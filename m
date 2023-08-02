@@ -2,175 +2,190 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CEF0C76CB12
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 12:39:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 69A4876CAEE
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 12:35:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233721AbjHBKjQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Aug 2023 06:39:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55840 "EHLO
+        id S232356AbjHBKfh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Aug 2023 06:35:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52392 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232102AbjHBKio (ORCPT
+        with ESMTP id S232208AbjHBKfR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Aug 2023 06:38:44 -0400
-Received: from CY4PR02CU007.outbound.protection.outlook.com (mail-westcentralusazon11011011.outbound.protection.outlook.com [40.93.199.11])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4FA8546BF;
-        Wed,  2 Aug 2023 03:35:21 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=AV8r4xwIk+Xp51I/XhbMhUQX6Kt/N1Lp2WX9QjnOBHnD3g8LoqwPNthXX5C7Txz5cS3kzixzalZ8LnzI5wJknoLjzSLdmw3/PwJewM7O9T+VqVadJOU3xOwIOCMt23NRAEzYIFIPsJDotkkzieuMixYSoLqmSjJ299C9iZ8AO3N3kIXS/a/hLW8In7sYlCmoghVEyP7H+dGtIk29I5tB6X1fV5J3ShJR3enAvI7ebWmkC8wH06yHUpAlar3q4GhixPmOx1dDJsve4gEypHYVbPL9Dh4Y9p3ElUXKvxsAYsiiVstXDG1NOspUC75IsW1jSW3D40hMXKkBjdvKMJy0qA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=JIKJtaL840RiBVm3F9tGNuLrrSUDm+zYqgPuljdDWKA=;
- b=XBUPryplLrx06cmh3ilRsomH/aaCtLO+dkJhbgQFitfLbLJy9LV5qpYcmR+KUeO18d0jliYV5qWSj9GZY3Ql2RIDVhMHANjCRFQCVfl5+UHaxLyfz9uTi4gNSDv3pu7SxCZGSnyPqY3Qfvw8Vlt1z1MPqQmthpBrj4rkW15gGPvR8bpIbojJ2DowWBUgKUgcSRtBtgtLQWqQhFTMblQofq37eUV5uSOJB5ovddvn+uQCc2LD2J9J2TC5feZTFpdj9ZZXchPk7/yJW6hv02aXeRieQwYsV6klNvhsp/T5V+KySlQ++66RYWuAE1MNvF9jcha6xhBoYFK1F6JQ+qEIAg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=vmware.com; dmarc=pass action=none header.from=vmware.com;
- dkim=pass header.d=vmware.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vmware.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=JIKJtaL840RiBVm3F9tGNuLrrSUDm+zYqgPuljdDWKA=;
- b=jzc2NkQlm2keTDZ7fI6FPvQUkJE7NiruclXroWhlXDUj60aex1DfIFkfT3HUNNkH7io9RXPOGk2LJIuktcRFlH4RlWP0V26pTUFmQt+CwKjEKOu8+qOVkPgC+xGNgTw/YoG5h9cSuB70RzwP07Qz0UbftiT4mBQSe4KHS3r35vI=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=vmware.com;
-Received: from BL0PR05MB5409.namprd05.prod.outlook.com (2603:10b6:208:6e::17)
- by PH0PR05MB8623.namprd05.prod.outlook.com (2603:10b6:510:b0::7) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6631.45; Wed, 2 Aug
- 2023 10:22:24 +0000
-Received: from BL0PR05MB5409.namprd05.prod.outlook.com
- ([fe80::7684:5353:3b78:b380]) by BL0PR05MB5409.namprd05.prod.outlook.com
- ([fe80::7684:5353:3b78:b380%5]) with mapi id 15.20.6652.019; Wed, 2 Aug 2023
- 10:22:24 +0000
-From:   Ashwin Dayanand Kamat <kashwindayan@vmware.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Wen Gong <wgong@codeaurora.org>,
-        Jouni Malinen <jouni@codeaurora.org>,
-        Johannes Berg <johannes.berg@intel.com>, davem@davemloft.net,
-        ath10k@lists.infradead.org, linux-wireless@vger.kernel.org,
-        netdev@vger.kernel.org, akaher@vmware.com, vsirnapalli@vmware.com,
-        tkundu@vmware.com, namit@vmware.com
-Subject: [PATCH v4.19.y] ath10k: Fix TKIP Michael MIC verification for PCIe
-Date:   Wed,  2 Aug 2023 15:52:13 +0530
-Message-Id: <1690971733-22270-1-git-send-email-kashwindayan@vmware.com>
-X-Mailer: git-send-email 2.7.4
-Content-Type: text/plain
-X-ClientProxiedBy: SJ0PR03CA0331.namprd03.prod.outlook.com
- (2603:10b6:a03:39c::6) To BL0PR05MB5409.namprd05.prod.outlook.com
- (2603:10b6:208:6e::17)
+        Wed, 2 Aug 2023 06:35:17 -0400
+Received: from outbound-smtp57.blacknight.com (outbound-smtp57.blacknight.com [46.22.136.241])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5D603595
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Aug 2023 03:30:24 -0700 (PDT)
+Received: from mail.blacknight.com (pemlinmail02.blacknight.ie [81.17.254.11])
+        by outbound-smtp57.blacknight.com (Postfix) with ESMTPS id C94CCFAD99
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Aug 2023 11:24:05 +0100 (IST)
+Received: (qmail 650 invoked from network); 2 Aug 2023 10:24:05 -0000
+Received: from unknown (HELO techsingularity.net) (mgorman@techsingularity.net@[84.203.20.191])
+  by 81.17.254.9 with ESMTPSA (AES256-SHA encrypted, authenticated); 2 Aug 2023 10:24:05 -0000
+Date:   Wed, 2 Aug 2023 11:24:02 +0100
+From:   Mel Gorman <mgorman@techsingularity.net>
+To:     David Hildenbrand <david@redhat.com>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        linux-fsdevel@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        liubo <liubo254@huawei.com>, Peter Xu <peterx@redhat.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Hugh Dickins <hughd@google.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        John Hubbard <jhubbard@nvidia.com>
+Subject: Re: [PATCH v1 0/4] smaps / mm/gup: fix gup_can_follow_protnone
+ fallout
+Message-ID: <20230802102402.at2lvqp3hlbksoz4@techsingularity.net>
+References: <20230727212845.135673-1-david@redhat.com>
+ <CAHk-=wiig=N75AGP7UAG9scmghWAqsTB5NRO6RiWLOB5YWfcTQ@mail.gmail.com>
+ <eaa67cf6-4896-bb62-0899-ebdae8744c7a@redhat.com>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BL0PR05MB5409:EE_|PH0PR05MB8623:EE_
-X-MS-Office365-Filtering-Correlation-Id: 623a05e6-73d6-41f4-cdb4-08db93425cd7
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: F2Url7V2BymK1TSl0ejKinh2PflJXUNtAT4S2gLiOGudI4HzY+JxcdWoAPFNjryYOtbEmhWrpJb0d8xkk22PIannO+JlcT2wUKskgM3MlUXe6epVKD6Au+CCg47XlOnJCX2LHXTtC+ESSX21UnoES5RRVSXYSHhSSXUoM4VnlVEXUFJqB3Q0vjS2AAdlzktibaZ7qp6JR7gWhw0jTkUeLB3Ldkhru2FmCkWiwoIuOQXpeoj4eUQuhhW/D7CleUS8G4XcAei4S2cwyU06S3ZEIbrir4hLqPgl3gx9eQBlSRjewV5dSd3InkPDh4XeCr1G2h6GortgEmLphQKNgySpB35oMJ4I1speval+KlShk4rvSmUEiL0Z5YfLXdIOS/l+zhCU8hJO1WwA/yMqB8vsL+/hgNyEEkJjEwCMqWMbCnzBRvuifVEsFjBT9UB6nu2JC7BLtEVB1M251YZl+QRYNOVgvOZR4RoUEhB1A/hBE1mhdfNXBjqajMhQ+jo0l25ROHPSA52fe5HhQaN5ZN8Y1Y6eyke5I6RnP0HI6dqY9UKEzXu0FNnZkdSrrbuZvg7g5lRkLDWWCJCX/1HQi36TTaZJTjZkIQsLqJ6TefrFO1DHGQH2E7FcY8FXWv5kNaP1Z52xOSQBygmaA7OZ+f7kF9WRdghd7PIWvOiDuUMtR/HPZLhSLH0b2leGzEZTbTA3MTkfMS4HNvZxw2W+keM6AQ==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL0PR05MB5409.namprd05.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(136003)(376002)(366004)(346002)(396003)(39860400002)(451199021)(83380400001)(86362001)(2906002)(36756003)(15650500001)(186003)(2616005)(107886003)(26005)(6506007)(7416002)(8676002)(966005)(8936002)(6512007)(6486002)(5660300002)(52116002)(478600001)(41300700001)(6666004)(316002)(54906003)(4326008)(6916009)(38350700002)(38100700002)(66946007)(66476007)(66556008);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?UxtTmEq/2zugI9y+jq/2umhsKrtaneN/7MA5jt/g1uxgs9k7EYD+Dhzd1jdK?=
- =?us-ascii?Q?t4pmDhQaMX9tzVPs+I7kOZwGp2reA857kdoQu0z9CtGmeSeTdmv+B/oVZfsM?=
- =?us-ascii?Q?zOsAL0BqWFBupIxQHsIU2tkC1UEkfnQiDT3sAIp7FPTB+2settY0M9jWkcyQ?=
- =?us-ascii?Q?Fn7PzeFMAl5VKtfMzktFE9rA20RxfEcYHecyYYEeP7bqjWKctC3vcANcvsvw?=
- =?us-ascii?Q?lgTzlN9oOk9/0yJqcnkPAAIwg+rYMTETYZNi6gGN0ZVZQLjNccHxEiuhoGzJ?=
- =?us-ascii?Q?fGt8lxBAax3zB6YaBhNu/S76d894nwFhBAogDFh8w7GjXapPOjm/V/m+SKLx?=
- =?us-ascii?Q?+x730CV9/JI+H20ZGVfRZNs0tq2SMcNM1vfS/QwqXssvviDAsIH5V8i0fBqm?=
- =?us-ascii?Q?B7brtH6YNjRrKXsPCl1SEasT3An+mv5CwY5wVlZTP8o70qhH6GqUc5blLFGO?=
- =?us-ascii?Q?Ke0biBYeTHoiNIF/vjGjUxRmdQrLAn9ZD10Q2ikM6lNH1rwbyEGcJ7lChZLJ?=
- =?us-ascii?Q?rZ02C4CR2gbah7iBg/GO/18AUp/yr6rBFWq+Nh3xVgax4AGUwFMZizNrAFhA?=
- =?us-ascii?Q?1a4Ii8txe5n0yyiHHSGpbn/31snnFZvdfHUeYVNJylsxx2x69EdQYPcsXTcp?=
- =?us-ascii?Q?OovFqitSAqN/EOwmyjvT56CHT/sMX2wjpEji/wIIrxQQj1EYOAmFixnNuXzP?=
- =?us-ascii?Q?sriUSejrT/NdWXyeHH3zXxgUhec1XYBRbumO4GCa2C4szh2MPBNvW7tGWHDo?=
- =?us-ascii?Q?24Vq9KAwol8C0nVj9FFOod0CXJt/YL6yX5l+ip2javCiyeOomMIDuADa049z?=
- =?us-ascii?Q?VDCY/upX8dX3pXtaAe8EPjDLqCeQXs0HhtAVngO7g14fb4PvJCEzpb+a6k/O?=
- =?us-ascii?Q?qeSCFbn0y5aD/UwndOaFu4EC5SUU1UlKvwhEvI09MBw8UurdpW+kalZ9Go+7?=
- =?us-ascii?Q?BCUkAgRXGgUCI8ijr2ebjGxPUdABVTsO3nm0vfwjNahLJFWr2WLMyA6v+nQm?=
- =?us-ascii?Q?eBlk0KvzTO6Rxxj3EEvhyMvuFY/VlTk11nLQawDv1RhLcfswlknzzq/IquBy?=
- =?us-ascii?Q?KPbm80lMqEmdb9lYVj2iy+6jQ1N2QSA89SUDTEueFvdM//SHcNGUYWkpr0zD?=
- =?us-ascii?Q?spXykfRSc/NV9o5sTKfUnesDUhmBnaOQVrz6XNOAc3WE1CyGExz+34DVBuyJ?=
- =?us-ascii?Q?tZkLV/2dDzrHZsqfunNP5xXuy/OSx41mDFox97PIKxlX9sEKyibGH/sQhaFN?=
- =?us-ascii?Q?A36rWl2V7yBj3qt7vfLKC4510xUkKRmzAwhhQuMLo2NZRqWJsXd5L893kstx?=
- =?us-ascii?Q?xD5C6Fn2YJy+qLA1GBAMkCEnY7NRajm9gb6Hx4t8S+4rNLl40pK5Zc6BXLCT?=
- =?us-ascii?Q?MtZo/TlOv4l8Z25ziFnjX8izCyJFaiIsknqbBPCraVLvIH1heGhdIZJJyBxm?=
- =?us-ascii?Q?bnvF68YtFpmuuAr9WNGQxipBWIDdv1rY9dqwpum5xyIusxW8YJo7cPee9u9E?=
- =?us-ascii?Q?pe/vKs4yES44FXS1T/CtdCkK9Nrc02wQ4cquq0TZVmijIDmTKtchmoKw2YX9?=
- =?us-ascii?Q?F5OgLk3SUjp3hhHFivxfEmNuRJGv0YPJVDbCfIZe?=
-X-OriginatorOrg: vmware.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 623a05e6-73d6-41f4-cdb4-08db93425cd7
-X-MS-Exchange-CrossTenant-AuthSource: BL0PR05MB5409.namprd05.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 02 Aug 2023 10:22:23.9273
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: b39138ca-3cee-4b4a-a4d6-cd83d9dd62f0
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: BFTSTriyr6lriEqOwlZF0JFnAXylvaCgtB3QkCEkVaK1KWWKzkHYZ3r1XTpl4YIkxLI2Zdn2yBlHCCIOeXTwnA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR05MB8623
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=iso-8859-15
+Content-Disposition: inline
+In-Reply-To: <eaa67cf6-4896-bb62-0899-ebdae8744c7a@redhat.com>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Wen Gong <wgong@codeaurora.org>
+On Fri, Jul 28, 2023 at 07:30:33PM +0200, David Hildenbrand wrote:
+> On 28.07.23 18:18, Linus Torvalds wrote:
+> > On Thu, 27 Jul 2023 at 14:28, David Hildenbrand <david@redhat.com> wrote:
+> > > 
+> > > This is my proposal on how to handle the fallout of 474098edac26
+> > > ("mm/gup: replace FOLL_NUMA by gup_can_follow_protnone()") where I
+> > > accidentially missed that follow_page() and smaps implicitly kept the
+> > > FOLL_NUMA flag clear by *not* setting it if FOLL_FORCE is absent, to
+> > > not trigger faults on PROT_NONE-mapped PTEs.
+> > 
+> > Ugh.
+> 
+> I was hoping for that reaction, with the assumption that we would get
+> something cleaner :)
+> 
+> > 
+> > I hate how it uses FOLL_FORCE that is inherently scary.
+> 
+> I hate FOLL_FORCE, but I hate FOLL_NUMA even more, because to me it
+> is FOLL_FORCE in disguise (currently and before 474098edac26, if
+> FOLL_FORCE is set, FOLL_NUMA won't be set and the other way around).
+> 
 
-commit 0dc267b13f3a7e8424a898815dd357211b737330 upstream.
+FOLL_NUMA being conflated with FOLL_FORCE is almost certainly a historical
+accident.
 
-TKIP Michael MIC was not verified properly for PCIe cases since the
-validation steps in ieee80211_rx_h_michael_mic_verify() in mac80211 did
-not get fully executed due to unexpected flag values in
-ieee80211_rx_status.
+> > 
+> > Why do we have that "gup_can_follow_protnone()" logic AT ALL?
+> 
+> That's what I was hoping for.
+> 
+> > 
+> > Couldn't we just get rid of that disgusting thing, and just say that
+> > GUP (and follow_page()) always just ignores NUMA hinting, and always
+> > just follows protnone?
+> > 
+> > We literally used to have this:
+> > 
+> >          if (!(gup_flags & FOLL_FORCE))
+> >                  gup_flags |= FOLL_NUMA;
+> > 
+> > ie we *always* set FOLL_NUMA for any sane situation. FOLL_FORCE should
+> > be the rare crazy case.
+> 
+> Yes, but my point would be that we now spell that "rare crazy case"
+> out for follow_page().
+> 
+> If you're talking about patch #1, I agree, therefore patch #3 to
+> avoid all that nasty FOLL_FORCE handling in GUP callers.
+> 
+> But yeah, if we can avoid all that, great.
+> 
+> > 
+> > The original reason for not setting FOLL_NUMA all the time is
+> > documented in commit 0b9d705297b2 ("mm: numa: Support NUMA hinting
+> > page faults from gup/gup_fast") from way back in 2012:
+> > 
+> >           * If FOLL_FORCE and FOLL_NUMA are both set, handle_mm_fault
+> >           * would be called on PROT_NONE ranges. We must never invoke
+> >           * handle_mm_fault on PROT_NONE ranges or the NUMA hinting
+> >           * page faults would unprotect the PROT_NONE ranges if
+> >           * _PAGE_NUMA and _PAGE_PROTNONE are sharing the same pte/pmd
+> >           * bitflag. So to avoid that, don't set FOLL_NUMA if
+> >           * FOLL_FORCE is set.
+> 
+> 
+> In handle_mm_fault(), we never call do_numa_page() if
+> !vma_is_accessible(). Same for do_huge_pmd_numa_page().
+> 
+> So, if we would ever end up triggering a page fault on
+> mprotect(PROT_NONE) ranges (i.e., via FOLL_FORCE), we
+> would simply do nothing.
+> 
+> At least that's the hope, I'll take a closer look just to make
+> sure we're good on all call paths.
+> 
+> > 
+> > but I don't think the original reason for this is *true* any more.
+> > 
+> > Because then two years later in 2014, in commit c46a7c817e66 ("x86:
+> > define _PAGE_NUMA by reusing software bits on the PMD and PTE levels")
+> > Mel made the code able to distinguish between PROT_NONE and NUMA
+> > pages, and he changed the comment above too.
+> 
+> CCing Mel.
+> 
+> I remember that pte_protnone() can only distinguished between
+> NUMA vs. actual mprotect(PROT_NONE) by looking at the VMA -- vma_is_accessible().
+> 
 
-Fix this by setting the flags property to meet mac80211 expectations for
-performing Michael MIC validation there. This fixes CVE-2020-26141. It
-does the same as ath10k_htt_rx_proc_rx_ind_hl() for SDIO which passed
-MIC verification case. This applies only to QCA6174/QCA9377 PCIe.
+Ok, as usual, I'm far behind and this thread massive but I'll respond
+to this part before trying to digest the history of this and the current
+implementation.
 
-Tested-on: QCA6174 hw3.2 PCI WLAN.RM.4.4.1-00110-QCARMSWP-1
+To the best of my recollection, FOLL_NUMA used to be a correctness issue
+but that should no longer true. Initially, it was to prevent mixing up
+"PROT_NONE" that was for NUMA hinting and "PROT_NONE" due to VMA
+protections. Now the bits are different so this case should be
+avoidable.
 
-Cc: stable@vger.kernel.org
-Signed-off-by: Wen Gong <wgong@codeaurora.org>
-Signed-off-by: Jouni Malinen <jouni@codeaurora.org>
-Link: https://lore.kernel.org/r/20210511200110.c3f1d42c6746.I795593fcaae941c471425b8c7d5f7bb185d29142@changeid
-Signed-off-by: Johannes Berg <johannes.berg@intel.com>
-Signed-off-by: Ashwin Dayanand Kamat <kashwindayan@vmware.com>
----
- drivers/net/wireless/ath/ath10k/htt_rx.c | 10 ++++++++++
- 1 file changed, 10 insertions(+)
+Later it was still a different correctness issue because PMD migration had
+a hacky implementation without migration entries and a GUP could find a
+page that was being collapsed and had to be serialised. That should also
+now be avoidable.
 
-diff --git a/drivers/net/wireless/ath/ath10k/htt_rx.c b/drivers/net/wireless/ath/ath10k/htt_rx.c
-index 0a7551dc0f94..b8bba6d99dba 100644
---- a/drivers/net/wireless/ath/ath10k/htt_rx.c
-+++ b/drivers/net/wireless/ath/ath10k/htt_rx.c
-@@ -1645,6 +1645,11 @@ static void ath10k_htt_rx_h_mpdu(struct ath10k *ar,
- 
- 	skb_queue_walk(amsdu, msdu) {
- 		ath10k_htt_rx_h_csum_offload(msdu);
-+
-+		if (frag && !fill_crypt_header &&
-+		    enctype == HTT_RX_MPDU_ENCRYPT_TKIP_WPA)
-+			status->flag &= ~RX_FLAG_MMIC_STRIPPED;
-+
- 		ath10k_htt_rx_h_undecap(ar, msdu, status, first_hdr, enctype,
- 					is_decrypted);
- 
-@@ -1662,6 +1667,11 @@ static void ath10k_htt_rx_h_mpdu(struct ath10k *ar,
- 
- 		hdr = (void *)msdu->data;
- 		hdr->frame_control &= ~__cpu_to_le16(IEEE80211_FCTL_PROTECTED);
-+
-+		if (frag && !fill_crypt_header &&
-+		    enctype == HTT_RX_MPDU_ENCRYPT_TKIP_WPA)
-+			status->flag &= ~RX_FLAG_IV_STRIPPED &
-+					~RX_FLAG_MMIC_STRIPPED;
- 	}
- }
- 
+At some point, FOLL_FORCE and FOLL_NUMA got conflated but they really should
+not be related even if they are by accident. FOLL_FORCE (e.g. ptrace)
+may have to process the fault and make the page resident and accessible
+regardless of any other consequences. FOLL_NUMA ideally should be much
+more specific. If the calling context only cares about the struct page
+(e.g. smaps) then it's ok to get a reference to the page. If necessary,
+it could clear the protection and lose the hinting fault although it's less
+than ideal. Just needing the struct page for informational purposes though
+should not be treated as a NUMA hinting fault because it has nothing to
+do with the tasks memory reference behaviour.
+
+A variant of FOLL_NUMA (FOLL_NUMA_HINT?) may still be required to indicate
+the calling context is accessing the page for reasons that are equivalent
+to a real memory access from a CPU related to the task mapping the page.
+I didn't check but KVM may be an example of this when dealing with some MMU
+faults as the page is being looked up on behalf of the task and presumably
+from the same CPU the task was running run. Something like reading smaps
+only needs the struct page but it should not be treated as a NUMA hinting
+fault as the access has nothing to do with the task mapping the page.
+
+> > The original reason for FOLL_NUMA simply does not exist any more. We
+> > know exactly when a page is marked for NUMA faulting, and we should
+> > simply *ignore* it for GUP and follow_page().
+> > 
+
+I'd be wary of completely ignoring it if there is any known calling context
+that is equivalent to a memory access and the hinting fault should be
+processed -- KVM may be an example.
+
 -- 
-2.35.6
-
+Mel Gorman
+SUSE Labs
