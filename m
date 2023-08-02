@@ -2,87 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C34776CAE5
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 12:33:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1BA0F76CAE6
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 12:33:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231267AbjHBKdd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Aug 2023 06:33:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52388 "EHLO
+        id S232523AbjHBKdp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Aug 2023 06:33:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52172 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232449AbjHBKc4 (ORCPT
+        with ESMTP id S234198AbjHBKdO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Aug 2023 06:32:56 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 043AF59F1;
-        Wed,  2 Aug 2023 03:28:27 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 47B39113E;
-        Wed,  2 Aug 2023 03:28:12 -0700 (PDT)
-Received: from [10.57.77.90] (unknown [10.57.77.90])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 64DCE3F6C4;
-        Wed,  2 Aug 2023 03:27:26 -0700 (PDT)
-Message-ID: <3bbfde16-ced1-dca8-6a3f-da893e045bc5@arm.com>
-Date:   Wed, 2 Aug 2023 11:27:24 +0100
+        Wed, 2 Aug 2023 06:33:14 -0400
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C61EA5B96
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Aug 2023 03:28:41 -0700 (PDT)
+Received: from pps.filterd (m0353726.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 372ALkVA009640;
+        Wed, 2 Aug 2023 10:27:57 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=oXj7HSyRMTqBviVL7YcF6pGvHG1VoYSfKB3xdnnZr9Q=;
+ b=KuWpg6EUIgQA5clG/1yO//r6zXqthcer+Z3mD5V7UpWiRNiWNKppCzptUnON+qt010IO
+ /5qP9ti86M8Vci5A7Wg7urCkjYayfkQOytL4I5a4ocCN6SSvx+CEjR5H96eTRDQAJ63a
+ NEY7oOUThsGrou3+U9V7U7bQB9ogyMULg7I6xA7DawNAsexHQFnKiZW7tZoG9uJGdr27
+ RqUINTcn52ATpmnyUBTX3Q9RLviqPDdPpjfFVUXkRvkvd0KkU/msG8dxw7/LHaqDndf5
+ kFqr2xxt7nv6fOFEXrfOLZ02YPGp0OfYGTLxSTiAmjhAfYUDl5yab04aQpre6WQWVr6q ww== 
+Received: from ppma11.dal12v.mail.ibm.com (db.9e.1632.ip4.static.sl-reverse.com [50.22.158.219])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3s7nax065g-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 02 Aug 2023 10:27:56 +0000
+Received: from pps.filterd (ppma11.dal12v.mail.ibm.com [127.0.0.1])
+        by ppma11.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 3728cHQX014537;
+        Wed, 2 Aug 2023 10:27:55 GMT
+Received: from smtprelay04.fra02v.mail.ibm.com ([9.218.2.228])
+        by ppma11.dal12v.mail.ibm.com (PPS) with ESMTPS id 3s5ft1k3mw-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 02 Aug 2023 10:27:55 +0000
+Received: from smtpav01.fra02v.mail.ibm.com (smtpav01.fra02v.mail.ibm.com [10.20.54.100])
+        by smtprelay04.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 372ARq6a42729854
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 2 Aug 2023 10:27:52 GMT
+Received: from smtpav01.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 365882004D;
+        Wed,  2 Aug 2023 10:27:52 +0000 (GMT)
+Received: from smtpav01.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id A9A602004F;
+        Wed,  2 Aug 2023 10:27:50 +0000 (GMT)
+Received: from [9.203.106.137] (unknown [9.203.106.137])
+        by smtpav01.fra02v.mail.ibm.com (Postfix) with ESMTP;
+        Wed,  2 Aug 2023 10:27:50 +0000 (GMT)
+Message-ID: <1f26411c-34b9-14e8-66eb-4854d5b1fbbb@linux.ibm.com>
+Date:   Wed, 2 Aug 2023 15:57:49 +0530
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.13.0
-Subject: Re: [PATCH 0/2] don't use mapcount() to check large folio sharing
-To:     Yin Fengwei <fengwei.yin@intel.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        akpm@linux-foundation.org, willy@infradead.org,
-        vishal.moola@gmail.com, wangkefeng.wang@huawei.com,
-        minchan@kernel.org, yuzhao@google.com, david@redhat.com,
-        shy828301@gmail.com
-References: <20230728161356.1784568-1-fengwei.yin@intel.com>
-From:   Ryan Roberts <ryan.roberts@arm.com>
-In-Reply-To: <20230728161356.1784568-1-fengwei.yin@intel.com>
-Content-Type: text/plain; charset=UTF-8
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [next-20230731] Kdump fails to capture vmcore (powerpc)
+To:     Sachin Sant <sachinp@linux.ibm.com>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>, linux-mm@kvack.org
+Cc:     "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
+        Mahesh J Salgaonkar <mahesh@linux.ibm.com>,
+        Sourabh Jain <sourabhjain@linux.ibm.com>,
+        open list <linux-kernel@vger.kernel.org>
+References: <F996AB3C-400E-447A-B142-9CB3600BCDD8@linux.ibm.com>
+Content-Language: en-US
+From:   Hari Bathini <hbathini@linux.ibm.com>
+In-Reply-To: <F996AB3C-400E-447A-B142-9CB3600BCDD8@linux.ibm.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: R3CV6zB-xe7IR6XXK__oDj9g4eFKtygh
+X-Proofpoint-GUID: R3CV6zB-xe7IR6XXK__oDj9g4eFKtygh
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
+ definitions=2023-08-02_05,2023-08-01_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0
+ mlxlogscore=999 clxscore=1011 impostorscore=0 suspectscore=0 bulkscore=0
+ lowpriorityscore=0 mlxscore=0 spamscore=0 phishscore=0 adultscore=0
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2306200000 definitions=main-2308020089
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_MSPIKE_H5,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 28/07/2023 17:13, Yin Fengwei wrote:
-> In madvise_cold_or_pageout_pte_range() and madvise_free_pte_range(),
-> folio_mapcount() is used to check whether the folio is shared. But it's
-> not correct as folio_mapcount() returns total mapcount of large folio.
+
+
+On 31/07/23 7:39 pm, Sachin Sant wrote:
+> Kernel Crash dump(kdump) and firmware assisted dump on powerpc
+> fails to capture vmcore on recent linux-next builds.
 > 
-> Use folio_estimated_sharers() here as the estimated number is enough.
+> Starting Kdump Vmcore Save Service...
+> systemd[1]: Starting Kdump Vmcore Save Service...
+> kdump[599]: Kdump is using the default log level(3).
+> kdump[635]: saving to /sysroot/var/crash/127.0.0.1-2023-07-31-09:01:28/
+> kdump[639]: Remounting the dump target in rw mode.
+> kdump[643]: saving vmcore-dmesg.txt to /sysroot/var/crash/127.0.0.1-2023-07-31-09:01:28/
+> kdump[649]: saving vmcore-dmesg.txt complete
+> kdump[651]: saving vmcore
+> kdump.sh[652]: readpage_elf: Attempt to read non-existent page at 0x4000000000000000.
+> kdump.sh[652]: readmem: type_addr: 0, addr:0, size:8
+> kdump.sh[652]: get_vmemmap_list_info: Can't get vmemmap region addresses
+> kdump.sh[652]: get_machdep_info_ppc64: Can't get vmemmap list info.
+> kdump.sh[652]: makedumpfile Failed.
+> kdump[654]: saving vmcore failed, exitcode:1
+> kdump[656]: saving the /run/initramfs/kexec-dmesg.log to /sysroot/var/crash/127.0.0.1-2023-07-31-09:01:28//
+> kdump[663]: saving vmcore failed
+> systemd[1]: kdump-capture.service: Main process exited, code=exited, status=1/FAILURE
+> systemd[1]: kdump-capture.service: Failed with result 'exit-code'.
+> systemd[1]: Failed to start Kdump Vmcore Save Service.
+> [FAILED] Failed to start Kdump Vmcore Save Service.
 > 
-> Yin Fengwei (2):
->   madvise: don't use mapcount() against large folio for sharing check
->   madvise: don't use mapcount() against large folio for sharing check
+> Git bisect points to following patch:
 > 
->  mm/huge_memory.c | 2 +-
->  mm/madvise.c     | 6 +++---
->  2 files changed, 4 insertions(+), 4 deletions(-)
+> 8dc9a0ad0c3e7f43e4e091e4e24634e21ce17a54 is the first bad commit
+> commit 8dc9a0ad0c3e7f43e4e091e4e24634e21ce17a54
+>      powerpc/book3s64/vmemmap: switch radix to use a different vmemmap handling function
 > 
 
-As a set of fixes, I agree this is definitely an improvement, so:
+Earlier, makedumpfile made use of vmemmap_list to populate all the
+vmemmap regions but that changed for radix. It uses the init_mm pgtable
+for vmemmap regions. A fix is needed in makedumpfile to catch up with
+the above change.
 
-Reviewed-By: Ryan Roberts
-
-
-But I have a couple of comments around further improvements;
-
-Once we have the scheme that David is working on to be able to provide precise
-exclusive vs shared info, we will probably want to move to that. Although that
-scheme will need access to the mm_struct of a process known to be mapping the
-folio. We have that info, but its not passed to folio_estimated_sharers() so we
-can't just reimplement folio_estimated_sharers() - we will need to rework these
-call sites again.
-
-Given the aspiration for most of the memory to be large folios going forwards,
-wouldn't it be better to avoid splitting the large folio where the large folio
-is mapped entirely within the range of the madvise operation? Sorry if this has
-already been discussed and decided against - I didn't follow the RFC too
-closely. Or perhaps you plan to do this as a follow up?
-
-Thanks,
-Ryan
-
+Thanks
+Hari
