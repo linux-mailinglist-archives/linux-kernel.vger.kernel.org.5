@@ -2,88 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 608DD76D777
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 21:10:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0DB9E76D77E
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 21:12:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232237AbjHBTK0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Aug 2023 15:10:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59508 "EHLO
+        id S232306AbjHBTMR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Aug 2023 15:12:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60086 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229517AbjHBTKY (ORCPT
+        with ESMTP id S229578AbjHBTMP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Aug 2023 15:10:24 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58A8626A6
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Aug 2023 12:10:23 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id E16AB61A73
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Aug 2023 19:10:22 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 4CD1EC433C8;
-        Wed,  2 Aug 2023 19:10:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691003422;
-        bh=46PMWe3e0Io+gQooYpA8G1g0Au2bYDA8kL63f8rshnM=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=epEV6mxmHAP26amC1DCeKHFEhfnkdOIvng7Mr4jy2Z03x8AV+XARbZx5jV8uzKH+r
-         JWKnE0V5zagpXOcG34JsFU0ptNc8je+p2xLlX+yt2JCFUrvGe+5hcs4m5jHsBohUDE
-         wPHIkDmzILdWX1L1/iTNuBW9tHzc8b74FysohM2nugEaf/suELfO9mFrcfd4uIo/QQ
-         RbSjAQaZzDNtf3JA6dfaeEfitTeQXCiY3o9CPScfiC3SBuiLqIl/um5wol3xgr9E1I
-         7aZj7GX4BoY16W9ua31o1Q3tdoY0xCzIdfDW27CPJ/JLgtjTAGhh1Ywq//J6wl5dyv
-         eqH3KdtCSr3QA==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 2F103E270D1;
-        Wed,  2 Aug 2023 19:10:22 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        Wed, 2 Aug 2023 15:12:15 -0400
+Received: from mail.hugovil.com (mail.hugovil.com [162.243.120.170])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74A1826B0;
+        Wed,  2 Aug 2023 12:12:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=hugovil.com
+        ; s=x; h=Subject:Content-Transfer-Encoding:MIME-Version:Message-Id:Date:Cc:To
+        :From:Sender:Reply-To:Content-Type:Content-ID:Content-Description:Resent-Date
+        :Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:
+        References:List-Id:List-Help:List-Unsubscribe:List-Subscribe:List-Post:
+        List-Owner:List-Archive; bh=8WLpw6r5gAvcjcRiv8zlx0QGc4QyV5Z8Lyq6blhWPEk=; b=T
+        I4T/GT2WUPvcY20vXyfr8xfGUq8ezI58z2FD6FQIvlo9xkcpuwneALGou7HZMTtbBQLXH2me8X51G
+        p+gJTh1+n947WJJqiPOVsMhw4+m0Ncu5e4pYfG/AOb0FFU9+k3kC9bvWKW2cYaxJypnxxCCJkA8G3
+        KG1QnpWSV2EVSD+Q=;
+Received: from modemcable061.19-161-184.mc.videotron.ca ([184.161.19.61]:50458 helo=localhost.localdomain)
+        by mail.hugovil.com with esmtpa (Exim 4.92)
+        (envelope-from <hugo@hugovil.com>)
+        id 1qRHGK-0003z2-IX; Wed, 02 Aug 2023 15:12:01 -0400
+From:   Hugo Villeneuve <hugo@hugovil.com>
+To:     a.zummo@towertech.it, alexandre.belloni@bootlin.com,
+        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+        conor+dt@kernel.org
+Cc:     linux-rtc@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, hugo@hugovil.com,
+        bruno.thomsen@gmail.com, Hugo Villeneuve <hvilleneuve@dimonoff.com>
+Date:   Wed,  2 Aug 2023 15:11:51 -0400
+Message-Id: <20230802191153.952667-1-hugo@hugovil.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH -next] net: hisilicon: fix the return value handle and remove
- redundant netdev_err() for platform_get_irq()
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <169100342218.23440.15408447758503116058.git-patchwork-notify@kernel.org>
-Date:   Wed, 02 Aug 2023 19:10:22 +0000
-References: <20230731073858.3633193-1-ruanjinjie@huawei.com>
-In-Reply-To: <20230731073858.3633193-1-ruanjinjie@huawei.com>
-To:     Ruan Jinjie <ruanjinjie@huawei.com>
-Cc:     yisen.zhuang@huawei.com, salil.mehta@huawei.com,
-        davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
-        pabeni@redhat.com, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-SA-Exim-Connect-IP: 184.161.19.61
+X-SA-Exim-Mail-From: hugo@hugovil.com
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
+Subject: [PATCH 0/2] rtc: pcf2127: add default battery-related power-on values
+X-SA-Exim-Version: 4.2.1 (built Wed, 08 May 2019 21:11:16 +0000)
+X-SA-Exim-Scanned: Yes (on mail.hugovil.com)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
+From: Hugo Villeneuve <hvilleneuve@dimonoff.com>
 
-This patch was applied to netdev/net-next.git (main)
-by Jakub Kicinski <kuba@kernel.org>:
+Hello,
+this patch series adds support for setting default battery-related
+functions for RTC devices.
 
-On Mon, 31 Jul 2023 15:38:58 +0800 you wrote:
-> There is no possible for platform_get_irq() to return 0
-> and the return value of platform_get_irq() is more sensible
-> to show the error reason.
-> 
-> And there is no need to call the netdev_err() function directly to print
-> a custom message when handling an error from platform_get_irq() function as
-> it is going to display an appropriate error message in case of a failure.
-> 
-> [...]
+This evolved from previous discussions about PCF2127 and also when reviewing
+PCF2131 driver:
 
-Here is the summary with links:
-  - [-next] net: hisilicon: fix the return value handle and remove redundant netdev_err() for platform_get_irq()
-    https://git.kernel.org/netdev/net-next/c/ae1d60c41e58
+Link: https://lore.kernel.org/linux-rtc/20190910143945.9364-1-bruno.thomsen@gmail.com/
+Link: https://lore.kernel.org/linux-rtc/20191211163354.GC1463890@piout.net/
+Link: https://lore.kernel.org/linux-rtc/20230123170731.6064430c50f5fb7b484d8734@hugovil.com/
 
-You are awesome, thank you!
+I decided to add these two new DT properties as generic RTC properties, in the
+hope that they can be reused by other RTC drivers if needed.
+
+Patch 1 adds two new DT properties to set battery-related functions. These
+properties are generic for all RTC devices.
+
+Patch 2 adds support for these two new DT properties to the PCF2127 driver.
+This is especially important for PCF2131 devices which have default PWRMNG
+values which disable battery-related functions.
+
+Thank you.
+
+Hugo Villeneuve (2):
+  dt-bindings: rtc: add properties to set battery-related functions
+  rtc: pcf2127: add support for battery-related DT properties
+
+ .../devicetree/bindings/rtc/rtc.yaml          | 19 ++++++
+ drivers/rtc/rtc-pcf2127.c                     | 59 +++++++++++++++++++
+ 2 files changed, 78 insertions(+)
+
+
+base-commit: 3c87b351809f220294aec3c0df7b078ff5c5b15b
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
+2.30.2
 
