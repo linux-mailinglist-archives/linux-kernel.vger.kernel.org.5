@@ -2,153 +2,211 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 69C6C76C981
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 11:32:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9DF8B76C97A
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 11:29:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234150AbjHBJcZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Aug 2023 05:32:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43248 "EHLO
+        id S232662AbjHBJ3Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Aug 2023 05:29:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42528 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234127AbjHBJcX (ORCPT
+        with ESMTP id S231765AbjHBJ3N (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Aug 2023 05:32:23 -0400
-X-Greylist: delayed 123 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Wed, 02 Aug 2023 02:32:20 PDT
-Received: from esa11.hc1455-7.c3s2.iphmx.com (esa11.hc1455-7.c3s2.iphmx.com [207.54.90.137])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9B69E7
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Aug 2023 02:32:20 -0700 (PDT)
-X-IronPort-AV: E=McAfee;i="6600,9927,10789"; a="106087032"
-X-IronPort-AV: E=Sophos;i="6.01,248,1684767600"; 
-   d="scan'208";a="106087032"
-Received: from unknown (HELO yto-r2.gw.nic.fujitsu.com) ([218.44.52.218])
-  by esa11.hc1455-7.c3s2.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Aug 2023 18:29:10 +0900
-Received: from yto-m2.gw.nic.fujitsu.com (yto-nat-yto-m2.gw.nic.fujitsu.com [192.168.83.65])
-        by yto-r2.gw.nic.fujitsu.com (Postfix) with ESMTP id 68E8CC68E2;
-        Wed,  2 Aug 2023 18:29:07 +0900 (JST)
-Received: from aks-ab1.gw.nic.fujitsu.com (aks-ab1.gw.nic.fujitsu.com [192.51.207.11])
-        by yto-m2.gw.nic.fujitsu.com (Postfix) with ESMTP id A9A88D5EA9;
-        Wed,  2 Aug 2023 18:29:06 +0900 (JST)
-Received: from localhost.localdomain (unknown [10.167.234.230])
-        by aks-ab1.gw.nic.fujitsu.com (Postfix) with ESMTP id ED4DB2FC7B4E;
-        Wed,  2 Aug 2023 18:29:04 +0900 (JST)
-From:   Li Zhijian <lizhijian@cn.fujitsu.com>
-To:     akpm@linux-foundation.org, linux-acpi@vger.kernel.org,
-        linux-mm@kvack.org
-Cc:     rafael@kernel.org, lenb@kernel.org, linux-kernel@vger.kernel.org,
-        ying.huang@intel.com, aneesh.kumar@linux.ibm.com,
-        Li Zhijian <lizhijian@cn.fujitsu.com>
-Subject: [PATCH] acpi,mm: fix typo sibiling -> sibling
-Date:   Wed,  2 Aug 2023 17:28:56 +0800
-Message-Id: <20230802092856.819328-1-lizhijian@cn.fujitsu.com>
-X-Mailer: git-send-email 2.31.1
+        Wed, 2 Aug 2023 05:29:13 -0400
+Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60A1B127
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Aug 2023 02:29:11 -0700 (PDT)
+Received: by mail-ej1-x62f.google.com with SMTP id a640c23a62f3a-99bed101b70so824567566b.3
+        for <linux-kernel@vger.kernel.org>; Wed, 02 Aug 2023 02:29:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ventanamicro.com; s=google; t=1690968550; x=1691573350;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=CEvdWKJwrirYDhttDd02rTV33tBJG9g5L+9AxNoea3M=;
+        b=WgRojBwticTI7tlGP4WhwryjFIOTSb45MoUr2Xomsnj5dZNimXNpbmwdtt7+Je4qpn
+         TomUFaMgXy0jF9o3axmIL0HPy8hlV/4x5aXy3r2c9bn6YJ4Hg7Y3TQJOh9mvhHpCkZF8
+         7ecMIM/3KehtF2nSe519/VXcRJJFE9OgiygnF2jZAItbssoFLRktIhrcyO3vZ6DDgpdV
+         dZ6Egnhrxr0Ai+PK8gXu4AFGUD8fO+2tjft3pOngaYXwvwcqHQnUS0k7z43PXF3UlNDS
+         DnjnF9Id5ixdw5KIBQOPhR5RtIGtjK2hpEWreQ9AW+PUrojmjfUTyccBFY2LjXFzMA12
+         1DPw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690968550; x=1691573350;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=CEvdWKJwrirYDhttDd02rTV33tBJG9g5L+9AxNoea3M=;
+        b=TO4G7CBiWNK5sZFtZNEdGdCvszP6j/I66yXfgp+5jcpSclPOytyPKZTIIKVw72+RQK
+         y14IQ1Tg7G8CcXLLgWui7fNsszjyo91rI5F0KbnmF4QfUPlY7ZpPXnwUwuXpEmvXV89x
+         6iOYPFldsMc1KC9SmZeeyOvzgH0+YkGziJPg1VDU2xd+QyOp1XkrejW40CZ76EhkVQDP
+         0k7PJfZeHVuE2mJrd9E9sunSassywL8SfX+oM89Ti4+dWZ/mnSzN4kWNlsr4t1JYMElj
+         KlnqkZxmcoBd92GRrctbHXsO7e4/06TKmmIRlmbby+TE8C/XPD5wXqqoXsX4dfFwB3qH
+         oTdw==
+X-Gm-Message-State: ABy/qLYg+FOrFRC6QYyOxSJeE+G9m43wyFwk8DCBGqlNyiTAVPpi/kt3
+        u16Zef4vjau1IdPnMYHUHev04A==
+X-Google-Smtp-Source: APBJJlFoWQnCKbhEbTUrZCJqYYVW6s4vDSWfgPkrwNS0ATxL1doB6I6qe6yB2sD40AZ6C/w2onWycw==
+X-Received: by 2002:a17:906:305b:b0:99b:cb78:8537 with SMTP id d27-20020a170906305b00b0099bcb788537mr4084494ejd.11.1690968549860;
+        Wed, 02 Aug 2023 02:29:09 -0700 (PDT)
+Received: from localhost (212-5-140-29.ip.btc-net.bg. [212.5.140.29])
+        by smtp.gmail.com with ESMTPSA id um6-20020a170906cf8600b009930c61dc0esm8823130ejb.92.2023.08.02.02.29.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 02 Aug 2023 02:29:09 -0700 (PDT)
+Date:   Wed, 2 Aug 2023 12:29:05 +0300
+From:   Andrew Jones <ajones@ventanamicro.com>
+To:     Alexandre Ghiti <alexghiti@rivosinc.com>
+Cc:     Jonathan Corbet <corbet@lwn.net>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Ian Rogers <irogers@google.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Atish Patra <atishp@atishpatra.org>,
+        Anup Patel <anup@brainfault.org>,
+        Will Deacon <will@kernel.org>, Rob Herring <robh@kernel.org>,
+        =?utf-8?B?UsOpbWk=?= Denis-Courmont <remi@remlab.net>,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-perf-users@vger.kernel.org, linux-riscv@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org,
+        Atish Patra <atishp@rivosinc.com>
+Subject: Re: [PATCH v6 09/10] tools: lib: perf: Implement riscv mmap support
+Message-ID: <20230802-11f1b3d1ff4cc987bb58bfa4@orel>
+References: <20230802080328.1213905-1-alexghiti@rivosinc.com>
+ <20230802080328.1213905-10-alexghiti@rivosinc.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-TM-AS-Product-Ver: IMSS-9.1.0.1408-9.0.0.1002-27788.006
-X-TM-AS-User-Approved-Sender: Yes
-X-TMASE-Version: IMSS-9.1.0.1408-9.0.1002-27788.006
-X-TMASE-Result: 10--4.362300-10.000000
-X-TMASE-MatchedRID: WwTQ5WpbqUAUnpTkX3DbLirLqyE6Ur/jGfZImb3fqAQ6FHRWx2FGsL8F
-        Hrw7frluf146W0iUu2t7Dk+VAslsnY3oygjMeK7eBO00Q/2PQs++F//Mn3a2wwPHqiqIXxKG+03
-        a+MQ8RE2BKmEhSw0fOvlc5/v2Z+iZlwV2iaAfSWcURSScn+QSXt0H8LFZNFG76sBnwpOylLPJ1d
-        yRsn38oPRpGUAneS024pirfueCpzaIU5/Hig73GZ0wLQO1SUhFqQX4Tk3p4TByE6+JCoh/s5Sfx
-        imG/4PbSy9102KxznIhyadlGFXHKsTgfCdKUS4cicSkmYsAV+kLUU1zqiphVX7cGd19dSFd
-X-TMASE-SNAP-Result: 1.821001.0001-0-1-22:0,33:0,34:0-0
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        SPF_HELO_PASS,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230802080328.1213905-10-alexghiti@rivosinc.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-First found this typo as reviewing memory tier code. Fix it by sed like:
-$ sed -i 's/sibiling/sibling/g' $(git grep -l sibiling)
+On Wed, Aug 02, 2023 at 10:03:27AM +0200, Alexandre Ghiti wrote:
+> riscv now supports mmaping hardware counters so add what's needed to
+> take advantage of that in libperf.
+> 
+> Signed-off-by: Alexandre Ghiti <alexghiti@rivosinc.com>
+> Reviewed-by: Andrew Jones <ajones@ventanamicro.com>
+> Reviewed-by: Atish Patra <atishp@rivosinc.com>
+> ---
+>  tools/lib/perf/mmap.c | 66 +++++++++++++++++++++++++++++++++++++++++++
+>  1 file changed, 66 insertions(+)
+> 
+> diff --git a/tools/lib/perf/mmap.c b/tools/lib/perf/mmap.c
+> index 0d1634cedf44..2184814b37dd 100644
+> --- a/tools/lib/perf/mmap.c
+> +++ b/tools/lib/perf/mmap.c
+> @@ -392,6 +392,72 @@ static u64 read_perf_counter(unsigned int counter)
+>  
+>  static u64 read_timestamp(void) { return read_sysreg(cntvct_el0); }
+>  
+> +/* __riscv_xlen contains the witdh of the native base integer, here 64-bit */
+> +#elif defined(__riscv) && __riscv_xlen == 64
+> +
+> +/* TODO: implement rv32 support */
 
-so the acpi one will be corrected as well.
+It'd be easy to implement the rv32 support now (even if it's premature for
+use), in order to avoid the TODO (which will likely be forgotten). I think
+we just need to drop the __riscv_xlen == 64 above and then extend the
+csr_read() macro something like the untested code below. (I'm not sure if
+a TODO or premature, likely untested, code is worse though.)
 
-Signed-off-by: Li Zhijian <lizhijian@cn.fujitsu.com>
----
- drivers/acpi/acpi_pad.c      |  2 +-
- include/linux/memory-tiers.h |  2 +-
- mm/memory-tiers.c            | 10 +++++-----
- 3 files changed, 7 insertions(+), 7 deletions(-)
+> +
+> +#define CSR_CYCLE	0xc00
+> +#define CSR_TIME	0xc01
+> +
+> +#define csr_read(csr)						\
+> +({								\
 
-diff --git a/drivers/acpi/acpi_pad.c b/drivers/acpi/acpi_pad.c
-index 7a453c5ff303..7f073ca64f0e 100644
---- a/drivers/acpi/acpi_pad.c
-+++ b/drivers/acpi/acpi_pad.c
-@@ -100,7 +100,7 @@ static void round_robin_cpu(unsigned int tsk_index)
- 	for_each_cpu(cpu, pad_busy_cpus)
- 		cpumask_or(tmp, tmp, topology_sibling_cpumask(cpu));
- 	cpumask_andnot(tmp, cpu_online_mask, tmp);
--	/* avoid HT sibilings if possible */
-+	/* avoid HT siblings if possible */
- 	if (cpumask_empty(tmp))
- 		cpumask_andnot(tmp, cpu_online_mask, pad_busy_cpus);
- 	if (cpumask_empty(tmp)) {
-diff --git a/include/linux/memory-tiers.h b/include/linux/memory-tiers.h
-index fc9647b1b4f9..1e6c8ddcaa92 100644
---- a/include/linux/memory-tiers.h
-+++ b/include/linux/memory-tiers.h
-@@ -22,7 +22,7 @@
- struct memory_tier;
- struct memory_dev_type {
- 	/* list of memory types that are part of same tier as this type */
--	struct list_head tier_sibiling;
-+	struct list_head tier_sibling;
- 	/* abstract distance for this specific memory type */
- 	int adistance;
- 	/* Nodes of same abstract distance */
-diff --git a/mm/memory-tiers.c b/mm/memory-tiers.c
-index a516e303e304..56c22470c96d 100644
---- a/mm/memory-tiers.c
-+++ b/mm/memory-tiers.c
-@@ -115,7 +115,7 @@ static __always_inline nodemask_t get_memtier_nodemask(struct memory_tier *memti
- 	nodemask_t nodes = NODE_MASK_NONE;
- 	struct memory_dev_type *memtype;
- 
--	list_for_each_entry(memtype, &memtier->memory_types, tier_sibiling)
-+	list_for_each_entry(memtype, &memtier->memory_types, tier_sibling)
- 		nodes_or(nodes, nodes, memtype->nodes);
- 
- 	return nodes;
-@@ -174,7 +174,7 @@ static struct memory_tier *find_create_memory_tier(struct memory_dev_type *memty
- 	 * If the memtype is already part of a memory tier,
- 	 * just return that.
- 	 */
--	if (!list_empty(&memtype->tier_sibiling)) {
-+	if (!list_empty(&memtype->tier_sibling)) {
- 		list_for_each_entry(memtier, &memory_tiers, list) {
- 			if (adistance == memtier->adistance_start)
- 				return memtier;
-@@ -218,7 +218,7 @@ static struct memory_tier *find_create_memory_tier(struct memory_dev_type *memty
- 	memtier = new_memtier;
- 
- link_memtype:
--	list_add(&memtype->tier_sibiling, &memtier->memory_types);
-+	list_add(&memtype->tier_sibling, &memtier->memory_types);
- 	return memtier;
- }
- 
-@@ -527,7 +527,7 @@ static bool clear_node_memory_tier(int node)
- 		memtype = node_memory_types[node].memtype;
- 		node_clear(node, memtype->nodes);
- 		if (nodes_empty(memtype->nodes)) {
--			list_del_init(&memtype->tier_sibiling);
-+			list_del_init(&memtype->tier_sibling);
- 			if (list_empty(&memtier->memory_types))
- 				destroy_memory_tier(memtier);
- 		}
-@@ -553,7 +553,7 @@ struct memory_dev_type *alloc_memory_type(int adistance)
- 		return ERR_PTR(-ENOMEM);
- 
- 	memtype->adistance = adistance;
--	INIT_LIST_HEAD(&memtype->tier_sibiling);
-+	INIT_LIST_HEAD(&memtype->tier_sibling);
- 	memtype->nodes  = NODE_MASK_NONE;
- 	kref_init(&memtype->kref);
- 	return memtype;
--- 
-2.31.1
+u64 __value;
 
+> +	register unsigned long __v;				\
+> +		__asm__ __volatile__ ("csrr %0, %1"		\
+> +		 : "=r" (__v)					\
+> +		 : "i" (csr) : );				\
+
+__value = __v;
+
+#if __riscv_xlen == 32
+{
+  int csrh = (csr) - CSR_CYCLE + CSR_CYCLEH;
+
+  __asm__ __volatile__ ("csrr %0, %1" : "=r" (__v) : "i" (csrh));
+  __value |= (u64)__v << 32;
+}
+#endif
+
+__value;
+
+> +})
+> +
+> +static unsigned long csr_read_num(int csr_num)
+
+static u64 csr_read_num(int csr_num)
+
+> +{
+> +#define switchcase_csr_read(__csr_num, __val)           {\
+> +	case __csr_num:                                 \
+> +		__val = csr_read(__csr_num);            \
+> +		break; }
+> +#define switchcase_csr_read_2(__csr_num, __val)         {\
+> +	switchcase_csr_read(__csr_num + 0, __val)        \
+> +	switchcase_csr_read(__csr_num + 1, __val)}
+> +#define switchcase_csr_read_4(__csr_num, __val)         {\
+> +	switchcase_csr_read_2(__csr_num + 0, __val)      \
+> +	switchcase_csr_read_2(__csr_num + 2, __val)}
+> +#define switchcase_csr_read_8(__csr_num, __val)         {\
+> +	switchcase_csr_read_4(__csr_num + 0, __val)      \
+> +	switchcase_csr_read_4(__csr_num + 4, __val)}
+> +#define switchcase_csr_read_16(__csr_num, __val)        {\
+> +	switchcase_csr_read_8(__csr_num + 0, __val)      \
+> +	switchcase_csr_read_8(__csr_num + 8, __val)}
+> +#define switchcase_csr_read_32(__csr_num, __val)        {\
+> +	switchcase_csr_read_16(__csr_num + 0, __val)     \
+> +	switchcase_csr_read_16(__csr_num + 16, __val)}
+> +
+> +	unsigned long ret = 0;
+> +
+> +	switch (csr_num) {
+> +	switchcase_csr_read_32(CSR_CYCLE, ret)
+> +	default:
+> +		break;
+> +	}
+> +
+> +	return ret;
+> +#undef switchcase_csr_read_32
+> +#undef switchcase_csr_read_16
+> +#undef switchcase_csr_read_8
+> +#undef switchcase_csr_read_4
+> +#undef switchcase_csr_read_2
+> +#undef switchcase_csr_read
+> +}
+> +
+> +static u64 read_perf_counter(unsigned int counter)
+> +{
+> +	return csr_read_num(CSR_CYCLE + counter);
+> +}
+> +
+> +static u64 read_timestamp(void)
+> +{
+> +	return csr_read_num(CSR_TIME);
+> +}
+> +
+>  #else
+>  static u64 read_perf_counter(unsigned int counter __maybe_unused) { return 0; }
+>  static u64 read_timestamp(void) { return 0; }
+> -- 
+> 2.39.2
+>
+
+Thanks,
+drew
