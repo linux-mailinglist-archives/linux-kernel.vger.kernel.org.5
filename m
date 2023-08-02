@@ -2,109 +2,277 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ED8FF76CFDE
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 16:17:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D21E176CFE1
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 16:18:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233880AbjHBORo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Aug 2023 10:17:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56386 "EHLO
+        id S233760AbjHBOSY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Aug 2023 10:18:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56888 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233109AbjHBORl (ORCPT
+        with ESMTP id S233413AbjHBOSU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Aug 2023 10:17:41 -0400
-Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 763BF272D
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Aug 2023 07:17:36 -0700 (PDT)
-Received: by mail-wm1-x32a.google.com with SMTP id 5b1f17b1804b1-3fe1e44fd2bso101135e9.0
-        for <linux-kernel@vger.kernel.org>; Wed, 02 Aug 2023 07:17:36 -0700 (PDT)
+        Wed, 2 Aug 2023 10:18:20 -0400
+Received: from mail-il1-x135.google.com (mail-il1-x135.google.com [IPv6:2607:f8b0:4864:20::135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AEE6A2703;
+        Wed,  2 Aug 2023 07:18:19 -0700 (PDT)
+Received: by mail-il1-x135.google.com with SMTP id e9e14a558f8ab-3490f207680so22558435ab.2;
+        Wed, 02 Aug 2023 07:18:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1690985855; x=1691590655;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=+qwGbFPriiBctUTIf5EIt3Ji/aXV3Kuo6I3x1a+UHFM=;
-        b=BG89yUNHMkxHF810dZQ2ZbAQDhv1zP8ZVtcAC67c+E/BGxxEfwn4+7QZVaZ2IEU3oA
-         dRKokiLUubYgxTgf4Sn1wNsYw6fAD9khqzHlOtRG2LwfWMY+ycelPCDRCbw0mSP+JyLb
-         +VOuz9juHYmbJwonRj+vuJwSQ9D/wf5YwXOUWYqZpNjbZxReeLdfs9GRzI59kYWZ/+Zw
-         cbc1l3DsrC8fivpFjwhMETPUzPXDKc+Cr3V7cDVhiU64ItLEoj+QCp5Yw6HLZRuCwzAl
-         gUXlCMjT+E7TpoT+C3mCINReshqlHXrs+Ui1zIP9CUJLu+27QClyR9Fk0PT8FjGosHSO
-         uDgA==
+        d=gmail.com; s=20221208; t=1690985899; x=1691590699;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :sender:from:to:cc:subject:date:message-id:reply-to;
+        bh=HDamUHzXADwxKV3O1rLHZBhXQPnVsyNzpLMXKmxWPcg=;
+        b=jjbyu2D/S6tF5S1IJ0g/KZ1/0mPYGeLjOe7rMHULDLqRl6V33cj3GtyGkMrY1OxhAs
+         A0CH816MqwvZsbm9eOzYnqSustH+AwF02xemAPteQygnAbMyWm1CkD1e7ARSAMDXybX8
+         jsjpsnUYyhtzLe7j1UbAp3stK14t/E9sRvEHz6JHDxObDzyfyJD+fhvgUkxLvmTy1oST
+         iJB+Xlr+fvAqAI+Z64LPxNfF+wUuvuIpmF98Zw82UP5HDPmtekeHJ6Ov9gzys/2oTGMx
+         VLx8eYeHu7Yz1fy2E3M5KPJx6w+k94r9aF7RTafVvEOPrFzfOsVvWDYik80yiCnFERtb
+         Kd9w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690985855; x=1691590655;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=+qwGbFPriiBctUTIf5EIt3Ji/aXV3Kuo6I3x1a+UHFM=;
-        b=ZGi1C9o05QT09zRMRnQvpsq+pdCL7GaGC3TJ1fYLjhzjmauLaP3No2VAV8OcMTkcP0
-         aPUgDIjPJmkun0hxfx3xxF3w5aDoFqyIKXiBnfPQGroIrqP2yZ2hzMMuo6y1lB7vWtsg
-         jkj4lDxmfx4r69mCopHdLkWjNgbGcddtwXJ8/iQd4605UC4yjL2g6gx/t+6NYiG5DnGC
-         cYkpHLzLb/dWqxxKHNVGdknamUVx4u5c4ctIA9KYwUtIvIU5trVi/75y1xGKC5N/9VA8
-         G0DVsOxs/hodT6hURUeGbXP0S7bWF6zsd9JzBRMRQqy70xiUZup9FEPDOO9EviecjPxT
-         dgTQ==
-X-Gm-Message-State: ABy/qLa9eHS0H8Ff9UxsaLk/kn1vy/iLTfu5ElXcor5QL8IBFXi4HqpA
-        phSmzDE/LkDKTXb+nO7yDdDngBlmNKNuaqFeRpJ44w==
-X-Google-Smtp-Source: APBJJlFryeNX8uWaYtlPyiRZrYLoVMke66TACyC12BOcmdmUSt10i7iCuVQR7UWUxyqxD4dPSdQ7ot33jqSSw8snvwg=
-X-Received: by 2002:a05:600c:3415:b0:3f7:e463:a0d6 with SMTP id
- y21-20020a05600c341500b003f7e463a0d6mr380986wmp.0.1690985854925; Wed, 02 Aug
- 2023 07:17:34 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1690985899; x=1691590699;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :sender:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=HDamUHzXADwxKV3O1rLHZBhXQPnVsyNzpLMXKmxWPcg=;
+        b=fg6nF5+zzogji96dWxtShT9QlIl0AvYpcX3AxsPjcw0TH9hz6lTx6nrg77fULdOQOY
+         Orxv2aq6nqsdyYuQU2Uem66tfE+JwX7tHIetFKCuuAjhv3hbS8o/JOV/1Slam+IXxOiq
+         CkqTiUxYtBPv87F+mdpYXjr1tdCnmrwHzH1tExaCKRJKZFpyvMFtJAd7eaIurZahJiR3
+         T3KU7LZ0hMrFVVl7Jq37N6aw0R9friAlFSUYQG0aFd6cmtuOpKjGusOfpaZv5tyxJ/Lg
+         oxAUQAszpLQz2zNoT7PYVsZG3hqWUcS9S2Vo6ebjJh/PczhW8nnOKcScA0l4XdhMHrpq
+         7Z/Q==
+X-Gm-Message-State: ABy/qLYAYNahZWzM6qtzfHfq7Tcic02Ie2gw1Kw1B9dJY6ZRYohjhl6z
+        +uqP3X4pCMsn9S++UXD65KI=
+X-Google-Smtp-Source: APBJJlHTgBXaJV9LsYa2PNIgrlJ0JCWqrN3N2nC0gJQWCt5u9fPPdYzVSOmEKqutdA1oQ9MAG3/OiA==
+X-Received: by 2002:a6b:e817:0:b0:790:bc17:1c63 with SMTP id f23-20020a6be817000000b00790bc171c63mr5674372ioh.1.1690985898950;
+        Wed, 02 Aug 2023 07:18:18 -0700 (PDT)
+Received: from ?IPV6:2600:1700:e321:62f0:329c:23ff:fee3:9d7c? ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id h20-20020a056602009400b007836c7e8dccsm4461945iob.17.2023.08.02.07.18.17
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 02 Aug 2023 07:18:18 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Message-ID: <0ea7ae64-c4dd-929d-2ca1-68598af13bc4@roeck-us.net>
+Date:   Wed, 2 Aug 2023 07:18:17 -0700
 MIME-Version: 1.0
-References: <000000000000fd151d05ece59b42@google.com> <000000000000261e660601dec2c2@google.com>
-In-Reply-To: <000000000000261e660601dec2c2@google.com>
-From:   Aleksandr Nogikh <nogikh@google.com>
-Date:   Wed, 2 Aug 2023 16:17:22 +0200
-Message-ID: <CANp29Y5DKbC0oCcxoX-fST0LQ8=0KZ-RK-GXL=2Vw=3y++wtOw@mail.gmail.com>
-Subject: Re: [syzbot] [btrfs?] possible deadlock in btrfs_search_slot
-To:     syzbot <syzbot+c06034aecf9f5eab1ac1@syzkaller.appspotmail.com>
-Cc:     anand.jain@oracle.com, clm@fb.com, dsterba@suse.com,
-        hdanton@sina.com, josef@toxicpanda.com,
-        linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED,USER_IN_DEF_DKIM_WL,
-        USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH] usb: typec: tcpm: Refactor the PPS APDO selection
+Content-Language: en-US
+To:     Kyle Tso <kyletso@google.com>, heikki.krogerus@linux.intel.com,
+        gregkh@linuxfoundation.org
+Cc:     badhri@google.com, linux-kernel@vger.kernel.org,
+        linux-usb@vger.kernel.org
+References: <20230731162159.19483-1-kyletso@google.com>
+From:   Guenter Roeck <linux@roeck-us.net>
+In-Reply-To: <20230731162159.19483-1-kyletso@google.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 1, 2023 at 6:08=E2=80=AFPM syzbot
-<syzbot+c06034aecf9f5eab1ac1@syzkaller.appspotmail.com> wrote:
->
-> syzbot suspects this issue was fixed by commit:
->
-> commit b740d806166979488e798e41743aaec051f2443f
-> Author: Josef Bacik <josef@toxicpanda.com>
-> Date:   Mon Nov 7 16:44:51 2022 +0000
->
->     btrfs: free btrfs_path before copying root refs to userspace
->
-> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=3D13015709a8=
-0000
-> start commit:   eb7081409f94 Linux 6.1-rc6
-> git tree:       upstream
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=3D8d01b6e319797=
-4dd
-> dashboard link: https://syzkaller.appspot.com/bug?extid=3Dc06034aecf9f5ea=
-b1ac1
-> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=3D124fc309880=
-000
-> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=3D126dfde588000=
-0
->
-> If the result looks correct, please mark the issue as fixed by replying w=
-ith:
->
-> #syz fix: btrfs: free btrfs_path before copying root refs to userspace
+On 7/31/23 09:21, Kyle Tso wrote:
+> In current design of the PPS APDO selection, TCPM power supply only
+> accepts the requested voltage which is inside the range of the selected
+> PPS profile. To extend the flexibility and usability, remove the checks
+> about the voltage range in current profile. And try to search all PPS
+> APDOs of the Source that fit the requested voltage.
+> 
+> Also remove some redundant checks in tcpm_pd_build_pps_request.
+> 
+> Signed-off-by: Kyle Tso <kyletso@google.com>
 
-Looks reasonable.
-#syz fix: btrfs: free btrfs_path before copying root refs to userspace
+Reviewed-by: Guenter Roeck <linux@roeck-us.net>
 
->
-> For information about bisection process see: https://goo.gl/tpsmEJ#bisect=
-ion
->
+> ---
+>   drivers/usb/typec/tcpm/tcpm.c | 122 ++++++----------------------------
+>   1 file changed, 21 insertions(+), 101 deletions(-)
+> 
+> diff --git a/drivers/usb/typec/tcpm/tcpm.c b/drivers/usb/typec/tcpm/tcpm.c
+> index 829d75ebab42..9c496b8302b4 100644
+> --- a/drivers/usb/typec/tcpm/tcpm.c
+> +++ b/drivers/usb/typec/tcpm/tcpm.c
+> @@ -3253,23 +3253,12 @@ static int tcpm_pd_select_pdo(struct tcpm_port *port, int *sink_pdo,
+>   	return ret;
+>   }
+>   
+> -#define min_pps_apdo_current(x, y)	\
+> -	min(pdo_pps_apdo_max_current(x), pdo_pps_apdo_max_current(y))
+> -
+>   static unsigned int tcpm_pd_select_pps_apdo(struct tcpm_port *port)
+>   {
+> -	unsigned int i, j, max_mw = 0, max_mv = 0;
+> -	unsigned int min_src_mv, max_src_mv, src_ma, src_mw;
+> -	unsigned int min_snk_mv, max_snk_mv;
+> -	unsigned int max_op_mv;
+> -	u32 pdo, src, snk;
+> -	unsigned int src_pdo = 0, snk_pdo = 0;
+> +	unsigned int i, src_ma, max_temp_mw = 0, max_op_ma, op_mw;
+> +	unsigned int src_pdo = 0;
+> +	u32 pdo, src;
+>   
+> -	/*
+> -	 * Select the source PPS APDO providing the most power while staying
+> -	 * within the board's limits. We skip the first PDO as this is always
+> -	 * 5V 3A.
+> -	 */
+>   	for (i = 1; i < port->nr_source_caps; ++i) {
+>   		pdo = port->source_caps[i];
+>   
+> @@ -3280,54 +3269,17 @@ static unsigned int tcpm_pd_select_pps_apdo(struct tcpm_port *port)
+>   				continue;
+>   			}
+>   
+> -			min_src_mv = pdo_pps_apdo_min_voltage(pdo);
+> -			max_src_mv = pdo_pps_apdo_max_voltage(pdo);
+> -			src_ma = pdo_pps_apdo_max_current(pdo);
+> -			src_mw = (src_ma * max_src_mv) / 1000;
+> -
+> -			/*
+> -			 * Now search through the sink PDOs to find a matching
+> -			 * PPS APDO. Again skip the first sink PDO as this will
+> -			 * always be 5V 3A.
+> -			 */
+> -			for (j = 1; j < port->nr_snk_pdo; j++) {
+> -				pdo = port->snk_pdo[j];
+> -
+> -				switch (pdo_type(pdo)) {
+> -				case PDO_TYPE_APDO:
+> -					if (pdo_apdo_type(pdo) != APDO_TYPE_PPS) {
+> -						tcpm_log(port,
+> -							 "Not PPS APDO (sink), ignoring");
+> -						continue;
+> -					}
+> -
+> -					min_snk_mv =
+> -						pdo_pps_apdo_min_voltage(pdo);
+> -					max_snk_mv =
+> -						pdo_pps_apdo_max_voltage(pdo);
+> -					break;
+> -				default:
+> -					tcpm_log(port,
+> -						 "Not APDO type (sink), ignoring");
+> -					continue;
+> -				}
+> +			if (port->pps_data.req_out_volt > pdo_pps_apdo_max_voltage(pdo) ||
+> +			    port->pps_data.req_out_volt < pdo_pps_apdo_min_voltage(pdo))
+> +				continue;
+>   
+> -				if (min_src_mv <= max_snk_mv &&
+> -				    max_src_mv >= min_snk_mv) {
+> -					max_op_mv = min(max_src_mv, max_snk_mv);
+> -					src_mw = (max_op_mv * src_ma) / 1000;
+> -					/* Prefer higher voltages if available */
+> -					if ((src_mw == max_mw &&
+> -					     max_op_mv > max_mv) ||
+> -					    src_mw > max_mw) {
+> -						src_pdo = i;
+> -						snk_pdo = j;
+> -						max_mw = src_mw;
+> -						max_mv = max_op_mv;
+> -					}
+> -				}
+> +			src_ma = pdo_pps_apdo_max_current(pdo);
+> +			max_op_ma = min(src_ma, port->pps_data.req_op_curr);
+> +			op_mw = max_op_ma * port->pps_data.req_out_volt / 1000;
+> +			if (op_mw > max_temp_mw) {
+> +				src_pdo = i;
+> +				max_temp_mw = op_mw;
+>   			}
+> -
+>   			break;
+>   		default:
+>   			tcpm_log(port, "Not APDO type (source), ignoring");
+> @@ -3337,16 +3289,10 @@ static unsigned int tcpm_pd_select_pps_apdo(struct tcpm_port *port)
+>   
+>   	if (src_pdo) {
+>   		src = port->source_caps[src_pdo];
+> -		snk = port->snk_pdo[snk_pdo];
+> -
+> -		port->pps_data.req_min_volt = max(pdo_pps_apdo_min_voltage(src),
+> -						  pdo_pps_apdo_min_voltage(snk));
+> -		port->pps_data.req_max_volt = min(pdo_pps_apdo_max_voltage(src),
+> -						  pdo_pps_apdo_max_voltage(snk));
+> -		port->pps_data.req_max_curr = min_pps_apdo_current(src, snk);
+> -		port->pps_data.req_out_volt = min(port->pps_data.req_max_volt,
+> -						  max(port->pps_data.req_min_volt,
+> -						      port->pps_data.req_out_volt));
+> +
+> +		port->pps_data.req_min_volt = pdo_pps_apdo_min_voltage(src);
+> +		port->pps_data.req_max_volt = pdo_pps_apdo_max_voltage(src);
+> +		port->pps_data.req_max_curr = pdo_pps_apdo_max_current(src);
+>   		port->pps_data.req_op_curr = min(port->pps_data.req_max_curr,
+>   						 port->pps_data.req_op_curr);
+>   	}
+> @@ -3464,32 +3410,16 @@ static int tcpm_pd_send_request(struct tcpm_port *port)
+>   static int tcpm_pd_build_pps_request(struct tcpm_port *port, u32 *rdo)
+>   {
+>   	unsigned int out_mv, op_ma, op_mw, max_mv, max_ma, flags;
+> -	enum pd_pdo_type type;
+>   	unsigned int src_pdo_index;
+> -	u32 pdo;
+>   
+>   	src_pdo_index = tcpm_pd_select_pps_apdo(port);
+>   	if (!src_pdo_index)
+>   		return -EOPNOTSUPP;
+>   
+> -	pdo = port->source_caps[src_pdo_index];
+> -	type = pdo_type(pdo);
+> -
+> -	switch (type) {
+> -	case PDO_TYPE_APDO:
+> -		if (pdo_apdo_type(pdo) != APDO_TYPE_PPS) {
+> -			tcpm_log(port, "Invalid APDO selected!");
+> -			return -EINVAL;
+> -		}
+> -		max_mv = port->pps_data.req_max_volt;
+> -		max_ma = port->pps_data.req_max_curr;
+> -		out_mv = port->pps_data.req_out_volt;
+> -		op_ma = port->pps_data.req_op_curr;
+> -		break;
+> -	default:
+> -		tcpm_log(port, "Invalid PDO selected!");
+> -		return -EINVAL;
+> -	}
+> +	max_mv = port->pps_data.req_max_volt;
+> +	max_ma = port->pps_data.req_max_curr;
+> +	out_mv = port->pps_data.req_out_volt;
+> +	op_ma = port->pps_data.req_op_curr;
+>   
+>   	flags = RDO_USB_COMM | RDO_NO_SUSPEND;
+>   
+> @@ -5882,12 +5812,6 @@ static int tcpm_pps_set_out_volt(struct tcpm_port *port, u16 req_out_volt)
+>   		goto port_unlock;
+>   	}
+>   
+> -	if (req_out_volt < port->pps_data.min_volt ||
+> -	    req_out_volt > port->pps_data.max_volt) {
+> -		ret = -EINVAL;
+> -		goto port_unlock;
+> -	}
+> -
+>   	target_mw = (port->current_limit * req_out_volt) / 1000;
+>   	if (target_mw < port->operating_snk_mw) {
+>   		ret = -EINVAL;
+> @@ -6440,11 +6364,7 @@ static int tcpm_psy_set_prop(struct power_supply *psy,
+>   		ret = tcpm_psy_set_online(port, val);
+>   		break;
+>   	case POWER_SUPPLY_PROP_VOLTAGE_NOW:
+> -		if (val->intval < port->pps_data.min_volt * 1000 ||
+> -		    val->intval > port->pps_data.max_volt * 1000)
+> -			ret = -EINVAL;
+> -		else
+> -			ret = tcpm_pps_set_out_volt(port, val->intval / 1000);
+> +		ret = tcpm_pps_set_out_volt(port, val->intval / 1000);
+>   		break;
+>   	case POWER_SUPPLY_PROP_CURRENT_NOW:
+>   		if (val->intval > port->pps_data.max_curr * 1000)
+
