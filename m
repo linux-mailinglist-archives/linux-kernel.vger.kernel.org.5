@@ -2,132 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AE58E76C4A9
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 07:14:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F37C76C4BB
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 07:17:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232302AbjHBFOO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Aug 2023 01:14:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40372 "EHLO
+        id S232403AbjHBFRi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Aug 2023 01:17:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41628 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231903AbjHBFOM (ORCPT
+        with ESMTP id S232365AbjHBFR2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Aug 2023 01:14:12 -0400
-Received: from lelv0142.ext.ti.com (lelv0142.ext.ti.com [198.47.23.249])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7FDD91736;
-        Tue,  1 Aug 2023 22:14:11 -0700 (PDT)
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
-        by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 3725E3Io018420;
-        Wed, 2 Aug 2023 00:14:03 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1690953243;
-        bh=n4aigKabrSs75QcXiNTIKIjgLT6W4FsnITVc3fjQhhE=;
-        h=Date:From:To:CC:Subject:References:In-Reply-To;
-        b=QlaksAkPQ/uwx0Umhp4FNNJzOaDCWxjnVePM9l8qqb0npxqyM2FGGP13jlqZnFES7
-         BElXI59abYvB1RNMRmwHk2CLL0puJU8HBUNsLIrfAPTSsQz2MS0XzCF+4TatP21EUA
-         LpG7Qhqx0VrxqEuZ9hjTDHTjc5N2TR3mKMntm5nM=
-Received: from DFLE115.ent.ti.com (dfle115.ent.ti.com [10.64.6.36])
-        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 3725E3CE012656
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 2 Aug 2023 00:14:03 -0500
-Received: from DFLE112.ent.ti.com (10.64.6.33) by DFLE115.ent.ti.com
- (10.64.6.36) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Wed, 2
- Aug 2023 00:14:03 -0500
-Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE112.ent.ti.com
- (10.64.6.33) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Wed, 2 Aug 2023 00:14:03 -0500
-Received: from localhost (ileaxei01-snat2.itg.ti.com [10.180.69.6])
-        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 3725E2AN043159;
-        Wed, 2 Aug 2023 00:14:02 -0500
-Date:   Wed, 2 Aug 2023 00:14:02 -0500
-From:   Nishanth Menon <nm@ti.com>
-To:     Judith Mendez <jm@ti.com>
-CC:     Vignesh Raghavendra <vigneshr@ti.com>,
-        Tero Kristo <kristo@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH]  arm64: dts: ti: k3-am62a7: Add MCU MCAN nodes
-Message-ID: <20230802051402.totwmtw2oadqrai7@herself>
-References: <20230724183844.635319-1-jm@ti.com>
+        Wed, 2 Aug 2023 01:17:28 -0400
+Received: from qproxy5-pub.mail.unifiedlayer.com (qproxy5-pub.mail.unifiedlayer.com [69.89.21.30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 069AC1BFA
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Aug 2023 22:17:27 -0700 (PDT)
+Received: from progateway7-pub.mail.pro1.eigbox.com (gproxy5-pub.mail.unifiedlayer.com [67.222.38.55])
+        by qproxy5.mail.unifiedlayer.com (Postfix) with ESMTP id C744E8033926
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Aug 2023 05:17:26 +0000 (UTC)
+Received: from cmgw13.mail.unifiedlayer.com (unknown [10.0.90.128])
+        by progateway7.mail.pro1.eigbox.com (Postfix) with ESMTP id 00591100471AC
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Aug 2023 05:17:25 +0000 (UTC)
+Received: from just2025.justhost.com ([173.254.28.237])
+        by cmsmtp with ESMTP
+        id R4EfqS7TjsBigR4Efqlz1d; Wed, 02 Aug 2023 05:17:25 +0000
+X-Authority-Reason: nr=8
+X-Authority-Analysis: v=2.4 cv=Ub+U9IeN c=1 sm=1 tr=0 ts=64c9e6e5
+ a=Jt2RHIFfQig1ELqEZVeWfA==:117 a=Jt2RHIFfQig1ELqEZVeWfA==:17
+ a=OWjo9vPv0XrRhIrVQ50Ab3nP57M=:19 a=dLZJa+xiwSxG16/P+YVxDGlgEgI=:19
+ a=UttIx32zK-AA:10:nop_rcvd_month_year
+ a=5SfhNeb3QxAA:10:endurance_base64_authed_username_1 a=VwQbUJbxAAAA:8
+ a=QX4gbG5DAAAA:8 a=LN1DEILRDWMThqYPT54A:9 a=AjGcO6oz07-iQ99wixmX:22
+ a=AbAUZ8qAyYyZVLSsDulk:22
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=singleboardsolutions.com; s=default; h=Content-Transfer-Encoding:
+        MIME-Version:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
+        Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+        Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=U4DX76mWHOowxF0p7uqV/JAT6U60P2EhAMKmm+yitJg=; b=AWyBuuweNOXZ6PJgptK61CXA/Q
+        sH1s9ybshAIiOcMhYHVSEJa1f/HMmkL3hiNg+eCvUQz9DsgQefYD/qpkLlEThd/yGJPUPX1Pi6/0P
+        FQ6J4lsJJ6K0IMFe21xeAxkpt2O9j9DC7qbU8ROcT2f7LmRUB9y7/Q9SahexrN3xop3PGQ7KHwiAV
+        55k+WUMm2MzCqa0UrcwQ0UeAJi7Ub1m1TM+qD3vnbrBRfLdmygYbQ2JXS/zPN435M5+bZ//7gnM6R
+        wo2UK+oJjClXOMxHxmWcQIQGh++1GUp3z91hwqo0rwOgmHD/qVW2/TV792SMjw+x30IYNjmLQ7VhR
+        FsTYihgQ==;
+Received: from 097-084-242-070.res.spectrum.com ([97.84.242.70]:50744 helo=localhost.localdomain)
+        by just2025.justhost.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.96)
+        (envelope-from <tmckahan@singleboardsolutions.com>)
+        id 1qR4Ef-001wRt-0c;
+        Tue, 01 Aug 2023 23:17:25 -0600
+From:   Thomas McKahan <tmckahan@singleboardsolutions.com>
+To:     "Rob Herring" <robh+dt@kernel.org>,
+        "Krzysztof Kozlowski" <krzysztof.kozlowski+dt@linaro.org>,
+        "Conor Dooley" <conor+dt@kernel.org>,
+        "Heiko Stuebner" <heiko@sntech.de>,
+        linux-rockchip@lists.infradead.org
+Cc:     Thomas McKahan <tmckahan@singleboardsolutions.com>,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH 0/2] Add Support for the FriendlyElec NanoPC T6
+Date:   Wed,  2 Aug 2023 01:14:05 -0400
+Message-Id: <20230802051441.3106-1-tmckahan@singleboardsolutions.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20230724183844.635319-1-jm@ti.com>
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - just2025.justhost.com
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - singleboardsolutions.com
+X-BWhitelist: no
+X-Source-IP: 97.84.242.70
+X-Source-L: No
+X-Exim-ID: 1qR4Ef-001wRt-0c
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
+X-Source-Sender: 097-084-242-070.res.spectrum.com (localhost.localdomain) [97.84.242.70]:50744
+X-Source-Auth: tmckahan@singleboardsolutions.com
+X-Email-Count: 1
+X-Source-Cap: ZWxlY3RyaTk7ZWxlY3RyaTk7anVzdDIwMjUuanVzdGhvc3QuY29t
+X-Local-Domain: yes
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_SOFTFAIL,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 13:38-20230724, Judith Mendez wrote:
-> On AM62ax there are no hardware interrupts routed to A53 GIC
-> interrupt controller for MCU MCAN IPs, so MCU MCAN nodes were
-> omitted from MCU dtsi.
-> 
-> Timer polling was introduced in commits [1][2] enabling 3x MCAN
-> on AM62ax, so now add MCU MCAN nodes to the mcu dtsi for the Cortex A53.
-> 
-> [1] commit b382380c0d2d ("can: m_can: Add hrtimer to generate software interrupt")
-> [2] commit bb410c03b999 ("dt-bindings: net: can: Remove interrupt properties for MCAN")
-> 
-> Signed-off-by: Judith Mendez <jm@ti.com>
-> ---
->  arch/arm64/boot/dts/ti/k3-am62a-mcu.dtsi | 24 ++++++++++++++++++++++++
->  1 file changed, 24 insertions(+)
-> 
-> diff --git a/arch/arm64/boot/dts/ti/k3-am62a-mcu.dtsi b/arch/arm64/boot/dts/ti/k3-am62a-mcu.dtsi
-> index 04599762c2b7..3fca702e7f2d 100644
-> --- a/arch/arm64/boot/dts/ti/k3-am62a-mcu.dtsi
-> +++ b/arch/arm64/boot/dts/ti/k3-am62a-mcu.dtsi
-> @@ -143,4 +143,28 @@ mcu_rti0: watchdog@4880000 {
->  		/* Tightly coupled to M4F */
->  		status = "reserved";
->  	};
-> +
-> +	mcu_mcan0: can@4e00000 {
+Hello,
 
-s/4e00000/4e08000
+This adds support for the RK3588-based NanoPC T6 single board computer.
+Note this series is dependent on the PCIe 3 support [0] being
+upstreamed. The NanoPC T6 uses PCIe3x4 like the Rock 5B and EVB1.
 
-> +		compatible = "bosch,m_can";
-> +		reg = <0x00 0x4e08000 0x00 0x200>,
-> +		      <0x00 0x4e00000 0x00 0x8000>;
-> +		reg-names = "m_can", "message_ram";
-> +		power-domains = <&k3_pds 188 TI_SCI_PD_EXCLUSIVE>;
-> +		clocks = <&k3_clks 188 6>, <&k3_clks 188 1>;
-> +		clock-names = "hclk", "cclk";
-> +		bosch,mram-cfg = <0x0 128 64 64 64 64 32 32>;
-> +		status = "disabled";
-> +	};
-> +
-> +	mcu_mcan1: can@4e10000 {
+[0] https://lore.kernel.org/all/20230717173512.65169-1-sebastian.reichel@collabora.com/
 
-s/4e10000/4e18000
+Thomas McKahan (2):
+  dt-bindings: arm: rockchip: Add NanoPC T6
+  arm64: dts: rockchip: Add NanoPC T6
 
-> +		compatible = "bosch,m_can";
-> +		reg = <0x00 0x4e18000 0x00 0x200>,
-> +		      <0x00 0x4e10000 0x00 0x8000>;
-> +		reg-names = "m_can", "message_ram";
-> +		power-domains = <&k3_pds 189 TI_SCI_PD_EXCLUSIVE>;
-> +		clocks = <&k3_clks 189 6>, <&k3_clks 189 1>;
-> +		clock-names = "hclk", "cclk";
-> +		bosch,mram-cfg = <0x0 128 64 64 64 64 32 32>;
-> +		status = "disabled";
-> +	};
->  };
-> -- 
-> 2.34.1
-> 
+ .../devicetree/bindings/arm/rockchip.yaml     |   5 +
+ arch/arm64/boot/dts/rockchip/Makefile         |   1 +
+ .../boot/dts/rockchip/rk3588-nanopc-t6.dts    | 845 ++++++++++++++++++
+ 3 files changed, 851 insertions(+)
+ create mode 100644 arch/arm64/boot/dts/rockchip/rk3588-nanopc-t6.dts
 
 -- 
-Regards,
-Nishanth Menon
-Key (0xDDB5849D1736249D) / Fingerprint: F8A2 8693 54EB 8232 17A3  1A34 DDB5 849D 1736 249D
+2.34.1
+
