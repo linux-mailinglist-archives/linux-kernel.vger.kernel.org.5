@@ -2,125 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F14EC76C997
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 11:40:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C664176C99B
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 11:40:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234157AbjHBJkI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Aug 2023 05:40:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46058 "EHLO
+        id S234158AbjHBJkl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Aug 2023 05:40:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46450 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233316AbjHBJkB (ORCPT
+        with ESMTP id S233886AbjHBJk2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Aug 2023 05:40:01 -0400
+        Wed, 2 Aug 2023 05:40:28 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C320410F5;
-        Wed,  2 Aug 2023 02:40:00 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68090E5C
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Aug 2023 02:40:22 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 5393D618D5;
-        Wed,  2 Aug 2023 09:40:00 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 368DBC433B8;
-        Wed,  2 Aug 2023 09:39:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1690969199;
-        bh=5qyLw2eCvjE4uVaT/oZ8daKDgkw06796ejPXw8VCLBo=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=J2vZZ5qN39mXGahqcryN2Aew9We10H/jpToK2guoWec1FzFP4mEZhNBs+uNf5SrIW
-         vvUEvdqnnZ2RoOVBfpPv6QUCDoCocqNH6XcWvE5WUkXeYrbyxM6rBgNjb1/ceGCjYZ
-         nzJ5oRRs6y4ojmS3phx/+4mRhQErpxCHNJt903Ds=
-Date:   Wed, 2 Aug 2023 11:39:56 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Tony Lindgren <tony@atomide.com>
-Cc:     kernel test robot <oliver.sang@intel.com>, oe-lkp@lists.linux.dev,
-        lkp@intel.com, Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Andy Shevchenko <andriy.shevchenko@intel.com>,
-        Dhruva Gole <d-gole@ti.com>,
-        Ilpo =?iso-8859-1?Q?J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>,
-        John Ogness <john.ogness@linutronix.de>,
-        Johan Hovold <johan@kernel.org>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Vignesh Raghavendra <vigneshr@ti.com>
-Subject: Re: [PATCH v5 3/3] serial: core: Fix serial core controller port
- name to show controller id
-Message-ID: <2023080236-gurgling-violet-b54e@gregkh>
-References: <20230725054216.45696-4-tony@atomide.com>
- <202308021529.35b3ad6c-oliver.sang@intel.com>
- <20230802092354.GC14799@atomide.com>
+        by dfw.source.kernel.org (Postfix) with ESMTPS id F1FDD6188A
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Aug 2023 09:40:21 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 5AC47C433C8;
+        Wed,  2 Aug 2023 09:40:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1690969221;
+        bh=bPpUbVJ8g+WfRXA8L/dbqhku1vmPtOZ22exFereT1AY=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=QSUj/c162+ie7S9gfe/Fu3ASh4GC3YpdvAnXOx3ZsC42Nt4cTDfEgb7VeOLUrOkop
+         2NbM1KfuEKAMsYLgC5OOmVGbpAkqT78slxmulP6ZxqmMBfHPbnCYev1gXKOsyLCE3O
+         GeNBu3cGCyOkoigjeUJ8/MxW8lYFoLp/dMjC1Mhjzhi6owotvM6IanGFKXnHgsSnc+
+         fbFyqxKdWDgU62pjiRd2Y7p3oqJpC3JIrW528C7YtqzSBf6HhvUzNeM/mYjGrg3xur
+         Q1TU4ItxSMM0uZX8AxCfP53MYPc1oFBf8hy9iw4pppS0hharQj2CQJnDhlEKNPg5Gb
+         CxL+V4Io9D8jQ==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 34B11C6445A;
+        Wed,  2 Aug 2023 09:40:21 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230802092354.GC14799@atomide.com>
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH v3] ip6mr: Fix skb_under_panic in ip6mr_cache_report()
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <169096922121.16759.10593210308395776255.git-patchwork-notify@kernel.org>
+Date:   Wed, 02 Aug 2023 09:40:21 +0000
+References: <20230801064318.34408-1-yuehaibing@huawei.com>
+In-Reply-To: <20230801064318.34408-1-yuehaibing@huawei.com>
+To:     Yue Haibing <yuehaibing@huawei.com>
+Cc:     davem@davemloft.net, dsahern@kernel.org, edumazet@google.com,
+        kuba@kernel.org, pabeni@redhat.com, yoshfuji@linux-ipv6.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        simon.horman@corigine.com
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 02, 2023 at 12:23:54PM +0300, Tony Lindgren wrote:
-> * kernel test robot <oliver.sang@intel.com> [230802 08:16]:
-> > from serial, we observed last print out is:
-> > 
-> > [   15.584772][  T954] EDAC MC0: Giving out device to module skx_edac controller Skylake Socket#0 IMC#0: DEV 0000:3a:0a.0 (INTERRUPT)
-> > [   15.597328][  T954] EDAC MC1: Giving out device to module skx_edac controller Skylake Socket#0 IMC#1: DEV 0000:3a:0c.0 (INTERRUPT)
-> > [   15.610326][  T954] EDAC MC2: Giving out device to module skx_edac controller Skylake Socket#1 IMC#0: DEV 0000:ae:0a.0 (INTERRUPT)
-> > [   15.623375][  T954] EDAC MC3: Giving out device to module skx_edac controller Skylake Socket#1 IMC#1: DEV 0000:ae:0c.0 (INTERRUPT)
-> > [   15.640145][   T19] intel_rapl_common: Found RAPL domain package
-> > [   15.655890][   T19] intel_rapl_common: Found RAPL domain dram
-> > [   15.661983][   T19] intel_rapl_common: package-0:package:long_term locked by BIOS
-> > [   15.678564][   T19] intel_rapl_common: package-0:package:short_term locked by BIOS
-> > [   15.695259][   T19] intel_rapl_common: package-0:dram:long_term locked by BIOS
-> > [   15.713068][  T158] intel_rapl_common: Found RAPL domain package
-> > [   15.728719][  T158] intel_rapl_common: Found RAPL domain dram
-> > [   15.734743][  T158] intel_rapl_common: package-1:package:long_term locked by BIOS
-> > [   15.745244][ T1154] raid6: avx512x4 gen() 18153 MB/s
-> > [   15.761297][  T158] intel_rapl_common: package-1:package:short_term locked by BIOS
-> > [   15.767244][ T1154] raid6: avx512x2 gen() 18130 MB/s
-> > [   15.768866][  T158] intel_rapl_common: package-1:dram:long_term locked by BIOS
-> > [   15.790243][ T1154] raid6: avx512x1 gen() 18155 MB/s
-> > [   15.812245][ T1154] raid6: avx2x4   gen() 18060 MB/s
-> > [   15.834244][ T1154] raid6: avx2x2   gen() 18076 MB/s
-> > [   15.856244][ T1154] raid6: avx2x1   gen() 13836 MB/s
-> > [   15.861474][ T1154] raid6: using algorithm avx512x1 gen() 18155 MB/s
-> > [   15.884243][ T1154] raid6: .... xor() 27974 MB/s, rmw enabled
-> > [   15.890254][ T1154] raid6: using avx512x2 recovery algorithm
-> > [   15.897891][ T1154] xor: measuring software checksum speed
-> > [   15.904013][ T1154]    prefetch64-sse  : 31308 MB/sec
-> > [   15.909878][ T1154]    generic_sse     : 22929 MB/sec
-> > [   15.915230][ T1154] xor: using function: prefetch64-sse (31308 MB/sec)
-> > [   16.042623][ T1154] Btrfs loaded, zoned=no, fsverity=no
-> > [   16.054593][  T930] BTRFS: device fsid e422031c-19be-42f5-ab4f-be5f306aa6e1 devid 1 transid 39725 /dev/sda2 scanned by systemd-udevd (930)
-> > 
-> > 
-> > then the machine is just stuck there. (whole dmesg captured from serial is
-> > attached), and the issue is 100% reproducible for this commit.
-> > 
-> > for parent, we never observed the boot failure.
-> > 
-> > it looks quite strange to us why this commit could cause this behavior on our
-> > machine. could you help check dmesg, config and kernel command line which is
-> > also captured in dmesg, etc. and guide us if anything need to be updated to be
-> > compatible with this change? Thanks!
-> 
-> Thanks for the report. With the ctrl and port prefixes dropped, I broke
-> serial_base_match() looks like. As we attempt to continue anyways, things
-> still mostly work..
-> 
-> Greg, can you please drop the related commit?
-> 
-> It's the following commit:
-> 
-> 1ef2c2df1199 ("serial: core: Fix serial core controller port name to show controller id")
+Hello:
 
-Please send me a revert, I can't rewrite history in my public branches.
+This patch was applied to netdev/net.git (main)
+by David S. Miller <davem@davemloft.net>:
 
-thanks,
+On Tue, 1 Aug 2023 14:43:18 +0800 you wrote:
+> skbuff: skb_under_panic: text:ffffffff88771f69 len:56 put:-4
+>  head:ffff88805f86a800 data:ffff887f5f86a850 tail:0x88 end:0x2c0 dev:pim6reg
+>  ------------[ cut here ]------------
+>  kernel BUG at net/core/skbuff.c:192!
+>  invalid opcode: 0000 [#1] PREEMPT SMP KASAN
+>  CPU: 2 PID: 22968 Comm: kworker/2:11 Not tainted 6.5.0-rc3-00044-g0a8db05b571a #236
+>  Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.15.0-1 04/01/2014
+>  Workqueue: ipv6_addrconf addrconf_dad_work
+>  RIP: 0010:skb_panic+0x152/0x1d0
+>  Call Trace:
+>   <TASK>
+>   skb_push+0xc4/0xe0
+>   ip6mr_cache_report+0xd69/0x19b0
+>   reg_vif_xmit+0x406/0x690
+>   dev_hard_start_xmit+0x17e/0x6e0
+>   __dev_queue_xmit+0x2d6a/0x3d20
+>   vlan_dev_hard_start_xmit+0x3ab/0x5c0
+>   dev_hard_start_xmit+0x17e/0x6e0
+>   __dev_queue_xmit+0x2d6a/0x3d20
+>   neigh_connected_output+0x3ed/0x570
+>   ip6_finish_output2+0x5b5/0x1950
+>   ip6_finish_output+0x693/0x11c0
+>   ip6_output+0x24b/0x880
+>   NF_HOOK.constprop.0+0xfd/0x530
+>   ndisc_send_skb+0x9db/0x1400
+>   ndisc_send_rs+0x12a/0x6c0
+>   addrconf_dad_completed+0x3c9/0xea0
+>   addrconf_dad_work+0x849/0x1420
+>   process_one_work+0xa22/0x16e0
+>   worker_thread+0x679/0x10c0
+>   ret_from_fork+0x28/0x60
+>   ret_from_fork_asm+0x11/0x20
+> 
+> [...]
 
-greg k-h
+Here is the summary with links:
+  - [v3] ip6mr: Fix skb_under_panic in ip6mr_cache_report()
+    https://git.kernel.org/netdev/net/c/30e0191b16e8
+
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
