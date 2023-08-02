@@ -2,84 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D49F876CE77
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 15:24:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D90AC76CE8F
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 15:27:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234045AbjHBNY4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Aug 2023 09:24:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56958 "EHLO
+        id S233868AbjHBN1B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Aug 2023 09:27:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58330 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230239AbjHBNYx (ORCPT
+        with ESMTP id S234119AbjHBN07 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Aug 2023 09:24:53 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08DADDA;
-        Wed,  2 Aug 2023 06:24:53 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 92CA861994;
-        Wed,  2 Aug 2023 13:24:52 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3C4CCC433C8;
-        Wed,  2 Aug 2023 13:24:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690982692;
-        bh=DDm1LEyHVrqgVPbORsJTPU+hVDJwprYsNNL9IHeL+5k=;
-        h=Date:From:To:Cc:Subject:From;
-        b=nWjglhibGmIAoJ0wRJHiguhdY/s9FGgXJNwpF0vJi9mJ8pofv2p7JYopQP/LkiAo2
-         SrzWDgQqEqxd+zUR8u/m4gwZH4DMVKXhPwjATpsaMIbE/csJS8XoMj36otYrK9WRIZ
-         qkcP3LbpzDOaGSitQOh2VAH/jqg5vdA9FTa1T49wj7DhBvRU4R9pG/WD/ME722baiR
-         VjIJVMlWetVgQP/RUfMmdqwZtvoQx6CspYJwak8pPv9rAzbhxdlDfWtqR8eMKU/7cm
-         Uc10RjfRmaThlihTV+AUKeNc6/c9NyFrzIGGSpUVo7Ij1DbCVdZbl8EWMeW342sz+c
-         psQ4JFmi/JWiQ==
-Date:   Wed, 2 Aug 2023 07:25:56 -0600
-From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
-To:     Richard Henderson <richard.henderson@linaro.org>,
-        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
-        Matt Turner <mattst88@gmail.com>
-Cc:     linux-alpha@vger.kernel.org, linux-kernel@vger.kernel.org,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        linux-hardening@vger.kernel.org
-Subject: [PATCH] alpha: Replace one-element array with flexible-array member
-Message-ID: <ZMpZZBShlLqyD3ax@work>
+        Wed, 2 Aug 2023 09:26:59 -0400
+Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F76626B5;
+        Wed,  2 Aug 2023 06:26:53 -0700 (PDT)
+Received: from canpemm500007.china.huawei.com (unknown [172.30.72.55])
+        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4RGCP2665kzLnxQ;
+        Wed,  2 Aug 2023 21:24:06 +0800 (CST)
+Received: from localhost (10.174.179.215) by canpemm500007.china.huawei.com
+ (7.192.104.62) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Wed, 2 Aug
+ 2023 21:26:49 +0800
+From:   Yue Haibing <yuehaibing@huawei.com>
+To:     <viro@zeniv.linux.org.uk>, <brauner@kernel.org>
+CC:     <linux-kernel@vger.kernel.org>, <yuehaibing@huawei.com>,
+        <linux-fsdevel@vger.kernel.org>
+Subject: [PATCH -next] dcache: Remove unused extern declaration d_instantiate_unique()
+Date:   Wed, 2 Aug 2023 21:26:32 +0800
+Message-ID: <20230802132632.22668-1-yuehaibing@huawei.com>
+X-Mailer: git-send-email 2.10.2.windows.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Originating-IP: [10.174.179.215]
+X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
+ canpemm500007.china.huawei.com (7.192.104.62)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-One-element and zero-length arrays are deprecated. So, replace
-one-element array in struct osf_dirent with flexible-array
-member.
+From: YueHaibing <yuehaibing@huawei.com>
 
-This results in no differences in binary output.
+Since commit 668d0cd56ef7 ("replace d_add_unique() with saner primitive")
+this is not used anymore.
 
-Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+Signed-off-by: YueHaibing <yuehaibing@huawei.com>
 ---
- arch/alpha/kernel/osf_sys.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ include/linux/dcache.h | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/arch/alpha/kernel/osf_sys.c b/arch/alpha/kernel/osf_sys.c
-index d98701ee36c6..5db88b627439 100644
---- a/arch/alpha/kernel/osf_sys.c
-+++ b/arch/alpha/kernel/osf_sys.c
-@@ -97,7 +97,7 @@ struct osf_dirent {
- 	unsigned int d_ino;
- 	unsigned short d_reclen;
- 	unsigned short d_namlen;
--	char d_name[1];
-+	char d_name[];
- };
- 
- struct osf_dirent_callback {
+diff --git a/include/linux/dcache.h b/include/linux/dcache.h
+index 6b351e009f59..612fb55623a0 100644
+--- a/include/linux/dcache.h
++++ b/include/linux/dcache.h
+@@ -220,7 +220,6 @@ extern seqlock_t rename_lock;
+  */
+ extern void d_instantiate(struct dentry *, struct inode *);
+ extern void d_instantiate_new(struct dentry *, struct inode *);
+-extern struct dentry * d_instantiate_unique(struct dentry *, struct inode *);
+ extern struct dentry * d_instantiate_anon(struct dentry *, struct inode *);
+ extern void __d_drop(struct dentry *dentry);
+ extern void d_drop(struct dentry *dentry);
 -- 
 2.34.1
 
