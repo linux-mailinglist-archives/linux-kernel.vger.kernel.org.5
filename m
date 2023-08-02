@@ -2,114 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A8DB76C26C
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 03:44:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 26D0376C235
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 03:28:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230038AbjHBBoM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Aug 2023 21:44:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49390 "EHLO
+        id S230182AbjHBB2g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Aug 2023 21:28:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40108 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229499AbjHBBoL (ORCPT
+        with ESMTP id S229727AbjHBB2f (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Aug 2023 21:44:11 -0400
-Received: from mailout1.samsung.com (mailout1.samsung.com [203.254.224.24])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0DCE594
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Aug 2023 18:44:09 -0700 (PDT)
-Received: from epcas2p2.samsung.com (unknown [182.195.41.54])
-        by mailout1.samsung.com (KnoxPortal) with ESMTP id 20230802013850epoutp019165b5b6f68126d68ae7844e143e3bbe~3bUWKTV5n1768117681epoutp01W
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Aug 2023 01:38:50 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.samsung.com 20230802013850epoutp019165b5b6f68126d68ae7844e143e3bbe~3bUWKTV5n1768117681epoutp01W
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1690940330;
-        bh=UTp2spf180fapim/QCGBMuGvcRmlmKbbwTJawClBTJo=;
-        h=From:To:Cc:Subject:Date:References:From;
-        b=EObybahhQI8texORO+HgKCWJv5iD5LnVbf2n8RLMa+uP85dvmLBkdu4fdh6PXzZ3e
-         5bPp9Kr/MRa3/CcVWLDE8SfMwiXylfiSrhO2RPO8aKsK9jG0Ti5jFmjFueogaq1bWc
-         2LlpVFhUSeRFBGA5ys23Jda7cQzic7dAUOE1PTIA=
-Received: from epsnrtp3.localdomain (unknown [182.195.42.164]) by
-        epcas2p3.samsung.com (KnoxPortal) with ESMTP id
-        20230802013849epcas2p3aaaebb3a4d25c93d5371c95dc33d85c9~3bUVmAKFM2061320613epcas2p3C;
-        Wed,  2 Aug 2023 01:38:49 +0000 (GMT)
-Received: from epsmgec2p1-new.samsung.com (unknown [182.195.36.92]) by
-        epsnrtp3.localdomain (Postfix) with ESMTP id 4RFvlF2dyPz4x9Q1; Wed,  2 Aug
-        2023 01:38:49 +0000 (GMT)
-Received: from epcas2p2.samsung.com ( [182.195.41.54]) by
-        epsmgec2p1-new.samsung.com (Symantec Messaging Gateway) with SMTP id
-        63.96.29526.9A3B9C46; Wed,  2 Aug 2023 10:38:49 +0900 (KST)
-Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
-        epcas2p3.samsung.com (KnoxPortal) with ESMTPA id
-        20230802013848epcas2p3a896970d5bdc8e3f3e422c84c282a151~3bUUpvjeP2063320633epcas2p32;
-        Wed,  2 Aug 2023 01:38:48 +0000 (GMT)
-Received: from epsmgms1p1new.samsung.com (unknown [182.195.42.41]) by
-        epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
-        20230802013848epsmtrp2156a6eee4530405a398e9e029373e1cd~3bUUo8KB81331913319epsmtrp2F;
-        Wed,  2 Aug 2023 01:38:48 +0000 (GMT)
-X-AuditID: b6c32a4d-853ff70000047356-f8-64c9b3a95461
-Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
-        epsmgms1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
-        46.0A.34491.8A3B9C46; Wed,  2 Aug 2023 10:38:48 +0900 (KST)
-Received: from ubuntu.dsn.sec.samsung.com (unknown [10.229.95.128]) by
-        epsmtip2.samsung.com (KnoxPortal) with ESMTPA id
-        20230802013848epsmtip2d41050ecba6841c4e4af8d5dec783f92~3bUUaRQAa0101401014epsmtip21;
-        Wed,  2 Aug 2023 01:38:48 +0000 (GMT)
-From:   Kiwoong Kim <kwmad.kim@samsung.com>
-To:     linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        alim.akhtar@samsung.com, avri.altman@wdc.com, bvanassche@acm.org,
-        jejb@linux.ibm.com, martin.petersen@oracle.com, beanhuo@micron.com,
-        adrian.hunter@intel.com, sc.suh@samsung.com, hy50.seo@samsung.com,
-        sh425.lee@samsung.com, kwangwon.min@samsung.com,
-        junwoo80.lee@samsung.com, wkon.kim@samsung.com
-Cc:     Kiwoong Kim <kwmad.kim@samsung.com>
-Subject: [RESEND PATCH v3 0/2] change UIC command handling
-Date:   Wed,  2 Aug 2023 10:28:31 +0900
-Message-Id: <cover.1690939662.git.kwmad.kim@samsung.com>
-X-Mailer: git-send-email 2.7.4
-X-Brightmail-Tracker: H4sIAAAAAAAAA0VSf0wbZRjed3deDxRzFsa+1QzhyDJBCy3jxw1hYlzMTUSRJi6aTbjQC5CW
-        tvbHxhaTYVRaQBmwjbGyOgabk2IkaVmlCG4tM0DCgAEGSoCURKZllk1L0Elglh7T/573fZ/n
-        fZ7vB4EK63ARUabSc1oVq6TwcMwxkJAu7rAPyyXzt0l6+Jdvcdr7lQOnfY9+xmnXYjVGNz18
-        hNKd7V6MbptxIHTvxqcIfWPGidGe7p8werL3Ek7XTvfg9PXBTYSumZ8B9LVNP0bbJ9awHJKZ
-        nMpl2vt8CFPfdgswf3WZcOaPpVmMqeu2AiZgi2GMt2qRfOIDRVYpx8o5bSynKlbLy1Ql2VSu
-        rPD1wrR0iVQsPUBnULEqtpzLpg69lS9+o0wZPAEVe5xVGoKtfFano5IPZmnVBj0XW6rW6bMp
-        TiNXajI0STq2XGdQlSSpOH2mVCJJSQsSixSlPwx4cU0TWjHYNf1UJXAjNSCMgGQqrF6pQmtA
-        OCEk+wDcWOzD+OJPAEeaHyB8sQZg27IRfyIZNj0W8IN+AOdWh7YlfwPo6QgItlg4mQCXPOdD
-        8ijyIQIfX3eArQFK7oO99UMh90gyEw74GkJrMXIvHDXxFhEkDX/90Sng7WKgZ7Q6lBCSnxCw
-        u2NsO/oheN5jRHkcCZcHu7cFIhhY6Q8uIoJYAfuuRPPtCtje5Md4vB+a7xnBFgUNBu3qTebZ
-        8fD2LManfBaaBjYEfDsCmqqEvDAe/tN4FvB4N7zomdv2ZGCjuTHUF5LHYI19AqkHe8z/728F
-        wApEnEZXXsIVp2ikYhV34r+HKlaX20DoYybm9YD7XRtJboAQwA0ggVJREc+vD8qFEXL25ClO
-        qy7UGpSczg3SgjfWgIp2FquDP1ulL5SmHpCkpqdLM1LSJBnUroiFzy1yIVnC6jkFx2k47RMd
-        QoSJKpG3vceX8IVXrbJde498179+ZQipvdS6pNn3wqk7X4QXNEe25FQqQQWafPdMHe10tS4f
-        xk/76zNN4phXrq7tOJozpG2Z9a8sCe76j102r/oK5k44rl52ydqcVUrFZNr7izvy9jxDNX9z
-        Ibqnc8Sfl7tgP9dYdOejndMzMqktcIEb6/VOjSQXt790L8GXqLQi/dcs+szxJINr7ObuM1Ob
-        pPtwE2OJW2t+bvVjW9RFn6zUWf1145EHZa9ZFrHTIlvdu+O/2z98Z71juWX0+9/2B94La1g2
-        UqhpdP1o1JednU/fxIzkjXlXXM/L8ZVv4i8mZrlObkZZwdki80RcQfT98YOfWShMV8pKE1Gt
-        jv0XgV1cYyEEAAA=
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrNLMWRmVeSWpSXmKPExsWy7bCSvO6KzSdTDHr/G1mcfLKGzeLBvG1s
-        Fi9/XmWzOPiwk8Vi2oefzBarFz9gsVh0YxuTxa6/zUwWW2/sZLG4ueUoi8XlXXPYLLqv72Cz
-        WH78H5NF190bjBZL/71lsdh86RuLg4DH5SveHov3vGTymLDoAKPH9/UdbB4fn95i8ejbsorR
-        4/MmOY/2A91MARxRXDYpqTmZZalF+nYJXBm7Dz9gK5jGXHF8/XXWBsZDTF2MnBwSAiYSJzv+
-        s3cxcnEICexmlOiespodIiEpcWLnc0YIW1jifssRVoiib4wS/1vOgxWxCWhKPL05lQkkISLQ
-        xCxxafZ0FpAEs4C6xK4JJ8BWCAtYSRx+OZENxGYRUJU419EOZvMKWEg837cTapucxM1zncwT
-        GHkWMDKsYpRMLSjOTc8tNiwwzEst1ytOzC0uzUvXS87P3cQIDl8tzR2M21d90DvEyMTBeIhR
-        goNZSYRX+vfxFCHelMTKqtSi/Pii0pzU4kOM0hwsSuK84i96U4QE0hNLUrNTUwtSi2CyTByc
-        Ug1MrR3ax/+ccmUpObqxaEthVNaL+oosRf2yiEwLQ6G5J7Y3nYpZyHm5tzeQp+9VSbHf67nl
-        oZ8DJYz9vA8cOi/jwPMzrzFBmH+a6JX46GrNp10M4vkXj5d8qf/76sDiyGOzIjQvzQlmLfqd
-        pP+pM8ksRu5fb0j3g+XH5I7zbjxw72NmxvojMz0bpBJ9ubSVFJ8+embYOys7Qe5j5DWOw6fT
-        lf0v7ErJvLL7DUdS9jQfMc/bQtMrtmf3sfaZLelKZWLc9/+g6Kow5p3bw/YH6u05eJmp8EWD
-        40u5LTdL54SfP5+YfEj3i1F0t6BXZ3THCjf++U52E3yi9e7URv5l9X37272eN7PRso77enzY
-        LSWW4oxEQy3mouJEAJGqH6fOAgAA
-X-CMS-MailID: 20230802013848epcas2p3a896970d5bdc8e3f3e422c84c282a151
-X-Msg-Generator: CA
+        Tue, 1 Aug 2023 21:28:35 -0400
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69A35210D;
+        Tue,  1 Aug 2023 18:28:34 -0700 (PDT)
+Received: from canpemm500007.china.huawei.com (unknown [172.30.72.57])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4RFvRW1Gx2ztRks;
+        Wed,  2 Aug 2023 09:25:11 +0800 (CST)
+Received: from [10.174.179.215] (10.174.179.215) by
+ canpemm500007.china.huawei.com (7.192.104.62) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.27; Wed, 2 Aug 2023 09:28:32 +0800
+Subject: Re: [PATCH v3] ip6mr: Fix skb_under_panic in ip6mr_cache_report()
+To:     David Ahern <dsahern@kernel.org>, Jakub Kicinski <kuba@kernel.org>,
+        Eric Dumazet <edumazet@google.com>
+CC:     <davem@davemloft.net>, <pabeni@redhat.com>,
+        <yoshfuji@linux-ipv6.org>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <simon.horman@corigine.com>
+References: <20230801064318.34408-1-yuehaibing@huawei.com>
+ <CANn89iJO44CiUjftDZHEjOCy5Q3-PDB12uWTkrbA5JJNXMoeDA@mail.gmail.com>
+ <20230801131146.51a9aaf3@kernel.org>
+ <0e3e2d6f-0e8d-ccb4-0750-928a568ccaaf@kernel.org>
+From:   YueHaibing <yuehaibing@huawei.com>
+Message-ID: <cad2b715-14fc-8424-f85d-b5391e0110dc@huawei.com>
+Date:   Wed, 2 Aug 2023 09:28:31 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.0
+MIME-Version: 1.0
+In-Reply-To: <0e3e2d6f-0e8d-ccb4-0750-928a568ccaaf@kernel.org>
 Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: AUTO_CONFIDENTIAL
-CMS-TYPE: 102P
-DLP-Filter: Pass
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.179.215]
+X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
+ canpemm500007.china.huawei.com (7.192.104.62)
 X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20230802013848epcas2p3a896970d5bdc8e3f3e422c84c282a151
-References: <CGME20230802013848epcas2p3a896970d5bdc8e3f3e422c84c282a151@epcas2p3.samsung.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -117,17 +56,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-v2 -> v3: rule out the change of polling w/ pmc from this thread.
-(I'll post the change later)
-v1 -> v2: remove an unused variable in __ufshcd_send_uic_cmd
+On 2023/8/2 8:52, David Ahern wrote:
+> On 8/1/23 2:11 PM, Jakub Kicinski wrote:
+>> On Tue, 1 Aug 2023 09:51:29 +0200 Eric Dumazet wrote:
+>>>> -               skb_push(skb, -skb_network_offset(pkt));
+>>>> +               __skb_pull(skb, skb_network_offset(pkt));
+>>>>
+>>>>                 skb_push(skb, sizeof(*msg));
+>>>>                 skb_reset_transport_header(skb);  
+>>>
+>>> Presumably this code has never been tested :/
+>>
+>> Could have been tested on 32bit, I wonder if there is more such bugs :S
+> 
+> that pattern shows up a few times:
 
-Kiwoong Kim (2):
-  ufs: make __ufshcd_send_uic_cmd not wrapped by host_lock
-  ufs: poll HCS.UCRDY before issuing a UIC command
-
- drivers/ufs/core/ufshcd.c | 13 +++++++------
- 1 file changed, 7 insertions(+), 6 deletions(-)
-
--- 
-2.7.4
-
+Ok, I will test and fix these if any.
+> 
+> net/ipv4/ah4.c:	skb_push(skb, -skb_network_offset(skb));
+> net/ipv4/esp4.c:	skb_push(skb, -skb_network_offset(skb));
+> net/ipv4/esp4_offload.c:	skb_push(skb, -skb_network_offset(skb));
+> net/ipv4/esp4_offload.c:	skb_push(skb, -skb_network_offset(skb));
+> net/ipv4/xfrm4_tunnel.c:	skb_push(skb, -skb_network_offset(skb));
+> net/ipv6/ah6.c:	skb_push(skb, -skb_network_offset(skb));
+> net/ipv6/esp6.c:	skb_push(skb, -skb_network_offset(skb));
+> net/ipv6/esp6_offload.c:	skb_push(skb, -skb_network_offset(skb));
+> net/ipv6/esp6_offload.c:	skb_push(skb, -skb_network_offset(skb));
+> net/ipv6/ip6mr.c:		skb_push(skb, -skb_network_offset(pkt));
+> net/ipv6/mip6.c:	skb_push(skb, -skb_network_offset(skb));
+> net/ipv6/mip6.c:	skb_push(skb, -skb_network_offset(skb));
+> net/ipv6/xfrm6_tunnel.c:	skb_push(skb, -skb_network_offset(skb));
+> net/xfrm/xfrm_ipcomp.c:	skb_push(skb, -skb_network_offset(skb));
+> .
+> 
