@@ -2,79 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DD6DE76C43C
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 06:45:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CDAC776C43E
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 06:47:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231856AbjHBEpw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Aug 2023 00:45:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53782 "EHLO
+        id S231163AbjHBErP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Aug 2023 00:47:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54180 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229946AbjHBEpt (ORCPT
+        with ESMTP id S229664AbjHBErM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Aug 2023 00:45:49 -0400
-Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00E651981
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Aug 2023 21:45:47 -0700 (PDT)
-Received: by mail-wm1-x334.google.com with SMTP id 5b1f17b1804b1-3fe1d462762so27872265e9.0
-        for <linux-kernel@vger.kernel.org>; Tue, 01 Aug 2023 21:45:47 -0700 (PDT)
+        Wed, 2 Aug 2023 00:47:12 -0400
+Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 754681715
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Aug 2023 21:47:11 -0700 (PDT)
+Received: by mail-wr1-x429.google.com with SMTP id ffacd0b85a97d-31297125334so288862f8f.0
+        for <linux-kernel@vger.kernel.org>; Tue, 01 Aug 2023 21:47:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=tuxon.dev; s=google; t=1690951546; x=1691556346;
-        h=content-transfer-encoding:in-reply-to:from:references:to
+        d=tuxon.dev; s=google; t=1690951630; x=1691556430;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=OAHQ1xVD6mCYyeiHHsFX9UKA5VExLMCp78lQW4TVXnM=;
-        b=BmU/dlqWP9BR2t3cqOtUyIszlumMyzotg5G2gXjdshwDEjfrgkS+yYIPBT2yqbEyBy
-         zQZh2/UneAWy+5R8sMHrgElD2QZOZTzvojG9RrLe6RWOLMAngd1Q5DjQVl6rxEcv3CSk
-         GZxQs+//rpFM6SF4UEOBw2d96dD+lR0xo/Ns3l7teCmAJKJltgeKeH4D1eMn/O0jcTei
-         RNraLAQ3hHGw4wrvkwMhWVAl4GavMxuXIVL2eLHl39rQl9GVgEVbDAS1AJ5Q1LM/NHyi
-         Wrp7y/yIlxxTXw5emyfGIjoHOvaTZfJCl/naQo4GJ6w0zZORRkGdxOaPw2W/yfPJhky2
-         ry2g==
+        bh=WkZQ3YpJIkA2eAMb/15s9HR66Ei62jkCCugnnLEp5bo=;
+        b=Jmy/5ATSLRhvIYLpnMf2o1bBssv9KZxTovxLJDP5KLq6z36/h9yDC1hwH78UexGBnz
+         4zmh+cK+B0aWv1uBQXvM62idnZzxA8fp6HAk8psN21TCZED5f87buaqKEE5KnUz6Q1bM
+         /aRgINxgE8u9cT7elVeuINDd/aDvEbcUlb7lsDpDpL4opoSeotI9thcV3QGqhu7u1OUu
+         bkADdacwc2Kd2UHJO7g8P0e1b80iontzce8W/I3ktgOM3ZuxjBwbf+BXt0DJE1HNNTf/
+         54EOD84TzN5HH68HzasAj3R68rZosd1xp2bfztFpXb9c6mTFswKCIZHdeRDk6ORHRBRT
+         blwQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690951546; x=1691556346;
-        h=content-transfer-encoding:in-reply-to:from:references:to
+        d=1e100.net; s=20221208; t=1690951630; x=1691556430;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=OAHQ1xVD6mCYyeiHHsFX9UKA5VExLMCp78lQW4TVXnM=;
-        b=kgNw7sWDm7auQnx37HfcypRp5Lfj3Z7yyV2PxgaPa5PJDbduXPqifeLl1m12fvi4rB
-         6da7OK0meT23zmSm0ooImgJ7iiczaHsZVysvxYvZA929zSYgJS8xb5Ygim9d/G0juIdv
-         xGBfjX4UZoNnD36ugUqmW4KUwmzeISsl77jwkm5i4PYIfiOig7GityCobvOlZ14QIY3B
-         h7Zh5c6feRngSkHNSJezcEOo2FK09PY0hfS54qFW/V0VWm3UenZ7VyGWxW6Dk36w1EEW
-         ZsOwYZpFEztZyrAJvkLEX2b89Uk4K9fUVr2gkvpvgSkEvnwUKtgkz/x2suWEhXXi/f6c
-         IoLg==
-X-Gm-Message-State: ABy/qLad8StJXbLelrRv8duCgIFezPjFq1lq3rkLFbQKyAApolOld1AS
-        zCALlBY+EjWcp9IxlCU3C/UKfw==
-X-Google-Smtp-Source: APBJJlGtYTEql3jo5gHuxQQNiIFSjGkQMXkUH6rBQhDuXth2jauQBfYAxpIAHPFOMFct74Mb8jKaVw==
-X-Received: by 2002:adf:e505:0:b0:315:9ee6:132f with SMTP id j5-20020adfe505000000b003159ee6132fmr3764483wrm.68.1690951546310;
-        Tue, 01 Aug 2023 21:45:46 -0700 (PDT)
+        bh=WkZQ3YpJIkA2eAMb/15s9HR66Ei62jkCCugnnLEp5bo=;
+        b=dGuLMdTrtT4PuHsXE3wkMR/q9BvzDZ77/vsJ+r63cdcS+UM+OUTNfhryI32uKMN+iw
+         oEFWX+Z6So8NMUi//0UgPOVsfrrTrNepJ1oVb475Cm5aBmpZmOVub1mx7Wu54ZJzQnE2
+         EQrzdy9GKvtJDPP2rgp1UH9DCsvbaVvHKr/ZeoY0umcJEWf7mSM1ZBbXPoi+81G65gxZ
+         otMltMiXvF7OJ4nXq0/tchYFbHBujIgz8mf2Pl3Jf+ePm/syj3iMs/bbHp7mDUBFTDmw
+         hmuyhtF0C1dA1bXr3xqBZWSvEREY5TeYLaYSFMgZvryImB0KfnlBmYBaWN0UyuV6wi6Z
+         jQRA==
+X-Gm-Message-State: ABy/qLYXMBubklNgEIyk6iANWngI0cYX+ojCHGZCGqBGULuxf+xcchc4
+        3a+NEjRhh2rqshDewGkicN0p0Q==
+X-Google-Smtp-Source: APBJJlEDYlkiXTohqZnL8MBZFMulqwTLKtgj6Y+Pkc+4ds+xCZvELARH/DwlmLQIVE0k3AtF89RSSg==
+X-Received: by 2002:a5d:51cc:0:b0:317:614b:5dad with SMTP id n12-20020a5d51cc000000b00317614b5dadmr3955329wrv.7.1690951629924;
+        Tue, 01 Aug 2023 21:47:09 -0700 (PDT)
 Received: from [10.0.2.15] ([82.78.167.79])
-        by smtp.gmail.com with ESMTPSA id x2-20020adfdd82000000b0030e56a9ff25sm17789401wrl.31.2023.08.01.21.45.45
+        by smtp.gmail.com with ESMTPSA id d4-20020adfe884000000b003144b95e1ecsm17824935wrm.93.2023.08.01.21.47.08
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 01 Aug 2023 21:45:45 -0700 (PDT)
-Message-ID: <a4286b78-7000-2271-513a-6147c68a7ac2@tuxon.dev>
-Date:   Wed, 2 Aug 2023 07:45:44 +0300
+        Tue, 01 Aug 2023 21:47:09 -0700 (PDT)
+Message-ID: <d10d803c-fc92-90f5-007c-3190742213ea@tuxon.dev>
+Date:   Wed, 2 Aug 2023 07:47:07 +0300
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Thunderbird/102.13.0
-Subject: Re: [PATCH] ARM: dts: microchip: split interrupts per cells
+Subject: Re: [PATCH] ARM: at91: Explicitly include correct DT includes
 Content-Language: en-US
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
+To:     Rob Herring <robh@kernel.org>,
+        Russell King <linux@armlinux.org.uk>,
         Nicolas Ferre <nicolas.ferre@microchip.com>,
         Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Claudiu Beznea <claudiu.beznea@microchip.com>,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-References: <20230730111542.98238-1-krzysztof.kozlowski@linaro.org>
+        Claudiu Beznea <claudiu.beznea@microchip.com>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+References: <20230717225429.3211307-1-robh@kernel.org>
 From:   claudiu beznea <claudiu.beznea@tuxon.dev>
-In-Reply-To: <20230730111542.98238-1-krzysztof.kozlowski@linaro.org>
+In-Reply-To: <20230717225429.3211307-1-robh@kernel.org>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.6
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -83,9 +80,18 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 
 
-On 30.07.2023 14:15, Krzysztof Kozlowski wrote:
-> Each interrupt should be in its own cell.  This is much more readable.
+On 18.07.2023 01:54, Rob Herring wrote:
+> The DT of_device.h and of_platform.h date back to the separate
+> of_platform_bus_type before it was merged into the regular platform bus.
+> As part of that merge prepping Arm DT support 13 years ago, they
+> "temporarily" include each other. They also include platform_device.h
+> and of.h. As a result, there's a pretty much random mix of those include
+> files used throughout the tree. In order to detangle these headers and
+> replace the implicit includes with struct declarations, users need to
+> explicitly include the correct includes.
 > 
-> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+> A couple of other includes are unused and can be dropped too.
+> 
+> Signed-off-by: Rob Herring <robh@kernel.org>
 
-Applied to at91-dt, thanks!
+Applied to at91-soc, thanks!
