@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1293976D640
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 19:59:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4572776D641
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 19:59:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234295AbjHBR7I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Aug 2023 13:59:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46728 "EHLO
+        id S234058AbjHBR7M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Aug 2023 13:59:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46788 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233351AbjHBR6W (ORCPT
+        with ESMTP id S233837AbjHBR6Z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Aug 2023 13:58:22 -0400
-Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com [IPv6:2a00:1450:4864:20::336])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A6EF171B
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Aug 2023 10:58:21 -0700 (PDT)
-Received: by mail-wm1-x336.google.com with SMTP id 5b1f17b1804b1-3fe1a17f983so1285895e9.3
-        for <linux-kernel@vger.kernel.org>; Wed, 02 Aug 2023 10:58:21 -0700 (PDT)
+        Wed, 2 Aug 2023 13:58:25 -0400
+Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F048E19AD
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Aug 2023 10:58:23 -0700 (PDT)
+Received: by mail-wm1-x32c.google.com with SMTP id 5b1f17b1804b1-3fe1e1142caso1617375e9.0
+        for <linux-kernel@vger.kernel.org>; Wed, 02 Aug 2023 10:58:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1690999100; x=1691603900;
+        d=gmail.com; s=20221208; t=1690999102; x=1691603902;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=TDgex51QiOVczO4DJKkVoIxdj5w2CMw4f9nt7sgUgwU=;
-        b=pQwSTdpiBct1ZkFKH+H1jKQOM71C568ZgrH2pqMuH26wTckRnDL3N40AhORENumltE
-         zjwoFb1I1dDovAIy1cjl2Dr+ZFGic9XThduhC22I5MFk2XPlqivwWueGL+cCxM+AzFzy
-         Vyx1Ymj/T07BBpAX/+KRco3eqLZDfqtRdt4+ZSm9x0ZK/TddmAFKO9q+X12HDOx/t+K6
-         zAfhEJSzxqiynoCTVut8YPG/RVeB+upM18gUrWRunggDmtgcCHaw/vLyPclub5WyBd/e
-         /T87a3L1YZ13oFytIh/urX2wIxLKRfTXzSuUpXb1yOILqJLYo9nBC++vfZxKCiQy9DC8
-         Bm7g==
+        bh=KlBC1H0XtO+vTlN099a54STTMxr//GhxYmUmPY9nGaY=;
+        b=P7SbG6nLbP5uQyIVD5oRSxcoBdInRHrHOSv3pvN/jypg+ocEyrjRbQ4lqEKp1vJiIu
+         7mDOvNK00gS5ddxx1HL+aDnc287/Kef8HVateKq08UJ+ZxcQva9Q739eH7LKqylyQ/fz
+         F66/1c6237DYGJ7C2P7le9/P9rNYRkgJB95gmL1ZDEfZ8wfaerwWkEUAWXGeiDjfxE+U
+         TpYj3I1a81h68lFefEYaO6OOn0DJ39tBL5Yop8v3OTuu46N5a8rocO63RHcKojqrFgde
+         z4Ip44DptNxtQ6sHAscXu8uNI+o+eo/aWuIYPBGLyoDeBYUCR+V7NCuCf4e7U1AfnM2Q
+         RNxg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690999100; x=1691603900;
+        d=1e100.net; s=20221208; t=1690999102; x=1691603902;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=TDgex51QiOVczO4DJKkVoIxdj5w2CMw4f9nt7sgUgwU=;
-        b=YDqhB/+e1ibblxW71sw5WZjBh5enH/6rOsGVHwEim9hs2PkT/xnHxjLhbU7EByOZ+7
-         b5e0G6rYNojaOBLulIX/0aSv2RHfEBWquN+gy1kz1+d/B23shH7UO8SYq3BDXX1U7EW6
-         0AtndQFxvbpmRQh3GHdkSjstnq0dNY4CPvf+fe8b6ampNj25pHS0NkgQe0pHbI86z/fQ
-         jSVvOIJE3BjK6uXAzVeuyIIvIzJT5tjjG2PUT2YDbcwOKS/6VLVC0MBf/g0W26Sw0jaF
-         4x20zFGQlEXBC/V8+2IBZ1f7oThS+BD98YFM1S7f+R5w/YXweCxVXqjUZ3uWvaWE0Zh0
-         /niQ==
-X-Gm-Message-State: ABy/qLapwz/Atvnzp13o0pHk9wAbEpi/VEs0tmRGNlX+Nx/LtRhyr0wd
-        DUZC/EhwksCdaFzHIereuwQ=
-X-Google-Smtp-Source: APBJJlH91r28l0IKr1hxqWGkEgaBxzgQ1myfYz6eME/NQQKzR9WlFFb9j5LckCL2VDUqkyoCxi0jpg==
-X-Received: by 2002:a05:600c:cf:b0:3fe:1f2c:df2b with SMTP id u15-20020a05600c00cf00b003fe1f2cdf2bmr5488486wmm.11.1690999100142;
-        Wed, 02 Aug 2023 10:58:20 -0700 (PDT)
+        bh=KlBC1H0XtO+vTlN099a54STTMxr//GhxYmUmPY9nGaY=;
+        b=UhiZIYqS5vWN0MLEJEhUpTFrKp7+y2MSiFSLRsf2f0hgvCLkxWx+XxVKk9plnKKjcP
+         0m6Nhh9vV0sVKcCqb/KFRNhK8zbIS0M8EGBIiKMLxHRkmeUmQRz58aYebORwaB5OI5vz
+         ufz0N6F4R5DE3MNbb0uYGH3m3+/UJmdMwV+gvZVNe4Ve0Kp5hNzOY8ahtZ81pHIyQO/E
+         /wm1+uTqDqKwNUwqpEyYMIh581wv7hf8Ik9HDZCsCvkMwFJZoccaOrUT/fCEMrDrvqio
+         TMX4b8Q/cAf2Ym3UntLkKIPR8hMtnl5qu5ImfYIO3Fuv+y/n56/fgTCmijalV5ePUyEC
+         qQwQ==
+X-Gm-Message-State: ABy/qLYpXS0QpqBnq1V5SDx8soGFiR8G8ZD8OIBV1KtNhmyTX6a0KsoO
+        l9MYqYWpW24/Ued+VX4VVYg=
+X-Google-Smtp-Source: APBJJlGfeKrU/n8gCLLShGwZi3d6BtH6N8GQz9cTtygM4kg1m56ye3zCalthG5m6h7ODrfn0m0jQhw==
+X-Received: by 2002:a7b:c8d2:0:b0:3fe:90f:8496 with SMTP id f18-20020a7bc8d2000000b003fe090f8496mr5507988wml.1.1690999102117;
+        Wed, 02 Aug 2023 10:58:22 -0700 (PDT)
 Received: from ALPER-PC.. ([178.233.24.1])
-        by smtp.gmail.com with ESMTPSA id l23-20020a7bc457000000b003fe20db88ebsm2192439wmi.31.2023.08.02.10.58.18
+        by smtp.gmail.com with ESMTPSA id l23-20020a7bc457000000b003fe20db88ebsm2192439wmi.31.2023.08.02.10.58.20
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 02 Aug 2023 10:58:19 -0700 (PDT)
+        Wed, 02 Aug 2023 10:58:21 -0700 (PDT)
 From:   Alper Nebi Yasak <alpernebiyasak@gmail.com>
 To:     alsa-devel@alsa-project.org
 Cc:     Cezary Rojewski <cezary.rojewski@intel.com>,
@@ -65,9 +65,9 @@ Cc:     Cezary Rojewski <cezary.rojewski@intel.com>,
         Matthias Brugger <matthias.bgg@gmail.com>,
         =?UTF-8?q?N=C3=ADcolas=20F=20=2E=20R=20=2E=20A=20=2E=20Prado?= 
         <nfraprado@collabora.com>
-Subject: [PATCH 13/27] ASoC: mediatek: mt8173-rt5650-rt5514: Map missing jack kcontrols
-Date:   Wed,  2 Aug 2023 20:57:23 +0300
-Message-Id: <20230802175737.263412-14-alpernebiyasak@gmail.com>
+Subject: [PATCH 14/27] ASoC: mediatek: mt8173-rt5650-rt5676: Map missing jack kcontrols
+Date:   Wed,  2 Aug 2023 20:57:24 +0300
+Message-Id: <20230802175737.263412-15-alpernebiyasak@gmail.com>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20230802175737.263412-1-alpernebiyasak@gmail.com>
 References: <20230802175737.263412-1-alpernebiyasak@gmail.com>
@@ -85,24 +85,24 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 This driver does not properly map jack pins to kcontrols that PulseAudio
 and PipeWire need to handle jack detection events. The RT5645 codec used
-here can detect Headphone and Headset Mic connections. Expose each to
+here can detect Headphone and Headset Mic connections. Expose both to
 userspace as kcontrols.
 
 Signed-off-by: Alper Nebi Yasak <alpernebiyasak@gmail.com>
 ---
 
- .../mediatek/mt8173/mt8173-rt5650-rt5514.c    | 23 +++++++++++++++----
+ .../mediatek/mt8173/mt8173-rt5650-rt5676.c    | 23 +++++++++++++++----
  1 file changed, 18 insertions(+), 5 deletions(-)
 
-diff --git a/sound/soc/mediatek/mt8173/mt8173-rt5650-rt5514.c b/sound/soc/mediatek/mt8173/mt8173-rt5650-rt5514.c
-index f803f121659d..e502cd1670ba 100644
---- a/sound/soc/mediatek/mt8173/mt8173-rt5650-rt5514.c
-+++ b/sound/soc/mediatek/mt8173/mt8173-rt5650-rt5514.c
-@@ -40,6 +40,17 @@ static const struct snd_kcontrol_new mt8173_rt5650_rt5514_controls[] = {
+diff --git a/sound/soc/mediatek/mt8173/mt8173-rt5650-rt5676.c b/sound/soc/mediatek/mt8173/mt8173-rt5650-rt5676.c
+index 8794720cea3a..ffb094284bfb 100644
+--- a/sound/soc/mediatek/mt8173/mt8173-rt5650-rt5676.c
++++ b/sound/soc/mediatek/mt8173/mt8173-rt5650-rt5676.c
+@@ -44,6 +44,17 @@ static const struct snd_kcontrol_new mt8173_rt5650_rt5676_controls[] = {
  	SOC_DAPM_PIN_SWITCH("Headset Mic"),
  };
  
-+static struct snd_soc_jack_pin mt8173_rt5650_rt5514_jack_pins[] = {
++static struct snd_soc_jack_pin mt8173_rt5650_rt5676_jack_pins[] = {
 +	{
 +		.pin	= "Headphone",
 +		.mask	= SND_JACK_HEADPHONE,
@@ -113,25 +113,25 @@ index f803f121659d..e502cd1670ba 100644
 +	},
 +};
 +
- static int mt8173_rt5650_rt5514_hw_params(struct snd_pcm_substream *substream,
+ static int mt8173_rt5650_rt5676_hw_params(struct snd_pcm_substream *substream,
  					  struct snd_pcm_hw_params *params)
  {
-@@ -82,11 +93,13 @@ static int mt8173_rt5650_rt5514_init(struct snd_soc_pcm_runtime *runtime)
- 				RT5645_CLK_SEL_I2S1_ASRC);
+@@ -95,11 +106,13 @@ static int mt8173_rt5650_rt5676_init(struct snd_soc_pcm_runtime *runtime)
+ 				RT5677_CLK_SEL_I2S2_ASRC);
  
  	/* enable jack detection */
 -	ret = snd_soc_card_jack_new(card, "Headset Jack",
 -				    SND_JACK_HEADPHONE | SND_JACK_MICROPHONE |
 -				    SND_JACK_BTN_0 | SND_JACK_BTN_1 |
 -				    SND_JACK_BTN_2 | SND_JACK_BTN_3,
--				    &mt8173_rt5650_rt5514_jack);
+-				    &mt8173_rt5650_rt5676_jack);
 +	ret = snd_soc_card_jack_new_pins(card, "Headset Jack",
 +					 SND_JACK_HEADPHONE | SND_JACK_MICROPHONE |
 +					 SND_JACK_BTN_0 | SND_JACK_BTN_1 |
 +					 SND_JACK_BTN_2 | SND_JACK_BTN_3,
-+					 &mt8173_rt5650_rt5514_jack,
-+					 mt8173_rt5650_rt5514_jack_pins,
-+					 ARRAY_SIZE(mt8173_rt5650_rt5514_jack_pins));
++					 &mt8173_rt5650_rt5676_jack,
++					 mt8173_rt5650_rt5676_jack_pins,
++					 ARRAY_SIZE(mt8173_rt5650_rt5676_jack_pins));
  	if (ret) {
  		dev_err(card->dev, "Can't new Headset Jack %d\n", ret);
  		return ret;
