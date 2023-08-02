@@ -2,93 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0032E76C9EC
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 11:56:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F18C76CA1C
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 11:58:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232571AbjHBJ4A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Aug 2023 05:56:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55236 "EHLO
+        id S233076AbjHBJ6k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Aug 2023 05:58:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56340 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232799AbjHBJzx (ORCPT
+        with ESMTP id S234033AbjHBJ6O (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Aug 2023 05:55:53 -0400
-Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2119B196
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Aug 2023 02:55:52 -0700 (PDT)
-Received: by mail-lf1-x134.google.com with SMTP id 2adb3069b0e04-4fbf09a9139so10901931e87.2
-        for <linux-kernel@vger.kernel.org>; Wed, 02 Aug 2023 02:55:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1690970150; x=1691574950;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:to:from:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=g3f9a0bqaXmmtqQwbJx6feRw+OxMSPGWZtZpS80ibCA=;
-        b=TsJKcJ4yS+4vQ3C3KyyOdARzfk2j7dx8adqXZ7Vodft741sJJC8JXHqCFds86wXwej
-         qESohiG6KA+3asWplAABmzuMmvTuko03NiF3hzUyb5GB2+eosnAl7+FAu9ZxBElkF/ux
-         Oud3ZV8nuudqi6Bd9CtI7cgEi8AZfsc9/QaOD2Kz7RFeoQKNoU1bsFSdPCfBf/miIasS
-         2UnUx+DLvRociKdqbZISdIElvZDz1+EBwOhXAudcLqsyz2x9w95peJGgNsfrBjZfNMA+
-         twpZJhWribksSbomuAZgWLi67yCoMsn+vhHKSrm3wuMb1ESfqpWy+KkximQRMQXFGyf0
-         qc/g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690970150; x=1691574950;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=g3f9a0bqaXmmtqQwbJx6feRw+OxMSPGWZtZpS80ibCA=;
-        b=D0Pe5wo5Ej1cm10ZbclyhEuyKvkrTgEMKspGamaKZCAFAC0z+YrQ2MESp/N4l1REqG
-         2pPTC7FFGLM+AdQmd29P5L0ld0nNt+GivjfPE20S6G1ju7wLDnxpkNSKtuHrIoLxwl9I
-         BNkRCSHSCeKuTDwY8+ovKWfV52lKlptC25k0ZgLsxafs/2ee+oNamX3tiJqMkErskUbS
-         nkIl7aVya7kZVs6wG0lp0taitDDJrHG0weofM1HdLe5d1tbo8oD6j4u5TFMNfw9qR762
-         TG4dEDJZKixWQBTaVsKTJWMU2/Jb61WfQF429GFmcfb1kDlRhDuojkfpsuRVV0pUFcG4
-         hjrg==
-X-Gm-Message-State: ABy/qLZzYEKckv1a6r5HwQLw3R+Ogj2cg/6vgJ240aTWMNd++KaFg22B
-        JQzCAnM/Kc2iN+JtD6v1uB28MA==
-X-Google-Smtp-Source: APBJJlH8PxyhUTN1mgA7mgCOhBeQJg4KAK+rtWR5LQCJoz3DfP5YUZqpJdz9DuxfNw42F/LERt4eUA==
-X-Received: by 2002:ac2:5319:0:b0:4fb:7c40:9f97 with SMTP id c25-20020ac25319000000b004fb7c409f97mr3788949lfh.27.1690970150547;
-        Wed, 02 Aug 2023 02:55:50 -0700 (PDT)
-Received: from umbar.unikie.fi ([192.130.178.91])
-        by smtp.gmail.com with ESMTPSA id x17-20020ac24891000000b004fe1960dd7csm2779762lfc.132.2023.08.02.02.55.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 02 Aug 2023 02:55:50 -0700 (PDT)
-From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-To:     robdclark@gmail.com, quic_abhinavk@quicinc.com, sean@poorly.run,
-        marijn.suijten@somainline.org, airlied@gmail.com, daniel@ffwll.ch,
-        quic_jesszhan@quicinc.com, dri-devel@lists.freedesktop.org,
-        freedreno@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        Ruan Jinjie <ruanjinjie@huawei.com>
-Subject: Re: [PATCH -next] drm/msm: Remove redundant DRM_DEV_ERROR()
-Date:   Wed,  2 Aug 2023 12:55:46 +0300
-Message-Id: <169096995980.4183272.6381311756168703819.b4-ty@linaro.org>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20230727112407.2916029-1-ruanjinjie@huawei.com>
-References: <20230727112407.2916029-1-ruanjinjie@huawei.com>
+        Wed, 2 Aug 2023 05:58:14 -0400
+Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 592F62101;
+        Wed,  2 Aug 2023 02:58:10 -0700 (PDT)
+Received: from kwepemi500012.china.huawei.com (unknown [172.30.72.53])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4RG6nL5NY2zVjth;
+        Wed,  2 Aug 2023 17:56:22 +0800 (CST)
+Received: from huawei.com (10.67.174.53) by kwepemi500012.china.huawei.com
+ (7.221.188.12) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Wed, 2 Aug
+ 2023 17:58:06 +0800
+From:   Liao Chang <liaochang1@huawei.com>
+To:     <andi.shyti@kernel.org>, <florian.fainelli@broadcom.com>,
+        <bcm-kernel-feedback-list@broadcom.com>, <rjui@broadcom.com>,
+        <sbranden@broadcom.com>, <yangyicong@hisilicon.com>,
+        <aisheng.dong@nxp.com>, <shawnguo@kernel.org>,
+        <s.hauer@pengutronix.de>, <kernel@pengutronix.de>,
+        <festevam@gmail.com>, <linux-imx@nxp.com>, <kblaiech@nvidia.com>,
+        <asmaa@nvidia.com>, <loic.poulain@linaro.org>, <rfoss@kernel.org>,
+        <ardb@kernel.org>, <gcherian@marvell.com>
+CC:     <linux-i2c@vger.kernel.org>,
+        <linux-rpi-kernel@lists.infradead.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <linux-arm-msm@vger.kernel.org>
+Subject: [PATCH v2 0/9] Use dev_err_probe in i2c probe function
+Date:   Wed, 2 Aug 2023 17:57:28 +0800
+Message-ID: <20230802095737.3957587-1-liaochang1@huawei.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.67.174.53]
+X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
+ kwepemi500012.china.huawei.com (7.221.188.12)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Use the dev_err_probe function instead of dev_err in the probe function
+so that the printed messge includes the return value and also handles
+-EPROBE_DEFER nicely.
 
-On Thu, 27 Jul 2023 11:24:07 +0000, Ruan Jinjie wrote:
-> There is no need to call the DRM_DEV_ERROR() function directly to print
-> a custom message when handling an error from platform_get_irq() function
-> as it is going to display an appropriate error message
-> in case of a failure.
-> 
-> 
+v2:
+1. Convert all dev_err() in lpi2c_imx_probe(), synquacer_i2c_probe(),
+   mlxbf_i2c_probe() to dev_err_probe().
+2. Add Reviewed-by: Florian Fainelli <florian.fainelli@broadcom.com>
+3. Add Reviewed-by: Yicong Yang <yangyicong@hisilicon.com>
+4. Add Reviewed-by: Andi Shyti <andi.shyti@kernel.com>
 
-Applied, thanks!
+Liao Chang (9):
+  i2c: bcm2835: Use dev_err_probe in probe function
+  i2c: mlxbf: Use dev_err_probe in probe function
+  i2c: xlp9xx: Use dev_err_probe in probe function
+  i2c: hisi: Use dev_err_probe in probe function
+  i2c: qcom-cci: Use dev_err_probe in probe function
+  i2c: pxa: Use dev_err_probe in probe function
+  i2c: dln2: Use dev_err_probe in probe function
+  i2c: imx-lpi2c: Use dev_err_probe in probe function
+  i2c: synquacer: Use dev_err_probe in probe function
 
-[1/1] drm/msm: Remove redundant DRM_DEV_ERROR()
-      https://gitlab.freedesktop.org/lumag/msm/-/commit/f09f5459bd85
+ drivers/i2c/busses/i2c-bcm2835.c   | 14 ++++-----
+ drivers/i2c/busses/i2c-dln2.c      |  6 ++--
+ drivers/i2c/busses/i2c-hisi.c      | 12 +++----
+ drivers/i2c/busses/i2c-imx-lpi2c.c | 12 +++----
+ drivers/i2c/busses/i2c-mlxbf.c     | 50 ++++++++++--------------------
+ drivers/i2c/busses/i2c-pxa.c       |  7 ++---
+ drivers/i2c/busses/i2c-qcom-cci.c  |  6 ++--
+ drivers/i2c/busses/i2c-synquacer.c | 19 ++++--------
+ drivers/i2c/busses/i2c-xlp9xx.c    |  6 ++--
+ 9 files changed, 46 insertions(+), 86 deletions(-)
 
-Best regards,
 -- 
-Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+2.25.1
+
