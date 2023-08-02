@@ -2,48 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 45A0776CEFC
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 15:41:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 59FB776CF0F
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 15:44:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232158AbjHBNlM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Aug 2023 09:41:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37000 "EHLO
+        id S233941AbjHBNoi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Aug 2023 09:44:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38820 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233699AbjHBNlK (ORCPT
+        with ESMTP id S233935AbjHBNog (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Aug 2023 09:41:10 -0400
-Received: from mail11.truemail.it (mail11.truemail.it [217.194.8.81])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F367269E;
-        Wed,  2 Aug 2023 06:41:09 -0700 (PDT)
-Received: from francesco-nb.int.toradex.com (93-49-2-63.ip317.fastwebnet.it [93.49.2.63])
-        by mail11.truemail.it (Postfix) with ESMTPA id 2B985209F0;
-        Wed,  2 Aug 2023 15:41:07 +0200 (CEST)
-Date:   Wed, 2 Aug 2023 15:41:03 +0200
-From:   Francesco Dolcini <francesco@dolcini.it>
-To:     Nishanth Menon <nm@ti.com>
-Cc:     Francesco Dolcini <francesco@dolcini.it>,
-        Jai Luthra <j-luthra@ti.com>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Tero Kristo <kristo@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Francesco Dolcini <francesco.dolcini@toradex.com>
-Subject: Re: [PATCH v1 1/4] arm64: dts: ti: k3-am62x: Enable AUDIO_REFCLKx
-Message-ID: <ZMpc7x8U91JLVakd@francesco-nb.int.toradex.com>
-References: <20230731142135.108477-1-francesco@dolcini.it>
- <20230731142135.108477-2-francesco@dolcini.it>
- <itvg2zmmapbfmgbwos6c4y5zsc2rb3sffv2znhwz6i2vahe4y6@uu2547kcz5sd>
- <23C6E13C-3F10-490B-A18E-C67B91CBAF35@dolcini.it>
- <20230802133244.b66pg3mztotgqotm@steerable>
+        Wed, 2 Aug 2023 09:44:36 -0400
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 721B5269A;
+        Wed,  2 Aug 2023 06:44:35 -0700 (PDT)
+Received: from pps.filterd (m0356517.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 372DdWmY001583;
+        Wed, 2 Aug 2023 13:44:02 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
+ subject : to : cc : references : from : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=pp1;
+ bh=g55Ym+YpNFbYbsHJm78sD6z/mEY3akqaVkYyzH3Jg7g=;
+ b=XalsLoKFIRMecbK04Ju3GMu6LWdk0ZWH2zOQoUDSUau+5GV3bZUpMGlvGZzaGlngcA7F
+ my/jzr5MLWWc2CkwQ9iVw0xoOqNradBdA3LDq8bYw+0V6mOBWTdQ8VbOF2wmQ7G4RAOq
+ QP6v2ylxhFkJbYc20fWBiyMrNp3VMgHTwJ5lMxSRmoG+m01xMWxVdGuobsSSHDt6f1ZJ
+ vBGgHLMJrxEn0RCfvHlYmG/JXHnlfnvxAb4m1XBtzomio0wiWJaAdDrxlS/cdY7+lVGt
+ PW18230/0EavT612jKmHZT9OuNrGKA9NMMPqb3HEaV2RjX9ew1eBwsPDrhgE22Id2Ua5 0g== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3s7r1a8f0m-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 02 Aug 2023 13:44:01 +0000
+Received: from m0356517.ppops.net (m0356517.ppops.net [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 372De5Fx006219;
+        Wed, 2 Aug 2023 13:43:40 GMT
+Received: from ppma12.dal12v.mail.ibm.com (dc.9e.1632.ip4.static.sl-reverse.com [50.22.158.220])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3s7r1a8dr9-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 02 Aug 2023 13:43:39 +0000
+Received: from pps.filterd (ppma12.dal12v.mail.ibm.com [127.0.0.1])
+        by ppma12.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 372CkWXw006161;
+        Wed, 2 Aug 2023 13:41:18 GMT
+Received: from smtprelay01.wdc07v.mail.ibm.com ([172.16.1.68])
+        by ppma12.dal12v.mail.ibm.com (PPS) with ESMTPS id 3s5d3sn9kj-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 02 Aug 2023 13:41:17 +0000
+Received: from smtpav06.wdc07v.mail.ibm.com (smtpav06.wdc07v.mail.ibm.com [10.39.53.233])
+        by smtprelay01.wdc07v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 372DfH2B29295132
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 2 Aug 2023 13:41:17 GMT
+Received: from smtpav06.wdc07v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 3D1D758054;
+        Wed,  2 Aug 2023 13:41:17 +0000 (GMT)
+Received: from smtpav06.wdc07v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 973595804E;
+        Wed,  2 Aug 2023 13:41:16 +0000 (GMT)
+Received: from [9.61.179.91] (unknown [9.61.179.91])
+        by smtpav06.wdc07v.mail.ibm.com (Postfix) with ESMTP;
+        Wed,  2 Aug 2023 13:41:16 +0000 (GMT)
+Message-ID: <388f1d61-c419-a133-6266-daff1fa4cd60@linux.ibm.com>
+Date:   Wed, 2 Aug 2023 08:41:16 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.12.0
+Subject: Re: [PATCH] i2c: aspeed: Avoid accessing freed buffers during i2c
+ transfers.
+To:     Lei YU <mine260309@gmail.com>, Joel Stanley <joel@jms.id.au>
+Cc:     Lixue Liang <lianglixuehao@126.com>,
+        Lixue Liang <lianglixue@greatwall.com.cn>,
+        linux-aspeed@lists.ozlabs.org,
+        OpenBMC Maillist <openbmc@lists.ozlabs.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        brendan.higgins@linux.dev, linux-i2c@vger.kernel.org,
+        p.zabel@pengutronix.de, linux-arm-kernel@lists.infradead.org
+References: <20230728122416.17782-1-lianglixuehao@126.com>
+ <CACPK8Xf6YssamEmHB5XDf8JYk+_=hnG8Yzqn4kCikseqg6rqOA@mail.gmail.com>
+ <CAARXrtmZbu3aabYJkEc25rHymRHDX4=zNdecHAs3LnQ259RkPg@mail.gmail.com>
+Content-Language: en-US
+From:   Eddie James <eajames@linux.ibm.com>
+In-Reply-To: <CAARXrtmZbu3aabYJkEc25rHymRHDX4=zNdecHAs3LnQ259RkPg@mail.gmail.com>
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: brqHT6bMSvTJF7K0U5buGGNpMKUKQ0Wg
+X-Proofpoint-ORIG-GUID: svrKPSwC-tR9dzrOChMyy-us0eG8TCj-
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230802133244.b66pg3mztotgqotm@steerable>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_PASS,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
+ definitions=2023-08-02_09,2023-08-01_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
+ impostorscore=0 bulkscore=0 mlxlogscore=999 clxscore=1011 mlxscore=0
+ adultscore=0 malwarescore=0 phishscore=0 suspectscore=0 spamscore=0
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2306200000 definitions=main-2308020121
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -51,52 +104,66 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 02, 2023 at 08:32:44AM -0500, Nishanth Menon wrote:
-> On 13:37-20230802, Francesco Dolcini wrote:
-> > Il 2 agosto 2023 13:23:50 CEST, Jai Luthra <j-luthra@ti.com> ha scritto:
-> > >On Jul 31, 2023 at 16:21:32 +0200, Francesco Dolcini wrote:
-> > >> From: Jai Luthra <j-luthra@ti.com>
-> > >> 
-> > >> On AM62-based SoCs the AUDIO_REFCLKx clocks can be used as an input to
-> > >> external peripherals when configured through CTRL_MMR, so add the
-> > >> clock nodes.
-> > >> 
-> > >> Signed-off-by: Jai Luthra <j-luthra@ti.com>
-> > >> Signed-off-by: Francesco Dolcini <francesco.dolcini@toradex.com>
-> > >> ---
-> > >>  arch/arm64/boot/dts/ti/k3-am62-main.dtsi  | 18 ++++++++++++++++++
-> > >>  arch/arm64/boot/dts/ti/k3-am62a-main.dtsi | 18 ++++++++++++++++++
-> > >
-> > >Given currently none of the AM62A boards are using the refclks, can you 
-> > >drop those or just mark the nodes as disabled. Whoever is the first user 
-> > >can enable them.
-> > 
-> > I can drop the 2 clocks from AM62A, however, should we really do it?
-> > These clocks exist and they are just defined in the DTS, they are
-> > not going to be enabled if not used, "ti,am62-epwm-tbclk" is also
-> > not disabled for example.
-> 
-> Overall, the SoC clock as such has nothing to do with board specific, so
-> leave it default (enabled) in SoC.dts - just want to make sure that the
-> clk-parent selection doesn't get in the way of platforms and is a sane
-> default.
 
-When I looked into that, months ago, this looked to me the correct and a
-sane default. I had the same in our downstream way before the addition
-from Jai Luthra to the SoC dtsi.
+On 7/31/23 01:10, Lei YU wrote:
+> There is a same fix in 
+> https: //lore. kernel. org/openbmc/374237cb-1cda-df12-eb9f-7422cab51fc4@ linux. alibaba. com/ 
+> On Mon, Jul 31, 2023 at 12: 21 PM Joel Stanley <joel@ jms. id. au> 
+> wrote: On Fri, 28 Jul 2023 at 12: 40, Lixue Liang 
+> <lianglixuehao@ 126. com>
+> ZjQcmQRYFpfptBannerStart
+> This Message Is From an Untrusted Sender
+> You have not previously corresponded with this sender.
+> Report Suspicious
+> <https://us-phishalarm-ewt.proofpoint.com/EWT/v1/PjiDSg!12-vrJBTB7HSMYjxkCEvpHwVyelw0CenAD3RKRjmVVfRig6DzCgRBaxHaeYsJsATzFgNYSRGXy6rQNXpmK9YdWQxScm-2h9p_bilDuLeU1r8NS5OEkCngl01P94y$> 
+>
+> ZjQcmQRYFpfptBannerEnd
+> There is a same fix in 
+> https://lore.kernel.org/openbmc/374237cb-1cda-df12-eb9f-7422cab51fc4@linux.alibaba.com/
+>
+> On Mon, Jul 31, 2023 at 12:21 PM Joel Stanley <joel@jms.id.au> wrote:
+>
+>     On Fri, 28 Jul 2023 at 12:40, Lixue Liang <lianglixuehao@126.com>
+>     wrote:
+>     >
+>     > From: Lixue Liang <lianglixue@greatwall.com.cn>
+>     >
+>     > After waiting for the transmission timeout, the I2C controller will
+>     > continue to transmit data when the bus is idle. Clearing
+>     bus->msg will
+>     > avoid kernel panic when accessing the freed msg->buf in
+>     > aspeed_i2c_master_irq.
+>     >
+>     > Signed-off-by: Lixue Liang <lianglixue@greatwall.com.cn>
+>     > ---
+>     >  drivers/i2c/busses/i2c-aspeed.c | 2 ++
+>     >  1 file changed, 2 insertions(+)
+>     >
+>     > diff --git a/drivers/i2c/busses/i2c-aspeed.c
+>     b/drivers/i2c/busses/i2c-aspeed.c
+>     > index 2e5acfeb76c8..c83057497e26 100644
+>     > --- a/drivers/i2c/busses/i2c-aspeed.c
+>     > +++ b/drivers/i2c/busses/i2c-aspeed.c
+>     > @@ -713,6 +713,8 @@ static int aspeed_i2c_master_xfer(struct
+>     i2c_adapter *adap,
+>     >                 spin_lock_irqsave(&bus->lock, flags);
+>     >                 if (bus->master_state == ASPEED_I2C_MASTER_PENDING)
+>     >                         bus->master_state =
+>     ASPEED_I2C_MASTER_INACTIVE;
+>     > +
+>     > +               bus->msgs = NULL;
+>
+>     Eddie, is this the same issue you were debugging?
+>
 
-Not sure if Jai can add more on that regard.
+Yes, it is, and the same fix I settled on.
 
-> pll2_hsdiv8 output - which looks like the default mux value anyways..
-> I am ok for it being explicit, but wondering if that works for boards
-> that do not use this default.
 
-IFF needed, it would be very easy to just override from the board dts,
-using the labels that are already there (audio_refclk0, audio_refclk1).
-
-> (sidenote): Fransesco - your new mail client has line wrap issues ;)
-Yep, I had the crazy idea to reply from my mobile phone while having a
-walk. It's already a success that I did not top post ;-)
-
-Francesco
-
+>
+>     >  spin_unlock_irqrestore(&bus->lock, flags);
+>     >
+>     >                 return -ETIMEDOUT;
+>     > --
+>     > 2.27.0
+>     >
+>
