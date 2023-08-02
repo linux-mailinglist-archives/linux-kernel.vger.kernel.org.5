@@ -2,63 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B7AAE76CBDF
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 13:37:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 89C6376CBE1
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 13:38:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234214AbjHBLhr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Aug 2023 07:37:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57572 "EHLO
+        id S234237AbjHBLiX convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 2 Aug 2023 07:38:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58050 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232592AbjHBLho (ORCPT
+        with ESMTP id S230139AbjHBLiW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Aug 2023 07:37:44 -0400
-Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C3162139;
-        Wed,  2 Aug 2023 04:37:39 -0700 (PDT)
-Received: from dggpemm500005.china.huawei.com (unknown [172.30.72.57])
-        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4RG8z16DmlzLp2H;
-        Wed,  2 Aug 2023 19:34:53 +0800 (CST)
-Received: from [10.69.30.204] (10.69.30.204) by dggpemm500005.china.huawei.com
- (7.185.36.74) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Wed, 2 Aug
- 2023 19:37:36 +0800
-Subject: Re: [PATCH net-next 6/9] page_pool: avoid calling no-op externals
- when possible
-To:     Alexander Lobakin <aleksander.lobakin@intel.com>
-CC:     "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
-        Larysa Zaremba <larysa.zaremba@intel.com>,
-        Alexander Duyck <alexanderduyck@fb.com>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
-        Simon Horman <simon.horman@corigine.com>,
-        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-References: <20230727144336.1646454-1-aleksander.lobakin@intel.com>
- <20230727144336.1646454-7-aleksander.lobakin@intel.com>
- <a79cc7ed-5355-ef7d-8865-0ba9673af5c6@huawei.com>
- <604d4f6c-a6e7-e921-2d9a-45fe46ab9e79@intel.com>
- <799ebbaf-961d-860a-6071-b74e10360e29@huawei.com>
- <1644b9d0-27a5-0c2b-c530-bcaa347f73c2@intel.com>
-From:   Yunsheng Lin <linyunsheng@huawei.com>
-Message-ID: <00695c43-b376-169d-a62d-c1a373cde90c@huawei.com>
-Date:   Wed, 2 Aug 2023 19:37:35 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
- Thunderbird/52.2.0
+        Wed, 2 Aug 2023 07:38:22 -0400
+Received: from mail11.truemail.it (mail11.truemail.it [IPv6:2001:4b7e:0:8::81])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5EA572137;
+        Wed,  2 Aug 2023 04:38:20 -0700 (PDT)
+Received: from [127.0.0.1] (unknown [176.201.65.65])
+        by mail11.truemail.it (Postfix) with ESMTPA id 6D8F9213FE;
+        Wed,  2 Aug 2023 13:38:18 +0200 (CEST)
+Date:   Wed, 02 Aug 2023 13:37:47 +0200
+From:   Francesco Dolcini <francesco@dolcini.it>
+To:     Jai Luthra <j-luthra@ti.com>
+CC:     Nishanth Menon <nm@ti.com>, Vignesh Raghavendra <vigneshr@ti.com>,
+        Tero Kristo <kristo@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Francesco Dolcini <francesco.dolcini@toradex.com>
+Subject: Re: [PATCH v1 1/4] arm64: dts: ti: k3-am62x: Enable AUDIO_REFCLKx
+User-Agent: K-9 Mail for Android
+In-Reply-To: <itvg2zmmapbfmgbwos6c4y5zsc2rb3sffv2znhwz6i2vahe4y6@uu2547kcz5sd>
+References: <20230731142135.108477-1-francesco@dolcini.it> <20230731142135.108477-2-francesco@dolcini.it> <itvg2zmmapbfmgbwos6c4y5zsc2rb3sffv2znhwz6i2vahe4y6@uu2547kcz5sd>
+Message-ID: <23C6E13C-3F10-490B-A18E-C67B91CBAF35@dolcini.it>
 MIME-Version: 1.0
-In-Reply-To: <1644b9d0-27a5-0c2b-c530-bcaa347f73c2@intel.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.69.30.204]
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
- dggpemm500005.china.huawei.com (7.185.36.74)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_PASS,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -66,66 +47,31 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023/8/1 21:42, Alexander Lobakin wrote:
-...
 
->>>>
->>>> It seems other subsystem may have the similar problem as page_pool,
->>>> is it possible to implement this kind of trick in the dma subsystem
->>>> instead of every subsystem inventing their own trick?
->>>
->>> In the ladder I described above most of overhead comes from jumping
->>> between Page Pool functions, not the generic DMA ones. Let's say I do
->>> this shortcut in dma_sync_single_range_for_device(), that is too late
->>> already to count on some good CPU saves.
->>
->> We can force inline the page_pool_dma_sync_for_device() function if it
->> is 'the good CPU saves' you mentioned above.
->>
->>> Plus, DMA sync API operates with dma_addr_t, not struct page. IOW it's
->>> not clear to me where to store this "we can shortcut" bit in that case.
->>
->> It seems we only need one bit in 'struct device' to do the 'shortcut',
->> and there seems to have avaliable bit at the end of 'struct device'?
-> 
-> dma_need_sync() can return different results for two different DMA
-> addresses within the same device.
 
-Yes, that's why we need a per device state in order to do the
-similar trick like this patch does.
+Il 2 agosto 2023 13:23:50 CEST, Jai Luthra <j-luthra@ti.com> ha scritto:
+>Hi Francesco,
+>
+>Thank you for posting this patch.
+>
+>On Jul 31, 2023 at 16:21:32 +0200, Francesco Dolcini wrote:
+>> From: Jai Luthra <j-luthra@ti.com>
+>> 
+>> On AM62-based SoCs the AUDIO_REFCLKx clocks can be used as an input to
+>> external peripherals when configured through CTRL_MMR, so add the
+>> clock nodes.
+>> 
+>> Signed-off-by: Jai Luthra <j-luthra@ti.com>
+>> Signed-off-by: Francesco Dolcini <francesco.dolcini@toradex.com>
+>> ---
+>>  arch/arm64/boot/dts/ti/k3-am62-main.dtsi  | 18 ++++++++++++++++++
+>>  arch/arm64/boot/dts/ti/k3-am62a-main.dtsi | 18 ++++++++++++++++++
+>
+>Given currently none of the AM62A boards are using the refclks, can you 
+>drop those or just mark the nodes as disabled. Whoever is the first user 
+>can enable them.
 
-> 
->>
->> Is it possible that we do something like this patch does in
->> dma_sync_single_range_for_device()?
->>
->> One thing to note is that there may be multi concurrent callers to
->> dma_sync_single_range_for_device(), which seems to be different from
->> atomic context for page_pool_dma_map(), so it may need some atomic
->> operation for the state changing if we want to implement it in a 'generic'
->> way.
->>
->>>
->>> >From "other subsystem" I remember only XDP sockets. There, they also
->>> avoid calling their own non-inline functions in the first place, not the
->>> generic DMA ones. So I'd say both cases (PP and XSk) can't be solved via
->>> some "generic" solution.
->>
->> If PP and XSk both have a similar trick, isn't it a more clear sight
->> that it may be solved via some "generic" solution?
-> 
-> Both shortcut their own functions in the first place, so I don't know
-> what generic solution could be to optimize non-generic functions.
+I can drop the 2 clocks from AM62A, however, should we really do it? These clocks exist and they are just defined in the DTS, they are not going to be enabled if not used, "ti,am62-epwm-tbclk" is also not disabled for example.
 
-If we are able to shortcut the generic functions, for the page_pool
-and XSK case，it seems the non-generic functions just need to be
-inlined if I understand your concern correctly.
+Francesco
 
-And for that we may be able to shortcut the generic functions for
-dma_sync_single_range_for_device() used in driver too?
-
-> 
->>
->> Is there any reason there is no a similar trick for sync for cpu in
->> XSk as below code indicates?
->> https://elixir.free-electrons.com/linux/v6.4-rc6/source/include/net/xsk_buff_pool.h#L152
