@@ -2,100 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5567976D402
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 18:48:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A502276D413
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 18:49:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231531AbjHBQsL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Aug 2023 12:48:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47264 "EHLO
+        id S232051AbjHBQtE convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 2 Aug 2023 12:49:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47390 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230223AbjHBQsJ (ORCPT
+        with ESMTP id S230175AbjHBQsa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Aug 2023 12:48:09 -0400
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69AA0173A;
-        Wed,  2 Aug 2023 09:48:07 -0700 (PDT)
-Received: from pps.filterd (m0353729.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 372Gfuw1023825;
-        Wed, 2 Aug 2023 16:48:05 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
- from : to : cc : date : in-reply-to : references : content-type :
- content-transfer-encoding : mime-version; s=pp1;
- bh=RYhl9o7SKKJztH3JmqXCvUi0CyeUsByFRM8iTudrnzA=;
- b=pOqNeVHqJ7Yp8Y0f9lVTtpwuFisK64YFdNtSp9S56CT0A7jqXCcXA88nvRzhET3kLacw
- +1gxiTT/6IcNScbX9Z7OXdhBFNFujjNW83brkY0cxkLHqdGK2mBBDEe+7u+nOOf2oN5c
- e9vRxEnx6DikaXBUJf0NZL2CvlA9cwiPoCvbC/QncCenVAWxWsZXPFgf9Ggu2u91PxKq
- L7nPtx4kDCptOZ8YXBq0nz0f8hIrBx0LBZ1QSq4uYtbVgIjXVRpPh0FybPyeoQPOBBZt
- opqelYv62ZQacajRUMp3M6PxhbvMi2+jn0NjmcfXYiCm+V6LHsIv5SkrzQMw6jYxAfE2 gw== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3s7tvvr7gn-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 02 Aug 2023 16:48:04 +0000
-Received: from m0353729.ppops.net (m0353729.ppops.net [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 372GhqkD031958;
-        Wed, 2 Aug 2023 16:48:04 GMT
-Received: from ppma13.dal12v.mail.ibm.com (dd.9e.1632.ip4.static.sl-reverse.com [50.22.158.221])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3s7tvvr7fs-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 02 Aug 2023 16:48:03 +0000
-Received: from pps.filterd (ppma13.dal12v.mail.ibm.com [127.0.0.1])
-        by ppma13.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 372F1GkG017116;
-        Wed, 2 Aug 2023 16:48:03 GMT
-Received: from smtprelay03.fra02v.mail.ibm.com ([9.218.2.224])
-        by ppma13.dal12v.mail.ibm.com (PPS) with ESMTPS id 3s5fajwprq-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 02 Aug 2023 16:48:02 +0000
-Received: from smtpav04.fra02v.mail.ibm.com (smtpav04.fra02v.mail.ibm.com [10.20.54.103])
-        by smtprelay03.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 372Gm0BC20185814
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 2 Aug 2023 16:48:00 GMT
-Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id F2EDC20043;
-        Wed,  2 Aug 2023 16:47:59 +0000 (GMT)
-Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 2E81020040;
-        Wed,  2 Aug 2023 16:47:59 +0000 (GMT)
-Received: from [9.179.11.37] (unknown [9.179.11.37])
-        by smtpav04.fra02v.mail.ibm.com (Postfix) with ESMTP;
-        Wed,  2 Aug 2023 16:47:59 +0000 (GMT)
-Message-ID: <603d2672855d74e9bfc2619156f4ffe7976de4f5.camel@linux.ibm.com>
-Subject: Re: [PATCH net 2/2] net/smc: Use correct buffer sizes when
- switching between TCP and SMC
-From:   Gerd Bayer <gbayer@linux.ibm.com>
-To:     Tony Lu <tonylu@linux.alibaba.com>
-Cc:     Wenjia Zhang <wenjia@linux.ibm.com>,
-        Jan Karcher <jaka@linux.ibm.com>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Karsten Graul <kgraul@linux.ibm.com>,
-        "D . Wythe" <alibuda@linux.alibaba.com>,
-        Wen Gu <guwen@linux.alibaba.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>, linux-s390@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Date:   Wed, 02 Aug 2023 18:47:58 +0200
-In-Reply-To: <ZMpPjAaRzSRy-Vo_@TONYMAC-ALIBABA.local>
-References: <20230802093313.1501605-1-gbayer@linux.ibm.com>
-         <20230802093313.1501605-3-gbayer@linux.ibm.com>
-         <ZMpPjAaRzSRy-Vo_@TONYMAC-ALIBABA.local>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.48.4 (3.48.4-1.module_f38+17164+63eeee4a) 
+        Wed, 2 Aug 2023 12:48:30 -0400
+Received: from mail-oo1-f49.google.com (mail-oo1-f49.google.com [209.85.161.49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C9711AC;
+        Wed,  2 Aug 2023 09:48:29 -0700 (PDT)
+Received: by mail-oo1-f49.google.com with SMTP id 006d021491bc7-56475c1b930so1027903eaf.0;
+        Wed, 02 Aug 2023 09:48:29 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690994908; x=1691599708;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=x4DJQJkC9NXulAsskXsBVfJzo4vhzZPcLEYBWos2xhk=;
+        b=LGX99bfLc3V1UPzQU4NAqOpkEjEr3BF4Ac9BmD/k4HVaKQp3fmaiKwEaQYSquewhiN
+         bU9Dfo3CyOxCYkuHddprqFjGsMm/2rkAjloqV1IryYSB5Joxf+hQiOZJbg/ZYP4u3dOr
+         KWuTYepa2ZMJUfFTYVH4zmMHT53GqCQhXdHzJt4vKCz4QMRxz86CkUxUUde+uVgjdw47
+         U5pAInc4ui9CaKMf2RZky4eM/KFP4Jxg1yg8LEdTbaox6X1e5eZtmIiVXMwyUvUtfVLS
+         48oMYkbbBw7IIlKVDYIHeVXFNztSIzGmQSUt4MVVWLYHwgXZDPg22JS6eHhPZqY7YrIj
+         NVog==
+X-Gm-Message-State: ABy/qLZ22+Y5OfnSg+U0rYmUohKb18yf9+06OwNknRAWocMRbn0TlsFP
+        duSdnU1fTae251vFgON0azV4psbP06IREK9pkOk=
+X-Google-Smtp-Source: APBJJlHSECy5jKPCEQN5IlcgxAHfjF5aalctkrWz+1/ATuL6Ow+piNoQF2SC+imfMegE01xDjGTvGCOxhAYg0CG8zt4=
+X-Received: by 2002:a05:6820:2201:b0:560:b01a:653d with SMTP id
+ cj1-20020a056820220100b00560b01a653dmr12607199oob.0.1690994908588; Wed, 02
+ Aug 2023 09:48:28 -0700 (PDT)
 MIME-Version: 1.0
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: zSPmUnJ3NkZEgtca34jLWGXJ_34EBbIf
-X-Proofpoint-ORIG-GUID: mUWuCCm1BoLhEp0umEXsTl4Akz6lPj6U
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
- definitions=2023-08-02_12,2023-08-01_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 spamscore=0
- priorityscore=1501 suspectscore=0 bulkscore=0 mlxscore=0 mlxlogscore=999
- phishscore=0 malwarescore=0 clxscore=1015 lowpriorityscore=0 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2306200000
- definitions=main-2308020146
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+References: <13318886.uLZWGnKmhe@kreacher> <12254967.O9o76ZdvQC@kreacher>
+ <4501957.LvFx2qVVIh@kreacher> <2d0315d4-35b4-84db-4dcb-c9528abad825@linaro.org>
+ <CAJZ5v0iQDOsTOqWFvbf5nom-b3-pbHPRzJQC-1DM9eoh=0AKjg@mail.gmail.com>
+ <eb279cf1-0605-3b87-5cb6-241a91977455@linaro.org> <CAJZ5v0i48=oawDJHoaHhiZRaO_CJokKsOHyNvu2v4PUbS6CH_Q@mail.gmail.com>
+ <f8029547-6851-7e0c-00e6-4963ccbc2702@linaro.org>
+In-Reply-To: <f8029547-6851-7e0c-00e6-4963ccbc2702@linaro.org>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Wed, 2 Aug 2023 18:48:17 +0200
+Message-ID: <CAJZ5v0gDQMNSeEU1J7ooJk4Ec=Hw_JuZAtL5k215v7Lf67iTgg@mail.gmail.com>
+Subject: Re: [PATCH v3 1/8] thermal: core: Add mechanism for connecting trips
+ with driver data
+To:     Daniel Lezcano <daniel.lezcano@linaro.org>
+Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Linux ACPI <linux-acpi@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Michal Wilczynski <michal.wilczynski@intel.com>,
+        Zhang Rui <rui.zhang@intel.com>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -103,80 +69,120 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2023-08-02 at 20:43 +0800, Tony Lu wrote:
-> On Wed, Aug 02, 2023 at 11:33:13AM +0200, Gerd Bayer wrote:
-> > Tuning of the effective buffer size through setsockopts was working
-> > for
-> > SMC traffic only but not for TCP fall-back connections even before
-> > commit 0227f058aa29 ("net/smc: Unbind r/w buffer size from clcsock
-> > and
-> > make them tunable"). That change made it apparent that TCP fall-
-> > back
-> > connections would use net.smc.[rw]mem as buffer size instead of
-> > net.ipv4_tcp_[rw]mem.
-> >=20
-> > Amend the code that copies attributes between the (TCP) clcsock and
-> > the
-> > SMC socket and adjust buffer sizes appropriately:
-> > - Copy over sk_userlocks so that both sockets agree on whether
-> > tuning
-> > =C2=A0 via setsockopt is active.
-> > - When falling back to TCP use sk_sndbuf or sk_rcvbuf as specified
-> > with
-> > =C2=A0 setsockopt. Otherwise, use the sysctl value for TCP/IPv4.
-> > - Likewise, use either values from setsockopt or from sysctl for
-> > SMC
-> > =C2=A0 (duplicated) on successful SMC connect.
-> >=20
-> > In smc_tcp_listen_work() drop the explicit copy of buffer sizes as
-> > that
-> > is taken care of by the attribute copy.
-> >=20
-> > Fixes: 0227f058aa29 ("net/smc: Unbind r/w buffer size from clcsock
-> > and make them tunable")
-> > Signed-off-by: Gerd Bayer <gbayer@linux.ibm.com>
-> > Reviewed-by: Wenjia Zhang <wenjia@linux.ibm.com>
-> > Reviewed-by: Jan Karcher <jaka@linux.ibm.com>
->=20
-> Reviewed-by: Tony Lu <tonylu@linux.alibaba.com>
->=20
-> >=20
-> ^^^^ nit: a extra new line here.
-I'll clean that up.
+On Wed, Aug 2, 2023 at 5:50 PM Daniel Lezcano <daniel.lezcano@linaro.org> wrote:
+>
+> On 02/08/2023 15:03, Rafael J. Wysocki wrote:
+>
+> [ ... ]
+>
+> >>>>> +struct thermal_trip_ref {
+> >>>>> +     struct thermal_trip *trip;
+> >>>>> +};
+> >>>>
+> >>>> That introduces a circular dependency. That should be avoided.
+> >>>
+> >>> Sorry, but this is an empty statement without any substance.
+> >>
+> >> I'm just pointing that we have a struct A pointing to struct B and
+> >> struct B pointing to struct A.
+> >
+> > Why is this a problem in general?
+>
+> Cyclic dependencies are often a sign of a design problem.
+>
+> > There are cases in which struct A needs to be found given struct B
+> > (like in the ACPI thermal case, when the driver needs to get to
+> > trips[i] from its local data) and there are cases in which struct B
+> > needs to be found given struct A (like when a driver's callback is
+> > invoked and passed a trip pointer, so the driver needs to get to its
+> > local data from it - arguably this is not the case right now, but I
+> > suppose it will be the case in the future).
+> >
+> >> [ ... ]
+> >>
+> >>>>>     struct thermal_cooling_device_ops {
+> >>>>> Index: linux-pm/drivers/thermal/thermal_core.c
+> >>>>> ===================================================================
+> >>>>> --- linux-pm.orig/drivers/thermal/thermal_core.c
+> >>>>> +++ linux-pm/drivers/thermal/thermal_core.c
+> >>>>> @@ -1306,14 +1306,28 @@ thermal_zone_device_register_with_trips(
+> >>>>>         if (result)
+> >>>>>                 goto release_device;
+> >>>>>
+> >>>>> +     mutex_lock(&tz->lock);
+> >>>>> +
+> >>>>>         for (count = 0; count < num_trips; count++) {
+> >>>>> -             struct thermal_trip trip;
+> >>>>> +             int temperature = 0;
+> >>>>> +
+> >>>>> +             if (trips) {
+> >>>>> +                     temperature = trips[count].temperature;
+> >>>>> +                     if (trips[count].driver_ref)
+> >>>>> +                             trips[count].driver_ref->trip = &trips[count];
+> >>>>> +             } else {
+> >>>>> +                     struct thermal_trip trip;
+> >>>>
+> >>>> As mentioned above, that should not appear in the thermal core code.
+> >>>
+> >>> Well, this is a matter of opinion to me.  Clearly, I disagree with it.
+> >>
+> >> Why? It is not an opinion.
+> >
+> > So what's wrong with it, technically?  What's broken by it?  Why does
+> > it make the code more difficult to maintain?
+>
+>
+>
+> >> The thermal core code has been very very tied
+> >> with the ACPI implementation (which is logical given the history of the
+> >> changes). All the efforts have been made to cut these frictions and make
+> >> the thermal core code driver agnostic.
+> >>
+> >> The changes put in place a mechanism for the ACPI driver.
+> >
+> > Not really, for all drivers that have local trip data and need to get
+> > to trips[i] from there and/or the other way around.
+> >
+> >> The thermal zone lock wrapper is put in place for the ACPI driver.
+> >
+> > Yes, it is, because that's the most straightforward way to address the
+> > use case at hand IMV.
+> >
+> >>> Anyway, I want to be productive, so here's the thing: either something
+> >>> like this is done, or drivers need to be allowed to walk the trips
+> >>> table.
+> >>>
+> >>> Which one is better?
+> >>
+> >> None of them. I think we can find a third solution where the changes are
+> >> self contained in the ACPI driver. What do you think?
+> >
+> > The ACPI thermal driver needs to update trip point temperatures at
+> > times.  For this purpose, it needs to get from its local trip data to
+> > trip[i] somehow.
+> >
+> > Creating a new trips[] array and handing it over to the core is not an
+> > option, because it potentially breaks the thermal device binding to
+> > the zone (in which trip indices are used, mind you).
+> >
+> > So how exactly do you want the driver to do the above?
+> >
+> > It could save a pointer to each trips[i] in its local data structures
+> > before registering the zone, but then if the core reordered the trips,
+> > those pointers would become stale.
+> >
+> > So how?
+>
+> Let me check if I can do something on top of your series to move it in
+> the ACPI driver.
 
-> > ---
-> > =C2=A0net/smc/af_smc.c | 76 ++++++++++++++++++++++++++++++++++---------=
--
-> > ----
-> > =C2=A01 file changed, 54 insertions(+), 22 deletions(-)
-> >=20
-> >=20
-[...]
+It doesn't need to be on top of my series, so if you have an idea,
+please just let me know what it is.
 
-> > +/* if set, use value set by setsockopt() - else use IPv4 or SMC
-> > sysctl value */
-> > +static void smc_adjust_sock_bufsizes(struct sock *nsk, struct sock
-> > *osk,
-> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 unsigned=
- long mask)
-> > +{
-> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0struct net *nnet;
-> > +
-> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0nnet =3D nsk->sk_net.net;
->=20
-> Better to combine these two lines with existed helper.
->=20
-> struct net *net =3D sock_net(nsk);
-Yes, looks much cleaner.
-
-[...]
->=20
-
-Thank you Tony for your review and comments.
-I'll be sending out a v2 with your recommendations - but give people a
-little more time to look at this version.
-
-Thanks,
-Gerd
+It can't be entirely in the ACPI driver AFAICS, though, because
+trips[i] need to be modified on updates and they belong to the core.
+Hence, the driver needs some help from the core to get to them.  It
+can be something like "this is my trip tag and please give me the
+address of the trip matching it" or similar, but it is needed, because
+the driver has to assume that the trip indices used by it initially
+may change.
