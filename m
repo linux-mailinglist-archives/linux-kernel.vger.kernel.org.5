@@ -2,156 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D00D976CFC2
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 16:11:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A517B76CFC4
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 16:12:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232158AbjHBOLg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Aug 2023 10:11:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53458 "EHLO
+        id S231241AbjHBOMu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Aug 2023 10:12:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53966 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232119AbjHBOLe (ORCPT
+        with ESMTP id S232119AbjHBOMr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Aug 2023 10:11:34 -0400
-Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C544C2708
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Aug 2023 07:11:31 -0700 (PDT)
-Received: by mail-wr1-x430.google.com with SMTP id ffacd0b85a97d-3177163aa97so6967413f8f.0
-        for <linux-kernel@vger.kernel.org>; Wed, 02 Aug 2023 07:11:31 -0700 (PDT)
+        Wed, 2 Aug 2023 10:12:47 -0400
+Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B21910E
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Aug 2023 07:12:46 -0700 (PDT)
+Received: by mail-ej1-x62c.google.com with SMTP id a640c23a62f3a-99bed101b70so864445066b.3
+        for <linux-kernel@vger.kernel.org>; Wed, 02 Aug 2023 07:12:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1690985490; x=1691590290;
-        h=content-transfer-encoding:in-reply-to:organization:references:cc:to
-         :content-language:subject:reply-to:from:user-agent:mime-version:date
-         :message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=SVUD/O22MK9ex6QgiZ3+WUntWWQ3J8kc4lQNBHLBbPU=;
-        b=O0pl3CfNG+2nlyUt5+zfo6hxkUIwCmA0VTxeAoAucHTP2J3GXCg1P/ihndRx2gZ1I4
-         0t1+kPq9wQCvjz8ovRbBlbKlQwVL6EZg7iHAAyFUZ3WHclipajFdd87iZ8Vjjz/ygVRQ
-         rWHMIgDWEKEZc+nK0spkAOFVW8mN7o3dPyajSNEcGbZcve+qEJNuTbJ2TddbaiHi2J/C
-         EpxmIZKdd6hrUpaH5JR5F3pfc6P+vE3OA7K39Ynn52i6RoSMpdc0BHai/1MAkXTt/Lco
-         hcj1WzLZnaiL5wxytbt69pPeY3LyclHGlIdXaKnPhDJ4q8JLhVQIqEJGRpWj1iuf64c5
-         QmBA==
+        d=chromium.org; s=google; t=1690985563; x=1691590363;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=jk7dG2JQoSWzPUYFtbFVP5ZnJGBCto9sOcANncXe8Fg=;
+        b=bm8wpxL4eg/lCXHTflwlgjjv7qSMLc8CgW64JCNIxYcBPWHFhk8LeLNiMmL2jzL9SM
+         P4MbDYukFCh+p2NfuK4xtDd4GpB1XJ0GB0MhPsIC13QXT2Np2OpV9bhgIk+LUPMtzGaW
+         47HmAashp6dCdElFYvKxmW0wtLzQ9Rgnghrag=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690985490; x=1691590290;
-        h=content-transfer-encoding:in-reply-to:organization:references:cc:to
-         :content-language:subject:reply-to:from:user-agent:mime-version:date
-         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=SVUD/O22MK9ex6QgiZ3+WUntWWQ3J8kc4lQNBHLBbPU=;
-        b=Dt/1tAD8pEXi7mi8L96sRdW9oEK1aRmeicG/0dKWVDKQ+vgMvKUGw5pW+MLOwEKHpy
-         qc/4BEVq0pVKcYC3p0RQDu5ZBpntIqyxY67jI+aQ7rCG+amdMo1u5sCfVbK8lrzs6kOt
-         9p6clFFMLby9xBSYoRKxiUnu6zcdyL8eA0bEF0rqqUoNL7rR004vicwV0YS2wCwRJGOp
-         Jt9giG9LQN62szkzNUOXLZFqLN6xNSsxwh8sM7BK5A8E6NMaJVXcUWb//vuySTJ308IK
-         dUog01nCYdOSPmgWiiNjUhliBfb8UyT2xKvefAXzasezDMslURgP8bxgVVpWy2sCVhEj
-         oevw==
-X-Gm-Message-State: ABy/qLbrrl7fieLnYJZW8PT9/6TKufKLcB6gSUSkbIgSSJF+lIqxbTb0
-        Nc2iJFhwrErG6klbx2CJnogs0A==
-X-Google-Smtp-Source: APBJJlG571gwXZIj6TT36oNDTSONPYSRs5LsCoWFMRx/QXy3Xwaf3xs7Q41gEg0SoGxykIUAzWqDbw==
-X-Received: by 2002:a5d:6a8e:0:b0:314:468d:ccab with SMTP id s14-20020a5d6a8e000000b00314468dccabmr4601407wru.45.1690985490210;
-        Wed, 02 Aug 2023 07:11:30 -0700 (PDT)
-Received: from ?IPV6:2a01:e0a:982:cbb0:c5bb:5b4:61e3:d196? ([2a01:e0a:982:cbb0:c5bb:5b4:61e3:d196])
-        by smtp.gmail.com with ESMTPSA id c7-20020a7bc847000000b003fe22da3bc5sm1772761wml.42.2023.08.02.07.11.29
+        d=1e100.net; s=20221208; t=1690985563; x=1691590363;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=jk7dG2JQoSWzPUYFtbFVP5ZnJGBCto9sOcANncXe8Fg=;
+        b=h5zgHfEXonSepydOP9icvBuWi/plVvmj46+iA2Szi28GpAooBOb22XrJN8DGLyQbeE
+         FIdXMdaxT3Bmg0ziy0nghrevX+7q45Rs3KEGR4xFBtSK3eFVOOJxt2r4evb+AXg5xvCL
+         ewjlA9ZZPR2+JBTTfbQ0Q/ZtdNU5zNAFzDstlvICp54NFWMACPsx6eKK1iVbDB++o6xN
+         sqIVOBHUHG8buXXBierZJPKXGSsgklq881G1TnCfxdxeURQznCBkninh1xGpWekGC0MI
+         t4ZeY77Kve/5JKndZsiTiDS6sXTxgnthlt1debtFOEJPntyljQdzHQVzFpNE3wZGIw9h
+         v9UA==
+X-Gm-Message-State: ABy/qLbFtIDkDJsfCnyWvDPr+XvCqSkFcSRNfdSporL+X0SYEwXZp84+
+        9y8t4yZLtHjdYaNVqHfM9+13Q0piZwwA42C+eVHg1DmG
+X-Google-Smtp-Source: APBJJlFi0hN/QCrK7U3fcplv/19MhJO6a2hRvpmYF00OAU79CQiGAPtPtP4FNhkUsr838vWcJz9IaA==
+X-Received: by 2002:a17:906:518a:b0:99b:fdbb:31f1 with SMTP id y10-20020a170906518a00b0099bfdbb31f1mr5379833ejk.16.1690985563602;
+        Wed, 02 Aug 2023 07:12:43 -0700 (PDT)
+Received: from mail-ed1-f45.google.com (mail-ed1-f45.google.com. [209.85.208.45])
+        by smtp.gmail.com with ESMTPSA id m15-20020a17090607cf00b00993159ce075sm9093337ejc.210.2023.08.02.07.12.42
+        for <linux-kernel@vger.kernel.org>
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 02 Aug 2023 07:11:29 -0700 (PDT)
-Message-ID: <079ece4b-3f36-2ff9-36ff-23fcc4c2c8e1@linaro.org>
-Date:   Wed, 2 Aug 2023 16:11:28 +0200
+        Wed, 02 Aug 2023 07:12:43 -0700 (PDT)
+Received: by mail-ed1-f45.google.com with SMTP id 4fb4d7f45d1cf-5223910acf2so13631a12.0
+        for <linux-kernel@vger.kernel.org>; Wed, 02 Aug 2023 07:12:42 -0700 (PDT)
+X-Received: by 2002:a50:d70e:0:b0:522:203b:c348 with SMTP id
+ t14-20020a50d70e000000b00522203bc348mr407273edi.5.1690985562352; Wed, 02 Aug
+ 2023 07:12:42 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-From:   Neil Armstrong <neil.armstrong@linaro.org>
-Reply-To: neil.armstrong@linaro.org
-Subject: Re: [PATCH] drm/msm/dpu: increase memtype count to 16 for sm8550
-Content-Language: en-US
-To:     Jonathan Marek <jonathan@marek.ca>, freedreno@lists.freedesktop.org
-Cc:     Rob Clark <robdclark@gmail.com>,
-        Abhinav Kumar <quic_abhinavk@quicinc.com>,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        Sean Paul <sean@poorly.run>,
-        Marijn Suijten <marijn.suijten@somainline.org>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Kuogee Hsieh <quic_khsieh@quicinc.com>,
-        Robert Foss <rfoss@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
-        <linux-arm-msm@vger.kernel.org>,
-        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
-        <dri-devel@lists.freedesktop.org>,
-        open list <linux-kernel@vger.kernel.org>
-References: <20230802134900.30435-1-jonathan@marek.ca>
-Organization: Linaro Developer Services
-In-Reply-To: <20230802134900.30435-1-jonathan@marek.ca>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+References: <20230731091754.1.I501ab68cb926ee33a7c87e063d207abf09b9943c@changeid>
+ <ZMkBY7K3Dn04YQ65@dhcp22.suse.cz> <CAD=FV=V5hx7Zy-XMB=sPYcD_h-iP5VknmEoJwvw3Akd_1wDnRw@mail.gmail.com>
+ <ZMkkNpYcaYPAMj0Z@dhcp22.suse.cz> <CAD=FV=Ujmyq-1GAvNJsrp=mj_Vg=9b6fmfMfkHq3+8ZQ5KiaRw@mail.gmail.com>
+ <ZMoFWK0uGdneJYVc@dhcp22.suse.cz>
+In-Reply-To: <ZMoFWK0uGdneJYVc@dhcp22.suse.cz>
+From:   Doug Anderson <dianders@chromium.org>
+Date:   Wed, 2 Aug 2023 07:12:29 -0700
+X-Gmail-Original-Message-ID: <CAD=FV=XQMH8sun7XCXJNjOC7tP1yt8=mt1NG3f8Xm9-x5TJFsA@mail.gmail.com>
+Message-ID: <CAD=FV=XQMH8sun7XCXJNjOC7tP1yt8=mt1NG3f8Xm9-x5TJFsA@mail.gmail.com>
+Subject: Re: [PATCH] watchdog/hardlockup: Avoid large stack frames in watchdog_hardlockup_check()
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Petr Mladek <pmladek@suse.com>,
+        kernel test robot <lkp@intel.com>,
+        Lecopzer Chen <lecopzer.chen@mediatek.com>,
+        Pingfan Liu <kernelfans@gmail.com>,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.6
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 02/08/2023 15:48, Jonathan Marek wrote:
-> sm8550 has 16 vbif clients.
-> 
-> This fixes the extra 2 clients (DMA4/DMA5) not having their memtype
-> initialized. This fixes DMA4/DMA5 planes not displaying correctly.
-> 
-> Fixes: efcd0107 ("drm/msm/dpu: add support for SM8550")
-> Signed-off-by: Jonathan Marek <jonathan@marek.ca>
-> ---
->   .../msm/disp/dpu1/catalog/dpu_9_0_sm8550.h    |  4 ++--
->   .../gpu/drm/msm/disp/dpu1/dpu_hw_catalog.c    | 20 +++++++++++++++++++
->   2 files changed, 22 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/gpu/drm/msm/disp/dpu1/catalog/dpu_9_0_sm8550.h b/drivers/gpu/drm/msm/disp/dpu1/catalog/dpu_9_0_sm8550.h
-> index f17b9a7fee85..89a2ac1e840d 100644
-> --- a/drivers/gpu/drm/msm/disp/dpu1/catalog/dpu_9_0_sm8550.h
-> +++ b/drivers/gpu/drm/msm/disp/dpu1/catalog/dpu_9_0_sm8550.h
-> @@ -245,8 +245,8 @@ const struct dpu_mdss_cfg dpu_sm8550_cfg = {
->   	.merge_3d = sm8550_merge_3d,
->   	.intf_count = ARRAY_SIZE(sm8550_intf),
->   	.intf = sm8550_intf,
-> -	.vbif_count = ARRAY_SIZE(sdm845_vbif),
-> -	.vbif = sdm845_vbif,
-> +	.vbif_count = ARRAY_SIZE(sm8550_vbif),
-> +	.vbif = sm8550_vbif,
->   	.perf = &sm8550_perf_data,
->   	.mdss_irqs = BIT(MDP_SSPP_TOP0_INTR) | \
->   		     BIT(MDP_SSPP_TOP0_INTR2) | \
-> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_catalog.c b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_catalog.c
-> index 0de507d4d7b7..8b17a4a9b438 100644
-> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_catalog.c
-> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_catalog.c
-> @@ -663,6 +663,26 @@ static const struct dpu_vbif_cfg sdm845_vbif[] = {
->   	},
->   };
->   
-> +static const struct dpu_vbif_cfg sm8550_vbif[] = {
-> +	{
-> +	.name = "vbif_rt", .id = VBIF_RT,
-> +	.base = 0, .len = 0x1040,
-> +	.features = BIT(DPU_VBIF_QOS_REMAP),
-> +	.xin_halt_timeout = 0x4000,
-> +	.qos_rp_remap_size = 0x40,
-> +	.qos_rt_tbl = {
-> +		.npriority_lvl = ARRAY_SIZE(sdm845_rt_pri_lvl),
-> +		.priority_lvl = sdm845_rt_pri_lvl,
-> +		},
-> +	.qos_nrt_tbl = {
-> +		.npriority_lvl = ARRAY_SIZE(sdm845_nrt_pri_lvl),
-> +		.priority_lvl = sdm845_nrt_pri_lvl,
-> +		},
-> +	.memtype_count = 16,
-> +	.memtype = {3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3},
-> +	},
-> +};
-> +
->   /*************************************************************
->    * PERF data config
->    *************************************************************/
+Hi,
 
-Thanks !
+On Wed, Aug 2, 2023 at 12:27=E2=80=AFAM Michal Hocko <mhocko@suse.com> wrot=
+e:
+>
+> On Tue 01-08-23 08:41:49, Doug Anderson wrote:
+> [...]
+> > Ah, I see what you mean. The one issue I have with your solution is
+> > that the ordering of the stack crawls is less ideal in the "dump all"
+> > case when cpu !=3D this_cpu. We really want to see the stack crawl of
+> > the locked up CPU first and _then_ see the stack crawls of other CPUs.
+> > With your solution the locked up CPU will be interspersed with all the
+> > others and will be harder to find in the output (you've got to match
+> > it up with the "Watchdog detected hard LOCKUP on cpu N" message).
+> > While that's probably not a huge deal, it's nicer to make the output
+> > easy to understand for someone trying to parse it...
+>
+> Is it worth to waste memory for this arguably nicer output? Identifying
+> the stack of the locked up CPU is trivial.
 
-Tested-by: Neil Armstrong <neil.armstrong@linaro.org> # on SM8550-QRD
+I guess it's debatable, but as someone who has spent time staring at
+trawling through reports generated like this, I'd say "yes", it's
+super helpful in understanding the problem to have the hung CPU first.
+Putting the memory usage in perspective:
+
+* On a kernel built with a more normal number of max CPUs, like 256,
+this is only a use of 32 bytes of memory. That's 8 CPU instructions
+worth of memory.
+
+* Even on a system with the largest number of max CPUs we currently
+allow (8192), this is only a use of 1024 bytes of memory. Sure, that's
+a big chunk, but this is also something on our largest systems.
+
+In any case, how about this. We only need the memory allocated if
+`sysctl_hardlockup_all_cpu_backtrace` is non-zero. I can hook in
+whenever that's changed (should be just at bootup) and then kmalloc
+memory then. This really limits the extra memory to just cases when
+it's useful. Presumably on systems that are designed to run massively
+SMP they wouldn't want to turn this knob on anyway since it would spew
+far too much data. If you took a kernel compiled for max SMP, ran it
+on a machine with only a few cores, and wanted this feature turned on
+then at most you'd be chewing up 1K. In the average case this would
+chew up some extra memory (extra CPU instructions to implement the
+function take code space, extra overhead around kmalloc) but it would
+avoid the 1K chunk in most cases.
+
+Does that sound reasonable?
+
+I guess my last alternative would be to keep the special case of
+tracing the hung CPU first (this is the most important part IMO) and
+then accept the double trace, AKA:
+
+/* Try to avoid re-dumping the stack on the hung CPU if possible */
+if (cpu =3D=3D this_cpu))
+  trigger_allbutself_cpu_backtrace();
+else
+  trigger_all_cpu_backtrace();
+
+-Doug
