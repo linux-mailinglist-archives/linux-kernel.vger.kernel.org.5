@@ -2,46 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CE36176CBA6
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 13:20:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C543B76CBA0
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 13:20:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234204AbjHBLUh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Aug 2023 07:20:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49262 "EHLO
+        id S234135AbjHBLUF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Aug 2023 07:20:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48738 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232741AbjHBLU1 (ORCPT
+        with ESMTP id S234121AbjHBLUD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Aug 2023 07:20:27 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id A48F426BD;
-        Wed,  2 Aug 2023 04:20:23 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 9C0DE113E;
-        Wed,  2 Aug 2023 04:21:06 -0700 (PDT)
-Received: from [10.57.77.90] (unknown [10.57.77.90])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 745BE3F6C4;
-        Wed,  2 Aug 2023 04:20:21 -0700 (PDT)
-Message-ID: <20419779-b5f5-7240-3f90-fe5c4b590e4d@arm.com>
-Date:   Wed, 2 Aug 2023 12:20:19 +0100
+        Wed, 2 Aug 2023 07:20:03 -0400
+Received: from out30-97.freemail.mail.aliyun.com (out30-97.freemail.mail.aliyun.com [115.124.30.97])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E45E2139
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Aug 2023 04:20:01 -0700 (PDT)
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R171e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045168;MF=baolin.wang@linux.alibaba.com;NM=1;PH=DS;RN=6;SR=0;TI=SMTPD_---0VouwrhT_1690975197;
+Received: from 30.97.48.77(mailfrom:baolin.wang@linux.alibaba.com fp:SMTPD_---0VouwrhT_1690975197)
+          by smtp.aliyun-inc.com;
+          Wed, 02 Aug 2023 19:19:58 +0800
+Message-ID: <026aaebd-ceb3-0659-8f54-2ec3cd81b5df@linux.alibaba.com>
+Date:   Wed, 2 Aug 2023 19:20:24 +0800
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.13.0
-Subject: Re: [PATCH 0/2] don't use mapcount() to check large folio sharing
-To:     David Hildenbrand <david@redhat.com>,
-        Yin Fengwei <fengwei.yin@intel.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        akpm@linux-foundation.org, willy@infradead.org,
-        vishal.moola@gmail.com, wangkefeng.wang@huawei.com,
-        minchan@kernel.org, yuzhao@google.com, shy828301@gmail.com
-References: <20230728161356.1784568-1-fengwei.yin@intel.com>
- <3bbfde16-ced1-dca8-6a3f-da893e045bc5@arm.com>
- <31093c49-5baa-caed-9871-9503cb89454b@redhat.com>
-From:   Ryan Roberts <ryan.roberts@arm.com>
-In-Reply-To: <31093c49-5baa-caed-9871-9503cb89454b@redhat.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH v2 2/8] mm/compaction: correct last_migrated_pfn update in
+ compact_zone
+To:     Kemeng Shi <shikemeng@huaweicloud.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, akpm@linux-foundation.org,
+        mgorman@techsingularity.net, david@redhat.com
+References: <20230802093741.2333325-1-shikemeng@huaweicloud.com>
+ <20230802093741.2333325-3-shikemeng@huaweicloud.com>
+From:   Baolin Wang <baolin.wang@linux.alibaba.com>
+In-Reply-To: <20230802093741.2333325-3-shikemeng@huaweicloud.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-10.0 required=5.0 tests=BAYES_00,
+        ENV_AND_HDR_SPF_MATCH,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -49,87 +45,52 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 02/08/2023 11:48, David Hildenbrand wrote:
-> On 02.08.23 12:27, Ryan Roberts wrote:
->> On 28/07/2023 17:13, Yin Fengwei wrote:
->>> In madvise_cold_or_pageout_pte_range() and madvise_free_pte_range(),
->>> folio_mapcount() is used to check whether the folio is shared. But it's
->>> not correct as folio_mapcount() returns total mapcount of large folio.
->>>
->>> Use folio_estimated_sharers() here as the estimated number is enough.
->>>
->>> Yin Fengwei (2):
->>>    madvise: don't use mapcount() against large folio for sharing check
->>>    madvise: don't use mapcount() against large folio for sharing check
->>>
->>>   mm/huge_memory.c | 2 +-
->>>   mm/madvise.c     | 6 +++---
->>>   2 files changed, 4 insertions(+), 4 deletions(-)
->>>
->>
->> As a set of fixes, I agree this is definitely an improvement, so:
->>
->> Reviewed-By: Ryan Roberts
->>
->>
->> But I have a couple of comments around further improvements;
->>
->> Once we have the scheme that David is working on to be able to provide precise
->> exclusive vs shared info, we will probably want to move to that. Although that
->> scheme will need access to the mm_struct of a process known to be mapping the
-> 
-> There are probably ways to work around lack of mm_struct, but it would not be
-> completely for free. But passing the mm_struct should probably be an easy
-> refactoring.
-> 
->> folio. We have that info, but its not passed to folio_estimated_sharers() so we
->> can't just reimplement folio_estimated_sharers() - we will need to rework these
->> call sites again.
-> 
-> We should probably just have a
-> 
-> folio_maybe_mapped_shared()
-> 
-> with proper documentation. Nobody should care about the exact number.
-> 
-> 
-> If my scheme for anon pages makes it in, that would be precise for anon pages
-> and we could document that. Once we can handle pagecache pages as well to get a
-> precise answer, we could change to folio_mapped_shared() and adjust the
-> documentation.
 
-Makes sense to me. I'm assuming your change would allow us to get rid of
-PG_anon_exclusive too? In which case we would also want a precise API
-specifically for anon folios for the CoW case, without waiting for pagecache
-page support.
 
+On 8/2/2023 5:37 PM, Kemeng Shi wrote:
+> We record start pfn of last isolated page block with last_migrated_pfn. And
+> then:
+> 1. We check if we mark the page block skip for exclusive access in
+> isolate_migratepages_block by test if next migrate pfn is still in last
+> isolated page block. If so, we will set finish_pageblock to do the rescan.
+> 2. We check if a full cc->order block is scanned by test if last scan range
+> passes the cc->order block boundary. If so, we flush the pages were freed.
 > 
+> We treat cc->migrate_pfn before isolate_migratepages as the start pfn of
+> last isolated page range. However, we always align migrate_pfn to page block
+> or move to another page block in fast_find_migrateblock or in linearly scan
+> forward in isolate_migratepages before do page isolation in
+> isolate_migratepages_block.
 > 
-> I just saw
+> Update last_migrated_pfn with pageblock_start_pfn(cc->migrate_pfn - 1)
+> after scan to correctly set start pfn of last isolated page range. To
+> avoid that:
+> 1. Miss a rescan with finish_pageblock set as last_migrate_pfn does not
+> point to right pageblock and the migrate will not be in pageblock of
+> last_migrate_pfn as it should be.
+> 2. Wrongly issue flush by test cc->order block boundary with wrong
+> last_migrate_pfn.
 > 
-> https://lkml.kernel.org/r/20230802095346.87449-1-wangkefeng.wang@huawei.com
-> 
-> that converts a lot of code to folio_estimated_sharers().
-> 
-> 
-> That patchset, for example, also does
-> 
-> total_mapcount(page) > 1 -> folio_estimated_sharers(folio) > 1
-> 
-> I'm not 100% sure what to think about that at this point. We eventually add
-> false negatives (actually shared but we fail to detect it) all over the place,
-> instead of having false positives (actually exclusive, but we fail to detect it).
-> 
-> And that patch set doesn't even spell that out.
-> 
-> 
-> Maybe it's as good as we will get, especially if my scheme doesn't make it in.
+> Signed-off-by: Kemeng Shi <shikemeng@huaweicloud.com>
 
-I've been working on the assumption that your scheme is plan A, and I'm waiting
-for it to unblock forward progress on large anon folios. Is this the right
-approach, or do you think your scheme is sufficiently riskly and/or far out that
-I should aim not to depend on it?
+LGTM.
+Reviewed-by: Baolin Wang <baolin.wang@linux.alibaba.com>
 
-> But we should definitely spell that out.
+> ---
+>   mm/compaction.c | 3 ++-
+>   1 file changed, 2 insertions(+), 1 deletion(-)
 > 
-
+> diff --git a/mm/compaction.c b/mm/compaction.c
+> index a8cea916df9d..ec3a96b7afce 100644
+> --- a/mm/compaction.c
+> +++ b/mm/compaction.c
+> @@ -2487,7 +2487,8 @@ compact_zone(struct compact_control *cc, struct capture_control *capc)
+>   			goto check_drain;
+>   		case ISOLATE_SUCCESS:
+>   			update_cached = false;
+> -			last_migrated_pfn = iteration_start_pfn;
+> +			last_migrated_pfn = max(cc->zone->zone_start_pfn,
+> +				pageblock_start_pfn(cc->migrate_pfn - 1));
+>   		}
+>   
+>   		err = migrate_pages(&cc->migratepages, compaction_alloc,
