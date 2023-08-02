@@ -2,49 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9FD5676CA45
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 12:02:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 98FBF76CA49
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 12:03:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232801AbjHBKCT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Aug 2023 06:02:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57084 "EHLO
+        id S233658AbjHBKDU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Aug 2023 06:03:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57054 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234312AbjHBKBp (ORCPT
+        with ESMTP id S231428AbjHBKCa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Aug 2023 06:01:45 -0400
+        Wed, 2 Aug 2023 06:02:30 -0400
 Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73E822690;
-        Wed,  2 Aug 2023 03:00:31 -0700 (PDT)
-Received: from pps.filterd (m0279863.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3726F5F8029956;
-        Wed, 2 Aug 2023 09:59:42 GMT
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 892E93AAC;
+        Wed,  2 Aug 2023 03:01:01 -0700 (PDT)
+Received: from pps.filterd (m0279862.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3726jYuX004604;
+        Wed, 2 Aug 2023 09:59:49 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
  subject : date : message-id : in-reply-to : references; s=qcppdkim1;
- bh=JTpvksgXGepv28ipffk/2mL8YqAd5UAVZeB47rmL7Tc=;
- b=PKeCO+UeWrUdKHGvn0Bo6pCIDsMhJ1ITVq32bEPSF6yZuLF9DApOXvMxT7w1MAKRIy9m
- e7IBLdHSXJBo1MhgBkGNWwblkWopqQt8QjY21XwewuLWs5OhDZLK1MnBGV2iaic3eNfm
- 2pYtv3ieICCvV8oN4o1P891xZr4ZR8SGmXKv/CUzz2Uyd90O35917Z8NqEi6yt43tEYh
- wCUTjYNFrFN+kItDYWxPevnd/a84EzLMFUrK71nJ4i1mn2AeAdY/yVizbRzdVkj3bGhx
- 8fqzBymIK71C4+3hNzBPC2HblU3sjrdWGWKlHvBhL4T9RFXZ1cEu1OKlTuzArTGL3cWy XA== 
+ bh=wQJQ/tb9UCRNyZBv0BvQaRt7PgRXnIhgp4osgfxsC0s=;
+ b=jayf2L6mzbgZ24SkPGKb5ZRWOg35UgdujePlzBvb4YXC8pk5YlAmuTSByMwX94cnVwh5
+ Y9QvFmXwyylQ8I4+7kfaflCaU5VhbfXmxnd+ePx62rjZfdxiEJTeAgKIAJR9ABRUC/Jx
+ GeWWkpwJ5P/IXq05IU5N7lKxP0yyJdzsCvN5q9ztCru2vTRLROuq3dXWlmlXRlndGXQ+
+ 0kXfV1HRgGAfTBUIIvIvwdbByhzuqS06tXrBhsOTdZxCCKl1M/RSJ7TTMad+Rb9OIMnO
+ KFgkAOXw9KI2cIR0reEChOaJS8NR9wKEYRbTvQz66MxrF2EPaSOUIyjY4OHGyQ8ilpue 5Q== 
 Received: from apblrppmta02.qualcomm.com (blr-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.18.19])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3s6rhaut0b-1
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3s6yq4aw4f-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 02 Aug 2023 09:59:41 +0000
+        Wed, 02 Aug 2023 09:59:49 +0000
 Received: from pps.filterd (APBLRPPMTA02.qualcomm.com [127.0.0.1])
-        by APBLRPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTP id 3729xTS6006668;
-        Wed, 2 Aug 2023 09:59:30 GMT
+        by APBLRPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTP id 3729xVpm006702;
+        Wed, 2 Aug 2023 09:59:31 GMT
 Received: from pps.reinject (localhost [127.0.0.1])
-        by APBLRPPMTA02.qualcomm.com (PPS) with ESMTPS id 3s4uuke10u-1
+        by APBLRPPMTA02.qualcomm.com (PPS) with ESMTPS id 3s4uuke110-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NO);
-        Wed, 02 Aug 2023 09:59:30 +0000
+        Wed, 02 Aug 2023 09:59:31 +0000
 Received: from APBLRPPMTA02.qualcomm.com (APBLRPPMTA02.qualcomm.com [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 3729xTYH006628;
-        Wed, 2 Aug 2023 09:59:30 GMT
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 3729xTPF006619;
+        Wed, 2 Aug 2023 09:59:31 GMT
 Received: from hu-sgudaval-hyd.qualcomm.com (hu-rohiagar-hyd.qualcomm.com [10.213.106.138])
-        by APBLRPPMTA02.qualcomm.com (PPS) with ESMTP id 3729xTUs006622;
+        by APBLRPPMTA02.qualcomm.com (PPS) with ESMTP id 3729xSf8006611;
         Wed, 02 Aug 2023 09:59:30 +0000
 Received: by hu-sgudaval-hyd.qualcomm.com (Postfix, from userid 3970568)
-        id 68C331A80; Wed,  2 Aug 2023 15:29:29 +0530 (+0530)
+        id 3024E1AE6; Wed,  2 Aug 2023 15:29:30 +0530 (+0530)
 From:   Rohit Agarwal <quic_rohiagar@quicinc.com>
 To:     agross@kernel.org, andersson@kernel.org, konrad.dybcio@linaro.org,
         robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
@@ -52,9 +52,9 @@ To:     agross@kernel.org, andersson@kernel.org, konrad.dybcio@linaro.org,
 Cc:     linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
         linux-kernel@vger.kernel.org,
         Rohit Agarwal <quic_rohiagar@quicinc.com>
-Subject: [PATCH 7/8] arm64: dts: qcom: sdx75: Add rpmhpd node
-Date:   Wed,  2 Aug 2023 15:29:25 +0530
-Message-Id: <1690970366-30982-8-git-send-email-quic_rohiagar@quicinc.com>
+Subject: [PATCH 8/8] arm64: dts: qcom: sdx75-idp: Add regulator nodes
+Date:   Wed,  2 Aug 2023 15:29:26 +0530
+Message-Id: <1690970366-30982-9-git-send-email-quic_rohiagar@quicinc.com>
 X-Mailer: git-send-email 2.7.4
 In-Reply-To: <1690970366-30982-1-git-send-email-quic_rohiagar@quicinc.com>
 References: <1690970366-30982-1-git-send-email-quic_rohiagar@quicinc.com>
@@ -62,16 +62,16 @@ X-QCInternal: smtphost
 X-QCInternal: smtphost
 X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
 X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: fBa5YI8GRqyAFQLFsYAw7zlse2bEJ9-j
-X-Proofpoint-ORIG-GUID: fBa5YI8GRqyAFQLFsYAw7zlse2bEJ9-j
+X-Proofpoint-ORIG-GUID: VZv_i6U6XylxPjuNQnGRftb6BXU6kupW
+X-Proofpoint-GUID: VZv_i6U6XylxPjuNQnGRftb6BXU6kupW
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
  definitions=2023-08-02_05,2023-08-01_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 malwarescore=0
- priorityscore=1501 adultscore=0 clxscore=1015 impostorscore=0 spamscore=0
- bulkscore=0 phishscore=0 mlxlogscore=539 lowpriorityscore=0 suspectscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2306200000
- definitions=main-2308020089
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 mlxscore=0
+ malwarescore=0 bulkscore=0 priorityscore=1501 lowpriorityscore=0
+ impostorscore=0 phishscore=0 adultscore=0 suspectscore=0 mlxlogscore=714
+ clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2306200000 definitions=main-2308020089
 X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,
@@ -82,82 +82,233 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add rpmhpd node and opps for this node to the SDX75 dts.
+Add the regulators found on SDX75 IDP.
 
 Signed-off-by: Rohit Agarwal <quic_rohiagar@quicinc.com>
 ---
- arch/arm64/boot/dts/qcom/sdx75.dtsi | 51 +++++++++++++++++++++++++++++++++++++
- 1 file changed, 51 insertions(+)
+ arch/arm64/boot/dts/qcom/sdx75-idp.dts | 202 +++++++++++++++++++++++++++++++++
+ 1 file changed, 202 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/qcom/sdx75.dtsi b/arch/arm64/boot/dts/qcom/sdx75.dtsi
-index 5e9602cd..3a1d37a 100644
---- a/arch/arm64/boot/dts/qcom/sdx75.dtsi
-+++ b/arch/arm64/boot/dts/qcom/sdx75.dtsi
-@@ -9,6 +9,7 @@
- #include <dt-bindings/clock/qcom,rpmh.h>
- #include <dt-bindings/clock/qcom,sdx75-gcc.h>
- #include <dt-bindings/interrupt-controller/arm-gic.h>
-+#include <dt-bindings/power/qcom,rpmhpd.h>
- #include <dt-bindings/soc/qcom,rpmh-rsc.h>
+diff --git a/arch/arm64/boot/dts/qcom/sdx75-idp.dts b/arch/arm64/boot/dts/qcom/sdx75-idp.dts
+index 94a9218..7cb4fea 100644
+--- a/arch/arm64/boot/dts/qcom/sdx75-idp.dts
++++ b/arch/arm64/boot/dts/qcom/sdx75-idp.dts
+@@ -5,6 +5,7 @@
  
- / {
-@@ -666,6 +667,56 @@
- 				clock-names = "xo";
- 				#clock-cells = <1>;
- 			};
-+
-+			rpmhpd: power-controller {
-+				compatible = "qcom,sdx75-rpmhpd";
-+				#power-domain-cells = <1>;
-+				operating-points-v2 = <&rpmhpd_opp_table>;
-+
-+				rpmhpd_opp_table: opp-table {
-+					compatible = "operating-points-v2";
-+
-+					rpmhpd_opp_ret: opp1 {
-+						opp-level = <RPMH_REGULATOR_LEVEL_RETENTION>;
-+					};
-+
-+					rpmhpd_opp_min_svs: opp2 {
-+						opp-level = <RPMH_REGULATOR_LEVEL_MIN_SVS>;
-+					};
-+
-+					rpmhpd_opp_low_svs: opp3 {
-+						opp-level = <RPMH_REGULATOR_LEVEL_LOW_SVS>;
-+					};
-+
-+					rpmhpd_opp_svs: opp4 {
-+						opp-level = <RPMH_REGULATOR_LEVEL_SVS>;
-+					};
-+
-+					rpmhpd_opp_svs_l1: opp5 {
-+						opp-level = <RPMH_REGULATOR_LEVEL_SVS_L1>;
-+					};
-+
-+					rpmhpd_opp_nom: opp6 {
-+						opp-level = <RPMH_REGULATOR_LEVEL_NOM>;
-+					};
-+
-+					rpmhpd_opp_nom_l1: opp7 {
-+						opp-level = <RPMH_REGULATOR_LEVEL_NOM_L1>;
-+					};
-+
-+					rpmhpd_opp_nom_l2: opp8 {
-+						opp-level = <RPMH_REGULATOR_LEVEL_NOM_L2>;
-+					};
-+
-+					rpmhpd_opp_turbo: opp9 {
-+						opp-level = <RPMH_REGULATOR_LEVEL_TURBO>;
-+					};
-+
-+					rpmhpd_opp_turbo_l1: opp10 {
-+						opp-level = <RPMH_REGULATOR_LEVEL_TURBO_L1>;
-+					};
-+				};
-+			};
- 		};
+ /dts-v1/;
  
- 		cpufreq_hw: cpufreq@17d91000 {
++#include <dt-bindings/regulator/qcom,rpmh-regulator.h>
+ #include "sdx75.dtsi"
+ #include "pmk8550.dtsi"
+ #include "pmx75.dtsi"
+@@ -17,6 +18,207 @@
+ 	aliases {
+ 		serial0 = &uart1;
+ 	};
++
++	vph_pwr: vph-pwr-regulator {
++		compatible = "regulator-fixed";
++		regulator-name = "vph_pwr";
++		regulator-min-microvolt = <3700000>;
++		regulator-max-microvolt = <3700000>;
++	};
++
++	vph_ext: vph-ext-regulator {
++		compatible = "regulator-fixed";
++		regulator-name = "vph_ext";
++		regulator-min-microvolt = <3700000>;
++		regulator-max-microvolt = <3700000>;
++	};
++
++	vreg_bob_3p3: pmx75-bob {
++		compatible = "regulator-fixed";
++		regulator-name = "vreg_bob_3p3";
++		regulator-min-microvolt = <3300000>;
++		regulator-max-microvolt = <3300000>;
++
++		vin-supply = <&vph_ext>;
++	};
++};
++
++&apps_rsc {
++	pmx75-rpmh-regulators {
++		compatible = "qcom,pmx75-rpmh-regulators";
++		qcom,pmic-id = "b";
++
++		vdd-s1-supply = <&vph_pwr>;
++		vdd-s2-supply = <&vph_pwr>;
++		vdd-s3-supply = <&vph_pwr>;
++		vdd-s4-supply = <&vph_pwr>;
++		vdd-s5-supply = <&vph_pwr>;
++		vdd-s6-supply = <&vph_pwr>;
++		vdd-s7-supply = <&vph_pwr>;
++		vdd-s8-supply = <&vph_pwr>;
++		vdd-s9-supply = <&vph_pwr>;
++		vdd-s10-supply = <&vph_pwr>;
++		vdd-l1-supply = <&vreg_s2b_1p224>;
++		vdd-l2-l18-supply = <&vreg_s2b_1p224>;
++		vdd-l3-supply = <&vreg_s7b_0p936>;
++		vdd-l4-l16-supply = <&vreg_s7b_0p936>;
++		vdd-l5-l6-supply = <&vreg_s4b_1p824>;
++		vdd-l7-supply = <&vreg_s7b_0p936>;
++		vdd-l8-l9-supply = <&vreg_s8b_0p824>;
++		vdd-l10-supply = <&vreg_bob_3p3>;
++		vdd-l11-l13-supply = <&vreg_bob_3p3>;
++		vdd-l12-supply = <&vreg_s2b_1p224>;
++		vdd-l14-supply = <&vreg_s3b_0p752>;
++		vdd-l15-supply = <&vreg_s2b_1p224>;
++		vdd-l17-supply = <&vreg_s8b_0p824>;
++		vdd-l19-supply = <&vreg_s7b_0p936>;
++		vdd-l20-l21-supply = <&vreg_s7b_0p936>;
++
++		vreg_s2b_1p224: smps2 {
++			regulator-min-microvolt = <1224000>;
++			regulator-max-microvolt = <1350000>;
++		};
++
++		vreg_s3b_0p752: smps3 {
++			regulator-min-microvolt = <684000>;
++			regulator-max-microvolt = <904000>;
++		};
++
++		vreg_s4b_1p824: smps4 {
++			regulator-min-microvolt = <1824000>;
++			regulator-max-microvolt = <1904000>;
++		};
++
++		vreg_s7b_0p936: smps7 {
++			regulator-min-microvolt = <352000>;
++			regulator-max-microvolt = <1060000>;
++		};
++
++		vreg_s8b_0p824: smps8 {
++			regulator-min-microvolt = <500000>;
++			regulator-max-microvolt = <1100000>;
++		};
++
++		ldo1 {
++			regulator-min-microvolt = <1200000>;
++			regulator-max-microvolt = <1200000>;
++			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
++		};
++
++		ldo2 {
++			regulator-min-microvolt = <1000000>;
++			regulator-max-microvolt = <1160000>;
++			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
++		};
++
++		ldo3 {
++			regulator-min-microvolt = <300000>;
++			regulator-max-microvolt = <1040000>;
++			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
++		};
++
++		ldo4 {
++			regulator-min-microvolt = <864000>;
++			regulator-max-microvolt = <912000>;
++			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
++		};
++
++		ldo5 {
++			regulator-min-microvolt = <1770000>;
++			regulator-max-microvolt = <1800000>;
++			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
++		};
++
++		ldo6 {
++			regulator-min-microvolt = <1800000>;
++			regulator-max-microvolt = <1800000>;
++			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
++		};
++
++		ldo7 {
++			regulator-min-microvolt = <300000>;
++			regulator-max-microvolt = <960000>;
++			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
++		};
++
++		ldo8 {
++			regulator-min-microvolt = <800000>;
++			regulator-max-microvolt = <800000>;
++			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
++		};
++
++		ldo9 {
++			regulator-min-microvolt = <752000>;
++			regulator-max-microvolt = <800000>;
++			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
++		};
++
++		ldo10 {
++			regulator-min-microvolt = <3008000>;
++			regulator-max-microvolt = <3088000>;
++			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
++		};
++
++		ldo11 {
++			regulator-min-microvolt = <1704000>;
++			regulator-max-microvolt = <2928000>;
++			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
++		};
++
++		ldo12 {
++			regulator-min-microvolt = <1200000>;
++			regulator-max-microvolt = <1200000>;
++			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
++		};
++
++		ldo13 {
++			regulator-min-microvolt = <1704000>;
++			regulator-max-microvolt = <2928000>;
++			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
++		};
++
++		ldo14 {
++			regulator-min-microvolt = <300000>;
++			regulator-max-microvolt = <800000>;
++			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
++		};
++
++		ldo15 {
++			regulator-min-microvolt = <1200000>;
++			regulator-max-microvolt = <1200000>;
++			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
++		};
++
++		ldo16 {
++			regulator-min-microvolt = <880000>;
++			regulator-max-microvolt = <920000>;
++			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
++		};
++
++		ldo17 {
++			regulator-min-microvolt = <684000>;
++			regulator-max-microvolt = <957600>;
++			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
++		};
++
++		ldo19 {
++			regulator-min-microvolt = <900000>;
++			regulator-max-microvolt = <960000>;
++			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
++		};
++
++		ldo20 {
++			regulator-min-microvolt = <912000>;
++			regulator-max-microvolt = <952000>;
++			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
++		};
++
++		ldo21 {
++			regulator-min-microvolt = <300000>;
++			regulator-max-microvolt = <1000000>;
++			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
++		};
++	};
+ };
+ 
+ &chosen {
 -- 
 2.7.4
 
