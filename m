@@ -2,144 +2,214 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AA6DA76CC22
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 13:56:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6BA0776CC23
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 13:56:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234282AbjHBL4X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Aug 2023 07:56:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38640 "EHLO
+        id S234396AbjHBL4s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Aug 2023 07:56:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39012 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232126AbjHBL4V (ORCPT
+        with ESMTP id S234351AbjHBL4q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Aug 2023 07:56:21 -0400
-Received: from ustc.edu.cn (email.ustc.edu.cn [IPv6:2001:da8:d800::8])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id E472E26B0;
-        Wed,  2 Aug 2023 04:56:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=mail.ustc.edu.cn; s=dkim; h=Received:Date:From:To:Cc:Subject:
-        Message-ID:Reply-To:References:MIME-Version:Content-Type:
-        Content-Disposition:In-Reply-To; bh=msXnw5IG4jvKLMzQa2hmaHiEHyhn
-        q8MqCAoMVYtLez8=; b=vD/7w/cwOmZ3edXHeLLoku0r7UxarQs0TgHNr6vfjbOb
-        MavwZ+Xh04TxWTDwF9JLFH50mTDtrRMhgAI+0rf7TNlNIbDXDp2zhA4x2O/J5gEc
-        1VnpGNphY7VhaKAHy3tYxIzFKvWljEyWpPvjnWhWS9tOQOAYB0FJWxmvXa0Sbvo=
-Received: from localhost (unknown [139.224.204.105])
-        by newmailweb.ustc.edu.cn (Coremail) with SMTP id LkAmygBn1BxRRMpkBIUTAA--.3970S2;
-        Wed, 02 Aug 2023 19:56:01 +0800 (CST)
-Date:   Wed, 2 Aug 2023 19:56:01 +0800
-From:   Wu Zongyo <wuzongyo@mail.ustc.edu.cn>
-To:     Tom Lendacky <thomas.lendacky@amd.com>,
-        Sean Christopherson <seanjc@google.com>
-Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org, x86@kernel.org,
-        linux-coco@lists.linux.dev
-Subject: Re: [Question] int3 instruction generates a #UD in SEV VM
-Message-ID: <ZMpEUVsv5hSmrcH8@iZuf6hx7901barev1c282cZ>
-Reply-To: Wu Zongyo <wuzongyo@mail.ustc.edu.cn>
-References: <8eb933fd-2cf3-d7a9-32fe-2a1d82eac42a@mail.ustc.edu.cn>
- <ZMfFaF2M6Vrh/QdW@google.com>
- <4ebb3e20-a043-8ad3-ef6c-f64c2443412c@amd.com>
- <544b7f95-4b34-654d-a57b-3791a6f4fd5f@mail.ustc.edu.cn>
+        Wed, 2 Aug 2023 07:56:46 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC65E273A
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Aug 2023 04:56:40 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 854B21F74D;
+        Wed,  2 Aug 2023 11:56:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1690977399; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=XMK9R+QQseObqkUFXRQpHJRWnpwg0vdKiMgN6PaIokk=;
+        b=TuShkOPcLwrF2uabKtMNgirjCXYDHIfm7NjFI2GbFYBRqvNX+Kd7BTHr5N2boo9nvEcqHp
+        l0x/S7N5BAo0evgG/SyXXXK+PeCWAhdq1oaICIpZKa5rCKOlxkeJjaTd7jYVi+01s1mYoL
+        uSr6TNInxigzPApgbfZ+6Oor/AOrgqI=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 36AD413909;
+        Wed,  2 Aug 2023 11:56:39 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id 7wYCDHdEymQKOQAAMHmgww
+        (envelope-from <jgross@suse.com>); Wed, 02 Aug 2023 11:56:39 +0000
+Message-ID: <2529ef0a-efad-d36c-42b1-478f0869326c@suse.com>
+Date:   Wed, 2 Aug 2023 13:56:38 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <544b7f95-4b34-654d-a57b-3791a6f4fd5f@mail.ustc.edu.cn>
-X-CM-TRANSID: LkAmygBn1BxRRMpkBIUTAA--.3970S2
-X-Coremail-Antispam: 1UD129KBjvJXoWxXr1xGw1kKFyfXw17Xr4Dtwb_yoW5Xry8pF
-        WxK3ZIkrs7Jrn3Zr4Dta1UAryFya9xGr47Xr18J3s8A3s0v3Za9ryIkrZ0k3ZrCrWfWw10
-        v3y0qF9F9a4DArDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUyYb7Iv0xC_Zr1lb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I2
-        0VC2zVCF04k26cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rw
-        A2F7IY1VAKz4vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xII
-        jxv20xvEc7CjxVAFwI0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4
-        A2jsIEc7CjxVAFwI0_GcCE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IE
-        w4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMc
-        vjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvEwIxGrwCF04k20xvY0x0EwIxGrwCFx2IqxVCF
-        s4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r
-        1rMI8E67AF67kF1VAFwI0_JF0_Jw1lIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWU
-        JVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Jr0_Gr1lIxAIcVCF04k26cxKx2IYs7xG6r
-        W3Jr0E3s1lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVWUJVW8
-        JbIYCTnIWIevJa73UjIFyTuYvjxUc_-PUUUUU
-X-CM-SenderInfo: pzx200xj1rqzxdloh3xvwfhvlgxou0/
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.12.0
+Subject: Re: [patch V3 00/40] x86/cpu: Rework the topology evaluation
+Content-Language: en-US
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        LKML <linux-kernel@vger.kernel.org>
+Cc:     x86@kernel.org, Tom Lendacky <thomas.lendacky@amd.com>,
+        Andrew Cooper <andrew.cooper3@citrix.com>,
+        Arjan van de Ven <arjan@linux.intel.com>,
+        Huang Rui <ray.huang@amd.com>,
+        Dimitri Sivanich <dimitri.sivanich@hpe.com>,
+        Michael Kelley <mikelley@microsoft.com>,
+        Wei Liu <wei.liu@kernel.org>
+References: <20230802101635.459108805@linutronix.de>
+From:   Juergen Gross <jgross@suse.com>
+In-Reply-To: <20230802101635.459108805@linutronix.de>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="------------bdMmOvZbS0X2bt8wUYPQynHw"
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 31, 2023 at 11:45:29PM +0800, wuzongyong wrote:
-> 
-> On 2023/7/31 23:03, Tom Lendacky wrote:
-> > On 7/31/23 09:30, Sean Christopherson wrote:
-> >> On Sat, Jul 29, 2023, wuzongyong wrote:
-> >>> Hi,
-> >>> I am writing a firmware in Rust to support SEV based on project td-shim[1].
-> >>> But when I create a SEV VM (just SEV, no SEV-ES and no SEV-SNP) with the firmware,
-> >>> the linux kernel crashed because the int3 instruction in int3_selftest() cause a
-> >>> #UD.
-> >>
-> >> ...
-> >>
-> >>> BTW, if a create a normal VM without SEV by qemu & OVMF, the int3 instruction always generates a
-> >>> #BP.
-> >>> So I am confused now about the behaviour of int3 instruction, could anyone help to explain the behaviour?
-> >>> Any suggestion is appreciated!
-> >>
-> >> Have you tried my suggestions from the other thread[*]?
-> Firstly, I'm sorry for sending muliple mails with the same content. I thought the mails I sent previously 
-> didn't be sent successfully.
-> And let's talk the problem here.
-> >>
-> >>    : > > I'm curious how this happend. I cannot find any condition that would
-> >>    : > > cause the int3 instruction generate a #UD according to the AMD's spec.
-> >>    :
-> >>    : One possibility is that the value from memory that gets executed diverges from the
-> >>    : value that is read out be the #UD handler, e.g. due to patching (doesn't seem to
-> >>    : be the case in this test), stale cache/tlb entries, etc.
-> >>    :
-> >>    : > > BTW, it worked nomarlly with qemu and ovmf.
-> >>    : >
-> >>    : > Does this happen every time you boot the guest with your firmware? What
-> >>    : > processor are you running on?
-> >>    :
-> Yes, every time.
-> The processor I used is EPYC 7T83.
-> >>    : And have you ruled out KVM as the culprit?  I.e. verified that KVM is NOT injecting
-> >>    : a #UD.  That obviously shouldn't happen, but it should be easy to check via KVM
-> >>    : tracepoints.
-> >
-> > I have a feeling that KVM is injecting the #UD, but it will take instrumenting KVM to see which path the #UD is being injected from.
-> >
-> > Wu Zongyo, can you add some instrumentation to figure that out if the trace points towards KVM injecting the #UD?
-> Ok, I will try to do that.
-You're right. The #UD is injected by KVM.
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--------------bdMmOvZbS0X2bt8wUYPQynHw
+Content-Type: multipart/mixed; boundary="------------3SsGS4jdEppOEAjEximbuPmy";
+ protected-headers="v1"
+From: Juergen Gross <jgross@suse.com>
+To: Thomas Gleixner <tglx@linutronix.de>, LKML <linux-kernel@vger.kernel.org>
+Cc: x86@kernel.org, Tom Lendacky <thomas.lendacky@amd.com>,
+ Andrew Cooper <andrew.cooper3@citrix.com>,
+ Arjan van de Ven <arjan@linux.intel.com>, Huang Rui <ray.huang@amd.com>,
+ Dimitri Sivanich <dimitri.sivanich@hpe.com>,
+ Michael Kelley <mikelley@microsoft.com>, Wei Liu <wei.liu@kernel.org>
+Message-ID: <2529ef0a-efad-d36c-42b1-478f0869326c@suse.com>
+Subject: Re: [patch V3 00/40] x86/cpu: Rework the topology evaluation
+References: <20230802101635.459108805@linutronix.de>
+In-Reply-To: <20230802101635.459108805@linutronix.de>
 
-The path I found is:
-    svm_vcpu_run
-        svm_complete_interrupts
-	    kvm_requeue_exception // vector = 3
-	        kvm_make_request
+--------------3SsGS4jdEppOEAjEximbuPmy
+Content-Type: multipart/mixed; boundary="------------ArlPww6NodM75mCSG0VERF30"
 
-    vcpu_enter_guest
-        kvm_check_and_inject_events
-	    svm_inject_exception
-	        svm_update_soft_interrupt_rip
-		    __svm_skip_emulated_instruction
-		        x86_emulate_instruction
-			    svm_can_emulate_instruction
-			        kvm_queue_exception(vcpu, UD_VECTOR)
+--------------ArlPww6NodM75mCSG0VERF30
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: base64
 
-Does this mean a #PF intercept occur when the guest try to deliver a
-#BP through the IDT? But why?
+T24gMDIuMDguMjMgMTI6MjAsIFRob21hcyBHbGVpeG5lciB3cm90ZToNCj4gSGkhDQo+IA0K
+PiBUaGlzIGlzIHRoZSBmb2xsb3cgdXAgdG8gVjI6DQo+IA0KPiAgICBodHRwczovL2xvcmUu
+a2VybmVsLm9yZy9sa21sLzIwMjMwNzI4MTA1NjUwLjU2NTc5OTc0NEBsaW51dHJvbml4LmRl
+DQo+IA0KPiB3aGljaCBhZGRyZXNzZXMgdGhlIHJldmlldyBmZWVkYmFjayBhbmQgc29tZSBm
+YWxsb3V0IHJlcG9ydGVkIG9uIGFuZA0KPiBvZmYtbGlzdC4NCj4gDQo+IFRMRFI6DQo+IA0K
+PiBUaGlzIHJld29ya3MgdGhlIHdheSBob3cgdG9wb2xvZ3kgaW5mb3JtYXRpb24gaXMgZXZh
+bHVhdGVkIHZpYSBDUFVJRA0KPiBpbiBwcmVwYXJhdGlvbiBmb3IgYSBsYXJnZXIgdG9wb2xv
+Z3kgbWFuYWdlbWVudCBvdmVyaGF1bCB0byBhZGRyZXNzDQo+IHNob3J0Y29taW5ncyBvZiB0
+aGUgY3VycmVudCBjb2RlIHZzLiBoeWJyaWQgc3lzdGVtcyBhbmQgc3lzdGVtcyB3aGljaCBt
+YWtlDQo+IHVzZSBvZiB0aGUgZXh0ZW5kZWQgdG9wb2xvZ3kgZG9tYWlucyBpbiBsZWFmIDB4
+MWYuIEFzaWRlIG9mIHRoYXQgaXQncyBhbg0KPiBvdmVyZHVlIHNwcmluZyBjbGVhbmluZyB0
+byBnZXQgcmlkIG9mIGFjY3VtdWxhdGVkIGxheWVycyBvZiBkdWN0IHRhcGUgYW5kDQo+IGhh
+eXdpcmUuDQo+IA0KPiBXaGF0IGNoYW5nZWQgdnMuIFYyOg0KPiANCj4gICAgLSBEZWNvZGVk
+IGFuZCBmaXhlZCB0aGUgZmFsbG91dCB2cy4gWEVOL1BWIHJlcG9ydGVkIGJ5IEp1ZXJnZW4u
+IFRoYW5rcyB0bw0KPiAgICAgIEp1ZXJnZW4gZm9yIHRoZSByZW1vdGUgaGFuZCBkZWJ1Z2dp
+bmcgc2Vzc2lvbnMhDQo+IA0KPiAgICAgIFRoYXQncyBhZGRyZXNzZWQgaW4gdGhlIGZpcnN0
+IHR3byBuZXcgcGF0Y2hlcyBpbiB0aGlzIHNlcmllcy4gU3VtbWFyeToNCj4gICAgICBYRU4v
+UFYgYm9vdGVkIGJ5IHB1cmUgY2hhbmNlIHNpbmNlIHRoZSBhZGRpdGlvbiBvZiBTTVQgY29u
+dHJvbCA1IHllYXJzDQo+ICAgICAgYWdvLg0KPiANCj4gICAgLSBGaXhlZCB0aGUgb2ZmIGJ5
+IG9uZSBpbiB0aGUgQU1EIHBhcnNlciB3aGljaCB3YXMgZGVidWdnZWQgYnkgTWljaGFlbA0K
+PiANCj4gICAgLSBBZGRyZXNzZWQgcmV2aWV3IGNvbW1lbnRzIGZyb20gdmFyaW91cyBwZW9w
+bGUNCj4gDQo+IEFzIGRpc2N1c3NlZCBpbjoNCj4gDQo+ICAgIGh0dHBzOi8vbG9yZS5rZXJu
+ZWwub3JnL2xrbWwvQllBUFIyMU1CMTY4ODlGRDIyNDM0NEIxQjI4QkUyMkExRDcwNUFAQllB
+UFIyMU1CMTY4OC5uYW1wcmQyMS5wcm9kLm91dGxvb2suY29tDQo+ICAgIC4uLi4NCj4gICAg
+aHR0cHM6Ly9sb3JlLmtlcm5lbC5vcmcvbGttbC84N3Iwb21qdDhjLmZmc0B0Z2x4DQo+IA0K
+PiB0aGlzIHNlcmllcyB1bmZvcnR1bmF0ZWx5IGJyaW5ncyB0aGUgSHlwZXItViBCSU9TIGlu
+Y29uc2lzdGVuY3kgaW50bw0KPiBlZmZlY3QsIHdoaWNoIHJlc3VsdHMgaW4gYSBzbGlnaHQg
+cGVyZm9ybWFuY2UgaW1wYWN0LiBUaGUgTDMgYXNzb2NpYXRpb24NCj4gd2hpY2ggIndvcmtl
+ZCIgc28gZmFyIGJ5IGV4cGxvaXRpbmcgdGhlIGluY29uc2lzdGVuY3kgb2YgdGhlIExpbnV4
+IHRvcG9sb2d5DQo+IGNvZGUgaXMgbm90IGxvbmdlciBzdXBwb3J0YWJsZSBhcyB3ZSByZWFs
+bHkgbmVlZCB0byBnZXQgdGhlIGFjdHVhbCBzaG9ydA0KPiBjb21pbmdzIG9mIG91ciB0b3Bv
+bG9neSBtYW5hZ2VtZW50IGFkZHJlc3NlZCBpbiBhIGNvbnNpc3RlbnQgd2F5Lg0KPiANCj4g
+VGhlIHNlcmllcyBpcyBiYXNlZCBvbiBWMyBvZiB0aGUgQVBJQyBjbGVhbnVwIHNlcmllczoN
+Cj4gDQo+ICAgIGh0dHBzOi8vbG9yZS5rZXJuZWwub3JnL2xrbWwvMjAyMzA4MDExMDMwNDIu
+OTM2MDIwMzMyQGxpbnV0cm9uaXguZGUNCj4gDQo+IGFuZCBhbHNvIGF2YWlsYWJsZSBvbiB0
+b3Agb2YgdGhhdCBmcm9tIGdpdDoNCj4gDQo+ICAgZ2l0Oi8vZ2l0Lmtlcm5lbC5vcmcvcHVi
+L3NjbS9saW51eC9rZXJuZWwvZ2l0L3RnbHgvZGV2ZWwuZ2l0IHRvcG8tY3B1aWQtdjMNCj4g
+DQo+IFRoYW5rcywNCj4gDQo+IAl0Z2x4DQoNCkZvciBYZW4gUFYgKGRvbTAgYW5kIHVucHJp
+dmlsZWdlZCBndWVzdCk6DQoNClRlc3RlZC1ieTogSnVlcmdlbiBHcm9zcyA8amdyb3NzQHN1
+c2UuY29tPg0KDQoNCkp1ZXJnZW4NCg0K
+--------------ArlPww6NodM75mCSG0VERF30
+Content-Type: application/pgp-keys; name="OpenPGP_0xB0DE9DD628BF132F.asc"
+Content-Disposition: attachment; filename="OpenPGP_0xB0DE9DD628BF132F.asc"
+Content-Description: OpenPGP public key
+Content-Transfer-Encoding: quoted-printable
 
-Thanks
+-----BEGIN PGP PUBLIC KEY BLOCK-----
 
-> >
-> > Thanks,
-> > Tom
-> >
-> >>
-> >> [*] https://lore.kernel.org/all/ZMFd5kkehlkIfnBA@google.com
+xsBNBFOMcBYBCACgGjqjoGvbEouQZw/ToiBg9W98AlM2QHV+iNHsEs7kxWhKMjri
+oyspZKOBycWxw3ie3j9uvg9EOB3aN4xiTv4qbnGiTr3oJhkB1gsb6ToJQZ8uxGq2
+kaV2KL9650I1SJvedYm8Of8Zd621lSmoKOwlNClALZNew72NjJLEzTalU1OdT7/i
+1TXkH09XSSI8mEQ/ouNcMvIJNwQpd369y9bfIhWUiVXEK7MlRgUG6MvIj6Y3Am/B
+BLUVbDa4+gmzDC9ezlZkTZG2t14zWPvxXP3FAp2pkW0xqG7/377qptDmrk42GlSK
+N4z76ELnLxussxc7I2hx18NUcbP8+uty4bMxABEBAAHNHEp1ZXJnZW4gR3Jvc3Mg
+PGpnQHBmdXBmLm5ldD7CwHkEEwECACMFAlOMcBYCGwMHCwkIBwMCAQYVCAIJCgsE
+FgIDAQIeAQIXgAAKCRCw3p3WKL8TL0KdB/93FcIZ3GCNwFU0u3EjNbNjmXBKDY4F
+UGNQH2lvWAUy+dnyThpwdtF/jQ6j9RwE8VP0+NXcYpGJDWlNb9/JmYqLiX2Q3Tye
+vpB0CA3dbBQp0OW0fgCetToGIQrg0MbD1C/sEOv8Mr4NAfbauXjZlvTj30H2jO0u
++6WGM6nHwbh2l5O8ZiHkH32iaSTfN7Eu5RnNVUJbvoPHZ8SlM4KWm8rG+lIkGurq
+qu5gu8q8ZMKdsdGC4bBxdQKDKHEFExLJK/nRPFmAuGlId1E3fe10v5QL+qHI3EIP
+tyfE7i9Hz6rVwi7lWKgh7pe0ZvatAudZ+JNIlBKptb64FaiIOAWDCx1SzR9KdWVy
+Z2VuIEdyb3NzIDxqZ3Jvc3NAc3VzZS5jb20+wsB5BBMBAgAjBQJTjHCvAhsDBwsJ
+CAcDAgEGFQgCCQoLBBYCAwECHgECF4AACgkQsN6d1ii/Ey/HmQf/RtI7kv5A2PS4
+RF7HoZhPVPogNVbC4YA6lW7DrWf0teC0RR3MzXfy6pJ+7KLgkqMlrAbN/8Dvjoz7
+8X+5vhH/rDLa9BuZQlhFmvcGtCF8eR0T1v0nC/nuAFVGy+67q2DH8As3KPu0344T
+BDpAvr2uYM4tSqxK4DURx5INz4ZZ0WNFHcqsfvlGJALDeE0LhITTd9jLzdDad1pQ
+SToCnLl6SBJZjDOX9QQcyUigZFtCXFst4dlsvddrxyqT1f17+2cFSdu7+ynLmXBK
+7abQ3rwJY8SbRO2iRulogc5vr/RLMMlscDAiDkaFQWLoqHHOdfO9rURssHNN8WkM
+nQfvUewRz80hSnVlcmdlbiBHcm9zcyA8amdyb3NzQG5vdmVsbC5jb20+wsB5BBMB
+AgAjBQJTjHDXAhsDBwsJCAcDAgEGFQgCCQoLBBYCAwECHgECF4AACgkQsN6d1ii/
+Ey8PUQf/ehmgCI9jB9hlgexLvgOtf7PJnFOXgMLdBQgBlVPO3/D9R8LtF9DBAFPN
+hlrsfIG/SqICoRCqUcJ96Pn3P7UUinFG/I0ECGF4EvTE1jnDkfJZr6jrbjgyoZHi
+w/4BNwSTL9rWASyLgqlA8u1mf+c2yUwcGhgkRAd1gOwungxcwzwqgljf0N51N5Jf
+VRHRtyfwq/ge+YEkDGcTU6Y0sPOuj4Dyfm8fJzdfHNQsWq3PnczLVELStJNdapwP
+OoE+lotufe3AM2vAEYJ9rTz3Cki4JFUsgLkHFqGZarrPGi1eyQcXeluldO3m91NK
+/1xMI3/+8jbO0tsn1tqSEUGIJi7ox80eSnVlcmdlbiBHcm9zcyA8amdyb3NzQHN1
+c2UuZGU+wsB5BBMBAgAjBQJTjHDrAhsDBwsJCAcDAgEGFQgCCQoLBBYCAwECHgEC
+F4AACgkQsN6d1ii/Ey+LhQf9GL45eU5vOowA2u5N3g3OZUEBmDHVVbqMtzwlmNC4
+k9Kx39r5s2vcFl4tXqW7g9/ViXYuiDXb0RfUpZiIUW89siKrkzmQ5dM7wRqzgJpJ
+wK8Bn2MIxAKArekWpiCKvBOB/Cc+3EXE78XdlxLyOi/NrmSGRIov0karw2RzMNOu
+5D+jLRZQd1Sv27AR+IP3I8U4aqnhLpwhK7MEy9oCILlgZ1QZe49kpcumcZKORmzB
+TNh30FVKK1EvmV2xAKDoaEOgQB4iFQLhJCdP1I5aSgM5IVFdn7v5YgEYuJYx37Io
+N1EblHI//x/e2AaIHpzK5h88NEawQsaNRpNSrcfbFmAg987ATQRTjHAWAQgAyzH6
+AOODMBjgfWE9VeCgsrwH3exNAU32gLq2xvjpWnHIs98ndPUDpnoxWQugJ6MpMncr
+0xSwFmHEgnSEjK/PAjppgmyc57BwKII3sV4on+gDVFJR6Y8ZRwgnBC5mVM6JjQ5x
+Dk8WRXljExRfUX9pNhdE5eBOZJrDRoLUmmjDtKzWaDhIg/+1Hzz93X4fCQkNVbVF
+LELU9bMaLPBG/x5q4iYZ2k2ex6d47YE1ZFdMm6YBYMOljGkZKwYde5ldM9mo45mm
+we0icXKLkpEdIXKTZeKDO+Hdv1aqFuAcccTg9RXDQjmwhC3yEmrmcfl0+rPghO0I
+v3OOImwTEe4co3c1mwARAQABwsBfBBgBAgAJBQJTjHAWAhsMAAoJELDendYovxMv
+Q/gH/1ha96vm4P/L+bQpJwrZ/dneZcmEwTbe8YFsw2V/Buv6Z4Mysln3nQK5ZadD
+534CF7TDVft7fC4tU4PONxF5D+/tvgkPfDAfF77zy2AH1vJzQ1fOU8lYFpZXTXIH
+b+559UqvIB8AdgR3SAJGHHt4RKA0F7f5ipYBBrC6cyXJyyoprT10EMvU8VGiwXvT
+yJz3fjoYsdFzpWPlJEBRMedCot60g5dmbdrZ5DWClAr0yau47zpWj3enf1tLWaqc
+suylWsviuGjKGw7KHQd3bxALOknAp4dN3QwBYCKuZ7AddY9yjynVaD5X7nF9nO5B
+jR/i1DG86lem3iBDXzXsZDn8R38=3D
+=3D2wuH
+-----END PGP PUBLIC KEY BLOCK-----
 
+--------------ArlPww6NodM75mCSG0VERF30--
+
+--------------3SsGS4jdEppOEAjEximbuPmy--
+
+--------------bdMmOvZbS0X2bt8wUYPQynHw
+Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="OpenPGP_signature"
+
+-----BEGIN PGP SIGNATURE-----
+
+wsB5BAABCAAjFiEEhRJncuj2BJSl0Jf3sN6d1ii/Ey8FAmTKRHYFAwAAAAAACgkQsN6d1ii/Ey8x
+BQf9H7DKa39Nr6xxxjLY8hgjDH7KwHu6Futpdw/xh9rLvXYFC/Pt10g0CtYTk9f1o2PpWzhAUBSK
+Du2ppGVZQBSY3qmWldEYrFxJtZJw9MpZQk1M7UYpoApmiemig7JvZlMPNyPTWHA5X9bhCsYUKRBm
+EwfWhoZqD1Sw9faneG9tRp+/Rm4TpyUu4yrOETecxvUbRFHnsAn3HHF2wYjeEGxZezjoROIDp6E7
+Zcaq7+Rlnam8KA+pRKzG8h+pwfwaqV/cKxQEgHBaqgXdHimds1XNFkpeTx514Kf1T9rIUyjf31Be
+zCaYlRrsyn/mhpHSJP8GlB76I9n2XWhxVQ+mfFCVNg==
+=isL0
+-----END PGP SIGNATURE-----
+
+--------------bdMmOvZbS0X2bt8wUYPQynHw--
