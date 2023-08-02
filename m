@@ -2,88 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 55F6076D940
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 23:10:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1CEFE76D944
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 23:12:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231200AbjHBVKm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Aug 2023 17:10:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54138 "EHLO
+        id S232183AbjHBVMF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Aug 2023 17:12:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55516 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231824AbjHBVK0 (ORCPT
+        with ESMTP id S229628AbjHBVME (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Aug 2023 17:10:26 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 938FA30C3;
-        Wed,  2 Aug 2023 14:10:24 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id D48B961B23;
-        Wed,  2 Aug 2023 21:10:23 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 428B7C433C9;
-        Wed,  2 Aug 2023 21:10:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691010623;
-        bh=HKZo0dVHBh4Cp5PSXTEsqA47UzzSgcKTLbt7nmNF2Zg=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=RYCOpfpkILLMWlN96Tqg2OLxcjBZEc46bhIaiN8Pbe8hhtHX93X2RsPuXvPLCHasH
-         3Gdpy29jVVxpv7FWibv7Fy/EHe6I0miEABqZ9M/3CflXNsEV0LmDB4V0gebU/wK+nL
-         vO6GyC6BpkaEaOfSurXVrrWJgR8O6PDxxN8/mpKe1LAxUEnYs5x2ckZyph9d4ekxgQ
-         g5QdjP5NZU2onRp4OR/2wtdOm+LYp8mJw+pMLlXhXjVeZwL1Yro1wI49Hr0XohxC4F
-         +Hrq3NhYLbb1qGbGGaDTIHwL1QqLfm2molNRTUkv5k5bGGJX3S0Pwx2GVba97OJX4E
-         i/0HKNqix9oPg==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 2B7C4C6445B;
-        Wed,  2 Aug 2023 21:10:23 +0000 (UTC)
+        Wed, 2 Aug 2023 17:12:04 -0400
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A684273C
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Aug 2023 14:12:03 -0700 (PDT)
+Received: by mail-yb1-xb49.google.com with SMTP id 3f1490d57ef6-d27ac992539so217007276.3
+        for <linux-kernel@vger.kernel.org>; Wed, 02 Aug 2023 14:12:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1691010722; x=1691615522;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=c0p0yEIzRim0dAJzv4cvo4xUxAql8N+5yPd28VmvQmM=;
+        b=tA6hk6rt/sZ0gzS/QtHZmiDhiz/ozOMiZBbFHARXWovhe8S6odoIIL0oEBFsPnN+D3
+         0RRiFn+MpP1A2sjDbE5oFaSpZkTh5mNOJi+Gi2Ok5dAj4H1L/zCyOlPZE+KEy+0L/G37
+         YQhyqBPmUK2Gb//rBWUl1zPBgVGonoYS4ZtMK3jz/Es32zck6NsYH7iGTkd2d14k9zHi
+         xHsAnQE2/liZXfqrQmilvfZL/UqfBKA5QS6xhSz0pEhZJMGUACzwDOWlhlpU5ip8ef0T
+         F+s37InE/MwwI7JLCausTqlMtLD1eb9oKcRVNvTV4pojV1upGgPWNWMjRp+CeGY79e1L
+         FoLg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691010722; x=1691615522;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=c0p0yEIzRim0dAJzv4cvo4xUxAql8N+5yPd28VmvQmM=;
+        b=gZ6keplPAqeZtJHE7aky3Ttaco1rPXaRN8Iry+w+82QAy1w4r7lciB7e900wWG5oNM
+         qNBUkNl+F1Msxir8fxkLst2e2i6458fUkOEd4CKIffhEgd5GP/mXFL6rJaVXNuBAY45J
+         C74j25GfgDkWH0/0lhvAr2crZp2QLsM0CeY95g8D+1/ug2LrXaHst1MMQ9DSJPTW4qjl
+         MpCzPN8bSd5UQaab/R5UWTd8Z9y8KEqnVDYPzCSZSvyjwQs0TDKEBhG08FMNt/KtYzXr
+         tYoZ7ljJoFfpzyGN+j8quj72mELHCUqfgBYE1dOOCwHBXziULJzkbLe1jTWOmOJ7z1by
+         PR4g==
+X-Gm-Message-State: ABy/qLbx6v4vaUXb4qECQI9+Gax0adyGOkonBMBTTon7BtOugOtIRWdk
+        H5mYraoDfJqytrMs9Uwzz4zr55LQDAY=
+X-Google-Smtp-Source: APBJJlE0UpAj8QPCOauNfmd67hYtykGLEOcvpIdTxaQ9xHW06ICLpBWZ8ZXToBUrb2/1EN5U53ZOEU2H/qA=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a25:7341:0:b0:d0b:ca14:33fd with SMTP id
+ o62-20020a257341000000b00d0bca1433fdmr118184ybc.8.1691010722283; Wed, 02 Aug
+ 2023 14:12:02 -0700 (PDT)
+Date:   Wed,  2 Aug 2023 14:11:49 -0700
+In-Reply-To: <20230731022405.854884-1-maobibo@loongson.cn>
+Mime-Version: 1.0
+References: <20230731022405.854884-1-maobibo@loongson.cn>
+X-Mailer: git-send-email 2.41.0.585.gd2178a4bd4-goog
+Message-ID: <169100955679.1738452.11040795142369096451.b4-ty@google.com>
+Subject: Re: [PATCH] KVM: selftests: use unified time type for comparison
+From:   Sean Christopherson <seanjc@google.com>
+To:     Sean Christopherson <seanjc@google.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Bibo Mao <maobibo@loongson.cn>
+Cc:     Shuah Khan <shuah@kernel.org>, kvm@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="utf-8"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH v3 -next] Bluetooth: Remove unused declaration
- amp_read_loc_info()
-From:   patchwork-bot+bluetooth@kernel.org
-Message-Id: <169101062317.23031.2805028576245980577.git-patchwork-notify@kernel.org>
-Date:   Wed, 02 Aug 2023 21:10:23 +0000
-References: <20230728033011.12096-1-yuehaibing@huawei.com>
-In-Reply-To: <20230728033011.12096-1-yuehaibing@huawei.com>
-To:     Yue Haibing <yuehaibing@huawei.com>
-Cc:     marcel@holtmann.org, johan.hedberg@gmail.com, luiz.dentz@gmail.com,
-        linux-bluetooth@vger.kernel.org, linux-kernel@vger.kernel.org,
-        pmenzel@molgen.mpg.de
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
-
-This patch was applied to bluetooth/bluetooth-next.git (master)
-by Luiz Augusto von Dentz <luiz.von.dentz@intel.com>:
-
-On Fri, 28 Jul 2023 11:30:11 +0800 you wrote:
-> This is introduced in commit 903e45411099 ("Bluetooth: AMP: Use HCI cmd to Read Loc AMP Assoc")
-> and never be implemented.
+On Mon, 31 Jul 2023 10:24:05 +0800, Bibo Mao wrote:
+> With test case kvm_page_table_test, start time is acquired with
+> time type CLOCK_MONOTONIC_RAW, however end time in function timespec_elapsed
+> is acquired with time type CLOCK_MONOTONIC. This will cause
+> inaccurate elapsed time calculation on some platform such as LoongArch.
 > 
-> Fixes: 903e45411099 ("Bluetooth: AMP: Use HCI cmd to Read Loc AMP Assoc")
-> Signed-off-by: Yue Haibing <yuehaibing@huawei.com>
-> ---
-> v3: Add Fixes tag
-> v2: fix SOB and update commit log
+> This patch modified test case kvm_page_table_test, and uses unified
+> time type CLOCK_MONOTONIC for start time.
 > 
 > [...]
 
-Here is the summary with links:
-  - [v3,-next] Bluetooth: Remove unused declaration amp_read_loc_info()
-    https://git.kernel.org/bluetooth/bluetooth-next/c/c8573f208a12
+Applied to kvm-x86 selftests, thanks!
 
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+[1/1] KVM: selftests: use unified time type for comparison
+      https://github.com/kvm-x86/linux/commit/b859b018aadf
 
-
+--
+https://github.com/kvm-x86/linux/tree/next
+https://github.com/kvm-x86/linux/tree/fixes
