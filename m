@@ -2,130 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1584576DAFD
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 00:52:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 702C976DB00
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 00:53:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232181AbjHBWwN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Aug 2023 18:52:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46556 "EHLO
+        id S230251AbjHBWxH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Aug 2023 18:53:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46974 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230251AbjHBWwL (ORCPT
+        with ESMTP id S229883AbjHBWw5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Aug 2023 18:52:11 -0400
-Received: from mail-oi1-x233.google.com (mail-oi1-x233.google.com [IPv6:2607:f8b0:4864:20::233])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56059127
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Aug 2023 15:52:09 -0700 (PDT)
-Received: by mail-oi1-x233.google.com with SMTP id 5614622812f47-38c35975545so228833b6e.1
-        for <linux-kernel@vger.kernel.org>; Wed, 02 Aug 2023 15:52:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1691016728; x=1691621528;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=9qzpG3gIU/S0XcDLKGDu9gNUJpgK/1yyRvn2bhEmM58=;
-        b=xrmpApeQ2v6sILt9CRqF3YnHSMiSJYgEblMuNX6hhdBoYCLL9uNzQKZ5qQLYpVZmtt
-         INgtnnTUfcC3RC2tnfGh9hYuvZ3ebUtc+UhBPHsGEIL6+1YjVa2USiLximhYXC0YCG1w
-         ERbvq/x/E0WyfMZcUpXvHHgXcs5NQUG79qg1XMx8llW9kRp7ayuHhSNiWnyAk1ZkSoYl
-         VSWrBMKYIGR22jMyIIMzl+O293it6cbfwydi+LzfQhs2XqqrW2eV5OysnXGY6NeFm8Ao
-         0qIIbUPBuF5trx8btNkKaGTIiRNwM37M5Br539VkyFfQZhtHiqNM/P7Si38BdWffnTNJ
-         Vkdw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691016728; x=1691621528;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=9qzpG3gIU/S0XcDLKGDu9gNUJpgK/1yyRvn2bhEmM58=;
-        b=V/O3S8P13iwa2HOa5GCVVORlCaktAT6MA6ZyGlXIhptAluUyVykoUK1LjT966X7Fbx
-         Y5DaOXXO6+5eHn5d4BTlEcalASJqoQQXQksush/Pb52YAQxbDb5740J0gDiHgWnwNuxX
-         oL7Ck+MTTfyGADMfsmZ1Hkktj7sIiWt1B3/WUeLS9FbXdN8QqnJFXMKf+gN00WJKVY0V
-         TXj8AH6PWddS9rz0xBjJMceUajYryIHdhHEQV1U9wZZOggkbGS6MvTKDGj3EWRsb29fV
-         XmLxsc3mNBwfbQQyJiCOrZHOo7zzadPflac41rEy4ASu/i5+h+7HXWNWJP0D2r1yBvLT
-         LETw==
-X-Gm-Message-State: ABy/qLYGM5fyYh6tgmHRvsW8p6nZZ5ei95nfPNfwzjbfcgfX8woSak8w
-        VTy/gX1nXihvZxzEFqVgNDvW2Y5FnqieIRbrteWD8w==
-X-Google-Smtp-Source: APBJJlGS+pNLS10Ghyz/+qDdpXNy2UKH4DHXtkFNIUNC/vRs0Td4khQtSZjXJLWpsP4zhYRzhRaS0kgKwSpqvjq0PzE=
-X-Received: by 2002:a05:6358:880e:b0:132:db25:bbfc with SMTP id
- hv14-20020a056358880e00b00132db25bbfcmr7288698rwb.2.1691016728583; Wed, 02
- Aug 2023 15:52:08 -0700 (PDT)
+        Wed, 2 Aug 2023 18:52:57 -0400
+Received: from bmailout1.hostsharing.net (bmailout1.hostsharing.net [83.223.95.100])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA329127;
+        Wed,  2 Aug 2023 15:52:50 -0700 (PDT)
+Received: from h08.hostsharing.net (h08.hostsharing.net [83.223.95.28])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256
+         client-signature RSA-PSS (4096 bits) client-digest SHA256)
+        (Client CN "*.hostsharing.net", Issuer "RapidSSL Global TLS RSA4096 SHA256 2022 CA1" (verified OK))
+        by bmailout1.hostsharing.net (Postfix) with ESMTPS id 438CA30010DFE;
+        Thu,  3 Aug 2023 00:52:48 +0200 (CEST)
+Received: by h08.hostsharing.net (Postfix, from userid 100393)
+        id 357C2D6B89; Thu,  3 Aug 2023 00:52:48 +0200 (CEST)
+Date:   Thu, 3 Aug 2023 00:52:48 +0200
+From:   Lukas Wunner <lukas@wunner.de>
+To:     Alistair Francis <alistair23@gmail.com>
+Cc:     Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Greg KH <gregkh@linuxfoundation.org>, bhelgaas@google.com,
+        linux-pci@vger.kernel.org, alex.williamson@redhat.com,
+        christian.koenig@amd.com, kch@nvidia.com, logang@deltatee.com,
+        linux-kernel@vger.kernel.org,
+        Alistair Francis <alistair.francis@wdc.com>
+Subject: Re: [PATCH v2] PCI/DOE: Expose the DOE protocols via sysfs
+Message-ID: <20230802225248.GA19409@wunner.de>
+References: <20230801121824.174556-1-alistair.francis@wdc.com>
+ <2023080152-disobey-widen-65a4@gregkh>
+ <CAKmqyKMEqrfP8BrXd9pVd4a5Aodipty-8bAkxK5xcGSewsC9JA@mail.gmail.com>
+ <20230801170739.000048cb@Huawei.com>
+ <CAKmqyKND01=xaiB-VFVsi3+KRbxu4dBKfh_RhCN-jric5VzNpA@mail.gmail.com>
 MIME-Version: 1.0
-References: <20230802152808.33037-1-brgl@bgdev.pl>
-In-Reply-To: <20230802152808.33037-1-brgl@bgdev.pl>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Thu, 3 Aug 2023 00:51:57 +0200
-Message-ID: <CACRpkdbNHVpCbBqRMd2eWvU9rMQoxN3Z3hwxqXhN8R5HMonA=g@mail.gmail.com>
-Subject: Re: [RFC PATCH] gpio: consumer: new virtual driver
-To:     Bartosz Golaszewski <brgl@bgdev.pl>
-Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Kent Gibson <warthog618@gmail.com>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAKmqyKND01=xaiB-VFVsi3+KRbxu4dBKfh_RhCN-jric5VzNpA@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 2, 2023 at 5:28=E2=80=AFPM Bartosz Golaszewski <brgl@bgdev.pl> =
-wrote:
+On Tue, Aug 01, 2023 at 02:24:24PM -0400, Alistair Francis wrote:
+> On Tue, Aug 1, 2023 at 12:07???PM Jonathan Cameron <Jonathan.Cameron@huawei.com> wrote:
+> > On Tue, 1 Aug 2023 09:48:13 -0400 Alistair Francis <alistair23@gmail.com> wrote:
+> > > On Tue, Aug 1, 2023 at 9:28???AM Greg KH <gregkh@linuxfoundation.org> wrote:
+> > > > On Tue, Aug 01, 2023 at 08:18:24AM -0400, Alistair Francis wrote:
+> > > > > +What:                /sys/bus/pci/devices/.../doe_proto
 
-> From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
->
-> The GPIO subsystem has a serious problem with undefined behavior and
-> use-after-free bugs on hot-unplug of GPIO chips. This can be considered a
-> corner-case by some as most GPIO controllers are enabled early in the
-> boot process and live until the system goes down but most GPIO drivers
-> do allow unbind over sysfs, many are loadable modules that can be (force)
-> unloaded and there are also GPIO devices that can be dynamically detached=
-,
-> for instance CP2112 which is a USB GPIO expender.
->
-> Bugs can be triggered both from user-space as well as by in-kernel users.
-> We have the means of testing it from user-space via the character device
-> but the issues manifest themselves differently in the kernel.
->
-> This is a proposition of adding a new virtual driver - a configurable
-> GPIO consumer that can be configured over configfs (similarly to
-> gpio-sim).
->
-> The configfs interface allows users to create dynamic GPIO lookup tables
-> that are registered with the GPIO subsystem. Every config group
-> represents a consumer device. Every sub-group represents a single GPIO
-> lookup. The device can work in three modes: just keeping the line
-> active, toggling it every second or requesting its interrupt and
-> reporting edges. Every lookup allows to specify the key, offset and
-> flags as per the lookup struct defined in linux/gpio/machine.h.
->
-> The module together with gpio-sim allows to easily trigger kernel
-> hot-unplug errors. A simple use-case is to create a simulated chip,
-> setup the consumer to lookup one of its lines in 'monitor' mode, unbind
-> the simulator, unbind the consumer and observe the fireworks in dmesg.
->
-> This driver is aimed as a helper in tackling the hot-unplug problem in
-> GPIO as well as basis for future regression testing once the fixes are
-> upstream.
->
-> Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+The PCISIG published the DOE r1.1 ECN in September 2022.
 
-Anyone can easily see how this will benefit testing, so:
-Acked-by: Linus Walleij <linus.walleij@linaro.org>
+It replaced all occurrences of the term "protocol" with either "feature"
+or "data object type".  Please adhere to the terms used by the spec so
+that it is easy for an uninitiated reader to make the connection between
+the spec and the implementation.
 
-> +config GPIO_CONSUMER
-> +       tristate "GPIO Consumer Testing Module"
-> +       select CONFIGFS_FS
-> +       help
-> +         This enables the configurable, configfs-based virtual GPIO cons=
-umer
-> +         testing driver.
+DOE r1.1 was merged into the PCIe Base Spec r6.1.  It wasn't merged into
+r6.0.1 yet.
 
-Since this is only for debugging, should it depend on DEBUG?
 
-Yours,
-Linus Walleij
+> > > > > +             This file contains a list of the supported Data Object Exchange (DOE)
+> > > > > +             protocols. The protocols are seperated by newlines.
+                                                     ^^^^^^^^^
+s/seperated/separated/
+
+
+> > > > > +             The value comes from the device and specifies the vendor and
+> > > > > +             protocol supported. The lower byte is the protocol and the next
+> > > > > +             two bytes are the vendor ID.
+> > > > > +             The file is read only.
+
+I kind of like the approach of exposing a list which can be grep'ed,
+even though it may go against the rule of having just one datum per
+attribute.  I'd prefer a representation that's human-readable though,
+e.g. "0001:01" for CMA-SPDM.
+
+
+> > > > So this is going to be a lot of data, what is ensuring that you didn't
+> > > > truncate it?  Which again, is the reason why this is not a good idea for
+> > > > sysfs, sorry.
+
+For all practical purposes, the maximum size which can be returned
+by a sysfs attribute (PAGE_SIZE, i.e. 4 kByte on x86) ought to be
+sufficient.  I'd say a mailbox typically doesn't support more than,
+say, 10 protocols.
+
+
+> > > I was hoping to avoid the kernel needing to know the protocols. This
+> > > list can include vendor specific protocols, as well as future
+> > > protocols that the running kernel doesn't yet support, so I wanted to
+> > > directly pass it to userspace without having to parse it in the
+> > > kernel.
+
+Right, just expose raw numbers and let lspci print them in beautified
+(parsed) form.
+
+
+> A directory per vid and files for each protocol sounds good to me.
+> I'll update the patch to do that. If anyone doesn't like that idea let
+> me know
+
+Since you intend to expose an interface for interacting with mailboxes,
+on top of just exposing a list of supported data types (protocols),
+I think you should first come up with a plan how to do that instead
+of kicking the can down the road.  The sysfs ABI is sort of set in
+stone, you can't easily change it if you realize after the fact
+that it has deficiencies for your use case.
+
+sysfs is not suitable for interaction with DOE mailboxes because the
+filesystem imposes a size restriction of PAGE_SIZE per read.  DOE
+allows up to 1 MByte per request or response, so way bigger than the
+puny 4 kByte PAGE_SIZE on x86.  Splitting response reception into
+multiple reads of the same attribute would be an awful kludge.
+So I think you need to resort to devfs or procfs for mailbox interaction,
+instead of sysfs.
+
+Question is, if you use devfs/procfs for mailbox interaction, maybe it
+makes sense to expose the list of supported data types there as well,
+instead of in sysfs?
+
+If you do expose a list of supported protocols, you should definitely
+have one sysfs attribute per mailbox, e.g. "doe_123" or "doe@123" if
+the mailbox is located at offset 123 in config space.
+
+
+> I think we will need to at least expose a few parts of SPDM to
+> userspace. It could either be the kernel passing data back (like the
+> measurements for example) or userspace orchestrating the
+> communication. That's a future problem at the moment though
+
+I envision that we'll provide a higher-level ABI for things like
+measurement retrieval, either through IMA or maybe sysfs, but not
+low-level access to the SPDM session.
+
+In fact, I think if you do implement mailbox interaction, you may
+want to blacklist certain data types that are handled in-kernel,
+such as CMA-SPDM.
+
+And you should constrain the whole thing to
+!security_locked_down(LOCKDOWN_PCI_ACCESS).
+
+FWIW, an experimental in-kernel implementation of SPDM measurement
+retrieval already exists (it goes on top of my doe branch that I
+linked to previously):
+
+https://github.com/debox1/spdm/commits/measurement
+
+Thanks,
+
+Lukas
