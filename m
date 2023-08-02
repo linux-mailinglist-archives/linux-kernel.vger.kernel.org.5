@@ -2,189 +2,236 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F87476CD41
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 14:44:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 06A5976CD43
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 14:44:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234694AbjHBMoB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Aug 2023 08:44:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35646 "EHLO
+        id S234692AbjHBMoL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Aug 2023 08:44:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35722 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234672AbjHBMnv (ORCPT
+        with ESMTP id S234686AbjHBMoA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Aug 2023 08:43:51 -0400
-Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.153.233])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8362530F7;
-        Wed,  2 Aug 2023 05:43:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1690980211; x=1722516211;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=Houb5Uq1/hNJIIwo2bmxK7+qir9H8Qp57XFhSB88IaQ=;
-  b=AbO6zxi19isMXBUK+gGTZMXa43dMtf6GPZL3pi77ILjP/odXeSNSmUct
-   Tj2cYNirH84zCjdXaudK4r9xLzXnXJl/9HxcFWgW9d/OPjrrUSA6oaUiM
-   t+uu7bUFDVisTSLANPnE1j2u/Lt5BdkaAOVa1yYQv7M1aBMSYJf0+LEzU
-   oDrMGq2MUSKtqsUVT9snDUqA2MZreD5Xar6BeJlN/irvWpIZ2X/apzdFC
-   DQHJLDieff1TpptakibFJGogRM2bgKl0NzFPbJ2FYEoolW0/zHp0NToaQ
-   pylO05KKooyu7sJMrbY9CwKSzQl654QAEmbii8Ai+P6pVM6L7jnVSwJjM
-   g==;
-X-IronPort-AV: E=Sophos;i="6.01,249,1684825200"; 
-   d="scan'208";a="226730999"
-X-Amp-Result: SKIPPED(no attachment in message)
-Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
-  by esa3.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 02 Aug 2023 05:42:54 -0700
-Received: from chn-vm-ex03.mchp-main.com (10.10.85.151) by
- chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.21; Wed, 2 Aug 2023 05:42:54 -0700
-Received: from NAM11-DM6-obe.outbound.protection.outlook.com (10.10.215.89) by
- email.microchip.com (10.10.87.152) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.21 via Frontend Transport; Wed, 2 Aug 2023 05:42:54 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=P3M8GnjzFbq7jSNKFawhyIIlg5jf0IcKIw/6xpz6FbdYXbJ/FcR6YmMuwhIQ+Sec9v9IfUjkO7Whaqx6mr3krBVIB4aiE6iwD6BMNlsgXMasUbWMXqF6yqEOryQXwMT6cubP+D5EtYQyIznQ1FeM1E78pGjobpVmBNd47nwCSo+awsytt1kIgSxq8mBYR813rbXdinab+3RnyP2xO297z6XK0J1DRjQI7hbRTEm+3Dzvpw7tND2W/oV4Yo6UO2zR/8OjL1nyWbq9+CaZDaw7vqfRnRUrX6sy5of+oa4/JE964D1iqHhr+ObrQcMuBxM9gElJ88n++/ZxNL/GSU4pBg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=Houb5Uq1/hNJIIwo2bmxK7+qir9H8Qp57XFhSB88IaQ=;
- b=MJPQlu4RLN0PiY763RVBVk9dJk1OM5TBZI2xX2Ryfps3Kiu5ROeXCIgKImRfpGBSg33441H1jzVG2lHlABcJm3EQuQrsYKjd8s+qGLFvVpEhFCXUJXSH1phi4GgHRkAGs/MjYdvG8rbe8aFEShT/kLA+zqZ2JNvmTwxhAh1geL12lQIlY0W/Trv42KKgbDMMfd3UujHvmLurCIU5OsTxn1wkUHm9Mkpor2U8diZQ0XlAIMv4Xe4XG4cBpn28eh76iAU1/5UoqgUl59JSdVo3bjcYP2I6MQAYzvLHURJlaN3PuaiXoWZdHTl/f0z3T+yVKl+IKg6isgWiCibyb9oLyA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=microchip.com; dmarc=pass action=none
- header.from=microchip.com; dkim=pass header.d=microchip.com; arc=none
+        Wed, 2 Aug 2023 08:44:00 -0400
+Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5980E4
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Aug 2023 05:43:39 -0700 (PDT)
+Received: by mail-pl1-x62e.google.com with SMTP id d9443c01a7336-1b8b4748fe4so44252945ad.1
+        for <linux-kernel@vger.kernel.org>; Wed, 02 Aug 2023 05:43:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=microchiptechnology.onmicrosoft.com;
- s=selector2-microchiptechnology-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Houb5Uq1/hNJIIwo2bmxK7+qir9H8Qp57XFhSB88IaQ=;
- b=Gqs2JUHnRCbh1eXAos9iO7fijwRuXmIgi18s4hWVP6hoS50DlxI95RYVaFbVWPPZ/SSJDEuTeHIn8rXW6Lb5dXeuyixMWFUiih9TOqFXVNidExYKjywDSMl/NIoTpg+fSmIFB4ppbNRwEtewr5Eske1+6sBz+tZS82T47pxy3NM=
-Received: from PH8PR11MB6804.namprd11.prod.outlook.com (2603:10b6:510:1bc::6)
- by DS7PR11MB6103.namprd11.prod.outlook.com (2603:10b6:8:84::19) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6631.45; Wed, 2 Aug
- 2023 12:42:53 +0000
-Received: from PH8PR11MB6804.namprd11.prod.outlook.com
- ([fe80::c03b:7225:e395:9abf]) by PH8PR11MB6804.namprd11.prod.outlook.com
- ([fe80::c03b:7225:e395:9abf%4]) with mapi id 15.20.6631.045; Wed, 2 Aug 2023
- 12:42:53 +0000
-From:   <Mihai.Sain@microchip.com>
-To:     <conor@kernel.org>
-CC:     <robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
-        <conor+dt@kernel.org>, <Nicolas.Ferre@microchip.com>,
-        <alexandre.belloni@bootlin.com>, <Claudiu.Beznea@microchip.com>,
-        <andre.przywara@arm.com>, <Andrei.Simion@microchip.com>,
-        <Jerry.Ray@microchip.com>, <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <Cristian.Birsan@microchip.com>
-Subject: RE: [PATCH 1/2] dt-bindings: ARM: at91: Document Microchip SAMA5D29
- Curiosity
-Thread-Topic: [PATCH 1/2] dt-bindings: ARM: at91: Document Microchip SAMA5D29
- Curiosity
-Thread-Index: AQHZxGkZvHXvIeEFPkCakwKNOHNxaq/VkraAgAFe0YA=
-Date:   Wed, 2 Aug 2023 12:42:52 +0000
-Message-ID: <PH8PR11MB6804073D5A1F26D8699756F8820BA@PH8PR11MB6804.namprd11.prod.outlook.com>
-References: <20230801111151.6546-1-mihai.sain@microchip.com>
- <20230801-unbalance-baguette-cd0d4e7e0107@spud>
-In-Reply-To: <20230801-unbalance-baguette-cd0d4e7e0107@spud>
-Accept-Language: en-US, ro-RO
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=microchip.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: PH8PR11MB6804:EE_|DS7PR11MB6103:EE_
-x-ms-office365-filtering-correlation-id: 7523928f-eaba-4bca-7f49-08db9355fd11
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: 0o3HIFhxrrw0sCAUlOjKqY65+q6PHZmhJfdW1p/v+PhdhiQUIJR367ia1LQY1Nkbdl++iEVVFukQKkgQ7+U5QQbuvygGEEigAXnAEC1DofwPG2z9YmOLxbBiz61X2xHJ/40h2Alw2cPHc3btpe7xmJMdjvPCM6P29aRA5X7x7VVtGBinjF7WTcDg3lDoUyuYg1BvyNoQywa4zZdqons4AdfixN5jrHWSFaaAF0SIHcV9bjjCVJh9VUdb9QmZBszZBQrFlFPrnLmspgLxBuQq3vcF7eJq3PzCwxquF/ii9sXuhAQkU4EvopDgUXhSADDBAijN+owbLU53kiU2vYYiDO2TGyXgG8PXWBTsN0RLy/vBw9RMY6SrzrNiwOBhguxO37yYsjzIgz+J63xQDMyhpCpYx3sz9ZSK11AgRBMCgSBfs0SHB2kwQRbnreOxh56DOsB/VtLAdC7mzN/a0aLlqJTx5u4oKyqWq9E5x4OOVtnWUlnc/T74E4dSxS1KI+bAu/SsdAV7jSKy6d4XGnLVfy9Ob8cSPeAkvAxaUDId6at/pwm+0st2h0UwzvWRrEqsqOgAblqo2oY0jJXSylj+Q/zA+EHhi4toH5uiIPt+oOhMMX3qVJ1nGN0+GiOOE/W+dHRDQ4FqSKfdGvkuebjb0IS0TDPjStV1NQ7ie3dvBOg=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH8PR11MB6804.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(346002)(396003)(136003)(366004)(376002)(39860400002)(451199021)(52536014)(8936002)(8676002)(5660300002)(26005)(41300700001)(107886003)(2906002)(38070700005)(55016003)(478600001)(54906003)(122000001)(38100700002)(316002)(86362001)(6506007)(64756008)(7696005)(76116006)(71200400001)(66946007)(66556008)(66476007)(66446008)(33656002)(4326008)(6916009)(186003)(9686003);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?UEZ2NE1oVzE3MzZmdVFTOWQ2S0VCMlFFVUs4ckkwTFQ0RkYrOXhQZmNoMWRa?=
- =?utf-8?B?aVZ2V1JMUk1IQTllRW10dkFTOFB1T0haODFMdStKdWZzQzFTTTJDVUxDdnM1?=
- =?utf-8?B?bk5udVdXWkZPT2JlcG95RStGa0Jvd1ZERzlWZm5wWHgwdXovdHg3ai9DOFJT?=
- =?utf-8?B?Sk5QSXFBZTNLdVNBZDIwZm8zNjFsdmk0eTZzR3VaNWcwOVIwUFdXS2lYTlF4?=
- =?utf-8?B?NUZBeVBYc01FYkI4d1lnRHN2c2hlTldMVGRoNkJuKzFMOUswUTVYREMrVEpD?=
- =?utf-8?B?SzY3dWtzNlJxMDQ1cmxyNXM5b0VzTjQzcW8zK0JnYzVoV29jTnJ4L1BXNjlk?=
- =?utf-8?B?N0x2dTRiYk1GMTZ3TFFrN0t5S3c1a2F3MG9MWTZLZFc2YkdYWEFOanBiVHE1?=
- =?utf-8?B?ZmhLVGd1YVBVeUZZOGdtQjBaQ0JobmRYclBGVXdqUWFZanN2cmhtNGM3QnRw?=
- =?utf-8?B?bitTVFRCY3hQRGpPbXNkb2E5MVgvUFpsWGxJNEI2TS9weWxvMlNQeTBES0FI?=
- =?utf-8?B?MzJ1NDdZYzdaUE5MM1Rzek9PYmY1YmpZRm9UVy9iVEd5U2ZSNmRnT3FGa2kx?=
- =?utf-8?B?UEwxSnVkekprVDNPTzJLSm9sWVRwSFZOUFQwb2lobnR0YVkxRVQ3Rjd0VHk5?=
- =?utf-8?B?ZGVvKzRvMWw5ZFByMDlGNzdPclFLQU5xaTJyOGFkajVFSUJkaFNtSFRZQk9M?=
- =?utf-8?B?ZVpWYU9kaWlXSXZlL1BwYjdDYzF1eDdRa3B2M3NOb2gwYzlKNVM5cXcwMFFU?=
- =?utf-8?B?bHlPVUYvZ1g5VzhrNHdvcUhYZmoyaFpQdXZTY2p2SDY1bjg3OG4yNDVPSXBC?=
- =?utf-8?B?T0JqSkx4K0FrNjVDNTlnZUFLR2oxMzZiZ2wxVXBmeWxoV0VYUndxNEkxRkRj?=
- =?utf-8?B?aGtJU0RkU0g2UFN5UUZtaTJVQXo3ckF2b1VxMnl1cStTWWdYVFlHTGtSNHFs?=
- =?utf-8?B?Z1pjVWcrZ3UrcUYweHZmdlIrWWc0NG5mc3VKMjIyd3lJRVduYWhNQmFrdTVX?=
- =?utf-8?B?b0F4Q052OXkwb1YyTFA3eHlMTkZqVFlhaWZrT3NzRTlETjlrcHJTVTFsdlFs?=
- =?utf-8?B?dGkzMFFPSHZ3d0JpdkNxMmN4R0UrMjRzVWg5cXZRWS9GTmRrMUM3N2U1SDFj?=
- =?utf-8?B?TWYySlpUZHVYVU92WDZIRXlXYzhRTENVN0RDWlh6emtXejRkL1l2YU5rSDlC?=
- =?utf-8?B?WWptRG00ZW0vdnRVSDZueWhVMG0xdEp1cXgwcHFTeWkzeEdwbjRROUIvL0pZ?=
- =?utf-8?B?eTJpNEtJWkk4NFhVRTlZNDVCb3cwbW5ZYk5lcC91K016NVlKZVM3ZjE0ckJV?=
- =?utf-8?B?THRlZkh1djJCSTVvem0xVG5ONnJTUTFIMmVQZDVEZzBKRnVaSy8rak5UZjQx?=
- =?utf-8?B?UFQzdXRKdkZFcGpFTlU4VkxCQjFDY1NMZU9xMkZuWXB1UmZ0TFdmMjdYWUZw?=
- =?utf-8?B?WVFtMXJmakVPM1hvdDEzMzB5YjlXeHpBZ0R6LzVjT0xZSzVNdiswNFBhOFNu?=
- =?utf-8?B?cE9Sd2pyYlRybU9aS1ZNVm1WL3Q3Ymg1eGs4NTZtYlB5RTNMVVRsN0ZrQTVy?=
- =?utf-8?B?Y2FzTzlDVGZGVVF1d2FVSFp5OGpwbUhxUlZ6N2lrRXNFMTFZaUprbGxjQXZY?=
- =?utf-8?B?M0t1ajk3ZHNhZWxxSG1laEhGK0lsaDVOQW84RGZGM1RjVENSZnl4QVFlUDc5?=
- =?utf-8?B?ckRjNHJTUG1Ud3lOb1hlN1JCemsrdU1CQ1ovWUlsbzN3YmtCdWZNN0tyMkRn?=
- =?utf-8?B?MFJuVHV5ZStURDV1Y3FQaTl3ellmLzNydXphVytLWU1Ta0hCRzF2V3R1VXpJ?=
- =?utf-8?B?KzhaUkpmWWJwZEpuK0lCTHRTV0pCdjJWMW5ETksrTmNjdXZRRTMwZ2tYVmtS?=
- =?utf-8?B?R0x5cmZEQ21ONDFod0d5ZmdjeWRYQVBhN3Z3N0NYcVZ0NlU5eERuL0VGVjMx?=
- =?utf-8?B?UjlBRHQxY0p6eU5vVnJnR0laL05Ud25wSmFYZytyOWN1ZU9GT3NQWGFCZGRX?=
- =?utf-8?B?RGJVNGRKK2lkaXZsYll2V3VQc1NsdWtjaHlkOVBYaFBseDNNZDM4M2REaEFp?=
- =?utf-8?B?a2hndzcvYXB0V2hKbmVaVU9ZZVBEMkUrc2l6S2I5N1lZakh1U2o2WDVCTUxE?=
- =?utf-8?Q?5shMHWZAW8DkRQuRoVT2JoMbq?=
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: PH8PR11MB6804.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 7523928f-eaba-4bca-7f49-08db9355fd11
-X-MS-Exchange-CrossTenant-originalarrivaltime: 02 Aug 2023 12:42:52.9862
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 3f4057f3-b418-4d4e-ba84-d55b4e897d88
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: crzHVSsJnOeoOk01gFmL1tGhyFVRA72bOPODVG2A9QemnK91f6JcBMJnqj63A9jN3J0rBlyFEVLrEGvZchWNiO3Moygs5k8G1wZZnsXLCXs=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS7PR11MB6103
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+        d=gmail.com; s=20221208; t=1690980219; x=1691585019;
+        h=message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=GxJzp9ATBmLdL264ZO+clCh18DN/3lFofn79g2q4smk=;
+        b=Rrio5nTp2Ow3RU0Y0RsLR0psF9tZECzn3JAi8aF6qwvOO0RnczEnOOLmrsFE0LCG0U
+         zpd4s8KAim7VlJZJ+l4EGQOVWeT10CtBxyN4CVGSuunXNIPQW2C9lZEibQby//mqygZf
+         DC3OStYjeULGvwpnQlQsRZ+hbEW29SBtS2eGhHgptG5hry5bisZF6Ol/dssWLIyceNLI
+         FOzYHgBeydZFj0/vnEFeP8K30FGmUgvVSv+KXD9Qx11l5shqPuR1rdem725uVwc1o94g
+         zJ8WRmaEtoekpKoFd/CSy/M2owNJU/vlFGMBjFdTr0VcIG2JjRvSv6OQmtSij5RLmrFw
+         5K2w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690980219; x=1691585019;
+        h=message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=GxJzp9ATBmLdL264ZO+clCh18DN/3lFofn79g2q4smk=;
+        b=FEElpyTM7zE2TZoLlH2ZB4rGNBi0j6oOUarSOKcOuATMzu+G/bQ1FL7c18vC/eXFsL
+         6SA5yf2EEjiB9O/CyCRzPMjMtEepUCcCVEHm9P24rWSC6XzeBzIBDi19TYuMTUQq9gHI
+         3RSRrYEkNPInLkExr2wD0MH99anr3xexA4r1xpjrZInBIiwfXe602SgfsVtPi1lvY/i8
+         P9nXXlzu3wjJ2QQ3jjNt3fucH7v3aKOWNbHJJhrmNfSDwjVQ7mI5/UwHYmcTqYjpoco1
+         9pqd4m2MZqL7Izd6exmiMPYB8sFZR0omyf8Gsu9W+HphMdYBX81RA6sqB5HDWPpYdzp0
+         xNFA==
+X-Gm-Message-State: ABy/qLaE2kpuprjofewQ8TNSsChTHzHtKO1ytHEFPTlc75zKIldfgNAg
+        yRFFx+D1POd1/SwXXlpSX2o=
+X-Google-Smtp-Source: APBJJlFR2J588uPiHI1YzTLZ55kMA2lE8AX2sgpHFFtcZqji+j6pH21aKU+hVDcmg4NVKrq88xje3w==
+X-Received: by 2002:a17:902:e741:b0:1b0:307c:e6fe with SMTP id p1-20020a170902e74100b001b0307ce6femr17124366plf.10.1690980218855;
+        Wed, 02 Aug 2023 05:43:38 -0700 (PDT)
+Received: from 377044c6c369.cse.ust.hk (191host097.mobilenet.cse.ust.hk. [143.89.191.97])
+        by smtp.gmail.com with ESMTPSA id m24-20020a170902bb9800b001bbbbda70ccsm12311217pls.158.2023.08.02.05.43.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 02 Aug 2023 05:43:38 -0700 (PDT)
+From:   Chengfeng Ye <dg573847474@gmail.com>
+To:     mark@fasheh.com, jlbec@evilplan.org, joseph.qi@linux.alibaba.com,
+        akpm@linux-foundation.org
+Cc:     ocfs2-devel@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Chengfeng Ye <dg573847474@gmail.com>
+Subject: [PATCH] ocfs2: cluster: fix potential deadlodddck on &o2net_debug_lock
+Date:   Wed,  2 Aug 2023 12:43:20 +0000
+Message-Id: <20230802124320.15827-1-dg573847474@gmail.com>
+X-Mailer: git-send-email 2.17.1
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGkgQ29ub3IsDQoNClBsZWFzZSBmaW5kIGJlbGxvdyBteSBhbnN3ZXJzLg0KDQpIZXksDQoNCk9u
-IFR1ZSwgQXVnIDAxLCAyMDIzIGF0IDAyOjExOjUwUE0gKzAzMDAsIE1paGFpIFNhaW4gd3JvdGU6
-DQo+IEZyb206IEFuZHJlaSBTaW1pb24gPGFuZHJlaS5zaW1pb25AbWljcm9jaGlwLmNvbT4NCj4g
-DQo+IERvY3VtZW50IGRldmljZSB0cmVlIGJpbmRpbmcgb2YgU0FNQTVEMjkgQ3VyaW9zaXR5LCBm
-cm9tIE1pY3JvY2hpcC4NCj4gDQo+IFJldmlld2VkLWJ5OiBNaWhhaSBTYWluIDxtaWhhaS5zYWlu
-QG1pY3JvY2hpcC5jb20+DQo+IFNpZ25lZC1vZmYtYnk6IEFuZHJlaSBTaW1pb24gPGFuZHJlaS5z
-aW1pb25AbWljcm9jaGlwLmNvbT4NCg0KWW91ciBTb0IgaXMgbWlzc2luZyBmcm9tIGhlcmUuDQoN
-ClN1cmUsIEkgd2lsbCBhZGQgbXkgU29CLg0KDQo+IC0tLQ0KPiAgRG9jdW1lbnRhdGlvbi9kZXZp
-Y2V0cmVlL2JpbmRpbmdzL2FybS9hdG1lbC1hdDkxLnlhbWwgfCA3ICsrKysrKysNCj4gIDEgZmls
-ZSBjaGFuZ2VkLCA3IGluc2VydGlvbnMoKykNCj4gDQo+IGRpZmYgLS1naXQgYS9Eb2N1bWVudGF0
-aW9uL2RldmljZXRyZWUvYmluZGluZ3MvYXJtL2F0bWVsLWF0OTEueWFtbCANCj4gYi9Eb2N1bWVu
-dGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3MvYXJtL2F0bWVsLWF0OTEueWFtbA0KPiBpbmRleCBk
-ZmI4ZmQwODkxOTcuLjg5ZDc1ZmJiMWRlNCAxMDA2NDQNCj4gLS0tIGEvRG9jdW1lbnRhdGlvbi9k
-ZXZpY2V0cmVlL2JpbmRpbmdzL2FybS9hdG1lbC1hdDkxLnlhbWwNCj4gKysrIGIvRG9jdW1lbnRh
-dGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL2FybS9hdG1lbC1hdDkxLnlhbWwNCj4gQEAgLTc5LDYg
-Kzc5LDEzIEBAIHByb3BlcnRpZXM6DQo+ICAgICAgICAgICAgLSBjb25zdDogYXRtZWwsc2FtYTVk
-Mg0KPiAgICAgICAgICAgIC0gY29uc3Q6IGF0bWVsLHNhbWE1DQo+ICANCj4gKyAgICAgIC0gZGVz
-Y3JpcHRpb246IE1pY3JvY2hpcCBTQU1BNUQyOSBDdXJpb3NpdHkNCj4gKyAgICAgICAgaXRlbXM6
-DQo+ICsgICAgICAgICAgLSBjb25zdDogbWljcm9jaGlwLHNhbWE1ZDI5LWN1cmlvc2l0eQ0KPiAr
-ICAgICAgICAgIC0gY29uc3Q6IGF0bWVsLHNhbWE1ZDI5DQo+ICsgICAgICAgICAgLSBjb25zdDog
-YXRtZWwsc2FtYTVkMg0KPiArICAgICAgICAgIC0gY29uc3Q6IGF0bWVsLHNhbWE1DQoNCldoYXQg
-aXMgdGhlIGJlbmVmaXQgb2YgYWRkaW5nIHRoZSB0d28gZmFtaWxpYWwgY29tcGF0aWJsZXM/IElz
-IHRoZXJlIHNvZnR3YXJlIHRoYXQgYWN0dWFsbHkgdXNlcyB0aGVzZT8NCg0KVGhhbmtzLA0KQ29u
-b3IuDQoNCkN1cnJlbnRseSB0aGVyZSBpcyBubyBzb2Z0d2FyZS4NCkluIHRoaXMgZmlsZSB3ZSd2
-ZSBqdXN0IGRvY3VtZW50ZWQgdGhlIHByZXZpb3VzIGJvYXJkcyBmcm9tIHNhbTksIHNhbWE1LCBz
-YW1hNyBNUFVzLg0KDQpUaGFua3MsDQpNaWhhaQ0KDQo+ICsNCj4gICAgICAgIC0gaXRlbXM6DQo+
-ICAgICAgICAgICAgLSBjb25zdDogYXRtZWwsc2FtYTVkMjcNCj4gICAgICAgICAgICAtIGNvbnN0
-OiBhdG1lbCxzYW1hNWQyDQo+IC0tDQo+IDIuNDEuMA0KPg0K
+&o2net_debug_lock is acquired by timer o2net_idle_timer() along the
+following call chain. Thus the acquisition of the lock under process
+context should disable bottom half, otherwise deadlock could happen
+if the timer happens to preempt the execution while the lock is held
+in process context on the same CPU.
+
+<timer interrupt>
+        -> o2net_idle_timer()
+        -> queue_delayed_work()
+        -> sc_put()
+        -> sc_kref_release()
+        -> o2net_debug_del_sc()
+        -> spin_lock(&o2net_debug_lock);
+
+Several lock acquisition of &o2net_debug_lock under process context
+do not disable irq or bottom half. The patch fixes these potential
+deadlocks scenerio by using spin_lock_bh() on &o2net_debug_lock.
+
+This flaw was found by an experimental static analysis tool I am
+developing for irq-related deadlock. x86_64 allmodconfig using gcc
+shows no new warning.
+
+Signed-off-by: Chengfeng Ye <dg573847474@gmail.com>
+---
+ fs/ocfs2/cluster/netdebug.c | 40 ++++++++++++++++++-------------------
+ 1 file changed, 20 insertions(+), 20 deletions(-)
+
+diff --git a/fs/ocfs2/cluster/netdebug.c b/fs/ocfs2/cluster/netdebug.c
+index 35c05c18de59..bc27301eab6d 100644
+--- a/fs/ocfs2/cluster/netdebug.c
++++ b/fs/ocfs2/cluster/netdebug.c
+@@ -44,17 +44,17 @@ static LIST_HEAD(send_tracking);
+ 
+ void o2net_debug_add_nst(struct o2net_send_tracking *nst)
+ {
+-	spin_lock(&o2net_debug_lock);
++	spin_lock_bh(&o2net_debug_lock);
+ 	list_add(&nst->st_net_debug_item, &send_tracking);
+-	spin_unlock(&o2net_debug_lock);
++	spin_unlock_bh(&o2net_debug_lock);
+ }
+ 
+ void o2net_debug_del_nst(struct o2net_send_tracking *nst)
+ {
+-	spin_lock(&o2net_debug_lock);
++	spin_lock_bh(&o2net_debug_lock);
+ 	if (!list_empty(&nst->st_net_debug_item))
+ 		list_del_init(&nst->st_net_debug_item);
+-	spin_unlock(&o2net_debug_lock);
++	spin_unlock_bh(&o2net_debug_lock);
+ }
+ 
+ static struct o2net_send_tracking
+@@ -84,9 +84,9 @@ static void *nst_seq_start(struct seq_file *seq, loff_t *pos)
+ {
+ 	struct o2net_send_tracking *nst, *dummy_nst = seq->private;
+ 
+-	spin_lock(&o2net_debug_lock);
++	spin_lock_bh(&o2net_debug_lock);
+ 	nst = next_nst(dummy_nst);
+-	spin_unlock(&o2net_debug_lock);
++	spin_unlock_bh(&o2net_debug_lock);
+ 
+ 	return nst;
+ }
+@@ -95,13 +95,13 @@ static void *nst_seq_next(struct seq_file *seq, void *v, loff_t *pos)
+ {
+ 	struct o2net_send_tracking *nst, *dummy_nst = seq->private;
+ 
+-	spin_lock(&o2net_debug_lock);
++	spin_lock_bh(&o2net_debug_lock);
+ 	nst = next_nst(dummy_nst);
+ 	list_del_init(&dummy_nst->st_net_debug_item);
+ 	if (nst)
+ 		list_add(&dummy_nst->st_net_debug_item,
+ 			 &nst->st_net_debug_item);
+-	spin_unlock(&o2net_debug_lock);
++	spin_unlock_bh(&o2net_debug_lock);
+ 
+ 	return nst; /* unused, just needs to be null when done */
+ }
+@@ -112,7 +112,7 @@ static int nst_seq_show(struct seq_file *seq, void *v)
+ 	ktime_t now;
+ 	s64 sock, send, status;
+ 
+-	spin_lock(&o2net_debug_lock);
++	spin_lock_bh(&o2net_debug_lock);
+ 	nst = next_nst(dummy_nst);
+ 	if (!nst)
+ 		goto out;
+@@ -145,7 +145,7 @@ static int nst_seq_show(struct seq_file *seq, void *v)
+ 		   (long long)status);
+ 
+ out:
+-	spin_unlock(&o2net_debug_lock);
++	spin_unlock_bh(&o2net_debug_lock);
+ 
+ 	return 0;
+ }
+@@ -191,16 +191,16 @@ static const struct file_operations nst_seq_fops = {
+ 
+ void o2net_debug_add_sc(struct o2net_sock_container *sc)
+ {
+-	spin_lock(&o2net_debug_lock);
++	spin_lock_bh(&o2net_debug_lock);
+ 	list_add(&sc->sc_net_debug_item, &sock_containers);
+-	spin_unlock(&o2net_debug_lock);
++	spin_unlock_bh(&o2net_debug_lock);
+ }
+ 
+ void o2net_debug_del_sc(struct o2net_sock_container *sc)
+ {
+-	spin_lock(&o2net_debug_lock);
++	spin_lock_bh(&o2net_debug_lock);
+ 	list_del_init(&sc->sc_net_debug_item);
+-	spin_unlock(&o2net_debug_lock);
++	spin_unlock_bh(&o2net_debug_lock);
+ }
+ 
+ struct o2net_sock_debug {
+@@ -236,9 +236,9 @@ static void *sc_seq_start(struct seq_file *seq, loff_t *pos)
+ 	struct o2net_sock_debug *sd = seq->private;
+ 	struct o2net_sock_container *sc, *dummy_sc = sd->dbg_sock;
+ 
+-	spin_lock(&o2net_debug_lock);
++	spin_lock_bh(&o2net_debug_lock);
+ 	sc = next_sc(dummy_sc);
+-	spin_unlock(&o2net_debug_lock);
++	spin_unlock_bh(&o2net_debug_lock);
+ 
+ 	return sc;
+ }
+@@ -248,12 +248,12 @@ static void *sc_seq_next(struct seq_file *seq, void *v, loff_t *pos)
+ 	struct o2net_sock_debug *sd = seq->private;
+ 	struct o2net_sock_container *sc, *dummy_sc = sd->dbg_sock;
+ 
+-	spin_lock(&o2net_debug_lock);
++	spin_lock_bh(&o2net_debug_lock);
+ 	sc = next_sc(dummy_sc);
+ 	list_del_init(&dummy_sc->sc_net_debug_item);
+ 	if (sc)
+ 		list_add(&dummy_sc->sc_net_debug_item, &sc->sc_net_debug_item);
+-	spin_unlock(&o2net_debug_lock);
++	spin_unlock_bh(&o2net_debug_lock);
+ 
+ 	return sc; /* unused, just needs to be null when done */
+ }
+@@ -349,7 +349,7 @@ static int sc_seq_show(struct seq_file *seq, void *v)
+ 	struct o2net_sock_debug *sd = seq->private;
+ 	struct o2net_sock_container *sc, *dummy_sc = sd->dbg_sock;
+ 
+-	spin_lock(&o2net_debug_lock);
++	spin_lock_bh(&o2net_debug_lock);
+ 	sc = next_sc(dummy_sc);
+ 
+ 	if (sc) {
+@@ -359,7 +359,7 @@ static int sc_seq_show(struct seq_file *seq, void *v)
+ 			sc_show_sock_stats(seq, sc);
+ 	}
+ 
+-	spin_unlock(&o2net_debug_lock);
++	spin_unlock_bh(&o2net_debug_lock);
+ 
+ 	return 0;
+ }
+-- 
+2.17.1
+
