@@ -2,71 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 210ED76D976
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 23:27:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4AB6976D97E
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 23:28:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232226AbjHBV1G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Aug 2023 17:27:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34396 "EHLO
+        id S232387AbjHBV2l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Aug 2023 17:28:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35346 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232100AbjHBV07 (ORCPT
+        with ESMTP id S231453AbjHBV2j (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Aug 2023 17:26:59 -0400
-Received: from mail-oi1-x22b.google.com (mail-oi1-x22b.google.com [IPv6:2607:f8b0:4864:20::22b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ECDBDE6F
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Aug 2023 14:26:54 -0700 (PDT)
-Received: by mail-oi1-x22b.google.com with SMTP id 5614622812f47-3a36b30aa7bso160456b6e.3
-        for <linux-kernel@vger.kernel.org>; Wed, 02 Aug 2023 14:26:54 -0700 (PDT)
+        Wed, 2 Aug 2023 17:28:39 -0400
+Received: from mail-yw1-x1149.google.com (mail-yw1-x1149.google.com [IPv6:2607:f8b0:4864:20::1149])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C9DF1734
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Aug 2023 14:28:38 -0700 (PDT)
+Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-5867fe87d16so1760157b3.2
+        for <linux-kernel@vger.kernel.org>; Wed, 02 Aug 2023 14:28:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1691011614; x=1691616414;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=jUEKuWb/qRWGPcwpGm7URWDdQ7oovJb2rcmtaobVWAE=;
-        b=RtvSGxJ+mav+wPCHXdVYU99ayoscEV2EM98/HQ0bElZBkBhCnY52dJk3jZmCfir+bQ
-         L8eAzwIAR2sBr3vw3uj7w5jHFASc0kRvhRLops40/wOaRkGdBtQZL0B2JXDVUq/DTidq
-         UwYpDpC3VbqG8FBd2+huJtyaBTMmNB05ZP73hP+qD1Exlyqr9dr1fWYofRcuCA2WmTzd
-         XRXdvyboVi8POQ/f4NS95xvWVD4BwvCCGv2lTwbCaaz6EbycEglhuXXD6usNr6E/nU6f
-         gM0GDl24nkATrFuswOptpea2z3rdCPAdNGFYtmJQnrRsSO3UrYwln4f4QN4w4WrqQg+Q
-         GYNQ==
+        d=google.com; s=20221208; t=1691011717; x=1691616517;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=icjiEwYAydMlzsRZ8GnEIvFOFSe1szS76VxxnsFH640=;
+        b=gs1AYJ4+CvQT/+aMUh1flJrlvS3Qzwy5Q2A3K7MBW4sLteIo/kC24KqrmQFPM7t55S
+         a2BhoOC55cwvp7PnytvAezuMeq0d301xQtaQbdFdct2XWWVdGm+3ID2oDQuqqdB57cdN
+         ddH/bqDFQbWpU8thUIMs/CD2+GOifMgxCgu+O+Q7uU5kgFR5ttJnY7qknE14tffEEgHA
+         dBFoP01vN5NBqV4vvKyRoG0KAgCntsT8skuZb8NyXLUpvK+77snvXHcvdVJ7eY71rq76
+         oqqGbxYJdlDRZx8U13Ey+T6MWkYdeofxzX2m8mwi+05nimAhCgjvD0uJ5riI+RZQxN2L
+         nYgA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691011614; x=1691616414;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=jUEKuWb/qRWGPcwpGm7URWDdQ7oovJb2rcmtaobVWAE=;
-        b=mE74ByK590kynAA0p0BgYbd2Zg8wY6Db/b1u/040J4JTmBGzGBG5NPpv8in9Mm2S8C
-         BBDxYTjkJulIC6r/INNX31+Eexn9NxDehQIWff+xhaOsysD0qV170xzS+sPhwM1MesEA
-         bwXs/DP7n3sUHOROf9XY2CFPi8yui1OXk0xnuuRKhVd0OMXGi6hegpNVkwZL8aHAfzb9
-         EGjcPuQamPEZkMZf/5WLmLkhcL6QomFfMSDvb6qP2SLxSJTZoJYiJKkvgHSoW1+HGun5
-         hKX2tcdw9zksUa77qbZMyqJPExGuBsz4dLevUp/0dE62LtPrcK+zTItZDj1IvcM+igh7
-         DGcA==
-X-Gm-Message-State: ABy/qLYWcoUe2DO/gFX4w0m0tRo/LmERu90QK62qWUhzeEmo9Jbp4HnS
-        BL/N++qLHbJ1qyC54o3QchgtiipAhTQKe3HIOncEJQ==
-X-Google-Smtp-Source: APBJJlEfMzUewc9dWiMhV1sSjAHIMUeF38rrKJ7dqV5L8zFEEuQ4WO4ftfNL1eREbhXHWSw8qo+hdp/PdFdD1O7e0SY=
-X-Received: by 2002:a05:6358:6f8d:b0:133:eff:39c with SMTP id
- s13-20020a0563586f8d00b001330eff039cmr6979151rwn.20.1691011614061; Wed, 02
- Aug 2023 14:26:54 -0700 (PDT)
-MIME-Version: 1.0
-References: <20230802092647.3000666-1-sergio.paracuellos@gmail.com>
-In-Reply-To: <20230802092647.3000666-1-sergio.paracuellos@gmail.com>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Wed, 2 Aug 2023 14:26:43 -0700
-Message-ID: <CAKwvOd=SvHUPd8+sWtqgxghPEciD5sqPiggZx+OOEqxtJrML6Q@mail.gmail.com>
-Subject: Re: [PATCH] clk: ralink: mtmips: quiet unused variable warning
-To:     Sergio Paracuellos <sergio.paracuellos@gmail.com>,
-        Arnd Bergmann <arnd@kernel.org>,
-        Nathan Chancellor <nathan@kernel.org>
-Cc:     linux-clk@vger.kernel.org, tsbogend@alpha.franken.de,
-        sboyd@kernel.org, mturquette@baylibre.com,
-        linux-kernel@vger.kernel.org, kernel test robot <lkp@intel.com>,
-        clang-built-linux <llvm@lists.linux.dev>
+        d=1e100.net; s=20221208; t=1691011717; x=1691616517;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=icjiEwYAydMlzsRZ8GnEIvFOFSe1szS76VxxnsFH640=;
+        b=bYjYcMp7tVEz3hJVHv4sKZgp+8XUF4jebENRq6VVFB5vkDwYfAXdZXYzFziAzNizNc
+         apgbnU8t3CtUts0G8zJklTuD42bGyV6pqQmLUfaHqyka6BGSXMn5SHebSQw6NtNclzNJ
+         DchoAEi8nYV5fdM/3MYPJ6qirURR5SE7ugJz/RVUVqg+kZCZJVoO61HoeI6ptg8XgkF+
+         b1RuVXDZRdp6OKHoTlfIbnDBzu/Ep1iAJAkOK677+WLTB2UVUY8z1hdnfcTjvl8lnvXK
+         E48+h78Pj+ZwoNCK8EmCIHGme+GrF8VeP+93X2MBhmQTDFFnjPnOvECnERk0H5IR1P4S
+         0VtA==
+X-Gm-Message-State: ABy/qLaRpkejIFm/PvTjpji8jJa8aAfcLid6mamDYsLhbh+JQuag5U10
+        opVZHkJpp6pOKocB3fXLFvhRgEKR/Q==
+X-Google-Smtp-Source: APBJJlG4oGBttMFLWAh4wb5lb/djVKbLKECONDMHKlsL1QIilZzq4Q9LdpyJ77FpiG3xEaVEoL2hzxOv7g==
+X-Received: from rmoar-specialist.c.googlers.com ([fda3:e722:ac3:cc00:2b:7d90:c0a8:45d3])
+ (user=rmoar job=sendgmr) by 2002:a81:4304:0:b0:584:43af:7b0d with SMTP id
+ q4-20020a814304000000b0058443af7b0dmr148419ywa.2.1691011717332; Wed, 02 Aug
+ 2023 14:28:37 -0700 (PDT)
+Date:   Wed,  2 Aug 2023 21:28:34 +0000
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.41.0.585.gd2178a4bd4-goog
+Message-ID: <20230802212834.761327-1-rmoar@google.com>
+Subject: [PATCH -next] kunit: fix uninitialized variables bug in attributes filtering
+From:   Rae Moar <rmoar@google.com>
+To:     shuah@kernel.org, davidgow@google.com, brendan.higgins@linux.dev
+Cc:     ruanjinjie@huawei.com, linux-kselftest@vger.kernel.org,
+        kunit-dev@googlegroups.com, linux-kernel@vger.kernel.org,
+        Rae Moar <rmoar@google.com>, kernel test robot <lkp@intel.com>,
+        Dan Carpenter <dan.carpenter@linaro.org>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -74,62 +68,180 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 2, 2023 at 2:26=E2=80=AFAM Sergio Paracuellos
-<sergio.paracuellos@gmail.com> wrote:
->
-> When CONFIG_OF is disabled then the matching table is not referenced and
-> the following warning appears:
->
-> drivers/clk/ralink/clk-mtmips.c:821:34: warning: unused variable 'mtmips_=
-of_match' [-Wunused-const-variable]
-> 821 |   static const struct of_device_id mtmips_of_match[] =3D {
->     |                          ^
->
-> Silence it declaring 'mtmips_of_match' with '__maybe_unused'.
->
-> Fixes: 6f3b15586eef ("clk: ralink: add clock and reset driver for MTMIPS =
-SoCs")
-> Reported-by: kernel test robot <lkp@intel.com>
-> Closes: https://lore.kernel.org/oe-kbuild-all/202307242310.CdOnd2py-lkp@i=
-ntel.com/
-> Signed-off-by: Sergio Paracuellos <sergio.paracuellos@gmail.com>
+Fix smatch warnings regarding uninitialized variables in the filtering
+patch of the new KUnit Attributes feature.
 
-I think this is fine; Arnd or Nathan do you have a preference? or thoughts =
-here?
+Fixes: 529534e8cba3 ("kunit: Add ability to filter attributes")
 
-If not, thanks for the patch.
-Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
+Reported-by: kernel test robot <lkp@intel.com>
+Reported-by: Dan Carpenter <dan.carpenter@linaro.org>
+Closes: https://lore.kernel.org/r/202307270610.s0w4NKEn-lkp@intel.com/
 
-(I have a slight preference for wrapping the use in `#ifdef CONFIG_OF`
-since with the approach used by this patch, if all users are removed
-we will never get a warning for this var. But it's a weak preference;
-it's more important to me that we don't have -Werror promote this
-warning to a build breakage)
+Signed-off-by: Rae Moar <rmoar@google.com>
+---
 
-> ---
->  drivers/clk/ralink/clk-mtmips.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/drivers/clk/ralink/clk-mtmips.c b/drivers/clk/ralink/clk-mtm=
-ips.c
-> index 1e7991439527..6716394b28a3 100644
-> --- a/drivers/clk/ralink/clk-mtmips.c
-> +++ b/drivers/clk/ralink/clk-mtmips.c
-> @@ -820,7 +820,7 @@ static const struct mtmips_clk_data mt76x8_clk_data =
-=3D {
->         .num_clk_periph =3D ARRAY_SIZE(mt76x8_pherip_clks),
->  };
->
-> -static const struct of_device_id mtmips_of_match[] =3D {
-> +static const __maybe_unused struct of_device_id mtmips_of_match[] =3D {
->         {
->                 .compatible =3D "ralink,rt2880-sysc",
->                 .data =3D &rt2880_clk_data,
-> --
-> 2.25.1
->
+Note that this is rebased on top of the recent fix:
+("kunit: fix possible memory leak in kunit_filter_suites()").
 
+ lib/kunit/attributes.c | 40 +++++++++++++++++-----------------------
+ lib/kunit/executor.c   | 10 +++++++---
+ 2 files changed, 24 insertions(+), 26 deletions(-)
 
---=20
-Thanks,
-~Nick Desaulniers
+diff --git a/lib/kunit/attributes.c b/lib/kunit/attributes.c
+index d37c40c0ce4f..5e3034b6be99 100644
+--- a/lib/kunit/attributes.c
++++ b/lib/kunit/attributes.c
+@@ -102,7 +102,7 @@ static int int_filter(long val, const char *op, int input, int *err)
+ static int attr_enum_filter(void *attr, const char *input, int *err,
+ 		const char * const str_list[], int max)
+ {
+-	int i, j, input_int;
++	int i, j, input_int = -1;
+ 	long test_val = (long)attr;
+ 	const char *input_val = NULL;
+ 
+@@ -124,7 +124,7 @@ static int attr_enum_filter(void *attr, const char *input, int *err,
+ 			input_int = j;
+ 	}
+ 
+-	if (!input_int) {
++	if (input_int < 0) {
+ 		*err = -EINVAL;
+ 		pr_err("kunit executor: invalid filter input: %s\n", input);
+ 		return false;
+@@ -186,8 +186,10 @@ static void *attr_module_get(void *test_or_suite, bool is_test)
+ 	// Suites get their module attribute from their first test_case
+ 	if (test)
+ 		return ((void *) test->module_name);
+-	else
++	else if (kunit_suite_num_test_cases(suite) > 0)
+ 		return ((void *) suite->test_cases[0].module_name);
++	else
++		return (void *) "";
+ }
+ 
+ /* List of all Test Attributes */
+@@ -221,7 +223,7 @@ const char *kunit_attr_filter_name(struct kunit_attr_filter filter)
+ void kunit_print_attr(void *test_or_suite, bool is_test, unsigned int test_level)
+ {
+ 	int i;
+-	bool to_free;
++	bool to_free = false;
+ 	void *attr;
+ 	const char *attr_name, *attr_str;
+ 	struct kunit_suite *suite = is_test ? NULL : test_or_suite;
+@@ -255,7 +257,7 @@ void kunit_print_attr(void *test_or_suite, bool is_test, unsigned int test_level
+ 
+ int kunit_get_filter_count(char *input)
+ {
+-	int i, comma_index, count = 0;
++	int i, comma_index = 0, count = 0;
+ 
+ 	for (i = 0; input[i]; i++) {
+ 		if (input[i] == ',') {
+@@ -272,7 +274,7 @@ int kunit_get_filter_count(char *input)
+ struct kunit_attr_filter kunit_next_attr_filter(char **filters, int *err)
+ {
+ 	struct kunit_attr_filter filter = {};
+-	int i, j, comma_index, new_start_index;
++	int i, j, comma_index = 0, new_start_index = 0;
+ 	int op_index = -1, attr_index = -1;
+ 	char op;
+ 	char *input = *filters;
+@@ -316,7 +318,7 @@ struct kunit_attr_filter kunit_next_attr_filter(char **filters, int *err)
+ 		filter.attr = &kunit_attr_list[attr_index];
+ 	}
+ 
+-	if (comma_index) {
++	if (comma_index > 0) {
+ 		input[comma_index] = '\0';
+ 		filter.input = input + op_index;
+ 		input = input + new_start_index;
+@@ -356,31 +358,22 @@ struct kunit_suite *kunit_filter_attr_tests(const struct kunit_suite *const suit
+ 
+ 	/* Save filtering result on default value */
+ 	default_result = filter.attr->filter(filter.attr->attr_default, filter.input, err);
+-	if (*err) {
+-		kfree(copy);
+-		kfree(filtered);
+-		return NULL;
+-	}
++	if (*err)
++		goto err;
+ 
+ 	/* Save suite attribute value and filtering result on that value */
+ 	suite_val = filter.attr->get_attr((void *)suite, false);
+ 	suite_result = filter.attr->filter(suite_val, filter.input, err);
+-	if (*err) {
+-		kfree(copy);
+-		kfree(filtered);
+-		return NULL;
+-	}
++	if (*err)
++		goto err;
+ 
+ 	/* For each test case, save test case if passes filtering. */
+ 	kunit_suite_for_each_test_case(suite, test_case) {
+ 		test_val = filter.attr->get_attr((void *) test_case, true);
+ 		test_result = filter.attr->filter(filter.attr->get_attr(test_case, true),
+ 				filter.input, err);
+-		if (*err) {
+-			kfree(copy);
+-			kfree(filtered);
+-			return NULL;
+-		}
++		if (*err)
++			goto err;
+ 
+ 		/*
+ 		 * If attribute value of test case is set, filter on that value.
+@@ -406,7 +399,8 @@ struct kunit_suite *kunit_filter_attr_tests(const struct kunit_suite *const suit
+ 		}
+ 	}
+ 
+-	if (n == 0) {
++err:
++	if (n == 0 || *err) {
+ 		kfree(copy);
+ 		kfree(filtered);
+ 		return NULL;
+diff --git a/lib/kunit/executor.c b/lib/kunit/executor.c
+index 481901d245d0..b6e07de2876a 100644
+--- a/lib/kunit/executor.c
++++ b/lib/kunit/executor.c
+@@ -130,7 +130,7 @@ static struct suite_set kunit_filter_suites(const struct suite_set *suite_set,
+ 	struct kunit_suite **copy, *filtered_suite, *new_filtered_suite;
+ 	struct suite_set filtered;
+ 	struct kunit_glob_filter parsed_glob;
+-	struct kunit_attr_filter *parsed_filters;
++	struct kunit_attr_filter *parsed_filters = NULL;
+ 
+ 	const size_t max = suite_set->end - suite_set->start;
+ 
+@@ -147,7 +147,11 @@ static struct suite_set kunit_filter_suites(const struct suite_set *suite_set,
+ 	/* Parse attribute filters */
+ 	if (filters) {
+ 		filter_count = kunit_get_filter_count(filters);
+-		parsed_filters = kcalloc(filter_count + 1, sizeof(*parsed_filters), GFP_KERNEL);
++		parsed_filters = kcalloc(filter_count, sizeof(*parsed_filters), GFP_KERNEL);
++		if (!parsed_filters) {
++			kfree(copy);
++			return filtered;
++		}
+ 		for (j = 0; j < filter_count; j++)
+ 			parsed_filters[j] = kunit_next_attr_filter(&filters, err);
+ 		if (*err)
+@@ -166,7 +170,7 @@ static struct suite_set kunit_filter_suites(const struct suite_set *suite_set,
+ 				goto err;
+ 			}
+ 		}
+-		if (filter_count) {
++		if (filter_count > 0 && parsed_filters != NULL) {
+ 			for (k = 0; k < filter_count; k++) {
+ 				new_filtered_suite = kunit_filter_attr_tests(filtered_suite,
+ 						parsed_filters[k], filter_action, err);
+
+base-commit: 3bffe185ad11e408903d2782727877388d08d94e
+-- 
+2.41.0.585.gd2178a4bd4-goog
+
