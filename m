@@ -2,51 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BA05A76D724
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 20:49:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DDDBA76D726
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 20:49:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231664AbjHBStO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Aug 2023 14:49:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47800 "EHLO
+        id S232014AbjHBStQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Aug 2023 14:49:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47802 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231720AbjHBStL (ORCPT
+        with ESMTP id S231834AbjHBStL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 2 Aug 2023 14:49:11 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62B7226A1;
-        Wed,  2 Aug 2023 11:49:04 -0700 (PDT)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E684A2119;
+        Wed,  2 Aug 2023 11:49:05 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 8A04961AB0;
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 8283461AB9;
+        Wed,  2 Aug 2023 18:49:05 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 65648C433C9;
         Wed,  2 Aug 2023 18:49:03 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3DF6DC433C8;
-        Wed,  2 Aug 2023 18:49:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691002143;
-        bh=/DSGNuWAHxe5PRcoeTdd6CJ72uKg2Br00NWX58ambS8=;
-        h=From:To:Cc:Subject:Date:From;
-        b=q3jHnB58ExvBojMqVxDiCvD8pYO/bErzabRTPdZKe5rwURUJvSve/VRd2Ge2H9slT
-         Ni3TsS5fZayhRKjkaryD3prPzVml9fcJb0UpVdtaV7KN5uf5sjFkF3eq85VAcknMjY
-         v8HPhs5EdPylL0MnaO02n16j33Ov3XHDvf64hrFSiKWB4BLWERtl22aZSdaLNQDB6l
-         QnVy/+kKfHRofr3xl9pRZ6cy+0AZR1K339/RbljnHoVFUaSkcluxgwqF5sKDfsiSXl
-         +23xXyOz/fVhshbIsx4xLE9Cn+koBKgjM7KF1QEQdQgML18j/FpXKiK6/O7gXd5W5a
-         nZhC7WMHF6CyA==
+        s=k20201202; t=1691002144;
+        bh=xtJczoF3oh6jnECOQfv5q5gtrDFCSV0gElhOqcidnQs=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=Aam6PDRdIj5psmth78BjW/Ag2k5AkwnNuQXZnByBSg+GeEK0iGRz5eWkeyPBnW3yb
+         SBcr0qJN81N5oQw0KqU7EEcZyozgDU6yj9mmtAdEi+sDX1BMfEw7xDjm0ItZjpmz2f
+         Ag8ONG4bxkS99eOlW1YJAkA3T4tDezogXHxHwmHQ6qScY3jVLiwknNkUaO3z+D30Zs
+         PwU9cVvqwzDICbOhCNp17cHJNuZOmrrfTmtz0rGEgmjXo92i1edy1/UHXa1uGiHGfs
+         4V9Zz4OgpnJwttqIhqTAUrEv9XRYHpmG5JEWjl2D1CFnLuKpjsNbEugzkU2/cuGiHd
+         q3Y1pU0nuPjJw==
 From:   Arnd Bergmann <arnd@kernel.org>
 To:     John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
 Cc:     linux-sh@vger.kernel.org, Rich Felker <dalias@libc.org>,
         Yoshinori Sato <ysato@users.sourceforge.jp>,
         Geert Uytterhoeven <geert+renesas@glider.be>,
         linux-kernel@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>
-Subject: [PATCH 1/4] sh: remove stale microdev board
-Date:   Wed,  2 Aug 2023 20:48:46 +0200
-Message-Id: <20230802184849.1019466-1-arnd@kernel.org>
+Subject: [PATCH 2/4] sh: remove unused sh4-202 support
+Date:   Wed,  2 Aug 2023 20:48:47 +0200
+Message-Id: <20230802184849.1019466-2-arnd@kernel.org>
 X-Mailer: git-send-email 2.39.2
+In-Reply-To: <20230802184849.1019466-1-arnd@kernel.org>
+References: <20230802184849.1019466-1-arnd@kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -57,902 +59,388 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Arnd Bergmann <arnd@arndb.de>
 
-This board was an early prototype platform for early SH4 CPUs and related
-to the already removed SH5 cayman platform.
+This early prototype of the SH4 CPU was only used in
+the "microdev" board that is now removed, so all of the
+sh4-202 supoprt can also be removed.
 
-The microdev board itself has been kept in the tree for this long despite
-being in a bad shape even 20 years ago when it got merged, with no working
-PCI support and ugly workarounds for its I/O port implementation that
-try to emulate PC style peripheral access despite being quite different
-in reality.
-
-As far as I can tell, the ethernet, display, USB and PCI devices on it
-already broke at some point (afbb9d8d5266b, 46bc85872040a), so I
-think we can just remove it entirely.
-
-Link: https://lore.kernel.org/lkml/09094baf-dadf-4bce-9f63-f2a1f255f9a8@app.fastmail.com/
 Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 ---
- arch/sh/Kconfig                             |   3 +-
- arch/sh/boards/Kconfig                      |   7 -
- arch/sh/boards/Makefile                     |   1 -
- arch/sh/boards/mach-microdev/Makefile       |   6 -
- arch/sh/boards/mach-microdev/fdc37c93xapm.c | 157 ----------------
- arch/sh/boards/mach-microdev/io.c           | 123 ------------
- arch/sh/boards/mach-microdev/irq.c          | 150 ---------------
- arch/sh/boards/mach-microdev/setup.c        | 197 --------------------
- arch/sh/configs/microdev_defconfig          |  42 -----
- arch/sh/include/mach-common/mach/microdev.h |  69 -------
- drivers/net/ethernet/smsc/smc91x.h          |  19 --
- 11 files changed, 1 insertion(+), 773 deletions(-)
- delete mode 100644 arch/sh/boards/mach-microdev/Makefile
- delete mode 100644 arch/sh/boards/mach-microdev/fdc37c93xapm.c
- delete mode 100644 arch/sh/boards/mach-microdev/io.c
- delete mode 100644 arch/sh/boards/mach-microdev/irq.c
- delete mode 100644 arch/sh/boards/mach-microdev/setup.c
- delete mode 100644 arch/sh/configs/microdev_defconfig
- delete mode 100644 arch/sh/include/mach-common/mach/microdev.h
+ arch/sh/Kconfig                        |   5 -
+ arch/sh/kernel/cpu/sh4/Makefile        |   4 -
+ arch/sh/kernel/cpu/sh4/clock-sh4-202.c | 174 -------------------------
+ arch/sh/kernel/cpu/sh4/setup-sh4-202.c | 139 --------------------
+ 4 files changed, 322 deletions(-)
+ delete mode 100644 arch/sh/kernel/cpu/sh4/clock-sh4-202.c
+ delete mode 100644 arch/sh/kernel/cpu/sh4/setup-sh4-202.c
 
 diff --git a/arch/sh/Kconfig b/arch/sh/Kconfig
-index 33530b044953c..d3df67f215ca5 100644
+index d3df67f215ca5..d785329e57151 100644
 --- a/arch/sh/Kconfig
 +++ b/arch/sh/Kconfig
-@@ -124,8 +124,7 @@ config ARCH_HAS_ILOG2_U64
+@@ -383,10 +383,6 @@ config CPU_SUBTYPE_SH7760
+ 	bool "Support SH7760 processor"
+ 	select CPU_SH4
  
- config NO_IOPORT_MAP
- 	def_bool !PCI
--	depends on !SH_SH4202_MICRODEV && !SH_SHMIN && !SH_HP6XX && \
--		   !SH_SOLUTION_ENGINE
-+	depends on !SH_SHMIN && !SH_HP6XX && !SH_SOLUTION_ENGINE
- 
- config IO_TRAPPED
- 	bool
-diff --git a/arch/sh/boards/Kconfig b/arch/sh/boards/Kconfig
-index fafe15d3ba1dc..109bec4dad94a 100644
---- a/arch/sh/boards/Kconfig
-+++ b/arch/sh/boards/Kconfig
-@@ -289,13 +289,6 @@ config SH_EDOSK7760
- 	  Select if configuring for a Renesas EDOSK7760
- 	  evaluation board.
- 
--config SH_SH4202_MICRODEV
--	bool "SH4-202 MicroDev"
--	depends on CPU_SUBTYPE_SH4_202
--	help
--	  Select SH4-202 MicroDev if configuring for a SuperH MicroDev board
--	  with an SH4-202 CPU.
+-config CPU_SUBTYPE_SH4_202
+-	bool "Support SH4-202 processor"
+-	select CPU_SH4
 -
- config SH_LANDISK
- 	bool "LANDISK"
- 	depends on CPU_SUBTYPE_SH7751R
-diff --git a/arch/sh/boards/Makefile b/arch/sh/boards/Makefile
-index b57219436ace3..fbbc350ca8542 100644
---- a/arch/sh/boards/Makefile
-+++ b/arch/sh/boards/Makefile
-@@ -33,7 +33,6 @@ obj-$(CONFIG_SH_SDK7780)	+= mach-sdk7780/
- obj-$(CONFIG_SH_SDK7786)	+= mach-sdk7786/
- obj-$(CONFIG_SH_X3PROTO)	+= mach-x3proto/
- obj-$(CONFIG_SH_SH7763RDP)	+= mach-sh7763rdp/
--obj-$(CONFIG_SH_SH4202_MICRODEV)+= mach-microdev/
- obj-$(CONFIG_SH_LANDISK)	+= mach-landisk/
- obj-$(CONFIG_SH_LBOX_RE2)	+= mach-lboxre2/
- obj-$(CONFIG_SH_RSK)		+= mach-rsk/
-diff --git a/arch/sh/boards/mach-microdev/Makefile b/arch/sh/boards/mach-microdev/Makefile
-deleted file mode 100644
-index 05c5698dcad02..0000000000000
---- a/arch/sh/boards/mach-microdev/Makefile
-+++ /dev/null
-@@ -1,6 +0,0 @@
--# SPDX-License-Identifier: GPL-2.0
--#
--# Makefile for the SuperH MicroDev specific parts of the kernel
--#
+ # SH-4A Processor Support
+ 
+ config CPU_SUBTYPE_SH7723
+@@ -517,7 +513,6 @@ config SH_PCLK_FREQ
+ 			      CPU_SUBTYPE_SH7263 || \
+ 			      CPU_SUBTYPE_MXG
+ 	default "60000000" if CPU_SUBTYPE_SH7751 || CPU_SUBTYPE_SH7751R
+-	default "66000000" if CPU_SUBTYPE_SH4_202
+ 	default "50000000"
+ 	help
+ 	  This option is used to specify the peripheral clock frequency.
+diff --git a/arch/sh/kernel/cpu/sh4/Makefile b/arch/sh/kernel/cpu/sh4/Makefile
+index 00c16331e07e5..02e3ee16e15ce 100644
+--- a/arch/sh/kernel/cpu/sh4/Makefile
++++ b/arch/sh/kernel/cpu/sh4/Makefile
+@@ -23,15 +23,11 @@ obj-$(CONFIG_CPU_SUBTYPE_SH7091)	+= setup-sh7750.o
+ obj-$(CONFIG_CPU_SUBTYPE_SH7751)	+= setup-sh7750.o
+ obj-$(CONFIG_CPU_SUBTYPE_SH7751R)	+= setup-sh7750.o
+ obj-$(CONFIG_CPU_SUBTYPE_SH7760)	+= setup-sh7760.o
+-obj-$(CONFIG_CPU_SUBTYPE_SH4_202)	+= setup-sh4-202.o
+ 
+ # Primary on-chip clocks (common)
+ ifndef CONFIG_CPU_SH4A
+ clock-$(CONFIG_CPU_SH4)			:= clock-sh4.o
+ endif
+ 
+-# Additional clocks by subtype
+-clock-$(CONFIG_CPU_SUBTYPE_SH4_202)	+= clock-sh4-202.o
 -
--obj-y	 := setup.o irq.o io.o fdc37c93xapm.o
-diff --git a/arch/sh/boards/mach-microdev/fdc37c93xapm.c b/arch/sh/boards/mach-microdev/fdc37c93xapm.c
+ obj-y					+= $(clock-y)
+ obj-$(CONFIG_PERF_EVENTS)		+= $(perf-y)
+diff --git a/arch/sh/kernel/cpu/sh4/clock-sh4-202.c b/arch/sh/kernel/cpu/sh4/clock-sh4-202.c
 deleted file mode 100644
-index 2a04f72dd1457..0000000000000
---- a/arch/sh/boards/mach-microdev/fdc37c93xapm.c
+index c1cdef763cb25..0000000000000
+--- a/arch/sh/kernel/cpu/sh4/clock-sh4-202.c
 +++ /dev/null
-@@ -1,157 +0,0 @@
+@@ -1,174 +0,0 @@
 -// SPDX-License-Identifier: GPL-2.0
 -/*
-- * Setup for the SMSC FDC37C93xAPM
+- * arch/sh/kernel/cpu/sh4/clock-sh4-202.c
 - *
-- * Copyright (C) 2003 Sean McGoogan (Sean.McGoogan@superh.com)
-- * Copyright (C) 2003, 2004 SuperH, Inc.
-- * Copyright (C) 2004, 2005 Paul Mundt
+- * Additional SH4-202 support for the clock framework
 - *
-- * SuperH SH4-202 MicroDev board support.
+- *  Copyright (C) 2005  Paul Mundt
 - */
 -#include <linux/init.h>
--#include <linux/ioport.h>
--#include <linux/io.h>
+-#include <linux/kernel.h>
 -#include <linux/err.h>
--#include <mach/microdev.h>
+-#include <linux/io.h>
+-#include <linux/clkdev.h>
+-#include <asm/clock.h>
+-#include <asm/freq.h>
 -
--#define SMSC_CONFIG_PORT_ADDR	 (0x3F0)
--#define SMSC_INDEX_PORT_ADDR	 SMSC_CONFIG_PORT_ADDR
--#define SMSC_DATA_PORT_ADDR	 (SMSC_INDEX_PORT_ADDR + 1)
+-#define CPG2_FRQCR3	0xfe0a0018
 -
--#define SMSC_ENTER_CONFIG_KEY	 0x55
--#define SMSC_EXIT_CONFIG_KEY	 0xaa
+-static int frqcr3_divisors[] = { 1, 2, 3, 4, 6, 8, 16 };
+-static int frqcr3_values[]   = { 0, 1, 2, 3, 4, 5, 6  };
 -
--#define SMCS_LOGICAL_DEV_INDEX	 0x07	/* Logical Device Number */
--#define SMSC_DEVICE_ID_INDEX	 0x20	/* Device ID */
--#define SMSC_DEVICE_REV_INDEX	 0x21	/* Device Revision */
--#define SMSC_ACTIVATE_INDEX	 0x30	/* Activate */
--#define SMSC_PRIMARY_BASE_INDEX	 0x60	/* Primary Base Address */
--#define SMSC_SECONDARY_BASE_INDEX 0x62	/* Secondary Base Address */
--#define SMSC_PRIMARY_INT_INDEX	 0x70	/* Primary Interrupt Select */
--#define SMSC_SECONDARY_INT_INDEX 0x72	/* Secondary Interrupt Select */
--#define SMSC_HDCS0_INDEX	 0xf0	/* HDCS0 Address Decoder */
--#define SMSC_HDCS1_INDEX	 0xf1	/* HDCS1 Address Decoder */
--
--#define SMSC_IDE1_DEVICE	1	/* IDE #1 logical device */
--#define SMSC_IDE2_DEVICE	2	/* IDE #2 logical device */
--#define SMSC_PARALLEL_DEVICE	3	/* Parallel Port logical device */
--#define SMSC_SERIAL1_DEVICE	4	/* Serial #1 logical device */
--#define SMSC_SERIAL2_DEVICE	5	/* Serial #2 logical device */
--#define SMSC_KEYBOARD_DEVICE	7	/* Keyboard logical device */
--#define SMSC_CONFIG_REGISTERS	8	/* Configuration Registers (Aux I/O) */
--
--#define SMSC_READ_INDEXED(index) ({ \
--	outb((index), SMSC_INDEX_PORT_ADDR); \
--	inb(SMSC_DATA_PORT_ADDR); })
--#define SMSC_WRITE_INDEXED(val, index) ({ \
--	outb((index), SMSC_INDEX_PORT_ADDR); \
--	outb((val),   SMSC_DATA_PORT_ADDR); })
--
--#define	IDE1_PRIMARY_BASE	0x01f0	/* Task File Registe base for IDE #1 */
--#define	IDE1_SECONDARY_BASE	0x03f6	/* Miscellaneous AT registers for IDE #1 */
--#define	IDE2_PRIMARY_BASE	0x0170	/* Task File Registe base for IDE #2 */
--#define	IDE2_SECONDARY_BASE	0x0376	/* Miscellaneous AT registers for IDE #2 */
--
--#define SERIAL1_PRIMARY_BASE	0x03f8
--#define SERIAL2_PRIMARY_BASE	0x02f8
--
--#define	MSB(x)		( (x) >> 8 )
--#define	LSB(x)		( (x) & 0xff )
--
--	/* General-Purpose base address on CPU-board FPGA */
--#define	MICRODEV_FPGA_GP_BASE		0xa6100000ul
--
--static int __init smsc_superio_setup(void)
+-static unsigned long emi_clk_recalc(struct clk *clk)
 -{
--
--	unsigned char devid, devrev;
--
--		/* Initially the chip is in run state */
--		/* Put it into configuration state */
--	outb(SMSC_ENTER_CONFIG_KEY, SMSC_CONFIG_PORT_ADDR);
--
--		/* Read device ID info */
--	devid  = SMSC_READ_INDEXED(SMSC_DEVICE_ID_INDEX);
--	devrev = SMSC_READ_INDEXED(SMSC_DEVICE_REV_INDEX);
--
--	if ((devid == 0x30) && (devrev == 0x01))
--		printk("SMSC FDC37C93xAPM SuperIO device detected\n");
--	else
--		return -ENODEV;
--
--		/* Select the keyboard device */
--	SMSC_WRITE_INDEXED(SMSC_KEYBOARD_DEVICE, SMCS_LOGICAL_DEV_INDEX);
--		/* enable it */
--	SMSC_WRITE_INDEXED(1, SMSC_ACTIVATE_INDEX);
--		/* enable the interrupts */
--	SMSC_WRITE_INDEXED(MICRODEV_FPGA_IRQ_KEYBOARD, SMSC_PRIMARY_INT_INDEX);
--	SMSC_WRITE_INDEXED(MICRODEV_FPGA_IRQ_MOUSE, SMSC_SECONDARY_INT_INDEX);
--
--		/* Select the Serial #1 device */
--	SMSC_WRITE_INDEXED(SMSC_SERIAL1_DEVICE, SMCS_LOGICAL_DEV_INDEX);
--		/* enable it */
--	SMSC_WRITE_INDEXED(1, SMSC_ACTIVATE_INDEX);
--		/* program with port addresses */
--	SMSC_WRITE_INDEXED(MSB(SERIAL1_PRIMARY_BASE), SMSC_PRIMARY_BASE_INDEX+0);
--	SMSC_WRITE_INDEXED(LSB(SERIAL1_PRIMARY_BASE), SMSC_PRIMARY_BASE_INDEX+1);
--	SMSC_WRITE_INDEXED(0x00, SMSC_HDCS0_INDEX);
--		/* enable the interrupts */
--	SMSC_WRITE_INDEXED(MICRODEV_FPGA_IRQ_SERIAL1, SMSC_PRIMARY_INT_INDEX);
--
--		/* Select the Serial #2 device */
--	SMSC_WRITE_INDEXED(SMSC_SERIAL2_DEVICE, SMCS_LOGICAL_DEV_INDEX);
--		/* enable it */
--	SMSC_WRITE_INDEXED(1, SMSC_ACTIVATE_INDEX);
--		/* program with port addresses */
--	SMSC_WRITE_INDEXED(MSB(SERIAL2_PRIMARY_BASE), SMSC_PRIMARY_BASE_INDEX+0);
--	SMSC_WRITE_INDEXED(LSB(SERIAL2_PRIMARY_BASE), SMSC_PRIMARY_BASE_INDEX+1);
--	SMSC_WRITE_INDEXED(0x00, SMSC_HDCS0_INDEX);
--		/* enable the interrupts */
--	SMSC_WRITE_INDEXED(MICRODEV_FPGA_IRQ_SERIAL2, SMSC_PRIMARY_INT_INDEX);
--
--		/* Select the IDE#1 device */
--	SMSC_WRITE_INDEXED(SMSC_IDE1_DEVICE, SMCS_LOGICAL_DEV_INDEX);
--		/* enable it */
--	SMSC_WRITE_INDEXED(1, SMSC_ACTIVATE_INDEX);
--		/* program with port addresses */
--	SMSC_WRITE_INDEXED(MSB(IDE1_PRIMARY_BASE), SMSC_PRIMARY_BASE_INDEX+0);
--	SMSC_WRITE_INDEXED(LSB(IDE1_PRIMARY_BASE), SMSC_PRIMARY_BASE_INDEX+1);
--	SMSC_WRITE_INDEXED(MSB(IDE1_SECONDARY_BASE), SMSC_SECONDARY_BASE_INDEX+0);
--	SMSC_WRITE_INDEXED(LSB(IDE1_SECONDARY_BASE), SMSC_SECONDARY_BASE_INDEX+1);
--	SMSC_WRITE_INDEXED(0x0c, SMSC_HDCS0_INDEX);
--	SMSC_WRITE_INDEXED(0x00, SMSC_HDCS1_INDEX);
--		/* select the interrupt */
--	SMSC_WRITE_INDEXED(MICRODEV_FPGA_IRQ_IDE1, SMSC_PRIMARY_INT_INDEX);
--
--		/* Select the IDE#2 device */
--	SMSC_WRITE_INDEXED(SMSC_IDE2_DEVICE, SMCS_LOGICAL_DEV_INDEX);
--		/* enable it */
--	SMSC_WRITE_INDEXED(1, SMSC_ACTIVATE_INDEX);
--		/* program with port addresses */
--	SMSC_WRITE_INDEXED(MSB(IDE2_PRIMARY_BASE), SMSC_PRIMARY_BASE_INDEX+0);
--	SMSC_WRITE_INDEXED(LSB(IDE2_PRIMARY_BASE), SMSC_PRIMARY_BASE_INDEX+1);
--	SMSC_WRITE_INDEXED(MSB(IDE2_SECONDARY_BASE), SMSC_SECONDARY_BASE_INDEX+0);
--	SMSC_WRITE_INDEXED(LSB(IDE2_SECONDARY_BASE), SMSC_SECONDARY_BASE_INDEX+1);
--		/* select the interrupt */
--	SMSC_WRITE_INDEXED(MICRODEV_FPGA_IRQ_IDE2, SMSC_PRIMARY_INT_INDEX);
--
--		/* Select the configuration registers */
--	SMSC_WRITE_INDEXED(SMSC_CONFIG_REGISTERS, SMCS_LOGICAL_DEV_INDEX);
--		/* enable the appropriate GPIO pins for IDE functionality:
--		 * bit[0]   In/Out		1==input;  0==output
--		 * bit[1]   Polarity		1==invert; 0==no invert
--		 * bit[2]   Int Enb #1		1==Enable Combined IRQ #1; 0==disable
--		 * bit[3:4] Function Select	00==original; 01==Alternate Function #1
--		 */
--	SMSC_WRITE_INDEXED(0x00, 0xc2);	/* GP42 = nIDE1_OE */
--	SMSC_WRITE_INDEXED(0x01, 0xc5);	/* GP45 = IDE1_IRQ */
--	SMSC_WRITE_INDEXED(0x00, 0xc6);	/* GP46 = nIOROP */
--	SMSC_WRITE_INDEXED(0x00, 0xc7);	/* GP47 = nIOWOP */
--	SMSC_WRITE_INDEXED(0x08, 0xe8);	/* GP20 = nIDE2_OE */
--
--		/* Exit the configuration state */
--	outb(SMSC_EXIT_CONFIG_KEY, SMSC_CONFIG_PORT_ADDR);
--
--	return 0;
+-	int idx = __raw_readl(CPG2_FRQCR3) & 0x0007;
+-	return clk->parent->rate / frqcr3_divisors[idx];
 -}
--device_initcall(smsc_superio_setup);
-diff --git a/arch/sh/boards/mach-microdev/io.c b/arch/sh/boards/mach-microdev/io.c
-deleted file mode 100644
-index a76c12721e63d..0000000000000
---- a/arch/sh/boards/mach-microdev/io.c
-+++ /dev/null
-@@ -1,123 +0,0 @@
--// SPDX-License-Identifier: GPL-2.0
--/*
-- * linux/arch/sh/boards/superh/microdev/io.c
-- *
-- * Copyright (C) 2003 Sean McGoogan (Sean.McGoogan@superh.com)
-- * Copyright (C) 2003, 2004 SuperH, Inc.
-- * Copyright (C) 2004 Paul Mundt
-- *
-- * SuperH SH4-202 MicroDev board support.
-- */
 -
--#include <linux/init.h>
--#include <linux/pci.h>
--#include <linux/wait.h>
--#include <asm/io.h>
--#include <mach/microdev.h>
--
--	/*
--	 *	we need to have a 'safe' address to re-direct all I/O requests
--	 *	that we do not explicitly wish to handle. This safe address
--	 *	must have the following properies:
--	 *
--	 *		* writes are ignored (no exception)
--	 *		* reads are benign (no side-effects)
--	 *		* accesses of width 1, 2 and 4-bytes are all valid.
--	 *
--	 *	The Processor Version Register (PVR) has these properties.
--	 */
--#define	PVR	0xff000030	/* Processor Version Register */
--
--
--#define	IO_IDE2_BASE		0x170ul	/* I/O base for SMSC FDC37C93xAPM IDE #2 */
--#define	IO_IDE1_BASE		0x1f0ul	/* I/O base for SMSC FDC37C93xAPM IDE #1 */
--#define IO_ISP1161_BASE		0x290ul /* I/O port for Philips ISP1161x USB chip */
--#define IO_SERIAL2_BASE		0x2f8ul /* I/O base for SMSC FDC37C93xAPM Serial #2 */
--#define	IO_LAN91C111_BASE	0x300ul	/* I/O base for SMSC LAN91C111 Ethernet chip */
--#define	IO_IDE2_MISC		0x376ul	/* I/O misc for SMSC FDC37C93xAPM IDE #2 */
--#define IO_SUPERIO_BASE		0x3f0ul /* I/O base for SMSC FDC37C93xAPM SuperIO chip */
--#define	IO_IDE1_MISC		0x3f6ul	/* I/O misc for SMSC FDC37C93xAPM IDE #1 */
--#define IO_SERIAL1_BASE		0x3f8ul /* I/O base for SMSC FDC37C93xAPM Serial #1 */
--
--#define	IO_ISP1161_EXTENT	0x04ul	/* I/O extent for Philips ISP1161x USB chip */
--#define	IO_LAN91C111_EXTENT	0x10ul	/* I/O extent for SMSC LAN91C111 Ethernet chip */
--#define	IO_SUPERIO_EXTENT	0x02ul	/* I/O extent for SMSC FDC37C93xAPM SuperIO chip */
--#define	IO_IDE_EXTENT		0x08ul	/* I/O extent for IDE Task Register set */
--#define IO_SERIAL_EXTENT	0x10ul
--
--#define	IO_LAN91C111_PHYS	0xa7500000ul	/* Physical address of SMSC LAN91C111 Ethernet chip */
--#define	IO_ISP1161_PHYS		0xa7700000ul	/* Physical address of Philips ISP1161x USB chip */
--#define	IO_SUPERIO_PHYS		0xa7800000ul	/* Physical address of SMSC FDC37C93xAPM SuperIO chip */
--
--/*
-- * map I/O ports to memory-mapped addresses
-- */
--void __iomem *microdev_ioport_map(unsigned long offset, unsigned int len)
+-static inline int frqcr3_lookup(struct clk *clk, unsigned long rate)
 -{
--	unsigned long result;
+-	int divisor = clk->parent->rate / rate;
+-	int i;
 -
--	if ((offset >= IO_LAN91C111_BASE) &&
--	    (offset <  IO_LAN91C111_BASE + IO_LAN91C111_EXTENT)) {
--			/*
--			 *	SMSC LAN91C111 Ethernet chip
--			 */
--		result = IO_LAN91C111_PHYS + offset - IO_LAN91C111_BASE;
--	} else if ((offset >= IO_SUPERIO_BASE) &&
--		   (offset <  IO_SUPERIO_BASE + IO_SUPERIO_EXTENT)) {
--			/*
--			 *	SMSC FDC37C93xAPM SuperIO chip
--			 *
--			 *	Configuration Registers
--			 */
--		result = IO_SUPERIO_PHYS + (offset << 1);
--	} else if (((offset >= IO_IDE1_BASE) &&
--		    (offset <  IO_IDE1_BASE + IO_IDE_EXTENT)) ||
--		    (offset == IO_IDE1_MISC)) {
--			/*
--			 *	SMSC FDC37C93xAPM SuperIO chip
--			 *
--			 *	IDE #1
--			 */
--	        result = IO_SUPERIO_PHYS + (offset << 1);
--	} else if (((offset >= IO_IDE2_BASE) &&
--		    (offset <  IO_IDE2_BASE + IO_IDE_EXTENT)) ||
--		    (offset == IO_IDE2_MISC)) {
--			/*
--			 *	SMSC FDC37C93xAPM SuperIO chip
--			 *
--			 *	IDE #2
--			 */
--	        result = IO_SUPERIO_PHYS + (offset << 1);
--	} else if ((offset >= IO_SERIAL1_BASE) &&
--		   (offset <  IO_SERIAL1_BASE + IO_SERIAL_EXTENT)) {
--			/*
--			 *	SMSC FDC37C93xAPM SuperIO chip
--			 *
--			 *	Serial #1
--			 */
--		result = IO_SUPERIO_PHYS + (offset << 1);
--	} else if ((offset >= IO_SERIAL2_BASE) &&
--		   (offset <  IO_SERIAL2_BASE + IO_SERIAL_EXTENT)) {
--			/*
--			 *	SMSC FDC37C93xAPM SuperIO chip
--			 *
--			 *	Serial #2
--			 */
--		result = IO_SUPERIO_PHYS + (offset << 1);
--	} else if ((offset >= IO_ISP1161_BASE) &&
--		   (offset < IO_ISP1161_BASE + IO_ISP1161_EXTENT)) {
--			/*
--			 *	Philips USB ISP1161x chip
--			 */
--		result = IO_ISP1161_PHYS + offset - IO_ISP1161_BASE;
--	} else {
--			/*
--			 *	safe default.
--			 */
--		printk("Warning: unexpected port in %s( offset = 0x%lx )\n",
--		       __func__, offset);
--		result = PVR;
--	}
+-	for (i = 0; i < ARRAY_SIZE(frqcr3_divisors); i++)
+-		if (frqcr3_divisors[i] == divisor)
+-			return frqcr3_values[i];
 -
--	return (void __iomem *)result;
+-	/* Safe fallback */
+-	return 5;
 -}
-diff --git a/arch/sh/boards/mach-microdev/irq.c b/arch/sh/boards/mach-microdev/irq.c
-deleted file mode 100644
-index dc27492c83d76..0000000000000
---- a/arch/sh/boards/mach-microdev/irq.c
-+++ /dev/null
-@@ -1,150 +0,0 @@
--// SPDX-License-Identifier: GPL-2.0
--/*
-- * arch/sh/boards/superh/microdev/irq.c
-- *
-- * Copyright (C) 2003 Sean McGoogan (Sean.McGoogan@superh.com)
-- *
-- * SuperH SH4-202 MicroDev board support.
-- */
 -
--#include <linux/init.h>
--#include <linux/irq.h>
--#include <linux/interrupt.h>
--#include <asm/io.h>
--#include <mach/microdev.h>
--
--#define NUM_EXTERNAL_IRQS 16	/* IRL0 .. IRL15 */
--
--static const struct {
--	unsigned char fpgaIrq;
--	unsigned char mapped;
--	const char *name;
--} fpgaIrqTable[NUM_EXTERNAL_IRQS] = {
--	{ 0,				0,	"unused"   },		/* IRQ #0	IRL=15	0x200  */
--	{ MICRODEV_FPGA_IRQ_KEYBOARD,	1,	"keyboard" },		/* IRQ #1	IRL=14	0x220  */
--	{ MICRODEV_FPGA_IRQ_SERIAL1,	1,	"Serial #1"},		/* IRQ #2	IRL=13	0x240  */
--	{ MICRODEV_FPGA_IRQ_ETHERNET,	1,	"Ethernet" },		/* IRQ #3	IRL=12	0x260  */
--	{ MICRODEV_FPGA_IRQ_SERIAL2,	0,	"Serial #2"},		/* IRQ #4	IRL=11	0x280  */
--	{ 0,				0,	"unused"   },		/* IRQ #5	IRL=10	0x2a0  */
--	{ 0,				0,	"unused"   },		/* IRQ #6	IRL=9	0x2c0  */
--	{ MICRODEV_FPGA_IRQ_USB_HC,	1,	"USB"	   },		/* IRQ #7	IRL=8	0x2e0  */
--	{ MICRODEV_IRQ_PCI_INTA,	1,	"PCI INTA" },		/* IRQ #8	IRL=7	0x300  */
--	{ MICRODEV_IRQ_PCI_INTB,	1,	"PCI INTB" },		/* IRQ #9	IRL=6	0x320  */
--	{ MICRODEV_IRQ_PCI_INTC,	1,	"PCI INTC" },		/* IRQ #10	IRL=5	0x340  */
--	{ MICRODEV_IRQ_PCI_INTD,	1,	"PCI INTD" },		/* IRQ #11	IRL=4	0x360  */
--	{ MICRODEV_FPGA_IRQ_MOUSE,	1,	"mouse"    },		/* IRQ #12	IRL=3	0x380  */
--	{ MICRODEV_FPGA_IRQ_IDE2,	1,	"IDE #2"   },		/* IRQ #13	IRL=2	0x3a0  */
--	{ MICRODEV_FPGA_IRQ_IDE1,	1,	"IDE #1"   },		/* IRQ #14	IRL=1	0x3c0  */
--	{ 0,				0,	"unused"   },		/* IRQ #15	IRL=0	0x3e0  */
+-static struct sh_clk_ops sh4202_emi_clk_ops = {
+-	.recalc		= emi_clk_recalc,
 -};
 -
--#if (MICRODEV_LINUX_IRQ_KEYBOARD != 1)
--#  error Inconsistancy in defining the IRQ# for Keyboard!
--#endif
--
--#if (MICRODEV_LINUX_IRQ_ETHERNET != 3)
--#  error Inconsistancy in defining the IRQ# for Ethernet!
--#endif
--
--#if (MICRODEV_LINUX_IRQ_USB_HC != 7)
--#  error Inconsistancy in defining the IRQ# for USB!
--#endif
--
--#if (MICRODEV_LINUX_IRQ_MOUSE != 12)
--#  error Inconsistancy in defining the IRQ# for PS/2 Mouse!
--#endif
--
--#if (MICRODEV_LINUX_IRQ_IDE2 != 13)
--#  error Inconsistancy in defining the IRQ# for secondary IDE!
--#endif
--
--#if (MICRODEV_LINUX_IRQ_IDE1 != 14)
--#  error Inconsistancy in defining the IRQ# for primary IDE!
--#endif
--
--static void disable_microdev_irq(struct irq_data *data)
--{
--	unsigned int irq = data->irq;
--	unsigned int fpgaIrq;
--
--	if (irq >= NUM_EXTERNAL_IRQS)
--		return;
--	if (!fpgaIrqTable[irq].mapped)
--		return;
--
--	fpgaIrq = fpgaIrqTable[irq].fpgaIrq;
--
--	/* disable interrupts on the FPGA INTC register */
--	__raw_writel(MICRODEV_FPGA_INTC_MASK(fpgaIrq), MICRODEV_FPGA_INTDSB_REG);
--}
--
--static void enable_microdev_irq(struct irq_data *data)
--{
--	unsigned int irq = data->irq;
--	unsigned long priorityReg, priorities, pri;
--	unsigned int fpgaIrq;
--
--	if (unlikely(irq >= NUM_EXTERNAL_IRQS))
--		return;
--	if (unlikely(!fpgaIrqTable[irq].mapped))
--		return;
--
--	pri = 15 - irq;
--
--	fpgaIrq = fpgaIrqTable[irq].fpgaIrq;
--	priorityReg = MICRODEV_FPGA_INTPRI_REG(fpgaIrq);
--
--	/* set priority for the interrupt */
--	priorities = __raw_readl(priorityReg);
--	priorities &= ~MICRODEV_FPGA_INTPRI_MASK(fpgaIrq);
--	priorities |= MICRODEV_FPGA_INTPRI_LEVEL(fpgaIrq, pri);
--	__raw_writel(priorities, priorityReg);
--
--	/* enable interrupts on the FPGA INTC register */
--	__raw_writel(MICRODEV_FPGA_INTC_MASK(fpgaIrq), MICRODEV_FPGA_INTENB_REG);
--}
--
--static struct irq_chip microdev_irq_type = {
--	.name = "MicroDev-IRQ",
--	.irq_unmask = enable_microdev_irq,
--	.irq_mask = disable_microdev_irq,
+-static struct clk sh4202_emi_clk = {
+-	.flags		= CLK_ENABLE_ON_INIT,
+-	.ops		= &sh4202_emi_clk_ops,
 -};
 -
--/* This function sets the desired irq handler to be a MicroDev type */
--static void __init make_microdev_irq(unsigned int irq)
+-static unsigned long femi_clk_recalc(struct clk *clk)
 -{
--	disable_irq_nosync(irq);
--	irq_set_chip_and_handler(irq, &microdev_irq_type, handle_level_irq);
--	disable_microdev_irq(irq_get_irq_data(irq));
+-	int idx = (__raw_readl(CPG2_FRQCR3) >> 3) & 0x0007;
+-	return clk->parent->rate / frqcr3_divisors[idx];
 -}
 -
--extern void __init init_microdev_irq(void)
+-static struct sh_clk_ops sh4202_femi_clk_ops = {
+-	.recalc		= femi_clk_recalc,
+-};
+-
+-static struct clk sh4202_femi_clk = {
+-	.flags		= CLK_ENABLE_ON_INIT,
+-	.ops		= &sh4202_femi_clk_ops,
+-};
+-
+-static void shoc_clk_init(struct clk *clk)
 -{
 -	int i;
 -
--	/* disable interrupts on the FPGA INTC register */
--	__raw_writel(~0ul, MICRODEV_FPGA_INTDSB_REG);
+-	/*
+-	 * For some reason, the shoc_clk seems to be set to some really
+-	 * insane value at boot (values outside of the allowable frequency
+-	 * range for instance). We deal with this by scaling it back down
+-	 * to something sensible just in case.
+-	 *
+-	 * Start scaling from the high end down until we find something
+-	 * that passes rate verification..
+-	 */
+-	for (i = 0; i < ARRAY_SIZE(frqcr3_divisors); i++) {
+-		int divisor = frqcr3_divisors[i];
 -
--	for (i = 0; i < NUM_EXTERNAL_IRQS; i++)
--		make_microdev_irq(i);
+-		if (clk->ops->set_rate(clk, clk->parent->rate / divisor) == 0)
+-			break;
+-	}
+-
+-	WARN_ON(i == ARRAY_SIZE(frqcr3_divisors));	/* Undefined clock */
 -}
 -
--extern void microdev_print_fpga_intc_status(void)
+-static unsigned long shoc_clk_recalc(struct clk *clk)
 -{
--	volatile unsigned int * const intenb = (unsigned int*)MICRODEV_FPGA_INTENB_REG;
--	volatile unsigned int * const intdsb = (unsigned int*)MICRODEV_FPGA_INTDSB_REG;
--	volatile unsigned int * const intpria = (unsigned int*)MICRODEV_FPGA_INTPRI_REG(0);
--	volatile unsigned int * const intprib = (unsigned int*)MICRODEV_FPGA_INTPRI_REG(8);
--	volatile unsigned int * const intpric = (unsigned int*)MICRODEV_FPGA_INTPRI_REG(16);
--	volatile unsigned int * const intprid = (unsigned int*)MICRODEV_FPGA_INTPRI_REG(24);
--	volatile unsigned int * const intsrc = (unsigned int*)MICRODEV_FPGA_INTSRC_REG;
--	volatile unsigned int * const intreq = (unsigned int*)MICRODEV_FPGA_INTREQ_REG;
--
--	printk("-------------------------- microdev_print_fpga_intc_status() ------------------\n");
--	printk("FPGA_INTENB = 0x%08x\n", *intenb);
--	printk("FPGA_INTDSB = 0x%08x\n", *intdsb);
--	printk("FPGA_INTSRC = 0x%08x\n", *intsrc);
--	printk("FPGA_INTREQ = 0x%08x\n", *intreq);
--	printk("FPGA_INTPRI[3..0] = %08x:%08x:%08x:%08x\n", *intprid, *intpric, *intprib, *intpria);
--	printk("-------------------------------------------------------------------------------\n");
+-	int idx = (__raw_readl(CPG2_FRQCR3) >> 6) & 0x0007;
+-	return clk->parent->rate / frqcr3_divisors[idx];
 -}
-diff --git a/arch/sh/boards/mach-microdev/setup.c b/arch/sh/boards/mach-microdev/setup.c
+-
+-static int shoc_clk_verify_rate(struct clk *clk, unsigned long rate)
+-{
+-	struct clk *bclk = clk_get(NULL, "bus_clk");
+-	unsigned long bclk_rate = clk_get_rate(bclk);
+-
+-	clk_put(bclk);
+-
+-	if (rate > bclk_rate)
+-		return 1;
+-	if (rate > 66000000)
+-		return 1;
+-
+-	return 0;
+-}
+-
+-static int shoc_clk_set_rate(struct clk *clk, unsigned long rate)
+-{
+-	unsigned long frqcr3;
+-	unsigned int tmp;
+-
+-	/* Make sure we have something sensible to switch to */
+-	if (shoc_clk_verify_rate(clk, rate) != 0)
+-		return -EINVAL;
+-
+-	tmp = frqcr3_lookup(clk, rate);
+-
+-	frqcr3 = __raw_readl(CPG2_FRQCR3);
+-	frqcr3 &= ~(0x0007 << 6);
+-	frqcr3 |= tmp << 6;
+-	__raw_writel(frqcr3, CPG2_FRQCR3);
+-
+-	clk->rate = clk->parent->rate / frqcr3_divisors[tmp];
+-
+-	return 0;
+-}
+-
+-static struct sh_clk_ops sh4202_shoc_clk_ops = {
+-	.init		= shoc_clk_init,
+-	.recalc		= shoc_clk_recalc,
+-	.set_rate	= shoc_clk_set_rate,
+-};
+-
+-static struct clk sh4202_shoc_clk = {
+-	.flags		= CLK_ENABLE_ON_INIT,
+-	.ops		= &sh4202_shoc_clk_ops,
+-};
+-
+-static struct clk *sh4202_onchip_clocks[] = {
+-	&sh4202_emi_clk,
+-	&sh4202_femi_clk,
+-	&sh4202_shoc_clk,
+-};
+-
+-static struct clk_lookup lookups[] = {
+-	/* main clocks */
+-	CLKDEV_CON_ID("emi_clk", &sh4202_emi_clk),
+-	CLKDEV_CON_ID("femi_clk", &sh4202_femi_clk),
+-	CLKDEV_CON_ID("shoc_clk", &sh4202_shoc_clk),
+-};
+-
+-int __init arch_clk_init(void)
+-{
+-	struct clk *clk;
+-	int i, ret = 0;
+-
+-	cpg_clk_init();
+-
+-	clk = clk_get(NULL, "master_clk");
+-	for (i = 0; i < ARRAY_SIZE(sh4202_onchip_clocks); i++) {
+-		struct clk *clkp = sh4202_onchip_clocks[i];
+-
+-		clkp->parent = clk;
+-		ret |= clk_register(clkp);
+-	}
+-
+-	clk_put(clk);
+-
+-	clkdev_add_table(lookups, ARRAY_SIZE(lookups));
+-
+-	return ret;
+-}
+diff --git a/arch/sh/kernel/cpu/sh4/setup-sh4-202.c b/arch/sh/kernel/cpu/sh4/setup-sh4-202.c
 deleted file mode 100644
-index ee55eb2b4d791..0000000000000
---- a/arch/sh/boards/mach-microdev/setup.c
+index 363463e53d99c..0000000000000
+--- a/arch/sh/kernel/cpu/sh4/setup-sh4-202.c
 +++ /dev/null
-@@ -1,197 +0,0 @@
+@@ -1,139 +0,0 @@
 -// SPDX-License-Identifier: GPL-2.0
 -/*
-- * arch/sh/boards/superh/microdev/setup.c
+- * SH4-202 Setup
 - *
-- * Copyright (C) 2003 Sean McGoogan (Sean.McGoogan@superh.com)
-- * Copyright (C) 2003, 2004 SuperH, Inc.
-- * Copyright (C) 2004, 2005 Paul Mundt
-- *
-- * SuperH SH4-202 MicroDev board support.
+- *  Copyright (C) 2006  Paul Mundt
+- *  Copyright (C) 2009  Magnus Damm
 - */
--#include <linux/init.h>
 -#include <linux/platform_device.h>
--#include <linux/ioport.h>
--#include <video/s1d13xxxfb.h>
--#include <mach/microdev.h>
--#include <asm/io.h>
--#include <asm/machvec.h>
--#include <linux/sizes.h>
+-#include <linux/init.h>
+-#include <linux/serial.h>
+-#include <linux/serial_sci.h>
+-#include <linux/sh_timer.h>
+-#include <linux/sh_intc.h>
+-#include <linux/io.h>
+-#include <asm/platform_early.h>
 -
--static struct resource smc91x_resources[] = {
--	[0] = {
--		.start		= 0x300,
--		.end		= 0x300 + SZ_4K - 1,
--		.flags		= IORESOURCE_MEM,
--	},
--	[1] = {
--		.start		= MICRODEV_LINUX_IRQ_ETHERNET,
--		.end		= MICRODEV_LINUX_IRQ_ETHERNET,
--		.flags		= IORESOURCE_IRQ,
--	},
+-static struct scif_platform_data scif0_platform_data = {
+-	.scscr		= SCSCR_REIE,
+-	.type		= PORT_SCIF,
 -};
 -
--static struct platform_device smc91x_device = {
--	.name		= "smc91x",
--	.id		= -1,
--	.num_resources	= ARRAY_SIZE(smc91x_resources),
--	.resource	= smc91x_resources,
+-static struct resource scif0_resources[] = {
+-	DEFINE_RES_MEM(0xffe80000, 0x100),
+-	DEFINE_RES_IRQ(evt2irq(0x700)),
+-	DEFINE_RES_IRQ(evt2irq(0x720)),
+-	DEFINE_RES_IRQ(evt2irq(0x760)),
+-	DEFINE_RES_IRQ(evt2irq(0x740)),
 -};
 -
--static struct s1d13xxxfb_regval s1d13806_initregs[] = {
--	{ S1DREG_MISC,			0x00 },
--	{ S1DREG_COM_DISP_MODE,		0x00 },
--	{ S1DREG_GPIO_CNF0,		0x00 },
--	{ S1DREG_GPIO_CNF1,		0x00 },
--	{ S1DREG_GPIO_CTL0,		0x00 },
--	{ S1DREG_GPIO_CTL1,		0x00 },
--	{ S1DREG_CLK_CNF,		0x02 },
--	{ S1DREG_LCD_CLK_CNF,		0x01 },
--	{ S1DREG_CRT_CLK_CNF,		0x03 },
--	{ S1DREG_MPLUG_CLK_CNF,		0x03 },
--	{ S1DREG_CPU2MEM_WST_SEL,	0x02 },
--	{ S1DREG_SDRAM_REF_RATE,	0x03 },
--	{ S1DREG_SDRAM_TC0,		0x00 },
--	{ S1DREG_SDRAM_TC1,		0x01 },
--	{ S1DREG_MEM_CNF,		0x80 },
--	{ S1DREG_PANEL_TYPE,		0x25 },
--	{ S1DREG_MOD_RATE,		0x00 },
--	{ S1DREG_LCD_DISP_HWIDTH,	0x63 },
--	{ S1DREG_LCD_NDISP_HPER,	0x1e },
--	{ S1DREG_TFT_FPLINE_START,	0x06 },
--	{ S1DREG_TFT_FPLINE_PWIDTH,	0x03 },
--	{ S1DREG_LCD_DISP_VHEIGHT0,	0x57 },
--	{ S1DREG_LCD_DISP_VHEIGHT1,	0x02 },
--	{ S1DREG_LCD_NDISP_VPER,	0x00 },
--	{ S1DREG_TFT_FPFRAME_START,	0x0a },
--	{ S1DREG_TFT_FPFRAME_PWIDTH,	0x81 },
--	{ S1DREG_LCD_DISP_MODE,		0x03 },
--	{ S1DREG_LCD_MISC,		0x00 },
--	{ S1DREG_LCD_DISP_START0,	0x00 },
--	{ S1DREG_LCD_DISP_START1,	0x00 },
--	{ S1DREG_LCD_DISP_START2,	0x00 },
--	{ S1DREG_LCD_MEM_OFF0,		0x90 },
--	{ S1DREG_LCD_MEM_OFF1,		0x01 },
--	{ S1DREG_LCD_PIX_PAN,		0x00 },
--	{ S1DREG_LCD_DISP_FIFO_HTC,	0x00 },
--	{ S1DREG_LCD_DISP_FIFO_LTC,	0x00 },
--	{ S1DREG_CRT_DISP_HWIDTH,	0x63 },
--	{ S1DREG_CRT_NDISP_HPER,	0x1f },
--	{ S1DREG_CRT_HRTC_START,	0x04 },
--	{ S1DREG_CRT_HRTC_PWIDTH,	0x8f },
--	{ S1DREG_CRT_DISP_VHEIGHT0,	0x57 },
--	{ S1DREG_CRT_DISP_VHEIGHT1,	0x02 },
--	{ S1DREG_CRT_NDISP_VPER,	0x1b },
--	{ S1DREG_CRT_VRTC_START,	0x00 },
--	{ S1DREG_CRT_VRTC_PWIDTH,	0x83 },
--	{ S1DREG_TV_OUT_CTL,		0x10 },
--	{ S1DREG_CRT_DISP_MODE,		0x05 },
--	{ S1DREG_CRT_DISP_START0,	0x00 },
--	{ S1DREG_CRT_DISP_START1,	0x00 },
--	{ S1DREG_CRT_DISP_START2,	0x00 },
--	{ S1DREG_CRT_MEM_OFF0,		0x20 },
--	{ S1DREG_CRT_MEM_OFF1,		0x03 },
--	{ S1DREG_CRT_PIX_PAN,		0x00 },
--	{ S1DREG_CRT_DISP_FIFO_HTC,	0x00 },
--	{ S1DREG_CRT_DISP_FIFO_LTC,	0x00 },
--	{ S1DREG_LCD_CUR_CTL,		0x00 },
--	{ S1DREG_LCD_CUR_START,		0x01 },
--	{ S1DREG_LCD_CUR_XPOS0,		0x00 },
--	{ S1DREG_LCD_CUR_XPOS1,		0x00 },
--	{ S1DREG_LCD_CUR_YPOS0,		0x00 },
--	{ S1DREG_LCD_CUR_YPOS1,		0x00 },
--	{ S1DREG_LCD_CUR_BCTL0,		0x00 },
--	{ S1DREG_LCD_CUR_GCTL0,		0x00 },
--	{ S1DREG_LCD_CUR_RCTL0,		0x00 },
--	{ S1DREG_LCD_CUR_BCTL1,		0x1f },
--	{ S1DREG_LCD_CUR_GCTL1,		0x3f },
--	{ S1DREG_LCD_CUR_RCTL1,		0x1f },
--	{ S1DREG_LCD_CUR_FIFO_HTC,	0x00 },
--	{ S1DREG_CRT_CUR_CTL,		0x00 },
--	{ S1DREG_CRT_CUR_START,		0x01 },
--	{ S1DREG_CRT_CUR_XPOS0,		0x00 },
--	{ S1DREG_CRT_CUR_XPOS1,		0x00 },
--	{ S1DREG_CRT_CUR_YPOS0,		0x00 },
--	{ S1DREG_CRT_CUR_YPOS1,		0x00 },
--	{ S1DREG_CRT_CUR_BCTL0,		0x00 },
--	{ S1DREG_CRT_CUR_GCTL0,		0x00 },
--	{ S1DREG_CRT_CUR_RCTL0,		0x00 },
--	{ S1DREG_CRT_CUR_BCTL1,		0x1f },
--	{ S1DREG_CRT_CUR_GCTL1,		0x3f },
--	{ S1DREG_CRT_CUR_RCTL1,		0x1f },
--	{ S1DREG_CRT_CUR_FIFO_HTC,	0x00 },
--	{ S1DREG_BBLT_CTL0,		0x00 },
--	{ S1DREG_BBLT_CTL1,		0x00 },
--	{ S1DREG_BBLT_CC_EXP,		0x00 },
--	{ S1DREG_BBLT_OP,		0x00 },
--	{ S1DREG_BBLT_SRC_START0,	0x00 },
--	{ S1DREG_BBLT_SRC_START1,	0x00 },
--	{ S1DREG_BBLT_SRC_START2,	0x00 },
--	{ S1DREG_BBLT_DST_START0,	0x00 },
--	{ S1DREG_BBLT_DST_START1,	0x00 },
--	{ S1DREG_BBLT_DST_START2,	0x00 },
--	{ S1DREG_BBLT_MEM_OFF0,		0x00 },
--	{ S1DREG_BBLT_MEM_OFF1,		0x00 },
--	{ S1DREG_BBLT_WIDTH0,		0x00 },
--	{ S1DREG_BBLT_WIDTH1,		0x00 },
--	{ S1DREG_BBLT_HEIGHT0,		0x00 },
--	{ S1DREG_BBLT_HEIGHT1,		0x00 },
--	{ S1DREG_BBLT_BGC0,		0x00 },
--	{ S1DREG_BBLT_BGC1,		0x00 },
--	{ S1DREG_BBLT_FGC0,		0x00 },
--	{ S1DREG_BBLT_FGC1,		0x00 },
--	{ S1DREG_LKUP_MODE,		0x00 },
--	{ S1DREG_LKUP_ADDR,		0x00 },
--	{ S1DREG_PS_CNF,		0x10 },
--	{ S1DREG_PS_STATUS,		0x00 },
--	{ S1DREG_CPU2MEM_WDOGT,		0x00 },
--	{ S1DREG_COM_DISP_MODE,		0x02 },
--};
--
--static struct s1d13xxxfb_platform_data s1d13806_platform_data = {
--	.initregs	= s1d13806_initregs,
--	.initregssize	= ARRAY_SIZE(s1d13806_initregs),
--};
--
--static struct resource s1d13806_resources[] = {
--	[0] = {
--		.start		= 0x07200000,
--		.end		= 0x07200000 + SZ_2M - 1,
--		.flags		= IORESOURCE_MEM,
--	},
--	[1] = {
--		.start		= 0x07000000,
--		.end		= 0x07000000 + SZ_2M - 1,
--		.flags		= IORESOURCE_MEM,
+-static struct platform_device scif0_device = {
+-	.name		= "sh-sci",
+-	.id		= 0,
+-	.resource	= scif0_resources,
+-	.num_resources	= ARRAY_SIZE(scif0_resources),
+-	.dev		= {
+-		.platform_data	= &scif0_platform_data,
 -	},
 -};
 -
--static struct platform_device s1d13806_device = {
--	.name		= "s1d13806fb",
--	.id		= -1,
--	.num_resources	= ARRAY_SIZE(s1d13806_resources),
--	.resource	= s1d13806_resources,
+-static struct sh_timer_platform_data tmu0_platform_data = {
+-	.channels_mask = 7,
+-};
 -
+-static struct resource tmu0_resources[] = {
+-	DEFINE_RES_MEM(0xffd80000, 0x30),
+-	DEFINE_RES_IRQ(evt2irq(0x400)),
+-	DEFINE_RES_IRQ(evt2irq(0x420)),
+-	DEFINE_RES_IRQ(evt2irq(0x440)),
+-};
+-
+-static struct platform_device tmu0_device = {
+-	.name		= "sh-tmu",
+-	.id		= 0,
 -	.dev = {
--		.platform_data	= &s1d13806_platform_data,
+-		.platform_data	= &tmu0_platform_data,
 -	},
+-	.resource	= tmu0_resources,
+-	.num_resources	= ARRAY_SIZE(tmu0_resources),
 -};
 -
--static struct platform_device *microdev_devices[] __initdata = {
--	&smc91x_device,
--	&s1d13806_device,
+-static struct platform_device *sh4202_devices[] __initdata = {
+-	&scif0_device,
+-	&tmu0_device,
 -};
 -
--static int __init microdev_devices_setup(void)
+-static int __init sh4202_devices_setup(void)
 -{
--	return platform_add_devices(microdev_devices, ARRAY_SIZE(microdev_devices));
+-	return platform_add_devices(sh4202_devices,
+-				    ARRAY_SIZE(sh4202_devices));
 -}
--device_initcall(microdev_devices_setup);
+-arch_initcall(sh4202_devices_setup);
 -
--/*
-- * The Machine Vector
-- */
--static struct sh_machine_vector mv_sh4202_microdev __initmv = {
--	.mv_name		= "SH4-202 MicroDev",
--	.mv_ioport_map		= microdev_ioport_map,
--	.mv_init_irq		= init_microdev_irq,
+-static struct platform_device *sh4202_early_devices[] __initdata = {
+-	&scif0_device,
+-	&tmu0_device,
 -};
-diff --git a/arch/sh/configs/microdev_defconfig b/arch/sh/configs/microdev_defconfig
-deleted file mode 100644
-index 39a83d832cac6..0000000000000
---- a/arch/sh/configs/microdev_defconfig
-+++ /dev/null
-@@ -1,42 +0,0 @@
--CONFIG_BSD_PROCESS_ACCT=y
--CONFIG_LOG_BUF_SHIFT=14
--CONFIG_BLK_DEV_INITRD=y
--# CONFIG_CC_OPTIMIZE_FOR_SIZE is not set
--# CONFIG_BLK_DEV_BSG is not set
--CONFIG_CPU_SUBTYPE_SH4_202=y
--CONFIG_FLATMEM_MANUAL=y
--CONFIG_SH_SH4202_MICRODEV=y
--CONFIG_SH_DMA=y
--CONFIG_SH_DMA_API=y
--CONFIG_HEARTBEAT=y
--CONFIG_PREEMPT=y
--CONFIG_CMDLINE_OVERWRITE=y
--CONFIG_CMDLINE="console=ttySC0,115200 root=/dev/hda1"
--CONFIG_SUPERHYWAY=y
--CONFIG_NET=y
--CONFIG_INET=y
--CONFIG_IP_PNP=y
--# CONFIG_IPV6 is not set
--# CONFIG_FW_LOADER is not set
--CONFIG_BLK_DEV_RAM=y
--CONFIG_NETDEVICES=y
--CONFIG_NET_ETHERNET=y
--CONFIG_SMC91X=y
--# CONFIG_INPUT is not set
--# CONFIG_SERIO is not set
--# CONFIG_VT is not set
--CONFIG_SERIAL_SH_SCI=y
--CONFIG_SERIAL_SH_SCI_CONSOLE=y
--CONFIG_EXT2_FS=y
--CONFIG_EXT3_FS=y
--# CONFIG_EXT3_DEFAULTS_TO_ORDERED is not set
--CONFIG_VFAT_FS=y
--CONFIG_PROC_KCORE=y
--CONFIG_TMPFS=y
--CONFIG_HUGETLBFS=y
--CONFIG_NFS_FS=y
--CONFIG_NFS_V3=y
--CONFIG_NFS_V4=y
--CONFIG_ROOT_NFS=y
--CONFIG_CRYPTO_ECB=y
--# CONFIG_CRYPTO_ANSI_CPRNG is not set
-diff --git a/arch/sh/include/mach-common/mach/microdev.h b/arch/sh/include/mach-common/mach/microdev.h
-deleted file mode 100644
-index 0e2f9ab119762..0000000000000
---- a/arch/sh/include/mach-common/mach/microdev.h
-+++ /dev/null
-@@ -1,69 +0,0 @@
--/* SPDX-License-Identifier: GPL-2.0
-- *
-- * linux/include/asm-sh/microdev.h
-- *
-- * Copyright (C) 2003 Sean McGoogan (Sean.McGoogan@superh.com)
-- *
-- * Definitions for the SuperH SH4-202 MicroDev board.
-- */
--#ifndef __ASM_SH_MICRODEV_H
--#define __ASM_SH_MICRODEV_H
 -
--extern void init_microdev_irq(void);
--extern void microdev_print_fpga_intc_status(void);
+-void __init plat_early_device_setup(void)
+-{
+-	sh_early_platform_add_devices(sh4202_early_devices,
+-				   ARRAY_SIZE(sh4202_early_devices));
+-}
 -
--/*
-- * The following are useful macros for manipulating the interrupt
-- * controller (INTC) on the CPU-board FPGA.  should be noted that there
-- * is an INTC on the FPGA, and a separate INTC on the SH4-202 core -
-- * these are two different things, both of which need to be prorammed to
-- * correctly route - unfortunately, they have the same name and
-- * abbreviations!
-- */
--#define	MICRODEV_FPGA_INTC_BASE		0xa6110000ul				/* INTC base address on CPU-board FPGA */
--#define	MICRODEV_FPGA_INTENB_REG	(MICRODEV_FPGA_INTC_BASE+0ul)		/* Interrupt Enable Register on INTC on CPU-board FPGA */
--#define	MICRODEV_FPGA_INTDSB_REG	(MICRODEV_FPGA_INTC_BASE+8ul)		/* Interrupt Disable Register on INTC on CPU-board FPGA */
--#define	MICRODEV_FPGA_INTC_MASK(n)	(1ul<<(n))				/* Interrupt mask to enable/disable INTC in CPU-board FPGA */
--#define	MICRODEV_FPGA_INTPRI_REG(n)	(MICRODEV_FPGA_INTC_BASE+0x10+((n)/8)*8)/* Interrupt Priority Register on INTC on CPU-board FPGA */
--#define	MICRODEV_FPGA_INTPRI_LEVEL(n,x)	((x)<<(((n)%8)*4))			/* MICRODEV_FPGA_INTPRI_LEVEL(int_number, int_level) */
--#define	MICRODEV_FPGA_INTPRI_MASK(n)	(MICRODEV_FPGA_INTPRI_LEVEL((n),0xful))	/* Interrupt Priority Mask on INTC on CPU-board FPGA */
--#define	MICRODEV_FPGA_INTSRC_REG	(MICRODEV_FPGA_INTC_BASE+0x30ul)	/* Interrupt Source Register on INTC on CPU-board FPGA */
--#define	MICRODEV_FPGA_INTREQ_REG	(MICRODEV_FPGA_INTC_BASE+0x38ul)	/* Interrupt Request Register on INTC on CPU-board FPGA */
+-enum {
+-	UNUSED = 0,
 -
+-	/* interrupt sources */
+-	IRL0, IRL1, IRL2, IRL3, /* only IRLM mode supported */
+-	HUDI, TMU0, TMU1, TMU2, RTC, SCIF, WDT,
+-};
 -
--/*
-- * The following are the IRQ numbers for the Linux Kernel for external
-- * interrupts.  i.e. the numbers seen by 'cat /proc/interrupt'.
-- */
--#define MICRODEV_LINUX_IRQ_KEYBOARD	 1	/* SuperIO Keyboard */
--#define MICRODEV_LINUX_IRQ_SERIAL1	 2	/* SuperIO Serial #1 */
--#define MICRODEV_LINUX_IRQ_ETHERNET	 3	/* on-board Ethnernet */
--#define MICRODEV_LINUX_IRQ_SERIAL2	 4	/* SuperIO Serial #2 */
--#define MICRODEV_LINUX_IRQ_USB_HC	 7	/* on-board USB HC */
--#define MICRODEV_LINUX_IRQ_MOUSE	12	/* SuperIO PS/2 Mouse */
--#define MICRODEV_LINUX_IRQ_IDE2		13	/* SuperIO IDE #2 */
--#define MICRODEV_LINUX_IRQ_IDE1		14	/* SuperIO IDE #1 */
+-static struct intc_vect vectors[] __initdata = {
+-	INTC_VECT(HUDI, 0x600),
+-	INTC_VECT(TMU0, 0x400), INTC_VECT(TMU1, 0x420),
+-	INTC_VECT(TMU2, 0x440), INTC_VECT(TMU2, 0x460),
+-	INTC_VECT(RTC, 0x480), INTC_VECT(RTC, 0x4a0),
+-	INTC_VECT(RTC, 0x4c0),
+-	INTC_VECT(SCIF, 0x700), INTC_VECT(SCIF, 0x720),
+-	INTC_VECT(SCIF, 0x740), INTC_VECT(SCIF, 0x760),
+-	INTC_VECT(WDT, 0x560),
+-};
 -
--/*
-- * The following are the IRQ numbers for the INTC on the FPGA for
-- * external interrupts.  i.e. the bits in the INTC registers in the
-- * FPGA.
-- */
--#define MICRODEV_FPGA_IRQ_KEYBOARD	 1	/* SuperIO Keyboard */
--#define MICRODEV_FPGA_IRQ_SERIAL1	 3	/* SuperIO Serial #1 */
--#define MICRODEV_FPGA_IRQ_SERIAL2	 4	/* SuperIO Serial #2 */
--#define MICRODEV_FPGA_IRQ_MOUSE		12	/* SuperIO PS/2 Mouse */
--#define MICRODEV_FPGA_IRQ_IDE1		14	/* SuperIO IDE #1 */
--#define MICRODEV_FPGA_IRQ_IDE2		15	/* SuperIO IDE #2 */
--#define MICRODEV_FPGA_IRQ_USB_HC	16	/* on-board USB HC */
--#define MICRODEV_FPGA_IRQ_ETHERNET	18	/* on-board Ethnernet */
+-static struct intc_prio_reg prio_registers[] __initdata = {
+-	{ 0xffd00004, 0, 16, 4, /* IPRA */ { TMU0, TMU1, TMU2, RTC } },
+-	{ 0xffd00008, 0, 16, 4, /* IPRB */ { WDT, 0, 0, 0 } },
+-	{ 0xffd0000c, 0, 16, 4, /* IPRC */ { 0, 0, SCIF, HUDI } },
+-	{ 0xffd00010, 0, 16, 4, /* IPRD */ { IRL0, IRL1, IRL2, IRL3 } },
+-};
 -
--#define MICRODEV_IRQ_PCI_INTA		 8
--#define MICRODEV_IRQ_PCI_INTB		 9
--#define MICRODEV_IRQ_PCI_INTC		10
--#define MICRODEV_IRQ_PCI_INTD		11
+-static DECLARE_INTC_DESC(intc_desc, "sh4-202", vectors, NULL,
+-			 NULL, prio_registers, NULL);
 -
--#define __IO_PREFIX microdev
--#include <asm/io_generic.h>
+-static struct intc_vect vectors_irlm[] __initdata = {
+-	INTC_VECT(IRL0, 0x240), INTC_VECT(IRL1, 0x2a0),
+-	INTC_VECT(IRL2, 0x300), INTC_VECT(IRL3, 0x360),
+-};
 -
--#endif /* __ASM_SH_MICRODEV_H */
-diff --git a/drivers/net/ethernet/smsc/smc91x.h b/drivers/net/ethernet/smsc/smc91x.h
-index 79431ea0ce934..6c933ff974343 100644
---- a/drivers/net/ethernet/smsc/smc91x.h
-+++ b/drivers/net/ethernet/smsc/smc91x.h
-@@ -114,25 +114,6 @@ static inline void _SMC_outw_align4(u16 val, void __iomem *ioaddr, int reg,
- 			 (lp)->cfg.pxa_u16_align4)
- 
- 
--#elif	defined(CONFIG_SH_SH4202_MICRODEV)
+-static DECLARE_INTC_DESC(intc_desc_irlm, "sh4-202_irlm", vectors_irlm, NULL,
+-			 NULL, prio_registers, NULL);
 -
--#define SMC_CAN_USE_8BIT	0
--#define SMC_CAN_USE_16BIT	1
--#define SMC_CAN_USE_32BIT	0
+-void __init plat_irq_setup(void)
+-{
+-	register_intc_controller(&intc_desc);
+-}
 -
--#define SMC_inb(a, r)		inb((a) + (r) - 0xa0000000)
--#define SMC_inw(a, r)		inw((a) + (r) - 0xa0000000)
--#define SMC_inl(a, r)		inl((a) + (r) - 0xa0000000)
--#define SMC_outb(v, a, r)	outb(v, (a) + (r) - 0xa0000000)
--#define SMC_outw(lp, v, a, r)	outw(v, (a) + (r) - 0xa0000000)
--#define SMC_outl(v, a, r)	outl(v, (a) + (r) - 0xa0000000)
--#define SMC_insl(a, r, p, l)	insl((a) + (r) - 0xa0000000, p, l)
--#define SMC_outsl(a, r, p, l)	outsl((a) + (r) - 0xa0000000, p, l)
--#define SMC_insw(a, r, p, l)	insw((a) + (r) - 0xa0000000, p, l)
--#define SMC_outsw(a, r, p, l)	outsw((a) + (r) - 0xa0000000, p, l)
+-#define INTC_ICR	0xffd00000UL
+-#define INTC_ICR_IRLM   (1<<7)
 -
--#define SMC_IRQ_FLAGS		(0)
--
- #elif defined(CONFIG_ATARI)
- 
- #define SMC_CAN_USE_8BIT        1
+-void __init plat_irq_setup_pins(int mode)
+-{
+-	switch (mode) {
+-	case IRQ_MODE_IRQ: /* individual interrupt mode for IRL3-0 */
+-		__raw_writew(__raw_readw(INTC_ICR) | INTC_ICR_IRLM, INTC_ICR);
+-		register_intc_controller(&intc_desc_irlm);
+-		break;
+-	default:
+-		BUG();
+-	}
+-}
 -- 
 2.39.2
 
