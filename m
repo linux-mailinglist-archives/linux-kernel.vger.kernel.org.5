@@ -2,44 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A2A276DAA6
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 00:21:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 02C9A76DAA1
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 00:20:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234088AbjHBWVC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Aug 2023 18:21:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60272 "EHLO
+        id S233099AbjHBWUp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Aug 2023 18:20:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60754 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233971AbjHBWUT (ORCPT
+        with ESMTP id S233902AbjHBWTz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Aug 2023 18:20:19 -0400
+        Wed, 2 Aug 2023 18:19:55 -0400
 Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90CA02D72;
-        Wed,  2 Aug 2023 15:19:38 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC8BC2D68;
+        Wed,  2 Aug 2023 15:19:37 -0700 (PDT)
 Date:   Wed, 02 Aug 2023 22:19:35 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
         s=2020; t=1691014776;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=LwaqRNW5cT50IS/q4CcHpsmYLk0PM3wPEZfV3PQfGeE=;
-        b=LThz5jup/AJDJCV2UNeK90y21IHnhrBEMA+jiKZ0PsLD6+zgUqRIBnSqLDuMWoq7HtAJk+
-        y3plJkjFZH2TjrlrGoRp4Y3iynYOzU4iQ+DSIbQtDGMPrsRuzxHCy7/bi907ANTBM+Pdpe
-        DAWH4/cDbdP0eWH4K2KsowLP9tal+TQ6KGw2vrhSAqbjEE3wr9tKlEujDkMiUQycf7AfpH
-        fVev4feUBoQKEvG9UAsMO9l1FKO6X8x9Y0l/w1Qx53nIgFJ6wAi5yYNHbKF8p8ujBcSOse
-        yu38ul8JCtzCF6rB2VCMm227lPqt+tTnScAbx2F0pjcqKWKgp9UmS4VS6moRGQ==
+        bh=gcyn36Jv3HtGUnwQSizKMwQBNb1jMXnbeMRFzDKvjBo=;
+        b=R6BsfNuYzJt2kvvcTkeP3m1c73bq/38RqaQ4BT3Nt/PCsEfKKFUuw7i2TWWF/A/eL13N/k
+        RcIJDafLG4yAtOutumjL/osRy3chncGnTXRLSZRTYtp+djCWc3r5PzHiZJdHTExurnFnII
+        v+5eYPAxBrNCWkhZEbvsj2UZqBUjUrbGiCtI9gSs1JbDTrgf3h/v/pVxcowlgEN/qGX2EP
+        2po5JIoo9c50R38yK9CbPpsnV7fah32WpgqjFdagQ77UDAhxJurwl7RrVxBBWycx1eZpZt
+        uHUpu1n3mrSMU+4qdAQK65cPibe5wUVySWKldXtcAOe9DLmkRzjYplsJ6U2XaA==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
         s=2020e; t=1691014776;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=LwaqRNW5cT50IS/q4CcHpsmYLk0PM3wPEZfV3PQfGeE=;
-        b=vy8imRzs8L0tFiVcwa1n6vj6AVAgB7awpgai7O02qFT0KPqIQhX17ipJIXnvSol6PqlR2F
-        1ZWvPpoiucHAH3DA==
+        bh=gcyn36Jv3HtGUnwQSizKMwQBNb1jMXnbeMRFzDKvjBo=;
+        b=g8rnXANsc0TqrXQZmd8vZaaHcBqXm2+NR00fd/tpojRmwuf6JaWktVPIU1wmJmT7ywR/pb
+        tC/iIHOaReufZlAA==
 From:   "tip-bot2 for Rick Edgecombe" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/shstk] x86/shstk: Add user control-protection fault handler
+Subject: [tip: x86/shstk] x86/shstk: Add user-mode shadow stack support
 Cc:     "Yu-cheng Yu" <yu-cheng.yu@intel.com>,
         Rick Edgecombe <rick.p.edgecombe@intel.com>,
         Dave Hansen <dave.hansen@linux.intel.com>,
@@ -50,7 +50,7 @@ Cc:     "Yu-cheng Yu" <yu-cheng.yu@intel.com>,
         John Allen <john.allen@amd.com>, x86@kernel.org,
         linux-kernel@vger.kernel.org
 MIME-Version: 1.0
-Message-ID: <169101477586.28540.10662386147922666898.tip-bot2@tip-bot2>
+Message-ID: <169101477502.28540.12081103518877160423.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2@linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -67,40 +67,26 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the x86/shstk branch of tip:
 
-Commit-ID:     a5f6c2ace9974adf92ce65dacca8126d90adabfe
-Gitweb:        https://git.kernel.org/tip/a5f6c2ace9974adf92ce65dacca8126d90adabfe
+Commit-ID:     2d39a6add422ac78254927ec2194838c33ae4fb2
+Gitweb:        https://git.kernel.org/tip/2d39a6add422ac78254927ec2194838c33ae4fb2
 Author:        Rick Edgecombe <rick.p.edgecombe@intel.com>
-AuthorDate:    Mon, 12 Jun 2023 17:10:53 -07:00
+AuthorDate:    Mon, 12 Jun 2023 17:10:54 -07:00
 Committer:     Dave Hansen <dave.hansen@linux.intel.com>
 CommitterDate: Wed, 02 Aug 2023 15:01:50 -07:00
 
-x86/shstk: Add user control-protection fault handler
+x86/shstk: Add user-mode shadow stack support
 
-A control-protection fault is triggered when a control-flow transfer
-attempt violates Shadow Stack or Indirect Branch Tracking constraints.
-For example, the return address for a RET instruction differs from the copy
-on the shadow stack.
+Introduce basic shadow stack enabling/disabling/allocation routines.
+A task's shadow stack is allocated from memory with VM_SHADOW_STACK flag
+and has a fixed size of min(RLIMIT_STACK, 4GB).
 
-There already exists a control-protection fault handler for handling kernel
-IBT faults. Refactor this fault handler into separate user and kernel
-handlers, like the page fault handler. Add a control-protection handler
-for usermode. To avoid ifdeffery, put them both in a new file cet.c, which
-is compiled in the case of either of the two CET features supported in the
-kernel: kernel IBT or user mode shadow stack. Move some static inline
-functions from traps.c into a header so they can be used in cet.c.
+Keep the task's shadow stack address and size in thread_struct. This will
+be copied when cloning new threads, but needs to be cleared during exec,
+so add a function to do this.
 
-Opportunistically fix a comment in the kernel IBT part of the fault
-handler that is on the end of the line instead of preceding it.
-
-Keep the same behavior for the kernel side of the fault handler, except for
-converting a BUG to a WARN in the case of a #CP happening when the feature
-is missing. This unifies the behavior with the new shadow stack code, and
-also prevents the kernel from crashing under this situation which is
-potentially recoverable.
-
-The control-protection fault handler works in a similar way as the general
-protection fault handler. It provides the si_code SEGV_CPERR to the signal
-handler.
+32 bit shadow stack is not expected to have many users and it will
+complicate the signal implementation. So do not support IA32 emulation
+or x32.
 
 Co-developed-by: Yu-cheng Yu <yu-cheng.yu@intel.com>
 Signed-off-by: Yu-cheng Yu <yu-cheng.yu@intel.com>
@@ -112,370 +98,224 @@ Acked-by: Mike Rapoport (IBM) <rppt@kernel.org>
 Tested-by: Pengfei Xu <pengfei.xu@intel.com>
 Tested-by: John Allen <john.allen@amd.com>
 Tested-by: Kees Cook <keescook@chromium.org>
-Link: https://lore.kernel.org/all/20230613001108.3040476-28-rick.p.edgecombe%40intel.com
+Link: https://lore.kernel.org/all/20230613001108.3040476-29-rick.p.edgecombe%40intel.com
 ---
- arch/arm/kernel/signal.c                 |  2 +-
- arch/arm64/kernel/signal.c               |  2 +-
- arch/arm64/kernel/signal32.c             |  2 +-
- arch/sparc/kernel/signal32.c             |  2 +-
- arch/sparc/kernel/signal_64.c            |  2 +-
- arch/x86/include/asm/disabled-features.h |  8 +-
- arch/x86/include/asm/idtentry.h          |  2 +-
- arch/x86/include/asm/traps.h             | 12 +++-
- arch/x86/kernel/cet.c                    | 94 ++++++++++++++++++++---
- arch/x86/kernel/idt.c                    |  2 +-
- arch/x86/kernel/signal_32.c              |  2 +-
- arch/x86/kernel/signal_64.c              |  2 +-
- arch/x86/kernel/traps.c                  | 12 +---
- arch/x86/xen/enlighten_pv.c              |  2 +-
- arch/x86/xen/xen-asm.S                   |  2 +-
- include/uapi/asm-generic/siginfo.h       |  3 +-
- 16 files changed, 117 insertions(+), 34 deletions(-)
+ arch/x86/include/asm/processor.h  |   2 +-
+ arch/x86/include/asm/shstk.h      |   7 +-
+ arch/x86/include/uapi/asm/prctl.h |   3 +-
+ arch/x86/kernel/shstk.c           | 145 +++++++++++++++++++++++++++++-
+ 4 files changed, 157 insertions(+)
 
-diff --git a/arch/arm/kernel/signal.c b/arch/arm/kernel/signal.c
-index 8d0afa1..79a6730 100644
---- a/arch/arm/kernel/signal.c
-+++ b/arch/arm/kernel/signal.c
-@@ -682,7 +682,7 @@ asmlinkage void do_rseq_syscall(struct pt_regs *regs)
-  */
- static_assert(NSIGILL	== 11);
- static_assert(NSIGFPE	== 15);
--static_assert(NSIGSEGV	== 9);
-+static_assert(NSIGSEGV	== 10);
- static_assert(NSIGBUS	== 5);
- static_assert(NSIGTRAP	== 6);
- static_assert(NSIGCHLD	== 6);
-diff --git a/arch/arm64/kernel/signal.c b/arch/arm64/kernel/signal.c
-index e304f7e..0df8cc2 100644
---- a/arch/arm64/kernel/signal.c
-+++ b/arch/arm64/kernel/signal.c
-@@ -1344,7 +1344,7 @@ void __init minsigstksz_setup(void)
-  */
- static_assert(NSIGILL	== 11);
- static_assert(NSIGFPE	== 15);
--static_assert(NSIGSEGV	== 9);
-+static_assert(NSIGSEGV	== 10);
- static_assert(NSIGBUS	== 5);
- static_assert(NSIGTRAP	== 6);
- static_assert(NSIGCHLD	== 6);
-diff --git a/arch/arm64/kernel/signal32.c b/arch/arm64/kernel/signal32.c
-index 4700f85..bbd5427 100644
---- a/arch/arm64/kernel/signal32.c
-+++ b/arch/arm64/kernel/signal32.c
-@@ -460,7 +460,7 @@ void compat_setup_restart_syscall(struct pt_regs *regs)
-  */
- static_assert(NSIGILL	== 11);
- static_assert(NSIGFPE	== 15);
--static_assert(NSIGSEGV	== 9);
-+static_assert(NSIGSEGV	== 10);
- static_assert(NSIGBUS	== 5);
- static_assert(NSIGTRAP	== 6);
- static_assert(NSIGCHLD	== 6);
-diff --git a/arch/sparc/kernel/signal32.c b/arch/sparc/kernel/signal32.c
-index ca450c7..a23cdd7 100644
---- a/arch/sparc/kernel/signal32.c
-+++ b/arch/sparc/kernel/signal32.c
-@@ -753,7 +753,7 @@ out:
-  */
- static_assert(NSIGILL	== 11);
- static_assert(NSIGFPE	== 15);
--static_assert(NSIGSEGV	== 9);
-+static_assert(NSIGSEGV	== 10);
- static_assert(NSIGBUS	== 5);
- static_assert(NSIGTRAP	== 6);
- static_assert(NSIGCHLD	== 6);
-diff --git a/arch/sparc/kernel/signal_64.c b/arch/sparc/kernel/signal_64.c
-index 570e43e..b4e4109 100644
---- a/arch/sparc/kernel/signal_64.c
-+++ b/arch/sparc/kernel/signal_64.c
-@@ -562,7 +562,7 @@ void do_notify_resume(struct pt_regs *regs, unsigned long orig_i0, unsigned long
-  */
- static_assert(NSIGILL	== 11);
- static_assert(NSIGFPE	== 15);
--static_assert(NSIGSEGV	== 9);
-+static_assert(NSIGSEGV	== 10);
- static_assert(NSIGBUS	== 5);
- static_assert(NSIGTRAP	== 6);
- static_assert(NSIGCHLD	== 6);
-diff --git a/arch/x86/include/asm/disabled-features.h b/arch/x86/include/asm/disabled-features.h
-index b9c7eae..702d93f 100644
---- a/arch/x86/include/asm/disabled-features.h
-+++ b/arch/x86/include/asm/disabled-features.h
-@@ -111,6 +111,12 @@
- #define DISABLE_USER_SHSTK	(1 << (X86_FEATURE_USER_SHSTK & 31))
- #endif
- 
-+#ifdef CONFIG_X86_KERNEL_IBT
-+#define DISABLE_IBT	0
-+#else
-+#define DISABLE_IBT	(1 << (X86_FEATURE_IBT & 31))
-+#endif
+diff --git a/arch/x86/include/asm/processor.h b/arch/x86/include/asm/processor.h
+index 4e35f40..b216ac8 100644
+--- a/arch/x86/include/asm/processor.h
++++ b/arch/x86/include/asm/processor.h
+@@ -479,6 +479,8 @@ struct thread_struct {
+ #ifdef CONFIG_X86_USER_SHADOW_STACK
+ 	unsigned long		features;
+ 	unsigned long		features_locked;
 +
- /*
-  * Make sure to add features to the correct mask
-  */
-@@ -134,7 +140,7 @@
- #define DISABLED_MASK16	(DISABLE_PKU|DISABLE_OSPKE|DISABLE_LA57|DISABLE_UMIP| \
- 			 DISABLE_ENQCMD)
- #define DISABLED_MASK17	0
--#define DISABLED_MASK18	0
-+#define DISABLED_MASK18	(DISABLE_IBT)
- #define DISABLED_MASK19	0
- #define DISABLED_MASK20	0
- #define DISABLED_MASK_CHECK BUILD_BUG_ON_ZERO(NCAPINTS != 21)
-diff --git a/arch/x86/include/asm/idtentry.h b/arch/x86/include/asm/idtentry.h
-index b241af4..61e0e63 100644
---- a/arch/x86/include/asm/idtentry.h
-+++ b/arch/x86/include/asm/idtentry.h
-@@ -614,7 +614,7 @@ DECLARE_IDTENTRY_RAW_ERRORCODE(X86_TRAP_DF,	xenpv_exc_double_fault);
++	struct thread_shstk	shstk;
  #endif
  
- /* #CP */
--#ifdef CONFIG_X86_KERNEL_IBT
-+#ifdef CONFIG_X86_CET
- DECLARE_IDTENTRY_ERRORCODE(X86_TRAP_CP,	exc_control_protection);
- #endif
+ 	/* Floating point and extended processor state */
+diff --git a/arch/x86/include/asm/shstk.h b/arch/x86/include/asm/shstk.h
+index ec75380..2b1f7c9 100644
+--- a/arch/x86/include/asm/shstk.h
++++ b/arch/x86/include/asm/shstk.h
+@@ -8,12 +8,19 @@
+ struct task_struct;
  
-diff --git a/arch/x86/include/asm/traps.h b/arch/x86/include/asm/traps.h
-index 47ecfff..75e0dab 100644
---- a/arch/x86/include/asm/traps.h
-+++ b/arch/x86/include/asm/traps.h
-@@ -47,4 +47,16 @@ void __noreturn handle_stack_overflow(struct pt_regs *regs,
- 				      struct stack_info *info);
- #endif
- 
-+static inline void cond_local_irq_enable(struct pt_regs *regs)
-+{
-+	if (regs->flags & X86_EFLAGS_IF)
-+		local_irq_enable();
-+}
-+
-+static inline void cond_local_irq_disable(struct pt_regs *regs)
-+{
-+	if (regs->flags & X86_EFLAGS_IF)
-+		local_irq_disable();
-+}
-+
- #endif /* _ASM_X86_TRAPS_H */
-diff --git a/arch/x86/kernel/cet.c b/arch/x86/kernel/cet.c
-index 7ad22b7..cc10d8b 100644
---- a/arch/x86/kernel/cet.c
-+++ b/arch/x86/kernel/cet.c
-@@ -4,10 +4,6 @@
- #include <asm/bugs.h>
- #include <asm/traps.h>
- 
--static __ro_after_init bool ibt_fatal = true;
--
--extern void ibt_selftest_ip(void); /* code label defined in asm below */
--
- enum cp_error_code {
- 	CP_EC        = (1 << 15) - 1,
- 
-@@ -20,15 +16,80 @@ enum cp_error_code {
- 	CP_ENCL	     = 1 << 15,
- };
- 
--DEFINE_IDTENTRY_ERRORCODE(exc_control_protection)
-+static const char cp_err[][10] = {
-+	[0] = "unknown",
-+	[1] = "near ret",
-+	[2] = "far/iret",
-+	[3] = "endbranch",
-+	[4] = "rstorssp",
-+	[5] = "setssbsy",
+ #ifdef CONFIG_X86_USER_SHADOW_STACK
++struct thread_shstk {
++	u64	base;
++	u64	size;
 +};
 +
-+static const char *cp_err_string(unsigned long error_code)
-+{
-+	unsigned int cpec = error_code & CP_EC;
-+
-+	if (cpec >= ARRAY_SIZE(cp_err))
-+		cpec = 0;
-+	return cp_err[cpec];
-+}
-+
-+static void do_unexpected_cp(struct pt_regs *regs, unsigned long error_code)
-+{
-+	WARN_ONCE(1, "Unexpected %s #CP, error_code: %s\n",
-+		  user_mode(regs) ? "user mode" : "kernel mode",
-+		  cp_err_string(error_code));
-+}
-+
-+static DEFINE_RATELIMIT_STATE(cpf_rate, DEFAULT_RATELIMIT_INTERVAL,
-+			      DEFAULT_RATELIMIT_BURST);
-+
-+static void do_user_cp_fault(struct pt_regs *regs, unsigned long error_code)
- {
--	if (!cpu_feature_enabled(X86_FEATURE_IBT)) {
--		pr_err("Unexpected #CP\n");
--		BUG();
-+	struct task_struct *tsk;
-+	unsigned long ssp;
-+
-+	/*
-+	 * An exception was just taken from userspace. Since interrupts are disabled
-+	 * here, no scheduling should have messed with the registers yet and they
-+	 * will be whatever is live in userspace. So read the SSP before enabling
-+	 * interrupts so locking the fpregs to do it later is not required.
-+	 */
-+	rdmsrl(MSR_IA32_PL3_SSP, ssp);
-+
-+	cond_local_irq_enable(regs);
-+
-+	tsk = current;
-+	tsk->thread.error_code = error_code;
-+	tsk->thread.trap_nr = X86_TRAP_CP;
-+
-+	/* Ratelimit to prevent log spamming. */
-+	if (show_unhandled_signals && unhandled_signal(tsk, SIGSEGV) &&
-+	    __ratelimit(&cpf_rate)) {
-+		pr_emerg("%s[%d] control protection ip:%lx sp:%lx ssp:%lx error:%lx(%s)%s",
-+			 tsk->comm, task_pid_nr(tsk),
-+			 regs->ip, regs->sp, ssp, error_code,
-+			 cp_err_string(error_code),
-+			 error_code & CP_ENCL ? " in enclave" : "");
-+		print_vma_addr(KERN_CONT " in ", regs->ip);
-+		pr_cont("\n");
- 	}
+ long shstk_prctl(struct task_struct *task, int option, unsigned long features);
+ void reset_thread_features(void);
++void shstk_free(struct task_struct *p);
+ #else
+ static inline long shstk_prctl(struct task_struct *task, int option,
+ 			       unsigned long arg2) { return -EINVAL; }
+ static inline void reset_thread_features(void) {}
++static inline void shstk_free(struct task_struct *p) {}
+ #endif /* CONFIG_X86_USER_SHADOW_STACK */
  
--	if (WARN_ON_ONCE(user_mode(regs) || (error_code & CP_EC) != CP_ENDBR))
-+	force_sig_fault(SIGSEGV, SEGV_CPERR, (void __user *)0);
-+	cond_local_irq_disable(regs);
+ #endif /* __ASSEMBLY__ */
+diff --git a/arch/x86/include/uapi/asm/prctl.h b/arch/x86/include/uapi/asm/prctl.h
+index 1cd44ec..6a8e0e1 100644
+--- a/arch/x86/include/uapi/asm/prctl.h
++++ b/arch/x86/include/uapi/asm/prctl.h
+@@ -34,4 +34,7 @@
+ #define ARCH_SHSTK_DISABLE		0x5002
+ #define ARCH_SHSTK_LOCK			0x5003
+ 
++/* ARCH_SHSTK_ features bits */
++#define ARCH_SHSTK_SHSTK		(1ULL <<  0)
++
+ #endif /* _ASM_X86_PRCTL_H */
+diff --git a/arch/x86/kernel/shstk.c b/arch/x86/kernel/shstk.c
+index 41ed655..3cb8522 100644
+--- a/arch/x86/kernel/shstk.c
++++ b/arch/x86/kernel/shstk.c
+@@ -8,14 +8,159 @@
+ 
+ #include <linux/sched.h>
+ #include <linux/bitops.h>
++#include <linux/types.h>
++#include <linux/mm.h>
++#include <linux/mman.h>
++#include <linux/slab.h>
++#include <linux/uaccess.h>
++#include <linux/sched/signal.h>
++#include <linux/compat.h>
++#include <linux/sizes.h>
++#include <linux/user.h>
++#include <asm/msr.h>
++#include <asm/fpu/xstate.h>
++#include <asm/fpu/types.h>
++#include <asm/shstk.h>
++#include <asm/special_insns.h>
++#include <asm/fpu/api.h>
+ #include <asm/prctl.h>
+ 
++static bool features_enabled(unsigned long features)
++{
++	return current->thread.features & features;
 +}
 +
-+static __ro_after_init bool ibt_fatal = true;
-+
-+/* code label defined in asm below */
-+extern void ibt_selftest_ip(void);
-+
-+static void do_kernel_cp_fault(struct pt_regs *regs, unsigned long error_code)
++static void features_set(unsigned long features)
 +{
-+	if ((error_code & CP_EC) != CP_ENDBR) {
-+		do_unexpected_cp(regs, error_code);
- 		return;
++	current->thread.features |= features;
++}
++
++static void features_clr(unsigned long features)
++{
++	current->thread.features &= ~features;
++}
++
++static unsigned long alloc_shstk(unsigned long size)
++{
++	int flags = MAP_ANONYMOUS | MAP_PRIVATE | MAP_ABOVE4G;
++	struct mm_struct *mm = current->mm;
++	unsigned long addr, unused;
++
++	mmap_write_lock(mm);
++	addr = do_mmap(NULL, addr, size, PROT_READ, flags,
++		       VM_SHADOW_STACK | VM_WRITE, 0, &unused, NULL);
++
++	mmap_write_unlock(mm);
++
++	return addr;
++}
++
++static unsigned long adjust_shstk_size(unsigned long size)
++{
++	if (size)
++		return PAGE_ALIGN(size);
++
++	return PAGE_ALIGN(min_t(unsigned long long, rlimit(RLIMIT_STACK), SZ_4G));
++}
++
++static void unmap_shadow_stack(u64 base, u64 size)
++{
++	while (1) {
++		int r;
++
++		r = vm_munmap(base, size);
++
++		/*
++		 * vm_munmap() returns -EINTR when mmap_lock is held by
++		 * something else, and that lock should not be held for a
++		 * long time.  Retry it for the case.
++		 */
++		if (r == -EINTR) {
++			cond_resched();
++			continue;
++		}
++
++		/*
++		 * For all other types of vm_munmap() failure, either the
++		 * system is out of memory or there is bug.
++		 */
++		WARN_ON_ONCE(r);
++		break;
 +	}
- 
- 	if (unlikely(regs->ip == (unsigned long)&ibt_selftest_ip)) {
- 		regs->ax = 0;
-@@ -74,3 +135,18 @@ static int __init ibt_setup(char *str)
++}
++
++static int shstk_setup(void)
++{
++	struct thread_shstk *shstk = &current->thread.shstk;
++	unsigned long addr, size;
++
++	/* Already enabled */
++	if (features_enabled(ARCH_SHSTK_SHSTK))
++		return 0;
++
++	/* Also not supported for 32 bit and x32 */
++	if (!cpu_feature_enabled(X86_FEATURE_USER_SHSTK) || in_32bit_syscall())
++		return -EOPNOTSUPP;
++
++	size = adjust_shstk_size(0);
++	addr = alloc_shstk(size);
++	if (IS_ERR_VALUE(addr))
++		return PTR_ERR((void *)addr);
++
++	fpregs_lock_and_load();
++	wrmsrl(MSR_IA32_PL3_SSP, addr + size);
++	wrmsrl(MSR_IA32_U_CET, CET_SHSTK_EN);
++	fpregs_unlock();
++
++	shstk->base = addr;
++	shstk->size = size;
++	features_set(ARCH_SHSTK_SHSTK);
++
++	return 0;
++}
++
+ void reset_thread_features(void)
+ {
++	memset(&current->thread.shstk, 0, sizeof(struct thread_shstk));
+ 	current->thread.features = 0;
+ 	current->thread.features_locked = 0;
  }
  
- __setup("ibt=", ibt_setup);
-+
-+DEFINE_IDTENTRY_ERRORCODE(exc_control_protection)
++void shstk_free(struct task_struct *tsk)
 +{
-+	if (user_mode(regs)) {
-+		if (cpu_feature_enabled(X86_FEATURE_USER_SHSTK))
-+			do_user_cp_fault(regs, error_code);
-+		else
-+			do_unexpected_cp(regs, error_code);
-+	} else {
-+		if (cpu_feature_enabled(X86_FEATURE_IBT))
-+			do_kernel_cp_fault(regs, error_code);
-+		else
-+			do_unexpected_cp(regs, error_code);
-+	}
++	struct thread_shstk *shstk = &tsk->thread.shstk;
++
++	if (!cpu_feature_enabled(X86_FEATURE_USER_SHSTK) ||
++	    !features_enabled(ARCH_SHSTK_SHSTK))
++		return;
++
++	if (!tsk->mm)
++		return;
++
++	unmap_shadow_stack(shstk->base, shstk->size);
 +}
-diff --git a/arch/x86/kernel/idt.c b/arch/x86/kernel/idt.c
-index a58c6bc..5074b84 100644
---- a/arch/x86/kernel/idt.c
-+++ b/arch/x86/kernel/idt.c
-@@ -107,7 +107,7 @@ static const __initconst struct idt_data def_idts[] = {
- 	ISTG(X86_TRAP_MC,		asm_exc_machine_check, IST_INDEX_MCE),
- #endif
- 
--#ifdef CONFIG_X86_KERNEL_IBT
-+#ifdef CONFIG_X86_CET
- 	INTG(X86_TRAP_CP,		asm_exc_control_protection),
- #endif
- 
-diff --git a/arch/x86/kernel/signal_32.c b/arch/x86/kernel/signal_32.c
-index 9027fc0..c12624b 100644
---- a/arch/x86/kernel/signal_32.c
-+++ b/arch/x86/kernel/signal_32.c
-@@ -402,7 +402,7 @@ Efault:
- */
- static_assert(NSIGILL  == 11);
- static_assert(NSIGFPE  == 15);
--static_assert(NSIGSEGV == 9);
-+static_assert(NSIGSEGV == 10);
- static_assert(NSIGBUS  == 5);
- static_assert(NSIGTRAP == 6);
- static_assert(NSIGCHLD == 6);
-diff --git a/arch/x86/kernel/signal_64.c b/arch/x86/kernel/signal_64.c
-index 13a1e60..0e808c7 100644
---- a/arch/x86/kernel/signal_64.c
-+++ b/arch/x86/kernel/signal_64.c
-@@ -403,7 +403,7 @@ void sigaction_compat_abi(struct k_sigaction *act, struct k_sigaction *oact)
- */
- static_assert(NSIGILL  == 11);
- static_assert(NSIGFPE  == 15);
--static_assert(NSIGSEGV == 9);
-+static_assert(NSIGSEGV == 10);
- static_assert(NSIGBUS  == 5);
- static_assert(NSIGTRAP == 6);
- static_assert(NSIGCHLD == 6);
-diff --git a/arch/x86/kernel/traps.c b/arch/x86/kernel/traps.c
-index 6f666df..f358350 100644
---- a/arch/x86/kernel/traps.c
-+++ b/arch/x86/kernel/traps.c
-@@ -77,18 +77,6 @@
- 
- DECLARE_BITMAP(system_vectors, NR_VECTORS);
- 
--static inline void cond_local_irq_enable(struct pt_regs *regs)
--{
--	if (regs->flags & X86_EFLAGS_IF)
--		local_irq_enable();
--}
--
--static inline void cond_local_irq_disable(struct pt_regs *regs)
--{
--	if (regs->flags & X86_EFLAGS_IF)
--		local_irq_disable();
--}
--
- __always_inline int is_valid_bugaddr(unsigned long addr)
++
++static int shstk_disable(void)
++{
++	if (!cpu_feature_enabled(X86_FEATURE_USER_SHSTK))
++		return -EOPNOTSUPP;
++
++	/* Already disabled? */
++	if (!features_enabled(ARCH_SHSTK_SHSTK))
++		return 0;
++
++	fpregs_lock_and_load();
++	/* Disable WRSS too when disabling shadow stack */
++	wrmsrl(MSR_IA32_U_CET, 0);
++	wrmsrl(MSR_IA32_PL3_SSP, 0);
++	fpregs_unlock();
++
++	shstk_free(current);
++	features_clr(ARCH_SHSTK_SHSTK);
++
++	return 0;
++}
++
+ long shstk_prctl(struct task_struct *task, int option, unsigned long features)
  {
- 	if (addr < TASK_SIZE_MAX)
-diff --git a/arch/x86/xen/enlighten_pv.c b/arch/x86/xen/enlighten_pv.c
-index 93b6582..aa797b8 100644
---- a/arch/x86/xen/enlighten_pv.c
-+++ b/arch/x86/xen/enlighten_pv.c
-@@ -694,7 +694,7 @@ static struct trap_array_entry trap_array[] = {
- 	TRAP_ENTRY(exc_coprocessor_error,		false ),
- 	TRAP_ENTRY(exc_alignment_check,			false ),
- 	TRAP_ENTRY(exc_simd_coprocessor_error,		false ),
--#ifdef CONFIG_X86_KERNEL_IBT
-+#ifdef CONFIG_X86_CET
- 	TRAP_ENTRY(exc_control_protection,		false ),
- #endif
- };
-diff --git a/arch/x86/xen/xen-asm.S b/arch/x86/xen/xen-asm.S
-index 08f1ceb..9e5e680 100644
---- a/arch/x86/xen/xen-asm.S
-+++ b/arch/x86/xen/xen-asm.S
-@@ -148,7 +148,7 @@ xen_pv_trap asm_exc_page_fault
- xen_pv_trap asm_exc_spurious_interrupt_bug
- xen_pv_trap asm_exc_coprocessor_error
- xen_pv_trap asm_exc_alignment_check
--#ifdef CONFIG_X86_KERNEL_IBT
-+#ifdef CONFIG_X86_CET
- xen_pv_trap asm_exc_control_protection
- #endif
- #ifdef CONFIG_X86_MCE
-diff --git a/include/uapi/asm-generic/siginfo.h b/include/uapi/asm-generic/siginfo.h
-index ffbe4ce..0f52d0a 100644
---- a/include/uapi/asm-generic/siginfo.h
-+++ b/include/uapi/asm-generic/siginfo.h
-@@ -242,7 +242,8 @@ typedef struct siginfo {
- #define SEGV_ADIPERR	7	/* Precise MCD exception */
- #define SEGV_MTEAERR	8	/* Asynchronous ARM MTE error */
- #define SEGV_MTESERR	9	/* Synchronous ARM MTE exception */
--#define NSIGSEGV	9
-+#define SEGV_CPERR	10	/* Control protection fault */
-+#define NSIGSEGV	10
- 
- /*
-  * SIGBUS si_codes
+ 	if (option == ARCH_SHSTK_LOCK) {
