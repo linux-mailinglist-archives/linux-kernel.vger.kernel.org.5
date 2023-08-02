@@ -2,220 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 79C0E76C173
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 02:21:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 883EB76C175
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 02:22:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231215AbjHBAV4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Aug 2023 20:21:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47060 "EHLO
+        id S231236AbjHBAWJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Aug 2023 20:22:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47190 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229597AbjHBAVy (ORCPT
+        with ESMTP id S231244AbjHBAWH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Aug 2023 20:21:54 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6752E2114;
-        Tue,  1 Aug 2023 17:21:53 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id DFB9861782;
-        Wed,  2 Aug 2023 00:21:52 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C091BC433C7;
-        Wed,  2 Aug 2023 00:21:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690935712;
-        bh=jsuMr7zGC6YSdBv0CMOAaKzlrnzwchH8WRKLh2X8IuM=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=DWP50PnTBKAqdSk3ApfYx2NBkkf0HjjEyhme5y0SAFFZWRAgMv1mx+BuWaz/KGRw1
-         EBCbcX6slt8WonApI9qkCLOrtxrGG4p/ukM5PSPuc5TbCIUu/PiJddV4SqaZENeE6C
-         Pze9uI4/0wV5f5/leH5zNEkJXSSFDQCdbIXxL9GbhkMp0LiBoSv5mBz1qKXkHDGmqs
-         DkgAvKZw8qg618sZaTdqZzy3621y1LCDfX9sS7jt2jvBfwWHb1+X+sqCocdqM4xqIZ
-         MwVF7FBwKyd0m2mTXCYlt4hk+U2SIQxkRGkz0He7iOQMUwd0uZKtl8aqco+/tx+48B
-         z7AV8lbPWR7lA==
-Date:   Wed, 2 Aug 2023 09:21:46 +0900
-From:   Masami Hiramatsu (Google) <mhiramat@kernel.org>
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        "Masami Hiramatsu (Google)" <mhiramat@kernel.org>,
-        linux-trace-kernel@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        bpf <bpf@vger.kernel.org>, Sven Schnelle <svens@linux.ibm.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Alan Maguire <alan.maguire@oracle.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Florent Revest <revest@chromium.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>
-Subject: Re: [PATCH v4 3/9] bpf/btf: Add a function to search a member of a
- struct/union
-Message-Id: <20230802092146.9bda5e49528e6988ab97899c@kernel.org>
-In-Reply-To: <20230801190920.7a1abfd5@gandalf.local.home>
-References: <169078860386.173706.3091034523220945605.stgit@devnote2>
-        <169078863449.173706.2322042687021909241.stgit@devnote2>
-        <CAADnVQ+C64_C1w1kqScZ6C5tr6_juaWFaQdAp9Mt3uzaQp2KOw@mail.gmail.com>
-        <20230801085724.9bb07d2c82e5b6c6a6606848@kernel.org>
-        <CAADnVQLaFpd2OhqP7W3xWB1b9P2GAKgrVQU1FU2yeNYKbCkT=Q@mail.gmail.com>
-        <20230802000228.158f1bd605e497351611739e@kernel.org>
-        <20230801112036.0d4ee60d@gandalf.local.home>
-        <20230801113240.4e625020@gandalf.local.home>
-        <CAADnVQ+N7b8_0UhndjwW9-5Vx2wUVvojujFLOCFr648DUv-Y2Q@mail.gmail.com>
-        <20230801190920.7a1abfd5@gandalf.local.home>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        Tue, 1 Aug 2023 20:22:07 -0400
+Received: from mail-ot1-x34a.google.com (mail-ot1-x34a.google.com [IPv6:2607:f8b0:4864:20::34a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A471211E
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Aug 2023 17:22:04 -0700 (PDT)
+Received: by mail-ot1-x34a.google.com with SMTP id 46e09a7af769-6bb23d4b3b7so11508446a34.3
+        for <linux-kernel@vger.kernel.org>; Tue, 01 Aug 2023 17:22:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1690935724; x=1691540524;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=KilSXJK2MVD2AnPm9S8tYLf7mVOFKVkH/54xfLNRqRA=;
+        b=OH8wphWtMmg60OnMDGFBbF7ujCNGPfgd2hbBYp4SVBYlFKrjyQu3OyqQGskdp6nUx0
+         zrZQow/qzsJWNWHEmuV3V2qPKIKMA9s5C7cY/R7IaT/DqJ6oRdyQY2b82z5poBpUR27F
+         du+pXzKwbNL4p7SmBwzwQkAIr0EraF+KpipRtx/9CfQdlWuxFUre1Z5oDrSL9dfERZ8Z
+         Ew5uf/pjeNaDEYFWcjMiEED9VgKAfpBYhKT2+HnffFuA0R6qzLEBFB96EoqyguDp8xX8
+         3hd9790NAi7zG25zuNBEJP/3LXIyAhUPtDDFV6dHiirHEEXFpZqC04f5xPep+Ptk6QbE
+         7/+Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690935724; x=1691540524;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=KilSXJK2MVD2AnPm9S8tYLf7mVOFKVkH/54xfLNRqRA=;
+        b=JGWYc5LyC0k4B7N6P2bHjqFIldRtqIdficz02yoSFuJRr3ZAgBS2dStv1NIYG2PzMs
+         ENlBDCUIXW6BFQWdvrZlhyh9Q1lScMT53Jm0XeRnN4nf7n4q7AVdx2MPYWkQzC2t+l66
+         /IlEWXhwANL1cK374M3yaONN+sxfmZgY2m/qJ1Ur3Il8Kcgoemb8ZBnkNFLy6xKnh+8B
+         I6HBIrESrEHSYRXHqPVEi97ZbxGHUb1cYCNUYYYS8MnB3H8KO83pp/5JgN7CmD2S08QM
+         wUcrxybX5QnNMRWfH4f27xkVtuB2RU7tvtrfQtOk53P+jeNRNvfAdT4O7mDb1MLxh1Kk
+         E2Ng==
+X-Gm-Message-State: ABy/qLZqFGELrwXFUwGhA4wvbgYdw8fx0DC/8KWgdU/iN9Vu71Y9CKSO
+        c0Vr//4FjC+X3hIniI42/fu9GT/p5ei00xOX5A==
+X-Google-Smtp-Source: APBJJlE6hQQSIqZLj/BmT+qswU4s+FzGwFzE/FiZyI/8dUSztNts5afzNmPqF9G3rBrPkMhq6NyTiD2qAN7/Qj9lhg==
+X-Received: from jstitt-linux1.c.googlers.com ([fda3:e722:ac3:cc00:2b:ff92:c0a8:23b5])
+ (user=justinstitt job=sendgmr) by 2002:a9d:7f0f:0:b0:6b9:6ef7:72f3 with SMTP
+ id j15-20020a9d7f0f000000b006b96ef772f3mr15098160otq.0.1690935723801; Tue, 01
+ Aug 2023 17:22:03 -0700 (PDT)
+Date:   Wed, 02 Aug 2023 00:21:58 +0000
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-B4-Tracking: v=1; b=H4sIAKWhyWQC/32NQQ6CMBBFr0Jm7Zi2ECSuvIdhAcMAE5GSqWk0p
+ He3cgCX7yX//R0Cq3CAa7GDcpQgfs3gTgXQ3K0TowyZwRlXmsZY7JRmVAkU8cG68oK26kzVENV VfYG825RHeR/Ne5t5lvDy+jkuov3Zf7Vo0aLry9ENZHqq7W3yflr4TP4JbUrpCzEeraazAAAA
+X-Developer-Key: i=justinstitt@google.com; a=ed25519; pk=tC3hNkJQTpNX/gLKxTNQKDmiQl6QjBNCGKJINqAdJsE=
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1690935722; l=1734;
+ i=justinstitt@google.com; s=20230717; h=from:subject:message-id;
+ bh=D6hZsVI6Tg/cS4gcm5zBne5/wTMEFngDX9MakiPlN9c=; b=BFamEJKVk9qr4ymm+TIZ9Pu636D4xvSUp89XThBbJXvRx+VpNnfLVUV6Vf6elstDWbOXogA6B
+ CRRIKYBa1mlBCWmpuuUH5qNbPrKKy1Gn0mQyZbapFhj08hVrY2pqzkp
+X-Mailer: b4 0.12.3
+Message-ID: <20230802-arch-riscv-kernel-v2-1-24266e85bc96@google.com>
+Subject: [PATCH v2] RISC-V: cpu: refactor deprecated strncpy
+From:   Justin Stitt <justinstitt@google.com>
+To:     Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>
+Cc:     linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Kees Cook <keescook@chromium.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        linux-hardening@vger.kernel.org,
+        Justin Stitt <justinstitt@google.com>
+Content-Type: text/plain; charset="utf-8"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        USER_IN_DEF_DKIM_WL autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 1 Aug 2023 19:09:20 -0400
-Steven Rostedt <rostedt@goodmis.org> wrote:
+`strncpy` is deprecated for use on NUL-terminated destination strings [1].
 
-> On Tue, 1 Aug 2023 15:18:56 -0700
-> Alexei Starovoitov <alexei.starovoitov@gmail.com> wrote:
-> 
-> > On Tue, Aug 1, 2023 at 8:32 AM Steven Rostedt <rostedt@goodmis.org> wrote:
-> > >
-> > > On Tue, 1 Aug 2023 11:20:36 -0400
-> > > Steven Rostedt <rostedt@goodmis.org> wrote:
-> > >  
-> > > > The solution was to come up with ftrace_regs, which just means it has all
-> > > > the registers to extract the arguments of a function and nothing more. Most  
-> > >
-> > > This isn't 100% true. The ftrace_regs may hold a fully filled pt_regs. As
-> > > the FTRACE_WITH_REGS callbacks still get passed a ftrace_regs pointer. They
-> > > will do:
-> > >
-> > >         void callback(..., struct ftrace_regs *fregs) {
-> > >                 struct pt_regs *regs = ftrace_get_regs(fregs);
-> > >
-> > >
-> > > Where ftrace_get_regs() will return the pt_regs only if it is fully filled.
-> > > If it is not, then it returns NULL. This was what the x86 maintainers
-> > > agreed with.  
-> > 
-> > arch/arm64/include/asm/ftrace.h:#define arch_ftrace_get_regs(regs) NULL
-> > 
-> > Ouch. That's very bad.
-> > We care a lot about bpf running well on arm64.
-> 
-> [ Adding Mark and Florent ]
-> 
-> That's because arm64 doesn't support FTRACE_WITH_REGS anymore. Their
-> function handlers only care about the arguments. If you want full regs at
-> function entry, then you need to take a breakpoint hit for a full kprobe.
-> 
-> In fact, fprobes isn't even supported on arm64 because it it doesn't have
-> DYNAMIC_FTRACE_WITH_REGS. I believe that was the reason Masami was trying
-> to get it to work with ftrace_regs. To get it to work on arm64.
+Favor not copying strings onto stack and instead use strings directly.
+This avoids hard-coding sizes and buffer lengths all together.
 
-That's right. And I think (agree) pt_regs is too heavy for function entry/exit
-because most users needs to access the function arguments or return value.
-kprobes is a bit different because it is for instruction level inspection
-tool.
+Link: https://github.com/KSPP/linux/issues/90
+Cc: linux-hardening@vger.kernel.org
+Suggested-by: Kees Cook <keescook@chromium.org>
+Signed-off-by: Justin Stitt <justinstitt@google.com>
+---
+Changes in v2:
+- Use strings directly instead of copying onto stack with `strscpy` (thanks Kees)
+- Link to v1: https://lore.kernel.org/r/20230801-arch-riscv-kernel-v1-1-2b3f2dc0bc61@google.com
+---
+ arch/riscv/kernel/cpu.c | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
 
-> 
-> Again, ftrace_get_regs(fregs) is only suppose to return something if the
-> pt_regs is fully supplied. If they are not, then it must not be used. Are
-> you not using a fully filled pt_regs? Because that's what both Thomas and
-> Peter (also added) told me not to do!
+diff --git a/arch/riscv/kernel/cpu.c b/arch/riscv/kernel/cpu.c
+index a2fc952318e9..872fa7a47d68 100644
+--- a/arch/riscv/kernel/cpu.c
++++ b/arch/riscv/kernel/cpu.c
+@@ -271,21 +271,21 @@ static void print_isa(struct seq_file *f, const char *isa)
+ 
+ static void print_mmu(struct seq_file *f)
+ {
+-	char sv_type[16];
++	const char *sv_type;
+ 
+ #ifdef CONFIG_MMU
+ #if defined(CONFIG_32BIT)
+-	strncpy(sv_type, "sv32", 5);
++	sv_type = "sv32";
+ #elif defined(CONFIG_64BIT)
+ 	if (pgtable_l5_enabled)
+-		strncpy(sv_type, "sv57", 5);
++		sv_type = "sv57";
+ 	else if (pgtable_l4_enabled)
+-		strncpy(sv_type, "sv48", 5);
++		sv_type = "sv48";
+ 	else
+-		strncpy(sv_type, "sv39", 5);
++		sv_type = "sv39";
+ #endif
+ #else
+-	strncpy(sv_type, "none", 5);
++	sv_type = "none";
+ #endif /* CONFIG_MMU */
+ 	seq_printf(f, "mmu\t\t: %s\n", sv_type);
+ }
 
-I guess that the user-land BPF tools (compliers etc.) only generates
-bytecode to access registers in pt_regs for kernel probes currently.
-This is why you are using "kprobes" as a naming. But I think you can be
-more flexible to generate the code to access registers in ftrace_regs.
-(because it's just a difference in the offset value)
+---
+base-commit: 5d0c230f1de8c7515b6567d9afba1f196fb4e2f4
+change-id: 20230801-arch-riscv-kernel-14a048cc6467
 
-> 
-> Otherwise, ftrace_regs() has support on arm64 for getting to the argument
-> registers and the stack. Even live kernel patching now uses ftrace_regs().
-> 
-> > 
-> > If you guys decide to convert fprobe to ftrace_regs please
-> > make it depend on kconfig or something.
-> > bpf side needs full pt_regs.
-> 
-> Then use kprobes. When I asked Masami what the difference between fprobes
-> and kprobes was, he told me that it would be that it would no longer rely
-> on the slower FTRACE_WITH_REGS. But currently, it still does.
+Best regards,
+--
+Justin Stitt <justinstitt@google.com>
 
-kprobes needs to keep using pt_regs because software-breakpoint exception
-handler gets that. And fprobe is used for bpf multi-kprobe interface,
-but I think it can be optional.
-
-So until user-land tool supports the ftrace_regs, you can just disable
-using fprobes if CONFIG_DYNAMIC_FTRACE_WITH_REGS=n
-
-Then you can safely use 
-
-struct pt_regs *regs = ftrace_get_regs(fregs);
-
-I think we can just replace the CONFIG_FPROBE ifdefs with
-CONFIG_DYNAMIC_FTRACE_WITH_REGS in kernel/trace/bpf_trace.c
-And that will be the first version of using ftrace_regs in fprobe.
-
-> 
-> The reason I started the FTRACE_WITH_ARGS (which gave us ftrace_regs) in
-> the first place, was because of the overhead you reported to me with
-> ftrace_regs_caller and why you wanted to go the direct trampoline approach.
-> That's when I realized I could use a subset because those registers were
-> already being saved. The only reason FTRACE_WITH_REGS was created was it
-> had to supply full pt_regs (including flags) and emulate a breakpoint for
-> the kprobes interface. But in reality, nothing really needs all that.
-> 
-> > It's not about access to args.
-> > pt_regs is passed from bpf prog further into all kinds of perf event
-> > functions including stack walking.
-> 
-> ftrace_regs gives you the stack pointer. Basically, it gives you access to
-> anything that is required to be saved to do a function call from fentry.
-
-Yeah, for stack walking, we usually need stack pointer and instruction pointer
-or frame pointer. But Alexei made a good point, linux/stacktrace.h provides
-pt_regs interaface because pt_regs is a generic (arch-independent) data
-structure. (see arch_stack_walk()) We need a new interface for it.
-
-> 
-> > I think ORC unwinder might depend on availability of all registers.
-
-This is not correct. ORC uses limited registers (r10, r13, bp, sp, di, dx)
-on x86. Anyway, since ftrace can make a stacktrace, it should be possible
-to use ORC with ftrace_regs.
-
-> > Other perf helpers might need it too. Like perf_event_output.
-> > bpf progs need to access arguments, no doubt about that.
-> > If ftrace_regs have them exactly in the same offsets as in pt_regs
-> > that might work transparently for bpf progs, but, I'm afraid,
-> > it's not the case on all archs.
-> > So we need full pt_regs to make sure all paths are still working.
-> > 
-> > Adding Jiri and others.
-> 
-> Then I recommend that you give up using fprobes and just stick with kprobes
-> as that's guaranteed to give you full pt_regs (at the overhead of doing
-> things like filing in flags and such). And currently for arm64, fprobes can
-> only work with ftrace_regs, without the full pt_regs.
-
-I think we can continue to limit usage of fprobe(kprobe_multi) with
-CONFIG_DYNAMIC_FTRACE_WITH_REGS, which can be configured on x86. That will
-not change anything from the BPF point of view.
-
-Thank you,
-
-> 
-> -- Steve
-
-
--- 
-Masami Hiramatsu (Google) <mhiramat@kernel.org>
