@@ -2,52 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D2AA776CBA8
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 13:21:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E22176CBA9
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 13:21:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234175AbjHBLU7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Aug 2023 07:20:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49790 "EHLO
+        id S233926AbjHBLVf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Aug 2023 07:21:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50366 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232421AbjHBLU5 (ORCPT
+        with ESMTP id S232246AbjHBLVc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Aug 2023 07:20:57 -0400
+        Wed, 2 Aug 2023 07:21:32 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3EF426A2
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Aug 2023 04:20:42 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48C42268D
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Aug 2023 04:21:29 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 5DF5561939
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Aug 2023 11:20:41 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id F0B07C433C7;
-        Wed,  2 Aug 2023 11:20:38 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id D12CF61934
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Aug 2023 11:21:28 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0A58AC433C8;
+        Wed,  2 Aug 2023 11:21:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690975240;
-        bh=WD+SSKvIiKPnRV7ZbrF3+/bXbHW9DvArsnTM6PE24VM=;
+        s=k20201202; t=1690975288;
+        bh=UM85u9Eehr9SJgkosXfFY8eaLUsGm9aavTi3il5wqIM=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Tek8esPJJh9XQS8B0tcf6QyBaku+4neVNlvdcUr/r74juDQhTl4aW4iMsWU0e3hDG
-         p8WdPuk67yh/hYUeefVfwit7ExitogrqiEbizRLV//AQah0M4lPH29dSXjxkjn1lL3
-         O7y307dB7ku3LXBbKrQGbRPaAcJjt0lgfPveVmOTUTbSCFBkaEGwZLesZhtUCsq7/g
-         rJH2n2quyjf66jDdFaCZQ0Z443pExWqhfA8t0r9UNs6G0MbInknzXQxSaC7JqR3LNa
-         mxbz99QcP5eQAD9i2jhdl9cvc6byz5+8wT3rxNlBNSM/s57Begy/Q/3sfchOMgQrWi
-         J6sUZoFLomOtw==
-Date:   Wed, 2 Aug 2023 16:50:28 +0530
-From:   Manivannan Sadhasivam <mani@kernel.org>
-To:     Jeffrey Hugo <quic_jhugo@quicinc.com>
-Cc:     linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        mhi@lists.linux.dev
-Subject: Re: [PATCH v2 0/2] Add MHI quirk for QAIC
-Message-ID: <20230802112028.GG57374@thinkpad>
-References: <20230519163902.4170-1-quic_jhugo@quicinc.com>
- <20230608115928.GA5672@thinkpad>
- <507f4cc2-15c2-8323-878e-4da00505bc45@quicinc.com>
+        b=e26DI5IHC5MeFhXMNn9hOLkxJSKXEE0lOMseiKxgOPVgPD3sIBXTWx06++1VqYzp1
+         28emqGVvq366BWef4xpKcTbXKPacj0BWsr5noFwWfXSrN04SJUg6AXYJ05r9p6Wz1Y
+         Hx7sp1kiCjK4n0TrAMTUkmP/AaynJ4kATcIns5euTnt/q9GsxkTTB03Bh6CHeBVGcb
+         fHAocsI+bJaqzpueCEgyTteq3FoXQkP0tNUEBrEJCNfU9u09DM3VRYcNnDDzKFi/Y0
+         L9I5Epph3cya8E5lvtSDy+cas8REXFrw814a7ojAnp6Yp5HlnB44OMEaQsUN6ZZWjW
+         qM2jeXvhTNrvA==
+Date:   Wed, 2 Aug 2023 12:21:23 +0100
+From:   Will Deacon <will@kernel.org>
+To:     Mark Brown <broonie@kernel.org>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Dave Martin <Dave.Martin@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] arm64/fpsimd: Only provide the length to cpufeature for
+ xCR registers
+Message-ID: <20230802112122.GA27807@willie-the-truck>
+References: <20230727-arm64-sme-fa64-hotplug-v1-1-34ae93afc05b@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <507f4cc2-15c2-8323-878e-4da00505bc45@quicinc.com>
+In-Reply-To: <20230727-arm64-sme-fa64-hotplug-v1-1-34ae93afc05b@kernel.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
@@ -58,117 +59,67 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 26, 2023 at 11:15:56AM -0600, Jeffrey Hugo wrote:
-> On 6/8/2023 5:59 AM, Manivannan Sadhasivam wrote:
-> > On Fri, May 19, 2023 at 10:39:00AM -0600, Jeffrey Hugo wrote:
-> > > With the QAIC driver in -next, I'd like to suggest some MHI changes that
-> > > specific to AIC100 devices, but perhaps provide a framework for other
-> > > device oddities.
-> > > 
-> > > AIC100 devices technically violate the MHI spec in two ways. Sadly, these
-> > > issues comes from the device hardware, so host SW needs to work around
-> > > them.
-> > > 
-> > > Thie first issue, presented in this series, has to do with the
-> > > SOC_HW_VERSION register. This register is suposed to be initialized by the
-> > > hardware prior to the MHI being accessable by the host to contain a
-> > > version string for the SoC of the device. This could be used by the host
-> > > MHI controller software to identify and handle version to version changes.
-> > > The AIC100 hardware does not initialize this register, and thus it
-> > > contains garbage.
-> > > 
-> > > This would not be much of a problem normally - the QAIC driver would just
-> > > never use it. However the MHI stack uses this register as part of the init
-> > > sequence and if the controller reports that the register is inaccessable
-> > > then the init sequence fails.  On some AIC100 cards, the garbage value
-> > > ends up being 0xFFFFFFFF which is PCIe spec defined to be a special value
-> > > indicating the access failed.  The MHI controller cannot tell if that
-> > > value is a PCIe link issue, or just garbage.
-> > > 
-> > > QAIC needs a way to tell MHI not to use this register. Other buses have a
-> > > quirk mechanism - a way to describe oddities in a particular
-> > > implementation that have some kind of workaround. Since this seems to be
-> > > the first need for such a thing in MHI, introduce a quirk framework.
-> > > 
-> > > The second issue AIC100 has involves the PK Hash registers. A solution for
-> > > this is expected to be proposed in the near future and is anticipated to
-> > > make use of the quirk framework proposed here. With PK Hash, there are two
-> > > oddities to handle. AIC100 does not initialize these registers until the
-> > > SBL is running, which is later than the spec indicates, and in practice
-> > > is after MHI reads/caches them. Also, AIC100 does not have enough
-> > > registers defined to fully report the 5 PK Hash slots, so a custom
-> > > reporting format is defined by the device.
-> > > 
-> > 
-> > Looking at the two issues you reported above, it looks to me that they can be
-> > handled inside the aic100 mhi_controller driver itself. Since the MHI stack
-> > exports the read_reg callback to controller drivers, if some registers are not
-> > supported by the device, then the callback can provide some fixed dummy data
-> > emulating the register until the issue is fixed in the device (if at all).
-> > 
-> > Quirk framework could be useful if the device misbehaves against the protocol
-> > itself but for the register issues like this, I think the controller driver can
-> > handle itself.
-> > 
-> > What do you think?
+On Thu, Jul 27, 2023 at 10:31:44PM +0100, Mark Brown wrote:
+> For both SVE and SME we abuse the generic register field comparison
+> support in the cpufeature code as part of our detection of unsupported
+> variations in the vector lengths available to PEs, reporting the maximum
+> vector lengths via ZCR_EL1.LEN and SMCR_EL1.LEN.  Since these are
+> configuration registers rather than identification registers the
+> assumptions the cpufeature code makes about how unknown bitfields behave
+> are invalid, leading to warnings when SME features like FA64 are enabled
+> and we hotplug a CPU:
 > 
-> I think for the HW_VERSION register, your suggestion is very good, and
-> something I plan to adopt.
+>   CPU features: SANITY CHECK: Unexpected variation in SYS_SMCR_EL1. Boot CPU: 0x0000000000000f, CPU3: 0x0000008000000f
+>   CPU features: Unsupported CPU feature variation detected.
 > 
-> For the PK Hash registers, I don't think it quite works.
+> SVE has no controls other than the vector length so is not yet impacted
+> but the same issue will apply there if any are defined.
 > 
-> HW_VERSION I can hard code to a valid value, or just stub out to 0 since
-> that appears to be only consumed by the MHI Controller, and we don't use it.
+> Since the only field we are interested in having the cpufeature code
+> handle is the length field and we use a custom read function to obtain
+> the value we can avoid these warnings by filtering out all other bits
+> when we return the register value.
 > 
-> The PK Hash registers are programmed into the SoC, and can be unique from
-> SoC to SoC.  I don't see how the driver can provide valid, but faked
-> information for them.  Also, the user consumes this data via sysfs.  We'd
-> like to give the data to the user, and we can't fake it. Also the data is
-> dynamic.
+> Fixes: 2e0f2478ea37eb ("arm64/sve: Probe SVE capabilities and usable vector lengths")
+> FixeS: b42990d3bf77cc ("arm64/sme: Identify supported SME vector lengths at boot")
+> Signed-off-by: Mark Brown <broonie@kernel.org>
+> ---
+>  arch/arm64/kernel/fpsimd.c | 6 +++---
+>  1 file changed, 3 insertions(+), 3 deletions(-)
 > 
-> Lets start with the dynamic data issue.  Right now MHI reads these registers
-> once, and caches the values.  I would propose a quirk to change that
-> behavior for AIC100, but does MHI really need to operate in a "read once"
-> mode?  Would something actually break if MHI read the registers every time
-> the sysfs node is accessed?  Then sysfs would display the latest data, which
-> would be beneficial to AIC100 and should not be a behavior change for other
-> devices which have static data (MHI just displays the same data because it
-> hasn't changed).
-> 
-> Do you recall the reason behind making the PK Hash registers read once and
-> cached?
-> 
+> diff --git a/arch/arm64/kernel/fpsimd.c b/arch/arm64/kernel/fpsimd.c
+> index 89d54a5242d1..c7fdeebd050c 100644
+> --- a/arch/arm64/kernel/fpsimd.c
+> +++ b/arch/arm64/kernel/fpsimd.c
+> @@ -1189,11 +1189,11 @@ u64 read_zcr_features(void)
+>  	write_sysreg_s(ZCR_ELx_LEN_MASK, SYS_ZCR_EL1);
+>  
+>  	zcr = read_sysreg_s(SYS_ZCR_EL1);
+> -	zcr &= ~(u64)ZCR_ELx_LEN_MASK; /* find sticky 1s outside LEN field */
+> +	zcr &= ~(u64)ZCR_ELx_LEN_MASK;
+>  	vq_max = sve_vq_from_vl(sve_get_vl());
+>  	zcr |= vq_max - 1; /* set LEN field to maximum effective value */
+>  
+> -	return zcr;
+> +	return SYS_FIELD_GET(ZCR_ELx, LEN, zcr);
 
-I don't see an issue with reading the PK hash dynamically. I think the intention
-for caching mostly come from the fact it was a static data.
+Hmm, now this function looks like a mixture of code which relies on the
+LEN field living at the bottom of the register and code which is agnostic
+to that.
 
-So you can dynamically read it all the time.
+Can we update the 'zcr |= vq_max - 1' part to use something like
+FIELD_PREP() instead?
 
-- Mani
+>  }
+>  
+>  void __init sve_setup(void)
+> @@ -1364,7 +1364,7 @@ u64 read_smcr_features(void)
+>  	vq_max = sve_vq_from_vl(sme_get_vl());
+>  	smcr |= vq_max - 1; /* set LEN field to maximum effective value */
+>  
+> -	return smcr;
+> +	return SYS_FIELD_GET(SMCR_ELx, LEN, smcr);
 
-> > 
-> > - Mani
-> > 
-> > > v2:
-> > > -Fix build error
-> > > -Fix typo in commit text
-> > > 
-> > > Jeffrey Hugo (2):
-> > >    bus: mhi: host: Add quirk framework and initial quirk
-> > >    accel/qaic: Add MHI_QUIRK_SOC_HW_VERSION_UNRELIABLE
-> > > 
-> > >   drivers/accel/qaic/mhi_controller.c |  1 +
-> > >   drivers/bus/mhi/host/init.c         | 13 +++++++++----
-> > >   include/linux/mhi.h                 | 18 ++++++++++++++++++
-> > >   3 files changed, 28 insertions(+), 4 deletions(-)
-> > > 
-> > > -- 
-> > > 2.40.1
-> > > 
-> > > 
-> > 
-> 
-> 
+It looks like there's a similar thing here.
 
--- 
-மணிவண்ணன் சதாசிவம்
+Will
