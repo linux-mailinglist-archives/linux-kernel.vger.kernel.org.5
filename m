@@ -2,42 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 326C076C255
+	by mail.lfdr.de (Postfix) with ESMTP id 7C15576C256
 	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 03:38:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230424AbjHBBh4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Aug 2023 21:37:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42466 "EHLO
+        id S231651AbjHBBh7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Aug 2023 21:37:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42478 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231222AbjHBBhc (ORCPT
+        with ESMTP id S231308AbjHBBhc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 1 Aug 2023 21:37:32 -0400
 Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 449121B7
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8A98210D
         for <linux-kernel@vger.kernel.org>; Tue,  1 Aug 2023 18:37:31 -0700 (PDT)
 Received: from mail02.huawei.com (unknown [172.30.67.143])
-        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4RFvjh1vNyz4f3pC7
+        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4RFvjh4ps8z4f3pCB
         for <linux-kernel@vger.kernel.org>; Wed,  2 Aug 2023 09:37:28 +0800 (CST)
 Received: from huaweicloud.com (unknown [10.175.124.27])
-        by APP4 (Coremail) with SMTP id gCh0CgAXzrFTs8lkvrtvPQ--.56352S8;
-        Wed, 02 Aug 2023 09:37:28 +0800 (CST)
+        by APP4 (Coremail) with SMTP id gCh0CgAXzrFTs8lkvrtvPQ--.56352S9;
+        Wed, 02 Aug 2023 09:37:29 +0800 (CST)
 From:   Kemeng Shi <shikemeng@huaweicloud.com>
 To:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
         akpm@linux-foundation.org, baolin.wang@linux.alibaba.com,
         mgorman@techsingularity.net, david@redhat.com
 Cc:     shikemeng@huaweicloud.com
-Subject: [PATCH v2 6/8] mm/compaction: correct comment to complete migration failure
-Date:   Wed,  2 Aug 2023 17:37:39 +0800
-Message-Id: <20230802093741.2333325-7-shikemeng@huaweicloud.com>
+Subject: [PATCH v2 7/8] mm/compaction: remove unnecessary return for void function
+Date:   Wed,  2 Aug 2023 17:37:40 +0800
+Message-Id: <20230802093741.2333325-8-shikemeng@huaweicloud.com>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20230802093741.2333325-1-shikemeng@huaweicloud.com>
 References: <20230802093741.2333325-1-shikemeng@huaweicloud.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: gCh0CgAXzrFTs8lkvrtvPQ--.56352S8
-X-Coremail-Antispam: 1UD129KBjvdXoWrZF1UKrW8Kr48JrWrWrW3Wrg_yoWfWFX_Jr
-        4Iyr1rWw1F9r9IyanrCayayryagr4kZr17Ww1DX3y7t34vyF4fW3WDArsrZr9YqayDW3sx
-        C34kZr1jk3Za9jkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+X-CM-TRANSID: gCh0CgAXzrFTs8lkvrtvPQ--.56352S9
+X-Coremail-Antispam: 1UD129KBjvdXoWrtryxtr1UAF4UZry3Kr1UAwb_yoWDCFX_Jr
+        yIyrWFqw4Yvr18AFnxCF4avrykGF4DCr1aqa1DXr1fAa4qya1vv3srZr13X3yYqa9rur9x
+        G3WkZFs2kF1avjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
         9fnUUIcSsGvfJTRUUUbDAFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k26cxKx2IYs7xG
         6rWj6s0DM7CIcVAFz4kK6r1j6r18M280x2IEY4vEnII2IxkI6r1a6r45M28IrcIa0xkI8V
         A2jI8067AKxVWUAVCq3wA2048vs2IY020Ec7CjxVAFwI0_Xr0E3s1l8cAvFVAK0II2c7xJ
@@ -63,28 +63,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit cfccd2e63e7e0 ("mm, compaction: finish pageblocks on complete
-migration failure") convert cc->order aligned check to page block
-order aligned check. Correct comment relevant with it.
+Remove unnecessary return for void function
 
 Signed-off-by: Kemeng Shi <shikemeng@huaweicloud.com>
+Reviewed-by: David Hildenbrand <david@redhat.com>
+Reviewed-by: Baolin Wang <baolin.wang@linux.alibaba.com>
 ---
- mm/compaction.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ mm/compaction.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
 diff --git a/mm/compaction.c b/mm/compaction.c
-index 7f01fbeb3084..5581e4cccac5 100644
+index 5581e4cccac5..a1cc327d1b32 100644
 --- a/mm/compaction.c
 +++ b/mm/compaction.c
-@@ -2512,7 +2512,7 @@ compact_zone(struct compact_control *cc, struct capture_control *capc)
- 			}
- 			/*
- 			 * If an ASYNC or SYNC_LIGHT fails to migrate a page
--			 * within the current order-aligned block and
-+			 * within the pageblock_order-aligned block and
- 			 * fast_find_migrateblock may be used then scan the
- 			 * remainder of the pageblock. This will mark the
- 			 * pageblock "skip" to avoid rescanning in the near
+@@ -1423,8 +1423,6 @@ fast_isolate_around(struct compact_control *cc, unsigned long pfn)
+ 	/* Skip this pageblock in the future as it's full or nearly full */
+ 	if (start_pfn >= end_pfn)
+ 		set_pageblock_skip(page);
+-
+-	return;
+ }
+ 
+ /* Search orders in round-robin fashion */
+@@ -2878,7 +2876,7 @@ int compaction_register_node(struct node *node)
+ 
+ void compaction_unregister_node(struct node *node)
+ {
+-	return device_remove_file(&node->dev, &dev_attr_compact);
++	device_remove_file(&node->dev, &dev_attr_compact);
+ }
+ #endif /* CONFIG_SYSFS && CONFIG_NUMA */
+ 
 -- 
 2.30.0
 
