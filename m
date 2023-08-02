@@ -2,42 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C543B76CBA0
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 13:20:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D2AA776CBA8
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 13:21:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234135AbjHBLUF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Aug 2023 07:20:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48738 "EHLO
+        id S234175AbjHBLU7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Aug 2023 07:20:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49790 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234121AbjHBLUD (ORCPT
+        with ESMTP id S232421AbjHBLU5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Aug 2023 07:20:03 -0400
-Received: from out30-97.freemail.mail.aliyun.com (out30-97.freemail.mail.aliyun.com [115.124.30.97])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E45E2139
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Aug 2023 04:20:01 -0700 (PDT)
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R171e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045168;MF=baolin.wang@linux.alibaba.com;NM=1;PH=DS;RN=6;SR=0;TI=SMTPD_---0VouwrhT_1690975197;
-Received: from 30.97.48.77(mailfrom:baolin.wang@linux.alibaba.com fp:SMTPD_---0VouwrhT_1690975197)
-          by smtp.aliyun-inc.com;
-          Wed, 02 Aug 2023 19:19:58 +0800
-Message-ID: <026aaebd-ceb3-0659-8f54-2ec3cd81b5df@linux.alibaba.com>
-Date:   Wed, 2 Aug 2023 19:20:24 +0800
+        Wed, 2 Aug 2023 07:20:57 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3EF426A2
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Aug 2023 04:20:42 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 5DF5561939
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Aug 2023 11:20:41 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id F0B07C433C7;
+        Wed,  2 Aug 2023 11:20:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1690975240;
+        bh=WD+SSKvIiKPnRV7ZbrF3+/bXbHW9DvArsnTM6PE24VM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Tek8esPJJh9XQS8B0tcf6QyBaku+4neVNlvdcUr/r74juDQhTl4aW4iMsWU0e3hDG
+         p8WdPuk67yh/hYUeefVfwit7ExitogrqiEbizRLV//AQah0M4lPH29dSXjxkjn1lL3
+         O7y307dB7ku3LXBbKrQGbRPaAcJjt0lgfPveVmOTUTbSCFBkaEGwZLesZhtUCsq7/g
+         rJH2n2quyjf66jDdFaCZQ0Z443pExWqhfA8t0r9UNs6G0MbInknzXQxSaC7JqR3LNa
+         mxbz99QcP5eQAD9i2jhdl9cvc6byz5+8wT3rxNlBNSM/s57Begy/Q/3sfchOMgQrWi
+         J6sUZoFLomOtw==
+Date:   Wed, 2 Aug 2023 16:50:28 +0530
+From:   Manivannan Sadhasivam <mani@kernel.org>
+To:     Jeffrey Hugo <quic_jhugo@quicinc.com>
+Cc:     linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        mhi@lists.linux.dev
+Subject: Re: [PATCH v2 0/2] Add MHI quirk for QAIC
+Message-ID: <20230802112028.GG57374@thinkpad>
+References: <20230519163902.4170-1-quic_jhugo@quicinc.com>
+ <20230608115928.GA5672@thinkpad>
+ <507f4cc2-15c2-8323-878e-4da00505bc45@quicinc.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v2 2/8] mm/compaction: correct last_migrated_pfn update in
- compact_zone
-To:     Kemeng Shi <shikemeng@huaweicloud.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, akpm@linux-foundation.org,
-        mgorman@techsingularity.net, david@redhat.com
-References: <20230802093741.2333325-1-shikemeng@huaweicloud.com>
- <20230802093741.2333325-3-shikemeng@huaweicloud.com>
-From:   Baolin Wang <baolin.wang@linux.alibaba.com>
-In-Reply-To: <20230802093741.2333325-3-shikemeng@huaweicloud.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-10.0 required=5.0 tests=BAYES_00,
-        ENV_AND_HDR_SPF_MATCH,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <507f4cc2-15c2-8323-878e-4da00505bc45@quicinc.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -45,52 +58,117 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 8/2/2023 5:37 PM, Kemeng Shi wrote:
-> We record start pfn of last isolated page block with last_migrated_pfn. And
-> then:
-> 1. We check if we mark the page block skip for exclusive access in
-> isolate_migratepages_block by test if next migrate pfn is still in last
-> isolated page block. If so, we will set finish_pageblock to do the rescan.
-> 2. We check if a full cc->order block is scanned by test if last scan range
-> passes the cc->order block boundary. If so, we flush the pages were freed.
+On Mon, Jun 26, 2023 at 11:15:56AM -0600, Jeffrey Hugo wrote:
+> On 6/8/2023 5:59 AM, Manivannan Sadhasivam wrote:
+> > On Fri, May 19, 2023 at 10:39:00AM -0600, Jeffrey Hugo wrote:
+> > > With the QAIC driver in -next, I'd like to suggest some MHI changes that
+> > > specific to AIC100 devices, but perhaps provide a framework for other
+> > > device oddities.
+> > > 
+> > > AIC100 devices technically violate the MHI spec in two ways. Sadly, these
+> > > issues comes from the device hardware, so host SW needs to work around
+> > > them.
+> > > 
+> > > Thie first issue, presented in this series, has to do with the
+> > > SOC_HW_VERSION register. This register is suposed to be initialized by the
+> > > hardware prior to the MHI being accessable by the host to contain a
+> > > version string for the SoC of the device. This could be used by the host
+> > > MHI controller software to identify and handle version to version changes.
+> > > The AIC100 hardware does not initialize this register, and thus it
+> > > contains garbage.
+> > > 
+> > > This would not be much of a problem normally - the QAIC driver would just
+> > > never use it. However the MHI stack uses this register as part of the init
+> > > sequence and if the controller reports that the register is inaccessable
+> > > then the init sequence fails.  On some AIC100 cards, the garbage value
+> > > ends up being 0xFFFFFFFF which is PCIe spec defined to be a special value
+> > > indicating the access failed.  The MHI controller cannot tell if that
+> > > value is a PCIe link issue, or just garbage.
+> > > 
+> > > QAIC needs a way to tell MHI not to use this register. Other buses have a
+> > > quirk mechanism - a way to describe oddities in a particular
+> > > implementation that have some kind of workaround. Since this seems to be
+> > > the first need for such a thing in MHI, introduce a quirk framework.
+> > > 
+> > > The second issue AIC100 has involves the PK Hash registers. A solution for
+> > > this is expected to be proposed in the near future and is anticipated to
+> > > make use of the quirk framework proposed here. With PK Hash, there are two
+> > > oddities to handle. AIC100 does not initialize these registers until the
+> > > SBL is running, which is later than the spec indicates, and in practice
+> > > is after MHI reads/caches them. Also, AIC100 does not have enough
+> > > registers defined to fully report the 5 PK Hash slots, so a custom
+> > > reporting format is defined by the device.
+> > > 
+> > 
+> > Looking at the two issues you reported above, it looks to me that they can be
+> > handled inside the aic100 mhi_controller driver itself. Since the MHI stack
+> > exports the read_reg callback to controller drivers, if some registers are not
+> > supported by the device, then the callback can provide some fixed dummy data
+> > emulating the register until the issue is fixed in the device (if at all).
+> > 
+> > Quirk framework could be useful if the device misbehaves against the protocol
+> > itself but for the register issues like this, I think the controller driver can
+> > handle itself.
+> > 
+> > What do you think?
 > 
-> We treat cc->migrate_pfn before isolate_migratepages as the start pfn of
-> last isolated page range. However, we always align migrate_pfn to page block
-> or move to another page block in fast_find_migrateblock or in linearly scan
-> forward in isolate_migratepages before do page isolation in
-> isolate_migratepages_block.
+> I think for the HW_VERSION register, your suggestion is very good, and
+> something I plan to adopt.
 > 
-> Update last_migrated_pfn with pageblock_start_pfn(cc->migrate_pfn - 1)
-> after scan to correctly set start pfn of last isolated page range. To
-> avoid that:
-> 1. Miss a rescan with finish_pageblock set as last_migrate_pfn does not
-> point to right pageblock and the migrate will not be in pageblock of
-> last_migrate_pfn as it should be.
-> 2. Wrongly issue flush by test cc->order block boundary with wrong
-> last_migrate_pfn.
+> For the PK Hash registers, I don't think it quite works.
 > 
-> Signed-off-by: Kemeng Shi <shikemeng@huaweicloud.com>
+> HW_VERSION I can hard code to a valid value, or just stub out to 0 since
+> that appears to be only consumed by the MHI Controller, and we don't use it.
+> 
+> The PK Hash registers are programmed into the SoC, and can be unique from
+> SoC to SoC.  I don't see how the driver can provide valid, but faked
+> information for them.  Also, the user consumes this data via sysfs.  We'd
+> like to give the data to the user, and we can't fake it. Also the data is
+> dynamic.
+> 
+> Lets start with the dynamic data issue.  Right now MHI reads these registers
+> once, and caches the values.  I would propose a quirk to change that
+> behavior for AIC100, but does MHI really need to operate in a "read once"
+> mode?  Would something actually break if MHI read the registers every time
+> the sysfs node is accessed?  Then sysfs would display the latest data, which
+> would be beneficial to AIC100 and should not be a behavior change for other
+> devices which have static data (MHI just displays the same data because it
+> hasn't changed).
+> 
+> Do you recall the reason behind making the PK Hash registers read once and
+> cached?
+> 
 
-LGTM.
-Reviewed-by: Baolin Wang <baolin.wang@linux.alibaba.com>
+I don't see an issue with reading the PK hash dynamically. I think the intention
+for caching mostly come from the fact it was a static data.
 
-> ---
->   mm/compaction.c | 3 ++-
->   1 file changed, 2 insertions(+), 1 deletion(-)
+So you can dynamically read it all the time.
+
+- Mani
+
+> > 
+> > - Mani
+> > 
+> > > v2:
+> > > -Fix build error
+> > > -Fix typo in commit text
+> > > 
+> > > Jeffrey Hugo (2):
+> > >    bus: mhi: host: Add quirk framework and initial quirk
+> > >    accel/qaic: Add MHI_QUIRK_SOC_HW_VERSION_UNRELIABLE
+> > > 
+> > >   drivers/accel/qaic/mhi_controller.c |  1 +
+> > >   drivers/bus/mhi/host/init.c         | 13 +++++++++----
+> > >   include/linux/mhi.h                 | 18 ++++++++++++++++++
+> > >   3 files changed, 28 insertions(+), 4 deletions(-)
+> > > 
+> > > -- 
+> > > 2.40.1
+> > > 
+> > > 
+> > 
 > 
-> diff --git a/mm/compaction.c b/mm/compaction.c
-> index a8cea916df9d..ec3a96b7afce 100644
-> --- a/mm/compaction.c
-> +++ b/mm/compaction.c
-> @@ -2487,7 +2487,8 @@ compact_zone(struct compact_control *cc, struct capture_control *capc)
->   			goto check_drain;
->   		case ISOLATE_SUCCESS:
->   			update_cached = false;
-> -			last_migrated_pfn = iteration_start_pfn;
-> +			last_migrated_pfn = max(cc->zone->zone_start_pfn,
-> +				pageblock_start_pfn(cc->migrate_pfn - 1));
->   		}
->   
->   		err = migrate_pages(&cc->migratepages, compaction_alloc,
+> 
+
+-- 
+மணிவண்ணன் சதாசிவம்
