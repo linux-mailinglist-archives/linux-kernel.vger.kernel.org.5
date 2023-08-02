@@ -2,136 +2,394 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 88A3776DA5A
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 00:02:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C37F76DA5B
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 00:02:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232382AbjHBWCJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Aug 2023 18:02:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53184 "EHLO
+        id S233716AbjHBWCS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Aug 2023 18:02:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53248 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233046AbjHBWCG (ORCPT
+        with ESMTP id S233450AbjHBWCP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Aug 2023 18:02:06 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 992DE2129;
-        Wed,  2 Aug 2023 15:02:04 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 2BE8361B13;
-        Wed,  2 Aug 2023 22:02:04 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 19DF0C433C7;
-        Wed,  2 Aug 2023 22:02:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691013723;
-        bh=fq3cWmTxdhO7mpPCgQ+OwosSWhnsTUfvrL0qkaxNDpA=;
-        h=In-Reply-To:References:Date:From:To:Cc:Subject:From;
-        b=eSD9SlAQ7rbg2TqZs1FdP/PgGOmU65z7JePTWO3d5We+u4brrkJrxovT/SI3iyOfH
-         JVlReuJujc8BgIdt2O6XeN15kZioYenOejcdY77w8e4tTlm3xFWv/Kl2wrCWgTpnK/
-         xMUBul9dQML3TS5OySlpxJ8ulpn8KS6bqtzqHynqlQqszVJ7DqGwq+L/gbdaFDeRNR
-         YURr0fqvlcXrWgqxMdg88Nue82ApcIOJXN+06P8+9mtbkOrHS1hoipXzxiJUwb68we
-         5oDq6NOWnMAmho2iSu4YwnNhESZ3+5+6odzEzd6BR8jI++nV3CAImViHRlpztyyYMc
-         odpYoK+G8preg==
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.47])
-        by mailauth.nyi.internal (Postfix) with ESMTP id EDEBE27C0054;
-        Wed,  2 Aug 2023 18:02:01 -0400 (EDT)
-Received: from imap51 ([10.202.2.101])
-  by compute6.internal (MEProxy); Wed, 02 Aug 2023 18:02:01 -0400
-X-ME-Sender: <xms:WNLKZNWVYqB1BnzgHH-kIgBALkBKjcpcgEFj8Y6Jv3OxnkdTlpWjHw>
-    <xme:WNLKZNlF6fozETDCORwW4f2s1qybZXkw59Jmf2JNSgxwqkjHle4SFCWOjR2W7E0w0
-    jdsq4r6jez1900NfVc>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedrkedugddthecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpefofgggkfgjfhffhffvvefutgfgsehtqhertderreejnecuhfhrohhmpedftehr
-    nhguuceuvghrghhmrghnnhdfuceorghrnhgusehkvghrnhgvlhdrohhrgheqnecuggftrf
-    grthhtvghrnhepvdelhfduueevkeeujeeuhfevfedufeeuteduvdeijeffheffieeiteel
-    jeelffdtnecuffhomhgrihhnpehkvghrnhgvlhdrohhrghenucevlhhushhtvghrufhiii
-    gvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegrrhhnugdomhgvshhmthhprghuthhh
-    phgvrhhsohhnrghlihhthidquddvkeehudejtddvgedqvdekjedttddvieegqdgrrhhnug
-    eppehkvghrnhgvlhdrohhrghesrghrnhgusgdruggv
-X-ME-Proxy: <xmx:WNLKZJYLgPNGXsizjVniNWNg24UkWht5ff6PSsu8gFJtTvXKk8CffA>
-    <xmx:WNLKZAUfGb_-TRwivRvE_HYi1UkciViGtHLnwmOYrO1sScwiq2iT4A>
-    <xmx:WNLKZHl3cBoEUeRDSPOF9qEAFDhR3rf-iccz98gWBpTrTYwc_tI0DQ>
-    <xmx:WdLKZFX4g4ANJBjULxrdbKClBBZLjFhKGhJw1UFDlOOlf0fu7odMRg>
-Feedback-ID: i36794607:Fastmail
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-        id D12B5B6008F; Wed,  2 Aug 2023 18:02:00 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.9.0-alpha0-624-g7714e4406d-fm-20230801.001-g7714e440
-Mime-Version: 1.0
-Message-Id: <9a22ecee-ebb0-437e-bd2b-99b5c6944855@app.fastmail.com>
-In-Reply-To: <CAKwvOd=SvHUPd8+sWtqgxghPEciD5sqPiggZx+OOEqxtJrML6Q@mail.gmail.com>
-References: <20230802092647.3000666-1-sergio.paracuellos@gmail.com>
- <CAKwvOd=SvHUPd8+sWtqgxghPEciD5sqPiggZx+OOEqxtJrML6Q@mail.gmail.com>
-Date:   Thu, 03 Aug 2023 00:01:25 +0200
-From:   "Arnd Bergmann" <arnd@kernel.org>
-To:     "Nick Desaulniers" <ndesaulniers@google.com>,
-        "Sergio Paracuellos" <sergio.paracuellos@gmail.com>,
-        "Nathan Chancellor" <nathan@kernel.org>
-Cc:     linux-clk@vger.kernel.org,
-        "Thomas Bogendoerfer" <tsbogend@alpha.franken.de>,
-        "Stephen Boyd" <sboyd@kernel.org>,
-        "Michael Turquette" <mturquette@baylibre.com>,
-        linux-kernel@vger.kernel.org, "kernel test robot" <lkp@intel.com>,
-        clang-built-linux <llvm@lists.linux.dev>
-Subject: Re: [PATCH] clk: ralink: mtmips: quiet unused variable warning
-Content-Type: text/plain;charset=utf-8
+        Wed, 2 Aug 2023 18:02:15 -0400
+Received: from mail-qt1-x82b.google.com (mail-qt1-x82b.google.com [IPv6:2607:f8b0:4864:20::82b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CFF391FEF
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Aug 2023 15:02:10 -0700 (PDT)
+Received: by mail-qt1-x82b.google.com with SMTP id d75a77b69052e-407db3e9669so41941cf.1
+        for <linux-kernel@vger.kernel.org>; Wed, 02 Aug 2023 15:02:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1691013730; x=1691618530;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=yQz3j/HHt2BjyChw+tL3/qGsF5Ut1X3dmU/am228B60=;
+        b=4NevuPZ+Z4fT5OUwB+x9L7bro0iKHqiW4GaOBT3ml3++IN1GQxq7HfcFVHy6EIzoUS
+         /3NC5OiFe4cLhpLYKwXeyeD6eNqZM4kQRAt6qpwO7JakJkyVEDtkv59l8zVBO9lY5B2F
+         EfGN3bruUC7VWdtL22gysaXBczaAiVyJgqEH06/To+sEroBthpsHOsyIZs6Nwgj0g39B
+         gEPyKg1Q5SXPJtAOIJaQET+cPTVefOc2tewX8B7BG3mHhxEHAEMKS3/qDiRoN+XtEYh/
+         FDg91wUC009ouk08nBSQvRj8aYvGnswqGjwBMBto2zxQ0h+6rmSihGIHTe4H6o7jber8
+         QRZQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691013730; x=1691618530;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=yQz3j/HHt2BjyChw+tL3/qGsF5Ut1X3dmU/am228B60=;
+        b=hKde3GpkzWbr2wd8FSxVU3D9ddcB/UvfWdM9kgVZfQ4+qdc2ChqDh3MB4F15VamAlc
+         CPKqaoNlm1BXiP8IXtN9T2fYd7CoMeiwqhzAGKPgV5kNY+WsOmBZ5JreiBzfeOnLrwlz
+         CXwZbR+L2mmJNx7FzpKxWirlGSqkPtg5s+8AoC3w8++TkpTVtniMuuzo8QR++7Tpm/Qb
+         4f3hP+EdmzMavVSkujhRvXMnD3SHAErQjTqQUktTn558LLslVkppVn0cnNSmUSG3SF2Z
+         P04KRrE9frMlfFZ2Nk64fkG5EhGlgrXzb7ET8XOvz+AlccNMGu+10/aTd/koafnDj8Ep
+         HM2g==
+X-Gm-Message-State: ABy/qLZnun18nqHu/SNYulyqy5Vd7f6Y1wEWNjMjE4UoeRqtACzqAseG
+        GaGhAO6BV1fFWBp5zQr8OB3mtRBA/b8SyPVCQcqEJG/o/pF8EuhWtc7wfQ==
+X-Google-Smtp-Source: APBJJlEAKojX9uohWA6DFSYc+dD94zvTXnDvzQIRIYNA+zLVC1mw6U7cGdkj3ZtubdGdZe4ypY1wF0Ugi3+gcdyQZTw=
+X-Received: by 2002:a05:622a:1a28:b0:40f:db89:5246 with SMTP id
+ f40-20020a05622a1a2800b0040fdb895246mr624917qtb.21.1691013729740; Wed, 02 Aug
+ 2023 15:02:09 -0700 (PDT)
+MIME-Version: 1.0
+References: <20230715035343.46737-1-leo.yan@linaro.org> <CAP-5=fVmBVA5XGac8BZks6UnjGaMv8bx_PhC6_YrWC2TGjw-Fg@mail.gmail.com>
+ <20230802170038.GA1306442@leoy-huanghe.lan>
+In-Reply-To: <20230802170038.GA1306442@leoy-huanghe.lan>
+From:   Ian Rogers <irogers@google.com>
+Date:   Wed, 2 Aug 2023 15:01:57 -0700
+Message-ID: <CAP-5=fUXtNqbDyYUXojPMmfz8ZK9-O7_Jfp8G9D5zWVB-_4eRw@mail.gmail.com>
+Subject: Re: [PATCH v1] perf doc: Document ring buffer mechanism
+To:     Leo Yan <leo.yan@linaro.org>
+Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>, linux-kernel@vger.kernel.org,
+        linux-perf-users@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 2, 2023, at 23:26, Nick Desaulniers wrote:
-> On Wed, Aug 2, 2023 at 2:26=E2=80=AFAM Sergio Paracuellos <sergio.para=
-cuellos@gmail.com> wrote:
->>
->> When CONFIG_OF is disabled then the matching table is not referenced =
-and
->> the following warning appears:
->>
->> drivers/clk/ralink/clk-mtmips.c:821:34: warning: unused variable 'mtm=
-ips_of_match' [-Wunused-const-variable]
->> 821 |   static const struct of_device_id mtmips_of_match[] =3D {
->>     |                          ^
->>
->> Silence it declaring 'mtmips_of_match' with '__maybe_unused'.
->>
->> Fixes: 6f3b15586eef ("clk: ralink: add clock and reset driver for MTM=
-IPS SoCs")
->> Reported-by: kernel test robot <lkp@intel.com>
->> Closes: https://lore.kernel.org/oe-kbuild-all/202307242310.CdOnd2py-l=
-kp@intel.com/
->> Signed-off-by: Sergio Paracuellos <sergio.paracuellos@gmail.com>
+On Wed, Aug 2, 2023 at 10:00=E2=80=AFAM Leo Yan <leo.yan@linaro.org> wrote:
 >
-> I think this is fine; Arnd or Nathan do you have a preference? or thou=
-ghts here?
+> Hi Ian,
 >
-> If not, thanks for the patch.
-> Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
+> On Mon, Jul 17, 2023 at 02:27:11PM -0700, Ian Rogers wrote:
 >
-> (I have a slight preference for wrapping the use in `#ifdef CONFIG_OF`
-> since with the approach used by this patch, if all users are removed
-> we will never get a warning for this var. But it's a weak preference;
-> it's more important to me that we don't have -Werror promote this
-> warning to a build breakage)
+> [...]
+>
+> > > Thanks Ian's suggestion for upstreaming this documentation into Linux
+> > > source code tree at the Jan of this year, also thanks my son Rowan fo=
+r
+> > > correcting me some grammer errors in this summer holiday.  Finally I
+> > > heavily refactored this documentation and I think it's ready for
+> > > reviewing.
+> >
+> > This is awesome, thanks Leo for taking the time to do this! I've done
+> > some readability nits
+>
+> Thanks a lot for review, Ian.
+>
+> I agreed with most of your comments.  Blow I just keep the comments for
+> further discussion or give supplements, otherwise, I remove the rest
+> comments and will reflect them in my new patch.
+>
+> [...]
+>
+> > > +Perf uses the same way to manage its ring buffer.  In implementation
+> > > +there have two actors: a page contains a control structure and ring
+> > > +buffer; the page containing the control structure is named as "user
+> > > +page", the user page and the ring buffer are mapped into user space
+> > > +with the continuous virtual address, since the user page and the rin=
+g
+> > > +buffer are consecutive, from the control structure pointer it's
+> > > +easily to know the ring buffer address.
+> >
+> > nit: Perhaps reword a little as:
+> > Perf uses the same way to manage its ring buffer. In the
+> > implementation there are two key data structures held together in a
+> > set of consecutive pages, the control structure and then the ring
+> > buffer itself. The page with the control structure in is known as the
+> > "user page". Being held in continuous virtual addresses simplifies
+> > locating the ring buffer address, it is in the pages after the page
+> > with the user page.
+> >
+> > Off-topic: seems wasteful to allocate a full page for this.
+>
+> Arm CPUs support not only 4KiB page size, but also support 16KiB/64KiB
+> page size, it does waste a bit memory for using a page for control
+> structure.  But given the control structure need to be mapped to user
+> space in page size unit, seems here have no room to optimize it.
+>
+> [...]
+>
+> > > +        user page                          ring buffer
+> > > +  +---------+---------+   +---------------------------------------+
+> > > +  |data_head|data_tail|...|   |   |***|***|***|***|***|   |   |   |
+> > > +  +---------+---------+   +---------------------------------------+
+> > > +      `          `--------------^                   ^
+> > > +       `--------------------------------------------|
+> > > +
+> > > +            * : the data is filled by the writer.
+> > > +           Figure 2: Perf ring buffer
+> > > +
+> > > +When using 'perf record' tool, we can specify the ring buffer size w=
+ith
+> >
+> > nit: s/using/using the/
+> >
+> > > +option '-m' or '--mmap-pages=3D', finally the size will be rounded u=
+p to
+> >
+> > nit: s/finally the size/the given size/
+> >
+> > > +power of two with page unit.  Though the kernel allocates at once fo=
+r
+> >
+> > nit: s/power of two with page unit/a power of two that is a multiple
+> > of a page size/
+> >
+> > Off-topic-ish: Perhaps it is worth motivating why the page size must
+> > be a power of 2. I'm guessing it is because this means that when
+> > moving the pointers/indices they can be masked to cause wrapping,
+> > rather than using division/modulus.
+>
+> Correct.  The comments in kernel/events/core.c verifies this guessing:
+>
+> "If we have rb pages ensure they're a power-of-two number, so we
+> can do bitmasks instead of modulo."
+>
+> > Fwiw, I think this could also be
+> > solved with a comparison, and the performance overhead could be
+> > insignificant compared to the memory savings.
+>
+> I am not sure if a comparison is sufficient.  As you said, if the page
+> number is not a power-of-two number, and page index increases
+> monotonically, we need to compute modulus to get the offset.
+>
+> Agreed with you, we can consider to remove the limitaion of the page
+> number must be power-of-two for memory saving and check what's the
+> performance penalty.
+>
+> > > +all memory pages, it's deferred to map the pages to VMA area until
+> > > +the perf tool accesses the buffer from the user space.  In other wor=
+ds,
+> > > +at the first time accesses the buffer's page from user space in the =
+perf
+> > > +tool, a data abort exception for page fault is taken and the kernel
+> > > +uses this occasion to map the page into process VMA, thus the perf t=
+ool
+> > > +can continue to access the page after returning from exception.
+> >
+> > nit: s/exception/the exception/
+> >
+> > Off topic: Should the perf tool use something like the MAP_POPULATE
+> > flag to reduce page faults, given the pages were allocated already in
+> > the kernel? Tweaking tools/lib/perf/mmap.c to do this and running
+> > "time perf record -a sleep 1" shows the minor page fault count going
+> > from 7700 to 9700, so it seems like a bad idea.
+>
+> Hmm ... I got the opposite result, by observing page fault counting, I
+> can see the improvement with adding the MAP_POPULATE flag.
+>
+> Before adding MAP_POPULATE flag:
+>
+>   # ./perf stat -- ./perf record -a sleep 1
+>
+>     5,359      page-faults                      #    2.409 K/sec
+>     5,353      page-faults                      #    2.415 K/sec
+>     5,353      page-faults                      #    2.425 K/sec
+>
+>   # ./perf stat -- ./perf record -e cs_etm/@tmc_etr0/ -a sleep 1
+>
+>     2,122      page-faults                      #    2.038 K/sec
+>     2,121      page-faults                      #    2.001 K/sec
+>     2,121      page-faults                      #    2.015 K/sec
+>
+> After adding MAP_POPULATE flag:
+>
+>   # ./perf stat -- ./perf record -a sleep 1
+>
+>     5,004      page-faults                      #    2.260 K/sec
+>     5,002      page-faults                      #    2.253 K/sec
+>     5,003      page-faults                      #    2.239 K/sec
+>
+>   # ./perf stat -- ./perf record -e cs_etm/@tmc_etr0/ -a sleep 1
+>
+>     1,082      page-faults                      #  856.589 /sec
+>     1,082      page-faults                      #    1.002 K/sec
+>     1,080      page-faults                      #    1.013 K/sec
+>
+> [...]
 
-I don't understand why there are two match tables in the same
-driver, with almost the same contents. I have not looked very
-closely here, but why can't we just drop the mtmips_clk_of_match[]
-table (the one without the .data fields) and use the same
-table for both? Is this because of the ralink,rt2880-reset entry
-that is missing in mtmips_of_match, or is that another bug?
+Interesting, I wonder if it is an ARM vs x86 difference?
 
-I also see that there is both a platform_driver instance for
-late probing and a list of CLK_OF_DECLARE_DRIVER() entries.
-Do we need both here?
+> > > +System wide mode
+> > > +
+> > > +By default if without specifying mode, or explicitly using option '=
+=E2=80=93a'
+> > > +or '=E2=80=93=E2=80=93all=E2=80=93cpus', perf collects samples on al=
+l CPUs in the system wide
+> > > +mode.
+> > > +
+> > > +In this mode, every CPU has its own ring buffer; all threads are
+> > > +monitored during the running state and the samples are recorded into=
+ the
+> >
+> > This doesn't cover the case of:
+> > $ perf record benchmark
+> > Where there will be a ring buffer on every CPU but events/sampling
+> > will only be enabled for benchmark's threads, ie not all threads.
+>
+> Correct.  I wrongly thought it's the system-wide mode when don't
+> specify option '-a', will add a 'default mode' to address above case.
+>
+> [...]
+>
+> > > When a sample is recorded into the ring buffer, the kernel event
+> > > +core layer will wake up the perf process to read samples from the ri=
+ng
+> > > +buffer.
+> >
+> > It isn't always necessary to wake the perf tool process. There is a
+> > little bit more detail on different polling modes in the
+> > perf_event_open man page in the section on "Overflow handling":
+> > https://github.com/mkerrisk/man-pages/blob/master/man2/perf_event_open.=
+2#L3062
+>
+> Exactly, perf ring buffer uses watermark as threshold, and only when
+> cross the threshold the kernel notifies the user space.  I confirmed
+> this in the function __perf_output_begin().
+>
+> So will rephrase as:
+>
+> "When a sample is recorded into the ring buffer, and the number of
+> samples crossing the threshold, the kernel event core layer will wake up
+> the perf process to read samples from the ring buffer."
 
-      Arnd
+Sounds good.
+
+> > > +
+> > > +                     Perf
+> > > +                     / | Read samples
+> > > +           Polling  /  `--------------|               Ring buffer
+> > > +                   v                  v    ;-------------------v
+> > > +  +----------------+     +---------+---------+   +------------------=
+-+
+> > > +  |Event wait queue|     |data_head|data_tail|   |***|***|   |   |**=
+*|
+> > > +  +----------------+     +---------+---------+   +------------------=
+-+
+> > > +           ^                  ^ `----------------------^
+> > > +           | Wake up tasks    | Store samples
+> > > +        +-----------------------------+
+> > > +       |  Kernel event core layer    |
+> > > +        +-----------------------------+
+> > > +
+> > > +            * : the data is filled by the writer.
+> > > +           Figure 6: Writing and reading the ring buffer
+> > > +
+> > > +Because multiple events might share the same ring buffer for recordi=
+ng
+> > > +samples, when any event sample is stored into the ring buffer, the
+> > > +kernel event core layer iterates every event associated to the ring
+> > > +buffer and wake up tasks on the wait queue of the events.  This is
+> > > +fulfilled by the kernel function ring_buffer_wakeup().
+> >
+> > I'm not sure about the use of "event" here. If you do:
+> > $ perf stat -e "cycles,instructions"
+> > Then cycles and instructions will each have a ring buffer, I'm not
+> > sure it is possible to get them to share a ring buffer. I think here
+> > you may be referring to side band events, like mmap2.
+>
+> Seems to me, this is incorrect.  Since 'perf stat' only read counters
+> (via the kernel function perf_read()), it doesn't allocate ring buffer
+> at all for events.  By using GDB, I can confirm the function
+> perf_mmap__mmap() is never called for 'perf stat' command.
+>
+> Just clarify, 'perf stat' still mmap the 'user page' for control
+> structure and for timer counter accessing, but this is not the same
+> thing with ring buffer.
+
+Sorry, I meant record not stat.
+
+> [...]
+>
+> > > +In Linux kernel, the event core layer uses the structure perf_buffer=
+ to
+> > > +track the buffer=E2=80=99s latest header, and it keeps the informati=
+on for
+> > > +buffer pages.  The structure perf_buffer manages ring buffer during =
+its
+> > > +life cycle, it is allocated once the ring buffer is created and rele=
+ased
+> > > +when the ring buffer is destroyed.
+> > > +
+> > > +It=E2=80=99s possible for multiple events to write buffer concurrent=
+ly.  For
+> > > +instance, a software event and a hardware PMU event both are enabled=
+ for
+> > > +profiling, when the software event is in the middle of sampling, the
+> > > +hardware event maybe be overflow and its interrupt is triggered in t=
+his
+> > > +case.  This leads to the race condition for updating perf_buffer::he=
+ad.
+> > > +In __perf_output_begin(), Linux kernel uses compare-and-swap atomici=
+ty
+> > > +local_cmpxchg() to implement the lockless algorithm for protecting
+> > > +perf_buffer::head.
+> >
+> > In the case of:
+> > $ perf record -e "instructions,faults"
+> > faults is a software event but it won't share the ring buffer with
+> > instructions. I think the atomicity exists for the side band events.
+>
+> I verified on my Arm64 board and confirmed that hardware events
+> (instructions, cycles) share the same ring buffer with software event
+> (faults).  Below is the captured log (truncated for more readable):
+>
+>   ...
+>   =3D> __perf_sw_event
+>   =3D> do_page_fault
+>   =3D> do_translation_fault
+>   ...
+>   ls-884     [003] ...2.   253.737217: perf_output_begin_forward: __perf_=
+output_begin: rb=3D00000000720bac97 page=3D0 offset=3D1688 addr=3D000000001=
+9392296 size=3D2408
+>
+>   ...
+>   =3D> __perf_event_overflow
+>   =3D> perf_event_overflow
+>   =3D> armv8pmu_handle_irq
+>   ...
+>   ls-884     [003] d.h1.   253.737247: perf_output_begin_forward: __perf_=
+output_begin: rb=3D00000000720bac97 page=3D0 offset=3D1736 addr=3D000000009=
+e259b5a size=3D2360
+>
+> We can see for both software event and Armv8 PMU event, both use the
+> same rb pointer (0x00000000720bac9), which means the software and
+> hardware events store samples into the same ring buffer.  Thus the
+> above description is valid.
+>
+> P.s. maybe the side band events are not a relevant topic, but I can
+> see the side band events have dedicated ring buffer.
+
+You're right, the code doing this is using ioctls in particular
+PERF_EVENT_IOC_SET_OUTPUT:
+https://git.kernel.org/pub/scm/linux/kernel/git/perf/perf-tools-next.git/tr=
+ee/tools/lib/perf/evlist.c?h=3Dperf-tools-next#n517
+The man page mentions "PERF_FLAG_FD_OUTPUT (broken since Linux
+2.6.35)" which had confused me.
+
+Thanks,
+Ian
+
+> Thanks,
+> Leo
