@@ -2,74 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F230C76C2D5
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 04:23:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 44A9676C2D8
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 04:24:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231225AbjHBCXj convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 1 Aug 2023 22:23:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34526 "EHLO
+        id S231712AbjHBCYd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Aug 2023 22:24:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34986 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230180AbjHBCXg (ORCPT
+        with ESMTP id S230180AbjHBCYc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Aug 2023 22:23:36 -0400
-Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id B1B6E213E
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Aug 2023 19:23:34 -0700 (PDT)
-Received: from loongson.cn (unknown [209.85.221.50])
-        by gateway (Coremail) with SMTP id _____8AxEvAlvslk5osOAA--.33118S3;
-        Wed, 02 Aug 2023 10:23:33 +0800 (CST)
-Received: from mail-wr1-f50.google.com (unknown [209.85.221.50])
-        by localhost.localdomain (Coremail) with SMTP id AQAAf8DxDc8ivslkYNdEAA--.47852S3;
-        Wed, 02 Aug 2023 10:23:32 +0800 (CST)
-Received: by mail-wr1-f50.google.com with SMTP id ffacd0b85a97d-31792ac0fefso3300303f8f.2
-        for <linux-kernel@vger.kernel.org>; Tue, 01 Aug 2023 19:23:32 -0700 (PDT)
-X-Gm-Message-State: ABy/qLbR4I2Y9xu14JEkQvrrT7w0v2+IhRfEVpSbx9Ze2iXQC7+fRqK5
-        yCRzVGucmGjF4/bAgqBQVnVKOhiNsbZqzHTYRgxVug==
-X-Google-Smtp-Source: APBJJlF1uWj6wIOqIFlfDDRCiTD78Qq9g6nbp+t0la6vtmj1Gk53kAMeZOdghLi9R93+HK/Wj4Dz9sqyDT30UvH5UyU=
-X-Received: by 2002:a05:6000:11c5:b0:317:594a:dbde with SMTP id
- i5-20020a05600011c500b00317594adbdemr3350887wrx.20.1690943009317; Tue, 01 Aug
- 2023 19:23:29 -0700 (PDT)
+        Tue, 1 Aug 2023 22:24:32 -0400
+Received: from out-120.mta1.migadu.com (out-120.mta1.migadu.com [95.215.58.120])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC77E213F
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Aug 2023 19:24:30 -0700 (PDT)
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1690943067;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=fwE+Rq9mSoCZ0Nln+HHt8N0bG1PTqQvHzIw9QHmw6bs=;
+        b=dLfBcyCus8YC/ybHlmyFMKLW7KJXaxqnWgSK17lfGcbv8Qqhh3EDBOb2nA/Ly8fxSwm/wh
+        7KemxI6RQAVD4qd87aWAj4xT9KxxshCvpG1jy6BhBlNaUSnx8wxz2yk1/yw1X8wka+Li1h
+        OqAts/cjjBpXHDHXQYnSoPOWxSaGB5Q=
+From:   Yajun Deng <yajun.deng@linux.dev>
+To:     mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com,
+        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
+        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
+        bristot@redhat.com, vschneid@redhat.com
+Cc:     linux-kernel@vger.kernel.org, Yajun Deng <yajun.deng@linux.dev>
+Subject: [PATCH v2] sched/rt: move back to RT_GROUP_SCHED and rename it child
+Date:   Wed,  2 Aug 2023 10:24:08 +0800
+Message-Id: <20230802022408.529208-1-yajun.deng@linux.dev>
 MIME-Version: 1.0
-References: <20230801011554.3950435-1-guoren@kernel.org> <CAHirt9ht8AsE=FC8+222JDZXH3T58uLt+o=_pq+1zBhv1MKRjg@mail.gmail.com>
- <CAJF2gTRa5erHomJzLgUFO4SGqd5zSDwn6r3WN7kM8aWpv1vesg@mail.gmail.com>
- <CAJF2gTQ1hV1vipAo3H4X4WiPO84kVVFZcdGq7u4f0bVTry_akQ@mail.gmail.com>
- <CAHirt9gVqE=9vviJEY=kY=booVRmFPHrnFsKCXPXnXiWTB8bZQ@mail.gmail.com>
- <CAJF2gTR2ON33wc87iV564rkDbNiE56h_t0kzKKXdJtGqgJ1sOQ@mail.gmail.com>
- <CAHirt9i_osW_Dy5jNAnNOKrm-+38qN7SF+8ofNHePMAYhRKHsA@mail.gmail.com> <CAJF2gTSLD3jwzV59dGj_RENCvE0zMOAkLHqmT55bxL-4vA1wkA@mail.gmail.com>
-In-Reply-To: <CAJF2gTSLD3jwzV59dGj_RENCvE0zMOAkLHqmT55bxL-4vA1wkA@mail.gmail.com>
-From:   WANG Rui <wangrui@loongson.cn>
-Date:   Wed, 2 Aug 2023 10:23:18 +0800
-X-Gmail-Original-Message-ID: <CAHirt9iiA_zdBbmnmMNAEmvKBU-1imRxD7wG-0OmnPTsG2RJMA@mail.gmail.com>
-Message-ID: <CAHirt9iiA_zdBbmnmMNAEmvKBU-1imRxD7wG-0OmnPTsG2RJMA@mail.gmail.com>
-Subject: Re: [PATCH] LoongArch: Fixup cmpxchg sematic for memory barrier
-To:     Guo Ren <guoren@kernel.org>
-Cc:     chenhuacai@kernel.or, kernel@xen0n.name, arnd@arndb.de,
-        andi.shyti@linux.intel.com, andrzej.hajda@intel.com,
-        peterz@infradead.org, will@kernel.org, boqun.feng@gmail.com,
-        mark.rutland@arm.com, loongarch@lists.linux.dev,
-        linux-kernel@vger.kernel.org, Guo Ren <guoren@linux.alibaba.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-CM-TRANSID: AQAAf8DxDc8ivslkYNdEAA--.47852S3
-X-CM-SenderInfo: pzdqw2txl6z05rqj20fqof0/
-X-Coremail-Antispam: 1Uk129KBj93XoWrtw4xtrW3tr1UKFWrKFyDArc_yoW8JrWDpr
-        WIyFs0gFZ7Xw40ywsakw48ZFyrtwnaqF17X3sa9rZFyFyav343trW7Gry3XrsxZr93Gw1Y
-        v3yq934FvFyDZFgCm3ZEXasCq-sJn29KB7ZKAUJUUUU5529EdanIXcx71UUUUU7KY7ZEXa
-        sCq-sGcSsGvfJ3Ic02F40EFcxC0VAKzVAqx4xG6I80ebIjqfuFe4nvWSU5nxnvy29KBjDU
-        0xBIdaVrnRJUUUyEb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2
-        IYs7xG6rWj6s0DM7CIcVAFz4kK6r106r15M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48v
-        e4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_JFI_Gr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI
-        0_Jr0_Gr1l84ACjcxK6I8E87Iv67AKxVWxJVW8Jr1l84ACjcxK6I8E87Iv6xkF7I0E14v2
-        6r4j6r4UJwAS0I0E0xvYzxvE52x082IY62kv0487Mc804VCY07AIYIkI8VC2zVCFFI0UMc
-        02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAF
-        wI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcVAKI48JMxAIw28IcxkI7VAKI4
-        8JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xv
-        wVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI42IY6xIIjx
-        v20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVWUJVW8JwCI42IY6xAIw20E
-        Y4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Gr0_Cr1lIxAIcVC2z280aVCY1x0267
-        AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IU8czVUUUUUU==
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -77,41 +47,110 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 2, 2023 at 7:17 AM Guo Ren <guoren@kernel.org> wrote:
->
-> On Tue, Aug 1, 2023 at 12:37 PM WANG Rui <wangrui@loongson.cn> wrote:
-> >
-> > On Tue, Aug 1, 2023 at 6:50 PM Guo Ren <guoren@kernel.org> wrote:
-> > >
-> > > On Tue, Aug 1, 2023 at 5:32 PM WANG Rui <wangrui@loongson.cn> wrote:
-> > > > No. LL and LL won't reorder because LL implies a memory barrier(though
-> > > > not acquire semantics).
-> > > That means we could remove __WEAK_LLSC_MB totally, right?
-> >
-> > More precisely, __WEAK_LLSC_MB is intended to prevent reordering
-> > between LL and normal LD used to fetch the expected value for cmpxchg.
-> Oh, that's unnecessary when cmpxchg fails.
->
-> Maybe you treat cmpxchg as a CoRR antidote in coincidence. Please
-> solve the CoRR problem by READ_ONCE.
->
-> See alpha architecture.
+The member back in struct sched_rt_entity only related to RT_GROUP_SCHED,
+it should not place out of RT_GROUP_SCHED, move back to RT_GROUP_SCHED
+and rename it child.
 
-Unfortunately, the LL instruction has no acquire semantics. Even if
-our kernel team improves READ_ONCE, it cannot prevent reordering
-between LL and READ_ONCE after cmpxchg fails.
+Init child in init_tg_rt_entry(). Also, add WARN_ON_ONCE if parent is
+NULL, because parent is only NULL when rt_se is NULL.
 
-LL (<memory-barrier> + <load-exclusive>); WEAK_LLSC_MB; READ_ONCE
-(<normal-load>); ...
+Introduce for_each_sched_rt_entity_reverse() to iterate rt_entity from
+top to down.
 
-vs
+Signed-off-by: Yajun Deng <yajun.deng@linux.dev>
+---
+ V1 -> V2: Add WARN_ON_ONCE in init_tg_rt_entry().
+---
+ include/linux/sched.h |  2 +-
+ kernel/sched/rt.c     | 29 +++++++++++++++++------------
+ 2 files changed, 18 insertions(+), 13 deletions(-)
 
-LL (<memory-barrier> + <load-exclusive>); READ_ONCE (<normal-load> +
-<memory-barrier>); ...
-
-Improving READ_ONCE is really important.
-
-Regards,
+diff --git a/include/linux/sched.h b/include/linux/sched.h
+index 177b3f3676ef..5635655d6c35 100644
+--- a/include/linux/sched.h
++++ b/include/linux/sched.h
+@@ -594,8 +594,8 @@ struct sched_rt_entity {
+ 	unsigned short			on_rq;
+ 	unsigned short			on_list;
+ 
+-	struct sched_rt_entity		*back;
+ #ifdef CONFIG_RT_GROUP_SCHED
++	struct sched_rt_entity		*child;
+ 	struct sched_rt_entity		*parent;
+ 	/* rq on which this entity is (to be) queued: */
+ 	struct rt_rq			*rt_rq;
+diff --git a/kernel/sched/rt.c b/kernel/sched/rt.c
+index 00e0e5074115..8e577c7b9257 100644
+--- a/kernel/sched/rt.c
++++ b/kernel/sched/rt.c
+@@ -228,13 +228,13 @@ void init_tg_rt_entry(struct task_group *tg, struct rt_rq *rt_rq,
+ 	if (!rt_se)
+ 		return;
+ 
+-	if (!parent)
+-		rt_se->rt_rq = &rq->rt;
+-	else
+-		rt_se->rt_rq = parent->my_q;
++	if (WARN_ON_ONCE(!parent))
++		return;
+ 
++	rt_se->rt_rq = parent->my_q;
+ 	rt_se->my_q = rt_rq;
+ 	rt_se->parent = parent;
++	parent->child = rt_se;
+ 	INIT_LIST_HEAD(&rt_se->run_list);
+ }
+ 
+@@ -564,6 +564,9 @@ static inline struct task_group *next_task_group(struct task_group *tg)
+ #define for_each_sched_rt_entity(rt_se) \
+ 	for (; rt_se; rt_se = rt_se->parent)
+ 
++#define for_each_sched_rt_entity_reverse(rt_se) \
++	for (; rt_se; rt_se = rt_se->child)
++
+ static inline struct rt_rq *group_rt_rq(struct sched_rt_entity *rt_se)
+ {
+ 	return rt_se->my_q;
+@@ -669,6 +672,9 @@ typedef struct rt_rq *rt_rq_iter_t;
+ #define for_each_sched_rt_entity(rt_se) \
+ 	for (; rt_se; rt_se = NULL)
+ 
++#define for_each_sched_rt_entity_reverse(rt_se) \
++	for_each_sched_rt_entity(rt_se)
++
+ static inline struct rt_rq *group_rt_rq(struct sched_rt_entity *rt_se)
+ {
+ 	return NULL;
+@@ -1481,22 +1487,21 @@ static void __dequeue_rt_entity(struct sched_rt_entity *rt_se, unsigned int flag
+  */
+ static void dequeue_rt_stack(struct sched_rt_entity *rt_se, unsigned int flags)
+ {
+-	struct sched_rt_entity *back = NULL;
++	struct sched_rt_entity *root;
+ 	unsigned int rt_nr_running;
+ 
+-	for_each_sched_rt_entity(rt_se) {
+-		rt_se->back = back;
+-		back = rt_se;
+-	}
++	for_each_sched_rt_entity(rt_se)
++		root = rt_se;
+ 
+-	rt_nr_running = rt_rq_of_se(back)->rt_nr_running;
++	rt_nr_running = rt_rq_of_se(root)->rt_nr_running;
+ 
+-	for (rt_se = back; rt_se; rt_se = rt_se->back) {
++	rt_se = root;
++	for_each_sched_rt_entity_reverse(rt_se) {
+ 		if (on_rt_rq(rt_se))
+ 			__dequeue_rt_entity(rt_se, flags);
+ 	}
+ 
+-	dequeue_top_rt_rq(rt_rq_of_se(back), rt_nr_running);
++	dequeue_top_rt_rq(rt_rq_of_se(root), rt_nr_running);
+ }
+ 
+ static void enqueue_rt_entity(struct sched_rt_entity *rt_se, unsigned int flags)
 -- 
-WANG Rui
+2.25.1
 
