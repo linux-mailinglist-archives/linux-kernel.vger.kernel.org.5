@@ -2,66 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 821E276D0CC
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 17:00:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 546FB76D0CE
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 17:00:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234370AbjHBPAs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Aug 2023 11:00:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53198 "EHLO
+        id S234734AbjHBPAv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Aug 2023 11:00:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53466 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234709AbjHBPAj (ORCPT
+        with ESMTP id S232749AbjHBPAl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Aug 2023 11:00:39 -0400
-Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A0A130E8
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Aug 2023 08:00:33 -0700 (PDT)
-Received: by mail-wm1-x32f.google.com with SMTP id 5b1f17b1804b1-3fe1a17f983so36440915e9.3
-        for <linux-kernel@vger.kernel.org>; Wed, 02 Aug 2023 08:00:33 -0700 (PDT)
+        Wed, 2 Aug 2023 11:00:41 -0400
+Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1252B210A
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Aug 2023 08:00:35 -0700 (PDT)
+Received: by mail-wr1-x435.google.com with SMTP id ffacd0b85a97d-31427ddd3fbso6401701f8f.0
+        for <linux-kernel@vger.kernel.org>; Wed, 02 Aug 2023 08:00:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1690988431; x=1691593231;
+        d=linaro.org; s=google; t=1690988433; x=1691593233;
         h=content-transfer-encoding:mime-version:date:message-id:subject
          :references:in-reply-to:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=T0B9n4BoQGKJhtTSxI1M2Z+FXSAxvxddim356lxqalw=;
-        b=XJS29n863up9xj2aMoG3YHyatpMO/MPalREmBPW8nmjgU8KAoGPc6zDLYxXQMvFfZV
-         0/Sa0BHc/4HI0Lr3csi3ksCJH2vcb81iO1GdGog4Qh37S2sXCWEaar9yXXayOCzmSK80
-         Dtk/dR/z8/FesRPFXHZC/i69aA2RzbUPFjsbH7UNP6+pfWVwHZSakGyEk8zd75mI2Blz
-         JRKR/MXIixEv8OVccVm0WQ2AjOzyVbeRBpNdTiEGlQ4nGpZi/FZedc4jKZxV14gmybfv
-         Tzfm9heuJfx3sm0eP4J93tnup6IaCDRkkZsjF9qLYqe/qmZlDjiPEUWDvAUXFbSEEcG3
-         drMQ==
+        bh=mPj5oQb/gSwDVKB5Tdu3got89oVLm0S9QauyfF4BC3U=;
+        b=b5zvHi6U2ftxA/daZ7INtzzCNjyerUNKLetDSNHdGRZMQM1iOUCknfguL5BWmGNDoY
+         k3S7k3CR9cjL1XEvhUCBHw0leJiOioqsL83yRyRoKwjZnvo5r0nexJ8TF2QGvd/acTA3
+         NwLMIg67O2+zHQZIOatQvBMeu/7wBuhHiE6SUSpaLTq7eVIKFLitGGwg/daxNqE7bwQg
+         gTUuFDfGixDy+ajPZFBqtRKKQU/z04Z+OY2AgExra6vJd4Rem564FnSlgOxl+Jg3A4mj
+         qOKrylji9wKTHxGQBK6Tvi0FDkZ/q9a6LR/QfLl66wKG5Lx4pWMizihHiGeRtTGXx+ik
+         a7/Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690988431; x=1691593231;
+        d=1e100.net; s=20221208; t=1690988433; x=1691593233;
         h=content-transfer-encoding:mime-version:date:message-id:subject
          :references:in-reply-to:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=T0B9n4BoQGKJhtTSxI1M2Z+FXSAxvxddim356lxqalw=;
-        b=WE65lRjbiwlYMQBmh11GlscF2LPHBHIWhJdDRar0S1zIpFgSuWr/ATHXoDzCLbY4iR
-         aZvBvaRFF8gvkvVkEO7/PMUQg+338OL6FFgyWySfOXPLi2AinfTQvXO5FZ2paiHpqNuG
-         ulN6ZGSwZGhjKpmBQMkoFNtyTSACrVx+SLP7NpDk6nXBg2dtoxCkWIP0QCt5MtskzrHV
-         a9UXDGN8xd9ZdfQ+zel08Z46Ch/5K1nKx0XtFNgQpTATj71lzG9kMyGw3bVyG1hdIWEc
-         b3dKEtbvpBDKEmLvnzTnIgEpn6BQg/7oVYeXGfdNkT9x1a6+a81clx7S1qhwGiu0KyUY
-         9azA==
-X-Gm-Message-State: ABy/qLZf878Q+ojXS49NAKzF9k3eUQFO0wYk75b/3wnWVCoZ8a6gVrEv
-        CFr7MBd+M0qpstcmDhh9pU9kaw==
-X-Google-Smtp-Source: APBJJlH+CrrttCjxWTJuERu7b3+cTt1JRnzLk3CvbktL36TDbm3vLFfWOZaYR/yUbuuW2gtcsRc6aQ==
-X-Received: by 2002:a05:600c:3644:b0:3fb:b1af:a455 with SMTP id y4-20020a05600c364400b003fbb1afa455mr4829810wmq.5.1690988431507;
-        Wed, 02 Aug 2023 08:00:31 -0700 (PDT)
+        bh=mPj5oQb/gSwDVKB5Tdu3got89oVLm0S9QauyfF4BC3U=;
+        b=F+7zy3H94f9yxaKEsZnh7lNebA2M75ma781emtZxsHYPecu0zDzmjlVGWT5kVsfrBr
+         PZDxFfipABRYbwMKdy1LdvVEgwMh1aQu5NjH6Or7EvOGfxVptncMh33WxoEDm54CIt9m
+         FA4h+p1sAE6tg5sMTDUlG5ElbyK6mRsiX9zMJIzkHpqJtQF6FvgGTxorXGVAbx7ThdSt
+         uDvPa9fm4OymvZcEgchNac+38ralSSeM3orYxBGVZnbkwjj2EVo97YeOhOvxMXkoKL+L
+         B7Uiq9SPdhP7xA+bT58XXY10FPWUDFzKoBM00GXJbUuPoGcfmRlpLTmeCOafx1ZdS0Su
+         fnPQ==
+X-Gm-Message-State: ABy/qLYdZSs0RDw2/rFpeyz2L+Hlr4XrV4/CR9iA9FrC9bXtuRoDB2Aa
+        x2RJmHuKQ1sjikHiT6iQpxlxQQ==
+X-Google-Smtp-Source: APBJJlFPLB9LoRRGImnN9+NIw0ge7AsUxBWoGqVXruAg6ZTGUgY9KCieZjFbfnhRAq9VbFPrJ7pi9A==
+X-Received: by 2002:adf:efd1:0:b0:313:ebf3:f817 with SMTP id i17-20020adfefd1000000b00313ebf3f817mr4761979wrp.22.1690988432883;
+        Wed, 02 Aug 2023 08:00:32 -0700 (PDT)
 Received: from [192.168.1.195] ([5.133.47.210])
-        by smtp.gmail.com with ESMTPSA id w10-20020a1cf60a000000b003fe1afb99a9sm1918418wmc.11.2023.08.02.08.00.30
+        by smtp.gmail.com with ESMTPSA id w10-20020a1cf60a000000b003fe1afb99a9sm1918418wmc.11.2023.08.02.08.00.31
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 02 Aug 2023 08:00:30 -0700 (PDT)
+        Wed, 02 Aug 2023 08:00:32 -0700 (PDT)
 From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 To:     linux-arm-msm@vger.kernel.org,
         Ekansh Gupta <quic_ekangupt@quicinc.com>
 Cc:     ekangupt@qti.qualcomm.com, gregkh@linuxfoundation.org,
-        linux-kernel@vger.kernel.org, bkumar@qti.qualcomm.com,
-        fastrpc.upstream@qti.qualcomm.com, stable <stable@kernel.org>
-In-Reply-To: <1685972918-30371-1-git-send-email-quic_ekangupt@quicinc.com>
-References: <1685972918-30371-1-git-send-email-quic_ekangupt@quicinc.com>
-Subject: Re: [PATCH v1] misc: fastrpc: Pass proper scm arguments for static
+        linux-kernel@vger.kernel.org, fastrpc.upstream@qti.qualcomm.com,
+        stable <stable@kernel.org>
+In-Reply-To: <1690984411-4448-1-git-send-email-quic_ekangupt@quicinc.com>
+References: <1690984411-4448-1-git-send-email-quic_ekangupt@quicinc.com>
+Subject: Re: [PATCH v4] misc: fastrpc: Pass proper scm arguments for static
  process init
-Message-Id: <169098843059.77085.12739943578767946779.b4-ty@linaro.org>
-Date:   Wed, 02 Aug 2023 16:00:30 +0100
+Message-Id: <169098843172.77085.14958655683805861888.b4-ty@linaro.org>
+Date:   Wed, 02 Aug 2023 16:00:31 +0100
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
@@ -77,7 +77,7 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-On Mon, 05 Jun 2023 19:18:38 +0530, Ekansh Gupta wrote:
+On Wed, 02 Aug 2023 19:23:31 +0530, Ekansh Gupta wrote:
 > Memory is allocated for dynamic loading when audio daemon is trying
 > to attach to audioPD on DSP side. This memory is allocated from
 > reserved CMA memory region and needs ownership assignment to
