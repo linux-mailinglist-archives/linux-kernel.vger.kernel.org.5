@@ -2,114 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CE05276D240
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 17:39:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 311BA76D23D
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 17:39:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235019AbjHBPjP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Aug 2023 11:39:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55628 "EHLO
+        id S234746AbjHBPjF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Aug 2023 11:39:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55698 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235279AbjHBPiv (ORCPT
+        with ESMTP id S235320AbjHBPin (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Aug 2023 11:38:51 -0400
-Received: from mail-il1-x12d.google.com (mail-il1-x12d.google.com [IPv6:2607:f8b0:4864:20::12d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8D3A2D7E
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Aug 2023 08:38:05 -0700 (PDT)
-Received: by mail-il1-x12d.google.com with SMTP id e9e14a558f8ab-34770dd0b4eso3790095ab.0
-        for <linux-kernel@vger.kernel.org>; Wed, 02 Aug 2023 08:38:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1690990685; x=1691595485;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ohwe7sWJuQOwFnTKjN2+GTRcxF1Lf9US/VSNkGV+XaY=;
-        b=inTzu8txCgciAR8I65Y61N8CeBtLfEsPEIKUD1xFOqdAVHPvfDx6sPYaThHOMv5dQG
-         ub/4WuCHvkqHu5kQe9cmg2ANWPoUJOuN7aKrApEMDDhk6NNQUnRdu43Es0/GPviE8GBp
-         zeMjzFV8Vh1VVL8mBR3I77coXxgxO6Xm5dnp8gzA7/paYNqIzkbAfPUiHx8BScbkRxKD
-         lXnNRRvsJDuliSPsXxZvKu5jBlidd7IKJfbA0Ar27lQfvXvk57pokot6iKGIgs3+8/qT
-         CGvTh9tnJxU/3BJoqhgBsVhqOzHFJ6vyWOJXiXUfk3aT55cQi00lY5/K/9QZao3SmPfu
-         OBIA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690990685; x=1691595485;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=ohwe7sWJuQOwFnTKjN2+GTRcxF1Lf9US/VSNkGV+XaY=;
-        b=cebYTdzE8Kt3N1Ly1m53DeCoPYMd8oBkQ4OmYrbmPG9iTHIPH94kzxN9qefldwHeh1
-         0aAbJ/Ju6+8QeGPGVjTNA6sSVfh6fUvkvYic+jgEXdgksflkkfA1Sf1HG0f9+mbN5/e/
-         Q9CK58W4bZSjMAAvSIj2jbKCW96j70TJU6L2Imrt/6JljpyOklTYv1wxZHYkcMVCIODU
-         GXJSkuVFgHgTXbvg6eJX6mRVTc8bNEV90s8LPyv84mWgjFioNOvUgQ+W3Zed975mV5Dw
-         kenUM6BeBmwNZYhLzpE24Q/Os+ky7XiWli6r85QE31JQfSRbUalyNeYVurDxAR7y2ziT
-         Pfew==
-X-Gm-Message-State: ABy/qLZU7bg+BoaKMmGZ0WXKuw+/mhCl4KRN6qTtY1hHMT3whW9klPvG
-        R9hOGp+eGr5MTmmtecm2oDc=
-X-Google-Smtp-Source: APBJJlH3/2Y8SBqCWEYPY2K1H4/Hbk2M+hOQ5vmajs5vp3cF83mW1qldpSF1BaFqrM3C6rEA0E8BjA==
-X-Received: by 2002:a6b:5d02:0:b0:783:6ec1:65f6 with SMTP id r2-20020a6b5d02000000b007836ec165f6mr13164371iob.1.1690990685237;
-        Wed, 02 Aug 2023 08:38:05 -0700 (PDT)
-Received: from localhost.localdomain ([173.23.87.62])
-        by smtp.gmail.com with ESMTPSA id g8-20020a6b7608000000b00786f50d6bf5sm4556830iom.19.2023.08.02.08.38.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 02 Aug 2023 08:38:04 -0700 (PDT)
-From:   Matthew Anderson <ruinairas1992@gmail.com>
-To:     tiwai@suse.com
-Cc:     perex@perex.cz, alsa-devel@alsa-project.org,
-        linux-kernel@vger.kernel.org,
-        Matthew Anderson <ruinairas1992@gmail.com>
-Subject: [PATCH 2/2] ALSA: hda/realtek: Add headphone quirk for Aya Neo 2
-Date:   Wed,  2 Aug 2023 10:37:30 -0500
-Message-ID: <20230802153730.39273-3-ruinairas1992@gmail.com>
-X-Mailer: git-send-email 2.41.0
-In-Reply-To: <20230802153730.39273-1-ruinairas1992@gmail.com>
-References: <20230802153730.39273-1-ruinairas1992@gmail.com>
+        Wed, 2 Aug 2023 11:38:43 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5439211E;
+        Wed,  2 Aug 2023 08:37:49 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 5D95A619B3;
+        Wed,  2 Aug 2023 15:37:49 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D3DA8C433C7;
+        Wed,  2 Aug 2023 15:37:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1690990668;
+        bh=QBVB0WlvCnUvm8x3azvoMYN/g12CYZtPOxFHIcPNmzM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=WZAA0quE/5Vo5GoBs9ixSIkXWgyHfW54jg7QdbDsKCWoJjuNr44uSe8HVuSfo986w
+         WIt+HRNxWE7AQ81kt3HDHHE+0ZUZcCbcF/7dzCW8x155Pxdzhni+/4rhJTbR1M6yNk
+         TKkz84U8prtaKLix4qNYknMMnR/bbyDszkSNrep/ayHtWirvLkvE/plrmCLi84kSW0
+         ut/4FaJad5a6NiY1vhCkBkFulQPQ0ccXReivZeNaaTE4kkMtG800DnUMU+jaqgGGDl
+         wk4hBqLEn4skEOAx21j2m16+y7ZWUidhroHEc2DSV+M/rJtLXKLLXPQ0G6HI+iQ0Lx
+         Gb/4yVFiZyxTg==
+Date:   Wed, 2 Aug 2023 16:37:44 +0100
+From:   Conor Dooley <conor@kernel.org>
+To:     Thomas McKahan <tmckahan@singleboardsolutions.com>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Heiko Stuebner <heiko@sntech.de>,
+        linux-rockchip@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/2] dt-bindings: arm: rockchip: Add NanoPC T6
+Message-ID: <20230802-daydream-rectangle-48b02d4ce245@spud>
+References: <20230802051441.3106-1-tmckahan@singleboardsolutions.com>
+ <20230802051441.3106-2-tmckahan@singleboardsolutions.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="QneCUxURrTjnydP3"
+Content-Disposition: inline
+In-Reply-To: <20230802051441.3106-2-tmckahan@singleboardsolutions.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This fixes the headphones on the Aya Neo 2 handheld.
-Signed-off-by: Matthew Anderson <ruinairas1992@gmail.com>
----
- sound/pci/hda/patch_realtek.c | 6 ++++++
- 1 file changed, 6 insertions(+)
 
-diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-index 33f9beec8179..5d31cbe5d40b 100644
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -7030,6 +7030,7 @@ enum {
- 	ALC269_FIXUP_DELL3_MIC_NO_PRESENCE,
- 	ALC269_FIXUP_DELL4_MIC_NO_PRESENCE,
- 	ALC269_FIXUP_DELL4_MIC_NO_PRESENCE_QUIET,
-+	ALC269_FIXUP_HEADSET_AYA_2,
- 	ALC269_FIXUP_HEADSET_AYA_GEEK,
- 	ALC269_FIXUP_HEADSET_MODE,
- 	ALC269_FIXUP_HEADSET_MODE_NO_HP_MIC,
-@@ -8455,6 +8456,10 @@ static const struct hda_fixup alc269_fixups[] = {
- 		.chained = true,
- 		.chain_id = ALC256_FIXUP_ASUS_HEADSET_MODE
- 	},
-+	[ALC269_FIXUP_HEADSET_AYA_2] = {
-+		.type = HDA_FIXUP_FUNC,
-+		.v.func = alc269_fixup_headphone_volume,
-+	},
- 	[ALC269_FIXUP_HEADSET_AYA_GEEK] = {
- 		.type = HDA_FIXUP_FUNC,
- 		.v.func = alc269_fixup_headphone_volume,
-@@ -9953,6 +9958,7 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
- 	SND_PCI_QUIRK(0x1d72, 0x1901, "RedmiBook 14", ALC256_FIXUP_ASUS_HEADSET_MIC),
- 	SND_PCI_QUIRK(0x1d72, 0x1945, "Redmi G", ALC256_FIXUP_ASUS_HEADSET_MIC),
- 	SND_PCI_QUIRK(0x1d72, 0x1947, "RedmiBook Air", ALC255_FIXUP_XIAOMI_HEADSET_MIC),
-+	SND_PCI_QUIRK(0x1f66, 0x0101, "AYANEO 2", ALC269_FIXUP_HEADSET_AYA_2),
- 	SND_PCI_QUIRK(0x1f66, 0x0101, "GEEK", ALC269_FIXUP_HEADSET_AYA_GEEK),
- 	SND_PCI_QUIRK(0x8086, 0x2074, "Intel NUC 8", ALC233_FIXUP_INTEL_NUC8_DMIC),
- 	SND_PCI_QUIRK(0x8086, 0x2080, "Intel NUC 8 Rugged", ALC256_FIXUP_INTEL_NUC8_RUGGED),
--- 
-2.41.0
+--QneCUxURrTjnydP3
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
+On Wed, Aug 02, 2023 at 01:14:06AM -0400, Thomas McKahan wrote:
+> Add the NanoPC T6, a single board computer from FriendlyElec
+>=20
+> Signed-off-by: Thomas McKahan <tmckahan@singleboardsolutions.com>
+
+Acked-by: Conor Dooley <conor.dooley@microchip.com>
+
+Thanks,
+Conor.
+
+> ---
+>  Documentation/devicetree/bindings/arm/rockchip.yaml | 5 +++++
+>  1 file changed, 5 insertions(+)
+>=20
+> diff --git a/Documentation/devicetree/bindings/arm/rockchip.yaml b/Docume=
+ntation/devicetree/bindings/arm/rockchip.yaml
+> index 115ca986e20f..ca5389862887 100644
+> --- a/Documentation/devicetree/bindings/arm/rockchip.yaml
+> +++ b/Documentation/devicetree/bindings/arm/rockchip.yaml
+> @@ -227,6 +227,11 @@ properties:
+>                - friendlyarm,nanopi-r5s
+>            - const: rockchip,rk3568
+> =20
+> +      - description: FriendlyElec NanoPC T6
+> +        items:
+> +          - const: friendlyarm,nanopc-t6
+> +          - const: rockchip,rk3588
+> +
+>        - description: GeekBuying GeekBox
+>          items:
+>            - const: geekbuying,geekbox
+> --=20
+> 2.34.1
+>=20
+
+--QneCUxURrTjnydP3
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZMp4SAAKCRB4tDGHoIJi
+0rJNAP4/xi+1tHGyTyTfZGH1OXkpTWCLEI0BTF8F8KOSY2fo0AEA7wGZ+Dwicclu
+04Pz9i+2zrL4KzJUkH4ZQKK+7OhkigI=
+=L/N6
+-----END PGP SIGNATURE-----
+
+--QneCUxURrTjnydP3--
