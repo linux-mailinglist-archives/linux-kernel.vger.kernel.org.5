@@ -2,86 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9673B76D9D9
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 23:43:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7564376D9DA
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 23:43:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233628AbjHBVnp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Aug 2023 17:43:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43340 "EHLO
+        id S230220AbjHBVnt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Aug 2023 17:43:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43350 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233242AbjHBVnY (ORCPT
+        with ESMTP id S233274AbjHBVnY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 2 Aug 2023 17:43:24 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 530CFE7D;
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90AA3269A;
         Wed,  2 Aug 2023 14:43:23 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 3320061B3B;
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 6EBF361B38;
         Wed,  2 Aug 2023 21:43:23 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1C740C433CB;
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C19FDC433C7;
         Wed,  2 Aug 2023 21:43:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691012602;
-        bh=MiKQzUem1fzoQJpnZETahxS4bhAx7AKf5JO3KUUBnl8=;
+        s=k20201202; t=1691012603;
+        bh=/3fkCyEgrxb/AUOocTnJxHaLWQx7r2oBGZrkuNBIGj8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=KNpNnySGcLwwD9KynrkvcNXQaBRN2V1X98Grk3mr3pGzY865PxRj0dR3+DzNO+I8w
-         hHZqYL0RWX3o6cMHKlY52OMbqe/PwKTQf9K1he85PgX4Ig5eyxoKnhKINzRLDWc2qL
-         c8AI/p7rQnIUnRc0f3gWXf8qhLlPWJgZWRQFlDUpg8b4HwYKp/bXNLjWHBMHceg1HF
-         eQwQPwGIOaDkkp4rfC4gyN4uKtsW0FW1oIMg/ImKkJNj9cNfIImyaYUs2S3ofFaBqm
-         wcAefhDChku+yGHFBeObxNq15C5S2UX6piTUqZRuEoBQWjgEL2GG8msiTo028SJJuP
-         epEhbvqJedrjQ==
+        b=X95R9KkVDRr3ki6dAqNlbFqXrxEEVHX/lRSSI/qgwcWgfiI3zUd3Q0zIpTOOV3Y63
+         CDVO7N6DcY+b2efTSCZMfcUIqZaxXdSLdXxtoRCtwVWub6Y1PQXdzwzNvTpesl1v3q
+         gNKU9OORW1ki6GBIb2+Em6y/0kUEy32D5bhIATAPvd4mFg4NB0zWPZuFJH/9w2/LBP
+         QhaBucUBUfqEmbqHMF2QbYb5iAaM1Bo88hLb5yxRHpmgTZCIMtw5koCerfYDy8tQm2
+         AhADeaeCFqIJCgjvwj2dD9IhR7Gyv3ZMEpHB/ZnKFjoXVfmcYHPWRuZpvhORippGWG
+         YF1l2ciI4grCQ==
 From:   SeongJae Park <sj@kernel.org>
 To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     SeongJae Park <sj@kernel.org>, Shuah Khan <shuah@kernel.org>,
+Cc:     SeongJae Park <sj@kernel.org>, Jonathan Corbet <corbet@lwn.net>,
         damon@lists.linux.dev, linux-mm@kvack.org,
-        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 10/13] selftests/damon/sysfs: test damon_target filter
-Date:   Wed,  2 Aug 2023 21:43:09 +0000
-Message-Id: <20230802214312.110532-11-sj@kernel.org>
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH 11/13] Docs/mm/damon/design: update for DAMON monitoring target type DAMOS filter
+Date:   Wed,  2 Aug 2023 21:43:10 +0000
+Message-Id: <20230802214312.110532-12-sj@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20230802214312.110532-1-sj@kernel.org>
 References: <20230802214312.110532-1-sj@kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Test existence of files and validity of input keyword for DAMON
-monitoring target based DAMOS filter on DAMON sysfs interface.
+Update DAMON design document for the newly added DAMON monitoring target
+type DAMOS filter.
 
 Signed-off-by: SeongJae Park <sj@kernel.org>
 ---
- tools/testing/selftests/damon/sysfs.sh | 2 ++
- 1 file changed, 2 insertions(+)
+ Documentation/mm/damon/design.rst | 33 +++++++++++++++++--------------
+ 1 file changed, 18 insertions(+), 15 deletions(-)
 
-diff --git a/tools/testing/selftests/damon/sysfs.sh b/tools/testing/selftests/damon/sysfs.sh
-index 5677cfd342fc..60a9a305aef0 100644
---- a/tools/testing/selftests/damon/sysfs.sh
-+++ b/tools/testing/selftests/damon/sysfs.sh
-@@ -104,11 +104,13 @@ test_filter()
- 	ensure_write_succ "$filter_dir/type" "anon" "valid input"
- 	ensure_write_succ "$filter_dir/type" "memcg" "valid input"
- 	ensure_write_succ "$filter_dir/type" "addr" "valid input"
-+	ensure_write_succ "$filter_dir/type" "target" "valid input"
- 	ensure_write_fail "$filter_dir/type" "foo" "invalid input"
- 	ensure_file "$filter_dir/matching" "exist" "600"
- 	ensure_file "$filter_dir/memcg_path" "exist" "600"
- 	ensure_file "$filter_dir/addr_start" "exist" "600"
- 	ensure_file "$filter_dir/addr_end" "exist" "600"
-+	ensure_file "$filter_dir/damon_target_idx" "exist" "600"
- }
+diff --git a/Documentation/mm/damon/design.rst b/Documentation/mm/damon/design.rst
+index 134912166f5a..a20383d01a95 100644
+--- a/Documentation/mm/damon/design.rst
++++ b/Documentation/mm/damon/design.rst
+@@ -380,21 +380,24 @@ number of filters for each scheme.  Each filter specifies the type of target
+ memory, and whether it should exclude the memory of the type (filter-out), or
+ all except the memory of the type (filter-in).
  
- test_filters()
+-Currently, anonymous page, memory cgroup, and address range type filters are
+-supported by the feature.  Some filter target types can require additional
+-arguments.  For example, the memory cgroup filter type asks users to specify
+-the file path of the memory cgroup for the filter, while the address range type
+-asks the start and end addresses of the range.  Hence, users can apply specific
+-schemes to only anonymous pages, non-anonymous pages, pages of specific
+-cgroups, all pages excluding those of specific cgroups, pages in specific
+-address range, and any combination of those.
+-
+-To handle filters efficiently, the address range type filter is handled by the
+-core layer, while others are handled by operations set.  If a memory region is
+-filtered by the core layer-handled filter, it is not counted as the scheme has
+-tried to the region.  In contrast, if a memory regions is filtered by an
+-operations set layer-handled filter, it is counted as the scheme has tried.
+-The difference in accounting leads to changes in the statistics.
++Currently, anonymous page, memory cgroup, address range, and DAMON monitoring
++target type filters are supported by the feature.  Some filter target types
++require additional arguments.  The memory cgroup filter type asks users to
++specify the file path of the memory cgroup for the filter.  The address range
++type asks the start and end addresses of the range.  The DAMON monitoring
++target type asks the index of the target from the context's monitoring targets
++list.  Hence, users can apply specific schemes to only anonymous pages,
++non-anonymous pages, pages of specific cgroups, all pages excluding those of
++specific cgroups, pages in specific address range, pages in specific DAMON
++monitoring targets, and any combination of those.
++
++To handle filters efficiently, the address range and DAMON monitoring target
++type filters are handled by the core layer, while others are handled by
++operations set.  If a memory region is filtered by a core layer-handled filter,
++it is not counted as the scheme has tried to the region.  In contrast, if a
++memory regions is filtered by an operations set layer-handled filter, it is
++counted as the scheme has tried.  The difference in accounting leads to changes
++in the statistics.
+ 
+ 
+ Application Programming Interface
 -- 
 2.25.1
 
