@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2919A76D646
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 19:59:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C55FD76D647
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 19:59:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234168AbjHBR7h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Aug 2023 13:59:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47576 "EHLO
+        id S234410AbjHBR7j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Aug 2023 13:59:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47838 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234266AbjHBR65 (ORCPT
+        with ESMTP id S234196AbjHBR7L (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Aug 2023 13:58:57 -0400
-Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com [IPv6:2a00:1450:4864:20::32b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 016C51734
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Aug 2023 10:58:31 -0700 (PDT)
-Received: by mail-wm1-x32b.google.com with SMTP id 5b1f17b1804b1-3fbf1b82d9cso1210925e9.2
-        for <linux-kernel@vger.kernel.org>; Wed, 02 Aug 2023 10:58:31 -0700 (PDT)
+        Wed, 2 Aug 2023 13:59:11 -0400
+Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 495282D67
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Aug 2023 10:58:33 -0700 (PDT)
+Received: by mail-wm1-x32d.google.com with SMTP id 5b1f17b1804b1-3fe2048c910so1373065e9.1
+        for <linux-kernel@vger.kernel.org>; Wed, 02 Aug 2023 10:58:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1690999110; x=1691603910;
+        d=gmail.com; s=20221208; t=1690999112; x=1691603912;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=XyXZmbrejVy6oU7P85KygnAFUmokjdS7T3od5TZzPV0=;
-        b=o61PY30OWJEqIsIJbqjC2wEfrFt++nmLh2bc7nDkGL4MxB0bYYDOddvwOSTvGgO9/1
-         RHnKe82BAvOY83+5Xd7YOx6OdqDvUJ9VfsRQaxg410gY6M8Z1JzmF12gvrgEX+EXNG9i
-         Bwn0OqH9bVANcCIpVEZci0Iki55/dZZrXWhvR3962AXTLoDu8IV6Cgx415uAlEIIhQxX
-         P1ta1eLDdskcspu7cWdvn25AoQdd7Ot8Vb4AsPGUfqe40RI/3U7vpm2361KN1PXfCLP2
-         lKV9u/gO3uLo2KNITq31zmI+fiqfmVrYKpoaPaqovx35yulDGwhwI9Psm2w6ScUR+/1x
-         Kk3Q==
+        bh=oxOrpyuPOmymgtlpLpXF+pVhKHjkFdHFw3wiijDx7h4=;
+        b=oNo4WjetICtChH1ktYq4b21m9aftBtQTSD6LlcebwyItLqzIhF7TAMisJPe7yIgXIz
+         vg0KkchbM4hQ6e/v+haVCtbS1VbuHjGucUljM+pFrC2+o9iwaF0M0l6K2vMadQEaJ+tP
+         Yz7e49XYRobQqI1Augs3Y1352cEwAY7rA69I7fO4UJGyqV+IvRUQapSiCTV6C37ALdYz
+         Kz074OS1rFUpq61Pwc4GhaN6eb1UgKEeTR1IlzIfWNE96bhEN1MzeU8r2HBR8X5gqSup
+         RdXrNniSwS37eV7RCPnUi5kgfVHGqcwaXhRrTx72nPBtD4T+A0aRyaXEMMew0n64o37M
+         PV4g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690999110; x=1691603910;
+        d=1e100.net; s=20221208; t=1690999112; x=1691603912;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=XyXZmbrejVy6oU7P85KygnAFUmokjdS7T3od5TZzPV0=;
-        b=KCNqpkArp509rrV5TknS3GF/J9tCMgpmoerL9UoViiLJ/aUB/x5y6fa+EK89weaqnf
-         mscITwZVe21Kv+q5z82Txy7a48hQ/4hSPRhMBYuHdszG+mmW8umfggPMHLHhCNhZBFzb
-         nhnBdwkAYa2pkbyRvJUhdfFBur01dVxhIxfWkWa9yKTK3lgVNrcuWKLOZNyoEYFzu7gk
-         HaYJKowZCH0MDcCnIba1vA4QOGGlRX9g8PWg2Jxo0XKPIY885jpVG0LUulS/27JOh7a4
-         vNPmhcD1ZPZkGJLfzfgGPO323VZW7XtuAe4ctQKNdRTm7tAY2o4ox2Fg1NCsGqVxH7vg
-         Cqig==
-X-Gm-Message-State: ABy/qLadoa5sxpJesGWGwixnLPQI/Sv1EPefJ4mnlqak8TpBLKaV87PR
-        VohUuE2t2irOPi/V4rbDLpM=
-X-Google-Smtp-Source: APBJJlG6lh7xO8s7gdwcdPpW393CzJ8GrsGTZ/O8tPJvPn73H1VkhPTU437+89OuIPBLICk0Dx6pWw==
-X-Received: by 2002:a1c:7714:0:b0:3fb:be7c:d58a with SMTP id t20-20020a1c7714000000b003fbbe7cd58amr4909567wmi.26.1690999109889;
-        Wed, 02 Aug 2023 10:58:29 -0700 (PDT)
+        bh=oxOrpyuPOmymgtlpLpXF+pVhKHjkFdHFw3wiijDx7h4=;
+        b=Ka7FLCrulW/QoYMs626XvahNCTovRa2YtZTNnnbz8P+gZr5TBxeYWoz+WYe4mBMb/O
+         1pBSb4Az35Qg9zz+GltaZ8hcEnZ8sh/CrEv8mWmL5o1w3w4YgbGhOYadWV8u+t7utnPf
+         nBRS5GUJTrEXqjfwzmkGx/W/0asSajTItOFLza1QJEN8IUz9SBE8f/7oM5Ycp4wJ5lBe
+         qSTPYe9fEwA/l0WTa09NgFpKP65oZXndT4AXblRr/0B9Spk4hwkd2QTKE6P+IlBIRxlC
+         4L+RsmuECtmckna9ov8EVuMc1x9UM9OKoAKi3aQ3kfWgoDAqAzZjWP9g9Wq/rPhSSI3l
+         tZHA==
+X-Gm-Message-State: ABy/qLYz6TNkNALq9fD30hwlLUXaDpNFwmnbNSAlGay0RiFm+uwdc2IK
+        YOo1dR3KzzKgRJkBEl54zCM=
+X-Google-Smtp-Source: APBJJlE9K3tR2ClpMYZTwTaCYVhiIb9nZbiQ1C7lY7tlCoz1Rl6MrRaS9ngzVQ5fg3zuMCGQaROKgQ==
+X-Received: by 2002:a7b:cb88:0:b0:3fc:f9c:a3e6 with SMTP id m8-20020a7bcb88000000b003fc0f9ca3e6mr5561916wmi.9.1690999111841;
+        Wed, 02 Aug 2023 10:58:31 -0700 (PDT)
 Received: from ALPER-PC.. ([178.233.24.1])
-        by smtp.gmail.com with ESMTPSA id l23-20020a7bc457000000b003fe20db88ebsm2192439wmi.31.2023.08.02.10.58.28
+        by smtp.gmail.com with ESMTPSA id l23-20020a7bc457000000b003fe20db88ebsm2192439wmi.31.2023.08.02.10.58.30
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 02 Aug 2023 10:58:29 -0700 (PDT)
+        Wed, 02 Aug 2023 10:58:31 -0700 (PDT)
 From:   Alper Nebi Yasak <alpernebiyasak@gmail.com>
 To:     alsa-devel@alsa-project.org
 Cc:     Cezary Rojewski <cezary.rojewski@intel.com>,
@@ -65,9 +65,9 @@ Cc:     Cezary Rojewski <cezary.rojewski@intel.com>,
         Matthias Brugger <matthias.bgg@gmail.com>,
         =?UTF-8?q?N=C3=ADcolas=20F=20=2E=20R=20=2E=20A=20=2E=20Prado?= 
         <nfraprado@collabora.com>
-Subject: [PATCH 18/27] ASoC: mediatek: mt8186-mt6366-da7219-max98357: Map missing jack kcontrols
-Date:   Wed,  2 Aug 2023 20:57:28 +0300
-Message-Id: <20230802175737.263412-19-alpernebiyasak@gmail.com>
+Subject: [PATCH 19/27] ASoC: qcom: apq8016_sbc: Map missing jack kcontrols
+Date:   Wed,  2 Aug 2023 20:57:29 +0300
+Message-Id: <20230802175737.263412-20-alpernebiyasak@gmail.com>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20230802175737.263412-1-alpernebiyasak@gmail.com>
 References: <20230802175737.263412-1-alpernebiyasak@gmail.com>
@@ -83,52 +83,89 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit 8e9867486806 ("ASoC: mediatek: mt8186-da7219: Expose individual
-headset jack pins") maps kcontrols for Headphone and Headset Mic jacks
-for this driver so that PulseAudio and PipeWire can handle jack
-detection events for these peripherals.
-
-The DA7219 codec used here can also distinguish between Headphone and
-Line Out connections that go into the same physical port. Expose the
-latter to userspace as a kcontrol as well and add the necessary widgets.
+This driver does not properly map jack pins to kcontrols that PulseAudio
+and PipeWire need to handle jack detection events. It seems to support
+detecting Headphone and Headset Mic connections. Expose each to
+userspace as a kcontrol and add the necessary widgets.
 
 Signed-off-by: Alper Nebi Yasak <alpernebiyasak@gmail.com>
 ---
+Tried to match sound/soc/qcom/common.c a bit. But that seems to be
+selected by this, maybe it's jack setup code can be reused?
 
- sound/soc/mediatek/mt8186/mt8186-mt6366-da7219-max98357.c | 6 ++++++
- 1 file changed, 6 insertions(+)
+ sound/soc/qcom/apq8016_sbc.c | 37 ++++++++++++++++++++++++++++--------
+ 1 file changed, 29 insertions(+), 8 deletions(-)
 
-diff --git a/sound/soc/mediatek/mt8186/mt8186-mt6366-da7219-max98357.c b/sound/soc/mediatek/mt8186/mt8186-mt6366-da7219-max98357.c
-index 0432f9d89020..aa8e00bba19b 100644
---- a/sound/soc/mediatek/mt8186/mt8186-mt6366-da7219-max98357.c
-+++ b/sound/soc/mediatek/mt8186/mt8186-mt6366-da7219-max98357.c
-@@ -46,6 +46,10 @@ static struct snd_soc_jack_pin mt8186_jack_pins[] = {
- 		.pin = "Headset Mic",
- 		.mask = SND_JACK_MICROPHONE,
- 	},
+diff --git a/sound/soc/qcom/apq8016_sbc.c b/sound/soc/qcom/apq8016_sbc.c
+index e54b8961112f..6de533d45e7d 100644
+--- a/sound/soc/qcom/apq8016_sbc.c
++++ b/sound/soc/qcom/apq8016_sbc.c
+@@ -44,6 +44,17 @@ struct apq8016_sbc_data {
+ #define DEFAULT_MCLK_RATE		9600000
+ #define MI2S_BCLK_RATE			1536000
+ 
++static struct snd_soc_jack_pin apq8016_sbc_jack_pins[] = {
 +	{
-+		.pin = "Line Out",
-+		.mask = SND_JACK_LINEOUT,
++		.pin = "Mic Jack",
++		.mask = SND_JACK_MICROPHONE,
 +	},
- };
++	{
++		.pin = "Headphone Jack",
++		.mask = SND_JACK_HEADPHONE,
++	},
++};
++
+ static int apq8016_dai_init(struct snd_soc_pcm_runtime *rtd, int mi2s)
+ {
+ 	struct snd_soc_dai *codec_dai;
+@@ -90,13 +101,15 @@ static int apq8016_dai_init(struct snd_soc_pcm_runtime *rtd, int mi2s)
+ 	if (!pdata->jack_setup) {
+ 		struct snd_jack *jack;
  
- static struct snd_soc_codec_conf mt8186_mt6366_da7219_max98357_codec_conf[] = {
-@@ -964,6 +968,7 @@ mt8186_mt6366_da7219_max98357_widgets[] = {
- 	SND_SOC_DAPM_SPK("Speakers", NULL),
- 	SND_SOC_DAPM_HP("Headphones", NULL),
+-		rval = snd_soc_card_jack_new(card, "Headset Jack",
+-					     SND_JACK_HEADSET |
+-					     SND_JACK_HEADPHONE |
+-					     SND_JACK_BTN_0 | SND_JACK_BTN_1 |
+-					     SND_JACK_BTN_2 | SND_JACK_BTN_3 |
+-					     SND_JACK_BTN_4,
+-					     &pdata->jack);
++		rval = snd_soc_card_jack_new_pins(card, "Headset Jack",
++						  SND_JACK_HEADSET |
++						  SND_JACK_HEADPHONE |
++						  SND_JACK_BTN_0 | SND_JACK_BTN_1 |
++						  SND_JACK_BTN_2 | SND_JACK_BTN_3 |
++						  SND_JACK_BTN_4,
++						  &pdata->jack,
++						  apq8016_sbc_jack_pins,
++						  ARRAY_SIZE(apq8016_sbc_jack_pins));
+ 
+ 		if (rval < 0) {
+ 			dev_err(card->dev, "Unable to add Headphone Jack\n");
+@@ -255,8 +268,14 @@ static void msm8916_qdsp6_add_ops(struct snd_soc_card *card)
+ 	}
+ }
+ 
+-static const struct snd_soc_dapm_widget apq8016_sbc_dapm_widgets[] = {
++static const struct snd_kcontrol_new apq8016_sbc_snd_controls[] = {
++	SOC_DAPM_PIN_SWITCH("Headphone Jack"),
++	SOC_DAPM_PIN_SWITCH("Mic Jack"),
++};
+ 
++static const struct snd_soc_dapm_widget apq8016_sbc_dapm_widgets[] = {
++	SND_SOC_DAPM_HP("Headphone Jack", NULL),
++	SND_SOC_DAPM_MIC("Mic Jack", NULL),
+ 	SND_SOC_DAPM_MIC("Handset Mic", NULL),
  	SND_SOC_DAPM_MIC("Headset Mic", NULL),
-+	SND_SOC_DAPM_LINE("Line Out", NULL),
- 	SND_SOC_DAPM_OUTPUT("HDMI1"),
- 	SND_SOC_DAPM_MIXER(SOF_DMA_DL1, SND_SOC_NOPM, 0, 0, NULL, 0),
- 	SND_SOC_DAPM_MIXER(SOF_DMA_DL2, SND_SOC_NOPM, 0, 0, NULL, 0),
-@@ -996,6 +1001,7 @@ mt8186_mt6366_da7219_max98357_controls[] = {
- 	SOC_DAPM_PIN_SWITCH("Speakers"),
- 	SOC_DAPM_PIN_SWITCH("Headphones"),
- 	SOC_DAPM_PIN_SWITCH("Headset Mic"),
-+	SOC_DAPM_PIN_SWITCH("Line Out"),
- 	SOC_DAPM_PIN_SWITCH("HDMI1"),
- };
+ 	SND_SOC_DAPM_MIC("Secondary Mic", NULL),
+@@ -285,6 +304,8 @@ static int apq8016_sbc_platform_probe(struct platform_device *pdev)
+ 	card->owner = THIS_MODULE;
+ 	card->dapm_widgets = apq8016_sbc_dapm_widgets;
+ 	card->num_dapm_widgets = ARRAY_SIZE(apq8016_sbc_dapm_widgets);
++	card->controls = apq8016_sbc_snd_controls;
++	card->num_controls = ARRAY_SIZE(apq8016_sbc_snd_controls);
  
+ 	ret = qcom_snd_parse_of(card);
+ 	if (ret)
 -- 
 2.40.1
 
