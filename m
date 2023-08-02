@@ -2,113 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7CDBA76D124
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 17:12:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 122D076D133
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 17:13:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233403AbjHBPMR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Aug 2023 11:12:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35480 "EHLO
+        id S234060AbjHBPNU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Aug 2023 11:13:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36100 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231788AbjHBPMP (ORCPT
+        with ESMTP id S235022AbjHBPNM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Aug 2023 11:12:15 -0400
-Received: from mgamail.intel.com (unknown [192.55.52.93])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4020B2103;
-        Wed,  2 Aug 2023 08:12:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1690989134; x=1722525134;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=qjoRO+86zoiQJt1dgEUpx5MbAiDYWWKhC+5c7+9nClw=;
-  b=ZKPZt9IOhG/MRsb4UHb49yS7thrjCL7Jsog5KzYLHsNBJ4qJL1s3E5n9
-   na5qrY4F+B1Wq3N2wGT8K/EQFkAWhE4z9kKW6pGLpIlsj9t3XTklk1cuE
-   4cjk/nvWY4Vj10Blr8RXBvdngipBkZLbjOOoZyPvaLgRyuxRvUhhO5t/U
-   qy5d9rFa1TIogx2obnh+V4YjqDlotPtvdfDW4VVSerBX7PAyMATn/g19g
-   7qV5rPCX1G4QS9WoboYqx6xW+qM/n0a2bI53xw9R2GGVqRjXiOOrsD0Fl
-   tUw0fFMMN9te7T9zSiyTqzEE8DYrf1kW5uLMQl9qi1qeVUehsVtXRy86w
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10790"; a="367074793"
-X-IronPort-AV: E=Sophos;i="6.01,249,1684825200"; 
-   d="scan'208";a="367074793"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Aug 2023 08:12:13 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10790"; a="843190688"
-X-IronPort-AV: E=Sophos;i="6.01,249,1684825200"; 
-   d="scan'208";a="843190688"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by fmsmga002.fm.intel.com with ESMTP; 02 Aug 2023 08:12:11 -0700
-Received: from andy by smile.fi.intel.com with local (Exim 4.96)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1qRDWD-003zxb-1Y;
-        Wed, 02 Aug 2023 18:12:09 +0300
-Date:   Wed, 2 Aug 2023 18:12:09 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Rob Herring <robh@kernel.org>
-Cc:     Frank Rowand <frowand.list@gmail.com>,
-        "Enrico Weigelt, metux IT consult" <info@metux.net>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Petr Mladek <pmladek@suse.com>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 4/5] of: dynamic: Move dead property list check into
- property add/update functions
-Message-ID: <ZMpySdEBHaPfUiyt@smile.fi.intel.com>
-References: <20230801-dt-changeset-fixes-v1-0-b5203e3fc22f@kernel.org>
- <20230801-dt-changeset-fixes-v1-4-b5203e3fc22f@kernel.org>
+        Wed, 2 Aug 2023 11:13:12 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B0DC11F;
+        Wed,  2 Aug 2023 08:13:09 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 208D16186B;
+        Wed,  2 Aug 2023 15:13:09 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id F0BEBC433C8;
+        Wed,  2 Aug 2023 15:13:07 +0000 (UTC)
+Date:   Wed, 2 Aug 2023 11:13:06 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Vincent Donnefort <vdonnefort@google.com>
+Cc:     mhiramat@kernel.org, linux-kernel@vger.kernel.org,
+        linux-trace-kernel@vger.kernel.org, kernel-team@android.com
+Subject: Re: [PATCH v5 1/2] ring-buffer: Introducing ring-buffer mapping
+ functions
+Message-ID: <20230802111306.4f52c1c6@gandalf.local.home>
+In-Reply-To: <ZMpMgA85+DyGirXa@google.com>
+References: <20230728164754.460767-1-vdonnefort@google.com>
+        <20230728164754.460767-2-vdonnefort@google.com>
+        <20230801132603.0b18c0eb@gandalf.local.home>
+        <20230802074526.2fa479ab@gandalf.local.home>
+        <ZMpMgA85+DyGirXa@google.com>
+X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230801-dt-changeset-fixes-v1-4-b5203e3fc22f@kernel.org>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-6.7 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_HI,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 01, 2023 at 03:54:47PM -0600, Rob Herring wrote:
-> The changeset code checks for a property in the deadprops list when
-> adding/updating a property, but of_add_property() and
-> of_update_property() do not. As the users of these functions are pretty
-> simple, they have not hit this scenario or else the property lists
-> would get corrupted.
+On Wed, 2 Aug 2023 13:30:56 +0100
+Vincent Donnefort <vdonnefort@google.com> wrote:
 
-...
+> On Wed, Aug 02, 2023 at 07:45:26AM -0400, Steven Rostedt wrote:
+> > On Tue, 1 Aug 2023 13:26:03 -0400
+> > Steven Rostedt <rostedt@goodmis.org> wrote:
+> >   
+> > > > +
+> > > > +	if (READ_ONCE(cpu_buffer->mapped)) {
+> > > > +		/* Ensure the meta_page is ready */
+> > > > +		smp_rmb();
+> > > > +		WRITE_ONCE(cpu_buffer->meta_page->pages_touched,
+> > > > +			   local_read(&cpu_buffer->pages_touched));
+> > > > +	}    
+> > > 
+> > > I was thinking instead of doing this in the semi fast path, put this logic
+> > > into the rb_wakeup_waiters() code. That is, if a task is mapped, we call
+> > > the irq_work() to do this for us. It could even do more, like handle
+> > > blocked mapped waiters.  
+> > 
+> > I was thinking how to implement this, and I worry that it may cause an irq
+> > storm. Let's keep this (and the other locations) as is, where we do the
+> > updates in place. Then we can look at seeing if it is possible to do it in
+> > a delayed fashion another time.  
+> 
+> I actually looking at this. How about:
+> 
+> On the userspace side, a simple poll:
+> 
+>   static void wait_entries(int fd)
+>   {
+>           struct pollfd pollfd = {
+>                   .fd     = fd,
+>                   .events = POLLIN,
+>           };
+>   
+>           if (poll(&pollfd, 1, -1) == -1)
+>                   pdie("poll");
+>   }
+> 
+> And on the kernel side, just a function to update the "writer fields" of the
+> meta-page:
+> 
+>    static void rb_wake_up_waiters(struct irq_work *work)
+>    {
+>           struct rb_irq_work *rbwork = container_of(work, struct rb_irq_work, work);
+>   +       struct ring_buffer_per_cpu *cpu_buffer =
+>   +               container_of(rbwork, struct ring_buffer_per_cpu, irq_work);
+>   +
+>   +       rb_update_meta_page(cpu_buffer);
+>    
+>           wake_up_all(&rbwork->waiters);
+> 
+> That would rate limit the number of updates to the meta-page without any irq storm?
+> 
 
-Seems like this...
+Is poll an issue? It requires user space to do a system call to see if
+there's more data? But I guess that's not too much of an issue, as it needs
+to do the ioctl to get the reader page.
 
-> +	/* If the property is in deadprops then it must be removed */
-> +	for (next = &np->deadprops; *next; next = &(*next)->next) {
-> +		if (*next == prop) {
-> +			*next = prop->next;
-> +			break;
-> +		}
-> +	}
+We could also add an option to the ioctl to block, or have the ioctl honor
+the NON_BLOCK flags of the fd?
 
->  	prop->next = NULL;
-
-...
-
-> +	for (next = &np->deadprops; *next; next = &(*next)->next) {
-> +		if (*next == newprop) {
-> +			*next = newprop->next;
-> +			newprop->next = NULL;
-> +			break;
-> +		}
-> +	}
-
-...is a dup of this. Are you planing to have a helper or at least conditional
-for_each_*() macro for them?
-
--- 
-With Best Regards,
-Andy Shevchenko
-
-
+-- Steve
