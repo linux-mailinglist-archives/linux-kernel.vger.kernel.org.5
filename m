@@ -2,73 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B86A076C875
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 10:38:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7354E76C889
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 10:43:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233201AbjHBIif (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Aug 2023 04:38:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48120 "EHLO
+        id S233972AbjHBInO convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 2 Aug 2023 04:43:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49294 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232200AbjHBIic (ORCPT
+        with ESMTP id S233979AbjHBInH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Aug 2023 04:38:32 -0400
-Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9BAD2A8
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Aug 2023 01:38:31 -0700 (PDT)
-Received: by mail-lf1-x12b.google.com with SMTP id 2adb3069b0e04-4fe3c7f16bbso4263195e87.0
-        for <linux-kernel@vger.kernel.org>; Wed, 02 Aug 2023 01:38:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1690965510; x=1691570310;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=uQ+lNL4fO4KPGrAzOlHkF7rrOY5ykF3mAwSuq0Z7KDY=;
-        b=jG2a6Y0+LcpsZztlW3jLfV8otpGZE1pKMJwRzNrp8SnY2R6Z0ZENBBc/9oQEqoq2En
-         zPMyVR21fD0lT9udPLrQduGfiz7/6BA0/TzkbAAmhOQbn+wQMj7Hj6t76f3EIE48vS46
-         N93IJ67ZG1Etk41/Qe8PPBsDyaz5eQM6HFHCjJDu/yoEHD4ou8VSQE/H/sSNtbM9Bqba
-         xeOV9jsH6kL5LOpyi2I0Cqd1ScyhXSS6vh8hw8AAQRleBWeTinKT0zxCkrbbo5U/zPBs
-         3hpPPJBncaapQo+H0RTLAKlcAilN1YyIRP6e1NZARI1VD9htnp4Z8n9ZCO5b/9OesPTA
-         FgQQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690965510; x=1691570310;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=uQ+lNL4fO4KPGrAzOlHkF7rrOY5ykF3mAwSuq0Z7KDY=;
-        b=CAcnj5CCbMBuAEMQNTS3ti4+390nlBtUmko9kuhsyA3NFUfB4tsNYDOaNniyvkPfhM
-         X6eDSAxLj5pZ5wTyrbKl3aIK7Zjbudv/fFOWMS0rJtkXHpBE1MAaM29t8o/Y6x/3TxKH
-         +FTPmQBANhQmqWV7uZYxpxzR8DK8kFG6vHtMTOcyIeBGBGvtfAw8gYCcs2X2MPieE1Gf
-         EDPmkHBHWeMsDm76YaoMKeCNq7HXXBtVMd+o6qiicoEU0Mfg3w2I3dQn1t6cS6MRBXaz
-         ZG9Aq39559Jkgd+nrhIuUzjgUbJYfYFe1viSAPkI8hBxgM5nleKOXllsPxCbA/9yMJ+Y
-         WEjw==
-X-Gm-Message-State: ABy/qLbNupMr15Nk/ZJbRGK3wIPxvZYVfK/Dh/DnDDK9u5RJ6DfjLjLg
-        NbmJnDMXlMJwqtJfzjh9UVxaiA8Oitw=
-X-Google-Smtp-Source: APBJJlEsy3ACQgE6lOUDSPn2tWv/oqAwyKEEpzaXCPVzqCTaqyZrq4EbhQfMCaLBMl5F/rx45fe0rg==
-X-Received: by 2002:a2e:2e0c:0:b0:2b7:33a6:f2c0 with SMTP id u12-20020a2e2e0c000000b002b733a6f2c0mr4643236lju.4.1690965509637;
-        Wed, 02 Aug 2023 01:38:29 -0700 (PDT)
-Received: from [192.168.0.124] (ip-37-248-152-247.multi.internet.cyfrowypolsat.pl. [37.248.152.247])
-        by smtp.gmail.com with ESMTPSA id l5-20020a2e3e05000000b002b9fec8961bsm457240lja.123.2023.08.02.01.38.26
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 02 Aug 2023 01:38:28 -0700 (PDT)
-Message-ID: <08258243-863b-62b4-bff6-71e28c3208c3@gmail.com>
-Date:   Wed, 2 Aug 2023 10:38:24 +0200
+        Wed, 2 Aug 2023 04:43:07 -0400
+Received: from ex01.ufhost.com (ex01.ufhost.com [61.152.239.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7DAC1194;
+        Wed,  2 Aug 2023 01:43:04 -0700 (PDT)
+Received: from EXMBX166.cuchost.com (unknown [175.102.18.54])
+        (using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
+        (Client CN "EXMBX166", Issuer "EXMBX166" (not verified))
+        by ex01.ufhost.com (Postfix) with ESMTP id E2A9924E199;
+        Wed,  2 Aug 2023 16:43:02 +0800 (CST)
+Received: from EXMBX061.cuchost.com (172.16.6.61) by EXMBX166.cuchost.com
+ (172.16.6.76) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Wed, 2 Aug
+ 2023 16:43:02 +0800
+Received: from localhost.localdomain (183.27.98.54) by EXMBX061.cuchost.com
+ (172.16.6.61) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Wed, 2 Aug
+ 2023 16:43:01 +0800
+From:   Xingyu Wu <xingyu.wu@starfivetech.com>
+To:     Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        "Maxim Kochetkov" <fido_max@inbox.ru>,
+        Rob Herring <robh+dt@kernel.org>,
+        "Krzysztof Kozlowski" <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor.dooley@microchip.com>,
+        Emil Renner Berthing <emil.renner.berthing@canonical.com>
+CC:     Jose Abreu <joabreu@synopsys.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Walker Chen <walker.chen@starfivetech.com>,
+        "Xingyu Wu" <xingyu.wu@starfivetech.com>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <alsa-devel@alsa-project.org>, <linux-riscv@lists.infradead.org>
+Subject: [PATCH v1 0/5] Add I2S support for the StarFive JH7110 SoC
+Date:   Wed, 2 Aug 2023 16:42:56 +0800
+Message-ID: <20230802084301.134122-1-xingyu.wu@starfivetech.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] drm/panel: samsung-s6d7aa0: Add MODULE_DEVICE_TABLE
-Content-Language: en-US
-To:     Nikita Travkin <nikita@trvn.ru>,
-        Neil Armstrong <neil.armstrong@linaro.org>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>
-Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-References: <20230802-gt5-panel-dtable-v1-1-c0a765c175e2@trvn.ru>
-From:   Artur Weber <aweber.kernel@gmail.com>
-In-Reply-To: <20230802-gt5-panel-dtable-v1-1-c0a765c175e2@trvn.ru>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+Content-Type: text/plain
+X-Originating-IP: [183.27.98.54]
+X-ClientProxiedBy: EXCAS066.cuchost.com (172.16.6.26) To EXMBX061.cuchost.com
+ (172.16.6.61)
+X-YovoleRuleAgent: yovoleflag
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -77,20 +64,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2.08.2023 08:41, Nikita Travkin wrote:
-> The driver can be built as a module, however the lack of the
-> MODULE_DEVICE_TABLE macro prevents it from being automatically probed
-> from the DT in such case.
-> 
-> Add the missed macro to make sure the module can load automatically.
-> 
-> Fixes: 6810bb390282 ("drm/panel: Add Samsung S6D7AA0 panel controller driver")
-> Signed-off-by: Nikita Travkin <nikita@trvn.ru>
-> ---
->   drivers/gpu/drm/panel/panel-samsung-s6d7aa0.c | 1 +
->   1 file changed, 1 insertion(+)
+This patch series adds I2S support for the StarFive JH7110 RISC-V
+SoC based on Designware I2S controller. There has three I2S channels
+(RX/TX0/TX1) on the JH7110 SoC, one of which is for record(RX) and
+two for playback(TX).
 
-Acked-by: Artur Weber <aweber.kernel@gmail.com>
+The first patch adds the ops to get data from platform bus in the
+I2S driver.
+The second patch adds support for the StarFive JH7110 SoC in
+the Designware I2S bindings.
+The third patch adds support for the StarFive JH7110 SoC in
+the Designware I2S driver. 
+The fourth patch fixes the name of I2STX1 pinmux.
+The last patch adds device node of I2S RX/TX0/TX1 in JH7110 dts.
 
-Best regards
-Artur
+This patch series is based on Linux-next which is merge clock,
+syscon and dma nodes for the StarFive JH7110 SoC. And these
+should be applied after the following patchset:
+https://lore.kernel.org/all/20230724055440.100947-1-xingyu.wu@starfivetech.com/
+
+The series has been tested and works normally on the VisionFive 2
+board by plugging an audio expansion board.
+
+Xingyu Wu (5):
+  ASoC: dwc: Use ops to get platform data
+  ASoC: dt-bindings: snps,designware-i2s: Add StarFive JH7110 SoC
+    support
+  ASoC: dwc: i2s: Add StarFive JH7110 SoC support
+  riscv: dts: starfive: pinfunc: Fix the pins name of I2STX1
+  riscv: dts: starfive: Add the nodes and pins of I2Srx/I2Stx0/I2Stx1
+
+ .../bindings/sound/snps,designware-i2s.yaml   | 101 +++++-
+ arch/riscv/boot/dts/starfive/jh7110-pinfunc.h |   4 +-
+ .../jh7110-starfive-visionfive-2.dtsi         |  58 ++++
+ arch/riscv/boot/dts/starfive/jh7110.dtsi      |  65 ++++
+ include/sound/designware_i2s.h                |   3 +
+ sound/soc/dwc/dwc-i2s.c                       | 318 ++++++++++++++++--
+ sound/soc/dwc/local.h                         |   1 +
+ 7 files changed, 523 insertions(+), 27 deletions(-)
+
+
+base-commit: 0fee53365d051781156b75c6f6e6015757e71fd8
+prerequisite-patch-id: 0159f09bb0a1ff711a00ae17ef5b12662c9c7d3d
+-- 
+2.25.1
+
