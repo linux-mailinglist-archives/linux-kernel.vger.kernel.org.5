@@ -2,117 +2,214 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 944E476C72C
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 09:41:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9AABD76C733
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 09:42:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233329AbjHBHlF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Aug 2023 03:41:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40714 "EHLO
+        id S233062AbjHBHmL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Aug 2023 03:42:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44784 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233320AbjHBHk2 (ORCPT
+        with ESMTP id S233117AbjHBHlp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Aug 2023 03:40:28 -0400
-Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 786634EE3;
-        Wed,  2 Aug 2023 00:38:34 -0700 (PDT)
-Received: by mail-lf1-x136.google.com with SMTP id 2adb3069b0e04-4fe1344b707so10394758e87.1;
-        Wed, 02 Aug 2023 00:38:34 -0700 (PDT)
+        Wed, 2 Aug 2023 03:41:45 -0400
+Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1E314234
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Aug 2023 00:39:23 -0700 (PDT)
+Received: by mail-lf1-x133.google.com with SMTP id 2adb3069b0e04-4fe11652b64so10862207e87.0
+        for <linux-kernel@vger.kernel.org>; Wed, 02 Aug 2023 00:39:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1690961912; x=1691566712;
-        h=content-transfer-encoding:in-reply-to:references:cc:to:from
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=hG6+YQ0tUDz48/03f7Nyeq0JCf007nOGlw47CxNzErA=;
-        b=ho6VKHchKIecptzcDesrpXEbSnhlh14yTzt1/ddoGIW7N+NJKZi73ac7qQaztLtMuQ
-         3QoiUN1MGh6hWVL2JPeX8ztzaEn3Ez2KIrW716wfFxX5mdvzgNtFce36FMNNd9p6NvMP
-         Rp/9tSbD6nj7pmSAP5/fmbUJOCs+OymiKh5WJGapFqJmksqITXhs51ukWWtqL1g/t6fP
-         JYAULICCKGSO4OEfZjnQ1bJUXw8ibs7fUQLGWYKNTk7V1g6d5OgWk01X9RfAg8lrdJm7
-         ibdC5h8BZ/EdZT0PVlni5KF4lldYS1rGS1+DXHd4Ma3i3tD2LelgmtvLlz/ARI1DRtt3
-         93tg==
+        d=gmail.com; s=20221208; t=1690961953; x=1691566753;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=0Wu+ajQyRgIN0Emiwp7sguZBZB+ZCl4Y83l4Rcy5bsA=;
+        b=bzlONBjURYW4qGGnnzHXuoPtxWB3/pqAmj7uXC143EG89y9cKhrAB/QmY8HmcZqWZi
+         uLXcd08R2OWcwV9B3bGZfTC/zcx3WS9It8KPKCQPYCo5HAAl/HL/WDMheUk2qssGXGSw
+         aXh4KUscuvOvXip/H9njIk9+rNRqyTqUnxZYmunRXNkCsZ37B8ZZwGss8V2SaenxOVle
+         C12Q475TyaS9K/vgoouh+KERHbzeNJ4YxVur6eNNnioRo6XI8nCYs7tlWJ+m9uiQCV98
+         lpu57U5Nt+K7E1XKJ6xPRik+XK+/NzW0FKp9MTkpi8xa9pkj2yQ0xGFo+kZ4tj8kdkBg
+         F5iQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690961912; x=1691566712;
-        h=content-transfer-encoding:in-reply-to:references:cc:to:from
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=hG6+YQ0tUDz48/03f7Nyeq0JCf007nOGlw47CxNzErA=;
-        b=WpXmCVhdAwwTC9cHarq+daabZ+xapLUDaB4DxEpyIApQ58gyNJIJkjVoRyv7kLBHhS
-         oOLlP4xioIi0onH3p4qt8BMkzCGJ/iS9ld0tJ4WruJjxfb3VruAuk9D/l15O8dRWrjcG
-         HUDucE8stF/TrXxCUYyaaHFIUWnYTz9pr3eQU7i2dhF2tCRWWd0644SW9nAK0jY0eEmZ
-         H8WfdyfZo5XEPjWWg8qAfbw7DWU06UpdOIKIctjFkqhqkmX67EReqt5zChMxlqTrnvE+
-         E7w0HjeW39mLLaiZpn0WnIJ0X5zpyNFGJzOgLr/8eip7gqXK/6XeMZPuel5kSvTNG0Xk
-         LPrg==
-X-Gm-Message-State: ABy/qLZmxEUyblOZPNplT7/bqE4eOxI7kje/oTc8EmSjZ7mrS8KlPmfR
-        rvngA1hmLYkyARMx0aHP8gs=
-X-Google-Smtp-Source: APBJJlFyaHc0Ucy5XRq29FSH+BjvL/M0W/SK3cClfC4+ud7BbZuUQeiusKk9chXOhYjrMhIYGEFoKA==
-X-Received: by 2002:a05:6512:3711:b0:4f8:67aa:4f03 with SMTP id z17-20020a056512371100b004f867aa4f03mr3683942lfr.1.1690961911447;
-        Wed, 02 Aug 2023 00:38:31 -0700 (PDT)
-Received: from [192.168.26.149] (031011218106.poznan.vectranet.pl. [31.11.218.106])
-        by smtp.googlemail.com with ESMTPSA id x1-20020ac25dc1000000b004cc9042c9cfsm2169486lfq.158.2023.08.02.00.38.30
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 02 Aug 2023 00:38:31 -0700 (PDT)
-Message-ID: <285f419e-f8f2-c8da-6064-2a51e92ca3bc@gmail.com>
-Date:   Wed, 2 Aug 2023 09:38:30 +0200
+        d=1e100.net; s=20221208; t=1690961953; x=1691566753;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=0Wu+ajQyRgIN0Emiwp7sguZBZB+ZCl4Y83l4Rcy5bsA=;
+        b=b1Bhc7kKGBILWip09ONMvu6u209rELSLxcUKXD6JmZFNo2jVR7ulPbA2JUti/kSDDx
+         0GxDXKqpRCSm4CKI3UzE4rQ2NHu5u1dLKKrZKz3jMzX0/c4trzrFzqpRDcr6eKHl+sjQ
+         FdPGJ4rbNmqmLuZZcYVo9JzPwpUJh/QQ8SbtU9sElVnf9kQ4lAN/HQxUk1Ah8rZ4U4Kp
+         64b4D+ZZEmTBT7f2XDn+PoiF2FiISpn6vfgxn3f/0wO9vClpNFrUwYhYaSA0gJNjEKJw
+         /a78R2x8kcHi+niSOT+mEb/hPuXR2Q8P3JkCJjcRC7UE0GOG+tvlJMDslsupsaudHxxy
+         MVvg==
+X-Gm-Message-State: ABy/qLaxypDcPXXrlepC4FFHv7r46uvvDdfbN+PRnHUhJEmEkOqvlVF2
+        8PYBLGzAU9/emrX08siZoMBygBReQS2L6HTSQ6U=
+X-Google-Smtp-Source: APBJJlGj6n1AQt5CK0flz5hFWYdPmceWBg9cQU3umZ++tCTzukPeb/1viPtGEVGRL9DGEubLvO9hj4lGai0eGPDrdE0=
+X-Received: by 2002:ac2:4e07:0:b0:4fe:ec5:2698 with SMTP id
+ e7-20020ac24e07000000b004fe0ec52698mr4893493lfr.50.1690961952440; Wed, 02 Aug
+ 2023 00:39:12 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: ARM board lockups/hangs triggered by locks and mutexes
-Content-Language: en-US
-From:   =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
-To:     "Russell King (Oracle)" <linux@armlinux.org.uk>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
-        Waiman Long <longman@redhat.com>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        linux-clk@vger.kernel.org,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        Network Development <netdev@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        OpenWrt Development List <openwrt-devel@lists.openwrt.org>,
-        bcm-kernel-feedback-list <bcm-kernel-feedback-list@broadcom.com>
-References: <CACna6rxpzDWE5-gnmpgMgfzPmmHvEGTZk4GJvJ8jLSMazh2bVA@mail.gmail.com>
- <ZMmFeCBxhJOxZ575@shell.armlinux.org.uk>
- <60a553a2-85f3-d8c6-b070-ecd3089c3c5e@gmail.com>
-In-Reply-To: <60a553a2-85f3-d8c6-b070-ecd3089c3c5e@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+References: <20230627132323.115440-1-andrealmeid@igalia.com>
+ <e292a30f-5cad-1968-de4f-0d43c9c1e943@igalia.com> <45a1e527-f5dc-aa6f-9482-8958566ecb96@mailbox.org>
+ <a1fecc5c-30c0-2754-70a1-2edb2fe118fb@igalia.com> <8eb58a5f-02d0-fadf-1d5a-790b6af2d81e@mailbox.org>
+In-Reply-To: <8eb58a5f-02d0-fadf-1d5a-790b6af2d81e@mailbox.org>
+From:   =?UTF-8?B?TWFyZWsgT2zFocOhaw==?= <maraeo@gmail.com>
+Date:   Wed, 2 Aug 2023 03:38:36 -0400
+Message-ID: <CAAxE2A6xy5yi7yMH-tzEfC2f3AgL7aesYQNpr=1oZ8Rx0K4=Ug@mail.gmail.com>
+Subject: Re: Non-robust apps and resets (was Re: [PATCH v5 1/1] drm/doc:
+ Document DRM device reset expectations)
+To:     =?UTF-8?Q?Michel_D=C3=A4nzer?= <michel.daenzer@mailbox.org>
+Cc:     =?UTF-8?Q?Andr=C3=A9_Almeida?= <andrealmeid@igalia.com>,
+        pierre-eric.pelloux-prayer@amd.com, amd-gfx@lists.freedesktop.org,
+        Pekka Paalanen <pekka.paalanen@collabora.com>,
+        =?UTF-8?Q?Timur_Krist=C3=B3f?= <timur.kristof@gmail.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        Pekka Paalanen <ppaalanen@gmail.com>,
+        Samuel Pitoiset <samuel.pitoiset@gmail.com>,
+        kernel-dev@igalia.com, alexander.deucher@amd.com,
+        christian.koenig@amd.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2.08.2023 09:00, Rafał Miłecki wrote:
-> With your comment I decided to try CONFIG_PROVE_LOCKING anyway / again
-> and this time on 1 of my BCM53573 devices I got something very
-> interesting on the first boot.
-> 
-> FWIW following error:
-> Broadcom B53 (2) bcma_mdio-0-0:1e: failed to register switch: -517
-> is caused by invalid DT I sent fixes for just recently.
-> 
-> Please scroll through the first booting lines for the WARNING:
-> 
-> (...)
-> [    1.167234] bgmac_bcma bcma0:5: Found PHY addr: 30 (NOREGS)
-> [    1.173655] ------------[ cut here ]------------
-> [    1.178374] WARNING: CPU: 0 PID: 1 at kernel/locking/mutex.c:950 __mutex_lock+0x6b4/0x8a0
-> [    1.186721] DEBUG_LOCKS_WARN_ON(lock->magic != lock)
+A screen that doesn't update isn't usable. Killing the window system
+and returning to the login screen is one option. Killing the window
+system manually from a terminal or over ssh and then returning to the
+login screen is another option, but 99% of users either hard-reset the
+machine or do sysrq+REISUB anyway because it's faster that way. Those
+are all your options. If we don't do the kill, users might decide to
+do a hard reset with an unsync'd file system, which can cause more
+damage.
 
-Ah, that mutex WARNING comes from my Tenda AC9 device which happens to
-use a hacky OpenWrt downstream b53 driver. That driver uses wrong API
-(it behaves as PHY driver instead of MDIO driver). It results in probing
-against PHY device which isn't properly initialized.
+The precedent from the CPU land is pretty strong here. There is
+SIGSEGV for invalid CPU memory access and SIGILL for invalid CPU
+instructions, yet we do nothing for invalid GPU memory access and
+invalid GPU instructions. Sending a terminating signal from the kernel
+would be the most natural thing to do. Instead, we just keep a frozen
+GUI to keep users helpless, or we continue command submission and then
+the hanging app can cause an infinite cycle of GPU hangs and resets,
+making the GPU unusable until somebody kills the app over ssh.
 
-Long story short: above WARNING is just a noise. Ignore it please. Sorry
-for that.
+That's why GL/Vulkan robustness is required - either robust apps, or a
+robust compositor that greys out lost windows and pops up a diagnostic
+message with a list of actions to choose from. That's the direction we
+should be taking. Non-robust apps under a non-robust compositor should
+just be killed if they crash the GPU.
 
-Kernel compiled with CONFIG_PROVE_LOCKING still works fine on other
-devices and on Tenda AC9 after fixing PHY<->MDIO thing. That kernel
-option hides actual bug whatever it is.
+
+Marek
+
+On Wed, Jul 26, 2023 at 4:07=E2=80=AFAM Michel D=C3=A4nzer
+<michel.daenzer@mailbox.org> wrote:
+>
+> On 7/25/23 15:02, Andr=C3=A9 Almeida wrote:
+> > Em 25/07/2023 05:03, Michel D=C3=A4nzer escreveu:
+> >> On 7/25/23 04:55, Andr=C3=A9 Almeida wrote:
+> >>> Hi everyone,
+> >>>
+> >>> It's not clear what we should do about non-robust OpenGL apps after G=
+PU resets, so I'll try to summarize the topic, show some options and my pro=
+posal to move forward on that.
+> >>>
+> >>> Em 27/06/2023 10:23, Andr=C3=A9 Almeida escreveu:
+> >>>> +Robustness
+> >>>> +----------
+> >>>> +
+> >>>> +The only way to try to keep an application working after a reset is=
+ if it
+> >>>> +complies with the robustness aspects of the graphical API that it i=
+s using.
+> >>>> +
+> >>>> +Graphical APIs provide ways to applications to deal with device res=
+ets. However,
+> >>>> +there is no guarantee that the app will use such features correctly=
+, and the
+> >>>> +UMD can implement policies to close the app if it is a repeating of=
+fender,
+> >>>> +likely in a broken loop. This is done to ensure that it does not ke=
+ep blocking
+> >>>> +the user interface from being correctly displayed. This should be d=
+one even if
+> >>>> +the app is correct but happens to trigger some bug in the hardware/=
+driver.
+> >>>> +
+> >>> Depending on the OpenGL version, there are different robustness API a=
+vailable:
+> >>>
+> >>> - OpenGL ABR extension [0]
+> >>> - OpenGL KHR extension [1]
+> >>> - OpenGL ES extension  [2]
+> >>>
+> >>> Apps written in OpenGL should use whatever version is available for t=
+hem to make the app robust for GPU resets. That usually means calling GetGr=
+aphicsResetStatusARB(), checking the status, and if it encounter something =
+different from NO_ERROR, that means that a reset has happened, the context =
+is considered lost and should be recreated. If an app follow this, it will =
+likely succeed recovering a reset.
+> >>>
+> >>> What should non-robustness apps do then? They certainly will not be n=
+otified if a reset happens, and thus can't recover if their context is lost=
+. OpenGL specification does not explicitly define what should be done in su=
+ch situations[3], and I believe that usually when the spec mandates to clos=
+e the app, it would explicitly note it.
+> >>>
+> >>> However, in reality there are different types of device resets, causi=
+ng different results. A reset can be precise enough to damage only the guil=
+ty context, and keep others alive.
+> >>>
+> >>> Given that, I believe drivers have the following options:
+> >>>
+> >>> a) Kill all non-robust apps after a reset. This may lead to lose work=
+ from innocent applications.
+> >>>
+> >>> b) Ignore all non-robust apps OpenGL calls. That means that applicati=
+ons would still be alive, but the user interface would be freeze. The user =
+would need to close it manually anyway, but in some corner cases, the app c=
+ould autosave some work or the user might be able to interact with it using=
+ some alternative method (command line?).
+> >>>
+> >>> c) Kill just the affected non-robust applications. To do that, the dr=
+iver need to be 100% sure on the impact of its resets.
+> >>>
+> >>> RadeonSI currently implements a), as can be seen at [4], while Iris i=
+mplements what I think it's c)[5].
+> >>>
+> >>> For the user experience point-of-view, c) is clearly the best option,=
+ but it's the hardest to archive. There's not much gain on having b) over a=
+), perhaps it could be an optional env var for such corner case application=
+s.
+> >>
+> >> I disagree on these conclusions.
+> >>
+> >> c) is certainly better than a), but it's not "clearly the best" in all=
+ cases. The OpenGL UMD is not a privileged/special component and is in no p=
+osition to decide whether or not the process as a whole (only some thread(s=
+) of which may use OpenGL at all) gets to continue running or not.
+> >>
+> >
+> > Thank you for the feedback. How do you think the documentation should l=
+ook like for this part?
+>
+> The initial paragraph about robustness should say "keep OpenGL working" i=
+nstead of "keep an application working". If an OpenGL context stops working=
+, it doesn't necessarily mean the application stops working altogether.
+>
+>
+> If the application doesn't use the robustness extensions, your option b) =
+is what should happen by default whenever possible. And it really has to be=
+ possible if the robustness extensions are supported.
+>
+>
+> --
+> Earthling Michel D=C3=A4nzer            |                  https://redhat=
+.com
+> Libre software enthusiast          |         Mesa and Xwayland developer
+>
