@@ -2,113 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B16BA76C18F
+	by mail.lfdr.de (Postfix) with ESMTP id 67E2176C18E
 	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 02:41:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230272AbjHBAlE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Aug 2023 20:41:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50806 "EHLO
+        id S231330AbjHBAld (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Aug 2023 20:41:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51138 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229492AbjHBAlD (ORCPT
+        with ESMTP id S229492AbjHBAla (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Aug 2023 20:41:03 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF677E46;
-        Tue,  1 Aug 2023 17:41:00 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 51C826177B;
-        Wed,  2 Aug 2023 00:41:00 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 08023C433C7;
-        Wed,  2 Aug 2023 00:40:57 +0000 (UTC)
-Date:   Tue, 1 Aug 2023 20:40:54 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     "Masami Hiramatsu (Google)" <mhiramat@kernel.org>
-Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        linux-trace-kernel@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        bpf <bpf@vger.kernel.org>, Sven Schnelle <svens@linux.ibm.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Alan Maguire <alan.maguire@oracle.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Florent Revest <revest@chromium.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>
-Subject: Re: [PATCH v4 3/9] bpf/btf: Add a function to search a member of a
- struct/union
-Message-ID: <20230801204054.3884688e@rorschach.local.home>
-In-Reply-To: <20230802092146.9bda5e49528e6988ab97899c@kernel.org>
-References: <169078860386.173706.3091034523220945605.stgit@devnote2>
-        <169078863449.173706.2322042687021909241.stgit@devnote2>
-        <CAADnVQ+C64_C1w1kqScZ6C5tr6_juaWFaQdAp9Mt3uzaQp2KOw@mail.gmail.com>
-        <20230801085724.9bb07d2c82e5b6c6a6606848@kernel.org>
-        <CAADnVQLaFpd2OhqP7W3xWB1b9P2GAKgrVQU1FU2yeNYKbCkT=Q@mail.gmail.com>
-        <20230802000228.158f1bd605e497351611739e@kernel.org>
-        <20230801112036.0d4ee60d@gandalf.local.home>
-        <20230801113240.4e625020@gandalf.local.home>
-        <CAADnVQ+N7b8_0UhndjwW9-5Vx2wUVvojujFLOCFr648DUv-Y2Q@mail.gmail.com>
-        <20230801190920.7a1abfd5@gandalf.local.home>
-        <20230802092146.9bda5e49528e6988ab97899c@kernel.org>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        Tue, 1 Aug 2023 20:41:30 -0400
+Received: from mail-oo1-f70.google.com (mail-oo1-f70.google.com [209.85.161.70])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8076A26AA
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Aug 2023 17:41:29 -0700 (PDT)
+Received: by mail-oo1-f70.google.com with SMTP id 006d021491bc7-56d0d5cc3c1so534303eaf.1
+        for <linux-kernel@vger.kernel.org>; Tue, 01 Aug 2023 17:41:29 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690936889; x=1691541689;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=WABMdNDsk2eKFUUAkeI7Ocof8Yl4v6UX9gv6D1RsRaw=;
+        b=ISYtoFp3o8BgYq7MVJL63R89YYjrIBsVugEtwtVg+tLyJFlfRXIjEJLB6g7kxRNVDC
+         0SO4izQ/VxINoPsQ5n1T5eccAb1BoKbR7saOqz3I0rp/tWbWedAx+4adheVX+DEGxcKg
+         YL3s76t7tjU3zld+ODIgvmt4YV+OIwHT0brQPgLsCVxCgb9ISePR36tq+wPSESRMyTWe
+         RkFJRbiltbJRwDi4uQ9MEWauLZ4u45iTkcCFSrjINX5maa40Qorf/JN633BM2qhvPsM0
+         LvC5RNSI8Nin9s8vSnREzx3P4SG5OhEqvq5cEt/R8NxwOuBvuKkMlDZrZnZ4xXvhKMi6
+         VzvQ==
+X-Gm-Message-State: ABy/qLYImojY4SHdW94t3kezINhp4CC0dNoiPHHL2HCBfEt9g5Q5ffgZ
+        CKU5COGnC2FaU7eEH1wux6BBVO/XcGzTs96e9f3JQotPyA3q
+X-Google-Smtp-Source: APBJJlFQW+TRmXKLL5dj1QeoJGESZy5rKFukawpB/6nElzZkSNSLCrJdElPKM37Io0fUi+qlPCAjHnqQvn862R2jq/ZKOXXa4643
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-6.7 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_HI,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+X-Received: by 2002:a4a:ddcb:0:b0:563:3a11:7c9a with SMTP id
+ i11-20020a4addcb000000b005633a117c9amr16940166oov.1.1690936888877; Tue, 01
+ Aug 2023 17:41:28 -0700 (PDT)
+Date:   Tue, 01 Aug 2023 17:41:28 -0700
+In-Reply-To: <000000000000af3d3105ff38ee3c@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000099695a0601e5ecfb@google.com>
+Subject: Re: [syzbot] [f2fs?] general protection fault in f2fs_drop_extent_tree
+From:   syzbot <syzbot+f4649be1be739e030111@syzkaller.appspotmail.com>
+To:     chao@kernel.org, jaegeuk@kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2 Aug 2023 09:21:46 +0900
-Masami Hiramatsu (Google) <mhiramat@kernel.org> wrote:
+syzbot suspects this issue was fixed by commit:
 
-> > Then use kprobes. When I asked Masami what the difference between fprobes
-> > and kprobes was, he told me that it would be that it would no longer rely
-> > on the slower FTRACE_WITH_REGS. But currently, it still does.  
-> 
-> kprobes needs to keep using pt_regs because software-breakpoint exception
-> handler gets that. And fprobe is used for bpf multi-kprobe interface,
-> but I think it can be optional.
-> 
-> So until user-land tool supports the ftrace_regs, you can just disable
-> using fprobes if CONFIG_DYNAMIC_FTRACE_WITH_REGS=n
+commit 458c15dfbce62c35fefd9ca637b20a051309c9f1
+Author: Chao Yu <chao@kernel.org>
+Date:   Tue May 23 03:58:22 2023 +0000
 
-I'm confused. I asked about the difference between kprobes on ftrace
-and fprobes, and you said it was to get rid of the requirement of
-FTRACE_WITH_REGS.
+    f2fs: don't reset unchangable mount option in f2fs_remount()
 
- https://lore.kernel.org/all/20230120205535.98998636329ca4d5f8325bc3@kernel.org/
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=12461d31a80000
+start commit:   a92b7d26c743 Merge tag 'drm-fixes-2023-06-23' of git://ano..
+git tree:       upstream
+kernel config:  https://syzkaller.appspot.com/x/.config?x=2cbd298d0aff1140
+dashboard link: https://syzkaller.appspot.com/bug?extid=f4649be1be739e030111
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1564afb0a80000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=166928c7280000
 
-> 
-> Then you can safely use 
-> 
-> struct pt_regs *regs = ftrace_get_regs(fregs);
-> 
-> I think we can just replace the CONFIG_FPROBE ifdefs with
-> CONFIG_DYNAMIC_FTRACE_WITH_REGS in kernel/trace/bpf_trace.c
-> And that will be the first version of using ftrace_regs in fprobe.
+If the result looks correct, please mark the issue as fixed by replying with:
 
-But it is still slow. The FTRACE_WITH_REGS gives us the full pt_regs
-and saves all registers including flags, which is a very slow operation
-(and noticeable in profilers).
+#syz fix: f2fs: don't reset unchangable mount option in f2fs_remount()
 
-And this still doesn't work on arm64.
-
-Maybe we can add a ftrace_partial_regs(fregs) that returns a
-partially filled pt_regs, and the caller that uses this obviously knows
-its partial (as it's in the name). But this doesn't quite help out arm64
-because unlike x86, struct ftrace_regs does not contain an address
-compatibility with pt_regs fields. It would need to do a copy.
-
- ftrace_partial_regs(fregs, &regs) ?
-
--- Steve
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
