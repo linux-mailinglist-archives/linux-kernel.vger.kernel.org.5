@@ -2,203 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 25F3A76D9BF
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 23:40:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7869276D9BB
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 23:40:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233311AbjHBVki (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Aug 2023 17:40:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42062 "EHLO
+        id S230326AbjHBVk1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Aug 2023 17:40:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41890 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232410AbjHBVkd (ORCPT
+        with ESMTP id S229638AbjHBVkZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Aug 2023 17:40:33 -0400
-Received: from mail-ot1-x32e.google.com (mail-ot1-x32e.google.com [IPv6:2607:f8b0:4864:20::32e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E664B2698
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Aug 2023 14:40:29 -0700 (PDT)
-Received: by mail-ot1-x32e.google.com with SMTP id 46e09a7af769-6b9c9944da8so313928a34.3
-        for <linux-kernel@vger.kernel.org>; Wed, 02 Aug 2023 14:40:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1691012429; x=1691617229;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=H+AS/eYgwiGocz0hRMqEzRe/0E7wSQPQ+cMSrzoRj80=;
-        b=JyZOHalDcREGIRUebxJEHeiwXJ6Et6CNw5fbFraZVOMPVaIyM9nO/X3CUPvSHkxdLT
-         rS71x3IqWf0P9Qm6ii3x+1j3X1l+Tc0zM4HxDnED4k5afgaXNiwFiIv4HMhoONjoeJ7q
-         V0WL0O8CaEQPvfe4/zSOrT1xTYOfLK3NwMRJWCbR7VABElDKeg5p0nsPmKdl8kB6tQ/u
-         RFPEb083Fh6dO/CNdzuhypFc9hQpxbBdLH3Y4c/c1XvmhYCf5+gDKniYOZWXLVeJrKxL
-         6gpKDCanfUJMnaOB8QEMiuqv0s1sUGeR29ViiIvsmrXf/26fXZDDhKVyZNGegOCWbwte
-         xHwQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691012429; x=1691617229;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=H+AS/eYgwiGocz0hRMqEzRe/0E7wSQPQ+cMSrzoRj80=;
-        b=Lp6udSb+QaoUweY2mNaaX1/4JZxOEmQ7dqpPLJFNV0Vblig0GHynItlvFRWQODQt+F
-         LQg+xDS4Qct/abiLoXgG1HyxAT8GraJQbrswUG2Y8DsqppfQCb4YhK+hzuPEsDmlR9WC
-         zMtHwfkVomDywdNLb6jX7PIK3KrFNe7HHIaFnIFyp46iyx6u/y66KhMlKeSLCdZ8H+gK
-         WzkGtpoqACnC7lFcXmHDi0kvN3NEyw461xCEfCOWwOiipax4N/gPmU7DJueayfSYdolX
-         tcAtCymSXyO/aVP9NFEqlI23CVqLDUp02u6jj2eqp8pKgyl8ctyA0hfiUv6WyzkQ7Ypz
-         OKNw==
-X-Gm-Message-State: ABy/qLY7zOmW6YIm4vADYXrZlUYuB/uqj9lc7WLC2Wnm/tiCtEWrD4Fu
-        pWNDrIrFJTRJTVHJNdB+gK/ZqX2GC6MFcb/HpGvl8w==
-X-Google-Smtp-Source: APBJJlFpo8nVaGFRVuT56BDjEKf8O23JElU7FcvApgZioYBFUBNDtxQczH22U7n95IT3rW7s29tffm7gNlVxtRvxtT8=
-X-Received: by 2002:a05:6358:711:b0:135:85ec:a092 with SMTP id
- e17-20020a056358071100b0013585eca092mr7354336rwj.26.1691012428979; Wed, 02
- Aug 2023 14:40:28 -0700 (PDT)
+        Wed, 2 Aug 2023 17:40:25 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A2E71BF6;
+        Wed,  2 Aug 2023 14:40:24 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 0DF7B61B32;
+        Wed,  2 Aug 2023 21:40:24 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 58895C433C7;
+        Wed,  2 Aug 2023 21:40:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1691012423;
+        bh=NLSSRe4RVRV0fKoewTCaMcbMjSsMEN9rztajQMsWR2U=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=esycnZjyO0VbjW17K3U6sGAkEzCF+dRNGe4hD+KeQ4ImP+IQhHmvmvZARPoH+XNXs
+         MsCJMYgKdRrUTCV208xUdg08KulgKKbrc3fsyZTKZ1+1VEuE6r9kGDo0xwSDqnKdrj
+         2qhT2/evFQwN6oEo35S4duyZOiZNfG10og3yRd++S4qFSVeIGPzG7m8Z96N6Tcmh3Q
+         FiWvXpGSdxVML/QTjDej3Kyisy3yOvURBAqz//gfdCTSDKAb+Ct9u7hxHe7IwQl2Fl
+         L4YNh9BYpo/1Kc1DmFQacYkWHxfXiM9osnaneUzRAmEhZUetyh8chL5LAJd9rTGXfs
+         HN0lvuxv5kRbw==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 37263E270D3;
+        Wed,  2 Aug 2023 21:40:23 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-References: <20230802080544.3239967-1-suhui@nfschina.com> <531df8ee-ba09-49df-8201-4221df5853c6@kadam.mountain>
-In-Reply-To: <531df8ee-ba09-49df-8201-4221df5853c6@kadam.mountain>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Wed, 2 Aug 2023 14:40:18 -0700
-Message-ID: <CAKwvOdnRwmxGuEidZ=OWxSX60D6ry0Rb__DjSayga6um35Jsrg@mail.gmail.com>
-Subject: Re: [PATCH] fs: lockd: avoid possible wrong NULL parameter
-To:     Dan Carpenter <dan.carpenter@linaro.org>
-Cc:     Su Hui <suhui@nfschina.com>, chuck.lever@oracle.com,
-        jlayton@kernel.org, neilb@suse.de, kolga@netapp.com,
-        Dai.Ngo@oracle.com, tom@talpey.com,
-        trond.myklebust@hammerspace.com, anna@kernel.org,
-        nathan@kernel.org, trix@redhat.com, bfields@fieldses.org,
-        linux-nfs@vger.kernel.org, linux-kernel@vger.kernel.org,
-        llvm@lists.linux.dev, kernel-janitors@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH bpf-next v5 0/2] bpf,
+ xdp: Add tracepoint to xdp attaching failure
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <169101242321.7476.5572550064226640292.git-patchwork-notify@kernel.org>
+Date:   Wed, 02 Aug 2023 21:40:23 +0000
+References: <20230801142621.7925-1-hffilwlqm@gmail.com>
+In-Reply-To: <20230801142621.7925-1-hffilwlqm@gmail.com>
+To:     Leon Hwang <hffilwlqm@gmail.com>
+Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
+        john.fastabend@gmail.com, andrii@kernel.org, martin.lau@linux.dev,
+        song@kernel.org, yonghong.song@linux.dev, kpsingh@kernel.org,
+        sdf@google.com, haoluo@google.com, jolsa@kernel.org,
+        davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+        pabeni@redhat.com, hawk@kernel.org, rostedt@goodmis.org,
+        mhiramat@kernel.org, mykolal@fb.com, shuah@kernel.org,
+        tangyeechou@gmail.com, kernel-patches-bot@fb.com,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        linux-trace-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED,USER_IN_DEF_DKIM_WL,
-        USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 2, 2023 at 3:25=E2=80=AFAM Dan Carpenter <dan.carpenter@linaro.=
-org> wrote:
->
-> On Wed, Aug 02, 2023 at 04:05:45PM +0800, Su Hui wrote:
-> > clang's static analysis warning: fs/lockd/mon.c: line 293, column 2:
-> > Null pointer passed as 2nd argument to memory copy function.
-> >
-> > Assuming 'hostname' is NULL and calling 'nsm_create_handle()', this wil=
-l
-> > pass NULL as 2nd argument to memory copy function 'memcpy()'. So return
-> > NULL if 'hostname' is invalid.
-> >
-> > Fixes: 77a3ef33e2de ("NSM: More clean up of nsm_get_handle()")
-> > Signed-off-by: Su Hui <suhui@nfschina.com>
-> > ---
-> >  fs/lockd/mon.c | 3 +++
-> >  1 file changed, 3 insertions(+)
-> >
-> > diff --git a/fs/lockd/mon.c b/fs/lockd/mon.c
-> > index 1d9488cf0534..eebab013e063 100644
-> > --- a/fs/lockd/mon.c
-> > +++ b/fs/lockd/mon.c
-> > @@ -358,6 +358,9 @@ struct nsm_handle *nsm_get_handle(const struct net =
-*net,
-> >
-> >       spin_unlock(&nsm_lock);
-> >
-> > +     if (!hostname)
-> > +             return NULL;
-> > +
-> >       new =3D nsm_create_handle(sap, salen, hostname, hostname_len);
->
-> It's weird that this bug is from 2008 and we haven't found it in
-> testing.  Presumably if hostname is NULL then hostname_len would be zero
-> and in that case, it's not actually a bug.  It's allowed in the kernel
-> to memcpy zero bytes from a NULL pointer.
->
->         memcpy(dst, NULL, 0);
->
-> Outside the kernel it's not allowed though.
+Hello:
 
-I wonder what kind of implications that has on the compilers ability
-to optimize libcalls to memcpy for targets that don't use
-`-ffreestanding`. Hmm...
+This series was applied to bpf/bpf-next.git (master)
+by Alexei Starovoitov <ast@kernel.org>:
 
-Though let's see what the C standard says, since that's what compilers
-target, rather than consider specifics of glibc.
+On Tue,  1 Aug 2023 22:26:19 +0800 you wrote:
+> This series introduces a new tracepoint in bpf_xdp_link_attach(). By
+> this tracepoint, error message will be captured when error happens in
+> dev_xdp_attach(), e.g. invalid attaching flags.
+> 
+> v4 -> v5:
+> * Initialise the extack variable.
+> * Fix code style issue of variable declaration lines.
+> 
+> [...]
 
-https://www.open-std.org/jtc1/sc22/wg14/www/docs/n1548.pdf
->> The memcpy function copies n characters from the object pointed to by s2=
- into the
->> object pointed to by s1. If copying takes place between objects that ove=
-rlap, the behavior
->> is undefined.
+Here is the summary with links:
+  - [bpf-next,v5,1/2] bpf, xdp: Add tracepoint to xdp attaching failure
+    https://git.kernel.org/bpf/bpf-next/c/bf4ea1d0b2cb
+  - [bpf-next,v5,2/2] selftests/bpf: Add testcase for xdp attaching failure tracepoint
+    https://git.kernel.org/bpf/bpf-next/c/7fedbf32fcc7
 
-So no mention about what assumptions can be made about source or
-destination being NULL.
-
-I noticed that the function in question already has a guard:
-322   if (hostname && memchr(hostname, '/', hostname_len) !=3D NULL) {
-
-Which implies that hostname COULD be NULL.
-
-Should this perhaps simply be rewritten as:
-
-if (!hostname)
-  return NULL;
-if (memchr(...) !=3D NULL)
-  ...
-
-Rather than bury yet another guard for the same check further down in
-the function? Check once and bail early.
-
->
-> I noticed a related bug which Smatch doesn't find, because of how Smatch
-> handles the dprintk macro.
->
-> fs/lockd/host.c
-> truct nlm_host *nlmclnt_lookup_host(const struct sockaddr *sap,
->    217                                       const size_t salen,
->    218                                       const unsigned short protoco=
-l,
->    219                                       const u32 version,
->    220                                       const char *hostname,
->    221                                       int noresvport,
->    222                                       struct net *net,
->    223                                       const struct cred *cred)
->    224  {
->    225          struct nlm_lookup_host_info ni =3D {
->    226                  .server         =3D 0,
->    227                  .sap            =3D sap,
->    228                  .salen          =3D salen,
->    229                  .protocol       =3D protocol,
->    230                  .version        =3D version,
->    231                  .hostname       =3D hostname,
->    232                  .hostname_len   =3D strlen(hostname),
->                                                  ^^^^^^^^
-> Dereferenced
->
->    233                  .noresvport     =3D noresvport,
->    234                  .net            =3D net,
->    235                  .cred           =3D cred,
->    236          };
->    237          struct hlist_head *chain;
->    238          struct nlm_host *host;
->    239          struct nsm_handle *nsm =3D NULL;
->    240          struct lockd_net *ln =3D net_generic(net, lockd_net_id);
->    241
->    242          dprintk("lockd: %s(host=3D'%s', vers=3D%u, proto=3D%s)\n"=
-, __func__,
->    243                          (hostname ? hostname : "<none>"), version=
-,
->                                  ^^^^^^^^
-> Checked too late.
->
->    244                          (protocol =3D=3D IPPROTO_UDP ? "udp" : "t=
-cp"));
->    245
->
-> regards,
-> dan carpenter
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
 
-
---=20
-Thanks,
-~Nick Desaulniers
