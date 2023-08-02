@@ -2,64 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A1F2E76CB4C
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 12:53:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 77D9F76CB4F
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 12:54:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232894AbjHBKwr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Aug 2023 06:52:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36210 "EHLO
+        id S232756AbjHBKyV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Aug 2023 06:54:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36664 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230245AbjHBKwn (ORCPT
+        with ESMTP id S231818AbjHBKyT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Aug 2023 06:52:43 -0400
-Received: from mx0b-0016f401.pphosted.com (mx0b-0016f401.pphosted.com [67.231.156.173])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95E1B1BD;
-        Wed,  2 Aug 2023 03:52:42 -0700 (PDT)
-Received: from pps.filterd (m0045851.ppops.net [127.0.0.1])
-        by mx0b-0016f401.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3729FC7u015426;
-        Wed, 2 Aug 2023 03:52:36 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=from : to : cc :
- subject : date : message-id : mime-version : content-transfer-encoding :
- content-type; s=pfpt0220; bh=t4uuEf0Rdqki78Zrbxaj+3q3dQ9rrzkccpAd/gVC1/E=;
- b=Fr/9hpKaFI1U/rUIl+AzcHOmXQqmJhxgfVHUPly5Ta9NwsNTlWnMBLx73SI7XFG5J5kK
- cfJ+j719qMI4D4WM26lw4JjqDQst9OeAOpd3/ddFOtHJ7KXuCmZWJY1fnLaCW5U4Qk4s
- hIKlvtHqjus4oXo1wiv0qfm5clgTxW1cYpl1zjKUCqJKf8XyGGPzKUoR9WrX2fqk8PEa
- EWmg6ZwQdDDs+pmiFGs3HyPsoigN2QPxxPVa54diTV1QhDcB9xlqXXL4uJ0pAoH5ve3j
- KdZGWv1wTRAkubqLJRWHqnxCPC9lUcb8pQdj3LiW+L7r8+FBekEUsjXzz6ZUilMHG27u 0A== 
-Received: from dc5-exch01.marvell.com ([199.233.59.181])
-        by mx0b-0016f401.pphosted.com (PPS) with ESMTPS id 3s529kc918-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
-        Wed, 02 Aug 2023 03:52:35 -0700
-Received: from DC5-EXCH01.marvell.com (10.69.176.38) by DC5-EXCH01.marvell.com
- (10.69.176.38) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Wed, 2 Aug
- 2023 03:52:33 -0700
-Received: from maili.marvell.com (10.69.176.80) by DC5-EXCH01.marvell.com
- (10.69.176.38) with Microsoft SMTP Server id 15.0.1497.48 via Frontend
- Transport; Wed, 2 Aug 2023 03:52:33 -0700
-Received: from marvell-OptiPlex-7090.marvell.com (unknown [10.28.36.165])
-        by maili.marvell.com (Postfix) with ESMTP id 3D42F3F7086;
-        Wed,  2 Aug 2023 03:52:29 -0700 (PDT)
-From:   Ratheesh Kannoth <rkannoth@marvell.com>
-To:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-CC:     <sgoutham@marvell.com>, <gakula@marvell.com>,
-        <sbhatta@marvell.com>, <hkelam@marvell.com>, <davem@davemloft.net>,
-        <edumazet@google.com>, <kuba@kernel.org>, <pabeni@redhat.com>,
-        Ratheesh Kannoth <rkannoth@marvell.com>
-Subject: [PATCH net] octeontx2-pf: Set maximum queue size to 16K
-Date:   Wed, 2 Aug 2023 16:22:27 +0530
-Message-ID: <20230802105227.3691713-1-rkannoth@marvell.com>
-X-Mailer: git-send-email 2.25.1
+        Wed, 2 Aug 2023 06:54:19 -0400
+Received: from mx1.zhaoxin.com (MX1.ZHAOXIN.COM [210.0.225.12])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3CDD1B6
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Aug 2023 03:54:17 -0700 (PDT)
+X-ASG-Debug-ID: 1690973652-086e23186c07d00001-xx1T2L
+Received: from ZXSHMBX1.zhaoxin.com (ZXSHMBX1.zhaoxin.com [10.28.252.163]) by mx1.zhaoxin.com with ESMTP id pC4RdGz1XyrAG08x (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NO); Wed, 02 Aug 2023 18:54:12 +0800 (CST)
+X-Barracuda-Envelope-From: TonyWWang-oc@zhaoxin.com
+X-Barracuda-RBL-Trusted-Forwarder: 10.28.252.163
+Received: from zxbjmbx1.zhaoxin.com (10.29.252.163) by ZXSHMBX1.zhaoxin.com
+ (10.28.252.163) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.16; Wed, 2 Aug
+ 2023 18:54:11 +0800
+Received: from tony-HX002EA.zhaoxin.com (10.32.65.162) by zxbjmbx1.zhaoxin.com
+ (10.29.252.163) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.16; Wed, 2 Aug
+ 2023 18:54:10 +0800
+X-Barracuda-RBL-Trusted-Forwarder: 10.28.252.163
+From:   Tony W Wang-oc <TonyWWang-oc@zhaoxin.com>
+X-Barracuda-RBL-Trusted-Forwarder: 10.29.252.163
+To:     <herbert@gondor.apana.org.au>, <davem@davemloft.net>,
+        <linux-crypto@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+CC:     <CobeChen@zhaoxin.com>, <TimGuo@zhaoxin.com>,
+        <LeoLiu-oc@zhaoxin.com>
+Subject: [PATCH] crypto: padlock-sha: Match CPUs with Family = 6 explicitly
+Date:   Wed, 2 Aug 2023 18:54:11 +0800
+X-ASG-Orig-Subj: [PATCH] crypto: padlock-sha: Match CPUs with Family = 6 explicitly
+Message-ID: <20230802105411.3960-1-TonyWWang-oc@zhaoxin.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-Proofpoint-GUID: Du8bMgPQRCRyS_7yw1zxAB20XxjgtS7q
-X-Proofpoint-ORIG-GUID: Du8bMgPQRCRyS_7yw1zxAB20XxjgtS7q
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
- definitions=2023-08-02_06,2023-08-01_01,2023-05-22_02
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+X-Originating-IP: [10.32.65.162]
+X-ClientProxiedBy: zxbjmbx1.zhaoxin.com (10.29.252.163) To
+ zxbjmbx1.zhaoxin.com (10.29.252.163)
+X-Barracuda-Connect: ZXSHMBX1.zhaoxin.com[10.28.252.163]
+X-Barracuda-Start-Time: 1690973652
+X-Barracuda-Encrypted: ECDHE-RSA-AES128-GCM-SHA256
+X-Barracuda-URL: https://10.28.252.35:4443/cgi-mod/mark.cgi
+X-Virus-Scanned: by bsmtpd at zhaoxin.com
+X-Barracuda-Scan-Msg-Size: 786
+X-Barracuda-BRTS-Status: 1
+X-Barracuda-Bayes: INNOCENT GLOBAL 0.0000 1.0000 -2.0210
+X-Barracuda-Spam-Score: -2.02
+X-Barracuda-Spam-Status: No, SCORE=-2.02 using global scores of TAG_LEVEL=1000.0 QUARANTINE_LEVEL=1000.0 KILL_LEVEL=9.0 tests=
+X-Barracuda-Spam-Report: Code version 3.2, rules version 3.2.3.112208
+        Rule breakdown below
+         pts rule name              description
+        ---- ---------------------- --------------------------------------------------
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -67,30 +67,27 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-page_pool_init() return error on requesting ring size > 32K.
-PF uses page pool for rx. octeon-tx2 Supported queue size
-are 16, 64, 256, 1K, 2K, 4K, 16K, 64K. If user try to
-configure larger ring size for rx, return error.
+Updates the supporting qualification for packlock-sha driver, making
+it support CPUs whose vendor ID is Centaur and Famliy is 6.
 
-Fixes: b2e3406a38f0 ("octeontx2-pf: Add support for page pool")
-Signed-off-by: Ratheesh Kannoth <rkannoth@marvell.com>
+Signed-off-by: Tony W Wang-oc <TonyWWang-oc@zhaoxin.com>
 ---
- drivers/net/ethernet/marvell/octeontx2/nic/otx2_ethtool.c | 2 +-
+ drivers/crypto/padlock-sha.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_ethtool.c b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_ethtool.c
-index c47d91da32dc..978e371008d6 100644
---- a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_ethtool.c
-+++ b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_ethtool.c
-@@ -378,7 +378,7 @@ static void otx2_get_ringparam(struct net_device *netdev,
- 	struct otx2_nic *pfvf = netdev_priv(netdev);
- 	struct otx2_qset *qs = &pfvf->qset;
+diff --git a/drivers/crypto/padlock-sha.c b/drivers/crypto/padlock-sha.c
+index 6865c7f1fc1a..2e82c5e77f7a 100644
+--- a/drivers/crypto/padlock-sha.c
++++ b/drivers/crypto/padlock-sha.c
+@@ -491,7 +491,7 @@ static struct shash_alg sha256_alg_nano = {
+ };
  
--	ring->rx_max_pending = Q_COUNT(Q_SIZE_MAX);
-+	ring->rx_max_pending = 16384; /* Page pool support on RX */
- 	ring->rx_pending = qs->rqe_cnt ? qs->rqe_cnt : Q_COUNT(Q_SIZE_256);
- 	ring->tx_max_pending = Q_COUNT(Q_SIZE_MAX);
- 	ring->tx_pending = qs->sqe_cnt ? qs->sqe_cnt : Q_COUNT(Q_SIZE_4K);
+ static const struct x86_cpu_id padlock_sha_ids[] = {
+-	X86_MATCH_FEATURE(X86_FEATURE_PHE, NULL),
++	X86_MATCH_VENDOR_FAM_FEATURE(CENTAUR, 6, X86_FEATURE_PHE, NULL),
+ 	{}
+ };
+ MODULE_DEVICE_TABLE(x86cpu, padlock_sha_ids);
 -- 
-2.25.1
+2.17.1
 
