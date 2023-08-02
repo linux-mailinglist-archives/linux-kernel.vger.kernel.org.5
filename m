@@ -2,151 +2,217 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 821DE76CAF9
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 12:37:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 953A576CAFB
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 12:37:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233944AbjHBKhS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Aug 2023 06:37:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52482 "EHLO
+        id S230457AbjHBKhf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Aug 2023 06:37:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52174 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232708AbjHBKgL (ORCPT
+        with ESMTP id S233828AbjHBKg1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Aug 2023 06:36:11 -0400
-Received: from bg4.exmail.qq.com (bg4.exmail.qq.com [43.155.65.254])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1012E2D64;
-        Wed,  2 Aug 2023 03:32:30 -0700 (PDT)
-X-QQ-mid: bizesmtp89t1690972338tkfrlw04
-Received: from linux-lab-host.localdomain ( [116.30.131.233])
-        by bizesmtp.qq.com (ESMTP) with 
-        id ; Wed, 02 Aug 2023 18:32:17 +0800 (CST)
-X-QQ-SSF: 01200000000000E0X000000A0000000
-X-QQ-FEAT: eSZ1CZgv+JBSYUJc7PFD3G6N17p6paGv1a8aco23EMsfHnoT1E30MoVGwBr4e
-        QByHSsMbsLfPXEa+zRsmuRLbW2szMS4Hxre6acEx6Mjvio7Iqdq0AEWqfBvw1MZZL6ahf8U
-        GLag5lZNVf1gcmDTa2VzXgpHIUlNXBe9XANo7MkoAYEYBbeXobgukJLqCMTgtLcroRSQ1c7
-        rx0gP72pNkJ7FVMzKPyRFbDBZOt53RnWROigIiHHiglToR5AQI94rMMusfOc70Q7qpadhCW
-        oEqNp1FVsqPQdEFbXBAkKQ6+PpQCxC/6imYhHr0urWr62Lg0yxvVBQOzBAkSCJBzqJkqYlc
-        RdMArs8snvh5dwDiMDTftzxSKwkgdPTToB18f9li4AZ3s/foevBk9D4rUKY+s7Dt01qhZOx
-X-QQ-GoodBg: 0
-X-BIZMAIL-ID: 6677180004816281553
-From:   Zhangjin Wu <falcon@tinylab.org>
-To:     w@1wt.eu
-Cc:     arnd@arndb.de, falcon@tinylab.org, linux-kernel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, linux@weissschuh.net,
-        thomas@t-8ch.de
-Subject: Re: [PATCH v4 08/12] selftests/nolibc: add test support for ppc
-Date:   Wed,  2 Aug 2023 18:32:17 +0800
-Message-Id: <20230802103217.231036-1-falcon@tinylab.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <ZMoKWheH5mrCXogy@1wt.eu>
-References: <ZMoKWheH5mrCXogy@1wt.eu>
+        Wed, 2 Aug 2023 06:36:27 -0400
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A03BD4490;
+        Wed,  2 Aug 2023 03:32:40 -0700 (PDT)
+Received: from [192.168.1.100] (2-237-20-237.ip236.fastwebnet.it [2.237.20.237])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits))
+        (No client certificate requested)
+        (Authenticated sender: kholk11)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id 22E0566018CF;
+        Wed,  2 Aug 2023 11:32:38 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1690972359;
+        bh=/7pQ+RL+C9IsOxEUKck+Ky/01nkzrjWwtJzBRApAFFg=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=FSPr7IDaJUZI8qae4UT7rbflUxVKpkNX71m4yCF5Ruhxl/K4k5yyEdDxEQkQccg9k
+         qDCrpbpi6aumO2kervMVnEQq432YsYqfYdS160+3UTkYZiNBUr3te5/PO0PzOSsSis
+         ioBQTiDXnuTlca51tOlHBJzoOBnrEsg8bQ3z7jcsS5qPjVIKWfQePpct+eFJDw99be
+         RW746hV1YiZIkVkK9FOJnpsgOOGL1qUqC4dUwbjywXrTA0DkjPt4VGh4oNU7fdwr/P
+         3f9lzB2BzLVkwByQNV++CgFAla1k/rgVOBc5Gi/57J1Q2HEy+7tXrh5F35M3xkuAlP
+         0xOcVABb4VkwA==
+Message-ID: <a410f098-af13-435d-688c-1021cc7b8cbb@collabora.com>
+Date:   Wed, 2 Aug 2023 12:32:35 +0200
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-QQ-SENDSIZE: 520
-Feedback-ID: bizesmtp:tinylab.org:qybglogicsvrgz:qybglogicsvrgz5a-1
-X-Spam-Status: No, score=-0.6 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H2,RCVD_IN_VALIDITY_RPBL,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH v2 1/3] mm-unstable: Multi-gen LRU: Fix per-zone reclaim
+Content-Language: en-US
+To:     Kalesh Singh <kaleshsingh@google.com>, yuzhao@google.com,
+        akpm@linux-foundation.org
+Cc:     surenb@google.com, android-mm@google.com, kernel-team@android.com,
+        stable@vger.kernel.org,
+        Charan Teja Kalla <quic_charante@quicinc.com>,
+        Lecopzer Chen <lecopzer.chen@mediatek.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Suleiman Souhlal <suleiman@google.com>,
+        Oleksandr Natalenko <oleksandr@natalenko.name>,
+        "Jan Alexander Steffens (heftig)" <heftig@archlinux.org>,
+        Qi Zheng <zhengqi.arch@bytedance.com>,
+        Steven Barrett <steven@liquorix.net>,
+        Brian Geffon <bgeffon@google.com>,
+        Barry Song <baohua@kernel.org>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org
+References: <20230802025606.346758-1-kaleshsingh@google.com>
+From:   AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>
+In-Reply-To: <20230802025606.346758-1-kaleshsingh@google.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, Willy, Hi Thomas
-
-Good news for us ;-)
-
-> Hi Zhangjin,
+Il 02/08/23 04:56, Kalesh Singh ha scritto:
+> MGLRU has a LRU list for each zone for each type (anon/file) in each
+> generation:
 > 
-> On Wed, Aug 02, 2023 at 01:21:50PM +0800, Zhangjin Wu wrote:
-> > Hi, Willy, Thomas
-> > 
-> > Yuan is helping me to test this series and the tinyconfig series with
-> > the latest compilers.
-> > 
-> > His first test found this ppc support failed with stackprotector when
-> > using a newer compiler (I used an older compiler without stackprotector
-> > for ppc), I'm debugging it, so, please ignore this revision too, of
-> > course, if time allows, welcome to take a look at the other patches.
-> > 
-> > His other tests are trying to find out the exact poweroff support
-> > options for every architecture one by one, let's fill this gap ...
+> 	long nr_pages[MAX_NR_GENS][ANON_AND_FILE][MAX_NR_ZONES];
+> The min_seq (oldest generation) can progress independently for each
+> type but the max_seq (youngest generation) is shared for both anon and
+> file. This is to maintain a common frame of reference.
 > 
-> Thanks for notifying us. I strongly suggest that you leave ppc32 aside
-> for now, until the rest is completely validated and merged. It turns
-
-Thanks very much, but good progress here ;-)
-
-I compared some compilers and at last got the root cause of the ppc32
-failure with stackprotector.
-
-    //// gcc 13.1.0 from mirrors.edge.kernel.org
-
-    $ make run-user XARCH=ppc -j4 CC=/labs/linux-lab/prebuilt/toolchains/ppc64le/gcc-13.1.0-nolibc/powerpc64-linux/bin/powerpc64-linux-gcc
-      ...
-    Segmentation fault (core dumped)
-
-      0 test(s):   0 passed,   0 skipped,   0 failed => status: success
-
-    See all results in /labs/linux-lab/src/linux-stable/tools/testing/selftests/nolibc/run.out
-
-    //// gcc 10 from ubuntu ppa 
- 
-    $ make run-user XARCH=ppc -j4 CC=/usr/bin/powerpc-linux-gnu-gcc-10
-      ...
-    165 test(s): 157 passed,   8 skipped,   0 failed => status: warning
-
-    See all results in /labs/linux-lab/src/linux-stable/tools/testing/selftests/nolibc/run.out
-
-    $ grep stack run.out
-    0 -fstackprotector                                               [OK]
-
-And then compared the assemblies, found gcc 13.1.0 insert a bad
-instruction at the beginning of _start() and break our stack eventually.
-
-    start:
-            stwu 1,-16(1) 
-
-Further compared the preprocessed files, found the root cause is the new
-compiler using 'no_stack_protector' instead of
-'__optimize__("-fno-stack-protector")'. And the attribute 'no_stack_protector'
-breaks our "omit-frame-pointer" like the failure with '-O0' we fixed before.
-
-I checked some of the other architectures, they didn't have the same issue, but
-test shows the 'no_stack_protector' attribute does have such compability issue
-here.
-
-I learned the commit message of tools/include/nolibc/compiler.h, seems
-__optimize__("-fno-stack-protector") is enough for all of the nolibc supported
-architectures? is it ok for us to simply give up 'no_stack_protector'
-eventully? otherwise, we should manually disable 'no_stack_protector' for
-ppc32:
-
-    #define __no_stack_protector __attribute__((__optimize__("-fno-stack-protector")))
-
-Benefit from the __no_stack_protetor macro, we have no need to input
-__optimize__("-fno-stack-protector") for every new architecture, it may be the
-time to only use __optimize__("-fno-stack-protector"), am I missing something? 
-
-> out that your willingness to work around some of the oddities met on
-> this one have resulted in a lot of drift away from the "keep it simple"
-> principle and significantly delayed the possibilities to integrate the
-> rest of your work. It would be much saner to only focus on ppc64/ppc64le
-> and figure later how to make ppc32 work (or decide not to support it if
-> it's not worth the effort in the end).
-
-Another test shows, the run target of ppc64le with the big endian gcc 13.1.0
-toolchain has test startup failure (although we have verified run-user before,
-run-user ok! and run with local powerpc64le toolchain ok too!), I'm debugging
-this now, hope it not cost too much.
-
-Another good news is, Yuan has found a working defconfig for ppc32 which has
-poweroff support and he is helping me narrowing down the exact options, this
-will eventually make us happy ;-)
-
-Thanks & Best regards,
-Zhangjin
-
+> In order for eviction to advance the min_seq of a type, all the per-zone
+> lists in the oldest generation of that type must be empty.
 > 
-> Regards,
-> willy
+> The eviction logic only considers pages from eligible zones for
+> eviction or promotion.
+> 
+>      scan_folios() {
+> 	...
+> 	for (zone = sc->reclaim_idx; zone >= 0; zone--)  {
+> 	    ...
+> 	    sort_folio(); 	// Promote
+> 	    ...
+> 	    isolate_folio(); 	// Evict
+> 	}
+> 	...
+>      }
+> 
+> Consider the system has the movable zone configured and default 4
+> generations. The current state of the system is as shown below
+> (only illustrating one type for simplicity):
+> 
+> Type: ANON
+> 
+> 	Zone    DMA32     Normal    Movable    Device
+> 
+> 	Gen 0       0          0        4GB         0
+> 
+> 	Gen 1       0        1GB        1MB         0
+> 
+> 	Gen 2     1MB        4GB        1MB         0
+> 
+> 	Gen 3     1MB        1MB        1MB         0
+> 
+> Now consider there is a GFP_KERNEL allocation request (eligible zone
+> index <= Normal), evict_folios() will return without doing any work
+> since there are no pages to scan in the eligible zones of the oldest
+> generation. Reclaim won't make progress until triggered from a ZONE_MOVABLE
+> allocation request; which may not happen soon if there is a lot of free
+> memory in the movable zone. This can lead to OOM kills, although there
+> is 1GB pages in the Normal zone of Gen 1 that we have not yet tried to
+> reclaim.
+> 
+> This issue is not seen in the conventional active/inactive LRU since
+> there are no per-zone lists.
+> 
+> If there are no (not enough) folios to scan in the eligible zones, move
+> folios from ineligible zone (zone_index > reclaim_index) to the next
+> generation. This allows for the progression of min_seq and reclaiming
+> from the next generation (Gen 1).
+> 
+> Qualcomm, Mediatek and raspberrypi [1] discovered this issue independently.
+> 
+> [1] https://github.com/raspberrypi/linux/issues/5395
+> 
+> Fixes: ac35a4902374 ("mm: multi-gen LRU: minimal implementation")
+> Cc: stable@vger.kernel.org
+> Cc: Yu Zhao <yuzhao@google.com>
+> Cc: Andrew Morton <akpm@linux-foundation.org>
+> Reported-by: Charan Teja Kalla <quic_charante@quicinc.com>
+> Reported-by: Lecopzer Chen <lecopzer.chen@mediatek.com>
+> Signed-off-by: Kalesh Singh <kaleshsingh@google.com>
+
+Whole series tested on MT8173 Elm Chromebook and MT6795 Xperia M5 as those are
+low ram devices. Can't reproduce the issue described in your [1] link from RPi.
+
+MediaTek:
+Tested-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+
+> ---
+> 
+> Changes in v2:
+>    - Add Fixes tag and cc stable
+> 
+>   mm/vmscan.c | 18 ++++++++++++++----
+>   1 file changed, 14 insertions(+), 4 deletions(-)
+> 
+> diff --git a/mm/vmscan.c b/mm/vmscan.c
+> index 4039620d30fe..489a4fc7d9b1 100644
+> --- a/mm/vmscan.c
+> +++ b/mm/vmscan.c
+> @@ -4889,7 +4889,8 @@ static int lru_gen_memcg_seg(struct lruvec *lruvec)
+>    *                          the eviction
+>    ******************************************************************************/
+>   
+> -static bool sort_folio(struct lruvec *lruvec, struct folio *folio, int tier_idx)
+> +static bool sort_folio(struct lruvec *lruvec, struct folio *folio, struct scan_control *sc,
+> +		       int tier_idx)
+>   {
+>   	bool success;
+>   	int gen = folio_lru_gen(folio);
+> @@ -4939,6 +4940,13 @@ static bool sort_folio(struct lruvec *lruvec, struct folio *folio, int tier_idx)
+>   		return true;
+>   	}
+>   
+> +	/* ineligible */
+> +	if (zone > sc->reclaim_idx) {
+> +		gen = folio_inc_gen(lruvec, folio, false);
+> +		list_move_tail(&folio->lru, &lrugen->folios[gen][type][zone]);
+> +		return true;
+> +	}
+> +
+>   	/* waiting for writeback */
+>   	if (folio_test_locked(folio) || folio_test_writeback(folio) ||
+>   	    (type == LRU_GEN_FILE && folio_test_dirty(folio))) {
+> @@ -4987,7 +4995,8 @@ static bool isolate_folio(struct lruvec *lruvec, struct folio *folio, struct sca
+>   static int scan_folios(struct lruvec *lruvec, struct scan_control *sc,
+>   		       int type, int tier, struct list_head *list)
+>   {
+> -	int gen, zone;
+> +	int i;
+> +	int gen;
+>   	enum vm_event_item item;
+>   	int sorted = 0;
+>   	int scanned = 0;
+> @@ -5003,9 +5012,10 @@ static int scan_folios(struct lruvec *lruvec, struct scan_control *sc,
+>   
+>   	gen = lru_gen_from_seq(lrugen->min_seq[type]);
+>   
+> -	for (zone = sc->reclaim_idx; zone >= 0; zone--) {
+> +	for (i = MAX_NR_ZONES; i > 0; i--) {
+>   		LIST_HEAD(moved);
+>   		int skipped = 0;
+> +		int zone = (sc->reclaim_idx + i) % MAX_NR_ZONES;
+>   		struct list_head *head = &lrugen->folios[gen][type][zone];
+>   
+>   		while (!list_empty(head)) {
+> @@ -5019,7 +5029,7 @@ static int scan_folios(struct lruvec *lruvec, struct scan_control *sc,
+>   
+>   			scanned += delta;
+>   
+> -			if (sort_folio(lruvec, folio, tier))
+> +			if (sort_folio(lruvec, folio, sc, tier))
+>   				sorted += delta;
+>   			else if (isolate_folio(lruvec, folio, sc)) {
+>   				list_add(&folio->lru, list);
+
