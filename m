@@ -2,72 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D0D476C753
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 09:46:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E6D076C758
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 09:47:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233652AbjHBHqX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Aug 2023 03:46:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44728 "EHLO
+        id S233187AbjHBHrf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Aug 2023 03:47:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44842 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233451AbjHBHp5 (ORCPT
+        with ESMTP id S233128AbjHBHrH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Aug 2023 03:45:57 -0400
-Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD2E144B9
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Aug 2023 00:43:29 -0700 (PDT)
-Received: by mail-ej1-x630.google.com with SMTP id a640c23a62f3a-99bd1d0cf2fso984777266b.3
-        for <linux-kernel@vger.kernel.org>; Wed, 02 Aug 2023 00:43:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=umich.edu; s=google-2016-06-03; t=1690962208; x=1691567008;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=hTlYTUXYUY0uT5dVegExxW34rudjU0yRbAqg9Bg5Z/A=;
-        b=jt1i3UyGg5T8VU7eoMf85nHf6pgJoeHFxp53BuGY+DiO76l/fHQrsYT4K/fJuRnm8S
-         dVrV+pGSUvLjAqkp3PYAwaLppgWCK35UNVv/OPwqrcST2L5PLWvqp1OODp/KoipUp82s
-         uZz82tOu/a1sIslbBKKYqVERgHoB4bXvh+LzeySCN45nzw2PoFcfx5mxgug/LDd9e52Y
-         ZHgmGKpJNcQyHY3eddpYCexB8rEhuNvI+ula63l8RraTy1lcP2qhtPEVcgIwTuPSlbcN
-         B42wWafgVMfjIK/+22+omr2Qn2GQI6MuK4qBSBPIvIrmK4tUQS4C+AYDh8mGKztFeBd5
-         qcPw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690962208; x=1691567008;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=hTlYTUXYUY0uT5dVegExxW34rudjU0yRbAqg9Bg5Z/A=;
-        b=g+8bi281FxYPnLhcURtWD9Au7LahkAkSIY/rBebBbTe9Yt9ZdFjQl0XBy5IwEzssZD
-         VQDZLKOm04k4yFWOgZjxrdX1GyrpEUbDKVCT8MMzEHzfgcRBcJbUJaMxZWCT7BqF0Hza
-         gfLWkIgbFzIWysuSU9D6lZVyrpJ92l2gyVikiyuUB9agqG4eG9Tqdgs+18N9Oy+sV22J
-         lHs8JcSgEb4GBCmwix0iGPXIv3RoZdQKMKVlIcVxNgPq9RFBU5eThQCa2QtdVDzgsluO
-         3RReGw49vbtUagLgZIyjd65HLz3o2LxkW9YpyyAfuJ9ue6kOFjS1D4O2d1kt7Y9iWhCD
-         N7ng==
-X-Gm-Message-State: ABy/qLbU7BhgyHQ93Xcmd/KwSshty6XeAwfGdTch3QCpX7WpPNQXfsj0
-        0W6jKw80x7qTnRBFM7oACGkL+JUqqcy1sCnAesGSgQ==
-X-Google-Smtp-Source: APBJJlGC3J+LrdYwhV48JZyyOU8Gidc+5NZEilh6J5EIEUFvOvEAHlb2kX02GozZtGR1CKxVU4GRFeOHUPskjTJKe/Q=
-X-Received: by 2002:a17:907:77ce:b0:992:a9c3:244f with SMTP id
- kz14-20020a17090777ce00b00992a9c3244fmr3991552ejc.4.1690962207821; Wed, 02
- Aug 2023 00:43:27 -0700 (PDT)
+        Wed, 2 Aug 2023 03:47:07 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45EA63C0F
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Aug 2023 00:43:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1690962227;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=JFUcGNyD24U1i9MJG6CCP0tDnMgYNxQlSEqN/mEfB+g=;
+        b=b610DIcZ4VhaOL9B4zHACRxPzlwdLqTpHaGt06/Yh4zbtuY7mUwGXlz1r18UQRtWFL0fhQ
+        25KYrNi6hfsv41JkC43m95kxYuXPV9zD3/s5arSVKJ4fAEdtdBwwxG+b07qi7n581MdbqW
+        rCS45sQhQXpYVVKAfkdQIVm3jqCxtYs=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-340-i4C96D6YMCaibwFKS7edOA-1; Wed, 02 Aug 2023 03:43:40 -0400
+X-MC-Unique: i4C96D6YMCaibwFKS7edOA-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.rdu2.redhat.com [10.11.54.1])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 15A448910E9;
+        Wed,  2 Aug 2023 07:43:40 +0000 (UTC)
+Received: from alecto.usersys.redhat.com (unknown [10.43.17.26])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 13CC840C2063;
+        Wed,  2 Aug 2023 07:43:37 +0000 (UTC)
+Date:   Wed, 2 Aug 2023 09:43:35 +0200
+From:   Artem Savkov <asavkov@redhat.com>
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Ian Rogers <irogers@google.com>,
+        Ingo Molnar <mingo@redhat.com>, Jiri Olsa <jolsa@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Milian Wolff <milian.wolff@kdab.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 1/1] Revert "perf report: Append inlines to non-DWARF
+ callchains"
+Message-ID: <20230802074335.GA622710@alecto.usersys.redhat.com>
+References: <ZMl8VyhdwhClTM5g@kernel.org>
 MIME-Version: 1.0
-References: <20230729220317.416771-1-ojeda@kernel.org>
-In-Reply-To: <20230729220317.416771-1-ojeda@kernel.org>
-From:   Trevor Gross <tmgross@umich.edu>
-Date:   Wed, 2 Aug 2023 03:43:16 -0400
-Message-ID: <CALNs47t8cuySRf0nTG2ipn7QSESgd44Z0LwCu6dRSU9kHzsJ8g@mail.gmail.com>
-Subject: Re: [PATCH 1/2] rust: upgrade to Rust 1.71.0
-To:     Miguel Ojeda <ojeda@kernel.org>
-Cc:     Wedson Almeida Filho <wedsonaf@gmail.com>,
-        Alex Gaynor <alex.gaynor@gmail.com>,
-        Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>,
-        =?UTF-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>,
-        Benno Lossin <benno.lossin@proton.me>,
-        Alice Ryhl <aliceryhl@google.com>,
-        Andreas Hindborg <a.hindborg@samsung.com>,
-        rust-for-linux@vger.kernel.org, linux-kernel@vger.kernel.org,
-        patches@lists.linux.dev
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <ZMl8VyhdwhClTM5g@kernel.org>
+X-Scanned-By: MIMEDefang 3.1 on 10.11.54.1
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
         SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -76,104 +71,118 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jul 29, 2023 at 6:05=E2=80=AFPM Miguel Ojeda <ojeda@kernel.org> wro=
-te:
->
-> This is the second upgrade to the Rust toolchain, from 1.68.2 to 1.71.0
-> (i.e. the latest).
->
-> See the upgrade policy [1] and the comments on the first upgrade in
-> commit 3ed03f4da06e ("rust: upgrade to Rust 1.68.2").
->
-> # Unstable features
->
-> No unstable features (that we use) were stabilized.
->
-> Therefore, the only unstable feature allowed to be used outside
-> the `kernel` crate is still `new_uninit`, though other code to be
-> upstreamed may increase the list.
->
-> Please see [2] for details.
->
-> # Required changes
->
-> For the upgrade, this patch requires the following changes:
->
->   - Removal of the `__rust_*` allocator functions, together with
->     the addition of the `__rust_no_alloc_shim_is_unstable` static.
->     See [3] for details.
->
->   - Some more compiler builtins added due to `<f{32,64}>::midpoint()`
->     that got added in Rust 1.71 [4].
->
-> # `alloc` upgrade and reviewing
->
-> The vast majority of changes are due to our `alloc` fork being upgraded
-> at once.
->
-> There are two kinds of changes to be aware of: the ones coming from
-> upstream, which we should follow as closely as possible, and the updates
-> needed in our added fallible APIs to keep them matching the newer
-> infallible APIs coming from upstream.
->
-> Instead of taking a look at the diff of this patch, an alternative
-> approach is reviewing a diff of the changes between upstream `alloc` and
-> the kernel's. This allows to easily inspect the kernel additions only,
-> especially to check if the fallible methods we already have still match
-> the infallible ones in the new version coming from upstream.
->
-> Another approach is reviewing the changes introduced in the additions in
-> the kernel fork between the two versions. This is useful to spot
-> potentially unintended changes to our additions.
->
-> To apply these approaches, one may follow steps similar to the following
-> to generate a pair of patches that show the differences between upstream
-> Rust and the kernel (for the subset of `alloc` we use) before and after
-> applying this patch:
->
->     # Get the difference with respect to the old version.
->     git -C rust checkout $(linux/scripts/min-tool-version.sh rustc)
->     git -C linux ls-tree -r --name-only HEAD -- rust/alloc |
->         cut -d/ -f3- |
->         grep -Fv README.md |
->         xargs -IPATH cp rust/library/alloc/src/PATH linux/rust/alloc/PATH
->     git -C linux diff --patch-with-stat --summary -R > old.patch
->     git -C linux restore rust/alloc
->
->     # Apply this patch.
->     git -C linux am rust-upgrade.patch
->
->     # Get the difference with respect to the new version.
->     git -C rust checkout $(linux/scripts/min-tool-version.sh rustc)
->     git -C linux ls-tree -r --name-only HEAD -- rust/alloc |
->         cut -d/ -f3- |
->         grep -Fv README.md |
->         xargs -IPATH cp rust/library/alloc/src/PATH linux/rust/alloc/PATH
->     git -C linux diff --patch-with-stat --summary -R > new.patch
->     git -C linux restore rust/alloc
->
-> Now one may check the `new.patch` to take a look at the additions (first
-> approach) or at the difference between those two patches (second
-> approach). For the latter, a side-by-side tool is recommended.
->
-> Link: https://rust-for-linux.com/rust-version-policy [1]
-> Link: https://github.com/Rust-for-Linux/linux/issues/2 [2]
-> Link: https://github.com/rust-lang/rust/pull/86844 [3]
-> Link: https://github.com/rust-lang/rust/pull/92048 [4]
-> Signed-off-by: Miguel Ojeda <ojeda@kernel.org>
-> [...]
+Hi Arnaldo,
 
-Reviewed-by: Trevor Gross <tmgross@umich.edu>
+On Tue, Aug 01, 2023 at 06:42:47PM -0300, Arnaldo Carvalho de Melo wrote:
+> Hi Artem,
+> 
+> 	Can you please double check this? I reproduced with:
+> 
+> git checkout 46d21ec067490ab9cdcc89b9de5aae28786a8b8e
+> build it
+> perf record -a -g sleep 5s
+> perf report
+> 
+> 	Do you get the same slowness and then reverting it, i.e. just
+> going to HEAD~ and rebuilding getting a fast 'perf report' startup, i.e.
+> without the inlines in the callchains?
 
-A few highlights since 1.68.2 that may eventually be of use:
+With a simple test like this I definitely get a slowdown, but not sure
+if it can be called excessive.
 
-- `CStr::is_empty` and `CStr::from_bytes_until_nul` help smooth FFI a bit
-- `NonNull::slice_from_raw_parts` for slice pointers
-- `AtomicX::as_ptr` makes interop with C more clear (doesn't seem like we
-  use these types anywhere yet)
-- const `ptr::read` and `ptr::read_unaligned`
-- `{Option, Result}::is_some_and`
-- `core::cell::OnceCell` one-time initialization
-- `repr(C)` enums now use `c_int` rather than always `i32` (no difference f=
-or
-  currently supported targets)
+Below are the times I got by running 'time perf report' and hitting 'q'
+during load so that it quits as soon as it is loads up. Tested on a
+freshly updated fedora 38.
+
+For 'perf record -a -g sleep 60' (Event count (approx.): 774055090):
+
+with inlines:
+$ time ./perf report
+
+real    0m1.477s
+user    0m1.324s
+sys     0m0.147s
+
+without inlines:
+$ time ./perf report
+
+real    0m1.349s
+user    0m1.232s
+sys     0m0.111s
+
+For 'perf record -a -g sleep 5' (Event count (approx.): 90179399):
+
+with inlines:
+$ time ./perf report
+
+real    0m0.657s
+user    0m0.555s
+sys     0m0.099s
+
+without inlines:
+$ time ./perf report
+
+real    0m0.559s
+user    0m0.498s
+sys     0m0.060s
+
+
+> - Arnaldo
+> 
+> ----
+> 
+> This reverts commit 46d21ec067490ab9cdcc89b9de5aae28786a8b8e.
+> 
+> The tests were made with a specific workload, further tests on a
+> recently updated fedora 38 system with a system wide perf.data file
+> shows 'perf report' taking excessive time, so lets revert this until a
+> full investigation and improvement on the addr2line support code is
+> made.
+> 
+> Cc: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+> Cc: Artem Savkov <asavkov@redhat.com>
+> Cc: Namhyung Kim <namhyung@kernel.org>
+> Cc: Adrian Hunter <adrian.hunter@intel.com>
+> Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
+> Cc: Ian Rogers <irogers@google.com>
+> Cc: Ingo Molnar <mingo@redhat.com>
+> Cc: Jiri Olsa <jolsa@kernel.org>
+> Cc: Mark Rutland <mark.rutland@arm.com>
+> Cc: Masami Hiramatsu <mhiramat@kernel.org>
+> Cc: Milian Wolff <milian.wolff@kdab.com>
+> Cc: Peter Zijlstra <peterz@infradead.org>
+> Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
+> ---
+>  tools/perf/util/machine.c | 5 -----
+>  1 file changed, 5 deletions(-)
+> 
+> diff --git a/tools/perf/util/machine.c b/tools/perf/util/machine.c
+> index 4e62843d51b7dbf9..f4cb41ee23cdbcfc 100644
+> --- a/tools/perf/util/machine.c
+> +++ b/tools/perf/util/machine.c
+> @@ -45,7 +45,6 @@
+>  
+>  static void __machine__remove_thread(struct machine *machine, struct thread_rb_node *nd,
+>  				     struct thread *th, bool lock);
+> -static int append_inlines(struct callchain_cursor *cursor, struct map_symbol *ms, u64 ip);
+>  
+>  static struct dso *machine__kernel_dso(struct machine *machine)
+>  {
+> @@ -2385,10 +2384,6 @@ static int add_callchain_ip(struct thread *thread,
+>  	ms.maps = maps__get(al.maps);
+>  	ms.map = map__get(al.map);
+>  	ms.sym = al.sym;
+> -
+> -	if (!branch && append_inlines(cursor, &ms, ip) == 0)
+> -		goto out;
+> -
+>  	srcline = callchain_srcline(&ms, al.addr);
+>  	err = callchain_cursor_append(cursor, ip, &ms,
+>  				      branch, flags, nr_loop_iter,
+> -- 
+> 2.41.0
+> 
+
+-- 
+ Artem
+
