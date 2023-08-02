@@ -2,141 +2,195 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9343476C4B0
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 07:15:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EDCCE76C4AC
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 07:15:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232348AbjHBFPT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Aug 2023 01:15:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40796 "EHLO
+        id S232326AbjHBFPO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Aug 2023 01:15:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40784 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232306AbjHBFPP (ORCPT
+        with ESMTP id S232306AbjHBFPM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Aug 2023 01:15:15 -0400
-Received: from mgamail.intel.com (unknown [192.55.52.115])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C81841736;
-        Tue,  1 Aug 2023 22:15:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1690953314; x=1722489314;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=fc2nysuFO9M8VGq9+Fl/1ckOPG9IPmlUO6abXeCqJyk=;
-  b=mYV8sy74yDlu0uAzR1G3yPxHuvkAlEUOefrazmWNKda+88I7KoRYDGcz
-   3H4n7v0Ezof+2h9ccnInqryCO+Cn6BrUZhoLV4iz0PqjmZG8AKaANS+Vx
-   gAtMg5M5vYiyZg5AjBYdc/jty0L+DyEEQE2BJbNNZmT0MZBmYPowssbOS
-   u2mFBi+3eSNc7QsyUNLqWBoIRxdMubfkfBD6YzsiImNhZ/7rtoaxOWe4d
-   IR5fPqacEk99gmQVRoQ8x4EvOSSRoflXwNr5aRjWjPazfNVAv9xxoCTOZ
-   pZUTLf+k37sDGNarvCJPhd+H6lxl8I0R1D+Rp07VIwsjCw7Ny/+qCLlp3
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10789"; a="369480283"
-X-IronPort-AV: E=Sophos;i="6.01,248,1684825200"; 
-   d="scan'208";a="369480283"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Aug 2023 22:15:14 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10789"; a="764064754"
-X-IronPort-AV: E=Sophos;i="6.01,248,1684825200"; 
-   d="scan'208";a="764064754"
-Received: from lkp-server01.sh.intel.com (HELO d1ccc7e87e8f) ([10.239.97.150])
-  by orsmga001.jf.intel.com with ESMTP; 01 Aug 2023 22:15:09 -0700
-Received: from kbuild by d1ccc7e87e8f with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qR4CS-0000tB-2d;
-        Wed, 02 Aug 2023 05:15:08 +0000
-Date:   Wed, 2 Aug 2023 13:14:44 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Krishna chaitanya chundru <quic_krichai@quicinc.com>,
-        manivannan.sadhasivam@linaro.org
-Cc:     oe-kbuild-all@lists.linux.dev, helgaas@kernel.org,
-        linux-pci@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, quic_vbadigan@quicinc.com,
-        quic_nitegupt@quicinc.com, quic_skananth@quicinc.com,
-        quic_ramkri@quicinc.com, quic_parass@quicinc.com,
-        krzysztof.kozlowski@linaro.org,
-        Krishna chaitanya chundru <quic_krichai@quicinc.com>,
-        Lorenzo Pieralisi <lpieralisi@kernel.org>,
-        Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-        Manivannan Sadhasivam <mani@kernel.org>,
-        Kishon Vijay Abraham I <kishon@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org
-Subject: Re: [PATCH v5 1/4] PCI: endpoint: Add D-state change notifier support
-Message-ID: <202308021312.obgu7FWM-lkp@intel.com>
-References: <1690948281-2143-2-git-send-email-quic_krichai@quicinc.com>
+        Wed, 2 Aug 2023 01:15:12 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6321A1BF9;
+        Tue,  1 Aug 2023 22:15:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        MIME-Version:Message-ID:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
+        Content-ID:Content-Description:In-Reply-To:References;
+        bh=Ws463DCdGOOUnDgf5xIij/KjEF+4fkspmM98in3YnIU=; b=sToXqHdwHcm7a53ZnJ8VZVQsEL
+        JjWuv099M/waB6PAJfQ8lRJtDpvT8yxhA4wuigAGDty+RkgngpSmNxZ6YnbjV6lI0yoPqMpRDVAFo
+        lGBeJMBRTog0Wn1NrkFlvX6met0legbG4TwZ7dCTCPmUCpWK8hlSDyTB2jtfnjTDeXiWZGCyupifA
+        aCmpywLceqMID9NkmNKf5i/YmWUo6w5VbcqiLjbO8IROz8il0QbAZiGS+1nVpaNvkabFTwxEyu71A
+        daPzLqx13PEh2RxcnOMDyayeK2iapvLzZC4t4Y3osA3Ape1Kw/ttFfHzXAoo7+QhmX37ik/RHIM+4
+        Hxmb9Cfg==;
+Received: from [2601:1c2:980:9ec0::2764] (helo=bombadil.infradead.org)
+        by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
+        id 1qR4CL-0042D7-2i;
+        Wed, 02 Aug 2023 05:15:01 +0000
+From:   Randy Dunlap <rdunlap@infradead.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Randy Dunlap <rdunlap@infradead.org>,
+        kernel test robot <lkp@intel.com>,
+        Richard Weinberger <richard@nod.at>,
+        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+        Johannes Berg <johannes@sipsolutions.net>,
+        linux-um@lists.infradead.org, Tejun Heo <tj@kernel.org>,
+        Takashi Iwai <tiwai@suse.de>, Jaroslav Kysela <perex@perex.cz>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Nicolas Schier <nicolas@fjasle.eu>,
+        linux-kbuild@vger.kernel.org, alsa-devel@alsa-project.org
+Subject: [PATCH v5] um/drivers: fix hostaudio build errors
+Date:   Tue,  1 Aug 2023 22:15:00 -0700
+Message-ID: <20230802051500.13271-1-rdunlap@infradead.org>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1690948281-2143-2-git-send-email-quic_krichai@quicinc.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Krishna,
+Use "select" to ensure that the required kconfig symbols are set
+as expected.
+Drop HOSTAUDIO since it is now equivalent to UML_SOUND.
 
-kernel test robot noticed the following build warnings:
+Set CONFIG_SOUND=m in ARCH=um defconfig files to maintain the
+status quo of the default configs.
 
-[auto build test WARNING on pci/next]
-[also build test WARNING on pci/for-linus linus/master v6.5-rc4 next-20230801]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+Allow SOUND with UML regardless of HAS_IOMEM. Otherwise there is a
+kconfig warning for unmet dependencies. (This was not an issue when
+SOUND was defined in arch/um/drivers/Kconfig. I have done 50 randconfig
+builds and didn't find any issues.)
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Krishna-chaitanya-chundru/PCI-endpoint-Add-D-state-change-notifier-support/20230802-115309
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/pci/pci.git next
-patch link:    https://lore.kernel.org/r/1690948281-2143-2-git-send-email-quic_krichai%40quicinc.com
-patch subject: [PATCH v5 1/4] PCI: endpoint: Add D-state change notifier support
-config: loongarch-allyesconfig (https://download.01.org/0day-ci/archive/20230802/202308021312.obgu7FWM-lkp@intel.com/config)
-compiler: loongarch64-linux-gcc (GCC) 12.3.0
-reproduce: (https://download.01.org/0day-ci/archive/20230802/202308021312.obgu7FWM-lkp@intel.com/reproduce)
+This fixes build errors when CONFIG_SOUND is not set:
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202308021312.obgu7FWM-lkp@intel.com/
+ld: arch/um/drivers/hostaudio_kern.o: in function `hostaudio_cleanup_module':
+hostaudio_kern.c:(.exit.text+0xa): undefined reference to `unregister_sound_mixer'
+ld: hostaudio_kern.c:(.exit.text+0x15): undefined reference to `unregister_sound_dsp'
+ld: arch/um/drivers/hostaudio_kern.o: in function `hostaudio_init_module':
+hostaudio_kern.c:(.init.text+0x19): undefined reference to `register_sound_dsp'
+ld: hostaudio_kern.c:(.init.text+0x31): undefined reference to `register_sound_mixer'
+ld: hostaudio_kern.c:(.init.text+0x49): undefined reference to `unregister_sound_dsp'
 
-All warnings (new ones prefixed by >>):
+and this kconfig warning:
+WARNING: unmet direct dependencies detected for SOUND
 
->> drivers/pci/endpoint/pci-epc-core.c:795:6: warning: no previous prototype for 'pci_epc_dstate_notity' [-Wmissing-prototypes]
-     795 | void pci_epc_dstate_notity(struct pci_epc *epc, pci_power_t state)
-         |      ^~~~~~~~~~~~~~~~~~~~~
+Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
+Fixes: d886e87cb82b ("sound: make OSS sound core optional")
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Reported-by: kernel test robot <lkp@intel.com>
+Closes: lore.kernel.org/r/202307141416.vxuRVpFv-lkp@intel.com
+Cc: Richard Weinberger <richard@nod.at>
+Cc: Anton Ivanov <anton.ivanov@cambridgegreys.com>
+Cc: Johannes Berg <johannes@sipsolutions.net>
+Cc: linux-um@lists.infradead.org
+Cc: Tejun Heo <tj@kernel.org>
+Cc: Takashi Iwai <tiwai@suse.de>
+Cc: Jaroslav Kysela <perex@perex.cz>
+Cc: Masahiro Yamada <masahiroy@kernel.org>
+Cc: Nathan Chancellor <nathan@kernel.org>
+Cc: Nick Desaulniers <ndesaulniers@google.com>
+Cc: Nicolas Schier <nicolas@fjasle.eu>
+Cc: linux-kbuild@vger.kernel.org
+Cc: alsa-devel@alsa-project.org
+---
+v2: don't delete the HOSTAUDIO Kconfig entry (Masahiro)
+v3: drop HOSTAUDIO and use CONFIG_UML_SOUND for it in Makefile (Takashi);
+    add SOUND depends on "|| UML" to HAS_IOMEM
+v4: use depends on instead of select for SOUND (Masahiro);
+    use Closes: instead of Link:
+v5: update ARCH=um defconfig files (Masahiro)
 
+ arch/um/configs/i386_defconfig   |    1 +
+ arch/um/configs/x86_64_defconfig |    1 +
+ arch/um/drivers/Kconfig          |   16 +++-------------
+ arch/um/drivers/Makefile         |    2 +-
+ sound/Kconfig                    |    2 +-
+ 5 files changed, 7 insertions(+), 15 deletions(-)
 
-vim +/pci_epc_dstate_notity +795 drivers/pci/endpoint/pci-epc-core.c
-
-   785	
-   786	/**
-   787	 * pci_epc_dstate_notity() - Notify the EPF driver that EPC device D-state
-   788	 *			has changed
-   789	 * @epc: the EPC device which has change in D-state
-   790	 * @state: the changed D-state
-   791	 *
-   792	 * Invoke to Notify the EPF device that the EPC device has D-state has
-   793	 * changed.
-   794	 */
- > 795	void pci_epc_dstate_notity(struct pci_epc *epc, pci_power_t state)
-   796	{
-   797		struct pci_epf *epf;
-   798	
-   799		if (!epc || IS_ERR(epc))
-   800			return;
-   801	
-   802		mutex_lock(&epc->list_lock);
-   803		list_for_each_entry(epf, &epc->pci_epf, list) {
-   804			mutex_lock(&epf->lock);
-   805			if (epf->event_ops && epf->event_ops->dstate_notify)
-   806				epf->event_ops->dstate_notify(epf, state);
-   807			mutex_unlock(&epf->lock);
-   808		}
-   809		mutex_unlock(&epc->list_lock);
-   810	}
-   811	EXPORT_SYMBOL_GPL(pci_epc_dstate_notity);
-   812	
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+diff -- a/arch/um/drivers/Kconfig b/arch/um/drivers/Kconfig
+--- a/arch/um/drivers/Kconfig
++++ b/arch/um/drivers/Kconfig
+@@ -111,24 +111,14 @@ config SSL_CHAN
+ 
+ config UML_SOUND
+ 	tristate "Sound support"
++	depends on SOUND
++	select SOUND_OSS_CORE
+ 	help
+ 	  This option enables UML sound support.  If enabled, it will pull in
+-	  soundcore and the UML hostaudio relay, which acts as a intermediary
++	  the UML hostaudio relay, which acts as a intermediary
+ 	  between the host's dsp and mixer devices and the UML sound system.
+ 	  It is safe to say 'Y' here.
+ 
+-config SOUND
+-	tristate
+-	default UML_SOUND
+-
+-config SOUND_OSS_CORE
+-	bool
+-	default UML_SOUND
+-
+-config HOSTAUDIO
+-	tristate
+-	default UML_SOUND
+-
+ endmenu
+ 
+ menu "UML Network Devices"
+diff -- a/sound/Kconfig b/sound/Kconfig
+--- a/sound/Kconfig
++++ b/sound/Kconfig
+@@ -1,7 +1,7 @@
+ # SPDX-License-Identifier: GPL-2.0-only
+ menuconfig SOUND
+ 	tristate "Sound card support"
+-	depends on HAS_IOMEM
++	depends on HAS_IOMEM || UML
+ 	help
+ 	  If you have a sound card in your computer, i.e. if it can say more
+ 	  than an occasional beep, say Y.
+diff -- a/arch/um/drivers/Makefile b/arch/um/drivers/Makefile
+--- a/arch/um/drivers/Makefile
++++ b/arch/um/drivers/Makefile
+@@ -54,7 +54,7 @@ obj-$(CONFIG_UML_NET) += net.o
+ obj-$(CONFIG_MCONSOLE) += mconsole.o
+ obj-$(CONFIG_MMAPPER) += mmapper_kern.o 
+ obj-$(CONFIG_BLK_DEV_UBD) += ubd.o 
+-obj-$(CONFIG_HOSTAUDIO) += hostaudio.o
++obj-$(CONFIG_UML_SOUND) += hostaudio.o
+ obj-$(CONFIG_NULL_CHAN) += null.o 
+ obj-$(CONFIG_PORT_CHAN) += port.o
+ obj-$(CONFIG_PTY_CHAN) += pty.o
+diff -- a/arch/um/configs/i386_defconfig b/arch/um/configs/i386_defconfig
+--- a/arch/um/configs/i386_defconfig
++++ b/arch/um/configs/i386_defconfig
+@@ -34,6 +34,7 @@ CONFIG_TTY_CHAN=y
+ CONFIG_XTERM_CHAN=y
+ CONFIG_CON_CHAN="pts"
+ CONFIG_SSL_CHAN="pts"
++CONFIG_SOUND=m
+ CONFIG_UML_SOUND=m
+ CONFIG_DEVTMPFS=y
+ CONFIG_DEVTMPFS_MOUNT=y
+diff -- a/arch/um/configs/x86_64_defconfig b/arch/um/configs/x86_64_defconfig
+--- a/arch/um/configs/x86_64_defconfig
++++ b/arch/um/configs/x86_64_defconfig
+@@ -32,6 +32,7 @@ CONFIG_TTY_CHAN=y
+ CONFIG_XTERM_CHAN=y
+ CONFIG_CON_CHAN="pts"
+ CONFIG_SSL_CHAN="pts"
++CONFIG_SOUND=m
+ CONFIG_UML_SOUND=m
+ CONFIG_DEVTMPFS=y
+ CONFIG_DEVTMPFS_MOUNT=y
