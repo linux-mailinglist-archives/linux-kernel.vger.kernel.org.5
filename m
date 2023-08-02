@@ -2,75 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 616F476DAC0
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 00:25:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 608B376DAC3
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 00:25:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231128AbjHBWZA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Aug 2023 18:25:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36924 "EHLO
+        id S233965AbjHBWZM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Aug 2023 18:25:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37086 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232528AbjHBWYk (ORCPT
+        with ESMTP id S233594AbjHBWYs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Aug 2023 18:24:40 -0400
-Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com [IPv6:2607:f8b0:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5BE723AB7;
-        Wed,  2 Aug 2023 15:23:34 -0700 (PDT)
-Received: by mail-pf1-x432.google.com with SMTP id d2e1a72fcca58-686f38692b3so279949b3a.2;
-        Wed, 02 Aug 2023 15:23:34 -0700 (PDT)
+        Wed, 2 Aug 2023 18:24:48 -0400
+Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64CB53C23;
+        Wed,  2 Aug 2023 15:23:42 -0700 (PDT)
+Received: by mail-pf1-x433.google.com with SMTP id d2e1a72fcca58-686b9964ae2so219537b3a.3;
+        Wed, 02 Aug 2023 15:23:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1691014952; x=1691619752;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=WqGEoOUd/ESEtcnLMxxkmmF+2HvAWe507ZrVsUYfvB8=;
-        b=OZEvcpqTsk5jpWwDIykftqID19fsX3SOufb9DrLDherZlc5274MgSh1+i+496ZqGOk
-         as+PSGpWPsvqG871b/RM7rD4jvxmwZKWwhV7RlfvcCgmGdaFqBmMfZhCoF2GqLP/J5dA
-         eZcseDJH7xny2uktvB80RgF2OrDF3H5u83lgzvFNTRhA7O2vsCGgXzlssljQREN4IqdR
-         QVgE01sreLd2x6WM/9Y6AFQq02dDszg9Fmakfae3IXD8Ne9MpHXGGDX2ApX1pukvx/FC
-         RKnJJuFTtaJY5MCGXB4LoAqtTti01fCIiLwY2NLeFLlFOQno+1odnaJVBwlVdc5o9IW6
-         rjNw==
+        d=gmail.com; s=20221208; t=1691014954; x=1691619754;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=BZNKuTKrcBgRO6bXVxaTsNFykZlM8LhlqXHhRV9iIMg=;
+        b=ZeNQnTSw63gUqdIOiPmnXIl0jX9pddEHQZXlodZ5XGlcKEU4VI8DVud5T5Sncrvzm+
+         sTi+cCt4G2gmYZc96sOEumuGVzZWP/n53luobPPCLPUM/VQfz2zzqFfn1BSrgqlqwgTb
+         cMmaAox48K2vOi/m46kqcc7Xnw0Rp/BCKPcUwitEPj/r11H3GdM0NUN7SwCwBl5d2B5T
+         tBqqXP4ChvxDYQKfXVv138ks9WbvfPU/dOdNf+TeqwYVZmfl7INc8xDCyHFcSxfS4ViK
+         Uwbw+eDR5leGqPeVH/qqdomg8yavyTPpjAeG7H9gIb9mxy+vUghACbc05ID5RPpMLmSm
+         9lng==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691014952; x=1691619752;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=WqGEoOUd/ESEtcnLMxxkmmF+2HvAWe507ZrVsUYfvB8=;
-        b=Ts/R2hvYAVEkGBf8WNFHkIpSG+8Yw6x/vkgZc7c/hygzSIhTAyKJHsTeFfnNT/aYPH
-         WB2667aaTfcB1aq/Q8yFXerOXdw5beEldjFTZ4PyNNnWl9jGlp0a6iAY55lEGX0PMWjv
-         T/qA6wx5hWIdjN3t4eodUc4467xvzMhZmGt+UhAaXVUJnvBzW097c3znrUoB2SOMB03q
-         jbY0EmsLJCq6HXVL5A15ksFHLaj2DDVWr9LdqFx8bm6niTelyMh6+SFzRC30n24E1aEm
-         1Pkv+Bbc7x8r5Jhfj9IopgJkECf1jMR4+UYxbt9R1JOvwEgYQUaDAks5hVGwWarlZmH/
-         mBFw==
-X-Gm-Message-State: ABy/qLYS1aRl20jG9Ucw6SeMuSwteOc4rYi7brUjrFiuZyCRwGH65Gdn
-        H9p34Ld1+7hy6uhAu0VOBIY=
-X-Google-Smtp-Source: APBJJlEVl/jx8lxgTCVEF4qXOsOTXbqHOZPKR0q9TTQi6IBaid3v2Q0uzFoeq/tX416LiqSgz/urTg==
-X-Received: by 2002:a05:6a00:1887:b0:687:7a30:deb with SMTP id x7-20020a056a00188700b006877a300debmr3224479pfh.15.1691014951825;
-        Wed, 02 Aug 2023 15:22:31 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1691014954; x=1691619754;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=BZNKuTKrcBgRO6bXVxaTsNFykZlM8LhlqXHhRV9iIMg=;
+        b=fEtfAUDu7V9X4qHyRmZxEfbADGBXObzZFz8BXazTurDza2xmBH3AAWtHcXDlNUzLMw
+         TSI/42s4PZ2lBtgMdGy0/Q82H+oFYqB1/cQqnxbU+ssq7eOzxqYWFiNXj/FCaqs5KO0o
+         URAP6JSW9mT0Fg83N4oLU2voy/PPaGPlictVKlWD6YWYbse6/FMCJwzVgRFWAMtD/v4U
+         JA2vwHkqgTskGVgM75Khy5IN2XKi+cbKqGK2q4VfLh8hZsbXnqOq8S7GTX8x8xct7Txe
+         +m7faT4WRo/fvknBzkjkObhhEIFYOMqlNNBTw/tFUzIg91yyD+YMbGnUXA8pTd4l/7OQ
+         zIbA==
+X-Gm-Message-State: ABy/qLYLHlMMOGNnsDl5KnTFeO4hXInPSjcyYlEg14NM4QZeiyglTbcl
+        9ZMTLTUbJe35rb7viFXNzso=
+X-Google-Smtp-Source: APBJJlG+Tf4GmWBUQWIaN/BFbth8eef9yEFZAVMQd4BC1XPs2NLxeysSzwbkRAkCpLiBfaDWCJ+XGA==
+X-Received: by 2002:a05:6a20:840b:b0:137:514a:9835 with SMTP id c11-20020a056a20840b00b00137514a9835mr20526626pzd.9.1691014953945;
+        Wed, 02 Aug 2023 15:22:33 -0700 (PDT)
 Received: from localhost ([2a00:79e1:abd:4a00:33de:aac3:fe1d:788])
-        by smtp.gmail.com with ESMTPSA id y17-20020a62b511000000b006875df47747sm2379495pfe.154.2023.08.02.15.22.30
+        by smtp.gmail.com with ESMTPSA id y16-20020aa78550000000b0066a6059d399sm11558227pfn.116.2023.08.02.15.22.33
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 02 Aug 2023 15:22:31 -0700 (PDT)
+        Wed, 02 Aug 2023 15:22:33 -0700 (PDT)
 From:   Rob Clark <robdclark@gmail.com>
 To:     dri-devel@lists.freedesktop.org
 Cc:     freedreno@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
         Rob Clark <robdclark@chromium.org>,
-        Adam Skladowski <a39.skl@gmail.com>,
-        Bjorn Andersson <andersson@kernel.org>,
+        Rob Clark <robdclark@gmail.com>,
+        Abhinav Kumar <quic_abhinavk@quicinc.com>,
         Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        Elliot Berman <quic_eberman@quicinc.com>,
-        Guru Das Srinagesh <quic_gurus@quicinc.com>,
-        linux-kernel@vger.kernel.org (open list),
+        Sean Paul <sean@poorly.run>,
         Marijn Suijten <marijn.suijten@somainline.org>,
-        Sean Paul <sean@poorly.run>
-Subject: [PATCH 0/4] drm/msm: Submit overhead opts
-Date:   Wed,  2 Aug 2023 15:21:48 -0700
-Message-ID: <20230802222158.11838-1-robdclark@gmail.com>
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH 1/4] drm/msm: Take lru lock once per job_run
+Date:   Wed,  2 Aug 2023 15:21:49 -0700
+Message-ID: <20230802222158.11838-2-robdclark@gmail.com>
 X-Mailer: git-send-email 2.41.0
+In-Reply-To: <20230802222158.11838-1-robdclark@gmail.com>
+References: <20230802222158.11838-1-robdclark@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -79,28 +82,60 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Rob Clark <robdclark@chromium.org>
 
-I recently wrote myself a submitoverhead igt test[1] and spent a bit of
-time profiling.  The end result ranges from 1.6x faster for
-NO_IMPLICIT_SYNC commits with 100 BOs to 2.5x faster for 1000 BOs.
+Rather than acquiring it and dropping it for each individual obj.
 
-[1] https://patchwork.freedesktop.org/series/121909/
+Signed-off-by: Rob Clark <robdclark@chromium.org>
+---
+ drivers/gpu/drm/msm/msm_gem.c        | 3 ---
+ drivers/gpu/drm/msm/msm_ringbuffer.c | 5 +++++
+ 2 files changed, 5 insertions(+), 3 deletions(-)
 
-Rob Clark (4):
-  drm/msm: Take lru lock once per job_run
-  drm/msm: Use drm_gem_object in submit bos table
-  drm/msm: Take lru lock once per submit_pin_objects()
-  drm/msm: Remove vma use tracking
-
- drivers/gpu/drm/msm/adreno/a5xx_gpu.c |  6 +--
- drivers/gpu/drm/msm/msm_gem.c         | 57 ++++++++++++-----------
- drivers/gpu/drm/msm/msm_gem.h         | 15 ++----
- drivers/gpu/drm/msm/msm_gem_submit.c  | 62 +++++++++++++------------
- drivers/gpu/drm/msm/msm_gem_vma.c     | 67 +--------------------------
- drivers/gpu/drm/msm/msm_gpu.c         | 20 ++++----
- drivers/gpu/drm/msm/msm_rd.c          |  8 ++--
- drivers/gpu/drm/msm/msm_ringbuffer.c  | 10 ++--
- 8 files changed, 91 insertions(+), 154 deletions(-)
-
+diff --git a/drivers/gpu/drm/msm/msm_gem.c b/drivers/gpu/drm/msm/msm_gem.c
+index 20cfd86d2b32..6d1dbffc3905 100644
+--- a/drivers/gpu/drm/msm/msm_gem.c
++++ b/drivers/gpu/drm/msm/msm_gem.c
+@@ -509,14 +509,11 @@ void msm_gem_unpin_locked(struct drm_gem_object *obj)
+  */
+ void msm_gem_unpin_active(struct drm_gem_object *obj)
+ {
+-	struct msm_drm_private *priv = obj->dev->dev_private;
+ 	struct msm_gem_object *msm_obj = to_msm_bo(obj);
+ 
+-	mutex_lock(&priv->lru.lock);
+ 	msm_obj->pin_count--;
+ 	GEM_WARN_ON(msm_obj->pin_count < 0);
+ 	update_lru_active(obj);
+-	mutex_unlock(&priv->lru.lock);
+ }
+ 
+ struct msm_gem_vma *msm_gem_get_vma_locked(struct drm_gem_object *obj,
+diff --git a/drivers/gpu/drm/msm/msm_ringbuffer.c b/drivers/gpu/drm/msm/msm_ringbuffer.c
+index b60199184409..8b8353dcde9f 100644
+--- a/drivers/gpu/drm/msm/msm_ringbuffer.c
++++ b/drivers/gpu/drm/msm/msm_ringbuffer.c
+@@ -16,10 +16,13 @@ static struct dma_fence *msm_job_run(struct drm_sched_job *job)
+ 	struct msm_gem_submit *submit = to_msm_submit(job);
+ 	struct msm_fence_context *fctx = submit->ring->fctx;
+ 	struct msm_gpu *gpu = submit->gpu;
++	struct msm_drm_private *priv = gpu->dev->dev_private;
+ 	int i;
+ 
+ 	msm_fence_init(submit->hw_fence, fctx);
+ 
++	mutex_lock(&priv->lru.lock);
++
+ 	for (i = 0; i < submit->nr_bos; i++) {
+ 		struct drm_gem_object *obj = &submit->bos[i].obj->base;
+ 
+@@ -28,6 +31,8 @@ static struct dma_fence *msm_job_run(struct drm_sched_job *job)
+ 		submit->bos[i].flags &= ~(BO_VMA_PINNED | BO_OBJ_PINNED);
+ 	}
+ 
++	mutex_unlock(&priv->lru.lock);
++
+ 	/* TODO move submit path over to using a per-ring lock.. */
+ 	mutex_lock(&gpu->lock);
+ 
 -- 
 2.41.0
 
