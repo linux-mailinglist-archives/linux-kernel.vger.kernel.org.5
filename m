@@ -2,93 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D5F276D1BB
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 17:22:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A84E76D103
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 17:07:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235157AbjHBPWY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Aug 2023 11:22:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43566 "EHLO
+        id S234423AbjHBPG6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Aug 2023 11:06:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59076 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234923AbjHBPVy (ORCPT
+        with ESMTP id S234304AbjHBPGb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Aug 2023 11:21:54 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7CC37729C;
-        Wed,  2 Aug 2023 08:18:44 -0700 (PDT)
+        Wed, 2 Aug 2023 11:06:31 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 402A630FF;
+        Wed,  2 Aug 2023 08:05:57 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 19A2361A10;
-        Wed,  2 Aug 2023 15:17:33 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 68AD5C433C8;
-        Wed,  2 Aug 2023 15:17:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690989452;
-        bh=7g0cOtIPkTfpyTVkaC+imOD6lb85coVQ5pyYai7ah8g=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=o+GTk+ZiTqrD50iO1u+Je+SWZGXJ8Ykl+Kd2uDp2GWXfLqyxNMBGGoKLq47yWby6/
-         Grucz//CFkdABFja9oavh7p0hIl+v8DkAzPsThD7LrkPk/4MWmVJxVSsE9wzX8/FZJ
-         CstVqxfxeHocIXHyfPrUsn3nZ4t0JO8dtNmEldKeMb0nhMfFkO7N/pGEpgFGV7Atd6
-         AhLtDUvem4RlppYeFSpP1CwRYzz93yhezO89tL4c6Pj0vV8hJVLLzYjsa5UcVLpArx
-         hfynAGhFjQQfJcuEOqtYF6ZDPcgHYqa9M0ap3SEnoIwG/oU406YjcI80x5hWsAIbti
-         YOH3EVR0d30gQ==
-From:   Jisheng Zhang <jszhang@kernel.org>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Jiri Slaby <jirislaby@kernel.org>
-Cc:     linux-serial@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH 2/2] serial: 8250_dw: fall back to poll if there's no interrupt
-Date:   Wed,  2 Aug 2023 23:05:45 +0800
-Message-Id: <20230802150545.3742-3-jszhang@kernel.org>
-X-Mailer: git-send-email 2.40.0
-In-Reply-To: <20230802150545.3742-1-jszhang@kernel.org>
-References: <20230802150545.3742-1-jszhang@kernel.org>
+        by dfw.source.kernel.org (Postfix) with ESMTPS id D1454619C8;
+        Wed,  2 Aug 2023 15:05:56 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9FCABC433C8;
+        Wed,  2 Aug 2023 15:05:54 +0000 (UTC)
+Date:   Wed, 2 Aug 2023 11:05:52 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Ze Gao <zegao2021@gmail.com>
+Cc:     Adrian Hunter <adrian.hunter@intel.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Ian Rogers <irogers@google.com>,
+        Ingo Molnar <mingo@redhat.com>, Jiri Olsa <jolsa@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
+        linux-trace-kernel@vger.kernel.org,
+        linux-trace-devel@vger.kernel.org, Ze Gao <zegao@tencent.com>
+Subject: Re: [RFC PATCH v4 4/7] sched, tracing: reorganize fields of switch
+ event struct
+Message-ID: <20230802110552.768f0487@gandalf.local.home>
+In-Reply-To: <20230802121116.324604-5-zegao@tencent.com>
+References: <20230802121116.324604-1-zegao@tencent.com>
+        <20230802121116.324604-5-zegao@tencent.com>
+X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-6.7 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_HI,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When there's no irq(this can be due to various reasons, for example,
-no irq from HW support, or we just want to use poll solution, and so
-on), falling back to poll is still better than no support at all.
+On Wed,  2 Aug 2023 08:09:59 -0400
+Ze Gao <zegao2021@gmail.com> wrote:
 
-Signed-off-by: Jisheng Zhang <jszhang@kernel.org>
----
- drivers/tty/serial/8250/8250_dw.c | 8 ++++++--
- 1 file changed, 6 insertions(+), 2 deletions(-)
+> From: Ze Gao <zegao2021@gmail.com>
+> 
+> Report priorities in 'short' and prev_state in 'int' to save
+> some buffer space. And also reorder the fields so that we take
+> struct alignment into consideration to make the record compact.
+> 
+> Suggested-by: Steven Rostedt (Google) <rostedt@goodmis.org>
+> Signed-off-by: Ze Gao <zegao@tencent.com>
+> ---
+>  include/trace/events/sched.h | 24 ++++++++++++------------
+>  1 file changed, 12 insertions(+), 12 deletions(-)
+> 
+> diff --git a/include/trace/events/sched.h b/include/trace/events/sched.h
+> index fbb99a61f714..7d34db20b2c6 100644
+> --- a/include/trace/events/sched.h
+> +++ b/include/trace/events/sched.h
+> @@ -187,7 +187,7 @@ DEFINE_EVENT(sched_wakeup_template, sched_wakeup_new,
+>  	     TP_ARGS(p));
+>  
+>  #ifdef CREATE_TRACE_POINTS
+> -static inline long __trace_sched_switch_state(bool preempt,
+> +static inline int __trace_sched_switch_state(bool preempt,
+>  					      unsigned int prev_state,
+>  					      struct task_struct *p)
+>  {
+> @@ -229,23 +229,23 @@ TRACE_EVENT(sched_switch,
+>  	TP_ARGS(preempt, prev, next, prev_state),
+>  
+>  	TP_STRUCT__entry(
+> -		__array(	char,	prev_comm,	TASK_COMM_LEN	)
+>  		__field(	pid_t,	prev_pid			)
+> -		__field(	int,	prev_prio			)
+> -		__field(	long,	prev_state			)
+> -		__array(	char,	next_comm,	TASK_COMM_LEN	)
+>  		__field(	pid_t,	next_pid			)
+> -		__field(	int,	next_prio			)
+> +		__field(	short,	prev_prio			)
+> +		__field(	short,	next_prio			)
+> +		__field(	int,	prev_state			)
 
-diff --git a/drivers/tty/serial/8250/8250_dw.c b/drivers/tty/serial/8250/8250_dw.c
-index 7db51781289e..39db768517eb 100644
---- a/drivers/tty/serial/8250/8250_dw.c
-+++ b/drivers/tty/serial/8250/8250_dw.c
-@@ -524,8 +524,12 @@ static int dw8250_probe(struct platform_device *pdev)
- 		return dev_err_probe(dev, -EINVAL, "no registers defined\n");
- 
- 	irq = platform_get_irq(pdev, 0);
--	if (irq < 0)
--		return irq;
-+	if (irq < 0) {
-+		if (irq != -ENXIO)
-+			return irq;
-+		/* no interrupt -> fall back to polling */
-+		irq = 0;
-+	}
- 
- 	spin_lock_init(&p->lock);
- 	p->mapbase	= regs->start;
--- 
-2.40.1
+I was talking with Peter on IRC and since the biggest number that
+prev_state can be is TASK_REPORT_MASK which is 0x100, I think we can make
+prev_state into a short as well.
+
+-- Steve
+
+
+> +		__array(	char,	prev_comm,	TASK_COMM_LEN	)
+> +		__array(	char,	next_comm,	TASK_COMM_LEN	)
+>  	),
+>  
+>  	TP_fast_assign(
+> -		memcpy(__entry->next_comm, next->comm, TASK_COMM_LEN);
+> -		__entry->prev_pid	= prev->pid;
+> -		__entry->prev_prio	= prev->prio;
+> -		__entry->prev_state	= __trace_sched_switch_state(preempt, prev_state, prev);
+> +		__entry->prev_pid		= prev->pid;
+> +		__entry->next_pid		= next->pid;
+> +		__entry->prev_prio		= (short) prev->prio;
+> +		__entry->next_prio		= (short) next->prio;
+> +		__entry->prev_state		= __trace_sched_switch_state(preempt, prev_state, prev);
+>  		memcpy(__entry->prev_comm, prev->comm, TASK_COMM_LEN);
+> -		__entry->next_pid	= next->pid;
+> -		__entry->next_prio	= next->prio;
+> +		memcpy(__entry->next_comm, next->comm, TASK_COMM_LEN);
+>  		/* XXX SCHED_DEADLINE */
+>  	),
+>  
 
