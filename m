@@ -2,45 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B8AD376D508
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 19:21:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E0CED76D509
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 19:21:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232449AbjHBRVZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Aug 2023 13:21:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44888 "EHLO
+        id S232648AbjHBRV2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Aug 2023 13:21:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44932 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232347AbjHBRVP (ORCPT
+        with ESMTP id S232432AbjHBRVR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Aug 2023 13:21:15 -0400
+        Wed, 2 Aug 2023 13:21:17 -0400
 Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 9CD971723;
-        Wed,  2 Aug 2023 10:21:14 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 0904F11D;
+        Wed,  2 Aug 2023 10:21:16 -0700 (PDT)
 Received: from rrs24-12-35.corp.microsoft.com (unknown [131.107.1.149])
-        by linux.microsoft.com (Postfix) with ESMTPSA id 14716238C439;
-        Wed,  2 Aug 2023 10:21:14 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 14716238C439
+        by linux.microsoft.com (Postfix) with ESMTPSA id 79213238C426;
+        Wed,  2 Aug 2023 10:21:15 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 79213238C426
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1690996874;
-        bh=0w/s1aILUGdu6l9TBg9GA7dQB129S5Vn6UT0DHQRKKQ=;
+        s=default; t=1690996875;
+        bh=sN4ORbZrUsD8+oDSUPlCat1gm8L9RoKnYdulGETe/mA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=RxY7sMqG1DU8nJHWiEsAMX5imMZv0hsAB2RxzI6Vy9pFn8zyCPGU0EkTJdbL1BBzL
-         tfkpU/0ASbACBBTjBECSQJET0XOovGuE3JwYT0qXP7jcGvY/BZXYE6ldplnVun1/Rb
-         J6OL4pYerZW+UMolFgiP37enjtJiHzFuDUI2bV6I=
+        b=jdqfRENJoNpvIBmForqZeh7hAiqLXFfNQPhHjgKvsl4SR3GGavSxrPcnwLLiNV2Y7
+         UXkBdCv0rB9QQCX0EnrCJEJaFyH9FF57OYE3tHJ7gnZ7yUNVpf6SUrxBLt4XctQWne
+         KSwY9HhY+orC1s9J4tY+PyIfFbr58b3Qt6uqHKTw=
 From:   Easwar Hariharan <eahariha@linux.microsoft.com>
 To:     stable@vger.kernel.org
 Cc:     easwar.hariharan@microsoft.com,
         Robin Murphy <robin.murphy@arm.com>,
         Nicolin Chen <nicolinc@nvidia.com>,
-        Will Deacon <will@kernel.org>, Joerg Roedel <joro@8bytes.org>,
+        Will Deacon <will@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Joerg Roedel <joro@8bytes.org>,
         Vladimir Oltean <vladimir.oltean@nxp.com>,
         Yicong Yang <yangyicong@hisilicon.com>,
         Lu Baolu <baolu.lu@linux.intel.com>,
-        linux-arm-kernel@lists.infradead.org (moderated list:ARM SMMU DRIVERS),
-        iommu@lists.linux.dev (open list:IOMMU SUBSYSTEM),
-        linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH v3 6.1 3/4] iommu/arm-smmu-v3: Add explicit feature for nesting
-Date:   Wed,  2 Aug 2023 17:20:59 +0000
-Message-Id: <20230802172100.1599164-4-eahariha@linux.microsoft.com>
+        linux-arm-kernel@lists.infradead.org (moderated list:ARM64 PORT
+        (AARCH64 ARCHITECTURE)),
+        linux-doc@vger.kernel.org (open list:DOCUMENTATION),
+        linux-kernel@vger.kernel.org (open list),
+        iommu@lists.linux.dev (open list:IOMMU SUBSYSTEM)
+Subject: [PATCH v3 6.1 4/4] iommu/arm-smmu-v3: Document nesting-related errata
+Date:   Wed,  2 Aug 2023 17:21:00 +0000
+Message-Id: <20230802172100.1599164-5-eahariha@linux.microsoft.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20230802172100.1599164-1-eahariha@linux.microsoft.com>
 References: <20230802172100.1599164-1-eahariha@linux.microsoft.com>
@@ -58,51 +63,61 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Robin Murphy <robin.murphy@arm.com>
 
-commit 1d9777b9f3d55b4b6faf186ba4f1d6fb560c0523 upstream
+commit 0bfbfc526c70606bf0fad302e4821087cbecfaf4 upstream
 
-In certain cases we may want to refuse to allow nested translation even
-when both stages are implemented, so let's add an explicit feature for
-nesting support which we can control in its own right. For now this
-merely serves as documentation, but it means a nice convenient check
-will be ready and waiting for the future nesting code.
+Both MMU-600 and MMU-700 have similar errata around TLB invalidation
+while both stages of translation are active, which will need some
+consideration once nesting support is implemented. For now, though,
+it's very easy to make our implicit lack of nesting support explicit
+for those cases, so they're less likely to be missed in future.
 
 Signed-off-by: Robin Murphy <robin.murphy@arm.com>
 Reviewed-by: Nicolin Chen <nicolinc@nvidia.com>
-Link: https://lore.kernel.org/r/136c3f4a3a84cc14a5a1978ace57dfd3ed67b688.1683731256.git.robin.murphy@arm.com
+Link: https://lore.kernel.org/r/696da78d32bb4491f898f11b0bb4d850a8aa7c6a.1683731256.git.robin.murphy@arm.com
 Signed-off-by: Will Deacon <will@kernel.org>
 Signed-off-by: Easwar Hariharan <eahariha@linux.microsoft.com>
 ---
- drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c | 4 ++++
- drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.h | 1 +
- 2 files changed, 5 insertions(+)
+ Documentation/arm64/silicon-errata.rst      | 4 ++--
+ drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c | 5 +++++
+ 2 files changed, 7 insertions(+), 2 deletions(-)
 
+diff --git a/Documentation/arm64/silicon-errata.rst b/Documentation/arm64/silicon-errata.rst
+index 120784507bc0..a01ce64a0651 100644
+--- a/Documentation/arm64/silicon-errata.rst
++++ b/Documentation/arm64/silicon-errata.rst
+@@ -138,9 +138,9 @@ stable kernels.
+ +----------------+-----------------+-----------------+-----------------------------+
+ | ARM            | MMU-500         | #841119,826419  | N/A                         |
+ +----------------+-----------------+-----------------+-----------------------------+
+-| ARM            | MMU-600         | #1076982        | N/A                         |
++| ARM            | MMU-600         | #1076982,1209401| N/A                         |
+ +----------------+-----------------+-----------------+-----------------------------+
+-| ARM            | MMU-700         | #2812531        | N/A                         |
++| ARM            | MMU-700         | #2268618,2812531| N/A                         |
+ +----------------+-----------------+-----------------+-----------------------------+
+ +----------------+-----------------+-----------------+-----------------------------+
+ | Broadcom       | Brahma-B53      | N/A             | ARM64_ERRATUM_845719        |
 diff --git a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
-index aed038f7d66c..330f909a29de 100644
+index 330f909a29de..db33dc87f69e 100644
 --- a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
 +++ b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
-@@ -3654,6 +3654,10 @@ static int arm_smmu_device_hw_probe(struct arm_smmu_device *smmu)
- 
- 	smmu->ias = max(smmu->ias, smmu->oas);
- 
-+	if ((smmu->features & ARM_SMMU_FEAT_TRANS_S1) &&
-+	    (smmu->features & ARM_SMMU_FEAT_TRANS_S2))
-+		smmu->features |= ARM_SMMU_FEAT_NESTING;
-+
- 	arm_smmu_device_iidr_probe(smmu);
- 
- 	if (arm_smmu_sva_supported(smmu))
-diff --git a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.h b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.h
-index d9e4357c6869..d0b207cae107 100644
---- a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.h
-+++ b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.h
-@@ -645,6 +645,7 @@ struct arm_smmu_device {
- #define ARM_SMMU_FEAT_BTM		(1 << 16)
- #define ARM_SMMU_FEAT_SVA		(1 << 17)
- #define ARM_SMMU_FEAT_E2H		(1 << 18)
-+#define ARM_SMMU_FEAT_NESTING		(1 << 19)
- 	u32				features;
- 
- #define ARM_SMMU_OPT_SKIP_PREFETCH	(1 << 0)
+@@ -3438,11 +3438,16 @@ static void arm_smmu_device_iidr_probe(struct arm_smmu_device *smmu)
+ 			/* Arm erratum 1076982 */
+ 			if (variant == 0 && revision <= 2)
+ 				smmu->features &= ~ARM_SMMU_FEAT_SEV;
++			/* Arm erratum 1209401 */
++			if (variant < 2)
++				smmu->features &= ~ARM_SMMU_FEAT_NESTING;
+ 			break;
+ 		case IIDR_PRODUCTID_ARM_MMU_700:
+ 			/* Arm erratum 2812531 */
+ 			smmu->features &= ~ARM_SMMU_FEAT_BTM;
+ 			smmu->options |= ARM_SMMU_OPT_CMDQ_FORCE_SYNC;
++			/* Arm errata 2268618, 2812531 */
++			smmu->features &= ~ARM_SMMU_FEAT_NESTING;
+ 			break;
+ 		}
+ 		break;
 -- 
 2.25.1
 
