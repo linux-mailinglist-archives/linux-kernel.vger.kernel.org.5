@@ -2,162 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0075C76D2EE
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 17:51:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D3B3976D2C3
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 17:49:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235419AbjHBPvh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Aug 2023 11:51:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38678 "EHLO
+        id S234408AbjHBPs6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Aug 2023 11:48:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38094 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235418AbjHBPvA (ORCPT
+        with ESMTP id S232069AbjHBPsq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Aug 2023 11:51:00 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0AD343C2B;
-        Wed,  2 Aug 2023 08:50:19 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        Wed, 2 Aug 2023 11:48:46 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB45C1735
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Aug 2023 08:48:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=LImLObs3PbfWRmVyYwazP2aaA0QKB8bTTtlThaSyFQc=; b=oPsrUIn++gGVB1cVF8en2q3Ucd
+        5GTIohXyXNKbdDGldSnxZCvsCuFwALvV3SPb0q++JunJbI6FjjNPG9cZx/RUPm2UBR04uBhkG88XQ
+        4dhAal277kVoHtsLYNIiH3dhzX1ER//Xw5s14AZ0lwSYr4DatgroBqyVFG4teTt5DAyT6Bu/cOOt1
+        FfBMM68QZ4ui3mt3w76rx1YwOTFEYeP3yyoYhNd5STQ7RJdDwiEp+FBhjfumb3WHSjXpJ0PDz1NnP
+        MbBNZM5d59AS2Rv7LF5ECtCU57pvYdLruMr/bc6OncQ0OE2k/pDslsHtHibm/bSZbLNPRBBk91mkT
+        BDYxwRwQ==;
+Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
+        id 1qRE5P-00G2gC-09;
+        Wed, 02 Aug 2023 15:48:31 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id C592A619D9;
-        Wed,  2 Aug 2023 15:50:19 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 50933C433CB;
-        Wed,  2 Aug 2023 15:50:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690991419;
-        bh=35ydgYIIKoLxZL2vz2F8XVJhO0j9D3mjWHEuMrtQ7Ck=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=TBGV7KlefXGHmsD+HOTcRqgYHCSof4BZcFbVEH5gszSi4zld41ZqILqjGWia2vxOh
-         w4gvqeYcttH5A6M3OyV4HRNbCMzNlKIe2wEiy0LXbquTUk+Be9RgImv7nl2Pl9nL5w
-         BPemBTmbR6g3Ndy1Kmc0/sYO5ltuR0I3Z/ChM1SVNbFzv8FQt581nXFpaEbsN9mlEU
-         2nS0RJu6AZG0p8WvndJIsgNt0vbY65NPwDLunld+2PcWbQ5yzG+LR4sSHrXuhU8ieJ
-         oYQaD76Aj6AIFlijAP3KKZRcwCoTCQ74vvq4L9zv/N+XX6L/zw6mIra99lZN7Bghhy
-         NFhNT6y+sJeDw==
-From:   Ard Biesheuvel <ardb@kernel.org>
-To:     linux-efi@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, Ard Biesheuvel <ardb@kernel.org>,
-        Evgeniy Baskov <baskov@ispras.ru>,
-        Borislav Petkov <bp@alien8.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Alexey Khoroshilov <khoroshilov@ispras.ru>,
-        Peter Jones <pjones@redhat.com>,
-        Gerd Hoffmann <kraxel@redhat.com>,
-        Dave Young <dyoung@redhat.com>,
-        Mario Limonciello <mario.limonciello@amd.com>,
-        Kees Cook <keescook@chromium.org>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Joerg Roedel <jroedel@suse.de>
-Subject: [PATCH v8 20/23] x86/decompressor: Factor out kernel decompression and relocation
-Date:   Wed,  2 Aug 2023 17:48:28 +0200
-Message-Id: <20230802154831.2147855-21-ardb@kernel.org>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20230802154831.2147855-1-ardb@kernel.org>
-References: <20230802154831.2147855-1-ardb@kernel.org>
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 011D73001DD;
+        Wed,  2 Aug 2023 17:48:30 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id E19FA210A8CBB; Wed,  2 Aug 2023 17:48:29 +0200 (CEST)
+Date:   Wed, 2 Aug 2023 17:48:29 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Mike Rapoport <rppt@kernel.org>
+Cc:     yury.norov@gmail.com, andriy.shevchenko@linux.intel.com,
+        linux@rasmusvillemoes.dk,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        tglx@linutronix.de
+Subject: Re: [PATCH 2/2] mm,nodemask: Use nr_node_ids
+Message-ID: <20230802154829.GB214207@hirez.programming.kicks-ass.net>
+References: <20230802112458.230221601@infradead.org>
+ <20230802112525.633758009@infradead.org>
+ <20230802153251.GF2607694@kernel.org>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=2968; i=ardb@kernel.org; h=from:subject; bh=35ydgYIIKoLxZL2vz2F8XVJhO0j9D3mjWHEuMrtQ7Ck=; b=owGbwMvMwCFmkMcZplerG8N4Wi2JIeVU1ekFc9wUapLUD1QecUzquslXIul15lj76WX1V3vWf b4Y4fmpo5SFQYyDQVZMkUVg9t93O09PlKp1niULM4eVCWQIAxenAExk3hWG/zHrFpx4tv7Vtf6H oiLNjIePBMXc/ZpTu8yx7qWSavLsJRoM/0MW+0/1k7DhY558Xqhs++GYSSUfJqh+XiN73SZK/Z2 vCi8A
-X-Developer-Key: i=ardb@kernel.org; a=openpgp; fpr=F43D03328115A198C90016883D200E9CA6329909
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230802153251.GF2607694@kernel.org>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Factor out the decompressor sequence that invokes the decompressor,
-parses the ELF and applies the relocations so that it can be called
-directly from the EFI stub.
+On Wed, Aug 02, 2023 at 06:32:51PM +0300, Mike Rapoport wrote:
+> > +/*
+> > + * We have several different "preferred sizes" for the nodemask
+> > + * operations, depending on operation.
+> > + *
+> > + * For example, the bitmap scanning and operating operations have
+> > + * optimized routines that work for the single-word case, but only when
+> > + * the size is constant. So if NR_CPUS fits in one single word, we are
+> 
+>                                 ^ MAX_NUMNODES?
+> 
+> > + * better off using that small constant, in order to trigger the
+> > + * optimized bit finding. That is 'small_nodemask_size'.
+> > + *
+> > + * The clearing and copying operations will similarly perform better
+> > + * with a constant size, but we limit that size arbitrarily to four
+> > + * words. We call this 'large_nodemask_size'.
+> > + *
+> > + * Finally, some operations just want the exact limit, either because
+> > + * they set bits or just don't have any faster fixed-sized versions. We
+> > + * call this just 'nr_nodemask_bits'.
+> > + *
+> > + * Note that these optional constants are always guaranteed to be at
+> > + * least as big as 'nr_node_ids' itself is, and all our nodemask
+> > + * allocations are at least that size (see nodemask_size()). The
+> 
+> We don't have nodemask_size(). NODEMASK_ALLOC() actually allocates memory
+> only when NODE_SHIFT > 8 and it always uses the static size.
+> 
+> > + * optimization comes from being able to potentially use a compile-time
+> > + * constant instead of a run-time generated exact number of CPUs.
+> 
+>                                                               ^ nodes?
 
-Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
----
- arch/x86/boot/compressed/misc.c | 28 ++++++++++++++++----
- arch/x86/include/asm/boot.h     |  8 ++++++
- 2 files changed, 31 insertions(+), 5 deletions(-)
+Durr, clearly I didn't actually read the comment after I 'borrowed' it
+and regex'ed it into 'shape'.
 
-diff --git a/arch/x86/boot/compressed/misc.c b/arch/x86/boot/compressed/misc.c
-index 2d91d56b59e1af93..f711f2a85862e9ef 100644
---- a/arch/x86/boot/compressed/misc.c
-+++ b/arch/x86/boot/compressed/misc.c
-@@ -330,11 +330,33 @@ static size_t parse_elf(void *output)
- 	return ehdr.e_entry - LOAD_PHYSICAL_ADDR;
- }
- 
-+const unsigned long kernel_total_size = VO__end - VO__text;
-+
- static u8 boot_heap[BOOT_HEAP_SIZE] __aligned(4);
- 
- extern unsigned char input_data[];
- extern unsigned int input_len, output_len;
- 
-+unsigned long decompress_kernel(unsigned char *outbuf, unsigned long virt_addr,
-+				void (*error)(char *x))
-+{
-+	unsigned long entry;
-+
-+	if (!free_mem_ptr) {
-+		free_mem_ptr     = (unsigned long)boot_heap;
-+		free_mem_end_ptr = (unsigned long)boot_heap + sizeof(boot_heap);
-+	}
-+
-+	if (__decompress(input_data, input_len, NULL, NULL, outbuf, output_len,
-+			 NULL, error) < 0)
-+		return ULONG_MAX;
-+
-+	entry = parse_elf(outbuf);
-+	handle_relocations(outbuf, output_len, virt_addr);
-+
-+	return entry;
-+}
-+
- /*
-  * The compressed kernel image (ZO), has been moved so that its position
-  * is against the end of the buffer used to hold the uncompressed kernel
-@@ -354,7 +376,6 @@ extern unsigned int input_len, output_len;
-  */
- asmlinkage __visible void *extract_kernel(void *rmode, unsigned char *output)
- {
--	const unsigned long kernel_total_size = VO__end - VO__text;
- 	unsigned long virt_addr = LOAD_PHYSICAL_ADDR;
- 	memptr heap = (memptr)boot_heap;
- 	unsigned long needed_size;
-@@ -463,10 +484,7 @@ asmlinkage __visible void *extract_kernel(void *rmode, unsigned char *output)
- 		accept_memory(__pa(output), __pa(output) + needed_size);
- 	}
- 
--	__decompress(input_data, input_len, NULL, NULL, output, output_len,
--			NULL, error);
--	entry_offset = parse_elf(output);
--	handle_relocations(output, output_len, virt_addr);
-+	entry_offset = decompress_kernel(output, virt_addr, error);
- 
- 	debug_putstr("done.\nBooting the kernel (entry_offset: 0x");
- 	debug_puthex(entry_offset);
-diff --git a/arch/x86/include/asm/boot.h b/arch/x86/include/asm/boot.h
-index 9191280d9ea3160d..4ae14339cb8cc72d 100644
---- a/arch/x86/include/asm/boot.h
-+++ b/arch/x86/include/asm/boot.h
-@@ -62,4 +62,12 @@
- # define BOOT_STACK_SIZE	0x1000
- #endif
- 
-+#ifndef __ASSEMBLY__
-+extern unsigned int output_len;
-+extern const unsigned long kernel_total_size;
-+
-+unsigned long decompress_kernel(unsigned char *outbuf, unsigned long virt_addr,
-+				void (*error)(char *x));
-+#endif
-+
- #endif /* _ASM_X86_BOOT_H */
--- 
-2.39.2
-
+I'll go fix, thanks!
