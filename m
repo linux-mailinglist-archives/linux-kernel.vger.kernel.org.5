@@ -2,167 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 55DE376D7A8
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 21:23:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A72676D7AC
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 21:24:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232210AbjHBTXU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Aug 2023 15:23:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37334 "EHLO
+        id S230465AbjHBTYv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Aug 2023 15:24:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37702 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229771AbjHBTXS (ORCPT
+        with ESMTP id S229495AbjHBTYt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Aug 2023 15:23:18 -0400
-Received: from mail-lj1-x233.google.com (mail-lj1-x233.google.com [IPv6:2a00:1450:4864:20::233])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2010B198B
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Aug 2023 12:23:17 -0700 (PDT)
-Received: by mail-lj1-x233.google.com with SMTP id 38308e7fff4ca-2b9cdba1228so2201471fa.2
-        for <linux-kernel@vger.kernel.org>; Wed, 02 Aug 2023 12:23:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1691004195; x=1691608995;
-        h=content-transfer-encoding:mime-version:message-id:references
-         :in-reply-to:user-agent:subject:cc:to:from:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=JI2K3/PcSU16SfdP5G82uId5N2ZoQeoXguPyrHWGg6g=;
-        b=tkMu6S6U09q5cbMC2faJ6XMuyy/++wbqdEdZQuxFKXozCoiSofPMmmKu56DsNj3dte
-         QDALUCNMAFVjAmv5bKBAry1F8F0lI0ksk7I6Axl3c2nhJV280O04ioXZbvsKW2t0Dj+o
-         puVbk8MXW29h67qAbAu1hfjjwUQkneRNaP6J7odNXeIMQ3dg8rGT4avdUpwS5HpUvmOg
-         2vGRDLsMxaoqsd/fcivVzvMBerknFUFR0FHbBaPRAIDUnksH1liS7pAoKK39M83IsShU
-         LJqqVxajJzIAUaudL6lNmlSBTWCBm90yZfqFcCbAPO41ymMZ8fMttR93kDAg425LPfeP
-         03zw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691004195; x=1691608995;
-        h=content-transfer-encoding:mime-version:message-id:references
-         :in-reply-to:user-agent:subject:cc:to:from:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=JI2K3/PcSU16SfdP5G82uId5N2ZoQeoXguPyrHWGg6g=;
-        b=hPO9nEbTSg28psbYT3RYiFlemPf6Oga3HBGzgsZsNBRxgIESzL7AL6mUZ2jZ2CWUSc
-         EhJ7OSA7ViYzZsyvkA1OtffP3dZ2m67w29L9cECNmaDjkAkCGAKMh1TAsx+LLXT0Mmbc
-         cIVCMF/7JLA7bmYlHgu1HNSSqGRU8jvrtgwy9nsgSZ/FkCqtyQRWV4x2z5nZ3VgQvooc
-         /qncTx0caeVpajTdcjG546oOch0MhlPV4prKKJqNOv+fJQzva6SzsBBbAZTOYLiHckR4
-         HeITjMpxk2yqukwM7klAd+VTRMLVaUsJEdHUrxUk/MkA8vuaWkWWDJ8a8iWA2mS4VNvT
-         3pow==
-X-Gm-Message-State: ABy/qLbiGLppNqETTjQH71SN+2ISLYMgt+xNRvSddqEFBveIqC4EualB
-        IvG2AlDSWELu//8Fw+NyR9zwqw==
-X-Google-Smtp-Source: APBJJlGtKeD676HvToSidDuUv88oPdXG/NhYmfpmAPpdeFYZVFMNg6R4XBWpqpRFoiNXESjcvPqjbw==
-X-Received: by 2002:a19:4f4c:0:b0:4fb:9168:1fc7 with SMTP id a12-20020a194f4c000000b004fb91681fc7mr5082939lfk.51.1691004195381;
-        Wed, 02 Aug 2023 12:23:15 -0700 (PDT)
-Received: from [127.0.0.1] (85-76-68-36-nat.elisa-mobile.fi. [85.76.68.36])
-        by smtp.gmail.com with ESMTPSA id d25-20020ac24c99000000b004f86d3e52c0sm3043962lfl.4.2023.08.02.12.23.14
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 02 Aug 2023 12:23:14 -0700 (PDT)
-Date:   Wed, 02 Aug 2023 22:23:14 +0300
-From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-CC:     David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
-        Andrzej Hajda <andrzej.hajda@intel.com>,
-        Neil Armstrong <neil.armstrong@linaro.org>,
-        Robert Foss <rfoss@kernel.org>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Simon Ser <contact@emersion.fr>, Janne Grunau <j@jannau.net>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        =?ISO-8859-1?Q?Christian_K=F6nig?= <christian.koenig@amd.com>,
-        "Pan, Xinhui" <Xinhui.Pan@amd.com>,
-        Harry Wentland <harry.wentland@amd.com>,
-        Leo Li <sunpeng.li@amd.com>,
-        Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>,
-        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org, intel-gfx@lists.freedesktop.org
-Subject: Re: [PATCH 3/4] drm/uapi: document the USB subconnector type
-User-Agent: K-9 Mail for Android
-In-Reply-To: <20230802191351.GA1407@pendragon.ideasonboard.com>
-References: <20230729004913.215872-1-dmitry.baryshkov@linaro.org> <20230729004913.215872-4-dmitry.baryshkov@linaro.org> <20230802185547.GC32500@pendragon.ideasonboard.com> <a32ce695-038f-0ef8-3584-5bd1ba528131@linaro.org> <20230802191351.GA1407@pendragon.ideasonboard.com>
-Message-ID: <DE2B4523-D16C-4AFC-8352-212B23548DD5@linaro.org>
+        Wed, 2 Aug 2023 15:24:49 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8AE91119;
+        Wed,  2 Aug 2023 12:24:48 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 27F6361AE1;
+        Wed,  2 Aug 2023 19:24:48 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 40F7BC433C7;
+        Wed,  2 Aug 2023 19:24:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1691004287;
+        bh=ceVwIDyjSpFimVYJA8IpCtR5gV/pCzomVlAV3sy7vK8=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=DVEWldMGeNvP66mevWA8PK/kEqqZkNcCybPk+5q6lc4jhziWzj+L4cr9l5j10oFWw
+         MtWiCnFHp5OMEuBxN+GvukCdaRDJj/GO8ZJBOWcd4KK53IDFjCkY4vE5JLp8ZS5QBQ
+         rkwaOJf/o4NCAkQaPOqojwL2eK2Be6GLt7URxpSmSb2f82l7Cl2ubCa5HsQuGpN3Up
+         V0uTawhQ1GCiVUD/Tl2XksQxaQ1lZSDsswgp2fucwZJN7B53z21xjNMQmObtjUpicV
+         eZLA/LOeD5v7pjJPxJ+uAEiyFyamxcpdn8Hptps3zDjVm2uQ2zeWNjrW/LyRFsNvY/
+         Y1HsTEDpLRt6A==
+Date:   Wed, 2 Aug 2023 14:24:45 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     "Verma, Achal" <a-verma1@ti.com>
+Cc:     Vignesh Raghavendra <vigneshr@ti.com>,
+        Lorenzo Pieralisi <lpieralisi@kernel.org>,
+        Krzysztof Wilczy_ski <kw@linux.com>,
+        Rob Herring <robh@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        linux-omap@vger.kernel.org, linux-pci@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [EXTERNAL] Re: [PATCH v3] PCI: j721e: Delay 100ms T_PVPERL from
+ power stable to PERST# inactive
+Message-ID: <20230802192445.GA64939@bhelgaas>
 MIME-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <8951d4fd-279d-8a78-65a3-daeb4befa899@ti.com>
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-2 =D0=B0=D0=B2=D0=B3=D1=83=D1=81=D1=82=D0=B0 2023 =D0=B3=2E 22:13:51 GMT+03=
-:00, Laurent Pinchart <laurent=2Epinchart@ideasonboard=2Ecom> =D0=BF=D0=B8=
-=D1=88=D0=B5=D1=82:
->On Wed, Aug 02, 2023 at 10:01:19PM +0300, Dmitry Baryshkov wrote:
->> On 02/08/2023 21:55, Laurent Pinchart wrote:
->> > Hi Dmitry,
->> >=20
->> > Thank you for the patch=2E
->> >=20
->> > On Sat, Jul 29, 2023 at 03:49:12AM +0300, Dmitry Baryshkov wrote:
->> >> To properly define the USB-C DP altmode connectors, add the USB
->> >> subconnector type=2E
->> >>
->> >> Suggested-by: Simon Ser <contact@emersion=2Efr>
->> >> Signed-off-by: Dmitry Baryshkov <dmitry=2Ebaryshkov@linaro=2Eorg>
->> >> ---
->> >>   drivers/gpu/drm/drm_connector=2Ec | 1 +
->> >>   include/uapi/drm/drm_mode=2Eh     | 1 +
->> >>   2 files changed, 2 insertions(+)
->> >>
->> >> diff --git a/drivers/gpu/drm/drm_connector=2Ec b/drivers/gpu/drm/drm=
-_connector=2Ec
->> >> index a6066e4a5e9a=2E=2E9e96b038f5d0 100644
->> >> --- a/drivers/gpu/drm/drm_connector=2Ec
->> >> +++ b/drivers/gpu/drm/drm_connector=2Ec
->> >> @@ -1050,6 +1050,7 @@ static const struct drm_prop_enum_list drm_dp_=
-subconnector_enum_list[] =3D {
->> >>   	{ DRM_MODE_SUBCONNECTOR_DisplayPort, "DP"        }, /* DP */
->> >>   	{ DRM_MODE_SUBCONNECTOR_Wireless,    "Wireless"  }, /* DP */
->> >>   	{ DRM_MODE_SUBCONNECTOR_Native,	     "Native"    }, /* DP */
->> >> +	{ DRM_MODE_SUBCONNECTOR_USB,	     "USB"       }, /* DP */
->> >=20
->> > Should this be DRM_MODE_SUBCONNECTOR_USB_C and "USB-C", in case we ge=
-t
->> > another USB type later ?
->>=20
->> Hmm, which id should I use for micro-USB then? (consider anx7808,=20
->> SlimPort)=2E I thought about using DRM_MODE_SUBCONNECTOR_USB for both o=
-f=20
->> them=2E But maybe I should add another subtype for SlimPort=2E
->
->I suppose it depends on whether userspace needs a way to differentiate
->those=2E Do you have a good visibility on the userspace use cases ?
+On Wed, Aug 02, 2023 at 02:38:02PM +0530, Verma, Achal wrote:
+> On 7/18/2023 9:25 PM, Bjorn Helgaas wrote:
+> > On Fri, Jul 07, 2023 at 03:21:19PM +0530, Achal Verma wrote:
+> > > As per the PCIe Card Electromechanical specification REV. 5.0, PERST#
+> > > signal should be de-asserted after minimum 100ms from the time power-rails
+> > > become stable. So, to ensure 100ms delay to give sufficient time for
+> > > power-rails and refclk to become stable, change delay from 100us to 100ms.
+> > > 
+> > >  From PCIe Card Electromechanical specification REV. 5.0 section 2.9.2:
+> > > TPVPERL: Power stable to PERST# inactive - 100ms
+> > > 
+> > > Fixes: f3e25911a430 ("PCI: j721e: Add TI J721E PCIe driver")
+> > > Signed-off-by: Achal Verma <a-verma1@ti.com>
+> > > ---
+> > > 
+> > > Changes from v2:
+> > > * Fix commit message.
+> > > 
+> > > Change from v1:
+> > > * Add macro for delay value.
+> > > 
+> > >   drivers/pci/controller/cadence/pci-j721e.c | 11 +++++------
+> > >   drivers/pci/pci.h                          |  2 ++
+> > >   2 files changed, 7 insertions(+), 6 deletions(-)
+> > > 
+> > > diff --git a/drivers/pci/controller/cadence/pci-j721e.c b/drivers/pci/controller/cadence/pci-j721e.c
+> > > index e70213c9060a..32b6a7dc3cff 100644
+> > > --- a/drivers/pci/controller/cadence/pci-j721e.c
+> > > +++ b/drivers/pci/controller/cadence/pci-j721e.c
+> > > @@ -498,14 +498,13 @@ static int j721e_pcie_probe(struct platform_device *pdev)
+> > >   		/*
+> > >   		 * "Power Sequencing and Reset Signal Timings" table in
+> > > -		 * PCI EXPRESS CARD ELECTROMECHANICAL SPECIFICATION, REV. 3.0
+> > > -		 * indicates PERST# should be deasserted after minimum of 100us
+> > > -		 * once REFCLK is stable. The REFCLK to the connector in RC
+> > > -		 * mode is selected while enabling the PHY. So deassert PERST#
+> > > -		 * after 100 us.
+> > > +		 * PCI EXPRESS CARD ELECTROMECHANICAL SPECIFICATION, REV. 5.0
+> > > +		 * indicates PERST# should be deasserted after minimum of 100ms
+> > > +		 * after power rails achieve specified operating limits and
+> > > +		 * within this period reference clock should also become stable.
+> > 
+> > I think the problem is not that the current code is *wrong*, because
+> > we do need to observe T_PERST-CLK, but that it failed to *also*
+> > account for T_PVPERL.
+> > 
+> > There are two delays before deasserting PERST#:
+> > 
+> >    T_PVPERL: delay after power becomes stable
+> >    T_PERST-CLK: delay after REFCLK becomes stable
+> > 
+> > I assume power is enabled by phy_power_on(), and REFCLK is enabled by
+> > clk_prepare_enable():
+> > 
+> >    cdns_pcie_init_phy
+> >      cdns_pcie_enable_phy
+> >        phy_power_on             <-- power becomes stable
+> >    clk_prepare_enable           <-- REFCLK becomes stable
+> >    if (gpiod)
+> >      usleep_range
+> >      gpiod_set_value_cansleep(gpiod, 1)   <-- deassert PERST#
+> > 
+> > I don't actually know if phy_power_on() guarantees that power is
+> > stable before it returns.  But I guess that's our assumption?
+> > Similarly for clk_prepare_enable().
+> > 
+> > In any case, we have to observe both delays.  They overlap, and
+> > T_PVPERL is 1000 times longer than T_PERST-CLK, so there might be
+> > enough slop in an msleep(100) to cover both, but I think I would do
+> > the simple-minded:
+> > 
+> >    msleep(PCIE_TPVPERL_MS);
+> >    usleep_range(PCIE_TPERST_CLK_US, 2 * PCIE_TPERST_CLK_US);
+> > 
+> I think adding 100us more is not required since as you said and as also
+> mentioned in CEM spec, 100ms covers for both power rails and refclock to
+> get stable and 2 consecutive sleep call looks different to me.
+> But if still required (please let me know), will do the suggested change,
+> along with other fixes you asked below.
 
-No=2E I'm not even sure, which userspace handles subtypes properly=2E
+If REFCLK is stable when clk_prepare_enable() returns, and we don't
+start the msleep(PCIE_TPVPERL_MS) until then, it should be safe.  
+Maybe mention T_PERST-CLK in a comment, e.g.,
 
-For the reference, SlimPort is mostly legacy hardware, think about Nexus 4=
-, 5, 6, 7 (2013)
+  PCIe CEM r5.0, sec 2.2.1, requires both T_PVPERL (100ms) between
+  power stable and PERST# inactive and T_PERST_CLK (100us) between
+  REFCLK stable and PERST# inactive.  Starting the T_PVPERL delay
+  after REFCLK is stable means that delay covers T_PERST_CLK as well.
 
-
->
->> >>   };
->> >>  =20
->> >>   DRM_ENUM_NAME_FN(drm_get_dp_subconnector_name,
->> >> diff --git a/include/uapi/drm/drm_mode=2Eh b/include/uapi/drm/drm_mo=
-de=2Eh
->> >> index 92d96a2b6763=2E=2E0f74918b011c 100644
->> >> --- a/include/uapi/drm/drm_mode=2Eh
->> >> +++ b/include/uapi/drm/drm_mode=2Eh
->> >> @@ -398,6 +398,7 @@ enum drm_mode_subconnector {
->> >>   	DRM_MODE_SUBCONNECTOR_HDMIA       =3D 11, /*            DP */
->> >>   	DRM_MODE_SUBCONNECTOR_Native      =3D 15, /*            DP */
->> >>   	DRM_MODE_SUBCONNECTOR_Wireless    =3D 18, /*            DP */
->> >> +	DRM_MODE_SUBCONNECTOR_USB         =3D 20, /*            DP */
->> >>   };
->> >>  =20
->> >>   #define DRM_MODE_CONNECTOR_Unknown	0
->
-
+Bjorn
