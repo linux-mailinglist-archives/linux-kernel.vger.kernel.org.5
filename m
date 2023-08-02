@@ -2,204 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E327C76D0F8
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 17:05:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0173D76D0FD
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 17:06:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231974AbjHBPF4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Aug 2023 11:05:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54266 "EHLO
+        id S234261AbjHBPGY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Aug 2023 11:06:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58546 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234756AbjHBPFl (ORCPT
+        with ESMTP id S234211AbjHBPGE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Aug 2023 11:05:41 -0400
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B006C3AAB
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Aug 2023 08:04:44 -0700 (PDT)
-Received: by mail-yb1-xb4a.google.com with SMTP id 3f1490d57ef6-d1d9814b89fso6331144276.0
-        for <linux-kernel@vger.kernel.org>; Wed, 02 Aug 2023 08:04:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1690988683; x=1691593483;
-        h=content-transfer-encoding:cc:to:from:subject:message-id:references
-         :mime-version:in-reply-to:date:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=UUMABgRf8+JLrJEPYxIPAcBfEzRgqars/lrXYCb1BUE=;
-        b=rSbGrQHo3VRf0sw+Ax8g0TxoxBZdQnoZh2HFkFM71zPpXZx/A3RCmEzkepLrMt7T3k
-         xPLUVeQYTz7USaEGMHSpxHS+MfkHoKSv4GhxoPCGB6E+IoC64HSHnvrcIHe1J2Uo6KHs
-         p5OvsWht9tX3QU5dCiNxQC1FNRnP8KthSqNyvyPAuBNG8rSshP07rWmGsTj33H1UpuZF
-         UyUCZbphP1jFYX6CJ3iF3GjZJJ2hECe2bfvdUOndflz7Jcp4QY29J09VRVPPTmgYOV28
-         ZCghnJ0ohRCf16vO0Jf9WIFO0ag+NO1xE594ltOegaPWmFCRa9ZRcmIKgSIWs/Wx8QTY
-         NXSA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690988683; x=1691593483;
-        h=content-transfer-encoding:cc:to:from:subject:message-id:references
-         :mime-version:in-reply-to:date:x-gm-message-state:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=UUMABgRf8+JLrJEPYxIPAcBfEzRgqars/lrXYCb1BUE=;
-        b=cDHWI5KRlOoLXKHGsuiRqYsPYCjuI1rsvDmV+3MjuxWM0bHAd/OhEoiP4lQbnLG+Ve
-         0AfDBqoRTe1NPxIJD1BeIZTKDY3JZ4KdUx+jZQEtgjOU5ciI1cgDahwU/UtNmzh46sSG
-         +kUTV2i+4NAd5BiC+v0YJtd+nN9BLCYp0dhzSsu4W2Z8jWBmh2TNvYyg1o4yhkp83Zxn
-         N5stJxSAtpIVrOGlVw18VJXlJiE93gnArmJV6+cqOIJC4K29YwyEJ7vJyFWfQaWnIpOx
-         bMKK92LAqeVCzkq1ZXbUbKsSkZ4vej56R1/U4aCtpN90QUdVElX3BT2XmXe/KKQQX31s
-         FA8w==
-X-Gm-Message-State: ABy/qLYgJ8uPilKUrthjepfkyfSD0ZvG6gIY5ig074DCOUijPhMEOM5I
-        P6/m00+NWkHvuPwpo0WzoFqSS6RwC1Y=
-X-Google-Smtp-Source: APBJJlEDEY0vSR2vn4i6PKsne/SSwUoYgKvwd++64qeUXGXac8cOKaNc1PGFy/Ghcc7t9rpN566hdBQ5LiM=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a25:69c6:0:b0:d0f:cf5:3282 with SMTP id
- e189-20020a2569c6000000b00d0f0cf53282mr123293ybc.1.1690988683739; Wed, 02 Aug
- 2023 08:04:43 -0700 (PDT)
-Date:   Wed, 2 Aug 2023 08:04:41 -0700
-In-Reply-To: <7a4f3f59-1482-49c4-92b2-aa621e9b06b3@amd.com>
-Mime-Version: 1.0
-References: <8eb933fd-2cf3-d7a9-32fe-2a1d82eac42a@mail.ustc.edu.cn>
- <ZMfFaF2M6Vrh/QdW@google.com> <4ebb3e20-a043-8ad3-ef6c-f64c2443412c@amd.com>
- <544b7f95-4b34-654d-a57b-3791a6f4fd5f@mail.ustc.edu.cn> <ZMpEUVsv5hSmrcH8@iZuf6hx7901barev1c282cZ>
- <ZMphvF+0H9wHQr5B@google.com> <bbc52f40-2661-3fa2-8e09-bec772728812@amd.com> <7a4f3f59-1482-49c4-92b2-aa621e9b06b3@amd.com>
-Message-ID: <ZMpwiSw9CBZh9xcc@google.com>
-Subject: Re: [Question] int3 instruction generates a #UD in SEV VM
-From:   Sean Christopherson <seanjc@google.com>
-To:     Tom Lendacky <thomas.lendacky@amd.com>
-Cc:     Wu Zongyo <wuzongyo@mail.ustc.edu.cn>,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org, x86@kernel.org,
-        linux-coco@lists.linux.dev
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        Wed, 2 Aug 2023 11:06:04 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91305421A;
+        Wed,  2 Aug 2023 08:05:14 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 665BF619D3;
+        Wed,  2 Aug 2023 15:05:09 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BB4CAC433C8;
+        Wed,  2 Aug 2023 15:05:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1690988708;
+        bh=r1VqFu8OfO1u5SoU4EmzmyOkzQIjy5fxk4p2tga+KAM=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=OwkIN+dIl1O3NsTYTQe/70zZ0rznSUs8gByfm0OBc7zvmQMLiMvn3CLkT+eKbTOUj
+         PAil3+ubHsZ183mPtIUzm7PUQB6y0mAJCa+ZRi4IFyAsz+TTY/1TkUdSiXarHW0wAz
+         iOQIdIMPD+I6kqL3/keDQMu2JiUg6eDoND0lZQeE8NMIt/M0MS6SiHL4vgzDv8IXWm
+         SbiGyEPgRIcHXNwuZR+KJ0+uo/YJIVF0VevuHZ1ptU8COE5mi0ssQMF5ifOCf/ll3L
+         X216QF4sppcAbe5WSg6P4NdMjHWOwYBPW6WG3U0mSYjjAHuD4c86lo34qhNQpb9FZp
+         ZZ0ci2gx+3C6w==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id 5C2E3CE092F; Wed,  2 Aug 2023 08:05:08 -0700 (PDT)
+Date:   Wed, 2 Aug 2023 08:05:08 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Roy Hopkins <rhopkins@suse.de>
+Cc:     Guenter Roeck <linux@roeck-us.net>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Pavel Machek <pavel@denx.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        stable@vger.kernel.org, patches@lists.linux.dev,
+        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, jonathanh@nvidia.com,
+        f.fainelli@gmail.com, sudipm.mukherjee@gmail.com,
+        srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org,
+        rcu@vger.kernel.org, Ingo Molnar <mingo@kernel.org>
+Subject: Re: scheduler problems in -next (was: Re: [PATCH 6.4 000/227]
+ 6.4.7-rc1 review)
+Message-ID: <063a2eba-6b5e-40bc-afd4-7d26f12762e4@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <20230731143954.GB37820@hirez.programming.kicks-ass.net>
+ <f5a18aa3-9db7-6ad2-33d5-3335a18e4e2f@roeck-us.net>
+ <20230731145232.GM29590@hirez.programming.kicks-ass.net>
+ <7ff2a2393d78275b14ff867f3af902b5d4b93ea2.camel@suse.de>
+ <20230731161452.GA40850@hirez.programming.kicks-ass.net>
+ <baa58a8e-54f0-2309-b34e-d62999a452a1@roeck-us.net>
+ <20230731211517.GA51835@hirez.programming.kicks-ass.net>
+ <a05743a3-4dec-6af7-302f-d1d2a0db7d3e@roeck-us.net>
+ <8215f037-63e9-4e92-8403-c5431ada9cc9@paulmck-laptop>
+ <4f18d78411a5477690640a168e0e5d9f28d1c015.camel@suse.de>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <4f18d78411a5477690640a168e0e5d9f28d1c015.camel@suse.de>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        USER_IN_DEF_DKIM_WL autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 02, 2023, Tom Lendacky wrote:
-> On 8/2/23 09:25, Tom Lendacky wrote:
-> > On 8/2/23 09:01, Sean Christopherson wrote:
-> > > > You're right. The #UD is injected by KVM.
-> > > >=20
-> > > > The path I found is:
-> > > > =C2=A0=C2=A0=C2=A0=C2=A0 svm_vcpu_run
-> > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 svm_complete_inter=
-rupts
-> > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 kvm_requeue_exception //=
- vector =3D 3
-> > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 =
-kvm_make_request
-> > > >=20
-> > > > =C2=A0=C2=A0=C2=A0=C2=A0 vcpu_enter_guest
-> > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 kvm_check_and_inje=
-ct_events
-> > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 svm_inject_exception
-> > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 =
-svm_update_soft_interrupt_rip
-> > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 =
-__svm_skip_emulated_instruction
-> > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0 x86_emulate_instruction
-> > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0 svm_can_emulate_instruction
-> > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 kvm_queue_exception(vcpu, =
-UD_VECTOR)
-> > > >=20
-> > > > Does this mean a #PF intercept occur when the guest try to deliver =
-a
-> > > > #BP through the IDT? But why?
-> > >=20
-> > > I doubt it's a #PF.=C2=A0 A #NPF is much more likely, though it could=
- be
-> > > something
-> > > else entirely, but I'm pretty sure that would require bugs in both
-> > > the host and
-> > > guest.
-> > >=20
-> > > What is the last exit recorded by trace_kvm_exit() before the #UD is
-> > > injected?
-> >=20
-> > I'm guessing it was a #NPF, too. Could it be related to the changes tha=
-t
-> > went in around svm_update_soft_interrupt_rip()?
-> >=20
-> > 6ef88d6e36c2 ("KVM: SVM: Re-inject INT3/INTO instead of retrying the
-> > instruction")
->=20
-> Sorry, that should have been:
->=20
-> 7e5b5ef8dca3 ("KVM: SVM: Re-inject INTn instead of retrying the insn on "=
-failure"")
->=20
-> >=20
-> > Before this the !nrips check would prevent the call into
-> > svm_skip_emulated_instruction(). But now, there is a call to:
-> >=20
-> >  =C2=A0 svm_update_soft_interrupt_rip()
-> >  =C2=A0=C2=A0=C2=A0 __svm_skip_emulated_instruction()
-> >  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 kvm_emulate_instruction()
-> >  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 x86_emulate_instruction() (=
-passed a NULL insn pointer)
-> >  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 kvm_can_emulate=
-_insn() (passed a NULL insn pointer)
-> >  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 svm=
-_can_emulate_instruction() (passed NULL insn pointer)
-> >=20
-> > Because it is an SEV guest, it ends up in the "if (unlikely(!insn))" pa=
-th
-> > and injects the #UD.
+On Wed, Aug 02, 2023 at 02:57:56PM +0100, Roy Hopkins wrote:
+> On Tue, 2023-08-01 at 12:11 -0700, Paul E. McKenney wrote:
+> > On Tue, Aug 01, 2023 at 10:32:45AM -0700, Guenter Roeck wrote:
+> > 
+> > 
+> > Please see below for my preferred fix.  Does this work for you guys?
+> > 
+> > Back to figuring out why recent kernels occasionally to blow up all
+> > rcutorture guest OSes...
+> > 
+> >                                                         Thanx, Paul
+> > 
+> > ------------------------------------------------------------------------
+> > 
+> > diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
+> > index 7294be62727b..2d5b8385c357 100644
+> > --- a/kernel/rcu/tasks.h
+> > +++ b/kernel/rcu/tasks.h
+> > @@ -570,10 +570,12 @@ static void rcu_tasks_one_gp(struct rcu_tasks *rtp, bool midboot)
+> >         if (unlikely(midboot)) {
+> >                 needgpcb = 0x2;
+> >         } else {
+> > +               mutex_unlock(&rtp->tasks_gp_mutex);
+> >                 set_tasks_gp_state(rtp, RTGS_WAIT_CBS);
+> >                 rcuwait_wait_event(&rtp->cbs_wait,
+> >                                    (needgpcb = rcu_tasks_need_gpcb(rtp)),
+> >                                    TASK_IDLE);
+> > +               mutex_lock(&rtp->tasks_gp_mutex);
+> >         }
+> >  
+> >         if (needgpcb & 0x2) {
+> 
+> Your preferred fix looks good to me.
+> 
+> With the original code I can quite easily reproduce the problem on my 
+> system every 10 reboots or so. With your fix in place the problem no
+> longer occurs.
 
-Yeah, my money is on that too.  I believe this is the least awful solution:
+Very good, thank you!  May I add your Tested-by?
 
-diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
-index d381ad424554..2eace114a934 100644
---- a/arch/x86/kvm/svm/svm.c
-+++ b/arch/x86/kvm/svm/svm.c
-@@ -385,6 +385,9 @@ static int __svm_skip_emulated_instruction(struct kvm_v=
-cpu *vcpu,
-        }
-=20
-        if (!svm->next_rip) {
-+               if (sev_guest(vcpu->kvm))
-+                       return 0;
-+
-                if (unlikely(!commit_side_effects))
-                        old_rflags =3D svm->vmcb->save.rflags;
-=20
-I'll send a formal patch (with a comment) if that solves the problem.
-
-
-Side topic, KVM should require nrips for SEV and beyond, I don't see how SE=
-V can
-possibly work if KVM doesn't utilize nrips.  E.g. this
-
-diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
-index 2eace114a934..43e500503d48 100644
---- a/arch/x86/kvm/svm/svm.c
-+++ b/arch/x86/kvm/svm/svm.c
-@@ -5111,9 +5111,11 @@ static __init int svm_hardware_setup(void)
-=20
-        svm_adjust_mmio_mask();
-=20
-+       nrips =3D nrips && boot_cpu_has(X86_FEATURE_NRIPS);
-+
-        /*
-         * Note, SEV setup consumes npt_enabled and enable_mmio_caching (wh=
-ich
--        * may be modified by svm_adjust_mmio_mask()).
-+        * may be modified by svm_adjust_mmio_mask()), as well as nrips.
-         */
-        sev_hardware_setup();
-=20
-@@ -5125,11 +5127,6 @@ static __init int svm_hardware_setup(void)
-                        goto err;
-        }
-=20
--       if (nrips) {
--               if (!boot_cpu_has(X86_FEATURE_NRIPS))
--                       nrips =3D false;
--       }
--
-        enable_apicv =3D avic =3D avic && avic_hardware_setup();
-=20
-        if (!enable_apicv) {
-
+							Thanx, Paul
