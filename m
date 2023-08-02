@@ -2,107 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DA9C476C4A0
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 07:10:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F95C76C4A2
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 07:10:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232274AbjHBFKY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Aug 2023 01:10:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39286 "EHLO
+        id S232299AbjHBFKs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Aug 2023 01:10:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39654 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231309AbjHBFKW (ORCPT
+        with ESMTP id S231903AbjHBFKq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Aug 2023 01:10:22 -0400
-Received: from fllv0015.ext.ti.com (fllv0015.ext.ti.com [198.47.19.141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 100A21716
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Aug 2023 22:10:21 -0700 (PDT)
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 3725A8Re031457;
-        Wed, 2 Aug 2023 00:10:08 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1690953008;
-        bh=zXFljiv8bmNuz1wn1UEPlWb1FAX6GYOBYQY3zOk3Jo4=;
-        h=From:To:CC:Subject:Date:In-Reply-To:References;
-        b=NEh76r7xxJBBI45gr+owdc1+unbPabsN+3H6cS+reGUue/ArId308feMtsETSc99V
-         J5gvzbe77Q4RVSyY+gn//TWiWWup0w8J8AXDJLwIDq3D+n97DGEiXg1BpgIQoUYNJb
-         GZSz8ijhTqxJlvHEx/RVzHgWa5IjDBA8MI2xWeDE=
-Received: from DLEE107.ent.ti.com (dlee107.ent.ti.com [157.170.170.37])
-        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 3725A8Fs002489
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 2 Aug 2023 00:10:08 -0500
-Received: from DLEE103.ent.ti.com (157.170.170.33) by DLEE107.ent.ti.com
- (157.170.170.37) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Wed, 2
- Aug 2023 00:10:08 -0500
-Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE103.ent.ti.com
- (157.170.170.33) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Wed, 2 Aug 2023 00:10:08 -0500
-Received: from localhost (ileaxei01-snat.itg.ti.com [10.180.69.5])
-        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 3725A7T3040031;
-        Wed, 2 Aug 2023 00:10:07 -0500
-From:   Nishanth Menon <nm@ti.com>
-To:     Vignesh Raghavendra <vigneshr@ti.com>,
-        Santosh Shilimkar <ssantosh@kernel.org>,
-        Russell King <linux@armlinux.org.uk>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, Andrew Davis <afd@ti.com>
-CC:     Nishanth Menon <nm@ti.com>
-Subject: Re: [PATCH v2 1/2] ARM: keystone: Merge memory.h into the only file that uses it
-Date:   Wed, 2 Aug 2023 00:10:07 -0500
-Message-ID: <169095298990.2814913.9232609485475584241.b4-ty@ti.com>
-X-Mailer: git-send-email 2.40.0
-In-Reply-To: <20230726160441.101566-1-afd@ti.com>
-References: <20230726160441.101566-1-afd@ti.com>
+        Wed, 2 Aug 2023 01:10:46 -0400
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7965D1FCB;
+        Tue,  1 Aug 2023 22:10:44 -0700 (PDT)
+Received: from pps.filterd (m0279864.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3724WEPx028031;
+        Wed, 2 Aug 2023 05:10:40 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-type; s=qcppdkim1;
+ bh=JGQQ2RRYZ1qf9bibWVUm1IHA4vj9lwvMXXEvTgPZB9s=;
+ b=BwGucw4cad6IJRVo6KTZ34lqAdCgdb/NXM6gSF1Z/NsI0zhryTDNxveTJogT3mR+rCRg
+ Xogjwil1SrVOmzcc3ly/KQ3aEdoJjPFE9SiRCzVikk8Q5xnOwDH4mwE2YtGwufGmsWIR
+ cWIPJhgdwBW+Pp9a8Zv5TUEf0DmzcW2REhsVsHicNvJa7BCnK/DkDYwecEWN0Cw1v2CR
+ MrfVCtKvN/7GMi8mz3S1ersYW7t//CLFwk3KEgJWZkARmU1CXTMPrx0OUhnM9lgJv4eo
+ CJGvnOFbPvqDvLWBcm4UYZaCpYI68yoXxMQdqsXK/VC76L/9XTcT2JCS26EkO8HTgomi 2Q== 
+Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3s7adk8m0g-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 02 Aug 2023 05:10:40 +0000
+Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com [10.47.209.197])
+        by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3725AdmW023636
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 2 Aug 2023 05:10:39 GMT
+Received: from ekangupt-linux.qualcomm.com (10.80.80.8) by
+ nalasex01b.na.qualcomm.com (10.47.209.197) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.30; Tue, 1 Aug 2023 22:10:36 -0700
+From:   Ekansh Gupta <quic_ekangupt@quicinc.com>
+To:     <srinivas.kandagatla@linaro.org>, <linux-arm-msm@vger.kernel.org>
+CC:     Ekansh Gupta <quic_ekangupt@quicinc.com>,
+        <ekangupt@qti.qualcomm.com>, <gregkh@linuxfoundation.org>,
+        <linux-kernel@vger.kernel.org>,
+        <fastrpc.upstream@qti.qualcomm.com>, stable <stable@kernel.org>
+Subject: [PATCH v3] misc: fastrpc: Fix incorrect DMA mapping unmap request
+Date:   Wed, 2 Aug 2023 10:40:32 +0530
+Message-ID: <1690953032-17070-1-git-send-email-quic_ekangupt@quicinc.com>
+X-Mailer: git-send-email 2.7.4
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01b.na.qualcomm.com (10.47.209.197)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: gTMHd-1VJt47SGVj2KF1yS310-ZxNrcN
+X-Proofpoint-GUID: gTMHd-1VJt47SGVj2KF1yS310-ZxNrcN
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
+ definitions=2023-08-02_03,2023-08-01_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 spamscore=0
+ priorityscore=1501 phishscore=0 bulkscore=0 impostorscore=0
+ lowpriorityscore=0 clxscore=1015 mlxlogscore=967 adultscore=0 mlxscore=0
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2306200000 definitions=main-2308020046
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Andrew Davis,
+Scatterlist table is obtained during map create request and the same
+table is used for DMA mapping unmap. In case there is any failure
+while getting the sg_table, ERR_PTR is returned instead of sg_table.
 
-On Wed, 26 Jul 2023 11:04:40 -0500, Andrew Davis wrote:
-> The defines in memory.h can go into the file that makes use of them.
-> No reason to have a header here, remove.
-> 
-> 
+When the map is getting freed, there is only a non-NULL check of
+sg_table which will also be true in case failure was returned instead
+of sg_table. This would result in improper unmap request. Add proper
+check before setting map table to avoid bad unmap request.
 
-I have applied the following to branch ti-keystone-next on [1].
-Thank you!
+Fixes: c68cfb718c8f ("misc: fastrpc: Add support for context Invoke method")
+Cc: stable <stable@kernel.org>
+Signed-off-by: Ekansh Gupta <quic_ekangupt@quicinc.com>
+---
+Changes in v2:
+  - Added fixes information to commit text
+Changes in v3:
+  - Set map->table only if attachment for successful
 
-[1/2] ARM: keystone: Merge memory.h into the only file that uses it
-      commit: 04a0137fc36d0b544afd5afd59f8f739ca97e33e
-[2/2] ARM: keystone: Merge PM function into main support file
-      commit: d33dbddf43a055f69bda7f3488bb1e136d1b6bbc
+ drivers/misc/fastrpc.c | 8 +++++---
+ 1 file changed, 5 insertions(+), 3 deletions(-)
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent up the chain during
-the next merge window (or sooner if it is a relevant bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-[1] https://git.kernel.org/pub/scm/linux/kernel/git/ti/linux.git
+diff --git a/drivers/misc/fastrpc.c b/drivers/misc/fastrpc.c
+index 9666d28..de7c812 100644
+--- a/drivers/misc/fastrpc.c
++++ b/drivers/misc/fastrpc.c
+@@ -756,6 +756,7 @@ static int fastrpc_map_create(struct fastrpc_user *fl, int fd,
+ {
+ 	struct fastrpc_session_ctx *sess = fl->sctx;
+ 	struct fastrpc_map *map = NULL;
++	struct sg_table *table;
+ 	int err = 0;
+ 
+ 	if (!fastrpc_map_lookup(fl, fd, ppmap, true))
+@@ -783,11 +784,12 @@ static int fastrpc_map_create(struct fastrpc_user *fl, int fd,
+ 		goto attach_err;
+ 	}
+ 
+-	map->table = dma_buf_map_attachment_unlocked(map->attach, DMA_BIDIRECTIONAL);
+-	if (IS_ERR(map->table)) {
+-		err = PTR_ERR(map->table);
++	table = dma_buf_map_attachment(map->attach, DMA_BIDIRECTIONAL);
++	if (IS_ERR(table)) {
++		err = PTR_ERR(table);
+ 		goto map_err;
+ 	}
++	map->table = table;
+ 
+ 	if (attr & FASTRPC_ATTR_SECUREMAP) {
+ 		map->phys = sg_phys(map->table->sgl);
 -- 
-Regards,
-Nishanth Menon
-Key (0xDDB5849D1736249D) / Fingerprint: F8A2 8693 54EB 8232 17A3  1A34 DDB5 849D 1736 249D
+2.7.4
 
