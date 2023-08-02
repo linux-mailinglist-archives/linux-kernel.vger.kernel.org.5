@@ -2,107 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9CC1276DAF1
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 00:47:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D9C9476DAF9
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 00:51:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231740AbjHBWr1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Aug 2023 18:47:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44892 "EHLO
+        id S231953AbjHBWu6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Aug 2023 18:50:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45980 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230096AbjHBWrY (ORCPT
+        with ESMTP id S230096AbjHBWu4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Aug 2023 18:47:24 -0400
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB2B1211D
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Aug 2023 15:47:23 -0700 (PDT)
-Received: from pps.filterd (m0279871.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 372KWK16024564;
-        Wed, 2 Aug 2023 22:47:02 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=date : from : to :
- cc : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=qcppdkim1; bh=o4q2+jILHE2sS/7ABN9AcHCB0XPqWQLtOj2mo/sfduQ=;
- b=SMqYkqNiooKTNVGxr3kAYoMJlN7XDB9Af3b+v2kG9C4GJNSellGgkQPPzSRuYsynHMdW
- MhqWC3zhTVCwp827kbpRhYUWWosMyK9f5NFls4ZwlugNzZ3iLnfHG0EZWUIjWBEOM2up
- v4dbTbk8Sc3Vrf3hyaYS+AOk3ofo5qXqF+lLVPaTWCky+Cn+AHhmAslna8Z3br3zu3cT
- cJP4GVXwaQAymIOfZVUXk+Jo9tw8jiEukgTzAp3Z4FFRz6lH9qe6p4Nqwzt8MOjv6U/5
- XHxdx70gUztYLaVjfZ4CfRB9t9kmsLIJpWW7KQV3WrgixEviqx8HrvImnGoLgo8V/KQ+ 7g== 
-Received: from nasanppmta03.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3s7upp0j23-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 02 Aug 2023 22:47:01 +0000
-Received: from nasanex01b.na.qualcomm.com (nasanex01b.na.qualcomm.com [10.46.141.250])
-        by NASANPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 372Ml0tS023663
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 2 Aug 2023 22:47:00 GMT
-Received: from quicinc.com (10.80.80.8) by nasanex01b.na.qualcomm.com
- (10.46.141.250) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.30; Wed, 2 Aug
- 2023 15:46:59 -0700
-Date:   Wed, 2 Aug 2023 15:46:58 -0700
-From:   Guru Das Srinagesh <quic_gurus@quicinc.com>
-To:     Pavan Kondeti <quic_pkondeti@quicinc.com>
-CC:     Masahiro Yamada <masahiroy@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Nicolas Schier" <nicolas@fjasle.eu>,
-        Kees Cook <keescook@chromium.org>,
-        "Bjorn Andersson" <andersson@kernel.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 1/1] scripts: Add add-maintainer.py
-Message-ID: <20230802224658.GA17567@quicinc.com>
-References: <cover.1690951441.git.quic_gurus@quicinc.com>
- <0d000c48e939beaa97c744c0a8b652396a0b045d.1690951441.git.quic_gurus@quicinc.com>
- <63764b84-3ebd-4081-836f-4863af196228@quicinc.com>
+        Wed, 2 Aug 2023 18:50:56 -0400
+Received: from mail-pf1-f175.google.com (mail-pf1-f175.google.com [209.85.210.175])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 921A89B;
+        Wed,  2 Aug 2023 15:50:55 -0700 (PDT)
+Received: by mail-pf1-f175.google.com with SMTP id d2e1a72fcca58-686f8614ce5so300275b3a.3;
+        Wed, 02 Aug 2023 15:50:55 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691016655; x=1691621455;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=DSZP6s8E87YIozKHHuno/d/txSVRFI7AHAk3fEQT3oo=;
+        b=QbZOKhR3PWBARSvzW1NZN7USu+BXZj4uutwyCwIutvUqKuNeJSvrER2r8Mlt2CmIEq
+         LhY5Qmf35B05TAGS0ITQQrvsiWiNhMWcBw+uo6QcfjnnAcxd7fhdKSASsfGhf+CYtUuV
+         CRf1lLjFluFu6KMs8hbaegRxh0zISof9jHIOSRsE58nphpjXsgsWp+n0PECvkvPTLfvE
+         Ueq94L44zfkbjyhE7+opy6sSrqKKAva7qk0mommmmrSHghFg0xQaCuhIVG7zbOhLUAJv
+         k7oofj6aySnB3oBelnjWChr6uS7t65k2m3Mu7oQFJMAIL1a92DYDa0SgFc71MtQadJjl
+         r1Eg==
+X-Gm-Message-State: ABy/qLZxp+Bd/Ccjm8Q0EtgYfRQ6HjD+v3ebI7fYgV2099VcY+cV0LG3
+        X6IIQXiOFAofXK1bBpD3pK8=
+X-Google-Smtp-Source: APBJJlEQyc/oGseiiXbsMGMZUszVgfMcxK3SQMnZu2T/xFQsiEwlYTiKIL/zNbyeM4OOfg2IpeyZfg==
+X-Received: by 2002:a05:6a20:a10e:b0:13d:b318:5c70 with SMTP id q14-20020a056a20a10e00b0013db3185c70mr13020943pzk.19.1691016655000;
+        Wed, 02 Aug 2023 15:50:55 -0700 (PDT)
+Received: from liuwe-devbox-debian-v2 ([20.69.120.36])
+        by smtp.gmail.com with ESMTPSA id x26-20020a62fb1a000000b00686e6e2b556sm11467645pfm.26.2023.08.02.15.50.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 02 Aug 2023 15:50:54 -0700 (PDT)
+Date:   Wed, 2 Aug 2023 22:50:48 +0000
+From:   Wei Liu <wei.liu@kernel.org>
+To:     Souradeep Chakrabarti <schakrabarti@linux.microsoft.com>
+Cc:     kys@microsoft.com, haiyangz@microsoft.com, wei.liu@kernel.org,
+        decui@microsoft.com, davem@davemloft.net, edumazet@google.com,
+        kuba@kernel.org, pabeni@redhat.com, longli@microsoft.com,
+        sharmaajay@microsoft.com, leon@kernel.org, cai.huoqing@linux.dev,
+        ssengar@linux.microsoft.com, vkuznets@redhat.com,
+        tglx@linutronix.de, linux-hyperv@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-rdma@vger.kernel.org, schakrabarti@microsoft.com,
+        stable@vger.kernel.org
+Subject: Re: [PATCH V6 net] net: mana: Fix MANA VF unload when hardware is
+Message-ID: <ZMrdyFgwr9sL7BmZ@liuwe-devbox-debian-v2>
+References: <1690377336-1353-1-git-send-email-schakrabarti@linux.microsoft.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <63764b84-3ebd-4081-836f-4863af196228@quicinc.com>
-User-Agent: Mutt/1.5.24 (2015-08-30)
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nasanex01b.na.qualcomm.com (10.46.141.250)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: 6bsRaLTgxOlxyrRN1EYuoXZThk_trr0R
-X-Proofpoint-ORIG-GUID: 6bsRaLTgxOlxyrRN1EYuoXZThk_trr0R
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
- definitions=2023-08-02_18,2023-08-01_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 clxscore=1015
- malwarescore=0 spamscore=0 lowpriorityscore=0 mlxlogscore=534 bulkscore=0
- impostorscore=0 priorityscore=1501 adultscore=0 mlxscore=0 phishscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2306200000
- definitions=main-2308020201
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <1690377336-1353-1-git-send-email-schakrabarti@linux.microsoft.com>
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Aug 02 2023 15:35, Pavan Kondeti wrote:
-> Thanks Guru for submitting this script. In my limited testing, I don't
-> find any issues. It works as expected.
+On Wed, Jul 26, 2023 at 06:15:36AM -0700, Souradeep Chakrabarti wrote:
+> When unloading the MANA driver, mana_dealloc_queues() waits for the MANA
+> hardware to complete any inflight packets and set the pending send count
+> to zero. But if the hardware has failed, mana_dealloc_queues()
+> could wait forever.
+> 
+> Fix this by adding a timeout to the wait. Set the timeout to 120 seconds,
+> which is a somewhat arbitrary value that is more than long enough for
+> functional hardware to complete any sends.
+> 
+> Cc: stable@vger.kernel.org
+> Fixes: ca9c54d2d6a5 ("net: mana: Add a driver for Microsoft Azure Network Adapter (MANA)")
+> 
+> Signed-off-by: Souradeep Chakrabarti <schakrabarti@linux.microsoft.com>
 
-Great! Thank you so much for testing this script.
+Hi Souradeep. The subject line of this patch seems to be cut off half
+way.
 
-> If I run this script on a series which spans across different lists,
-> there is a possiblity that we send partial series to certain lists. What
-> is the best way to deal with this? one way is to include union of all
-> lists in CC while sending the series with primary maintainer in TO. Can
-> the script print those values for easier workflow?
-
-Thanks for bringing this up - I was hoping to start a conversation on this.
-
-Your suggestion seems logical to me. I can update v2 of this script adding an
-`-a` flag that will add all maintainers to all patches following the scheme of
-gathering the union of all maintainers, lists and "others" separately.
-
-Hoping to get feedback from other maintainers on this point as well. Should I
-expand the audience of this patch some more? I addressed this to whomever
-`get_maintainer.pl -f ./scripts/` listed, plus Bjorn.
-
-Guru Das.
+Thanks,
+Wei.
