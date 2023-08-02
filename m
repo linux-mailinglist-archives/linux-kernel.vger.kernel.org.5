@@ -2,70 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D928F76D86C
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 22:12:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4537C76D871
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 22:15:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231874AbjHBUM1 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 2 Aug 2023 16:12:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56660 "EHLO
+        id S229921AbjHBUPh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Aug 2023 16:15:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57372 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229525AbjHBUMZ (ORCPT
+        with ESMTP id S229525AbjHBUPf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Aug 2023 16:12:25 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 916E6E75;
-        Wed,  2 Aug 2023 13:12:24 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 1C2DF61AB8;
-        Wed,  2 Aug 2023 20:12:24 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DDB70C433C7;
-        Wed,  2 Aug 2023 20:12:21 +0000 (UTC)
-Date:   Wed, 2 Aug 2023 16:12:20 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Masami Hiramatsu <mhiramat@kernel.org>,
-        linux-trace-kernel@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        bpf <bpf@vger.kernel.org>, Sven Schnelle <svens@linux.ibm.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Alan Maguire <alan.maguire@oracle.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Florent Revest <revest@chromium.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>
-Subject: Re: [PATCH v4 3/9] bpf/btf: Add a function to search a member of a
- struct/union
-Message-ID: <20230802161220.579b2220@gandalf.local.home>
-In-Reply-To: <CAADnVQKrL3LZaRcgoTdGN-csPt=eyujPbw9qoxgv9tPYPmZiZA@mail.gmail.com>
-References: <169078860386.173706.3091034523220945605.stgit@devnote2>
-        <169078863449.173706.2322042687021909241.stgit@devnote2>
-        <CAADnVQ+C64_C1w1kqScZ6C5tr6_juaWFaQdAp9Mt3uzaQp2KOw@mail.gmail.com>
-        <20230801085724.9bb07d2c82e5b6c6a6606848@kernel.org>
-        <CAADnVQLaFpd2OhqP7W3xWB1b9P2GAKgrVQU1FU2yeNYKbCkT=Q@mail.gmail.com>
-        <20230802000228.158f1bd605e497351611739e@kernel.org>
-        <20230801112036.0d4ee60d@gandalf.local.home>
-        <20230801113240.4e625020@gandalf.local.home>
-        <CAADnVQ+N7b8_0UhndjwW9-5Vx2wUVvojujFLOCFr648DUv-Y2Q@mail.gmail.com>
-        <20230801190920.7a1abfd5@gandalf.local.home>
-        <20230802092146.9bda5e49528e6988ab97899c@kernel.org>
-        <20230801204054.3884688e@rorschach.local.home>
-        <20230802225634.f520080cd9de759d687a2b0a@kernel.org>
-        <CAADnVQLqXjJvCcuQLVz8HxF050jDHaSa2D7cehoYtjXdp3wGLQ@mail.gmail.com>
-        <20230802143845.3ce6ed61@gandalf.local.home>
-        <CAADnVQKrL3LZaRcgoTdGN-csPt=eyujPbw9qoxgv9tPYPmZiZA@mail.gmail.com>
-X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        Wed, 2 Aug 2023 16:15:35 -0400
+Received: from mail-pg1-x530.google.com (mail-pg1-x530.google.com [IPv6:2607:f8b0:4864:20::530])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4FDDE2689
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Aug 2023 13:15:34 -0700 (PDT)
+Received: by mail-pg1-x530.google.com with SMTP id 41be03b00d2f7-53482b44007so100198a12.2
+        for <linux-kernel@vger.kernel.org>; Wed, 02 Aug 2023 13:15:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=rivosinc-com.20221208.gappssmtp.com; s=20221208; t=1691007334; x=1691612134;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=bqaiD0oWwblWodb1STkSm+MDiqVpucLuhqfe3hzQhdE=;
+        b=yAiX8FxYkc605M0cG+7yI0Nl+xuCcB1+e2VLfkaxupBO4Hj4NNiGpqu1274aRHw/KB
+         QFTNVLNa2vGOhhLnixSOScJrplMeRvS6oweKOEiuYnxobjOL980rDlte4j8dvjXY82dL
+         JLVEYMK1nPzTZMK1x5bzfn0tY3JhzreMu/znJxGySZrF8hq4I7VWEfjgXn3zWMR3+57H
+         IRf+OcXBUUPMf+yycDv7kFDnp4dGE8uJACu/C93f0R/plZXHkX7E/p9Xbcd34jFW3CdN
+         pomzxFkfzRUvhRLvj6raPg5WHZI9z56OG97ChW6kAjslaZA72E9OyTlUnZwXw0MB4f9Y
+         vZEA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691007334; x=1691612134;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=bqaiD0oWwblWodb1STkSm+MDiqVpucLuhqfe3hzQhdE=;
+        b=FyStZVnHYdNPST19PQDY0WG+PE/8JGNg39+MmLbLOi9DWHftMXe7uFk9aEbBoSlN1h
+         su6JdsrIcPGxXbr6g8j1mxwwFi1FaKyW0Uce8n5b4dmqaMqzjTDRWQLO4YlRJmMISmTN
+         Xs5A2Lb/fM0WfvSyk1FTw+H0wXjp8KbRw9nD0MVhlarW86tiaBr81xT9uiPkQeYyRNIz
+         jsVlAaF6GDThEpC+g9DlHMaQTy+By748bIvNlYehCgtEljeB6yMho1SYBgtiZcx53gxR
+         HSDjNGvc8ahzUm/4EVDI7x79Aq1OemxrwgJIRXDVMPSnk1+fBxV29hsJNr/TFPWG+JxX
+         tNIg==
+X-Gm-Message-State: AOJu0YzVCKUoAjqhjl55V34ZJDf/DCFWRCtO7LIwR9xrbOcH/+Atzm64
+        zVDxu6PTnn3PyshZyhvE/Orjqu3GebN+6aFcTQVHYw==
+X-Google-Smtp-Source: AGHT+IEldlUzLdMbLeNZ5QAQ0zR94lcB3YjBYjuINZSrYFnfre7W0+RGSobst9wqQSqSuGXumKZlxDhigTUDgnGM86U=
+X-Received: by 2002:a17:90b:110f:b0:268:fb85:3b2 with SMTP id
+ gi15-20020a17090b110f00b00268fb8503b2mr3104373pjb.7.1691007333727; Wed, 02
+ Aug 2023 13:15:33 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS,
+References: <cover.1689792825.git.tjeznach@rivosinc.com> <c33c24036c06c023947ecb47177da273569b3ac7.1689792825.git.tjeznach@rivosinc.com>
+ <CANXhq0qRYvTffMnep-aQyTq2tMxbP-s_Lunc+cZ2Rio+BvAE=g@mail.gmail.com>
+In-Reply-To: <CANXhq0qRYvTffMnep-aQyTq2tMxbP-s_Lunc+cZ2Rio+BvAE=g@mail.gmail.com>
+From:   Tomasz Jeznach <tjeznach@rivosinc.com>
+Date:   Wed, 2 Aug 2023 13:15:22 -0700
+Message-ID: <CAH2o1u5Sr0XigUbhna0E-Zk=U76CLZZ4LbM0u4ahPaN5+nOK6A@mail.gmail.com>
+Subject: Re: [PATCH 01/11] RISC-V: drivers/iommu: Add RISC-V IOMMU - Ziommu support.
+To:     Zong Li <zong.li@sifive.com>
+Cc:     Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Anup Patel <apatel@ventanamicro.com>,
+        Albert Ou <aou@eecs.berkeley.edu>, linux@rivosinc.com,
+        linux-kernel@vger.kernel.org, Sebastien Boeuf <seb@rivosinc.com>,
+        iommu@lists.linux.dev, Palmer Dabbelt <palmer@dabbelt.com>,
+        Nick Kossifidis <mick@ics.forth.gr>,
+        linux-riscv@lists.infradead.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
         T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -73,37 +76,126 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2 Aug 2023 12:48:14 -0700
-Alexei Starovoitov <alexei.starovoitov@gmail.com> wrote:
-
-> On Wed, Aug 2, 2023 at 11:38 AM Steven Rostedt <rostedt@goodmis.org> wrote:
+On Thu, Jul 27, 2023 at 7:42=E2=80=AFPM Zong Li <zong.li@sifive.com> wrote:
+>
+> On Thu, Jul 20, 2023 at 3:34=E2=80=AFAM Tomasz Jeznach <tjeznach@rivosinc=
+.com> wrote:
 > >
-> > On Wed, 2 Aug 2023 11:24:12 -0700
-> > Alexei Starovoitov <alexei.starovoitov@gmail.com> wrote:
-> >  
-> > > This is a non starter.
-> > > bpf progs expect arch dependent 'struct pt_regs *' and we cannot change that.  
-> >
-> > If the progs are compiled into native code, isn't there optimizations that
-> > could be done? That is, if ftrace_regs is available, and the bpf program is
-> > just using the subset of pt_regs, is it possible that it could be compiled
-> > to use ftrace_regs?
-> >
-> > Forgive my ignorance on how BPF programs turn into executables when running
-> > in the kernel.  
-> 
-> Right. It's possible for the verifier to do an offset rewrite,
-> forbid certain access, always return 0 on load from certain offset,
-> and so on.
-> It's all non trivial amount of work.
-> ftrace_partial_regs() from ftrace_regs into pt_regs is so much simpler.
+> > +static int riscv_iommu_platform_probe(struct platform_device *pdev)
+> > +{
+> > +       struct device *dev =3D &pdev->dev;
+> > +       struct riscv_iommu_device *iommu =3D NULL;
+> > +       struct resource *res =3D NULL;
+> > +       int ret =3D 0;
+> > +
+> > +       iommu =3D devm_kzalloc(dev, sizeof(*iommu), GFP_KERNEL);
+> > +       if (!iommu)
+> > +               return -ENOMEM;
+> > +
+> > +       iommu->dev =3D dev;
+> > +       dev_set_drvdata(dev, iommu);
+> > +
+> > +       res =3D platform_get_resource(pdev, IORESOURCE_MEM, 0);
+> > +       if (!res) {
+> > +               dev_err(dev, "could not find resource for register regi=
+on\n");
+> > +               return -EINVAL;
+> > +       }
+> > +
+> > +       iommu->reg =3D devm_platform_get_and_ioremap_resource(pdev, 0, =
+&res);
+> > +       if (IS_ERR(iommu->reg)) {
+> > +               ret =3D dev_err_probe(dev, PTR_ERR(iommu->reg),
+> > +                                   "could not map register region\n");
+> > +               goto fail;
+> > +       };
+> > +
+> > +       iommu->reg_phys =3D res->start;
+> > +
+> > +       ret =3D -ENODEV;
+> > +
+> > +       /* Sanity check: Did we get the whole register space ? */
+> > +       if ((res->end - res->start + 1) < RISCV_IOMMU_REG_SIZE) {
+> > +               dev_err(dev, "device region smaller than register file =
+(0x%llx)\n",
+> > +                       res->end - res->start);
+> > +               goto fail;
+> > +       }
+>
+> Could we assume that DT should be responsible for specifying the right si=
+ze?
+>
 
-Sure, and the copy could be the solution we have in the near future, but if
-we could optimize it in the future, then perhaps it would be worth doing it.
+This only to validate DT provided info and driver expected register
+file size. Expectation is that DT will provide right size.
 
-Also, how are the bpf programs referencing the pt_regs? Could a ftrace_regs
-API be added too? If the verifier sees that the program is using
-ftrace_regs, it could then use the lighter weight fprobes for access,
-otherwise it falls back to the kprobe version.
 
--- Steve
+> > +static struct iommu_domain *riscv_iommu_domain_alloc(unsigned type)
+> > +{
+> > +       struct riscv_iommu_domain *domain;
+> > +
+> > +       if (type !=3D IOMMU_DOMAIN_IDENTITY &&
+> > +           type !=3D IOMMU_DOMAIN_BLOCKED)
+> > +               return NULL;
+> > +
+> > +       domain =3D kzalloc(sizeof(*domain), GFP_KERNEL);
+> > +       if (!domain)
+> > +               return NULL;
+> > +
+> > +       mutex_init(&domain->lock);
+> > +       INIT_LIST_HEAD(&domain->endpoints);
+> > +
+> > +       domain->domain.ops =3D &riscv_iommu_domain_ops;
+> > +       domain->mode =3D RISCV_IOMMU_DC_FSC_MODE_BARE;
+> > +       domain->pscid =3D ida_alloc_range(&riscv_iommu_pscids, 1,
+> > +                                       RISCV_IOMMU_MAX_PSCID, GFP_KERN=
+EL);
+> > +
+> > +       printk("domain type %x alloc %u\n", type, domain->pscid);
+> > +
+>
+> Could it uses pr_xxx instead of printk?
+>
+
+Absolutely, fixed here and elsewhere. Also, used dev_dbg wherever applicabl=
+e.
+
+> > +
+> > +static int riscv_iommu_enable(struct riscv_iommu_device *iommu, unsign=
+ed requested_mode)
+> > +{
+> > +       struct device *dev =3D iommu->dev;
+> > +       u64 ddtp =3D 0;
+> > +       u64 ddtp_paddr =3D 0;
+> > +       unsigned mode =3D requested_mode;
+> > +       unsigned mode_readback =3D 0;
+> > +
+> > +       ddtp =3D riscv_iommu_get_ddtp(iommu);
+> > +       if (ddtp & RISCV_IOMMU_DDTP_BUSY)
+> > +               return -EBUSY;
+> > +
+> > +       /* Disallow state transtion from xLVL to xLVL. */
+> > +       switch (FIELD_GET(RISCV_IOMMU_DDTP_MODE, ddtp)) {
+> > +       case RISCV_IOMMU_DDTP_MODE_BARE:
+> > +       case RISCV_IOMMU_DDTP_MODE_OFF:
+> > +               break;
+> > +       default:
+> > +               if ((mode !=3D RISCV_IOMMU_DDTP_MODE_BARE)
+> > +                   && (mode !=3D RISCV_IOMMU_DDTP_MODE_OFF))
+> > +                       return -EINVAL;
+> > +               break;
+> > +       }
+> > +
+> > + retry:
+>
+> We need to consider the `iommu.passthrough` before we set up the mode
+> in switch case, something like
+>
+
+This function is only to execute configuration and set device directory mod=
+e.
+Handling global iommu.passthrough policy is implemented in
+riscv_iommu_init() call (patch #7).
+
+Best,
+- Tomasz
