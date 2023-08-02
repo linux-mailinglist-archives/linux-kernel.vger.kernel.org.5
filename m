@@ -2,135 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 68BD176C36F
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 05:18:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C1A9D76C374
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 05:18:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231329AbjHBDSE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Aug 2023 23:18:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55576 "EHLO
+        id S231962AbjHBDS5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Aug 2023 23:18:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55872 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232013AbjHBDR7 (ORCPT
+        with ESMTP id S231516AbjHBDSn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Aug 2023 23:17:59 -0400
-Received: from mail-ot1-f77.google.com (mail-ot1-f77.google.com [209.85.210.77])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1097819BE
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Aug 2023 20:17:57 -0700 (PDT)
-Received: by mail-ot1-f77.google.com with SMTP id 46e09a7af769-6bc9d79cbf6so5406270a34.1
-        for <linux-kernel@vger.kernel.org>; Tue, 01 Aug 2023 20:17:57 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690946276; x=1691551076;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=YzxFr6VpXvMxKNFLgx6TDRiLSMqJZ6TE1M1VLYF6do8=;
-        b=N+TMQVJR85t+ISLUDDt7L5Wve9CimS6XwhUyryluiYFOwdMuS6OGvBr1Uanu1K+wTj
-         fMhwGtDuRnwEYUJEZeuhQmw9nm068/VZHoBZmLd4++C3Je2qy9qKYv1OoTMaA3X42eeE
-         yRllDbp46O+F+9J9sWGOOwds5WYqzF7CGgilVRRdlQPRjXp25KMZl2X+mZ7SQXtfQqJk
-         s8HRmi55NpzsGCMfKffuxW+THRLarQpC76GIr8cJWqWDF3nR7DJXEUp8HeebpJCHvPSM
-         yEIImKO1Yz6uEJwVynNMbyqMl5aVv0/2aE9GezggGz7qTYNmN+QFao1SX7zVyTaTvvb7
-         8hmg==
-X-Gm-Message-State: ABy/qLZ/1OlcbcJzSl+khgWKAyWqeEWi8yazW0GTdannM6Su9yl/aFcJ
-        Blil0TaApf+iuYdnkHXew9b0b8hEJJnAF+arUSmwGNulMenl
-X-Google-Smtp-Source: APBJJlHYSiWk1s84nzGXaiDRqCmJvLbWn9fU2bS1lPgH8xcVht8nfT5jDIjzaH939nXj/ITRs9MVHAI7XLRnYqy6fG3SqfgFHysL
+        Tue, 1 Aug 2023 23:18:43 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.151])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 631031713;
+        Tue,  1 Aug 2023 20:18:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1690946322; x=1722482322;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=9NCM2C6plWYZlTWDXnxmxP68QKs4h7xrJfHjoOpKpzc=;
+  b=HKVScfi42mwgsATJUFTdoEF/d8ysJsHLoXgzwBGEilbCqHr8C50FUEwC
+   TPHKYD4tlYU6dfr8TU/vVnv6JOOMXOCKgV3bM+G8Kc4JzN6LPWObPfOkZ
+   0hLXJuFBXKISsCaX0ZJXXXdRMLrFAlRJWqyPJKDYobKJ0pmH5S15GP3oe
+   hBWEw87tZpOkDuux4fB6w5WXxMOZbHUvwdOP7lTIbs5uVTElHFqY1y55T
+   l2OZvigm/JmLckZ7RZRBL30rjWtYzsLI29xD5ZfjCPydP17Ux/fWcWx6J
+   YF1KT2e3eRUrBkWQyfgrk+S2TvcDBiQkhoM5nZzG9W+RVoQIhc292UsGl
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10789"; a="349773127"
+X-IronPort-AV: E=Sophos;i="6.01,248,1684825200"; 
+   d="scan'208";a="349773127"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Aug 2023 20:18:41 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10789"; a="794424914"
+X-IronPort-AV: E=Sophos;i="6.01,248,1684825200"; 
+   d="scan'208";a="794424914"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by fmsmga008.fm.intel.com with ESMTP; 01 Aug 2023 20:18:36 -0700
+Received: from andy by smile.fi.intel.com with local (Exim 4.96)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1qR2Nd-00ExOt-1i;
+        Wed, 02 Aug 2023 06:18:33 +0300
+Date:   Wed, 2 Aug 2023 06:18:33 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Bjorn Helgaas <helgaas@kernel.org>
+Cc:     Shuah Khan <skhan@linuxfoundation.org>,
+        David Gow <davidgow@google.com>,
+        Daniel Latypov <dlatypov@google.com>,
+        "Steven Rostedt (Google)" <rostedt@goodmis.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        kunit-dev@googlegroups.com, linux-arm-kernel@lists.infradead.org,
+        linux-pci@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Brendan Higgins <brendan.higgins@linux.dev>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Lorenzo Pieralisi <lpieralisi@kernel.org>,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>
+Subject: Re: [PATCH v4 1/4] kernel.h: Split out COUNT_ARGS() and
+ CONCATENATE() to args.h
+Message-ID: <ZMnLCSsY83IphIrv@smile.fi.intel.com>
+References: <20230718211147.18647-2-andriy.shevchenko@linux.intel.com>
+ <20230801211139.GA51676@bhelgaas>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6830:138a:b0:6b8:c631:5c5a with SMTP id
- d10-20020a056830138a00b006b8c6315c5amr15549784otq.4.1690946276448; Tue, 01
- Aug 2023 20:17:56 -0700 (PDT)
-Date:   Tue, 01 Aug 2023 20:17:56 -0700
-In-Reply-To: <000000000000672c810601db3e84@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000245f470601e81cbc@google.com>
-Subject: Re: [syzbot] [btrfs?] kernel BUG in btrfs_cancel_balance
-From:   syzbot <syzbot+d6443e1f040e8d616e7b@syzkaller.appspotmail.com>
-To:     clm@fb.com, dsterba@suse.com, josef@toxicpanda.com,
-        linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=0.8 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230801211139.GA51676@bhelgaas>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-syzbot has found a reproducer for the following issue on:
+On Tue, Aug 01, 2023 at 04:11:39PM -0500, Bjorn Helgaas wrote:
+> On Wed, Jul 19, 2023 at 12:11:44AM +0300, Andy Shevchenko wrote:
+> > kernel.h is being used as a dump for all kinds of stuff for a long time.
+> > The COUNT_ARGS() and CONCATENATE() macros may be used in some places
+> > without need of the full kernel.h dependency train with it.
+> > 
+> > Here is the attempt on cleaning it up by splitting out these macros().
+> > 
+> > While at it, include new header where it's being used.
+> > 
+> > Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> > Acked-by: Steven Rostedt (Google) <rostedt@goodmis.org>
+> 
+> Acked-by: Bjorn Helgaas <bhelgaas@google.com>	# PCI
 
-HEAD commit:    5d0c230f1de8 Linux 6.5-rc4
-git tree:       upstream
-console+strace: https://syzkaller.appspot.com/x/log.txt?x=13ccaa4da80000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=1e3d5175079af5a4
-dashboard link: https://syzkaller.appspot.com/bug?extid=d6443e1f040e8d616e7b
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1167e711a80000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=16a90161a80000
+Thank you!
 
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/e60219ddf5b3/disk-5d0c230f.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/d843603af783/vmlinux-5d0c230f.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/a0a1cdcb2de2/bzImage-5d0c230f.xz
-mounted in repro: https://storage.googleapis.com/syzbot-assets/6a80485ad7a0/mount_0.gz
+...
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+d6443e1f040e8d616e7b@syzkaller.appspotmail.com
+> > -
+> > +#include <linux/args.h>
+> >  #include <linux/mod_devicetable.h>
+> >  
+> >  #include <linux/types.h>
+> 
+> If there's not a reason otherwise, I'd put this in the main list
+> instead of the weirdly separated mod_devicetable.h.
 
-------------[ cut here ]------------
-kernel BUG at fs/btrfs/volumes.c:4642!
-invalid opcode: 0000 [#1] PREEMPT SMP KASAN
-CPU: 0 PID: 5103 Comm: syz-executor303 Not tainted 6.5.0-rc4-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 07/12/2023
-RIP: 0010:btrfs_cancel_balance+0x429/0x430 fs/btrfs/volumes.c:4641
-Code: e8 1c 31 01 00 4c 89 ef 48 c7 c6 80 fa 4a 8b e8 2d 17 24 07 e9 ef fe ff ff e8 93 ab 25 07 e8 2e f2 f4 fd 0f 0b e8 27 f2 f4 fd <0f> 0b 0f 1f 44 00 00 f3 0f 1e fa 55 48 89 e5 41 57 41 56 41 55 41
-RSP: 0018:ffffc90003edfdc0 EFLAGS: 00010293
-RAX: ffffffff8396b559 RBX: ffff888072810010 RCX: ffff88801fa88000
-RDX: 0000000000000000 RSI: 0000000000000004 RDI: 0000000000000001
-RBP: ffffc90003edfed0 R08: ffff8880728113d3 R09: 1ffff1100e50227a
-R10: dffffc0000000000 R11: ffffed100e50227b R12: 1ffff920007dbfc0
-R13: ffff888072811468 R14: dffffc0000000000 R15: ffff888072811460
-FS:  00007faef2e626c0(0000) GS:ffff8880b9800000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007faef2a1a000 CR3: 000000001a7bc000 CR4: 00000000003506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- <TASK>
- btrfs_ioctl_balance_ctl+0x3f/0x70 fs/btrfs/ioctl.c:3632
- vfs_ioctl fs/ioctl.c:51 [inline]
- __do_sys_ioctl fs/ioctl.c:870 [inline]
- __se_sys_ioctl+0xf8/0x170 fs/ioctl.c:856
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x41/0xc0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x63/0xcd
-RIP: 0033:0x7faefa2c65f9
-Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 81 18 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b0 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007faef2e62218 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
-RAX: ffffffffffffffda RBX: 00007faefa352618 RCX: 00007faefa2c65f9
-RDX: 0000000000000002 RSI: 0000000040049421 RDI: 0000000000000004
-RBP: 00007faefa352610 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 00007faefa31f26c
-R13: 0030656c69662f2e R14: 7573617461646f6e R15: 61635f7261656c63
- </TASK>
-Modules linked in:
----[ end trace 0000000000000000 ]---
-RIP: 0010:btrfs_cancel_balance+0x429/0x430 fs/btrfs/volumes.c:4641
-Code: e8 1c 31 01 00 4c 89 ef 48 c7 c6 80 fa 4a 8b e8 2d 17 24 07 e9 ef fe ff ff e8 93 ab 25 07 e8 2e f2 f4 fd 0f 0b e8 27 f2 f4 fd <0f> 0b 0f 1f 44 00 00 f3 0f 1e fa 55 48 89 e5 41 57 41 56 41 55 41
-RSP: 0018:ffffc90003edfdc0 EFLAGS: 00010293
-RAX: ffffffff8396b559 RBX: ffff888072810010 RCX: ffff88801fa88000
-RDX: 0000000000000000 RSI: 0000000000000004 RDI: 0000000000000001
-RBP: ffffc90003edfed0 R08: ffff8880728113d3 R09: 1ffff1100e50227a
-R10: dffffc0000000000 R11: ffffed100e50227b R12: 1ffff920007dbfc0
-R13: ffff888072811468 R14: dffffc0000000000 R15: ffff888072811460
-FS:  00007faef2e626c0(0000) GS:ffff8880b9800000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007ffe38b00e58 CR3: 000000001a7bc000 CR4: 00000000003506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+The idea is to make them alphabetically ordered. currently even main list
+is a mess. And I have no idea why mod_devicetable.h is so special, a few
+bus headers (e.g., i2c, spi) consider that just as yet another header while
+actually ain't using it (in the respective _headers_).
+
+That said, I would take the sorting change as a separate one that can be
+done after this.
+
+-- 
+With Best Regards,
+Andy Shevchenko
 
 
----
-If you want syzbot to run the reproducer, reply with:
-#syz test: git://repo/address.git branch-or-commit-hash
-If you attach or paste a git patch, syzbot will apply it before testing.
