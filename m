@@ -2,151 +2,197 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A72676D7AC
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 21:24:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1721476D7B1
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 21:26:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230465AbjHBTYv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Aug 2023 15:24:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37702 "EHLO
+        id S230204AbjHBT0k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Aug 2023 15:26:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38300 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229495AbjHBTYt (ORCPT
+        with ESMTP id S229495AbjHBT0h (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Aug 2023 15:24:49 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8AE91119;
-        Wed,  2 Aug 2023 12:24:48 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 27F6361AE1;
-        Wed,  2 Aug 2023 19:24:48 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 40F7BC433C7;
-        Wed,  2 Aug 2023 19:24:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691004287;
-        bh=ceVwIDyjSpFimVYJA8IpCtR5gV/pCzomVlAV3sy7vK8=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=DVEWldMGeNvP66mevWA8PK/kEqqZkNcCybPk+5q6lc4jhziWzj+L4cr9l5j10oFWw
-         MtWiCnFHp5OMEuBxN+GvukCdaRDJj/GO8ZJBOWcd4KK53IDFjCkY4vE5JLp8ZS5QBQ
-         rkwaOJf/o4NCAkQaPOqojwL2eK2Be6GLt7URxpSmSb2f82l7Cl2ubCa5HsQuGpN3Up
-         V0uTawhQ1GCiVUD/Tl2XksQxaQ1lZSDsswgp2fucwZJN7B53z21xjNMQmObtjUpicV
-         eZLA/LOeD5v7pjJPxJ+uAEiyFyamxcpdn8Hptps3zDjVm2uQ2zeWNjrW/LyRFsNvY/
-         Y1HsTEDpLRt6A==
-Date:   Wed, 2 Aug 2023 14:24:45 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     "Verma, Achal" <a-verma1@ti.com>
-Cc:     Vignesh Raghavendra <vigneshr@ti.com>,
-        Lorenzo Pieralisi <lpieralisi@kernel.org>,
-        Krzysztof Wilczy_ski <kw@linux.com>,
-        Rob Herring <robh@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        linux-omap@vger.kernel.org, linux-pci@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [EXTERNAL] Re: [PATCH v3] PCI: j721e: Delay 100ms T_PVPERL from
- power stable to PERST# inactive
-Message-ID: <20230802192445.GA64939@bhelgaas>
+        Wed, 2 Aug 2023 15:26:37 -0400
+Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9EF7198B
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Aug 2023 12:26:36 -0700 (PDT)
+Received: by mail-pj1-x102f.google.com with SMTP id 98e67ed59e1d1-26826f93a1fso54717a91.3
+        for <linux-kernel@vger.kernel.org>; Wed, 02 Aug 2023 12:26:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1691004396; x=1691609196;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=YoqyI/XiFTcZ0l4BsoYyXnYQUsdBHx0RPZa0K7IP7RE=;
+        b=W90c3LYqxCQejsdA13wix+Z+oz5S40cLcWGStf2LcSBINctqmlnIZyC3cbO4UhNa71
+         3tQ1HrwRP6T7Lz/CX62MxRRH6wH8ioEtCfKBQ+BJaI9lt/MMCq11lY/e1P/EzpnixuQH
+         lsvOUsfS+rX9jCFLHHOa85yCi4OfN63dAzu3k=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691004396; x=1691609196;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=YoqyI/XiFTcZ0l4BsoYyXnYQUsdBHx0RPZa0K7IP7RE=;
+        b=A4KcJi9xvqcZvFmd+x8rtWFMqJXBVo2FeU9EiZH8leM/vmfuBx3zgQTWKMCfovyTMD
+         lZJunSIKa5NwYpOnZeeNjfPmcrL5TglC5EVTMzP+mfgI6c8V/unIRgytMeMkctEgbpEL
+         SehP8crHk8iLJ0CXOufK5JRzGvwoyPH6FUA2CQpAfSdJCIDtlf22oOBpssAH+PBZAM1n
+         iyh3s8Tn7n+yGlWEOj3LwXBnSOuWWlbZoBR9M0gYWJdrd0ni7P0pz60QRlxVAMTjkJ/J
+         v75HAPJy7doWcK2Ifg1R7ShkEXio+iqdK+uimimkSpYOqprOJWCWfPfJC7Gm59XOzPBs
+         Vkeg==
+X-Gm-Message-State: ABy/qLYIaux4uIzz/954HQzOTxNoxKY37vObrPSsckJS7y+Wp2DNKSBq
+        1GVnp7w6e7Bodk+jclknkYbGoA==
+X-Google-Smtp-Source: APBJJlF0wsw1TXbRGmlGZ6iSwCmnLk1v+HJSSZBEwc2IyRyuXMOULVj7VHVYDSLlusfxzxCpI3m9lQ==
+X-Received: by 2002:a17:90a:5d0c:b0:263:6e10:7cdd with SMTP id s12-20020a17090a5d0c00b002636e107cddmr16745127pji.38.1691004396230;
+        Wed, 02 Aug 2023 12:26:36 -0700 (PDT)
+Received: from tictac2.mtv.corp.google.com ([2620:15c:9d:2:db33:7523:f391:a4d])
+        by smtp.gmail.com with ESMTPSA id a8-20020a17090a008800b00268b439a0cbsm1527266pja.23.2023.08.02.12.26.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 02 Aug 2023 12:26:35 -0700 (PDT)
+From:   Douglas Anderson <dianders@chromium.org>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Michal Hocko <mhocko@suse.com>, Petr Mladek <pmladek@suse.com>,
+        Douglas Anderson <dianders@chromium.org>,
+        kernel test robot <lkp@intel.com>,
+        Lecopzer Chen <lecopzer.chen@mediatek.com>,
+        Pingfan Liu <kernelfans@gmail.com>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v2] watchdog/hardlockup: Avoid large stack frames in watchdog_hardlockup_check()
+Date:   Wed,  2 Aug 2023 12:26:00 -0700
+Message-ID: <20230802122555.v2.1.I501ab68cb926ee33a7c87e063d207abf09b9943c@changeid>
+X-Mailer: git-send-email 2.41.0.585.gd2178a4bd4-goog
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <8951d4fd-279d-8a78-65a3-daeb4befa899@ti.com>
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 02, 2023 at 02:38:02PM +0530, Verma, Achal wrote:
-> On 7/18/2023 9:25 PM, Bjorn Helgaas wrote:
-> > On Fri, Jul 07, 2023 at 03:21:19PM +0530, Achal Verma wrote:
-> > > As per the PCIe Card Electromechanical specification REV. 5.0, PERST#
-> > > signal should be de-asserted after minimum 100ms from the time power-rails
-> > > become stable. So, to ensure 100ms delay to give sufficient time for
-> > > power-rails and refclk to become stable, change delay from 100us to 100ms.
-> > > 
-> > >  From PCIe Card Electromechanical specification REV. 5.0 section 2.9.2:
-> > > TPVPERL: Power stable to PERST# inactive - 100ms
-> > > 
-> > > Fixes: f3e25911a430 ("PCI: j721e: Add TI J721E PCIe driver")
-> > > Signed-off-by: Achal Verma <a-verma1@ti.com>
-> > > ---
-> > > 
-> > > Changes from v2:
-> > > * Fix commit message.
-> > > 
-> > > Change from v1:
-> > > * Add macro for delay value.
-> > > 
-> > >   drivers/pci/controller/cadence/pci-j721e.c | 11 +++++------
-> > >   drivers/pci/pci.h                          |  2 ++
-> > >   2 files changed, 7 insertions(+), 6 deletions(-)
-> > > 
-> > > diff --git a/drivers/pci/controller/cadence/pci-j721e.c b/drivers/pci/controller/cadence/pci-j721e.c
-> > > index e70213c9060a..32b6a7dc3cff 100644
-> > > --- a/drivers/pci/controller/cadence/pci-j721e.c
-> > > +++ b/drivers/pci/controller/cadence/pci-j721e.c
-> > > @@ -498,14 +498,13 @@ static int j721e_pcie_probe(struct platform_device *pdev)
-> > >   		/*
-> > >   		 * "Power Sequencing and Reset Signal Timings" table in
-> > > -		 * PCI EXPRESS CARD ELECTROMECHANICAL SPECIFICATION, REV. 3.0
-> > > -		 * indicates PERST# should be deasserted after minimum of 100us
-> > > -		 * once REFCLK is stable. The REFCLK to the connector in RC
-> > > -		 * mode is selected while enabling the PHY. So deassert PERST#
-> > > -		 * after 100 us.
-> > > +		 * PCI EXPRESS CARD ELECTROMECHANICAL SPECIFICATION, REV. 5.0
-> > > +		 * indicates PERST# should be deasserted after minimum of 100ms
-> > > +		 * after power rails achieve specified operating limits and
-> > > +		 * within this period reference clock should also become stable.
-> > 
-> > I think the problem is not that the current code is *wrong*, because
-> > we do need to observe T_PERST-CLK, but that it failed to *also*
-> > account for T_PVPERL.
-> > 
-> > There are two delays before deasserting PERST#:
-> > 
-> >    T_PVPERL: delay after power becomes stable
-> >    T_PERST-CLK: delay after REFCLK becomes stable
-> > 
-> > I assume power is enabled by phy_power_on(), and REFCLK is enabled by
-> > clk_prepare_enable():
-> > 
-> >    cdns_pcie_init_phy
-> >      cdns_pcie_enable_phy
-> >        phy_power_on             <-- power becomes stable
-> >    clk_prepare_enable           <-- REFCLK becomes stable
-> >    if (gpiod)
-> >      usleep_range
-> >      gpiod_set_value_cansleep(gpiod, 1)   <-- deassert PERST#
-> > 
-> > I don't actually know if phy_power_on() guarantees that power is
-> > stable before it returns.  But I guess that's our assumption?
-> > Similarly for clk_prepare_enable().
-> > 
-> > In any case, we have to observe both delays.  They overlap, and
-> > T_PVPERL is 1000 times longer than T_PERST-CLK, so there might be
-> > enough slop in an msleep(100) to cover both, but I think I would do
-> > the simple-minded:
-> > 
-> >    msleep(PCIE_TPVPERL_MS);
-> >    usleep_range(PCIE_TPERST_CLK_US, 2 * PCIE_TPERST_CLK_US);
-> > 
-> I think adding 100us more is not required since as you said and as also
-> mentioned in CEM spec, 100ms covers for both power rails and refclock to
-> get stable and 2 consecutive sleep call looks different to me.
-> But if still required (please let me know), will do the suggested change,
-> along with other fixes you asked below.
+After commit 77c12fc95980 ("watchdog/hardlockup: add a "cpu" param to
+watchdog_hardlockup_check()") we started storing a `struct cpumask` on
+the stack in watchdog_hardlockup_check(). On systems with
+CONFIG_NR_CPUS set to 8192 this takes up 1K on the stack. That
+triggers warnings with `CONFIG_FRAME_WARN` set to 1024.
 
-If REFCLK is stable when clk_prepare_enable() returns, and we don't
-start the msleep(PCIE_TPVPERL_MS) until then, it should be safe.  
-Maybe mention T_PERST-CLK in a comment, e.g.,
+Instead of putting this `struct cpumask` on the stack, we'll allocate
+it on the heap whenever userspace tells us that they want to backtrace
+all CPUs upon a hardlockup.
 
-  PCIe CEM r5.0, sec 2.2.1, requires both T_PVPERL (100ms) between
-  power stable and PERST# inactive and T_PERST_CLK (100us) between
-  REFCLK stable and PERST# inactive.  Starting the T_PVPERL delay
-  after REFCLK is stable means that delay covers T_PERST_CLK as well.
+NOTE: the reason that this mask is even needed is to make sure that we
+can print the hung CPU first, which makes the logs much easier to
+understand.
 
-Bjorn
+Fixes: 77c12fc95980 ("watchdog/hardlockup: add a "cpu" param to watchdog_hardlockup_check()")
+Reported-by: kernel test robot <lkp@intel.com>
+Closes: https://lore.kernel.org/r/202307310955.pLZDhpnl-lkp@intel.com
+Signed-off-by: Douglas Anderson <dianders@chromium.org>
+---
+
+Changes in v2:
+- Allocate space when userspace requests all cpus be backtraced.
+
+ kernel/watchdog.c | 44 ++++++++++++++++++++++++++++++++++----------
+ 1 file changed, 34 insertions(+), 10 deletions(-)
+
+diff --git a/kernel/watchdog.c b/kernel/watchdog.c
+index be38276a365f..25d5627a6580 100644
+--- a/kernel/watchdog.c
++++ b/kernel/watchdog.c
+@@ -93,6 +93,8 @@ static DEFINE_PER_CPU(bool, watchdog_hardlockup_warned);
+ static DEFINE_PER_CPU(bool, watchdog_hardlockup_touched);
+ static unsigned long watchdog_hardlockup_all_cpu_dumped;
+ 
++static struct cpumask *hardlockup_backtrace_mask;
++
+ notrace void arch_touch_nmi_watchdog(void)
+ {
+ 	/*
+@@ -106,6 +108,29 @@ notrace void arch_touch_nmi_watchdog(void)
+ }
+ EXPORT_SYMBOL(arch_touch_nmi_watchdog);
+ 
++static int hardlockup_all_cpu_backtrace_proc_handler(struct ctl_table *table, int write,
++		  void *buffer, size_t *lenp, loff_t *ppos)
++{
++	int ret;
++
++	ret = proc_dointvec_minmax(table, write, buffer, lenp, ppos);
++
++	/*
++	 * Only allocate memory for the backtrace mask if userspace actually
++	 * wants to trace all CPUs since this can take up 1K of space on a
++	 * system with CONFIG_NR_CPUS=8192.
++	 */
++	if (sysctl_hardlockup_all_cpu_backtrace && !hardlockup_backtrace_mask) {
++		hardlockup_backtrace_mask =
++			   kzalloc(sizeof(*hardlockup_backtrace_mask), GFP_KERNEL);
++	} else if (!sysctl_hardlockup_all_cpu_backtrace && hardlockup_backtrace_mask) {
++		kfree(hardlockup_backtrace_mask);
++		hardlockup_backtrace_mask = NULL;
++	}
++
++	return ret;
++}
++
+ void watchdog_hardlockup_touch_cpu(unsigned int cpu)
+ {
+ 	per_cpu(watchdog_hardlockup_touched, cpu) = true;
+@@ -151,9 +176,6 @@ void watchdog_hardlockup_check(unsigned int cpu, struct pt_regs *regs)
+ 	 */
+ 	if (is_hardlockup(cpu)) {
+ 		unsigned int this_cpu = smp_processor_id();
+-		struct cpumask backtrace_mask;
+-
+-		cpumask_copy(&backtrace_mask, cpu_online_mask);
+ 
+ 		/* Only print hardlockups once. */
+ 		if (per_cpu(watchdog_hardlockup_warned, cpu))
+@@ -167,19 +189,20 @@ void watchdog_hardlockup_check(unsigned int cpu, struct pt_regs *regs)
+ 				show_regs(regs);
+ 			else
+ 				dump_stack();
+-			cpumask_clear_cpu(cpu, &backtrace_mask);
+ 		} else {
+-			if (trigger_single_cpu_backtrace(cpu))
+-				cpumask_clear_cpu(cpu, &backtrace_mask);
++			trigger_single_cpu_backtrace(cpu);
+ 		}
+ 
+ 		/*
+ 		 * Perform multi-CPU dump only once to avoid multiple
+ 		 * hardlockups generating interleaving traces
+ 		 */
+-		if (sysctl_hardlockup_all_cpu_backtrace &&
+-		    !test_and_set_bit(0, &watchdog_hardlockup_all_cpu_dumped))
+-			trigger_cpumask_backtrace(&backtrace_mask);
++		if (hardlockup_backtrace_mask &&
++		    !test_and_set_bit(0, &watchdog_hardlockup_all_cpu_dumped)) {
++			cpumask_copy(hardlockup_backtrace_mask, cpu_online_mask);
++			cpumask_clear_cpu(cpu, hardlockup_backtrace_mask);
++			trigger_cpumask_backtrace(hardlockup_backtrace_mask);
++		}
+ 
+ 		if (hardlockup_panic)
+ 			nmi_panic(regs, "Hard LOCKUP");
+@@ -192,6 +215,7 @@ void watchdog_hardlockup_check(unsigned int cpu, struct pt_regs *regs)
+ 
+ #else /* CONFIG_HARDLOCKUP_DETECTOR_COUNTS_HRTIMER */
+ 
++#define hardlockup_all_cpu_backtrace_proc_handler proc_dointvec_minmax
+ static inline void watchdog_hardlockup_kick(void) { }
+ 
+ #endif /* !CONFIG_HARDLOCKUP_DETECTOR_COUNTS_HRTIMER */
+@@ -916,7 +940,7 @@ static struct ctl_table watchdog_sysctls[] = {
+ 		.data		= &sysctl_hardlockup_all_cpu_backtrace,
+ 		.maxlen		= sizeof(int),
+ 		.mode		= 0644,
+-		.proc_handler	= proc_dointvec_minmax,
++		.proc_handler	= hardlockup_all_cpu_backtrace_proc_handler,
+ 		.extra1		= SYSCTL_ZERO,
+ 		.extra2		= SYSCTL_ONE,
+ 	},
+-- 
+2.41.0.585.gd2178a4bd4-goog
+
