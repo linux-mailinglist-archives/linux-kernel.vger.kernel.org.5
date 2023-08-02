@@ -2,124 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9838176C4D7
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 07:26:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E86E476C4DC
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 07:27:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230189AbjHBFZ5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Aug 2023 01:25:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46064 "EHLO
+        id S231237AbjHBF12 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Aug 2023 01:27:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46474 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229537AbjHBFZy (ORCPT
+        with ESMTP id S229537AbjHBF10 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Aug 2023 01:25:54 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.24])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05EF8EE;
-        Tue,  1 Aug 2023 22:25:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1690953954; x=1722489954;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=SUYyiEFaOXroKQDsrvyWD1ilNyTYr4fVpzmSKVWFGCo=;
-  b=iWz30P3aHgJ+eISBJX5FEIjlH4N+wXjVR0TOAk5ZRNLf5rwnquVXiSrF
-   KuwTJuTpiIWo2Q2h9WeNRF4iqAbMEEl6KxIwgniPjz3a7uTfr0qpi9e5y
-   9d6+9q+ipksxV62N50Pc9T1juj7r/G0V11kvXODLI+qb8f1F8PCjEGbb0
-   4NxktdDuk03vqNMu8o2D8Pnf9KahjpteZ7aRKxE8xomx8KUx4WVsUnNQE
-   OygD13h9CMMr+gn/20qxvsSJuII8vTlB8f1c+tuilXqmb3PQm9jrKm4ww
-   wMm0VDMlSQo4CYzYe7NEUCE/ZlL9Ki/Exa0kyo/o0ecFaTMFyFXF4CWVP
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10789"; a="372215666"
-X-IronPort-AV: E=Sophos;i="6.01,248,1684825200"; 
-   d="scan'208";a="372215666"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Aug 2023 22:25:53 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10789"; a="758611562"
-X-IronPort-AV: E=Sophos;i="6.01,248,1684825200"; 
-   d="scan'208";a="758611562"
-Received: from black.fi.intel.com ([10.237.72.28])
-  by orsmga008.jf.intel.com with ESMTP; 01 Aug 2023 22:25:51 -0700
-Received: by black.fi.intel.com (Postfix, from userid 1001)
-        id 7132213F; Wed,  2 Aug 2023 08:26:01 +0300 (EEST)
-Date:   Wed, 2 Aug 2023 08:26:01 +0300
-From:   Mika Westerberg <mika.westerberg@linux.intel.com>
-To:     Mario Limonciello <mario.limonciello@amd.com>
-Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        Bjorn Helgaas <helgaas@kernel.org>, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Len Brown <lenb@kernel.org>,
-        linux-acpi@vger.kernel.org, Iain Lane <iain@orangesquash.org.uk>,
-        Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Subject: Re: [PATCH v7 2/2] PCI: Don't put non-power manageable PCIe root
- ports into D3
-Message-ID: <20230802052601.GM14638@black.fi.intel.com>
-References: <20230711221427.GA250962@bhelgaas>
- <b82a50eb-8182-84ca-5b24-dbe8870fa871@amd.com>
- <CAJZ5v0i6PviqW7u3i8hmvSCvR_VHqP-mWRy3Da8Ev_1vi9qBQA@mail.gmail.com>
- <a309e3fe-b1f9-e269-cb97-8af87c8d483b@amd.com>
- <CAJZ5v0jvxrDMR6YHFpYZ4yYpp82-3TtrH==SMRFtUMJsv7=i=g@mail.gmail.com>
- <37b005d5-68fb-f8dd-67e2-c953d677fca2@amd.com>
- <8298c01c-abec-914b-0542-459f38c635fe@amd.com>
- <CAJZ5v0i3g0JujMwikB8niRZ93hXJZqWtjrCjbaDmkMLUbMmwMA@mail.gmail.com>
- <d1b2cf1b-de5f-6c2e-c8dc-fdf60cd0882d@amd.com>
+        Wed, 2 Aug 2023 01:27:26 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4207CC6;
+        Tue,  1 Aug 2023 22:27:25 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id CF274617C4;
+        Wed,  2 Aug 2023 05:27:24 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AFF52C433C7;
+        Wed,  2 Aug 2023 05:27:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1690954044;
+        bh=azM3bcFJeWc/QfFcM1GLP+oyJesxpNRDvkBEwKapPVw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=PquN6SH5qSNL/QpI9d6APdUMX7krzrOugE45kPfPFLFLu6+lFBwPTO92BsE/Ljm+l
+         QLhO19ojv4MXz7cdZ0IH4TfKN6Idd8rH9CeDJs+CJiZ19ZyYGw9PeKKczDzqlMqTSC
+         pHCY1+Un92ZXedh+C1EI3MKH8MzU34DtTYI1Nb0c=
+Date:   Wed, 2 Aug 2023 07:27:16 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Thinh Nguyen <Thinh.Nguyen@synopsys.com>
+Cc:     Stanley Chang <stanley_chang@realtek.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2 1/2] usb: dwc3: add Realtek DHC RTD SoC dwc3 glue
+ layer driver
+Message-ID: <2023080232-stowaway-resisting-fe39@gregkh>
+References: <20230801092541.25261-1-stanley_chang@realtek.com>
+ <20230802011400.v4jim6ajsqc3tvei@synopsys.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <d1b2cf1b-de5f-6c2e-c8dc-fdf60cd0882d@amd.com>
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+In-Reply-To: <20230802011400.v4jim6ajsqc3tvei@synopsys.com>
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Mario,
+On Wed, Aug 02, 2023 at 01:14:09AM +0000, Thinh Nguyen wrote:
+> > +MODULE_LICENSE("GPL");
+> 
+> I'm not familiar with licensing much, but can the SPDX header indicates
+> different version than the module license?
 
-On Tue, Aug 01, 2023 at 10:17:11PM -0500, Mario Limonciello wrote:
-> > Consequently, platform_pci_bridge_d3() will return false and the only
-> > thing that may allow the port to go into D0 is the dmi_get_bios_year()
-> > check at the end of pci_bridge_d3_possible().
-> > 
-> > However, that was added, because there are Intel platforms on which
-> > Root Ports need to be programmed into D3hot on suspend (which allows
-> > the whole platform to reduce power significantly) and there are no
-> > ACPI device power management objects associated with them (Mika should
-> > know the gory details related to this).  It looks like under Windows
-> > the additional power reduction would not be possible on those systems,
-> > but that would be a problem, wouldn't it?
-> > 
-> 
-> I've been thinking on this today, and I at least have a hypothesis about
-> this behavior.  Perhaps Windows is actually utilizing enabled PEP
-> constraints to enforce what state device should be put into over Modern
-> Standby cycles in the absence of ACPI objects.
-> 
-> In the case of one of my problematic system the PEP constraints for the root
-> port are:
-> 
-> Package (0x04)
-> {
-> 	0x00,
-> 	"\\_SB.PCI0.GP17",
-> 	0x00,
-> 	0x00
-> },
-> 
-> That first 0x00 means the constraint isn't actually enabled for the root
-> port.
-> 
-> Mika,
-> 
-> Could you get an acpidump from one of these problematic Intel systems so we
-> can check the PEP constraints to see if this theory works? Or maybe you have
-> some other ideas why this is different?
+They match, so I do not understand the issue.  Look at module.h for a
+list of what the different strings of MODULE_LICENSE() mean for details.
 
-The patch adding this was merged in 2016 and unfortunately I don't have
-any of the ACPI dumps from them available anymore (and do not recall the
-details either). I think these were Apollo Lake-P based systems with the
-initial runtime D3cold and S0ix support at the time.
+thanks,
+
+greg k-h
