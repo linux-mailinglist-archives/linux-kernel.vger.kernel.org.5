@@ -2,177 +2,202 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DCF1176CA71
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 12:06:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C26576CA73
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 12:06:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232078AbjHBKGG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Aug 2023 06:06:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34406 "EHLO
+        id S232459AbjHBKGO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Aug 2023 06:06:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34524 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231509AbjHBKGD (ORCPT
+        with ESMTP id S231477AbjHBKGI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Aug 2023 06:06:03 -0400
-Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com [IPv6:2a00:1450:4864:20::331])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 562E011F
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Aug 2023 03:05:38 -0700 (PDT)
-Received: by mail-wm1-x331.google.com with SMTP id 5b1f17b1804b1-3fe1d462762so30371385e9.0
-        for <linux-kernel@vger.kernel.org>; Wed, 02 Aug 2023 03:05:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1690970737; x=1691575537;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=cF2FUhStQzchBg8EsNZ3PTlwlia/z+UG1itwYa+1w48=;
-        b=JzfYxtvZfxxFD6qkz6THP204zLrAiElgl0934FX0RHk3ykyx8MwCzq2wjKaeQkrJJ4
-         ISUnpj2tVfFBAn9YipG8V4o7XH4bW8V8F/Gz+aCm+fqCFsCMS1ovL1qGpePz9I5ZE/u6
-         SC7xTqA8aiQkzfjgf24AqVRpNsU909t3DEn8e9A/sKZvBes5ZNkbokaAFUw6+KtfWxdl
-         bZuDw0sSosmGQyfRa8xCm2GGzkzC4sKHJt/G16tv+/0heA+KAbSO5QEKb9CKisssPX5K
-         E3S/Ba/HIn4QOZq6L/NKViYZuPwZxBGB0ySGve2kqP3rgmV+9NCggNBA0Et3wwzHlZ+P
-         ivYg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690970737; x=1691575537;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=cF2FUhStQzchBg8EsNZ3PTlwlia/z+UG1itwYa+1w48=;
-        b=hR3cGzhM0DQOdXTzmKAugk1BcVBYxfChxUGeQyKVqPFfvlQmclBKplmCntyd4W0Aar
-         rQGm4WCElBvHLf3RAdhixMJEc+UCTgR8jHZde/J4okaS12PYZrPEGGit4Zvlf27N+CjH
-         dGxTnWqpcbztu4YK1tE/DDhZEbify40TfHJ66AjEt6tOxhamxDySwcrfoKQiufHemyk0
-         zK6P7kAE3UXPSpJMXK6tsxUGLpv7TzBWpjOBIN8/MDE+cGKpruU2Ssd1vprQnPFrc5mc
-         b4Evi6AqCiTuDdOSBY4zk7tGRmB90f9YmTQ6qdXk7S8C9wdrj/8tgHg/QM6Jj4ONJiRM
-         UqMg==
-X-Gm-Message-State: ABy/qLZ1h9iliohhgvIP9mw/m/+QUFT3bECBsg1iK2fjAkmXhGn8eG11
-        U4zzlpbm4oh4dYITcPW0bezZv6g4Bx81Lw4YX58=
-X-Google-Smtp-Source: APBJJlH3pfPlzSGgbSJIfcxXkXUxVokwvam+tnvDb/DSTS7pWmqUOuB79Em+1psry3vpjf4x7C4JmQ==
-X-Received: by 2002:a7b:cc88:0:b0:3fe:1d13:4663 with SMTP id p8-20020a7bcc88000000b003fe1d134663mr4426709wma.1.1690970736804;
-        Wed, 02 Aug 2023 03:05:36 -0700 (PDT)
-Received: from ?IPV6:2a02:6b6a:b465:0:bbb6:1437:eebd:d9ef? ([2a02:6b6a:b465:0:bbb6:1437:eebd:d9ef])
-        by smtp.gmail.com with ESMTPSA id q7-20020a1cf307000000b003fa98908014sm1286703wmq.8.2023.08.02.03.05.35
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 02 Aug 2023 03:05:36 -0700 (PDT)
-Message-ID: <540a0f2e-31e0-6396-be14-d9baec608b87@bytedance.com>
-Date:   Wed, 2 Aug 2023 11:05:35 +0100
+        Wed, 2 Aug 2023 06:06:08 -0400
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5818196
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Aug 2023 03:06:06 -0700 (PDT)
+Received: from pps.filterd (m0279862.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3724XFMu020961;
+        Wed, 2 Aug 2023 10:05:57 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=date : from : to :
+ cc : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=qcppdkim1; bh=eIzxzpTJrE8SFJQOovUrBi2LJyMj33uUIwke+IPSnAg=;
+ b=TZleOF3vSINUnc8FKqZ3U/9nbnAM7jqA/HhikrgK1bf1QxP8RY5PYnVMA/gMeOo6FIak
+ ljIcigIdIN2O4HPt+Ro9TyXpGUmyj7SJ05pk9EupRV3GNtNu839lD8MXpf2E88EDDlpC
+ jaL4aecKNfe11925W4Cu5yj8H3zD0f2JS8JjCB2MLvIfgOolnjmTYtpIcWsHpw9Dg6dt
+ 0nMBVlhU8Z7r6XxPBZ9lzXM08G0h0EskCnNrgcnJ8okjUNyfo2E3Pa23RXfkythxa3p0
+ 7nou6EwClH/jSm6DlhPKsotF8ijvFQ9NKEY8yGbs1UvmBQ+4Yp+kekf1GK9WYjp1X3Jp /w== 
+Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3s6yq4awg1-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 02 Aug 2023 10:05:56 +0000
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+        by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 372A5uqw007420
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 2 Aug 2023 10:05:56 GMT
+Received: from hu-pkondeti-hyd.qualcomm.com (10.80.80.8) by
+ nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.30; Wed, 2 Aug 2023 03:05:52 -0700
+Date:   Wed, 2 Aug 2023 15:35:50 +0530
+From:   Pavan Kondeti <quic_pkondeti@quicinc.com>
+To:     Guru Das Srinagesh <quic_gurus@quicinc.com>
+CC:     Masahiro Yamada <masahiroy@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Nicolas Schier" <nicolas@fjasle.eu>,
+        Kees Cook <keescook@chromium.org>,
+        "Bjorn Andersson" <andersson@kernel.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 1/1] scripts: Add add-maintainer.py
+Message-ID: <63764b84-3ebd-4081-836f-4863af196228@quicinc.com>
+References: <cover.1690951441.git.quic_gurus@quicinc.com>
+ <0d000c48e939beaa97c744c0a8b652396a0b045d.1690951441.git.quic_gurus@quicinc.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.4.2
-Subject: Re: [External] Re: [v2 1/6] mm: hugetlb: Skip prep of tail pages when
- HVO is enabled
-Content-Language: en-US
-To:     Mike Kravetz <mike.kravetz@oracle.com>
-Cc:     linux-mm@kvack.org, muchun.song@linux.dev, rppt@kernel.org,
-        linux-kernel@vger.kernel.org, fam.zheng@bytedance.com,
-        liangma@liangbit.com, simon.evans@bytedance.com,
-        punit.agrawal@bytedance.com, Muchun Song <songmuchun@bytedance.com>
-References: <20230730151606.2871391-1-usama.arif@bytedance.com>
- <20230730151606.2871391-2-usama.arif@bytedance.com>
- <20230731231841.GA39768@monkey>
-From:   Usama Arif <usama.arif@bytedance.com>
-In-Reply-To: <20230731231841.GA39768@monkey>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <0d000c48e939beaa97c744c0a8b652396a0b045d.1690951441.git.quic_gurus@quicinc.com>
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: 2-rP3oWhi1-NNcfeP5BFEAOw1Yfa7s8E
+X-Proofpoint-GUID: 2-rP3oWhi1-NNcfeP5BFEAOw1Yfa7s8E
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
+ definitions=2023-08-02_05,2023-08-01_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 mlxscore=0
+ malwarescore=0 bulkscore=0 priorityscore=1501 lowpriorityscore=0
+ impostorscore=0 phishscore=0 adultscore=0 suspectscore=0 mlxlogscore=640
+ clxscore=1011 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2306200000 definitions=main-2308020090
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 01/08/2023 00:18, Mike Kravetz wrote:
-> On 07/30/23 16:16, Usama Arif wrote:
->> When vmemmap is optimizable, it will free all the duplicated tail
->> pages in hugetlb_vmemmap_optimize while preparing the new hugepage.
->> Hence, there is no need to prepare them.
->>
->> For 1G x86 hugepages, it avoids preparing
->> 262144 - 64 = 262080 struct pages per hugepage.
->>
->> The indirection of using __prep_compound_gigantic_folio is also removed,
->> as it just creates extra functions to indicate demote which can be done
->> with the argument.
->>
->> Signed-off-by: Usama Arif <usama.arif@bytedance.com>
->> ---
->>   mm/hugetlb.c         | 32 ++++++++++++++------------------
->>   mm/hugetlb_vmemmap.c |  2 +-
->>   mm/hugetlb_vmemmap.h | 15 +++++++++++----
->>   3 files changed, 26 insertions(+), 23 deletions(-)
+On Tue, Aug 01, 2023 at 09:54:29PM -0700, Guru Das Srinagesh wrote:
+> This script runs get_maintainer.py on a given patch file and adds its
+> output to the patch file in place with the appropriate email headers
+> "To: " or "Cc: " as the case may be. These new headers are added after
+> the "From: " line in the patch.
 > 
-> Thanks,
+> Currently, maintainers are added as "To: ", mailing lists are added as
+> "Cc: " and all others are addded as "Cc: " as well.
 > 
-> I just started looking at this series.  Adding Muchun on Cc:
+> The script is quiet by default (only prints errors) and its verbosity
+> can be adjusted via an optional parameter.
 > 
->>
->> diff --git a/mm/hugetlb.c b/mm/hugetlb.c
->> index 64a3239b6407..541c07b6d60f 100644
->> --- a/mm/hugetlb.c
->> +++ b/mm/hugetlb.c
->> @@ -1942,14 +1942,23 @@ static void prep_new_hugetlb_folio(struct hstate *h, struct folio *folio, int ni
->>   	spin_unlock_irq(&hugetlb_lock);
->>   }
->>   
->> -static bool __prep_compound_gigantic_folio(struct folio *folio,
->> -					unsigned int order, bool demote)
->> +static bool prep_compound_gigantic_folio(struct folio *folio, struct hstate *h, bool demote)
->>   {
->>   	int i, j;
->> +	int order = huge_page_order(h);
->>   	int nr_pages = 1 << order;
->>   	struct page *p;
->>   
->>   	__folio_clear_reserved(folio);
->> +
->> +	/*
->> +	 * No need to prep pages that will be freed later by hugetlb_vmemmap_optimize.
->> +	 * Hence, reduce nr_pages to the pages that will be kept.
->> +	 */
->> +	if (IS_ENABLED(CONFIG_HUGETLB_PAGE_OPTIMIZE_VMEMMAP) &&
->> +			vmemmap_should_optimize(h, &folio->page))
+> Signed-off-by: Guru Das Srinagesh <quic_gurus@quicinc.com>
+> ---
+>  scripts/add-maintainer.py | 82 +++++++++++++++++++++++++++++++++++++++
+>  1 file changed, 82 insertions(+)
+>  create mode 100755 scripts/add-maintainer.py
 > 
-> IIUC, vmemmap_optimize_enabled (checked in vmemmap_should_optimize) can be
-> modified at runtime via sysctl.  If so, what prevents it from being changed
-> after this check and the later call to hugetlb_vmemmap_optimize()?
+> diff --git a/scripts/add-maintainer.py b/scripts/add-maintainer.py
+> new file mode 100755
+> index 000000000000..942d331cf8d4
+> --- /dev/null
+> +++ b/scripts/add-maintainer.py
+> @@ -0,0 +1,82 @@
+> +#! /usr/bin/env python3
+> +
+> +import argparse
+> +import logging
+> +import os
+> +import sys
+> +import subprocess
+> +import re
+> +
+> +def add_maintainers_to_file(patch_file):
+> +    # Run get_maintainer.pl on patch file
+> +    logging.info("Patch: {}".format(os.path.basename(patch_file)))
+> +    cmd = ['scripts/get_maintainer.pl']
+> +    cmd.extend([patch_file])
+> +    p = subprocess.run(cmd, stdout=subprocess.PIPE, check=True)
+> +    logging.debug("\n{}".format(p.stdout.decode()))
+> +
+> +    entries = p.stdout.decode().splitlines()
+> +
+> +    maintainers = []
+> +    lists = []
+> +    others = []
+> +
+> +    for entry in entries:
+> +        entity = entry.split('(')[0].strip()
+> +        if "maintainer" in entry:
+> +            maintainers.append(entity)
+> +        elif "list" in entry:
+> +            lists.append(entity)
+> +        else:
+> +            others.append(entity)
+> +
+> +    # Specify email headers appropriately
+> +    to_maintainers  = ["To: " + m for m in maintainers]
+> +    cc_lists        = ["Cc: " + l for l in lists]
+> +    cc_others       = ["Cc: " + o for o in others]
+> +    logging.debug("To Maintainers:\n{}".format('\n'.join(to_maintainers)))
+> +    logging.debug("Cc Lists:\n{}".format('\n'.join(cc_lists)))
+> +    logging.debug("Cc Others:\n{}".format('\n'.join(cc_others)))
+> +
+> +    # Edit patch file in place to add maintainers
+> +    with open(patch_file, "r") as pf:
+> +        lines = pf.readlines()
+> +
+> +    from_line = [i for i, line in enumerate(lines) if re.search("From: ", line)]
+> +    if len(from_line) > 1:
+> +        logging.error("Only one From: line is allowed in a patch file")
+> +        sys.exit(1)
+> +
+> +    next_line_after_from = from_line[0] + 1
+> +
+> +    # Reverse lists to maintain same order as in get_maintainer.py output
+> +    # as we will be insert()-ing the elements
+> +    to_maintainers.reverse()
+> +    cc_lists.reverse()
+> +    cc_others.reverse()
+> +
+> +    for o in cc_others:
+> +        lines.insert(next_line_after_from, o + "\n")
+> +    for l in cc_lists:
+> +        lines.insert(next_line_after_from, l + "\n")
+> +    for m in to_maintainers:
+> +        lines.insert(next_line_after_from, m + "\n")
+> +
+> +    with open(patch_file, "w") as pf:
+> +        pf.writelines(lines)
+> +
+> +def main():
+> +    parser = argparse.ArgumentParser(description='Add the respective maintainers and mailing lists to patch files')
+> +    parser.add_argument('patches', nargs='*', help="One or more patch files")
+> +    parser.add_argument('--verbosity', choices=['debug', 'info', 'error'], default='error', help="Verbosity level of script output")
+> +    args = parser.parse_args()
+> +
+> +    logging.basicConfig(level=args.verbosity.upper(), format='%(levelname)s: %(message)s')
+> +
+> +    for patch in args.patches:
+> +        add_maintainers_to_file(patch)
+> +
+> +    logging.info("Maintainers added to all patch files successfully")
+> +
+> +if __name__ == "__main__":
+> +    main()
+> -- 
+> 2.40.0
 
-Hi,
+Thanks Guru for submitting this script. In my limited testing, I don't
+find any issues. It works as expected.
 
-Thanks for the review.
-
-Yes thats a good catch. The solution for this issue would be to to turn 
-hugetlb_free_vmemmap into a callback core_param and have a lock around 
-the write and when its used in gather_bootmem_prealloc, etc.
-
-But the bigger issue during runtime is what Muchun pointed out that the 
-struct page refcount is not frozen to 0.
-
-My main usecase (and maybe for others as well?) is reserving these 
-gigantic pages at boot time. I thought the runtime improvement might 
-come from free with it but doesnt look like it. Both issues could be 
-solved by just limiting it to boot time, as vmemmap_optimize_enabled 
-cannot be changed during boot time, and reference to those pages cannot 
-gotten by anything else as well (they aren't even initialized by 
-memblock after patch 6), so will include the below diff to solve both 
-the issues in next revision.
-
-
-diff --git a/mm/hugetlb.c b/mm/hugetlb.c
-index 8434100f60ae..790842a6f978 100644
---- a/mm/hugetlb.c
-+++ b/mm/hugetlb.c
-@@ -1956,7 +1956,8 @@ static bool prep_compound_gigantic_folio(struct 
-folio *folio, struct hstate *h,
-          * Hence, reduce nr_pages to the pages that will be kept.
-          */
-         if (IS_ENABLED(CONFIG_HUGETLB_PAGE_OPTIMIZE_VMEMMAP) &&
--                       vmemmap_should_optimize(h, &folio->page))
-+                       vmemmap_should_optimize(h, &folio->page) &&
-+                       system_state == SYSTEM_BOOTING)
-                 nr_pages = HUGETLB_VMEMMAP_RESERVE_SIZE / sizeof(struct 
-page);
-         for (i = 0; i < nr_pages; i++) {
+If I run this script on a series which spans across different lists,
+there is a possiblity that we send partial series to certain lists. What
+is the best way to deal with this? one way is to include union of all
+lists in CC while sending the series with primary maintainer in TO. Can
+the script print those values for easier workflow?
 
 Thanks,
-Usama
+Pavan
