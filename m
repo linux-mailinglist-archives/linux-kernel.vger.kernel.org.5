@@ -2,403 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CD5B776DA0E
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 23:58:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 88A3776DA5A
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 00:02:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232105AbjHBV6f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Aug 2023 17:58:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51958 "EHLO
+        id S232382AbjHBWCJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Aug 2023 18:02:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53184 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231996AbjHBV6b (ORCPT
+        with ESMTP id S233046AbjHBWCG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Aug 2023 17:58:31 -0400
-Received: from mgamail.intel.com (unknown [192.55.52.43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1105C30C3;
-        Wed,  2 Aug 2023 14:58:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1691013507; x=1722549507;
-  h=from:to:cc:subject:in-reply-to:references:date:
-   message-id:mime-version;
-  bh=r+m4opMizQ6LAk9BBG6aOX5ScHmf410e3LtrOPinIrM=;
-  b=OUanyhILeet5A3pg7X1RIGnlrY4cu73eJJKJ7/YzJ5RSpwU4Wli2Yj30
-   LsO+lOg+GrlBfO+PpWFkyq6PjiCmxYb84NExYZdjqzCt96CU0dDhYIT6J
-   uFYk78lXn5BtpRgxvtO7cJJ5KPv5EVXTsr46khFyd54t/ANydVBv3OOlw
-   VxoO4NNrdcLReHXnPb8ciqVNXSSvhn/D7tEqNPyCVnPKkBABtpmgK4w8b
-   We0XFiZ346EhxtPzLCZN4jJgENI5frXa0rqTZ0cJ+QjT8lJgt5cyWLC/6
-   RwOexbf9eKC77QaaE9CmmkXktcXagikxy7lWpvu56+Zo5/fijUbYTBwn6
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10790"; a="456083275"
-X-IronPort-AV: E=Sophos;i="6.01,250,1684825200"; 
-   d="scan'208";a="456083275"
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Aug 2023 14:58:26 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10790"; a="975831045"
-X-IronPort-AV: E=Sophos;i="6.01,250,1684825200"; 
-   d="scan'208";a="975831045"
-Received: from rbappers-mobl2.amr.corp.intel.com (HELO vcostago-mobl3) ([10.209.84.112])
-  by fmsmga006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Aug 2023 14:58:24 -0700
-From:   Vinicius Costa Gomes <vinicius.gomes@intel.com>
-To:     Vladimir Oltean <vladimir.oltean@nxp.com>, netdev@vger.kernel.org
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Jamal Hadi Salim <jhs@mojatatu.com>,
-        Cong Wang <xiyou.wangcong@gmail.com>,
-        Jiri Pirko <jiri@resnulli.us>, linux-kernel@vger.kernel.org,
-        intel-wired-lan@lists.osuosl.org,
-        Muhammad Husaini Zulkifli <muhammad.husaini.zulkifli@intel.com>,
-        Peilin Ye <yepeilin.cs@gmail.com>,
-        Pedro Tammela <pctammela@mojatatu.com>,
-        Richard Cochran <richardcochran@gmail.com>,
-        Zhengchao Shao <shaozhengchao@huawei.com>,
-        Maxim Georgiev <glipus@gmail.com>
-Subject: Re: [PATCH v3 net-next 06/10] net: ptp: create a mock-up PTP
- Hardware Clock driver
-In-Reply-To: <20230801182421.1997560-7-vladimir.oltean@nxp.com>
-References: <20230801182421.1997560-1-vladimir.oltean@nxp.com>
- <20230801182421.1997560-7-vladimir.oltean@nxp.com>
-Date:   Wed, 02 Aug 2023 14:58:24 -0700
-Message-ID: <87wmyd14zj.fsf@intel.com>
-MIME-Version: 1.0
-Content-Type: text/plain
+        Wed, 2 Aug 2023 18:02:06 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 992DE2129;
+        Wed,  2 Aug 2023 15:02:04 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 2BE8361B13;
+        Wed,  2 Aug 2023 22:02:04 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 19DF0C433C7;
+        Wed,  2 Aug 2023 22:02:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1691013723;
+        bh=fq3cWmTxdhO7mpPCgQ+OwosSWhnsTUfvrL0qkaxNDpA=;
+        h=In-Reply-To:References:Date:From:To:Cc:Subject:From;
+        b=eSD9SlAQ7rbg2TqZs1FdP/PgGOmU65z7JePTWO3d5We+u4brrkJrxovT/SI3iyOfH
+         JVlReuJujc8BgIdt2O6XeN15kZioYenOejcdY77w8e4tTlm3xFWv/Kl2wrCWgTpnK/
+         xMUBul9dQML3TS5OySlpxJ8ulpn8KS6bqtzqHynqlQqszVJ7DqGwq+L/gbdaFDeRNR
+         YURr0fqvlcXrWgqxMdg88Nue82ApcIOJXN+06P8+9mtbkOrHS1hoipXzxiJUwb68we
+         5oDq6NOWnMAmho2iSu4YwnNhESZ3+5+6odzEzd6BR8jI++nV3CAImViHRlpztyyYMc
+         odpYoK+G8preg==
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.47])
+        by mailauth.nyi.internal (Postfix) with ESMTP id EDEBE27C0054;
+        Wed,  2 Aug 2023 18:02:01 -0400 (EDT)
+Received: from imap51 ([10.202.2.101])
+  by compute6.internal (MEProxy); Wed, 02 Aug 2023 18:02:01 -0400
+X-ME-Sender: <xms:WNLKZNWVYqB1BnzgHH-kIgBALkBKjcpcgEFj8Y6Jv3OxnkdTlpWjHw>
+    <xme:WNLKZNlF6fozETDCORwW4f2s1qybZXkw59Jmf2JNSgxwqkjHle4SFCWOjR2W7E0w0
+    jdsq4r6jez1900NfVc>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedrkedugddthecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpefofgggkfgjfhffhffvvefutgfgsehtqhertderreejnecuhfhrohhmpedftehr
+    nhguuceuvghrghhmrghnnhdfuceorghrnhgusehkvghrnhgvlhdrohhrgheqnecuggftrf
+    grthhtvghrnhepvdelhfduueevkeeujeeuhfevfedufeeuteduvdeijeffheffieeiteel
+    jeelffdtnecuffhomhgrihhnpehkvghrnhgvlhdrohhrghenucevlhhushhtvghrufhiii
+    gvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegrrhhnugdomhgvshhmthhprghuthhh
+    phgvrhhsohhnrghlihhthidquddvkeehudejtddvgedqvdekjedttddvieegqdgrrhhnug
+    eppehkvghrnhgvlhdrohhrghesrghrnhgusgdruggv
+X-ME-Proxy: <xmx:WNLKZJYLgPNGXsizjVniNWNg24UkWht5ff6PSsu8gFJtTvXKk8CffA>
+    <xmx:WNLKZAUfGb_-TRwivRvE_HYi1UkciViGtHLnwmOYrO1sScwiq2iT4A>
+    <xmx:WNLKZHl3cBoEUeRDSPOF9qEAFDhR3rf-iccz98gWBpTrTYwc_tI0DQ>
+    <xmx:WdLKZFX4g4ANJBjULxrdbKClBBZLjFhKGhJw1UFDlOOlf0fu7odMRg>
+Feedback-ID: i36794607:Fastmail
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+        id D12B5B6008F; Wed,  2 Aug 2023 18:02:00 -0400 (EDT)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.9.0-alpha0-624-g7714e4406d-fm-20230801.001-g7714e440
+Mime-Version: 1.0
+Message-Id: <9a22ecee-ebb0-437e-bd2b-99b5c6944855@app.fastmail.com>
+In-Reply-To: <CAKwvOd=SvHUPd8+sWtqgxghPEciD5sqPiggZx+OOEqxtJrML6Q@mail.gmail.com>
+References: <20230802092647.3000666-1-sergio.paracuellos@gmail.com>
+ <CAKwvOd=SvHUPd8+sWtqgxghPEciD5sqPiggZx+OOEqxtJrML6Q@mail.gmail.com>
+Date:   Thu, 03 Aug 2023 00:01:25 +0200
+From:   "Arnd Bergmann" <arnd@kernel.org>
+To:     "Nick Desaulniers" <ndesaulniers@google.com>,
+        "Sergio Paracuellos" <sergio.paracuellos@gmail.com>,
+        "Nathan Chancellor" <nathan@kernel.org>
+Cc:     linux-clk@vger.kernel.org,
+        "Thomas Bogendoerfer" <tsbogend@alpha.franken.de>,
+        "Stephen Boyd" <sboyd@kernel.org>,
+        "Michael Turquette" <mturquette@baylibre.com>,
+        linux-kernel@vger.kernel.org, "kernel test robot" <lkp@intel.com>,
+        clang-built-linux <llvm@lists.linux.dev>
+Subject: Re: [PATCH] clk: ralink: mtmips: quiet unused variable warning
+Content-Type: text/plain;charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Vladimir Oltean <vladimir.oltean@nxp.com> writes:
+On Wed, Aug 2, 2023, at 23:26, Nick Desaulniers wrote:
+> On Wed, Aug 2, 2023 at 2:26=E2=80=AFAM Sergio Paracuellos <sergio.para=
+cuellos@gmail.com> wrote:
+>>
+>> When CONFIG_OF is disabled then the matching table is not referenced =
+and
+>> the following warning appears:
+>>
+>> drivers/clk/ralink/clk-mtmips.c:821:34: warning: unused variable 'mtm=
+ips_of_match' [-Wunused-const-variable]
+>> 821 |   static const struct of_device_id mtmips_of_match[] =3D {
+>>     |                          ^
+>>
+>> Silence it declaring 'mtmips_of_match' with '__maybe_unused'.
+>>
+>> Fixes: 6f3b15586eef ("clk: ralink: add clock and reset driver for MTM=
+IPS SoCs")
+>> Reported-by: kernel test robot <lkp@intel.com>
+>> Closes: https://lore.kernel.org/oe-kbuild-all/202307242310.CdOnd2py-l=
+kp@intel.com/
+>> Signed-off-by: Sergio Paracuellos <sergio.paracuellos@gmail.com>
+>
+> I think this is fine; Arnd or Nathan do you have a preference? or thou=
+ghts here?
+>
+> If not, thanks for the patch.
+> Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
+>
+> (I have a slight preference for wrapping the use in `#ifdef CONFIG_OF`
+> since with the approach used by this patch, if all users are removed
+> we will never get a warning for this var. But it's a weak preference;
+> it's more important to me that we don't have -Werror promote this
+> warning to a build breakage)
 
-> There are several cases where virtual net devices may benefit from
-> having a PTP clock, and these have to do with testing. I can see at
-> least netdevsim and veth as potential users of a common mock-up PTP
-> hardware clock driver.
->
-> The proposed idea is to create an object which emulates PTP clock
-> operations on top of the unadjustable CLOCK_MONOTONIC_RAW plus a
-> software-controlled time domain via a timecounter/cyclecounter and then
-> link that PHC to the netdevsim device.
->
-> The driver is fully functional for its intended purpose, and it
-> successfully passes the PTP selftests.
->
-> $ cd tools/testing/selftests/ptp/
-> $ ./phc.sh /dev/ptp2
-> TEST: settime                          [ OK ]
-> TEST: adjtime                          [ OK ]
-> TEST: adjfreq                          [ OK ]
->
-> Signed-off-by: Vladimir Oltean <vladimir.oltean@nxp.com>
-> ---
-> v2->v3:
-> - split off ptp_mock into separate patch
-> - fix ptp_mock compilation as a module
-> - turn phc->lock into a global spinlock
-> - drop bogus support for ptp_clock_register() ever returning NULL
-> - add MAINTAINERS entry
-> v1->v2: patch is new
->
->  MAINTAINERS              |   7 ++
->  drivers/ptp/Kconfig      |  11 +++
->  drivers/ptp/Makefile     |   1 +
->  drivers/ptp/ptp_mock.c   | 175 +++++++++++++++++++++++++++++++++++++++
->  include/linux/ptp_mock.h |  38 +++++++++
->  5 files changed, 232 insertions(+)
->  create mode 100644 drivers/ptp/ptp_mock.c
->  create mode 100644 include/linux/ptp_mock.h
->
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index c4f95a9d03b9..164b7930f5d0 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -17175,6 +17175,13 @@ F:	drivers/ptp/*
->  F:	include/linux/ptp_cl*
->  K:	(?:\b|_)ptp(?:\b|_)
->  
-> +PTP MOCKUP CLOCK SUPPORT
-> +M:	Vladimir Oltean <vladimir.oltean@nxp.com>
-> +L:	netdev@vger.kernel.org
-> +S:	Maintained
-> +F:	drivers/ptp/ptp_mock.c
-> +F:	include/linux/ptp_mock.h
-> +
->  PTP VIRTUAL CLOCK SUPPORT
->  M:	Yangbo Lu <yangbo.lu@nxp.com>
->  L:	netdev@vger.kernel.org
-> diff --git a/drivers/ptp/Kconfig b/drivers/ptp/Kconfig
-> index 32dff1b4f891..ed9d97a032f1 100644
-> --- a/drivers/ptp/Kconfig
-> +++ b/drivers/ptp/Kconfig
-> @@ -155,6 +155,17 @@ config PTP_1588_CLOCK_IDTCM
->  	  To compile this driver as a module, choose M here: the module
->  	  will be called ptp_clockmatrix.
->  
-> +config PTP_1588_CLOCK_MOCK
-> +	tristate "Mock-up PTP clock"
-> +	depends on PTP_1588_CLOCK
-> +	help
-> +	  This driver offers a set of PTP clock manipulation operations over
-> +	  the system monotonic time. It can be used by virtual network device
-> +	  drivers to emulate PTP capabilities.
-> +
-> +	  To compile this driver as a module, choose M here: the module
-> +	  will be called ptp_mock.
-> +
->  config PTP_1588_CLOCK_VMW
->  	tristate "VMware virtual PTP clock"
->  	depends on ACPI && HYPERVISOR_GUEST && X86
-> diff --git a/drivers/ptp/Makefile b/drivers/ptp/Makefile
-> index 553f18bf3c83..dea0cebd2303 100644
-> --- a/drivers/ptp/Makefile
-> +++ b/drivers/ptp/Makefile
-> @@ -16,6 +16,7 @@ ptp-qoriq-y				+= ptp_qoriq.o
->  ptp-qoriq-$(CONFIG_DEBUG_FS)		+= ptp_qoriq_debugfs.o
->  obj-$(CONFIG_PTP_1588_CLOCK_IDTCM)	+= ptp_clockmatrix.o
->  obj-$(CONFIG_PTP_1588_CLOCK_IDT82P33)	+= ptp_idt82p33.o
-> +obj-$(CONFIG_PTP_1588_CLOCK_MOCK)	+= ptp_mock.o
->  obj-$(CONFIG_PTP_1588_CLOCK_VMW)	+= ptp_vmw.o
->  obj-$(CONFIG_PTP_1588_CLOCK_OCP)	+= ptp_ocp.o
->  obj-$(CONFIG_PTP_DFL_TOD)		+= ptp_dfl_tod.o
-> diff --git a/drivers/ptp/ptp_mock.c b/drivers/ptp/ptp_mock.c
-> new file mode 100644
-> index 000000000000..1525aafca752
-> --- /dev/null
-> +++ b/drivers/ptp/ptp_mock.c
-> @@ -0,0 +1,175 @@
-> +// SPDX-License-Identifier: GPL-2.0-or-later
-> +/*
-> + * Copyright 2023 NXP
-> + *
-> + * Mock-up PTP Hardware Clock driver for virtual network devices
-> + *
-> + * Create a PTP clock which offers PTP time manipulation operations
-> + * using a timecounter/cyclecounter on top of CLOCK_MONOTONIC_RAW.
-> + */
-> +
-> +#include <linux/ptp_clock_kernel.h>
-> +#include <linux/ptp_mock.h>
-> +#include <linux/timecounter.h>
-> +
-> +/* Clamp scaled_ppm between -2,097,152,000 and 2,097,152,000,
-> + * and thus "adj" between -68,719,476 and 68,719,476
-> + */
-> +#define MOCK_PHC_MAX_ADJ_PPB		32000000
-> +/* Timestamps from ktime_get_raw() have 1 ns resolution, so the scale factor
-> + * (MULT >> SHIFT) needs to be 1. Pick SHIFT as 31 bits, which translates
-> + * MULT(freq 0) into 0x80000000.
-> + */
-> +#define MOCK_PHC_CC_SHIFT		31
-> +#define MOCK_PHC_CC_MULT		(1 << MOCK_PHC_CC_SHIFT)
-> +#define MOCK_PHC_FADJ_SHIFT		9
-> +#define MOCK_PHC_FADJ_DENOMINATOR	15625ULL
-> +
-> +/* The largest cycle_delta that timecounter_read_delta() can handle without a
-> + * 64-bit overflow during the multiplication with cc->mult, given the max "adj"
-> + * we permit, is ~8.3 seconds. Make sure readouts are more frequent than that.
-> + */
-> +#define MOCK_PHC_REFRESH_INTERVAL	(HZ * 5)
-> +
-> +#define info_to_phc(d) container_of((d), struct mock_phc, info)
-> +
-> +static DEFINE_SPINLOCK(mock_phc_lock);
-> +
+I don't understand why there are two match tables in the same
+driver, with almost the same contents. I have not looked very
+closely here, but why can't we just drop the mtmips_clk_of_match[]
+table (the one without the .data fields) and use the same
+table for both? Is this because of the ralink,rt2880-reset entry
+that is missing in mtmips_of_match, or is that another bug?
 
-Not a big deal, but as it is possible to have multiple netdevsim
-instances (is it?), I think it's better to move the lock inside struct
-mock_phc.
+I also see that there is both a platform_driver instance for
+late probing and a list of CLK_OF_DECLARE_DRIVER() entries.
+Do we need both here?
 
-> +struct mock_phc {
-> +	struct ptp_clock_info info;
-> +	struct ptp_clock *clock;
-> +	struct timecounter tc;
-> +	struct cyclecounter cc;
-> +};
-> +
-> +static u64 mock_phc_cc_read(const struct cyclecounter *cc)
-> +{
-> +	return ktime_to_ns(ktime_get_raw());
-> +}
-> +
-> +static int mock_phc_adjfine(struct ptp_clock_info *info, long scaled_ppm)
-> +{
-> +	struct mock_phc *phc = info_to_phc(info);
-> +	s64 adj;
-> +
-> +	adj = (s64)scaled_ppm << MOCK_PHC_FADJ_SHIFT;
-> +	adj = div_s64(adj, MOCK_PHC_FADJ_DENOMINATOR);
-> +
-> +	spin_lock_bh(&mock_phc_lock);
-> +	timecounter_read(&phc->tc);
-> +	phc->cc.mult = MOCK_PHC_CC_MULT + adj;
-> +	spin_unlock_bh(&mock_phc_lock);
-> +
-> +	return 0;
-> +}
-> +
-> +static int mock_phc_adjtime(struct ptp_clock_info *info, s64 delta)
-> +{
-> +	struct mock_phc *phc = info_to_phc(info);
-> +
-> +	spin_lock_bh(&mock_phc_lock);
-> +	timecounter_adjtime(&phc->tc, delta);
-> +	spin_unlock_bh(&mock_phc_lock);
-> +
-> +	return 0;
-> +}
-> +
-> +static int mock_phc_settime64(struct ptp_clock_info *info,
-> +			      const struct timespec64 *ts)
-> +{
-> +	struct mock_phc *phc = info_to_phc(info);
-> +	u64 ns = timespec64_to_ns(ts);
-> +
-> +	spin_lock_bh(&mock_phc_lock);
-> +	timecounter_init(&phc->tc, &phc->cc, ns);
-> +	spin_unlock_bh(&mock_phc_lock);
-> +
-> +	return 0;
-> +}
-> +
-> +static int mock_phc_gettime64(struct ptp_clock_info *info, struct timespec64 *ts)
-> +{
-> +	struct mock_phc *phc = info_to_phc(info);
-> +	u64 ns;
-> +
-> +	spin_lock_bh(&mock_phc_lock);
-> +	ns = timecounter_read(&phc->tc);
-> +	spin_unlock_bh(&mock_phc_lock);
-> +
-> +	*ts = ns_to_timespec64(ns);
-> +
-> +	return 0;
-> +}
-> +
-> +static long mock_phc_refresh(struct ptp_clock_info *info)
-> +{
-> +	struct timespec64 ts;
-> +
-> +	mock_phc_gettime64(info, &ts);
-> +
-> +	return MOCK_PHC_REFRESH_INTERVAL;
-> +}
-> +
-> +int mock_phc_index(struct mock_phc *phc)
-> +{
-> +	return ptp_clock_index(phc->clock);
-> +}
-> +EXPORT_SYMBOL_GPL(mock_phc_index);
-> +
-> +struct mock_phc *mock_phc_create(struct device *dev)
-> +{
-> +	struct mock_phc *phc;
-> +	int err;
-> +
-> +	phc = kzalloc(sizeof(*phc), GFP_KERNEL);
-> +	if (!phc) {
-> +		err = -ENOMEM;
-> +		goto out;
-> +	}
-> +
-> +	phc->info = (struct ptp_clock_info) {
-> +		.owner		= THIS_MODULE,
-> +		.name		= "Mock-up PTP clock",
-> +		.max_adj	= MOCK_PHC_MAX_ADJ_PPB,
-> +		.adjfine	= mock_phc_adjfine,
-> +		.adjtime	= mock_phc_adjtime,
-> +		.gettime64	= mock_phc_gettime64,
-> +		.settime64	= mock_phc_settime64,
-> +		.do_aux_work	= mock_phc_refresh,
-> +	};
-> +
-> +	phc->cc = (struct cyclecounter) {
-> +		.read	= mock_phc_cc_read,
-> +		.mask	= CYCLECOUNTER_MASK(64),
-> +		.mult	= MOCK_PHC_CC_MULT,
-> +		.shift	= MOCK_PHC_CC_SHIFT,
-> +	};
-> +
-> +	timecounter_init(&phc->tc, &phc->cc, 0);
-> +
-> +	phc->clock = ptp_clock_register(&phc->info, dev);
-> +	if (IS_ERR(phc->clock)) {
-> +		err = PTR_ERR(phc->clock);
-> +		goto out_free_phc;
-> +	}
-> +
-> +	ptp_schedule_worker(phc->clock, MOCK_PHC_REFRESH_INTERVAL);
-> +
-> +	return phc;
-> +
-> +out_free_phc:
-> +	kfree(phc);
-> +out:
-> +	return ERR_PTR(err);
-> +}
-> +EXPORT_SYMBOL_GPL(mock_phc_create);
-> +
-> +void mock_phc_destroy(struct mock_phc *phc)
-> +{
-> +	ptp_clock_unregister(phc->clock);
-> +	kfree(phc);
-> +}
-> +EXPORT_SYMBOL_GPL(mock_phc_destroy);
-> +
-> +MODULE_DESCRIPTION("Mock-up PTP Hardware Clock driver");
-> +MODULE_LICENSE("GPL");
-> diff --git a/include/linux/ptp_mock.h b/include/linux/ptp_mock.h
-> new file mode 100644
-> index 000000000000..72eb401034d9
-> --- /dev/null
-> +++ b/include/linux/ptp_mock.h
-> @@ -0,0 +1,38 @@
-> +/* SPDX-License-Identifier: GPL-2.0-or-later */
-> +/*
-> + * Mock-up PTP Hardware Clock driver for virtual network devices
-> + *
-> + * Copyright 2023 NXP
-> + */
-> +
-> +#ifndef _PTP_MOCK_H_
-> +#define _PTP_MOCK_H_
-> +
-> +struct device;
-> +struct mock_phc;
-> +
-> +#if IS_ENABLED(CONFIG_PTP_1588_CLOCK_MOCK)
-> +
-> +struct mock_phc *mock_phc_create(struct device *dev);
-> +void mock_phc_destroy(struct mock_phc *phc);
-> +int mock_phc_index(struct mock_phc *phc);
-> +
-> +#else
-> +
-> +static inline struct mock_phc *mock_phc_create(struct device *dev)
-> +{
-> +	return NULL;
-> +}
-> +
-> +static inline void mock_phc_destroy(struct mock_phc *phc)
-> +{
-> +}
-> +
-> +static inline int mock_phc_index(struct mock_phc *phc)
-> +{
-> +	return -1;
-> +}
-> +
-> +#endif
-> +
-> +#endif /* _PTP_MOCK_H_ */
-> -- 
-> 2.34.1
->
-
--- 
-Vinicius
+      Arnd
