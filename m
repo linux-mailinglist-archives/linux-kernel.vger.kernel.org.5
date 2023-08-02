@@ -2,42 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8BAE376C713
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 09:37:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D469376C709
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 09:37:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232789AbjHBHhd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Aug 2023 03:37:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40642 "EHLO
+        id S232988AbjHBHhN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Aug 2023 03:37:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40552 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233117AbjHBHgu (ORCPT
+        with ESMTP id S232959AbjHBHgm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Aug 2023 03:36:50 -0400
-Received: from mail11.truemail.it (mail11.truemail.it [IPv6:2001:4b7e:0:8::81])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8CA133585;
-        Wed,  2 Aug 2023 00:36:43 -0700 (PDT)
-Received: from francesco-nb.pivistrello.it (93-49-2-63.ip317.fastwebnet.it [93.49.2.63])
-        by mail11.truemail.it (Postfix) with ESMTPA id 579F920389;
-        Wed,  2 Aug 2023 09:36:40 +0200 (CEST)
-From:   Francesco Dolcini <francesco@dolcini.it>
-To:     Nishanth Menon <nm@ti.com>, Vignesh Raghavendra <vigneshr@ti.com>,
-        Tero Kristo <kristo@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>
-Cc:     Hiago De Franco <hiago.franco@toradex.com>,
-        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Francesco Dolcini <francesco.dolcini@toradex.com>
-Subject: [PATCH v2 2/2] arm64: dts: ti: k3-am625-verdin: enable CAN_2
-Date:   Wed,  2 Aug 2023 09:36:35 +0200
-Message-Id: <20230802073635.11290-3-francesco@dolcini.it>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20230802073635.11290-1-francesco@dolcini.it>
-References: <20230802073635.11290-1-francesco@dolcini.it>
+        Wed, 2 Aug 2023 03:36:42 -0400
+Received: from mx1.sberdevices.ru (mx1.sberdevices.ru [37.18.73.165])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2CB7C30EB;
+        Wed,  2 Aug 2023 00:36:39 -0700 (PDT)
+Received: from p-infra-ksmg-sc-msk01 (localhost [127.0.0.1])
+        by mx1.sberdevices.ru (Postfix) with ESMTP id 9CB3E100020;
+        Wed,  2 Aug 2023 10:36:37 +0300 (MSK)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru 9CB3E100020
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sberdevices.ru;
+        s=mail; t=1690961797;
+        bh=b/D/LJ/JEmhps4l5xrKdBZ4JUoOucTGmiH6sdU6vmSw=;
+        h=Date:From:To:Subject:Message-ID:MIME-Version:Content-Type:From;
+        b=asQkXlnrZwtQb8EjKdJdbn87doPjxw8ZkcF0jXGFDNEUolgpT3dW/UJ9/NaMxNmth
+         z+0OtccyG9yCK9ivH1JtmahlrBpXc6LtQLbZbJNMkoq683PhRHPlaFDiR5NfFKn/6S
+         IHGBHsPy2W5bNkQKx74WyYde6Iiqge71INBwIr5x9FAd5qdxqQnVM7T9KsT9EMNX52
+         68cBxdyEWA+cLb7KqrHodbxxBx4LraFGnzyOpjqCyGKyyOmLAUnb5zH1WCXTWvyqz6
+         WbA5XPj8IswtfpSzyOkxHEnyP1bKVUKnB60m6IN3V3Hk9IQcOGT/iForslYKU26KQv
+         zkLBgQ8FY03pw==
+Received: from p-i-exch-sc-m01.sberdevices.ru (p-i-exch-sc-m01.sberdevices.ru [172.16.192.107])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mx1.sberdevices.ru (Postfix) with ESMTPS;
+        Wed,  2 Aug 2023 10:36:37 +0300 (MSK)
+Received: from localhost (100.64.160.123) by p-i-exch-sc-m01.sberdevices.ru
+ (172.16.192.107) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.30; Wed, 2 Aug
+ 2023 10:36:37 +0300
+Date:   Wed, 2 Aug 2023 10:36:37 +0300
+From:   Dmitry Rokosov <ddrokosov@sberdevices.ru>
+To:     Huqiang Qin <huqiang.qin@amlogic.com>
+CC:     <wim@linux-watchdog.org>, <linux@roeck-us.net>,
+        <robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
+        <conor+dt@kernel.org>, <neil.armstrong@linaro.org>,
+        <khilman@baylibre.com>, <jbrunet@baylibre.com>,
+        <martin.blumenstingl@googlemail.com>,
+        <linux-watchdog@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-amlogic@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>,
+        Conor Dooley <conor.dooley@microchip.com>
+Subject: Re: [PATCH V2 1/4] dt-bindings: watchdog: Add support for Amlogic-T7
+ SoCs
+Message-ID: <20230802073637.4dy22fdh5kxukylo@CAB-WSD-L081021>
+References: <20230802033222.4024946-1-huqiang.qin@amlogic.com>
+ <20230802033222.4024946-2-huqiang.qin@amlogic.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20230802033222.4024946-2-huqiang.qin@amlogic.com>
+User-Agent: NeoMutt/20220415
+X-Originating-IP: [100.64.160.123]
+X-ClientProxiedBy: p-i-exch-sc-m01.sberdevices.ru (172.16.192.107) To
+ p-i-exch-sc-m01.sberdevices.ru (172.16.192.107)
+X-KSMG-Rule-ID: 10
+X-KSMG-Message-Action: clean
+X-KSMG-AntiSpam-Lua-Profiles: 178796 [Jul 22 2023]
+X-KSMG-AntiSpam-Version: 5.9.59.0
+X-KSMG-AntiSpam-Envelope-From: DDRokosov@sberdevices.ru
+X-KSMG-AntiSpam-Rate: 0
+X-KSMG-AntiSpam-Status: not_detected
+X-KSMG-AntiSpam-Method: none
+X-KSMG-AntiSpam-Auth: dkim=none
+X-KSMG-AntiSpam-Info: LuaCore: 525 525 723604743bfbdb7e16728748c3fa45e9eba05f7d, {Tracking_uf_ne_domains}, {Track_E25351}, {Tracking_from_domain_doesnt_match_to}, FromAlignment: s, ApMailHostAddress: 100.64.160.123
+X-MS-Exchange-Organization-SCL: -1
+X-KSMG-AntiSpam-Interceptor-Info: scan successful
+X-KSMG-AntiPhishing: Clean, bases: 2023/07/23 10:45:00
+X-KSMG-LinksScanning: Clean, bases: 2023/07/23 10:46:00
+X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 2.0.1.6960, bases: 2023/07/23 08:49:00 #21663637
+X-KSMG-AntiVirus-Status: Clean, skipped
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -45,119 +90,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hiago De Franco <hiago.franco@toradex.com>
+On Wed, Aug 02, 2023 at 11:32:19AM +0800, Huqiang Qin wrote:
+> Update dt-binding document for watchdog of Amlogic-T7 SoCs.
+> 
+> Signed-off-by: Huqiang Qin <huqiang.qin@amlogic.com>
+> Acked-by: Conor Dooley <conor.dooley@microchip.com>
 
-Add Verdin CAN_2 (TI AM62 MCU_MCAN0) and enable it on the Yavia,
-Dahlia and Verdin Development board.
+Reviewed-by: Dmitry Rokosov <ddrokosov@sberdevices.ru>
 
-Signed-off-by: Hiago De Franco <hiago.franco@toradex.com>
-Signed-off-by: Francesco Dolcini <francesco.dolcini@toradex.com>
----
- .../boot/dts/ti/k3-am62-verdin-dahlia.dtsi    |  5 +++++
- .../arm64/boot/dts/ti/k3-am62-verdin-dev.dtsi |  5 +++++
- .../boot/dts/ti/k3-am62-verdin-yavia.dtsi     |  5 +++++
- arch/arm64/boot/dts/ti/k3-am62-verdin.dtsi    | 19 +++++++++++++++++--
- 4 files changed, 32 insertions(+), 2 deletions(-)
+> ---
+> 
+> V1 -> V2: Unchanged.
+> 
+>  .../devicetree/bindings/watchdog/amlogic,meson-gxbb-wdt.yaml     | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/Documentation/devicetree/bindings/watchdog/amlogic,meson-gxbb-wdt.yaml b/Documentation/devicetree/bindings/watchdog/amlogic,meson-gxbb-wdt.yaml
+> index f5cc7aa1b93b..443e2e7ab467 100644
+> --- a/Documentation/devicetree/bindings/watchdog/amlogic,meson-gxbb-wdt.yaml
+> +++ b/Documentation/devicetree/bindings/watchdog/amlogic,meson-gxbb-wdt.yaml
+> @@ -17,6 +17,7 @@ properties:
+>    compatible:
+>      enum:
+>        - amlogic,meson-gxbb-wdt
+> +      - amlogic,t7-wdt
+>  
+>    reg:
+>      maxItems: 1
+> -- 
+> 2.37.1
+> 
+> 
+> _______________________________________________
+> linux-amlogic mailing list
+> linux-amlogic@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-amlogic
 
-diff --git a/arch/arm64/boot/dts/ti/k3-am62-verdin-dahlia.dtsi b/arch/arm64/boot/dts/ti/k3-am62-verdin-dahlia.dtsi
-index 3abd8d1d6761..33c8f6ffaa30 100644
---- a/arch/arm64/boot/dts/ti/k3-am62-verdin-dahlia.dtsi
-+++ b/arch/arm64/boot/dts/ti/k3-am62-verdin-dahlia.dtsi
-@@ -115,6 +115,11 @@ &mcu_i2c0 {
- 	status = "okay";
- };
- 
-+/* Verdin CAN_2 */
-+&mcu_mcan0 {
-+	status = "okay";
-+};
-+
- /* Verdin UART_4 */
- &mcu_uart0 {
- 	status = "okay";
-diff --git a/arch/arm64/boot/dts/ti/k3-am62-verdin-dev.dtsi b/arch/arm64/boot/dts/ti/k3-am62-verdin-dev.dtsi
-index 846caee7dfa4..8205081fda33 100644
---- a/arch/arm64/boot/dts/ti/k3-am62-verdin-dev.dtsi
-+++ b/arch/arm64/boot/dts/ti/k3-am62-verdin-dev.dtsi
-@@ -144,6 +144,11 @@ &mcu_i2c0 {
- 	status = "okay";
- };
- 
-+/* Verdin CAN_2 */
-+&mcu_mcan0 {
-+	status = "okay";
-+};
-+
- /* Verdin UART_4 */
- &mcu_uart0 {
- 	status = "okay";
-diff --git a/arch/arm64/boot/dts/ti/k3-am62-verdin-yavia.dtsi b/arch/arm64/boot/dts/ti/k3-am62-verdin-yavia.dtsi
-index cb11d6e7f525..c685df7deaee 100644
---- a/arch/arm64/boot/dts/ti/k3-am62-verdin-yavia.dtsi
-+++ b/arch/arm64/boot/dts/ti/k3-am62-verdin-yavia.dtsi
-@@ -167,6 +167,11 @@ &mcu_i2c0 {
- 	status = "okay";
- };
- 
-+/* Verdin CAN_2 */
-+&mcu_mcan0 {
-+	status = "okay";
-+};
-+
- /* Verdin UART_4 */
- &mcu_uart0 {
- 	status = "okay";
-diff --git a/arch/arm64/boot/dts/ti/k3-am62-verdin.dtsi b/arch/arm64/boot/dts/ti/k3-am62-verdin.dtsi
-index 57dd061911ab..12dd1d64eac9 100644
---- a/arch/arm64/boot/dts/ti/k3-am62-verdin.dtsi
-+++ b/arch/arm64/boot/dts/ti/k3-am62-verdin.dtsi
-@@ -19,6 +19,8 @@ chosen {
- 	};
- 
- 	aliases {
-+		can0 = &main_mcan0;
-+		can1 = &mcu_mcan0;
- 		ethernet0 = &cpsw_port1;
- 		ethernet1 = &cpsw_port2;
- 		i2c0 = &main_i2c0;
-@@ -732,6 +734,14 @@ AM62X_MCU_IOPAD(0x0048, PIN_INPUT, 0) /* (D10) MCU_I2C0_SDA */ /* SODIMM 57 */
- 		>;
- 	};
- 
-+	/* Verdin CAN_2 */
-+	pinctrl_mcu_mcan0: mcu-mcan0-default-pins {
-+		pinctrl-single,pins = <
-+			AM62X_MCU_IOPAD(0x0038, PIN_INPUT,  0) /* (B3) MCU_MCAN0_RX */ /* SODIMM 26 */
-+			AM62X_MCU_IOPAD(0x0034, PIN_OUTPUT, 0) /* (D6) MCU_MCAN0_TX */ /* SODIMM 24 */
-+		>;
-+	};
-+
- 	/* Verdin UART_4 - Reserved to Cortex-M4 */
- 	pinctrl_mcu_uart0: mcu-uart0-default-pins {
- 		pinctrl-single,pins = <
-@@ -1238,8 +1248,6 @@ &main_mcan0 {
- 	status = "disabled";
- };
- 
--/* Verdin CAN_2 - Reserved to Cortex-M4 */
--
- /* Verdin SPI_1 */
- &main_spi1 {
- 	pinctrl-names = "default";
-@@ -1333,6 +1341,13 @@ &mcu_gpio0 {
- 		"";
- };
- 
-+/* Verdin CAN_2 */
-+&mcu_mcan0 {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_mcu_mcan0>;
-+	status = "disabled";
-+};
-+
- /* Verdin UART_4 - Cortex-M4 UART */
- &mcu_uart0 {
- 	pinctrl-names = "default";
 -- 
-2.25.1
-
+Thank you,
+Dmitry
