@@ -2,133 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6ABFE76C818
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 10:12:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B037076C81E
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 10:12:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233816AbjHBIMA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Aug 2023 04:12:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37736 "EHLO
+        id S233855AbjHBIMl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Aug 2023 04:12:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38388 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233751AbjHBIL5 (ORCPT
+        with ESMTP id S233849AbjHBIMe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Aug 2023 04:11:57 -0400
-Received: from mgamail.intel.com (unknown [134.134.136.126])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2010F7;
-        Wed,  2 Aug 2023 01:11:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1690963917; x=1722499917;
-  h=message-id:date:mime-version:cc:subject:to:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=UiSK8hYpddgJIFyikzodWrEoTHw1JzUx9cKD1o/utS0=;
-  b=RLnxFe61dfMLO3ULW3F82JI6mDk/p1wxpEmpJ4QNgjQom/rDydQ9P41Z
-   +jdwLbYobIXcuZ70TU+8DnFuNgDBusbciUCCErRSqKacqJGbIpG6b3puK
-   ajNUu+z2nZqYtyDI6TRiE8l4FBjvvrcSElcyruJIjXO5wm2bbCbWrX99X
-   UqtnvGQZi1BPaq7togQKu4m7KWpbkupyDqZN6bHRTJDlxowvLoE3J6cJl
-   9atgW+z855Mso1tI5DhlG8qq54ax/1XeHWCkO7LOHAANiVfY2vSvIFoPI
-   mbzwHG24LQm+GNv6fTI02bVxrYzB0FJLDwItA8410SPREKKgt1UtJnXyc
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10789"; a="354435754"
-X-IronPort-AV: E=Sophos;i="6.01,248,1684825200"; 
-   d="scan'208";a="354435754"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Aug 2023 01:11:56 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10789"; a="902904809"
-X-IronPort-AV: E=Sophos;i="6.01,248,1684825200"; 
-   d="scan'208";a="902904809"
-Received: from blu2-mobl.ccr.corp.intel.com (HELO [10.254.213.137]) ([10.254.213.137])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Aug 2023 01:11:49 -0700
-Message-ID: <859a2d3e-a892-b02e-db1a-ca2503b8952b@linux.intel.com>
-Date:   Wed, 2 Aug 2023 16:11:47 +0800
+        Wed, 2 Aug 2023 04:12:34 -0400
+Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 680CA10F5
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Aug 2023 01:12:31 -0700 (PDT)
+Received: by mail-ej1-x62c.google.com with SMTP id a640c23a62f3a-99bcd6c0282so985067966b.1
+        for <linux-kernel@vger.kernel.org>; Wed, 02 Aug 2023 01:12:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1690963950; x=1691568750;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=mbfWfMV50AarvWD5inw6HeTT4LJutE3Rh+ubSQUN7nw=;
+        b=A7CXYSrzdB5JXUD+7TCbtjYXqsDsijx1Qdih2Ww0e826+V/wI+JeaBTYRRV/cOs7yL
+         15UHOQr5FA1Sx0dmaVxVTdw+klq5kFNneo6tqFVCNM4hFZLZCKgk2utxHXdGIvlPgZLa
+         3dEZUaL+11e8wHIVj5u5stdyVVQM22KYzS/H4AYYeyTqrtkdVY76SxyKBSvcEEXB2sJu
+         QUE2bQoTGJXp4/Gw1pzCfyUMM8pEEBvcN/Xg3y3sJrL56Me5G8XV4GI9Auc269FYZD4V
+         0WwHsAbVbENXuGd6QRWFeGdXWdSGTGshDHcFjYRwqbkvlUFwGwJKWgwsXKuxzbI0+hWa
+         Iecg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690963950; x=1691568750;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=mbfWfMV50AarvWD5inw6HeTT4LJutE3Rh+ubSQUN7nw=;
+        b=fLSe0+Rj+20L0ju8EPfgG6Zbpc1FsY+TUozaDdpjvbzU9ThVUgqKFrY/CA3kkMHq1D
+         eYIywfet9Q/45gHPZLrtvT4C3e0CX6c1yDHqG34ent6iav+XqksPJQAQfFDs06HErUFP
+         3fqA4FRA0mE45f61e86tq4jDjObwsslIXhLPWjVUZh729/ykpW6utkNC+LsO1+nhGAl2
+         djq/ytJN5/mu9XazTY9Oge3liAlgYLitP5yqzDk0JR5mYMCJofSDQOUqdR+50JZiy01P
+         wrvH7CFnmiMYbQ5pRCLeMLAbyi2Zi9rql/viZB160tGjuPYvQkJl6sWkR3bqRV2BQW36
+         QNUw==
+X-Gm-Message-State: ABy/qLY7UBQiVqXUI+5InyuLxMl5E2QSVZ+L6CVNjx/zpnYl5ednx9zI
+        quTTik5YxdboQ8peKycGpEpf89sAoJW/vShkMHvkPg==
+X-Google-Smtp-Source: APBJJlH17ZJkr9XN41pMawh6L7L6NKX+Z1Ok4kwtDpQPfUYS94l+Xz6GAxuT+FR3wt51KLj2CMrhDx7WzA1fFAo+guk=
+X-Received: by 2002:a17:907:7618:b0:977:ecff:3367 with SMTP id
+ jx24-20020a170907761800b00977ecff3367mr4685802ejc.40.1690963949700; Wed, 02
+ Aug 2023 01:12:29 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Cc:     baolu.lu@linux.intel.com, "cohuck@redhat.com" <cohuck@redhat.com>,
-        "eric.auger@redhat.com" <eric.auger@redhat.com>,
-        "nicolinc@nvidia.com" <nicolinc@nvidia.com>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "mjrosato@linux.ibm.com" <mjrosato@linux.ibm.com>,
-        "chao.p.peng@linux.intel.com" <chao.p.peng@linux.intel.com>,
-        "yi.y.sun@linux.intel.com" <yi.y.sun@linux.intel.com>,
-        "peterx@redhat.com" <peterx@redhat.com>,
-        "jasowang@redhat.com" <jasowang@redhat.com>,
-        "shameerali.kolothum.thodi@huawei.com" 
-        <shameerali.kolothum.thodi@huawei.com>,
-        "lulu@redhat.com" <lulu@redhat.com>,
-        "suravee.suthikulpanit@amd.com" <suravee.suthikulpanit@amd.com>,
-        "iommu@lists.linux.dev" <iommu@lists.linux.dev>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
-        "Duan, Zhenzhong" <zhenzhong.duan@intel.com>,
-        Jacob Pan <jacob.jun.pan@linux.intel.com>
-Subject: Re: [PATCH v4 04/12] iommu/vt-d: Add helper to setup pasid nested
- translation
-Content-Language: en-US
-To:     "Tian, Kevin" <kevin.tian@intel.com>,
-        "Liu, Yi L" <yi.l.liu@intel.com>,
-        "joro@8bytes.org" <joro@8bytes.org>,
-        "alex.williamson@redhat.com" <alex.williamson@redhat.com>,
-        "jgg@nvidia.com" <jgg@nvidia.com>,
-        "robin.murphy@arm.com" <robin.murphy@arm.com>
-References: <20230724111335.107427-1-yi.l.liu@intel.com>
- <20230724111335.107427-5-yi.l.liu@intel.com>
- <BN9PR11MB5276C84A20C48B4041BE07B78C0BA@BN9PR11MB5276.namprd11.prod.outlook.com>
- <17e403c0-f2f8-c3d4-9dd0-3a812be79b4a@linux.intel.com>
-From:   Baolu Lu <baolu.lu@linux.intel.com>
-In-Reply-To: <17e403c0-f2f8-c3d4-9dd0-3a812be79b4a@linux.intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+References: <20230726153223.821757-1-yosryahmed@google.com>
+ <20230726153223.821757-2-yosryahmed@google.com> <ZMkXDuwD8RFRKnNQ@dhcp22.suse.cz>
+ <CAJD7tkbb8AWR-duWb+at-S9MMz48b0JqnM+b5ok83TzvXvPb+A@mail.gmail.com>
+ <CAJD7tkbZi16w4mYngVK8qA84FMijmHvwzMjHfrJiCsV=WjixOA@mail.gmail.com> <ZMoIYLwITUZzXp4C@dhcp22.suse.cz>
+In-Reply-To: <ZMoIYLwITUZzXp4C@dhcp22.suse.cz>
+From:   Yosry Ahmed <yosryahmed@google.com>
+Date:   Wed, 2 Aug 2023 01:11:53 -0700
+Message-ID: <CAJD7tkY4hTTCfqSGa_XexbH=WSTJ4WXWeMXSU+6KW8qfr7agfQ@mail.gmail.com>
+Subject: Re: [PATCH v3] mm: memcg: use rstat for non-hierarchical stats
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     Johannes Weiner <hannes@cmpxchg.org>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Shakeel Butt <shakeelb@google.com>,
+        Muchun Song <muchun.song@linux.dev>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
+        linux-mm@kvack.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023/8/2 16:09, Baolu Lu wrote:
-> On 2023/8/2 15:10, Tian, Kevin wrote:
->>> +
->>> +    pasid_set_slptr(pte, virt_to_phys(pgd));
->>> +    pasid_set_fault_enable(pte);
->>> +    pasid_set_domain_id(pte, did);
->>> +    pasid_set_address_width(pte, s2_domain->agaw);
->>> +    pasid_set_page_snoop(pte, !!ecap_smpwc(iommu->ecap));
->>> +    pasid_set_translation_type(pte, PASID_ENTRY_PGTT_NESTED);
->>> +    pasid_set_present(pte);
->>> +    spin_unlock(&iommu->lock);
->>> +
->> this lacks of handling of force_snooping
-> 
-> If stage-2 domain has force_snooping attribute set, then we should set
-> the bit field in the pasid entry, right?
-> 
-> How about below additional change?
-> 
-> diff --git a/drivers/iommu/intel/pasid.c b/drivers/iommu/intel/pasid.c
-> index 19ac4084913b..86db81ec91f1 100644
-> --- a/drivers/iommu/intel/pasid.c
-> +++ b/drivers/iommu/intel/pasid.c
-> @@ -827,6 +827,9 @@ int intel_pasid_setup_nested(struct intel_iommu 
-> *iommu, struct device *dev,
->          if (s1_cfg->flags & IOMMU_VTD_S1_EAFE)
->                  pasid_set_eafe(pte);
-> 
-> +       if (s2_domain>force_snooping)
+On Wed, Aug 2, 2023 at 12:40=E2=80=AFAM Michal Hocko <mhocko@suse.com> wrot=
+e:
+>
+> On Tue 01-08-23 10:29:39, Yosry Ahmed wrote:
+> > On Tue, Aug 1, 2023 at 9:39=E2=80=AFAM Yosry Ahmed <yosryahmed@google.c=
+om> wrote:
+> [...]
+> > > > Have you measured any potential regression for cgroup v2 which coll=
+ects
+> > > > all this data without ever using it (AFAICS)?
+> > >
+> > > I did not. I did not expect noticeable regressions given that all the
+> > > extra work is done during flushing, which should mostly be done by th=
+e
+> > > asynchronous worker, but can also happen in the stats reading context=
+.
+> > > Let me run the same script on cgroup v2 just in case and report back.
+> >
+> > A few runs on mm-unstable with this patch:
+> >
+> > # time cat /sys/fs/cgroup/cg*/memory.stat > /dev/null
+>
+> Is this really representative test to make? I would have expected the
+> overhead would be mostly in mem_cgroup_css_rstat_flush (if it is visible
+> at all of course). This would be more likely visible in all cpus busy
+> situation (you can try heavy parallel kernel build from tmpfs for
+> example).
 
-+       if (s2_domain->force_snooping)
 
-Sorry for typo.
+I see. You are more worried about asynchronous flushing eating cpu
+time rather than the synchronous flushing being slower. In fact, my
+test is actually not representative at all because probably most of
+the cgroups either do not have updates or the asynchronous flusher got
+to them first.
 
-> +               pasid_set_pgsnp(pte);
-> +
->          pasid_set_slptr(pte, virt_to_phys(pgd));
->          pasid_set_fault_enable(pte);
->          pasid_set_domain_id(pte, did);
-> 
-> Best regards,
-> baolu
+Let me try a workload that is more parallel & cpu intensive and report
+back. I am thinking of parallel reclaim/refault loops since both
+reclaim and refault paths invoke stat updates and stat flushing.
 
+>
+> [...]
+>
+> > It looks like there are no regressions on cgroup v2 when reading the
+> > stats. Please let me know if you want me to send a new version with
+> > the cgroup v2 results as well in the commit log -- or I can just send
+> > a new commit log. Whatever is easier for Andrew.
+>
+> Updating the changelog should be good enough.
+> --
+> Michal Hocko
+> SUSE Labs
