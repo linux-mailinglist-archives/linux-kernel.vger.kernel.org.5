@@ -2,130 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D12B876CD86
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 14:50:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E9A076CD8D
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 14:51:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234858AbjHBMuO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Aug 2023 08:50:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41686 "EHLO
+        id S234796AbjHBMvE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Aug 2023 08:51:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41496 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234901AbjHBMtt (ORCPT
+        with ESMTP id S234862AbjHBMup (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Aug 2023 08:49:49 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id F0C6F2121;
-        Wed,  2 Aug 2023 05:49:24 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 2DD5A113E;
-        Wed,  2 Aug 2023 05:50:07 -0700 (PDT)
-Received: from [10.57.77.90] (unknown [10.57.77.90])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id AB4F03F5A1;
-        Wed,  2 Aug 2023 05:49:21 -0700 (PDT)
-Message-ID: <a590da86-0c42-7d46-d320-c661a59a46c1@arm.com>
-Date:   Wed, 2 Aug 2023 13:49:19 +0100
+        Wed, 2 Aug 2023 08:50:45 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6482B359C;
+        Wed,  2 Aug 2023 05:50:16 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 766AF61965;
+        Wed,  2 Aug 2023 12:49:54 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 38DD8C433C7;
+        Wed,  2 Aug 2023 12:49:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1690980593;
+        bh=Ljcd5pbRznBECm60MkpvEmPwtPvPGHtbOUqrvZAEUXg=;
+        h=From:To:Cc:Subject:Date:From;
+        b=UHge9AgJBACU7icvP8phQt6fsIRMdR7DlykH8zzWKulsEUBV1zlGKLcQmxIT9da1H
+         0RyYngdd7F24SJMP9jJ8f2j4URwDX3deiM9ebO8cPsXL4HwJOLmjE7eLbHfAxbkCv7
+         sBJsNudHGCCv7WMi2Xtu2qJwR9u/6wtRWR0TJVLsvyy5QCD1zzUMe6UALKpG6PKzuI
+         97YTYg7OgxKWZ6uv8G05c5tAFGIpUXAZaPR3z4vd/j8oqB+4m8pxn2oB9u2sMfiFiX
+         m3QZRZRwBGbQzT1DnYUrOINTPNH//QCxAzWKc3MH0NaUyqkqq/qmYa+Gktx3Pi7AUo
+         eoR/hGQXXw0Lg==
+From:   Arnd Bergmann <arnd@kernel.org>
+To:     Jiri Kosina <jikos@kernel.org>,
+        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
+        Douglas Anderson <dianders@chromium.org>,
+        Maxime Ripard <mripard@kernel.org>
+Cc:     Arnd Bergmann <arnd@arndb.de>, Hans de Goede <hdegoede@redhat.com>,
+        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] HID: i2c-hid: add more DRM dependencies
+Date:   Wed,  2 Aug 2023 14:49:40 +0200
+Message-Id: <20230802124947.1355415-1-arnd@kernel.org>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.13.0
-Subject: Re: [PATCH 0/2] don't use mapcount() to check large folio sharing
-To:     "Yin, Fengwei" <fengwei.yin@intel.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        akpm@linux-foundation.org, willy@infradead.org,
-        vishal.moola@gmail.com, wangkefeng.wang@huawei.com,
-        minchan@kernel.org, yuzhao@google.com, david@redhat.com,
-        shy828301@gmail.com
-References: <20230728161356.1784568-1-fengwei.yin@intel.com>
- <3bbfde16-ced1-dca8-6a3f-da893e045bc5@arm.com>
- <56c8f4f9-b54b-b0bb-250c-ec8643accfc7@intel.com>
- <3541d2de-5cf8-2f84-8153-277e2bfc0101@arm.com>
- <5f98748a-97ca-6426-1e24-a5675da75381@intel.com>
-From:   Ryan Roberts <ryan.roberts@arm.com>
-In-Reply-To: <5f98748a-97ca-6426-1e24-a5675da75381@intel.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 02/08/2023 13:42, Yin, Fengwei wrote:
-> 
-> 
-> On 8/2/2023 8:40 PM, Ryan Roberts wrote:
->> On 02/08/2023 13:35, Yin, Fengwei wrote:
->>>
->>>
->>> On 8/2/2023 6:27 PM, Ryan Roberts wrote:
->>>> On 28/07/2023 17:13, Yin Fengwei wrote:
->>>>> In madvise_cold_or_pageout_pte_range() and madvise_free_pte_range(),
->>>>> folio_mapcount() is used to check whether the folio is shared. But it's
->>>>> not correct as folio_mapcount() returns total mapcount of large folio.
->>>>>
->>>>> Use folio_estimated_sharers() here as the estimated number is enough.
->>>>>
->>>>> Yin Fengwei (2):
->>>>>   madvise: don't use mapcount() against large folio for sharing check
->>>>>   madvise: don't use mapcount() against large folio for sharing check
->>>>>
->>>>>  mm/huge_memory.c | 2 +-
->>>>>  mm/madvise.c     | 6 +++---
->>>>>  2 files changed, 4 insertions(+), 4 deletions(-)
->>>>>
->>>>
->>>> As a set of fixes, I agree this is definitely an improvement, so:
->>>>
->>>> Reviewed-By: Ryan Roberts
->>> Thanks.
->>>
->>>>
->>>>
->>>> But I have a couple of comments around further improvements;
->>>>
->>>> Once we have the scheme that David is working on to be able to provide precise
->>>> exclusive vs shared info, we will probably want to move to that. Although that
->>>> scheme will need access to the mm_struct of a process known to be mapping the
->>>> folio. We have that info, but its not passed to folio_estimated_sharers() so we
->>>> can't just reimplement folio_estimated_sharers() - we will need to rework these
->>>> call sites again.
->>> Yes. This could be extra work. Maybe should delay till David's work is done.
->>
->> What you have is definitely an improvement over what was there before. And is
->> probably the best we can do without David's scheme. So I wouldn't delay this.
->> Just pointing out that we will be able to make it even better later on (if
->> David's stuff goes in).
-> Yes. I agree that we should wait for David's work ready and do fix based on that.
+From: Arnd Bergmann <arnd@arndb.de>
 
-I was suggesting the opposite - not waiting. Then we can do separate improvement
-later.
+When a symbol is selected that has extra dependencies,
+anything that selects it must have the same dependencies.
+With the added CONFIG_DRM reference from I2C_HID_CORE,
+this broke a couple of drivers that now also depend
+on DRM:
 
-> 
-> 
-> Regards
-> Yin, Fengwei
-> 
->>
->>>
->>>>
->>>> Given the aspiration for most of the memory to be large folios going forwards,
->>>> wouldn't it be better to avoid splitting the large folio where the large folio
->>>> is mapped entirely within the range of the madvise operation? Sorry if this has
->>>> already been discussed and decided against - I didn't follow the RFC too
->>>> closely. Or perhaps you plan to do this as a follow up?
->>> Yes. We are on same page. RFC patchset did that. But there are some other opens
->>> on the RFC. So I tried to submit this part of change which is bug fix. The other
->>> thing left in RFC is optimization (avoid split large folio if we can).
->>>
->>>
->>> Regards
->>> Yin, Fengwei
->>>
->>>>
->>>> Thanks,
->>>> Ryan
->>>>
->>
->>
+WARNING: unmet direct dependencies detected for I2C_HID_CORE
+  Depends on [m]: HID_SUPPORT [=y] && I2C_HID [=y] && (DRM [=m] || !DRM [=m])
+  Selected by [y]:
+  - I2C_HID_OF [=y] && HID_SUPPORT [=y] && I2C_HID [=y]
+  - I2C_HID_ACPI [=y] && HID_SUPPORT [=y] && I2C_HID [=y] && ACPI [=y]
+  - I2C_HID_OF_GOODIX [=y] && HID_SUPPORT [=y] && I2C_HID [=y] && OF [=y]
+x86_64-linux-ld: vmlinux.o: in function `i2c_hid_core_remove':
+(.text+0xfc8826): undefined reference to `drm_panel_remove_follower'
+x86_64-linux-ld: vmlinux.o: in function `i2c_hid_core_probe':
+(.text+0xfc8da0): undefined reference to `drm_is_panel_follower'
+
+Add the corresponding DRM||!DRM dependencies on each one that
+is affected.
+
+Fixes: 96a37bfd232ae ("HID: i2c-hid: Support being a panel follower")
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+---
+ drivers/hid/i2c-hid/Kconfig | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/drivers/hid/i2c-hid/Kconfig b/drivers/hid/i2c-hid/Kconfig
+index 2bdb55203104b..ef7c595c9403c 100644
+--- a/drivers/hid/i2c-hid/Kconfig
++++ b/drivers/hid/i2c-hid/Kconfig
+@@ -9,6 +9,7 @@ if I2C_HID
+ config I2C_HID_ACPI
+ 	tristate "HID over I2C transport layer ACPI driver"
+ 	depends on ACPI
++	depends on DRM || !DRM
+ 	select I2C_HID_CORE
+ 	help
+ 	  Say Y here if you use a keyboard, a touchpad, a touchscreen, or any
+@@ -25,6 +26,7 @@ config I2C_HID_OF
+ 	tristate "HID over I2C transport layer Open Firmware driver"
+ 	# No "depends on OF" because this can also be used for manually
+ 	# (board-file) instantiated "hid-over-i2c" type i2c-clients.
++	depends on DRM || !DRM
+ 	select I2C_HID_CORE
+ 	help
+ 	  Say Y here if you use a keyboard, a touchpad, a touchscreen, or any
+@@ -41,6 +43,7 @@ config I2C_HID_OF
+ config I2C_HID_OF_ELAN
+ 	tristate "Driver for Elan hid-i2c based devices on OF systems"
+ 	depends on OF
++	depends on DRM || !DRM
+ 	select I2C_HID_CORE
+ 	help
+ 	  Say Y here if you want support for Elan i2c devices that use
+@@ -56,6 +59,7 @@ config I2C_HID_OF_ELAN
+ config I2C_HID_OF_GOODIX
+ 	tristate "Driver for Goodix hid-i2c based devices on OF systems"
+ 	depends on OF
++	depends on DRM || !DRM
+ 	select I2C_HID_CORE
+ 	help
+ 	  Say Y here if you want support for Goodix i2c devices that use
+-- 
+2.39.2
 
