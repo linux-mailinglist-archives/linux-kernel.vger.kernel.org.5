@@ -2,110 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7635376CD5A
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 14:45:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BEE6776CD61
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 14:46:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234680AbjHBMp4 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 2 Aug 2023 08:45:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37816 "EHLO
+        id S234719AbjHBMqi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Aug 2023 08:46:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38770 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234650AbjHBMpx (ORCPT
+        with ESMTP id S234718AbjHBMqb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Aug 2023 08:45:53 -0400
-Received: from mail-oa1-f51.google.com (mail-oa1-f51.google.com [209.85.160.51])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E0BE2D4C;
-        Wed,  2 Aug 2023 05:45:30 -0700 (PDT)
-Received: by mail-oa1-f51.google.com with SMTP id 586e51a60fabf-1bb6334fec5so797391fac.1;
-        Wed, 02 Aug 2023 05:45:30 -0700 (PDT)
+        Wed, 2 Aug 2023 08:46:31 -0400
+Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E892A2D7E
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Aug 2023 05:46:07 -0700 (PDT)
+Received: by mail-lf1-x133.google.com with SMTP id 2adb3069b0e04-4fe48a2801bso2251811e87.1
+        for <linux-kernel@vger.kernel.org>; Wed, 02 Aug 2023 05:46:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1690980365; x=1691585165;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=GGkuunS4EDmPT1tZH3dzhdgVpDClL+Bc1J1FBeTNMhc=;
+        b=GmDVhJOHeNgvmek1pbBqqjCH1KuKNhhP55WDa1j5eD1oUjiab38sPQFDqwj82rYPAh
+         5cZJvbCzzq0GGqEflTvTrlUBZc5IKu7gGesqRcd4Pu2nlrYXsOqeAJo3yryBQI39njmL
+         S4jKzckVRMKv+ZENBHkIJCy463fTcaj0eNbeaVbjMFPAfcNxtIHqMKmeLQzzHsYwMSPk
+         K4IZRyh/Eg4+f/t4ra0WcZmEBWGJNY24lZYqysJTJ1oYYpMaI8QZaRbcD62j5EquHZdO
+         kUdn421XnO19QQPQsxdWiXtGW7lFhz6v1of1G6ZnyLUKdge3vQ/m/n/Dk65+ELOBoK+H
+         gkyQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690980285; x=1691585085;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=at867tJckf1nQORNLj4OAwSlXms8YsyeqcRBXqkAs8A=;
-        b=Yvk/lIRGkmSm2qtgbWipMTFeQKe0S5WXsxVjmi7UrfG0AtpWJV//WOa2m1Ss2CuEs1
-         iife9vHWcSDeZLdhfBuorf12gmJAKrMZkYE+apn+7p83ZYwc3h52e8YSn2LQyA63eXca
-         d4YJaLWSjK0+x1o8LXoXpiTgE2tXP4RfaelKNST5qDGN8HlsoPcMIDQBjeF6fzif6mWF
-         xUeMtvfJZuwMgnJSVuLnSatW4TY87XeZ33I32p9J7vL/dXq6ZUBbb7uMZdLU7aLa8OQz
-         1YAMMoCG6bNyK+S3qJNi8GlSuVAQ8VCOlyLVaDB43JY/kUhwc1HFFcLFj4JhyCLuyMiD
-         RFYg==
-X-Gm-Message-State: ABy/qLZOMnp/XnwnQnF5yvxiW8mEMLqxSdti6DVVCB2aQ613wE6zPoAI
-        AGncyv7iIwZ5Wm+L1N9SreQ/BLPNeGvzOtF5uPU=
-X-Google-Smtp-Source: APBJJlHrX8CZBRaQSwN8AGSMWlTg21y9BjLbat0wsMulksa1y+4QVEwR8wkHsQPwwckRN/BKrCMGaC0wh63srUFWIwQ=
-X-Received: by 2002:a05:6870:231d:b0:1a7:f79c:2fbc with SMTP id
- w29-20020a056870231d00b001a7f79c2fbcmr11997663oao.0.1690980285231; Wed, 02
- Aug 2023 05:44:45 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1690980365; x=1691585165;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=GGkuunS4EDmPT1tZH3dzhdgVpDClL+Bc1J1FBeTNMhc=;
+        b=HVjOZVPDJrWZAjxbmzfgCBcllWS7Va6/Q8fQy3jwvJT6DU1kOLykOkdKAMZKPkqQIL
+         KQwxVSzv3MfK+tr8rsIa6+O21hRprhf96Sx3ypOPjLpZUoUY0OXLucDiMVwpH6augdk8
+         P0eYJWu4HRJ7+Q53USj+uLLMPRSd8NVSEZ98/92Uw3Hjko85A0txAPIZqYNM9P/dnMDn
+         74tLHJdDzyh1AQyxa9dhWAgLsmxyQ/Bp2MrbxkJm4ZEYYExkdV3w/YZcrttmSjcVqPOS
+         bGucVuetkh2+h/7F7fxBKNFNcnptGvBTzF/zAVMybtlr0PSrZnFetM9o4VRa3ySdw31V
+         QKVA==
+X-Gm-Message-State: ABy/qLZmrxzhkzWmSKCBh42OOOdIJS9o0yrcw+fi3FY6o0YxrXBCnOf+
+        XdvBBGFVJbNxmuTDWKsrLX0zJw==
+X-Google-Smtp-Source: APBJJlGNN+IyRYy9wtIbTnJF9tCCZxS7TKgMiSJIaBh9EOf9lnl3LR8IgGgB/iju35iVR+Xlev+LBw==
+X-Received: by 2002:ac2:5f64:0:b0:4f8:7513:8cb0 with SMTP id c4-20020ac25f64000000b004f875138cb0mr4244966lfc.2.1690980365125;
+        Wed, 02 Aug 2023 05:46:05 -0700 (PDT)
+Received: from [192.168.1.101] (abyk53.neoplus.adsl.tpnet.pl. [83.9.30.53])
+        by smtp.gmail.com with ESMTPSA id v11-20020a056512048b00b004f76a88dbcbsm2948635lfq.176.2023.08.02.05.46.03
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 02 Aug 2023 05:46:04 -0700 (PDT)
+Message-ID: <edc0bf71-ceff-0af5-62e5-ac5c48e62add@linaro.org>
+Date:   Wed, 2 Aug 2023 14:46:03 +0200
 MIME-Version: 1.0
-References: <20230728145515.990749537@infradead.org> <20230728145808.835742568@infradead.org>
- <CAJZ5v0gNqEuqvV0RtrXiDDGtvKB2hronLwAU8jnmuGppKmyDxA@mail.gmail.com>
- <20230729084417.GB3945851@hirez.programming.kicks-ass.net>
- <CAJZ5v0iVKRY5-YvQmMbZ3+eZNHJgXt=CoYedNueAJyT9+Ld5Dg@mail.gmail.com>
- <20230731090935.GB29590@hirez.programming.kicks-ass.net> <CAJZ5v0jh5oozZm7OvN9j1iHtzYQzPMOJ=Nt0HaJKYyJ218Cezw@mail.gmail.com>
- <20230731113850.GE29590@hirez.programming.kicks-ass.net> <CAJZ5v0h+KC+uMiOE4m4Dp4=iHMkekutk+B+cwb0de8Fvswv6jA@mail.gmail.com>
- <20230802103426.GB210177@hirez.programming.kicks-ass.net>
-In-Reply-To: <20230802103426.GB210177@hirez.programming.kicks-ass.net>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Wed, 2 Aug 2023 14:44:33 +0200
-Message-ID: <CAJZ5v0gMrUBqtWfuN4DJwXYY5kM+kikWHiep=p-8Jz3yEO0hfQ@mail.gmail.com>
-Subject: Re: [RFC][PATCH 1/3] cpuidle: Inject tick boundary state
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     "Rafael J. Wysocki" <rafael@kernel.org>, anna-maria@linutronix.de,
-        tglx@linutronix.de, frederic@kernel.org, gautham.shenoy@amd.com,
-        linux-kernel@vger.kernel.org, daniel.lezcano@linaro.org,
-        linux-pm@vger.kernel.org, mingo@redhat.com, juri.lelli@redhat.com,
-        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
-        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
-        bristot@redhat.com, vschneid@redhat.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 4/8] arm64: dts: qcom: Add PMIC pmx75 dtsi
+Content-Language: en-US
+To:     Rohit Agarwal <quic_rohiagar@quicinc.com>, agross@kernel.org,
+        andersson@kernel.org, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org
+Cc:     linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <1690970366-30982-1-git-send-email-quic_rohiagar@quicinc.com>
+ <1690970366-30982-5-git-send-email-quic_rohiagar@quicinc.com>
+From:   Konrad Dybcio <konrad.dybcio@linaro.org>
+Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
+ 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
+ izWDgYvmBE8=
+In-Reply-To: <1690970366-30982-5-git-send-email-quic_rohiagar@quicinc.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 2, 2023 at 12:34 PM Peter Zijlstra <peterz@infradead.org> wrote:
->
-> On Mon, Jul 31, 2023 at 06:55:35PM +0200, Rafael J. Wysocki wrote:
->
-> > > In that case you cannot tell the difference between I'm good to use this
-> > > state and I'm good to disable the tick and still use this state.
-> >
-> > No, you don't, but is it really worth the fuss?
->
-> My somewhat aged IVB-EP sits around 25 us for restarting the tick.
->
-> Depending on the C state, that is a significant chunk of exit latency,
-> and depending on how often you do the whole NOHZ dance, this can add up
-> to significant lost runtime too.
->
-> And these are all machines that have a usable TSC, these numbers all go
-> up significantly when you somehow end up on the HPET or similar wreckage.
->
-> Stopping the tick is slightly more expensive, but in the same order, I
-> get around 30 us on the IVB, vs 25 for restarting it. Reprogramming the
-> timer (LAPIC/TSC-DEADLINE) is the main chunk of it I suspect.
->
-> So over-all that's 55 us extra latency for the full idle path, which can
-> definitely hurt.
->
-> So yeah, I would say this is all worth it.
+On 2.08.2023 11:59, Rohit Agarwal wrote:
+> Add dtsi for PMIC pmx75 found in Qualcomm platforms.
+> 
+> Signed-off-by: Rohit Agarwal <quic_rohiagar@quicinc.com>
+> ---
+[...]
 
-I agree that, in general, it is good to avoid stopping the tick when
-it is not necessary to stop it.
+> +		pmx75_temp: temp-alarm@a00 {
+Nit: can the label be pmx75_temp_alarm? "temp" is too vague, I think.
 
-> My ADL is somewhat better, but also much higher clocked, and gets around
-> 10 us for a big core and 16 us for a little core for restarting the
-> tick.
-
-But my overall point is different.
-
-An additional bin would possibly help if the deepest state has been
-selected and its target residency is below the tick, and the closest
-timer (other than the tick) is beyond the tick.  So how much of a
-difference would be made by making this particular case more accurate?
+Konrad
