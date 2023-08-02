@@ -2,84 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 63E5C76CFAF
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 16:08:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7215976CFA4
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 16:08:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234122AbjHBOIy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Aug 2023 10:08:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50880 "EHLO
+        id S234756AbjHBOIf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Aug 2023 10:08:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49516 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233316AbjHBOIW (ORCPT
+        with ESMTP id S234982AbjHBOII (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Aug 2023 10:08:22 -0400
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AAD882D7E;
-        Wed,  2 Aug 2023 07:07:56 -0700 (PDT)
-Received: from pps.filterd (m0279863.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 372CK9w3025892;
-        Wed, 2 Aug 2023 14:07:51 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding : content-type; s=qcppdkim1;
- bh=js11k2OvXkZLyF/iJ1sYhUOqKW61Jmb3tXCifLd/WnQ=;
- b=Y7WHm3ugcanqGqif6jtppCacgZ9KQjtdFmy4v1j4auq8ZsMl+mbZqVPlLXeY6FmUGWMe
- bzcvTmkNoTLQyrLGmXLdPdwEwLptgHWbqr+Dyc1aGoOLQMsnv72/KCYi+6nwGU261goB
- oWoj62f6vbTRniCEof3FnsCFlgsY6MjfEpe+1Hhdh6WzOOoBfiLW2AP05/UJPBq63642
- 2lK7p4e0+Lbm2PPCtRwrJCrTSoSL7MIzySPUJbv2/XFkqP2bMS6BfRgIEQjjj7eM9yMA
- Sa4Z2iaWTUWJ37ZL9CNcNELggX2AL19K3eoAf5bWpwrhm/sUrj6CqKc6H3x94ZC1uejG rw== 
-Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3s7n93gfme-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 02 Aug 2023 14:07:50 +0000
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-        by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 372E7ois004221
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 2 Aug 2023 14:07:50 GMT
-Received: from hu-mmanikan-blr.qualcomm.com (10.80.80.8) by
- nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.30; Wed, 2 Aug 2023 07:07:43 -0700
-From:   Manikanta Mylavarapu <quic_mmanikan@quicinc.com>
-To:     <agross@kernel.org>, <andersson@kernel.org>,
-        <konrad.dybcio@linaro.org>, <mathieu.poirier@linaro.org>,
-        <robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
-        <conor+dt@kernel.org>, <mturquette@baylibre.com>,
-        <sboyd@kernel.org>, <quic_eberman@quicinc.com>,
-        <quic_gurus@quicinc.com>, <kvalo@kernel.org>,
-        <quic_mmanikan@quicinc.com>, <loic.poulain@linaro.org>,
-        <linux-arm-msm@vger.kernel.org>,
-        <linux-remoteproc@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linux-clk@vger.kernel.org>
-CC:     <quic_srichara@quicinc.com>, <quic_sjaganat@quicinc.com>,
-        <quic_kathirav@quicinc.com>, <quic_anusha@quicinc.com>,
-        <quic_varada@quicinc.com>
-Subject: [PATCH v5 11/11] arm64: dts: qcom: ipq9574: Add nodes to bring up multipd
-Date:   Wed, 2 Aug 2023 19:36:06 +0530
-Message-ID: <20230802140606.2041889-12-quic_mmanikan@quicinc.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20230802140606.2041889-1-quic_mmanikan@quicinc.com>
-References: <20230802140606.2041889-1-quic_mmanikan@quicinc.com>
-MIME-Version: 1.0
+        Wed, 2 Aug 2023 10:08:08 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 715B9359C;
+        Wed,  2 Aug 2023 07:07:46 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 80307619BA;
+        Wed,  2 Aug 2023 14:07:45 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D3DA2C433C9;
+        Wed,  2 Aug 2023 14:07:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1690985264;
+        bh=bJNValHUjzspsGmERMVn8LUzA2cKwOnf4DUJY1j/1pQ=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=bDfKnaHt6TLKDIdJzeXIdoYUzA1Y9aEHuYTtsjNqmDcueBDleqo9LzmIqenZP41As
+         ESe1I5Outu5972eAywedMd0nX/Ut3onQEahHL7SIXffjYjWwIp5MmeDoR4F7eirofW
+         o5y5H329SMBec4sTvZ77TD9PJ/kK39Gf6LJ+Kb1lsTc1euM65Pe8O7cphvu2D11mJp
+         txoXyXBMjZrianJSkzdmxfO+kOd44W6ATTTTDUUr5MWFbGdp+AJxjL2t0lnLqzathT
+         sKyPuu9hf+ED/nJiPlcoZ+F+uh8jDm+bxcrDogP/CtJfUav2ZEPmxieevybBNFtmWI
+         es49ti3hgnRgg==
+Date:   Wed, 2 Aug 2023 23:07:38 +0900
+From:   Masami Hiramatsu (Google) <mhiramat@kernel.org>
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Steven Rostedt <rostedt@goodmis.org>,
+        "Masami Hiramatsu (Google)" <mhiramat@kernel.org>,
+        linux-trace-kernel@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        bpf <bpf@vger.kernel.org>, Sven Schnelle <svens@linux.ibm.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Alan Maguire <alan.maguire@oracle.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Florent Revest <revest@chromium.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>
+Subject: Re: [PATCH v4 3/9] bpf/btf: Add a function to search a member of a
+ struct/union
+Message-Id: <20230802230738.2b22cef561feb5d498f22f49@kernel.org>
+In-Reply-To: <CAADnVQLkVatr5BTScpuKaKAO+Cp=0KVxhqXwsjZoGhJPu3G4jA@mail.gmail.com>
+References: <169078860386.173706.3091034523220945605.stgit@devnote2>
+        <169078863449.173706.2322042687021909241.stgit@devnote2>
+        <CAADnVQ+C64_C1w1kqScZ6C5tr6_juaWFaQdAp9Mt3uzaQp2KOw@mail.gmail.com>
+        <20230801085724.9bb07d2c82e5b6c6a6606848@kernel.org>
+        <CAADnVQLaFpd2OhqP7W3xWB1b9P2GAKgrVQU1FU2yeNYKbCkT=Q@mail.gmail.com>
+        <20230802000228.158f1bd605e497351611739e@kernel.org>
+        <20230801112036.0d4ee60d@gandalf.local.home>
+        <20230801113240.4e625020@gandalf.local.home>
+        <CAADnVQ+N7b8_0UhndjwW9-5Vx2wUVvojujFLOCFr648DUv-Y2Q@mail.gmail.com>
+        <20230801190920.7a1abfd5@gandalf.local.home>
+        <20230802092146.9bda5e49528e6988ab97899c@kernel.org>
+        <20230801204054.3884688e@rorschach.local.home>
+        <20230801204407.7b284b00@rorschach.local.home>
+        <CAADnVQLkVatr5BTScpuKaKAO+Cp=0KVxhqXwsjZoGhJPu3G4jA@mail.gmail.com>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: blO-G6wQNZb6iPw7Gdtii4-6Cojkjtas
-X-Proofpoint-ORIG-GUID: blO-G6wQNZb6iPw7Gdtii4-6Cojkjtas
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
- definitions=2023-08-02_09,2023-08-01_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 clxscore=1015
- bulkscore=0 mlxlogscore=732 spamscore=0 malwarescore=0 suspectscore=0
- mlxscore=0 impostorscore=0 priorityscore=1501 phishscore=0
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2306200000 definitions=main-2308020125
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -87,111 +83,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Enable nodes required for multipd remoteproc bring up.
+On Tue, 1 Aug 2023 19:22:01 -0700
+Alexei Starovoitov <alexei.starovoitov@gmail.com> wrote:
 
-Signed-off-by: Manikanta Mylavarapu <quic_mmanikan@quicinc.com>
----
-Changes in v5:
-	- Rebased on linux-next
+> On Tue, Aug 1, 2023 at 5:44 PM Steven Rostedt <rostedt@goodmis.org> wrote:
+> >
+> > On Tue, 1 Aug 2023 20:40:54 -0400
+> > Steven Rostedt <rostedt@goodmis.org> wrote:
+> >
+> > > Maybe we can add a ftrace_partial_regs(fregs) that returns a
+> > > partially filled pt_regs, and the caller that uses this obviously knows
+> > > its partial (as it's in the name). But this doesn't quite help out arm64
+> > > because unlike x86, struct ftrace_regs does not contain an address
+> > > compatibility with pt_regs fields. It would need to do a copy.
+> > >
+> > >  ftrace_partial_regs(fregs, &regs) ?
+> >
+> > Well, both would be pointers so you wouldn't need the "&", but it was
+> > to stress that it would be copying one to the other.
+> >
+> >   void ftrace_partial_regs(const struct ftrace_regs *fregs, struct pt_regs regs);
+> 
+> Copy works, but why did you pick a different layout?
 
-Changes in v4:
-	- Rebased on linux-next
+I think it is for minimize the stack consumption. pt_regs on arm64 will
+consume 42*u64 = 336 bytes, on the other hand ftrace_regs will use
+14*unsigned long = 112 bytes. And most of the registers in pt_regs are not
+accessed usually. (as you may know RISC processors usually have many
+registers - and x86 will be if we use APX in kernel. So pt_regs is big.)
 
-Changes in v3:
-	- Fixed all comments and rebased on linux-next.
-	- Removed WCSS userpd nodes from dtsi file,
-	  because it vary based on no of radio's connected.
- 
-Changes in v2:
-	- Corrected syntax like alignmnet and kept nodes in sorted
-	  order.
-	- Added 'firmware-name' property.
+> Why not to use pt_regs ? if save of flags is slow, just skip that part
+> and whatever else that is slow. You don't even need to zero out
+> unsaved fields. Just ask the caller to zero out pt_regs before hand.
+> Most users have per-cpu pt_regs that is being reused.
+> So there will be one zero-out in the beginning and every partial
+> save of regs will be fast.
+> Then there won't be any need for copy-converter from ftrace_regs to pt_regs.
+> Maybe too much churn at this point. copy is fine.
 
- arch/arm64/boot/dts/qcom/ipq9574.dtsi | 59 +++++++++++++++++++++++++++
- 1 file changed, 59 insertions(+)
+If there is no nested call, yeah, per-cpu pt_regs will work.
 
-diff --git a/arch/arm64/boot/dts/qcom/ipq9574.dtsi b/arch/arm64/boot/dts/qcom/ipq9574.dtsi
-index 51aba071c1eb..5d59ff1557b6 100644
---- a/arch/arm64/boot/dts/qcom/ipq9574.dtsi
-+++ b/arch/arm64/boot/dts/qcom/ipq9574.dtsi
-@@ -198,6 +198,11 @@ smem@4aa00000 {
- 			hwlocks = <&tcsr_mutex 0>;
- 			no-map;
- 		};
-+
-+		q6_region: wcnss@4ab00000 {
-+			reg = <0x0 0x4ab00000 0x0 0x2b00000>;
-+			no-map;
-+		};
- 	};
- 
- 	soc: soc@0 {
-@@ -722,6 +727,36 @@ frame@b128000 {
- 				status = "disabled";
- 			};
- 		};
-+
-+		q6v5_wcss: remoteproc@cd00000 {
-+			compatible = "qcom,ipq9574-q6-mpd";
-+			reg = <0x0cd00000 0x4040>;
-+			firmware-name = "ath11k/IPQ9574/hw1.0/q6_fw.mdt",
-+					"ath11k/IPQ9574/hw1.0/m3_fw.mdt";
-+			interrupts-extended = <&intc GIC_SPI 325 IRQ_TYPE_EDGE_RISING>,
-+					      <&wcss_smp2p_in 0 IRQ_TYPE_NONE>,
-+					      <&wcss_smp2p_in 1 IRQ_TYPE_NONE>,
-+					      <&wcss_smp2p_in 2 IRQ_TYPE_NONE>,
-+					      <&wcss_smp2p_in 3 IRQ_TYPE_NONE>;
-+			interrupt-names = "wdog",
-+					  "fatal",
-+					  "ready",
-+					  "handover",
-+					  "stop-ack";
-+
-+			qcom,smem-states = <&wcss_smp2p_out 0>,
-+					   <&wcss_smp2p_out 1>;
-+			qcom,smem-state-names = "shutdown",
-+						"stop";
-+			memory-region = <&q6_region>;
-+
-+			glink-edge {
-+				interrupts = <GIC_SPI 321 IRQ_TYPE_EDGE_RISING>;
-+				label = "rtr";
-+				qcom,remote-pid = <1>;
-+				mboxes = <&apcs_glb 8>;
-+			};
-+		};
- 	};
- 
- 	thermal-zones {
-@@ -979,4 +1014,28 @@ timer {
- 			     <GIC_PPI 4 (GIC_CPU_MASK_SIMPLE(4) | IRQ_TYPE_LEVEL_LOW)>,
- 			     <GIC_PPI 1 (GIC_CPU_MASK_SIMPLE(4) | IRQ_TYPE_LEVEL_LOW)>;
- 	};
-+
-+	wcss: wcss-smp2p {
-+		compatible = "qcom,smp2p";
-+		qcom,smem = <435>, <428>;
-+
-+		interrupt-parent = <&intc>;
-+		interrupts = <GIC_SPI 322 IRQ_TYPE_EDGE_RISING>;
-+
-+		mboxes = <&apcs_glb 9>;
-+
-+		qcom,local-pid = <0>;
-+		qcom,remote-pid = <1>;
-+
-+		wcss_smp2p_out: master-kernel {
-+			qcom,entry-name = "master-kernel";
-+			#qcom,smem-state-cells = <1>;
-+		};
-+
-+		wcss_smp2p_in: slave-kernel {
-+			qcom,entry-name = "slave-kernel";
-+			interrupt-controller;
-+			#interrupt-cells = <2>;
-+		};
-+	};
- };
+Thank you,
+
 -- 
-2.34.1
-
+Masami Hiramatsu (Google) <mhiramat@kernel.org>
