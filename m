@@ -2,205 +2,187 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E21176D6B7
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 20:21:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E53B376D6C1
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 20:22:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230440AbjHBSVB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Aug 2023 14:21:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34992 "EHLO
+        id S233910AbjHBSWF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Aug 2023 14:22:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35416 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231406AbjHBSU7 (ORCPT
+        with ESMTP id S231406AbjHBSV7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Aug 2023 14:20:59 -0400
-Received: from mail-yb1-xb2c.google.com (mail-yb1-xb2c.google.com [IPv6:2607:f8b0:4864:20::b2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0417219A8
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Aug 2023 11:20:58 -0700 (PDT)
-Received: by mail-yb1-xb2c.google.com with SMTP id 3f1490d57ef6-c5f98fc4237so89345276.2
-        for <linux-kernel@vger.kernel.org>; Wed, 02 Aug 2023 11:20:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1691000457; x=1691605257;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=Homk9fjzMS9bRt7+JLpaV1MTVogVxSAQQC2/ioeMDYs=;
-        b=cglIoM6sjH+zBmascjr/gM8vL+7gGGCZUdjV7mtnF4yV93Ty1l53erEyXgHv12bEbu
-         pGBzH8Vc+EfShQRn+4dhoS9n8u3BWsfRj1iPSR1StLh7wfqj9zBS2BxrpS159whlJxnS
-         7igu1uBdIQZmyX5FUSm95WTDBuA+DQdQzA88TLo0kFBaqvp/39CX+1885MQbkKmumIyj
-         N+bjctQEtPoHBBKONrWT37KN+X0+n3X47G50DXRFIbP+oEZLc2mQeBeDdEjcL1DcqUE7
-         /HUW1SKIx1jsTQnc2UrbYAq2Q55WP63D25gB0VeIzPVYByqE1SPvhEodu0WjfvK94SiF
-         SbVw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691000457; x=1691605257;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Homk9fjzMS9bRt7+JLpaV1MTVogVxSAQQC2/ioeMDYs=;
-        b=P7ZhSk3SlzrxvR2urR7SkNJTxdVJr0Vwj/QpUAY8MQJF+XR94lKrmtdGSGgW0dnLKn
-         Yvpeg5oRfyJV0bpyO6AM06cdVrTjgmujUHvS5eUMvIRArwknTZUTEKo8B+vREwxWOA1q
-         RTTiwqWX4k56A608rAdr9tYfkfserCMvb6IkqPHOczwb85I+qjxbJQCF/Satm4IGdOcT
-         dAbEJOvDjWwzyy9mzGIPUNDKkUeGa8YVUF0Xy9XPRF47BSXpF/ZUjOzZLHD4lhintZv0
-         NwC8TsZh4zwLTnI2Db5l9FeXADtw8qpFZ0BvqdsbdIQhctExB47+L0h33mSGEhVLPNvJ
-         OQ6w==
-X-Gm-Message-State: ABy/qLb0je7N8z2EoRmduBz2U3hOceXJWYw4x+gpEMqpDg3HX2pqLsho
-        QiDA5irDU6y9ToX/Vku/EuuUDjlGucnbevdUIdr59w==
-X-Google-Smtp-Source: APBJJlGdRkk9ZTw77IAlIa2EQ5+EbP7+f/MNQsqxMuzb2A7BYiWokn6e+q+V79qBOo+lQb7f/hDZkW2TA/vLhi6yLSY=
-X-Received: by 2002:a25:4d87:0:b0:d35:7c2a:e912 with SMTP id
- a129-20020a254d87000000b00d357c2ae912mr6332121ybb.3.1691000457217; Wed, 02
- Aug 2023 11:20:57 -0700 (PDT)
+        Wed, 2 Aug 2023 14:21:59 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 901121724;
+        Wed,  2 Aug 2023 11:21:57 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 1C56D61A87;
+        Wed,  2 Aug 2023 18:21:57 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 51C95C433C8;
+        Wed,  2 Aug 2023 18:21:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1691000516;
+        bh=ycwx/5PKSOfdsJleD1GrXVU/2tvqnKBKqdlrqiXz2a4=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+        b=Lq45skxqh7cpBQLhcIe1Gw+lovpqkvSzuzb8uAcyF5FrElk/i/Ef62Ff+U85B0JYe
+         gb5CgOGTY1TKw/GZkOMcRDcxztlWQJmGUpbe2PB0ZZtJhOtSfNtibfRZFTg6XykiV4
+         x4PKksy3wl2+3UvlwVruRvycuEHFr6v641nEPFf7oKydUHdevtCfIP62s3qFywogxs
+         bUSv3T3yZ3RUK3kjfZ3Erjub/WKAY+sdkcU6WTTdHAgJrOMM/i9gdSpZrws8Unwtrq
+         tNeLRJIXs/0bUybd4cEYmTQYz1K0b/J8KC16T4R6xltE9tlCNFzbPuAaxgMh/CIZB5
+         7bXA8nQ4jZd1w==
+Message-ID: <16f46a9e6d88582d53d31a320589a7ba9d232e0c.camel@kernel.org>
+Subject: Re: [PATCH v6 5/7] xfs: switch to multigrain timestamps
+From:   Jeff Layton <jlayton@kernel.org>
+To:     "Darrick J. Wong" <djwong@kernel.org>,
+        Christian Brauner <brauner@kernel.org>
+Cc:     Eric Van Hensbergen <ericvh@kernel.org>,
+        Latchesar Ionkov <lucho@ionkov.net>,
+        Dominique Martinet <asmadeus@codewreck.org>,
+        Christian Schoenebeck <linux_oss@crudebyte.com>,
+        David Howells <dhowells@redhat.com>,
+        Marc Dionne <marc.dionne@auristor.com>,
+        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>, Xiubo Li <xiubli@redhat.com>,
+        Ilya Dryomov <idryomov@gmail.com>,
+        Jan Harkes <jaharkes@cs.cmu.edu>, coda@cs.cmu.edu,
+        Tyler Hicks <code@tyhicks.com>, Gao Xiang <xiang@kernel.org>,
+        Chao Yu <chao@kernel.org>, Yue Hu <huyue2@coolpad.com>,
+        Jeffle Xu <jefflexu@linux.alibaba.com>,
+        Namjae Jeon <linkinjeon@kernel.org>,
+        Sungjong Seo <sj1557.seo@samsung.com>,
+        Jan Kara <jack@suse.com>, Theodore Ts'o <tytso@mit.edu>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Jaegeuk Kim <jaegeuk@kernel.org>,
+        OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>,
+        Miklos Szeredi <miklos@szeredi.hu>,
+        Bob Peterson <rpeterso@redhat.com>,
+        Andreas Gruenbacher <agruenba@redhat.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Tejun Heo <tj@kernel.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Christian Brauner <brauner@kernel.org>,
+        Trond Myklebust <trond.myklebust@hammerspace.com>,
+        Anna Schumaker <anna@kernel.org>,
+        Konstantin Komarov <almaz.alexandrovich@paragon-software.com>,
+        Mark Fasheh <mark@fasheh.com>,
+        Joel Becker <jlbec@evilplan.org>,
+        Joseph Qi <joseph.qi@linux.alibaba.com>,
+        Mike Marshall <hubcap@omnibond.com>,
+        Martin Brandenburg <martin@omnibond.com>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Iurii Zaikin <yzaikin@google.com>,
+        Steve French <sfrench@samba.org>,
+        Paulo Alcantara <pc@manguebit.com>,
+        Ronnie Sahlberg <lsahlber@redhat.com>,
+        Shyam Prasad N <sprasad@microsoft.com>,
+        Tom Talpey <tom@talpey.com>,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Richard Weinberger <richard@nod.at>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Hugh Dickins <hughd@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Dave Chinner <david@fromorbit.com>,
+        Anthony Iliopoulos <ailiop@suse.com>, v9fs@lists.linux.dev,
+        linux-kernel@vger.kernel.org, linux-afs@lists.infradead.org,
+        linux-btrfs@vger.kernel.org, ceph-devel@vger.kernel.org,
+        codalist@coda.cs.cmu.edu, ecryptfs@vger.kernel.org,
+        linux-erofs@lists.ozlabs.org, linux-fsdevel@vger.kernel.org,
+        linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
+        cluster-devel@redhat.com, linux-nfs@vger.kernel.org,
+        ntfs3@lists.linux.dev, ocfs2-devel@lists.linux.dev,
+        devel@lists.orangefs.org, linux-cifs@vger.kernel.org,
+        samba-technical@lists.samba.org, linux-mtd@lists.infradead.org,
+        linux-mm@kvack.org, linux-xfs@vger.kernel.org
+Date:   Wed, 02 Aug 2023 14:21:49 -0400
+In-Reply-To: <20230802174853.GC11352@frogsfrogsfrogs>
+References: <20230725-mgctime-v6-0-a794c2b7abca@kernel.org>
+         <20230725-mgctime-v6-5-a794c2b7abca@kernel.org>
+         <20230802174853.GC11352@frogsfrogsfrogs>
+Content-Type: text/plain; charset="ISO-8859-15"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
 MIME-Version: 1.0
-References: <20230802-add-widebus-support-v3-0-2661706be001@quicinc.com> <20230802-add-widebus-support-v3-2-2661706be001@quicinc.com>
-In-Reply-To: <20230802-add-widebus-support-v3-2-2661706be001@quicinc.com>
-From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Date:   Wed, 2 Aug 2023 21:20:46 +0300
-Message-ID: <CAA8EJpoPd_T+vLVrJ6RpCrYY6H1xLF4eFYVGV4N-wS3g+5cR-w@mail.gmail.com>
-Subject: Re: [PATCH v3 2/4] drm/msm/dpu: Enable widebus for DSI INTF
-To:     Jessica Zhang <quic_jesszhan@quicinc.com>
-Cc:     Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
-        Marijn Suijten <marijn.suijten@somainline.org>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>, quic_abhinavk@quicinc.com,
-        linux-arm-msm@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        freedreno@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=unavailable autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2 Aug 2023 at 21:09, Jessica Zhang <quic_jesszhan@quicinc.com> wrote:
->
-> DPU supports a data-bus widen mode for DSI INTF.
->
-> Enable this mode for all supported chipsets if widebus is enabled for DSI.
->
-> Signed-off-by: Jessica Zhang <quic_jesszhan@quicinc.com>
-> ---
->  drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c          | 11 ++++++++---
->  drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys_cmd.c |  4 +++-
->  drivers/gpu/drm/msm/disp/dpu1/dpu_hw_intf.c          |  3 +++
->  drivers/gpu/drm/msm/disp/dpu1/dpu_hw_intf.h          |  1 +
->  drivers/gpu/drm/msm/msm_drv.h                        |  6 +++++-
->  5 files changed, 20 insertions(+), 5 deletions(-)
->
-> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c b/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c
-> index 3dcd37c48aac..de08aad39e15 100644
-> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c
-> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c
-> @@ -1196,15 +1196,20 @@ static void dpu_encoder_virt_atomic_enable(struct drm_encoder *drm_enc,
->         struct drm_display_mode *cur_mode = NULL;
->         struct msm_drm_private *priv = drm_enc->dev->dev_private;
->         struct msm_display_info *disp_info;
-> +       int index;
->
->         dpu_enc = to_dpu_encoder_virt(drm_enc);
->         disp_info = &dpu_enc->disp_info;
->
-> +       disp_info = &dpu_enc->disp_info;
-> +       index = disp_info->h_tile_instance[0];
-> +
->         dpu_enc->dsc = dpu_encoder_get_dsc_config(drm_enc);
->
-> -       if (disp_info->intf_type == INTF_DP)
-> -               dpu_enc->wide_bus_en = msm_dp_wide_bus_available(
-> -                               priv->dp[disp_info->h_tile_instance[0]]);
-> +       if (disp_info->intf_type == INTF_DSI)
-> +               dpu_enc->wide_bus_en = msm_dsi_is_widebus_enabled(priv->dsi[index]);
-> +       else if (disp_info->intf_type == INTF_DP)
-> +               dpu_enc->wide_bus_en = msm_dp_wide_bus_available(priv->dp[index]);
+On Wed, 2023-08-02 at 10:48 -0700, Darrick J. Wong wrote:
+> On Tue, Jul 25, 2023 at 10:58:18AM -0400, Jeff Layton wrote:
+> > Enable multigrain timestamps, which should ensure that there is an
+> > apparent change to the timestamp whenever it has been written after
+> > being actively observed via getattr.
+> >=20
+> > Also, anytime the mtime changes, the ctime must also change, and those
+> > are now the only two options for xfs_trans_ichgtime. Have that function
+> > unconditionally bump the ctime, and ASSERT that XFS_ICHGTIME_CHG is
+> > always set.
+> >=20
+> > Signed-off-by: Jeff Layton <jlayton@kernel.org>
+> > ---
+> >  fs/xfs/libxfs/xfs_trans_inode.c | 6 +++---
+> >  fs/xfs/xfs_iops.c               | 4 ++--
+> >  fs/xfs/xfs_super.c              | 2 +-
+> >  3 files changed, 6 insertions(+), 6 deletions(-)
+> >=20
+> > diff --git a/fs/xfs/libxfs/xfs_trans_inode.c b/fs/xfs/libxfs/xfs_trans_=
+inode.c
+> > index 6b2296ff248a..ad22656376d3 100644
+> > --- a/fs/xfs/libxfs/xfs_trans_inode.c
+> > +++ b/fs/xfs/libxfs/xfs_trans_inode.c
+> > @@ -62,12 +62,12 @@ xfs_trans_ichgtime(
+> >  	ASSERT(tp);
+> >  	ASSERT(xfs_isilocked(ip, XFS_ILOCK_EXCL));
+> > =20
+> > -	tv =3D current_time(inode);
+> > +	/* If the mtime changes, then ctime must also change */
+> > +	ASSERT(flags & XFS_ICHGTIME_CHG);
+> > =20
+> > +	tv =3D inode_set_ctime_current(inode);
+> >  	if (flags & XFS_ICHGTIME_MOD)
+> >  		inode->i_mtime =3D tv;
+> > -	if (flags & XFS_ICHGTIME_CHG)
+> > -		inode_set_ctime_to_ts(inode, tv);
+> >  	if (flags & XFS_ICHGTIME_CREATE)
+> >  		ip->i_crtime =3D tv;
+> >  }
+> > diff --git a/fs/xfs/xfs_iops.c b/fs/xfs/xfs_iops.c
+> > index 3a9363953ef2..3f89ef5a2820 100644
+> > --- a/fs/xfs/xfs_iops.c
+> > +++ b/fs/xfs/xfs_iops.c
+> > @@ -573,10 +573,10 @@ xfs_vn_getattr(
+> >  	stat->gid =3D vfsgid_into_kgid(vfsgid);
+> >  	stat->ino =3D ip->i_ino;
+> >  	stat->atime =3D inode->i_atime;
+> > -	stat->mtime =3D inode->i_mtime;
+> > -	stat->ctime =3D inode_get_ctime(inode);
+> >  	stat->blocks =3D XFS_FSB_TO_BB(mp, ip->i_nblocks + ip->i_delayed_blks=
+);
+> > =20
+> > +	fill_mg_cmtime(request_mask, inode, stat);
+>=20
+> Huh.  I would've thought @stat would come first since that's what we're
+> acting upon, but ... eh. :)
+>=20
+> If everyone else is ok with the fill_mg_cmtime signature,
+> Acked-by: Darrick J. Wong <djwong@kernel.org>
+>=20
+>=20
 
-If you change the order, you won't have to touch DP lines.
+Good point. We can change the signature. I think xfs is the only caller
+outside of the generic vfs right now, and it'd be best to do it now.
 
->
->         mutex_lock(&dpu_enc->enc_lock);
->         cur_mode = &dpu_enc->base.crtc->state->adjusted_mode;
-> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys_cmd.c b/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys_cmd.c
-> index df88358e7037..dace6168be2d 100644
-> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys_cmd.c
-> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys_cmd.c
-> @@ -69,8 +69,10 @@ static void _dpu_encoder_phys_cmd_update_intf_cfg(
->                                 phys_enc->hw_intf,
->                                 phys_enc->hw_pp->idx);
->
-> -       if (intf_cfg.dsc != 0)
-> +       if (intf_cfg.dsc != 0) {
->                 cmd_mode_cfg.data_compress = true;
-> +               cmd_mode_cfg.wide_bus_en = dpu_encoder_is_widebus_enabled(phys_enc->parent);
-> +       }
-
-This embeds the knowledge that a wide bus can only be enabled when DSC
-is in use. Please move the wide_bus_en assignment out of conditional
-code.
-
->
->         if (phys_enc->hw_intf->ops.program_intf_cmd_cfg)
->                 phys_enc->hw_intf->ops.program_intf_cmd_cfg(phys_enc->hw_intf, &cmd_mode_cfg);
-> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_intf.c b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_intf.c
-> index 8ec6505d9e78..dc6f3febb574 100644
-> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_intf.c
-> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_intf.c
-> @@ -521,6 +521,9 @@ static void dpu_hw_intf_program_intf_cmd_cfg(struct dpu_hw_intf *ctx,
-
-This function is only enabled for DPU >= 7.0, while IIRC wide bus can
-be enabled even for some of the earlier chipsets.
-
->         if (cmd_mode_cfg->data_compress)
->                 intf_cfg2 |= INTF_CFG2_DCE_DATA_COMPRESS;
->
-> +       if (cmd_mode_cfg->wide_bus_en)
-> +               intf_cfg2 |= INTF_CFG2_DATABUS_WIDEN;
-> +
->         DPU_REG_WRITE(&ctx->hw, INTF_CONFIG2, intf_cfg2);
->  }
->
-> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_intf.h b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_intf.h
-> index 77f80531782b..c539025c418b 100644
-> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_intf.h
-> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_intf.h
-> @@ -50,6 +50,7 @@ struct dpu_hw_intf_status {
->
->  struct dpu_hw_intf_cmd_mode_cfg {
->         u8 data_compress;       /* enable data compress between dpu and dsi */
-> +       u8 wide_bus_en;         /* enable databus widen mode */
->  };
->
->  /**
-> diff --git a/drivers/gpu/drm/msm/msm_drv.h b/drivers/gpu/drm/msm/msm_drv.h
-> index 9d9d5e009163..e4f706b16aad 100644
-> --- a/drivers/gpu/drm/msm/msm_drv.h
-> +++ b/drivers/gpu/drm/msm/msm_drv.h
-> @@ -344,6 +344,7 @@ void msm_dsi_snapshot(struct msm_disp_state *disp_state, struct msm_dsi *msm_dsi
->  bool msm_dsi_is_cmd_mode(struct msm_dsi *msm_dsi);
->  bool msm_dsi_is_bonded_dsi(struct msm_dsi *msm_dsi);
->  bool msm_dsi_is_master_dsi(struct msm_dsi *msm_dsi);
-> +bool msm_dsi_is_widebus_enabled(struct msm_dsi *msm_dsi);
->  struct drm_dsc_config *msm_dsi_get_dsc_config(struct msm_dsi *msm_dsi);
->  #else
->  static inline void __init msm_dsi_register(void)
-> @@ -373,7 +374,10 @@ static inline bool msm_dsi_is_master_dsi(struct msm_dsi *msm_dsi)
->  {
->         return false;
->  }
-> -
-> +static inline bool msm_dsi_is_widebus_enabled(struct msm_dsi *msm_dsi)
-> +{
-> +       return false;
-> +}
-
-Empty line, please.
-
->  static inline struct drm_dsc_config *msm_dsi_get_dsc_config(struct msm_dsi *msm_dsi)
->  {
->         return NULL;
->
-> --
-> 2.41.0
->
-
-
--- 
-With best wishes
-Dmitry
+Christian, would you prefer that I send an updated series, or patches on
+top of vfs.ctime that can be folded in?
+=20
+--=20
+Jeff Layton <jlayton@kernel.org>
