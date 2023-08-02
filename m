@@ -2,71 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F2BEF76DB40
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 01:07:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9777676DB44
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 01:10:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231484AbjHBXHQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Aug 2023 19:07:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53978 "EHLO
+        id S232093AbjHBXK2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Aug 2023 19:10:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54830 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229480AbjHBXHN (ORCPT
+        with ESMTP id S229480AbjHBXK0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Aug 2023 19:07:13 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D94B123;
-        Wed,  2 Aug 2023 16:07:13 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id B77EE61B38;
-        Wed,  2 Aug 2023 23:07:12 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A5A36C433C8;
-        Wed,  2 Aug 2023 23:07:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691017632;
-        bh=sHIKg/nDNw3R4xGSVyhZMISd3sEKpe+1jfL2edNNHgA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=r6pNyZVV7c9ABVfYRda6Jya1y6gTBcFtI4Gs4CndLhCx3ZUj/fmC0MgVcSsruNZUA
-         92JnAeXnuHV1eFMr9AD1f2bpBWvCXnU0Zm0Vp4aAcRWkzHp0pddHt6R6vtJ0Uz7nOH
-         pUIUDFslkrzFI5PeAKrhU4Vt/xwa89RonPkeVOENLhtPz1ZDe+bX/m8IzPG+PX4ch5
-         OTFaKX7NndxImTa7zobq3VEMRZONo/sORnMA6Hzv1oXLOjkGh+lXwie38AjeeKqEdM
-         j2/7FXtkr6LWJMweWcArFyizc8l5DsV0b3XejajRAvdJS8LODSmywydaj3Og1dfMLx
-         MAzwAL2/w3ONw==
-Date:   Thu, 3 Aug 2023 00:07:06 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Nathan Chancellor <nathan@kernel.org>
-Cc:     Nick Desaulniers <ndesaulniers@google.com>,
-        "Sahin, Okan" <okan.sahin@analog.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        "zzzzTilki, zzzzIbrahim" <Ibrahim.Tilki@analog.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "llvm@lists.linux.dev" <llvm@lists.linux.dev>, linux@leemhuis.info
-Subject: Re: [PATCH v3 2/2] regulator: max77857: Add ADI MAX77857/59/MAX77831
- Regulator Support
-Message-ID: <ae431bb5-d132-4737-b4bb-58a323f877a6@sirena.org.uk>
-References: <20230717050736.10075-1-okan.sahin@analog.com>
- <20230717050736.10075-3-okan.sahin@analog.com>
- <20230718155502.GA3542993@dev-arch.thelio-3990X>
- <20230726161033.GA1102409@dev-arch.thelio-3990X>
- <PH7PR03MB739122A373964651D995EA5AE701A@PH7PR03MB7391.namprd03.prod.outlook.com>
- <20230727145143.GB2013261@dev-arch.thelio-3990X>
- <CAKwvOdnPQEdbTGBO0hBn7CC4d0xtRV2zmfrYDfAhH0stfDYeJA@mail.gmail.com>
- <32af6891-8246-46de-ba1d-ae1999f6eb10@sirena.org.uk>
- <20230802230426.GA3027248@dev-arch.thelio-3990X>
+        Wed, 2 Aug 2023 19:10:26 -0400
+Received: from mail-pf1-f178.google.com (mail-pf1-f178.google.com [209.85.210.178])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27EBE1727;
+        Wed,  2 Aug 2023 16:10:26 -0700 (PDT)
+Received: by mail-pf1-f178.google.com with SMTP id d2e1a72fcca58-686ba97e4feso320711b3a.0;
+        Wed, 02 Aug 2023 16:10:26 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691017825; x=1691622625;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=R5J1Jr2A+AmEVJ3YQaMd97ioATpANcvZMYjjl7OLHuI=;
+        b=igDt8av7q9/TvtrAqeDAp0L2mCus9QHlRFsbYHHU+sP4RaBQhtcxhuQ5kRTK1xVATP
+         nDYzcw7l3RPd6sKyd3Xg/TIZRi5JXP3dkDC7Y0USbeY7I5OLBtIXJ4ohQJW+yoo8ypaq
+         yxsNIQxx5qw3Hm121FScz9BcVZP4gOgEtA1FRceKQvT0ZmnpVG/tkt5OgX1FOb4k0hSd
+         ZmQfuXU7nHG5CQpA1W5ahWoEmXMIGI1Cni/GQMegQKBOcKtyq5Kz5YQ/qWwrICmkaGQY
+         fbfNiLT+iHwcjQh8mM4st/jL8A5W6WUWFEEmM0WGUdZTEoclXgWg4EaTWDityR2jKxe3
+         0+uA==
+X-Gm-Message-State: ABy/qLbSihRQCaNo8nLsS1WUQ+7DUd2u3AVK3xNP2wTc1u4TDsUvHg8v
+        CgrglWKwkOfZUx5jdmi7UFM=
+X-Google-Smtp-Source: APBJJlHFROEuKw8A9slDlgdQWEWfiiTvqmon2ZRST9cuflAhaS1fTIhO0K67Q6oBF+lcAyyTKX4KIQ==
+X-Received: by 2002:a05:6a20:548c:b0:138:1980:1837 with SMTP id i12-20020a056a20548c00b0013819801837mr22535642pzk.13.1691017825606;
+        Wed, 02 Aug 2023 16:10:25 -0700 (PDT)
+Received: from liuwe-devbox-debian-v2 ([20.69.120.36])
+        by smtp.gmail.com with ESMTPSA id u19-20020aa78493000000b00666e649ca46sm11519994pfn.101.2023.08.02.16.10.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 02 Aug 2023 16:10:25 -0700 (PDT)
+Date:   Wed, 2 Aug 2023 23:10:19 +0000
+From:   Wei Liu <wei.liu@kernel.org>
+To:     Saurabh Sengar <ssengar@linux.microsoft.com>
+Cc:     kys@microsoft.com, haiyangz@microsoft.com, wei.liu@kernel.org,
+        decui@microsoft.com, tglx@linutronix.de, mingo@redhat.com,
+        bp@alien8.de, dave.hansen@linux.intel.com, x86@kernel.org,
+        mikelley@microsoft.com, linux-kernel@vger.kernel.org,
+        linux-hyperv@vger.kernel.org, hpa@zytor.com
+Subject: Re: [PATCH v3] x86/hyperv: add noop functions to x86_init mpparse
+ functions
+Message-ID: <ZMriW7IWemouYB43@liuwe-devbox-debian-v2>
+References: <1687537688-5397-1-git-send-email-ssengar@linux.microsoft.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="2LX9drZDxEXVlZBe"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230802230426.GA3027248@dev-arch.thelio-3990X>
-X-Cookie: Humpty Dumpty was pushed.
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+In-Reply-To: <1687537688-5397-1-git-send-email-ssengar@linux.microsoft.com>
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -74,43 +65,22 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, Jun 23, 2023 at 09:28:08AM -0700, Saurabh Sengar wrote:
+> Hyper-V can run VMs at different privilege "levels" known as Virtual
+> Trust Levels (VTL). Sometimes, it chooses to run two different VMs
+> at different levels but they share some of their address space. In
+> such setups VTL2 (higher level VM) has visibility of all of the
+> VTL0 (level 0) memory space.
+> 
+> When the CONFIG_X86_MPPARSE is enabled for VTL2, the VTL2 kernel
+> performs a search within the low memory to locate MP tables. However,
+> in systems where VTL0 manages the low memory and may contain valid
+> tables, this scanning can result in incorrect MP table information
+> being provided to the VTL2 kernel, mistakenly considering VTL0's MP
+> table as its own
+> 
+> Add noop functions to avoid MP parse scan by VTL2.
+> 
+> Signed-off-by: Saurabh Sengar <ssengar@linux.microsoft.com>
 
---2LX9drZDxEXVlZBe
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Wed, Aug 02, 2023 at 04:04:26PM -0700, Nathan Chancellor wrote:
-> On Thu, Aug 03, 2023 at 12:02:38AM +0100, Mark Brown wrote:
-> > On Wed, Aug 02, 2023 at 03:52:52PM -0700, Nick Desaulniers wrote:
-> > > Hi Okan,
-> > > Have you sent a follow up fix? The build should not remain broken for
-> > > so long.  Otherwise I think Broonie should drop your patch.
-> >=20
-> > Someone sent what's probably a fix but I was waiting for some
-> > confirmation that the change actually works on hardware, it's not super
-> > obvious.
->=20
-> Got a pointer? I don't see anything on lore:
->=20
-> https://lore.kernel.org/all/?q=3Ddfn:drivers/regulator/max77857-regulator=
-=2Ec
-
-Oh, they didn't actuallly send it to the list :(
-
---2LX9drZDxEXVlZBe
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmTK4ZkACgkQJNaLcl1U
-h9ASwAf9EgOXf2eaprSEmmkAg6E0PBhk53WjSA3+uyZ9WVMDppxj9A5mAbXM7yQU
-5BWMxzZeCiawZDUEKj4j1vfy7m9MenZ/HLTSrkCWMl8MNvhpqCwow0cjSk5gLadU
-aywjTAYv0MX0yhkBEgHG1zjOchsIRYGt7uqS9KpQWGkPu11SiA7sfEuC8bOd0jDF
-laXWu6xKF6xFrYPMuqfjojnE+fOfjdAXxhCMeWHsdlO22CvrL4XZqK+rb+i8Kg1z
-3uiXzG0XOR23ObrAaphBnTR1j2aWJxDWxmjR9upNxvtGP5dyZLyFERqN4DfY8Ozt
-Xj8LHN5SuNGcbAv6pOaFb5JlXevv6Q==
-=gRU5
------END PGP SIGNATURE-----
-
---2LX9drZDxEXVlZBe--
+Applied to hyperv-fixes. Thanks.
