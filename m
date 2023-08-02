@@ -2,140 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EFBE476D38A
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 18:20:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C26F876D394
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 18:24:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231322AbjHBQUA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Aug 2023 12:20:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59966 "EHLO
+        id S229796AbjHBQY2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Aug 2023 12:24:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33328 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229528AbjHBQT6 (ORCPT
+        with ESMTP id S229495AbjHBQY0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Aug 2023 12:19:58 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C032019AD;
-        Wed,  2 Aug 2023 09:19:56 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 55BFB61A39;
-        Wed,  2 Aug 2023 16:19:56 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4B059C433C9;
-        Wed,  2 Aug 2023 16:19:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690993195;
-        bh=QTwasRuhNebEV2x038dVhKhR/ojnqWPqXsBjFOvKkoo=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=VmYKxiz2lH82VF3/Bh1HznBLPf0W8KvQ7pBRWT8k4Z+w6V3WuH1GTVLPq/Ub3JGMs
-         Kr3DPgEej2Tx35mcn+2ZYGEu3MjL0FuGAs7bDXrBTvP2cJiezprBmoqEPmNNQBunbG
-         sNLzDiE760QgvDIf0vxzftb+u+Oc7UH71tOWm2bHi7ZQplXI81FHmaTkGUBCqrQiY/
-         5WdM1X7iFK7kPJ5QfhqOEtkrcNamn50Rh/9fSH18K7JmkBdjOgvEj1kpf7WkVcUIhx
-         VrBkWHIjhtV4/p2Z3BtJsaqSrXhVo02c7o35nymFRDXAsND573IWJuStxcB6vRKpHR
-         HhVTrl3lAzkFg==
-Date:   Wed, 2 Aug 2023 11:19:53 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Achal Verma <a-verma1@ti.com>
-Cc:     Vignesh Raghavendra <vigneshr@ti.com>,
-        Tom Joseph <tjoseph@cadence.com>,
-        Lorenzo Pieralisi <lpieralisi@kernel.org>,
-        Krzysztof Wilczy_ski <kw@linux.com>,
-        Rob Herring <robh@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        linux-omap@vger.kernel.org, linux-pci@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] PCI: cadence: Set the AFS bit in Device Capabilities 2
- Register
-Message-ID: <20230802161953.GA60043@bhelgaas>
+        Wed, 2 Aug 2023 12:24:26 -0400
+Received: from mout.gmx.net (mout.gmx.net [212.227.15.18])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 940A72102;
+        Wed,  2 Aug 2023 09:24:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.de;
+ s=s31663417; t=1690993461; x=1691598261; i=rwarsow@gmx.de;
+ bh=cq4ElQGiX8L/DIAYdvWjKqUUNUqQdGiDkVhdL9ofxLY=;
+ h=X-UI-Sender-Class:Date:From:To:Cc:Subject;
+ b=U8KHNwM+b2CTk6TO8V/6wwRIo+dldO0w84iaFpYedKT5RH8F8yyY+a4verKAbjYhHJQ3H0n
+ v/JqiF0ChjXhFnWjoWqyHuCBS1MmEgEQ/Q/wVv3K1YoFijjWgGeY/OvJp/15r8H8LNCUqFASQ
+ mVU8+WtvQ9K23IIhNlZSVYNs1shaNR5QPBM2wZFOgF/hTOIYRgqMzLb04NrmbPhhuP93X8LOd
+ Ba2BPWR1nwlu6BFniVivnVIYOS34zrprGxD1pelZHcBEL8zReEmN+lc5Bu08vZs3yKWY87MVv
+ ADAOaMKug6Rti7xwCBwF6A4DM4a9AskaFnQWyxFg6H5jEguS1sNg==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from [192.168.100.20] ([46.142.32.0]) by mail.gmx.net (mrgmx004
+ [212.227.17.190]) with ESMTPSA (Nemesis) id 1M59C2-1qSL6f0nPo-001CjS; Wed, 02
+ Aug 2023 18:24:21 +0200
+Message-ID: <4681f49e-03dd-a553-431d-8756a3f9fcef@gmx.de>
+Date:   Wed, 2 Aug 2023 18:24:20 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230802103059.3492181-1-a-verma1@ti.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+From:   Ronald Warsow <rwarsow@gmx.de>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        stable@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org
+Content-Language: de-DE, en-US
+Subject: Re: [PATCH 6.4 000/235] 6.4.8-rc2 review
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Provags-ID: V03:K1:cGF5WdyJZyEIToD6oe3+u4BWOMCPnN2qfrYw//lQ99KsYWmbBBl
+ kSxif2oMP06h7tPBWCUD1J4fO73ptRwYaxZu4U3Fk3uXt0pUE79N3gTDFiB8h7tjHIR1s82
+ JhHadw8IO0xc6VzHGpTT3hR8/aPIRmahIFZkEcclnf+b3N7cJrDIWzxxS1yngYhSBtvIqUm
+ TJOwzMDcYtDgXnndHrGDQ==
+UI-OutboundReport: notjunk:1;M01:P0:fm28WEnRfS4=;aS19RNFSKGwbU/GoxG9TjAKP9jc
+ 0KsEOWqQ390s0MzBW38JkMFz6sYciL1qZVuAyL82j1/u7kpK0i8mNFYn3q4nH1W0RMC+u0all
+ ulUdK7l4osfdCAdzn/03INMUG1EztQVNNjjlGJQuLBqUxWgDcA5sZ4inyLPeyNwGAgalwjUtw
+ I9zPZz880h9LXvYxTmxI3NSC/J3QbUDPD8ERcWkMv5evWBT3hiepkLkzL+HtPwRNQ2BC6rtJr
+ aEP1dXQK9dBnGsHze+dNJHObj1Od7fIp9ZqzOkz5kNKejsDkVhbkUgKuLeGHWKx6V/hm11M3k
+ 8ECmyauMoIxZ2OcmeiW6xjNtkEZDttB6UbEMxsbhrZfCpw9Ur2pqXQkwbprQK0e9RLHD27zxL
+ +YSS2+S88YctSaqf6bZr/Z5nw3UfZS5NsQGV2uTQmijc3WmgkAbGzP3me/2RZoC2+7u/HQCGR
+ IsDO6Hcz1btohtOVKGNWdraMOYmhjS3hvfCRypSDEjWmlUVBPbKsIVdx2oMfDKj5JlGkqbxpz
+ y6GQ8oAE3mybvma+oXlLhbzmlZMHvUrCC8X4u3zWC8fJMMs6SoBNUXPpingPPSk6F6XEE/U+A
+ 9fGF2fGS9xPLw2MWw74p8G33MHiWRlzmQUj6KwgJgAvKgxXnY6PBVYzrt5tAldsAGuvFwR68p
+ HqQcTsYQLZ/tfK1lOOTN5eMhZKrfh8NpxD6uX6InYvjxNL0oErP8mgfz5ZMMGzmVL2yqTN9FO
+ AXX1bVV2b499uWYsHCwia6QrU6c46J9+gnEtAamLodbnc7N7BTeP3QrJ13uo4Z+IhfyewdnJF
+ soOWrXgBaS/19NZ2hdS5j6QRtQQTA2JIURkjq4/MynY+koz/kxrNh8ZeVk/b8JdRzo1fs1zyb
+ WXh2HJSdEWjo6XRwNl4v4QaT+AWFJxUysYDLfYP5UDjrGU49qH7myTRIhxwqarf5dkxucFmOK
+ LQ56Ij5z9S6tXvs/DUiMNHC17l8=
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In subject, "Advertise ARI Forwarding Supported".
+Hi Greg
 
-It's not obvious that "AFS" refers to ARI Forwarding Supported, and
-the bit name is enough; we don't need to know that it's in Dev Cap 2.
-"Advertise" shows that we're just *advertising* the functionality, not
-*enabling* it.
+6.4.8-rc2
 
-On Wed, Aug 02, 2023 at 04:00:59PM +0530, Achal Verma wrote:
-> J7 PCIe Root Complex has ARI Forwarding Support, means supporting
-> forwarding of TLPs addressed to functions with function number greater than
-> 7 but some PCIe instances on J7 have this bit cleared which results in
-> failure of forwarding of TLPs destined for function number > 7.
-> Setting the AFS bit in Device Capabilities 2 Register explicitly, resolves
-> the issue and leads to successful access to function number > 7.
+compiles, boots and runs here on x86_64
+(Intel Rocket Lake, i5-11400)
 
-s/AFS/ARI Forwarding Supported/
+Thanks
 
-> Some observations:
-> 1. J7200-EVB has single PCIe instance(PCIe1) for which ARIFwd bit is not
->    set. Enumeration gracefully fails for funciton number greater than 7 but
->    later read/write access to these funcitons results in a crash.
+Tested-by: Ronald Warsow <rwarsow@gmx.de>
 
-By "ARIFwd bit" here, I assume you mean PCI_EXP_DEVCAP2_ARI in the Root
-Port?  Maybe you can use the #define to make this more greppable.
-
-s/funciton/function/ (twice)
-
-If we don't enumerate function numbers greater than 7, we shouldn't
-have pci_dev structs for them, so why are there later read/write
-config accesses to them?
-
-If the Root Port doesn't advertise ARI Forwarding Supported,
-bridge->ari_enabled will not be set, and we shouldn't even try to
-enumerate functions greater than 7.  So it's not that enumeration
-*fails*; it just doesn't happen at all.
-
-> 2. On J721E-EVB, PCIe1 instance has ARIFwd bit set while it is cleared for
->    PCIe0 instance. This issue combined with errata i2086
->    (Unsupported Request (UR) Response Results in External Abort) results in
->    SERROR while scanning multi-function endpoint device.
-
-Is the SERROR when scanning under PCIe0 or under PCIe1?
-
-I'm not clear on what's happening here:
-
-  1) Root Port advertises PCI_EXP_DEVCAP2_ARI, we set
-     bridge->ari_enabled and scan functions > 7, we do a config read
-     to function 8, get a UR response (as expected during enumeration)
-     and that results in SERROR?
-
-  2) Root Port *doesn't* advertise PCI_EXP_DEVCAP2_ARI, we don't set
-     bridge->ari_enabled, so we don't try config read to function 8,
-     and something blows up later?
-
-  3) Something else?
-
-> @@ -507,6 +507,7 @@ int cdns_pcie_host_setup(struct cdns_pcie_rc *rc)
->  	struct cdns_pcie *pcie;
->  	struct resource *res;
->  	int ret;
-> +	u32 pcie_cap2;
->  
->  	bridge = pci_host_bridge_from_priv(rc);
->  	if (!bridge)
-> @@ -536,6 +537,12 @@ int cdns_pcie_host_setup(struct cdns_pcie_rc *rc)
->  	if (rc->quirk_detect_quiet_flag)
->  		cdns_pcie_detect_quiet_min_delay_set(&rc->pcie);
->  
-> +	if (rc->set_afs_bit) {
-> +		pcie_cap2 = cdns_pcie_rp_readl(pcie, CDNS_PCIE_RP_CAP_OFFSET + PCI_EXP_DEVCAP2);
-> +		pcie_cap2 |= PCI_EXP_DEVCAP2_ARI;
-> +		cdns_pcie_rp_writel(pcie, CDNS_PCIE_RP_CAP_OFFSET + PCI_EXP_DEVCAP2, pcie_cap2);
-> +	}
-
-This seems like a j721e defect; why does the workaround need to be in
-the generic cadence code?
-
-Bjorn
