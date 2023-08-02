@@ -2,34 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D4CC76C6BE
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 09:26:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8BEA576C6C4
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 09:27:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230186AbjHBH0d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Aug 2023 03:26:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36072 "EHLO
+        id S232005AbjHBH1H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Aug 2023 03:27:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36378 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230072AbjHBH0b (ORCPT
+        with ESMTP id S230072AbjHBH1F (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Aug 2023 03:26:31 -0400
-Received: from out28-195.mail.aliyun.com (out28-195.mail.aliyun.com [115.124.28.195])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A532198B
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Aug 2023 00:26:29 -0700 (PDT)
-X-Alimail-AntiSpam: AC=CONTINUE;BC=0.2717956|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_alarm|0.00605419-0.000108826-0.993837;FP=0|0|0|0|0|-1|-1|-1;HT=ay29a033018047193;MF=sunran001@208suo.com;NM=1;PH=DS;RN=5;RT=5;SR=0;TI=SMTPD_---.U6c61oB_1690961182;
-Received: from localhost.localdomain(mailfrom:sunran001@208suo.com fp:SMTPD_---.U6c61oB_1690961182)
-          by smtp.aliyun-inc.com;
-          Wed, 02 Aug 2023 15:26:24 +0800
-From:   Ran Sun <sunran001@208suo.com>
-To:     alexander.deucher@amd.com
-Cc:     amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org, Ran Sun <sunran001@208suo.com>
-Subject: [PATCH] drm/amdgpu: Clean up errors in amdgpu_trace.h
-Date:   Wed,  2 Aug 2023 07:26:21 +0000
-Message-Id: <20230802072621.13162-1-sunran001@208suo.com>
-X-Mailer: git-send-email 2.17.1
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY autolearn=ham
+        Wed, 2 Aug 2023 03:27:05 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1303198B;
+        Wed,  2 Aug 2023 00:27:04 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 196946183D;
+        Wed,  2 Aug 2023 07:27:04 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0369FC433C8;
+        Wed,  2 Aug 2023 07:27:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1690961223;
+        bh=nhMWAX0JZCMdR76h1WXi/CMNQv6QqzNrLWOGcbCo8sA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=RiEFMZYtNKuthj/PCmgiUMFsgNqURRju0WyaF8GtvwpV0KLcq4uagnEzja02itBQf
+         VcZJPkaM/lFtG0Ijd6Rt6sMjrsZZVnUAEirYSTT1HURgY0u1NZvk4tQSJJoG68XQNQ
+         Uy2dGSfQw73bW3MmNZa1USI3HZSVK3zqK00mEkMIXWiDE/vjoJQl57YqjtxRCSQOop
+         3hXyeaMgKhqVZ5Q3MDzQ/8ZklZFJKhXzofFXS5IRQFFoi69KtsBDnDViNrnPqqssB3
+         tEI5fLn50YEQnirSRlCMm4dsOKZQPE/+EVkNyz/zdISFzu6B+Ka6NFPB54gP4NSuSD
+         f8Ec2wx64vTyg==
+Date:   Wed, 2 Aug 2023 09:26:57 +0200
+From:   Christian Brauner <brauner@kernel.org>
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Jens Axboe <axboe@kernel.dk>,
+        "Darrick J. Wong" <djwong@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Christian Brauner <christian@brauner.io>,
+        linux-block@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-xfs@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 3/6] block: open code __generic_file_write_iter for
+ blkdev writes
+Message-ID: <20230802-hotel-abneigung-6bb5ac334195@brauner>
+References: <20230801172201.1923299-1-hch@lst.de>
+ <20230801172201.1923299-4-hch@lst.de>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20230801172201.1923299-4-hch@lst.de>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -37,38 +63,11 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix the following errors reported by checkpatch:
+On Tue, Aug 01, 2023 at 07:21:58PM +0200, Christoph Hellwig wrote:
+> Open code __generic_file_write_iter to remove the indirect call into
+> ->direct_IO and to prepare using the iomap based write code.
+> 
+> Signed-off-by: Christoph Hellwig <hch@lst.de>
+> ---
 
-ERROR: space required after that ',' (ctx:VxV)
-ERROR: "foo* bar" should be "foo *bar"
-
-Signed-off-by: Ran Sun <sunran001@208suo.com>
----
- drivers/gpu/drm/amd/amdgpu/amdgpu_trace.h | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_trace.h b/drivers/gpu/drm/amd/amdgpu/amdgpu_trace.h
-index 525dffbe046a..2fd1bfb35916 100644
---- a/drivers/gpu/drm/amd/amdgpu/amdgpu_trace.h
-+++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_trace.h
-@@ -432,7 +432,7 @@ TRACE_EVENT(amdgpu_vm_flush,
- 			   ),
- 	    TP_printk("ring=%s, id=%u, hub=%u, pd_addr=%010Lx",
- 		      __get_str(ring), __entry->vmid,
--		      __entry->vm_hub,__entry->pd_addr)
-+		      __entry->vm_hub, __entry->pd_addr)
- );
- 
- DECLARE_EVENT_CLASS(amdgpu_pasid,
-@@ -494,7 +494,7 @@ TRACE_EVENT(amdgpu_cs_bo_status,
- );
- 
- TRACE_EVENT(amdgpu_bo_move,
--	    TP_PROTO(struct amdgpu_bo* bo, uint32_t new_placement, uint32_t old_placement),
-+	    TP_PROTO(struct amdgpu_bo *bo, uint32_t new_placement, uint32_t old_placement),
- 	    TP_ARGS(bo, new_placement, old_placement),
- 	    TP_STRUCT__entry(
- 			__field(struct amdgpu_bo *, bo)
--- 
-2.17.1
-
+Reviewed-by: Christian Brauner <brauner@kernel.org>
