@@ -2,155 +2,209 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A488076CACF
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 12:25:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D44E276CAD0
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 12:25:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233475AbjHBKZI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Aug 2023 06:25:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43208 "EHLO
+        id S233750AbjHBKZQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Aug 2023 06:25:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43212 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232829AbjHBKYK (ORCPT
+        with ESMTP id S233721AbjHBKYN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Aug 2023 06:24:10 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 305FF30EB
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Aug 2023 03:22:24 -0700 (PDT)
-Message-ID: <20230802101934.981826753@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1690971721;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         references:references; bh=y/zw4jIEoXHpKelNkwXOESHKGmmFcaqzgwgGslsADMM=;
-        b=RSZtmFFhNHNFj1zXzqnUtmaSstQ/ZlnmyJ1H27QGXck6sDA+Y8Q5Ynf+Fn9JR2n7fbvg6R
-        4XWpQ9wCIgHlq25B8KpYDPAl0P7FSszu/hQF0vEQAhSrHE+/crj68OzkRilSt13Owsq8yq
-        3Hg/sx60C2/PBPVZqXdBhowN1d+cLrnZu7axIR6f5zuRPfvVC7X7gV01IcbGxev1sxQB2D
-        wDntLXLwkB7OvwUE3rRSKbRresbkveMhW+1zW7o2mwZH5Elx3ITe8FXcwXVOetQA1u8H9H
-        BAF+5JLTl01rbCBRDuD+wmNzW3EUuLaoNhCSKY6EMkX6XDcti0w/yCICZH8RHQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1690971721;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         references:references; bh=y/zw4jIEoXHpKelNkwXOESHKGmmFcaqzgwgGslsADMM=;
-        b=SXRN6j03xvwSK8gaUFGtwggHDPgt0kdu5OPWLKi5rTi38FJLmHOSCLCVu8/i2jKomGsNgB
-        DXuk6wgnoKISyYCg==
-From:   Thomas Gleixner <tglx@linutronix.de>
-To:     LKML <linux-kernel@vger.kernel.org>
-Cc:     x86@kernel.org, Tom Lendacky <thomas.lendacky@amd.com>,
-        Andrew Cooper <andrew.cooper3@citrix.com>,
-        Arjan van de Ven <arjan@linux.intel.com>,
-        Huang Rui <ray.huang@amd.com>, Juergen Gross <jgross@suse.com>,
-        Dimitri Sivanich <dimitri.sivanich@hpe.com>,
-        Michael Kelley <mikelley@microsoft.com>,
-        Wei Liu <wei.liu@kernel.org>, Steve Wahl <steve.wahl@hpe.com>,
-        Mike Travis <mike.travis@hpe.com>,
-        Russ Anderson <russ.anderson@hpe.com>
-Subject: [patch V3 40/40] x86/apic/uv: Remove the private leaf 0xb parser
-References: <20230802101635.459108805@linutronix.de>
+        Wed, 2 Aug 2023 06:24:13 -0400
+Received: from pandora.armlinux.org.uk (unknown [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 303503582;
+        Wed,  2 Aug 2023 03:22:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=N1HgB4YiEzmJxeTSi3B7Jhbwy5EMd0guXdnsKoYE0Vc=; b=vBg/kp3AXeZ7PuHuRqKuhie8K+
+        uWWP+teLk/qZdRjzIBiB6Msmrdb/9+QSNOvG3Q/7E/7GYZWQr9sJuY8EbpeClpuN8YehYfieNxTxI
+        u+R7q11Vglqcj82S//5qKAC359vvsgf0A+hslga17piuypkiOExsHEQxD6NjAZAMr6LHezCBIjCof
+        uvt+4Zh54BlNxBoZ9oYhrf3FdISvm1s2Oz6nPiVGy5ywiDs0By6zCwXHBD8tzImzM5Iizlv0giusO
+        ocZQ9vmlXtnBPIGv27yPtjAIy/IEgMKPm7exxllbprrNCkPfLmI2lhdm2AHyf4q3vrlzMYfXw/Lxz
+        1AmyHO+w==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:53728)
+        by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.96)
+        (envelope-from <linux@armlinux.org.uk>)
+        id 1qR8zU-0005IT-2w;
+        Wed, 02 Aug 2023 11:22:04 +0100
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
+        (envelope-from <linux@shell.armlinux.org.uk>)
+        id 1qR8zS-0001e7-QR; Wed, 02 Aug 2023 11:22:02 +0100
+Date:   Wed, 2 Aug 2023 11:22:02 +0100
+From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
+To:     Li Yang <leoyang.li@nxp.com>
+Cc:     Andrew Lunn <andrew@lunn.ch>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        David Bauer <mail@david-bauer.net>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Viorel Suman <viorel.suman@nxp.com>,
+        Wei Fang <wei.fang@nxp.com>
+Subject: Re: [PATCH v3 1/2] net: phy: at803x: fix the wol setting functions
+Message-ID: <ZMouSluMSC+bIi9x@shell.armlinux.org.uk>
+References: <20230728215320.31801-1-leoyang.li@nxp.com>
+ <20230728215320.31801-2-leoyang.li@nxp.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Date:   Wed,  2 Aug 2023 12:22:00 +0200 (CEST)
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230728215320.31801-2-leoyang.li@nxp.com>
+Sender: Russell King (Oracle) <linux@armlinux.org.uk>
+X-Spam-Status: No, score=-1.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RDNS_NONE,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The package shift has been already evaluated by the early CPU init.
+On Fri, Jul 28, 2023 at 04:53:19PM -0500, Li Yang wrote:
+> In commit 7beecaf7d507 ("net: phy: at803x: improve the WOL feature"), it
+> seems not correct to use a wol_en bit in a 1588 Control Register which is
+> only available on AR8031/AR8033(share the same phy_id) to determine if WoL
+> is enabled.  Change it back to use AT803X_INTR_ENABLE_WOL for determining
+> the WoL status which is applicable on all chips supporting wol. Also update
+> the at803x_set_wol() function to only update the 1588 register on chips
+> having it.  After this change, disabling wol at probe from commit
+> d7cd5e06c9dd ("net: phy: at803x: disable WOL at probe") is no longer
+> needed.  So that part is removed.
 
-Put the mindless copy right next to the original leaf 0xb parser.
+Okay, having been through the AR8031, AR8033, and AR8035 datasheets that
+I have, this is what I've gathered:
 
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Cc: Steve Wahl <steve.wahl@hpe.com>
-Cc: Mike Travis <mike.travis@hpe.com>
-Cc: Dimitri Sivanich <dimitri.sivanich@hpe.com>
-Cc: Russ Anderson <russ.anderson@hpe.com>
----
- arch/x86/include/asm/topology.h    |    5 +++
- arch/x86/kernel/apic/x2apic_uv_x.c |   52 ++++++-------------------------------
- 2 files changed, 14 insertions(+), 43 deletions(-)
+AR8031 and AR8033 are identical as far as WoL is concerned:
+	In terms of hardware, these have a WOL_INT pin that is separate
+	from the normal interrupt.
 
---- a/arch/x86/include/asm/topology.h
-+++ b/arch/x86/include/asm/topology.h
-@@ -126,6 +126,11 @@ static inline unsigned int topology_get_
- 	return x86_topo_system.dom_size[dom];
- }
- 
-+static inline unsigned int topology_get_domain_shift(enum x86_topology_domains dom)
-+{
-+	return dom == TOPO_SMT_DOMAIN ? 0 : x86_topo_system.dom_shifts[dom - 1];
-+}
-+
- extern const struct cpumask *cpu_coregroup_mask(int cpu);
- extern const struct cpumask *cpu_clustergroup_mask(int cpu);
- 
---- a/arch/x86/kernel/apic/x2apic_uv_x.c
-+++ b/arch/x86/kernel/apic/x2apic_uv_x.c
-@@ -241,54 +241,20 @@ static void __init uv_tsc_check_sync(voi
- 	is_uv(UV3) ? sname.s3.field :		\
- 	undef)
- 
--/* [Copied from arch/x86/kernel/cpu/topology.c:detect_extended_topology()] */
--
--#define SMT_LEVEL			0	/* Leaf 0xb SMT level */
--#define INVALID_TYPE			0	/* Leaf 0xb sub-leaf types */
--#define SMT_TYPE			1
--#define CORE_TYPE			2
--#define LEAFB_SUBTYPE(ecx)		(((ecx) >> 8) & 0xff)
--#define BITS_SHIFT_NEXT_LEVEL(eax)	((eax) & 0x1f)
--
--static void set_x2apic_bits(void)
--{
--	unsigned int eax, ebx, ecx, edx, sub_index;
--	unsigned int sid_shift;
--
--	cpuid(0, &eax, &ebx, &ecx, &edx);
--	if (eax < 0xb) {
--		pr_info("UV: CPU does not have CPUID.11\n");
--		return;
--	}
--
--	cpuid_count(0xb, SMT_LEVEL, &eax, &ebx, &ecx, &edx);
--	if (ebx == 0 || (LEAFB_SUBTYPE(ecx) != SMT_TYPE)) {
--		pr_info("UV: CPUID.11 not implemented\n");
--		return;
--	}
--
--	sid_shift = BITS_SHIFT_NEXT_LEVEL(eax);
--	sub_index = 1;
--	do {
--		cpuid_count(0xb, sub_index, &eax, &ebx, &ecx, &edx);
--		if (LEAFB_SUBTYPE(ecx) == CORE_TYPE) {
--			sid_shift = BITS_SHIFT_NEXT_LEVEL(eax);
--			break;
--		}
--		sub_index++;
--	} while (LEAFB_SUBTYPE(ecx) != INVALID_TYPE);
--
--	uv_cpuid.apicid_shift	= 0;
--	uv_cpuid.apicid_mask	= (~(-1 << sid_shift));
--	uv_cpuid.socketid_shift = sid_shift;
--}
--
- static void __init early_get_apic_socketid_shift(void)
- {
-+	unsigned int sid_shift = topology_get_domain_shift(TOPO_ROOT_DOMAIN);
-+
- 	if (is_uv2_hub() || is_uv3_hub())
- 		uvh_apicid.v = uv_early_read_mmr(UVH_APICID);
- 
--	set_x2apic_bits();
-+	if (sid_shift) {
-+		uv_cpuid.apicid_shift	= 0;
-+		uv_cpuid.apicid_mask	= (~(-1 << sid_shift));
-+		uv_cpuid.socketid_shift = sid_shift;
-+	} else {
-+		pr_info("UV: CPU does not have valid CPUID.11\n");
-+	}
- 
- 	pr_info("UV: apicid_shift:%d apicid_mask:0x%x\n", uv_cpuid.apicid_shift, uv_cpuid.apicid_mask);
- 	pr_info("UV: socketid_shift:%d pnode_mask:0x%x\n", uv_cpuid.socketid_shift, uv_cpuid.pnode_mask);
+	MMD3 0x8012 (1588 register) bit 5 controls whether the WoL
+	function is enabled or disabled. Defaults to enabled.
 
+	BMCR in copper/fiber can be used to save more power.
+
+	AR8035 details below also apply.
+
+AR8035:
+	No WOL_INT pin.
+
+	No MMD3 0x8012 register.
+
+	WoL interrupt enable in C22 register 0x12 bit 0
+	WoL interrupt status in C22 register 0x13 bit 0
+	WoL MAC address programmed in MMD3 registers 0x804a (bits 47:32)
+	0x804b (bits 31:16) and 0x804c (bits 15:0)
+
+So, what this means is that AR8035, the only possibility for WoL is via
+the INT pin and the C22 interrupt enable/status registers.
+
+For AR8031 and AR8033, it depends how the hardware is wired.
+
+If WOL_INT is used to wake the system, then MMD3 0x8012 has to be used to
+enable or disable that functionality. From my reading of the datasheets,
+WOL_INT is unaffected by the C22 interrupt enable register settings.
+
+If INT is used to wake the system, then it behaves the same as AR8035.
+However, the datasheet doesn't make it clear whether MMD3 0x8012 bit 5
+also has an effect - although I would lean more towards it having an
+effect.
+
+So, given that:
+
+> diff --git a/drivers/net/phy/at803x.c b/drivers/net/phy/at803x.c
+> index c1f307d90518..1d61f7190367 100644
+> --- a/drivers/net/phy/at803x.c
+> +++ b/drivers/net/phy/at803x.c
+> @@ -459,21 +459,27 @@ static int at803x_set_wol(struct phy_device *phydev,
+>  			phy_write_mmd(phydev, MDIO_MMD_PCS, offsets[i],
+>  				      mac[(i * 2) + 1] | (mac[(i * 2)] << 8));
+>  
+> -		/* Enable WOL function */
+> -		ret = phy_modify_mmd(phydev, MDIO_MMD_PCS, AT803X_PHY_MMD3_WOL_CTRL,
+> -				0, AT803X_WOL_EN);
+> -		if (ret)
+> -			return ret;
+> +		/* Enable WOL function for 1588 */
+> +		if (phydev->drv->phy_id == ATH8031_PHY_ID) {
+> +			ret = phy_modify_mmd(phydev, MDIO_MMD_PCS,
+> +					     AT803X_PHY_MMD3_WOL_CTRL,
+> +					     0, AT803X_WOL_EN);
+> +			if (ret)
+> +				return ret;
+> +		}
+>  		/* Enable WOL interrupt */
+>  		ret = phy_modify(phydev, AT803X_INTR_ENABLE, 0, AT803X_INTR_ENABLE_WOL);
+>  		if (ret)
+>  			return ret;
+>  	} else {
+> -		/* Disable WoL function */
+> -		ret = phy_modify_mmd(phydev, MDIO_MMD_PCS, AT803X_PHY_MMD3_WOL_CTRL,
+> -				AT803X_WOL_EN, 0);
+> -		if (ret)
+> -			return ret;
+> +		/* Disable WoL function for 1588 */
+> +		if (phydev->drv->phy_id == ATH8031_PHY_ID) {
+> +			ret = phy_modify_mmd(phydev, MDIO_MMD_PCS,
+> +					     AT803X_PHY_MMD3_WOL_CTRL,
+> +					     AT803X_WOL_EN, 0);
+> +			if (ret)
+> +				return ret;
+> +		}
+>  		/* Disable WOL interrupt */
+>  		ret = phy_modify(phydev, AT803X_INTR_ENABLE, AT803X_INTR_ENABLE_WOL, 0);
+>  		if (ret)
+> @@ -508,11 +514,11 @@ static void at803x_get_wol(struct phy_device *phydev,
+>  	wol->supported = WAKE_MAGIC;
+>  	wol->wolopts = 0;
+>  
+> -	value = phy_read_mmd(phydev, MDIO_MMD_PCS, AT803X_PHY_MMD3_WOL_CTRL);
+> +	value = phy_read(phydev, AT803X_INTR_ENABLE);
+>  	if (value < 0)
+>  		return;
+>  
+> -	if (value & AT803X_WOL_EN)
+> +	if (value & AT803X_INTR_ENABLE_WOL)
+>  		wol->wolopts |= WAKE_MAGIC;
+>  }
+>  
+
+The above all looks correct to me.
+
+> @@ -858,9 +864,6 @@ static int at803x_probe(struct phy_device *phydev)
+>  	if (phydev->drv->phy_id == ATH8031_PHY_ID) {
+>  		int ccr = phy_read(phydev, AT803X_REG_CHIP_CONFIG);
+>  		int mode_cfg;
+> -		struct ethtool_wolinfo wol = {
+> -			.wolopts = 0,
+> -		};
+>  
+>  		if (ccr < 0)
+>  			return ccr;
+> @@ -876,13 +879,6 @@ static int at803x_probe(struct phy_device *phydev)
+>  			priv->is_fiber = true;
+>  			break;
+>  		}
+> -
+> -		/* Disable WOL by default */
+> -		ret = at803x_set_wol(phydev, &wol);
+> -		if (ret < 0) {
+> -			phydev_err(phydev, "failed to disable WOL on probe: %d\n", ret);
+> -			return ret;
+> -		}
+>  	}
+>  
+>  	return 0;
+
+This doesn't look correct to me, because in the case of AR8031 or
+AR8033 using WOL_INT, because MMD3 0x8012 bit 5 defaults on reset to
+being set, if we don't want WoL enabled after the PHY has been probed,
+we need to clear it.
+
+-- 
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
