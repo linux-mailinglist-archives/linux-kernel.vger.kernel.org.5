@@ -2,141 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 739ED76CE52
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 15:19:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C57976CE59
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 15:20:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234085AbjHBNTf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Aug 2023 09:19:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54684 "EHLO
+        id S229463AbjHBNUR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Aug 2023 09:20:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55508 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234018AbjHBNTa (ORCPT
+        with ESMTP id S234051AbjHBNUO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Aug 2023 09:19:30 -0400
-Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1CCCE1724
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Aug 2023 06:19:29 -0700 (PDT)
-Received: by mail-wm1-x335.google.com with SMTP id 5b1f17b1804b1-3fe1a17f983so35233125e9.3
-        for <linux-kernel@vger.kernel.org>; Wed, 02 Aug 2023 06:19:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1690982367; x=1691587167;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=O/2WIVROlZsV9PaE7ZRV5iugvs6edZ71omTT4F/SSvo=;
-        b=b5ttnfL5oEhNHJ+OuMs3TaY01QRb+YOyogeni8rOKLZRF34u4K7seXIEgc9zybGmDy
-         i6CL1VdjafelnmnuFFrUfjUn2XCMDV0Dn0c/CIQ9VnH35f0a/AmkWcnQFD931P2VnAvi
-         ppn66jIET8cdYTFhWERY2AFPKxopY+IyxBsAoKoVMSGyYaEEJ8wLYHFH0qM/WdDzm75M
-         DzRsx+xyBo/RoEwtmvScNiwcPUmZqmpPSfsQ8SI1HOKOfgCjojPjI/zbXUF++XjXeVIu
-         Hc7uLzGLqp0iKRBZg5lmWkB4q5qcyV1ZRNIRmrHJzWBF5GaE84d3dQLZxFnfxu2x7ca0
-         6FBA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690982367; x=1691587167;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=O/2WIVROlZsV9PaE7ZRV5iugvs6edZ71omTT4F/SSvo=;
-        b=BqDNIY5vbYwiGVJQrgowAEYyirnEBvCe8Ah2f7yM0OHzwU28UqP9CI45vu3/0S9UJP
-         I0YCOO3XsobyfnCDiz89m8FZ0oszDmiq0YMMRGbX93FhoUitcRTU+3UeqnHuKDuN6oS8
-         n/Orw6beMlGyuy/VBkLD9k23yzv1tzdrqlMKC9yJbto8W5JuHrr2r1j0AOj2c+OJg/gy
-         hKsqxMuAFN6EqvWCqRqGWX1rr1n76BftwIIVp4RGI1Tke2HduVPEGWtAoOw/YlRrfbMl
-         hMAODcUTIPOdfpC+CHIrbFqmZzrCHpOgZyR21H3MvO0neLv4//FJAe2gUsaXs/XwUeyR
-         KZVA==
-X-Gm-Message-State: ABy/qLbJtOG40akg/biWX/uKZUIBbcC7BS5nb/imS4JZaMik/x08uyB9
-        X0hYmYTMIFYHAyOLwjVHwdBFyQ==
-X-Google-Smtp-Source: APBJJlHDtPxPkjUQDc9Cgo3moh4rigDIqtwormB9fceq6QeriPzioOsRh/evkwesGLHEjyC7EvY7hw==
-X-Received: by 2002:adf:f44c:0:b0:317:3f64:4901 with SMTP id f12-20020adff44c000000b003173f644901mr4651149wrp.41.1690982367568;
-        Wed, 02 Aug 2023 06:19:27 -0700 (PDT)
-Received: from [192.168.1.14] (host-92-17-103-66.as13285.net. [92.17.103.66])
-        by smtp.gmail.com with ESMTPSA id d14-20020adff2ce000000b003176053506fsm15276105wrp.99.2023.08.02.06.19.26
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 02 Aug 2023 06:19:27 -0700 (PDT)
-Message-ID: <2c0860e2-40d6-ec91-60cf-2684edd52676@linaro.org>
-Date:   Wed, 2 Aug 2023 14:19:26 +0100
+        Wed, 2 Aug 2023 09:20:14 -0400
+Received: from lelv0142.ext.ti.com (lelv0142.ext.ti.com [198.47.23.249])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6BCB32D76;
+        Wed,  2 Aug 2023 06:19:53 -0700 (PDT)
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+        by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 372DJaQW121305;
+        Wed, 2 Aug 2023 08:19:36 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1690982376;
+        bh=M72XeTXRwzSvth9sAd+tBED6fXANjUgTO4CFhDTqHxk=;
+        h=Date:From:To:CC:Subject:References:In-Reply-To;
+        b=ogM8pqWz6B61S34M7CTJTlxeBWBzQk74uw8L9lQiudnQodBxN3n/w3fLydBGCCiKH
+         QkEkIruCCAAqywTblzmvkjXtiOcYkFs04rhLK1m/O5RQEXkx8x11hT7mvo+BlkNE9r
+         ypgETG+2ZiCnP3us1fO/G92fPhWR4pzGzr7tnXoI=
+Received: from DFLE115.ent.ti.com (dfle115.ent.ti.com [10.64.6.36])
+        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 372DJaOI041360
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 2 Aug 2023 08:19:36 -0500
+Received: from DFLE109.ent.ti.com (10.64.6.30) by DFLE115.ent.ti.com
+ (10.64.6.36) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Wed, 2
+ Aug 2023 08:19:36 -0500
+Received: from fllv0040.itg.ti.com (10.64.41.20) by DFLE109.ent.ti.com
+ (10.64.6.30) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Wed, 2 Aug 2023 08:19:36 -0500
+Received: from localhost (ileaxei01-snat2.itg.ti.com [10.180.69.6])
+        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 372DJab2081580;
+        Wed, 2 Aug 2023 08:19:36 -0500
+Date:   Wed, 2 Aug 2023 08:19:36 -0500
+From:   Nishanth Menon <nm@ti.com>
+To:     Francesco Dolcini <francesco@dolcini.it>
+CC:     Vignesh Raghavendra <vigneshr@ti.com>,
+        Tero Kristo <kristo@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Hiago De Franco <hiago.franco@toradex.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Francesco Dolcini <francesco.dolcini@toradex.com>
+Subject: Re: [PATCH v1 2/2] arm64: dts: ti: k3-am625-verdin: enable CAN_2
+Message-ID: <20230802131936.zkxypz5odj6ua4mv@cassette>
+References: <20230724133612.37366-1-francesco@dolcini.it>
+ <20230724133612.37366-3-francesco@dolcini.it>
+ <20230802034325.puqhry4xocaceldl@clothes>
+ <ZMoI70GFNcdIiJnN@francesco-nb.int.toradex.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: drivers/power/supply/qcom_pmi8998_charger.c:565
- smb2_status_change_work() error: uninitialized symbol 'usb_online'.
-Content-Language: en-US
-To:     kernel test robot <dan.carpenter@linaro.org>,
-        oe-kbuild@lists.linux.dev
-Cc:     lkp@intel.com, Dan Carpenter <error27@gmail.com>,
-        oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Sebastian Reichel <sebastian.reichel@collabora.com>,
-        Harshit Mogalapalli <harshit.m.mogalapalli@oracle.com>
-References: <ZMNWCD66TAhahJ2Y@kadam>
-From:   Caleb Connolly <caleb.connolly@linaro.org>
-In-Reply-To: <ZMNWCD66TAhahJ2Y@kadam>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <ZMoI70GFNcdIiJnN@francesco-nb.int.toradex.com>
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 09:42-20230802, Francesco Dolcini wrote:
+> On Tue, Aug 01, 2023 at 10:43:25PM -0500, Nishanth Menon wrote:
+> > On 15:36-20230724, Francesco Dolcini wrote:
+> > [...]
+> > 
+> > > +	/* Verdin CAN_2 */
+> > > +	pinctrl_mcu_mcan0: mcu-mcan0-default-pins {
+> > > +		pinctrl-single,pins = <
+> > > +			AM62X_MCU_IOPAD(0x0038, PIN_INPUT,  0) /* (B3) MCU_MCAN0_RX */ /* SODIMM 26 */
+> > > +			AM62X_MCU_IOPAD(0x0034, PIN_OUTPUT, 0) /* (D6) MCU_MCAN0_TX */ /* SODIMM 24 */
+> > 
+> > This is minor - I realize we already accepted this, but:
+> > /* (B3) MCU_MCAN0_RX */ /* SODIMM 26 */
+> > Vs
+> > /* (B3) MCU_MCAN0_RX - SODIMM 26 */
+> > 
+> > I wonder if you'd like the second style.
+> 
+> For sure I do not like to have the file with 2 different styles, and to
+> me this is just a taste thingy that would not justify updating the whole
+> file.
+> 
+> I'll keep it as it is.
 
-
-On 28/07/2023 06:45, kernel test robot wrote:
-> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-> head:   57012c57536f8814dec92e74197ee96c3498d24e
-> commit: 8648aeb5d7b70e13264ff5f444f22081d37d4670 power: supply: add Qualcomm PMI8998 SMB2 Charger driver
-> config: arm-randconfig-m041-20230727 (https://download.01.org/0day-ci/archive/20230728/202307280638.556PrzIS-lkp@intel.com/config)
-> compiler: arm-linux-gnueabi-gcc (GCC) 12.3.0
-> reproduce: (https://download.01.org/0day-ci/archive/20230728/202307280638.556PrzIS-lkp@intel.com/reproduce)
-> 
-> If you fix the issue in a separate patch/commit (i.e. not just a new version of
-> the same patch/commit), kindly add following tags
-> | Reported-by: kernel test robot <lkp@intel.com>
-> | Reported-by: Dan Carpenter <error27@gmail.com>
-> | Closes: https://lore.kernel.org/r/202307280638.556PrzIS-lkp@intel.com/
-> 
-> smatch warnings:
-> drivers/power/supply/qcom_pmi8998_charger.c:565 smb2_status_change_work() error: uninitialized symbol 'usb_online'.
-
-Hi, thanks for the report.
-> 
-> vim +/usb_online +565 drivers/power/supply/qcom_pmi8998_charger.c
-> 
-> 8648aeb5d7b70e Caleb Connolly 2023-05-26  556  static void smb2_status_change_work(struct work_struct *work)
-> 8648aeb5d7b70e Caleb Connolly 2023-05-26  557  {
-> 8648aeb5d7b70e Caleb Connolly 2023-05-26  558  	unsigned int charger_type, current_ua;
-> 8648aeb5d7b70e Caleb Connolly 2023-05-26  559  	int usb_online, count, rc;
-> 8648aeb5d7b70e Caleb Connolly 2023-05-26  560  	struct smb2_chip *chip;
-> 8648aeb5d7b70e Caleb Connolly 2023-05-26  561  
-> 8648aeb5d7b70e Caleb Connolly 2023-05-26  562  	chip = container_of(work, struct smb2_chip, status_change_work.work);
-> 8648aeb5d7b70e Caleb Connolly 2023-05-26  563  
-> 8648aeb5d7b70e Caleb Connolly 2023-05-26  564  	smb2_get_prop_usb_online(chip, &usb_online);
-> 
-> This can only happen if regmap_read() fails, and in real life they
-> can't actually fail can they?  We can't really recover if regmap
-> breaks so in that situation this uninitialized variable would be the
-> least of our concerns.  Right?
-
-In this case, the driver is for a peripheral on the SPMI bus, a read
-failing is extremely unlikely but under some conditions like bandwidth
-constraints it could happen. Though admittedly there are likely bigger
-issues to deal with in that situation heh.
-
-It's a trivial fix so I'll send a patch over.
-> 
-> So what I could do is just delete the regmap_read error paths from
-> the DB.  I just add these two lines to smatch_data/db/kernel.delete.return_states
-> 
-> regmap_read (-22)
-> regmap_read (-4095)-(-1)
-> 
-> 8648aeb5d7b70e Caleb Connolly 2023-05-26 @565  	if (!usb_online)
->                                                      ^^^^^^^^^^
-> 
-> 8648aeb5d7b70e Caleb Connolly 2023-05-26  566  		return;
-> 8648aeb5d7b70e Caleb Connolly 2023-05-26  567  
-> 8648aeb5d7b70e Caleb Connolly 2023-05-26  568  	for (count = 0; count < 3; count++) {
-> 8648aeb5d7b70e Caleb Connolly 2023-05-26  569  		dev_dbg(chip->dev, "get charger type retry %d\n", count);
-> 
-
+That is fine. Thanks.
 -- 
-// Caleb (they/them)
+Regards,
+Nishanth Menon
+Key (0xDDB5849D1736249D) / Fingerprint: F8A2 8693 54EB 8232 17A3  1A34 DDB5 849D 1736 249D
