@@ -2,113 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F8FE76C495
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 07:06:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EEC4176C490
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 07:05:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230304AbjHBFGT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Aug 2023 01:06:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36866 "EHLO
+        id S232244AbjHBFFg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Aug 2023 01:05:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36106 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232089AbjHBFGN (ORCPT
+        with ESMTP id S232218AbjHBFF2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Aug 2023 01:06:13 -0400
-Received: from fllv0016.ext.ti.com (fllv0016.ext.ti.com [198.47.19.142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9FE11BFA;
-        Tue,  1 Aug 2023 22:06:10 -0700 (PDT)
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 372563pf019669;
-        Wed, 2 Aug 2023 00:06:03 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1690952764;
-        bh=6JEuWc4f30IuqUU6XKRgm84QAg2VlhvFZkxR9ff0p/w=;
-        h=From:To:CC:Subject:Date:In-Reply-To:References;
-        b=n54IXrxR1wOT4556mNZjSF12Zyz0J661CpZaEqhfTO7rnRMkOeVetLAscGvklSyOC
-         WdKZRmPwNFBdXL7QePnmYOMWPUiHyI/NIr1mKbiVjaSCngzuvcrPtTEXS5IdoEJJfj
-         35f2iAo6TAw7Jjowqb9t24zXDSa+HK6dE0KvVDiQ=
-Received: from DFLE100.ent.ti.com (dfle100.ent.ti.com [10.64.6.21])
-        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 372563uJ026209
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 2 Aug 2023 00:06:03 -0500
-Received: from DFLE111.ent.ti.com (10.64.6.32) by DFLE100.ent.ti.com
- (10.64.6.21) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Wed, 2
- Aug 2023 00:06:03 -0500
-Received: from lelv0327.itg.ti.com (10.180.67.183) by DFLE111.ent.ti.com
- (10.64.6.32) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Wed, 2 Aug 2023 00:06:03 -0500
-Received: from localhost (ileaxei01-snat.itg.ti.com [10.180.69.5])
-        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 372563NF120612;
-        Wed, 2 Aug 2023 00:06:03 -0500
-From:   Nishanth Menon <nm@ti.com>
-To:     <vigneshr@ti.com>, <kristo@kernel.org>, <robh+dt@kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        Udit Kumar <u-kumar1@ti.com>
-CC:     Nishanth Menon <nm@ti.com>
-Subject: Re: [PATCH v2 0/2] arm64: dts: ti: k3-j784s4: Add UFS support
-Date:   Wed, 2 Aug 2023 00:06:02 -0500
-Message-ID: <169095270125.2813863.16614506862321546595.b4-ty@ti.com>
-X-Mailer: git-send-email 2.40.0
-In-Reply-To: <20230725133607.2021379-1-u-kumar1@ti.com>
-References: <20230725133607.2021379-1-u-kumar1@ti.com>
+        Wed, 2 Aug 2023 01:05:28 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5134A1FCF;
+        Tue,  1 Aug 2023 22:05:27 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id D24F3617E2;
+        Wed,  2 Aug 2023 05:05:26 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 14365C433CA;
+        Wed,  2 Aug 2023 05:05:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1690952726;
+        bh=mqqkGVbU/w5XVGL8wNFiKBrpnoFsZ0U7xfNm17f7El4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=aVODpFlGBTgJf/7xxXR6C30T6BZmJoEN3+kRYa79kTII0nnf6ub3clATPGufXTnTE
+         P1eFFL1msnaqiFvcfvjhfbIWovhU1tqPpSdnflkPghhkn2lh+hZ5ZVoaHo2VaQypDj
+         xV+96UEjZDU4q2/giYSW3dfh9wWNayYZcKuYJ63+9jB0uKPZfoy3MyJkKN7gxkmCO0
+         55jVCANF0xJbgIXgoULvPYhOrsgUFYs10dSKWJ46Pm6V3nVYy/aB/0YZ8yNl8Isl/v
+         AEa+nwN887eWcZeTNlqhP7f9DUeSP+L1HcCFO/w3mQm7W43LY4naJJaRTzU9eZdGCu
+         sWK96H0/eRzpQ==
+Date:   Tue, 1 Aug 2023 23:06:30 -0600
+From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
+To:     Jesse Brandeburg <jesse.brandeburg@intel.com>,
+        Tony Nguyen <anthony.l.nguyen@intel.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>
+Cc:     netdev@vger.kernel.org, intel-wired-lan@lists.osuosl.org,
+        linux-kernel@vger.kernel.org,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        linux-hardening@vger.kernel.org
+Subject: [PATCH 3/4][next] i40e: Replace one-element array with flex-array
+ member in struct i40e_section_table
+Message-ID: <ddc1cde5fe6cb6a0865ae96d0d064298e343720d.1690938732.git.gustavoars@kernel.org>
+References: <cover.1690938732.git.gustavoars@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <cover.1690938732.git.gustavoars@kernel.org>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Udit Kumar,
+One-element and zero-length arrays are deprecated. So, replace
+one-element array in struct i40e_section_table with flexible-array
+member.
 
-On Tue, 25 Jul 2023 19:06:05 +0530, Udit Kumar wrote:
-> This patch series adds UFS support for J784S4 SOC,
-> UFS is kept disabled at SOC level, and enabled in EVM where
-> UFS flash is present.
-> 
-> This patch is tested by enabling below configs on top of defconfig
-> CONFIG_SCSI_UFS_BSG=y
-> CONFIG_SCSI_UFS_CDNS_PLATFORM=y
-> CONFIG_SCSI_UFS_TI_J721E=y
-> 
-> [...]
+This results in no differences in binary output.
 
-I have applied the following to branch ti-k3-dts-next on [1].
-Thank you!
+Link: https://github.com/KSPP/linux/issues/335
+Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+---
+ drivers/net/ethernet/intel/i40e/i40e_type.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-[1/2] arm64: dts: ti: k3-j784s4-main: Add DT node for UFS
-      commit: f33f5e4c801b7f1838f05aae81eaed8189a1eac4
-[2/2] arm64: dts: ti: k3-j784s4-evm: Add Support for UFS peripheral
-      commit: 5d55545cc2da8ad320b73705b26a5c0a837b20da
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent up the chain during
-the next merge window (or sooner if it is a relevant bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-[1] https://git.kernel.org/pub/scm/linux/kernel/git/ti/linux.git
+diff --git a/drivers/net/ethernet/intel/i40e/i40e_type.h b/drivers/net/ethernet/intel/i40e/i40e_type.h
+index f7a984304b65..010261a10f56 100644
+--- a/drivers/net/ethernet/intel/i40e/i40e_type.h
++++ b/drivers/net/ethernet/intel/i40e/i40e_type.h
+@@ -1492,7 +1492,7 @@ struct i40e_profile_segment {
+ 
+ struct i40e_section_table {
+ 	u32 section_count;
+-	u32 section_offset[1];
++	u32 section_offset[];
+ };
+ 
+ struct i40e_profile_section_header {
 -- 
-Regards,
-Nishanth Menon
-Key (0xDDB5849D1736249D) / Fingerprint: F8A2 8693 54EB 8232 17A3  1A34 DDB5 849D 1736 249D
+2.34.1
 
