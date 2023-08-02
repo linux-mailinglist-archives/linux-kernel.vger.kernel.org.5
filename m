@@ -2,161 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 92D8B76CFFB
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 16:26:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 55F0876D000
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 16:27:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232752AbjHBO0D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Aug 2023 10:26:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60750 "EHLO
+        id S233110AbjHBO1N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Aug 2023 10:27:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33392 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232628AbjHBOZ7 (ORCPT
+        with ESMTP id S232733AbjHBO1K (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Aug 2023 10:25:59 -0400
-Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73B55271C
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Aug 2023 07:25:57 -0700 (PDT)
-Received: by mail-ej1-x62d.google.com with SMTP id a640c23a62f3a-99bded9d93dso171424566b.1
-        for <linux-kernel@vger.kernel.org>; Wed, 02 Aug 2023 07:25:57 -0700 (PDT)
+        Wed, 2 Aug 2023 10:27:10 -0400
+Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com [IPv6:2a00:1450:4864:20::333])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F846273E
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Aug 2023 07:27:08 -0700 (PDT)
+Received: by mail-wm1-x333.google.com with SMTP id 5b1f17b1804b1-3fe1e44fd2bso102965e9.0
+        for <linux-kernel@vger.kernel.org>; Wed, 02 Aug 2023 07:27:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google; t=1690986356; x=1691591156;
-        h=in-reply-to:content-disposition:mime-version:references
-         :mail-followup-to:message-id:subject:cc:to:from:date:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=FsVcsCDvamjl31gifaKwLNv2n2Xspa6emd5tT3prZvw=;
-        b=eq9qvw/au3DtjNiInHv+/Ks+sX1tL4hda1Ymw/mKWe9H1Dn/0GH3Lkc2XHr2w4hnqh
-         szW59lqw7i9lIfZLBs86jn+JmO2jiioTa1/OThHRi93xkN7nQo8rqnOgCYtBmvg7+wtd
-         WF753BEgN/emMxve58EPL3p3mFOmrc8E1KGkg=
+        d=google.com; s=20221208; t=1690986427; x=1691591227;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=n7NE4BqcxOTAM1FXdBRtUyCLd0auS/l4RfesziLuyeU=;
+        b=w3+G/MlFOQ4FCLai9RRniwpTTBXS9EUQi9tdWYIztNtf7PWUPb2RSj+dfp7fUKo6a1
+         5jrqOxExWvN8aEHWc3E+9pAr3jTb/aK4TYnqDlmIBqGTIOP9ih0YbzgErTYajSHP5XWA
+         +1pzMcTNXPtcA9+k3het2rZ3ysB7ejSMIdWtLvUvoBaqPt2pHiRiJOgBNH0Yrn+G8PEe
+         Hy0yILIkNTvCxt6uihI0H2iEYHnyjo6L2CKU0hOfUlZ/+xdA6wXevJJWS6skHEaFn3dn
+         d96bbJdZD2akyGY9BlDqxsBFOFBPlmCVc6q+0gMualvtlQ86q58y7cCJIaPJa5mX4e+b
+         DlIg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690986356; x=1691591156;
-        h=in-reply-to:content-disposition:mime-version:references
-         :mail-followup-to:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=FsVcsCDvamjl31gifaKwLNv2n2Xspa6emd5tT3prZvw=;
-        b=jxPlfi453x5fK2mHKMPRj4L6UzstUhrjL4HOXEVCEvGcjeYMKgFBPB6euYSadoOk6h
-         JIwVLLfIZ9vYbtMYzdnuVFUvPaI+XmpzniEGW3XEwbatEj+HrQr31YdWpaildhHXxeAT
-         nvr1FeIj7hpkfkaNBqNVnvO3D9KcmkUUDQxZ0caqlK8GsIhdUyVrmnybVPU0pUdxeeip
-         wQb98d/31X6VF9guf+RKVbNHSElZqg/VevowCW78ILnRp6xFK8lnJIVG5C6WrTLlKd8r
-         it00dRfMnQDd2b1YJJzgadYuzhmGj/RZd+4hoenXkSfShhEVSRfvPmm6lcqRcnUqmvYe
-         goIg==
-X-Gm-Message-State: ABy/qLaKP9zmttGCDHCoDLw6FK1k9JfdAd4DEF11Lb03rd8Cy8co4VNx
-        vdS1S9+ptObAsLnJHmWe0ULcUg==
-X-Google-Smtp-Source: APBJJlEGuIJd0GEks9/vYG2PGf+sSGozgW3aVzw1hHeGDBgQvjzANdpy3n5m6RtZqxVwQKbbxW+z3w==
-X-Received: by 2002:a17:906:73dd:b0:99b:d594:8f89 with SMTP id n29-20020a17090673dd00b0099bd5948f89mr10192169ejl.0.1690986355776;
-        Wed, 02 Aug 2023 07:25:55 -0700 (PDT)
-Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
-        by smtp.gmail.com with ESMTPSA id si15-20020a170906cecf00b00992e265495csm9261942ejb.212.2023.08.02.07.25.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 02 Aug 2023 07:25:55 -0700 (PDT)
-Date:   Wed, 2 Aug 2023 16:25:53 +0200
-From:   Daniel Vetter <daniel@ffwll.ch>
-To:     Michael Riesch <michael.riesch@wolfvision.net>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Neil Armstrong <neil.armstrong@linaro.org>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Maxime Ripard <mripard@kernel.org>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Sebastian Reichel <sre@kernel.org>,
-        Gerald Loacker <gerald.loacker@wolfvision.net>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        dri-devel@lists.freedesktop.org
-Subject: Re: [PATCH 0/4] drm/panel: sitronix-st7789v: add support for partial
- mode
-Message-ID: <ZMpnceQYSuyOmi+F@phenom.ffwll.local>
-Mail-Followup-To: Michael Riesch <michael.riesch@wolfvision.net>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Neil Armstrong <neil.armstrong@linaro.org>,
-        Sam Ravnborg <sam@ravnborg.org>, David Airlie <airlied@gmail.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Sebastian Reichel <sre@kernel.org>,
-        Gerald Loacker <gerald.loacker@wolfvision.net>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        dri-devel@lists.freedesktop.org
-References: <20230718-feature-lcd-panel-v1-0-e9a85d5374fd@wolfvision.net>
+        d=1e100.net; s=20221208; t=1690986427; x=1691591227;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=n7NE4BqcxOTAM1FXdBRtUyCLd0auS/l4RfesziLuyeU=;
+        b=CljOPBnQlAAuqTrrk9aqvWzQyreFnZ0RJL1GNL1tY9cvBYyk6wpHptZZxKbduMcgon
+         n2QSr/+uv4azMbTddzG1MiE0XhMPrMc6LHptyqYwiOn9yIdnHiQ8THOByWoabPAksUB+
+         IfRX5GtWUbLrsqYfGovHc4e03l8HKHABhVh4HEJtK/WDOwNZ92sVQYd0iaKo7ZsSH+Ka
+         JUcMh3n7+OoZRfdA59zDea0nmk3YqjX04lqkuUALxVbcRcpq85utqT/6hW702OxK5/lj
+         yTL8dUQdHqqw4qWwvXAWMaNH7Dw9xQ3WpLQwQLprFvJPt2UrZU4+quMX1YxzXPsYyz64
+         nn7Q==
+X-Gm-Message-State: ABy/qLasJgyHbAHbQ3p7SPkVBpMT7ovy2lDuRkpvo51MaaaYliEf1NAV
+        FtI9dIWvOvzJMtzkVzh2jOSFOynOOjhlFcRIh2ht69KjHHY18Qd2SebYPuAY2BQ=
+X-Google-Smtp-Source: APBJJlGdKDlmTdjAVJFjYw+jb6H3+upJ/VfB7N/IyLinOQZAGY3YKZ7Q/5RLmI7ogwSKbkCk2ZCzzgHV51lf7ytXuRM=
+X-Received: by 2002:a05:600c:1f0a:b0:3f7:e59f:2183 with SMTP id
+ bd10-20020a05600c1f0a00b003f7e59f2183mr358065wmb.5.1690986426694; Wed, 02 Aug
+ 2023 07:27:06 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230718-feature-lcd-panel-v1-0-e9a85d5374fd@wolfvision.net>
-X-Operating-System: Linux phenom 6.3.0-2-amd64 
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <000000000000af3d3105ff38ee3c@google.com> <00000000000099695a0601e5ecfb@google.com>
+In-Reply-To: <00000000000099695a0601e5ecfb@google.com>
+From:   Aleksandr Nogikh <nogikh@google.com>
+Date:   Wed, 2 Aug 2023 16:26:54 +0200
+Message-ID: <CANp29Y4RFKPWBv+=ExNtud=CR2sAPR29H-KxV7R+HSiwjh3GvA@mail.gmail.com>
+Subject: Re: [syzbot] [f2fs?] general protection fault in f2fs_drop_extent_tree
+To:     syzbot <syzbot+f4649be1be739e030111@syzkaller.appspotmail.com>
+Cc:     chao@kernel.org, jaegeuk@kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED,USER_IN_DEF_DKIM_WL,
+        USER_IN_DEF_SPF_WL autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 18, 2023 at 05:31:49PM +0200, Michael Riesch wrote:
-> Hi all,
-> 
-> This series adds support for the partial display mode to the Sitronix
-> ST7789V panel driver. This is useful for panels that are partially
-> occluded by design, such as the Jasonic JT240MHQS-HWT-EK-E3. Support
-> for this particular panel is added as well.
-> 
-> Note: This series is already based on
-> https://lore.kernel.org/lkml/20230714013756.1546769-1-sre@kernel.org/
-> 
-> Looking forward to your comments!
+On Wed, Aug 2, 2023 at 2:41=E2=80=AFAM syzbot
+<syzbot+f4649be1be739e030111@syzkaller.appspotmail.com> wrote:
+>
+> syzbot suspects this issue was fixed by commit:
+>
+> commit 458c15dfbce62c35fefd9ca637b20a051309c9f1
+> Author: Chao Yu <chao@kernel.org>
+> Date:   Tue May 23 03:58:22 2023 +0000
+>
+>     f2fs: don't reset unchangable mount option in f2fs_remount()
+>
+> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=3D12461d31a8=
+0000
+> start commit:   a92b7d26c743 Merge tag 'drm-fixes-2023-06-23' of git://an=
+o..
+> git tree:       upstream
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=3D2cbd298d0aff1=
+140
+> dashboard link: https://syzkaller.appspot.com/bug?extid=3Df4649be1be739e0=
+30111
+> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=3D1564afb0a80=
+000
+> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=3D166928c728000=
+0
+>
+> If the result looks correct, please mark the issue as fixed by replying w=
+ith:
+>
+> #syz fix: f2fs: don't reset unchangable mount option in f2fs_remount()
 
-Summary of my take from a fairly long (and kinda still on-going) irc
-discussion:
+Looks reasonable.
+#syz fix: f2fs: don't reset unchangable mount option in f2fs_remount()
 
-- Where we do know the exact overscan, the kernel should expose correct
-  modes and adjust the display pipeline to match if needed when
-  programming the hardware. Meaning the approach in this patch series.
-
-- For hdmi overscan there's a lot of automagic overscan happening by
-  default. Drivers can mostly fix this by setting all the right
-  infoframes, but unfortuantely a very big pile of infoframes is needed.
-  Assuming drivers actually use the helpers I think only i915 gets them
-  all, so intel_hdmi_compute_config() at the bottom would be the example
-  to follow, and maybe some more code to extract from and share.
-
-- That /should/ only leave the really old analog TV and similar horrors
-  leftover. For those we simply can't even guess the right amount of
-  overscan (because back then no one cared back then about really seeing
-  everything), and so that's the only case where we should rely on the
-  overscan properties. And that case only works when the compositor stack
-  passes these properties all the way to the user, since only they can
-  check when the settings are good.
-
-The overscan properties should _not_ be used to fix issues of the previous
-kind, that really should all work out of the box as much as possible.
-
-Cheers, Sima
-
-
-> 
-> ---
-> Michael Riesch (4):
->       dt-bindings: vendor-prefixes: add jasonic
->       dt-bindings: display: st7789v: add jasonic jt240mhqs-hwt-ek-e3 display
->       drm/panel: sitronix-st7789v: add support for partial mode
->       drm/panel: sitronix-st7789v: add jasonic jt240mhqs-hwt-ek-e3 support
-> 
->  .../bindings/display/panel/sitronix,st7789v.yaml   |  1 +
->  .../devicetree/bindings/vendor-prefixes.yaml       |  2 +
->  drivers/gpu/drm/panel/panel-sitronix-st7789v.c     | 67 +++++++++++++++++++++-
->  3 files changed, 68 insertions(+), 2 deletions(-)
-> ---
-> base-commit: b43dae411767f34288aa347f26b5ed2dade39469
-> change-id: 20230718-feature-lcd-panel-26d9f29a7830
-> 
-> Best regards,
-> -- 
-> Michael Riesch <michael.riesch@wolfvision.net>
-> 
-
--- 
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
+>
+> For information about bisection process see: https://goo.gl/tpsmEJ#bisect=
+ion
+>
