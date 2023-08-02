@@ -2,155 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 85B1476D3E5
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 18:42:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B911276D3E9
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 18:44:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229898AbjHBQmc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Aug 2023 12:42:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44008 "EHLO
+        id S229815AbjHBQoM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Aug 2023 12:44:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44826 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229535AbjHBQma (ORCPT
+        with ESMTP id S229923AbjHBQoI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Aug 2023 12:42:30 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 9CF21269A
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Aug 2023 09:42:27 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 90C41113E;
-        Wed,  2 Aug 2023 09:43:10 -0700 (PDT)
-Received: from [10.57.77.90] (unknown [10.57.77.90])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 359D63F6C4;
-        Wed,  2 Aug 2023 09:42:25 -0700 (PDT)
-Message-ID: <b308fbb3-73a1-f8b4-3b08-ed5da044b2a9@arm.com>
-Date:   Wed, 2 Aug 2023 17:42:23 +0100
+        Wed, 2 Aug 2023 12:44:08 -0400
+Received: from mx.treblig.org (unknown [IPv6:2a00:1098:5b::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5063F269A
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Aug 2023 09:44:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=treblig.org
+        ; s=bytemarkmx; h=In-Reply-To:Content-Type:MIME-Version:References:Message-ID
+        :Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:Content-ID
+        :Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:
+        Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe
+        :List-Post:List-Owner:List-Archive;
+        bh=031AZhyLVAnvSrG5EfAXCSNcm362d8NHJ28zLnLxYmc=; b=mtLrXd/JAIp176o8Ohuxx8WcsW
+        CxmFnVk4u/FFudPnt/vFTbsxFGGckpr8P3ZRXY0tjldKqOvwlzyqA1Hy3gkWRMi0NR/dgQFWUyeGU
+        +tpJmOLGSaC4XVSe7yQTczif0hg52oCybE+3qlr6ZWcIlTCRwZp28cQoRAhbcTskQh2Lllht3EIBX
+        PQBcjcivt1eZGQdRpsyvbR2zgoYBSt5GXncG4J0N+IOg74k4D6WVfNHPYnufGJvRTDBbJBvaW80VM
+        ulomkks44Tt+xFKB5j54KJePEH5DDUMdjSxhltyT/PCTX/pXXSh01bsoVqYreJ7WgBfbyloP/qUul
+        JIv5hMxg==;
+Received: from dg by mx.treblig.org with local (Exim 4.94.2)
+        (envelope-from <dg@treblig.org>)
+        id 1qREwy-004sNq-9g; Wed, 02 Aug 2023 16:43:52 +0000
+Date:   Wed, 2 Aug 2023 16:43:52 +0000
+From:   "Dr. David Alan Gilbert" <linux@treblig.org>
+To:     Randy Dunlap <rdunlap@infradead.org>
+Cc:     Michael Ellerman <mpe@ellerman.id.au>, npiggin@gmail.com,
+        christophe.leroy@csgroup.eu, sam@ravnborg.org,
+        benh@kernel.crashing.org, linuxppc-dev@lists.ozlabs.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] powerpc: Use shared font data
+Message-ID: <ZMqHyC5PAEGzMLRz@gallifrey>
+References: <20230725000141.165985-1-linux@treblig.org>
+ <878rb0em3s.fsf@mail.lhotse>
+ <ZMOaz9EqqeaPGokA@gallifrey>
+ <871qgl1vs2.fsf@mail.lhotse>
+ <182b08ea-04f3-3282-e3c3-9448bab6568a@infradead.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.13.0
-Subject: Re: [PATCH v4 0/3] Optimize large folio interaction with deferred
- split
-To:     Andrew Morton <akpm@linux-foundation.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Yin Fengwei <fengwei.yin@intel.com>,
-        David Hildenbrand <david@redhat.com>,
-        Yu Zhao <yuzhao@google.com>, Yang Shi <shy828301@gmail.com>,
-        "Huang, Ying" <ying.huang@intel.com>, Zi Yan <ziy@nvidia.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Alexander Gordeev <agordeev@linux.ibm.com>,
-        Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
-Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org
-References: <20230727141837.3386072-1-ryan.roberts@arm.com>
-From:   Ryan Roberts <ryan.roberts@arm.com>
-In-Reply-To: <20230727141837.3386072-1-ryan.roberts@arm.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+In-Reply-To: <182b08ea-04f3-3282-e3c3-9448bab6568a@infradead.org>
+X-Chocolate: 70 percent or better cocoa solids preferably
+X-Operating-System: Linux/5.10.0-23-amd64 (x86_64)
+X-Uptime: 16:37:41 up 27 days,  2:09,  1 user,  load average: 0.00, 0.01, 0.00
+User-Agent: Mutt/2.0.5 (2021-01-21)
+X-Spam-Status: No, score=-1.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,RDNS_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Andrew,
+* Randy Dunlap (rdunlap@infradead.org) wrote:
+> 
+> 
+> On 8/2/23 05:19, Michael Ellerman wrote:
+> > "Dr. David Alan Gilbert" <linux@treblig.org> writes:
+> >> * Michael Ellerman (mpe@ellerman.id.au) wrote:
+> >>> linux@treblig.org writes:
+> >>>> From: "Dr. David Alan Gilbert" <linux@treblig.org>
+> >>>>
+> >>>> PowerPC has a 'btext' font used for the console which is almost identical
+> >>>> to the shared font_sun8x16, so use it rather than duplicating the data.
+> >>>>
+> >>>> They were actually identical until about a decade ago when
+> >>>>    commit bcfbeecea11c ("drivers: console: font_: Change a glyph from
+> >>>>                         "broken bar" to "vertical line"")
+> >>>>
+> >>>> which changed the | in the shared font to be a solid
+> >>>> bar rather than a broken bar.  That's the only difference.
+> >>>>
+> >>>> This was originally spotted by PMD which noticed that sparc does
+> >>>
+> >>> PMD means "Page Middle Directory" to most Linux folks, I assume that's
+> >>> not what you meant :)
+> >>
+> >> Ah, any good TLA is ripe for reuse:
+> >>    https://pmd.github.io/pmd/pmd_userdocs_cpd.html
+> > 
+> > Thanks.
+> > 
+> > Unfortunately this patch causes a warning:
+> > 
+> >   WARNING: unmet direct dependencies detected for FONT_SUN8x16
+> >     Depends on [n]: FONT_SUPPORT [=y] && FRAMEBUFFER_CONSOLE [=y] && (!SPARC && FONTS [=n] || SPARC)
+> >     Selected by [y]:
+> >     - BOOTX_TEXT [=y] && PPC_BOOK3S [=y]
+> > 
+> > And breaks allmodconfig with:
+> > 
+> >   ld: arch/powerpc/kernel/btext.o:(.toc+0x0): undefined reference to `font_sun_8x16'
+> >   make[3]: *** [../scripts/Makefile.vmlinux:36: vmlinux] Error 1
+> > 
+> > I guess the Kconfig logic needs some more work.
+> 
+> Also please see:
+>   https://lore.kernel.org/all/dd29e5f5-d9f7-0103-e602-b98f26c88fb1@infradead.org/
+> for a similar problem on UML.
 
-After discussion about this in Matthew's THP Cabal, we have decided to take a
-different approach with this patch set. Could you therefore remove it from
-mm-unstable, please? Sorry about the noise.
+Thanks Michael, Randy.
 
-I'm going to try 2 different approaches:
- - avoid the split lock contention by using mmu gather (suggested by Kirill)
- - expand the zap pte batching to also cover file folios (as requested by Yu).
+Does anyone understand why the font_sun8x16 has any of those
+ 'Depends on' ?
 
-Thanks,
-Ryan
+It's just a font structure definition.
 
+Dave
 
-
-On 27/07/2023 15:18, Ryan Roberts wrote:
-> Hi All,
-> 
-> This is v4 of a small series in support of my work to enable the use of large
-> folios for anonymous memory (known as "FLEXIBLE_THP" or "LARGE_ANON_FOLIO") [5].
-> It first makes it possible to add large, non-pmd-mappable folios to the deferred
-> split queue. Then it modifies zap_pte_range() to batch-remove spans of
-> physically contiguous pages from the rmap, which means that in the common case,
-> we elide the need to ever put the folio on the deferred split queue, thus
-> reducing lock contention and improving performance.
-> 
-> This becomes more visible once we have lots of large anonymous folios in the
-> system, and Huang Ying has suggested solving this needs to be a prerequisit for
-> merging the main FLEXIBLE_THP/LARGE_ANON_FOLIO work.
-> 
-> The series applies on top of v6.5-rc3 and a branch is available at [4].
-> 
-> NOTE: v3 is currently in mm-unstable and has a bug that affects s390, which this
-> version fixes.
-> 
-> 
-> Changes since v3 [3]
-> --------------------
-> 
-> - Fixed bug reported on s390 [6]
->     - Since s390 enables MMU_GATHER_NO_GATHER, __tlb_remove_page() causes a ref
->       to be dropped on the page, but we were still using the page after that
->       function call.
->     - Fix by using folio_get()/folio_put() to guarrantee lifetime of page
->     - Thanks to Nathan Chancellor for the bug report and helping me get set up
->       with s390!
-> - Don't use batch path if folio is not large
-> 
-> 
-> Changes since v2 [2]
-> --------------------
-> 
-> - patch 2: Reworked at Yu Zhou's request to reduce duplicated code.
->     - page_remove_rmap() now forwards to folio_remove_rmap_range() for the
->       !compound (PMD mapped) case.
->     - Both page_remove_rmap() and folio_remove_rmap_range() share common
->       epilogue via new helper function __remove_rmap_finish().
->     - As a result of the changes, I've removed the previous Reviewed-bys.
-> - other 2 patches are unchanged.
-> 
-> 
-> Changes since v1 [1]
-> --------------------
-> 
-> - patch 2: Modified doc comment for folio_remove_rmap_range()
-> - patch 2: Hoisted _nr_pages_mapped manipulation out of page loop so its now
->   modified once per folio_remove_rmap_range() call.
-> - patch 2: Added check that page range is fully contained by folio in
->   folio_remove_rmap_range()
-> - patch 2: Fixed some nits raised by Huang, Ying for folio_remove_rmap_range()
-> - patch 3: Support batch-zap of all anon pages, not just those in anon vmas
-> - patch 3: Renamed various functions to make their use clear
-> - patch 3: Various minor refactoring/cleanups
-> - Added Reviewed-By tags - thanks!
-> 
-> 
-> [1] https://lore.kernel.org/linux-mm/20230717143110.260162-1-ryan.roberts@arm.com/
-> [2] https://lore.kernel.org/linux-mm/20230719135450.545227-1-ryan.roberts@arm.com/
-> [3] https://lore.kernel.org/linux-mm/20230720112955.643283-1-ryan.roberts@arm.com/
-> [4] https://gitlab.arm.com/linux-arm/linux-rr/-/tree/features/granule_perf/deferredsplit-lkml_v4
-> [5] https://lore.kernel.org/linux-mm/20230714160407.4142030-1-ryan.roberts@arm.com/
-> [6] https://lore.kernel.org/linux-mm/20230726161942.GA1123863@dev-arch.thelio-3990X/
-> 
-> Thanks,
-> Ryan
-> 
-> 
-> Ryan Roberts (3):
->   mm: Allow deferred splitting of arbitrary large anon folios
->   mm: Implement folio_remove_rmap_range()
->   mm: Batch-zap large anonymous folio PTE mappings
-> 
->  include/linux/rmap.h |   2 +
->  mm/memory.c          | 132 +++++++++++++++++++++++++++++++++++++++++++
->  mm/rmap.c            | 125 ++++++++++++++++++++++++++++++----------
->  3 files changed, 229 insertions(+), 30 deletions(-)
-> 
-> --
-> 2.25.1
-> 
-
+> -- 
+> ~Randy
+-- 
+ -----Open up your eyes, open up your mind, open up your code -------   
+/ Dr. David Alan Gilbert    |       Running GNU/Linux       | Happy  \ 
+\        dave @ treblig.org |                               | In Hex /
+ \ _________________________|_____ http://www.treblig.org   |_______/
