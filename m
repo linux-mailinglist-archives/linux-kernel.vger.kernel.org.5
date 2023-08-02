@@ -2,73 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7DA9576C282
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 03:54:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 763D376C285
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 03:56:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231597AbjHBByi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Aug 2023 21:54:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52970 "EHLO
+        id S231613AbjHBB4I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Aug 2023 21:56:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53384 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230452AbjHBByh (ORCPT
+        with ESMTP id S230343AbjHBB4H (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Aug 2023 21:54:37 -0400
-Received: from mail-vs1-xe29.google.com (mail-vs1-xe29.google.com [IPv6:2607:f8b0:4864:20::e29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5EBD212A
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Aug 2023 18:54:35 -0700 (PDT)
-Received: by mail-vs1-xe29.google.com with SMTP id ada2fe7eead31-44779e3e394so1583338137.0
-        for <linux-kernel@vger.kernel.org>; Tue, 01 Aug 2023 18:54:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1690941275; x=1691546075;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=Il+U9n5lkmGrYzbgPyJy+8Iv+Ld+DI3VHeIjDoz9VUM=;
-        b=vSL0H8DTXB0Kmux8lwHUA0+W91duPqgibPyWwXQ6YMB+vb1l4P2S5ewfEHHHnR4WIN
-         4DdmLWqkZyUM2yUIa/LA/VGeYSRLQTUtw1HTiMhy+PE9fkfpGO8Nm7rdXYatSGDhEkQs
-         imK3HsRUgwVo2eeH+4FjzpfgZzjFzX6kjXTYqGVXAG+DPHsvM5t1n4ujqIUXcznjO4+z
-         /ssmOzh6Bp2DD//7d2bf/zApW8dDuKVx+4cYL7TXCRDXXFe2gMeo+n37VFRXZ0uXspqg
-         w867U2wDo3tVKXXNxVyumM7zKmroWlSSMHsghwAIiYCqwlP1DCLmqmIgjg8/MARKAcF8
-         jhPw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690941275; x=1691546075;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Il+U9n5lkmGrYzbgPyJy+8Iv+Ld+DI3VHeIjDoz9VUM=;
-        b=FjbSaDFu1Yd4fGP8eETvy3VrnxxqXd2hSPyOEGuvoAHYT83y1LIQnzKaGNE6a0hpv6
-         4822SLCTaKJOTURHyVUPUj/T9Tedzue5BwF8mL7cVcr6zUmpOfAjUNEBsxXwOtCvrcmv
-         mCBxLtqkhrQO8OYK6zr6ZyMlOlT9Y5RsLBS2Pe+bt2Dr/8D+B70dleT+YytwL46GbpZ6
-         BmuGI1szlTlDjV/C+SeP5sjsxk6K+zq4Mn0kd6iUBv0T5lojtwmXdztLC5VfvH0yl+xR
-         19AjlnhnbSW29XvvY75GAmgBkkf0+1HHu9UwlEi0L6aEr3+4De64x55rjROYXbaQf5Ay
-         FqWA==
-X-Gm-Message-State: ABy/qLbnI3SpDHelCyhVRaadYGiFgZbRufy00v/56KfYO9LGYhEncJMs
-        Kjk1+Xjqrxfz+QcEygchnAoWOQafaRK+EmBRvoGUrw==
-X-Google-Smtp-Source: APBJJlHVwke1xKedtBlG6j6nnQKNFJJs08fE/jID+0Q0nxx/66rdtlH74xRK3FUg7aXspTtHo+zeGBv+Kznh+Q3Z30Q=
-X-Received: by 2002:a67:eb92:0:b0:443:6052:43a7 with SMTP id
- e18-20020a67eb92000000b00443605243a7mr3785649vso.32.1690941274911; Tue, 01
- Aug 2023 18:54:34 -0700 (PDT)
-MIME-Version: 1.0
-References: <20230801091922.799813980@linuxfoundation.org>
-In-Reply-To: <20230801091922.799813980@linuxfoundation.org>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Wed, 2 Aug 2023 07:24:23 +0530
-Message-ID: <CA+G9fYsqEE6P8vKKvWgFDjpgT64FebUssPNS48n6qfUriu6Z1w@mail.gmail.com>
-Subject: Re: [PATCH 6.1 000/228] 6.1.43-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     stable@vger.kernel.org, patches@lists.linux.dev,
-        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
-        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
-        jonathanh@nvidia.com, f.fainelli@gmail.com,
-        sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
-        conor@kernel.org,
-        =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
-        Andy Shevchenko <andy@kernel.org>,
-        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        Tue, 1 Aug 2023 21:56:07 -0400
+Received: from out28-115.mail.aliyun.com (out28-115.mail.aliyun.com [115.124.28.115])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A59D2116
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Aug 2023 18:56:05 -0700 (PDT)
+X-Alimail-AntiSpam: AC=CONTINUE;BC=0.07436259|-1;CH=blue;DM=|OVERLOAD|false|;DS=CONTINUE|ham_regular_dialog|0.00525346-3.70405e-05-0.994709;FP=0|0|0|0|0|-1|-1|-1;HT=ay29a033018047192;MF=sunran001@208suo.com;NM=1;PH=DS;RN=5;RT=5;SR=0;TI=SMTPD_---.U6KbKP9_1690941358;
+Received: from localhost.localdomain(mailfrom:sunran001@208suo.com fp:SMTPD_---.U6KbKP9_1690941358)
+          by smtp.aliyun-inc.com;
+          Wed, 02 Aug 2023 09:56:00 +0800
+From:   Ran Sun <sunran001@208suo.com>
+To:     alexander.deucher@amd.com
+Cc:     amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org, Ran Sun <sunran001@208suo.com>
+Subject: [PATCH] drm/amd/pm: Clean up errors in smu73.h
+Date:   Wed,  2 Aug 2023 01:55:57 +0000
+Message-Id: <20230802015557.9034-1-sunran001@208suo.com>
+X-Mailer: git-send-email 2.17.1
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -76,52 +37,164 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 1 Aug 2023 at 15:00, Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> This is the start of the stable review cycle for the 6.1.43 release.
-> There are 228 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
->
-> Responses should be made by Thu, 03 Aug 2023 09:18:38 +0000.
-> Anything received after that time might be too late.
->
-> The whole patch series can be found in one patch at:
->         https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.1.43-rc1.gz
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.1.y
-> and the diffstat can be found below.
->
-> thanks,
->
-> greg k-h
+Fix the following errors reported by checkpatch:
 
-Following patch caused build regression on stable-rc 6.1 and 5.15,
+ERROR: open brace '{' following struct go on the same line
+ERROR: space prohibited before open square bracket '['
+ERROR: "foo * bar" should be "foo *bar"
 
-Regressions found on arm:
+Signed-off-by: Ran Sun <sunran001@208suo.com>
+---
+ drivers/gpu/drm/amd/pm/powerplay/inc/smu73.h | 45 ++++++++------------
+ 1 file changed, 17 insertions(+), 28 deletions(-)
 
-  - build/gcc-12-orion5x_defconfig
-  - build/clang-nightly-orion5x_defconfig
-  - build/gcc-8-orion5x_defconfig
-  - build/clang-16-orion5x_defconfig
+diff --git a/drivers/gpu/drm/amd/pm/powerplay/inc/smu73.h b/drivers/gpu/drm/amd/pm/powerplay/inc/smu73.h
+index c6b12a4c00db..cf4b2c3c65bc 100644
+--- a/drivers/gpu/drm/amd/pm/powerplay/inc/smu73.h
++++ b/drivers/gpu/drm/amd/pm/powerplay/inc/smu73.h
+@@ -37,8 +37,7 @@ enum Poly3rdOrderCoeff {
+     POLY_3RD_ORDER_COUNT
+ };
+ 
+-struct SMU7_Poly3rdOrder_Data
+-{
++struct SMU7_Poly3rdOrder_Data {
+     int32_t a;
+     int32_t b;
+     int32_t c;
+@@ -51,8 +50,7 @@ struct SMU7_Poly3rdOrder_Data
+ 
+ typedef struct SMU7_Poly3rdOrder_Data SMU7_Poly3rdOrder_Data;
+ 
+-struct Power_Calculator_Data
+-{
++struct Power_Calculator_Data {
+   uint16_t NoLoadVoltage;
+   uint16_t LoadVoltage;
+   uint16_t Resistance;
+@@ -71,8 +69,7 @@ struct Power_Calculator_Data
+ 
+ typedef struct Power_Calculator_Data PowerCalculatorData_t;
+ 
+-struct Gc_Cac_Weight_Data
+-{
++struct Gc_Cac_Weight_Data {
+   uint8_t index;
+   uint32_t value;
+ };
+@@ -187,8 +184,7 @@ typedef struct {
+ #define SMU73_THERMAL_CLAMP_MODE_COUNT 8
+ 
+ 
+-struct SMU7_HystController_Data
+-{
++struct SMU7_HystController_Data {
+     uint16_t waterfall_up;
+     uint16_t waterfall_down;
+     uint16_t waterfall_limit;
+@@ -199,8 +195,7 @@ struct SMU7_HystController_Data
+ 
+ typedef struct SMU7_HystController_Data SMU7_HystController_Data;
+ 
+-struct SMU73_PIDController
+-{
++struct SMU73_PIDController {
+     uint32_t Ki;
+     int32_t LFWindupUpperLim;
+     int32_t LFWindupLowerLim;
+@@ -215,8 +210,7 @@ struct SMU73_PIDController
+ 
+ typedef struct SMU73_PIDController SMU73_PIDController;
+ 
+-struct SMU7_LocalDpmScoreboard
+-{
++struct SMU7_LocalDpmScoreboard {
+     uint32_t PercentageBusy;
+ 
+     int32_t  PIDError;
+@@ -261,8 +255,8 @@ struct SMU7_LocalDpmScoreboard
+     uint8_t  DteClampMode;
+     uint8_t  FpsClampMode;
+ 
+-    uint16_t LevelResidencyCounters [SMU73_MAX_LEVELS_GRAPHICS];
+-    uint16_t LevelSwitchCounters [SMU73_MAX_LEVELS_GRAPHICS];
++    uint16_t LevelResidencyCounters[SMU73_MAX_LEVELS_GRAPHICS];
++    uint16_t LevelSwitchCounters[SMU73_MAX_LEVELS_GRAPHICS];
+ 
+     void     (*TargetStateCalculator)(uint8_t);
+     void     (*SavedTargetStateCalculator)(uint8_t);
+@@ -315,8 +309,7 @@ typedef uint8_t (*VoltageChangeHandler_t)(uint16_t, uint8_t);
+ 
+ typedef uint32_t SMU_VoltageLevel;
+ 
+-struct SMU7_VoltageScoreboard
+-{
++struct SMU7_VoltageScoreboard {
+     SMU_VoltageLevel TargetVoltage;
+     uint16_t MaxVid;
+     uint8_t  HighestVidOffset;
+@@ -354,7 +347,7 @@ struct SMU7_VoltageScoreboard
+ 
+     VoltageChangeHandler_t functionLinks[6];
+ 
+-    uint16_t * VddcFollower1;
++    uint16_t *VddcFollower1;
+ 
+     int16_t  Driver_OD_RequestedVidOffset1;
+     int16_t  Driver_OD_RequestedVidOffset2;
+@@ -366,8 +359,7 @@ typedef struct SMU7_VoltageScoreboard SMU7_VoltageScoreboard;
+ // -------------------------------------------------------------------------------------------------------------------------
+ #define SMU7_MAX_PCIE_LINK_SPEEDS 3 /* 0:Gen1 1:Gen2 2:Gen3 */
+ 
+-struct SMU7_PCIeLinkSpeedScoreboard
+-{
++struct SMU7_PCIeLinkSpeedScoreboard {
+     uint8_t     DpmEnable;
+     uint8_t     DpmRunning;
+     uint8_t     DpmForce;
+@@ -396,8 +388,7 @@ typedef struct SMU7_PCIeLinkSpeedScoreboard SMU7_PCIeLinkSpeedScoreboard;
+ #define SMU7_SCALE_I  7
+ #define SMU7_SCALE_R 12
+ 
+-struct SMU7_PowerScoreboard
+-{
++struct SMU7_PowerScoreboard {
+     uint32_t GpuPower;
+ 
+     uint32_t VddcPower;
+@@ -436,8 +427,7 @@ typedef struct SMU7_PowerScoreboard SMU7_PowerScoreboard;
+ #define SMU7_VCE_SCLK_HANDSHAKE_DISABLE                  0x00020000
+ 
+ // All 'soft registers' should be uint32_t.
+-struct SMU73_SoftRegisters
+-{
++struct SMU73_SoftRegisters {
+     uint32_t        RefClockFrequency;
+     uint32_t        PmTimerPeriod;
+     uint32_t        FeatureEnables;
+@@ -493,8 +483,7 @@ struct SMU73_SoftRegisters
+ 
+ typedef struct SMU73_SoftRegisters SMU73_SoftRegisters;
+ 
+-struct SMU73_Firmware_Header
+-{
++struct SMU73_Firmware_Header {
+     uint32_t Digest[5];
+     uint32_t Version;
+     uint32_t HeaderSize;
+@@ -708,9 +697,9 @@ typedef struct VFT_CELL_t VFT_CELL_t;
+ 
+ struct VFT_TABLE_t {
+   VFT_CELL_t    Cell[TEMP_RANGE_MAXSTEPS][NUM_VFT_COLUMNS];
+-  uint16_t      AvfsGbv [NUM_VFT_COLUMNS];
+-  uint16_t      BtcGbv  [NUM_VFT_COLUMNS];
+-  uint16_t      Temperature [TEMP_RANGE_MAXSTEPS];
++  uint16_t      AvfsGbv[NUM_VFT_COLUMNS];
++  uint16_t      BtcGbv[NUM_VFT_COLUMNS];
++  uint16_t      Temperature[TEMP_RANGE_MAXSTEPS];
+ 
+   uint8_t       NumTemperatureSteps;
+   uint8_t       padding[3];
+-- 
+2.17.1
 
-gpio: mvebu: Make use of devm_pwmchip_add
-[ Upstream commit 1945063eb59e64d2919cb14d54d081476d9e53bb ]
-
-Build log:
-------
-drivers/gpio/gpio-mvebu.c: In function 'mvebu_pwm_probe':
-drivers/gpio/gpio-mvebu.c:877:16: error: implicit declaration of
-function 'devm_pwmchip_add'; did you mean 'pwmchip_add'?
-[-Werror=implicit-function-declaration]
-  877 |         return devm_pwmchip_add(dev, &mvpwm->chip);
-      |                ^~~~~~~~~~~~~~~~
-      |                pwmchip_add
-cc1: some warnings being treated as errors
-
-Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
-
---
-Linaro LKFT
-https://lkft.linaro.org
