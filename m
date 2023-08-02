@@ -2,113 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EB98576C62C
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 09:13:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A6C5976C625
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 09:12:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232710AbjHBHNa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Aug 2023 03:13:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56422 "EHLO
+        id S232658AbjHBHM5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Aug 2023 03:12:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55922 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232732AbjHBHNV (ORCPT
+        with ESMTP id S230253AbjHBHMu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Aug 2023 03:13:21 -0400
-Received: from mail-lj1-x232.google.com (mail-lj1-x232.google.com [IPv6:2a00:1450:4864:20::232])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E22D72116;
-        Wed,  2 Aug 2023 00:13:15 -0700 (PDT)
-Received: by mail-lj1-x232.google.com with SMTP id 38308e7fff4ca-2b9aa1d3029so97075721fa.2;
-        Wed, 02 Aug 2023 00:13:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1690960394; x=1691565194;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=2buEm2gDrf1fNgEA1fBvBUhdIcoSkeNWypy9BrDWZro=;
-        b=o/Z0yMvRj/sHbGhhlNrlERgGL/vkblmm6ZJLHQMACyDwmmKmNZYvTU/06maEeEpfRp
-         Qykwe/MywZjAj7CgMOPhkGkeYcF/+NkNb9nzn50MZU8ub6CiuIOy5wlQaHDZiG5zxPFm
-         hOwzsQe8rXq+FQKiuPeG7nEpdZeTr5wWh3uyQZddDw1dVz7T+jkLOZ44dHXGhKyahFF8
-         RSn7gC04V66HalFvzQXJfxycd+4lyPUNPP2wu9sArTQK6awUl2bONG+SgQvFn0/Nru7D
-         YNyTWzdXp1bb3ibxDzOjTS6ZOvdtOkGS6gwUlv+9CUSZEiKg1xeVsqCq30sD7eJNrEvF
-         I9bA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690960394; x=1691565194;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=2buEm2gDrf1fNgEA1fBvBUhdIcoSkeNWypy9BrDWZro=;
-        b=XUFzgcNj1+T+ja5Sme+MS7rFnPURiwiWAPyenGLL87LNjA6GW0opjGW+JzKm4M5A4t
-         /eF7odK+e4tWp4wRapv/vBd6omuW1fvEwP0ScDOzK3fyCl3xKCP+iDn4HEW7ofmNrf+D
-         xi91SNc6Q5Tki+R87S9sJ0nH8Pjj+6Ik1kZBr64iEdQXtTlR14qTMfgaBCgWMZ11GK/4
-         A5CnyqsSPdslVCNT0pDlIMpjWjerkHBP3DBlbxfZzMi4PIltHBYc7VDGBBIryHRdDWLg
-         EMu5Gek5SIEesNZ4orUfLxy23ffT6Qe37kPwdJWFKIK124NNxJ6HtqQvn20bCyHZreXn
-         h90g==
-X-Gm-Message-State: ABy/qLag+rMIB8Mh3pkcecgn+d3kM1MQau1zI/WW3M0E4B6vIu6b+QSv
-        xjjMtWQhcFOU5jGHdSwoU0jnrY+wwcpieVXhqKk=
-X-Google-Smtp-Source: APBJJlFxZVa5Xg7zcWRSLmy5da3OrRqJyEbYh7IorsIlR3vmcIxbFVhHJnD/w70xPRJB36NtVtlb3OCXjqI+33+VmtI=
-X-Received: by 2002:a05:651c:106:b0:2b5:80e0:f18e with SMTP id
- a6-20020a05651c010600b002b580e0f18emr4150209ljb.3.1690960393778; Wed, 02 Aug
- 2023 00:13:13 -0700 (PDT)
+        Wed, 2 Aug 2023 03:12:50 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93F0F18D;
+        Wed,  2 Aug 2023 00:12:49 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 3086D6181B;
+        Wed,  2 Aug 2023 07:12:49 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 15656C433C7;
+        Wed,  2 Aug 2023 07:12:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1690960368;
+        bh=vvVsV9NiWis9C3pGrpjACtwIsJq8v0LCCmHawlI6+mE=;
+        h=Date:Subject:To:References:From:In-Reply-To:From;
+        b=kPZb+vv7wqR3f3UGrR57UIs8CmaRLyz2MTCYxu9YSEMfqXkKLiqU7yddh4LJhqVYM
+         LmQex4Q+/Z2CKDFY1bRY4N0y4/X6Kmq3lvmxNRsKin9jkR8JveNJlOARFZnH1zzCVp
+         ohFV9W7GK4cfiItg98ABD0mXUMIqpu6Vk40vJlhyWANbj6d28n1waVk1ugXRdTuYDc
+         8K+buNV/63ERZhIBfFb8mCeV3D8umhYi3FReiXQqCiHxan+9dkoZBDbhdVb3tWrl/i
+         E63AZVAPhhHSIHOEIMtuXyWptCgfOaw2J43QT1rIbGPhCZXE9MNCur1JVvnV4Ulb6i
+         ZnT03Vu9papew==
+Message-ID: <845391b2-12f6-86b6-9ce6-19e16edbfce1@kernel.org>
+Date:   Wed, 2 Aug 2023 09:12:44 +0200
 MIME-Version: 1.0
-References: <20230801173544.1929519-1-hch@lst.de> <20230801173544.1929519-3-hch@lst.de>
-In-Reply-To: <20230801173544.1929519-3-hch@lst.de>
-From:   Manuel Lauss <manuel.lauss@gmail.com>
-Date:   Wed, 2 Aug 2023 09:12:37 +0200
-Message-ID: <CAOLZvyGAahsfqS0yMZDaHNVxLBC9QxKGEdW1TRfM_EgieCeORQ@mail.gmail.com>
-Subject: Re: [PATCH 2/5] mmc: au1xmmc: force non-modular build and remove
- symbol_get usage
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     Luis Chamberlain <mcgrof@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Daniel Mack <daniel@zonque.org>,
-        Haojian Zhuang <haojian.zhuang@gmail.com>,
-        Robert Jarzmik <robert.jarzmik@free.fr>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Yangbo Lu <yangbo.lu@nxp.com>,
-        Joshua Kinard <kumba@gentoo.org>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Arnd Bergmann <arnd@arndb.de>,
-        linux-arm-kernel@lists.infradead.org,
-        open list <linux-kernel@vger.kernel.org>,
-        linux-mmc@vger.kernel.org, netdev@vger.kernel.org,
-        linux-rtc@vger.kernel.org, linux-modules@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.12.0
+Subject: Re: [PATCH] docs: rtla: replace dashes with spaces in titles
+To:     Costa Shulyupin <costa.shul@redhat.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        linux-trace-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20230802035037.404230-1-costa.shul@redhat.com>
+Content-Language: en-US, pt-BR, it-IT
+From:   Daniel Bristot de Oliveira <bristot@kernel.org>
+In-Reply-To: <20230802035037.404230-1-costa.shul@redhat.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-7.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_HI,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 1, 2023 at 7:36=E2=80=AFPM Christoph Hellwig <hch@lst.de> wrote=
-:
->
-> au1xmmc is split somewhat awkwardly into the main mmc subsystem driver,
-> and callbacks in platform_data that sit under arch/mips/ and are
-> always built in.  The latter than call mmc_detect_change through
-> symbol_get.  Remove the use of symbol_get by requiring the driver
-> to be built in.  In the future the interrupt handlers for card
-> insert/eject detection should probably be moved into the main driver,
-> and which point it can be built modular again.
+On 8/2/23 05:50, Costa Shulyupin wrote:
+> because
+> - Titles containing spaces offer better readability compared
+>   to those with dashes
+> - Commands and their described subcommands are separated by spaces
+> - Ensure that the titles are identical to the commands with subcommands
 
-The carddetection stuff is entirely system-specific, I don't want the drive=
-r
-littered with board-custom stuff; I'm fine with it being built-in only.
+I added the - because that is how we call the man-pages:
+
+man rtla-osnoise-top
+--------------- %< ----------------------
+RTLA-OSNOISE-TOP(1)                                                                                                                                                    RTLA-OSNOISE-TOP(1)
+
+NAME
+       rtla-osnoise-top - Display a summary of the operating system noise
+
+SYNOPSIS
+       rtla osnoise top [OPTIONS]
+--------------- %< ----------------------
 
 
-> Signed-off-by: Christoph Hellwig <hch@lst.de>
-> ---
->  arch/mips/alchemy/devboards/db1000.c |  8 +-------
->  arch/mips/alchemy/devboards/db1200.c | 19 ++-----------------
->  arch/mips/alchemy/devboards/db1300.c | 10 +---------
->  drivers/mmc/host/Kconfig             |  4 ++--
->  4 files changed, 6 insertions(+), 35 deletions(-)
+and it is also inline with other kernel tools, like perf:
 
-Ok For me.  If it matters:
+man perf-record
+--------------- %< ----------------------
+PERF-RECORD(1)                                                                          perf Manual                                                                         PERF-RECORD(1)
 
-Acked-by: Manuel Lauss <manuel.lauss@gmail.com>
+NAME
+       perf-record - Run a command and record its profile into perf.data
 
-Thanks!
-     Manuel
+SYNOPSIS
+       perf record [-e <EVENT> | --event=EVENT] [-a] <command>
+       perf record [-e <EVENT> | --event=EVENT] [-a] -- <command> [<options>]
+--------------- %< ----------------------
+
+also...
+
+[bristot@x1 rtla]$ make
+rst2man --verbose rtla-hwnoise.rst > rtla-hwnoise.1
+rst2man --verbose rtla-osnoise-hist.rst > rtla-osnoise-hist.1
+rtla-osnoise-hist.rst:1: (ERROR/3) Invalid section title or transition marker.
+
+===================
+===================
+rst2man --verbose rtla-osnoise.rst > rtla-osnoise.1
+rtla-osnoise.rst:1: (ERROR/3) Invalid section title or transition marker.
+
+===============
+===============
+rtla-osnoise.rst:3: (SEVERE/4) Missing matching underline for section title overline.
+
+------------------------------------------------------------------
+rtla osnoise
+Measure the operating system noise
+Exiting due to level-4 (SEVERE) system message.
+make: *** [Makefile:36: rtla-osnoise.1] Error 1
+[bristot@x1 rtla]$
+
+
+> Signed-off-by: Costa Shulyupin <costa.shul@redhat.com>
+
