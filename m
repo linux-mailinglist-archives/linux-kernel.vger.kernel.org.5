@@ -2,111 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A004876DBCB
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 01:47:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 72B3C76DBCE
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 01:48:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232566AbjHBXrU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Aug 2023 19:47:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46640 "EHLO
+        id S232287AbjHBXrx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Aug 2023 19:47:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46976 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231444AbjHBXrS (ORCPT
+        with ESMTP id S231253AbjHBXru (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Aug 2023 19:47:18 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE8161BF1;
-        Wed,  2 Aug 2023 16:47:17 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 6A89B61B7F;
-        Wed,  2 Aug 2023 23:47:17 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 59BEBC433C7;
-        Wed,  2 Aug 2023 23:47:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691020036;
-        bh=/qLrq5KmhPCru0yGNrw689Q7iuDeimHvE/3JmRSDTww=;
-        h=From:Date:Subject:To:Cc:From;
-        b=AwGQtqIPzjbR8wMuR5jn2X71Mwj4xDLmlhgEmXwS6B3MUajRsljJLfcJoV+JWzkpB
-         RzPxVWhsI3E/BTIFE7+Idh22k3TjJLZTFlUeLJw1YvZFYX7vmg22cAl+M2dUjKuYC0
-         ZSLPwBslwt6qGqlztOwGzXdAErfHGcQ6kG+/z3PtP0RsYMVGjfEgI5mGuDODF4FL/6
-         90DddhJfnLjAH6LEDvcwRiZ9pPGVbIK2huHwt9lvNmfl1amXfswQFM+TabHFvKrpJl
-         0w/BZs6N3v33CFxpF/PiWFd91eQPWJtYj/SWmMXP71Lu4Mc+pjZIgpPbEpQuIN2MUc
-         VKLVj7VY2RgMA==
-From:   Mark Brown <broonie@kernel.org>
-Date:   Thu, 03 Aug 2023 00:46:39 +0100
-Subject: [PATCH] arm64/fpsimd: Clear SME state in the target task when
- setting the VL
+        Wed, 2 Aug 2023 19:47:50 -0400
+Received: from mail-pf1-f172.google.com (mail-pf1-f172.google.com [209.85.210.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1DEF4F2;
+        Wed,  2 Aug 2023 16:47:47 -0700 (PDT)
+Received: by mail-pf1-f172.google.com with SMTP id d2e1a72fcca58-68730bafa6bso1025996b3a.1;
+        Wed, 02 Aug 2023 16:47:47 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691020066; x=1691624866;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=iND6DoCGv2c/em+mZgV+i0Ux/oJxu8oM5xAqj7hv5MQ=;
+        b=Wl7g+i4UCqmbP2pbXDNt3dz/ocSMKa+SpnT1SRIM6e3ztSQL6i6s1f2npQ+oqMiqBH
+         u/1CLUAOGxnCHoGAVzhA7g9tvmD7Llig8U0MgHhUgN0E3/YBx80irEk2u7A/aRuH1B4Z
+         tOviSI0loBjPXZH9/NJcV/aM0YZ29q2wpa1rd5WFBnsFmdR3BkefsVDNxjhCNSxla/+F
+         VuwTMZrXsk6lGyAmnUWK5zlTn4uniSWJSx1uOHHxhvs5nBMpGN/JwxxnJTaKeLQvQ4vN
+         b6jvw7ziR0q84TxXb1HErQrRHlcavskME5iVFw47oLL5RSGsyXpiqe5NJf3ZKN9ubdZ6
+         wSfg==
+X-Gm-Message-State: ABy/qLb8nplTFrPZEzUx/TkKquM3Lui5vj+3ggKqx4cnjsGd7a7Ru8Wx
+        UrULHgWWAIQlV8iBbOT8YAo=
+X-Google-Smtp-Source: APBJJlHbxVznnDHfw3ul7bW2kcVCoiWDy1NoNUodbRC6Z0E1ILsRsrjtOqq0YX6H8sipUKpi3cZBbg==
+X-Received: by 2002:a05:6a20:729b:b0:125:4d74:cd6a with SMTP id o27-20020a056a20729b00b001254d74cd6amr22020038pzk.3.1691020066504;
+        Wed, 02 Aug 2023 16:47:46 -0700 (PDT)
+Received: from liuwe-devbox-debian-v2 ([20.69.120.36])
+        by smtp.gmail.com with ESMTPSA id n4-20020a637204000000b0054fe7736ac1sm12152307pgc.76.2023.08.02.16.47.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 02 Aug 2023 16:47:45 -0700 (PDT)
+Date:   Wed, 2 Aug 2023 23:47:39 +0000
+From:   Wei Liu <wei.liu@kernel.org>
+To:     Nuno Das Neves <nunodasneves@linux.microsoft.com>
+Cc:     linux-hyperv@vger.kernel.org, linux-kernel@vger.kernel.org,
+        x86@kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-arch@vger.kernel.org, mikelley@microsoft.com,
+        kys@microsoft.com, wei.liu@kernel.org, haiyangz@microsoft.com,
+        decui@microsoft.com, ssengar@linux.microsoft.com,
+        mukeshrathor@microsoft.com, stanislav.kinsburskiy@gmail.com,
+        jinankjain@linux.microsoft.com, apais@linux.microsoft.com,
+        Tianyu.Lan@microsoft.com, vkuznets@redhat.com, tglx@linutronix.de,
+        mingo@redhat.com, bp@alien8.de, dave.hansen@linux.intel.com,
+        hpa@zytor.com, will@kernel.org, catalin.marinas@arm.com,
+        rafael@kernel.org, lenb@kernel.org
+Subject: Re: [PATCH 03/15] mshyperv: Introduce
+ numa_node_to_proximity_domain_info
+Message-ID: <ZMrrG0urnR6BdZcW@liuwe-devbox-debian-v2>
+References: <1690487690-2428-1-git-send-email-nunodasneves@linux.microsoft.com>
+ <1690487690-2428-4-git-send-email-nunodasneves@linux.microsoft.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20230803-arm64-fix-ptrace-tif-sme-v1-1-88312fd6fbfd@kernel.org>
-X-B4-Tracking: v=1; b=H4sIAN7qymQC/x2MywqAIBAAfyX23IKZSPUr0cF0rT30YI0IpH9PO
- g7MTIZEwpRgqDII3Zz42As0dQV+dftCyKEwaKVb1SmNTjZrMPKD5yXOE14cMW2Eao6hN77T1gY
- o+SlUrH89Tu/7AXktrpBqAAAA
-To:     Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>
-Cc:     David Spickett <David.Spickett@arm.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Mark Brown <broonie@kernel.org>, stable@vger.kernel.org
-X-Mailer: b4 0.13-dev-034f2
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1382; i=broonie@kernel.org;
- h=from:subject:message-id; bh=/qLrq5KmhPCru0yGNrw689Q7iuDeimHvE/3JmRSDTww=;
- b=owEBbQGS/pANAwAKASTWi3JdVIfQAcsmYgBkyusCoD1cpgdbLKtmBqNR295Gzu5KbTY2MY4nxVPB
- 0NnJ2mmJATMEAAEKAB0WIQSt5miqZ1cYtZ/in+ok1otyXVSH0AUCZMrrAgAKCRAk1otyXVSH0B3JB/
- 9WoAz7QxboWYtzDkqt8/cmsOqEMDh0uIswB63EKF0rOJZSkukmRnuVUIIt01kyH9jEh6/CfbJeIhMX
- COMMFmM3tzymxHyb+FQOU3sFXzx+GxDmQiB79Jvwhh9+djemFdAKmSkOjmZROUrl+cGhPiGSbfpwRl
- t230mvLmbkeDajUEwoCeiFjRnH8prZPX8yfCEaLWFslWxL3I+awa2jrGm0XSwkmojp5oFAueyYfrnu
- 2NwKEiwEjAi6pDcqqueBmmkR94EiKYlEkbk2X9rkUeTIXO/MteVFapOop7v7kuwNJRSZfRRAhDQoE+
- sB21YuxIJTucBsPanLSxDuQwgrole5
-X-Developer-Key: i=broonie@kernel.org; a=openpgp;
- fpr=3F2568AAC26998F9E813A1C5C3F436CA30F5D8EB
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1690487690-2428-4-git-send-email-nunodasneves@linux.microsoft.com>
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When setting SME vector lengths we clear TIF_SME to reenable SME traps,
-doing a reallocation of the backing storage on next use. We do this using
-clear_thread_flag() which operates on the current thread, meaning that when
-setting the vector length via ptrace we may both not force traps for the
-target task and force a spurious flush of any SME state that the tracing
-task may have.
+On Thu, Jul 27, 2023 at 12:54:38PM -0700, Nuno Das Neves wrote:
+> Factor out logic for converting numa node to proximity domain info into
+> a helper function, and export it.
+> 
+> Signed-off-by: Nuno Das Neves <nunodasneves@linux.microsoft.com>
 
-Clear the flag in the target task.
+Reviewed-by: Wei Liu <wei.liu@kernel.org>
 
-Fixes: e12310a0d30f ("arm64/sme: Implement ptrace support for streaming mode SVE registers")
-Reported-by: David Spickett <David.Spickett@arm.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
-Cc: stable@vger.kernel.org
----
- arch/arm64/kernel/fpsimd.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+> ---
+>  arch/x86/hyperv/hv_proc.c      |  8 ++------
+>  drivers/acpi/numa/srat.c       |  1 +
+>  include/asm-generic/mshyperv.h | 18 ++++++++++++++++++
+>  3 files changed, 21 insertions(+), 6 deletions(-)
+> 
+[...]
+> diff --git a/drivers/acpi/numa/srat.c b/drivers/acpi/numa/srat.c
+> index 1f4fc5f8a819..0cf9f0574495 100644
+> --- a/drivers/acpi/numa/srat.c
+> +++ b/drivers/acpi/numa/srat.c
+> @@ -48,6 +48,7 @@ int node_to_pxm(int node)
+>  		return PXM_INVAL;
+>  	return node_to_pxm_map[node];
+>  }
+> +EXPORT_SYMBOL(node_to_pxm);
 
-diff --git a/arch/arm64/kernel/fpsimd.c b/arch/arm64/kernel/fpsimd.c
-index 520b681a07bb..a61a1fd6492d 100644
---- a/arch/arm64/kernel/fpsimd.c
-+++ b/arch/arm64/kernel/fpsimd.c
-@@ -909,7 +909,7 @@ int vec_set_vector_length(struct task_struct *task, enum vec_type type,
- 			 */
- 			task->thread.svcr &= ~(SVCR_SM_MASK |
- 					       SVCR_ZA_MASK);
--			clear_thread_flag(TIF_SME);
-+			clear_tsk_thread_flag(task, TIF_SME);
- 			free_sme = true;
- 		}
- 	}
+Rafael and Len, I would like to get an ACK from you on this one line
+change. I see a lot of other functions in that file are already
+exported, so I hope this is okay, too.
 
----
-base-commit: 5d0c230f1de8c7515b6567d9afba1f196fb4e2f4
-change-id: 20230802-arm64-fix-ptrace-tif-sme-0bfd94c8266d
+It's user is the function below numa_node_to_proximity_domain_info.
 
-Best regards,
--- 
-Mark Brown <broonie@kernel.org>
+Thanks,
+Wei.
 
+>  
+>  static void __acpi_map_pxm_to_node(int pxm, int node)
+>  {
+> diff --git a/include/asm-generic/mshyperv.h b/include/asm-generic/mshyperv.h
+> index 233c976344e5..447e7ebe67ee 100644
+> --- a/include/asm-generic/mshyperv.h
+> +++ b/include/asm-generic/mshyperv.h
+> @@ -21,6 +21,7 @@
+>  #include <linux/types.h>
+>  #include <linux/atomic.h>
+>  #include <linux/bitops.h>
+> +#include <acpi/acpi_numa.h>
+>  #include <linux/cpumask.h>
+>  #include <linux/nmi.h>
+>  #include <asm/ptrace.h>
+> @@ -28,6 +29,23 @@
+>  
+>  #define VTPM_BASE_ADDRESS 0xfed40000
+>  
+> +static inline union hv_proximity_domain_info
+> +numa_node_to_proximity_domain_info(int node)
+> +{
+> +	union hv_proximity_domain_info proximity_domain_info;
+> +
+> +	if (node != NUMA_NO_NODE) {
+> +		proximity_domain_info.domain_id = node_to_pxm(node);
+> +		proximity_domain_info.flags.reserved = 0;
+> +		proximity_domain_info.flags.proximity_info_valid = 1;
+> +		proximity_domain_info.flags.proximity_preferred = 1;
+> +	} else {
+> +		proximity_domain_info.as_uint64 = 0;
+> +	}
+> +
+> +	return proximity_domain_info;
+> +}
+> +
+>  struct ms_hyperv_info {
+>  	u32 features;
+>  	u32 priv_high;
+> -- 
+> 2.25.1
+> 
