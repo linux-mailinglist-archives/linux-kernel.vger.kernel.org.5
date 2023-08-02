@@ -2,121 +2,210 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7170C76C84B
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 10:22:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 105DB76C84E
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 10:24:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233915AbjHBIWh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Aug 2023 04:22:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43272 "EHLO
+        id S233920AbjHBIYY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Aug 2023 04:24:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43744 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229784AbjHBIWf (ORCPT
+        with ESMTP id S233874AbjHBIYV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Aug 2023 04:22:35 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F393DDA
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Aug 2023 01:22:34 -0700 (PDT)
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1qR77l-0003y4-B3; Wed, 02 Aug 2023 10:22:29 +0200
-Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
-        by drehscheibe.grey.stw.pengutronix.de with esmtp (Exim 4.94.2)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1qR77j-000ZVR-38; Wed, 02 Aug 2023 10:22:27 +0200
-Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.94.2)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1qR77i-009pAW-Cd; Wed, 02 Aug 2023 10:22:26 +0200
-Date:   Wed, 2 Aug 2023 10:22:26 +0200
-From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To:     Naresh Kamboju <naresh.kamboju@linaro.org>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, patches@lists.linux.dev,
-        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
-        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
-        jonathanh@nvidia.com, f.fainelli@gmail.com,
-        sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
-        conor@kernel.org, Andy Shevchenko <andy@kernel.org>,
-        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-Subject: Re: [PATCH 6.1 000/228] 6.1.43-rc1 review
-Message-ID: <20230802082226.ok23iygasc3byc35@pengutronix.de>
-References: <20230801091922.799813980@linuxfoundation.org>
- <CA+G9fYsqEE6P8vKKvWgFDjpgT64FebUssPNS48n6qfUriu6Z1w@mail.gmail.com>
+        Wed, 2 Aug 2023 04:24:21 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE6ECE48
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Aug 2023 01:23:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1690964614;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=J6xA1F/tQvnceD1AFJdAnCO4v6zT18KFQE0US8wehYA=;
+        b=OqkPaNTUQG9J8JRZNgOOzP0OCUsPPFYyi6/yIfJXV6+ozvFj6uvneSo+CGDb/wGNnhMhd3
+        I9bWb/WkrXvRs6RQjeZ3KAzyceKWlSFPQ5sDf1h7soxaHz/HS3i/3OoRMDD70bCs5BVqC4
+        poPjbA+zWtY2S5MG9/vinfxVe+3cDfU=
+Received: from mail-lf1-f70.google.com (mail-lf1-f70.google.com
+ [209.85.167.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-672-KnYmjVUFP7WgPNsiGAYvyw-1; Wed, 02 Aug 2023 04:23:32 -0400
+X-MC-Unique: KnYmjVUFP7WgPNsiGAYvyw-1
+Received: by mail-lf1-f70.google.com with SMTP id 2adb3069b0e04-4fe4a1ce065so684229e87.3
+        for <linux-kernel@vger.kernel.org>; Wed, 02 Aug 2023 01:23:32 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690964611; x=1691569411;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=J6xA1F/tQvnceD1AFJdAnCO4v6zT18KFQE0US8wehYA=;
+        b=Lky9xKz5SttlnepEApRbiUCdLnrEwjM7lXyu9T7sx/jIb7E6tCNmxhInaMoKqUci3a
+         HYKqolGNVtHRFP5e2n1EqAz0gb0tVcAis/4ZW+nlsLKaQ4XpSHDoMo4Xc8hpt+5E6tgC
+         BnyRTL1ntnfSksG/7E1HRVTdMleDYU/p06kWEELc4UIRP1nVn71n4cjG+cyt/YCo+Ac6
+         9H4OPhQA8/K/cBpQqR6SMdHHE7ihXSrlKF55VT74pggmrEMRWyG/U1QTXYuGVgmF/KVC
+         4yjNO3r40ioissmo4/6icRGZGny7DuHUeHKYRndwMxboOgCGsmhqDsCGQdjXErXwckVp
+         Oxig==
+X-Gm-Message-State: ABy/qLZfOi2ExTvovtJDcicC+XbI3yukldc5RIPhSfBMHMC5c2giJjBT
+        6AwDXLVBI6Huo3Zd+Fq4dqrWcWYpsL0LQGHiDV0Bcx4+s1dancr2IBGDYbFokaMFBTZWz/G7TWc
+        z5fQ3Hs7NNv+zLicz48/RR0sdHSBID5blM/dX9HF/
+X-Received: by 2002:a05:6512:3c9d:b0:4fd:d016:c2e8 with SMTP id h29-20020a0565123c9d00b004fdd016c2e8mr5267051lfv.43.1690964611477;
+        Wed, 02 Aug 2023 01:23:31 -0700 (PDT)
+X-Google-Smtp-Source: APBJJlEJNKHF2p2CytRgIKLCKCUGGjT7LyJXykVvMQOxHkWM+4I6/V0yxuRpiIuVaotJpuNHCW0V42NQ2DovrfXG528=
+X-Received: by 2002:a05:6512:3c9d:b0:4fd:d016:c2e8 with SMTP id
+ h29-20020a0565123c9d00b004fdd016c2e8mr5267031lfv.43.1690964611133; Wed, 02
+ Aug 2023 01:23:31 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="lhcm5ps2paryt6e6"
-Content-Disposition: inline
-In-Reply-To: <CA+G9fYsqEE6P8vKKvWgFDjpgT64FebUssPNS48n6qfUriu6Z1w@mail.gmail.com>
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.6
+References: <20230601072043.24439-1-ltao@redhat.com> <20230713100459.GEZK/MS69XbphJa+tN@fat_crate.local>
+ <CAO7dBbVMNKTSDi5eP4BseEUexsk0Mo0GWJpyHfOcp+tHs6cSUw@mail.gmail.com>
+ <20230717141409.GGZLVMsU6d/9mpJvMO@fat_crate.local> <CAO7dBbXJv9JzDbSa-DLT03+osYCQXNUXFwz63gbq=NGDxEVyEA@mail.gmail.com>
+ <20230728165535.GDZMPzB/ek5QM+xJqA@fat_crate.local>
+In-Reply-To: <20230728165535.GDZMPzB/ek5QM+xJqA@fat_crate.local>
+From:   Tao Liu <ltao@redhat.com>
+Date:   Wed, 2 Aug 2023 16:22:54 +0800
+Message-ID: <CAO7dBbVyuLHH6RfdVQkU5ThXaJ-F4yvFAYD1PDNGkOpph9xvnA@mail.gmail.com>
+Subject: Re: [PATCH v2] x86/kexec: Add EFI config table identity mapping for
+ kexec kernel
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     tglx@linutronix.de, mingo@redhat.com, dave.hansen@linux.intel.com,
+        x86@kernel.org, hpa@zytor.com, ardb@kernel.org,
+        linux-kernel@vger.kernel.org, bhe@redhat.com, dyoung@redhat.com,
+        kexec@lists.infradead.org, linux-efi@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Borislav,
 
---lhcm5ps2paryt6e6
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Wed, Aug 02, 2023 at 07:24:23AM +0530, Naresh Kamboju wrote:
-> On Tue, 1 Aug 2023 at 15:00, Greg Kroah-Hartman
-> <gregkh@linuxfoundation.org> wrote:
+On Sat, Jul 29, 2023 at 12:56=E2=80=AFAM Borislav Petkov <bp@alien8.de> wro=
+te:
+>
+> On Thu, Jul 27, 2023 at 07:03:26PM +0800, Tao Liu wrote:
+> > Hi Borislav,
 > >
-> > This is the start of the stable review cycle for the 6.1.43 release.
-> > There are 228 patches in this series, all will be posted as a response
-> > to this one.  If anyone has any issues with these being applied, please
-> > let me know.
+> > Sorry for the late response. I spent some time retesting your patch
+> > against 6.5.0-rc1 and 6.5.0-rc3, and it is OK. So
 > >
-> > Responses should be made by Thu, 03 Aug 2023 09:18:38 +0000.
-> > Anything received after that time might be too late.
+> > Reported-and-tested-by: Tao Liu <ltao@redhat.com>
 > >
-> > The whole patch series can be found in one patch at:
-> >         https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patc=
-h-6.1.43-rc1.gz
-> > or in the git tree and branch at:
-> >         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stab=
-le-rc.git linux-6.1.y
-> > and the diffstat can be found below.
-> >
-> > thanks,
-> >
-> > greg k-h
->=20
-> Following patch caused build regression on stable-rc 6.1 and 5.15,
+> > And will we use this patch as a workaround or will we wait for a
+> > better solution as proposed by Michael?
+>
+> First of all, please do not top-post.
+>
 
-Looking at 6.1.x, cherry-picking
-88da4e8113110d5f4ebdd2f8cd0899e300cd1954 can be done without conflicts
-and fixes this regression.
+OK, thanks for the reminder.
 
-Best regards
-Uwe
+> And yes, here's a better one. I'd appreciate it you testing it.
+>
 
---=20
-Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
-Industrial Linux Solutions                 | https://www.pengutronix.de/ |
+Thanks for the patch! I have tested it on the lenovo machine in the
+past few days, no issue found, so the patch tests OK.
 
---lhcm5ps2paryt6e6
-Content-Type: application/pgp-signature; name="signature.asc"
+Thanks,
+Tao Liu
 
------BEGIN PGP SIGNATURE-----
+> Thx.
+>
+> ---
+>  arch/x86/boot/compressed/idt_64.c |  5 ++++-
+>  arch/x86/boot/compressed/sev.c    | 37 +++++++++++++++++++++++++++++--
+>  2 files changed, 39 insertions(+), 3 deletions(-)
+>
+> diff --git a/arch/x86/boot/compressed/idt_64.c b/arch/x86/boot/compressed=
+/idt_64.c
+> index 6debb816e83d..0f03ac12e2a6 100644
+> --- a/arch/x86/boot/compressed/idt_64.c
+> +++ b/arch/x86/boot/compressed/idt_64.c
+> @@ -63,7 +63,10 @@ void load_stage2_idt(void)
+>         set_idt_entry(X86_TRAP_PF, boot_page_fault);
+>
+>  #ifdef CONFIG_AMD_MEM_ENCRYPT
+> -       set_idt_entry(X86_TRAP_VC, boot_stage2_vc);
+> +       if (sev_status & BIT(1))
+> +               set_idt_entry(X86_TRAP_VC, boot_stage2_vc);
+> +       else
+> +               set_idt_entry(X86_TRAP_VC, NULL);
+>  #endif
+>
+>         load_boot_idt(&boot_idt_desc);
+> diff --git a/arch/x86/boot/compressed/sev.c b/arch/x86/boot/compressed/se=
+v.c
+> index 09dc8c187b3c..c3e343bd4760 100644
+> --- a/arch/x86/boot/compressed/sev.c
+> +++ b/arch/x86/boot/compressed/sev.c
+> @@ -404,13 +404,46 @@ void sev_enable(struct boot_params *bp)
+>         if (bp)
+>                 bp->cc_blob_address =3D 0;
+>
+> +       /*
+> +        * Do an initial SEV capability check before snp_init() which
+> +        * loads the CPUID page and the same checks afterwards are done
+> +        * without the hypervisor and are trustworthy.
+> +        *
+> +        * If the HV fakes SEV support, the guest will crash'n'burn
+> +        * which is good enough.
+> +        */
+> +
+> +       /* Check for the SME/SEV support leaf */
+> +       eax =3D 0x80000000;
+> +       ecx =3D 0;
+> +       native_cpuid(&eax, &ebx, &ecx, &edx);
+> +       if (eax < 0x8000001f)
+> +               return;
+> +
+> +       /*
+> +        * Check for the SME/SEV feature:
+> +        *   CPUID Fn8000_001F[EAX]
+> +        *   - Bit 0 - Secure Memory Encryption support
+> +        *   - Bit 1 - Secure Encrypted Virtualization support
+> +        *   CPUID Fn8000_001F[EBX]
+> +        *   - Bits 5:0 - Pagetable bit position used to indicate encrypt=
+ion
+> +        */
+> +       eax =3D 0x8000001f;
+> +       ecx =3D 0;
+> +       native_cpuid(&eax, &ebx, &ecx, &edx);
+> +       /* Check whether SEV is supported */
+> +       if (!(eax & BIT(1)))
+> +               return;
+> +
+>         /*
+>          * Setup/preliminary detection of SNP. This will be sanity-checke=
+d
+>          * against CPUID/MSR values later.
+>          */
+>         snp =3D snp_init(bp);
+>
+> -       /* Check for the SME/SEV support leaf */
+> +       /* Now repeat the checks with the SNP CPUID table. */
+> +
+> +       /* Recheck the SME/SEV support leaf */
+>         eax =3D 0x80000000;
+>         ecx =3D 0;
+>         native_cpuid(&eax, &ebx, &ecx, &edx);
+> @@ -418,7 +451,7 @@ void sev_enable(struct boot_params *bp)
+>                 return;
+>
+>         /*
+> -        * Check for the SME/SEV feature:
+> +        * Recheck for the SME/SEV feature:
+>          *   CPUID Fn8000_001F[EAX]
+>          *   - Bit 0 - Secure Memory Encryption support
+>          *   - Bit 1 - Secure Encrypted Virtualization support
+> --
+> 2.41.0
+>
+> --
+> Regards/Gruss,
+>     Boris.
+>
+> https://people.kernel.org/tglx/notes-about-netiquette
+>
 
-iQEzBAABCgAdFiEEP4GsaTp6HlmJrf7Tj4D7WH0S/k4FAmTKEkEACgkQj4D7WH0S
-/k5wvggAgtrCjOYtlxIf+mTuERuXed1KoBxR5BVykRI0G1jdxrdZValMvoqkksAf
-dtCGlrNmzTInIDBC6ih9a6lNZeQ+J0I8L69d2Tnf5ik375mJRi9ChsBvfWT4aCcY
-AEc3tfKL2eB8CvHickjAqJ98ddRdQgD2FI1331x/kGS/mCtTpPECOd/6g+fwntYl
-pafHicNklXmeDeQ07fsuEx4kqLLD3+JUma6+9bsqdu8njK3Eu9nbF7WjHYr/B1gB
-tlgEvCtxz/qKRgzp6l/Gi4K1ZkvHfzBcteFDrXjOfk2wxhJdLLz5pIQYV705ftsR
-4jYySnxN7+BIKX+GLFhsUzy4Bm6AAg==
-=rbCs
------END PGP SIGNATURE-----
-
---lhcm5ps2paryt6e6--
