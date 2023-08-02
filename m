@@ -2,64 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 28D1B76D308
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 17:55:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BAFD976D30E
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 17:55:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235398AbjHBPz3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Aug 2023 11:55:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44344 "EHLO
+        id S235479AbjHBPz4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Aug 2023 11:55:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44156 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235387AbjHBPzK (ORCPT
+        with ESMTP id S235431AbjHBPze (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Aug 2023 11:55:10 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 927003C14
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Aug 2023 08:54:30 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        Wed, 2 Aug 2023 11:55:34 -0400
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74C6E2701;
+        Wed,  2 Aug 2023 08:55:25 -0700 (PDT)
+Received: from mail.alien8.de (mail.alien8.de [IPv6:2a01:4f9:3051:3f93::2])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id E3C9F1F37C;
-        Wed,  2 Aug 2023 15:54:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1690991668; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=DpvkF7h/6CHY1yRubkDyJc0q7vYwpDpt2jComXffOdQ=;
-        b=xp7T6BbWPDzODxs+8z1dlCsYH2dEpvz+dKStQDFNSv/XuDNKaBwWCS+Y3pxaCDSJ3xHZze
-        QI9FXGwZoOEU3RYP2DT6U4DJthtkEcjGOPXCvadjOuEiiiA4k//yT5X8XvtlN/623HSXnJ
-        W3hg/2dZq4jgC2dPFY12uzLEG7CqIs0=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1690991668;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=DpvkF7h/6CHY1yRubkDyJc0q7vYwpDpt2jComXffOdQ=;
-        b=i98CGzjHOQKbfazm2d3tzxMuoDpRAzJVLI79wUtG0ZXxmsMKXUYqOLTCAs05BXdhUIrhx3
-        zFw03QK0cW8V39BQ==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 7865F1EC053F;
+        Wed,  2 Aug 2023 17:55:24 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1690991724;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=4Ix5zDGj/AnSytX9MQHc5/WTKPNGfN8exUCjp+sgZ80=;
+        b=Xj3xxvmGvhJt/U23Kc8ElpFtFbhpZjmlF9CFWGNhBmQfogIaJCUdYE4PnPs4vmcE51BtZr
+        08j6VPEE667AAxouDs7nf/CtCkZ46VxTRe5ZomHQTeOI1EjkIej9qKt13IfAq0K96MBP2X
+        IyKfRB2q00uXUFDu0BOOcr7nk9WelyA=
+X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
+Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
+        header.d=alien8.de
+Received: from mail.alien8.de ([127.0.0.1])
+        by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id 0Qx9PwxlHf18; Wed,  2 Aug 2023 15:55:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
+        t=1690991721; bh=4Ix5zDGj/AnSytX9MQHc5/WTKPNGfN8exUCjp+sgZ80=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=kz64U4MONqF0z/eLh63O76J8JHb0SCKmXIbAVHS/+eVoWHvfhFVe0tug9D5PDjYlv
+         8ZvZ97hTdSyLDJUrVk23joB4o7ekENAxFGO+c2qMOx70ERSIR3/ayQZNkCualAvBN9
+         FAN6MvpQzoA3ljQPh13rCTt8xkjy0HA4BMgm/x7i7HBHTIbnUGuXNf5hhB9bhGRBBd
+         ewA2q3hagiVF0WumZW1MKk+QV7RRdO1+SmTLh2D/BLXLADgthe78FuD9n+n6JW361j
+         vmDF/N51bJ1VdF/+ahH5XgAys7OPJDNNOcnuQnzZN6TnyUdMQtWLsv0cW/KKlKzLN5
+         Po+/VLpVLrx+U8sQdfMVgmdRPUjCjdmERKjAiW9DAB14zgo8ItLt3xfrKLWfyWqrLa
+         PTqLnuDf9uLDu3zXpQuZEiUrEf2s0AEZ7PEy/Mtkv6HGEDwBl4pocdnQQXu1Q0NMHx
+         Kygf7sYD58H1HC3PF/gOWCDeolpdeqcbfL9SyxFWTv5U/DZbYlYkHviUX6ZRs1Qj7P
+         cY0JplgCIG3L7RiR+Twkvh7+19HknNdqzD1NRfZ3pm48TW3pvqYzOEe6BCxug5rDyf
+         rTpruCyRy8JvKBWVDLycg8gzmhkpqj9mrptHtxAYUokR/4OxrKXGWU2yYQ5+TeJaEf
+         KC3sLyKP/cCLK8ul2OqBFTW0=
+Received: from zn.tnic (pd9530d32.dip0.t-ipconnect.de [217.83.13.50])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+         key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id B064A13909;
-        Wed,  2 Aug 2023 15:54:28 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id cDJCKjR8ymROOwAAMHmgww
-        (envelope-from <tiwai@suse.de>); Wed, 02 Aug 2023 15:54:28 +0000
-Date:   Wed, 02 Aug 2023 17:54:28 +0200
-Message-ID: <87il9xcudn.wl-tiwai@suse.de>
-From:   Takashi Iwai <tiwai@suse.de>
-To:     Matthew Anderson <ruinairas1992@gmail.com>
-Cc:     tiwai@suse.com, perex@perex.cz, alsa-devel@alsa-project.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/2] ALSA: hda/realtek: Add headphone quirk for Aya Neo 2
-In-Reply-To: <20230802153730.39273-3-ruinairas1992@gmail.com>
-References: <20230802153730.39273-1-ruinairas1992@gmail.com>
-        <20230802153730.39273-3-ruinairas1992@gmail.com>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
+        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 9E4EA40E01FF;
+        Wed,  2 Aug 2023 15:55:02 +0000 (UTC)
+Date:   Wed, 2 Aug 2023 17:55:01 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Ard Biesheuvel <ardb@kernel.org>
+Cc:     linux-efi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Evgeniy Baskov <baskov@ispras.ru>,
+        Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Alexey Khoroshilov <khoroshilov@ispras.ru>,
+        Peter Jones <pjones@redhat.com>,
+        Gerd Hoffmann <kraxel@redhat.com>,
+        Dave Young <dyoung@redhat.com>,
+        Mario Limonciello <mario.limonciello@amd.com>,
+        Kees Cook <keescook@chromium.org>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Joerg Roedel <jroedel@suse.de>
+Subject: Re: [PATCH v7 22/22] x86/efistub: Avoid legacy decompressor when
+ doing EFI boot
+Message-ID: <20230802155501.GDZMp8VfLCXCJog+vt@fat_crate.local>
+References: <20230728090916.1538550-1-ardb@kernel.org>
+ <20230728090916.1538550-23-ardb@kernel.org>
+ <20230802102600.GIZMovOIUDAJAXu0F5@fat_crate.local>
+ <CAMj1kXH9f+xXe3j3Bx-tku8k9eiWO_BVw70ePbfEft4stxjjgw@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <CAMj1kXH9f+xXe3j3Bx-tku8k9eiWO_BVw70ePbfEft4stxjjgw@mail.gmail.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
@@ -70,55 +96,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 02 Aug 2023 17:37:30 +0200,
-Matthew Anderson wrote:
+On Wed, Aug 02, 2023 at 12:47:24PM +0200, Ard Biesheuvel wrote:
+> https://git.kernel.org/pub/scm/linux/kernel/git/ardb/linux.git/log/?h=x86-efistub-cleanup-v8
 > 
-> This fixes the headphones on the Aya Neo 2 handheld.
-> Signed-off-by: Matthew Anderson <ruinairas1992@gmail.com>
-> ---
->  sound/pci/hda/patch_realtek.c | 6 ++++++
->  1 file changed, 6 insertions(+)
-> 
-> diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-> index 33f9beec8179..5d31cbe5d40b 100644
-> --- a/sound/pci/hda/patch_realtek.c
-> +++ b/sound/pci/hda/patch_realtek.c
-> @@ -7030,6 +7030,7 @@ enum {
->  	ALC269_FIXUP_DELL3_MIC_NO_PRESENCE,
->  	ALC269_FIXUP_DELL4_MIC_NO_PRESENCE,
->  	ALC269_FIXUP_DELL4_MIC_NO_PRESENCE_QUIET,
-> +	ALC269_FIXUP_HEADSET_AYA_2,
->  	ALC269_FIXUP_HEADSET_AYA_GEEK,
->  	ALC269_FIXUP_HEADSET_MODE,
->  	ALC269_FIXUP_HEADSET_MODE_NO_HP_MIC,
-> @@ -8455,6 +8456,10 @@ static const struct hda_fixup alc269_fixups[] = {
->  		.chained = true,
->  		.chain_id = ALC256_FIXUP_ASUS_HEADSET_MODE
->  	},
-> +	[ALC269_FIXUP_HEADSET_AYA_2] = {
-> +		.type = HDA_FIXUP_FUNC,
-> +		.v.func = alc269_fixup_headphone_volume,
-> +	},
->  	[ALC269_FIXUP_HEADSET_AYA_GEEK] = {
->  		.type = HDA_FIXUP_FUNC,
->  		.v.func = alc269_fixup_headphone_volume,
-> @@ -9953,6 +9958,7 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
->  	SND_PCI_QUIRK(0x1d72, 0x1901, "RedmiBook 14", ALC256_FIXUP_ASUS_HEADSET_MIC),
->  	SND_PCI_QUIRK(0x1d72, 0x1945, "Redmi G", ALC256_FIXUP_ASUS_HEADSET_MIC),
->  	SND_PCI_QUIRK(0x1d72, 0x1947, "RedmiBook Air", ALC255_FIXUP_XIAOMI_HEADSET_MIC),
-> +	SND_PCI_QUIRK(0x1f66, 0x0101, "AYANEO 2", ALC269_FIXUP_HEADSET_AYA_2),
->  	SND_PCI_QUIRK(0x1f66, 0x0101, "GEEK", ALC269_FIXUP_HEADSET_AYA_GEEK),
->  	SND_PCI_QUIRK(0x8086, 0x2074, "Intel NUC 8", ALC233_FIXUP_INTEL_NUC8_DMIC),
->  	SND_PCI_QUIRK(0x8086, 0x2080, "Intel NUC 8 Rugged", ALC256_FIXUP_INTEL_NUC8_RUGGED),
+> I'll prepare the v8 based on this branch after doing some more tests
+> on bare metal. I'll probably send it out later today.
 
-Hmm, both devices have the very same SSID (1f66:0101)?  Then it's
-superfluous.
+Thx, I'll run it here too.
 
-And, if you have two devices that require the same quirk but with
-different SSIDs, both can use the same ALC269_FIXUP_HEADSET_AYA_GEEK,
-instead of defining two.
+> It depends on the timing. If we take the whole thing now, it should
+> ideally go through -tip.
 
+Now's fine, if it passes testing.
 
-thanks,
+> There is a conflict with the kexec sev patch you just suggested on the
+> list, though. I'll rebase onto that in any case, but if that causes
+> any problems, we might decide to take everything except the last two
+> (or three *) patches now, and defer those for later.
 
-Takashi
+Right.
+
+> * 'efi/libstub: Add limit argument to efi_random_alloc()' may conflict
+> with some changes that may arrive via the RISC-V tree. That patch is
+> completely independent, so perhaps I should put it on a shared stable
+> branch in the EFI tree. Or alternatively, depending on how you decide
+> to organize the branches, you could put it at the beginning of the
+> topic branch where the RISC-V tree can merge it in.
+
+I could simply give them the tip branch with the stuff and they can
+merge it. It'll be immutable ofc.
+
+> Or we might just ignore the conflict - it just adds a function
+> argument to a function call that gets moved from one source file to
+> the another in the conflicting branch, so it should be rather
+> straight-forward to resolve.
+
+That's also a possibility.
+
+Thx.
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
