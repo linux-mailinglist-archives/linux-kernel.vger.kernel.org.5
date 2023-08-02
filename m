@@ -2,676 +2,237 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1ED0B76CB7A
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 13:07:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5982A76CB7C
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 13:08:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232749AbjHBLHz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Aug 2023 07:07:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41742 "EHLO
+        id S232650AbjHBLIa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Aug 2023 07:08:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42036 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232607AbjHBLHt (ORCPT
+        with ESMTP id S232520AbjHBLI1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Aug 2023 07:07:49 -0400
-Received: from mx2.zhaoxin.com (mx2.zhaoxin.com [203.110.167.99])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C670E4C
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Aug 2023 04:07:46 -0700 (PDT)
-X-ASG-Debug-ID: 1690974462-1eb14e747c08800001-xx1T2L
-Received: from ZXSHMBX3.zhaoxin.com (ZXSHMBX3.zhaoxin.com [10.28.252.165]) by mx2.zhaoxin.com with ESMTP id D5OitRhmYR9E5rJI (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NO); Wed, 02 Aug 2023 19:07:42 +0800 (CST)
-X-Barracuda-Envelope-From: TonyWWang-oc@zhaoxin.com
-X-Barracuda-RBL-Trusted-Forwarder: 10.28.252.165
-Received: from zxbjmbx1.zhaoxin.com (10.29.252.163) by ZXSHMBX3.zhaoxin.com
- (10.28.252.165) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.16; Wed, 2 Aug
- 2023 19:07:41 +0800
-Received: from tony-HX002EA.zhaoxin.com (10.32.65.162) by zxbjmbx1.zhaoxin.com
- (10.29.252.163) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.16; Wed, 2 Aug
- 2023 19:07:39 +0800
-X-Barracuda-RBL-Trusted-Forwarder: 10.28.252.165
-From:   Tony W Wang-oc <TonyWWang-oc@zhaoxin.com>
-X-Barracuda-RBL-Trusted-Forwarder: 10.29.252.163
-To:     <tglx@linutronix.de>, <mingo@redhat.com>, <bp@alien8.de>,
-        <dave.hansen@linux.intel.com>, <hpa@zytor.com>, <x86@kernel.org>,
-        <linux-kernel@vger.kernel.org>, <TonyWWang-oc@zhaoxin.com>,
-        <herbert@gondor.apana.org.au>, <davem@davemloft.net>,
-        <seanjc@google.com>, <kim.phillips@amd.com>,
-        <peterz@infradead.org>, <pbonzini@redhat.com>,
-        <pawan.kumar.gupta@linux.intel.com>, <babu.moger@amd.com>,
-        <jiaxi.chen@linux.intel.com>, <jmattson@google.com>,
-        <sandipan.das@amd.com>, <linux-crypto@vger.kernel.org>
-CC:     <CobeChen@zhaoxin.com>, <TimGuo@zhaoxin.com>,
-        <LeoLiu-oc@zhaoxin.com>
-Subject: [PATCH] crypto: Zhaoxin: Hardware Engine Driver for SHA1/256/384/512
-Date:   Wed, 2 Aug 2023 19:07:41 +0800
-X-ASG-Orig-Subj: [PATCH] crypto: Zhaoxin: Hardware Engine Driver for SHA1/256/384/512
-Message-ID: <20230802110741.4077-1-TonyWWang-oc@zhaoxin.com>
-X-Mailer: git-send-email 2.17.1
+        Wed, 2 Aug 2023 07:08:27 -0400
+Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B94C1FCF
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Aug 2023 04:08:26 -0700 (PDT)
+Received: by mail-pj1-x1033.google.com with SMTP id 98e67ed59e1d1-2680ccc1d52so3833489a91.0
+        for <linux-kernel@vger.kernel.org>; Wed, 02 Aug 2023 04:08:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1690974505; x=1691579305;
+        h=content-transfer-encoding:subject:cc:from:to:content-language
+         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=HN4yL9Ko67hBibaQtI8bqdyy0f3U3Ny1uhYF2yLwlQ8=;
+        b=GQZyJfbgsRz9nNrAGCts8b4/2MOEMy3S9AeJuWzhkuKlD9iW3mhZMPYEysDmxjapEg
+         56oHNng4Y3ImRd8B/13g1+W0IDzlmS1f/mlsMtmb1neEcJj0TJ4TcDEvVspQp4ZKas9R
+         HYsqNOVpO/LolK8ERdlP6mjW3JGFDuOIT9T59H+NhgGs2Fa99K3QAkC5a5ekk6znN+az
+         MLRS5K4gpJJvrrWya2h+76sd22lbwhID63tKbswPacEhYv4Q0J0Ds+NNv4viKBVbdbL2
+         ohG/szm18hERu6cn2tGJ+ZeTE4b2oXuTfNJOC+w+qPZY9gkebpS3v8Da57J2E4v+J+QS
+         ttdg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690974505; x=1691579305;
+        h=content-transfer-encoding:subject:cc:from:to:content-language
+         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=HN4yL9Ko67hBibaQtI8bqdyy0f3U3Ny1uhYF2yLwlQ8=;
+        b=Dy3BTiBTCnMRlUgYfar5BM7+VCmmdjkHbcC0r6cUKfXYLW2UTGFedPsKR6qPTsJ9hF
+         YLAxYQxKgIwT5jppZAnZJhvhElkawSZK0iPOMlmIC5EiCnvbtEMp6f3yxkRnTDpuTTmP
+         /SAFObVRKxsnC9FKo8KlbZtOCc61thJmnlyQrnD3uJCyoTV7Q3NncNYDPYhU+yx2ehSb
+         YNeMEaC7a/c7ZDtSU/eeAxJMHkPTSOaSoK8iwgFEG3va2WlUaqbDu3XE1fpG/pMua1xR
+         NVP5qa1+mgJUxGB+a+KG02xRoGg9oxt7XD8TXfB69BQmd2vIj/E7wIkukI6K8Uz9EADY
+         mw4g==
+X-Gm-Message-State: ABy/qLauTTrd/R0UGTU9ECJkBP9ng1uESuWM/mwuancK/edOUIh8nvFm
+        dcrIfheKNkm3Dn86/SiWyhK7LDTeYZU=
+X-Google-Smtp-Source: APBJJlFuxaM/ap7LahQ7bEdeqW1QLwRIaT165kyavi8a1q4dCF1PT3erL/L51C3YlMQ95f05ijztSQ==
+X-Received: by 2002:a17:90b:3556:b0:268:25b7:1922 with SMTP id lt22-20020a17090b355600b0026825b71922mr13151147pjb.5.1690974505514;
+        Wed, 02 Aug 2023 04:08:25 -0700 (PDT)
+Received: from [192.168.0.105] ([103.131.18.64])
+        by smtp.gmail.com with ESMTPSA id p5-20020a17090a284500b00262fc3d911esm997808pjf.28.2023.08.02.04.08.23
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 02 Aug 2023 04:08:25 -0700 (PDT)
+Message-ID: <428d8fe9-8c19-ddba-b36e-7db5524e8d04@gmail.com>
+Date:   Wed, 2 Aug 2023 18:08:20 +0700
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.32.65.162]
-X-ClientProxiedBy: zxbjmbx1.zhaoxin.com (10.29.252.163) To
- zxbjmbx1.zhaoxin.com (10.29.252.163)
-X-Barracuda-Connect: ZXSHMBX3.zhaoxin.com[10.28.252.165]
-X-Barracuda-Start-Time: 1690974462
-X-Barracuda-Encrypted: ECDHE-RSA-AES128-GCM-SHA256
-X-Barracuda-URL: https://10.28.252.36:4443/cgi-mod/mark.cgi
-X-Virus-Scanned: by bsmtpd at zhaoxin.com
-X-Barracuda-Scan-Msg-Size: 17075
-X-Barracuda-BRTS-Status: 1
-X-Barracuda-Bayes: INNOCENT GLOBAL 0.0000 1.0000 -2.0210
-X-Barracuda-Spam-Score: -2.02
-X-Barracuda-Spam-Status: No, SCORE=-2.02 using global scores of TAG_LEVEL=1000.0 QUARANTINE_LEVEL=1000.0 KILL_LEVEL=9.0 tests=
-X-Barracuda-Spam-Report: Code version 3.2, rules version 3.2.3.112209
-        Rule breakdown below
-         pts rule name              description
-        ---- ---------------------- --------------------------------------------------
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=unavailable autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Content-Language: en-US
+To:     Alistair Popple <apopple@nvidia.com>,
+        Felix Kuehling <Felix.Kuehling@amd.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Marco <rodomar705@protonmail.com>
+From:   Bagas Sanjaya <bagasdotme@gmail.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        Linux Regressions <regressions@lists.linux.dev>
+Subject: Fwd: Kernel memory management bug at mm/migrate.c:662 when flushing
+ caches
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This driver is developed to take advantage of the hardware
-accelerating engine for SHA1/256/384/512 on Zhaoxin CPUs with
-Family 7 and newer.
+Hi,
 
-Signed-off-by: Tony W Wang-oc <TonyWWang-oc@zhaoxin.com>
----
- arch/x86/include/asm/cpufeatures.h |   2 +
- drivers/crypto/Kconfig             |  15 +
- drivers/crypto/Makefile            |   1 +
- drivers/crypto/zhaoxin-sha.c       | 500 +++++++++++++++++++++++++++++
- drivers/crypto/zhaoxin-sha.h       |  25 ++
- 5 files changed, 543 insertions(+)
- create mode 100644 drivers/crypto/zhaoxin-sha.c
- create mode 100644 drivers/crypto/zhaoxin-sha.h
+I notice a regression report on Bugzilla [1]. Quoting from it:
 
-diff --git a/arch/x86/include/asm/cpufeatures.h b/arch/x86/include/asm/cpufeatures.h
-index cb8ca46213be..37c6edbc4add 100644
---- a/arch/x86/include/asm/cpufeatures.h
-+++ b/arch/x86/include/asm/cpufeatures.h
-@@ -156,6 +156,8 @@
- #define X86_FEATURE_PHE_EN		( 5*32+11) /* PHE enabled */
- #define X86_FEATURE_PMM			( 5*32+12) /* PadLock Montgomery Multiplier */
- #define X86_FEATURE_PMM_EN		( 5*32+13) /* PMM enabled */
-+#define X86_FEATURE_PHE2		( 5*32+25) /* "phe2" Zhaoxin Hash Engine */
-+#define X86_FEATURE_PHE2_EN		( 5*32+26) /* "phe2_en" PHE2 enabled */
- 
- /* More extended AMD flags: CPUID level 0x80000001, ECX, word 6 */
- #define X86_FEATURE_LAHF_LM		( 6*32+ 0) /* LAHF/SAHF in long mode */
-diff --git a/drivers/crypto/Kconfig b/drivers/crypto/Kconfig
-index 44e44b8d9ce6..ff466c8367db 100644
---- a/drivers/crypto/Kconfig
-+++ b/drivers/crypto/Kconfig
-@@ -798,4 +798,19 @@ config CRYPTO_DEV_SA2UL
- source "drivers/crypto/aspeed/Kconfig"
- source "drivers/crypto/starfive/Kconfig"
- 
-+config CRYPTO_DEV_ZHAOXIN_SHA
-+	tristate "Support for Zhaoxin SHA1/SHA256/SHA384/SHA512 algorithms"
-+	select CRYPTO_HASH
-+	select CRYPTO_SHA1
-+	select CRYPTO_SHA256
-+	select CRYPTO_SHA384
-+	select CRYPTO_SHA512
-+	help
-+	  Use Zhaoxin HW engine for SHA1/SHA256/SHA384/SHA512 algorithms.
-+
-+	  Available in ZX-C+ and newer processors.
-+
-+	  If unsure say M. The compiled module will be
-+	  called zhaoxin-sha.
-+
- endif # CRYPTO_HW
-diff --git a/drivers/crypto/Makefile b/drivers/crypto/Makefile
-index d859d6a5f3a4..b77c02d6dab7 100644
---- a/drivers/crypto/Makefile
-+++ b/drivers/crypto/Makefile
-@@ -51,3 +51,4 @@ obj-y += hisilicon/
- obj-$(CONFIG_CRYPTO_DEV_AMLOGIC_GXL) += amlogic/
- obj-y += intel/
- obj-y += starfive/
-+obj-$(CONFIG_CRYPTO_DEV_ZHAOXIN_SHA) += zhaoxin-sha.o
-diff --git a/drivers/crypto/zhaoxin-sha.c b/drivers/crypto/zhaoxin-sha.c
-new file mode 100644
-index 000000000000..2da234a9e8b2
---- /dev/null
-+++ b/drivers/crypto/zhaoxin-sha.c
-@@ -0,0 +1,500 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * Cryptographic API.
-+ *
-+ * Support for Zhaoxin hardware crypto engine.
-+ *
-+ * Copyright (c) 2023  George Xue <georgexue@zhaoxin.com>
-+ */
-+
-+#include <crypto/internal/hash.h>
-+#include "zhaoxin-sha.h"
-+#include <crypto/sha1.h>
-+#include <crypto/sha2.h>
-+#include <linux/err.h>
-+#include <linux/module.h>
-+#include <linux/init.h>
-+#include <linux/errno.h>
-+#include <linux/interrupt.h>
-+#include <linux/kernel.h>
-+#include <linux/scatterlist.h>
-+#include <asm/cpu_device_id.h>
-+#include <asm/fpu/api.h>
-+
-+
-+static inline void zhaoxin_output_block(uint32_t *src,
-+			uint32_t *dst, size_t count)
-+{
-+	while (count--)
-+		*dst++ = swab32(*src++);
-+}
-+
-+/* Add two shash_alg instance for hardware-implemented */
-+static int zhaoxin_sha1_init(struct shash_desc *desc)
-+{
-+	struct sha1_state *sctx = shash_desc_ctx(desc);
-+
-+	*sctx = (struct sha1_state){
-+		.state = { SHA1_H0, SHA1_H1, SHA1_H2, SHA1_H3, SHA1_H4 },
-+	};
-+
-+	return 0;
-+}
-+
-+static int zhaoxin_sha1_update(struct shash_desc *desc,
-+			const u8 *data,	unsigned int len)
-+{
-+	struct sha1_state *sctx = shash_desc_ctx(desc);
-+	unsigned int partial, done;
-+	const u8 *src;
-+	/*The PHE require the out buffer must 128 bytes and 16-bytes aligned*/
-+	u8 buf[128 + ZHAOXIN_SHA_ALIGNMENT - STACK_ALIGN] __attribute__
-+		((aligned(STACK_ALIGN)));
-+	u8 *dst = PTR_ALIGN(&buf[0], ZHAOXIN_SHA_ALIGNMENT);
-+
-+	partial = sctx->count & 0x3f;
-+	sctx->count += len;
-+	done = 0;
-+	src = data;
-+	memcpy(dst, (u8 *)(sctx->state), SHA1_DIGEST_SIZE);
-+
-+	if ((partial + len) >= SHA1_BLOCK_SIZE) {
-+
-+		/* Append the bytes in state's buffer to a block to handle */
-+		if (partial) {
-+			done = -partial;
-+			memcpy(sctx->buffer + partial, data,
-+				done + SHA1_BLOCK_SIZE);
-+			src = sctx->buffer;
-+			asm volatile (".byte 0xf3,0x0f,0xa6,0xc8"
-+			: "+S"(src), "+D"(dst)
-+			: "a"((long)-1), "c"(1UL));
-+			done += SHA1_BLOCK_SIZE;
-+			src = data + done;
-+		}
-+
-+		/* Process the left bytes from the input data */
-+		if (len - done >= SHA1_BLOCK_SIZE) {
-+			asm volatile (".byte 0xf3,0x0f,0xa6,0xc8"
-+			: "+S"(src), "+D"(dst)
-+			: "a"((long)-1),
-+			"c"((unsigned long)((len - done) / SHA1_BLOCK_SIZE)));
-+			done += ((len - done) - (len - done) % SHA1_BLOCK_SIZE);
-+			src = data + done;
-+		}
-+		partial = 0;
-+	}
-+	memcpy((u8 *)(sctx->state), dst, SHA1_DIGEST_SIZE);
-+	memcpy(sctx->buffer + partial, src, len - done);
-+
-+	return 0;
-+}
-+
-+static int zhaoxin_sha1_final(struct shash_desc *desc, u8 *out)
-+{
-+	struct sha1_state *state = (struct sha1_state *)shash_desc_ctx(desc);
-+	unsigned int partial, padlen;
-+	__be64 bits;
-+	static const u8 padding[64] = { 0x80, };
-+
-+	bits = cpu_to_be64(state->count << 3);
-+
-+	/* Pad out to 56 mod 64 */
-+	partial = state->count & 0x3f;
-+	padlen = (partial < 56) ? (56 - partial) : ((64+56) - partial);
-+	zhaoxin_sha1_update(desc, padding, padlen);
-+
-+	/* Append length field bytes */
-+	zhaoxin_sha1_update(desc, (const u8 *)&bits, sizeof(bits));
-+
-+	/* Swap to output */
-+	zhaoxin_output_block((uint32_t *)(state->state), (uint32_t *)out, 5);
-+
-+	return 0;
-+}
-+
-+static int zhaoxin_sha256_init(struct shash_desc *desc)
-+{
-+	struct sha256_state *sctx = shash_desc_ctx(desc);
-+
-+	*sctx = (struct sha256_state){
-+		.state = { SHA256_H0, SHA256_H1, SHA256_H2, SHA256_H3,
-+				SHA256_H4, SHA256_H5, SHA256_H6, SHA256_H7},
-+	};
-+
-+	return 0;
-+}
-+
-+static int zhaoxin_sha256_update(struct shash_desc *desc, const u8 *data,
-+			  unsigned int len)
-+{
-+	struct sha256_state *sctx = shash_desc_ctx(desc);
-+	unsigned int partial, done;
-+	const u8 *src;
-+	/*The PHE require the out buffer must 128 bytes and 16-bytes aligned*/
-+	u8 buf[128 + ZHAOXIN_SHA_ALIGNMENT - STACK_ALIGN] __attribute__
-+		((aligned(STACK_ALIGN)));
-+	u8 *dst = PTR_ALIGN(&buf[0], ZHAOXIN_SHA_ALIGNMENT);
-+
-+	partial = sctx->count & 0x3f;
-+	sctx->count += len;
-+	done = 0;
-+	src = data;
-+	memcpy(dst, (u8 *)(sctx->state), SHA256_DIGEST_SIZE);
-+
-+	if ((partial + len) >= SHA256_BLOCK_SIZE) {
-+
-+		/* Append the bytes in state's buffer to a block to handle */
-+		if (partial) {
-+			done = -partial;
-+			memcpy(sctx->buf + partial, data,
-+				done + SHA256_BLOCK_SIZE);
-+			src = sctx->buf;
-+			asm volatile (".byte 0xf3,0x0f,0xa6,0xd0"
-+			: "+S"(src), "+D"(dst)
-+			: "a"((long)-1), "c"(1UL));
-+			done += SHA256_BLOCK_SIZE;
-+			src = data + done;
-+		}
-+
-+		/* Process the left bytes from input data*/
-+		if (len - done >= SHA256_BLOCK_SIZE) {
-+			asm volatile (".byte 0xf3,0x0f,0xa6,0xd0"
-+			: "+S"(src), "+D"(dst)
-+			: "a"((long)-1),
-+			"c"((unsigned long)((len - done) / 64)));
-+			done += ((len - done) - (len - done) % 64);
-+			src = data + done;
-+		}
-+		partial = 0;
-+	}
-+	memcpy((u8 *)(sctx->state), dst, SHA256_DIGEST_SIZE);
-+	memcpy(sctx->buf + partial, src, len - done);
-+
-+	return 0;
-+}
-+
-+static int zhaoxin_sha256_final(struct shash_desc *desc, u8 *out)
-+{
-+	struct sha256_state *state =
-+		(struct sha256_state *)shash_desc_ctx(desc);
-+	unsigned int partial, padlen;
-+	__be64 bits;
-+	static const u8 padding[64] = { 0x80, };
-+
-+	bits = cpu_to_be64(state->count << 3);
-+
-+	/* Pad out to 56 mod 64 */
-+	partial = state->count & 0x3f;
-+	padlen = (partial < 56) ? (56 - partial) : ((64+56) - partial);
-+	zhaoxin_sha256_update(desc, padding, padlen);
-+
-+	/* Append length field bytes */
-+	zhaoxin_sha256_update(desc, (const u8 *)&bits, sizeof(bits));
-+
-+	/* Swap to output */
-+	zhaoxin_output_block((uint32_t *)(state->state), (uint32_t *)out, 8);
-+
-+	return 0;
-+}
-+
-+static inline void zhaoxin_output_block_512(uint64_t *src,
-+			uint64_t *dst, size_t count)
-+{
-+	while (count--)
-+		*dst++ = swab64(*src++);
-+}
-+
-+static int zhaoxin_sha384_init(struct shash_desc *desc)
-+{
-+	struct sha512_state *sctx = shash_desc_ctx(desc);
-+
-+	*sctx = (struct sha512_state){
-+		.state = { SHA384_H0, SHA384_H1, SHA384_H2, SHA384_H3,
-+				SHA384_H4, SHA384_H5, SHA384_H6, SHA384_H7},
-+		.count = {0, 0},
-+	};
-+
-+	return 0;
-+}
-+
-+static int zhaoxin_sha512_init(struct shash_desc *desc)
-+{
-+	struct sha512_state *sctx = shash_desc_ctx(desc);
-+
-+	*sctx = (struct sha512_state){
-+		.state = { SHA512_H0, SHA512_H1, SHA512_H2, SHA512_H3,
-+				SHA512_H4, SHA512_H5, SHA512_H6, SHA512_H7},
-+		.count = {0, 0},
-+	};
-+
-+	return 0;
-+}
-+
-+static int zhaoxin_sha512_update(struct shash_desc *desc, const u8 *data,
-+			  unsigned int len)
-+{
-+	struct sha512_state *sctx = shash_desc_ctx(desc);
-+	unsigned int partial, done;
-+
-+	const u8 *src;
-+	/*The PHE require the out buffer must 128 bytes and 16-bytes aligned*/
-+	u8 buf[128 + ZHAOXIN_SHA_ALIGNMENT - STACK_ALIGN] __attribute__
-+		((aligned(STACK_ALIGN)));
-+	u8 *dst = PTR_ALIGN(&buf[0], ZHAOXIN_SHA_ALIGNMENT);
-+
-+	partial = sctx->count[0] % SHA512_BLOCK_SIZE;
-+
-+	sctx->count[0] += len;
-+	if (sctx->count[0] < len)
-+		sctx->count[1]++;
-+
-+	done = 0;
-+	src = data;
-+	memcpy(dst, (u8 *)(sctx->state), SHA512_DIGEST_SIZE);
-+
-+	if ((partial + len) >= SHA512_BLOCK_SIZE) {
-+		/* Append the bytes in state's buffer to a block to handle */
-+		if (partial) {
-+
-+			done = -partial;
-+			memcpy(sctx->buf + partial, data, done + SHA512_BLOCK_SIZE);
-+
-+			src = sctx->buf;
-+
-+			asm volatile (".byte 0xf3,0x0f,0xa6,0xe0"
-+			: "+S"(src), "+D"(dst)
-+			: "c"(1UL));
-+
-+			done += SHA512_BLOCK_SIZE;
-+			src = data + done;
-+		}
-+
-+		/* Process the left bytes from input data*/
-+		if (len - done >= SHA512_BLOCK_SIZE) {
-+			asm volatile (".byte 0xf3,0x0f,0xa6,0xe0"
-+			: "+S"(src), "+D"(dst)
-+			: "c"((unsigned long)((len - done) / SHA512_BLOCK_SIZE)));
-+
-+			done += ((len - done) - (len - done) % SHA512_BLOCK_SIZE);
-+			src = data + done;
-+		}
-+		partial = 0;
-+	}
-+
-+	memcpy((u8 *)(sctx->state), dst, SHA512_DIGEST_SIZE);
-+	memcpy(sctx->buf + partial, src, len - done);
-+
-+	return 0;
-+}
-+
-+static int zhaoxin_sha512_final(struct shash_desc *desc, u8 *out)
-+{
-+	struct sha512_state *state =
-+		(struct sha512_state *)shash_desc_ctx(desc);
-+	unsigned int partial = state->count[0] % SHA512_BLOCK_SIZE, padlen;
-+
-+	__be64 bits2[2];
-+
-+	int dgst_size = crypto_shash_digestsize(desc->tfm);
-+
-+	static u8 padding[SHA512_BLOCK_SIZE] = { 0x80, };
-+
-+	memset(padding, 0, SHA512_BLOCK_SIZE);
-+	padding[0] = 0x80;
-+
-+	bits2[0] = cpu_to_be64(state->count[1] << 3 | state->count[0] >> 61);
-+	bits2[1] = cpu_to_be64(state->count[0] << 3);
-+
-+	padlen = (partial < 112) ? (112 - partial) : ((SHA512_BLOCK_SIZE + 112) - partial);
-+
-+	zhaoxin_sha512_update(desc, padding, padlen);
-+
-+	/* Append length field bytes */
-+	zhaoxin_sha512_update(desc, (const u8 *)bits2, sizeof(__be64[2]));
-+
-+	/* Swap to output */
-+	zhaoxin_output_block_512((uint64_t *)(state->state), (uint64_t *)out, dgst_size/sizeof(uint64_t));
-+
-+	return 0;
-+}
-+
-+static int zhaoxin_sha_export(struct shash_desc *desc,
-+				void *out)
-+{
-+	int statesize = crypto_shash_statesize(desc->tfm);
-+	void *sctx = shash_desc_ctx(desc);
-+
-+	memcpy(out, sctx, statesize);
-+	return 0;
-+}
-+
-+static int zhaoxin_sha_import(struct shash_desc *desc,
-+				const void *in)
-+{
-+	int statesize = crypto_shash_statesize(desc->tfm);
-+	void *sctx = shash_desc_ctx(desc);
-+
-+	memcpy(sctx, in, statesize);
-+	return 0;
-+}
-+
-+static struct shash_alg sha1_alg = {
-+	.digestsize	=	SHA1_DIGEST_SIZE,
-+	.init		=	zhaoxin_sha1_init,
-+	.update		=	zhaoxin_sha1_update,
-+	.final		=	zhaoxin_sha1_final,
-+	.export		=	zhaoxin_sha_export,
-+	.import		=	zhaoxin_sha_import,
-+	.descsize	=	sizeof(struct sha1_state),
-+	.statesize	=	sizeof(struct sha1_state),
-+	.base		=	{
-+		.cra_name		=	"sha1",
-+		.cra_driver_name	=	"sha1-zhaoxin",
-+		.cra_priority		=	ZHAOXIN_SHA_CRA_PRIORITY,
-+		.cra_blocksize		=	SHA1_BLOCK_SIZE,
-+		.cra_module		=	THIS_MODULE,
-+	}
-+};
-+
-+static struct shash_alg sha256_alg = {
-+	.digestsize	=	SHA256_DIGEST_SIZE,
-+	.init		=	zhaoxin_sha256_init,
-+	.update		=	zhaoxin_sha256_update,
-+	.final		=	zhaoxin_sha256_final,
-+	.export		=	zhaoxin_sha_export,
-+	.import		=	zhaoxin_sha_import,
-+	.descsize	=	sizeof(struct sha256_state),
-+	.statesize	=	sizeof(struct sha256_state),
-+	.base		=	{
-+		.cra_name		=	"sha256",
-+		.cra_driver_name	=	"sha256-zhaoxin",
-+		.cra_priority		=	ZHAOXIN_SHA_CRA_PRIORITY,
-+		.cra_blocksize		=	SHA256_BLOCK_SIZE,
-+		.cra_module		=	THIS_MODULE,
-+	}
-+};
-+
-+static struct shash_alg sha384_alg = {
-+	.digestsize	=	SHA384_DIGEST_SIZE,
-+	.init		=	zhaoxin_sha384_init,
-+	.update		=	zhaoxin_sha512_update,
-+	.final		=	zhaoxin_sha512_final,
-+	.export		=	zhaoxin_sha_export,
-+	.import		=	zhaoxin_sha_import,
-+	.descsize	=	sizeof(struct sha512_state),
-+	.statesize	=	sizeof(struct sha512_state),
-+	.base		=	{
-+		.cra_name		=	"sha384",
-+		.cra_driver_name	=	"sha384-zhaoxin",
-+		.cra_priority		=	ZHAOXIN_SHA_CRA_PRIORITY,
-+		.cra_blocksize		=	SHA384_BLOCK_SIZE,
-+		.cra_module		=	THIS_MODULE,
-+	}
-+};
-+
-+static struct shash_alg sha512_alg = {
-+	.digestsize	=	SHA512_DIGEST_SIZE,
-+	.init		=	zhaoxin_sha512_init,
-+	.update		=	zhaoxin_sha512_update,
-+	.final		=	zhaoxin_sha512_final,
-+	.export		=	zhaoxin_sha_export,
-+	.import		=	zhaoxin_sha_import,
-+	.descsize	=	sizeof(struct sha512_state),
-+	.statesize	=	sizeof(struct sha512_state),
-+	.base		=	{
-+		.cra_name		=	"sha512",
-+		.cra_driver_name	=	"sha512-zhaoxin",
-+		.cra_priority		=	ZHAOXIN_SHA_CRA_PRIORITY,
-+		.cra_blocksize		=	SHA512_BLOCK_SIZE,
-+		.cra_module		=	THIS_MODULE,
-+	}
-+};
-+
-+
-+static const struct x86_cpu_id zhaoxin_sha_ids[] = {
-+	X86_MATCH_VENDOR_FAM_FEATURE(ZHAOXIN, 6, X86_FEATURE_PHE, NULL),
-+	X86_MATCH_VENDOR_FAM_FEATURE(ZHAOXIN, 7, X86_FEATURE_PHE, NULL),
-+	X86_MATCH_VENDOR_FAM_FEATURE(CENTAUR, 7, X86_FEATURE_PHE, NULL),
-+	{}
-+};
-+MODULE_DEVICE_TABLE(x86cpu, zhaoxin_sha_ids);
-+
-+static int __init zhaoxin_sha_init(void)
-+{
-+	int rc = -ENODEV;
-+
-+	struct shash_alg *sha1;
-+	struct shash_alg *sha256;
-+	struct shash_alg *sha384;
-+	struct shash_alg *sha512;
-+
-+	if (!x86_match_cpu(zhaoxin_sha_ids) || !boot_cpu_has(X86_FEATURE_PHE_EN))
-+		return -ENODEV;
-+
-+	sha1 = &sha1_alg;
-+	sha256 = &sha256_alg;
-+	sha384 = &sha384_alg;
-+	sha512 = &sha512_alg;
-+
-+
-+	rc = crypto_register_shash(sha1);
-+	if (rc)
-+		goto out;
-+
-+	rc = crypto_register_shash(sha256);
-+	if (rc)
-+		goto out_unreg1;
-+
-+	if (boot_cpu_has(X86_FEATURE_PHE2_EN)) {
-+		rc = crypto_register_shash(sha384);
-+		if (rc)
-+			goto out_unreg2;
-+
-+		rc = crypto_register_shash(sha512);
-+		if (rc)
-+			goto out_unreg3;
-+	}
-+
-+	pr_notice(PFX "Using Zhaoxin Hardware Engine for SHA1/SHA256/SHA384/SHA512 algorithms.\n");
-+
-+	return 0;
-+
-+out_unreg3:
-+	if (boot_cpu_has(X86_FEATURE_PHE2_EN))
-+		crypto_unregister_shash(sha384);
-+
-+out_unreg2:
-+	crypto_unregister_shash(sha256);
-+out_unreg1:
-+	crypto_unregister_shash(sha1);
-+
-+out:
-+	pr_err(PFX "Zhaoxin Hardware Engine for SHA1/SHA256/SHA384/SHA512 initialization failed.\n");
-+	return rc;
-+}
-+
-+static void __exit zhaoxin_sha_fini(void)
-+{
-+	crypto_unregister_shash(&sha1_alg);
-+	crypto_unregister_shash(&sha256_alg);
-+
-+	if (boot_cpu_has(X86_FEATURE_PHE2_EN)) {
-+		crypto_unregister_shash(&sha384_alg);
-+		crypto_unregister_shash(&sha512_alg);
-+	}
-+
-+}
-+
-+module_init(zhaoxin_sha_init);
-+module_exit(zhaoxin_sha_fini);
-+
-+MODULE_DESCRIPTION("Zhaoxin Hardware SHA1/SHA256/SHA384/SHA512 algorithms support.");
-+MODULE_LICENSE("GPL");
-+MODULE_AUTHOR("George Xue");
-+
-+MODULE_ALIAS_CRYPTO("sha1-zhaoxin");
-+MODULE_ALIAS_CRYPTO("sha256-zhaoxin");
-+MODULE_ALIAS_CRYPTO("sha384-zhaoxin");
-+MODULE_ALIAS_CRYPTO("sha512-zhaoxin");
-+
-diff --git a/drivers/crypto/zhaoxin-sha.h b/drivers/crypto/zhaoxin-sha.h
-new file mode 100644
-index 000000000000..c41bc90a650d
---- /dev/null
-+++ b/drivers/crypto/zhaoxin-sha.h
-@@ -0,0 +1,25 @@
-+/* SPDX-License-Identifier: GPL-2.0-or-later */
-+/*
-+ * Driver for Zhaoxin SHA
-+ *
-+ * Copyright (c) 2023 George Xue<georgexue@zhaoxin.com>
-+ */
-+
-+#ifndef _ZHAOXIN_SHA_H
-+#define _ZHAOXIN_SHA_H
-+
-+#define ZHAOXIN_SHA_ALIGNMENT 16
-+
-+#define PFX	KBUILD_MODNAME ": "
-+
-+#define ZHAOXIN_SHA_CRA_PRIORITY	300
-+#define ZHAOXIN_SHA_COMPOSITE_PRIORITY 400
-+
-+#ifdef CONFIG_64BIT
-+#define STACK_ALIGN 16
-+#else
-+#define STACK_ALIGN 4
-+#endif
-+
-+#endif	/* _ZHAOXIN_SHA_H */
-+
--- 
-2.17.1
+> I hit this kernel bug on the latest 6.3.9 kernel after executing this s=
+cript to cleanup hugepages from the kernel before booting up a Windows 11=
+ VM with QEMU (otherwise I don't have enough contiguous memory to allocat=
+e the pages to the VM)
+>=20
+> snip
+> if [[ $VM_ACTION =3D=3D 'prepare' ]];
+> then
+>     sync
+>     echo 3 > /proc/sys/vm/drop_caches
+>     echo 1 > /proc/sys/vm/compact_memory
+> endsnip
+>=20
+> Attached is the full QEMU script that I used. I do use ZFS as a root fi=
+lesystem, as you can see from the loaded modules.
+>=20
+> Ever seen something similar? On first bootup this is fine, it works fin=
+e. Any subsequent call cause to kill the script with the error below.
+>=20
+> [ 2682.534320] bash (54689): drop_caches: 3
+> [ 2682.624207] ------------[ cut here ]------------
+> [ 2682.624211] kernel BUG at mm/migrate.c:662!
+> [ 2682.624219] invalid opcode: 0000 [#1] PREEMPT SMP NOPTI
+> [ 2682.624223] CPU: 2 PID: 54689 Comm: bash Tainted: P           OE    =
+  6.3.9-arch1-1 #1 124dc55df4f5272ccb409f39ef4872fc2b3376a2
+> [ 2682.624226] Hardware name: System manufacturer System Product Name/R=
+OG STRIX B450-F GAMING, BIOS 5102 05/31/2023
+> [ 2682.624228] RIP: 0010:migrate_folio_extra+0x6c/0x70
+> [ 2682.624234] Code: de 48 89 ef e8 35 e2 ff ff 5b 44 89 e0 5d 41 5c 41=
+ 5d e9 e7 6d 9d 00 e8 22 e2 ff ff 44 89 e0 5b 5d 41 5c 41 5d e9 d4 6d 9d =
+00 <0f> 0b 66 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 0f 1f
+> [ 2682.624236] RSP: 0018:ffffb4685b5038f8 EFLAGS: 00010282
+> [ 2682.624238] RAX: 02ffff0000008025 RBX: ffffd9f684f02740 RCX: 0000000=
+000000002
+> [ 2682.624240] RDX: ffffd9f684f02740 RSI: ffffd9f68d958dc0 RDI: ffff99d=
+8d1cfe728
+> [ 2682.624241] RBP: ffff99d8d1cfe728 R08: 0000000000000000 R09: 0000000=
+000000000
+> [ 2682.624242] R10: ffffd9f68d958dc8 R11: 0000000004020000 R12: ffffd9f=
+68d958dc0
+> [ 2682.624243] R13: 0000000000000002 R14: ffffd9f684f02740 R15: ffffb46=
+85b5039b8
+> [ 2682.624245] FS:  00007f78b8182740(0000) GS:ffff99de9ea80000(0000) kn=
+lGS:0000000000000000
+> [ 2682.624246] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> [ 2682.624248] CR2: 00007fe9a0001960 CR3: 000000011e406000 CR4: 0000000=
+0003506e0
+> [ 2682.624249] Call Trace:
+> [ 2682.624251]  <TASK>
+> [ 2682.624253]  ? die+0x36/0x90
+> [ 2682.624258]  ? do_trap+0xda/0x100
+> [ 2682.624261]  ? migrate_folio_extra+0x6c/0x70
+> [ 2682.624263]  ? do_error_trap+0x6a/0x90
+> [ 2682.624266]  ? migrate_folio_extra+0x6c/0x70
+> [ 2682.624268]  ? exc_invalid_op+0x50/0x70
+> [ 2682.624271]  ? migrate_folio_extra+0x6c/0x70
+> [ 2682.624273]  ? asm_exc_invalid_op+0x1a/0x20
+> [ 2682.624278]  ? migrate_folio_extra+0x6c/0x70
+> [ 2682.624280]  move_to_new_folio+0x136/0x150
+> [ 2682.624283]  migrate_pages_batch+0x913/0xd30
+> [ 2682.624285]  ? __pfx_compaction_free+0x10/0x10
+> [ 2682.624289]  ? __pfx_remove_migration_pte+0x10/0x10
+> [ 2682.624292]  migrate_pages+0xc61/0xde0
+> [ 2682.624295]  ? __pfx_compaction_alloc+0x10/0x10
+> [ 2682.624296]  ? __pfx_compaction_free+0x10/0x10
+> [ 2682.624300]  compact_zone+0x865/0xda0
+> [ 2682.624303]  compact_node+0x88/0xc0
+> [ 2682.624306]  sysctl_compaction_handler+0x46/0x80
+> [ 2682.624308]  proc_sys_call_handler+0x1bd/0x2e0
+> [ 2682.624312]  vfs_write+0x239/0x3f0
+> [ 2682.624316]  ksys_write+0x6f/0xf0
+> [ 2682.624317]  do_syscall_64+0x60/0x90
+> [ 2682.624322]  ? syscall_exit_to_user_mode+0x1b/0x40
+> [ 2682.624324]  ? do_syscall_64+0x6c/0x90
+> [ 2682.624327]  ? syscall_exit_to_user_mode+0x1b/0x40
+> [ 2682.624329]  ? exc_page_fault+0x7c/0x180
+> [ 2682.624330]  entry_SYSCALL_64_after_hwframe+0x72/0xdc
+> [ 2682.624333] RIP: 0033:0x7f78b82f5bc4
+> [ 2682.624355] Code: 15 99 11 0e 00 f7 d8 64 89 02 48 c7 c0 ff ff ff ff=
+ eb b7 0f 1f 00 f3 0f 1e fa 80 3d 3d 99 0e 00 00 74 13 b8 01 00 00 00 0f =
+05 <48> 3d 00 f0 ff ff 77 54 c3 0f 1f 00 48 83 ec 28 48 89 54 24 18 48
+> [ 2682.624356] RSP: 002b:00007ffd9d25ed18 EFLAGS: 00000202 ORIG_RAX: 00=
+00000000000001
+> [ 2682.624358] RAX: ffffffffffffffda RBX: 0000000000000002 RCX: 00007f7=
+8b82f5bc4
+> [ 2682.624359] RDX: 0000000000000002 RSI: 000055c97c5f05c0 RDI: 0000000=
+000000001
+> [ 2682.624360] RBP: 000055c97c5f05c0 R08: 0000000000000073 R09: 0000000=
+000000001
+> [ 2682.624362] R10: 0000000000000000 R11: 0000000000000202 R12: 0000000=
+000000002
+> [ 2682.624363] R13: 00007f78b83d86a0 R14: 0000000000000002 R15: 00007f7=
+8b83d3ca0
+> [ 2682.624365]  </TASK>
+> [ 2682.624366] Modules linked in: vhost_net vhost vhost_iotlb tap tun s=
+nd_seq_dummy snd_hrtimer snd_seq xt_CHECKSUM xt_MASQUERADE xt_conntrack i=
+pt_REJECT nf_reject_ipv4 xt_tcpudp ip6table_mangle ip6table_nat ip6table_=
+filter ip6_tables iptable_mangle iptable_nat nf_nat nf_conntrack nf_defra=
+g_ipv6 nf_defrag_ipv4 libcrc32c iptable_filter bridge stp llc intel_rapl_=
+msr intel_rapl_common edac_mce_amd kvm_amd snd_hda_codec_realtek snd_hda_=
+codec_generic kvm snd_hda_codec_hdmi snd_usb_audio btusb btrtl snd_hda_in=
+tel btbcm snd_intel_dspcfg crct10dif_pclmul btintel crc32_pclmul snd_inte=
+l_sdw_acpi btmtk vfat polyval_clmulni snd_usbmidi_lib polyval_generic fat=
+ snd_hda_codec ext4 gf128mul snd_rawmidi eeepc_wmi bluetooth ghash_clmuln=
+i_intel snd_hda_core sha512_ssse3 asus_wmi snd_seq_device aesni_intel mc =
+ledtrig_audio snd_hwdep crc32c_generic crypto_simd snd_pcm sparse_keymap =
+crc32c_intel igb ecdh_generic platform_profile sp5100_tco cryptd snd_time=
+r mbcache rapl rfkill wmi_bmof pcspkr dca asus_wmi_sensors snd i2c_piix4 =
+zenpower(OE) ccp
+> [ 2682.624417]  jbd2 crc16 soundcore gpio_amdpt gpio_generic mousedev a=
+cpi_cpufreq joydev mac_hid dm_multipath i2c_dev crypto_user loop fuse dm_=
+mod bpf_preload ip_tables x_tables usbhid zfs(POE) zunicode(POE) zzstd(OE=
+) zlua(OE) zavl(POE) icp(POE) zcommon(POE) znvpair(POE) spl(OE) nouveau n=
+vme nvme_core xhci_pci nvme_common xhci_pci_renesas vfio_pci vfio_pci_cor=
+e irqbypass vfio_iommu_type1 vfio iommufd amdgpu i2c_algo_bit drm_ttm_hel=
+per ttm mxm_wmi video wmi drm_buddy gpu_sched drm_display_helper cec
+> [ 2682.624456] ---[ end trace 0000000000000000 ]---
+> [ 2682.624457] RIP: 0010:migrate_folio_extra+0x6c/0x70
+> [ 2682.624461] Code: de 48 89 ef e8 35 e2 ff ff 5b 44 89 e0 5d 41 5c 41=
+ 5d e9 e7 6d 9d 00 e8 22 e2 ff ff 44 89 e0 5b 5d 41 5c 41 5d e9 d4 6d 9d =
+00 <0f> 0b 66 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 0f 1f
+> [ 2682.624463] RSP: 0018:ffffb4685b5038f8 EFLAGS: 00010282
+> [ 2682.624465] RAX: 02ffff0000008025 RBX: ffffd9f684f02740 RCX: 0000000=
+000000002
+> [ 2682.624466] RDX: ffffd9f684f02740 RSI: ffffd9f68d958dc0 RDI: ffff99d=
+8d1cfe728
+> [ 2682.624467] RBP: ffff99d8d1cfe728 R08: 0000000000000000 R09: 0000000=
+000000000
+> [ 2682.624469] R10: ffffd9f68d958dc8 R11: 0000000004020000 R12: ffffd9f=
+68d958dc0
+> [ 2682.624470] R13: 0000000000000002 R14: ffffd9f684f02740 R15: ffffb46=
+85b5039b8
+> [ 2682.624472] FS:  00007f78b8182740(0000) GS:ffff99de9ea80000(0000) kn=
+lGS:0000000000000000
+> [ 2682.624473] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> [ 2682.624475] CR2: 00007fe9a0001960 CR3: 000000011e406000 CR4: 0000000=
+0003506e0
 
+See Bugzilla for the full thread and attached QEMU hook script to
+reproduce this regression.
+
+Anyway, I'm adding it to regzbot:
+
+#regzbot introduced: v6.2..v6.3 https://bugzilla.kernel.org/show_bug.cgi?=
+id=3D217747
+#regzbot title: kernel memory bug when cleaning hugepages before QEMU boo=
+t
+
+Thanks.
+
+[1]: https://bugzilla.kernel.org/show_bug.cgi?id=3D217747
+
+--=20
+An old man doll... just what I always wanted! - Clara
