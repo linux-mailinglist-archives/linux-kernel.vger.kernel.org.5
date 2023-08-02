@@ -2,76 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CBCD676CB8C
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 13:14:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 676E076CB89
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 13:14:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234014AbjHBLOu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Aug 2023 07:14:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45342 "EHLO
+        id S229629AbjHBLO3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Aug 2023 07:14:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44858 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232692AbjHBLOs (ORCPT
+        with ESMTP id S233880AbjHBLOX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Aug 2023 07:14:48 -0400
-Received: from mgamail.intel.com (unknown [192.55.52.136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 136A32D4E;
-        Wed,  2 Aug 2023 04:14:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1690974871; x=1722510871;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=h/cs+jJte6HO7usFj7kMbMOyqZ6ySurFpnQ9adQ5vBQ=;
-  b=dyMhi2UDruns4JEJefzPSUnQUtHPcwFchcdIup3lrTNcNlYOrxXmnwhZ
-   o3Ex0oKDs9Fg19r43gvnEDKhZYXJghqDHJro8k0DNuzgpklEFI/WCOT5P
-   0Qc2Z1a43xp2zyKe5GpwxI9GdDLLQmLwiLznox08Jzv9ZNwspoHkfEYjW
-   Vf0CDRWS5xo//f/zPN5hs0eHsGX+9lVzq/ufdU1HIPHcF4ZGKUzcThEDs
-   LEPqMhpP+tOBsUuQJij2L8B6guoUBdAKc09IETKpORI2ETNndgcpkCuVQ
-   fnvQR2CbO3SJu9HVC59fJbw3YLAdTFS2kXOzrS8bg5Rn173pd/ET7A9gl
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10789"; a="349155844"
-X-IronPort-AV: E=Sophos;i="6.01,249,1684825200"; 
-   d="scan'208";a="349155844"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Aug 2023 04:14:17 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10789"; a="722825000"
-X-IronPort-AV: E=Sophos;i="6.01,249,1684825200"; 
-   d="scan'208";a="722825000"
-Received: from turnipsi.fi.intel.com (HELO kekkonen.fi.intel.com) ([10.237.72.44])
-  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Aug 2023 04:14:12 -0700
-Received: from kekkonen.localdomain (localhost [127.0.0.1])
-        by kekkonen.fi.intel.com (Postfix) with SMTP id 43A0811FBE7;
-        Wed,  2 Aug 2023 14:14:10 +0300 (EEST)
-Date:   Wed, 2 Aug 2023 11:14:10 +0000
-From:   Sakari Ailus <sakari.ailus@linux.intel.com>
-To:     Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
-Cc:     Jai Luthra <j-luthra@ti.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        Mauro Carvalho Chehab <mchehab+samsung@kernel.org>,
-        Maxime Ripard <mripard@kernel.org>,
-        niklas.soderlund+renesas@ragnatech.se,
-        Benoit Parrot <bparrot@ti.com>,
-        Vaishnav Achath <vaishnav.a@ti.com>,
-        Vignesh Raghavendra <vigneshr@ti.com>, nm@ti.com,
-        devarsht@ti.com
-Subject: Re: [PATCH v8 16/16] media: ti: Add CSI2RX support for J721E
-Message-ID: <ZMo6gtN/4sQz44tH@kekkonen.localdomain>
-References: <20230731-upstream_csi-v8-0-fb7d3661c2c9@ti.com>
- <20230731-upstream_csi-v8-16-fb7d3661c2c9@ti.com>
- <d5d9f2cb-9879-9f25-9b5c-b3b43d551658@ideasonboard.com>
+        Wed, 2 Aug 2023 07:14:23 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 33B292D40
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Aug 2023 04:14:18 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id CBF16113E;
+        Wed,  2 Aug 2023 04:15:00 -0700 (PDT)
+Received: from [10.57.77.90] (unknown [10.57.77.90])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 2EA823F6C4;
+        Wed,  2 Aug 2023 04:14:16 -0700 (PDT)
+Message-ID: <55c9e3f7-099d-6f57-32da-1f318a9688a0@arm.com>
+Date:   Wed, 2 Aug 2023 12:14:14 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <d5d9f2cb-9879-9f25-9b5c-b3b43d551658@ideasonboard.com>
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.13.0
+Subject: Re: [PATCH 1/3] mm: add functions folio_in_range() and
+ folio_within_vma()
+To:     Yin Fengwei <fengwei.yin@intel.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, akpm@linux-foundation.org,
+        yuzhao@google.com, willy@infradead.org, david@redhat.com,
+        shy828301@gmail.com, hughd@google.com
+References: <20230728070929.2487065-1-fengwei.yin@intel.com>
+ <20230728070929.2487065-2-fengwei.yin@intel.com>
+From:   Ryan Roberts <ryan.roberts@arm.com>
+In-Reply-To: <20230728070929.2487065-2-fengwei.yin@intel.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -79,42 +47,110 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Moi,
-
-On Wed, Aug 02, 2023 at 02:04:57PM +0300, Tomi Valkeinen wrote:
-> > +static int ti_csi2rx_enum_fmt_vid_cap(struct file *file, void *priv,
-> > +				      struct v4l2_fmtdesc *f)
-> > +{
-> > +	const struct ti_csi2rx_fmt *fmt = NULL;
-> > +
-> > +	if (f->mbus_code) {
-> > +		if (f->index > 0)
-> > +			return -EINVAL;
+On 28/07/2023 08:09, Yin Fengwei wrote:
+> It will be used to check whether the folio is mapped to specific
+> VMA and whether the mapping address of folio is in the range.
 > 
-> This fails to enumerate the formats if mbus_code is set, doesn't it?
-
-This is intentional: if the mbus_code field is set, you're supposed to get
-only format(s) corresponding to that mbus code.
-
+> Also a helper function folio_within_vma() to check whether folio
+> is in the range of vma based on folio_in_range().
 > 
-> > +
-> > +		fmt = find_format_by_code(f->mbus_code);
-> > +	} else {
-> > +		if (f->index >= num_formats)
-> > +			return -EINVAL;
-> > +
-> > +		fmt = &formats[f->index];
-> > +	}
-> > +
-> > +	if (!fmt)
-> > +		return -EINVAL;
-> > +
-> > +	f->pixelformat = fmt->fourcc;
-> > +	memset(f->reserved, 0, sizeof(f->reserved));
-> > +	f->type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
-> > +
-> > +	return 0;
-> > +}
+> Signed-off-by: Yin Fengwei <fengwei.yin@intel.com>
+> ---
+>  mm/internal.h | 69 +++++++++++++++++++++++++++++++++++++++++++++++++++
+>  1 file changed, 69 insertions(+)
+> 
+> diff --git a/mm/internal.h b/mm/internal.h
+> index 5a03bc4782a2..63de32154a48 100644
+> --- a/mm/internal.h
+> +++ b/mm/internal.h
+> @@ -585,6 +585,75 @@ extern long faultin_vma_page_range(struct vm_area_struct *vma,
+>  				   bool write, int *locked);
+>  extern bool mlock_future_ok(struct mm_struct *mm, unsigned long flags,
+>  			       unsigned long bytes);
+> +
+> +/*
+> + * Check whether the folio is in specific range
+> + *
+> + * First, check whether the folio is in the range of vma.
+> + * Then, check whether the folio is mapped to the range of [start, end].
+> + * In the end, check whether the folio is fully mapped to the range.
+> + *
+> + * @pte page table pointer will be checked whether the large folio
+> + *      is fully mapped to. Currently, if mremap in the middle of
+> + *      large folio, the large folio could be mapped to to different
+> + *      VMA and address check can't identify this situation.
+> + */
+> +static inline bool
+> +folio_in_range(struct folio *folio, struct vm_area_struct *vma,
+> +		unsigned long start, unsigned long end, pte_t *pte)
 
--- 
-Sakari Ailus
+This api seems a bit redundant to me. Wouldn't it be better to remove the vma
+parameter and instead fix up the start/end addresses in folio_within_vma()?
+
+> +{
+> +	pte_t ptent;
+> +	unsigned long i, nr = folio_nr_pages(folio);
+> +	pgoff_t pgoff, addr;
+> +	unsigned long vma_pglen = (vma->vm_end - vma->vm_start) >> PAGE_SHIFT;
+> +
+> +	VM_WARN_ON_FOLIO(folio_test_ksm(folio), folio);
+> +
+> +	if (start < vma->vm_start)
+> +		start = vma->vm_start;
+> +	if (end > vma->vm_end)
+> +		end = vma->vm_end;
+> +
+> +	pgoff = folio_pgoff(folio);
+> +	/* if folio start address is not in vma range */
+> +	if (pgoff < vma->vm_pgoff || pgoff > vma->vm_pgoff + vma_pglen)
+> +		return false;
+> +
+> +	addr = vma->vm_start + ((pgoff - vma->vm_pgoff) << PAGE_SHIFT);
+> +	if (addr < start || end - addr < folio_size(folio))
+> +		return false;
+> +
+> +	/* not necessary to check pte for none large folio */
+> +	if (!folio_test_large(folio))
+> +		return true;
+> +
+> +	if (!pte)
+> +		return false;
+> +
+> +	/* check whether parameter pte is associated with folio */
+> +	ptent = ptep_get(pte);
+> +	if (pte_none(ptent) || !pte_present(ptent) ||
+> +			pte_pfn(ptent) - folio_pfn(folio) >= nr)
+> +		return false;
+> +
+> +	pte -= pte_pfn(ptent) - folio_pfn(folio);
+> +	for (i = 0; i < nr; i++, pte++) {
+> +		ptent = ptep_get(pte);
+> +
+> +		if (pte_none(ptent) || !pte_present(ptent) ||
+> +				pte_pfn(ptent) - folio_pfn(folio) >= nr)
+> +			return false;
+> +	}
+
+I don't think I see anything to ensure you don't wander off the end (or start)
+of the pgtable? If the folio is mremapped so that it straddles multiple tables
+(or is bigger than a single table?) then I think pte can become invalid? Perhaps
+you intended start/end to always be within the same pgtable, but that is not
+guarranteed in the case that folio_within_vma() is making the call.
+
+Also I want to check that this function is definitely always called under the
+PTL for the table that pte belongs to?
+
+> +
+> +	return true;
+> +}
+> +
+> +static inline bool
+> +folio_within_vma(struct folio *folio, struct vm_area_struct *vma, pte_t *pte)
+> +{
+> +	return folio_in_range(folio, vma, vma->vm_start, vma->vm_end, pte);
+> +}
+> +
+>  /*
+>   * mlock_vma_folio() and munlock_vma_folio():
+>   * should be called with vma's mmap_lock held for read or write,
+
