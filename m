@@ -2,95 +2,198 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9BFDC76DB9A
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 01:33:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5390476DB7E
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 01:28:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232525AbjHBXdM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Aug 2023 19:33:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39396 "EHLO
+        id S231347AbjHBX2S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Aug 2023 19:28:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35948 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229606AbjHBXdL (ORCPT
+        with ESMTP id S229436AbjHBX2R (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Aug 2023 19:33:11 -0400
-X-Greylist: delayed 405 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Wed, 02 Aug 2023 16:33:10 PDT
-Received: from newman.cs.utexas.edu (newman.cs.utexas.edu [128.83.139.110])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20C5319BE
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Aug 2023 16:33:09 -0700 (PDT)
-X-AuthUser: ysohail
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=cs.utexas.edu;
-        s=default; t=1691018783;
-        bh=jezoec35LIPHQGp7NRCcRqZwNvqa3eRC0vUme+DyUOQ=;
-        h=Date:Subject:References:From:To:In-Reply-To:From;
-        b=lUrJDCMoio5wnlgZjyYi3t/D5xVJh/urOj43OTYqLug2phQBd2QYqQ9ZPUMvJTOxB
-         ne4L5DCSiwE6iGzNW1TNOLdGVeL68mhPmHQNa3FzROXZ5j+z6QMrY8e37KbhlGJANY
-         5jrKTJbeW+fTOS5RRtYfz0yEOQWzR4nvW2XmLCrA=
-Received: from [192.168.0.202] (71-138-92-128.lightspeed.hstntx.sbcglobal.net [71.138.92.128])
-        (authenticated bits=0)
-        by newman.cs.utexas.edu (8.14.4/8.14.4/Debian-4.1ubuntu1.1) with ESMTP id 372NQMqi005047
-        (version=TLSv1/SSLv3 cipher=AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <linux-kernel@vger.kernel.org>; Wed, 2 Aug 2023 18:26:22 -0500
-Message-ID: <1126dfcc-50d1-e4ed-12a3-d48e6b6a1bbe@cs.utexas.edu>
-Date:   Wed, 2 Aug 2023 18:26:19 -0500
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: x86 64-bit Entrypoint
-Content-Language: en-US
-References: <ec3ce891-5a9f-c0b0-1a1e-1d66bb8e3623@cs.utexas.edu>
-From:   Yahya Sohail <ysohail@cs.utexas.edu>
-To:     linux-kernel@vger.kernel.org
-In-Reply-To: <ec3ce891-5a9f-c0b0-1a1e-1d66bb8e3623@cs.utexas.edu>
-X-Forwarded-Message-Id: <ec3ce891-5a9f-c0b0-1a1e-1d66bb8e3623@cs.utexas.edu>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.3.9 (newman.cs.utexas.edu [128.83.139.110]); Wed, 02 Aug 2023 18:26:23 -0500 (CDT)
-X-Virus-Scanned: clamav-milter 0.103.8 at newman
-X-Virus-Status: Clean
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+        Wed, 2 Aug 2023 19:28:17 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05B04E4F;
+        Wed,  2 Aug 2023 16:28:16 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 8E8EB61B7F;
+        Wed,  2 Aug 2023 23:28:15 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E3031C433C7;
+        Wed,  2 Aug 2023 23:28:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1691018895;
+        bh=nhWlDoBroZnLqL2p7qonO6/FNtiNV5czfDfLuSPQnQM=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=k69LJczbkLd6JK8AoOtoqQZMCYBU6tHbpqBwWU0WMusxaXzNh2LMLKIRGA3YEJNCk
+         HolTMn+Jr1nUMyv9P1fTFE+BDe41EbbHjYz1Tf2MnlqYi1vKwH+V33Vtq/gxibL9Ay
+         STkoZZ37HTMwVV0WTmynxyAdZE8GXt2TOaBvGK8Aoyzm8SHjfD0H0THnOfKKj/LVyx
+         11fjb87SgX8bdXtX4/YsdVvfZ5Ran3A3/iSHNpthmsu1EnTLPYcvkB2YY7cH0WyNvs
+         sGZYHgDSKMz8rN+P4QzAL2pVU0bdf9mzkU7dTfv6O4hpbg4ICVeaPypRq7fnbVpsIl
+         meFdHsxGyRDHw==
+Received: from sofa.misterjones.org ([185.219.108.64] helo=goblin-girl.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.95)
+        (envelope-from <maz@kernel.org>)
+        id 1qRLGG-001VrN-Ot;
+        Thu, 03 Aug 2023 00:28:12 +0100
+Date:   Thu, 03 Aug 2023 00:28:12 +0100
+Message-ID: <86fs5158j7.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Raghavendra Rao Ananta <rananta@google.com>
+Cc:     Oliver Upton <oliver.upton@linux.dev>,
+        James Morse <james.morse@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Zenghui Yu <yuzenghui@huawei.com>,
+        Anup Patel <anup@brainfault.org>,
+        Atish Patra <atishp@atishpatra.org>,
+        Jing Zhang <jingzhangos@google.com>,
+        Reiji Watanabe <reijiw@google.com>,
+        Colton Lewis <coltonlewis@google.com>,
+        David Matlack <dmatlack@google.com>,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
+        linux-mips@vger.kernel.org, kvm-riscv@lists.infradead.org,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org
+Subject: Re: [PATCH v7 12/12] KVM: arm64: Use TLBI range-based intructions for unmap
+In-Reply-To: <CAJHc60zGzAqWw2iZwNEG_bWERXkz_io7ae-K_tf_kh6xcOBxLA@mail.gmail.com>
+References: <20230722022251.3446223-1-rananta@google.com>
+        <20230722022251.3446223-13-rananta@google.com>
+        <87jzulqz0v.wl-maz@kernel.org>
+        <CAJHc60zGzAqWw2iZwNEG_bWERXkz_io7ae-K_tf_kh6xcOBxLA@mail.gmail.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/28.2
+ (aarch64-unknown-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-SA-Exim-Connect-IP: 185.219.108.64
+X-SA-Exim-Rcpt-To: rananta@google.com, oliver.upton@linux.dev, james.morse@arm.com, suzuki.poulose@arm.com, pbonzini@redhat.com, seanjc@google.com, chenhuacai@kernel.org, yuzenghui@huawei.com, anup@brainfault.org, atishp@atishpatra.org, jingzhangos@google.com, reijiw@google.com, coltonlewis@google.com, dmatlack@google.com, linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev, linux-mips@vger.kernel.org, kvm-riscv@lists.infradead.org, linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org, kvm@vger.kernel.org
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Mon, 31 Jul 2023 19:26:09 +0100,
+Raghavendra Rao Ananta <rananta@google.com> wrote:
+>=20
+> On Thu, Jul 27, 2023 at 6:12=E2=80=AFAM Marc Zyngier <maz@kernel.org> wro=
+te:
+> >
+> > On Sat, 22 Jul 2023 03:22:51 +0100,
+> > Raghavendra Rao Ananta <rananta@google.com> wrote:
+> > >
+> > > The current implementation of the stage-2 unmap walker traverses
+> > > the given range and, as a part of break-before-make, performs
+> > > TLB invalidations with a DSB for every PTE. A multitude of this
+> > > combination could cause a performance bottleneck on some systems.
+> > >
+> > > Hence, if the system supports FEAT_TLBIRANGE, defer the TLB
+> > > invalidations until the entire walk is finished, and then
+> > > use range-based instructions to invalidate the TLBs in one go.
+> > > Condition deferred TLB invalidation on the system supporting FWB,
+> > > as the optimization is entirely pointless when the unmap walker
+> > > needs to perform CMOs.
+> > >
+> > > Rename stage2_put_pte() to stage2_unmap_put_pte() as the function
+> > > now serves the stage-2 unmap walker specifically, rather than
+> > > acting generic.
+> > >
+> > > Signed-off-by: Raghavendra Rao Ananta <rananta@google.com>
+> > > ---
+> > >  arch/arm64/kvm/hyp/pgtable.c | 67 +++++++++++++++++++++++++++++++---=
+--
+> > >  1 file changed, 58 insertions(+), 9 deletions(-)
+> > >
+> > > diff --git a/arch/arm64/kvm/hyp/pgtable.c b/arch/arm64/kvm/hyp/pgtabl=
+e.c
+> > > index 5ef098af1736..cf88933a2ea0 100644
+> > > --- a/arch/arm64/kvm/hyp/pgtable.c
+> > > +++ b/arch/arm64/kvm/hyp/pgtable.c
+> > > @@ -831,16 +831,54 @@ static void stage2_make_pte(const struct kvm_pg=
+table_visit_ctx *ctx, kvm_pte_t n
+> > >       smp_store_release(ctx->ptep, new);
+> > >  }
+> > >
+> > > -static void stage2_put_pte(const struct kvm_pgtable_visit_ctx *ctx, =
+struct kvm_s2_mmu *mmu,
+> > > -                        struct kvm_pgtable_mm_ops *mm_ops)
+> > > +struct stage2_unmap_data {
+> > > +     struct kvm_pgtable *pgt;
+> > > +     bool defer_tlb_flush_init;
+> > > +};
+> > > +
+> > > +static bool __stage2_unmap_defer_tlb_flush(struct kvm_pgtable *pgt)
+> > > +{
+> > > +     /*
+> > > +      * If FEAT_TLBIRANGE is implemented, defer the individual
+> > > +      * TLB invalidations until the entire walk is finished, and
+> > > +      * then use the range-based TLBI instructions to do the
+> > > +      * invalidations. Condition deferred TLB invalidation on the
+> > > +      * system supporting FWB, as the optimization is entirely
+> > > +      * pointless when the unmap walker needs to perform CMOs.
+> > > +      */
+> > > +     return system_supports_tlb_range() && stage2_has_fwb(pgt);
+> > > +}
+> > > +
+> > > +static bool stage2_unmap_defer_tlb_flush(struct stage2_unmap_data *u=
+nmap_data)
+> > > +{
+> > > +     bool defer_tlb_flush =3D __stage2_unmap_defer_tlb_flush(unmap_d=
+ata->pgt);
+> > > +
+> > > +     /*
+> > > +      * Since __stage2_unmap_defer_tlb_flush() is based on alternati=
+ve
+> > > +      * patching and the TLBIs' operations behavior depend on this,
+> > > +      * track if there's any change in the state during the unmap se=
+quence.
+> > > +      */
+> > > +     WARN_ON(unmap_data->defer_tlb_flush_init !=3D defer_tlb_flush);
+> > > +     return defer_tlb_flush;
+> >
+> > I really don't understand what you're testing here. The ability to
+> > defer TLB invalidation is a function of the system capabilities
+> > (range+FWB) and a single flag that is only set on the host for pKVM.
+> >
+> > How could that change in the middle of the life of the system? if
+> > further begs the question about the need for the unmap_data data
+> > structure.
+> >
+> > It looks to me that we could simply pass the pgt pointer around and be
+> > done with it. Am I missing something obvious?
+> >
+> From one of the previous comments [1] (used in a different context),
+> I'm given to understand that since these feature checks are governed
+> by alternative patching, they can potentially change (at runtime?). Is
+> that not the case and I have misunderstood the idea in comment [1]
+> entirely? Is it solely used for optimization purposes and set only
+> once?
 
-I've read the documentation for the x86 boot protocol at 
-Documentation/arch/x86/boot.rst. It states the following:
-> In 64-bit boot protocol, the kernel is started by jumping to the
-> 64-bit kernel entry point, which is the start address of loaded
-> 64-bit kernel plus 0x200.
+Alternative patching, just like the static branches used to implement
+the capability stuff, is a one way street. At the point where KVM is
+initialised, these configurations are set in stone, and there is no
+going back.
 
-When I build a kernel and check the bytes at 0x200, they have the 
-following disassembly:
-0x00000200      eb6a           jmp 0x26c
+> If that's the case, I can get rid of the WARN_ON() and unmap_data.
 
-The bytes at 0x26c disassemble as follows:
-0x0000026c      8cd8           mov eax, ds
-0x0000026e      8ec0           mov es, eax
-0x00000270      fc             cld
-0x00000271      8cd2           mov edx, ss
-0x00000273      39c2           cmp edx, eax
-0x00000275      89e2           mov edx, esp
-0x00000277      7416           je 0x28f
-0x00000279      ba204df606     mov edx, 0x6f64d20
-0x0000027e      1102           adc dword [rdx], eax
-0x00000280      8074048b16     xor byte [rsp + rax - 0x75], 0x16
-0x00000285      2402           and al, 2
-0x00000287      81c200047302   add edx, 0x2730400
-0x0000028d      31d2           xor edx, edx
-0x0000028f      83e2fc         and edx, 0xfffffffc
-0x00000292      7503           jne 0x297
-0x00000294      bafcff8ed0     mov edx, 0xd08efffc
-0x00000299      660fb7e2       movzx sp, dx
-0x0000029d      fb             sti
-0x0000029e      1e             invalid
-
-Notice the invalid opcode at 0x29e. In 32-bit mode 0x1e would be PUSH 
-DS, but it is invalid in 64-bit mode. It appears the 64-bit entrypoint 
-is invalid. Are the docs out of date?
+yes, please.
 
 Thanks,
-Yahya Sohail
+
+	M.
+
+--=20
+Without deviation from the norm, progress is not possible.
