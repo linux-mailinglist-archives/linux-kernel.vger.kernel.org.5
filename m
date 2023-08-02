@@ -2,107 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 38D4A76D60D
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 19:50:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 696F676D607
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 19:50:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233852AbjHBRuE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Aug 2023 13:50:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39986 "EHLO
+        id S234174AbjHBRuA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Aug 2023 13:50:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39988 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233462AbjHBRtm (ORCPT
+        with ESMTP id S231936AbjHBRtm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 2 Aug 2023 13:49:42 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB1A144B8;
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9CA544B7;
         Wed,  2 Aug 2023 10:49:00 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id D49F561A81;
+        by dfw.source.kernel.org (Postfix) with ESMTPS id BBB4B61A73;
         Wed,  2 Aug 2023 17:48:54 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2BB32C433C7;
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 236FFC433C8;
         Wed,  2 Aug 2023 17:48:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1690998534;
-        bh=llcebvZe/hkTeRKgHM9EKZHOV4OnEZQnmHgz/2BQCWE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=mvxuU6kSe40eik5JXODSzEUcQCom178bEIK/ueyoWRpPBYA045brCsn1TKHc//Xbp
-         0ObmccZq1JK/3BS0VYByWWa5KMlUgDASDUx+Tg3MIvNOAUYxUN5IA3Q6lhJnKpS+Kr
-         sJpmoKfyS9TkkEjB5QiyyKjYqppx1pnxNqB5iMeyjJu+17+GIbmic7cVmXJSuLaPLd
-         3IndlMaTUYFSp0rFtJkAhEAA+wijtIBWkzROVqk80WuAfa/+5o+BWPM09WvvAR3rkz
-         JrCY5Grb5YAFwp2aCPycS4pLSm1cHlwT5kTUQjtvoINT5B7AR/RvqxCMtj/D0aZcEn
-         M8gGWOmNe33KQ==
+        bh=ec++qd+96KFIy686wWR0g6gZlFG7AhB4I5X3AHouovE=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=gQgov8TXV7aMMrG4qm3LbiCBnMZBGnIhXpvZ3e/awF1e7R8hw19JT/Urv7O3laRfT
+         fshhhiU4UR5UXbvsf8Y81pRqirlso7KI13sNI2AXwcFemvPj9iYIX5zErlveCaFYoS
+         0EOExx6E60EDCMnxxO66zLQn3T5EBeoZ9rVW1dSHsThPovkvNqHPMaUS1WZwgv1IZ4
+         os+UAD2cg5KaUBykb4cfjfeQ9qwZFeVAUjB4Ija7ecOw61LYXJLul1oEt7sQ5ucFqI
+         DW06aWKd2Jk3M4ba3qq0Ula1BIkilSRa+BJaBqAMchOEWVJ7EkrhOiDR76FEHS5wut
+         m3YSwr8S2IKZw==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id A8786CE0927; Wed,  2 Aug 2023 10:48:53 -0700 (PDT)
 Date:   Wed, 2 Aug 2023 10:48:53 -0700
-From:   "Darrick J. Wong" <djwong@kernel.org>
-To:     Jeff Layton <jlayton@kernel.org>
-Cc:     Eric Van Hensbergen <ericvh@kernel.org>,
-        Latchesar Ionkov <lucho@ionkov.net>,
-        Dominique Martinet <asmadeus@codewreck.org>,
-        Christian Schoenebeck <linux_oss@crudebyte.com>,
-        David Howells <dhowells@redhat.com>,
-        Marc Dionne <marc.dionne@auristor.com>,
-        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>, Xiubo Li <xiubli@redhat.com>,
-        Ilya Dryomov <idryomov@gmail.com>,
-        Jan Harkes <jaharkes@cs.cmu.edu>, coda@cs.cmu.edu,
-        Tyler Hicks <code@tyhicks.com>, Gao Xiang <xiang@kernel.org>,
-        Chao Yu <chao@kernel.org>, Yue Hu <huyue2@coolpad.com>,
-        Jeffle Xu <jefflexu@linux.alibaba.com>,
-        Namjae Jeon <linkinjeon@kernel.org>,
-        Sungjong Seo <sj1557.seo@samsung.com>,
-        Jan Kara <jack@suse.com>, Theodore Ts'o <tytso@mit.edu>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Jaegeuk Kim <jaegeuk@kernel.org>,
-        OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>,
-        Miklos Szeredi <miklos@szeredi.hu>,
-        Bob Peterson <rpeterso@redhat.com>,
-        Andreas Gruenbacher <agruenba@redhat.com>,
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Guenter Roeck <linux@roeck-us.net>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Roy Hopkins <rhopkins@suse.de>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Pavel Machek <pavel@denx.de>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Tejun Heo <tj@kernel.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Christian Brauner <brauner@kernel.org>,
-        Trond Myklebust <trond.myklebust@hammerspace.com>,
-        Anna Schumaker <anna@kernel.org>,
-        Konstantin Komarov <almaz.alexandrovich@paragon-software.com>,
-        Mark Fasheh <mark@fasheh.com>,
-        Joel Becker <jlbec@evilplan.org>,
-        Joseph Qi <joseph.qi@linux.alibaba.com>,
-        Mike Marshall <hubcap@omnibond.com>,
-        Martin Brandenburg <martin@omnibond.com>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Iurii Zaikin <yzaikin@google.com>,
-        Steve French <sfrench@samba.org>,
-        Paulo Alcantara <pc@manguebit.com>,
-        Ronnie Sahlberg <lsahlber@redhat.com>,
-        Shyam Prasad N <sprasad@microsoft.com>,
-        Tom Talpey <tom@talpey.com>,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Richard Weinberger <richard@nod.at>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Hugh Dickins <hughd@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Dave Chinner <david@fromorbit.com>,
-        Anthony Iliopoulos <ailiop@suse.com>, v9fs@lists.linux.dev,
-        linux-kernel@vger.kernel.org, linux-afs@lists.infradead.org,
-        linux-btrfs@vger.kernel.org, ceph-devel@vger.kernel.org,
-        codalist@coda.cs.cmu.edu, ecryptfs@vger.kernel.org,
-        linux-erofs@lists.ozlabs.org, linux-fsdevel@vger.kernel.org,
-        linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
-        cluster-devel@redhat.com, linux-nfs@vger.kernel.org,
-        ntfs3@lists.linux.dev, ocfs2-devel@lists.linux.dev,
-        devel@lists.orangefs.org, linux-cifs@vger.kernel.org,
-        samba-technical@lists.samba.org, linux-mtd@lists.infradead.org,
-        linux-mm@kvack.org, linux-xfs@vger.kernel.org
-Subject: Re: [PATCH v6 5/7] xfs: switch to multigrain timestamps
-Message-ID: <20230802174853.GC11352@frogsfrogsfrogs>
-References: <20230725-mgctime-v6-0-a794c2b7abca@kernel.org>
- <20230725-mgctime-v6-5-a794c2b7abca@kernel.org>
+        stable@vger.kernel.org, patches@lists.linux.dev,
+        linux-kernel@vger.kernel.org, akpm@linux-foundation.org,
+        shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, jonathanh@nvidia.com,
+        f.fainelli@gmail.com, sudipm.mukherjee@gmail.com,
+        srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org,
+        rcu@vger.kernel.org, Ingo Molnar <mingo@kernel.org>
+Subject: Re: scheduler problems in -next (was: Re: [PATCH 6.4 000/227]
+ 6.4.7-rc1 review)
+Message-ID: <8ab3ca72-e20c-4b18-803f-bf6937c2cd70@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <20230731143954.GB37820@hirez.programming.kicks-ass.net>
+ <f5a18aa3-9db7-6ad2-33d5-3335a18e4e2f@roeck-us.net>
+ <20230731145232.GM29590@hirez.programming.kicks-ass.net>
+ <7ff2a2393d78275b14ff867f3af902b5d4b93ea2.camel@suse.de>
+ <20230731161452.GA40850@hirez.programming.kicks-ass.net>
+ <baa58a8e-54f0-2309-b34e-d62999a452a1@roeck-us.net>
+ <20230731211517.GA51835@hirez.programming.kicks-ass.net>
+ <a05743a3-4dec-6af7-302f-d1d2a0db7d3e@roeck-us.net>
+ <8215f037-63e9-4e92-8403-c5431ada9cc9@paulmck-laptop>
+ <CAHk-=wj5iESP-=gJSHe0Mfi=Xh2HdSsy+nm8NSr7DbXB9aBDGQ@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230725-mgctime-v6-5-a794c2b7abca@kernel.org>
+In-Reply-To: <CAHk-=wj5iESP-=gJSHe0Mfi=Xh2HdSsy+nm8NSr7DbXB9aBDGQ@mail.gmail.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
@@ -113,83 +79,125 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 25, 2023 at 10:58:18AM -0400, Jeff Layton wrote:
-> Enable multigrain timestamps, which should ensure that there is an
-> apparent change to the timestamp whenever it has been written after
-> being actively observed via getattr.
-> 
-> Also, anytime the mtime changes, the ctime must also change, and those
-> are now the only two options for xfs_trans_ichgtime. Have that function
-> unconditionally bump the ctime, and ASSERT that XFS_ICHGTIME_CHG is
-> always set.
-> 
-> Signed-off-by: Jeff Layton <jlayton@kernel.org>
-> ---
->  fs/xfs/libxfs/xfs_trans_inode.c | 6 +++---
->  fs/xfs/xfs_iops.c               | 4 ++--
->  fs/xfs/xfs_super.c              | 2 +-
->  3 files changed, 6 insertions(+), 6 deletions(-)
-> 
-> diff --git a/fs/xfs/libxfs/xfs_trans_inode.c b/fs/xfs/libxfs/xfs_trans_inode.c
-> index 6b2296ff248a..ad22656376d3 100644
-> --- a/fs/xfs/libxfs/xfs_trans_inode.c
-> +++ b/fs/xfs/libxfs/xfs_trans_inode.c
-> @@ -62,12 +62,12 @@ xfs_trans_ichgtime(
->  	ASSERT(tp);
->  	ASSERT(xfs_isilocked(ip, XFS_ILOCK_EXCL));
->  
-> -	tv = current_time(inode);
-> +	/* If the mtime changes, then ctime must also change */
-> +	ASSERT(flags & XFS_ICHGTIME_CHG);
->  
-> +	tv = inode_set_ctime_current(inode);
->  	if (flags & XFS_ICHGTIME_MOD)
->  		inode->i_mtime = tv;
-> -	if (flags & XFS_ICHGTIME_CHG)
-> -		inode_set_ctime_to_ts(inode, tv);
->  	if (flags & XFS_ICHGTIME_CREATE)
->  		ip->i_crtime = tv;
->  }
-> diff --git a/fs/xfs/xfs_iops.c b/fs/xfs/xfs_iops.c
-> index 3a9363953ef2..3f89ef5a2820 100644
-> --- a/fs/xfs/xfs_iops.c
-> +++ b/fs/xfs/xfs_iops.c
-> @@ -573,10 +573,10 @@ xfs_vn_getattr(
->  	stat->gid = vfsgid_into_kgid(vfsgid);
->  	stat->ino = ip->i_ino;
->  	stat->atime = inode->i_atime;
-> -	stat->mtime = inode->i_mtime;
-> -	stat->ctime = inode_get_ctime(inode);
->  	stat->blocks = XFS_FSB_TO_BB(mp, ip->i_nblocks + ip->i_delayed_blks);
->  
-> +	fill_mg_cmtime(request_mask, inode, stat);
+On Wed, Aug 02, 2023 at 10:14:51AM -0700, Linus Torvalds wrote:
+> Two quick comments, both of them "this code is a bit odd" rather than
+> anything else.
 
-Huh.  I would've thought @stat would come first since that's what we're
-acting upon, but ... eh. :)
+Good to get eyes on this code, so thank you very much!!!
 
-If everyone else is ok with the fill_mg_cmtime signature,
-Acked-by: Darrick J. Wong <djwong@kernel.org>
-
---D
-
-> +
->  	if (xfs_has_v3inodes(mp)) {
->  		if (request_mask & STATX_BTIME) {
->  			stat->result_mask |= STATX_BTIME;
-> diff --git a/fs/xfs/xfs_super.c b/fs/xfs/xfs_super.c
-> index 818510243130..4b10edb2c972 100644
-> --- a/fs/xfs/xfs_super.c
-> +++ b/fs/xfs/xfs_super.c
-> @@ -2009,7 +2009,7 @@ static struct file_system_type xfs_fs_type = {
->  	.init_fs_context	= xfs_init_fs_context,
->  	.parameters		= xfs_fs_parameters,
->  	.kill_sb		= kill_block_super,
-> -	.fs_flags		= FS_REQUIRES_DEV | FS_ALLOW_IDMAP,
-> +	.fs_flags		= FS_REQUIRES_DEV | FS_ALLOW_IDMAP | FS_MGTIME,
->  };
->  MODULE_ALIAS_FS("xfs");
->  
+> On Tue, 1 Aug 2023 at 12:11, Paul E. McKenney <paulmck@kernel.org> wrote:
+> >
+> > diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
 > 
-> -- 
-> 2.41.0
+> Why is this file called "tasks.h"?
 > 
+> It's not a header file. It makes no sense. It's full of C code. It's
+> included in only one place. It's just _weird_.
+
+You are right, it is weird.
+
+This is a holdover from when I was much more concerned about being
+criticized for having #ifdef in a .c file, and pretty much every
+line in this file is under some combination or another of #ifdefs.
+This concern led to kernel/rcu/tree_plugin.h being set up in this way
+back when preemptible RCU was introduced, and for good or for bad I just
+kept following that pattern.
+
+We could convert this to a .c file, keep the #ifdefs, drop some instances
+of "static", add a bunch of declarations, and maybe (or maybe not) push a
+function or two into some .h file for performance/inlining reasons.  Me, I
+would prefer to leave it alone, but we can certainly change it.
+
+> However, more relevantly:
+> 
+> > +               mutex_unlock(&rtp->tasks_gp_mutex);
+> >                 set_tasks_gp_state(rtp, RTGS_WAIT_CBS);
+> 
+> Isn't the tasks_gp_mutex the thing that protects the gp state here?
+> Shouldn't it be after setting?
+
+Much of the gp state is protected by being accessed only by the gp
+kthread.  But there is a window in time where the gp might be driven
+directly out of the synchronize_rcu_tasks() call.  That window in time
+does not have a definite end, so this ->tasks_gp_mutex does the needed
+mutual exclusion during the transition of gp processing to the newly
+created gp kthread.
+
+> >                 rcuwait_wait_event(&rtp->cbs_wait,
+> >                                    (needgpcb = rcu_tasks_need_gpcb(rtp)),
+> >                                    TASK_IDLE);
+> 
+> Also, looking at rcu_tasks_need_gpcb() that is now called outside the
+> lock, it does something quite odd.
+
+The state of each callback list is protected by the ->lock field of
+the rcu_tasks_percpu structure.  Yes, rcu_segcblist_n_cbs() is invoked
+int rcu_tasks_need_gpcb() outside of the lock, but it is designed for
+lockless use.  If it is modified just after the check, then there will
+be a later wakeup on the one hand or we will just uselessly acquire that
+->lock this one time on the other.
+
+Also, ncbs records the number of callbacks seen in that first loop,
+then used later, where its value might be stale.  This might result in
+a collapse back to single-callback-queue operation and a later expansion
+back up.  Except that at this point we are still in single-CPU mode, so
+there should not be any lock contention, which means that there should
+still be but a single callback queue.  The transition itself is protected
+by ->cbs_gbl_lock.
+
+> At the very top of the function does
+> 
+>         for (cpu = 0; cpu < smp_load_acquire(&rtp->percpu_dequeue_lim); cpu++) {
+> 
+> and 'smp_load_acquire()' is all about saying "everything *after* this
+> load is ordered,
+> 
+> But the way it is done in that loop, it is indeed done at the
+> beginning of the loop, but then it's done *after* the loop too, so the
+> last smp_load_acquire seems a bit nonsensical.
+> 
+> If you want to load a value and say "this value is now sensible for
+> everything that follows", I think you should load it *first*. No?
+> 
+> IOW, wouldn't the whole sequence make more sense as
+> 
+>         dequeue_limit = smp_load_acquire(&rtp->percpu_dequeue_lim);
+>         for (cpu = 0; cpu < dequeue_limit; cpu++) {
+> 
+> and say that everything in rcu_tasks_need_gpcb() is ordered wrt the
+> initial limit on entry?
+> 
+> I dunno. That use of "smp_load_acquire()" just seems odd. Memory
+> ordering is hard to understand to begin with, but then when you have
+> things like loops that do the same ordered load multiple times, it
+> goes from "hard to understand" to positively confusing.
+
+Excellent point.  I am queueing that change with your Suggested-by.
+If testing goes well, it will be as shown below.
+
+							Thanx, Paul
+
+------------------------------------------------------------------------
+
+diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
+index 83049a893de5..94bb5abdbb37 100644
+--- a/kernel/rcu/tasks.h
++++ b/kernel/rcu/tasks.h
+@@ -432,6 +432,7 @@ static void rcu_barrier_tasks_generic(struct rcu_tasks *rtp)
+ static int rcu_tasks_need_gpcb(struct rcu_tasks *rtp)
+ {
+ 	int cpu;
++	int dequeue_limit;
+ 	unsigned long flags;
+ 	bool gpdone = poll_state_synchronize_rcu(rtp->percpu_dequeue_gpseq);
+ 	long n;
+@@ -439,7 +440,8 @@ static int rcu_tasks_need_gpcb(struct rcu_tasks *rtp)
+ 	long ncbsnz = 0;
+ 	int needgpcb = 0;
+ 
+-	for (cpu = 0; cpu < smp_load_acquire(&rtp->percpu_dequeue_lim); cpu++) {
++	dequeue_limit = smp_load_acquire(&rtp->percpu_dequeue_lim);
++	for (cpu = 0; cpu < dequeue_limit; cpu++) {
+ 		struct rcu_tasks_percpu *rtpcp = per_cpu_ptr(rtp->rtpcpu, cpu);
+ 
+ 		/* Advance and accelerate any new callbacks. */
