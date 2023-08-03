@@ -2,85 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BEFDE76E390
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 10:48:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D3A1676E392
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 10:48:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234062AbjHCIsL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Aug 2023 04:48:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37104 "EHLO
+        id S234744AbjHCIsr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Aug 2023 04:48:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37604 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233745AbjHCIsJ (ORCPT
+        with ESMTP id S234716AbjHCIsn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Aug 2023 04:48:09 -0400
-Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA50FDA
-        for <linux-kernel@vger.kernel.org>; Thu,  3 Aug 2023 01:48:06 -0700 (PDT)
-Received: by mail-lf1-x12f.google.com with SMTP id 2adb3069b0e04-4fe463420fbso1180534e87.3
-        for <linux-kernel@vger.kernel.org>; Thu, 03 Aug 2023 01:48:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1691052485; x=1691657285;
-        h=content-transfer-encoding:in-reply-to:organization:from:references
-         :cc:to:content-language:subject:reply-to:user-agent:mime-version
-         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=2/hdxh3xj6iR4Yykv7Dt+Q7h/174Nys/IxjYgXNUnVA=;
-        b=raY2Go5vuMFc5/QctA0YSLUQfciPAf69VmtKHUgoDQgoDMgllytied97OkQyodbuFH
-         WnuF5FtIu+mEvtDjgQOII/EPcaYPFO+DIpEIoOQf+tPB4ELKZK3KRffieZB7STmoID9J
-         oaAobXQhjz3bhLHfh940OTRpowIEG1A9uUutgFIG60UoB3AYaijRERQ5si6ATqcz6yWY
-         RLfxHfMladH/225xS2vBh/cuwkn00q5AJ5d7Cp64ZG6eZm2Dpdin76rBw22afBUFLqSQ
-         myp8Dhf7pQbaRNjh24Se+Z/Kogxgeh0FFHSeEzuWatwJ1ngDyFlFx7JrD9fNO2dV4q29
-         yfCA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691052485; x=1691657285;
-        h=content-transfer-encoding:in-reply-to:organization:from:references
-         :cc:to:content-language:subject:reply-to:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=2/hdxh3xj6iR4Yykv7Dt+Q7h/174Nys/IxjYgXNUnVA=;
-        b=Ir9mswMtTgmJ0yqdOelDPgPBF3PsXX/+dD+phZrvCr2JtyQvnojJClZ6z9VZbbctf4
-         Ie2E2MbYwxyV53izO/G91UIs35fQUYOiY9j9st7ssLnG7bJnlCmLqUK3qOk9qvUFaTo3
-         KZ4JdebLen81AJquAzAGQzfT77VTY/DFe2spYPYP5xmiD9sP6Mtj5Ec60LllrZMMJ7QS
-         +x1OGf1lFLjrC6fiSLDOt28rpGprVDbHgXNCsPQdtFCID1lKBI3R75ljtSkdvWZ9ED82
-         E5P4ZyPKSullBjZ9PMTn5K0aiDTNAi8utXCIe/b+hOznb+QWmi//lBNMXY4AGWeaePBL
-         PQtA==
-X-Gm-Message-State: ABy/qLaTDNVb6F8W7nZL8dCxFpYLEllAlxIsS/Caqb3th+hBboULYxyX
-        mDKk6JuAy1Uwj6jzp+LlU3BvWQ==
-X-Google-Smtp-Source: APBJJlG1TSXmbhUXV6vd3PGIBBYcghGyWllyDz062a86gUJzBx9qMnh2oD2yAfzL++WwiCd4hkhqKw==
-X-Received: by 2002:ac2:518a:0:b0:4fb:9497:b2a5 with SMTP id u10-20020ac2518a000000b004fb9497b2a5mr5653512lfi.21.1691052485036;
-        Thu, 03 Aug 2023 01:48:05 -0700 (PDT)
-Received: from ?IPV6:2a01:e0a:982:cbb0:8656:583:d034:d966? ([2a01:e0a:982:cbb0:8656:583:d034:d966])
-        by smtp.gmail.com with ESMTPSA id i17-20020a5d55d1000000b003143be36d99sm21265332wrw.58.2023.08.03.01.48.03
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 03 Aug 2023 01:48:04 -0700 (PDT)
-Message-ID: <5aab1846-5d3c-7010-56ca-556db1f74e92@linaro.org>
-Date:   Thu, 3 Aug 2023 10:48:03 +0200
+        Thu, 3 Aug 2023 04:48:43 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A063EA;
+        Thu,  3 Aug 2023 01:48:41 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 1976121963;
+        Thu,  3 Aug 2023 08:48:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1691052520; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=0hBbcrfPXGHM68Wuj3+6ufrfuN1l894aNWg5/t/rzUc=;
+        b=BlREvVqy4q1sYcCDZ4YCCE7xdtk/rNcCD3GOas97X6g/DvZ4CUysjKQsFCHNn11lOgITRn
+        GuL7Ba3IesEMtyElmsqS/Qdimu1a/duWfVaC5yi/osWFwdKaol581uSVRL3wQBkMX6Bgtn
+        /xxI3iEgl5l4ls1qaQDI7PJFP0lyIGQ=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1691052520;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=0hBbcrfPXGHM68Wuj3+6ufrfuN1l894aNWg5/t/rzUc=;
+        b=cWv1TM7WulkoU1ZH44WKmb+MF4rox4iZb4089/sKX9rLNqc/PvtLTtRyw/JXRrVOTJ8EIU
+        xBdE5tnEW6AbR1Dw==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id ECC9C134B0;
+        Thu,  3 Aug 2023 08:48:39 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id tXwYOedpy2SkXgAAMHmgww
+        (envelope-from <vbabka@suse.cz>); Thu, 03 Aug 2023 08:48:39 +0000
+Message-ID: <d0b555a4-ed2e-3100-ae12-1b05f3035824@suse.cz>
+Date:   Thu, 3 Aug 2023 10:48:39 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Reply-To: neil.armstrong@linaro.org
-Subject: Re: [PATCH 00/14] A7xx support
+ Thunderbird/102.13.1
+Subject: Re: [PATCH] parisc/mm: preallocate fixmap page tables at init
 Content-Language: en-US
-To:     Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Rob Clark <robdclark@gmail.com>,
-        Abhinav Kumar <quic_abhinavk@quicinc.com>,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        Sean Paul <sean@poorly.run>, David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>
-Cc:     Marijn Suijten <marijn.suijten@somainline.org>,
-        linux-arm-msm@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        freedreno@lists.freedesktop.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20230628-topic-a7xx_drmmsm-v1-0-a7f4496e0c12@linaro.org>
-From:   Neil Armstrong <neil.armstrong@linaro.org>
-Organization: Linaro Developer Services
-In-Reply-To: <20230628-topic-a7xx_drmmsm-v1-0-a7f4496e0c12@linaro.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+To:     Mike Rapoport <rppt@kernel.org>, Helge Deller <deller@gmx.de>
+Cc:     Christoph Biedl <linux-kernel.bfrz@manchmal.in-ulm.de>,
+        "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
+        John David Anglin <dave.anglin@bell.net>,
+        linux-parisc@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20230803062404.2373480-1-rppt@kernel.org>
+From:   Vlastimil Babka <vbabka@suse.cz>
+In-Reply-To: <20230803062404.2373480-1-rppt@kernel.org>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+X-Spam-Status: No, score=-4.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -88,85 +76,173 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 28/06/2023 22:35, Konrad Dybcio wrote:
-> This series attempts to introduce Adreno 700 support (with A730 and A740
-> found on SM8450 and SM8550 respectively), reusing much of the existing
-> A6xx code. This submission largely lays the groundwork for expansion and
-> more or less gives us feature parity (on the kernel side, that is) with
-> existing A6xx parts.
+On 8/3/23 08:24, Mike Rapoport wrote:
+> From: "Mike Rapoport (IBM)" <rppt@kernel.org>
 > 
-> On top of introducing a very messy set of three (!) separate and
-> obfuscated deivce identifiers for each 7xx part, this generation
-> introduces very sophisticated hardware multi-threading and (on some SKUs)
-> hardware ray-tracing (not supported yet).
+> Christoph Biedl reported early OOM on recent kernels:
 > 
-> After this series, a long-overdue cleanup of drm/msm/adreno is planned
-> in preparation for adding more features and removing some hardcoding.
+>     swapper: page allocation failure: order:0, mode:0x100(__GFP_ZERO),
+> nodemask=(null)
+>     CPU: 0 PID: 0 Comm: swapper Not tainted 6.3.0-rc4+ #16
+>     Hardware name: 9000/785/C3600
+>     Backtrace:
+>      [<10408594>] show_stack+0x48/0x5c
+>      [<10e152d8>] dump_stack_lvl+0x48/0x64
+>      [<10e15318>] dump_stack+0x24/0x34
+>      [<105cf7f8>] warn_alloc+0x10c/0x1c8
+>      [<105d068c>] __alloc_pages+0xbbc/0xcf8
+>      [<105d0e4c>] __get_free_pages+0x28/0x78
+>      [<105ad10c>] __pte_alloc_kernel+0x30/0x98
+>      [<10406934>] set_fixmap+0xec/0xf4
+>      [<10411ad4>] patch_map.constprop.0+0xa8/0xdc
+>      [<10411bb0>] __patch_text_multiple+0xa8/0x208
+>      [<10411d78>] patch_text+0x30/0x48
+>      [<1041246c>] arch_jump_label_transform+0x90/0xcc
+>      [<1056f734>] jump_label_update+0xd4/0x184
+>      [<1056fc9c>] static_key_enable_cpuslocked+0xc0/0x110
+>      [<1056fd08>] static_key_enable+0x1c/0x2c
+>      [<1011362c>] init_mem_debugging_and_hardening+0xdc/0xf8
+>      [<1010141c>] start_kernel+0x5f0/0xa98
+>      [<10105da8>] start_parisc+0xb8/0xe4
 > 
-> The last patch is a hack that may or may not be necessary depending
-> on your board's humour.. eh.. :/
+>     Mem-Info:
+>     active_anon:0 inactive_anon:0 isolated_anon:0
+>      active_file:0 inactive_file:0 isolated_file:0
+>      unevictable:0 dirty:0 writeback:0
+>      slab_reclaimable:0 slab_unreclaimable:0
+>      mapped:0 shmem:0 pagetables:0
+>      sec_pagetables:0 bounce:0
+>      kernel_misc_reclaimable:0
+>      free:0 free_pcp:0 free_cma:0
+>     Node 0 active_anon:0kB inactive_anon:0kB active_file:0kB
+> inactive_file:0kB unevictable:0kB isolated(anon):0kB isolated(file):0kB
+> mapped:0kB dirty:0kB writeback:0kB shmem:0kB
+> +writeback_tmp:0kB kernel_stack:0kB pagetables:0kB sec_pagetables:0kB
+> all_unreclaimable? no
+>     Normal free:0kB boost:0kB min:0kB low:0kB high:0kB
+> reserved_highatomic:0KB active_anon:0kB inactive_anon:0kB active_file:0kB
+> inactive_file:0kB unevictable:0kB writepending:0kB
+> +present:1048576kB managed:1039360kB mlocked:0kB bounce:0kB free_pcp:0kB
+> local_pcp:0kB free_cma:0kB
+>     lowmem_reserve[]: 0 0
+>     Normal: 0*4kB 0*8kB 0*16kB 0*32kB 0*64kB 0*128kB 0*256kB 0*512kB
+> 0*1024kB 0*2048kB 0*4096kB = 0kB
+>     0 total pagecache pages
+>     0 pages in swap cache
+>     Free swap  = 0kB
+>     Total swap = 0kB
+>     262144 pages RAM
+>     0 pages HighMem/MovableOnly
+>     2304 pages reserved
+>     Backtrace:
+>      [<10411d78>] patch_text+0x30/0x48
+>      [<1041246c>] arch_jump_label_transform+0x90/0xcc
+>      [<1056f734>] jump_label_update+0xd4/0x184
+>      [<1056fc9c>] static_key_enable_cpuslocked+0xc0/0x110
+>      [<1056fd08>] static_key_enable+0x1c/0x2c
+>      [<1011362c>] init_mem_debugging_and_hardening+0xdc/0xf8
+>      [<1010141c>] start_kernel+0x5f0/0xa98
+>      [<10105da8>] start_parisc+0xb8/0xe4
 > 
-> Developed atop (and hence depends on) [1]
+>     Kernel Fault: Code=15 (Data TLB miss fault) at addr 0f7fe3c0
+>     CPU: 0 PID: 0 Comm: swapper Not tainted 6.3.0-rc4+ #16
+>     Hardware name: 9000/785/C3600
 > 
-> The corresponding devicetree patches are initially available at [2] and
-> will be posted after this series gets merged. To test it, you'll also need
-> firmware that you need to obtain from your board (there's none with a
-> redistributable license, sorry..). Most likely it will be in one of
-> these directories on your stock android installation:
+> This happens because patching static key code temporarily maps it via
+> fixmap and if it happens before page allocator is initialized set_fixmap()
+> cannot allocate memory using pte_alloc_kernel().
 > 
-> * /vendor/firmware
-> * /vendor/firmware_mnt
-> * /system
+> Make sure that fixmap page tables are preallocated early so that
+> pte_offset_kernel() in set_fixmap() never resorts to pte allocation.
 > 
-> ..but some vendors make it hard and you have to do some grepping ;)
-> 
-> Requires [3] to work on the userspace side. You'll almost cerainly want
-> to test it alongside Zink with a lot of debug flags (early impl), like:
-> 
-> TU_DEBUG=sysmem,nolrz,flushall,noubwc MESA_LOADER_DRIVER_OVERRIDE=zink kmscube
-> 
-> [1] https://lore.kernel.org/linux-arm-msm/20230517-topic-a7xx_prep-v4-0-b16f273a91d4@linaro.org/
-> [2] https://github.com/SoMainline/linux/commits/topic/a7xx_dt
-> [3] https://gitlab.freedesktop.org/mesa/mesa/-/merge_requests/23217
-> 
-> Signed-off-by: Konrad Dybcio <konrad.dybcio@linaro.org>
-> ---
-> Konrad Dybcio (14):
->        dt-bindings: display/msm/gmu: Add Adreno 7[34]0 GMU
->        dt-bindings: display/msm/gmu: Allow passing QMP handle
->        dt-bindings: display/msm/gpu: Allow A7xx SKUs
->        drm/msm/a6xx: Add missing regs for A7XX
->        drm/msm/a6xx: Introduce a6xx_llc_read
->        drm/msm/a6xx: Move LLC accessors to the common header
->        drm/msm/a6xx: Bail out early if setting GPU OOB fails
->        drm/msm/a6xx: Add skeleton A7xx support
->        drm/msm/a6xx: Send ACD state to QMP at GMU resume
->        drm/msm/a6xx: Mostly implement A7xx gpu_state
->        drm/msm/a6xx: Add A730 support
->        drm/msm/a6xx: Add A740 support
->        drm/msm/a6xx: Vastly increase HFI timeout
->        [RFC] drm/msm/a6xx: Poll for GBIF unhalt status in hw_init
-> 
->   .../devicetree/bindings/display/msm/gmu.yaml       |  47 +-
->   .../devicetree/bindings/display/msm/gpu.yaml       |   4 +-
->   drivers/gpu/drm/msm/adreno/a6xx.xml.h              |   9 +
->   drivers/gpu/drm/msm/adreno/a6xx_gmu.c              | 188 ++++--
->   drivers/gpu/drm/msm/adreno/a6xx_gmu.h              |   3 +
->   drivers/gpu/drm/msm/adreno/a6xx_gmu.xml.h          |   8 +
->   drivers/gpu/drm/msm/adreno/a6xx_gpu.c              | 658 ++++++++++++++++++---
->   drivers/gpu/drm/msm/adreno/a6xx_gpu.h              |  15 +
->   drivers/gpu/drm/msm/adreno/a6xx_gpu_state.c        |  52 +-
->   drivers/gpu/drm/msm/adreno/a6xx_gpu_state.h        |  61 +-
->   drivers/gpu/drm/msm/adreno/a6xx_hfi.c              |  90 ++-
->   drivers/gpu/drm/msm/adreno/adreno_device.c         |  26 +
->   drivers/gpu/drm/msm/adreno/adreno_gpu.c            |   7 +-
->   drivers/gpu/drm/msm/adreno/adreno_gpu.h            |  24 +-
->   drivers/gpu/drm/msm/msm_ringbuffer.h               |   2 +
->   15 files changed, 1070 insertions(+), 124 deletions(-)
-> ---
-> base-commit: 6f9b660e9cbb30669fcfec83288d527c0844717d
-> change-id: 20230628-topic-a7xx_drmmsm-123f30d76cf7
-> 
-> Best regards,
+> Signed-off-by: Mike Rapoport (IBM) <rppt@kernel.org>
 
-Tested-by: Neil Armstrong <neil.armstrong@linaro.org> # on SM8550-QRD
+Acked-by: Vlastimil Babka <vbabka@suse.cz>
+
+Thanks, Mike!
+
+> ---
+> 
+> I didn't add Fixes tag with the commit Christoph bisected because that
+> commit didn't change anything in the initialization of the static keys
+> and I really doubt it is the actual cause of the issue.
+
+Yeah I also don't see how the commit could cause a static key initialization
+to happen sooner than it already has.
+But if it's manifesting for whatever reason since 6.4 then a "Cc: stable #
+6.4+" would be in order.
+
+> 
+>  arch/parisc/mm/fixmap.c |  3 ---
+>  arch/parisc/mm/init.c   | 34 ++++++++++++++++++++++++++++++++++
+>  2 files changed, 34 insertions(+), 3 deletions(-)
+> 
+> diff --git a/arch/parisc/mm/fixmap.c b/arch/parisc/mm/fixmap.c
+> index cc15d737fda6..ae3493dae9dc 100644
+> --- a/arch/parisc/mm/fixmap.c
+> +++ b/arch/parisc/mm/fixmap.c
+> @@ -19,9 +19,6 @@ void notrace set_fixmap(enum fixed_addresses idx, phys_addr_t phys)
+>  	pmd_t *pmd = pmd_offset(pud, vaddr);
+>  	pte_t *pte;
+>  
+> -	if (pmd_none(*pmd))
+> -		pte = pte_alloc_kernel(pmd, vaddr);
+> -
+>  	pte = pte_offset_kernel(pmd, vaddr);
+>  	set_pte_at(&init_mm, vaddr, pte, __mk_pte(phys, PAGE_KERNEL_RWX));
+>  	flush_tlb_kernel_range(vaddr, vaddr + PAGE_SIZE);
+> diff --git a/arch/parisc/mm/init.c b/arch/parisc/mm/init.c
+> index 406c52fe23d5..389941c7f209 100644
+> --- a/arch/parisc/mm/init.c
+> +++ b/arch/parisc/mm/init.c
+> @@ -669,6 +669,39 @@ static void __init gateway_init(void)
+>  		  PAGE_SIZE, PAGE_GATEWAY, 1);
+>  }
+>  
+> +static void __init fixmap_init(void)
+> +{
+> +	unsigned long addr = FIXMAP_START;
+> +	unsigned long end = FIXMAP_START + FIXMAP_SIZE;
+> +	pgd_t *pgd = pgd_offset_k(addr);
+> +	p4d_t *p4d = p4d_offset(pgd, addr);
+> +	pud_t *pud = pud_offset(p4d, addr);
+> +	pmd_t *pmd;
+> +
+> +	BUILD_BUG_ON(FIXMAP_SIZE > PMD_SIZE);
+> +
+> +#if CONFIG_PGTABLE_LEVELS == 3
+> +	if (pud_none(*pud)) {
+> +		pmd = memblock_alloc(PAGE_SIZE << PMD_TABLE_ORDER,
+> +				     PAGE_SIZE << PMD_TABLE_ORDER);
+> +		if (!pmd)
+> +			panic("fixmap: pmd allocation failed.\n");
+> +		pud_populate(NULL, pud, pmd);
+> +	}
+> +#endif
+> +
+> +	pmd = pmd_offset(pud, addr);
+> +	do {
+> +		pte_t *pte = memblock_alloc(PAGE_SIZE, PAGE_SIZE);
+> +		if (!pte)
+> +			panic("fixmap: pte allocation failed.\n");
+> +
+> +		pmd_populate_kernel(&init_mm, pmd, pte);
+> +
+> +		addr += PAGE_SIZE;
+> +	} while (addr < end);
+> +}
+> +
+>  static void __init parisc_bootmem_free(void)
+>  {
+>  	unsigned long max_zone_pfn[MAX_NR_ZONES] = { 0, };
+> @@ -683,6 +716,7 @@ void __init paging_init(void)
+>  	setup_bootmem();
+>  	pagetable_init();
+>  	gateway_init();
+> +	fixmap_init();
+>  	flush_cache_all_local(); /* start with known state */
+>  	flush_tlb_all_local(NULL);
+>  
+> 
+> base-commit: 5d0c230f1de8c7515b6567d9afba1f196fb4e2f4
+
