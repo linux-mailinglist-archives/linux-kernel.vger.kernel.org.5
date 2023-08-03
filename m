@@ -2,77 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A5EF76F04A
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 19:05:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9780B76F04C
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 19:06:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232321AbjHCRFi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Aug 2023 13:05:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59500 "EHLO
+        id S233417AbjHCRGQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Aug 2023 13:06:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59986 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229617AbjHCRFg (ORCPT
+        with ESMTP id S232802AbjHCRGO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Aug 2023 13:05:36 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7EDB5DA;
-        Thu,  3 Aug 2023 10:05:35 -0700 (PDT)
+        Thu, 3 Aug 2023 13:06:14 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41C48DA
+        for <linux-kernel@vger.kernel.org>; Thu,  3 Aug 2023 10:06:12 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id F349C61E46;
-        Thu,  3 Aug 2023 17:05:34 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 058D5C433C7;
-        Thu,  3 Aug 2023 17:05:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
-        s=korg; t=1691082334;
-        bh=mKXYwoVy5HfvYiKywnPPMjvSi6Q9LzPXn0QPxBh7klc=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=sR/84AOqkNrlcyI3Mg///cmnKs9K7ETOFfWUvoe1dfQx5DKvUhLK0PQV/VfacxYKJ
-         c9FskuPuzEyD0/Tut7Eg8+l/huwAJp84RU/+2om1L2s6CgrKvpPktF5KRDDNtb/hjd
-         y3DtIqnBfSiziLpvk1Mk36RNcIEzzVBWcY1gLVII=
-Date:   Thu, 3 Aug 2023 10:05:33 -0700
-From:   Andrew Morton <akpm@linux-foundation.org>
-To:     Johannes Weiner <hannes@cmpxchg.org>
-Cc:     Miaohe Lin <linmiaohe@huawei.com>, tj@kernel.org,
-        lizefan.x@bytedance.com, cgroups@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] cgroup: minor cleanup for cgroup_local_stat_show()
-Message-Id: <20230803100533.a9bdac370de2e8e4bee0f33a@linux-foundation.org>
-In-Reply-To: <20230803142758.GC219857@cmpxchg.org>
-References: <20230803113123.577023-1-linmiaohe@huawei.com>
-        <20230803142758.GC219857@cmpxchg.org>
-X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        by dfw.source.kernel.org (Postfix) with ESMTPS id D35B361E2F
+        for <linux-kernel@vger.kernel.org>; Thu,  3 Aug 2023 17:06:11 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 361A5C433C8;
+        Thu,  3 Aug 2023 17:06:09 +0000 (UTC)
+Date:   Thu, 3 Aug 2023 18:06:06 +0100
+From:   Catalin Marinas <catalin.marinas@arm.com>
+To:     Zhang Jianhua <chris.zjh@huawei.com>
+Cc:     will@kernel.org, mark.rutland@arm.com, ryan.roberts@arm.com,
+        joey.gouly@arm.com, ardb@kernel.org, anshuman.khandual@arm.com,
+        bhe@redhat.com, thunder.leizhen@huawei.com, broonie@kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH -next v3] arm64: fix build warning for
+ ARM64_MEMSTART_SHIFT
+Message-ID: <ZMvefmB6unOE+OPB@arm.com>
+References: <20230725202404.3470111-1-chris.zjh@huawei.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20230725202404.3470111-1-chris.zjh@huawei.com>
+X-Spam-Status: No, score=-6.7 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_HI,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 3 Aug 2023 10:27:58 -0400 Johannes Weiner <hannes@cmpxchg.org> wrote:
-
-> > @@ -3686,8 +3686,9 @@ static int cpu_stat_show(struct seq_file *seq, void *v)
-> >  	return ret;
-> >  }
-> >  
-> > -static int __maybe_unused cgroup_local_stat_show(struct seq_file *seq,
-> > -						 struct cgroup *cgrp, int ssid)
-> > +#ifdef CONFIG_CGROUP_SCHED
-> > +static int cgroup_local_stat_show(struct seq_file *seq,
-> > +				  struct cgroup *cgrp, int ssid)
+On Tue, Jul 25, 2023 at 08:24:04PM +0000, Zhang Jianhua wrote:
+> When building with W=1, the following warning occurs.
 > 
-> Andrew, this is based on "sched: add throttled time stat for throttled
-> children" in -next (coming in from -tip). Hence the routing through
-> you rather than the cgroup tree.
+> arch/arm64/include/asm/kernel-pgtable.h:129:41: error: "PUD_SHIFT" is not defined, evaluates to 0 [-Werror=undef]
+>   129 | #define ARM64_MEMSTART_SHIFT            PUD_SHIFT
+>       |                                         ^~~~~~~~~
+> arch/arm64/include/asm/kernel-pgtable.h:142:5: note: in expansion of macro ‘ARM64_MEMSTART_SHIFT’
+>   142 | #if ARM64_MEMSTART_SHIFT < SECTION_SIZE_BITS
+>       |     ^~~~~~~~~~~~~~~~~~~~
+> 
+> The reason is that PUD_SHIFT isn't defined if CONFIG_PGTABLE_LEVELS == 3
+> and CONFIG_VA_BITS == 39.
 
-Since switching to the more gitty workflow I have lost the power to
-carry patches against -next.  I could regain that power I guess, but
-this is the first time the requirement has come up.
+The correct description is that the generic PUD_SHIFT isn't defined for
+asm files, we still have it defined for C files (there's an #ifndef
+__ASSEMBLY__ guard).
 
-So for now I'll save this patch away for the next -rc cycle.
+> Now move the macro ARM64_MEMSTART_SHIFT and
+> ARM64_MEMSTART_ALIGN to arch/arm64/mm/init.c where it is used to avoid
+> this issue, and also there is no other place to call these two macro.
+> 
+> Signed-off-by: Zhang Jianhua <chris.zjh@huawei.com>
+
+This fix works for me. I'll leave it to Will for 6.6 as apart from the
+warning with W=1, there's no other issue (ARM64_MEMSTART_* are not used
+in any asm files).
+
+Reviewed-by: Catalin Marinas <catalin.marinas@arm.com>
