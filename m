@@ -2,123 +2,301 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 110C076E28C
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 10:11:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EF13576E29D
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 10:14:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234291AbjHCILS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Aug 2023 04:11:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39678 "EHLO
+        id S232904AbjHCIN4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Aug 2023 04:13:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41566 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234217AbjHCIK4 (ORCPT
+        with ESMTP id S234403AbjHCINK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Aug 2023 04:10:56 -0400
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8279A187;
-        Thu,  3 Aug 2023 01:02:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.de;
- s=s31663417; t=1691049752; x=1691654552; i=deller@gmx.de;
- bh=jVIaHqd0C5FRVw9ggeD+N36uhb3oQPjzcd7X7a5NTpU=;
- h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:In-Reply-To;
- b=G02+OCbgK/62oGqmTqBpMMQG8jJbkwWovhFBHDojNGwfuK/YhBNze8g8A7NDEkYnYnlLR0O
- Rcts9jaZjiodWKw6HmGrhGb0WIKZ2cokSS3UTjSz6oks2O3nTOn3oMHaKj2LfW1QxKr+TxumU
- 4IRf3pTvTZYwBhlA6Y8awQwyCMVC/rKkCBjr7ctkqcj9CtmC8EHbaFflohU4aM0hzpS3xgHLv
- 51mHROS+NknNpsBViZ9NciCHL2tLbIdmDLx2WdbrMp44Hg4T/CkqOI5tmR4kBiK2RQNHBDUlR
- ylM16DuXsNcg2niF1iN2qY7zeTrioMrOrHl+cJYLSJsHWmqtENlw==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [192.168.20.60] ([94.134.147.53]) by mail.gmx.net (mrgmx104
- [212.227.17.168]) with ESMTPSA (Nemesis) id 1M1Ygt-1qOR1I3dQx-0032zM; Thu, 03
- Aug 2023 10:02:31 +0200
-Message-ID: <5859e93c-23b3-f1f7-9a7c-d2e4c92047eb@gmx.de>
-Date:   Thu, 3 Aug 2023 10:02:30 +0200
+        Thu, 3 Aug 2023 04:13:10 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39A01A5D1
+        for <linux-kernel@vger.kernel.org>; Thu,  3 Aug 2023 01:04:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1691049845;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=moxKMwUDbhA+vA1Ts0dJ3Yq4Q7IThf0mQEpJ1kG2LAM=;
+        b=NM+14AH6cy6sbFqiGYWyJDyEl11GZTXdXe1PX//mSeCss04PebY4TsBJNVYSXZXazdqQNb
+        GcVPdtJj5xH8l5Le01aU2LXdiN6cEgMof2msIenWi5cyy/UKCrM9T6ug9IuuJSYOALhwfn
+        l78z8WUIyApOwvbdcp2VlBpj0dOPGww=
+Received: from mail-lj1-f200.google.com (mail-lj1-f200.google.com
+ [209.85.208.200]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-548-_i5Yl9xcMdyA149h129LPw-1; Thu, 03 Aug 2023 04:04:02 -0400
+X-MC-Unique: _i5Yl9xcMdyA149h129LPw-1
+Received: by mail-lj1-f200.google.com with SMTP id 38308e7fff4ca-2b9e014111fso6700031fa.0
+        for <linux-kernel@vger.kernel.org>; Thu, 03 Aug 2023 01:04:02 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691049840; x=1691654640;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=moxKMwUDbhA+vA1Ts0dJ3Yq4Q7IThf0mQEpJ1kG2LAM=;
+        b=TPw2LbXzu5hiqIem62NN8JUhN3toIibOjT8Y9NDB3/sDs9GLXawCpjvjMkqajd3M4P
+         jGZzEGVnPiJRtOUiMOl1QawyEX6bDwOCHU8PJGxO42Z/QiIZOye013gski2f5G1hhjy7
+         xq9fnusX3l2fKD1d48wVdSFLY4bsBSc1hTxNhb2I2fz0GinIg8u0Pe918crR7FLEddfu
+         bVjJYh/A59LY/SErS94KFZhCtHKd43Z4eIG7hKecgZxw1Xobk981W8a3k+8l47XqSCVL
+         ybXfUcx7iP7G4f5h7iYy37XPbDWfqhQeb5elkPR1dGGz4WA3v8FpYEorNPOL1bGfmGXT
+         OruQ==
+X-Gm-Message-State: ABy/qLbYcD+RTlxFA7Lq1nC1XR2iGhgmRyVac+sWED2nE0XKoFYGy4Qr
+        UuWoTt7SqWsL1DV8QV6b1rImFQvAwgxl099RtLLBBg2YuybcM5ZFANdjSv4drxFXvH3fSUM/8Ub
+        JLuNEY36ixFs3RGc2cn8u4b906GnE8rICJQ+dphWK/naIXKM9fXBzeQ==
+X-Received: by 2002:a2e:97c6:0:b0:2b7:2ea:33c3 with SMTP id m6-20020a2e97c6000000b002b702ea33c3mr7191833ljj.22.1691049840695;
+        Thu, 03 Aug 2023 01:04:00 -0700 (PDT)
+X-Google-Smtp-Source: APBJJlFMDxVwbeHqj4DgdHBE4iuwjdlVVHKrE3/GFhPOK7CvcNV780cC8GDmA4oCFP3zWPdRN0SaVbdmTAK/LBVxNQY=
+X-Received: by 2002:a2e:97c6:0:b0:2b7:2ea:33c3 with SMTP id
+ m6-20020a2e97c6000000b002b702ea33c3mr7191814ljj.22.1691049840334; Thu, 03 Aug
+ 2023 01:04:00 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH] parisc/mm: preallocate fixmap page tables at init
-To:     Mike Rapoport <rppt@kernel.org>
-Cc:     Christoph Biedl <linux-kernel.bfrz@manchmal.in-ulm.de>,
-        "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
-        John David Anglin <dave.anglin@bell.net>,
-        Vlastimil Babka <vbabka@suse.cz>, linux-parisc@vger.kernel.org,
+References: <20230802171231.11001-1-dtatulea@nvidia.com> <20230802171231.11001-3-dtatulea@nvidia.com>
+In-Reply-To: <20230802171231.11001-3-dtatulea@nvidia.com>
+From:   Jason Wang <jasowang@redhat.com>
+Date:   Thu, 3 Aug 2023 16:03:48 +0800
+Message-ID: <CACGkMEsE45k+fqv-biYfOX5VbqZLo_drQV5rPYByuLJZK03hWQ@mail.gmail.com>
+Subject: Re: [PATCH 1/2] vdpa/mlx5: Fix mr->initialized semantics
+To:     Dragos Tatulea <dtatulea@nvidia.com>
+Cc:     "Michael S. Tsirkin" <mst@redhat.com>,
+        Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
+        =?UTF-8?Q?Eugenio_P=C3=A9rez?= <eperezma@redhat.com>,
+        Gal Pressman <gal@nvidia.com>,
+        virtualization@lists.linux-foundation.org,
         linux-kernel@vger.kernel.org
-References: <20230803062404.2373480-1-rppt@kernel.org>
-Content-Language: en-US
-From:   Helge Deller <deller@gmx.de>
-In-Reply-To: <20230803062404.2373480-1-rppt@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:rKpu2Cl0rRssSWl8tLv4kGQF+QIefluskhC1Yw2+jMtpR4zPN57
- 0Bkd6wHeBYGzx+mgsdt3vMt/AfjXsKWjN+h0myFpMYSOncVT14tgOqXZmtLMgFnQVXpT9OH
- RqhkLWZNPo5HzsOYz1r2D5F2sVPP7M4t3okiGhR5dKHC60xeB3qKLMlF+OJ+JhtuB+42Asn
- XLK4o1Cmkqo9hSA9v/AGg==
-UI-OutboundReport: notjunk:1;M01:P0:cCv/Zue/FhA=;/MUeLeefkbfQvFZTFWjfmbMOO1G
- p2CbgvIztWey6UagEGeWmdDi8ocipXC6oxG54/YLVeEabXaftcFxI9sYqBl+VNpEuzazxFOnU
- xOMooJ8fnz1cyjYIEcP4Pem5amu4nfh5DzWHe9/GkyHDLMA56VB4AWR9h5NC8KNsXK06NGRGb
- ZRItT4iRBCAnQigZiOt9X/CNHwmufMbb4l+5zrB4cmoNcmae4XM2tsvGQFJdtIA5UXAP+RuvL
- VWyR+Hw7Pp6cGyvo8Bg6mq2YvojHMXcJyMq6b0M8Dbx6Wgr/F2TwyJUefvYMv9PZb9RaEAplh
- dWgAOrkoDT1I5J/u9X2dHmJPNVEI4RF59oqZqk/4MXCQtvjkYmMy6R6M3ImUloQsD7vIlz9gO
- dR1zWdhefGNlGBWL4Q3EOILDcc1lDNm+SumVnf825CIlame8E5AIQ59vD1BYLuotUBf7FwisX
- 9rYYp0LwvQ5iZVoV0ZJcyulDHRP+avMKFqRjuia6h8rSFQF4eMk9UQavyzjvM+QXbojrHcHes
- zznovfHv/RnY6BLopJrhQ0VwhzKNHz8a+ZEmFzjH+dwr+iK7hKkzmzP7LvGSl/LYsBqoAkiii
- WKa3nmwWMNOvQf8ml+wFta5fRKKq411KWkCFrLUFZLUBSQzQsNUguHInHV2RPghObjT5In6BH
- /H6BA5SzcNmSQ6YUpQROt+KZtFFYclbKLSm+YaiG6IGB/96Yhjwv30m7pUN6zDkrl60+ZmdY2
- 5UW0Lqyj5ER2pC7E685X9sNrxO0ceWLJRgZFPWx+++h6DB168IhEtx37hdkzZHgC7cROlhcgX
- qPD2cWU+LmQJmj0kgeNoyd8WOOE72Gy1ItqaxACp1m4noh0XnZwykhp6KpnGhSxCf9hDRKNsl
- U9alRSPEi72/LbP8JDtQ5U6zc7hgNvsKn/xLGmIx4GTHq4JXWMErDgigx/CnFvOzhV/0706oD
- 2x0zy6VkAXYyRyvVBpTgNpaEi1E=
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/3/23 08:24, Mike Rapoport wrote:
-> From: "Mike Rapoport (IBM)" <rppt@kernel.org>
+On Thu, Aug 3, 2023 at 1:13=E2=80=AFAM Dragos Tatulea <dtatulea@nvidia.com>=
+ wrote:
 >
-> Christoph Biedl reported early OOM on recent kernels:
+> The mr->initialized flag is shared between the control vq and data vq
+> part of the mr init/uninit. But if the control vq and data vq get placed
+> in different ASIDs, it can happen that initializing the control vq will
+> prevent the data vq mr from being initialized.
 >
->      swapper: page allocation failure: order:0, mode:0x100(__GFP_ZERO),
-> nodemask=3D(null)
->      CPU: 0 PID: 0 Comm: swapper Not tainted 6.3.0-rc4+ #16
->      Hardware name: 9000/785/C3600
->      Backtrace:
->       [<10408594>] show_stack+0x48/0x5c
->       [<10e152d8>] dump_stack_lvl+0x48/0x64
->       [<10e15318>] dump_stack+0x24/0x34
->       [<105cf7f8>] warn_alloc+0x10c/0x1c8
->       [<105d068c>] __alloc_pages+0xbbc/0xcf8
->       [<105d0e4c>] __get_free_pages+0x28/0x78
->       [<105ad10c>] __pte_alloc_kernel+0x30/0x98
->       [<10406934>] set_fixmap+0xec/0xf4
->       [<10411ad4>] patch_map.constprop.0+0xa8/0xdc
->       [<10411bb0>] __patch_text_multiple+0xa8/0x208
->       [<10411d78>] patch_text+0x30/0x48
->       [<1041246c>] arch_jump_label_transform+0x90/0xcc
->       [<1056f734>] jump_label_update+0xd4/0x184
->       [<1056fc9c>] static_key_enable_cpuslocked+0xc0/0x110
->       [<1056fd08>] static_key_enable+0x1c/0x2c
->       [<1011362c>] init_mem_debugging_and_hardening+0xdc/0xf8
->       [<1010141c>] start_kernel+0x5f0/0xa98
->       [<10105da8>] start_parisc+0xb8/0xe4
-> ...
->      Kernel Fault: Code=3D15 (Data TLB miss fault) at addr 0f7fe3c0
->      CPU: 0 PID: 0 Comm: swapper Not tainted 6.3.0-rc4+ #16
->      Hardware name: 9000/785/C3600
+> This patch consolidates the control and data vq init parts into their
+> own init functions. The mr->initialized will now be used for the data vq
+> only. The control vq currently doesn't need a flag.
 >
-> This happens because patching static key code temporarily maps it via
-> fixmap and if it happens before page allocator is initialized set_fixmap=
-()
-> cannot allocate memory using pte_alloc_kernel().
+> The uninitializing part is also taken care of: mlx5_vdpa_destroy_mr got
+> split into data and control vq functions which are now also ASID aware.
 >
-> Make sure that fixmap page tables are preallocated early so that
-> pte_offset_kernel() in set_fixmap() never resorts to pte allocation.
+> Fixes: 8fcd20c30704 ("vdpa/mlx5: Support different address spaces for con=
+trol and data")
+> Signed-off-by: Dragos Tatulea <dtatulea@nvidia.com>
+> Reviewed-by: Eugenio P=C3=A9rez <eperezma@redhat.com>
+> Reviewed-by: Gal Pressman <gal@nvidia.com>
+> ---
+>  drivers/vdpa/mlx5/core/mlx5_vdpa.h |  1 +
+>  drivers/vdpa/mlx5/core/mr.c        | 97 +++++++++++++++++++++---------
+>  2 files changed, 71 insertions(+), 27 deletions(-)
 >
-> Signed-off-by: Mike Rapoport (IBM) <rppt@kernel.org>
+> diff --git a/drivers/vdpa/mlx5/core/mlx5_vdpa.h b/drivers/vdpa/mlx5/core/=
+mlx5_vdpa.h
+> index 25fc4120b618..a0420be5059f 100644
+> --- a/drivers/vdpa/mlx5/core/mlx5_vdpa.h
+> +++ b/drivers/vdpa/mlx5/core/mlx5_vdpa.h
+> @@ -31,6 +31,7 @@ struct mlx5_vdpa_mr {
+>         struct list_head head;
+>         unsigned long num_directs;
+>         unsigned long num_klms;
+> +       /* state of dvq mr */
+>         bool initialized;
+>
+>         /* serialize mkey creation and destruction */
+> diff --git a/drivers/vdpa/mlx5/core/mr.c b/drivers/vdpa/mlx5/core/mr.c
+> index 03e543229791..4ae14a248a4b 100644
+> --- a/drivers/vdpa/mlx5/core/mr.c
+> +++ b/drivers/vdpa/mlx5/core/mr.c
+> @@ -489,60 +489,103 @@ static void destroy_user_mr(struct mlx5_vdpa_dev *=
+mvdev, struct mlx5_vdpa_mr *mr
+>         }
+>  }
+>
+> -void mlx5_vdpa_destroy_mr(struct mlx5_vdpa_dev *mvdev)
+> +static void _mlx5_vdpa_destroy_cvq_mr(struct mlx5_vdpa_dev *mvdev, unsig=
+ned int asid)
+> +{
+> +       if (mvdev->group2asid[MLX5_VDPA_CVQ_GROUP] !=3D asid)
+> +               return;
+> +
+> +       prune_iotlb(mvdev);
+> +}
+> +
+> +static void _mlx5_vdpa_destroy_dvq_mr(struct mlx5_vdpa_dev *mvdev, unsig=
+ned int asid)
+>  {
+>         struct mlx5_vdpa_mr *mr =3D &mvdev->mr;
+>
+> -       mutex_lock(&mr->mkey_mtx);
+> +       if (mvdev->group2asid[MLX5_VDPA_DATAVQ_GROUP] !=3D asid)
+> +               return;
+> +
+>         if (!mr->initialized)
+> -               goto out;
+> +               return;
+>
+> -       prune_iotlb(mvdev);
+>         if (mr->user_mr)
+>                 destroy_user_mr(mvdev, mr);
+>         else
+>                 destroy_dma_mr(mvdev, mr);
+>
+>         mr->initialized =3D false;
+> -out:
+> +}
+> +
+> +static void mlx5_vdpa_destroy_mr_asid(struct mlx5_vdpa_dev *mvdev, unsig=
+ned int asid)
+> +{
+> +       struct mlx5_vdpa_mr *mr =3D &mvdev->mr;
+> +
+> +       mutex_lock(&mr->mkey_mtx);
+> +
+> +       _mlx5_vdpa_destroy_dvq_mr(mvdev, asid);
+> +       _mlx5_vdpa_destroy_cvq_mr(mvdev, asid);
+> +
+>         mutex_unlock(&mr->mkey_mtx);
+>  }
+>
+> -static int _mlx5_vdpa_create_mr(struct mlx5_vdpa_dev *mvdev,
+> -                               struct vhost_iotlb *iotlb, unsigned int a=
+sid)
+> +void mlx5_vdpa_destroy_mr(struct mlx5_vdpa_dev *mvdev)
+> +{
+> +       mlx5_vdpa_destroy_mr_asid(mvdev, mvdev->group2asid[MLX5_VDPA_CVQ_=
+GROUP]);
+> +       mlx5_vdpa_destroy_mr_asid(mvdev, mvdev->group2asid[MLX5_VDPA_DATA=
+VQ_GROUP]);
+> +}
+> +
+> +static int _mlx5_vdpa_create_cvq_mr(struct mlx5_vdpa_dev *mvdev,
+> +                                   struct vhost_iotlb *iotlb,
+> +                                   unsigned int asid)
+> +{
+> +       if (mvdev->group2asid[MLX5_VDPA_CVQ_GROUP] !=3D asid)
+> +               return 0;
+> +
+> +       return dup_iotlb(mvdev, iotlb);
 
-Now queued up in parisc for-next tree.
+This worries me as conceptually, there should be no difference between
+dvq mr and cvq mr. The virtqueue should be loosely coupled with mr.
 
-Thanks to Christoph for bisecting and Mike for coming up with this patch!
-Helge
+One example is that, if we only do dup_iotlb() but not try to create
+dma mr here, we will break virtio-vdpa:
+
+commit 6f5312f801836e6af9bcbb0bdb44dc423e129206
+Author: Eli Cohen <elic@nvidia.com>
+Date:   Wed Jun 2 11:58:54 2021 +0300
+
+    vdpa/mlx5: Add support for running with virtio_vdpa
+
+    In order to support running vdpa using vritio_vdpa driver, we need  to
+    create a different kind of MR, one that has 1:1 mapping, since the
+    addresses referring to virtqueues are dma addresses.
+
+    We create the 1:1 MR in mlx5_vdpa_dev_add() only in case firmware
+    supports the general capability umem_uid_0. The reason for that is that
+    1:1 MRs must be created with uid =3D=3D 0 while virtqueue objects can b=
+e
+    created with uid =3D=3D 0 only when the firmware capability is on.
+
+    If the set_map() callback is called with new translations provided
+    through iotlb, the driver will destroy the 1:1 MR and create a regular
+    one.
+
+    Signed-off-by: Eli Cohen <elic@nvidia.com>
+    Link: https://lore.kernel.org/r/20210602085854.62690-1-elic@nvidia.com
+    Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
+    Acked-by: Jason Wang <jasowang@redhat.com>
+
+Thanks
+
+
+> +}
+> +
+> +static int _mlx5_vdpa_create_dvq_mr(struct mlx5_vdpa_dev *mvdev,
+> +                                   struct vhost_iotlb *iotlb,
+> +                                   unsigned int asid)
+>  {
+>         struct mlx5_vdpa_mr *mr =3D &mvdev->mr;
+>         int err;
+>
+> -       if (mr->initialized)
+> +       if (mvdev->group2asid[MLX5_VDPA_DATAVQ_GROUP] !=3D asid)
+>                 return 0;
+>
+> -       if (mvdev->group2asid[MLX5_VDPA_DATAVQ_GROUP] =3D=3D asid) {
+> -               if (iotlb)
+> -                       err =3D create_user_mr(mvdev, iotlb);
+> -               else
+> -                       err =3D create_dma_mr(mvdev, mr);
+> +       if (mr->initialized)
+> +               return 0;
+>
+> -               if (err)
+> -                       return err;
+> -       }
+> +       if (iotlb)
+> +               err =3D create_user_mr(mvdev, iotlb);
+> +       else
+> +               err =3D create_dma_mr(mvdev, mr);
+>
+> -       if (mvdev->group2asid[MLX5_VDPA_CVQ_GROUP] =3D=3D asid) {
+> -               err =3D dup_iotlb(mvdev, iotlb);
+> -               if (err)
+> -                       goto out_err;
+> -       }
+> +       if (err)
+> +               return err;
+>
+>         mr->initialized =3D true;
+> +
+> +       return 0;
+> +}
+> +
+> +static int _mlx5_vdpa_create_mr(struct mlx5_vdpa_dev *mvdev,
+> +                               struct vhost_iotlb *iotlb, unsigned int a=
+sid)
+> +{
+> +       int err;
+> +
+> +       err =3D _mlx5_vdpa_create_dvq_mr(mvdev, iotlb, asid);
+> +       if (err)
+> +               return err;
+> +
+> +       err =3D _mlx5_vdpa_create_cvq_mr(mvdev, iotlb, asid);
+> +       if (err)
+> +               goto out_err;
+> +
+>         return 0;
+>
+>  out_err:
+> -       if (mvdev->group2asid[MLX5_VDPA_DATAVQ_GROUP] =3D=3D asid) {
+> -               if (iotlb)
+> -                       destroy_user_mr(mvdev, mr);
+> -               else
+> -                       destroy_dma_mr(mvdev, mr);
+> -       }
+> +       _mlx5_vdpa_destroy_dvq_mr(mvdev, asid);
+>
+>         return err;
+>  }
+> --
+> 2.41.0
+>
+
