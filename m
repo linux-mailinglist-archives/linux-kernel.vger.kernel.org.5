@@ -2,215 +2,222 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 505F976EFE9
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 18:48:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 134AF76EFED
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 18:48:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231474AbjHCQsL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Aug 2023 12:48:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48482 "EHLO
+        id S234369AbjHCQsU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Aug 2023 12:48:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48598 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232935AbjHCQrz (ORCPT
+        with ESMTP id S233854AbjHCQsR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Aug 2023 12:47:55 -0400
-Received: from NAM10-BN7-obe.outbound.protection.outlook.com (mail-bn7nam10on2087.outbound.protection.outlook.com [40.107.92.87])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6BA31DA;
-        Thu,  3 Aug 2023 09:47:54 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=jaIyykD9LTjypAIPFSahqsoNOS83yzHl1ZXRsyBmLWdXFMXzD/PZNNpoWNq7mK5Yoatrznkj88an8kpCpJx7bTrLzb1zlu9XJ7rj+k+PwOCugpRMR+ndrGGb+s/VgRE6wwtlbRlB2E5C/OpQ5WP9iVln+n8TWLovIXnKl2rAmQ/TxlaLZcBIUG6JkObIfvDcEg02tGMpXY8OYqj/3qR3RYAL34YE486v8pIOijZlWIP8n4LZP2tUdhnmgq9G87Wl8Bxsoh8Nlt1oXg5LcX1+8zZ7rIszMztPw680C3b1edQ1a9M9WzulobNN3ALMM3XVadhK50fRR2YpC9n8ZnN3bA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=YbcMkhYlFFKFnjE6NwOrolSHJ3TLqk6B+Sx73Ti/FGE=;
- b=NoCgU26bPjw1M/ppZfPj4Jh4qR/VNVpwcNugH80Kygxoig+8o8fwrKNvHBKpHe0cKLbPGVjbtHBQBcG8YJwtZBydv0joyNOg9Y7u7fLOBgIWYaA0UdaOG1iZ2XpDdCEkCzV8wGy5ZcFAzGb0sYk0SKuZW1OixTla02RQqoqClVwMkDMxtqHpRisC6GyZqNvV3Sj4OCXgF4LKynG6qFltlbWIe+O45WqMWPN8p+Cvr9Es8crUZd2yYfA2F9IO0yusJZTje2E15w4W+kA0NSCA8RHPxe2bdAiNWSNuJVepBezBx5VCMAxWHZiKH5EOAOxCV4fErnYXxa2uus82cqm4Gg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=YbcMkhYlFFKFnjE6NwOrolSHJ3TLqk6B+Sx73Ti/FGE=;
- b=F+bwY/d676+ZN1fzwwLbr6dBXULsRdYqZ8sRGxu+h8COk/19uSkn9+otybT1Sspcv6hvdNJFT7HgT6U5qPdtGkGuhKe4+RRRMoohBn3uAgQ/VszfPoPj5XF99pluXR963ZRGtmT99pVXJpOViKM5U/86adtylTgQUHaXqKI0kcRNr1mpBPFEdQbE0sG473mqytmUKw5vxwgAMTBQXc53ueqZDT1Sr/6nbmVqTUKL0ojnvJIc0Ym0eOXPTJKz3SABV/UbZacoLAfJOVidBR+0cScFdx9JDJIge5CsAnMiM3T+9IqvfpC9nRCN90lSEo2i5iDqnFA24Q+CJqS4mW0zoQ==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-Received: from LV2PR12MB5869.namprd12.prod.outlook.com (2603:10b6:408:176::16)
- by CH0PR12MB8550.namprd12.prod.outlook.com (2603:10b6:610:192::11) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6631.47; Thu, 3 Aug
- 2023 16:47:52 +0000
-Received: from LV2PR12MB5869.namprd12.prod.outlook.com
- ([fe80::5111:16e8:5afe:1da1]) by LV2PR12MB5869.namprd12.prod.outlook.com
- ([fe80::5111:16e8:5afe:1da1%6]) with mapi id 15.20.6631.046; Thu, 3 Aug 2023
- 16:47:51 +0000
-Date:   Thu, 3 Aug 2023 13:47:50 -0300
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Nicolin Chen <nicolinc@nvidia.com>
-Cc:     "Tian, Kevin" <kevin.tian@intel.com>,
-        "Liu, Yi L" <yi.l.liu@intel.com>,
-        "joro@8bytes.org" <joro@8bytes.org>,
-        "alex.williamson@redhat.com" <alex.williamson@redhat.com>,
-        "robin.murphy@arm.com" <robin.murphy@arm.com>,
-        "baolu.lu@linux.intel.com" <baolu.lu@linux.intel.com>,
-        "cohuck@redhat.com" <cohuck@redhat.com>,
-        "eric.auger@redhat.com" <eric.auger@redhat.com>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "mjrosato@linux.ibm.com" <mjrosato@linux.ibm.com>,
-        "chao.p.peng@linux.intel.com" <chao.p.peng@linux.intel.com>,
-        "yi.y.sun@linux.intel.com" <yi.y.sun@linux.intel.com>,
-        "peterx@redhat.com" <peterx@redhat.com>,
-        "jasowang@redhat.com" <jasowang@redhat.com>,
-        "shameerali.kolothum.thodi@huawei.com" 
-        <shameerali.kolothum.thodi@huawei.com>,
-        "lulu@redhat.com" <lulu@redhat.com>,
-        "suravee.suthikulpanit@amd.com" <suravee.suthikulpanit@amd.com>,
-        "iommu@lists.linux.dev" <iommu@lists.linux.dev>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
-        "Duan, Zhenzhong" <zhenzhong.duan@intel.com>
-Subject: Re: [PATCH v3 08/17] iommufd: IOMMU_HWPT_ALLOC allocation with user
- data
-Message-ID: <ZMvaNqskASX3pGuF@nvidia.com>
-References: <20230724110406.107212-1-yi.l.liu@intel.com>
- <20230724110406.107212-9-yi.l.liu@intel.com>
- <ZMQBLTm+U+5bgC/Z@nvidia.com>
- <BN9PR11MB5276C84452E56AB03B819D208C05A@BN9PR11MB5276.namprd11.prod.outlook.com>
- <ZMe0IQksFgV6yKTB@nvidia.com>
- <ZMrp0ofsx8M6fT/S@Asurada-Nvidia>
- <ZMrqEAOh82SBvyaq@nvidia.com>
- <ZMr6lJpRDNZsvSm/@Asurada-Nvidia>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZMr6lJpRDNZsvSm/@Asurada-Nvidia>
-X-ClientProxiedBy: BL0PR0102CA0013.prod.exchangelabs.com
- (2603:10b6:207:18::26) To LV2PR12MB5869.namprd12.prod.outlook.com
- (2603:10b6:408:176::16)
+        Thu, 3 Aug 2023 12:48:17 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46A333ABF;
+        Thu,  3 Aug 2023 09:48:16 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id CB4B461E4D;
+        Thu,  3 Aug 2023 16:48:15 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 79A5CC433C7;
+        Thu,  3 Aug 2023 16:48:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1691081295;
+        bh=7ih77e1O1WRRHs0N4JvX9JDljcQRbssPj1LkTZtl7Jc=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=NRHLNhARAMl8lYehiE0faYX2zFBDY8X1+qIEZkiV1gXU/GtAiEDYaEy4yorCNtNPi
+         m8wFMTIDzXp9lisRixB4A8mKSZTo30XlfeADvm6ktksCquOAmNSVloYGP9dNhLZGXN
+         iT2JudKZyAAAp0PVHMzXMnrtdpJF19k7upG8IPZxPmSKiWuSyjNJtvAYn7ht6V3Z1b
+         cqvgeIhqjUdz0UnLjAqi5V3SWXfp7NAZMZ5a3vN/iHIquHQeXdjwwqPhANAVW2pF0M
+         faHgHYfADJbUXZirxovfuycyBsFPD55rAgO181D9B0qxNWf4iGT95SMp0Ya0x1e9ID
+         jaxXBVcYqTPHw==
+Message-ID: <c067a45f-9629-d516-9e56-36538e4ff6db@kernel.org>
+Date:   Thu, 3 Aug 2023 19:48:08 +0300
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: LV2PR12MB5869:EE_|CH0PR12MB8550:EE_
-X-MS-Office365-Filtering-Correlation-Id: df503b35-d826-426b-0557-08db94416072
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: PUalJmP4ebQ+lk9npchnSLr+Hem91SwQfivPqt1oTZdm968kEh0XiHMK82i0Xz/WRGjYW0u8E/mNbXvNtXpJWS5ZyNCR5PNXV6p4+vE3Fi8c6tH5dK3OJv/gPtdZKYpd3KmVLGl5pCPJX9hjM3KWl4JQ2rxYYoo+dwiLrJkBQB4Zvfb84HoUVW42jD5V/Tdctzh/kWw/+avRzZDoC32wDDP2p5d/SQ/Gz1pO/vm835aQ59YbjHco7X6UnomW8RWd8ehFqYcQFWfMQmQr6c2IgSKkGUcU1vukV4qT3SwR0+fVh6U2C9doxngyGlIphAx8ZJ41KKe3CG/eHVFyxpIIReJIpblwd14O9maO87v9Vzmg0wpYL8EAD5KTDvW0TXozXOKqyRt5elnSuUTxwc59vDy9R33COVMGwtdBU/zTdgv5V1ZSu2ZyC5P0ecanqcRwk3qE46peOfPyUci7jWASA+HfEMRFSSCgl96L6xwtgud72FSnwmgW1jexQaJSOZIR+pu5IePEasM+/rTT44qP7M9BG5LAg1VIvWBZRmXtlV9x3Ofv/2dJqeJ8AiBnTeSV
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:LV2PR12MB5869.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(396003)(376002)(346002)(366004)(136003)(39860400002)(451199021)(66899021)(41300700001)(38100700002)(6486002)(6512007)(54906003)(6636002)(66556008)(4326008)(66476007)(66946007)(316002)(37006003)(5660300002)(478600001)(26005)(83380400001)(186003)(6506007)(2616005)(6862004)(36756003)(7416002)(8676002)(8936002)(86362001)(2906002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?DTHpaui4knb0rRsxIy/z6ecOJ598EvkqwafbXjUQ9zu7mVCfBNkwdbbNazB4?=
- =?us-ascii?Q?nv6HVp5m3PSKiOffbRKha0d8pnZ9cfjG1Zj73ONt4R1BzSdGDRsUuhP4tD4q?=
- =?us-ascii?Q?ImCUjkEPFCkpxdYVShAruoYN5bl4ODbtLQwPzALDQceaVGwZk5xD7Wi3GOVJ?=
- =?us-ascii?Q?pgchpjBLdYMhTqMcyOl022GwfpsCB8hfqA+BU39smz+LLcVzFaP4LsGPqM5M?=
- =?us-ascii?Q?qjCRHtpNg89kzDZiGBrQrrzwR71KjDtGPrLJ1f7S5eS+bl621CPSvxS4MyXd?=
- =?us-ascii?Q?PAdrVW9VkzSxCkvTbw+Ol5h+tpmlg12YdEf7IETgY0xdsRQmNfrE+IIH9WQj?=
- =?us-ascii?Q?XDhWKpzu8QWa2zxgdQ1xhqUUmTWSMETav8RoVwQQQyqpMs1eXAz9cdij0UTw?=
- =?us-ascii?Q?ZCPd+myg6t/qZ9VLtfZooPZa0FvQ+XgW/sU5nisY2zmKMxBRmuUSOEwJIOlU?=
- =?us-ascii?Q?oEoosJoJclnq2v6nTt/fQyCU8ZCI0SFYMlBwBuVFO8zS02TJW0oOZWL9AOnQ?=
- =?us-ascii?Q?DJzKjHvfRDoKjZ7u9cxG6mDuHL4FXmnLX807ExrTYYs8nqcbYoCIMovHI+3x?=
- =?us-ascii?Q?TINErZyRiE20JJg9tRCpxtzRjJLAoJu3+qA36xmz6DDC394sUqWdW6+X57DB?=
- =?us-ascii?Q?kFNU46QUynrI6/+XoERzd4tSt4zWh9QeDn+o/Ssl7JiIn8y6fetMnFpo9oeX?=
- =?us-ascii?Q?T4etzrqJyWuc6Nd6wOXBf7X1Z1V3TtHmk3u7hdQApBsnixIFVCTkHyZ0mNJP?=
- =?us-ascii?Q?DPo/YWEHsHcdHpb3F7vHZzq8D+NtlKTxPV/pgxh1r0hZVJbqWyfYqnrFcB/x?=
- =?us-ascii?Q?fufPsHaVMuoWFYewIhjtXfobxaoNHJoNjxKEkCFQE8YpmStUJ7r/k0ySEmyE?=
- =?us-ascii?Q?uEbdD3ZcbG+xlcWYGm6ePi8UvZpl3PY2Z/Y1kSrmvVAC1u8uXtEUOI/dW/Yw?=
- =?us-ascii?Q?jLgzIF2Z6pI5xf5YS6JZglMjmyLw0g5n78mmaa97L48qxiHLrYr4dU27SoqN?=
- =?us-ascii?Q?FhH4+Evlh6b3HtQQzn9n+nJ9Ik7Rm7ns+ZHgfRAvDBTB+El2ZEeiuca1QSup?=
- =?us-ascii?Q?WZFAndbg7j/0ZLme3sKmZN4bcmMnPDyzTurzgXD52noXZUPk5LWStRvx1dLR?=
- =?us-ascii?Q?QeNiHLWyHAfh8jAPEV4i5POyMJLsrOoF8roK5SRlEkBYv2CmuK9qyNfd+gGr?=
- =?us-ascii?Q?Kfv6tUaFPgwMyS2r5xv0CXqV5SjFW4+cFaUxGwpYx4wXYojPbDPEqJOv0a6i?=
- =?us-ascii?Q?yXlmBKDN7zl/fdNCIaWmP+AakGVjzB9iKdr0EA+QGbFFSBLCfwvF92u7YF2D?=
- =?us-ascii?Q?bR/OHtoaSLYPF4QR5N4BSnt2XNaWSvO5SSc28lHaqfTtT9mrAcTyEtIekldo?=
- =?us-ascii?Q?afsSyAGL7vZtcWonxEFYXf0wQ2XYoUaToN7wPPsxdYw0mVL9Ub8Oyf/HA5PW?=
- =?us-ascii?Q?jU+iGhSOdrdMGO+3iGHTWu9d2vdSTOZL4J2mmR6N9cauHSCCptIAVt1LqfZk?=
- =?us-ascii?Q?spFQVzz0On6exBH59KJ+/c9ht1+TqrQHAwToRUCMIUdqWOHsawee4dX+eie1?=
- =?us-ascii?Q?jNHwKvGO5Zm5sJmbqeGtRS4Evrqt8hxTvXfKqGVj?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: df503b35-d826-426b-0557-08db94416072
-X-MS-Exchange-CrossTenant-AuthSource: LV2PR12MB5869.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 03 Aug 2023 16:47:51.6920
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: G7SVeXPeNbWwSbuPVrG6WNUExWltMrZ2ForHzysisk4GnJVNr7uWy1lgt3Jx4ABK
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH0PR12MB8550
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+Subject: Re: [PATCH 00/53] icc-rpmh multi-RSC voting groundwork
+Content-Language: en-US
+To:     Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        cros-qcom-dts-watchers@chromium.org,
+        Mike Tipton <quic_mdtipton@quicinc.com>
+Cc:     Marijn Suijten <marijn.suijten@somainline.org>,
+        linux-arm-msm@vger.kernel.org, linux-pm@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20230708-topic-rpmh_icc_rsc-v1-0-b223bd2ac8dd@linaro.org>
+From:   Georgi Djakov <djakov@kernel.org>
+In-Reply-To: <20230708-topic-rpmh_icc_rsc-v1-0-b223bd2ac8dd@linaro.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 02, 2023 at 05:53:40PM -0700, Nicolin Chen wrote:
-> On Wed, Aug 02, 2023 at 08:43:12PM -0300, Jason Gunthorpe wrote:
-> > On Wed, Aug 02, 2023 at 04:42:10PM -0700, Nicolin Chen wrote:
-> > > On Mon, Jul 31, 2023 at 10:16:17AM -0300, Jason Gunthorpe wrote:
-> > >  
-> > > > > Ideally expanding uAPI structure size should come with new flag bits.
-> > > > 
-> > > > Flags or some kind of 'zero is the same behavior as a smaller struct'
-> > > > scheme.
-> > > > 
-> > > > This patch is doing the zero option:
-> > > > 
-> > > >  	__u32 __reserved;
-> > > > +	__u32 hwpt_type;
-> > > > +	__u32 data_len;
-> > > > +	__aligned_u64 data_uptr;
-> > > >  };
-> > > > 
-> > > > hwpt_type == 0 means default type
-> > > > data_len == 0 means no data
-> > > > data_uptr is ignored (zero is safe)
-> > > > 
-> > > > So there is no need to change it
-> > > 
-> > > TEST_LENGTH passing ".size = sizeof(struct _struct) - 1" expects a
-> > > -EINVAL error code from "if (ucmd.user_size < op->min_size)" check
-> > > in the iommufd_fops_ioctl(). This has been working when min_size is
-> > > exactly the size of the structure.
-> > > 
-> > > When the size of the structure becomes larger than min_size, i.e.
-> > > the passing size above is larger than min_size, it bypasses that
-> > > min_size sanity and goes down to an ioctl handler with a potential
-> > > risk. And actually, the size range can be [min_size, struct_size),
-> > > making it harder for us to sanitize with the existing code.
-> > > 
-> > > I wonder what's the generic way of sanitizing this case? And, it
-> > > seems that TEST_LENGTH needs some rework to test min_size only?
-> > 
-> > Yes, it should technically test using offsetof and a matching set of
-> > struct members.
-> 
-> OK. I copied 3 lines for offsetofend from the kernel and did this:
-> --------------------------------------------------------------------------
-> diff --git a/tools/testing/selftests/iommu/iommufd.c b/tools/testing/selftests/iommu/iommufd.c
-> index 6b075a68b928..a15a475c1243 100644
-> --- a/tools/testing/selftests/iommu/iommufd.c
-> +++ b/tools/testing/selftests/iommu/iommufd.c
-> @@ -86,12 +86,13 @@ TEST_F(iommufd, cmd_fail)
-> 
->  TEST_F(iommufd, cmd_length)
->  {
-> -#define TEST_LENGTH(_struct, _ioctl)                                     \
-> +#define TEST_LENGTH(_struct, _ioctl, _last)                              \
->         {                                                                \
-> +               size_t min_size = offsetofend(struct _struct, _last);    \
->                 struct {                                                 \
->                         struct _struct cmd;                              \
->                         uint8_t extra;                                   \
-> -               } cmd = { .cmd = { .size = sizeof(struct _struct) - 1 }, \
-> +               } cmd = { .cmd = { .size = min_size - 1 },               \
->                           .extra = UINT8_MAX };                          \
->                 int old_errno;                                           \
->                 int rc;                                                  \
-> --------------------------------------------------------------------------
-> 
-> Any misaligned size within the range of [min_size, struct_size) still
-> doesn't have a coverage though. Is this something that we have to let
-> it fail with a potential risk?
+Hi Konrad,
 
-It looks about right, I didn't try to test all the permutations, it
-could be done but I'm not sure it has value.
+On 11.07.23 15:17, Konrad Dybcio wrote:
+> Many parts of Qualcomm SoCs are entirely independent of each other and can
+> run when the other parts are off. The RPMh system architecture embraces
+> this by giving each (loosely defined) subsystem its own connection (as in,
+> physical wires) to the AOSS, terminated by per-subsystem RSCs (Resource
+> State Coordinators) that barter for power, bandwidth etc.
+> 
+> This series introduces the groundwork necessary for voting for resources
+> through non-APPS RSCs. It should allow for lower-latency vote adjustments
+> (e.g. for very high bandwidth / multiple displays) and could potentially
+> allow for full APSS collapse while keeping e.g. MDSS operating (say
+> refreshing an image from a RAM buffer).
 
-Jason
+This is good stuff. Thanks for working on it! Actually the path tagging,
+that have been introduced some time ago could be used for supporting the
+multiple RSCs. Today we can get the tags from DT, and tag the path with
+some DISP_RSC flag (for example) and avoid the qcom,bcm-voter-idx property.
+
+Mike has been also looking into this, so maybe he can share his thoughts.
+
+> 
+> On top of that, a rather necessary and overdue cleanup is performed to
+> stop adding more and more arguments to the insane preprocessor macros.
+> 
+
+Retiring the DEFINE_QNODE is good clean-up, but some patches failed to
+apply so a re-base would be needed.
+
+Thanks,
+Georgi
+
+> Partially reverting (or reimplementing the revert) [1] will be necessary
+> to coordinate the rather complex relationship between the DPU and RSC
+> drivers.
+> 
+> The "Point x paths to the x RSC" patches won't do anything (check the
+> compatibility workaround qcom_icc_pre_aggregate()) until disp_rsc is
+> properly described in the device tree, along with its BCM voter),
+> but they prepare ground for when that happens.
+> 
+> I was able to test sending requests through the DISP_RSC on SM8450, but
+> I had to hack its clocks (_rscc_ in dispcc) to be always-on, as we don't
+> have any clk handling for qcom,rpmh-rsc today.
+> 
+> Boot-tested on SM8350 and SM8450, nothing exploded.
+> 
+> [1] https://patchwork.kernel.org/project/dri-devel/patch/1521827074-28424-1-git-send-email-ryadav@codeaurora.org/
+> 
+> Dependencies:
+> [2] https://lore.kernel.org/linux-arm-msm/113b50f8-35f6-73fc-4fc9-302262927c5e@quicinc.com/
+> [3] https://lore.kernel.org/linux-arm-msm/20230703-topic-8250_qup_icc-v2-0-9ba0a9460be2@linaro.org/
+> 
+> Signed-off-by: Konrad Dybcio <konrad.dybcio@linaro.org>
+> ---
+> Konrad Dybcio (53):
+>        dt-bindings: interconnect: qcom,icc: Introduce fixed BCM voter indices
+>        dt-bindings: interconnect: qcom,bcm-voter: Add qcom,bcm-voter-idx
+>        interconnect: qcom: icc-rpmh: Store direct BCM voter references
+>        interconnect: qcom: icc-rpmh: Retire dead code
+>        interconnect: qcom: icc-rpmh: Implement voting on non-APPS RSCs
+>        interconnect: qcom: sc7180: Retire DEFINE_QNODE
+>        interconnect: qcom: sdm670: Retire DEFINE_QNODE
+>        interconnect: qcom: sdm845: Retire DEFINE_QNODE
+>        interconnect: qcom: sdx55: Retire DEFINE_QNODE
+>        interconnect: qcom: sdx65: Retire DEFINE_QNODE
+>        interconnect: qcom: sm6350: Retire DEFINE_QNODE
+>        interconnect: qcom: sm8150: Retire DEFINE_QNODE
+>        interconnect: qcom: sm8250: Retire DEFINE_QNODE
+>        interconnect: qcom: sm8350: Retire DEFINE_QNODE
+>        interconnect: qcom: icc-rpmh: Retire DEFINE_QNODE
+>        interconnect: qcom: sc7180: Retire DEFINE_QBCM
+>        interconnect: qcom: sdm670: Retire DEFINE_QBCM
+>        interconnect: qcom: sdm845: Retire DEFINE_QBCM
+>        interconnect: qcom: sdx55: Retire DEFINE_QBCM
+>        interconnect: qcom: sdx65: Retire DEFINE_QBCM
+>        interconnect: qcom: sm6350: Retire DEFINE_QBCM
+>        interconnect: qcom: sm8150: Retire DEFINE_QBCM
+>        interconnect: qcom: sm8250: Retire DEFINE_QBCM
+>        interconnect: qcom: sm8350: Retire DEFINE_QBCM
+>        interconnect: qcom: icc-rpmh: Retire DEFINE_QBCM
+>        interconnect: qcom: qdu1000: Explicitly assign voter_idx
+>        interconnect: qcom: sa8775p: Explicitly assign voter_idx
+>        interconnect: qcom: sc7280: Explicitly assign voter_idx
+>        interconnect: qcom: sc8180x: Explicitly assign voter_idx
+>        interconnect: qcom: sc8280xp: Explicitly assign voter_idx
+>        interconnect: qcom: sm8450: Explicitly assign voter_idx
+>        interconnect: qcom: sm8550: Explicitly assign voter_idx
+>        arm64: dts: qcom: qdu1000: add qcom,bcm-voter-idx
+>        arm64: dts: qcom: sa8775p: add qcom,bcm-voter-idx
+>        arm64: dts: qcom: sc7180: add qcom,bcm-voter-idx
+>        arm64: dts: qcom: sc7280: add qcom,bcm-voter-idx
+>        arm64: dts: qcom: sc8180x: add qcom,bcm-voter-idx
+>        arm64: dts: qcom: sc8280xp: add qcom,bcm-voter-idx
+>        arm64: dts: qcom: sdm670: add qcom,bcm-voter-idx
+>        arm64: dts: qcom: sdm845: add qcom,bcm-voter-idx
+>        arm64: dts: qcom: sdx75: add qcom,bcm-voter-idx
+>        arm64: dts: qcom: sm6350: add qcom,bcm-voter-idx
+>        arm64: dts: qcom: sm8150: add qcom,bcm-voter-idx
+>        arm64: dts: qcom: sm8250: add qcom,bcm-voter-idx
+>        arm64: dts: qcom: sm8350: add qcom,bcm-voter-idx
+>        arm64: dts: qcom: sm8450: add qcom,bcm-voter-idx
+>        arm64: dts: qcom: sm8550: add qcom,bcm-voter-idx
+>        arm64: dts: qcom: sdx55: add qcom,bcm-voter-idx
+>        arm64: dts: qcom: sdx65: add qcom,bcm-voter-idx
+>        interconnect: qcom: sm8350: Point display paths to the display RSC
+>        interconnect: qcom: sm8450: Point display paths to the display RSC
+>        interconnect: qcom: sm8550: Point display paths to the display RSC
+>        interconnect: qcom: sm8550: Point camera paths to the camera RSC
+> 
+>   .../bindings/interconnect/qcom,bcm-voter.yaml      |   10 +
+>   arch/arm/boot/dts/qcom/qcom-sdx55.dtsi             |    1 +
+>   arch/arm/boot/dts/qcom/qcom-sdx65.dtsi             |    1 +
+>   arch/arm64/boot/dts/qcom/qdu1000.dtsi              |    2 +
+>   arch/arm64/boot/dts/qcom/sa8775p.dtsi              |    1 +
+>   arch/arm64/boot/dts/qcom/sc7180.dtsi               |    1 +
+>   arch/arm64/boot/dts/qcom/sc7280.dtsi               |    2 +
+>   arch/arm64/boot/dts/qcom/sc8180x.dtsi              |    2 +
+>   arch/arm64/boot/dts/qcom/sc8280xp.dtsi             |    2 +
+>   arch/arm64/boot/dts/qcom/sdm670.dtsi               |    2 +
+>   arch/arm64/boot/dts/qcom/sdm845.dtsi               |    2 +
+>   arch/arm64/boot/dts/qcom/sdx75.dtsi                |    2 +
+>   arch/arm64/boot/dts/qcom/sm6350.dtsi               |    1 +
+>   arch/arm64/boot/dts/qcom/sm8150.dtsi               |    2 +
+>   arch/arm64/boot/dts/qcom/sm8250.dtsi               |    2 +
+>   arch/arm64/boot/dts/qcom/sm8350.dtsi               |    2 +
+>   arch/arm64/boot/dts/qcom/sm8450.dtsi               |    2 +
+>   arch/arm64/boot/dts/qcom/sm8550.dtsi               |    2 +
+>   drivers/interconnect/qcom/bcm-voter.c              |   75 +-
+>   drivers/interconnect/qcom/bcm-voter.h              |    9 -
+>   drivers/interconnect/qcom/icc-rpmh.c               |   53 +-
+>   drivers/interconnect/qcom/icc-rpmh.h               |   14 +-
+>   drivers/interconnect/qcom/qdu1000.c                |   11 +
+>   drivers/interconnect/qcom/sa8775p.c                |   28 +
+>   drivers/interconnect/qcom/sc7180.c                 | 1637 +++++++++++++++--
+>   drivers/interconnect/qcom/sc7280.c                 |   27 +
+>   drivers/interconnect/qcom/sc8180x.c                |   23 +
+>   drivers/interconnect/qcom/sc8280xp.c               |   27 +
+>   drivers/interconnect/qcom/sdm670.c                 | 1410 +++++++++++++--
+>   drivers/interconnect/qcom/sdm845.c                 | 1683 ++++++++++++++++--
+>   drivers/interconnect/qcom/sdx55.c                  |  863 ++++++++-
+>   drivers/interconnect/qcom/sdx65.c                  |  850 ++++++++-
+>   drivers/interconnect/qcom/sm6350.c                 | 1551 +++++++++++++++--
+>   drivers/interconnect/qcom/sm8150.c                 | 1714 ++++++++++++++++--
+>   drivers/interconnect/qcom/sm8250.c                 | 1772 +++++++++++++++++--
+>   drivers/interconnect/qcom/sm8350.c                 | 1830 ++++++++++++++++++--
+>   drivers/interconnect/qcom/sm8450.c                 |   24 +
+>   drivers/interconnect/qcom/sm8550.c                 |   42 +
+>   include/dt-bindings/interconnect/qcom,icc.h        |    8 +
+>   39 files changed, 12320 insertions(+), 1370 deletions(-)
+> ---
+> base-commit: 82cee168d497ffcb79e4889fe3c7384788e89f4d
+> change-id: 20230708-topic-rpmh_icc_rsc-f897080fb207
+> 
+> Best regards,
+
