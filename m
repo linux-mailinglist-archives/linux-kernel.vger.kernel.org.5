@@ -2,96 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E4CBA76E6AE
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 13:20:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EEBE076E6B1
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 13:20:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235168AbjHCLUE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Aug 2023 07:20:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56450 "EHLO
+        id S235284AbjHCLUO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Aug 2023 07:20:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56604 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234988AbjHCLUC (ORCPT
+        with ESMTP id S235222AbjHCLUN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Aug 2023 07:20:02 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1695C127;
-        Thu,  3 Aug 2023 04:20:02 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id A294261D3A;
-        Thu,  3 Aug 2023 11:20:01 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 22D68C433C8;
-        Thu,  3 Aug 2023 11:19:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691061601;
-        bh=+3V8C5BQdIdgwVUKpiLRTY0NHNKdE8QV8AYMJx7EgrI=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=N4SGXLXrL5rK7usEapdpQYnO2z2godCFTseipW+0m4nPOast0y94w58iFLkZA6CZX
-         rnHwXPft3U4+gDwqvSoNlJ+1mYrP+oE72O4j3nlW9tOX6KqDRJSzhpwrkxjKSJFEQI
-         w1CBg5jtIaePxsSyF+aybRMd4kcoLQWCg4P7gK3tqC1phoOT2D21LRDBhAyVVG+3Oj
-         bo9DMeWXckw0oYlHBcNeuJMgHqOnQBneXXTL5cfKV3ouJ8DO53TgYQ3TugS0yzNPzK
-         Su07rngVRS1wIE3t1Y495OGXabf/EqFbdv36d7VmIG1uI1F6AfEwml7Y1XRe//ZrrL
-         3If7XqFvxjxOw==
-Message-ID: <579c3ab0-8595-10f4-e257-d4c67c11dbb3@kernel.org>
-Date:   Thu, 3 Aug 2023 13:19:56 +0200
+        Thu, 3 Aug 2023 07:20:13 -0400
+Received: from lelv0143.ext.ti.com (lelv0143.ext.ti.com [198.47.23.248])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42A31126;
+        Thu,  3 Aug 2023 04:20:10 -0700 (PDT)
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+        by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 373BJv8Y096622;
+        Thu, 3 Aug 2023 06:19:57 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1691061597;
+        bh=hoGqFp8CkBz3knU4UYjFztgLrGPuNWUe37EXbYiLNzU=;
+        h=Date:From:To:CC:Subject:References:In-Reply-To;
+        b=SOWT2Ma4OxxcfThiX3DrNVR0CaR5AzQ6/73OC7PeWX1uaB48sQQCN3g2rFPPTpolb
+         rFgnARE7wascC+H5Jmqt4Si7XFDu515jalgyWTCA9NVtPm6/Ze+Reptkl4eQq6bwFN
+         yea+NtbAKzR/ETrASnbd28syjh/79/gc4Z8T/rFE=
+Received: from DFLE102.ent.ti.com (dfle102.ent.ti.com [10.64.6.23])
+        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 373BJvBf039614
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Thu, 3 Aug 2023 06:19:57 -0500
+Received: from DFLE100.ent.ti.com (10.64.6.21) by DFLE102.ent.ti.com
+ (10.64.6.23) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Thu, 3
+ Aug 2023 06:19:53 -0500
+Received: from fllv0040.itg.ti.com (10.64.41.20) by DFLE100.ent.ti.com
+ (10.64.6.21) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Thu, 3 Aug 2023 06:19:53 -0500
+Received: from localhost (ileaxei01-snat.itg.ti.com [10.180.69.5])
+        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 373BJr80035270;
+        Thu, 3 Aug 2023 06:19:53 -0500
+Date:   Thu, 3 Aug 2023 16:49:57 +0530
+From:   Jai Luthra <j-luthra@ti.com>
+To:     Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
+CC:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        <linux-media@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        Mauro Carvalho Chehab <mchehab+samsung@kernel.org>,
+        Maxime Ripard <mripard@kernel.org>,
+        <niklas.soderlund+renesas@ragnatech.se>,
+        Benoit Parrot <bparrot@ti.com>,
+        Vaishnav Achath <vaishnav.a@ti.com>,
+        Vignesh Raghavendra <vigneshr@ti.com>, <nm@ti.com>,
+        <devarsht@ti.com>
+Subject: Re: [PATCH v8 09/16] media: cadence: csi2rx: Soft reset the streams
+ before starting capture
+Message-ID: <colvp5wmyedwoxchnifpaqipa7bv7g7hooxev3j5agvnuekfve@3cpxre6uoqbm>
+References: <20230731-upstream_csi-v8-0-fb7d3661c2c9@ti.com>
+ <20230731-upstream_csi-v8-9-fb7d3661c2c9@ti.com>
+ <d84852d8-1ade-94fc-bbc2-c3a4d30fdbe1@ideasonboard.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.1
-Subject: Re: [PATCH v4 1/3] dt-bindings: remoteproc: k3-m4f: Add K3 AM64x SoCs
-Content-Language: en-US
-To:     Hari Nagalla <hnagalla@ti.com>, andersson@kernel.org,
-        mathieu.poirier@linaro.org, p.zabel@pengutronix.de,
-        martyn.welch@collabora.com
-Cc:     linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20230801141117.2559-1-hnagalla@ti.com>
- <20230801141117.2559-2-hnagalla@ti.com>
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-In-Reply-To: <20230801141117.2559-2-hnagalla@ti.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-7.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_HI,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="sj63dybvm4x7x4z4"
+Content-Disposition: inline
+In-Reply-To: <d84852d8-1ade-94fc-bbc2-c3a4d30fdbe1@ideasonboard.com>
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 01/08/2023 16:11, Hari Nagalla wrote:
-> K3 AM64x SoC has a Cortex M4F subsystem in the MCU voltage domain.
-> The remote processor's life cycle management and IPC mechanisms are
-> similar across the R5F and M4F cores from remote processor driver
-> point of view. However, there are subtle differences in image loading
-> and starting the M4F subsystems.
-> 
-> The YAML binding document provides the various node properties to be
-> configured by the consumers of the M4F subsystem.
-> 
-> Signed-off-by: Martyn Welch <martyn.welch@collabora.com>
-> Signed-off-by: Hari Nagalla <hnagalla@ti.com>
-> ---
-> 
-> Changes since v1:
->  - Spelling corrections
->  - Corrected to pass DT checks
+--sj63dybvm4x7x4z4
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-I don't think so.
+On Aug 01, 2023 at 17:16:41 +0300, Tomi Valkeinen wrote:
+> On 31/07/2023 11:29, Jai Luthra wrote:
+> > From: Pratyush Yadav <p.yadav@ti.com>
+> >=20
+> > This resets the stream state machines and FIFOs, giving them a clean
+> > slate. On J721E if the streams are not reset before starting the
+> > capture, the captured frame gets wrapped around vertically on every run
+> > after the first.
+> >=20
+> > Signed-off-by: Pratyush Yadav <p.yadav@ti.com>
+> > Signed-off-by: Jai Luthra <j-luthra@ti.com>
+> > Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+> > ---
+> > v7->v8: No change
+> >=20
+> >   drivers/media/platform/cadence/cdns-csi2rx.c | 11 +++++++++++
+> >   1 file changed, 11 insertions(+)
+> >=20
+> > diff --git a/drivers/media/platform/cadence/cdns-csi2rx.c b/drivers/med=
+ia/platform/cadence/cdns-csi2rx.c
+> > index 2a80c66fb547..30cdc260b46a 100644
+> > --- a/drivers/media/platform/cadence/cdns-csi2rx.c
+> > +++ b/drivers/media/platform/cadence/cdns-csi2rx.c
+> > @@ -40,6 +40,7 @@
+> >   #define CSI2RX_STREAM_BASE(n)		(((n) + 1) * 0x100)
+> >   #define CSI2RX_STREAM_CTRL_REG(n)		(CSI2RX_STREAM_BASE(n) + 0x000)
+> > +#define CSI2RX_STREAM_CTRL_SOFT_RST			BIT(4)
+> >   #define CSI2RX_STREAM_CTRL_START			BIT(0)
+> >   #define CSI2RX_STREAM_DATA_CFG_REG(n)		(CSI2RX_STREAM_BASE(n) + 0x008)
+> > @@ -138,12 +139,22 @@ struct csi2rx_priv *v4l2_subdev_to_csi2rx(struct =
+v4l2_subdev *subdev)
+> >   static void csi2rx_reset(struct csi2rx_priv *csi2rx)
+> >   {
+> > +	unsigned int i;
+> > +
+> >   	writel(CSI2RX_SOFT_RESET_PROTOCOL | CSI2RX_SOFT_RESET_FRONT,
+> >   	       csi2rx->base + CSI2RX_SOFT_RESET_REG);
+> >   	udelay(10);
+> >   	writel(0, csi2rx->base + CSI2RX_SOFT_RESET_REG);
+> > +
+> > +	/* Reset individual streams. */
+> > +	for (i =3D 0; i < csi2rx->max_streams; i++) {
+> > +		writel(CSI2RX_STREAM_CTRL_SOFT_RST,
+> > +		       csi2rx->base + CSI2RX_STREAM_CTRL_REG(i));
+> > +		usleep_range(10, 20);
+> > +		writel(0, csi2rx->base + CSI2RX_STREAM_CTRL_REG(i));
+> > +	}
+>=20
+> Do you have to do it like this? Or would it be fine to set the reset bit =
+for
+> all stream regs, then sleep, then clear the reset bit from all stream reg=
+s?
+> Or going even further, can you set the CSI2RX_SOFT_RESET_REG and all
+> CSI2RX_STREAM_CTRL_REG regs, then sleep, and then clear them all?
 
-Please use scripts/get_maintainers.pl to get a list of necessary people
-and lists to CC. It might happen, that command when run on an older
-kernel, gives you outdated entries. Therefore please be sure you base
-your patches on recent Linux kernel.
+You're right I think that should work, and would be much cleaner. Will=20
+fix.
 
-You missed at least DT list (maybe more), so this won't be tested by
-automated tooling. Performing review on untested code might be a waste
-of time, thus I will skip this patch entirely till you follow the
-process allowing the patch to be tested.
+>=20
+>  Tomi
+>=20
 
-Please kindly resend and include all necessary To/Cc entries.
+--=20
+Thanks,
+Jai
 
-Best regards,
-Krzysztof
+GPG Fingerprint: 4DE0 D818 E5D5 75E8 D45A AFC5 43DE 91F9 249A 7145
 
+--sj63dybvm4x7x4z4
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCAAdFiEETeDYGOXVdejUWq/FQ96R+SSacUUFAmTLjVwACgkQQ96R+SSa
+cUUEXhAAv8HzJ4dZ4Cm1uBFXii5KFFi6YxfKFS27jM4P1ZOMQlIubVqDO9NksI4i
+KbWqyWc5cnRk8kmllyE8foxsf2QIlqo4wTJiK4lz4g2DTIX8c57wtAWZVpwU3sbV
+f7qWrguooSXJIfqN49EmMsvDTledycK+w6Hh3C8zJqZQx83ckekkrxlCOfYzTR1b
+MfmQiu4pkIrsXrNIpYE6UXXl65T51ry+AorEeha+KRHI1PihFF1Zh8RoadznrThT
+KQRpvAN4eLCro57YBiR4/1zvnYoMfjaxqySsjsFgvsm03Uh0HFYqHBMH9fR1ESmD
+QDmgo2bjh9J1sd2cz7GuFL66eDZObv2/jsOyFN5WYMJ1j5+anHYFfM47jFeddRpA
+fOYpcDhImAOnFVL+SCMczMb1oQjzppzcpHgXICzg6vsvjoQPh4klpP7h47xzECmG
+5zrXIGTmRYOFYGTS4hi1cQ8cU/pqVJhgVHw6xXpVn7tD71y/jG/bHdbUtpoYOpOx
+QqkbDPYvG4iwh6N3rcFyJXmhL/m7dzSgUlQhmPRuq+103XyNe2eIjwJKdMQlBBM1
+H6Le/YnptekR3LrzeBTNVuXQjIX6ZMikW4Ts6ES3lIdoyd+DFvUiO8y0ORTNi9tw
+QEy0heknMbAlLl8Acm97tlvs9IS05KaLWPDmxe66TLG3XLT3p2Y=
+=PUnK
+-----END PGP SIGNATURE-----
+
+--sj63dybvm4x7x4z4--
