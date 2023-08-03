@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 399F976E343
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 10:36:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E44A276E342
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 10:36:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234721AbjHCIgq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Aug 2023 04:36:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55558 "EHLO
+        id S234678AbjHCIgu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Aug 2023 04:36:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55556 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234534AbjHCIgU (ORCPT
+        with ESMTP id S234556AbjHCIgV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Aug 2023 04:36:20 -0400
-Received: from mail-oi1-x235.google.com (mail-oi1-x235.google.com [IPv6:2607:f8b0:4864:20::235])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D43F106;
-        Thu,  3 Aug 2023 01:34:47 -0700 (PDT)
-Received: by mail-oi1-x235.google.com with SMTP id 5614622812f47-3a1ebb85f99so537031b6e.2;
-        Thu, 03 Aug 2023 01:34:47 -0700 (PDT)
+        Thu, 3 Aug 2023 04:36:21 -0400
+Received: from mail-oo1-xc29.google.com (mail-oo1-xc29.google.com [IPv6:2607:f8b0:4864:20::c29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04D8611F;
+        Thu,  3 Aug 2023 01:34:51 -0700 (PDT)
+Received: by mail-oo1-xc29.google.com with SMTP id 006d021491bc7-56ca1eebcd7so444841eaf.0;
+        Thu, 03 Aug 2023 01:34:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1691051686; x=1691656486;
+        d=gmail.com; s=20221208; t=1691051690; x=1691656490;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=9yzvVXRdBeqmAGMgkYT2mmYjrEoAW1rfgKPDCwF36WA=;
-        b=RRMSprWcdo0EHDLbflQ1VWFM2eErDNcXJkuOivyhQxPPJX3GByJ5qqB5xy48HDkRbe
-         fkB/qdPYljeCR+bRYB32TcjMnek5pwR2ssfcS6j/p3DYiLZ3WCX4SNK244SjYo6Xj+mj
-         qTL+TJBlgARMMhO7bnLdgWh++1uylOZb7Zmw7KEWlUKXfOqkjGohEk8qspJt5bB83W9E
-         fzb01EFStYKCKG1ky7H+hETc7u7sz4MF68eQl9UaGxdO4su82r4wMcYcL72KvMSBBSRc
-         65BrUGseIxSrZCciyPmk05Lo5KzVHM7+wx+0cwJqP0jZIdmHd/e9Wpe5H8JOKF+hwRQG
-         I2Bg==
+        bh=coQVZUIdITCOzeysZQXt4l056xN3FXYmzJxiupx3WHw=;
+        b=od4Z3nXkFb2ruxjbXhUVYjA7VEjNrqjYqVRfIWS4yENSZ8YyawxHk2gFaODut66GXi
+         QMTLtpTHRHlLrjWPtfIvFQi0PbNH0B5RIBnQtyj/b4q1EaH4jEMdWhjpA4b7nxqrQBKR
+         QBoQg/tsr5ZgXitzUD83Z/iYAnREuTa6EyqFtthFCk/sclpqULlSbCgD4SZPEpTA4nME
+         x2Ot8A/KIsWlmnExXdAoZcEb2erX23ziDZa7TXn0KIEqzR8QHyjyAVqquyHz16YiTggQ
+         teiKO3JIyKUoxwD8raxR2CHSTK6MtBT1MwQcvh3G4fEHzDD1ctomVvlGYFKs36QoZJ70
+         BeHA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691051686; x=1691656486;
+        d=1e100.net; s=20221208; t=1691051690; x=1691656490;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=9yzvVXRdBeqmAGMgkYT2mmYjrEoAW1rfgKPDCwF36WA=;
-        b=ENBgpJ8x9oysWhvOTGG4jXMC056ODSDvlUL+VS7d3555ELvq5KWGgpPWH5U58SMtU+
-         g/w76TcAopkbAv4vwP2+N9wYGcWwDhAFtYIxjJflurvJrIkT0jmW+gB5f2QDvNLmDkri
-         1s5b0Ej/szI3oUuLN9j0CByDIVWYVuk9XymHPBJ1pyX+fdh7KNmLlvpp0paMSj58u92h
-         tZmjldHHgxAGfDX97I//6ngW3Kduv6vmTWF0f0QGEy3q553u7uRWIf0M9ZUwWqgXqEz5
-         F/QrHmSXVaa78XofpCBsw2XUa7levHeg7j5uC5lonuH4YiFjdnXTqTk5rmbfUuRrUfce
-         OjpQ==
-X-Gm-Message-State: ABy/qLZDgKVU+Y+GfOqzS/vAw9UNuRF+V0ob75s/ZwWhLGMVX6NZIMrI
-        /N4qSeO5VSCzFcXmVVLTz1I=
-X-Google-Smtp-Source: APBJJlHZev/DvqiJieIn4E39AVjyE63qfFfRlV74M5gg22x1ulMAfI6Or6fmHn9LXPFnouH4XUlypA==
-X-Received: by 2002:a05:6808:f8e:b0:3a7:8a1:9cdd with SMTP id o14-20020a0568080f8e00b003a708a19cddmr18794967oiw.28.1691051686270;
-        Thu, 03 Aug 2023 01:34:46 -0700 (PDT)
+        bh=coQVZUIdITCOzeysZQXt4l056xN3FXYmzJxiupx3WHw=;
+        b=YMw8VeSAqm1Yg2Cau3mhyQ60YlI4Cb5f0jq/RD6nfjhWrMuBS77CRy43ZDJ3c4ewnX
+         qVwGezDkvW38hR9H3lagIZT1E4XsZsOhUkmSMPNTYy4dUe0qRqJbmE0J049/RhTYMry1
+         cOt6c7h1+LskQAw9Yp1DhQuNaBmc0q/bqrHTIxmxs7JGbGpHUWbjFUmwIDldzge1FVWJ
+         5yrcE4HTuS9cY/G82t+SF8HGWNY6iCQemcA963szCsdwdlPQjrCquWcpAIN85wZjsYhT
+         73ZFlxUN146E203bBQCB9b0DpVu1sSTXo74IQhILEXP8mmLwPrgQsMKGY2VSqvbBa96t
+         QyGA==
+X-Gm-Message-State: ABy/qLYAsoeZZtRfcdRk55lVHCMBzDo834tbVDtA9TevKd7En9bqeEHB
+        jMQpggKlUmF5Mwj6K1a23wY=
+X-Google-Smtp-Source: APBJJlHosJbEqlQ3cDjlkkUfsBBDb5wexf21fjSkUspd2mRuPIJnNNYq68K+T1TXDUL/mzDY3dU5iA==
+X-Received: by 2002:a05:6358:e499:b0:139:d226:b361 with SMTP id by25-20020a056358e49900b00139d226b361mr8646644rwb.31.1691051690070;
+        Thu, 03 Aug 2023 01:34:50 -0700 (PDT)
 Received: from localhost.localdomain ([203.205.141.83])
-        by smtp.googlemail.com with ESMTPSA id r6-20020a63b106000000b00563feb7113dsm12541876pgf.91.2023.08.03.01.34.42
+        by smtp.googlemail.com with ESMTPSA id r6-20020a63b106000000b00563feb7113dsm12541876pgf.91.2023.08.03.01.34.46
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 03 Aug 2023 01:34:45 -0700 (PDT)
+        Thu, 03 Aug 2023 01:34:49 -0700 (PDT)
 From:   Ze Gao <zegao2021@gmail.com>
 X-Google-Original-From: Ze Gao <zegao@tencent.com>
 To:     Adrian Hunter <adrian.hunter@intel.com>,
@@ -64,9 +64,9 @@ To:     Adrian Hunter <adrian.hunter@intel.com>,
         Steven Rostedt <rostedt@goodmis.org>
 Cc:     linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
         linux-trace-kernel@vger.kernel.org, Ze Gao <zegao@tencent.com>
-Subject: [RFC PATCH v6 2/5] perf sched: reorganize sched-out task state report code
-Date:   Thu,  3 Aug 2023 04:33:49 -0400
-Message-ID: <20230803083352.1585-3-zegao@tencent.com>
+Subject: [RFC PATCH v6 3/5] sched, tracing: reorganize fields of switch event struct
+Date:   Thu,  3 Aug 2023 04:33:50 -0400
+Message-ID: <20230803083352.1585-4-zegao@tencent.com>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <20230803083352.1585-1-zegao@tencent.com>
 References: <20230803083352.1585-1-zegao@tencent.com>
@@ -82,167 +82,72 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Mainly does housekeeping work and not introduce any
-functional change.
+Report prioritiy and prev_state in 'short' to save some buffer
+space. And also reorder the fields so that we take struct
+alignment into consideration to make the record compact.
 
+Suggested-by: Steven Rostedt (Google) <rostedt@goodmis.org>
 Signed-off-by: Ze Gao <zegao@tencent.com>
 ---
- tools/perf/builtin-sched.c | 59 +++++++++++++++++---------------------
- 1 file changed, 26 insertions(+), 33 deletions(-)
+ include/trace/events/sched.h | 26 +++++++++++++-------------
+ 1 file changed, 13 insertions(+), 13 deletions(-)
 
-diff --git a/tools/perf/builtin-sched.c b/tools/perf/builtin-sched.c
-index 8dc8f071721c..5042874ba204 100644
---- a/tools/perf/builtin-sched.c
-+++ b/tools/perf/builtin-sched.c
-@@ -94,11 +94,6 @@ struct sched_atom {
+diff --git a/include/trace/events/sched.h b/include/trace/events/sched.h
+index fbb99a61f714..43492daefa6f 100644
+--- a/include/trace/events/sched.h
++++ b/include/trace/events/sched.h
+@@ -187,14 +187,14 @@ DEFINE_EVENT(sched_wakeup_template, sched_wakeup_new,
+ 	     TP_ARGS(p));
  
- #define TASK_STATE_TO_CHAR_STR "RSDTtXZPI"
- 
--/* task state bitmask, copied from include/linux/sched.h */
--#define TASK_RUNNING		0
--#define TASK_INTERRUPTIBLE	1
--#define TASK_UNINTERRUPTIBLE	2
--
- enum thread_state {
- 	THREAD_SLEEPING = 0,
- 	THREAD_WAIT_CPU,
-@@ -255,7 +250,7 @@ struct thread_runtime {
- 	u64 total_preempt_time;
- 	u64 total_delay_time;
- 
--	int last_state;
-+	char last_state;
- 
- 	char shortname[3];
- 	bool comm_changed;
-@@ -425,7 +420,7 @@ static void add_sched_event_wakeup(struct perf_sched *sched, struct task_desc *t
- }
- 
- static void add_sched_event_sleep(struct perf_sched *sched, struct task_desc *task,
--				  u64 timestamp, u64 task_state __maybe_unused)
-+				  u64 timestamp, char task_state __maybe_unused)
+ #ifdef CREATE_TRACE_POINTS
+-static inline long __trace_sched_switch_state(bool preempt,
++static inline short __trace_sched_switch_state(bool preempt,
+ 					      unsigned int prev_state,
+ 					      struct task_struct *p)
  {
- 	struct sched_atom *event = get_new_event(task, timestamp);
+ 	unsigned int state;
  
-@@ -840,6 +835,22 @@ replay_wakeup_event(struct perf_sched *sched,
- 	return 0;
- }
+ #ifdef CONFIG_SCHED_DEBUG
+-	BUG_ON(p != current);
++	WARN_ON_ONCE(p != current);
+ #endif /* CONFIG_SCHED_DEBUG */
  
-+static inline char task_state_char(int state)
-+{
-+	static const char state_to_char[] = "RSDTtXZPI";
-+	unsigned int bit = state ? ffs(state) : 0;
-+
-+	return bit < sizeof(state_to_char) - 1 ? state_to_char[bit] : '?';
-+}
-+
-+static inline char get_task_prev_state(struct evsel *evsel,
-+				       struct perf_sample *sample)
-+{
-+	const int prev_state = evsel__intval(evsel, sample, "prev_state");
-+
-+	return task_state_char(prev_state);
-+}
-+
- static int replay_switch_event(struct perf_sched *sched,
- 			       struct evsel *evsel,
- 			       struct perf_sample *sample,
-@@ -849,7 +860,7 @@ static int replay_switch_event(struct perf_sched *sched,
- 		   *next_comm  = evsel__strval(evsel, sample, "next_comm");
- 	const u32 prev_pid = evsel__intval(evsel, sample, "prev_pid"),
- 		  next_pid = evsel__intval(evsel, sample, "next_pid");
--	const u64 prev_state = evsel__intval(evsel, sample, "prev_state");
-+	const char prev_state = get_task_prev_state(evsel, sample);
- 	struct task_desc *prev, __maybe_unused *next;
- 	u64 timestamp0, timestamp = sample->time;
- 	int cpu = sample->cpu;
-@@ -1039,12 +1050,6 @@ static int thread_atoms_insert(struct perf_sched *sched, struct thread *thread)
- 	return 0;
- }
+ 	/*
+@@ -229,23 +229,23 @@ TRACE_EVENT(sched_switch,
+ 	TP_ARGS(preempt, prev, next, prev_state),
  
--static char sched_out_state(u64 prev_state)
--{
--	const char *str = TASK_STATE_TO_CHAR_STR;
--
--	return str[prev_state];
--}
+ 	TP_STRUCT__entry(
+-		__array(	char,	prev_comm,	TASK_COMM_LEN	)
+ 		__field(	pid_t,	prev_pid			)
+-		__field(	int,	prev_prio			)
+-		__field(	long,	prev_state			)
+-		__array(	char,	next_comm,	TASK_COMM_LEN	)
+ 		__field(	pid_t,	next_pid			)
+-		__field(	int,	next_prio			)
++		__field(	short,	prev_prio			)
++		__field(	short,	next_prio			)
++		__array(	char,	prev_comm,	TASK_COMM_LEN	)
++		__array(	char,	next_comm,	TASK_COMM_LEN	)
++		__field(	short,	prev_state			)
+ 	),
  
- static int
- add_sched_out_event(struct work_atoms *atoms,
-@@ -1121,7 +1126,7 @@ static int latency_switch_event(struct perf_sched *sched,
- {
- 	const u32 prev_pid = evsel__intval(evsel, sample, "prev_pid"),
- 		  next_pid = evsel__intval(evsel, sample, "next_pid");
--	const u64 prev_state = evsel__intval(evsel, sample, "prev_state");
-+	const char prev_state = get_task_prev_state(evsel, sample);
- 	struct work_atoms *out_events, *in_events;
- 	struct thread *sched_out, *sched_in;
- 	u64 timestamp0, timestamp = sample->time;
-@@ -1157,7 +1162,7 @@ static int latency_switch_event(struct perf_sched *sched,
- 			goto out_put;
- 		}
- 	}
--	if (add_sched_out_event(out_events, sched_out_state(prev_state), timestamp))
-+	if (add_sched_out_event(out_events, prev_state, timestamp))
- 		return -1;
+ 	TP_fast_assign(
+-		memcpy(__entry->next_comm, next->comm, TASK_COMM_LEN);
+-		__entry->prev_pid	= prev->pid;
+-		__entry->prev_prio	= prev->prio;
+-		__entry->prev_state	= __trace_sched_switch_state(preempt, prev_state, prev);
++		__entry->prev_pid		= prev->pid;
++		__entry->next_pid		= next->pid;
++		__entry->prev_prio		= (short) prev->prio;
++		__entry->next_prio		= (short) next->prio;
+ 		memcpy(__entry->prev_comm, prev->comm, TASK_COMM_LEN);
+-		__entry->next_pid	= next->pid;
+-		__entry->next_prio	= next->prio;
++		memcpy(__entry->next_comm, next->comm, TASK_COMM_LEN);
++		__entry->prev_state		= __trace_sched_switch_state(preempt, prev_state, prev);
+ 		/* XXX SCHED_DEADLINE */
+ 	),
  
- 	in_events = thread_atoms_search(&sched->atom_root, sched_in, &sched->cmp_pid);
-@@ -2022,24 +2027,12 @@ static void timehist_header(struct perf_sched *sched)
- 	printf("\n");
- }
- 
--static char task_state_char(struct thread *thread, int state)
--{
--	static const char state_to_char[] = TASK_STATE_TO_CHAR_STR;
--	unsigned bit = state ? ffs(state) : 0;
--
--	/* 'I' for idle */
--	if (thread__tid(thread) == 0)
--		return 'I';
--
--	return bit < sizeof(state_to_char) - 1 ? state_to_char[bit] : '?';
--}
--
- static void timehist_print_sample(struct perf_sched *sched,
- 				  struct evsel *evsel,
- 				  struct perf_sample *sample,
- 				  struct addr_location *al,
- 				  struct thread *thread,
--				  u64 t, int state)
-+				  u64 t, char state)
- {
- 	struct thread_runtime *tr = thread__priv(thread);
- 	const char *next_comm = evsel__strval(evsel, sample, "next_comm");
-@@ -2080,7 +2073,7 @@ static void timehist_print_sample(struct perf_sched *sched,
- 	print_sched_time(tr->dt_run, 6);
- 
- 	if (sched->show_state)
--		printf(" %5c ", task_state_char(thread, state));
-+		printf(" %5c ", thread->tid == 0 ? 'I' : state);
- 
- 	if (sched->show_next) {
- 		snprintf(nstr, sizeof(nstr), "next: %s[%d]", next_comm, next_pid);
-@@ -2152,9 +2145,9 @@ static void timehist_update_runtime_stats(struct thread_runtime *r,
- 		else if (r->last_time) {
- 			u64 dt_wait = tprev - r->last_time;
- 
--			if (r->last_state == TASK_RUNNING)
-+			if (r->last_state == 'R')
- 				r->dt_preempt = dt_wait;
--			else if (r->last_state == TASK_UNINTERRUPTIBLE)
-+			else if (r->last_state == 'D')
- 				r->dt_iowait = dt_wait;
- 			else
- 				r->dt_sleep = dt_wait;
-@@ -2579,7 +2572,7 @@ static int timehist_sched_change_event(struct perf_tool *tool,
- 	struct thread_runtime *tr = NULL;
- 	u64 tprev, t = sample->time;
- 	int rc = 0;
--	int state = evsel__intval(evsel, sample, "prev_state");
-+	const char state = get_task_prev_state(evsel, sample);
- 
- 	addr_location__init(&al);
- 	if (machine__resolve(machine, &al, sample) < 0) {
 -- 
 2.41.0
 
