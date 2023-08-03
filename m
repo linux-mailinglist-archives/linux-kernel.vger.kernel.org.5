@@ -2,195 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 507A576E67A
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 13:12:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 70A0976E688
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 13:14:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232462AbjHCLMw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Aug 2023 07:12:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51164 "EHLO
+        id S234165AbjHCLOs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Aug 2023 07:14:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53370 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234240AbjHCLMn (ORCPT
+        with ESMTP id S233764AbjHCLOq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Aug 2023 07:12:43 -0400
-Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D5003AA9
-        for <linux-kernel@vger.kernel.org>; Thu,  3 Aug 2023 04:12:36 -0700 (PDT)
-Received: by mail-ed1-x529.google.com with SMTP id 4fb4d7f45d1cf-5221cf2bb8cso1060305a12.1
-        for <linux-kernel@vger.kernel.org>; Thu, 03 Aug 2023 04:12:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=9elements.com; s=google; t=1691061154; x=1691665954;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=s50wqnYcuW7vCWAmLFI5zKlzJEcFsQM28qc0cEKNUSo=;
-        b=NNnOrn2gpHzni6r0+I2E44v+NVp/J6WhE/ZyRjnjSW7UiRI21X/nEw241plybZTaFx
-         MIj7txsnMcYyEMgjv9F2V8eRJJXf0z9bDfq/CAkBCa0EvowLEey2xKcSgK0Yk8Vh7HHj
-         5ZEyJvn7kzkfohoQIYhUF0XltgvgniI5rRd1HJEhCZQ+XkrOxEeT3l6IRZy3+dVRfaVX
-         WqDkFEXmE0ATnWx9+reCF6zjZ0eeMtiZ5ihnmieiaA7tvVgEOCcpLWFG/ez4prQ8OoP8
-         Ed+TKcEBAF9dCb4fxh3s9sJk6jBxNHz9vzt4AEC6mMkOaKb/9Z3r5AEsjuiPpSYO6sYc
-         +glw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691061154; x=1691665954;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=s50wqnYcuW7vCWAmLFI5zKlzJEcFsQM28qc0cEKNUSo=;
-        b=CWCwvHoSlk4I7UC7w+BAAjraP94w5AshxcMJEPxcHZd2AcNiODDmzO2Jl/cLj/ER/o
-         t8LN7JulTQjCy05dkddA1OXpBQuIalRio69a9Jh1D+jClQfb7LWExShF3ghcX4duros+
-         BZXOK2abc2QjqkZ5YC91ghMF9uJyiTUop5t+aMGOte7yzhnR2U9zm7b0/WSfFFsLbrdc
-         t6oz2ajSEIMzOkyN/0BaSWubleemKWKOmOriht6o3CY90vyP0LL09Y0btlnR9Watwxp3
-         U45P7//ZhGGwhmP7vU5QlTKnsy3Nss4youDfU9Ldhes8QIReqng8MMPH7cpbfx86aleV
-         jVgw==
-X-Gm-Message-State: ABy/qLbiBvuV43NjrI1q2bfFrtPriY0JjzlciMKA6Db7EnbRAW3hShe5
-        kwkWrQh+4dWH9ipX3NU8krqPhA==
-X-Google-Smtp-Source: APBJJlGBuIrXuWxhXPWmcIKc1dZNltXd/w8q32ySlOuR746aIYSuh5xtb01fpaV6NKTb5BpNgTr4Dg==
-X-Received: by 2002:a05:6402:1847:b0:521:d23b:f2c5 with SMTP id v7-20020a056402184700b00521d23bf2c5mr7105134edy.14.1691061154721;
-        Thu, 03 Aug 2023 04:12:34 -0700 (PDT)
-Received: from stroh80.sec.9e.network (ip-078-094-000-051.um19.pools.vodafone-ip.de. [78.94.0.51])
-        by smtp.gmail.com with ESMTPSA id n17-20020aa7c691000000b0051de018af1esm10027688edq.59.2023.08.03.04.12.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 03 Aug 2023 04:12:34 -0700 (PDT)
-From:   Naresh Solanki <naresh.solanki@9elements.com>
-X-Google-Original-From: Naresh Solanki <Naresh.Solanki@9elements.com>
-To:     Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>
-Cc:     zev@bewilderbeest.net,
-        Naresh Solanki <Naresh.Solanki@9elements.com>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] regulator: userspace-consumer: Add regulator event support
-Date:   Thu,  3 Aug 2023 13:12:25 +0200
-Message-ID: <20230803111225.107572-1-Naresh.Solanki@9elements.com>
-X-Mailer: git-send-email 2.41.0
+        Thu, 3 Aug 2023 07:14:46 -0400
+Received: from SHSQR01.spreadtrum.com (mx1.unisoc.com [222.66.158.135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E77E9B;
+        Thu,  3 Aug 2023 04:14:43 -0700 (PDT)
+Received: from dlp.unisoc.com ([10.29.3.86])
+        by SHSQR01.spreadtrum.com with ESMTP id 373BEBdF048295;
+        Thu, 3 Aug 2023 19:14:11 +0800 (+08)
+        (envelope-from Zhiguo.Niu@unisoc.com)
+Received: from SHDLP.spreadtrum.com (bjmbx02.spreadtrum.com [10.0.64.8])
+        by dlp.unisoc.com (SkyGuard) with ESMTPS id 4RGmQf3WpJz2Nwpsg;
+        Thu,  3 Aug 2023 19:12:26 +0800 (CST)
+Received: from bj08434pcu.spreadtrum.com (10.0.73.87) by
+ BJMBX02.spreadtrum.com (10.0.64.8) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.23; Thu, 3 Aug 2023 19:14:09 +0800
+From:   Zhiguo Niu <zhiguo.niu@unisoc.com>
+To:     <axboe@kernel.dk>, <bvanassche@acm.org>
+CC:     <linux-block@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <niuzhiguo84@gmail.com>, <zhiguo.niu@unisoc.com>,
+        <hongyu.jin@unisoc.com>, <yunlong.xing@unisoc.com>
+Subject: [PATCH] block/mq-deadline: use correct way to throttling write requests
+Date:   Thu, 3 Aug 2023 19:12:42 +0800
+Message-ID: <1691061162-22898-1-git-send-email-zhiguo.niu@unisoc.com>
+X-Mailer: git-send-email 1.9.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Originating-IP: [10.0.73.87]
+X-ClientProxiedBy: SHCAS01.spreadtrum.com (10.0.1.201) To
+ BJMBX02.spreadtrum.com (10.0.64.8)
+X-MAIL: SHSQR01.spreadtrum.com 373BEBdF048295
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add sysfs attribute to track regulator events received from regulator
-notifier block handler.
+The original formula was inaccurate:
+dd->async_depth = max(1UL, 3 * q->nr_requests / 4);
 
-Signed-off-by: Naresh Solanki <Naresh.Solanki@9elements.com>
+For write requests, when we assign a tags from sched_tags,
+data->shallow_depth will be passed to sbitmap_find_bit,
+see the following code:
+
+nr = sbitmap_find_bit_in_word(&sb->map[index],
+			min_t (unsigned int,
+			__map_depth(sb, index),
+			depth),
+			alloc_hint, wrap);
+
+The smaller of data->shallow_depth and __map_depth(sb, index)
+will be used as the maximum range when allocating bits.
+
+For a mmc device (one hw queue, deadline I/O scheduler):
+q->nr_requests = sched_tags = 128, so according to the previous
+calculation method, dd->async_depth = data->shallow_depth = 96,
+and the platform is 64bits with 8 cpus, sched_tags.bitmap_tags.sb.shift=5,
+sb.maps[]=32/32/32/32, 32 is smaller than 96, whether it is a read or
+a write I/O, tags can be allocated to the maximum range each time,
+which has not throttling effect.
+
+In addition, refer to the methods of bfg/kyber I/O scheduler,
+limit ratiois are calculated base on sched_tags.bitmap_tags.sb.shift.
+
+This patch can throttle write requests really.
+
+Fixes: 07757588e507 ("block/mq-deadline: Reserve 25% of scheduler tags for synchronous requests")
+
+Signed-off-by: Zhiguo Niu <zhiguo.niu@unisoc.com>
+
 ---
- drivers/regulator/userspace-consumer.c | 52 +++++++++++++++++++++++++-
- 1 file changed, 51 insertions(+), 1 deletion(-)
+ block/mq-deadline.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/regulator/userspace-consumer.c b/drivers/regulator/userspace-consumer.c
-index 97f075ed68c9..a0b980022993 100644
---- a/drivers/regulator/userspace-consumer.c
-+++ b/drivers/regulator/userspace-consumer.c
-@@ -29,6 +29,10 @@ struct userspace_consumer_data {
+diff --git a/block/mq-deadline.c b/block/mq-deadline.c
+index 5839a027e0f0..7e043d4a78f8 100644
+--- a/block/mq-deadline.c
++++ b/block/mq-deadline.c
+@@ -620,8 +620,9 @@ static void dd_depth_updated(struct blk_mq_hw_ctx *hctx)
+ 	struct request_queue *q = hctx->queue;
+ 	struct deadline_data *dd = q->elevator->elevator_data;
+ 	struct blk_mq_tags *tags = hctx->sched_tags;
++	unsigned int shift = tags->bitmap_tags.sb.shift;
  
- 	int num_supplies;
- 	struct regulator_bulk_data *supplies;
-+
-+	struct kobject *kobj;
-+	struct notifier_block nb;
-+	unsigned long events;
- };
+-	dd->async_depth = max(1UL, 3 * q->nr_requests / 4);
++	dd->async_depth = max(1U, 3 * (1U << shift)  / 4);
  
- static ssize_t name_show(struct device *dev,
-@@ -89,12 +93,30 @@ static ssize_t state_store(struct device *dev, struct device_attribute *attr,
- 	return count;
+ 	sbitmap_queue_min_shallow_depth(&tags->bitmap_tags, dd->async_depth);
  }
- 
-+static DEFINE_MUTEX(events_lock);
-+
-+static ssize_t events_show(struct device *dev,
-+			   struct device_attribute *attr, char *buf)
-+{
-+	struct userspace_consumer_data *data = dev_get_drvdata(dev);
-+	unsigned long e;
-+
-+	mutex_lock(&events_lock);
-+	e = data->events;
-+	data->events = 0;
-+	mutex_unlock(&events_lock);
-+
-+	return sprintf(buf, "0x%lx\n", e);
-+}
-+
- static DEVICE_ATTR_RO(name);
- static DEVICE_ATTR_RW(state);
-+static DEVICE_ATTR_RO(events);
- 
- static struct attribute *attributes[] = {
- 	&dev_attr_name.attr,
- 	&dev_attr_state.attr,
-+	&dev_attr_events.attr,
- 	NULL,
- };
- 
-@@ -115,12 +137,28 @@ static const struct attribute_group attr_group = {
- 	.is_visible =  attr_visible,
- };
- 
-+static int regulator_userspace_notify(struct notifier_block *nb,
-+				      unsigned long event,
-+				      void *ignored)
-+{
-+	struct userspace_consumer_data *data =
-+		container_of(nb, struct userspace_consumer_data, nb);
-+
-+	mutex_lock(&events_lock);
-+	data->events |= event;
-+	mutex_unlock(&events_lock);
-+
-+	sysfs_notify(data->kobj, NULL, dev_attr_events.attr.name);
-+
-+	return NOTIFY_OK;
-+}
-+
- static int regulator_userspace_consumer_probe(struct platform_device *pdev)
- {
- 	struct regulator_userspace_consumer_data tmpdata;
- 	struct regulator_userspace_consumer_data *pdata;
- 	struct userspace_consumer_data *drvdata;
--	int ret;
-+	int i, ret;
- 
- 	pdata = dev_get_platdata(&pdev->dev);
- 	if (!pdata) {
-@@ -153,6 +191,7 @@ static int regulator_userspace_consumer_probe(struct platform_device *pdev)
- 	drvdata->num_supplies = pdata->num_supplies;
- 	drvdata->supplies = pdata->supplies;
- 	drvdata->no_autoswitch = pdata->no_autoswitch;
-+	drvdata->kobj = &pdev->dev.kobj;
- 
- 	mutex_init(&drvdata->lock);
- 
-@@ -186,6 +225,13 @@ static int regulator_userspace_consumer_probe(struct platform_device *pdev)
- 	}
- 	drvdata->enabled = !!ret;
- 
-+	drvdata->nb.notifier_call = regulator_userspace_notify;
-+	for (i = 0; i < drvdata->num_supplies; i++) {
-+		ret = devm_regulator_register_notifier(drvdata->supplies[i].consumer, &drvdata->nb);
-+		if (ret)
-+			goto err_enable;
-+	}
-+
- 	return 0;
- 
- err_enable:
-@@ -197,6 +243,10 @@ static int regulator_userspace_consumer_probe(struct platform_device *pdev)
- static int regulator_userspace_consumer_remove(struct platform_device *pdev)
- {
- 	struct userspace_consumer_data *data = platform_get_drvdata(pdev);
-+	int i;
-+
-+	for (i = 0; i < data->num_supplies; i++)
-+		devm_regulator_unregister_notifier(data->supplies[i].consumer, &data->nb);
- 
- 	sysfs_remove_group(&pdev->dev.kobj, &attr_group);
- 
-
-base-commit: 4fb53b2377c364e3753d6e293913b57dad68e98b
 -- 
-2.41.0
+2.37.3
 
