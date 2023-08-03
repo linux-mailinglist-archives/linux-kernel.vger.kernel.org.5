@@ -2,169 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D81576F335
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 21:05:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C6B1D76F33B
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 21:07:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231649AbjHCTFm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Aug 2023 15:05:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46738 "EHLO
+        id S230026AbjHCTHF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Aug 2023 15:07:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47710 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231765AbjHCTF1 (ORCPT
+        with ESMTP id S229660AbjHCTGw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Aug 2023 15:05:27 -0400
-Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E17143A93;
-        Thu,  3 Aug 2023 12:04:49 -0700 (PDT)
-Received: by mail-ed1-x52e.google.com with SMTP id 4fb4d7f45d1cf-5230f8da574so1159539a12.3;
-        Thu, 03 Aug 2023 12:04:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1691089488; x=1691694288;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=OjWDL2QftxnG9c5+Vha2qoI437XfBQWXN8yDWNa47PQ=;
-        b=mV4KTN0ysT5hTWu9K8Zc31QqIGOV7LQ1dwH4El6DJSEHE1FtI7dZUuEczg74YLrZOT
-         0EgbOxFz3pD9xeAK9hkbHYdc8Xx8xR/Jo2aomITNvTm6y5PWIfWVNZ7l789Ld8GZfjkn
-         cp4c/v4/D4O4XC6+Vv7CEJUb/sh3D+as1ZZeJUk3990UkQT0Oimc1u4ElS7CwkE8Mitx
-         wdGw5o06v4xn2IF1MTnG1qHGxULGuI60c4DVaUMCJe2mKVippAQQW2EH3ek6G/QW+Z7p
-         9OK01xzemoCiwbDcj3oFZwFVfOHejPB+7PLomRQ4Iir8StXjxNo+DnXSjRaLPwgcbKB0
-         KM1Q==
+        Thu, 3 Aug 2023 15:06:52 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5529A3A98
+        for <linux-kernel@vger.kernel.org>; Thu,  3 Aug 2023 12:05:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1691089526;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=pPDr3fHEuj+B4yeJMYhNPLAGlxXe+c7xVHr2n9vPefY=;
+        b=Njc0yKCNv2heVDtwEQfcY3iCaVrHfSU2IgaiZXCMFoTcRWHQ3uyY5Zi9BlU0gC5cG3I4DG
+        GYx50I5+wOm8NUYGHO0fKXX7hOlbYUPX1+epxDNQB0+N0wLncFAfB7Q2Qz2E0rH/DGjnmH
+        0rFgsDbA/FcytF+uy2iecDSjBV8n4P4=
+Received: from mail-qk1-f197.google.com (mail-qk1-f197.google.com
+ [209.85.222.197]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-615-h-th-gJvMi2lYI1TSOSdeA-1; Thu, 03 Aug 2023 15:05:24 -0400
+X-MC-Unique: h-th-gJvMi2lYI1TSOSdeA-1
+Received: by mail-qk1-f197.google.com with SMTP id af79cd13be357-76cb292df12so32374285a.0
+        for <linux-kernel@vger.kernel.org>; Thu, 03 Aug 2023 12:05:24 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691089488; x=1691694288;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=OjWDL2QftxnG9c5+Vha2qoI437XfBQWXN8yDWNa47PQ=;
-        b=N7gXFKXhB7defZ4+7b6SbBBp9LJCsrY9V2FfA0YJV+bUVOhfpscORrh0i1u7LNSzeo
-         3XSCAkXSwwLjcP+XhW7TpB6fMO7CDBrCudlPuFNrmtuh5UGwCR8h1uotdyaiK/rwKnhY
-         ABTKlRNlrj3632GgO055rTZMnM+ZX/VuFRb4bv/x5Cazdo+TkKm+0FZiS2uV9bX7bjXG
-         EkUOT8UttUaIwWVN+yDC3FxTjFtcyr2V01itaGrLgBvkMKQm1+ehXdtfnQnCT3o4D9JA
-         uUofZtuOUAXJPm6710j0pJdG7YQaxt3hcM6vOME9fvWoeWdIgoeTiA1F4jwKJwZS0400
-         onbg==
-X-Gm-Message-State: ABy/qLYIQySqtHb5EIjN5qu3W14DI8/Q8LasK7MSSDWiIw5s96/gW4vh
-        n+6yTR27tzOpDar7YXy2BwA=
-X-Google-Smtp-Source: APBJJlGddjj+hpSRgOCDARjrmWpd5r3t7GFMF97AXlxC73gVDE7QpmUeSSqOWqDM6EPTtAa0eyyQ2w==
-X-Received: by 2002:aa7:c251:0:b0:522:3410:de23 with SMTP id y17-20020aa7c251000000b005223410de23mr7929054edo.3.1691089487896;
-        Thu, 03 Aug 2023 12:04:47 -0700 (PDT)
-Received: from dev7.kernelcare.com ([2a01:4f8:201:23::2])
-        by smtp.gmail.com with ESMTPSA id g8-20020a056402180800b005227ead61d0sm158232edy.83.2023.08.03.12.04.46
+        d=1e100.net; s=20221208; t=1691089524; x=1691694324;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=pPDr3fHEuj+B4yeJMYhNPLAGlxXe+c7xVHr2n9vPefY=;
+        b=RMdT/WI+dBzverncAuwk1Ed3mkkeSLka0mM23R3cdgu8z1F83KSPnEERq3Nd+x5DJd
+         t2jHRIGFcHSrZ9i6SM3FaaA1+qHu88CxJatL4FVGQwQDwxn90e9vDTz/3+26ATtBfCy6
+         cdmfkQrHA8W3HpTof9m9jHD8Pu94ASGXGTYCu1LfmFoe4kT/NWzcuggRLNztgaatWnc9
+         kwZ1JMkRZkdKBfRwKu9Fxc193iRFXLau3xTFZRQC9xTVkOOpidnPtJ/yN4H0Cwxoq8bz
+         9Xgb/B7lQzWQv3amqHEXD78FvNxk7ayq7vongbmZu0+hIPUqrONYZ70L0i4KU5WkIfYx
+         YUcQ==
+X-Gm-Message-State: ABy/qLYNamZb8I+W1cR/6C6O8rqdZNnhIhJoaSLVWPAodmNXRvbdxxlP
+        mcSuHT0o4ZVugjGIQ5qB0PLMejS2leznvYk5FJBmpMVNSYnkbpUnVvlq3vLb8vDCXwEYA9aFJXg
+        mbLB5TJ9jO9Xtrg+KCcodbbyK
+X-Received: by 2002:a05:622a:c1:b0:400:8036:6f05 with SMTP id p1-20020a05622a00c100b0040080366f05mr24001863qtw.2.1691089523797;
+        Thu, 03 Aug 2023 12:05:23 -0700 (PDT)
+X-Google-Smtp-Source: APBJJlH2ykL98pmKhK3SiQ2b6vrIhtlRShiCOrIVRmlDJBxu7aT77VMcWW+uQQCpCeqHjK8Bd8KhMA==
+X-Received: by 2002:a05:622a:c1:b0:400:8036:6f05 with SMTP id p1-20020a05622a00c100b0040080366f05mr24001840qtw.2.1691089523525;
+        Thu, 03 Aug 2023 12:05:23 -0700 (PDT)
+Received: from x1n (cpe5c7695f3aee0-cm5c7695f3aede.cpe.net.cable.rogers.com. [99.254.144.39])
+        by smtp.gmail.com with ESMTPSA id m25-20020aed27d9000000b0040fe0fdf555sm135924qtg.22.2023.08.03.12.05.22
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 03 Aug 2023 12:04:47 -0700 (PDT)
-From:   Andrew Kanner <andrew.kanner@gmail.com>
-To:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        martin.lau@linux.dev, song@kernel.org, yhs@fb.com,
-        kpsingh@kernel.org, sdf@google.com, haoluo@google.com,
-        jolsa@kernel.org, mw@semihalf.com, shayagr@amazon.com,
-        bpf@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
-        pabeni@redhat.com, jasowang@redhat.com, hawk@kernel.org,
-        jbrouer@redhat.com, dsahern@gmail.com, john.fastabend@gmail.com,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        syzbot+f817490f5bd20541b90a@syzkaller.appspotmail.com,
-        Andrew Kanner <andrew.kanner@gmail.com>
-Subject: [PATCH net-next v5 2/2] net: core: remove unnecessary frame_sz check in bpf_xdp_adjust_tail()
-Date:   Thu,  3 Aug 2023 21:03:18 +0200
-Message-Id: <20230803190316.2380231-1-andrew.kanner@gmail.com>
-X-Mailer: git-send-email 2.39.3
-In-Reply-To: <20230803185947.2379988-1-andrew.kanner@gmail.com>
-References: <20230803185947.2379988-1-andrew.kanner@gmail.com>
+        Thu, 03 Aug 2023 12:05:23 -0700 (PDT)
+Date:   Thu, 3 Aug 2023 15:05:21 -0400
+From:   Peter Xu <peterx@redhat.com>
+To:     David Hildenbrand <david@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        linux-fsdevel@vger.kernel.org, kvm@vger.kernel.org,
+        linux-kselftest@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        liubo <liubo254@huawei.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Hugh Dickins <hughd@google.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Mel Gorman <mgorman@suse.de>, Shuah Khan <shuah@kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>
+Subject: Re: [PATCH v3 6/7] selftest/mm: ksm_functional_tests: test in
+ mmap_and_merge_range() if anything got merged
+Message-ID: <ZMv6cZH2PdyeTmw1@x1n>
+References: <20230803143208.383663-1-david@redhat.com>
+ <20230803143208.383663-7-david@redhat.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20230803143208.383663-7-david@redhat.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Syzkaller reported the following issue:
-=======================================
-Too BIG xdp->frame_sz = 131072
-WARNING: CPU: 0 PID: 5020 at net/core/filter.c:4121
-  ____bpf_xdp_adjust_tail net/core/filter.c:4121 [inline]
-WARNING: CPU: 0 PID: 5020 at net/core/filter.c:4121
-  bpf_xdp_adjust_tail+0x466/0xa10 net/core/filter.c:4103
-...
-Call Trace:
- <TASK>
- bpf_prog_4add87e5301a4105+0x1a/0x1c
- __bpf_prog_run include/linux/filter.h:600 [inline]
- bpf_prog_run_xdp include/linux/filter.h:775 [inline]
- bpf_prog_run_generic_xdp+0x57e/0x11e0 net/core/dev.c:4721
- netif_receive_generic_xdp net/core/dev.c:4807 [inline]
- do_xdp_generic+0x35c/0x770 net/core/dev.c:4866
- tun_get_user+0x2340/0x3ca0 drivers/net/tun.c:1919
- tun_chr_write_iter+0xe8/0x210 drivers/net/tun.c:2043
- call_write_iter include/linux/fs.h:1871 [inline]
- new_sync_write fs/read_write.c:491 [inline]
- vfs_write+0x650/0xe40 fs/read_write.c:584
- ksys_write+0x12f/0x250 fs/read_write.c:637
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x38/0xb0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x63/0xcd
+On Thu, Aug 03, 2023 at 04:32:07PM +0200, David Hildenbrand wrote:
+> Let's extend mmap_and_merge_range() to test if anything in the current
+> process was merged. range_maps_duplicates() is too unreliable for that
+> use case, so instead look at KSM stats.
+> 
+> Trigger a complete unmerge first, to cleanup the stable tree and
+> stabilize accounting of merged pages.
+> 
+> Note that we're using /proc/self/ksm_merging_pages instead of
+> /proc/self/ksm_stat, because that one is available in more existing
+> kernels.
+> 
+> If /proc/self/ksm_merging_pages can't be opened, we can't perform any
+> checks and simply skip them.
+> 
+> We have to special-case the shared zeropage for now. But the only user
+> -- test_unmerge_zero_pages() -- performs its own merge checks.
+> 
+> Signed-off-by: David Hildenbrand <david@redhat.com>
 
-xdp->frame_sz > PAGE_SIZE check was introduced in commit c8741e2bfe87
-("xdp: Allow bpf_xdp_adjust_tail() to grow packet size"). But Jesper
-Dangaard Brouer <jbrouer@redhat.com> noted that after introducing the
-xdp_init_buff() which all XDP driver use - it's safe to remove this
-check. The original intend was to catch cases where XDP drivers have
-not been updated to use xdp.frame_sz, but that is not longer a concern
-(since xdp_init_buff).
+Acked-by: Peter Xu <peterx@redhat.com>
 
-Running the initial syzkaller repro it was discovered that the
-contiguous physical memory allocation is used for both xdp paths in
-tun_get_user(), e.g. tun_build_skb() and tun_alloc_skb(). It was also
-stated by Jesper Dangaard Brouer <jbrouer@redhat.com> that XDP can
-work on higher order pages, as long as this is contiguous physical
-memory (e.g. a page).
+One nitpick:
 
-Reported-and-tested-by: syzbot+f817490f5bd20541b90a@syzkaller.appspotmail.com
-Closes: https://lore.kernel.org/all/000000000000774b9205f1d8a80d@google.com/T/
-Link: https://syzkaller.appspot.com/bug?extid=f817490f5bd20541b90a
-Link: https://lore.kernel.org/all/20230725155403.796-1-andrew.kanner@gmail.com/T/
-Fixes: 43b5169d8355 ("net, xdp: Introduce xdp_init_buff utility routine")
-Signed-off-by: Andrew Kanner <andrew.kanner@gmail.com>
-Acked-by: Jesper Dangaard Brouer <hawk@kernel.org>
-Acked-by: Jason Wang <jasowang@redhat.com>
----
+> ---
+>  .../selftests/mm/ksm_functional_tests.c       | 47 +++++++++++++++++++
+>  1 file changed, 47 insertions(+)
+> 
+> diff --git a/tools/testing/selftests/mm/ksm_functional_tests.c b/tools/testing/selftests/mm/ksm_functional_tests.c
+> index 0de9d33cd565..cb63b600cb4f 100644
+> --- a/tools/testing/selftests/mm/ksm_functional_tests.c
+> +++ b/tools/testing/selftests/mm/ksm_functional_tests.c
+> @@ -30,6 +30,7 @@
+>  static int ksm_fd;
+>  static int ksm_full_scans_fd;
+>  static int proc_self_ksm_stat_fd;
+> +static int proc_self_ksm_merging_pages_fd;
+>  static int ksm_use_zero_pages_fd;
+>  static int pagemap_fd;
+>  static size_t pagesize;
+> @@ -88,6 +89,22 @@ static long get_my_ksm_zero_pages(void)
+>  	return my_ksm_zero_pages;
+>  }
+>  
+> +static long get_my_merging_pages(void)
+> +{
+> +	char buf[10];
+> +	ssize_t ret;
+> +
+> +	if (proc_self_ksm_merging_pages_fd < 0)
+> +		return proc_self_ksm_merging_pages_fd;
 
-Notes (akanner):
-    v5:
-      - same as v4, but cc-ed bpf@vger.kernel.org according to v3->v4
-        change
-    v4: https://lore.kernel.org/all/20230801220710.464-1-andrew.kanner@gmail.com/T/
-      - remove bpf_xdp_adjust_tail() check for frame_sz instead.
-    v3: https://lore.kernel.org/all/20230725155403.796-1-andrew.kanner@gmail.com/T/
-    v2: https://lore.kernel.org/all/20230725153941.653-1-andrew.kanner@gmail.com/T/
-    v1: https://lore.kernel.org/all/20230724221326.384-1-andrew.kanner@gmail.com/T/
-      - initial attempts to fix drivers/net/tun.c:tun_get_user(),
-        e.g. tun_build_skb() or tun_alloc_skb(), to not exceed
-        xdp->frame_sz check from net/core/filter.c
+Better do the fds check all in main(), e.g. not all callers below considers
+negative values, so -1 can pass "if (get_my_merging_pages())" etc.
 
- net/core/filter.c | 6 ------
- 1 file changed, 6 deletions(-)
+> +
+> +	ret = pread(proc_self_ksm_merging_pages_fd, buf, sizeof(buf) - 1, 0);
+> +	if (ret <= 0)
+> +		return -errno;
+> +	buf[ret] = 0;
+> +
+> +	return strtol(buf, NULL, 10);
+> +}
 
-diff --git a/net/core/filter.c b/net/core/filter.c
-index 06ba0e56e369..28a59596987a 100644
---- a/net/core/filter.c
-+++ b/net/core/filter.c
-@@ -4116,12 +4116,6 @@ BPF_CALL_2(bpf_xdp_adjust_tail, struct xdp_buff *, xdp, int, offset)
- 	if (unlikely(data_end > data_hard_end))
- 		return -EINVAL;
- 
--	/* ALL drivers MUST init xdp->frame_sz, chicken check below */
--	if (unlikely(xdp->frame_sz > PAGE_SIZE)) {
--		WARN_ONCE(1, "Too BIG xdp->frame_sz = %d\n", xdp->frame_sz);
--		return -EINVAL;
--	}
--
- 	if (unlikely(data_end < xdp->data + ETH_HLEN))
- 		return -EINVAL;
- 
 -- 
-2.39.3
+Peter Xu
 
