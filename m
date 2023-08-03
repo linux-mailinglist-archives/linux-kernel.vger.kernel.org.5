@@ -2,165 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7605676F0B2
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 19:33:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 39F8476F0B5
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 19:34:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234863AbjHCRdp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Aug 2023 13:33:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47294 "EHLO
+        id S235030AbjHCReS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Aug 2023 13:34:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47890 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233056AbjHCRdk (ORCPT
+        with ESMTP id S229837AbjHCReP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Aug 2023 13:33:40 -0400
-Received: from mail-yw1-x1149.google.com (mail-yw1-x1149.google.com [IPv6:2607:f8b0:4864:20::1149])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8DFCA3C25
-        for <linux-kernel@vger.kernel.org>; Thu,  3 Aug 2023 10:33:33 -0700 (PDT)
-Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-5734d919156so13155547b3.3
-        for <linux-kernel@vger.kernel.org>; Thu, 03 Aug 2023 10:33:33 -0700 (PDT)
+        Thu, 3 Aug 2023 13:34:15 -0400
+Received: from mail-vs1-xe2e.google.com (mail-vs1-xe2e.google.com [IPv6:2607:f8b0:4864:20::e2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 125EE10B;
+        Thu,  3 Aug 2023 10:34:15 -0700 (PDT)
+Received: by mail-vs1-xe2e.google.com with SMTP id ada2fe7eead31-44799de68f3so1534419137.1;
+        Thu, 03 Aug 2023 10:34:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1691084012; x=1691688812;
-        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=0pu/AbS0HKjXzXWiPYnMLO2Amc72EsgDe6tRMstBdak=;
-        b=KC193m6YkfKMgU1V5pk0nLnwEMaKH+pCPxR6oyeWGiIkaM4A2w8Pp69NstZno0wmB1
-         ZDjO/BuWqE7adFEoyq3k08am+VD+HDLkdlXGSfaOrrWJLfoTTrC8zC2MD/8zr3IwpcGS
-         o72PCx2btOf54qsSVe5aRfxxbauOWdb1xXriKdpgIWMYv8OxBaHbQe3OkHX+1ExgQT45
-         4fi2EEVVuwEfD4HoT72VhlIbFGq1san8AhAwlOpsM/inO6HtwB2deOg08vibUNXNZbAS
-         PKBRwsPLy2Rp5beitfEyzkusmkTZvL9/MuWg+1nxQ2xObOdCIZbE25I+cpJg67GqrUbV
-         EF+Q==
+        d=gmail.com; s=20221208; t=1691084054; x=1691688854;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=s8Xa9pYsN9q26Cy2OfWksmVuBviyVuvzRMdasYi4RPE=;
+        b=ieYA6bVxf1lbXkgHAn+hXhVfxzKe711nmI2r+8a2Pkje45GQmKLftZmaLt0qar82gg
+         SFBl/K1845mX6+FAqPkGcjyrpBXYikncS74nQOppvoyKSHXe0rCclfsEAXrPauDBdjLV
+         e25KI/Uu6/whFSVJCUzOwGJkV3uYaP9OmOzDMNjjkk1ts8gnSQW1ex6gNo+0kzwO65XL
+         HyypX83EJT7/21befwOJ9uRlgd3lhXqtj1LN6iNBdvKWKSCrS9QQZFXiZGxHkCMMLy82
+         +seRRUC93Y1mRKPJn8r746QD8Gi1bfCC2+B+iopA0nXA09o5X8xylmqFAP/A/rLnnA0P
+         /oIA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691084012; x=1691688812;
-        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=0pu/AbS0HKjXzXWiPYnMLO2Amc72EsgDe6tRMstBdak=;
-        b=awl5T/FdoonzpumC2g6T/jzhjaa3+P/VyJwbUkKb9HcXVPgoNpIfxVZqwUfcwDi+Qg
-         C91X7jIs43qBJKXL+Cp0saONQcy02tI10qo4VzzCaZRDiUhcoP8x6kf1wxZOv9ZPngsw
-         sbg6KG3lbx8nhMIbD+9Cd4cIM/qOb7kRzA+jQMJ/Uaj4gbEaudmtIglkY+h9NyDWEyy2
-         YtKP5Ka915rHY7zoGzcq3O0nrWsDVzbsyjzWmVfYBArepNQo7wRRW6iSoyxFMvKvJHFf
-         ZZVnP3jw9/t8aQywUio9U0NiZ96Ke9iLYVMuZ4NVXeediL3KQz5WsFyNxKcMBSwkYkqa
-         e1Dw==
-X-Gm-Message-State: ABy/qLY43LlBCoKV6uJbjRymNbeDiLbwkEaQKAoHq8Fj7FZQOcugM2U4
-        Fcd5p8VkWdm4IQp65485aIIx71vQOEikchK523w=
-X-Google-Smtp-Source: APBJJlEJdivYv8+b0csxVKGpKeftEtW6vp2C3Qo3RNq++FnZzd8sjOXFBRON9kXJ/6W7O/EGTSqXhU2ZwUIF7yQaems=
-X-Received: from ndesaulniers-desktop.svl.corp.google.com ([2620:15c:2d1:203:cd2a:c126:8d90:d5ab])
- (user=ndesaulniers job=sendgmr) by 2002:a81:b646:0:b0:569:e04a:238f with SMTP
- id h6-20020a81b646000000b00569e04a238fmr187846ywk.4.1691084012010; Thu, 03
- Aug 2023 10:33:32 -0700 (PDT)
-Date:   Thu, 03 Aug 2023 10:33:27 -0700
-Mime-Version: 1.0
-X-B4-Tracking: v=1; b=H4sIAObky2QC/3WNQQ6CMBBFr2JmbQ0FVHTlPQwx7XQKkxTatIRgC
- He3sHf5/s/LWyFRZErwPK0QaebEfsxQnk+AvRo7EmwyQ1mUVdEUlQgBP5PT7BYX2Ai0Rtvamtr
- eLWRJq0RCRzViv2uDShPF/QiRLC9H6d1m7jlNPn6P8Cz39W9jlkKKplZS4xXt41a9Ou87Rxf0A 7Tbtv0Aeg6LYsYAAAA=
-X-Developer-Key: i=ndesaulniers@google.com; a=ed25519; pk=UIrHvErwpgNbhCkRZAYSX0CFd/XFEwqX3D0xqtqjNug=
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1691084010; l=3497;
- i=ndesaulniers@google.com; s=20220923; h=from:subject:message-id;
- bh=67hlOu38BB7CQZwIwTCku7kE6/CaycFqUpDIAeyUINw=; b=bEhP7KO3a79AFAV5eK8xUw0gGcjsqOcYWQS5seKyBUjoRQ1L5F0wGAVdqGIdML0+QnIFkiFCZ
- aVyNKTTHEi8Bvs5TOuBZ3doktaLzVfwNxT210gHDiu1vK3zkunVW0w1
-X-Mailer: b4 0.12.3
-Message-ID: <20230803-ppc_tlbilxlpid-v2-1-211ffa1df194@google.com>
-Subject: [PATCH v2] powerpc/inst: add PPC_TLBILX_LPID
-From:   Nick Desaulniers <ndesaulniers@google.com>
-To:     Michael Ellerman <mpe@ellerman.id.au>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Tom Rix <trix@redhat.com>
-Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org, llvm@lists.linux.dev,
-        kernel test robot <lkp@intel.com>,
-        Nick Desaulniers <ndesaulniers@google.com>
-Content-Type: text/plain; charset="utf-8"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        d=1e100.net; s=20221208; t=1691084054; x=1691688854;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=s8Xa9pYsN9q26Cy2OfWksmVuBviyVuvzRMdasYi4RPE=;
+        b=Khj1CqU68ZW5JL7jvi+pAiIgubbQcSdOSioCHUAfRRrEK3wEQEOBOXhiHNa782xOK0
+         UPqwiB2NmMmM+twM72bGE9FgzVc86HK7WqMXgv2w2QuRxYGJss8qW1y6++gwGcDCifNl
+         NAV3m7xO/s3fyfEcrgTatPMe9m95tBFPB1vErPL0r+tQnVzkgRPuL4sGeI6HkUbr9cAv
+         j1cu7XVp3wBaRjUz0qXRSN0X1OTpbe4G8n/iqzjOvLdESagGXKE+Q5TDU8WgkdB69xhd
+         N9l72PSsrm+EPi9hScYKgRe44/8Et89Jy2gZlyHu6T+Mpc5AYt/8GRAlAKE3sxDoXJ/w
+         J9QQ==
+X-Gm-Message-State: ABy/qLbF3wRyFXbaDCQ1CE+Hrhe1CxHK2awnp4p/B09UvgIkaA7y0xCK
+        ktLpTVM4KCBwMeU/FIXCz435PMTD55CY+t0AsoU=
+X-Google-Smtp-Source: APBJJlG6pjOoG0q6RAsawh+9qeUBUHt8XE1GKbQlIBPYmQFLRffHoU6WGPDLy5lU6fh2CQ1SS4cFWeU/BvylteONzOI=
+X-Received: by 2002:a05:6102:d8a:b0:443:5524:8f8b with SMTP id
+ d10-20020a0561020d8a00b0044355248f8bmr4828038vst.4.1691084054017; Thu, 03 Aug
+ 2023 10:34:14 -0700 (PDT)
+MIME-Version: 1.0
+References: <1690598115-26287-1-git-send-email-quic_pintu@quicinc.com>
+ <20230731112155.GA3662@lst.de> <CAOuPNLjnfq1JefngtNrg0Q+JdMTSRz+eEqxGQJFfx9+af+k9WA@mail.gmail.com>
+ <20230801171838.GA14599@lst.de> <CANDhNCq+3OEosUcQJ5GFgk+5OyG+JqXKM43UAo0aPz-V27OgAA@mail.gmail.com>
+ <20230802094725.GA28241@lst.de>
+In-Reply-To: <20230802094725.GA28241@lst.de>
+From:   Pintu Agarwal <pintu.ping@gmail.com>
+Date:   Thu, 3 Aug 2023 23:04:02 +0530
+Message-ID: <CAOuPNLjAOk0BOXDcjbY+evX_uxbZyptrJXMf0ULhReECzEX0CQ@mail.gmail.com>
+Subject: Re: [PATCH v2] dma-contiguous: define proper name for global cma region
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     John Stultz <jstultz@google.com>,
+        Pintu Kumar <quic_pintu@quicinc.com>,
+        linux-kernel@vger.kernel.org, akpm@linux-foundation.org,
+        linux-mm@kvack.org, m.szyprowski@samsung.com, robin.murphy@arm.com,
+        iommu@lists.linux.dev, Sumit Semwal <sumit.semwal@linaro.org>,
+        Benjamin Gaignard <benjamin.gaignard@collabora.com>,
+        Liam Mark <lmark@codeaurora.org>,
+        Laura Abbott <labbott@redhat.com>,
+        Brian Starkey <Brian.Starkey@arm.com>,
+        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+        linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        linaro-mm-sig@lists.linaro.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Clang didn't recognize the instruction tlbilxlpid. This was fixed in
-clang-18 [0] then backported to clang-17 [1].  To support clang-16 and
-older, rather than using that instruction bare in inline asm, add it to
-ppc-opcode.h and use that macro as is done elsewhere for other
-instructions.
+Hi,
 
-Link: https://github.com/ClangBuiltLinux/linux/issues/1891
-Link: https://github.com/llvm/llvm-project/issues/64080
-Link: https://github.com/llvm/llvm-project/commit/53648ac1d0c953ae6d008864dd2eddb437a92468 [0]
-Link: https://github.com/llvm/llvm-project-release-prs/commit/0af7e5e54a8c7ac665773ac1ada328713e8338f5 [1]
-Reported-by: kernel test robot <lkp@intel.com>
-Closes: https://lore.kernel.org/llvm/202307211945.TSPcyOhh-lkp@intel.com/
-Suggested-by: Michael Ellerman <mpe@ellerman.id.au>
-Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
----
-Changes in v2:
-- add 2 missing tabs to PPC_RAW_TLBILX_LPID
-- Link to v1: https://lore.kernel.org/r/20230803-ppc_tlbilxlpid-v1-1-84a1bc5cf963@google.com
----
- arch/powerpc/include/asm/ppc-opcode.h |  4 +++-
- arch/powerpc/kvm/e500mc.c             | 10 +++++++---
- 2 files changed, 10 insertions(+), 4 deletions(-)
+On Wed, 2 Aug 2023 at 15:17, Christoph Hellwig <hch@lst.de> wrote:
+>
+> On Tue, Aug 01, 2023 at 10:39:04PM -0700, John Stultz wrote:
+> > So, forgive me, I've not had a chance to look into this, but my
+> > recollection was "reserved" is the name we see on x86, but other names
+> > are possibly provided via the dts node?
+>
+No, I think "reserved" is the name hard-coded (for all arch) in Kernel
+for global-cma.
+So, I don't think this is x86 specific. I am checking on arm32 itself.
+When we can dma_alloc_coherent we see these in the logs (if dts region
+is not present).
+cma: cma_alloc(cma (ptrval), name: reserved, count 64, align 6)
+Now, with this change we will see this:
+cma: cma_alloc(cma (ptrval), name: global-cma-region, count 64, align 6)
 
-diff --git a/arch/powerpc/include/asm/ppc-opcode.h b/arch/powerpc/include/asm/ppc-opcode.h
-index ef6972aa33b9..f37d8d8cbec6 100644
---- a/arch/powerpc/include/asm/ppc-opcode.h
-+++ b/arch/powerpc/include/asm/ppc-opcode.h
-@@ -397,7 +397,8 @@
- #define PPC_RAW_RFCI			(0x4c000066)
- #define PPC_RAW_RFDI			(0x4c00004e)
- #define PPC_RAW_RFMCI			(0x4c00004c)
--#define PPC_RAW_TLBILX(t, a, b)		(0x7c000024 | __PPC_T_TLB(t) | 	__PPC_RA0(a) | __PPC_RB(b))
-+#define PPC_RAW_TLBILX_LPID		(0x7c000024)
-+#define PPC_RAW_TLBILX(t, a, b)		(PPC_RAW_TLBILX_LPID | __PPC_T_TLB(t) | __PPC_RA0(a) | __PPC_RB(b))
- #define PPC_RAW_WAIT_v203		(0x7c00007c)
- #define PPC_RAW_WAIT(w, p)		(0x7c00003c | __PPC_WC(w) | __PPC_PL(p))
- #define PPC_RAW_TLBIE(lp, a)		(0x7c000264 | ___PPC_RB(a) | ___PPC_RS(lp))
-@@ -616,6 +617,7 @@
- #define PPC_TLBILX(t, a, b)	stringify_in_c(.long PPC_RAW_TLBILX(t, a, b))
- #define PPC_TLBILX_ALL(a, b)	PPC_TLBILX(0, a, b)
- #define PPC_TLBILX_PID(a, b)	PPC_TLBILX(1, a, b)
-+#define PPC_TLBILX_LPID		stringify_in_c(.long PPC_RAW_TLBILX_LPID)
- #define PPC_TLBILX_VA(a, b)	PPC_TLBILX(3, a, b)
- #define PPC_WAIT_v203		stringify_in_c(.long PPC_RAW_WAIT_v203)
- #define PPC_WAIT(w, p)		stringify_in_c(.long PPC_RAW_WAIT(w, p))
-diff --git a/arch/powerpc/kvm/e500mc.c b/arch/powerpc/kvm/e500mc.c
-index d58df71ace58..dc054b8b5032 100644
---- a/arch/powerpc/kvm/e500mc.c
-+++ b/arch/powerpc/kvm/e500mc.c
-@@ -16,10 +16,11 @@
- #include <linux/miscdevice.h>
- #include <linux/module.h>
- 
--#include <asm/reg.h>
- #include <asm/cputable.h>
--#include <asm/kvm_ppc.h>
- #include <asm/dbell.h>
-+#include <asm/kvm_ppc.h>
-+#include <asm/ppc-opcode.h>
-+#include <asm/reg.h>
- 
- #include "booke.h"
- #include "e500.h"
-@@ -92,7 +93,10 @@ void kvmppc_e500_tlbil_all(struct kvmppc_vcpu_e500 *vcpu_e500)
- 
- 	local_irq_save(flags);
- 	mtspr(SPRN_MAS5, MAS5_SGS | get_lpid(&vcpu_e500->vcpu));
--	asm volatile("tlbilxlpid");
-+	/* clang-17 and older could not assemble tlbilxlpid.
-+	 * https://github.com/ClangBuiltLinux/linux/issues/1891
-+	 */
-+	asm volatile (PPC_TLBILX_LPID);
- 	mtspr(SPRN_MAS5, 0);
- 	local_irq_restore(flags);
- }
+> Indeed, dma_contiguous_default_area can also be set through
+> rmem_cma_setup, which then takes the name from DT.
+>
+I think this is a different case. If DT entry is present we get this:
+Reserved memory: created CMA memory pool at 0x98000000, name: name:
+linux,cma, size 128 MiB
+cma: cma_alloc(cma (ptrval), name: linux,cma, count 64, align 6)
 
----
-base-commit: 7bafbd4027ae86572f308c4ddf93120c90126332
-change-id: 20230803-ppc_tlbilxlpid-cfdbf4fd4f7f
+Here we are talking about the default hard-coded name in Kernel code
+if DT is not defined.
+So, in one of the boards, this DT entry was not present and it shows
+as "reserved".
 
-Best regards,
--- 
-Nick Desaulniers <ndesaulniers@google.com>
+> > I believe on the hikey board its "linux,cma" is the name, so forcing
+> > it to reserved would break that.
+> >
+Yes, everywhere in the DT it's defined as "linux,cma".
+You mean this also should be changed to "linux,cma-global-region"
+everywhere with this change ?
 
+> > Maybe instead add a compat config option to force the cma name (so x86
+> > can set it to "default" if needed)?
+>
+Yes, having it in config is also a good option instead of hard-coding in Ke=
+rnel.
+>
+> I think we'll just need to leave it as-is.  I with dma-heaps had never
+> exposed the name to userspace, but we'll have to l=D1=96ve with it now.
+
+Can you point me to the userspace utility we are talking about here ?
+I think we should not worry much about userspace name exposure.
+I guess it should fetch whatever is declared in Kernel or DTS, right ?
