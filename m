@@ -2,112 +2,200 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CEAD676EDF9
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 17:22:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 733EA76EDFC
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 17:24:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232404AbjHCPWd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Aug 2023 11:22:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52020 "EHLO
+        id S235111AbjHCPYD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Aug 2023 11:24:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52588 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234450AbjHCPWb (ORCPT
+        with ESMTP id S234450AbjHCPYB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Aug 2023 11:22:31 -0400
-Received: from mail-4317.proton.ch (mail-4317.proton.ch [185.70.43.17])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D2FB10EA
-        for <linux-kernel@vger.kernel.org>; Thu,  3 Aug 2023 08:22:22 -0700 (PDT)
-Date:   Thu, 03 Aug 2023 15:22:05 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=emersion.fr;
-        s=protonmail2; t=1691076139; x=1691335339;
-        bh=k5I++nvJ7Xqg3Fp+Q+60Yxv68PVfC3iWMrivxLIDp90=;
-        h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
-         Feedback-ID:From:To:Cc:Date:Subject:Reply-To:Feedback-ID:
-         Message-ID:BIMI-Selector;
-        b=n0lAB4Sl1hGuc7fNVTs22fy2VshY42XLwZbz2alwhPOc8N46hQt40qVPZVcT/V/hS
-         S4PC4ARMfSbJdpomhr8ohgPUk5a17ax6lWt1Uk5b7iYsZ280gdNYw/xx2kfd9sMiEC
-         ITQuwAoysOAVumyAbEJZ2OFov3Z2nwNtRYbm8CY1RVoEdw05lXSLvTlxsjtzafBuhq
-         FYJV6hByuV6MXBKMiPEl+oAYW/BGQLYBODnGiBD2yYbKljFaCwg++9U2/z7N1o8878
-         mWXa4xMgoe0Qtj0eU6R6p8mKggYnoOMIiGdVu/TVv8BTpBOjCqJ57srI3k5/iRtJ05
-         7rnaacE2kZ8uA==
-To:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-From:   Simon Ser <contact@emersion.fr>
-Cc:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Andrzej Hajda <andrzej.hajda@intel.com>,
-        Neil Armstrong <neil.armstrong@linaro.org>,
-        Robert Foss <rfoss@kernel.org>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Janne Grunau <j@jannau.net>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        =?utf-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
-        "Pan, Xinhui" <Xinhui.Pan@amd.com>,
-        Harry Wentland <harry.wentland@amd.com>,
-        Leo Li <sunpeng.li@amd.com>,
-        Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>,
-        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org, intel-gfx@lists.freedesktop.org
-Subject: Re: [PATCH 3/4] drm/uapi: document the USB subconnector type
-Message-ID: <b6oOVz2YMIG4hJDWhq9lTh6R2HYcrpRwHENhplig9KSQMD8dIjTgC5KdH1Ij3URgV2HESp67Ax7QUsByGjMLouvbs-5q7PiPRdLkgJz6Fwk=@emersion.fr>
-In-Reply-To: <DE2B4523-D16C-4AFC-8352-212B23548DD5@linaro.org>
-References: <20230729004913.215872-1-dmitry.baryshkov@linaro.org> <20230729004913.215872-4-dmitry.baryshkov@linaro.org> <20230802185547.GC32500@pendragon.ideasonboard.com> <a32ce695-038f-0ef8-3584-5bd1ba528131@linaro.org> <20230802191351.GA1407@pendragon.ideasonboard.com> <DE2B4523-D16C-4AFC-8352-212B23548DD5@linaro.org>
-Feedback-ID: 1358184:user:proton
+        Thu, 3 Aug 2023 11:24:01 -0400
+Received: from fllv0016.ext.ti.com (fllv0016.ext.ti.com [198.47.19.142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E40F180;
+        Thu,  3 Aug 2023 08:23:59 -0700 (PDT)
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 373FNmuH072909;
+        Thu, 3 Aug 2023 10:23:48 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1691076228;
+        bh=kQEkqXmPngb2k51xcZMXyyrrnsQOSxoYZCPy53sg6x0=;
+        h=Date:Subject:To:CC:References:From:In-Reply-To;
+        b=d05StiuyHhTbb6Lj9dmrBwGnoZra/R1zCuCpGo/V5f1Vv1pX3RbAm9OoiQPipkuav
+         GP7FVmZVg3gTPGiEtRSKhZQQRZ5QWUXCN9MoFpySpbEIUsnitqIwLqQapibnWSvt0U
+         iKED4z6EBWQdOi6BqyhuPDI25udke0vE1nO96KuM=
+Received: from DLEE104.ent.ti.com (dlee104.ent.ti.com [157.170.170.34])
+        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 373FNm3C093199
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Thu, 3 Aug 2023 10:23:48 -0500
+Received: from DLEE106.ent.ti.com (157.170.170.36) by DLEE104.ent.ti.com
+ (157.170.170.34) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Thu, 3
+ Aug 2023 10:23:48 -0500
+Received: from lelv0327.itg.ti.com (10.180.67.183) by DLEE106.ent.ti.com
+ (157.170.170.36) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Thu, 3 Aug 2023 10:23:48 -0500
+Received: from [10.250.36.243] (ileaxei01-snat2.itg.ti.com [10.180.69.6])
+        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 373FNlpQ111966;
+        Thu, 3 Aug 2023 10:23:47 -0500
+Message-ID: <7c12b109-d6b9-f0d4-cada-28140a33da21@ti.com>
+Date:   Thu, 3 Aug 2023 10:23:47 -0500
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_MSPIKE_H5,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH V6 3/4] firmware: ti_sci: Allocate memory for Low Power
+ Modes
+Content-Language: en-US
+To:     Dhruva Gole <d-gole@ti.com>, Nishanth Menon <nm@ti.com>,
+        Tero Kristo <kristo@kernel.org>,
+        Santosh Shilimkar <ssantosh@kernel.org>
+CC:     <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <linux-pm@vger.kernel.org>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        "Praneeth Bajjuri" <praneeth@ti.com>,
+        Tony Lindgren <tony@atomide.com>,
+        Dave Gerlach <d-gerlach@ti.com>,
+        Vibhore Vardhan <vibhore@ti.com>,
+        Georgi Vlaev <g-vlaev@ti.com>,
+        Roger Quadros <rogerq@kernel.org>
+References: <20230803064247.503036-1-d-gole@ti.com>
+ <20230803064247.503036-4-d-gole@ti.com>
+From:   Andrew Davis <afd@ti.com>
+In-Reply-To: <20230803064247.503036-4-d-gole@ti.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+X-Spam-Status: No, score=-4.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wednesday, August 2nd, 2023 at 21:23, Dmitry Baryshkov <dmitry.baryshkov=
-@linaro.org> wrote:
+On 8/3/23 1:42 AM, Dhruva Gole wrote:
+> From: Dave Gerlach <d-gerlach@ti.com>
+> 
+> A region of memory in DDR must be used during Deep Sleep for saving
+> of some system context when using the ti_sci firmware. From DM's point
+> of view, this can be any contiguous region in the DDR, so can allocate
+> 512KB of DMA reserved memory in probe(), instead of another carveout.
+> 
+> Also send a TISCI_MSG_QUERY_FW_CAPS message to the firmware during
+> probe to determine if any low power modes are supported and if
+> ti_sci_init_suspend should be called based on the response received.
+> 
+> Signed-off-by: Dave Gerlach <d-gerlach@ti.com>
+> Signed-off-by: Vibhore Vardhan <vibhore@ti.com>
+> Signed-off-by: Georgi Vlaev <g-vlaev@ti.com>
+> Tested-by: Roger Quadros <rogerq@kernel.org>
+> [d-gole@ti.com: Use dma_alloc_attrs instead of dma_alloc_coherent]
+> Signed-off-by: Dhruva Gole <d-gole@ti.com>
+> ---
+>   drivers/firmware/ti_sci.c | 42 +++++++++++++++++++++++++++++++++++++++
+>   1 file changed, 42 insertions(+)
+> 
+> diff --git a/drivers/firmware/ti_sci.c b/drivers/firmware/ti_sci.c
+> index 3b40f9336b3f..0334ade19868 100644
+> --- a/drivers/firmware/ti_sci.c
+> +++ b/drivers/firmware/ti_sci.c
+> @@ -10,6 +10,7 @@
+>   
+>   #include <linux/bitmap.h>
+>   #include <linux/debugfs.h>
+> +#include <linux/dma-mapping.h>
+>   #include <linux/export.h>
+>   #include <linux/io.h>
+>   #include <linux/iopoll.h>
+> @@ -25,6 +26,9 @@
+>   
+>   #include "ti_sci.h"
+>   
+> +/* Low power mode memory context size */
+> +#define LPM_CTX_MEM_SIZE 0x80000
+> +
+>   /* List of all TI SCI devices active in system */
+>   static LIST_HEAD(ti_sci_list);
+>   /* Protection for the entire list */
+> @@ -96,6 +100,9 @@ struct ti_sci_desc {
+>    * @minfo:	Message info
+>    * @node:	list head
+>    * @host_id:	Host ID
+> + * @ctx_mem_addr: Low power context memory phys address
+> + * @ctx_mem_buf: Low power context memory buffer
+> + * @fw_caps:	FW/SoC low power capabilities
+>    * @users:	Number of users of this instance
+>    */
+>   struct ti_sci_info {
+> @@ -113,6 +120,9 @@ struct ti_sci_info {
+>   	struct ti_sci_xfers_info minfo;
+>   	struct list_head node;
+>   	u8 host_id;
+> +	dma_addr_t ctx_mem_addr;
+> +	void *ctx_mem_buf;
+> +	u64 fw_caps;
+>   	/* protected by ti_sci_list_mutex */
+>   	int users;
+>   };
+> @@ -3511,6 +3521,25 @@ static int tisci_reboot_handler(struct notifier_block *nb, unsigned long mode,
+>   	return NOTIFY_BAD;
+>   }
+>   
+> +static int ti_sci_init_suspend(struct platform_device *pdev,
+> +			       struct ti_sci_info *info)
+> +{
+> +	struct device *dev = &pdev->dev;
+> +
+> +	dma_set_mask_and_coherent(dev, DMA_BIT_MASK(64));
+> +	info->ctx_mem_buf = dma_alloc_attrs(info->dev, LPM_CTX_MEM_SIZE,
+> +					    &info->ctx_mem_addr,
+> +					    GFP_KERNEL,
+> +					    DMA_ATTR_NO_KERNEL_MAPPING |
+> +					    DMA_ATTR_FORCE_CONTIGUOUS);
+> +	if (!info->ctx_mem_buf) {
+> +		dev_err(info->dev, "Failed to allocate LPM context memory\n");
+> +		return -ENOMEM;
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+>   /* Description for K2G */
+>   static const struct ti_sci_desc ti_sci_pmmc_k2g_desc = {
+>   	.default_host_id = 2,
+> @@ -3661,6 +3690,15 @@ static int ti_sci_probe(struct platform_device *pdev)
+>   		}
+>   	}
+>   
+> +	/*
+> +	 * Check if the firmware supports any optional low power modes
+> +	 * and initialize them if present. Old revisions of TIFS (< 08.04)
+> +	 * will NACK the request.
+> +	 */
+> +	ret = ti_sci_msg_cmd_query_fw_caps(&info->handle, &info->fw_caps);
+> +	if (!ret && (info->fw_caps & MSG_MASK_CAPS_LPM))
+> +		ti_sci_init_suspend(pdev, info);
+> +
+>   	dev_info(dev, "ABI: %d.%d (firmware rev 0x%04x '%s')\n",
+>   		 info->handle.version.abi_major, info->handle.version.abi_minor,
+>   		 info->handle.version.firmware_revision,
+> @@ -3708,6 +3746,10 @@ static int ti_sci_remove(struct platform_device *pdev)
+>   		mbox_free_channel(info->chan_rx);
+>   	}
+>   
+> +	if (info->ctx_mem_buf)
+> +		dma_free_coherent(info->dev, LPM_CTX_MEM_SIZE,
 
-> >> >> +=09{ DRM_MODE_SUBCONNECTOR_USB,=09     "USB"       }, /* DP */
-> >> >
-> >> > Should this be DRM_MODE_SUBCONNECTOR_USB_C and "USB-C", in case we g=
-et
-> >> > another USB type later ?
-> >>
-> >> Hmm, which id should I use for micro-USB then? (consider anx7808,
-> >> SlimPort). I thought about using DRM_MODE_SUBCONNECTOR_USB for both of
-> >> them. But maybe I should add another subtype for SlimPort.
-> >
-> >I suppose it depends on whether userspace needs a way to differentiate
-> >those. Do you have a good visibility on the userspace use cases ?
->=20
-> No. I'm not even sure, which userspace handles subtypes properly.
+You allocated with dma_alloc_attrs() you should free with dma_free_attrs().
 
-wlroots uses it for human-readable output descriptions, e.g.
+Andrew
 
-    > wayland-info
-    interface: 'wl_output',                                  version:  4, n=
-ame: 49
-    =09name: DP-3
-    =09description: Samsung Electric Company SyncMaster HS3P505873 (DP-3 vi=
-a DVI-D)
-
-The "via DVI-D" bit comes from subconnector.
-
-The description is displayed to the user when picking an output to screen
-capture, among other things. It is helpful to users because they can better
-understand why their output connected via DVI shows up as "DP".
-
-The KMS docs describe "subconnector" to be defined as "downstream port" for=
- DP.
-Can USB-C (or USB) be seen as a DP downstream port?
+> +				  info->ctx_mem_buf,
+> +				  info->ctx_mem_addr);
+>   	return ret;
+>   }
+>   
