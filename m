@@ -2,104 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8620A76F2ED
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 20:44:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C698C76F1EB
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 20:34:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232486AbjHCSo2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Aug 2023 14:44:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60636 "EHLO
+        id S232805AbjHCSeB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Aug 2023 14:34:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54798 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234018AbjHCSnj (ORCPT
+        with ESMTP id S230344AbjHCSeA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Aug 2023 14:43:39 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85BC926B2;
-        Thu,  3 Aug 2023 11:43:17 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 7F64A61EAA;
-        Thu,  3 Aug 2023 18:42:24 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4E9D4C433CA;
-        Thu,  3 Aug 2023 18:42:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691088143;
-        bh=95Dt53hR2pyBz39OJo3JRDWSs/xQPgCW4Y8m1VN2MTo=;
-        h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
-        b=iKhq/fj8MaM0IEbTjBTPoJfjrkSC+hVn0SNJKfrodcO7wm+PSmBwo6mX9rS/4q+kH
-         NGkaPQn3CV9peiWVaWBwzHzetYAdlJdIl1QwgHrQZ7KwHAcVYQP6c2KiEN9joGDv+a
-         k5COH7hCFhp9SRu2HM++qTzRf6nNV9gXlOFtDmZYvYuRQv6a5x4YSpKCA3aS/5/Kdh
-         G7v/O+d/MIuFI4f+/xM2jWRLO4DnV2WOVJUyvIPcSxvKuTHJA1HBwkCEbakQeA5mea
-         ShpqaBq1fA6hXTCvv3Sn2TEJqIOFhhFNMP+9P5o/+NgSqLuVc4CKPzt0qoKNkzOzrs
-         yyg+HG9Ip8H9Q==
-From:   Mark Brown <broonie@kernel.org>
-Date:   Thu, 03 Aug 2023 19:33:23 +0100
-Subject: [PATCH 3/3] arm64/fpsimd: Sync and zero pad FPSIMD state for
- streaming SVE
-MIME-Version: 1.0
+        Thu, 3 Aug 2023 14:34:00 -0400
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9DB92D42
+        for <linux-kernel@vger.kernel.org>; Thu,  3 Aug 2023 11:33:58 -0700 (PDT)
+Received: by mail-yb1-xb49.google.com with SMTP id 3f1490d57ef6-d41fa6e7103so586628276.0
+        for <linux-kernel@vger.kernel.org>; Thu, 03 Aug 2023 11:33:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1691087636; x=1691692436;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=U3VOaPJ6MKTIiohfINI/eYuhi42VF/TpE5lJuXmVnZU=;
+        b=jGBcVWGiKzPAHOVeNjq1y7oxUP/yrgTePN9mw3TokA4mYnl3VDEc0K63yNHbMmWj19
+         GPHyuz9aZECjuN6QGh09dWL6iBwA6n10Smp7y1Jh/MHuEpWEZyq1SMWIQ9fXZi3u+Rnn
+         Q4PzbmbAQj5lD2qkXPusJo1mDha8dVvAwg47zexPP6FviSk+KBD3yHKAmHO3VC+yY1jY
+         pIa3y0jz91NRfZrBiYtMV37D3Tg6Y2KyfAkgsxVxYrCjAHfDA6CMiziLZASdpEGmvDO8
+         Jf1Gu2ZDuwlIMpjZIAz0IEkIcqLSpqtewaRO8/SkHfSAiTWvVpbvS7ereml0dLLBf3fV
+         suEg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691087636; x=1691692436;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=U3VOaPJ6MKTIiohfINI/eYuhi42VF/TpE5lJuXmVnZU=;
+        b=cJRJsYE4Qzlyk2212T+pANIogXKQVqjOQAmBgs+rABhfUKMD+tIRV8qZ/2tlcYTQX1
+         QBKTB9HXpU7BlNNr49GFh8uHY3OV1o6z3v/ZCjWnUvLTpMa/S1axRJekHqOgA3Fso8zp
+         FP2++r/11bVIERDBOe8ZINlq7UubwbuVpDbWg7FK1yu2a1Fn9uz4ZeQ2i7l76/yGnLrC
+         zADMKecGUzBvvhykKbemC0IDCMEdfHdj+wJ6EMKSdYO8e1u/1uPkWMnxi2SdrpUIOm8C
+         lqQAwl4V/2rJV1C7hSp7OGtzjl592G6nTtGk2ijXDW4MGwhfYZGqqVYkONwqUY8jchP2
+         rpxA==
+X-Gm-Message-State: ABy/qLbkCn95VGxaS9TIXk1wfk8Pk/bgXaNyIlgqc/XUzw+IeQ/WlLwG
+        qyobLqLkFCZi47ilpjltcNo+TGrEETwgorOYHEk=
+X-Google-Smtp-Source: APBJJlGgnFQzPOitZAU98RMK0X9+hq6s9tJJjr7a1RlQJuN/fchCzoXnESBcHJ3kPK5j1medkwomkVGXWLCOWggpRxM=
+X-Received: from ndesaulniers-desktop.svl.corp.google.com ([2620:15c:2d1:203:cd2a:c126:8d90:d5ab])
+ (user=ndesaulniers job=sendgmr) by 2002:a05:6902:569:b0:d11:3c58:2068 with
+ SMTP id a9-20020a056902056900b00d113c582068mr133475ybt.2.1691087636427; Thu,
+ 03 Aug 2023 11:33:56 -0700 (PDT)
+Date:   Thu, 03 Aug 2023 11:33:52 -0700
+Mime-Version: 1.0
+X-B4-Tracking: v=1; b=H4sIAA/zy2QC/32NywrCMBBFf6VkbaR5qNWV/yEieU0bSJuQlFAp/
+ XeT7lzo8sxw7llRMtGahG7NiqLJNlk/FWCHBqlBTL3BVhdGtKWs7VqGQ1Cv2UnrFhesxgq0BA6
+ awwVQkaRIBssoJjVUbRRpNrE+QjRgl730eBYebJp9fO/hTOr1ZyMTTHDHBZHqpOB6Zvfe+96Zo /IjqluZ/vdp8SkhAIJoIFf+5W/b9gEPHU1kBgEAAA==
+X-Developer-Key: i=ndesaulniers@google.com; a=ed25519; pk=UIrHvErwpgNbhCkRZAYSX0CFd/XFEwqX3D0xqtqjNug=
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1691087634; l=3590;
+ i=ndesaulniers@google.com; s=20220923; h=from:subject:message-id;
+ bh=DXS75M6ip4LIo9QVOPrHgK0haQj5/x/umg+wlNPWCPQ=; b=AfeE+hGjVv3usaoDClqYLXcfcyNoLusX6a90nkmY2QDifz22bZ5hqW8UPQE+UW4b6yR7D6XX6
+ kx3WwCXMXWtBwssf5qp7Ju6NNxmRCCQDloYP+6XypBgQ9bapq9Ou/AQ
+X-Mailer: b4 0.12.3
+Message-ID: <20230803-ppc_tlbilxlpid-v3-1-ca84739bfd73@google.com>
+Subject: [PATCH v3] powerpc/inst: add PPC_TLBILX_LPID
+From:   Nick Desaulniers <ndesaulniers@google.com>
+To:     Michael Ellerman <mpe@ellerman.id.au>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Tom Rix <trix@redhat.com>
+Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org, llvm@lists.linux.dev,
+        kernel test robot <lkp@intel.com>,
+        Nick Desaulniers <ndesaulniers@google.com>
 Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20230803-arm64-fix-ptrace-ssve-no-sve-v1-3-49df214bfb3e@kernel.org>
-References: <20230803-arm64-fix-ptrace-ssve-no-sve-v1-0-49df214bfb3e@kernel.org>
-In-Reply-To: <20230803-arm64-fix-ptrace-ssve-no-sve-v1-0-49df214bfb3e@kernel.org>
-To:     Oleg Nesterov <oleg@redhat.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>
-Cc:     David Spickett <David.Spickett@arm.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Mark Brown <broonie@kernel.org>, stable@vger.kernel.org
-X-Mailer: b4 0.13-dev-034f2
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1255; i=broonie@kernel.org;
- h=from:subject:message-id; bh=95Dt53hR2pyBz39OJo3JRDWSs/xQPgCW4Y8m1VN2MTo=;
- b=owEBbQGS/pANAwAKASTWi3JdVIfQAcsmYgBky/UG59zUDvfiprOkSFdpvtR91Bq9XADckhG2g6Sc
- jiCzcImJATMEAAEKAB0WIQSt5miqZ1cYtZ/in+ok1otyXVSH0AUCZMv1BgAKCRAk1otyXVSH0GTVB/
- 9J8/zx7cdkXvm4pbhhG5E4Heen6fPAuF/GNuXHVhmgPYd/qRn9HZz93uR4OlhvCIkfOcMDsRWZVXZT
- XBjRbHU3zKf/+1X+diJZf22raEPYoYjwJK3EeRQkYjPMHz1DZQu1aPoposJKxxDDgNkzdRqNDSfFOp
- pxF2WiEK0O7hgXtI6r4Nx3OVHgw0oDATOC60HggBmXODZWQIzOpRvvFhgmBDm/F2mpje6VduU3dS/Y
- 6mUk3H4BLWwd64hpSiQfc70nAcG4BzcIoE0JItmKd4n2CZd4tVVqSs5AEdat3g61cwd1vYIyzZ92wB
- QcpSFIZpyStyDkPGwIe0m3j4ZOkhG2
-X-Developer-Key: i=broonie@kernel.org; a=openpgp;
- fpr=3F2568AAC26998F9E813A1C5C3F436CA30F5D8EB
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        USER_IN_DEF_DKIM_WL autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We have a function sve_sync_from_fpsimd_zeropad() which is used by the
-ptrace code to update the SVE state when the user writes to the the
-FPSIMD register set.  Currently this checks that the task has SVE
-enabled but this will miss updates for tasks which have streaming SVE
-enabled if SVE has not been enabled for the thread, also do the
-conversion if the task has streaming SVE enabled.
+Clang didn't recognize the instruction tlbilxlpid. This was fixed in
+clang-18 [0] then backported to clang-17 [1].  To support clang-16 and
+older, rather than using that instruction bare in inline asm, add it to
+ppc-opcode.h and use that macro as is done elsewhere for other
+instructions.
 
-Fixes: e12310a0d30 ("arm64/sme: Implement ptrace support for streaming mode SVE registers")
-Signed-off-by: Mark Brown <broonie@kernel.org>
-Cc: stable@vger.kernel.org
+Link: https://github.com/ClangBuiltLinux/linux/issues/1891
+Link: https://github.com/llvm/llvm-project/issues/64080
+Link: https://github.com/llvm/llvm-project/commit/53648ac1d0c953ae6d008864dd2eddb437a92468 [0]
+Link: https://github.com/llvm/llvm-project-release-prs/commit/0af7e5e54a8c7ac665773ac1ada328713e8338f5 [1]
+Reported-by: kernel test robot <lkp@intel.com>
+Closes: https://lore.kernel.org/llvm/202307211945.TSPcyOhh-lkp@intel.com/
+Suggested-by: Michael Ellerman <mpe@ellerman.id.au>
+Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
 ---
- arch/arm64/kernel/fpsimd.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+Changes in v3:
+- left comment @ https://github.com/linuxppc/issues/issues/350#issuecomment-1664417212
+- restore PPC_RAW_TLBILX previous definition
+- fix comment style
+- Link to v2: https://lore.kernel.org/r/20230803-ppc_tlbilxlpid-v2-1-211ffa1df194@google.com
 
-diff --git a/arch/arm64/kernel/fpsimd.c b/arch/arm64/kernel/fpsimd.c
-index b4afa0d147cc..8e8b853da616 100644
---- a/arch/arm64/kernel/fpsimd.c
-+++ b/arch/arm64/kernel/fpsimd.c
-@@ -835,7 +835,8 @@ void sve_sync_from_fpsimd_zeropad(struct task_struct *task)
- 	void *sst = task->thread.sve_state;
- 	struct user_fpsimd_state const *fst = &task->thread.uw.fpsimd_state;
- 
--	if (!test_tsk_thread_flag(task, TIF_SVE))
-+	if (!test_tsk_thread_flag(task, TIF_SVE) &&
-+	    !thread_sm_enabled(&task->thread))
- 		return;
- 
- 	vq = sve_vq_from_vl(thread_get_cur_vl(&task->thread));
+Changes in v2:
+- add 2 missing tabs to PPC_RAW_TLBILX_LPID
+- Link to v1: https://lore.kernel.org/r/20230803-ppc_tlbilxlpid-v1-1-84a1bc5cf963@google.com
+---
+ arch/powerpc/include/asm/ppc-opcode.h |  2 ++
+ arch/powerpc/kvm/e500mc.c             | 11 ++++++++---
+ 2 files changed, 10 insertions(+), 3 deletions(-)
 
+diff --git a/arch/powerpc/include/asm/ppc-opcode.h b/arch/powerpc/include/asm/ppc-opcode.h
+index ef6972aa33b9..005601243dda 100644
+--- a/arch/powerpc/include/asm/ppc-opcode.h
++++ b/arch/powerpc/include/asm/ppc-opcode.h
+@@ -397,6 +397,7 @@
+ #define PPC_RAW_RFCI			(0x4c000066)
+ #define PPC_RAW_RFDI			(0x4c00004e)
+ #define PPC_RAW_RFMCI			(0x4c00004c)
++#define PPC_RAW_TLBILX_LPID		(0x7c000024)
+ #define PPC_RAW_TLBILX(t, a, b)		(0x7c000024 | __PPC_T_TLB(t) | 	__PPC_RA0(a) | __PPC_RB(b))
+ #define PPC_RAW_WAIT_v203		(0x7c00007c)
+ #define PPC_RAW_WAIT(w, p)		(0x7c00003c | __PPC_WC(w) | __PPC_PL(p))
+@@ -616,6 +617,7 @@
+ #define PPC_TLBILX(t, a, b)	stringify_in_c(.long PPC_RAW_TLBILX(t, a, b))
+ #define PPC_TLBILX_ALL(a, b)	PPC_TLBILX(0, a, b)
+ #define PPC_TLBILX_PID(a, b)	PPC_TLBILX(1, a, b)
++#define PPC_TLBILX_LPID		stringify_in_c(.long PPC_RAW_TLBILX_LPID)
+ #define PPC_TLBILX_VA(a, b)	PPC_TLBILX(3, a, b)
+ #define PPC_WAIT_v203		stringify_in_c(.long PPC_RAW_WAIT_v203)
+ #define PPC_WAIT(w, p)		stringify_in_c(.long PPC_RAW_WAIT(w, p))
+diff --git a/arch/powerpc/kvm/e500mc.c b/arch/powerpc/kvm/e500mc.c
+index d58df71ace58..7c09c000c330 100644
+--- a/arch/powerpc/kvm/e500mc.c
++++ b/arch/powerpc/kvm/e500mc.c
+@@ -16,10 +16,11 @@
+ #include <linux/miscdevice.h>
+ #include <linux/module.h>
+ 
+-#include <asm/reg.h>
+ #include <asm/cputable.h>
+-#include <asm/kvm_ppc.h>
+ #include <asm/dbell.h>
++#include <asm/kvm_ppc.h>
++#include <asm/ppc-opcode.h>
++#include <asm/reg.h>
+ 
+ #include "booke.h"
+ #include "e500.h"
+@@ -92,7 +93,11 @@ void kvmppc_e500_tlbil_all(struct kvmppc_vcpu_e500 *vcpu_e500)
+ 
+ 	local_irq_save(flags);
+ 	mtspr(SPRN_MAS5, MAS5_SGS | get_lpid(&vcpu_e500->vcpu));
+-	asm volatile("tlbilxlpid");
++	/*
++	 * clang-17 and older could not assemble tlbilxlpid.
++	 * https://github.com/ClangBuiltLinux/linux/issues/1891
++	 */
++	asm volatile (PPC_TLBILX_LPID);
+ 	mtspr(SPRN_MAS5, 0);
+ 	local_irq_restore(flags);
+ }
+
+---
+base-commit: 7bafbd4027ae86572f308c4ddf93120c90126332
+change-id: 20230803-ppc_tlbilxlpid-cfdbf4fd4f7f
+
+Best regards,
 -- 
-2.30.2
+Nick Desaulniers <ndesaulniers@google.com>
 
