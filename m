@@ -2,83 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D5A476E78E
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 13:59:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DB93D76E791
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 14:00:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235689AbjHCL7g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Aug 2023 07:59:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51964 "EHLO
+        id S234740AbjHCMA0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Aug 2023 08:00:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52380 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234690AbjHCL7f (ORCPT
+        with ESMTP id S232363AbjHCMAX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Aug 2023 07:59:35 -0400
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [213.167.242.64])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A09426BA;
-        Thu,  3 Aug 2023 04:59:34 -0700 (PDT)
-Received: from [192.168.88.20] (91-154-35-171.elisa-laajakaista.fi [91.154.35.171])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 1A8065A4;
-        Thu,  3 Aug 2023 13:58:28 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1691063908;
-        bh=RT7rKebX3umkthzwSncQznVIc6lMU58Y2I9IpWZTk/8=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=tq+ScKaZYYq+H6B6wdd5zeVOtNtUgExQY5hP+bgvKqV06m0VK1FC7Yg33ZCAaCbrs
-         fHIuXquq/ne8ECWvSmU+QkKZPukMbRqp5QMa0kCn+veLRCEZoI/zeV1QarKlCyqPHF
-         tpU26fubATYc8Vy8rbG76j5+itcnONCGI2AuQBrk=
-Message-ID: <fe67a748-e358-71ca-d828-1ff24eb54efa@ideasonboard.com>
-Date:   Thu, 3 Aug 2023 14:59:28 +0300
+        Thu, 3 Aug 2023 08:00:23 -0400
+Received: from frasgout13.his.huawei.com (unknown [14.137.139.46])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 719EDE70
+        for <linux-kernel@vger.kernel.org>; Thu,  3 Aug 2023 05:00:20 -0700 (PDT)
+Received: from mail02.huawei.com (unknown [172.18.147.228])
+        by frasgout13.his.huawei.com (SkyGuard) with ESMTP id 4RGnDd3ND3z9xs5v
+        for <linux-kernel@vger.kernel.org>; Thu,  3 Aug 2023 19:48:49 +0800 (CST)
+Received: from A2101119013HW2.china.huawei.com (unknown [10.81.221.240])
+        by APP2 (Coremail) with SMTP id GxC2BwB3d++6lstkfcs3AA--.61178S2;
+        Thu, 03 Aug 2023 13:00:01 +0100 (CET)
+From:   Petr Tesarik <petrtesarik@huaweicloud.com>
+To:     Christoph Hellwig <hch@lst.de>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        iommu@lists.linux.dev (open list:DMA MAPPING HELPERS),
+        linux-kernel@vger.kernel.org (open list)
+Cc:     Roberto Sassu <roberto.sassu@huaweicloud.com>, petr@tesarici.cz
+Subject: [PATCH v1] swiotlb: optimize get_max_slots()
+Date:   Thu,  3 Aug 2023 13:59:41 +0200
+Message-Id: <20230803115941.497-1-petrtesarik@huaweicloud.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH 1/2] media: i2c: ds90ub9x3: Fix use of uninitialized
- variables
-Content-Language: en-US
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Hans Verkuil <hverkuil@xs4all.nl>, linux-media@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20230803-ub9xx-uninit-vars-v1-0-284a5455260f@ideasonboard.com>
- <20230803-ub9xx-uninit-vars-v1-1-284a5455260f@ideasonboard.com>
- <ZMuWF71x0thq/aTs@smile.fi.intel.com>
-From:   Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
-In-Reply-To: <ZMuWF71x0thq/aTs@smile.fi.intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_PASS,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: GxC2BwB3d++6lstkfcs3AA--.61178S2
+X-Coremail-Antispam: 1UD129KBjvJXoW7tw47WFWkCF4ktw45Zw1kKrg_yoW8Jw4Upa
+        1xJr1rGayvqF1xAa4IyFs3KFyS93srJa9xXFZ0kryfu3W5tF4FqrWxK3yqq34FqrWvkF1a
+        va4aqw4vyr43JrDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUkE14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+        1l84ACjcxK6xIIjxv20xvE14v26r1j6r1xM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r1j
+        6r4UM28EF7xvwVC2z280aVAFwI0_Gr0_Cr1l84ACjcxK6I8E87Iv6xkF7I0E14v26r4j6r
+        4UJwAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0
+        I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r
+        4UM4x0Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwCY1x0264kExVAvwVAq
+        07x20xyl42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67
+        AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIY
+        rxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14
+        v26r1j6r4UMIIF0xvE42xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE14v26r1j
+        6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x0JU2fO
+        wUUUUU=
+X-CM-SenderInfo: hshw23xhvd2x3n6k3tpzhluzxrxghudrp/
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-0.9 required=5.0 tests=BAYES_00,KHOP_HELO_FCRDNS,
+        LOTS_OF_MONEY,MAY_BE_FORGED,RDNS_DYNAMIC,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 03/08/2023 14:57, Andy Shevchenko wrote:
-> On Thu, Aug 03, 2023 at 11:41:38AM +0300, Tomi Valkeinen wrote:
->> smatch reports some uninitialized variables:
->>
->> drivers/media/i2c/ds90ub913.c:481 ub913_log_status() error: uninitialized symbol 'v1'.
->> drivers/media/i2c/ds90ub913.c:481 ub913_log_status() error: uninitialized symbol 'v2'.
->> drivers/media/i2c/ds90ub953.c:655 ub953_log_status() error: uninitialized symbol 'gpio_local_data'.
->> drivers/media/i2c/ds90ub953.c:655 ub953_log_status() error: uninitialized symbol 'gpio_input_ctrl'.
->> drivers/media/i2c/ds90ub953.c:655 ub953_log_status() error: uninitialized symbol 'gpio_pin_sts'.
->>
->> These are used only for printing debug information, and the use of an
->> uninitialized variable only happens if an i2c transaction has failed,
->> which will print an error. Thus, fix the errors just by initializing the
->> variables to 0.
->>
->> Fixes: 6363db1c9d45 ("media: i2c: add DS90UB953 driver")
->> Fixes: c158d0d4ff15 ("media: i2c: add DS90UB913 driver")
-> 
-> I would prefer two separate changes on per driver basis. This is a good
-> practice to make backporting easier (generally speaking).
+From: Petr Tesarik <petr.tesarik.ext@huawei.com>
 
-Yes, I almost did that, but then somehow got hit by acute laziness... 
-I'll send a v2 with split patches.
+Use a simple logical shift and increment to calculate the number of slots
+taken by the DMA segment boundary.
 
-  Tomi
+At least GCC-13 is not able to optimize the expression, producing this
+horrible assembly code on x86:
+
+	cmpq	$-1, %rcx
+	je	.L364
+	addq	$2048, %rcx
+	shrq	$11, %rcx
+	movq	%rcx, %r13
+.L331:
+	// rest of the function here...
+
+	// after function epilogue and return:
+.L364:
+	movabsq $9007199254740992, %r13
+	jmp	.L331
+
+After the optimization, the code looks more reasonable:
+
+	shrq	$11, %r11
+	leaq	1(%r11), %rbx
+
+Signed-off-by: Petr Tesarik <petr.tesarik.ext@huawei.com>
+---
+ kernel/dma/swiotlb.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
+
+diff --git a/kernel/dma/swiotlb.c b/kernel/dma/swiotlb.c
+index 2b83e3ad9dca..a95d2ea2ae18 100644
+--- a/kernel/dma/swiotlb.c
++++ b/kernel/dma/swiotlb.c
+@@ -577,9 +577,7 @@ static inline phys_addr_t slot_addr(phys_addr_t start, phys_addr_t idx)
+  */
+ static inline unsigned long get_max_slots(unsigned long boundary_mask)
+ {
+-	if (boundary_mask == ~0UL)
+-		return 1UL << (BITS_PER_LONG - IO_TLB_SHIFT);
+-	return nr_slots(boundary_mask + 1);
++	return (boundary_mask >> IO_TLB_SHIFT) + 1;
+ }
+ 
+ static unsigned int wrap_area_index(struct io_tlb_mem *mem, unsigned int index)
+-- 
+2.25.1
 
