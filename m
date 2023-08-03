@@ -2,67 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0354D76E9FC
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 15:23:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A62876E9FF
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 15:23:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235418AbjHCNWy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Aug 2023 09:22:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43256 "EHLO
+        id S234372AbjHCNXK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Aug 2023 09:23:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43272 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234605AbjHCNWw (ORCPT
+        with ESMTP id S235722AbjHCNW5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Aug 2023 09:22:52 -0400
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21E6510EA
-        for <linux-kernel@vger.kernel.org>; Thu,  3 Aug 2023 06:22:50 -0700 (PDT)
-Received: from [192.168.0.125] (unknown [82.76.24.202])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits))
-        (No client certificate requested)
-        (Authenticated sender: ehristev)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id 932BA66003AA;
-        Thu,  3 Aug 2023 14:22:48 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1691068969;
-        bh=QjOypgF2tjYzN7SWK9FWCkeF0m/mCGr8viJpxU+QpfU=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=QRhY6RjuYvQYrtIjk7tguUaphwsxhkMgvaV5aXqsta5ceFPkEv3CpeM5u+E+MyWQC
-         2q4o3TYK6QQUY4SbYMwEkO+d6Y0k3JmwehKBKEKqDZdHm5JHPl+BhAuYYVY5cNc9mF
-         qF3u/ztJjpNcnzfOjDVqsQ3y9Tf5NEgWUeEAk/t5OocMl1tZS2u1PRETUzd39cm+vq
-         E9SBCEZMkNKmJHuCleyHVAMoAbwb5PA6YIxrGFVWHElaLpFHbUGVuFo7Z6+3A8p23a
-         tztmQQhw5Rsxno+eL4PQbNJstMoaAX+auT90i6P+GF71g7g7ci3hZGrwIDGWCyMTxf
-         hu7c45LAT5jQA==
-Message-ID: <3d5de892-8311-86e8-b962-0e564903b0e6@collabora.com>
-Date:   Thu, 3 Aug 2023 16:22:45 +0300
+        Thu, 3 Aug 2023 09:22:57 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC369134;
+        Thu,  3 Aug 2023 06:22:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=LnL/w0gerl2bmZjXzcUrorqUHH4MeidXJZnUY3FnBf8=; b=tl66j6LVXL/8xk7brEEbkOjnTb
+        qWzPdVREn0HUGqy0AbZR/JqX2T8Bb0c6IIHM2Pgw7Q9Z4ji8BTbs7cYVdRDvNLu5as/rQFfnoxXsD
+        ubsP2nHqvmnJFWHkOsNvw9xLGwiu3TtHORltseCtB4yU4AOe+PFUQDZjzwwEATH5U+UJirW8lA4h2
+        nJGxcrFeisAuW9vNDS4lbP1raFOXJZe4RGGW6gRjjXsvKwCK29CnM2IIzSsTwDsVtK2Mn7cvA9eok
+        DVxdCD/umCFRYUt37bXhFWjC7xsJGMS776PK1R+VMDAsHIvyqndWJdFJPxgzZOKCFo4ZoP4hw0Lbl
+        9juj41AA==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1qRYI2-003td9-EV; Thu, 03 Aug 2023 13:22:54 +0000
+Date:   Thu, 3 Aug 2023 14:22:54 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Phi Nguyen <phind.uet@gmail.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        linux-arch@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v6 01/38] minmax: Add in_range() macro
+Message-ID: <ZMuqLhfsu0tV/tAT@casper.infradead.org>
+References: <20230802151406.3735276-1-willy@infradead.org>
+ <20230802151406.3735276-2-willy@infradead.org>
+ <cf3085ba-5b2e-c048-20bf-4b9a54443cc8@gmail.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v8 3/8] drm/mediatek: Fix using wrong drm private data to
- bind mediatek-drm
-Content-Language: en-US
-To:     "Jason-JH.Lin" <jason-jh.lin@mediatek.com>,
-        Chun-Kuang Hu <chunkuang.hu@kernel.org>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>
-Cc:     Matthias Brugger <matthias.bgg@gmail.com>,
-        Jason-ch Chen <jason-ch.chen@mediatek.com>,
-        Johnson Wang <johnson.wang@mediatek.com>,
-        Singo Chang <singo.chang@mediatek.com>,
-        Nancy Lin <nancy.lin@mediatek.com>,
-        Shawn Sung <shawn.sung@mediatek.com>,
-        dri-devel@lists.freedesktop.org,
-        linux-mediatek@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Project_Global_Chrome_Upstream_Group@mediatek.com
-References: <20230802144802.751-1-jason-jh.lin@mediatek.com>
- <20230802144802.751-4-jason-jh.lin@mediatek.com>
-From:   Eugen Hristev <eugen.hristev@collabora.com>
-In-Reply-To: <20230802144802.751-4-jason-jh.lin@mediatek.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <cf3085ba-5b2e-c048-20bf-4b9a54443cc8@gmail.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -70,64 +52,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/2/23 17:47, Jason-JH.Lin wrote:
-> In mtk_drm_kms_init(), each element in all_drm_priv should has one
-> display path private data only, such as:
-> all_drm_priv[CRTC_MAIN] should has main_path data only
-> all_drm_priv[CRTC_EXT] should has ext_path data only
-> all_drm_priv[CRTC_THIRD] should has third_path data only
-
-s/should has/should have/ ?
-
+On Thu, Aug 03, 2023 at 09:00:35PM +0800, Phi Nguyen wrote:
+> On 8/2/2023 11:13 PM, Matthew Wilcox (Oracle) wrote:
+> > +static inline bool in_range64(u64 val, u64 start, u64 len)
+> > +{
+> > +	return (val - start) < len;
+> > +}
+> > +
+> > +static inline bool in_range32(u32 val, u32 start, u32 len)
+> > +{
+> > +	return (val - start) < len;
+> > +}
+> > +
 > 
-> So we need to add the length checking for each display path before
-> assigning their drm private data into all_drm_priv array.
-> 
-> Fixes: 1ef7ed48356c ("drm/mediatek: Modify mediatek-drm for mt8195 multi mmsys support")
-> Signed-off-by: Jason-JH.Lin <jason-jh.lin@mediatek.com>
-> Reviewed-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-> Reviewed-by: CK Hu <ck.hu@mediatek.com>
-> ---
->   drivers/gpu/drm/mediatek/mtk_drm_drv.c | 16 +++++++++++++---
->   1 file changed, 13 insertions(+), 3 deletions(-)
-> 
-> diff --git a/drivers/gpu/drm/mediatek/mtk_drm_drv.c b/drivers/gpu/drm/mediatek/mtk_drm_drv.c
-> index 89a38561ba27..c12886f31e54 100644
-> --- a/drivers/gpu/drm/mediatek/mtk_drm_drv.c
-> +++ b/drivers/gpu/drm/mediatek/mtk_drm_drv.c
-> @@ -351,6 +351,7 @@ static bool mtk_drm_get_all_drm_priv(struct device *dev)
->   {
->   	struct mtk_drm_private *drm_priv = dev_get_drvdata(dev);
->   	struct mtk_drm_private *all_drm_priv[MAX_CRTC];
-> +	struct mtk_drm_private *temp_drm_priv;
->   	struct device_node *phandle = dev->parent->of_node;
->   	const struct of_device_id *of_id;
->   	struct device_node *node;
-> @@ -373,9 +374,18 @@ static bool mtk_drm_get_all_drm_priv(struct device *dev)
->   		if (!drm_dev || !dev_get_drvdata(drm_dev))
->   			continue;
->   
-> -		all_drm_priv[cnt] = dev_get_drvdata(drm_dev);
-> -		if (all_drm_priv[cnt] && all_drm_priv[cnt]->mtk_drm_bound)
-> -			cnt++;
-> +		temp_drm_priv = dev_get_drvdata(drm_dev);
-> +		if (temp_drm_priv) {
+> I think these two functions return wrong result if val is smaller than start
+> and len is big enough.
 
-This is inside a 'for' loop right ?
-Why don't you just 'continue' if temp_drm_priv is null ?
+How is it that you stopped reading at exactly the point where I explained
+that this is intentional?
 
-
-> +			if (temp_drm_priv->mtk_drm_bound)
-> +				cnt++;
-> +
-> +			if (temp_drm_priv->data->main_len)
-> +				all_drm_priv[CRTC_MAIN] = temp_drm_priv;
-> +			else if (temp_drm_priv->data->ext_len)
-> +				all_drm_priv[CRTC_EXT] = temp_drm_priv;
-> +			else if (temp_drm_priv->data->third_len)
-> +				all_drm_priv[CRTC_THIRD] = temp_drm_priv;
-> +		}
->   	}
->   
->   	if (drm_priv->data->mmsys_dev_num == cnt) {
++/**
++ * in_range - Determine if a value lies within a range.
++ * @val: Value to test.
++ * @start: First value in range.
++ * @len: Number of values in range.
++ *
++ * This is more efficient than "if (start <= val && val < (start + len))".
++ * It also gives a different answer if @start + @len overflows the size of
++ * the type by a sufficient amount to encompass @val.  Decide for yourself
++ * which behaviour you want, or prove that start + len never overflow.
++ * Do not blindly replace one form with the other.
++ */
 
