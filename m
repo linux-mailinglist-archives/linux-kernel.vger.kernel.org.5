@@ -2,212 +2,310 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3204B76E866
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 14:36:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D8BB76E86B
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 14:37:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235295AbjHCMgV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Aug 2023 08:36:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40430 "EHLO
+        id S234726AbjHCMhW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Aug 2023 08:37:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41126 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234684AbjHCMgS (ORCPT
+        with ESMTP id S234098AbjHCMhT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Aug 2023 08:36:18 -0400
-Received: from mail-qt1-x833.google.com (mail-qt1-x833.google.com [IPv6:2607:f8b0:4864:20::833])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7BBC23A9F
-        for <linux-kernel@vger.kernel.org>; Thu,  3 Aug 2023 05:35:56 -0700 (PDT)
-Received: by mail-qt1-x833.google.com with SMTP id d75a77b69052e-40fed08b990so2941611cf.2
-        for <linux-kernel@vger.kernel.org>; Thu, 03 Aug 2023 05:35:56 -0700 (PDT)
+        Thu, 3 Aug 2023 08:37:19 -0400
+Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D308330EF;
+        Thu,  3 Aug 2023 05:37:17 -0700 (PDT)
+Received: by mail-ej1-x636.google.com with SMTP id a640c23a62f3a-99c10ba30afso440427866b.1;
+        Thu, 03 Aug 2023 05:37:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google; t=1691066155; x=1691670955;
-        h=to:in-reply-to:cc:references:message-id:date:subject:mime-version
-         :from:content-transfer-encoding:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Jp3hTgUY18/N/XEQ+iz6TxOXCGZIQfvOaWHcJ1832JY=;
-        b=mAGpLqkdsAIdNTZU4KfE/StJqqO8cFzAHfP5rR22fNUTJ1K04+p5IzaaUB18lV2bEA
-         jD31hgtZ9UiMtSzPwFY2UnsXqgp/scAfLfdkqydaZLHevRg+FNF/OrL89FTBhnb27XXQ
-         fitmfoWY7KaMBQa0bpkRqR7ODBEfPgpx0zsHE=
+        d=gmail.com; s=20221208; t=1691066236; x=1691671036;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ppRRImnjb0wsMR8Fj1ZtcjVXFsDRqp3qO+UJYqzBAyE=;
+        b=P1F63pGUU6YN5E2omXCkAv2x/bzflrfH5ZmXIxOmgpY284FxRcGmwxv236F/pKiIkI
+         7NQdOOaY8eWnA5kbSNb6lvIWJLHmnokArH+LM2IZNERd2o3dBWVaQiNkBN8a4vpJCDYd
+         bpeosCO3ET2BfELH29DyK7i9xw6aP60Q2T26Y66WKtaMk+hBJqHdu9XH6MUzvy32fVpi
+         7t/Af3oQimCPuO2mVxBcEadKMuKJLNzva+n009M+NdCKKJmaOst6MftNvnR8qgTin0Af
+         AOxvRGiCuFGlvWazWe/3yl39PLAY6XfekaP6Q/pDsyxz0c20ez3u+SIjMa+QMyCS6RSq
+         WrDg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691066155; x=1691670955;
-        h=to:in-reply-to:cc:references:message-id:date:subject:mime-version
-         :from:content-transfer-encoding:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20221208; t=1691066236; x=1691671036;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=Jp3hTgUY18/N/XEQ+iz6TxOXCGZIQfvOaWHcJ1832JY=;
-        b=SETZ9vfxfu5geEMn5OPjT7P/+s2T++4VNqySg8r8XQtYML92ebcPwzfXBkGD2ZvNVD
-         kafScbCHnlO/T6DtvoeQBr1lslqsBut+PhijB/RYGiQEgV2PN8fNmAD8cBawlWYLuHAF
-         H4Ey7fORQYn8Na9apLcH5TjavDRyXRSuaL7kgTkormi+SimxWKuKsTPqeQNVi8ZlKnho
-         j9CaORV6pnuEsCfhdjtto+a2oEazllaLoLzHYGVE6epWDitvdXO80b+bFM38Cv4gOuN/
-         +xaQo+5FPmhIw3Iy93uQwgTCC9f4h42hji9Jg26yx46rxMljrvPxs6cKERt9BjDD3MJN
-         EZlA==
-X-Gm-Message-State: ABy/qLa18ilyFcZ+6dWF8TqnmSx29uJ3LqqGZjabUMzDp0WTbf57ZSSc
-        ocgHODSz2yTu4Q6mXQUr5qdGjt4dyq3lmlXl4Z4=
-X-Google-Smtp-Source: APBJJlGl4AQ6y7e0J3IYSfDfzzNxkT0vrZRXptKFuMR/zJ7g4M+q2wFDT0gctVqr+hr2Qx8RDErVEg==
-X-Received: by 2002:ac8:5ad3:0:b0:40f:dc70:fde1 with SMTP id d19-20020ac85ad3000000b0040fdc70fde1mr6847753qtd.18.1691066155123;
-        Thu, 03 Aug 2023 05:35:55 -0700 (PDT)
-Received: from smtpclient.apple ([45.85.144.224])
-        by smtp.gmail.com with ESMTPSA id b16-20020ac844d0000000b00406b11a54b8sm6145774qto.7.2023.08.03.05.35.54
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 03 Aug 2023 05:35:54 -0700 (PDT)
-Content-Type: text/plain; charset=utf-8
+        bh=ppRRImnjb0wsMR8Fj1ZtcjVXFsDRqp3qO+UJYqzBAyE=;
+        b=OfO0qDPMXeDnE4NFDMWXeuMfX9URoy5Lxr1G7QH1ml3/hHrRX5paMuyEgZk+s+fPhe
+         T4xBt0kVTqTAZ7Uc/1VQuuWag5U9zx7h+JlXPiYFZLjG/sZ7gmHqRYNfDymkdFdL/l8Q
+         jVhtJ2L5oxon++7/WPEA1HV8NPhx+6hPHGeZzK5UK52mplwu4D+WiID4ZURQayUT7RgN
+         WXR79yf5sp8+ozNiLRaECpK9rfHHV6ob7TmyHUozOznO6xjp+C567erfi5HC7R4Uc4wX
+         G/cwuH/TlEyAurTRF84bccK9a5JmKmMU+NPOFzTe1UcjgsZMV4zM7YBWwui3VMmkoyME
+         M/Vw==
+X-Gm-Message-State: ABy/qLZoWSG/CQXQNsI+ZwvmWAREEYhGc0PJNC6ZX++/VZBmdxwN9jvW
+        UaG7rYr+ve3dy++dndZTYqIRwt+/wygVkYUFxgQ=
+X-Google-Smtp-Source: APBJJlHI2a8HOTPwSZ8QCMLfU4WHwMQBsjDKFtfsERKOf5l/XJXKLUsburWGwRAjYucvWeKe+cbqoSS/bmzSXjNFPiI=
+X-Received: by 2002:a17:907:6daa:b0:99b:af5a:fc2c with SMTP id
+ sb42-20020a1709076daa00b0099baf5afc2cmr10439361ejc.26.1691066235869; Thu, 03
+ Aug 2023 05:37:15 -0700 (PDT)
+MIME-Version: 1.0
+References: <20230803083352.1585-1-zegao@tencent.com> <20230803083352.1585-3-zegao@tencent.com>
+ <20230803051011.4833785f@gandalf.local.home>
+In-Reply-To: <20230803051011.4833785f@gandalf.local.home>
+From:   Ze Gao <zegao2021@gmail.com>
+Date:   Thu, 3 Aug 2023 20:37:04 +0800
+Message-ID: <CAD8CoPC5YwEcyqH5nBziGTi5oHuGf1ucQF63UApSPtfGW-vjSQ@mail.gmail.com>
+Subject: Re: [RFC PATCH v6 2/5] perf sched: reorganize sched-out task state
+ report code
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     Adrian Hunter <adrian.hunter@intel.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Ian Rogers <irogers@google.com>,
+        Ingo Molnar <mingo@redhat.com>, Jiri Olsa <jolsa@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
+        linux-trace-kernel@vger.kernel.org, Ze Gao <zegao@tencent.com>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-From:   Joel Fernandes <joel@joelfernandes.org>
-Mime-Version: 1.0 (1.0)
-Subject: Re: [PATCH 1/2] docs: rcu: Add cautionary note on plain-accesses to requirements
-Date:   Thu, 3 Aug 2023 08:35:43 -0400
-Message-Id: <148CE02E-BBEC-4D30-9C75-6632A110FFC0@joelfernandes.org>
-References: <A272EB21-28F9-4FFE-A3BB-6689807CC3ED@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, rcu@vger.kernel.org,
-        Will Deacon <will@kernel.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Zqiang <qiang.zhang1211@gmail.com>,
-        Jonathan Corbet <corbet@lwn.net>
-In-Reply-To: <A272EB21-28F9-4FFE-A3BB-6689807CC3ED@gmail.com>
-To:     Alan Huang <mmpgouride@gmail.com>
-X-Mailer: iPhone Mail (20B101)
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Steven,
 
+THIS IS THE NEW CHANGELOG FOR THIS PATCH:
 
-> On Aug 3, 2023, at 8:09 AM, Alan Huang <mmpgouride@gmail.com> wrote:
->=20
-> =EF=BB=BF
->> 2023=E5=B9=B48=E6=9C=883=E6=97=A5 11:24=EF=BC=8CJoel Fernandes (Google) <=
-joel@joelfernandes.org> =E5=86=99=E9=81=93=EF=BC=9A
->>=20
->> Add a detailed note to explain the potential side effects of
->> plain-accessing the gp pointer using a plain load, without using the
->> rcu_dereference() macros; which might trip neighboring code that does
->> use rcu_dereference().
->>=20
->> I haven't verified this with a compiler, but this is what I gather from
->> the below link using Will's experience with READ_ONCE().
->>=20
->> Link: https://lore.kernel.org/all/20230728124412.GA21303@willie-the-truck=
-/
->> Cc: Will Deacon <will@kernel.org>
->> Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
->> ---
->> .../RCU/Design/Requirements/Requirements.rst  | 32 +++++++++++++++++++
->> 1 file changed, 32 insertions(+)
->>=20
->> diff --git a/Documentation/RCU/Design/Requirements/Requirements.rst b/Doc=
-umentation/RCU/Design/Requirements/Requirements.rst
->> index f3b605285a87..e0b896d3fb9b 100644
->> --- a/Documentation/RCU/Design/Requirements/Requirements.rst
->> +++ b/Documentation/RCU/Design/Requirements/Requirements.rst
->> @@ -376,6 +376,38 @@ mechanism, most commonly locking or reference counti=
-ng
->> .. |high-quality implementation of C11 memory_order_consume [PDF]| replac=
-e:: high-quality implementation of C11 ``memory_order_consume`` [PDF]
->> .. _high-quality implementation of C11 memory_order_consume [PDF]: http:/=
-/www.rdrop.com/users/paulmck/RCU/consume.2015.07.13a.pdf
->>=20
->> +Note that, there can be strange side effects (due to compiler optimizati=
-ons) if
->> +``gp`` is ever accessed using a plain load (i.e. without ``READ_ONCE()``=
- or
->> +``rcu_dereference()``) potentially hurting any succeeding
->> +``rcu_dereference()``. For example, consider the code:
->> +
->> +   ::
->> +
->> +       1 bool do_something_gp(void)
->> +       2 {
->> +       3   void *tmp;
->> +       4   rcu_read_lock();
->> +       5   tmp =3D gp; // Plain-load of GP.
->> +       6   printk("Point gp =3D %p\n", tmp);
->> +       7
->> +       8   p =3D rcu_dereference(gp);
->> +       9   if (p) {
->> +      10     do_something(p->a, p->b);
->> +      11     rcu_read_unlock();
->> +      12     return true;
->> +      13   }
->> +      14   rcu_read_unlock();
->> +      15   return false;
->> +      16 }
->> +
->> +The behavior of plain accesses involved in a data race is non-determinis=
-tic in
->> +the face of compiler optimizations. Since accesses to the ``gp`` pointer=
- is
->> +by-design a data race, the compiler could trip this code by caching the v=
-alue
->> +of ``gp`` into a register in line 5, and then using the value of the reg=
-ister
->> +to satisfy the load in line 10. Thus it is important to never mix
->=20
-> Will=E2=80=99s example is:
->=20
->     // Assume *ptr is initially 0 and somebody else writes it to 1
->     // concurrently
->=20
->     foo =3D *ptr;
->     bar =3D READ_ONCE(*ptr);
->     baz =3D *ptr;
->=20
-> Then the compiler is within its right to reorder it to:
->=20
->    foo =3D *ptr;
->    baz =3D *ptr;
->    bar =3D READ_ONCE(*ptr);
->=20
-> So, the result foo =3D=3D baz =3D=3D 0 but bar =3D=3D 1 is perfectly legal=
-.
+    perf sched: reorganize sched-out task state report code
 
-Yes, a bad outcome is perfectly legal amidst data race. Who said it is not l=
-egal?
+    Passing around the task state reported by tracepoint as an
+    integer creates dependencies both on the task state macros
+    and TASK_STATE_TO_CHAR_STR.
 
->=20
-> But the example here is different,
+    Actually we can simplify this by computing the state based
+    on TASK_STATE_TO_CHAR_STR and then pass the result as a
+    'char', which saves us from using these macros anymore.
+    So we can remove them for good.
 
-That is intentional. Wills discussion partially triggered this. Though I am w=
-ondering
-if we should document that as well.
+    Note that sched_out_state() is basically doing the same
+    thing as task_state_char(), so combine them into one
+    and provide an intended helper get_task_prev_state() for
+    extracting task state from perf record.
 
-> the compiler can not use the value loaded from line 5
-> unless the compiler can deduce that the tmp is equals to p in which case t=
-he address dependency
-> doesn=E2=80=99t exist anymore.
->=20
-> What am I missing here?
+    IOW, this patch does not introduce any functional changes.
+    mainly for housekeeping.
 
-Maybe you are trying to rationalize too much that the sequence mentioned can=
-not result
-in a counter intuitive outcome like I did?
+    Signed-off-by: Ze Gao <zegao@tencent.com>
 
-The point AFAIU is not just about line 10 but that the compiler can replace a=
-ny of the
-lines after the plain access with the cached value.
+Suggestions?
 
-Thanks.
+Regards,
+Ze
 
-
-
->=20
->> +plain accesses of a memory location with rcu_dereference() of the same m=
-emory
->> +location, in code involved in a data race.
->> +
->> In short, updaters use rcu_assign_pointer() and readers use
->> rcu_dereference(), and these two RCU API elements work together to
->> ensure that readers have a consistent view of newly added data elements.
->> --=20
->> 2.41.0.585.gd2178a4bd4-goog
->>=20
->=20
+On Thu, Aug 3, 2023 at 5:10=E2=80=AFPM Steven Rostedt <rostedt@goodmis.org>=
+ wrote:
+>
+> On Thu,  3 Aug 2023 04:33:49 -0400
+> Ze Gao <zegao2021@gmail.com> wrote:
+>
+> > Mainly does housekeeping work and not introduce any
+> > functional change.
+>
+> This change log doesn't explain at all why this patch is needed, let alon=
+e
+> what it is even doing.
+>
+> -- Steve
+>
+>
+> >
+> > Signed-off-by: Ze Gao <zegao@tencent.com>
+> > ---
+> >  tools/perf/builtin-sched.c | 59 +++++++++++++++++---------------------
+> >  1 file changed, 26 insertions(+), 33 deletions(-)
+> >
+> > diff --git a/tools/perf/builtin-sched.c b/tools/perf/builtin-sched.c
+> > index 8dc8f071721c..5042874ba204 100644
+> > --- a/tools/perf/builtin-sched.c
+> > +++ b/tools/perf/builtin-sched.c
+> > @@ -94,11 +94,6 @@ struct sched_atom {
+> >
+> >  #define TASK_STATE_TO_CHAR_STR "RSDTtXZPI"
+> >
+> > -/* task state bitmask, copied from include/linux/sched.h */
+> > -#define TASK_RUNNING         0
+> > -#define TASK_INTERRUPTIBLE   1
+> > -#define TASK_UNINTERRUPTIBLE 2
+> > -
+> >  enum thread_state {
+> >       THREAD_SLEEPING =3D 0,
+> >       THREAD_WAIT_CPU,
+> > @@ -255,7 +250,7 @@ struct thread_runtime {
+> >       u64 total_preempt_time;
+> >       u64 total_delay_time;
+> >
+> > -     int last_state;
+> > +     char last_state;
+> >
+> >       char shortname[3];
+> >       bool comm_changed;
+> > @@ -425,7 +420,7 @@ static void add_sched_event_wakeup(struct perf_sche=
+d *sched, struct task_desc *t
+> >  }
+> >
+> >  static void add_sched_event_sleep(struct perf_sched *sched, struct tas=
+k_desc *task,
+> > -                               u64 timestamp, u64 task_state __maybe_u=
+nused)
+> > +                               u64 timestamp, char task_state __maybe_=
+unused)
+> >  {
+> >       struct sched_atom *event =3D get_new_event(task, timestamp);
+> >
+> > @@ -840,6 +835,22 @@ replay_wakeup_event(struct perf_sched *sched,
+> >       return 0;
+> >  }
+> >
+> > +static inline char task_state_char(int state)
+> > +{
+> > +     static const char state_to_char[] =3D "RSDTtXZPI";
+> > +     unsigned int bit =3D state ? ffs(state) : 0;
+> > +
+> > +     return bit < sizeof(state_to_char) - 1 ? state_to_char[bit] : '?'=
+;
+> > +}
+> > +
+> > +static inline char get_task_prev_state(struct evsel *evsel,
+> > +                                    struct perf_sample *sample)
+> > +{
+> > +     const int prev_state =3D evsel__intval(evsel, sample, "prev_state=
+");
+> > +
+> > +     return task_state_char(prev_state);
+> > +}
+> > +
+> >  static int replay_switch_event(struct perf_sched *sched,
+> >                              struct evsel *evsel,
+> >                              struct perf_sample *sample,
+> > @@ -849,7 +860,7 @@ static int replay_switch_event(struct perf_sched *s=
+ched,
+> >                  *next_comm  =3D evsel__strval(evsel, sample, "next_com=
+m");
+> >       const u32 prev_pid =3D evsel__intval(evsel, sample, "prev_pid"),
+> >                 next_pid =3D evsel__intval(evsel, sample, "next_pid");
+> > -     const u64 prev_state =3D evsel__intval(evsel, sample, "prev_state=
+");
+> > +     const char prev_state =3D get_task_prev_state(evsel, sample);
+> >       struct task_desc *prev, __maybe_unused *next;
+> >       u64 timestamp0, timestamp =3D sample->time;
+> >       int cpu =3D sample->cpu;
+> > @@ -1039,12 +1050,6 @@ static int thread_atoms_insert(struct perf_sched=
+ *sched, struct thread *thread)
+> >       return 0;
+> >  }
+> >
+> > -static char sched_out_state(u64 prev_state)
+> > -{
+> > -     const char *str =3D TASK_STATE_TO_CHAR_STR;
+> > -
+> > -     return str[prev_state];
+> > -}
+> >
+> >  static int
+> >  add_sched_out_event(struct work_atoms *atoms,
+> > @@ -1121,7 +1126,7 @@ static int latency_switch_event(struct perf_sched=
+ *sched,
+> >  {
+> >       const u32 prev_pid =3D evsel__intval(evsel, sample, "prev_pid"),
+> >                 next_pid =3D evsel__intval(evsel, sample, "next_pid");
+> > -     const u64 prev_state =3D evsel__intval(evsel, sample, "prev_state=
+");
+> > +     const char prev_state =3D get_task_prev_state(evsel, sample);
+> >       struct work_atoms *out_events, *in_events;
+> >       struct thread *sched_out, *sched_in;
+> >       u64 timestamp0, timestamp =3D sample->time;
+> > @@ -1157,7 +1162,7 @@ static int latency_switch_event(struct perf_sched=
+ *sched,
+> >                       goto out_put;
+> >               }
+> >       }
+> > -     if (add_sched_out_event(out_events, sched_out_state(prev_state), =
+timestamp))
+> > +     if (add_sched_out_event(out_events, prev_state, timestamp))
+> >               return -1;
+> >
+> >       in_events =3D thread_atoms_search(&sched->atom_root, sched_in, &s=
+ched->cmp_pid);
+> > @@ -2022,24 +2027,12 @@ static void timehist_header(struct perf_sched *=
+sched)
+> >       printf("\n");
+> >  }
+> >
+> > -static char task_state_char(struct thread *thread, int state)
+> > -{
+> > -     static const char state_to_char[] =3D TASK_STATE_TO_CHAR_STR;
+> > -     unsigned bit =3D state ? ffs(state) : 0;
+> > -
+> > -     /* 'I' for idle */
+> > -     if (thread__tid(thread) =3D=3D 0)
+> > -             return 'I';
+> > -
+> > -     return bit < sizeof(state_to_char) - 1 ? state_to_char[bit] : '?'=
+;
+> > -}
+> > -
+> >  static void timehist_print_sample(struct perf_sched *sched,
+> >                                 struct evsel *evsel,
+> >                                 struct perf_sample *sample,
+> >                                 struct addr_location *al,
+> >                                 struct thread *thread,
+> > -                               u64 t, int state)
+> > +                               u64 t, char state)
+> >  {
+> >       struct thread_runtime *tr =3D thread__priv(thread);
+> >       const char *next_comm =3D evsel__strval(evsel, sample, "next_comm=
+");
+> > @@ -2080,7 +2073,7 @@ static void timehist_print_sample(struct perf_sch=
+ed *sched,
+> >       print_sched_time(tr->dt_run, 6);
+> >
+> >       if (sched->show_state)
+> > -             printf(" %5c ", task_state_char(thread, state));
+> > +             printf(" %5c ", thread->tid =3D=3D 0 ? 'I' : state);
+> >
+> >       if (sched->show_next) {
+> >               snprintf(nstr, sizeof(nstr), "next: %s[%d]", next_comm, n=
+ext_pid);
+> > @@ -2152,9 +2145,9 @@ static void timehist_update_runtime_stats(struct =
+thread_runtime *r,
+> >               else if (r->last_time) {
+> >                       u64 dt_wait =3D tprev - r->last_time;
+> >
+> > -                     if (r->last_state =3D=3D TASK_RUNNING)
+> > +                     if (r->last_state =3D=3D 'R')
+> >                               r->dt_preempt =3D dt_wait;
+> > -                     else if (r->last_state =3D=3D TASK_UNINTERRUPTIBL=
+E)
+> > +                     else if (r->last_state =3D=3D 'D')
+> >                               r->dt_iowait =3D dt_wait;
+> >                       else
+> >                               r->dt_sleep =3D dt_wait;
+> > @@ -2579,7 +2572,7 @@ static int timehist_sched_change_event(struct per=
+f_tool *tool,
+> >       struct thread_runtime *tr =3D NULL;
+> >       u64 tprev, t =3D sample->time;
+> >       int rc =3D 0;
+> > -     int state =3D evsel__intval(evsel, sample, "prev_state");
+> > +     const char state =3D get_task_prev_state(evsel, sample);
+> >
+> >       addr_location__init(&al);
+> >       if (machine__resolve(machine, &al, sample) < 0) {
+>
