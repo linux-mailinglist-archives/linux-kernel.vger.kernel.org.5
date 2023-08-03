@@ -2,386 +2,420 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ECFEF76EFF3
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 18:50:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DB47576F009
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 18:53:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233593AbjHCQu0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Aug 2023 12:50:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49990 "EHLO
+        id S233728AbjHCQxj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Aug 2023 12:53:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50964 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230056AbjHCQuY (ORCPT
+        with ESMTP id S230056AbjHCQxi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Aug 2023 12:50:24 -0400
-Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 788A4DA
-        for <linux-kernel@vger.kernel.org>; Thu,  3 Aug 2023 09:50:22 -0700 (PDT)
-Received: by mail-wm1-x32e.google.com with SMTP id 5b1f17b1804b1-3fe45481edfso1398825e9.1
-        for <linux-kernel@vger.kernel.org>; Thu, 03 Aug 2023 09:50:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1691081421; x=1691686221;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=LbYzUMz7bma8Vi1ElZVXbhP2yhVBKy05QrmRv33u6aA=;
-        b=ShDrvRHu4U94HJdjE3OOG4b0vAeFyzsAFvW77Fg2suHTPgpwY/ctboiGOfwiN/woEC
-         zQ/hibT5gJaFCeTLf6cJSTWIKWASkNrCHKY9EuPmzWCzmNtb3PhQXy6qwB41oo8Q6LQl
-         rFTFc3b+P/TVASt+WTZQOUfBS3v2i8Wd+PDRTf78pIQnf9RRIo1kipdT+CWWlEoveNo7
-         oFCBJ4f4yN+EHGr0eTnft5ThSc6YMU9Ud1yx8CF7nonuZwKAmFstpHs6T0um43q2L+Qq
-         fGWTiw9Fle5+vsCBFMOwK5wQAgv2YROvsKGwYPTUhO34+irniCyqro7I5IDXPMqpQvOV
-         b8PQ==
+        Thu, 3 Aug 2023 12:53:38 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D7DF211F
+        for <linux-kernel@vger.kernel.org>; Thu,  3 Aug 2023 09:52:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1691081572;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=fmZTcfTEwraJ1QLwqVqcFkUBQjsyyxn443qlczfTHBE=;
+        b=Z69K/hDMTuyhzQcVPhLjTAmXq+SEZgGq2qlXonFnxj5sFcgFj027dwdoB0KKGEs75iDt3P
+        kCYArAbmXgGuAZunvc6Dg9zemM8NRmgizb3v+G13vyNWq3izc67Ui7wE/73p3k4opd7cE+
+        NVbg4G9+jSIGkMMBduXJUrGmLTHlIJk=
+Received: from mail-lj1-f199.google.com (mail-lj1-f199.google.com
+ [209.85.208.199]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-249-NNV6i4yvNYCs_8XTcWEMgQ-1; Thu, 03 Aug 2023 12:52:51 -0400
+X-MC-Unique: NNV6i4yvNYCs_8XTcWEMgQ-1
+Received: by mail-lj1-f199.google.com with SMTP id 38308e7fff4ca-2b9b1a21b93so14364181fa.2
+        for <linux-kernel@vger.kernel.org>; Thu, 03 Aug 2023 09:52:50 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691081421; x=1691686221;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=LbYzUMz7bma8Vi1ElZVXbhP2yhVBKy05QrmRv33u6aA=;
-        b=affXfHfVqn79HWsJZ/JrNhJR/mVQY3i7mhU4ZIl++umfMedWLVmfuseNAHGiyWJ6aF
-         dSpbpYROxH5TzF7ktH8XJ0s0yff7mhF07DYUOoUA9c/NEsMoiLCt25moOn2w1sdukDAe
-         QRZYKJVyyhvKIhiyv0LUVB22KslKBSruOoaFPTIm6IvJC6xivZwfs8kd+gsh7ZFcan5d
-         EtVj1GOy1GVDly7ivmrWiJVmTfMKbcYuBoPa1jyMhX6xaSFDVFufGA8TbsSEv/B2h/C3
-         DLKrqnvNpXs9x+sihdK9AodN1zoOFy2Y3okajIaJY7eNg24a8TENLByBqmhR3K9+7S3y
-         IZzg==
-X-Gm-Message-State: ABy/qLa51b7yuQRs6kmH/rVhGsP0t4vuzS4qvHB8eNOCSNoG0H3rMeL3
-        MTki61+8tLhqm6YLKgBpX4/9xnW2V4/yqOnVYkW6vQ==
-X-Google-Smtp-Source: APBJJlHGo2K/o+/SgY6ojixrarLLfcAcR/NTJra6AjyreLeWj36u89C2zRuVmIp1cethzLHtI80WJZYnBao5gQ6EUrk=
-X-Received: by 2002:adf:ec85:0:b0:314:ca7:f30b with SMTP id
- z5-20020adfec85000000b003140ca7f30bmr7720543wrn.54.1691081420743; Thu, 03 Aug
- 2023 09:50:20 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1691081569; x=1691686369;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=fmZTcfTEwraJ1QLwqVqcFkUBQjsyyxn443qlczfTHBE=;
+        b=XdUr1IcIruge+pN1nRMzgeeoTuDMuwNu7c/+9XlTAyW5iJgWPhSYzujDcFAF/lmXYr
+         fe6V0wqVrKsdhAC2w7Ae/AGiZ2cPP6JLZp26pN3Mq+GwEgvVELIAMoi/5kURroNICpww
+         RIWxNUYmm6sk0c+mJRM+cxW/Fep7dtrN3XI8Y6NXLGjsQMe5BBjvJLFEVgf5Cjv5I+xQ
+         ECXNVfQ4fZcktTwDgIni9Bnh/MnlJ+l+lIp/W7yUvDIQxsukdvlH9NqyfFcCKp5+nL1t
+         fAhLU3wlttEs9skMEL9oxwlXOihFjIoSL15R6RhTxfaMRqgNVaFpomq6p8XdM+KLpXLr
+         4DTQ==
+X-Gm-Message-State: ABy/qLaS7b2kOsl0lz6HA2Ge6smtGyBYKandow1hG5dyKGye20F0hldr
+        TcJp25sRjJp4pVEEXGYh393SUEoreSL/rWjoESBTX8SvXawQXioivEDYxSFx7NvdFhMAQbGzNVW
+        yI5R/DsGkUDVYwd7bmY9CaxhG
+X-Received: by 2002:a2e:9c5a:0:b0:2b1:c1ae:73e3 with SMTP id t26-20020a2e9c5a000000b002b1c1ae73e3mr7413441ljj.15.1691081569338;
+        Thu, 03 Aug 2023 09:52:49 -0700 (PDT)
+X-Google-Smtp-Source: APBJJlH2uvtzM79pNaCRvpIzX5/dIvRuNZEg0DGybu2gK4QdoTkWENsR7tsffb42g3ouHBuK6M3ntA==
+X-Received: by 2002:a2e:9c5a:0:b0:2b1:c1ae:73e3 with SMTP id t26-20020a2e9c5a000000b002b1c1ae73e3mr7413420ljj.15.1691081568859;
+        Thu, 03 Aug 2023 09:52:48 -0700 (PDT)
+Received: from cassiopeiae.. ([2a02:810d:4b3f:de9c:642:1aff:fe31:a19f])
+        by smtp.gmail.com with ESMTPSA id c18-20020a170906529200b0099c53c44083sm70085ejm.79.2023.08.03.09.52.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 03 Aug 2023 09:52:48 -0700 (PDT)
+From:   Danilo Krummrich <dakr@redhat.com>
+To:     airlied@gmail.com, daniel@ffwll.ch, tzimmermann@suse.de,
+        mripard@kernel.org, corbet@lwn.net, christian.koenig@amd.com,
+        bskeggs@redhat.com, Liam.Howlett@oracle.com,
+        matthew.brost@intel.com, boris.brezillon@collabora.com,
+        alexdeucher@gmail.com, ogabbay@kernel.org, bagasdotme@gmail.com,
+        willy@infradead.org, jason@jlekstrand.net, donald.robson@imgtec.com
+Cc:     dri-devel@lists.freedesktop.org, nouveau@lists.freedesktop.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Danilo Krummrich <dakr@redhat.com>
+Subject: [PATCH drm-misc-next v9 00/11] Nouveau VM_BIND UAPI & DRM GPUVA Manager (merged)
+Date:   Thu,  3 Aug 2023 18:52:19 +0200
+Message-ID: <20230803165238.8798-1-dakr@redhat.com>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-References: <20230731174613.4133167-1-davidai@google.com> <20230731174613.4133167-3-davidai@google.com>
- <20230801093620.ggz25g3faxycp44q@vireshk-i7>
-In-Reply-To: <20230801093620.ggz25g3faxycp44q@vireshk-i7>
-From:   David Dai <davidai@google.com>
-Date:   Thu, 3 Aug 2023 09:50:09 -0700
-Message-ID: <CABN1KC+4kznd54-dZf4PiftxiqBfkGxpsqngaX4=dGf1pNg5Ug@mail.gmail.com>
-Subject: Re: [PATCH v3 2/2] cpufreq: add virtual-cpufreq driver
-To:     Viresh Kumar <viresh.kumar@linaro.org>
-Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        Saravana Kannan <saravanak@google.com>,
-        Quentin Perret <qperret@google.com>,
-        Masami Hiramatsu <mhiramat@google.com>,
-        Will Deacon <will@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Marc Zyngier <maz@kernel.org>,
-        Oliver Upton <oliver.upton@linux.dev>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Pavan Kondeti <quic_pkondeti@quicinc.com>,
-        Gupta Pankaj <pankaj.gupta@amd.com>,
-        Mel Gorman <mgorman@suse.de>, kernel-team@android.com,
-        linux-pm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Viresh,
+This patch series provides a new UAPI for the Nouveau driver in order to
+support Vulkan features, such as sparse bindings and sparse residency.
 
-Thanks for reviewing!
+Furthermore, with the DRM GPUVA manager it provides a new DRM core feature to
+keep track of GPU virtual address (VA) mappings in a more generic way (merged
+into drm-misc/drm-misc-next since V8).
 
-On Tue, Aug 1, 2023 at 2:36=E2=80=AFAM Viresh Kumar <viresh.kumar@linaro.or=
-g> wrote:
->
-> On 31-07-23, 10:46, David Dai wrote:
-> > diff --git a/drivers/cpufreq/virtual-cpufreq.c b/drivers/cpufreq/virtua=
-l-cpufreq.c
-> > new file mode 100644
-> > index 000000000000..66b0fd9b821c
-> > --- /dev/null
-> > +++ b/drivers/cpufreq/virtual-cpufreq.c
-> > @@ -0,0 +1,237 @@
-> > +// SPDX-License-Identifier: GPL-2.0-only
-> > +/*
-> > + * Copyright (C) 2023 Google LLC
-> > + */
-> > +
-> > +#include <linux/arch_topology.h>
-> > +#include <linux/cpufreq.h>
-> > +#include <linux/init.h>
-> > +#include <linux/sched.h>
-> > +#include <linux/kernel.h>
-> > +#include <linux/module.h>
-> > +#include <linux/of_address.h>
-> > +#include <linux/of_platform.h>
-> > +#include <linux/pm_opp.h>
-> > +#include <linux/slab.h>
-> > +
-> > +#define REG_CUR_FREQ_OFFSET 0x0
-> > +#define REG_SET_FREQ_OFFSET 0x4
-> > +#define PER_CPU_OFFSET 0x8
-> > +
-> > +struct virt_cpufreq_ops {
-> > +     void (*set_freq)(struct cpufreq_policy *policy, u32 freq);
-> > +     u32 (*get_freq)(struct cpufreq_policy *policy);
-> > +};
->
-> Since you only have one implementation currently, this isn't really
-> required. Keep the data as NULL in `virt_cpufreq_match` and use
-> writel/readl directly.
+The DRM GPUVA manager is indented to help drivers implement userspace-manageable
+GPU VA spaces in reference to the Vulkan API. In order to achieve this goal it
+serves the following purposes in this context.
 
-Okay, I=E2=80=99ll remove the ops for now and bring it back in the future i=
-f required.
+    1) Provide infrastructure to track GPU VA allocations and mappings,
+       using an interval tree (RB-tree).
 
->
-> This can be updated if we need more implementations later.
->
-> > +struct virt_cpufreq_drv_data {
-> > +     void __iomem *base;
-> > +     const struct virt_cpufreq_ops *ops;
-> > +};
-> > +
-> > +static void virt_cpufreq_set_freq(struct cpufreq_policy *policy, u32 f=
-req)
-> > +{
-> > +     struct virt_cpufreq_drv_data *data =3D policy->driver_data;
-> > +
-> > +     writel_relaxed(freq, data->base + policy->cpu * PER_CPU_OFFSET
-> > +                     + REG_SET_FREQ_OFFSET);
-> > +}
-> > +
-> > +static u32 virt_cpufreq_get_freq(struct cpufreq_policy *policy)
-> > +{
-> > +     struct virt_cpufreq_drv_data *data =3D policy->driver_data;
-> > +
-> > +     return readl_relaxed(data->base + policy->cpu * PER_CPU_OFFSET
-> > +                     + REG_CUR_FREQ_OFFSET);
->
-> This doesn't look properly aligned. Please run checkpatch (--strict
-> (optional)).
+    2) Generically connect GPU VA mappings to their backing buffers, in
+       particular DRM GEM objects.
 
-Ok.
+    3) Provide a common implementation to perform more complex mapping
+       operations on the GPU VA space. In particular splitting and merging
+       of GPU VA mappings, e.g. for intersecting mapping requests or partial
+       unmap requests.
 
->
-> > +}
-> > +
-> > +static const struct virt_cpufreq_ops virt_freq_ops =3D {
-> > +     .set_freq =3D virt_cpufreq_set_freq,
-> > +     .get_freq =3D virt_cpufreq_get_freq,
-> > +};
-> > +
-> > +static void virt_scale_freq_tick(void)
-> > +{
-> > +     struct cpufreq_policy *policy =3D cpufreq_cpu_get(smp_processor_i=
-d());
-> > +     struct virt_cpufreq_drv_data *data =3D policy->driver_data;
-> > +     u32 max_freq =3D (u32)policy->cpuinfo.max_freq;
-> > +     u64 cur_freq;
-> > +     u64 scale;
-> > +
-> > +     cpufreq_cpu_put(policy);
-> > +
-> > +     cur_freq =3D (u64)data->ops->get_freq(policy);
-> > +     cur_freq <<=3D SCHED_CAPACITY_SHIFT;
-> > +     scale =3D div_u64(cur_freq, max_freq);
-> > +
-> > +     this_cpu_write(arch_freq_scale, (unsigned long)scale);
-> > +}
-> > +
-> > +static struct scale_freq_data virt_sfd =3D {
-> > +     .source =3D SCALE_FREQ_SOURCE_VIRT,
-> > +     .set_freq_scale =3D virt_scale_freq_tick,
-> > +};
-> > +
-> > +static unsigned int virt_cpufreq_set_perf(struct cpufreq_policy *polic=
-y)
-> > +{
-> > +     struct virt_cpufreq_drv_data *data =3D policy->driver_data;
-> > +     /*
-> > +      * Use cached frequency to avoid rounding to freq table entries
-> > +      * and undo 25% frequency boost applied by schedutil.
-> > +      */
-> > +     u32 freq =3D mult_frac(policy->cached_target_freq, 80, 100);
-> > +
-> > +     data->ops->set_freq(policy, freq);
-> > +     return 0;
-> > +}
-> > +
-> > +static unsigned int virt_cpufreq_fast_switch(struct cpufreq_policy *po=
-licy,
-> > +             unsigned int target_freq)
-> > +{
-> > +     virt_cpufreq_set_perf(policy);
-> > +     return target_freq;
-> > +}
-> > +
-> > +static int virt_cpufreq_target_index(struct cpufreq_policy *policy,
-> > +             unsigned int index)
-> > +{
-> > +     return virt_cpufreq_set_perf(policy);
-> > +}
-> > +
-> > +static int virt_cpufreq_cpu_init(struct cpufreq_policy *policy)
-> > +{
-> > +     struct virt_cpufreq_drv_data *drv_data =3D cpufreq_get_driver_dat=
-a();
-> > +     struct cpufreq_frequency_table *table;
-> > +     struct device *cpu_dev;
-> > +     int ret;
-> > +
-> > +     cpu_dev =3D get_cpu_device(policy->cpu);
-> > +     if (!cpu_dev)
-> > +             return -ENODEV;
-> > +
-> > +     ret =3D dev_pm_opp_of_add_table(cpu_dev);
-> > +     if (ret)
-> > +             return ret;
-> > +
-> > +     ret =3D dev_pm_opp_get_opp_count(cpu_dev);
-> > +     if (ret <=3D 0) {
-> > +             dev_err(cpu_dev, "OPP table can't be empty\n");
-> > +             return -ENODEV;
-> > +     }
-> > +
-> > +     ret =3D dev_pm_opp_init_cpufreq_table(cpu_dev, &table);
-> > +     if (ret) {
-> > +             dev_err(cpu_dev, "failed to init cpufreq table: %d\n", re=
-t);
-> > +             return ret;
-> > +     }
-> > +
-> > +     policy->freq_table =3D table;
-> > +     policy->dvfs_possible_from_any_cpu =3D false;
->
-> Why can't we call virt_cpufreq_target_index() from any CPU ?
->
-> > +     policy->fast_switch_possible =3D true;
-> > +     policy->driver_data =3D drv_data;
-> > +
-> > +     /*
-> > +      * Only takes effect if another FIE source such as AMUs
-> > +      * have not been registered.
-> > +      */
-> > +     topology_set_scale_freq_source(&virt_sfd, policy->cpus);
-> > +
-> > +     return 0;
-> > +
-> > +}
-> > +
-> > +static int virt_cpufreq_cpu_exit(struct cpufreq_policy *policy)
-> > +{
-> > +     topology_clear_scale_freq_source(SCALE_FREQ_SOURCE_VIRT, policy->=
-related_cpus);
-> > +     kfree(policy->freq_table);
-> > +     policy->freq_table =3D NULL;
-> > +     return 0;
-> > +}
-> > +
-> > +static int virt_cpufreq_online(struct cpufreq_policy *policy)
-> > +{
-> > +     /* Nothing to restore. */
-> > +     return 0;
-> > +}
-> > +
-> > +static int virt_cpufreq_offline(struct cpufreq_policy *policy)
-> > +{
-> > +     /* Dummy offline() to avoid exit() being called and freeing resou=
-rces. */
-> > +     return 0;
-> > +}
-> > +
-> > +static struct cpufreq_driver cpufreq_virt_driver =3D {
-> > +     .name           =3D "virt-cpufreq",
-> > +     .init           =3D virt_cpufreq_cpu_init,
-> > +     .exit           =3D virt_cpufreq_cpu_exit,
-> > +     .online         =3D virt_cpufreq_online,
-> > +     .offline        =3D virt_cpufreq_offline,
-> > +     .verify         =3D cpufreq_generic_frequency_table_verify,
-> > +     .target_index   =3D virt_cpufreq_target_index,
-> > +     .fast_switch    =3D virt_cpufreq_fast_switch,
-> > +     .attr           =3D cpufreq_generic_attr,
-> > +};
-> > +
-> > +static int virt_cpufreq_driver_probe(struct platform_device *pdev)
-> > +{
-> > +     int ret;
-> > +     struct virt_cpufreq_drv_data *drv_data;
-> > +
-> > +     drv_data =3D devm_kzalloc(&pdev->dev, sizeof(*drv_data), GFP_KERN=
-EL);
-> > +     if (!drv_data)
-> > +             return -ENOMEM;
-> > +
-> > +     drv_data->ops =3D of_device_get_match_data(&pdev->dev);
-> > +     if (!drv_data->ops)
-> > +             return -EINVAL;
-> > +
-> > +     drv_data->base =3D devm_platform_ioremap_resource(pdev, 0);
-> > +     if (IS_ERR(drv_data->base))
-> > +             return PTR_ERR(drv_data->base);
-> > +
-> > +     cpufreq_virt_driver.driver_data =3D drv_data;
-> > +
-> > +     ret =3D cpufreq_register_driver(&cpufreq_virt_driver);
-> > +     if (ret) {
-> > +             dev_err(&pdev->dev, "Virtual CPUFreq driver failed to reg=
-ister: %d\n", ret);
-> > +             return ret;
-> > +     }
-> > +
-> > +     dev_dbg(&pdev->dev, "Virtual CPUFreq driver initialized\n");
-> > +     return 0;
-> > +}
-> > +
-> > +static int virt_cpufreq_driver_remove(struct platform_device *pdev)
-> > +{
-> > +     cpufreq_unregister_driver(&cpufreq_virt_driver);
-> > +     return 0;
-> > +}
-> > +
-> > +static const struct of_device_id virt_cpufreq_match[] =3D {
-> > +     { .compatible =3D "virtual,cpufreq", .data =3D &virt_freq_ops},
-> > +     {}
-> > +};
-> > +MODULE_DEVICE_TABLE(of, virt_cpufreq_match);
-> > +
-> > +static struct platform_driver virt_cpufreq_driver =3D {
-> > +     .probe =3D virt_cpufreq_driver_probe,
-> > +     .remove =3D virt_cpufreq_driver_remove,
-> > +     .driver =3D {
-> > +             .name =3D "virt-cpufreq",
-> > +             .of_match_table =3D virt_cpufreq_match,
-> > +     },
-> > +};
-> > +
-> > +static int __init virt_cpufreq_init(void)
-> > +{
-> > +     return platform_driver_register(&virt_cpufreq_driver);
-> > +}
-> > +postcore_initcall(virt_cpufreq_init);
->
-> Why do you want to use this and not module_init() ? Then you can
-> simply use `module_platform_driver()`.
+The new VM_BIND Nouveau UAPI build on top of the DRM GPUVA manager, itself
+providing the following new interfaces.
 
-We found that using postcore_init over module_init results in a
-small(2-3%) but measurable benefit during boot time for VMs, so this
-is an optimization that I=E2=80=99d prefer to keep.
+    1) Initialize a GPU VA space via the new DRM_IOCTL_NOUVEAU_VM_INIT ioctl
+       for UMDs to specify the portion of VA space managed by the kernel and
+       userspace, respectively.
 
-Thanks,
-David
+    2) Allocate and free a VA space region as well as bind and unbind memory
+       to the GPUs VA space via the new DRM_IOCTL_NOUVEAU_VM_BIND ioctl.
 
->
-> > +
-> > +static void __exit virt_cpufreq_exit(void)
-> > +{
-> > +     platform_driver_unregister(&virt_cpufreq_driver);
-> > +}
-> > +module_exit(virt_cpufreq_exit);
-> > +
-> > +MODULE_DESCRIPTION("Virtual cpufreq driver");
-> > +MODULE_LICENSE("GPL");
->
-> --
-> viresh
+    3) Execute push buffers with the new DRM_IOCTL_NOUVEAU_EXEC ioctl.
+
+Both, DRM_IOCTL_NOUVEAU_VM_BIND and DRM_IOCTL_NOUVEAU_EXEC, make use of the DRM
+scheduler to queue jobs and support asynchronous processing with DRM syncobjs
+as synchronization mechanism.
+
+By default DRM_IOCTL_NOUVEAU_VM_BIND does synchronous processing,
+DRM_IOCTL_NOUVEAU_EXEC supports asynchronous processing only.
+
+The new VM_BIND UAPI for Nouveau makes also use of drm_exec (execution context
+for GEM buffers) by Christian König. Since the patch implementing drm_exec was
+not yet merged into drm-next it is part of this series, as well as a small fix
+for this patch, which was found while testing this series.
+
+This patch series is also available at [1].
+
+There is a Mesa NVK merge request by Dave Airlie [2] implementing the
+corresponding userspace parts for this series.
+
+The Vulkan CTS test suite passes the sparse binding and sparse residency test
+cases for the new UAPI together with Dave's Mesa work.
+
+There are also some test cases in the igt-gpu-tools project [3] for the new UAPI
+and hence the DRM GPU VA manager. However, most of them are testing the DRM GPU
+VA manager's logic through Nouveau's new UAPI and should be considered just as
+helper for implementation.
+
+However, I absolutely intend to change those test cases to proper kunit test
+cases for the DRM GPUVA manager, once and if we agree on it's usefulness and
+design.
+
+[1] https://gitlab.freedesktop.org/nouvelles/kernel/-/tree/new-uapi-drm-next /
+    https://gitlab.freedesktop.org/nouvelles/kernel/-/merge_requests/1
+[2] https://gitlab.freedesktop.org/nouveau/mesa/-/merge_requests/150/
+[3] https://gitlab.freedesktop.org/dakr/igt-gpu-tools/-/tree/wip_nouveau_vm_bind
+
+Changes in V2:
+==============
+  Nouveau:
+    - Reworked the Nouveau VM_BIND UAPI to avoid memory allocations in fence
+      signalling critical sections. Updates to the VA space are split up in three
+      separate stages, where only the 2. stage executes in a fence signalling
+      critical section:
+
+        1. update the VA space, allocate new structures and page tables
+        2. (un-)map the requested memory bindings
+        3. free structures and page tables
+
+    - Separated generic job scheduler code from specific job implementations.
+    - Separated the EXEC and VM_BIND implementation of the UAPI.
+    - Reworked the locking parts of the nvkm/vmm RAW interface, such that
+      (un-)map operations can be executed in fence signalling critical sections.
+
+  GPUVA Manager:
+    - made drm_gpuva_regions optional for users of the GPUVA manager
+    - allow NULL GEMs for drm_gpuva entries
+    - swichted from drm_mm to maple_tree for track drm_gpuva / drm_gpuva_region
+      entries
+    - provide callbacks for users to allocate custom drm_gpuva_op structures to
+      allow inheritance
+    - added user bits to drm_gpuva_flags
+    - added a prefetch operation type in order to support generating prefetch
+      operations in the same way other operations generated
+    - hand the responsibility for mutual exclusion for a GEM's
+      drm_gpuva list to the user; simplified corresponding (un-)link functions
+
+  Maple Tree:
+    - I added two maple tree patches to the series, one to support custom tree
+      walk macros and one to hand the locking responsibility to the user of the
+      GPUVA manager without pre-defined lockdep checks.
+
+Changes in V3:
+==============
+  Nouveau:
+    - Reworked the Nouveau VM_BIND UAPI to do the job cleanup (including page
+      table cleanup) within a workqueue rather than the job_free() callback of
+      the scheduler itself. A job_free() callback can stall the execution (run()
+      callback) of the next job in the queue. Since the page table cleanup
+      requires to take the same locks as need to be taken for page table
+      allocation, doing it directly in the job_free() callback would still
+      violate the fence signalling critical path.
+    - Separated Nouveau fence allocation and emit, such that we do not violate
+      the fence signalling critical path in EXEC jobs.
+    - Implement "regions" (for handling sparse mappings through PDEs and dual
+      page tables) within Nouveau.
+    - Drop the requirement for every mapping to be contained within a region.
+    - Add necassary synchronization of VM_BIND job operation sequences in order
+      to work around limitations in page table handling. This will be addressed
+      in a future re-work of Nouveau's page table handling.
+    - Fixed a couple of race conditions found through more testing. Thanks to
+      Dave for consitently trying to break it. :-)
+
+  GPUVA Manager:
+    - Implement pre-allocation capabilities for tree modifications within fence
+      signalling critical sections.
+    - Implement accessors to to apply tree modification while walking the GPUVA
+      tree in order to actually support processing of drm_gpuva_ops through
+      callbacks in fence signalling critical sections rather than through
+      pre-allocated operation lists.
+    - Remove merging of GPUVAs; the kernel has limited to none knowlege about
+      the semantics of mapping sequences. Hence, merging is purely speculative.
+      It seems that gaining a significant (or at least a measurable) performance
+      increase through merging is way more likely to happen when userspace is
+      responsible for merging mappings up to the next larger page size if
+      possible.
+    - Since merging was removed, regions pretty much loose their right to exist.
+      They might still be useful for handling dual page tables or similar
+      mechanisms, but since Nouveau seems to be the only driver having a need
+      for this for now, regions were removed from the GPUVA manager.
+    - Fixed a couple of maple_tree related issues; thanks to Liam for helping me
+      out.
+
+Changes in V4:
+==============
+  Nouveau:
+    - Refactored how specific VM_BIND and EXEC jobs are created and how their
+      arguments are passed to the generic job implementation.
+    - Fixed a UAF race condition where bind job ops could have been freed
+      already while still waiting for a job cleanup to finish. This is due to
+      in certain cases we need to wait for mappings actually being unmapped
+      before creating sparse regions in the same area.
+    - Re-based the code onto drm_exec v4 patch.
+
+  GPUVA Manager:
+    - Fixed a maple tree related bug when pre-allocating MA states.
+      (Boris Brezillion)
+    - Made struct drm_gpuva_fn_ops a const object in all occurrences.
+      (Boris Brezillion)
+
+Changes in V5:
+==============
+  Nouveau:
+    - Link and unlink GPUVAs outside the fence signalling critical path in
+      nouveau_uvmm_bind_job_submit() holding the dma-resv lock. Mutual exclusion
+      of BO evicts causing mapping invalidation and regular mapping operations
+      is ensured with dma-fences.
+
+  GPUVA Manager:
+    - Removed the separate GEMs GPUVA list lock. Link and unlink as well as
+      iterating the GEM's GPUVA list should be protected with the GEM's dma-resv
+      lock instead.
+    - Renamed DRM_GPUVA_EVICTED flag to DRM_GPUVA_INVALIDATED. Mappings do not
+      get eviced, they might get invalidated due to eviction.
+    - Maple tree uses the 'unsinged long' type for node entries. While this
+      works for GPU VA spaces larger than 32-bit on 64-bit kernel, the GPU VA
+      space is limited to 32-bit on 32-bit kernels as well.
+      As long as we do not have a 64-bit capable maple tree for 32-bit kernels,
+      the GPU VA manager contains checks to throw warnings when GPU VA entries
+      exceed the maple tree's storage capabilities.
+    - Extended the Documentation and added example code as requested by Donald
+      Robson.
+
+Changes in V6
+=============
+
+  Nouveau:
+    - Re-based the code onto drm_exec v5 patch.
+
+  GPUVA Manager:
+    - Switch from maple tree to RB-tree.
+
+      It turned out that mas_preallocate() requires the maple tree not to change
+      in between pre-allocating nodes with mas_preallocate() and inserting an
+      entry with the help of the pre-allocated memory (mas_insert_prealloc()).
+
+      However, considering that drivers typically implement interfaces where
+      jobs to create GPU mappings can be submitted by userspace, are queued up
+      by the kernel and are processed asynchronously in dma-fence signalling
+      critical paths, this is a major issue. In the ioctl() used to submit a job
+      we'd need to pre-allocated memory with mas_preallocate(), however,
+      previously queued up jobs could concurrently alter the maple tree
+      resulting in potentially insufficient pre-allocated memory for the
+      currently submitted job on execution time.
+
+      There is a detailed and still ongoing discussion about this topic one the
+      -mm list [1]. So far the only solution seems to be to use GFP_ATOMIC
+      and allocate memory directly in the fence signalling critical path, where
+      we need it. However, I think that is not what we want to rely on.
+
+      I think we should definitely continue in trying to find a solution on how
+      to fit in the maple tree (or how to make the maple tree fit in). However,
+      for now it seems to be more expedient to move on using a RB-tree.
+
+      [1] https://lore.kernel.org/lkml/20230612203953.2093911-15-Liam.Howlett@oracle.com/
+
+    - Provide a flag to let driver optionally provide their own lock to lock
+      linking and unlinking of GPUVAs to GEM objects. The DRM GPUVA manager
+      still does not take the locks itself, but rather contains lockdep checks
+      on either the GEMs dma-resv lock (default) or, if
+      DRM_GPUVA_MANAGER_LOCK_EXTERN is set, the driver provided lock.
+      (Boris Brezillon)
+
+Changes in V7
+=============
+  Nouveau:
+    - Rebase to drm_exec v7.
+    - Move drm_gem_gpuva_init() before ttm_bo_init_validate(), but after
+      initialization of the corresponding dma-resv.
+
+  GPUVA Manager:
+    - Fix drm_gpuva_find_first() range parameter in drm_gpuva_for_each_va*
+      macros. (Boris)
+    - Simplify drm_gpuva_for_each_va* macros using a __drm_gpuva_next() helper.
+      (Boris)
+    - Move lockdep checks for an optional external GEM gpuva list lock out of
+      the GPUVA Manager to drm_gem.h. (Boris)
+    - Fix code style issues pointed out by Thomas.
+    - Switch to EXPORT_SYMBOL_GPL(). (Christoph)
+
+Changes in V8
+=============
+  Nouveau:
+    - n/a
+
+  GPUVA Manager:
+    - Fix documentation about locking the GEMs GPUVA list. (Donald)
+    - Fix a few minor checkpatch warnings.
+
+Changes in V9
+=============
+  Nouveau:
+    - uAPI header (Faith, Dave):
+      - documented preconditions to successfully initialize the VM_BIND uAPI
+      - renamed drm_nouveau_vm_init unmanaged_{addr,size} to
+        kernel_managed_{addr,size}
+      - add NOUVEAU_GEM_DOMAIN_NO_SHARE flag
+    - allow VM_BIND and EXEC jobs with op_count == 0 (Faith)
+    - add a common dma-resv object for the VM and handle
+      NOUVEAU_GEM_DOMAIN_NO_SHARE accordingly
+    - add armed_submit() callback to nouveau_job
+    - make use of drm_gpuva_map() rather than open code the GPUVA initialization
+
+  GPUVA Manager :
+    - n/a (merged into drm-misc/drm-misc-next since V8)
+
+  DRM GEM:
+    - added a patch to fix lockdep checks of GEM GPUVA locks
+
+Danilo Krummrich (11):
+  drm/gem: fix lockdep check for dma-resv lock
+  drm/nouveau: new VM_BIND uapi interfaces
+  drm/nouveau: get vmm via nouveau_cli_vmm()
+  drm/nouveau: bo: initialize GEM GPU VA interface
+  drm/nouveau: move usercopy helpers to nouveau_drv.h
+  drm/nouveau: fence: separate fence alloc and emit
+  drm/nouveau: fence: fail to emit when fence context is killed
+  drm/nouveau: chan: provide nouveau_channel_kill()
+  drm/nouveau: nvkm/vmm: implement raw ops to manage uvmm
+  drm/nouveau: implement new VM_BIND uAPI
+  drm/nouveau: debugfs: implement DRM GPU VA debugfs
+
+ Documentation/gpu/driver-uapi.rst             |   11 +
+ drivers/gpu/drm/nouveau/Kbuild                |    3 +
+ drivers/gpu/drm/nouveau/Kconfig               |    2 +
+ drivers/gpu/drm/nouveau/dispnv04/crtc.c       |    9 +-
+ drivers/gpu/drm/nouveau/include/nvif/if000c.h |   26 +-
+ drivers/gpu/drm/nouveau/include/nvif/vmm.h    |   19 +-
+ .../gpu/drm/nouveau/include/nvkm/subdev/mmu.h |   20 +-
+ drivers/gpu/drm/nouveau/nouveau_abi16.c       |   24 +
+ drivers/gpu/drm/nouveau/nouveau_abi16.h       |    1 +
+ drivers/gpu/drm/nouveau/nouveau_bo.c          |  221 +-
+ drivers/gpu/drm/nouveau/nouveau_bo.h          |    3 +-
+ drivers/gpu/drm/nouveau/nouveau_chan.c        |   22 +-
+ drivers/gpu/drm/nouveau/nouveau_chan.h        |    1 +
+ drivers/gpu/drm/nouveau/nouveau_debugfs.c     |   39 +
+ drivers/gpu/drm/nouveau/nouveau_dmem.c        |    9 +-
+ drivers/gpu/drm/nouveau/nouveau_drm.c         |   27 +-
+ drivers/gpu/drm/nouveau/nouveau_drv.h         |   93 +-
+ drivers/gpu/drm/nouveau/nouveau_exec.c        |  436 ++++
+ drivers/gpu/drm/nouveau/nouveau_exec.h        |   54 +
+ drivers/gpu/drm/nouveau/nouveau_fence.c       |   23 +-
+ drivers/gpu/drm/nouveau/nouveau_fence.h       |    5 +-
+ drivers/gpu/drm/nouveau/nouveau_gem.c         |   86 +-
+ drivers/gpu/drm/nouveau/nouveau_gem.h         |    3 +-
+ drivers/gpu/drm/nouveau/nouveau_mem.h         |    5 +
+ drivers/gpu/drm/nouveau/nouveau_prime.c       |   13 +-
+ drivers/gpu/drm/nouveau/nouveau_sched.c       |  444 ++++
+ drivers/gpu/drm/nouveau/nouveau_sched.h       |  127 ++
+ drivers/gpu/drm/nouveau/nouveau_svm.c         |    2 +-
+ drivers/gpu/drm/nouveau/nouveau_uvmm.c        | 1946 +++++++++++++++++
+ drivers/gpu/drm/nouveau/nouveau_uvmm.h        |  108 +
+ drivers/gpu/drm/nouveau/nouveau_vmm.c         |    4 +-
+ drivers/gpu/drm/nouveau/nvif/vmm.c            |  100 +-
+ .../gpu/drm/nouveau/nvkm/subdev/mmu/uvmm.c    |  213 +-
+ drivers/gpu/drm/nouveau/nvkm/subdev/mmu/vmm.c |  197 +-
+ drivers/gpu/drm/nouveau/nvkm/subdev/mmu/vmm.h |   25 +
+ .../drm/nouveau/nvkm/subdev/mmu/vmmgf100.c    |   16 +-
+ .../drm/nouveau/nvkm/subdev/mmu/vmmgp100.c    |   16 +-
+ .../gpu/drm/nouveau/nvkm/subdev/mmu/vmmnv50.c |   27 +-
+ include/drm/drm_gem.h                         |   15 +-
+ include/uapi/drm/nouveau_drm.h                |  217 ++
+ 40 files changed, 4362 insertions(+), 250 deletions(-)
+ create mode 100644 drivers/gpu/drm/nouveau/nouveau_exec.c
+ create mode 100644 drivers/gpu/drm/nouveau/nouveau_exec.h
+ create mode 100644 drivers/gpu/drm/nouveau/nouveau_sched.c
+ create mode 100644 drivers/gpu/drm/nouveau/nouveau_sched.h
+ create mode 100644 drivers/gpu/drm/nouveau/nouveau_uvmm.c
+ create mode 100644 drivers/gpu/drm/nouveau/nouveau_uvmm.h
+
+
+base-commit: e4774e9968b26dc5d225ce629af8081ddab0029a
+-- 
+2.41.0
+
