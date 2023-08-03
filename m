@@ -2,165 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E4E5176DDBC
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 03:58:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B40B76DDC1
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 03:59:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231698AbjHCB6O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Aug 2023 21:58:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35550 "EHLO
+        id S229445AbjHCB7B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Aug 2023 21:59:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35972 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232700AbjHCB5w (ORCPT
+        with ESMTP id S232145AbjHCB61 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Aug 2023 21:57:52 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04AA830EF;
-        Wed,  2 Aug 2023 18:55:34 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 9650161BAF;
-        Thu,  3 Aug 2023 01:55:33 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9989EC433C7;
-        Thu,  3 Aug 2023 01:55:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691027733;
-        bh=8bcmBU6UJXfBBUjLouuDS8paEUI0aVBdp/2XqX+Gop4=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=u19FFhV2TK+D+tVZD87Zm5hkMwHS8OoJgc7dVKX0fn9QT9ZTiwGReEZKV3JHR9syR
-         LR76vtAlG1FQ/MK27TEEMQhswKRZ0eL8HARcPWkZTII4h1BlOSxRnhCLrMVF45VxdM
-         kPyw7nK75ayI7lIE8UinDqMdIrS3F+xBspjiHKWd4qtcIzKq8Bh+YZnKGlTokzHFfx
-         IqWBKLjCybEoggTKv58GcbuK/sEh4K6hLoiWcbjCsZ37ghpMhnrStkv+le+4bBzOlt
-         cLPst9olh0Z1hrISOyfLooTy37ojSX7uSCc825cvCZHTHtJVlWr0aDVWJBW9xW9MG/
-         kuVX7cgU09BTw==
-Date:   Thu, 3 Aug 2023 10:55:27 +0900
-From:   Masami Hiramatsu (Google) <mhiramat@kernel.org>
-To:     Florent Revest <revest@chromium.org>
-Cc:     Steven Rostedt <rostedt@goodmis.org>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        linux-trace-kernel@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        bpf <bpf@vger.kernel.org>, Sven Schnelle <svens@linux.ibm.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Alan Maguire <alan.maguire@oracle.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>
-Subject: Re: [PATCH v4 3/9] bpf/btf: Add a function to search a member of a
- struct/union
-Message-Id: <20230803105527.838017f58531af25c125f577@kernel.org>
-In-Reply-To: <CABRcYm+-tBmM1sUMozPaa8fBfRFhTNpTNtwT5z6xz0nsZA=P0g@mail.gmail.com>
-References: <169078860386.173706.3091034523220945605.stgit@devnote2>
-        <169078863449.173706.2322042687021909241.stgit@devnote2>
-        <CAADnVQ+C64_C1w1kqScZ6C5tr6_juaWFaQdAp9Mt3uzaQp2KOw@mail.gmail.com>
-        <20230801085724.9bb07d2c82e5b6c6a6606848@kernel.org>
-        <CAADnVQLaFpd2OhqP7W3xWB1b9P2GAKgrVQU1FU2yeNYKbCkT=Q@mail.gmail.com>
-        <20230802000228.158f1bd605e497351611739e@kernel.org>
-        <20230801112036.0d4ee60d@gandalf.local.home>
-        <20230801113240.4e625020@gandalf.local.home>
-        <CAADnVQ+N7b8_0UhndjwW9-5Vx2wUVvojujFLOCFr648DUv-Y2Q@mail.gmail.com>
-        <20230801190920.7a1abfd5@gandalf.local.home>
-        <20230802092146.9bda5e49528e6988ab97899c@kernel.org>
-        <20230801204054.3884688e@rorschach.local.home>
-        <20230802225634.f520080cd9de759d687a2b0a@kernel.org>
-        <CABRcYm+-tBmM1sUMozPaa8fBfRFhTNpTNtwT5z6xz0nsZA=P0g@mail.gmail.com>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+        Wed, 2 Aug 2023 21:58:27 -0400
+Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id C225330D1;
+        Wed,  2 Aug 2023 18:56:06 -0700 (PDT)
+Received: from loongson.cn (unknown [10.20.42.201])
+        by gateway (Coremail) with SMTP id _____8Cx2eo1CctkO2YPAA--.30842S3;
+        Thu, 03 Aug 2023 09:56:05 +0800 (CST)
+Received: from [10.20.42.201] (unknown [10.20.42.201])
+        by localhost.localdomain (Coremail) with SMTP id AQAAf8CxWM0yCctkAX9GAA--.52730S3;
+        Thu, 03 Aug 2023 09:56:02 +0800 (CST)
+Subject: Re: [PATCH v2 1/2] gpio: dt-bindings: add parsing of loongson gpio
+ offset
+To:     Conor Dooley <conor@kernel.org>
+Cc:     Conor Dooley <conor.dooley@microchip.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <brgl@bgdev.pl>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>, linux-gpio@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Jianmin Lv <lvjianmin@loongson.cn>, wanghongliang@loongson.cn,
+        Liu Peibao <liupeibao@loongson.cn>,
+        loongson-kernel@lists.loongnix.cn, zhuyinbo@loongson.cn
+References: <20230731-setback-such-61815ee3ef51@spud>
+ <041bf8a6-8d91-c2ce-6752-aa7255f946c7@loongson.cn>
+ <20230801-whenever-imitation-b2759b212f6b@spud>
+ <a5c27913-2a88-d376-0130-22ca8a3d4516@loongson.cn>
+ <20230801-varsity-chemo-09cc5e250ded@spud>
+ <26adb487-f8c5-9cf4-5b31-070e9161e761@loongson.cn>
+ <20230802-jailer-pavilion-84fb17bb3710@wendy>
+ <3534f7b9-0e02-28c1-238a-5a6fdbb95e94@loongson.cn>
+ <20230802-bunkbed-siamese-57ee53bdf273@wendy>
+ <db7012b2-9156-34ed-ad1f-10a3e5dfe390@loongson.cn>
+ <20230802-empathy-wound-70df4990a976@spud>
+From:   Yinbo Zhu <zhuyinbo@loongson.cn>
+Message-ID: <ae74e7b0-26ae-5707-7b85-5dcf733d2bed@loongson.cn>
+Date:   Thu, 3 Aug 2023 09:56:02 +0800
+User-Agent: Mozilla/5.0 (X11; Linux loongarch64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
+MIME-Version: 1.0
+In-Reply-To: <20230802-empathy-wound-70df4990a976@spud>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-7.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_HI,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-CM-TRANSID: AQAAf8CxWM0yCctkAX9GAA--.52730S3
+X-CM-SenderInfo: 52kx5xhqerqz5rrqw2lrqou0/
+X-Coremail-Antispam: 1Uk129KBjDUn29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7KY7
+        ZEXasCq-sGcSsGvfJ3UbIjqfuFe4nvWSU5nxnvy29KBjDU0xBIdaVrnUUvcSsGvfC2Kfnx
+        nUUI43ZEXa7xR_UUUUUUUUU==
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2 Aug 2023 17:47:03 +0200
-Florent Revest <revest@chromium.org> wrote:
 
-> On Wed, Aug 2, 2023 at 3:56 PM Masami Hiramatsu <mhiramat@kernel.org> wrote:
-> >
-> > On Tue, 1 Aug 2023 20:40:54 -0400
-> > Steven Rostedt <rostedt@goodmis.org> wrote:
-> >
-> > > On Wed, 2 Aug 2023 09:21:46 +0900
-> > > Masami Hiramatsu (Google) <mhiramat@kernel.org> wrote:
-> > >
-> > > > > Then use kprobes. When I asked Masami what the difference between fprobes
-> > > > > and kprobes was, he told me that it would be that it would no longer rely
-> > > > > on the slower FTRACE_WITH_REGS. But currently, it still does.
-> > > >
-> > > > kprobes needs to keep using pt_regs because software-breakpoint exception
-> > > > handler gets that. And fprobe is used for bpf multi-kprobe interface,
-> > > > but I think it can be optional.
-> > > >
-> > > > So until user-land tool supports the ftrace_regs, you can just disable
-> > > > using fprobes if CONFIG_DYNAMIC_FTRACE_WITH_REGS=n
-> > >
-> > > I'm confused. I asked about the difference between kprobes on ftrace
-> > > and fprobes, and you said it was to get rid of the requirement of
-> > > FTRACE_WITH_REGS.
-> > >
-> > >  https://lore.kernel.org/all/20230120205535.98998636329ca4d5f8325bc3@kernel.org/
-> >
-> > Yes, it is for enabling fprobe (and fprobe-event) on more architectures.
-> > I don't think it's possible to change everything at once. So, it will be
-> > changed step by step. At the first step, I will replace pt_regs with
-> > ftrace_regs, and make bpf_trace.c and fprobe_event depends on
-> > FTRACE_WITH_REGS.
-> >
-> > At this point, we can split the problem into two, how to move bpf on
-> > ftrace_regs and how to move fprobe-event on ftrace_regs. fprobe-event
-> > change is not hard because it is closing in the kernel and I can do it.
-> > But for BPF, I need to ask BPF user-land tools to support ftrace_regs.
+
+在 2023/8/2 下午11:36, Conor Dooley 写道:
+> On Wed, Aug 02, 2023 at 04:37:50PM +0800, Yinbo Zhu wrote:
+>>
+>>
+>> 在 2023/8/2 下午3:50, Conor Dooley 写道:
+>>> On Wed, Aug 02, 2023 at 03:44:17PM +0800, Yinbo Zhu wrote:
+>>>> 在 2023/8/2 下午3:22, Conor Dooley 写道:
+>>>>> On Wed, Aug 02, 2023 at 09:38:34AM +0800, Yinbo Zhu wrote:
+>>>>>> 在 2023/8/1 下午11:54, Conor Dooley 写道:
+>>>>>>> On Tue, Aug 01, 2023 at 04:34:30PM +0800, Yinbo Zhu wrote:
+>>>
+>>>>>>>> Sorry, I may not have described it clearly before, the ls2k500 was only
+>>>>>>>> as a example, actually, Loongson GPIO controllers (2k500,2k1000,eg)come
+>>>>>>>> in multiple variants that are compatible except for certain register
+>>>>>>>> offset values.  So above all offset device property was used to in all
+>>>>>>>> loongson gpio controller.
+>>>>>>>
+>>>>>>> But it would be good to know why they are different. Do they each
+>>>>>>> support some different features, or was there some other reason for
+>>>>>>> making controllers like this?
+>>>>>>
+>>>>>>
+>>>>>> There are no other reasons, just differences in these offset addresses.
+>>>>>
+>>>>> Huh. Do you have a link to a devicetree for the ls2k500?
+>>>>
+>>>>
+>>>> Yes,  there was a link about ls2k500 dts,  but that ls2k500 dts has not
+>>>> yet added a gpio node.  this gpio node will be added later.
+>>>
+>>> You must have something that you used to test with, no? I don't mind if
+>>> it is not a patch, but rather is some WIP - I'd just like to see user of
+>>> the binding :)
+>>
+>>
+>> yes, I have a test, for 2k0500, that gpio dts as follows:
+>>
+>>                  gpio0:gpio@0x1fe10430 {
+>>                          compatible = "loongson,ls2k-gpio";
+>>                          reg = <0 0x1fe10430 0 0x20>;
+>>                          gpio-controller;
+>>                          #gpio-cells = <2>;
+>> 			interrupt-parent = <&liointc1>;
+>>                          ngpios = <64>;
+>>                          loongson,gpio-conf-offset = <0>;
+>>                          loongson,gpio-out-offset = <0x10>;
+>>                          loongson,gpio-in-offset = <0x8>;
+>>                          loongson,gpio-inten-offset = <0xb0>;
+>> 			loongson,gpio-ctrl-mode = <0x0>;
+>>                          ...
+>> 		  }
+>>
+>>                  gpio1:gpio@0x1fe10450 {
+>>                          compatible = "loongson,ls2k-gpio";
+>>                          reg = <0 0x1fe10450 0 0x20>;
+>>                          gpio-controller;
+>>                          #gpio-cells = <2>;
+>> 			interrupt-parent = <&liointc1>;
+>>                          ngpios = <64>;
+>>                          loongson,gpio-conf-offset = <0>;
+>>                          loongson,gpio-out-offset = <0x10>;
+>>                          loongson,gpio-in-offset = <0x8>;
 > 
-> Ah! I finally found the branch where I had pushed my proof of concept
-> of fprobe with ftrace_regs... it's a few months old and I didn't get
-> it in a state such that it could be sent to the list but maybe this
-> can save you a little bit of lead time Masami :) (especially the bpf
-> and arm64 specific bits)
+> These 3 are the same for both controllers, no?
+> Is only the inten-offset a variable?
 > 
-> https://github.com/FlorentRevest/linux/commits/bpf-arm-complete
+>>                          loongson,gpio-inten-offset = <0x98>;
 > 
-> 08afb628c6e1 ("ftrace: Add a macro to forge an incomplete pt_regs from
-> a ftrace_regs")
-> 203e96fe1790 ("fprobe, rethook: Use struct ftrace_regs instead of
-> struct pt_regs")
-> 1a9e280b9b16 ("arm64,rethook,kprobes: Replace kretprobe with rethook on arm64")
-> 7751c6db9f9d ("bpf: Fix bpf get_func_ip() on arm64 multi-kprobe programs")
-> a10c49c0d717 ("selftests/bpf: Update the tests deny list on aarch64")
+> These offsets exceed the region that you've got in the reg property for
+> this controller, do they not?
+> 
+> Is there some sort of "miscellaneous register area" at 0x1FE104E0, or
+> just those two interrupt registers and nothing else?
 
-Thanks for the work! I also pushed my patches on 
 
-https://kernel.googlesource.com/pub/scm/linux/kernel/git/mhiramat/linux/+/refs/heads/topic/fprobe-ftrace-regs
+2k500 gpio dts is just an example, like 3a5000, or more other platform,
+above offset was different but the gpio controller was compatible.
 
-628e6c19d7dc ("tracing/fprobe: Enable fprobe events with CONFIG_DYNAMIC_FTRACE_WITH_ARGS")
-311c98c29cfd ("fprobe: Use fprobe_regs in fprobe entry handler")
+                 gpio: gpio@1fe00500 {
+                         compatible = "loongson,ls2k-gpio";
+                         reg = <0 0x1fe00500 0xc00>;
+                         gpio-controller;
+                         #gpio-cells = <2>;
+                         ngpios = <16>;
+                         loongson,gpio-conf-offset = <0x0>;
+                         loongson,gpio-out-offset = <0x8>;
+                         loongson,gpio-in-offset = <0xc>;
+			...
+			}
 
-This doesn't cover arm64 and rethook, but provides ftrace_regs optimized
-fprobe-event code, which uses a correct APIs for ftrace_regs.
 
-For the rethook we still need to provide 2 version for kretprobe(pt_regs)
-and fprobe(ftrace_regs).
-I think eventually we should replace the kretprobe with fprobe, but
-current rethook is tightly coupled with kretprobe and the kretprobe
-needs pt_regs. So, I would like to keep arm64 kretprobe impl, and add
-new rethook with ftrace_regs.
+Thanks,
+Yinbo
 
-Or, maybe we need these 2 configs intermediately.
-CONFIG_RETHOOK_WITH_REGS - in this case, kretprobe uses rethook
-CONFIG_RETHOOK_WITH_ARGS - in this case, kretprobe uses its own stack
 
-The problem is ftrace_regs only depends on CONFIG_DYNAMIC_FTRACE_WITH_*.
+> 
 
-Thank you,
-
--- 
-Masami Hiramatsu (Google) <mhiramat@kernel.org>
