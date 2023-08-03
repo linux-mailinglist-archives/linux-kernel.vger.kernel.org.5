@@ -2,76 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 748FD76E3C8
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 10:58:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D0A876E3CE
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 10:59:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234908AbjHCI6b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Aug 2023 04:58:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42502 "EHLO
+        id S231817AbjHCI7n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Aug 2023 04:59:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43952 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234857AbjHCI6T (ORCPT
+        with ESMTP id S231460AbjHCI7k (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Aug 2023 04:58:19 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6526EE58;
-        Thu,  3 Aug 2023 01:58:18 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        Thu, 3 Aug 2023 04:59:40 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A35CAE43;
+        Thu,  3 Aug 2023 01:59:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=DFxy+9MsOX2CxBRtThLgeCAlgtgs8UAOqnC7kEA2lOc=; b=v+ZU04CXJ+36isCG8CyhFHBxf2
+        C0GXo4/GeS8WZ6FbmRYUXWs6W6Qa9nwFCgwwI82ZRLXXqBWjh5WoKzVogIjscqRQk+2G2EBitjazk
+        SA7mjowqGzWsaskGT8Gan3X0ho6LLi9LnZi+dHuhz2t7rnDj7JgGSnIQPF0muPUVX4e8teR1ovVdN
+        8Uhvr3yZ6pMK6Q/EVaujSQKZbN4TiVegBwhEs482iRVrFK+ltOFLsd1WptufEc9lxOSDgaodwAlLG
+        8r1cTnFCt7P6gTskD3MSc5tu5ZCj3xQJeOFMggA/2cgtZVFKGmb64gWqngI3gjfj8TGUqE5LZyPFr
+        XL5YVebQ==;
+Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1qRUAn-002dqs-Qf; Thu, 03 Aug 2023 08:59:09 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 2371B219AE;
-        Thu,  3 Aug 2023 08:58:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1691053097; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=3n1Xwcb4VZeSgb4cQeQ3gMUuZkzy82ywXtFnmXwXFLo=;
-        b=UTFScJUNTHA/ifu6d7I8Bq1rCz1+plajC7GH+WD/DO1z/vFGnMb4O85CvXzOf7iUBQoBdm
-        iaNG0J0ovupOZmkh9NlWiM7Lx9LwvbXVmxqXiBB1a/Izdau4Aoo7JFn5upnHve5PTIFaX2
-        qFpQK9XeHkJcPhkSabvlgNgbLjIiv84=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1691053097;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=3n1Xwcb4VZeSgb4cQeQ3gMUuZkzy82ywXtFnmXwXFLo=;
-        b=OIvL1Hzv0YURFLHqO/DkC7i9CiIrVmFyWvH098+HiozNcz5F0fViL/PnMvxmJAuJgHHqPy
-        sVNUo8sQ9LNvdIDw==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id B3E50134B0;
-        Thu,  3 Aug 2023 08:58:16 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id DF/gKChsy2TFYwAAMHmgww
-        (envelope-from <lhenriques@suse.de>); Thu, 03 Aug 2023 08:58:16 +0000
-Received: from localhost (brahms.olymp [local])
-        by brahms.olymp (OpenSMTPD) with ESMTPA id 66f404ce;
-        Thu, 3 Aug 2023 08:58:15 +0000 (UTC)
-From:   =?utf-8?Q?Lu=C3=ADs_Henriques?= <lhenriques@suse.de>
-To:     Eric Biggers <ebiggers@kernel.org>
-Cc:     Theodore Ts'o <tytso@mit.edu>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Daniel Rosenberg <drosen@google.com>,
-        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] ext4: fix memory leaks in
- ext4_fname_{setup_filename,prepare_lookup}
-In-Reply-To: <20230803041918.GA1218@sol.localdomain> (Eric Biggers's message
-        of "Wed, 2 Aug 2023 21:19:18 -0700")
-References: <20230802094931.18215-1-lhenriques@suse.de>
-        <20230803041918.GA1218@sol.localdomain>
-Date:   Thu, 03 Aug 2023 09:58:15 +0100
-Message-ID: <87sf90v6xk.fsf@suse.de>
+         key-exchange X25519 server-signature RSA-PSS (4096 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 558F930007E;
+        Thu,  3 Aug 2023 10:59:09 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 161022066B20B; Thu,  3 Aug 2023 10:59:09 +0200 (CEST)
+Date:   Thu, 3 Aug 2023 10:59:09 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Ze Gao <zegao2021@gmail.com>
+Cc:     Adrian Hunter <adrian.hunter@intel.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Ian Rogers <irogers@google.com>,
+        Ingo Molnar <mingo@redhat.com>, Jiri Olsa <jolsa@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
+        linux-trace-kernel@vger.kernel.org, Ze Gao <zegao@tencent.com>
+Subject: Re: [RFC PATCH v6 4/5] sched, tracing: add to report task state in
+ symbolic chars
+Message-ID: <20230803085909.GH212435@hirez.programming.kicks-ass.net>
+References: <20230803083352.1585-1-zegao@tencent.com>
+ <20230803083352.1585-5-zegao@tencent.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230803083352.1585-5-zegao@tencent.com>
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -79,67 +69,30 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Eric Biggers <ebiggers@kernel.org> writes:
+On Thu, Aug 03, 2023 at 04:33:51AM -0400, Ze Gao wrote:
+> Internal representations of task state are likely to be changed
+> or ordered, and reporting them to userspace without exporting
+> them as part of API is basically wrong, which can easily break
+> a userspace observability tool as kernel evolves. For example,
+> perf suffers from this and still reports wrong states as of this
+> writing.
+> 
+> OTOH, some masqueraded states like TASK_REPORT_IDLE and
+> TASK_REPORT_MAX are also reported inadvertently, which confuses
+> things even more and most userspace tools do not even take them
+> into consideration.
+> 
+> So add a new variable in company with the old raw value to
+> report task state in symbolic chars, which are self-explaining
+> and no further translation is needed. Of course this does not
+> break any userspace tool.
+> 
+> Note for PREEMPT_ACTIVE, we introduce 'p' to report it and use
+> the old conventions for the rest.
+> 
+> Signed-off-by: Ze Gao <zegao@tencent.com>
+> Reviewed-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+> Acked-by: Ian Rogers <irogers@google.com>
 
-> On Wed, Aug 02, 2023 at 10:49:31AM +0100, Lu=C3=ADs Henriques wrote:
->> If casefolding the filename fails, we'll be leaking fscrypt_buf name.
->
-> fscrypt_buf =3D> fscrypt_name
->
->> diff --git a/fs/ext4/crypto.c b/fs/ext4/crypto.c
->> index e20ac0654b3f..3c05c7f3415b 100644
->> --- a/fs/ext4/crypto.c
->> +++ b/fs/ext4/crypto.c
->> @@ -33,6 +33,8 @@ int ext4_fname_setup_filename(struct inode *dir, const=
- struct qstr *iname,
->>	struct fscrypt_name name;
->>	int err;
->>
->>	err =3D fscrypt_setup_filename(dir, iname, lookup, &name);
->>	if (err)
->>		return err;
->>
->>	ext4_fname_from_fscrypt_name(fname, &name);
->>
->>  #if IS_ENABLED(CONFIG_UNICODE)
->>  	err =3D ext4_fname_setup_ci_filename(dir, iname, fname);
->> +	if (err)
->> +		fscrypt_free_filename(&name);
->>  #endif
->>  	return err;
->>  }
->> @@ -51,6 +53,8 @@ int ext4_fname_prepare_lookup(struct inode *dir, struc=
-t dentry *dentry,
->>	struct fscrypt_name name;
->>	int err;
->>
->>	err =3D fscrypt_prepare_lookup(dir, dentry, &name);
->>	if (err)
->>		return err;
->>
->>	ext4_fname_from_fscrypt_name(fname, &name);
->>
->>  #if IS_ENABLED(CONFIG_UNICODE)
->>  	err =3D ext4_fname_setup_ci_filename(dir, &dentry->d_name, fname);
->> +	if (err)
->> +		fscrypt_free_filename(&name);
->>  #endif
->>  	return err;
->>  }
->
-> This works, but it's a bit weird that the freeing happens on the original=
- struct
-> fscrypt_name after it has already been "moved" to the struct ext4_filenam=
-e by
-> ext4_fname_from_fscrypt_name().  That leaves a dangling pointer in the st=
-ruct
-> ext4_filename.  Maybe you should call ext4_fname_free_filename() instead,=
- even
-> though it would do some unnecessary work?
-
-That makes sense, specially because fname is a parameter and it's probably
-a good idea to clean-up everything before returning an error.  Thanks.
-
-Cheers,
---=20
-Lu=C3=ADs
+I'm not sure you've actually read any of the things I've written. I hate
+this. Not going to happen.
