@@ -2,80 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DA4F476E3DF
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 11:02:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 01F3A76E3E2
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 11:02:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234994AbjHCJCU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Aug 2023 05:02:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44958 "EHLO
+        id S235015AbjHCJCm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Aug 2023 05:02:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44946 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234960AbjHCJCA (ORCPT
+        with ESMTP id S234973AbjHCJC2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Aug 2023 05:02:00 -0400
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8745B2D68;
-        Thu,  3 Aug 2023 02:01:52 -0700 (PDT)
-Received: from [192.168.1.100] (2-237-20-237.ip236.fastwebnet.it [2.237.20.237])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits))
+        Thu, 3 Aug 2023 05:02:28 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5782C3AA8;
+        Thu,  3 Aug 2023 02:02:05 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        (Authenticated sender: kholk11)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id 623B36607196;
-        Thu,  3 Aug 2023 10:01:50 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1691053310;
-        bh=mFbVLS4BQ5yM0rCdKvzXd40KW58VQZxdeWGxz8gwKuk=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=WfBv8hznVFnvTQZfLg1sLKKfhUDJhf4I89wQtJikB0/hJWM0RdmcXWrCBcVv+kEWG
-         nQRsrJuUA38WR+NyHanO0qTrsGEIqErFQ8EaI5Iywcd1uYyQ0oLyJTE0bd2r3Mx1gY
-         mfgTzhJ3sGi6+mtGUFGqVVYH/tAfL2CWoZjFwLcBA2a06Hryex5oIvs14BH04naE4p
-         495FxFRW6TQFGkYuXNMKd0OrEA4mCjPS1AhTT6LazDt8PNem05LMptsg9lmIrWzXRx
-         d3iL3R5+hWg3iqvN9aUfYk8OUd1dwuwTHo/+E8qLS+Fi7y4J3YNeO5Rp9yDubE1+OJ
-         HqGxjBdeew5Pg==
-Message-ID: <41ef7216-3884-9e72-f45c-a31838ce83f3@collabora.com>
-Date:   Thu, 3 Aug 2023 11:01:48 +0200
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH 8/9] regulator: mt6358: Add supply names for MT6366
- regulators
-Content-Language: en-US
-To:     Chen-Yu Tsai <wenst@chromium.org>, Lee Jones <lee@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Mark Brown <broonie@kernel.org>
-Cc:     Zhiyong Tao <zhiyong.tao@mediatek.com>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org
-References: <20230803074249.3065586-1-wenst@chromium.org>
- <20230803074249.3065586-9-wenst@chromium.org>
-From:   AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>
-In-Reply-To: <20230803074249.3065586-9-wenst@chromium.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 217C961CEC;
+        Thu,  3 Aug 2023 09:02:04 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EAF5AC433C7;
+        Thu,  3 Aug 2023 09:02:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1691053323;
+        bh=sqPG+ysOgyUlqjDwjPLXOytpQBtxbeKvqrxIv64ng80=;
+        h=Date:To:Cc:Subject:From:References:In-Reply-To:From;
+        b=oaiKDNF0aYuwG4Q9bZZWRNR+xJdDLcKjbEWIVEOI0tgb+Kd8LoX6mD2xGimBL++vg
+         haTuZ9DxtLjbyA/+ut+afO3S7dMjgxrhxlIMc/OUVI8GtgOu7s8o9chDnnoGtarLo/
+         kRek1OKsFMnb2RAAF8oAxYEx1K3L9vi5GpUul2e3zlnJgEGdHYL0zIzdFauwe9LQc4
+         fTUcxEyH3YA7+12CC3j+r4+A8cPwn7ux2v7vc7tuKS0s1+vMwRtruJXKKqKGCGx9Om
+         7ZNvHLg/TY5LJD3gjkAUOHi1I4AWUBfqDFOavpATZWOiO2RG46rcWsf3oSld//IaAF
+         CiqS1SDodAt0A==
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Date:   Thu, 03 Aug 2023 12:01:59 +0300
+Message-Id: <CUISDE4L54JX.2KYPM33L74XRT@suppilovahvero>
+To:     "Mario Limonciello" <mario.limonciello@amd.com>,
+        <peterhuewe@gmx.de>
+Cc:     <linux-kernel@vger.kernel.org>, <linux-integrity@vger.kernel.org>,
+        <Jason@zx2c4.com>, <dragonn@op.pl>
+Subject: Re: [PATCH 3/3] tpm: Drop CONFIG_HW_RANDOM_TPM
+From:   "Jarkko Sakkinen" <jarkko@kernel.org>
+X-Mailer: aerc 0.14.0
+References: <20230803015015.915-1-mario.limonciello@amd.com>
+ <20230803015015.915-4-mario.limonciello@amd.com>
+In-Reply-To: <20230803015015.915-4-mario.limonciello@amd.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Il 03/08/23 09:42, Chen-Yu Tsai ha scritto:
-> The DT bindings for MT6366 regulator defines the supply names for the
-> PMIC.
-> 
-> Add support for them by adding .supply_name field settings for each
-> regulator. The buck regulators each have their own supply whose name
-> can be derived from the regulator name. The LDOs have shared supplies.
-> 
-> Signed-off-by: Chen-Yu Tsai <wenst@chromium.org>
+On Thu Aug 3, 2023 at 4:50 AM EEST, Mario Limonciello wrote:
+> As the behavior of whether a TPM is registered for hwrng can be controlle=
+d
+> by command line, drop the kernel configuration option.
+>
+> Cc: Mateusz Schyboll <dragonn@op.pl>
+> Signed-off-by: Mario Limonciello <mario.limonciello@amd.com>
+> ---
+>  drivers/char/tpm/Kconfig    | 11 -----------
+>  drivers/char/tpm/tpm-chip.c |  6 +++---
+>  2 files changed, 3 insertions(+), 14 deletions(-)
+>
+> diff --git a/drivers/char/tpm/Kconfig b/drivers/char/tpm/Kconfig
+> index 927088b2c3d3f..69aaa730dc208 100644
+> --- a/drivers/char/tpm/Kconfig
+> +++ b/drivers/char/tpm/Kconfig
+> @@ -27,17 +27,6 @@ menuconfig TCG_TPM
+> =20
+>  if TCG_TPM
+> =20
+> -config HW_RANDOM_TPM
+> -	bool "TPM HW Random Number Generator support"
+> -	depends on TCG_TPM && HW_RANDOM && !(TCG_TPM=3Dy && HW_RANDOM=3Dm)
+> -	default y
+> -	help
+> -	  This setting exposes the TPM's Random Number Generator as a hwrng
+> -	  device. This allows the kernel to collect randomness from the TPM at
+> -	  boot, and provides the TPM randomines in /dev/hwrng.
+> -
+> -	  If unsure, say Y.
+> -
+>  config TCG_TIS_CORE
+>  	tristate
+>  	help
+> diff --git a/drivers/char/tpm/tpm-chip.c b/drivers/char/tpm/tpm-chip.c
+> index 8fb42232bd7a5..0d69335743469 100644
+> --- a/drivers/char/tpm/tpm-chip.c
+> +++ b/drivers/char/tpm/tpm-chip.c
+> @@ -533,7 +533,7 @@ static int tpm_add_hwrng(struct tpm_chip *chip)
+>  	if (!trust_tpm)
+>  		chip->flags |=3D TPM_CHIP_FLAG_HWRNG_DISABLED;
+> =20
+> -	if (!IS_ENABLED(CONFIG_HW_RANDOM_TPM) || tpm_is_firmware_upgrade(chip) =
+||
+> +	if (tpm_is_firmware_upgrade(chip) ||
+>  	    chip->flags & TPM_CHIP_FLAG_HWRNG_DISABLED)
+>  		return 0;
+> =20
+> @@ -639,7 +639,7 @@ int tpm_chip_register(struct tpm_chip *chip)
+>  	return 0;
+> =20
+>  out_hwrng:
+> -	if (IS_ENABLED(CONFIG_HW_RANDOM_TPM) && !tpm_is_firmware_upgrade(chip) =
+&&
+> +	if (!tpm_is_firmware_upgrade(chip) &&
+>  	    !(chip->flags & TPM_CHIP_FLAG_HWRNG_DISABLED))
+>  		hwrng_unregister(&chip->hwrng);
+>  out_ppi:
+> @@ -665,7 +665,7 @@ EXPORT_SYMBOL_GPL(tpm_chip_register);
+>  void tpm_chip_unregister(struct tpm_chip *chip)
+>  {
+>  	tpm_del_legacy_sysfs(chip);
+> -	if (IS_ENABLED(CONFIG_HW_RANDOM_TPM) && !tpm_is_firmware_upgrade(chip) =
+&&
+> +	if (!tpm_is_firmware_upgrade(chip) &&
+>  	    !(chip->flags & TPM_CHIP_FLAG_HWRNG_DISABLED))
+>  		hwrng_unregister(&chip->hwrng);
+>  	tpm_bios_log_teardown(chip);
+> --=20
+> 2.34.1
 
-Reviewed-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+I don't understand this but please take it a way from patch set, which
+should only contain critical fixes, which this definitely is not.
 
-
+BR, Jarkko
