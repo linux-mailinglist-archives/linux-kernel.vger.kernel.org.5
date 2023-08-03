@@ -2,103 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 67C9A76E49E
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 11:37:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A1F8B76E4A9
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 11:38:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235188AbjHCJhV convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 3 Aug 2023 05:37:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34036 "EHLO
+        id S235087AbjHCJiU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Aug 2023 05:38:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33888 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235174AbjHCJg1 (ORCPT
+        with ESMTP id S235114AbjHCJhl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Aug 2023 05:36:27 -0400
-Received: from outpost1.zedat.fu-berlin.de (outpost1.zedat.fu-berlin.de [130.133.4.66])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96CC335A1;
-        Thu,  3 Aug 2023 02:36:26 -0700 (PDT)
-Received: from inpost2.zedat.fu-berlin.de ([130.133.4.69])
-          by outpost.zedat.fu-berlin.de (Exim 4.95)
-          with esmtps (TLS1.3)
-          tls TLS_AES_256_GCM_SHA384
-          (envelope-from <glaubitz@zedat.fu-berlin.de>)
-          id 1qRUkq-001sGb-08; Thu, 03 Aug 2023 11:36:24 +0200
-Received: from p57bd9cac.dip0.t-ipconnect.de ([87.189.156.172] helo=suse-laptop.fritz.box)
-          by inpost2.zedat.fu-berlin.de (Exim 4.95)
-          with esmtpsa (TLS1.3)
-          tls TLS_AES_256_GCM_SHA384
-          (envelope-from <glaubitz@physik.fu-berlin.de>)
-          id 1qRUkp-00321y-Ow; Thu, 03 Aug 2023 11:36:23 +0200
-Message-ID: <13c836b31909f2eb64dcf2a5feb22c2a3173bba2.camel@physik.fu-berlin.de>
-Subject: Re: [PATCH 3/4] sh: remove superhyway bus support
-From:   John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
-To:     Arnd Bergmann <arnd@kernel.org>,
-        "D. Jeff Dionne" <djeffdionne@gmail.com>
-Cc:     linux-sh@vger.kernel.org, Rich Felker <dalias@libc.org>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        linux-kernel@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>
-Date:   Thu, 03 Aug 2023 11:36:22 +0200
-In-Reply-To: <4a3fae63-cf85-4e18-b785-1a438ec761aa@app.fastmail.com>
-References: <20230802184849.1019466-3-arnd@kernel.org>
-         <D28BDDE3-7FE6-4ACC-98B9-B6AB6D9518A3@gmail.com>
-         <fecb873aefad8dd4c1d89935cf8f7790e9ba231d.camel@physik.fu-berlin.de>
-         <4a3fae63-cf85-4e18-b785-1a438ec761aa@app.fastmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-User-Agent: Evolution 3.48.4 
+        Thu, 3 Aug 2023 05:37:41 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C665E468B;
+        Thu,  3 Aug 2023 02:36:47 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id D0341219D4;
+        Thu,  3 Aug 2023 09:36:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1691055405; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=goH0RGRJhK/fH7zf9HOfwIEiuL8jO8QFiZpqtIWmMRU=;
+        b=idJP/bqJMlFV8Z4SD8NT3qylf/Q5haz9vMLly6Aks76OLgyNjYBQBuPlJELdvXSqhQc/wn
+        eWT7ydzq7defa0ZVcrm9o/N85F6Wd3oDNHUugOYWvKgMBoE9XY5kPZBktuUF+00QnmRdfq
+        Ayh2Jn26k0GqeqebmASpfmDatyfbz8w=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1691055405;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=goH0RGRJhK/fH7zf9HOfwIEiuL8jO8QFiZpqtIWmMRU=;
+        b=el9ojAmSgdIsxss/3BGTff0xvJ7J71SqHIDjuwLRyN/SpWelmabz8pYD0a39vcLrQqyvqi
+        rSFVrFcYCzGSsnAg==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 780A91333C;
+        Thu,  3 Aug 2023 09:36:45 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id EhiBHC11y2Q1eAAAMHmgww
+        (envelope-from <vbabka@suse.cz>); Thu, 03 Aug 2023 09:36:45 +0000
+Message-ID: <bc156898-b350-d1d4-c978-15bce94bf6f8@suse.cz>
+Date:   Thu, 3 Aug 2023 11:36:45 +0200
 MIME-Version: 1.0
-X-Original-Sender: glaubitz@physik.fu-berlin.de
-X-Originating-IP: 87.189.156.172
-X-ZEDAT-Hint: PO
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.1
+Subject: Re: [PATCH v4 1/2] mm: Remove kmem_valid_obj()
+Content-Language: en-US
+To:     thunder.leizhen@huaweicloud.com, Christoph Lameter <cl@linux.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        David Rientjes <rientjes@google.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Hyeonggon Yoo <42.hyeyoo@gmail.com>, linux-mm@kvack.org,
+        "Paul E . McKenney" <paulmck@kernel.org>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Zqiang <qiang.zhang1211@gmail.com>, rcu@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     Zhen Lei <thunder.leizhen@huawei.com>
+References: <20230802130918.1132-1-thunder.leizhen@huaweicloud.com>
+ <20230802130918.1132-2-thunder.leizhen@huaweicloud.com>
+From:   Vlastimil Babka <vbabka@suse.cz>
+In-Reply-To: <20230802130918.1132-2-thunder.leizhen@huaweicloud.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Arnd!
+On 8/2/23 15:09, thunder.leizhen@huaweicloud.com wrote:
+> From: Zhen Lei <thunder.leizhen@huawei.com>
+> 
+> Function kmem_dump_obj() will splat if passed a pointer to a non-slab
+> object. So no one will call it directly. It is always necessary to call
+> kmem_valid_obj() first to determine whether the passed pointer to a
+> valid slab object. Then merging kmem_valid_obj() into kmem_dump_obj()
+> will make the code more concise. So convert kmem_dump_obj() to work the
+> same way as vmalloc_dump_obj(). After this, no one calls kmem_valid_obj()
+> anymore, and it can be safely removed.
+> 
+> Suggested-by: Matthew Wilcox <willy@infradead.org>
+> Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
 
-On Thu, 2023-08-03 at 11:19 +0200, Arnd Bergmann wrote:
-> Applying this first should definitely help with the DT conversion,
-> especially not having to create a bus specific binding for superhyway
-> would help, as converting that to DT would be a complete rewrite
-> but also be untestable without drivers attaching to the bus.
+Acked-by: Vlastimil Babka <vbabka@suse.cz>
 
-OK, we'll discuss this on the #linux-sh IRC channel and if no one objects,
-I'm going to apply the series.
+No problem if this goes through rcu tree due to patch 2/2.
 
-> I would also recommend trying to eliminate most of the SoC
-> support for chips that only support a reference board but no
-> products or known user of the reference board itself. While
-> a lot of the conversion could be done fairly mechanical, at
-> least the clk driver for each chip is a huge effort.
-
-It depends on what Yoshinori plans for the device tree conversion. The
-latest version of his series was posted here [1]. But he promised to
-send a rebased and updated version soon.
-
-> I looked at the clk conversion in the past, as this is not just
-> needed for the DT work, but also to remove CONFIG_HAVE_LEGACY_CLK.
-> The patch series I did a while ago renames the sh clk interfaces
-> to no longer conflict with COMMON_CLK, which should allow it
-> to coexist with a DT-enabled platform in the same kernel build.
-> Let me know if you'd like me to dig out and rebase that series,
-> it probably still applies and may help you here.
-
-Yes, that would be greatly appreciated. Please go ahead.
-
-FWIW, I am currently on vacation until August 15th, so I might be a bit
-slow with open source stuff. I am using the free time to get things done
-on my TODO list.
-
-Adrian
-
-> [1] https://lore.kernel.org/all/20180507155543.GJ1392@brightrain.aerifal.cx/t/
-
--- 
- .''`.  John Paul Adrian Glaubitz
-: :' :  Debian Developer
-`. `'   Physicist
-  `-    GPG: 62FF 8A75 84E0 2956 9546  0006 7426 3B37 F5B5 F913
