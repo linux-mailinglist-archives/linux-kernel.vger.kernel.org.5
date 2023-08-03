@@ -2,207 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B685076F443
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 22:53:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EB40376F42C
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 22:47:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232258AbjHCUwv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Aug 2023 16:52:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56256 "EHLO
+        id S232242AbjHCUrS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Aug 2023 16:47:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53788 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229452AbjHCUwt (ORCPT
+        with ESMTP id S232222AbjHCUrN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Aug 2023 16:52:49 -0400
-X-Greylist: delayed 428 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Thu, 03 Aug 2023 13:52:47 PDT
-Received: from thorn.bewilderbeest.net (thorn.bewilderbeest.net [71.19.156.171])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D826C11F
-        for <linux-kernel@vger.kernel.org>; Thu,  3 Aug 2023 13:52:47 -0700 (PDT)
-Received: from hatter.bewilderbeest.net (63-228-114-1.tukw.qwest.net [63.228.114.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: zev)
-        by thorn.bewilderbeest.net (Postfix) with ESMTPSA id 3BAFE783;
-        Thu,  3 Aug 2023 13:45:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bewilderbeest.net;
-        s=thorn; t=1691095539;
-        bh=rqLvNnIUzrROBT5rajV36LBK+ny6+l2//bZ787j+lX4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=mhL62TV2yHCgtCLXCMNy6nG3wukcImfjmhjBbDWP+XreY0GCrVku3IgD5CDWFhLD0
-         8UZLOMEpHD7qYEBrZPyiqgbhjJVMDb/gxuye1Ab2pKaBHewkppUYFM3ag6mYPSVxUR
-         x3/MqJ8tP9SjEdzdci9DKx+SL++vEGK1xU84Jo7k=
-Date:   Thu, 3 Aug 2023 13:45:37 -0700
-From:   Zev Weiss <zev@bewilderbeest.net>
-To:     Naresh Solanki <naresh.solanki@9elements.com>
-Cc:     Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] regulator: userspace-consumer: Add regulator event
- support
-Message-ID: <d3ea0fe2-00bb-493b-aca7-ba7a31bd3c78@hatter.bewilderbeest.net>
-References: <20230803111225.107572-1-Naresh.Solanki@9elements.com>
+        Thu, 3 Aug 2023 16:47:13 -0400
+Received: from mail-qt1-x830.google.com (mail-qt1-x830.google.com [IPv6:2607:f8b0:4864:20::830])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68D1D44AB
+        for <linux-kernel@vger.kernel.org>; Thu,  3 Aug 2023 13:47:02 -0700 (PDT)
+Received: by mail-qt1-x830.google.com with SMTP id d75a77b69052e-407db3e9669so22571cf.1
+        for <linux-kernel@vger.kernel.org>; Thu, 03 Aug 2023 13:47:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1691095621; x=1691700421;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=QBG66oV9M3i8nb1aREffuxZFPEb9Uhyo/aCShL7gQx8=;
+        b=zCDXZdoqGLts5JkBxWgjTn7HX0P9lrbxt1E+j6GydaPp/EqpJODluHyNYUe+FFwAeJ
+         EzHCj4QPdEePGFf0KC6ZwzKK45YkvBQwUjuowCS+t1wH4+nKlbknKjShxaOESs0/qRHr
+         phQu4PvmRFinykx0kJKX6MspQvg9qUGliHnJ38O60m9W//ThV8B7b9T/sjZ5IxpgBCwj
+         s66gczDYtX2fpEII7KiXVSOJnlpTwoMa2V4rtyMHvBtuahihXbiyZfObEETh1FEXTVYK
+         VFeWH7movu/EY/2clu5iPSNQGCj0BVq/CUGb03ou4isJIbohFbsjGy90F8Q1Te3MDlRd
+         ADeQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691095621; x=1691700421;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=QBG66oV9M3i8nb1aREffuxZFPEb9Uhyo/aCShL7gQx8=;
+        b=IcRiShi9qbYYoPPsb0iJwuZ36uRVHtCVFkQ1I3T8rHyIZW6zPtfC/VVVYI9qDj32UD
+         Q5qTQAZUE9RgcMAqkqKiu7GmAalCKUXOjLdsdz4b0amcEm4gEl50LFaZfvM0Uq6Zdfp6
+         X9jATLUv7VI0WRs3IOdIVCYKdyoGGdJW8IGgpTsaWDHCF8+bzZ0KCJhA3qviQCpkZg0j
+         eN/AIrPYa3WdV7IBzZW5i6HNniSf+THkp5uw3dqnXJ1LsEvb6yQrAu8aSBkXyQoVO2We
+         oom5GgUg6f4E9aQo0SNXafz/5UYGoiU1b7kmbKO30MWq7BisInF6nehFuNjL6e6JxlcK
+         7IrA==
+X-Gm-Message-State: AOJu0Yxx/2/P/x4IOMjzxLr73NvOkEnGojUDOOHs9jx9h2TkmXXsvib9
+        TjzNVhFU/ykU1wy+5XvQdOMGMpEEEW2tzvJnxqWM4A==
+X-Google-Smtp-Source: AGHT+IEdgeMssYgkzrO6SBZ/o4UiOXS8RvE2r0xaLvZhKBjn7l5c7r2RpdmOKCQ427vYXukxwFiWZXjUggeonWTDg7I=
+X-Received: by 2002:a05:622a:55:b0:3f2:1441:3c11 with SMTP id
+ y21-20020a05622a005500b003f214413c11mr46781qtw.2.1691095621340; Thu, 03 Aug
+ 2023 13:47:01 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <20230803111225.107572-1-Naresh.Solanki@9elements.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <20230728161356.1784568-1-fengwei.yin@intel.com>
+ <3bbfde16-ced1-dca8-6a3f-da893e045bc5@arm.com> <56c8f4f9-b54b-b0bb-250c-ec8643accfc7@intel.com>
+ <3541d2de-5cf8-2f84-8153-277e2bfc0101@arm.com> <5f98748a-97ca-6426-1e24-a5675da75381@intel.com>
+ <a590da86-0c42-7d46-d320-c661a59a46c1@arm.com> <837ba176-c97f-f81b-c044-eb6aa3d88bb7@intel.com>
+In-Reply-To: <837ba176-c97f-f81b-c044-eb6aa3d88bb7@intel.com>
+From:   Yu Zhao <yuzhao@google.com>
+Date:   Thu, 3 Aug 2023 14:46:23 -0600
+Message-ID: <CAOUHufY9EQ70Pn-n2zVa9=Gm3-WHxxphp7VHia4qv9x2domdbg@mail.gmail.com>
+Subject: Re: [PATCH 0/2] don't use mapcount() to check large folio sharing
+To:     "Yin, Fengwei" <fengwei.yin@intel.com>
+Cc:     Ryan Roberts <ryan.roberts@arm.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        akpm@linux-foundation.org, willy@infradead.org,
+        vishal.moola@gmail.com, wangkefeng.wang@huawei.com,
+        minchan@kernel.org, david@redhat.com, shy828301@gmail.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 03, 2023 at 04:12:25AM PDT, Naresh Solanki wrote:
->Add sysfs attribute to track regulator events received from regulator
->notifier block handler.
+On Wed, Aug 2, 2023 at 6:56=E2=80=AFAM Yin, Fengwei <fengwei.yin@intel.com>=
+ wrote:
 >
+>
+>
+> On 8/2/2023 8:49 PM, Ryan Roberts wrote:
+> > On 02/08/2023 13:42, Yin, Fengwei wrote:
+> >>
+> >>
+> >> On 8/2/2023 8:40 PM, Ryan Roberts wrote:
+> >>> On 02/08/2023 13:35, Yin, Fengwei wrote:
+> >>>>
+> >>>>
+> >>>> On 8/2/2023 6:27 PM, Ryan Roberts wrote:
+> >>>>> On 28/07/2023 17:13, Yin Fengwei wrote:
+> >>>>>> In madvise_cold_or_pageout_pte_range() and madvise_free_pte_range(=
+),
+> >>>>>> folio_mapcount() is used to check whether the folio is shared. But=
+ it's
+> >>>>>> not correct as folio_mapcount() returns total mapcount of large fo=
+lio.
+> >>>>>>
+> >>>>>> Use folio_estimated_sharers() here as the estimated number is enou=
+gh.
+> >>>>>>
+> >>>>>> Yin Fengwei (2):
+> >>>>>>   madvise: don't use mapcount() against large folio for sharing ch=
+eck
+> >>>>>>   madvise: don't use mapcount() against large folio for sharing ch=
+eck
+> >>>>>>
+> >>>>>>  mm/huge_memory.c | 2 +-
+> >>>>>>  mm/madvise.c     | 6 +++---
+> >>>>>>  2 files changed, 4 insertions(+), 4 deletions(-)
+> >>>>>>
+> >>>>>
+> >>>>> As a set of fixes, I agree this is definitely an improvement, so:
+> >>>>>
+> >>>>> Reviewed-By: Ryan Roberts
+> >>>> Thanks.
+> >>>>
+> >>>>>
+> >>>>>
+> >>>>> But I have a couple of comments around further improvements;
+> >>>>>
+> >>>>> Once we have the scheme that David is working on to be able to prov=
+ide precise
+> >>>>> exclusive vs shared info, we will probably want to move to that. Al=
+though that
+> >>>>> scheme will need access to the mm_struct of a process known to be m=
+apping the
+> >>>>> folio. We have that info, but its not passed to folio_estimated_sha=
+rers() so we
+> >>>>> can't just reimplement folio_estimated_sharers() - we will need to =
+rework these
+> >>>>> call sites again.
+> >>>> Yes. This could be extra work. Maybe should delay till David's work =
+is done.
+> >>>
+> >>> What you have is definitely an improvement over what was there before=
+. And is
+> >>> probably the best we can do without David's scheme. So I wouldn't del=
+ay this.
+> >>> Just pointing out that we will be able to make it even better later o=
+n (if
+> >>> David's stuff goes in).
+> >> Yes. I agree that we should wait for David's work ready and do fix bas=
+ed on that.
+> >
+> > I was suggesting the opposite - not waiting. Then we can do separate im=
+provement
+> > later.
+> Let's wait for David's work ready.
 
-Hi Naresh,
-
-Could you provide a bit more detail on how this is intended to be used?  
-Some of the details (more below) seem a bit odd to me...
-
->Signed-off-by: Naresh Solanki <Naresh.Solanki@9elements.com>
->---
-> drivers/regulator/userspace-consumer.c | 52 +++++++++++++++++++++++++-
-> 1 file changed, 51 insertions(+), 1 deletion(-)
->
->diff --git a/drivers/regulator/userspace-consumer.c b/drivers/regulator/userspace-consumer.c
->index 97f075ed68c9..a0b980022993 100644
->--- a/drivers/regulator/userspace-consumer.c
->+++ b/drivers/regulator/userspace-consumer.c
->@@ -29,6 +29,10 @@ struct userspace_consumer_data {
->
-> 	int num_supplies;
-> 	struct regulator_bulk_data *supplies;
->+
->+	struct kobject *kobj;
->+	struct notifier_block nb;
->+	unsigned long events;
-> };
->
-> static ssize_t name_show(struct device *dev,
->@@ -89,12 +93,30 @@ static ssize_t state_store(struct device *dev, struct device_attribute *attr,
-> 	return count;
-> }
->
->+static DEFINE_MUTEX(events_lock);
->+
->+static ssize_t events_show(struct device *dev,
->+			   struct device_attribute *attr, char *buf)
->+{
->+	struct userspace_consumer_data *data = dev_get_drvdata(dev);
->+	unsigned long e;
->+
->+	mutex_lock(&events_lock);
->+	e = data->events;
->+	data->events = 0;
-
-...particularly this bit -- a read operation on a read-only file (and 
-especially one with 0644 permissions) having side-effects (clearing the 
-value it accesses) seems on the face of it like fairly surprising 
-behavior.  Is this a pattern that's used elsewhere in any other sysfs 
-files?
-
->+	mutex_unlock(&events_lock);
->+
->+	return sprintf(buf, "0x%lx\n", e);
->+}
->+
-> static DEVICE_ATTR_RO(name);
-> static DEVICE_ATTR_RW(state);
->+static DEVICE_ATTR_RO(events);
-
-New sysfs attributes should be documented in Documentation/ABI, which 
-this appears to be missing.
-
-However, it looks like this would expose the values of all the 
-REGULATOR_EVENT_* constants as a userspace-visible ABI -- is that 
-something we really want to do?
-
->
-> static struct attribute *attributes[] = {
-> 	&dev_attr_name.attr,
-> 	&dev_attr_state.attr,
->+	&dev_attr_events.attr,
-> 	NULL,
-> };
->
->@@ -115,12 +137,28 @@ static const struct attribute_group attr_group = {
-> 	.is_visible =  attr_visible,
-> };
->
->+static int regulator_userspace_notify(struct notifier_block *nb,
->+				      unsigned long event,
->+				      void *ignored)
->+{
->+	struct userspace_consumer_data *data =
->+		container_of(nb, struct userspace_consumer_data, nb);
->+
->+	mutex_lock(&events_lock);
->+	data->events |= event;
->+	mutex_unlock(&events_lock);
->+
-
-Using a single global mutex (events_lock) to protect a single member of 
-a per-device struct looks weird.  Unless there's something subtle going 
-on that I'm not seeing, it seems like the lock should be a member of the 
-data struct instead of global, and since no blocking operations happen 
-under it could it just be a spinlock?  Or since it's just some simple 
-updates to a single variable, why not just use an atomic_t and skip the 
-lock entirely?
-
->+	sysfs_notify(data->kobj, NULL, dev_attr_events.attr.name);
->+
->+	return NOTIFY_OK;
->+}
->+
-> static int regulator_userspace_consumer_probe(struct platform_device *pdev)
-> {
-> 	struct regulator_userspace_consumer_data tmpdata;
-> 	struct regulator_userspace_consumer_data *pdata;
-> 	struct userspace_consumer_data *drvdata;
->-	int ret;
->+	int i, ret;
->
-> 	pdata = dev_get_platdata(&pdev->dev);
-> 	if (!pdata) {
->@@ -153,6 +191,7 @@ static int regulator_userspace_consumer_probe(struct platform_device *pdev)
-> 	drvdata->num_supplies = pdata->num_supplies;
-> 	drvdata->supplies = pdata->supplies;
-> 	drvdata->no_autoswitch = pdata->no_autoswitch;
->+	drvdata->kobj = &pdev->dev.kobj;
->
-> 	mutex_init(&drvdata->lock);
->
->@@ -186,6 +225,13 @@ static int regulator_userspace_consumer_probe(struct platform_device *pdev)
-> 	}
-> 	drvdata->enabled = !!ret;
->
->+	drvdata->nb.notifier_call = regulator_userspace_notify;
->+	for (i = 0; i < drvdata->num_supplies; i++) {
->+		ret = devm_regulator_register_notifier(drvdata->supplies[i].consumer, &drvdata->nb);
->+		if (ret)
->+			goto err_enable;
->+	}
->+
-> 	return 0;
->
-> err_enable:
->@@ -197,6 +243,10 @@ static int regulator_userspace_consumer_probe(struct platform_device *pdev)
-> static int regulator_userspace_consumer_remove(struct platform_device *pdev)
-> {
-> 	struct userspace_consumer_data *data = platform_get_drvdata(pdev);
->+	int i;
->+
->+	for (i = 0; i < data->num_supplies; i++)
->+		devm_regulator_unregister_notifier(data->supplies[i].consumer, &data->nb);
->
-> 	sysfs_remove_group(&pdev->dev.kobj, &attr_group);
->
->
->base-commit: 4fb53b2377c364e3753d6e293913b57dad68e98b
->-- 
->2.41.0
->
+Waiting is fine as long as we don't miss the next merge window -- we
+don't want these two bugs to get into another release. Also I think we
+should cc stable, since as David mentioned, they have been causing
+selftest failures.
