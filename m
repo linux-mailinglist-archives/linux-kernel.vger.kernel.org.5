@@ -2,289 +2,321 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 457F076F361
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 21:26:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 734F876F365
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 21:28:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230002AbjHCT02 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Aug 2023 15:26:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59954 "EHLO
+        id S230011AbjHCT2t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Aug 2023 15:28:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60802 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229495AbjHCT00 (ORCPT
+        with ESMTP id S229495AbjHCT2r (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Aug 2023 15:26:26 -0400
-Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 935D73A80;
-        Thu,  3 Aug 2023 12:26:25 -0700 (PDT)
-Received: by mail-pl1-x62a.google.com with SMTP id d9443c01a7336-1bc02bd4eafso11450655ad.1;
-        Thu, 03 Aug 2023 12:26:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1691090785; x=1691695585;
-        h=to:references:message-id:content-transfer-encoding:cc:date
-         :in-reply-to:from:subject:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=fkwdY9e/9MMGS88fBKDkYbx5CtiT5bHBQRYcXXTAFL4=;
-        b=aqzTxZj5sul4FXzniCvo0yd75HrZrdpKxGHWGwQVxDDPl3CL0yKtUTmYWsT2IJvPOP
-         gcGhJ3FX/b22lP5o5KmarieUV6Wp0Aj++r71Vmk6Bz1PERKdDJMqLnkZKoMkPFT+BFJR
-         +m7KjvdRyVC7lWa9mq6N2rNs5MsFga8nGAylo9WfgKlkB5N78duawKT8iC00WFZOXWDp
-         AJ5NplH6tWO1kDBAzQvAGK78s3o+iBhWM6nP/TMUsSuEzBJfURGvng5oR2FhmJm6TUDG
-         9C/nMADHZY0F33tk4SDj9Nz6crrArd6qRIJdibqYDXjdVunNR7BGSBZ3ufZTx7nwoewK
-         igcA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691090785; x=1691695585;
-        h=to:references:message-id:content-transfer-encoding:cc:date
-         :in-reply-to:from:subject:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=fkwdY9e/9MMGS88fBKDkYbx5CtiT5bHBQRYcXXTAFL4=;
-        b=DHq1eRQdsnBqDHGyvaOwMhEvaD0vx/HlPoys7yK/QJ8m8TUqfqkJI2eC2k5HMGyvZt
-         BAEfeECFRBA1aYH6FTH4fYTp2gYzi0QeJbjJlOUgqxW2tbJEMRs+jSfi9nhfNBDutiBc
-         WxC0VPiitQjX2SPPPv2XkWkyCxrbwSlOZlPrkUEIV/IdxrhpbYVSJ2JkqM1dSPdc+q4C
-         FXCrINuu8dzJGuwY9FivESa6SCHRsCl8krdYndttBM6Vsx0aLAhbEIr9uKRwls9p0gko
-         8OVW0GxrgBXlH3lEKQWPAduVYMci5XDpaUxRo5tgRF9smPHfCPSFiFW2zFGHWJNbJNhf
-         GdXA==
-X-Gm-Message-State: ABy/qLZeQvqEBLKiJ2hQJHcGF5N00N39b1Q2b/2eTsFC16/h1QP92K1R
-        BzML07p21zoZKR/fspGplSk=
-X-Google-Smtp-Source: APBJJlEPw2ntYxiXliTObYv3t8EmpTsYqFncu72o4bvoUu4UW2FM43ifW9SbRVXxpgGr0o6dPxq9Ug==
-X-Received: by 2002:a17:902:db06:b0:1b8:1bac:3782 with SMTP id m6-20020a170902db0600b001b81bac3782mr23101626plx.6.1691090784873;
-        Thu, 03 Aug 2023 12:26:24 -0700 (PDT)
-Received: from smtpclient.apple ([2402:d0c0:2:a2a::1])
-        by smtp.gmail.com with ESMTPSA id jf1-20020a170903268100b001b85bb5fd77sm222664plb.119.2023.08.03.12.26.15
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 03 Aug 2023 12:26:24 -0700 (PDT)
-Content-Type: text/plain;
-        charset=utf-8
-Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3731.400.51.1.1\))
-Subject: Re: [PATCH 1/2] docs: rcu: Add cautionary note on plain-accesses to
- requirements
-From:   Alan Huang <mmpgouride@gmail.com>
-In-Reply-To: <CAEXW_YRXA3j3k9VRuZJ7d=yo6__TRpeE6igrQ+GEZiyKtFmUOQ@mail.gmail.com>
-Date:   Fri, 4 Aug 2023 03:25:57 +0800
-Cc:     linux-kernel@vger.kernel.org, rcu@vger.kernel.org,
-        Will Deacon <will@kernel.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Zqiang <qiang.zhang1211@gmail.com>,
-        Jonathan Corbet <corbet@lwn.net>
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <D3D65E05-AC98-43EA-8B66-CA63E94C1C80@gmail.com>
-References: <A272EB21-28F9-4FFE-A3BB-6689807CC3ED@gmail.com>
- <148CE02E-BBEC-4D30-9C75-6632A110FFC0@joelfernandes.org>
- <E96297CF-6C81-4BB5-BA5A-6734F6B629F4@gmail.com>
- <CAEXW_YRXA3j3k9VRuZJ7d=yo6__TRpeE6igrQ+GEZiyKtFmUOQ@mail.gmail.com>
-To:     Joel Fernandes <joel@joelfernandes.org>
-X-Mailer: Apple Mail (2.3731.400.51.1.1)
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        Thu, 3 Aug 2023 15:28:47 -0400
+Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 0DF3E1A8;
+        Thu,  3 Aug 2023 12:28:46 -0700 (PDT)
+Received: from UbuntuVM-18.efytirfs5hsengjwslc1ligxab.xx.internal.cloudapp.net (unknown [20.72.208.6])
+        by linux.microsoft.com (Postfix) with ESMTPSA id 29544207F5AF;
+        Thu,  3 Aug 2023 12:28:45 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 29544207F5AF
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1691090925;
+        bh=d/Q0tfkeWRaqXZbjrsVExBbWs12KQlVq15rFnfwJiBg=;
+        h=From:To:Cc:Subject:Date:From;
+        b=isi4Quf1AWk8mU9YL/qO/DvCjakYV3nqa7wyZgPloXIvrEoeS7FQoWqVDX0i9FmZQ
+         0ksh37AtqX1ROZjF0f36O5CDiJjxtOVfDr0JU9sXAcpeGfiMAFVb/Kkv4qMtjHnMwk
+         PutE8LMqyT1zASd7n2hujny/b8oGZrjG1Z/abVT0=
+From:   Hardik Garg <hargar@linux.microsoft.com>
+To:     stable@vger.kernel.org
+Cc:     davem@davemloft.net, kuba@kernel.org, shayd@nvidia.com,
+        saeedm@nvidia.com, fred@cloudflare.com, netdev@vger.kernel.org,
+        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH 6.1 5.15] net/mlx5: Free irqs only on shutdown callback
+Date:   Thu,  3 Aug 2023 19:28:32 +0000
+Message-Id: <20230803192832.22966-1-hargar@linux.microsoft.com>
+X-Mailer: git-send-email 2.17.1
+X-Spam-Status: No, score=-18.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,ENV_AND_HDR_SPF_MATCH,HEXHASH_WORD,
+        RCVD_IN_DNSWL_MED,RCVD_IN_SBL,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+commit 9c2d08010963 ("net/mlx5: Free irqs only on shutdown callback")
+backport this v6.4 commit to v6.1 and v5.15
 
-> 2023=E5=B9=B48=E6=9C=884=E6=97=A5 00:01=EF=BC=8CJoel Fernandes =
-<joel@joelfernandes.org> =E5=86=99=E9=81=93=EF=BC=9A
->=20
-> On Thu, Aug 3, 2023 at 9:36=E2=80=AFAM Alan Huang =
-<mmpgouride@gmail.com> wrote:
->>=20
->>=20
->>> 2023=E5=B9=B48=E6=9C=883=E6=97=A5 =E4=B8=8B=E5=8D=888:35=EF=BC=8CJoel =
-Fernandes <joel@joelfernandes.org> =E5=86=99=E9=81=93=EF=BC=9A
->>>=20
->>>=20
->>>=20
->>>> On Aug 3, 2023, at 8:09 AM, Alan Huang <mmpgouride@gmail.com> =
-wrote:
->>>>=20
->>>> =EF=BB=BF
->>>>> 2023=E5=B9=B48=E6=9C=883=E6=97=A5 11:24=EF=BC=8CJoel Fernandes =
-(Google) <joel@joelfernandes.org> =E5=86=99=E9=81=93=EF=BC=9A
->>>>>=20
->>>>> Add a detailed note to explain the potential side effects of
->>>>> plain-accessing the gp pointer using a plain load, without using =
-the
->>>>> rcu_dereference() macros; which might trip neighboring code that =
-does
->>>>> use rcu_dereference().
->>>>>=20
->>>>> I haven't verified this with a compiler, but this is what I gather =
-from
->>>>> the below link using Will's experience with READ_ONCE().
->>>>>=20
->>>>> Link: =
-https://lore.kernel.org/all/20230728124412.GA21303@willie-the-truck/
->>>>> Cc: Will Deacon <will@kernel.org>
->>>>> Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
->>>>> ---
->>>>> .../RCU/Design/Requirements/Requirements.rst  | 32 =
-+++++++++++++++++++
->>>>> 1 file changed, 32 insertions(+)
->>>>>=20
->>>>> diff --git =
-a/Documentation/RCU/Design/Requirements/Requirements.rst =
-b/Documentation/RCU/Design/Requirements/Requirements.rst
->>>>> index f3b605285a87..e0b896d3fb9b 100644
->>>>> --- a/Documentation/RCU/Design/Requirements/Requirements.rst
->>>>> +++ b/Documentation/RCU/Design/Requirements/Requirements.rst
->>>>> @@ -376,6 +376,38 @@ mechanism, most commonly locking or reference =
-counting
->>>>> .. |high-quality implementation of C11 memory_order_consume [PDF]| =
-replace:: high-quality implementation of C11 ``memory_order_consume`` =
-[PDF]
->>>>> .. _high-quality implementation of C11 memory_order_consume [PDF]: =
-http://www.rdrop.com/users/paulmck/RCU/consume.2015.07.13a.pdf
->>>>>=20
->>>>> +Note that, there can be strange side effects (due to compiler =
-optimizations) if
->>>>> +``gp`` is ever accessed using a plain load (i.e. without =
-``READ_ONCE()`` or
->>>>> +``rcu_dereference()``) potentially hurting any succeeding
->>>>> +``rcu_dereference()``. For example, consider the code:
->>>>> +
->>>>> +   ::
->>>>> +
->>>>> +       1 bool do_something_gp(void)
->>>>> +       2 {
->>>>> +       3   void *tmp;
->>>>> +       4   rcu_read_lock();
->>>>> +       5   tmp =3D gp; // Plain-load of GP.
->>>>> +       6   printk("Point gp =3D %p\n", tmp);
->>>>> +       7
->>>>> +       8   p =3D rcu_dereference(gp);
->>>>> +       9   if (p) {
->>>>> +      10     do_something(p->a, p->b);
->>>>> +      11     rcu_read_unlock();
->>>>> +      12     return true;
->>>>> +      13   }
->>>>> +      14   rcu_read_unlock();
->>>>> +      15   return false;
->>>>> +      16 }
->>>>> +
->>>>> +The behavior of plain accesses involved in a data race is =
-non-deterministic in
->>>>> +the face of compiler optimizations. Since accesses to the ``gp`` =
-pointer is
->>>>> +by-design a data race, the compiler could trip this code by =
-caching the value
->>>>> +of ``gp`` into a register in line 5, and then using the value of =
-the register
->>>>> +to satisfy the load in line 10. Thus it is important to never mix
->>>>=20
->>>> Will=E2=80=99s example is:
->>>>=20
->>>>   // Assume *ptr is initially 0 and somebody else writes it to 1
->>>>   // concurrently
->>>>=20
->>>>   foo =3D *ptr;
->>>>   bar =3D READ_ONCE(*ptr);
->>>>   baz =3D *ptr;
->>>>=20
->>>> Then the compiler is within its right to reorder it to:
->>>>=20
->>>>  foo =3D *ptr;
->>>>  baz =3D *ptr;
->>>>  bar =3D READ_ONCE(*ptr);
->>>>=20
->>>> So, the result foo =3D=3D baz =3D=3D 0 but bar =3D=3D 1 is =
-perfectly legal.
->>>=20
->>> Yes, a bad outcome is perfectly legal amidst data race. Who said it =
-is not legal?
->>=20
->> My understanding is that it is legal even without data race, and the =
-compiler only keeps the order of volatile access.
->=20
-> Yes, but I can bet on it the author of the code would not have
-> intended such an outcome, if they did then Will wouldn't have been
-> debugging it ;-). That's why I called it a bad outcome. The goal of
-> this patch is to document such a possible unintentional outcome.
->=20
->>>> But the example here is different,
->>>=20
->>> That is intentional. Wills discussion partially triggered this. =
-Though I am wondering
->>> if we should document that as well.
->>>=20
->>>> the compiler can not use the value loaded from line 5
->>>> unless the compiler can deduce that the tmp is equals to p in which =
-case the address dependency
->>>> doesn=E2=80=99t exist anymore.
->>>>=20
->>>> What am I missing here?
->>>=20
->>> Maybe you are trying to rationalize too much that the sequence =
-mentioned cannot result
->>> in a counter intuitive outcome like I did?
->>>=20
->>> The point AFAIU is not just about line 10 but that the compiler can =
-replace any of the
->>> lines after the plain access with the cached value.
->>=20
->> Well, IIUC, according to the C standard, the compiler can do anything =
-if there is a data race (undefined behavior).
->>=20
->> However, what if a write is not protected with WRITE_ONCE and the =
-read is marked with READ_ONCE?
->> That=E2=80=99s also a data race, right? But the kernel considers it =
-is Okay if the write is machine word aligned.
->=20
-> Yes, but there is a compiler between the HLL code and what the
-> processor sees which can tear the write. How can not using
-> WRITE_ONCE() prevent store-tearing? See [1]. My understanding is that
-> it is OK only if the reader did a NULL check. In that case the torn
+Whenever a shutdown is invoked, free irqs only and keep mlx5_irq
+synthetic wrapper intact in order to avoid use-after-free on
+system shutdown.
 
-Yes, a write-write data race where the value is the same is also fine.
+for example:
+==================================================================
+BUG: KASAN: use-after-free in _find_first_bit+0x66/0x80
+Read of size 8 at addr ffff88823fc0d318 by task kworker/u192:0/13608
 
-But they are still data race, if the compiler is within its right to do =
-anything it likes (due to data race),
-we still need WRITE_ONCE() in these cases, though it=E2=80=99s =
-semantically safe.
+CPU: 25 PID: 13608 Comm: kworker/u192:0 Tainted: 
+G    B   W  O  6.1.21-cloudflare-kasan-2023.3.21 #1
+Hardware name: GIGABYTE R162-R2-GEN0/MZ12-HD2-CD, BIOS R14 05/03/2021
+Workqueue: mlx5e mlx5e_tx_timeout_work [mlx5_core]
+Call Trace:
+  <TASK>
+  dump_stack_lvl+0x34/0x48
+  print_report+0x170/0x473
+  ? _find_first_bit+0x66/0x80
+  kasan_report+0xad/0x130
+  ? _find_first_bit+0x66/0x80
+  _find_first_bit+0x66/0x80
+  mlx5e_open_channels+0x3c5/0x3a10 [mlx5_core]
+  ? console_unlock+0x2fa/0x430
+  ? _raw_spin_lock_irqsave+0x8d/0xf0
+  ? _raw_spin_unlock_irqrestore+0x42/0x80
+  ? preempt_count_add+0x7d/0x150
+  ? __wake_up_klogd.part.0+0x7d/0xc0
+  ? vprintk_emit+0xfe/0x2c0
+  ? mlx5e_trigger_napi_sched+0x40/0x40 [mlx5_core]
+  ? dev_attr_show.cold+0x35/0x35
+  ? devlink_health_do_dump.part.0+0x174/0x340
+  ? devlink_health_report+0x504/0x810
+  ? mlx5e_reporter_tx_timeout+0x29d/0x3a0 [mlx5_core]
+  ? mlx5e_tx_timeout_work+0x17c/0x230 [mlx5_core]
+  ? process_one_work+0x680/0x1050
+  mlx5e_safe_switch_params+0x156/0x220 [mlx5_core]
+  ? mlx5e_switch_priv_channels+0x310/0x310 [mlx5_core]
+  ? mlx5_eq_poll_irq_disabled+0xb6/0x100 [mlx5_core]
+  mlx5e_tx_reporter_timeout_recover+0x123/0x240 [mlx5_core]
+  ? __mutex_unlock_slowpath.constprop.0+0x2b0/0x2b0
+  devlink_health_reporter_recover+0xa6/0x1f0
+  devlink_health_report+0x2f7/0x810
+  ? vsnprintf+0x854/0x15e0
+  mlx5e_reporter_tx_timeout+0x29d/0x3a0 [mlx5_core]
+  ? mlx5e_reporter_tx_err_cqe+0x1a0/0x1a0 [mlx5_core]
+  ? mlx5e_tx_reporter_timeout_dump+0x50/0x50 [mlx5_core]
+  ? mlx5e_tx_reporter_dump_sq+0x260/0x260 [mlx5_core]
+  ? newidle_balance+0x9b7/0xe30
+  ? psi_group_change+0x6a7/0xb80
+  ? mutex_lock+0x96/0xf0
+  ? __mutex_lock_slowpath+0x10/0x10
+  mlx5e_tx_timeout_work+0x17c/0x230 [mlx5_core]
+  process_one_work+0x680/0x1050
+  worker_thread+0x5a0/0xeb0
+  ? process_one_work+0x1050/0x1050
+  kthread+0x2a2/0x340
+  ? kthread_complete_and_exit+0x20/0x20
+  ret_from_fork+0x22/0x30
+  </TASK>
 
-IIUC, even with _ONCE(), the compiler is within its right do anything =
-according to the standard (at least before the upcoming C23), because =
-the standard doesn=E2=80=99t consider a volatile access to be atomic.
+Freed by task 1:
+  kasan_save_stack+0x23/0x50
+  kasan_set_track+0x21/0x30
+  kasan_save_free_info+0x2a/0x40
+  ____kasan_slab_free+0x169/0x1d0
+  slab_free_freelist_hook+0xd2/0x190
+  __kmem_cache_free+0x1a1/0x2f0
+  irq_pool_free+0x138/0x200 [mlx5_core]
+  mlx5_irq_table_destroy+0xf6/0x170 [mlx5_core]
+  mlx5_core_eq_free_irqs+0x74/0xf0 [mlx5_core]
+  shutdown+0x194/0x1aa [mlx5_core]
+  pci_device_shutdown+0x75/0x120
+  device_shutdown+0x35c/0x620
+  kernel_restart+0x60/0xa0
+  __do_sys_reboot+0x1cb/0x2c0
+  do_syscall_64+0x3b/0x90
+  entry_SYSCALL_64_after_hwframe+0x4b/0xb5
 
-However, the kernel consider the volatile access to be atomic, right?
+The buggy address belongs to the object at ffff88823fc0d300
+  which belongs to the cache kmalloc-192 of size 192
+The buggy address is located 24 bytes inside of
+  192-byte region [ffff88823fc0d300, ffff88823fc0d3c0)
 
-BTW, line 5 in the example is likely to be optimized away. And yes, the =
-compiler can cache the value loaded from line 5 from the perspective of =
-undefined behavior, even if I believe it would be a compiler bug from =
-the perspective of kernel.
+The buggy address belongs to the physical page:
+page:0000000010139587 refcount:1 mapcount:0 mapping:0000000000000000
+index:0x0 pfn:0x23fc0c
+head:0000000010139587 order:1 compound_mapcount:0 compound_pincount:0
+flags: 0x2ffff800010200(slab|head|node=0|zone=2|lastcpupid=0x1ffff)
+raw: 002ffff800010200 0000000000000000 dead000000000122 ffff88810004ca00
+raw: 0000000000000000 0000000000200020 00000001ffffffff 0000000000000000
+page dumped because: kasan: bad access detected
 
-> result will not change the semantics of the program. But otherwise,
-> that's bad.
->=20
-> [1] https://lwn.net/Articles/793253/#Store%20Tearing
->=20
-> thanks,
->=20
-> - Joel
->=20
->=20
->>=20
->>>=20
->>> Thanks.
->>>=20
->>>=20
->>>=20
->>>>=20
->>>>> +plain accesses of a memory location with rcu_dereference() of the =
-same memory
->>>>> +location, in code involved in a data race.
->>>>> +
->>>>> In short, updaters use rcu_assign_pointer() and readers use
->>>>> rcu_dereference(), and these two RCU API elements work together to
->>>>> ensure that readers have a consistent view of newly added data =
-elements.
->>>>> --
->>>>> 2.41.0.585.gd2178a4bd4-goog
+Memory state around the buggy address:
+  ffff88823fc0d200: fa fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+  ffff88823fc0d280: fb fb fb fb fb fb fb fb fc fc fc fc fc fc fc fc
+ >ffff88823fc0d300: fa fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+                             ^
+  ffff88823fc0d380: fb fb fb fb fb fb fb fb fc fc fc fc fc fc fc fc
+  ffff88823fc0d400: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+==================================================================
+general protection fault, probably for non-canonical address
+0xdffffc005c40d7ac: 0000 [#1] PREEMPT SMP KASAN NOPTI
+KASAN: probably user-memory-access in range 
+[0x00000002e206bd60-0x00000002e206bd67]
+CPU: 25 PID: 13608 Comm: kworker/u192:0 Tainted: 
+G    B   W  O  6.1.21-cloudflare-kasan-2023.3.21 #1
+Hardware name: GIGABYTE R162-R2-GEN0/MZ12-HD2-CD, BIOS R14 05/03/2021
+Workqueue: mlx5e mlx5e_tx_timeout_work [mlx5_core]
+RIP: 0010:__alloc_pages+0x141/0x5c0
+Call Trace:
+  <TASK>
+  ? sysvec_apic_timer_interrupt+0xa0/0xc0
+  ? asm_sysvec_apic_timer_interrupt+0x16/0x20
+  ? __alloc_pages_slowpath.constprop.0+0x1ec0/0x1ec0
+  ? _raw_spin_unlock_irqrestore+0x3d/0x80
+  __kmalloc_large_node+0x80/0x120
+  ? kvmalloc_node+0x4e/0x170
+  __kmalloc_node+0xd4/0x150
+  kvmalloc_node+0x4e/0x170
+  mlx5e_open_channels+0x631/0x3a10 [mlx5_core]
+  ? console_unlock+0x2fa/0x430
+  ? _raw_spin_lock_irqsave+0x8d/0xf0
+  ? _raw_spin_unlock_irqrestore+0x42/0x80
+  ? preempt_count_add+0x7d/0x150
+  ? __wake_up_klogd.part.0+0x7d/0xc0
+  ? vprintk_emit+0xfe/0x2c0
+  ? mlx5e_trigger_napi_sched+0x40/0x40 [mlx5_core]
+  ? dev_attr_show.cold+0x35/0x35
+  ? devlink_health_do_dump.part.0+0x174/0x340
+  ? devlink_health_report+0x504/0x810
+  ? mlx5e_reporter_tx_timeout+0x29d/0x3a0 [mlx5_core]
+  ? mlx5e_tx_timeout_work+0x17c/0x230 [mlx5_core]
+  ? process_one_work+0x680/0x1050
+  mlx5e_safe_switch_params+0x156/0x220 [mlx5_core]
+  ? mlx5e_switch_priv_channels+0x310/0x310 [mlx5_core]
+  ? mlx5_eq_poll_irq_disabled+0xb6/0x100 [mlx5_core]
+  mlx5e_tx_reporter_timeout_recover+0x123/0x240 [mlx5_core]
+  ? __mutex_unlock_slowpath.constprop.0+0x2b0/0x2b0
+  devlink_health_reporter_recover+0xa6/0x1f0
+  devlink_health_report+0x2f7/0x810
+  ? vsnprintf+0x854/0x15e0
+  mlx5e_reporter_tx_timeout+0x29d/0x3a0 [mlx5_core]
+  ? mlx5e_reporter_tx_err_cqe+0x1a0/0x1a0 [mlx5_core]
+  ? mlx5e_tx_reporter_timeout_dump+0x50/0x50 [mlx5_core]
+  ? mlx5e_tx_reporter_dump_sq+0x260/0x260 [mlx5_core]
+  ? newidle_balance+0x9b7/0xe30
+  ? psi_group_change+0x6a7/0xb80
+  ? mutex_lock+0x96/0xf0
+  ? __mutex_lock_slowpath+0x10/0x10
+  mlx5e_tx_timeout_work+0x17c/0x230 [mlx5_core]
+  process_one_work+0x680/0x1050
+  worker_thread+0x5a0/0xeb0
+  ? process_one_work+0x1050/0x1050
+  kthread+0x2a2/0x340
+  ? kthread_complete_and_exit+0x20/0x20
+  ret_from_fork+0x22/0x30
+  </TASK>
+---[ end trace 0000000000000000  ]---
+RIP: 0010:__alloc_pages+0x141/0x5c0
+Code: e0 39 a3 96 89 e9 b8 22 01 32 01 83 e1 0f 48 89 fa 01 c9 48 c1 ea
+03 d3 f8 83 e0 03 89 44 24 6c 48 b8 00 00 00 00 00 fc ff df <80> 3c 02
+00 0f 85 fc 03 00 00 89 e8 4a 8b 14 f5 e0 39 a3 96 4c 89
+RSP: 0018:ffff888251f0f438 EFLAGS: 00010202
+RAX: dffffc0000000000 RBX: 1ffff1104a3e1e8b RCX: 0000000000000000
+RDX: 000000005c40d7ac RSI: 0000000000000003 RDI: 00000002e206bd60
+RBP: 0000000000052dc0 R08: ffff8882b0044218 R09: ffff8882b0045e8a
+R10: fffffbfff300fefc R11: ffff888167af4000 R12: 0000000000000003
+R13: 0000000000000000 R14: 00000000696c7070 R15: ffff8882373f4380
+FS:  0000000000000000(0000) GS:ffff88bf2be80000(0000)
+knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00005641d031eee8 CR3: 0000002e7ca14000 CR4: 0000000000350ee0
+Kernel panic - not syncing: Fatal exception
+Kernel Offset: 0x11000000 from 0xffffffff81000000 (relocation range:
+0xffffffff80000000-0xffffffffbfffffff)
+---[ end Kernel panic - not syncing: Fatal exception  ]---]
+
+Reported-by: Frederick Lawler <fred@cloudflare.com>
+Link: https://lore.kernel.org/netdev/be5b9271-7507-19c5-ded1-fa78f1980e69@cloudflare.com
+Signed-off-by: Shay Drory <shayd@nvidia.com>
+Signed-off-by: Saeed Mahameed <saeedm@nvidia.com>
+[hardik: Refer to the irqn member of the mlx5_irq struct, instead of
+ the msi_map, since we don't have upstream v6.4 commit 235a25fe28de
+ ("net/mlx5: Modify struct mlx5_irq to use struct msi_map")].
+[hardik: Refer to the pf_pool member of the mlx5_irq_table struct,
+ instead of pcif_pool, since we don't have upstream v6.4 commit
+ 8bebfd767909 ("net/mlx5: Improve naming of pci function vectors")].
+ 
+Signed-off-by: Hardik Garg <hargar@linux.microsoft.com>
+---
+ drivers/net/ethernet/mellanox/mlx5/core/eq.c  |  2 +-
+ .../ethernet/mellanox/mlx5/core/mlx5_irq.h    |  1 +
+ .../net/ethernet/mellanox/mlx5/core/pci_irq.c | 29 +++++++++++++++++++
+ 3 files changed, 31 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/eq.c b/drivers/net/ethernet/mellanox/mlx5/core/eq.c
+index a0242dc15741..e112b5685b02 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/eq.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/eq.c
+@@ -1061,7 +1061,7 @@ void mlx5_core_eq_free_irqs(struct mlx5_core_dev *dev)
+ 	mutex_lock(&table->lock); /* sync with create/destroy_async_eq */
+ 	if (!mlx5_core_is_sf(dev))
+ 		clear_rmap(dev);
+-	mlx5_irq_table_destroy(dev);
++	mlx5_irq_table_free_irqs(dev);
+ 	mutex_unlock(&table->lock);
+ }
+ 
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/mlx5_irq.h b/drivers/net/ethernet/mellanox/mlx5/core/mlx5_irq.h
+index 23cb63fa4588..2e728e4e81fa 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/mlx5_irq.h
++++ b/drivers/net/ethernet/mellanox/mlx5/core/mlx5_irq.h
+@@ -14,6 +14,7 @@ int mlx5_irq_table_init(struct mlx5_core_dev *dev);
+ void mlx5_irq_table_cleanup(struct mlx5_core_dev *dev);
+ int mlx5_irq_table_create(struct mlx5_core_dev *dev);
+ void mlx5_irq_table_destroy(struct mlx5_core_dev *dev);
++void mlx5_irq_table_free_irqs(struct mlx5_core_dev *dev);
+ int mlx5_irq_table_get_num_comp(struct mlx5_irq_table *table);
+ int mlx5_irq_table_get_sfs_vec(struct mlx5_irq_table *table);
+ struct mlx5_irq_table *mlx5_irq_table_get(struct mlx5_core_dev *dev);
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/pci_irq.c b/drivers/net/ethernet/mellanox/mlx5/core/pci_irq.c
+index 662f1d55e30e..5e0f7d96aac5 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/pci_irq.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/pci_irq.c
+@@ -591,6 +591,24 @@ static void irq_pools_destroy(struct mlx5_irq_table *table)
+ 	irq_pool_free(table->pf_pool);
+ }
+ 
++static void mlx5_irq_pool_free_irqs(struct mlx5_irq_pool *pool)
++{
++	struct mlx5_irq *irq;
++	unsigned long index;
++
++	xa_for_each(&pool->irqs, index, irq)
++		free_irq(irq->irqn, &irq->nh);
++}
++
++static void mlx5_irq_pools_free_irqs(struct mlx5_irq_table *table)
++{
++	if (table->sf_ctrl_pool) {
++		mlx5_irq_pool_free_irqs(table->sf_comp_pool);
++		mlx5_irq_pool_free_irqs(table->sf_ctrl_pool);
++	}
++	mlx5_irq_pool_free_irqs(table->pf_pool);
++}
++
+ /* irq_table API */
+ 
+ int mlx5_irq_table_init(struct mlx5_core_dev *dev)
+@@ -670,6 +688,17 @@ void mlx5_irq_table_destroy(struct mlx5_core_dev *dev)
+ 	pci_free_irq_vectors(dev->pdev);
+ }
+ 
++void mlx5_irq_table_free_irqs(struct mlx5_core_dev *dev)
++{
++	struct mlx5_irq_table *table = dev->priv.irq_table;
++
++	if (mlx5_core_is_sf(dev))
++		return;
++
++	mlx5_irq_pools_free_irqs(table);
++	pci_free_irq_vectors(dev->pdev);
++}
++
+ int mlx5_irq_table_get_sfs_vec(struct mlx5_irq_table *table)
+ {
+ 	if (table->sf_comp_pool)
+-- 
+2.34.1
 
 
