@@ -2,190 +2,189 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E4F1676DDE6
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 04:15:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2CFE076DDE9
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 04:17:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231497AbjHCCPP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Aug 2023 22:15:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41460 "EHLO
+        id S231674AbjHCCQ7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Aug 2023 22:16:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41878 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229446AbjHCCPN (ORCPT
+        with ESMTP id S229446AbjHCCQy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Aug 2023 22:15:13 -0400
-Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7107518D;
-        Wed,  2 Aug 2023 19:15:11 -0700 (PDT)
-Received: by mail-ej1-x62a.google.com with SMTP id a640c23a62f3a-99bcf2de59cso60969966b.0;
-        Wed, 02 Aug 2023 19:15:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1691028910; x=1691633710;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=unkis5nXNs66F8VIMqSk5MoQfKJubskRTJFUPZd8qbw=;
-        b=k1jX/fjz8FkLDLaxCgVrmFEJuJOa6PlfRIOdx4jo1nBpHhdVWAwDEQUPMl92Dj7i+s
-         /AtOYhnL8sCreORgAgG+mFSo9RaBNL0Wmzpw+SE0MZv86SsicfZIX+YcUBDQSg72DNJ5
-         LuJzisNL4IVjh4B1xGHaTgRr240XVQVG+fcjzmyN/qBSDnQKOavbGZgRzVNvrowJGASe
-         2NCNenCsPqNX85acun6Ez5JK/T49iwuC7H2MbAe+L5nSycE8vxkpMPiM/SlC1nKWiYWa
-         81LTouMO7tgBCY7LNPze6oWXCY89ke2WX0NU6pNnAg7uoNdj+0suDBxQgWpVy6XBjBue
-         hq3w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691028910; x=1691633710;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=unkis5nXNs66F8VIMqSk5MoQfKJubskRTJFUPZd8qbw=;
-        b=UOyh+ZyTbF4hvdqc1ag1qEAl59GVVyxc5/KUK6eBvs9dfhw00dLBqqY+BG1qV1Q7Xc
-         PZOVBMf1VqHm4r1UukhDURscryUy8uIgrQkMnREiwYlPdamrW4c9RcB8rutwxgxUTpn/
-         WeFOVV5v2HSbGKiBBj5VFgiD09S5ibEFFRDSrOdYkuzxAzUuyMREOrTdIGZZEXeFnt0B
-         qkjb1GPAZRDaIKLotaWJHycTOQCWa3EQDWEVC/R35y6Cak4sPgjMQExXWHzIYEzmgpMo
-         gZ3pWuEwHO7PeQ3rr5Igq7ChbP0xz5TCuxiL1l6z+Myvpxt3LkIC+cCr0LPn/Tr9g9hG
-         BBrg==
-X-Gm-Message-State: ABy/qLak7E9ht0udf62XQx0mkl+WYpQ16SqvDskWArQdoQnCb72D6XV3
-        P9ijdyFtklPp9kU0oSVZWJS+vJSrcF3Ed65zfiTIQ2sdp7w=
-X-Google-Smtp-Source: APBJJlGfaOHFrEispGkCIYBL3pBtijSTK2Andpe3ZctM0sw1IZGwRKwVImEjxbYXaed1UDCcW5GfPRF56xFdEy3SCnw=
-X-Received: by 2002:a17:907:2c77:b0:992:48b7:99e3 with SMTP id
- ib23-20020a1709072c7700b0099248b799e3mr6243347ejc.63.1691028909671; Wed, 02
- Aug 2023 19:15:09 -0700 (PDT)
+        Wed, 2 Aug 2023 22:16:54 -0400
+Received: from NAM11-BN8-obe.outbound.protection.outlook.com (mail-bn8nam11on2040.outbound.protection.outlook.com [40.107.236.40])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9CF5019F;
+        Wed,  2 Aug 2023 19:16:52 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=OwWnBmVHMuXDtIexwLYH4U3hgaeLx8SsG0DYymjwNX+FC3EpWsci7LIiMo3hdRv9tevZGEdR7hDQ8KU5utHm2qvn9QLA/Fhp4C1gPwHLj+RG5cxYKj5rlVuKiXhKbLNOFhl07veT8Su2g1JBuOdivuUZ342aWCwZO7/JgFPPWBMCE+23SK4AZpanj86uce93wO5A/rdEUWyrLINWbZ997WmRFRnGuWh+jz5joZ0DoPxJH5wJjD22/3cQF0txn4ToOzYlH3hopxGz8kfB2avfGZHFW/7KGH74c5jXZycAiea0mdI6FBxhZldFcvAU61d6CfJvdN/AqUzhzjzj6EPxBg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=R3OXPCizP8mz6RonC30oiLzTHHdWDCGp0SlqZkJqKhI=;
+ b=MdWnlhrXFE2uW8uQ9ii24CD3ax/DQMddWZ+LZPYf+RoFhqNbuVBT1nCIFq3RLITI+zQsCm+AJrstVSQcKUNqge1o7scb0mDy32FSewG87dw6XsQTg0XghF9T4iM4uBoEQxhwTo5wcKA3GZnWCCpMzIj3Czomt90V7Q0fAFrs9Ls+ftYEL1cl6Ef1NFWCzjudUbHQ/KDAa6ERZBEbn+DjkjEtlFXUmrQlE5twS0WAjNV1ACY6eEfDccvi1Z3issq7a2De7+kg72ryvfqWaC6IWYqNriT1EeN2GGm41vIBG2OKd6jnFgTe993YrYiL126avgUl+ipFF3j5YumypQNWbw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 216.228.117.160) smtp.rcpttodomain=vger.kernel.org smtp.mailfrom=nvidia.com;
+ dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
+ dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=R3OXPCizP8mz6RonC30oiLzTHHdWDCGp0SlqZkJqKhI=;
+ b=inAAhB/qtCR/mcWffACU1por/kanIkk/CPimOHhuO85pJssvwYZlKyu2AJBwzLlNNfmjItUNXbWIWqMeDIJZu82oSeKHaW7XRl1jbilOihlbo7lkSWH1cnX4wKUgksldPHewbSeh1OaYcRujOVPzvlRo5BPRV7Cx6/BznHuLPomHM3zw7dvbqbft6bHFdM3B+eyD7mTBM9NtZMQZ9Bc8r29vkGJ/oSpNRUhRlts0NsmkGDScBJ3eSeJ2iT0lyypX9MHZMtzmD0ii7C5TP5QnOtU8SFraiGatdyFDwLrzXQWTkv0YlwpZiQggAvNUm19w116SYJPh7FO8Aft6KRtYVw==
+Received: from SJ0PR03CA0184.namprd03.prod.outlook.com (2603:10b6:a03:2ef::9)
+ by CH2PR12MB4327.namprd12.prod.outlook.com (2603:10b6:610:7d::13) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6631.29; Thu, 3 Aug
+ 2023 02:16:50 +0000
+Received: from CO1PEPF000042AD.namprd03.prod.outlook.com
+ (2603:10b6:a03:2ef:cafe::31) by SJ0PR03CA0184.outlook.office365.com
+ (2603:10b6:a03:2ef::9) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6652.19 via Frontend
+ Transport; Thu, 3 Aug 2023 02:16:50 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.117.160)
+ smtp.mailfrom=nvidia.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 216.228.117.160 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.117.160; helo=mail.nvidia.com; pr=C
+Received: from mail.nvidia.com (216.228.117.160) by
+ CO1PEPF000042AD.mail.protection.outlook.com (10.167.243.42) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.6652.19 via Frontend Transport; Thu, 3 Aug 2023 02:16:50 +0000
+Received: from rnnvmail205.nvidia.com (10.129.68.10) by mail.nvidia.com
+ (10.129.200.66) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.5; Wed, 2 Aug 2023
+ 19:16:38 -0700
+Received: from rnnvmail205.nvidia.com (10.129.68.10) by rnnvmail205.nvidia.com
+ (10.129.68.10) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.37; Wed, 2 Aug 2023
+ 19:16:37 -0700
+Received: from Asurada-Nvidia (10.127.8.14) by mail.nvidia.com (10.129.68.10)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.37 via Frontend
+ Transport; Wed, 2 Aug 2023 19:16:36 -0700
+Date:   Wed, 2 Aug 2023 19:16:34 -0700
+From:   Nicolin Chen <nicolinc@nvidia.com>
+To:     Jason Gunthorpe <jgg@nvidia.com>
+CC:     "Liu, Yi L" <yi.l.liu@intel.com>,
+        "joro@8bytes.org" <joro@8bytes.org>,
+        "alex.williamson@redhat.com" <alex.williamson@redhat.com>,
+        "Tian, Kevin" <kevin.tian@intel.com>,
+        "robin.murphy@arm.com" <robin.murphy@arm.com>,
+        "baolu.lu@linux.intel.com" <baolu.lu@linux.intel.com>,
+        "cohuck@redhat.com" <cohuck@redhat.com>,
+        "eric.auger@redhat.com" <eric.auger@redhat.com>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "mjrosato@linux.ibm.com" <mjrosato@linux.ibm.com>,
+        "chao.p.peng@linux.intel.com" <chao.p.peng@linux.intel.com>,
+        "yi.y.sun@linux.intel.com" <yi.y.sun@linux.intel.com>,
+        "peterx@redhat.com" <peterx@redhat.com>,
+        "jasowang@redhat.com" <jasowang@redhat.com>,
+        "shameerali.kolothum.thodi@huawei.com" 
+        <shameerali.kolothum.thodi@huawei.com>,
+        "lulu@redhat.com" <lulu@redhat.com>,
+        "suravee.suthikulpanit@amd.com" <suravee.suthikulpanit@amd.com>,
+        "iommu@lists.linux.dev" <iommu@lists.linux.dev>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
+        "Duan, Zhenzhong" <zhenzhong.duan@intel.com>
+Subject: Re: [PATCH v3 09/17] iommufd: Add IOMMU_HWPT_INVALIDATE
+Message-ID: <ZMsOAv9PjZpLaf4z@Asurada-Nvidia>
+References: <20230724110406.107212-1-yi.l.liu@intel.com>
+ <20230724110406.107212-10-yi.l.liu@intel.com>
+ <ZMQCw2iiIqa4CXNG@nvidia.com>
+ <DS0PR11MB7529696366A4447EF0945E87C305A@DS0PR11MB7529.namprd11.prod.outlook.com>
+ <ZMe0zQ/29/gLGBwZ@nvidia.com>
 MIME-Version: 1.0
-References: <20230622152017.2512101-1-kherbst@redhat.com>
-In-Reply-To: <20230622152017.2512101-1-kherbst@redhat.com>
-From:   Dave Airlie <airlied@gmail.com>
-Date:   Thu, 3 Aug 2023 12:14:57 +1000
-Message-ID: <CAPM=9ty8KT+JNu3x_qu4_1+Xg91Hdhyak_4_AVOfRQ0GMDjD9w@mail.gmail.com>
-Subject: Re: [PATCH v2] drm/nouveau/gr: enable memory loads on helper
- invocation on all channels
-To:     Karol Herbst <kherbst@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, Ben Skeggs <bskeggs@redhat.com>,
-        nouveau@lists.freedesktop.org, stable@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <ZMe0zQ/29/gLGBwZ@nvidia.com>
+X-NV-OnPremToCloud: ExternallySecured
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: CO1PEPF000042AD:EE_|CH2PR12MB4327:EE_
+X-MS-Office365-Filtering-Correlation-Id: b486cdf8-99d9-4a44-27c2-08db93c7b275
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: s3UHHz0POo/VchLzEYmN9c8Ld+ZvaQpPM9GK9lRoqyIsmu5v675PMNIOCn/QL+VHbK010epZa7ApaL60Cg6VKbMOvYHdqHsRlYP9MvlLMA/n8zPbyraSNuMKF8ka70Ys5DKW+zd8s5sACQmI0EBrjCb0NUahSiM6U4VFbbz7cIPxjZ8qNLUFrCR9K2V1KUEUViieNHjJY5P5dYDwu0cK9pJrY9mBqzLn3tsVxQlsfr3GUclKCFHZhxA3IdydlYLswAQQWnIsmXvjB1uzlfllLJMDVKAFyd0tI5yNVdZrs82MSvEkQ4bSELnsfvhDXgQYVdGftUHMcA9gTH/iBHgCFALztNEJPUPe+3fDBoBcINBrnltC+bdCE7u97kDzDCx/GrsByYKP4ZaUPAaH+ds8ArpaQg+qIkuoyQqZz3w6emcKw+xA0x3ZNT/KzCgIVZZITwtUNBiZei8PeVZiSvhRdeBVJ90FIJlR0jVCiWTvfyiH/kmHun8/B5oPj8UYL7bwGcRzuJcNXi1OGPsYg5aKT/bSS+VguYJFg0gCuZfkrr0Keaw8CCygsxZORFd3hgzpj4s+9WTLvQoFzBxn7FZZYlQjuZcJprOsM/Gea5EkBWfbFeieKblV3xVLP4QNODwf7GNZ5WDHgUE4WMdmA8hCM4p0ILi1bj7smdSV+De6V66MgiJVNpCBFTjFkY5WcHEjqRDbq+C3kZUovUpS5WWDU4hxSymBcowDBYAEyV5/Cn0smtXZ65izgcQjFhNMU8mZ
+X-Forefront-Antispam-Report: CIP:216.228.117.160;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc6edge1.nvidia.com;CAT:NONE;SFS:(13230028)(4636009)(396003)(136003)(376002)(39860400002)(346002)(82310400008)(451199021)(40470700004)(46966006)(36840700001)(70206006)(7636003)(40480700001)(83380400001)(426003)(47076005)(36860700001)(356005)(86362001)(41300700001)(82740400003)(7416002)(5660300002)(40460700003)(316002)(6862004)(4326008)(8936002)(8676002)(9686003)(336012)(70586007)(6636002)(186003)(26005)(55016003)(54906003)(478600001)(33716001)(2906002);DIR:OUT;SFP:1101;
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 03 Aug 2023 02:16:50.3916
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: b486cdf8-99d9-4a44-27c2-08db93c7b275
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.117.160];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource: CO1PEPF000042AD.namprd03.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH2PR12MB4327
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 23 Jun 2023 at 01:20, Karol Herbst <kherbst@redhat.com> wrote:
->
-> We have a lurking bug where Fragment Shader Helper Invocations can't load
-> from memory. But this is actually required in OpenGL and is causing random
-> hangs or failures in random shaders.
->
-> It is unknown how widespread this issue is, but shaders hitting this can
-> end up with infinite loops.
->
-> We enable those only on all Kepler and newer GPUs where we use our own
-> Firmware.
->
-> Nvidia's firmware provides a way to set a kernelspace controlled list of
-> mmio registers in the gr space from push buffers via MME macros.
+On Mon, Jul 31, 2023 at 10:19:09AM -0300, Jason Gunthorpe wrote:
+> On Mon, Jul 31, 2023 at 10:07:32AM +0000, Liu, Yi L wrote:
+> > > > +		goto out_put_hwpt;
+> > > > +	}
+> > > > +
+> > > > +	/*
+> > > > +	 * Copy the needed fields before reusing the ucmd buffer, this
+> > > > +	 * avoids memory allocation in this path.
+> > > > +	 */
+> > > > +	user_ptr = cmd->data_uptr;
+> > > > +	user_data_len = cmd->data_len;
+> > > 
+> > > Uhh, who checks that klen < the temporary stack struct?
+> > 
+> > Take vtd as an example. The invalidate structure is struct iommu_hwpt_vtd_s1_invalidate[1].
+> > The klen is sizeof(struct iommu_hwpt_vtd_s1_invalidate)[2]. iommu_hwpt_vtd_s1_invalidate
+> > is also placed in the temporary stack struct (actually it is a union)[1]. So the klen should
+> > be <= temporary stack.
+> 
+> Ohh, I think I would add a few comments noting that the invalidate
+> structs need to be added to that union. Easy to miss.
 
-seems sane,
+Added here:
 
-Reviewed-by: Dave Airlie <airlied@redhat.com>
->
-> v2: drop code for gm200 and newer.
->
-> Cc: Ben Skeggs <bskeggs@redhat.com>
-> Cc: David Airlie <airlied@gmail.com>
-> Cc: nouveau@lists.freedesktop.org
-> Cc: stable@vger.kernel.org
-> Signed-off-by: Karol Herbst <kherbst@redhat.com>
-> ---
->  drivers/gpu/drm/nouveau/nvkm/engine/gr/ctxgf100.h  |  1 +
->  drivers/gpu/drm/nouveau/nvkm/engine/gr/ctxgk104.c  |  4 +++-
->  drivers/gpu/drm/nouveau/nvkm/engine/gr/ctxgk110.c  | 10 ++++++++++
->  drivers/gpu/drm/nouveau/nvkm/engine/gr/ctxgk110b.c |  1 +
->  drivers/gpu/drm/nouveau/nvkm/engine/gr/ctxgk208.c  |  1 +
->  drivers/gpu/drm/nouveau/nvkm/engine/gr/ctxgm107.c  |  1 +
->  6 files changed, 17 insertions(+), 1 deletion(-)
->
-> diff --git a/drivers/gpu/drm/nouveau/nvkm/engine/gr/ctxgf100.h b/drivers/gpu/drm/nouveau/nvkm/engine/gr/ctxgf100.h
-> index 00dbeda7e346..de161e7a04aa 100644
-> --- a/drivers/gpu/drm/nouveau/nvkm/engine/gr/ctxgf100.h
-> +++ b/drivers/gpu/drm/nouveau/nvkm/engine/gr/ctxgf100.h
-> @@ -117,6 +117,7 @@ void gk104_grctx_generate_r418800(struct gf100_gr *);
->
->  extern const struct gf100_grctx_func gk110_grctx;
->  void gk110_grctx_generate_r419eb0(struct gf100_gr *);
-> +void gk110_grctx_generate_r419f78(struct gf100_gr *);
->
->  extern const struct gf100_grctx_func gk110b_grctx;
->  extern const struct gf100_grctx_func gk208_grctx;
-> diff --git a/drivers/gpu/drm/nouveau/nvkm/engine/gr/ctxgk104.c b/drivers/gpu/drm/nouveau/nvkm/engine/gr/ctxgk104.c
-> index 94233d0119df..52a234b1ef01 100644
-> --- a/drivers/gpu/drm/nouveau/nvkm/engine/gr/ctxgk104.c
-> +++ b/drivers/gpu/drm/nouveau/nvkm/engine/gr/ctxgk104.c
-> @@ -906,7 +906,9 @@ static void
->  gk104_grctx_generate_r419f78(struct gf100_gr *gr)
->  {
->         struct nvkm_device *device = gr->base.engine.subdev.device;
-> -       nvkm_mask(device, 0x419f78, 0x00000001, 0x00000000);
-> +
-> +       /* bit 3 set disables loads in fp helper invocations, we need it enabled */
-> +       nvkm_mask(device, 0x419f78, 0x00000009, 0x00000000);
->  }
->
->  void
-> diff --git a/drivers/gpu/drm/nouveau/nvkm/engine/gr/ctxgk110.c b/drivers/gpu/drm/nouveau/nvkm/engine/gr/ctxgk110.c
-> index 4391458e1fb2..3acdd9eeb74a 100644
-> --- a/drivers/gpu/drm/nouveau/nvkm/engine/gr/ctxgk110.c
-> +++ b/drivers/gpu/drm/nouveau/nvkm/engine/gr/ctxgk110.c
-> @@ -820,6 +820,15 @@ gk110_grctx_generate_r419eb0(struct gf100_gr *gr)
->         nvkm_mask(device, 0x419eb0, 0x00001000, 0x00001000);
->  }
->
-> +void
-> +gk110_grctx_generate_r419f78(struct gf100_gr *gr)
-> +{
-> +       struct nvkm_device *device = gr->base.engine.subdev.device;
-> +
-> +       /* bit 3 set disables loads in fp helper invocations, we need it enabled */
-> +       nvkm_mask(device, 0x419f78, 0x00000008, 0x00000000);
-> +}
-> +
->  const struct gf100_grctx_func
->  gk110_grctx = {
->         .main  = gf100_grctx_generate_main,
-> @@ -854,4 +863,5 @@ gk110_grctx = {
->         .gpc_tpc_nr = gk104_grctx_generate_gpc_tpc_nr,
->         .r418800 = gk104_grctx_generate_r418800,
->         .r419eb0 = gk110_grctx_generate_r419eb0,
-> +       .r419f78 = gk110_grctx_generate_r419f78,
->  };
-> diff --git a/drivers/gpu/drm/nouveau/nvkm/engine/gr/ctxgk110b.c b/drivers/gpu/drm/nouveau/nvkm/engine/gr/ctxgk110b.c
-> index 7b9a34f9ec3c..5597e87624ac 100644
-> --- a/drivers/gpu/drm/nouveau/nvkm/engine/gr/ctxgk110b.c
-> +++ b/drivers/gpu/drm/nouveau/nvkm/engine/gr/ctxgk110b.c
-> @@ -103,4 +103,5 @@ gk110b_grctx = {
->         .gpc_tpc_nr = gk104_grctx_generate_gpc_tpc_nr,
->         .r418800 = gk104_grctx_generate_r418800,
->         .r419eb0 = gk110_grctx_generate_r419eb0,
-> +       .r419f78 = gk110_grctx_generate_r419f78,
->  };
-> diff --git a/drivers/gpu/drm/nouveau/nvkm/engine/gr/ctxgk208.c b/drivers/gpu/drm/nouveau/nvkm/engine/gr/ctxgk208.c
-> index c78d07a8bb7d..612656496541 100644
-> --- a/drivers/gpu/drm/nouveau/nvkm/engine/gr/ctxgk208.c
-> +++ b/drivers/gpu/drm/nouveau/nvkm/engine/gr/ctxgk208.c
-> @@ -568,4 +568,5 @@ gk208_grctx = {
->         .dist_skip_table = gf117_grctx_generate_dist_skip_table,
->         .gpc_tpc_nr = gk104_grctx_generate_gpc_tpc_nr,
->         .r418800 = gk104_grctx_generate_r418800,
-> +       .r419f78 = gk110_grctx_generate_r419f78,
->  };
-> diff --git a/drivers/gpu/drm/nouveau/nvkm/engine/gr/ctxgm107.c b/drivers/gpu/drm/nouveau/nvkm/engine/gr/ctxgm107.c
-> index beac66eb2a80..9906974ac3f0 100644
-> --- a/drivers/gpu/drm/nouveau/nvkm/engine/gr/ctxgm107.c
-> +++ b/drivers/gpu/drm/nouveau/nvkm/engine/gr/ctxgm107.c
-> @@ -988,4 +988,5 @@ gm107_grctx = {
->         .r406500 = gm107_grctx_generate_r406500,
->         .gpc_tpc_nr = gk104_grctx_generate_gpc_tpc_nr,
->         .r419e00 = gm107_grctx_generate_r419e00,
-> +       .r419f78 = gk110_grctx_generate_r419f78,
->  };
-> --
-> 2.41.0
->
+-        * Copy the needed fields before reusing the ucmd buffer, this
+-        * avoids memory allocation in this path.
++        * Copy the needed fields before reusing the ucmd buffer, this avoids
++        * memory allocation in this path. Again, user invalidate data struct
++        * must be added to the union ucmd_buffer.
+
+> > It's not so explicit though. Perhaps worth to have a check like below in this patch?
+> > 
+> > if (unlikely(klen > sizeof(union ucmd_buffer)))
+> > 	return -EINVAL;
+> 
+> Yes, stick this in the domain allocate path with a WARN_ON. The driver
+> is broken to allocate a domain with an invalid size.
+
+And here too with a WARN_ON_ONCE.
+
++       /*
++        * Either the driver is broken by having an invalid size, or the user
++        * invalidate data struct used by the driver is missing in the union.
++        */
++       if (WARN_ON_ONCE(hwpt->domain->ops->cache_invalidate_user &&
++                        (!hwpt->domain->ops->cache_invalidate_user_data_len ||
++                         hwpt->domain->ops->cache_invalidate_user_data_len >
++                         sizeof(union ucmd_buffer)))) {
++               rc = -EINVAL;
++               goto out_abort;
++
++       }
+
+Though I am making this cache_invalidate_user optional here, I
+wonder if there actually could be a case that a user-managed
+domain doesn't need a cache_invalidate_user op...
+
+Thanks
+Nicolin
