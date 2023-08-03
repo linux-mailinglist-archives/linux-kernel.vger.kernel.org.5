@@ -2,84 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5AB5076E3AB
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 10:54:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6610776E3B1
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 10:55:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234822AbjHCIyS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Aug 2023 04:54:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40486 "EHLO
+        id S234840AbjHCIzr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Aug 2023 04:55:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40884 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231331AbjHCIyQ (ORCPT
+        with ESMTP id S231331AbjHCIzo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Aug 2023 04:54:16 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 796BEE43;
-        Thu,  3 Aug 2023 01:54:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=G3dKS3PiyfTeGk+/L0aBzxktIOdUDrPMrl0WarMpWQQ=; b=Ia1vVio9qPQGTgm9A1rXOwAQvs
-        JdHxuflT57Mix99Tv3LruwRbE1jHPxlrI8ly2lXKqTgSNyxtnpLW4OPMI/YrbOz4lRyygGp0OCzCf
-        nuvOxZTE9hDXtjw/ML1v6wXGIlLP1/7jjMj/mPPR1iRNP3JhRfd/AlVuev525ENSTuBpoLUZND7cW
-        5PGXEbXG51yAdInstMTyFNCb01j+rWx7jEZsVrUTO7j1cwIKfeFS9yEvnnPGZY8yn/9FMlzve1fc4
-        dEcYOYqlRu3pr6SYW2qyA59vDs0RnkWYDBFHumuwSO5Gt7Z1yc/MTJt8hLJPUwWYcUGypRkIUW6St
-        GEDPh6jw==;
-Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-        id 1qRU5X-00GgiW-2u;
-        Thu, 03 Aug 2023 08:53:44 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 59B6F30007E;
-        Thu,  3 Aug 2023 10:53:42 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 38DA5202F3A1A; Thu,  3 Aug 2023 10:53:42 +0200 (CEST)
-Date:   Thu, 3 Aug 2023 10:53:42 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Ze Gao <zegao2021@gmail.com>
-Cc:     Adrian Hunter <adrian.hunter@intel.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Ian Rogers <irogers@google.com>,
-        Ingo Molnar <mingo@redhat.com>, Jiri Olsa <jolsa@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
-        linux-trace-kernel@vger.kernel.org, Ze Gao <zegao@tencent.com>
-Subject: Re: [RFC PATCH v6 3/5] sched, tracing: reorganize fields of switch
- event struct
-Message-ID: <20230803085342.GG212435@hirez.programming.kicks-ass.net>
-References: <20230803083352.1585-1-zegao@tencent.com>
- <20230803083352.1585-4-zegao@tencent.com>
+        Thu, 3 Aug 2023 04:55:44 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8FFD8E43
+        for <linux-kernel@vger.kernel.org>; Thu,  3 Aug 2023 01:54:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1691052898;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=a0Qb1ZCjTg5X2iHgPbuPkClilFu2mrOZGxq+uAuigRM=;
+        b=dvIbW6H9vc/JJQf0RRHFY7OusS9w4Ou7wLSb9EXp+PSO5KanYdgxOPCyVjnEMnbYwVj5NF
+        mq/6leymBEOnXEvE0Y8x84/x15QTHfImT2sjSyL2XS1q2+pa2iiDzxur1WBjp3Sbxr6w3G
+        KsFlt6V2W8f4O9D3BbtpvUotqCEJ+PU=
+Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
+ [209.85.218.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-218-2I-C1BrJO5yV8qekwrRrWQ-1; Thu, 03 Aug 2023 04:54:57 -0400
+X-MC-Unique: 2I-C1BrJO5yV8qekwrRrWQ-1
+Received: by mail-ej1-f72.google.com with SMTP id a640c23a62f3a-94a34d3e5ebso47231266b.3
+        for <linux-kernel@vger.kernel.org>; Thu, 03 Aug 2023 01:54:57 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691052896; x=1691657696;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=a0Qb1ZCjTg5X2iHgPbuPkClilFu2mrOZGxq+uAuigRM=;
+        b=CJYSFYOZZDOPJvn5DveeN5VV80WVKnKrBdkKAoTGpQ4kJUKrXnPMWjWHKHOOXtu7D1
+         12og8QSlmn+Y00e3RxHweDOOyr1EVxQ5eO2wT9xT0+HMDL48nfm5xL9SBEmlZdn8YX5T
+         swwYBPzqT++T0eLKOOKMgsretPaBBbr6C0dZfD67JGrAGZz++cIvOx3EFOnL4u5qi5PG
+         9aqorW/xpH3jcIUFtI3ok5UwZep6UsIFsyLlXXYU6zIYXJgGJq4My8cCk/McaQGGMtTf
+         1snbx0hwuDyOJJet3YF0UwOS19ESk5Dt8XZ8MdgLxdUXGWj4nP8+uGkFO4+eMnu4nl4h
+         y+AQ==
+X-Gm-Message-State: ABy/qLYIp7SCm+7sO6G/q9y5F3XxORNKi+fr47EnsJYdNbS5myjc5/TS
+        JqyYvW3gsdA1p0CMit+cq5/tp0TVgJfgCvmCbgl1hgNVpTsAXBVXZU4fZiAZhldCH9joZon7Xx7
+        ouNoYwZKX5aNdZ4qTjzXO3jUS
+X-Received: by 2002:a17:906:519e:b0:993:fb68:ed67 with SMTP id y30-20020a170906519e00b00993fb68ed67mr7034890ejk.24.1691052896530;
+        Thu, 03 Aug 2023 01:54:56 -0700 (PDT)
+X-Google-Smtp-Source: APBJJlHVe0KJwC7fd5aUom3TJxYmpf5W0xCgiDOUhdnqgr4ZWF5nCbowtI5xFne903dpuVY/rWA+AQ==
+X-Received: by 2002:a17:906:519e:b0:993:fb68:ed67 with SMTP id y30-20020a170906519e00b00993fb68ed67mr7034877ejk.24.1691052896280;
+        Thu, 03 Aug 2023 01:54:56 -0700 (PDT)
+Received: from step1.home (host-82-57-51-214.retail.telecomitalia.it. [82.57.51.214])
+        by smtp.gmail.com with ESMTPSA id u17-20020a1709060b1100b0099bcf563fe6sm10239984ejg.223.2023.08.03.01.54.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 03 Aug 2023 01:54:55 -0700 (PDT)
+From:   Stefano Garzarella <sgarzare@redhat.com>
+To:     netdev@vger.kernel.org
+Cc:     Arseniy Krasnov <AVKrasnov@sberdevices.ru>,
+        Stefano Garzarella <sgarzare@redhat.com>,
+        Paolo Abeni <pabeni@redhat.com>, linux-kernel@vger.kernel.org,
+        virtualization@lists.linux-foundation.org
+Subject: [PATCH net] test/vsock: remove vsock_perf executable on `make clean`
+Date:   Thu,  3 Aug 2023 10:54:54 +0200
+Message-ID: <20230803085454.30897-1-sgarzare@redhat.com>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230803083352.1585-4-zegao@tencent.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-type: text/plain
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 03, 2023 at 04:33:50AM -0400, Ze Gao wrote:
-> Report prioritiy and prev_state in 'short' to save some buffer
-> space. And also reorder the fields so that we take struct
-> alignment into consideration to make the record compact.
-> 
-> Suggested-by: Steven Rostedt (Google) <rostedt@goodmis.org>
-> Signed-off-by: Ze Gao <zegao@tencent.com>
+We forgot to add vsock_perf to the rm command in the `clean`
+target, so now we have a left over after `make clean` in
+tools/testing/vsock.
 
-I am really getting fed up with this. This again doesn't list any
-reasons on why this is a sane thing to do.
+Fixes: 8abbffd27ced ("test/vsock: vsock_perf utility")
+Cc: AVKrasnov@sberdevices.ru
+Signed-off-by: Stefano Garzarella <sgarzare@redhat.com>
+---
+ tools/testing/vsock/Makefile | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Please review past discussions and collate the various things mentioned
-into this Changelog.
+diff --git a/tools/testing/vsock/Makefile b/tools/testing/vsock/Makefile
+index 43a254f0e14d..21a98ba565ab 100644
+--- a/tools/testing/vsock/Makefile
++++ b/tools/testing/vsock/Makefile
+@@ -8,5 +8,5 @@ vsock_perf: vsock_perf.o
+ CFLAGS += -g -O2 -Werror -Wall -I. -I../../include -I../../../usr/include -Wno-pointer-sign -fno-strict-overflow -fno-strict-aliasing -fno-common -MMD -U_FORTIFY_SOURCE -D_GNU_SOURCE
+ .PHONY: all test clean
+ clean:
+-	${RM} *.o *.d vsock_test vsock_diag_test
++	${RM} *.o *.d vsock_test vsock_diag_test vsock_perf
+ -include *.d
+-- 
+2.41.0
+
