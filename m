@@ -2,254 +2,208 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0EECC76DCBB
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 02:34:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B2FE376DCF5
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 02:57:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232394AbjHCAeA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Aug 2023 20:34:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37182 "EHLO
+        id S232465AbjHCA5H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Aug 2023 20:57:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46022 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229832AbjHCAd6 (ORCPT
+        with ESMTP id S229875AbjHCA5F (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Aug 2023 20:33:58 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5AB8E1982;
-        Wed,  2 Aug 2023 17:33:57 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id D422161B6B;
-        Thu,  3 Aug 2023 00:33:56 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 99E3AC433C8;
-        Thu,  3 Aug 2023 00:33:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691022836;
-        bh=VZfLIkHg/Fv53y9K+d8bMvfkrphMsv+1OEZOJrz/KwY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=gKq34UVVJaybD8lmbevKl8jMO3tjQMTL29Wc7NjsCqwHIlZs47tcN8k4vmNOWy6MQ
-         7uAXl7Sg/BEnjwTiOS6QUoprir590zKsx8bLnxRCiTdoYPmmDdZkqsGcRrk+5u2WS7
-         4ao4jqOhY7+L+huDXu9eomIakTHBQyQ6s26gwFk7oq/BrvavWax3CwUntiPGFHDP99
-         7mPDfokImSBIqI24zbN60qNNrv+2SdkA2fwA7cryusvw33mPKe6Oce/wwZy8WhLwhW
-         Prq1QpqE0hqq4F3+UVKcU5OmcEiZrd3HAd4Valak6P3UdHBKlCR4yIrMHARGiFM1fn
-         FLu1o+Jz0wB4Q==
-Received: (nullmailer pid 1590584 invoked by uid 1000);
-        Thu, 03 Aug 2023 00:33:54 -0000
-Date:   Wed, 2 Aug 2023 18:33:54 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     TY Chang <tychang@realtek.com>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>, linux-gpio@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 5/7] dt-bindings: pinctrl: realtek: add RTD1315E pinctrl
- binding
-Message-ID: <20230803003354.GA1586526-robh@kernel.org>
-References: <20230726090409.16606-1-tychang@realtek.com>
- <20230726090409.16606-6-tychang@realtek.com>
+        Wed, 2 Aug 2023 20:57:05 -0400
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 517D226B0;
+        Wed,  2 Aug 2023 17:57:04 -0700 (PDT)
+Received: from pps.filterd (m0356517.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3730fecq025844;
+        Thu, 3 Aug 2023 00:56:45 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=jmkQEw53pUWR0UBuP984zIVOfazrdtIEuNlyOUI5ZZU=;
+ b=M6cQVI0LWWGgB8UKC45EHTtj4HRi7gVt0z7DjFWSZ37XR6XtbmN3npebaqnEeC4ARNvx
+ qBphfrsNrtqBqIYrzah4jfyZ4iH+eSUZX0pOix0tJNTGZ2LicrDBJVVqwxYLzyqtugWG
+ L9gutQRnECoG8dmw4BDAaKk8hV1aqHOUp93kERPZpH9H18900F4+yf5LsE0AbAkDZeGU
+ LR/+bKb2rve7VeyKe+shB4vI938+ZJunGlFaoI1m1Om0G9BrtU/egUunznfNjJGJCvtu
+ 7o4TD9FA5TcLD8RIEb4yiPoAGSzdEp8aU+FsvCTia26/T498H+gNyScKiS+Txo+Cee9z cw== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3s8179gww8-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 03 Aug 2023 00:56:45 +0000
+Received: from m0356517.ppops.net (m0356517.ppops.net [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 3730iGdS032755;
+        Thu, 3 Aug 2023 00:56:44 GMT
+Received: from ppma21.wdc07v.mail.ibm.com (5b.69.3da9.ip4.static.sl-reverse.com [169.61.105.91])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3s8179gwt6-13
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 03 Aug 2023 00:56:44 +0000
+Received: from pps.filterd (ppma21.wdc07v.mail.ibm.com [127.0.0.1])
+        by ppma21.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 372MfdTl015578;
+        Thu, 3 Aug 2023 00:34:35 GMT
+Received: from smtprelay04.wdc07v.mail.ibm.com ([172.16.1.71])
+        by ppma21.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3s5e3n93rm-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 03 Aug 2023 00:34:35 +0000
+Received: from smtpav04.wdc07v.mail.ibm.com (smtpav04.wdc07v.mail.ibm.com [10.39.53.231])
+        by smtprelay04.wdc07v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 3730YZTn42140104
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 3 Aug 2023 00:34:35 GMT
+Received: from smtpav04.wdc07v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 1D73258050;
+        Thu,  3 Aug 2023 00:34:35 +0000 (GMT)
+Received: from smtpav04.wdc07v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id BCE0058045;
+        Thu,  3 Aug 2023 00:34:33 +0000 (GMT)
+Received: from [9.47.158.152] (unknown [9.47.158.152])
+        by smtpav04.wdc07v.mail.ibm.com (Postfix) with ESMTP;
+        Thu,  3 Aug 2023 00:34:33 +0000 (GMT)
+Message-ID: <e21da81e-5e18-1aec-cc63-f316cdf0d2fc@linux.ibm.com>
+Date:   Wed, 2 Aug 2023 20:34:33 -0400
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230726090409.16606-6-tychang@realtek.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.12.0
+Subject: Re: [PATCH 1/1] tpm: disable hwrng for fTPM on some AMD designs
+Content-Language: en-US
+To:     Jerry Snitselaar <jsnitsel@redhat.com>,
+        Jarkko Sakkinen <jarkko@kernel.org>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Daniil Stas <daniil.stas@posteo.net>,
+        Mario Limonciello <mario.limonciello@amd.com>,
+        James.Bottomley@hansenpartnership.com, Jason@zx2c4.com,
+        linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org,
+        regressions@leemhuis.info, stable@vger.kernel.org
+References: <65a1c307-826d-4ca3-0336-07a185684e5d@amd.com>
+ <20230727195019.41abb48d@g14> <67eefe98-e6df-e152-3169-44329e22478d@amd.com>
+ <20230727200527.4080c595@g14>
+ <CAHk-=whqT0PxBazwfjWwoHQQFzZt50tV6Jfgq3iYceKMJtyuUg@mail.gmail.com>
+ <CUGAV1Y993FB.1O2Q691015Z2C@seitikki>
+ <CAHk-=whphk8Jp=NYmnm7Qv+vZ6ScYCz+rV8a2G1nD-AQY3z+mQ@mail.gmail.com>
+ <CUHF67ZOFOTN.1UFE7Q1IFRQMX@suppilovahvero>
+ <CAHk-=wgK0Z-LrJGExwG=e=oxjD93LJhY3jMmi_2O2_Pkjf8Tsg@mail.gmail.com>
+ <CUHG1TB7IELF.PVXOXEXBGEPP@suppilovahvero>
+ <ejqnhdrhktfrhcb76bxx6y73hydjov34t7m4wrvzjc22gdtzts@p4g7yqxdnijn>
+From:   Stefan Berger <stefanb@linux.ibm.com>
+In-Reply-To: <ejqnhdrhktfrhcb76bxx6y73hydjov34t7m4wrvzjc22gdtzts@p4g7yqxdnijn>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: Odd5d8PJL65wwCtxuBEiLvglHKN7Wn02
+X-Proofpoint-ORIG-GUID: X0UOYzpL91UBanjjrMqCZBDATt-De4VZ
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
+ definitions=2023-08-02_20,2023-08-01_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1011 mlxlogscore=999
+ impostorscore=0 malwarescore=0 adultscore=0 bulkscore=0 mlxscore=0
+ spamscore=0 lowpriorityscore=0 priorityscore=1501 phishscore=0
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2306200000 definitions=main-2308030004
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_MSPIKE_H5,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 26, 2023 at 05:04:07PM +0800, TY Chang wrote:
-> Add device tree bindings for RTD1315E.
+
+
+On 8/2/23 19:13, Jerry Snitselaar wrote:
+> On Tue, Aug 01, 2023 at 10:09:58PM +0300, Jarkko Sakkinen wrote:
+>> On Tue Aug 1, 2023 at 9:42 PM EEST, Linus Torvalds wrote:
+>>> On Tue, 1 Aug 2023 at 11:28, Jarkko Sakkinen <jarkko@kernel.org> wrote:
+>>>>
+>>>> I would disable it inside tpm_crb driver, which is the driver used
+>>>> for fTPM's: they are identified by MSFT0101 ACPI identifier.
+>>>>
+>>>> I think the right scope is still AMD because we don't have such
+>>>> regressions with Intel fTPM.
+>>>
+>>> I'm ok with that.
+>>>
+>>>> I.e. I would move the helper I created inside tpm_crb driver, and
+>>>> a new flag, let's say "TPM_CHIP_FLAG_HWRNG_DISABLED", which tpm_crb
+>>>> sets before calling tpm_chip_register().
+>>>>
+>>>> Finally, tpm_add_hwrng() needs the following invariant:
+>>>>
+>>>>          if (chip->flags & TPM_CHIP_FLAG_HWRNG_DISABLED)
+>>>>                  return 0;
+>>>>
+>>>> How does this sound? I can refine this quickly from my first trial.
+>>>
+>>> Sounds fine.
+>>
+>> Mario, it would be good if you could send a fix candidate but take my
+>> suggestion for a new TPM chip flag into account, while doing it. Please
+>> send it as a separate patch, not attachment to this thread.
+>>
+>> I can test and ack it, if it looks reasonable.
+>>
+>>> My only worry comes from my ignorance: do these fTPM devices *always*
+>>> end up being enumerated through CRB, or do they potentially look
+>>> "normal enough" that you can actually end up using them even without
+>>> having that CRB driver loaded?
+>>
+>> I know that QEMU has TPM passthrough but I don't know how it behaves
+>> exactly.
+>>
 > 
-> Signed-off-by: TY Chang <tychang@realtek.com>
-> ---
->  .../pinctrl/realtek,rtd1315e-pinctrl.yaml     | 165 ++++++++++++++++++
->  1 file changed, 165 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/pinctrl/realtek,rtd1315e-pinctrl.yaml
+> I just created a passthrough tpm device with a guest which it is using
+> the tis driver, while the host is using crb (and apparently one of the
+> amd devices that has an impacted fTPM). It looks like there is a
+> complete separation between the frontend and backends, with the front
+> end providing either a tis or crb interface to the guest, and then the
+> backend sending commands by writing to the passthrough device that was
+> given, such as /dev/tpm0, or an emulator such as swtpm. Stefan can
+> probably explain it much better than I.
+
+
+You explained it well... The passthrough TPM is only good for one VM (if
+at all), and all other VMs on the same machine should use a vTPM. Even
+one VM sharing the TPM with the host creates a potential mess with the
+shared resources of the TPM, such as the state of the PCRs.
+
+When that guest VM using the passthrough device now identifies the underlying
+hardware TPM's firmware version it will also take the same action to disable
+the TPM as a source for randomness. But then a VM with a passthrough TPM
+device should be rather rare...
+
 > 
-> diff --git a/Documentation/devicetree/bindings/pinctrl/realtek,rtd1315e-pinctrl.yaml b/Documentation/devicetree/bindings/pinctrl/realtek,rtd1315e-pinctrl.yaml
-> new file mode 100644
-> index 000000000000..b8fb6335ed65
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/pinctrl/realtek,rtd1315e-pinctrl.yaml
-> @@ -0,0 +1,165 @@
-> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
-> +# Copyright 2023 Realtek Semiconductor Corporation
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/pinctrl/realtek,rtd1315e-pinctrl.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Realtek DHC RTD1315E Pin Controller
-> +
-> +maintainers:
-> +  - TY Chang <tychang@realtek.com>
-> +
-> +description: |
-> +  Binding for Realtek DHC RTD1315E SoC pin control.
-> +
-> +properties:
-> +  compatible:
-> +    const: realtek,rtd13xxe-pinctrl
+>>> Put another way: is the CRB driver the _only_ way they are visible, or
+>>> could some people hit on this through the TPM TIS interface if they
+>>> have CRB disabled?
+>>
+>> I'm not aware of such implementations.
 
-Don't use wildcards in compatible strings.
+CRB and TIS are two distinct MMIO type of interfaces with different registers etc.
 
-> +
-> +  reg:
-> +    maxItems: 1
-> +
-> +patternProperties:
-> +  '^.*$':
-> +    if:
-> +      type: object
+AMD could theoretically build a fTPM with a CRB interface and then another one with the same firmware and the TIS, but why would they?
 
-For new bindings, define a suffix (e.g. "-pins") for the node name. 
+    Stefan
 
-> +    then:
-> +      allOf:
-> +        - $ref: pincfg-node.yaml#
-> +        - $ref: pinmux-node.yaml#
-> +
-> +      properties:
-> +        pins:
-> +          items:
-> +            enum: [ gpio_0, gpio_1, emmc_rst_n, emmc_dd_sb, emmc_clk, emmc_cmd,
-> +                    gpio_6, gpio_7, gpio_8, gpio_9, gpio_10, gpio_11, gpio_12,
-> +                    gpio_13, gpio_14, gpio_15, gpio_16, gpio_17, gpio_18, gpio_19,
-> +                    gpio_20, emmc_data_0, emmc_data_1, emmc_data_2, usb_cc2, gpio_25,
-> +                    gpio_26, gpio_27, gpio_28, gpio_29, gpio_30, gpio_31, gpio_32,
-> +                    gpio_33, gpio_34, gpio_35, hif_data, hif_en, hif_rdy, hif_clk,
-> +                    gpio_dummy_40, gpio_dummy_41, gpio_dummy_42, gpio_dummy_43,
-> +                    gpio_dummy_44, gpio_dummy_45, gpio_46, gpio_47, gpio_48, gpio_49,
-> +                    gpio_50, usb_cc1, emmc_data_3, emmc_data_4, ir_rx, ur0_rx, ur0_tx,
-> +                    gpio_57, gpio_58, gpio_59, gpio_60, gpio_61, gpio_62, gpio_dummy_63,
-> +                    gpio_dummy_64, gpio_dummy_65, gpio_66, gpio_67, gpio_68, gpio_69,
-> +                    gpio_70, gpio_71, gpio_72, gpio_dummy_73, emmc_data_5, emmc_data_6,
-> +                    emmc_data_7, gpio_dummy_77, gpio_78, gpio_79, gpio_80, gpio_81,
-> +                    ur2_loc, gspi_loc, hi_width, sf_en, arm_trace_dbg_en,
-> +                    ejtag_aucpu_loc, ejtag_acpu_loc, ejtag_vcpu_loc, ejtag_scpu_loc,
-> +                    dmic_loc, vtc_dmic_loc, vtc_tdm_loc, vtc_i2si_loc, tdm_ai_loc,
-> +                    ai_loc, spdif_loc, hif_en_loc, scan_switch, wd_rset, boot_sel,
-> +                    reset_n, testmode ]
-> +
-> +        function:
-> +          enum: [ gpio, nf, emmc, ao, gspi_loc0, gspi_loc1, uart0, uart1,
-> +                  uart2_loc0, uart2_loc1, i2c0, i2c1, i2c4, i2c5, pcie1,
-> +                  etn_led, etn_phy, spi, pwm0_loc0, pwm0_loc1, pwm1_loc0,
-> +                  pwm1_loc1, pwm2_loc0, pwm2_loc1, pwm3_loc0, pwm3_loc1,
-> +                  spdif_optical_loc0, spdif_optical_loc1, usb_cc1, usb_cc2,
-> +                  sd, dmic_loc0, dmic_loc1, ai_loc0, ai_loc1, tdm_ai_loc0,
-> +                  tdm_ai_loc1, hi_loc0, hi_m, vtc_i2so, vtc_i2si_loc0,
-> +                  vtc_i2si_loc1, vtc_dmic_loc0, vtc_dmic_loc1, vtc_tdm_loc0,
-> +                  vtc_tdm_loc1, dc_fan, pll_test_loc0, pll_test_loc1,
-> +                  ir_rx, uart2_disable, gspi_disable, hi_width_disable,
-> +                  hi_width_1bit, sf_disable, sf_enable, scpu_ejtag_loc0,
-> +                  scpu_ejtag_loc1, scpu_ejtag_loc2, scpu_ejtag_loc3,
-> +                  acpu_ejtag_loc0, acpu_ejtag_loc1, acpu_ejtag_loc2,
-> +                  vcpu_ejtag_loc0, vcpu_ejtag_loc1, vcpu_ejtag_loc2,
-> +                  aucpu_ejtag_loc0, aucpu_ejtag_loc1, aucpu_ejtag_loc2,
-> +                  gpu_ejtag, iso_tristate, dbg_out0, dbg_out1, standby_dbg,
-> +                  spdif, arm_trace_debug_disable, arm_trace_debug_enable,
-> +                  aucpu_ejtag_disable, acpu_ejtag_disable, vcpu_ejtag_disable,
-> +                  scpu_ejtag_disable, vtc_dmic_loc_disable, vtc_tdm_disable,
-> +                  vtc_i2si_disable, tdm_ai_disable, ai_disable, spdif_disable,
-> +                  hif_disable, hif_enable, test_loop, pmic_pwrup ]
-> +
-> +
-> +        drive-strength:
-> +          enum: [4, 8]
-> +
-> +        bias-pull-down: true
-> +
-> +        bias-pull-up: true
-> +
-> +        bias-disable: true
-> +
-> +        input-schmitt-enable: true
-> +
-> +        input-schmitt-disable: true
-> +
-> +        drive-push-pull: true
-> +
-> +        power-source:
-> +          description: |
-> +            Valid arguments are described as below:
-> +            0: power supply of 1.8V
-> +            1: power supply of 3.3V
-> +          enum: [0, 1]
-> +
-> +        realtek,pdrive:
-> +          description: |
-> +            An integer describing the level to adjust PMOS output driving capability.
-> +          $ref: /schemas/types.yaml#/definitions/uint32
-> +          minimum: 0
-> +          maximum: 7
-> +
-> +        realtek,ndrive:
-> +          description: |
-> +            An integer describing the level to adjust NMOS output driving capability.
-> +          $ref: /schemas/types.yaml#/definitions/uint32
-> +          minimum: 0
-> +          maximum: 7
-> +
-> +        realtek,dcycle:
-> +          description: |
-> +            An integer describing the level to adjust output duty cycle.
-> +            Valid arguments are described as below:
-> +            0: 0ns
-> +            2: + 0.25ns
-> +            3: + 0.5ns
-> +            4: -0.25ns
-> +            5: -0.5ns
-> +          $ref: /schemas/types.yaml#/definitions/uint32
-> +          enum: [ 0, 2, 3, 4, 5 ]
-> +
-> +      required:
-> +        - pins
-> +
-> +      additionalProperties: false
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +
-> +additionalProperties: false
-> +
-> +examples:
-> +  - |
-> +     pinctrl@4e000 {
-> +         compatible = "realtek,rtd13xxe-pinctrl";
-> +         reg = <0x4e000 0x130>;
-> +
-> +         emmc_pins_hs200 {
 
-Don't use '_' in node names.
+>>
+>>> I see, for example, that qemu ends up emulating the TIS layer, and it
+>>> might end up forwarding the TPM requests to something that is natively
+>>> CRB?
+>>>
+>>> But again: I don't know enough about CRB vs TIS, so the above may be a
+>>> stupid question.
 
-> +             pins = "emmc_clk",
-> +                    "emmc_cmd",
-> +                    "emmc_data_0",
-> +                    "emmc_data_1",
-> +                    "emmc_data_2",
-> +                    "emmc_data_3",
-> +                    "emmc_data_4",
-> +                    "emmc_data_5",
-> +                    "emmc_data_6",
-> +                    "emmc_data_7";
-> +             function = "emmc";
-> +             realtek,pdrive = <0x2>;
-> +             realtek,ndrive = <0x2>;
-> +         };
-> +
-> +         i2c_pins_0 {
-> +             pins = "gpio_12",
-> +                    "gpio_13";
-> +             function = "i2c0";
-> +             drive-strength = <4>;
-> +         };
-> +     };
-> -- 
-> 2.41.0
+
+
+>>>
+>>>             Linus
+>>
+>> I would focus exactly what is known not to work and disable exactly
+>> that.
+>>
+>> If someone still wants to enable TPM on such hardware, we can later
+>> on add a kernel command-line flag to enforce hwrng. This ofc based
+>> on user feedback, not something I would add right now.
+>>
+>> BR, Jarkko
 > 
