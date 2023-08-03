@@ -2,241 +2,874 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3301976DF20
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 05:50:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 04EB776DF22
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 05:51:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231219AbjHCDuf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Aug 2023 23:50:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57730 "EHLO
+        id S231542AbjHCDvJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Aug 2023 23:51:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58024 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229613AbjHCDub (ORCPT
+        with ESMTP id S231396AbjHCDvD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Aug 2023 23:50:31 -0400
-Received: from NAM12-BN8-obe.outbound.protection.outlook.com (mail-bn8nam12on2125.outbound.protection.outlook.com [40.107.237.125])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 908842D65
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Aug 2023 20:50:30 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=gcuSVoxKA+QdI9zCNekARX7nFQmO2G6EVEVHm/iw4e2xVY6aTTqgoN78kizYQgeeQGozRVOw6hFJFV8wFdgZvswPuBjUCZek89TKLdYZJqWwvhigWRIWSKbKOcD1aLCyeuX20Vguu4bqHNxAJ3jAZewBl6OJ410hBAk56o/Vz2IgHCnKy+Vs5Voovp8n68v3IQaTuq5rWbAzkGPFGG+STNrgjWFoAKIBKYVmpA0HyEXpkXgVubnMQN8fPn+1C1Ll5XHio6W8rWDLO0p6AZlbwAyumrNUvRPcqwJcb5qSgNsMOsRaXHhhttsFKoWCu5/h22uVJ3slxsG9ynw1+oGxeg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=ZYKawFCrBDqSkSE7yHp+1Ifxz9TYZHElwARyIAbIz0A=;
- b=mmfI7F2j2AHgHmf5YvFx9ZRnA+rcrk+bs877wwY/UdB6bxbNZnJFEX7Vr+koBcshelu9N+spBwcXcxUeJQVpbimzpiVo5aNnzRiAcdXBjJqWodRkytlhEEfjpLtaG6o4rJzBfsfJhe6fOklkqQXr6upLhWekCz+odwoTCuI/TKudBX8lJg8s+6jM4xuSOxIJ5iaOs4TRoe3USIet/dsLeJJEHiWWssO5cFan+S+9piTgvU6DqThglBbS2aiuc/RP5iBs4k/8fZJ0gq36Egl2tpwiO0m5s2oDjZVRWGYQH53dmiPYJvXwckCEtrHP9EbToRj5C+HzEKhyvSLpwxjUPw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=microsoft.com; dmarc=pass action=none
- header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ZYKawFCrBDqSkSE7yHp+1Ifxz9TYZHElwARyIAbIz0A=;
- b=UScGMniEywmr+JIRuTgBW/lJlxeztdoLmEbUE7j1JEGJNtMWr83DWV3h4KxKCum/oDsT22dswh6L8GwNrDHh1ktUtta2N1xiTEmIWqsCq7FxeiRzcadOG7ldkzGArBHVJnlma4W9NJVa4bpqgiMoSrSDTppQR2s7UNh060ZaQgg=
-Received: from BYAPR21MB1688.namprd21.prod.outlook.com (2603:10b6:a02:bf::26)
- by IA1PR21MB3425.namprd21.prod.outlook.com (2603:10b6:208:3e2::5) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6652.3; Thu, 3 Aug
- 2023 03:50:27 +0000
-Received: from BYAPR21MB1688.namprd21.prod.outlook.com
- ([fe80::b588:458f:b0dd:8b9f]) by BYAPR21MB1688.namprd21.prod.outlook.com
- ([fe80::b588:458f:b0dd:8b9f%3]) with mapi id 15.20.6652.004; Thu, 3 Aug 2023
- 03:50:27 +0000
-From:   "Michael Kelley (LINUX)" <mikelley@microsoft.com>
-To:     Thomas Gleixner <tglx@linutronix.de>,
-        LKML <linux-kernel@vger.kernel.org>
-CC:     "x86@kernel.org" <x86@kernel.org>,
-        Andrew Cooper <andrew.cooper3@citrix.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Wei Liu <wei.liu@kernel.org>,
-        Arjan van de Ven <arjan@linux.intel.com>,
-        Juergen Gross <jgross@suse.com>,
-        Peter Keresztes Schmidt <peter@keresztesschmidt.de>
-Subject: RE: [patch V3 00/60] x86/apic: Decrapification and static calls
-Thread-Topic: [patch V3 00/60] x86/apic: Decrapification and static calls
-Thread-Index: AQHZxGV49eyUF/ezwEuz96/Kw6sqkK/X8RoQ
-Date:   Thu, 3 Aug 2023 03:50:27 +0000
-Message-ID: <BYAPR21MB168880BB447AA37A88D47B89D708A@BYAPR21MB1688.namprd21.prod.outlook.com>
-References: <20230801103042.936020332@linutronix.de>
-In-Reply-To: <20230801103042.936020332@linutronix.de>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-msip_labels: MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ActionId=5ffb9866-069c-47c9-8a3f-61721969371b;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ContentBits=0;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Enabled=true;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Method=Standard;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Name=Internal;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SetDate=2023-08-03T03:45:29Z;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SiteId=72f988bf-86f1-41af-91ab-2d7cd011db47;
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=microsoft.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: BYAPR21MB1688:EE_|IA1PR21MB3425:EE_
-x-ms-office365-filtering-correlation-id: af0cd00e-5145-48a7-b761-08db93d4c676
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: cH1u09bhmOwBH/teGCBETCzpKVc69lXu2DBLNVIwkurt9BBm3GFdqm6l3Xg6082DW4Kcs8WBuj0GEDXRD+16yg2wM6ZpvxHJlV2FgkOilTgrj8DWKbe2VVZ+GW0ER2bcB3NQlIOXn7+Xa36sWKPHpVhrA7WaWNcE3PKbeshEZ6fVZp+xq8UrUukTmooJ0lXlKnGk8oGCypDQ2EFyAzDt6ILDxYC39quZB6OCbnb0ynYV62Nw3joG/KBamznDAmCZUpLZCy7wlpq9I7/wajUEeHMmpereUfv6uufM3hWSnPaktF+AX+ubH4+bEva0r0lrHXpCgj/0KrATZVfyIM62x1Yb8MKUF4v3AI3QaHw1XcohwhYC6nH6Yrfzb9/tL25fMumHM1pegwLuJIMYCFBokELX6B13th3E+Xqt7Wwzs4JWJtkIB0ADPzvKwpC4kG2a2rZptN17FJxNQXKcZ2/C8Z+irJnHia/VhnnQGx59WE4tq7jn/WyHA6SyKKu8+G0IxiiGoAfoqMTgp2Xh2lNdQYWh6xiaNcxMR3cH7TZd7B0xZch0527fIB+PSgmj7G7k/NtQ6t/tUmpdMavh57VvnnlafbyNbqsH1JwRilwTY0Tb58FuGFWzF8PL7m83CYVMRWT5tC8a7rcGvmsGtwEX5A==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR21MB1688.namprd21.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(136003)(376002)(346002)(396003)(39860400002)(366004)(451199021)(86362001)(66476007)(8936002)(8990500004)(2906002)(7416002)(52536014)(5660300002)(41300700001)(66946007)(786003)(76116006)(66556008)(54906003)(64756008)(316002)(66446008)(4326008)(33656002)(110136005)(10290500003)(478600001)(71200400001)(7696005)(9686003)(966005)(26005)(6506007)(186003)(83380400001)(38070700005)(8676002)(122000001)(38100700002)(82950400001)(82960400001)(55016003);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?m13zw8wffNxuZ8IR4owUn206vsNqp8NbM1nXY4bgPcjMMxS46eqCB9LPYyRQ?=
- =?us-ascii?Q?eUO3CW8UPBaHeQd+YXLWKJhoshgai+6dFrZNd83UhTKGdzjNKlhsfrHQIOKT?=
- =?us-ascii?Q?n18Q+Foou+rnfdLP7WmyftesNGNd+aOcNj4z/KUEypTKBYEoBunnVB4c3qQl?=
- =?us-ascii?Q?/OIjbDX+ksBMRHwHLlj36G64Go4iWPt6i9E0f5KeJRLf0UHbZM6mZMYn5dc5?=
- =?us-ascii?Q?V0Xyzwp4OZmxbUZ4N6Iq1GakmqWqiY7p8G9ugzHW8hOSti2qqQldg4kroMgB?=
- =?us-ascii?Q?ETW1QEogmfzl113Q7je+omCvcheKJIPq4Hh7802vj6Y8p0cLoya3kk02xYEb?=
- =?us-ascii?Q?kIE9ow/hB6LmKLshNEF8ce72Z1YmNKoAAu0uTT1VVfqLf2By9cyyB9Cg0Ytg?=
- =?us-ascii?Q?P4Le4Ss3E2gkRBDZxUCphWANBxJU9IOwzP3ZuPKDd2yY5kptRYmQQAavSg4Z?=
- =?us-ascii?Q?g9X/xpbVt04nHPGLW5W/NJHWkGbfBsi4vuFUUrRYA7sPMlvSnmrZYSphOA40?=
- =?us-ascii?Q?w172sxaiftwVRyMH7f266UKYwWPTsp8/xlOf1/b+mvksYLNbyvbwuLxF34SU?=
- =?us-ascii?Q?Yria6GjMeHtFM2ZriescmjokejhvlZpTHb0F6KKhlk+ps1SgnhxqajQSnwrH?=
- =?us-ascii?Q?FAqOmuZdWTBbtOv7+k2JFkjJqu3cq2fT4dQO4ltnhPvbfjTUcJyQvhJAWlik?=
- =?us-ascii?Q?UTzj/dxYM+QyZGJm3nknaSICnZp1AUQR1V0E4D5IXln/F8Mpgbwjsw1gCL3q?=
- =?us-ascii?Q?KhYLgseWMi02JEpMnYM2sS2gNVnZQwRSlsOlMjk/swluaaX+QnSvGKTg3E4O?=
- =?us-ascii?Q?IMYyXLGCXFOYllAei8z3IbKsY7iadbOumUff7vv73DHp/dA9ZWSc6vERUfVz?=
- =?us-ascii?Q?WsOJvFLzSJ8+TqWf4k/+KN5pNd8BASJA5hNL5oXN+8wFTuK9NFSr7Jeem1mx?=
- =?us-ascii?Q?4Ub47+Du0TttpUmHL7zcP5OLR8+5DwYpqmF8in0hzXy6jsJAVEY32Pg2WkEt?=
- =?us-ascii?Q?Es3AMsKhX/Slbl2+gAs8sl9HU19N7d8dOtp4YDwSeF0k1N2zUJrHSaKWPtrx?=
- =?us-ascii?Q?aIlxPv5YveJcSSR3RYRWkScksfIEYzUuyO9QW1IOiyHyjrYaciLz6c7a+7br?=
- =?us-ascii?Q?k1OAy7wBHtChueRdD3nI6MLjNHQcT9m8YqkE6c/7JGpNOx7mpqhUfzWtxZRP?=
- =?us-ascii?Q?fG7CSN6KreIzWaDPw2sktXQ9P8t71yZuxuvj3cfFSAR7Kk3HeqUB7F89noL0?=
- =?us-ascii?Q?RBwVz6xVXo+ywUOM3f/IbbKqCK+/hkMlA6MpSAqhrhrCFx3Vuo75XzF3rYW3?=
- =?us-ascii?Q?56+ABnCgVdI+6/7hWMlte6j2ZNfyVXuIesviCZ9vhU5nKNyEmbGsoB+EjtlR?=
- =?us-ascii?Q?8h2oeGItoiT0T/ShGGxXcMnutvSfFYFhkRtsIoqH0Fqp8rzQWcTV/0Vr/zuL?=
- =?us-ascii?Q?MtXgX58gny1j3js7i32xetoLiSoFT9sxGUEZ4eSaFEhfCpybxY69yv4FQi/P?=
- =?us-ascii?Q?Ehw39ksrZIKRFOkkZ4pyVfQjZ2RDjjwYWvwOQ3i25WBLiecx0PPCsGL2raB+?=
- =?us-ascii?Q?iAvlZAgunb09Uso7Cs731V4iYldj4dzyGMarjf3yNenmesX3zffVzBmEL8bx?=
- =?us-ascii?Q?Ww=3D=3D?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        Wed, 2 Aug 2023 23:51:03 -0400
+Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 560C830CA
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Aug 2023 20:50:54 -0700 (PDT)
+Received: by mail-pl1-x62f.google.com with SMTP id d9443c01a7336-1bbc87ded50so4044685ad.1
+        for <linux-kernel@vger.kernel.org>; Wed, 02 Aug 2023 20:50:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1691034654; x=1691639454;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=DYgRi+5mBSSOvNhGupjoV8ReE7dLBtDZr4KHCJaGAIA=;
+        b=vCAM2y+rQ/N2eCisLeoRuRIAC/nMo33nwXqsWPsJ6tf0GMesytOwPrompDBtrXY8oJ
+         +1r01jqqpyT7tV+lxF5J+qxPLoapVuTpWTTHS7MBvSbBuz4arTtvBGC0QqdhwNsL/ovw
+         EzNZFVy90D/Y0iGZ7cnFWLq2urkmw024nXKPSQ5P+fqLDJyNJp96rBp7yXjlVE6GSoQg
+         V6LnPpGJW5mbWzS4hoTWCAjOaD7yb/9+DWyZSe161qmIBVygaD9HTaxXA0PLkwy/k12y
+         alBvIYuvyOvcpws5AMWI7lvyrqy9CpZdEDsJWePTI5K5/d1EvjXQhSyfvsfKkRW/bmYb
+         LSxw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691034654; x=1691639454;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=DYgRi+5mBSSOvNhGupjoV8ReE7dLBtDZr4KHCJaGAIA=;
+        b=lN8Kq2goiOLlTUKBENGoWwX+UInMOxzNG6o4k1OTnMWyDrJHmnHvaRbiPZ0a0yBJp7
+         NZeXQwYAUzuuKIziGjsYTHytNf0sGya4kC+WSLqiDB4/C7yd7Kz3DrtQLeromVgBvKfG
+         iEvQjU3dO0vi98RasM3PDJmv8CM02BU83bCoOEEf7EOMQqlq1D6F6A0+dJZBE7Vz90JI
+         0UGuYN9XljlSnqfn+vit01B8xWUajmRwZUQAOyXJPXGIGYTVzG3L35FQPbwD5QvKGG3E
+         fhUU03FWWLIt2srvzGojRaoPOKKWG+uDBObgYLWodAPD4kilcHaG86cuMkgzm5YUDEmR
+         5Tgg==
+X-Gm-Message-State: ABy/qLbiqRxJsg4nYnNeIPoK/LZbksqVa3MrLSnx2xL8JyRkqwgiFO+e
+        p4mqqvOdFz2JsM2ZbW3L3wnKGg==
+X-Google-Smtp-Source: APBJJlHd303Xy38Fma2MoDFrp5qOw85kAs4UHAwclsbk2moIoTsxfzMGBw7H1yyZJYppwELRyz8V1w==
+X-Received: by 2002:a17:902:c20c:b0:1b1:9218:6bf9 with SMTP id 12-20020a170902c20c00b001b192186bf9mr17287950pll.43.1691034653972;
+        Wed, 02 Aug 2023 20:50:53 -0700 (PDT)
+Received: from leoy-huanghe.lan ([156.59.39.102])
+        by smtp.gmail.com with ESMTPSA id q10-20020a170902edca00b001bbdf32f011sm13033041plk.269.2023.08.02.20.50.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 02 Aug 2023 20:50:53 -0700 (PDT)
+From:   Leo Yan <leo.yan@linaro.org>
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Ian Rogers <irogers@google.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org
+Cc:     Leo Yan <leo.yan@linaro.org>
+Subject: [PATCH v2] perf doc: Document ring buffer mechanism
+Date:   Thu,  3 Aug 2023 11:50:37 +0800
+Message-Id: <20230803035037.1750340-1-leo.yan@linaro.org>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-X-OriginatorOrg: microsoft.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR21MB1688.namprd21.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: af0cd00e-5145-48a7-b761-08db93d4c676
-X-MS-Exchange-CrossTenant-originalarrivaltime: 03 Aug 2023 03:50:27.5046
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 72f988bf-86f1-41af-91ab-2d7cd011db47
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: qr12XGzdHxSr+QQbzcFEFbxkfy/OKbSBGvaoXbyvAjOfgn3Tj3FNFKOWjFSnLuNZ2IK8uJeQPHfeTP2vAfKK4s7b0lDGaEVJEVbemcBw6P4=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA1PR21MB3425
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Thomas Gleixner <tglx@linutronix.de> Sent: Tuesday, August 1, 2023 3:=
-47 AM
->=20
-> Hi!
->=20
-> This is the follow up to:
->=20
->=20
-> https://lore.kernel.org/lkml/20230724131206.500814398@linutronix.de/
->=20
-> which addresses the XEN PV fallout decoded by Juergen.
->=20
-> TLDR: This cleans up accrued and partially unused gunk in order to conver=
-t
-> the APIC callbacks to static calls.
->=20
-> The changes vs. V2:
->=20
->   - Unbreak XEN/PV - Juergen
->=20
->     Resulting delta patch below.
->=20
->   - Rebased to 6.5-rc4 in preparation for the CPUID overhaul on top, whic=
-h
->     has some collisions due to the recent mitigation muck.
->=20
-> The series is also available from git:
->=20
->   git://git.kernel.org/pub/scm/linux/kernel/git/tglx/devel.git apic-stati=
-c-call-v3
->=20
-> Thanks,
->=20
-> 	tglx
-> ---
-> diff --git a/arch/x86/xen/apic.c b/arch/x86/xen/apic.c
-> index 468406f511ff..7ad91225fdf4 100644
-> --- a/arch/x86/xen/apic.c
-> +++ b/arch/x86/xen/apic.c
-> @@ -155,20 +155,9 @@ static struct apic xen_pv_apic __ro_after_init =3D {
->  	.icr_read			=3D xen_apic_icr_read,
->  	.icr_write			=3D xen_apic_icr_write,
->  };
-> -
-> -static void __init xen_apic_check(void)
-> -{
-> -	apic_install_driver(&xen_pv_apic);
-> -}
-> +apic_driver(xen_pv_apic);
->=20
->  void __init xen_init_apic(void)
->  {
->  	x86_apic_ops.io_apic_read =3D xen_io_apic_read;
-> -	/* On PV guests the APIC CPUID bit is disabled so none of the
-> -	 * routines end up executing. */
-> -	if (!xen_initial_domain())
-> -		apic_install_driver(&xen_pv_apic);
-> -
-> -	x86_platform.apic_post_init =3D xen_apic_check;
->  }
-> -apic_driver(xen_pv_apic);
-> diff --git a/arch/x86/xen/enlighten_pv.c b/arch/x86/xen/enlighten_pv.c
-> index 93b658248d01..c393c44892ac 100644
-> --- a/arch/x86/xen/enlighten_pv.c
-> +++ b/arch/x86/xen/enlighten_pv.c
-> @@ -1326,7 +1326,7 @@ asmlinkage __visible void __init xen_start_kernel(s=
-truct
-> start_info *si)
->=20
->  	x86_init.resources.memory_setup =3D xen_memory_setup;
->  	x86_init.irqs.intr_mode_select	=3D x86_init_noop;
-> -	x86_init.irqs.intr_mode_init	=3D x86_init_noop;
-> +	x86_init.irqs.intr_mode_init	=3D x86_64_probe_apic;
->  	x86_init.oem.arch_setup =3D xen_arch_setup;
->  	x86_init.oem.banner =3D xen_banner;
->  	x86_init.hyper.init_platform =3D xen_pv_init_platform;
-> @@ -1366,12 +1366,10 @@ asmlinkage __visible void __init xen_start_kernel=
-(struct
-> start_info *si)
->=20
->  	xen_init_capabilities();
->=20
-> -#ifdef CONFIG_X86_LOCAL_APIC
->  	/*
->  	 * set up the basic apic ops.
->  	 */
->  	xen_init_apic();
-> -#endif
->=20
->  	machine_ops =3D xen_machine_ops;
->=20
-> diff --git a/arch/x86/xen/smp_pv.c b/arch/x86/xen/smp_pv.c
-> index c6b42c66c60c..a0f07bbfcd6e 100644
-> --- a/arch/x86/xen/smp_pv.c
-> +++ b/arch/x86/xen/smp_pv.c
-> @@ -182,7 +182,8 @@ static void __init _get_smp_config(unsigned int early=
-)
->  	if (subtract)
->  		set_nr_cpu_ids(nr_cpu_ids - subtract);
->  #endif
-> -
-> +	/* Pretend to be a proper enumerated system */
-> +	smp_found_config =3D 1;
->  }
->=20
->  static void __init xen_pv_smp_prepare_boot_cpu(void)
->=20
+In the Linux perf tool, the ring buffer serves not only as a medium for
+transferring PMU event data but also as a vital mechanism for hardware
+tracing using technologies like Intel PT and Arm CoreSight, etc.
 
-Entire series tested implicitly on Hyper-V guests as part of
-testing the topology series with the scope described here:
-https://lore.kernel.org/lkml/BYAPR21MB16884A9AE4AF581B0B1CDB25D708A@BYAPR21=
-MB1688.namprd21.prod.outlook.com/T/#mf6ccf50e65e214cd6d8ba3e683873bf4139259=
-a1
+Consequently, the ring buffer mechanism plays a crucial role by ensuring
+high throughput for data transfer between the kernel and user space
+while avoiding excessive overhead caused by the ring buffer itself.
 
-Tested-by: Michael Kelley <mikelley@microsoft.com>
+This commit documents the ring buffer mechanism in detail.  It provides
+an in-depth explanation of the implementation of both the generic ring
+buffer and the AUX ring buffer.  Additionally, it covers how these ring
+buffers support various tracing modes and explains the synchronization
+with memory barriers.
+
+Signed-off-by: Leo Yan <leo.yan@linaro.org>
+---
+
+Changes from v1:
+- Addressed Ian's comments and suggestions (Ian Rogers).
+
+ tools/perf/Documentation/perf-ring-buffer.txt | 762 ++++++++++++++++++
+ 1 file changed, 762 insertions(+)
+ create mode 100644 tools/perf/Documentation/perf-ring-buffer.txt
+
+diff --git a/tools/perf/Documentation/perf-ring-buffer.txt b/tools/perf/Documentation/perf-ring-buffer.txt
+new file mode 100644
+index 000000000000..2380d54a1068
+--- /dev/null
++++ b/tools/perf/Documentation/perf-ring-buffer.txt
+@@ -0,0 +1,762 @@
++perf-ring-buffer(1)
++===================
++
++NAME
++----
++perf-ring-buffer - Introduction to the perf ring buffer mechanism
++
++Introduction
++------------
++The ring buffer is a fundamental mechanism for data transfer.  perf uses
++ring buffers to transfer event data from kernel to user space, another
++kind of ring buffer which is so called auxiliary (AUX) ring buffer also
++plays an important role for hardware tracing with Intel PT, Arm
++CoreSight, etc.
++
++The ring buffer implementation is critical but it's also a very
++challenging work.  On the one hand, the kernel and perf tool in the user
++space use the ring buffer to exchange data and stores data into data
++file, thus the ring buffer needs to transfer data with high throughput;
++on the other hand, the ring buffer management should avoid significant
++overload to distract profiling results.
++
++This documentation dives into the details for perf ring buffer with two
++parts: firstly it explains the perf ring buffer implementation, then in
++the second part discusses the AUX ring buffer mechanism.
++
++Ring buffer implementation
++--------------------------
++
++Basic algorithm
++~~~~~~~~~~~~~~~
++
++That said, a typical ring buffer is managed by a head pointer and a tail
++pointer; the head pointer is manipulated by a writer and the tail
++pointer is updated by a reader respectively.
++
++            +---------------------------+
++            |   |   |***|***|***|   |   |
++            +---------------------------+
++                  `-> Tail    `-> Head
++
++            * : the data is filled by the writer.
++	    Figure 1: Ring buffer
++
++Perf uses the same way to manage its ring buffer.  In the implementation
++there are two key data structures held together in a set of consecutive
++pages, the control structure and then the ring buffer itself.  The page
++with the control structure in is known as the "user page".  Being held
++in continuous virtual addresses simplifies locating the ring buffer
++address, it is in the pages after the page with the user page.
++
++The control structure is named as `perf_event_mmap_page`, it contains a
++head pointer `data_head` and a tail pointer `data_tail`.  When the
++kernel starts to fill records into the ring buffer, it updates the head
++pointer to reserve the memory so later it can safely store events into
++the buffer; on the other side, the perf tool updates the tail pointer
++after consuming data from the ring buffer.
++
++        user page                          ring buffer
++  +---------+---------+   +---------------------------------------+
++  |data_head|data_tail|...|   |   |***|***|***|***|***|   |   |   |
++  +---------+---------+   +---------------------------------------+
++      `          `--------------^                   ^
++       `--------------------------------------------|
++
++            * : the data is filled by the writer.
++	    Figure 2: Perf ring buffer
++
++When using the 'perf record' tool, we can specify the ring buffer size
++with option '-m' or '--mmap-pages=', the given size will be rounded up
++to a power of two that is a multiple of a page size.  Though the kernel
++allocates at once for all memory pages, it's deferred to map the pages
++to VMA area until the perf tool accesses the buffer from the user space.
++In other words, at the first time accesses the buffer's page from user
++space in the perf tool, a data abort exception for page fault is taken
++and the kernel uses this occasion to map the page into process VMA, thus
++the perf tool can continue to access the page after returning from the
++exception.
++
++The function perf_mmap_fault() is for handling the page fault, which
++invokes perf_mmap_to_page() to figure out which page should be mapped.
++The structure 'vm_fault' has a field 'pgoff' to indicate which page
++should be mapped, if 'pgoff' is zero it maps the ring buffer's user
++page, otherwise, the ring buffer's page is mapped with index 'pgoff-1'
++(since the first page in VMA is for user page, so we need to decrease 1
++to get the ring buffer's page index).
++
++Ring buffer for different tracing modes
++~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
++
++Perf profiles programs with different modes: default mode, per thread
++mode, per cpu mode, and system wide mode.  This section describes what's
++these modes and how the ring buffer meets requirements for them.  At
++last we will review the race conditions caused by these modes.
++
++Default mode
++
++Usually we execute `perf record` command followed by a profiling program
++name, like below command:
++
++	perf record test_program
++
++This command doesn't specify any options related with ring buffer mode,
++it's called default mode.
++
++As shown below, the perf tool allocates individual ring buffers for each
++CPU, but it only enables events for the profiled program rather than for
++all threads in the system.  The T1 thread represents the thread context
++of the `test_program`, whereas T2 and T3 are irrelevant threads in the
++system.   The perf samples are exclusively collected for the T1 thread
++and stored in the ring buffer associated with the CPU on which the T1
++thread is running.
++
++
++            T1                      T2                 T1
++          +----+              +-----------+          +----+
++  CPU0    |xxxx|              |xxxxxxxxxxx|          |xxxx|
++          +----+--------------+-----------+----------+----+-------->
++            |                                          |
++            v                                          v
++          +-----------------------------------------------------+
++          |                  Ring buffer 0                      |
++          +-----------------------------------------------------+
++
++                 T1
++               +-----+
++  CPU1         |xxxxx|
++          -----+-----+--------------------------------------------->
++                  |
++                  v
++          +-----------------------------------------------------+
++          |                  Ring buffer 1                      |
++          +-----------------------------------------------------+
++
++                                      T1              T3
++                                    +----+        +-------+
++  CPU2                              |xxxx|        |xxxxxxx|
++          --------------------------+----+--------+-------+-------->
++                                      |
++                                      v
++          +-----------------------------------------------------+
++          |                  Ring buffer 2                      |
++          +-----------------------------------------------------+
++
++                            T1
++                     +--------------+
++  CPU3               |xxxxxxxxxxxxxx|
++          -----------+--------------+------------------------------>
++                            |
++                            v
++          +-----------------------------------------------------+
++          |                  Ring buffer 3                      |
++          +-----------------------------------------------------+
++
++	    T1: Thread 1; T2: Thread 2; T3: Thread 3
++	    x: Thread is in running state
++	    Figure 3: Ring buffer for default mode
++
++Per-thread mode
++
++By specifying option '--per-thread' in perf command, the ring buffer is
++allocated for every profiled thread.  An example command is:
++
++	perf record --per-thread test_program
++
++In this mode, a profiled thread is scheduled on a CPU, the events on
++that CPU will be enabled; and if the thread is scheduled out from the
++CPU, the events on the CPU will be disabled.  When the thread is
++migrated from one CPU to another, the events will be disabled on the
++previous CPU and enabled on the next CPU correspondingly.
++
++            T1                      T2                 T1
++          +----+              +-----------+          +----+
++  CPU0    |xxxx|              |xxxxxxxxxxx|          |xxxx|
++          +----+--------------+-----------+----------+----+-------->
++            |                                           |
++            |    T1                                     |
++            |  +-----+                                  |
++  CPU1      |  |xxxxx|                                  |
++          --|--+-----+----------------------------------|---------->
++            |     |                                     |
++            |     |                   T1            T3  |
++            |     |                 +----+        +---+ |
++  CPU2      |     |                 |xxxx|        |xxx| |
++          --|-----|-----------------+----+--------+---+-|---------->
++            |     |                   |                 |
++            |     |         T1        |                 |
++            |     |  +--------------+ |                 |
++  CPU3      |     |  |xxxxxxxxxxxxxx| |                 |
++          --|-----|--+--------------+-|-----------------|---------->
++            |     |         |         |                 |
++            v     v         v         v                 v
++          +-----------------------------------------------------+
++          |                  Ring buffer                        |
++          +-----------------------------------------------------+
++
++	    T1: Thread 1
++	    x: Thread is in running state
++	    Figure 4: Ring buffer for per-thread mode
++
++When perf runs in per-thread mode, a ring buffer is allocated for the
++profiled thread T1.  The ring buffer is dedicated for thread T1, if the
++thread T1 is running, the perf events will be recorded into the ring
++buffer; when the thread is sleeping, all associated events will be
++disabled, thus no trace data will be recorded into the ring buffer.
++
++Per-CPU mode
++
++The option '-C' is used to collect samples on the list of CPUs, the ring
++buffers are allocated for the specified CPUs.  For the example in below
++command, the perf command receives option '-C 0,2', as the result, two
++ring buffers serve CPU0 and CPU2 separately:
++
++	perf record -C 0,2 test_program
++
++In this example, even there have tasks running on CPU1 and CPU3, since
++the ring buffer is absent for them, any activities on these two CPUs
++will be ignored.  A usage case is to combine the options for per-thread
++mode and per-CPU mode, e.g. the options '–C 0,2' and '––per–thread' are
++specified together, the samples are recorded only when the profiled
++thread is scheduled on any of the listed CPUs.
++
++            T1                      T2                 T1
++          +----+              +-----------+          +----+
++  CPU0    |xxxx|              |xxxxxxxxxxx|          |xxxx|
++          +----+--------------+-----------+----------+----+-------->
++            |                       |                  |
++            v                       v                  v
++          +-----------------------------------------------------+
++          |                  Ring buffer 0                      |
++          +-----------------------------------------------------+
++
++                 T1
++               +-----+
++  CPU1         |xxxxx|
++          -----+-----+--------------------------------------------->
++
++                                      T1              T3
++                                    +----+        +-------+
++  CPU2                              |xxxx|        |xxxxxxx|
++          --------------------------+----+--------+-------+-------->
++                                      |               |
++                                      v               v
++          +-----------------------------------------------------+
++          |                  Ring buffer 1                      |
++          +-----------------------------------------------------+
++
++                            T1
++                     +--------------+
++  CPU3               |xxxxxxxxxxxxxx|
++          -----------+--------------+------------------------------>
++
++	    T1: Thread 1; T2: Thread 2; T3: Thread 3
++	    x: Thread is in running state
++	    Figure 5: Ring buffer for per-CPU mode
++
++System wide mode
++
++By using option '–a' or '––all–cpus', perf collects samples on all CPUs
++for all tasks, we call it as the system wide mode, the command is:
++
++	perf record -a test_program
++
++In the system wide mode, every CPU has its own ring buffer, all threads
++are monitored during the running state and the samples are recorded into
++the ring buffer belonging to the CPU which the events occurred on.
++
++            T1                      T2                 T1
++          +----+              +-----------+          +----+
++  CPU0    |xxxx|              |xxxxxxxxxxx|          |xxxx|
++          +----+--------------+-----------+----------+----+-------->
++            |                       |                  |
++            v                       v                  v
++          +-----------------------------------------------------+
++          |                  Ring buffer 0                      |
++          +-----------------------------------------------------+
++
++                 T1
++               +-----+
++  CPU1         |xxxxx|
++          -----+-----+--------------------------------------------->
++                  |
++                  v
++          +-----------------------------------------------------+
++          |                  Ring buffer 1                      |
++          +-----------------------------------------------------+
++
++                                      T1              T3
++                                    +----+        +-------+
++  CPU2                              |xxxx|        |xxxxxxx|
++          --------------------------+----+--------+-------+-------->
++                                      |               |
++                                      v               v
++          +-----------------------------------------------------+
++          |                  Ring buffer 2                      |
++          +-----------------------------------------------------+
++
++                            T1
++                     +--------------+
++  CPU3               |xxxxxxxxxxxxxx|
++          -----------+--------------+------------------------------>
++                            |
++                            v
++          +-----------------------------------------------------+
++          |                  Ring buffer 3                      |
++          +-----------------------------------------------------+
++
++	    T1: Thread 1; T2: Thread 2; T3: Thread 3
++	    x: Thread is in running state
++	    Figure 6: Ring buffer for system wide mode
++
++
++Accessing buffer
++~~~~~~~~~~~~~~~~
++
++Based on the understanding of how the ring buffer is allocated in
++various modes, this section will explain the accessing the ring buffer.
++
++Producer-consumer model
++
++In the Linux kernel, the PMU events can produce samples which are stored
++into the ring buffer; the perf command in user space consumes the
++samples by reading out data from the ring buffer and finally saves the
++data into the file for post analysis.  It’s a typical producer-consumer
++model for using the ring buffer.
++
++The perf process polls on the PMU events and sleeps when no events are
++incoming.  To prevent frequent exchanges between the kernel and user
++space, the kernel event core layer introduces a watermark, which is
++stored in the perf_buffer::watermark.  When a sample is recorded into
++the ring buffer, and if the used buffer exceeds the watermark, the
++kernel wakes up the perf process to read samples from the ring buffer.
++
++                     Perf
++                     / | Read samples
++           Polling  /  `--------------|               Ring buffer
++                   v                  v    ;-------------------v
++  +----------------+     +---------+---------+   +-------------------+
++  |Event wait queue|     |data_head|data_tail|   |***|***|   |   |***|
++  +----------------+     +---------+---------+   +-------------------+
++           ^                  ^ `----------------------^
++           | Wake up tasks    | Store samples
++        +-----------------------------+
++	|  Kernel event core layer    |
++        +-----------------------------+
++
++            * : the data is filled by the writer.
++	    Figure 7: Writing and reading the ring buffer
++
++When the kernel event core layer notifies the user space, because
++multiple events might share the same ring buffer for recording samples,
++the core layer iterates every event associated with the ring buffer and
++wakes up tasks waiting on the event.  This is fulfilled by the kernel
++function ring_buffer_wakeup().
++
++After the perf process is woken up, it starts to check the ring buffers
++one by one, if it finds any ring buffer contains samples it will read
++out the samples for statistics or saving into the data file.  Given the
++perf process is able to run on any CPU, this leads to the ring buffer
++potentially being accessed from multiple CPUs simultaneously, which
++causes race conditions.  The race condition handling is described in the
++section "Memory synchronization".
++
++Writing samples into buffer
++
++When a hardware event counter overflows, a sample will be taken and
++saved into the ring buffer; the function __perf_event_output() is used
++to fill samples into the ring buffer, it calls the below sub functions:
++
++- The sub function perf_prepare_sample() prepares sample fields based on
++  the sample type;
++- output_begin() is a function pointer, it’s passed dynamically via the
++  argument for different writing directions, its purpose is to prepare
++  the info for writing ring buffer, when the function returns back the
++  ring buffer info is stored in structure perf_output_handle;
++- perf_output_sample() outputs the sample into the ring buffer;
++- perf_output_end() updates the head pointer for user page so perf tool
++  can see the latest value.
++
++Let’s examine output_begin() in detail.  As the ring buffer allows
++writing in two directions: backward or forward, the function pointer for
++output_begin() is assigned according to the writing type of the buffer,
++it can be perf_output_begin_forward() or perf_output_begin_backward().
++
++In the case of the backward ring buffer, where the user page is mapped
++without ’PROT_WRITE’, the tool in user space is unable to update the
++tail pointer.  As a result, only the head pointer is accessed in this
++scenario, and the tail pointer is not used in perf tool.  The head
++pointer indicates the beginning of a sample, perf tool can read out the
++samples one by one based on sample’s event size.
++
++Alternatively, the forward ring buffer uses both head pointer and tail
++pointer for the buffer management.  This method is more commonly used in
++perf tool, to simplify the description, the following explanation
++focuses on the forward ring buffer.
++
++    struct perf_output_handle       /---->  struct perf_buffer
++  +---------------------------+     |     +--------------------+
++  |           *rb;            |-----|     |   local_t head;    |
++  +---------------------------+           +--------------------+
++  |        int page;          |           |    *user_page;     |
++  +---------------------------+           +--------------------+
++  |       void *addr;         |                      |
++  +---------------------------+                      v
++  |   unsigned long size;     |         struct perf_event_mmap_page
++  +---------------------------+           +--------------------+
++                                          |   __u64 data_head; |
++                                          +--------------------+
++                                          |   __u64 data_tail; |
++                                          +--------------------+
++
++	    Figure 8: Data structures for writing ring buffer
++
++In Linux kernel, the event core layer uses the structure perf_buffer to
++track the buffer’s latest header, and it keeps the information for
++buffer pages.  The structure perf_buffer manages ring buffer during its
++life cycle, it is allocated once the ring buffer is created and released
++when the ring buffer is destroyed.
++
++It’s possible for multiple events to write buffer concurrently.  For
++instance, a software event and a hardware PMU event both are enabled for
++profiling, when the software event is in the middle of sampling, the
++hardware event maybe be overflow and its interrupt is triggered in this
++case.  This leads to the race condition for updating perf_buffer::head.
++In __perf_output_begin(), Linux kernel uses compare-and-swap atomicity
++local_cmpxchg() to implement the lockless algorithm for protecting
++perf_buffer::head.
++
++The structure perf_output_handle serves as a temporary context for
++tracking the information related to the buffer.  For instance, the
++perf_output_handle::rb field points to the global perf_buffer structure.
++Additionally, the perf_output_handle::addr field, based on the lockless
++algorithm, specifies the destination address where the sample data is to
++be stored.
++
++The advantages of the perf_output_handle structure is that it enables
++concurrent writing to the buffer by different events.  For the previous
++example, two instances of perf_output_handle serve as separate contexts
++for software events and hardware events.  This allows each event to
++reserve its own memory space within the out_begin() function, and
++perf_output_handle::addr is used for populating the specific event.
++
++Once the sample data has been successfully stored in the buffer, the
++header of the ring buffer is synced from perf_buffer::head to
++perf_event_mmap_page::data_head, which is fulfilled in the function
++perf_output_end().  This synchronization indicates to the perf tool that
++it is now safe to read the newly added samples from the user space.
++
++Reading samples from buffer
++
++In the user space, the perf tool utilizes the perf_event_mmap_page
++structure to handle the head and tail of the buffer.  It also uses
++perf_mmap structure to keep track of a context for the ring buffer, this
++context includes information about the buffer's starting and ending
++addresses.  Additionally, the mask value can be utilized to compute the
++circular buffer pointer even for an overflow.
++
++Similar to the kernel, the perf tool in the user space firstly reads
++out the recorded data from the ring buffer, and then updates the
++buffer's tail pointer perf_event_mmap_page::data_tail.
++
++Memory synchronization
++
++The modern CPUs with relaxed memory model cannot promise the memory
++ordering, this means it’s possible to access the ring buffer and the
++perf_event_mmap_page structure out of order.  To assure the specific
++sequence for memory accessing perf ring buffer, memory barriers are
++used to assure the data dependency.  The rationale for the memory
++synchronization is as below:
++
++  Kernel                          User space
++
++  if (LOAD ->data_tail) {         LOAD ->data_head
++                   (A)            smp_rmb()        (C)
++    STORE $data                   LOAD $data
++    smp_wmb()      (B)            smp_mb()         (D)
++    STORE ->data_head             STORE ->data_tail
++  }
++
++The comments in tools/include/linux/ring_buffer.h gives nice description
++for why and how to use memory barriers, here we will just provide an
++alternative explanation:
++
++(A) is a control dependency so that CPU assures order between checking
++pointer perf_event_mmap_page::data_tail and filling sample into ring
++buffer;
++
++(D) pairs with (A).  (D) separates the ring buffer data reading from
++writing the pointer data_tail, perf tool firstly consumes samples and
++then tells the kernel that the data chunk has been released.  Since
++a reading operation is followed by a writing operation, thus (D) is a
++full memory barrier.
++
++(B) is a writing barrier in the middle of two writing operations, which
++makes sure that recording a sample must be prior to updating the head
++pointer.
++
++(C) pairs with (B).  (C) is a read memory barrier to ensure the head
++pointer is fetched before reading samples.
++
++To implement the above algorithm, the perf_output_put_handle() function
++in the kernel and two helpers ring_buffer_read_head() and
++ring_buffer_write_tail() in the user space are introduced, they rely
++on memory barriers as described above to ensure the data dependency.
++
++Some architectures support one-way permeable barrier with load-acquire
++and store-release operations, these barriers are more relaxed with less
++performance penalty, so (C) and (D) can be optimized to use barriers
++smp_load_acquire() and smp_store_release() respectively.
++
++If an architecture doesn’t support load-acquire and store-release in its
++memory model, it will roll back to the old fashion of memory barrier
++operations.  In this case, smp_load_acquire() encapsulates READ_ONCE() +
++smp_mb(), since smp_mb() is costly, ring_buffer_read_head() doesn't
++invoke smp_load_acquire() and it uses the barriers READ_ONCE() +
++smp_rmb() instead.
++
++The mechanism of AUX ring buffer
++--------------------------------
++
++In this chapter, we will explain the implementation of the AUX ring
++buffer.  In the first part it will discuss the connection between the
++AUX ring buffer and the regular ring buffer, then the second part will
++examine how the AUX ring buffer co-works with the regular ring buffer,
++as well as the additional features introduced by the AUX ring buffer for
++the sampling mechanism.
++
++The relationship between AUX and regular ring buffers
++~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
++
++Generally, the AUX ring buffer is an auxiliary for the regular ring
++buffer.  The regular ring buffer is primarily used to store the event
++samples and every event format complies with the definition in the
++union perf_event; the AUX ring buffer is for recording the hardware
++trace data and the trace data format is hardware IP dependent.
++
++The general use and advantage of the AUX ring buffer is that it is
++written directly by hardware rather than by the kernel.  For example,
++regular profile samples that write to the regular ring buffer cause an
++interrupt.  Tracing execution requires a high number of samples and
++using interrupts would be overwhelming for the regular ring buffer
++mechanism.  Having an AUX buffer allows for a region of memory more
++decoupled from the kernel and written to directly by hardware tracing.
++
++The AUX ring buffer reuses the same algorithm with the regular ring
++buffer for the buffer management.  The control structure
++perf_event_mmap_page extends the new fields aux_head and aux_tail for
++the head and tail pointers of the AUX ring buffer.
++
++During the initialisation phase, besides the mmap()-ed regular ring
++buffer, the perf tool invokes a second syscall in the
++auxtrace_mmap__mmap() function for the mmap of the AUX buffer;
++rb_alloc_aux() in the kernel allocates pages, these pages will be
++deferred to map into VMA when handling the page fault, which is the same
++lazy mechanism with the regular ring buffer.
++
++AUX events and AUX trace data are two different things.  Let's see an
++example:
++
++	perf record -a -e cycles -e cs_etm/@tmc_etr0/ -- sleep 2
++
++The above command enables two events: one is the event 'cycles' from PMU
++and another is the AUX event 'cs_etm' from Arm CoreSight, both are saved
++into the regular ring buffer while the CoreSight's AUX trace data is
++stored in the AUX ring buffer.
++
++As a result, we can see the regular ring buffer and the AUX ring buffer
++are allocated in pairs.  The perf in default mode allocates the regular
++ring buffer and the AUX ring buffer per CPU-wise, which is the same as
++the system wide mode, however, the default mode records samples only for
++the profiled program, whereas the latter mode profiles for all programs
++in the system.  For per-thread mode, the perf tool allocates only one
++regular ring buffer and one AUX ring buffer for the whole session.  For
++the per-CPU mode, the perf allocates two kinds of ring buffers for CPUs
++specified by the option '-C'.
++
++The below figure demonstrates the buffers' layout in the system wide
++mode; if there are any activities on one CPU, the AUX event samples and
++the hardware trace data will be recorded into the dedicated buffers for
++the CPU.
++
++            T1                      T2                 T1
++          +----+              +-----------+          +----+
++  CPU0    |xxxx|              |xxxxxxxxxxx|          |xxxx|
++          +----+--------------+-----------+----------+----+-------->
++            |                       |                  |
++            v                       v                  v
++          +-----------------------------------------------------+
++          |                  Ring buffer 0                      |
++          +-----------------------------------------------------+
++            |                       |                  |
++            v                       v                  v
++          +-----------------------------------------------------+
++          |               AUX Ring buffer 0                     |
++          +-----------------------------------------------------+
++
++                 T1
++               +-----+
++  CPU1         |xxxxx|
++          -----+-----+--------------------------------------------->
++                  |
++                  v
++          +-----------------------------------------------------+
++          |                  Ring buffer 1                      |
++          +-----------------------------------------------------+
++                  |
++                  v
++          +-----------------------------------------------------+
++          |               AUX Ring buffer 1                     |
++          +-----------------------------------------------------+
++
++                                      T1              T3
++                                    +----+        +-------+
++  CPU2                              |xxxx|        |xxxxxxx|
++          --------------------------+----+--------+-------+-------->
++                                      |               |
++                                      v               v
++          +-----------------------------------------------------+
++          |                  Ring buffer 2                      |
++          +-----------------------------------------------------+
++                                      |               |
++                                      v               v
++          +-----------------------------------------------------+
++          |               AUX Ring buffer 2                     |
++          +-----------------------------------------------------+
++
++                            T1
++                     +--------------+
++  CPU3               |xxxxxxxxxxxxxx|
++          -----------+--------------+------------------------------>
++                            |
++                            v
++          +-----------------------------------------------------+
++          |                  Ring buffer 3                      |
++          +-----------------------------------------------------+
++                            |
++                            v
++          +-----------------------------------------------------+
++          |               AUX Ring buffer 3                     |
++          +-----------------------------------------------------+
++
++	    T1: Thread 1; T2: Thread 2; T3: Thread 3
++	    x: Thread is in running state
++	    Figure 9: AUX ring buffer for system wide mode
++
++AUX events
++~~~~~~~~~~
++
++Similar to perf_output_begin() and perf_output_end()'s working for the
++regular ring buffer, perf_aux_output_begin() and perf_aux_output_end()
++serve for the AUX ring buffer for processing the hardware trace data.
++The structure perf_output_handle is used as a context to track the AUX
++buffer’s info.
++
++perf_aux_output_begin() initializes the structure perf_output_handle.
++It fetches the AUX head pointer and assigns to perf_output_handle::head,
++afterwards, the low level driver uses perf_output_handle::head as the
++start address for storing hardware trace data.
++
++Once the hardware trace data is stored into the AUX ring buffer, the PMU
++driver will stop hardware tracing by calling the pmu::stop() callback.
++Similar to the regular ring buffer, the AUX ring buffer needs to apply
++the memory synchronization mechanism as discussed in the section "Memory
++synchronization".  Since the AUX ring buffer is managed by the PMU
++driver, the barrier (B), which is a writing barrier to ensure the trace
++data is externally visible prior to updating the head pointer, is asked
++to be implemented in the PMU driver.
++
++Then pmu::stop() can safely call the perf_aux_output_end() function to
++finish two things:
++
++- It fills an event PERF_RECORD_AUX into the regular ring buffer, this
++event delivers the information of the start address and data size for a
++chunk of hardware trace data has been stored into the AUX ring buffer;
++
++- Since the hardware trace driver has stored new trace data into the AUX
++ring buffer, the argument 'size' indicates how many bytes have been
++consumed by the hardware tracing, thus perf_aux_output_end() updates the
++header pointer perf_buffer::aux_head to reflect the latest buffer usage.
++
++At the end, the PMU driver will restart hardware tracing.  During this
++temporary suspending period, it will lose hardware trace data, which
++will introduce a discontinuity during decoding phase.
++
++The event PERF_RECORD_AUX presents an AUX event which is handled in the
++kernel, but it lacks the information for saving the AUX trace data in
++the perf file.  When the perf tool copies the trace data from AUX ring
++buffer to the perf data file, it synthesizes a PERF_RECORD_AUXTRACE
++event which includes the offest and size of the AUX trace data in the
++perf file.  Afterwards, the perf tool reads out the AUX trace data from
++the perf file based on the PERF_RECORD_AUXTRACE events, and the
++PERF_RECORD_AUX event is used to decode a chunk of data by correlating
++with time order.
++
++Snapshot mode
++~~~~~~~~~~~~~
++
++Perf supports snapshot mode for AUX ring buffer, in this mode, users
++only record AUX trace data at a specific time point which users are
++interested in.  E.g. below gives an example of how to take snapshots
++with 1 second interval with Arm CoreSight:
++
++  perf record -e cs_etm/@tmc_etr0/u -S -a program &
++  PERFPID=$!
++  while true; do
++      kill -USR2 $PERFPID
++      sleep 1
++  done
++
++The main flow for snapshot mode is:
++
++- Before a snapshot is taken, the AUX ring buffer acts in free run mode.
++During free run mode the perf doesn't record any of the AUX events and
++trace data;
++
++- Once the perf tool receives the USR2 signal, it triggers the callback
++function auxtrace_record::snapshot_start() to deactivate hardware
++tracing.  The kernel driver then populates the AUX ring buffer with the
++hardware trace data, and the event PERF_RECORD_AUX is stored in the
++regular ring buffer;
++
++- Then perf tool takes a snapshot, record__read_auxtrace_snapshot()
++reads out the hardware trace data from the AUX ring buffer and saves it
++into perf data file;
++
++- After the snapshot is finished, auxtrace_record::snapshot_finish()
++restarts the PMU event for AUX tracing.
++
++The perf only accesses the head pointer perf_event_mmap_page::aux_head
++in snapshot mode and doesn’t touch tail pointer aux_tail, this is
++because the AUX ring buffer can overflow in free run mode, the tail
++pointer is useless in this case.  Alternatively, the callback
++auxtrace_record::find_snapshot() is introduced for making the decision
++of whether the AUX ring buffer has been wrapped around or not, at the
++end it fixes up the AUX buffer's head which are used to calculate the
++trace data size.
++
++As we know, the buffers' deployment can be per-thread mode, per-CPU
++mode, or system wide mode, and the snapshot can be applied to any of
++these modes.  Below is an example of taking snapshot with system wide
++mode.
++
++                                         Snapshot is taken
++                                                 |
++                                                 v
++                        +------------------------+
++                        |  AUX Ring buffer 0     | <- aux_head
++                        +------------------------+
++                                                 v
++                +--------------------------------+
++                |          AUX Ring buffer 1     | <- aux_head
++                +--------------------------------+
++                                                 v
++    +--------------------------------------------+
++    |                      AUX Ring buffer 2     | <- aux_head
++    +--------------------------------------------+
++                                                 v
++         +---------------------------------------+
++         |                 AUX Ring buffer 3     | <- aux_head
++         +---------------------------------------+
++
++	    Figure 10: Snapshot with system wide mode
+-- 
+2.34.1
+
