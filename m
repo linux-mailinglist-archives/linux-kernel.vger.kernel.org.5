@@ -2,322 +2,452 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D55076F311
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 20:58:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4ADB176F319
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 20:59:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229989AbjHCS6a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Aug 2023 14:58:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43512 "EHLO
+        id S230162AbjHCS7C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Aug 2023 14:59:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44018 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229457AbjHCS62 (ORCPT
+        with ESMTP id S229652AbjHCS7A (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Aug 2023 14:58:28 -0400
-Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5D3F1713;
-        Thu,  3 Aug 2023 11:58:26 -0700 (PDT)
-Received: by mail-pl1-x62d.google.com with SMTP id d9443c01a7336-1bbc7b2133fso9137725ad.1;
-        Thu, 03 Aug 2023 11:58:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1691089106; x=1691693906;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=acwzAvJJew1sBkrG7SLAsHAOiLMxXJQy0g6yQkN9J/k=;
-        b=DxY4CDfpDvBX+XIqoLFhc0uGzmno9xoVBWjtaR6lqHyxtNKmZ9d9SOFiBOvrBZwJZC
-         dB+pc8Msa+6VdRUPyRJVHs5YFQIL0w5i5V+BGooPb4YIKv9SzkRDkWWigoEq0yBR2mgE
-         8nGSJT2vfhnBlpelTiadreUHEwREu4vyz+oKv3Hzb7wujpwV1tdI2K7KCus3dpU6uCZd
-         zJ5ZY4FPDSq57HVMclKpIGSAoeX/HXNyP1Vm1PGr+RwR4Pjp8eyj442S3RcMN1mCVizX
-         2wrvExUVcxLroQT/KF7pSGfyPFD7yjb6Zx3jl2PHrL53c9pKisDpGgSyHFrO5Ma0hC3L
-         USzg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691089106; x=1691693906;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=acwzAvJJew1sBkrG7SLAsHAOiLMxXJQy0g6yQkN9J/k=;
-        b=CEdeyISbIvke3T6/eCTaVLgRLSJ04n1drsl/t8EFr/zgmNn35Fwpxn0ODdjfACoHKV
-         cweaPdaR80fRAdJUPNWVW09cJXtQbr/QmqV92JunQxCLNIPIAswdJ0YgTtr2uf2favvV
-         pAlnwHwnTeijAnHPSyG/xBALqbo8xNarxXuLw/QLbVLl1ewANK3U3a4N9xiNgI7pNj+u
-         D31IFjLAaF2TxuBU+1vaCICRUpKateASd5JrS/BCfWAwvTDGPFigkL/wy7lJCrQxu0iK
-         zsXWzg0yHKkL1rAc7Adh+viWow4jPwiO5rK1iL7RDm4PZNlOWc5SXnFDMu7JJCQaRPQ6
-         pj4A==
-X-Gm-Message-State: ABy/qLbxhUuGzVO/8/Xh6eq9/KchAMlegn57svsiqy08VJ1WY06+wYbz
-        mfXEcUIf/S0XIrykY6G9Lq4=
-X-Google-Smtp-Source: APBJJlHXIG1PCBPpnlGmiDmeq4Zbu8dxh/ZMyrS/Enqv5aR5XB1tVPRb2BW4n7uiLrN+5lCxUib3gg==
-X-Received: by 2002:a17:903:22c1:b0:1b8:a936:1905 with SMTP id y1-20020a17090322c100b001b8a9361905mr20738159plg.38.1691089106130;
-        Thu, 03 Aug 2023 11:58:26 -0700 (PDT)
-Received: from localhost (ec2-52-8-182-0.us-west-1.compute.amazonaws.com. [52.8.182.0])
-        by smtp.gmail.com with ESMTPSA id y7-20020a170902b48700b001b83dc8649dsm189259plr.250.2023.08.03.11.58.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 03 Aug 2023 11:58:25 -0700 (PDT)
-Date:   Thu, 3 Aug 2023 18:58:24 +0000
-From:   Bobby Eshleman <bobbyeshleman@gmail.com>
-To:     Stefano Garzarella <sgarzare@redhat.com>
-Cc:     linux-hyperv@vger.kernel.org,
-        Bobby Eshleman <bobby.eshleman@bytedance.com>,
-        kvm@vger.kernel.org, "Michael S. Tsirkin" <mst@redhat.com>,
-        VMware PV-Drivers Reviewers <pv-drivers@vmware.com>,
-        Simon Horman <simon.horman@corigine.com>,
-        Stefan Hajnoczi <stefanha@redhat.com>,
-        virtualization@lists.linux-foundation.org,
-        Eric Dumazet <edumazet@google.com>,
-        Dan Carpenter <dan.carpenter@linaro.org>,
-        Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
-        Wei Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>,
-        Bryan Tan <bryantan@vmware.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Arseniy Krasnov <oxffffaa@gmail.com>,
-        Vishnu Dasa <vdasa@vmware.com>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
-        "David S. Miller" <davem@davemloft.net>
-Subject: Re: [PATCH RFC net-next v5 03/14] af_vsock: support multi-transport
- datagrams
-Message-ID: <ZMv40KJo/9Pd2Lik@bullseye>
-References: <20230413-b4-vsock-dgram-v5-0-581bd37fdb26@bytedance.com>
- <20230413-b4-vsock-dgram-v5-3-581bd37fdb26@bytedance.com>
- <43fad7ab-2ca9-608e-566f-80e607d2d6b8@gmail.com>
- <ZMrXrBHuaEcpxGwA@bullseye>
- <ZMr6giur//A1hrND@bullseye>
- <7ioiy325g6bkplp6sqk676sk62wlsxaqy6luwjnnztxsgd3srt@5nh73ct53kr3>
+        Thu, 3 Aug 2023 14:59:00 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C492A3A9C;
+        Thu,  3 Aug 2023 11:58:50 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 8EF1E61E7A;
+        Thu,  3 Aug 2023 18:58:49 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6D57FC433C8;
+        Thu,  3 Aug 2023 18:58:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1691089129;
+        bh=hDv8LWjWgKvZp7KwDrZhjBj9e+DeCL7C2LJNQvTVA0w=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+        b=NnciuiivLNwNSGtUcWGXa4mnldxlR5zX18ly69SmF12VK0QYIvqpH/QZEomeM7Yq3
+         7gPqegMa9AW+c0J6WcTiulSCn1C3+KW8fX+KNipNCY1OHuuIKvOn6UsHSqNP8NdTPD
+         mqtgtdxPvnUyDmsdL7o5EL7MXDncFQtPEYbFl1NC6eMnWNy/Mp0/lJVK3ET5OLp8K6
+         iSMqbDv2tdCD/cd8vZcQZ/HXdbkL1w5YDh9khfyqsLyXa2xqgx8ArRo15V8Hc0hP8R
+         joOqsRhm6iXw5JVM44g93EcmBDoQmq4w/ceEci+ZVZUcDqAOIQnyhjWLTG0zqDIiVr
+         nfo0sNtdfFzkQ==
+Message-ID: <bab1dda495bc157d3d0650738ea9b620365d9813.camel@kernel.org>
+Subject: Re: [PATCH v6] vfs, security: Fix automount superblock LSM init
+ problem, preventing NFS sb sharing
+From:   Jeff Layton <jlayton@kernel.org>
+To:     Christian Brauner <brauner@kernel.org>
+Cc:     Paul Moore <paul@paul-moore.com>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Trond Myklebust <trond.myklebust@hammerspace.com>,
+        Anna Schumaker <anna@kernel.org>,
+        James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        Stephen Smalley <stephen.smalley.work@gmail.com>,
+        Eric Paris <eparis@parisplace.org>,
+        Casey Schaufler <casey@schaufler-ca.com>,
+        David Howells <dhowells@redhat.com>,
+        Scott Mayhew <smayhew@redhat.com>,
+        Stephen Smalley <sds@tycho.nsa.gov>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-nfs@vger.kernel.org, linux-security-module@vger.kernel.org,
+        selinux@vger.kernel.org
+Date:   Thu, 03 Aug 2023 14:58:46 -0400
+In-Reply-To: <20230803-verstanden-perfide-70ee3b425417@brauner>
+References: <20230802-master-v6-1-45d48299168b@kernel.org>
+         <bac543537058619345b363bbfc745927.paul@paul-moore.com>
+         <ca156cecbc070c3b7c68626572274806079a6e04.camel@kernel.org>
+         <20230803-verlassen-lernprogramm-b9e61719ce55@brauner>
+         <782a39afec947b1a3575be9cf8921e7294190326.camel@kernel.org>
+         <20230803-verstanden-perfide-70ee3b425417@brauner>
+Content-Type: text/plain; charset="ISO-8859-15"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <7ioiy325g6bkplp6sqk676sk62wlsxaqy6luwjnnztxsgd3srt@5nh73ct53kr3>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 03, 2023 at 02:42:26PM +0200, Stefano Garzarella wrote:
-> On Thu, Aug 03, 2023 at 12:53:22AM +0000, Bobby Eshleman wrote:
-> > On Wed, Aug 02, 2023 at 10:24:44PM +0000, Bobby Eshleman wrote:
-> > > On Sun, Jul 23, 2023 at 12:53:15AM +0300, Arseniy Krasnov wrote:
-> > > >
-> > > >
-> > > > On 19.07.2023 03:50, Bobby Eshleman wrote:
-> > > > > This patch adds support for multi-transport datagrams.
-> > > > >
-> > > > > This includes:
-> > > > > - Per-packet lookup of transports when using sendto(sockaddr_vm)
-> > > > > - Selecting H2G or G2H transport using VMADDR_FLAG_TO_HOST and CID in
-> > > > >   sockaddr_vm
-> > > > > - rename VSOCK_TRANSPORT_F_DGRAM to VSOCK_TRANSPORT_F_DGRAM_FALLBACK
-> > > > > - connect() now assigns the transport for (similar to connectible
-> > > > >   sockets)
-> > > > >
-> > > > > To preserve backwards compatibility with VMCI, some important changes
-> > > > > are made. The "transport_dgram" / VSOCK_TRANSPORT_F_DGRAM is changed to
-> > > > > be used for dgrams only if there is not yet a g2h or h2g transport that
-> > > > > has been registered that can transmit the packet. If there is a g2h/h2g
-> > > > > transport for that remote address, then that transport will be used and
-> > > > > not "transport_dgram". This essentially makes "transport_dgram" a
-> > > > > fallback transport for when h2g/g2h has not yet gone online, and so it
-> > > > > is renamed "transport_dgram_fallback". VMCI implements this transport.
-> > > > >
-> > > > > The logic around "transport_dgram" needs to be retained to prevent
-> > > > > breaking VMCI:
-> > > > >
-> > > > > 1) VMCI datagrams existed prior to h2g/g2h and so operate under a
-> > > > >    different paradigm. When the vmci transport comes online, it registers
-> > > > >    itself with the DGRAM feature, but not H2G/G2H. Only later when the
-> > > > >    transport has more information about its environment does it register
-> > > > >    H2G or G2H.  In the case that a datagram socket is created after
-> > > > >    VSOCK_TRANSPORT_F_DGRAM registration but before G2H/H2G registration,
-> > > > >    the "transport_dgram" transport is the only registered transport and so
-> > > > >    needs to be used.
-> > > > >
-> > > > > 2) VMCI seems to require a special message be sent by the transport when a
-> > > > >    datagram socket calls bind(). Under the h2g/g2h model, the transport
-> > > > >    is selected using the remote_addr which is set by connect(). At
-> > > > >    bind time there is no remote_addr because often no connect() has been
-> > > > >    called yet: the transport is null. Therefore, with a null transport
-> > > > >    there doesn't seem to be any good way for a datagram socket to tell the
-> > > > >    VMCI transport that it has just had bind() called upon it.
-> > > > >
-> > > > > With the new fallback logic, after H2G/G2H comes online the socket layer
-> > > > > will access the VMCI transport via transport_{h2g,g2h}. Prior to H2G/G2H
-> > > > > coming online, the socket layer will access the VMCI transport via
-> > > > > "transport_dgram_fallback".
-> > > > >
-> > > > > Only transports with a special datagram fallback use-case such as VMCI
-> > > > > need to register VSOCK_TRANSPORT_F_DGRAM_FALLBACK.
-> > > > >
-> > > > > Signed-off-by: Bobby Eshleman <bobby.eshleman@bytedance.com>
-> > > > > ---
-> > > > >  drivers/vhost/vsock.c                   |  1 -
-> > > > >  include/linux/virtio_vsock.h            |  2 --
-> > > > >  include/net/af_vsock.h                  | 10 +++---
-> > > > >  net/vmw_vsock/af_vsock.c                | 64 ++++++++++++++++++++++++++-------
-> > > > >  net/vmw_vsock/hyperv_transport.c        |  6 ----
-> > > > >  net/vmw_vsock/virtio_transport.c        |  1 -
-> > > > >  net/vmw_vsock/virtio_transport_common.c |  7 ----
-> > > > >  net/vmw_vsock/vmci_transport.c          |  2 +-
-> > > > >  net/vmw_vsock/vsock_loopback.c          |  1 -
-> > > > >  9 files changed, 58 insertions(+), 36 deletions(-)
-> > > > >
-> > > > > diff --git a/drivers/vhost/vsock.c b/drivers/vhost/vsock.c
-> > > > > index ae8891598a48..d5d6a3c3f273 100644
-> > > > > --- a/drivers/vhost/vsock.c
-> > > > > +++ b/drivers/vhost/vsock.c
-> > > > > @@ -410,7 +410,6 @@ static struct virtio_transport vhost_transport = {
-> > > > >  		.cancel_pkt               = vhost_transport_cancel_pkt,
-> > > > >
-> > > > >  		.dgram_enqueue            = virtio_transport_dgram_enqueue,
-> > > > > -		.dgram_bind               = virtio_transport_dgram_bind,
-> > > > >  		.dgram_allow              = virtio_transport_dgram_allow,
-> > > > >
-> > > > >  		.stream_enqueue           = virtio_transport_stream_enqueue,
-> > > > > diff --git a/include/linux/virtio_vsock.h b/include/linux/virtio_vsock.h
-> > > > > index 18cbe8d37fca..7632552bee58 100644
-> > > > > --- a/include/linux/virtio_vsock.h
-> > > > > +++ b/include/linux/virtio_vsock.h
-> > > > > @@ -211,8 +211,6 @@ void virtio_transport_notify_buffer_size(struct vsock_sock *vsk, u64 *val);
-> > > > >  u64 virtio_transport_stream_rcvhiwat(struct vsock_sock *vsk);
-> > > > >  bool virtio_transport_stream_is_active(struct vsock_sock *vsk);
-> > > > >  bool virtio_transport_stream_allow(u32 cid, u32 port);
-> > > > > -int virtio_transport_dgram_bind(struct vsock_sock *vsk,
-> > > > > -				struct sockaddr_vm *addr);
-> > > > >  bool virtio_transport_dgram_allow(u32 cid, u32 port);
-> > > > >
-> > > > >  int virtio_transport_connect(struct vsock_sock *vsk);
-> > > > > diff --git a/include/net/af_vsock.h b/include/net/af_vsock.h
-> > > > > index 305d57502e89..f6a0ca9d7c3e 100644
-> > > > > --- a/include/net/af_vsock.h
-> > > > > +++ b/include/net/af_vsock.h
-> > > > > @@ -96,13 +96,13 @@ struct vsock_transport_send_notify_data {
-> > > > >
-> > > > >  /* Transport features flags */
-> > > > >  /* Transport provides host->guest communication */
-> > > > > -#define VSOCK_TRANSPORT_F_H2G		0x00000001
-> > > > > +#define VSOCK_TRANSPORT_F_H2G			0x00000001
-> > > > >  /* Transport provides guest->host communication */
-> > > > > -#define VSOCK_TRANSPORT_F_G2H		0x00000002
-> > > > > -/* Transport provides DGRAM communication */
-> > > > > -#define VSOCK_TRANSPORT_F_DGRAM		0x00000004
-> > > > > +#define VSOCK_TRANSPORT_F_G2H			0x00000002
-> > > > > +/* Transport provides fallback for DGRAM communication */
-> > > > > +#define VSOCK_TRANSPORT_F_DGRAM_FALLBACK	0x00000004
-> > > > >  /* Transport provides local (loopback) communication */
-> > > > > -#define VSOCK_TRANSPORT_F_LOCAL		0x00000008
-> > > > > +#define VSOCK_TRANSPORT_F_LOCAL			0x00000008
-> > > > >
-> > > > >  struct vsock_transport {
-> > > > >  	struct module *module;
-> > > > > diff --git a/net/vmw_vsock/af_vsock.c b/net/vmw_vsock/af_vsock.c
-> > > > > index ae5ac5531d96..26c97b33d55a 100644
-> > > > > --- a/net/vmw_vsock/af_vsock.c
-> > > > > +++ b/net/vmw_vsock/af_vsock.c
-> > > > > @@ -139,8 +139,8 @@ struct proto vsock_proto = {
-> > > > >  static const struct vsock_transport *transport_h2g;
-> > > > >  /* Transport used for guest->host communication */
-> > > > >  static const struct vsock_transport *transport_g2h;
-> > > > > -/* Transport used for DGRAM communication */
-> > > > > -static const struct vsock_transport *transport_dgram;
-> > > > > +/* Transport used as a fallback for DGRAM communication */
-> > > > > +static const struct vsock_transport *transport_dgram_fallback;
-> > > > >  /* Transport used for local communication */
-> > > > >  static const struct vsock_transport *transport_local;
-> > > > >  static DEFINE_MUTEX(vsock_register_mutex);
-> > > > > @@ -439,6 +439,18 @@ vsock_connectible_lookup_transport(unsigned int cid, __u8 flags)
-> > > > >  	return transport;
-> > > > >  }
-> > > > >
-> > > > > +static const struct vsock_transport *
-> > > > > +vsock_dgram_lookup_transport(unsigned int cid, __u8 flags)
-> > > > > +{
-> > > > > +	const struct vsock_transport *transport;
-> > > > > +
-> > > > > +	transport = vsock_connectible_lookup_transport(cid, flags);
-> > > > > +	if (transport)
-> > > > > +		return transport;
-> > > > > +
-> > > > > +	return transport_dgram_fallback;
-> > > > > +}
-> > > > > +
-> > > > >  /* Assign a transport to a socket and call the .init transport callback.
-> > > > >   *
-> > > > >   * Note: for connection oriented socket this must be called when vsk->remote_addr
-> > > > > @@ -475,7 +487,8 @@ int vsock_assign_transport(struct vsock_sock *vsk, struct vsock_sock *psk)
-> > > > >
-> > > > >  	switch (sk->sk_type) {
-> > > > >  	case SOCK_DGRAM:
-> > > > > -		new_transport = transport_dgram;
-> > > > > +		new_transport = vsock_dgram_lookup_transport(remote_cid,
-> > > > > +							     remote_flags);
-> > > >
-> > > > I'm a little bit confused about this:
-> > > > 1) Let's create SOCK_DGRAM socket using vsock_create()
-> > > > 2) for SOCK_DGRAM it calls 'vsock_assign_transport()' and we go here, remote_cid == -1
-> > > > 3) I guess 'vsock_dgram_lookup_transport()' calls logic from 0002 and returns h2g for such remote cid, which is not
-> > > >    correct I think...
-> > > >
-> > > > Please correct me if i'm wrong
-> > > >
-> > > > Thanks, Arseniy
-> > > >
-> > > 
-> > > As I understand, for the VMCI case, if transport_h2g != NULL, then
-> > > transport_h2g == transport_dgram_fallback. In either case,
-> > > vsk->transport == transport_dgram_fallback.
-> > > 
-> > > For the virtio/vhost case, temporarily vsk->transport == transport_h2g,
-> > > but it is unused because vsk->transport->dgram_bind == NULL.
-> > > 
-> > > Until SS_CONNECTED is set by connect() and vsk->transport is set
-> > > correctly, the send path is barred from using the bad transport.
-> > > 
-> > > I guess the recvmsg() path is a little more sketchy, and probably only
-> > > works in my test cases because h2g/g2h in the vhost/virtio case have
-> > > identical dgram_addr_init() implementations.
-> > > 
-> > > I think a cleaner solution is maybe checking in vsock_create() if
-> > > dgram_bind is implemented. If it is not, then vsk->transport should be
-> > > reset to NULL and a comment added explaining why VMCI requires this.
-> > > 
-> > > Then the other calls can begin explicitly checking for vsk->transport ==
-> > > NULL.
-> > 
-> > Actually, on further reflection here, in order for the vsk->transport to
-> > be called in time for ->dgram_addr_init(), it is going to be necessary
-> > to call vsock_assign_transport() in vsock_dgram_bind() anyway.
-> > 
-> > I think this means that the vsock_assign_transport() call can be removed
-> > from vsock_create() call entirely, and yet VMCI can still dispatch
-> > messages upon bind() calls as needed.
-> > 
-> > This would then simplify the whole arrangement, if there aren't other
-> > unseen issues.
-> 
-> This sounds like a good approach.
-> 
-> My only question is whether vsock_dgram_bind() is always called for each
-> dgram socket.
-> 
+On Thu, 2023-08-03 at 19:36 +0200, Christian Brauner wrote:
+> On Thu, Aug 03, 2023 at 12:09:33PM -0400, Jeff Layton wrote:
+> > On Thu, 2023-08-03 at 15:27 +0200, Christian Brauner wrote:
+> > > On Wed, Aug 02, 2023 at 03:34:27PM -0400, Jeff Layton wrote:
+> > > > On Wed, 2023-08-02 at 14:16 -0400, Paul Moore wrote:
+> > > > > On Aug  2, 2023 Jeff Layton <jlayton@kernel.org> wrote:
+> > > > > >=20
+> > > > > > When NFS superblocks are created by automounting, their LSM par=
+ameters
+> > > > > > aren't set in the fs_context struct prior to sget_fc() being ca=
+lled,
+> > > > > > leading to failure to match existing superblocks.
+> > > > > >=20
+> > > > > > Fix this by adding a new LSM hook to load fc->security for subm=
+ount
+> > > > > > creation when alloc_fs_context() is creating the fs_context for=
+ it.
+> > > > > >=20
+> > > > > > However, this uncovers a further bug: nfs_get_root() initialise=
+s the
+> > > > > > superblock security manually by calling security_sb_set_mnt_opt=
+s() or
+> > > > > > security_sb_clone_mnt_opts() - but then vfs_get_tree() calls
+> > > > > > security_sb_set_mnt_opts(), which can lead to SELinux, at least=
+,
+> > > > > > complaining.
+> > > > > >=20
+> > > > > > Fix that by adding a flag to the fs_context that suppresses the
+> > > > > > security_sb_set_mnt_opts() call in vfs_get_tree().  This can be=
+ set by NFS
+> > > > > > when it sets the LSM context on the new superblock.
+> > > > > >=20
+> > > > > > The first bug leads to messages like the following appearing in=
+ dmesg:
+> > > > > >=20
+> > > > > > 	NFS: Cache volume key already in use (nfs,4.2,2,108,106a8c0,1,=
+,,,100000,100000,2ee,3a98,1d4c,3a98,1)
+> > > > > >=20
+> > > > > > Signed-off-by: David Howells <dhowells@redhat.com>
+> > > > > > Signed-off-by: Jeff Layton <jlayton@kernel.org>
+> > > > > > Fixes: 9bc61ab18b1d ("vfs: Introduce fs_context, switch vfs_ker=
+n_mount() to it.")
+> > > > > > Fixes: 779df6a5480f ("NFS: Ensure security label is set for roo=
+t inode)
+> > > > > > Tested-by: Jeff Layton <jlayton@kernel.org>
+> > > > > > Reviewed-by: Jeff Layton <jlayton@kernel.org>
+> > > > > > Acked-by: Casey Schaufler <casey@schaufler-ca.com>
+> > > > > > Acked-by: "Christian Brauner (Microsoft)" <brauner@kernel.org>
+> > > > > > Link: https://lore.kernel.org/r/165962680944.3334508.6610023900=
+349142034.stgit@warthog.procyon.org.uk/ # v1
+> > > > > > Link: https://lore.kernel.org/r/165962729225.3357250.1435072884=
+6471527137.stgit@warthog.procyon.org.uk/ # v2
+> > > > > > Link: https://lore.kernel.org/r/165970659095.2812394.6868894171=
+102318796.stgit@warthog.procyon.org.uk/ # v3
+> > > > > > Link: https://lore.kernel.org/r/166133579016.3678898.6283195019=
+480567275.stgit@warthog.procyon.org.uk/ # v4
+> > > > > > Link: https://lore.kernel.org/r/217595.1662033775@warthog.procy=
+on.org.uk/ # v5
+> > > > > > ---
+> > > > > > This patch was originally sent by David several months ago, but=
+ it
+> > > > > > never got merged. I'm resending to resurrect the discussion. Ca=
+n we
+> > > > > > get this fixed?
+> > > > >=20
+> > > > > Sorry, I sorta lost track of this after the ROOTCONTEXT_MNT discu=
+ssion
+> > > > > back in v3.  Looking at it a bit closer now I have one nitpicky
+> > > > > request and one larger concern (see below).
+> > > > >=20
+> > > > > > diff --git a/fs/super.c b/fs/super.c
+> > > > > > index e781226e2880..13adf43e2e5d 100644
+> > > > > > --- a/fs/super.c
+> > > > > > +++ b/fs/super.c
+> > > > > > @@ -1541,10 +1541,12 @@ int vfs_get_tree(struct fs_context *fc)
+> > > > > >  	smp_wmb();
+> > > > > >  	sb->s_flags |=3D SB_BORN;
+> > > > > > =20
+> > > > > > -	error =3D security_sb_set_mnt_opts(sb, fc->security, 0, NULL)=
+;
+> > > > > > -	if (unlikely(error)) {
+> > > > > > -		fc_drop_locked(fc);
+> > > > > > -		return error;
+> > > > > > +	if (!(fc->lsm_set)) {
+> > > > > > +		error =3D security_sb_set_mnt_opts(sb, fc->security, 0, NULL=
+);
+> > > > > > +		if (unlikely(error)) {
+> > > > > > +			fc_drop_locked(fc);
+> > > > > > +			return error;
+> > > > > > +		}
+> > > > > >  	}
+> > > > >=20
+> > > > > I generally dislike core kernel code which makes LSM calls condit=
+ional
+> > > > > on some kernel state maintained outside the LSM.  Sometimes it ha=
+s to
+> > > > > be done as there is no other good options, but I would like us to=
+ try
+> > > > > and avoid it if possible.  The commit description mentioned that =
+this
+> > > > > was put here to avoid a SELinux complaint, can you provide an exa=
+mple
+> > > > > of the complain?  Does it complain about a double/invalid mount, =
+e.g.
+> > > > > "SELinux: mount invalid.  Same superblock, different security ...=
+"?
+> > > > >=20
+> > > >=20
+> > > > The problem I had was not so much SELinux warnings, but rather that=
+ in a
+> > > > situation where I would expect to share superblocks between two
+> > > > filesystems, it didn't.
+> > > >=20
+> > > > Basically if you do something like this:
+> > > >=20
+> > > > # mount nfsserver:/export/foo /mnt/foo -o context=3Dsystem_u:object=
+_r:root_t:s0
+> > > > # mount nfsserver:/export/bar /mnt/bar -o context=3Dsystem_u:object=
+_r:root_t:s0
+> > > >=20
+> > > > ...when "foo" and "bar" are directories on the same filesystem on t=
+he
+> > > > server, you should get two vfsmounts that share a superblock. That'=
+s
+> > > > what you get if selinux is disabled, but not when it's enabled (eve=
+n
+> > > > when it's in permissive mode).
+> > > >=20
+> > > > The problems that David hit with the automounter have a similar roo=
+t
+> > > > cause though, I believe.
+> > > >=20
+> > > > > I'd like to understand why the sb_set_mnt_opts() call fails when =
+it
+> > > > > comes after the fs_context_init() call.  I'm particulary curious =
+to
+> > > > > know if the failure is due to conflicting SELinux state in the
+> > > > > fs_context, or if it is simply an issue of sb_set_mnt_opts() not
+> > > > > properly handling existing values.  Perhaps I'm being overly naiv=
+e,
+> > > > > but I'm hopeful that we can address both of these within the SELi=
+nux
+> > > > > code itself.
+> > > > >=20
+> > > >=20
+> > > > The problem I hit was that nfs_compare_super is called with a fs_co=
+ntext
+> > > > that has a NULL ->security pointer. That caused it to call
+> > > > selinux_sb_mnt_opts_compat with mnt_opts set to NULL, and at that p=
+oint
+> > > > it returns 1 and decides not to share sb's.
+> > >=20
+> > > I tried to follow this because I'm really still quite puzzled by this
+> > > whole thing. Two consecutive mounts that should share the superblock
+> > > don't share the superblock. But behavior differs between nfs3 and nfs=
+4
+> > > due to how automounting works.
+> > >=20
+> > > Afaict, the callchain you're looking at in this scenario is:
+> > >=20
+> > > (1) nfs3
+> > >=20
+> > > (1.1) mount 127.0.0.1:/export/foo /mnt/foo -o context=3Dsystem_u:obje=
+ct_r:root_t:s0,nfsvers=3D3
+> > >       vfs_get_tree(fc_foo)
+> > >       -> fs_contex_operations->get_tree::nfs_get_tree(fc_foo)
+> > >             -> ctx->nfs_mod->rpc_ops->try_get_tree::nfs_try_get_tree(=
+fc_foo)
+> > >                -> nfs_get_tree_common(fc_foo)
+> > >                   -> sb_foo =3D sget_fc(fc_foo, nfs_compare_super, ..=
+.)
+> > >=20
+> > > (1.2) mount 127.0.0.1:/export/bar /mnt/bar -o context=3Dsystem_u:obje=
+ct_r:root_t:s0,nfsvers=3D3
+> > >       vfs_get_tree(fc_bar)
+> > >       -> fs_contex_operations->get_tree::nfs_get_tree(fc_bar)
+> > >             -> ctx->nfs_mod->rpc_ops->try_get_tree::nfs_try_get_tree(=
+fc_bar)
+> > >                -> nfs_get_tree_common(fc_bar)
+> > >                   -> sb_foo =3D sget_fc(fc_bar, nfs_compare_super, ..=
+.)
+> > >                      -> nfs_compare_super(sb_foo, fc_bar)
+> > >                         -> selinux_sb_mnt_opts_compat(sb_foo, fc_bar-=
+>security)
+> > >=20
+> > > And fc_bar->security is non-NULL and compatible with sb_foo's current
+> > > security settings. Fine.
+> > >=20
+> > > (2) nfs4
+> > >=20
+> > > But for nfs4 we're looking at a vastly more complicated callchain at
+> > > least looking at this from a local nfs:
+> > >=20
+> > > (2.1) mount 127.0.0.1:/export/foo /mnt/foo -o context=3Dsystem_u:obje=
+ct_r:root_t:s0
+> > >       vfs_get_tree(fc_foo)
+> > >       -> fs_contex_operations->get_tree::nfs_get_tree(fc_foo)
+> > >          -> if (!ctx->internal) branch is taken
+> > >             -> ctx->nfs_mod->rpc_ops->try_get_tree::nfs4_try_get_tree=
+(fc_foo)
+> > >                -> do_nfs4_mount(fc_foo)
+> > >                   -> fc_dup_foo =3D vfs_dup_fs_context(fc_foo)
+> > >                     -> security_fs_context_dup(fc_dup_foo, fc_foo)
+> > >                        {
+> > >                                 fc_dup_foo->security =3D kmemdup(fc_f=
+oo->security)
+> > >                        }
+> > >                        new_fs_context->internal =3D true
+> > >                   -> foo_mnt =3D fc_mount(fc_dup_foo)
+> > >                     -> vfs_get_tree(fc_dup_foo)
+> > >                        -> if (!ctx->internal) branch is _not_ taken
+> > >                           -> nfs_get_tree_common(fc_dup_foo)
+> > >                                  sb_foo =3D sget_fc(fc, nfs_compare_s=
+uper, ...)
+> > >                   -> mount_subtree()
+> > >                      -> vfs_path_lookup(..., "/export/foo", LOOKUP_AU=
+TOMOUNT)
+> > >                         -> nfs_d_automount("export")
+> > >                            -> fc_sub_foo =3D fs_context_for_submount(=
+)
+> > >                               {
+> > >                                       fc_sub_bar->security =3D NULL
+> >=20
+> >=20
+> > Should the above be:
+> >=20
+> > 					fc_sub_foo->security =3D NULL;
+>=20
+> Yes, typo for whatever reason.
+>=20
+> >=20
+> > ?
+> >=20
+> > If so, then with this patch, the above would no longer be NULL. We'd
+> > inherit the security context info from the reference dentry passed to
+> > fs_context_for_submount().
+> >=20
+> > >                               {
+> > >                            -> nfs4_submount(fc_sub_foo)
+> > >                               -> nfs4_do_submount(fc_sub_foo)
+> > >                                  -> vfs_get_tree(fc_sub_foo)
+> > >                                     -> nfs_get_tree_common(fc_sub_foo=
+)
+> > >                                        -> sb_foo_2 =3D sget_fc(fc_sub=
+_foo, nfs_compare_super, ...)
+> > >                         -> nfs_d_automount("foo")
+> > >                            -> fc_sub_foo =3D fs_context_for_submount(=
+)
+> > >                               {
+> > >                                       fc_sub_bar->security =3D NULL
+> >=20
+> > Ditto here -- that should be fc_sub_foo , correct?
+>=20
+> Yes, same. Was just a typo.
+>=20
+> > >                               {
+> > >                            -> nfs4_submount(fc_sub_foo)
+> > >                               -> nfs4_do_submount(fc_sub_foo)
+> > >                                  -> vfs_get_tree(fc_sub_foo)
+> > >                                     -> nfs_get_tree_common(fc_sub_foo=
+)
+> > >              |--------------------------> sb_foo_3 =3D sget_fc(fc_sub=
+_foo, nfs_compare_super, ...)
+> > >              |
+> > > As far as I can see you're already allocating 3 separate superblocks =
+of
+> > > which two are discarded and only one survives. Afaict, the one that
+> > > survives is _| the last one. Under the assumption that I'm correct,
+> > > where does the third superblock get it's selinux context from given t=
+hat
+> > > fc->security isn't even set during submount?
+> > >=20
+> >=20
+> > That's the problem this patch is intended to fix. It allows child mount=
+s
+> > to properly inherit security options from a parent dentry.
+>=20
+> Yeah, I'm aware. Your patch will ensure that the last superblock is
+> found again. But you're always going to allocate addititional
+> superblocks afaict. That's at least what I can gather from the logic.
+> Say you have:
+>=20
+> /export/a/b/c/d/e/foo   *(rw,insecure,no_subtree_check,no_root_squash)
+> /export/a/b/c/d/e/bar   *(rw,insecure,no_subtree_check,no_root_squash)
+>=20
+> you allocate 8 superblocks (it's always path components +1) of which you
+> immediately discard 7 after you finished. That's easily reproducible
+> with selinux completely disabled. I'm just astonished.
+>=20
 
-No, not yet.
+Actually, your callchain might not be correct.
 
-Currently, receivers may use vsock_dgram_recvmsg() prior to any bind,
-but this should probably change.
+I think that you should only end up calling back into nfs_d_automount
+and creating a new sb when we cross a mount boundary. So if each of
+those intermediate directories represents a different fs, then you'll
+get a bunch of superblocks that will end up discarded, but I don't
+believe we create a new mount just for intermediate directories that we
+can walk.
 
-For UDP, if we initialize a socket and call recvmsg() with no prior
-bind, then the socket will be auto-bound to 0.0.0.0. I guess vsock
-should probably also auto-bind in this case.
+Basically the nfsv4 mount process is to create a (hidden) superblock for
+the root of the tree on the server, and then use the normal pathwalk
+scheme to walk down to the right dentry for the root. Once we get there
+we can prune everything above that point and we end up with a single sb.
 
-For other cases, bind may not be called prior to calls to vsock_poll() /
-vsock_getname() (even if it doesn't make sense to do so), but I think it
-is okay as long as vsk->transport is not used.
 
-vsock_dgram_sendmsg() always auto-binds if needed.
 
-> Stefano
-> 
-> _______________________________________________
-> Virtualization mailing list
-> Virtualization@lists.linux-foundation.org
-> https://lists.linuxfoundation.org/mailman/listinfo/virtualization
+> >=20
+> > > And where is the context=3D%s output generated for mountinfo?
+> > >=20
+> >=20
+> > security_sb_show_options / selinux_sb_show_options
+> >=20
+> > > Is this a correct callchain?
+> > >=20
+> >=20
+> > I think it looks about right, but I didn't verify the details to the
+> > degree you have.
+> >=20
+> > > >=20
+> > > > Filling out fc->security with this new operation seems to fix that,=
+ but
+> > > > if you see a better way to do this, then I'm certainly open to the =
+idea.
+> > > >=20
+> > > > > In a worst case situation, we could always implement a flag *insi=
+de*
+> > > > > the SELinux code, similar to what has been done with 'lsm_set' he=
+re.
+> > > > >=20
+> > > >=20
+> > > > I'm fine with a different solution, if you see a better one. You'll=
+ have
+> > >=20
+> > > Independent of the modification in fs_context_for_submount() you migh=
+t want to
+> > > think about something like:
+> > >=20
+> > > static const struct fs_context_operations nfs4_fs_context_ops =3D {
+> > >       .free           =3D nfs4_free,
+> > >       .parse_param    =3D nfs4_parse_param,
+> > >       .get_tree       =3D nfs4_get_tree,
+> > > };
+> > >=20
+> > > static const struct fs_context_operations nfs4_fs_submount_ops =3D {
+> > >       .free           =3D nfs4_free_submount,
+> > >       .parse_param    =3D nfs4_parse_param_submount,
+> > >       .get_tree       =3D nfs4_get_tree_submount,
+> > > };
+> > >=20
+> > > static int nfs4_init_fs_context_submount(struct fs_context *fc)
+> > > {
+> > >         return 0;
+> > > }
+> > >=20
+> > > static int nfs4_fs_context_get_tree(struct fs_context *fc)
+> > > {
+> > >         if (fc->purpose =3D=3D FS_CONTEXT_FOR_SUBMOUNT)
+> > >                 fc->ops =3D &nfs4_fs_submount_ops;
+> > >         else
+> > >                 fc->ops =3D &nfs4_fs_context_ops;
+> > >         .
+> > >         .
+> > >         .
+> > > }
+> > >=20
+> > > which will make the callchain probably a lot to follow instead of waf=
+ting
+> > > through the same nested functions over and over. But just a thought.
+> >=20
+> > Sounds reasonable. I'd rather do that sort of cleanup afterward though,
+> > to make this patch easier to eventually backport.
+>=20
+> Yeah, sure.
+
+--=20
+Jeff Layton <jlayton@kernel.org>
