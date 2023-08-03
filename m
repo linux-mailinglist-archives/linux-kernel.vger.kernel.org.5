@@ -2,102 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DC2A876E749
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 13:47:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D5BC976E74D
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 13:48:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234601AbjHCLrp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Aug 2023 07:47:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44496 "EHLO
+        id S234223AbjHCLsx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Aug 2023 07:48:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45466 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234777AbjHCLrm (ORCPT
+        with ESMTP id S231496AbjHCLsv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Aug 2023 07:47:42 -0400
-Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2AAEAE53;
-        Thu,  3 Aug 2023 04:47:41 -0700 (PDT)
-Received: by mail-ej1-x62d.google.com with SMTP id a640c23a62f3a-9923833737eso121973566b.3;
-        Thu, 03 Aug 2023 04:47:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1691063259; x=1691668059;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=uCIhJJ2hQzGyb6KTmj3+r2054kWgm3yg50ej7a2QDQc=;
-        b=csXKjk2uhcfAg18dyTPk/RSzhNTWvubZIkepX1Mj3atVktKxOrnvv2YG36KoACoDNC
-         cny9ht4allynSHcLQQ6ciTN8i8LPccQRSd11vfi8IHmkUB6to8/GFYqbVUp4B8Ak6kk6
-         twCtl4BfxAgLsPpRxML7vLOq0u7wGQzuMesOoc7Kx+VlkPtdnNMdWEewM9LKFaejDUVB
-         4qZbE64kk18Jcyh8H5Knp5wcFoOR8GkbVyVk2qu3wHkCP+ZE3A+CjAlP6einWWRpoDF+
-         k86qVzOyoRWv48h49pVjr+5EKlk4xNSxVuEAaYeNtq2jaV70WfIi8IZn2tQ9qZJH+M+H
-         cQ9w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691063259; x=1691668059;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=uCIhJJ2hQzGyb6KTmj3+r2054kWgm3yg50ej7a2QDQc=;
-        b=Sd4Dx+TeTG4/BmrWHjkCLk7FlsDUWcD5Y2suFzXQRnkLPEstp0TW7c6PTNOEmMqWIM
-         4VHMbjXsLclDy9ZIeocDL5PpcQIrNKq/YZ9ooBpUKqzGaij4pLibYKSBDrs2NAbGlEBj
-         +Gv53Pm46w1i3w6ZX6mnz9pyVt/Gog+4MUkBLRzUG0UlEWaif2TMnEYoOU3z2u3W2PRh
-         smyrt56OB6eSgBvsTvKPURAfeOX5q8zyHKMgmOEeCYPnua0JCMsC7SOScBQcHsqYlvT1
-         UZ9bGaiNBfOvaWTWDvgatllVc5CB2TxEyowGY9cIzIhY8Mpk0ohVBbsLKvxmSrMnoF3P
-         b5Sg==
-X-Gm-Message-State: ABy/qLZMtC/RyulAl0OtPWr4helf1d6cANlQIUeEYMrOIPvm81AAbkMa
-        PgoPblcy+LUIWBKMwvp1Ph1K6FS5G/Y=
-X-Google-Smtp-Source: APBJJlEuLtlzLF7ZRSWqZTPsnYH5PMw8werL0IhJsaRD6sunTyQymk/YX8Sx+fiBHSP3tF/19IR7Yw==
-X-Received: by 2002:a17:906:8a58:b0:991:d5ad:f1b1 with SMTP id gx24-20020a1709068a5800b00991d5adf1b1mr7306166ejc.47.1691063259192;
-        Thu, 03 Aug 2023 04:47:39 -0700 (PDT)
-Received: from [192.168.0.103] ([77.126.7.132])
-        by smtp.gmail.com with ESMTPSA id sb9-20020a170906edc900b00992ae4cf3c1sm10325742ejb.186.2023.08.03.04.47.36
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 03 Aug 2023 04:47:38 -0700 (PDT)
-Message-ID: <852cef0c-2c1a-fdcd-4ee9-4a0bca3f54c5@gmail.com>
-Date:   Thu, 3 Aug 2023 14:47:35 +0300
+        Thu, 3 Aug 2023 07:48:51 -0400
+Received: from bg4.exmail.qq.com (bg4.exmail.qq.com [43.155.65.254])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4CF0E6F;
+        Thu,  3 Aug 2023 04:48:49 -0700 (PDT)
+X-QQ-mid: bizesmtp74t1691063319tvuri5m6
+Received: from linux-lab-host.localdomain ( [116.30.131.233])
+        by bizesmtp.qq.com (ESMTP) with 
+        id ; Thu, 03 Aug 2023 19:48:38 +0800 (CST)
+X-QQ-SSF: 00200000000000E0X000000A0000000
+X-QQ-FEAT: K2/klV1qoGlgQFITSGxVBRsam1EKtASy9rInE71XVAB8zAK2aUOgM8zIkBgPb
+        qCkgBtzdB/GZNd3ylQkg97OMTBSQGw/YDbKnvSsEgQ0NhDoWX6cJDd6tJ4NfDZco9Nu3y0n
+        OAcZ4Mqt1qB9xQLNNF/hOwQnD229SSjnQhhY7GkcEz1YmYPXVj0YrnJcoe5SFwO4xZdYST2
+        dZVlaODubiG8laWFZXtAuPLQ525EYkfGXOO3ZFJPqvnGJxPadd9JJTIjMp3OkXNBwe5Jklj
+        Z7yiksAP3xGvOMhCeG9s47xZ9EziebpRjLvLOO3HpmPmPbF4+gqBQjlRqSWa/2qM0oGpopz
+        jwcWDTB8t33onImHcRUhfRBtJ4zwEsa2iX33EFMsj8KFL0Okdyfz0jl9NkaCH3HAA+TOwgB
+        RJDd4Vz96rFcPWavDkVRig==
+X-QQ-GoodBg: 0
+X-BIZMAIL-ID: 560584784227893315
+From:   Zhangjin Wu <falcon@tinylab.org>
+To:     thomas@t-8ch.de, w@1wt.eu
+Cc:     falcon@tinylab.org, arnd@arndb.de, linux-kernel@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, tanyuan@tinylab.org,
+        =?UTF-8?q?Thomas=20Wei=C3=9Fschuh?= <linux@weissschuh.net>
+Subject: [PATCH v5 5/8] selftests/nolibc: add test support for ppc64le
+Date:   Thu,  3 Aug 2023 19:48:38 +0800
+Message-Id: <54b1ac710baee8750c4328c65da0fdcb7f06eae4.1691062722.git.falcon@tinylab.org>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <cover.1691062722.git.falcon@tinylab.org>
+References: <cover.1691062722.git.falcon@tinylab.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH net-next v10 08/16] tls: Inline do_tcp_sendpages()
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     David Howells <dhowells@redhat.com>, netdev@vger.kernel.org,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
-        David Ahern <dsahern@kernel.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Christoph Hellwig <hch@infradead.org>,
-        Jens Axboe <axboe@kernel.dk>, Jeff Layton <jlayton@kernel.org>,
-        Christian Brauner <brauner@kernel.org>,
-        Chuck Lever III <chuck.lever@oracle.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, Boris Pismenny <borisp@nvidia.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Gal Pressman <gal@nvidia.com>, ranro@nvidia.com,
-        samiram@nvidia.com, drort@nvidia.com,
-        Tariq Toukan <tariqt@nvidia.com>
-References: <ecbb5d7e-7238-28e2-1a17-686325e2bb50@gmail.com>
- <4c49176f-147a-4283-f1b1-32aac7b4b996@gmail.com>
- <20230522121125.2595254-1-dhowells@redhat.com>
- <20230522121125.2595254-9-dhowells@redhat.com>
- <2267272.1686150217@warthog.procyon.org.uk>
- <5a9d4ffb-a569-3f60-6ac8-070ab5e5f5ad@gmail.com>
- <776549.1687167344@warthog.procyon.org.uk>
- <7337a904-231d-201d-397a-7bbe7cae929f@gmail.com>
- <20230630102143.7deffc30@kernel.org>
- <f0538006-6641-eaf6-b7b5-b3ef57afc652@gmail.com>
- <20230705091914.5bee12f8@kernel.org>
- <bbdce803-0f23-7d3f-f75a-2bc3cfb794af@gmail.com>
- <20230725173036.442ba8ba@kernel.org>
-Content-Language: en-US
-From:   Tariq Toukan <ttoukan.linux@gmail.com>
-In-Reply-To: <20230725173036.442ba8ba@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
-        NORMAL_HTTP_TO_IP,NUMERIC_HTTP_ADDR,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,WEIRD_PORT autolearn=ham
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-QQ-SENDSIZE: 520
+Feedback-ID: bizesmtp:tinylab.org:qybglogicsvrgz:qybglogicsvrgz5a-1
+X-Spam-Status: No, score=-0.6 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,RCVD_IN_VALIDITY_RPBL,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -105,80 +55,92 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Kernel uses ARCH=powerpc for both 32-bit and 64-bit PowerPC, here adds a
+ppc64le variant for little endian 64-bit PowerPC, users can pass
+XARCH=ppc64le to test it.
 
+The powernv machine of qemu-system-ppc64le is used for there is just a
+working powernv_defconfig.
 
-On 26/07/2023 3:30, Jakub Kicinski wrote:
-> On Sun, 23 Jul 2023 09:35:56 +0300 Tariq Toukan wrote:
->> Hi Jakub, David,
->>
->> We repro the issue on the server side using this client command:
->> $ wrk -b2.2.2.2 -t4 -c1000 -d5 --timeout 5s
->> https://2.2.2.3:20443/256000b.img
->>
->> Port 20443 is configured with:
->>       ssl_ciphers ECDHE-RSA-AES128-GCM-SHA256;
->>       sendfile    off;
->>
->>
->> Important:
->> 1. Couldn't repro with files smaller than 40KB.
->> 2. Couldn't repro with "sendfile    on;"
->>
->> In addition, we collected the vmcore (forced by panic_on_warn), it can
->> be downloaded from here:
->> https://drive.google.com/file/d/1Fi2dzgq6k2hb2L_kwyntRjfLF6_RmbxB/view?usp=sharing
-> 
-> This has no symbols :(
-> 
-> There is a small bug in this commit, we should always set SPLICE.
-> But I don't see how that'd cause the warning you're seeing.
-> Does your build have CONFIG_DEBUG_VM enabled?
-> 
-> -->8-------------------------
-> 
-> From: Jakub Kicinski <kuba@kernel.org>
-> Date: Tue, 25 Jul 2023 17:03:25 -0700
-> Subject: net: tls: set MSG_SPLICE_PAGES consistently
-> 
-> We used to change the flags for the last segment, because
-> non-last segments had the MSG_SENDPAGE_NOTLAST flag set.
-> That flag is no longer a thing so remove the setting.
-> 
-> Since flags most likely don't have MSG_SPLICE_PAGES set
-> this avoids passing parts of the sg as splice and parts
-> as non-splice.
-> 
-> ... tags ...
-> Signed-off-by: Jakub Kicinski <kuba@kernel.org>
-> ---
->   net/tls/tls_main.c | 3 ---
->   1 file changed, 3 deletions(-)
-> 
-> diff --git a/net/tls/tls_main.c b/net/tls/tls_main.c
-> index b6896126bb92..4a8ee2f6badb 100644
-> --- a/net/tls/tls_main.c
-> +++ b/net/tls/tls_main.c
-> @@ -139,9 +139,6 @@ int tls_push_sg(struct sock *sk,
->   
->   	ctx->splicing_pages = true;
->   	while (1) {
-> -		if (sg_is_last(sg))
-> -			msg.msg_flags = flags;
-> -
->   		/* is sending application-limited? */
->   		tcp_rate_check_app_limited(sk);
->   		p = sg_page(sg);
+As the document [1] shows:
 
-Hi Jakub,
+  PowerNV (as Non-Virtualized) is the “bare metal” platform using the
+  OPAL firmware. It runs Linux on IBM and OpenPOWER systems and it can be
+  used as an hypervisor OS, running KVM guests, or simply as a host OS.
 
-When applying this patch, repro disappears! :)
-Apparently it is related to the warning.
-Please go on and submit it.
+Notes,
 
-Tested-by: Tariq Toukan <tariqt@nvidia.com>
+- since the VSX support may be disabled in kernel side, to avoid
+  "illegal instruction" errors due to missing VSX kernel support, let's
+  simply let compiler not generate vector/scalar (VSX) instructions via
+  the '-mno-vsx' option.
 
-We are going to run more comprehensive tests, I'll let you know if we 
-find anything unusual.
+- little endian ppc64 prefers elfv2 to elfv1 if the toolchain (e.g. gcc
+  13.1.0) supports it, let's align with kernel, otherwise, our elfv1
+  binary will not run on kernel with elfv2 ABI.
 
-Regards,
-Tariq
+[1]: https://qemu.readthedocs.io/en/latest/system/ppc/powernv.html
+
+Suggested-by: Willy Tarreau <w@1wt.eu>
+Link: https://lore.kernel.org/lkml/20230722120747.GC17311@1wt.eu/
+Reviewed-by: Thomas Weißschuh <linux@weissschuh.net>
+Signed-off-by: Zhangjin Wu <falcon@tinylab.org>
+---
+ tools/testing/selftests/nolibc/Makefile | 6 ++++++
+ 1 file changed, 6 insertions(+)
+
+diff --git a/tools/testing/selftests/nolibc/Makefile b/tools/testing/selftests/nolibc/Makefile
+index 53f55aad8f5c..4d71393e75ef 100644
+--- a/tools/testing/selftests/nolibc/Makefile
++++ b/tools/testing/selftests/nolibc/Makefile
+@@ -35,6 +35,7 @@ XARCH            = $(or $(XARCH_$(ARCH)),$(ARCH))
+ 
+ # map from user input variants to their kernel supported architectures
+ ARCH_ppc         = powerpc
++ARCH_ppc64le     = powerpc
+ ARCH            := $(or $(ARCH_$(XARCH)),$(XARCH))
+ 
+ # kernel image names by architecture
+@@ -45,6 +46,7 @@ IMAGE_arm64      = arch/arm64/boot/Image
+ IMAGE_arm        = arch/arm/boot/zImage
+ IMAGE_mips       = vmlinuz
+ IMAGE_ppc        = vmlinux
++IMAGE_ppc64le    = arch/powerpc/boot/zImage
+ IMAGE_riscv      = arch/riscv/boot/Image
+ IMAGE_s390       = arch/s390/boot/bzImage
+ IMAGE_loongarch  = arch/loongarch/boot/vmlinuz.efi
+@@ -59,6 +61,7 @@ DEFCONFIG_arm64      = defconfig
+ DEFCONFIG_arm        = multi_v7_defconfig
+ DEFCONFIG_mips       = malta_defconfig
+ DEFCONFIG_ppc        = pmac32_defconfig
++DEFCONFIG_ppc64le    = powernv_defconfig
+ DEFCONFIG_riscv      = defconfig
+ DEFCONFIG_s390       = defconfig
+ DEFCONFIG_loongarch  = defconfig
+@@ -75,6 +78,7 @@ QEMU_ARCH_arm64      = aarch64
+ QEMU_ARCH_arm        = arm
+ QEMU_ARCH_mips       = mipsel  # works with malta_defconfig
+ QEMU_ARCH_ppc        = ppc
++QEMU_ARCH_ppc64le    = ppc64le
+ QEMU_ARCH_riscv      = riscv64
+ QEMU_ARCH_s390       = s390x
+ QEMU_ARCH_loongarch  = loongarch64
+@@ -88,6 +92,7 @@ QEMU_ARGS_arm64      = -M virt -cpu cortex-a53 -append "panic=-1 $(TEST:%=NOLIBC
+ QEMU_ARGS_arm        = -M virt -append "panic=-1 $(TEST:%=NOLIBC_TEST=%)"
+ QEMU_ARGS_mips       = -M malta -append "panic=-1 $(TEST:%=NOLIBC_TEST=%)"
+ QEMU_ARGS_ppc        = -M g3beige -append "console=ttyS0 panic=-1 $(TEST:%=NOLIBC_TEST=%)"
++QEMU_ARGS_ppc64le    = -M powernv -append "console=hvc0 panic=-1 $(TEST:%=NOLIBC_TEST=%)"
+ QEMU_ARGS_riscv      = -M virt -append "console=ttyS0 panic=-1 $(TEST:%=NOLIBC_TEST=%)"
+ QEMU_ARGS_s390       = -M s390-ccw-virtio -m 1G -append "console=ttyS0 panic=-1 $(TEST:%=NOLIBC_TEST=%)"
+ QEMU_ARGS_loongarch  = -M virt -append "console=ttyS0,115200 panic=-1 $(TEST:%=NOLIBC_TEST=%)"
+@@ -104,6 +109,7 @@ Q=@
+ endif
+ 
+ CFLAGS_ppc = -m32 -mbig-endian -Wl,-EB,-melf32ppc -mmultiple -mno-vsx
++CFLAGS_ppc64le = -m64 -mlittle-endian -Wl,-EL,-melf64lppc -mno-vsx $(call cc-option,-mabi=elfv2)
+ CFLAGS_s390 = -m64
+ CFLAGS_mips = -EL
+ CFLAGS_STACKPROTECTOR ?= $(call cc-option,-mstack-protector-guard=global $(call cc-option,-fstack-protector-all))
+-- 
+2.25.1
+
