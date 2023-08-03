@@ -2,75 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 20EFF76EFB0
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 18:35:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A6D076EFB6
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 18:38:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237326AbjHCQfk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Aug 2023 12:35:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38942 "EHLO
+        id S234122AbjHCQio (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Aug 2023 12:38:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41592 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237177AbjHCQfW (ORCPT
+        with ESMTP id S233901AbjHCQim (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Aug 2023 12:35:22 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67CA930D2;
-        Thu,  3 Aug 2023 09:35:18 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id EC5FC61E37;
-        Thu,  3 Aug 2023 16:35:17 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C6BF9C433CC;
-        Thu,  3 Aug 2023 16:35:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691080517;
-        bh=ZTZgeCCqcCk5qt3bqo0mNlPdVNRWhr4NJIvWHGkwC7Q=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=dv9/S6UCgzugrr5kPIj6znHz+y8Os2gQPoLd8ZeUNNwQghH91gAp+49PEiQkUrh/V
-         RLu4q35WGpN5kTIcvdM/Hge7K5OLoqTTaHL1pDgMXX/N3TEMnpQw0BqwD1/h0tVNmk
-         1DCN2OMmGDTGNyP25xINCLwMzcWR0pdFi2wpi+OCIKr6I3q0E1d41qru7J3dlol5kW
-         oCyZi5g8XkyB1J11lG1oFWIxg/c8bAYLHqteQWMCNsfaTj0SXkO4+I7iISC4Ae07io
-         9zKP1ON7B0JZaenfd7MOL9W3OuL/M3o+5cOaOzi2iNYXpBqQP51csTngk44E/GqgRV
-         Yfa1ykcjNEuXg==
-From:   Bjorn Andersson <andersson@kernel.org>
-To:     agross@kernel.org, konrad.dybcio@linaro.org,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Praveenkumar I <quic_ipkumar@quicinc.com>
-Cc:     quic_varada@quicinc.com, quic_clew@quicinc.com
-Subject: Re: [PATCH v3] soc: qcom: qmi_encdec: Restrict string length in decode
-Date:   Thu,  3 Aug 2023 09:38:07 -0700
-Message-ID: <169108064636.108343.3377347407906942880.b4-ty@kernel.org>
-X-Mailer: git-send-email 2.41.0
-In-Reply-To: <20230801064712.3590128-1-quic_ipkumar@quicinc.com>
-References: <20230801064712.3590128-1-quic_ipkumar@quicinc.com>
+        Thu, 3 Aug 2023 12:38:42 -0400
+Received: from mail-ot1-x32d.google.com (mail-ot1-x32d.google.com [IPv6:2607:f8b0:4864:20::32d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3F72E77
+        for <linux-kernel@vger.kernel.org>; Thu,  3 Aug 2023 09:38:40 -0700 (PDT)
+Received: by mail-ot1-x32d.google.com with SMTP id 46e09a7af769-6bcc5c86b20so1080285a34.3
+        for <linux-kernel@vger.kernel.org>; Thu, 03 Aug 2023 09:38:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1691080720; x=1691685520;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=b7hXTqR0jH2hsI9WNMzkw89TQE7WPo/H+95Mu1R0KQE=;
+        b=TwBfw10n8Q1dq4al0QEoJQbukd0ijgBQZO/dS/h1PHcJqBpzGkA30e5IkPWZoVW9Sy
+         vANVWg9vunFLYRXH5ipbbP2HZHO+WsfO22BijlHNt0bcAyA7yEJHqj7pJ/CvcgSRtOvE
+         3tJR0OXjltD/my4Wag02g++tbHtJEOWfijGbow/pk5LXCJFtEgdbd5ScHetqaO4+RdYg
+         GAdNB+MzTO8OeNKIgmDPgsw7Sz0EffJES7YwhWs5Emv9CxHIzH1/4K7SsfCg7T+Fn1fg
+         P+RTrezTLnE6sy6VpWk6PP7VgNTzo5/06VSmaNCL5Xaw3WYsZcPdNgRKAshbiFFqfaYO
+         cjQw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691080720; x=1691685520;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=b7hXTqR0jH2hsI9WNMzkw89TQE7WPo/H+95Mu1R0KQE=;
+        b=gl6uVpyUMSxG1ehVT68tZSZA/KZTePKscsUJHichbyCYiODJXZLA1OZdYwFsDCigaY
+         0uW4WJYBVFiGR6p3OsXTlLGE8Hg6vxGiqcx8SpFyzpNoxCn+XpT7loFrnW31CTYiZMOh
+         RjGYVMiDaGDPXlvdBx4ui8ANswulylGN7qyQanb5b+Oj+4ga9xhFvuoSqKCxn6gv7gU5
+         z77ndPsEXocGDviWnMe7z+C/DBLwNM1EXw/okVBAXLEWL6SysBWLhZQyJDdMF1Cc4a7N
+         TZ/Lip1bTpvj54Af3Ymoqxi7bRRj1UcP1WEzruUGdTx5uiR5wweV1F7P2EE/cWE69rY8
+         ms+Q==
+X-Gm-Message-State: ABy/qLaWlNrg+lFAq4xmlzm8+XbMki+pNlGAKrACoPKM1y+HeDceD/49
+        7gQvLPPP26QWnaQR5rkBGAmcIMWDTbPiz91KJ6MQwA==
+X-Google-Smtp-Source: APBJJlHUyAnRAFZVPgXBElopa5dcKpbBDbuElevyl7taFoGz9yEueMUgSOJhFfonaQeDoBh7LbHScUn0uHooT0zI8vw=
+X-Received: by 2002:a05:6358:998f:b0:137:7ab1:b7bc with SMTP id
+ j15-20020a056358998f00b001377ab1b7bcmr8324379rwb.0.1691080719807; Thu, 03 Aug
+ 2023 09:38:39 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+References: <CAKwvOdnRwmxGuEidZ=OWxSX60D6ry0Rb__DjSayga6um35Jsrg@mail.gmail.com>
+ <5066885c-3ac9-adbd-6852-eba89657470c@nfschina.com>
+In-Reply-To: <5066885c-3ac9-adbd-6852-eba89657470c@nfschina.com>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Thu, 3 Aug 2023 09:38:28 -0700
+Message-ID: <CAKwvOd=BJy==Ly80zLvW=RiEO=F5KeztVet7CuKT0FjvQtoSbw@mail.gmail.com>
+Subject: Re: [PATCH] fs: lockd: avoid possible wrong NULL parameter
+To:     Su Hui <suhui@nfschina.com>
+Cc:     Dan Carpenter <dan.carpenter@linaro.org>, chuck.lever@oracle.com,
+        jlayton@kernel.org, neilb@suse.de, kolga@netapp.com,
+        Dai.Ngo@oracle.com, tom@talpey.com,
+        trond.myklebust@hammerspace.com, anna@kernel.org,
+        nathan@kernel.org, trix@redhat.com, bfields@fieldses.org,
+        linux-nfs@vger.kernel.org, linux-kernel@vger.kernel.org,
+        llvm@lists.linux.dev, kernel-janitors@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Aug 2, 2023 at 9:11=E2=80=AFPM Su Hui <suhui@nfschina.com> wrote:
+>
+> On 2023/8/3 05:40, Nick Desaulniers wrote:
+>
+> On Wed, Aug 2, 2023 at 3:25=E2=80=AFAM Dan Carpenter <dan.carpenter@linar=
+o.org> wrote:
+>
+>
+> I noticed that the function in question already has a guard:
+> 322   if (hostname && memchr(hostname, '/', hostname_len) !=3D NULL) {
+>
+> Which implies that hostname COULD be NULL.
+>
+> Should this perhaps simply be rewritten as:
+>
+> if (!hostname)
+>   return NULL;
+> if (memchr(...) !=3D NULL)
+>   ...
+>
+> Rather than bury yet another guard for the same check further down in
+> the function? Check once and bail early.
+>
+> Hi, Nick Desaulnier,
+>
+> This may disrupt the logic of this function. So maybe the past one is bet=
+ter.
+>
+> 322         if (!hostname)
+> 323                 return NULL;
+>                     ^^^^^^^^^^^^
+> If we return in this place.
+>
+> 324         if (memchr(hostname, '/', hostname_len) !=3D NULL) {
+> 325                 if (printk_ratelimit()) {
+> 326                         printk(KERN_WARNING "Invalid hostname \"%.*s\=
+" "
+> 327                                             "in NFS lock request\n",
+> 328                                 (int)hostname_len, hostname);
+> 329                 }
+> 330                 return NULL;
+> 331         }
+> 332
+> 333 retry:
+> 334         spin_lock(&nsm_lock);
+> 335
+> 336         if (nsm_use_hostnames && hostname !=3D NULL)
+> 337                 cached =3D nsm_lookup_hostname(&ln->nsm_handles,
+> 338                                         hostname, hostname_len);
+> 339         else
+> 340                 cached =3D nsm_lookup_addr(&ln->nsm_handles, sap);
+>                              ^^^^^^^^^^^^^^^
+> This case will be broken when hostname is NULL.
 
-On Tue, 01 Aug 2023 12:17:12 +0530, Praveenkumar I wrote:
-> The QMI TLV value for strings in a lot of qmi element info structures
-> account for null terminated strings with MAX_LEN + 1. If a string is
-> actually MAX_LEN + 1 length, this will cause an out of bounds access
-> when the NULL character is appended in decoding.
-> 
-> 
+Ah, you're right; I agree.
 
-Applied, thanks!
+What are your thoughts then about moving the "is hostname NULL" check
+to nsm_create_handle() then?
 
-[1/1] soc: qcom: qmi_encdec: Restrict string length in decode
-      commit: 8d207400fd6b79c92aeb2f33bb79f62dff904ea2
+Perhaps nsm_create_handle() should check that immediately and return
+NULL, or simply skip the memcpy if hostname is NULL?
 
-Best regards,
--- 
-Bjorn Andersson <andersson@kernel.org>
+It seems perhaps best to localize this to the callee rather than the
+caller. While there is only one caller today, should another arise
+someday, they may make the same mistake.
+
+I don't feel strongly either way, and am happy to sign off on either
+approach; just triple checking we've considered a few different cases.
+
+>
+> 341
+> 342         if (cached !=3D NULL) {
+> 343                 refcount_inc(&cached->sm_count);
+> 344                 spin_unlock(&nsm_lock);
+> 345                 kfree(new);
+> 346                 dprintk("lockd: found nsm_handle for %s (%s), "
+> 347                                 "cnt %d\n", cached->sm_name,
+> 348                                 cached->sm_addrbuf,
+> 349                                 refcount_read(&cached->sm_count));
+> 350                 return cached;
+> 351         }
+>
+
+
+--=20
+Thanks,
+~Nick Desaulniers
