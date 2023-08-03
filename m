@@ -2,171 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 90F8976DE74
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 04:46:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DFD5176DE76
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 04:47:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233483AbjHCCqq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Aug 2023 22:46:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33744 "EHLO
+        id S233283AbjHCCrN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Aug 2023 22:47:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33934 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230149AbjHCCqo (ORCPT
+        with ESMTP id S233721AbjHCCrG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Aug 2023 22:46:44 -0400
-Received: from mail-yw1-x1129.google.com (mail-yw1-x1129.google.com [IPv6:2607:f8b0:4864:20::1129])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55EFC9B
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Aug 2023 19:46:42 -0700 (PDT)
-Received: by mail-yw1-x1129.google.com with SMTP id 00721157ae682-584243f84eeso4199197b3.0
-        for <linux-kernel@vger.kernel.org>; Wed, 02 Aug 2023 19:46:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paul-moore.com; s=google; t=1691030801; x=1691635601;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=C7rPDjP3w7SFi7WVbOLZnOQv42SK/YK3pgxUtFOJqn8=;
-        b=NhqdR98K7bSRKTQ7CDjVRuusX4/Mn2110sFpO+gM2ndRgcP5OGA/FvizImRpEFEI4Z
-         PzGJ2fbtz7V+aSAsGKRRX4zdMzG2Ac0+NO8G5LU04GpWmY1oYpNibBULXCfo1KfjeD/Y
-         VkGVoJ4W5p9nydWS1OU+rOHdFLg07+H2eJVFgHRBmy669hWJ8MfQyLHxBzHgyNt/2Jk+
-         CcwoWKuzcB5rmpv9andPMrMoVDPaHBL3zU3r1fFGqN7x74QhHlDsK1NwpW9SEdncDCRd
-         FkoTtcniWlVsCYHVycdjAtMDuJQ9Pfykj7simTA9WCo2OIiEEMeuJSS5RVZpb31IsaiE
-         GjcA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691030801; x=1691635601;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=C7rPDjP3w7SFi7WVbOLZnOQv42SK/YK3pgxUtFOJqn8=;
-        b=cDvPQWRS3yxQrJL0w7i6nqWElDxK2x5QD83CS/usjmQqSqGXlnJKDNfIRd5ZtVWJoP
-         Qai7yBqFXOmrGfbVpQ7tQCA9X6gZiw8e5wRE7LsHirsHzmH5jGQCcUCYdiWWu17na0M9
-         M2O4k7aqxkqSKrGUEMtPdelEAvZCgIecSs7DKtfWljcnDNZVA2C7+XuE8DUPL6UNl2vI
-         AxQKjH8c6owfnUAgilaU17V4rgOwbK+lYWdpDTZsFoyPtkdfKYfhVQo3rD5/mVkIOPs3
-         tk8OTZC6s9uuvk7Tz31aUJt0Ur4sCC4zlgtSQT8eRx2uFP9hTxyz2UVdK0qN3JvZh0xF
-         Ii2A==
-X-Gm-Message-State: ABy/qLYHWhCR4rLqClQjASKryFof6cuErGNblFWoCSvb5ZmkUTJU5L9P
-        2hA7nTc3/HCwXqpU3B65mNtJJaNytKDdRzBU+uyn
-X-Google-Smtp-Source: APBJJlFqHlrp0u9AowD2PWwPoxkgbyl77rYK4KODV0+X/B9t9X/ggsV9oR4Jf3avj9eFA1ansLbJ8J91robM9izXfWw=
-X-Received: by 2002:a81:7b05:0:b0:56c:e1e0:8da1 with SMTP id
- w5-20020a817b05000000b0056ce1e08da1mr23328025ywc.19.1691030801385; Wed, 02
- Aug 2023 19:46:41 -0700 (PDT)
-MIME-Version: 1.0
-References: <20230802-master-v6-1-45d48299168b@kernel.org> <bac543537058619345b363bbfc745927.paul@paul-moore.com>
- <ca156cecbc070c3b7c68626572274806079a6e04.camel@kernel.org>
-In-Reply-To: <ca156cecbc070c3b7c68626572274806079a6e04.camel@kernel.org>
-From:   Paul Moore <paul@paul-moore.com>
-Date:   Wed, 2 Aug 2023 22:46:30 -0400
-Message-ID: <CAHC9VhTQDVyZewU0Oiy4AfJt_UtB7O2_-PcUmXkZtuwKDQBfXg@mail.gmail.com>
-Subject: Re: [PATCH v6] vfs, security: Fix automount superblock LSM init
- problem, preventing NFS sb sharing
-To:     Jeff Layton <jlayton@kernel.org>
-Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
-        Christian Brauner <brauner@kernel.org>,
-        Trond Myklebust <trond.myklebust@hammerspace.com>,
-        Anna Schumaker <anna@kernel.org>,
-        James Morris <jmorris@namei.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>,
-        Stephen Smalley <stephen.smalley.work@gmail.com>,
-        Eric Paris <eparis@parisplace.org>,
-        Casey Schaufler <casey@schaufler-ca.com>,
-        David Howells <dhowells@redhat.com>,
-        Scott Mayhew <smayhew@redhat.com>,
-        Stephen Smalley <sds@tycho.nsa.gov>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-nfs@vger.kernel.org, linux-security-module@vger.kernel.org,
-        selinux@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        Wed, 2 Aug 2023 22:47:06 -0400
+Received: from mailout3.samsung.com (mailout3.samsung.com [203.254.224.33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 753D29B
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Aug 2023 19:46:59 -0700 (PDT)
+Received: from epcas2p3.samsung.com (unknown [182.195.41.55])
+        by mailout3.samsung.com (KnoxPortal) with ESMTP id 20230803024657epoutp039a98167818338ae7e7d8ce44156cb488~3v5GkxRvo2923329233epoutp03y
+        for <linux-kernel@vger.kernel.org>; Thu,  3 Aug 2023 02:46:57 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout3.samsung.com 20230803024657epoutp039a98167818338ae7e7d8ce44156cb488~3v5GkxRvo2923329233epoutp03y
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1691030817;
+        bh=PwO6EleDN2/9BZS0MgsO4FzRedJIuZjGAgP/GjGmsxM=;
+        h=Subject:Reply-To:From:To:Date:References:From;
+        b=ra7AdzDDRLI4/Hz9IZOsl3RVZm1PeV0qE8UeMShoWLh7/mr/uoH8GGCVaGH3w4QWI
+         0ZRTnKjMNNodawEmPbMQE7IqzhGwemsd60iDyUh6yFOYRGhtDL83k5QynMTHWIfWZa
+         rQy85oiVH6HJrSZr/+64GXGQ3P+lTyEUL45SP0XE=
+Received: from epsnrtp1.localdomain (unknown [182.195.42.162]) by
+        epcas2p2.samsung.com (KnoxPortal) with ESMTP id
+        20230803024656epcas2p21235592e87f645b38610e486af8f4979~3v5GKuIWJ1584415844epcas2p2V;
+        Thu,  3 Aug 2023 02:46:56 +0000 (GMT)
+Received: from epsmges2p2.samsung.com (unknown [182.195.36.92]) by
+        epsnrtp1.localdomain (Postfix) with ESMTP id 4RGYCN2wlrz4x9Pv; Thu,  3 Aug
+        2023 02:46:56 +0000 (GMT)
+X-AuditID: b6c32a46-6fdfa70000009cc5-80-64cb15201a31
+Received: from epcas2p4.samsung.com ( [182.195.41.56]) by
+        epsmges2p2.samsung.com (Symantec Messaging Gateway) with SMTP id
+        66.A1.40133.0251BC46; Thu,  3 Aug 2023 11:46:56 +0900 (KST)
+Mime-Version: 1.0
+Subject: [PATCH v3 0/4] multi-page bvec configuration for integrity payload
+Reply-To: j-young.choi@samsung.com
+Sender: Jinyoung Choi <j-young.choi@samsung.com>
+From:   Jinyoung Choi <j-young.choi@samsung.com>
+To:     Christoph Hellwig <hch@infradead.org>,
+        "axboe@kernel.dk" <axboe@kernel.dk>,
+        "kbusch@kernel.org" <kbusch@kernel.org>,
+        "chaitanya.kulkarni@wdc.com" <chaitanya.kulkarni@wdc.com>,
+        "sagi@grimberg.me" <sagi@grimberg.me>,
+        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "martin.petersen@oracle.com" <martin.petersen@oracle.com>
+X-Priority: 3
+X-Content-Kind-Code: NORMAL
+X-CPGS-Detection: blocking_info_exchange
+X-Drm-Type: N,general
+X-Msg-Generator: Mail
+X-Msg-Type: PERSONAL
+X-Reply-Demand: N
+Message-ID: <20230803024656epcms2p4da6defb8e1e9b050fe2fbd52cb2e9524@epcms2p4>
+Date:   Thu, 03 Aug 2023 11:46:56 +0900
+X-CMS-MailID: 20230803024656epcms2p4da6defb8e1e9b050fe2fbd52cb2e9524
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: AUTO_CONFIDENTIAL
+CMS-TYPE: 102P
+X-CPGSPASS: Y
+X-CPGSPASS: Y
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprJJsWRmVeSWpSXmKPExsWy7bCmha6C6OkUg65mUYvVd/vZLGbdfs1i
+        8fKQpsXpCYuYLCYdusZosfeWtsXlXXPYLJYf/8dkse71exYHTo/z9zayeGxeoeVx+Wypx6ZV
+        nWweH5/eYvHo27KK0ePzJjmP9gPdTAEcUdk2GamJKalFCql5yfkpmXnptkrewfHO8aZmBoa6
+        hpYW5koKeYm5qbZKLj4Bum6ZOUC3KSmUJeaUAoUCEouLlfTtbIryS0tSFTLyi0tslVILUnIK
+        zAv0ihNzi0vz0vXyUkusDA0MjEyBChOyM+5/fsZcsE2sYu6e64wNjCcFuxg5OSQETCQmn1rK
+        3sXIxSEksINR4vfqB0xdjBwcvAKCEn93CIPUCAt4S8x8ep8RxBYSUJI4t2YWI0TcQKLldhsL
+        iM0moCex4/lusDkiAnOYJS6tWcYKsYBXYkb7UxYIW1pi+/KtjBC2hsSPZb3MELaoxM3Vb9lh
+        7PfH5kPViEi03jsLVSMo8eDnbqi4pMShQ1/ZQO6UEMiX2HAgECJcI9H26z1Uub7EtY6NYGt5
+        BXwlHjw8BWazCKhKPG1bzARR4yKx7ttpsLXMAvIS29/OYQYZySygKbF+lz7EdGWJI7dYICr4
+        JDoO/2WHeaph42+s7B3znjBBtKpJLGoyggjLSHw9PB+qxEOi6+RexgmMirMQwTwLyQmzEE5Y
+        wMi8ilEstaA4Nz212KjACB6zyfm5mxjBaVTLbQfjlLcf9A4xMnEwHmKU4GBWEuGV/n08RYg3
+        JbGyKrUoP76oNCe1+BCjKdDzE5mlRJPzgYk8ryTe0MTSwMTMzNDcyNTAXEmc917r3BQhgfTE
+        ktTs1NSC1CKYPiYOTqkGpvoz9/1vHbrtVlVQ8oP/xDanU+Xr8lqrvEK2pC862v1vI7edhd2f
+        QxM3XJv47lqnjZ/smi1KEpzN+xyY38ZxXdXeI/xSU2jxm4uXtc7ntBbXTVJwda7+eFs2s2px
+        jH9+wo/c3UtSqlUfdeb4MUzdWZW4IVaV0di5ypQvRaZ+28LeyRInl8sK8VxIzrP9Esc1f7GZ
+        1Gp316s7XRyeMiicOssbsOXvztYCScbQBpO/t88af09Wienjko3b/37+5ivr3BTdcj4HaPj6
+        xbQHzLrdukyhyed4RG7BztNNwV1HdvdOUlWwq7l0Lqzzs0h87UvNfKZdMu+KPPSeHnEQLNh2
+        JLy3/XHP3Ezf748FL+1SYinOSDTUYi4qTgQACBWlaywEAAA=
+DLP-Filter: Pass
+X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20230803024656epcms2p4da6defb8e1e9b050fe2fbd52cb2e9524
+References: <CGME20230803024656epcms2p4da6defb8e1e9b050fe2fbd52cb2e9524@epcms2p4>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 2, 2023 at 3:34=E2=80=AFPM Jeff Layton <jlayton@kernel.org> wro=
-te:
-> On Wed, 2023-08-02 at 14:16 -0400, Paul Moore wrote:
-> > On Aug  2, 2023 Jeff Layton <jlayton@kernel.org> wrote:
+In the case of NVMe, it has an integrity payload consisting of one segment.
+So, rather than configuring SG_LIST, it was changed by direct DMA mapping.
 
+The page-merge is not performed for the struct bio_vec when creating 
+a integrity payload in block.
+As a result, when creating an integrity paylaod beyond one page, each 
+struct bio_vec is generated, and its bv_len does not exceed the PAGESIZE.
+
+To solve it, bio_integrity_add_page() should just add to the existing 
+bvec, similar to bio_add_page() and friends. 
+
+(ref: https://lore.kernel.org/linux-nvme/yq18rewbmay.fsf@ca-mkp.ca.oracle.com/T/#t)
+
+
+Tested like this:
+
+- Format (support pi)
+$ sudo nvme format /dev/nvme2n1 --force -n 1 -i 1 -p 0 -m 0 -l 1 -r
+
+- Run FIO
+[global]
+ioengine=libaio
+group_reporting
+
+[job]
+bs=512k
+iodepth=256
+rw=write
+numjobs=8
+direct=1
+runtime=10s
+filename=/dev/nvme2n1
+
+- Result
+...
+[   93.496218] nvme2n1: I/O Cmd(0x1) @ LBA 62464, 1024 blocks, I/O Error (sct 0x2 / sc 0x82) MORE
+[   93.496227] protection error, dev nvme2n1, sector 62464 op 0x1:(WRITE) flags 0x18800 phys_seg 3 prio class 2
+[   93.538788] nvme2n1: I/O Cmd(0x1) @ LBA 6144, 1024 blocks, I/O Error (sct 0x2 / sc 0x82) MORE
+[   93.538798] protection error, dev nvme2n1, sector 6144 op 0x1:(WRITE) flags 0x18800 phys_seg 3 prio class 2
+[   93.566231] nvme2n1: I/O Cmd(0x1) @ LBA 124928, 1024 blocks, I/O Error (sct 0x0 / sc 0x4)
+[   93.566241] I/O error, dev nvme2n1, sector 124928 op 0x1:(WRITE) flags 0x18800 phys_seg 3 prio class 2
+[   93.694147] nvme2n1: I/O Cmd(0x1) @ LBA 64512, 1024 blocks, I/O Error (sct 0x2 / sc 0x82) MORE
+[   93.694155] protection error, dev nvme2n1, sector 64512 op 0x1:(WRITE) flags 0x18800 phys_seg 3 prio class 2
+[   93.694299] nvme2n1: I/O Cmd(0x1) @ LBA 5120, 1024 blocks, I/O Error (sct 0x2 / sc 0x82) MORE
+[   93.694305] protection error, dev nvme2n1, sector 5120 op 0x1:(WRITE) flags 0x18800 phys_seg 3 prio class 2
 ...
 
-> > I generally dislike core kernel code which makes LSM calls conditional
-> > on some kernel state maintained outside the LSM.  Sometimes it has to
-> > be done as there is no other good options, but I would like us to try
-> > and avoid it if possible.  The commit description mentioned that this
-> > was put here to avoid a SELinux complaint, can you provide an example
-> > of the complain?  Does it complain about a double/invalid mount, e.g.
-> > "SELinux: mount invalid.  Same superblock, different security ..."?
->
-> The problem I had was not so much SELinux warnings, but rather that in a
-> situation where I would expect to share superblocks between two
-> filesystems, it didn't.
->
-> Basically if you do something like this:
->
-> # mount nfsserver:/export/foo /mnt/foo -o context=3Dsystem_u:object_r:roo=
-t_t:s0
-> # mount nfsserver:/export/bar /mnt/bar -o context=3Dsystem_u:object_r:roo=
-t_t:s0
->
-> ...when "foo" and "bar" are directories on the same filesystem on the
-> server, you should get two vfsmounts that share a superblock. That's
-> what you get if selinux is disabled, but not when it's enabled (even
-> when it's in permissive mode).
+Changes to v2:
+- apply review related to comment (by Christoph)
 
-Thanks, that helps.  I'm guessing the difference in behavior is due to
-the old->has_sec_mnt_opts check in nfs_compare_super().
+Changes to v1:
+- add a patch to modify the location of the bi_size update code.
+- split a patch (create multi-page bvecs in bio_integirty_add_page()).
 
-> > I'd like to understand why the sb_set_mnt_opts() call fails when it
-> > comes after the fs_context_init() call.  I'm particulary curious to
-> > know if the failure is due to conflicting SELinux state in the
-> > fs_context, or if it is simply an issue of sb_set_mnt_opts() not
-> > properly handling existing values.  Perhaps I'm being overly naive,
-> > but I'm hopeful that we can address both of these within the SELinux
-> > code itself.
->
-> The problem I hit was that nfs_compare_super is called with a fs_context
-> that has a NULL ->security pointer. That caused it to call
-> selinux_sb_mnt_opts_compat with mnt_opts set to NULL, and at that point
-> it returns 1 and decides not to share sb's.
->
-> Filling out fc->security with this new operation seems to fix that, but
-> if you see a better way to do this, then I'm certainly open to the idea.
+Jinyoung Choi (4):
+  block: make bvec_try_merge_hw_page() non-static
+  bio-integrity: update the payload size in bio_integrity_add_page()
+  bio-integrity: cleanup adding integrity pages to bip's bvec.
+  bio-integrity: create multi-page bvecs in bio_integrity_add_page()
 
-Just as you mention that you are not a LSM expert, I am not a VFS
-expert, so I think we'll have to help each other a bit ;)
+ block/bio-integrity.c               | 49 ++++++++++++++++-------------
+ block/bio.c                         |  2 +-
+ block/blk.h                         |  4 +++
+ drivers/md/dm-crypt.c               |  1 -
+ drivers/nvme/host/ioctl.c           |  1 -
+ drivers/nvme/target/io-cmd-bdev.c   |  3 +-
+ drivers/target/target_core_iblock.c |  3 +-
+ 7 files changed, 35 insertions(+), 28 deletions(-)
 
-I think I'm beginning to understand alloc_fs_context() a bit more,
-including the fs_context_for_XXX() wrappers.  One thing I have
-realized is that I believe we need to update the
-selinux_fs_context_init() and smack_fs_context_init() functions to
-properly handle a NULL @reference dentry; I think returning without
-error in both cases is the correct answer.  In the non-NULL @reference
-case, I believe your patch is correct, we do want to inherit the
-options from @reference.  My only concern now is the
-fs_context::lsm_set flag.
-
-You didn't mention exactly why the security_sb_set_mnt_opts() was
-failing, and requires the fs_context::lsm_set check, but my guess is
-that something is tripping over the fact that the superblock is
-already properly setup.  I'm working under the assumption that this
-problem - attempting to reconfigure a properly configured superblock -
-should only be happening in the submount/non-NULL-reference case.  If
-it is happening elsewhere I think I'm going to need some help
-understanding that ...
-
-However, assuming I'm mostly correct in the above paragraph, would it
-be possible to take a reference to the @reference dentry's superblock
-in security_fs_context_init(), that we could later compare to the
-superblock passed into security_sb_set_mnt_opts()?  If we know that
-the fs_context was initialized with the same superblock we are now
-being asked to set mount options on, we should be able to return from
-the LSM hook without doing anything.
-
-Right?
-
-Or am I missing something really silly? :)
-
---=20
-paul-moore.com
+-- 
+2.34.1
