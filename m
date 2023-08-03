@@ -2,107 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F73476F570
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 00:03:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E583576F609
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 01:13:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232455AbjHCWDZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Aug 2023 18:03:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53392 "EHLO
+        id S231439AbjHCXNj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Aug 2023 19:13:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49626 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232851AbjHCWDL (ORCPT
+        with ESMTP id S229446AbjHCXNh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Aug 2023 18:03:11 -0400
-Received: from mail-pg1-x530.google.com (mail-pg1-x530.google.com [IPv6:2607:f8b0:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76C844214;
-        Thu,  3 Aug 2023 15:02:44 -0700 (PDT)
-Received: by mail-pg1-x530.google.com with SMTP id 41be03b00d2f7-517ab9a4a13so977002a12.1;
-        Thu, 03 Aug 2023 15:02:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1691100157; x=1691704957;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=nXZWjfN9jRVe+H33im5sYKdcYpl83+nexah9W681kvs=;
-        b=Af4HYsP21mKSBHrPbKz2NpveemF6uwBT1sqWwDLsPtvM3YsxUwa5D+L114TsYL9LJF
-         qGKv+qE5ecIQtCimduvkKUI6DAwH0wMa7scKIszgw/LUohFbIQuwXJNGIghRVtOM+swX
-         edw4kN4ZMGakALGBXyEWOX/uJpyC686aQwCNpXvu2KXbMPHNoCZu2m7qCQEO5KdEk3LH
-         iAAXYxNpxcu01fJOZJDMeLSftYmzn92ekYN8aRYg5uaLeOcgXqNWcJ5ttwAudypA7dJI
-         RtB8bhKQ+DDQRR2XGbZIrrf1GeGXbIPP9rS4tG9gL9H5b/WVdZ+aIaPWaPxDNl/8xyam
-         8Cuw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691100157; x=1691704957;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=nXZWjfN9jRVe+H33im5sYKdcYpl83+nexah9W681kvs=;
-        b=V0Yc48ZjgkNpOpgMT+LXdC+IWokjVsGCvZ/ET/ccKr+2eSNTcB8Z1aJ+KzCHjq4+dA
-         iqYNcAWbBrfO31i1puFGsRAG2JVBmPqJW/FCG6Y0/MV+Fl3E7M94VSpq8HYi/4ckb3no
-         ONesWGurXNsSpKBlRzvdFTiVeniIlOHtRFPfY+QuttCELr8OmZdbkVxHwYHdbiSavxIF
-         LvBYo2akenHzY6Kd7uDROWcaI3IrvnCYM+t5SyJNdmcn1aww4jHaHxlwU25vxJyua1BP
-         buI+Vzlawe/8kWTieqyZmmH/eluLwwUb9PI5g99gU5ct6x5J6o9WzOctTDHSOUcfAJnm
-         uHyg==
-X-Gm-Message-State: AOJu0YxElFcfdA/4WVY4B51JcIs+/F4G502ErSrrq2Wlh8DQeiqYfDZY
-        bQ7iZIWhznxEWEOaQey+00XV9KzPoP0=
-X-Google-Smtp-Source: AGHT+IGl2tGbAFvssGQqeZ1wP6XLECY7/4WzZoYSgAMqTT2kydzqs2HGdiQ8789wcCkrTEohoNh2QA==
-X-Received: by 2002:a17:90a:764a:b0:263:6e10:7cdd with SMTP id s10-20020a17090a764a00b002636e107cddmr9864pjl.38.1691100157236;
-        Thu, 03 Aug 2023 15:02:37 -0700 (PDT)
-Received: from localhost ([2a00:79e1:abd:4a00:6c80:7c10:75a0:44f4])
-        by smtp.gmail.com with ESMTPSA id q9-20020a170902b10900b001b8622c1ad2sm317439plr.130.2023.08.03.15.02.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 03 Aug 2023 15:02:36 -0700 (PDT)
-From:   Rob Clark <robdclark@gmail.com>
-To:     dri-devel@lists.freedesktop.org
-Cc:     linux-arm-msm@vger.kernel.org, freedreno@lists.freedesktop.org,
-        Rob Clark <robdclark@chromium.org>,
-        Rob Clark <robdclark@gmail.com>,
-        Abhinav Kumar <quic_abhinavk@quicinc.com>,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        Sean Paul <sean@poorly.run>,
-        Marijn Suijten <marijn.suijten@somainline.org>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH v3 9/9] drm/msm: Enable fence signalling annotations
-Date:   Thu,  3 Aug 2023 15:01:57 -0700
-Message-ID: <20230803220202.78036-10-robdclark@gmail.com>
-X-Mailer: git-send-email 2.41.0
-In-Reply-To: <20230803220202.78036-1-robdclark@gmail.com>
-References: <20230803220202.78036-1-robdclark@gmail.com>
+        Thu, 3 Aug 2023 19:13:37 -0400
+Received: from omta34.uswest2.a.cloudfilter.net (omta34.uswest2.a.cloudfilter.net [35.89.44.33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2DC1030C2;
+        Thu,  3 Aug 2023 16:13:36 -0700 (PDT)
+Received: from eig-obgw-6004a.ext.cloudfilter.net ([10.0.30.197])
+        by cmsmtp with ESMTP
+        id Rfjpq3SjmfaVXRhVfqcha8; Thu, 03 Aug 2023 23:13:35 +0000
+Received: from gator4166.hostgator.com ([108.167.133.22])
+        by cmsmtp with ESMTPS
+        id RhVeq4yE3s12sRhVeqGTLw; Thu, 03 Aug 2023 23:13:35 +0000
+X-Authority-Analysis: v=2.4 cv=Jt3iEe0C c=1 sm=1 tr=0 ts=64cc349f
+ a=1YbLdUo/zbTtOZ3uB5T3HA==:117 a=WzbPXH4gqzPVN0x6HrNMNA==:17
+ a=OWjo9vPv0XrRhIrVQ50Ab3nP57M=:19 a=dLZJa+xiwSxG16/P+YVxDGlgEgI=:19
+ a=IkcTkHD0fZMA:10 a=UttIx32zK-AA:10 a=wYkD_t78qR0A:10 a=VwQbUJbxAAAA:8
+ a=8y0NZTZfdASZg88ec6MA:9 a=QEXdDO2ut3YA:10 a=AjGcO6oz07-iQ99wixmX:22
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender
+        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
+        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=TPDYq/13b+187Q0SS/vTNVpKl0QGMUe23edKdHdTGg4=; b=lW4POMbZZz8pdEiKWDgfiN+/9G
+        FFTf8XTZRaPbjuVyDp9s3tDARPMd8d80llkfksYznfqBS2D2vEroKNJPX+tqdymbRdh7tTVBTkkjP
+        zFj2RLi0w+OQqoANkn5lhj75zaheouGr7u7TMfYX/KFpYRuiEawzTJVGeLcxs4ckYmvU8eGU5Na5i
+        Nace+k1AnA78H3qOBesKrDdqR7Nr3Z+5yo1gw2YoJ2FT60oFQ+jnuo+qFyMwa8FS18tC97xYebAOi
+        if+uyf10osJrXShxk+Ue12tb3mQec1+EO39g5Lf/+HB1Im0CErSXFR4w5ICfEpTszM1Vi6YRuhZt2
+        ULk6K+ew==;
+Received: from 187-162-21-192.static.axtel.net ([187.162.21.192]:60340 helo=[192.168.15.8])
+        by gator4166.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.96)
+        (envelope-from <gustavo@embeddedor.com>)
+        id 1qReTt-001xR4-2u;
+        Thu, 03 Aug 2023 14:59:33 -0500
+Message-ID: <5979a609-beb9-d622-d8ed-8d01afb56ff4@embeddedor.com>
+Date:   Thu, 3 Aug 2023 14:00:39 -0600
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH][next] RDMA/irdma: Replace one-element array with
+ flexible-array member
+Content-Language: en-US
+To:     Leon Romanovsky <leon@kernel.org>,
+        Mustafa Ismail <mustafa.ismail@intel.com>,
+        Shiraz Saleem <shiraz.saleem@intel.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>
+Cc:     linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-hardening@vger.kernel.org
+References: <ZMpsQrZadBaJGkt4@work>
+ <169108630160.1408615.8996122913079845353.b4-ty@kernel.org>
+From:   "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+In-Reply-To: <169108630160.1408615.8996122913079845353.b4-ty@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - embeddedor.com
+X-BWhitelist: no
+X-Source-IP: 187.162.21.192
+X-Source-L: No
+X-Exim-ID: 1qReTt-001xR4-2u
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
+X-Source-Sender: 187-162-21-192.static.axtel.net ([192.168.15.8]) [187.162.21.192]:60340
+X-Source-Auth: gustavo@embeddedor.com
+X-Email-Count: 0
+X-Org:  HG=hgshared;ORG=hostgator;
+X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
+X-Local-Domain: yes
+X-CMAE-Envelope: MS4xfKjlMT4GktZ4hGLzk2QkEhdDpT9wO68m7uHEhCJ3tMOz+ImM125GTz0+aAE/wPrMsgnl0IQv6Wv2W3vzGF4vlcSGyJvdSAgtQ8v23bLBo4cCMoJggdaK
+ VZAThFxVhSE8L88A/KJLWY+emcuiUsuSwpqCXFSc/XFLOuOcI1v13hQnsCwN7S4mbk/iIE3OvkA5aAXXPH0kYT4+Bg2UHCQLpxsWQP4mHSCUzfxhi1BfkFPk
+ yz6a26PXzhkyoaaCMoODqmHcQ03DlRiOa00aUUqKsL0=
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rob Clark <robdclark@chromium.org>
 
-Now that the runpm/qos/interconnect lockdep vs reclaim issues are
-solved, we can enable the fence signalling annotations without lockdep
-making it's immediate displeasure known.
 
-Signed-off-by: Rob Clark <robdclark@chromium.org>
----
- drivers/gpu/drm/msm/msm_ringbuffer.c | 1 +
- 1 file changed, 1 insertion(+)
+On 8/3/23 12:11, Leon Romanovsky wrote:
+> 
+> On Wed, 02 Aug 2023 08:46:26 -0600, Gustavo A. R. Silva wrote:
+>> One-element and zero-length arrays are deprecated. So, replace
+>> one-element array in struct irdma_qvlist_info with flexible-array
+>> member.
+>>
+>> A patch for this was sent a while ago[1]. However, it seems that, at
+>> the time, the changes were partially folded[2][3], and the actual
+>> flexible-array transformation was omitted. This patch fixes that.
+>>
+>> [...]
+> 
+> Applied, thanks!
 
-diff --git a/drivers/gpu/drm/msm/msm_ringbuffer.c b/drivers/gpu/drm/msm/msm_ringbuffer.c
-index 7f5e0a961bba..cb9cf41bcb9b 100644
---- a/drivers/gpu/drm/msm/msm_ringbuffer.c
-+++ b/drivers/gpu/drm/msm/msm_ringbuffer.c
-@@ -97,6 +97,7 @@ struct msm_ringbuffer *msm_ringbuffer_new(struct msm_gpu *gpu, int id,
- 	 /* currently managing hangcheck ourselves: */
- 	sched_timeout = MAX_SCHEDULE_TIMEOUT;
- 
-+	ring->sched.fence_signalling = true;
- 	ret = drm_sched_init(&ring->sched, &msm_sched_ops,
- 			num_hw_submissions, 0, sched_timeout,
- 			NULL, NULL, to_msm_bo(ring->bo)->name, gpu->dev->dev);
--- 
-2.41.0
+Awesome. :)
 
+Thank you!
+--
+Gustavo
+
+> 
+> [1/1] RDMA/irdma: Replace one-element array with flexible-array member
+>        https://git.kernel.org/rdma/rdma/c/38313c6d2a02c2
+> 
+> Best regards,
