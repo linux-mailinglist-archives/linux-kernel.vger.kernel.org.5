@@ -2,58 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F172D76EEE6
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 17:59:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E7D0676EEE3
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 17:59:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237317AbjHCP7f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Aug 2023 11:59:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42110 "EHLO
+        id S235664AbjHCP7h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Aug 2023 11:59:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42114 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233995AbjHCP7T (ORCPT
+        with ESMTP id S237276AbjHCP7U (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Aug 2023 11:59:19 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48403115;
+        Thu, 3 Aug 2023 11:59:20 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5AAEF211B;
         Thu,  3 Aug 2023 08:59:18 -0700 (PDT)
-Date:   Thu, 03 Aug 2023 15:59:15 -0000
+Date:   Thu, 03 Aug 2023 15:59:16 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1691078355;
+        s=2020; t=1691078356;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=QOYYpFCjIgnStr2qW66eWt25QWHWyNJ2vYvVd9dQEZU=;
-        b=JcWL/HMT4G1Gg5ivm/Dz8DXVPBBZ5j3u/KlspYkdOpZssvu+6WGe4rAAlw6czGDmSm67py
-        ukkCs7qRT9/ttMKN8CWp5RjHzG3n7RHKsFLgTOIxxi3mqI2l+cTTDo2WaCIs66jQfXtNSo
-        Y3K7iHVtcoTTwZslvjCdsyHFffsUh53ClfE1MaAdP+C0UAQ2zfE35kQk9DTdRKLcf82EKg
-        c6JNq2+7nggSlIZJht664Z8UO7P4hV/U0ZNZffj/+T9qkV4z/uWOjDTxu3HEA3FohLQOZ9
-        0iJ4stJF6axqBr/rumSEmnCow3kcquj8uUlnOo7IxUme5G1hvmI/VQLi5ARgXw==
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=eTChyiFhvIi4JIl1UodawWAFP422YBkqPUZjcTiWnRQ=;
+        b=mEtG/rtDo/OBInzajt2mngeLe+8/pjFaAOxIo5Zp/N+jKIsm9ZauzMw5Sr0dt+K/m6FiiF
+        z53O1KDp2+TttsDv5MjRnhb3vgUUBmuJh43vEjsOYHTThWOg0tdB1j6lvWwWz8PMDEdnwd
+        e0EscLecnlEdK5Pdx3qCSAMCO5v7a7G8zyx9dZlPnld8zFat5GIsz9k/984v6L62lC0Wxc
+        Gn009ZgiQZW409zGkIcZ3kA8nCNA4l3ea2M74mU/ICEzw0y0+xpalv+uIhp7AqTAWk/WMw
+        mI7YaDWzb7HSqE3T9TcmuLhZSuiXVW9tynnRuyn8GYesVQjYnRAnhHf/U7KJpA==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1691078355;
+        s=2020e; t=1691078356;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=QOYYpFCjIgnStr2qW66eWt25QWHWyNJ2vYvVd9dQEZU=;
-        b=Ir6WTfyub+vLdjLBsOY8fUze0fW1fRj98VNIR2aiKqNZqN10pVw8zlX9HEIvBq4ALXIZG5
-        +j3B1IZhoZBSRoCg==
-From:   "tip-bot2 for Peter Zijlstra" <tip-bot2@linutronix.de>
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=eTChyiFhvIi4JIl1UodawWAFP422YBkqPUZjcTiWnRQ=;
+        b=ggXJJUhgVsZBl73vnO/8+g2PFQ/ftKnxSM6z44MyE+hu1Y7OrtEZwRobHYSj9k2prZ1eoZ
+        kJ2wgTVpiujXujCw==
+From:   "tip-bot2 for Arnd Bergmann" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/cleanups] Revert "sched/fair: Move unused stub functions to header"
+Subject: [tip: x86/cleanups] x86/cpu: Fix amd_check_microcode() declaration
 Cc:     Arnd Bergmann <arnd@arndb.de>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
         "Borislav Petkov (AMD)" <bp@alien8.de>, x86@kernel.org,
         linux-kernel@vger.kernel.org
+In-Reply-To: <20230725121751.2007665-1-arnd@kernel.org>
+References: <20230725121751.2007665-1-arnd@kernel.org>
 MIME-Version: 1.0
-Message-ID: <169107835534.28540.16435626638250235806.tip-bot2@tip-bot2>
+Message-ID: <169107835629.28540.8472266349964382413.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2@linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -62,85 +67,71 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the x86/cleanups branch of tip:
 
-Commit-ID:     22dc02f81cddd19528fc1d4fbd7404defbf736c5
-Gitweb:        https://git.kernel.org/tip/22dc02f81cddd19528fc1d4fbd7404defbf736c5
-Author:        Peter Zijlstra <peterz@infradead.org>
-AuthorDate:    Mon, 24 Jul 2023 21:30:54 +02:00
+Commit-ID:     566ffa3ae9649f7aa1debcf559ee7e26ed4a110f
+Gitweb:        https://git.kernel.org/tip/566ffa3ae9649f7aa1debcf559ee7e26ed4a110f
+Author:        Arnd Bergmann <arnd@arndb.de>
+AuthorDate:    Tue, 25 Jul 2023 14:17:39 +02:00
 Committer:     Borislav Petkov (AMD) <bp@alien8.de>
-CommitterDate: Mon, 31 Jul 2023 11:47:08 +02:00
+CommitterDate: Mon, 31 Jul 2023 11:03:16 +02:00
 
-Revert "sched/fair: Move unused stub functions to header"
+x86/cpu: Fix amd_check_microcode() declaration
 
-Revert commit 7aa55f2a5902 ("sched/fair: Move unused stub functions to
-header"), for while it has the right Changelog, the actual patch
-content a revert of the previous 4 patches:
+The newly added amd_check_microcode() function has two conflicting definitions
+if CONFIG_CPU_SUP_AMD is enabled and CONFIG_MICROCODE_AMD is disabled. Since
+the header with the stub definition is not included in cpu/amd.c, this only
+causes a -Wmissing-prototype warning with W=1:
 
-  f7df852ad6db ("sched: Make task_vruntime_update() prototype visible")
-  c0bdfd72fbfb ("sched/fair: Hide unused init_cfs_bandwidth() stub")
-  378be384e01f ("sched: Add schedule_user() declaration")
-  d55ebae3f312 ("sched: Hide unused sched_update_scaling()")
+  arch/x86/kernel/cpu/amd.c:1289:6: error: no previous prototype for 'amd_check_microcode' [-Werror=missing-prototypes]
 
-So in effect this is a revert of a revert and re-applies those
-patches.
+Adding the missing #include shows the other problem:
 
-Fixes: 7aa55f2a5902 ("sched/fair: Move unused stub functions to header")
-Reported-by: Arnd Bergmann <arnd@arndb.de>
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+  arch/x86/kernel/cpu/amd.c:1290:6: error: redefinition of 'amd_check_microcode'
+  arch/x86/include/asm/microcode_amd.h:58:20: note: previous definition of 'amd_check_microcode' with type 'void(void)'
+
+Move the declaration into a more appropriate header that is already
+included, with the #ifdef check changed to match the definition's.
+
+Fixes: 522b1d69219d8 ("x86/cpu/amd: Add a Zenbleed fix")
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 Signed-off-by: Borislav Petkov (AMD) <bp@alien8.de>
+Link: https://lore.kernel.org/r/20230725121751.2007665-1-arnd@kernel.org
 ---
- kernel/sched/fair.c  | 6 +++---
- kernel/sched/sched.h | 2 ++
- 2 files changed, 5 insertions(+), 3 deletions(-)
+ arch/x86/include/asm/microcode_amd.h | 3 +--
+ arch/x86/include/asm/processor.h     | 2 ++
+ 2 files changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index b3e25be..695f8e5 100644
---- a/kernel/sched/fair.c
-+++ b/kernel/sched/fair.c
-@@ -684,7 +684,7 @@ struct sched_entity *__pick_last_entity(struct cfs_rq *cfs_rq)
- /**************************************************************
-  * Scheduling class statistics methods:
-  */
--
-+#ifdef CONFIG_SMP
- int sched_update_scaling(void)
- {
- 	unsigned int factor = get_update_sysctl_factor();
-@@ -702,6 +702,7 @@ int sched_update_scaling(void)
- 	return 0;
- }
+diff --git a/arch/x86/include/asm/microcode_amd.h b/arch/x86/include/asm/microcode_amd.h
+index 9675c62..2ed09a1 100644
+--- a/arch/x86/include/asm/microcode_amd.h
++++ b/arch/x86/include/asm/microcode_amd.h
+@@ -48,13 +48,12 @@ extern void __init load_ucode_amd_bsp(unsigned int family);
+ extern void load_ucode_amd_ap(unsigned int family);
+ extern int __init save_microcode_in_initrd_amd(unsigned int family);
+ void reload_ucode_amd(unsigned int cpu);
+-extern void amd_check_microcode(void);
+ #else
+ static inline void __init load_ucode_amd_bsp(unsigned int family) {}
+ static inline void load_ucode_amd_ap(unsigned int family) {}
+ static inline int __init
+ save_microcode_in_initrd_amd(unsigned int family) { return -EINVAL; }
+ static inline void reload_ucode_amd(unsigned int cpu) {}
+-static inline void amd_check_microcode(void) {}
  #endif
-+#endif
- 
- /*
-  * delta /= w
-@@ -6186,9 +6187,8 @@ static inline int throttled_lb_pair(struct task_group *tg,
- 	return 0;
- }
- 
--void init_cfs_bandwidth(struct cfs_bandwidth *cfs_b) {}
--
- #ifdef CONFIG_FAIR_GROUP_SCHED
-+void init_cfs_bandwidth(struct cfs_bandwidth *cfs_b) {}
- static void init_cfs_rq_runtime(struct cfs_rq *cfs_rq) {}
- #endif
- 
-diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
-index e93e006..44b540a 100644
---- a/kernel/sched/sched.h
-+++ b/kernel/sched/sched.h
-@@ -1245,6 +1245,7 @@ static inline raw_spinlock_t *__rq_lockp(struct rq *rq)
- 
- bool cfs_prio_less(const struct task_struct *a, const struct task_struct *b,
- 			bool fi);
-+void task_vruntime_update(struct rq *rq, struct task_struct *p, bool in_fi);
- 
- /*
-  * Helpers to check if the CPU's core cookie matches with the task's cookie
-@@ -2398,6 +2399,7 @@ static inline struct cpuidle_state *idle_get_state(struct rq *rq)
++
+ #endif /* _ASM_X86_MICROCODE_AMD_H */
+diff --git a/arch/x86/include/asm/processor.h b/arch/x86/include/asm/processor.h
+index d46300e..36d5207 100644
+--- a/arch/x86/include/asm/processor.h
++++ b/arch/x86/include/asm/processor.h
+@@ -682,9 +682,11 @@ extern u16 get_llc_id(unsigned int cpu);
+ #ifdef CONFIG_CPU_SUP_AMD
+ extern u32 amd_get_nodes_per_socket(void);
+ extern u32 amd_get_highest_perf(void);
++extern void amd_check_microcode(void);
+ #else
+ static inline u32 amd_get_nodes_per_socket(void)	{ return 0; }
+ static inline u32 amd_get_highest_perf(void)		{ return 0; }
++static inline void amd_check_microcode(void)		{ }
  #endif
  
- extern void schedule_idle(void);
-+asmlinkage void schedule_user(void);
- 
- extern void sysrq_sched_debug_show(void);
- extern void sched_init_granularity(void);
+ extern unsigned long arch_align_stack(unsigned long sp);
