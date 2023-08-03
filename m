@@ -2,66 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DD08876ED19
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 16:47:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F4E076EDBB
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 17:13:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236606AbjHCOrO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Aug 2023 10:47:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58418 "EHLO
+        id S236925AbjHCPNz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Aug 2023 11:13:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44928 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236724AbjHCOrD (ORCPT
+        with ESMTP id S236804AbjHCPNv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Aug 2023 10:47:03 -0400
-Received: from domac.alu.hr (domac.alu.unizg.hr [IPv6:2001:b68:2:2800::3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00AB53ABA;
-        Thu,  3 Aug 2023 07:46:47 -0700 (PDT)
-Received: from localhost (localhost [127.0.0.1])
-        by domac.alu.hr (Postfix) with ESMTP id 87B1B60182;
-        Thu,  3 Aug 2023 16:46:46 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=alu.unizg.hr; s=mail;
-        t=1691074006; bh=XDroynnUjUBJEtp/2QLFLkXj09Awer2npj4c8l8wtN8=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=W5AXfG833jMfoDSe+SbeS9XN/NVK+m1mUJtLdOHhRGQo1QKdIsszFGfCUQHcrx0LX
-         xm2Yzem9Mi8L79lyxJWrXLe3aHVUcRccmmdBEZT+qHRW8hE3ArFxGAyXupgXpuTq24
-         Tm6kw0it3oO4ozMW2147W+pjS/Vykt6K0RimBWGxNJ+Wuwk0Rk7xXd6Opi/nvQ8pSB
-         WsBw3ruZfXzFvCL7ipbXXd95YMgNeRKCE0SjImyt8elDKHo+weO7Fslwx1CsIzxnwO
-         DlQLC7B2MxNe4QtjyAYF9KzLP3Spm18cAefxPER/8Uf4Z/iWnlmzWeaBirUEg4XGTZ
-         JGJWqsitMdA+Q==
-X-Virus-Scanned: Debian amavisd-new at domac.alu.hr
-Received: from domac.alu.hr ([127.0.0.1])
-        by localhost (domac.alu.hr [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id clE_6VX2vetW; Thu,  3 Aug 2023 16:46:44 +0200 (CEST)
-Received: from pc-mtodorov.slava.alu.hr (pc-mtodorov.slava.alu.hr [193.198.186.200])
-        by domac.alu.hr (Postfix) with ESMTPSA id 05FFD6017F;
-        Thu,  3 Aug 2023 16:46:44 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=alu.unizg.hr; s=mail;
-        t=1691074004; bh=XDroynnUjUBJEtp/2QLFLkXj09Awer2npj4c8l8wtN8=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=HNpxiyMQHHvXmeiafqhFrS9euCBk6QcmVGJU/oDITpjolO9qoZV61J5TuxkbgYV0c
-         5cuAAw8iK/Vy3bOSROhceS1/uPbAbkzu7HjH0/WXW4BFUujYcsoHvru4hX2QI4/gTL
-         9m8BhgGgWNxkf6T0WIQRdXI6XL66cu3yYtr8lbaRK1MxP93uUKOHcccv3R2F72jpSw
-         deBN4SJQnUZOKJ49U0duvGDeJUjgavIZu871YKYM3JqUQ5HsQwV2i1JkTF6zD7fbtd
-         3ArwUiKJiDCcc0ZaZ+6inAU5iCm3oFjuUJUbzcaDs+CLc465N8rJ0Gwgj2PhGqkOtU
-         IIob2jRq1SDQg==
-From:   Mirsad Todorovac <mirsad.todorovac@alu.unizg.hr>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Mirsad Todorovac <mirsad.todorovac@alu.unizg.hr>,
-        linux-kernel@vger.kernel.org
-Cc:     Dan Carpenter <error27@gmail.com>, Takashi Iwai <tiwai@suse.de>,
-        Kees Cook <keescook@chromium.org>,
-        "Luis R . Rodriguez" <mcgrof@kernel.org>,
-        Brian Norris <computersforpeace@gmail.com>,
-        stable@vger.kernel.org
-Subject: [PATCH v2 2/2] test_firmware: return ENOMEM instead of ENOSPC on failed memory allocation
-Date:   Thu,  3 Aug 2023 16:44:53 +0200
-Message-Id: <20230803144451.3571-2-mirsad.todorovac@alu.unizg.hr>
-X-Mailer: git-send-email 2.39.3
-In-Reply-To: <20230803144451.3571-1-mirsad.todorovac@alu.unizg.hr>
-References: <20230803144451.3571-1-mirsad.todorovac@alu.unizg.hr>
+        Thu, 3 Aug 2023 11:13:51 -0400
+Received: from mail-oi1-x22e.google.com (mail-oi1-x22e.google.com [IPv6:2607:f8b0:4864:20::22e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A472910D2
+        for <linux-kernel@vger.kernel.org>; Thu,  3 Aug 2023 08:13:50 -0700 (PDT)
+Received: by mail-oi1-x22e.google.com with SMTP id 5614622812f47-3a741f46fadso829286b6e.0
+        for <linux-kernel@vger.kernel.org>; Thu, 03 Aug 2023 08:13:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=rivosinc-com.20221208.gappssmtp.com; s=20221208; t=1691075630; x=1691680430;
+        h=to:from:cc:content-transfer-encoding:mime-version:date:message-id
+         :subject:references:in-reply-to:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=NSK2FUGY1przyTtVFiZaUHO9KuKYI8oQjaSBCONicVY=;
+        b=FgI6HJuCLmlIIfhgwxl2HYhgvvEO0gMnbnbo5JcS1tXxFRRW3EO9yVG41ccq44RWRy
+         1x/q83ecGHJhoaaZU93W3GpWnoOM0h5hMYD0SD75A5flKg+3Ho7RFEtkK9ZQoqwfOl0A
+         +cVLthsaYH5icLAo+tZX+lUq/wgFJK9YcCYjkaqnipVDrI++onoa5b+LZoJJ4L1Jr30I
+         GloMos7v8AstvMeOEs2u3/1cX6hnqKM2g9RMJWofn+YyPYEtIvYojTzRZgHZJr/cBuIf
+         LAKzWa0iNzLT7Gx6ZIcVX5IIzKdH9zS1KVKF/EICY+rOGY+4+pvj1r+e3UJCyX4CNYIP
+         bVgA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691075630; x=1691680430;
+        h=to:from:cc:content-transfer-encoding:mime-version:date:message-id
+         :subject:references:in-reply-to:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=NSK2FUGY1przyTtVFiZaUHO9KuKYI8oQjaSBCONicVY=;
+        b=HWe0rmoX/0/0qr6EGNcZKQUP9YAqVZcfJuwLFFOIkrX5uHqIUsiCyD+hOpaPhUND75
+         XNwkTC5PWV8l7nNz/UOwMrxj+w4gdT4SdvwrijLjqYy6RZd2/6YIGNhvY/MRULcZfecV
+         GlSwpercTxnngH6NMHFSOdeHCOeD0yGy+Mu4+Wdku92NN6/kDWAOGEMk57BSmkLOmKKf
+         Z8mg6HcKP7OM9zbE9je90DIm8bRhZiwvmGAeNt4BR8Iz6QZuMuCYBXZp4T91N+4ZVUSg
+         MMiClzzcWABB1dRMKc4Bw4Ee2oPMMbR7HjtN4HpJEWMkprHEDk9/VQEKfkeACRbnLHkn
+         iLuQ==
+X-Gm-Message-State: ABy/qLY3k3xZTE7cpe1IGGoK1bjL8HO1oXo4xgxrGIpVno3Reu/2yeBU
+        Ejfi6YjSsSSrI5A+x4rp8NFrCQ==
+X-Google-Smtp-Source: APBJJlFVMdy6DDLkJxkMERnwGOiIBPbaX/0bBxceQP9420eI2mZRj6I9+lP/P1kOoB9353xoGfyMGA==
+X-Received: by 2002:a05:6358:98a2:b0:134:c279:c829 with SMTP id q34-20020a05635898a200b00134c279c829mr10617038rwa.18.1691075629869;
+        Thu, 03 Aug 2023 08:13:49 -0700 (PDT)
+Received: from localhost ([135.180.227.0])
+        by smtp.gmail.com with ESMTPSA id p27-20020a63951b000000b00563590be25esm1798pgd.29.2023.08.03.08.13.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 03 Aug 2023 08:13:49 -0700 (PDT)
+In-Reply-To: <20230712193514.740033-1-jhubbard@nvidia.com>
+References: <20230712193514.740033-1-jhubbard@nvidia.com>
+Subject: Re: [PATCH] selftests/riscv: fix potential build failure during
+ the "emit_tests" step
+Message-Id: <169107392499.27633.6579477595845776477.b4-ty@rivosinc.com>
+Date:   Thu, 03 Aug 2023 07:45:24 -0700
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Mailer: b4 0.13-dev-901c5
+Cc:     Albert Ou <aou@eecs.berkeley.edu>,
+        Alexandre Ghiti <alexghiti@rivosinc.com>,
+        Anders Roxell <anders.roxell@linaro.org>,
+        Andrew Jones <ajones@ventanamicro.com>,
+        Andy Chiu <andy.chiu@sifive.com>,
+        Evan Green <evan@rivosinc.com>,
+        Hugh Dickins <hughd@google.com>,
+        Muhammad Usama Anjum <usama.anjum@collabora.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Qinglin Pan <panqinglin2020@iscas.ac.cn>,
+        Shuah Khan <shuah@kernel.org>, linux-kselftest@vger.kernel.org,
+        linux-riscv@lists.infradead.org, linux-mm@kvack.org,
+        LKML <linux-kernel@vger.kernel.org>
+From:   Palmer Dabbelt <palmer@rivosinc.com>
+To:     Andrew Morton <akpm@linux-foundation.org>,
+        John Hubbard <jhubbard@nvidia.com>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
         T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -69,99 +86,23 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-[ Upstream commit 7dae593cd226a0bca61201cf85ceb9335cf63682 ]
 
-In a couple of situations like
+On Wed, 12 Jul 2023 12:35:14 -0700, John Hubbard wrote:
+> The riscv selftests (which were modeled after the arm64 selftests) are
+> improperly declaring the "emit_tests" target to depend upon the "all"
+> target. This approach, when combined with commit 9fc96c7c19df
+> ("selftests: error out if kernel header files are not yet built"), has
+> caused build failures [1] on arm64, and is likely to cause similar
+> failures for riscv.
+> 
+> [...]
 
-	name = kstrndup(buf, count, GFP_KERNEL);
-	if (!name)
-		return -ENOSPC;
+Applied, thanks!
 
-the error is not actually "No space left on device", but "Out of memory".
+[1/1] selftests/riscv: fix potential build failure during the "emit_tests" step
+      https://git.kernel.org/palmer/c/8c82d2bf5944
 
-It is semantically correct to return -ENOMEM in all failed kstrndup()
-and kzalloc() cases in this driver, as it is not a problem with disk
-space, but with kernel memory allocator failing allocation.
-
-The semantically correct should be:
-
-        name = kstrndup(buf, count, GFP_KERNEL);
-        if (!name)
-                return -ENOMEM;
-
-Cc: Dan Carpenter <error27@gmail.com>
-Cc: Takashi Iwai <tiwai@suse.de>
-Cc: Kees Cook <keescook@chromium.org>
-Cc: Luis R. Rodriguez <mcgrof@kernel.org>
-Cc: Brian Norris <computersforpeace@gmail.com>
-Cc: stable@vger.kernel.org # 4.19, 4.14
-Fixes: c92316bf8e948 ("test_firmware: add batched firmware tests")
-Fixes: 0a8adf584759c ("test: add firmware_class loader test")
-Fixes: eb910947c82f9 ("test: firmware_class: add asynchronous request trigger")
-Fixes: 061132d2b9c95 ("test_firmware: add test custom fallback trigger")
-Fixes: 7feebfa487b92 ("test_firmware: add support for request_firmware_into_buf")
-Link: https://lore.kernel.org/all/20230606070808.9300-1-mirsad.todorovac@alu.unizg.hr/
-Signed-off-by: Mirsad Todorovac <mirsad.todorovac@alu.unizg.hr>
-
-[ This is the backport of the patch to specific to 5.4 branch. There are no		]
-[ semantic differences in the commit. Backport is provided for completeness sake	]
-[ so it would apply to all of the supported LTS kernels.				]
----
-v2:
- tested on 5.4 stable build.
-
- lib/test_firmware.c | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
-
-diff --git a/lib/test_firmware.c b/lib/test_firmware.c
-index 92d7195d5b5b..dd3850ec1dfa 100644
---- a/lib/test_firmware.c
-+++ b/lib/test_firmware.c
-@@ -173,7 +173,7 @@ static int __kstrncpy(char **dst, const char *name, size_t count, gfp_t gfp)
- {
- 	*dst = kstrndup(name, count, gfp);
- 	if (!*dst)
--		return -ENOSPC;
-+		return -ENOMEM;
- 	return count;
- }
- 
-@@ -509,7 +509,7 @@ static ssize_t trigger_request_store(struct device *dev,
- 
- 	name = kstrndup(buf, count, GFP_KERNEL);
- 	if (!name)
--		return -ENOSPC;
-+		return -ENOMEM;
- 
- 	pr_info("loading '%s'\n", name);
- 
-@@ -552,7 +552,7 @@ static ssize_t trigger_async_request_store(struct device *dev,
- 
- 	name = kstrndup(buf, count, GFP_KERNEL);
- 	if (!name)
--		return -ENOSPC;
-+		return -ENOMEM;
- 
- 	pr_info("loading '%s'\n", name);
- 
-@@ -597,7 +597,7 @@ static ssize_t trigger_custom_fallback_store(struct device *dev,
- 
- 	name = kstrndup(buf, count, GFP_KERNEL);
- 	if (!name)
--		return -ENOSPC;
-+		return -ENOMEM;
- 
- 	pr_info("loading '%s' using custom fallback mechanism\n", name);
- 
-@@ -648,7 +648,7 @@ static int test_fw_run_batch_request(void *data)
- 
- 		test_buf = kzalloc(TEST_FIRMWARE_BUF_SIZE, GFP_KERNEL);
- 		if (!test_buf)
--			return -ENOSPC;
-+			return -ENOMEM;
- 
- 		req->rc = request_firmware_into_buf(&req->fw,
- 						    req->name,
+Best regards,
 -- 
-2.39.3
+Palmer Dabbelt <palmer@rivosinc.com>
 
