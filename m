@@ -2,237 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 99FDB76E653
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 13:04:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 096C676E629
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 13:02:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235600AbjHCLEH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Aug 2023 07:04:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43986 "EHLO
+        id S235504AbjHCLCm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Aug 2023 07:02:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41058 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235668AbjHCLDD (ORCPT
+        with ESMTP id S233018AbjHCLC1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Aug 2023 07:03:03 -0400
-Received: from lelv0142.ext.ti.com (lelv0142.ext.ti.com [198.47.23.249])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF01E3A95;
-        Thu,  3 Aug 2023 04:02:54 -0700 (PDT)
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-        by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 373B2S7m010391;
-        Thu, 3 Aug 2023 06:02:28 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1691060548;
-        bh=CoQHbB7ASV/+6Bp+MG8mFHgYRak2hFdXnN3fvXrjZeg=;
-        h=From:To:CC:Subject:Date:In-Reply-To:References;
-        b=HYbA4WIHBpEb8TA/Cte4BbfNV1sPAhQFOw56VMRPcGQh32mJjnWsMduppB516OEaF
-         cyYf3gyX7ZxixgzPg6BMOwKm0WBPfHjBihME3KUqkFl35KqcR2GMZGo4b/jshAHQIQ
-         5ZgxMc0n7zXh4fir/12uWQKKqpwMrF/0uwyVJGq4=
-Received: from DLEE104.ent.ti.com (dlee104.ent.ti.com [157.170.170.34])
-        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 373B2SQQ049893
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 3 Aug 2023 06:02:28 -0500
-Received: from DLEE114.ent.ti.com (157.170.170.25) by DLEE104.ent.ti.com
- (157.170.170.34) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Thu, 3
- Aug 2023 06:02:27 -0500
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE114.ent.ti.com
- (157.170.170.25) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Thu, 3 Aug 2023 06:02:27 -0500
-Received: from fllv0122.itg.ti.com (fllv0122.itg.ti.com [10.247.120.72])
-        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 373B2R9V026296;
-        Thu, 3 Aug 2023 06:02:27 -0500
-Received: from localhost (uda0501179.dhcp.ti.com [172.24.227.217])
-        by fllv0122.itg.ti.com (8.14.7/8.14.7) with ESMTP id 373B2Qva022634;
-        Thu, 3 Aug 2023 06:02:27 -0500
-From:   MD Danish Anwar <danishanwar@ti.com>
-To:     Randy Dunlap <rdunlap@infradead.org>,
-        Roger Quadros <rogerq@kernel.org>,
-        Simon Horman <simon.horman@corigine.com>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Richard Cochran <richardcochran@gmail.com>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Eric Dumazet <edumazet@google.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        MD Danish Anwar <danishanwar@ti.com>
-CC:     <nm@ti.com>, <srk@ti.com>, <linux-kernel@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <netdev@vger.kernel.org>,
-        <linux-omap@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>
-Subject: [PATCH 4/4] net: ti: icssg-prueth: am65x SR2.0 add 10M full duplex support
-Date:   Thu, 3 Aug 2023 16:31:53 +0530
-Message-ID: <20230803110153.3309577-5-danishanwar@ti.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20230803110153.3309577-1-danishanwar@ti.com>
-References: <20230803110153.3309577-1-danishanwar@ti.com>
+        Thu, 3 Aug 2023 07:02:27 -0400
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5358330F3
+        for <linux-kernel@vger.kernel.org>; Thu,  3 Aug 2023 04:02:23 -0700 (PDT)
+Received: from IcarusMOD.eternityproject.eu (2-237-20-237.ip236.fastwebnet.it [2.237.20.237])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: kholk11)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id 12A226607198;
+        Thu,  3 Aug 2023 12:02:21 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1691060541;
+        bh=+yI1mg5elaHMRsnmGnaNm8f85DKVXejTCE4y0fNu+Ow=;
+        h=From:To:Cc:Subject:Date:From;
+        b=ncOYgAg4PYeqVRJKfuwV9N3vX66oWf300xISVwP0dEde1GgVK48l2Txu0GTsYBVBI
+         wb+h6LXNDaL0YSMOr+pTnGB6AXKMTCBPRLQJA2H0/DJ8GJv5KUMiuZVUNOcw7p1C8w
+         QFYKgMgTOGRgyZrhT+BXMQK1MekVS+qvr6KVfKVvTprEqsOo3KYEEMknJ72vqcSjPU
+         Isui6QyYSjMR0nHyOIUQ1u0fzeZM2q4WaMfJoOdcQQE+0lCdZ4lA6uwFGyrxbmEUMt
+         0nsu4vR/K2qwlFnVRCSUTOt00C1VSCvsmP5+nuMTLxhQ2xQps9RgYT3RQWWUyk3PfU
+         krBsoJ6/qgLSg==
+From:   AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>
+To:     chunkuang.hu@kernel.org
+Cc:     p.zabel@pengutronix.de, airlied@gmail.com, daniel@ffwll.ch,
+        matthias.bgg@gmail.com, angelogioacchino.delregno@collabora.com,
+        dri-devel@lists.freedesktop.org,
+        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, wenst@chromium.org,
+        kernel@collabora.com, ehristev@collabora.com
+Subject: [PATCH v9 00/16] MediaTek DDP GAMMA - 12-bit LUT support
+Date:   Thu,  3 Aug 2023 13:01:58 +0200
+Message-ID: <20230803110214.163645-1-angelogioacchino.delregno@collabora.com>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Grygorii Strashko <grygorii.strashko@ti.com>
+Changes in v9:
+ - As per previous conversation with CK Hu, added a commit that
+   de-commonizes the gamma setting function that was used in
+   both DISP_AAL and DISP_GAMMA, now each of them have their
+   own .gamma_set() callback (mtk_disp_gamma_set_common() has
+   been removed).
+ - Added a change to use bitfield macros in mtk_disp_aal.c
+ - Added a change to compress of_device_id entries in mtk_disp_aal.c
+ - Tested again on MT6795, MT8173, MT8186, MT8192, MT8195
 
-For AM65x SR2.0 it's required to enable IEP1 in raw 64bit mode which is
-used by PRU FW to monitor the link and apply w/a for 10M link issue.
-Note. No public errata available yet.
+Changes in v8:
+ - Changed lut_size to be a mtk_disp_gamma_set_common() function
+   parameter to pass lut size from AAL
 
-Without this w/a the PRU FW will stuck if link state changes under TX
-traffic pressure.
+Changes in v7:
+ - Added check for NULL dev for AAL-gamma case
+ - Added get_lut_size callback for AAL-gamma
+ - Added comment to clarify SoC 10/12 bits support and old vs new
+   register layout as suggested by Alexandre M.
 
-Hence, add support for 10M full duplex for AM65x SR2.0:
- - add new IEP API to enable IEP, but without PTP support
- - add pdata quirk_10m_link_issue to enable 10M link issue w/a.
+Changes in v6:
+ - Fixed smatch warning in patch 11/11, ref.:
+   https://lore.kernel.org/all/202306101458.lRXHEE0Z-lkp@intel.com/
 
-Signed-off-by: Grygorii Strashko <grygorii.strashko@ti.com>
-Signed-off-by: Vignesh Raghavendra <vigneshr@ti.com>
-Signed-off-by: MD Danish Anwar <danishanwar@ti.com>
----
- drivers/net/ethernet/ti/icssg/icss_iep.c     | 26 ++++++++++++++++++++
- drivers/net/ethernet/ti/icssg/icss_iep.h     |  2 ++
- drivers/net/ethernet/ti/icssg/icssg_config.c |  6 +++++
- drivers/net/ethernet/ti/icssg/icssg_prueth.c | 17 +++++++++++--
- 4 files changed, 49 insertions(+), 2 deletions(-)
+Changes in v5:
+ - Removed incorrect comment on default LUT size and bits
+ - Removed useless check for num_lut_banks
+ - Added comment about CMDQ implementation on patch 5
+ - Evaluated passing lut size/bits from AAL, idea discarded as
+   the implementation would be rather tricky while bringing no
+   benefits.
 
-diff --git a/drivers/net/ethernet/ti/icssg/icss_iep.c b/drivers/net/ethernet/ti/icssg/icss_iep.c
-index ee333cf14776..dfb836aef2e5 100644
---- a/drivers/net/ethernet/ti/icssg/icss_iep.c
-+++ b/drivers/net/ethernet/ti/icssg/icss_iep.c
-@@ -721,6 +721,32 @@ void icss_iep_put(struct icss_iep *iep)
- }
- EXPORT_SYMBOL_GPL(icss_iep_put);
- 
-+void icss_iep_init_fw(struct icss_iep *iep)
-+{
-+	/* start IEP for FW use in raw 64bit mode, no PTP support */
-+	iep->clk_tick_time = iep->def_inc;
-+	iep->cycle_time_ns = 0;
-+	iep->ops = NULL;
-+	iep->clockops_data = NULL;
-+	icss_iep_set_default_inc(iep, iep->def_inc);
-+	icss_iep_set_compensation_inc(iep, iep->def_inc);
-+	icss_iep_set_compensation_count(iep, 0);
-+	regmap_write(iep->map, ICSS_IEP_SYNC_PWIDTH_REG, iep->refclk_freq / 10); /* 100 ms pulse */
-+	regmap_write(iep->map, ICSS_IEP_SYNC0_PERIOD_REG, 0);
-+	if (iep->plat_data->flags & ICSS_IEP_SLOW_COMPEN_REG_SUPPORT)
-+		icss_iep_set_slow_compensation_count(iep, 0);
-+
-+	icss_iep_enable(iep);
-+	icss_iep_settime(iep, 0);
-+}
-+EXPORT_SYMBOL_GPL(icss_iep_init_fw);
-+
-+void icss_iep_exit_fw(struct icss_iep *iep)
-+{
-+	icss_iep_disable(iep);
-+}
-+EXPORT_SYMBOL_GPL(icss_iep_exit_fw);
-+
- int icss_iep_init(struct icss_iep *iep, const struct icss_iep_clockops *clkops,
- 		  void *clockops_data, u32 cycle_time_ns)
- {
-diff --git a/drivers/net/ethernet/ti/icssg/icss_iep.h b/drivers/net/ethernet/ti/icssg/icss_iep.h
-index 9c7f4d0a0916..803a4b714893 100644
---- a/drivers/net/ethernet/ti/icssg/icss_iep.h
-+++ b/drivers/net/ethernet/ti/icssg/icss_iep.h
-@@ -35,5 +35,7 @@ int icss_iep_exit(struct icss_iep *iep);
- int icss_iep_get_count_low(struct icss_iep *iep);
- int icss_iep_get_count_hi(struct icss_iep *iep);
- int icss_iep_get_ptp_clock_idx(struct icss_iep *iep);
-+void icss_iep_init_fw(struct icss_iep *iep);
-+void icss_iep_exit_fw(struct icss_iep *iep);
- 
- #endif /* __NET_TI_ICSS_IEP_H */
-diff --git a/drivers/net/ethernet/ti/icssg/icssg_config.c b/drivers/net/ethernet/ti/icssg/icssg_config.c
-index ab648d3efe85..4c2b5d496670 100644
---- a/drivers/net/ethernet/ti/icssg/icssg_config.c
-+++ b/drivers/net/ethernet/ti/icssg/icssg_config.c
-@@ -210,6 +210,9 @@ void icssg_config_ipg(struct prueth_emac *emac)
- 	case SPEED_100:
- 		icssg_mii_update_ipg(prueth->mii_rt, slice, MII_RT_TX_IPG_100M);
- 		break;
-+	case SPEED_10:
-+		icssg_mii_update_ipg(prueth->mii_rt, slice, MII_RT_TX_IPG_100M);
-+		break;
- 	default:
- 		/* Other links speeds not supported */
- 		netdev_err(emac->ndev, "Unsupported link speed\n");
-@@ -440,6 +443,9 @@ void icssg_config_set_speed(struct prueth_emac *emac)
- 	case SPEED_100:
- 		fw_speed = FW_LINK_SPEED_100M;
- 		break;
-+	case SPEED_10:
-+		fw_speed = FW_LINK_SPEED_10M;
-+		break;
- 	default:
- 		/* Other links speeds not supported */
- 		netdev_err(emac->ndev, "Unsupported link speed\n");
-diff --git a/drivers/net/ethernet/ti/icssg/icssg_prueth.c b/drivers/net/ethernet/ti/icssg/icssg_prueth.c
-index 28a6deb8d4aa..40cb86872470 100644
---- a/drivers/net/ethernet/ti/icssg/icssg_prueth.c
-+++ b/drivers/net/ethernet/ti/icssg/icssg_prueth.c
-@@ -1131,7 +1131,6 @@ static int emac_phy_connect(struct prueth_emac *emac)
- 
- 	/* remove unsupported modes */
- 	phy_remove_link_mode(ndev->phydev, ETHTOOL_LINK_MODE_10baseT_Half_BIT);
--	phy_remove_link_mode(ndev->phydev, ETHTOOL_LINK_MODE_10baseT_Full_BIT);
- 	phy_remove_link_mode(ndev->phydev, ETHTOOL_LINK_MODE_100baseT_Half_BIT);
- 	phy_remove_link_mode(ndev->phydev, ETHTOOL_LINK_MODE_1000baseT_Half_BIT);
- 	phy_remove_link_mode(ndev->phydev, ETHTOOL_LINK_MODE_Pause_BIT);
-@@ -2081,13 +2080,20 @@ static int prueth_probe(struct platform_device *pdev)
- 		goto free_pool;
- 	}
- 
-+	if (prueth->pdata.quirk_10m_link_issue) {
-+		/* Enable IEP1 for FW in 64bit mode as W/A for 10M FD link detect issue under TX
-+		 * traffic.
-+		 */
-+		icss_iep_init_fw(prueth->iep1);
-+	}
-+
- 	/* setup netdev interfaces */
- 	if (eth0_node) {
- 		ret = prueth_netdev_init(prueth, eth0_node);
- 		if (ret) {
- 			dev_err_probe(dev, ret, "netdev init %s failed\n",
- 				      eth0_node->name);
--			goto netdev_exit;
-+			goto exit_iep;
- 		}
- 		prueth->emac[PRUETH_MAC0]->iep = prueth->iep0;
- 	}
-@@ -2158,6 +2164,10 @@ static int prueth_probe(struct platform_device *pdev)
- 		prueth_netdev_exit(prueth, eth_node);
- 	}
- 
-+exit_iep:
-+	if (prueth->pdata.quirk_10m_link_issue)
-+		icss_iep_exit_fw(prueth->iep1);
-+
- free_pool:
- 	gen_pool_free(prueth->sram_pool,
- 		      (unsigned long)prueth->msmcram.va, msmc_ram_size);
-@@ -2203,6 +2213,9 @@ static void prueth_remove(struct platform_device *pdev)
- 		prueth_netdev_exit(prueth, eth_node);
- 	}
- 
-+	if (prueth->pdata.quirk_10m_link_issue)
-+		icss_iep_exit_fw(prueth->iep1);
-+
- 	icss_iep_put(prueth->iep1);
- 	icss_iep_put(prueth->iep0);
- 
+Changes in v4:
+ - Fixed assignment typo appeared in v3
+
+Changes in v3:
+ - Fixed issues due to variables renaming during cleanup (oops)
+ - This is actually the right series, since v2 was taken from the
+   wrong kernel tree.... :-)
+
+Changes in v2:
+ - Added explicit inclusion of linux/bitfield.h in patch [06/11]
+
+This series adds support for GAMMA IP requiring and/or supporting
+a 12-bits LUT using a slightly different register layout and programming
+sequence for multiple LUT banks: this IP version is currently found
+on a number of SoCs, not only including the Chromebook/IoT oriented
+Kompanio 1200/1380 MT8195/MT8195T, but also Smartphone chips such as
+the Dimensity 9200 (MT6985) and others.
+
+This series was tested on MT8195, MT8192, MT8173, MT6795:
+ * MT6795, MT8192, MT8173: No regression, works fine.
+ * MT8195: Color correction is finally working!
+
+AngeloGioacchino Del Regno (15):
+  drm/mediatek: gamma: Reduce indentation in mtk_gamma_set_common()
+  drm/mediatek: gamma: Support SoC specific LUT size
+  drm/mediatek: gamma: Improve and simplify HW LUT calculation
+  drm/mediatek: gamma: Enable the Gamma LUT table only after programming
+  drm/mediatek: gamma: Use bitfield macros
+  drm/mediatek: aal: Use bitfield macros
+  drm/mediatek: De-commonize disp_aal/disp_gamma gamma_set functions
+  drm/mediatek: gamma: Support specifying number of bits per LUT
+    component
+  drm/mediatek: gamma: Support multi-bank gamma LUT
+  drm/mediatek: gamma: Add support for 12-bit LUT and MT8195
+  drm/mediatek: gamma: Make sure relay mode is disabled
+  drm/mediatek: gamma: Program gamma LUT type for descending or rising
+  drm/mediatek: aal: Rewrite kerneldoc for struct mtk_disp_aal
+  drm/mediatek: gamma: Add kerneldoc for struct mtk_disp_gamma
+  drm/mediatek: aal: Compress of_device_id entries and add sentinel
+
+Jason-JH.Lin (1):
+  drm/mediatek: gamma: Adjust mtk_drm_gamma_set_common parameters
+
+ drivers/gpu/drm/mediatek/mtk_disp_aal.c     |  84 ++++++--
+ drivers/gpu/drm/mediatek/mtk_disp_drv.h     |   3 +-
+ drivers/gpu/drm/mediatek/mtk_disp_gamma.c   | 203 ++++++++++++++++----
+ drivers/gpu/drm/mediatek/mtk_drm_crtc.c     |   8 +-
+ drivers/gpu/drm/mediatek/mtk_drm_crtc.h     |   1 -
+ drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.c |   2 +
+ drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.h |   9 +
+ 7 files changed, 256 insertions(+), 54 deletions(-)
+
 -- 
-2.34.1
+2.41.0
 
