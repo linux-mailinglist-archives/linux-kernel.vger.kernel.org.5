@@ -2,193 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 99AFA76F4D4
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 23:50:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2666676F4DF
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 23:53:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231236AbjHCVuc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Aug 2023 17:50:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47762 "EHLO
+        id S231636AbjHCVxi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Aug 2023 17:53:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48424 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229542AbjHCVua (ORCPT
+        with ESMTP id S229959AbjHCVxg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Aug 2023 17:50:30 -0400
-Received: from relay06.th.seeweb.it (relay06.th.seeweb.it [IPv6:2001:4b7a:2000:18::167])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77E9730F8
-        for <linux-kernel@vger.kernel.org>; Thu,  3 Aug 2023 14:50:28 -0700 (PDT)
-Received: from SoMainline.org (94-211-6-86.cable.dynamic.v4.ziggo.nl [94.211.6.86])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by m-r2.th.seeweb.it (Postfix) with ESMTPSA id 39A9C3F5A2;
-        Thu,  3 Aug 2023 23:50:24 +0200 (CEST)
-Date:   Thu, 3 Aug 2023 23:50:21 +0200
-From:   Marijn Suijten <marijn.suijten@somainline.org>
-To:     Danila Tikhonov <danila@jiaxyga.com>
-Cc:     robdclark@gmail.com, quic_abhinavk@quicinc.com,
-        dmitry.baryshkov@linaro.org, sean@poorly.run, airlied@gmail.com,
-        daniel@ffwll.ch, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        konrad.dybcio@linaro.org, neil.armstrong@linaro.org,
-        rfoss@kernel.org, andersson@kernel.org, quic_khsieh@quicinc.com,
-        quic_vpolimer@quicinc.com, quic_rmccann@quicinc.com,
-        quic_jesszhan@quicinc.com, liushixin2@huawei.com,
-        linux-arm-msm@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        freedreno@lists.freedesktop.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, davidwronek@gmail.com
-Subject: Re: [PATCH 1/2] dt-bindings: display/msm: document DPU on SM7150
-Message-ID: <77nlqneq5z5wb223va4ez5mol5eol5uja2hpev73fv5iina4qh@ixbvxligq5ss>
-References: <20230803194724.154591-1-danila@jiaxyga.com>
- <20230803194724.154591-2-danila@jiaxyga.com>
+        Thu, 3 Aug 2023 17:53:36 -0400
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [213.167.242.64])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 359072D7E;
+        Thu,  3 Aug 2023 14:53:31 -0700 (PDT)
+Received: from pendragon.ideasonboard.com (213-243-189-158.bb.dnainternet.fi [213.243.189.158])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 23B0AC67;
+        Thu,  3 Aug 2023 23:52:26 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1691099546;
+        bh=ZqDmGTJU5wYQKOmk6F4NuUrXtBi0FAI5NAPCvoFr3Ew=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=I+ngpATuJZoM5K1OKuk4FjG7sQCuFQHwVmlnjGM47vS91kb6ur0lf4oSjanmhiTGV
+         yeHZItElUXcbjrP6vykbKdatqn5KSqpsZ8gW3DFWtb8WX4bIsEDsY2Pe1sunlkBXMV
+         Jw2zARH0Q/fezSuUvD/m2K1KcHAk1ONomy0dKrQ8=
+Date:   Fri, 4 Aug 2023 00:53:36 +0300
+From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To:     Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
+Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Hans Verkuil <hverkuil@xs4all.nl>, linux-media@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 3/3] media: i2c: ds90ub960: Fix PLL config for 1200
+ MHz CSI rate
+Message-ID: <20230803215336.GI27752@pendragon.ideasonboard.com>
+References: <20230803-ub9xx-uninit-vars-v2-0-512570ecb798@ideasonboard.com>
+ <20230803-ub9xx-uninit-vars-v2-3-512570ecb798@ideasonboard.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20230803194724.154591-2-danila@jiaxyga.com>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+In-Reply-To: <20230803-ub9xx-uninit-vars-v2-3-512570ecb798@ideasonboard.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023-08-03 22:47:23, Danila Tikhonov wrote:
-> Document the DPU hardware found on the Qualcomm SM7150 platform.
+On Thu, Aug 03, 2023 at 03:15:47PM +0300, Tomi Valkeinen wrote:
+> smatch reports:
 > 
-> Signed-off-by: Danila Tikhonov <danila@jiaxyga.com>
+> drivers/media/i2c/ds90ub960.c:1788 ub960_init_tx_ports() error: uninitialized symbol 'pll_div'.
+> 
+> This is caused by 'pll_div' not being set for 1200 MHz CSI rate. Set the
+> 'pll_div' correctly.
+> 
+> Fixes: afe267f2d368 ("media: i2c: add DS90UB960 driver")
+> Reported-by: Hans Verkuil <hverkuil@xs4all.nl>
+> Closes: https://lore.kernel.org/all/8d6daeb1-b62a-bbb2-b840-8759c84f2085@xs4all.nl/
+> Signed-off-by: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
+
+My
+
+Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+
+from v1, send before I noticed v2 was on the list, still applies.
+
 > ---
->  .../bindings/display/msm/qcom,sm7150-dpu.yaml | 116 ++++++++++++++++++
->  1 file changed, 116 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/display/msm/qcom,sm7150-dpu.yaml
+>  drivers/media/i2c/ds90ub960.c | 1 +
+>  1 file changed, 1 insertion(+)
 > 
-> diff --git a/Documentation/devicetree/bindings/display/msm/qcom,sm7150-dpu.yaml b/Documentation/devicetree/bindings/display/msm/qcom,sm7150-dpu.yaml
-> new file mode 100644
-> index 000000000000..0d86997ae09f
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/display/msm/qcom,sm7150-dpu.yaml
-> @@ -0,0 +1,116 @@
-> +# SPDX-License-Identifier: GPL-2.0-only or BSD-2-Clause
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/display/msm/qcom,sm7150-dpu.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Qualcomm SM7150 Display DPU
-> +
-> +maintainers:
-> +  - Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-> +  - Danila Tikhonov <danila@jiaxyga.com>
-> +
-> +$ref: /schemas/display/msm/dpu-common.yaml#
-> +
-> +properties:
-> +  compatible:
-> +    const: qcom,sm7150-dpu
-> +
-> +  reg:
-> +    items:
-> +      - description: Address offset and size for mdp register set
-> +      - description: Address offset and size for vbif register set
-> +
-> +  reg-names:
-> +    items:
-> +      - const: mdp
-> +      - const: vbif
-> +
-> +  clocks:
-> +    items:
-> +      - description: Display hf axi clock
-> +      - description: Display ahb clock
-> +      - description: Display rotator clock
-> +      - description: Display lut clock
-> +      - description: Display core clock
-> +      - description: Display vsync clock
-> +
-> +  clock-names:
-> +    items:
-> +      - const: bus
-> +      - const: iface
-> +      - const: rot
-> +      - const: lut
-> +      - const: core
-> +      - const: vsync
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +  - reg-names
-> +  - clocks
-> +  - clock-names
-> +
-> +unevaluatedProperties: false
-> +
-> +examples:
-> +  - |
-> +    #include <dt-bindings/clock/qcom,sm7150-dispcc.h>
-> +    #include <dt-bindings/clock/qcom,sm7150-gcc.h>
-> +    #include <dt-bindings/interrupt-controller/arm-gic.h>
-> +    #include <dt-bindings/power/qcom-rpmpd.h>
-> +
-> +    display-controller@ae01000 {
-> +        compatible = "qcom,sm7150-dpu";
-> +        reg = <0x0ae01000 0x8f000>,
-> +              <0x0aeb0000 0x2008>;
-> +        reg-names = "mdp", "vbif";
-> +
-> +        clocks = <&gcc GCC_DISP_HF_AXI_CLK>,
-> +                 <&dispcc DISP_CC_MDSS_AHB_CLK>,
-> +                 <&dispcc DISP_CC_MDSS_ROT_CLK>,
-> +                 <&dispcc DISP_CC_MDSS_MDP_LUT_CLK>,
-> +                 <&dispcc DISP_CC_MDSS_MDP_CLK>,
-> +                 <&dispcc DISP_CC_MDSS_VSYNC_CLK>;
-> +        clock-names = "bus", "iface", "rot", "lut", "core",
-> +                      "vsync";
-> +
-> +        assigned-clocks = <&dispcc DISP_CC_MDSS_VSYNC_CLK>,
-> +                          <&dispcc DISP_CC_MDSS_ROT_CLK>,
-> +                          <&dispcc DISP_CC_MDSS_AHB_CLK>;
-> +        assigned-clock-rates = <19200000>,
-> +                               <19200000>,
-> +                               <19200000>;
-> +
-> +        operating-points-v2 = <&mdp_opp_table>;
-> +        power-domains = <&rpmhpd SM7150_CX>;
-> +
-> +        interrupt-parent = <&mdss>;
-> +        interrupts = <0>;
-> +
-> +        ports {
-> +            #address-cells = <1>;
-> +            #size-cells = <0>;
-> +
-> +            port@0 {
-> +                reg = <0>;
-> +                endpoint {
-> +                    remote-endpoint = <&dsi0_in>;
-> +                };
-> +            };
-> +
-> +            port@1 {
-> +                reg = <1>;
-> +                endpoint {
-> +                    remote-endpoint = <&dsi1_in>;
-> +                };
-
-I don't think this compiles with a missing closing bracket.  Did you
-test the bindings?
-
-- Marijn
-
-> +
-> +            port@2 {
-> +                reg = <2>;
-> +                endpoint {
-> +                    remote-endpoint = <&dp_in>;
-> +                };
-> +            };
-> +        };
-> +    };
-> +...
-> -- 
-> 2.41.0
+> diff --git a/drivers/media/i2c/ds90ub960.c b/drivers/media/i2c/ds90ub960.c
+> index 4833b39b9178..4ab45e326d80 100644
+> --- a/drivers/media/i2c/ds90ub960.c
+> +++ b/drivers/media/i2c/ds90ub960.c
+> @@ -1763,6 +1763,7 @@ static int ub960_init_tx_ports(struct ub960_data *priv)
+>  		break;
+>  	case MHZ(1200):
+>  		speed_select = 1;
+> +		pll_div = 0x18;
+>  		break;
+>  	case MHZ(800):
+>  		speed_select = 2;
 > 
+
+-- 
+Regards,
+
+Laurent Pinchart
