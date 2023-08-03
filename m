@@ -2,405 +2,264 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4113976F493
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 23:19:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DF84676F49D
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 23:28:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230072AbjHCVTS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Aug 2023 17:19:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40582 "EHLO
+        id S230330AbjHCV2M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Aug 2023 17:28:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41878 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229733AbjHCVTQ (ORCPT
+        with ESMTP id S229534AbjHCV2K (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Aug 2023 17:19:16 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 208C1173F
-        for <linux-kernel@vger.kernel.org>; Thu,  3 Aug 2023 14:18:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1691097508;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=zxsbW3bAHVEZm7hXwF+kjqoxRoiowudt/Vzyxy79JVs=;
-        b=bcTeyAZ8F/+GuudXM6pbKADXfzGKYdaqJFiHNUyzesGv7AN9YQadwLTQyQVWZziD3brUMq
-        Qj85HCxy4hmbNDNMT/zBS53Era8Rs3PLCqF+lma/FFgeAfi9zRGGdZaGfe9XmQ3Hf/pKLi
-        cF5eHmhSd9l9df6CZKED1OfkKtTRMro=
-Received: from mail-io1-f69.google.com (mail-io1-f69.google.com
- [209.85.166.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-116-xHX5s6BCNLu8F57lKAYWFQ-1; Thu, 03 Aug 2023 17:18:26 -0400
-X-MC-Unique: xHX5s6BCNLu8F57lKAYWFQ-1
-Received: by mail-io1-f69.google.com with SMTP id ca18e2360f4ac-7868ec37aa7so133247239f.0
-        for <linux-kernel@vger.kernel.org>; Thu, 03 Aug 2023 14:18:26 -0700 (PDT)
+        Thu, 3 Aug 2023 17:28:10 -0400
+Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9AB82D5F
+        for <linux-kernel@vger.kernel.org>; Thu,  3 Aug 2023 14:28:08 -0700 (PDT)
+Received: by mail-ed1-x52c.google.com with SMTP id 4fb4d7f45d1cf-5223910acf2so4319a12.0
+        for <linux-kernel@vger.kernel.org>; Thu, 03 Aug 2023 14:28:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1691098087; x=1691702887;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=dZP6I8n8eTXLmaasRpdveplEXg3ecv2yETrEXTcd5TM=;
+        b=jP3gGITXjO3EwpcCfDEcQHIZuELjWf572dA8XFLl+NnqwLkZaf42KlwvYKntE3x454
+         Y9R0twIjSrX3U6EKd4wYfEAXJid9ZODOZOyqTFZJ0Jf4BTyNrrXo7W2HIkIH/H5tCma8
+         lcsliUgqgJIDC69Y6pi2jw8fGLOXY3fclOFvtg6wue1qfd+Y68aGVDXcyiyidStWuIBg
+         uEns155CmChRmk9PFh+v5JtlaNktrxzFOXY5QRtv2QbevV7HEm3bE9OmVSLqX0cYcs+B
+         TrL4u3fEc/PwyHsXvhZuTvlg5NtWAlk0iPvsM6KI0lDJlhPF0qIjYQIRS+DNV7n2jK1A
+         0Fow==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691097506; x=1691702306;
-        h=content-transfer-encoding:mime-version:organization:references
-         :in-reply-to:message-id:subject:cc:to:from:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=zxsbW3bAHVEZm7hXwF+kjqoxRoiowudt/Vzyxy79JVs=;
-        b=PWTjF2B67fe4NSx9utqiNB5PC8ZZlpNSs3gfzA6LpR/kSoaXNJKAc+d+1jTWXVLjxD
-         2TSRnDrhenQK2lIwemZczSjmWFBK4qNgkhn7yGoWj0lGCGJ+ERmZr7EwmG0/OrzqNH8F
-         bJf3QKHdqTOTOA9Kwo5JTCGDEodzWk/iuPvUwR5jTFvZwRP1a8xD4xjxEdRhWLHFIdUU
-         5mIRgWFq680Be2hE7P2/W1CyZNbeSwQUc1KiIWEQmG5o++9enaEmJuQcDisTCzfI8bTn
-         Uke2IJFwAciY9+GT7rI/HFmIjf8uHSnPgFckGTG5kuUit0fw2EX4wf2RHqFKConI3CTp
-         N5YA==
-X-Gm-Message-State: ABy/qLa6p7htzLTCOL4pmaizSP/x3J5t2ZfpthTE4oPVNUYf2RrIlCW7
-        ZEjwhBuA+AY6p0h8oU0w9kjsWq8YaRJIHz/tZTWtSYnqMEmyQlbGOg4PfFFj8p5GyoFANsam6Iy
-        O6QGGLowLIF5tIU9U8G9iowjr
-X-Received: by 2002:a5d:9755:0:b0:783:72b9:ed67 with SMTP id c21-20020a5d9755000000b0078372b9ed67mr19118010ioo.10.1691097506021;
-        Thu, 03 Aug 2023 14:18:26 -0700 (PDT)
-X-Google-Smtp-Source: APBJJlFaIIK4smhA5e+B+dxZ7qnh0iU3KDmvXmnlaWl3LKCFTBWJarYK7Dcp5ZoSbiwC+Qu49SilQQ==
-X-Received: by 2002:a5d:9755:0:b0:783:72b9:ed67 with SMTP id c21-20020a5d9755000000b0078372b9ed67mr19117998ioo.10.1691097505661;
-        Thu, 03 Aug 2023 14:18:25 -0700 (PDT)
-Received: from redhat.com ([38.15.60.12])
-        by smtp.gmail.com with ESMTPSA id m21-20020a5d8995000000b00790af7745b1sm204360iol.20.2023.08.03.14.18.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 03 Aug 2023 14:18:24 -0700 (PDT)
-Date:   Thu, 3 Aug 2023 15:18:23 -0600
-From:   Alex Williamson <alex.williamson@redhat.com>
-To:     Stefan Hajnoczi <stefanha@redhat.com>
-Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] vfio: align capability structures
-Message-ID: <20230803151823.4e5943e6.alex.williamson@redhat.com>
-In-Reply-To: <20230803144109.2331944-1-stefanha@redhat.com>
-References: <20230803144109.2331944-1-stefanha@redhat.com>
-Organization: Red Hat
+        d=1e100.net; s=20221208; t=1691098087; x=1691702887;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=dZP6I8n8eTXLmaasRpdveplEXg3ecv2yETrEXTcd5TM=;
+        b=CRMoTdwMFu8nnaRudTjK6gzK8YC0zwsnq1L5+RdiBwowSJYozZceYMfrwSuWZdsatK
+         j4Cph9E1FoFwlA1JcWDCM9G69vAKyUqtKUzkNdyFZHNpHjWdE4zwh/WxKe0/XnBKg1Kq
+         YskkbhHGsfzaibUcMnC3KqyIGTlxRTBcpS+pNyxQJq9WHtmW3x9BmA9YNMtvbFd+fi6F
+         peBDkQ9am8Rd533Jj3oWWH+bSHXn2dy7PuqZ+02BTcH3OTHWqTQEk2gQFMFlJnDnf1gm
+         Ct5QH56aDBIRmXcaiCXMLv6hhQKq2jyqw4Ghl6shMYXLil2Xpt8bKOLp/k7SZnkt6zBY
+         GsqA==
+X-Gm-Message-State: AOJu0YwtSLnnBq/MEcjy8CB1CEgZ+Nk+IgJr4EUb4da/J4KQ1It2iYhg
+        aa8ZB70UN47XwwfP71eWPhzKdFx5/u5ECTr9n37hUg==
+X-Google-Smtp-Source: AGHT+IHqvm5Uhm2oIbAA/pXRt1FQnQePfihlxGSPCY2Qo4vR8wP8joBYZmXhkl3Fx1YkYmlejG3T14ow4WRNcQA/g18=
+X-Received: by 2002:a50:c30e:0:b0:523:193b:5587 with SMTP id
+ a14-20020a50c30e000000b00523193b5587mr23411edb.6.1691098087197; Thu, 03 Aug
+ 2023 14:28:07 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+References: <20230731141021.2854827-5-janusz.krzysztofik@linux.intel.com> <20230731141021.2854827-7-janusz.krzysztofik@linux.intel.com>
+In-Reply-To: <20230731141021.2854827-7-janusz.krzysztofik@linux.intel.com>
+From:   Rae Moar <rmoar@google.com>
+Date:   Thu, 3 Aug 2023 17:27:56 -0400
+Message-ID: <CA+GJov6htL9GPODdJeGWGahsTGTHPqpfCCmxTGfcmhc1GedPfw@mail.gmail.com>
+Subject: Re: [PATCH v3 2/3] kunit: Make 'list' action available to kunit test modules
+To:     Janusz Krzysztofik <janusz.krzysztofik@linux.intel.com>
+Cc:     Brendan Higgins <brendan.higgins@linux.dev>,
+        David Gow <davidgow@google.com>,
+        linux-kselftest@vger.kernel.org, kunit-dev@googlegroups.com,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        igt-dev@lists.freedesktop.org, intel-xe@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu,  3 Aug 2023 10:41:09 -0400
-Stefan Hajnoczi <stefanha@redhat.com> wrote:
-
-> The VFIO_DEVICE_GET_INFO, VFIO_DEVICE_GET_REGION_INFO, and
-> VFIO_IOMMU_GET_INFO ioctls fill in an info struct followed by capability
-> structs:
-> 
->   +------+---------+---------+-----+
->   | info | caps[0] | caps[1] | ... |
->   +------+---------+---------+-----+
-> 
-> Both the info and capability struct sizes are not always multiples of
-> sizeof(u64), leaving u64 fields in later capability structs misaligned.
-> 
-> Userspace applications currently need to handle misalignment manually in
-> order to support CPU architectures and programming languages with strict
-> alignment requirements.
-> 
-> Make life easier for userspace by ensuring alignment in the kernel.
-> The new layout is as follows:
-> 
->   +------+---+---------+---------+---+-----+
->   | info | 0 | caps[0] | caps[1] | 0 | ... |
->   +------+---+---------+---------+---+-----+
-> 
-> In this example info and caps[1] have sizes that are not multiples of
-> sizeof(u64), so zero padding is added to align the subsequent structure.
-> 
-> Adding zero padding between structs does not break the uapi. The memory
-> layout is specified by the info.cap_offset and caps[i].next fields
-> filled in by the kernel. Applications use these field values to locate
-> structs and are therefore unaffected by the addition of zero padding.
-> 
-> Signed-off-by: Stefan Hajnoczi <stefanha@redhat.com>
+On Mon, Jul 31, 2023 at 10:12=E2=80=AFAM Janusz Krzysztofik
+<janusz.krzysztofik@linux.intel.com> wrote:
+>
+> Results from kunit tests reported via dmesg may be interleaved with other
+> kernel messages.  When parsing dmesg for modular kunit results in real
+> time, external tools, e.g., Intel GPU tools (IGT), may want to insert
+> their own test name markers into dmesg at the start of each test, before
+> any kernel message related to that test appears there, so existing upper
+> level test result parsers have no doubt which test to blame for a specifi=
+c
+> kernel message.  Unfortunately, kunit reports names of tests only at thei=
+r
+> completion (with the exeption of a not standarized "# Subtest: <name>"
+> header above a test plan of each test suite or parametrized test).
+>
+> External tools could be able to insert their own "start of the test"
+> markers with test names included if they new those names in advance.
+> Test names could be learned from a list if provided by a kunit test
+> module.
+>
+> There exists a feature of listing kunit tests without actually executing
+> them, but it is now limited to configurations with the kunit module built
+> in and covers only built-in tests, already available at boot time.
+> Moreover, switching from list to normal mode requires reboot.  If that
+> feature was also available when kunit is built as a module, userspace
+> could load the module with action=3Dlist parameter, load some kunit test
+> modules they are interested in and learn about the list of tests provided
+> by those modules, then unload them, reload the kunit module in normal mod=
+e
+> and execute the tests with their lists already known.
+>
+> Extend kunit module notifier initialization callback with a processing
+> path for only listing the tests provided by a module if the kunit action
+> parameter is set to "list".  For ease of use, submit the list in the
+> format of a standard KTAP report, with SKIP result from each test case,
+> giving "list mode" as the reason for skipping.  For each test suite
+> provided by a kunit test module, make such list of its test cases also
+> available via kunit debugfs for the lifetime of the module.  For user
+> convenience, make the kunit.action parameter visible in sysfs.
+>
+> Signed-off-by: Janusz Krzysztofik <janusz.krzysztofik@linux.intel.com>
 > ---
->  include/linux/vfio.h             |  2 +-
->  drivers/gpu/drm/i915/gvt/kvmgt.c |  7 +++--
->  drivers/s390/cio/vfio_ccw_ops.c  |  7 +++--
->  drivers/vfio/pci/vfio_pci_core.c | 14 ++++++---
->  drivers/vfio/vfio_iommu_type1.c  |  7 +++--
->  drivers/vfio/vfio_main.c         | 53 +++++++++++++++++++++++++++-----
->  6 files changed, 71 insertions(+), 19 deletions(-)
-> 
-> diff --git a/include/linux/vfio.h b/include/linux/vfio.h
-> index 2c137ea94a3e..ff0864e73cc3 100644
-> --- a/include/linux/vfio.h
-> +++ b/include/linux/vfio.h
-> @@ -272,7 +272,7 @@ struct vfio_info_cap {
->  struct vfio_info_cap_header *vfio_info_cap_add(struct vfio_info_cap *caps,
->  					       size_t size, u16 id,
->  					       u16 version);
-> -void vfio_info_cap_shift(struct vfio_info_cap *caps, size_t offset);
-> +ssize_t vfio_info_cap_shift(struct vfio_info_cap *caps, size_t offset);
->  
->  int vfio_info_add_capability(struct vfio_info_cap *caps,
->  			     struct vfio_info_cap_header *cap, size_t size);
-> diff --git a/drivers/gpu/drm/i915/gvt/kvmgt.c b/drivers/gpu/drm/i915/gvt/kvmgt.c
-> index de675d799c7d..9060e9c6ac7c 100644
-> --- a/drivers/gpu/drm/i915/gvt/kvmgt.c
-> +++ b/drivers/gpu/drm/i915/gvt/kvmgt.c
-> @@ -1297,7 +1297,10 @@ static long intel_vgpu_ioctl(struct vfio_device *vfio_dev, unsigned int cmd,
->  				info.argsz = sizeof(info) + caps.size;
->  				info.cap_offset = 0;
->  			} else {
-> -				vfio_info_cap_shift(&caps, sizeof(info));
-> +				ssize_t cap_offset = vfio_info_cap_shift(&caps, sizeof(info));
-> +				if (cap_offset < 0)
-> +					return cap_offset;
-> +
->  				if (copy_to_user((void __user *)arg +
->  						  sizeof(info), caps.buf,
->  						  caps.size)) {
-> @@ -1305,7 +1308,7 @@ static long intel_vgpu_ioctl(struct vfio_device *vfio_dev, unsigned int cmd,
->  					kfree(sparse);
->  					return -EFAULT;
->  				}
-> -				info.cap_offset = sizeof(info);
-> +				info.cap_offset = cap_offset;
 
-The copy_to_user() above needs to be modified to make this true:
+Hello!
 
-	copy_to_user((void __user *)arg + cap_offset,...
+Great idea to expose this feature to modules. But just letting you
+know this patch didn't apply cleanly for me onto the current
+kselftest/kunit branch. So this may need rebasing.
 
-Same for all similar below.
-
->  			}
->  
->  			kfree(caps.buf);
-> diff --git a/drivers/s390/cio/vfio_ccw_ops.c b/drivers/s390/cio/vfio_ccw_ops.c
-> index 5b53b94f13c7..63d5163376a5 100644
-> --- a/drivers/s390/cio/vfio_ccw_ops.c
-> +++ b/drivers/s390/cio/vfio_ccw_ops.c
-> @@ -361,13 +361,16 @@ static int vfio_ccw_mdev_get_region_info(struct vfio_ccw_private *private,
->  			info->argsz = sizeof(*info) + caps.size;
->  			info->cap_offset = 0;
->  		} else {
-> -			vfio_info_cap_shift(&caps, sizeof(*info));
-> +			ssize_t cap_offset = vfio_info_cap_shift(&caps, sizeof(*info));
-> +			if (cap_offset < 0)
-> +				return cap_offset;
-> +
->  			if (copy_to_user((void __user *)arg + sizeof(*info),
->  					 caps.buf, caps.size)) {
->  				kfree(caps.buf);
->  				return -EFAULT;
->  			}
-> -			info->cap_offset = sizeof(*info);
-> +			info->cap_offset = cap_offset;
->  		}
->  
->  		kfree(caps.buf);
-> diff --git a/drivers/vfio/pci/vfio_pci_core.c b/drivers/vfio/pci/vfio_pci_core.c
-> index 20d7b69ea6ff..92c093b99187 100644
-> --- a/drivers/vfio/pci/vfio_pci_core.c
-> +++ b/drivers/vfio/pci/vfio_pci_core.c
-> @@ -966,12 +966,15 @@ static int vfio_pci_ioctl_get_info(struct vfio_pci_core_device *vdev,
->  		if (info.argsz < sizeof(info) + caps.size) {
->  			info.argsz = sizeof(info) + caps.size;
->  		} else {
-> -			vfio_info_cap_shift(&caps, sizeof(info));
-> +			ssize_t cap_offset = vfio_info_cap_shift(&caps, sizeof(info));
-> +			if (cap_offset < 0)
-> +				return cap_offset;
-> +
->  			if (copy_to_user(arg + 1, caps.buf, caps.size)) {
->  				kfree(caps.buf);
->  				return -EFAULT;
->  			}
-> -			info.cap_offset = sizeof(*arg);
-> +			info.cap_offset = cap_offset;
->  		}
->  
->  		kfree(caps.buf);
-> @@ -1107,12 +1110,15 @@ static int vfio_pci_ioctl_get_region_info(struct vfio_pci_core_device *vdev,
->  			info.argsz = sizeof(info) + caps.size;
->  			info.cap_offset = 0;
->  		} else {
-> -			vfio_info_cap_shift(&caps, sizeof(info));
-> +			ssize_t cap_offset = vfio_info_cap_shift(&caps, sizeof(info));
-> +			if (cap_offset < 0)
-> +				return cap_offset;
-> +
->  			if (copy_to_user(arg + 1, caps.buf, caps.size)) {
->  				kfree(caps.buf);
->  				return -EFAULT;
->  			}
-> -			info.cap_offset = sizeof(*arg);
-> +			info.cap_offset = cap_offset;
->  		}
->  
->  		kfree(caps.buf);
-> diff --git a/drivers/vfio/vfio_iommu_type1.c b/drivers/vfio/vfio_iommu_type1.c
-> index ebe0ad31d0b0..ab64b9e3ed7c 100644
-> --- a/drivers/vfio/vfio_iommu_type1.c
-> +++ b/drivers/vfio/vfio_iommu_type1.c
-> @@ -2808,14 +2808,17 @@ static int vfio_iommu_type1_get_info(struct vfio_iommu *iommu,
->  		if (info.argsz < sizeof(info) + caps.size) {
->  			info.argsz = sizeof(info) + caps.size;
->  		} else {
-> -			vfio_info_cap_shift(&caps, sizeof(info));
-> +			ssize_t cap_offset = vfio_info_cap_shift(&caps, sizeof(info));
-> +			if (cap_offset < 0)
-> +				return cap_offset;
-> +
->  			if (copy_to_user((void __user *)arg +
->  					sizeof(info), caps.buf,
->  					caps.size)) {
->  				kfree(caps.buf);
->  				return -EFAULT;
->  			}
-> -			info.cap_offset = sizeof(info);
-> +			info.cap_offset = cap_offset;
->  		}
->  
->  		kfree(caps.buf);
-> diff --git a/drivers/vfio/vfio_main.c b/drivers/vfio/vfio_main.c
-> index f0ca33b2e1df..4fc8698577a7 100644
-> --- a/drivers/vfio/vfio_main.c
-> +++ b/drivers/vfio/vfio_main.c
-> @@ -1171,8 +1171,18 @@ struct vfio_info_cap_header *vfio_info_cap_add(struct vfio_info_cap *caps,
->  {
->  	void *buf;
->  	struct vfio_info_cap_header *header, *tmp;
-> +	size_t header_offset;
-> +	size_t new_size;
->  
-> -	buf = krealloc(caps->buf, caps->size + size, GFP_KERNEL);
-> +	/*
-> +	 * Reserve extra space when the previous capability was not a multiple of
-> +	 * the largest field size. This ensures that capabilities are properly
-> +	 * aligned.
-> +	 */
-
-If we simply start with:
-
-	size = ALIGN(size, sizeof(u64));
-
-then shouldn't there never be a previous misaligned size to correct?
-
-I wonder if we really need all this complexity, we're drawing from a
-finite set of info structs for the initial alignment, we can pad those
-without breaking the uapi and we can introduce a warning to avoid such
-poor alignment in the future.  Allocating an aligned size for each
-capability is then sufficiently trivial to handle runtime.  ex:
-
-diff --git a/drivers/vfio/vfio_main.c b/drivers/vfio/vfio_main.c
-index 902f06e52c48..2d074cbd371d 100644
---- a/drivers/vfio/vfio_main.c
-+++ b/drivers/vfio/vfio_main.c
-@@ -1362,6 +1362,8 @@ struct vfio_info_cap_header *vfio_info_cap_add(struct vfio_info_cap *caps,
- 	void *buf;
- 	struct vfio_info_cap_header *header, *tmp;
- 
-+	size = ALIGN(size, sizeof(u64));
-+
- 	buf = krealloc(caps->buf, caps->size + size, GFP_KERNEL);
- 	if (!buf) {
- 		kfree(caps->buf);
-@@ -1395,6 +1397,8 @@ void vfio_info_cap_shift(struct vfio_info_cap *caps, size_t offset)
- 	struct vfio_info_cap_header *tmp;
- 	void *buf = (void *)caps->buf;
- 
-+	WARN_ON(!IS_ALIGNED(offset, sizeof(u64)));
-+
- 	for (tmp = buf; tmp->next; tmp = buf + tmp->next - offset)
- 		tmp->next += offset;
- }
-diff --git a/include/uapi/linux/vfio.h b/include/uapi/linux/vfio.h
-index fa06e3eb4955..fd2761841ffe 100644
---- a/include/uapi/linux/vfio.h
-+++ b/include/uapi/linux/vfio.h
-@@ -217,6 +217,7 @@ struct vfio_device_info {
- 	__u32	num_regions;	/* Max region index + 1 */
- 	__u32	num_irqs;	/* Max IRQ index + 1 */
- 	__u32   cap_offset;	/* Offset within info struct of first cap */
-+	__u32	pad;		/* Size must be aligned for caps */
- };
- #define VFIO_DEVICE_GET_INFO		_IO(VFIO_TYPE, VFIO_BASE + 7)
- 
-@@ -1444,6 +1445,7 @@ struct vfio_iommu_type1_info {
- #define VFIO_IOMMU_INFO_CAPS	(1 << 1)	/* Info supports caps */
- 	__u64	iova_pgsizes;	/* Bitmap of supported page sizes */
- 	__u32   cap_offset;	/* Offset within info struct of first cap */
-+	__u32	pad;		/* Size must be aligned for caps */
- };
- 
- /*
-
-Thanks,
-Alex
-
-
-> +	header_offset = ALIGN(caps->size, sizeof(u64));
-> +	new_size = header_offset + size;
-> +
-> +	buf = krealloc(caps->buf, new_size, GFP_KERNEL);
->  	if (!buf) {
->  		kfree(caps->buf);
->  		caps->buf = NULL;
-> @@ -1181,10 +1191,10 @@ struct vfio_info_cap_header *vfio_info_cap_add(struct vfio_info_cap *caps,
->  	}
->  
->  	caps->buf = buf;
-> -	header = buf + caps->size;
-> +	header = buf + header_offset;
->  
->  	/* Eventually copied to user buffer, zero */
-> -	memset(header, 0, size);
-> +	memset(buf + caps->size, 0, new_size - caps->size);
->  
->  	header->id = id;
->  	header->version = version;
-> @@ -1193,20 +1203,47 @@ struct vfio_info_cap_header *vfio_info_cap_add(struct vfio_info_cap *caps,
->  	for (tmp = buf; tmp->next; tmp = buf + tmp->next)
->  		; /* nothing */
->  
-> -	tmp->next = caps->size;
-> -	caps->size += size;
-> +	tmp->next = header_offset;
-> +	caps->size = new_size;
->  
->  	return header;
+>  include/kunit/test.h |  1 +
+>  lib/kunit/executor.c | 19 +++++++++++++------
+>  lib/kunit/test.c     | 30 +++++++++++++++++++++++++++++-
+>  3 files changed, 43 insertions(+), 7 deletions(-)
+>
+> diff --git a/include/kunit/test.h b/include/kunit/test.h
+> index 23120d50499ef..6d693f21a4833 100644
+> --- a/include/kunit/test.h
+> +++ b/include/kunit/test.h
+> @@ -237,6 +237,7 @@ static inline void kunit_set_failure(struct kunit *te=
+st)
 >  }
->  EXPORT_SYMBOL_GPL(vfio_info_cap_add);
->  
-> -void vfio_info_cap_shift(struct vfio_info_cap *caps, size_t offset)
-> +/*
-> + * Adjust the capability next fields to account for the given offset at which
-> + * capability structures start and any padding added for alignment. Returns the
-> + * cap_offset or -errno.
-> + */
-> +ssize_t vfio_info_cap_shift(struct vfio_info_cap *caps, size_t offset)
->  {
->  	struct vfio_info_cap_header *tmp;
-> +	struct vfio_info_cap_header *next_tmp;
->  	void *buf = (void *)caps->buf;
-> +	size_t pad = ALIGN(offset, sizeof(u64)) - offset;
-> +	size_t cap_offset = offset + pad;
->  
-> -	for (tmp = buf; tmp->next; tmp = buf + tmp->next - offset)
-> -		tmp->next += offset;
-> +	/* Shift the next fields to account for offset and pad */
-> +	for (tmp = buf; tmp->next; tmp = next_tmp) {
-> +		next_tmp = buf + tmp->next;
-> +		tmp->next += cap_offset;
-> +	}
+>
+>  bool kunit_enabled(void);
+> +const char *kunit_action(void);
+>
+>  void kunit_init_test(struct kunit *test, const char *name, char *log);
+>
+> diff --git a/lib/kunit/executor.c b/lib/kunit/executor.c
+> index 74982b83707ca..d1c0616569dfd 100644
+> --- a/lib/kunit/executor.c
+> +++ b/lib/kunit/executor.c
+> @@ -12,19 +12,26 @@
+>  extern struct kunit_suite * const __kunit_suites_start[];
+>  extern struct kunit_suite * const __kunit_suites_end[];
+>
+> +static char *action_param;
 > +
-> +	/* Pad with zeroes so capabilities start with proper alignment */
-> +	buf = krealloc(caps->buf, caps->size + pad, GFP_KERNEL);
-> +	if (!buf) {
-> +		kfree(caps->buf);
-> +		caps->buf = NULL;
-> +		caps->size = 0;
-> +		return -ENOMEM;
-> +	}
+> +module_param_named(action, action_param, charp, 0400);
+> +MODULE_PARM_DESC(action,
+> +                "Changes KUnit executor behavior, valid values are:\n"
+> +                "<none>: run the tests like normal\n"
+> +                "'list' to list test names instead of running them.\n");
 > +
-> +	memmove(buf + pad, buf, caps->size);
-> +	memset(buf, 0, pad);
+> +const char *kunit_action(void)
+> +{
+> +       return action_param;
+> +}
 > +
-> +	caps->buf = buf;
-> +	caps->size += pad;
-> +	return cap_offset;
+>  #if IS_BUILTIN(CONFIG_KUNIT)
+>
+>  static char *filter_glob_param;
+> -static char *action_param;
+>
+>  module_param_named(filter_glob, filter_glob_param, charp, 0);
+>  MODULE_PARM_DESC(filter_glob,
+>                 "Filter which KUnit test suites/tests run at boot-time, e=
+.g. list* or list*.*del_test");
+> -module_param_named(action, action_param, charp, 0);
+> -MODULE_PARM_DESC(action,
+> -                "Changes KUnit executor behavior, valid values are:\n"
+> -                "<none>: run the tests like normal\n"
+> -                "'list' to list test names instead of running them.\n");
+>
+>  /* glob_match() needs NULL terminated strings, so we need a copy of filt=
+er_glob_param. */
+>  struct kunit_test_filter {
+> diff --git a/lib/kunit/test.c b/lib/kunit/test.c
+> index a29ca1acc4d81..413d9fd364a8d 100644
+> --- a/lib/kunit/test.c
+> +++ b/lib/kunit/test.c
+> @@ -674,6 +674,27 @@ int kunit_run_tests(struct kunit_suite *suite)
 >  }
->  EXPORT_SYMBOL(vfio_info_cap_shift);
->  
+>  EXPORT_SYMBOL_GPL(kunit_run_tests);
+>
+> +static void kunit_list_suite(struct kunit_suite *suite)
+> +{
+> +       struct kunit_case *test_case;
+> +
+> +       kunit_print_suite_start(suite);
+> +
+> +       kunit_suite_for_each_test_case(suite, test_case) {
+> +               struct kunit test =3D { .param_value =3D NULL, .param_ind=
+ex =3D 0 };
+> +
+> +               kunit_init_test(&test, test_case->name, test_case->log);
+> +
+> +               kunit_print_ok_not_ok(&test, true, KUNIT_SKIPPED,
+> +                                     kunit_test_case_num(suite, test_cas=
+e),
+> +                                     test_case->name, "list mode");
+> +       }
+> +
+> +       kunit_print_ok_not_ok((void *)suite, false, KUNIT_SKIPPED,
+> +                             kunit_suite_counter++,
+> +                             suite->name, "list mode");
+> +}
+> +
 
+I have some reservations about using a different format to the current
+format output when using the action_param=3Dlist option. Is it possible
+to export and use the kunit_exec_list_tests() method instead? This
+would allow for there to be only one method to control the format for
+this option.
+
+Also just a note that the new attributes patches introduce the
+action_param.list_attr option, which would then need to be accounted
+for here and maybe change some of this formatting.
+
+Thanks!
+Rae
+
+>  static void kunit_init_suite(struct kunit_suite *suite)
+>  {
+>         kunit_debugfs_create_suite(suite);
+> @@ -688,6 +709,7 @@ bool kunit_enabled(void)
+>
+>  int __kunit_test_suites_init(struct kunit_suite * const * const suites, =
+int num_suites)
+>  {
+> +       const char *action =3D kunit_action();
+>         unsigned int i;
+>
+>         if (!kunit_enabled() && num_suites > 0) {
+> @@ -699,7 +721,13 @@ int __kunit_test_suites_init(struct kunit_suite * co=
+nst * const suites, int num_
+>
+>         for (i =3D 0; i < num_suites; i++) {
+>                 kunit_init_suite(suites[i]);
+> -               kunit_run_tests(suites[i]);
+> +
+> +               if (!action)
+> +                       kunit_run_tests(suites[i]);
+> +               else if (!strcmp(action, "list"))
+> +                       kunit_list_suite(suites[i]);
+> +               else
+> +                       pr_err("kunit: unknown action '%s'\n", action);
+>         }
+>
+>         static_branch_dec(&kunit_running);
+> --
+> 2.41.0
+>
+> --
+> You received this message because you are subscribed to the Google Groups=
+ "KUnit Development" group.
+> To unsubscribe from this group and stop receiving emails from it, send an=
+ email to kunit-dev+unsubscribe@googlegroups.com.
+> To view this discussion on the web visit https://groups.google.com/d/msgi=
+d/kunit-dev/20230731141021.2854827-7-janusz.krzysztofik%40linux.intel.com.
