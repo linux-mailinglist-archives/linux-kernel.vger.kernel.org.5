@@ -2,56 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 40D1376EEFC
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 18:06:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ED25A76EF00
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 18:07:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235934AbjHCQGY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Aug 2023 12:06:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48090 "EHLO
+        id S236249AbjHCQHN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Aug 2023 12:07:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48742 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234700AbjHCQGW (ORCPT
+        with ESMTP id S229634AbjHCQHK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Aug 2023 12:06:22 -0400
+        Thu, 3 Aug 2023 12:07:10 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 227BC2D54;
-        Thu,  3 Aug 2023 09:06:22 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A7751BD9;
+        Thu,  3 Aug 2023 09:07:09 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id A4EA861E26;
-        Thu,  3 Aug 2023 16:06:21 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 09B8CC433C8;
-        Thu,  3 Aug 2023 16:06:18 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 075F361E2D;
+        Thu,  3 Aug 2023 16:07:09 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B9585C433C8;
+        Thu,  3 Aug 2023 16:07:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691078781;
-        bh=yfY2HhbzUm+eVGsxVz3j1t9wwouP1zYfDD/CdbcAEzs=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=soTl5UJdFwXfJN22lNxH+roRHiH/4rlPqDIg9GqROuVvdHORkjnqz5WPYEKnidZIM
-         FfjaNVgWIXT0IGW+OdXCxniD9xpQc68CKAvtU85W1OBBIMpEUbp7C7Hj9yp2YlVyDN
-         cftJZCPjzUtK2bO5cDcsOFlxBLtUG4ZetxTP30C7MCblxNY1fty9FoqUcoqEOxlJk4
-         2cBU7fDt0MFleLdzVqgC2smkVfCfuFXeKROs30l/4HJKILlPkHLvWIlKNLVg4qKmR/
-         pGhEbpGHNUf3UHvowfq3/BbylzLhG5ZYUaujeOM891JSTux3FSNFCh5O3JMufkaY0Q
-         GKpu3ftgvfXbw==
-Date:   Thu, 3 Aug 2023 17:06:16 +0100
-From:   Conor Dooley <conor@kernel.org>
-To:     Raphael Gallais-Pou <rgallaispou@gmail.com>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Marc Zyngier <maz@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Patrice Chotard <patrice.chotard@foss.st.com>,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
-Subject: Re: [PATCH] dt-bindings: irqchip: convert st,stih407-irq-syscfg to
- DT schema
-Message-ID: <20230803-endurable-thirteen-a6ff7cce8e76@spud>
-References: <20230801214651.27418-1-rgallaispou@gmail.com>
+        s=k20201202; t=1691078828;
+        bh=2ysWTyQQDcDgRN4umSoNYqrm4bVY3O6jpAhY0GjhzaM=;
+        h=From:To:In-Reply-To:References:Subject:Date:From;
+        b=bgkFejYMRDUhw6Ck0ycUTLUMc0VWt7hRnbN8D0EyQ/SVxJVOMtzPCUonOyB2se9kh
+         hi7qAJc6JxOMW4uEDWY3cBvQYIAt11Q4nNVE2wh3xZYm+ldy+iaLb1YnAjF6FB91Kk
+         s/HR1TaYiN2XAfMX8K2Ev0q1qP03vVDQLuSVTFD1CPq7nvNhrFiG0h/zYdniB23oG6
+         3H8jl9qeT9ihDeVvwJW2LUQbAg8198Kl0rHalhpfjfg5bm+Ypk6DtqdBA7aK47HNJi
+         HInIuIzV+/dBGypGH/Z2VpAwBNdwTU1oWqMtZQ5R0kGTdj6ARJmndgscRcsUi3YFXN
+         Gn/1h2/FkUWCg==
+From:   Mark Brown <broonie@kernel.org>
+To:     linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Zhu Wang <wangzhu9@huawei.com>
+In-Reply-To: <20230803083944.21501-1-wangzhu9@huawei.com>
+References: <20230803083944.21501-1-wangzhu9@huawei.com>
+Subject: Re: [PATCH -next] spi: fsl-spi: Do not check 0 for
+ platform_get_irq()
+Message-Id: <169107882741.87002.3144423833085038986.b4-ty@kernel.org>
+Date:   Thu, 03 Aug 2023 17:07:07 +0100
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="neR+wAL8ec6JqfMA"
-Content-Disposition: inline
-In-Reply-To: <20230801214651.27418-1-rgallaispou@gmail.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Mailer: b4 0.13-dev-034f2
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
@@ -62,33 +56,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, 03 Aug 2023 16:39:44 +0800, Zhu Wang wrote:
+> Since platform_get_irq() never returned zero, so it need not to check
+> whether it returned zero, and we use the return error code of
+> platform_get_irq() to replace the current return error code, for that
+> platform_get_irq() may return -EINVAL or -ENXIO.
+> 
+> 
 
---neR+wAL8ec6JqfMA
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Applied to
 
-On Tue, Aug 01, 2023 at 11:46:51PM +0200, Raphael Gallais-Pou wrote:
-> Convert deprecated format to DT schema format.
->=20
-> Signed-off-by: Raphael Gallais-Pou <rgallaispou@gmail.com>
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git for-next
 
-This seems ok to me,
-Reviewed-by: Conor Dooley <conor.dooley@microchip.com>
+Thanks!
+
+[1/1] spi: fsl-spi: Do not check 0 for platform_get_irq()
+      commit: d8736266ae960504110e812994f555bf7cb8740c
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
 Thanks,
-Conor.
+Mark
 
-
---neR+wAL8ec6JqfMA
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZMvQeAAKCRB4tDGHoIJi
-0qxsAP4+nTXkPAhEHwMQl7zXoZgJlYEhmtSd9NnDwzXnR2VY8gD/epAg/mzluc4a
-ciNfNQWZqbkSpvhA+K+T3z0hqBVz/wM=
-=647j
------END PGP SIGNATURE-----
-
---neR+wAL8ec6JqfMA--
