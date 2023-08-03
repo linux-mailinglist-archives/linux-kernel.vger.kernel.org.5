@@ -2,80 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D023276EF39
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 18:16:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3991D76EF3C
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 18:16:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234224AbjHCQQT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Aug 2023 12:16:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54522 "EHLO
+        id S236545AbjHCQQi convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 3 Aug 2023 12:16:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54798 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235967AbjHCQQR (ORCPT
+        with ESMTP id S235264AbjHCQQc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Aug 2023 12:16:17 -0400
-Received: from mail-lj1-x22f.google.com (mail-lj1-x22f.google.com [IPv6:2a00:1450:4864:20::22f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 308A73A97;
-        Thu,  3 Aug 2023 09:16:11 -0700 (PDT)
-Received: by mail-lj1-x22f.google.com with SMTP id 38308e7fff4ca-2b9cf2b1309so14943321fa.0;
-        Thu, 03 Aug 2023 09:16:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1691079369; x=1691684169;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Ak2e6qyQw5b5s1FOOu8IqFAFc+5BX1aqKP7dFDqfSkg=;
-        b=LWv3jcuFeu+HQkIEQ6J0LW5YNcp1nRfncRfXPIe5WqVTH7k9FCfWBWVQBYfgDt68uC
-         /MGOfeXglLZMHClwSpOAHGUEvH0LeD7S5ikJu+WfkHGPPn1uv0jy352Q5TXuDVD0zwfX
-         8eix3oqFIqSe2zsj43NMFSZ4eDT9rc4T3mLD6dAQbrrC7KwNz1dWPyDUvkkEMIBuM9iR
-         2vngNLtenYn1jzOe1/Wn0U+uAeFQBOskYIpZFxsT1pfAdVD2MyVhMy5Hg7jt1DEFnNPg
-         1aC35lNIZcWCtqUq+c8o/2609YnYX/uvLz+MZEyAxOeHRFh/kFujzyle6iv816/KVPKC
-         o+Uw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691079369; x=1691684169;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Ak2e6qyQw5b5s1FOOu8IqFAFc+5BX1aqKP7dFDqfSkg=;
-        b=F+DK427nKUnPWtLyRJDVm3AxLxtiYr2dA2duMLJmRmxyOgObTdTzXgYuP8GNjx7gl2
-         hixBbeHzOf29s0/ZX9z8KkYGAog75I+wwc+9EXZoh12eTu0vxQyvQthe4EWjur60DsvO
-         1/0hbgxYv6IOuBVQmYWaIDrJPzx3nLGRyMqFIJszcgt1DaSJbRpMZrJhtHOc7r2brYOa
-         tz0UZMuTKAOEdmBT8Y4IZ+C2htWlq09vM9yUgqTQHQKvtV2tq4J56LVBL9OhbQfxFUn/
-         8w0zT2a19wLwK4ZGLS6oiBAcxdB1zosN845NTCn6C8D3d4Vn9hFpB1LFYuomVTrIuO5y
-         lA5Q==
-X-Gm-Message-State: ABy/qLZr3yv5QxKxKnIqM/NlcVV1AsnSnZpgrMmcdJaE2LTHk40JkKKm
-        bTixJnInUAwcXQdnPduEZfiY7HkfKb665rmOFjY=
-X-Google-Smtp-Source: APBJJlFPy5XddgcUkQ8ldIEwz7iLpQjjQrxx2s2OJio36y38yw8a5auP9RBYgm318xZCRkWZUt2Vqp2Wnbgn5gyK2/A=
-X-Received: by 2002:a2e:9602:0:b0:2b6:c3f9:b86b with SMTP id
- v2-20020a2e9602000000b002b6c3f9b86bmr3531763ljh.15.1691079368631; Thu, 03 Aug
- 2023 09:16:08 -0700 (PDT)
+        Thu, 3 Aug 2023 12:16:32 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 71EE63ABE;
+        Thu,  3 Aug 2023 09:16:27 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id B411B113E;
+        Thu,  3 Aug 2023 09:17:09 -0700 (PDT)
+Received: from donnerap.manchester.arm.com (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 92C573F5A1;
+        Thu,  3 Aug 2023 09:16:23 -0700 (PDT)
+Date:   Thu, 3 Aug 2023 17:16:20 +0100
+From:   Andre Przywara <andre.przywara@arm.com>
+To:     Martin Botka <martin@biqu3d.com>
+Cc:     Konrad Dybcio <konrad.dybcio@somainline.org>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@somainline.org>,
+        Marijn Suijten <marijn.suijten@somainline.org>,
+        Jami Kettunen <jamipkettunen@somainline.org>,
+        Paul Bouchara <paul.bouchara@somainline.org>,
+        Martin Botka <martin.botka@somainline.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Samuel Holland <samuel@sholland.org>,
+        Icenowy Zheng <uwu@icenowy.me>,
+        Ludwig Kormann <ludwig.kormann@ict42.de>,
+        Andrew Lunn <andrew@lunn.ch>, Heiko Stuebner <heiko@sntech.de>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Chris Morgan <macromorgan@hotmail.com>,
+        Jagan Teki <jagan@edgeble.ai>,
+        Maxime Ripard <mripard@kernel.org>, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v1 5/6] arm64: dts: allwinner: h616: Add BigTreeTech CB1
+ SoM & boards support
+Message-ID: <20230803171620.0bb28784@donnerap.manchester.arm.com>
+In-Reply-To: <4272045580294B4A+21851d6a-9a8f-8141-bc31-8398a03663c9@biqu3d.com>
+References: <20230802220309.163804-1-martin@biqu3d.com>
+        <85E425AED000D34C+20230802220309.163804-6-martin@biqu3d.com>
+        <20230803133746.20cd7b04@donnerap.manchester.arm.com>
+        <4272045580294B4A+21851d6a-9a8f-8141-bc31-8398a03663c9@biqu3d.com>
+Organization: ARM
+X-Mailer: Claws Mail 3.18.0 (GTK+ 2.24.32; aarch64-unknown-linux-gnu)
 MIME-Version: 1.0
-References: <20230626085811.3192402-1-puranjay12@gmail.com>
- <7e05efe1-0af0-1896-6f6f-dcb02ed8ca27@iogearbox.net> <ZKMCFtlfJA1LfGNJ@FVFF77S0Q05N>
- <CANk7y0gTXPBj5U-vFK0cEvVe83tP1FqyD=MuLXT_amWO=EssOA@mail.gmail.com>
- <CANk7y0hRYzpsYoqcU1tHyZThAgg-cx46C4-n2JYZTa7sDwEk-w@mail.gmail.com>
- <CAADnVQJJHiSZPZFpu1n-oQLEsUptacSzF7FdOKfO6OEoKz-jXg@mail.gmail.com> <ZMuLvKRbPfOK0IpN@FVFF77S0Q05N>
-In-Reply-To: <ZMuLvKRbPfOK0IpN@FVFF77S0Q05N>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Thu, 3 Aug 2023 09:15:57 -0700
-Message-ID: <CAADnVQJvtLjByy2E6Cy1JO8REiUVtBDSfsLMgN3OvHrDwWOykw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v4 0/3] bpf, arm64: use BPF prog pack allocator
- in BPF JIT
-To:     Mark Rutland <mark.rutland@arm.com>
-Cc:     Puranjay Mohan <puranjay12@gmail.com>,
-        Florent Revest <revest@chromium.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        bpf <bpf@vger.kernel.org>, KP Singh <kpsingh@kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -83,95 +69,432 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 3, 2023 at 4:13=E2=80=AFAM Mark Rutland <mark.rutland@arm.com> =
-wrote:
->
-> Hi Alexei,
->
-> On Wed, Aug 02, 2023 at 02:02:39PM -0700, Alexei Starovoitov wrote:
-> > On Sun, Jul 30, 2023 at 10:22=E2=80=AFAM Puranjay Mohan <puranjay12@gma=
-il.com> wrote:
-> > >
-> > > Hi Mark,
-> > > I am really looking forward to your feedback on this series.
-> > >
-> > > On Mon, Jul 17, 2023 at 9:50=E2=80=AFAM Puranjay Mohan <puranjay12@gm=
-ail.com> wrote:
-> > > >
-> > > > Hi Mark,
-> > > >
-> > > > On Mon, Jul 3, 2023 at 7:15=E2=80=AFPM Mark Rutland <mark.rutland@a=
-rm.com> wrote:
-> > > > >
-> > > > > On Mon, Jul 03, 2023 at 06:40:21PM +0200, Daniel Borkmann wrote:
-> > > > > > Hi Mark,
-> > > > >
-> > > > > Hi Daniel,
-> > > > >
-> > > > > > On 6/26/23 10:58 AM, Puranjay Mohan wrote:
-> > > > > > > BPF programs currently consume a page each on ARM64. For syst=
-ems with many BPF
-> > > > > > > programs, this adds significant pressure to instruction TLB. =
-High iTLB pressure
-> > > > > > > usually causes slow down for the whole system.
-> > > > > > >
-> > > > > > > Song Liu introduced the BPF prog pack allocator[1] to mitigat=
-e the above issue.
-> > > > > > > It packs multiple BPF programs into a single huge page. It is=
- currently only
-> > > > > > > enabled for the x86_64 BPF JIT.
-> > > > > > >
-> > > > > > > This patch series enables the BPF prog pack allocator for the=
- ARM64 BPF JIT.
-> > > > >
-> > > > > > If you get a chance to take another look at the v4 changes from=
- Puranjay and
-> > > > > > in case they look good to you reply with an Ack, that would be =
-great.
-> > > > >
-> > > > > Sure -- this is on my queue of things to look at; it might just t=
-ake me a few
-> > > > > days to get the time to give this a proper look.
-> > > > >
-> > > > > Thanks,
-> > > > > Mark.
-> > > >
-> > > > I am eagerly looking forward to your feedback on this series.
-> >
-> > Mark, Catalin, Florent, KP,
-> >
-> > This patch set was submitted on June 26 !
->
-> I appreciate this was sent a while ago, but I have been stuck on some urg=
-ent
-> bug-fixing for the last few weeks, and my review bandwidth is therfore ve=
-ry
-> limited.
->
-> Given Puranjay had previously told me he was doing this as a side project=
- for
-> fun, and given no-one had told me this was urgent, I assumed that this wa=
-sn't a
-> major blocker and could wait.
->
-> I should have sent a holding reply to that effect; sorry.
->
-> The series addresses my original concern. However, in looking at it I thi=
-nk
-> there may me a wider potential isssue w.r.t. the way instruction memory g=
-ets
-> reused, because as writtten today the architecture doesn't seem to have a
-> guarantee on when instruction fetches are completed and therefore when it=
-'s
-> safe to modify instruction memory. Usually we're saved by TLB maintenance=
-,
-> which this series avoids by design.
->
-> I unfortunately haven't had the time to dig into that, poke our architect=
-s,
-> etc.
->
-> So how urgent is this?
+On Thu, 3 Aug 2023 17:35:55 +0200
+Martin Botka <martin@biqu3d.com> wrote:
 
-The performance wins are substantial.
-We'd like to realize them sooner than later.
+Hi Martin,
+
+thanks for the reply and the explanations, very helpful.
+
+> On 8/3/23 2:37 PM, Andre Przywara wrote:
+> > On Thu,  3 Aug 2023 00:02:38 +0200
+> > Martin Botka <martin@biqu3d.com> wrote:
+> > 
+> > Hi Martin,
+> > 
+> > thanks for sending this!
+> > There are some whitespace errors in here, some leading tabs in the first
+> > section. "git show" should print them in red.
+> >   
+> >> From: Martin Botka <martin.botka@somainline.org>
+> >>
+> >> CB1 is Compute Module style board that plugs into Rpi board style adapter or
+> >> Manta 3D printer boards (M4P/M8P).
+> >>
+> >> The SoM features:
+> >>    - H616 SoC
+> >>    - 1GiB of RAM
+> >>    - AXP313A PMIC
+> >>    - RTL8189FTV WiFi
+> >>
+> >> Boards feature:
+> >>    - 4x USB via USB2 hub (usb1 on SoM).
+> >>    - SDcard slot for loading images.
+> >>    - Ethernet port wired to the internal PHY. (100M)
+> >>    - 2x HDMI 2.0. (Only 1 usable on CB1)
+> >>    - Power and Status LEDs. (Only Status LED usable on CB1)
+> >>    - 40 pin GPIO header
+> >>
+> >> Currently working:
+> >>    - Booting
+> >>    - USB
+> >>    - UART
+> >>    - MMC
+> >>    - Status LED
+> >>    - WiFi (RTL8189FS via out of tree driver)
+> >>
+> >> I didnt want to duplicate things so the manta DTS can also be used on BTT pi4b adapter.
+> >> CB1 SoM has its own DTSI file in case other boards shows up that accept this SoM.
+> >>
+> >> Signed-off-by: Martin Botka <martin.botka@somainline.org>
+> >> ---
+> >>   arch/arm64/boot/dts/allwinner/Makefile        |   1 +
+> >>   .../sun50i-h616-bigtreetech-cb1-manta.dts     |  20 +++
+> >>   .../sun50i-h616-bigtreetech-cb1.dtsi          | 164 ++++++++++++++++++
+> >>   3 files changed, 185 insertions(+)
+> >>   create mode 100644 arch/arm64/boot/dts/allwinner/sun50i-h616-bigtreetech-cb1-manta.dts
+> >>   create mode 100644 arch/arm64/boot/dts/allwinner/sun50i-h616-bigtreetech-cb1.dtsi
+> >>
+> >> diff --git a/arch/arm64/boot/dts/allwinner/Makefile b/arch/arm64/boot/dts/allwinner/Makefile
+> >> index 6a96494a2e0a..7b386428510b 100644
+> >> --- a/arch/arm64/boot/dts/allwinner/Makefile
+> >> +++ b/arch/arm64/boot/dts/allwinner/Makefile
+> >> @@ -38,5 +38,6 @@ dtb-$(CONFIG_ARCH_SUNXI) += sun50i-h6-pine-h64.dtb
+> >>   dtb-$(CONFIG_ARCH_SUNXI) += sun50i-h6-pine-h64-model-b.dtb
+> >>   dtb-$(CONFIG_ARCH_SUNXI) += sun50i-h6-tanix-tx6.dtb
+> >>   dtb-$(CONFIG_ARCH_SUNXI) += sun50i-h6-tanix-tx6-mini.dtb
+> >> +dtb-$(CONFIG_ARCH_SUNXI) += sun50i-h616-bigtreetech-cb1-manta.dtb
+> >>   dtb-$(CONFIG_ARCH_SUNXI) += sun50i-h616-orangepi-zero2.dtb
+> >>   dtb-$(CONFIG_ARCH_SUNXI) += sun50i-h616-x96-mate.dtb
+> >> diff --git a/arch/arm64/boot/dts/allwinner/sun50i-h616-bigtreetech-cb1-manta.dts b/arch/arm64/boot/dts/allwinner/sun50i-h616-bigtreetech-cb1-manta.dts
+> >> new file mode 100644
+> >> index 000000000000..dff5b592a97a
+> >> --- /dev/null
+> >> +++ b/arch/arm64/boot/dts/allwinner/sun50i-h616-bigtreetech-cb1-manta.dts
+> >> @@ -0,0 +1,20 @@
+> >> +// SPDX-License-Identifier: (GPL-2.0+ or MIT)
+> >> +/*
+> >> + * Copyright (C) 2023 Martin Botka <martin.botka@somainline.org>.
+> >> + */
+> >> +
+> >> +/dts-v1/;
+> >> +
+> >> +#include "sun50i-h616-bigtreetech-cb1.dtsi"
+> >> +
+> >> +/ {
+> >> +	compatible = "bigtreetech,cb1-manta", "bigtreetech,cb1", "allwinner,sun50i-h616";
+> >> +};
+> >> +
+> >> +&ehci1 {
+> >> +	status = "okay";
+> >> +};
+> >> +
+> >> +&ohci1 {
+> >> +	status = "okay";
+> >> +};  
+> > 
+> > So how is the STM32 connected? Via SPI? If yes, you should activate the SPI
+> > node and specify the pinctrl.
+> > Even if this requires a patch cable to connect the SPI header coming from
+> > the CB1 to the SPI pins on the STM (does it?), it might be worth stating
+> > the pins used. I don't know for sure if we enable interfaces that are
+> > routed to fixed function header pins, but it might be worth doing so here,
+> > since this is some very obvious use case (I guess you wouldn't buy the M8P
+> > if you don't plan to use all of its goodies).  
+> So the STM32 chip is connected directly via USB. There is USB hub on 
+> Manta boards and Pi adapter (Not on BTT Pi. That one doesnt use USB hub)
+> that uses this USB port and STM32 connects via that. Then on manta 
+> boards there are 2 USB ports and 1 USB port with just pins exposed on
+> XH2.54 4 pin connector. Bit weird but it is what it is :)
+
+Ah, I missed that, and was already wondering where the fourth HUB output
+went to. So USB is fine. Do the hub or the STM need a switched regulator?
+Or is the hub and the STM32 always powered on?
+
+> > And what's the USB-C connector doing? Is that an alternative power supply?
+> > Ann does it connect the port0 D-/D+ pins, so can be used for OTG? If yes,
+> > please enable the usb_otg node here.
+> >   
+> It is indeed an alternative power supply. Or well primary supply in the 
+> case of Pi adapter board.
+> 
+> It should be connected yes. Tho i never really had much luck getting it 
+> to work. Tho i will check again and if i get it to work i will enable it 
+> in V2 :)
+
+You could test with FEL. Get
+https://github.com/linux-sunxi/sunxi-tools/raw/master/bin/fel-sdboot.sunxi,
+write that to sector 16 of an SD card, and boot from there.
+That should put the SoC into FEL mode, and you should be able to see the
+BootROM provided USB device ID on a connected host - if the data pins are
+connected to USB port 0.
+I see DP0/DM0 test pads on the SoM, maybe you can chase them down to
+see if they actually go to the SoM connector? But wasn't it that there is
+only one pair of USB pins available on a CM4 pinout? Hence the hub on the
+Mantra boards?
+
+> >> diff --git a/arch/arm64/boot/dts/allwinner/sun50i-h616-bigtreetech-cb1.dtsi b/arch/arm64/boot/dts/allwinner/sun50i-h616-bigtreetech-cb1.dtsi
+> >> new file mode 100644
+> >> index 000000000000..e630114f0ce4
+> >> --- /dev/null
+> >> +++ b/arch/arm64/boot/dts/allwinner/sun50i-h616-bigtreetech-cb1.dtsi
+> >> @@ -0,0 +1,164 @@
+> >> +// SPDX-License-Identifier: (GPL-2.0+ or MIT)
+> >> +/*
+> >> + * Copyright (C) 2023 Martin Botka <martin.botka@somainline.org>.
+> >> + */
+> >> +
+> >> +/dts-v1/;
+> >> +
+> >> +#include "sun50i-h616.dtsi"
+> >> +
+> >> +#include <dt-bindings/gpio/gpio.h>
+> >> +#include <dt-bindings/interrupt-controller/arm-gic.h>
+> >> +#include <dt-bindings/leds/common.h>
+> >> +
+> >> +/ {
+> >> +	model = "BigTreeTech CB1";
+> >> +	compatible = "bigtreetech,cb1", "allwinner,sun50i-h616";
+> >> +
+> >> +	aliases {
+> >> +		serial0 = &uart0;
+> >> +		ethernet0 = &rtl8189ftv;
+> >> +	};
+> >> +
+> >> +	chosen {
+> >> +		stdout-path = "serial0:115200n8";
+> >> +	};  
+> > 
+> > I think stdout-path belongs into the board .dts.
+> >  
+> 
+> Got it
+> 
+> >> +	
+> >> +	leds {
+> >> +		compatible = "gpio-leds";
+> >> +
+> >> +		led-0 {
+> >> +			function = LED_FUNCTION_STATUS;
+> >> +			color = <LED_COLOR_ID_GREEN>;
+> >> +			gpios = <&pio 7 5 GPIO_ACTIVE_HIGH>; /* PH5 */
+> >> +		};
+> >> +	};
+> >> +
+> >> +	reg_vcc5v: regulator-vcc5v {
+> >> +		/* board wide 5V supply directly from the USB-C socket */  
+> > 
+> > I guess this "regulator" is still valid, but please adjust the comment,
+> > since there is certainly no USB-C socket on the SoM. I guess it's multiple
+> > pins on the SoM connector that supply the incoming base voltage?  
+> Correct. Its just pins that get the 5V power. My fault for saying 
+> directly from USB-C since it can be from somewhere else :)
+> >   
+> >> +		compatible = "regulator-fixed";
+> >> +		regulator-name = "vcc-5v";
+> >> +		regulator-min-microvolt = <5000000>;
+> >> +		regulator-max-microvolt = <5000000>;
+> >> +		regulator-always-on;
+> >> +	};
+> >> +
+> >> +	reg_usb1_vbus: regulator-usb1-vbus {  
+> > 
+> > So is this regulator really on the SoM? Or is it just PC16 on the SoM
+> > connector, and the actual regulator chip is on the respective carrier
+> > boards?
+> >   
+> 
+> This is my bad. This is completely wrong. The actual regulator is the 5V 
+> one thats turned on when 5V comes in. Its bit weird but i suppose its 
+> done that way for USB-OTG. This will be removed in next revision of this 
+> DTS :)
+
+Having fixed 5V supply for USB ports, coming directly from the board power
+supply, is actually quite common, see many Pine64 boards, for instance.
+In this case you don't need to specify a usb<x>_vbus-supply property in
+the PHY node below.
+
+> >> +		compatible = "regulator-fixed";
+> >> +		regulator-name = "usb1-vbus";
+> >> +		regulator-min-microvolt = <5000000>;
+> >> +		regulator-max-microvolt = <5000000>;
+> >> +		vin-supply = <&reg_vcc5v>;
+> >> +		enable-active-high;
+> >> +		gpio = <&pio 2 16 GPIO_ACTIVE_HIGH>; /* PC16 */
+> >> +	};
+> >> +	
+> >> +	reg_vcc33_wifi: vcc33-wifi {
+> >> +		/* Always on 3.3V regulator for WiFi and BT */
+> >> +		compatible = "regulator-fixed";
+> >> +		regulator-name = "vcc33-wifi";
+> >> +		regulator-min-microvolt = <3300000>;
+> >> +		regulator-max-microvolt = <3300000>;
+> >> +		regulator-always-on;
+> >> +		vin-supply = <&reg_vcc5v>;
+> >> +	};
+> >> +	
+> >> +	reg_vcc_wifi_io: vcc-wifi-io {
+> >> +		/* Always on 1.8V/300mA regulator for WiFi and BT IO */
+> >> +		compatible = "regulator-fixed";
+> >> +		regulator-name = "vcc-wifi-io";
+> >> +		regulator-min-microvolt = <1800000>;
+> >> +		regulator-max-microvolt = <1800000>;
+> >> +		regulator-always-on;
+> >> +		vin-supply = <&reg_vcc33_wifi>;
+> >> +	};
+> >> +
+> >> +	wifi_pwrseq: wifi-pwrseq {
+> >> +		compatible = "mmc-pwrseq-simple";
+> >> +		clocks = <&rtc 1>;
+> >> +		clock-names = "ext_clock";
+> >> +		reset-gpios = <&pio 6 18 GPIO_ACTIVE_LOW>;  /* PG18 */
+> >> +		post-power-on-delay-ms = <200>;
+> >> +	};
+> >> +};
+> >> +
+> >> +&mmc0 {
+> >> +	vmmc-supply = <&reg_dldo1>;
+> >> +	broken-cd;  
+> > 
+> > Is there no card detect switch or is it not wired up, or is it really
+> > "broken"? Might be good to have a comment explaining that.
+> > And yeah, I also forgot to do this in my Orange Pi Zero3 .dts ;-)
+> >   
+> Its just straight up not connected. And since documentation specifies 
+> that this should be set when no card detection is available i set it.
+> 
+> Will add a comment specifying that this is due to the pin not being 
+> connected.
+
+Yes, that's correct, broken-cd is the right choice then and works fine. I
+was just asking because it *is* connected on the OrangePi Zero3, but didn't
+work for me there.
+
+> >> +	bus-width = <4>;
+> >> +	status = "okay";
+> >> +};
+> >> +
+> >> +&mmc1 {
+> >> +	vmmc-supply = <&reg_vcc33_wifi>;
+> >> +	vqmmc-supply = <&reg_vcc_wifi_io>;
+> >> +	mmc-pwrseq = <&wifi_pwrseq>;
+> >> +	bus-width = <4>;
+> >> +	non-removable;
+> >> +	mmc-ddr-1_8v;
+> >> +	status = "okay";
+> >> +
+> >> +	rtl8189ftv: sdio_wifi@1 {
+> >> +		reg = <1>;
+> >> +	};
+> >> +};
+> >> +
+> >> +&r_i2c {
+> >> +	status = "okay";
+> >> +
+> >> +	axp313a: pmic@36 {
+> >> +		compatible = "x-powers,axp313a";
+> >> +		reg = <0x36>;
+> >> +		interrupt-controller;
+> >> +		#interrupt-cells = <1>;
+> >> +
+> >> +		regulators{
+> >> +			reg_dcdc1: dcdc1 {
+> >> +				regulator-name = "vdd-gpu";
+> >> +				regulator-min-microvolt = <500000>;
+> >> +				regulator-max-microvolt = <3400000>;  
+> > 
+> > So those are the ranges of the PMIC rail, but if this is really connected
+> > to VDD_GPU on the H616, you should limit it to between 0.81V and 0.99V, as
+> > described in the H616 datasheet. Otherwise this risks frying the SoC, I
+> > guess.  
+> 
+> The range here should be correct. It is also the sys rail. Since AXP313a 
+> lacks many rails this was chosen as the sys rail as well.
+
+Yes, very common indeed. I think in reality most boards will need all
+rails to be always on.
+
+> >   
+> >> +				regulator-always-on;  
+> > 
+> > So is this connected to something else as well, like VDD_SYS? Please
+> > either mention this as a comment, to justify the always-on, or name the
+> > regulator accordingly, like "vdd-gpu-sys".  
+> Will rename to vdd-gpu-sys.
+> >     
+> >> +			};
+> >> +
+> >> +			reg_dcdc2: dcdc2 {
+> >> +				regulator-name = "vdd-cpu";
+> >> +				regulator-min-microvolt = <500000>;
+> >> +				regulator-max-microvolt = <1540000>;  
+> > 
+> > Same limit problem here, VDD_CPU must be between 0.81V and 1.1V.  
+> That is indeed right. I will test it on the range you provided with OPP 
+> (WIP) and stress test it :)
+> >   
+> >> +				regulator-ramp-delay = <200>;
+> >> +				regulator-always-on;
+> >> +			};
+> >> +
+> >> +			reg_dcdc3: dcdc3 {
+> >> +				regulator-name = "vcc-dram";
+> >> +				regulator-min-microvolt = <500000>;
+> >> +				regulator-max-microvolt = <1840000>;  
+> > 
+> > Is that DDR3 or DDR3L DRAM here? I don't think there is any runtime
+> > adjustments here, so just specify the respective voltage required, with the
+> > same value for both min and max.  
+> it uses Kingston D2516ECMDXGJD so DDR3. I will specify the direct voltage.
+
+But this is DDR3L, so DDR3, just with a slightly lower voltage (1.35V
+instead of 1.5V). Please note that this is different from LPDDR3, which
+uses a different protocol, on top of lowering the voltage.
+
+> >   
+> >> +				regulator-always-on;
+> >> +			};
+> >> +
+> >> +			reg_aldo1: aldo1 {
+> >> +				regulator-name = "vcc-1v8";
+> >> +				regulator-min-microvolt = <1800000>;
+> >> +				regulator-max-microvolt = <1800000>;
+> >> +				regulator-always-on;  
+> > 
+> > Please mention what this supplies that justifies always-on.  
+> ALDO1 1.8V gets also converted to 1.8V for DRAM. Thus needs to be on always.
+
+Yes, as seen with other boards, where it more prominently also supplies
+VCC-PLL, which is essential for any clock operation. Might be worth
+checking, if you have access to the complete schematic.
+
+> >> +			};
+> >> +
+> >> +			reg_dldo1: dldo1 {
+> >> +				regulator-name = "vcc-3v3";
+> >> +				regulator-min-microvolt = <3300000>;
+> >> +				regulator-max-microvolt = <3300000>;
+> >> +				regulator-always-on;  
+> > 
+> > Please mention what this supplies that justifies always-on.  
+> SDcard that serves as storage for system. Will add comments for both :)
+
+SD card alone does not justify always-on, as you reference this regulator
+in the mmc0 node, so a kernel could make the connection. But chances are
+this is also connected to VCC-IO, which is also one of the mandatory supply
+voltages.
+
+> >   
+> >> +			};
+> >> +		};
+> >> +	};
+> >> +};
+> >> +
+> >> +&uart0 {
+> >> +	pinctrl-names = "default";
+> >> +	pinctrl-0 = <&uart0_ph_pins>;
+> >> +	status = "okay";
+> >> +};  
+> > 
+> > This belongs into the board .dts, since the connector/UART bridge is
+> > there.  
+> Actually the SoM has exposed pads to connect UART (Which is what i have 
+> done to get UART) but also the boards get the exact pins wired to GPIO.
+
+Those pad on the lower right corner? In this case it might justify having
+the UART node in the SoM .dtsi, though I don't know if (test)pads qualify
+for enabling peripherals. Generic GPIO pins (say pinmux'ed I2C on some
+GPIO headers) certainly don't.
+
+Cheers,
+Andre
+
+> But since most users would use the GPIO UART i will specify it in 
+> carrier boards and in BTT Pi boards separately.
+> 
+> Cheers,
+> Martin
+> > 
+> > Cheers,
+> > Andre
+> >   
+> >> +
+> >> +&usbphy {
+> >> +	usb1_vbus-supply = <&reg_usb1_vbus>;
+> >> +	status = "okay";
+> >> +};  
+> > 
+> >   
+> 
+> 
+
