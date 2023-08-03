@@ -2,93 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E5EF76E6CC
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 13:27:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 309C776E6D9
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 13:29:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235634AbjHCL1j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Aug 2023 07:27:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59584 "EHLO
+        id S234686AbjHCL3c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Aug 2023 07:29:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32894 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235596AbjHCL1e (ORCPT
+        with ESMTP id S234218AbjHCL3a (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Aug 2023 07:27:34 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 020C4198C
-        for <linux-kernel@vger.kernel.org>; Thu,  3 Aug 2023 04:27:32 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 7DE9F61D4D
-        for <linux-kernel@vger.kernel.org>; Thu,  3 Aug 2023 11:27:32 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C32ACC433C7;
-        Thu,  3 Aug 2023 11:27:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691062051;
-        bh=94uq0Bo3QnKTETsWRpHX00Zq/UK65SuO7RrYYlFqiPY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=oG0KahOFGElnYYGp4HYhmQgvg12UxbdCUyxny5SFkjCOEMA5i4Q2UPxt18674wuma
-         Jn8edrfpdKCWlbkX9s6h9Xw0tjVvFCatrcxiOv4ML9SNYiu21qT50URueafImaLgxx
-         YSBZvgGLjfHjyEoK1+2pEP8T+k4Gr27Dk1XFZUO+t+6a5LzuG/SGcWQfW46koHrjQR
-         IdPRrMxlk63w/H541M7W6UFDa+p5zVbXoUmgRIK5vdfuaW4i/PLVd7KhSVDaacjovF
-         ZaE4IorHLntzzTN4qdqb0oyR+cqgz0GnKZ04Ymcdr7DlVE0M92+M1NMJum6uXPdF4l
-         D3aJbsziWhgiA==
-Date:   Thu, 3 Aug 2023 12:27:26 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Randy Dunlap <rdunlap@infradead.org>
-Cc:     linux-kernel@vger.kernel.org,
-        Grant Likely <grant.likely@secretlab.ca>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Shengjiu Wang <shengjiu.wang@gmail.com>,
-        Xiubo Li <Xiubo.Lee@gmail.com>, alsa-devel@alsa-project.org,
-        linuxppc-dev@lists.ozlabs.org, Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>
-Subject: Re: [PATCH v2 RESEND*3] ASoC: fsl MPC52xx drivers require
- PPC_BESTCOMM
-Message-ID: <9581313f-5340-455d-a75d-dc27d2eb3ec0@sirena.org.uk>
-References: <20230803025941.24157-1-rdunlap@infradead.org>
+        Thu, 3 Aug 2023 07:29:30 -0400
+Received: from mail-ej1-f42.google.com (mail-ej1-f42.google.com [209.85.218.42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E217A1981;
+        Thu,  3 Aug 2023 04:29:24 -0700 (PDT)
+Received: by mail-ej1-f42.google.com with SMTP id a640c23a62f3a-99357737980so119851166b.2;
+        Thu, 03 Aug 2023 04:29:24 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691062163; x=1691666963;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=qVUTi9M5sLcie6yIGG2nnYWviv8Jo0VEzp70AMTqbEE=;
+        b=iFrKy0sETDaCuaQaqWt7dGy/PZ4/MU2p4PGFUMklXBtb+IKdJp7tbIeA1Mn7vcoE/9
+         caWe7boyfiaXeIyqu5hZN9e5diARiTkU4+RjVhDLwUc3QN7zf2fYQ/XyqQr8a95j1iG9
+         6an7wCd7AkD/EuIRuQcLAeV+tED8s6zQlZHokyCPH+wF7ZuFYOiHoBebE7z2P58nyw9a
+         fwqj84+PxlZsWCYFTHwe8BQYTRMVhA68ztGCbBqIR9sE3jduUKJlpe0w909MXgXA717x
+         kemQKsMDtc+Z4Mx1O5Nx0AueJl7A8286qkOaNX5dUR90P9EbzPZnafVhaWZ7vKln7DUM
+         JF4g==
+X-Gm-Message-State: ABy/qLbtFpbwQq1WCItr2C1+01eQmcFU/VP2mnV57925ptSD2DxrE5Qe
+        hOSqV55DlzjZuPAVV/kBaS4=
+X-Google-Smtp-Source: APBJJlE7c/wOwf/5XM2UVblac3j3wiFTw268rQNvK5rBO5aS7rWUiJ9mRnWYQUHlF2uTZL8gS4gcqQ==
+X-Received: by 2002:a17:906:5198:b0:973:fd02:a41f with SMTP id y24-20020a170906519800b00973fd02a41fmr8429104ejk.40.1691062163118;
+        Thu, 03 Aug 2023 04:29:23 -0700 (PDT)
+Received: from gmail.com (fwdproxy-cln-008.fbsv.net. [2a03:2880:31ff:8::face:b00c])
+        by smtp.gmail.com with ESMTPSA id se9-20020a170906ce4900b0099364d9f0e6sm10389437ejb.117.2023.08.03.04.29.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 03 Aug 2023 04:29:22 -0700 (PDT)
+Date:   Thu, 3 Aug 2023 04:29:20 -0700
+From:   Breno Leitao <leitao@debian.org>
+To:     Eric Dumazet <edumazet@google.com>
+Cc:     rdunlap@infradead.org, benjamin.poirier@gmail.com,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>, leit@meta.com,
+        "open list:NETWORKING DRIVERS" <netdev@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH net-next v3] netconsole: Enable compile time configuration
+Message-ID: <ZMuPkMlg1/kfRyXk@gmail.com>
+References: <20230801100533.3350037-1-leitao@debian.org>
+ <CANn89iKuHxUGphhDkKz2ZWS3YR3-BkieTb4b4gKMR9B7jxKpWQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="JtDrcl5vLUX5Kj+l"
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20230803025941.24157-1-rdunlap@infradead.org>
-X-Cookie: One Bell System - it works.
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CANn89iKuHxUGphhDkKz2ZWS3YR3-BkieTb4b4gKMR9B7jxKpWQ@mail.gmail.com>
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,FSL_HELO_FAKE,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Aug 03, 2023 at 09:47:43AM +0200, Eric Dumazet wrote:
+> On Tue, Aug 1, 2023 at 12:06 PM Breno Leitao <leitao@debian.org> wrote:
+> >
+> > Enable netconsole features to be set at compilation time. Create two
+> > Kconfig options that allow users to set extended logs and release
+> > prepending features at compilation time.
+> >
+> > Right now, the user needs to pass command line parameters to netconsole,
+> > such as "+"/"r" to enable extended logs and version prepending features.
+> >
+> > With these two options, the user could set the default values for the
+> > features at compile time, and don't need to pass it in the command line
+> > to get them enabled, simplifying the command line.
+> >
+> > Signed-off-by: Breno Leitao <leitao@debian.org>
+> > ---
+> >   v1 -> v2:
+> >         * Improvements in the Kconfig help section.
+> >   v2 -> v3:
+> >         * Honour the Kconfig settings when creating sysfs targets
+> >         * Add "by default" in a Kconfig help.
+> > ---
+> >  drivers/net/Kconfig      | 22 ++++++++++++++++++++++
+> >  drivers/net/netconsole.c | 10 ++++++++++
+> >  2 files changed, 32 insertions(+)
+> >
+> > diff --git a/drivers/net/Kconfig b/drivers/net/Kconfig
+> > index 368c6f5b327e..55fb9509bcae 100644
+> > --- a/drivers/net/Kconfig
+> > +++ b/drivers/net/Kconfig
+> > @@ -332,6 +332,28 @@ config NETCONSOLE_DYNAMIC
+> >           at runtime through a userspace interface exported using configfs.
+> >           See <file:Documentation/networking/netconsole.rst> for details.
+> >
+> > +config NETCONSOLE_EXTENDED_LOG
+> > +       bool "Set kernel extended message by default"
+> > +       depends on NETCONSOLE
+> > +       default n
+> > +       help
+> > +         Set extended log support for netconsole message. If this option is
+> > +         set, log messages are transmitted with extended metadata header in a
+> > +         format similar to /dev/kmsg.  See
+> > +         <file:Documentation/networking/netconsole.rst> for details.
+> > +
+> > +config NETCONSOLE_PREPEND_RELEASE
+> > +       bool "Prepend kernel release version in the message by default"
+> > +       depends on NETCONSOLE_EXTENDED_LOG
+> > +       default n
+> > +       help
+> > +         Set kernel release to be prepended to each netconsole message by
+> > +         default. If this option is set, the kernel release is prepended into
+> > +         the first field of every netconsole message, so, the netconsole
+> > +         server/peer can easily identify what kernel release is logging each
+> > +         message.  See <file:Documentation/networking/netconsole.rst> for
+> > +         details.
+> > +
+> >  config NETPOLL
+> >         def_bool NETCONSOLE
+> >
+> > diff --git a/drivers/net/netconsole.c b/drivers/net/netconsole.c
+> > index 87f18aedd3bd..e3b6155f4529 100644
+> > --- a/drivers/net/netconsole.c
+> > +++ b/drivers/net/netconsole.c
+> > @@ -181,6 +181,11 @@ static struct netconsole_target *alloc_param_target(char *target_config)
+> >         if (!nt)
+> >                 goto fail;
+> >
+> > +       if (IS_ENABLED(CONFIG_NETCONSOLE_EXTENDED_LOG))
+> > +               nt->extended = true;
+> > +       if (IS_ENABLED(CONFIG_NETCONSOLE_PREPEND_RELEASE))
+> > +               nt->release = true;
+> > +
+> >         nt->np.name = "netconsole";
+> >         strscpy(nt->np.dev_name, "eth0", IFNAMSIZ);
+> >         nt->np.local_port = 6665;
+> > @@ -681,6 +686,11 @@ static struct config_item *make_netconsole_target(struct config_group *group,
+> >         nt->np.remote_port = 6666;
+> >         eth_broadcast_addr(nt->np.remote_mac);
+> >
+> > +       if (IS_ENABLED(CONFIG_NETCONSOLE_EXTENDED_LOG))
+> > +               nt->extended = true;
+> > +       if (IS_ENABLED(CONFIG_NETCONSOLE_PREPEND_RELEASE))
+> > +               nt->release = true;
+> > +
+> 
+> Instead of duplicating these, what about adding a preliminary helper
+> in a separate patch ?
 
---JtDrcl5vLUX5Kj+l
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+That is a good idea, I will update.
 
-On Wed, Aug 02, 2023 at 07:59:41PM -0700, Randy Dunlap wrote:
-> Both SND_MPC52xx_SOC_PCM030 and SND_MPC52xx_SOC_EFIKA select
-> SND_SOC_MPC5200_AC97. The latter symbol depends on PPC_BESTCOMM,
-> so the 2 former symbols should also depend on PPC_BESTCOMM since
-> "select" does not follow any dependency chains.
-
-Take a hint, it's not clear that the patch is tasteful.
-
---JtDrcl5vLUX5Kj+l
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmTLjx0ACgkQJNaLcl1U
-h9APBwf/Xlz8zi+ScLXchSdGVzlpBaygqFFBp+EYQnQuF+pLp1RgI0dzC3kNdV/b
-UiYqKfemmWpNm+E/hBv2DgcPPGbB6d1iQQqpTeuymxO4Gloe06zD6Xwa34VJWB7y
-lz8fB2dSwxMLTxBCRKo7zQ+ZvOCVHDBZ6TXUFjMtPNM16Mn6P/IurMUh1GT63csu
-ssICm8IKAyCnvZqfjYn2SsfwXKzs2M8h6aVsbSCD2WPjJfHBHrE3SN2jIWhHjkPJ
-fXZUi2MGJmGHiUD/rPOjHgFfJX1WCmaABpYQVfoZXsPF/Fk015SNCH2AR+8PU1NF
-dT/TaWGwdHn4vBWSFTpsk/0yHjL2KQ==
-=Baba
------END PGP SIGNATURE-----
-
---JtDrcl5vLUX5Kj+l--
+Thanks!
