@@ -2,180 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 56AA676EAEB
+	by mail.lfdr.de (Postfix) with ESMTP id A31E576EAEC
 	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 15:44:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234875AbjHCNoL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Aug 2023 09:44:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58574 "EHLO
+        id S236363AbjHCNoR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Aug 2023 09:44:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33818 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236748AbjHCNnZ (ORCPT
+        with ESMTP id S236774AbjHCNn2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Aug 2023 09:43:25 -0400
-Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6CCE55254;
-        Thu,  3 Aug 2023 06:40:21 -0700 (PDT)
-Received: by mail-pf1-x42b.google.com with SMTP id d2e1a72fcca58-686ed1d2594so827508b3a.2;
-        Thu, 03 Aug 2023 06:40:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1691070020; x=1691674820;
-        h=to:references:message-id:content-transfer-encoding:cc:date
-         :in-reply-to:from:subject:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=19BZNGqKOrPHBBOl2OIBFvG7nlcaxoTrDeHm2ZDX1TA=;
-        b=W8tofW1SuF9HGXbhGt1RS/OKnyCIc2o+7Q4E9Mvb83NSzkw0Hb4y2WpDlL7esofUW3
-         7mH1po3DNTYdhcCGWsprQxa2uJUUAnjP5wDkcGZ2K3EP9v9gj9O+UNFPS/A8mMEd9toh
-         f0HlDQrKVRnEb2tnRNGvcQIElWx5TAsmw3agJmEjK4BBPRXVRDKR3SDJ6M69cVKVjAkW
-         Mqhjoo9XseJODyFp3nHgOOLMahILyVBza2cZZS8zlhAXTtn/jVYbz6lRqAU2VSR2qHz6
-         9vLBEaxd1hL/VZV5lBW08+dFZTaqgdkQssZeBS3/tsJksBGZVva9PW1RXRaL1P6FQmvM
-         fQPg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691070020; x=1691674820;
-        h=to:references:message-id:content-transfer-encoding:cc:date
-         :in-reply-to:from:subject:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=19BZNGqKOrPHBBOl2OIBFvG7nlcaxoTrDeHm2ZDX1TA=;
-        b=Ol/sKTMWInE/fxfpdwV0CIAClJmqnJeGHS5IkvPJrPRO7gUzoiOmYKeNIQOuT5hC1k
-         Z1XdHUjBktY3ghc/AtFa2T75ggOs468OPFk+OqI90CN43Jcn7SBpouOw4YSBnxF0aDdZ
-         fownoocPlu0ozCJN89VR0D7VSgZH08Q+KxlORED394l1QeBuRs4+poUF+LEegCrr4W55
-         IpnVX+H6QV+yQ0oFGdQJ47XMmYvroQxIwWq4AhJD96DQTDs1CWOiVC9uxQqEA5NPGafu
-         vtvJOxAwNycYlBtXlK6gWJ83UnEck7ce9Xudd3eWKFADGjAxZLDvmAlKioeSnRNNELEp
-         14mQ==
-X-Gm-Message-State: ABy/qLaUBAQvw34T8Yzc+zy523AL/Q5H0xGLwybNGyUFtQ8rFOqgUsi5
-        nbGoCNLotmKaOhQyJCZUsqs=
-X-Google-Smtp-Source: APBJJlGlp+yWSQxPakMHTH8CBwof/o0IZJ7MoBfjMU7WLatUWtIjgSM1mqoZAnKguzbKZ/FUlKnKEw==
-X-Received: by 2002:a05:6a00:148b:b0:67b:2eba:bed4 with SMTP id v11-20020a056a00148b00b0067b2ebabed4mr25209241pfu.14.1691070020449;
-        Thu, 03 Aug 2023 06:40:20 -0700 (PDT)
-Received: from [127.0.0.1] ([2402:d0c0:2:a2a::1])
-        by smtp.gmail.com with ESMTPSA id d25-20020aa78e59000000b0062cf75a9e6bsm12841091pfr.131.2023.08.03.06.40.14
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 03 Aug 2023 06:40:20 -0700 (PDT)
-Content-Type: text/plain;
-        charset=utf-8
-Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.60.0.2.21\))
-Subject: Re: Question about the barrier() in hlist_nulls_for_each_entry_rcu()
-From:   Alan Huang <mmpgouride@gmail.com>
-In-Reply-To: <43d29007-3c59-4497-a1e5-26f182a7f4c5@paulmck-laptop>
-Date:   Thu, 3 Aug 2023 21:40:11 +0800
-Cc:     Joel Fernandes <joel@joelfernandes.org>,
-        Eric Dumazet <edumazet@google.com>,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        rcu@vger.kernel.org, roman.gushchin@linux.dev
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <784ABF9D-303F-4FC8-8AFF-A3FF319B4E7A@gmail.com>
-References: <E9CF24C7-3080-4720-B540-BAF03068336B@gmail.com>
- <1E0741E0-2BD9-4FA3-BA41-4E83315A10A8@joelfernandes.org>
- <1AF98387-B78C-4556-BE2E-E8F88ADACF8A@gmail.com>
- <43d29007-3c59-4497-a1e5-26f182a7f4c5@paulmck-laptop>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-X-Mailer: Apple Mail (2.3654.60.0.2.21)
+        Thu, 3 Aug 2023 09:43:28 -0400
+Received: from relay7-d.mail.gandi.net (relay7-d.mail.gandi.net [IPv6:2001:4b98:dc4:8::227])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 257F35269;
+        Thu,  3 Aug 2023 06:40:31 -0700 (PDT)
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 6FEA220009;
+        Thu,  3 Aug 2023 13:40:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+        t=1691070029;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=ODx6HHEfw/q2BpEzyA3WwCbT6VxmkvFjHfIIxaaXghU=;
+        b=JBltUXC8uDo3y7yCHpaQsroSI4Xhp9XBBp93Q1MX761kj+eP1eDrE+p56m2EZGNi+BTHlI
+        kEUfv4phLqTiXrvssaiuaVbFkTzolZBDZxR2TBiLNEmzZKk/RmH8r6ZZ799sRACQuO5Hry
+        xTzDf4vE1fh2JZv6qNMohuvFMPYGtrfoY7ZgxZrICtxh01uh+zXcLkR4uYzNx16oUzbEo3
+        oT+BpQR0hDpwnO0JxaU2u7qYr2vb1C2uIfk7C1YK/4G1t0PN8LieIo436A+l9ZP5BzAWZs
+        auyTDHwO+RdwqvFpZH7A1KaYGimZKHlt8Fvlk+++RHO9F6Q2ZYVB5Wci/8gBPw==
+Date:   Thu, 3 Aug 2023 15:40:29 +0200
+From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
+To:     Anvesh Jain P <quic_ajainp@quicinc.com>
+Cc:     Alessandro Zummo <a.zummo@towertech.it>, linux-rtc@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Venkata Rao Kakani <quic_vkakani@quicinc.com>
+Subject: Re: [PATCH] rtc: rtc-pm8xxx: control default alarm wake up capability
+Message-ID: <20230803134029e0470f25@mail.local>
+References: <20230801114549.26956-1-quic_ajainp@quicinc.com>
+ <20230801124056fc665814@mail.local>
+ <93722831-dc83-8ea3-4af9-33eaefcf81be@quicinc.com>
+ <202308011934080c7083b9@mail.local>
+ <43055e2f-963c-a738-964e-d483c751d913@quicinc.com>
+ <20230803133940eef87e40@mail.local>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230803133940eef87e40@mail.local>
+X-GND-Sasl: alexandre.belloni@bootlin.com
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 03/08/2023 15:39:41+0200, Alexandre Belloni wrote:
+> On 03/08/2023 19:01:51+0530, Anvesh Jain P wrote:
+> > 
+> > 
+> > On 8/2/2023 1:04 AM, Alexandre Belloni wrote:
+> > > On 01/08/2023 18:18:46+0530, Anvesh Jain P wrote:
+> > > > In automotive systems, RTC should not wake up the device when it is parked
+> > > > or when it is garage to avoid leakage current. providing a control from
+> > > > device tree to avoid RTC wake up based on the use case is reason for this
+> > > > patch.
+> > > > 
+> > > 
+> > > Then simply avoid providing an IRQ or setting an alarm.
+> > The purpose of the change is just to block alarms/notifications waking up
+> > the target when it is in Suspend2ram(low power) mode.
+> > if we disable IRQ, alarms/notifications won't come even when the target is
+> > in active mode.
+> > This change will just stop the wake up capability of the alarm when target
+> > is in suspend 2 ram mode based on flag passed from device tree.
+> > Use case of this patch is,
+> > In mobile targets where alarms / notifications will need to wake up the
+> > target when there is a reminder as per user expectation.
+> > where as in automotive targets, when driver is not in Car and target is in
+> > suspend state, alarms/notifications would have no meaning and waking up the
+> > target of no use as there is no user to attend the message. hence blocking
+> > them in automotive use cases based on device tree is the use of this patch.
+> 
+> Simply remove the alarm before going to suspend, this is a userspace
+> policy, it has nothing to do in the device or kernel.
+s/device/device tree/ obviously.
 
-> 2023=E5=B9=B48=E6=9C=881=E6=97=A5 =E4=B8=8A=E5=8D=884:09=EF=BC=8CPaul =
-E. McKenney <paulmck@kernel.org> =E5=86=99=E9=81=93=EF=BC=9A
->=20
-> On Fri, Jul 21, 2023 at 10:27:04PM +0800, Alan Huang wrote:
->>=20
->>> 2023=E5=B9=B47=E6=9C=8821=E6=97=A5 20:54=EF=BC=8CJoel Fernandes =
-<joel@joelfernandes.org> =E5=86=99=E9=81=93=EF=BC=9A
->>>=20
->>>=20
->>>=20
->>>> On Jul 20, 2023, at 4:00 PM, Alan Huang <mmpgouride@gmail.com> =
-wrote:
->>>>=20
->>>> =EF=BB=BF
->>>>> 2023=E5=B9=B47=E6=9C=8821=E6=97=A5 03:22=EF=BC=8CEric Dumazet =
-<edumazet@google.com> =E5=86=99=E9=81=93=EF=BC=9A
->>>>>=20
->>>>>> On Thu, Jul 20, 2023 at 8:54=E2=80=AFPM Alan Huang =
-<mmpgouride@gmail.com> wrote:
->>>>>>=20
->>>>>> Hi,
->>>>>>=20
->>>>>> I noticed a commit c87a124a5d5e(=E2=80=9Cnet: force a reload of =
-first item in hlist_nulls_for_each_entry_rcu=E2=80=9D)
->>>>>> and a related discussion [1].
->>>>>>=20
->>>>>> After reading the whole discussion, it seems like that ptr->field =
-was cached by gcc even with the deprecated
->>>>>> ACCESS_ONCE(), so my question is:
->>>>>>=20
->>>>>>     Is that a compiler bug? If so, has this bug been fixed today, =
-ten years later?
->>>>>>=20
->>>>>>     What about READ_ONCE(ptr->field)?
->>>>>=20
->>>>> Make sure sparse is happy.
->>>>=20
->>>> It caused a problem without barrier(), and the deprecated =
-ACCESS_ONCE() didn=E2=80=99t help:
->>>>=20
->>>>  https://lore.kernel.org/all/519D19DA.50400@yandex-team.ru/
->>>>=20
->>>> So, my real question is: With READ_ONCE(ptr->field), are there =
-still some unusual cases where gcc=20
->>>> decides not to reload ptr->field?
->>>=20
->>> I am a bit doubtful there will be strong (any?) interest in =
-replacing the barrier() with READ_ONCE() without any tangible reason, =
-regardless of whether a gcc issue was fixed.
->>>=20
->>> But hey, if you want to float the idea=E2=80=A6
->>=20
->> We already had the READ_ONCE() in rcu_deference_raw().
->>=20
->> The barrier() here makes me think we need write code like below:
->> =09
->> 	READ_ONCE(head->first);
->> 	barrier();
->> 	READ_ONCE(head->first);
->>=20
->> With READ_ONCE (or the deprecated ACCESS_ONCE),
->> I don=E2=80=99t think a compiler should cache the value of =
-head->first.
->=20
-> Apologies for the late reply!
->=20
-> If both are READ_ONCE(), you should not need the barrier().  Unless =
-there
-> is some other code not shown in your example that requires it, that =
-is.
+> 
+> > > 
+> > > > On 8/1/2023 6:10 PM, Alexandre Belloni wrote:
+> > > > > On 01/08/2023 17:15:49+0530, Anvesh Jain P wrote:
+> > > > > > Enable & disable rtc alarm wake up capability based on
+> > > > > > default parameter passed from device tree.
+> > > > > > 
+> > > > > 
+> > > > > I see what you are doing but not why this is necessary, NAK.
+> > > > > 
+> > > > > > Signed-off-by: Venkata Rao Kakani <quic_vkakani@quicinc.com>
+> > > > > > Signed-off-by: Anvesh Jain P <quic_ajainp@quicinc.com>
+> > > > > > ---
+> > > > > >    drivers/rtc/rtc-pm8xxx.c | 3 +++
+> > > > > >    1 file changed, 3 insertions(+)
+> > > > > > 
+> > > > > > diff --git a/drivers/rtc/rtc-pm8xxx.c b/drivers/rtc/rtc-pm8xxx.c
+> > > > > > index f6b779c12ca7..bed57be602b6 100644
+> > > > > > --- a/drivers/rtc/rtc-pm8xxx.c
+> > > > > > +++ b/drivers/rtc/rtc-pm8xxx.c
+> > > > > > @@ -523,6 +523,9 @@ static int pm8xxx_rtc_probe(struct platform_device *pdev)
+> > > > > >    	if (rc)
+> > > > > >    		return rc;
+> > > > > > +	if (of_property_read_bool(pdev->dev.of_node, "disable-alarm-wakeup"))
+> > > > > > +		device_set_wakeup_capable(&pdev->dev, false);
+> > > > > > +
+> > > > > >    	rc = dev_pm_set_wake_irq(&pdev->dev, rtc_dd->alarm_irq);
+> > > > > >    	if (rc)
+> > > > > >    		return rc;
+> > > > > > 
+> > > > > > base-commit: 0a8db05b571ad5b8d5c8774a004c0424260a90bd
+> > > > > > -- 
+> > > > > > 2.17.1
+> > > > > > 
+> > > > > 
+> > > 
+> 
+> -- 
+> Alexandre Belloni, co-owner and COO, Bootlin
+> Embedded Linux and Kernel engineering
+> https://bootlin.com
 
-And unless the compiler has a bug. :)=20
-
-So, the barrier() in hlist_nulls_for_each_entry_rcu() is a workaround =
-for a compiler bug.
-
->=20
-> 							Thanx, Paul
->=20
->>> Thanks,
->>>=20
->>> - Joel
->>>=20
->>>>=20
->>>>>=20
->>>>> Do you have a patch for review ?
->>>>=20
->>>> Possibly next month. :)
->>>>=20
->>>>>=20
->>>>>=20
->>>>>>=20
->>>>>>=20
->>>>>> [1] =
-https://lore.kernel.org/all/1369699930.3301.494.camel@edumazet-glaptop/
->>>>>>=20
->>>>>> Thanks,
->>>>>> Alan
-
+-- 
+Alexandre Belloni, co-owner and COO, Bootlin
+Embedded Linux and Kernel engineering
+https://bootlin.com
