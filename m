@@ -2,112 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DAA7A76EF07
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 18:08:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3443576EF1E
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 18:09:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235750AbjHCQIf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Aug 2023 12:08:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49486 "EHLO
+        id S236153AbjHCQJk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Aug 2023 12:09:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50392 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235759AbjHCQIb (ORCPT
+        with ESMTP id S232707AbjHCQJh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Aug 2023 12:08:31 -0400
-Received: from mail-qk1-x732.google.com (mail-qk1-x732.google.com [IPv6:2607:f8b0:4864:20::732])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 389902D54
-        for <linux-kernel@vger.kernel.org>; Thu,  3 Aug 2023 09:08:30 -0700 (PDT)
-Received: by mail-qk1-x732.google.com with SMTP id af79cd13be357-7679ea01e16so83699585a.2
-        for <linux-kernel@vger.kernel.org>; Thu, 03 Aug 2023 09:08:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20221208.gappssmtp.com; s=20221208; t=1691078909; x=1691683709;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=+XToHAF3Tp6ttDMOwj4eUjXmrH43hQkGliAE52bu3OI=;
-        b=nwBfuP1EF89+aISDQLUPsPs557pMHRTYHh/moPt/GEUf3VZSegFJN2WLjwtOxNaeVr
-         tELhzCnpQiVVzn/p9TxTM40ypLAI9Wl8Dm00Ma0u6gCG9cYdJZyEwo/8Du3Xb48kiI3S
-         aj+mMtHg5P4dd9nwwPCbs602BbZueBi9x/ZXCX+ClObKOCBNOJ2QGS2u1cys65T6jh4F
-         sdy7Pm6FD7EqT02Lj5dytAzyu/Lm8M/yCK7CYer/QhZjZ1QXAsA3k1m/WtIhfHYpfDaQ
-         JTwBdRXqxtir8UKBvShgRNW5OjaHl24g01HNtAzPqjO+63i2Pwtjedb13yOisZI7uZQ1
-         KP1A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691078909; x=1691683709;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=+XToHAF3Tp6ttDMOwj4eUjXmrH43hQkGliAE52bu3OI=;
-        b=a/c8OkOW94WNdQGPdgwu5bwifZWApPMRKG3Lnog6ubzLMAB+4/8hWgIZWDJRdJjeTp
-         KSGnmOJ3cvJKABR+HYFi65DOcZcsrG5YYykrSwQvhAZZbU+WcbbAfX7N68wc3UMsz5mq
-         lXMZBx1O3eSYeor6OZP9LNLWgi1ZHyU3ZBKBL36Xs6NF1PBnNRV0WVUX6ZTHg79T9mHJ
-         pQ3nCrhzJsX5E1IVfOaG7tYAsxKDfJHaiUi8DIqCKTPXNrdyX+7OJhzidNAmH0lG5lB+
-         pnQQGQxXWE1tnRUwK1UWD9hKODD6PuHtAxmecOyONZxLacYCUXCDcTMlbcEIGhgh0I3p
-         UurA==
-X-Gm-Message-State: ABy/qLabgPykwIR5RAK/WsMMFYlpIU048PGOO0Z/uX/vQkWmiGZZwCb0
-        vx6GHxibrYCGi5AFZ9w53leb0A==
-X-Google-Smtp-Source: APBJJlE/HITWbFDhpZ/D5lR41JynAMCPkaudsb/XHWlqv+SykPhRMLbLhtMkySOs7sEOxK1mOiRSuw==
-X-Received: by 2002:a37:5a05:0:b0:767:2471:c880 with SMTP id o5-20020a375a05000000b007672471c880mr18403599qkb.28.1691078909290;
-        Thu, 03 Aug 2023 09:08:29 -0700 (PDT)
-Received: from localhost ([2620:10d:c091:400::5:9910])
-        by smtp.gmail.com with ESMTPSA id g16-20020ae9e110000000b0076cb0ed2d7asm14050qkm.24.2023.08.03.09.08.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 03 Aug 2023 09:08:29 -0700 (PDT)
-Date:   Thu, 3 Aug 2023 12:08:28 -0400
-From:   Johannes Weiner <hannes@cmpxchg.org>
-To:     Lucas Karpinski <lkarpins@redhat.com>
-Cc:     Michal Hocko <mhocko@kernel.org>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Shakeel Butt <shakeelb@google.com>,
-        Muchun Song <muchun.song@linux.dev>, Tejun Heo <tj@kernel.org>,
-        Zefan Li <lizefan.x@bytedance.com>,
-        Shuah Khan <shuah@kernel.org>, cgroups@vger.kernel.org,
-        linux-mm@kvack.org, linux-kselftest@vger.kernel.org,
+        Thu, 3 Aug 2023 12:09:37 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0AF6A2D54;
+        Thu,  3 Aug 2023 09:09:37 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 7B26461E2E;
+        Thu,  3 Aug 2023 16:09:36 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C17B0C433C7;
+        Thu,  3 Aug 2023 16:09:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1691078975;
+        bh=lSJVkTfbON95P1BPKWV/UPmDZSbg52JekuS2qndfKnA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=UKF3hoIoWjZ2JnCikrqcXLLo5RVbxGvOkmOZiyE+fYebuExZS2x+fEW+UVWC+KBEk
+         9EqW09Euzl2BPfh7Aa47ZL15Cp96uPlY2mZBH2lsTlctHFK7KOLUIXx9uFiqqGpsf0
+         rI0IdLVzNixXCxKizBkgy57JAqaqkyCmO7/KoWo4FXstzMte/uvDRw/BSaPN2W4PWc
+         3BolBh8JnfNu8H5wSixzphLhTjwwVh0pNghI1u8837gbIxZED7d4vs48Zw8j5VQbkP
+         EkJ9TG6DAcSp5Cd5ZN1zyvbnmYvBWbpMlymw/hQBakyphwHx3xlOiCKDEydJAY5ckd
+         iLB3SSnL0elOg==
+Date:   Thu, 3 Aug 2023 17:09:31 +0100
+From:   Conor Dooley <conor@kernel.org>
+To:     Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
+        <u.kleine-koenig@pengutronix.de>
+Cc:     =?iso-8859-1?Q?Rapha=EBl?= Gallais-Pou <rgallaispou@gmail.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Patrice Chotard <patrice.chotard@foss.st.com>,
+        linux-pwm@vger.kernel.org, devicetree@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] selftests: cgroup: fix test_kmem_basic slab1 check
-Message-ID: <20230803160828.GA223746@cmpxchg.org>
-References: <ix6vzgjqay2x7bskle7pypoint4nj66fwq7odvd5hektatvp2l@kukoifnfj3dr>
+Subject: Re: [PATCH] dt-bindings: pwm: st: convert sti-pwm to DT schema
+Message-ID: <20230803-sandbox-prideful-4f23b78ddc67@spud>
+References: <20230801220559.32530-1-rgallaispou@gmail.com>
+ <20230802080238.d3nam6elnern65rb@pengutronix.de>
+ <8e74af01-36c6-3a41-6d31-91b09ea62026@gmail.com>
+ <20230803085645.svrrcritdifbjwdz@pengutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="YM8QKZEAAE3zp/In"
 Content-Disposition: inline
-In-Reply-To: <ix6vzgjqay2x7bskle7pypoint4nj66fwq7odvd5hektatvp2l@kukoifnfj3dr>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20230803085645.svrrcritdifbjwdz@pengutronix.de>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 03, 2023 at 12:00:47PM -0400, Lucas Karpinski wrote:
-> test_kmem_basic creates 100,000 negative dentries, with each one mapping
-> to a slab object. After memory.high is set, these are reclaimed through
-> the shrink_slab function call which reclaims all 100,000 entries. The
-> test passes the majority of the time because when slab1 is calculated,
-> it is often above 0, however, 0 is also an acceptable value.
-> 
-> Signed-off-by: Lucas Karpinski <lkarpins@redhat.com>
 
-Acked-by: Johannes Weiner <hannes@cmpxchg.org>
+--YM8QKZEAAE3zp/In
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> @@ -71,7 +71,7 @@ static int test_kmem_basic(const char *root)
->  
->  	cg_write(cg, "memory.high", "1M");
->  	slab1 = cg_read_key_long(cg, "memory.stat", "slab ");
-> -	if (slab1 <= 0)
-> +	if (slab1 < 0)
->  		goto cleanup;
+On Thu, Aug 03, 2023 at 10:56:45AM +0200, Uwe Kleine-K=F6nig wrote:
+> On Thu, Aug 03, 2023 at 09:18:14AM +0200, Rapha=EBl Gallais-Pou wrote:
+> > Hi
+> >=20
+> > Le 02/08/2023 =E0 10:02, Uwe Kleine-K=F6nig a =E9crit=A0:
+> > > Hello,
+> > >=20
+> > > On Wed, Aug 02, 2023 at 12:05:59AM +0200, Raphael Gallais-Pou wrote:
+> > > > +  st,capture-num-chan:
+> > > > +    $ref: "/schemas/types.yaml#/definitions/uint32"
+> > > > +    description: Number of available Capture channels.
+> > >=20
+> > > I have the theory that nobody actually uses the capture feature and I=
+'d
+> > > like to get rid of it. People who do use it, should better switch to =
+the
+> > > counter driver.
+> >=20
+> > TBH I only found two drivers using it, including this one.
+> >=20
+> > $ grep -rinI "\.capture" drivers/pwm/ | wc -l
+> > 2
+>=20
+> Right, there is pwm-stm32 and pwm-sti that support capture.
+>=20
+> There are a few machines that have a st,sti-pwm device:
+>=20
+> 	$ grep -rl st,sti-pwm arch/arm/boot/dts/*.dtb
+> 	arch/arm/boot/dts/stih407-b2120.dtb
+> 	arch/arm/boot/dts/stih410-b2120.dtb
+> 	arch/arm/boot/dts/stih410-b2260.dtb
+> 	arch/arm/boot/dts/stih418-b2199.dtb
+> 	arch/arm/boot/dts/stih418-b2264.dtb
+>=20
+> but to actually use capture the device tree must have a property
+> st,capture-num-chan. "st,capture-num-chan" isn't set by any of the
+> devices.
+>=20
+> I think for stm32 it's not that trivial to show that it's unused.
+> While the capture code isn't a big maintenance burden, I still would
+> prefer to get rid of it if nobody uses it. Still more given that there
+> are better alternatives available.
+>=20
+> > If there is no opposition about removing this feature I suggest to do i=
+t in
+> > a second time, in a serie.
+>=20
+> Does that mean you will do that? I guess not, but at least this means
+> you're not using capture support.
 
-This conflicts with a recent patch already queued up in -mm:
+It seems like it should either be done as part of the conversion or as a
+second patch in the series doing the conversion /shrug
 
-  selftests: cgroup: fix test_kmem_basic false positives
+--YM8QKZEAAE3zp/In
+Content-Type: application/pgp-signature; name="signature.asc"
 
-which adds a sleep(1) between cg_write() and cg_read_key_long().
+-----BEGIN PGP SIGNATURE-----
 
-Can you please rebase on top of
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZMvROwAKCRB4tDGHoIJi
+0rsBAP9W4ZcZaDLpQ4p91p3GDR6kxwf0M0FjUwJOV5k+MHVzLQEA/huIQjfEVEs4
+X5xwyVnO3I0+FfyVNMPK6uDXwyjZgws=
+=yoUc
+-----END PGP SIGNATURE-----
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/akpm/mm.git mm-unstable
-
-and re-send the patch with
-
-  To: Andrew Morton <akpm@linux-foundation.org>
-
-? Thanks
-
+--YM8QKZEAAE3zp/In--
