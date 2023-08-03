@@ -2,384 +2,243 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6CC0B76DD54
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 03:38:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0876B76DD46
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 03:35:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231383AbjHCBiW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Aug 2023 21:38:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57072 "EHLO
+        id S232163AbjHCBfV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Aug 2023 21:35:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56026 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232525AbjHCBhp (ORCPT
+        with ESMTP id S229883AbjHCBfP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Aug 2023 21:37:45 -0400
+        Wed, 2 Aug 2023 21:35:15 -0400
 Received: from mgamail.intel.com (unknown [134.134.136.20])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41CE0198C
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Aug 2023 18:37:43 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E4B410FB;
+        Wed,  2 Aug 2023 18:35:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1691026663; x=1722562663;
-  h=message-id:date:subject:to:references:from:in-reply-to:
-   content-transfer-encoding:mime-version;
-  bh=QflC3FQGq4rMlt8pGjjDJIZzCXARgEYE8T8KATn0ag4=;
-  b=BwTwBUokhRsbPP8QaHNr4hKx3KSQtFx0W8vfBAHMJNGSQ6weGfEci9n2
-   jfZeOrCwSvHFxCRhSuR21k9XHHLUaUsJNojLDHCqIuPHHW7qQ/zCCDevy
-   uqP7y+jOK5dzUBfCIFr8uQabQ2dYDtfX+WRftWRQ/THZ1G+U/L+IxzzWC
-   b9s+GVdOtcAo39Vz+ps06CFc8g3rXKj+v8ekoDw3A8HSeGoeQEUOFPWGb
-   XDVS5JJVsNGKQQBU/j2EC2S1uQHI4wSG1+r9dVYQIFVFFxZC8m8mw1Fzp
-   2froOWrxfvA4bwtjWLbQvbzChkbemJr63F+hr4fZsOclxygaRtmLeeN4u
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10790"; a="359784630"
+  t=1691026513; x=1722562513;
+  h=date:from:to:cc:subject:message-id:references:
+   in-reply-to:mime-version;
+  bh=+Jo4moCstqnMMLcCEV7MW9CxCdxeBEl/2hU9RIsmM0E=;
+  b=DrFaJUtcny73Si7SkmgCnwr7FCpOTLOf7ggAaPkn8b65E8qdgvaH1r3w
+   zE7MTQ8hWScmLYobJzzMVrTDNvT4EjOVy4tmjF7mkD073NDpYYUybmVRn
+   y+78s2uYaiAjCgqLZoiffQKqNJaxObz/3dBzrNFj/2Kox8X51MIa3fOPF
+   ++ujaIvdO9kNVVR1jFW3JToEfyn8zhLZS2TX5mIdIjASHYqbPWJHzj1X1
+   zeBK87yE1h6w9ZSv5WOnuavYF/gW63TvcIXevb1osjFTT9ikMZ30JBRtM
+   VtxxnZ6k2/YGLngXrTXB3A1sNSPivL5bW+rcIuMOM+wXTQ6yhcPvX4y/b
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10790"; a="359784272"
 X-IronPort-AV: E=Sophos;i="6.01,250,1684825200"; 
-   d="scan'208";a="359784630"
+   d="scan'208";a="359784272"
 Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Aug 2023 18:37:42 -0700
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Aug 2023 18:35:12 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10790"; a="706373338"
+X-IronPort-AV: E=McAfee;i="6600,9927,10790"; a="706372724"
 X-IronPort-AV: E=Sophos;i="6.01,250,1684825200"; 
-   d="scan'208";a="706373338"
+   d="scan'208";a="706372724"
 Received: from fmsmsx601.amr.corp.intel.com ([10.18.126.81])
-  by orsmga006.jf.intel.com with ESMTP; 02 Aug 2023 18:37:42 -0700
-Received: from fmsmsx612.amr.corp.intel.com (10.18.126.92) by
+  by orsmga006.jf.intel.com with ESMTP; 02 Aug 2023 18:35:12 -0700
+Received: from fmsmsx611.amr.corp.intel.com (10.18.126.91) by
  fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.27; Wed, 2 Aug 2023 18:37:42 -0700
-Received: from fmsmsx611.amr.corp.intel.com (10.18.126.91) by
- fmsmsx612.amr.corp.intel.com (10.18.126.92) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.27; Wed, 2 Aug 2023 18:37:41 -0700
-Received: from fmsedg601.ED.cps.intel.com (10.1.192.135) by
+ 15.1.2507.27; Wed, 2 Aug 2023 18:35:12 -0700
+Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
  fmsmsx611.amr.corp.intel.com (10.18.126.91) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.27 via Frontend Transport; Wed, 2 Aug 2023 18:37:41 -0700
-Received: from NAM10-BN7-obe.outbound.protection.outlook.com (104.47.70.109)
- by edgegateway.intel.com (192.55.55.70) with Microsoft SMTP Server
+ 15.1.2507.27; Wed, 2 Aug 2023 18:35:11 -0700
+Received: from fmsedg602.ED.cps.intel.com (10.1.192.136) by
+ fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.27 via Frontend Transport; Wed, 2 Aug 2023 18:35:11 -0700
+Received: from NAM02-SN1-obe.outbound.protection.outlook.com (104.47.57.44) by
+ edgegateway.intel.com (192.55.55.71) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.27; Wed, 2 Aug 2023 18:37:41 -0700
+ 15.1.2507.27; Wed, 2 Aug 2023 18:35:11 -0700
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=eGqajKfg33/s6OfJirJDuM3YCth3neLbKDhUwvDWw0OffJrYe4+1ustS8vcYoMGWVve8nJmM8yckh3w/NFsgIipdDWSSTYR/ETuPQBWwLvGhlWtbWiEQch8Si5xBc4osfRyPS2AzkyjM1oHZWTp1NWDFy/GTCO3TLp03JF4wGt7LPt1LW6YagYzm++jfLiNntP+sQAuYJUHvPyx4Xiye2PIan8tE259YlM15gehEvpf2mksHKwdTSQSxGUyMpj6mu0pla8qIXnhIcTqY5rpLVGuswthsfMaFYK6BQIRlWO1eXKhZVVLk6plmQiKiyHrr4mFZFpa99XS+K06lKNBvAg==
+ b=T0ZmMcpHxCmvDZArRTDHqGwgIuLiE4ILAeZSIbgQGQI6PrenHhrfUxiTaM8UYqbdvE0vdDJw3dFT75c2XU9Kcw+NWxjoRq+ZrSk+VBhKGj/w/GfaOSfY3fwUBcnVFmtQMDt6X441x9HZ/Tq8/ci4luN0GxxBq196WIjIZ4E6euvf3iY5jtFf6a5+fTsHOJoitUY8IvNxCLEZ8Vh5XiH4Jl9Z1E1+20XZrWl0w/JgTcNFvI8N1wEmmAH+1Kh4Z1Wy3KRp8NvnZp7HrlAGsM1Owv+qjZFEL1gDKKxeWJf9+HcvYTZnqswoy4TjaMc+jnTqt5kHvysHfD3sTcYd2oLxtg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=3zMiYGB4/kqWvQhnev23KPV11QG4FvdXGdipP6yNlZg=;
- b=WwgauHhPouPmiJnSTgrAWIcmBYrQXoJhEuwKn+op8AO2KRm7VmU+q68oI4wyO/agyuaQhiiXtjj6A8wk0EU/ZDrfJzmYJ5c8pwdisBuo29ul6yG15HR59zqOxqe5mTRDfJoYnAe23IXcU7+kjkRBgygnfaHZ5FMJ9yL3QlUeYGbYeb2voSWFabvOUUOUidKA3psxMukpv0sul18H+OuQCNj7DB72lI3HDMsX8kSeuUpb4VQ5nlaSBW1sdYrIcbfoS/qByn6lxJRr9LoGKzy1+u390/J0+qGAqL1666pyVesh7jELlvhZjQ2Klo2+OKkOABLDjvzBh6BIoh9SKqo4Sg==
+ bh=vbEFRkufuU45ml77arN4jPweUqK7EIUPpE3+5Sw6/gk=;
+ b=fRXLsBmuBHAS0gApb3W54w3Vihh7Gwz6MiZ3w0x5sOa7TVMw1wMuGMm7gLeLGs14CThqAYh4V1YlKv3iae8Ffb8lZbRm+w1sEeKtlgdJ6v3GhOZ5e/68ys2C3LB9ur5Hs2cM89IPATLoIkrWq86PRupB84ZeKW9LALXTHwGEpjOz5X+3dgoSMa92ivVwyC3kMGo2Ivi4oHmXHyr2XE5Lbc8Os+I8ILW2zx91t6QI73LGbnXWdOG5AEC+XrF+875TYOkJ36m3FoRQctHeKq8r8/SdtE1MdFCbg2CGg8MmcakvEiHyt3+5xbtRSwmhwrouKmIdBH8+nZ57iHOQnjf2Wg==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
  dkim=pass header.d=intel.com; arc=none
 Authentication-Results: dkim=none (message not signed)
  header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from CO1PR11MB4820.namprd11.prod.outlook.com (2603:10b6:303:6f::8)
- by SA1PR11MB5922.namprd11.prod.outlook.com (2603:10b6:806:239::20) with
+Received: from PH0PR11MB4839.namprd11.prod.outlook.com (2603:10b6:510:42::18)
+ by CY8PR11MB7797.namprd11.prod.outlook.com (2603:10b6:930:76::21) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6631.45; Thu, 3 Aug
- 2023 01:37:39 +0000
-Received: from CO1PR11MB4820.namprd11.prod.outlook.com
- ([fe80::221b:d422:710b:c9e6]) by CO1PR11MB4820.namprd11.prod.outlook.com
- ([fe80::221b:d422:710b:c9e6%3]) with mapi id 15.20.6631.046; Thu, 3 Aug 2023
- 01:37:39 +0000
-Message-ID: <89dff38d-f047-1d45-d06d-40eb08443d1a@intel.com>
-Date:   Thu, 3 Aug 2023 09:36:09 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Firefox/102.0 Thunderbird/102.11.0
-Subject: Re: [PATCH 1/3] mm: add functions folio_in_range() and
- folio_within_vma()
-Content-Language: en-US
-To:     Ryan Roberts <ryan.roberts@arm.com>, <linux-mm@kvack.org>,
-        <linux-kernel@vger.kernel.org>, <akpm@linux-foundation.org>,
-        <yuzhao@google.com>, <willy@infradead.org>, <david@redhat.com>,
-        <shy828301@gmail.com>, <hughd@google.com>
-References: <20230728070929.2487065-1-fengwei.yin@intel.com>
- <20230728070929.2487065-2-fengwei.yin@intel.com>
- <55c9e3f7-099d-6f57-32da-1f318a9688a0@arm.com>
- <9bba9369-e3f5-53da-bf8f-8ab887d3c3ae@arm.com>
- <a6ff77ba-18f7-f3ed-3f9a-00f04edccdb3@intel.com>
- <7c7b8c39-b412-a120-368c-ba4ab2cc2a15@arm.com>
-From:   Yin Fengwei <fengwei.yin@intel.com>
-In-Reply-To: <7c7b8c39-b412-a120-368c-ba4ab2cc2a15@arm.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: KL1PR0401CA0025.apcprd04.prod.outlook.com
- (2603:1096:820:e::12) To CO1PR11MB4820.namprd11.prod.outlook.com
- (2603:10b6:303:6f::8)
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6631.47; Thu, 3 Aug
+ 2023 01:35:10 +0000
+Received: from PH0PR11MB4839.namprd11.prod.outlook.com
+ ([fe80::34c:f9c:28bd:e642]) by PH0PR11MB4839.namprd11.prod.outlook.com
+ ([fe80::34c:f9c:28bd:e642%4]) with mapi id 15.20.6631.045; Thu, 3 Aug 2023
+ 01:35:09 +0000
+Date:   Thu, 3 Aug 2023 09:37:30 +0800
+From:   Pengfei Xu <pengfei.xu@intel.com>
+To:     syzbot <syzbot+5050ad0fb47527b1808a@syzkaller.appspotmail.com>
+CC:     <adilger.kernel@dilger.ca>, <linux-ext4@vger.kernel.org>,
+        <linux-fsdevel@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <netdev@vger.kernel.org>, <syzkaller-bugs@googlegroups.com>,
+        <tytso@mit.edu>, <heng.su@intel.com>, <pengfei.xu@intel.com>,
+        <bfoster@redhat.com>
+Subject: Re: [syzbot] [ext4?] WARNING in ext4_file_write_iter
+Message-ID: <ZMsE2q9VX2sQFh/g@xpf.sh.intel.com>
+References: <0000000000007faf0005fe4f14b9@google.com>
+ <000000000000a3f45805ffcbb21f@google.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <000000000000a3f45805ffcbb21f@google.com>
+X-ClientProxiedBy: SI1PR02CA0028.apcprd02.prod.outlook.com
+ (2603:1096:4:1f4::6) To PH0PR11MB4839.namprd11.prod.outlook.com
+ (2603:10b6:510:42::18)
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CO1PR11MB4820:EE_|SA1PR11MB5922:EE_
-X-MS-Office365-Filtering-Correlation-Id: a26f40da-0f7a-4be1-91ed-08db93c238b7
+X-MS-TrafficTypeDiagnostic: PH0PR11MB4839:EE_|CY8PR11MB7797:EE_
+X-MS-Office365-Filtering-Correlation-Id: b576b997-b87f-4564-dc17-08db93c1df9f
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: OwXfutj0jo3qaQDbuagm/ZeyyO4Nj00VqG0gFe3IUMQRPW/TnlBW598s3EUE7Wc3J5Kqfvv0rB3HnMjr5Lf50iStwiyPfRZVfIAszqXuC9RmQXbHlT9wUKY2T0vpXJBXxC5riG7Ls36tSJWTroGJb17/j3b4dm+TbmJsdDnnnkZhO1/eUHVm/LlnqQ0eXOw1LQbwk7+2WKSltmCql5L7BIEduoPgtFMpxnMieYXbv41bVhsigYt5CZ6ndQA9CtY8rDJkbk8ZXc42WWuEpQ38YMZM85CrKq9V0xW3nBTc5m0IyPg0oa5thL2zFRd34QHMH7+9VnddxDEulYArZeNM3PATK/Xs8Q2/qM+CG9VRW/VRanVWKOAtKPzME0xTVguJyzKun0rj9wXVJvFFVpiTLu6lDiKW8kGtwqV0Y/V7PaLT8QCSibKanA0VkbYztQNxC+mbBT0SzEgOl2fepzmbn1IZjW3jdZCAXkon9fRAla7e75gkK4uJCr5LpaD9WrJb+fWBe6C2TETWKU/5Y6jOwZKB7M+loeg13QiT3wHQZzspPE5L80GbCugo/WU8IATa0PSbbXfa2zk9BMqYehITkfzHh6L8ZoIIgeDhZN3KybK5ZCkCi1mxzCdwNZH2xIkSXhX9e3sIKk61ngF1tsTI5A==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CO1PR11MB4820.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(39860400002)(346002)(366004)(136003)(376002)(396003)(451199021)(186003)(2616005)(6512007)(36756003)(316002)(86362001)(478600001)(38100700002)(66556008)(66946007)(6666004)(66476007)(6486002)(82960400001)(31696002)(53546011)(6506007)(41300700001)(26005)(8936002)(8676002)(30864003)(5660300002)(31686004)(2906002)(43740500002)(45980500001);DIR:OUT;SFP:1102;
+X-Microsoft-Antispam-Message-Info: gI6e6e2/egt+tcSoF7ynBZE8GUDaoS7H5XDCz8GkEDjaVp1Nn1VW9e7kQ1StiQIi71u3kKvo9EuLyqwc49pvGKjrkv5CWa9vjnzvBDwSi98X95Y9r99KawhEmD92SBDKMWY88TGALMD3NjvGVOMGOzaNNceb0jGT2dLpKw+8ZbwibJBYkVRt1MmiitscGEiYKnDTdWvI8ShCHvqwD6NSnfsTxglxtc5Bz+sRiwLh3oT8nYAMtDNx0xqSBHQR4CZE+Jrms7dgbU2oYIoY7pclsE3/2WA4oCVR1iYnLUZmX+WZ0XkwAdDLQtPlOqSenLuuHcc2tDuqY43vVlNrta2EpuOOOGV2wl4bVAUB1DafNZtjbmazIumUDwvstRBZ6oT0QDWf7wKqyVx5MqypYRttGVwDNizShOTFdiDVtENxZJKVqW+re7n5FGh72lC3Uk0nJ9XNlF+7ObvaNgIxhx0KN6WCeVLLqXTvBk0tLM9GiHl5xNFu6Zntd+4pr+hRLWn8axpQsPLwrG2G95EZmFu3sPfnk2/k0c1BeuKZx8z5+bug4Y8PkO7tZN6wdT476DIvBDx5MTAR0PeNCNK0plhXXtzUsFKY3XE6MiSAp0JYvHyj45pS/xpbLzw3fDh+sZy+D+QtEBmHe1Wi+eSiggYXaQ==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR11MB4839.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(136003)(396003)(346002)(39860400002)(366004)(376002)(451199021)(53546011)(6506007)(83380400001)(26005)(186003)(316002)(2906002)(66946007)(4326008)(66476007)(66556008)(5660300002)(44832011)(41300700001)(8676002)(8936002)(6666004)(6486002)(966005)(6512007)(45080400002)(478600001)(38100700002)(82960400001)(86362001)(99710200001);DIR:OUT;SFP:1102;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?QXdwTmQzcXhEWkFhTnVTRWtSdlFweEk5eEhRNDUxTG5jMC9oa21HV1JlN2l6?=
- =?utf-8?B?TFc2QXBzQSt5Z0xaWUE0WHhwcmtnREFqZTRTYSsvMHFhOGJ2a3kyOWVuZFJO?=
- =?utf-8?B?UkFGZ1B3S2VxNTMxQWVpaVFDZEI0cXl1NGlycWM4Mi9QcGR5d3k1cXgyemxa?=
- =?utf-8?B?MDh0QVZlQTl6bU9CKzNmWWVvN3AvT2ZDWGxWMDRydVVpYklrM2pUdkdlOXZr?=
- =?utf-8?B?ekpMdGVuamJjRlNFVDNNa3lQT2tCVmZscGtWVXNUNnNpaTVhc21QQnM0eTUz?=
- =?utf-8?B?NnBaVmVJbmUyWHpHdzR2MUh2eFZZZ1hFYXQ3eTZJb2FEL1hmRGVONllDZG9t?=
- =?utf-8?B?dGZSQnc0U1g3d09iaFNrMGQyTk1ITlBNRHM2dmt1MGZnOEZ6VzBGQU9kWnBt?=
- =?utf-8?B?MTgyQzZMemp6YTdCODI4bm9tcU1DOGtXMzVNS3IxUm1ZL1grRWxFV2RIeDBF?=
- =?utf-8?B?UFRtMWNPd0JqQzhIZjUzc2IrcEhEWnFSbkg4UDJ5aWt3b3ZyOEQwemFlcnEr?=
- =?utf-8?B?eFlST0p3T0R1eVhMNFg4eFE2V1FoWHlwTTcwbzNnSTA4RmN6N0ZZRWdEVXRy?=
- =?utf-8?B?c2ZzQ2ExV1c5Z0RHSm5RczJBRGN6Q2YxTFNicXAvNGd0VHJoWWNiOEdPaVlw?=
- =?utf-8?B?OGE1MHFQQ2xqSVdVQlZFdTVhVVlLSWt1emV5T3ZUQzZPdFpCTXFUem5Hek12?=
- =?utf-8?B?NWIwR3V6cFBYWEVEZ2NUYlpmMnhBaFpQRW5VcnEzY0o5LzlpNko3STJ5ZU43?=
- =?utf-8?B?UnBEOEFUeVdQRTMzVlg0UVp2eW8yTENWSkY2dWJDalZDUkdMLy9tRit4eTFy?=
- =?utf-8?B?UWd5ZFY1cXZ3YSs0Vm4raEZXQysyVWhCSldDOS9FV3ZmQ1hkR3hYdFRzMmdy?=
- =?utf-8?B?UldkTXNNbklMMkJaa2dsV0U5eEFDK0dhMlBZb2xnQU5wM0NiWEVzQTVsZ0h6?=
- =?utf-8?B?SDFRbUpwUkVKcnZGa01hQTRFNWdmK1ZTL2ppTldheEdIZHBENkdEdVVpZkVm?=
- =?utf-8?B?TDY4eHlhT3NDeis3akN2cjNIR1lhTHBGSXNSdFdEZWg1RjJqWlJYdXpSVlpK?=
- =?utf-8?B?UmRJWkFrcnlJT3dIUU54R2NTbmU0Y2dieFJ3S2RNbTNXTW5xbkdZUmVLdXp5?=
- =?utf-8?B?U1plbXFMNHM3b05JNFBhcStrdlBtTzdUb2NuQ0lKSWcyR2lqbUFCKzJubTdh?=
- =?utf-8?B?MjlUWDRLb0hlZ3FocVRUeEcwNkd1cnlSbGxZTGoreFlGYlpTNkV0Q2ZwNXdB?=
- =?utf-8?B?b0ROaWxvTmt4QzZKMVJsRzQ4eWZUeWtyWVBpb2Y3a3ZjYnhPa2ZldGZ4THBR?=
- =?utf-8?B?emtHYURsVWVqaS9aWWUyVWpIN3JmM045WWdUS080d3AzVXpiQTRyaFdjNnQ2?=
- =?utf-8?B?K0ZLM055WUZzRmk1Nmo5ZkJXZEhlQ1R1M2h6WEZrM1lHempBWDNjcFFqL05y?=
- =?utf-8?B?a0pDdjhFMXdobmErNnJEQmJrSjl2S2RPbWFXamFGZzJKMDlhV255dEZneHNI?=
- =?utf-8?B?NzNDMWcybGxST2ZaT1JFMmE3OGlYbVhYeThlNEoxOXVaUHR6V3F0MExwZk1p?=
- =?utf-8?B?RXRyNmxhSzR3RCtYeEo3aEs0MUpIbUZ5d2VzUGVtb0piRUk1Y0N4V0RpdCtj?=
- =?utf-8?B?MFdRNXQzUmhPaTdGa0NaL0F0L0NyTWFWdEM2bkdVM0RHcGNDb3dVQnBQd3JL?=
- =?utf-8?B?RFREVHo2cFdvbHQ4d29ObnBPUkkycVdaRTVrTGpnSUI2Rjk4bjhxRlI3TVZt?=
- =?utf-8?B?WUZvMVl6TU5vZGYvQ1ZyWWNnUEFETU5BMjZ5ak02Y2lzQ0VtY2VaOTlvY0Zn?=
- =?utf-8?B?VEhpTHJpQVBzb2NqTzN2bXc0MjhLSWlDQ1NLOHVtT205QXgwOW9pOWNqZDUr?=
- =?utf-8?B?TVlwWU41d3hwWm4wUkJtNkFBeXpoY0lJeFgzU1FUZDBKYjlPZ2pobmdmcmJ2?=
- =?utf-8?B?MWtybGUxaWZsY0dZTlIxcU8xVmppelNzT1FvMUxBOW4zNTRBSk80eVNFLzB0?=
- =?utf-8?B?cGIzQXE4ZHNvZXN0amw5R1BqZzE3RTRNdkxwZm56aVF1ZUM5ZmhKUm5TMFIv?=
- =?utf-8?B?OXRhZlhUcEgzYWppdG9lNGZpWS9RZlF6d0dPWWUzak1nWHQ3K2dyYUpUaUV1?=
- =?utf-8?B?UmlIYlFTak4zdE5TMXlXUEdCVDUxc3R5a1I2MGlpK0V2aUJJaWdOQllYTVRz?=
- =?utf-8?B?Mnc9PQ==?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: a26f40da-0f7a-4be1-91ed-08db93c238b7
-X-MS-Exchange-CrossTenant-AuthSource: CO1PR11MB4820.namprd11.prod.outlook.com
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?jk+Q87FGbQhSaHV2NTxA+NwvzSvHstLjO6Jv7G5aymVHte4Ag+B8If2dr7Hh?=
+ =?us-ascii?Q?NIG94ZKWmJziFTJ3B9iE4xtfg9YPf3kugMeCyNoN938gGjt8FLvQaFHx9MEX?=
+ =?us-ascii?Q?esQU07wB1FKCCSWcB4dehufOSEr6Eg2hKxgVoD50oZFBEK4ieck8SxSapygH?=
+ =?us-ascii?Q?CAXKMd1cIOwRCQW9qy7SDc2eqoqgg8424GmJ92YS8NwVwNhEAlZEu/PfoEom?=
+ =?us-ascii?Q?aU+txU76TbbBlcL917znaN8m7zRCttoX+fNdwz6U+a9w9pe+a/GQJEz8cQ7m?=
+ =?us-ascii?Q?zEf1kaO6QeYt1JgdPGCJslhgHTVFLMSmZuAoucBBGM0NOE3NIuM5hmYjVIM3?=
+ =?us-ascii?Q?nGp+vLwnWmBjNnSY0Y9BZ1YlLQ1ZWU2QFicCgJTWRIY4zG5HnEhh1F8qX8/E?=
+ =?us-ascii?Q?H2WmJ0dZUMJNIXZXEXPgm7hbTYf40qlzxKUvyjEgxRo29vhx4bQGe4Ix3UPo?=
+ =?us-ascii?Q?wtdNC1kBUop5OZn9ZPyeRBDy2jKbbmhLOc0Bvb3rFGTTSOvlDIBPuP+p8UK4?=
+ =?us-ascii?Q?c9CpHViqsBCvVxNUpYu6UApFSV7dEr2i7bDGk/f2YCKVEElqh3FmkRIjwfTV?=
+ =?us-ascii?Q?U/WCqGkCjmjTe4FPVrqb3mkEOrvuwkjFBqRlnAqc5RXvuFDLP0c1Epb+omjy?=
+ =?us-ascii?Q?yxTzYCh3uLLGbbms5eN1P4OKeKB1qXebt6fMCNboNNUEJR75vl8DdmQPISQF?=
+ =?us-ascii?Q?K/tFiubphxg+aOVcgzLMiTyd2KKI53eCfprkkGwhbmhUr2sMVLuEFn5+Qs0a?=
+ =?us-ascii?Q?HqzjsdjUKLG97RvRFw0fyizxTyBZ8DQdXIYtLhk638NGYz9J/yC+VLXWesZJ?=
+ =?us-ascii?Q?WiOmTM49kh9U/iAHdr5AppqcW9CMrMDfp6cnO6adhEvKaqqfDr+RyPUtFWEr?=
+ =?us-ascii?Q?fX2w/lJZBcCugaaeU78p7MmrEKN7MtJ9SwWQarKs4acNnOW7Gp85i1g9DH1Q?=
+ =?us-ascii?Q?ozKiU/YDyUSgcPTml2mD2G65MYKwBe9KBKvc/t/Gc7sPHdMObg0MPICmcCvt?=
+ =?us-ascii?Q?UHgJ2fse15bwBKpfjjYwkVN88Ac+C2R/d6NhwiTcLAWBjHpcdTL+gm/LqEok?=
+ =?us-ascii?Q?4Jp46xsXj23LaBFfmmyIh0OXKoMLSOhK13OeKhnI/jvVWxY3T6xrIOQGPQwg?=
+ =?us-ascii?Q?CYJ0k6uyL34y3fP8KqO0Cstx4/PyudiuVNk3iJpb1Yi1FmbLGZh2F31pnfKp?=
+ =?us-ascii?Q?L7lhbpkxUGVPfjvZh4C2YXcePebEOCmAt6P7z4A3/Zz3qRxuTyAIWYzHFeEN?=
+ =?us-ascii?Q?05p3x9yVX9annKmIHBi+f+fhs+KWZChgbqEzDYCXWTcx131YUl1a96NOUQDb?=
+ =?us-ascii?Q?7PxSYyJ4nwAhw2QmR7lViGWEQDmKpY6+kQRYTGCxBDhwOOKLf4QKRnF2gwxF?=
+ =?us-ascii?Q?ycdFe/ESIcl26qXa1pn/m7lPTfyF5MEBqChyF3nYFBNuw9LehmfydQJf7l2J?=
+ =?us-ascii?Q?4Gl877PsDHG5NqFoVs0CzE9YTQGFZoccVAKaMzYp/HmkOgnZaE7beyOpeUDz?=
+ =?us-ascii?Q?RAFdNUsXYH8uoHZA6iTurIeiNDSAPlzLbpOjjtDwPQr/c7/2mg3Ok95MhbrB?=
+ =?us-ascii?Q?jetimNlaAFMg2CxWXDqU+fC8w+uBAGxM5t0nJJ13?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: b576b997-b87f-4564-dc17-08db93c1df9f
+X-MS-Exchange-CrossTenant-AuthSource: PH0PR11MB4839.namprd11.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 03 Aug 2023 01:37:39.0458
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 03 Aug 2023 01:35:09.4174
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: g4Cd69hvmfOPlibn9WgSMsdwiBr0YE4o7ky/epySvHjawcODpk87BEwbdzLRaRn7XuiwczDWtvGhGib7P9iZSA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA1PR11MB5922
+X-MS-Exchange-CrossTenant-UserPrincipalName: 4eO+X9z3zDe1xYFBwwtneUcza7vvcqkbOT3nKtPVdis9mEujDkII+RsEuMhl9ToT/+ac8lDmHSIn3lp9HAVHbQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY8PR11MB7797
 X-OriginatorOrg: intel.com
-X-Spam-Status: No, score=-4.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 2023-07-05 at 23:33:43 -0700, syzbot wrote:
+> syzbot has found a reproducer for the following issue on:
+> 
+> HEAD commit:    6843306689af Merge tag 'net-6.5-rc1' of git://git.kernel.o..
+> git tree:       net
+> console output: https://syzkaller.appspot.com/x/log.txt?x=114522aca80000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=7ad417033279f15a
+> dashboard link: https://syzkaller.appspot.com/bug?extid=5050ad0fb47527b1808a
+> compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
+> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=102cb190a80000
+> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=17c49d90a80000
+> 
+> Downloadable assets:
+> disk image: https://storage.googleapis.com/syzbot-assets/f6adc10dbd71/disk-68433066.raw.xz
+> vmlinux: https://storage.googleapis.com/syzbot-assets/5c3fa1329201/vmlinux-68433066.xz
+> kernel image: https://storage.googleapis.com/syzbot-assets/84db3452bac5/bzImage-68433066.xz
+> 
+> IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> Reported-by: syzbot+5050ad0fb47527b1808a@syzkaller.appspotmail.com
+> 
+> ------------[ cut here ]------------
+> WARNING: CPU: 1 PID: 5382 at fs/ext4/file.c:611 ext4_dio_write_iter fs/ext4/file.c:611 [inline]
+> WARNING: CPU: 1 PID: 5382 at fs/ext4/file.c:611 ext4_file_write_iter+0x1470/0x1880 fs/ext4/file.c:720
+> Modules linked in:
+> CPU: 1 PID: 5382 Comm: syz-executor288 Not tainted 6.4.0-syzkaller-11989-g6843306689af #0
+> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 05/27/2023
+> RIP: 0010:ext4_dio_write_iter fs/ext4/file.c:611 [inline]
+> RIP: 0010:ext4_file_write_iter+0x1470/0x1880 fs/ext4/file.c:720
+> Code: 84 03 00 00 48 8b 04 24 31 ff 8b 40 20 89 c3 89 44 24 10 83 e3 08 89 de e8 5d 5a 5b ff 85 db 0f 85 d5 fc ff ff e8 30 5e 5b ff <0f> 0b e9 c9 fc ff ff e8 24 5e 5b ff 48 8b 4c 24 40 4c 89 fa 4c 89
+> RSP: 0018:ffffc9000522fc30 EFLAGS: 00010293
+> RAX: 0000000000000000 RBX: 0000000000000000 RCX: 0000000000000000
+> RDX: ffff8880277a3b80 RSI: ffffffff82298140 RDI: 0000000000000005
+> RBP: 0000000000000001 R08: 0000000000000005 R09: 0000000000000000
+> R10: 0000000000000000 R11: 0000000000000001 R12: ffffffff8a832a60
+> R13: 0000000000000000 R14: 0000000000000000 R15: fffffffffffffff5
+> FS:  00007f154db95700(0000) GS:ffff8880b9900000(0000) knlGS:0000000000000000
+> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> CR2: 00007f154db74718 CR3: 000000006bcc7000 CR4: 00000000003506e0
+> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+> Call Trace:
+>  <TASK>
+>  call_write_iter include/linux/fs.h:1871 [inline]
+>  new_sync_write fs/read_write.c:491 [inline]
+>  vfs_write+0x981/0xda0 fs/read_write.c:584
+>  ksys_write+0x122/0x250 fs/read_write.c:637
+>  do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+>  do_syscall_64+0x39/0xb0 arch/x86/entry/common.c:80
+>  entry_SYSCALL_64_after_hwframe+0x63/0xcd
+> RIP: 0033:0x7f154dc094f9
+> Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 e1 15 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
+> RSP: 002b:00007f154db952f8 EFLAGS: 00000246 ORIG_RAX: 0000000000000001
+> RAX: ffffffffffffffda RBX: 00007f154dc924f0 RCX: 00007f154dc094f9
+> RDX: 0000000000248800 RSI: 0000000020000000 RDI: 0000000000000006
+> RBP: 00007f154dc5f628 R08: 0000000000000000 R09: 0000000000000000
+> R10: 0000000000000000 R11: 0000000000000246 R12: 652e79726f6d656d
+> R13: 656c6c616b7a7973 R14: 6465646165726874 R15: 00007f154dc924f8
+>  </TASK>
+> 
 
+Above issue in dmesg is:
+"WARNING: CPU: 1 PID: 5382 at fs/ext4/file.c:611 ext4_dio_write_iter fs/ext4/file.c:611 [inline]"
 
-On 8/2/23 23:12, Ryan Roberts wrote:
->>> I also wonder if you should change the name of folio_within_vma() to something
->>> like folio_test_cont_in_vma() to disambiguate from the case where the folio may
->>> be fully mapped with a discontiguity (although perhaps that's not possible
->>> because a mremap would result in distinct vmas... would a new mmap in the hole
->>> cause a merge of all 3?).
->> I don't think it's possible as mremap reuse original pgoff of VMA to new VMA. I suppose
->> it will prevent VMA merging. But I didn't check detail.
-> 
-> pgoff is not relevant for anon though, right?
-anonymous folio->index is related with vma->vm_pgoff.
+I found the similar behavior issue:
+"WARNING: CPU: 0 PID: 182134 at fs/ext4/file.c:611 ext4_dio_write_iter fs/ext4/file.c:611 [inline]"
+repro.report shows similar details.
+
+Updated the bisect info for the above similar issue:
+Bisected and the problem commit was:
+"
+310ee0902b8d9d0a13a5a13e94688a5863fa29c2: ext4: allow concurrent unaligned dio overwrites
+"
+After reverted the commit on top of v6.5-rc3, this issue was gone.
+
+All information: https://github.com/xupengfe/syzkaller_logs/tree/main/230730_134501_ext4_file_write_iter
+Reproduced code: https://github.com/xupengfe/syzkaller_logs/blob/main/230730_134501_ext4_file_write_iter/repro.c
+repro.prog(syscall reproduced steps): https://github.com/xupengfe/syzkaller_logs/blob/main/230730_134501_ext4_file_write_iter/repro.prog
+repro.report: https://github.com/xupengfe/syzkaller_logs/blob/main/230730_134501_ext4_file_write_iter/repro.report
+Bisect log: https://github.com/xupengfe/syzkaller_logs/blob/main/230730_134501_ext4_file_write_iter/bisect_info.log
+Kconfig: https://github.com/xupengfe/syzkaller_logs/blob/main/230730_134501_ext4_file_write_iter/kconfig_origin
+Issue dmesg: https://github.com/xupengfe/syzkaller_logs/blob/main/230730_134501_ext4_file_write_iter/6eaae198076080886b9e7d57f4ae06fa782f90ef_dmesg.log
+
+Best Regards,
+Thanks!
 
 > 
-> FWIW, I wrote a test to check if merging is performed. Interestingly, v5.4 (on x86) *does* merge the VMAs in this case, but v6.5-rc3 (on arm64) *does not* merge the VMAs in this case.
-What if you fault in the pages to the mapped VMAs?
-
-> 
-> I think you should assume it might be possible in some cases.
-I don't think mremap target VMA could be merged with prev/next
-unless it's merged back (move the pieces large folio together).
-
-
-Regards
-Yin, Fengwei
-
-> 
-> 
-> #define _GNU_SOURCE
-> #include <stdlib.h>
-> #include <stdio.h>
-> #include <sys/mman.h>
-> #include <unistd.h>
-> 
-> int main(int argc, char **argv)
-> {
-> 	size_t pgsize = getpagesize();
-> 	char *memarea;
-> 	char *memlow;
-> 	char *memmid;
-> 	char *memhigh;
-> 	int ret = 0;
-> 
-> 	// Get a free vm area big enough for 5 pages.
-> 	memarea = mmap(NULL, pgsize * 5,
-> 			PROT_NONE,
-> 			MAP_PRIVATE | MAP_ANONYMOUS,
-> 			-1, 0);
-> 	if (memarea == MAP_FAILED) {
-> 		perror("mmap 1");
-> 		exit(1);
-> 	}
-> 
-> 	// Map 2 pages one page into allocated area.
-> 	memlow = mmap(memarea + pgsize, pgsize * 2,
-> 			PROT_READ | PROT_WRITE,
-> 			MAP_FIXED | MAP_PRIVATE | MAP_ANONYMOUS,
-> 			-1, 0);
-> 	if (memlow == MAP_FAILED) {
-> 		perror("mmap 2");
-> 		exit(1);
-> 	}
-> 
-> 	// Move the second allocated page one page higher.
-> 	memhigh = mremap(memarea + pgsize * 2, pgsize, pgsize,
-> 			MREMAP_FIXED | MREMAP_MAYMOVE,
-> 			memarea + pgsize * 3);
-> 	if (memhigh == MAP_FAILED) {
-> 		perror("mremap");
-> 		exit(1);
-> 	}
-> 
-> 	// We should now have:
-> 	// | page 0 | page 1 | page 2 | page 3 | page 4 |
-> 	// | NONE   | vma 1  | empty  | vma 2  | NONE   |
-> 	printf("Check for 2 vmas with hole: pid=%d, memarea=%p, memlow=%p, memhigh=%p\n",
-> 		getpid(), memarea, memlow, memhigh);
-> 	getchar();
-> 
-> 	// Now map a page in the empty space.
-> 	memmid = mmap(memarea + pgsize * 2, pgsize,
-> 			PROT_READ | PROT_WRITE,
-> 			MAP_FIXED | MAP_PRIVATE | MAP_ANONYMOUS,
-> 			-1, 0);
-> 	if (memmid == MAP_FAILED) {
-> 		perror("mmap 2");
-> 		exit(1);
-> 	}
-> 
-> 	// We should now have:
-> 	// | page 0 | page 1 | page 2 | page 3 | page 4 |
-> 	// | NONE   |          vma 1           | NONE   |
-> 	printf("Check for single merged vma: pid=%d, memarea=%p, memlow=%p, memmid=%p, memhigh=%p\n",
-> 		getpid(), memarea, memlow, memmid, memhigh);
-> 	getchar();
-> 
-> 	return ret;
-> }
-> 
-> 
-> 
-> Output on v5.4:
-> 
-> Check for 2 vmas with hole: pid=171038, memarea=0x7fe6c34d9000, memlow=0x7fe6c34da000, memhigh=0x7fe6c34dc000
-> Check for single merged vma: pid=171038, memarea=0x7fe6c34d9000, memlow=0x7fe6c34da000, memmid=0x7fe6c34db000, memhigh=0x7fe6c34dc000
-> 
-> And maps output at the 2 check points:
-> 
-> (base) ryarob01@e125769:/data_nvme0n1/ryarob01/granule_perf$ cat /proc/171038/maps
-> 55e55c258000-55e55c259000 r--p 00000000 fd:00 5297466                    /data_nvme0n1/ryarob01/granule_perf/merge
-> 55e55c259000-55e55c25a000 r-xp 00001000 fd:00 5297466                    /data_nvme0n1/ryarob01/granule_perf/merge
-> 55e55c25a000-55e55c25b000 r--p 00002000 fd:00 5297466                    /data_nvme0n1/ryarob01/granule_perf/merge
-> 55e55c25b000-55e55c25c000 r--p 00002000 fd:00 5297466                    /data_nvme0n1/ryarob01/granule_perf/merge
-> 55e55c25c000-55e55c25d000 rw-p 00003000 fd:00 5297466                    /data_nvme0n1/ryarob01/granule_perf/merge
-> 55e55c403000-55e55c424000 rw-p 00000000 00:00 0                          [heap]
-> 7fe6c32d2000-7fe6c32f4000 r--p 00000000 fd:02 9573653                    /lib/x86_64-linux-gnu/libc-2.31.so
-> 7fe6c32f4000-7fe6c346c000 r-xp 00022000 fd:02 9573653                    /lib/x86_64-linux-gnu/libc-2.31.so
-> 7fe6c346c000-7fe6c34ba000 r--p 0019a000 fd:02 9573653                    /lib/x86_64-linux-gnu/libc-2.31.so
-> 7fe6c34ba000-7fe6c34be000 r--p 001e7000 fd:02 9573653                    /lib/x86_64-linux-gnu/libc-2.31.so
-> 7fe6c34be000-7fe6c34c0000 rw-p 001eb000 fd:02 9573653                    /lib/x86_64-linux-gnu/libc-2.31.so
-> 7fe6c34c0000-7fe6c34c6000 rw-p 00000000 00:00 0 
-> 7fe6c34d9000-7fe6c34da000 ---p 00000000 00:00 0 
-> 7fe6c34da000-7fe6c34db000 rw-p 00000000 00:00 0 
-> 7fe6c34dc000-7fe6c34dd000 rw-p 00000000 00:00 0 
-> 7fe6c34dd000-7fe6c34de000 ---p 00000000 00:00 0 
-> 7fe6c34de000-7fe6c34df000 r--p 00000000 fd:02 9573649                    /lib/x86_64-linux-gnu/ld-2.31.so
-> 7fe6c34df000-7fe6c3502000 r-xp 00001000 fd:02 9573649                    /lib/x86_64-linux-gnu/ld-2.31.so
-> 7fe6c3502000-7fe6c350a000 r--p 00024000 fd:02 9573649                    /lib/x86_64-linux-gnu/ld-2.31.so
-> 7fe6c350b000-7fe6c350c000 r--p 0002c000 fd:02 9573649                    /lib/x86_64-linux-gnu/ld-2.31.so
-> 7fe6c350c000-7fe6c350d000 rw-p 0002d000 fd:02 9573649                    /lib/x86_64-linux-gnu/ld-2.31.so
-> 7fe6c350d000-7fe6c350e000 rw-p 00000000 00:00 0 
-> 7fff39a11000-7fff39a32000 rw-p 00000000 00:00 0                          [stack]
-> 7fff39a83000-7fff39a86000 r--p 00000000 00:00 0                          [vvar]
-> 7fff39a86000-7fff39a87000 r-xp 00000000 00:00 0                          [vdso]
-> ffffffffff600000-ffffffffff601000 --xp 00000000 00:00 0                  [vsyscall]
-> (base) ryarob01@e125769:/data_nvme0n1/ryarob01/granule_perf$ cat /proc/171038/maps
-> 55e55c258000-55e55c259000 r--p 00000000 fd:00 5297466                    /data_nvme0n1/ryarob01/granule_perf/merge
-> 55e55c259000-55e55c25a000 r-xp 00001000 fd:00 5297466                    /data_nvme0n1/ryarob01/granule_perf/merge
-> 55e55c25a000-55e55c25b000 r--p 00002000 fd:00 5297466                    /data_nvme0n1/ryarob01/granule_perf/merge
-> 55e55c25b000-55e55c25c000 r--p 00002000 fd:00 5297466                    /data_nvme0n1/ryarob01/granule_perf/merge
-> 55e55c25c000-55e55c25d000 rw-p 00003000 fd:00 5297466                    /data_nvme0n1/ryarob01/granule_perf/merge
-> 55e55c403000-55e55c424000 rw-p 00000000 00:00 0                          [heap]
-> 7fe6c32d2000-7fe6c32f4000 r--p 00000000 fd:02 9573653                    /lib/x86_64-linux-gnu/libc-2.31.so
-> 7fe6c32f4000-7fe6c346c000 r-xp 00022000 fd:02 9573653                    /lib/x86_64-linux-gnu/libc-2.31.so
-> 7fe6c346c000-7fe6c34ba000 r--p 0019a000 fd:02 9573653                    /lib/x86_64-linux-gnu/libc-2.31.so
-> 7fe6c34ba000-7fe6c34be000 r--p 001e7000 fd:02 9573653                    /lib/x86_64-linux-gnu/libc-2.31.so
-> 7fe6c34be000-7fe6c34c0000 rw-p 001eb000 fd:02 9573653                    /lib/x86_64-linux-gnu/libc-2.31.so
-> 7fe6c34c0000-7fe6c34c6000 rw-p 00000000 00:00 0 
-> 7fe6c34d9000-7fe6c34da000 ---p 00000000 00:00 0 
-> 7fe6c34da000-7fe6c34dd000 rw-p 00000000 00:00 0 
-> 7fe6c34dd000-7fe6c34de000 ---p 00000000 00:00 0 
-> 7fe6c34de000-7fe6c34df000 r--p 00000000 fd:02 9573649                    /lib/x86_64-linux-gnu/ld-2.31.so
-> 7fe6c34df000-7fe6c3502000 r-xp 00001000 fd:02 9573649                    /lib/x86_64-linux-gnu/ld-2.31.so
-> 7fe6c3502000-7fe6c350a000 r--p 00024000 fd:02 9573649                    /lib/x86_64-linux-gnu/ld-2.31.so
-> 7fe6c350b000-7fe6c350c000 r--p 0002c000 fd:02 9573649                    /lib/x86_64-linux-gnu/ld-2.31.so
-> 7fe6c350c000-7fe6c350d000 rw-p 0002d000 fd:02 9573649                    /lib/x86_64-linux-gnu/ld-2.31.so
-> 7fe6c350d000-7fe6c350e000 rw-p 00000000 00:00 0 
-> 7fff39a11000-7fff39a32000 rw-p 00000000 00:00 0                          [stack]
-> 7fff39a83000-7fff39a86000 r--p 00000000 00:00 0                          [vvar]
-> 7fff39a86000-7fff39a87000 r-xp 00000000 00:00 0                          [vdso]
-> ffffffffff600000-ffffffffff601000 --xp 00000000 00:00 0                  [vsyscall]
-> 
-> 
-> Output on v6.5-rc3:
-> 
-> Check for 2 vmas with hole: pid=3181, memarea=0xfffff7ff2000, memlow=0xfffff7ff3000, memhigh=0xfffff7ff5000
-> Check for single merged vma: pid=3181, memarea=0xfffff7ff2000, memlow=0xfffff7ff3000, memmid=0xfffff7ff4000, memhigh=0xfffff7ff5000
-> 
-> And maps output at the 2 check points:
-> 
-> ubuntu@ubuntuvm:~/linux$ cat /proc/3181/maps 
-> aaaaaaaa0000-aaaaaaaa1000 r-xp 00000000 fe:02 8199010                    /home/ubuntu/merge
-> aaaaaaab0000-aaaaaaab1000 r--p 00000000 fe:02 8199010                    /home/ubuntu/merge
-> aaaaaaab1000-aaaaaaab2000 rw-p 00001000 fe:02 8199010                    /home/ubuntu/merge
-> aaaaaaab2000-aaaaaaad3000 rw-p 00000000 00:00 0                          [heap]
-> fffff7e00000-fffff7f89000 r-xp 00000000 fe:02 41410085                   /usr/lib/aarch64-linux-gnu/libc.so.6
-> fffff7f89000-fffff7f98000 ---p 00189000 fe:02 41410085                   /usr/lib/aarch64-linux-gnu/libc.so.6
-> fffff7f98000-fffff7f9c000 r--p 00188000 fe:02 41410085                   /usr/lib/aarch64-linux-gnu/libc.so.6
-> fffff7f9c000-fffff7f9e000 rw-p 0018c000 fe:02 41410085                   /usr/lib/aarch64-linux-gnu/libc.so.6
-> fffff7f9e000-fffff7faa000 rw-p 00000000 00:00 0 
-> fffff7fc2000-fffff7fed000 r-xp 00000000 fe:02 41316494                   /usr/lib/aarch64-linux-gnu/ld-linux-aarch64.so.1
-> fffff7ff2000-fffff7ff3000 ---p 00000000 00:00 0 
-> fffff7ff3000-fffff7ff4000 rw-p 00000000 00:00 0 
-> fffff7ff5000-fffff7ff6000 rw-p 00000000 00:00 0 
-> fffff7ff6000-fffff7ff7000 ---p 00000000 00:00 0 
-> fffff7ff7000-fffff7ff9000 rw-p 00000000 00:00 0 
-> fffff7ff9000-fffff7ffb000 r--p 00000000 00:00 0                          [vvar]
-> fffff7ffb000-fffff7ffc000 r-xp 00000000 00:00 0                          [vdso]
-> fffff7ffc000-fffff7ffe000 r--p 0002a000 fe:02 41316494                   /usr/lib/aarch64-linux-gnu/ld-linux-aarch64.so.1
-> fffff7ffe000-fffff8000000 rw-p 0002c000 fe:02 41316494                   /usr/lib/aarch64-linux-gnu/ld-linux-aarch64.so.1
-> fffffffdf000-1000000000000 rw-p 00000000 00:00 0                         [stack]
-> ubuntu@ubuntuvm:~/linux$ cat /proc/3181/maps 
-> aaaaaaaa0000-aaaaaaaa1000 r-xp 00000000 fe:02 8199010                    /home/ubuntu/merge
-> aaaaaaab0000-aaaaaaab1000 r--p 00000000 fe:02 8199010                    /home/ubuntu/merge
-> aaaaaaab1000-aaaaaaab2000 rw-p 00001000 fe:02 8199010                    /home/ubuntu/merge
-> aaaaaaab2000-aaaaaaad3000 rw-p 00000000 00:00 0                          [heap]
-> fffff7e00000-fffff7f89000 r-xp 00000000 fe:02 41410085                   /usr/lib/aarch64-linux-gnu/libc.so.6
-> fffff7f89000-fffff7f98000 ---p 00189000 fe:02 41410085                   /usr/lib/aarch64-linux-gnu/libc.so.6
-> fffff7f98000-fffff7f9c000 r--p 00188000 fe:02 41410085                   /usr/lib/aarch64-linux-gnu/libc.so.6
-> fffff7f9c000-fffff7f9e000 rw-p 0018c000 fe:02 41410085                   /usr/lib/aarch64-linux-gnu/libc.so.6
-> fffff7f9e000-fffff7faa000 rw-p 00000000 00:00 0 
-> fffff7fc2000-fffff7fed000 r-xp 00000000 fe:02 41316494                   /usr/lib/aarch64-linux-gnu/ld-linux-aarch64.so.1
-> fffff7ff2000-fffff7ff3000 ---p 00000000 00:00 0 
-> fffff7ff3000-fffff7ff4000 rw-p 00000000 00:00 0 
-> fffff7ff4000-fffff7ff5000 rw-p 00000000 00:00 0 
-> fffff7ff5000-fffff7ff6000 rw-p 00000000 00:00 0 
-> fffff7ff6000-fffff7ff7000 ---p 00000000 00:00 0 
-> fffff7ff7000-fffff7ff9000 rw-p 00000000 00:00 0 
-> fffff7ff9000-fffff7ffb000 r--p 00000000 00:00 0                          [vvar]
-> fffff7ffb000-fffff7ffc000 r-xp 00000000 00:00 0                          [vdso]
-> fffff7ffc000-fffff7ffe000 r--p 0002a000 fe:02 41316494                   /usr/lib/aarch64-linux-gnu/ld-linux-aarch64.so.1
-> fffff7ffe000-fffff8000000 rw-p 0002c000 fe:02 41316494                   /usr/lib/aarch64-linux-gnu/ld-linux-aarch64.so.1
-> fffffffdf000-1000000000000 rw-p 00000000 00:00 0                         [stack]
+> ---
+> If you want syzbot to run the reproducer, reply with:
+> #syz test: git://repo/address.git branch-or-commit-hash
+> If you attach or paste a git patch, syzbot will apply it before testing.
