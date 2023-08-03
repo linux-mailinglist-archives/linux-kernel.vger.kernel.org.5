@@ -2,167 +2,538 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F48876EF70
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 18:28:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 389A276EF74
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 18:30:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237342AbjHCQ2r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Aug 2023 12:28:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32920 "EHLO
+        id S234351AbjHCQaQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Aug 2023 12:30:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34054 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236978AbjHCQ2e (ORCPT
+        with ESMTP id S232507AbjHCQaN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Aug 2023 12:28:34 -0400
-Received: from NAM10-DM6-obe.outbound.protection.outlook.com (mail-dm6nam10on2086.outbound.protection.outlook.com [40.107.93.86])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4DDF944A7
-        for <linux-kernel@vger.kernel.org>; Thu,  3 Aug 2023 09:28:22 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=VorjOhtVgEUab0NUv0/JJ6qBoR1UPRXS3Gx6NjXRyH3m8CA6xfHZsk2uJjUby1gznOLddP6hFkIXVFZx7fqBLzHWsYwr9J1RgXqV5upSlFZ/B36egZkWw226MkvR/rlA027Z3I7ehwbSyiwNoMjtAfEi+lbACRq59pw1Lycr5jnEzA5MJnQyXu506Pz563ysGqzh+mciNvZFyNrKbPgCMI/ycomi30tU0k15l4wAw8yedcrNYjl5bFB8b33Mm4G6flB49d1y1dr8oD85iHKzOVBW1Vx0cJNQTMCOpm3Ea59Hu3osHc9fFEUTtUa078Cq25bArPWTLEjn/jGT8faWCQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=FHNKzec/qiPyNOpOXM8i6lcnqCIoWY4yvUzInNiJz84=;
- b=UuYEofKf3MiooY9e9m2fpFcr0KksQ1ls72HLqZPBqz2uiGKwTKG3NHkoWlrFLSSBQs/0NFNXV4od59dOqFElr/sh08y/x41hfE1nYE34sWqQiZbn1qFW7GBhWAroz/DmM4m4YAtTSuGpEZVLencqLDJxF6UuA+t1U55nRtSdsdz77wUjIHqjLvafoXK1eZbqoeRjFNBy/FstLDjOI/C8obWdjBfkLZGsGgAQ8tzr0SvK3OUZK5yDwoZ1C5rKqsq8iIokyeKdKfdBE+SZ7QLocBfJ44ZDlhsp68BfzEBaLkF64rYwTNJVatdZklVipe/leKHWEHro8uoqstTJimWFcQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=FHNKzec/qiPyNOpOXM8i6lcnqCIoWY4yvUzInNiJz84=;
- b=0HpQwEuwaj5FFGTTEi7n3ZG6L3tJlU21Ct7ANONQh3lJoksGIMP9nsIAsO61Lis7MtiL/j8/K/nPhS42F97v01Fa9HpohIJXmQOcJmZK8uCIZUVRnr/U751Ah46FV3TNlyqvYZi9khei9LMjkzy7fFXMqIQAepuedNHszY7/bhI=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=amd.com;
-Received: from DS7PR12MB6048.namprd12.prod.outlook.com (2603:10b6:8:9f::5) by
- BY5PR12MB4854.namprd12.prod.outlook.com (2603:10b6:a03:1d1::9) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.6652.20; Thu, 3 Aug 2023 16:28:19 +0000
-Received: from DS7PR12MB6048.namprd12.prod.outlook.com
- ([fe80::67ec:80e:c478:df8e]) by DS7PR12MB6048.namprd12.prod.outlook.com
- ([fe80::67ec:80e:c478:df8e%7]) with mapi id 15.20.6631.046; Thu, 3 Aug 2023
- 16:28:19 +0000
-Message-ID: <a34b1c3c-6fc6-d762-4139-bcc397a00f3f@amd.com>
-Date:   Thu, 3 Aug 2023 21:58:04 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.8.1
-Subject: Re: [PATCH] x86/smp: Validate APIC ID before parking CPU in INIT
-Content-Language: en-US
-To:     tglx@linutronix.de, linux-kernel@vger.kernel.org
-Cc:     x86@kernel.org, dave.hansen@linux.intel.com, bp@alien8.de,
-        mingo@redhat.com,
-        Dheeraj Kumar Srivastava <dheerajkumar.srivastava@amd.com>
-References: <20230719051302.15801-1-vasant.hegde@amd.com>
-From:   Vasant Hegde <vasant.hegde@amd.com>
-In-Reply-To: <20230719051302.15801-1-vasant.hegde@amd.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: BMXP287CA0020.INDP287.PROD.OUTLOOK.COM
- (2603:1096:b00:2c::28) To DS7PR12MB6048.namprd12.prod.outlook.com
- (2603:10b6:8:9f::5)
+        Thu, 3 Aug 2023 12:30:13 -0400
+Received: from bg4.exmail.qq.com (bg4.exmail.qq.com [43.154.54.12])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D4FC30D5
+        for <linux-kernel@vger.kernel.org>; Thu,  3 Aug 2023 09:30:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=biqu3d.com;
+        s=tfld2305; t=1691080193;
+        bh=II6alhHralFufv5SBWswv5gqkKFdwRifNZk9ZDt53dY=;
+        h=Message-ID:Date:MIME-Version:Subject:To:From;
+        b=XXiEi9/s/Glp//ZX4/mRc2yk4/TBZrlyyobA/PtzJtyxOf9Kj+9OLYXMqH2rILNPv
+         KMGE5Jy70qjRQ5v39cM15KnnAyVkMf5pbp/g4YwVTSRdGQa7eOe8jSPtT9WiA3a7c0
+         FeF12dqD2Tm/2ULY4yTWx3NnAEGgW/de+/0FjGdQ=
+X-QQ-mid: bizesmtp76t1691080132teco6qgv
+Received: from [192.168.2.144] ( [178.41.211.221])
+        by bizesmtp.qq.com (ESMTP) with 
+        id ; Fri, 04 Aug 2023 00:28:41 +0800 (CST)
+X-QQ-SSF: 01400000000000403000000A0000000
+X-QQ-FEAT: WgqKRQTMXFV1W4ooLJFrdkeNSR3ui0teGXKR6++CDB62UUyjFuohRf40LVX3g
+        9D3nNrtsvpfjpUfUabbH6v/2tg0ausAcS5jGQy9rKc3ok+7oP49h8c99OfiFx3qCt+viVXY
+        OtiRBV5oMPkj++Eh5884WBheZ4CmpvDFDK0My4DGGGaHbqJ6Dk5w58TAmdCAPmFcLtkRXRO
+        06JHuLh20jGYqDl6kj0YmmOedrJq4RRsremJp8As9DNgntBBIfc7F2hBQDpozK7r0e7K+Nk
+        Lg8Yb4Ml/lOJgdRQewv8/TZzFQ7fEm7loCsxoZNwnVgUB9ttAbF1RKq68K77oBMN8a8H1ew
+        JW70KJ3oUu2O+YJC0MagIjgdW7jkY5IOWuO/ZdlmLDDNR1DICw=
+X-QQ-GoodBg: 2
+X-BIZMAIL-ID: 9063117837025285105
+Message-ID: <807A4F62FAC1F9D4+a56b3e48-ab9c-8049-49ba-c781b8a00de4@biqu3d.com>
+Date:   Thu, 3 Aug 2023 18:28:38 +0200
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DS7PR12MB6048:EE_|BY5PR12MB4854:EE_
-X-MS-Office365-Filtering-Correlation-Id: 9d818a53-7f5a-4653-b977-08db943ea56f
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: rclA+oiUvXCHagDOxuwxEG8QV9vi7M4JTduRxJ8euOpjnYO9V6AuWlAMCHQRwMLNtkbZhEqdz1jx8ucyq6E+7Yz/Fkj4nUtkIm+gJx/m4MOChHv3ls+lwdOEiFx5XTa4a/Gw+Ug/ScMI8ooOoZ+y/e/WDn8qT2BEykAzoGG7lscTgM5qGiJyHN4XcC2TLB4TYyv1wuwddISZuajRjPtruScRSULafqZPubHOzHp87DkRps3IqLxNsnn0ZLOkSqhlHDCv0n0t5EdlgkLC9HRaC4ZHzEI/SGn/x7VyDg61dYgBf+kksveBXE9KCC/zIeFwez7RQ+uQWZyixfZ/jqXhJLdh2jGKXD3eri6j1H+zn0O9daz0Atdcf9Hvs0OXTeKR3cVevfiFob0J2yjDY5UlMJIVK3HnEpbG/hk+xDoyVjlpf3jRpKBsb36emVX5vfuXV/K31vXDYu+qftVakKBsY1dPG0BpvtV/AchlBct8zcpNL3n4ZIu/CBO7gaDhaujsiVEZ9T55nkRcL5z7BlauyTq4pqtfxqmsG3jpFhtEfa7E/mW/HePpozY98/PL8qmRSnYGqRVSKZuCbHOfyts6XoE+R2HR49EWGkdFtifiPCzRgIsQ7g3gSmkeRaRwUd8OfoB8wrLvObHYJa/D3A8vFg==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DS7PR12MB6048.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(39860400002)(136003)(346002)(396003)(366004)(376002)(451199021)(2616005)(53546011)(6506007)(83380400001)(186003)(26005)(8676002)(316002)(66556008)(2906002)(4326008)(66946007)(5660300002)(66476007)(41300700001)(44832011)(8936002)(6486002)(6666004)(6512007)(478600001)(38100700002)(31696002)(86362001)(36756003)(31686004)(43740500002)(45980500001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?Qmd2S1VXNlk3eC9aTEt6WlVxcWttWDZjY1dlaHBoNlRNSEZCMythdVNqbFc3?=
- =?utf-8?B?MklZZUZjRitCOEdYNG1jbUhtTmdBZ0JvbWhpc1J0VmF4MDEvd01qUHZlQmhi?=
- =?utf-8?B?WkNzQm1EdC9QSWtSRGVhamxhYi9hZ1paU2l2Ymh2YjdrQmtCWmFtOGQrQklC?=
- =?utf-8?B?bDY4aytxdUd3eG9nNW9HQXBCSXZEdUttSnBmL1liVzIzSXd3UHZqRFFQZjhy?=
- =?utf-8?B?K2FIMW9XSGhheHA2REdSSXEwbWdKZnltUmhZbGsxNjg3MnduMGFXZkJyVFFm?=
- =?utf-8?B?RlZBQm9BYk0rV3JnUktJajJsdmJkZnppc05xbWRpSHZNUGl6eXlZamZYakxw?=
- =?utf-8?B?c2dsM0F0TjE3WmV3NHFDdE9wK1plUGVnS3NZYXU1Nk9EYlFwUHU3eWdNeGd1?=
- =?utf-8?B?ZmlKcjBQb2NpeHhOdWI1bkl0UE0zRXA5M05ObE1wMXg1TTVaaC94RjQ4c3Fi?=
- =?utf-8?B?aCs4Z09yUDhxc2ZucnM0UjFQTC9ORWlqdFVncHRxSjd2VTNKMVpobm9xcVBp?=
- =?utf-8?B?ZmZyc0dhV2IyWms0TUI1ZjJVcG9XU3BmZ3o1bFlzWHpxM0R1TlJ3UkVjd2Zm?=
- =?utf-8?B?T0xIbXh4TTFyU0dwKzdYdlJyMUtndDNzbnc1azBIZHpYaWJEUmU5NFdLYmtT?=
- =?utf-8?B?WHdJbFRlQ291ZEg5czVaWFVlNEg0MU5zMVVSVW9yMGNFTkVRMXZyUjBybzhQ?=
- =?utf-8?B?cmZ2b3JCUUVYM2V1RHluZnVHR2phSmJxamMvRlRJdTNsWGNCRmsrTHA2QzRr?=
- =?utf-8?B?MHUyMU8zT0Z2NXE0dXZURlpDTWlCOFpWV0NRQTdUazlPYmlKb0dMVERXZFFX?=
- =?utf-8?B?Z1ZUdnNoZnJZOWlmMjBWRzBJc0VUNVNFUmUralNobHdlODQ3ck56czRpSkps?=
- =?utf-8?B?Q05LSHc3dmM5RmpZVUluaW5rOGo4Y09DdWk0cmFDWHUxY1FzeFNUVHpPM2sr?=
- =?utf-8?B?ZWNST2FvcXFpaGpwMTA2K3VXTFRqUmc5V1BiOGUrdzZwTE0zMjJrWXBBS3My?=
- =?utf-8?B?bUVkZ2hMQTN6cVN4QW9VOWQ4clNONWpjRUhFdHhVZk1La3hiR0VBSkRoZHM0?=
- =?utf-8?B?amFPUTF5WmlVeTdVSTBjT2JVOTRwMGNUdDA4b2huUVMyNzZxYm9ZY3JKWDJU?=
- =?utf-8?B?VVAyNFZUY3FXeW1uakpoVnUrZ1huTzU2R01UYUYzczAwVlFXd2VJOW1LVjll?=
- =?utf-8?B?aDZnNGZTOHh6ZFkrbVNpOENSSWNQVDNRYm0rSHk4QTc5d2xvS1dmZHdCaUIy?=
- =?utf-8?B?OTMzQy9vMndDMUdMVVJJaUE4WWorWDV0bW9XMkI4MEpIVzhpQXdka0RIcmdh?=
- =?utf-8?B?SUVCSDdMdGY3ZmJmZ3pFWXFBT0RTb2R0YXhkdlllUSs5Z2JIZUpkeFI0QnIy?=
- =?utf-8?B?cFlKc1R2c2dPWmIxSTRXNDR2T0RweDU4dHpQaFpqRzJ2M3l2MHlSVzNpbjhj?=
- =?utf-8?B?Vm15QXBrRXcwMWlaNzdaTUoyVWtyVXNSenNTNW5ndWpuM1Y0WVhla2c3ZmZk?=
- =?utf-8?B?ZEsvd1dQOXZzR2tMbVp2M3ZXQWlVV0hkNjUzNWR2eVpwVUYvM3FRZG1sS0E4?=
- =?utf-8?B?NjU1VUFibmdJakEwVXREUmEvV3JacnlmeCtCL05uTFBBcjJielk4WklnT2Fv?=
- =?utf-8?B?VkNLd3ZoZ1FkMEJ4Yng5NHE1MDNPaUdwN3Y5UDRLaUV5ckJ0ekFHWlZ2QnlI?=
- =?utf-8?B?Y21uRGEzajVuNzFUSzhOUS9pQ2g0dEFFV3BxVHNtRnduYW5kQkpLWVViQ3RL?=
- =?utf-8?B?UTRyY21wU0V1YTF4dmN5cUtteVJvZWQrUGt1ZzVTcmNobzBhRzhMKzdSNlVG?=
- =?utf-8?B?MVh2VlJsem9qeWU1NVBOZzhmdFpMZFlPSHNlUHkxWUhQMWVmcjNOMjQ0MzJF?=
- =?utf-8?B?SGNNT2RVaWFjS0o3VHU0MkVTeXcrbkUzWENGMVUreTJjb3ZpOUV4Uko2UTRH?=
- =?utf-8?B?UzVlUVJEZytXNktZNDZmeWJ1bnI4U2Q5M0VwT0pFRW9yUHVuaDUvZmc1d2lM?=
- =?utf-8?B?Ukh4WE4ycllicnNYMUpwSlptY2Z3T1hUVkY1UStwZGVJcTlZYUNMU1Q2RUtB?=
- =?utf-8?B?WURjdFBlZzh6d204R1prMVFEb1ZXTDZDaE85dUZBT1BVa1RiZnQ3K1JmMGxD?=
- =?utf-8?Q?R87YBoYE1FvkCCAsQ6PtD/8TU?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 9d818a53-7f5a-4653-b977-08db943ea56f
-X-MS-Exchange-CrossTenant-AuthSource: DS7PR12MB6048.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 03 Aug 2023 16:28:19.1696
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: fgVviyJPK+rhQp4kQFWLiQFkqXaI7mx/UUIo3oeqEOGVPwN12arP1KWVGVNC8AbvXWPt+lFZLAepSUB/Ny825w==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR12MB4854
-X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.12.0
+Subject: Re: [PATCH v1 5/6] arm64: dts: allwinner: h616: Add BigTreeTech CB1
+ SoM & boards support
+Content-Language: en-US
+To:     Andre Przywara <andre.przywara@arm.com>
+Cc:     Konrad Dybcio <konrad.dybcio@somainline.org>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@somainline.org>,
+        Marijn Suijten <marijn.suijten@somainline.org>,
+        Jami Kettunen <jamipkettunen@somainline.org>,
+        Paul Bouchara <paul.bouchara@somainline.org>,
+        Martin Botka <martin.botka@somainline.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Samuel Holland <samuel@sholland.org>,
+        Icenowy Zheng <uwu@icenowy.me>,
+        Ludwig Kormann <ludwig.kormann@ict42.de>,
+        Andrew Lunn <andrew@lunn.ch>, Heiko Stuebner <heiko@sntech.de>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Chris Morgan <macromorgan@hotmail.com>,
+        Jagan Teki <jagan@edgeble.ai>,
+        Maxime Ripard <mripard@kernel.org>, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev,
+        linux-kernel@vger.kernel.org
+References: <20230802220309.163804-1-martin@biqu3d.com>
+ <85E425AED000D34C+20230802220309.163804-6-martin@biqu3d.com>
+ <20230803133746.20cd7b04@donnerap.manchester.arm.com>
+ <4272045580294B4A+21851d6a-9a8f-8141-bc31-8398a03663c9@biqu3d.com>
+ <20230803171620.0bb28784@donnerap.manchester.arm.com>
+From:   Martin Botka <martin@biqu3d.com>
+In-Reply-To: <20230803171620.0bb28784@donnerap.manchester.arm.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-QQ-SENDSIZE: 520
+Feedback-ID: bizesmtp:biqu3d.com:qybglogicsvrgz:qybglogicsvrgz5a-1
+X-Spam-Status: No, score=1.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_MUA_MOZILLA,NICE_REPLY_A,
+        RCVD_IN_MSPIKE_H2,RCVD_IN_VALIDITY_RPBL,SPF_HELO_NONE,SPF_PASS,
         T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Level: *
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi
-
-Did you get a chance to look into this patch?
 
 
--Vasant
+On 8/3/23 6:16 PM, Andre Przywara wrote:
+> On Thu, 3 Aug 2023 17:35:55 +0200
+> Martin Botka <martin@biqu3d.com> wrote:
+> 
+> Hi Martin,
+> 
+> thanks for the reply and the explanations, very helpful.
+> 
+>> On 8/3/23 2:37 PM, Andre Przywara wrote:
+>>> On Thu,  3 Aug 2023 00:02:38 +0200
+>>> Martin Botka <martin@biqu3d.com> wrote:
+>>>
+>>> Hi Martin,
+>>>
+>>> thanks for sending this!
+>>> There are some whitespace errors in here, some leading tabs in the first
+>>> section. "git show" should print them in red.
+>>>    
+>>>> From: Martin Botka <martin.botka@somainline.org>
+>>>>
+>>>> CB1 is Compute Module style board that plugs into Rpi board style adapter or
+>>>> Manta 3D printer boards (M4P/M8P).
+>>>>
+>>>> The SoM features:
+>>>>     - H616 SoC
+>>>>     - 1GiB of RAM
+>>>>     - AXP313A PMIC
+>>>>     - RTL8189FTV WiFi
+>>>>
+>>>> Boards feature:
+>>>>     - 4x USB via USB2 hub (usb1 on SoM).
+>>>>     - SDcard slot for loading images.
+>>>>     - Ethernet port wired to the internal PHY. (100M)
+>>>>     - 2x HDMI 2.0. (Only 1 usable on CB1)
+>>>>     - Power and Status LEDs. (Only Status LED usable on CB1)
+>>>>     - 40 pin GPIO header
+>>>>
+>>>> Currently working:
+>>>>     - Booting
+>>>>     - USB
+>>>>     - UART
+>>>>     - MMC
+>>>>     - Status LED
+>>>>     - WiFi (RTL8189FS via out of tree driver)
+>>>>
+>>>> I didnt want to duplicate things so the manta DTS can also be used on BTT pi4b adapter.
+>>>> CB1 SoM has its own DTSI file in case other boards shows up that accept this SoM.
+>>>>
+>>>> Signed-off-by: Martin Botka <martin.botka@somainline.org>
+>>>> ---
+>>>>    arch/arm64/boot/dts/allwinner/Makefile        |   1 +
+>>>>    .../sun50i-h616-bigtreetech-cb1-manta.dts     |  20 +++
+>>>>    .../sun50i-h616-bigtreetech-cb1.dtsi          | 164 ++++++++++++++++++
+>>>>    3 files changed, 185 insertions(+)
+>>>>    create mode 100644 arch/arm64/boot/dts/allwinner/sun50i-h616-bigtreetech-cb1-manta.dts
+>>>>    create mode 100644 arch/arm64/boot/dts/allwinner/sun50i-h616-bigtreetech-cb1.dtsi
+>>>>
+>>>> diff --git a/arch/arm64/boot/dts/allwinner/Makefile b/arch/arm64/boot/dts/allwinner/Makefile
+>>>> index 6a96494a2e0a..7b386428510b 100644
+>>>> --- a/arch/arm64/boot/dts/allwinner/Makefile
+>>>> +++ b/arch/arm64/boot/dts/allwinner/Makefile
+>>>> @@ -38,5 +38,6 @@ dtb-$(CONFIG_ARCH_SUNXI) += sun50i-h6-pine-h64.dtb
+>>>>    dtb-$(CONFIG_ARCH_SUNXI) += sun50i-h6-pine-h64-model-b.dtb
+>>>>    dtb-$(CONFIG_ARCH_SUNXI) += sun50i-h6-tanix-tx6.dtb
+>>>>    dtb-$(CONFIG_ARCH_SUNXI) += sun50i-h6-tanix-tx6-mini.dtb
+>>>> +dtb-$(CONFIG_ARCH_SUNXI) += sun50i-h616-bigtreetech-cb1-manta.dtb
+>>>>    dtb-$(CONFIG_ARCH_SUNXI) += sun50i-h616-orangepi-zero2.dtb
+>>>>    dtb-$(CONFIG_ARCH_SUNXI) += sun50i-h616-x96-mate.dtb
+>>>> diff --git a/arch/arm64/boot/dts/allwinner/sun50i-h616-bigtreetech-cb1-manta.dts b/arch/arm64/boot/dts/allwinner/sun50i-h616-bigtreetech-cb1-manta.dts
+>>>> new file mode 100644
+>>>> index 000000000000..dff5b592a97a
+>>>> --- /dev/null
+>>>> +++ b/arch/arm64/boot/dts/allwinner/sun50i-h616-bigtreetech-cb1-manta.dts
+>>>> @@ -0,0 +1,20 @@
+>>>> +// SPDX-License-Identifier: (GPL-2.0+ or MIT)
+>>>> +/*
+>>>> + * Copyright (C) 2023 Martin Botka <martin.botka@somainline.org>.
+>>>> + */
+>>>> +
+>>>> +/dts-v1/;
+>>>> +
+>>>> +#include "sun50i-h616-bigtreetech-cb1.dtsi"
+>>>> +
+>>>> +/ {
+>>>> +	compatible = "bigtreetech,cb1-manta", "bigtreetech,cb1", "allwinner,sun50i-h616";
+>>>> +};
+>>>> +
+>>>> +&ehci1 {
+>>>> +	status = "okay";
+>>>> +};
+>>>> +
+>>>> +&ohci1 {
+>>>> +	status = "okay";
+>>>> +};
+>>>
+>>> So how is the STM32 connected? Via SPI? If yes, you should activate the SPI
+>>> node and specify the pinctrl.
+>>> Even if this requires a patch cable to connect the SPI header coming from
+>>> the CB1 to the SPI pins on the STM (does it?), it might be worth stating
+>>> the pins used. I don't know for sure if we enable interfaces that are
+>>> routed to fixed function header pins, but it might be worth doing so here,
+>>> since this is some very obvious use case (I guess you wouldn't buy the M8P
+>>> if you don't plan to use all of its goodies).
+>> So the STM32 chip is connected directly via USB. There is USB hub on
+>> Manta boards and Pi adapter (Not on BTT Pi. That one doesnt use USB hub)
+>> that uses this USB port and STM32 connects via that. Then on manta
+>> boards there are 2 USB ports and 1 USB port with just pins exposed on
+>> XH2.54 4 pin connector. Bit weird but it is what it is :)
+> 
+> Ah, I missed that, and was already wondering where the fourth HUB output
+> went to. So USB is fine. Do the hub or the STM need a switched regulator?
+> Or is the hub and the STM32 always powered on?
+Always powered on :)
+> 
+>>> And what's the USB-C connector doing? Is that an alternative power supply?
+>>> Ann does it connect the port0 D-/D+ pins, so can be used for OTG? If yes,
+>>> please enable the usb_otg node here.
+>>>    
+>> It is indeed an alternative power supply. Or well primary supply in the
+>> case of Pi adapter board.
+>>
+>> It should be connected yes. Tho i never really had much luck getting it
+>> to work. Tho i will check again and if i get it to work i will enable it
+>> in V2 :)
+> 
+> You could test with FEL. Get
+> https://github.com/linux-sunxi/sunxi-tools/raw/master/bin/fel-sdboot.sunxi,
+> write that to sector 16 of an SD card, and boot from there.
+> That should put the SoC into FEL mode, and you should be able to see the
+> BootROM provided USB device ID on a connected host - if the data pins are
+> connected to USB port 0.
+> I see DP0/DM0 test pads on the SoM, maybe you can chase them down to
+> see if they actually go to the SoM connector? But wasn't it that there is
+> only one pair of USB pins available on a CM4 pinout? Hence the hub on the
+> Mantra boards?
+Yea the SoM connector supplies only 1 USB and that goes to multiplexer 
+that should be switched via a small 4 switch thingy on the board.
+And then one of those 2 outputs goes to USB hub.
+> 
+>>>> diff --git a/arch/arm64/boot/dts/allwinner/sun50i-h616-bigtreetech-cb1.dtsi b/arch/arm64/boot/dts/allwinner/sun50i-h616-bigtreetech-cb1.dtsi
+>>>> new file mode 100644
+>>>> index 000000000000..e630114f0ce4
+>>>> --- /dev/null
+>>>> +++ b/arch/arm64/boot/dts/allwinner/sun50i-h616-bigtreetech-cb1.dtsi
+>>>> @@ -0,0 +1,164 @@
+>>>> +// SPDX-License-Identifier: (GPL-2.0+ or MIT)
+>>>> +/*
+>>>> + * Copyright (C) 2023 Martin Botka <martin.botka@somainline.org>.
+>>>> + */
+>>>> +
+>>>> +/dts-v1/;
+>>>> +
+>>>> +#include "sun50i-h616.dtsi"
+>>>> +
+>>>> +#include <dt-bindings/gpio/gpio.h>
+>>>> +#include <dt-bindings/interrupt-controller/arm-gic.h>
+>>>> +#include <dt-bindings/leds/common.h>
+>>>> +
+>>>> +/ {
+>>>> +	model = "BigTreeTech CB1";
+>>>> +	compatible = "bigtreetech,cb1", "allwinner,sun50i-h616";
+>>>> +
+>>>> +	aliases {
+>>>> +		serial0 = &uart0;
+>>>> +		ethernet0 = &rtl8189ftv;
+>>>> +	};
+>>>> +
+>>>> +	chosen {
+>>>> +		stdout-path = "serial0:115200n8";
+>>>> +	};
+>>>
+>>> I think stdout-path belongs into the board .dts.
+>>>   
+>>
+>> Got it
+>>
+>>>> +	
+>>>> +	leds {
+>>>> +		compatible = "gpio-leds";
+>>>> +
+>>>> +		led-0 {
+>>>> +			function = LED_FUNCTION_STATUS;
+>>>> +			color = <LED_COLOR_ID_GREEN>;
+>>>> +			gpios = <&pio 7 5 GPIO_ACTIVE_HIGH>; /* PH5 */
+>>>> +		};
+>>>> +	};
+>>>> +
+>>>> +	reg_vcc5v: regulator-vcc5v {
+>>>> +		/* board wide 5V supply directly from the USB-C socket */
+>>>
+>>> I guess this "regulator" is still valid, but please adjust the comment,
+>>> since there is certainly no USB-C socket on the SoM. I guess it's multiple
+>>> pins on the SoM connector that supply the incoming base voltage?
+>> Correct. Its just pins that get the 5V power. My fault for saying
+>> directly from USB-C since it can be from somewhere else :)
+>>>    
+>>>> +		compatible = "regulator-fixed";
+>>>> +		regulator-name = "vcc-5v";
+>>>> +		regulator-min-microvolt = <5000000>;
+>>>> +		regulator-max-microvolt = <5000000>;
+>>>> +		regulator-always-on;
+>>>> +	};
+>>>> +
+>>>> +	reg_usb1_vbus: regulator-usb1-vbus {
+>>>
+>>> So is this regulator really on the SoM? Or is it just PC16 on the SoM
+>>> connector, and the actual regulator chip is on the respective carrier
+>>> boards?
+>>>    
+>>
+>> This is my bad. This is completely wrong. The actual regulator is the 5V
+>> one thats turned on when 5V comes in. Its bit weird but i suppose its
+>> done that way for USB-OTG. This will be removed in next revision of this
+>> DTS :)
+> 
+> Having fixed 5V supply for USB ports, coming directly from the board power
+> supply, is actually quite common, see many Pine64 boards, for instance.
+> In this case you don't need to specify a usb<x>_vbus-supply property in
+> the PHY node below.
+Got it.
+> 
+>>>> +		compatible = "regulator-fixed";
+>>>> +		regulator-name = "usb1-vbus";
+>>>> +		regulator-min-microvolt = <5000000>;
+>>>> +		regulator-max-microvolt = <5000000>;
+>>>> +		vin-supply = <&reg_vcc5v>;
+>>>> +		enable-active-high;
+>>>> +		gpio = <&pio 2 16 GPIO_ACTIVE_HIGH>; /* PC16 */
+>>>> +	};
+>>>> +	
+>>>> +	reg_vcc33_wifi: vcc33-wifi {
+>>>> +		/* Always on 3.3V regulator for WiFi and BT */
+>>>> +		compatible = "regulator-fixed";
+>>>> +		regulator-name = "vcc33-wifi";
+>>>> +		regulator-min-microvolt = <3300000>;
+>>>> +		regulator-max-microvolt = <3300000>;
+>>>> +		regulator-always-on;
+>>>> +		vin-supply = <&reg_vcc5v>;
+>>>> +	};
+>>>> +	
+>>>> +	reg_vcc_wifi_io: vcc-wifi-io {
+>>>> +		/* Always on 1.8V/300mA regulator for WiFi and BT IO */
+>>>> +		compatible = "regulator-fixed";
+>>>> +		regulator-name = "vcc-wifi-io";
+>>>> +		regulator-min-microvolt = <1800000>;
+>>>> +		regulator-max-microvolt = <1800000>;
+>>>> +		regulator-always-on;
+>>>> +		vin-supply = <&reg_vcc33_wifi>;
+>>>> +	};
+>>>> +
+>>>> +	wifi_pwrseq: wifi-pwrseq {
+>>>> +		compatible = "mmc-pwrseq-simple";
+>>>> +		clocks = <&rtc 1>;
+>>>> +		clock-names = "ext_clock";
+>>>> +		reset-gpios = <&pio 6 18 GPIO_ACTIVE_LOW>;  /* PG18 */
+>>>> +		post-power-on-delay-ms = <200>;
+>>>> +	};
+>>>> +};
+>>>> +
+>>>> +&mmc0 {
+>>>> +	vmmc-supply = <&reg_dldo1>;
+>>>> +	broken-cd;
+>>>
+>>> Is there no card detect switch or is it not wired up, or is it really
+>>> "broken"? Might be good to have a comment explaining that.
+>>> And yeah, I also forgot to do this in my Orange Pi Zero3 .dts ;-)
+>>>    
+>> Its just straight up not connected. And since documentation specifies
+>> that this should be set when no card detection is available i set it.
+>>
+>> Will add a comment specifying that this is due to the pin not being
+>> connected.
+> 
+> Yes, that's correct, broken-cd is the right choice then and works fine. I
+> was just asking because it *is* connected on the OrangePi Zero3, but didn't
+> work for me there.
+> 
+>>>> +	bus-width = <4>;
+>>>> +	status = "okay";
+>>>> +};
+>>>> +
+>>>> +&mmc1 {
+>>>> +	vmmc-supply = <&reg_vcc33_wifi>;
+>>>> +	vqmmc-supply = <&reg_vcc_wifi_io>;
+>>>> +	mmc-pwrseq = <&wifi_pwrseq>;
+>>>> +	bus-width = <4>;
+>>>> +	non-removable;
+>>>> +	mmc-ddr-1_8v;
+>>>> +	status = "okay";
+>>>> +
+>>>> +	rtl8189ftv: sdio_wifi@1 {
+>>>> +		reg = <1>;
+>>>> +	};
+>>>> +};
+>>>> +
+>>>> +&r_i2c {
+>>>> +	status = "okay";
+>>>> +
+>>>> +	axp313a: pmic@36 {
+>>>> +		compatible = "x-powers,axp313a";
+>>>> +		reg = <0x36>;
+>>>> +		interrupt-controller;
+>>>> +		#interrupt-cells = <1>;
+>>>> +
+>>>> +		regulators{
+>>>> +			reg_dcdc1: dcdc1 {
+>>>> +				regulator-name = "vdd-gpu";
+>>>> +				regulator-min-microvolt = <500000>;
+>>>> +				regulator-max-microvolt = <3400000>;
+>>>
+>>> So those are the ranges of the PMIC rail, but if this is really connected
+>>> to VDD_GPU on the H616, you should limit it to between 0.81V and 0.99V, as
+>>> described in the H616 datasheet. Otherwise this risks frying the SoC, I
+>>> guess.
+>>
+>> The range here should be correct. It is also the sys rail. Since AXP313a
+>> lacks many rails this was chosen as the sys rail as well.
+> 
+> Yes, very common indeed. I think in reality most boards will need all
+> rails to be always on.
+> 
+>>>    
+>>>> +				regulator-always-on;
+>>>
+>>> So is this connected to something else as well, like VDD_SYS? Please
+>>> either mention this as a comment, to justify the always-on, or name the
+>>> regulator accordingly, like "vdd-gpu-sys".
+>> Will rename to vdd-gpu-sys.
+>>>      
+>>>> +			};
+>>>> +
+>>>> +			reg_dcdc2: dcdc2 {
+>>>> +				regulator-name = "vdd-cpu";
+>>>> +				regulator-min-microvolt = <500000>;
+>>>> +				regulator-max-microvolt = <1540000>;
+>>>
+>>> Same limit problem here, VDD_CPU must be between 0.81V and 1.1V.
+>> That is indeed right. I will test it on the range you provided with OPP
+>> (WIP) and stress test it :)
+>>>    
+>>>> +				regulator-ramp-delay = <200>;
+>>>> +				regulator-always-on;
+>>>> +			};
+>>>> +
+>>>> +			reg_dcdc3: dcdc3 {
+>>>> +				regulator-name = "vcc-dram";
+>>>> +				regulator-min-microvolt = <500000>;
+>>>> +				regulator-max-microvolt = <1840000>;
+>>>
+>>> Is that DDR3 or DDR3L DRAM here? I don't think there is any runtime
+>>> adjustments here, so just specify the respective voltage required, with the
+>>> same value for both min and max.
+>> it uses Kingston D2516ECMDXGJD so DDR3. I will specify the direct voltage.
+> 
+> But this is DDR3L, so DDR3, just with a slightly lower voltage (1.35V
+> instead of 1.5V). Please note that this is different from LPDDR3, which
+> uses a different protocol, on top of lowering the voltage.
+Well my bad. Was slightly in hurry when checking the very very crude 
+datasheet kingston provides for it. Must have overlooked the mention of 
+DDR3L.
+> 
+>>>    
+>>>> +				regulator-always-on;
+>>>> +			};
+>>>> +
+>>>> +			reg_aldo1: aldo1 {
+>>>> +				regulator-name = "vcc-1v8";
+>>>> +				regulator-min-microvolt = <1800000>;
+>>>> +				regulator-max-microvolt = <1800000>;
+>>>> +				regulator-always-on;
+>>>
+>>> Please mention what this supplies that justifies always-on.
+>> ALDO1 1.8V gets also converted to 1.8V for DRAM. Thus needs to be on always.
+> 
+> Yes, as seen with other boards, where it more prominently also supplies
+> VCC-PLL, which is essential for any clock operation. Might be worth
+> checking, if you have access to the complete schematic.
+I do :)
+yes it also supplies PLL.
+> 
+>>>> +			};
+>>>> +
+>>>> +			reg_dldo1: dldo1 {
+>>>> +				regulator-name = "vcc-3v3";
+>>>> +				regulator-min-microvolt = <3300000>;
+>>>> +				regulator-max-microvolt = <3300000>;
+>>>> +				regulator-always-on;
+>>>
+>>> Please mention what this supplies that justifies always-on.
+>> SDcard that serves as storage for system. Will add comments for both :)
+> 
+> SD card alone does not justify always-on, as you reference this regulator
+> in the mmc0 node, so a kernel could make the connection. But chances are
+> this is also connected to VCC-IO, which is also one of the mandatory supply
+> voltages.
+Correct. VCC-IO is one of the rails supplied from this parent rail.
+> 
+>>>    
+>>>> +			};
+>>>> +		};
+>>>> +	};
+>>>> +};
+>>>> +
+>>>> +&uart0 {
+>>>> +	pinctrl-names = "default";
+>>>> +	pinctrl-0 = <&uart0_ph_pins>;
+>>>> +	status = "okay";
+>>>> +};
+>>>
+>>> This belongs into the board .dts, since the connector/UART bridge is
+>>> there.
+>> Actually the SoM has exposed pads to connect UART (Which is what i have
+>> done to get UART) but also the boards get the exact pins wired to GPIO.
+> 
+> Those pad on the lower right corner? In this case it might justify having
+> the UART node in the SoM .dtsi, though I don't know if (test)pads qualify
+> for enabling peripherals. Generic GPIO pins (say pinmux'ed I2C on some
+> GPIO headers) certainly don't.
+Its fine. I will just enable it in carrier boards and BTT Pi DTS :)
 
-On 7/19/2023 10:43 AM, Vasant Hegde wrote:
-> Below commit is causing kexec to hang in certain scenarios with >255 CPUs.
+Cheers,
+Martin
 > 
-> Reproduce steps:
->   - We are using 2 socket system with 384 CPUs
->   - Booting first kernel with kernel command line intremap=off
->     This disabled x2apic in kernel and booted with apic mode
->   - During kexec it tries to send INIT to all CPUs except boot CPU
->     If APIC ID is 0x100 (like in our case) then it will send CPU0
->     to INIT mode and system hangs (in APIC mode DEST field is 8bit)
+> Cheers,
+> Andre
 > 
-> Fix this issue by adding apic->apic_id_valid() check before sending
-> INIT sequence.
+>> But since most users would use the GPIO UART i will specify it in
+>> carrier boards and in BTT Pi boards separately.
+>>
+>> Cheers,
+>> Martin
+>>>
+>>> Cheers,
+>>> Andre
+>>>    
+>>>> +
+>>>> +&usbphy {
+>>>> +	usb1_vbus-supply = <&reg_usb1_vbus>;
+>>>> +	status = "okay";
+>>>> +};
+>>>
+>>>    
+>>
+>>
 > 
-> Fixes: 45e34c8af58f ("x86/smp: Put CPUs into INIT on shutdown if possible")
-> Reported-by: Dheeraj Kumar Srivastava <dheerajkumar.srivastava@amd.com>
-> Tested-by: Dheeraj Kumar Srivastava <dheerajkumar.srivastava@amd.com>
-> Signed-off-by: Vasant Hegde <vasant.hegde@amd.com>
-> ---
->  arch/x86/kernel/smpboot.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> diff --git a/arch/x86/kernel/smpboot.c b/arch/x86/kernel/smpboot.c
-> index e1aa2cd7734b..e5ca0689c4dd 100644
-> --- a/arch/x86/kernel/smpboot.c
-> +++ b/arch/x86/kernel/smpboot.c
-> @@ -1360,7 +1360,7 @@ bool smp_park_other_cpus_in_init(void)
->  		if (cpu == this_cpu)
->  			continue;
->  		apicid = apic->cpu_present_to_apicid(cpu);
-> -		if (apicid == BAD_APICID)
-> +		if (apicid == BAD_APICID || !apic->apic_id_valid(apicid))
->  			continue;
->  		send_init_sequence(apicid);
->  	}
