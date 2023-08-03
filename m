@@ -2,153 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F08CB76DF83
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 07:03:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E146E76DF85
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 07:04:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231717AbjHCFDx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Aug 2023 01:03:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45162 "EHLO
+        id S232222AbjHCFEJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Aug 2023 01:04:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45284 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229547AbjHCFDv (ORCPT
+        with ESMTP id S231916AbjHCFED (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Aug 2023 01:03:51 -0400
-Received: from out-106.mta0.migadu.com (out-106.mta0.migadu.com [91.218.175.106])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60A001702
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Aug 2023 22:03:49 -0700 (PDT)
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1691039026;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=vnwuMnQktIn7+Xvq8T1vzTAeqXaEEef/2+c0OLwPoHc=;
-        b=d3GcjSMR190Ifk+6CEt3j9TsJMNRgJjwx2bVA9LE9Atj0zmJ8U3vOf3rBU83TfNB3EaODK
-        zlS5V9jMcGT3PNRsqGwmRa8SlqKVksZYwl53fCVU7JTVgJZhCrlogurgeCS7XhBmiGn2d7
-        yehlNWwCbzzMSpQISq0f/q2b5D4n9eE=
-From:   Yajun Deng <yajun.deng@linux.dev>
-To:     mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com,
-        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
-        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
-        bristot@redhat.com, vschneid@redhat.com
-Cc:     linux-kernel@vger.kernel.org, Yajun Deng <yajun.deng@linux.dev>,
-        kernel test robot <oliver.sang@intel.com>
-Subject: [PATCH v4] sched/rt: move back to RT_GROUP_SCHED and rename it child
-Date:   Thu,  3 Aug 2023 13:03:17 +0800
-Message-Id: <20230803050317.2240948-1-yajun.deng@linux.dev>
+        Thu, 3 Aug 2023 01:04:03 -0400
+Received: from mail-wr1-f41.google.com (mail-wr1-f41.google.com [209.85.221.41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5ABC330F1;
+        Wed,  2 Aug 2023 22:04:00 -0700 (PDT)
+Received: by mail-wr1-f41.google.com with SMTP id ffacd0b85a97d-3128fcd58f3so497577f8f.1;
+        Wed, 02 Aug 2023 22:04:00 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691039039; x=1691643839;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=j9ZnReRkIatzrcYgj5JzpsMcAWQyZ8o9F9DDy3PX+rI=;
+        b=CyFMu70sizZQYb+1hHDYCeH62YNcl4ZW+hVT9wYWC2HAUTNG7QOj/g9sBTdKCJPmXI
+         1f1GmUx+n/5xcdinJ4AKQxu/KxDkMO6QOLUnbdjdcfkpe03iTz7cbmI9ZkxQhK+nUCn/
+         S6YUx+BQ0LHFTA+E/FXgDKIbug2YxC3BZnuTxJsOlRVFK526HLY7h7+dU1BiI3QxvEoO
+         denbeVP/2oniuMmvDLY1XKcsxFYfYE0viCY+7yMnE+rTChHAwPIr+SABWEe4jdVIjBTX
+         PXAOT4pTBUbNQRH81DVrfdL8QkPgU6BNCEOBTvyO5iEg60qTd3ZtTQTJ4WdzyrThH9HC
+         DHkw==
+X-Gm-Message-State: ABy/qLbsgph1yESw3n5yhXvg2VR9/h3cbCh7akqB0M5yi+UkexIsX47U
+        hyXxpFmzCbbnUclMIY4GpKk=
+X-Google-Smtp-Source: APBJJlHHZBPvSNoWe46vU35lSlLEH0299lo02WJ9EtQxELEcNQXj1iOlxtND+QC/G5PDc5zpIxVLZQ==
+X-Received: by 2002:adf:ef46:0:b0:313:f704:5450 with SMTP id c6-20020adfef46000000b00313f7045450mr6733850wrp.38.1691039038637;
+        Wed, 02 Aug 2023 22:03:58 -0700 (PDT)
+Received: from ?IPV6:2a0b:e7c0:0:107::aaaa:59? ([2a0b:e7c0:0:107::aaaa:59])
+        by smtp.gmail.com with ESMTPSA id l18-20020a05600012d200b0031753073abcsm20674727wrx.36.2023.08.02.22.03.57
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 02 Aug 2023 22:03:58 -0700 (PDT)
+Message-ID: <651e47f9-821f-9947-f453-4288cc4e4d9a@kernel.org>
+Date:   Thu, 3 Aug 2023 07:03:57 +0200
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.1
+Subject: Re: [PATCH] MAINTAINERS: Update TTY layer for lists and recently
+ added files
+Content-Language: en-US
+To:     Tony Lindgren <tony@atomide.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Andy Shevchenko <andriy.shevchenko@intel.com>,
+        Dhruva Gole <d-gole@ti.com>,
+        =?UTF-8?Q?Ilpo_J=c3=a4rvinen?= <ilpo.jarvinen@linux.intel.com>,
+        John Ogness <john.ogness@linutronix.de>,
+        Johan Hovold <johan@kernel.org>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org
+References: <20230721072334.59272-1-tony@atomide.com>
+ <ZLpboaXKVOOjeGJ+@smile.fi.intel.com> <20230724045327.GV5194@atomide.com>
+ <2023072517-onward-payment-569d@gregkh> <2023072530-wired-chaps-c1e3@gregkh>
+ <edb0414f-3808-8651-4956-8ec34b056901@kernel.org>
+ <20230802120530.GE14799@atomide.com>
+From:   Jiri Slaby <jirislaby@kernel.org>
+In-Reply-To: <20230802120530.GE14799@atomide.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The member back in struct sched_rt_entity only related to RT_GROUP_SCHED,
-it should not place out of RT_GROUP_SCHED, move back to RT_GROUP_SCHED
-and rename it child.
+On 02. 08. 23, 14:05, Tony Lindgren wrote:
+> * Jiri Slaby <jirislaby@kernel.org> [230726 10:12]:
+>> On 25. 07. 23, 19:29, Greg Kroah-Hartman wrote:
+>>> On Tue, Jul 25, 2023 at 07:28:46PM +0200, Greg Kroah-Hartman wrote:
+>>>> On Mon, Jul 24, 2023 at 07:53:27AM +0300, Tony Lindgren wrote:
+>>>>> * Andy Shevchenko <andriy.shevchenko@intel.com> [230721 10:19]:
+>>>>>> On Fri, Jul 21, 2023 at 10:23:32AM +0300, Tony Lindgren wrote:
+>>>>>>> Add mailing lists for linux-serial and lkml for the TTY layer. And let's
+>>>>>>> list the recently added files. This makes it easier for get_maintainer.pl
+>>>>>>> to include linux-serial for patches.
+>>>>>>
+>>>>>> Shouldn't serial_* stuff go to the "SERIAL DRIVERS" section?
+>>>>>
+>>>>> Not sure if there's some reason we have "TTY LAYER" with serial_core
+>>>>> files. If not, yeah let's move the serial files.
+>>>>
+>>>> I'll take this patch, can you send a new one that removes the serial
+>>>> files from this entry as I don't think they are needed in here anymore.
+>>>
+>>> Better yet, they should be merged probably.  Although I don't know if
+>>> Jiri wants to be responsible for serial stuff, that's his call...
+>>
+>> No problem. I actually didn't realize they are separate. So feel free to
+>> submit a patch, so we have a single MAINTAINTERS file entry...
+> 
+> How about something like this?
 
-Init child when parent isn't NULL in init_tg_rt_entry().
+Acked-by: Jiri Slaby <jirislaby@kernel.org>
 
-Introduce for_each_sched_rt_entity_reverse() to iterate rt_se from
-top to down.
-
-Signed-off-by: Yajun Deng <yajun.deng@linux.dev>
-Reported-by: kernel test robot <oliver.sang@intel.com>
-Closes: https://lore.kernel.org/oe-lkp/202308031034.4369b15b-oliver.sang@intel.com
----
- V3 -> V4: Missed rt_se = root in dequeue_rt_stack().
- V2 -> V3: Keep parent is NULL in init_tg_rt_entry().
- V1 -> V2: Add WARN_ON_ONCE in init_tg_rt_entry().
----
- include/linux/sched.h |  2 +-
- kernel/sched/rt.c     | 25 ++++++++++++++++---------
- 2 files changed, 17 insertions(+), 10 deletions(-)
-
-diff --git a/include/linux/sched.h b/include/linux/sched.h
-index 177b3f3676ef..5635655d6c35 100644
---- a/include/linux/sched.h
-+++ b/include/linux/sched.h
-@@ -594,8 +594,8 @@ struct sched_rt_entity {
- 	unsigned short			on_rq;
- 	unsigned short			on_list;
- 
--	struct sched_rt_entity		*back;
- #ifdef CONFIG_RT_GROUP_SCHED
-+	struct sched_rt_entity		*child;
- 	struct sched_rt_entity		*parent;
- 	/* rq on which this entity is (to be) queued: */
- 	struct rt_rq			*rt_rq;
-diff --git a/kernel/sched/rt.c b/kernel/sched/rt.c
-index 00e0e5074115..5e3edd7b8be4 100644
---- a/kernel/sched/rt.c
-+++ b/kernel/sched/rt.c
-@@ -230,8 +230,10 @@ void init_tg_rt_entry(struct task_group *tg, struct rt_rq *rt_rq,
- 
- 	if (!parent)
- 		rt_se->rt_rq = &rq->rt;
--	else
-+	else {
- 		rt_se->rt_rq = parent->my_q;
-+		parent->child = rt_se;
-+	}
- 
- 	rt_se->my_q = rt_rq;
- 	rt_se->parent = parent;
-@@ -564,6 +566,9 @@ static inline struct task_group *next_task_group(struct task_group *tg)
- #define for_each_sched_rt_entity(rt_se) \
- 	for (; rt_se; rt_se = rt_se->parent)
- 
-+#define for_each_sched_rt_entity_reverse(rt_se) \
-+	for (; rt_se; rt_se = rt_se->child)
-+
- static inline struct rt_rq *group_rt_rq(struct sched_rt_entity *rt_se)
- {
- 	return rt_se->my_q;
-@@ -669,6 +674,9 @@ typedef struct rt_rq *rt_rq_iter_t;
- #define for_each_sched_rt_entity(rt_se) \
- 	for (; rt_se; rt_se = NULL)
- 
-+#define for_each_sched_rt_entity_reverse(rt_se) \
-+	for_each_sched_rt_entity(rt_se)
-+
- static inline struct rt_rq *group_rt_rq(struct sched_rt_entity *rt_se)
- {
- 	return NULL;
-@@ -1481,22 +1489,21 @@ static void __dequeue_rt_entity(struct sched_rt_entity *rt_se, unsigned int flag
-  */
- static void dequeue_rt_stack(struct sched_rt_entity *rt_se, unsigned int flags)
- {
--	struct sched_rt_entity *back = NULL;
-+	struct sched_rt_entity *root;
- 	unsigned int rt_nr_running;
- 
--	for_each_sched_rt_entity(rt_se) {
--		rt_se->back = back;
--		back = rt_se;
--	}
-+	for_each_sched_rt_entity(rt_se)
-+		root = rt_se;
- 
--	rt_nr_running = rt_rq_of_se(back)->rt_nr_running;
-+	rt_nr_running = rt_rq_of_se(root)->rt_nr_running;
- 
--	for (rt_se = back; rt_se; rt_se = rt_se->back) {
-+	rt_se = root;
-+	for_each_sched_rt_entity_reverse(rt_se) {
- 		if (on_rt_rq(rt_se))
- 			__dequeue_rt_entity(rt_se, flags);
- 	}
- 
--	dequeue_top_rt_rq(rt_rq_of_se(back), rt_nr_running);
-+	dequeue_top_rt_rq(rt_rq_of_se(root), rt_nr_running);
- }
- 
- static void enqueue_rt_entity(struct sched_rt_entity *rt_se, unsigned int flags)
 -- 
-2.25.1
+js
+suse labs
 
