@@ -2,109 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A8AC76E9BD
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 15:14:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 441FE76E9CE
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 15:16:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236179AbjHCNN5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Aug 2023 09:13:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59814 "EHLO
+        id S236235AbjHCNQp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Aug 2023 09:16:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36486 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236375AbjHCNNO (ORCPT
+        with ESMTP id S236215AbjHCNQ3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Aug 2023 09:13:14 -0400
-Received: from mail-io1-xd33.google.com (mail-io1-xd33.google.com [IPv6:2607:f8b0:4864:20::d33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2AAE04495;
-        Thu,  3 Aug 2023 06:11:42 -0700 (PDT)
-Received: by mail-io1-xd33.google.com with SMTP id ca18e2360f4ac-790bed44880so31373439f.0;
-        Thu, 03 Aug 2023 06:11:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1691068291; x=1691673091;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=7lC0SW0eAGcjrPelcOslL8Ss4E31DBBOJeX5ruPDUDU=;
-        b=OgeQqTU3eLsToIFQqpnPIA8g1WCwq6zItGL9mntQIrUxGhjbBitttp4rPonWdcsfxP
-         iRu6lmPdnlStCJoOCDCEuv4opy0zlLNTWrDmAEXCgmXENtRx5rA/fBxUCmTnEEXn1s3d
-         +b7fpiJVshrK7ErQ0MD+MO4FLFbHFFpyzV69Zs7aLy44fmoU9jTLoK5MvRuK820kS5RG
-         J+SRnf5gQSlsbchEYrjWURjn7aZhSZjoQmyVb5mdk1f9ajw0rn3vuOWoAlhOae+REEzD
-         zfGk59orqaoBC1o2Oruv8/rVXoVQYP4t+5ttTB6qg7JIglPFNGEO+kjJ6kcvnW4QH0jw
-         r2EA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691068291; x=1691673091;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=7lC0SW0eAGcjrPelcOslL8Ss4E31DBBOJeX5ruPDUDU=;
-        b=hFbOT7tAeS/COxdSU20i3JjhUwsJzQ9PcnJxapPWhtpp/juWr3OA2Med5XdZRaK1Nl
-         VNelsEXIAuxm8jnWVtA6u2t/JQ+JoJ9yxdeLLmf0ioZLgWgnkMEJLeXdWIujM46sdM1E
-         W7hoXnvcOXYUMKr2CGDMlSxp1XLONEwhLz3SdRSmgRUBJMIPeQBI05kAFA4XRVqN0zzE
-         SJEylf58e/TM9CcYfTvZ9+k+4IC4/WA5oqFM/DufIV8GZWgvQo6sn3F/i2/PwAqJmz7q
-         1WrGlHclab2y5htWIQ8ZSy9ZjJQx+tzhQkGd0zJVAXpkehhKgq5a1QcriM8GjFofUIhT
-         nzZg==
-X-Gm-Message-State: ABy/qLYxWEqNTu1b6vJsWzud3JK+hxiY1lnWWiAulCGlUgg7Dwc3NLju
-        26stkc1Xxe2g9WN03F+0KuSD2DrUE+hQGmskrto=
-X-Google-Smtp-Source: APBJJlEtqzIxYCVUFEvV5fgDCP81fGeD3GZpt6levaG9H4upWh9g5EvLMYrqL4ob+7IT6h4Vjry/EVcjmBnCK9V7HJM=
-X-Received: by 2002:a05:6e02:1569:b0:348:c041:abd7 with SMTP id
- k9-20020a056e02156900b00348c041abd7mr15797226ilu.13.1691068290064; Thu, 03
- Aug 2023 06:11:30 -0700 (PDT)
+        Thu, 3 Aug 2023 09:16:29 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8DA8F448E;
+        Thu,  3 Aug 2023 06:15:22 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 1CE2661D99;
+        Thu,  3 Aug 2023 13:14:55 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 08908C433C7;
+        Thu,  3 Aug 2023 13:14:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1691068494;
+        bh=9tXX2FIKE8MOIWXd1K+8WbPOQ/m7uwCnkCQGt0+g8AQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=XMc7NS4BuZ8tlExBuYyg/arego0CELq+F5mMOUrtFOaQ8rSdgn6CGYFS7bBdYirVK
+         fUF3GyXwd4pQon3H/B7tpMxNstuyYwM/S4IYQmq/r8wZ+nTxJfOOpiwfoq/Nc3Nt3z
+         WE+ETcBAVsI8rtm9Rt+uylHd2P7ohw/0ye1sD5F+96FaBff/0hNShho5Ice/ZY9cr+
+         TxdWUUqVFlLN5g8cSGsXt8l2437Kfb7qJFsU4RF4qMwZg107C77DF+D/A6x3lDdMM3
+         eB5GVF23kBseUH4KrUm1JE8aE+k1FsUMLNd4sinkWoERW3Y1boEvoKHaWh4igxFT/n
+         JGZwDAiLfUZ8Q==
+Date:   Thu, 3 Aug 2023 18:44:50 +0530
+From:   Vinod Koul <vkoul@kernel.org>
+To:     Tom Zanussi <tom.zanussi@linux.intel.com>
+Cc:     herbert@gondor.apana.org.au, davem@davemloft.net,
+        fenghua.yu@intel.com, dave.jiang@intel.com, tony.luck@intel.com,
+        wajdi.k.feghali@intel.com, james.guilford@intel.com,
+        kanchana.p.sridhar@intel.com, vinodh.gopal@intel.com,
+        giovanni.cabiddu@intel.com, linux-kernel@vger.kernel.org,
+        linux-crypto@vger.kernel.org, dmaengine@vger.kernel.org
+Subject: Re: [PATCH v8 02/14] dmaengine: idxd: add external module driver
+ support for dsa_bus_type
+Message-ID: <ZMuoSvB84KaN6wuh@matsya>
+References: <20230731212939.1391453-1-tom.zanussi@linux.intel.com>
+ <20230731212939.1391453-3-tom.zanussi@linux.intel.com>
 MIME-Version: 1.0
-References: <1690265540-25999-1-git-send-email-shengjiu.wang@nxp.com>
- <47d66c28-1eb2-07f5-d6f9-779d675aefe8@xs4all.nl> <87il9xu1ro.wl-tiwai@suse.de>
- <CAA+D8ANmBKMp_L2GS=Lp-saMQKja6L4E6No3yP-e=a5YQBD_jQ@mail.gmail.com>
- <87il9xoddo.wl-tiwai@suse.de> <CAA+D8AOVEpGxO0YNeS1p+Ym86k6VP-CNQB3JmbeT7mPKg0R99A@mail.gmail.com>
- <844ef9b6-d5e2-46a9-b7a5-7ee86a2e449c@sirena.org.uk>
-In-Reply-To: <844ef9b6-d5e2-46a9-b7a5-7ee86a2e449c@sirena.org.uk>
-From:   Shengjiu Wang <shengjiu.wang@gmail.com>
-Date:   Thu, 3 Aug 2023 21:11:16 +0800
-Message-ID: <CAA+D8AOnsx+7t3MrWm42waxtetL07nbKURLsh1hBx39LUDm+Zg@mail.gmail.com>
-Subject: Re: [RFC PATCH v2 0/7] Add audio support in v4l2 framework
-To:     Mark Brown <broonie@kernel.org>
-Cc:     Takashi Iwai <tiwai@suse.de>, Hans Verkuil <hverkuil@xs4all.nl>,
-        Shengjiu Wang <shengjiu.wang@nxp.com>, sakari.ailus@iki.fi,
-        tfiga@chromium.org, m.szyprowski@samsung.com, mchehab@kernel.org,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Xiubo.Lee@gmail.com, festevam@gmail.com, nicoleotsuka@gmail.com,
-        lgirdwood@gmail.com, perex@perex.cz, tiwai@suse.com,
-        alsa-devel@alsa-project.org, linuxppc-dev@lists.ozlabs.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230731212939.1391453-3-tom.zanussi@linux.intel.com>
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 3, 2023 at 1:28=E2=80=AFAM Mark Brown <broonie@kernel.org> wrot=
-e:
->
-> On Wed, Aug 02, 2023 at 10:41:43PM +0800, Shengjiu Wang wrote:
->
-> > Currently the ASRC in ALSA is to connect to another I2S device as
-> > a sound card.  But we'd like to the ASRC can be used by user space dire=
-ctly
-> > that user space application can get the output after conversion from AS=
-RC.
->
-> That sort of use case would be handled via DPCM at the minute, though
-> persuading it to connect two front ends together might be fun (which is
-> the sort of reason why we want to push digital information down into
-> DAPM and make everything a component).
+On 31-07-23, 16:29, Tom Zanussi wrote:
+> From: Dave Jiang <dave.jiang@intel.com>
+> 
+> Add support to allow an external driver to be registered to the
+> dsa_bus_type and also auto-loaded.
 
-Thanks.
+Acked-by: Vinod Koul <vkoul@kernel.org>
 
-ASRC M2M case needs to run as fast as possible, no sync clock control.
-If use sound card to handle ASRC M2M case,  the user application
-should be aplay/arecord, then we need to consider xrun issue, buffer
-may timeout, sync between aplay and arecord,  these should't be
-considered by pure memory to memory operation.
-
-DPCM may achitect all the audio things in components and sound
-card,  it is good. but for the M2M case, it is complcated. not sure
-it is doable.
-
-best regards
-wang shengjiu
+-- 
+~Vinod
