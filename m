@@ -2,94 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D5B5976F635
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 01:40:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4DEE776F647
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 01:50:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232065AbjHCXkJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Aug 2023 19:40:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54854 "EHLO
+        id S231778AbjHCXuY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Aug 2023 19:50:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56792 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231178AbjHCXkH (ORCPT
+        with ESMTP id S229880AbjHCXuV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Aug 2023 19:40:07 -0400
-Received: from out-85.mta1.migadu.com (out-85.mta1.migadu.com [IPv6:2001:41d0:203:375::55])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C7E33A89
-        for <linux-kernel@vger.kernel.org>; Thu,  3 Aug 2023 16:40:01 -0700 (PDT)
-Message-ID: <5c9c4b8c-9f9a-7677-3c3f-6c0faf77397d@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1691105999;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=nsWcqJqp3UWAuUaBqLlcAaS04nYnFCORUz3OLcwWUUk=;
-        b=RwK8TbiFVk6plWneHnjRHhz+DTDMHp8x0+QN/byuFIdSOMoMjX7thRWSt9cJixicKO1E/0
-        9GASftNfUqKbZAJrmeGHz0cwpNxesztIT3E9rdXLF/e3m4N+/CqKodj6ySKy2iuU3+WSf5
-        sa84CTPna7HNg4rrLDhK+qtQb4B+NXo=
-Date:   Thu, 3 Aug 2023 16:39:54 -0700
+        Thu, 3 Aug 2023 19:50:21 -0400
+Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 703E81718;
+        Thu,  3 Aug 2023 16:50:20 -0700 (PDT)
+Received: by mail-pf1-x435.google.com with SMTP id d2e1a72fcca58-686fc0d3c92so1113963b3a.0;
+        Thu, 03 Aug 2023 16:50:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1691106620; x=1691711420;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=OP8pAkGmqcoifyAHKkznCuAfpusO15WSf6dYYfXbnWE=;
+        b=PgXXxzGzaAwUtIpzTTXbsZnBtS76iQFwC1R3DmeSTZdbZJKnoq6FG+qIJfa0ga1hl5
+         TWCOeqIovBS4gZMFFwmjAb5gYwdZSBDwkKzMqBDZI6rZpTSnZjZhbM2sws+XtC3BQu16
+         F3bEEb6TMl7dhdkyDVhVaBfbLf6FSsiDjbQd/gg4iQFuNf736eah9lWpOuFQ+Ftd1c6u
+         rSRZI7+FyciRYDmW3pLArfl9uM9HecVmp5Qk84Vf0FnlTBDAL7G5t5EmeVy87oRkcDiW
+         +4XQwEh9SShZN/bTn2OqthQfTWpjgWmkfz8CkoxAZG0yOqla4DJ66IppVflWDBg9kyyN
+         UUEw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691106620; x=1691711420;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=OP8pAkGmqcoifyAHKkznCuAfpusO15WSf6dYYfXbnWE=;
+        b=LiHovXKAiNK727rql1qXS4sHB9tAz3Ma8Hn7Eh3awJZNTdkPGSPQ5/jf3U9eEOL2hO
+         8W+tfOegITLv76RpjU5Imnnqs7OyLPsvDg4wupvWEKpQez6cHGP5xdb3cNeBCd13/aGU
+         BPe6ZW9D55zvxBpcFlQcFP8wUm+GaVvecj2tITugRwg+urynl13OqwJcOJa6bWx+pQ1P
+         1RrFRdT2frZUdogLybMobk5CaDSLvKXRAfSlI5zGEkqt2/7HqAOUy+ARNtb78gQ5ANfy
+         RYBsE53lW8UHguDtpg1cBvM105tBnOOUEnMKD82NUAOBwrr9NIlbnBb4XAmytStt3kK4
+         xAYg==
+X-Gm-Message-State: AOJu0YxOSOFEFZoqY5qmcotcDvXulGRmPlAi9wSxbXKxD0WMzVVHwv+X
+        oBdE2xNClppKpFJRUEbQcbU=
+X-Google-Smtp-Source: AGHT+IEkK9m5UC0fjBbStPVpvGbMqyYkE8OIDUNZCnvuaRzMxzZJ52sAUlgCOO0Uch9UiRf+Mik+qw==
+X-Received: by 2002:a05:6a00:14d5:b0:680:252d:da3e with SMTP id w21-20020a056a0014d500b00680252dda3emr208073pfu.5.1691106619663;
+        Thu, 03 Aug 2023 16:50:19 -0700 (PDT)
+Received: from localhost ([192.55.55.51])
+        by smtp.gmail.com with ESMTPSA id c23-20020a62e817000000b0068783a2dfdasm367609pfi.104.2023.08.03.16.50.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 03 Aug 2023 16:50:19 -0700 (PDT)
+Date:   Thu, 3 Aug 2023 16:50:17 -0700
+From:   Isaku Yamahata <isaku.yamahata@gmail.com>
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Zhenyu Wang <zhenyuw@linux.intel.com>,
+        Zhi Wang <zhi.a.wang@intel.com>, kvm@vger.kernel.org,
+        intel-gvt-dev@lists.freedesktop.org,
+        intel-gfx@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        Yan Zhao <yan.y.zhao@intel.com>,
+        Yongwei Ma <yongwei.ma@intel.com>,
+        Ben Gardon <bgardon@google.com>, isaku.yamahata@gmail.com
+Subject: Re: [PATCH v4 12/29] KVM: x86/mmu: Move
+ kvm_arch_flush_shadow_{all,memslot}() to mmu.c
+Message-ID: <20230803235017.GA2257301@ls.amr.corp.intel.com>
+References: <20230729013535.1070024-1-seanjc@google.com>
+ <20230729013535.1070024-13-seanjc@google.com>
 MIME-Version: 1.0
-Subject: Re: [syzbot] [bpf?] UBSAN: array-index-out-of-bounds in
- bpf_mprog_detach
-Content-Language: en-US
-To:     syzbot <syzbot+0c06ba0f831fe07a8f27@syzkaller.appspotmail.com>,
-        syzkaller-bugs@googlegroups.com, bpf@vger.kernel.org
-References: <0000000000007095cd0601a9ad91@google.com>
-Cc:     andrii@kernel.org, ast@kernel.org, daniel@iogearbox.net,
-        haoluo@google.com, john.fastabend@gmail.com, jolsa@kernel.org,
-        kpsingh@kernel.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, sdf@google.com, song@kernel.org, yhs@fb.com
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Martin KaFai Lau <martin.lau@linux.dev>
-In-Reply-To: <0000000000007095cd0601a9ad91@google.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20230729013535.1070024-13-seanjc@google.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/29/23 5:48 PM, syzbot wrote:
-> syzbot found the following issue on:
-> 
-> HEAD commit:    ec87f05402f5 octeontx2-af: Install TC filter rules in hard..
-> git tree:       net-next
-> console output:https://syzkaller.appspot.com/x/log.txt?x=12a76df1a80000
-> kernel config:https://syzkaller.appspot.com/x/.config?x=8acaeb93ad7c6aaa
-> dashboard link:https://syzkaller.appspot.com/bug?extid=0c06ba0f831fe07a8f27
-> compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
-> 
-> Unfortunately, I don't have any reproducer for this issue yet.
-> 
-> Downloadable assets:
-> disk image:https://storage.googleapis.com/syzbot-assets/0fc53904fc08/disk-ec87f054.raw.xz
-> vmlinux:https://storage.googleapis.com/syzbot-assets/aee64718ea5c/vmlinux-ec87f054.xz
-> kernel image:https://storage.googleapis.com/syzbot-assets/d3b6d3f4cfbc/bzImage-ec87f054.xz
-> 
-> IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> Reported-by:syzbot+0c06ba0f831fe07a8f27@syzkaller.appspotmail.com
-> 
-> ================================================================================
-> UBSAN: array-index-out-of-bounds in ./include/linux/bpf_mprog.h:292:24
-> index 4294967295 is out of range for type 'bpf_mprog_fp [64]'
-> CPU: 1 PID: 13232 Comm: syz-executor.1 Not tainted 6.5.0-rc2-syzkaller-00573-gec87f05402f5 #0
-> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 07/12/2023
-> Call Trace:
->   <TASK>
->   __dump_stack lib/dump_stack.c:88 [inline]
->   dump_stack_lvl+0x125/0x1b0 lib/dump_stack.c:106
->   ubsan_epilogue lib/ubsan.c:217 [inline]
->   __ubsan_handle_out_of_bounds+0x111/0x150 lib/ubsan.c:348
->   bpf_mprog_read include/linux/bpf_mprog.h:292 [inline]
->   bpf_mprog_fetch kernel/bpf/mprog.c:307 [inline]
->   bpf_mprog_detach+0xcd7/0xd50 kernel/bpf/mprog.c:381
->   tcx_prog_detach+0x258/0x950 kernel/bpf/tcx.c:78
->   bpf_prog_detach kernel/bpf/syscall.c:3877 [inline]
->   __sys_bpf+0x36ee/0x4ec0 kernel/bpf/syscall.c:5357
+On Fri, Jul 28, 2023 at 06:35:18PM -0700,
+Sean Christopherson <seanjc@google.com> wrote:
 
-Thanks for the report. I will take a look.
+> Move x86's implementation of kvm_arch_flush_shadow_{all,memslot}() into
+> mmu.c, and make kvm_mmu_zap_all() static as it was globally visible only
+> for kvm_arch_flush_shadow_all().  This will allow refactoring
+> kvm_arch_flush_shadow_memslot() to call kvm_mmu_zap_all() directly without
+> having to expose kvm_mmu_zap_all_fast() outside of mmu.c.  Keeping
+> everything in mmu.c will also likely simplify supporting TDX, which
+> intends to do zap only relevant SPTEs on memslot updates.
+
+Yes, it helps TDX code cleaner to move mmu related function under mmu.c.
+Reviewed-by: Isaku Yamahata <isaku.yamahata@intel.com>
+
+Thanks,
+
+> 
+> No functional change intended.
+> 
+> Suggested-by: Yan Zhao <yan.y.zhao@intel.com>
+> Tested-by: Yongwei Ma <yongwei.ma@intel.com>
+> Signed-off-by: Sean Christopherson <seanjc@google.com>
+> ---
+>  arch/x86/include/asm/kvm_host.h |  1 -
+>  arch/x86/kvm/mmu/mmu.c          | 13 ++++++++++++-
+>  arch/x86/kvm/x86.c              | 11 -----------
+>  3 files changed, 12 insertions(+), 13 deletions(-)
+> 
+> diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
+> index 28bd38303d70..856ec22aceb6 100644
+> --- a/arch/x86/include/asm/kvm_host.h
+> +++ b/arch/x86/include/asm/kvm_host.h
+> @@ -1832,7 +1832,6 @@ void kvm_mmu_zap_collapsible_sptes(struct kvm *kvm,
+>  				   const struct kvm_memory_slot *memslot);
+>  void kvm_mmu_slot_leaf_clear_dirty(struct kvm *kvm,
+>  				   const struct kvm_memory_slot *memslot);
+> -void kvm_mmu_zap_all(struct kvm *kvm);
+>  void kvm_mmu_invalidate_mmio_sptes(struct kvm *kvm, u64 gen);
+>  void kvm_mmu_change_mmu_pages(struct kvm *kvm, unsigned long kvm_nr_mmu_pages);
+>  
+> diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
+> index ec169f5c7dce..c6dee659d592 100644
+> --- a/arch/x86/kvm/mmu/mmu.c
+> +++ b/arch/x86/kvm/mmu/mmu.c
+> @@ -6732,7 +6732,7 @@ void kvm_mmu_slot_leaf_clear_dirty(struct kvm *kvm,
+>  	 */
+>  }
+>  
+> -void kvm_mmu_zap_all(struct kvm *kvm)
+> +static void kvm_mmu_zap_all(struct kvm *kvm)
+>  {
+>  	struct kvm_mmu_page *sp, *node;
+>  	LIST_HEAD(invalid_list);
+> @@ -6757,6 +6757,17 @@ void kvm_mmu_zap_all(struct kvm *kvm)
+>  	write_unlock(&kvm->mmu_lock);
+>  }
+>  
+> +void kvm_arch_flush_shadow_all(struct kvm *kvm)
+> +{
+> +	kvm_mmu_zap_all(kvm);
+> +}
+> +
+> +void kvm_arch_flush_shadow_memslot(struct kvm *kvm,
+> +				   struct kvm_memory_slot *slot)
+> +{
+> +	kvm_page_track_flush_slot(kvm, slot);
+> +}
+> +
+>  void kvm_mmu_invalidate_mmio_sptes(struct kvm *kvm, u64 gen)
+>  {
+>  	WARN_ON(gen & KVM_MEMSLOT_GEN_UPDATE_IN_PROGRESS);
+> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+> index a6b9bea62fb8..059571d5abed 100644
+> --- a/arch/x86/kvm/x86.c
+> +++ b/arch/x86/kvm/x86.c
+> @@ -12776,17 +12776,6 @@ void kvm_arch_commit_memory_region(struct kvm *kvm,
+>  		kvm_arch_free_memslot(kvm, old);
+>  }
+>  
+> -void kvm_arch_flush_shadow_all(struct kvm *kvm)
+> -{
+> -	kvm_mmu_zap_all(kvm);
+> -}
+> -
+> -void kvm_arch_flush_shadow_memslot(struct kvm *kvm,
+> -				   struct kvm_memory_slot *slot)
+> -{
+> -	kvm_page_track_flush_slot(kvm, slot);
+> -}
+> -
+>  static inline bool kvm_guest_apic_has_interrupt(struct kvm_vcpu *vcpu)
+>  {
+>  	return (is_guest_mode(vcpu) &&
+> -- 
+> 2.41.0.487.g6d72f3e995-goog
+> 
+
+-- 
+Isaku Yamahata <isaku.yamahata@gmail.com>
