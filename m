@@ -2,219 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5960A76DCDC
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 02:45:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0AA9376DCE2
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 02:49:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231922AbjHCApw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Aug 2023 20:45:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42030 "EHLO
+        id S232504AbjHCAtI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Aug 2023 20:49:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42836 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229527AbjHCApu (ORCPT
+        with ESMTP id S229527AbjHCAtF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Aug 2023 20:45:50 -0400
-Received: from mail-qt1-x82c.google.com (mail-qt1-x82c.google.com [IPv6:2607:f8b0:4864:20::82c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BDA902D4A
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Aug 2023 17:45:47 -0700 (PDT)
-Received: by mail-qt1-x82c.google.com with SMTP id d75a77b69052e-4055bc3cdd8so2936071cf.1
-        for <linux-kernel@vger.kernel.org>; Wed, 02 Aug 2023 17:45:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1691023546; x=1691628346;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=GrMEgIpkm4DOHGO7jkt8EZd96GkcH4rGkdwb4adkLh4=;
-        b=j7CTXFrnyFko0+2H/M8nyAfarmrhDwmXt+n4w1bxjxq7ssdjRIzyoNV1MTFDwz7GLY
-         ijN47+5abnB1LdeMxVLJNF94q0+dTvXR1nqut0q5GcfbzLZ6fVCfEcLOEocZy8pW2cBr
-         isfOWiXkCNZ8KGrfwq2GsoPlxyRX1j61IIA4kcW9kUybk8vASOMRsxi3HWAKPE1317Um
-         Zxw8JE2YWRZTuSMK1CD8WVt6AasrDWt5oykDdVP41NGRkyySoI/PsU3g7CB5urTSf0Yz
-         JhW1eN2s0tVTVXC0TYqGnGtAhBBp4o/yuvfZObgtneSWG4dVwh+Wa1x/xZ/xBS+smfog
-         iK5w==
+        Wed, 2 Aug 2023 20:49:05 -0400
+Received: from mail-pj1-f43.google.com (mail-pj1-f43.google.com [209.85.216.43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C56DA269E;
+        Wed,  2 Aug 2023 17:49:04 -0700 (PDT)
+Received: by mail-pj1-f43.google.com with SMTP id 98e67ed59e1d1-26837895fc8so210663a91.0;
+        Wed, 02 Aug 2023 17:49:04 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691023546; x=1691628346;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=GrMEgIpkm4DOHGO7jkt8EZd96GkcH4rGkdwb4adkLh4=;
-        b=EZg5W6YHwwnju/fOSfhYtn1a9GVFrrfR296pVXbdd7E2Foy6LcCW76HqhmpVU3/2rK
-         mMDOLt+aeO4CGeMETKGfZg1whBTw2Ky9IjVUVJfOA8VbF7JZAAh1x+GtezFQrKzpT3JJ
-         F5/nayonmabi579XNnw+WJHl+JzmMDkQ4Su1z4VaCa6+aedJCStdC2tcgRze0vIVJDqT
-         prG+CzeqKnmnATVtKGTshrmJ3iLLsmxE3BRzmDChgZPEejBT+KchaDBy+BxYVRS97u1M
-         cZKmp4m2adlI5I2j8A3veTVBedZL2kwzKiLkm1XKnv7Qbs1ioH+o+9atJPFKCz2Nu8wb
-         VN3Q==
-X-Gm-Message-State: ABy/qLb+9xzAX/vMB1oUH2lCaqOuV0j/0GQvDiinStf41fomtGhC301E
-        /zaOhxnHjzwyh3JfzGj4Oe4=
-X-Google-Smtp-Source: APBJJlFeJ5QHYsTLYvciZrfmRwYH5Do4DFRCqMp05HjanrOhz1z506QNy3sHJ0LayCmbrXV9OuDe/g==
-X-Received: by 2002:ac8:4e4c:0:b0:40c:82f:b66c with SMTP id e12-20020ac84e4c000000b0040c082fb66cmr19106129qtw.34.1691023546451;
-        Wed, 02 Aug 2023 17:45:46 -0700 (PDT)
-Received: from localhost ([2607:fb90:8de1:d00d:8c37:1fd4:e9e6:8e5a])
-        by smtp.gmail.com with ESMTPSA id j13-20020a37c24d000000b00763b94432ebsm5430212qkm.18.2023.08.02.17.45.45
+        d=1e100.net; s=20221208; t=1691023744; x=1691628544;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=oTv5W4Q6yS6G6v7qn6WVl32Gcj1wC0XOowAiH8q+7B8=;
+        b=CFVIYiBwZr5MZErTBrWEGvzVYBlF5Qyx5ZQsIGqbRoc2tetc0YCNYOLu1bUu+HXV7j
+         sugxe5qEul+NpTXf+b8aYuc+okVd+ety3Gvl2hMq69oRivfeu8CfXqNXAdJWiQ285Sd0
+         z5PTj91jTi6/LVBkybuGqcuZOlLMPnoOpWgNikpuPQ1igtIrUgwnY8Xmeh17tbXGwJpf
+         x6z6N1+s0aSWZIMJkOgxI7ftkNGt3v/u96uyLClDrjEaqSP2OSJmd7Lm7ntQrA8BCiWd
+         rVmgPf1sZPQ+NMYxMcY12hOjK/12ek9czeoSDVA+WuvVFnZuREZmX/bLBAf4jEl2Ops0
+         0jFQ==
+X-Gm-Message-State: ABy/qLbAQjtQfhM/dtTGIHLNblQ5tLeJniZXmfmZbGAy5NPNAbor0a2n
+        ttmSvQznUzHuLXI56LVeKR0=
+X-Google-Smtp-Source: APBJJlGlrF2BoFgwZfEV6V2b6NStOmhRISsvraxtM7VPK80JgV3vkWcJ9YhwIsY3KRqEi5lAF4jmQg==
+X-Received: by 2002:a17:90a:6fa6:b0:262:e6c6:c2ec with SMTP id e35-20020a17090a6fa600b00262e6c6c2ecmr15085133pjk.33.1691023744201;
+        Wed, 02 Aug 2023 17:49:04 -0700 (PDT)
+Received: from liuwe-devbox-debian-v2 ([20.69.120.36])
+        by smtp.gmail.com with ESMTPSA id l4-20020a17090ad10400b00263f33eef41sm1595084pju.37.2023.08.02.17.49.03
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 02 Aug 2023 17:45:46 -0700 (PDT)
-Date:   Wed, 2 Aug 2023 17:45:44 -0700
-From:   Yury Norov <yury.norov@gmail.com>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     andriy.shevchenko@linux.intel.com, linux@rasmusvillemoes.dk,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Mateusz Guzik <mjguzik@gmail.com>,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        tglx@linutronix.de, rppt@kernel.org
-Subject: Re: [PATCH v2 2/2] mm,nodemask: Use nr_node_ids
-Message-ID: <ZMr4uBfjKY9dERl2@yury-ThinkPad>
-References: <20230802112458.230221601@infradead.org>
- <20230802112525.633758009@infradead.org>
- <20230802193616.GC231007@hirez.programming.kicks-ass.net>
+        Wed, 02 Aug 2023 17:49:03 -0700 (PDT)
+Date:   Thu, 3 Aug 2023 00:48:57 +0000
+From:   Wei Liu <wei.liu@kernel.org>
+To:     Nuno Das Neves <nunodasneves@linux.microsoft.com>
+Cc:     linux-hyperv@vger.kernel.org, linux-kernel@vger.kernel.org,
+        x86@kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-arch@vger.kernel.org, mikelley@microsoft.com,
+        kys@microsoft.com, wei.liu@kernel.org, haiyangz@microsoft.com,
+        decui@microsoft.com, ssengar@linux.microsoft.com,
+        mukeshrathor@microsoft.com, stanislav.kinsburskiy@gmail.com,
+        jinankjain@linux.microsoft.com, apais@linux.microsoft.com,
+        Tianyu.Lan@microsoft.com, vkuznets@redhat.com, tglx@linutronix.de,
+        mingo@redhat.com, bp@alien8.de, dave.hansen@linux.intel.com,
+        hpa@zytor.com, will@kernel.org, catalin.marinas@arm.com
+Subject: Re: [PATCH 14/15] asm-generic: hyperv: Use mshv headers
+ conditionally. Add asm-generic/hyperv-defs.h
+Message-ID: <ZMr5ebxAqfjHPkVb@liuwe-devbox-debian-v2>
+References: <1690487690-2428-1-git-send-email-nunodasneves@linux.microsoft.com>
+ <1690487690-2428-15-git-send-email-nunodasneves@linux.microsoft.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20230802193616.GC231007@hirez.programming.kicks-ass.net>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <1690487690-2428-15-git-send-email-nunodasneves@linux.microsoft.com>
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-+ Linus, Mateusz
+On Thu, Jul 27, 2023 at 12:54:49PM -0700, Nuno Das Neves wrote:
+> In order to keep unstable hyper-v interfaces independent of
+> hyperv-tlfs.h, hvhdk.h must replace hyperv-tlfs.h eveywhere it will be
+> used in the mshv driver.
 
-On Wed, Aug 02, 2023 at 09:36:16PM +0200, Peter Zijlstra wrote:
+Please properly capitalize "Hyper-V" when it is used as a term.
+
+> Add hyperv-defs.h to replace some inclusions of hyperv-tlfs.h.
+> It includes hyperv-tlfs.h or hvhdk.h depending on a compile-time constant
+> HV_HYPERV_DEFS which will be defined in the mshv driver.
 > 
-> Just like how cpumask uses nr_cpu_ids to limit the bitmap scanning,
-> make nodemask use nr_node_ids.
-> 
-> Since current users expect MAX_NUMNODES as the end-of-bitmap marker,
-> retain this behaviour for now.
-> 
-> Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-> Reviewed-by: Mike Rapoport (IBM) <rppt@kernel.org>
+> Signed-off-by: Nuno Das Neves <nunodasneves@linux.microsoft.com>
 > ---
-> Changes since v1:
->  - updated and reflowed the 'borrowed' comment some more (rppt)
-
-Hi Peter,
-
-Thanks for the patch! I wanted to do it sooner or later.
-
-Can you mention the commit that you used to borrow the approach.
-Maybe suggested-by?
-
-The motivation for the original patch was that the following test
-revealed broken small_const_nbits() optimization for cpumasks:
-
-  On Fri, Mar 3, 2023 at 12:39 PM Mateusz Guzik <mjguzik@gmail.com> wrote:
-  >
-  > as an example here is a one-liner to show crappers which do 0-sized ops:
-  > bpftrace -e 'kprobe:memset,kprobe:memcpy /arg2 == 0/ { @[probe,
-  > kstack(2)] = count(); }'
-
-See:
-https://lore.kernel.org/lkml/CAHk-=wgfNrMFQCFWFtn+UXjAdJAGAAFFJZ1JpEomTneza32A6g@mail.gmail.com/
-
-Can you make sure your patch doesn't brake the test for nodemasks?
-
->  include/linux/nodemask.h |  121 ++++++++++++++++++++++++++++++++++-------------
->  1 file changed, 89 insertions(+), 32 deletions(-)
+>  arch/arm64/include/asm/mshyperv.h |  2 +-
+>  arch/x86/include/asm/mshyperv.h   |  3 +--
+>  drivers/hv/hyperv_vmbus.h         |  1 -
+>  include/asm-generic/hyperv-defs.h | 26 ++++++++++++++++++++++++++
+>  include/asm-generic/mshyperv.h    |  2 +-
+>  include/linux/hyperv.h            |  2 +-
+>  6 files changed, 30 insertions(+), 6 deletions(-)
+>  create mode 100644 include/asm-generic/hyperv-defs.h
 > 
-> --- a/include/linux/nodemask.h
-> +++ b/include/linux/nodemask.h
-> @@ -99,6 +99,48 @@
->  typedef struct { DECLARE_BITMAP(bits, MAX_NUMNODES); } nodemask_t;
->  extern nodemask_t _unused_nodemask_arg_;
->  
-> +#if MAX_NUMNODES > 1
-> +extern unsigned int nr_node_ids;
-> +#else
-> +#define nr_node_ids		1U
-> +#endif
+[...]
+> diff --git a/include/asm-generic/hyperv-defs.h b/include/asm-generic/hyperv-defs.h
+> new file mode 100644
+> index 000000000000..ac6fcba35c8c
+> --- /dev/null
+> +++ b/include/asm-generic/hyperv-defs.h
+> @@ -0,0 +1,26 @@
+> +/* SPDX-License-Identifier: GPL-2.0 */
+> +#ifndef _ASM_GENERIC_HYPERV_DEFS_H
+> +#define _ASM_GENERIC_HYPERV_DEFS_H
 > +
 > +/*
-> + * We have several different "preferred sizes" for the nodemask operations,
-> + * depending on operation.
+> + * There are cases where Microsoft Hypervisor ABIs are needed which may not be
+> + * stable or present in the Hyper-V TLFS document. E.g. the mshv_root driver.
 > + *
-> + * For example, the bitmap scanning and operating operations have optimized
-> + * routines that work for the single-word case, but only when the size is
-> + * constant. So if MAX_NUMNODES fits in one single word, we are better off
-> + * using that small constant, in order to trigger the optimized bit finding.
-> + * That is 'small_nodemask_size'.
+> + * As these interfaces are unstable and may differ from hyperv-tlfs.h, they
+> + * must be kept separate and independent.
 > + *
-> + * The clearing and copying operations will similarly perform better with a
-
-Copying will not, because there's no nodemask_copy(). :-)
-
-> + * constant size, but we limit that size arbitrarily to four words. We call
-> + * this 'large_nodemask_size'.
+> + * However, code from files that depend on hyperv-tlfs.h (such as mshyperv.h)
+> + * is still needed, so work around the issue by conditionally including the
+> + * correct definitions.
 > + *
-> + * Finally, some operations just want the exact limit, either because they set
-> + * bits or just don't have any faster fixed-sized versions. We call this just
-> + * 'nr_nodemask_bits'.
-> + *
-> + * Note that these optional constants are always guaranteed to be at least as
-> + * big as 'nr_node_ids' itself is, and all our nodemask allocations are at
-> + * least that size. The optimization comes from being able to potentially use
-> + * a compile-time constant instead of a run-time generated exact number of
-> + * nodes.
+> + * Note: Since they are independent of each other, there are many definitions
+> + * duplicated in both hyperv-tlfs.h and uapi/hyperv/hv*.h files.
 > + */
-> +#if MAX_NUMNODES <= BITS_PER_LONG
-> +  #define small_nodemask_bits ((unsigned int)MAX_NUMNODES)
-> +  #define large_nodemask_bits ((unsigned int)MAX_NUMNODES)
-> +#elif MAX_NUMNODES <= 4*BITS_PER_LONG
-> +  #define small_nodemask_bits nr_node_ids
-> +  #define large_nodemask_bits ((unsigned int)MAX_NUMNODES)
-> +#else
-> +  #define small_nodemask_bits nr_node_ids
-> +  #define large_nodemask_bits nr_node_ids
-> +#endif
-> +#define nr_nodemask_bits nr_node_ids
 
-We don't need nr_nodemask_bits. In CPU subsystem nr_cpumask_bits
-exists (existed) to support dynamic allocation for cpumask_var_t
-if CPUMASK_OFFSTACK is enabled. And it apparently caused troubles.
-
-In nodemasks we don't have an offstack feature, and don't need the
-nr_nodemask_bits. Just use nr_node_ids everywhere.
-
-[...]
-
-> -#define nodes_setall(dst) __nodes_setall(&(dst), MAX_NUMNODES)
-> +#define nodes_setall(dst) __nodes_setall(&(dst), large_nodemask_bits)
->  static inline void __nodes_setall(nodemask_t *dstp, unsigned int nbits)
->  {
->  	bitmap_fill(dstp->bits, nbits);
->  }
-
-When MAX_NUMNODES <= 4*BITS_PER_LONG, this breaks the rule that all
-bits beyond nr_node_ids must be clear. And that in turn may brake
-nodemask_weight() and others. Refer to this patch for details and
-correct implementation:
-
-63355b9884b ("cpumask: be more careful with 'cpumask_setall()'")
-
-[...]
-
-> @@ -452,7 +511,6 @@ static inline unsigned int next_memory_n
->  	return next_node(nid, node_states[N_MEMORY]);
->  }
->  
-> -extern unsigned int nr_node_ids;
->  extern unsigned int nr_online_nodes;
->  
->  static inline void node_set_online(int nid)
-> @@ -494,7 +552,6 @@ static inline int num_node_state(enum no
->  #define first_memory_node	0
->  #define next_online_node(nid)	(MAX_NUMNODES)
->  #define next_memory_node(nid)	(MAX_NUMNODES)
-> -#define nr_node_ids		1U
->  #define nr_online_nodes		1U
- 
-I like how you separated the nr_node_ids from the other ifdefery, and
-changed it to __ro_after_init. But I think it's better to fold this all
-into the 1st patch.
-
-Why don't we make nr_cpu_ids to be a __ro_after_init just as well?
+Is this because we accidentally introduced some host only, unstable
+interfaces to hyperv-tlfs.h? Is the long term plan to drop those from
+hyperv-tlfs.h and further separate the helper functions?
 
 Thanks,
-Yury
+Wei.
+
+> +#ifdef HV_HYPERV_DEFS
+> +#include <uapi/hyperv/hvhdk.h>
+> +#else
+> +#include <asm/hyperv-tlfs.h>
+> +#endif
+> +
+> +#endif /* _ASM_GENERIC_HYPERV_DEFS_H */
+> +
+> diff --git a/include/asm-generic/mshyperv.h b/include/asm-generic/mshyperv.h
+> index 2b20994d809e..e86b6f51fb64 100644
+> --- a/include/asm-generic/mshyperv.h
+> +++ b/include/asm-generic/mshyperv.h
+> @@ -25,7 +25,7 @@
+>  #include <linux/cpumask.h>
+>  #include <linux/nmi.h>
+>  #include <asm/ptrace.h>
+> -#include <asm/hyperv-tlfs.h>
+> +#include <asm-generic/hyperv-defs.h>
+>  
+>  #define VTPM_BASE_ADDRESS 0xfed40000
+>  
+> diff --git a/include/linux/hyperv.h b/include/linux/hyperv.h
+> index f90de5abcd50..66ed8b3e5d89 100644
+> --- a/include/linux/hyperv.h
+> +++ b/include/linux/hyperv.h
+> @@ -24,7 +24,7 @@
+>  #include <linux/mod_devicetable.h>
+>  #include <linux/interrupt.h>
+>  #include <linux/reciprocal_div.h>
+> -#include <asm/hyperv-tlfs.h>
+> +#include <asm-generic/hyperv-defs.h>
+>  
+>  #define MAX_PAGE_BUFFER_COUNT				32
+>  #define MAX_MULTIPAGE_BUFFER_COUNT			32 /* 128K */
+> -- 
+> 2.25.1
+> 
