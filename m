@@ -2,179 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BC78476E8DB
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 14:54:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 35A2876E8DD
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 14:55:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234490AbjHCMyc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Aug 2023 08:54:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49144 "EHLO
+        id S235132AbjHCMzs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Aug 2023 08:55:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49578 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229924AbjHCMya (ORCPT
+        with ESMTP id S229924AbjHCMzp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Aug 2023 08:54:30 -0400
-Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 404F91BFA;
-        Thu,  3 Aug 2023 05:54:29 -0700 (PDT)
-Received: by mail-ed1-x530.google.com with SMTP id 4fb4d7f45d1cf-5227e5d9d96so1184741a12.2;
-        Thu, 03 Aug 2023 05:54:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1691067268; x=1691672068;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=AcmYW4JGGVC6YTvPh0NOYo5Pg9VZn0CcBiPbWpP9P3U=;
-        b=lTHVvqJCc/AAtRNei1xoC2/uCeN1Pv8H0itOFjf5T5PxKAQP3LUHaeigGEYyxgNCry
-         Kx4wKAW3/AjhGu7EROypR7jKG/iZvcyQusIezZgQs8QCxlC7N0s42wISiGFCwZWRh4ds
-         Va0ZEqH0L2nvLcrYqKe2n/TvQ3EydmSRj/XDJLWIhHeaELJCO0h+U/HXkewTaSzakyol
-         jOC0zOu1G4TjNigbfFN28eUmaiTHu04cMY1D9708Y6qrqqdz6nkVgYZr/Df2hIQJhIO7
-         wkKxgu5hrm21imuEkAKvn3fhEth/I0thWn75oafagmDi0Vyrtpv1YZJc32ANxq700jEQ
-         PtmA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691067268; x=1691672068;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=AcmYW4JGGVC6YTvPh0NOYo5Pg9VZn0CcBiPbWpP9P3U=;
-        b=T47zqv0F5+6hdGiluVzE1cvH9pdPDUpKezS/daiZud+ax/rhv2UekRGz/zOEl4ADkA
-         BBVyD/oaSEJ3jXFcglKtS1TqLY/eaE3G9rxzGT/pCv443sw/N+6k2zD8eRgLsEfkS8FI
-         spJnh+GAw7IYusao5A4X9RIvlNUZjp6YyTI2CzUsbtbjbtrneVoJ4/L9XhoHarHPpOLW
-         fgnJt8SWgJFKeiRSBRLYhA5+wJpLAVPogXNEMoSVpgcKjeE0M0WFBaYXBvce63mrTRJQ
-         rGpXR9npSqsf4FcMctBYOK2zEWXuZqaJZcOFRfB8NiAYD18aSzBP32WPDvg1pFzC2SpX
-         whjw==
-X-Gm-Message-State: ABy/qLajjhRwddrjVDixAuqenIQAOwJIjHcWZ3smr889k6hdCCrnv6KV
-        g+i024mC75YWgJ4lYnJZ+plF8n7uviB3Ngh9wt0=
-X-Google-Smtp-Source: APBJJlFarG03EnmAWbzgK1Xn0jPX1Wn0KH73rRsnMV+EUOwNM0amgOg0CvwgCp5+Ny9ewkOhEFQw4lD6zom6imfxLlU=
-X-Received: by 2002:a05:6402:d7:b0:522:59a7:5453 with SMTP id
- i23-20020a05640200d700b0052259a75453mr6234368edu.35.1691067267543; Thu, 03
- Aug 2023 05:54:27 -0700 (PDT)
+        Thu, 3 Aug 2023 08:55:45 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 618611712
+        for <linux-kernel@vger.kernel.org>; Thu,  3 Aug 2023 05:55:44 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id D9EFC61D85
+        for <linux-kernel@vger.kernel.org>; Thu,  3 Aug 2023 12:55:43 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 21202C433C8;
+        Thu,  3 Aug 2023 12:55:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1691067343;
+        bh=GhmWwQWMZjJg/eGpXkU3AgopEMscfS5D4Dor979ob8c=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=dvRmOH831+pqhZHhKsHSaiHkJOMtiL241WzFcGB2utZAUuahi0yp3FqdSCC/u4tF7
+         AhTpYtOPJ/wDhlQ1PfZAzXijJmtgCio2MMfqDnqqRbU/WNFII3KsWVUMy2DE8yfu/n
+         rAViT3AaaJNMGdX7Yyl7w/ckImq62lVTrRrf/3wrJHT67MNWpxNUmmOCCMnZ6qB1y9
+         5R6s7wbeLRm2ioTPtiZT4bbiJZZOfWYC3lYFq6NEcfTK+/CmRpq5WEJQ0XH7bRMWbG
+         Bbt0nJ82xqJynIwryPSM1ws4WggJo/VoAfsVj3XRm+WrcCDM6Sh7dUVlLOaomxSTGK
+         222NuFAoKZ0Vw==
+Message-ID: <cc24e860-7d6f-7ec8-49cb-a49cb066f618@kernel.org>
+Date:   Thu, 3 Aug 2023 14:55:37 +0200
 MIME-Version: 1.0
-References: <20230803083352.1585-1-zegao@tencent.com> <20230803083352.1585-4-zegao@tencent.com>
- <20230803051826.25ba7973@gandalf.local.home>
-In-Reply-To: <20230803051826.25ba7973@gandalf.local.home>
-From:   Ze Gao <zegao2021@gmail.com>
-Date:   Thu, 3 Aug 2023 20:54:16 +0800
-Message-ID: <CAD8CoPBkK64H0UE+_K9yxmiq-kMTvuM=N3S_H1bhdQuJ2JV2Jg@mail.gmail.com>
-Subject: Re: [RFC PATCH v6 3/5] sched, tracing: reorganize fields of switch
- event struct
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     Adrian Hunter <adrian.hunter@intel.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Ian Rogers <irogers@google.com>,
-        Ingo Molnar <mingo@redhat.com>, Jiri Olsa <jolsa@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
-        linux-trace-kernel@vger.kernel.org, Ze Gao <zegao@tencent.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH V3 net-next] net: fec: add XDP_TX feature support
+Content-Language: en-US
+To:     Wei Fang <wei.fang@nxp.com>,
+        Jesper Dangaard Brouer <jbrouer@redhat.com>,
+        Jakub Kicinski <kuba@kernel.org>
+Cc:     "brouer@redhat.com" <brouer@redhat.com>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "edumazet@google.com" <edumazet@google.com>,
+        "pabeni@redhat.com" <pabeni@redhat.com>,
+        Shenwei Wang <shenwei.wang@nxp.com>,
+        Clark Wang <xiaoning.wang@nxp.com>,
+        "ast@kernel.org" <ast@kernel.org>,
+        "daniel@iogearbox.net" <daniel@iogearbox.net>,
+        "john.fastabend@gmail.com" <john.fastabend@gmail.com>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        dl-linux-imx <linux-imx@nxp.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        Andrew Lunn <andrew@lunn.ch>
+References: <20230731060025.3117343-1-wei.fang@nxp.com>
+ <20230802104706.5ce541e9@kernel.org>
+ <AM5PR04MB313985C61D92E183238809138808A@AM5PR04MB3139.eurprd04.prod.outlook.com>
+ <1bf41ea8-5131-7d54-c373-00c1fbcac095@redhat.com>
+ <AM5PR04MB31398ABF941EBDD0907E845B8808A@AM5PR04MB3139.eurprd04.prod.outlook.com>
+From:   Jesper Dangaard Brouer <hawk@kernel.org>
+In-Reply-To: <AM5PR04MB31398ABF941EBDD0907E845B8808A@AM5PR04MB3139.eurprd04.prod.outlook.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-7.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_HI,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 3, 2023 at 5:18=E2=80=AFPM Steven Rostedt <rostedt@goodmis.org>=
- wrote:
->
-> On Thu,  3 Aug 2023 04:33:50 -0400
-> Ze Gao <zegao2021@gmail.com> wrote:
->
-> > Report prioritiy and prev_state in 'short' to save some buffer
-> > space. And also reorder the fields so that we take struct
-> > alignment into consideration to make the record compact.
->
-> If I were to write this, I would have wrote:
->
->   The prev_state field in the sched_switch event is assigned by
->   __trace_sched_switch_state(). The largest number that function will ret=
-urn
->   is TASK_REPORT_MAX which is just 0x100. There's no reason that the
->   prev_state field is a full 32 bits when it is using just 9 bits max. In
->   order to save space on the ring buffer, shrink the prev_state to 16 bit=
-s
->   (short).
->
->   Also, change the positions of the other fields to accommodate the short
->   value of prev_state to eliminate any holes that were created in the
->   structure.
->
-> See the difference?
->
-> >
-> >  #ifdef CREATE_TRACE_POINTS
-> > -static inline long __trace_sched_switch_state(bool preempt,
-> > +static inline short __trace_sched_switch_state(bool preempt,
-> >                                             unsigned int prev_state,
-> >                                             struct task_struct *p)
-> >  {
-> >       unsigned int state;
-> >
-> >  #ifdef CONFIG_SCHED_DEBUG
-> > -     BUG_ON(p !=3D current);
-> > +     WARN_ON_ONCE(p !=3D current);
-> >  #endif /* CONFIG_SCHED_DEBUG */
->
-> The above needs to be a separate patch.
 
-I've moved this to a new patch, and this is the changelog:
 
-    sched, tracing: change BUG_ON to WARN_ON_ONCE in __trace_sched_switch_s=
-tate
+On 03/08/2023 13.18, Wei Fang wrote:
+>> On 03/08/2023 05.58, Wei Fang wrote:
+>>>>>                    } else {
+>>>>> -                 xdp_return_frame(xdpf);
+>>>>> +                 xdp_return_frame_rx_napi(xdpf);
+>>>> If you implement Jesper's syncing suggestions, I think you can use
+>>>>
+>>>>     page_pool_put_page(pool, page, 0, true);
+>> To Jakub, using 0 here you are trying to bypass the DMA-sync (which is valid
+>> as driver knows XDP_TX have already done the sync).
+>> The code will still call into DMA-sync calls with zero as size, so wonder if we
+>> should detect size zero and skip that call?
+>> (I mean is this something page_pool should support.)
+>>
+[...]
+>>
+>>
+>>>> for XDP_TX here to avoid the DMA sync on page recycle.
+>>> I tried Jasper's syncing suggestion and used page_pool_put_page() to
+>>> recycle pages, but the results does not seem to improve the
+>>> performance of XDP_TX,
+>> The optimization will only have effect on those devices which have
+>> dev->dma_coherent=false else DMA function [1] (e.g.
+>> dma_direct_sync_single_for_device) will skip the sync calls.
+>>
+>>  [1] https://elixir.bootlin.com/linux/v6.5-rc4/source/kernel/dma/direct.h#L63
+>>
+>> (Cc. Andrew Lunn)
+>> Does any of the imx generations have dma-noncoherent memory?
+>>
+>> And does any of these use the fec NIC driver?
+>>
+>>> it even degrades the speed.
+>> 
+>> Could be low runs simply be a variation between your test runs?
+>>
+> Maybe, I just tested once before. So I test several times again, the
+> results of the two methods do not seem to be much different so far,
+> both about 255000 pkt/s.
+> 
+>> The specific device (imx8mpevk) this was tested on, clearly have
+>> dma_coherent=true, or else we would have seen a difference.
+>> But the code change should not have any overhead for the
+>> dma_coherent=true case, the only extra overhead is the extra empty DMA
+>> sync call with size zero (as discussed in top).
+>>
+> The FEC of i.MX8MP-EVK has dma_coherent=false, and as I mentioned
+> above, I did not see an obvious difference in the performance. :(
 
-    BUG_ON() was introduced in 2014 and old, and we
-    switch it to WARN_ON_ONCE() to not to crash the
-    kernel when the sched-out task is unexpected than
-    the current, as suggested by Steven.
+That is surprising - given the results.
 
-    Signed-off-by: Ze Gao <zegao@tencent.com>
+(see below, lack of perf/diff might be caused by Ethernet flow-control).
 
-Regards,
-Ze
+> 
+>>> The result of the current modification.
+>>> root@imx8mpevk:~# ./xdp2 eth0
+>>> proto 17:     260180 pkt/s
+>>
+>> These results are*significantly*  better than reported in patch-1.
+>> What happened?!?
+>>
+> The test environment is slightly different, in patch-1, the FEC port was
+> directly connected to the port of another board. But in the latest test,
+> the ports of the two boards were connected to a switch, so the ports of
+> the two boards are not directly connected.
+> 
 
-> >
-> >       /*
-> > @@ -229,23 +229,23 @@ TRACE_EVENT(sched_switch,
-> >       TP_ARGS(preempt, prev, next, prev_state),
-> >
-> >       TP_STRUCT__entry(
-> > -             __array(        char,   prev_comm,      TASK_COMM_LEN   )
-> >               __field(        pid_t,  prev_pid                        )
-> > -             __field(        int,    prev_prio                       )
-> > -             __field(        long,   prev_state                      )
-> > -             __array(        char,   next_comm,      TASK_COMM_LEN   )
-> >               __field(        pid_t,  next_pid                        )
-> > -             __field(        int,    next_prio                       )
-> > +             __field(        short,  prev_prio                       )
-> > +             __field(        short,  next_prio                       )
-> > +             __array(        char,   prev_comm,      TASK_COMM_LEN   )
-> > +             __array(        char,   next_comm,      TASK_COMM_LEN   )
-> > +             __field(        short,  prev_state                      )
-> >       ),
-> >
-> >       TP_fast_assign(
-> > -             memcpy(__entry->next_comm, next->comm, TASK_COMM_LEN);
-> > -             __entry->prev_pid       =3D prev->pid;
-> > -             __entry->prev_prio      =3D prev->prio;
-> > -             __entry->prev_state     =3D __trace_sched_switch_state(pr=
-eempt, prev_state, prev);
-> > +             __entry->prev_pid               =3D prev->pid;
-> > +             __entry->next_pid               =3D next->pid;
-> > +             __entry->prev_prio              =3D (short) prev->prio;
-> > +             __entry->next_prio              =3D (short) next->prio;
-> >               memcpy(__entry->prev_comm, prev->comm, TASK_COMM_LEN);
-> > -             __entry->next_pid       =3D next->pid;
-> > -             __entry->next_prio      =3D next->prio;
-> > +             memcpy(__entry->next_comm, next->comm, TASK_COMM_LEN);
-> > +             __entry->prev_state             =3D __trace_sched_switch_=
-state(preempt, prev_state, prev);
-> >               /* XXX SCHED_DEADLINE */
-> >       ),
-> >
->
+Hmm, I've seen this kind of perf behavior of direct-connected or via
+switch before. The mistake I made was, that I had not disabled Ethernet
+flow-control.  The xdp2 XDP_TX program will swap the mac addresses, and
+send the packet back to the packet generator (running pktgen), which
+will get overloaded itself and starts sending Ethernet flow-control
+pause frames.
+
+Command line to disable:
+  # ethtool -A eth0 rx off tx off
+
+Can I ask/get you to make sure that Ethernet flow-control is disabled
+(on both generator and DUT (to be on safe-side)) and run the test again?
+
+--Jesper
+
+>> e.g.
+>>    root@imx8mpevk:~# ./xdp2 eth0
+>>    proto 17:     135817 pkt/s
+>>    proto 17:     142776 pkt/s
+>>
+>>> proto 17:     260373 pkt/s
+>>> proto 17:     260363 pkt/s
+>>> proto 17:     259036 pkt/s
+[...]
+>>>
+>>> After using the sync suggestion, the result shows as follow.
+>>> root@imx8mpevk:~# ./xdp2 eth0
+>>> proto 17:     255956 pkt/s
+>>> proto 17:     255841 pkt/s
+>>> proto 17:     255835 pkt/s
