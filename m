@@ -2,73 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EB40376F42C
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 22:47:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 149E276F42A
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 22:46:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232242AbjHCUrS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Aug 2023 16:47:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53788 "EHLO
+        id S229879AbjHCUqo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Aug 2023 16:46:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53340 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232222AbjHCUrN (ORCPT
+        with ESMTP id S230393AbjHCUql (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Aug 2023 16:47:13 -0400
-Received: from mail-qt1-x830.google.com (mail-qt1-x830.google.com [IPv6:2607:f8b0:4864:20::830])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68D1D44AB
-        for <linux-kernel@vger.kernel.org>; Thu,  3 Aug 2023 13:47:02 -0700 (PDT)
-Received: by mail-qt1-x830.google.com with SMTP id d75a77b69052e-407db3e9669so22571cf.1
-        for <linux-kernel@vger.kernel.org>; Thu, 03 Aug 2023 13:47:02 -0700 (PDT)
+        Thu, 3 Aug 2023 16:46:41 -0400
+Received: from mail-yw1-x114a.google.com (mail-yw1-x114a.google.com [IPv6:2607:f8b0:4864:20::114a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67320358D
+        for <linux-kernel@vger.kernel.org>; Thu,  3 Aug 2023 13:46:37 -0700 (PDT)
+Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-586a6269dbfso1267717b3.1
+        for <linux-kernel@vger.kernel.org>; Thu, 03 Aug 2023 13:46:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1691095621; x=1691700421;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=QBG66oV9M3i8nb1aREffuxZFPEb9Uhyo/aCShL7gQx8=;
-        b=zCDXZdoqGLts5JkBxWgjTn7HX0P9lrbxt1E+j6GydaPp/EqpJODluHyNYUe+FFwAeJ
-         EzHCj4QPdEePGFf0KC6ZwzKK45YkvBQwUjuowCS+t1wH4+nKlbknKjShxaOESs0/qRHr
-         phQu4PvmRFinykx0kJKX6MspQvg9qUGliHnJ38O60m9W//ThV8B7b9T/sjZ5IxpgBCwj
-         s66gczDYtX2fpEII7KiXVSOJnlpTwoMa2V4rtyMHvBtuahihXbiyZfObEETh1FEXTVYK
-         VFeWH7movu/EY/2clu5iPSNQGCj0BVq/CUGb03ou4isJIbohFbsjGy90F8Q1Te3MDlRd
-         ADeQ==
+        d=google.com; s=20221208; t=1691095596; x=1691700396;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=lAj7Kn9ZVU1EdKyXKDleCAun0XcKoAg24+NEl4ASQzg=;
+        b=MbkjwPCXOqlHnwsHwnZmTYoUDzajIuJh8MTGZfJeFxqPc1s9L4SYOjTBSPqMHeTTWQ
+         4tGClw9RMUWaG/0kpzyWVJ+exdJ8EtbaTLcMebyCv8Z64xvzdARWSj2z3cgEFAg1ZrBG
+         axRoWOIlWUW7JvTBvzUXIiM8XKB0W6Iyq2G6l69fxpxC3989tzSvWfqkNjehICVPCPxb
+         L+Yx8+Z6F5dQ09wGn4qR6BoDTcodmbxBI1uvvgFfXfgXgdEZFW6ZB0R0kWAU3GJR8f0W
+         ZzqC6hIlOKxyy+IS011UTebs6CnF37n/jgsB+FAtVzg5lL+asbcZY4uhyjAqGWT4Q5sF
+         QmaQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691095621; x=1691700421;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=QBG66oV9M3i8nb1aREffuxZFPEb9Uhyo/aCShL7gQx8=;
-        b=IcRiShi9qbYYoPPsb0iJwuZ36uRVHtCVFkQ1I3T8rHyIZW6zPtfC/VVVYI9qDj32UD
-         Q5qTQAZUE9RgcMAqkqKiu7GmAalCKUXOjLdsdz4b0amcEm4gEl50LFaZfvM0Uq6Zdfp6
-         X9jATLUv7VI0WRs3IOdIVCYKdyoGGdJW8IGgpTsaWDHCF8+bzZ0KCJhA3qviQCpkZg0j
-         eN/AIrPYa3WdV7IBzZW5i6HNniSf+THkp5uw3dqnXJ1LsEvb6yQrAu8aSBkXyQoVO2We
-         oom5GgUg6f4E9aQo0SNXafz/5UYGoiU1b7kmbKO30MWq7BisInF6nehFuNjL6e6JxlcK
-         7IrA==
-X-Gm-Message-State: AOJu0Yxx/2/P/x4IOMjzxLr73NvOkEnGojUDOOHs9jx9h2TkmXXsvib9
-        TjzNVhFU/ykU1wy+5XvQdOMGMpEEEW2tzvJnxqWM4A==
-X-Google-Smtp-Source: AGHT+IEdgeMssYgkzrO6SBZ/o4UiOXS8RvE2r0xaLvZhKBjn7l5c7r2RpdmOKCQ427vYXukxwFiWZXjUggeonWTDg7I=
-X-Received: by 2002:a05:622a:55:b0:3f2:1441:3c11 with SMTP id
- y21-20020a05622a005500b003f214413c11mr46781qtw.2.1691095621340; Thu, 03 Aug
- 2023 13:47:01 -0700 (PDT)
-MIME-Version: 1.0
-References: <20230728161356.1784568-1-fengwei.yin@intel.com>
- <3bbfde16-ced1-dca8-6a3f-da893e045bc5@arm.com> <56c8f4f9-b54b-b0bb-250c-ec8643accfc7@intel.com>
- <3541d2de-5cf8-2f84-8153-277e2bfc0101@arm.com> <5f98748a-97ca-6426-1e24-a5675da75381@intel.com>
- <a590da86-0c42-7d46-d320-c661a59a46c1@arm.com> <837ba176-c97f-f81b-c044-eb6aa3d88bb7@intel.com>
-In-Reply-To: <837ba176-c97f-f81b-c044-eb6aa3d88bb7@intel.com>
-From:   Yu Zhao <yuzhao@google.com>
-Date:   Thu, 3 Aug 2023 14:46:23 -0600
-Message-ID: <CAOUHufY9EQ70Pn-n2zVa9=Gm3-WHxxphp7VHia4qv9x2domdbg@mail.gmail.com>
-Subject: Re: [PATCH 0/2] don't use mapcount() to check large folio sharing
-To:     "Yin, Fengwei" <fengwei.yin@intel.com>
-Cc:     Ryan Roberts <ryan.roberts@arm.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        akpm@linux-foundation.org, willy@infradead.org,
-        vishal.moola@gmail.com, wangkefeng.wang@huawei.com,
-        minchan@kernel.org, david@redhat.com, shy828301@gmail.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        d=1e100.net; s=20221208; t=1691095596; x=1691700396;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=lAj7Kn9ZVU1EdKyXKDleCAun0XcKoAg24+NEl4ASQzg=;
+        b=RYUumLNQbyF+B5omLmHje+4fKfePs1EPKvPXXO6NQShu2lhyo1nkw8XlvCWVL+2IMv
+         dkEnEhB7LyCdq6WCib1k9XQIPFGyn92olX6uRQvWVF5PNdh6Q6XFrxI+bjXzsJmc46/I
+         gcB0/4S/ftEi9DVhf0AhMjs/sMviDl0kz7GS4RWzSuJvwW2+9MPTCKdN2d0CwZTijLHo
+         kghULn0prATGudU4Is9KswQJV9XPSDS2OlJL1QNSrMHYdxYE4zToDYEHZT++JdX64wVd
+         xeOCwkg8JY6T7QFDBAvhC9Y/sy3B62bJU+kCtjRRvZ11tKRjRof2khiQdLhF14i/Kyde
+         uiSA==
+X-Gm-Message-State: AOJu0YxBI4A7d+qjGr374qAEDGPXI5TtiP8X5NoU28VVqWCqexWUkVdY
+        wo+8WTAs1zTInp01p6N4gOSdjx3Z97A=
+X-Google-Smtp-Source: AGHT+IE+az8JE2LQ+ccKdt31OYl1qZEcHJ38Yw6hFrfDo6irLJ8JPMvMqhO24gEuy1eCM3BsxkN4YQzh/hY=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a05:690c:c81:b0:586:88d5:9434 with SMTP id
+ cm1-20020a05690c0c8100b0058688d59434mr75210ywb.1.1691095596679; Thu, 03 Aug
+ 2023 13:46:36 -0700 (PDT)
+Date:   Thu, 3 Aug 2023 20:46:35 +0000
+In-Reply-To: <CALcu4rbFrU4go8sBHk3FreP+qjgtZCGcYNpSiEXOLm==qFv7iQ@mail.gmail.com>
+Mime-Version: 1.0
+References: <CALcu4rbFrU4go8sBHk3FreP+qjgtZCGcYNpSiEXOLm==qFv7iQ@mail.gmail.com>
+Message-ID: <ZMwSKy09gsa/dL08@google.com>
+Subject: Re: WARNING in kvm_arch_vcpu_ioctl_run
+From:   Sean Christopherson <seanjc@google.com>
+To:     Yikebaer Aizezi <yikebaer61@gmail.com>
+Cc:     pbonzini@redhat.com, tglx@linutronix.de, mingo@redhat.com,
+        bp@alien8.de, dave.hansen@linux.intel.com, x86@kernel.org,
+        hpa@zytor.com, jarkko@kernel.org, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-sgx@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL
         autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -76,81 +69,67 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 2, 2023 at 6:56=E2=80=AFAM Yin, Fengwei <fengwei.yin@intel.com>=
- wrote:
->
->
->
-> On 8/2/2023 8:49 PM, Ryan Roberts wrote:
-> > On 02/08/2023 13:42, Yin, Fengwei wrote:
-> >>
-> >>
-> >> On 8/2/2023 8:40 PM, Ryan Roberts wrote:
-> >>> On 02/08/2023 13:35, Yin, Fengwei wrote:
-> >>>>
-> >>>>
-> >>>> On 8/2/2023 6:27 PM, Ryan Roberts wrote:
-> >>>>> On 28/07/2023 17:13, Yin Fengwei wrote:
-> >>>>>> In madvise_cold_or_pageout_pte_range() and madvise_free_pte_range(=
-),
-> >>>>>> folio_mapcount() is used to check whether the folio is shared. But=
- it's
-> >>>>>> not correct as folio_mapcount() returns total mapcount of large fo=
-lio.
-> >>>>>>
-> >>>>>> Use folio_estimated_sharers() here as the estimated number is enou=
-gh.
-> >>>>>>
-> >>>>>> Yin Fengwei (2):
-> >>>>>>   madvise: don't use mapcount() against large folio for sharing ch=
-eck
-> >>>>>>   madvise: don't use mapcount() against large folio for sharing ch=
-eck
-> >>>>>>
-> >>>>>>  mm/huge_memory.c | 2 +-
-> >>>>>>  mm/madvise.c     | 6 +++---
-> >>>>>>  2 files changed, 4 insertions(+), 4 deletions(-)
-> >>>>>>
-> >>>>>
-> >>>>> As a set of fixes, I agree this is definitely an improvement, so:
-> >>>>>
-> >>>>> Reviewed-By: Ryan Roberts
-> >>>> Thanks.
-> >>>>
-> >>>>>
-> >>>>>
-> >>>>> But I have a couple of comments around further improvements;
-> >>>>>
-> >>>>> Once we have the scheme that David is working on to be able to prov=
-ide precise
-> >>>>> exclusive vs shared info, we will probably want to move to that. Al=
-though that
-> >>>>> scheme will need access to the mm_struct of a process known to be m=
-apping the
-> >>>>> folio. We have that info, but its not passed to folio_estimated_sha=
-rers() so we
-> >>>>> can't just reimplement folio_estimated_sharers() - we will need to =
-rework these
-> >>>>> call sites again.
-> >>>> Yes. This could be extra work. Maybe should delay till David's work =
-is done.
-> >>>
-> >>> What you have is definitely an improvement over what was there before=
-. And is
-> >>> probably the best we can do without David's scheme. So I wouldn't del=
-ay this.
-> >>> Just pointing out that we will be able to make it even better later o=
-n (if
-> >>> David's stuff goes in).
-> >> Yes. I agree that we should wait for David's work ready and do fix bas=
-ed on that.
-> >
-> > I was suggesting the opposite - not waiting. Then we can do separate im=
-provement
-> > later.
-> Let's wait for David's work ready.
+On Thu, Jul 27, 2023, Yikebaer Aizezi wrote:
+> Hello, I'm sorry for the mistake in my previous email. I forgot to add
+> a subject. This is my second attempt to send the message.
+> 
+> When using Healer to fuzz the latest Linux kernel, the following crash
+> was triggered.
+> 
+> HEAD commit: fdf0eaf11452d72945af31804e2a1048ee1b574c (tag: v6.5-rc2)
+> 
+> git tree: upstream
+> 
+> console output:
+> https://drive.google.com/file/d/1FiemC_AWRT-6EGscpQJZNzYhXZty6BVr/view?usp=drive_link
+> kernel config: https://drive.google.com/file/d/1fgPLKOw7QbKzhK6ya5KUyKyFhumQgunw/view?usp=drive_link
+> C reproducer: https://drive.google.com/file/d/1SiLpYTZ7Du39ubgf1k1BIPlu9ZvMjiWZ/view?usp=drive_link
+> Syzlang reproducer:
+> https://drive.google.com/file/d/1eWSmwvNGOlZNU-0-xsKhUgZ4WG2VLZL5/view?usp=drive_link
+> Similar report:
+> https://groups.google.com/g/syzkaller-bugs/c/C2ud-S1Thh0/m/z4iI7l_dAgAJ
+> 
+> If you fix this issue, please add the following tag to the commit:
+> Reported-by: Yikebaer Aizezi <yikebaer61@gmail.com>
+> 
+> kvm: vcpu 129: requested lapic timer restore with starting count
+> register 0x390=4241646265 (4241646265 ns) > initial count (296265111
+> ns). Using initial count to start timer.
+> ------------[ cut here ]------------
+> WARNING: CPU: 0 PID: 1977 at arch/x86/kvm/x86.c:11098
+> kvm_arch_vcpu_ioctl_run+0x152f/0x1830 arch/x86/kvm/x86.c:11098
 
-Waiting is fine as long as we don't miss the next merge window -- we
-don't want these two bugs to get into another release. Also I think we
-should cc stable, since as David mentioned, they have been causing
-selftest failures.
+Well that's annoying.  The WARN is a sanity check that KVM doesn't somehow put
+the guest into an uninitialized state while emulating the guest's APIC timer, but
+I completely overlooked the fact that userspace can simply stuff the should-be-
+impossible guest state. *sigh*
+
+Sadly, I think the most reasonable thing to do is to simply drop the sanity check :-(
+
+diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+index 0145d844283b..e9e262b244b8 100644
+--- a/arch/x86/kvm/x86.c
++++ b/arch/x86/kvm/x86.c
+@@ -11091,12 +11091,17 @@ int kvm_arch_vcpu_ioctl_run(struct kvm_vcpu *vcpu)
+                        r = -EINTR;
+                        goto out;
+                }
++
+                /*
+-                * It should be impossible for the hypervisor timer to be in
+-                * use before KVM has ever run the vCPU.
++                * Don't bother switching APIC timer emulation from the
++                * hypervisor timer to the software timer, the only way for the
++                * APIC timer to be active is if userspace stuffed vCPU state,
++                * i.e. put the vCPU and into a nonsensical state.  The only
++                * transition out of UNINITIALIZED (without more state stuffing
++                * from userspace) is an INIT, which will reset the local APIC
++                * and thus smother the timer anyways, i.e. APIC timer IRQs
++                * will be dropped no matter what.
+                 */
+-               WARN_ON_ONCE(kvm_lapic_hv_timer_in_use(vcpu));
+-
+                kvm_vcpu_srcu_read_unlock(vcpu);
+                kvm_vcpu_block(vcpu);
+                kvm_vcpu_srcu_read_lock(vcpu);
+
