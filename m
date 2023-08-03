@@ -2,58 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 74AFC76E420
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 11:17:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 44F2776E423
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 11:18:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234404AbjHCJQs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Aug 2023 05:16:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53078 "EHLO
+        id S233283AbjHCJSO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Aug 2023 05:18:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53888 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234093AbjHCJQl (ORCPT
+        with ESMTP id S235014AbjHCJRY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Aug 2023 05:16:41 -0400
-Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 52A38E7;
-        Thu,  3 Aug 2023 02:16:40 -0700 (PDT)
-Received: from loongson.cn (unknown [10.20.42.43])
-        by gateway (Coremail) with SMTP id _____8CxLOt2cMtkzJoPAA--.30887S3;
-        Thu, 03 Aug 2023 17:16:38 +0800 (CST)
-Received: from openarena.loongson.cn (unknown [10.20.42.43])
-        by localhost.localdomain (Coremail) with SMTP id AQAAf8CxF811cMtkn_lGAA--.49739S2;
-        Thu, 03 Aug 2023 17:16:37 +0800 (CST)
-From:   Sui Jingfeng <suijingfeng@loongson.cn>
-To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Sui Jingfeng <suijingfeng@loongson.cn>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jesse Brandeburg <jesse.brandeburg@intel.com>,
-        Tony Nguyen <anthony.l.nguyen@intel.com>,
-        Lukas Bulwahn <lukas.bulwahn@gmail.com>,
-        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] Mips: loongson3_defconfig: Enable ast drm driver by default
-Date:   Thu,  3 Aug 2023 17:16:37 +0800
-Message-Id: <20230803091637.971924-1-suijingfeng@loongson.cn>
-X-Mailer: git-send-email 2.34.1
+        Thu, 3 Aug 2023 05:17:24 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D78C430D2;
+        Thu,  3 Aug 2023 02:17:16 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 4238A219CB;
+        Thu,  3 Aug 2023 09:17:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1691054235; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=ZnMoWEEpAsUPtzHKTEyf3AXNncjwngOjcJYgFuxitFU=;
+        b=Vli1TgXK3idTK2YIoKvKoLGunLGeyq34SmTTNZ3KnmH7lPjGBV7f+Z2S9a0PNoqt7EQsAM
+        QOujKeAmIuZ0Mx1rqIBP9RCoIA0aRyDnugN7s6/kkPZ4L7GGla/OnsrPtrAT28rmrm3Sw9
+        986gTtv2dW4Q73IlgvNaYkZ7nKrgVb8=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1691054235;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=ZnMoWEEpAsUPtzHKTEyf3AXNncjwngOjcJYgFuxitFU=;
+        b=kHOzd5ikuBiXaDMrk3M+0w3w2GPatGUoRW5JSLvdteZp4OEtG/tiIBXFN29cHlC27J3mAX
+        A4Tp3Oxbh9IkXZDg==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id C0D911333C;
+        Thu,  3 Aug 2023 09:17:14 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id xYAdLJpwy2TEbQAAMHmgww
+        (envelope-from <lhenriques@suse.de>); Thu, 03 Aug 2023 09:17:14 +0000
+Received: from localhost (brahms.olymp [local])
+        by brahms.olymp (OpenSMTPD) with ESMTPA id 53a1b5e5;
+        Thu, 3 Aug 2023 09:17:14 +0000 (UTC)
+From:   =?UTF-8?q?Lu=C3=ADs=20Henriques?= <lhenriques@suse.de>
+To:     Theodore Ts'o <tytso@mit.edu>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Daniel Rosenberg <drosen@google.com>,
+        Eric Biggers <ebiggers@kernel.org>
+Cc:     linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
+        =?UTF-8?q?Lu=C3=ADs=20Henriques?= <lhenriques@suse.de>
+Subject: [PATCH v3] ext4: fix memory leaks in ext4_fname_{setup_filename,prepare_lookup}
+Date:   Thu,  3 Aug 2023 10:17:13 +0100
+Message-Id: <20230803091713.13239-1-lhenriques@suse.de>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: AQAAf8CxF811cMtkn_lGAA--.49739S2
-X-CM-SenderInfo: xvxlyxpqjiv03j6o00pqjv00gofq/
-X-Coremail-Antispam: 1Uk129KBj9xXoWrZrW8Cw1kGF45tw1fGF1rAFc_yoWfAwc_tF
-        y2k3W8ur4FyFZFgrWxXw1rur4a9a4Uu3WrCF17Jry3Z3yjvr43XryvyryUGFn8W34DK3yf
-        Xay8AFy2kF1ftosvyTuYvTs0mTUanT9S1TB71UUUUUDqnTZGkaVYY2UrUUUUj1kv1TuYvT
-        s0mT0YCTnIWjqI5I8CrVACY4xI64kE6c02F40Ex7xfYxn0WfASr-VFAUDa7-sFnT9fnUUI
-        cSsGvfJTRUUUb28YFVCjjxCrM7AC8VAFwI0_Jr0_Gr1l1xkIjI8I6I8E6xAIw20EY4v20x
-        vaj40_Wr0E3s1l1IIY67AEw4v_Jrv_JF1l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxS
-        w2x7M28EF7xvwVC0I7IYx2IY67AKxVW8JVW5JwA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxV
-        W8JVWxJwA2z4x0Y4vEx4A2jsIE14v26r4UJVWxJr1l84ACjcxK6I8E87Iv6xkF7I0E14v2
-        6r4UJVWxJr1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqjxCEc2xF0cIa020Ex4CE44I27w
-        Aqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jw0_WrylYx0Ex4A2jsIE
-        14v26r4j6F4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwIxGrwCF04k20xvY0x
-        0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E
-        7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jw0_GFylIxkGc2Ij64vIr41lIxAIcV
-        C0I7IYx2IY67AKxVWUCVW8JwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Gr0_Cr1lIxAIcVCF
-        04k26cxKx2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14v26r4j6F4UMIIF0xvEx4A2jsIEc7
-        CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x07josjUUUUUU=
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
         SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -62,30 +73,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-ASpeed GPU is typically found on the Loongson server platform, as a
-peripheral device driver, it generally should be compiled as a module.
+If the filename casefolding fails, we'll be leaking memory from the
+fscrypt_name struct, namely from the 'crypto_buf.name' member.
 
-Tested on loongson 3B4000 server[1].
+Make sure we free it in the error path on both ext4_fname_setup_filename()
+and ext4_fname_prepare_lookup() functions.
 
-[1] https://github.com/loongson-gfx/loongson_boards/tree/main/ls3b4000x2_server
-
-Signed-off-by: Sui Jingfeng <suijingfeng@loongson.cn>
+Fixes: 1ae98e295fa2 ("ext4: optimize match for casefolded encrypted dirs")
+Signed-off-by: Luís Henriques <lhenriques@suse.de>
 ---
- arch/mips/configs/loongson3_defconfig | 1 +
- 1 file changed, 1 insertion(+)
+Changes since v2:
+- Rephrased commit log to (hopefully!) make it more clear.
+- Use ext4_fname_free_filename() instead of fscrypt_free_filename().
+  Although not strictly needed, it cleans up the fname struct, removing a
+  dangling pointer to freed memory.
 
-diff --git a/arch/mips/configs/loongson3_defconfig b/arch/mips/configs/loongson3_defconfig
-index 3087e64e6ebe..a9fadea72da5 100644
---- a/arch/mips/configs/loongson3_defconfig
-+++ b/arch/mips/configs/loongson3_defconfig
-@@ -283,6 +283,7 @@ CONFIG_DRM_AMDGPU_USERPTR=y
- CONFIG_DRM_AMD_ACP=y
- CONFIG_DRM_AMD_DC=y
- CONFIG_DRM_AMD_DC_SI=y
-+CONFIG_DRM_AST=m
- CONFIG_DRM_RADEON=m
- CONFIG_DRM_QXL=y
- CONFIG_DRM_VIRTIO_GPU=y
--- 
-2.34.1
+Changes since v1:
+- Include fix to ext4_fname_prepare_lookup() as well
+- Add 'Fixes:' tag
 
+ fs/ext4/crypto.c | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/fs/ext4/crypto.c b/fs/ext4/crypto.c
+index e20ac0654b3f..453d4da5de52 100644
+--- a/fs/ext4/crypto.c
++++ b/fs/ext4/crypto.c
+@@ -33,6 +33,8 @@ int ext4_fname_setup_filename(struct inode *dir, const struct qstr *iname,
+ 
+ #if IS_ENABLED(CONFIG_UNICODE)
+ 	err = ext4_fname_setup_ci_filename(dir, iname, fname);
++	if (err)
++		ext4_fname_free_filename(fname);
+ #endif
+ 	return err;
+ }
+@@ -51,6 +53,8 @@ int ext4_fname_prepare_lookup(struct inode *dir, struct dentry *dentry,
+ 
+ #if IS_ENABLED(CONFIG_UNICODE)
+ 	err = ext4_fname_setup_ci_filename(dir, &dentry->d_name, fname);
++	if (err)
++		ext4_fname_free_filename(fname);
+ #endif
+ 	return err;
+ }
