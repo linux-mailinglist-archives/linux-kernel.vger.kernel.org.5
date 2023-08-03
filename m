@@ -2,88 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3DDDF76DFE4
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 07:49:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 688B776DFE7
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 07:52:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232465AbjHCFto (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Aug 2023 01:49:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58880 "EHLO
+        id S232506AbjHCFwH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Aug 2023 01:52:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59394 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229924AbjHCFtl (ORCPT
+        with ESMTP id S229924AbjHCFwE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Aug 2023 01:49:41 -0400
-Received: from mail-yw1-x1135.google.com (mail-yw1-x1135.google.com [IPv6:2607:f8b0:4864:20::1135])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B3712D49
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Aug 2023 22:49:40 -0700 (PDT)
-Received: by mail-yw1-x1135.google.com with SMTP id 00721157ae682-583f036d50bso5592807b3.3
-        for <linux-kernel@vger.kernel.org>; Wed, 02 Aug 2023 22:49:40 -0700 (PDT)
+        Thu, 3 Aug 2023 01:52:04 -0400
+Received: from mail-pg1-x531.google.com (mail-pg1-x531.google.com [IPv6:2607:f8b0:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6DEF2D43
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Aug 2023 22:52:03 -0700 (PDT)
+Received: by mail-pg1-x531.google.com with SMTP id 41be03b00d2f7-53482b44007so315641a12.2
+        for <linux-kernel@vger.kernel.org>; Wed, 02 Aug 2023 22:52:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1691041779; x=1691646579;
+        d=linaro.org; s=google; t=1691041923; x=1691646723;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=kfTUi7xflA+MwfHSQqcAtzP6pql4voH5e7kvmJj7QUs=;
-        b=FnQp7K+goL5kX5YrNjoKe7RMe9oWsPBKNrqPHgFNhF3SoHfOH9xNzAX6lBHYZVXETK
-         ZLbwfN6PBwwbZgZ/VFljDwBmSqtTjVZchhSdiB+sYRwl1E+8NZ0yrUxkexmdtzCSLjeB
-         eQepK/Co4MpNaNGvZ9NG6Dhp2aJY8f1RJgNhk2x3PbIS4fhEpgPbRvW1hDMtbzh4dG2M
-         1a/DKUBjQo+rtiMCqciXA4IKmNzLvbcB2EOmhVq1S7gFZjtjb4H2lxhouJAoSVeC3uFC
-         F38QQCZjxfeksLovgnDZV7iDEJmi9J6HndbV48/lDnzFYJZZfwOPSRgGZF8YMfWKSau6
-         k3mg==
+        bh=h7Xjxw5oP4NVrDYaL/2U9f67DZbadaUYZn2oVTJWP4Y=;
+        b=c9c3oFd5ZfGep7Y6Qt5e6nDkPbJRtR9CxU7dV/wdz5TM0eBVml0MCoWf3Unmm6codE
+         cD2jDrO7kYLddk5ESrvpHQK4we0/lkaL7K719YCTkWk7uCK9NVu6RyhL6RJG3vsAcT3e
+         JsFqzczjOZTEOAKx+fkIR56RL/kRoLOaZOrMGT8/iwX2X+ZXdgt5mHXRfzlAaCynXQYg
+         U3VBfd+tGpqCING6LjH/HvNIxmfDGHjSRXFsGC1M6jMArcVmKpHj0Q7TqDWMqCo8Dptg
+         VcAZoKk6UAURY6xm1bBHbLLAX0iZ1gq6qdoaA0dbJvjHvJG6hJKjWNlm1jZGQE7lbQP/
+         4xlQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691041779; x=1691646579;
+        d=1e100.net; s=20221208; t=1691041923; x=1691646723;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=kfTUi7xflA+MwfHSQqcAtzP6pql4voH5e7kvmJj7QUs=;
-        b=cgYdsI/GnSZVshS3MptQcdq2zIhI7/i4EsL+gVylEKDywPapAfFkBYxrs2c5l5fGJL
-         rEW6TK0wJA4JYdgomfzLWKgiHwQqU8Fe1LVT2W2L3bkpKekd0QZfMHQI1Jr9P4ZGffOl
-         4gbtm6f2hDYJkJ9q4R05/di4xdrp0qbGQ/JLeyU7lP7EJUQDtg3nTFTKP8oip0p0NW2d
-         +ylKb2vFy6Vn7mTEVZZ9iguB4FMOA6YQKltJ3DHqoIAYjO55Q8PGaOSCJooDYrDxfjfn
-         H5KLIuSdtpwvALA5/MjV7Ggd7nJxsDpsDzByAwgKX57kT7XmVdSoxu/XBfmSfl7Zmo6B
-         EOWQ==
-X-Gm-Message-State: ABy/qLZayQw+uxhZ7tHuSStSNFrpp4XBnwF6NYDRK3cftJqtmZ+bXULw
-        FVPtCrYKN7V/DZULasMyOGersw==
-X-Google-Smtp-Source: APBJJlFcSTIQ6AYzinujNeqC/VSvrhCiCIXIw1zsLOZIFkGtr7963td1ne5jUS+/eqdVRHBhyxIGXw==
-X-Received: by 2002:a81:5cc1:0:b0:56f:ff55:2b7d with SMTP id q184-20020a815cc1000000b0056fff552b7dmr20769766ywb.17.1691041779473;
-        Wed, 02 Aug 2023 22:49:39 -0700 (PDT)
+        bh=h7Xjxw5oP4NVrDYaL/2U9f67DZbadaUYZn2oVTJWP4Y=;
+        b=AaJAh+5526lPlzDRWIz8q1363+STPKQBoDeFVM4GbNjxzPzJp1UZjffycrdvQeSSXg
+         0hc2+QO+2+aWOIltt1WauZPiVopRAmPeKpDtQKHqdeSh6urN5yCshgK/AfDN0y8eADQT
+         XzyM0oKjfJeP6Op8Pi6ukss7kltwNUnnSKUiQPY0NmIktaGamcaZ3dfCY/cxomOXCy7O
+         iCkTCLB6z5sxd91JwYBjhe/xBqD/Kecwtsn0/VPk0nLMKhJsL7fWaGicN/iMUV7GyMK7
+         s3B1GYZ56X6e0gZ3FCIxaQG5W7OU13I7U0YQGkumgANlh6bzRiMmUSbVL1ojcLtuIoak
+         RiEA==
+X-Gm-Message-State: ABy/qLb7OLtubKABYNugqkYqQs1e+JE2D94dOCyL/nsKV8QAYc77LjOu
+        bU82YjFNdlSZzDlOxcGmW+7TCQ==
+X-Google-Smtp-Source: APBJJlFbeznejLOl5fuDUqmAF9iajzKw8sPutb+mj1oH4M1L7QAjZN+0V0ejGcBti4J4DuXx8P9j3A==
+X-Received: by 2002:a17:902:ce86:b0:1bb:c64f:9a5e with SMTP id f6-20020a170902ce8600b001bbc64f9a5emr16747225plg.5.1691041920317;
+        Wed, 02 Aug 2023 22:52:00 -0700 (PDT)
 Received: from localhost ([122.172.87.195])
-        by smtp.gmail.com with ESMTPSA id hx11-20020a17090b440b00b00267a487f01bsm1881080pjb.48.2023.08.02.22.49.37
+        by smtp.gmail.com with ESMTPSA id iy15-20020a170903130f00b001bbb1eec92esm13383748plb.281.2023.08.02.22.51.59
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 02 Aug 2023 22:49:38 -0700 (PDT)
-Date:   Thu, 3 Aug 2023 11:19:35 +0530
+        Wed, 02 Aug 2023 22:51:59 -0700 (PDT)
+Date:   Thu, 3 Aug 2023 11:21:57 +0530
 From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Caleb Connolly <caleb.connolly@linaro.org>
-Cc:     Konrad Dybcio <konrad.dybcio@linaro.org>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
+To:     Saravana Kannan <saravanak@google.com>
+Cc:     David Dai <davidai@google.com>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
         Rob Herring <robh+dt@kernel.org>,
         Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Viresh Kumar <vireshk@kernel.org>, Nishanth Menon <nm@ti.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Niklas Cassel <nks@flawful.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
         Conor Dooley <conor+dt@kernel.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Robert Marko <robimarko@gmail.com>,
-        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-pm@vger.kernel.org,
-        Jeffrey Hugo <quic_jhugo@quicinc.com>,
-        Marijn Suijten <marijn.suijten@somainline.org>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@somainline.org>
-Subject: Re: [PATCH v13 01/10] cpufreq: blocklist MSM8998 in
- cpufreq-dt-platdev
-Message-ID: <20230803054935.y36bjdxed4yvitev@vireshk-i7>
-References: <20230217-topic-cpr3h-v13-0-d01cff1c54cf@linaro.org>
- <20230217-topic-cpr3h-v13-1-d01cff1c54cf@linaro.org>
- <CUI2S5IGZEHC.P7MUFZVOHCYR@lion.caleb.rex.connolly.tech>
+        Sudeep Holla <sudeep.holla@arm.com>,
+        Quentin Perret <qperret@google.com>,
+        Masami Hiramatsu <mhiramat@google.com>,
+        Will Deacon <will@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Marc Zyngier <maz@kernel.org>,
+        Oliver Upton <oliver.upton@linux.dev>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Pavan Kondeti <quic_pkondeti@quicinc.com>,
+        Gupta Pankaj <pankaj.gupta@amd.com>,
+        Mel Gorman <mgorman@suse.de>, kernel-team@android.com,
+        linux-pm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 2/2] cpufreq: add virtual-cpufreq driver
+Message-ID: <20230803055157.6buxd5lcxjo4wrbk@vireshk-i7>
+References: <20230731174613.4133167-1-davidai@google.com>
+ <20230731174613.4133167-3-davidai@google.com>
+ <20230801093620.ggz25g3faxycp44q@vireshk-i7>
+ <CAGETcx-Y2MONWPEWYHXsWtBxuFQP51wTCS30wJt+NYKD969BuA@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CUI2S5IGZEHC.P7MUFZVOHCYR@lion.caleb.rex.connolly.tech>
+In-Reply-To: <CAGETcx-Y2MONWPEWYHXsWtBxuFQP51wTCS30wJt+NYKD969BuA@mail.gmail.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
@@ -94,39 +91,28 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 02-08-23, 13:58, Caleb Connolly wrote:
-> On Wed Aug 2, 2023 at 1:37 PM BST, Konrad Dybcio wrote:
-> > From: AngeloGioacchino Del Regno <angelogioacchino.delregno@somainline.org>
-> >
-> > Add the MSM8998 to the blocklist since the CPU scaling on this platform
-> > is handled by a separate driver.
-> >
-> > Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@somainline.org>
-> > Tested-by: Jeffrey Hugo <quic_jhugo@quicinc.com>
-> > Signed-off-by: Konrad Dybcio <konrad.dybcio@linaro.org>
+On 02-08-23, 15:16, Saravana Kannan wrote:
+> This is mainly an optimization to reduce the latency of the "frequency
+> change" which has a huge impact on the performance (as can be seen
+> from the numbers in the cover letter).
 > 
-> Reviewed-by: Caleb Connolly <caleb.connolly@linaro.org>
+> Setting this flag means that the vCPU thread triggering the MMIO
+> handling (on the host side) is the thread on which the host needs to
+> apply any uclamp settings. So this avoids the VMM having to look up
+> the right vCPU thread that corresponds to this CPU, and any
+> permissions issues wrt setting another threads uclamp, etc. This
+> becomes even more important if/when BPF support is added for handling
+> simple MMIO read/writes. Will Deacon has been working on the eBPF
+> part[1] and IIUC, not setting this flag adds a lot of extra overhead
+> on the BPF side.
 > 
-> // Caleb (they/them)
+> So, yeah, this flag is very helpful wrt reducing latency/simplifying
+> host side implementation and that's why we want it here.
 > 
-> > ---
-> >  drivers/cpufreq/cpufreq-dt-platdev.c | 1 +
-> >  1 file changed, 1 insertion(+)
-> >
-> > diff --git a/drivers/cpufreq/cpufreq-dt-platdev.c b/drivers/cpufreq/cpufreq-dt-platdev.c
-> > index e2b20080de3a..adb3579a1fee 100644
-> > --- a/drivers/cpufreq/cpufreq-dt-platdev.c
-> > +++ b/drivers/cpufreq/cpufreq-dt-platdev.c
-> > @@ -143,6 +143,7 @@ static const struct of_device_id blocklist[] __initconst = {
-> >  
-> >  	{ .compatible = "qcom,apq8096", },
-> >  	{ .compatible = "qcom,msm8996", },
-> > +	{ .compatible = "qcom,msm8998", },
-> >  	{ .compatible = "qcom,qcs404", },
-> >  	{ .compatible = "qcom,sa8155p" },
-> >  	{ .compatible = "qcom,sa8540p" },
+> [1] - https://kvm-forum.qemu.org/2023/talk/AZKC77/
 
-Applied patch 1/10.
+Would be good to have a (big) comment in the code explaining that as
+it isn't obvious. Thanks.
 
 -- 
 viresh
