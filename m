@@ -2,129 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D3F0B76F1D9
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 20:28:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E4EF76F1E3
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 20:32:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232412AbjHCS2O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Aug 2023 14:28:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52508 "EHLO
+        id S232520AbjHCSb7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Aug 2023 14:31:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53668 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230344AbjHCS2L (ORCPT
+        with ESMTP id S230344AbjHCSb5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Aug 2023 14:28:11 -0400
-Received: from smtp-fw-6001.amazon.com (smtp-fw-6001.amazon.com [52.95.48.154])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 457FA110;
-        Thu,  3 Aug 2023 11:28:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.de; i=@amazon.de; q=dns/txt; s=amazon201209;
-  t=1691087287; x=1722623287;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   content-id:mime-version:content-transfer-encoding;
-  bh=dU7FhD9vg9CDvnRfzIXtvR7vPuzQleLv4BUkDfepjCk=;
-  b=loyjJ0Nkhbkmzv90mngg8M+qc0afK4SSmBS9xNM0G706Fz/nrhL28zVw
-   HojYvmpDne89nDofr1cj08Hc3znJ0ahEmHevC/kWXl5coruod57uOGn0z
-   IIpNeg726xobAK5QAC8CvMxE9Doj/UAJ2ND1sMted90/Y+XuHHXbPzPWV
-   k=;
-X-IronPort-AV: E=Sophos;i="6.01,252,1684800000"; 
-   d="scan'208";a="350627819"
-Received: from iad12-co-svc-p1-lb1-vlan2.amazon.com (HELO email-inbound-relay-pdx-2b-m6i4x-26a610d2.us-west-2.amazon.com) ([10.43.8.2])
-  by smtp-border-fw-6001.iad6.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Aug 2023 18:28:01 +0000
-Received: from EX19MTAUWA002.ant.amazon.com (pdx1-ws-svc-p6-lb9-vlan3.pdx.amazon.com [10.236.137.198])
-        by email-inbound-relay-pdx-2b-m6i4x-26a610d2.us-west-2.amazon.com (Postfix) with ESMTPS id 8B90F40DE0;
-        Thu,  3 Aug 2023 18:27:58 +0000 (UTC)
-Received: from EX19D020UWA002.ant.amazon.com (10.13.138.222) by
- EX19MTAUWA002.ant.amazon.com (10.250.64.202) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.30; Thu, 3 Aug 2023 18:27:58 +0000
-Received: from EX19D033EUC001.ant.amazon.com (10.252.61.132) by
- EX19D020UWA002.ant.amazon.com (10.13.138.222) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.30; Thu, 3 Aug 2023 18:27:57 +0000
-Received: from EX19D033EUC001.ant.amazon.com ([fe80::6dc8:500e:fe63:454c]) by
- EX19D033EUC001.ant.amazon.com ([fe80::6dc8:500e:fe63:454c%3]) with mapi id
- 15.02.1118.030; Thu, 3 Aug 2023 18:27:56 +0000
-From:   "Schander, Johanna 'Mimoja' Amelie" <mimoja@amazon.de>
-To:     "Graf (AWS), Alexander" <graf@amazon.de>,
-        "michael.roth@amd.com" <michael.roth@amd.com>,
-        "mimoja@mimoja.de" <mimoja@mimoja.de>
-CC:     "tglx@linutronix.de" <tglx@linutronix.de>,
-        "srinivas.pandruvada@linux.intel.com" 
-        <srinivas.pandruvada@linux.intel.com>,
-        "tobin@ibm.com" <tobin@ibm.com>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "alpergun@google.com" <alpergun@google.com>,
-        "jmattson@google.com" <jmattson@google.com>,
-        "luto@kernel.org" <luto@kernel.org>,
-        "ak@linux.intel.com" <ak@linux.intel.com>,
-        "slp@redhat.com" <slp@redhat.com>,
-        "dovmurik@linux.ibm.com" <dovmurik@linux.ibm.com>,
-        "pbonzini@redhat.com" <pbonzini@redhat.com>,
-        "rientjes@google.com" <rientjes@google.com>,
-        "peterz@infradead.org" <peterz@infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "pgonda@google.com" <pgonda@google.com>,
-        "thomas.lendacky@amd.com" <thomas.lendacky@amd.com>,
-        "tony.luck@intel.com" <tony.luck@intel.com>,
-        "x86@kernel.org" <x86@kernel.org>, "bp@alien8.de" <bp@alien8.de>,
-        "dgilbert@redhat.com" <dgilbert@redhat.com>,
-        "seanjc@google.com" <seanjc@google.com>,
-        "vkuznets@redhat.com" <vkuznets@redhat.com>,
-        "marcorr@google.com" <marcorr@google.com>,
-        "vbabka@suse.cz" <vbabka@suse.cz>,
-        "ashish.kalra@amd.com" <ashish.kalra@amd.com>,
-        "linux-coco@lists.linux.dev" <linux-coco@lists.linux.dev>,
-        "nikunj.dadhania@amd.com" <nikunj.dadhania@amd.com>,
-        "hpa@zytor.com" <hpa@zytor.com>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "sathyanarayanan.kuppuswamy@linux.intel.com" 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        "jroedel@suse.de" <jroedel@suse.de>,
-        "kirill@shutemov.name" <kirill@shutemov.name>,
-        "jarkko@kernel.org" <jarkko@kernel.org>,
-        "ardb@kernel.org" <ardb@kernel.org>,
-        "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>
-Subject: Re: [PATCH RFC v8 00/56] Add AMD Secure Nested Paging (SEV-SNP)
- Hypervisor Support
-Thread-Topic: [PATCH RFC v8 00/56] Add AMD Secure Nested Paging (SEV-SNP)
- Hypervisor Support
-Thread-Index: AQHZxjg5EcZaH17x7USkn+te0u//TQ==
-Date:   Thu, 3 Aug 2023 18:27:56 +0000
-Message-ID: <f4905c32f4054d4ce254b3acb9339aa1c59728b8.camel@amazon.de>
-In-Reply-To: <20230220183847.59159-1-michael.roth@amd.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.106.82.18]
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <21BE49845F41F240B8334E1AF103963F@amazon.com>
+        Thu, 3 Aug 2023 14:31:57 -0400
+Received: from todd.t-8ch.de (todd.t-8ch.de [159.69.126.157])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4BD51110
+        for <linux-kernel@vger.kernel.org>; Thu,  3 Aug 2023 11:31:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=weissschuh.net;
+        s=mail; t=1691087513;
+        bh=1MJdNmTkgtKX/vx+dYeTpSYV0qY7AMfZAHv0pQ3nn1M=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=eo8K/2w4NP5Nkghrx4f1Mc3bICEbLK35iVKUITOC1pbTqbvtKLFFMI+ED7n79co5A
+         4fJz+6390KtI40iTaVlv8hII8R/pwRY1Acy2gGOk/5jzDKtVY6+GHaQZpwqUsYs22+
+         N+Io4jZtU+AES7dJc1ulC+gFK6r+jO5sGvKFYtzg=
+Date:   Thu, 3 Aug 2023 20:31:50 +0200
+From:   Thomas =?utf-8?Q?Wei=C3=9Fschuh?= <linux@weissschuh.net>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, Willy Tarreau <w@1wt.eu>,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        Konstantin Ryabitsev <konstantin@linuxfoundation.org>
+Subject: Re: [PATCH] MAINTAINERS: nolibc: add myself as co-maintainer
+Message-ID: <1f85e8c3-e07d-482f-aa90-5e6631bc7873@t-8ch.de>
+References: <20230728-nolibc-maintainer-v1-1-5f13daaebf4c@weissschuh.net>
 MIME-Version: 1.0
-Content-Transfer-Encoding: base64
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,T_SCC_BODY_TEXT_LINE,
-        T_SPF_TEMPERROR autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20230728-nolibc-maintainer-v1-1-5f13daaebf4c@weissschuh.net>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-V2UgZGlzY292ZXJlZCB0aGF0IHRoZSBrZHVtcCBjcmFzaGtlcm5lbCB3b3VsZCBub3Qgd29yayB3
-aXRoIG91ciBTRVYtDQpTTlAgY29uZmlndXJhdGlvbi4NCg0KQWZ0ZXIgcmVhZGluZyB0aGUgZGV2
-aWNlIHRhYmxlIGZyb20gdGhlIHByZXZpb3VyIGtlcm5lbCB3ZSB3b3VsZA0Kc2VlIGEgbG90IG9m
-DQogIEFNRC1WaTogQ29tcGxldGlvbi1XYWl0IGxvb3AgdGltZWQgb3V0DQplcnJvcnMgYW5kIGZp
-bmFsbHkgY3Jhc2g6DQogIEtlcm5lbCBwYW5pYyAtIG5vdCBzeW5jaW5nOiB0aW1lciBkb2Vzbid0
-IHdvcmsgdGhyb3VnaCBJbnRlcnJ1cHQtDQpyZW1hcHBlZCBJTy1BUElDDQoNCldlIGZvdW5kIHRo
-YXQgZGlzYWJlbGluZyBTTlAgaW4gdGhlIG91dGdvaW5nIChjcmFzaGluZykga2VybmVsDQp3b3Vs
-ZCBlbmFibGUgdGhlIGNyYXNoa2VybmVsIHRvIHRha2Ugb3ZlciB0aGUgaW9tbXUgY29uZmlnIGFu
-ZA0KYm9vdCBmcm9tIHRoZXJlLg0KDQpXZSBvcGVuZWQgYSBQUiBvdmVyIG9uIGdpdGh1YiBhZ2Fp
-bnN0IHRoZSByZmMtdjkgYnJhbmNoIHRvIGRpc2N1c3MNCnRoZSBpc3N1ZToNCmh0dHBzOi8vZ2l0
-aHViLmNvbS9BTURFU0UvbGludXgvcHVsbC81DQoNCkNoZWVycyBKb2hhbm5hDQoNCg0KDQoNCgoK
-CkFtYXpvbiBEZXZlbG9wbWVudCBDZW50ZXIgR2VybWFueSBHbWJICktyYXVzZW5zdHIuIDM4CjEw
-MTE3IEJlcmxpbgpHZXNjaGFlZnRzZnVlaHJ1bmc6IENocmlzdGlhbiBTY2hsYWVnZXIsIEpvbmF0
-aGFuIFdlaXNzCkVpbmdldHJhZ2VuIGFtIEFtdHNnZXJpY2h0IENoYXJsb3R0ZW5idXJnIHVudGVy
-IEhSQiAxNDkxNzMgQgpTaXR6OiBCZXJsaW4KVXN0LUlEOiBERSAyODkgMjM3IDg3OQoKCg==
+Hi Paul, 
 
+On 2023-07-28 23:21:52+0200, Thomas Weißschuh wrote:
+> As discussed with Willy, Paul and Shuah add myself as maintainer for
+> the nolibc subsystem.
+
+it seems I forgot to send the nolibc maintainers update patch to you.
+
+My bad!
+
+Willy and me wondered if the patch could go through your tree?
+
+For you convenience the link to this patch on lore (with the Ack from Willy):
+https://lore.kernel.org/lkml/20230728-nolibc-maintainer-v1-1-5f13daaebf4c@weissschuh.net/
+
+
+Thomas
+
+> Link: https://lore.kernel.org/lkml/7afafb6c-9664-44a1-bc8f-d20239db1dd5@paulmck-laptop/
+> Signed-off-by: Thomas Weißschuh <linux@weissschuh.net>
+> ---
+>  MAINTAINERS | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index b87fbcecd905..a67b50caea2a 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -14993,6 +14993,7 @@ F:	include/linux/power/bq27xxx_battery.h
+>  
+>  NOLIBC HEADER FILE
+>  M:	Willy Tarreau <w@1wt.eu>
+> +M:	Thomas Weißschuh <linux@weissschuh.net>
+>  S:	Maintained
+>  T:	git git://git.kernel.org/pub/scm/linux/kernel/git/wtarreau/nolibc.git
+>  F:	tools/include/nolibc/
+> 
+> ---
+> base-commit: f837f0a3c94882a29e38ff211a36c1c8a0f07804
+> change-id: 20230728-nolibc-maintainer-ebdd50c844ed
+> 
+> Best regards,
+> -- 
+> Thomas Weißschuh <linux@weissschuh.net>
