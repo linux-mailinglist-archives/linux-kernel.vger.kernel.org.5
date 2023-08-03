@@ -2,80 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8180D76E52E
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 12:01:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D034476E4D7
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 11:44:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235108AbjHCKBo convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 3 Aug 2023 06:01:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46824 "EHLO
+        id S233870AbjHCJox (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Aug 2023 05:44:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37774 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235090AbjHCKA5 (ORCPT
+        with ESMTP id S234101AbjHCJo2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Aug 2023 06:00:57 -0400
-X-Greylist: delayed 902 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Thu, 03 Aug 2023 03:00:11 PDT
-Received: from webmail.salom.com.cn (unknown [59.61.75.166])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE9443A80
-        for <linux-kernel@vger.kernel.org>; Thu,  3 Aug 2023 03:00:11 -0700 (PDT)
-Received: from SECC-27.salom.com.cn (192.168.1.35) by SECC-27.salom.com.cn
- (192.168.1.35) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.21; Thu, 3 Aug
- 2023 17:43:48 +0800
-Received: from salom.com.cn (196.171.115.74) by SECC-27.salom.com.cn
- (192.168.1.27) with Microsoft SMTP Server id 15.1.2507.21 via Frontend
- Transport; Thu, 3 Aug 2023 17:43:47 +0800
-Reply-To: <tomasinacatherine@gmail.com>
-From:   =?UTF-8?B?Y2F0aMOpcmluZSB0b21hc2luYQ==?= <testuser@salom.com.cn>
-To:     <linux-kernel@vger.kernel.org>
-Subject: =?UTF-8?B?T2ZlcnRhIGRlIHByw6lzdGFtbyBlbnRyZSBwYXJ0aWN1bGFy?=
-Date:   Thu, 3 Aug 2023 09:43:43 +0000
-Message-ID: <20230803094343.841E0EEC8B3B79CF@salom.com.cn>
+        Thu, 3 Aug 2023 05:44:28 -0400
+Received: from wxsgout04.xfusion.com (wxsgout04.xfusion.com [36.139.87.180])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D57B358B
+        for <linux-kernel@vger.kernel.org>; Thu,  3 Aug 2023 02:44:25 -0700 (PDT)
+Received: from wuxshcsitd00600.xfusion.com (unknown [10.32.133.213])
+        by wxsgout04.xfusion.com (SkyGuard) with ESMTPS id 4RGkRN5BbTz9xxKC;
+        Thu,  3 Aug 2023 17:42:56 +0800 (CST)
+Received: from fedora (10.82.147.3) by wuxshcsitd00600.xfusion.com
+ (10.32.133.213) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.23; Thu, 3 Aug
+ 2023 17:44:02 +0800
+Date:   Thu, 3 Aug 2023 17:44:00 +0800
+From:   Wang Jinchao <wangjinchao@xfusion.com>
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>, <x86@kernel.org>,
+        "H. Peter Anvin" <hpa@zytor.com>, <linux-kernel@vger.kernel.org>
+CC:     <stone.xulei@xfusion.com>
+Subject: [PATCH] x86/head64: Harmonize the style of array-type parameter for
+ fixup_pointer
+Message-ID: <ZMt24BGEX9IhPSY6@fedora>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8BIT
-Received-SPF: None (SECC-27.salom.com.cn: testuser@salom.com.cn does not
- designate permitted sender hosts)
-X-Spam-Status: Yes, score=5.6 required=5.0 tests=BAYES_50,
-        FREEMAIL_FORGED_REPLYTO,LOTS_OF_MONEY,MAY_BE_FORGED,
-        MONEY_FREEMAIL_REPTO,RCVD_IN_MSPIKE_H2,RCVD_IN_VALIDITY_RPBL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=no
-        autolearn_force=no version=3.4.6
-X-Spam-Report: *  1.3 RCVD_IN_VALIDITY_RPBL RBL: Relay in Validity RPBL,
-        *      https://senderscore.org/blocklistlookup/
-        *      [59.61.75.166 listed in bl.score.senderscore.com]
-        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
-        *      [score: 0.5000]
-        * -0.0 RCVD_IN_MSPIKE_H2 RBL: Average reputation (+2)
-        *      [59.61.75.166 listed in wl.mailspike.net]
-        *  0.0 SPF_NONE SPF: sender does not publish an SPF Record
-        *  0.0 SPF_HELO_NONE SPF: HELO does not publish an SPF Record
-        * -0.0 T_SCC_BODY_TEXT_LINE No description available.
-        *  0.0 LOTS_OF_MONEY Huge... sums of money
-        *  1.4 MONEY_FREEMAIL_REPTO Lots of money from someone using free
-        *      email?
-        *  2.1 FREEMAIL_FORGED_REPLYTO Freemail in Reply-To, but not From
-        *  0.0 MAY_BE_FORGED Relay IP's reverse DNS does not resolve to IP
-X-Spam-Level: *****
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+X-Originating-IP: [10.82.147.3]
+X-ClientProxiedBy: wuxshcsitd00602.xfusion.com (10.32.132.250) To
+ wuxshcsitd00600.xfusion.com (10.32.133.213)
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Tengo un capital que se utilizará para conceder préstamos 
-personales a corto y largo plazo que van desde 5.000 euros a 
-1.000.000 euros a cualquier persona seria que desee este 
-préstamo. 2% de interés anual en función de la cantidad prestada, 
-porque como un particular no quiero romper la ley sobre la usura. 
-Se puede devolver en un plazo máximo de 3 a 25 años, dependiendo 
-de la cantidad prestada. Puede reembolsarlo en un plazo máximo de 
-3 a 25 años, dependiendo de la cantidad prestada. Todo lo que 
-necesito es un pagaré manuscrito y certificado y algunos 
-documentos más.
-Si estás registrado como persona rechazada por los bancos y no 
-gozas de su favor, o si tienes un proyecto y necesitas 
-financiación, un mal historial crediticio o necesitas dinero para 
-pagar facturas, fondos para invertir en empresas.
-Así que si necesitas un crédito, no dudes en ponerte en contacto 
-conmigo para saber más sobre mis condiciones. Ponte en contacto 
-conmigo directamente. Correo electrónico: 
-tomasinacatherine@gmail.com
+The usage of '&' before the array parameter is redundant because '&array'
+is equivalent to 'array'. Therefore, there is no need to include '&'
+before the array parameter. In fact, using '&' can cause more confusion,
+especially for individuals who are not familiar with the address-of
+operation for arrays. They might mistakenly believe that one is different
+from the other and spend additional time realizing that they are actually
+the same.
+
+Harmonizing the style by removing the unnecessary '&' would save time for
+those individuals.
+
+Signed-off-by: Wang Jinchao <wangjinchao@xfusion.com>
+---
+ arch/x86/kernel/head64.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/arch/x86/kernel/head64.c b/arch/x86/kernel/head64.c
+index 49f7629b17f7..25a67a13a1fa 100644
+--- a/arch/x86/kernel/head64.c
++++ b/arch/x86/kernel/head64.c
+@@ -211,7 +211,7 @@ unsigned long __head __startup_64(unsigned long physaddr,
+ 
+ 	/* Fixup the physical addresses in the page table */
+ 
+-	pgd = fixup_pointer(&early_top_pgt, physaddr);
++	pgd = fixup_pointer(early_top_pgt, physaddr);
+ 	p = pgd + pgd_index(__START_KERNEL_map);
+ 	if (la57)
+ 		*p = (unsigned long)level4_kernel_pgt;
+@@ -220,11 +220,11 @@ unsigned long __head __startup_64(unsigned long physaddr,
+ 	*p += _PAGE_TABLE_NOENC - __START_KERNEL_map + load_delta;
+ 
+ 	if (la57) {
+-		p4d = fixup_pointer(&level4_kernel_pgt, physaddr);
++		p4d = fixup_pointer(level4_kernel_pgt, physaddr);
+ 		p4d[511] += load_delta;
+ 	}
+ 
+-	pud = fixup_pointer(&level3_kernel_pgt, physaddr);
++	pud = fixup_pointer(level3_kernel_pgt, physaddr);
+ 	pud[510] += load_delta;
+ 	pud[511] += load_delta;
+ 
+-- 
+2.40.0
+
