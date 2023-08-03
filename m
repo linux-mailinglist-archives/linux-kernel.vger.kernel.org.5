@@ -2,164 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 57DEF76EB34
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 15:51:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A883376EB3B
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 15:53:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234699AbjHCNve (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Aug 2023 09:51:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39746 "EHLO
+        id S234344AbjHCNxs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Aug 2023 09:53:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41408 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230488AbjHCNv1 (ORCPT
+        with ESMTP id S229825AbjHCNxq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Aug 2023 09:51:27 -0400
-Received: from mail-yw1-x1133.google.com (mail-yw1-x1133.google.com [IPv6:2607:f8b0:4864:20::1133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B6C9DF
-        for <linux-kernel@vger.kernel.org>; Thu,  3 Aug 2023 06:51:25 -0700 (PDT)
-Received: by mail-yw1-x1133.google.com with SMTP id 00721157ae682-5844bb9923eso11336607b3.0
-        for <linux-kernel@vger.kernel.org>; Thu, 03 Aug 2023 06:51:25 -0700 (PDT)
+        Thu, 3 Aug 2023 09:53:46 -0400
+Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57F6D196
+        for <linux-kernel@vger.kernel.org>; Thu,  3 Aug 2023 06:53:45 -0700 (PDT)
+Received: by mail-ej1-x633.google.com with SMTP id a640c23a62f3a-99bc9e3cbf1so222864866b.0
+        for <linux-kernel@vger.kernel.org>; Thu, 03 Aug 2023 06:53:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=resnulli-us.20221208.gappssmtp.com; s=20221208; t=1691070684; x=1691675484;
+        d=gmail.com; s=20221208; t=1691070824; x=1691675624;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=3TfS+q+g/wvbotFwtzxMOMoDCbRna0bH1a78XXprxeI=;
-        b=EAJJVN1o5YA+3KBVdv4UscJmef4SKNv9Dbf+06cCaxesk/XtnA/l/PWHODeRspsWcc
-         YdGZR6MkadCChnUKol6Iw/0jhT2x3TI/LXZ3fUAL4rKkTf+obRlsY7y1mBfmx3LwBW2m
-         eN2JdaJoEfW7wbNvjKoyiqi3V7RHuyIPYYCM5E+qvaXHCyY0+hycn1P82kamT6ZxjBmu
-         dMQ6fsn+WBeH2taUx+UAO7yGepL9nPRum6IXA/mY6UWv2BwCFWyEgL/fIppvGLISZETk
-         WyJhjuyGn11ImF4entiMiPSWLkYEAB8CXCw3WmhV40vM+onvXTs961dLu62UslkN9fCg
-         msMg==
+        bh=Ejd3tpdC1zaV/w7ewmBn4nRM+R1O4uRxApY6GI0ypWU=;
+        b=MrSf1vv9VKN509zhlwdLejJnhpoBtnZEiwJpWn2QCVgcbHDN1t95geCJd7z/xyVvcd
+         zjc3ycorHtrZUUBopYNEQy2wfxaT72wQ8vBuDiNQmGprRNcuW67Ce4c18tW2SD4u415H
+         Wyu2qc4+2APAz/kXJo8c/rqU3rQ4nkUuP13P+x1ZlD4pKX1ta6a3mqOaczr1FnVdhbB4
+         49GCdSsjdyZZkeQcco9vcUhgvFptGP5EbR4zPc3TATosuK1+DdWEHhfPAMjItY82lUSx
+         NFpoiOE963jvsAsWTJRIw6s9C7svICTxPyR1Y+f7HLpVqqKxqfn6JLBRdho9HW5DUDt8
+         ns1w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691070684; x=1691675484;
+        d=1e100.net; s=20221208; t=1691070824; x=1691675624;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=3TfS+q+g/wvbotFwtzxMOMoDCbRna0bH1a78XXprxeI=;
-        b=GgbcE8jAJIjK+F7w9+uvg7B7PaHLXuUSoSvW0wttQT3pIKRNDF1S1MVEfIcD7jSB16
-         /TP3AjMWYibjspE/cM1Oq8he1Otx9nPQPnLnuVL47evOl/8nYcSPxXOH0f4IIEy4tOjE
-         fx8x5mGd97RkHu8/dUlm6goDZ6ETR4ij5fITx+J2Obim7lWiWu7P2Zog5NZioRTRuqop
-         2GBx4t6ncrro2l2jwVAYG/AzjSSubn9blBOC9bZ4m2Hnm5YFpoM9onRIwTKFYXqXIG/n
-         USdH/bcunDm9RrfCDg1Ewttf2cmHqqNn+V25qtJ77xFwgm0pjk8M13qGvFKIgZhuwLT9
-         /TSA==
-X-Gm-Message-State: ABy/qLZGPR90V//UkkI57uiu0wGdmp5c2CxyFd63xs+KHtHWzU36QFJM
-        NvLPzVX33sAu7XCI2Z9+G71zlcLfQUf1cibBpwJLgQ==
-X-Google-Smtp-Source: APBJJlFAN4u5b0arzVMb6FTR1fLhQVm1kNxh4BMhFDtGt59+JBJfXfFbXE8Qxy63E1Xh51gWowaVjw==
-X-Received: by 2002:a0d:d6c8:0:b0:561:cb45:d7de with SMTP id y191-20020a0dd6c8000000b00561cb45d7demr20645639ywd.31.1691070684548;
-        Thu, 03 Aug 2023 06:51:24 -0700 (PDT)
-Received: from localhost ([212.23.236.67])
-        by smtp.gmail.com with ESMTPSA id s9-20020a817709000000b005869e1d8c41sm144956ywc.29.2023.08.03.06.51.23
+        bh=Ejd3tpdC1zaV/w7ewmBn4nRM+R1O4uRxApY6GI0ypWU=;
+        b=DaWeCdXT5FijS9YSrdQRLLAtzPFpEittjwLedCjlt0DaJzEqv4a38l7gbdGBUNHC4w
+         AimNizZOV7xvYlu/Iv/wj9yVYdoQF+F6hm3tZ/V5T5WUrudUv9phP8aZ97sgS20ika0x
+         V8Gd74mPO+ekMciRFl5QYGoh8wlLD1tV2/6ViT+j626MHVk4+V/6CBuoJ6cszO9OwuA7
+         z3r1TGcHNAFp6Qnne/4uZwugRYyT1kN391saIIVlipdZsL6nAfgzt/4ztc9XV8hA00j9
+         b1Z20wHfbCjCmE95qJdYhLM+aBbVoZgssGVBSQdak0ai11klX8JZ34eyOplfjg664MRX
+         s6Jg==
+X-Gm-Message-State: ABy/qLZCXtnOU8Hq1uWxGC0Gjk+tl245BMZNTftJoCzPVB62QYaUZbWk
+        6n3Z9Kn0OLqQKJFn8abWjGI=
+X-Google-Smtp-Source: APBJJlHuIoaTBbpnUrcFFXT7fPGxu/0lXWN0OwVoj+05bI0S+IwQ8VVonMPQFmEKY5BIDHPRexQbLA==
+X-Received: by 2002:a17:906:974b:b0:988:8efc:54fa with SMTP id o11-20020a170906974b00b009888efc54famr10650437ejy.37.1691070823469;
+        Thu, 03 Aug 2023 06:53:43 -0700 (PDT)
+Received: from andrea (host-82-57-177-142.retail.telecomitalia.it. [82.57.177.142])
+        by smtp.gmail.com with ESMTPSA id a11-20020a17090680cb00b0099b921de301sm10561131ejx.159.2023.08.03.06.53.41
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 03 Aug 2023 06:51:23 -0700 (PDT)
-Date:   Thu, 3 Aug 2023 15:51:21 +0200
-From:   Jiri Pirko <jiri@resnulli.us>
-To:     Justin Lai <justinlai0215@realtek.com>
-Cc:     "kuba@kernel.org" <kuba@kernel.org>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "edumazet@google.com" <edumazet@google.com>,
-        "pabeni@redhat.com" <pabeni@redhat.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>
-Subject: Re: [PATCH] net/ethernet/realtek: Add Realtek automotive PCIe driver
-Message-ID: <ZMuw2SuGZtVX42Nu@nanopsycho>
-References: <20230803082513.6523-1-justinlai0215@realtek.com>
- <ZMtr+WbURFaynK15@nanopsycho>
- <14e094a861204bf0a744848cb30db635@realtek.com>
+        Thu, 03 Aug 2023 06:53:42 -0700 (PDT)
+Date:   Thu, 3 Aug 2023 15:53:37 +0200
+From:   Andrea Parri <parri.andrea@gmail.com>
+To:     Leonardo Bras <leobras@redhat.com>
+Cc:     Will Deacon <will@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Andrzej Hajda <andrzej.hajda@intel.com>,
+        Arnd Bergmann <arnd@arndb.de>, Ingo Molnar <mingo@kernel.org>,
+        Palmer Dabbelt <palmer@rivosinc.com>,
+        Guo Ren <guoren@kernel.org>, linux-kernel@vger.kernel.org,
+        linux-riscv@lists.infradead.org
+Subject: Re: [RFC PATCH v2 0/3] Deduplicate RISCV cmpxchg.h and atomic.c
+ macros
+Message-ID: <ZMuxYXQgR446JwUp@andrea>
+References: <20230803051401.710236-2-leobras@redhat.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <14e094a861204bf0a744848cb30db635@realtek.com>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20230803051401.710236-2-leobras@redhat.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thu, Aug 03, 2023 at 03:20:46PM CEST, justinlai0215@realtek.com wrote:
->Hi, Jiri Pirko
->
->Our device is multi-function, one of which is netdev and the other is character device. For character devices, we have some custom functions that must use copy_from_user or copy_to_user to pass data.
+On Thu, Aug 03, 2023 at 02:13:57AM -0300, Leonardo Bras wrote:
+> I unified previous patchsets into a single one, since the work is related.
+> 
+> While studying riscv's cmpxchg.h file, I got really interested in
+> understanding how RISCV asm implemented the different versions of
+> {cmp,}xchg.
+> 
+> When I understood the pattern, it made sense for me to remove the
+> duplications and create macros to make it easier to understand what exactly
+> changes between the versions: Instruction sufixes & barriers.
+> 
+> Also, did the same kind of work on atomic.c.
+> 
+> Note to Guo Ren:
+> I did some further improvement after your previous reviews, so I ended
+> up afraid including your Reviewed-by before cheching if the changes are
+> ok for you. Please check it out again, I just removed some helper macros
+> that were not being used elsewhere in the kernel.
+> 
+> Thanks!
+> Leo
+> 
+> 
+> Changes since squashed cmpxchg:
+> - Unified with atomic.c patchset 
+> - Rebased on top of torvalds/master (thanks Andrea Parri!)
+> - Removed helper macros that were not being used elsewhere in the kernel.
+> 
+> Changes since (cmpxchg) RFCv3:
+> - Squashed the 6 original patches in 2: one for cmpxchg and one for xchg
+> https://lore.kernel.org/all/20230404163741.2762165-1-leobras@redhat.com/
+> 
+> Changes since (cmpxchg) RFCv2:
+> - Fixed  macros that depend on having a local variable with a magic name
+> - Previous cast to (long) is now only applied on 4-bytes cmpxchg
+> https://lore.kernel.org/all/20230321074249.2221674-1-leobras@redhat.com/
+> 
+> Changes since (cmpxchg) RFCv1:
+> - Fixed patch 4/6 suffix from 'w.aqrl' to '.w.aqrl', to avoid build error
+> https://lore.kernel.org/all/20230318080059.1109286-1-leobras@redhat.com/
+> 
+> 
+> Leonardo Bras (3):
+>   riscv/cmpxchg: Deduplicate xchg() asm functions
+>   riscv/cmpxchg: Deduplicate cmpxchg() asm and macros
+>   riscv/atomic.h : Deduplicate arch_atomic.*
+> 
+>  arch/riscv/include/asm/atomic.h  | 164 ++++++++--------
+>  arch/riscv/include/asm/cmpxchg.h | 318 +++++--------------------------
+>  2 files changed, 123 insertions(+), 359 deletions(-)
 
-1. Don't top post
-2. That's nice you have it, but it is totally unacceptable. That's my
-   point. This is not about wrapping your out-of-tree driver and sending
-   it as is. You have to make sure you comply with the upstream code.
-   Which you don't, not even remotelly.
+LGTM.  For the series,
 
+Reviewed-by: Andrea Parri <parri.andrea@gmail.com>
 
->
->-----Original Message-----
->From: Jiri Pirko <jiri@resnulli.us> 
->Sent: Thursday, August 3, 2023 4:57 PM
->To: Justin Lai <justinlai0215@realtek.com>
->Cc: kuba@kernel.org; davem@davemloft.net; edumazet@google.com; pabeni@redhat.com; linux-kernel@vger.kernel.org; netdev@vger.kernel.org
->Subject: Re: [PATCH] net/ethernet/realtek: Add Realtek automotive PCIe driver
->
->
->External mail.
->
->
->
->Thu, Aug 03, 2023 at 10:25:13AM CEST, justinlai0215@realtek.com wrote:
->>This patch is to add the ethernet device driver for the PCIe interface 
->>of Realtek Automotive Ethernet Switch, applicable to RTL9054, RTL9068, RTL9072, RTL9075, RTL9068, RTL9071.
->>
->>Signed-off-by: justinlai0215 <justinlai0215@realtek.com>
->
->[...]
->
->
->>+
->>+static long rtase_swc_ioctl(struct file *p_file, unsigned int cmd, 
->>+unsigned long arg)
->
->There are *MANY* thing wrong in this patch spotted just during 5 minutes skimming over the code, but this definitelly tops all of them.
->I didn't see so obvious kernel bypass attempt for a long time. Ugh, you can't be serious :/
->
->I suggest to you take couple of rounds of consulting the patch with some skilled upstream developer internaly before you make another submission in order not not to waste time of reviewers.
->
->
->>+{
->>+      long rc = 0;
->>+      struct rtase_swc_cmd_t sw_cmd;
->>+
->>+      (void)p_file;
->>+
->>+      if (rtase_swc_device.init_flag == 1u) {
->>+              rc = -ENXIO;
->>+              goto out;
->>+      }
->>+
->>+      rc = (s64)(copy_from_user(&sw_cmd, (void *)arg, sizeof(struct 
->>+ rtase_swc_cmd_t)));
->>+
->>+      if (rc != 0) {
->>+              SWC_DRIVER_INFO("rtase_swc copy_from_user failed.");
->>+      } else {
->>+              switch (cmd) {
->>+              case SWC_CMD_REG_GET:
->>+                      rtase_swc_reg_get(&sw_cmd);
->>+                      rc = (s64)(copy_to_user((void *)arg, &sw_cmd,
->>+                                              sizeof(struct rtase_swc_cmd_t)));
->>+                      break;
->>+
->>+              case SWC_CMD_REG_SET:
->>+                      rtase_swc_reg_set(&sw_cmd);
->>+                      rc = (s64)(copy_to_user((void *)arg, &sw_cmd,
->>+                                              sizeof(struct rtase_swc_cmd_t)));
->>+                      break;
->>+
->>+              default:
->>+                      rc = -ENOTTY;
->>+                      break;
->>+              }
->>+      }
->>+
->>+out:
->>+      return rc;
->>+}
->
->[...]
->
->------Please consider the environment before printing this e-mail.
+  Andrea
