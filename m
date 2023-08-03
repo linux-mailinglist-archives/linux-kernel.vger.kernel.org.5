@@ -2,50 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A748276E256
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 10:02:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 72CEA76E25E
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 10:03:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234297AbjHCICO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Aug 2023 04:02:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33120 "EHLO
+        id S232075AbjHCID0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Aug 2023 04:03:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36242 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232519AbjHCIA7 (ORCPT
+        with ESMTP id S234206AbjHCIC1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Aug 2023 04:00:59 -0400
-Received: from bg4.exmail.qq.com (bg4.exmail.qq.com [43.154.54.12])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB8B549C5;
-        Thu,  3 Aug 2023 00:51:36 -0700 (PDT)
-X-QQ-mid: bizesmtp63t1691049082t37lovh4
-Received: from linux-lab-host.localdomain ( [116.30.131.233])
-        by bizesmtp.qq.com (ESMTP) with 
-        id ; Thu, 03 Aug 2023 15:51:21 +0800 (CST)
-X-QQ-SSF: 01200000000000E0X000000A0000000
-X-QQ-FEAT: q+EIYT+FhZpJNnQZqE13UO0u+lKWcobXuNSUyobgDPkR8n5tc51SRyUG83dCj
-        EaAODalCOPJ0Y8eYCeuOoPrGTA9n7ym8gi8axHTk+HW3JtQh8KJ+8+k3+3Ag/Kwf3LWAOMR
-        xG4SyySoWR78Oy7cj7MN0KTQZT6Cs/5qPN1w7SRKorM3g2t6EHTDVOXntFLU/39gjD6XNuV
-        J0a0vI2PdO0u9BM6Id0w3Q3q5qXOgOcVIc9uNuOE0irr8/LLJjovA4KU5s+8/eojb3S8T5m
-        v9nXZlfjuBTwatjba7v/+y8So2lQnkojeICFhGtNQvYyyylETpBN5fKr1ofddqsvMefrenZ
-        tgz4/vIG0v5NgokY1k9Fc1H21BZpJ/dg1jITvVLL6KbN/QfZhdfQwndlihW6MUcr7Uy6K2a
-X-QQ-GoodBg: 0
-X-BIZMAIL-ID: 8175652093103281820
-From:   Zhangjin Wu <falcon@tinylab.org>
-To:     w@1wt.eu
-Cc:     arnd@arndb.de, falcon@tinylab.org, linux-kernel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, tanyuan@tinylab.org,
-        thomas@t-8ch.de
-Subject: Re: [PATCH v4 08/12] selftests/nolibc: add test support for ppc
-Date:   Thu,  3 Aug 2023 15:51:20 +0800
-Message-Id: <20230803075120.76776-1-falcon@tinylab.org>
+        Thu, 3 Aug 2023 04:02:27 -0400
+Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C8D24C12
+        for <linux-kernel@vger.kernel.org>; Thu,  3 Aug 2023 00:54:21 -0700 (PDT)
+Received: from dggpemm100012.china.huawei.com (unknown [172.30.72.54])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4RGgy442tBzNmf5;
+        Thu,  3 Aug 2023 15:50:52 +0800 (CST)
+Received: from dggpemm500007.china.huawei.com (7.185.36.183) by
+ dggpemm100012.china.huawei.com (7.185.36.212) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.27; Thu, 3 Aug 2023 15:54:18 +0800
+Received: from huawei.com (10.175.103.91) by dggpemm500007.china.huawei.com
+ (7.185.36.183) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Thu, 3 Aug
+ 2023 15:54:18 +0800
+From:   Yang Yingliang <yangyingliang@huawei.com>
+To:     <linux-kernel@vger.kernel.org>
+CC:     <tj@kernel.org>, <jiangshanlai@gmail.com>,
+        <yangyingliang@huawei.com>
+Subject: [PATCH -next] workqueue: use LIST_HEAD to initialize cull_list
+Date:   Thu, 3 Aug 2023 15:51:35 +0800
+Message-ID: <20230803075135.499536-1-yangyingliang@huawei.com>
 X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20230803020533.GA23704@1wt.eu>
-References: <20230803020533.GA23704@1wt.eu>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-QQ-SENDSIZE: 520
-Feedback-ID: bizesmtp:tinylab.org:qybglogicsvrgz:qybglogicsvrgz5a-1
-X-Spam-Status: No, score=-0.6 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,RCVD_IN_VALIDITY_RPBL,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.103.91]
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+ dggpemm500007.china.huawei.com (7.185.36.183)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -53,70 +51,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, Willy
+Use LIST_HEAD() to initialize cull_list instead of open-coding it.
 
-> On Thu, Aug 03, 2023 at 10:58:55AM +0800, Zhangjin Wu wrote:
-> > Yes, ppc series at first, will renew it today. let's delay the whole tinyconfig
-> > series (include part1) in v6.7, we have no enough time to test them carefully
-> > for v6.6.
-> 
-> Thanks.
->
+Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
+---
+ kernel/workqueue.c | 7 ++-----
+ 1 file changed, 2 insertions(+), 5 deletions(-)
 
-To even further simplify the ppc series merge progress, since Yuan have helped
-me sending the standalone serial console enable patch for pmac32_defconfig [1],
-and it has gotten a Reviewed-by line from the ppc maintainer, perhaps we can
-safely expect it in v6.6, so, I plan to delay the nolibc-test-config related
-stuff and minimize the whole ppc series to only these necessary patches:
+diff --git a/kernel/workqueue.c b/kernel/workqueue.c
+index 3ddd0d599dab..ae975a7c9f69 100644
+--- a/kernel/workqueue.c
++++ b/kernel/workqueue.c
+@@ -2307,9 +2307,8 @@ static void idle_worker_timeout(struct timer_list *t)
+ static void idle_cull_fn(struct work_struct *work)
+ {
+ 	struct worker_pool *pool = container_of(work, struct worker_pool, idle_cull_work);
+-	struct list_head cull_list;
++	LIST_HEAD(cull_list);
+ 
+-	INIT_LIST_HEAD(&cull_list);
+ 	/*
+ 	 * Grabbing wq_pool_attach_mutex here ensures an already-running worker
+ 	 * cannot proceed beyong worker_detach_from_pool() in its self-destruct
+@@ -3875,10 +3874,8 @@ static void rcu_free_pool(struct rcu_head *rcu)
+ static void put_unbound_pool(struct worker_pool *pool)
+ {
+ 	DECLARE_COMPLETION_ONSTACK(detach_completion);
+-	struct list_head cull_list;
+ 	struct worker *worker;
+-
+-	INIT_LIST_HEAD(&cull_list);
++	LIST_HEAD(cull_list);
+ 
+ 	lockdep_assert_held(&wq_pool_mutex);
+ 
+-- 
+2.25.1
 
-    $ git log --reverse --oneline 813cab75752d9f2bbd71179b0c43c1052515cf48^..HEAD
-    813cab75752d tools/nolibc: add support for powerpc
-    122e2610c649 tools/nolibc: add support for powerpc64
-    f31fe18cf2e2 selftests/nolibc: add XARCH and ARCH mapping support
-    b25c71125154 selftests/nolibc: add test support for ppc
-    27bc0026f1e7 selftests/nolibc: add test support for ppc64le
-    d70649478ef8 (HEAD -> v6.6-nolibc-202308031233-pure-ppc-v5) selftests/nolibc: add test support for ppc64
-
-After this ppc series, if you are still happy with parts of the left ones, I
-will renew them.
-
-[1]: https://lore.kernel.org/lkml/bb7b5f9958b3e3a20f6573ff7ce7c5dc566e7e32.1690982937.git.tanyuan@tinylab.org/
-
-> 
-> [...]
-> > So, it is ok for us to simply ignore -O0 currently, let's work on them
-> > in v6.7.
-> 
-> Yeah I'm fine with this. In the worst case those using -O0 can also avoid
-> using stack-protector.
->
-
-Yeah, let's ignore -O0 here.
-
-but must clarify that, even with the default "-Os" from command line,
-when using gcc 13.1.0, it has '__no_stack_protector' attribute but this
-attribute breaks 'omit-frame-pointer' and result in segfaults. To avoid
-touching the common code, I plan to let ppc32 uses its own
-__no_stack_protector with '__optimize__("-fno-stack-protector")', I hope
-it is fair enough now ;-)
-
-Here is what I have added for arch-powerpc.h in the first patch of the series:
-
-    /* FIXME: For ppc32, with newer gcc compilers (e.g. gcc 13.1.0),
-     * "omit-frame-pointer" fails with __attribute__((no_stack_protector)) but
-     * works with __attribute__((__optimize__("-fno-stack-protector")))
-     */
-    #ifdef __no_stack_protector
-    #undef __no_stack_protector
-    #define __no_stack_protector __attribute__((__optimize__("-fno-stack-protector")))
-    #endif
-
-If you are happy with this, v5 with come with it.
-
-Thanks!
-
-Best regards,
-Zhangjin
-
-> 
-> Willy
