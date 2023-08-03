@@ -2,71 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C724576ECFA
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 16:44:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 13D5D76ED01
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 16:45:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234746AbjHCOoh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Aug 2023 10:44:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54506 "EHLO
+        id S235218AbjHCOpW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Aug 2023 10:45:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56086 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235876AbjHCOoZ (ORCPT
+        with ESMTP id S229838AbjHCOpU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Aug 2023 10:44:25 -0400
-Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0F33423A
-        for <linux-kernel@vger.kernel.org>; Thu,  3 Aug 2023 07:44:08 -0700 (PDT)
-Received: by mail-ej1-x62a.google.com with SMTP id a640c23a62f3a-98377c5d53eso145896966b.0
-        for <linux-kernel@vger.kernel.org>; Thu, 03 Aug 2023 07:44:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=9elements.com; s=google; t=1691073847; x=1691678647;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=0r+9XHSegFpPDIn73xAFAT26b/ix75Yh9T7lUlxBALs=;
-        b=FaOC8x9foorB/DO/xUejSHl7q5/x/eaarUpwmM866XgP3aUu+ZqAG+lPd0XBHXK6jL
-         A2biSOSS/ai/aDzO7o4atvi46CkL55u+zOn5zjpp/aNbfETdAGwvvwM0M7LXDVBqbM2n
-         J4FDJlX/KAVK/g972SkegOgBw4wBnE7MKzIK+v9ga+z+OifTG9SADRwui82BXBzsaSre
-         ZzfPzodjb5FCRfiWIrmreD9oX+vFTz7nG6NkSC7E6Su7pTjfkDUy2BlceHYefsWTUz7b
-         FQERfBJJoa/Lz+y1Z0R2x0+O80RX6wxYdowCIcPhjJrAEwEXH33WejD6GmnLB2JWRgZf
-         ymOA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691073847; x=1691678647;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=0r+9XHSegFpPDIn73xAFAT26b/ix75Yh9T7lUlxBALs=;
-        b=Ni5yhy9n9LagF9Vt2T0/kIyCm0RbmcU4aXiZPGOgOfTpOf+Pqjn0QAoWuG1JX2u6dg
-         SUC4uRlpRWdZ50oOrw86oLFfQdcIVqRrcLhQ3G1r8lsotSgvKA6s/kUGwUgbH1A70nxd
-         5MdCY3EeaVMFwOXDP0+2PTDE6VnCpsaB48WNiw+StcjnN4+lkDsPJeEZxumbo7fEwy6J
-         v5wNdkzBE/UlUH+iNAmF1f1UiyMp/ILvaO0BT8kgSpThHMvvITaql1f6WKeP2XaYxX6t
-         +Q7KZECO19alVuZve4gAliWtSmepHk9r5L94KpFGcxafCD+qNM9sk7mbIoI+qIzcBFca
-         VrHg==
-X-Gm-Message-State: ABy/qLbWUCL/XfO8+8jTdj6cnYutBSCdOUY00lrYbTB99cDdc40M1sFs
-        W30WY9ud7bQ8b2P1QSSWUsFsmLnwzL9KAzyaV9nwWg9g
-X-Google-Smtp-Source: APBJJlH1vFggjc1HEMg1YK1GUi5k2ulIewhgqw/1pZ4nEJmwY8skVAKd+7C/ZYk27qxLRyS5V/xurw==
-X-Received: by 2002:a17:906:53d3:b0:99b:d9f3:9a98 with SMTP id p19-20020a17090653d300b0099bd9f39a98mr7885996ejo.74.1691073846843;
-        Thu, 03 Aug 2023 07:44:06 -0700 (PDT)
-Received: from stroh80.sec.9e.network (ip-078-094-000-051.um19.pools.vodafone-ip.de. [78.94.0.51])
-        by smtp.gmail.com with ESMTPSA id t26-20020a1709064f1a00b0099bd86f9248sm10629859eju.63.2023.08.03.07.44.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 03 Aug 2023 07:44:06 -0700 (PDT)
-From:   Naresh Solanki <naresh.solanki@9elements.com>
-X-Google-Original-From: Naresh Solanki <Naresh.Solanki@9elements.com>
-To:     Guenter Roeck <linux@roeck-us.net>,
-        krzysztof.kozlowski+dt@linaro.org, Jean Delvare <jdelvare@suse.com>
-Cc:     Naresh Solanki <Naresh.Solanki@9elements.com>,
-        linux-hwmon@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v3 2/2] hwmon: (max6639) Add compatible string
-Date:   Thu,  3 Aug 2023 16:44:00 +0200
-Message-ID: <20230803144401.1151065-2-Naresh.Solanki@9elements.com>
-X-Mailer: git-send-email 2.41.0
-In-Reply-To: <20230803144401.1151065-1-Naresh.Solanki@9elements.com>
-References: <20230803144401.1151065-1-Naresh.Solanki@9elements.com>
+        Thu, 3 Aug 2023 10:45:20 -0400
+Received: from bg4.exmail.qq.com (bg4.exmail.qq.com [43.154.54.12])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F25F6272A;
+        Thu,  3 Aug 2023 07:45:01 -0700 (PDT)
+X-QQ-mid: bizesmtp68t1691073889t4khgjyo
+Received: from linux-lab-host.localdomain ( [116.30.131.233])
+        by bizesmtp.qq.com (ESMTP) with 
+        id ; Thu, 03 Aug 2023 22:44:48 +0800 (CST)
+X-QQ-SSF: 01200000000000E0X000000A0000000
+X-QQ-FEAT: IcCSTr/hHjOY6VEm71/IgqzXpvSKtnkkeAhaXGC6ywTF2cpGNkzcpdx/TKfBR
+        hiT/uimJdY9bSUpyUuSaerHKZybT6bxkLtzpKWPzP4ooH8Q94U9UtiRcBQ3eFczhrRwN0sP
+        b4pn/bUfnf6T2k4b4Fv80z+bDiHCUHDykgviC0pI3DKArvoIjWychyt0uvjPLtexRtVLQx5
+        pU4R/Quxhus+VsmVZ6eOZH5iVH/ob+OX1ILvDCjEkeaYJWleLJOER+TqdX2+vAzvDLswN3O
+        q8BOXHnGwEIhwM+sJs2a4ElA7H7t8fgMjeA19g2jg7owR+VT0XL665E/HiEvaKafzk9JWY+
+        +/sXOyNDWMr9NK7kd0RcSvv4+qaaME1X7G1Y8NPx/JA2YLJAOgRmSVXABKMtA==
+X-QQ-GoodBg: 0
+X-BIZMAIL-ID: 16889210508808416794
+From:   Zhangjin Wu <falcon@tinylab.org>
+To:     thomas@t-8ch.de, w@1wt.eu
+Cc:     falcon@tinylab.org, arnd@arndb.de, linux-kernel@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, tanyuan@tinylab.org
+Subject: [PATCH v1 1/3] selftests/nolibc: allow report with existing test log
+Date:   Thu,  3 Aug 2023 22:44:47 +0800
+Message-Id: <a2879d1ef44fd482a63a8d1a41527289ebcd501b.1691073180.git.falcon@tinylab.org>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <cover.1691073180.git.falcon@tinylab.org>
+References: <cover.1691073180.git.falcon@tinylab.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+X-QQ-SENDSIZE: 520
+Feedback-ID: bizesmtp:tinylab.org:qybglogicsvrgz:qybglogicsvrgz5a-1
+X-Spam-Status: No, score=-0.6 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,RCVD_IN_VALIDITY_RPBL,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -74,40 +52,31 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use maxim,max6639 as compatible string for the driver.
+After the tests finish, it is valuable to report and summarize with
+existing test log.
 
-Signed-off-by: Naresh Solanki <Naresh.Solanki@9elements.com>
----
-Changes in V3:
-- None
-Changes in V2:
-- None, Updated DT patch
----
- drivers/hwmon/max6639.c | 6 ++++++
- 1 file changed, 6 insertions(+)
+This avoid rerun or run the tests again when not necessary.
 
-diff --git a/drivers/hwmon/max6639.c b/drivers/hwmon/max6639.c
-index caf527154fca..aa7f21ab2395 100644
---- a/drivers/hwmon/max6639.c
-+++ b/drivers/hwmon/max6639.c
-@@ -618,11 +618,17 @@ MODULE_DEVICE_TABLE(i2c, max6639_id);
+Signed-off-by: Zhangjin Wu <falcon@tinylab.org>
+---
+ tools/testing/selftests/nolibc/Makefile | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/tools/testing/selftests/nolibc/Makefile b/tools/testing/selftests/nolibc/Makefile
+index 16cc33db54e3..51fef5e6a152 100644
+--- a/tools/testing/selftests/nolibc/Makefile
++++ b/tools/testing/selftests/nolibc/Makefile
+@@ -225,6 +225,10 @@ rerun:
+ 	$(Q)qemu-system-$(QEMU_ARCH) -display none -no-reboot -kernel "$(srctree)/$(IMAGE)" -serial stdio $(QEMU_ARGS) > "$(CURDIR)/run.out"
+ 	$(Q)$(REPORT) $(CURDIR)/run.out
  
- static DEFINE_SIMPLE_DEV_PM_OPS(max6639_pm_ops, max6639_suspend, max6639_resume);
- 
-+static const struct of_device_id max6639_of_match[] = {
-+	{ .compatible = "maxim,max6639", },
-+	{ },
-+};
++# report with existing test log
++report:
++	$(Q)$(REPORT) $(CURDIR)/run.out
 +
- static struct i2c_driver max6639_driver = {
- 	.class = I2C_CLASS_HWMON,
- 	.driver = {
- 		   .name = "max6639",
- 		   .pm = pm_sleep_ptr(&max6639_pm_ops),
-+		   .of_match_table = max6639_of_match,
- 		   },
- 	.probe = max6639_probe,
- 	.id_table = max6639_id,
+ clean:
+ 	$(call QUIET_CLEAN, sysroot)
+ 	$(Q)rm -rf sysroot
 -- 
-2.41.0
+2.25.1
 
