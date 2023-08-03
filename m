@@ -2,96 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2434776DECB
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 05:14:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0731276DECF
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 05:16:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232394AbjHCDOz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Aug 2023 23:14:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47042 "EHLO
+        id S232724AbjHCDP7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Aug 2023 23:15:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47744 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232278AbjHCDOw (ORCPT
+        with ESMTP id S232836AbjHCDPy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Aug 2023 23:14:52 -0400
-Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5E0726BA
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Aug 2023 20:14:49 -0700 (PDT)
-Received: by mail-ed1-x529.google.com with SMTP id 4fb4d7f45d1cf-51d95aed33aso493613a12.3
-        for <linux-kernel@vger.kernel.org>; Wed, 02 Aug 2023 20:14:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1691032488; x=1691637288;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=tCmRhEn7acE0EeZXBjc4bZ+e4lkMA3dESMJ2NR80pQI=;
-        b=ssFkzkPXHd8jVwKVBEtxh9iKaMto13MD/V5TbGWkQbBZ61LmdngEFvVkkTULDCXVQG
-         hl/QcK4D/nJh/ZKUU6XZhZ/v1SQh4rkOYHxbilygY6jtpKnDwhCUZDGY0CvOT2ROV6yK
-         Qb+0S3wDgmSwaLMNO7zJHW8w2554Hw36Ehsx44JTlAkr+RCF/hCMi9iCcFZ+8m9lBsU+
-         dkop4vz/5G+SYrhkmxCiMIoLjHD7f9Npi1BUSVDVuAWGrKpZt3b4MvuJRXZe7rBq/mO1
-         xETBK5iTh3v4wXwVP6vbkaFlOnOIq95ehrLXgLKJU9k52ehrAve3pu69HZXwEVA5sC9B
-         5alg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691032488; x=1691637288;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=tCmRhEn7acE0EeZXBjc4bZ+e4lkMA3dESMJ2NR80pQI=;
-        b=CGgBWU6C2wSTGjOSV1/9+OXYTs2puwW69ky+Q+0ZmVeOOugRfo6tRrAEnnqAEBrqbt
-         iOiyPdsCtnvW+xOaRIdTVvkEG22UXzOOO2/lzrm4YgmD2Ziv/JSZ9qNPNXszOWS7dyjj
-         TTHDXcpJHW0xyUrHkw2y9xEqAoh9r3WA+HRerriB/pjGFxB6Ye9qt0eTGgL4B8OTLVD0
-         hfqo7yKomrmkgLW5FfyKdAM7UI9VltFgtIYNm8zpkvDkv02i+lgu9lbUX5cHTGCRGAY4
-         yekhtebYg5gIYpRtVU3441FxWVjxSDRijwcERH+Z9hbmxxhe83EUEl+TP4Tz71sNm/VB
-         0S3A==
-X-Gm-Message-State: ABy/qLYJTRBQntuprsHsB/+NGkX0fqsYNOKUFvf19XM+baB+BbUs+Rm8
-        ++OA+nwjD2Z/O5colVJ90Ak=
-X-Google-Smtp-Source: APBJJlHsrCYZaYZH7ZJI99siUd6uXcZkUDZc007Y4cKhbUNk0R7LMiGKBUeM1+7N8o/DL6CetMql7A==
-X-Received: by 2002:a17:906:8a75:b0:99b:4afc:7714 with SMTP id hy21-20020a1709068a7500b0099b4afc7714mr6165885ejc.44.1691032487767;
-        Wed, 02 Aug 2023 20:14:47 -0700 (PDT)
-Received: from andrea (host-82-57-177-142.retail.telecomitalia.it. [82.57.177.142])
-        by smtp.gmail.com with ESMTPSA id dc26-20020a170906c7da00b00988e953a586sm9874967ejb.61.2023.08.02.20.14.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 02 Aug 2023 20:14:47 -0700 (PDT)
-Date:   Thu, 3 Aug 2023 05:14:41 +0200
-From:   Andrea Parri <parri.andrea@gmail.com>
-To:     Leonardo =?iso-8859-1?Q?Br=E1s?= <leobras@redhat.com>
-Cc:     Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>, Guo Ren <guoren@kernel.org>,
-        Conor Dooley <conor.dooley@microchip.com>,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH v1 0/2] Deduplicating RISCV cmpxchg.h macros
-Message-ID: <ZMsboVmlrWhjfNJd@andrea>
-References: <20230406082018.70367-1-leobras@redhat.com>
- <ZC7/LzV53KsZ/cSn@andrea>
- <2f301cd6c4009248c5eb6af00f12f36f3127ca10.camel@redhat.com>
+        Wed, 2 Aug 2023 23:15:54 -0400
+Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 23D562719;
+        Wed,  2 Aug 2023 20:15:47 -0700 (PDT)
+Received: from loongson.cn (unknown [10.40.46.158])
+        by gateway (Coremail) with SMTP id _____8BxXeviG8tkGG8PAA--.30739S3;
+        Thu, 03 Aug 2023 11:15:46 +0800 (CST)
+Received: from [192.168.124.126] (unknown [10.40.46.158])
+        by localhost.localdomain (Coremail) with SMTP id AQAAf8CxLCPgG8tkAZNGAA--.32394S3;
+        Thu, 03 Aug 2023 11:15:44 +0800 (CST)
+Subject: Re: [PATCH v1 0/4] selftests: kvm: Add LoongArch support
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     Shuah Khan <shuah@kernel.org>, Paolo Bonzini <pbonzini@redhat.com>,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        Vishal Annapurve <vannapurve@google.com>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        WANG Xuerui <kernel@xen0n.name>, loongarch@lists.linux.dev,
+        Peter Xu <peterx@redhat.com>,
+        Vipin Sharma <vipinsh@google.com>, maobibo@loongson.cn
+References: <20230801020206.1957986-1-zhaotianrui@loongson.cn>
+ <ZMqLKAWRapQjGgWR@google.com>
+From:   zhaotianrui <zhaotianrui@loongson.cn>
+Message-ID: <66eb2e6c-7d16-6fbf-7deb-f6d821b1cd8c@loongson.cn>
+Date:   Thu, 3 Aug 2023 11:14:42 +0800
+User-Agent: Mozilla/5.0 (X11; Linux loongarch64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <2f301cd6c4009248c5eb6af00f12f36f3127ca10.camel@redhat.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <ZMqLKAWRapQjGgWR@google.com>
+Content-Type: text/plain; charset=gbk; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-CM-TRANSID: AQAAf8CxLCPgG8tkAZNGAA--.32394S3
+X-CM-SenderInfo: p2kd03xldq233l6o00pqjv00gofq/
+X-Coremail-Antispam: 1Uk129KBj93XoW7WF1kuw4fGF1Dtw4xCw48AFc_yoW8uw1rpa
+        9akF4FkFs7KF1IyF93J397Xr1Fya1kGr42v3WSqryUZw47try8Jr1xKFZ2kFy3u34kWr1F
+        vas7KwnxW3WUXagCm3ZEXasCq-sJn29KB7ZKAUJUUUU5529EdanIXcx71UUUUU7KY7ZEXa
+        sCq-sGcSsGvfJ3Ic02F40EFcxC0VAKzVAqx4xG6I80ebIjqfuFe4nvWSU5nxnvy29KBjDU
+        0xBIdaVrnRJUUUvYb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2
+        IYs7xG6rWj6s0DM7CIcVAFz4kK6r106r15M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48v
+        e4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_JFI_Gr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI
+        0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVWxJVW8Jr1l84ACjcxK6I8E87Iv6xkF7I0E14v2
+        6r4j6r4UJwAS0I0E0xvYzxvE52x082IY62kv0487Mc804VCY07AIYIkI8VC2zVCFFI0UMc
+        02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUXVWUAwAv7VC2z280aVAF
+        wI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcVAKI48JMxk0xIA0c2IEe2xFo4
+        CEbIxvr21l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG
+        67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MI
+        IYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E
+        14v26r1j6r4UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWUJV
+        W8JwCI42IY6I8E87Iv6xkF7I0E14v26r1j6r4UYxBIdaVFxhVjvjDU0xZFpf9x07j1YL9U
+        UUUU=
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> > LGTM.  AFAICT, this would need to be rebased, cf. e.g.
-> > 
-> >   a8596dda1fbf7e ("arch: rename all internal names __xchg to __arch_xchg")
-> > 
-> > from the tip tree.
-> > 
-> >   Andrea
-> 
-> Thanks for the heads up!
-> I will update this and re-send!
-> 
-> 
-> And sorry about the delay :(
-> For some weird reason neither the cover letter, nor your message reached my
-> gmail, and just now looking at lore I could find your message. 
 
-All's well that ends well.  ;-)  Thanks,
+ÔÚ 2023/8/3 ÉÏÎç12:58, Sean Christopherson Ð´µÀ:
+> Please use "KVM: selftests:" for the scope.  There's no "official" requirement,
+> but I've been heavily pushing "KVM: selftests:" and no one has objected or
+> suggested an alternative, and I'd really like all of KVM selftests to use a
+> consistent scope.
+Thanks for your reviewing.
+I will replace all the "selftests: kvm:" with "KVM: selftests:".
+>
+> On Tue, Aug 01, 2023, Tianrui Zhao wrote:
+>> This patch series base on the Linux LoongArch KVM patch:
+>> Based-on: <20230720062813.4126751-1-zhaotianrui@loongson.cn>
+> Is there an actual dependency?  I ask because I'm shepherding along a series[*]
+> that will silently conflict with the ucall support, and in a way with the Makefile
+> changes.
+Yes, this KVM selftests patch series actually depend on the previous 
+LoongArch KVM patches.
 
-  Andrea
+Thanks
+Tianrui Zhao
+>
+> If there's no hard dependency, one option would be take this series through
+> kvm-x86/selftests (my topic branch for KVM selftests changes) along with the
+> guest printf series, e.g. so that we don't end up with a mess in linux-next and/or
+> come the 6.6 merge window.
+>
+> https://lore.kernel.org/all/20230731203026.1192091-1-seanjc@google.com
+>
+>>   tools/testing/selftests/kvm/Makefile          |  11 +
+>>   .../selftests/kvm/include/kvm_util_base.h     |   5 +
+>>   .../kvm/include/loongarch/processor.h         |  28 ++
+>>   .../selftests/kvm/include/loongarch/sysreg.h  |  89 +++++
+>>   .../selftests/kvm/lib/loongarch/exception.S   |  27 ++
+>>   .../selftests/kvm/lib/loongarch/processor.c   | 367 ++++++++++++++++++
+>>   .../selftests/kvm/lib/loongarch/ucall.c       |  44 +++
+>>   7 files changed, 571 insertions(+)
+>>   create mode 100644 tools/testing/selftests/kvm/include/loongarch/processor.h
+>>   create mode 100644 tools/testing/selftests/kvm/include/loongarch/sysreg.h
+>>   create mode 100644 tools/testing/selftests/kvm/lib/loongarch/exception.S
+>>   create mode 100644 tools/testing/selftests/kvm/lib/loongarch/processor.c
+>>   create mode 100644 tools/testing/selftests/kvm/lib/loongarch/ucall.c
+>>
+>> -- 
+>> 2.39.1
+>>
+
