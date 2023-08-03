@@ -2,305 +2,252 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1094A76F585
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 00:15:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3AAA876F586
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 00:15:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232277AbjHCWPG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Aug 2023 18:15:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58994 "EHLO
+        id S231432AbjHCWP5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Aug 2023 18:15:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59414 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231301AbjHCWPC (ORCPT
+        with ESMTP id S231301AbjHCWPz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Aug 2023 18:15:02 -0400
-Received: from mail-ot1-f77.google.com (mail-ot1-f77.google.com [209.85.210.77])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54DD8212D
-        for <linux-kernel@vger.kernel.org>; Thu,  3 Aug 2023 15:14:59 -0700 (PDT)
-Received: by mail-ot1-f77.google.com with SMTP id 46e09a7af769-6bb31a92b44so2393248a34.0
-        for <linux-kernel@vger.kernel.org>; Thu, 03 Aug 2023 15:14:59 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691100898; x=1691705698;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=xWuGunlhpV3gfwSP4YqmV/vDFap4pRJjEoFFhevuKpY=;
-        b=L1o4NPgRPkVBv0PwHZYmMlm0S9pP0Mnb+NitCsyny+VPVoyZUnRCd3WJpN4Iha+/DF
-         1mrthHgdAyXR02D10NC2JTNwRA7fTOSlRgY3eqZRfFDEjWUL3H9vpHDtuSbUVU7pM21r
-         3aJDjJDM3VH9wrODIjT4ZQ7kDJkqPtqS9/QYTngnqT/zu8A8HFNVoSplYzZBYxB9NHQM
-         xaYPmw4Nqye8dfjDqEKlOLIPD0YoeazTb3x+tIupUUo+S5W3bjl6wRQ2m1h5znHdEf39
-         HhU6pMvoxxdzrMogGCcjC7JOpORxPephKx/T0IWob2Zv5UbSodoolDKGSMGCC8NDouk8
-         SWzQ==
-X-Gm-Message-State: ABy/qLa+I27kuqYFXibBBf2eDUIelCrzrA/egJ5Rn5shO2mApmZlUJuc
-        3rjGqWNKirYRnXM7qC9/N6z5MDClCWQahvdiEu7hoz5tuXlX
-X-Google-Smtp-Source: APBJJlGYP4PCfjelT3KQBQkr0PaU2Pgbky/2cQ0pgnBhJfZYxjib7+P/x4Fe2iuj6Wp3dPTNaIHzLDE0R8dFBAUHQYseryQieW/w
+        Thu, 3 Aug 2023 18:15:55 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52F2A2130
+        for <linux-kernel@vger.kernel.org>; Thu,  3 Aug 2023 15:15:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1691100953; x=1722636953;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=NbD7jIxZ6syhcmEyeRpAAkmzjdyogWp0Mmg1DvVQHh0=;
+  b=AbSqgGiJpbqw100BLsoliLcIEqJiFoDpmPz3QC9Gkf/ZlDJ+iUcGU5Sh
+   NroPZHuxb+9xKVyQNcFw3Sdvbzsw7PHWXjiTaQmaBdHjxr7m1Ak1jB4Cw
+   ITdzhqDLZB2hulJGeLPxndEHYpQa9sXiTtvIclZUDOT6k2bo4OIWmRXgQ
+   jGgyTfVlFClooaooPUM/dFCZRIyB8Zueyq2gMPVu65vzW7FL7Qp2beSwL
+   uOHSmEX/FphFqSeyfbk7ZIcywNGvzy9SLZjanMN88Ed8Li3jQmlpyZ+9U
+   kT2ckHzHXP3hQGw9kD7SJ+VmGPNcjJACRS7uHaop5omAyzlqmkxsMgNLm
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10791"; a="456381567"
+X-IronPort-AV: E=Sophos;i="6.01,253,1684825200"; 
+   d="scan'208";a="456381567"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Aug 2023 15:15:53 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10791"; a="976295586"
+X-IronPort-AV: E=Sophos;i="6.01,253,1684825200"; 
+   d="scan'208";a="976295586"
+Received: from lkp-server01.sh.intel.com (HELO d1ccc7e87e8f) ([10.239.97.150])
+  by fmsmga006.fm.intel.com with ESMTP; 03 Aug 2023 15:15:51 -0700
+Received: from kbuild by d1ccc7e87e8f with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qRgbm-0002Oa-2f;
+        Thu, 03 Aug 2023 22:15:50 +0000
+Date:   Fri, 4 Aug 2023 06:15:00 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Arnd Bergmann <arnd@arndb.de>
+Cc:     llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
+        linux-kernel@vger.kernel.org
+Subject: sound/soc/pxa/pxa-ssp.c:594:15: warning: variable 'acds' set but not
+ used
+Message-ID: <202308040619.BEismjFv-lkp@intel.com>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6870:7703:b0:1bb:72af:4373 with SMTP id
- dw3-20020a056870770300b001bb72af4373mr20894069oab.10.1691100898709; Thu, 03
- Aug 2023 15:14:58 -0700 (PDT)
-Date:   Thu, 03 Aug 2023 15:14:58 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000058d58e06020c1cab@google.com>
-Subject: [syzbot] [fs?] KASAN: slab-use-after-free Read in test_bdev_super_fc
-From:   syzbot <syzbot+2faac0423fdc9692822b@syzkaller.appspotmail.com>
-To:     brauner@kernel.org, hch@lst.de, jack@suse.cz,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com, viro@zeniv.linux.org.uk
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=0.8 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   999f6631866e9ea81add935b9c6ebaab0579d259
+commit: 7036440eab3e2d47a775d4616909f8235488d714 ARM: omap1: enable multiplatform
+date:   1 year, 2 months ago
+config: arm-randconfig-r024-20230804 (https://download.01.org/0day-ci/archive/20230804/202308040619.BEismjFv-lkp@intel.com/config)
+compiler: clang version 17.0.0 (https://github.com/llvm/llvm-project.git 4a5ac14ee968ff0ad5d2cc1ffa0299048db4c88a)
+reproduce: (https://download.01.org/0day-ci/archive/20230804/202308040619.BEismjFv-lkp@intel.com/reproduce)
 
-syzbot found the following issue on:
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202308040619.BEismjFv-lkp@intel.com/
 
-HEAD commit:    d7b3af5a77e8 Add linux-next specific files for 20230728
-git tree:       linux-next
-console+strace: https://syzkaller.appspot.com/x/log.txt?x=15a26181a80000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=62dd327c382e3fe
-dashboard link: https://syzkaller.appspot.com/bug?extid=2faac0423fdc9692822b
-compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=15f98b26a80000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=14fb7009a80000
+All warnings (new ones prefixed by >>):
 
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/5efa5e68267f/disk-d7b3af5a.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/b1f5d3e10263/vmlinux-d7b3af5a.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/57cab469d186/bzImage-d7b3af5a.xz
-
-The issue was bisected to:
-
-commit 1dbd9ceb390c4c61d28cf2c9251dd2015946ce51
-Author: Jan Kara <jack@suse.cz>
-Date:   Mon Jul 24 17:51:45 2023 +0000
-
-    fs: open block device after superblock creation
-
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=173870c5a80000
-final oops:     https://syzkaller.appspot.com/x/report.txt?x=14b870c5a80000
-console output: https://syzkaller.appspot.com/x/log.txt?x=10b870c5a80000
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+2faac0423fdc9692822b@syzkaller.appspotmail.com
-Fixes: 1dbd9ceb390c ("fs: open block device after superblock creation")
-
-MTD: Attempt to mount non-MTD device "/dev/nullb0"
-==================================================================
-BUG: KASAN: slab-use-after-free in test_bdev_super_fc+0x10a/0x110 fs/super.c:1242
-Read of size 8 at addr ffff88807887e058 by task syz-executor798/5042
-
-CPU: 1 PID: 5042 Comm: syz-executor798 Not tainted 6.5.0-rc3-next-20230728-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 07/12/2023
-Call Trace:
- <TASK>
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0xd9/0x1b0 lib/dump_stack.c:106
- print_address_description mm/kasan/report.c:364 [inline]
- print_report+0xc4/0x620 mm/kasan/report.c:475
- kasan_report+0xda/0x110 mm/kasan/report.c:588
- test_bdev_super_fc+0x10a/0x110 fs/super.c:1242
- sget_fc+0x584/0x860 fs/super.c:574
- get_tree_bdev+0x13e/0x6a0 fs/super.c:1323
- romfs_get_tree fs/romfs/super.c:561 [inline]
- romfs_get_tree+0x4e/0x60 fs/romfs/super.c:552
- vfs_get_tree+0x88/0x350 fs/super.c:1521
- do_new_mount fs/namespace.c:3335 [inline]
- path_mount+0x1492/0x1ed0 fs/namespace.c:3662
- do_mount fs/namespace.c:3675 [inline]
- __do_sys_mount fs/namespace.c:3884 [inline]
- __se_sys_mount fs/namespace.c:3861 [inline]
- __x64_sys_mount+0x293/0x310 fs/namespace.c:3861
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x38/0xb0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x63/0xcd
-RIP: 0033:0x7f8cfb721359
-Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 f1 17 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007fffc0205068 EFLAGS: 00000246 ORIG_RAX: 00000000000000a5
-RAX: ffffffffffffffda RBX: 00007fffc02050b0 RCX: 00007f8cfb721359
-RDX: 0000000020000040 RSI: 0000000020000080 RDI: 00000000200000c0
-RBP: 0000000000000000 R08: 0000000000000000 R09: 00000000000f4240
-R10: 0000000000000005 R11: 0000000000000246 R12: 00000000000f4240
-R13: 00007fffc0205338 R14: 00007fffc020509c R15: 00007f8cfb76a06a
- </TASK>
-
-Allocated by task 5038:
- kasan_save_stack+0x33/0x50 mm/kasan/common.c:45
- kasan_set_track+0x25/0x30 mm/kasan/common.c:52
- ____kasan_kmalloc mm/kasan/common.c:374 [inline]
- __kasan_kmalloc+0xa2/0xb0 mm/kasan/common.c:383
- kmalloc include/linux/slab.h:599 [inline]
- kzalloc include/linux/slab.h:720 [inline]
- alloc_super+0x52/0xb40 fs/super.c:202
- sget_fc+0x142/0x860 fs/super.c:580
- get_tree_bdev+0x13e/0x6a0 fs/super.c:1323
- romfs_get_tree fs/romfs/super.c:561 [inline]
- romfs_get_tree+0x4e/0x60 fs/romfs/super.c:552
- vfs_get_tree+0x88/0x350 fs/super.c:1521
- do_new_mount fs/namespace.c:3335 [inline]
- path_mount+0x1492/0x1ed0 fs/namespace.c:3662
- do_mount fs/namespace.c:3675 [inline]
- __do_sys_mount fs/namespace.c:3884 [inline]
- __se_sys_mount fs/namespace.c:3861 [inline]
- __x64_sys_mount+0x293/0x310 fs/namespace.c:3861
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x38/0xb0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x63/0xcd
-
-Freed by task 4776:
- kasan_save_stack+0x33/0x50 mm/kasan/common.c:45
- kasan_set_track+0x25/0x30 mm/kasan/common.c:52
- kasan_save_free_info+0x2b/0x40 mm/kasan/generic.c:522
- ____kasan_slab_free mm/kasan/common.c:236 [inline]
- ____kasan_slab_free+0x15e/0x1b0 mm/kasan/common.c:200
- kasan_slab_free include/linux/kasan.h:162 [inline]
- slab_free_hook mm/slub.c:1800 [inline]
- slab_free_freelist_hook+0x114/0x1e0 mm/slub.c:1826
- slab_free mm/slub.c:3809 [inline]
- __kmem_cache_free+0xb8/0x2f0 mm/slub.c:3822
- process_one_work+0xaa2/0x16f0 kernel/workqueue.c:2603
- worker_thread+0x687/0x1110 kernel/workqueue.c:2754
- kthread+0x33a/0x430 kernel/kthread.c:389
- ret_from_fork+0x2c/0x70 arch/x86/kernel/process.c:145
- ret_from_fork_asm+0x11/0x20 arch/x86/entry/entry_64.S:304
-
-Last potentially related work creation:
- kasan_save_stack+0x33/0x50 mm/kasan/common.c:45
- __kasan_record_aux_stack+0xbc/0xd0 mm/kasan/generic.c:492
- insert_work+0x4a/0x330 kernel/workqueue.c:1559
- __queue_work+0x5f5/0x1040 kernel/workqueue.c:1720
- queue_work_on+0xed/0x110 kernel/workqueue.c:1750
- rcu_do_batch kernel/rcu/tree.c:2139 [inline]
- rcu_core+0x7fb/0x1bb0 kernel/rcu/tree.c:2403
- __do_softirq+0x218/0x965 kernel/softirq.c:553
-
-Second to last potentially related work creation:
- kasan_save_stack+0x33/0x50 mm/kasan/common.c:45
- __kasan_record_aux_stack+0xbc/0xd0 mm/kasan/generic.c:492
- __call_rcu_common.constprop.0+0x9a/0x790 kernel/rcu/tree.c:2653
- __put_super fs/super.c:345 [inline]
- put_super fs/super.c:309 [inline]
- deactivate_locked_super+0x144/0x170 fs/super.c:341
- get_tree_bdev+0x4c7/0x6a0 fs/super.c:1347
- romfs_get_tree fs/romfs/super.c:561 [inline]
- romfs_get_tree+0x4e/0x60 fs/romfs/super.c:552
- vfs_get_tree+0x88/0x350 fs/super.c:1521
- do_new_mount fs/namespace.c:3335 [inline]
- path_mount+0x1492/0x1ed0 fs/namespace.c:3662
- do_mount fs/namespace.c:3675 [inline]
- __do_sys_mount fs/namespace.c:3884 [inline]
- __se_sys_mount fs/namespace.c:3861 [inline]
- __x64_sys_mount+0x293/0x310 fs/namespace.c:3861
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x38/0xb0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x63/0xcd
-
-The buggy address belongs to the object at ffff88807887e000
- which belongs to the cache kmalloc-4k of size 4096
-The buggy address is located 88 bytes inside of
- freed 4096-byte region [ffff88807887e000, ffff88807887f000)
-
-The buggy address belongs to the physical page:
-page:ffffea0001e21e00 refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x78878
-head:ffffea0001e21e00 order:3 entire_mapcount:0 nr_pages_mapped:0 pincount:0
-flags: 0xfff00000010200(slab|head|node=0|zone=1|lastcpupid=0x7ff)
-page_type: 0xffffffff()
-raw: 00fff00000010200 ffff888012842140 dead000000000122 0000000000000000
-raw: 0000000000000000 0000000000040004 00000001ffffffff 0000000000000000
-page dumped because: kasan: bad access detected
-page_owner tracks the page as allocated
-page last allocated via order 3, migratetype Unmovable, gfp_mask 0xd2040(__GFP_IO|__GFP_NOWARN|__GFP_NORETRY|__GFP_COMP|__GFP_NOMEMALLOC), pid 5038, tgid 5038 (syz-executor798), ts 42876874060, free_ts 42820208731
- set_page_owner include/linux/page_owner.h:31 [inline]
- post_alloc_hook+0x2d2/0x350 mm/page_alloc.c:1569
- prep_new_page mm/page_alloc.c:1576 [inline]
- get_page_from_freelist+0x10d7/0x31b0 mm/page_alloc.c:3256
- __alloc_pages+0x1d0/0x4a0 mm/page_alloc.c:4512
- alloc_pages+0x1a9/0x270 mm/mempolicy.c:2279
- alloc_slab_page mm/slub.c:1870 [inline]
- allocate_slab+0x24e/0x380 mm/slub.c:2017
- new_slab mm/slub.c:2070 [inline]
- ___slab_alloc+0x8bc/0x1570 mm/slub.c:3223
- __slab_alloc.constprop.0+0x56/0xa0 mm/slub.c:3322
- __slab_alloc_node mm/slub.c:3375 [inline]
- slab_alloc_node mm/slub.c:3468 [inline]
- __kmem_cache_alloc_node+0x137/0x350 mm/slub.c:3517
- __do_kmalloc_node mm/slab_common.c:1023 [inline]
- __kmalloc+0x4f/0x100 mm/slab_common.c:1037
- kmalloc include/linux/slab.h:603 [inline]
- tomoyo_realpath_from_path+0xb9/0x710 security/tomoyo/realpath.c:251
- tomoyo_mount_acl+0x1af/0x880 security/tomoyo/mount.c:105
- tomoyo_mount_permission+0x16d/0x410 security/tomoyo/mount.c:237
- security_sb_mount+0x86/0xd0 security/security.c:1361
- path_mount+0x129/0x1ed0 fs/namespace.c:3604
- do_mount fs/namespace.c:3675 [inline]
- __do_sys_mount fs/namespace.c:3884 [inline]
- __se_sys_mount fs/namespace.c:3861 [inline]
- __x64_sys_mount+0x293/0x310 fs/namespace.c:3861
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x38/0xb0 arch/x86/entry/common.c:80
-page last free stack trace:
- reset_page_owner include/linux/page_owner.h:24 [inline]
- free_pages_prepare mm/page_alloc.c:1160 [inline]
- free_unref_page_prepare+0x508/0xb90 mm/page_alloc.c:2383
- free_unref_page+0x33/0x3b0 mm/page_alloc.c:2478
- __unfreeze_partials+0x21d/0x240 mm/slub.c:2655
- qlink_free mm/kasan/quarantine.c:166 [inline]
- qlist_free_all+0x6a/0x170 mm/kasan/quarantine.c:185
- kasan_quarantine_reduce+0x18b/0x1d0 mm/kasan/quarantine.c:292
- __kasan_slab_alloc+0x65/0x90 mm/kasan/common.c:305
- kasan_slab_alloc include/linux/kasan.h:186 [inline]
- slab_post_alloc_hook mm/slab.h:762 [inline]
- slab_alloc_node mm/slub.c:3478 [inline]
- slab_alloc mm/slub.c:3486 [inline]
- __kmem_cache_alloc_lru mm/slub.c:3493 [inline]
- kmem_cache_alloc+0x172/0x3b0 mm/slub.c:3502
- kmem_cache_zalloc include/linux/slab.h:710 [inline]
- locks_alloc_lock fs/locks.c:271 [inline]
- flock_lock_inode+0xb7f/0xfe0 fs/locks.c:1039
- flock_lock_inode_wait fs/locks.c:2018 [inline]
- locks_lock_inode_wait+0x1c7/0x450 fs/locks.c:2045
- locks_lock_file_wait include/linux/filelock.h:346 [inline]
- __do_sys_flock+0x403/0x4c0 fs/locks.c:2115
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x38/0xb0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x63/0xcd
-
-Memory state around the buggy address:
- ffff88807887df00: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
- ffff88807887df80: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
->ffff88807887e000: fa fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-                                                    ^
- ffff88807887e080: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
- ffff88807887e100: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-==================================================================
+>> sound/soc/pxa/pxa-ssp.c:594:15: warning: variable 'acds' set but not used [-Wunused-but-set-variable]
+     594 |                         int ssacd, acds;
+         |                                    ^
+   1 warning generated.
 
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+vim +/acds +594 sound/soc/pxa/pxa-ssp.c
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+05739375f1c0a10 Daniel Mack     2018-06-29  526  
+1b340bd7e444f20 Mark Brown      2008-07-30  527  /*
+1b340bd7e444f20 Mark Brown      2008-07-30  528   * Set the SSP audio DMA parameters and sample size.
+1b340bd7e444f20 Mark Brown      2008-07-30  529   * Can be called multiple times by oss emulation.
+1b340bd7e444f20 Mark Brown      2008-07-30  530   */
+1b340bd7e444f20 Mark Brown      2008-07-30  531  static int pxa_ssp_hw_params(struct snd_pcm_substream *substream,
+dee89c4d9443352 Mark Brown      2008-11-18  532  				struct snd_pcm_hw_params *params,
+f0fba2ad1b6b53d Liam Girdwood   2010-03-17  533  				struct snd_soc_dai *cpu_dai)
+1b340bd7e444f20 Mark Brown      2008-07-30  534  {
+f0fba2ad1b6b53d Liam Girdwood   2010-03-17  535  	struct ssp_priv *priv = snd_soc_dai_get_drvdata(cpu_dai);
+f9efc9df94fd126 Eric Miao       2010-02-09  536  	struct ssp_device *ssp = priv->ssp;
+2d7e71fa231035d Eric Miao       2009-04-23  537  	int chn = params_channels(params);
+05739375f1c0a10 Daniel Mack     2018-06-29  538  	u32 sscr0, sspsp;
+1b340bd7e444f20 Mark Brown      2008-07-30  539  	int width = snd_pcm_format_physical_width(params_format(params));
+baffe1699c68da5 Haojian Zhuang  2010-05-05  540  	int ttsa = pxa_ssp_read_reg(ssp, SSTSA) & 0xf;
+d65a14587a9be85 Daniel Mack     2013-08-12  541  	struct snd_dmaengine_dai_dma_data *dma_data;
+05739375f1c0a10 Daniel Mack     2018-06-29  542  	int rate = params_rate(params);
+05739375f1c0a10 Daniel Mack     2018-06-29  543  	int bclk = rate * chn * (width / 8);
+737e370a57e4e83 Daniel Mack     2018-05-21  544  	int ret;
+5f712b2b73a9fc8 Daniel Mack     2010-03-22  545  
+f0fba2ad1b6b53d Liam Girdwood   2010-03-17  546  	dma_data = snd_soc_dai_get_dma_data(cpu_dai, substream);
+1b340bd7e444f20 Mark Brown      2008-07-30  547  
+92429069d0fc9f5 Philipp Zabel   2009-03-19  548  	/* Network mode with one active slot (ttsa == 1) can be used
+92429069d0fc9f5 Philipp Zabel   2009-03-19  549  	 * to force 16-bit frame width on the wire (for S16_LE), even
+92429069d0fc9f5 Philipp Zabel   2009-03-19  550  	 * with two channels. Use 16-bit DMA transfers for this case.
+92429069d0fc9f5 Philipp Zabel   2009-03-19  551  	 */
+d93ca1ae61adf67 guoyh           2012-05-07  552  	pxa_ssp_set_dma_params(ssp,
+2d7e71fa231035d Eric Miao       2009-04-23  553  		((chn == 2) && (ttsa != 1)) || (width == 32),
+d93ca1ae61adf67 guoyh           2012-05-07  554  		substream->stream == SNDRV_PCM_STREAM_PLAYBACK, dma_data);
+5f712b2b73a9fc8 Daniel Mack     2010-03-22  555  
+1b340bd7e444f20 Mark Brown      2008-07-30  556  	/* we can only change the settings if the port is not in use */
+baffe1699c68da5 Haojian Zhuang  2010-05-05  557  	if (pxa_ssp_read_reg(ssp, SSCR0) & SSCR0_SSE)
+1b340bd7e444f20 Mark Brown      2008-07-30  558  		return 0;
+1b340bd7e444f20 Mark Brown      2008-07-30  559  
+737e370a57e4e83 Daniel Mack     2018-05-21  560  	ret = pxa_ssp_configure_dai_fmt(priv);
+737e370a57e4e83 Daniel Mack     2018-05-21  561  	if (ret < 0)
+737e370a57e4e83 Daniel Mack     2018-05-21  562  		return ret;
+737e370a57e4e83 Daniel Mack     2018-05-21  563  
+1b340bd7e444f20 Mark Brown      2008-07-30  564  	/* clear selected SSP bits */
+baffe1699c68da5 Haojian Zhuang  2010-05-05  565  	sscr0 = pxa_ssp_read_reg(ssp, SSCR0) & ~(SSCR0_DSS | SSCR0_EDSS);
+1b340bd7e444f20 Mark Brown      2008-07-30  566  
+1b340bd7e444f20 Mark Brown      2008-07-30  567  	/* bit size */
+1b340bd7e444f20 Mark Brown      2008-07-30  568  	switch (params_format(params)) {
+1b340bd7e444f20 Mark Brown      2008-07-30  569  	case SNDRV_PCM_FORMAT_S16_LE:
+972a55b62d592cf Qiao Zhou       2012-06-04  570  		if (ssp->type == PXA3xx_SSP)
+1b340bd7e444f20 Mark Brown      2008-07-30  571  			sscr0 |= SSCR0_FPCKE;
+1b340bd7e444f20 Mark Brown      2008-07-30  572  		sscr0 |= SSCR0_DataSize(16);
+1b340bd7e444f20 Mark Brown      2008-07-30  573  		break;
+1b340bd7e444f20 Mark Brown      2008-07-30  574  	case SNDRV_PCM_FORMAT_S24_LE:
+1b340bd7e444f20 Mark Brown      2008-07-30  575  		sscr0 |= (SSCR0_EDSS | SSCR0_DataSize(8));
+1b340bd7e444f20 Mark Brown      2008-07-30  576  		break;
+1b340bd7e444f20 Mark Brown      2008-07-30  577  	case SNDRV_PCM_FORMAT_S32_LE:
+1b340bd7e444f20 Mark Brown      2008-07-30  578  		sscr0 |= (SSCR0_EDSS | SSCR0_DataSize(16));
+1b340bd7e444f20 Mark Brown      2008-07-30  579  		break;
+1b340bd7e444f20 Mark Brown      2008-07-30  580  	}
+baffe1699c68da5 Haojian Zhuang  2010-05-05  581  	pxa_ssp_write_reg(ssp, SSCR0, sscr0);
+1b340bd7e444f20 Mark Brown      2008-07-30  582  
+05739375f1c0a10 Daniel Mack     2018-06-29  583  	if (sscr0 & SSCR0_ACS) {
+05739375f1c0a10 Daniel Mack     2018-06-29  584  		ret = pxa_ssp_set_pll(priv, bclk);
+05739375f1c0a10 Daniel Mack     2018-06-29  585  
+05739375f1c0a10 Daniel Mack     2018-06-29  586  		/*
+05739375f1c0a10 Daniel Mack     2018-06-29  587  		 * If we were able to generate the bclk directly,
+05739375f1c0a10 Daniel Mack     2018-06-29  588  		 * all is fine. Otherwise, look up the closest rate
+05739375f1c0a10 Daniel Mack     2018-06-29  589  		 * from the table and also set the dividers.
+05739375f1c0a10 Daniel Mack     2018-06-29  590  		 */
+05739375f1c0a10 Daniel Mack     2018-06-29  591  
+05739375f1c0a10 Daniel Mack     2018-06-29  592  		if (ret < 0) {
+05739375f1c0a10 Daniel Mack     2018-06-29  593  			const struct pxa_ssp_clock_mode *m;
+05739375f1c0a10 Daniel Mack     2018-06-29 @594  			int ssacd, acds;
+05739375f1c0a10 Daniel Mack     2018-06-29  595  
+05739375f1c0a10 Daniel Mack     2018-06-29  596  			for (m = pxa_ssp_clock_modes; m->rate; m++) {
+05739375f1c0a10 Daniel Mack     2018-06-29  597  				if (m->rate == rate)
+05739375f1c0a10 Daniel Mack     2018-06-29  598  					break;
+05739375f1c0a10 Daniel Mack     2018-06-29  599  			}
+05739375f1c0a10 Daniel Mack     2018-06-29  600  
+05739375f1c0a10 Daniel Mack     2018-06-29  601  			if (!m->rate)
+05739375f1c0a10 Daniel Mack     2018-06-29  602  				return -EINVAL;
+05739375f1c0a10 Daniel Mack     2018-06-29  603  
+05739375f1c0a10 Daniel Mack     2018-06-29  604  			acds = m->acds;
+05739375f1c0a10 Daniel Mack     2018-06-29  605  
+05739375f1c0a10 Daniel Mack     2018-06-29  606  			/* The values in the table are for 16 bits */
+05739375f1c0a10 Daniel Mack     2018-06-29  607  			if (width == 32)
+05739375f1c0a10 Daniel Mack     2018-06-29  608  				acds--;
+05739375f1c0a10 Daniel Mack     2018-06-29  609  
+05739375f1c0a10 Daniel Mack     2018-06-29  610  			ret = pxa_ssp_set_pll(priv, bclk);
+05739375f1c0a10 Daniel Mack     2018-06-29  611  			if (ret < 0)
+05739375f1c0a10 Daniel Mack     2018-06-29  612  				return ret;
+05739375f1c0a10 Daniel Mack     2018-06-29  613  
+05739375f1c0a10 Daniel Mack     2018-06-29  614  			ssacd = pxa_ssp_read_reg(ssp, SSACD);
+05739375f1c0a10 Daniel Mack     2018-06-29  615  			ssacd &= ~(SSACD_ACDS(7) | SSACD_SCDB_1X);
+05739375f1c0a10 Daniel Mack     2018-06-29  616  			ssacd |= SSACD_ACDS(m->acds);
+05739375f1c0a10 Daniel Mack     2018-06-29  617  			ssacd |= m->scdb;
+05739375f1c0a10 Daniel Mack     2018-06-29  618  			pxa_ssp_write_reg(ssp, SSACD, ssacd);
+05739375f1c0a10 Daniel Mack     2018-06-29  619  		}
+05739375f1c0a10 Daniel Mack     2018-06-29  620  	} else if (sscr0 & SSCR0_ECS) {
+05739375f1c0a10 Daniel Mack     2018-06-29  621  		/*
+05739375f1c0a10 Daniel Mack     2018-06-29  622  		 * For setups with external clocking, the PLL and its diviers
+05739375f1c0a10 Daniel Mack     2018-06-29  623  		 * are not active. Instead, the SCR bits in SSCR0 can be used
+05739375f1c0a10 Daniel Mack     2018-06-29  624  		 * to divide the clock.
+05739375f1c0a10 Daniel Mack     2018-06-29  625  		 */
+05739375f1c0a10 Daniel Mack     2018-06-29  626  		pxa_ssp_set_scr(ssp, bclk / rate);
+05739375f1c0a10 Daniel Mack     2018-06-29  627  	}
+05739375f1c0a10 Daniel Mack     2018-06-29  628  
+1b340bd7e444f20 Mark Brown      2008-07-30  629  	switch (priv->dai_fmt & SND_SOC_DAIFMT_FORMAT_MASK) {
+1b340bd7e444f20 Mark Brown      2008-07-30  630  	case SND_SOC_DAIFMT_I2S:
+baffe1699c68da5 Haojian Zhuang  2010-05-05  631  	       sspsp = pxa_ssp_read_reg(ssp, SSPSP);
+72d7466468b471f Daniel Mack     2009-03-12  632  
+05739375f1c0a10 Daniel Mack     2018-06-29  633  		if (((priv->sysclk / bclk) == 64) && (width == 16)) {
+72d7466468b471f Daniel Mack     2009-03-12  634  			/* This is a special case where the bitclk is 64fs
+72d7466468b471f Daniel Mack     2009-03-12  635  			 * and we're not dealing with 2*32 bits of audio
+72d7466468b471f Daniel Mack     2009-03-12  636  			 * samples.
+72d7466468b471f Daniel Mack     2009-03-12  637  			 *
+72d7466468b471f Daniel Mack     2009-03-12  638  			 * The SSP values used for that are all found out by
+72d7466468b471f Daniel Mack     2009-03-12  639  			 * trying and failing a lot; some of the registers
+72d7466468b471f Daniel Mack     2009-03-12  640  			 * needed for that mode are only available on PXA3xx.
+72d7466468b471f Daniel Mack     2009-03-12  641  			 */
+972a55b62d592cf Qiao Zhou       2012-06-04  642  			if (ssp->type != PXA3xx_SSP)
+72d7466468b471f Daniel Mack     2009-03-12  643  				return -EINVAL;
+72d7466468b471f Daniel Mack     2009-03-12  644  
+72d7466468b471f Daniel Mack     2009-03-12  645  			sspsp |= SSPSP_SFRMWDTH(width * 2);
+72d7466468b471f Daniel Mack     2009-03-12  646  			sspsp |= SSPSP_SFRMDLY(width * 4);
+72d7466468b471f Daniel Mack     2009-03-12  647  			sspsp |= SSPSP_EDMYSTOP(3);
+72d7466468b471f Daniel Mack     2009-03-12  648  			sspsp |= SSPSP_DMYSTOP(3);
+72d7466468b471f Daniel Mack     2009-03-12  649  			sspsp |= SSPSP_DMYSTRT(1);
+0ce36c5f7f87632 Mark Brown      2009-03-13  650  		} else {
+0ce36c5f7f87632 Mark Brown      2009-03-13  651  			/* The frame width is the width the LRCLK is
+0ce36c5f7f87632 Mark Brown      2009-03-13  652  			 * asserted for; the delay is expressed in
+0ce36c5f7f87632 Mark Brown      2009-03-13  653  			 * half cycle units.  We need the extra cycle
+0ce36c5f7f87632 Mark Brown      2009-03-13  654  			 * because the data starts clocking out one BCLK
+0ce36c5f7f87632 Mark Brown      2009-03-13  655  			 * after LRCLK changes polarity.
+0ce36c5f7f87632 Mark Brown      2009-03-13  656  			 */
+0ce36c5f7f87632 Mark Brown      2009-03-13  657  			sspsp |= SSPSP_SFRMWDTH(width + 1);
+0ce36c5f7f87632 Mark Brown      2009-03-13  658  			sspsp |= SSPSP_SFRMDLY((width + 1) * 2);
+0ce36c5f7f87632 Mark Brown      2009-03-13  659  			sspsp |= SSPSP_DMYSTRT(1);
+0ce36c5f7f87632 Mark Brown      2009-03-13  660  		}
+72d7466468b471f Daniel Mack     2009-03-12  661  
+baffe1699c68da5 Haojian Zhuang  2010-05-05  662  		pxa_ssp_write_reg(ssp, SSPSP, sspsp);
+1b340bd7e444f20 Mark Brown      2008-07-30  663  		break;
+1b340bd7e444f20 Mark Brown      2008-07-30  664  	default:
+1b340bd7e444f20 Mark Brown      2008-07-30  665  		break;
+1b340bd7e444f20 Mark Brown      2008-07-30  666  	}
+1b340bd7e444f20 Mark Brown      2008-07-30  667  
+72d7466468b471f Daniel Mack     2009-03-12  668  	/* When we use a network mode, we always require TDM slots
+1b340bd7e444f20 Mark Brown      2008-07-30  669  	 * - complain loudly and fail if they've not been set up yet.
+1b340bd7e444f20 Mark Brown      2008-07-30  670  	 */
+92429069d0fc9f5 Philipp Zabel   2009-03-19  671  	if ((sscr0 & SSCR0_MOD) && !ttsa) {
+4f3d957718e7f0a Andy Shevchenko 2019-10-18  672  		dev_err(ssp->dev, "No TDM timeslot configured\n");
+1b340bd7e444f20 Mark Brown      2008-07-30  673  		return -EINVAL;
+1b340bd7e444f20 Mark Brown      2008-07-30  674  	}
+1b340bd7e444f20 Mark Brown      2008-07-30  675  
+1b340bd7e444f20 Mark Brown      2008-07-30  676  	dump_registers(ssp);
+1b340bd7e444f20 Mark Brown      2008-07-30  677  
+1b340bd7e444f20 Mark Brown      2008-07-30  678  	return 0;
+1b340bd7e444f20 Mark Brown      2008-07-30  679  }
+1b340bd7e444f20 Mark Brown      2008-07-30  680  
 
-If the bug is already fixed, let syzbot know by replying with:
-#syz fix: exact-commit-title
+:::::: The code at line 594 was first introduced by commit
+:::::: 05739375f1c0a1048fea8b9c4cb54d9e4a891938 ASoC: pxa-ssp: remove .set_pll() and .set_clkdiv() callbacks
 
-If you want syzbot to run the reproducer, reply with:
-#syz test: git://repo/address.git branch-or-commit-hash
-If you attach or paste a git patch, syzbot will apply it before testing.
+:::::: TO: Daniel Mack <daniel@zonque.org>
+:::::: CC: Mark Brown <broonie@kernel.org>
 
-If you want to change bug's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the bug is a duplicate of another bug, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
