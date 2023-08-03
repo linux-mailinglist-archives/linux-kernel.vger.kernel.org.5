@@ -2,64 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B21776DEA8
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 05:01:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 66B6776DEAB
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 05:01:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231438AbjHCDA7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Aug 2023 23:00:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41314 "EHLO
+        id S231628AbjHCDB4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Aug 2023 23:01:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41756 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229550AbjHCDA5 (ORCPT
+        with ESMTP id S229550AbjHCDBy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Aug 2023 23:00:57 -0400
-Received: from ex01.ufhost.com (ex01.ufhost.com [61.152.239.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5AACF10A;
-        Wed,  2 Aug 2023 20:00:55 -0700 (PDT)
-Received: from EXMBX165.cuchost.com (unknown [175.102.18.54])
-        (using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
-        (Client CN "EXMBX165", Issuer "EXMBX165" (not verified))
-        by ex01.ufhost.com (Postfix) with ESMTP id EA21F24E225;
-        Thu,  3 Aug 2023 11:00:48 +0800 (CST)
-Received: from EXMBX172.cuchost.com (172.16.6.92) by EXMBX165.cuchost.com
- (172.16.6.75) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Thu, 3 Aug
- 2023 11:00:49 +0800
-Received: from [192.168.125.84] (183.27.98.54) by EXMBX172.cuchost.com
- (172.16.6.92) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Thu, 3 Aug
- 2023 11:00:47 +0800
-Message-ID: <2ea68c95-1581-a67d-613b-5315fcfd0016@starfivetech.com>
-Date:   Thu, 3 Aug 2023 11:00:47 +0800
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.3.2
-Subject: Re: [PATCH v2 2/3] ASoC: starfive: Add JH7110 PWM-DAC driver
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        Mark Brown <broonie@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Claudiu Beznea <claudiu.beznea@microchip.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        "Krzysztof Kozlowski" <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Walker Chen <walker.chen@starfivetech.com>,
-        Xingyu Wu <xingyu.wu@starfivetech.com>,
-        Emil Renner Berthing <emil.renner.berthing@canonical.com>
-CC:     <alsa-devel@alsa-project.org>, <devicetree@vger.kernel.org>,
-        <linux-riscv@lists.infradead.org>, <linux-kernel@vger.kernel.org>
-References: <20230731032829.127864-1-hal.feng@starfivetech.com>
- <20230731032829.127864-3-hal.feng@starfivetech.com>
- <b938ba84-38e9-b220-9686-6656e4452c10@linaro.org>
-Content-Language: en-US
-From:   Hal Feng <hal.feng@starfivetech.com>
-In-Reply-To: <b938ba84-38e9-b220-9686-6656e4452c10@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [183.27.98.54]
-X-ClientProxiedBy: EXCAS062.cuchost.com (172.16.6.22) To EXMBX172.cuchost.com
- (172.16.6.92)
-X-YovoleRuleAgent: yovoleflag
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        Wed, 2 Aug 2023 23:01:54 -0400
+Received: from mgamail.intel.com (unknown [192.55.52.120])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69F4310A
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Aug 2023 20:01:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1691031713; x=1722567713;
+  h=date:from:to:cc:subject:message-id;
+  bh=1Fh/RD+e6DRK3mIhtkdKCpFBLE9HswmsJOmCeY5EyxY=;
+  b=Xmov0VhwDWhE8RnYucNH1wogb4ePVnwlkwC57fqGClZ7exeGs5cGz4mr
+   NkXXKQNKFwLUPFJXzQsKNuq9V7D244zeQ+DtNpNS+jLAZCtjUe3N8iVqY
+   pBn45rIEkh//kZxefqVUhJnjD7mT8oRUAI9iyr/DUCK8oFtSd0Joa4ccd
+   l2NoLgjlGdY1NH9ynX+StgoKUMt+xvBf4jMVObODB2jrlyPLW3ncFq9Dd
+   TWmXUQjL1fyp2kCO88pgYXPaQzIPldxMofWfl1HKuNI/R/bPUDz3/oc2v
+   UjNXYulk2qcrYj2Cr20nYHUPZzeYmLtf1UdcgQCRA7CNhsSNnyhugVA3k
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10790"; a="368654613"
+X-IronPort-AV: E=Sophos;i="6.01,250,1684825200"; 
+   d="scan'208";a="368654613"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Aug 2023 20:01:53 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10790"; a="819457678"
+X-IronPort-AV: E=Sophos;i="6.01,250,1684825200"; 
+   d="scan'208";a="819457678"
+Received: from lkp-server01.sh.intel.com (HELO d1ccc7e87e8f) ([10.239.97.150])
+  by FMSMGA003.fm.intel.com with ESMTP; 02 Aug 2023 20:01:52 -0700
+Received: from kbuild by d1ccc7e87e8f with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qROb1-0001hW-1R;
+        Thu, 03 Aug 2023 03:01:51 +0000
+Date:   Thu, 03 Aug 2023 11:01:34 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "x86-ml" <x86@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [tip:x86/core] BUILD SUCCESS
+ 029239c5b0e6484e4443be90e5664fd0bf0f066b
+Message-ID: <202308031132.No6Zc1rf-lkp@intel.com>
+User-Agent: s-nail v14.9.24
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -67,96 +60,173 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 31 Jul 2023 09:06:10 +0200, Krzysztof Kozlowski wrote:
-> On 31/07/2023 05:28, Hal Feng wrote:
->> Add PWM-DAC driver support for the StarFive JH7110 SoC.
->> 
-> 
-> 
-> ...
-> 
->> +static int jh7110_pwmdac_probe(struct platform_device *pdev)
->> +{
->> +	struct jh7110_pwmdac_dev *dev;
->> +	struct resource *res;
->> +	int ret;
->> +
->> +	dev = devm_kzalloc(&pdev->dev, sizeof(*dev), GFP_KERNEL);
->> +	if (!dev)
->> +		return -ENOMEM;
->> +
->> +	dev->base = devm_platform_get_and_ioremap_resource(pdev, 0, &res);
->> +	if (IS_ERR(dev->base))
->> +		return PTR_ERR(dev->base);
->> +
->> +	dev->mapbase = res->start;
->> +
->> +	dev->clks[0].id = "apb";
->> +	dev->clks[1].id = "core";
->> +
->> +	ret = devm_clk_bulk_get(&pdev->dev, ARRAY_SIZE(dev->clks), dev->clks);
->> +	if (ret) {
->> +		dev_err(&pdev->dev, "failed to get pwmdac clocks\n");
-> 
-> return dev_err_probe
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git x86/core
+branch HEAD: 029239c5b0e6484e4443be90e5664fd0bf0f066b  x86/retpoline,kprobes: Skip optprobe check for indirect jumps with retpolines and IBT
 
-OK, will fix.
+elapsed time: 725m
 
-> 
->> +		return ret;
->> +	}
->> +
->> +	dev->rst_apb = devm_reset_control_get_exclusive(&pdev->dev, NULL);
->> +	if (IS_ERR(dev->rst_apb)) {
->> +		dev_err(&pdev->dev, "failed to get pwmdac apb reset\n");
->> +		return PTR_ERR(dev->rst_apb);
-> 
-> return dev_err_probe
+configs tested: 154
+configs skipped: 7
 
-Will fix.
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-> 
->> +	}
->> +
->> +	dev->dev = &pdev->dev;
->> +	dev->shift = PWMDAC_SHIFT_8;
->> +	dev->duty_cycle = PWMDAC_CYCLE_CENTER;
->> +	dev->cnt_n = PWMDAC_SAMPLE_CNT_1;
->> +	dev->data_change = NO_CHANGE;
->> +	dev->data_mode = INVERTER_DATA_MSB;
->> +	dev->data_shift = PWMDAC_DATA_LEFT_SHIFT_BIT_0;
->> +
->> +	dev_set_drvdata(&pdev->dev, dev);
->> +	ret = devm_snd_soc_register_component(&pdev->dev,
->> +					      &jh7110_pwmdac_component,
->> +					      &jh7110_pwmdac_dai, 1);
->> +	if (ret) {
->> +		dev_err(&pdev->dev, "failed to register dai\n");
->> +		return ret;
-> 
-> I guess here as well for consistency and shorter code even though
-> EPROBE_DEFER does not happen really.
-> 
-> return dev_err_probe
+tested configs:
+alpha                            allyesconfig   gcc  
+alpha                               defconfig   gcc  
+alpha                randconfig-r011-20230731   gcc  
+alpha                randconfig-r036-20230801   gcc  
+arc                              allyesconfig   gcc  
+arc                                 defconfig   gcc  
+arc                  randconfig-r004-20230801   gcc  
+arc                  randconfig-r023-20230801   gcc  
+arc                  randconfig-r033-20230731   gcc  
+arc                  randconfig-r043-20230801   gcc  
+arc                  randconfig-r043-20230802   gcc  
+arm                              allmodconfig   gcc  
+arm                              allyesconfig   gcc  
+arm                         assabet_defconfig   gcc  
+arm                                 defconfig   gcc  
+arm                          gemini_defconfig   gcc  
+arm                          pxa3xx_defconfig   gcc  
+arm                  randconfig-r005-20230801   clang
+arm                  randconfig-r021-20230801   gcc  
+arm                  randconfig-r046-20230801   gcc  
+arm                        realview_defconfig   gcc  
+arm64                            allyesconfig   gcc  
+arm64                               defconfig   gcc  
+arm64                randconfig-r013-20230731   clang
+arm64                randconfig-r014-20230731   clang
+arm64                randconfig-r036-20230731   gcc  
+csky                                defconfig   gcc  
+csky                 randconfig-r006-20230801   gcc  
+hexagon              randconfig-r041-20230801   clang
+hexagon              randconfig-r045-20230801   clang
+i386                             allyesconfig   gcc  
+i386         buildonly-randconfig-r004-20230731   gcc  
+i386         buildonly-randconfig-r004-20230801   gcc  
+i386         buildonly-randconfig-r005-20230731   gcc  
+i386         buildonly-randconfig-r005-20230801   gcc  
+i386         buildonly-randconfig-r006-20230731   gcc  
+i386         buildonly-randconfig-r006-20230801   gcc  
+i386                              debian-10.3   gcc  
+i386                                defconfig   gcc  
+i386                 randconfig-i001-20230731   gcc  
+i386                 randconfig-i001-20230801   gcc  
+i386                 randconfig-i002-20230731   gcc  
+i386                 randconfig-i002-20230801   gcc  
+i386                 randconfig-i003-20230731   gcc  
+i386                 randconfig-i003-20230801   gcc  
+i386                 randconfig-i004-20230731   gcc  
+i386                 randconfig-i004-20230801   gcc  
+i386                 randconfig-i005-20230731   gcc  
+i386                 randconfig-i005-20230801   gcc  
+i386                 randconfig-i006-20230731   gcc  
+i386                 randconfig-i006-20230801   gcc  
+i386                 randconfig-i011-20230731   clang
+i386                 randconfig-i011-20230802   gcc  
+i386                 randconfig-i012-20230731   clang
+i386                 randconfig-i012-20230802   gcc  
+i386                 randconfig-i013-20230731   clang
+i386                 randconfig-i013-20230802   gcc  
+i386                 randconfig-i014-20230731   clang
+i386                 randconfig-i014-20230802   gcc  
+i386                 randconfig-i015-20230731   clang
+i386                 randconfig-i015-20230802   gcc  
+i386                 randconfig-i016-20230731   clang
+i386                 randconfig-i016-20230802   gcc  
+i386                 randconfig-r025-20230731   clang
+i386                 randconfig-r026-20230801   clang
+loongarch                        allmodconfig   gcc  
+loongarch                         allnoconfig   gcc  
+loongarch                           defconfig   gcc  
+loongarch            randconfig-r016-20230731   gcc  
+m68k                             allmodconfig   gcc  
+m68k                             allyesconfig   gcc  
+m68k                                defconfig   gcc  
+m68k                        m5272c3_defconfig   gcc  
+m68k                 randconfig-r025-20230801   gcc  
+microblaze                          defconfig   gcc  
+microblaze           randconfig-r001-20230801   gcc  
+microblaze           randconfig-r003-20230801   gcc  
+microblaze           randconfig-r005-20230801   gcc  
+mips                             allmodconfig   gcc  
+mips                             allyesconfig   gcc  
+mips                         bigsur_defconfig   gcc  
+mips                      maltaaprp_defconfig   clang
+mips                 randconfig-r002-20230801   clang
+mips                          rb532_defconfig   gcc  
+nios2                               defconfig   gcc  
+openrisc             randconfig-r014-20230731   gcc  
+openrisc             randconfig-r034-20230801   gcc  
+openrisc                 simple_smp_defconfig   gcc  
+parisc                           allyesconfig   gcc  
+parisc                              defconfig   gcc  
+parisc               randconfig-r006-20230801   gcc  
+parisc64                            defconfig   gcc  
+powerpc                          allmodconfig   gcc  
+powerpc                           allnoconfig   gcc  
+powerpc                     mpc5200_defconfig   clang
+powerpc              randconfig-r003-20230801   gcc  
+powerpc              randconfig-r022-20230731   clang
+powerpc              randconfig-r026-20230731   clang
+riscv                            allmodconfig   gcc  
+riscv                             allnoconfig   gcc  
+riscv                            allyesconfig   gcc  
+riscv                               defconfig   gcc  
+riscv                randconfig-r042-20230801   clang
+riscv                randconfig-r042-20230802   gcc  
+riscv                          rv32_defconfig   gcc  
+s390                             allmodconfig   gcc  
+s390                             allyesconfig   gcc  
+s390                                defconfig   gcc  
+s390                 randconfig-r011-20230731   clang
+s390                 randconfig-r044-20230801   clang
+s390                 randconfig-r044-20230802   gcc  
+sh                               allmodconfig   gcc  
+sh                        apsh4ad0a_defconfig   gcc  
+sh                          lboxre2_defconfig   gcc  
+sh                   randconfig-r024-20230801   gcc  
+sh                           se7724_defconfig   gcc  
+sparc                            allyesconfig   gcc  
+sparc                               defconfig   gcc  
+sparc                randconfig-r033-20230801   gcc  
+sparc64              randconfig-r002-20230801   gcc  
+sparc64              randconfig-r015-20230731   gcc  
+sparc64              randconfig-r031-20230801   gcc  
+sparc64              randconfig-r035-20230731   gcc  
+um                               allmodconfig   clang
+um                                allnoconfig   clang
+um                               allyesconfig   clang
+um                                  defconfig   gcc  
+um                             i386_defconfig   gcc  
+um                           x86_64_defconfig   gcc  
+x86_64                           allyesconfig   gcc  
+x86_64       buildonly-randconfig-r001-20230731   gcc  
+x86_64       buildonly-randconfig-r001-20230801   gcc  
+x86_64       buildonly-randconfig-r002-20230731   gcc  
+x86_64       buildonly-randconfig-r002-20230801   gcc  
+x86_64       buildonly-randconfig-r003-20230731   gcc  
+x86_64       buildonly-randconfig-r003-20230801   gcc  
+x86_64                              defconfig   gcc  
+x86_64                                  kexec   gcc  
+x86_64               randconfig-r012-20230731   clang
+x86_64               randconfig-x001-20230731   clang
+x86_64               randconfig-x002-20230731   clang
+x86_64               randconfig-x003-20230731   clang
+x86_64               randconfig-x004-20230731   clang
+x86_64               randconfig-x005-20230731   clang
+x86_64               randconfig-x006-20230731   clang
+x86_64               randconfig-x011-20230731   gcc  
+x86_64               randconfig-x012-20230731   gcc  
+x86_64               randconfig-x013-20230731   gcc  
+x86_64               randconfig-x014-20230731   gcc  
+x86_64               randconfig-x015-20230731   gcc  
+x86_64               randconfig-x016-20230731   gcc  
+x86_64                          rhel-8.3-rust   clang
+x86_64                               rhel-8.3   gcc  
+xtensa               randconfig-r022-20230801   gcc  
 
-Will fix.
-
-> 
->> +	}
->> +
->> +	ret = devm_snd_dmaengine_pcm_register(&pdev->dev, NULL, 0);
->> +	if (ret) {
->> +		dev_err(&pdev->dev, "failed to register pcm\n");
->> +		return ret;
-> 
-> return dev_err_probe
-
-Will fix. Thanks for your review.
-
-Best regards,
-Hal
-
-> 
->> +	}
->> +
-
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
