@@ -2,154 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B95C676F178
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 20:10:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2679F76F17D
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 20:10:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229941AbjHCSKa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Aug 2023 14:10:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36934 "EHLO
+        id S231588AbjHCSKs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Aug 2023 14:10:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37420 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229815AbjHCSKP (ORCPT
+        with ESMTP id S230280AbjHCSKc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Aug 2023 14:10:15 -0400
-Received: from phobos.denx.de (phobos.denx.de [IPv6:2a01:238:438b:c500:173d:9f52:ddab:ee01])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F0123C20
-        for <linux-kernel@vger.kernel.org>; Thu,  3 Aug 2023 11:10:13 -0700 (PDT)
-Received: from [127.0.0.1] (p578adb1c.dip0.t-ipconnect.de [87.138.219.28])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits))
+        Thu, 3 Aug 2023 14:10:32 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 708A93C25
+        for <linux-kernel@vger.kernel.org>; Thu,  3 Aug 2023 11:10:29 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        (Authenticated sender: marex@denx.de)
-        by phobos.denx.de (Postfix) with ESMTPSA id C4A3E86839;
-        Thu,  3 Aug 2023 20:10:10 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=denx.de;
-        s=phobos-20191101; t=1691086211;
-        bh=fpuHp8OO6h5mevOgIeHsP5FLeL9qrPSYZmeq+L8xvLk=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=EF1Sp2Z46iR/82qNBP9O0RKnEctp3wFsIYKTiMoZeGS7DoLm8WQRqjiYL3YnnZ7t5
-         pI9yEQap9hzBdXcoM3IQXyJhuEt9F9l9Y/6mzmmI1FQG9OdHE0YBGUJbDLoYfKbuJ3
-         d9g24kE5vjJSRvN/hNBY9mpRmM3oX7cn/5rvNT3TvN5raEgyA63GoDJtpwjNVc2wYJ
-         dvW3IxwagPu0NZ1F1WXc/n66UM7N6oP/1P6v1k0dg7AggfPcRekwXr2O+BbiRNQdWV
-         80TLtTw0fpBuijkV1cx+O60LKIO5QPA5oCHH9z/3+xv6T5jw2p6G7zsmRmOqX8p6sB
-         H/CihvJUVzR5w==
-Message-ID: <25f3026f-3d97-a5ac-862a-da6dc5f8d830@denx.de>
-Date:   Thu, 3 Aug 2023 20:10:10 +0200
+        by dfw.source.kernel.org (Postfix) with ESMTPS id E331D61E57
+        for <linux-kernel@vger.kernel.org>; Thu,  3 Aug 2023 18:10:28 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 4A43CC433CB;
+        Thu,  3 Aug 2023 18:10:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1691086228;
+        bh=zrPIRxFjq0KdaitqvNccDNu+R+Bux2zXtbmruB/8WmU=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=sBPGKDZYUjAozVrFwwCu+ghQp9b/5LXqVYfRPZBAsEqPXyb1WywfttbuMD4fhet1W
+         HPQeXtgqBB1UnZbgKFcmKXHppdUXqt8s9+aBf3uJY23aQdIUwE756PizAGZrgs7yU/
+         n787027yvd7SF7lyw12VK4oG8F+odPmgMxpuPcrAma3ObKO4z5LjGuJg/g8+eipBzl
+         SItACUN7fTBpzDlnwm1mMdmU+uOM6S0VpFv22nYhFLGQ/Psc1Urbk+3Jhk+qbd2u1Y
+         x0MRVUEqnAIa2eupDTJxkeucM0L3gBVXkvQmVq/5mMV082XtwCr8XfVylph2xD3XzU
+         cAFr75qQm5wmg==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 298C0C595C2;
+        Thu,  3 Aug 2023 18:10:28 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.1
-Subject: Re: [PATCH] Revert "drm/bridge: lt9611: Do not generate HFP/HBP/HSA
- and EOT packet"
-Content-Language: en-US
-To:     Rob Clark <robdclark@gmail.com>,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Cc:     Amit Pundir <amit.pundir@linaro.org>,
-        Neil Armstrong <neil.armstrong@linaro.org>,
-        Robert Foss <rfoss@kernel.org>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Abhinav Kumar <quic_abhinavk@quicinc.com>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        Andrzej Hajda <andrzej.hajda@intel.com>,
-        Jagan Teki <jagan@amarulasolutions.com>
-References: <20230802-revert-do-not-generate-hfp-hbp-hsa-eot-packet-v1-1-f8a20084e15a@linaro.org>
- <5cf0e3fa-f66d-06c4-cfda-c48efd8c6508@linaro.org>
- <bf95af44-2510-1835-dec9-183144de8413@denx.de>
- <CAA8EJppp_ZJr-DcoZGd1GZmWuo=AECNS+X9zx0dNB4Edn8M2zg@mail.gmail.com>
- <CAF6AEGsfbUMCS4QTfqoyYetqea_ov-AET-iM54B-HvYpwwZvmg@mail.gmail.com>
-From:   Marek Vasut <marex@denx.de>
-In-Reply-To: <CAF6AEGsfbUMCS4QTfqoyYetqea_ov-AET-iM54B-HvYpwwZvmg@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Virus-Scanned: clamav-milter 0.103.8 at phobos.denx.de
-X-Virus-Status: Clean
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Subject: Re: [PATCH] prestera: fix fallback to previous version on same major
+ version
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <169108622816.23543.13453786898223633114.git-patchwork-notify@kernel.org>
+Date:   Thu, 03 Aug 2023 18:10:28 +0000
+References: <20230802092357.163944-1-jonas.gorski@bisdn.de>
+In-Reply-To: <20230802092357.163944-1-jonas.gorski@bisdn.de>
+To:     Jonas Gorski <jonas.gorski@bisdn.de>
+Cc:     taras.chornyi@plvision.eu, davem@davemloft.net,
+        edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
+        andrew@lunn.ch, vkochan@marvell.com, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/2/23 20:49, Rob Clark wrote:
-> On Wed, Aug 2, 2023 at 11:16 AM Dmitry Baryshkov
-> <dmitry.baryshkov@linaro.org> wrote:
->>
->> On Wed, 2 Aug 2023 at 20:34, Marek Vasut <marex@denx.de> wrote:
->>>
->>> On 8/2/23 15:38, Dmitry Baryshkov wrote:
->>>> On 02/08/2023 11:52, Neil Armstrong wrote:
->>>>> This reverts commit [1] to fix display regression on the Dragonboard 845c
->>>>> (SDM845) devboard.
->>>>>
->>>>> There's a mismatch on the real action of the following flags:
->>>>> - MIPI_DSI_MODE_VIDEO_NO_HSA
->>>>> - MIPI_DSI_MODE_VIDEO_NO_HFP
->>>>> - MIPI_DSI_MODE_VIDEO_NO_HBP
->>>>> which leads to a non-working display on qcom platforms.
->>>>>
->>>>> [1] 8ddce13ae696 ("drm/bridge: lt9611: Do not generate HFP/HBP/HSA and
->>>>> EOT packet")
->>>>>
->>>>> Cc: Marek Vasut <marex@denx.de>
->>>>> Cc: Robert Foss <rfoss@kernel.org>
->>>>> Cc: Jagan Teki <jagan@amarulasolutions.com>
->>>>> Cc: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
->>>>> Cc: Abhinav Kumar <quic_abhinavk@quicinc.com>
->>>>> Fixes: 8ddce13ae69 ("drm/bridge: lt9611: Do not generate HFP/HBP/HSA
->>>>> and EOT packet")
->>>>> Reported-by: Amit Pundir <amit.pundir@linaro.org>
->>>>> Link:
->>>>> https://lore.kernel.org/r/CAMi1Hd0TD=2z_=bcDrht3H_wiLvAFcv8Z-U_r_KUOoeMc6UMjw@mail.gmail.com/
->>>>> Signed-off-by: Neil Armstrong <neil.armstrong@linaro.org>
->>>>> ---
->>>>>    drivers/gpu/drm/bridge/lontium-lt9611.c | 4 +---
->>>>>    1 file changed, 1 insertion(+), 3 deletions(-)
->>>>>
->>>> Acked-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org> #fix db845c
->>>>
->>>> The boards broken by [1] are used in production by different parties
->>>> since 5.10, breaking them doesn't seem more acceptable than breaking the
->>>> new out-of-tree iMX8m hardware.
->>>
->>> The MX8M is also in-tree, so this does not apply.
->>
->> v6.5-rc4:
->>
->> $ git grep lontium,lt9611 | grep -v 9611uxc
->> Documentation/devicetree/bindings/display/bridge/lontium,lt9611.yaml:$id:
->> http://devicetree.org/schemas/display/bridge/lontium,lt9611.yaml#
->> Documentation/devicetree/bindings/display/bridge/lontium,lt9611.yaml:
->>      - lontium,lt9611
->> Documentation/devicetree/bindings/display/bridge/lontium,lt9611.yaml:
->>        compatible = "lontium,lt9611";
->> arch/arm64/boot/dts/qcom/sdm845-db845c.dts: compatible = "lontium,lt9611";
->> drivers/gpu/drm/bridge/lontium-lt9611.c: { "lontium,lt9611", 0 },
->> drivers/gpu/drm/bridge/lontium-lt9611.c: { .compatible = "lontium,lt9611" },
->>
->> next-20230802:
->>
->> $ git grep lontium,lt9611 | grep -v 9611uxc
->> Documentation/devicetree/bindings/display/bridge/lontium,lt9611.yaml:$id:
->> http://devicetree.org/schemas/display/bridge/lontium,lt9611.yaml#
->> Documentation/devicetree/bindings/display/bridge/lontium,lt9611.yaml:
->>      - lontium,lt9611
->> Documentation/devicetree/bindings/display/bridge/lontium,lt9611.yaml:
->>        compatible = "lontium,lt9611";
->> arch/arm64/boot/dts/qcom/sdm845-db845c.dts: compatible = "lontium,lt9611";
->> drivers/gpu/drm/bridge/lontium-lt9611.c: { "lontium,lt9611", 0 },
->> drivers/gpu/drm/bridge/lontium-lt9611.c: { .compatible = "lontium,lt9611" },
->>
->> Your device is not in the tree. Your commit broke existing users.
->>
->> Can we please end the argument, land the fix (this revert) for 6.5 and
->> work on the solution for 6.6 or 6.7?
->>
-> 
-> Even if they were in-tree, breaking existing hw means revert and
-> try-again.  Especially as we get into later -rc's
+Hello:
 
-Then just apply the revert, I don't have time to debug this right this 
-moment, and it is anyway meaningless until I can look at the bus with 
-DSI bus analyzer.
+This patch was applied to netdev/net.git (main)
+by Jakub Kicinski <kuba@kernel.org>:
+
+On Wed,  2 Aug 2023 11:23:56 +0200 you wrote:
+> When both supported and previous version have the same major version,
+> and the firmwares are missing, the driver ends in a loop requesting the
+> same (previous) version over and over again:
+> 
+>     [   76.327413] Prestera DX 0000:01:00.0: missing latest mrvl/prestera/mvsw_prestera_fw-v4.1.img firmware, fall-back to previous 4.0 version
+>     [   76.339802] Prestera DX 0000:01:00.0: missing latest mrvl/prestera/mvsw_prestera_fw-v4.0.img firmware, fall-back to previous 4.0 version
+>     [   76.352162] Prestera DX 0000:01:00.0: missing latest mrvl/prestera/mvsw_prestera_fw-v4.0.img firmware, fall-back to previous 4.0 version
+>     [   76.364502] Prestera DX 0000:01:00.0: missing latest mrvl/prestera/mvsw_prestera_fw-v4.0.img firmware, fall-back to previous 4.0 version
+>     [   76.376848] Prestera DX 0000:01:00.0: missing latest mrvl/prestera/mvsw_prestera_fw-v4.0.img firmware, fall-back to previous 4.0 version
+>     [   76.389183] Prestera DX 0000:01:00.0: missing latest mrvl/prestera/mvsw_prestera_fw-v4.0.img firmware, fall-back to previous 4.0 version
+>     [   76.401522] Prestera DX 0000:01:00.0: missing latest mrvl/prestera/mvsw_prestera_fw-v4.0.img firmware, fall-back to previous 4.0 version
+>     [   76.413860] Prestera DX 0000:01:00.0: missing latest mrvl/prestera/mvsw_prestera_fw-v4.0.img firmware, fall-back to previous 4.0 version
+>     [   76.426199] Prestera DX 0000:01:00.0: missing latest mrvl/prestera/mvsw_prestera_fw-v4.0.img firmware, fall-back to previous 4.0 version
+>     ...
+> 
+> [...]
+
+Here is the summary with links:
+  - prestera: fix fallback to previous version on same major version
+    https://git.kernel.org/netdev/net/c/b755c25fbcd5
+
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
