@@ -2,74 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C3A8C76EC51
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 16:21:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7782976EC58
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 16:22:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236729AbjHCOVc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Aug 2023 10:21:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36586 "EHLO
+        id S236746AbjHCOWE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Aug 2023 10:22:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36968 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236599AbjHCOVG (ORCPT
+        with ESMTP id S236725AbjHCOVb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Aug 2023 10:21:06 -0400
-Received: from mail-yb1-xb2c.google.com (mail-yb1-xb2c.google.com [IPv6:2607:f8b0:4864:20::b2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE8B01FED;
-        Thu,  3 Aug 2023 07:20:48 -0700 (PDT)
-Received: by mail-yb1-xb2c.google.com with SMTP id 3f1490d57ef6-d1fb9107036so1169164276.0;
-        Thu, 03 Aug 2023 07:20:48 -0700 (PDT)
+        Thu, 3 Aug 2023 10:21:31 -0400
+Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A0902726;
+        Thu,  3 Aug 2023 07:21:12 -0700 (PDT)
+Received: by mail-pl1-x62d.google.com with SMTP id d9443c01a7336-1bba48b0bd2so6973325ad.3;
+        Thu, 03 Aug 2023 07:21:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1691072448; x=1691677248;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
+        d=gmail.com; s=20221208; t=1691072472; x=1691677272;
+        h=content-transfer-encoding:subject:from:cc:to:content-language
+         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=oiEbRwyP1tR0wrByY60w56se8HslR4yyLy7pAwEV4iM=;
-        b=ivJdcWKQ/0yXqwLoZqJ43+Jsc/9M7Ko2molswXhNAs6VRI2u3kqNp9o8iSO9G1koPY
-         wI6EXIhwUM5zN+n1tVKduNZZAoqzWdkv72FOlTH8V9V8oqoT1hjpaID49l+c/m42Fi7v
-         dgW5O0b1GNiGPcjvvQPjzRk9FdW3hGIIMrSzCGjfG6DwbOEtJgJBOrciiYhPPO6CY67/
-         v4BokpyqGHX9wGsDruT+innqTBW1k0AETD7h0ZYh78vLAACEvi0A38c6ZDUSB2PwzFrA
-         4A6SyKJoRQn3SGjTl46eZsgBoMW0qBUHvgkfPjOd3HjKq5cod4RXORgEMqBH/c69FzYx
-         QB5A==
+        bh=E5lXL6jNOr+JQ+0o+MbkuxmG+29BoCJPCIwZhaOmXrQ=;
+        b=ZelEqZUrYq1t/iicz4hp2cVVVpIUvGIwSjDic8q4ru83c4fK4VM3Q3A99c4vDeVVup
+         xX64gxmklbWKt+KQ0JTpEwEdjbu+CgedoljPbKRNpacJsfsDxD39pggudxQpMU3TdB/F
+         gv21WGiEiHWaau764BqEPAiG9wMPundB1DzGR7NYik8Y5Gv8x77I3NlPElG3K1TFe87t
+         pMIXhr8962Qv7MA9UnKsw+0OwCKH9VZ6WNkScAi7p/OhYWU5b8YLRz5nDGmEUcIdFe4C
+         IJ+BggPjISS9DBrubXoiGYAKdepiNq4DPNKWZnaaSKYwZwwFOpoSmIZRC+ZdvcvNYAas
+         k0uA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691072448; x=1691677248;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=oiEbRwyP1tR0wrByY60w56se8HslR4yyLy7pAwEV4iM=;
-        b=iQZfb9g9nggDN/ZRV0yqNbdPZlGAQwBSKUjWWAu8qG5eZU13EYKJyIC5pxtLEQFMhL
-         EhgQSeFwK89pHsaqgqKGl5lQAjbpnwWo/qnrDNJRiqtlT1ABiffjySB9pI85bDmxGal+
-         zAtvWkxPIM61KgfV2TU0gGwUibtCM9rD27EfPfpHTrOUz3cwwX1hSbtlvqW8JBzvD1Pt
-         IdNHMLASq9BxHZOkZO5MAvj/fB7H6bRT8bbDMdJW2S2n7blF1nY5M6Fwqjxaks3cKjZT
-         VrDYOlFfrcYZDWBlceE+IHvix8wqt2MxgXB+DIWcCSlYNjrPzjSoNvgbuMvshrO0NAin
-         hvGQ==
-X-Gm-Message-State: ABy/qLbbvDp/TF28W4rpeg4SrQ9MHXbp7+6YL3/GKJ8vtxXvQa5P9ZGT
-        PPYKtYgJtlrpB+dm3kzMlkXz3nFpTfLZUdWgFvI=
-X-Google-Smtp-Source: APBJJlGWhJELvy0wK0ntAUH+eQukqY1V0H0MwKCevOZfLrSbqznIdyBI6v/cB0IegSGb94STk4usjuYWZsPnfU+Dwx4=
-X-Received: by 2002:a25:6b42:0:b0:d1a:65c9:d98f with SMTP id
- o2-20020a256b42000000b00d1a65c9d98fmr18859603ybm.56.1691072447822; Thu, 03
- Aug 2023 07:20:47 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1691072472; x=1691677272;
+        h=content-transfer-encoding:subject:from:cc:to:content-language
+         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=E5lXL6jNOr+JQ+0o+MbkuxmG+29BoCJPCIwZhaOmXrQ=;
+        b=eMj0K1trMcbeduTTghXKs2uQuAzEL53fjgEer5vzYpVaxsK3mkVrFtVokFGAqfn/UL
+         u3IMl7LlDe4PqL+fv47MVF4LeyW8mdF3QfSNUwSJvkJOr3SXJY6RbRU1Y5fTDELYvtJ5
+         iX0pS/R7UR9abYUJYz3pWsjLk+WiLQ+ktbue2ShBmkcNkGRssUo9urHSyuTpOyhwCD1H
+         L+2PaSPMM1vcQZoOLV9FhRClsXzoe7xGD55EQOq5O+GOMzdLsisOwnTglry/B2pKGYE1
+         DGMrTSkMAuxklG2oJc6t+eANFk6N6ijbhYikVf9HejOizObgaaSuO6MFb6J4v6k8zPdM
+         pFGA==
+X-Gm-Message-State: ABy/qLabvZjw86sf21CwlFIMhwVZ2tVpNAp6nTJ5nkG9j55x6EnfkpVB
+        YqmBMh0qINCN7KajjldM4gU=
+X-Google-Smtp-Source: APBJJlG3EScu40/C2MiREogG3Q2YKj/AlQl30W5wCL3ow31o6hOilRMH8KXsBsNNAchZ1ZcfAxAcDw==
+X-Received: by 2002:a17:902:e88c:b0:1bb:9357:8b76 with SMTP id w12-20020a170902e88c00b001bb93578b76mr20729682plg.50.1691072471860;
+        Thu, 03 Aug 2023 07:21:11 -0700 (PDT)
+Received: from [192.168.0.105] ([103.131.18.64])
+        by smtp.gmail.com with ESMTPSA id ix13-20020a170902f80d00b001b9d7c8f44dsm14466972plb.182.2023.08.03.07.21.06
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 03 Aug 2023 07:21:11 -0700 (PDT)
+Message-ID: <36f891d3-0236-d3c7-55c8-0d8a73d4e30d@gmail.com>
+Date:   Thu, 3 Aug 2023 21:20:54 +0700
 MIME-Version: 1.0
-References: <20230803140926.205974-1-changxian.cqs@antgroup.com>
-In-Reply-To: <20230803140926.205974-1-changxian.cqs@antgroup.com>
-From:   Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
-Date:   Thu, 3 Aug 2023 16:20:36 +0200
-Message-ID: <CANiq72nqy_WNY4LbyZw9p=Yk8K1HT7fjdyP2DvVKxOEw3SUv0w@mail.gmail.com>
-Subject: Re: [PATCH v2] rust: macros: vtable: fix `HAS_*` redefinition (`gen_const_name`)
-To:     Qingsong Chen <changxian.cqs@antgroup.com>
-Cc:     linux-kernel@vger.kernel.org,
-        =?UTF-8?B?55Sw5rSq5Lqu?= <tate.thl@antgroup.com>,
-        Miguel Ojeda <ojeda@kernel.org>,
-        Alex Gaynor <alex.gaynor@gmail.com>,
-        Wedson Almeida Filho <wedsonaf@gmail.com>,
-        Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>,
-        =?UTF-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>,
-        Benno Lossin <benno.lossin@proton.me>,
-        =?UTF-8?Q?Sergio_Gonz=C3=A1lez_Collado?= <sergio.collado@gmail.com>,
-        rust-for-linux@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.14.0
+Content-Language: en-US
+To:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>,
+        Olivier Wuillemin <olivier@wuillemin.fr>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Regressions <regressions@lists.linux.dev>,
+        Linux btrfs <linux-btrfs@vger.kernel.org>
+From:   Bagas Sanjaya <bagasdotme@gmail.com>
+Subject: Fwd: Btrfs scrub on single ssd reports non existing errors on Linux
+ 6.4
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -77,41 +77,55 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 3, 2023 at 4:10=E2=80=AFPM Qingsong Chen <changxian.cqs@antgrou=
-p.com> wrote:
->
-> ```rust
->     #[vtable]
->     pub trait Foo {
->         #[cfg(CONFIG_X)]
->         fn bar();
->
->         #[cfg(not(CONFIG_X))]
->         fn bar(x: usize);
->     }
-> ```
+Hi,
 
-I forgot to mention this in v1: the code does not need to be indented,
-since it is in a ``` block. Or you could remove the block, and keep
-the indentation. Both ways are fine.
+I notice a regression report on Bugzilla [1]. Quoting from it:
 
-> Changelog:
-> ----------
-> v1 -> v2:
-> - Use `BTreeSet` and existing `consts` as suggested by Alice and Gary.
-> - Reword commit messages as suggested by Miguel.
-> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> My distribution is a Manjaro 23.0.0, CPU is AMD A10.
+> System disk is an SSD PNY_CS900 120Gb
+> 
+> With Linux 6.4.6.1-MANJARO, a scrub on then system disk root reports errors  and some times freeze the linux :
+> 
+> sudo btrfs scrub status /
+> UUID:             53e62983-fed7-46ed-b97c-23d19af4f26f
+> Scrub started:    Tue Aug  1 13:26:14 2023
+> Status:           running
+> Duration:         0:03:21
+> Time left:        1:12:50
+> ETA:              Tue Aug  1 14:42:25 2023
+> Total to scrub:   85.39GiB
+> Bytes scrubbed:   3.75GiB  (4.40%)
+> Rate:             19.13MiB/s
+> Error summary:    read=80
+>   Corrected:      34
+>   Uncorrectable:  46
+>   Unverified:     0
+> 
+> In this case, this report is the last one before the Linux freeze.
+> Scrub not always freese, but when it freeze only low level functionnalities as ping or ps are working.
+> 
+> If Y downgrade the linux kernel to 6.1.41-1-MANJARO there is no errors :
+> 
+> sudo btrfs scrub status /
+> UUID:             53e62983-fed7-46ed-b97c-23d19af4f26f
+> Scrub started:    Thu Aug  3 14:17:11 2023
+> Status:           finished
+> Duration:         0:04:41
+> Total to scrub:   66.72GiB
+> Rate:             225.62MiB/s
+> Error summary:    no errors found
+> 
+> Ask me if you want more details.
 
-The changelog for a patch should be placed after the `---` line below
-the Signed-off-by. That means it will not be part of the commit
-message that will land in Git. See e.g. how Martin did it here:
-https://lore.kernel.org/rust-for-linux/20230520231701.46008-1-yakoyoku@gmai=
-l.com/
+See Bugzilla for the full thread.
 
-No need to send a v3 for these two nits: I can fix it on my side when
-I apply it if others are happy with this version of the patch.
+Anyway, I'm adding this regression to be tracked by regzbot:
 
-Thanks!
+#regzbot introduced: v6.1.41..v6.4.6 https://bugzilla.kernel.org/show_bug.cgi?id=217758
 
-Cheers,
-Miguel
+Thanks.
+
+[1]: https://bugzilla.kernel.org/show_bug.cgi?id=217758
+
+-- 
+An old man doll... just what I always wanted! - Clara
