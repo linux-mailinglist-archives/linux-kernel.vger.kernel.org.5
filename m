@@ -2,55 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EE6FF76EA74
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 15:32:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4DDD176EA75
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 15:32:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235993AbjHCNcY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Aug 2023 09:32:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48142 "EHLO
+        id S235289AbjHCNcb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Aug 2023 09:32:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47402 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232240AbjHCNcB (ORCPT
+        with ESMTP id S233702AbjHCNcC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Aug 2023 09:32:01 -0400
+        Thu, 3 Aug 2023 09:32:02 -0400
 Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48DB01BFA;
-        Thu,  3 Aug 2023 06:30:55 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13FA6B1;
+        Thu,  3 Aug 2023 06:30:56 -0700 (PDT)
 Received: from mail02.huawei.com (unknown [172.30.67.143])
-        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4RGqVJ369rz4f3yDh;
+        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4RGqVJ65kNz4f41V7;
         Thu,  3 Aug 2023 21:30:48 +0800 (CST)
 Received: from huaweicloud.com (unknown [10.175.104.67])
-        by APP4 (Coremail) with SMTP id gCh0CgCnD7MGrMtkNVvlPQ--.7517S7;
-        Thu, 03 Aug 2023 21:30:48 +0800 (CST)
+        by APP4 (Coremail) with SMTP id gCh0CgCnD7MGrMtkNVvlPQ--.7517S8;
+        Thu, 03 Aug 2023 21:30:49 +0800 (CST)
 From:   Yu Kuai <yukuai1@huaweicloud.com>
 To:     song@kernel.org, xni@redhat.com
 Cc:     linux-raid@vger.kernel.org, linux-kernel@vger.kernel.org,
         yukuai3@huawei.com, yukuai1@huaweicloud.com, yi.zhang@huawei.com,
         yangerkun@huawei.com
-Subject: [PATCH -next 3/7] md: don't rely on 'mddev->pers' to be set in mddev_suspend()
-Date:   Thu,  3 Aug 2023 21:27:47 +0800
-Message-Id: <20230803132751.2741652-4-yukuai1@huaweicloud.com>
+Subject: [PATCH -next 4/7] md-bitmap: remove the checking of 'pers->quiesce' from location_store()
+Date:   Thu,  3 Aug 2023 21:27:48 +0800
+Message-Id: <20230803132751.2741652-5-yukuai1@huaweicloud.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20230803132751.2741652-1-yukuai1@huaweicloud.com>
 References: <20230803132751.2741652-1-yukuai1@huaweicloud.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: gCh0CgCnD7MGrMtkNVvlPQ--.7517S7
-X-Coremail-Antispam: 1UD129KBjvdXoWrKr1xGryDWw4rXry8Zr48Crg_yoWfCFXEgF
-        4Du34DXr1FvF9Fgr1Yyw4Fvry5Kwn8W3ZrZFySkryavFyxAFW8JFZ5W3y5Xws2grZrG3sr
-        KryUKr43Ars3GjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUIcSsGvfJTRUUUbTxFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k26cxKx2IYs7xG
-        6rWj6s0DM7CIcVAFz4kK6r1j6r18M28IrcIa0xkI8VA2jI8067AKxVWUWwA2048vs2IY02
-        0Ec7CjxVAFwI0_Xr0E3s1l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxSw2x7M28EF7xv
-        wVC0I7IYx2IY67AKxVW7JVWDJwA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxVW8Jr0_Cr1UM2
-        8EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I0E14v26rxl6s0DM2AI
-        xVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xIIjxv20x
-        vE14v26r106r15McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xv
-        r2IYc2Ij64vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7MxAIw28IcxkI7VAKI48JMxC20s
-        026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_
-        JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14
-        v26r4j6ryUMIIF0xvE2Ix0cI8IcVCY1x0267AKxVW8Jr0_Cr1UMIIF0xvE42xK8VAvwI8I
-        cIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVW8JVWxJwCI42IY6I8E87Iv6xkF7I0E14v26r
-        4UJVWxJrUvcSsGvfC2KfnxnUUI43ZEXa7VU1VOJ5UUUUU==
+X-CM-TRANSID: gCh0CgCnD7MGrMtkNVvlPQ--.7517S8
+X-Coremail-Antispam: 1UD129KBjvdXoW7Gw18Xr45WFW7KF1DJr1rtFb_yoW3XrgE9a
+        1kZry3tr17CrWUAr13tw1xZryjkw1kWan7XFWSgrWSvFnxG348GryFkF17Xw4IvFZxCasx
+        Xryjgr48Zr4rtjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUIcSsGvfJTRUUUbf8FF20E14v26rWj6s0DM7CY07I20VC2zVCF04k26cxKx2IYs7xG
+        6rWj6s0DM7CIcVAFz4kK6r1j6r18M28IrcIa0xkI8VA2jI8067AKxVWUAVCq3wA2048vs2
+        IY020Ec7CjxVAFwI0_Xr0E3s1l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxSw2x7M28E
+        F7xvwVC0I7IYx2IY67AKxVW7JVWDJwA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxVW8Jr0_Cr
+        1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I0E14v26rxl6s0D
+        M2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xIIjx
+        v20xvE14v26r106r15McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr0_Gr1l
+        F7xvr2IYc2Ij64vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7MxAIw28IcxkI7VAKI48JMx
+        C20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAF
+        wI0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20x
+        vE14v26r4j6ryUMIIF0xvE2Ix0cI8IcVCY1x0267AKxVW8Jr0_Cr1UMIIF0xvE42xK8VAv
+        wI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVW8JVWxJwCI42IY6I8E87Iv6xkF7I0E14
+        v26r4UJVWxJrUvcSsGvfC2KfnxnUUI43ZEXa7VU17GYJUUUUU==
 X-CM-SenderInfo: 51xn3trlr6x35dzhxuhorxvhhfrp/
 X-CFilter-Loop: Reflected
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,KHOP_HELO_FCRDNS,
@@ -64,30 +64,30 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Yu Kuai <yukuai3@huawei.com>
 
-Now that active io is initialized when mddev is allocated, it's safe to
-call mddev_suspend() before 'mddev->pers' is set.
-
-This also prevent null-ptr-def in some cases that caller doesn't
-guarantee 'mddev->pers' to be set.
+After commit 4d27e927344a ("md: don't quiesce in mddev_suspend()"),
+there is no need to check 'pers->quiesce' before calling
+mddev_suspend().
 
 Signed-off-by: Yu Kuai <yukuai3@huawei.com>
 ---
- drivers/md/md.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/md/md-bitmap.c | 4 ----
+ 1 file changed, 4 deletions(-)
 
-diff --git a/drivers/md/md.c b/drivers/md/md.c
-index 897e94a9e47d..f14f2f0a9484 100644
---- a/drivers/md/md.c
-+++ b/drivers/md/md.c
-@@ -448,7 +448,7 @@ void mddev_suspend(struct mddev *mddev)
- 	set_bit(MD_ALLOW_SB_UPDATE, &mddev->flags);
- 	percpu_ref_kill(&mddev->active_io);
- 
--	if (mddev->pers->prepare_suspend)
-+	if (mddev->pers && mddev->pers->prepare_suspend)
- 		mddev->pers->prepare_suspend(mddev);
- 
- 	wait_event(mddev->sb_wait, percpu_ref_is_zero(&mddev->active_io));
+diff --git a/drivers/md/md-bitmap.c b/drivers/md/md-bitmap.c
+index 6f9ff14971f9..f38c7f3156cb 100644
+--- a/drivers/md/md-bitmap.c
++++ b/drivers/md/md-bitmap.c
+@@ -2352,10 +2352,6 @@ location_store(struct mddev *mddev, const char *buf, size_t len)
+ 	if (rv)
+ 		return rv;
+ 	if (mddev->pers) {
+-		if (!mddev->pers->quiesce) {
+-			rv = -EBUSY;
+-			goto out;
+-		}
+ 		if (mddev->recovery || mddev->sync_thread) {
+ 			rv = -EBUSY;
+ 			goto out;
 -- 
 2.39.2
 
