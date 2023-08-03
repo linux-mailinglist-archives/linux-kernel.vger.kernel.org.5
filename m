@@ -2,166 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 68E4676DF94
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 07:13:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 12F3C76DF96
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 07:15:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229818AbjHCFNm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Aug 2023 01:13:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48296 "EHLO
+        id S232222AbjHCFPV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Aug 2023 01:15:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48782 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231506AbjHCFNj (ORCPT
+        with ESMTP id S231506AbjHCFPS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Aug 2023 01:13:39 -0400
-Received: from mail-wr1-f41.google.com (mail-wr1-f41.google.com [209.85.221.41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B381E43;
-        Wed,  2 Aug 2023 22:13:37 -0700 (PDT)
-Received: by mail-wr1-f41.google.com with SMTP id ffacd0b85a97d-3178dd81ac4so481567f8f.3;
-        Wed, 02 Aug 2023 22:13:37 -0700 (PDT)
+        Thu, 3 Aug 2023 01:15:18 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1D9D1B4
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Aug 2023 22:14:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1691039672;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=tVYxWTkZM5MxAXyW1tcoWD4FZJx006FyKlsgQ2S6vrI=;
+        b=H6yrBGOsGeQ2T+rIN8/5dRojqHcyVewHgtSj/GgcOrUzROBUJeGfKsWc9yARBcTbmeDlxJ
+        EuPyy+6yCujeHoF1C0AQ2yM9L3FDrAd3r21vJATy33wHG2zUHGOkIQBYQBWYQw43hUO4fS
+        C7XoFJWPi6Jb1023SE+qBZoy1XqoMSs=
+Received: from mail-oi1-f198.google.com (mail-oi1-f198.google.com
+ [209.85.167.198]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-195-Bt9TOWYTNKGjJ99jhYYRRw-1; Thu, 03 Aug 2023 01:14:31 -0400
+X-MC-Unique: Bt9TOWYTNKGjJ99jhYYRRw-1
+Received: by mail-oi1-f198.google.com with SMTP id 5614622812f47-3a751d44acdso875195b6e.1
+        for <linux-kernel@vger.kernel.org>; Wed, 02 Aug 2023 22:14:31 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691039616; x=1691644416;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=t/+wHAm+pSFsxBZxH6R9J1UEW1BsnRshtaSbp6LTgTk=;
-        b=d4ad+ZC+kClI2upxC11+SImqqZyeTqMKTuOLkGgqk7rkYixRfmW3N6EmiZbJQIH+tE
-         jmsZ52ipcB8K/M0Ct1HdDWLdfIJrQGu+lLLxJ2eEdy5Aziidjt5A/M2YbBOKWDXCa1am
-         WJmIqHUzem7xVaCuNbE8i2FkqOtTWbMyyI5ij+ch7OIY0Xdv72JnfIE5nwFErOaJWZ2w
-         Rr0HN/fzgRZCqZNPwO6wRsBNlYwz24bWc2J5dlXn3HPRDJfSXXhoAq/qw0JjylUcNB9U
-         pBIlDOlDaqvgZKgZqPC461fNnrfQ+59jN9Ij0Um7RWUNBxLo5ARUmbAm172L4zDXx9ra
-         h4/Q==
-X-Gm-Message-State: ABy/qLbu5EWV8hYiyroVRNPOdNMgQ8MmsdZZElkZS2iBe/6Wc6svf941
-        ujtH8TZwMOgCLKxoArnvcHA=
-X-Google-Smtp-Source: APBJJlGOTuijVRnR5/YBVOcI0cNMM7JyNVucFPypSjaaX0VaS+h/17bq0LW3VcIIB6IbYB5UoI3lFQ==
-X-Received: by 2002:adf:ee52:0:b0:317:57f0:fae with SMTP id w18-20020adfee52000000b0031757f00faemr6252072wro.63.1691039615638;
-        Wed, 02 Aug 2023 22:13:35 -0700 (PDT)
-Received: from [192.168.1.58] (185-219-167-24-static.vivo.cz. [185.219.167.24])
-        by smtp.gmail.com with ESMTPSA id c4-20020a056000104400b003143b14848dsm20683080wrx.102.2023.08.02.22.13.34
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 02 Aug 2023 22:13:34 -0700 (PDT)
-Message-ID: <496b56e1-1cc3-dfa3-d628-aeab62b9e60f@kernel.org>
-Date:   Thu, 3 Aug 2023 07:13:33 +0200
+        d=1e100.net; s=20221208; t=1691039670; x=1691644470;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=tVYxWTkZM5MxAXyW1tcoWD4FZJx006FyKlsgQ2S6vrI=;
+        b=RtEpLnpGfWAy90lVXSYRralYNAyLzySCs+0lUJxLlwdpf7q19WZiv7iYQvzhEU3eqz
+         eQ/rvG2PpLadmZzYiFDPAimDFVuFfzHho+Ntr/BjLLIdX/niea1BP2QPFcSXiz2DySEc
+         gQw+yeC4yA6O5YLGO+kthGvJ6Ab9MUXl93MjO3JEJCqQu4wAvlNMt2CGIlvzhTRRIKTm
+         S2iW2gQKevdwY8EhF2jgFbTiQC8I2ampKQ/ul88Z8Hjr7+HAWd9LtUdjbSTG3i4hS1Ch
+         Gql9GyiTi2ANopyJC+12ZFSHPGK46rUAhR10EljVKzorzvbGGVQy8JlYI1LQrmeZwsJ2
+         2DrQ==
+X-Gm-Message-State: ABy/qLab+Z0zJodQMP/FhapXVllbAEN9XH85wmKy8Ow1gvytsya2BrXL
+        SkOCUOHYisACFuGBLTG62Mh9kyWHBzbF8xBR3dwhWAdYYJL91yXaYbympstmmObesSgPUNrjffZ
+        KQA8/yPl/l82Hxkhdr1tIYa/cv14BlV74
+X-Received: by 2002:a05:6808:1243:b0:3a4:a87:bea1 with SMTP id o3-20020a056808124300b003a40a87bea1mr22621582oiv.21.1691039670627;
+        Wed, 02 Aug 2023 22:14:30 -0700 (PDT)
+X-Google-Smtp-Source: APBJJlGHkWZOKBl6mFHadL8uFrpU9XlCOsSVnPSp3iY1y2FAQauWvnIQlW4XqyEz3aKjpwF/O5uLEw==
+X-Received: by 2002:a05:6808:1243:b0:3a4:a87:bea1 with SMTP id o3-20020a056808124300b003a40a87bea1mr22621571oiv.21.1691039670356;
+        Wed, 02 Aug 2023 22:14:30 -0700 (PDT)
+Received: from localhost.localdomain ([2804:1b3:a801:d380:694f:4f52:764c:4b7f])
+        by smtp.gmail.com with ESMTPSA id g51-20020a0568080df300b003a75593746asm1675473oic.57.2023.08.02.22.14.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 02 Aug 2023 22:14:29 -0700 (PDT)
+From:   Leonardo Bras <leobras@redhat.com>
+To:     Will Deacon <will@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Leonardo Bras <leobras@redhat.com>,
+        Andrzej Hajda <andrzej.hajda@intel.com>,
+        Arnd Bergmann <arnd@arndb.de>, Ingo Molnar <mingo@kernel.org>,
+        Palmer Dabbelt <palmer@rivosinc.com>,
+        Guo Ren <guoren@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org
+Subject: [RFC PATCH v2 0/3] Deduplicate RISCV cmpxchg.h and atomic.c macros
+Date:   Thu,  3 Aug 2023 02:13:57 -0300
+Message-ID: <20230803051401.710236-2-leobras@redhat.com>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.1
-Subject: Re: [PATCH] serial: core: Fix serial_base_match() after fixing
- controller port name
-Content-Language: en-US
-To:     Tony Lindgren <tony@atomide.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     Andy Shevchenko <andriy.shevchenko@intel.com>,
-        Dhruva Gole <d-gole@ti.com>,
-        =?UTF-8?Q?Ilpo_J=c3=a4rvinen?= <ilpo.jarvinen@linux.intel.com>,
-        John Ogness <john.ogness@linutronix.de>,
-        Johan Hovold <johan@kernel.org>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org,
-        kernel test robot <oliver.sang@intel.com>
-References: <20230802114846.21899-1-tony@atomide.com>
-From:   Jiri Slaby <jirislaby@kernel.org>
-In-Reply-To: <20230802114846.21899-1-tony@atomide.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 02. 08. 23, 13:48, Tony Lindgren wrote:
-> While fixing DEVNAME to be more usable, I broke serial_base_match() as
-> the ctrl and port prefix for device seemed unnecessary.
+I unified previous patchsets into a single one, since the work is related.
 
-It's not completely clear to me what you are actually fixing. Please 
-elaborate in more detail.
+While studying riscv's cmpxchg.h file, I got really interested in
+understanding how RISCV asm implemented the different versions of
+{cmp,}xchg.
 
-> Let's fix the issue by checking against dev->type and drv->name.
-> 
-> Fixes: 1ef2c2df1199 ("serial: core: Fix serial core controller port name to show controller id")
+When I understood the pattern, it made sense for me to remove the
+duplications and create macros to make it easier to understand what exactly
+changes between the versions: Instruction sufixes & barriers.
+
+Also, did the same kind of work on atomic.c.
+
+Note to Guo Ren:
+I did some further improvement after your previous reviews, so I ended
+up afraid including your Reviewed-by before cheching if the changes are
+ok for you. Please check it out again, I just removed some helper macros
+that were not being used elsewhere in the kernel.
+
+Thanks!
+Leo
 
 
-> Reported-by: kernel test robot <oliver.sang@intel.com>
+Changes since squashed cmpxchg:
+- Unified with atomic.c patchset 
+- Rebased on top of torvalds/master (thanks Andrea Parri!)
+- Removed helper macros that were not being used elsewhere in the kernel.
 
-Then we are missing a Link here.
+Changes since (cmpxchg) RFCv3:
+- Squashed the 6 original patches in 2: one for cmpxchg and one for xchg
+https://lore.kernel.org/all/20230404163741.2762165-1-leobras@redhat.com/
 
-> Signed-off-by: Tony Lindgren <tony@atomide.com>
-> ---
->   drivers/tty/serial/serial_base.h     |  3 +++
->   drivers/tty/serial/serial_base_bus.c | 10 ++++++++--
->   drivers/tty/serial/serial_ctrl.c     |  2 +-
->   drivers/tty/serial/serial_port.c     |  2 +-
->   4 files changed, 13 insertions(+), 4 deletions(-)
-> 
-> diff --git a/drivers/tty/serial/serial_base.h b/drivers/tty/serial/serial_base.h
-> --- a/drivers/tty/serial/serial_base.h
-> +++ b/drivers/tty/serial/serial_base.h
-> @@ -6,6 +6,9 @@
->    * Author: Tony Lindgren <tony@atomide.com>
->    */
->   
-> +#define SERIAL_BASE_CTRL_NAME	"ctrl"
-> +#define SERIAL_BASE_PORT_NAME	"port"
+Changes since (cmpxchg) RFCv2:
+- Fixed  macros that depend on having a local variable with a magic name
+- Previous cast to (long) is now only applied on 4-bytes cmpxchg
+https://lore.kernel.org/all/20230321074249.2221674-1-leobras@redhat.com/
 
-Could you make those char[] instead? The compiler/linker will hopefully 
-(will it?) de-dup the occurrences, but the arrays would look cleaner and 
-safer from this POV.
+Changes since (cmpxchg) RFCv1:
+- Fixed patch 4/6 suffix from 'w.aqrl' to '.w.aqrl', to avoid build error
+https://lore.kernel.org/all/20230318080059.1109286-1-leobras@redhat.com/
 
->   #define to_serial_base_ctrl_device(d) container_of((d), struct serial_ctrl_device, dev)
->   #define to_serial_base_port_device(d) container_of((d), struct serial_port_device, dev)
->   
-> diff --git a/drivers/tty/serial/serial_base_bus.c b/drivers/tty/serial/serial_base_bus.c
-> --- a/drivers/tty/serial/serial_base_bus.c
-> +++ b/drivers/tty/serial/serial_base_bus.c
-> @@ -29,9 +29,15 @@ static const struct device_type serial_port_type = {
->   
->   static int serial_base_match(struct device *dev, struct device_driver *drv)
->   {
-> -	int len = strlen(drv->name);
-> +	if (dev->type == &serial_ctrl_type &&
-> +	    !strncmp(SERIAL_BASE_CTRL_NAME, drv->name, 4))
-> +		return 1;
->   
-> -	return !strncmp(dev_name(dev), drv->name, len);
-> +	if (dev->type == &serial_port_type &&
-> +	    !strncmp(SERIAL_BASE_PORT_NAME, drv->name, 4))
-> +		return 1;
-> +
-> +	return 0;
->   }
->   
->   static struct bus_type serial_base_bus_type = {
-> diff --git a/drivers/tty/serial/serial_ctrl.c b/drivers/tty/serial/serial_ctrl.c
-> --- a/drivers/tty/serial/serial_ctrl.c
-> +++ b/drivers/tty/serial/serial_ctrl.c
-> @@ -47,7 +47,7 @@ void serial_ctrl_unregister_port(struct uart_driver *drv, struct uart_port *port
->   }
->   
->   static struct device_driver serial_ctrl_driver = {
-> -	.name = "ctrl",
-> +	.name = SERIAL_BASE_CTRL_NAME,
->   	.suppress_bind_attrs = true,
->   	.probe = serial_ctrl_probe,
->   	.remove = serial_ctrl_remove,
-> diff --git a/drivers/tty/serial/serial_port.c b/drivers/tty/serial/serial_port.c
-> --- a/drivers/tty/serial/serial_port.c
-> +++ b/drivers/tty/serial/serial_port.c
-> @@ -83,7 +83,7 @@ void uart_remove_one_port(struct uart_driver *drv, struct uart_port *port)
->   EXPORT_SYMBOL(uart_remove_one_port);
->   
->   static struct device_driver serial_port_driver = {
-> -	.name = "port",
-> +	.name = SERIAL_BASE_PORT_NAME,
->   	.suppress_bind_attrs = true,
->   	.probe = serial_port_probe,
->   	.remove = serial_port_remove,
+
+Leonardo Bras (3):
+  riscv/cmpxchg: Deduplicate xchg() asm functions
+  riscv/cmpxchg: Deduplicate cmpxchg() asm and macros
+  riscv/atomic.h : Deduplicate arch_atomic.*
+
+ arch/riscv/include/asm/atomic.h  | 164 ++++++++--------
+ arch/riscv/include/asm/cmpxchg.h | 318 +++++--------------------------
+ 2 files changed, 123 insertions(+), 359 deletions(-)
 
 -- 
-js
-suse labs
+2.41.0
 
