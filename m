@@ -2,42 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 62ABF76EAAD
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 15:36:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E11376EA9C
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 15:34:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234513AbjHCNfF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Aug 2023 09:35:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53354 "EHLO
+        id S236296AbjHCNen (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Aug 2023 09:34:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53244 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236188AbjHCNdw (ORCPT
+        with ESMTP id S235747AbjHCNds (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Aug 2023 09:33:52 -0400
-Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 064A34ECB;
-        Thu,  3 Aug 2023 06:32:36 -0700 (PDT)
+        Thu, 3 Aug 2023 09:33:48 -0400
+Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 767574C37;
+        Thu,  3 Aug 2023 06:32:35 -0700 (PDT)
 Received: from mail02.huawei.com (unknown [172.30.67.143])
-        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4RGqXG6131z4f3lD6;
-        Thu,  3 Aug 2023 21:32:30 +0800 (CST)
+        by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4RGqXF3VPWz4f4Hw5;
+        Thu,  3 Aug 2023 21:32:29 +0800 (CST)
 Received: from huaweicloud.com (unknown [10.175.104.67])
-        by APP4 (Coremail) with SMTP id gCh0CgAHuKtqrMtkWHLlPQ--.49699S16;
-        Thu, 03 Aug 2023 21:32:31 +0800 (CST)
+        by APP4 (Coremail) with SMTP id gCh0CgAHuKtqrMtkWHLlPQ--.49699S17;
+        Thu, 03 Aug 2023 21:32:32 +0800 (CST)
 From:   Yu Kuai <yukuai1@huaweicloud.com>
 To:     song@kernel.org, xni@redhat.com
 Cc:     linux-raid@vger.kernel.org, linux-kernel@vger.kernel.org,
         yukuai3@huawei.com, yukuai1@huaweicloud.com, yi.zhang@huawei.com,
         yangerkun@huawei.com
-Subject: [PATCH -next 12/29] md/raid5-cache: use new apis to suspend array for r5c_journal_mode_store()
-Date:   Thu,  3 Aug 2023 21:29:13 +0800
-Message-Id: <20230803132930.2742286-13-yukuai1@huaweicloud.com>
+Subject: [PATCH -next 13/29] md/raid5: use new apis to suspend array for raid5_store_stripe_size()
+Date:   Thu,  3 Aug 2023 21:29:14 +0800
+Message-Id: <20230803132930.2742286-14-yukuai1@huaweicloud.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20230803132930.2742286-1-yukuai1@huaweicloud.com>
 References: <20230803132930.2742286-1-yukuai1@huaweicloud.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: gCh0CgAHuKtqrMtkWHLlPQ--.49699S16
-X-Coremail-Antispam: 1UD129KBjvJXoW7Cr1fWr4rArWkGF15Ar15CFg_yoW8Gr43pa
-        nFgayru3409rWrA3W8WF4DuF95J3y8KrZF9r9xC3Z3ua98Xry3GF1FgFyUWryvvFyfGa13
-        Jw4UJ3WkC348Kr7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+X-CM-TRANSID: gCh0CgAHuKtqrMtkWHLlPQ--.49699S17
+X-Coremail-Antispam: 1UD129KBjvJXoWrZFWUZF4ftFWrKr4rWr4rXwb_yoW8Jr13pa
+        nF9FWfWr1xu34rXryDZw1DuFy5Gw4DKrWqk3y7X3Z7X3Z7Xry2gw4YgFy5Wry8Ja4ft398
+        Gw15WF95JFy8JrJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
         9KBjDU0xBIdaVrnRJUUUBj14x267AKxVWrJVCq3wAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
         rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2048vs2IY020E87I2jVAFwI0_JF0E3s1l82xGYI
         kIc2x26xkF7I0E14v26ryj6s0DM28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8wA2
@@ -53,8 +53,8 @@ X-Coremail-Antispam: 1UD129KBjvJXoW7Cr1fWr4rArWkGF15Ar15CFg_yoW8Gr43pa
         AKxVW8Jr0_Cr1UYxBIdaVFxhVjvjDU0xZFpf9x0JUqiihUUUUU=
 X-CM-SenderInfo: 51xn3trlr6x35dzhxuhorxvhhfrp/
 X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,KHOP_HELO_FCRDNS,
-        MAY_BE_FORGED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -64,42 +64,46 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Yu Kuai <yukuai3@huawei.com>
 
-r5c_journal_mode_set() will suspend array and it has only 2 caller, the
-other caller raid_ctl() already suspend the array with new apis.
+Convert to use new apis, the old apis will be removed eventually.
 
 This is not hot path, so performance is not concerned.
 
 Signed-off-by: Yu Kuai <yukuai3@huawei.com>
 ---
- drivers/md/raid5-cache.c | 6 ++----
+ drivers/md/raid5.c | 6 ++----
  1 file changed, 2 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/md/raid5-cache.c b/drivers/md/raid5-cache.c
-index c71cb5c954e0..51a68fbc241c 100644
---- a/drivers/md/raid5-cache.c
-+++ b/drivers/md/raid5-cache.c
-@@ -2585,9 +2585,7 @@ int r5c_journal_mode_set(struct mddev *mddev, int mode)
- 	    mode == R5C_JOURNAL_MODE_WRITE_BACK)
+diff --git a/drivers/md/raid5.c b/drivers/md/raid5.c
+index d6695fc718c1..624899e95b4d 100644
+--- a/drivers/md/raid5.c
++++ b/drivers/md/raid5.c
+@@ -7025,7 +7025,7 @@ raid5_store_stripe_size(struct mddev  *mddev, const char *page, size_t len)
+ 			new != roundup_pow_of_two(new))
  		return -EINVAL;
  
+-	err = mddev_lock(mddev);
++	err = mddev_suspend_and_lock(mddev);
+ 	if (err)
+ 		return err;
+ 
+@@ -7049,7 +7049,6 @@ raid5_store_stripe_size(struct mddev  *mddev, const char *page, size_t len)
+ 		goto out_unlock;
+ 	}
+ 
 -	mddev_suspend(mddev);
- 	conf->log->r5c_journal_mode = mode;
+ 	mutex_lock(&conf->cache_size_mutex);
+ 	size = conf->max_nr_stripes;
+ 
+@@ -7064,10 +7063,9 @@ raid5_store_stripe_size(struct mddev  *mddev, const char *page, size_t len)
+ 		err = -ENOMEM;
+ 	}
+ 	mutex_unlock(&conf->cache_size_mutex);
 -	mddev_resume(mddev);
  
- 	pr_debug("md/raid:%s: setting r5c cache mode to %d: %s\n",
- 		 mdname(mddev), mode, r5c_journal_mode_str[mode]);
-@@ -2612,11 +2610,11 @@ static ssize_t r5c_journal_mode_store(struct mddev *mddev,
- 		if (strlen(r5c_journal_mode_str[mode]) == len &&
- 		    !strncmp(page, r5c_journal_mode_str[mode], len))
- 			break;
--	ret = mddev_lock(mddev);
-+	ret = mddev_suspend_and_lock(mddev);
- 	if (ret)
- 		return ret;
- 	ret = r5c_journal_mode_set(mddev, mode);
+ out_unlock:
 -	mddev_unlock(mddev);
 +	mddev_unlock_and_resume(mddev);
- 	return ret ?: length;
+ 	return err ?: len;
  }
  
 -- 
