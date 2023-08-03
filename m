@@ -2,199 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 56D8476EB27
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 15:49:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AC43A76E97A
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 15:06:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236325AbjHCNt3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Aug 2023 09:49:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37782 "EHLO
+        id S235892AbjHCNGn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Aug 2023 09:06:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54552 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236352AbjHCNtL (ORCPT
+        with ESMTP id S236043AbjHCNGG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Aug 2023 09:49:11 -0400
-Received: from mail.hugovil.com (mail.hugovil.com [162.243.120.170])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36AF21702;
-        Thu,  3 Aug 2023 06:49:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=hugovil.com
-        ; s=x; h=Subject:Content-Transfer-Encoding:Content-Type:Mime-Version:
-        References:In-Reply-To:Message-Id:Cc:To:From:Date:Sender:Reply-To:Content-ID:
-        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-        :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
-        List-Post:List-Owner:List-Archive;
-        bh=Ld2noSdra5BNqMzE0bPZuYFJMJpb2EpiNnt7IK1QEFM=; b=X9izG5Cxk+OQmeNZ56PEzFQbiR
-        6asrc0JJAS/e11bzA0YKNYjLlB+8uBv44sWgZ7Xrt6qSPogLugLYOrMQhZb+KuGmEUB1BPNPLx8Ll
-        +bWy0jBEZbL0BZOURkXgk8wkivLpKWrIYW5UwXLrBvwrSceXa2gtC/hzy8oummCTOQf0=;
-Received: from modemcable061.19-161-184.mc.videotron.ca ([184.161.19.61]:50276 helo=pettiford)
-        by mail.hugovil.com with esmtpa (Exim 4.92)
-        (envelope-from <hugo@hugovil.com>)
-        id 1qRY0L-00085F-He; Thu, 03 Aug 2023 09:04:39 -0400
-Date:   Thu, 3 Aug 2023 09:04:36 -0400
-From:   Hugo Villeneuve <hugo@hugovil.com>
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
-        conor+dt@kernel.org, jirislaby@kernel.org, jringle@gridpoint.com,
-        isaac.true@canonical.com, jesse.sung@canonical.com,
-        l.perczak@camlintechnologies.com, tomasz.mon@camlingroup.com,
-        linux-serial@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org,
-        Hugo Villeneuve <hvilleneuve@dimonoff.com>,
-        stable@vger.kernel.org,
-        Ilpo =?ISO-8859-1?Q?J?= =?ISO-8859-1?Q?=E4rvinen?= 
-        <ilpo.jarvinen@linux.intel.com>,
-        Lech Perczak <lech.perczak@camlingroup.com>
-Message-Id: <20230803090436.ca7ebefaa63054f30cf10f89@hugovil.com>
-In-Reply-To: <2023080336-unsalted-dropout-d8f6@gregkh>
-References: <20230725142343.1724130-1-hugo@hugovil.com>
-        <20230725142343.1724130-2-hugo@hugovil.com>
-        <2023073148-marshy-extenuate-2d45@gregkh>
-        <20230801131655.80bd8f97f018dda6155d65f6@hugovil.com>
-        <2023080336-unsalted-dropout-d8f6@gregkh>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
-X-SA-Exim-Connect-IP: 184.161.19.61
-X-SA-Exim-Mail-From: hugo@hugovil.com
+        Thu, 3 Aug 2023 09:06:06 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12C214C37;
+        Thu,  3 Aug 2023 06:04:42 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id DE0FC61D7E;
+        Thu,  3 Aug 2023 13:04:41 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 29ED8C433C7;
+        Thu,  3 Aug 2023 13:04:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1691067881;
+        bh=LWzbhEDAkcUxT4vk5MFeu//No99X5Z72z+2vQyX8zFQ=;
+        h=From:To:Cc:Subject:Date:From;
+        b=egTh1qwbhDDz+mxMqe5xTEhKdo5bMxIJRQET/OIJpAOxaXWhZ5JvoVyNNmgQMloHi
+         MKNF52PCBVzowz78NGXSPG719IEUQ0HEF4NdjfNeUVRVWKYcWOvLky+0gk5Bw8LKKK
+         zJh9emqkVp4D+vHkx8jABzEKm8w29YrW1qXSrfbTclNO1KPRSNMEehsYf8pMUwJfv6
+         WKeqZGOngNgq0mFw48qyZZELxNQwO+kC3KZ5fLeeJoYhnYcv1Kp+vLnOyPTwtJffgX
+         kTTzmiJlvho0V3glUXeQTnOOfaXcIBvYJqVNznuac9FGzdt7eTX6HP9LptqEHtR+Qg
+         w7iXmG7UIVygA==
+From:   Sasha Levin <sashal@kernel.org>
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc:     Alan Stern <stern@rowland.harvard.edu>,
+        syzbot+63ee658b9a100ffadbe2@syzkaller.appspotmail.com,
+        Oliver Neukum <oneukum@suse.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Sasha Levin <sashal@kernel.org>, davem@davemloft.net,
+        edumazet@google.com, pabeni@redhat.com, netdev@vger.kernel.org,
+        linux-usb@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.15 1/3] net: usbnet: Fix WARNING in usbnet_start_xmit/usb_submit_urb
+Date:   Thu,  3 Aug 2023 09:04:36 -0400
+Message-Id: <20230803130438.641988-1-sashal@kernel.org>
+X-Mailer: git-send-email 2.40.1
+MIME-Version: 1.0
+X-stable: review
+X-Patchwork-Hint: Ignore
+X-stable-base: Linux 5.15.123
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
-Subject: Re: [PATCH v9 01/10] serial: sc16is7xx: fix broken port 0 uart init
-X-SA-Exim-Version: 4.2.1 (built Wed, 08 May 2019 21:11:16 +0000)
-X-SA-Exim-Scanned: Yes (on mail.hugovil.com)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 3 Aug 2023 09:54:37 +0200
-Greg KH <gregkh@linuxfoundation.org> wrote:
+From: Alan Stern <stern@rowland.harvard.edu>
 
-> On Tue, Aug 01, 2023 at 01:16:55PM -0400, Hugo Villeneuve wrote:
-> > On Mon, 31 Jul 2023 17:52:26 +0200
-> > Greg KH <gregkh@linuxfoundation.org> wrote:
-> >=20
-> > > On Tue, Jul 25, 2023 at 10:23:33AM -0400, Hugo Villeneuve wrote:
-> > > > From: Hugo Villeneuve <hvilleneuve@dimonoff.com>
-> > > >=20
-> > > > The sc16is7xx_config_rs485() function is called only for the second
-> > > > port (index 1, channel B), causing initialization problems for the
-> > > > first port.
-> > > >=20
-> > > > For the sc16is7xx driver, port->membase and port->mapbase are not s=
-et,
-> > > > and their default values are 0. And we set port->iobase to the devi=
-ce
-> > > > index. This means that when the first device is registered using the
-> > > > uart_add_one_port() function, the following values will be in the p=
-ort
-> > > > structure:
-> > > >     port->membase =3D 0
-> > > >     port->mapbase =3D 0
-> > > >     port->iobase  =3D 0
-> > > >=20
-> > > > Therefore, the function uart_configure_port() in serial_core.c will
-> > > > exit early because of the following check:
-> > > > 	/*
-> > > > 	 * If there isn't a port here, don't do anything further.
-> > > > 	 */
-> > > > 	if (!port->iobase && !port->mapbase && !port->membase)
-> > > > 		return;
-> > > >=20
-> > > > Typically, I2C and SPI drivers do not set port->membase and
-> > > > port->mapbase.
-> > > >=20
-> > > > The max310x driver sets port->membase to ~0 (all ones). By
-> > > > implementing the same change in this driver, uart_configure_port() =
-is
-> > > > now correctly executed for all ports.
-> > > >=20
-> > > > Fixes: dfeae619d781 ("serial: sc16is7xx")
-> > >=20
-> > > That commit is in a very old 3.x release.
-> > >=20
-> > > > Cc: <stable@vger.kernel.org> # 6.1.x
-> > >=20
-> > > But you say this should only go to 6.1.y?  Why?  What is wrong with t=
-he
-> > > older kernels?
-> >=20
-> > Hi Greg,
-> > I have read (and reread a couple of times)
-> > Documentation/process/stable-kernel-rules.rst to try to understand how
-> > to format the tags, but unfortunately it doesn't contain "Everything
-> > you ever wanted to know about Linux -stable releases" as the title
-> > claims :)
-> >=20
-> > In particular, it doesn't explain or advise which older version we
-> > should target, that is why since I was not sure I specified 6.1.y
-> > because I could test it properly, but not v3.x.
->=20
-> If you think this fixes an issue back to 3.x, then just leave it at
-> that, there's no need to have to test all of these.  If when I apply the
-> patch to the stable trees, and it does not go back to all of the
-> active versions specified by Fixes: then you will get an email saying
-> so and can handle it then if you want to.
->=20
-> > Maybe it would be best to simply drop for now all the "Cc:
-> > <stable@vger.kernel.org>" tags for this series, and following Option 2,
-> > I send an email to stable@vger.kernel.org once the patches have been
-> > merged to Linus' tree?
->=20
-> That will just mean more work for both of us, leave it as is, just drop
-> the "# 6.1.x" portion please.
->=20
-> > > > Signed-off-by: Hugo Villeneuve <hvilleneuve@dimonoff.com>
-> > > > Reviewed-by: Ilpo J=E4rvinen <ilpo.jarvinen@linux.intel.com>
-> > > > Reviewed-by: Lech Perczak <lech.perczak@camlingroup.com>
-> > > > Tested-by: Lech Perczak <lech.perczak@camlingroup.com>
-> > > > ---
-> > > >  drivers/tty/serial/sc16is7xx.c | 1 +
-> > > >  1 file changed, 1 insertion(+)
-> > > >=20
-> > > > diff --git a/drivers/tty/serial/sc16is7xx.c b/drivers/tty/serial/sc=
-16is7xx.c
-> > > > index 2e7e7c409cf2..8ae2afc76a9b 100644
-> > > > --- a/drivers/tty/serial/sc16is7xx.c
-> > > > +++ b/drivers/tty/serial/sc16is7xx.c
-> > > > @@ -1436,6 +1436,7 @@ static int sc16is7xx_probe(struct device *dev,
-> > > >  		s->p[i].port.fifosize	=3D SC16IS7XX_FIFO_SIZE;
-> > > >  		s->p[i].port.flags	=3D UPF_FIXED_TYPE | UPF_LOW_LATENCY;
-> > > >  		s->p[i].port.iobase	=3D i;
-> > > > +		s->p[i].port.membase	=3D (void __iomem *)~0;
-> > >=20
-> > > That's a magic value, some comment should be added here to explain why
-> > > setting all bits is ok.  Why does this work exactly?  You only say th=
-at
-> > > the max310x driver does this, but not why it does this at all.
-> >=20
-> > I do not understand, because my commit log message is quite long
-> > and, it seems to me, well documenting why this works the way it
-> > does when calling uart_configure_port() in serial_core.c?
-> >=20
-> > I say that the max310x driver also does this, because there is also no
-> > comment in the max310x driver for using the (void __iomem *)~0;
-> > construct. I also located the original commit message for the max310x
-> > driver but no comments were usefull there also.
-> >=20
-> > So, what about adding this comment:
-> >=20
-> > /*
-> >  * Use all ones as membase to make sure uart_configure_port() in
-> >  * serial_core.c does not abort for SPI/I2C devices where the
-> >  * membase address is not applicable.
-> >  */
-> >  s->p[i].port.membase	=3D (void __iomem *)~0;
->=20
-> Yes, that would be good, thank you.
->=20
-> > If wou want, I could also add the same comment to the max310 driver?
->=20
-> Yes please.
+[ Upstream commit 5e1627cb43ddf1b24b92eb26f8d958a3f5676ccb ]
 
-Hi Greg,
-I will send a separate patch specifically for this.
+The syzbot fuzzer identified a problem in the usbnet driver:
 
-Thank you, Hugo.
+usb 1-1: BOGUS urb xfer, pipe 3 != type 1
+WARNING: CPU: 0 PID: 754 at drivers/usb/core/urb.c:504 usb_submit_urb+0xed6/0x1880 drivers/usb/core/urb.c:504
+Modules linked in:
+CPU: 0 PID: 754 Comm: kworker/0:2 Not tainted 6.4.0-rc7-syzkaller-00014-g692b7dc87ca6 #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 05/27/2023
+Workqueue: mld mld_ifc_work
+RIP: 0010:usb_submit_urb+0xed6/0x1880 drivers/usb/core/urb.c:504
+Code: 7c 24 18 e8 2c b4 5b fb 48 8b 7c 24 18 e8 42 07 f0 fe 41 89 d8 44 89 e1 4c 89 ea 48 89 c6 48 c7 c7 a0 c9 fc 8a e8 5a 6f 23 fb <0f> 0b e9 58 f8 ff ff e8 fe b3 5b fb 48 81 c5 c0 05 00 00 e9 84 f7
+RSP: 0018:ffffc9000463f568 EFLAGS: 00010086
+RAX: 0000000000000000 RBX: 0000000000000001 RCX: 0000000000000000
+RDX: ffff88801eb28000 RSI: ffffffff814c03b7 RDI: 0000000000000001
+RBP: ffff8881443b7190 R08: 0000000000000001 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000001 R12: 0000000000000003
+R13: ffff88802a77cb18 R14: 0000000000000003 R15: ffff888018262500
+FS:  0000000000000000(0000) GS:ffff8880b9800000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000556a99c15a18 CR3: 0000000028c71000 CR4: 0000000000350ef0
+Call Trace:
+ <TASK>
+ usbnet_start_xmit+0xfe5/0x2190 drivers/net/usb/usbnet.c:1453
+ __netdev_start_xmit include/linux/netdevice.h:4918 [inline]
+ netdev_start_xmit include/linux/netdevice.h:4932 [inline]
+ xmit_one net/core/dev.c:3578 [inline]
+ dev_hard_start_xmit+0x187/0x700 net/core/dev.c:3594
+...
+
+This bug is caused by the fact that usbnet trusts the bulk endpoint
+addresses its probe routine receives in the driver_info structure, and
+it does not check to see that these endpoints actually exist and have
+the expected type and directions.
+
+The fix is simply to add such a check.
+
+Reported-and-tested-by: syzbot+63ee658b9a100ffadbe2@syzkaller.appspotmail.com
+Closes: https://lore.kernel.org/linux-usb/000000000000a56e9105d0cec021@google.com/
+Signed-off-by: Alan Stern <stern@rowland.harvard.edu>
+CC: Oliver Neukum <oneukum@suse.com>
+Link: https://lore.kernel.org/r/ea152b6d-44df-4f8a-95c6-4db51143dcc1@rowland.harvard.edu
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ drivers/net/usb/usbnet.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
+
+diff --git a/drivers/net/usb/usbnet.c b/drivers/net/usb/usbnet.c
+index e4fbb4d866064..566aa01ad2810 100644
+--- a/drivers/net/usb/usbnet.c
++++ b/drivers/net/usb/usbnet.c
+@@ -1771,6 +1771,10 @@ usbnet_probe (struct usb_interface *udev, const struct usb_device_id *prod)
+ 	} else if (!info->in || !info->out)
+ 		status = usbnet_get_endpoints (dev, udev);
+ 	else {
++		u8 ep_addrs[3] = {
++			info->in + USB_DIR_IN, info->out + USB_DIR_OUT, 0
++		};
++
+ 		dev->in = usb_rcvbulkpipe (xdev, info->in);
+ 		dev->out = usb_sndbulkpipe (xdev, info->out);
+ 		if (!(info->flags & FLAG_NO_SETINT))
+@@ -1780,6 +1784,8 @@ usbnet_probe (struct usb_interface *udev, const struct usb_device_id *prod)
+ 		else
+ 			status = 0;
+ 
++		if (status == 0 && !usb_check_bulk_endpoints(udev, ep_addrs))
++			status = -EINVAL;
+ 	}
+ 	if (status >= 0 && dev->status)
+ 		status = init_status (dev, udev);
+-- 
+2.40.1
+
