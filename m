@@ -2,144 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A512976F058
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 19:10:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9CF8676F05D
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 19:10:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234501AbjHCRKP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Aug 2023 13:10:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33886 "EHLO
+        id S234588AbjHCRKo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Aug 2023 13:10:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34272 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229733AbjHCRKN (ORCPT
+        with ESMTP id S233753AbjHCRKl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Aug 2023 13:10:13 -0400
-Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94B4B3C16;
-        Thu,  3 Aug 2023 10:09:39 -0700 (PDT)
-Received: by mail-lf1-x12b.google.com with SMTP id 2adb3069b0e04-4fe1344b707so1996222e87.1;
-        Thu, 03 Aug 2023 10:09:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1691082577; x=1691687377;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=xdX+NfKio0pdth/b1d1o4UZ72iZouUkmJiyFwK8qVRA=;
-        b=nksi91tjevvMMgNWYlvmcgOmPIdGTqnFBRLPCT4P4lOdETDuOkwWnO1rHuCIfdw4CU
-         GcZ4/CN57hMzWYbmPQywctjcJiI6QLL2u2cW0ZoTXswXkLWmHQXGEJRorLkVQx4DdS/9
-         fTR1zwTefMbODzpnwr0ea1j+KnCP1lVgeFeRmR1ahJdNHssrp/+w7Zv8EYy6JzzOQZFL
-         WDsPSgZDXxS5qPjVOOm3DAa72J8KEcK/wPQN8f6cMTCnr4EE2RjQjmxiskVQTsZqGzTP
-         fDYQxueX3vSXC17ZthaXEJpuMVsUTKS5YFORjBJyJvGph5vXDuKB+HgTdCS7+OfcE4A7
-         C9zw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691082577; x=1691687377;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=xdX+NfKio0pdth/b1d1o4UZ72iZouUkmJiyFwK8qVRA=;
-        b=LYHmlLkDRQvZ5v68BiEB/Eukoft1KTg51LAPknVv6qFZz+FFi2a6ytTsMnVNMUSmhV
-         sxoHam72V7u9Qu++x1TIw4RWyANVjUS/ZzXw5mr+EPjxNqwdvvK1xtdAX8Lm3QqYtIMO
-         5EzeU15YEPvSoWyAOcqpdphxNF/6aPIbcmDS5sFtciUSp4FthVQEVDPy3NazbRix8pBt
-         Dwyt4uSpSWVNQ/rBsvZL5ox9ckRkNw7cASyDs/YCKW1EMTv0toDj7FhA3Wwin3339efr
-         S781akRZJFsm4cx7nSzle/2B+Xyq8yluWTUj4aTn99izQga71oo2TGwgcJU+mngDFn9F
-         v/ZQ==
-X-Gm-Message-State: ABy/qLatb61zhHqweIwx6MYn1myftQgA6t36/swc3KlBF1L72dVN+4GY
-        TfSfHYYHnlXpSH7CtyI9APM=
-X-Google-Smtp-Source: APBJJlGhRWoXCW3zb8xv6o2L/pb2FkVE77i5R/jy7yvFiOJbKfQhEbkYqdBs0TwL3XUgT12uDeagtA==
-X-Received: by 2002:a19:5005:0:b0:4fe:19ef:8795 with SMTP id e5-20020a195005000000b004fe19ef8795mr7081713lfb.64.1691082576831;
-        Thu, 03 Aug 2023 10:09:36 -0700 (PDT)
-Received: from ?IPV6:2a02:8071:b783:140:927c:82ba:d32d:99c1? ([2a02:8071:b783:140:927c:82ba:d32d:99c1])
-        by smtp.gmail.com with ESMTPSA id d13-20020a50fe8d000000b0051e1660a34esm49538edt.51.2023.08.03.10.09.35
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 03 Aug 2023 10:09:36 -0700 (PDT)
-Message-ID: <b8b82aee-45a5-5e56-1737-4ec78f6279c2@gmail.com>
-Date:   Thu, 3 Aug 2023 19:09:34 +0200
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v5 3/3] firmware: Add support for Qualcomm UEFI Secure
- Application
-To:     Ard Biesheuvel <ardb@kernel.org>
-Cc:     Bjorn Andersson <andersson@kernel.org>,
-        Andy Gross <agross@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
-        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        Johan Hovold <johan@kernel.org>,
-        Steev Klimaszewski <steev@kali.org>,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20230730161906.606163-1-luzmaximilian@gmail.com>
- <20230730161906.606163-4-luzmaximilian@gmail.com>
- <CAMj1kXHOaEuP2Wds9ZU4RLx9oKhthvE=yR-Ju_Ka2boqTmTYNw@mail.gmail.com>
+        Thu, 3 Aug 2023 13:10:41 -0400
+Received: from CAN01-YQB-obe.outbound.protection.outlook.com (mail-yqbcan01on2129.outbound.protection.outlook.com [40.107.116.129])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE54A4227;
+        Thu,  3 Aug 2023 10:10:04 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Xm7/gfqv/4RgDPZI3RYmVOsJjNM6LnD2Nhi8c6fhMU06rKzYmTBkEDtfmcXTAncDEn5NFqsuTdKlW8h0BSZ4ey27N0TiW0w7veVUsUECzfAE29EdoknMw8Drg9Y8LmWvUGgO8yRi2HOPTEFs3mrpN3U7YB1cDba0I0KNbAmZmDa59vwzzTGfvKYW6qTKCR/kNmsRbENer3Hr6KJ7EyjMnOZsILcz6+np0V//n4q/H+f5pqXa1DUyotRO9kCOTTJov7Lwd9MnYJHe1qWHNxabZNHFwt0sBHRZUMyrAixpjcwSN6EFKuHSXLJjTB1ZL06DQgQgjkvLoCdZUPr5DOwacw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=XgIq/MrrfIvSpj0V/+dUGZAl08B671VtUm9M+dgDtiY=;
+ b=Cnf2G86GBAdG0xJ/z3JZPTPcsSdVIOKph9B6eqBsLW7Z4tIMBYDwn4IR9VFgWGUhgiutXg9l18m3xaYtg5AqqcJOLagvwFbi4ncz1efdOBVQKb1anOfvabqZU3j+5vgv9PszCGYbRzPjluEY4zW3fD/EgGk7/JHZvlh+zsemQ5mT50Ms+kR2gsbFn+OY1KA9ZT7H+Xy5YkLk3a598VlMI/UY/O+T76Oq2/s2KbL68KSw7fqncT8KWxmDXx53TzMpikOyCeQag26UaUA9+urGdzmOfCi6VgWoFcZc6BdN33IL3/A30C0A44Rt69tOOkhOxWZ3b5CcoCKaOzqDEl+grw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=connecttech.com; dmarc=pass action=none
+ header.from=connecttech.com; dkim=pass header.d=connecttech.com; arc=none
+Received: from YT1PR01MB4124.CANPRD01.PROD.OUTLOOK.COM (2603:10b6:b01:2b::11)
+ by YT3PR01MB6051.CANPRD01.PROD.OUTLOOK.COM (2603:10b6:b01:68::20) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6631.47; Thu, 3 Aug
+ 2023 17:10:02 +0000
+Received: from YT1PR01MB4124.CANPRD01.PROD.OUTLOOK.COM
+ ([fe80::7fe0:2f38:7134:6e7d]) by YT1PR01MB4124.CANPRD01.PROD.OUTLOOK.COM
+ ([fe80::7fe0:2f38:7134:6e7d%7]) with mapi id 15.20.6652.020; Thu, 3 Aug 2023
+ 17:10:02 +0000
+From:   Parker Newman <pnewman@connecttech.com>
+To:     Laxman Dewangan <ldewangan@nvidia.com>,
+        Dmitry Osipenko <digetx@gmail.com>,
+        Andi Shyti <andi.shyti@kernel.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        "linux-i2c@vger.kernel.org" <linux-i2c@vger.kernel.org>,
+        "linux-tegra@vger.kernel.org" <linux-tegra@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: [PATCH] i2c: tegra: Fix i2c-tegra DMA config option processing
+Thread-Topic: [PATCH] i2c: tegra: Fix i2c-tegra DMA config option processing
+Thread-Index: AQHZxi1XxuhBoZdpFUiMCrgiycCKGw==
+Date:   Thu, 3 Aug 2023 17:10:02 +0000
+Message-ID: <fcfcf9b3-c8c4-9b34-2ff8-cd60a3d490bd@connecttech.com>
+Accept-Language: en-US
 Content-Language: en-US
-From:   Maximilian Luz <luzmaximilian@gmail.com>
-In-Reply-To: <CAMj1kXHOaEuP2Wds9ZU4RLx9oKhthvE=yR-Ju_Ka2boqTmTYNw@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=connecttech.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: YT1PR01MB4124:EE_|YT3PR01MB6051:EE_
+x-ms-office365-filtering-correlation-id: 6d4e95be-44a2-4ad5-18ab-08db944479e7
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: nLuZxC+OReXBgkWMUlsDDpja4sY/F9ZVeKdkZwIB9qCwqcbUYE3dbLOc7Xq98HCqqgsXTiD5HUtyJKPezAqVRk2RC9s/mskAo0bmRElJk1xFu5tGyriJ7/RQnpTSOz6hua8tZLG64U87Vde8rvxuhvYmlJrRQCWZbA3YYrFRBijRL4+WYQMO0T1gOzORonyWaqojQpYU5grBOV1KcdMFYLAE0G9CpsBS+f573kP9Fbjw83ttKij4vT5phkNaDtfvzs6txuLTGkA9nzIYBIsRpdApsTjd2u5DY6OnRnCDw95NWFHAd6r4d2oYX8sQMK57xyjhswRVRSvVCkLLPXUCWOT+r1yfbZbyxs/zfrqR8RCCdQcTQSXbcbDyw7GSK1vrP6Ea7ChW1LF+Vjba+VzIyvLblGeEZimy6bfzWbsVwec1M6fgfUtM1jMxIXUF6ONwuSEovbZMOPJ/WRPlk5NgaJwftUMXY0RBxNzh1GvkFpgTLK3nScvZEjHqeTZwjcbsTxf0TWEfzcjlkMeIL2xi/P8JxbZC8jd0m63+5V5XsLhui8F/AvhznnTaZ/EdqG74mzuluW/v/mHzH/lDy2Cwzh6Ujq7Z2IS3YmAXyTrTINwsMnD/ONVXb13ZYVy1hilW5WL3OsNPch9LM0/DRjqvKw==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:YT1PR01MB4124.CANPRD01.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(13230028)(136003)(346002)(39840400004)(396003)(366004)(376002)(451199021)(2616005)(6506007)(83380400001)(186003)(26005)(8676002)(76116006)(316002)(66556008)(2906002)(64756008)(66946007)(5660300002)(66446008)(66476007)(41300700001)(8936002)(6486002)(71200400001)(6512007)(110136005)(478600001)(38100700002)(122000001)(31696002)(86362001)(36756003)(38070700005)(31686004)(45980500001);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?utf-8?B?Vk9HQlJrRFdjWG5hNW83c1lWVUZ6SytTNFp1WGxZNjF5N0wyOVZVZmFzY0pK?=
+ =?utf-8?B?TDRIWExLZU9GeWhxOE9PUER6VE5MeW1sZTNTT0RCM0FyMWVUaDVUVCtKV2FD?=
+ =?utf-8?B?V1VOQUViV1dlK05MSlU5ZkpWYlNQeXJmN0RpemJPdzVaRW9qQzM0eUd4bHhh?=
+ =?utf-8?B?ZmduQTEwNU14NHk0YWN3bEZqSGU5Uktjd2d5MURDZ3IrdmdZK2JTYncwcVFZ?=
+ =?utf-8?B?eGVBVk1uLzZJWXNaSXM2VkwxYy8wQ20vdW9TVEhIRDNLOWlrOEZaN3A2Ritq?=
+ =?utf-8?B?R3Z4N3Z4YkNKQkF1K2FYU0YxZGxzTlRCNCtBSG1KZHhCQXJhdFo2cVVEUXZm?=
+ =?utf-8?B?djBPUWp2NHo4T29yQlE2VWs1M2lKRUNlbDMvM3VoRWFtZGJLS3lEK3VMNlZs?=
+ =?utf-8?B?VUp4V3lTRHR5SERmbHlBYm9qNGk2S053d3dtNE9JdDRNYUJUSURkRXMyYU1v?=
+ =?utf-8?B?TWh6SVZEQm1Yd1kvb0FvZVNGS0tQcTNqZjZabE56Z1NsVk4yOTMrTkhWQm5u?=
+ =?utf-8?B?enlJYkJaWmhVU1VrNmk4SThLK2VxRGFVbGVwMDVhY3Y4aHlvYnBWRFFLY20y?=
+ =?utf-8?B?SDhCYjFXdGNhVGNGVElRcm1DVEt3TkRLcXZLWVFSMHRneHM1SlhLZUQ2NTFs?=
+ =?utf-8?B?aWMyaDlCWEx6b1dIRUlnZGl3YnZUNDJYUkhtQUpnYytmZHB4SWJDZVN0OXM0?=
+ =?utf-8?B?K09kK2MvMGMyZ1k4RC90eEJjcmF4Szh2UEFIY0ZxZk9teDVLLzBqdVlvOWkw?=
+ =?utf-8?B?UllaWlZTTFg1V3c5bTVqOFVyMHRzbjlJVlhVa2U3T0NQRUFjTnZSTUJUbmVu?=
+ =?utf-8?B?VlZITlZjVG1ZTDh6dlRxcnpBS0YyeE9JL0tLZnp0Z3FjSHRaYXNwcEpBRE95?=
+ =?utf-8?B?blVUUS9RalpqeFhjbXhsOFR6ajVmNFNtQmV0ZDhscXoya2M2b2NKd2FKUEpR?=
+ =?utf-8?B?N3NyZy9uTjgvTk50QTlSbjIyd2ZMN0lPL21iMXloYzBEalhuYitVVzhDdWx0?=
+ =?utf-8?B?ei9xNm91eldIekRTbit6dVpOZ3FKRXlXaXY2a3BESUtTWnZra2dwV05neHE3?=
+ =?utf-8?B?aisrUjVjakU0NFNJN0wvR3gxMTdka05FU2pJMTlKVitjdmxPRUYvTkF4K2V6?=
+ =?utf-8?B?WkpCWmNWK2c4WVRCL2V6b2o5WUgrM29JbEtiUDhvMXNZQUVSVzROek9pYTYw?=
+ =?utf-8?B?WGFRQ3RWdi8rN09kNHFKZUFyZEJHQUh5T0RGMFZaU3FKVUtlcDJzb1RXOWFn?=
+ =?utf-8?B?L0hhZFZiRm9QVlJPNzlSdVFQbzNvZXJ5MUo1RUNzVjhySDNkSmVRUnNMeVBp?=
+ =?utf-8?B?TkFOYjBvQjBQY2IyTXhuclF5KzRySnlKQnh0WUllekgrQ1pJRGJPci9MK2VK?=
+ =?utf-8?B?QTBYWWNZL1dLS3NZdEpqcTlDSHllaGJZdncybHNvMmZmR2Q0TTNLbVRkRVov?=
+ =?utf-8?B?b3JXYVRUYTNMemtuVndHQlF4QTNGcnhtU3kzZUdadXhZeVNNN0pMeUkzUFNT?=
+ =?utf-8?B?aHkvL25wSEpCQ2VjYUpQT3JEMHJSVkwyL205bG0rU1phZDQzckFoOGxOaHJu?=
+ =?utf-8?B?NWs0NHd1OE05VFBXS1pFTm1BUHY2dTJSb1VWL3NjczV5d2QzTC80MmVRNnI5?=
+ =?utf-8?B?VFBYb0UzVURweHN4U0V3TVJjR0J4V1V6VDMveXVoYVluQmlGSkJoVlVpWVNa?=
+ =?utf-8?B?QUdqa2ZWbXExcDRHVDRsUjA4L0NFNitEVXJMMEhmc2JTVVZRdTdHU01OZ3pY?=
+ =?utf-8?B?Y0dIakM1STJTMU1SeGJWZ3dnYmpWYVhITUExejhwamYrRmdHTUFRTng3cXRT?=
+ =?utf-8?B?alhZWGdQUmZXZ0wzZFVtQk5ubnJyaTZiMVlhL25Nc0duZXYxcEhwekdmRzgw?=
+ =?utf-8?B?UkFKMENpR1luUkVWV2pwR1QwWnQzQ24wZWpTYXZMNU1oUDFKVEMrMHdqSUd2?=
+ =?utf-8?B?ay9nZnJkeFN2Ymh4dWFobUNURFRDaXEwYnNLQUl6SHFBVkJFRWVqaWNiREE2?=
+ =?utf-8?B?MVZPY3F3M0ZoRmhxZUNaRTlLNVBhdUdYZFduWVZpR1k3N1JpQW9wNEpFYWN5?=
+ =?utf-8?B?ckduWXFHbmVNcXh2ZU9BelRSYjdVUVpaWmY4RzlxaG5SdmsvTHdQd09kS2R2?=
+ =?utf-8?Q?LG4w3+0wTBGzSvN3lQP3mn1p1?=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <AFDBA9A0458C2A44BA1712BBA341F3ED@CANPRD01.PROD.OUTLOOK.COM>
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+X-OriginatorOrg: connecttech.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: YT1PR01MB4124.CANPRD01.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-Network-Message-Id: 6d4e95be-44a2-4ad5-18ab-08db944479e7
+X-MS-Exchange-CrossTenant-originalarrivaltime: 03 Aug 2023 17:10:02.6632
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: d33071ec-da55-4b12-8469-920f998c36b3
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: c872yGM8Bnca/XGIwm/+BKjik3Qi6685HA5wyzKnI0Le/pcOCv9tAsbHH/AtZKIcd1dVtAVMisKHLzQnaWRPQg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: YT3PR01MB6051
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/3/23 17:44, Ard Biesheuvel wrote:
-> On Sun, 30 Jul 2023 at 18:19, Maximilian Luz <luzmaximilian@gmail.com> wrote:
-
-[...]
-
->> +/* -- Driver setup. --------------------------------------------------------- */
->> +
->> +static int qcom_uefisecapp_probe(struct auxiliary_device *aux_dev,
->> +                                const struct auxiliary_device_id *aux_dev_id)
->> +{
->> +       struct qcuefi_client *qcuefi;
->> +       int status;
->> +
->> +       qcuefi = devm_kzalloc(&aux_dev->dev, sizeof(*qcuefi), GFP_KERNEL);
->> +       if (!qcuefi)
->> +               return -ENOMEM;
->> +
->> +       qcuefi->client = container_of(aux_dev, struct qseecom_client, aux_dev);
->> +
->> +       auxiliary_set_drvdata(aux_dev, qcuefi);
->> +       status = qcuefi_set_reference(qcuefi);
->> +       if (status)
->> +               return status;
->> +
->> +       status = efivars_register(&qcuefi->efivars, &qcom_efivar_ops);
-> 
-> Will this also work if the EFI runtime services were already
-> registered by the time we reach this point?
-
-That's actually a good question. In short: No. However, let me explain
-that a bit:
-
-First, we assume that we're the only other non-generic provider
-(arguably, multiple non-generic providers don't make much sense on a
-single platform anyway, so I'd say in that case it's okay to fail here).
-
-Second, we assume that the generic ops are not going to be registered at
-all on the platforms that this implementation is used. In particular, on
-the platforms I've tested and heard reports from so far, "standard"
-efivars either aren't actively advertised as "supported" or they return
-EFI_UNSUPPORTED for all calls. So we assume that either the check in
-efisubsys_init() or in generic_ops_supported() prevents registration
-of the generic ops.
-
-Further, I'd hope that the uefisecapp would not be loaded if generic ops
-would be supported on such a platform, thus preventing instantiation of
-the respective client device.
-
-So the only issue that I can see is that if uefisecapp is loaded and
-generic ops are supported, we would need a way to choose one over the
-other. But I think that is fairly unlikely to happen and I think it
-would probably be best to sort that out then (e.g. by refusing to load
-this new driver with some additional check).
-
-Apart from that case, there should not be any timing issues that could
-cause registration to fail spuriously.
-
-Regards
-Max
+DQpUaGlzIHBhdGNoIGZpeGVzIHRoZSBUZWdyYSBETUEgY29uZmlnIG9wdGlvbiBwcm9jZXNzaW5n
+IGluIHRoZQ0KaTJjLXRlZ3JhIGRyaXZlci4NCg0KVGVncmEgcHJvY2Vzc29ycyBwcmlvciB0byBU
+ZWdyYTE4NiB1c2VkIEFQQiBETUEgZm9yIEkyQyByZXF1aXJpbmcNCkNPTkZJR19URUdSQTIwX0FQ
+Ql9ETUE9eSB3aGlsZSBUZWdyYTE4NiBhbmQgbGF0ZXIgdXNlIEdQQyBETUEgcmVxdWlyaW5nDQpD
+T05GSUdfVEVHUkExODZfR1BDX0RNQT15Lg0KDQpUaGUgY2hlY2sgZm9yIGlmIHRoZSBwcm9jZXNz
+b3IgdXNlcyBBUEIgRE1BIGlzIGludmVydGVkIGFuZCBzbyB0aGUgd3JvbmcNCkRNQSBjb25maWcg
+b3B0aW9ucyBhcmUgY2hlY2tlZC4NCg0KVGhpcyBtZWFucyBpZiBDT05GSUdfVEVHUkEyMF9BUEJf
+RE1BPXkgYnV0IENPTkZJR19URUdSQTE4Nl9HUENfRE1BPW4NCndpdGggYSBUZWdyYTE4NiBvciBs
+YXRlciBwcm9jZXNzb3IgdGhlIGRyaXZlciB3aWxsIGluY29ycmVjdGx5IHRoaW5rIERNQSBpcw0K
+ZW5hYmxlZCBhbmQgYXR0ZW1wdCB0byByZXF1ZXN0IERNQSBjaGFubmVscyB0aGF0IHdpbGwgbmV2
+ZXIgYmUgYXZhaWxpYmxlLA0KbGVhdmluZyB0aGUgZHJpdmVyIGluIGEgcGVycGV0dWFsIEVQUk9C
+RV9ERUZFUiBzdGF0ZS4NCg0KU2lnbmVkLW9mZi1ieTogUGFya2VyIE5ld21hbiA8cG5ld21hbkBj
+b25uZWN0dGVjaC5jb20+DQotLS0NCiBkcml2ZXJzL2kyYy9idXNzZXMvaTJjLXRlZ3JhLmMgfCAy
+ICstDQogMSBmaWxlIGNoYW5nZWQsIDEgaW5zZXJ0aW9uKCspLCAxIGRlbGV0aW9uKC0pDQoNCmRp
+ZmYgLS1naXQgYS9kcml2ZXJzL2kyYy9idXNzZXMvaTJjLXRlZ3JhLmMgYi9kcml2ZXJzL2kyYy9i
+dXNzZXMvaTJjLXRlZ3JhLmMNCmluZGV4IGJjYmJmMjNhYTUzMC4uZGM2ZWQzYThkNjllIDEwMDY0
+NA0KLS0tIGEvZHJpdmVycy9pMmMvYnVzc2VzL2kyYy10ZWdyYS5jDQorKysgYi9kcml2ZXJzL2ky
+Yy9idXNzZXMvaTJjLXRlZ3JhLmMNCkBAIC00NDIsNyArNDQyLDcgQEAgc3RhdGljIGludCB0ZWdy
+YV9pMmNfaW5pdF9kbWEoc3RydWN0IHRlZ3JhX2kyY19kZXYgKmkyY19kZXYpDQogICAgaWYgKElT
+X1ZJKGkyY19kZXYpKQ0KICAgICAgICByZXR1cm4gMDsNCg0KLSAgIGlmICghaTJjX2Rldi0+aHct
+Pmhhc19hcGJfZG1hKSB7DQorICAgaWYgKGkyY19kZXYtPmh3LT5oYXNfYXBiX2RtYSkgew0KICAg
+ICAgICBpZiAoIUlTX0VOQUJMRUQoQ09ORklHX1RFR1JBMjBfQVBCX0RNQSkpIHsNCiAgICAgICAg
+ICAgIGRldl9kYmcoaTJjX2Rldi0+ZGV2LCAiQVBCIERNQSBzdXBwb3J0IG5vdCBlbmFibGVkXG4i
+KTsNCiAgICAgICAgICAgIHJldHVybiAwOw0KLS0gDQoyLjE3LjENCg0K
