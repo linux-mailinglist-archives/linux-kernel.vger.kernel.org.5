@@ -2,50 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 751D876DEA2
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 04:59:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E032076DEA5
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 04:59:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229547AbjHCC7Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Aug 2023 22:59:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40604 "EHLO
+        id S231146AbjHCC7w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Aug 2023 22:59:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40912 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229674AbjHCC7N (ORCPT
+        with ESMTP id S229674AbjHCC7u (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Aug 2023 22:59:13 -0400
-Received: from bg4.exmail.qq.com (bg4.exmail.qq.com [43.155.65.254])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ABC741B6;
-        Wed,  2 Aug 2023 19:59:09 -0700 (PDT)
-X-QQ-mid: bizesmtp73t1691031537tsgoj5ej
-Received: from linux-lab-host.localdomain ( [116.30.131.233])
-        by bizesmtp.qq.com (ESMTP) with 
-        id ; Thu, 03 Aug 2023 10:58:56 +0800 (CST)
-X-QQ-SSF: 01200000000000E0X000000A0000000
-X-QQ-FEAT: wPivafIDGPOgBGJZXumf1D0l+U3XdYDAwtUQg2VLTQKULee6QEo1JUpSROVyy
-        HfR1sAPKsbBLezgC1yTtdi0caktub2/fR5jGRKh2+di5fkUxjM1H3JS2hx95CwdzbHm7s3+
-        syYJEtgM3jntyYPabT37x9zIp7N9JPisGMYFwk2Jre12QBodeL/wrK1JE0cRcKQfKdRygLk
-        +/2AgGOzOovtSu5fIBR1NWZ98IPKlhcn4G5q7+tGm7Ewgg4u1AFONYvyOncO+WXxOLs9u5N
-        5bAfBG6GK1yU9yGs6Ge1wg+B8aAEDb8rKo7MXYVAQARVQJpj14VB+nu46NrozK1hXY4xsvj
-        MgEqLPtMOYWkz8d4S6ap2Jz1mC6MKa8oyBCzXqMPizSrmHXPYo=
-X-QQ-GoodBg: 0
-X-BIZMAIL-ID: 5300737042752940419
-From:   Zhangjin Wu <falcon@tinylab.org>
-To:     w@1wt.eu, thomas@t-8ch.de
-Cc:     arnd@arndb.de, falcon@tinylab.org, linux-kernel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, tanyuan@tinylab.org
-Subject: Re: [PATCH v4 08/12] selftests/nolibc: add test support for ppc
-Date:   Thu,  3 Aug 2023 10:58:55 +0800
-Message-Id: <20230803025855.6925-1-falcon@tinylab.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20230803020533.GA23704@1wt.eu>
-References: <20230803020533.GA23704@1wt.eu>
+        Wed, 2 Aug 2023 22:59:50 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7718D10A
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Aug 2023 19:59:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        MIME-Version:Message-ID:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
+        Content-ID:Content-Description:In-Reply-To:References;
+        bh=V34U8x+xt3cNOs6Hq3uSEoa9SGtAD0arB4vReWdva5o=; b=dv1aBM6wBmGZQ7hPRqWmxgrOQB
+        dy+FQT81UfT7eaeA7UyeRmzxBzRfo8x27SdpCBn3zFfXgYZvuohELngmC3zTk57Nfhdm93vDWMty7
+        lNn2rxu1wYKvLhjEPsgPwtiTfz7HeZZM15eNYIEOXLe5f58jfb99cJmduUdq0htWWnA/ZXBo+6ZTZ
+        4zdBA6M1upafxG+rKFlDETJgCv4LWBW369cleIp8sGx1ed/0uo3teEOdc7x1Lh0+iAPpsSKmqsrDO
+        5tJYaIFpNuzPJGT7D3VhITvnqCm26O9R969JuFNS3vGBkUkfTVjE/XRwzLq5GLBPKD8mcn7uwuWNL
+        Yuj0BP9Q==;
+Received: from [2601:1c2:980:9ec0::2764] (helo=bombadil.infradead.org)
+        by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
+        id 1qROZ0-006Ve1-0D;
+        Thu, 03 Aug 2023 02:59:46 +0000
+From:   Randy Dunlap <rdunlap@infradead.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Randy Dunlap <rdunlap@infradead.org>,
+        Grant Likely <grant.likely@secretlab.ca>,
+        Mark Brown <broonie@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Shengjiu Wang <shengjiu.wang@gmail.com>,
+        Xiubo Li <Xiubo.Lee@gmail.com>, alsa-devel@alsa-project.org,
+        linuxppc-dev@lists.ozlabs.org, Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>
+Subject: [PATCH v2 RESEND*3] ASoC: fsl MPC52xx drivers require PPC_BESTCOMM
+Date:   Wed,  2 Aug 2023 19:59:41 -0700
+Message-ID: <20230803025941.24157-1-rdunlap@infradead.org>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-QQ-SENDSIZE: 520
-Feedback-ID: bizesmtp:tinylab.org:qybglogicsvrgz:qybglogicsvrgz5a-1
-X-Spam-Status: No, score=-0.6 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,RCVD_IN_VALIDITY_RPBL,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -53,101 +55,58 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Both SND_MPC52xx_SOC_PCM030 and SND_MPC52xx_SOC_EFIKA select
+SND_SOC_MPC5200_AC97. The latter symbol depends on PPC_BESTCOMM,
+so the 2 former symbols should also depend on PPC_BESTCOMM since
+"select" does not follow any dependency chains.
 
-> On Wed, Aug 02, 2023 at 11:36:30PM +0200, Thomas Weißschuh wrote:
-> > On 2023-08-03 00:03:58+0800, Zhangjin Wu wrote:
-> > > Hi, Willy, Hi Thomas
-> > > 
-> > > I'm so happy to share with you, we have solved all of the left found
-> > > issues, include the ones about ppc and the missing poweroff options for
-> > > the tinyconfig series, will renew both series ;-)
-> > 
-> > Can we stick to one series at a time?
-> 
-> Yes and please this time, let's stick exclusively to what is sufficiently
-> tested for 6.6, otherwise it will have to be delayed.
->
+This prevents a kconfig warning and build errors:
 
-Yes, ppc series at first, will renew it today. let's delay the whole tinyconfig
-series (include part1) in v6.7, we have no enough time to test them carefully
-for v6.6.
+WARNING: unmet direct dependencies detected for SND_SOC_MPC5200_AC97
+  Depends on [n]: SOUND [=y] && !UML && SND [=m] && SND_SOC [=m] && SND_POWERPC_SOC [=m] && PPC_MPC52xx [=y] && PPC_BESTCOMM [=n]
+  Selected by [m]:
+  - SND_MPC52xx_SOC_PCM030 [=m] && SOUND [=y] && !UML && SND [=m] && SND_SOC [=m] && SND_POWERPC_SOC [=m] && PPC_MPC5200_SIMPLE [=y]
+  - SND_MPC52xx_SOC_EFIKA [=m] && SOUND [=y] && !UML && SND [=m] && SND_SOC [=m] && SND_POWERPC_SOC [=m] && PPC_EFIKA [=y]
 
-> > > > Further compared the preprocessed files, found the root cause is the new
-> > > > compiler using 'no_stack_protector' instead of
-> > > > '__optimize__("-fno-stack-protector")'. And the attribute 'no_stack_protector'
-> > > > breaks our "omit-frame-pointer" like the failure with '-O0' we fixed before.
-> > > > 
-> > > > I checked some of the other architectures, they didn't have the same issue, but
-> > > > test shows the 'no_stack_protector' attribute does have such compability issue
-> > > > here.
-> > > > 
-> > > > I learned the commit message of tools/include/nolibc/compiler.h, seems
-> > > > __optimize__("-fno-stack-protector") is enough for all of the nolibc supported
-> > > > architectures? is it ok for us to simply give up 'no_stack_protector'
-> > > > eventully? otherwise, we should manually disable 'no_stack_protector' for
-> > > > ppc32:
-> > > > 
-> > > >     #define __no_stack_protector __attribute__((__optimize__("-fno-stack-protector")))
-> > > >
-> > > 
-> > > Hello, any suggestion here? ;-)
-> > 
-> > Patience :-)
-> > 
-> > no_stack_protector is the offically documented mechanism to disable
-> > stack protector for a function. As it works for all other architectures
-> > this seems like a compiler bug.
->
-> Or a limitation. To be honest we're playing with compiler limits by
-> adjusting their optimizations per function.  But as long as we don't
-> break what currently works, we can accept to have some limits in a first
-> version (e.g. if ppc32 doesn't support -O0 for now it's not dramatic).
-> Also, some other archs use optimize("Os", "omit-frame-pointer")), maybe
-> that's needed there as well.
->
+ERROR: modpost: "mpc5200_audio_dma_destroy" [sound/soc/fsl/mpc5200_psc_ac97.ko] undefined!
+ERROR: modpost: "mpc5200_audio_dma_create" [sound/soc/fsl/mpc5200_psc_ac97.ko] undefined!
 
-Since it is really related, let's summarize yesterdays's further test here for
-a reference:
+Fixes: 40d9ec14e7e1 ("ASoC: remove BROKEN from Efika and pcm030 fabric drivers")
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Cc: Grant Likely <grant.likely@secretlab.ca>
+Cc: Mark Brown <broonie@kernel.org>
+Cc: Liam Girdwood <lgirdwood@gmail.com>
+Cc: Shengjiu Wang <shengjiu.wang@gmail.com>
+Cc: Xiubo Li <Xiubo.Lee@gmail.com>
+Cc: alsa-devel@alsa-project.org
+Cc: linuxppc-dev@lists.ozlabs.org
+Cc: Jaroslav Kysela <perex@perex.cz>
+Cc: Takashi Iwai <tiwai@suse.com>
+Acked-by: Shengjiu Wang <shengjiu.wang@gmail.com>
+---
+v2: use correct email address for Mark Brown.
 
-Yesterday's test result on randomly chosen x86_64 and riscv64 shows,
-from at least gcc 12.3.0 (may differs from archs), even with
-optimize("Os", "omit-frame-pointer")), whatever with or without
-'-fno-stack-protector', -O0 forbids the per function's
-"omit-frame-pointer" as the doc [1] describes (as we discussed before),
-that means some imtermediate gcc versions deviate from their docs and
-now, the latest gcc version come back to follow its doc [1] and become
-even more strict and then breaks our optimize("Os",
-"omit-frame-pointer") workaround eventually:
+ sound/soc/fsl/Kconfig |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-    Most optimizations are completely disabled at -O0 or if an -O level
-    is not set on the command line, even if individual optimization
-    flags are specified.
-
-So, it is ok for us to simply ignore -O0 currently, let's work on them
-in v6.7.
-
-[1]: https://gcc.gnu.org/onlinedocs/gcc-13.1.0/gcc/Optimize-Options.html
-
-> > If we want to work around it I would prefer to have both attributes.
-> 
-> Also if you remember we also used to have a work-around for the
-> function's entry code consisting in renaming _start and having a _start
-> pointer in the asm code itself. That can remain an option to experiment
-> with later.
-
-Yes, the 'asm' style of _start may be a choice to prevent gcc touching
-our startup code.
-
-> But let's not change everything again at the last minute,
-
-It is reasonable.
-
-> all these series have been sufficiently difficult to follow :-(
->
-
-Thanks,
-Zhangjin
-
-> thanks,
-> Willy
+diff -- a/sound/soc/fsl/Kconfig b/sound/soc/fsl/Kconfig
+--- a/sound/soc/fsl/Kconfig
++++ b/sound/soc/fsl/Kconfig
+@@ -243,7 +243,7 @@ config SND_SOC_MPC5200_AC97
+ 
+ config SND_MPC52xx_SOC_PCM030
+ 	tristate "SoC AC97 Audio support for Phytec pcm030 and WM9712"
+-	depends on PPC_MPC5200_SIMPLE
++	depends on PPC_MPC5200_SIMPLE && PPC_BESTCOMM
+ 	select SND_SOC_MPC5200_AC97
+ 	select SND_SOC_WM9712
+ 	help
+@@ -252,7 +252,7 @@ config SND_MPC52xx_SOC_PCM030
+ 
+ config SND_MPC52xx_SOC_EFIKA
+ 	tristate "SoC AC97 Audio support for bbplan Efika and STAC9766"
+-	depends on PPC_EFIKA
++	depends on PPC_EFIKA && PPC_BESTCOMM
+ 	select SND_SOC_MPC5200_AC97
+ 	select SND_SOC_STAC9766
+ 	help
