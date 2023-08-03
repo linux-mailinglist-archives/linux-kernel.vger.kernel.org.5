@@ -2,275 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 45D3376E2E1
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 10:24:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C518576E2EA
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 10:24:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234525AbjHCIY1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Aug 2023 04:24:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48544 "EHLO
+        id S234508AbjHCIYq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Aug 2023 04:24:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48342 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233714AbjHCIX7 (ORCPT
+        with ESMTP id S234444AbjHCIYI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Aug 2023 04:23:59 -0400
-Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 6F218468C;
-        Thu,  3 Aug 2023 01:18:00 -0700 (PDT)
-Received: from loongson.cn (unknown [10.20.42.43])
-        by gateway (Coremail) with SMTP id _____8Cxc_C2Ystk35EPAA--.36216S3;
-        Thu, 03 Aug 2023 16:17:58 +0800 (CST)
-Received: from openarena.loongson.cn (unknown [10.20.42.43])
-        by localhost.localdomain (Coremail) with SMTP id AQAAf8BxrM62YstkmOdGAA--.51590S2;
-        Thu, 03 Aug 2023 16:17:58 +0800 (CST)
-From:   Sui Jingfeng <suijingfeng@loongson.cn>
-To:     suijingfeng@loongson.cn
-Cc:     bhelgaas@google.com, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
-        loongson-kernel@lists.loongnix.cn
-Subject: [PATCH] PCI/VGA: Make the vga_is_firmware_default() arch-independent
-Date:   Thu,  3 Aug 2023 16:17:58 +0800
-Message-Id: <20230803081758.968742-1-suijingfeng@loongson.cn>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20230801183706.702567-1-suijingfeng@loongson.cn>
-References: <20230801183706.702567-1-suijingfeng@loongson.cn>
+        Thu, 3 Aug 2023 04:24:08 -0400
+Received: from fllv0016.ext.ti.com (fllv0016.ext.ti.com [198.47.19.142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3BE2F7D99;
+        Thu,  3 Aug 2023 01:18:09 -0700 (PDT)
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 3738I43p112785;
+        Thu, 3 Aug 2023 03:18:04 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1691050684;
+        bh=mGTl9vsr+g3bdslJ/fVBdF1Bo2OFJs7c0FPRKliJD5w=;
+        h=From:To:CC:Subject:Date:In-Reply-To:References;
+        b=ZucIrd8/miOHGpWjNOVRNih+XEKXUaqTMcz1bvItb7UlkgnJPWgRRGV75LKzjUsao
+         ge4MmmfkBe07UjSGtfrZEG0p6v3FPg3PDKQh55R0jfpOnBTWyTO/Q/GBExg5oIuwPa
+         SqUCdfGQqLP0fljG2ELfPTCs97GYoxT0uECU3ayY=
+Received: from DLEE100.ent.ti.com (dlee100.ent.ti.com [157.170.170.30])
+        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 3738I4WN080171
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Thu, 3 Aug 2023 03:18:04 -0500
+Received: from DLEE109.ent.ti.com (157.170.170.41) by DLEE100.ent.ti.com
+ (157.170.170.30) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Thu, 3
+ Aug 2023 03:18:03 -0500
+Received: from fllv0040.itg.ti.com (10.64.41.20) by DLEE109.ent.ti.com
+ (157.170.170.41) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Thu, 3 Aug 2023 03:18:03 -0500
+Received: from localhost (ileaxei01-snat2.itg.ti.com [10.180.69.6])
+        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 3738I2Ts008918;
+        Thu, 3 Aug 2023 03:18:03 -0500
+From:   Jayesh Choudhary <j-choudhary@ti.com>
+To:     <nm@ti.com>, <vigneshr@ti.com>
+CC:     <kristo@kernel.org>, <robh+dt@kernel.org>,
+        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
+        <a-bhatia1@ti.com>, <r-ravikumar@ti.com>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>, <j-choudhary@ti.com>
+Subject: [PATCH 1/2] arm64: dts: ti: k3-j721s2-main: Add DSS node
+Date:   Thu, 3 Aug 2023 13:47:59 +0530
+Message-ID: <20230803081800.368582-2-j-choudhary@ti.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20230803081800.368582-1-j-choudhary@ti.com>
+References: <20230803081800.368582-1-j-choudhary@ti.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: AQAAf8BxrM62YstkmOdGAA--.51590S2
-X-CM-SenderInfo: xvxlyxpqjiv03j6o00pqjv00gofq/
-X-Coremail-Antispam: 1Uk129KBj93XoW3Ww1fGrW7ZF15CrWkCFyfGrX_yoWxAF1kpF
-        Z3AFWrtrs8Gw4fJrsxGF48Xw1rursYvFW7KFW7Z3Z3Ja43urykKr4FyFWDtryfJ39rJw4a
-        gF12yr1rGFsrXFgCm3ZEXasCq-sJn29KB7ZKAUJUUUU5529EdanIXcx71UUUUU7KY7ZEXa
-        sCq-sGcSsGvfJ3Ic02F40EFcxC0VAKzVAqx4xG6I80ebIjqfuFe4nvWSU5nxnvy29KBjDU
-        0xBIdaVrnRJUUUkFb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2
-        IYs7xG6rWj6s0DM7CIcVAFz4kK6r1Y6r17M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48v
-        e4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Jr0_JF4l84ACjcxK6xIIjxv20xvEc7CjxVAFwI
-        0_Jr0_Gr1l84ACjcxK6I8E87Iv67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVCY1x0267AK
-        xVW8Jr0_Cr1UM2AIxVAIcxkEcVAq07x20xvEncxIr21l57IF6xkI12xvs2x26I8E6xACxx
-        1l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r1Y6r17McIj6I8E87Iv
-        67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41l42xK82IYc2
-        Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s02
-        6x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r126r1DMIIYrxkI7VAKI48JMIIF0x
-        vE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE
-        42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6x
-        kF7I0E14v26r1j6r4UYxBIdaVFxhVjvjDU0xZFpf9x07j1WlkUUUUU=
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently, the vga_is_firmware_default() function works on x86 and IA64
-architectures, but it is a no-op on ARM64, PPC, RISC-V, etc. This patch
-completes the implementation by tracking the firmware framebuffer's address
-range. The added code is trying to identify the VRAM aperture that contains
-the firmware framebuffer. Once found, related information about the VRAM
-aperture will be tracked.
+Add DSS node for J721S2 SoC. DSS IP in J721S2 is
+same as DSS IP in J721E, so same compatible is used.
 
-Note that the initial VRAM aperture (the one that contains firmware fb)
-identification should be done before the PCI resource relocation. This is
-because we need to lock the VRAM aperture before it is moved. We achieve
-this by using DECLARE_PCI_FIXUP_CLASS_HEADER(), which ensures that
-vga_arb_firmware_fb_addr_tracker() gets called before PCI resource
-allocation.
-
-This patch overcame the VRAM bar relocation issue by updating the cached
-firmware framebuffer's address range accordingly if the VRAM bar of the
-primary GPU do moved. We achieve that by monitoring the address changes of
-the VRAM aperture.
-
-This patch make the vga_is_firmware_default() function works on whatever
-arch that has UEFI GOP support, including x86 and IA64. But at the first
-step, we make it available only on platforms which PCI resource relocation
-do happens. Once provided to be effective and reliable, it can be expanded
-to other arch easily.
-
-This patch is tested on LS3A5000+LS7A2000 platform and LS3A5000+LS7A1000
-platform. This patch can be applied on pci-next (6.5.0-rc1+) branch cleanly
-
-v2:
-	* Fix test robot warnnings and fix typos
-
-Signed-off-by: Sui Jingfeng <suijingfeng@loongson.cn>
+Signed-off-by: Jayesh Choudhary <j-choudhary@ti.com>
 ---
- drivers/pci/vgaarb.c | 140 ++++++++++++++++++++++++++++++++++++++-----
- 1 file changed, 125 insertions(+), 15 deletions(-)
+ arch/arm64/boot/dts/ti/k3-j721s2-main.dtsi | 46 ++++++++++++++++++++++
+ 1 file changed, 46 insertions(+)
 
-diff --git a/drivers/pci/vgaarb.c b/drivers/pci/vgaarb.c
-index 5a696078b382..1f2d464e5812 100644
---- a/drivers/pci/vgaarb.c
-+++ b/drivers/pci/vgaarb.c
-@@ -61,6 +61,82 @@ static bool vga_arbiter_used;
- static DEFINE_SPINLOCK(vga_lock);
- static DECLARE_WAIT_QUEUE_HEAD(vga_wait_queue);
- 
-+static struct firmware_fb_tracker {
-+	/* The PCI(e) device who owns the firmware framebuffer */
-+	struct pci_dev *pdev;
-+	/* The index of the VRAM Bar */
-+	unsigned int bar;
-+	/* Firmware fb's offset from the VRAM aperture start */
-+	resource_size_t offset;
-+	/* The firmware fb's size, in bytes */
-+	resource_size_t size;
+diff --git a/arch/arm64/boot/dts/ti/k3-j721s2-main.dtsi b/arch/arm64/boot/dts/ti/k3-j721s2-main.dtsi
+index ed79ab3a3271..3b14b188a6ed 100644
+--- a/arch/arm64/boot/dts/ti/k3-j721s2-main.dtsi
++++ b/arch/arm64/boot/dts/ti/k3-j721s2-main.dtsi
+@@ -1507,4 +1507,50 @@ main_spi7: spi@2170000 {
+ 		clocks = <&k3_clks 346 1>;
+ 		status = "disabled";
+ 	};
 +
-+	/* Firmware fb's address range, suffer from change */
-+	resource_size_t start;
-+	resource_size_t end;
-+} firmware_fb;
++	dss: dss@4a00000 {
++		compatible = "ti,j721e-dss";
++		reg = <0x00 0x04a00000 0x00 0x10000>, /* common_m */
++		      <0x00 0x04a10000 0x00 0x10000>, /* common_s0*/
++		      <0x00 0x04b00000 0x00 0x10000>, /* common_s1*/
++		      <0x00 0x04b10000 0x00 0x10000>, /* common_s2*/
++		      <0x00 0x04a20000 0x00 0x10000>, /* vidl1 */
++		      <0x00 0x04a30000 0x00 0x10000>, /* vidl2 */
++		      <0x00 0x04a50000 0x00 0x10000>, /* vid1 */
++		      <0x00 0x04a60000 0x00 0x10000>, /* vid2 */
++		      <0x00 0x04a70000 0x00 0x10000>, /* ovr1 */
++		      <0x00 0x04a90000 0x00 0x10000>, /* ovr2 */
++		      <0x00 0x04ab0000 0x00 0x10000>, /* ovr3 */
++		      <0x00 0x04ad0000 0x00 0x10000>, /* ovr4 */
++		      <0x00 0x04a80000 0x00 0x10000>, /* vp1 */
++		      <0x00 0x04aa0000 0x00 0x10000>, /* vp2 */
++		      <0x00 0x04ac0000 0x00 0x10000>, /* vp3 */
++		      <0x00 0x04ae0000 0x00 0x10000>, /* vp4 */
++		      <0x00 0x04af0000 0x00 0x10000>; /* wb */
++		reg-names = "common_m", "common_s0",
++			    "common_s1", "common_s2",
++			    "vidl1", "vidl2","vid1","vid2",
++			    "ovr1", "ovr2", "ovr3", "ovr4",
++			    "vp1", "vp2", "vp3", "vp4",
++			    "wb";
++		clocks = <&k3_clks 158 0>,
++			 <&k3_clks 158 2>,
++			 <&k3_clks 158 5>,
++			 <&k3_clks 158 14>,
++			 <&k3_clks 158 18>;
++		clock-names = "fck", "vp1", "vp2", "vp3", "vp4";
++		power-domains = <&k3_pds 158 TI_SCI_PD_EXCLUSIVE>;
++		interrupts = <GIC_SPI 602 IRQ_TYPE_LEVEL_HIGH>,
++			     <GIC_SPI 603 IRQ_TYPE_LEVEL_HIGH>,
++			     <GIC_SPI 604 IRQ_TYPE_LEVEL_HIGH>,
++			     <GIC_SPI 605 IRQ_TYPE_LEVEL_HIGH>;
++		interrupt-names = "common_m",
++				  "common_s0",
++				  "common_s1",
++				  "common_s2";
++		status = "disabled";
 +
-+static bool vga_arb_get_fb_range_from_screen_info(resource_size_t *start,
-+						  resource_size_t *end)
-+{
-+	resource_size_t fb_start;
-+	resource_size_t fb_end;
-+	resource_size_t fb_size;
-+
-+	fb_start = screen_info.lfb_base;
-+	if (screen_info.capabilities & VIDEO_CAPABILITY_64BIT_BASE)
-+		fb_start |= (u64)screen_info.ext_lfb_base << 32;
-+
-+	fb_size = screen_info.lfb_size;
-+
-+	/* No firmware framebuffer support */
-+	if (!fb_start || !fb_size)
-+		return false;
-+
-+	fb_end = fb_start + fb_size - 1;
-+
-+	*start = fb_start;
-+	*end = fb_end;
-+
-+	return true;
-+}
-+
-+static bool vga_arb_get_fb_range_from_tracker(resource_size_t *start,
-+					      resource_size_t *end)
-+{
-+	struct pci_dev *pdev = firmware_fb.pdev;
-+	resource_size_t new_vram_base;
-+	resource_size_t new_fb_start;
-+	resource_size_t old_fb_start;
-+	resource_size_t old_fb_end;
-+
-+	/*
-+	 * No firmware framebuffer support or no aperture that contains the
-+	 * firmware FB is found. In this case, the firmware_fb.pdev will be
-+	 * NULL. We will return immediately.
-+	 */
-+	if (!pdev)
-+		return false;
-+
-+	new_vram_base = pdev->resource[firmware_fb.bar].start;
-+	new_fb_start = new_vram_base + firmware_fb.offset;
-+	old_fb_start = firmware_fb.start;
-+	old_fb_end = firmware_fb.end;
-+
-+	if (new_fb_start != old_fb_start) {
-+		firmware_fb.start = new_fb_start;
-+		firmware_fb.end = new_fb_start + firmware_fb.size - 1;
-+		vgaarb_dbg(&pdev->dev,
-+			   "[0x%llx, 0x%llx] -> [0x%llx, 0x%llx]\n",
-+			   (u64)old_fb_start, (u64)old_fb_end,
-+			   (u64)firmware_fb.start, (u64)firmware_fb.end);
-+	}
-+
-+	*start = firmware_fb.start;
-+	*end = firmware_fb.end;
-+
-+	return true;
-+}
- 
- static const char *vga_iostate_to_str(unsigned int iostate)
- {
-@@ -543,20 +619,21 @@ void vga_put(struct pci_dev *pdev, unsigned int rsrc)
- }
- EXPORT_SYMBOL(vga_put);
- 
-+/* Select the device owning the boot framebuffer if there is one */
- static bool vga_is_firmware_default(struct pci_dev *pdev)
- {
--#if defined(CONFIG_X86) || defined(CONFIG_IA64)
--	u64 base = screen_info.lfb_base;
--	u64 size = screen_info.lfb_size;
- 	struct resource *r;
--	u64 limit;
--
--	/* Select the device owning the boot framebuffer if there is one */
-+	resource_size_t fb_start;
-+	resource_size_t fb_end;
-+	bool ret;
- 
--	if (screen_info.capabilities & VIDEO_CAPABILITY_64BIT_BASE)
--		base |= (u64)screen_info.ext_lfb_base << 32;
--
--	limit = base + size;
-+#if defined(CONFIG_X86) || defined(CONFIG_IA64)
-+	ret = vga_arb_get_fb_range_from_screen_info(&fb_start, &fb_end);
-+#else
-+	ret = vga_arb_get_fb_range_from_tracker(&fb_start, &fb_end);
-+#endif
-+	if (!ret)
-+		return false;
- 
- 	/* Does firmware framebuffer belong to us? */
- 	pci_dev_for_each_resource(pdev, r) {
-@@ -566,12 +643,10 @@ static bool vga_is_firmware_default(struct pci_dev *pdev)
- 		if (!r->start || !r->end)
- 			continue;
- 
--		if (base < r->start || limit >= r->end)
--			continue;
--
--		return true;
-+		if (fb_start >= r->start && fb_end <= r->end)
-+			return true;
- 	}
--#endif
-+
- 	return false;
- }
- 
-@@ -1555,3 +1630,38 @@ static int __init vga_arb_device_init(void)
- 	return rc;
- }
- subsys_initcall_sync(vga_arb_device_init);
-+
-+static void vga_arb_firmware_fb_addr_tracker(struct pci_dev *pdev)
-+{
-+	resource_size_t fb_start;
-+	resource_size_t fb_end;
-+	unsigned int i;
-+
-+	if (!vga_arb_get_fb_range_from_screen_info(&fb_start, &fb_end))
-+		return;
-+
-+	for (i = 0; i < PCI_STD_NUM_BARS; i++) {
-+		struct resource *ap = &pdev->resource[i];
-+
-+		if (resource_type(ap) != IORESOURCE_MEM)
-+			continue;
-+
-+		if (!ap->start || !ap->end)
-+			continue;
-+
-+		if (ap->start <= fb_start && fb_end <= ap->end) {
-+			firmware_fb.pdev = pdev;
-+			firmware_fb.bar = i;
-+			firmware_fb.size = fb_end - fb_start + 1;
-+			firmware_fb.offset = fb_start - ap->start;
-+			firmware_fb.start = fb_start;
-+			firmware_fb.end = fb_end;
-+
-+			vgaarb_dbg(&pdev->dev,
-+				   "BAR %u contains firmware FB\n", i);
-+			break;
-+		}
-+	}
-+}
-+DECLARE_PCI_FIXUP_CLASS_HEADER(PCI_ANY_ID, PCI_ANY_ID, PCI_CLASS_DISPLAY_VGA,
-+			       8, vga_arb_firmware_fb_addr_tracker);
++		dss_ports: ports {
++		};
++	};
+ };
 -- 
-2.34.1
+2.25.1
 
