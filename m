@@ -2,114 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 78AE776EC27
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 16:16:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E95A776EC3F
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 16:20:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234518AbjHCOQQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Aug 2023 10:16:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34250 "EHLO
+        id S235794AbjHCOUO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Aug 2023 10:20:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36212 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233993AbjHCOQK (ORCPT
+        with ESMTP id S231874AbjHCOUM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Aug 2023 10:16:10 -0400
-Received: from mgamail.intel.com (unknown [134.134.136.65])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A801C1B2
-        for <linux-kernel@vger.kernel.org>; Thu,  3 Aug 2023 07:16:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1691072169; x=1722608169;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=hAFMMXOAM2pzpIk5VcLNkbp6zrSaafTVSYc31s+0CAU=;
-  b=Y1ZhSP1kuOmj3Em6PvGoBcMxzd5KHLhz6cWnm1GF1+JuG2uNZxKx/YhQ
-   cDd6VCUR2TOqmqNmzeKF0k7eVYtC1whzcdu7DeU5EdLTkRCk+huYH1W90
-   wTu/RogUyQG5MYpAkuawGTHDakoHgNWkLUy+aEDdVhcPGU+74Ud3XrDF2
-   riE+6NjmerD+GF4vRLTGBJTcZAw6hSuEJfap7HOsi2fsE9/G9UWRuHZlz
-   guM/PbVsSpQzO70eQzyIwXRoC/SI/sRrL70wsOcN2k+qQSf+o2LqD16Um
-   dQVpdfHmCOxMEZN4mpnDP6lXp167wixw2W8Pa8bVZ7L2BG2WR2EXCjx9V
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10791"; a="373519579"
-X-IronPort-AV: E=Sophos;i="6.01,252,1684825200"; 
-   d="scan'208";a="373519579"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Aug 2023 06:47:31 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10791"; a="843593493"
-X-IronPort-AV: E=Sophos;i="6.01,252,1684825200"; 
-   d="scan'208";a="843593493"
-Received: from sosterlu-mobl1.ger.corp.intel.com (HELO box.shutemov.name) ([10.251.209.233])
-  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Aug 2023 06:47:27 -0700
-Received: by box.shutemov.name (Postfix, from userid 1000)
-        id 43226109FCF; Thu,  3 Aug 2023 16:47:25 +0300 (+03)
-Date:   Thu, 3 Aug 2023 16:47:25 +0300
-From:   "kirill.shutemov@linux.intel.com" <kirill.shutemov@linux.intel.com>
-To:     "Huang, Kai" <kai.huang@intel.com>
-Cc:     "Hansen, Dave" <dave.hansen@intel.com>,
-        "Christopherson,, Sean" <seanjc@google.com>,
-        "x86@kernel.org" <x86@kernel.org>, "bp@alien8.de" <bp@alien8.de>,
-        "peterz@infradead.org" <peterz@infradead.org>,
-        "hpa@zytor.com" <hpa@zytor.com>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "pbonzini@redhat.com" <pbonzini@redhat.com>,
-        "Yamahata, Isaku" <isaku.yamahata@intel.com>,
-        "sathyanarayanan.kuppuswamy@linux.intel.com" 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        "n.borisov.lkml@gmail.com" <n.borisov.lkml@gmail.com>
-Subject: Re: [PATCH v3 07/12] x86/tdx: Make TDX_HYPERCALL asm similar to
- TDX_MODULE_CALL
-Message-ID: <20230803134725.eq4uliddd7rlu3ac@box>
-References: <cover.1690369495.git.kai.huang@intel.com>
- <6f92d08855491b3e9ff1221d2bb7af873d546afd.1690369495.git.kai.huang@intel.com>
- <20230727171008.aw3z6oxh4vfnahep@box.shutemov.name>
- <e75603996f88941892a19181c852ecfdc9adf06c.camel@intel.com>
- <20230803114546.em5qsjs33i5b7ogh@box.shutemov.name>
- <332547a2332121313bf6d00c9eaf71136b48696b.camel@intel.com>
- <20230803121207.krvcuj22mdxhugog@box.shutemov.name>
- <ce045f6ccf9451d177581280c35092de7bd71488.camel@intel.com>
+        Thu, 3 Aug 2023 10:20:12 -0400
+X-Greylist: delayed 1385 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Thu, 03 Aug 2023 07:20:10 PDT
+Received: from pegase1.c-s.fr (pegase1.c-s.fr [93.17.236.30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E1A8F7;
+        Thu,  3 Aug 2023 07:20:10 -0700 (PDT)
+Received: from localhost (mailhub3.si.c-s.fr [192.168.12.233])
+        by localhost (Postfix) with ESMTP id 4RGr4j2Llbz9t3X;
+        Thu,  3 Aug 2023 15:57:09 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from pegase1.c-s.fr ([192.168.12.234])
+        by localhost (pegase1.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id beVGL-Nghc2H; Thu,  3 Aug 2023 15:57:09 +0200 (CEST)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase1.c-s.fr (Postfix) with ESMTP id 4RGr4d4ktdz9t3r;
+        Thu,  3 Aug 2023 15:57:05 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 9DFD58B773;
+        Thu,  3 Aug 2023 15:57:05 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id lUIReUQR1OXM; Thu,  3 Aug 2023 15:57:05 +0200 (CEST)
+Received: from PO20335.IDSI0.si.c-s.fr (unknown [192.168.232.144])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id D52448B763;
+        Thu,  3 Aug 2023 15:57:03 +0200 (CEST)
+Received: from PO20335.IDSI0.si.c-s.fr (localhost [127.0.0.1])
+        by PO20335.IDSI0.si.c-s.fr (8.17.1/8.16.1) with ESMTPS id 373Duvd4494154
+        (version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=NOT);
+        Thu, 3 Aug 2023 15:56:57 +0200
+Received: (from chleroy@localhost)
+        by PO20335.IDSI0.si.c-s.fr (8.17.1/8.17.1/Submit) id 373DuupZ494121;
+        Thu, 3 Aug 2023 15:56:56 +0200
+X-Authentication-Warning: PO20335.IDSI0.si.c-s.fr: chleroy set sender to christophe.leroy@csgroup.eu using -f
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Timur Tabi <timur@kernel.org>
+Cc:     Christophe Leroy <christophe.leroy@csgroup.eu>,
+        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        linux-serial@vger.kernel.org
+Subject: [PATCH v1 00/12] serial: cpm_uart: Cleanup and refactoring
+Date:   Thu,  3 Aug 2023 15:56:41 +0200
+Message-ID: <cover.1691068700.git.christophe.leroy@csgroup.eu>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ce045f6ccf9451d177581280c35092de7bd71488.camel@intel.com>
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1691071000; l=2546; i=christophe.leroy@csgroup.eu; s=20211009; h=from:subject:message-id; bh=NoHIes4UmbMh0Oj+iKdKyDPU6aye+Gd+j7FfhzwC+rk=; b=FtnkdgyOm6dJ9NlFSzUc3f1zMzVhr+5VxwoZ/EnqjmBY6ncNnyG+0RepY+yLb9QQEuJ1mHBBS tEe2dXaVxGLBUd4lNrfdfDUklUD/x/QFbRA1Pq0TyiE7UNeN8MjMuZO
+X-Developer-Key: i=christophe.leroy@csgroup.eu; a=ed25519; pk=HIzTzUj91asvincQGOFx6+ZF5AoUuP9GdOtQChs7Mm0=
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 03, 2023 at 12:41:25PM +0000, Huang, Kai wrote:
-> On Thu, 2023-08-03 at 15:12 +0300, kirill.shutemov@linux.intel.com wrote:
-> > On Thu, Aug 03, 2023 at 11:56:40AM +0000, Huang, Kai wrote:
-> > > On Thu, 2023-08-03 at 14:45 +0300, kirill.shutemov@linux.intel.com wrote:
-> > > > > > I would rather keep the struct
-> > > > > > read-only where possible.
-> > > > > > 
-> > > > > 
-> > > > > We can achieve this if there's a clean way to do, but I don't see that.
-> > > > 
-> > > > Keep _ret() and non-_ret() versions?
-> > > 
-> > > The problem is the assembly needs to always turn on the "\ret" so that the R10
-> > > (used as VP.VMCALL leaf return code) can be saved to the structure.  Otherwise
-> > > we are not able to return VP.VMCALL leaf return code.
-> > 
-> > Yeah. This is downside of single assembly macro for all calls.
-> > 
-> > One possible way is to make it in C: non-_ret() version pass to the
-> > assembly helper copy of the caller's struct, keeping original intact.
-> > But, yeah, it is ugly.
-> > 
-> 
-> You sure you want to do this? :-)
+This series is a dust removal and cleanup of cpm_uart serial driver.
 
-No, I am not.
+After cleaning up things we see that CPM1 and CPM2 have so much in
+common that it is not worth keeping separate code.
 
-Maybe somebody else has better ideas.
+Once refactoring is done, there is only one .c and one .h in cpm_uart/
+subdirectory so its worth getting rid of cpm_uart/ subdir.
+
+The last part leads to the complete removal of include/linux/fs_uart_pd.h
+
+Christophe Leroy (12):
+  serial: cpm_uart: Avoid suspicious locking
+  serial: cpm_uart: Remove stale prototypes and table and macros
+  serial: cpm_uart: Stop using fs_uart_id enum
+  serial: cpm_uart: Use get_baudrate() instead of uart_baudrate()
+  serial: cpm_uart: Deduplicate cpm_set_{brg/smc_fcr/scc_fcr}()
+  serial: cpm_uart: Deduplicate cpm_line_cr_cmd()
+  serial: cpm_uart: Refactor cpm_uart_allocbuf()/cpm_uart_freebuf()
+  serial: cpm_uart: Refactor cpm_uart_[un]map_pram()
+  serial: cpm_uart: Remove cpm_uart/ subdirectory
+  serial: cpm_uart: Remove stale prototype in powerpc/fsl_soc.c
+  serial: cpm_uart: Don't include fs_uart_pd.h when not needed
+  serial: cpm_uart: Remove linux/fs_uart_pd.h
+
+ arch/powerpc/include/asm/fs_pd.h              |  10 --
+ arch/powerpc/platforms/8xx/mpc885ads_setup.c  |   1 -
+ arch/powerpc/platforms/8xx/tqm8xx_setup.c     |   1 -
+ arch/powerpc/sysdev/fsl_soc.c                 |   2 -
+ drivers/tty/serial/Makefile                   |   2 +-
+ .../{cpm_uart/cpm_uart_core.c => cpm_uart.c}  | 157 ++++++++++++++++--
+ drivers/tty/serial/{cpm_uart => }/cpm_uart.h  |  38 +----
+ drivers/tty/serial/cpm_uart/Makefile          |  12 --
+ drivers/tty/serial/cpm_uart/cpm_uart_cpm1.c   | 122 --------------
+ drivers/tty/serial/cpm_uart/cpm_uart_cpm1.h   |  33 ----
+ drivers/tty/serial/cpm_uart/cpm_uart_cpm2.c   | 156 -----------------
+ drivers/tty/serial/cpm_uart/cpm_uart_cpm2.h   |  33 ----
+ drivers/tty/serial/ucc_uart.c                 |   1 -
+ include/linux/fs_uart_pd.h                    |  71 --------
+ 14 files changed, 145 insertions(+), 494 deletions(-)
+ rename drivers/tty/serial/{cpm_uart/cpm_uart_core.c => cpm_uart.c} (90%)
+ rename drivers/tty/serial/{cpm_uart => }/cpm_uart.h (64%)
+ delete mode 100644 drivers/tty/serial/cpm_uart/Makefile
+ delete mode 100644 drivers/tty/serial/cpm_uart/cpm_uart_cpm1.c
+ delete mode 100644 drivers/tty/serial/cpm_uart/cpm_uart_cpm1.h
+ delete mode 100644 drivers/tty/serial/cpm_uart/cpm_uart_cpm2.c
+ delete mode 100644 drivers/tty/serial/cpm_uart/cpm_uart_cpm2.h
+ delete mode 100644 include/linux/fs_uart_pd.h
 
 -- 
-  Kiryl Shutsemau / Kirill A. Shutemov
+2.41.0
+
