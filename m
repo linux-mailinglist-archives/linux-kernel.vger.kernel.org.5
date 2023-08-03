@@ -2,110 +2,190 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A1F8B76E4A9
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 11:38:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 079BE76E4AE
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 11:39:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235087AbjHCJiU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Aug 2023 05:38:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33888 "EHLO
+        id S232454AbjHCJjq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Aug 2023 05:39:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33778 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235114AbjHCJhl (ORCPT
+        with ESMTP id S233311AbjHCJj1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Aug 2023 05:37:41 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C665E468B;
-        Thu,  3 Aug 2023 02:36:47 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        Thu, 3 Aug 2023 05:39:27 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2013D4694;
+        Thu,  3 Aug 2023 02:38:32 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id D0341219D4;
-        Thu,  3 Aug 2023 09:36:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1691055405; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=goH0RGRJhK/fH7zf9HOfwIEiuL8jO8QFiZpqtIWmMRU=;
-        b=idJP/bqJMlFV8Z4SD8NT3qylf/Q5haz9vMLly6Aks76OLgyNjYBQBuPlJELdvXSqhQc/wn
-        eWT7ydzq7defa0ZVcrm9o/N85F6Wd3oDNHUugOYWvKgMBoE9XY5kPZBktuUF+00QnmRdfq
-        Ayh2Jn26k0GqeqebmASpfmDatyfbz8w=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1691055405;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=goH0RGRJhK/fH7zf9HOfwIEiuL8jO8QFiZpqtIWmMRU=;
-        b=el9ojAmSgdIsxss/3BGTff0xvJ7J71SqHIDjuwLRyN/SpWelmabz8pYD0a39vcLrQqyvqi
-        rSFVrFcYCzGSsnAg==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 780A91333C;
-        Thu,  3 Aug 2023 09:36:45 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id EhiBHC11y2Q1eAAAMHmgww
-        (envelope-from <vbabka@suse.cz>); Thu, 03 Aug 2023 09:36:45 +0000
-Message-ID: <bc156898-b350-d1d4-c978-15bce94bf6f8@suse.cz>
-Date:   Thu, 3 Aug 2023 11:36:45 +0200
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 99AD261D17;
+        Thu,  3 Aug 2023 09:38:31 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 82A84C433C7;
+        Thu,  3 Aug 2023 09:38:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1691055511;
+        bh=M7mKv7aFom4lStcfY4aW++sZ1R7wmmAzxjw85MUjNDU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ILvlrqdelXLsQ94SKYibc+TpHrnegKXc1xtybeWaEJOYmGgq1eX4rzESkLuMcVuJ0
+         7nSBnBCt7wbbGd0S+wPwKV8XjX7ch+9opQSP3uKR3fUW1Z47OUtzMDHXNNMwNr/RuH
+         uV8gUP7p327Gi/1faGdYXIPOY7lFPw/F+g5ETgci34A6FZ1IeNMvUHRrJQp0y+OWx5
+         NzdR6938SLhAu54kd4dRNxSvgOjqigi0YXAScsIKaAx224bGdjgLTN+/DACng+bguA
+         hARqk/iCof8jz/I0zv/HXG0XBykPvPNN4ev/Ob1x6jkiPPc9WUrjsrQSIUWliTmOCr
+         4wqgBzNBDDJKA==
+Date:   Thu, 3 Aug 2023 11:38:28 +0200
+From:   Maxime Ripard <mripard@kernel.org>
+To:     Neil Armstrong <neil.armstrong@linaro.org>
+Cc:     Michael Riesch <michael.riesch@wolfvision.net>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Sebastian Reichel <sre@kernel.org>,
+        Gerald Loacker <gerald.loacker@wolfvision.net>,
+        David Airlie <airlied@gmail.com>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org
+Subject: Re: [PATCH 0/4] drm/panel: sitronix-st7789v: add support for partial
+ mode
+Message-ID: <teag3fdr7i65wzenovlcytnnpgk2gunzyq6wmci33g7csoasvz@tyyp6h7pqswk>
+References: <20230718-feature-lcd-panel-v1-0-e9a85d5374fd@wolfvision.net>
+ <292c3e7d-82ea-2631-bd4b-ef747f56287c@linaro.org>
+ <ekmwiy3iuvtqtb6hwjbba2ia3aemt3dxmx6dj3zh6ljfmuim4w@4jzhqdenxth4>
+ <ZMtqraOyGN9JvVj9@phenom.ffwll.local>
+ <qmwtcungahbe2bhty7v2rso2kf3vai6k47muwipifbybmi7o6s@oj6lngnhyhtg>
+ <9f0670a7-6ef6-7823-19c2-de10683f303f@linaro.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.1
-Subject: Re: [PATCH v4 1/2] mm: Remove kmem_valid_obj()
-Content-Language: en-US
-To:     thunder.leizhen@huaweicloud.com, Christoph Lameter <cl@linux.com>,
-        Pekka Enberg <penberg@kernel.org>,
-        David Rientjes <rientjes@google.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Hyeonggon Yoo <42.hyeyoo@gmail.com>, linux-mm@kvack.org,
-        "Paul E . McKenney" <paulmck@kernel.org>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Zqiang <qiang.zhang1211@gmail.com>, rcu@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     Zhen Lei <thunder.leizhen@huawei.com>
-References: <20230802130918.1132-1-thunder.leizhen@huaweicloud.com>
- <20230802130918.1132-2-thunder.leizhen@huaweicloud.com>
-From:   Vlastimil Babka <vbabka@suse.cz>
-In-Reply-To: <20230802130918.1132-2-thunder.leizhen@huaweicloud.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="iqykblsj6nj6m3cz"
+Content-Disposition: inline
+In-Reply-To: <9f0670a7-6ef6-7823-19c2-de10683f303f@linaro.org>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/2/23 15:09, thunder.leizhen@huaweicloud.com wrote:
-> From: Zhen Lei <thunder.leizhen@huawei.com>
-> 
-> Function kmem_dump_obj() will splat if passed a pointer to a non-slab
-> object. So no one will call it directly. It is always necessary to call
-> kmem_valid_obj() first to determine whether the passed pointer to a
-> valid slab object. Then merging kmem_valid_obj() into kmem_dump_obj()
-> will make the code more concise. So convert kmem_dump_obj() to work the
-> same way as vmalloc_dump_obj(). After this, no one calls kmem_valid_obj()
-> anymore, and it can be safely removed.
-> 
-> Suggested-by: Matthew Wilcox <willy@infradead.org>
-> Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
 
-Acked-by: Vlastimil Babka <vbabka@suse.cz>
+--iqykblsj6nj6m3cz
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-No problem if this goes through rcu tree due to patch 2/2.
+On Thu, Aug 03, 2023 at 11:30:52AM +0200, Neil Armstrong wrote:
+> On 03/08/2023 11:22, Maxime Ripard wrote:
+> > On Thu, Aug 03, 2023 at 10:51:57AM +0200, Daniel Vetter wrote:
+> > > On Thu, Aug 03, 2023 at 10:48:57AM +0200, Maxime Ripard wrote:
+> > > > On Thu, Aug 03, 2023 at 10:11:22AM +0200, Neil Armstrong wrote:
+> > > > > Hi,
+> > > > >=20
+> > > > > On 18/07/2023 17:31, Michael Riesch wrote:
+> > > > > > Hi all,
+> > > > > >=20
+> > > > > > This series adds support for the partial display mode to the Si=
+tronix
+> > > > > > ST7789V panel driver. This is useful for panels that are partia=
+lly
+> > > > > > occluded by design, such as the Jasonic JT240MHQS-HWT-EK-E3. Su=
+pport
+> > > > > > for this particular panel is added as well.
+> > > > > >=20
+> > > > > > Note: This series is already based on
+> > > > > > https://lore.kernel.org/lkml/20230714013756.1546769-1-sre@kerne=
+l.org/
+> > > > >=20
+> > > > > I understand Maxime's arguments, but by looking closely at the co=
+de,
+> > > > > this doesn't look like an hack at all and uses capabilities of the
+> > > > > panel controller to expose a smaller area without depending on any
+> > > > > changes or hacks on the display controller side which is coherent.
+> > > > >=20
+> > > > > Following's Daniel's summary we cannot compare it to TV overscan
+> > > > > because overscan is only on *some* displays, we can still get 100%
+> > > > > of the picture from the signal.
+> > > >=20
+> > > > Still disagree on the fact that it only affects some display. But i=
+t's
+> > > > not really relevant for that series.
+> > >=20
+> > > See my 2nd point, from a quick grep aside from i915 hdmi support, no =
+one
+> > > else sets all the required hdmi infoframes correctly. Which means on a
+> > > compliant hdmi tv, you _should_ get overscan. That's how that stuff is
+> > > speced.
+> > >=20
+> > > Iirc you need to at least set both the VIC and the content type, maybe
+> > > even more stuff.
+> > >=20
+> > > Unless all that stuff is set I'd say it's a kms driver bug if you get
+> > > overscan on a hdmi TV.
+> >=20
+> > I have no doubt that i915 works there. The source of my disagreement is
+> > that if all drivers but one don't do that, then userspace will have to
+> > care. You kind of said it yourself, i915 is kind of the exception there.
+> >=20
+> > The exception can be (and I'm sure it is) right, but still, it deviates
+> > from the norm.
+>=20
+> HDMI spec is hidden behind a paywall, HDMI testing is a mess, HDMI real
+> implementation on TVs and Displays is mostly broken, and HDMI certificati=
+on
+> devices are too expensive... this is mainly why only i915 handles it corr=
+ectly.
 
+Sure, I know all that, it's why I was disagreeing with the fact that
+it's mostly old news and we shouldn't care anymore. And it could largely
+be fixed if i915 was using more helpers in general.
+
+But that's a separate discussion entirely. The point I was trying to
+make is that it's still very much the current situation for the vast
+majority of drivers, for whatever reason, so we can't really treat as if
+it isn't anymore.
+
+> > > > I think I'll still like to have something clarified before we merge=
+ it:
+> > > > if userspace forces a mode, does it contain the margins or not? I d=
+on't
+> > > > have an opinion there, I just think it should be documented.
+> > >=20
+> > > The mode comes with the margins, so if userspace does something really
+> > > funny then either it gets garbage (as in, part of it's crtc area isn't
+> > > visible, or maybe black bars on the screen), or the driver rejects it
+> > > (which I think is the case for panels, they only take their mode and
+> > > nothing else).
+> >=20
+> > Panels can usually be quite flexible when it comes to the timings they
+> > accept, and we could actually use that to our advantage, but even if we
+> > assume that they have a single mode, I don't think we have anything that
+> > enforces that, either at the framework or documentation levels?
+>=20
+> Yep, this is why we would need a better atomic based panel API that would
+> permit us handling dynamic timings for panel and get out of the single-mo=
+de
+> for modern panels.
+
+Again, I definitely agree on the new API, but that seems a bit out of
+scope :)
+
+My point was that we can't expect modes to be the one we provided in
+=2Eget_modes. And that's for all the drivers, even i915 doesn't do it (as
+far as I could see)
+
+Maxime
+
+--iqykblsj6nj6m3cz
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCZMt1lAAKCRDj7w1vZxhR
+xQMaAPwNXMv/pcq5vo5GVXn54SaI8sUtQ/LzmvdqFrXqkE3MNwEAvFr+U9cZYjDw
+s1xrtXXgBzW8oBHSoQuxtTTLKhFzYAs=
+=JLy4
+-----END PGP SIGNATURE-----
+
+--iqykblsj6nj6m3cz--
