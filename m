@@ -2,55 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2899176F2F1
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 20:46:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AD90076F2FE
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 20:50:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233516AbjHCSpa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Aug 2023 14:45:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33694 "EHLO
+        id S233677AbjHCSt4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Aug 2023 14:49:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33740 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234310AbjHCSpH (ORCPT
+        with ESMTP id S234903AbjHCSsB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Aug 2023 14:45:07 -0400
+        Thu, 3 Aug 2023 14:48:01 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59AD5198A
-        for <linux-kernel@vger.kernel.org>; Thu,  3 Aug 2023 11:44:43 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37F032D4E;
+        Thu,  3 Aug 2023 11:47:34 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 40C4861E77
-        for <linux-kernel@vger.kernel.org>; Thu,  3 Aug 2023 18:43:18 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A5E30C433C9;
-        Thu,  3 Aug 2023 18:43:17 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 820BB61E8C;
+        Thu,  3 Aug 2023 18:46:57 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 353FBC433C7;
+        Thu,  3 Aug 2023 18:46:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691088197;
-        bh=+viZhIzSFXfCpemsNfwE5+wg0IfMl924eGE0IoyuWgg=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=eL8ToXQ43LZ3UPuFsMIMhOIx9kMMIn6mWSlyLFmCUcHy26M6VLmGhfeMBAAJo71L0
-         9ZoMsvZOKuFi5gj9EPcMnXYVFy4rKkuosaUlQ0R0fRn5kESKbjCKJEx3qQEt3V7CZj
-         GUZ5/GNIqBySAzT+p8QT3OYc8Nau5BJVUp87NIgBH8ePc9oY0eRyu0AzpY8jOnFE3m
-         0mK2loxuVaR3yCXhfxFTPP2b9Glp7TIXEb8jwB24FDnY61ITG1kFjUPMsmoRWssMLv
-         bVoDhdge0u0daIL6/+bzjGUnARA6r4wbspTF5fw/7w2QMQJRc3mbl0nCTw6k9ZIvtr
-         2BUGMuq98Rgpw==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 42575CE0AE0; Thu,  3 Aug 2023 11:43:17 -0700 (PDT)
-Date:   Thu, 3 Aug 2023 11:43:17 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Thomas =?iso-8859-1?Q?Wei=DFschuh?= <linux@weissschuh.net>
-Cc:     linux-kernel@vger.kernel.org, Willy Tarreau <w@1wt.eu>,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        Konstantin Ryabitsev <konstantin@linuxfoundation.org>
-Subject: Re: [PATCH] MAINTAINERS: nolibc: add myself as co-maintainer
-Message-ID: <884b4415-2b6f-44be-aaeb-da1d9d85ea01@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <20230728-nolibc-maintainer-v1-1-5f13daaebf4c@weissschuh.net>
- <1f85e8c3-e07d-482f-aa90-5e6631bc7873@t-8ch.de>
+        s=k20201202; t=1691088416;
+        bh=GFEg2m6DB2KbdjEpaONHepp4fVsAqm7MaT+ukZJmCgw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=GcnbVzceeIb3dwHAqgGzYuX+MZd+B/nCCk8GUiuEVcnKb2FvRSCAc9Nm7aeEBDkJe
+         W//AMrZcAmPdtHktj9kbO4ebjRuK3f+enyUUxf+ccrkl8T/GU4DBnniMXHAWBBvN25
+         s870lEbIQepWS/I+JQsfPIgRIGm98uMXbo+VKnr2tdC1XFFZC5LCKNAimQ5jJENHgh
+         mVV1eOCP8z/2bbzczxsqgNJaNClyHTs2OxTx94vGOcU7SzozFGIAtOdH4dJ5QzUCsr
+         gS2Vj6SuwVwoLcmkMmjy+huOQgGzAYoh573AaTY1c9pydxxkfL/hxOh5xJMNZ1swcw
+         RiPHIdIbjRsyA==
+Date:   Thu, 3 Aug 2023 19:46:51 +0100
+From:   Conor Dooley <conor@kernel.org>
+To:     Andrea Collamati <andrea.collamati@gmail.com>
+Cc:     Jonathan Cameron <jic23@kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>, linux-iio@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4 1/2] dt-bindings: iio: dac: add mcp4728.yaml
+Message-ID: <20230803-muzzle-shorten-5e59c2985a3c@spud>
+References: <cover.1691066050.git.andrea.collamati@gmail.com>
+ <d93dd116cfa7f958c038c0c62993071ea48451d2.1691066050.git.andrea.collamati@gmail.com>
+ <20230803-art-marbles-c57091465420@spud>
+ <8077daef-bbcc-4162-a9c8-18bae3372878@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="wapNLu/LBcZ2UjUH"
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <1f85e8c3-e07d-482f-aa90-5e6631bc7873@t-8ch.de>
+In-Reply-To: <8077daef-bbcc-4162-a9c8-18bae3372878@gmail.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
@@ -61,58 +63,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 03, 2023 at 08:31:50PM +0200, Thomas Weiﬂschuh wrote:
-> Hi Paul, 
-> 
-> On 2023-07-28 23:21:52+0200, Thomas Weiﬂschuh wrote:
-> > As discussed with Willy, Paul and Shuah add myself as maintainer for
-> > the nolibc subsystem.
-> 
-> it seems I forgot to send the nolibc maintainers update patch to you.
-> 
-> My bad!
-> 
-> Willy and me wondered if the patch could go through your tree?
 
-It could, but why not just include it in the batch going to Shuah?
-It is not all that long until the merge window opens, plus it is hard
-to argue that this is a regression.
+--wapNLu/LBcZ2UjUH
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> For you convenience the link to this patch on lore (with the Ack from Willy):
-> https://lore.kernel.org/lkml/20230728-nolibc-maintainer-v1-1-5f13daaebf4c@weissschuh.net/
+On Thu, Aug 03, 2023 at 08:39:30PM +0200, Andrea Collamati wrote:
+> On 8/3/23 17:21, Conor Dooley wrote:
+> > On Thu, Aug 03, 2023 at 02:56:34PM +0200, Andrea Collamati wrote:
+> >> Add documentation for MCP4728
+> >>
+> >> Signed-off-by: Andrea Collamati <andrea.collamati@gmail.com>
+> > I gave you a reviewed-by on v3, is there a reason that you dropped it?
 
-But if public acknowledgement of your nolibc maintainership would
-help:
+> Sorry it's the first time I try to submit a driver.
 
-Reviewed-by: Paul E. McKenney <paulmck@kernel.org>
+No worries. It's just hard to know if people do things intentionally or
+not!
 
-							Thanx, Paul
+> So after your positive review I should add...
+>=20
+> Reviewed-by: Conor Dooley <conor.dooley@microchip.com>
+>=20
+> I will do in v5.
 
-> Thomas
-> 
-> > Link: https://lore.kernel.org/lkml/7afafb6c-9664-44a1-bc8f-d20239db1dd5@paulmck-laptop/
-> > Signed-off-by: Thomas Weiﬂschuh <linux@weissschuh.net>
-> > ---
-> >  MAINTAINERS | 1 +
-> >  1 file changed, 1 insertion(+)
-> > 
-> > diff --git a/MAINTAINERS b/MAINTAINERS
-> > index b87fbcecd905..a67b50caea2a 100644
-> > --- a/MAINTAINERS
-> > +++ b/MAINTAINERS
-> > @@ -14993,6 +14993,7 @@ F:	include/linux/power/bq27xxx_battery.h
-> >  
-> >  NOLIBC HEADER FILE
-> >  M:	Willy Tarreau <w@1wt.eu>
-> > +M:	Thomas Weiﬂschuh <linux@weissschuh.net>
-> >  S:	Maintained
-> >  T:	git git://git.kernel.org/pub/scm/linux/kernel/git/wtarreau/nolibc.git
-> >  F:	tools/include/nolibc/
-> > 
-> > ---
-> > base-commit: f837f0a3c94882a29e38ff211a36c1c8a0f07804
-> > change-id: 20230728-nolibc-maintainer-ebdd50c844ed
-> > 
-> > Best regards,
-> > -- 
-> > Thomas Weiﬂschuh <linux@weissschuh.net>
+But don't post a v5 for that alone, if this version is fine then it can
+be picked up on application.
+
+--wapNLu/LBcZ2UjUH
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZMv2GwAKCRB4tDGHoIJi
+0uzoAPoDksbA688aJm4Cr6zqDm0rcUNAucXQEpRVHd1bAEO60wD/VWEuPceGWKat
+ui7rltRkgUyDhB+LEmSe+vwnPWzNRg0=
+=vYmp
+-----END PGP SIGNATURE-----
+
+--wapNLu/LBcZ2UjUH--
