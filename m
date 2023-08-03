@@ -2,198 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 462FB76EF5D
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 18:27:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C96876EF6A
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 18:28:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236477AbjHCQ1d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Aug 2023 12:27:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60016 "EHLO
+        id S236897AbjHCQ2D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Aug 2023 12:28:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60318 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231460AbjHCQ1b (ORCPT
+        with ESMTP id S236924AbjHCQ1z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Aug 2023 12:27:31 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4CD5F30D3;
-        Thu,  3 Aug 2023 09:27:30 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id CFC7861E31;
-        Thu,  3 Aug 2023 16:27:29 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 95019C433C7;
-        Thu,  3 Aug 2023 16:27:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691080049;
-        bh=R9CF2H7mbl0cgRXO+z4tXwwMfit3swiAWcNJEtpzi1Y=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=cItRdHU8ppyTRYkjux/OaZteYYB46EBf6G8e/iMfeXgRUR8ZGlWDDbC9jCWrex8dX
-         q88xudYsQ4coAFRhO/Uiq2Ste3axYkcId1WfMhh85ioLEjq87RsPVLZA7ILU7ZNhqo
-         Q6Bnh2fcTMyiCEKX2IIx57hQKViodinp4xPXgG3N2VTtsTuN+/8NMPeMMk46zyu39k
-         ezVItsWlD5GsUOD0jo7fUYoAlA4HQLTE5IDnmAIZhCLk9ZO6zcgWXlshnO3FupfZM4
-         6cpWec+RvB0hGaMmVB7kUVVEH1ikferq79RA2TN0sxqoUy0yYw/op2RMMdNpTgVKlG
-         Ot0/BUJr2U50Q==
-Message-ID: <ec1fd18f271593d5c6b6813cfaeb688994f20bf4.camel@kernel.org>
-Subject: Re: [PATCH v6] vfs, security: Fix automount superblock LSM init
- problem, preventing NFS sb sharing
-From:   Jeff Layton <jlayton@kernel.org>
-To:     Paul Moore <paul@paul-moore.com>
-Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
-        Christian Brauner <brauner@kernel.org>,
-        Trond Myklebust <trond.myklebust@hammerspace.com>,
-        Anna Schumaker <anna@kernel.org>,
-        James Morris <jmorris@namei.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>,
-        Stephen Smalley <stephen.smalley.work@gmail.com>,
-        Eric Paris <eparis@parisplace.org>,
-        Casey Schaufler <casey@schaufler-ca.com>,
-        David Howells <dhowells@redhat.com>,
-        Scott Mayhew <smayhew@redhat.com>,
-        Stephen Smalley <sds@tycho.nsa.gov>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-nfs@vger.kernel.org, linux-security-module@vger.kernel.org,
-        selinux@vger.kernel.org
-Date:   Thu, 03 Aug 2023 12:27:26 -0400
-In-Reply-To: <CAHC9VhTQDVyZewU0Oiy4AfJt_UtB7O2_-PcUmXkZtuwKDQBfXg@mail.gmail.com>
-References: <20230802-master-v6-1-45d48299168b@kernel.org>
-         <bac543537058619345b363bbfc745927.paul@paul-moore.com>
-         <ca156cecbc070c3b7c68626572274806079a6e04.camel@kernel.org>
-         <CAHC9VhTQDVyZewU0Oiy4AfJt_UtB7O2_-PcUmXkZtuwKDQBfXg@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
+        Thu, 3 Aug 2023 12:27:55 -0400
+Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE18C3AB6
+        for <linux-kernel@vger.kernel.org>; Thu,  3 Aug 2023 09:27:50 -0700 (PDT)
+Received: by mail-wr1-x434.google.com with SMTP id ffacd0b85a97d-313e742a787so741662f8f.1
+        for <linux-kernel@vger.kernel.org>; Thu, 03 Aug 2023 09:27:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=tessares.net; s=google; t=1691080069; x=1691684869;
+        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
+         :mime-version:subject:date:from:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=qBnIPaLpUBQo0kIbt1VtWMaNdY6vXScOGJHuxsyxb80=;
+        b=Tl1CBteXvZksZc6XFPE19x//hK3eTgSZXpehyGdVUlUYc1c4XhbKbtTvV/MadlUO2K
+         EU0UhkI31jFrxkQX8As3FeXlFlTbvnYiX3pVV3oz45CYY3HlEcFZJTBYiiLvWVBRl3mr
+         hYVdN91cO+c77JOi5iIzRLzuJHMphc8pYEzzlshs+8NrjHR6NNCTM9rGm9930shPvAlb
+         CAETCrou+xDeZ3aYdgwFCJUHVMZq9lbsCssev2CHU8WxKPa7ss1HbAf2+Tqlb2ExPM+A
+         8ZRMPNbSaEA5nbq8ERxGJu+9mUSOX3jmN6A/saWzGCdWdxLY1gA19wBBbJpnd+b0FxnJ
+         Cf0A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691080069; x=1691684869;
+        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
+         :mime-version:subject:date:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=qBnIPaLpUBQo0kIbt1VtWMaNdY6vXScOGJHuxsyxb80=;
+        b=V8DOhr/ispaFWPZJoeRLPGxtdM2qlXwex1uDUrPKKPBgaOL35QwV6NwzgJWkDMqV7L
+         o+gJEfF721mVPrKn5/qWG2SSRti5sd8GwmoD6Et0LiHR5AmnXC3hu6YPMR6s067qhHK8
+         Gm3jy8JFC4qMZ8uB0onN4goPxCTJDUEv7JABGMiDbVrRibt1purRUulh9cAZSXRsF8E8
+         M6mi5sSrzmIsc1FJeEuIRbTDzdid9wRcE0E/UgGbMTvshu+wflhJmQ+D7qvNp92hrQs7
+         VUed0PJyXa/apAGlt1VJoVzwhswgikKwFLWGQsDhK21zwnbnJo2PjIQBTTTEYRPcDuF8
+         yulA==
+X-Gm-Message-State: ABy/qLZ6H1Z7JvmhnEU9H5P1M1qlh3JewFP3o11eA0/mVCZlkVtT0Rj9
+        u7egAlJwcaiYAW8p+Q8ipAp46A==
+X-Google-Smtp-Source: APBJJlFrCTmGtUyj8DEzG5dbqfh/5TPifKxWOHdkGuYEm0EErlHgwew30hIE5BgUjIpCwVkn5w5guQ==
+X-Received: by 2002:a05:6000:1a47:b0:317:5efa:c46a with SMTP id t7-20020a0560001a4700b003175efac46amr8097820wry.27.1691080069077;
+        Thu, 03 Aug 2023 09:27:49 -0700 (PDT)
+Received: from vdi08.nix.tessares.net (static.219.156.76.144.clients.your-server.de. [144.76.156.219])
+        by smtp.gmail.com with ESMTPSA id o10-20020a5d474a000000b003141a3c4353sm253167wrs.30.2023.08.03.09.27.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 03 Aug 2023 09:27:48 -0700 (PDT)
+From:   Matthieu Baerts <matthieu.baerts@tessares.net>
+Date:   Thu, 03 Aug 2023 18:27:27 +0200
+Subject: [PATCH net 1/4] selftests: mptcp: join: fix 'delete and re-add'
+ test
 MIME-Version: 1.0
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Message-Id: <20230803-upstream-net-20230803-misc-fixes-6-5-v1-1-6671b1ab11cc@tessares.net>
+References: <20230803-upstream-net-20230803-misc-fixes-6-5-v1-0-6671b1ab11cc@tessares.net>
+In-Reply-To: <20230803-upstream-net-20230803-misc-fixes-6-5-v1-0-6671b1ab11cc@tessares.net>
+To:     mptcp@lists.linux.dev, Mat Martineau <martineau@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>, Shuah Khan <shuah@kernel.org>,
+        Geliang Tang <geliang.tang@suse.com>
+Cc:     Andrea Claudi <aclaudi@redhat.com>, netdev@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Matthieu Baerts <matthieu.baerts@tessares.net>,
+        stable@vger.kernel.org
+X-Mailer: b4 0.12.3
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1603;
+ i=matthieu.baerts@tessares.net; h=from:subject:message-id;
+ bh=hfqRzKxGyaUEWgzy2QiBCH3NjrZO3p7pR4iRluGjJ+E=;
+ b=owEBbQKS/ZANAwAIAfa3gk9CaaBzAcsmYgBky9WCVBTSFtFVA9hiSUR5uWKhdSZZFB+b8F8YM
+ 07eJUfLXiaJAjMEAAEIAB0WIQToy4X3aHcFem4n93r2t4JPQmmgcwUCZMvVggAKCRD2t4JPQmmg
+ c8IUEACLIP5dcRWU20s4Av9wjL/rYYWQRKsTzptp5p2mVJHQaDU8N8op/BVmDAKBqt/pxA8y9X2
+ VdFWG08EVnJjZuHIj1asuj8ETOas4S/tTWAVgGjyHFuVIJdtR1xVZ+EO2u/sWnZ/pfe/Zn3ri2D
+ BQbvLMPx/R8EVN1XTmqGZSs+Dg7Qi41bzi89gzRx01cvs9LjVUrbTnknKtALHMueq1U2YpNJ45c
+ Jw8u7HTCod1UvlD8jadC8MNomMme66rAn8+8ahuPR0gnNShHrwFcfFhkVfZvV9AiwkENEcaEH/u
+ psGioGwajZwJAdcFFcJa01OhDVhBPLWQSLsFGOK/uhR4bnU7oJSKm++znAatjb2q+o9PceG06yU
+ 8nR672vgkXXyO8M/UpHKIczRcrSJF8whkgbKQVU3TxPVYxb68cjnz9+YFiQV2jyj2UY+3vTXIxB
+ YshS3lHT5S9MEUNT8YLCAlk7rwocVMAH2Mbpt46xVPbHmTLD5VxseqJqc4wcXYxTCKV/P0bwWOQ
+ mvm0+M+ngNK4B3uhSLuecyfgP06r5ay2imfu2du2L8vgjoTblFI1t6ODh57SZQuHhrCycGUujN3
+ k0+MbKFpIrvp3Nkij1jENsbyGVZJ5ajuhmDfiskNpdTZTK/ciVUyJB0y6ULrt2JGgAssB6nZtU6
+ uRagsMcCbX2XFwg==
+X-Developer-Key: i=matthieu.baerts@tessares.net; a=openpgp;
+ fpr=E8CB85F76877057A6E27F77AF6B7824F4269A073
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2023-08-02 at 22:46 -0400, Paul Moore wrote:
-> On Wed, Aug 2, 2023 at 3:34=E2=80=AFPM Jeff Layton <jlayton@kernel.org> w=
-rote:
-> > On Wed, 2023-08-02 at 14:16 -0400, Paul Moore wrote:
-> > > On Aug  2, 2023 Jeff Layton <jlayton@kernel.org> wrote:
->=20
-> ...
->=20
-> > > I generally dislike core kernel code which makes LSM calls conditiona=
-l
-> > > on some kernel state maintained outside the LSM.  Sometimes it has to
-> > > be done as there is no other good options, but I would like us to try
-> > > and avoid it if possible.  The commit description mentioned that this
-> > > was put here to avoid a SELinux complaint, can you provide an example
-> > > of the complain?  Does it complain about a double/invalid mount, e.g.
-> > > "SELinux: mount invalid.  Same superblock, different security ..."?
-> >=20
-> > The problem I had was not so much SELinux warnings, but rather that in =
-a
-> > situation where I would expect to share superblocks between two
-> > filesystems, it didn't.
-> >=20
-> > Basically if you do something like this:
-> >=20
-> > # mount nfsserver:/export/foo /mnt/foo -o context=3Dsystem_u:object_r:r=
-oot_t:s0
-> > # mount nfsserver:/export/bar /mnt/bar -o context=3Dsystem_u:object_r:r=
-oot_t:s0
-> >=20
-> > ...when "foo" and "bar" are directories on the same filesystem on the
-> > server, you should get two vfsmounts that share a superblock. That's
-> > what you get if selinux is disabled, but not when it's enabled (even
-> > when it's in permissive mode).
->=20
-> Thanks, that helps.  I'm guessing the difference in behavior is due to
-> the old->has_sec_mnt_opts check in nfs_compare_super().
->=20
+From: Andrea Claudi <aclaudi@redhat.com>
 
-Yep. That gets set, but fc->security is still NULL.
+mptcp_join 'delete and re-add' test fails when using ip mptcp:
 
-> > > I'd like to understand why the sb_set_mnt_opts() call fails when it
-> > > comes after the fs_context_init() call.  I'm particulary curious to
-> > > know if the failure is due to conflicting SELinux state in the
-> > > fs_context, or if it is simply an issue of sb_set_mnt_opts() not
-> > > properly handling existing values.  Perhaps I'm being overly naive,
-> > > but I'm hopeful that we can address both of these within the SELinux
-> > > code itself.
-> >=20
-> > The problem I hit was that nfs_compare_super is called with a fs_contex=
-t
-> > that has a NULL ->security pointer. That caused it to call
-> > selinux_sb_mnt_opts_compat with mnt_opts set to NULL, and at that point
-> > it returns 1 and decides not to share sb's.
-> >=20
-> > Filling out fc->security with this new operation seems to fix that, but
-> > if you see a better way to do this, then I'm certainly open to the idea=
-.
->=20
-> Just as you mention that you are not a LSM expert, I am not a VFS
-> expert, so I think we'll have to help each other a bit ;)
->=20
-> I think I'm beginning to understand alloc_fs_context() a bit more,
-> including the fs_context_for_XXX() wrappers.  One thing I have
-> realized is that I believe we need to update the
-> selinux_fs_context_init() and smack_fs_context_init() functions to
-> properly handle a NULL @reference dentry; I think returning without
-> error in both cases is the correct answer.  In the non-NULL @reference
-> case, I believe your patch is correct, we do want to inherit the
-> options from @reference.
->=20
+  $ ./mptcp_join.sh -iI
+  <snip>
+  002 delete and re-add                    before delete[ ok ]
+                                           mptcp_info subflows=1         [ ok ]
+  Error: argument "ADDRESS" is wrong: invalid for non-zero id address
+                                           after delete[fail] got 2:2 subflows expected 1
 
+This happens because endpoint delete includes an ip address while id is
+not 0, contrary to what is indicated in the ip mptcp man page:
 
-ACK. That seems reasonable. I'll work that in.
+"When used with the delete id operation, an IFADDR is only included when
+the ID is 0."
 
+This fixes the issue using the $addr variable in pm_nl_del_endpoint()
+only when id is 0.
 
->   My only concern now is the
-> fs_context::lsm_set flag.
->=20
+Fixes: 34aa6e3bccd8 ("selftests: mptcp: add ip mptcp wrappers")
+Cc: stable@vger.kernel.org
+Signed-off-by: Andrea Claudi <aclaudi@redhat.com>
+Reviewed-by: Matthieu Baerts <matthieu.baerts@tessares.net>
+Signed-off-by: Matthieu Baerts <matthieu.baerts@tessares.net>
+---
+ tools/testing/selftests/net/mptcp/mptcp_join.sh | 1 +
+ 1 file changed, 1 insertion(+)
 
-Yeah, that bit is ugly. David studied this problem a lot more than I
-have, but basically, we only want to set the context info once, and
-we're not always going to have a nice string to parse to set up the
-options. This obviously works, but I'm fine with a more elegant method
-if you can spot one.
+diff --git a/tools/testing/selftests/net/mptcp/mptcp_join.sh b/tools/testing/selftests/net/mptcp/mptcp_join.sh
+index 3c2096ac97ef..067fabc401f1 100755
+--- a/tools/testing/selftests/net/mptcp/mptcp_join.sh
++++ b/tools/testing/selftests/net/mptcp/mptcp_join.sh
+@@ -705,6 +705,7 @@ pm_nl_del_endpoint()
+ 	local addr=$3
+ 
+ 	if [ $ip_mptcp -eq 1 ]; then
++		[ $id -ne 0 ] && addr=''
+ 		ip -n $ns mptcp endpoint delete id $id $addr
+ 	else
+ 		ip netns exec $ns ./pm_nl_ctl del $id $addr
 
+-- 
+2.40.1
 
-> You didn't mention exactly why the security_sb_set_mnt_opts() was
-> failing, and requires the fs_context::lsm_set check, but my guess is
-> that something is tripping over the fact that the superblock is
-> already properly setup.  I'm working under the assumption that this
-> problem - attempting to reconfigure a properly configured superblock -
-> should only be happening in the submount/non-NULL-reference case.  If
-> it is happening elsewhere I think I'm going to need some help
-> understanding that ...
->=20
-
-Correct. When you pass in the mount options, fc->security seems to be
-properly set. NFS mounting is complex though, so the final superblock
-you care about may end up being a descendant of the one that was
-originally configured.
-
-This patch is intended to ensure we carry over security info in these
-cases. We already try to inherit other parameters from parent mounts, so
-this is just another set that we need to make sure we inherit.
-
-> However, assuming I'm mostly correct in the above paragraph, would it
-> be possible to take a reference to the @reference dentry's superblock
-> in security_fs_context_init(), that we could later compare to the
-> superblock passed into security_sb_set_mnt_opts()?  If we know that
-> the fs_context was initialized with the same superblock we are now
-> being asked to set mount options on, we should be able to return from
-> the LSM hook without doing anything.
->=20
-
-I'm not sure that I follow your logic here:
-
-You want to take a sb reference and carry that in the fs_context? What
-will you do with it in security_sb_set_mnt_opts?
-
-FWIW, It's generally easier to deal with inode or dentry references than
-refs to the superblock too, so if we want to carry a reference to an
-object around, we'd probably rather handle one of those.
---=20
-Jeff Layton <jlayton@kernel.org>
