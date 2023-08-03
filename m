@@ -2,205 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EAB8976DC95
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 02:25:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A533B76DC9E
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 02:26:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230040AbjHCAZI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Aug 2023 20:25:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33862 "EHLO
+        id S232124AbjHCA0d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Aug 2023 20:26:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34730 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229685AbjHCAZH (ORCPT
+        with ESMTP id S231998AbjHCA0b (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Aug 2023 20:25:07 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 059BE11D;
-        Wed,  2 Aug 2023 17:25:06 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 9597F61B95;
-        Thu,  3 Aug 2023 00:25:05 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D6861C433C8;
-        Thu,  3 Aug 2023 00:25:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691022304;
-        bh=Ak6kWgpita0ccStQUBSLTHQZ7Qxm2852u+BDrFi7RTQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=oxoeAZAGjuZLO3hoE98/N44RKxRUPG41IhNvI224eG9LzGYuPJ8KxOHPpB05W3om9
-         5b5TuYFEiAHtFZ2fL7L9JR+ldk+TrfSE0YhaBJJHVmh5mn7nDHfVruAH97TJK9hood
-         gLYnjUG1/u8MMHPdk4BzKhpk3JqQ2dPHz5nvlEqmccwuBMgtJE7TMz5k0WHn5BF7uH
-         +DupCeCicS+5gCblQeAizSgrN0sPOwSEuLBc4GEt/q6nYNtTI3A2/GQ0iBkuL7Glxl
-         RLD0GwnXsX4J71uei464iGVOTgdXaegNN4hvxit/2wWQgS9Y4HiONI/Nkp6+y+fRMA
-         9wDKyN8IyhgtQ==
-Received: (nullmailer pid 1580378 invoked by uid 1000);
-        Thu, 03 Aug 2023 00:25:02 -0000
-Date:   Wed, 2 Aug 2023 18:25:02 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Anjelique Melendez <quic_amelende@quicinc.com>
-Cc:     pavel@ucw.cz, lee@kernel.org, thierry.reding@gmail.com,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        agross@kernel.org, andersson@kernel.org, luca.weiss@fairphone.com,
-        konrad.dybcio@linaro.org, u.kleine-koenig@pengutronix.de,
-        quic_subbaram@quicinc.com, linux-leds@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, linux-pwm@vger.kernel.org
-Subject: Re: [PATCH v2 2/7] dt-bindings: leds: leds-qcom-lpg: Add support for
- LPG PPG
-Message-ID: <20230803002502.GA1569972-robh@kernel.org>
-References: <20230725193423.25047-1-quic_amelende@quicinc.com>
- <20230725193423.25047-3-quic_amelende@quicinc.com>
+        Wed, 2 Aug 2023 20:26:31 -0400
+Received: from mail-vs1-xe29.google.com (mail-vs1-xe29.google.com [IPv6:2607:f8b0:4864:20::e29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD45C11D
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Aug 2023 17:26:30 -0700 (PDT)
+Received: by mail-vs1-xe29.google.com with SMTP id ada2fe7eead31-44779e3e394so195522137.0
+        for <linux-kernel@vger.kernel.org>; Wed, 02 Aug 2023 17:26:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1691022390; x=1691627190;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Nk6j0GFS7IPls0T71J5TEv/VUGibQ9LYNrY6ZRhc4WQ=;
+        b=A3FMTBgSM/+Ry82aQYMpgPvkPsrxEIudSjvLRAWekauteN8dYcaciENk0Oham5nWy+
+         xsg+1uyABr3c3yglOICg10HACIY9k/783EuGqXe2gDqUbmOLBe4ITkiMpCmo4Cu5uCY0
+         /scnsN6894j9ytnLEzrF/w7h2uyoiPKsbe/x/albIdAKXtTpayBGcFePRywUNDjpc905
+         8nbZHZUqds3mtii+jbBCHzaGjdZpvKEn9UI0/SCJlYo6Q+PJwHx5BIHl14YDI89e/yNV
+         FjzS23P8g6NrJ2DsGhaKnVgo0HwUWsVpHMrrDU5GGAncT+91/Zxnk5kSsYr8aUB/vsDb
+         nqGA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691022390; x=1691627190;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Nk6j0GFS7IPls0T71J5TEv/VUGibQ9LYNrY6ZRhc4WQ=;
+        b=ZW1kH67qugmXRMSpFPo2xM8v8Y8NiG0nHYZn9oDaXoi/cADO153Z3JCaKiaHHf2L5l
+         wi8DFIctn8zHZ91SkIh/B2VcSTPEY7/lyQ39wEnWaXmfk5aLoe+u+lI5DsKvsr0wOaRa
+         vlma86XrAbp8wDGX2gHehnWC4+wAtD1Q9jmBPR8XZ0vv5tTguAK0Q8e206WUupe3S7wa
+         4nOs0kRHmeGtHIEi3S173935FQ0tb7XAipVLtsRdBLslmO5lu/ekpdzug4/Cd1yxMe2d
+         mAaCWv8CKnTAsN8siwC1OCGuPjVBiMyb3ZpAYIkpdODgho52ynO4ekrpntDpQyxhPEqn
+         e6lA==
+X-Gm-Message-State: ABy/qLZAxUdBnsa8j+PEjXUjB3OPswZ99Km5Y6wJdJXtNcXypwShxjgG
+        MRpvRtkqPLcZaU2SxXG8ylTxI7GSb3FuCXnzKKQElg==
+X-Google-Smtp-Source: APBJJlHQm66TQC7ZMPcAlCbk6UgXh9vKj+jbw4Phlpmpl7p76qi5w0WQynMiK0D3UAqbFJec33RdF5UnBYM/r6Ya17U=
+X-Received: by 2002:a05:6102:364d:b0:443:8034:be4a with SMTP id
+ s13-20020a056102364d00b004438034be4amr5895518vsu.28.1691022388451; Wed, 02
+ Aug 2023 17:26:28 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230725193423.25047-3-quic_amelende@quicinc.com>
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <20230731074829.79309-1-wangkefeng.wang@huawei.com>
+ <20230731074829.79309-2-wangkefeng.wang@huawei.com> <20230731234027.GB39768@monkey>
+In-Reply-To: <20230731234027.GB39768@monkey>
+From:   Mina Almasry <almasrymina@google.com>
+Date:   Wed, 2 Aug 2023 17:26:17 -0700
+Message-ID: <CAHS8izM=_TWVhu9OcEFBg=MDYrh4BFmzM8a3=tSRPRBmkuAUuQ@mail.gmail.com>
+Subject: Re: [PATCH 1/4] mm: hugetlb: use flush_hugetlb_tlb_range() in move_hugetlb_page_tables()
+To:     Mike Kravetz <mike.kravetz@oracle.com>,
+        James Houghton <jthoughton@google.com>
+Cc:     Kefeng Wang <wangkefeng.wang@huawei.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Muchun Song <muchun.song@linux.dev>, kirill@shutemov.name,
+        joel@joelfernandes.org, william.kucharski@oracle.com,
+        kaleshsingh@google.com, linux-mm@kvack.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 25, 2023 at 12:34:18PM -0700, Anjelique Melendez wrote:
-> Update leds-qcom-lpg bindings to support LPG PPG.
-> 
-> Signed-off-by: Anjelique Melendez <quic_amelende@quicinc.com>
-> ---
->  .../bindings/leds/leds-qcom-lpg.yaml          | 92 ++++++++++++++++++-
->  1 file changed, 91 insertions(+), 1 deletion(-)
-> 
-> diff --git a/Documentation/devicetree/bindings/leds/leds-qcom-lpg.yaml b/Documentation/devicetree/bindings/leds/leds-qcom-lpg.yaml
-> index e6f1999cb22f..6feca859fb74 100644
-> --- a/Documentation/devicetree/bindings/leds/leds-qcom-lpg.yaml
-> +++ b/Documentation/devicetree/bindings/leds/leds-qcom-lpg.yaml
-> @@ -11,7 +11,7 @@ maintainers:
->  
->  description: >
->    The Qualcomm Light Pulse Generator consists of three different hardware blocks;
-> -  a ramp generator with lookup table, the light pulse generator and a three
-> +  a ramp generator with lookup table (LUT), the light pulse generator and a three
->    channel current sink. These blocks are found in a wide range of Qualcomm PMICs.
->  
->  properties:
-> @@ -63,6 +63,27 @@ properties:
->          - description: dtest line to attach
->          - description: flags for the attachment
->  
-> +  nvmem:
-> +    description: >
-> +      This property is required for PMICs that supports PPG, which is when a
-> +      PMIC stores LPG per-channel data and pattern LUT in SDAM modules instead
-> +      of in a LUT peripheral. For PMICs, such as PM8350C, per-channel data
-> +      and pattern LUT is separated into 2 SDAM modules. In that case, phandles
-> +      to both SDAM modules need to be specified.
-> +    minItems: 1
-> +    maxItems: 2
-> +
-> +  nvmem-names:
-> +    minItems: 1
-> +    maxItems: 2
-> +
-> +  qcom,pbs:
-> +    $ref: /schemas/types.yaml#/definitions/phandle
-> +    description: >
-> +      Phandle of the Qualcomm Programmable Boot Sequencer node (PBS).
-> +      PBS node is used to trigger LPG pattern sequences for PMICs that support
-> +      single SDAM PPG.
-> +
->    multi-led:
->      type: object
->      $ref: leds-class-multicolor.yaml#
-> @@ -106,6 +127,44 @@ required:
->  
->  additionalProperties: false
->  
-> +allOf:
-> +  - if:
-> +      properties:
-> +        compatible:
-> +          contains:
-> +            const: qcom,pmi632-lpg
-> +    then:
-> +      properties:
-> +        nvmem:
-> +          maxItems: 1
-> +        nvmem-names:
-> +          items:
-> +            - const: lpg_chan_sdam
-> +        qcom,pbs:
-> +          maxItems: 1
-> +      required:
-> +        - nvmem
-> +        - nvmem-names
-> +        - qcom,pbs
-> +  - if:
-> +      properties:
-> +        compatible:
-> +          contains:
-> +            enum:
-> +              - qcom,pm8350c-pwm
-> +              - qcom,pm8550-pwm
-> +    then:
-> +      properties:
-> +        nvmem:
-> +          minItems: 2
-> +        nvmem-names:
-> +          items:
-> +            - const: lpg_chan_sdam
-> +            - const: lut_sdam
+On Mon, Jul 31, 2023 at 4:40=E2=80=AFPM Mike Kravetz <mike.kravetz@oracle.c=
+om> wrote:
+>
+> On 07/31/23 15:48, Kefeng Wang wrote:
+> > Archs may need to do special things when flushing hugepage tlb,
+> > so use the more applicable flush_hugetlb_tlb_range() instead of
+> > flush_tlb_range().
+> >
+> > Fixes: 550a7d60bd5e ("mm, hugepages: add mremap() support for hugepage =
+backed vma")
+> > Signed-off-by: Kefeng Wang <wangkefeng.wang@huawei.com>
+>
+> Thanks!
+>
+> Reviewed-by: Mike Kravetz <mike.kravetz@oracle.com>
+>
 
-This can go into the main section and then here you just say 
-'minItems: 2'. And similar for the 1st if/then.
+Sorry for jumping in late, but given the concerns raised around HGM
+and the deviation between hugetlb and the rest of MM, does it make
+sense to try to make an incremental effort towards avoiding hugetlb
+specialization?
 
-> +      required:
-> +        - nvmem
-> +        - nvmem-names
+In the context of this patch, I would prefer that the arch upgrade
+flush_tlb_range() to handle hugetlb correctly, instead of adding more
+hugetlb specific deviations, ala flush_hugetlb_tlb_range. While it's
+at it, maybe replace flush_hugetlb_tlb_range() in the code with
+flush_tlb_range().
 
-Looks like these are always required.
+Although, I don't have the expertise to judge if upgrading
+flush_tlb_range() to handle hugetlb is easy or feasible at all.
 
-> +
->  examples:
->    - |
->      #include <dt-bindings/leds/common.h>
-> @@ -191,4 +250,35 @@ examples:
->        compatible = "qcom,pm8916-pwm";
->        #pwm-cells = <2>;
->      };
-> +  - |
-> +    #include <dt-bindings/leds/common.h>
-> +
-> +    led-controller {
-> +      compatible = "qcom,pmi632-lpg";
-> +      #address-cells = <1>;
-> +      #size-cells = <0>;
-> +      #pwm-cells = <2>;
-> +      nvmem-names = "lpg_chan_sdam";
-> +      nvmem = <&pmi632_sdam_7>;
-> +      qcom,pbs = <&pmi632_pbs_client3>;
-> +
-> +      led@1 {
-> +        reg = <1>;
-> +        color = <LED_COLOR_ID_RED>;
-> +        label = "red";
-> +      };
-> +
-> +      led@2 {
-> +        reg = <2>;
-> +        color = <LED_COLOR_ID_GREEN>;
-> +        label = "green";
-> +      };
-> +
-> +      led@3 {
-> +        reg = <3>;
-> +        color = <LED_COLOR_ID_BLUE>;
-> +        label = "blue";
-> +      };
-> +    };
-> +
->  ...
-> -- 
-> 2.41.0
-> 
+> Although, I missed this in 550a7d60bd5e :(
+>
+> Looks like only powerpc provides an arch specific flush_hugetlb_tlb_range
+> today.
+> --
+> Mike Kravetz
+>
+> > ---
+> >  mm/hugetlb.c | 4 ++--
+> >  1 file changed, 2 insertions(+), 2 deletions(-)
+> >
+> > diff --git a/mm/hugetlb.c b/mm/hugetlb.c
+> > index 64a3239b6407..ac876bfba340 100644
+> > --- a/mm/hugetlb.c
+> > +++ b/mm/hugetlb.c
+> > @@ -5281,9 +5281,9 @@ int move_hugetlb_page_tables(struct vm_area_struc=
+t *vma,
+> >       }
+> >
+> >       if (shared_pmd)
+> > -             flush_tlb_range(vma, range.start, range.end);
+> > +             flush_hugetlb_tlb_range(vma, range.start, range.end);
+> >       else
+> > -             flush_tlb_range(vma, old_end - len, old_end);
+> > +             flush_hugetlb_tlb_range(vma, old_end - len, old_end);
+> >       mmu_notifier_invalidate_range_end(&range);
+> >       i_mmap_unlock_write(mapping);
+> >       hugetlb_vma_unlock_write(vma);
+> > --
+> > 2.41.0
+> >
+
+
+
+--=20
+Thanks,
+Mina
