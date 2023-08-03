@@ -2,156 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C10A76E573
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 12:19:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 229B376E577
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 12:19:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235330AbjHCKTp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Aug 2023 06:19:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54974 "EHLO
+        id S235343AbjHCKTx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Aug 2023 06:19:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52766 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235320AbjHCKTO (ORCPT
+        with ESMTP id S231184AbjHCKTR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Aug 2023 06:19:14 -0400
-Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7AB3A35BE;
-        Thu,  3 Aug 2023 03:19:12 -0700 (PDT)
-Received: from mail02.huawei.com (unknown [172.30.67.143])
-        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4RGlF92nt6z4f3yDV;
-        Thu,  3 Aug 2023 18:19:09 +0800 (CST)
-Received: from huaweicloud.com (unknown [10.174.178.55])
-        by APP4 (Coremail) with SMTP id gCh0CgD3mp4Uf8tk4+TaPQ--.35755S7;
-        Thu, 03 Aug 2023 18:19:09 +0800 (CST)
-From:   thunder.leizhen@huaweicloud.com
-To:     Christoph Lameter <cl@linux.com>,
-        Pekka Enberg <penberg@kernel.org>,
-        David Rientjes <rientjes@google.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Hyeonggon Yoo <42.hyeyoo@gmail.com>, linux-mm@kvack.org,
-        "Paul E . McKenney" <paulmck@kernel.org>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Zqiang <qiang.zhang1211@gmail.com>, rcu@vger.kernel.org,
+        Thu, 3 Aug 2023 06:19:17 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC1FB272E;
+        Thu,  3 Aug 2023 03:19:14 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 9D65B61D2B;
+        Thu,  3 Aug 2023 10:19:13 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7932EC433C8;
+        Thu,  3 Aug 2023 10:19:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1691057953;
+        bh=fk288gRc1SQZmQ4UNdYdVEWyx6SEt1/IBnzF1eLVfv0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=HKuiqHH0SaPukuizU7zrBiXFfJNkKfPiEWUdYta41dLkxHAwjps/TKBfe+DSyB6MU
+         I0dX2deqQSnGQhzajqGvCKUeQRRexwh/R2GsJzIMsefTeY9qNXSIvVHUxVQbtMqhiu
+         jkkrGoS2mJhjzbXT+YJS5ffVldA4sqHR42K8ftFk=
+Date:   Thu, 3 Aug 2023 12:19:09 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Rasmus Villemoes <linux@rasmusvillemoes.dk>
+Cc:     Jonathan Corbet <corbet@lwn.net>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        workflows@vger.kernel.org, linux-doc@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Cc:     Zhen Lei <thunder.leizhen@huawei.com>
-Subject: [PATCH v5 3/3] mm: Dump the memory of slab object in kmem_dump_obj()
-Date:   Thu,  3 Aug 2023 18:17:54 +0800
-Message-Id: <20230803101754.1149-4-thunder.leizhen@huaweicloud.com>
-X-Mailer: git-send-email 2.37.3.windows.1
-In-Reply-To: <20230803101754.1149-1-thunder.leizhen@huaweicloud.com>
-References: <20230803101754.1149-1-thunder.leizhen@huaweicloud.com>
+Subject: Re: [PATCH] Documentation: changes.rst: add entry for git
+Message-ID: <2023080302-theology-custody-670b@gregkh>
+References: <20230803090711.2261876-1-linux@rasmusvillemoes.dk>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: gCh0CgD3mp4Uf8tk4+TaPQ--.35755S7
-X-Coremail-Antispam: 1UD129KBjvJXoW7Ary7WFWDKrWxKF1rKFW8tFb_yoW8Kr13pr
-        9xGr1UK3yxArnrCrs3J3WkXF45J3ykC3WkJayavr17Zw1UJr48uF97tF92kFWUGF1Fqa9F
-        yrZ0vFnIgryUJaUanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUPjb4IE77IF4wAFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k2
-        6cxKx2IYs7xG6r1S6rWUM7CIcVAFz4kK6r1j6r18M28IrcIa0xkI8VA2jI8067AKxVWUWw
-        A2048vs2IY020Ec7CjxVAFwI0_Xr0E3s1l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxS
-        w2x7M28EF7xvwVC0I7IYx2IY67AKxVWDJVCq3wA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxV
-        W8Jr0_Cr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I0E14v2
-        6rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMc
-        Ij6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_
-        Jr0_Gr1lF7xvr2IYc2Ij64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1lw4CEc2x0rVAKj4
-        xxMxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_
-        Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVW8ZVWrXwCIc40Y0x
-        0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVWx
-        JVW8Jr1lIxAIcVCF04k26cxKx2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14v26r1j6r4UMI
-        IF0xvEx4A2jsIEc7CjxVAFwI0_Gr1j6F4UJbIYCTnIWIevJa73UjIFyTuYvjxUFR6zUUUU
-        U
-X-CM-SenderInfo: hwkx0vthuozvpl2kv046kxt4xhlfz01xgou0bp/
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,MAY_BE_FORGED,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230803090711.2261876-1-linux@rasmusvillemoes.dk>
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zhen Lei <thunder.leizhen@huawei.com>
+On Thu, Aug 03, 2023 at 11:07:10AM +0200, Rasmus Villemoes wrote:
+> git is obviously used for development, directly and also
+> indirectly (via checkpatch, get_maintainer and other helper
+> scripts). But it is also invoked during the build to produce the
+> `uname -r` string.
+> 
+> It's useful to have some minimal git version one can expect people to
+> use. For now, set a somewhat conservative minimum of 1.8.0, which is
+> already more then ten years old.
+> 
+> Signed-off-by: Rasmus Villemoes <linux@rasmusvillemoes.dk>
+> ---
+>  Documentation/process/changes.rst | 8 ++++++++
+>  1 file changed, 8 insertions(+)
+> 
+> diff --git a/Documentation/process/changes.rst b/Documentation/process/changes.rst
+> index 5561dae94f85..a82c619f4bb2 100644
+> --- a/Documentation/process/changes.rst
+> +++ b/Documentation/process/changes.rst
+> @@ -62,6 +62,7 @@ Sphinx\ [#f1]_         1.7              sphinx-build --version
+>  cpio                   any              cpio --version
+>  GNU tar                1.28             tar --version
+>  gtags (optional)       6.6.5            gtags --version
+> +git                    1.8.0            git --version
+>  ====================== ===============  ========================================
+>  
+>  .. [#f1] Sphinx is needed only to build the Kernel documentation
+> @@ -189,6 +190,13 @@ The kernel build requires GNU GLOBAL version 6.6.5 or later to generate
+>  tag files through ``make gtags``.  This is due to its use of the gtags
+>  ``-C (--directory)`` flag.
+>  
+> +git
+> +---
+> +
+> +When building with CONFIG_LOCALVERSION_AUTO=y, the build system uses
+> +git to produce a version string of the form
+> +6.4.6-00128-gd78b7f406397, which will be shown e.g. by running `uname -r`.
 
-The contents of the slab object may contain some magic words and other
-useful information that may be helpful in locating problems such as
-memory corruption and use-after-free.
+Isn't this optional?  If git is not installed it just will not use git
+to determine the local version.
 
-To avoid print flooding, dump up to "16 * sizeof(int) = 64" bytes
-centered on argument 'ojbect'.
+So you should put "(optional)" above on the list of tools.
 
-For example:
-slab kmalloc-64 start ffff4043802d8b40 pointer offset 24 size 64
-[8b40]: 12345678 00000000 8092d000 ffff8000
-[8b50]: 00101000 00000000 8199ee00 ffff4043
-[8b60]: 00000000 00000000 00000000 00000100
-[8b70]: 00000000 9abcdef0 a8744de4 ffffc7fe
+And also, don't pick a specific version like this unless it is that way
+for a reason.  Why not pick a newer one?  Or the last one that the local
+version script can handle properly?
 
-Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
----
- mm/slab_common.c | 30 +++++++++++++++++++++++++++---
- 1 file changed, 27 insertions(+), 3 deletions(-)
+thanks,
 
-diff --git a/mm/slab_common.c b/mm/slab_common.c
-index ee6ed6dd7ba9fa5..0232de9a3b29cf5 100644
---- a/mm/slab_common.c
-+++ b/mm/slab_common.c
-@@ -553,7 +553,7 @@ static void kmem_obj_info(struct kmem_obj_info *kpp, void *object, struct slab *
- bool kmem_dump_obj(void *object)
- {
- 	char *cp = IS_ENABLED(CONFIG_MMU) ? "" : "/vmalloc";
--	int i;
-+	int i, object_size = 0;
- 	struct slab *slab;
- 	unsigned long ptroffset;
- 	struct kmem_obj_info kp = { };
-@@ -580,12 +580,36 @@ bool kmem_dump_obj(void *object)
- 		ptroffset = ((char *)object - (char *)kp.kp_objp) - kp.kp_data_offset;
- 		pr_cont(" pointer offset %lu", ptroffset);
- 	}
--	if (kp.kp_slab_cache && kp.kp_slab_cache->object_size)
--		pr_cont(" size %u", kp.kp_slab_cache->object_size);
-+	if (kp.kp_slab_cache && kp.kp_slab_cache->object_size) {
-+		object_size = kp.kp_slab_cache->object_size;
-+		pr_cont(" size %u", object_size);
-+	}
- 	if (kp.kp_ret)
- 		pr_cont(" allocated at %pS\n", kp.kp_ret);
- 	else
- 		pr_cont("\n");
-+
-+	/* Dump a small piece of memory centered on 'object' */
-+	if (kp.kp_objp && object_size) {
-+		int *p = object, n = 16;
-+
-+		p += n / 2;
-+		if ((void *)p > kp.kp_objp + object_size)
-+			p = kp.kp_objp + object_size;
-+
-+		p -= n;
-+		if ((void *)p < kp.kp_objp)
-+			p = kp.kp_objp;
-+
-+		n = min_t(int, object_size / sizeof(int), n);
-+		for (i = 0; i < n; i++, p++) {
-+			if (i % 4 == 0)
-+				pr_info("[%04lx]:", 0xffff & (unsigned long)p);
-+			pr_cont(" %08x", *p);
-+		}
-+		pr_cont("\n");
-+	}
-+
- 	for (i = 0; i < ARRAY_SIZE(kp.kp_stack); i++) {
- 		if (!kp.kp_stack[i])
- 			break;
--- 
-2.34.1
-
+greg k-h
