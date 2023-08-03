@@ -2,94 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2254C76DBF7
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 02:06:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BF1BA76DBF9
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 02:06:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233416AbjHCAGf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Aug 2023 20:06:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53140 "EHLO
+        id S233160AbjHCAGh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Aug 2023 20:06:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53402 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230085AbjHCAGZ (ORCPT
+        with ESMTP id S229689AbjHCAG0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Aug 2023 20:06:25 -0400
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48B3A30FF
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Aug 2023 17:05:49 -0700 (PDT)
-Received: by mail-yb1-xb49.google.com with SMTP id 3f1490d57ef6-d05883d850fso318586276.3
-        for <linux-kernel@vger.kernel.org>; Wed, 02 Aug 2023 17:05:49 -0700 (PDT)
+        Wed, 2 Aug 2023 20:06:26 -0400
+Received: from mail-pl1-x64a.google.com (mail-pl1-x64a.google.com [IPv6:2607:f8b0:4864:20::64a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85EE23C3D
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Aug 2023 17:05:50 -0700 (PDT)
+Received: by mail-pl1-x64a.google.com with SMTP id d9443c01a7336-1bb98659f3cso3242035ad.3
+        for <linux-kernel@vger.kernel.org>; Wed, 02 Aug 2023 17:05:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1691021134; x=1691625934;
+        d=google.com; s=20221208; t=1691021147; x=1691625947;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=UtfYC04jsxx/hmk165NEuwbBR9Bronbgn4CnQDbpM30=;
-        b=PdTp+xpsG7YJPitrbqM7SPSA850ncGJ+tNK8CCDMJkjswu4Dv5/F5dZuFtStn3Cp6e
-         kDPhqtOvgbHPlRrnYM8mUBAJhveKNf13N5EhQdQd5o5yFKMs752uxiCezZRkXeW+muge
-         8Nr1mVk2UsqyGT3c9dkEfihcrSBPedcyB+0KssmKOZo51AKz1heY2tUPaPXkEXMt6ZSa
-         RtQrcP+0AcwyILBYXRBeVRrCo0Md0dKXXwFA0/MTOWDKp/CPNkIAW8IlZCgRqKiFuKQr
-         M+bbnzTU6nnMy+OcNgrKuSElDGZBQkexirJfspGmL+5p6sA2fnNq/CZWFqYzX8Urz5bb
-         PClQ==
+        bh=GlCUVKX6yHmT83rCLHSwZjnxDTnktIg6Wv8CEdATqYU=;
+        b=UgsX2266duslCIx7H3KbGtKnmIzKzMCIYtbXnwjfD/gAa8Y796aUmREyFBNdZMULn9
+         1JqfIWtERU07Kniq8B8S9AbP61PJu+BmkkaUor4mkzQNIlqiGLjYgOCgTNf2sIJUptr0
+         jNiX9Q+IKHjC/zKCYh+RwGjsDBd20DR5IRj/38vx1X79kjC8DgxiV6EJGtWEEPMCNcBL
+         cdD+uHJmvOao17hnMdAQJeGB/ZXjhuBlmLiNR4rx8Gh29qmiDzVrbd5/cI/U8lkQoqel
+         4RXwosqn/ZhkYRhAIi8NjoPL7bSgeOkAN0qJTlKpWSW9V4oYuJcqIjiDf7CC/b484HRL
+         xsCA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691021134; x=1691625934;
+        d=1e100.net; s=20221208; t=1691021147; x=1691625947;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=UtfYC04jsxx/hmk165NEuwbBR9Bronbgn4CnQDbpM30=;
-        b=ED3cVfMXCeJsNx+PVIPmlQmFEz3UDwdNANSP5ViN8VvnWDkaALdTR3WcqrIMQz1dY+
-         BPjWp4wC19sTZAxU619lhcXqz9fw8OrEZXuQM82fdqjHgfQy8G/jXAqQYU6i4fZa7VWp
-         N/BoP0kS73MqNDor//npFZ+sB4Vje7GjPW+qUlxyX53EJ5uCPPDPo9hqbRCR+pQBi4Nf
-         f9g7jz/zwv9ARBj5kUqmAGtNdn95zwMtNdfg2BDrKeLnt43eomAy8JJAu/22vE1JkeWc
-         9Oy8LQ7Kkr7gntFUUCAOIxVHWg1Ra4VDqKrmWQzclmBtI4H1mmgIFVCAmhHuUh2sWc3b
-         y7Bg==
-X-Gm-Message-State: AOJu0YzRtByKx3b+zUJ8dbq0mX7MBBom/IREA00XTUCYlRv8D0tGMvsu
-        4G+RlWlITrzknsylJGNgMduUztYcrG4=
-X-Google-Smtp-Source: AGHT+IFDcnRjGudQotbkKT0UwYsheCZVBpeQ+quvbMFdVkqz2DAemHJrCowECmkMgfhSG5/xmMCT/wFfbk8=
+        bh=GlCUVKX6yHmT83rCLHSwZjnxDTnktIg6Wv8CEdATqYU=;
+        b=QY7bNeK3OgFVlFOu4aQsOGYvnAK3Q1wDWa4EM0EFP0s64XRVEFwPFWdzzQzRPkOuWl
+         vzrHzblmfeAL6qJgEHRKtS2IyHBLBbGbOHb5V5xUkMysLz/btfiAGTyUV89Dabt9miId
+         4BanmfVCThNDqjqX6PV8nRIv+IVUexYdC+C8XrpdApFNSZwVbFf5FkzOeYpHBUtWa4Mc
+         b+3V+3bpWpOb8ITW8VsMxCBs6mC8vEpouAWW44IqmUmzNpxHqehkQzJP8/OkZVnjFj3S
+         vCtGTRlSyCsiqmw/3AjSLliEq1AmTsW1y+bO7rjJtbYcPuXOBhxuuDNVPGI7UuxjTWzF
+         ASsA==
+X-Gm-Message-State: ABy/qLb0fvw8bRYGdHRuzDwSl0bijrAI2qUzb2sjPR5yRuYLEDxBfkk5
+        ad7KF0zhyGkYD7Bkof1NEFrh3rUBEgw=
+X-Google-Smtp-Source: APBJJlEXUzqIMppSTa6zA2UipB6qgQTTTzx9gWZ46EnoosI8YXxuzK1t/AWOOzBrtqw92VXwvZMD9O5+quw=
 X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a25:9392:0:b0:d3d:74b6:e082 with SMTP id
- a18-20020a259392000000b00d3d74b6e082mr29538ybm.9.1691021134273; Wed, 02 Aug
- 2023 17:05:34 -0700 (PDT)
-Date:   Wed,  2 Aug 2023 17:05:24 -0700
-In-Reply-To: <20230607203519.1570167-1-seanjc@google.com>
+ (user=seanjc job=sendgmr) by 2002:a17:902:ea09:b0:1bc:2547:b184 with SMTP id
+ s9-20020a170902ea0900b001bc2547b184mr59465plg.1.1691021147078; Wed, 02 Aug
+ 2023 17:05:47 -0700 (PDT)
+Date:   Wed,  2 Aug 2023 17:05:42 -0700
+In-Reply-To: <20230607010206.1425277-1-seanjc@google.com>
 Mime-Version: 1.0
-References: <20230607203519.1570167-1-seanjc@google.com>
+References: <20230607010206.1425277-1-seanjc@google.com>
 X-Mailer: git-send-email 2.41.0.585.gd2178a4bd4-goog
-Message-ID: <169101982757.1829784.5172834389286123693.b4-ty@google.com>
-Subject: Re: [PATCH 0/3] KVM: SVM: Clean up LBRv MSRs handling
+Message-ID: <169101994485.1830375.1891135489217943647.b4-ty@google.com>
+Subject: Re: [PATCH 0/4] KVM: x86/pmu: Clean up arch/hw event handling
 From:   Sean Christopherson <seanjc@google.com>
 To:     Sean Christopherson <seanjc@google.com>,
         Paolo Bonzini <pbonzini@redhat.com>
 Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Michal Luczaj <mhal@rbox.co>, Yuan Yao <yuan.yao@intel.com>
+        Aaron Lewis <aaronlewis@google.com>,
+        Like Xu <like.xu.linux@gmail.com>
 Content-Type: text/plain; charset="utf-8"
 X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        USER_IN_DEF_DKIM_WL autolearn=unavailable autolearn_force=no
-        version=3.4.6
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 07 Jun 2023 13:35:16 -0700, Sean Christopherson wrote:
-> Eliminate dead KVM_BUG() code in SVM's LBR MSRs virtualization by
-> refactoring the code to completely remove any need for a KVM_BUG(), and
-> clean up a few others pieces of related code.
+On Tue, 06 Jun 2023 18:02:02 -0700, Sean Christopherson wrote:
+> Clean up KVM's handling of arch/hw events, and the related fixed counter
+> usage.  KVM has far too many open coded magic numbers, and kludgy code
+> that stems from the magic numbers.
 > 
-> Sean Christopherson (3):
->   KVM: SVM: Fix dead KVM_BUG() code in LBR MSR virtualization
->   KVM: SVM: Clean up handling of LBR virtualization enabled
->   KVM: SVM: Use svm_get_lbr_vmcb() helper to handle writes to DEBUGCTL
+> Sean Christopherson (4):
+>   KVM: x86/pmu: Use enums instead of hardcoded magic for arch event
+>     indices
+>   KVM: x86/pmu: Simplify intel_hw_event_available()
+>   KVM: x86/pmu: Require nr fixed_pmc_events to match nr max fixed
+>     counters
+>   KVM: x86/pmu: Move .hw_event_available() check out of PMC filter
+>     helper
 > 
 > [...]
 
-Applied to kvm-x86 svm, thanks!
+Applied to kvm-x86 pmu, thanks!
 
-[1/3] KVM: SVM: Fix dead KVM_BUG() code in LBR MSR virtualization
-      https://github.com/kvm-x86/linux/commit/d518f8cc10af
-[2/3] KVM: SVM: Clean up handling of LBR virtualization enabled
-      https://github.com/kvm-x86/linux/commit/41dfb5f13ed9
-[3/3] KVM: SVM: Use svm_get_lbr_vmcb() helper to handle writes to DEBUGCTL
-      https://github.com/kvm-x86/linux/commit/a85cd52d7205
+[1/4] KVM: x86/pmu: Use enums instead of hardcoded magic for arch event indices
+      https://github.com/kvm-x86/linux/commit/0033fa354916
+[2/4] KVM: x86/pmu: Simplify intel_hw_event_available()
+      https://github.com/kvm-x86/linux/commit/bc9658999b3e
+[3/4] KVM: x86/pmu: Require nr fixed_pmc_events to match nr max fixed counters
+      https://github.com/kvm-x86/linux/commit/6d88d0ee5de1
+[4/4] KVM: x86/pmu: Move .hw_event_available() check out of PMC filter helper
+      https://github.com/kvm-x86/linux/commit/6de2ccc16968
 
 --
 https://github.com/kvm-x86/linux/tree/next
