@@ -2,104 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B71C876EA64
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 15:31:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4796476EAA1
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 15:35:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234996AbjHCNbS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Aug 2023 09:31:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47546 "EHLO
+        id S236306AbjHCNeV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Aug 2023 09:34:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53548 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231449AbjHCNa7 (ORCPT
+        with ESMTP id S235377AbjHCNdn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Aug 2023 09:30:59 -0400
-Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8884C1716
-        for <linux-kernel@vger.kernel.org>; Thu,  3 Aug 2023 06:29:22 -0700 (PDT)
-Received: by mail-pf1-x42a.google.com with SMTP id d2e1a72fcca58-686f94328a4so683977b3a.0
-        for <linux-kernel@vger.kernel.org>; Thu, 03 Aug 2023 06:29:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1691069351; x=1691674151;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=ntEvLFlRpNT+qR6jlJekxZXF9ONqBaZB8tTPc8hJxHo=;
-        b=aq/S7/aTPM+jsQtw76McH/TkFHY/hJfftBjXoaty8AFCiu52VNsFuIa2y/jT+iW6rG
-         qY0TwLe48wBcbUlPMpFNxWv67kyywoGrwj8xJxu3AkhYZRAYf6Wfbt5RFwMpPf9VVQAr
-         2pxdC+LjsS1A/x3VvS81QlMwp5FaNPh/y+PHOFG8GmogYfpQ9cA557fuxP9q4bHl+RkZ
-         Qy1r5R3kh9wBgwX6cveOxF17KilSfhAlOXlWVBY29U2SIM5XLujru4yVDXHaGrGEYC9W
-         25mnc+PIC+/ubhs+UNho4VDIdw+jaA/YTihXZ+CHEH4uwT+iRXdFShji4NOBpL+hopF6
-         qyVQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691069351; x=1691674151;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=ntEvLFlRpNT+qR6jlJekxZXF9ONqBaZB8tTPc8hJxHo=;
-        b=fUGLirT6aFRDKb4VsJj7E0QQZHmnbqCSS7c8eviFRr1qVdJt5su46Lx1Og/FpB9AoI
-         Q4Cn5fsuG0L72LVDlndb/YKifl3alWPyRDOpeumqFudeXobWjQ4zj6V4r6e0Hu0F69OK
-         zeR6VY2jCAGD23Jvaw6db8LBB5bKglwfP3IrlSftFdlyVNTo7M8owqAMrp8GUtoY5Kmi
-         WGaRgVjHGwgM82kWdOkfjZMbvqKRkngu7V+SSToOLDvohqO/ZnjWy3GBwI0r6mVnojxZ
-         h+UYZKfC0pfjz7N7J5Bu8tukTZJmxbj5WZdEoBMGCDxnq1Ch71mH9xWrd9p7Fv2pSbuo
-         KUCw==
-X-Gm-Message-State: ABy/qLZGUQVCpER2V8P5fztc3tOtd2+CJ2gKFw2gHZo+weMjmnE+8iwB
-        +pC+1VkJX4YoGxLSmftLXzWMZ9Km0MZrERS1A8k=
-X-Google-Smtp-Source: APBJJlHIzo4MqHS+k/JCdqgT16BcRk/5v7ytqHftiDKKZXbIZ4AikfQny7La+e94VmPdHMof8J0Wrg==
-X-Received: by 2002:a05:6a21:32a1:b0:130:a400:1d65 with SMTP id yt33-20020a056a2132a100b00130a4001d65mr24223360pzb.14.1691069351683;
-        Thu, 03 Aug 2023 06:29:11 -0700 (PDT)
-Received: from n26-073-040.byted.org ([106.38.226.44])
-        by smtp.gmail.com with ESMTPSA id q23-20020a637517000000b0055b4307963dsm6901376pgc.23.2023.08.03.06.28.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 03 Aug 2023 06:28:46 -0700 (PDT)
-From:   Xu Lu <luxu.kernel@bytedance.com>
-To:     paul.walmsley@sifive.com, palmer@dabbelt.com, aou@eecs.berkeley.edu
-Cc:     linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Xu Lu <luxu.kernel@bytedance.com>
-Subject: [PATCH RESEND] riscv: Fix local irq restore when flags indicates irq disabled
-Date:   Thu,  3 Aug 2023 21:28:18 +0800
-Message-Id: <20230803132818.2092166-1-luxu.kernel@bytedance.com>
-X-Mailer: git-send-email 2.20.1
+        Thu, 3 Aug 2023 09:33:43 -0400
+Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8A5C4694;
+        Thu,  3 Aug 2023 06:32:31 -0700 (PDT)
+Received: from mail02.huawei.com (unknown [172.30.67.143])
+        by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4RGqX83Vg5z4f3l7M;
+        Thu,  3 Aug 2023 21:32:24 +0800 (CST)
+Received: from huaweicloud.com (unknown [10.175.104.67])
+        by APP4 (Coremail) with SMTP id gCh0CgAHuKtqrMtkWHLlPQ--.49699S4;
+        Thu, 03 Aug 2023 21:32:27 +0800 (CST)
+From:   Yu Kuai <yukuai1@huaweicloud.com>
+To:     song@kernel.org, xni@redhat.com
+Cc:     linux-raid@vger.kernel.org, linux-kernel@vger.kernel.org,
+        yukuai3@huawei.com, yukuai1@huaweicloud.com, yi.zhang@huawei.com,
+        yangerkun@huawei.com
+Subject: [PATCH -next 00/29] md: synchronize io with array reconfiguration
+Date:   Thu,  3 Aug 2023 21:29:01 +0800
+Message-Id: <20230803132930.2742286-1-yukuai1@huaweicloud.com>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-CM-TRANSID: gCh0CgAHuKtqrMtkWHLlPQ--.49699S4
+X-Coremail-Antispam: 1UD129KBjvJXoWxZr4DWr48Cr1xWryxKr1Utrb_yoW5trWfp3
+        9rtFZIvw48JFy5Ar4xX3yDGF95Jw1rKrW2kr9xCw4rC3W3GryrZrWUGr98XrZYkFyfAF9r
+        Ja4UX34rGr18Aa7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUyE14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+        1l84ACjcxK6xIIjxv20xvE14v26ryj6F1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
+        JVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
+        CE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
+        2Ix0cI8IcVAFwI0_Jrv_JF1lYx0Ex4A2jsIE14v26r4j6F4UMcvjeVCFs4IE7xkEbVWUJV
+        W8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1l42xK82IYc2Ij64vI
+        r41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8Gjc
+        xK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0
+        cI8IcVAFwI0_Xr0_Ar1lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4UJVWxJr1lIxAIcVCF04
+        k26cxKx2IYs7xG6Fyj6rWUJwCI42IY6I8E87Iv67AKxVW8JVWxJwCI42IY6I8E87Iv6xkF
+        7I0E14v26r4UJVWxJrUvcSsGvfC2KfnxnUUI43ZEXa7VUb7GYJUUUUU==
+X-CM-SenderInfo: 51xn3trlr6x35dzhxuhorxvhhfrp/
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When arch_local_irq_restore() is called with flags indicating irqs
-disabled, we need to clear SR_IE bit in CSR_STATUS, whereas current
-implementation based on csr_set() function only sets SR_IE bit of
-CSR_STATUS when SR_IE bit of flags is high and does nothing when
-SR_IE bit of flags is low.
+From: Yu Kuai <yukuai3@huawei.com>
 
-This commit supplies csr clear operation when calling irq restore
-function with flags indicating irq disabled.
+After previous four patchset of preparatory work, this patchset impelement
+a new version of mddev_suspend(), the new apis:
+ - reconfig_mutex is not required;
+ - the weird logical that suspend array hold 'reconfig_mutex' for
+   mddev_check_recovery() to update superblock is not needed;
+ - the special handling, 'pers->prepare_suspend', for raid456 is not
+   needed;
+ - It's safe to be called at any time once mddev is allocated, and it's
+   designed to be used from slow path where array configuration is changed;
 
-Fixes: 6d60b6ee0c97 ("RISC-V: Device, timer, IRQs, and the SBI")
-Signed-off-by: Xu Lu <luxu.kernel@bytedance.com>
----
- arch/riscv/include/asm/irqflags.h | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+And use the new api to replace:
 
-diff --git a/arch/riscv/include/asm/irqflags.h b/arch/riscv/include/asm/irqflags.h
-index 08d4d6a5b7e9..7c31fc3c3559 100644
---- a/arch/riscv/include/asm/irqflags.h
-+++ b/arch/riscv/include/asm/irqflags.h
-@@ -49,7 +49,10 @@ static inline int arch_irqs_disabled(void)
- /* set interrupt enabled status */
- static inline void arch_local_irq_restore(unsigned long flags)
- {
--	csr_set(CSR_STATUS, flags & SR_IE);
-+	if (flags & SR_IE)
-+		csr_set(CSR_STATUS, SR_IE);
-+	else
-+		csr_clear(CSR_STATUS, SR_IE);
- }
- 
- #endif /* _ASM_RISCV_IRQFLAGS_H */
+mddev_lock
+mddev_suspend or not
+// array reconfiguration
+mddev_resume or not
+mddev_unlock
+
+With:
+
+mddev_suspend
+mddev_lock
+// array reconfiguration
+mddev_unlock
+mddev_resume
+
+However, the above change is not possible for raid5 and raid-cluster in
+some corner cases, and mddev_suspend/resume() is replaced with quiesce()
+callback, which will suspend the array as well.
+
+This patchset is tested in my VM with mdadm testsuite with loop device
+except for 10ddf tests(they always fail before this patchset).
+
+A lot of cleanups will be started after this patchset.
+
+Yu Kuai (29):
+  md: use READ_ONCE/WRITE_ONCE for 'suspend_lo' and 'suspend_hi'
+  md: use 'mddev->suspended' for is_md_suspended()
+  md: add new helpers to suspend/resume array
+  md: add new helpers to suspend/resume and lock/unlock array
+  md: use new apis to suspend array for suspend_lo/hi/store()
+  md: use new apis to suspend array for level_store()
+  md: use new apis to suspend array for serialize_policy_store()
+  md/dm-raid: use new apis to suspend array
+  md/md-bitmap: use new apis to suspend array for location_store()
+  md/raid5-cache: use READ_ONCE/WRITE_ONCE for 'conf->log'
+  md/raid5-cache: use new apis to suspend array for r5c_disable_writeback_async()
+  md/raid5-cache: use new apis to suspend array for r5c_journal_mode_store()
+  md/raid5: use new apis to suspend array for raid5_store_stripe_size()
+  md/raid5: use new apis to suspend array for raid5_store_skip_copy()
+  md/raid5: use new apis to suspend array for raid5_store_group_thread_cnt()
+  md/raid5: use new apis to suspend array for raid5_change_consistency_policy()
+  md/raid5: replace suspend with quiesce() callback
+  md: quiesce before md_kick_rdev_from_array() for md-cluster
+  md: use new apis to suspend array for ioctls involed array reconfiguration
+  md: use new apis to suspend array for adding/removing rdev from state_store()
+  md: use new apis to suspend array for bind_rdev_to_array()
+  md: use new apis to suspend array related to serial pool in state_store()
+  md: use new apis to suspend array in backlog_store()
+  md: suspend array in md_start_sync() if array need reconfiguration
+  md: cleanup mddev_create/destroy_serial_pool()
+  md/md-linear: cleanup linear_add()
+  md: remove mddev_suspend() and mddev_resume()
+  md/raid5: Revert "md/raid5: fix a deadlock in the case that reshape is interrupted"
+  md: Revert "md: add a new api prepare_suspend() in md_personality"
+
+ drivers/md/dm-raid.c       |  12 +-
+ drivers/md/md-autodetect.c |   4 +-
+ drivers/md/md-bitmap.c     |  18 ++-
+ drivers/md/md-linear.c     |   2 -
+ drivers/md/md.c            | 267 ++++++++++++++++++++++---------------
+ drivers/md/md.h            |  57 ++++++--
+ drivers/md/raid5-cache.c   |  65 +++++----
+ drivers/md/raid5.c         | 100 +++-----------
+ 8 files changed, 267 insertions(+), 258 deletions(-)
+
 -- 
-2.20.1
+2.39.2
 
