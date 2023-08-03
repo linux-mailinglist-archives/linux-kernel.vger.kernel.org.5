@@ -2,152 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5AA9876EB3D
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 15:54:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B01476EB41
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 15:54:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229825AbjHCNx7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Aug 2023 09:53:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41524 "EHLO
+        id S234281AbjHCNyk convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 3 Aug 2023 09:54:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42086 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234515AbjHCNx5 (ORCPT
+        with ESMTP id S229576AbjHCNyj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Aug 2023 09:53:57 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86D8E194;
-        Thu,  3 Aug 2023 06:53:56 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 086FF61DAC;
-        Thu,  3 Aug 2023 13:53:56 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 64411C433C9;
-        Thu,  3 Aug 2023 13:53:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691070835;
-        bh=eunUKw9uV0Od2SyjTNbBP/Vaia5sXfNsrcmUMJQ+B2E=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=rSP/7RUvopX8hkXFsm0MFaQRHYmk/w48m2k/m3/372kSl7KtQyeuzD8F8mRzl8p0n
-         ReiuhHMpqbj3YtMkQWd6kbOlH9Y0bWyT4+eF69S/aWRonSuLaiyh9GBX5/yWqQ6LW0
-         0EMBjzn/D4aKysgtA0mz/Z/9181IvqQ3bnvXHDrgGC1J904AjAvvfJdASuTm/O8Xg2
-         1ZYyPEAn7zIUpKoSf86749k5JzYuorXrJtN/886pAVGuVsb3HFtGs5ex9+fdqNkKxe
-         4wdViMjMy7khOa1xhLYHBtn5GcCVHHKQMvTs9sj1r+LVewcHZudA1ueVLHe1ACXlbg
-         9FPJqMsYxfovQ==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id F2953CE089E; Thu,  3 Aug 2023 06:53:54 -0700 (PDT)
-Date:   Thu, 3 Aug 2023 06:53:54 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Alan Huang <mmpgouride@gmail.com>
-Cc:     Joel Fernandes <joel@joelfernandes.org>,
-        Eric Dumazet <edumazet@google.com>,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        rcu@vger.kernel.org, roman.gushchin@linux.dev
-Subject: Re: Question about the barrier() in hlist_nulls_for_each_entry_rcu()
-Message-ID: <bf86abde-6a90-4ea0-a298-abe5b367f4f9@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <E9CF24C7-3080-4720-B540-BAF03068336B@gmail.com>
- <1E0741E0-2BD9-4FA3-BA41-4E83315A10A8@joelfernandes.org>
- <1AF98387-B78C-4556-BE2E-E8F88ADACF8A@gmail.com>
- <43d29007-3c59-4497-a1e5-26f182a7f4c5@paulmck-laptop>
- <784ABF9D-303F-4FC8-8AFF-A3FF319B4E7A@gmail.com>
+        Thu, 3 Aug 2023 09:54:39 -0400
+Received: from mail-oo1-f51.google.com (mail-oo1-f51.google.com [209.85.161.51])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59A76194;
+        Thu,  3 Aug 2023 06:54:38 -0700 (PDT)
+Received: by mail-oo1-f51.google.com with SMTP id 006d021491bc7-563393b63dbso131050eaf.1;
+        Thu, 03 Aug 2023 06:54:38 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691070877; x=1691675677;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=m0uojx/PSR6NRVoOOYI8BdNOR0rI5Yxlweh79ZGfbrQ=;
+        b=VrrbwkXRlRvx392sqNtvnHi6Z99scB0cwphZyk89G7mhPd1eb1XjNGrwZDcIZ2ykE0
+         6d562gIaGS8O0g27LcS/N4OQx09zUXgoc/n8LwuFT5QQaqVBE+geR1xOW9cMNIvU4sqT
+         g+2kQfM9/7Xj6BPbvBD0ZTNBzvn7QRHcyDDZ2ehO76KXwJrNdS+Q7cXmhj+sNE54Lr7Z
+         zjU4cpPVecLofPYE9ss3P4wViyglxb2Pt9dzOj7691CdKTStT1JSLQXtzN/NWIXVwhsH
+         nuAc26Qx1EPjn1p8mLDMQDMTBSNmrBUq3cPy5Cst2CKIFCpekfd4s5tBC5LvaF+T4RvO
+         piKw==
+X-Gm-Message-State: ABy/qLbCkZBD6ddA/7dX1ZNsxAkliQGCQ5dVwkS8yq5p4A43MhG/ZWCS
+        zruKSHQTUXe6H+v1GtLfzKVzfhMhzAkX/lSDq2FCNFx2
+X-Google-Smtp-Source: APBJJlH8QBBe/1Zdnnp+6mBnDgrxY4JAWToHxCeYgNP2HjzSXTvNuZDm1UME8fCXLSDUW4KweY+wy3+ORvw1x9SlCMA=
+X-Received: by 2002:a4a:a585:0:b0:56c:484a:923d with SMTP id
+ d5-20020a4aa585000000b0056c484a923dmr12865389oom.1.1691070877330; Thu, 03 Aug
+ 2023 06:54:37 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <784ABF9D-303F-4FC8-8AFF-A3FF319B4E7A@gmail.com>
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <4511619.LvFx2qVVIh@kreacher> <ZMupCqOA+v6QGdWN@e126311.manchester.arm.com>
+In-Reply-To: <ZMupCqOA+v6QGdWN@e126311.manchester.arm.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Thu, 3 Aug 2023 15:54:26 +0200
+Message-ID: <CAJZ5v0haMtqmsfo4JLVgfagtK=60nqfRm2=C1X-8WjhxMO5uiw@mail.gmail.com>
+Subject: Re: [RFC/RFT][PATCH v1 0/2] cpuidle: teo: Do not check timers
+ unconditionally every time
+To:     Kajetan Puchalski <kajetan.puchalski@arm.com>
+Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Anna-Maria Behnsen <anna-maria@linutronix.de>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Frederic Weisbecker <frederic@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 03, 2023 at 09:40:11PM +0800, Alan Huang wrote:
-> 
-> > 2023年8月1日 上午4:09，Paul E. McKenney <paulmck@kernel.org> 写道：
-> > 
-> > On Fri, Jul 21, 2023 at 10:27:04PM +0800, Alan Huang wrote:
-> >> 
-> >>> 2023年7月21日 20:54，Joel Fernandes <joel@joelfernandes.org> 写道：
-> >>> 
-> >>> 
-> >>> 
-> >>>> On Jul 20, 2023, at 4:00 PM, Alan Huang <mmpgouride@gmail.com> wrote:
-> >>>> 
-> >>>> ﻿
-> >>>>> 2023年7月21日 03:22，Eric Dumazet <edumazet@google.com> 写道：
-> >>>>> 
-> >>>>>> On Thu, Jul 20, 2023 at 8:54 PM Alan Huang <mmpgouride@gmail.com> wrote:
-> >>>>>> 
-> >>>>>> Hi,
-> >>>>>> 
-> >>>>>> I noticed a commit c87a124a5d5e(“net: force a reload of first item in hlist_nulls_for_each_entry_rcu”)
-> >>>>>> and a related discussion [1].
-> >>>>>> 
-> >>>>>> After reading the whole discussion, it seems like that ptr->field was cached by gcc even with the deprecated
-> >>>>>> ACCESS_ONCE(), so my question is:
-> >>>>>> 
-> >>>>>>     Is that a compiler bug? If so, has this bug been fixed today, ten years later?
-> >>>>>> 
-> >>>>>>     What about READ_ONCE(ptr->field)?
-> >>>>> 
-> >>>>> Make sure sparse is happy.
-> >>>> 
-> >>>> It caused a problem without barrier(), and the deprecated ACCESS_ONCE() didn’t help:
-> >>>> 
-> >>>>  https://lore.kernel.org/all/519D19DA.50400@yandex-team.ru/
-> >>>> 
-> >>>> So, my real question is: With READ_ONCE(ptr->field), are there still some unusual cases where gcc 
-> >>>> decides not to reload ptr->field?
-> >>> 
-> >>> I am a bit doubtful there will be strong (any?) interest in replacing the barrier() with READ_ONCE() without any tangible reason, regardless of whether a gcc issue was fixed.
-> >>> 
-> >>> But hey, if you want to float the idea…
-> >> 
-> >> We already had the READ_ONCE() in rcu_deference_raw().
-> >> 
-> >> The barrier() here makes me think we need write code like below:
-> >> 	
-> >> 	READ_ONCE(head->first);
-> >> 	barrier();
-> >> 	READ_ONCE(head->first);
-> >> 
-> >> With READ_ONCE (or the deprecated ACCESS_ONCE),
-> >> I don’t think a compiler should cache the value of head->first.
-> > 
-> > Apologies for the late reply!
-> > 
-> > If both are READ_ONCE(), you should not need the barrier().  Unless there
-> > is some other code not shown in your example that requires it, that is.
-> 
-> And unless the compiler has a bug. :) 
-> 
-> So, the barrier() in hlist_nulls_for_each_entry_rcu() is a workaround for a compiler bug.
+Hi Kajetan,
 
-Fair enough!!!  ;-)
+On Thu, Aug 3, 2023 at 3:18 PM Kajetan Puchalski
+<kajetan.puchalski@arm.com> wrote:
+>
+> Hi Rafael,
+>
+> On Tue, Aug 01, 2023 at 09:35:15PM +0200, Rafael J. Wysocki wrote:
+> > Hi Folks,
+> >
+> > This is on top of the fixes series posted previously:
+> >
+> > https://lore.kernel.org/linux-pm/4515817.LvFx2qVVIh@kreacher/
+> >
+> > (I'll put it all into one git branch tomorrow).
+> >
+> > I started to play with the idea described here
+> >
+> > https://lore.kernel.org/linux-pm/CAJZ5v0hQh2Pg_uXxj8KBRw3oLS1WdsU+rUafBAAq7dRdbRwYSA@mail.gmail.com/
+> >
+> > and this is the result.
+> >
+> > Note that this is completely experimental, even though it doesn't kill any of
+> > the test boxes I've run it on.
+> >
+> > Patch [1/2] moves the tick_nohz_get_sleep_length() call in teo_select() after
+> > a preliminary idle state selection based on statistics and patch [2/2] adds
+> > checks to avoid it completely if the idle state selected so far is shallow
+> > enough.
+> >
+> > I would appreciate checking if this actually makes any difference.
+> >
+> > Thanks!
+>
+> As mentioned in the other thread I did some testing with these two
+> patches on top as well, here are the results:
+>
+> 1. Geekbench 6
+>
+> +---------------------------+---------------+-----------------+-------------------+
+> |          metric           |      teo      |     teo_tick    |    teo_tick_rfc   |
+> +---------------------------+---------------+-----------------+-------------------+
+> |      multicore_score      | 3320.9 (0.0%) | 3303.3 (-0.53%) |  3293.6 (-0.82%)  |
+> |           score           | 1415.7 (0.0%) | 1417.7 (0.14%)  |  1423.4 (0.54%)   |
+> |      CPU_total_power      | 2421.3 (0.0%) | 2429.3 (0.33%)  |  2442.2 (0.86%)   |
+> |  latency (AsyncTask #1)   | 49.41μ (0.0%) | 51.07μ (3.36%)  |   50.1μ (1.4%)    |
+> | latency (labs.geekbench6) | 65.63μ (0.0%) | 77.47μ (18.03%) | 55.82μ (-14.95%)  |
+> | latency (surfaceflinger)  | 39.46μ (0.0%) | 36.94μ (-6.39%) |  35.79μ (-9.28%)  |
+> +---------------------------+---------------+-----------------+-------------------+
+>
+> Ie the big picture is all right, the latency either improves with these
+> patches or the spike in the previous patchset was an anomaly, either way
+> seems fine. Not sure where the change in the score is coming from but
+> for the record the line plots of the 3 iterations for both the tick
+> variants look the same while they're slightly distinct from the pure 'teo'
+> variant. It's still a below 1% gap so not the end of the world if
+> there's benefits elsewhere.
+>
+> +-------------------+---------+------------+--------+
+> |      kernel       | cluster | idle_state |  time  |
+> +-------------------+---------+------------+--------+
+> |        teo        | little  |    0.0     | 146.75 |
+> |      teo_tick     | little  |    0.0     |  63.5  |
+> |     teo_tick_rfc  | little  |    0.0     | 62.48  |
+> |        teo        | little  |    1.0     | 53.75  |
+> |      teo_tick     | little  |    1.0     | 146.78 |
+> |     teo_tick_rfc  | little  |    1.0     | 147.14 |
+> +-------------------+---------+------------+--------+
+>
+> The idle numbers look pretty much the same as the previous variant which
+> confirms that the change for the little cluster residency is caused by
+> the previous changes but also that these two patches don't affect it.
+>
+> 2. JetNews
+>
+> +-----------------+---------------+----------------+-------------------+
+> |     metric      |      teo      |    teo_tick    |    teo_tick_rfc   |
+> +-----------------+---------------+----------------+-------------------+
+> |       fps       |  86.2 (0.0%)  |  86.4 (0.16%)  |   86.0 (-0.28%)   |
+> |    janks_pc     |  0.8 (0.0%)   |  0.8 (-0.66%)  |   0.8 (-1.37%)    |
+> | CPU_total_power | 185.2 (0.0%)  | 178.2 (-3.76%) |   182.2 (-1.6%)   |
+> +-----------------+---------------+----------------+-------------------+
+>
+> Pretty much no change here, the power is still better than in base teo.
+>
+> +-------------------+---------+------------+-------+
+> |      kernel       | cluster | idle_state | time  |
+> +-------------------+---------+------------+-------+
+> |        teo        |   mid   |    -1.0    | 21.63 |
+> |     teo_tick      |   mid   |    -1.0    | 21.57 |
+> |    teo_tick_rfc   |   mid   |    -1.0    | 17.66 |
+> |        teo        |   big   |    -1.0    | 8.81  |
+> |     teo_tick      |   big   |    -1.0    | 8.55  |
+> |    teo_tick_rfc   |   big   |    -1.0    | 12.04 |
+> +-------------------+---------+------------+-------+
+>
+> This part slightly stands out so could be worth noting. For some reason
+> the trace registers a few seconds less running time (-1 means 'not
+> idle') on the mid cores but a few seconds more on the big cores. This
+> wasn't the case for the 'teo_tick' variant before so looks like it's
+> caused by these two patches. Doesn't seem to be an issue though, just
+> interesting.
+>
+> TLDR:
+> Does not blow up, looks okay :)
 
+Thank you for the feedback, much appreciated!
 
-							Thanx, Paul
+I'll likely send a new version of this series later today including
+one more patch and I will set up a git branch with it later.
 
-> >>> Thanks,
-> >>> 
-> >>> - Joel
-> >>> 
-> >>>> 
-> >>>>> 
-> >>>>> Do you have a patch for review ?
-> >>>> 
-> >>>> Possibly next month. :)
-> >>>> 
-> >>>>> 
-> >>>>> 
-> >>>>>> 
-> >>>>>> 
-> >>>>>> [1] https://lore.kernel.org/all/1369699930.3301.494.camel@edumazet-glaptop/
-> >>>>>> 
-> >>>>>> Thanks,
-> >>>>>> Alan
-> 
+Thanks!
