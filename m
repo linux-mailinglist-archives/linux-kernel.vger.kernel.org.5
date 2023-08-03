@@ -2,267 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6427976EF6C
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 18:28:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F48876EF70
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 18:28:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237257AbjHCQ2O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Aug 2023 12:28:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60360 "EHLO
+        id S237342AbjHCQ2r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Aug 2023 12:28:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32920 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236784AbjHCQ15 (ORCPT
+        with ESMTP id S236978AbjHCQ2e (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Aug 2023 12:27:57 -0400
-Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE2A43ABE
-        for <linux-kernel@vger.kernel.org>; Thu,  3 Aug 2023 09:27:53 -0700 (PDT)
-Received: by mail-wr1-x435.google.com with SMTP id ffacd0b85a97d-317b31203c7so1076405f8f.2
-        for <linux-kernel@vger.kernel.org>; Thu, 03 Aug 2023 09:27:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=tessares.net; s=google; t=1691080072; x=1691684872;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=wyY2zV5vJaOIfyB4fQkW5n9NhYmmuO2ZPGVSyZVmtMg=;
-        b=qbePPPfnLE5E4qAH1BV1jZ3I2w0UFqw7GHg+qcz81lgnRyzwbkr4gOfO3r/MN/07JP
-         yK0ubEgcerqoCtTP6BIAtvJNzs1BqO+Yz8yj/nK+QDjNb28KWk1ZpUWQyVhWhk1oZqH+
-         WtjKMxfH6f3mJCOZ4ce95a6nIzJyG1Wqa3l4eX4eOpQeP8Zy/jgtFGHcTsw6YzQj/NgO
-         qOOIRvzNowKD0Vd1RXXtzJ0cfJJihEcTN7BmEK70n0y9wejojrxytcA6ZShYWqJPq2Fo
-         ziPpAKOfqzI3O8fyFW6KS4CjDEoG/h2IsFFr9pH39JZmvRfogLjMzpLbYUfMM71MPHDB
-         4haw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691080072; x=1691684872;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=wyY2zV5vJaOIfyB4fQkW5n9NhYmmuO2ZPGVSyZVmtMg=;
-        b=QomlOXpESggpmj5ZFUbxq7svvbXObBVYf1+5Cqq9wjnFtmioL171FOMh0P+3VdBqWV
-         4xWBi6gWTrnuSEg5iefN4MGNzbsD/sy5p1lMtWjmmcfQVkd9qF4SF+vzYZwOaHkrfuva
-         egQ3GCBOGkpd4kDslGwUYJt9V1coK6QI/3rcIaizFIlB/xP02BoOiymog5g6tou1q5pf
-         jheLAcUNsvQqs0S9Xk5seA01Bmei/ZpEl135SKGJYKOUZS2A9pEz0qvDhm/9OdboWOgq
-         OhMrb651UsqA236/ib2Xf+oIxoueYJMswK2A4GjmJ2xzYgPB9yUHoThPdXSYVBesa3ry
-         xMbw==
-X-Gm-Message-State: ABy/qLbAxpOs9Xt+n9ro5PL9VIII2kFe3Qbb/qLkFGzFvI6F0BvYWrV6
-        DNNrpJWmI/Vh8CItiTnAb+EMGQ==
-X-Google-Smtp-Source: APBJJlFOUzY4WZSRiAxXYt14cKpFQXdsNaYdRrHkNPWzcIugEnJx/GRXshHYrzwhcSV1nJLZnuS4cg==
-X-Received: by 2002:adf:f490:0:b0:315:a74c:f627 with SMTP id l16-20020adff490000000b00315a74cf627mr7639736wro.16.1691080072198;
-        Thu, 03 Aug 2023 09:27:52 -0700 (PDT)
-Received: from vdi08.nix.tessares.net (static.219.156.76.144.clients.your-server.de. [144.76.156.219])
-        by smtp.gmail.com with ESMTPSA id o10-20020a5d474a000000b003141a3c4353sm253167wrs.30.2023.08.03.09.27.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 03 Aug 2023 09:27:51 -0700 (PDT)
-From:   Matthieu Baerts <matthieu.baerts@tessares.net>
-Date:   Thu, 03 Aug 2023 18:27:30 +0200
-Subject: [PATCH net 4/4] mptcp: fix disconnect vs accept race
-MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+        Thu, 3 Aug 2023 12:28:34 -0400
+Received: from NAM10-DM6-obe.outbound.protection.outlook.com (mail-dm6nam10on2086.outbound.protection.outlook.com [40.107.93.86])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4DDF944A7
+        for <linux-kernel@vger.kernel.org>; Thu,  3 Aug 2023 09:28:22 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=VorjOhtVgEUab0NUv0/JJ6qBoR1UPRXS3Gx6NjXRyH3m8CA6xfHZsk2uJjUby1gznOLddP6hFkIXVFZx7fqBLzHWsYwr9J1RgXqV5upSlFZ/B36egZkWw226MkvR/rlA027Z3I7ehwbSyiwNoMjtAfEi+lbACRq59pw1Lycr5jnEzA5MJnQyXu506Pz563ysGqzh+mciNvZFyNrKbPgCMI/ycomi30tU0k15l4wAw8yedcrNYjl5bFB8b33Mm4G6flB49d1y1dr8oD85iHKzOVBW1Vx0cJNQTMCOpm3Ea59Hu3osHc9fFEUTtUa078Cq25bArPWTLEjn/jGT8faWCQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=FHNKzec/qiPyNOpOXM8i6lcnqCIoWY4yvUzInNiJz84=;
+ b=UuYEofKf3MiooY9e9m2fpFcr0KksQ1ls72HLqZPBqz2uiGKwTKG3NHkoWlrFLSSBQs/0NFNXV4od59dOqFElr/sh08y/x41hfE1nYE34sWqQiZbn1qFW7GBhWAroz/DmM4m4YAtTSuGpEZVLencqLDJxF6UuA+t1U55nRtSdsdz77wUjIHqjLvafoXK1eZbqoeRjFNBy/FstLDjOI/C8obWdjBfkLZGsGgAQ8tzr0SvK3OUZK5yDwoZ1C5rKqsq8iIokyeKdKfdBE+SZ7QLocBfJ44ZDlhsp68BfzEBaLkF64rYwTNJVatdZklVipe/leKHWEHro8uoqstTJimWFcQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=FHNKzec/qiPyNOpOXM8i6lcnqCIoWY4yvUzInNiJz84=;
+ b=0HpQwEuwaj5FFGTTEi7n3ZG6L3tJlU21Ct7ANONQh3lJoksGIMP9nsIAsO61Lis7MtiL/j8/K/nPhS42F97v01Fa9HpohIJXmQOcJmZK8uCIZUVRnr/U751Ah46FV3TNlyqvYZi9khei9LMjkzy7fFXMqIQAepuedNHszY7/bhI=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amd.com;
+Received: from DS7PR12MB6048.namprd12.prod.outlook.com (2603:10b6:8:9f::5) by
+ BY5PR12MB4854.namprd12.prod.outlook.com (2603:10b6:a03:1d1::9) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.6652.20; Thu, 3 Aug 2023 16:28:19 +0000
+Received: from DS7PR12MB6048.namprd12.prod.outlook.com
+ ([fe80::67ec:80e:c478:df8e]) by DS7PR12MB6048.namprd12.prod.outlook.com
+ ([fe80::67ec:80e:c478:df8e%7]) with mapi id 15.20.6631.046; Thu, 3 Aug 2023
+ 16:28:19 +0000
+Message-ID: <a34b1c3c-6fc6-d762-4139-bcc397a00f3f@amd.com>
+Date:   Thu, 3 Aug 2023 21:58:04 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.8.1
+Subject: Re: [PATCH] x86/smp: Validate APIC ID before parking CPU in INIT
+Content-Language: en-US
+To:     tglx@linutronix.de, linux-kernel@vger.kernel.org
+Cc:     x86@kernel.org, dave.hansen@linux.intel.com, bp@alien8.de,
+        mingo@redhat.com,
+        Dheeraj Kumar Srivastava <dheerajkumar.srivastava@amd.com>
+References: <20230719051302.15801-1-vasant.hegde@amd.com>
+From:   Vasant Hegde <vasant.hegde@amd.com>
+In-Reply-To: <20230719051302.15801-1-vasant.hegde@amd.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-Message-Id: <20230803-upstream-net-20230803-misc-fixes-6-5-v1-4-6671b1ab11cc@tessares.net>
-References: <20230803-upstream-net-20230803-misc-fixes-6-5-v1-0-6671b1ab11cc@tessares.net>
-In-Reply-To: <20230803-upstream-net-20230803-misc-fixes-6-5-v1-0-6671b1ab11cc@tessares.net>
-To:     mptcp@lists.linux.dev, Mat Martineau <martineau@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, Shuah Khan <shuah@kernel.org>,
-        Geliang Tang <geliang.tang@suse.com>
-Cc:     Andrea Claudi <aclaudi@redhat.com>, netdev@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Matthieu Baerts <matthieu.baerts@tessares.net>,
-        stable@vger.kernel.org, Christoph Paasch <cpaasch@apple.com>
-X-Mailer: b4 0.12.3
-X-Developer-Signature: v=1; a=openpgp-sha256; l=6350;
- i=matthieu.baerts@tessares.net; h=from:subject:message-id;
- bh=aKcow2E15Tjek3grxJIpgMFsqze4hMw1QTBvn16JVm8=;
- b=owEBbQKS/ZANAwAIAfa3gk9CaaBzAcsmYgBky9WCZ/PIlkegmWQ+oRn1/er9lZ7+r/US1BaBo
- xry6wrvOpyJAjMEAAEIAB0WIQToy4X3aHcFem4n93r2t4JPQmmgcwUCZMvVggAKCRD2t4JPQmmg
- c6r+EADDM4nK4HHbE8VttqzJEu2kc7hBHUe/O1+iQPG3XmqMkMORrSJP1OjRnmYV0NBnKGARiKJ
- /drfsn60O8gpJoMpBhOuoWhUvlXaWNTURDne8QvBuY+b04dhjLQ/K4+im9U0FQiPDRC7JMbtu/N
- VRdEBWbcSVTcLPrxqtXljnPYlpXxAGQU0UAoYA0phciVxwJkRCbXnl3pcRZqH4DW+L71cIxAGpk
- dcuuzpfXakNQ4NwWvg1kMYhgM74q9DVuVRhsvOFgfouWWg4eYk2KZBN0hF09wYUapzilA56mN0P
- o0dYXp0+OohL2LG5BzeyAjFyC/LSNbHrxkUgbR/Q2s/bQlR+OBtW74z8JrR3dq5v9ovYwxAGjLn
- Hm51kzqOkgIg8n45zIgF9X7vLzwTY04kdRmsA+kKrXen0hQlrCRS9wWGy+PIiVtXJTWS9d7D4LH
- mztuedwS5jh4zK77CJQGydo2XCwvqe3cpR5+RdsSTvXfNUa5HhCCE8n8sJM62BbNCe4bXpLg0sE
- DhBUkMig9XxKur3bdZmrdF+NE9rqmLWmn9LDbs7RfPs+4a1pXL0RWLDeFdwMSzB6QT1ST8oJPPt
- lRWH8NfWhlbwrbglyp3pMK3TRtAsgoiQefToVlOc/vzh03SIwGz40Ih4PJF41EM9c1PXCAsqLFJ
- +qc+0oELhN/D9jA==
-X-Developer-Key: i=matthieu.baerts@tessares.net; a=openpgp;
- fpr=E8CB85F76877057A6E27F77AF6B7824F4269A073
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-ClientProxiedBy: BMXP287CA0020.INDP287.PROD.OUTLOOK.COM
+ (2603:1096:b00:2c::28) To DS7PR12MB6048.namprd12.prod.outlook.com
+ (2603:10b6:8:9f::5)
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DS7PR12MB6048:EE_|BY5PR12MB4854:EE_
+X-MS-Office365-Filtering-Correlation-Id: 9d818a53-7f5a-4653-b977-08db943ea56f
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: rclA+oiUvXCHagDOxuwxEG8QV9vi7M4JTduRxJ8euOpjnYO9V6AuWlAMCHQRwMLNtkbZhEqdz1jx8ucyq6E+7Yz/Fkj4nUtkIm+gJx/m4MOChHv3ls+lwdOEiFx5XTa4a/Gw+Ug/ScMI8ooOoZ+y/e/WDn8qT2BEykAzoGG7lscTgM5qGiJyHN4XcC2TLB4TYyv1wuwddISZuajRjPtruScRSULafqZPubHOzHp87DkRps3IqLxNsnn0ZLOkSqhlHDCv0n0t5EdlgkLC9HRaC4ZHzEI/SGn/x7VyDg61dYgBf+kksveBXE9KCC/zIeFwez7RQ+uQWZyixfZ/jqXhJLdh2jGKXD3eri6j1H+zn0O9daz0Atdcf9Hvs0OXTeKR3cVevfiFob0J2yjDY5UlMJIVK3HnEpbG/hk+xDoyVjlpf3jRpKBsb36emVX5vfuXV/K31vXDYu+qftVakKBsY1dPG0BpvtV/AchlBct8zcpNL3n4ZIu/CBO7gaDhaujsiVEZ9T55nkRcL5z7BlauyTq4pqtfxqmsG3jpFhtEfa7E/mW/HePpozY98/PL8qmRSnYGqRVSKZuCbHOfyts6XoE+R2HR49EWGkdFtifiPCzRgIsQ7g3gSmkeRaRwUd8OfoB8wrLvObHYJa/D3A8vFg==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DS7PR12MB6048.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(39860400002)(136003)(346002)(396003)(366004)(376002)(451199021)(2616005)(53546011)(6506007)(83380400001)(186003)(26005)(8676002)(316002)(66556008)(2906002)(4326008)(66946007)(5660300002)(66476007)(41300700001)(44832011)(8936002)(6486002)(6666004)(6512007)(478600001)(38100700002)(31696002)(86362001)(36756003)(31686004)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?Qmd2S1VXNlk3eC9aTEt6WlVxcWttWDZjY1dlaHBoNlRNSEZCMythdVNqbFc3?=
+ =?utf-8?B?MklZZUZjRitCOEdYNG1jbUhtTmdBZ0JvbWhpc1J0VmF4MDEvd01qUHZlQmhi?=
+ =?utf-8?B?WkNzQm1EdC9QSWtSRGVhamxhYi9hZ1paU2l2Ymh2YjdrQmtCWmFtOGQrQklC?=
+ =?utf-8?B?bDY4aytxdUd3eG9nNW9HQXBCSXZEdUttSnBmL1liVzIzSXd3UHZqRFFQZjhy?=
+ =?utf-8?B?K2FIMW9XSGhheHA2REdSSXEwbWdKZnltUmhZbGsxNjg3MnduMGFXZkJyVFFm?=
+ =?utf-8?B?RlZBQm9BYk0rV3JnUktJajJsdmJkZnppc05xbWRpSHZNUGl6eXlZamZYakxw?=
+ =?utf-8?B?c2dsM0F0TjE3WmV3NHFDdE9wK1plUGVnS3NZYXU1Nk9EYlFwUHU3eWdNeGd1?=
+ =?utf-8?B?ZmlKcjBQb2NpeHhOdWI1bkl0UE0zRXA5M05ObE1wMXg1TTVaaC94RjQ4c3Fi?=
+ =?utf-8?B?aCs4Z09yUDhxc2ZucnM0UjFQTC9ORWlqdFVncHRxSjd2VTNKMVpobm9xcVBp?=
+ =?utf-8?B?ZmZyc0dhV2IyWms0TUI1ZjJVcG9XU3BmZ3o1bFlzWHpxM0R1TlJ3UkVjd2Zm?=
+ =?utf-8?B?T0xIbXh4TTFyU0dwKzdYdlJyMUtndDNzbnc1azBIZHpYaWJEUmU5NFdLYmtT?=
+ =?utf-8?B?WHdJbFRlQ291ZEg5czVaWFVlNEg0MU5zMVVSVW9yMGNFTkVRMXZyUjBybzhQ?=
+ =?utf-8?B?cmZ2b3JCUUVYM2V1RHluZnVHR2phSmJxamMvRlRJdTNsWGNCRmsrTHA2QzRr?=
+ =?utf-8?B?MHUyMU8zT0Z2NXE0dXZURlpDTWlCOFpWV0NRQTdUazlPYmlKb0dMVERXZFFX?=
+ =?utf-8?B?Z1ZUdnNoZnJZOWlmMjBWRzBJc0VUNVNFUmUralNobHdlODQ3ck56czRpSkps?=
+ =?utf-8?B?Q05LSHc3dmM5RmpZVUluaW5rOGo4Y09DdWk0cmFDWHUxY1FzeFNUVHpPM2sr?=
+ =?utf-8?B?ZWNST2FvcXFpaGpwMTA2K3VXTFRqUmc5V1BiOGUrdzZwTE0zMjJrWXBBS3My?=
+ =?utf-8?B?bUVkZ2hMQTN6cVN4QW9VOWQ4clNONWpjRUhFdHhVZk1La3hiR0VBSkRoZHM0?=
+ =?utf-8?B?amFPUTF5WmlVeTdVSTBjT2JVOTRwMGNUdDA4b2huUVMyNzZxYm9ZY3JKWDJU?=
+ =?utf-8?B?VVAyNFZUY3FXeW1uakpoVnUrZ1huTzU2R01UYUYzczAwVlFXd2VJOW1LVjll?=
+ =?utf-8?B?aDZnNGZTOHh6ZFkrbVNpOENSSWNQVDNRYm0rSHk4QTc5d2xvS1dmZHdCaUIy?=
+ =?utf-8?B?OTMzQy9vMndDMUdMVVJJaUE4WWorWDV0bW9XMkI4MEpIVzhpQXdka0RIcmdh?=
+ =?utf-8?B?SUVCSDdMdGY3ZmJmZ3pFWXFBT0RTb2R0YXhkdlllUSs5Z2JIZUpkeFI0QnIy?=
+ =?utf-8?B?cFlKc1R2c2dPWmIxSTRXNDR2T0RweDU4dHpQaFpqRzJ2M3l2MHlSVzNpbjhj?=
+ =?utf-8?B?Vm15QXBrRXcwMWlaNzdaTUoyVWtyVXNSenNTNW5ndWpuM1Y0WVhla2c3ZmZk?=
+ =?utf-8?B?ZEsvd1dQOXZzR2tMbVp2M3ZXQWlVV0hkNjUzNWR2eVpwVUYvM3FRZG1sS0E4?=
+ =?utf-8?B?NjU1VUFibmdJakEwVXREUmEvV3JacnlmeCtCL05uTFBBcjJielk4WklnT2Fv?=
+ =?utf-8?B?VkNLd3ZoZ1FkMEJ4Yng5NHE1MDNPaUdwN3Y5UDRLaUV5ckJ0ekFHWlZ2QnlI?=
+ =?utf-8?B?Y21uRGEzajVuNzFUSzhOUS9pQ2g0dEFFV3BxVHNtRnduYW5kQkpLWVViQ3RL?=
+ =?utf-8?B?UTRyY21wU0V1YTF4dmN5cUtteVJvZWQrUGt1ZzVTcmNobzBhRzhMKzdSNlVG?=
+ =?utf-8?B?MVh2VlJsem9qeWU1NVBOZzhmdFpMZFlPSHNlUHkxWUhQMWVmcjNOMjQ0MzJF?=
+ =?utf-8?B?SGNNT2RVaWFjS0o3VHU0MkVTeXcrbkUzWENGMVUreTJjb3ZpOUV4Uko2UTRH?=
+ =?utf-8?B?UzVlUVJEZytXNktZNDZmeWJ1bnI4U2Q5M0VwT0pFRW9yUHVuaDUvZmc1d2lM?=
+ =?utf-8?B?Ukh4WE4ycllicnNYMUpwSlptY2Z3T1hUVkY1UStwZGVJcTlZYUNMU1Q2RUtB?=
+ =?utf-8?B?WURjdFBlZzh6d204R1prMVFEb1ZXTDZDaE85dUZBT1BVa1RiZnQ3K1JmMGxD?=
+ =?utf-8?Q?R87YBoYE1FvkCCAsQ6PtD/8TU?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 9d818a53-7f5a-4653-b977-08db943ea56f
+X-MS-Exchange-CrossTenant-AuthSource: DS7PR12MB6048.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 03 Aug 2023 16:28:19.1696
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: fgVviyJPK+rhQp4kQFWLiQFkqXaI7mx/UUIo3oeqEOGVPwN12arP1KWVGVNC8AbvXWPt+lFZLAepSUB/Ny825w==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR12MB4854
+X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Paolo Abeni <pabeni@redhat.com>
+Hi
 
-Despite commit 0ad529d9fd2b ("mptcp: fix possible divide by zero in
-recvmsg()"), the mptcp protocol is still prone to a race between
-disconnect() (or shutdown) and accept.
+Did you get a chance to look into this patch?
 
-The root cause is that the mentioned commit checks the msk-level
-flag, but mptcp_stream_accept() does acquire the msk-level lock,
-as it can rely directly on the first subflow lock.
 
-As reported by Christoph than can lead to a race where an msk
-socket is accepted after that mptcp_subflow_queue_clean() releases
-the listener socket lock and just before it takes destructive
-actions leading to the following splat:
+-Vasant
 
-BUG: kernel NULL pointer dereference, address: 0000000000000012
-PGD 5a4ca067 P4D 5a4ca067 PUD 37d4c067 PMD 0
-Oops: 0000 [#1] PREEMPT SMP
-CPU: 2 PID: 10955 Comm: syz-executor.5 Not tainted 6.5.0-rc1-gdc7b257ee5dd #37
-Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.11.0-2.el7 04/01/2014
-RIP: 0010:mptcp_stream_accept+0x1ee/0x2f0 include/net/inet_sock.h:330
-Code: 0a 09 00 48 8b 1b 4c 39 e3 74 07 e8 bc 7c 7f fe eb a1 e8 b5 7c 7f fe 4c 8b 6c 24 08 eb 05 e8 a9 7c 7f fe 49 8b 85 d8 09 00 00 <0f> b6 40 12 88 44 24 07 0f b6 6c 24 07 bf 07 00 00 00 89 ee e8 89
-RSP: 0018:ffffc90000d07dc0 EFLAGS: 00010293
-RAX: 0000000000000000 RBX: ffff888037e8d020 RCX: ffff88803b093300
-RDX: 0000000000000000 RSI: ffffffff833822c5 RDI: ffffffff8333896a
-RBP: 0000607f82031520 R08: ffff88803b093300 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000003e83 R12: ffff888037e8d020
-R13: ffff888037e8c680 R14: ffff888009af7900 R15: ffff888009af6880
-FS:  00007fc26d708640(0000) GS:ffff88807dd00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 0000000000000012 CR3: 0000000066bc5001 CR4: 0000000000370ee0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- <TASK>
- do_accept+0x1ae/0x260 net/socket.c:1872
- __sys_accept4+0x9b/0x110 net/socket.c:1913
- __do_sys_accept4 net/socket.c:1954 [inline]
- __se_sys_accept4 net/socket.c:1951 [inline]
- __x64_sys_accept4+0x20/0x30 net/socket.c:1951
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x47/0xa0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x6e/0xd8
-
-Address the issue by temporary removing the pending request socket
-from the accept queue, so that racing accept() can't touch them.
-
-After depleting the msk - the ssk still exists, as plain TCP sockets,
-re-insert them into the accept queue, so that later inet_csk_listen_stop()
-will complete the tcp socket disposal.
-
-Fixes: 2a6a870e44dd ("mptcp: stops worker on unaccepted sockets at listener close")
-Cc: stable@vger.kernel.org
-Reported-by: Christoph Paasch <cpaasch@apple.com>
-Closes: https://github.com/multipath-tcp/mptcp_net-next/issues/423
-Signed-off-by: Paolo Abeni <pabeni@redhat.com>
-Reviewed-by: Matthieu Baerts <matthieu.baerts@tessares.net>
-Signed-off-by: Matthieu Baerts <matthieu.baerts@tessares.net>
----
- net/mptcp/protocol.h |  1 -
- net/mptcp/subflow.c  | 60 ++++++++++++++++++++++++++--------------------------
- 2 files changed, 30 insertions(+), 31 deletions(-)
-
-diff --git a/net/mptcp/protocol.h b/net/mptcp/protocol.h
-index 37fbe22e2433..ba2a873a4d2e 100644
---- a/net/mptcp/protocol.h
-+++ b/net/mptcp/protocol.h
-@@ -325,7 +325,6 @@ struct mptcp_sock {
- 	u32		subflow_id;
- 	u32		setsockopt_seq;
- 	char		ca_name[TCP_CA_NAME_MAX];
--	struct mptcp_sock	*dl_next;
- };
- 
- #define mptcp_data_lock(sk) spin_lock_bh(&(sk)->sk_lock.slock)
-diff --git a/net/mptcp/subflow.c b/net/mptcp/subflow.c
-index 9ee3b7abbaf6..94ae7dd01c65 100644
---- a/net/mptcp/subflow.c
-+++ b/net/mptcp/subflow.c
-@@ -1793,34 +1793,21 @@ static void subflow_state_change(struct sock *sk)
- void mptcp_subflow_queue_clean(struct sock *listener_sk, struct sock *listener_ssk)
- {
- 	struct request_sock_queue *queue = &inet_csk(listener_ssk)->icsk_accept_queue;
--	struct mptcp_sock *msk, *next, *head = NULL;
--	struct request_sock *req;
--	struct sock *sk;
-+	struct request_sock *req, *head, *tail;
-+	struct mptcp_subflow_context *subflow;
-+	struct sock *sk, *ssk;
- 
--	/* build a list of all unaccepted mptcp sockets */
-+	/* Due to lock dependencies no relevant lock can be acquired under rskq_lock.
-+	 * Splice the req list, so that accept() can not reach the pending ssk after
-+	 * the listener socket is released below.
-+	 */
- 	spin_lock_bh(&queue->rskq_lock);
--	for (req = queue->rskq_accept_head; req; req = req->dl_next) {
--		struct mptcp_subflow_context *subflow;
--		struct sock *ssk = req->sk;
--
--		if (!sk_is_mptcp(ssk))
--			continue;
--
--		subflow = mptcp_subflow_ctx(ssk);
--		if (!subflow || !subflow->conn)
--			continue;
--
--		/* skip if already in list */
--		sk = subflow->conn;
--		msk = mptcp_sk(sk);
--		if (msk->dl_next || msk == head)
--			continue;
--
--		sock_hold(sk);
--		msk->dl_next = head;
--		head = msk;
--	}
-+	head = queue->rskq_accept_head;
-+	tail = queue->rskq_accept_tail;
-+	queue->rskq_accept_head = NULL;
-+	queue->rskq_accept_tail = NULL;
- 	spin_unlock_bh(&queue->rskq_lock);
-+
- 	if (!head)
- 		return;
- 
-@@ -1829,13 +1816,19 @@ void mptcp_subflow_queue_clean(struct sock *listener_sk, struct sock *listener_s
- 	 */
- 	release_sock(listener_ssk);
- 
--	for (msk = head; msk; msk = next) {
--		sk = (struct sock *)msk;
-+	for (req = head; req; req = req->dl_next) {
-+		ssk = req->sk;
-+		if (!sk_is_mptcp(ssk))
-+			continue;
-+
-+		subflow = mptcp_subflow_ctx(ssk);
-+		if (!subflow || !subflow->conn)
-+			continue;
-+
-+		sk = subflow->conn;
-+		sock_hold(sk);
- 
- 		lock_sock_nested(sk, SINGLE_DEPTH_NESTING);
--		next = msk->dl_next;
--		msk->dl_next = NULL;
--
- 		__mptcp_unaccepted_force_close(sk);
- 		release_sock(sk);
- 
-@@ -1859,6 +1852,13 @@ void mptcp_subflow_queue_clean(struct sock *listener_sk, struct sock *listener_s
- 
- 	/* we are still under the listener msk socket lock */
- 	lock_sock_nested(listener_ssk, SINGLE_DEPTH_NESTING);
-+
-+	/* restore the listener queue, to let the TCP code clean it up */
-+	spin_lock_bh(&queue->rskq_lock);
-+	WARN_ON_ONCE(queue->rskq_accept_head);
-+	queue->rskq_accept_head = head;
-+	queue->rskq_accept_tail = tail;
-+	spin_unlock_bh(&queue->rskq_lock);
- }
- 
- static int subflow_ulp_init(struct sock *sk)
-
--- 
-2.40.1
-
+On 7/19/2023 10:43 AM, Vasant Hegde wrote:
+> Below commit is causing kexec to hang in certain scenarios with >255 CPUs.
+> 
+> Reproduce steps:
+>   - We are using 2 socket system with 384 CPUs
+>   - Booting first kernel with kernel command line intremap=off
+>     This disabled x2apic in kernel and booted with apic mode
+>   - During kexec it tries to send INIT to all CPUs except boot CPU
+>     If APIC ID is 0x100 (like in our case) then it will send CPU0
+>     to INIT mode and system hangs (in APIC mode DEST field is 8bit)
+> 
+> Fix this issue by adding apic->apic_id_valid() check before sending
+> INIT sequence.
+> 
+> Fixes: 45e34c8af58f ("x86/smp: Put CPUs into INIT on shutdown if possible")
+> Reported-by: Dheeraj Kumar Srivastava <dheerajkumar.srivastava@amd.com>
+> Tested-by: Dheeraj Kumar Srivastava <dheerajkumar.srivastava@amd.com>
+> Signed-off-by: Vasant Hegde <vasant.hegde@amd.com>
+> ---
+>  arch/x86/kernel/smpboot.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/arch/x86/kernel/smpboot.c b/arch/x86/kernel/smpboot.c
+> index e1aa2cd7734b..e5ca0689c4dd 100644
+> --- a/arch/x86/kernel/smpboot.c
+> +++ b/arch/x86/kernel/smpboot.c
+> @@ -1360,7 +1360,7 @@ bool smp_park_other_cpus_in_init(void)
+>  		if (cpu == this_cpu)
+>  			continue;
+>  		apicid = apic->cpu_present_to_apicid(cpu);
+> -		if (apicid == BAD_APICID)
+> +		if (apicid == BAD_APICID || !apic->apic_id_valid(apicid))
+>  			continue;
+>  		send_init_sequence(apicid);
+>  	}
