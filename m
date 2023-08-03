@@ -2,166 +2,341 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 00E1076E155
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 09:27:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F2D3C76E157
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 09:28:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231922AbjHCH1L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Aug 2023 03:27:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42220 "EHLO
+        id S231895AbjHCH2I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Aug 2023 03:28:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42700 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233958AbjHCH1D (ORCPT
+        with ESMTP id S230491AbjHCH2F (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Aug 2023 03:27:03 -0400
-Received: from EUR01-DB5-obe.outbound.protection.outlook.com (mail-db5eur01on2048.outbound.protection.outlook.com [40.107.15.48])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0659130C7
-        for <linux-kernel@vger.kernel.org>; Thu,  3 Aug 2023 00:26:59 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=bJD15VOYznIStgj9GAAN1z7vu2hAf269yTmBtDcgbEAKWVK/L/0hJMIE+ldCO6nJE+Bun9csp/RXYWVfZPI/CjFV47Tgi+sNs35nyupguiqs5RvxTBLMehoHvmVjbFKRJ455nm31PkiZ71Qk2um+/T+lZ6cEZxFDn56ajRXUwW4USOKXCmzOsm557LCXvozLjjEJVPC8jSM5YJzBItxjZ8CvjIlsOoNwEw6WtRSckHTBVRur3oi0Bp2WHtPOta+Q/JPiWBbyZFQ/o8ednFfM4Z6TQPWcL+XeFAqoJgqtkXx1x9t+IFh8vbxvch/RJGlVyPLMustwYH9jJlkXxqqy6w==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=i6xZVWo+VAqKRi84PvtvOP4MObkyLAc9LaKFlb7R0Bg=;
- b=cdhalbwPE4JELvdAIYClJLBsAKfg54cuzQg+mTX4GEBa2to5m4bLlm2BQIT8Bo9i1S3lzb1NKyFLavdUEBWps/xvOt1cZ24KiVqJMFAA/4aUUNUWUASkqLA7Tv1n2pwKbtC11POxfeYWvPzZ7toeDIUrjNVbP1bZfkI/tslYr6jXx+s2FVY3oC5BZr2amSEgBqjB5KBnQSm/k+6KNN8r3cP7xKtv2imM3FcdXSHnc8kr3L5OrgjYBSay0jm9L/gvUYZWPrAmuUYRffXiSWzPwH+9X/0RR2vyNeMHPa/rqj+Ebw/piotayG6+FWS+Yl2yHt8QM7yss6D9g/X3tTeUIA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oss.nxp.com; dmarc=pass action=none header.from=oss.nxp.com;
- dkim=pass header.d=oss.nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=NXP1.onmicrosoft.com;
- s=selector2-NXP1-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=i6xZVWo+VAqKRi84PvtvOP4MObkyLAc9LaKFlb7R0Bg=;
- b=UW7oH9VtKgOH1KdKUoWc+w85ce42paODxcj6hZjsKN14LClH6S1BDSk43zRmfCJOGBeNfbs0f8QYOx5Oa35oK2TU7UfL2IkKpod5QAz7mkbOmeM07ktbsjRWAFOq8JOMz5MAk8t15RINk48qq3wbkl+ej0vaGZ9cpV3tajvlIus=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=oss.nxp.com;
-Received: from VI1PR04MB5151.eurprd04.prod.outlook.com (2603:10a6:803:61::28)
- by DU2PR04MB8631.eurprd04.prod.outlook.com (2603:10a6:10:2de::19) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6609.32; Thu, 3 Aug
- 2023 07:26:56 +0000
-Received: from VI1PR04MB5151.eurprd04.prod.outlook.com
- ([fe80::d4e4:973a:b085:de93]) by VI1PR04MB5151.eurprd04.prod.outlook.com
- ([fe80::d4e4:973a:b085:de93%7]) with mapi id 15.20.6631.046; Thu, 3 Aug 2023
- 07:26:55 +0000
-From:   Daniel Baluta <daniel.baluta@oss.nxp.com>
-To:     shengjiu.wang@gmail.com, broonie@kernel.org,
-        alsa-devel@alsa-project.org
-Cc:     Xiubo.Lee@gmail.com, festevam@gmail.com, nicoleotsuka@gmail.com,
-        lgirdwood@gmail.com, perex@perex.cz, tiwai@suse.com,
-        linux-kernel@vger.kernel.org, linux-imx@nxp.com
-Subject: [PATCH] ASoC: fsl: micfil: Use dual license micfil code
-Date:   Thu,  3 Aug 2023 10:26:38 +0300
-Message-Id: <20230803072638.640789-1-daniel.baluta@oss.nxp.com>
-X-Mailer: git-send-email 2.25.1
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: ZR2P278CA0072.CHEP278.PROD.OUTLOOK.COM
- (2603:10a6:910:52::9) To VI1PR04MB5151.eurprd04.prod.outlook.com
- (2603:10a6:803:61::28)
-MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: VI1PR04MB5151:EE_|DU2PR04MB8631:EE_
-X-MS-Office365-Filtering-Correlation-Id: 01e6ab90-ca91-48cd-f0b6-08db93f3037d
-X-MS-Exchange-SharedMailbox-RoutingAgent-Processed: True
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: s6CDYNXGAlDUvgelTC7zRF4MifMgHPljwgKc7QO0T2da0ngGqISSqmC/5ywotDjTVdCfQNMdOp+Fl5iXxt7KkTuhJ44PNq1e8+3MTQ/6tecPEjP2mTAWmO/PHDHdEltg4jQkO/d2M3KjtZMjYW80Yst1ZkLN34pxOXKHIwMPHbp8AKFNJX/GcV22YDwJeGR6hqSwwa03rW0TND9YPkxt8TvTaDfXUqMrmfH2xNEy08gWxMv3JtKNRj3hA4zOQXn0LqdfxFNgjRlVJRaK0Kjmyd3ovsFnxnTNoeQXezP/83viqYyRb4txPwnyO+cJnyoPGAYw7Ufhl55bBmwP+JjNl2jC+k/blnuY1n5fRzc2yJV8TpHwDeVIKTRJPzlVluqzhJhUJZtsq32ZFuWFPPtPNaQp2GX93RxpwjoVIvoTazblwIfULY2F1FtfMRDmiY9Lxhu0DkWWfLj3yDC3nJRf6ZL/OZ0Er3MYNbC0CQGw5HgedsPZyRw+2Difh4de4sL7XUhBC0fu5iKRkUIiSEP5qt4QJmlUQlzoitcf30eBlLn+BDHWwOLohvrAyB/QbyAhuibox5Vdpjbnbn/1PidqQJx0dpmavqOF94c49zPCkK5jyvaNkUuVM+1Ax2+FRz2c
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR04MB5151.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(136003)(346002)(376002)(366004)(39860400002)(396003)(451199021)(6666004)(52116002)(478600001)(186003)(6512007)(6486002)(83380400001)(86362001)(26005)(38350700002)(8936002)(2906002)(4326008)(66946007)(1076003)(44832011)(2616005)(6506007)(5660300002)(66556008)(41300700001)(66476007)(38100700002)(8676002)(7416002)(316002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?Mc8DfxdUxhQqSin3B5xTUTU/bCq6SeozcBMIuUAbo2nhyYDBsu6LYMd9Iw6u?=
- =?us-ascii?Q?DYC7pCOsxIzhNOW7XvXyz3npZY2o354pKmTv7vXhyk5fTLA4wwy5kk/wOgkq?=
- =?us-ascii?Q?Wcht8M3rNcrPk+N0VBAm8TFMKuWLT/eFeT4FVHZe+zXBfUqh+IXPyY7YKhLj?=
- =?us-ascii?Q?qrwbBJEgliUicU6UDv8QPcece/PeOO+JvwWrcwahOcoIVD1xiA+pGkf+mdsp?=
- =?us-ascii?Q?JhrHPzEgXqOoMLH2USEERBeEioZCN0sK5wAIjWz3IiuKN2hj8+6ev2qQaKRM?=
- =?us-ascii?Q?y2Y4jCtPtwPNRCu0CIfJyNF7vUoV4tlSeh32BcoAokrVucSaMzCwZfVCwINH?=
- =?us-ascii?Q?j1JSK4jnsoGMcQApEfhn48CKuAZP9srEciEslQokEMfcxtOQV2IJiIL5yK6E?=
- =?us-ascii?Q?n1MKPNQWcVyKrPsUsf3ibgZFKMBpHgVeTcdMXlHby4tjb10kfHWal/dta5Y2?=
- =?us-ascii?Q?2I/asiJmaeqQbmx5A1c+ubJvxdquOy0GoiuHTULurfwvyTP1wy8iT3NuxSAg?=
- =?us-ascii?Q?e7Yw4g4EkC68V41PgktCmHmy1z10CStEue4xi8VOM6qDVOf/MCjbHaazNVZ2?=
- =?us-ascii?Q?SemnYM4r+k67Nq7tARMnsWKPBCk+h4v8GvAvVfrgzVGhFxMjlhQgwKyfnba5?=
- =?us-ascii?Q?TRDegTH2aSQyUXkPtBIVO83Q3nRLzdV8NUffL3la1mpUs6OCS18m/xe91jIF?=
- =?us-ascii?Q?p+Iu8LUhVkL/bvR+Spsx2jRak/DZWvHxhcQcotWkZB0vVytzpOEMlLY4thyk?=
- =?us-ascii?Q?FCNr7RPyDFFmUEI1gfTeSwwfwiK3JRkI+ccEbTsjS/qpXu7BaJzTsy15JcJP?=
- =?us-ascii?Q?cEjenMrEGHPCLP98211+BgBr6ZfNLwmlFnW9n6dU0qEx3OJS+iIsdpm4KSA3?=
- =?us-ascii?Q?clF/5k+W9tt1KXHwej97F/ANsi/4+mW+IxioUB0pcEWota8tO6OTxRTT777G?=
- =?us-ascii?Q?h++wx0C7E8+4qQsmh7xafy9j+Ft2+C55KTjb5eoMewj7fbhVgGLB3gA9dV8g?=
- =?us-ascii?Q?b8xM+oTzDIcvBfJ1OrNF0i/CboaY4JTtJbA+MZLJ07XvkIqe7O1CRiO9iDlV?=
- =?us-ascii?Q?x1NPm5P+ja4T9+q+gLc2B+M0Emd4mS9L758tVU3QaVkIkdSz+ppDS/QWa66L?=
- =?us-ascii?Q?V39qW3os7IaIG+NqLjHYCy+SWVxwSQtBYMFUxqOoYRAXJFxEszCnIjo4YA0E?=
- =?us-ascii?Q?VxvrkVplDLtLZP2rRwat0j6rPja0owN6Sopj5JycQJUfJD2Z8HU/+zSVdRRv?=
- =?us-ascii?Q?RkDvQOAGPmCQQ8XkbjZ8RjLPVnMQIMbQMrQuTzMZC95C4uO1KRD4ai/mXv+M?=
- =?us-ascii?Q?4PtKRY+vo5fWiy9zfIJo5zC0tA4vkDSYheZElqGA5O3yVyQwFlEupUsKs+ra?=
- =?us-ascii?Q?tTx5y+KEiRhLK7cVdyV+7CuD3oPpuBXb+FJ/7Z0dvJ+Z/7EEjJ7+0hWQTj6f?=
- =?us-ascii?Q?d49ci9nzbfuxrWIC4/BsU9UgH3QBlCLULPIg6tHlGo/yTc9WKutHYUP5T3F/?=
- =?us-ascii?Q?jHXJZodDPkb0JTf1gFLO9LXU/uCrm6bAoEU4sT2RbohXXDCTsxgRHUIIPxn+?=
- =?us-ascii?Q?xbyt3sQNbWY2d7YvlaYqqLzjIWWMWQOfgxmzM8ZI?=
-X-OriginatorOrg: oss.nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 01e6ab90-ca91-48cd-f0b6-08db93f3037d
-X-MS-Exchange-CrossTenant-AuthSource: VI1PR04MB5151.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 03 Aug 2023 07:26:54.9926
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: n7tVF/dyzBl0To7cg2xsE2GPFC8WCJfvx56V+kNxxCooe4AKX4LD3G2gPH+R0ETA3xvuTh7M/lj3ntK5627TZg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DU2PR04MB8631
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+        Thu, 3 Aug 2023 03:28:05 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.24])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F22BF187
+        for <linux-kernel@vger.kernel.org>; Thu,  3 Aug 2023 00:28:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1691047684; x=1722583684;
+  h=date:from:to:cc:subject:message-id;
+  bh=cw1hkUbjeuW+pkC8yiMbYdrJuF3lvNo3gy7xYLX0qLw=;
+  b=I/KkRVVxAWyKyryH/zO8VZez+fVrgXlKsSE1334uzuBN0Wssx6PzKKsF
+   bjPINtHYe39AF2G58ncQxay9uLeanBSgX1ph+kipX5pz+9FpgE6sVRBiA
+   KBJbfFDQO0XDc9o/ERlTwhmZCCEVepGnHuI+MV2xXT0mRVIy55yX7+4lt
+   /UNsWl0vC/cHo53j6qZhwexQ7Dtexi8//awiV0zi3XHI69Aj/6VJ0RULo
+   MGa2NxL7hxiMmDOKK6a/uztiInm6zIg3+gPxeTJkfsCKga6s+iHVIZFGn
+   KEqc0RYj2pHfhRjBCiguJjme3Z8I1TE0g1rtcEI1rOvzA/EcdquovhaYw
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10790"; a="372531614"
+X-IronPort-AV: E=Sophos;i="6.01,251,1684825200"; 
+   d="scan'208";a="372531614"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Aug 2023 00:28:03 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10790"; a="729455558"
+X-IronPort-AV: E=Sophos;i="6.01,251,1684825200"; 
+   d="scan'208";a="729455558"
+Received: from lkp-server01.sh.intel.com (HELO d1ccc7e87e8f) ([10.239.97.150])
+  by orsmga002.jf.intel.com with ESMTP; 03 Aug 2023 00:28:01 -0700
+Received: from kbuild by d1ccc7e87e8f with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qRSkZ-0001rb-2h;
+        Thu, 03 Aug 2023 07:27:59 +0000
+Date:   Thu, 03 Aug 2023 15:27:12 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>
+Subject: [gustavoars:testing/fam01-next20230731] BUILD REGRESSION
+ fb53d89ede1aed6cca2a6cb73ffecb99fe1bcc65
+Message-ID: <202308031558.MhRIyeiu-lkp@intel.com>
+User-Agent: s-nail v14.9.24
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Daniel Baluta <daniel.baluta@nxp.com>
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/gustavoars/linux.git testing/fam01-next20230731
+branch HEAD: fb53d89ede1aed6cca2a6cb73ffecb99fe1bcc65  RDMA/irdma: Replace one-element array with flexible-array member
 
-We need this in order to easily reuse register definitions
-and some functions with Sound Open Firmware driver.
+Error/Warning reports:
 
-According to Documentation/process/license-rules.rst:
-    "Dual BSD/GPL"	The module is dual licensed under a GPL v2
-			variant or BSD license choice. The exact
-			variant of the BSD license can only be
-			determined via the license information
-			in the corresponding source files.
+https://lore.kernel.org/oe-kbuild-all/202308010320.Wqt7lyc4-lkp@intel.com
 
-so use "Dual BSD/GPL" for license string.
+Error/Warning: (recently discovered and may have been fixed)
 
-Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
-Signed-off-by: Daniel Baluta <daniel.baluta@nxp.com>
----
- sound/soc/fsl/fsl_micfil.c | 4 ++--
- sound/soc/fsl/fsl_micfil.h | 2 +-
- 2 files changed, 3 insertions(+), 3 deletions(-)
+arch/alpha/include/asm/string.h:22:16: warning: writing 12 bytes into a region of size 1 [-Wstringop-overflow=]
+arch/loongarch/include/asm/atomic.h:174:9: warning: array subscript 1 is outside array bounds of 'struct cpumask[1]' [-Warray-bounds]
+arch/parisc/mm/init.c:285:46: warning: array subscript -269484032 is outside array bounds of 'char[2147483647]' [-Warray-bounds]
+arch/sparc/include/asm/string.h:15:25: warning: writing 12 bytes into a region of size 1 [-Wstringop-overflow=]
+arch/sparc/mm/init_64.c:3073:31: error: array subscript -1 is outside array bounds of 'char[]' [-Werror=array-bounds]
+drivers/gpu/drm/sun4i/sun8i_tcon_top.c:204:19: warning: array subscript 0 is outside array bounds of 'const bool[0]' {aka 'const _Bool[]'} [-Warray-bounds]
+drivers/net/ethernet/broadcom/bnxt/bnxt_dcb.c:133:17: warning: writing 12 bytes into a region of size 1 [-Wstringop-overflow=]
+drivers/net/ethernet/microchip/sparx5/sparx5_psfp.c:167:31: warning: array subscript 4 is above array bounds of 'const struct sparx5_psfp_gce[4]' [-Warray-bounds]
+drivers/soc/qcom/llcc-qcom.c:1038:17: warning: array subscript 0 is outside array bounds of 'const bool[0]' {aka 'const _Bool[]'} [-Warray-bounds]
+drivers/spi/spi-stm32.c:1808:17: warning: array subscript 0 is outside array bounds of 'const bool[0]' {aka 'const _Bool[]'} [-Warray-bounds]
+include/asm-generic/io.h:116:16: warning: array subscript 0 is outside array bounds of 'const volatile void[0]' [-Warray-bounds]
+include/asm-generic/io.h:150:38: warning: array subscript 0 is outside array bounds of 'volatile void[0]' [-Warray-bounds]
+include/linux/fortify-string.h:57:33: warning: writing 12 bytes into a region of size 1 [-Wstringop-overflow=]
+include/linux/fortify-string.h:57:33: warning: writing 4 bytes into a region of size between 18446744073709551613 and 2 [-Wstringop-overflow=]
+include/linux/iio/buffer.h:42:46: warning: array subscript 'int64_t {aka long long int}[0]' is partly outside array bounds of 's16[1]' {aka 'short int[1]'} [-Warray-bounds]
+include/linux/list.h:73:19: warning: array subscript 0 is outside array bounds of 'struct list_head[0]' [-Warray-bounds]
+include/net/xfrm.h:1363:19: warning: array subscript 'xfrm_address_t[0]' is partly outside array bounds of '__be32[1]' {aka 'unsigned int[1]'} [-Warray-bounds]
+kernel/bpf/net_namespace.c:437:27: warning: array subscript [0, 1] is outside array bounds of 'struct bpf_prog *[2]' [-Warray-bounds]
+sound/core/ump.c:716:25: warning: array subscript 'struct snd_ump_block_info[0]' is partly outside array bounds of 'char[20]' [-Warray-bounds]
+sound/soc/sunxi/sun8i-codec-analog.c:760:19: warning: array subscript 0 is outside array bounds of 'const bool[0]' {aka 'const _Bool[]'} [-Warray-bounds]
+sound/soc/tegra/tegra_asoc_machine.c:486:17: warning: array subscript 0 is outside array bounds of 'const bool[0]' {aka 'const _Bool[]'} [-Warray-bounds]
 
-diff --git a/sound/soc/fsl/fsl_micfil.c b/sound/soc/fsl/fsl_micfil.c
-index fe28b27e50d0..97cf315781ab 100644
---- a/sound/soc/fsl/fsl_micfil.c
-+++ b/sound/soc/fsl/fsl_micfil.c
-@@ -1,4 +1,4 @@
--// SPDX-License-Identifier: GPL-2.0
-+// SPDX-License-Identifier: GPL-2.0 OR BSD-3-Clause
- // Copyright 2018 NXP
- 
- #include <linux/bitfield.h>
-@@ -1254,4 +1254,4 @@ module_platform_driver(fsl_micfil_driver);
- 
- MODULE_AUTHOR("Cosmin-Gabriel Samoila <cosmin.samoila@nxp.com>");
- MODULE_DESCRIPTION("NXP PDM Microphone Interface (MICFIL) driver");
--MODULE_LICENSE("GPL v2");
-+MODULE_LICENSE("Dual BSD/GPL");
-diff --git a/sound/soc/fsl/fsl_micfil.h b/sound/soc/fsl/fsl_micfil.h
-index 9237a1c4cb8f..fee9fe3d9119 100644
---- a/sound/soc/fsl/fsl_micfil.h
-+++ b/sound/soc/fsl/fsl_micfil.h
-@@ -1,4 +1,4 @@
--/* SPDX-License-Identifier: GPL-2.0 */
-+/* SPDX-License-Identifier: GPL-2.0 OR BSD-3-Clause */
- /*
-  * PDM Microphone Interface for the NXP i.MX SoC
-  * Copyright 2018 NXP
+Unverified Error/Warning (likely false positive, please contact us if interested):
+
+arch/m68k/include/asm/io_no.h:23:72: warning: array subscript 0 is outside array bounds of 'volatile u8[0]' {aka 'volatile unsigned char[]'} [-Warray-bounds]
+
+Error/Warning ids grouped by kconfigs:
+
+gcc_recent_errors
+|-- alpha-allyesconfig
+|   |-- arch-alpha-include-asm-string.h:warning:writing-bytes-into-a-region-of-size
+|   |-- drivers-net-ethernet-microchip-sparx5-sparx5_psfp.c:warning:array-subscript-is-above-array-bounds-of-const-struct-sparx5_psfp_gce
+|   `-- include-linux-iio-buffer.h:warning:array-subscript-int64_t-aka-long-long-int-is-partly-outside-array-bounds-of-s16-aka-short-int
+|-- arc-allyesconfig
+|   `-- include-linux-iio-buffer.h:warning:array-subscript-int64_t-aka-long-long-int-is-partly-outside-array-bounds-of-s16-aka-short-int
+|-- arm-allmodconfig
+|   |-- drivers-net-ethernet-microchip-sparx5-sparx5_psfp.c:warning:array-subscript-is-above-array-bounds-of-const-struct-sparx5_psfp_gce
+|   |-- include-linux-fortify-string.h:warning:writing-bytes-into-a-region-of-size
+|   `-- include-linux-iio-buffer.h:warning:array-subscript-int64_t-aka-long-long-int-is-partly-outside-array-bounds-of-s16-aka-short-int
+|-- arm-allyesconfig
+|   |-- drivers-net-ethernet-microchip-sparx5-sparx5_psfp.c:warning:array-subscript-is-above-array-bounds-of-const-struct-sparx5_psfp_gce
+|   |-- include-linux-fortify-string.h:warning:writing-bytes-into-a-region-of-size
+|   `-- include-linux-iio-buffer.h:warning:array-subscript-int64_t-aka-long-long-int-is-partly-outside-array-bounds-of-s16-aka-short-int
+|-- arm64-allyesconfig
+|   |-- include-linux-fortify-string.h:warning:writing-bytes-into-a-region-of-size
+|   `-- include-linux-iio-buffer.h:warning:array-subscript-int64_t-aka-long-long-int-is-partly-outside-array-bounds-of-s16-aka-short-int
+|-- i386-allyesconfig
+|   |-- drivers-net-ethernet-microchip-sparx5-sparx5_psfp.c:warning:array-subscript-is-above-array-bounds-of-const-struct-sparx5_psfp_gce
+|   |-- include-linux-fortify-string.h:warning:writing-bytes-into-a-region-of-size
+|   `-- include-linux-iio-buffer.h:warning:array-subscript-int64_t-aka-long-long-int-is-partly-outside-array-bounds-of-s16-aka-short-int
+|-- i386-randconfig-i005-20230731
+|   `-- kernel-bpf-net_namespace.c:warning:array-subscript-is-outside-array-bounds-of-struct-bpf_prog
+|-- i386-randconfig-i006-20230731
+|   `-- sound-core-ump.c:warning:array-subscript-struct-snd_ump_block_info-is-partly-outside-array-bounds-of-char
+|-- loongarch-randconfig-r052-20230802
+|   `-- arch-loongarch-include-asm-atomic.h:warning:array-subscript-is-outside-array-bounds-of-struct-cpumask
+|-- m68k-allmodconfig
+|   `-- include-linux-iio-buffer.h:warning:array-subscript-int64_t-aka-long-long-int-is-partly-outside-array-bounds-of-s16-aka-short-int
+|-- m68k-allyesconfig
+|   `-- include-linux-iio-buffer.h:warning:array-subscript-int64_t-aka-long-long-int-is-partly-outside-array-bounds-of-s16-aka-short-int
+|-- m68k-randconfig-r083-20230730
+|   `-- arch-m68k-include-asm-io_no.h:warning:array-subscript-is-outside-array-bounds-of-volatile-u8-aka-volatile-unsigned-char
+|-- microblaze-randconfig-r093-20230730
+|   |-- include-asm-generic-io.h:warning:array-subscript-is-outside-array-bounds-of-const-volatile-void
+|   `-- include-asm-generic-io.h:warning:array-subscript-is-outside-array-bounds-of-volatile-void
+|-- mips-allmodconfig
+|   |-- include-linux-fortify-string.h:warning:writing-bytes-into-a-region-of-size
+|   `-- include-linux-iio-buffer.h:warning:array-subscript-int64_t-aka-long-long-int-is-partly-outside-array-bounds-of-s16-aka-short-int
+|-- mips-allyesconfig
+|   |-- include-linux-fortify-string.h:warning:writing-bytes-into-a-region-of-size
+|   `-- include-linux-iio-buffer.h:warning:array-subscript-int64_t-aka-long-long-int-is-partly-outside-array-bounds-of-s16-aka-short-int
+|-- nios2-randconfig-r032-20230731
+|   |-- include-asm-generic-io.h:warning:array-subscript-is-outside-array-bounds-of-const-volatile-void
+|   `-- include-asm-generic-io.h:warning:array-subscript-is-outside-array-bounds-of-volatile-void
+|-- nios2-randconfig-r081-20230730
+|   |-- include-asm-generic-io.h:warning:array-subscript-is-outside-array-bounds-of-const-volatile-void
+|   `-- include-asm-generic-io.h:warning:array-subscript-is-outside-array-bounds-of-volatile-void
+|-- parisc-allyesconfig
+|   |-- drivers-net-ethernet-broadcom-bnxt-bnxt_dcb.c:warning:writing-bytes-into-a-region-of-size
+|   `-- include-linux-iio-buffer.h:warning:array-subscript-int64_t-aka-long-long-int-is-partly-outside-array-bounds-of-s16-aka-short-int
+|-- parisc-randconfig-r006-20230801
+|   |-- arch-parisc-mm-init.c:warning:array-subscript-is-outside-array-bounds-of-char
+|   |-- drivers-soc-qcom-llcc-qcom.c:warning:array-subscript-is-outside-array-bounds-of-const-bool-aka-const-_Bool
+|   |-- sound-soc-sunxi-sun8i-codec-analog.c:warning:array-subscript-is-outside-array-bounds-of-const-bool-aka-const-_Bool
+|   `-- sound-soc-tegra-tegra_asoc_machine.c:warning:array-subscript-is-outside-array-bounds-of-const-bool-aka-const-_Bool
+|-- parisc-randconfig-r026-20230731
+|   |-- arch-parisc-mm-init.c:warning:array-subscript-is-outside-array-bounds-of-char
+|   `-- include-net-xfrm.h:warning:array-subscript-xfrm_address_t-is-partly-outside-array-bounds-of-__be32-aka-unsigned-int
+|-- powerpc-allmodconfig
+|   |-- drivers-net-ethernet-microchip-sparx5-sparx5_psfp.c:warning:array-subscript-is-above-array-bounds-of-const-struct-sparx5_psfp_gce
+|   |-- include-linux-fortify-string.h:warning:writing-bytes-into-a-region-of-size
+|   `-- include-linux-iio-buffer.h:warning:array-subscript-int64_t-aka-long-long-int-is-partly-outside-array-bounds-of-s16-aka-short-int
+|-- riscv-allmodconfig
+|   |-- include-linux-fortify-string.h:warning:writing-bytes-into-a-region-of-size
+|   `-- include-linux-iio-buffer.h:warning:array-subscript-int64_t-aka-long-long-int-is-partly-outside-array-bounds-of-s16-aka-short-int
+|-- riscv-allyesconfig
+|   |-- include-linux-fortify-string.h:warning:writing-bytes-into-a-region-of-size
+|   `-- include-linux-iio-buffer.h:warning:array-subscript-int64_t-aka-long-long-int-is-partly-outside-array-bounds-of-s16-aka-short-int
+|-- s390-allmodconfig
+|   `-- include-linux-iio-buffer.h:warning:array-subscript-int64_t-aka-long-long-int-is-partly-outside-array-bounds-of-s16-aka-short-int
+|-- s390-allyesconfig
+|   |-- include-linux-fortify-string.h:warning:writing-bytes-into-a-region-of-size
+|   `-- include-linux-iio-buffer.h:warning:array-subscript-int64_t-aka-long-long-int-is-partly-outside-array-bounds-of-s16-aka-short-int
+|-- sh-allmodconfig
+|   |-- drivers-net-ethernet-microchip-sparx5-sparx5_psfp.c:warning:array-subscript-is-above-array-bounds-of-const-struct-sparx5_psfp_gce
+|   |-- include-linux-iio-buffer.h:warning:array-subscript-int64_t-aka-long-long-int-is-partly-outside-array-bounds-of-s16-aka-short-int
+|   `-- include-linux-list.h:warning:array-subscript-is-outside-array-bounds-of-struct-list_head
+|-- sparc-allyesconfig
+|   |-- arch-sparc-include-asm-string.h:warning:writing-bytes-into-a-region-of-size
+|   |-- arch-sparc-mm-init_64.c:error:array-subscript-is-outside-array-bounds-of-char
+|   |-- drivers-net-ethernet-microchip-sparx5-sparx5_psfp.c:warning:array-subscript-is-above-array-bounds-of-const-struct-sparx5_psfp_gce
+|   `-- include-linux-iio-buffer.h:warning:array-subscript-int64_t-aka-long-long-int-is-partly-outside-array-bounds-of-s16-aka-short-int
+|-- sparc-defconfig
+|   |-- include-asm-generic-io.h:warning:array-subscript-is-outside-array-bounds-of-const-volatile-void
+|   `-- include-asm-generic-io.h:warning:array-subscript-is-outside-array-bounds-of-volatile-void
+|-- sparc64-randconfig-r035-20230731
+|   |-- arch-sparc-mm-init_64.c:error:array-subscript-is-outside-array-bounds-of-char
+|   `-- kernel-bpf-net_namespace.c:warning:array-subscript-is-outside-array-bounds-of-struct-bpf_prog
+|-- sparc64-randconfig-r054-20230802
+|   `-- arch-sparc-mm-init_64.c:error:array-subscript-is-outside-array-bounds-of-char
+|-- x86_64-allyesconfig
+|   |-- drivers-net-ethernet-microchip-sparx5-sparx5_psfp.c:warning:array-subscript-is-above-array-bounds-of-const-struct-sparx5_psfp_gce
+|   |-- include-linux-fortify-string.h:warning:writing-bytes-into-a-region-of-size
+|   `-- include-linux-iio-buffer.h:warning:array-subscript-int64_t-aka-long-long-int-is-partly-outside-array-bounds-of-s16-aka-short-int
+|-- x86_64-buildonly-randconfig-r002-20230731
+|   |-- drivers-gpu-drm-sun4i-sun8i_tcon_top.c:warning:array-subscript-is-outside-array-bounds-of-const-bool-aka-const-_Bool
+|   |-- drivers-spi-spi-stm32.c:warning:array-subscript-is-outside-array-bounds-of-const-bool-aka-const-_Bool
+|   `-- include-linux-fortify-string.h:warning:writing-bytes-into-a-region-of-size-between-and
+|-- x86_64-randconfig-r004-20230801
+|   `-- include-linux-list.h:warning:array-subscript-is-outside-array-bounds-of-struct-list_head
+|-- x86_64-randconfig-r005-20230801
+|   `-- include-linux-list.h:warning:array-subscript-is-outside-array-bounds-of-struct-list_head
+|-- x86_64-randconfig-x011-20230731
+|   `-- kernel-bpf-net_namespace.c:warning:array-subscript-is-outside-array-bounds-of-struct-bpf_prog
+`-- x86_64-randconfig-x015-20230731
+    `-- include-linux-list.h:warning:array-subscript-is-outside-array-bounds-of-struct-list_head
+
+elapsed time: 722m
+
+configs tested: 123
+configs skipped: 5
+
+tested configs:
+alpha                            allyesconfig   gcc  
+alpha                               defconfig   gcc  
+alpha                randconfig-r002-20230801   gcc  
+alpha                randconfig-r024-20230731   gcc  
+arc                              allyesconfig   gcc  
+arc                          axs103_defconfig   gcc  
+arc                                 defconfig   gcc  
+arc                  randconfig-r043-20230731   gcc  
+arm                              allmodconfig   gcc  
+arm                              allyesconfig   gcc  
+arm                                 defconfig   gcc  
+arm                          pxa168_defconfig   clang
+arm                  randconfig-r011-20230801   gcc  
+arm                  randconfig-r046-20230731   gcc  
+arm                       versatile_defconfig   clang
+arm64                            allyesconfig   gcc  
+arm64                               defconfig   gcc  
+csky                                defconfig   gcc  
+hexagon              randconfig-r041-20230731   clang
+hexagon              randconfig-r045-20230731   clang
+i386                             allyesconfig   gcc  
+i386         buildonly-randconfig-r004-20230731   gcc  
+i386         buildonly-randconfig-r005-20230731   gcc  
+i386         buildonly-randconfig-r006-20230731   gcc  
+i386                              debian-10.3   gcc  
+i386                                defconfig   gcc  
+i386                 randconfig-i001-20230731   gcc  
+i386                 randconfig-i002-20230731   gcc  
+i386                 randconfig-i003-20230731   gcc  
+i386                 randconfig-i004-20230731   gcc  
+i386                 randconfig-i005-20230731   gcc  
+i386                 randconfig-i006-20230731   gcc  
+i386                 randconfig-i011-20230801   clang
+i386                 randconfig-i012-20230801   clang
+i386                 randconfig-i013-20230801   clang
+i386                 randconfig-i014-20230801   clang
+i386                 randconfig-i015-20230801   clang
+i386                 randconfig-i016-20230801   clang
+loongarch                        allmodconfig   gcc  
+loongarch                         allnoconfig   gcc  
+loongarch                           defconfig   gcc  
+m68k                             allmodconfig   gcc  
+m68k                             allyesconfig   gcc  
+m68k                          atari_defconfig   gcc  
+m68k                                defconfig   gcc  
+m68k                 randconfig-r016-20230801   gcc  
+m68k                 randconfig-r033-20230731   gcc  
+m68k                        stmark2_defconfig   gcc  
+microblaze           randconfig-r022-20230731   gcc  
+mips                             allmodconfig   gcc  
+mips                             allyesconfig   gcc  
+mips                        bcm47xx_defconfig   gcc  
+mips                         db1xxx_defconfig   gcc  
+mips                       lemote2f_defconfig   clang
+mips                      loongson3_defconfig   gcc  
+mips                           xway_defconfig   gcc  
+nios2                               defconfig   gcc  
+nios2                randconfig-r032-20230731   gcc  
+openrisc             randconfig-r015-20230801   gcc  
+openrisc             randconfig-r025-20230731   gcc  
+parisc                           allyesconfig   gcc  
+parisc                              defconfig   gcc  
+parisc               randconfig-r006-20230801   gcc  
+parisc               randconfig-r026-20230731   gcc  
+parisc64                            defconfig   gcc  
+powerpc                          allmodconfig   gcc  
+powerpc                           allnoconfig   gcc  
+powerpc                 linkstation_defconfig   gcc  
+powerpc                      pcm030_defconfig   gcc  
+riscv                            allmodconfig   gcc  
+riscv                             allnoconfig   gcc  
+riscv                            allyesconfig   gcc  
+riscv                               defconfig   gcc  
+riscv                randconfig-r012-20230801   clang
+riscv                randconfig-r034-20230731   gcc  
+riscv                randconfig-r042-20230731   clang
+riscv                          rv32_defconfig   gcc  
+s390                             allmodconfig   gcc  
+s390                             allyesconfig   gcc  
+s390                                defconfig   gcc  
+s390                 randconfig-r044-20230731   clang
+sh                               allmodconfig   gcc  
+sh                   randconfig-r001-20230801   gcc  
+sh                   rts7751r2dplus_defconfig   gcc  
+sh                           se7721_defconfig   gcc  
+sh                        sh7763rdp_defconfig   gcc  
+sh                             shx3_defconfig   gcc  
+sh                            titan_defconfig   gcc  
+sparc                            allyesconfig   gcc  
+sparc                               defconfig   gcc  
+sparc64              randconfig-r035-20230731   gcc  
+um                               allmodconfig   clang
+um                                allnoconfig   clang
+um                               allyesconfig   clang
+um                                  defconfig   gcc  
+um                             i386_defconfig   gcc  
+um                   randconfig-r003-20230801   clang
+um                   randconfig-r014-20230801   gcc  
+um                   randconfig-r031-20230731   clang
+um                           x86_64_defconfig   gcc  
+x86_64                           allyesconfig   gcc  
+x86_64       buildonly-randconfig-r001-20230731   gcc  
+x86_64       buildonly-randconfig-r002-20230731   gcc  
+x86_64       buildonly-randconfig-r003-20230731   gcc  
+x86_64                              defconfig   gcc  
+x86_64                                  kexec   gcc  
+x86_64               randconfig-r004-20230801   gcc  
+x86_64               randconfig-r005-20230801   gcc  
+x86_64               randconfig-r021-20230731   clang
+x86_64               randconfig-x001-20230731   clang
+x86_64               randconfig-x002-20230731   clang
+x86_64               randconfig-x003-20230731   clang
+x86_64               randconfig-x004-20230731   clang
+x86_64               randconfig-x005-20230731   clang
+x86_64               randconfig-x006-20230731   clang
+x86_64               randconfig-x011-20230731   gcc  
+x86_64               randconfig-x012-20230731   gcc  
+x86_64               randconfig-x013-20230731   gcc  
+x86_64               randconfig-x014-20230731   gcc  
+x86_64               randconfig-x015-20230731   gcc  
+x86_64               randconfig-x016-20230731   gcc  
+x86_64                          rhel-8.3-rust   clang
+x86_64                               rhel-8.3   gcc  
+
 -- 
-2.25.1
-
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
