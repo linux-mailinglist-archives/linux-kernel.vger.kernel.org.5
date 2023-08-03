@@ -2,64 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B141976ED12
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 16:46:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DD08876ED19
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 16:47:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236318AbjHCOqd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Aug 2023 10:46:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56812 "EHLO
+        id S236606AbjHCOrO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Aug 2023 10:47:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58418 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235729AbjHCOq0 (ORCPT
+        with ESMTP id S236724AbjHCOrD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Aug 2023 10:46:26 -0400
+        Thu, 3 Aug 2023 10:47:03 -0400
 Received: from domac.alu.hr (domac.alu.unizg.hr [IPv6:2001:b68:2:2800::3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00FEE1990;
-        Thu,  3 Aug 2023 07:46:18 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00AB53ABA;
+        Thu,  3 Aug 2023 07:46:47 -0700 (PDT)
 Received: from localhost (localhost [127.0.0.1])
-        by domac.alu.hr (Postfix) with ESMTP id 860C060182;
-        Thu,  3 Aug 2023 16:46:15 +0200 (CEST)
+        by domac.alu.hr (Postfix) with ESMTP id 87B1B60182;
+        Thu,  3 Aug 2023 16:46:46 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=alu.unizg.hr; s=mail;
-        t=1691073975; bh=zPRICqcQrDX+dOl4TyFlg90/BDxv5KpvXkkuz6MfLJw=;
-        h=From:To:Cc:Subject:Date:From;
-        b=sO6EiGr5SE2IcALEBhXz0OEzX4s+Pt+uIm88EBTEr2vjiV9dipwFtlUS00kMO9EVl
-         18FSJaJ2eStHmrEjZ0Jtfr1YEBMRrsG8hpUKr369NsTVJTkTy75WEeh/CwWheUtnqm
-         iglC4pstbxrkg+orPupsmOYTIrcDD2SIIg/dP3JF9D1N9DZkUyPEoUJXTLz6fyHRjh
-         hO8kPG2wEEGy1EZCOcNQwJlXxa6Xq4Wnrl1baZO+9s34GHNm4CRWdM3bJ5tDFphZDg
-         7NkFevOcIYMNubPeVwpAbJhwxiRBpabYLSqXgJQXkJhchZ7tX6bUH7LXNyqPFLIJsw
-         a06rZRxvicRXA==
+        t=1691074006; bh=XDroynnUjUBJEtp/2QLFLkXj09Awer2npj4c8l8wtN8=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=W5AXfG833jMfoDSe+SbeS9XN/NVK+m1mUJtLdOHhRGQo1QKdIsszFGfCUQHcrx0LX
+         xm2Yzem9Mi8L79lyxJWrXLe3aHVUcRccmmdBEZT+qHRW8hE3ArFxGAyXupgXpuTq24
+         Tm6kw0it3oO4ozMW2147W+pjS/Vykt6K0RimBWGxNJ+Wuwk0Rk7xXd6Opi/nvQ8pSB
+         WsBw3ruZfXzFvCL7ipbXXd95YMgNeRKCE0SjImyt8elDKHo+weO7Fslwx1CsIzxnwO
+         DlQLC7B2MxNe4QtjyAYF9KzLP3Spm18cAefxPER/8Uf4Z/iWnlmzWeaBirUEg4XGTZ
+         JGJWqsitMdA+Q==
 X-Virus-Scanned: Debian amavisd-new at domac.alu.hr
 Received: from domac.alu.hr ([127.0.0.1])
         by localhost (domac.alu.hr [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id kycRNmb8NNVd; Thu,  3 Aug 2023 16:46:12 +0200 (CEST)
+        with ESMTP id clE_6VX2vetW; Thu,  3 Aug 2023 16:46:44 +0200 (CEST)
 Received: from pc-mtodorov.slava.alu.hr (pc-mtodorov.slava.alu.hr [193.198.186.200])
-        by domac.alu.hr (Postfix) with ESMTPSA id 67E1C6017F;
-        Thu,  3 Aug 2023 16:46:12 +0200 (CEST)
+        by domac.alu.hr (Postfix) with ESMTPSA id 05FFD6017F;
+        Thu,  3 Aug 2023 16:46:44 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=alu.unizg.hr; s=mail;
-        t=1691073972; bh=zPRICqcQrDX+dOl4TyFlg90/BDxv5KpvXkkuz6MfLJw=;
-        h=From:To:Cc:Subject:Date:From;
-        b=wPl9DwfRlX6rACkg83O1zyXRqo1tjYC8s325SYmmMuM0eHkOIDvcKVXAPMhLF6ozc
-         WsSbnVL6mL+i9WpZVqrYrEd9pTOPi3cP0PMGNZDe1N8bOZoUs3Oe/RErdJTAXWHeR3
-         3FZraJaQ95Ia/CHFzTKB9e4vhmv5D94aMdRj5M3NOMT3aO+lBbyjX0rbJzAx8fl0nv
-         7J44VRTVZTN7BuKFNrRB1rvjJU1fUjY9nSxZHQWF3IYC7Dal9vWg7pTW5uVLcpCAdh
-         4I8akP1GUiwtnKtHryOUgOFkxLSomUO4ARD9KZGMmg6HHgZ06r/h0WQqokBuEItmFO
-         RmeggvFvn9jyg==
+        t=1691074004; bh=XDroynnUjUBJEtp/2QLFLkXj09Awer2npj4c8l8wtN8=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=HNpxiyMQHHvXmeiafqhFrS9euCBk6QcmVGJU/oDITpjolO9qoZV61J5TuxkbgYV0c
+         5cuAAw8iK/Vy3bOSROhceS1/uPbAbkzu7HjH0/WXW4BFUujYcsoHvru4hX2QI4/gTL
+         9m8BhgGgWNxkf6T0WIQRdXI6XL66cu3yYtr8lbaRK1MxP93uUKOHcccv3R2F72jpSw
+         deBN4SJQnUZOKJ49U0duvGDeJUjgavIZu871YKYM3JqUQ5HsQwV2i1JkTF6zD7fbtd
+         3ArwUiKJiDCcc0ZaZ+6inAU5iCm3oFjuUJUbzcaDs+CLc465N8rJ0Gwgj2PhGqkOtU
+         IIob2jRq1SDQg==
 From:   Mirsad Todorovac <mirsad.todorovac@alu.unizg.hr>
 To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Mirsad Todorovac <mirsad.todorovac@alu.unizg.hr>,
         linux-kernel@vger.kernel.org
-Cc:     "Luis R . Rodriguez" <mcgrof@kernel.org>,
-        Russ Weight <russell.h.weight@intel.com>,
-        Takashi Iwai <tiwai@suse.de>,
-        Tianfei Zhang <tianfei.zhang@intel.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Colin Ian King <colin.i.king@gmail.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        linux-kselftest@vger.kernel.org, stable@vger.kernel.org,
-        Dan Carpenter <error27@gmail.com>
-Subject: [PATCH v2 1/2] test_firmware: prevent race conditions by a correct implementation of locking
-Date:   Thu,  3 Aug 2023 16:44:51 +0200
-Message-Id: <20230803144451.3571-1-mirsad.todorovac@alu.unizg.hr>
+Cc:     Dan Carpenter <error27@gmail.com>, Takashi Iwai <tiwai@suse.de>,
+        Kees Cook <keescook@chromium.org>,
+        "Luis R . Rodriguez" <mcgrof@kernel.org>,
+        Brian Norris <computersforpeace@gmail.com>,
+        stable@vger.kernel.org
+Subject: [PATCH v2 2/2] test_firmware: return ENOMEM instead of ENOSPC on failed memory allocation
+Date:   Thu,  3 Aug 2023 16:44:53 +0200
+Message-Id: <20230803144451.3571-2-mirsad.todorovac@alu.unizg.hr>
 X-Mailer: git-send-email 2.39.3
+In-Reply-To: <20230803144451.3571-1-mirsad.todorovac@alu.unizg.hr>
+References: <20230803144451.3571-1-mirsad.todorovac@alu.unizg.hr>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -71,204 +69,99 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-[ Upstream commit 4acfe3dfde685a5a9eaec5555351918e2d7266a1 ]
+[ Upstream commit 7dae593cd226a0bca61201cf85ceb9335cf63682 ]
 
-Dan Carpenter spotted a race condition in a couple of situations like
-these in the test_firmware driver:
+In a couple of situations like
 
-static int test_dev_config_update_u8(const char *buf, size_t size, u8 *cfg)
-{
-        u8 val;
-        int ret;
+	name = kstrndup(buf, count, GFP_KERNEL);
+	if (!name)
+		return -ENOSPC;
 
-        ret = kstrtou8(buf, 10, &val);
-        if (ret)
-                return ret;
+the error is not actually "No space left on device", but "Out of memory".
 
-        mutex_lock(&test_fw_mutex);
-        *(u8 *)cfg = val;
-        mutex_unlock(&test_fw_mutex);
+It is semantically correct to return -ENOMEM in all failed kstrndup()
+and kzalloc() cases in this driver, as it is not a problem with disk
+space, but with kernel memory allocator failing allocation.
 
-        /* Always return full write size even if we didn't consume all */
-        return size;
-}
+The semantically correct should be:
 
-static ssize_t config_num_requests_store(struct device *dev,
-                                         struct device_attribute *attr,
-                                         const char *buf, size_t count)
-{
-        int rc;
+        name = kstrndup(buf, count, GFP_KERNEL);
+        if (!name)
+                return -ENOMEM;
 
-        mutex_lock(&test_fw_mutex);
-        if (test_fw_config->reqs) {
-                pr_err("Must call release_all_firmware prior to changing config\n");
-                rc = -EINVAL;
-                mutex_unlock(&test_fw_mutex);
-                goto out;
-        }
-        mutex_unlock(&test_fw_mutex);
-
-        // NOTE: HERE is the race!!! Function can be preempted!
-
-        // test_fw_config->reqs can change between the release of
-        // the lock about and acquire of the lock in the
-        // test_dev_config_update_u8()
-
-        rc = test_dev_config_update_u8(buf, count,
-                                       &test_fw_config->num_requests);
-
-out:
-        return rc;
-}
-
-static ssize_t config_read_fw_idx_store(struct device *dev,
-                                        struct device_attribute *attr,
-                                        const char *buf, size_t count)
-{
-        return test_dev_config_update_u8(buf, count,
-                                         &test_fw_config->read_fw_idx);
-}
-
-The function test_dev_config_update_u8() is called from both the locked
-and the unlocked context, function config_num_requests_store() and
-config_read_fw_idx_store() which can both be called asynchronously as
-they are driver's methods, while test_dev_config_update_u8() and siblings
-change their argument pointed to by u8 *cfg or similar pointer.
-
-To avoid deadlock on test_fw_mutex, the lock is dropped before calling
-test_dev_config_update_u8() and re-acquired within test_dev_config_update_u8()
-itself, but alas this creates a race condition.
-
-Having two locks wouldn't assure a race-proof mutual exclusion.
-
-This situation is best avoided by the introduction of a new, unlocked
-function __test_dev_config_update_u8() which can be called from the locked
-context and reducing test_dev_config_update_u8() to:
-
-static int test_dev_config_update_u8(const char *buf, size_t size, u8 *cfg)
-{
-        int ret;
-
-        mutex_lock(&test_fw_mutex);
-        ret = __test_dev_config_update_u8(buf, size, cfg);
-        mutex_unlock(&test_fw_mutex);
-
-        return ret;
-}
-
-doing the locking and calling the unlocked primitive, which enables both
-locked and unlocked versions without duplication of code.
-
-Fixes: c92316bf8e948 ("test_firmware: add batched firmware tests")
-Cc: Luis R. Rodriguez <mcgrof@kernel.org>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: Russ Weight <russell.h.weight@intel.com>
+Cc: Dan Carpenter <error27@gmail.com>
 Cc: Takashi Iwai <tiwai@suse.de>
-Cc: Tianfei Zhang <tianfei.zhang@intel.com>
-Cc: Shuah Khan <shuah@kernel.org>
-Cc: Colin Ian King <colin.i.king@gmail.com>
-Cc: Randy Dunlap <rdunlap@infradead.org>
-Cc: linux-kselftest@vger.kernel.org
-Cc: stable@vger.kernel.org # v5.4, 4.19
-Suggested-by: Dan Carpenter <error27@gmail.com>
-Link: https://lore.kernel.org/r/20230509084746.48259-1-mirsad.todorovac@alu.unizg.hr
+Cc: Kees Cook <keescook@chromium.org>
+Cc: Luis R. Rodriguez <mcgrof@kernel.org>
+Cc: Brian Norris <computersforpeace@gmail.com>
+Cc: stable@vger.kernel.org # 4.19, 4.14
+Fixes: c92316bf8e948 ("test_firmware: add batched firmware tests")
+Fixes: 0a8adf584759c ("test: add firmware_class loader test")
+Fixes: eb910947c82f9 ("test: firmware_class: add asynchronous request trigger")
+Fixes: 061132d2b9c95 ("test_firmware: add test custom fallback trigger")
+Fixes: 7feebfa487b92 ("test_firmware: add support for request_firmware_into_buf")
+Link: https://lore.kernel.org/all/20230606070808.9300-1-mirsad.todorovac@alu.unizg.hr/
 Signed-off-by: Mirsad Todorovac <mirsad.todorovac@alu.unizg.hr>
 
-[ This is the patch to fix the racing condition in locking for the 5.4, ]
-[ 4.19 and 4.4 stable branches. Not all the fixes from the upstream     ]
-[ commit apply, but those which do are verbatim equal to those in the   ]
-[ upstream commit.                                                      ]
+[ This is the backport of the patch to specific to 5.4 branch. There are no		]
+[ semantic differences in the commit. Backport is provided for completeness sake	]
+[ so it would apply to all of the supported LTS kernels.				]
 ---
 v2:
- bundled locking and ENOSPC patches together.
- tested on 5.4 and 4.19 stable.
+ tested on 5.4 stable build.
 
- lib/test_firmware.c | 37 ++++++++++++++++++++++++++++---------
- 1 file changed, 28 insertions(+), 9 deletions(-)
+ lib/test_firmware.c | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
 diff --git a/lib/test_firmware.c b/lib/test_firmware.c
-index 38553944e967..92d7195d5b5b 100644
+index 92d7195d5b5b..dd3850ec1dfa 100644
 --- a/lib/test_firmware.c
 +++ b/lib/test_firmware.c
-@@ -301,16 +301,26 @@ static ssize_t config_test_show_str(char *dst,
- 	return len;
+@@ -173,7 +173,7 @@ static int __kstrncpy(char **dst, const char *name, size_t count, gfp_t gfp)
+ {
+ 	*dst = kstrndup(name, count, gfp);
+ 	if (!*dst)
+-		return -ENOSPC;
++		return -ENOMEM;
+ 	return count;
  }
  
--static int test_dev_config_update_bool(const char *buf, size_t size,
--				       bool *cfg)
-+static inline int __test_dev_config_update_bool(const char *buf, size_t size,
-+						bool *cfg)
- {
- 	int ret;
+@@ -509,7 +509,7 @@ static ssize_t trigger_request_store(struct device *dev,
  
--	mutex_lock(&test_fw_mutex);
- 	if (strtobool(buf, cfg) < 0)
- 		ret = -EINVAL;
- 	else
- 		ret = size;
-+
-+	return ret;
-+}
-+
-+static int test_dev_config_update_bool(const char *buf, size_t size,
-+				       bool *cfg)
-+{
-+	int ret;
-+
-+	mutex_lock(&test_fw_mutex);
-+	ret = __test_dev_config_update_bool(buf, size, cfg);
- 	mutex_unlock(&test_fw_mutex);
+ 	name = kstrndup(buf, count, GFP_KERNEL);
+ 	if (!name)
+-		return -ENOSPC;
++		return -ENOMEM;
  
- 	return ret;
-@@ -340,7 +350,7 @@ static ssize_t test_dev_config_show_int(char *buf, int cfg)
- 	return snprintf(buf, PAGE_SIZE, "%d\n", val);
- }
+ 	pr_info("loading '%s'\n", name);
  
--static int test_dev_config_update_u8(const char *buf, size_t size, u8 *cfg)
-+static inline int __test_dev_config_update_u8(const char *buf, size_t size, u8 *cfg)
- {
- 	int ret;
- 	long new;
-@@ -352,14 +362,23 @@ static int test_dev_config_update_u8(const char *buf, size_t size, u8 *cfg)
- 	if (new > U8_MAX)
- 		return -EINVAL;
+@@ -552,7 +552,7 @@ static ssize_t trigger_async_request_store(struct device *dev,
  
--	mutex_lock(&test_fw_mutex);
- 	*(u8 *)cfg = new;
--	mutex_unlock(&test_fw_mutex);
+ 	name = kstrndup(buf, count, GFP_KERNEL);
+ 	if (!name)
+-		return -ENOSPC;
++		return -ENOMEM;
  
- 	/* Always return full write size even if we didn't consume all */
- 	return size;
- }
+ 	pr_info("loading '%s'\n", name);
  
-+static int test_dev_config_update_u8(const char *buf, size_t size, u8 *cfg)
-+{
-+	int ret;
-+
-+	mutex_lock(&test_fw_mutex);
-+	ret = __test_dev_config_update_u8(buf, size, cfg);
-+	mutex_unlock(&test_fw_mutex);
-+
-+	return ret;
-+}
-+
- static ssize_t test_dev_config_show_u8(char *buf, u8 cfg)
- {
- 	u8 val;
-@@ -392,10 +411,10 @@ static ssize_t config_num_requests_store(struct device *dev,
- 		mutex_unlock(&test_fw_mutex);
- 		goto out;
- 	}
--	mutex_unlock(&test_fw_mutex);
+@@ -597,7 +597,7 @@ static ssize_t trigger_custom_fallback_store(struct device *dev,
  
--	rc = test_dev_config_update_u8(buf, count,
--				       &test_fw_config->num_requests);
-+	rc = __test_dev_config_update_u8(buf, count,
-+					 &test_fw_config->num_requests);
-+	mutex_unlock(&test_fw_mutex);
+ 	name = kstrndup(buf, count, GFP_KERNEL);
+ 	if (!name)
+-		return -ENOSPC;
++		return -ENOMEM;
  
- out:
- 	return rc;
+ 	pr_info("loading '%s' using custom fallback mechanism\n", name);
+ 
+@@ -648,7 +648,7 @@ static int test_fw_run_batch_request(void *data)
+ 
+ 		test_buf = kzalloc(TEST_FIRMWARE_BUF_SIZE, GFP_KERNEL);
+ 		if (!test_buf)
+-			return -ENOSPC;
++			return -ENOMEM;
+ 
+ 		req->rc = request_firmware_into_buf(&req->fw,
+ 						    req->name,
 -- 
 2.39.3
 
