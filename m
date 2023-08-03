@@ -2,92 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2520076DBFB
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 02:06:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E86C76DC00
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 02:08:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233534AbjHCAGu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Aug 2023 20:06:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52842 "EHLO
+        id S230509AbjHCAIH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Aug 2023 20:08:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53836 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232350AbjHCAGc (ORCPT
+        with ESMTP id S233471AbjHCAHj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Aug 2023 20:06:32 -0400
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C01E23A9F
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Aug 2023 17:06:03 -0700 (PDT)
-Received: by mail-yb1-xb49.google.com with SMTP id 3f1490d57ef6-d114bc2057fso368748276.3
-        for <linux-kernel@vger.kernel.org>; Wed, 02 Aug 2023 17:06:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1691021154; x=1691625954;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=24xpWy5jqWvnaUWcLSAqh6x2b0mz42plt2nZzdQyqhk=;
-        b=J0wDGRo3GVgo0cQOQvYi6z+1Z9xEECkzTI0o3sOeSAfztMRUBv0/edPKcXdVgWCJoN
-         bUCDfFYNfaRLtCy+y43YvhRDbIoeD4FrXPn0QCerDk0zwiIa77efRqrzAOpKZ1lpHnTo
-         XT+it1KSz15jDTo69J0uHerP9G7HuXFQZGLDa/fpIwCKafjhUpaShneLrzRcRyUD/85l
-         71nmJqWRNT9PhBXMISpzibjMCVWN22es9FNI8OCdF0YX/8G2Loi0sgWJTm9G6vo8SutM
-         bFe76GDNCL9EJk2+gVB4Nz4hpnV8MKjJh692U6w6wVr9AgD5Fr6/rGTaOis2kViFzGBr
-         8HxQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691021154; x=1691625954;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=24xpWy5jqWvnaUWcLSAqh6x2b0mz42plt2nZzdQyqhk=;
-        b=ImJlSL7wxhnt+f3AW2NnfUjDpgSdmUm3IyyVK/Qv676csi9e4nDUTxlfonWzqk06F7
-         WsLkiaXH1q5GMKc7jCWdIgQGZkTG8NuBtRuhS6PCw3Pc8u4ofzTRSHMbS6y2BUyMEKzc
-         mFDZkiEnVdw2TG+PWiOkYilW3C8VTIwtaRApzYWXWd5JhcLLZp8XTlLOAVRAXRlBpGix
-         QvfnztfOmUiTvCzswUQTzBfkyorC2fDyup2Q74JzfcwHTncbh3Cnftpji+Jd9KRq/cFW
-         cp94mQ2feueQLO0i31MryJyp7t+VtPBg5cISZBEvtu4aUUmU9tohBl+/tsFAnNpbu/9E
-         kujg==
-X-Gm-Message-State: ABy/qLY+/pBQC4Fk5EW9/Crk2fXkJY16gzf15/A42jqiA9QCqAqCAlo2
-        TwIHkBwMOh6FE7DIaxsmaVtbSCgR9NU=
-X-Google-Smtp-Source: APBJJlEmoDryPaAQoynG+0QllaP7SCbPdVOfYdjwezb/OIO5nbMPPapZeNIsHeV5kRXSKPVLYXRDkBg6IHU=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a05:6902:1582:b0:d0a:353b:b93b with SMTP id
- k2-20020a056902158200b00d0a353bb93bmr144582ybu.3.1691021154336; Wed, 02 Aug
- 2023 17:05:54 -0700 (PDT)
-Date:   Wed,  2 Aug 2023 17:05:51 -0700
-In-Reply-To: <20230721233858.2343941-1-seanjc@google.com>
-Mime-Version: 1.0
-References: <20230721233858.2343941-1-seanjc@google.com>
-X-Mailer: git-send-email 2.41.0.585.gd2178a4bd4-goog
-Message-ID: <169101967698.1829360.6805677761713115883.b4-ty@google.com>
-Subject: Re: [PATCH] KVM: VMX: Drop manual TLB flush when migrating vmcs.APIC_ACCESS_ADDR
-From:   Sean Christopherson <seanjc@google.com>
-To:     Sean Christopherson <seanjc@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>
-Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Yu Zhang <yu.c.zhang@linux.intel.com>,
-        Jim Mattson <jmattson@google.com>
-Content-Type: text/plain; charset="utf-8"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        USER_IN_DEF_DKIM_WL autolearn=ham autolearn_force=no version=3.4.6
+        Wed, 2 Aug 2023 20:07:39 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7562E30FD
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Aug 2023 17:06:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1691021190;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=E4JlhFPikF+sSc4TfuvT2iSqBvcIXhfFcOmWT8+LXOA=;
+        b=Phs/Px0stJCrHap5f7DXY6XJyTB6L+SlcR96PbFC2twx8/g4g8KjjED73AdfcsHdv9PkNc
+        Dzo6QFk1EMh+IpGjsYqbfpNVHZvydTi+hEGql3WRfoFjcrme6K2nQsNZ8B5/9R9vZ4v8iQ
+        aG3vsVsW26m+z+Fdo8IvYWVm0DnAbCI=
+Received: from mimecast-mx02.redhat.com (66.187.233.73 [66.187.233.73]) by
+ relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-30-y-ZaeKMtPM2ckAmg_G7-VA-1; Wed, 02 Aug 2023 20:06:25 -0400
+X-MC-Unique: y-ZaeKMtPM2ckAmg_G7-VA-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.rdu2.redhat.com [10.11.54.3])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id A16441C0782A;
+        Thu,  3 Aug 2023 00:06:24 +0000 (UTC)
+Received: from fedora (unknown [10.72.120.3])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 86EBC112132D;
+        Thu,  3 Aug 2023 00:06:06 +0000 (UTC)
+Date:   Thu, 3 Aug 2023 08:06:00 +0800
+From:   Ming Lei <ming.lei@redhat.com>
+To:     "Andreas Hindborg (Samsung)" <nmi@metaspace.dk>
+Cc:     Niklas Cassel <Niklas.Cassel@wdc.com>,
+        Matias =?iso-8859-1?Q?Bj=F8rling?= <Matias.Bjorling@wdc.com>,
+        open list <linux-kernel@vger.kernel.org>,
+        Damien Le Moal <dlemoal@kernel.org>,
+        Jens Axboe <axboe@kernel.dk>,
+        "gost.dev@samsung.com" <gost.dev@samsung.com>,
+        "hch@infradead.org" <hch@infradead.org>,
+        Johannes Thumshirn <jth@kernel.org>,
+        Aravind Ramesh <Aravind.Ramesh@wdc.com>,
+        "open list:BLOCK LAYER" <linux-block@vger.kernel.org>,
+        Hans Holmberg <Hans.Holmberg@wdc.com>,
+        Minwoo Im <minwoo.im.dev@gmail.com>
+Subject: Re: [PATCH v9 2/2] ublk: enable zoned storage support
+Message-ID: <ZMrvaE4FjdYya72P@fedora>
+References: <20230714072510.47770-1-nmi@metaspace.dk>
+ <20230714072510.47770-3-nmi@metaspace.dk>
+ <ZLfQjNK5j5lB68C/@x1-carbon>
+ <87il9zot9c.fsf@metaspace.dk>
+ <ZMkBbvb7EFyT/zGX@ovpn-8-18.pek2.redhat.com>
+ <87a5v9pzx7.fsf@metaspace.dk>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87a5v9pzx7.fsf@metaspace.dk>
+X-Scanned-By: MIMEDefang 3.1 on 10.11.54.3
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 21 Jul 2023 16:38:58 -0700, Sean Christopherson wrote:
-> Remove the superfluous flush of the current TLB in VMX's handling of
-> migration of the APIC-access page, as a full TLB flush on all vCPUs will
-> have already been performed in response to kvm_unmap_gfn_range() *if*
-> there were SPTEs pointing at the APIC-access page.  And if there were no
-> valid SPTEs, then there can't possibly be TLB entries to flush.
+On Wed, Aug 02, 2023 at 11:09:56AM +0200, Andreas Hindborg (Samsung) wrote:
 > 
-> The extra flush was added by commit fb6c81984313 ("kvm: vmx: Flush TLB
-> when the APIC-access address changes"), with the justification of "because
-> the SDM says so".  The SDM said, and still says:
+> Ming Lei <ming.lei@redhat.com> writes:
 > 
-> [...]
+> > On Tue, Aug 01, 2023 at 02:11:56PM +0200, Andreas Hindborg (Samsung) wrote:
+> >> 
+> >> Niklas Cassel <Niklas.Cassel@wdc.com> writes:
+> >> 
+> >> > On Fri, Jul 14, 2023 at 09:25:10AM +0200, Andreas Hindborg wrote:
+> >> >> From: Andreas Hindborg <a.hindborg@samsung.com>
+> >> >
+> >> > Hello Andreas!
+> >> >
+> >> 
+> >> <snip>
+> >> 
+> >> >>  	/* for READ request, writing data in iod->addr to rq buffers */
+> >> >> @@ -1120,6 +1404,11 @@ static void ublk_commit_completion(struct ublk_device *ub,
+> >> >>  	/* find the io request and complete */
+> >> >>  	req = blk_mq_tag_to_rq(ub->tag_set.tags[qid], tag);
+> >> >>  
+> >> >> +	if (io->flags & UBLK_IO_FLAG_ZONE_APPEND) {
+> >> >
+> >> > Do we really need to introduce a completely new flag just for this?
+> >> >
+> >> > if (req_op(req) == REQ_OP_ZONE_APPEND)
+> >> >
+> >> > should work just as well, no?
+> >> 
+> >> Makes sense, thanks.
+> >
+> > The above one can be replaced with req_op().
+> >
+> > But extra cost is added when retrieving request for the check in
+> > __ublk_ch_uring_cmd().
+> >
+> 
+> How about this (diff to v9):
+> 
+> @@ -1709,7 +1702,7 @@ static int __ublk_ch_uring_cmd(struct io_uring_cmd *cmd,
+>  		goto out;
+>  
+>  	if (ublk_support_user_copy(ubq) &&
+> -	    !(io->flags & UBLK_IO_FLAG_ZONE_APPEND) && ub_cmd->addr) {
+> +	    _IOC_NR(cmd_op) != UBLK_IO_COMMIT_AND_FETCH_REQ && ub_cmd->addr) {
+>  		ret = -EINVAL;
+>  		goto out;
+>  	}
 
-Applied to kvm-x86 vmx, thanks!
+Let's merge the above original user_copy check into 'case UBLK_IO_FETCH_REQ' &
+'case UBLK_IO_COMMIT_AND_FETCH_REQ' first, then this patch can be cleaner, which
+can be done as one prep change for zoned support.
 
-[1/1] KVM: VMX: Drop manual TLB flush when migrating vmcs.APIC_ACCESS_ADDR
-      https://github.com/kvm-x86/linux/commit/775bc098657b
+> @@ -1751,6 +1744,12 @@ static int __ublk_ch_uring_cmd(struct io_uring_cmd *cmd,
+>  		if (!(io->flags & UBLK_IO_FLAG_OWNED_BY_SRV))
+>  			goto out;
+>  
+> +		if (ublk_support_user_copy(ubq) &&
+> +		    req_op(req) != REQ_OP_ZONE_APPEND && ub_cmd->addr) {
+> +			ret = -EINVAL;
+> +			goto out;
+> +		}
+> +
 
---
-https://github.com/kvm-x86/linux/tree/next
-https://github.com/kvm-x86/linux/tree/fixes
+Given request is available for UBLK_IO_COMMIT_AND_FETCH_REQ, this approach is
+good, and UBLK_IO_FETCH_REQ cmd doesn't have OP.
+
+
+Thanks,
+Ming
+
