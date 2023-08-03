@@ -2,84 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A5F7076E39C
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 10:50:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 773C076E3A1
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 10:52:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234257AbjHCIut (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Aug 2023 04:50:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38824 "EHLO
+        id S231516AbjHCIwF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Aug 2023 04:52:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39408 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231143AbjHCIur (ORCPT
+        with ESMTP id S232545AbjHCIwD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Aug 2023 04:50:47 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9393FEA;
-        Thu,  3 Aug 2023 01:50:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=0Bkf1eqstwa5u7IuR/ir8LatugZOUdwgShvLIz5Uv3I=; b=hIVtD9Otlp2gKLttDQGNytCrfX
-        4SFxgkulD9iABSeDR7gRbTHicg3RFD0zx0p66Wuj1LV+8AfQKxog31nlOwx8QkIZe3wu/QP7yA2f8
-        ZYISM/I5Z6t1D4I1SlfS2Pf57VhYcR1gOp2W/+ruh0NzQFFLVmwsMrx/3iOGiBW+kpZiqqnFlvkNB
-        tY/Twau+TVEgJZr29pi5Cehf77JtxFjpsI/8dL48w04zGIQqhHyy3gQLR2PjVT9HkrVzhaEJBFzRx
-        MfS1jNywhbEndtqkCwHNstGEOwwjzvfn7W+0pPla9+tHGOeoFgB8U+dIjIyNKHxoIm15P2ozdCI4+
-        ugRL7dgA==;
-Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1qRU21-002bDp-P8; Thu, 03 Aug 2023 08:50:05 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 03D7030007E;
-        Thu,  3 Aug 2023 10:50:05 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id DE2B4205963BA; Thu,  3 Aug 2023 10:50:04 +0200 (CEST)
-Date:   Thu, 3 Aug 2023 10:50:04 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Guo Ren <guoren@kernel.org>
-Cc:     Alex Kogan <alex.kogan@oracle.com>, linux@armlinux.org.uk,
-        mingo@redhat.com, will.deacon@arm.com, arnd@arndb.de,
-        longman@redhat.com, linux-arch@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        tglx@linutronix.de, bp@alien8.de, hpa@zytor.com, x86@kernel.org,
-        guohanjun@huawei.com, jglauber@marvell.com,
-        steven.sistare@oracle.com, daniel.m.jordan@oracle.com,
-        dave.dice@oracle.com
-Subject: Re: [PATCH v15 3/6] locking/qspinlock: Introduce CNA into the slow
- path of qspinlock
-Message-ID: <20230803085004.GF212435@hirez.programming.kicks-ass.net>
-References: <20210514200743.3026725-1-alex.kogan@oracle.com>
- <20210514200743.3026725-4-alex.kogan@oracle.com>
- <ZMrjPWdWhEhwpZDo@gmail.com>
+        Thu, 3 Aug 2023 04:52:03 -0400
+Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE912DA
+        for <linux-kernel@vger.kernel.org>; Thu,  3 Aug 2023 01:52:01 -0700 (PDT)
+Received: by mail-ej1-x62c.google.com with SMTP id a640c23a62f3a-99bded9d93dso18384266b.1
+        for <linux-kernel@vger.kernel.org>; Thu, 03 Aug 2023 01:52:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ffwll.ch; s=google; t=1691052720; x=1691657520;
+        h=in-reply-to:content-disposition:mime-version:references
+         :mail-followup-to:message-id:subject:cc:to:from:date:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=BGbNwddyJIbTWPXRqz0uovs8m1zlRfKLT7WMyoOKIRE=;
+        b=a+wYsHDdsV1GNn/TSThCcwLN/2U8JnEHnckHwtKYcO4Mgf5k2o/fwUdi5F5Ubvvffk
+         vbSnX+R2vrGAkckz8Yz1PkLrRo049vkcKKJSNKl1RhP787Mxvjg5xvo+nc2RolnykHKI
+         Fv1RsK7mcFSYhzD5T/AKf27po9OpENY1aJ2Lg=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691052720; x=1691657520;
+        h=in-reply-to:content-disposition:mime-version:references
+         :mail-followup-to:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=BGbNwddyJIbTWPXRqz0uovs8m1zlRfKLT7WMyoOKIRE=;
+        b=ET2HYUtF7TVkrEb2iFjybbuO9jF9098i4KEuYXFQMW1uxH97HLb7WhGK6xrN3USclY
+         KS22BkqU3uvXlEt/D3FzvSkA0FLQgvP/loj2JnFV+XJc0wqHJeDJIlAyH32FLPhGCs4R
+         LuXGHGSBg8t0tSYrF3xQZUcAyndvyouerzcbs4alyo25jjAsWEI0r8Zrl7eb9WOEQA0o
+         IRe6eXk5lY6xNoU7TAQo1jVckjt1BlDpDnIfogg26/EIBDbVr1rjEkYmuboVEX26gKxx
+         SNnPPIwEYDfeN04okidspOaHbVHE0IO9UMjX9KBG1d/jscCBrngaT9iPJmDDFhzB+4X/
+         h5Qw==
+X-Gm-Message-State: AOJu0Yy9DSaHYDq6exVoQwfLemMaJPIGFFsDFY3tRCW4WHo6Z7lL3NRh
+        G61gjdJOUIvgVEuDJpCtZZd2Hw==
+X-Google-Smtp-Source: APBJJlGhUvRqMl/XqMY8g+Tj3Qf8c9+kEncYsyJiiZ9/+yOA/Kk2tC7F6LOv3NhEZ2o1owcbaWLfZg==
+X-Received: by 2002:a17:906:74cd:b0:99c:5711:da5 with SMTP id z13-20020a17090674cd00b0099c57110da5mr1942435ejl.5.1691052720294;
+        Thu, 03 Aug 2023 01:52:00 -0700 (PDT)
+Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
+        by smtp.gmail.com with ESMTPSA id u17-20020a1709060b1100b0099bcf563fe6sm10236759ejg.223.2023.08.03.01.51.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 03 Aug 2023 01:51:59 -0700 (PDT)
+Date:   Thu, 3 Aug 2023 10:51:57 +0200
+From:   Daniel Vetter <daniel@ffwll.ch>
+To:     Maxime Ripard <mripard@kernel.org>
+Cc:     Neil Armstrong <neil.armstrong@linaro.org>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Michael Riesch <michael.riesch@wolfvision.net>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Sebastian Reichel <sre@kernel.org>,
+        Gerald Loacker <gerald.loacker@wolfvision.net>,
+        David Airlie <airlied@gmail.com>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org
+Subject: Re: [PATCH 0/4] drm/panel: sitronix-st7789v: add support for partial
+ mode
+Message-ID: <ZMtqraOyGN9JvVj9@phenom.ffwll.local>
+Mail-Followup-To: Maxime Ripard <mripard@kernel.org>,
+        Neil Armstrong <neil.armstrong@linaro.org>,
+        Michael Riesch <michael.riesch@wolfvision.net>,
+        Sam Ravnborg <sam@ravnborg.org>, Sebastian Reichel <sre@kernel.org>,
+        Gerald Loacker <gerald.loacker@wolfvision.net>,
+        David Airlie <airlied@gmail.com>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org
+References: <20230718-feature-lcd-panel-v1-0-e9a85d5374fd@wolfvision.net>
+ <292c3e7d-82ea-2631-bd4b-ef747f56287c@linaro.org>
+ <ekmwiy3iuvtqtb6hwjbba2ia3aemt3dxmx6dj3zh6ljfmuim4w@4jzhqdenxth4>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ZMrjPWdWhEhwpZDo@gmail.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+In-Reply-To: <ekmwiy3iuvtqtb6hwjbba2ia3aemt3dxmx6dj3zh6ljfmuim4w@4jzhqdenxth4>
+X-Operating-System: Linux phenom 6.3.0-2-amd64 
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 02, 2023 at 07:14:05PM -0400, Guo Ren wrote:
-
-> The pv_ops is belongs to x86 custom frame work, and it prevent other
-> architectures connect to the CNA spinlock.
-
-static_call() exists as a arch neutral variant of this.
-
-> I'm working on riscv qspinlock on sg2042 64 cores 2/4 NUMA nodes
-> platforms. Here are the patches about riscv CNA qspinlock:
-> https://lore.kernel.org/linux-riscv/20230802164701.192791-19-guoren@kernel.org/
+On Thu, Aug 03, 2023 at 10:48:57AM +0200, Maxime Ripard wrote:
+> On Thu, Aug 03, 2023 at 10:11:22AM +0200, Neil Armstrong wrote:
+> > Hi,
+> > 
+> > On 18/07/2023 17:31, Michael Riesch wrote:
+> > > Hi all,
+> > > 
+> > > This series adds support for the partial display mode to the Sitronix
+> > > ST7789V panel driver. This is useful for panels that are partially
+> > > occluded by design, such as the Jasonic JT240MHQS-HWT-EK-E3. Support
+> > > for this particular panel is added as well.
+> > > 
+> > > Note: This series is already based on
+> > > https://lore.kernel.org/lkml/20230714013756.1546769-1-sre@kernel.org/
+> > 
+> > I understand Maxime's arguments, but by looking closely at the code,
+> > this doesn't look like an hack at all and uses capabilities of the
+> > panel controller to expose a smaller area without depending on any
+> > changes or hacks on the display controller side which is coherent.
+> > 
+> > Following's Daniel's summary we cannot compare it to TV overscan
+> > because overscan is only on *some* displays, we can still get 100%
+> > of the picture from the signal.
 > 
-> What's the next plan for this patch series? I think the two-queue design
-> has satisfied most platforms with two NUMA nodes.
+> Still disagree on the fact that it only affects some display. But it's
+> not really relevant for that series.
 
-What has been your reason for working on CNA? What lock has been so
-contended you need this?
+See my 2nd point, from a quick grep aside from i915 hdmi support, no one
+else sets all the required hdmi infoframes correctly. Which means on a
+compliant hdmi tv, you _should_ get overscan. That's how that stuff is
+speced.
+
+Iirc you need to at least set both the VIC and the content type, maybe
+even more stuff.
+
+Unless all that stuff is set I'd say it's a kms driver bug if you get
+overscan on a hdmi TV.
+
+> I think I'll still like to have something clarified before we merge it:
+> if userspace forces a mode, does it contain the margins or not? I don't
+> have an opinion there, I just think it should be documented.
+
+The mode comes with the margins, so if userspace does something really
+funny then either it gets garbage (as in, part of it's crtc area isn't
+visible, or maybe black bars on the screen), or the driver rejects it
+(which I think is the case for panels, they only take their mode and
+nothing else).
+
+Cheers, Sima
+-- 
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
