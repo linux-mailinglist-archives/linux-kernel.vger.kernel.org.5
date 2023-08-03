@@ -2,57 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DC60E76F087
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 19:23:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EDE6376F08B
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 19:24:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234525AbjHCRXT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Aug 2023 13:23:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40928 "EHLO
+        id S234596AbjHCRYv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Aug 2023 13:24:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41402 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232007AbjHCRXR (ORCPT
+        with ESMTP id S232007AbjHCRYt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Aug 2023 13:23:17 -0400
+        Thu, 3 Aug 2023 13:24:49 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E91530C0;
-        Thu,  3 Aug 2023 10:23:16 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E686430C2;
+        Thu,  3 Aug 2023 10:24:48 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 15E6361E57;
-        Thu,  3 Aug 2023 17:23:16 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DD5C7C433C8;
-        Thu,  3 Aug 2023 17:23:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691083395;
-        bh=y8eGtQQgDapSBxqm5rIyj31sufYbaMEgXLeK19zO7LI=;
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 83BD261E4A;
+        Thu,  3 Aug 2023 17:24:48 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2680EC433C8;
+        Thu,  3 Aug 2023 17:24:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
+        s=korg; t=1691083487;
+        bh=oIo8w6drezvDhvrXgj4j0LpRAgS/qxGC1oMH8Yk1tvw=;
         h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=TV3mGJLBxAKOBcjGquYn6Gmjq5TTuB4Rk54K0nNdkJ1siAAM/5vGB2E+7iMCzVCme
-         n9nXIb/CClmNhi6ktroMwe4JvPmRFSFr27xkNFHdKsm2ZZUuHjLBm4XWoOwahOUcW4
-         4sj8DuAAoqVO2oD9Q6uB18ShOzdXg2sjN9k7UjJgR6S0nGPqp2WXSWSqLmh4nBLb0M
-         DbXUCm220kMgBYoWGauX8beHsnG80zR6F+j0jEzqZHIUOwOnx8oZyB8nUXt+CnVTmd
-         sNcVnhoCz0DaVqMXqo1MeCZJlsjpURrhifAEm+/idcGd+m1n+CB+0+lxETSXaGb8bW
-         vfQtqWR4pGQLA==
-Date:   Thu, 3 Aug 2023 10:23:14 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Simon Horman <horms@kernel.org>
-Cc:     Sonia Sharma <sosha@linux.microsoft.com>,
-        linux-kernel@vger.kernel.org, linux-hyperv@vger.kernel.org,
-        netdev@vger.kernel.org, sosha@microsoft.com, kys@microsoft.com,
-        mikelley@microsoft.com, haiyangz@microsoft.com, wei.liu@kernel.org,
-        decui@microsoft.com, longli@microsoft.com, davem@davemloft.net,
-        edumazet@google.com, pabeni@redhat.com
-Subject: Re: [PATCH v3 net] net: hv_netvsc: fix netvsc_send_completion to
- avoid multiple message length checks
-Message-ID: <20230803102314.768b6462@kernel.org>
-In-Reply-To: <ZMuaCetqzgRsMDvd@kernel.org>
-References: <1691023528-5270-1-git-send-email-sosha@linux.microsoft.com>
-        <ZMuaCetqzgRsMDvd@kernel.org>
-MIME-Version: 1.0
+        b=eMUBImiK3nx9CnEb8dGmTePWdUsS7g5uZigscN46OZefvAG3cHSY2c1TSsAcLKC40
+         zPxEuHVQWiL5/mNhVTLbA8ihaNKKMYztp8m3nTQYBzC0NmOSQDQIdWjQg3Y7lhAX8W
+         XkhnUZWaEsgnvMagICmJ859HiRc9GHDBYBWe6kXc=
+Date:   Thu, 3 Aug 2023 10:24:46 -0700
+From:   Andrew Morton <akpm@linux-foundation.org>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     Jani Nikula <jani.nikula@intel.com>,
+        Imre Deak <imre.deak@intel.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Andi Shyti <andi.shyti@linux.intel.com>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Alexey Dobriyan <adobriyan@gmail.com>,
+        intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org,
+        linux-fbdev@vger.kernel.org,
+        Jani Nikula <jani.nikula@linux.intel.com>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>, Helge Deller <deller@gmx.de>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>
+Subject: Re: [PATCH v4 1/1] drm/i915: Move abs_diff() to math.h
+Message-Id: <20230803102446.8edf94acc77e81ab2e09cee3@linux-foundation.org>
+In-Reply-To: <20230803131918.53727-1-andriy.shevchenko@linux.intel.com>
+References: <20230803131918.53727-1-andriy.shevchenko@linux.intel.com>
+X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+X-Spam-Status: No, score=-7.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_HI,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -61,21 +68,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 3 Aug 2023 14:14:01 +0200 Simon Horman wrote:
-> > The switch statement in netvsc_send_completion() is incorrectly validating
-> > the length of incoming network packets by falling through to the next case.
-> > Avoid the fallthrough. Instead break after a case match and then process
-> > the complete() call.
-> > 
-> > Signed-off-by: Sonia Sharma <sonia.sharma@linux.microsoft.com>  
-> 
-> Hi Sonia,
-> 
-> if this is a bug-fix, which seems to be the case, then it probably warrants
-> a Fixes tag.
+On Thu,  3 Aug 2023 16:19:18 +0300 Andy Shevchenko <andriy.shevchenko@linux.intel.com> wrote:
 
-And a description of what this problem results in. The commit message
-kinda tells us what the patch does, which we already see from the code.
-Paraphrasing corporate America "focus on the impact"...
--- 
-pw-bot: cr
+> abs_diff() belongs to math.h. Move it there.
+> This will allow others to use it.
+> 
+> ...
+>
+> --- a/include/linux/math.h
+> +++ b/include/linux/math.h
+> @@ -155,6 +155,13 @@ __STRUCT_FRACT(u32)
+>  	__builtin_types_compatible_p(typeof(x), unsigned type),		\
+>  	({ signed type __x = (x); __x < 0 ? -__x : __x; }), other)
+>  
+> +#define abs_diff(a, b) ({			\
+> +	typeof(a) __a = (a);			\
+> +	typeof(b) __b = (b);			\
+> +	(void)(&__a == &__b);			\
+> +	__a > __b ? (__a - __b) : (__b - __a);	\
+> +})
+
+Can we document it please?
+
+Also, the open-coded type comparison could be replaced with __typecheck()?
+
+And why the heck isn't __typecheck() in typecheck.h, to be included by
+minmax.h.
+
+etcetera.  Sigh.  I'll grab it, but please at least send along some
+kerneldoc?
+
+
