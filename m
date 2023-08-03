@@ -2,42 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F43376EAAC
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 15:36:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 60D4C76EABD
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 15:36:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236408AbjHCNfP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Aug 2023 09:35:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53406 "EHLO
+        id S236403AbjHCNfK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Aug 2023 09:35:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53382 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236241AbjHCNdy (ORCPT
+        with ESMTP id S233496AbjHCNdx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Aug 2023 09:33:54 -0400
+        Thu, 3 Aug 2023 09:33:53 -0400
 Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B842B4ED6;
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1EFEA4ED8;
         Thu,  3 Aug 2023 06:32:37 -0700 (PDT)
 Received: from mail02.huawei.com (unknown [172.30.67.143])
-        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4RGqXK15YSz4f3lfP;
+        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4RGqXK3nKDz4f3lVM;
         Thu,  3 Aug 2023 21:32:33 +0800 (CST)
 Received: from huaweicloud.com (unknown [10.175.104.67])
-        by APP4 (Coremail) with SMTP id gCh0CgAHuKtqrMtkWHLlPQ--.49699S22;
+        by APP4 (Coremail) with SMTP id gCh0CgAHuKtqrMtkWHLlPQ--.49699S23;
         Thu, 03 Aug 2023 21:32:34 +0800 (CST)
 From:   Yu Kuai <yukuai1@huaweicloud.com>
 To:     song@kernel.org, xni@redhat.com
 Cc:     linux-raid@vger.kernel.org, linux-kernel@vger.kernel.org,
         yukuai3@huawei.com, yukuai1@huaweicloud.com, yi.zhang@huawei.com,
         yangerkun@huawei.com
-Subject: [PATCH -next 18/29] md: quiesce before md_kick_rdev_from_array() for md-cluster
-Date:   Thu,  3 Aug 2023 21:29:19 +0800
-Message-Id: <20230803132930.2742286-19-yukuai1@huaweicloud.com>
+Subject: [PATCH -next 19/29] md: use new apis to suspend array for ioctls involed array reconfiguration
+Date:   Thu,  3 Aug 2023 21:29:20 +0800
+Message-Id: <20230803132930.2742286-20-yukuai1@huaweicloud.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20230803132930.2742286-1-yukuai1@huaweicloud.com>
 References: <20230803132930.2742286-1-yukuai1@huaweicloud.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: gCh0CgAHuKtqrMtkWHLlPQ--.49699S22
-X-Coremail-Antispam: 1UD129KBjvJXoWxAry5uF13ZrWruryfGw1rWFg_yoW5WrWDpa
-        y2gFyYgr4DXr13Jw13J3s8Ga45tw10krZ2y34fCa4Yya43KrZ8Cw1rXa45trZrAFWYyF1a
-        va15J39rWw1xCFUanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+X-CM-TRANSID: gCh0CgAHuKtqrMtkWHLlPQ--.49699S23
+X-Coremail-Antispam: 1UD129KBjvJXoWxGF13Cw43KryDJw43GrWrGrg_yoW5AFyxpr
+        WxKan5KrW5tFy3WrWUta4v9a4Fvwn7KrZFyrWfWw15GF1fArnxuF1rWF1rAr1093s7JFn8
+        Jw4Yka48C3WUWFDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
         9KBjDU0xBIdaVrnRJUUUBj14x267AKxVWrJVCq3wAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
         rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2048vs2IY020E87I2jVAFwI0_JF0E3s1l82xGYI
         kIc2x26xkF7I0E14v26ryj6s0DM28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8wA2
@@ -64,97 +64,107 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Yu Kuai <yukuai3@huawei.com>
 
-md_kick_rdev_from_array() can be called from md_check_recovery() and
-md_reload_sb() for md-cluster, it's very complicated to use new apis to
-suspend the array before holding 'reconfig_mutex' in this case.
+'reconfig_mutex' will be grabbed before these ioctls, suspend array
+before holding the lock, so that io won't concurrent with array
+reconfiguration through ioctls.
 
-Fortunately, md-cluster is only supported for raid1 and raid10, and they
-both impelement quiesce() callback that is safe to be called from daemon
-thread. Hence use quiesce() callback to prevent io concurrent with
-removing rdev from the array.
+This is not hot path, so performance is not concerned.
 
 Signed-off-by: Yu Kuai <yukuai3@huawei.com>
 ---
- drivers/md/md.c | 38 ++++++++++++++++++++++++++++++++++++++
- 1 file changed, 38 insertions(+)
+ drivers/md/md.c | 27 +++++++++++++++++++--------
+ 1 file changed, 19 insertions(+), 8 deletions(-)
 
 diff --git a/drivers/md/md.c b/drivers/md/md.c
-index 765667b5fa59..d550bacd0efc 100644
+index d550bacd0efc..66bb6a585291 100644
 --- a/drivers/md/md.c
 +++ b/drivers/md/md.c
-@@ -9514,6 +9514,21 @@ void md_check_recovery(struct mddev *mddev)
+@@ -7183,7 +7183,6 @@ static int set_bitmap_file(struct mddev *mddev, int fd)
+ 			struct bitmap *bitmap;
  
- 		if (mddev_is_clustered(mddev)) {
- 			struct md_rdev *rdev, *tmp;
-+			bool suspended = false;
-+
-+			/*
-+			 * md-cluster is used for raid1/raid10, and they both
-+			 * implement quiesce() callback that is safe to be
-+			 * called from daemon thread.
-+			 */
-+			rdev_for_each(rdev, mddev)
-+				if (test_bit(ClusterRemove, &rdev->flags) &&
-+				    rdev->raid_disk < 0) {
-+					mddev->pers->quiesce(mddev, true);
-+					suspended = true;
-+					break;
-+				}
-+
- 			/* kick the device if another node issued a
- 			 * remove disk.
- 			 */
-@@ -9522,6 +9537,9 @@ void md_check_recovery(struct mddev *mddev)
- 						rdev->raid_disk < 0)
- 					md_kick_rdev_from_array(rdev);
+ 			bitmap = md_bitmap_create(mddev, -1);
+-			mddev_suspend(mddev);
+ 			if (!IS_ERR(bitmap)) {
+ 				mddev->bitmap = bitmap;
+ 				err = md_bitmap_load(mddev);
+@@ -7193,11 +7192,8 @@ static int set_bitmap_file(struct mddev *mddev, int fd)
+ 				md_bitmap_destroy(mddev);
+ 				fd = -1;
  			}
-+
-+			if (suspended)
-+				mddev->pers->quiesce(mddev, false);
+-			mddev_resume(mddev);
+ 		} else if (fd < 0) {
+-			mddev_suspend(mddev);
+ 			md_bitmap_destroy(mddev);
+-			mddev_resume(mddev);
  		}
- 
- 		if (try_set_sync && !mddev->external && !mddev->in_sync) {
-@@ -9814,6 +9832,7 @@ static void check_sb_changes(struct mddev *mddev, struct md_rdev *rdev)
- {
- 	struct mdp_superblock_1 *sb = page_address(rdev->sb_page);
- 	struct md_rdev *rdev2, *tmp;
-+	bool suspended = false;
- 	int role, ret;
- 
- 	/*
-@@ -9828,6 +9847,22 @@ static void check_sb_changes(struct mddev *mddev, struct md_rdev *rdev)
- 			md_bitmap_update_sb(mddev->bitmap);
  	}
+ 	if (fd < 0) {
+@@ -7486,7 +7482,6 @@ static int update_array_info(struct mddev *mddev, mdu_array_info_t *info)
+ 			mddev->bitmap_info.space =
+ 				mddev->bitmap_info.default_space;
+ 			bitmap = md_bitmap_create(mddev, -1);
+-			mddev_suspend(mddev);
+ 			if (!IS_ERR(bitmap)) {
+ 				mddev->bitmap = bitmap;
+ 				rv = md_bitmap_load(mddev);
+@@ -7494,7 +7489,6 @@ static int update_array_info(struct mddev *mddev, mdu_array_info_t *info)
+ 				rv = PTR_ERR(bitmap);
+ 			if (rv)
+ 				md_bitmap_destroy(mddev);
+-			mddev_resume(mddev);
+ 		} else {
+ 			/* remove the bitmap */
+ 			if (!mddev->bitmap) {
+@@ -7519,9 +7513,7 @@ static int update_array_info(struct mddev *mddev, mdu_array_info_t *info)
+ 				module_put(md_cluster_mod);
+ 				mddev->safemode_delay = DEFAULT_SAFEMODE_DELAY;
+ 			}
+-			mddev_suspend(mddev);
+ 			md_bitmap_destroy(mddev);
+-			mddev_resume(mddev);
+ 			mddev->bitmap_info.offset = 0;
+ 		}
+ 	}
+@@ -7592,6 +7584,19 @@ static inline bool md_ioctl_valid(unsigned int cmd)
+ 	}
+ }
  
-+	/*
-+	 * md-cluster is used for raid1/raid10, and they both
-+	 * implement quiesce() callback.
-+	 */
-+	rdev_for_each(rdev2, mddev) {
-+		if (test_bit(Faulty, &rdev2->flags))
-+			continue;
-+		role = le16_to_cpu(sb->dev_roles[rdev2->desc_nr]);
-+		if (test_bit(Candidate, &rdev2->flags) &&
-+		    role == MD_DISK_ROLE_FAULTY) {
-+			mddev->pers->quiesce(mddev, true);
-+			suspended = true;
-+			break;
-+		}
++static bool md_ioctl_need_suspend(unsigned int cmd)
++{
++	switch (cmd) {
++	case ADD_NEW_DISK:
++	case HOT_ADD_DISK:
++	case HOT_REMOVE_DISK:
++	case SET_BITMAP_FILE:
++		return true;
++	default:
++		return false;
 +	}
++}
 +
- 	/* Check for change of roles in the active devices */
- 	rdev_for_each_safe(rdev2, tmp, mddev) {
- 		if (test_bit(Faulty, &rdev2->flags))
-@@ -9883,6 +9918,9 @@ static void check_sb_changes(struct mddev *mddev, struct md_rdev *rdev)
- 		}
+ static int __md_set_array_info(struct mddev *mddev, void __user *argp)
+ {
+ 	mdu_array_info_t info;
+@@ -7720,6 +7725,9 @@ static int md_ioctl(struct block_device *bdev, blk_mode_t mode,
+ 		mutex_unlock(&mddev->open_mutex);
+ 		sync_blockdev(bdev);
  	}
- 
-+	if (suspended)
-+		mddev->pers->quiesce(mddev, false);
 +
- 	if (mddev->raid_disks != le32_to_cpu(sb->raid_disks)) {
- 		ret = update_raid_disks(mddev, le32_to_cpu(sb->raid_disks));
- 		if (ret)
++	if (md_ioctl_need_suspend(cmd))
++		__mddev_suspend(mddev);
+ 	err = mddev_lock(mddev);
+ 	if (err) {
+ 		pr_debug("md: ioctl lock interrupted, reason %d, cmd %d\n",
+@@ -7848,6 +7856,9 @@ static int md_ioctl(struct block_device *bdev, blk_mode_t mode,
+ 	if (mddev->hold_active == UNTIL_IOCTL &&
+ 	    err != -EINVAL)
+ 		mddev->hold_active = 0;
++
++	if (md_ioctl_need_suspend(cmd))
++		__mddev_resume(mddev);
+ 	mddev_unlock(mddev);
+ out:
+ 	if(did_set_md_closing)
 -- 
 2.39.2
 
