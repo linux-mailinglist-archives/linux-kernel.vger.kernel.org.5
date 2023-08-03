@@ -2,42 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0671F76EA50
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 15:29:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E7C076EA41
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 15:29:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235841AbjHCN2n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Aug 2023 09:28:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47400 "EHLO
+        id S235258AbjHCN2i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Aug 2023 09:28:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47394 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236015AbjHCN1n (ORCPT
+        with ESMTP id S236001AbjHCN1m (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Aug 2023 09:27:43 -0400
-Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 871E12D4E;
-        Thu,  3 Aug 2023 06:27:36 -0700 (PDT)
+        Thu, 3 Aug 2023 09:27:42 -0400
+Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A072A1FF0;
+        Thu,  3 Aug 2023 06:27:35 -0700 (PDT)
 Received: from mail02.huawei.com (unknown [172.30.67.143])
-        by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4RGqQS0FBxz4f3lx7;
-        Thu,  3 Aug 2023 21:27:28 +0800 (CST)
+        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4RGqQV1C1Yz4f3lD2;
+        Thu,  3 Aug 2023 21:27:30 +0800 (CST)
 Received: from huaweicloud.com (unknown [10.175.104.67])
-        by APP4 (Coremail) with SMTP id gCh0CgCnD7M6q8tk5SrlPQ--.7420S14;
-        Thu, 03 Aug 2023 21:27:30 +0800 (CST)
+        by APP4 (Coremail) with SMTP id gCh0CgCnD7M6q8tk5SrlPQ--.7420S15;
+        Thu, 03 Aug 2023 21:27:31 +0800 (CST)
 From:   Yu Kuai <yukuai1@huaweicloud.com>
 To:     song@kernel.org, xni@redhat.com
 Cc:     linux-raid@vger.kernel.org, linux-kernel@vger.kernel.org,
         yukuai3@huawei.com, yukuai1@huaweicloud.com, yi.zhang@huawei.com,
         yangerkun@huawei.com
-Subject: [PATCH -next 10/13] md: cleanup remove_and_add_spares()
-Date:   Thu,  3 Aug 2023 21:24:23 +0800
-Message-Id: <20230803132426.2688608-11-yukuai1@huaweicloud.com>
+Subject: [PATCH -next 11/13] md: use separate work_struct for md_start_sync()
+Date:   Thu,  3 Aug 2023 21:24:24 +0800
+Message-Id: <20230803132426.2688608-12-yukuai1@huaweicloud.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20230803132426.2688608-1-yukuai1@huaweicloud.com>
 References: <20230803132426.2688608-1-yukuai1@huaweicloud.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: gCh0CgCnD7M6q8tk5SrlPQ--.7420S14
-X-Coremail-Antispam: 1UD129KBjvJXoWxJFW7KF45tr4DZr15AFyxXwb_yoW5XFy3pa
-        1Ik3ZxCr4UZ3yfZayjqr4DGa45Jr10qrZFyFy7ua4fZ3Wayr1vga4rZFy7ArZ5AasY9F43
-        Aw48Kw45ur18GF7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+X-CM-TRANSID: gCh0CgCnD7M6q8tk5SrlPQ--.7420S15
+X-Coremail-Antispam: 1UD129KBjvJXoW7Ary3ur4xtw48KFW8JF13Arb_yoW5JFyfpa
+        ySgFy3JrW8J390qw4UWFWDC3Wagw1vkryDtryfuwsYvF9xtr1UGa1FgayqqF98Cayrtr1a
+        va1FqFW5ur18Gr7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
         9KBjDU0xBIdaVrnRJUUU9K14x267AKxVWrJVCq3wAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
         rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2048vs2IY020E87I2jVAFwI0_JF0E3s1l82xGYI
         kIc2x26xkF7I0E14v26ryj6s0DM28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8wA2
@@ -53,8 +53,8 @@ X-Coremail-Antispam: 1UD129KBjvJXoWxJFW7KF45tr4DZr15AFyxXwb_yoW5XFy3pa
         v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjfUOBTYUUUUU
 X-CM-SenderInfo: 51xn3trlr6x35dzhxuhorxvhhfrp/
 X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,KHOP_HELO_FCRDNS,
+        MAY_BE_FORGED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -64,85 +64,79 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Yu Kuai <yukuai3@huawei.com>
 
-Now that remove_and_add_spares() is only called from daemon thread, and
-the second parameter is always NULL, remove the second parameter.
+It's a little weird to borrow 'del_work' for md_start_sync(), declare
+a new work_struct 'sync_work' for md_start_sync().
 
 Signed-off-by: Yu Kuai <yukuai3@huawei.com>
 ---
- drivers/md/md.c | 22 +++++-----------------
- 1 file changed, 5 insertions(+), 17 deletions(-)
+ drivers/md/md.c | 10 ++++++----
+ drivers/md/md.h |  5 ++++-
+ 2 files changed, 10 insertions(+), 5 deletions(-)
 
 diff --git a/drivers/md/md.c b/drivers/md/md.c
-index 1dc26bb1e096..e64d1d0b4c5c 100644
+index e64d1d0b4c5c..8980a41bfe97 100644
 --- a/drivers/md/md.c
 +++ b/drivers/md/md.c
-@@ -86,8 +86,6 @@ static struct workqueue_struct *md_misc_wq;
- struct workqueue_struct *md_bitmap_wq;
- 
- static bool hot_remove_rdev(struct md_rdev *rdev);
--static int remove_and_add_spares(struct mddev *mddev,
--				 struct md_rdev *this);
- static void mddev_detach(struct mddev *mddev);
- static void export_rdev(struct md_rdev *rdev, struct mddev *mddev);
- static void md_wakeup_thread_directly(struct md_thread __rcu *thread);
-@@ -9232,36 +9230,26 @@ static bool hot_add_rdev(struct md_rdev *rdev)
- 	return true;
+@@ -630,13 +630,13 @@ void mddev_put(struct mddev *mddev)
+ 		 * flush_workqueue() after mddev_find will succeed in waiting
+ 		 * for the work to be done.
+ 		 */
+-		INIT_WORK(&mddev->del_work, mddev_delayed_delete);
+ 		queue_work(md_misc_wq, &mddev->del_work);
+ 	}
+ 	spin_unlock(&all_mddevs_lock);
  }
  
--static int remove_and_add_spares(struct mddev *mddev,
--				 struct md_rdev *this)
-+static int remove_and_add_spares(struct mddev *mddev)
+ static void md_safemode_timeout(struct timer_list *t);
++static void md_start_sync(struct work_struct *ws);
+ 
+ void mddev_init(struct mddev *mddev)
  {
- 	struct md_rdev *rdev;
- 	int spares = 0;
- 	int removed = 0;
- 
--	if (this && test_bit(MD_RECOVERY_RUNNING, &mddev->recovery))
--		/* Mustn't remove devices when resync thread is running */
--		return 0;
--
- 	rdev_for_each(rdev, mddev)
--		if ((this == NULL || rdev == this) && hot_remove_rdev(rdev))
-+		if (hot_remove_rdev(rdev))
- 			removed++;
- 
- 	if (removed && mddev->kobj.sd)
- 		sysfs_notify_dirent_safe(mddev->sysfs_degraded);
- 
--	if (this && removed)
--		goto no_add;
--
- 	rdev_for_each(rdev, mddev) {
--		if (this && this != rdev)
--			continue;
- 		if (rdev_is_spare(rdev))
- 			spares++;
- 		if (hot_add_rdev(rdev) && !test_bit(Journal, &rdev->flags))
- 			spares++;
- 	}
--no_add:
+@@ -661,6 +661,9 @@ void mddev_init(struct mddev *mddev)
+ 	mddev->resync_min = 0;
+ 	mddev->resync_max = MaxSector;
+ 	mddev->level = LEVEL_NONE;
 +
- 	if (removed)
- 		set_bit(MD_SB_CHANGE_DEVS, &mddev->sb_flags);
- 	return spares;
-@@ -9381,7 +9369,7 @@ void md_check_recovery(struct mddev *mddev)
- 			 * As we only add devices that are already in-sync,
- 			 * we can activate the spares immediately.
- 			 */
--			remove_and_add_spares(mddev, NULL);
-+			remove_and_add_spares(mddev);
- 			/* There is no thread, but we need to call
- 			 * ->spare_active and clear saved_raid_disk
- 			 */
-@@ -9462,7 +9450,7 @@ void md_check_recovery(struct mddev *mddev)
- 				goto not_running;
- 			set_bit(MD_RECOVERY_RESHAPE, &mddev->recovery);
- 			clear_bit(MD_RECOVERY_RECOVER, &mddev->recovery);
--		} else if ((spares = remove_and_add_spares(mddev, NULL))) {
-+		} else if ((spares = remove_and_add_spares(mddev))) {
- 			clear_bit(MD_RECOVERY_SYNC, &mddev->recovery);
- 			clear_bit(MD_RECOVERY_CHECK, &mddev->recovery);
- 			clear_bit(MD_RECOVERY_REQUESTED, &mddev->recovery);
++	INIT_WORK(&mddev->sync_work, md_start_sync);
++	INIT_WORK(&mddev->del_work, mddev_delayed_delete);
+ }
+ EXPORT_SYMBOL_GPL(mddev_init);
+ 
+@@ -9257,7 +9260,7 @@ static int remove_and_add_spares(struct mddev *mddev)
+ 
+ static void md_start_sync(struct work_struct *ws)
+ {
+-	struct mddev *mddev = container_of(ws, struct mddev, del_work);
++	struct mddev *mddev = container_of(ws, struct mddev, sync_work);
+ 
+ 	rcu_assign_pointer(mddev->sync_thread,
+ 			   md_register_thread(md_do_sync, mddev, "resync"));
+@@ -9470,8 +9473,7 @@ void md_check_recovery(struct mddev *mddev)
+ 				 */
+ 				md_bitmap_write_all(mddev->bitmap);
+ 			}
+-			INIT_WORK(&mddev->del_work, md_start_sync);
+-			queue_work(md_misc_wq, &mddev->del_work);
++			queue_work(md_misc_wq, &mddev->sync_work);
+ 			goto unlock;
+ 		}
+ 	not_running:
+diff --git a/drivers/md/md.h b/drivers/md/md.h
+index b25b6d061372..0381f2aa6cbb 100644
+--- a/drivers/md/md.h
++++ b/drivers/md/md.h
+@@ -445,7 +445,10 @@ struct mddev {
+ 	struct kernfs_node		*sysfs_degraded;	/*handle for 'degraded' */
+ 	struct kernfs_node		*sysfs_level;		/*handle for 'level' */
+ 
+-	struct work_struct del_work;	/* used for delayed sysfs removal */
++	/* used for delayed sysfs removal */
++	struct work_struct del_work;
++	/* used for register new sync thread */
++	struct work_struct sync_work;
+ 
+ 	/* "lock" protects:
+ 	 *   flush_bio transition from NULL to !NULL
 -- 
 2.39.2
 
