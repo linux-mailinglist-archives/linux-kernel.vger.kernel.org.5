@@ -2,112 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 408DF76ED33
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 16:53:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5575B76ED66
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 17:00:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235754AbjHCOwt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Aug 2023 10:52:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33266 "EHLO
+        id S236731AbjHCO76 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Aug 2023 10:59:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36902 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231874AbjHCOwr (ORCPT
+        with ESMTP id S232505AbjHCO75 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Aug 2023 10:52:47 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A20921728;
-        Thu,  3 Aug 2023 07:52:46 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 359F061DC7;
-        Thu,  3 Aug 2023 14:52:46 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0C95DC433C8;
-        Thu,  3 Aug 2023 14:52:44 +0000 (UTC)
-Date:   Thu, 3 Aug 2023 10:52:42 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Vincent Donnefort <vdonnefort@google.com>
-Cc:     mhiramat@kernel.org, linux-kernel@vger.kernel.org,
-        linux-trace-kernel@vger.kernel.org, kernel-team@android.com
-Subject: Re: [PATCH v5 1/2] ring-buffer: Introducing ring-buffer mapping
- functions
-Message-ID: <20230803105242.2df8831d@gandalf.local.home>
-In-Reply-To: <ZMuCg/J8gwbb0PXd@google.com>
-References: <20230728164754.460767-1-vdonnefort@google.com>
-        <20230728164754.460767-2-vdonnefort@google.com>
-        <20230801132603.0b18c0eb@gandalf.local.home>
-        <20230802074526.2fa479ab@gandalf.local.home>
-        <ZMpMgA85+DyGirXa@google.com>
-        <20230802111306.4f52c1c6@gandalf.local.home>
-        <ZMuCg/J8gwbb0PXd@google.com>
-X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        Thu, 3 Aug 2023 10:59:57 -0400
+X-Greylist: delayed 321 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Thu, 03 Aug 2023 07:59:55 PDT
+Received: from gw.red-soft.ru (red-soft.ru [188.246.186.2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 12A7AEA
+        for <linux-kernel@vger.kernel.org>; Thu,  3 Aug 2023 07:59:54 -0700 (PDT)
+Received: from localhost.biz (unknown [10.81.81.211])
+        by gw.red-soft.ru (Postfix) with ESMTPA id DDF773E039C;
+        Thu,  3 Aug 2023 17:54:29 +0300 (MSK)
+From:   Artem Chernyshev <artem.chernyshev@red-soft.ru>
+To:     Joel Becker <jlbec@evilplan.org>, Mark Fasheh <mark@fasheh.com>
+Cc:     Artem Chernyshev <artem.chernyshev@red-soft.ru>,
+        Joseph Qi <joseph.qi@linux.alibaba.com>,
+        Kurt Hackel <kurt.hackel@oracle.com>,
+        ocfs2-devel@lists.linux.dev, linux-kernel@vger.kernel.org,
+        lvc-project@linuxtesting.org
+Subject: [PATCH] fs: ocfs2: namei: Check return value of ocfs2_add_entry()
+Date:   Thu,  3 Aug 2023 17:54:17 +0300
+Message-Id: <20230803145417.177649-1-artem.chernyshev@red-soft.ru>
+X-Mailer: git-send-email 2.37.3
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-KLMS-Rule-ID: 1
+X-KLMS-Message-Action: clean
+X-KLMS-AntiSpam-Lua-Profiles: 179049 [Aug 03 2023]
+X-KLMS-AntiSpam-Version: 5.9.59.0
+X-KLMS-AntiSpam-Envelope-From: artem.chernyshev@red-soft.ru
+X-KLMS-AntiSpam-Rate: 0
+X-KLMS-AntiSpam-Status: not_detected
+X-KLMS-AntiSpam-Method: none
+X-KLMS-AntiSpam-Auth: dkim=none
+X-KLMS-AntiSpam-Info: LuaCore: 526 526 7a6a9b19f6b9b3921b5701490f189af0e0cd5310, {Tracking_from_domain_doesnt_match_to}, red-soft.ru:7.1.1;localhost.biz:7.1.1;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;127.0.0.199:7.1.2, FromAlignment: s
+X-MS-Exchange-Organization-SCL: -1
+X-KLMS-AntiSpam-Interceptor-Info: scan successful
+X-KLMS-AntiPhishing: Clean, bases: 2023/08/03 11:45:00
+X-KLMS-AntiVirus: Kaspersky Security for Linux Mail Server, version 8.0.3.30, bases: 2023/08/03 09:18:00 #21658041
+X-KLMS-AntiVirus-Status: Clean, skipped
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 3 Aug 2023 11:33:39 +0100
-Vincent Donnefort <vdonnefort@google.com> wrote:
+Process result of ocfs2_add_entry() in case we have an error
+value.
 
-> [...]
-> 
-> > > And on the kernel side, just a function to update the "writer fields" of the
-> > > meta-page:
-> > > 
-> > >    static void rb_wake_up_waiters(struct irq_work *work)
-> > >    {
-> > >           struct rb_irq_work *rbwork = container_of(work, struct rb_irq_work, work);
-> > >   +       struct ring_buffer_per_cpu *cpu_buffer =
-> > >   +               container_of(rbwork, struct ring_buffer_per_cpu, irq_work);
-> > >   +
-> > >   +       rb_update_meta_page(cpu_buffer);
-> > >    
-> > >           wake_up_all(&rbwork->waiters);
-> > > 
-> > > That would rate limit the number of updates to the meta-page without any irq storm?
-> > >   
-> > 
-> > Is poll an issue? It requires user space to do a system call to see if
-> > there's more data? But I guess that's not too much of an issue, as it needs
-> > to do the ioctl to get the reader page.  
-> 
-> I don't think there's any problem with this approach, beside the extra system
-> call...
-> 
-> > 
-> > We could also add an option to the ioctl to block, or have the ioctl honor
-> > the NON_BLOCK flags of the fd?  
-> 
-> ... but indeed, we could block there. The userspace interface would be even simpler.
-> How about?
-> 
->   +++ b/kernel/trace/trace.c
->   @@ -8499,12 +8499,22 @@ static long tracing_buffers_ioctl(struct file *file, unsigned int cmd, unsigned
->    {
->           struct ftrace_buffer_info *info = file->private_data;
->           struct trace_iterator *iter = &info->iter;
->   +       int err;
->   +
->   +       if (cmd == TRACE_MMAP_IOCTL_GET_READER_PAGE) {
->   +               if (!(file->f_flags & O_NONBLOCK)) {
->   +                       err = ring_buffer_wait(iter->array_buffer->buffer,
->   +                                              iter->cpu_file,
->   +                                              iter->tr->buffer_percent);
->   +                       if (err)
->   +                               return err;
->   +               }
->    
->   -       if (cmd == TRACE_MMAP_IOCTL_GET_READER_PAGE)
->                   return ring_buffer_map_get_reader_page(iter->array_buffer->buffer,
->                                                          iter->cpu_file);
-> 
+Found by Linux Verification Center (linuxtesting.org) with SVACE.
 
-Looks good to me.
+Fixes: ccd979bdbce9 ("[PATCH] OCFS2: The Second Oracle Cluster Filesystem")
+Signed-off-by: Artem Chernyshev <artem.chernyshev@red-soft.ru>
+---
+ fs/ocfs2/namei.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
--- Steve
+diff --git a/fs/ocfs2/namei.c b/fs/ocfs2/namei.c
+index 17c52225b87d..03bccfd183f3 100644
+--- a/fs/ocfs2/namei.c
++++ b/fs/ocfs2/namei.c
+@@ -1535,6 +1535,10 @@ static int ocfs2_rename(struct mnt_idmap *idmap,
+ 		status = ocfs2_add_entry(handle, new_dentry, old_inode,
+ 					 OCFS2_I(old_inode)->ip_blkno,
+ 					 new_dir_bh, &target_insert);
++		if (status < 0) {
++			mlog_errno(status);
++			goto bail;
++		}
+ 	}
+ 
+ 	old_inode->i_ctime = current_time(old_inode);
+-- 
+2.37.3
+
