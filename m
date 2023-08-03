@@ -2,295 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9BE5D76F04E
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 19:08:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EC5EB76F052
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 19:09:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232802AbjHCRIo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Aug 2023 13:08:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60784 "EHLO
+        id S234175AbjHCRJL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Aug 2023 13:09:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32902 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231565AbjHCRIm (ORCPT
+        with ESMTP id S233351AbjHCRJJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Aug 2023 13:08:42 -0400
-Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3580E35A8;
-        Thu,  3 Aug 2023 10:08:40 -0700 (PDT)
-Received: by mail-wm1-x332.google.com with SMTP id 5b1f17b1804b1-3fb4146e8fcso7982745e9.0;
-        Thu, 03 Aug 2023 10:08:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1691082518; x=1691687318;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Rk7llkQgL4cMEKHdefrrxMgtn62a9OblrizmjtxCpss=;
-        b=lUTsarpLg2XFm4fyiN/jzKZEg7WRlD8OtXgHZCoaNpblGEyi9jlXA6+HBwsa9nq+EI
-         IONrQzuhPurL03OLdn0Cb49eB3t/kkOeOygtY3nEZzjR8yTfRDpFrM4Tb3Fiwhp2NXnD
-         s6/0GswYV3qMIpc5BUk9cKv6rrZI8XUmZvhePNZh/+4EwAcD48mRz493oLTNT4HJoGUt
-         4nHvQ9bS0UMoYQ8ilARn7RZmONnCfg5IN6/VMRSkNcAFgdz/Ff+vrLMByIHBVVx3u/28
-         zLaG+9PNj5HDmJ8mjOKmO4+kJRWwcpG7m2EkcpLD9q8mbq1zaLtSGeUGP9FO+1SBJdy5
-         +nUQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691082518; x=1691687318;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Rk7llkQgL4cMEKHdefrrxMgtn62a9OblrizmjtxCpss=;
-        b=HVVW6WNZ1ihSEBuotkFy0JWepUpKSOlciTL1fRI28NhfFN3ApcVDXKAP8taq6X1ek/
-         BLU4oqRW/E15Dgdy6z/7vnVOpHZeY7RhaK+m3L8Ypd0xZmn1REg+tk6iCyg+a9qSc6ox
-         OF2tfDQRvCV32lrY9BcVZ3BA1pU9AlPzoo8KX61ovc7XXl5GeVAlQYff0xurK8hevppC
-         JKR//G50dDpZz/ElOqfOY1fq7cP6AaKYFVMNDI5QHIOP5o8WRcuzJmKxuzlTa3AZiLEi
-         ysn7SQzQ2KNljmFOIxZd9o/zsbK2JesDy188kNrLWUMNA2fNbIk+EX3nS2iOs2/0SDtg
-         URfw==
-X-Gm-Message-State: ABy/qLbEv7RMTfGcp+zbfjmv02Ooxop1Q89nOBcNxFByZnR3cERTFyGE
-        Env0gRS4G6IY3ROwUr36MAo=
-X-Google-Smtp-Source: APBJJlHUrTdG2N0krMLAGrMlWK0GQXgvtl9r3/mjOqwV41pBjC+SdzLz2A1REJr2BBPs3uxMSINOSA==
-X-Received: by 2002:a1c:721a:0:b0:3fd:2e87:aa28 with SMTP id n26-20020a1c721a000000b003fd2e87aa28mr8133382wmc.15.1691082518262;
-        Thu, 03 Aug 2023 10:08:38 -0700 (PDT)
-Received: from suse.localnet (host-79-26-191-229.retail.telecomitalia.it. [79.26.191.229])
-        by smtp.gmail.com with ESMTPSA id f10-20020a7bc8ca000000b003fe20533a1esm341078wml.44.2023.08.03.10.08.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 03 Aug 2023 10:08:37 -0700 (PDT)
-From:   "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
-To:     Jonathan Corbet <corbet@lwn.net>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Mike Rapoport <rppt@kernel.org>, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Ira Weiny <ira.weiny@intel.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Randy Dunlap <rdunlap@infradead.org>
-Subject: Re: [PATCH] Documentation/page_tables: Add info about MMU/TLB and Page Faults
-Date:   Thu, 03 Aug 2023 19:08:35 +0200
-Message-ID: <4824798.GXAFRqVoOG@suse>
-In-Reply-To: <20230728120054.12306-1-fmdefrancesco@gmail.com>
-References: <20230728120054.12306-1-fmdefrancesco@gmail.com>
+        Thu, 3 Aug 2023 13:09:09 -0400
+Received: from mailbox.box.xen0n.name (mail.xen0n.name [115.28.160.31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 437B135B7;
+        Thu,  3 Aug 2023 10:09:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=xen0n.name; s=mail;
+        t=1691082541; bh=tDRhfzXpaq1fM0TjibW5Ku2JH48WhEQAG8YGXEYj5Rw=;
+        h=From:To:Cc:Subject:Date:From;
+        b=ImA3znyX3XeTUoqvroanVe5hjFQ93AWdOSWo/9O92RDhSo/eOIFpyVxdyip3ePSb9
+         KhqkVxFUa13oabUg6hOv+c+Bj00ceDTuoyUolOL/OSzakdVgbdeTfMLD17+3i/+Wvm
+         4Nk1jVfMwJeuViYZOK5cvU+2UmbCJlZSSXu3anEk=
+Received: from ld50.lan (unknown [101.88.28.229])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mailbox.box.xen0n.name (Postfix) with ESMTPSA id A0324600A6;
+        Fri,  4 Aug 2023 01:09:00 +0800 (CST)
+From:   WANG Xuerui <kernel@xen0n.name>
+To:     Song Liu <song@kernel.org>
+Cc:     Huacai Chen <chenhuacai@kernel.org>, linux-raid@vger.kernel.org,
+        loongarch@lists.linux.dev, linux-kernel@vger.kernel.org,
+        WANG Xuerui <git@xen0n.name>
+Subject: [PATCH v2 0/3] raid5, raid6: Accelerate RAID math with LoongArch SIMD
+Date:   Fri,  4 Aug 2023 01:08:55 +0800
+Message-Id: <20230803170858.781245-1-kernel@xen0n.name>
+X-Mailer: git-send-email 2.40.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On venerd=EC 28 luglio 2023 13:53:01 CEST Fabio M. De Francesco wrote:
-> Extend page_tables.rst by adding a section about the role of MMU and TLB
-> in translating between virtual addresses and physical page frames.
-> Furthermore explain the concept behind Page Faults and how the Linux
-> kernel handles TLB misses. Finally briefly explain how and why to disable
-> the page faults handler.
+From: WANG Xuerui <git@xen0n.name>
 
-Hello everyone,
+Hi,
 
-I'd be grateful to anyone who wanted to comment on / or formally review thi=
-s=20
-patch. At the moment I've only had comments by Jonathan Cameron on RFC v2=20
-(https://lore.kernel.org/all/20230723120721.7139-1-fmdefrancesco@gmail.com/
-#t).
+Seeing the LoongArch port recently (finally!) gained the ability to use
+the vector units, I've subsequently ported the RAID5/6 math to LSX and
+LASX (which are LoongArch's 128-bit and 256-bit SIMD extensions), with
+nice speedups observed. They are reasonably straight-forward conversions
+of existing code, and I hope the comments I put in there are helpful
+enough for anyone not familiar with LoongArch assembly to get a rough
+picture of how things work here. Performance numbers are included in
+each commit's commit message.
 
-Does anybody else want to contribute?
+This series needs [1] ("LoongArch: Allow usage of LSX/LASX in the
+kernel") as a prerequisite, or the vector context would likely get
+corrupted by the vector-unaware kernel_fpu_{begin,end} calls. I tested
+the changes on top of next-20230731 with the raid6test build fixes [2]
+applied, but the series should apply cleanly to v6.5-rc4 (or maybe any
+other tag) too; it doesn't depend on the raid6test fixes.
+The base-commit and prerequisite-patch-id info is available for
+minimally recreating a working configuration for both the kernel and
+raid6test tool.
 
-Thanks in advance,
+[1]: https://lore.kernel.org/loongarch/20230722072201.2677516-1-chenhuacai@loongson.cn/
+[2]: https://lore.kernel.org/linux-raid/20230731104911.411964-1-kernel@xen0n.name/
 
-=46abio
+Changes in v2 (no functional change):
 
-> Cc: Andrew Morton <akpm@linux-foundation.org>
-> Cc: Ira Weiny <ira.weiny@intel.com>
-> Cc: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-> Cc: Jonathan Corbet <corbet@lwn.net>
-> Cc: Linus Walleij <linus.walleij@linaro.org>
-> Cc: Matthew Wilcox <willy@infradead.org>
-> Cc: Mike Rapoport <rppt@kernel.org>
-> Cc: Randy Dunlap <rdunlap@infradead.org>
-> Signed-off-by: Fabio M. De Francesco <fmdefrancesco@gmail.com>
-> ---
->=20
-> This has been an RFC PATCH in its 2nd version for a week or so. I received
-> comments and suggestions on it from Jonathan Cameron (thanks!), and so it=
-=20
-has
-> now been modified to a real patch. I hope that other people want to add=20
-their
-> comments on this document in order to further improve and extend it.
->=20
-> The link to the thread with the RFC PATCH v2 and the messages between=20
-Jonathan
-> and me start at
-> https://lore.kernel.org/all/20230723120721.7139-1-fmdefrancesco@gmail.com=
-/#r
->=20
->  Documentation/mm/page_tables.rst | 105 +++++++++++++++++++++++++++++++
->  1 file changed, 105 insertions(+)
->=20
-> diff --git a/Documentation/mm/page_tables.rst
-> b/Documentation/mm/page_tables.rst index 7840c1891751..6ecfd6d2f1f3 100644
-> --- a/Documentation/mm/page_tables.rst
-> +++ b/Documentation/mm/page_tables.rst
-> @@ -152,3 +152,108 @@ Page table handling code that wishes to be
-> architecture-neutral, such as the virtual memory manager, will need to be
-> written so that it traverses all of the currently five levels. This style
-> should also be preferred for
->  architecture-specific code, so as to be robust to future changes.
-> +
-> +
-> +MMU, TLB, and Page Faults
-> +=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D
-> +
-> +The `Memory Management Unit (MMU)` is a hardware component that handles
-> virtual +to physical address translations. It may use relatively small=20
-caches
-> in hardware +called `Translation Lookaside Buffers (TLBs)` and `Page Walk
-> Caches` to speed up +these translations.
-> +
-> +When a process wants to access a memory location, the CPU provides a=20
-virtual
-> +address to the MMU, which then uses the MMU to check access permissions =
-and
-> +dirty bits, and if possible it resolves the physical address and consent=
-s=20
-the
-> +requested type of access to the corresponding physical address.
-> +
-> +If the TLBs have not yet any recorded translations, the MMU may use the=
-=20
-Page
-> +Walk Caches and complete or restart the page tables walks until a physic=
-al
-> +address can finally be resolved. Permissions and dirty bits are checked.
-> +
-> +In the context of a virtual memory system, like the one used by the Linux
-> +kernel, each page of memory has associated permission and dirty bits.
-> +
-> +The dirty bit for a page is set (i.e., turned on) when the page is writt=
-en
-> +to. This indicates that the page has been modified since it was loaded i=
-nto
-> +memory. It probably needs to be written on disk or other cores may need =
-to
-> +be informed about previous changes before allowing further operations.
-> +
-> +If nothing prevents it, eventually the physical memory can be accessed a=
-nd
-> +the requested operation on the physical frame is performed.
-> +
-> +There are several reasons why the MMU can't find certain translations. It
-> +could happen because the process is trying to access a range of memory t=
-hat
-> is +not allowed to, or because the data is not present into RAM.
-> +
-> +When these conditions happen, the MMU triggers page faults, which are ty=
-pes
-> +of exceptions that signal the CPU to pause the current process and run a
-> special +function to handle the mentioned page faults.
-> +
-> +One cause of page faults is due to bugs (or maliciously crafted addresse=
-s)
-> and +happens when a process tries to access a range of memory that it=20
-doesn't
-> have +permission to. This could be because the memory is reserved for the
-> kernel or +for another process, or because the process is trying to write=
- to
-> a read-only +section of memory. When this happens, the kernel sends a
-> Segmentation Fault +(SIGSEGV) signal to the process, which usually causes=
-=20
-the
-> process to terminate. +
-> +An expected and more common cause of page faults is an optimization call=
-ed
-> "lazy +allocation". This is a technique used by the Kernel to improve mem=
-ory
-> efficiency +and reduce footprint. Instead of allocating physical memory t=
-o a
-> process as soon +as it's requested, the Kernel waits until the process
-> actually tries to use the +memory. This can save a significant amount of
-> memory in cases where a process +requests a large block but only uses a=20
-small
-> portion of it.
-> +
-> +A related technique is called "Copy-on-Write" (CoW), where the Kernel=20
-allows
-> +multiple processes to share the same physical memory as long as they're=
-=20
-only
-> +reading from it. If a process tries to write to the shared memory, the=20
-kernel
-> +triggers a page fault and allocates a separate copy of the memory for the
-> +process. This allows the Kernel to save memory and avoid unnecessary data
-> +copying and, by doing so, it reduces latency and space occupation.
-> +
-> +Now, let's see how the Linux kernel handles these page faults:
-> +
-> +1. For most architectures, `do_page_fault()` is the primary interrupt=20
-handler
-> +   for page faults. It delegates the actual handling of the page fault t=
-o +=20
->  `handle_mm_fault()`. This function checks the cause of the page fault an=
-d +=20
->  takes the appropriate action, such as loading the required page into + =
-=20
-> memory, granting the process the necessary permissions, or sending a + =20
-> SIGSEGV signal to the process.
-> +
-> +2. In the specific case of the x86 architecture, the interrupt handler is
-> +   defined by the `DEFINE_IDTENTRY_RAW_ERRORCODE()` macro, which calls
-> +   `handle_page_fault()`. This function then calls either
-> +   `do_user_addr_fault()` or `do_kern_addr_fault()`, depending on whether
-> +   the fault occurred in user space or kernel space. Both of these=20
-functions
-> +   eventually lead to `handle_mm_fault()`, similar to the workflow in ot=
-her
-> +   architectures.
-> +
-> +`handle_mm_fault()` (likely) ends up calling `__handle_mm_fault()` to ca=
-rry
-> +out the actual work of allocation of the page tables. It works by using
-> +several functions to find the entry's offsets of the 4 - 5 layers of tab=
-les
-> +and allocate the tables it needs to. The functions that look for the off=
-set
-> +have names like `*_offset()`, where the "*" is for pgd, p4d, pud, pmd, p=
-te;
-> +instead the functions to allocate the corresponding tables, layer by lay=
-er,
-> +are named `*_alloc`, with the above mentioned convention to name them af=
-ter
-> +the corresponding types of tables in the hierarchy.
-> +
-> +At the very end of the walk with allocations, if it didn't return errors,
-> +`__handle_mm_fault()` finally calls `handle_pte_fault()`, which via
-> +`do_fault()` performs one of `do_read_fault()`, `do_cow_fault()`,
-> +`do_shared_fault()`. "read", "cow", "shared" give hints about the reasons
-> +and the kind of fault it's handling.
-> +
-> +The actual implementation of the workflow is very complex. Its design=20
-allows
-> +Linux to handle page faults in a way that is tailored to the specific
-> +characteristics of each architecture, while still sharing a common overa=
-ll
-> +structure.
-> +
-> +To conclude this brief overview from very high altitude of how Linux=20
-handles
-> +page faults, let's add that page faults handler can be disabled and enab=
-led
-> +respectively with `pagefault_disable()` and `pagefault_enable()`.
-> +
-> +Several code path make use of the latter two functions because they need=
- to
-> +disable traps into the page faults handler, mostly to prevent deadlocks.=
-[1]
-> +
-> +[1] mm/userfaultfd: Replace kmap/kmap_atomic() with kmap_local_page()
-> +https://lore.kernel.org/all/20221025220136.2366143-1-ira.weiny@intel.com/
-> --
-> 2.41.0
+- minor commit message tweaks
+- changed comment style from // to /* */ throughout
+
+WANG Xuerui (3):
+  LoongArch: Add SIMD-optimized XOR routines
+  raid6: Add LoongArch SIMD syndrome calculation
+  raid6: Add LoongArch SIMD recovery implementation
+
+ arch/loongarch/include/asm/xor.h      |  68 ++++
+ arch/loongarch/include/asm/xor_simd.h |  42 +++
+ arch/loongarch/lib/Makefile           |   3 +
+ arch/loongarch/lib/xor_simd.c         |  93 +++++
+ arch/loongarch/lib/xor_simd.h         |  46 +++
+ arch/loongarch/lib/xor_simd_glue.c    |  71 ++++
+ arch/loongarch/lib/xor_template.c     | 110 ++++++
+ include/linux/raid/pq.h               |   4 +
+ lib/raid6/Makefile                    |   1 +
+ lib/raid6/algos.c                     |  16 +
+ lib/raid6/loongarch.h                 |  38 ++
+ lib/raid6/loongarch_simd.c            | 422 +++++++++++++++++++++
+ lib/raid6/recov_loongarch_simd.c      | 515 ++++++++++++++++++++++++++
+ lib/raid6/test/Makefile               |  12 +
+ 14 files changed, 1441 insertions(+)
+ create mode 100644 arch/loongarch/include/asm/xor.h
+ create mode 100644 arch/loongarch/include/asm/xor_simd.h
+ create mode 100644 arch/loongarch/lib/xor_simd.c
+ create mode 100644 arch/loongarch/lib/xor_simd.h
+ create mode 100644 arch/loongarch/lib/xor_simd_glue.c
+ create mode 100644 arch/loongarch/lib/xor_template.c
+ create mode 100644 lib/raid6/loongarch.h
+ create mode 100644 lib/raid6/loongarch_simd.c
+ create mode 100644 lib/raid6/recov_loongarch_simd.c
 
 
-
+base-commit: 5d0c230f1de8c7515b6567d9afba1f196fb4e2f4
+prerequisite-patch-id: 85d08a9828893250ae78dbca9d6e6f8dac755f61
+prerequisite-patch-id: fe0bba41e0bbc676454365ed16fb13fc0aac6ee0
+prerequisite-patch-id: 84ef8212b74e696ce019255bbfd9679d7516f7f7
+prerequisite-patch-id: b1f8fc4e4acdaff7f821a9fcbd063475178e037b
+prerequisite-patch-id: 82aacbf27f249fdefe40dd6bcc712e5795256926
+prerequisite-patch-id: ae4e026e18f92ffcc93f6b135a3bd48fbdded39a
+-- 
+2.40.0
 
