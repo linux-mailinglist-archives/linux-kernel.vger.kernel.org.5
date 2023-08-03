@@ -2,169 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B40B76DDC1
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 03:59:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C79876DDCB
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 04:02:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229445AbjHCB7B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Aug 2023 21:59:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35972 "EHLO
+        id S229610AbjHCCCX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Aug 2023 22:02:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38064 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232145AbjHCB61 (ORCPT
+        with ESMTP id S229446AbjHCCCU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Aug 2023 21:58:27 -0400
-Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id C225330D1;
-        Wed,  2 Aug 2023 18:56:06 -0700 (PDT)
-Received: from loongson.cn (unknown [10.20.42.201])
-        by gateway (Coremail) with SMTP id _____8Cx2eo1CctkO2YPAA--.30842S3;
-        Thu, 03 Aug 2023 09:56:05 +0800 (CST)
-Received: from [10.20.42.201] (unknown [10.20.42.201])
-        by localhost.localdomain (Coremail) with SMTP id AQAAf8CxWM0yCctkAX9GAA--.52730S3;
-        Thu, 03 Aug 2023 09:56:02 +0800 (CST)
-Subject: Re: [PATCH v2 1/2] gpio: dt-bindings: add parsing of loongson gpio
- offset
-To:     Conor Dooley <conor@kernel.org>
-Cc:     Conor Dooley <conor.dooley@microchip.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <brgl@bgdev.pl>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>, linux-gpio@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Jianmin Lv <lvjianmin@loongson.cn>, wanghongliang@loongson.cn,
-        Liu Peibao <liupeibao@loongson.cn>,
-        loongson-kernel@lists.loongnix.cn, zhuyinbo@loongson.cn
-References: <20230731-setback-such-61815ee3ef51@spud>
- <041bf8a6-8d91-c2ce-6752-aa7255f946c7@loongson.cn>
- <20230801-whenever-imitation-b2759b212f6b@spud>
- <a5c27913-2a88-d376-0130-22ca8a3d4516@loongson.cn>
- <20230801-varsity-chemo-09cc5e250ded@spud>
- <26adb487-f8c5-9cf4-5b31-070e9161e761@loongson.cn>
- <20230802-jailer-pavilion-84fb17bb3710@wendy>
- <3534f7b9-0e02-28c1-238a-5a6fdbb95e94@loongson.cn>
- <20230802-bunkbed-siamese-57ee53bdf273@wendy>
- <db7012b2-9156-34ed-ad1f-10a3e5dfe390@loongson.cn>
- <20230802-empathy-wound-70df4990a976@spud>
-From:   Yinbo Zhu <zhuyinbo@loongson.cn>
-Message-ID: <ae74e7b0-26ae-5707-7b85-5dcf733d2bed@loongson.cn>
-Date:   Thu, 3 Aug 2023 09:56:02 +0800
-User-Agent: Mozilla/5.0 (X11; Linux loongarch64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        Wed, 2 Aug 2023 22:02:20 -0400
+Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F219C13E;
+        Wed,  2 Aug 2023 19:02:17 -0700 (PDT)
+Received: by mail-lf1-x12d.google.com with SMTP id 2adb3069b0e04-4fe48d0ab0fso740230e87.1;
+        Wed, 02 Aug 2023 19:02:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1691028136; x=1691632936;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=OcK6gslx0LoIyGj+/TpyBsBC+gruy1kemhKkiJB+8W8=;
+        b=RPwVsk4sOj2Nq+sKh3qHWv5DoD9cfQy6DEJ0Xn0EP9Ohsx5uqkXr1sq33B4R0hQlcm
+         nn50Nxo6gN8AfE1bLB+54DPKFLHRswl4IRGMJF4eAwBbggUrk6pOzAYTn0ypCFTsIhgU
+         mmnLiPjuzQNEOWw7esUMP3kfC01KdQYe8d1l3lDrFckvKr6nd26cL0f0ZU/S0Wo94j27
+         7ZH14DzJuuQ0RCMRZhA/3ZodUUQW5SRRVCHptEXjUIyl7HI0RoljhkDoYbPcb0KuGR8t
+         Ube0htK2aiilLm6tlCcF8gQcBgStQ0Bi8GhhrwneXS+YwmDhwdASPvV75e+cN24bIVzY
+         lk4A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691028136; x=1691632936;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=OcK6gslx0LoIyGj+/TpyBsBC+gruy1kemhKkiJB+8W8=;
+        b=NX4dP+Q/0iOmImVpT+4RBHsWPGe3Nd7QX4Ut18Q355buO5g8NDS0a4dVnigUWyqolP
+         rnnZGluaiKr2KM4ajluvslb9+ShfElArz6ZsfH4wsPhkj/qFLbZIi6crtzzwWgAy1ZPb
+         qNAqEdqwE3ZWgVGeTI80OL3VkkmP/NB1WK6zrdU9bNtl7OLiBXpsm+P83pwlNAUlo8Cj
+         Mzy5ES1jm410mvhwJzBoka3T7FM6vN8autmBvQBA/G8anMd8S70CrVMPEXLtEhAsIp5s
+         F6K9OIDD2GyuM/DC55CyK2+wqKGbWi9qcw5HoCiSzAU9p1Cr7vISntu4WZUeNV5xZ6ds
+         H65Q==
+X-Gm-Message-State: ABy/qLYzbATFHJzx7svClVE7WWzt0J/DdxQODnVZK3wTZ+LqoBzy7DGq
+        wfBAR5RAxrq4P3Sgod0fgw85juLoJbKlcuTl6wU=
+X-Google-Smtp-Source: APBJJlFQhf0kZ84BOcTysEnD0b4btfk6w9fnBq19hPWw57ei4khkRRWhYI+YozSgtnSXcZlMZ0w2YrKbBWkXD/ljXPg=
+X-Received: by 2002:a19:384d:0:b0:4f7:6685:2c5f with SMTP id
+ d13-20020a19384d000000b004f766852c5fmr5164267lfj.61.1691028135872; Wed, 02
+ Aug 2023 19:02:15 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20230802-empathy-wound-70df4990a976@spud>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: AQAAf8CxWM0yCctkAX9GAA--.52730S3
-X-CM-SenderInfo: 52kx5xhqerqz5rrqw2lrqou0/
-X-Coremail-Antispam: 1Uk129KBjDUn29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7KY7
-        ZEXasCq-sGcSsGvfJ3UbIjqfuFe4nvWSU5nxnvy29KBjDU0xBIdaVrnUUvcSsGvfC2Kfnx
-        nUUI43ZEXa7xR_UUUUUUUUU==
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <20230802121116.324604-1-zegao@tencent.com> <20230802121116.324604-5-zegao@tencent.com>
+ <20230802110552.768f0487@gandalf.local.home>
+In-Reply-To: <20230802110552.768f0487@gandalf.local.home>
+From:   Ze Gao <zegao2021@gmail.com>
+Date:   Thu, 3 Aug 2023 10:02:04 +0800
+Message-ID: <CAD8CoPDad+PckQVD51c4bU7Z-cDuguknWMhoBVQ5G1PX0R-npQ@mail.gmail.com>
+Subject: Re: [RFC PATCH v4 4/7] sched, tracing: reorganize fields of switch
+ event struct
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     Adrian Hunter <adrian.hunter@intel.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Ian Rogers <irogers@google.com>,
+        Ingo Molnar <mingo@redhat.com>, Jiri Olsa <jolsa@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
+        linux-trace-kernel@vger.kernel.org,
+        linux-trace-devel@vger.kernel.org, Ze Gao <zegao@tencent.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Aug 2, 2023 at 11:05=E2=80=AFPM Steven Rostedt <rostedt@goodmis.org=
+> wrote:
+>
+> On Wed,  2 Aug 2023 08:09:59 -0400
+> Ze Gao <zegao2021@gmail.com> wrote:
+>
+> > From: Ze Gao <zegao2021@gmail.com>
+> >
+> > Report priorities in 'short' and prev_state in 'int' to save
+> > some buffer space. And also reorder the fields so that we take
+> > struct alignment into consideration to make the record compact.
+> >
+> > Suggested-by: Steven Rostedt (Google) <rostedt@goodmis.org>
+> > Signed-off-by: Ze Gao <zegao@tencent.com>
+> > ---
+> >  include/trace/events/sched.h | 24 ++++++++++++------------
+> >  1 file changed, 12 insertions(+), 12 deletions(-)
+> >
+> > diff --git a/include/trace/events/sched.h b/include/trace/events/sched.=
+h
+> > index fbb99a61f714..7d34db20b2c6 100644
+> > --- a/include/trace/events/sched.h
+> > +++ b/include/trace/events/sched.h
+> > @@ -187,7 +187,7 @@ DEFINE_EVENT(sched_wakeup_template, sched_wakeup_ne=
+w,
+> >            TP_ARGS(p));
+> >
+> >  #ifdef CREATE_TRACE_POINTS
+> > -static inline long __trace_sched_switch_state(bool preempt,
+> > +static inline int __trace_sched_switch_state(bool preempt,
+> >                                             unsigned int prev_state,
+> >                                             struct task_struct *p)
+> >  {
+> > @@ -229,23 +229,23 @@ TRACE_EVENT(sched_switch,
+> >       TP_ARGS(preempt, prev, next, prev_state),
+> >
+> >       TP_STRUCT__entry(
+> > -             __array(        char,   prev_comm,      TASK_COMM_LEN   )
+> >               __field(        pid_t,  prev_pid                        )
+> > -             __field(        int,    prev_prio                       )
+> > -             __field(        long,   prev_state                      )
+> > -             __array(        char,   next_comm,      TASK_COMM_LEN   )
+> >               __field(        pid_t,  next_pid                        )
+> > -             __field(        int,    next_prio                       )
+> > +             __field(        short,  prev_prio                       )
+> > +             __field(        short,  next_prio                       )
+> > +             __field(        int,    prev_state                      )
+>
+> I was talking with Peter on IRC and since the biggest number that
+> prev_state can be is TASK_REPORT_MASK which is 0x100, I think we can make
+> prev_state into a short as well.
 
+Make sense, let's change it to short.
 
-在 2023/8/2 下午11:36, Conor Dooley 写道:
-> On Wed, Aug 02, 2023 at 04:37:50PM +0800, Yinbo Zhu wrote:
->>
->>
->> 在 2023/8/2 下午3:50, Conor Dooley 写道:
->>> On Wed, Aug 02, 2023 at 03:44:17PM +0800, Yinbo Zhu wrote:
->>>> 在 2023/8/2 下午3:22, Conor Dooley 写道:
->>>>> On Wed, Aug 02, 2023 at 09:38:34AM +0800, Yinbo Zhu wrote:
->>>>>> 在 2023/8/1 下午11:54, Conor Dooley 写道:
->>>>>>> On Tue, Aug 01, 2023 at 04:34:30PM +0800, Yinbo Zhu wrote:
->>>
->>>>>>>> Sorry, I may not have described it clearly before, the ls2k500 was only
->>>>>>>> as a example, actually, Loongson GPIO controllers (2k500,2k1000,eg)come
->>>>>>>> in multiple variants that are compatible except for certain register
->>>>>>>> offset values.  So above all offset device property was used to in all
->>>>>>>> loongson gpio controller.
->>>>>>>
->>>>>>> But it would be good to know why they are different. Do they each
->>>>>>> support some different features, or was there some other reason for
->>>>>>> making controllers like this?
->>>>>>
->>>>>>
->>>>>> There are no other reasons, just differences in these offset addresses.
->>>>>
->>>>> Huh. Do you have a link to a devicetree for the ls2k500?
->>>>
->>>>
->>>> Yes,  there was a link about ls2k500 dts,  but that ls2k500 dts has not
->>>> yet added a gpio node.  this gpio node will be added later.
->>>
->>> You must have something that you used to test with, no? I don't mind if
->>> it is not a patch, but rather is some WIP - I'd just like to see user of
->>> the binding :)
->>
->>
->> yes, I have a test, for 2k0500, that gpio dts as follows:
->>
->>                  gpio0:gpio@0x1fe10430 {
->>                          compatible = "loongson,ls2k-gpio";
->>                          reg = <0 0x1fe10430 0 0x20>;
->>                          gpio-controller;
->>                          #gpio-cells = <2>;
->> 			interrupt-parent = <&liointc1>;
->>                          ngpios = <64>;
->>                          loongson,gpio-conf-offset = <0>;
->>                          loongson,gpio-out-offset = <0x10>;
->>                          loongson,gpio-in-offset = <0x8>;
->>                          loongson,gpio-inten-offset = <0xb0>;
->> 			loongson,gpio-ctrl-mode = <0x0>;
->>                          ...
->> 		  }
->>
->>                  gpio1:gpio@0x1fe10450 {
->>                          compatible = "loongson,ls2k-gpio";
->>                          reg = <0 0x1fe10450 0 0x20>;
->>                          gpio-controller;
->>                          #gpio-cells = <2>;
->> 			interrupt-parent = <&liointc1>;
->>                          ngpios = <64>;
->>                          loongson,gpio-conf-offset = <0>;
->>                          loongson,gpio-out-offset = <0x10>;
->>                          loongson,gpio-in-offset = <0x8>;
-> 
-> These 3 are the same for both controllers, no?
-> Is only the inten-offset a variable?
-> 
->>                          loongson,gpio-inten-offset = <0x98>;
-> 
-> These offsets exceed the region that you've got in the reg property for
-> this controller, do they not?
-> 
-> Is there some sort of "miscellaneous register area" at 0x1FE104E0, or
-> just those two interrupt registers and nothing else?
-
-
-2k500 gpio dts is just an example, like 3a5000, or more other platform,
-above offset was different but the gpio controller was compatible.
-
-                 gpio: gpio@1fe00500 {
-                         compatible = "loongson,ls2k-gpio";
-                         reg = <0 0x1fe00500 0xc00>;
-                         gpio-controller;
-                         #gpio-cells = <2>;
-                         ngpios = <16>;
-                         loongson,gpio-conf-offset = <0x0>;
-                         loongson,gpio-out-offset = <0x8>;
-                         loongson,gpio-in-offset = <0xc>;
-			...
-			}
-
-
-Thanks,
-Yinbo
-
-
-> 
-
+Regards,
+Ze
