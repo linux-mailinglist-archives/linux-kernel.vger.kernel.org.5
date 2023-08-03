@@ -2,103 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E589E76DF75
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 06:41:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EB0CB76DF81
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 07:01:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231536AbjHCEll (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Aug 2023 00:41:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42604 "EHLO
+        id S231665AbjHCFBl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Aug 2023 01:01:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44314 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229697AbjHCEli (ORCPT
+        with ESMTP id S229697AbjHCFBj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Aug 2023 00:41:38 -0400
-Received: from bg4.exmail.qq.com (bg4.exmail.qq.com [43.155.65.254])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 090522D71
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Aug 2023 21:41:34 -0700 (PDT)
-X-QQ-mid: bizesmtp71t1691037685tpxaqjs6
-Received: from [192.168.2.11] ( [116.30.131.233])
-        by bizesmtp.qq.com (ESMTP) with 
-        id ; Thu, 03 Aug 2023 12:41:24 +0800 (CST)
-X-QQ-SSF: 00200000000000904000000A0000000
-X-QQ-FEAT: uSN+FHkLExbDiJTi143NrDb+JoCVhp+kkT70Y8vCNNWvRQRLSdThgIfID1eaO
-        H667Uvy/u+Z89sv8YYl7it6N3hSoAoARRqFywMhchPN0PT0IxYpdOd9ODwkFwZKbJjk/TRm
-        yz8yqD7o19abFNNgXGNQ3uukvzxXtbNMsQ7tM/7cnMCZ1gjJNcKxao+GJsY5V4IISXMWktD
-        KyEoe+aloCRUV8IWNdUoYMz6nGCwBZM5XfEceE3BUFWMnPjuldvgq0D3zEQzQm6uNLhxMtm
-        /r8lsMQ++5tBNarnmOdiOomtYNJ5Hf4EI+cH1VhfjOAuYmhMsaIMXfy9izYx2iNqe6vxJGW
-        XWNDtWuCFytdbKBELMBBFhEM02MhMiGbVghGKC2i+vs3rLXgXw=
-X-QQ-GoodBg: 0
-X-BIZMAIL-ID: 9874323047209275138
-Message-ID: <4CC3DEEB40C0DEC3+d4d7dfc3-0e9b-9185-d72a-419b36fc1f53@tinylab.org>
-Date:   Thu, 3 Aug 2023 12:41:23 +0800
+        Thu, 3 Aug 2023 01:01:39 -0400
+Received: from mgamail.intel.com (unknown [192.55.52.115])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB0B42D7B;
+        Wed,  2 Aug 2023 22:01:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1691038897; x=1722574897;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=4c1lxsWgP38TF56d0QxLmeGD2mVcoO3Hq9Qvaznk1ss=;
+  b=jqjnb86IZcIRwaDRwohSGTSih3HrmZQrYS+/lNtQGzT1rXPqeL2dN503
+   g0iWN48oEg5ZsQiSlimoeFYsajnX4h0QtvmTRoAazPJOYQJmu1p00sRnF
+   g3z80nCPxbeVQakvWeqDLPOHC1zY39p9Kc1dsRYvS2rEdGyKuf2ghC2S8
+   xuoHekE+KJQFPvu1MPYnAQsoHZ0Air50R+l24HtqNLJoRDZxUEJJ32Wm1
+   5Hl1GvMw8zBh9EwgzgTELRWroldvKnVDC9hGr4H5VjfDGiEGvppCsOmFd
+   lrya/HwLbbsVbR/Y0l1iQB81grZubeb3eoN3pghPuIaLi1f18ZuvA2en2
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10790"; a="369770789"
+X-IronPort-AV: E=Sophos;i="6.01,251,1684825200"; 
+   d="scan'208";a="369770789"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Aug 2023 22:01:37 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10790"; a="729411159"
+X-IronPort-AV: E=Sophos;i="6.01,251,1684825200"; 
+   d="scan'208";a="729411159"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by orsmga002.jf.intel.com with ESMTP; 02 Aug 2023 22:01:07 -0700
+Received: by black.fi.intel.com (Postfix, from userid 1001)
+        id 81B8913F; Thu,  3 Aug 2023 08:01:18 +0300 (EEST)
+Date:   Thu, 3 Aug 2023 08:01:18 +0300
+From:   Mika Westerberg <mika.westerberg@linux.intel.com>
+To:     Mario Limonciello <mario.limonciello@amd.com>
+Cc:     "Rafael J . Wysocki" <rafael@kernel.org>,
+        Bjorn Helgaas <helgaas@kernel.org>, linux-pci@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-acpi@vger.kernel.org,
+        Iain Lane <iain@orangesquash.org.uk>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>
+Subject: Re: [PATCH v8 2/2] PCI/ACPI: Use device constraints instead of dates
+ to opt devices into D3
+Message-ID: <20230803050118.GV14638@black.fi.intel.com>
+References: <20230802201013.910-1-mario.limonciello@amd.com>
+ <20230802201013.910-3-mario.limonciello@amd.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] powerpc: pmac32: enable serial options by default in
- defconfig
-Content-Language: en-GB
-To:     Christophe Leroy <christophe.leroy@csgroup.eu>
-References: <bb7b5f9958b3e3a20f6573ff7ce7c5dc566e7e32.1690982937.git.tanyuan@tinylab.org>
- <88334e42-a3c2-dab5-fdcb-91305d672e5b@csgroup.eu>
-Cc:     falcon@tinylab.org, linux-kernel@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, linux@weissschuh.net, w@1wt.eu,
-        npiggin@gmail.com
-From:   Yuan Tan <tanyuan@tinylab.org>
-In-Reply-To: <88334e42-a3c2-dab5-fdcb-91305d672e5b@csgroup.eu>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-QQ-SENDSIZE: 520
-Feedback-ID: bizesmtp:tinylab.org:qybglogicsvrgz:qybglogicsvrgz5a-1
-X-Spam-Status: No, score=1.7 required=5.0 tests=BAYES_00,FORGED_MUA_MOZILLA,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,RCVD_IN_VALIDITY_RPBL,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20230802201013.910-3-mario.limonciello@amd.com>
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
-X-Spam-Level: *
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Christophe
+Hi,
 
-On 8/2/2023 9:58 PM, Christophe Leroy wrote:
->
-> Le 02/08/2023 à 15:41, Yuan Tan a écrit :
->> [Vous ne recevez pas souvent de courriers de tanyuan@tinylab.org. Découvrez pourquoi ceci est important à https://aka.ms/LearnAboutSenderIdentification ]
->>
->> Serial is a critical feature for logging and debuging, and the other
->> architectures enable serial by default.
->>
->> Let's enable CONFIG_SERIAL_PMACZILOG and CONFIG_SERIAL_PMACZILOG_CONSOLE
->> by default.
->>
->> Signed-off-by: Yuan Tan <tanyuan@tinylab.org>
-> Reviewed-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+On Wed, Aug 02, 2023 at 03:10:13PM -0500, Mario Limonciello wrote:
+> @@ -3036,11 +3044,8 @@ bool pci_bridge_d3_possible(struct pci_dev *bridge)
+>  		if (dmi_check_system(bridge_d3_blacklist))
+>  			return false;
+>  
+> -		/*
+> -		 * It should be safe to put PCIe ports from 2015 or newer
+> -		 * to D3.
+> -		 */
+> -		if (dmi_get_bios_year() >= 2015)
+> +		/* the platform indicates in a device constraint that D3 is needed */
+> +		if (platform_constraint_d3(bridge))
 
-Can this patch be merged into v6.6? There's another patch depends on it :)
+This for sure causes some sort of power regression on the Intel
+platforms made after 2015. Why not check for the constraint and:
 
-Best regards,
+- If present and enabled, use the desired D-state
+- If present and disabled, leave the device in D0
+- If not present use the existing cutoff date
 
-Yuan Tan
-
->> ---
->>    arch/powerpc/configs/pmac32_defconfig | 3 ++-
->>    1 file changed, 2 insertions(+), 1 deletion(-)
->>
->> diff --git a/arch/powerpc/configs/pmac32_defconfig b/arch/powerpc/configs/pmac32_defconfig
->> index 019163c2571e..3aae79afb9d9 100644
->> --- a/arch/powerpc/configs/pmac32_defconfig
->> +++ b/arch/powerpc/configs/pmac32_defconfig
->> @@ -176,8 +176,9 @@ CONFIG_MOUSE_APPLETOUCH=y
->>    # CONFIG_SERIO_I8042 is not set
->>    # CONFIG_SERIO_SERPORT is not set
->>    CONFIG_SERIAL_8250=m
->> -CONFIG_SERIAL_PMACZILOG=m
->> +CONFIG_SERIAL_PMACZILOG=y
->>    CONFIG_SERIAL_PMACZILOG_TTYS=y
->> +CONFIG_SERIAL_PMACZILOG_CONSOLE=y
->>    CONFIG_NVRAM=y
->>    CONFIG_I2C_CHARDEV=m
->>    CONFIG_APM_POWER=y
->> --
->> 2.34.1
->>
+?
