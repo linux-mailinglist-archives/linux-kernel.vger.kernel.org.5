@@ -2,203 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E359B76DCF0
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 02:54:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A32476DD04
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 03:10:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230226AbjHCAyH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Aug 2023 20:54:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45056 "EHLO
+        id S232491AbjHCBJA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Aug 2023 21:09:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47644 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229924AbjHCAyE (ORCPT
+        with ESMTP id S231406AbjHCBI7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Aug 2023 20:54:04 -0400
-Received: from NAM10-DM6-obe.outbound.protection.outlook.com (mail-dm6nam10on2069.outbound.protection.outlook.com [40.107.93.69])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF1A02D5A;
-        Wed,  2 Aug 2023 17:53:50 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=ATGjOkVqm3rQTLCinS2t6QmyRhBwnzPmzqiwdU/QpsA5LYkIjGEWm2cpUEZKL7pYytaSfJXWMVO3epFboQKelsYz9vwEyK7NQ24saI20SpjhIWK/OJHE/yAYANeH/yfejcDRr081pl6I/gBsFlQ69w5p7oMrOMDeW/hwZe352hvoUTCYXXZTrgchvcQBBxO6T93hAot+RqRGFfHPyyf4SAjR600VldbfLGthG+sorbFmTkP9ZintGhAzsJx1XUuG7bQA/0LMQDAH4T2OVQ0inISm0s1DchrgLXTy2jVv7HVIvFu8hZYtObozpop7nWLhFzxaaQ7iLlw+fG0kp0H89Q==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=P9P3W9cEqFBnuh7ZdWHim6sI1BI16haLklkmsLBX9z0=;
- b=ipRUZSVy/LZxV7Ub/RslfDONHhbYi1bDizRr6Kg023d6VrCWAyngzwdwc0Xna1PLL70DJk+b1ZAqqaGE5msgkVJ1lmRzQE7eqvIbtROGfMrf2m03KmxAbWod+sRT1sm9Lwp1ZbSUbjPV4UZbwnlZ5Qu64JtBiAdI0ZqZcX0+vmqK1F9KyTq5xVdC/hIZjTamCEbjQ2zWkt6AlwfQjmiMKEvM07m16OmK2F7itLjPAAtW/lDQ2gqiVVzpooOEZnEf6HGnIHStPsORlVwh7mqOOk7arFPnqqOWoV8T5unteAYOx3SMhH16IHhqZMx7BVzP6NZj3fi534S+CsvA++fppA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.118.232) smtp.rcpttodomain=vger.kernel.org smtp.mailfrom=nvidia.com;
- dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
- dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=P9P3W9cEqFBnuh7ZdWHim6sI1BI16haLklkmsLBX9z0=;
- b=gU++xw5rm8WO2gAa6xyS8Ye/Qo+dWbmqKKqlEWNqs/DRe5NHuPP8669zFU9h0arOXcVBrKlmT7j8QOzGbhIemds1KamiHZBLybJKOl3tSRX9BOmsbNukv6GDZJggRt73e5zb+sZ1WcDhkN7CkdH3gZHhJVME3mqgYDi1HabHKMjrPyyJIO3WEZXK7w2hCCh6mL42e5GJELp+el0uaXV04oHihzKL8YMiDGj5Kr2PtPkbhLJKXxfoiQyVnZMIq1jxMyLtzo6gGRqwYHp24X/MdpY/Yl4zxk51XEkO1KnsEHofbiahNqEg67uOZ6fRvIcDZ57zfGZMozpI7AZ8Ri+uqw==
-Received: from SJ0PR05CA0178.namprd05.prod.outlook.com (2603:10b6:a03:339::33)
- by DS0PR12MB7726.namprd12.prod.outlook.com (2603:10b6:8:130::6) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6631.47; Thu, 3 Aug
- 2023 00:53:49 +0000
-Received: from MWH0EPF000971E2.namprd02.prod.outlook.com
- (2603:10b6:a03:339:cafe::b1) by SJ0PR05CA0178.outlook.office365.com
- (2603:10b6:a03:339::33) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6652.14 via Frontend
- Transport; Thu, 3 Aug 2023 00:53:48 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.118.232)
- smtp.mailfrom=nvidia.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.118.232 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.118.232; helo=mail.nvidia.com; pr=C
-Received: from mail.nvidia.com (216.228.118.232) by
- MWH0EPF000971E2.mail.protection.outlook.com (10.167.243.69) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.6652.20 via Frontend Transport; Thu, 3 Aug 2023 00:53:48 +0000
-Received: from drhqmail201.nvidia.com (10.126.190.180) by mail.nvidia.com
- (10.127.129.5) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.5; Wed, 2 Aug 2023
- 17:53:43 -0700
-Received: from drhqmail201.nvidia.com (10.126.190.180) by
- drhqmail201.nvidia.com (10.126.190.180) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.986.37; Wed, 2 Aug 2023 17:53:42 -0700
-Received: from Asurada-Nvidia (10.127.8.14) by mail.nvidia.com
- (10.126.190.180) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.37 via Frontend
- Transport; Wed, 2 Aug 2023 17:53:41 -0700
-Date:   Wed, 2 Aug 2023 17:53:40 -0700
-From:   Nicolin Chen <nicolinc@nvidia.com>
-To:     Jason Gunthorpe <jgg@nvidia.com>
-CC:     "Tian, Kevin" <kevin.tian@intel.com>,
-        "Liu, Yi L" <yi.l.liu@intel.com>,
-        "joro@8bytes.org" <joro@8bytes.org>,
-        "alex.williamson@redhat.com" <alex.williamson@redhat.com>,
-        "robin.murphy@arm.com" <robin.murphy@arm.com>,
-        "baolu.lu@linux.intel.com" <baolu.lu@linux.intel.com>,
-        "cohuck@redhat.com" <cohuck@redhat.com>,
-        "eric.auger@redhat.com" <eric.auger@redhat.com>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "mjrosato@linux.ibm.com" <mjrosato@linux.ibm.com>,
-        "chao.p.peng@linux.intel.com" <chao.p.peng@linux.intel.com>,
-        "yi.y.sun@linux.intel.com" <yi.y.sun@linux.intel.com>,
-        "peterx@redhat.com" <peterx@redhat.com>,
-        "jasowang@redhat.com" <jasowang@redhat.com>,
-        "shameerali.kolothum.thodi@huawei.com" 
-        <shameerali.kolothum.thodi@huawei.com>,
-        "lulu@redhat.com" <lulu@redhat.com>,
-        "suravee.suthikulpanit@amd.com" <suravee.suthikulpanit@amd.com>,
-        "iommu@lists.linux.dev" <iommu@lists.linux.dev>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
-        "Duan, Zhenzhong" <zhenzhong.duan@intel.com>
-Subject: Re: [PATCH v3 08/17] iommufd: IOMMU_HWPT_ALLOC allocation with user
- data
-Message-ID: <ZMr6lJpRDNZsvSm/@Asurada-Nvidia>
-References: <20230724110406.107212-1-yi.l.liu@intel.com>
- <20230724110406.107212-9-yi.l.liu@intel.com>
- <ZMQBLTm+U+5bgC/Z@nvidia.com>
- <BN9PR11MB5276C84452E56AB03B819D208C05A@BN9PR11MB5276.namprd11.prod.outlook.com>
- <ZMe0IQksFgV6yKTB@nvidia.com>
- <ZMrp0ofsx8M6fT/S@Asurada-Nvidia>
- <ZMrqEAOh82SBvyaq@nvidia.com>
+        Wed, 2 Aug 2023 21:08:59 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A86C1716
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Aug 2023 18:08:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1691024888;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=yNCl3TS6o3J06UrSCjbBrl21cvR06Nfa+qdUrrTWUOw=;
+        b=PPBygaoBGIN+RllqEOPGnP5lT+raEyRWb//MAQuh8KsENi8lJkffn8L3VgzOr3Qww13nPg
+        qvJqMaFFukEvPzugBDjhdA77VJ6hGnT5ok/ahgMJw56wolc19NtSzGjG/yxVKLW3mPzphg
+        6KKbw1tQj5HT8DYKGHsusJfptsqwtCI=
+Received: from mimecast-mx02.redhat.com (66.187.233.73 [66.187.233.73]) by
+ relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-86-kT90DbMtPA-AfZ-sdNrgZQ-1; Wed, 02 Aug 2023 21:08:04 -0400
+X-MC-Unique: kT90DbMtPA-AfZ-sdNrgZQ-1
+Received: from smtp.corp.redhat.com (int-mx09.intmail.prod.int.rdu2.redhat.com [10.11.54.9])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id A7DC228237CB;
+        Thu,  3 Aug 2023 01:08:03 +0000 (UTC)
+Received: from [10.22.18.41] (unknown [10.22.18.41])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 0C0D7492CA6;
+        Thu,  3 Aug 2023 01:08:01 +0000 (UTC)
+Message-ID: <0c019181-7e9b-0a19-c477-f8630ea98124@redhat.com>
+Date:   Wed, 2 Aug 2023 21:08:01 -0400
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <ZMrqEAOh82SBvyaq@nvidia.com>
-X-NV-OnPremToCloud: ExternallySecured
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: MWH0EPF000971E2:EE_|DS0PR12MB7726:EE_
-X-MS-Office365-Filtering-Correlation-Id: aed14420-8684-4708-109d-08db93bc18fe
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: +j6W/Ydz8H/IPes4dLa/SEdf1Xxd6hZM7Az88huw35iYbgMonoSEwg0BeBK0VMQmOn3nM/NMOLQLtG10CO+m/tRWWmczCvv1zbMCEbyCrZhLsXMhZkxuIrW8bb6AcWRJhZgH95EQvfLAZliLw91KA8b2Y1HSdRzMfTEq4DurI2263bqmG+kBCKHIKoE+BU1CfO99qn61MwvGADWHGXMl3Me1ayBflf55bfS9RwUFYT9Zxkd+qv/Fo/jtmOZo/bs2tWWioGc4HuU115POr/V79vZmQwRFnRAZQrj+7BrbcN//vWLdrctGZJ/CRSscUWVT7/jScrn1Ig9laHg3NaYvN/x5Dv6MMmrxXUqcKAVKPPA8SjPxamrpOjWAuFfPHcSJgdrELrqA/+RPT5qGL6XrBtbVd4+h5XMlk1HS0GWtiHfbvm2GyDKxh+EGywG9i0SPYz55G96Aav2vw8Xt5ANiNm7AxRKlDzmQQd3eVYL5m1RE8sNd7z2TjABgbuBfJpw5YjRZhucH50KzIBrJ9U4B/G+w2r1OSyII2kDqFsMziuuL+Wu9CSoQk8jsL0uN+CV/48lspCgeh6taayec+LualkVecAdM/Rf5+QrCeROf8UNsovZngMiIoM4T0KY3lJAgN14d5EZmwe8dFpVffSy94QSQCZlvR0iOt8ivz7EqI4Y8uS2w5wvmfvFWXuiWu0SK2Y4YwYLHe/M3kfdWEEcl/y+2xBxgSbZa33Skv5qcZOs=
-X-Forefront-Antispam-Report: CIP:216.228.118.232;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc7edge1.nvidia.com;CAT:NONE;SFS:(13230028)(4636009)(396003)(346002)(39860400002)(136003)(376002)(82310400008)(451199021)(40470700004)(46966006)(36840700001)(40460700003)(426003)(336012)(26005)(186003)(83380400001)(47076005)(36860700001)(316002)(70206006)(70586007)(2906002)(4326008)(6636002)(5660300002)(7416002)(6862004)(41300700001)(8676002)(8936002)(9686003)(478600001)(54906003)(40480700001)(55016003)(356005)(7636003)(82740400003)(33716001)(86362001)(66899021);DIR:OUT;SFP:1101;
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 03 Aug 2023 00:53:48.4401
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: aed14420-8684-4708-109d-08db93bc18fe
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.118.232];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource: MWH0EPF000971E2.namprd02.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS0PR12MB7726
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.7.1
+Subject: Re: [PATCH v5 4/5] cgroup/cpuset: Documentation update for partition
+Content-Language: en-US
+To:     Tejun Heo <tj@kernel.org>
+Cc:     Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Christian Brauner <brauner@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Shuah Khan <shuah@kernel.org>, cgroups@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Juri Lelli <juri.lelli@redhat.com>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        =?UTF-8?Q?Michal_Koutn=c3=bd?= <mkoutny@suse.com>,
+        Giuseppe Scrivano <gscrivan@redhat.com>
+References: <20230713172601.3285847-1-longman@redhat.com>
+ <20230713172601.3285847-5-longman@redhat.com>
+ <ZMrERWeIeEOGzXHO@slm.duckdns.org>
+From:   Waiman Long <longman@redhat.com>
+In-Reply-To: <ZMrERWeIeEOGzXHO@slm.duckdns.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 3.1 on 10.11.54.9
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 02, 2023 at 08:43:12PM -0300, Jason Gunthorpe wrote:
-> On Wed, Aug 02, 2023 at 04:42:10PM -0700, Nicolin Chen wrote:
-> > On Mon, Jul 31, 2023 at 10:16:17AM -0300, Jason Gunthorpe wrote:
-> >  
-> > > > Ideally expanding uAPI structure size should come with new flag bits.
-> > > 
-> > > Flags or some kind of 'zero is the same behavior as a smaller struct'
-> > > scheme.
-> > > 
-> > > This patch is doing the zero option:
-> > > 
-> > >  	__u32 __reserved;
-> > > +	__u32 hwpt_type;
-> > > +	__u32 data_len;
-> > > +	__aligned_u64 data_uptr;
-> > >  };
-> > > 
-> > > hwpt_type == 0 means default type
-> > > data_len == 0 means no data
-> > > data_uptr is ignored (zero is safe)
-> > > 
-> > > So there is no need to change it
-> > 
-> > TEST_LENGTH passing ".size = sizeof(struct _struct) - 1" expects a
-> > -EINVAL error code from "if (ucmd.user_size < op->min_size)" check
-> > in the iommufd_fops_ioctl(). This has been working when min_size is
-> > exactly the size of the structure.
-> > 
-> > When the size of the structure becomes larger than min_size, i.e.
-> > the passing size above is larger than min_size, it bypasses that
-> > min_size sanity and goes down to an ioctl handler with a potential
-> > risk. And actually, the size range can be [min_size, struct_size),
-> > making it harder for us to sanitize with the existing code.
-> > 
-> > I wonder what's the generic way of sanitizing this case? And, it
-> > seems that TEST_LENGTH needs some rework to test min_size only?
-> 
-> Yes, it should technically test using offsetof and a matching set of
-> struct members.
+On 8/2/23 17:01, Tejun Heo wrote:
+> Hello, Waiman.
+>
+> On Thu, Jul 13, 2023 at 01:26:00PM -0400, Waiman Long wrote:
+> ...
+>> +	When a valid partition is created, the value of this file will
+>> +	be automatically set to the largest subset of "cpuset.cpus"
+>> +	that can be granted for exclusive access from its parent if
+>> +	its value isn't explicitly set before.
+>> +
+>> +	Users can also manually set it to a value that is different from
+>> +	"cpuset.cpus".	In this case, its value becomes invariant and
+>> +	may no longer reflect the effective value that is being used
+>> +	to create a valid partition if some dependent cpuset control
+>> +	files are modified.
+>> +
+>> +	There are constraints on what values are acceptable to this
+>> +	control file.  If a null string is provided, it will invalidate a
+>> +	valid partition root and reset its invariant state.  Otherwise,
+>> +	its value must be a subset of the cgroup's "cpuset.cpus" value
+>> +	and the parent cgroup's "cpuset.cpus.exclusive" value.
+> As I wrote before, the hidden state really bothers me. This is fine when
+> there is one person configuring the system, but working with automated
+> management and monitoring tools can be really confusing at scale when there
+> are hidden states like this as there's no way to determine the current state
+> by looking at what's visible at the interface level.
+>
+> Can't we do something like the following?
+>
+> * cpuset.cpus.exclusive can be set to any possible cpus. While I'm not
+>    completely against failing certain writes (e.g. siblings having
+>    overlapping masks is never correct or useful), expanding that to
+>    hierarchical checking quickly gets into trouble around what happens when
+>    an ancestor retracts a CPU.
+>
+>    I don't think it makes sense to reject writes if the applied rules can't
+>    be invariants for the same reason given for avoiding hidden states - the
+>    system can be managed by multiple agents at different delegation levels.
+>    One layer changing resource configuration shouldn't affect the success or
+>    failure of configuration operations in other layers.
+>
+> * cpuset.cpus.exclusive.effective shows what's currently available for
+>    exclusive usage - ie. what'd be used for a partition if the cgroup is to
+>    become a partition at that point.
+>
+>    This, I think, gets rid of the need for the hidden states. If .exclusive
+>    of a child of a partition is empty, its .exclusive.effective can show all
+>    the CPUs allowed in it. If .exclusive is set then, .exclusive.effective
+>    shows the available subset.
+>
+> What do you think?
+>
+Sure, I can add cpuset.cpus.exclusive.effective and allow users to set 
+cpuset.cpus.exclusive to whatever they want, just like cpuset.cpus. I 
+will rework the patch series and send out a new version sometimes next 
+week.
 
-OK. I copied 3 lines for offsetofend from the kernel and did this:
---------------------------------------------------------------------------
-diff --git a/tools/testing/selftests/iommu/iommufd.c b/tools/testing/selftests/iommu/iommufd.c
-index 6b075a68b928..a15a475c1243 100644
---- a/tools/testing/selftests/iommu/iommufd.c
-+++ b/tools/testing/selftests/iommu/iommufd.c
-@@ -86,12 +86,13 @@ TEST_F(iommufd, cmd_fail)
+With the new cpuset.cpus.exclusive.effective file, cpuset.cpus.exclusive 
+will really be invariant and become whatever the users set. 
+cpuset.cpus.exclusive.effective file will only have value if 
+cpuset.cpus.exclusive set or it becomes a local partition.
 
- TEST_F(iommufd, cmd_length)
- {
--#define TEST_LENGTH(_struct, _ioctl)                                     \
-+#define TEST_LENGTH(_struct, _ioctl, _last)                              \
-        {                                                                \
-+               size_t min_size = offsetofend(struct _struct, _last);    \
-                struct {                                                 \
-                        struct _struct cmd;                              \
-                        uint8_t extra;                                   \
--               } cmd = { .cmd = { .size = sizeof(struct _struct) - 1 }, \
-+               } cmd = { .cmd = { .size = min_size - 1 },               \
-                          .extra = UINT8_MAX };                          \
-                int old_errno;                                           \
-                int rc;                                                  \
---------------------------------------------------------------------------
+Hopefully this will be the final version.
 
-Any misaligned size within the range of [min_size, struct_size) still
-doesn't have a coverage though. Is this something that we have to let
-it fail with a potential risk?
+Cheers,
+Longman
 
-Thanks
-Nic
