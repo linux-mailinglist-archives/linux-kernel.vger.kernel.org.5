@@ -2,137 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DC22476E3AA
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 10:53:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5AB5076E3AB
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 10:54:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234433AbjHCIxl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Aug 2023 04:53:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40148 "EHLO
+        id S234822AbjHCIyS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Aug 2023 04:54:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40486 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231331AbjHCIxi (ORCPT
+        with ESMTP id S231331AbjHCIyQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Aug 2023 04:53:38 -0400
-Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.154.123])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 715AAE43;
-        Thu,  3 Aug 2023 01:53:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1691052817; x=1722588817;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=1DUG1YI9NaBIZLAvEQTa5XZeeipNelrYpejz4hwab7Q=;
-  b=GJlqrq8/zVUazAgzGQ9TGMAu6CTZYnKIZfTOu6EhRGjx3wuZRofCwO8o
-   2gBDwPEC/XlV3U0kB33kAlXqpD6FZH0zTEzlVEPDtXjWID11MwS1jh6DA
-   jQrNgWXOK2Qw+g18W4JkwqO1jMAog+LbLviLqSdfuUpl5s08hIIUIU5/M
-   Sz/26UtEM0U1yCP0psQsMN6zJ8musiNaf88Ae7q7MetKRvIWv3HLu49LT
-   4Jq/pNRCCJR6t36E3xBzojcnUM2F4F8r8yTgpPhIi60IFoSGh5AglHH5G
-   60LTJYXwUpp/F9jIZ+K42QFElRnLoal93ziRgH/3dQqXDJKyKNTNw8BqN
-   g==;
-X-IronPort-AV: E=Sophos;i="6.01,251,1684825200"; 
-   d="asc'?scan'208";a="164637452"
-X-Amp-Result: UNKNOWN
-X-Amp-Original-Verdict: FILE UNKNOWN
-Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
-  by esa6.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 03 Aug 2023 01:53:35 -0700
-Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
- chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.21; Thu, 3 Aug 2023 01:53:35 -0700
-Received: from wendy (10.10.115.15) by chn-vm-ex04.mchp-main.com
- (10.10.85.152) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.21 via Frontend
- Transport; Thu, 3 Aug 2023 01:53:32 -0700
-Date:   Thu, 3 Aug 2023 09:52:56 +0100
-From:   Conor Dooley <conor.dooley@microchip.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-CC:     Tony Lindgren <tony@atomide.com>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Andy Shevchenko <andriy.shevchenko@intel.com>,
-        Dhruva Gole <d-gole@ti.com>,
-        Ilpo =?iso-8859-1?Q?J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>,
-        John Ogness <john.ogness@linutronix.de>,
-        Johan Hovold <johan@kernel.org>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        <linux-kernel@vger.kernel.org>, <linux-serial@vger.kernel.org>,
-        kernel test robot <oliver.sang@intel.com>
-Subject: Re: [PATCH v2 1/1] serial: core: Fix serial_base_match() after
- fixing controller port name
-Message-ID: <20230803-molecule-shelter-aa71b219af26@wendy>
-References: <20230803071034.25571-1-tony@atomide.com>
- <2023080351-chaplain-headgear-bcbb@gregkh>
+        Thu, 3 Aug 2023 04:54:16 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 796BEE43;
+        Thu,  3 Aug 2023 01:54:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=G3dKS3PiyfTeGk+/L0aBzxktIOdUDrPMrl0WarMpWQQ=; b=Ia1vVio9qPQGTgm9A1rXOwAQvs
+        JdHxuflT57Mix99Tv3LruwRbE1jHPxlrI8ly2lXKqTgSNyxtnpLW4OPMI/YrbOz4lRyygGp0OCzCf
+        nuvOxZTE9hDXtjw/ML1v6wXGIlLP1/7jjMj/mPPR1iRNP3JhRfd/AlVuev525ENSTuBpoLUZND7cW
+        5PGXEbXG51yAdInstMTyFNCb01j+rWx7jEZsVrUTO7j1cwIKfeFS9yEvnnPGZY8yn/9FMlzve1fc4
+        dEcYOYqlRu3pr6SYW2qyA59vDs0RnkWYDBFHumuwSO5Gt7Z1yc/MTJt8hLJPUwWYcUGypRkIUW6St
+        GEDPh6jw==;
+Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
+        id 1qRU5X-00GgiW-2u;
+        Thu, 03 Aug 2023 08:53:44 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 59B6F30007E;
+        Thu,  3 Aug 2023 10:53:42 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 38DA5202F3A1A; Thu,  3 Aug 2023 10:53:42 +0200 (CEST)
+Date:   Thu, 3 Aug 2023 10:53:42 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Ze Gao <zegao2021@gmail.com>
+Cc:     Adrian Hunter <adrian.hunter@intel.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Ian Rogers <irogers@google.com>,
+        Ingo Molnar <mingo@redhat.com>, Jiri Olsa <jolsa@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
+        linux-trace-kernel@vger.kernel.org, Ze Gao <zegao@tencent.com>
+Subject: Re: [RFC PATCH v6 3/5] sched, tracing: reorganize fields of switch
+ event struct
+Message-ID: <20230803085342.GG212435@hirez.programming.kicks-ass.net>
+References: <20230803083352.1585-1-zegao@tencent.com>
+ <20230803083352.1585-4-zegao@tencent.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="SqrNJ+wWy5BRsFok"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <2023080351-chaplain-headgear-bcbb@gregkh>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20230803083352.1585-4-zegao@tencent.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---SqrNJ+wWy5BRsFok
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+On Thu, Aug 03, 2023 at 04:33:50AM -0400, Ze Gao wrote:
+> Report prioritiy and prev_state in 'short' to save some buffer
+> space. And also reorder the fields so that we take struct
+> alignment into consideration to make the record compact.
+> 
+> Suggested-by: Steven Rostedt (Google) <rostedt@goodmis.org>
+> Signed-off-by: Ze Gao <zegao@tencent.com>
 
-On Thu, Aug 03, 2023 at 09:50:03AM +0200, Greg Kroah-Hartman wrote:
-> On Thu, Aug 03, 2023 at 10:10:32AM +0300, Tony Lindgren wrote:
-> > While fixing DEVNAME to be more usable, I broke serial_base_match() as =
-the
-> > ctrl and port prefix for device names seemed unnecessary.
-> >=20
-> > The prefixes are still needed by serial_base_match() to probe the serial
-> > base controller port, and serial tx is now broken.
-> >=20
-> > Let's fix the issue by checking against dev->type and drv->name instead
-> > of the prefixes that are no longer in the DEVNAME.
-> >=20
-> > Fixes: 1ef2c2df1199 ("serial: core: Fix serial core controller port nam=
-e to show controller id")
-> > Reported-by: kernel test robot <oliver.sang@intel.com>
-> > Closes: https://lore.kernel.org/oe-lkp/202308021529.35b3ad6c-oliver.san=
-g@intel.com
-> > Signed-off-by: Tony Lindgren <tony@atomide.com>
-> > ---
-> >=20
-> > Changes since v1:
-> > - Leave out magic numbers and use str_has_prefix() as suggested by Andy
-> >   and Greg
-> >=20
-> > - Improve patch description and add a link for Closes tag as suggested
-> >   by Jiri
-> >=20
-> > - Check the name against device_type name since we have it and leave
-> >   out the changes to try to define names in the header because of the
-> >   issues noted by Jiri
-> >=20
-> > - Leave out Tested-by from Mark and Anders as the patch changed
->=20
-> Thanks for this, now queued up.
+I am really getting fed up with this. This again doesn't list any
+reasons on why this is a sane thing to do.
 
-Seems like I am a bit late, but FWIW this does fix my boot failures in
--next:
-Tested-by: Conor Dooley <conor.dooley@microchip.com>
-
-Thanks,
-Conor.
-
---SqrNJ+wWy5BRsFok
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZMtq3QAKCRB4tDGHoIJi
-0hzrAPwNe3Aci1oYSam7q2JubnqG7pAXfKkMra6oE8XJJWnaAgEA+tcvAHd/Uxl6
-hWtkS4rt9R1xmhsUfEj/FVcMrh8ZCAc=
-=VAFL
------END PGP SIGNATURE-----
-
---SqrNJ+wWy5BRsFok--
+Please review past discussions and collate the various things mentioned
+into this Changelog.
