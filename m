@@ -2,119 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CA32F76EBAA
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 16:02:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 13E1A76EC09
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 16:12:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232169AbjHCOCg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Aug 2023 10:02:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47212 "EHLO
+        id S235573AbjHCOMe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Aug 2023 10:12:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58942 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236633AbjHCOBa (ORCPT
+        with ESMTP id S233919AbjHCOMO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Aug 2023 10:01:30 -0400
-Received: from smtp-relay-internal-0.canonical.com (smtp-relay-internal-0.canonical.com [185.125.188.122])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7682644A6
-        for <linux-kernel@vger.kernel.org>; Thu,  3 Aug 2023 07:00:58 -0700 (PDT)
-Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com [209.85.208.72])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id 75EE642418
-        for <linux-kernel@vger.kernel.org>; Thu,  3 Aug 2023 14:00:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1691071241;
-        bh=VUgFUdqFi9+fVf4KBmHgMSHcrOKks48HLHXKSZR7nM0=;
-        h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-         MIME-Version;
-        b=JIRRfFumk1KY9LDcMpWwjJ90vLnQarrxyxZjplJtu/Vurq9gBwGboIOlerOQhzlKO
-         c8NpAmjijcKMOiQ+O5XzppV//nZ6aECE9D4/UWeo8/x1h/Yinop9Oh+/+1JKGdE5dN
-         24NWgAR/6NAwkg3GVrZlk2DoMIF77B1eg2CVvWdqanxnF6HwZ9+flPObW//Kv2xDuN
-         bbrmz5AmcSXAdYZHShoGAjORp65Bw0v37GbU0ygaQETLLpoZtJMzw5KdspRvXlrIMe
-         JB8pCRbin34GBqST0G0hJuVsMhjNre9ak+iwBt7cNJo05IFB1OQJhGKgt5pV9BZ+6S
-         zZ6xOsiG4o06g==
-Received: by mail-ed1-f72.google.com with SMTP id 4fb4d7f45d1cf-5223854ef71so685389a12.1
-        for <linux-kernel@vger.kernel.org>; Thu, 03 Aug 2023 07:00:41 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691071240; x=1691676040;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=VUgFUdqFi9+fVf4KBmHgMSHcrOKks48HLHXKSZR7nM0=;
-        b=l7iXpSvU8c4pVezwAsa04w15jmQyQKBcpeKkMVUlYfv6WQFolO3b11TRLNTvJkwZLs
-         B5EdnwPci5tPXQY/CZ9m6jQBCsEypFFmigakMyRhc+lUOI5jmjzvUS9Eux39/CZEBBnu
-         uO5romNiq37k6+/OwBdvOCclPaXBNn2m6VpiKC7KYX+v5Y4R1U3LaPSOeJ1IsZ0L41eN
-         krHy58YE0gOOpZwPZLF3uhOvLeUgaplt2EyA1GyzuZraf1UdH87cgnJKZzZnoSgzB6eY
-         C6yJ6edd2AehSbeWni/mYmVECcxL8ht1oogIQDGES0cL1N9RFOYlhzCmxIWtStrttaZ4
-         dqPw==
-X-Gm-Message-State: ABy/qLbHQIDlqYrP1eCp4WtWLRAfK/kro7NiJBLA31YIN8DKVK1wN/Mv
-        qkYWCMAnoOZxqXsHqh5FyB0ZmZ9W/P3mhzPzcl6EaO4DkPad9ARketcsyVCjTAa9eaXxPtpF8oI
-        3riRhsNA54vmeyO+eYouDkaVfdvM4hwARDWLp8mN6jg==
-X-Received: by 2002:aa7:cb48:0:b0:522:37ca:a51c with SMTP id w8-20020aa7cb48000000b0052237caa51cmr7051507edt.40.1691071240822;
-        Thu, 03 Aug 2023 07:00:40 -0700 (PDT)
-X-Google-Smtp-Source: APBJJlG6Q02R9Pwuh55imXZTjVXNaetMucDVc5mJ3+DcQHv4FmT8HpUH72N1OhXDUzrzxEYbQpmVdA==
-X-Received: by 2002:aa7:cb48:0:b0:522:37ca:a51c with SMTP id w8-20020aa7cb48000000b0052237caa51cmr7051500edt.40.1691071240663;
-        Thu, 03 Aug 2023 07:00:40 -0700 (PDT)
-Received: from amikhalitsyn.local (dslb-088-066-182-192.088.066.pools.vodafone-ip.de. [88.66.182.192])
-        by smtp.gmail.com with ESMTPSA id bc21-20020a056402205500b0052229882fb0sm10114822edb.71.2023.08.03.07.00.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 03 Aug 2023 07:00:40 -0700 (PDT)
-From:   Alexander Mikhalitsyn <aleksandr.mikhalitsyn@canonical.com>
-To:     xiubli@redhat.com
-Cc:     brauner@kernel.org, stgraber@ubuntu.com,
-        linux-fsdevel@vger.kernel.org, Jeff Layton <jlayton@kernel.org>,
-        Ilya Dryomov <idryomov@gmail.com>, ceph-devel@vger.kernel.org,
-        Alexander Mikhalitsyn <aleksandr.mikhalitsyn@canonical.com>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v8 12/12] ceph: allow idmapped mounts
-Date:   Thu,  3 Aug 2023 15:59:55 +0200
-Message-Id: <20230803135955.230449-13-aleksandr.mikhalitsyn@canonical.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20230803135955.230449-1-aleksandr.mikhalitsyn@canonical.com>
-References: <20230803135955.230449-1-aleksandr.mikhalitsyn@canonical.com>
+        Thu, 3 Aug 2023 10:12:14 -0400
+Received: from mgamail.intel.com (unknown [134.134.136.65])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 233E0E69;
+        Thu,  3 Aug 2023 07:11:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1691071898; x=1722607898;
+  h=date:from:to:cc:subject:in-reply-to:message-id:
+   references:mime-version;
+  bh=F8f4BApASGNCPhtinYIc3rUiCeFOT3UfB6SVX2g7axo=;
+  b=VufsGXUQQSWExSdAEUVDXfVX0xlGilrCTarxQODqfseYbYO25a69g3Mp
+   6OnWbTDC7Erbc5ZxRNdY6uToE/y0EVKaCe1pWkAdLk949DyoIoLHPtWma
+   +4lwR7QF2dReeFojFwhzos/Kf1oWEv26WfIKUjdR22VjQ3kGqTbngs2Es
+   hAOUsxipYbkyiDFpUOCMM0Tvc/eE7fgB19p8rfhQewmDeV69eQn6L4PWc
+   Cmt131VQRWIK8u2YTelWgComBpvks2fwGNCKhZL1H+ZeCcymPtWUJQ/eB
+   uKs5U/YWNgJmjajbdXi4YGQMLF343+x1DScpef5QtAcbHs7DFwl//8k+b
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10791"; a="373517225"
+X-IronPort-AV: E=Sophos;i="6.01,252,1684825200"; 
+   d="scan'208";a="373517225"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Aug 2023 06:39:16 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10791"; a="819656692"
+X-IronPort-AV: E=Sophos;i="6.01,252,1684825200"; 
+   d="scan'208";a="819656692"
+Received: from eozturk-mobl.ger.corp.intel.com ([10.249.38.219])
+  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Aug 2023 06:39:11 -0700
+Date:   Thu, 3 Aug 2023 16:39:08 +0300 (EEST)
+From:   =?ISO-8859-15?Q?Ilpo_J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>
+To:     Tony Lindgren <tony@atomide.com>
+cc:     Jiri Slaby <jirislaby@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Andy Shevchenko <andriy.shevchenko@intel.com>,
+        Dhruva Gole <d-gole@ti.com>,
+        John Ogness <john.ogness@linutronix.de>,
+        Johan Hovold <johan@kernel.org>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-serial <linux-serial@vger.kernel.org>
+Subject: Re: [PATCH] MAINTAINERS: Update TTY layer for lists and recently
+ added files
+In-Reply-To: <20230802120530.GE14799@atomide.com>
+Message-ID: <61e5675-570-9566-34c2-86975c56d961@linux.intel.com>
+References: <20230721072334.59272-1-tony@atomide.com> <ZLpboaXKVOOjeGJ+@smile.fi.intel.com> <20230724045327.GV5194@atomide.com> <2023072517-onward-payment-569d@gregkh> <2023072530-wired-chaps-c1e3@gregkh> <edb0414f-3808-8651-4956-8ec34b056901@kernel.org>
+ <20230802120530.GE14799@atomide.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Type: multipart/mixed; boundary="8323329-294453060-1691069953=:1954"
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Christian Brauner <brauner@kernel.org>
+  This message is in MIME format.  The first part should be readable text,
+  while the remaining parts are likely unreadable without MIME-aware tools.
 
-Now that we converted cephfs internally to account for idmapped mounts
-allow the creation of idmapped mounts on by setting the FS_ALLOW_IDMAP
-flag.
+--8323329-294453060-1691069953=:1954
+Content-Type: text/plain; charset=ISO-8859-15
+Content-Transfer-Encoding: 8BIT
 
-https://github.com/ceph/ceph/pull/52575
-https://tracker.ceph.com/issues/62217
+On Wed, 2 Aug 2023, Tony Lindgren wrote:
 
-Cc: Xiubo Li <xiubli@redhat.com>
-Cc: Jeff Layton <jlayton@kernel.org>
-Cc: Ilya Dryomov <idryomov@gmail.com>
-Cc: ceph-devel@vger.kernel.org
-Signed-off-by: Christian Brauner <brauner@kernel.org>
-Signed-off-by: Alexander Mikhalitsyn <aleksandr.mikhalitsyn@canonical.com>
----
- fs/ceph/super.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+> * Jiri Slaby <jirislaby@kernel.org> [230726 10:12]:
+> > On 25. 07. 23, 19:29, Greg Kroah-Hartman wrote:
+> > > On Tue, Jul 25, 2023 at 07:28:46PM +0200, Greg Kroah-Hartman wrote:
+> > > > On Mon, Jul 24, 2023 at 07:53:27AM +0300, Tony Lindgren wrote:
+> > > > > * Andy Shevchenko <andriy.shevchenko@intel.com> [230721 10:19]:
+> > > > > > On Fri, Jul 21, 2023 at 10:23:32AM +0300, Tony Lindgren wrote:
+> > > > > > > Add mailing lists for linux-serial and lkml for the TTY layer. And let's
+> > > > > > > list the recently added files. This makes it easier for get_maintainer.pl
+> > > > > > > to include linux-serial for patches.
+> > > > > > 
+> > > > > > Shouldn't serial_* stuff go to the "SERIAL DRIVERS" section?
+> > > > > 
+> > > > > Not sure if there's some reason we have "TTY LAYER" with serial_core
+> > > > > files. If not, yeah let's move the serial files.
+> > > > 
+> > > > I'll take this patch, can you send a new one that removes the serial
+> > > > files from this entry as I don't think they are needed in here anymore.
+> > > 
+> > > Better yet, they should be merged probably.  Although I don't know if
+> > > Jiri wants to be responsible for serial stuff, that's his call...
+> > 
+> > No problem. I actually didn't realize they are separate. So feel free to
+> > submit a patch, so we have a single MAINTAINTERS file entry...
+> 
+> How about something like this?
+> 
+> Tony
+> 
+> 8< ----------------------
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -19319,13 +19319,6 @@ F:	Documentation/devicetree/bindings/serial/serial.yaml
+>  F:	drivers/tty/serdev/
+>  F:	include/linux/serdev.h
+>  
+> -SERIAL DRIVERS
+> -M:	Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> -L:	linux-serial@vger.kernel.org
+> -S:	Maintained
+> -F:	Documentation/devicetree/bindings/serial/
+> -F:	drivers/tty/serial/
+> -
+>  SERIAL IR RECEIVER
+>  M:	Sean Young <sean@mess.org>
+>  L:	linux-media@vger.kernel.org
+> @@ -21760,20 +21753,16 @@ W:	https://github.com/srcres258/linux-doc
+>  T:	git git://github.com/srcres258/linux-doc.git doc-zh-tw
+>  F:	Documentation/translations/zh_TW/
+>  
+> -TTY LAYER
+> +TTY LAYER AND SERIAL DRIVERS
+>  M:	Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+>  M:	Jiri Slaby <jirislaby@kernel.org>
+>  L:	linux-kernel@vger.kernel.org
+>  L:	linux-serial@vger.kernel.org
+>  S:	Supported
+>  T:	git git://git.kernel.org/pub/scm/linux/kernel/git/gregkh/tty.git
+> +F:	Documentation/devicetree/bindings/serial/
+>  F:	Documentation/driver-api/serial/
+>  F:	drivers/tty/
+> -F:	drivers/tty/serial/serial_base.h
+> -F:	drivers/tty/serial/serial_base_bus.c
+> -F:	drivers/tty/serial/serial_core.c
+> -F:	drivers/tty/serial/serial_ctrl.c
+> -F:	drivers/tty/serial/serial_port.c
+>  F:	include/linux/selection.h
+>  F:	include/linux/serial.h
+>  F:	include/linux/serial_core.h
 
-diff --git a/fs/ceph/super.c b/fs/ceph/super.c
-index 18bfdfd48cef..ad6d40309ebe 100644
---- a/fs/ceph/super.c
-+++ b/fs/ceph/super.c
-@@ -1581,7 +1581,7 @@ static struct file_system_type ceph_fs_type = {
- 	.name		= "ceph",
- 	.init_fs_context = ceph_init_fs_context,
- 	.kill_sb	= ceph_kill_sb,
--	.fs_flags	= FS_RENAME_DOES_D_MOVE,
-+	.fs_flags	= FS_RENAME_DOES_D_MOVE | FS_ALLOW_IDMAP,
- };
- MODULE_ALIAS_FS("ceph");
- 
+The separation of these two has always felt a bit artificial to me.
+
+Acked-by: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
+
 -- 
-2.34.1
+ i.
 
+--8323329-294453060-1691069953=:1954--
