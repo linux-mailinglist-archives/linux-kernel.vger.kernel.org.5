@@ -2,64 +2,46 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2FBFE76DFD3
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 07:44:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 11A6376DFD6
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 07:46:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230385AbjHCFok (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Aug 2023 01:44:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56808 "EHLO
+        id S232330AbjHCFqO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Aug 2023 01:46:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57380 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229480AbjHCFoh (ORCPT
+        with ESMTP id S229480AbjHCFqM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Aug 2023 01:44:37 -0400
-Received: from mail-lj1-x230.google.com (mail-lj1-x230.google.com [IPv6:2a00:1450:4864:20::230])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 485B518B
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Aug 2023 22:44:36 -0700 (PDT)
-Received: by mail-lj1-x230.google.com with SMTP id 38308e7fff4ca-2b9d07a8d84so8176601fa.3
-        for <linux-kernel@vger.kernel.org>; Wed, 02 Aug 2023 22:44:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1691041474; x=1691646274;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=N17mOoqnnUTZabcqpIbOcfnfxpGhrgb1sPK5QFRZMDw=;
-        b=O7RIG76B+fMU7Pv2WrTp/NyxkGLYBl88Uqyv0JXpI5L9k6Rdoz8x3naWa3vFteWULH
-         bIKWq42wPTu3DdfS43Z/mDFLSUWxWpUc6mD2Ad1bx3Sh8uFicMmb0P+XX4AebHouQonV
-         cXUhNuSJvWcgD+GkMzYYhV5gwcbQFWnSPiK38qvLBa0ytuePHSiZpQ5UgurMuWH7mjx7
-         ESAB89BuN2X+JRT0hx+u7Ax86nsrDzkRqnmmMfWIpaI40OFmFK2viHkTyYxuzX5l9QSU
-         2+dToZ8dmVz9INDIY827qtN3nMpl2w3LfD3a0sGbrzd/vpTx0+PaXEaUl9uAlYccLd+0
-         PdqA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691041474; x=1691646274;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=N17mOoqnnUTZabcqpIbOcfnfxpGhrgb1sPK5QFRZMDw=;
-        b=WoZSAfOVxX0UBjR0mpxsmPPYsmlOwRV/hipdNW6+8V/jmzuvinf0XjJgfoJJQqPdMs
-         ohnecUwyx9p8h/2TDDFkTdFM5zt2xQAR2tzLw8rCUgMPSGM35D8V2PVnG7eE4idjH0M/
-         Vxmez7EI/PMiyTWUbnKOwzfsBsmn0aL0B4ZFTsxCOt/wlo0L4+UW+mAyTKTumA4OdVzg
-         q7vZKF007DUwWVdQtlcgtTQA+gxMSANNVT8dkiThnhQIEuacdZC/Uz/tWY+TnbWbowON
-         B9cxPqEWTdUwvaLRlJagrk0lieNPKSbB785z76sIfR5/kxjYiUxDKaRs+wkNfWCV17mc
-         orrQ==
-X-Gm-Message-State: ABy/qLauW6SL6eMF5GvpLe9cKUtzkxNyB1BBaXiGQrxZozYQSEljhTyw
-        3r0+HxQ1oMQLlxPVhyjpsaVpqBuKU7FZuwqJ1WuieF4=
-X-Google-Smtp-Source: APBJJlH2u7pjnmVdCU9QFg/PWcn5KJDYDp8yO5fxMbbiEBpV+wPepTJu+at5foeDke5Sr6UlLS11XRWhQJDPSdlcTFc=
-X-Received: by 2002:a2e:80d7:0:b0:2b6:d63d:cc1e with SMTP id
- r23-20020a2e80d7000000b002b6d63dcc1emr6336175ljg.51.1691041474238; Wed, 02
- Aug 2023 22:44:34 -0700 (PDT)
+        Thu, 3 Aug 2023 01:46:12 -0400
+Received: from SHSQR01.spreadtrum.com (unknown [222.66.158.135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F0A318B;
+        Wed,  2 Aug 2023 22:46:09 -0700 (PDT)
+Received: from dlp.unisoc.com ([10.29.3.86])
+        by SHSQR01.spreadtrum.com with ESMTP id 3735jqBG099242;
+        Thu, 3 Aug 2023 13:45:52 +0800 (+08)
+        (envelope-from Wenchao.Chen@unisoc.com)
+Received: from SHDLP.spreadtrum.com (shmbx05.spreadtrum.com [10.29.1.56])
+        by dlp.unisoc.com (SkyGuard) with ESMTPS id 4RGd7q47GTz2NtKNr;
+        Thu,  3 Aug 2023 13:44:07 +0800 (CST)
+Received: from xm9614pcu.spreadtrum.com (10.13.2.29) by shmbx05.spreadtrum.com
+ (10.29.1.56) with Microsoft SMTP Server (TLS) id 15.0.1497.23; Thu, 3 Aug
+ 2023 13:45:50 +0800
+From:   Wenchao Chen <wenchao.chen@unisoc.com>
+To:     <ulf.hansson@linaro.org>
+CC:     <linux-mmc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <wenchao.chen666@gmail.com>, <zhenxiong.lai@unisoc.com>,
+        <chunyan.zhang@unisoc.com>, <yuelin.tang@unisoc.com>,
+        Wenchao Chen <wenchao.chen@unisoc.com>
+Subject: [PATCH] mmc: queue: replace immediate with hsq->depth
+Date:   Thu, 3 Aug 2023 13:45:44 +0800
+Message-ID: <20230803054544.22007-1-wenchao.chen@unisoc.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-References: <ec3ce891-5a9f-c0b0-1a1e-1d66bb8e3623@cs.utexas.edu> <1126dfcc-50d1-e4ed-12a3-d48e6b6a1bbe@cs.utexas.edu>
-In-Reply-To: <1126dfcc-50d1-e4ed-12a3-d48e6b6a1bbe@cs.utexas.edu>
-From:   Brian Gerst <brgerst@gmail.com>
-Date:   Thu, 3 Aug 2023 01:44:22 -0400
-Message-ID: <CAMzpN2gqnO_yRUxGcUXVoS5Vf7nEPdUEb6B5=Ud+8Lj7MuowSQ@mail.gmail.com>
-Subject: Re: x86 64-bit Entrypoint
-To:     Yahya Sohail <ysohail@cs.utexas.edu>
-Cc:     linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+Content-Type: text/plain
+X-Originating-IP: [10.13.2.29]
+X-ClientProxiedBy: SHCAS03.spreadtrum.com (10.0.1.207) To
+ shmbx05.spreadtrum.com (10.29.1.56)
+X-MAIL: SHSQR01.spreadtrum.com 3735jqBG099242
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -68,54 +50,77 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 2, 2023 at 9:50=E2=80=AFPM Yahya Sohail <ysohail@cs.utexas.edu>=
- wrote:
->
-> Hi,
->
-> I've read the documentation for the x86 boot protocol at
-> Documentation/arch/x86/boot.rst. It states the following:
-> > In 64-bit boot protocol, the kernel is started by jumping to the
-> > 64-bit kernel entry point, which is the start address of loaded
-> > 64-bit kernel plus 0x200.
->
-> When I build a kernel and check the bytes at 0x200, they have the
-> following disassembly:
-> 0x00000200      eb6a           jmp 0x26c
->
-> The bytes at 0x26c disassemble as follows:
-> 0x0000026c      8cd8           mov eax, ds
-> 0x0000026e      8ec0           mov es, eax
-> 0x00000270      fc             cld
-> 0x00000271      8cd2           mov edx, ss
-> 0x00000273      39c2           cmp edx, eax
-> 0x00000275      89e2           mov edx, esp
-> 0x00000277      7416           je 0x28f
-> 0x00000279      ba204df606     mov edx, 0x6f64d20
-> 0x0000027e      1102           adc dword [rdx], eax
-> 0x00000280      8074048b16     xor byte [rsp + rax - 0x75], 0x16
-> 0x00000285      2402           and al, 2
-> 0x00000287      81c200047302   add edx, 0x2730400
-> 0x0000028d      31d2           xor edx, edx
-> 0x0000028f      83e2fc         and edx, 0xfffffffc
-> 0x00000292      7503           jne 0x297
-> 0x00000294      bafcff8ed0     mov edx, 0xd08efffc
-> 0x00000299      660fb7e2       movzx sp, dx
-> 0x0000029d      fb             sti
-> 0x0000029e      1e             invalid
->
-> Notice the invalid opcode at 0x29e. In 32-bit mode 0x1e would be PUSH
-> DS, but it is invalid in 64-bit mode. It appears the 64-bit entrypoint
-> is invalid. Are the docs out of date?
->
-> Thanks,
-> Yahya Sohail
+Hsq is similar to cqe, using hsq->depth to represent
+the maximum processing capacity of hsq. We can adjust
+hsq->depth according to the actual situation.
 
-The code you are looking at is from arch/x86/boot/header.S, which is
-the 16-bit legacy BIOS entry.  The 64-bit entry point the boot docs
-are referring to is in arch/x86/boot/compressed/head_64.S.  The 0x200
-offset is relative to the start of the protected mode setup code,
-which is appended to the setup header and legacy BIOS code to form the
-bzImage.
+Signed-off-by: Wenchao Chen <wenchao.chen@unisoc.com>
+---
+ drivers/mmc/core/queue.c   | 6 +-----
+ drivers/mmc/host/mmc_hsq.c | 1 +
+ drivers/mmc/host/mmc_hsq.h | 7 +++++++
+ include/linux/mmc/host.h   | 1 +
+ 4 files changed, 10 insertions(+), 5 deletions(-)
 
-Brian Gerst
+diff --git a/drivers/mmc/core/queue.c b/drivers/mmc/core/queue.c
+index b396e3900717..a0a2412f62a7 100644
+--- a/drivers/mmc/core/queue.c
++++ b/drivers/mmc/core/queue.c
+@@ -260,11 +260,7 @@ static blk_status_t mmc_mq_queue_rq(struct blk_mq_hw_ctx *hctx,
+ 		}
+ 		break;
+ 	case MMC_ISSUE_ASYNC:
+-		/*
+-		 * For MMC host software queue, we only allow 2 requests in
+-		 * flight to avoid a long latency.
+-		 */
+-		if (host->hsq_enabled && mq->in_flight[issue_type] > 2) {
++		if (host->hsq_enabled && mq->in_flight[issue_type] > host->hsq_depth) {
+ 			spin_unlock_irq(&mq->lock);
+ 			return BLK_STS_RESOURCE;
+ 		}
+diff --git a/drivers/mmc/host/mmc_hsq.c b/drivers/mmc/host/mmc_hsq.c
+index 424dc7b07858..7b3952721c17 100644
+--- a/drivers/mmc/host/mmc_hsq.c
++++ b/drivers/mmc/host/mmc_hsq.c
+@@ -337,6 +337,7 @@ int mmc_hsq_init(struct mmc_hsq *hsq, struct mmc_host *mmc)
+ 	hsq->mmc = mmc;
+ 	hsq->mmc->cqe_private = hsq;
+ 	mmc->cqe_ops = &mmc_hsq_ops;
++	mmc->hsq_depth = HSQ_MAX_DEPTH;
+ 
+ 	for (i = 0; i < HSQ_NUM_SLOTS; i++)
+ 		hsq->tag_slot[i] = HSQ_INVALID_TAG;
+diff --git a/drivers/mmc/host/mmc_hsq.h b/drivers/mmc/host/mmc_hsq.h
+index 1808024fc6c5..795f6b9421d7 100644
+--- a/drivers/mmc/host/mmc_hsq.h
++++ b/drivers/mmc/host/mmc_hsq.h
+@@ -5,6 +5,13 @@
+ #define HSQ_NUM_SLOTS	64
+ #define HSQ_INVALID_TAG	HSQ_NUM_SLOTS
+ 
++/*
++ * For MMC host software queue, we usually allow 2 requests in
++ * flight to avoid a long latency. But we can adjust hsq->depth
++ * according to the actual situation.
++ */
++#define HSQ_MAX_DEPTH	2
++
+ struct hsq_slot {
+ 	struct mmc_request *mrq;
+ };
+diff --git a/include/linux/mmc/host.h b/include/linux/mmc/host.h
+index 461d1543893b..1fd8b1dd8698 100644
+--- a/include/linux/mmc/host.h
++++ b/include/linux/mmc/host.h
+@@ -520,6 +520,7 @@ struct mmc_host {
+ 
+ 	/* Host Software Queue support */
+ 	bool			hsq_enabled;
++	int			hsq_depth;
+ 
+ 	u32			err_stats[MMC_ERR_MAX];
+ 	unsigned long		private[] ____cacheline_aligned;
+-- 
+2.17.1
+
