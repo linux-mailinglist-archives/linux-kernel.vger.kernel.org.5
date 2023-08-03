@@ -2,77 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 131E476F45F
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 22:59:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A4B5B76F460
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 23:00:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231321AbjHCU7i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Aug 2023 16:59:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59794 "EHLO
+        id S231432AbjHCVAd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Aug 2023 17:00:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60294 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229767AbjHCU7g (ORCPT
+        with ESMTP id S229767AbjHCVAa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Aug 2023 16:59:36 -0400
-Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 481701AB;
-        Thu,  3 Aug 2023 13:59:34 -0700 (PDT)
-Received: by mail-wm1-x32c.google.com with SMTP id 5b1f17b1804b1-3fe24dd8898so14237945e9.2;
-        Thu, 03 Aug 2023 13:59:34 -0700 (PDT)
+        Thu, 3 Aug 2023 17:00:30 -0400
+Received: from mail-qt1-x829.google.com (mail-qt1-x829.google.com [IPv6:2607:f8b0:4864:20::829])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05D9B1AB
+        for <linux-kernel@vger.kernel.org>; Thu,  3 Aug 2023 14:00:29 -0700 (PDT)
+Received: by mail-qt1-x829.google.com with SMTP id d75a77b69052e-40fc654bea1so9904641cf.2
+        for <linux-kernel@vger.kernel.org>; Thu, 03 Aug 2023 14:00:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1691096373; x=1691701173;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=DP2b+AILmlpdJLSBdLdZp7i7Y6kRAXSbaj0B+upIxrM=;
-        b=KzzRQ4S29CvAU+TMW8J+OxQJT0N2VhnDo449Nyam5kEaT/lCE1i/60oslFCK2Hsg9Y
-         GJ8tR5nS/QQr2daknYxum4FyeNCoXDvPajZSppWA6fXsarteFlTEBTQle6I5+qDh5yVh
-         ngnmh8QazL+AyBdq85o1BjPm/64gbyFgTStzkiooUU9Phj5GbPjSBKK5KeinEBVRMQLR
-         MDoaI9uwvFjXnuP2iW6YwDSKktwQRl82ymGuY3S2+HdlfHslVj6n95vbQklGMBrrmdrM
-         8IYb17FZ/8wMlU/YHeTfKrPsbOBC64FDYeO76bYT6bsFN3xrpmEJ2qCgl3q0dXPynKZV
-         LtBQ==
+        d=gmail.com; s=20221208; t=1691096428; x=1691701228;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=QuYitPJZqMO1br4FQSyqi//ppdhPI+NAR1KWcWA6710=;
+        b=gs0xR52ZjdCvuFTwrpGe2Hferm5v3XQEZVvpsyDiKFWkASHv9XT1wstoTnEmVPTceU
+         HIvA62wJaNYL4R5ZVKOPdmg1/irCFyXEeyWNdqwji2wYZkkeLuMVyk7Sk3nsu56Znp3a
+         1QOBVdF3FH0vXdnA9Qvoq4KSR0DruXQOmV0X55BFmsZrINuvbqHmlmKCGPAcuj6H44fG
+         JmsY0Se94Ure36WyDpTVwGNfaWQuaKLEG3h5QfhG7wtk6nNZ7VWfxpT4bZu/iftNyE9l
+         52LX89W4PvME1n4Y9o0NusD5zJBO/aTRZL4P7sBEkNUx2LPojjb9/juXBxvHnYAyGHxQ
+         zi3Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691096373; x=1691701173;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=DP2b+AILmlpdJLSBdLdZp7i7Y6kRAXSbaj0B+upIxrM=;
-        b=IqpQEWhkKFJJM34Eq92X+IYDXm4Iusjd7Cyj8xeRzWmLriZNW+C2ln9Q5o0M+S9TZm
-         CooJxplPy9zhtcShiYUuP//hmEclXnYMAdi87I0ZZPGQlIVaYQ+8UZysxru6M3OfUT/S
-         4yajWg6S2U7PZo/QuPStkDOyyD12lkycW7OvgJqdogYn7EjDSuQbGScwFUslaiKyhaRf
-         +16x0zPvWZjSXe1lcLtIHuYPXRVfVuXLU8IJM1RGKJb4pjNBZLX8pGtwFElQ3in3VEyK
-         pCzAJiQRd3dGP0OBPAwcW7O2Zd6SaUXp+u8RBoiVPFg6VIeQgxwvEgXv/fBhkubjyGXI
-         00PA==
-X-Gm-Message-State: ABy/qLYQf+SWwGc6zgF/3Ygj6NSIDOa+Th/iAD+CUK252N/dItxEtwXo
-        YwLShwR0O9zNTFJqZAblzg0=
-X-Google-Smtp-Source: APBJJlHHfuo6kBelJvqwbXH9kUi+80SC8CQMEFEj5k03HeeeLJcquEgoQREJ2cxFra7O+czacV7ZcQ==
-X-Received: by 2002:a5d:69c1:0:b0:314:c9c:bc96 with SMTP id s1-20020a5d69c1000000b003140c9cbc96mr7821541wrw.7.1691096372657;
-        Thu, 03 Aug 2023 13:59:32 -0700 (PDT)
-Received: from jernej-laptop.localnet (82-149-1-233.dynamic.telemach.net. [82.149.1.233])
-        by smtp.gmail.com with ESMTPSA id u7-20020a5d5147000000b0031437ec7ec1sm770658wrt.2.2023.08.03.13.59.31
+        d=1e100.net; s=20221208; t=1691096428; x=1691701228;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=QuYitPJZqMO1br4FQSyqi//ppdhPI+NAR1KWcWA6710=;
+        b=QOfS9CC6yV3R+OCEDYP7fscvj/fe4Q9kXohb7cQTr27ewa6ZO+PuFVgFidozOwDzQe
+         QtJwkkClyrF66gSamLhuRWGi3z/9j06FNTDAEhdYNmkACn18zXESEpclMQK8Dx8Dt690
+         VO8PZil4xYGnyq1k1mFA9hf0SlbKPs0ykOzyRLA016h0yKAPFY2dQUYjfQd7RdR1G2YT
+         6kzZkk3d0en4sNAYudjd2gC7S4bDKhBGYgwad/vTupD2/ASOkMj0Cfl1VpSTN8GjGLIN
+         ICJ+vyaMCTxnWjDdh34BfseR31BCOd7CI0YsWmkRMCopVuBI+YPJcRVJIE91X0YBUkxd
+         08Tg==
+X-Gm-Message-State: ABy/qLb+4Cz9ucjvkSYpzGJivb6z64C+KX6MPgDOl68FqqnPc7CXIPcz
+        HH0DyK2QFHjq1qEGrtTmRdHOFhj5mJ8=
+X-Google-Smtp-Source: APBJJlGr+LkTYffTZjsB4B1e2iFyJt/S4Es0pSTq8xjeuH9kP8L7uZali5AbwiRWzLyQcPfbVcJalQ==
+X-Received: by 2002:ac8:7d90:0:b0:403:eb3c:1fed with SMTP id c16-20020ac87d90000000b00403eb3c1fedmr24878626qtd.35.1691096428036;
+        Thu, 03 Aug 2023 14:00:28 -0700 (PDT)
+Received: from localhost ([50.217.79.158])
+        by smtp.gmail.com with ESMTPSA id e21-20020ac85995000000b003fde3d63d22sm189653qte.69.2023.08.03.14.00.27
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 03 Aug 2023 13:59:32 -0700 (PDT)
-From:   Jernej =?utf-8?B?xaBrcmFiZWM=?= <jernej.skrabec@gmail.com>
-To:     linux-sunxi@lists.linux.dev, John Watts <contact@jookia.org>
-Cc:     John Watts <contact@jookia.org>, Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Chen-Yu Tsai <wens@csie.org>,
-        Samuel Holland <samuel@sholland.org>,
-        Cristian Ciocaltea <cristian.ciocaltea@collabora.com>,
-        Maksim Kiselev <bigunclemax@gmail.com>,
-        devicetree@vger.kernel.org, linux-riscv@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        mkl@pengutronix.de
-Subject: Re: [PATCH] riscv: dts: allwinner: d1: Specify default CAN pins
-Date:   Thu, 03 Aug 2023 22:59:30 +0200
-Message-ID: <3248110.44csPzL39Z@jernej-laptop>
-In-Reply-To: <20230731023701.2581713-1-contact@jookia.org>
-References: <20230731023701.2581713-1-contact@jookia.org>
+        Thu, 03 Aug 2023 14:00:27 -0700 (PDT)
+Date:   Thu, 3 Aug 2023 14:00:26 -0700
+From:   Yury Norov <yury.norov@gmail.com>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     andriy.shevchenko@linux.intel.com, linux@rasmusvillemoes.dk,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Mateusz Guzik <mjguzik@gmail.com>,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        tglx@linutronix.de, rppt@kernel.org
+Subject: Re: [PATCH v2 2/2] mm,nodemask: Use nr_node_ids
+Message-ID: <ZMwVanb0nTbOiWyn@yury-ThinkPad>
+References: <20230802112458.230221601@infradead.org>
+ <20230802112525.633758009@infradead.org>
+ <20230802193616.GC231007@hirez.programming.kicks-ass.net>
+ <ZMr4uBfjKY9dERl2@yury-ThinkPad>
+ <20230803084125.GE212435@hirez.programming.kicks-ass.net>
+ <ZMwRBqTgkvA7o9x3@yury-ThinkPad>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZMwRBqTgkvA7o9x3@yury-ThinkPad>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
@@ -83,56 +80,54 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-/cc Marc
-
-Dne ponedeljek, 31. julij 2023 ob 04:36:59 CEST je John Watts napisal(a):
-> There are only one set of CAN pins available on these chips.
-> Specify these as the default to avoid redundancy in board device trees.
+> Consider MAX_NUMNODES == 64 and nr_node_ids == 4. Then
+> small_nodemask_bits == 64.
 > 
-> Signed-off-by: John Watts <contact@jookia.org>
-> ---
->  arch/riscv/boot/dts/allwinner/sunxi-d1s-t113.dtsi | 4 ++++
->  1 file changed, 4 insertions(+)
+> The nodes_full() will set all 64 bits:
 > 
-> diff --git a/arch/riscv/boot/dts/allwinner/sunxi-d1s-t113.dtsi
-> b/arch/riscv/boot/dts/allwinner/sunxi-d1s-t113.dtsi index
-> 4086c0cc0f9d..b27c3fc13b0d 100644
-> --- a/arch/riscv/boot/dts/allwinner/sunxi-d1s-t113.dtsi
-> +++ b/arch/riscv/boot/dts/allwinner/sunxi-d1s-t113.dtsi
-> @@ -898,6 +898,8 @@ can0: can@2504000 {
->  			interrupts = <SOC_PERIPHERAL_IRQ(21) 
-IRQ_TYPE_LEVEL_HIGH>;
->  			clocks = <&ccu CLK_BUS_CAN0>;
->  			resets = <&ccu RST_BUS_CAN0>;
-> +			pinctrl-names = "default";
-> +			pinctrl-0 = <&can0_pins>;
->  			status = "disabled";
->  		};
+>   #define nodes_full(nodemask) __nodes_full(&(nodemask), small_nodemask_bits)
+>   static inline bool __nodes_full(const nodemask_t *srcp, unsigned int nbits)
+>   {
+>           return bitmap_full(srcp->bits, nbits);
+>   }
 
-pinctrl-names and pinctrl-0 are usually at the top. However, since there is no 
-hard rule (I've seen it mixed), I'm fine with it.
+Damn, copied the wrong function. This should be nodes_setall() of
+course:
 
-Acked-by: Jernej Skrabec <jernej.skrabec@gmail.com>
+  #define nodes_setall(dst) __nodes_setall(&(dst), large_nodemask_bits)
+  static inline void __nodes_setall(nodemask_t *dstp, unsigned int nbits)
+  {
+          bitmap_fill(dstp->bits, nbits);
+  }
 
-Since original DT node entry goes through netdev tree, this should be picked 
-there or it can be dropped there and I pick both patches or I can pick patch 
-for later kernel version.
-
-Best regards,
-Jernej
-
+ 
+> And the following nodes_weight() will return 64:
 > 
-> @@ -907,6 +909,8 @@ can1: can@2504400 {
->  			interrupts = <SOC_PERIPHERAL_IRQ(22) 
-IRQ_TYPE_LEVEL_HIGH>;
->  			clocks = <&ccu CLK_BUS_CAN1>;
->  			resets = <&ccu RST_BUS_CAN1>;
-> +			pinctrl-names = "default";
-> +			pinctrl-0 = <&can1_pins>;
->  			status = "disabled";
->  		};
->  	};
-
-
-
-
+>   #define nodes_weight(nodemask) __nodes_weight(&(nodemask), small_nodemask_bits)
+>   static inline int __nodes_weight(const nodemask_t *srcp, unsigned int nbits)
+>   {
+>           return bitmap_weight(srcp->bits, nbits);
+>   }
+> 
+> Which is definitely wrong because there's 4 nodes at max. To solve
+> this problem, both cpumask and nodemask implementations share the same
+> rule: all bits beyond nr_{node,cpumask}_bits must be always cleared.
+> 
+> See how cpumask_setall() implements that:
+> 
+>   static inline void cpumask_setall(struct cpumask *dstp)
+>   {
+>           // Make sure we don't break the optimization
+>           if (small_const_nbits(small_cpumask_bits)) {
+>                   cpumask_bits(dstp)[0] = BITMAP_LAST_WORD_MASK(nr_cpumask_bits);
+>                   return;
+>           }
+> 
+>           // Pass the exact (runtime) number of bits
+>           bitmap_fill(cpumask_bits(dstp), nr_cpumask_bits);
+>   }
+> 
+> Hope that makes sense.
+> 
+> Thanks,
+> Yury
