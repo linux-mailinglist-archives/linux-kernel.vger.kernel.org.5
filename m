@@ -2,125 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E0DAF76EC35
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 16:18:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 21BE176EC4F
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 16:21:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235560AbjHCOS0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Aug 2023 10:18:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35404 "EHLO
+        id S236703AbjHCOVW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Aug 2023 10:21:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36264 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235191AbjHCOSY (ORCPT
+        with ESMTP id S236697AbjHCOVE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Aug 2023 10:18:24 -0400
-Received: from mail.hugovil.com (mail.hugovil.com [162.243.120.170])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32E601981;
-        Thu,  3 Aug 2023 07:18:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=hugovil.com
-        ; s=x; h=Subject:Content-Transfer-Encoding:Content-Type:Mime-Version:
-        References:In-Reply-To:Message-Id:Cc:To:From:Date:Sender:Reply-To:Content-ID:
-        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-        :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
-        List-Post:List-Owner:List-Archive;
-        bh=e0cd+bfuuJW5D9Vjs7Kwr/ftMzeFILJUbMoh0kdOipw=; b=EXQn0KHSOEFemcJr9tzvUCuA6X
-        IUdoxJh0x4owZByHKyfE7VOq0bHIkOUQkgxJ1TNN82jm0UB2uXoWdsHBXmx4vmcIytm2Oa8HLbEuS
-        EsVVmHiTkrugW3Bz1LgtWx1HpmRj68prsQk9wMjAIylpRMnLuX8hqpbjhdI0g2qj5Se0=;
-Received: from modemcable061.19-161-184.mc.videotron.ca ([184.161.19.61]:43022 helo=pettiford)
-        by mail.hugovil.com with esmtpa (Exim 4.92)
-        (envelope-from <hugo@hugovil.com>)
-        id 1qRZ9b-0000Wk-Jc; Thu, 03 Aug 2023 10:18:16 -0400
-Date:   Thu, 3 Aug 2023 10:18:14 -0400
-From:   Hugo Villeneuve <hugo@hugovil.com>
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
-        conor+dt@kernel.org, jirislaby@kernel.org, jringle@gridpoint.com,
-        isaac.true@canonical.com, jesse.sung@canonical.com,
-        l.perczak@camlintechnologies.com, tomasz.mon@camlingroup.com,
-        linux-serial@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org,
-        Hugo Villeneuve <hvilleneuve@dimonoff.com>,
-        stable@vger.kernel.org,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Lech Perczak <lech.perczak@camlingroup.com>
-Message-Id: <20230803101814.39a61229d81dcd3e96cbe8ee@hugovil.com>
-In-Reply-To: <2023073105-elevation-canister-2777@gregkh>
-References: <20230725142343.1724130-1-hugo@hugovil.com>
-        <20230725142343.1724130-7-hugo@hugovil.com>
-        <2023073105-elevation-canister-2777@gregkh>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-SA-Exim-Connect-IP: 184.161.19.61
-X-SA-Exim-Mail-From: hugo@hugovil.com
+        Thu, 3 Aug 2023 10:21:04 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E856171B
+        for <linux-kernel@vger.kernel.org>; Thu,  3 Aug 2023 07:20:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1691072414;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=nbrWzc88d0mXXcVtOfac4PPN+ZD5v291zVOH90s9S3k=;
+        b=MRTM9vAw/DgTncPSK+V5uHZK4dfIjKHonHiXTwHi0fouQvFXdSUt57h8Q7aclfG4AB1gvC
+        AnRLMgNCQhDEN9k/wcsvIbHK1U8VI+swxaBjeeAkJp270FGDdCtyTAlsnSULZ5caI3J+S6
+        lGdH6Z0KN0+hgomsVtEFKpvMTrxEuWo=
+Received: from mail-qv1-f71.google.com (mail-qv1-f71.google.com
+ [209.85.219.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-403-rmu0YfK9Nv2LpAquGF1gdg-1; Thu, 03 Aug 2023 10:20:12 -0400
+X-MC-Unique: rmu0YfK9Nv2LpAquGF1gdg-1
+Received: by mail-qv1-f71.google.com with SMTP id 6a1803df08f44-63d2b88325bso1891056d6.1
+        for <linux-kernel@vger.kernel.org>; Thu, 03 Aug 2023 07:20:12 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691072412; x=1691677212;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=nbrWzc88d0mXXcVtOfac4PPN+ZD5v291zVOH90s9S3k=;
+        b=Cm7GLbelgJJLg0jfncRjoGGpVhI2XEj0eKFWs5Gs36WDvq12iQpTzTOUbcihZs4VIJ
+         DcsIPhy+DtXUh32EYISaN4FF2j1DZGD4OEweGwhUAW++3lZXllAoZSWy9gk2vIIRXs3y
+         sijthkOLfPs0aA3D4RNRBfzMuLYZTVbuN5hlYNGELtwB2XhLasbRSIr5yJCbPVH9mjr0
+         33ppF5Wk0Okk3nPlyTeJWgT5JYk0dXLjG2jWeNix4LeD7QYWmZTiYv3X4IV385OVPuZE
+         f42WDgf67SAPAKjcMFQv2Hij4icrMZ+JhYD4fBtBNuzQYUcVfmTKCWi4xMMHXHDj30QY
+         Rnxw==
+X-Gm-Message-State: ABy/qLbAyA1JQL2G6lNx+yGMp+YexCPSbSsNdo7Sf14TbgIHgqpvWQQZ
+        dw1QMKiOzeevsNZLXC4OAwlWvYKfqAY/YvoIJH7H7Ariz2UzrcvRUMdKSkNWgN0plpi1ssaJMNY
+        MVe0um6z3NuTup8/O20awmLq2
+X-Received: by 2002:a05:6214:c8d:b0:63c:7427:e7e9 with SMTP id r13-20020a0562140c8d00b0063c7427e7e9mr19747698qvr.6.1691072412122;
+        Thu, 03 Aug 2023 07:20:12 -0700 (PDT)
+X-Google-Smtp-Source: APBJJlGNys8vM7ek/eHEjSQxNfohkfJgnLkZpZ8gVvxXJqVykAOZhfgtp41kcpSaVUS9/K2KfELkGg==
+X-Received: by 2002:a05:6214:c8d:b0:63c:7427:e7e9 with SMTP id r13-20020a0562140c8d00b0063c7427e7e9mr19747675qvr.6.1691072411850;
+        Thu, 03 Aug 2023 07:20:11 -0700 (PDT)
+Received: from gerbillo.redhat.com (146-241-226-226.dyn.eolo.it. [146.241.226.226])
+        by smtp.gmail.com with ESMTPSA id m9-20020a0cdb89000000b0063d2898f210sm6292922qvk.103.2023.08.03.07.20.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 03 Aug 2023 07:20:11 -0700 (PDT)
+Message-ID: <a144aa6351412e25bbdf866c0d31b550e6ff3e8a.camel@redhat.com>
+Subject: Re: [RFC Optimizing veth xsk performance 00/10]
+From:   Paolo Abeni <pabeni@redhat.com>
+To:     "huangjie.albert" <huangjie.albert@bytedance.com>,
+        davem@davemloft.net, edumazet@google.com, kuba@kernel.org
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        =?ISO-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn@kernel.org>,
+        Magnus Karlsson <magnus.karlsson@intel.com>,
+        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        Pavel Begunkov <asml.silence@gmail.com>,
+        Yunsheng Lin <linyunsheng@huawei.com>,
+        Kees Cook <keescook@chromium.org>,
+        Richard Gobert <richardbgobert@gmail.com>,
+        "open list:NETWORKING DRIVERS" <netdev@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        "open list:XDP (eXpress Data Path)" <bpf@vger.kernel.org>
+Date:   Thu, 03 Aug 2023 16:20:06 +0200
+In-Reply-To: <20230803140441.53596-1-huangjie.albert@bytedance.com>
+References: <20230803140441.53596-1-huangjie.albert@bytedance.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.46.4 (3.46.4-1.fc37) 
+MIME-Version: 1.0
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
-Subject: Re: [PATCH v9 06/10] serial: sc16is7xx: fix regression with GPIO
- configuration
-X-SA-Exim-Version: 4.2.1 (built Wed, 08 May 2019 21:11:16 +0000)
-X-SA-Exim-Scanned: Yes (on mail.hugovil.com)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 31 Jul 2023 17:58:41 +0200
-Greg KH <gregkh@linuxfoundation.org> wrote:
+On Thu, 2023-08-03 at 22:04 +0800, huangjie.albert wrote:
+> AF_XDP is a kernel bypass technology that can greatly improve performance=
+.
+> However, for virtual devices like veth, even with the use of AF_XDP socke=
+ts,
+> there are still many additional software paths that consume CPU resources=
+.=20
+> This patch series focuses on optimizing the performance of AF_XDP sockets=
+=20
+> for veth virtual devices. Patches 1 to 4 mainly involve preparatory work.=
+=20
+> Patch 5 introduces tx queue and tx napi for packet transmission, while=
+=20
+> patch 9 primarily implements zero-copy, and patch 10 adds support for=20
+> batch sending of IPv4 UDP packets. These optimizations significantly redu=
+ce=20
+> the software path and support checksum offload.
+>=20
+> I tested those feature with
+> A typical topology is shown below:
+> veth<-->veth-peer                                    veth1-peer<--->veth1
+> 	1       |                                                  |   7
+> 	        |2                                                6|
+> 	        |                                                  |
+> 	      bridge<------->eth0(mlnx5)- switch -eth1(mlnx5)<--->bridge1
+>                   3                    4                 5   =20
+>              (machine1)                              (machine2)   =20
+> AF_XDP socket is attach to veth and veth1. and send packets to physical N=
+IC(eth0)
+> veth:(172.17.0.2/24)
+> bridge:(172.17.0.1/24)
+> eth0:(192.168.156.66/24)
+>=20
+> eth1(172.17.0.2/24)
+> bridge1:(172.17.0.1/24)
+> eth0:(192.168.156.88/24)
+>=20
+> after set default route=EF=BF=BD=EF=BF=BD?snat=EF=BF=BD=EF=BF=BD?dnat. we=
+ can have a tests
+> to get the performance results.
+>=20
+> packets send from veth to veth1:
+> af_xdp test tool:
+> link:https://github.com/cclinuxer/libxudp
+> send:(veth)
+> ./objs/xudpperf send --dst 192.168.156.88:6002 -l 1300
+> recv:(veth1)
+> ./objs/xudpperf recv --src 172.17.0.2:6002
+>=20
+> udp test tool:iperf3
+> send:(veth)
+> iperf3 -c 192.168.156.88 -p 6002 -l 1300 -b 60G -u
 
-> On Tue, Jul 25, 2023 at 10:23:38AM -0400, Hugo Villeneuve wrote:
-> > From: Hugo Villeneuve <hvilleneuve@dimonoff.com>
-> > 
-> > Commit 679875d1d880 ("sc16is7xx: Separate GPIOs from modem control lines")
-> > and commit 21144bab4f11 ("sc16is7xx: Handle modem status lines")
-> > changed the function of the GPIOs pins to act as modem control
-> > lines without any possibility of selecting GPIO function.
-> > 
-> > As a consequence, applications that depends on GPIO lines configured
-> > by default as GPIO pins no longer work as expected.
-> > 
-> > Also, the change to select modem control lines function was done only
-> > for channel A of dual UART variants (752/762). This was not documented
-> > in the log message.
-> > 
-> > Allow to specify GPIO or modem control line function in the device
-> > tree, and for each of the ports (A or B).
-> > 
-> > Do so by using the new device-tree property named
-> > "nxp,modem-control-line-ports" (property added in separate patch).
-> > 
-> > When registering GPIO chip controller, mask-out GPIO pins declared as
-> > modem control lines according to this new DT property.
-> > 
-> > Fixes: 679875d1d880 ("sc16is7xx: Separate GPIOs from modem control lines")
-> > Fixes: 21144bab4f11 ("sc16is7xx: Handle modem status lines")
-> > Cc: <stable@vger.kernel.org> # 6.1.x: 95982fad dt-bindings: sc16is7xx: Add property to change GPIO function
-> > Cc: <stable@vger.kernel.org> # 6.1.x: 1584d572 serial: sc16is7xx: refactor GPIO controller registration
-> > Cc: <stable@vger.kernel.org> # 6.1.x: ac2caa5a serial: sc16is7xx: remove obsolete out_thread label
-> > Cc: <stable@vger.kernel.org> # 6.1.x: d90961ad serial: sc16is7xx: mark IOCONTROL register as volatile
-> > Cc: <stable@vger.kernel.org> # 6.1.x: 6dae3bad serial: sc16is7xx: fix broken port 0 uart init
-> 
-> Where are these git commit ids from?  I don't see them in Linus's tree,
-> how are they supposed to be picked up by the stable developers if they
-> are not valid ones?
-> 
-> confused,
-> 
-> greg k-h
+Should be: '-b 0' otherwise you will experience additional overhead.
 
-Hi Greg,
-once again, I simply misinterpreted stable-kernel-rules.rst.
+And you would likely pin processes and irqs to ensure BH and US run on
+different cores of the same numa node.
 
-I wrongly assumed that, for example, this patch had, as a prerequisite,
-all the patches before it in this series, and that is why I listed
-them.
+Cheers,
 
-So I will remove them all, since this patch doesn't have any other
-requisites other than the previous patches in this series.
+Paolo
 
-Maybe it would be good to add some notes about that in
-stable-kernel-rules.rst?
-
-Thank you, Hugo.
