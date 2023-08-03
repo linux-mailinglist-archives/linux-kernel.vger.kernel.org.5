@@ -2,96 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E9ADB76ED16
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 16:46:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EF6CD76ED1D
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 16:47:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236778AbjHCOqs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Aug 2023 10:46:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57786 "EHLO
+        id S236054AbjHCOrm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Aug 2023 10:47:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57990 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236439AbjHCOqf (ORCPT
+        with ESMTP id S235671AbjHCOrh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Aug 2023 10:46:35 -0400
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8277619B9;
-        Thu,  3 Aug 2023 07:46:32 -0700 (PDT)
-Received: from pps.filterd (m0353726.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 373Eg8JZ011669;
-        Thu, 3 Aug 2023 14:46:30 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding; s=pp1;
- bh=avuefi9Jf8+2a1NB7rc28/ORuP+YUHSjQ/Bxn8++A4s=;
- b=i/DWsOZEHgsDxsvqQcqPcuaAx9FdNP2G4+i/pXZJY4nRIaa4Tqpk3C2RvSXMojwt+8i8
- LVXq/Soc5oEwXVJV1ocgVfb+g0roqXlOPG/JxYfLlQirOsbW1nvNNGogEZzNV+q4Bhm/
- 8yQkbcX3ssnz8TNuYlwCoTNXnd9FBXNl8kuYidaNrG5OxI1gl4MVeNTOr0KT0+MNzawp
- IFNTSi4q93ON+gcdQsBeZH7hRwadQVTRUkCFx3iS+XsekKlI9bwrIaJFVo7OBRyiKifd
- pAAWw9dy1POhCzcQjUgDrRAUTQhDvtjZBn7nbgxzynaLjM21iZb635mQ6ZbntgC6fzN7 IA== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3s8e7wr591-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 03 Aug 2023 14:46:29 +0000
-Received: from m0353726.ppops.net (m0353726.ppops.net [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 373EgMkE012742;
-        Thu, 3 Aug 2023 14:46:29 GMT
-Received: from ppma21.wdc07v.mail.ibm.com (5b.69.3da9.ip4.static.sl-reverse.com [169.61.105.91])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3s8e7wr587-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 03 Aug 2023 14:46:28 +0000
-Received: from pps.filterd (ppma21.wdc07v.mail.ibm.com [127.0.0.1])
-        by ppma21.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 373DwmD9015480;
-        Thu, 3 Aug 2023 14:46:12 GMT
-Received: from smtprelay07.fra02v.mail.ibm.com ([9.218.2.229])
-        by ppma21.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3s5e3ne8qj-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 03 Aug 2023 14:46:12 +0000
-Received: from smtpav01.fra02v.mail.ibm.com (smtpav01.fra02v.mail.ibm.com [10.20.54.100])
-        by smtprelay07.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 373Ek8BM61538602
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 3 Aug 2023 14:46:08 GMT
-Received: from smtpav01.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 050A420040;
-        Thu,  3 Aug 2023 14:46:08 +0000 (GMT)
-Received: from smtpav01.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 9045020043;
-        Thu,  3 Aug 2023 14:46:07 +0000 (GMT)
-Received: from dilbert5.boeblingen.de.ibm.com (unknown [9.155.208.153])
-        by smtpav01.fra02v.mail.ibm.com (Postfix) with ESMTP;
-        Thu,  3 Aug 2023 14:46:07 +0000 (GMT)
-From:   Gerd Bayer <gbayer@linux.ibm.com>
-To:     Wenjia Zhang <wenjia@linux.ibm.com>,
-        Jan Karcher <jaka@linux.ibm.com>,
-        Tony Lu <tonylu@linux.alibaba.com>,
-        Paolo Abeni <pabeni@redhat.com>
-Cc:     Karsten Graul <kgraul@linux.ibm.com>,
-        "D . Wythe" <alibuda@linux.alibaba.com>,
-        Wen Gu <guwen@linux.alibaba.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>, linux-s390@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH net v2 2/2] net/smc: Use correct buffer sizes when switching between TCP and SMC
-Date:   Thu,  3 Aug 2023 16:46:05 +0200
-Message-ID: <20230803144605.477903-3-gbayer@linux.ibm.com>
-X-Mailer: git-send-email 2.41.0
-In-Reply-To: <20230803144605.477903-1-gbayer@linux.ibm.com>
-References: <20230803144605.477903-1-gbayer@linux.ibm.com>
+        Thu, 3 Aug 2023 10:47:37 -0400
+Received: from bg4.exmail.qq.com (bg4.exmail.qq.com [43.154.54.12])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E93C1BE4;
+        Thu,  3 Aug 2023 07:47:15 -0700 (PDT)
+X-QQ-mid: bizesmtp78t1691074025tkmonxr9
+Received: from linux-lab-host.localdomain ( [116.30.131.233])
+        by bizesmtp.qq.com (ESMTP) with 
+        id ; Thu, 03 Aug 2023 22:47:04 +0800 (CST)
+X-QQ-SSF: 01200000000000E0X000000A0000000
+X-QQ-FEAT: EKa9/5zJOSjEdzda4qaDuVCtg7Ilp8g7uMOnt2Znfu3gOhN23U58dt8i2H0rQ
+        wL7+pkiMzvAKuxsqW+rE00MFBYMdyTnHePlHshxwQ/zl6vI/IyQEfs3kKI6VG8Pff13TJaR
+        u6BakN1cnrbLslooXXrsyYGIH3Rm+CWvRrE+96D7kdTdSW2e/5zi4nLM1QZ4PKmo3kMkX8B
+        nQH69mtUKZEDlygzHvq2A0U2IDAC3ah9yya5qGoNb4Iw0+zV76LxZvO71ZhHTIIWBMMFrwM
+        GTpRKl1iVuvFCe24lsUjoJj4X7KgSO7qiaYw/6yt/R4BHwq8FCFA+YyRtEMi7qCfrzh0yTd
+        LyIg4XeReqzeXtfo1EZnnMMpLDvrtk8KXiZLihozj35AoYe6/sApd8Ipv+6xpiBeRtF4nU6
+X-QQ-GoodBg: 0
+X-BIZMAIL-ID: 9459210872236914971
+From:   Zhangjin Wu <falcon@tinylab.org>
+To:     thomas@t-8ch.de, w@1wt.eu
+Cc:     falcon@tinylab.org, arnd@arndb.de, linux-kernel@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, tanyuan@tinylab.org
+Subject: [PATCH v1 3/3] tools/nolibc: stackprotector.h: make __stack_chk_init static
+Date:   Thu,  3 Aug 2023 22:47:01 +0800
+Message-Id: <d5eb12e6b9238dcb85935cf6af3ed12ff043f900.1691073180.git.falcon@tinylab.org>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <cover.1691073180.git.falcon@tinylab.org>
+References: <cover.1691073180.git.falcon@tinylab.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: x2tMWBT83Fm1T3Qgq0ZgI2Do9MbS_gGc
-X-Proofpoint-ORIG-GUID: X53ZC6hFi7PrQEOgHQ0QVes4swtu3Ejv
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
- definitions=2023-08-03_14,2023-08-03_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 spamscore=0
- impostorscore=0 priorityscore=1501 mlxscore=0 adultscore=0 malwarescore=0
- mlxlogscore=999 bulkscore=0 lowpriorityscore=0 suspectscore=0 phishscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2306200000
- definitions=main-2308030131
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+X-QQ-SENDSIZE: 520
+Feedback-ID: bizesmtp:tinylab.org:qybglogicsvrgz:qybglogicsvrgz5a-1
+X-Spam-Status: No, score=-0.6 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,RCVD_IN_VALIDITY_RPBL,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -99,138 +52,54 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Tuning of the effective buffer size through setsockopts was working for
-SMC traffic only but not for TCP fall-back connections even before
-commit 0227f058aa29 ("net/smc: Unbind r/w buffer size from clcsock and
-make them tunable"). That change made it apparent that TCP fall-back
-connections would use net.smc.[rw]mem as buffer size instead of
-net.ipv4_tcp_[rw]mem.
+This allows to generate smaller text/data/dec size.
 
-Amend the code that copies attributes between the (TCP) clcsock and the
-SMC socket and adjust buffer sizes appropriately:
-- Copy over sk_userlocks so that both sockets agree on whether tuning
-  via setsockopt is active.
-- When falling back to TCP use sk_sndbuf or sk_rcvbuf as specified with
-  setsockopt. Otherwise, use the sysctl value for TCP/IPv4.
-- Likewise, use either values from setsockopt or from sysctl for SMC
-  (duplicated) on successful SMC connect.
+As the _start_c() function added by crt.h, __stack_chk_init() is called
+from _start_c() instead of the assembly _start. So, it is able to mark
+it with static now.
 
-In smc_tcp_listen_work() drop the explicit copy of buffer sizes as that
-is taken care of by the attribute copy.
-
-Fixes: 0227f058aa29 ("net/smc: Unbind r/w buffer size from clcsock and make them tunable")
-Signed-off-by: Gerd Bayer <gbayer@linux.ibm.com>
-Reviewed-by: Wenjia Zhang <wenjia@linux.ibm.com>
-Reviewed-by: Tony Lu <tonylu@linux.alibaba.com>
+Signed-off-by: Zhangjin Wu <falcon@tinylab.org>
 ---
- net/smc/af_smc.c | 73 +++++++++++++++++++++++++++++++++---------------
- 1 file changed, 51 insertions(+), 22 deletions(-)
+ tools/include/nolibc/crt.h            | 2 +-
+ tools/include/nolibc/stackprotector.h | 5 ++---
+ 2 files changed, 3 insertions(+), 4 deletions(-)
 
-diff --git a/net/smc/af_smc.c b/net/smc/af_smc.c
-index 1fcf1e42474a..385e86bd6bdf 100644
---- a/net/smc/af_smc.c
-+++ b/net/smc/af_smc.c
-@@ -436,13 +436,60 @@ static int smc_bind(struct socket *sock, struct sockaddr *uaddr,
- 	return rc;
- }
+diff --git a/tools/include/nolibc/crt.h b/tools/include/nolibc/crt.h
+index 32e128b0fb62..a5f33fef1672 100644
+--- a/tools/include/nolibc/crt.h
++++ b/tools/include/nolibc/crt.h
+@@ -10,7 +10,7 @@
+ char **environ __attribute__((weak));
+ const unsigned long *_auxv __attribute__((weak));
  
-+/* copy only relevant settings and flags of SOL_SOCKET level from smc to
-+ * clc socket (since smc is not called for these options from net/core)
-+ */
-+
-+#define SK_FLAGS_SMC_TO_CLC ((1UL << SOCK_URGINLINE) | \
-+			     (1UL << SOCK_KEEPOPEN) | \
-+			     (1UL << SOCK_LINGER) | \
-+			     (1UL << SOCK_BROADCAST) | \
-+			     (1UL << SOCK_TIMESTAMP) | \
-+			     (1UL << SOCK_DBG) | \
-+			     (1UL << SOCK_RCVTSTAMP) | \
-+			     (1UL << SOCK_RCVTSTAMPNS) | \
-+			     (1UL << SOCK_LOCALROUTE) | \
-+			     (1UL << SOCK_TIMESTAMPING_RX_SOFTWARE) | \
-+			     (1UL << SOCK_RXQ_OVFL) | \
-+			     (1UL << SOCK_WIFI_STATUS) | \
-+			     (1UL << SOCK_NOFCS) | \
-+			     (1UL << SOCK_FILTER_LOCKED) | \
-+			     (1UL << SOCK_TSTAMP_NEW))
-+
-+/* if set, use value set by setsockopt() - else use IPv4 or SMC sysctl value */
-+static void smc_adjust_sock_bufsizes(struct sock *nsk, struct sock *osk,
-+				     unsigned long mask)
-+{
-+	struct net *nnet = sock_net(nsk);
-+
-+	nsk->sk_userlocks = osk->sk_userlocks;
-+	if (osk->sk_userlocks & SOCK_SNDBUF_LOCK) {
-+		nsk->sk_sndbuf = osk->sk_sndbuf;
-+	} else {
-+		if (mask == SK_FLAGS_SMC_TO_CLC)
-+			WRITE_ONCE(nsk->sk_sndbuf,
-+				   READ_ONCE(nnet->ipv4.sysctl_tcp_wmem[1]));
-+		else
-+			WRITE_ONCE(nsk->sk_sndbuf,
-+				   2 * READ_ONCE(nnet->smc.sysctl_wmem));
-+	}
-+	if (osk->sk_userlocks & SOCK_RCVBUF_LOCK) {
-+		nsk->sk_rcvbuf = osk->sk_rcvbuf;
-+	} else {
-+		if (mask == SK_FLAGS_SMC_TO_CLC)
-+			WRITE_ONCE(nsk->sk_rcvbuf,
-+				   READ_ONCE(nnet->ipv4.sysctl_tcp_rmem[1]));
-+		else
-+			WRITE_ONCE(nsk->sk_rcvbuf,
-+				   2 * READ_ONCE(nnet->smc.sysctl_rmem));
-+	}
-+}
-+
- static void smc_copy_sock_settings(struct sock *nsk, struct sock *osk,
- 				   unsigned long mask)
+-void __stack_chk_init(void);
++static void __stack_chk_init(void);
+ static void exit(int);
+ 
+ void _start_c(long *sp)
+diff --git a/tools/include/nolibc/stackprotector.h b/tools/include/nolibc/stackprotector.h
+index b620f2b9578d..13f1d0e60387 100644
+--- a/tools/include/nolibc/stackprotector.h
++++ b/tools/include/nolibc/stackprotector.h
+@@ -37,8 +37,7 @@ void __stack_chk_fail_local(void)
+ __attribute__((weak,section(".data.nolibc_stack_chk")))
+ uintptr_t __stack_chk_guard;
+ 
+-__attribute__((weak,section(".text.nolibc_stack_chk"))) __no_stack_protector
+-void __stack_chk_init(void)
++static __no_stack_protector void __stack_chk_init(void)
  {
- 	/* options we don't get control via setsockopt for */
- 	nsk->sk_type = osk->sk_type;
--	nsk->sk_sndbuf = osk->sk_sndbuf;
--	nsk->sk_rcvbuf = osk->sk_rcvbuf;
- 	nsk->sk_sndtimeo = osk->sk_sndtimeo;
- 	nsk->sk_rcvtimeo = osk->sk_rcvtimeo;
- 	nsk->sk_mark = osk->sk_mark;
-@@ -453,26 +500,10 @@ static void smc_copy_sock_settings(struct sock *nsk, struct sock *osk,
- 
- 	nsk->sk_flags &= ~mask;
- 	nsk->sk_flags |= osk->sk_flags & mask;
-+
-+	smc_adjust_sock_bufsizes(nsk, osk, mask);
+ 	my_syscall3(__NR_getrandom, &__stack_chk_guard, sizeof(__stack_chk_guard), 0);
+ 	/* a bit more randomness in case getrandom() fails, ensure the guard is never 0 */
+@@ -46,7 +45,7 @@ void __stack_chk_init(void)
+ 		__stack_chk_guard ^= (uintptr_t) &__stack_chk_guard;
  }
+ #else /* !defined(_NOLIBC_STACKPROTECTOR) */
+-__inline__ void __stack_chk_init(void) {}
++static void __stack_chk_init(void) {}
+ #endif /* defined(_NOLIBC_STACKPROTECTOR) */
  
--#define SK_FLAGS_SMC_TO_CLC ((1UL << SOCK_URGINLINE) | \
--			     (1UL << SOCK_KEEPOPEN) | \
--			     (1UL << SOCK_LINGER) | \
--			     (1UL << SOCK_BROADCAST) | \
--			     (1UL << SOCK_TIMESTAMP) | \
--			     (1UL << SOCK_DBG) | \
--			     (1UL << SOCK_RCVTSTAMP) | \
--			     (1UL << SOCK_RCVTSTAMPNS) | \
--			     (1UL << SOCK_LOCALROUTE) | \
--			     (1UL << SOCK_TIMESTAMPING_RX_SOFTWARE) | \
--			     (1UL << SOCK_RXQ_OVFL) | \
--			     (1UL << SOCK_WIFI_STATUS) | \
--			     (1UL << SOCK_NOFCS) | \
--			     (1UL << SOCK_FILTER_LOCKED) | \
--			     (1UL << SOCK_TSTAMP_NEW))
--/* copy only relevant settings and flags of SOL_SOCKET level from smc to
-- * clc socket (since smc is not called for these options from net/core)
-- */
- static void smc_copy_sock_settings_to_clc(struct smc_sock *smc)
- {
- 	smc_copy_sock_settings(smc->clcsock->sk, &smc->sk, SK_FLAGS_SMC_TO_CLC);
-@@ -2479,8 +2510,6 @@ static void smc_tcp_listen_work(struct work_struct *work)
- 		sock_hold(lsk); /* sock_put in smc_listen_work */
- 		INIT_WORK(&new_smc->smc_listen_work, smc_listen_work);
- 		smc_copy_sock_settings_to_smc(new_smc);
--		new_smc->sk.sk_sndbuf = lsmc->sk.sk_sndbuf;
--		new_smc->sk.sk_rcvbuf = lsmc->sk.sk_rcvbuf;
- 		sock_hold(&new_smc->sk); /* sock_put in passive closing */
- 		if (!queue_work(smc_hs_wq, &new_smc->smc_listen_work))
- 			sock_put(&new_smc->sk);
+ #endif /* _NOLIBC_STACKPROTECTOR_H */
 -- 
-2.41.0
+2.25.1
 
