@@ -2,66 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A0F676DC86
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 02:20:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E83C876DC8D
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 02:23:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231637AbjHCAUD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Aug 2023 20:20:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60666 "EHLO
+        id S231669AbjHCAXl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Aug 2023 20:23:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33332 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230523AbjHCAUC (ORCPT
+        with ESMTP id S229685AbjHCAXj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Aug 2023 20:20:02 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ACD3BE4D
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Aug 2023 17:20:01 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 414A961A6A
-        for <linux-kernel@vger.kernel.org>; Thu,  3 Aug 2023 00:20:01 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 726DFC433C7;
-        Thu,  3 Aug 2023 00:19:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691022000;
-        bh=sZptYRYDFoHAb+wOsSizNCW/jt+/ft7PFZewKheT524=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=rYZh2Ou5eiiksaJ0lkp7mNnqK/3Vw3Dw5erd0OqvNvnhXHUAejIjuL7ZtxgMylygM
-         uNVn9tZ3XjAfglxx4DqZgZQuUvpQbpZ3CyC0OsVCQa+TsapDwQr2qoG8czG7YwXgzi
-         QH4AnUtu0m29L7ibQliudSn1aPbOqKm9oqODFVWPS/Rr0EkGHamcgudwlJ0eUmD9vi
-         UUY4JQTAk1AyA9tQ4zneX/WRwWkSDonb+eXT1geqlUescolNTMmh8ETndow1MvXqYC
-         6SpbsvnqTRnYMG91iVfqCyS5RpNEQwRLoJT42Afo1LLHBbNgKA5EWgQYqSWxBKEmqi
-         EI5zL15FKhrOQ==
-Date:   Thu, 3 Aug 2023 08:19:57 +0800
-From:   Tzung-Bi Shih <tzungbi@kernel.org>
-To:     Rob Barnes <robbarnes@google.com>
-Cc:     patchwork-bot+chrome-platform@kernel.org, bleung@chromium.org,
-        groeck@chromium.org, dtor@chromium.org,
-        chrome-platform@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] platform/chrome: cros_ec_lpc: Sync filesystem on EC panic
-Message-ID: <ZMryrehtCouCCngA@google.com>
-References: <20230726181738.1.Ic6b8e25120b2aec95e3d0f4ac92c2a35fc7a40e8@changeid>
- <169079822136.24246.16960757983645261559.git-patchwork-notify@kernel.org>
- <CA+Dqm30s282gcs6PHkZkH92mhndLi5YP=NPwS0duorizJfx+oQ@mail.gmail.com>
+        Wed, 2 Aug 2023 20:23:39 -0400
+Received: from mail-pf1-f171.google.com (mail-pf1-f171.google.com [209.85.210.171])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1EE511D;
+        Wed,  2 Aug 2023 17:23:38 -0700 (PDT)
+Received: by mail-pf1-f171.google.com with SMTP id d2e1a72fcca58-686f090310dso371878b3a.0;
+        Wed, 02 Aug 2023 17:23:38 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691022218; x=1691627018;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=gmVePWus/D2ZSIv2TlvDrcFpCMCiW/1/xN8nusTSum4=;
+        b=co76xerCqMWH8tdYDT/w0Kp01+ZGeOztoF+Kf0QrXJgbCakhjq44LC5CGjbDwDZSQC
+         mRYnP7G5qCSdPM7f/H/8dumoYtmeIKQoXEjcdurklfi5umgzaF0N1mvF4xO6ZMzoWmrU
+         J/7tUuW8IoBQ3gtSKVWXUg2BLFojHvs+gYoQmLmPj1q2YFuxTD016Gkg+Cl45MxH+Nwn
+         PLC/Ji2MHButkWG3fVTciICbi5I9wD46hY1MQygfCFXrIpkQxeYfI087Xq/m/rpmVK2e
+         ZGNsEeQw3eNwgHkcnAXiwb6SF1vCoOhnj6qnqjdzFyQyO8J9KaPCfq70yziwQ7EFKXQW
+         lA0g==
+X-Gm-Message-State: ABy/qLaLOUO0tgRwcIMENUpP9xwCTKeBo4eKIkz7xIsZ0zqgcjD9yXne
+        JM7m8RSxaAQDXGMU35yGWWnv91rp6H8=
+X-Google-Smtp-Source: APBJJlElxh1W6wNXf7GhFS8b/QMqghSfbgpkibvNXkhK40jke5XiUp1npsujtjeyRUZK+f64tfqstw==
+X-Received: by 2002:a05:6a20:85:b0:13b:cc09:a547 with SMTP id 5-20020a056a20008500b0013bcc09a547mr15593305pzg.36.1691022218125;
+        Wed, 02 Aug 2023 17:23:38 -0700 (PDT)
+Received: from liuwe-devbox-debian-v2 ([20.69.120.36])
+        by smtp.gmail.com with ESMTPSA id p26-20020a63741a000000b0056433b1b996sm7696281pgc.45.2023.08.02.17.23.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 02 Aug 2023 17:23:37 -0700 (PDT)
+Date:   Thu, 3 Aug 2023 00:23:29 +0000
+From:   Wei Liu <wei.liu@kernel.org>
+To:     Nuno Das Neves <nunodasneves@linux.microsoft.com>, corbet@lwn.net
+Cc:     linux-hyperv@vger.kernel.org, linux-kernel@vger.kernel.org,
+        x86@kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-arch@vger.kernel.org, mikelley@microsoft.com,
+        kys@microsoft.com, wei.liu@kernel.org, haiyangz@microsoft.com,
+        decui@microsoft.com, ssengar@linux.microsoft.com,
+        mukeshrathor@microsoft.com, stanislav.kinsburskiy@gmail.com,
+        jinankjain@linux.microsoft.com, apais@linux.microsoft.com,
+        Tianyu.Lan@microsoft.com, vkuznets@redhat.com, tglx@linutronix.de,
+        mingo@redhat.com, bp@alien8.de, dave.hansen@linux.intel.com,
+        hpa@zytor.com, will@kernel.org, catalin.marinas@arm.com
+Subject: Re: [PATCH 12/15] Documentation: Reserve ioctl number for mshv driver
+Message-ID: <ZMrzgeETgsn1iTfe@liuwe-devbox-debian-v2>
+References: <1690487690-2428-1-git-send-email-nunodasneves@linux.microsoft.com>
+ <1690487690-2428-13-git-send-email-nunodasneves@linux.microsoft.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CA+Dqm30s282gcs6PHkZkH92mhndLi5YP=NPwS0duorizJfx+oQ@mail.gmail.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <1690487690-2428-13-git-send-email-nunodasneves@linux.microsoft.com>
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 02, 2023 at 12:16:35PM -0600, Rob Barnes wrote:
-> Note: This change is being rejected upstream due to the use of
-> ksys_sync_helper. Apparently it's discouraged. I sent a new patch to
-> replace this one:
-> https://lore.kernel.org/lkml/20230802175847.1.Ie9fc53b6a1f4c6661c5376286a50e0cf51b3e961@changeid/
+This needs an ack from Jonathan.
 
-Do you have any links about the rejection?
+On Thu, Jul 27, 2023 at 12:54:47PM -0700, Nuno Das Neves wrote:
+> Signed-off-by: Nuno Das Neves <nunodasneves@linux.microsoft.com>
+> ---
+>  Documentation/userspace-api/ioctl/ioctl-number.rst | 2 ++
+>  1 file changed, 2 insertions(+)
+> 
+> diff --git a/Documentation/userspace-api/ioctl/ioctl-number.rst b/Documentation/userspace-api/ioctl/ioctl-number.rst
+> index 0a1882e296ae..ca6b82419118 100644
+> --- a/Documentation/userspace-api/ioctl/ioctl-number.rst
+> +++ b/Documentation/userspace-api/ioctl/ioctl-number.rst
+> @@ -355,6 +355,8 @@ Code  Seq#    Include File                                           Comments
+>  0xB6  all    linux/fpga-dfl.h
+>  0xB7  all    uapi/linux/remoteproc_cdev.h                            <mailto:linux-remoteproc@vger.kernel.org>
+>  0xB7  all    uapi/linux/nsfs.h                                       <mailto:Andrei Vagin <avagin@openvz.org>>
+> +0xB8  all    uapi/linux/mshv.h                                       Microsoft Hypervisor VM management APIs
+> +                                                                     <mailto:linux-hyperv@vger.kernel.org>
+>  0xC0  00-0F  linux/usb/iowarrior.h
+>  0xCA  00-0F  uapi/misc/cxl.h
+>  0xCA  10-2F  uapi/misc/ocxl.h
+> -- 
+> 2.25.1
+> 
