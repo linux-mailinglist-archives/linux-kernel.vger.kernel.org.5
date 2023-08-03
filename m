@@ -2,54 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0FFD676E891
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 14:42:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6BA6676E89E
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 14:43:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233798AbjHCMmJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Aug 2023 08:42:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43814 "EHLO
+        id S234994AbjHCMnW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Aug 2023 08:43:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44216 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229760AbjHCMmH (ORCPT
+        with ESMTP id S234768AbjHCMnT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Aug 2023 08:42:07 -0400
-Received: from mail-oa1-f77.google.com (mail-oa1-f77.google.com [209.85.160.77])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6656A2D42
-        for <linux-kernel@vger.kernel.org>; Thu,  3 Aug 2023 05:42:03 -0700 (PDT)
-Received: by mail-oa1-f77.google.com with SMTP id 586e51a60fabf-1bb6519da1dso1178421fac.3
-        for <linux-kernel@vger.kernel.org>; Thu, 03 Aug 2023 05:42:03 -0700 (PDT)
+        Thu, 3 Aug 2023 08:43:19 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3764359E
+        for <linux-kernel@vger.kernel.org>; Thu,  3 Aug 2023 05:42:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1691066553;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=rfTmYD28gRUQxEv/F82rqwXCUGgxTUb21DSPMY1yz5o=;
+        b=ORqsgGKBm4AF3SN3D9xTD0z+k4HZ3iHXS81a09mEKPm2zvu3PvtUWgefr88C6pXckLc2I6
+        P7of2vgOlBtVlzPwrNC67asXelL08uCZxbJmmA8qZRNVzYLEvyKFCHi0jhGRPgW9jhLYT8
+        BZjRAxU7zR5+8wmF7vCdCSrFMoarXTM=
+Received: from mail-lf1-f69.google.com (mail-lf1-f69.google.com
+ [209.85.167.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-645-5tuvwvtoN-WLZhpfIYNbJw-1; Thu, 03 Aug 2023 08:42:32 -0400
+X-MC-Unique: 5tuvwvtoN-WLZhpfIYNbJw-1
+Received: by mail-lf1-f69.google.com with SMTP id 2adb3069b0e04-4fe32cab9b7so1302619e87.1
+        for <linux-kernel@vger.kernel.org>; Thu, 03 Aug 2023 05:42:32 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691066522; x=1691671322;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=QS/jf/60yteZJ4KS6ZjrdJhYl3jCQuMPys0NiOhJrhY=;
-        b=VqWswiUYjUZh4Mk9IcYTl/o3KARmyezSiu7+TTfm4aua3Mxaa9SmwYPh4i6qSlhPxU
-         cRAAZADV9sLqmpZrXnIwJf1NkyF1Ask0kXqV6YKlmntEmNGgaQYgdcTFQXEIDa5k+H3c
-         wYuxuMgmy/1E2/ee3hUtCbTCZIBclA7IJZSh+YGTRvmMZTRJGrmyu8D8jao5gPZnBTEj
-         P/0azE3cXLLuADP9OnNmDBhPCuZFM0U/eGU5PLHzZIoCmtTAZRYoV3+i2YhmuwvQOnDs
-         aEp4dHP+mQT3/mgdJfvqbLbcWDGV6jK7aIwsWBslTDzLoC5zgojy4mwo13B+myShQyRv
-         JeLw==
-X-Gm-Message-State: ABy/qLbTXkKEgfIqvJcjvx5SoBfJ165AeEiKLJ/YEbABsM4sRj6A5CA3
-        y7X3pzmrxCskInW7Iv+ZS0V1gS76ReH6y5eVqTOLj+1AY2t1
-X-Google-Smtp-Source: APBJJlENO0gmwwV/xjXG9L0hUNI4Nqx2bZZgKXtPLaN9g0bZrxgPVdPJqzdkkI55GpfUxvyNlxZ/eZAQ3E0uJDawHHOphpogDL4E
+        d=1e100.net; s=20221208; t=1691066551; x=1691671351;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=rfTmYD28gRUQxEv/F82rqwXCUGgxTUb21DSPMY1yz5o=;
+        b=c3lmIe63PMm9aZswNf6sPWs9MER0ezaDh2hmcaazm4LiO2ls7OmzpIZ/GBBXrY89gO
+         GlPby8XDYM7UwK4/+iSBljCu3qS2sN/pvop3O5OQwkfCE4Do6wYe9MZa177HnS00ossK
+         JySy+lkDtD3C6SDfhJUmJuafc1TJjSFOHH/fvvZr0RxcksBrZX2PNu7h9r6wbYcmr3A3
+         2ur1GJxF6MPw307DNn7OyeLWUKXTxAUxjmv824/9LYvy2S6+/J/EMY3wc2ZC8yF0nP0y
+         4pAg3d7R0Gkg0EROBXwPob59NSQe7okHaoO7bbVq047/1pRgwkJR2GFTkkgmizgbWs3F
+         oZ1g==
+X-Gm-Message-State: ABy/qLaCZ6zWajlg3qJYbcmW6DvPH6Nl3Kh7RkEqL2jIVvWsLpVw5YoF
+        Pf6ibxAvGlEyh2MihUGZUJPdIfTU7IDmAXmvfr0Y0qGlfZSHKjQxme7dsjVyLRibh0PpbbsBDnc
+        ZwhHhzOm2r6IJcjt+0r5QQFnN
+X-Received: by 2002:ac2:4f14:0:b0:4fe:494b:3769 with SMTP id k20-20020ac24f14000000b004fe494b3769mr5409099lfr.33.1691066551072;
+        Thu, 03 Aug 2023 05:42:31 -0700 (PDT)
+X-Google-Smtp-Source: APBJJlEcSrtyaTfvbW1un5x4OA2V0PmTOG0vx/3ukK215u4e/ZhL/EloFZvQu/W8SYZkUViQ3rzh4A==
+X-Received: by 2002:ac2:4f14:0:b0:4fe:494b:3769 with SMTP id k20-20020ac24f14000000b004fe494b3769mr5409072lfr.33.1691066550673;
+        Thu, 03 Aug 2023 05:42:30 -0700 (PDT)
+Received: from sgarzare-redhat (host-82-57-51-214.retail.telecomitalia.it. [82.57.51.214])
+        by smtp.gmail.com with ESMTPSA id c7-20020a7bc847000000b003fe22da3bc5sm4163717wml.42.2023.08.03.05.42.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 03 Aug 2023 05:42:30 -0700 (PDT)
+Date:   Thu, 3 Aug 2023 14:42:26 +0200
+From:   Stefano Garzarella <sgarzare@redhat.com>
+To:     Bobby Eshleman <bobbyeshleman@gmail.com>
+Cc:     Arseniy Krasnov <oxffffaa@gmail.com>,
+        Bobby Eshleman <bobby.eshleman@bytedance.com>,
+        Stefan Hajnoczi <stefanha@redhat.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        "K. Y. Srinivasan" <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Wei Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>,
+        Bryan Tan <bryantan@vmware.com>,
+        Vishnu Dasa <vdasa@vmware.com>,
+        VMware PV-Drivers Reviewers <pv-drivers@vmware.com>,
+        Dan Carpenter <dan.carpenter@linaro.org>,
+        Simon Horman <simon.horman@corigine.com>, kvm@vger.kernel.org,
+        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-hyperv@vger.kernel.org,
+        bpf@vger.kernel.org
+Subject: Re: [PATCH RFC net-next v5 03/14] af_vsock: support multi-transport
+ datagrams
+Message-ID: <7ioiy325g6bkplp6sqk676sk62wlsxaqy6luwjnnztxsgd3srt@5nh73ct53kr3>
+References: <20230413-b4-vsock-dgram-v5-0-581bd37fdb26@bytedance.com>
+ <20230413-b4-vsock-dgram-v5-3-581bd37fdb26@bytedance.com>
+ <43fad7ab-2ca9-608e-566f-80e607d2d6b8@gmail.com>
+ <ZMrXrBHuaEcpxGwA@bullseye>
+ <ZMr6giur//A1hrND@bullseye>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6870:768e:b0:1bb:51ab:a7c5 with SMTP id
- dx14-20020a056870768e00b001bb51aba7c5mr19524053oab.9.1691066521933; Thu, 03
- Aug 2023 05:42:01 -0700 (PDT)
-Date:   Thu, 03 Aug 2023 05:42:01 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000054df9f0602041ba8@google.com>
-Subject: [syzbot] [wireguard?] KASAN: null-ptr-deref Write in wg_packet_send_staged_packets
-From:   syzbot <syzbot+1ef6522091226898343f@syzkaller.appspotmail.com>
-To:     Jason@zx2c4.com, davem@davemloft.net, edumazet@google.com,
-        kuba@kernel.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, pabeni@redhat.com,
-        syzkaller-bugs@googlegroups.com, wireguard@lists.zx2c4.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=0.8 required=5.0 tests=BAYES_00,FROM_LOCAL_DIGITS,
-        FROM_LOCAL_HEX,HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SORTED_RECIPS,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <ZMr6giur//A1hrND@bullseye>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -57,138 +102,209 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Thu, Aug 03, 2023 at 12:53:22AM +0000, Bobby Eshleman wrote:
+>On Wed, Aug 02, 2023 at 10:24:44PM +0000, Bobby Eshleman wrote:
+>> On Sun, Jul 23, 2023 at 12:53:15AM +0300, Arseniy Krasnov wrote:
+>> >
+>> >
+>> > On 19.07.2023 03:50, Bobby Eshleman wrote:
+>> > > This patch adds support for multi-transport datagrams.
+>> > >
+>> > > This includes:
+>> > > - Per-packet lookup of transports when using sendto(sockaddr_vm)
+>> > > - Selecting H2G or G2H transport using VMADDR_FLAG_TO_HOST and CID in
+>> > >   sockaddr_vm
+>> > > - rename VSOCK_TRANSPORT_F_DGRAM to VSOCK_TRANSPORT_F_DGRAM_FALLBACK
+>> > > - connect() now assigns the transport for (similar to connectible
+>> > >   sockets)
+>> > >
+>> > > To preserve backwards compatibility with VMCI, some important changes
+>> > > are made. The "transport_dgram" / VSOCK_TRANSPORT_F_DGRAM is changed to
+>> > > be used for dgrams only if there is not yet a g2h or h2g transport that
+>> > > has been registered that can transmit the packet. If there is a g2h/h2g
+>> > > transport for that remote address, then that transport will be used and
+>> > > not "transport_dgram". This essentially makes "transport_dgram" a
+>> > > fallback transport for when h2g/g2h has not yet gone online, and so it
+>> > > is renamed "transport_dgram_fallback". VMCI implements this transport.
+>> > >
+>> > > The logic around "transport_dgram" needs to be retained to prevent
+>> > > breaking VMCI:
+>> > >
+>> > > 1) VMCI datagrams existed prior to h2g/g2h and so operate under a
+>> > >    different paradigm. When the vmci transport comes online, it registers
+>> > >    itself with the DGRAM feature, but not H2G/G2H. Only later when the
+>> > >    transport has more information about its environment does it register
+>> > >    H2G or G2H.  In the case that a datagram socket is created after
+>> > >    VSOCK_TRANSPORT_F_DGRAM registration but before G2H/H2G registration,
+>> > >    the "transport_dgram" transport is the only registered transport and so
+>> > >    needs to be used.
+>> > >
+>> > > 2) VMCI seems to require a special message be sent by the transport when a
+>> > >    datagram socket calls bind(). Under the h2g/g2h model, the transport
+>> > >    is selected using the remote_addr which is set by connect(). At
+>> > >    bind time there is no remote_addr because often no connect() has been
+>> > >    called yet: the transport is null. Therefore, with a null transport
+>> > >    there doesn't seem to be any good way for a datagram socket to tell the
+>> > >    VMCI transport that it has just had bind() called upon it.
+>> > >
+>> > > With the new fallback logic, after H2G/G2H comes online the socket layer
+>> > > will access the VMCI transport via transport_{h2g,g2h}. Prior to H2G/G2H
+>> > > coming online, the socket layer will access the VMCI transport via
+>> > > "transport_dgram_fallback".
+>> > >
+>> > > Only transports with a special datagram fallback use-case such as VMCI
+>> > > need to register VSOCK_TRANSPORT_F_DGRAM_FALLBACK.
+>> > >
+>> > > Signed-off-by: Bobby Eshleman <bobby.eshleman@bytedance.com>
+>> > > ---
+>> > >  drivers/vhost/vsock.c                   |  1 -
+>> > >  include/linux/virtio_vsock.h            |  2 --
+>> > >  include/net/af_vsock.h                  | 10 +++---
+>> > >  net/vmw_vsock/af_vsock.c                | 64 ++++++++++++++++++++++++++-------
+>> > >  net/vmw_vsock/hyperv_transport.c        |  6 ----
+>> > >  net/vmw_vsock/virtio_transport.c        |  1 -
+>> > >  net/vmw_vsock/virtio_transport_common.c |  7 ----
+>> > >  net/vmw_vsock/vmci_transport.c          |  2 +-
+>> > >  net/vmw_vsock/vsock_loopback.c          |  1 -
+>> > >  9 files changed, 58 insertions(+), 36 deletions(-)
+>> > >
+>> > > diff --git a/drivers/vhost/vsock.c b/drivers/vhost/vsock.c
+>> > > index ae8891598a48..d5d6a3c3f273 100644
+>> > > --- a/drivers/vhost/vsock.c
+>> > > +++ b/drivers/vhost/vsock.c
+>> > > @@ -410,7 +410,6 @@ static struct virtio_transport vhost_transport = {
+>> > >  		.cancel_pkt               = vhost_transport_cancel_pkt,
+>> > >
+>> > >  		.dgram_enqueue            = virtio_transport_dgram_enqueue,
+>> > > -		.dgram_bind               = virtio_transport_dgram_bind,
+>> > >  		.dgram_allow              = virtio_transport_dgram_allow,
+>> > >
+>> > >  		.stream_enqueue           = virtio_transport_stream_enqueue,
+>> > > diff --git a/include/linux/virtio_vsock.h b/include/linux/virtio_vsock.h
+>> > > index 18cbe8d37fca..7632552bee58 100644
+>> > > --- a/include/linux/virtio_vsock.h
+>> > > +++ b/include/linux/virtio_vsock.h
+>> > > @@ -211,8 +211,6 @@ void virtio_transport_notify_buffer_size(struct vsock_sock *vsk, u64 *val);
+>> > >  u64 virtio_transport_stream_rcvhiwat(struct vsock_sock *vsk);
+>> > >  bool virtio_transport_stream_is_active(struct vsock_sock *vsk);
+>> > >  bool virtio_transport_stream_allow(u32 cid, u32 port);
+>> > > -int virtio_transport_dgram_bind(struct vsock_sock *vsk,
+>> > > -				struct sockaddr_vm *addr);
+>> > >  bool virtio_transport_dgram_allow(u32 cid, u32 port);
+>> > >
+>> > >  int virtio_transport_connect(struct vsock_sock *vsk);
+>> > > diff --git a/include/net/af_vsock.h b/include/net/af_vsock.h
+>> > > index 305d57502e89..f6a0ca9d7c3e 100644
+>> > > --- a/include/net/af_vsock.h
+>> > > +++ b/include/net/af_vsock.h
+>> > > @@ -96,13 +96,13 @@ struct vsock_transport_send_notify_data {
+>> > >
+>> > >  /* Transport features flags */
+>> > >  /* Transport provides host->guest communication */
+>> > > -#define VSOCK_TRANSPORT_F_H2G		0x00000001
+>> > > +#define VSOCK_TRANSPORT_F_H2G			0x00000001
+>> > >  /* Transport provides guest->host communication */
+>> > > -#define VSOCK_TRANSPORT_F_G2H		0x00000002
+>> > > -/* Transport provides DGRAM communication */
+>> > > -#define VSOCK_TRANSPORT_F_DGRAM		0x00000004
+>> > > +#define VSOCK_TRANSPORT_F_G2H			0x00000002
+>> > > +/* Transport provides fallback for DGRAM communication */
+>> > > +#define VSOCK_TRANSPORT_F_DGRAM_FALLBACK	0x00000004
+>> > >  /* Transport provides local (loopback) communication */
+>> > > -#define VSOCK_TRANSPORT_F_LOCAL		0x00000008
+>> > > +#define VSOCK_TRANSPORT_F_LOCAL			0x00000008
+>> > >
+>> > >  struct vsock_transport {
+>> > >  	struct module *module;
+>> > > diff --git a/net/vmw_vsock/af_vsock.c b/net/vmw_vsock/af_vsock.c
+>> > > index ae5ac5531d96..26c97b33d55a 100644
+>> > > --- a/net/vmw_vsock/af_vsock.c
+>> > > +++ b/net/vmw_vsock/af_vsock.c
+>> > > @@ -139,8 +139,8 @@ struct proto vsock_proto = {
+>> > >  static const struct vsock_transport *transport_h2g;
+>> > >  /* Transport used for guest->host communication */
+>> > >  static const struct vsock_transport *transport_g2h;
+>> > > -/* Transport used for DGRAM communication */
+>> > > -static const struct vsock_transport *transport_dgram;
+>> > > +/* Transport used as a fallback for DGRAM communication */
+>> > > +static const struct vsock_transport *transport_dgram_fallback;
+>> > >  /* Transport used for local communication */
+>> > >  static const struct vsock_transport *transport_local;
+>> > >  static DEFINE_MUTEX(vsock_register_mutex);
+>> > > @@ -439,6 +439,18 @@ vsock_connectible_lookup_transport(unsigned int cid, __u8 flags)
+>> > >  	return transport;
+>> > >  }
+>> > >
+>> > > +static const struct vsock_transport *
+>> > > +vsock_dgram_lookup_transport(unsigned int cid, __u8 flags)
+>> > > +{
+>> > > +	const struct vsock_transport *transport;
+>> > > +
+>> > > +	transport = vsock_connectible_lookup_transport(cid, flags);
+>> > > +	if (transport)
+>> > > +		return transport;
+>> > > +
+>> > > +	return transport_dgram_fallback;
+>> > > +}
+>> > > +
+>> > >  /* Assign a transport to a socket and call the .init transport callback.
+>> > >   *
+>> > >   * Note: for connection oriented socket this must be called when vsk->remote_addr
+>> > > @@ -475,7 +487,8 @@ int vsock_assign_transport(struct vsock_sock *vsk, struct vsock_sock *psk)
+>> > >
+>> > >  	switch (sk->sk_type) {
+>> > >  	case SOCK_DGRAM:
+>> > > -		new_transport = transport_dgram;
+>> > > +		new_transport = vsock_dgram_lookup_transport(remote_cid,
+>> > > +							     remote_flags);
+>> >
+>> > I'm a little bit confused about this:
+>> > 1) Let's create SOCK_DGRAM socket using vsock_create()
+>> > 2) for SOCK_DGRAM it calls 'vsock_assign_transport()' and we go here, remote_cid == -1
+>> > 3) I guess 'vsock_dgram_lookup_transport()' calls logic from 0002 and returns h2g for such remote cid, which is not
+>> >    correct I think...
+>> >
+>> > Please correct me if i'm wrong
+>> >
+>> > Thanks, Arseniy
+>> >
+>>
+>> As I understand, for the VMCI case, if transport_h2g != NULL, then
+>> transport_h2g == transport_dgram_fallback. In either case,
+>> vsk->transport == transport_dgram_fallback.
+>>
+>> For the virtio/vhost case, temporarily vsk->transport == transport_h2g,
+>> but it is unused because vsk->transport->dgram_bind == NULL.
+>>
+>> Until SS_CONNECTED is set by connect() and vsk->transport is set
+>> correctly, the send path is barred from using the bad transport.
+>>
+>> I guess the recvmsg() path is a little more sketchy, and probably only
+>> works in my test cases because h2g/g2h in the vhost/virtio case have
+>> identical dgram_addr_init() implementations.
+>>
+>> I think a cleaner solution is maybe checking in vsock_create() if
+>> dgram_bind is implemented. If it is not, then vsk->transport should be
+>> reset to NULL and a comment added explaining why VMCI requires this.
+>>
+>> Then the other calls can begin explicitly checking for vsk->transport ==
+>> NULL.
+>
+>Actually, on further reflection here, in order for the vsk->transport to
+>be called in time for ->dgram_addr_init(), it is going to be necessary
+>to call vsock_assign_transport() in vsock_dgram_bind() anyway.
+>
+>I think this means that the vsock_assign_transport() call can be removed
+>from vsock_create() call entirely, and yet VMCI can still dispatch
+>messages upon bind() calls as needed.
+>
+>This would then simplify the whole arrangement, if there aren't other
+>unseen issues.
 
-syzbot found the following issue on:
+This sounds like a good approach.
 
-HEAD commit:    d7b3af5a77e8 Add linux-next specific files for 20230728
-git tree:       linux-next
-console output: https://syzkaller.appspot.com/x/log.txt?x=10774fa1a80000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=62dd327c382e3fe
-dashboard link: https://syzkaller.appspot.com/bug?extid=1ef6522091226898343f
-compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
+My only question is whether vsock_dgram_bind() is always called for each
+dgram socket.
 
-Unfortunately, I don't have any reproducer for this issue yet.
+Stefano
 
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/5efa5e68267f/disk-d7b3af5a.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/b1f5d3e10263/vmlinux-d7b3af5a.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/57cab469d186/bzImage-d7b3af5a.xz
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+1ef6522091226898343f@syzkaller.appspotmail.com
-
-==================================================================
-BUG: KASAN: null-ptr-deref in instrument_atomic_read_write include/linux/instrumented.h:96 [inline]
-BUG: KASAN: null-ptr-deref in atomic_fetch_add_relaxed include/linux/atomic/atomic-instrumented.h:252 [inline]
-BUG: KASAN: null-ptr-deref in __refcount_add include/linux/refcount.h:193 [inline]
-BUG: KASAN: null-ptr-deref in __refcount_inc include/linux/refcount.h:250 [inline]
-BUG: KASAN: null-ptr-deref in refcount_inc include/linux/refcount.h:267 [inline]
-BUG: KASAN: null-ptr-deref in kref_get include/linux/kref.h:45 [inline]
-BUG: KASAN: null-ptr-deref in wg_peer_get drivers/net/wireguard/peer.h:76 [inline]
-BUG: KASAN: null-ptr-deref in wg_packet_send_staged_packets+0xd10/0x1860 drivers/net/wireguard/send.c:385
-Write of size 4 at addr 0000000000000710 by task syz-executor.2/22201
-
-CPU: 1 PID: 22201 Comm: syz-executor.2 Not tainted 6.5.0-rc3-next-20230728-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 07/12/2023
-Call Trace:
- <IRQ>
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0xd9/0x1b0 lib/dump_stack.c:106
- kasan_report+0xda/0x110 mm/kasan/report.c:588
- check_region_inline mm/kasan/generic.c:181 [inline]
- kasan_check_range+0xef/0x190 mm/kasan/generic.c:187
- instrument_atomic_read_write include/linux/instrumented.h:96 [inline]
- atomic_fetch_add_relaxed include/linux/atomic/atomic-instrumented.h:252 [inline]
- __refcount_add include/linux/refcount.h:193 [inline]
- __refcount_inc include/linux/refcount.h:250 [inline]
- refcount_inc include/linux/refcount.h:267 [inline]
- kref_get include/linux/kref.h:45 [inline]
- wg_peer_get drivers/net/wireguard/peer.h:76 [inline]
- wg_packet_send_staged_packets+0xd10/0x1860 drivers/net/wireguard/send.c:385
- wg_packet_send_keepalive+0x48/0x300 drivers/net/wireguard/send.c:239
- wg_expired_send_persistent_keepalive+0x5e/0x70 drivers/net/wireguard/timers.c:141
- call_timer_fn+0x1a0/0x580 kernel/time/timer.c:1700
- expire_timers kernel/time/timer.c:1751 [inline]
- __run_timers+0x764/0xb10 kernel/time/timer.c:2022
- run_timer_softirq+0x58/0xd0 kernel/time/timer.c:2035
- __do_softirq+0x218/0x965 kernel/softirq.c:553
- invoke_softirq kernel/softirq.c:427 [inline]
- __irq_exit_rcu kernel/softirq.c:632 [inline]
- irq_exit_rcu+0xb7/0x120 kernel/softirq.c:644
- sysvec_apic_timer_interrupt+0x93/0xc0 arch/x86/kernel/apic/apic.c:1109
- </IRQ>
- <TASK>
- asm_sysvec_apic_timer_interrupt+0x1a/0x20 arch/x86/include/asm/idtentry.h:645
-RIP: 0010:write_comp_data+0x3c/0x90 kernel/kcov.c:236
-Code: 01 00 00 49 89 f8 65 48 8b 14 25 40 ba 03 00 a9 00 01 ff 00 74 0e 85 f6 74 59 8b 82 04 16 00 00 85 c0 74 4f 8b 82 e0 15 00 00 <83> f8 03 75 44 48 8b 82 e8 15 00 00 8b 92 e4 15 00 00 48 8b 38 48
-RSP: 0018:ffffc900038bfa80 EFLAGS: 00000246
-RAX: 0000000000000000 RBX: 1ffff92000717f51 RCX: ffffffff882281ad
-RDX: ffff888020b1bb80 RSI: 0000000000000000 RDI: 0000000000000005
-RBP: 0000000000000000 R08: 0000000000000005 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000000 R12: ffffc900038bfdb0
-R13: ffffc900038bfbb0 R14: ffffc900038bfb90 R15: ffffc900038bfaa8
- copy_msghdr_from_user+0xcd/0x160 net/socket.c:2430
- recvmsg_copy_msghdr net/socket.c:2681 [inline]
- ___sys_recvmsg+0xdc/0x1a0 net/socket.c:2753
- do_recvmmsg+0x2af/0x740 net/socket.c:2851
- __sys_recvmmsg net/socket.c:2930 [inline]
- __do_sys_recvmmsg net/socket.c:2953 [inline]
- __se_sys_recvmmsg net/socket.c:2946 [inline]
- __x64_sys_recvmmsg+0x235/0x290 net/socket.c:2946
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x38/0xb0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x63/0xcd
-RIP: 0033:0x7fcbf367cb29
-Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 e1 20 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b0 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007fcbf43d00c8 EFLAGS: 00000246 ORIG_RAX: 000000000000012b
-RAX: ffffffffffffffda RBX: 00007fcbf379c050 RCX: 00007fcbf367cb29
-RDX: 0000000000010106 RSI: 00000000200000c0 RDI: 0000000000000003
-RBP: 00007fcbf36c847a R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000002 R11: 0000000000000246 R12: 0000000000000000
-R13: 000000000000000b R14: 00007fcbf379c050 R15: 00007ffdfffbc408
- </TASK>
-==================================================================
-----------------
-Code disassembly (best guess):
-   0:	01 00                	add    %eax,(%rax)
-   2:	00 49 89             	add    %cl,-0x77(%rcx)
-   5:	f8                   	clc
-   6:	65 48 8b 14 25 40 ba 	mov    %gs:0x3ba40,%rdx
-   d:	03 00
-   f:	a9 00 01 ff 00       	test   $0xff0100,%eax
-  14:	74 0e                	je     0x24
-  16:	85 f6                	test   %esi,%esi
-  18:	74 59                	je     0x73
-  1a:	8b 82 04 16 00 00    	mov    0x1604(%rdx),%eax
-  20:	85 c0                	test   %eax,%eax
-  22:	74 4f                	je     0x73
-  24:	8b 82 e0 15 00 00    	mov    0x15e0(%rdx),%eax
-* 2a:	83 f8 03             	cmp    $0x3,%eax <-- trapping instruction
-  2d:	75 44                	jne    0x73
-  2f:	48 8b 82 e8 15 00 00 	mov    0x15e8(%rdx),%rax
-  36:	8b 92 e4 15 00 00    	mov    0x15e4(%rdx),%edx
-  3c:	48 8b 38             	mov    (%rax),%rdi
-  3f:	48                   	rex.W
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-
-If the bug is already fixed, let syzbot know by replying with:
-#syz fix: exact-commit-title
-
-If you want to change bug's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the bug is a duplicate of another bug, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
