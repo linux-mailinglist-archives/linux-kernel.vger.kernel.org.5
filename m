@@ -2,135 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 113AA76E3C1
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 10:57:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 479DE76E3C7
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 10:58:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234885AbjHCI5k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Aug 2023 04:57:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42310 "EHLO
+        id S231184AbjHCI6X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Aug 2023 04:58:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42650 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234876AbjHCI5h (ORCPT
+        with ESMTP id S234911AbjHCI5x (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Aug 2023 04:57:37 -0400
-Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44818E53
-        for <linux-kernel@vger.kernel.org>; Thu,  3 Aug 2023 01:57:33 -0700 (PDT)
-Received: by mail-lf1-x12b.google.com with SMTP id 2adb3069b0e04-4fe27849e6aso1242689e87.1
-        for <linux-kernel@vger.kernel.org>; Thu, 03 Aug 2023 01:57:33 -0700 (PDT)
+        Thu, 3 Aug 2023 04:57:53 -0400
+Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CFE8B1FC2
+        for <linux-kernel@vger.kernel.org>; Thu,  3 Aug 2023 01:57:42 -0700 (PDT)
+Received: by mail-pj1-x102c.google.com with SMTP id 98e67ed59e1d1-268b3ddc894so357847a91.1
+        for <linux-kernel@vger.kernel.org>; Thu, 03 Aug 2023 01:57:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=resnulli-us.20221208.gappssmtp.com; s=20221208; t=1691053051; x=1691657851;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=/RYOvA3GPH9yLj5LX7ItcBXbKrc7dBhaTvMPDzCiKhI=;
-        b=QYpmTq0iHjjpPUROzsfV3ui565+LyzJjb6AZIaR2NMmJq0sK3A48bcGty+dpOSeQa7
-         QuHD1f9cYyP2WHWcPPqS2++NzTUR8+8GnpGP1+ZKQWGoGcN+Tk5wMMkGkjn7Huh3SFOg
-         y2tUPyRRLAFSgKYkozMVDoA1YwvqO4/Rgo+vBSBqOsk0Gqro9NCEdM/YD5hJKzzA6sJO
-         VdB0cClAJ42T0ojRpkkIZkCqtULtf31Swzq+nEl9AXh2HXWRV2lz9UeXvj/Ok5Yc6bkh
-         Tphq9d9B1VPf6st5E/VRCbTvFD/BrlY0fzCb6N9umIxeU+4tGCT9uJ1SYySpM+E0OnnJ
-         dOxg==
+        d=sifive.com; s=google; t=1691053061; x=1691657861;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=yLuMaVJQRwFXzrj2KAyjh6dQRHn4ylta+xeHAhU0hZc=;
+        b=Bu0D3tGjQV9Pc4NF3RI5B5EiGg4B5cv6DLumG8NB9wnCVaSTXNEZzxw48JRUczYBZg
+         zia2PWyNqRQVA1lY1qZBnJ95b8Kr3cIHSKrJ+uLCY5rcKIWSx6IDWM8IryDShuLSGoE5
+         pn9BtS0M7KZ4IzyfSh0JZ0j6l5cXaQojDx7yqnjlwtlmOnpvMJnlEs6kfTLnZCkEqAiU
+         D14t5UbsxeVCvzkkUSbJhYQ8kVoIOwIZDDmcEvkSF3lTBYlUBm0nnfSfKvF+pX3pa0gD
+         Dl1uFzTOlCW3eVyT7CNUSofcEAwnHXRh5EUHt9kC4E0DQEhfSNDOz8JZAG2r6AqJmufg
+         +xHw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691053051; x=1691657851;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=/RYOvA3GPH9yLj5LX7ItcBXbKrc7dBhaTvMPDzCiKhI=;
-        b=fctYJ1PQTS/rb+hTcCF/aq8gJG3bqkFGQLPnt2TowF0XgXOLsjfypsn/VwD/NGqijV
-         4ictkI5dpj595Rh/eTjejWtkO+ZQRvt19hySTfUaj+Lulbk5n6Q+/PVQ0CwPerEG+W6d
-         BSP2eXkWNDA+DXTFyO2Msdc8WjaUsjt5RyZ8C9dld4Drz0Ndgp/GcnYOx1PihLcQKoAT
-         6dnNiCY/xx/n6vU9B5J+Bg+HA17nHpPYycGRAVsNOhArPX1ZZFcAhAZ0yA/ECRCUz6Lt
-         bp+/bQaHV4XbMXj4PiVDRm3tCh8onnSyxaAhjp7TkFc/2hF9GbgNnv/o0InALa7c82Gs
-         jD/Q==
-X-Gm-Message-State: ABy/qLak7/qS23Jii6x00+wbi7ij4Yt+sOnRpF1H1AhSt3HzT+qTbiW3
-        hpBLWyTqmO8VeEPONxRwrOUeXQ==
-X-Google-Smtp-Source: APBJJlFwAN56ckCsXu8+/F68+HPgxrLICVNWd/AJ12TY+DAcRjD+iVX2dddTKPWUYyPXdUiJsX6MXg==
-X-Received: by 2002:a2e:a0cf:0:b0:2b6:cb55:72bc with SMTP id f15-20020a2ea0cf000000b002b6cb5572bcmr7115600ljm.1.1691053051344;
-        Thu, 03 Aug 2023 01:57:31 -0700 (PDT)
-Received: from localhost ([212.23.236.67])
-        by smtp.gmail.com with ESMTPSA id j4-20020a5d6184000000b003142c85fbcdsm21178152wru.11.2023.08.03.01.57.30
+        d=1e100.net; s=20221208; t=1691053061; x=1691657861;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=yLuMaVJQRwFXzrj2KAyjh6dQRHn4ylta+xeHAhU0hZc=;
+        b=Eh9PtNYuXZHbY082P/X8KMj13lJKJmdkXu17SHbrZJe3SQDr7R5cjmp4PBjOF0YFvU
+         d6E8y0zsaAhocvAP7XtEqOdnZEJV9eSEdfQTrPFscQ5OpxyKQFWCY2FLqdDbgEpfrZzc
+         k7EUKKkdfuPsZHl1YQ/7lFjc1hPlFb/QuU+FA+1362XNgTxNON0bK8F7ziBxks7hDK0m
+         U6h95QmSw2XA2LHzaIutUWfSnJ/4IxdU86nPIOWn+B4VB7ZAHaLi0ewFS7L4Hw4R0AJE
+         nG2yFDnImUSPJz44u/iUTD4u+/vROrDPecBsAbE/JaCrzj5Erie4M23d7FXBVm9NP5ET
+         sF/A==
+X-Gm-Message-State: ABy/qLbR9NTPaSgI84ajqM1xFClBw2B5N6ZE8rGD74FUkU+UbjX285Qk
+        43MDmJdPBrsTyEwLcC5B9cHgsulIKtUxfK2ulIbHclw/zRc/U4XZM3x5zlqnzH714YVDmjcgWqn
+        GqjLZFhdCqt9wvZevUSJlYIV7i0RnghS8nTth/kcCg6f3LyqvKB4sQZbpCzyKuITASrhiuRo9ni
+        A2U4PkQW2J3g==
+X-Google-Smtp-Source: APBJJlGnnPb//8k65nNPvHDIdInt/WndMpdPrnE5Y80vvoLgTBTdyYd4KLPnCWV1uD6o2WUos8NKPg==
+X-Received: by 2002:a17:90a:a592:b0:268:daa4:3a70 with SMTP id b18-20020a17090aa59200b00268daa43a70mr8066701pjq.32.1691053061337;
+        Thu, 03 Aug 2023 01:57:41 -0700 (PDT)
+Received: from hsinchu15.internal.sifive.com (59-124-168-89.hinet-ip.hinet.net. [59.124.168.89])
+        by smtp.gmail.com with ESMTPSA id i6-20020a633c46000000b0056334a7b9b2sm12941735pgn.33.2023.08.03.01.57.38
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 03 Aug 2023 01:57:30 -0700 (PDT)
-Date:   Thu, 3 Aug 2023 10:57:29 +0200
-From:   Jiri Pirko <jiri@resnulli.us>
-To:     justinlai0215 <justinlai0215@realtek.com>
-Cc:     kuba@kernel.org, davem@davemloft.net, edumazet@google.com,
-        pabeni@redhat.com, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org
-Subject: Re: [PATCH] net/ethernet/realtek: Add Realtek automotive PCIe driver
-Message-ID: <ZMtr+WbURFaynK15@nanopsycho>
-References: <20230803082513.6523-1-justinlai0215@realtek.com>
+        Thu, 03 Aug 2023 01:57:40 -0700 (PDT)
+From:   Nylon Chen <nylon.chen@sifive.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     devicetree@vger.kernel.org, linux-riscv@lists.infradead.org,
+        geert+renesas@glider.be, pavel@ucw.cz, vincent.chen@sifive.com,
+        nylon.chen@sifive.com, emil.renner.berthing@canonical.com,
+        aou@eecs.berkeley.edu, palmer@dabbelt.com,
+        paul.walmsley@sifive.com, krzysztof.kozlowski+dt@linaro.org,
+        robh+dt@kernel.org, conor@kernel.org, zong.li@sifive.com
+Subject: [PATCH v4 0/1] Change PWM-controlled LED pin active mode and algorithm
+Date:   Thu,  3 Aug 2023 16:57:33 +0800
+Message-Id: <20230803085734.340-1-nylon.chen@sifive.com>
+X-Mailer: git-send-email 2.40.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230803082513.6523-1-justinlai0215@realtek.com>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thu, Aug 03, 2023 at 10:25:13AM CEST, justinlai0215@realtek.com wrote:
->This patch is to add the ethernet device driver for the PCIe interface of Realtek Automotive Ethernet Switch,
->applicable to RTL9054, RTL9068, RTL9072, RTL9075, RTL9068, RTL9071.
->
->Signed-off-by: justinlai0215 <justinlai0215@realtek.com>
+According to the circuit diagram of User LEDs - RGB described in themanual hifive-unleashed-a00.pdf[0] and hifive-unmatched-schematics-v3.pdf[1].
 
-[...]
+The behavior of PWM is acitve-high.
+
+Removed patches: 1
+New patches: (none)
+
+Links:
+- [0]:  https://sifive.cdn.prismic.io/sifive/c52a8e32-05ce-4aaf-95c8-7bf8453f8698_hifive-unleashed-a00-schematics-1.pdf
+- [1]:  https://sifive.cdn.prismic.io/sifive/6a06d6c0-6e66-49b5-8e9e-e68ce76f4192_hifive-unmatched-schematics-v3.pdf
+- [2]:  https://sifive.cdn.prismic.io/sifive/1a82e600-1f93-4f41-b2d8-86ed8b16acba_fu740-c000-manual-v1p6.pdf
+
+Changed in v4:
+ - Remove previous updates to the PWM algorithm.
+
+Changed in v3:
+ - Convert the reference link to standard link.
+ - Move the inverted function before taking the minimum value.
+ - Change polarity check condition(high and low).
+ - Pick the biggest period length possible that is not bigger than the
+   requested period.
+
+Changed in v2:
+ - Convert the reference link to standard link.
+ - Fix typo: s/sifive unmatched:/sifive: unmatched:/.
+ - Remove active-low from hifive-unleashed-a00.dts.
+ - Include this reference link in the dts and pwm commit messages.
 
 
->+
->+static long rtase_swc_ioctl(struct file *p_file, unsigned int cmd, unsigned long arg)
+Nylon Chen (1):
+  riscv: dts: sifive: unleashed/unmatched: Remove PWM controlled LED's
+    active-low properties
 
-There are *MANY* thing wrong in this patch spotted just during 5 minutes
-skimming over the code, but this definitelly tops all of them.
-I didn't see so obvious kernel bypass attempt for a long time. Ugh, you
-can't be serious :/
+ arch/riscv/boot/dts/sifive/hifive-unleashed-a00.dts | 4 ----
+ arch/riscv/boot/dts/sifive/hifive-unmatched-a00.dts | 4 ----
+ 2 files changed, 8 deletions(-)
 
-I suggest to you take couple of rounds of consulting the patch with
-some skilled upstream developer internaly before you make another
-submission in order not not to waste time of reviewers.
+-- 
+2.40.1
 
-
->+{
->+	long rc = 0;
->+	struct rtase_swc_cmd_t sw_cmd;
->+
->+	(void)p_file;
->+
->+	if (rtase_swc_device.init_flag == 1u) {
->+		rc = -ENXIO;
->+		goto out;
->+	}
->+
->+	rc = (s64)(copy_from_user(&sw_cmd, (void *)arg, sizeof(struct rtase_swc_cmd_t)));
->+
->+	if (rc != 0) {
->+		SWC_DRIVER_INFO("rtase_swc copy_from_user failed.");
->+	} else {
->+		switch (cmd) {
->+		case SWC_CMD_REG_GET:
->+			rtase_swc_reg_get(&sw_cmd);
->+			rc = (s64)(copy_to_user((void *)arg, &sw_cmd,
->+						sizeof(struct rtase_swc_cmd_t)));
->+			break;
->+
->+		case SWC_CMD_REG_SET:
->+			rtase_swc_reg_set(&sw_cmd);
->+			rc = (s64)(copy_to_user((void *)arg, &sw_cmd,
->+						sizeof(struct rtase_swc_cmd_t)));
->+			break;
->+
->+		default:
->+			rc = -ENOTTY;
->+			break;
->+		}
->+	}
->+
->+out:
->+	return rc;
->+}
-
-[...]
