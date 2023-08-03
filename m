@@ -2,44 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F01F76E515
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 11:58:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6EDC776E51F
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 11:59:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233844AbjHCJ6w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Aug 2023 05:58:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45584 "EHLO
+        id S234936AbjHCJ7m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Aug 2023 05:59:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45770 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231444AbjHCJ6u (ORCPT
+        with ESMTP id S235104AbjHCJ7W (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Aug 2023 05:58:50 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 92D212D73
-        for <linux-kernel@vger.kernel.org>; Thu,  3 Aug 2023 02:58:48 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 54DAA2F4;
-        Thu,  3 Aug 2023 02:59:31 -0700 (PDT)
-Received: from [10.1.35.53] (C02Z41KALVDN.cambridge.arm.com [10.1.35.53])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id D8DD03F5A1;
-        Thu,  3 Aug 2023 02:58:46 -0700 (PDT)
-Message-ID: <502afc9c-0760-76af-d224-2a3428089850@arm.com>
-Date:   Thu, 3 Aug 2023 10:58:45 +0100
+        Thu, 3 Aug 2023 05:59:22 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14FCB3594;
+        Thu,  3 Aug 2023 02:59:15 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 9707061CE6;
+        Thu,  3 Aug 2023 09:59:14 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0CA82C433CA;
+        Thu,  3 Aug 2023 09:59:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1691056754;
+        bh=BFZpJsShnV7chFQ6j5N/0sdSDzzhIsWCO5shMzIbM/I=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=f6TRORx24cAafVSY/2poXHwp7rxU18r1K2aJNN9yeq3kXCsxm4bI2hBcbOWs78KVq
+         HbsTA9sypvIIASMxyhj7/G84fO4EmdSEPdg9FH9UcSSEbnyiCCJRfeB8B1PPag+lcX
+         65F822tXdwVPsVCQ9ucJykAOer38/AAhlHNjDcCz8KVLUPFJoG38Kceta0YNqPbVq1
+         xZix6QfzbGfdiNe1rLUvmc7v0ysdO5RNr/maVjx0nkLz0SbFY4UHNT3ZspfACC/bpr
+         S3wuFm9JglB696Va/pFddQ/QMF7ATouYo1Lu24XYcnK0/xXuxQDBQ2oJw3amZw8Lze
+         Mx7I9EZeHORjA==
+Received: by mail-lf1-f50.google.com with SMTP id 2adb3069b0e04-4fe216edaf7so2366536e87.0;
+        Thu, 03 Aug 2023 02:59:13 -0700 (PDT)
+X-Gm-Message-State: ABy/qLYnLKdtOcro5OVRNu0JEpIgNXRgBJdjZoSkBF0QS5kSnaF/5wRm
+        TAGOuDzxCRpRXvENygYiK5MWrif6g9T6zmvA38Y=
+X-Google-Smtp-Source: APBJJlFw2V3wcRa5v0Vnt1fPUZW5N5QfqaQ6cwXmzUW+1y1w1ET8IiAveXFEKGiBw1l2gDcoGbIc2BvfscEj5e4U4I4=
+X-Received: by 2002:a05:6512:158b:b0:4fb:7624:85a5 with SMTP id
+ bp11-20020a056512158b00b004fb762485a5mr3778949lfb.0.1691056752072; Thu, 03
+ Aug 2023 02:59:12 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.13.0
-Subject: Re: [PATCH 1/3] mm: add functions folio_in_range() and
- folio_within_vma()
-To:     Yin Fengwei <fengwei.yin@intel.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, akpm@linux-foundation.org,
-        yuzhao@google.com, willy@infradead.org, david@redhat.com,
-        shy828301@gmail.com, hughd@google.com
-References: <20230728070929.2487065-1-fengwei.yin@intel.com>
- <20230728070929.2487065-2-fengwei.yin@intel.com>
-From:   Ryan Roberts <ryan.roberts@arm.com>
-In-Reply-To: <20230728070929.2487065-2-fengwei.yin@intel.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+References: <20230718125847.3869700-1-ardb@kernel.org> <20230718125847.3869700-2-ardb@kernel.org>
+ <ZMt4nkfpdCXxAkr5@gcabiddu-mobl1.ger.corp.intel.com>
+In-Reply-To: <ZMt4nkfpdCXxAkr5@gcabiddu-mobl1.ger.corp.intel.com>
+From:   Ard Biesheuvel <ardb@kernel.org>
+Date:   Thu, 3 Aug 2023 11:59:00 +0200
+X-Gmail-Original-Message-ID: <CAMj1kXGn70sGAHgOttKkC6n6jfVZ9Y61NZ9ffLmJV8MK2Kh8nQ@mail.gmail.com>
+Message-ID: <CAMj1kXGn70sGAHgOttKkC6n6jfVZ9Y61NZ9ffLmJV8MK2Kh8nQ@mail.gmail.com>
+Subject: Re: [RFC PATCH 01/21] crypto: scomp - Revert "add support for deflate
+ rfc1950 (zlib)"
+To:     Giovanni Cabiddu <giovanni.cabiddu@intel.com>
+Cc:     "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Eric Biggers <ebiggers@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Haren Myneni <haren@us.ibm.com>,
+        Nick Terrell <terrelln@fb.com>,
+        Minchan Kim <minchan@kernel.org>,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Jens Axboe <axboe@kernel.dk>,
+        Richard Weinberger <richard@nod.at>,
+        David Ahern <dsahern@kernel.org>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Steffen Klassert <steffen.klassert@secunet.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
+        qat-linux <qat-linux@intel.com>,
+        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
+        "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -47,151 +84,50 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 28/07/2023 08:09, Yin Fengwei wrote:
-> It will be used to check whether the folio is mapped to specific
-> VMA and whether the mapping address of folio is in the range.
-> 
-> Also a helper function folio_within_vma() to check whether folio
-> is in the range of vma based on folio_in_range().
-> 
-> Signed-off-by: Yin Fengwei <fengwei.yin@intel.com>
-> ---
->  mm/internal.h | 69 +++++++++++++++++++++++++++++++++++++++++++++++++++
->  1 file changed, 69 insertions(+)
-> 
-> diff --git a/mm/internal.h b/mm/internal.h
-> index 5a03bc4782a2..63de32154a48 100644
-> --- a/mm/internal.h
-> +++ b/mm/internal.h
-> @@ -585,6 +585,75 @@ extern long faultin_vma_page_range(struct vm_area_struct *vma,
->  				   bool write, int *locked);
->  extern bool mlock_future_ok(struct mm_struct *mm, unsigned long flags,
->  			       unsigned long bytes);
-> +
+Hello Giovanni,
 
-Hi Yin,
+On Thu, 3 Aug 2023 at 11:51, Giovanni Cabiddu
+<giovanni.cabiddu@intel.com> wrote:
+>
+> Hi Ard,
+>
+> On Tue, Jul 18, 2023 at 01:58:27PM +0100, Ard Biesheuvel wrote:
+> > This reverts commit a368f43d6e3a001e684e9191a27df384fbff12f5.
+> >
+> > "zlib-deflate" was introduced 6 years ago, but it does not have any
+> > users. So let's remove the generic implementation and the test vectors,
+> > but retain the "zlib-deflate" entry in the testmgr code to avoid
+> > introducing warning messages on systems that implement zlib-deflate in
+> > hardware.
+> >
+> > Note that RFC 1950 which forms the basis of this algorithm dates back to
+> > 1996, and predates RFC 1951, on which the existing IPcomp is based and
+> > which we have supported in the kernel since 2003. So it seems rather
+> > unlikely that we will ever grow the need to support zlib-deflate.
+> >
+> > Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
+> Support for zlib-deflate was added for [1] but that work was not
+> completed.
+>
 
-I wanted to take a step back and consolidate my concerns about this function. I
-should say that my understanding of the pgoff and index stuff is shaky and I
-could therefore be wrong about some of this; if this is the case, then sorry for
-the noise! But something about this function doesn't smell right to me, so I
-figure its better to raise it...
+Any clue why zlib_deflate was chosen in this case?
 
-> +/*
-> + * Check whether the folio is in specific range
+/me also notes that this is another occurrence of the antipattern
+where we use an asynchronous API and subsequently sleep on the
+completion.
 
-What exactly is the function trying to do? I *think* the intention is to figure
-out if a folio is fully and contiguously mapped within a range of virtual
-addresses belonging to a specific virtual address space? And I assume you want
-the answer to be precise? I'm assuming 'yes' for the below.
+> Based on [2], either we leave this SW implementation or we remove the HW
+> implementations in the QAT [3] and in the Hisilicon Zip [4] drivers.
+>
 
-I think the only way to do this is to actually check each PTE. And that causes a
-problem, because a folio can straddle multiple PTE tables, which causes PTL
-locking issues, and means having just a *pte pointer is insufficient if we need
-to traverse multiple pte tables. So perhaps you need to allow for a false
-negative in the case that the folio is not contained within a single pte table.
+That would work for me as well - dead code is just busywork.
 
-> + *
-> + * First, check whether the folio is in the range of vma.
-> + * Then, check whether the folio is mapped to the range of [start, end].
-> + * In the end, check whether the folio is fully mapped to the range.
-> + *
-> + * @pte page table pointer will be checked whether the large folio
-> + *      is fully mapped to. Currently, if mremap in the middle of
-> + *      large folio, the large folio could be mapped to to different
-> + *      VMA and address check can't identify this situation.
-> + */
-> +static inline bool
-> +folio_in_range(struct folio *folio, struct vm_area_struct *vma,
-> +		unsigned long start, unsigned long end, pte_t *pte)
-
-The prototype looks odd to me; Fundamentally it seems to me that you need the
-folio, start and end virtual addresses (the range you want to check that it is
-in), the pte pointer and the virtual address that the pte represents. That
-virtual address allows you to figure out the offset between the pa and va. Then
-you can look at all the ptes to figure out if they reference the folio's pfns,
-and use the va to pa mapping info to figure out if its within the specified range.
-
-I don't really understand why the vma is useful.
-
-> +{
-> +	pte_t ptent;
-> +	unsigned long i, nr = folio_nr_pages(folio);
-> +	pgoff_t pgoff, addr;
-> +	unsigned long vma_pglen = (vma->vm_end - vma->vm_start) >> PAGE_SHIFT;
-> +
-> +	VM_WARN_ON_FOLIO(folio_test_ksm(folio), folio);
-> +
-> +	if (start < vma->vm_start)
-> +		start = vma->vm_start;
-> +	if (end > vma->vm_end)
-> +		end = vma->vm_end;
-> +
-> +	pgoff = folio_pgoff(folio);
-> +	/* if folio start address is not in vma range */
-> +	if (pgoff < vma->vm_pgoff || pgoff > vma->vm_pgoff + vma_pglen)
-> +		return false;
-
-Why is this pgoff calculation helpful? Surely it's only useful if the folio
-belongs to the same file that the vma is mapping? Otherwise the folio's pgoff
-might be referring to a completely different file than the vma's vm_pgoff. So
-you will get spurious results.
-
-> +
-> +	addr = vma->vm_start + ((pgoff - vma->vm_pgoff) << PAGE_SHIFT);
-> +	if (addr < start || end - addr < folio_size(folio))
-> +		return false;
-> +
-> +	/* not necessary to check pte for none large folio */
-> +	if (!folio_test_large(folio))
-> +		return true;
-
-I don't understand why you don't need to check the pte for a small folio? As
-above, if the folio doesn't belong to the file that the vma is mapping the above
-checks seem wrong and you can't conclude that the folio is mapped in the range
-without looking at the pte?
-
-> +
-> +	if (!pte)
-> +		return false;
-> +
-> +	/* check whether parameter pte is associated with folio */
-> +	ptent = ptep_get(pte);
-> +	if (pte_none(ptent) || !pte_present(ptent) ||
-> +			pte_pfn(ptent) - folio_pfn(folio) >= nr)
-> +		return false;
-> +
-> +	pte -= pte_pfn(ptent) - folio_pfn(folio);
-
-I think this could wander off the front or back of the pte table into arbitrary
-memory if the folio is strddling multiple pte tables.
-
-> +	for (i = 0; i < nr; i++, pte++) {
-> +		ptent = ptep_get(pte);
-> +
-> +		if (pte_none(ptent) || !pte_present(ptent) ||
-> +				pte_pfn(ptent) - folio_pfn(folio) >= nr)
-
-Doesn't !pte_present() also cover pte_none()? So I think the pte_none() check is
-redundant?
-
-Thanks,
-Ryan
-
-
-> +			return false;
-> +	}
-> +
-> +	return true;
-> +}
-> +
-> +static inline bool
-> +folio_within_vma(struct folio *folio, struct vm_area_struct *vma, pte_t *pte)
-> +{
-> +	return folio_in_range(folio, vma, vma->vm_start, vma->vm_end, pte);
-> +}
-> +
->  /*
->   * mlock_vma_folio() and munlock_vma_folio():
->   * should be called with vma's mmap_lock held for read or write,
-
+> [1] https://patchwork.kernel.org/project/linux-btrfs/patch/1467083180-111750-1-git-send-email-weigang.li@intel.com/
+> [2] https://lore.kernel.org/lkml/ZIw%2Fjtxdg6O1O0j3@gondor.apana.org.au/
+> [3] https://elixir.bootlin.com/linux/latest/source/drivers/crypto/intel/qat/qat_common/qat_comp_algs.c#L457
+> [4] https://elixir.bootlin.com/linux/latest/source/drivers/crypto/hisilicon/zip/zip_crypto.c#L754
+>
+> Regards,
+>
+> --
+> Giovanni
