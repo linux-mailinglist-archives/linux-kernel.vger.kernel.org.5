@@ -2,137 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7DA3976E3B7
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 10:57:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 113AA76E3C1
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 10:57:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234870AbjHCI5D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Aug 2023 04:57:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41702 "EHLO
+        id S234885AbjHCI5k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Aug 2023 04:57:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42310 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234172AbjHCI5B (ORCPT
+        with ESMTP id S234876AbjHCI5h (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Aug 2023 04:57:01 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4640DE46
-        for <linux-kernel@vger.kernel.org>; Thu,  3 Aug 2023 01:57:00 -0700 (PDT)
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1qRU8W-0000PT-EI; Thu, 03 Aug 2023 10:56:48 +0200
-Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
-        by drehscheibe.grey.stw.pengutronix.de with esmtp (Exim 4.94.2)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1qRU8U-000nhX-7v; Thu, 03 Aug 2023 10:56:46 +0200
-Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.94.2)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1qRU8T-00A6Il-JQ; Thu, 03 Aug 2023 10:56:45 +0200
-Date:   Thu, 3 Aug 2023 10:56:45 +0200
-From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To:     =?utf-8?Q?Rapha=C3=ABl?= Gallais-Pou <rgallaispou@gmail.com>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Patrice Chotard <patrice.chotard@foss.st.com>,
-        linux-pwm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] dt-bindings: pwm: st: convert sti-pwm to DT schema
-Message-ID: <20230803085645.svrrcritdifbjwdz@pengutronix.de>
-References: <20230801220559.32530-1-rgallaispou@gmail.com>
- <20230802080238.d3nam6elnern65rb@pengutronix.de>
- <8e74af01-36c6-3a41-6d31-91b09ea62026@gmail.com>
+        Thu, 3 Aug 2023 04:57:37 -0400
+Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44818E53
+        for <linux-kernel@vger.kernel.org>; Thu,  3 Aug 2023 01:57:33 -0700 (PDT)
+Received: by mail-lf1-x12b.google.com with SMTP id 2adb3069b0e04-4fe27849e6aso1242689e87.1
+        for <linux-kernel@vger.kernel.org>; Thu, 03 Aug 2023 01:57:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=resnulli-us.20221208.gappssmtp.com; s=20221208; t=1691053051; x=1691657851;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=/RYOvA3GPH9yLj5LX7ItcBXbKrc7dBhaTvMPDzCiKhI=;
+        b=QYpmTq0iHjjpPUROzsfV3ui565+LyzJjb6AZIaR2NMmJq0sK3A48bcGty+dpOSeQa7
+         QuHD1f9cYyP2WHWcPPqS2++NzTUR8+8GnpGP1+ZKQWGoGcN+Tk5wMMkGkjn7Huh3SFOg
+         y2tUPyRRLAFSgKYkozMVDoA1YwvqO4/Rgo+vBSBqOsk0Gqro9NCEdM/YD5hJKzzA6sJO
+         VdB0cClAJ42T0ojRpkkIZkCqtULtf31Swzq+nEl9AXh2HXWRV2lz9UeXvj/Ok5Yc6bkh
+         Tphq9d9B1VPf6st5E/VRCbTvFD/BrlY0fzCb6N9umIxeU+4tGCT9uJ1SYySpM+E0OnnJ
+         dOxg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691053051; x=1691657851;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=/RYOvA3GPH9yLj5LX7ItcBXbKrc7dBhaTvMPDzCiKhI=;
+        b=fctYJ1PQTS/rb+hTcCF/aq8gJG3bqkFGQLPnt2TowF0XgXOLsjfypsn/VwD/NGqijV
+         4ictkI5dpj595Rh/eTjejWtkO+ZQRvt19hySTfUaj+Lulbk5n6Q+/PVQ0CwPerEG+W6d
+         BSP2eXkWNDA+DXTFyO2Msdc8WjaUsjt5RyZ8C9dld4Drz0Ndgp/GcnYOx1PihLcQKoAT
+         6dnNiCY/xx/n6vU9B5J+Bg+HA17nHpPYycGRAVsNOhArPX1ZZFcAhAZ0yA/ECRCUz6Lt
+         bp+/bQaHV4XbMXj4PiVDRm3tCh8onnSyxaAhjp7TkFc/2hF9GbgNnv/o0InALa7c82Gs
+         jD/Q==
+X-Gm-Message-State: ABy/qLak7/qS23Jii6x00+wbi7ij4Yt+sOnRpF1H1AhSt3HzT+qTbiW3
+        hpBLWyTqmO8VeEPONxRwrOUeXQ==
+X-Google-Smtp-Source: APBJJlFwAN56ckCsXu8+/F68+HPgxrLICVNWd/AJ12TY+DAcRjD+iVX2dddTKPWUYyPXdUiJsX6MXg==
+X-Received: by 2002:a2e:a0cf:0:b0:2b6:cb55:72bc with SMTP id f15-20020a2ea0cf000000b002b6cb5572bcmr7115600ljm.1.1691053051344;
+        Thu, 03 Aug 2023 01:57:31 -0700 (PDT)
+Received: from localhost ([212.23.236.67])
+        by smtp.gmail.com with ESMTPSA id j4-20020a5d6184000000b003142c85fbcdsm21178152wru.11.2023.08.03.01.57.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 03 Aug 2023 01:57:30 -0700 (PDT)
+Date:   Thu, 3 Aug 2023 10:57:29 +0200
+From:   Jiri Pirko <jiri@resnulli.us>
+To:     justinlai0215 <justinlai0215@realtek.com>
+Cc:     kuba@kernel.org, davem@davemloft.net, edumazet@google.com,
+        pabeni@redhat.com, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org
+Subject: Re: [PATCH] net/ethernet/realtek: Add Realtek automotive PCIe driver
+Message-ID: <ZMtr+WbURFaynK15@nanopsycho>
+References: <20230803082513.6523-1-justinlai0215@realtek.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="qtjumvqtwxq43ajp"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <8e74af01-36c6-3a41-6d31-91b09ea62026@gmail.com>
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=unavailable autolearn_force=no version=3.4.6
+In-Reply-To: <20230803082513.6523-1-justinlai0215@realtek.com>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Thu, Aug 03, 2023 at 10:25:13AM CEST, justinlai0215@realtek.com wrote:
+>This patch is to add the ethernet device driver for the PCIe interface of Realtek Automotive Ethernet Switch,
+>applicable to RTL9054, RTL9068, RTL9072, RTL9075, RTL9068, RTL9071.
+>
+>Signed-off-by: justinlai0215 <justinlai0215@realtek.com>
 
---qtjumvqtwxq43ajp
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+[...]
 
-On Thu, Aug 03, 2023 at 09:18:14AM +0200, Rapha=EBl Gallais-Pou wrote:
-> Hi
->=20
-> Le 02/08/2023 =E0 10:02, Uwe Kleine-K=F6nig a =E9crit=A0:
-> > Hello,
-> >=20
-> > On Wed, Aug 02, 2023 at 12:05:59AM +0200, Raphael Gallais-Pou wrote:
-> > > +  st,capture-num-chan:
-> > > +    $ref: "/schemas/types.yaml#/definitions/uint32"
-> > > +    description: Number of available Capture channels.
-> >=20
-> > I have the theory that nobody actually uses the capture feature and I'd
-> > like to get rid of it. People who do use it, should better switch to the
-> > counter driver.
->=20
-> TBH I only found two drivers using it, including this one.
->=20
-> $ grep -rinI "\.capture" drivers/pwm/ | wc -l
-> 2
 
-Right, there is pwm-stm32 and pwm-sti that support capture.
+>+
+>+static long rtase_swc_ioctl(struct file *p_file, unsigned int cmd, unsigned long arg)
 
-There are a few machines that have a st,sti-pwm device:
+There are *MANY* thing wrong in this patch spotted just during 5 minutes
+skimming over the code, but this definitelly tops all of them.
+I didn't see so obvious kernel bypass attempt for a long time. Ugh, you
+can't be serious :/
 
-	$ grep -rl st,sti-pwm arch/arm/boot/dts/*.dtb
-	arch/arm/boot/dts/stih407-b2120.dtb
-	arch/arm/boot/dts/stih410-b2120.dtb
-	arch/arm/boot/dts/stih410-b2260.dtb
-	arch/arm/boot/dts/stih418-b2199.dtb
-	arch/arm/boot/dts/stih418-b2264.dtb
+I suggest to you take couple of rounds of consulting the patch with
+some skilled upstream developer internaly before you make another
+submission in order not not to waste time of reviewers.
 
-but to actually use capture the device tree must have a property
-st,capture-num-chan. "st,capture-num-chan" isn't set by any of the
-devices.
 
-I think for stm32 it's not that trivial to show that it's unused.
-While the capture code isn't a big maintenance burden, I still would
-prefer to get rid of it if nobody uses it. Still more given that there
-are better alternatives available.
+>+{
+>+	long rc = 0;
+>+	struct rtase_swc_cmd_t sw_cmd;
+>+
+>+	(void)p_file;
+>+
+>+	if (rtase_swc_device.init_flag == 1u) {
+>+		rc = -ENXIO;
+>+		goto out;
+>+	}
+>+
+>+	rc = (s64)(copy_from_user(&sw_cmd, (void *)arg, sizeof(struct rtase_swc_cmd_t)));
+>+
+>+	if (rc != 0) {
+>+		SWC_DRIVER_INFO("rtase_swc copy_from_user failed.");
+>+	} else {
+>+		switch (cmd) {
+>+		case SWC_CMD_REG_GET:
+>+			rtase_swc_reg_get(&sw_cmd);
+>+			rc = (s64)(copy_to_user((void *)arg, &sw_cmd,
+>+						sizeof(struct rtase_swc_cmd_t)));
+>+			break;
+>+
+>+		case SWC_CMD_REG_SET:
+>+			rtase_swc_reg_set(&sw_cmd);
+>+			rc = (s64)(copy_to_user((void *)arg, &sw_cmd,
+>+						sizeof(struct rtase_swc_cmd_t)));
+>+			break;
+>+
+>+		default:
+>+			rc = -ENOTTY;
+>+			break;
+>+		}
+>+	}
+>+
+>+out:
+>+	return rc;
+>+}
 
-> If there is no opposition about removing this feature I suggest to do it =
-in
-> a second time, in a serie.
-
-Does that mean you will do that? I guess not, but at least this means
-you're not using capture support.
-
-Best regards
-Uwe
-
---=20
-Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
-Industrial Linux Solutions                 | https://www.pengutronix.de/ |
-
---qtjumvqtwxq43ajp
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEP4GsaTp6HlmJrf7Tj4D7WH0S/k4FAmTLa8wACgkQj4D7WH0S
-/k5kqAf5AUlS1PFYKiPBmxelcFtkKh5q7ONNjSqWzlujDKL9ZKQemH6LC5WnHobm
-I97fyE6PD/asmAvBJ41YzCGUIxQyqK7JnLKrKYwQuVOPojcx/Dbvh599hFwxq3Vf
-ySU3AUjuH0Ynilp2NDui50nPMSHt/Y0OFNuyBsDz5fvxvmf/nJ9pKN7+QRHEWkxv
-+yGub7i28h5kXue2v8OUPz5fO3BV6K4HkYeZwhh4hJNSEdx9uuJMbgwW/PktREWU
-uAY6VQyHi+jOf5kDaWA9fpKBDKyNIYmNg2dU20lzB91M2RRlpfHr7R6PLhzjQJbv
-CjOIRmhHKn+VbdvMg1FQw1E5HM45og==
-=71Vl
------END PGP SIGNATURE-----
-
---qtjumvqtwxq43ajp--
+[...]
