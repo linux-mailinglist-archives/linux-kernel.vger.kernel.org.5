@@ -2,74 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A4B5B76F460
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 23:00:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8630E76F468
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 23:05:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231432AbjHCVAd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Aug 2023 17:00:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60294 "EHLO
+        id S230400AbjHCVFK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Aug 2023 17:05:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32920 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229767AbjHCVAa (ORCPT
+        with ESMTP id S229446AbjHCVFH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Aug 2023 17:00:30 -0400
-Received: from mail-qt1-x829.google.com (mail-qt1-x829.google.com [IPv6:2607:f8b0:4864:20::829])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05D9B1AB
-        for <linux-kernel@vger.kernel.org>; Thu,  3 Aug 2023 14:00:29 -0700 (PDT)
-Received: by mail-qt1-x829.google.com with SMTP id d75a77b69052e-40fc654bea1so9904641cf.2
-        for <linux-kernel@vger.kernel.org>; Thu, 03 Aug 2023 14:00:28 -0700 (PDT)
+        Thu, 3 Aug 2023 17:05:07 -0400
+Received: from mail-oo1-xc2f.google.com (mail-oo1-xc2f.google.com [IPv6:2607:f8b0:4864:20::c2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6DE962D43;
+        Thu,  3 Aug 2023 14:05:06 -0700 (PDT)
+Received: by mail-oo1-xc2f.google.com with SMTP id 006d021491bc7-56d2fe54863so726716eaf.0;
+        Thu, 03 Aug 2023 14:05:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1691096428; x=1691701228;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=QuYitPJZqMO1br4FQSyqi//ppdhPI+NAR1KWcWA6710=;
-        b=gs0xR52ZjdCvuFTwrpGe2Hferm5v3XQEZVvpsyDiKFWkASHv9XT1wstoTnEmVPTceU
-         HIvA62wJaNYL4R5ZVKOPdmg1/irCFyXEeyWNdqwji2wYZkkeLuMVyk7Sk3nsu56Znp3a
-         1QOBVdF3FH0vXdnA9Qvoq4KSR0DruXQOmV0X55BFmsZrINuvbqHmlmKCGPAcuj6H44fG
-         JmsY0Se94Ure36WyDpTVwGNfaWQuaKLEG3h5QfhG7wtk6nNZ7VWfxpT4bZu/iftNyE9l
-         52LX89W4PvME1n4Y9o0NusD5zJBO/aTRZL4P7sBEkNUx2LPojjb9/juXBxvHnYAyGHxQ
-         zi3Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691096428; x=1691701228;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+        d=gmail.com; s=20221208; t=1691096705; x=1691701505;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=QuYitPJZqMO1br4FQSyqi//ppdhPI+NAR1KWcWA6710=;
-        b=QOfS9CC6yV3R+OCEDYP7fscvj/fe4Q9kXohb7cQTr27ewa6ZO+PuFVgFidozOwDzQe
-         QtJwkkClyrF66gSamLhuRWGi3z/9j06FNTDAEhdYNmkACn18zXESEpclMQK8Dx8Dt690
-         VO8PZil4xYGnyq1k1mFA9hf0SlbKPs0ykOzyRLA016h0yKAPFY2dQUYjfQd7RdR1G2YT
-         6kzZkk3d0en4sNAYudjd2gC7S4bDKhBGYgwad/vTupD2/ASOkMj0Cfl1VpSTN8GjGLIN
-         ICJ+vyaMCTxnWjDdh34BfseR31BCOd7CI0YsWmkRMCopVuBI+YPJcRVJIE91X0YBUkxd
-         08Tg==
-X-Gm-Message-State: ABy/qLb+4Cz9ucjvkSYpzGJivb6z64C+KX6MPgDOl68FqqnPc7CXIPcz
-        HH0DyK2QFHjq1qEGrtTmRdHOFhj5mJ8=
-X-Google-Smtp-Source: APBJJlGr+LkTYffTZjsB4B1e2iFyJt/S4Es0pSTq8xjeuH9kP8L7uZali5AbwiRWzLyQcPfbVcJalQ==
-X-Received: by 2002:ac8:7d90:0:b0:403:eb3c:1fed with SMTP id c16-20020ac87d90000000b00403eb3c1fedmr24878626qtd.35.1691096428036;
-        Thu, 03 Aug 2023 14:00:28 -0700 (PDT)
-Received: from localhost ([50.217.79.158])
-        by smtp.gmail.com with ESMTPSA id e21-20020ac85995000000b003fde3d63d22sm189653qte.69.2023.08.03.14.00.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 03 Aug 2023 14:00:27 -0700 (PDT)
-Date:   Thu, 3 Aug 2023 14:00:26 -0700
-From:   Yury Norov <yury.norov@gmail.com>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     andriy.shevchenko@linux.intel.com, linux@rasmusvillemoes.dk,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Mateusz Guzik <mjguzik@gmail.com>,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        tglx@linutronix.de, rppt@kernel.org
-Subject: Re: [PATCH v2 2/2] mm,nodemask: Use nr_node_ids
-Message-ID: <ZMwVanb0nTbOiWyn@yury-ThinkPad>
-References: <20230802112458.230221601@infradead.org>
- <20230802112525.633758009@infradead.org>
- <20230802193616.GC231007@hirez.programming.kicks-ass.net>
- <ZMr4uBfjKY9dERl2@yury-ThinkPad>
- <20230803084125.GE212435@hirez.programming.kicks-ass.net>
- <ZMwRBqTgkvA7o9x3@yury-ThinkPad>
+        bh=3iykb0ohtHUOxu1qS/h80/ncUZA75kT5+rr0gHB5Pw8=;
+        b=bwIgCDVI7omgikbK2l7nU0xAW3OrLEslLM5tuHHsY/EsPY9eghaMPV3ZGjo9uUhbxN
+         Mg3DDSXTrUvQStc4tDr3unTcJOGYDglijWZrLog5+cBPLIZ+D4QPSHAA6JsVcD9stqyQ
+         lVGV4M5392N/TU9M/IGmkjTkuZE0hBXc12VE0d7Od1TjTPD8Th9rSJGBdDVsol6/kXpm
+         31JWHY2joKtZhI/4ubmYU4+9hHPCdBn15t+Q+wmxMWRwfkLTglNb3htRJfE9QspTsUbK
+         IxEk2RHTx6Gq5RdEmzVV99TSIY5QiqLdTTHRAzU8SwCxq8zjs26ORryAQ7cTnR1gR2c8
+         hgOQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691096705; x=1691701505;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=3iykb0ohtHUOxu1qS/h80/ncUZA75kT5+rr0gHB5Pw8=;
+        b=LMi4vhRKJQI60OV9BNQ+lkEDgAKk9d8BiILn6CIqDwt+YZ9CnCkTLQmaO65EV8wz/d
+         hOkcSV1kzONqpTNSY4iSlUceFdHv5pP8UCbelfg4o7gxKSTssY5G2xhbYWeH2QA0MY/u
+         HSA5762qYR8nG4Dsq9GILt1gdStZDqbdHvgZrweoM59TlUUj7bwRyQcOLM49d7p2Xls4
+         Wve82ORUNpxgFvbTs/+pjnwaWR19iOF0lsGTAV9zOggJEUIi/JBgiru+aiAuqmAWqub4
+         2cYcrzKqlcMJauHbtaeoE+UYS/IGAC3PIfhlhRlcaTtfvnthdyuRTVgNq8WRNN2mTSOX
+         ML4g==
+X-Gm-Message-State: ABy/qLb03MQS38FWwGqKwvuSGDco1c2v0zh3XFlvHcgLNxxM2rnk08m0
+        Ncs0SfphnAfbafj2gx2DFUuYcgVkxIF8sPEe/zQ=
+X-Google-Smtp-Source: APBJJlHWF19YdNlEw5neOPDLx2yKP0yQjc7UvVqD4DCZsuyVxs5cSaPp/BS7yKVMpY9D51X1ChhRRTjrKlyCkihMJaw=
+X-Received: by 2002:a4a:928f:0:b0:564:e465:5d5c with SMTP id
+ i15-20020a4a928f000000b00564e4655d5cmr14966931ooh.2.1691096705538; Thu, 03
+ Aug 2023 14:05:05 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZMwRBqTgkvA7o9x3@yury-ThinkPad>
+References: <20230725142343.1724130-1-hugo@hugovil.com> <20230725142343.1724130-7-hugo@hugovil.com>
+ <2023073105-elevation-canister-2777@gregkh> <20230803101814.39a61229d81dcd3e96cbe8ee@hugovil.com>
+In-Reply-To: <20230803101814.39a61229d81dcd3e96cbe8ee@hugovil.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Fri, 4 Aug 2023 00:04:29 +0300
+Message-ID: <CAHp75VdCqqZfQXRRWUkbDTf_gd3T60Stp+m59Q34iWxddLiG5g@mail.gmail.com>
+Subject: Re: [PATCH v9 06/10] serial: sc16is7xx: fix regression with GPIO configuration
+To:     Hugo Villeneuve <hugo@hugovil.com>
+Cc:     Greg KH <gregkh@linuxfoundation.org>, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        jirislaby@kernel.org, jringle@gridpoint.com,
+        isaac.true@canonical.com, jesse.sung@canonical.com,
+        l.perczak@camlintechnologies.com, tomasz.mon@camlingroup.com,
+        linux-serial@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org,
+        Hugo Villeneuve <hvilleneuve@dimonoff.com>,
+        stable@vger.kernel.org, Lech Perczak <lech.perczak@camlingroup.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
@@ -80,54 +77,55 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> Consider MAX_NUMNODES == 64 and nr_node_ids == 4. Then
-> small_nodemask_bits == 64.
-> 
-> The nodes_full() will set all 64 bits:
-> 
->   #define nodes_full(nodemask) __nodes_full(&(nodemask), small_nodemask_bits)
->   static inline bool __nodes_full(const nodemask_t *srcp, unsigned int nbits)
->   {
->           return bitmap_full(srcp->bits, nbits);
->   }
+On Thu, Aug 3, 2023 at 5:18=E2=80=AFPM Hugo Villeneuve <hugo@hugovil.com> w=
+rote:
+> On Mon, 31 Jul 2023 17:58:41 +0200
+> Greg KH <gregkh@linuxfoundation.org> wrote:
+> > On Tue, Jul 25, 2023 at 10:23:38AM -0400, Hugo Villeneuve wrote:
 
-Damn, copied the wrong function. This should be nodes_setall() of
-course:
+...
 
-  #define nodes_setall(dst) __nodes_setall(&(dst), large_nodemask_bits)
-  static inline void __nodes_setall(nodemask_t *dstp, unsigned int nbits)
-  {
-          bitmap_fill(dstp->bits, nbits);
-  }
+> > > Fixes: 679875d1d880 ("sc16is7xx: Separate GPIOs from modem control li=
+nes")
+> > > Fixes: 21144bab4f11 ("sc16is7xx: Handle modem status lines")
+> > > Cc: <stable@vger.kernel.org> # 6.1.x: 95982fad dt-bindings: sc16is7xx=
+: Add property to change GPIO function
+> > > Cc: <stable@vger.kernel.org> # 6.1.x: 1584d572 serial: sc16is7xx: ref=
+actor GPIO controller registration
+> > > Cc: <stable@vger.kernel.org> # 6.1.x: ac2caa5a serial: sc16is7xx: rem=
+ove obsolete out_thread label
+> > > Cc: <stable@vger.kernel.org> # 6.1.x: d90961ad serial: sc16is7xx: mar=
+k IOCONTROL register as volatile
+> > > Cc: <stable@vger.kernel.org> # 6.1.x: 6dae3bad serial: sc16is7xx: fix=
+ broken port 0 uart init
+> >
+> > Where are these git commit ids from?  I don't see them in Linus's tree,
+> > how are they supposed to be picked up by the stable developers if they
+> > are not valid ones?
+> >
+> > confused,
 
- 
-> And the following nodes_weight() will return 64:
-> 
->   #define nodes_weight(nodemask) __nodes_weight(&(nodemask), small_nodemask_bits)
->   static inline int __nodes_weight(const nodemask_t *srcp, unsigned int nbits)
->   {
->           return bitmap_weight(srcp->bits, nbits);
->   }
-> 
-> Which is definitely wrong because there's 4 nodes at max. To solve
-> this problem, both cpumask and nodemask implementations share the same
-> rule: all bits beyond nr_{node,cpumask}_bits must be always cleared.
-> 
-> See how cpumask_setall() implements that:
-> 
->   static inline void cpumask_setall(struct cpumask *dstp)
->   {
->           // Make sure we don't break the optimization
->           if (small_const_nbits(small_cpumask_bits)) {
->                   cpumask_bits(dstp)[0] = BITMAP_LAST_WORD_MASK(nr_cpumask_bits);
->                   return;
->           }
-> 
->           // Pass the exact (runtime) number of bits
->           bitmap_fill(cpumask_bits(dstp), nr_cpumask_bits);
->   }
-> 
-> Hope that makes sense.
-> 
-> Thanks,
-> Yury
+...
+
+> I wrongly assumed that, for example, this patch had, as a prerequisite,
+> all the patches before it in this series, and that is why I listed
+> them.
+
+The problem, as I understand it, is not that you listed them (how else
+will the backporter know that this patch requires something else?) but
+the format (you used wrong SHA-1 sums).
+
+...
+
+> So I will remove them all, since this patch doesn't have any other
+> requisites other than the previous patches in this series.
+>
+> Maybe it would be good to add some notes about that in
+> stable-kernel-rules.rst?
+
+This probably is a good idea. Briefly looking at it I see no examples
+like yours there.
+
+--=20
+With Best Regards,
+Andy Shevchenko
