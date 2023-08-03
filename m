@@ -2,163 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C81276F58E
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 00:18:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8FD4776F590
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 00:19:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232554AbjHCWSe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Aug 2023 18:18:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60204 "EHLO
+        id S232411AbjHCWTO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Aug 2023 18:19:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32798 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229576AbjHCWS3 (ORCPT
+        with ESMTP id S229550AbjHCWTM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Aug 2023 18:18:29 -0400
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [213.167.242.64])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65ED935A4;
-        Thu,  3 Aug 2023 15:18:28 -0700 (PDT)
-Received: from pendragon.ideasonboard.com (213-243-189-158.bb.dnainternet.fi [213.243.189.158])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 5C1B312E4;
-        Fri,  4 Aug 2023 00:17:22 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1691101042;
-        bh=PVyn7lrC2FfLJnqTrC/LH4n10j3fO6cZ4yJjzkJsPMU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=II6SDcqcMMB+j2EhbOraU17/Uy+BfZxRYYCOiVrEOgQxUfNr/j0mYpl0B1GalU++G
-         Zf8Adx+nqvHB4Fi7qTPhpY835T8MekT+CZ8PVouMXQTmgMMKSrae/yCRx4SnJvrOqb
-         vppq2RzQs9XdcZ9QarslwP5DYTOitgcO6K8jKF50=
-Date:   Fri, 4 Aug 2023 01:18:33 +0300
-From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To:     Jack Zhu <jack.zhu@starfivetech.com>
-Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Robert Foss <rfoss@kernel.org>,
-        Todor Tomov <todor.too@gmail.com>, bryan.odonoghue@linaro.org,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Eugen Hristev <eugen.hristev@collabora.com>,
-        Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, changhuang.liang@starfivetech.com
-Subject: Re: [PATCH v7 6/6] media: starfive: camss: Add VIN driver
-Message-ID: <20230803221833.GF9722@pendragon.ideasonboard.com>
-References: <20230619112838.19797-1-jack.zhu@starfivetech.com>
- <20230619112838.19797-7-jack.zhu@starfivetech.com>
- <20230727204911.GA7136@pendragon.ideasonboard.com>
- <696e3fd0-7c89-812b-5cda-c5c46b594bf7@starfivetech.com>
- <20230802103809.GB5269@pendragon.ideasonboard.com>
- <73222603-445e-fdb0-e831-219bac1d5865@starfivetech.com>
+        Thu, 3 Aug 2023 18:19:12 -0400
+Received: from mail-io1-xd36.google.com (mail-io1-xd36.google.com [IPv6:2607:f8b0:4864:20::d36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 240F8469C;
+        Thu,  3 Aug 2023 15:18:45 -0700 (PDT)
+Received: by mail-io1-xd36.google.com with SMTP id ca18e2360f4ac-79094ee23e0so52393739f.0;
+        Thu, 03 Aug 2023 15:18:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1691101124; x=1691705924;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=uxCty9oc1mjAqHTw6+6YKzajdVIrcQkiZDg/YOH9YWE=;
+        b=DkWgmc1Ffdq00Q6fJ8opmNiefTg0FORhoMBkYdD+HnM/rpp7aIDuxsXIxGtdDIQzWH
+         XhgjoGuap2ineFA4lfUvpezem2i2KRiKgwrVMyBGn+3ywyAdrbqjchS24VgU1SszlCML
+         kgdaEr5nVAt+Td1FyJA9DbuR+qywjXoN6wsSFwAelwKiKEr7frNIP/7XnBinyLMykvUU
+         ZDwBpQ6L+LHLs7adQuapsqRuedYBt3W3kPM4RCN7PKePNMkJftPrYKvgPB8HwSTn8Ppi
+         8pN0JCYWbaMMMjtneCYkawQOpFVoZIRw7m8a6NLsz7t9GoNqPF8d38t4QaH5q49HlaN0
+         9Rmg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691101124; x=1691705924;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=uxCty9oc1mjAqHTw6+6YKzajdVIrcQkiZDg/YOH9YWE=;
+        b=GSFODsb4qfYAGPPL+Ggmy5ctlX71p9Lcf898vjvy09Ux9suTlQsIIyiwXdhct/VAN3
+         JzHBQqccK6xq8ARDFB2rQu6CmYJpa58xf6JvapSlKK022uTwff8Cw/fGKlL1w6VdyWAo
+         5KBVAajwp8GDWxT1CFi5eQ1sqvLyvZwczE672496WBAop54v8dUk1tdsz7zgnNTMiA9X
+         2QbWATToillnVA0MQqmRNuJ5R4s8Ig0sXyrTTxgu5kyGXZS7K2BCuvr1YE/cV3EeV9/R
+         psY9T7Lm/CrQwF4f+pfIpGYkXcR08SEU8OqyU0Qw9F2J9vJZGUYgj2NFXTBc4ydI32UE
+         FkTg==
+X-Gm-Message-State: ABy/qLbw/vOuyVaodYqzYfxJA5+UYEQ+uSXTEJPwNMdrYWg2jvQNS/oH
+        VMCcVnF2BA2pjNsabCmkKrM=
+X-Google-Smtp-Source: APBJJlGQIttkqsIPxJTp9SwCtcoAgLB6T8BKrJVjKk9rgx0gL+wgB2mGMwoQX5NXUN7H3EYUlngNrg==
+X-Received: by 2002:a5d:9e14:0:b0:790:a073:f122 with SMTP id h20-20020a5d9e14000000b00790a073f122mr16794925ioh.2.1691101124647;
+        Thu, 03 Aug 2023 15:18:44 -0700 (PDT)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id z11-20020a6b0a0b000000b007791e286fdbsm225354ioi.21.2023.08.03.15.18.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 03 Aug 2023 15:18:44 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date:   Thu, 3 Aug 2023 15:18:42 -0700
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Tony Lindgren <tony@atomide.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Andy Shevchenko <andriy.shevchenko@intel.com>,
+        Dhruva Gole <d-gole@ti.com>,
+        Ilpo =?iso-8859-1?Q?J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>,
+        John Ogness <john.ogness@linutronix.de>,
+        Johan Hovold <johan@kernel.org>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org
+Subject: Re: [PATCH v5 3/3] serial: core: Fix serial core controller port
+ name to show controller id
+Message-ID: <6423de18-637e-4ee6-858e-b74e701ff3e5@roeck-us.net>
+References: <20230725054216.45696-1-tony@atomide.com>
+ <20230725054216.45696-4-tony@atomide.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <73222603-445e-fdb0-e831-219bac1d5865@starfivetech.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20230725054216.45696-4-tony@atomide.com>
+X-Spam-Status: No, score=-1.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jack,
-
-On Thu, Aug 03, 2023 at 10:44:50AM +0800, Jack Zhu wrote:
-> On 2023/8/2 18:38, Laurent Pinchart wrote:
-> > On Wed, Aug 02, 2023 at 05:58:26PM +0800, Jack Zhu wrote:
-> >> On 2023/7/28 4:49, Laurent Pinchart wrote:
-> >> > On Mon, Jun 19, 2023 at 07:28:38PM +0800, Jack Zhu wrote:
-> >> >> Add Video In Controller driver for StarFive Camera Subsystem.
-> >> > 
-> >> > I haven't reviewed this patch in details, as I have a high-level
-> >> > question: why do you need VIN subdevs ? They don't seem to represent any
-> >> > particular piece of hardware, their input and output formats are always
-> >> > identical, and they're not used to configure registers. The contents of
-> >> > this patch seems to belong to the video device, I think you can drop the
-> >> > VIN subdevs.
-> >> 
-> >> The VIN module corresponds to a hardware module, which is mainly responsible
-> >> for data routing and partial interrupt management (when the image data does
-> >> not pass through the isp but directly goes to the ddr), the relevant registers
-> >> need to be configured.
-> > 
-> > That's fine, but I don't think you need a subdev for it. As far as I
-> > understand, the VIn modules are (more or less) DMA engines. You can just
-> > model them as video devices, connected directly to the CSI-2 RX and ISP
-> > source pads.
+On Tue, Jul 25, 2023 at 08:42:12AM +0300, Tony Lindgren wrote:
+> We are missing the serial core controller id for the serial core port
+> name. Let's fix the issue for sane sysfs output, and to avoid issues
+> addressing serial ports later on.
 > 
-> The VIN hardware can also route input data, it can decide whether DVP sensor
-> or MIPI sensor is used as input data.
+> And as we're now showing the controller id, the "ctrl" and "port" prefix
+> for the DEVNAME become useless, we can just drop them. Let's standardize on
+> DEVNAME:0 for controller name, where 0 is the controller id. And
+> DEVNAME:0.0 for port name, where 0.0 are the controller id and port id.
 > 
-> > Does the "vin0_wr" have the ability to capture raw data from the DVP
-> > interface as well, or only from the CSI-2 RX ?
+> This makes the sysfs output nicer, on qemu for example:
 > 
-> Yes, the "vin0_wr" has the ability to capture raw data from the DVP
-> interface.
+> $ ls /sys/bus/serial-base/devices
+> 00:04:0         serial8250:0    serial8250:0.2
+> 00:04:0.0       serial8250:0.1  serial8250:0.3
+> 
+> Fixes: 84a9582fd203 ("serial: core: Start managing serial controllers to enable runtime PM")
+> Reported-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> Signed-off-by: Tony Lindgren <tony@atomide.com>
 
-Then I would recommend something similar to the following media graph:
+This patch causes about 50% of my boot tests to fail because the console
+is no longer recognized. Reverting this patch fixes the problem.
+Bisect log attached.
 
-digraph board {
-        rankdir=TB
-        imx219 [label="{{} | imx219 6-0010\n/dev/v4l-subdev0 | {<port0> 0}}", shape=Mrecord, style=filled, fillcolor=green]
-        imx219:port0 -> csi2rx:port0 [style=bold]
-        csi2rx [label="{{<port0> 0} | cdns_csi2rx.19800000.csi-bridge\n | {<port1> 1 | <port2> 2 | <port3> 3 | <port4> 4}}", shape=Mrecord, style=filled, fillcolor=green]
-        csi2rx:port1 -> vin:port0 [style=bold]
-        ov5640 [label="{{} | ov5640 6-0020\n/dev/v4l-subdev1 | {<port0> 0}}", shape=Mrecord, style=filled, fillcolor=green]
-        ov5640:port0 -> vin:port1 [style=bold]
-        vin [label="{{<port0> 0 | <port1> 1} | stf_vin0\n/dev/v4l-subdev2 | {<port2> 2}}", shape=Mrecord, style=filled, fillcolor=green]
-        vin:port2 -> raw_capture [style=dashed]
-        vin:port2 -> isp:port0 [style=dashed]
-        raw_capture [label="stf_vin0_wr_video0\n/dev/video0", shape=box, style=filled, fillcolor=yellow]
-        isp [label="{{<port0> 0} | stf_isp0\n/dev/v4l-subdev3 | {<port1> 1}}", shape=Mrecord, style=filled, fillcolor=green]
-        isp:port1 -> yuv_capture [style=bold]
-        yuv_capture [label="stf_vin0_isp0_video1\n/dev/video1", shape=box, style=filled, fillcolor=yellow]
-}
+Guenter
 
-Here, the stf_vin0 subdev is used to route either the CSI-2 input or the
-DVP input to the raw capture video device and the ISP.
-
-Does this match the hardware architecture ?
-
-What are ports 2, 3 and 4 for in the CSI-2 RX ?
-
-> >> >> Signed-off-by: Jack Zhu <jack.zhu@starfivetech.com>
-> >> >> ---
-> >> >>  .../media/platform/starfive/camss/Makefile    |    4 +-
-> >> >>  .../media/platform/starfive/camss/stf_camss.c |   42 +-
-> >> >>  .../media/platform/starfive/camss/stf_camss.h |    2 +
-> >> >>  .../media/platform/starfive/camss/stf_vin.c   | 1069 +++++++++++++++++
-> >> >>  .../media/platform/starfive/camss/stf_vin.h   |  173 +++
-> >> >>  .../platform/starfive/camss/stf_vin_hw_ops.c  |  192 +++
-> >> >>  6 files changed, 1478 insertions(+), 4 deletions(-)
-> >> >>  create mode 100644 drivers/media/platform/starfive/camss/stf_vin.c
-> >> >>  create mode 100644 drivers/media/platform/starfive/camss/stf_vin.h
-> >> >>  create mode 100644 drivers/media/platform/starfive/camss/stf_vin_hw_ops.c
-> >> >> 
-> >> >> diff --git a/drivers/media/platform/starfive/camss/Makefile b/drivers/media/platform/starfive/camss/Makefile
-> >> >> index cdf57e8c9546..ef574e01ca47 100644
-> >> >> --- a/drivers/media/platform/starfive/camss/Makefile
-> >> >> +++ b/drivers/media/platform/starfive/camss/Makefile
-> >> >> @@ -7,6 +7,8 @@ starfive-camss-objs += \
-> >> >>  		stf_camss.o \
-> >> >>  		stf_isp.o \
-> >> >>  		stf_isp_hw_ops.o \
-> >> >> -		stf_video.o
-> >> >> +		stf_video.o \
-> >> >> +		stf_vin.o \
-> >> >> +		stf_vin_hw_ops.o
-> >> >>  
-> >> >>  obj-$(CONFIG_VIDEO_STARFIVE_CAMSS) += starfive-camss.o
-> >> >> diff --git a/drivers/media/platform/starfive/camss/stf_camss.c b/drivers/media/platform/starfive/camss/stf_camss.c
-> >> >> index 6f56b45f57db..834ea63eb833 100644
-> >> >> --- a/drivers/media/platform/starfive/camss/stf_camss.c
-> >> >> +++ b/drivers/media/platform/starfive/camss/stf_camss.c
-> >> >> @@ -131,27 +131,61 @@ static int stfcamss_init_subdevices(struct stfcamss *stfcamss)
-> >> >>  		return ret;
-> >> >>  	}
-> >> >>  
-
--- 
-Regards,
-
-Laurent Pinchart
+---
+# bad: [35245ef82c5b8206d97d0296017df658fd8ea3d2] Merge branch 'for-linux-next-fixes' of git://anongit.freedesktop.org/drm/drm-misc
+# good: [5d0c230f1de8c7515b6567d9afba1f196fb4e2f4] Linux 6.5-rc4
+git bisect start 'HEAD' 'v6.5-rc4'
+# good: [ec0f64d0666ce02114b11efd3df3234f7a3497d8] Merge branch 'master' of git://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf.git
+git bisect good ec0f64d0666ce02114b11efd3df3234f7a3497d8
+# bad: [8eb8b701a263abed01d3fd7e7f1984ef37b02149] Merge branch 'fixes' of git://git.kernel.org/pub/scm/linux/kernel/git/vkoul/dmaengine.git
+git bisect bad 8eb8b701a263abed01d3fd7e7f1984ef37b02149
+# good: [f29c3a80b329fbfbf92278c29fdcaafb736e3d01] Merge branch 'for-linus' of git://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git
+git bisect good f29c3a80b329fbfbf92278c29fdcaafb736e3d01
+# bad: [eddb92c4c656a669c30e17ce934e5eba8c261392] Merge branch 'fixes-togreg' of git://git.kernel.org/pub/scm/linux/kernel/git/jic23/iio.git
+git bisect bad eddb92c4c656a669c30e17ce934e5eba8c261392
+# good: [6811694eb2f6b7a4e97be2029edc7dd6a39460f8] iio: imu: lsm6dsx: Fix mount matrix retrieval
+git bisect good 6811694eb2f6b7a4e97be2029edc7dd6a39460f8
+# bad: [1ef2c2df11997b8135f34adcf2c200d3b4aacbe9] serial: core: Fix serial core controller port name to show controller id
+git bisect bad 1ef2c2df11997b8135f34adcf2c200d3b4aacbe9
+# good: [83c35180abfdfb22f3d7703b0c85ad2d442ed2c5] serial: core: Controller id cannot be negative
+git bisect good 83c35180abfdfb22f3d7703b0c85ad2d442ed2c5
+# good: [d962de6ae51f9b76ad736220077cda83084090b1] serial: core: Fix serial core port id to not use port->line
+git bisect good d962de6ae51f9b76ad736220077cda83084090b1
+# first bad commit: [1ef2c2df11997b8135f34adcf2c200d3b4aacbe9] serial: core: Fix serial core controller port name to show controller id
