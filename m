@@ -2,122 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7399076DFB9
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 07:24:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A7CA076DFBA
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 07:26:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230226AbjHCFY4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Aug 2023 01:24:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52576 "EHLO
+        id S232041AbjHCF0Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Aug 2023 01:26:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53144 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229883AbjHCFYx (ORCPT
+        with ESMTP id S229845AbjHCF0W (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Aug 2023 01:24:53 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EBF191B4
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Aug 2023 22:24:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1691040245;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=CwpRObE3Mu0PTmBnHo+CXP3E6KvsETU6GJ0mZhuN6xE=;
-        b=QCpP1tYSB5sJ50A8oprNOUlUcibrC8QdQFvP4R036krYWRtiwFRPpf7Rg35DTlxdgCBK1R
-        KLZI4hP8kqmpG7UQZxlZkGvxV3ACrrSXKZxx28gyoAUoys6MgO24RoOfflyQopJWm/pYtS
-        l+iqQlKGcunE69HAJqh0dpMmQgdlrrk=
-Received: from mail-qk1-f200.google.com (mail-qk1-f200.google.com
- [209.85.222.200]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-31-umI-7hBNNpiP9CjiXRqS1g-1; Thu, 03 Aug 2023 01:24:04 -0400
-X-MC-Unique: umI-7hBNNpiP9CjiXRqS1g-1
-Received: by mail-qk1-f200.google.com with SMTP id af79cd13be357-76ce59841d5so5658485a.3
-        for <linux-kernel@vger.kernel.org>; Wed, 02 Aug 2023 22:24:03 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691040243; x=1691645043;
-        h=content-transfer-encoding:in-reply-to:subject:from:references:cc:to
-         :content-language:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=CwpRObE3Mu0PTmBnHo+CXP3E6KvsETU6GJ0mZhuN6xE=;
-        b=jzf2gSzP9W3oEolcKyZcyVsDSwG/8Ye7k47hvrSp/fl4CV652OMHL57M3qxN2zQxUM
-         jQ17b5+U59NxtBJOyK6iE3kB5Harvf7/U1FMzr35xR/TOV9NUu0QRlRbMPK3DtaKOCj7
-         CAU0RSu5ioOybpzurqF+MrkleMouTjqEq4Am462Y92r6kGbNVKZG7M+xTBm40W+Wpzuz
-         G3DHjIBCn/UQ86c65FAYzpiLS+ObRgsgGZvD91YxnbePM9rmFtUTxTjqJ88z9X+aC8d3
-         S2o/ai2v+SsNRRf+y7OxOaG+c/MHyuZ80F7mrVmf7cnGOcyx8Ih+lB7Fql24dqKuDtaz
-         3LfQ==
-X-Gm-Message-State: ABy/qLayJSyf4iaXez7NLMtlUybPdBs7eKzQE7gptVSBZifqA88z01wA
-        Bpcmenmz+tG6FuuJoNhx7L8npdC4l6JQGqpVC0ximfMNJvNyNRyBlEtAj+L2jCkgbmMjf90EETJ
-        auxqOVHgSP8wp4s9Pkfyon6kh
-X-Received: by 2002:a05:620a:143:b0:76c:c0bc:bfe0 with SMTP id e3-20020a05620a014300b0076cc0bcbfe0mr7406643qkn.39.1691040243446;
-        Wed, 02 Aug 2023 22:24:03 -0700 (PDT)
-X-Google-Smtp-Source: APBJJlG9V4+uJSXQAwi0H0dkJp+F78Nd+MiTS9NDoSbIzUTQI0U2Rml5xhIcMIe8fWoAu/WSFk+tXA==
-X-Received: by 2002:a05:620a:143:b0:76c:c0bc:bfe0 with SMTP id e3-20020a05620a014300b0076cc0bcbfe0mr7406633qkn.39.1691040243220;
-        Wed, 02 Aug 2023 22:24:03 -0700 (PDT)
-Received: from [192.168.8.105] (tmo-081-137.customers.d1-online.com. [80.187.81.137])
-        by smtp.gmail.com with ESMTPSA id d13-20020a05620a158d00b0076cce1e9a1csm1219870qkk.31.2023.08.02.22.24.01
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 02 Aug 2023 22:24:02 -0700 (PDT)
-Message-ID: <54de068f-94ff-ce75-333d-7f1f79e2743f@redhat.com>
-Date:   Thu, 3 Aug 2023 07:23:59 +0200
+        Thu, 3 Aug 2023 01:26:22 -0400
+Received: from mailgw01.mediatek.com (unknown [60.244.123.138])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C94E6E43
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Aug 2023 22:26:14 -0700 (PDT)
+X-UUID: 414ff8aa31be11ee9cb5633481061a41-20230803
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Type:MIME-Version:Message-ID:Date:Subject:CC:To:From; bh=DjApbBKUywopMY8yXQx/U/psYA0RxGGdamGb0o4t9RM=;
+        b=iFrgPV1rQm8Af5ip9J1a5eSvzFRdN8bCOww+284XqHijygyrUZJHLS1aN5+7UIF01GKk31fxY8o35H+yLfyUxwGYSzJ9xsoy2n6NQJ13xj0con+Dy6iFXUDStjgsIbyLhNIhbuhYpPMs0YOUHVA2/00CxOpfszxN4MU18ROMnSM=;
+X-CID-P-RULE: Release_Ham
+X-CID-O-INFO: VERSION:1.1.30,REQID:ced6312d-2d41-4f86-879f-588d8a5b0955,IP:0,U
+        RL:0,TC:0,Content:0,EDM:0,RT:0,SF:95,FILE:0,BULK:0,RULE:Release_Ham,ACTION
+        :release,TS:95
+X-CID-INFO: VERSION:1.1.30,REQID:ced6312d-2d41-4f86-879f-588d8a5b0955,IP:0,URL
+        :0,TC:0,Content:0,EDM:0,RT:0,SF:95,FILE:0,BULK:0,RULE:Spam_GS981B3D,ACTION
+        :quarantine,TS:95
+X-CID-META: VersionHash:1fcc6f8,CLOUDID:b3cbd6a0-0933-4333-8d4f-6c3c53ebd55b,B
+        ulkID:230803132610T9EIB3X3,BulkQuantity:0,Recheck:0,SF:17|19|48|38|29|28,T
+        C:nil,Content:0,EDM:-3,IP:nil,URL:0,File:nil,Bulk:nil,QS:nil,BEC:nil,COL:0
+        ,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,DKR:0,DKP:0,BRR:0,BRE:0
+X-CID-BVR: 0
+X-CID-BAS: 0,_,0,_
+X-CID-FACTOR: TF_CID_SPAM_SNR,TF_CID_SPAM_SDM,TF_CID_SPAM_ASC,TF_CID_SPAM_FAS,
+        TF_CID_SPAM_FSD
+X-UUID: 414ff8aa31be11ee9cb5633481061a41-20230803
+Received: from mtkmbs14n2.mediatek.inc [(172.21.101.76)] by mailgw01.mediatek.com
+        (envelope-from <trevor.wu@mediatek.com>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
+        with ESMTP id 684881788; Thu, 03 Aug 2023 13:26:10 +0800
+Received: from mtkmbs11n2.mediatek.inc (172.21.101.187) by
+ mtkmbs10n2.mediatek.inc (172.21.101.183) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.26; Thu, 3 Aug 2023 13:26:09 +0800
+Received: from mtksdccf07.mediatek.inc (172.21.84.99) by
+ mtkmbs11n2.mediatek.inc (172.21.101.73) with Microsoft SMTP Server id
+ 15.2.1118.26 via Frontend Transport; Thu, 3 Aug 2023 13:26:09 +0800
+From:   Trevor Wu <trevor.wu@mediatek.com>
+To:     <broonie@kernel.org>, <lgirdwood@gmail.com>, <tiwai@suse.com>,
+        <perex@perex.cz>, <matthias.bgg@gmail.com>,
+        <angelogioacchino.delregno@collabora.com>
+CC:     <trevor.wu@mediatek.com>, <alsa-devel@alsa-project.org>,
+        <linux-mediatek@lists.infradead.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: [PATCH v2 0/3] ASoC: mt8188-mt6359: add SOF support
+Date:   Thu, 3 Aug 2023 13:26:04 +0800
+Message-ID: <20230803052607.25843-1-trevor.wu@mediatek.com>
+X-Mailer: git-send-email 2.18.0
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Content-Language: en-US
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        linux-kselftest@vger.kernel.org,
-        David Matlack <dmatlack@google.com>
-References: <20230712075910.22480-1-thuth@redhat.com>
- <20230712075910.22480-3-thuth@redhat.com> <ZMq0nYYDbOX1cOKN@google.com>
- <ZMrLMYxj3s+vHGrQ@google.com>
-From:   Thomas Huth <thuth@redhat.com>
-Subject: Re: [PATCH 2/4] KVM: selftests: x86: Use TAP interface in the
- sync_regs test
-In-Reply-To: <ZMrLMYxj3s+vHGrQ@google.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-MTK:  N
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,T_SCC_BODY_TEXT_LINE,T_SPF_TEMPERROR,UNPARSEABLE_RELAY
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 02/08/2023 23.31, Sean Christopherson wrote:
-> On Wed, Aug 02, 2023, Sean Christopherson wrote:
->> Oh, and no need to post "KVM: selftests: Rename the ASSERT_EQ macro" in the next
->> version, I'm planning on grabbing that one straightaway.
-> 
-> After paging this all back in...
-> 
-> I would much prefer that we implement the KVM specific macros[*], e.g. KVM_ONE_VCPU_TEST(),
-> and build on top of those.  I'm definitely ok doing a "slow" conversion, i.e. starting
-> with a few easy tests.  IIRC at some point I said I strongly preferred an all-or-nothing
-> approach, but realistically I don't think we'll make progress anytime soon if we try to
-> boil the ocean.
+This series introduces dynamic pinctrl and adds support for the SOF on
+the mt8188-mt6359 machine driver.
 
-At least I don't have enough spare time to do such a big conversion all at 
-once - I'm only occasionally looking at the KVM selftests, mostly for s390x, 
-and I also lack the knowledge how to test all those x86 tests. So don't 
-expect such a big conversion from me, all I can provide is a small patch 
-here or there.
+Changes since v1:
+  - minor changes to incorporate the suggestions from the reviewer.
 
-> But I do think we should spend the time to implement the infrastructure right away.  We
-> may end up having to tweak the infrastructure down the road, e.g. to convert other tests,
-> but I would rather do that then convert some tests twice.
-> 
-> [*] https://lore.kernel.org/all/Y2v+B3xxYKJSM%2FfH@google.com
+Trevor Wu (3):
+  ASoC: mediatek: mt8188-mt6359: support dynamic pinctrl
+  ASoC: mediatek: common: revise SOF common code
+  ASoC: mediatek: mt8188-mt6359: add SOF support
 
-Sorry, I somehow completely missed that KVM_ONE_VCPU_TEST suggestion when 
-picking up the series up again after working on other stuff for more than 
-half a year. I'll try to incorporate this into the next version.
+ .../soc/mediatek/common/mtk-dsp-sof-common.c  | 106 ++++++--
+ .../soc/mediatek/common/mtk-dsp-sof-common.h  |   8 +
+ sound/soc/mediatek/mt8188/mt8188-mt6359.c     | 239 +++++++++++++++++-
+ 3 files changed, 325 insertions(+), 28 deletions(-)
 
-(the other patches don't need a fixture, so I think they shouldn't be 
-affected by this?)
-
-  Thomas
+-- 
+2.18.0
 
