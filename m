@@ -2,213 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 721DD76DD87
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 03:50:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 48A4B76DDA5
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 03:54:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232439AbjHCBuM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Aug 2023 21:50:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60662 "EHLO
+        id S232524AbjHCByg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Aug 2023 21:54:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60644 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232795AbjHCBtM (ORCPT
+        with ESMTP id S231136AbjHCBxS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Aug 2023 21:49:12 -0400
-Received: from mx2.zhaoxin.com (mx2.zhaoxin.com [203.110.167.99])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40C5830D5
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Aug 2023 18:49:07 -0700 (PDT)
-X-ASG-Debug-ID: 1691027343-1eb14e747a09830001-xx1T2L
-Received: from ZXSHMBX2.zhaoxin.com (ZXSHMBX2.zhaoxin.com [10.28.252.164]) by mx2.zhaoxin.com with ESMTP id aqJqCZXaJSdejAKn (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NO); Thu, 03 Aug 2023 09:49:03 +0800 (CST)
-X-Barracuda-Envelope-From: TonyWWang-oc@zhaoxin.com
-X-Barracuda-RBL-Trusted-Forwarder: 10.28.252.164
-Received: from zxbjmbx1.zhaoxin.com (10.29.252.163) by ZXSHMBX2.zhaoxin.com
- (10.28.252.164) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.16; Thu, 3 Aug
- 2023 09:49:03 +0800
-Received: from [10.32.65.162] (10.32.65.162) by zxbjmbx1.zhaoxin.com
- (10.29.252.163) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.16; Thu, 3 Aug
- 2023 09:49:01 +0800
-X-Barracuda-RBL-Trusted-Forwarder: 10.28.252.164
-Message-ID: <771b24c2-1cc3-94b4-739c-56ff461b4f32@zhaoxin.com>
-X-Barracuda-RBL-Trusted-Forwarder: 10.32.65.162
-Date:   Thu, 3 Aug 2023 09:49:02 +0800
+        Wed, 2 Aug 2023 21:53:18 -0400
+Received: from NAM11-DM6-obe.outbound.protection.outlook.com (mail-dm6nam11on20601.outbound.protection.outlook.com [IPv6:2a01:111:f400:7eaa::601])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06AEF4C0A;
+        Wed,  2 Aug 2023 18:50:34 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=YcteNrjO+YCA6FOm2dlbvZggEMCeU4bCpmwL3S6R2OS59iveZ7oaHn8SkrFU8ldxvTxd8HNsZM4BOFyB+KH6ZKJbN+ddf+myvWbIjx1hR3fKkJMDnA4DZEt4Fbn8dIRAlUOp8U/r3QdoUpaEt4x2pnz6f7KojRsr509qhVzIkDzwccXQSUuQx7zB0X14Yh/+dO2yTDTQvo9NneFi2aJatZBqhlpwC05R20bkLbYMoIA4PsTP6BzhVSPXSKlyed6PlhOYDjrr1Kc16V4MthBnNCeLVr+A/XNis9LwmGb2bXecZq+h5xVkfq2xbk1Ykio07Eq+LqXx0jMpVwL1edOnzQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=0go771iIIkKMt8IdHGSPh+sqXs2P/RU4M3OWzp7KWZQ=;
+ b=lh3dPjRutPLVYuHMUEeTfLk1008D+tg694vljRT9ESetzmRY9J/4aSKZ4qXTP3ed5QSPsa7pgir6IyT1jMPgdh3nmxpC+v1sKsjLyNW8MpZqKNu5n6Uze8akrBPOzekgq3WMMgLpCDXZBU4ChCOI4I3KLwwtrC1iiwhekyHdikKZgobA+kRk6Wm9JTuroVV4AFR/cTg131o6siKUAdanArdmvta7F5ihjNCq98sCErTv23XiKICKjN+BG0r/NHvBRAQND6ZY09EiJjzJrNIsVDszKtE/6S094NVuJolcz3FXp4k33BrpZVh982gjMa4X8fMTbYS3kuqTjogFvCa2SQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 165.204.84.17) smtp.rcpttodomain=kernel.org smtp.mailfrom=amd.com; dmarc=pass
+ (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
+ dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=0go771iIIkKMt8IdHGSPh+sqXs2P/RU4M3OWzp7KWZQ=;
+ b=iTfWprTHqJ+sHkFXO4A5qMJKyD8d6T8o2JQXWEeXjL+HUzdUdiy1/kaTzgASFyWIxfc/6Qud2AsisOlmn6BZf1U1OUhQ/lqG8obwFccfAiSS4ms0XqYv5O96GiyZUyJ5VVq89EJh4ObrAUOFesoQagTxKbr5CdUuGoSPmR3UJBI=
+Received: from MW4PR03CA0143.namprd03.prod.outlook.com (2603:10b6:303:8c::28)
+ by SA1PR12MB8886.namprd12.prod.outlook.com (2603:10b6:806:375::6) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6631.45; Thu, 3 Aug
+ 2023 01:50:30 +0000
+Received: from CO1PEPF000044FD.namprd21.prod.outlook.com
+ (2603:10b6:303:8c:cafe::6e) by MW4PR03CA0143.outlook.office365.com
+ (2603:10b6:303:8c::28) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6631.46 via Frontend
+ Transport; Thu, 3 Aug 2023 01:50:30 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
+ smtp.mailfrom=amd.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=amd.com;
+Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
+ 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
+ client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
+Received: from SATLEXMB04.amd.com (165.204.84.17) by
+ CO1PEPF000044FD.mail.protection.outlook.com (10.167.241.203) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.6652.19 via Frontend Transport; Thu, 3 Aug 2023 01:50:30 +0000
+Received: from SITE-L-T34-2.amd.com (10.180.168.240) by SATLEXMB04.amd.com
+ (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Wed, 2 Aug
+ 2023 20:50:29 -0500
+From:   Mario Limonciello <mario.limonciello@amd.com>
+To:     <jarkko@kernel.org>, <peterhuewe@gmx.de>
+CC:     <linux-kernel@vger.kernel.org>, <linux-integrity@vger.kernel.org>,
+        <Jason@zx2c4.com>, <dragonn@op.pl>,
+        Mario Limonciello <mario.limonciello@amd.com>
+Subject: [PATCH 0/3] More changes related to TPM RNG handling
+Date:   Wed, 2 Aug 2023 20:50:12 -0500
+Message-ID: <20230803015015.915-1-mario.limonciello@amd.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.11.0
-Subject: Re: [PATCH] crypto: Zhaoxin: Hardware Engine Driver for
- SHA1/256/384/512
-Content-Language: en-US
-X-ASG-Orig-Subj: Re: [PATCH] crypto: Zhaoxin: Hardware Engine Driver for
- SHA1/256/384/512
-To:     Dave Hansen <dave.hansen@intel.com>, <tglx@linutronix.de>,
-        <mingo@redhat.com>, <bp@alien8.de>, <dave.hansen@linux.intel.com>,
-        <hpa@zytor.com>, <x86@kernel.org>, <linux-kernel@vger.kernel.org>,
-        <herbert@gondor.apana.org.au>, <davem@davemloft.net>,
-        <seanjc@google.com>, <kim.phillips@amd.com>,
-        <peterz@infradead.org>, <pbonzini@redhat.com>,
-        <pawan.kumar.gupta@linux.intel.com>, <babu.moger@amd.com>,
-        <jiaxi.chen@linux.intel.com>, <jmattson@google.com>,
-        <sandipan.das@amd.com>, <linux-crypto@vger.kernel.org>
-CC:     <CobeChen@zhaoxin.com>, <TimGuo@zhaoxin.com>,
-        <LeoLiu-oc@zhaoxin.com>, <GeorgeXue@zhaoxin.com>
-References: <20230802110741.4077-1-TonyWWang-oc@zhaoxin.com>
- <bc950efd-b7f7-5fc9-b41d-ebddcf4a459e@intel.com>
-From:   Tony W Wang-oc <TonyWWang-oc@zhaoxin.com>
-In-Reply-To: <bc950efd-b7f7-5fc9-b41d-ebddcf4a459e@intel.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.32.65.162]
-X-ClientProxiedBy: ZXSHCAS2.zhaoxin.com (10.28.252.162) To
- zxbjmbx1.zhaoxin.com (10.29.252.163)
-X-Barracuda-Connect: ZXSHMBX2.zhaoxin.com[10.28.252.164]
-X-Barracuda-Start-Time: 1691027343
-X-Barracuda-Encrypted: ECDHE-RSA-AES128-GCM-SHA256
-X-Barracuda-URL: https://10.28.252.36:4443/cgi-mod/mark.cgi
-X-Virus-Scanned: by bsmtpd at zhaoxin.com
-X-Barracuda-Scan-Msg-Size: 4190
-X-Barracuda-BRTS-Status: 1
-X-Barracuda-Bayes: INNOCENT GLOBAL 0.0000 1.0000 -2.0210
-X-Barracuda-Spam-Score: -2.02
-X-Barracuda-Spam-Status: No, SCORE=-2.02 using global scores of TAG_LEVEL=1000.0 QUARANTINE_LEVEL=1000.0 KILL_LEVEL=9.0 tests=
-X-Barracuda-Spam-Report: Code version 3.2, rules version 3.2.3.112238
-        Rule breakdown below
-         pts rule name              description
-        ---- ---------------------- --------------------------------------------------
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.180.168.240]
+X-ClientProxiedBy: SATLEXMB03.amd.com (10.181.40.144) To SATLEXMB04.amd.com
+ (10.181.40.145)
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: CO1PEPF000044FD:EE_|SA1PR12MB8886:EE_
+X-MS-Office365-Filtering-Correlation-Id: 7f66f72f-4efa-4c1d-cb34-08db93c404df
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: d0mtEeBnh/j8p64jitN1b7mwKYbH8/D4/Gdl/xsJPDjRguRYQhVuBgWtW7owdOXmbG8v9S8Hbf2KCBOyIYW9l/hKqRALryPa2ZfIhD5KyK1h/PU97Fozrc68LnNHn33aosGlo1w3ljivNHe2l1i2tlHnJIS8L3D8BHNA6J39+9B63B03+UIwdRD0zi/NhOEkME26Swg4LNbEF0rWv94ce/XzuleCUO5317H/aONP4ASBkKc+zG/4yoQH3dDYRDHb6mNQKmzgt1uIW/065NB/0dla5yLu4HB82HO4pA3CtgvVMpNcTMWhtt5Kj7ytHc/uOGbUrbbeFNJsT8yeUMTVE6HFzwVcPPt6ZASq2wcbNRzC4WiaCnxA6DbMO35FFbh5TSM8dU7BaV6TYJk9rzcGJIyBJf2TMW6oLh6/YkGjwxjCnbY7hyNfQraAurdus05D/0rmDGjUkygP7lkqIxb1z/MpRKlIxu3Z428Y+ZIX7+5SdcBbCuSCRg6bgBgoNn6lTryXdXArhdVSY/noOAAOy+ukdjdClJ8byoMRFUUxpdHQTA8JNiyrsJyt7lCWZ3tUQrRhjBaFQXJQ9YMLBQwnogGg4eI/EhzIrkJHfIF94bZFrDpRdgAlNNbalUzmicULWt3HFZhMRUY1rOQASfc3Ui+8Uy4lZaSHnMZZyohkH226h07PtMtjrisJPAne/veHxTKz7UsezK4bo4n1IJuGbCa+IBUJ9jfH1PPruR82oWSVaAUOYI9bBjTCsEFvoxuj8guKFFkBqQKL7zx/qZNCuA==
+X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230028)(4636009)(39860400002)(346002)(136003)(376002)(396003)(82310400008)(451199021)(40470700004)(46966006)(36840700001)(40480700001)(336012)(16526019)(40460700003)(2616005)(186003)(316002)(86362001)(478600001)(54906003)(81166007)(110136005)(6666004)(7696005)(70206006)(70586007)(356005)(4326008)(82740400003)(36756003)(41300700001)(26005)(426003)(5660300002)(8676002)(8936002)(47076005)(1076003)(4744005)(2906002)(36860700001)(44832011)(83380400001)(36900700001);DIR:OUT;SFP:1101;
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 03 Aug 2023 01:50:30.5986
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 7f66f72f-4efa-4c1d-cb34-08db93c404df
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
+X-MS-Exchange-CrossTenant-AuthSource: CO1PEPF000044FD.namprd21.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA1PR12MB8886
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dear Dave,
-Thanks for your review. will refactor this patch per your suggestions.
+Patch 1 fixes a mistake in error handling path introduced in
+previous patch.  It should fold in previous patch or go to -fixes.
 
-On 8/2/23 22:20, Dave Hansen wrote:
-> This code looks pretty rough.
-> 
->> +static int zhaoxin_sha1_update(struct shash_desc *desc,
->> +			const u8 *data,	unsigned int len)
->> +{
->> +	struct sha1_state *sctx = shash_desc_ctx(desc);
->> +	unsigned int partial, done;
->> +	const u8 *src;
->> +	/*The PHE require the out buffer must 128 bytes and 16-bytes aligned*/
->> +	u8 buf[128 + ZHAOXIN_SHA_ALIGNMENT - STACK_ALIGN] __attribute__
->> +		((aligned(STACK_ALIGN)));
->> +	u8 *dst = PTR_ALIGN(&buf[0], ZHAOXIN_SHA_ALIGNMENT);
-> 
-> All of the different alignments here are pretty dazzling.
-> 
->> +	partial = sctx->count & 0x3f;
-> 
-> "0x3f" is a random magic number.
-> 
->> +	sctx->count += len;
->> +	done = 0;
->> +	src = data;
->> +	memcpy(dst, (u8 *)(sctx->state), SHA1_DIGEST_SIZE);
->> +
->> +	if ((partial + len) >= SHA1_BLOCK_SIZE) {
->> +
->> +		/* Append the bytes in state's buffer to a block to handle */
->> +		if (partial) {
->> +			done = -partial;
->> +			memcpy(sctx->buffer + partial, data,
->> +				done + SHA1_BLOCK_SIZE);
->> +			src = sctx->buffer;
->> +			asm volatile (".byte 0xf3,0x0f,0xa6,0xc8"
->> +			: "+S"(src), "+D"(dst)
->> +			: "a"((long)-1), "c"(1UL));
-> 
-> Please look around the codebase for examples on how to do this.  We
-> usually try to use real instructions when binutils supports them and
-> also don't repeatedly open-code the ".byte ...".
-> 
->> +			done += SHA1_BLOCK_SIZE;
->> +			src = data + done;
->> +		}
->> +
->> +		/* Process the left bytes from the input data */
->> +		if (len - done >= SHA1_BLOCK_SIZE) {
->> +			asm volatile (".byte 0xf3,0x0f,0xa6,0xc8"
->> +			: "+S"(src), "+D"(dst)
->> +			: "a"((long)-1),
->> +			"c"((unsigned long)((len - done) / SHA1_BLOCK_SIZE)));
->> +			done += ((len - done) - (len - done) % SHA1_BLOCK_SIZE);
->> +			src = data + done;
->> +		}
->> +		partial = 0;
->> +	}
->> +	memcpy((u8 *)(sctx->state), dst, SHA1_DIGEST_SIZE);
-> 
-> What's the purpose of the cast?
-> 
->> +	memcpy(sctx->buffer + partial, src, len - done);
->> +
->> +	return 0;
->> +}
->> +
->> +static int zhaoxin_sha1_final(struct shash_desc *desc, u8 *out)
->> +{
->> +	struct sha1_state *state = (struct sha1_state *)shash_desc_ctx(desc);
-> 
-> What's the purpose of *this* cast?
-> 
->> +	unsigned int partial, padlen;
->> +	__be64 bits;
->> +	static const u8 padding[64] = { 0x80, };
->> +
->> +	bits = cpu_to_be64(state->count << 3);
->> +
->> +	/* Pad out to 56 mod 64 */
->> +	partial = state->count & 0x3f;
->> +	padlen = (partial < 56) ? (56 - partial) : ((64+56) - partial);
->> +	zhaoxin_sha1_update(desc, padding, padlen);
->> +
->> +	/* Append length field bytes */
->> +	zhaoxin_sha1_update(desc, (const u8 *)&bits, sizeof(bits));
->> +
->> +	/* Swap to output */
->> +	zhaoxin_output_block((uint32_t *)(state->state), (uint32_t *)out, 5);
->> +
->> +	return 0;
->> +}
->> +
->> +static int zhaoxin_sha256_init(struct shash_desc *desc)
->> +{
->> +	struct sha256_state *sctx = shash_desc_ctx(desc);
->> +
->> +	*sctx = (struct sha256_state){
->> +		.state = { SHA256_H0, SHA256_H1, SHA256_H2, SHA256_H3,
->> +				SHA256_H4, SHA256_H5, SHA256_H6, SHA256_H7},
->> +	};
->> +
->> +	return 0;
->> +}
->> +
->> +static int zhaoxin_sha256_update(struct shash_desc *desc, const u8 *data,
->> +			  unsigned int len)
->> +{
->> +	struct sha256_state *sctx = shash_desc_ctx(desc);
->> +	unsigned int partial, done;
->> +	const u8 *src;
->> +	/*The PHE require the out buffer must 128 bytes and 16-bytes aligned*/
->> +	u8 buf[128 + ZHAOXIN_SHA_ALIGNMENT - STACK_ALIGN] __attribute__
->> +		((aligned(STACK_ALIGN)));
->> +	u8 *dst = PTR_ALIGN(&buf[0], ZHAOXIN_SHA_ALIGNMENT);
->> +
->> +	partial = sctx->count & 0x3f;
->> +	sctx->count += len;
->> +	done = 0;
->> +	src = data;
->> +	memcpy(dst, (u8 *)(sctx->state), SHA256_DIGEST_SIZE);
-> 
-> That looks familiar.
-> 
-> This patch needs some serious cleanups and refactoring.  It seems to be
-> missing even the basics like avoiding copy-and-pasting code.  The
-> changelog is quite sparse.
-> 
-> Could you spend some more time on this and give it another go, please?
+Patches 2 and 3 add command line option and drop Kconfig.
+These should be targeted for -next.
+Mario Limonciello (3):
+  tpm: Add a missing check for TPM_CHIP_FLAG_HWRNG_DISABLED
+  tpm: Add command line for not trusting tpm for RNG
+  tpm: Drop CONFIG_HW_RANDOM_TPM
+
+ Documentation/admin-guide/kernel-parameters.txt |  5 +++++
+ drivers/char/tpm/Kconfig                        | 11 -----------
+ drivers/char/tpm/tpm-chip.c                     | 17 ++++++++++++++---
+ 3 files changed, 19 insertions(+), 14 deletions(-)
+
+-- 
+2.34.1
+
