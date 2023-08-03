@@ -2,218 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BF03276E026
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 08:24:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EAF5876E02C
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 08:26:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233120AbjHCGY0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Aug 2023 02:24:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41064 "EHLO
+        id S230202AbjHCG0x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Aug 2023 02:26:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43008 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232177AbjHCGYU (ORCPT
+        with ESMTP id S231616AbjHCG0t (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Aug 2023 02:24:20 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F41DC10FB;
-        Wed,  2 Aug 2023 23:24:18 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 753D061BCB;
-        Thu,  3 Aug 2023 06:24:18 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9E031C433C7;
-        Thu,  3 Aug 2023 06:24:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691043857;
-        bh=Hm/g9aC+hWCP6Ihz8zX5wVSTOllY15bZ3NwCc3kbbXs=;
-        h=From:To:Cc:Subject:Date:From;
-        b=MhDJKaWU3OZYGs1YbKGpCvZibYbdqtXrXFjQ1yFISxxL9XuMUQ5MEOcl1szgXM/n+
-         wjIzkIVu7a8b7lm9ukhqSpq0ASJ27Ly+1CXGVfy0vStxh665KZ4lb5FxlNUFzboYcu
-         A9Y2D1rps7TOBWdfP961uYc2Vj6bJgP/ACq3SoRjAiCAFldEtNdnOQxeroZmVNdmDy
-         5l6mU41FvLLJ94rGY0rqZZjq36yBc16zWpgagBZcxfT943TN+zMf4LWy9iSVaqXBno
-         VEbxidfHHx+ba/Oh5QpOJxXfsAAM9mbQI5KKHuA85iU2UEHf87X26O5p8JmgkNb0M9
-         W8nkVm/1udWxQ==
-From:   Mike Rapoport <rppt@kernel.org>
-To:     Helge Deller <deller@gmx.de>
-Cc:     Christoph Biedl <linux-kernel.bfrz@manchmal.in-ulm.de>,
-        "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
-        John David Anglin <dave.anglin@bell.net>,
-        Mike Rapoport <rppt@kernel.org>,
-        Vlastimil Babka <vbabka@suse.cz>, linux-parisc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] parisc/mm: preallocate fixmap page tables at init
-Date:   Thu,  3 Aug 2023 09:24:04 +0300
-Message-Id: <20230803062404.2373480-1-rppt@kernel.org>
-X-Mailer: git-send-email 2.39.2
+        Thu, 3 Aug 2023 02:26:49 -0400
+Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.153.233])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 382261706
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Aug 2023 23:26:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1691044006; x=1722580006;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=/ZwfAoSWG3OILQCx5AkENs63AOVTeG0AjJEGkSSi5Sc=;
+  b=oYN088aoHZIsHjkYJqoJITYn1bR0UCwU1U9MYjFunh5JwHByMfy9lNCK
+   8LFfnfeYWh/r20aI7LFbNWSNBiOkRzrmr9ldVpYRBqJfmcI1LJZeMgFdU
+   oSkTBlTGXpemF9u0bpvxDPysCU5kfDJbUx9bm/bIwhdlfgBwA8jc5eysI
+   FvqBDaFbC90PE5nsIJqS8ImGCj55ieSZNOL52vzRx3Sr0oMkFGBqbfZdZ
+   gm8gZ6QsTEQq9nqaSTSFCRxvr1UrszECyXGrHtiJAG6voQ2sLGHOldLwp
+   wSztXJTC5DTYsXcFcPO+V6HrKynLroj5xu/16Zsst823agyVIHDj3vlLR
+   Q==;
+X-IronPort-AV: E=Sophos;i="6.01,251,1684825200"; 
+   d="asc'?scan'208";a="239517011"
+X-Amp-Result: UNKNOWN
+X-Amp-Original-Verdict: FILE UNKNOWN
+Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
+  by esa1.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 02 Aug 2023 23:26:45 -0700
+Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
+ chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.21; Wed, 2 Aug 2023 23:26:45 -0700
+Received: from wendy (10.10.115.15) by chn-vm-ex04.mchp-main.com
+ (10.10.85.152) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.21 via Frontend
+ Transport; Wed, 2 Aug 2023 23:26:44 -0700
+Date:   Thu, 3 Aug 2023 07:26:08 +0100
+From:   Conor Dooley <conor.dooley@microchip.com>
+To:     Samuel Holland <samuel.holland@sifive.com>
+CC:     Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        <linux-riscv@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+        Palmer Dabbelt <palmer@rivosinc.com>
+Subject: Re: [PATCH] riscv: Fix CPU feature detection with SMP disabled
+Message-ID: <20230803-bash-spree-4c02a339a6d5@wendy>
+References: <20230803012608.3540081-1-samuel.holland@sifive.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="IWqUTP8P5wUkOjNk"
+Content-Disposition: inline
+In-Reply-To: <20230803012608.3540081-1-samuel.holland@sifive.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: "Mike Rapoport (IBM)" <rppt@kernel.org>
+--IWqUTP8P5wUkOjNk
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Christoph Biedl reported early OOM on recent kernels:
+On Wed, Aug 02, 2023 at 06:26:06PM -0700, Samuel Holland wrote:
+> commit 914d6f44fc50 ("RISC-V: only iterate over possible CPUs in ISA
+> string parser") changed riscv_fill_hwcap() from iterating over CPU DT
+> nodes to iterating over logical CPU IDs. Since this function runs long
+> before cpu_dev_init() creates CPU devices, it hits the fallback path in
+> of_cpu_device_node_get(), which itself iterates over the DT nodes,
+> searching for a node with the requested CPU ID.
 
-    swapper: page allocation failure: order:0, mode:0x100(__GFP_ZERO),
-nodemask=(null)
-    CPU: 0 PID: 0 Comm: swapper Not tainted 6.3.0-rc4+ #16
-    Hardware name: 9000/785/C3600
-    Backtrace:
-     [<10408594>] show_stack+0x48/0x5c
-     [<10e152d8>] dump_stack_lvl+0x48/0x64
-     [<10e15318>] dump_stack+0x24/0x34
-     [<105cf7f8>] warn_alloc+0x10c/0x1c8
-     [<105d068c>] __alloc_pages+0xbbc/0xcf8
-     [<105d0e4c>] __get_free_pages+0x28/0x78
-     [<105ad10c>] __pte_alloc_kernel+0x30/0x98
-     [<10406934>] set_fixmap+0xec/0xf4
-     [<10411ad4>] patch_map.constprop.0+0xa8/0xdc
-     [<10411bb0>] __patch_text_multiple+0xa8/0x208
-     [<10411d78>] patch_text+0x30/0x48
-     [<1041246c>] arch_jump_label_transform+0x90/0xcc
-     [<1056f734>] jump_label_update+0xd4/0x184
-     [<1056fc9c>] static_key_enable_cpuslocked+0xc0/0x110
-     [<1056fd08>] static_key_enable+0x1c/0x2c
-     [<1011362c>] init_mem_debugging_and_hardening+0xdc/0xf8
-     [<1010141c>] start_kernel+0x5f0/0xa98
-     [<10105da8>] start_parisc+0xb8/0xe4
+> (Incidentally, this
+> makes riscv_fill_hwcap() now take quadratic time.)
 
-    Mem-Info:
-    active_anon:0 inactive_anon:0 isolated_anon:0
-     active_file:0 inactive_file:0 isolated_file:0
-     unevictable:0 dirty:0 writeback:0
-     slab_reclaimable:0 slab_unreclaimable:0
-     mapped:0 shmem:0 pagetables:0
-     sec_pagetables:0 bounce:0
-     kernel_misc_reclaimable:0
-     free:0 free_pcp:0 free_cma:0
-    Node 0 active_anon:0kB inactive_anon:0kB active_file:0kB
-inactive_file:0kB unevictable:0kB isolated(anon):0kB isolated(file):0kB
-mapped:0kB dirty:0kB writeback:0kB shmem:0kB
-+writeback_tmp:0kB kernel_stack:0kB pagetables:0kB sec_pagetables:0kB
-all_unreclaimable? no
-    Normal free:0kB boost:0kB min:0kB low:0kB high:0kB
-reserved_highatomic:0KB active_anon:0kB inactive_anon:0kB active_file:0kB
-inactive_file:0kB unevictable:0kB writepending:0kB
-+present:1048576kB managed:1039360kB mlocked:0kB bounce:0kB free_pcp:0kB
-local_pcp:0kB free_cma:0kB
-    lowmem_reserve[]: 0 0
-    Normal: 0*4kB 0*8kB 0*16kB 0*32kB 0*64kB 0*128kB 0*256kB 0*512kB
-0*1024kB 0*2048kB 0*4096kB = 0kB
-    0 total pagecache pages
-    0 pages in swap cache
-    Free swap  = 0kB
-    Total swap = 0kB
-    262144 pages RAM
-    0 pages HighMem/MovableOnly
-    2304 pages reserved
-    Backtrace:
-     [<10411d78>] patch_text+0x30/0x48
-     [<1041246c>] arch_jump_label_transform+0x90/0xcc
-     [<1056f734>] jump_label_update+0xd4/0x184
-     [<1056fc9c>] static_key_enable_cpuslocked+0xc0/0x110
-     [<1056fd08>] static_key_enable+0x1c/0x2c
-     [<1011362c>] init_mem_debugging_and_hardening+0xdc/0xf8
-     [<1010141c>] start_kernel+0x5f0/0xa98
-     [<10105da8>] start_parisc+0xb8/0xe4
+Ouch, that I did not realise. Should we revert that portion of the
+changes? Starting to sound like we should..
 
-    Kernel Fault: Code=15 (Data TLB miss fault) at addr 0f7fe3c0
-    CPU: 0 PID: 0 Comm: swapper Not tainted 6.3.0-rc4+ #16
-    Hardware name: 9000/785/C3600
+> riscv_fill_hwcap() passes a logical CPU ID to of_cpu_device_node_get(),
+> which uses the arch_match_cpu_phys_id() hook to translate the logical ID
+> to a physical ID as found in the DT.
+>=20
+> arch_match_cpu_phys_id() has a generic weak definition, and RISC-V
+> provides a strong definition using cpuid_to_hartid_map(). However, the
+> RISC-V specific implementation is located in arch/riscv/kernel/smp.c,
+> and that file is only compiled when SMP is enabled.
+>=20
+> As a result, when SMP is disabled, the generic definition is used, and
+> riscv_isa gets initialized based on the ISA string of hart 0, not the
+> boot hart. On FU740, this means has_fpu() returns false, and userspace
+> crashes when trying to use floating-point instructions.
+>=20
+> Fix this by moving arch_match_cpu_phys_id() to a file which is always
+> compiled.
+>=20
+> Fixes: 70114560b285 ("RISC-V: Add RISC-V specific arch_match_cpu_phys_id")
+> Fixes: 914d6f44fc50 ("RISC-V: only iterate over possible CPUs in ISA stri=
+ng parser")
+> Reported-by: Palmer Dabbelt <palmer@rivosinc.com>
+> Signed-off-by: Samuel Holland <samuel.holland@sifive.com>
 
-This happens because patching static key code temporarily maps it via
-fixmap and if it happens before page allocator is initialized set_fixmap()
-cannot allocate memory using pte_alloc_kernel().
+Reviewed-by: Conor Dooley <conor.dooley@microchip.com>
 
-Make sure that fixmap page tables are preallocated early so that
-pte_offset_kernel() in set_fixmap() never resorts to pte allocation.
+Thanks for fixing this Samuel.
 
-Signed-off-by: Mike Rapoport (IBM) <rppt@kernel.org>
----
+--IWqUTP8P5wUkOjNk
+Content-Type: application/pgp-signature; name="signature.asc"
 
-I didn't add Fixes tag with the commit Christoph bisected because that
-commit didn't change anything in the initialization of the static keys
-and I really doubt it is the actual cause of the issue.
+-----BEGIN PGP SIGNATURE-----
 
- arch/parisc/mm/fixmap.c |  3 ---
- arch/parisc/mm/init.c   | 34 ++++++++++++++++++++++++++++++++++
- 2 files changed, 34 insertions(+), 3 deletions(-)
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZMtIfAAKCRB4tDGHoIJi
+0vT9AP9Lu6eMzcV6VTEm4k72Es6D5W5Ni4kxzCx/NDrEq5FgTAD+OZ0n6fMavKzX
+j2GbejIGfNlZJLsxERdo3/aJ5THhcQw=
+=xp9a
+-----END PGP SIGNATURE-----
 
-diff --git a/arch/parisc/mm/fixmap.c b/arch/parisc/mm/fixmap.c
-index cc15d737fda6..ae3493dae9dc 100644
---- a/arch/parisc/mm/fixmap.c
-+++ b/arch/parisc/mm/fixmap.c
-@@ -19,9 +19,6 @@ void notrace set_fixmap(enum fixed_addresses idx, phys_addr_t phys)
- 	pmd_t *pmd = pmd_offset(pud, vaddr);
- 	pte_t *pte;
- 
--	if (pmd_none(*pmd))
--		pte = pte_alloc_kernel(pmd, vaddr);
--
- 	pte = pte_offset_kernel(pmd, vaddr);
- 	set_pte_at(&init_mm, vaddr, pte, __mk_pte(phys, PAGE_KERNEL_RWX));
- 	flush_tlb_kernel_range(vaddr, vaddr + PAGE_SIZE);
-diff --git a/arch/parisc/mm/init.c b/arch/parisc/mm/init.c
-index 406c52fe23d5..389941c7f209 100644
---- a/arch/parisc/mm/init.c
-+++ b/arch/parisc/mm/init.c
-@@ -669,6 +669,39 @@ static void __init gateway_init(void)
- 		  PAGE_SIZE, PAGE_GATEWAY, 1);
- }
- 
-+static void __init fixmap_init(void)
-+{
-+	unsigned long addr = FIXMAP_START;
-+	unsigned long end = FIXMAP_START + FIXMAP_SIZE;
-+	pgd_t *pgd = pgd_offset_k(addr);
-+	p4d_t *p4d = p4d_offset(pgd, addr);
-+	pud_t *pud = pud_offset(p4d, addr);
-+	pmd_t *pmd;
-+
-+	BUILD_BUG_ON(FIXMAP_SIZE > PMD_SIZE);
-+
-+#if CONFIG_PGTABLE_LEVELS == 3
-+	if (pud_none(*pud)) {
-+		pmd = memblock_alloc(PAGE_SIZE << PMD_TABLE_ORDER,
-+				     PAGE_SIZE << PMD_TABLE_ORDER);
-+		if (!pmd)
-+			panic("fixmap: pmd allocation failed.\n");
-+		pud_populate(NULL, pud, pmd);
-+	}
-+#endif
-+
-+	pmd = pmd_offset(pud, addr);
-+	do {
-+		pte_t *pte = memblock_alloc(PAGE_SIZE, PAGE_SIZE);
-+		if (!pte)
-+			panic("fixmap: pte allocation failed.\n");
-+
-+		pmd_populate_kernel(&init_mm, pmd, pte);
-+
-+		addr += PAGE_SIZE;
-+	} while (addr < end);
-+}
-+
- static void __init parisc_bootmem_free(void)
- {
- 	unsigned long max_zone_pfn[MAX_NR_ZONES] = { 0, };
-@@ -683,6 +716,7 @@ void __init paging_init(void)
- 	setup_bootmem();
- 	pagetable_init();
- 	gateway_init();
-+	fixmap_init();
- 	flush_cache_all_local(); /* start with known state */
- 	flush_tlb_all_local(NULL);
- 
-
-base-commit: 5d0c230f1de8c7515b6567d9afba1f196fb4e2f4
--- 
-2.34.1
-
+--IWqUTP8P5wUkOjNk--
