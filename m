@@ -2,57 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F03E576E968
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 15:06:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 61B2E76E96B
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 15:06:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236074AbjHCNGH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Aug 2023 09:06:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53918 "EHLO
+        id S236082AbjHCNGV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Aug 2023 09:06:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54040 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236041AbjHCNFs (ORCPT
+        with ESMTP id S236068AbjHCNF4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Aug 2023 09:05:48 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF65C49DE;
-        Thu,  3 Aug 2023 06:04:25 -0700 (PDT)
+        Thu, 3 Aug 2023 09:05:56 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2821F49FC;
+        Thu,  3 Aug 2023 06:04:32 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id B4AF761DA3;
-        Thu,  3 Aug 2023 13:04:22 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E1810C433C9;
-        Thu,  3 Aug 2023 13:04:20 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 2D76A61DA6;
+        Thu,  3 Aug 2023 13:04:26 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D6A3BC433C8;
+        Thu,  3 Aug 2023 13:04:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691067862;
-        bh=GTGT20iU3/7JnRQKndWC49V2rfiEkE19lS7NkxeDGvA=;
-        h=From:To:Cc:Subject:Date:From;
-        b=uF/LMjMtmOVUOnSHNKlzidjsC7G2scsrBOhpzAgJbNZjDWjFSLywwXDS5pABXWaBU
-         vptJ+Uj8bhJmi+JLNmfsz6MElAtyDoRFdw3u3RQbncDi5ImHKyhnokbrv70SRXFB/D
-         yef0yqDIHQjzle5YXLaa1igWJsKag3RqHDrES1Fx0+48jrqGc+WEk+62FfFfg8HGlg
-         Ze1hHi8aZ9VVYwwx5bvNIceXxjcDVtjATTb96RjeZAMujXVMYJJ259LFOgz+3eypC8
-         PrSjAO6NIEcSsL451PeAbogIsWGRnOIS9I9KBBGhPC2l69UIQz4LtSFnWu+TO3OhSM
-         /gpLRjyERatSA==
+        s=k20201202; t=1691067865;
+        bh=vkgMhk5pL7GGu6vV+78air3bWNRQYu/zusD/HonXuBc=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=bRPHo3VgDSS/bT/p2AQhBMN6bcmPe1VYeVSXSSRVpYdXCESWo53G22Q8CY3+vDidS
+         yu6Zgw+7z84fxEImhVxfDn2m6G29QK91bYKoB2/rvBFRgR0D2DJg8uR0bFFY3FWBFo
+         qLAxr3uxCtTmYrGet9Z3MH8cmq3fdcH0XiGzMGVJRC5hd7mKpC915WLluDitVJFMSc
+         8K3gVQ5mZy5xW7Mp3FxLX2uDquv27xE7s0Jonxv+eSeYgDaLqiKmqxnDMtxj/XVe8r
+         MUt1iJex/AJ1h1VCwwWHNctp3lZSUsSLp9CJjde/3giumXNOz8zEdTHEQDy0XztgX7
+         JhqjkqRw5lN9g==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Alan Stern <stern@rowland.harvard.edu>,
-        syzbot+63ee658b9a100ffadbe2@syzkaller.appspotmail.com,
-        Oliver Neukum <oneukum@suse.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Sasha Levin <sashal@kernel.org>, davem@davemloft.net,
-        edumazet@google.com, pabeni@redhat.com, netdev@vger.kernel.org,
-        linux-usb@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.4 1/4] net: usbnet: Fix WARNING in usbnet_start_xmit/usb_submit_urb
-Date:   Thu,  3 Aug 2023 09:04:15 -0400
-Message-Id: <20230803130419.641865-1-sashal@kernel.org>
+Cc:     Benjamin Gray <bgray@linux.ibm.com>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Sasha Levin <sashal@kernel.org>, linuxppc-dev@lists.ozlabs.org
+Subject: [PATCH AUTOSEL 6.4 2/4] powerpc/kasan: Disable KCOV in KASAN code
+Date:   Thu,  3 Aug 2023 09:04:16 -0400
+Message-Id: <20230803130419.641865-2-sashal@kernel.org>
 X-Mailer: git-send-email 2.40.1
+In-Reply-To: <20230803130419.641865-1-sashal@kernel.org>
+References: <20230803130419.641865-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
 X-stable-base: Linux 6.4.7
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -61,80 +60,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Alan Stern <stern@rowland.harvard.edu>
+From: Benjamin Gray <bgray@linux.ibm.com>
 
-[ Upstream commit 5e1627cb43ddf1b24b92eb26f8d958a3f5676ccb ]
+[ Upstream commit ccb381e1af1ace292153c88eb1fffa5683d16a20 ]
 
-The syzbot fuzzer identified a problem in the usbnet driver:
+As per the generic KASAN code in mm/kasan, disable KCOV with
+KCOV_INSTRUMENT := n in the makefile.
 
-usb 1-1: BOGUS urb xfer, pipe 3 != type 1
-WARNING: CPU: 0 PID: 754 at drivers/usb/core/urb.c:504 usb_submit_urb+0xed6/0x1880 drivers/usb/core/urb.c:504
-Modules linked in:
-CPU: 0 PID: 754 Comm: kworker/0:2 Not tainted 6.4.0-rc7-syzkaller-00014-g692b7dc87ca6 #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 05/27/2023
-Workqueue: mld mld_ifc_work
-RIP: 0010:usb_submit_urb+0xed6/0x1880 drivers/usb/core/urb.c:504
-Code: 7c 24 18 e8 2c b4 5b fb 48 8b 7c 24 18 e8 42 07 f0 fe 41 89 d8 44 89 e1 4c 89 ea 48 89 c6 48 c7 c7 a0 c9 fc 8a e8 5a 6f 23 fb <0f> 0b e9 58 f8 ff ff e8 fe b3 5b fb 48 81 c5 c0 05 00 00 e9 84 f7
-RSP: 0018:ffffc9000463f568 EFLAGS: 00010086
-RAX: 0000000000000000 RBX: 0000000000000001 RCX: 0000000000000000
-RDX: ffff88801eb28000 RSI: ffffffff814c03b7 RDI: 0000000000000001
-RBP: ffff8881443b7190 R08: 0000000000000001 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000001 R12: 0000000000000003
-R13: ffff88802a77cb18 R14: 0000000000000003 R15: ffff888018262500
-FS:  0000000000000000(0000) GS:ffff8880b9800000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 0000556a99c15a18 CR3: 0000000028c71000 CR4: 0000000000350ef0
-Call Trace:
- <TASK>
- usbnet_start_xmit+0xfe5/0x2190 drivers/net/usb/usbnet.c:1453
- __netdev_start_xmit include/linux/netdevice.h:4918 [inline]
- netdev_start_xmit include/linux/netdevice.h:4932 [inline]
- xmit_one net/core/dev.c:3578 [inline]
- dev_hard_start_xmit+0x187/0x700 net/core/dev.c:3594
-...
+This fixes a ppc64 boot hang when KCOV and KASAN are enabled.
+kasan_early_init() gets called before a PACA is initialised, but the
+KCOV hook expects a valid PACA.
 
-This bug is caused by the fact that usbnet trusts the bulk endpoint
-addresses its probe routine receives in the driver_info structure, and
-it does not check to see that these endpoints actually exist and have
-the expected type and directions.
-
-The fix is simply to add such a check.
-
-Reported-and-tested-by: syzbot+63ee658b9a100ffadbe2@syzkaller.appspotmail.com
-Closes: https://lore.kernel.org/linux-usb/000000000000a56e9105d0cec021@google.com/
-Signed-off-by: Alan Stern <stern@rowland.harvard.edu>
-CC: Oliver Neukum <oneukum@suse.com>
-Link: https://lore.kernel.org/r/ea152b6d-44df-4f8a-95c6-4db51143dcc1@rowland.harvard.edu
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+Suggested-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+Signed-off-by: Benjamin Gray <bgray@linux.ibm.com>
+Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
+Link: https://msgid.link/20230710044143.146840-1-bgray@linux.ibm.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/usb/usbnet.c | 6 ++++++
- 1 file changed, 6 insertions(+)
+ arch/powerpc/mm/kasan/Makefile | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/net/usb/usbnet.c b/drivers/net/usb/usbnet.c
-index 283ffddda821d..2d14b0d78541a 100644
---- a/drivers/net/usb/usbnet.c
-+++ b/drivers/net/usb/usbnet.c
-@@ -1775,6 +1775,10 @@ usbnet_probe (struct usb_interface *udev, const struct usb_device_id *prod)
- 	} else if (!info->in || !info->out)
- 		status = usbnet_get_endpoints (dev, udev);
- 	else {
-+		u8 ep_addrs[3] = {
-+			info->in + USB_DIR_IN, info->out + USB_DIR_OUT, 0
-+		};
-+
- 		dev->in = usb_rcvbulkpipe (xdev, info->in);
- 		dev->out = usb_sndbulkpipe (xdev, info->out);
- 		if (!(info->flags & FLAG_NO_SETINT))
-@@ -1784,6 +1788,8 @@ usbnet_probe (struct usb_interface *udev, const struct usb_device_id *prod)
- 		else
- 			status = 0;
+diff --git a/arch/powerpc/mm/kasan/Makefile b/arch/powerpc/mm/kasan/Makefile
+index 699eeffd9f551..f9522fd70b2f3 100644
+--- a/arch/powerpc/mm/kasan/Makefile
++++ b/arch/powerpc/mm/kasan/Makefile
+@@ -1,6 +1,7 @@
+ # SPDX-License-Identifier: GPL-2.0
  
-+		if (status == 0 && !usb_check_bulk_endpoints(udev, ep_addrs))
-+			status = -EINVAL;
- 	}
- 	if (status >= 0 && dev->status)
- 		status = init_status (dev, udev);
+ KASAN_SANITIZE := n
++KCOV_INSTRUMENT := n
+ 
+ obj-$(CONFIG_PPC32)		+= init_32.o
+ obj-$(CONFIG_PPC_8xx)		+= 8xx.o
 -- 
 2.40.1
 
