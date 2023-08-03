@@ -2,297 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EC75976E20F
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 09:40:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E7FDC76E21C
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 09:54:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234259AbjHCHkE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Aug 2023 03:40:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47180 "EHLO
+        id S229904AbjHCHyN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Aug 2023 03:54:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58446 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234211AbjHCHiE (ORCPT
+        with ESMTP id S229788AbjHCHxf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Aug 2023 03:38:04 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F4A33C14
-        for <linux-kernel@vger.kernel.org>; Thu,  3 Aug 2023 00:36:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1691048179;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=y5lW9yJGd0tTOcYr5wtydcMH3ilaH7qpJMhJhFacpac=;
-        b=IECSsSaG8dRhDV382ziXcVSnCCXufa74UG0MiGBghHux0jmTvqZngQK5vXiu2duo+6nGje
-        3NRmGinbFNlbwqmtVFETx/HZrD8yhPrmquaoNR+7cAqr7BEuqoTKU7Pt/wRY1T2jseutW4
-        zxEkybif/iIKlF0HsRT5+zGOiSADaZM=
-Received: from mail-lf1-f72.google.com (mail-lf1-f72.google.com
- [209.85.167.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-169-1ELBMUFwN5uDYoRQyPLg5g-1; Thu, 03 Aug 2023 03:36:18 -0400
-X-MC-Unique: 1ELBMUFwN5uDYoRQyPLg5g-1
-Received: by mail-lf1-f72.google.com with SMTP id 2adb3069b0e04-4fe08e088d5so628497e87.2
-        for <linux-kernel@vger.kernel.org>; Thu, 03 Aug 2023 00:36:18 -0700 (PDT)
+        Thu, 3 Aug 2023 03:53:35 -0400
+Received: from mail-oi1-x233.google.com (mail-oi1-x233.google.com [IPv6:2607:f8b0:4864:20::233])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BEC1C5593
+        for <linux-kernel@vger.kernel.org>; Thu,  3 Aug 2023 00:43:23 -0700 (PDT)
+Received: by mail-oi1-x233.google.com with SMTP id 5614622812f47-3a76cbd4bbfso139230b6e.3
+        for <linux-kernel@vger.kernel.org>; Thu, 03 Aug 2023 00:43:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1691048578; x=1691653378;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=9wcQgKLzUEDCQTRYm49e4K1eJ/gD3SsCDYx79kxO5Jk=;
+        b=lxmBti7naxFncDx+danzQeW9Ae4PH8ymvcBAYbncEatj2ordC1uXqCq1hQDn0J8Hs4
+         M3gafNZz5gtrMlWOriWt+vk3Y1apTrzyGuPCr9/lJPtJzuFZsPG/eCGxFRbkpzMjM7+Z
+         ND37OklDyGfg81mWexD/wxVQ59qyNmzpdSwqw=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691048177; x=1691652977;
-        h=content-transfer-encoding:in-reply-to:references:to
-         :content-language:subject:cc:user-agent:mime-version:date:message-id
-         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=y5lW9yJGd0tTOcYr5wtydcMH3ilaH7qpJMhJhFacpac=;
-        b=AOvDXJOL6wmjaKWb68FOOMj5zDYJFjDuYMmJehQPErKW7dlQQw+Kxwt+5u3XamGA4g
-         +d+iCzsqvYiEmiG/5mTJMfTQ1W+ujL/uxQ8r/HDsPUuQVbB2Y1+XPeGcZsbZa9uQc6Ko
-         f+4IPNPB8jFd1JFHTzrFUPj3abufZiZzB+tFdwp/pR13r0/jbTFwtlp1njL67MeRcP27
-         fFjz77ET8SuY24cCMbSb1rhXExYJFsN1VSuA49n57i9pwKC2kCq8ImOuNKimIPdfWyaN
-         fxFlp7fvwIplvFE/ZYkcPrTxuyTatoC2pzvNa30o035Apooknx9ivOc0CI2XYRjBX5ya
-         Z56Q==
-X-Gm-Message-State: ABy/qLbzyNo1TgrgSU4qT5U1fOYAYPf2DECTNqJbV/ZC7kZxCMpDCwqN
-        x3RDGLZ+wfIZzBMoveqFUXLDAUx9qnJqgb7ZjxJQZ+DXFDsOnVIFPrPrrPWxOnRx8Milas21LaN
-        3GQg/dgphOPCfuJofL8nA9+3e
-X-Received: by 2002:a05:6512:5cf:b0:4f9:547c:a3cc with SMTP id o15-20020a05651205cf00b004f9547ca3ccmr5247246lfo.14.1691048176975;
-        Thu, 03 Aug 2023 00:36:16 -0700 (PDT)
-X-Google-Smtp-Source: APBJJlHk7khmdMhPIrJx41CkIsKhng1gZd/TgR+/xDOjScGe95JF1N3aEbzr0qwR3nW3Rsl3nXk3Ig==
-X-Received: by 2002:a05:6512:5cf:b0:4f9:547c:a3cc with SMTP id o15-20020a05651205cf00b004f9547ca3ccmr5247235lfo.14.1691048176425;
-        Thu, 03 Aug 2023 00:36:16 -0700 (PDT)
-Received: from [192.168.42.222] (194-45-78-10.static.kviknet.net. [194.45.78.10])
-        by smtp.gmail.com with ESMTPSA id c12-20020a056402120c00b0052241b8fd0bsm9589115edw.29.2023.08.03.00.36.15
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 03 Aug 2023 00:36:15 -0700 (PDT)
-From:   Jesper Dangaard Brouer <jbrouer@redhat.com>
-X-Google-Original-From: Jesper Dangaard Brouer <brouer@redhat.com>
-Message-ID: <1bf41ea8-5131-7d54-c373-00c1fbcac095@redhat.com>
-Date:   Thu, 3 Aug 2023 09:36:14 +0200
+        d=1e100.net; s=20221208; t=1691048578; x=1691653378;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=9wcQgKLzUEDCQTRYm49e4K1eJ/gD3SsCDYx79kxO5Jk=;
+        b=DRlfoqEREw7rvT8dJJQbY5729vopOx6Ma9xZEP9FiV+1rUnNwlKQChfL0OJd5AKQ5N
+         Bq6HZYVBZdv4VdWR/mOHu51oR7sibETg0cXBxqE3jjD7zf+twBbJTHYvIirpNTSP/psV
+         zvDsJPvzZThlZP3ydy640moHCb6QaYudXqT6qZqWc88HOJvF8VPZzZhtFkm13GI0MStb
+         psMpq2KQlitkgnV7fRcZv8ou7HmeNvG5y0UuHceeGoaztEKJS4up9rKRypv5TwnpXXC2
+         7HFgCTV+3Wg3Tc+WyuNDm8A+eu5s8bz/PqREIRNs5fBSQtNAhmlnY0WwUZhzHUkFuKv7
+         rabA==
+X-Gm-Message-State: ABy/qLafVQPdgpE3YhUQA0CAJyjETRqh+ccC9gblZT+AfhaBFehe5lRL
+        YNgodBgUpWbodmz5q+7Y7z3uWA==
+X-Google-Smtp-Source: APBJJlE6UT0T4AwfmsNqza3+1zBspZtZF++zc77ynB+tf5wLZLaPVCNPN77k7YeQhSxF5KVnRC7RGQ==
+X-Received: by 2002:a05:6870:f623:b0:1a6:c968:4a15 with SMTP id ek35-20020a056870f62300b001a6c9684a15mr19659252oab.4.1691048578025;
+        Thu, 03 Aug 2023 00:42:58 -0700 (PDT)
+Received: from wenstp920.tpe.corp.google.com ([2401:fa00:1:10:6f3e:66ee:db46:473b])
+        by smtp.gmail.com with ESMTPSA id l11-20020a17090a72cb00b00262d079720bsm2095753pjk.29.2023.08.03.00.42.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 03 Aug 2023 00:42:57 -0700 (PDT)
+From:   Chen-Yu Tsai <wenst@chromium.org>
+To:     Lee Jones <lee@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        Mark Brown <broonie@kernel.org>
+Cc:     Chen-Yu Tsai <wenst@chromium.org>,
+        Zhiyong Tao <zhiyong.tao@mediatek.com>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org
+Subject: [PATCH 0/9] regulator: mt6366: Split out of MT6358 and cleanup
+Date:   Thu,  3 Aug 2023 15:42:38 +0800
+Message-ID: <20230803074249.3065586-1-wenst@chromium.org>
+X-Mailer: git-send-email 2.41.0.585.gd2178a4bd4-goog
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Cc:     brouer@redhat.com, "davem@davemloft.net" <davem@davemloft.net>,
-        "edumazet@google.com" <edumazet@google.com>,
-        "pabeni@redhat.com" <pabeni@redhat.com>,
-        Shenwei Wang <shenwei.wang@nxp.com>,
-        Clark Wang <xiaoning.wang@nxp.com>,
-        "ast@kernel.org" <ast@kernel.org>,
-        "daniel@iogearbox.net" <daniel@iogearbox.net>,
-        "hawk@kernel.org" <hawk@kernel.org>,
-        "john.fastabend@gmail.com" <john.fastabend@gmail.com>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        dl-linux-imx <linux-imx@nxp.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        Andrew Lunn <andrew@lunn.ch>
-Subject: Re: [PATCH V3 net-next] net: fec: add XDP_TX feature support
-Content-Language: en-US
-To:     Wei Fang <wei.fang@nxp.com>, Jakub Kicinski <kuba@kernel.org>,
-        Jesper Dangaard Brouer <jbrouer@redhat.com>
-References: <20230731060025.3117343-1-wei.fang@nxp.com>
- <20230802104706.5ce541e9@kernel.org>
- <AM5PR04MB313985C61D92E183238809138808A@AM5PR04MB3139.eurprd04.prod.outlook.com>
-In-Reply-To: <AM5PR04MB313985C61D92E183238809138808A@AM5PR04MB3139.eurprd04.prod.outlook.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi everyone,
 
+This series splits out the MT6366 PMIC from the MT6358. The two PMICs
+are mostly identical, except for the regulator bits. The MT6366 is
+missing the VCAM* (camera related) LDOs, but in their place has a few
+other ones. This thus requires a separate DT binding and compatible.
 
-On 03/08/2023 05.58, Wei Fang wrote:
->>>   		} else {
->>> -			xdp_return_frame(xdpf);
->>> +			xdp_return_frame_rx_napi(xdpf);
->>
->> If you implement Jesper's syncing suggestions, I think you can use
->>
->> 	page_pool_put_page(pool, page, 0, true);
+This depends on my previous "regulator: mt6358: Remove bogus regulators
+and improvements" series [1]. The series is still in flight, but I think
+posting this earlier would help get reviews underway.
 
-To Jakub, using 0 here you are trying to bypass the DMA-sync (which is
-valid as driver knows XDP_TX have already done the sync).
-The code will still call into DMA-sync calls with zero as size, so
-wonder if we should detect size zero and skip that call?
-(I mean is this something page_pool should support.)
+Patch 1 splits out the compatible string for the MT6366 PMIC, so that
+it no longer falls back to the MT6358 one.
 
-diff --git a/net/core/page_pool.c b/net/core/page_pool.c
-index 7ca456bfab71..778d061e4f2c 100644
---- a/net/core/page_pool.c
-+++ b/net/core/page_pool.c
-@@ -323,7 +323,8 @@ static void page_pool_dma_sync_for_device(struct 
-page_pool *pool,
-         dma_addr_t dma_addr = page_pool_get_dma_addr(page);
+Patch 2 adds new register definitions for the MT6366-specific
+regulators.
 
-         dma_sync_size = min(dma_sync_size, pool->p.max_len);
--       dma_sync_single_range_for_device(pool->p.dev, dma_addr,
-+       if (dma_sync_size)
-+               dma_sync_single_range_for_device(pool->p.dev, dma_addr,
-                                          pool->p.offset, dma_sync_size,
-                                          pool->p.dma_dir);
+Patch 3 adds a new entry for the MT6366 PMIC to the MT6397 mfd driver.
 
+These three should go through the MFD tree and put on an immutable
+branch for the regulator tree to consume patch 2.
 
+Patch 4 adds new binding for MT6366 regulators. This was previously done
+by Zhiyong Tao [2] from MediaTek. I cleaned up the patch based on previous
+review comments, simplified the regulator names, and added regulator
+supplies. Bogus regulators were also dropped, like what was done for the
+MT6358 [1].
 
->>
->> for XDP_TX here to avoid the DMA sync on page recycle.
-> 
-> I tried Jasper's syncing suggestion and used page_pool_put_page() to recycle
-> pages, but the results does not seem to improve the performance of XDP_TX,
+Patch 5 simplifies the MT6366 regulator names to match the new names
+specified in the binding.
 
-The optimization will only have effect on those devices which have
-dev->dma_coherent=false else DMA function [1] (e.g.
-dma_direct_sync_single_for_device) will skip the sync calls.
+Patch 6 makes the MT6366 VCN18 LDO regulator configurable. This is one
+of the differences between the MT6358 and MT6366.
 
-  [1] 
-https://elixir.bootlin.com/linux/v6.5-rc4/source/kernel/dma/direct.h#L63
+Patch 7 adds regulators that were missing from the originally proposed
+binding and driver.
 
-(Cc. Andrew Lunn)
-Does any of the imx generations have dma-noncoherent memory?
+Patch 8 adds regulator supply names to the MT6366 regulators
 
-And does any of these use the fec NIC driver?
+Patch 9 adds an entry for the MT6366 PMIC to the MedaiTek pwrap driver.
 
-> it even degrades the speed.
+As mentioned, patches 1 through 3 should go through the mfd tree on an
+immutable branch. patches 4 through 8 should go through the regulator
+tree, on top of the aforementioned immutable branch. Patch 9 should go
+through the MediaTek tree.
 
-Could be low runs simply be a variation between your test runs?
+[1] https://lore.kernel.org/linux-arm-kernel/20230721082903.2038975-1-wenst@chromium.org/
+[2] https://lore.kernel.org/linux-arm-kernel/20220823123745.14061-1-zhiyong.tao@mediatek.com/
 
-The specific device (imx8mpevk) this was tested on, clearly have
-dma_coherent=true, or else we would have seen a difference.
-But the code change should not have any overhead for the
-dma_coherent=true case, the only extra overhead is the extra empty DMA
-sync call with size zero (as discussed in top).
+Chen-Yu Tsai (8):
+  dt-bindings: mfd: mt6397: Split out compatible for MediaTek MT6366
+    PMIC
+  mfd: mt6358: Add registers for MT6366 specific regulators
+  mfd: mt6397: Split MediaTek MT6366 PMIC out of MT6358
+  regulator: mt6358: fix and drop type prefix in MT6366 regulator node
+    names
+  regulator: mt6358: Make MT6366 vcn18 LDO configurable
+  regulator: mt6358: Add missing regulators for MT6366
+  regulator: mt6358: Add supply names for MT6366 regulators
+  soc: mediatek: pwrap: add support for MT6366 PMIC
 
-> 
-> The result of the current modification.
-> root@imx8mpevk:~# ./xdp2 eth0
-> proto 17:     260180 pkt/s
+Zhiyong Tao (1):
+  regulator: dt-bindings: mediatek: Add MT6366 PMIC
 
-These results are *significantly* better than reported in patch-1.
-What happened?!?
+ .../devicetree/bindings/mfd/mt6397.txt        |   5 +-
+ .../regulator/mediatek,mt6366-regulator.yaml  | 154 ++++++++++++++++++
+ drivers/mfd/mt6397-core.c                     |  31 ++++
+ drivers/regulator/mt6358-regulator.c          | 127 ++++++++++-----
+ drivers/soc/mediatek/mtk-pmic-wrap.c          |   2 +
+ include/linux/mfd/mt6358/registers.h          |  18 ++
+ include/linux/regulator/mt6358-regulator.h    |   3 +
+ 7 files changed, 296 insertions(+), 44 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/regulator/mediatek,mt6366-regulator.yaml
 
-e.g.
-  root@imx8mpevk:~# ./xdp2 eth0
-  proto 17:     135817 pkt/s
-  proto 17:     142776 pkt/s
-
-> proto 17:     260373 pkt/s
-> proto 17:     260363 pkt/s
-> proto 17:     259036 pkt/s
-> proto 17:     260180 pkt/s
-> proto 17:     260048 pkt/s
-> proto 17:     260029 pkt/s
-> proto 17:     260133 pkt/s
-> proto 17:     260021 pkt/s
-> proto 17:     260203 pkt/s
-> proto 17:     260293 pkt/s
-> proto 17:     259418 pkt/s
-> 
-> After using the sync suggestion, the result shows as follow.
-> root@imx8mpevk:~# ./xdp2 eth0
-> proto 17:     255956 pkt/s
-> proto 17:     255841 pkt/s
-> proto 17:     255835 pkt/s
-> proto 17:     255381 pkt/s
-> proto 17:     255736 pkt/s
-> proto 17:     255779 pkt/s
-> proto 17:     254135 pkt/s
-> proto 17:     255584 pkt/s
-> proto 17:     255855 pkt/s
-> proto 17:     255664 pkt/s
-> 
-> Below are my changes, I don't know what cause it. Based on the results,
-> it's better to keep the current modification.
-> 
-> diff --git a/drivers/net/ethernet/freescale/fec_main.c b/drivers/net/ethernet/freescale/fec_main.c
-> index d5fda24a4c52..415c0cb83f84 100644
-> --- a/drivers/net/ethernet/freescale/fec_main.c
-> +++ b/drivers/net/ethernet/freescale/fec_main.c
-> @@ -77,7 +77,8 @@
->   static void set_multicast_list(struct net_device *ndev);
->   static void fec_enet_itr_coal_set(struct net_device *ndev);
->   static int fec_enet_xdp_tx_xmit(struct net_device *ndev,
-> -                               struct xdp_buff *xdp);
-> +                               struct xdp_buff *xdp,
-> +                               u32 dma_sync_len);
-> 
->   #define DRIVER_NAME    "fec"
-> 
-> @@ -1487,7 +1488,14 @@ fec_enet_tx_queue(struct net_device *ndev, u16 queue_id, int budget)
->                          /* Free the sk buffer associated with this last transmit */
->                          dev_kfree_skb_any(skb);
->                  } else {
-> -                       xdp_return_frame_rx_napi(xdpf);
-> +                       if (txq->tx_buf[index].type == FEC_TXBUF_T_XDP_NDO)
-> +                               xdp_return_frame_rx_napi(xdpf);
-> +                       else {
-> +                               struct page *page;
-> +
-> +                               page = virt_to_head_page(xdpf->data);
-> +                               page_pool_put_page(page->pp, page, 0, true);
-> +                       }
-> 
->                          txq->tx_buf[index].xdp = NULL;
->                          /* restore default tx buffer type: FEC_TXBUF_T_SKB */
-> @@ -1557,7 +1565,8 @@ fec_enet_run_xdp(struct fec_enet_private *fep, struct bpf_prog *prog,
->          act = bpf_prog_run_xdp(prog, xdp);
-> 
->          /* Due xdp_adjust_tail: DMA sync for_device cover max len CPU touch */
-> -       sync = xdp->data_end - xdp->data_hard_start - FEC_ENET_XDP_HEADROOM;
-> +       sync = xdp->data_end - xdp->data;
->          sync = max(sync, len);
-> 
->          switch (act) {
-> @@ -1579,7 +1588,7 @@ fec_enet_run_xdp(struct fec_enet_private *fep, struct bpf_prog *prog,
->                  break;
-> 
->          case XDP_TX:
-> -               err = fec_enet_xdp_tx_xmit(fep->netdev, xdp);
-> +               err = fec_enet_xdp_tx_xmit(fep->netdev, xdp, sync);
->                  if (unlikely(err)) {
->                          ret = FEC_ENET_XDP_CONSUMED;
->                          page = virt_to_head_page(xdp->data);
-> @@ -3807,6 +3816,7 @@ fec_enet_xdp_get_tx_queue(struct fec_enet_private *fep, int index)
->   static int fec_enet_txq_xmit_frame(struct fec_enet_private *fep,
->                                     struct fec_enet_priv_tx_q *txq,
->                                     struct xdp_frame *frame,
-> +                                  u32 dma_sync_len,
->                                     bool ndo_xmit)
->   {
->          unsigned int index, status, estatus;
-> @@ -3840,7 +3850,7 @@ static int fec_enet_txq_xmit_frame(struct fec_enet_private *fep,
->                  dma_addr = page_pool_get_dma_addr(page) + sizeof(*frame) +
->                             frame->headroom;
->                  dma_sync_single_for_device(&fep->pdev->dev, dma_addr,
-> -                                          frame->len, DMA_BIDIRECTIONAL);
-> +                                          dma_sync_len, DMA_BIDIRECTIONAL);
->                  txq->tx_buf[index].type = FEC_TXBUF_T_XDP_TX;
->          }
-> 
-> @@ -3889,7 +3899,8 @@ static int fec_enet_txq_xmit_frame(struct fec_enet_private *fep,
->   }
-> 
->   static int fec_enet_xdp_tx_xmit(struct net_device *ndev,
-> -                               struct xdp_buff *xdp)
-> +                               struct xdp_buff *xdp,
-> +                               u32 dma_sync_len)
->   {
->          struct xdp_frame *xdpf = xdp_convert_buff_to_frame(xdp);
->          struct fec_enet_private *fep = netdev_priv(ndev);
-> @@ -3909,7 +3920,7 @@ static int fec_enet_xdp_tx_xmit(struct net_device *ndev,
-> 
->          /* Avoid tx timeout as XDP shares the queue with kernel stack */
->          txq_trans_cond_update(nq);
-> -       ret = fec_enet_txq_xmit_frame(fep, txq, xdpf, false);
-> +       ret = fec_enet_txq_xmit_frame(fep, txq, xdpf, dma_sync_len, false);
-> 
->          __netif_tx_unlock(nq);
-> 
-> @@ -3938,7 +3949,7 @@ static int fec_enet_xdp_xmit(struct net_device *dev,
->          /* Avoid tx timeout as XDP shares the queue with kernel stack */
->          txq_trans_cond_update(nq);
->          for (i = 0; i < num_frames; i++) {
-> -               if (fec_enet_txq_xmit_frame(fep, txq, frames[i], true) < 0)
-> +               if (fec_enet_txq_xmit_frame(fep, txq, frames[i], 0, true) < 0)
->                          break;
->                  sent_frames++;
->          }
-> 
+-- 
+2.41.0.585.gd2178a4bd4-goog
 
