@@ -2,102 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5524A76F402
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 22:23:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ECE1776F403
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 22:23:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231765AbjHCUXG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Aug 2023 16:23:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48226 "EHLO
+        id S231901AbjHCUX4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Aug 2023 16:23:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48640 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229959AbjHCUXE (ORCPT
+        with ESMTP id S229959AbjHCUXx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Aug 2023 16:23:04 -0400
-Received: from ms.lwn.net (ms.lwn.net [IPv6:2600:3c01:e000:3a1::42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25EFE10CA;
-        Thu,  3 Aug 2023 13:23:03 -0700 (PDT)
-Received: from localhost (unknown [IPv6:2601:281:8300:73::5f6])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ms.lwn.net (Postfix) with ESMTPSA id C071F31A;
-        Thu,  3 Aug 2023 20:23:02 +0000 (UTC)
-DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net C071F31A
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
-        t=1691094182; bh=Z6H7ra75b1GD73w6Q6OpzWHRmyhXKkKOs8nQ5RLXIVQ=;
-        h=From:To:Cc:Subject:Date:From;
-        b=hjFHyuy6wYcVB18RivK5h6DV5/Y7YbgjJMZcXEPNRJRS+4ayf3uIKYX9d833oI401
-         jBtZUXp7witT83riwS7a0wgq1eaxfPMObzH/nYeq7RRj6gzTVMRj1W5Qa76XLr3zg/
-         TeW26vvx/HofPouEtLJY/8QBRLSyM2gGEOQK1x42jsFyvH/PhwzHR0IqBEqQS6KVaS
-         cYFYN77NWHUvtBP6x/v9SZZiZMXboW+2b8bfTmMb8aaocFV4tGdO77/Neid2Zn1es3
-         gSJ4CCjnYGCFVEFwX/lu5GO32flW8u5V9R38z6rHfNIhizQ5WQmhjBC3i/lw3RJPD/
-         OHPS/qk607c1w==
-From:   Jonathan Corbet <corbet@lwn.net>
-To:     linux-kernel@vger.kernel.org
-Cc:     Dan Williams <dan.j.williams@intel.com>, linux-doc@vger.kernel.org,
-        tech-board@lists.linuxfoundation.org
-Subject: [PATCH] docs: Add a section on surveys to the researcher guidelines
-Date:   Thu, 03 Aug 2023 14:23:02 -0600
-Message-ID: <87il9v7u55.fsf@meer.lwn.net>
+        Thu, 3 Aug 2023 16:23:53 -0400
+Received: from mail-yw1-x1134.google.com (mail-yw1-x1134.google.com [IPv6:2607:f8b0:4864:20::1134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E190F269E
+        for <linux-kernel@vger.kernel.org>; Thu,  3 Aug 2023 13:23:52 -0700 (PDT)
+Received: by mail-yw1-x1134.google.com with SMTP id 00721157ae682-58653c9bed3so16586907b3.2
+        for <linux-kernel@vger.kernel.org>; Thu, 03 Aug 2023 13:23:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1691094232; x=1691699032;
+        h=to:subject:message-id:date:from:sender:mime-version:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=YgsQjPYSA4x9EUAST26pLIMgzwk5/fmUNEDBBVE+P4A=;
+        b=CTAdy697Oc40Dma38+0VyQ1aPUem55vYhZ8ZFreUl+Tknje5C9DeF91DePs7jz/In1
+         7t2uN2Vk8ftbqpEVZWxll9QYZuVP6mocgaV4QpjXkFkvyRihaEuU5r8p56IJYw16V4JA
+         gR7u300hOAwsB4wmtHI3SCU0OrjsqGCXE/HgzEmgZQeANZEKTB2k88D6THa99HMN1iAU
+         AGge7bujWeohHVSxupJi/wdzyaOsyH4x6x7ewyPNPhs5y5S0ijyhAMJWlAEvKLa2LY2q
+         cXgxFr8RJvTamlpqqQOl4bZJ8mjhZ0iIIzyQuaJ3FHZijXdf+y+C8aqGK4E4xIJxgj20
+         cnJA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691094232; x=1691699032;
+        h=to:subject:message-id:date:from:sender:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=YgsQjPYSA4x9EUAST26pLIMgzwk5/fmUNEDBBVE+P4A=;
+        b=ZcnCAXtAv3ol+odQJqgJnNvze/+WdjAqo8jVxKuQuko6oK2Ch6ETlkvwC1fsFKi8/F
+         Dgj5fMhIA8KTWFiUBHEWR6HLTGxvCUQXQKB3hmt3ekgfv9PSa+hc/1fidOoOmSexo7PX
+         gg1tScE/90D7O7PhlaW10R9m1b7xydJd28SodAPt2h4dNugzollardAXpNwj+RntG3BQ
+         +JWzvHqtl+Kzh5XK30iBhBJzvXMMm/QfsxxTzx5Lo3uey3g9q2mwweL5ThcLDAITYX3b
+         VtEwJb6GH0S2bQwN5hEe4pVJVguysbbJdTosWPFmcOZNCGkKS4KsNmWJhS7ocY1dLmkn
+         XFsg==
+X-Gm-Message-State: ABy/qLaSiSiYVgDj26Cmt4ZKvTpHDc0yiLM8f7g3cJk/blOKs2VFWM0D
+        2xEc3cfaG5HFMZr9fWo06CUdTPQBWdYdTFJ06eo=
+X-Google-Smtp-Source: APBJJlEc4l5fn1PfoG5lk5XKhmjaQqBEUOxdlJ/5iv5Br/LUmmbfO59MmE9PVsth+LqnZlqTz1Q5moWz7ezbdVshstU=
+X-Received: by 2002:a0d:dd56:0:b0:583:6767:1cb9 with SMTP id
+ g83-20020a0ddd56000000b0058367671cb9mr19095971ywe.39.1691094231889; Thu, 03
+ Aug 2023 13:23:51 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Sender: mrderick.smith2@gmail.com
+Received: by 2002:a05:7108:158d:b0:311:eba4:1a86 with HTTP; Thu, 3 Aug 2023
+ 13:23:51 -0700 (PDT)
+From:   Dr Lisa Williams <lw4666555@gmail.com>
+Date:   Thu, 3 Aug 2023 13:23:51 -0700
+X-Google-Sender-Auth: _kTshNqTrOxTBzzb6a55WoL6VEM
+Message-ID: <CAO-9xd=bec+UqHrtD1qXd+cwCmyiozqjb_8yR4aGgxxQdPN=hw@mail.gmail.com>
+Subject: Hi,
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=0.8 required=5.0 tests=BAYES_50,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-It is common for university researchers to want to poll the community with
-online surveys, but that approach distracts developers while yielding
-little in the way of useful data.  Encourage alternatives instead.
+Hi,
 
-Co-developed-by: Dan Williams <dan.j.williams@intel.com>
-Signed-off-by: Dan Williams <dan.j.williams@intel.com>
-Signed-off-by: Jonathan Corbet <corbet@lwn.net>
----
- .../process/researcher-guidelines.rst         | 27 +++++++++++++++++++
- 1 file changed, 27 insertions(+)
+My name is Dr. Lisa Williams, from the United States, currently living
+in the United Kingdom.
 
-diff --git a/Documentation/process/researcher-guidelines.rst b/Documentation/process/researcher-guidelines.rst
-index 9fcfed3c350b..d159cd4f5e5b 100644
---- a/Documentation/process/researcher-guidelines.rst
-+++ b/Documentation/process/researcher-guidelines.rst
-@@ -44,6 +44,33 @@ explicit agreement of, and full disclosure to, the individual developers
- involved. Developers cannot be interacted with/experimented on without
- consent; this, too, is standard research ethics.
- 
-+Surveys
-+=======
-+
-+Research often takes the form of surveys sent to maintainers or
-+contributors.  As a general rule, though, the kernel community derives
-+little value from these surveys.  The kernel development process works
-+because every developer benefits from their participation, even working
-+with others who have different goals.  Responding to a survey, though, is a
-+one-way demand placed on busy developers with no corresponding benefit to
-+themselves or to the kernel community as a whole.  For this reason, this
-+method of research is discouraged.
-+
-+Kernel community members already receive far too much email and are likely
-+to perceive survey requests as just another demand on their time.  Sending
-+such requests deprives the community of valuable contributor time and is
-+unlikely to yield a statistically useful response.
-+
-+As an alternative, researchers should consider attending developer events,
-+hosting sessions where the research project and its benefits to the
-+participants can be explained, and interacting directly with the community
-+there.  The information received will be far richer than that obtained from
-+an email survey, and the community will gain from the ability to learn from
-+your insights as well.
-+
-+Patches
-+=======
-+
- To help clarify: sending patches to developers *is* interacting
- with them, but they have already consented to receiving *good faith
- contributions*. Sending intentionally flawed/vulnerable patches or
--- 
-2.41.0
+I hope you consider my friend request. I will share some of my photos
+and more details about me when I get your reply.
 
+With love
+Lisa
