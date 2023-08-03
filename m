@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C66BF76E341
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 10:36:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 399F976E343
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 10:36:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233213AbjHCIgk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Aug 2023 04:36:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55510 "EHLO
+        id S234721AbjHCIgq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Aug 2023 04:36:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55558 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234389AbjHCIgC (ORCPT
+        with ESMTP id S234534AbjHCIgU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Aug 2023 04:36:02 -0400
-Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 248723C31;
-        Thu,  3 Aug 2023 01:34:36 -0700 (PDT)
-Received: by mail-pf1-x42f.google.com with SMTP id d2e1a72fcca58-686b91c2744so481121b3a.0;
-        Thu, 03 Aug 2023 01:34:36 -0700 (PDT)
+        Thu, 3 Aug 2023 04:36:20 -0400
+Received: from mail-oi1-x235.google.com (mail-oi1-x235.google.com [IPv6:2607:f8b0:4864:20::235])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D43F106;
+        Thu,  3 Aug 2023 01:34:47 -0700 (PDT)
+Received: by mail-oi1-x235.google.com with SMTP id 5614622812f47-3a1ebb85f99so537031b6e.2;
+        Thu, 03 Aug 2023 01:34:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1691051675; x=1691656475;
+        d=gmail.com; s=20221208; t=1691051686; x=1691656486;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=CzdBr4YE6+e2aCPihxyG1VP6AlkYIgUBNXtEC6jGkqA=;
-        b=Y/9r8JJKfyClJG9K8FJm7KPjugSxpks8rCNhdwQOcJ/bv6c8+pq3lK1IGeChGXO2LC
-         pi3sH0DN49vBEdT3Qsn6L3k7bSFjv45LF32+NLCeRjTucTTcel6FNw6g4Jf1HIPX/Byh
-         CFPwads8yzANusFzRsqrcp27YQlhFSCVP5tt1F7ywMOWKqRZA3T1GHLOuCt/Vodga/mc
-         +OGFmPsQHN+3DHmzldqn5nYkzEAv4BpH2ReuCijEBmP7XjPi3iEwm3SSh7uEDwWSvO3Z
-         gMRmxZJVK+ePNtOwjYugvmX3+8FoHs7WFHenPW/eFPImn5eDtu4qcJN3QTr6B0nuxHvF
-         bYzQ==
+        bh=9yzvVXRdBeqmAGMgkYT2mmYjrEoAW1rfgKPDCwF36WA=;
+        b=RRMSprWcdo0EHDLbflQ1VWFM2eErDNcXJkuOivyhQxPPJX3GByJ5qqB5xy48HDkRbe
+         fkB/qdPYljeCR+bRYB32TcjMnek5pwR2ssfcS6j/p3DYiLZ3WCX4SNK244SjYo6Xj+mj
+         qTL+TJBlgARMMhO7bnLdgWh++1uylOZb7Zmw7KEWlUKXfOqkjGohEk8qspJt5bB83W9E
+         fzb01EFStYKCKG1ky7H+hETc7u7sz4MF68eQl9UaGxdO4su82r4wMcYcL72KvMSBBSRc
+         65BrUGseIxSrZCciyPmk05Lo5KzVHM7+wx+0cwJqP0jZIdmHd/e9Wpe5H8JOKF+hwRQG
+         I2Bg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691051675; x=1691656475;
+        d=1e100.net; s=20221208; t=1691051686; x=1691656486;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=CzdBr4YE6+e2aCPihxyG1VP6AlkYIgUBNXtEC6jGkqA=;
-        b=QN+XxRPsEHEipReA3y+RX6zVTq2/ihrkm0k65yztcS5nZIdmijhdTjMTaQM6It9Lw1
-         E1W0UUe/pO3RfhoEbVCqdtxRqWWjVGy7mGDjChveeSHICtOdacRbwLHil5JBmbZtASdO
-         NWR3tvL4W7cUthaYQ66uL2VckgTTNAaYEsbxnol2sm/D28nE8j/skJcmp6JXJ3pwIdDp
-         u2C3RiuLe+BfcXGEznLgmDp+BcSPf0yXjNy4OtUjuf1SvF762MjGql+XbE6mCTDyAt/P
-         ZEBKi7Ii+kxPy6v7Cu5Bs2ul4mYQUwExUQa9Xhg0qGHr+yiia9JGmfemYfawNuMiotzS
-         kSAg==
-X-Gm-Message-State: ABy/qLZ81Il02Zfit6KrJC2RY7F9Q7duPWA2s2ixeVS/bp1P0Pm1Xs0l
-        SI/lce4vYpJ+aHIR7GekimI=
-X-Google-Smtp-Source: APBJJlEGFiyYR2dnywruAdKluQmnlzdmdALjAj927Ka8hbWWQiJM/D7yXi/2t+xwAdwtSeQEt4rHLA==
-X-Received: by 2002:a05:6a00:15d6:b0:682:a62a:ec36 with SMTP id o22-20020a056a0015d600b00682a62aec36mr22266054pfu.15.1691051675648;
-        Thu, 03 Aug 2023 01:34:35 -0700 (PDT)
+        bh=9yzvVXRdBeqmAGMgkYT2mmYjrEoAW1rfgKPDCwF36WA=;
+        b=ENBgpJ8x9oysWhvOTGG4jXMC056ODSDvlUL+VS7d3555ELvq5KWGgpPWH5U58SMtU+
+         g/w76TcAopkbAv4vwP2+N9wYGcWwDhAFtYIxjJflurvJrIkT0jmW+gB5f2QDvNLmDkri
+         1s5b0Ej/szI3oUuLN9j0CByDIVWYVuk9XymHPBJ1pyX+fdh7KNmLlvpp0paMSj58u92h
+         tZmjldHHgxAGfDX97I//6ngW3Kduv6vmTWF0f0QGEy3q553u7uRWIf0M9ZUwWqgXqEz5
+         F/QrHmSXVaa78XofpCBsw2XUa7levHeg7j5uC5lonuH4YiFjdnXTqTk5rmbfUuRrUfce
+         OjpQ==
+X-Gm-Message-State: ABy/qLZDgKVU+Y+GfOqzS/vAw9UNuRF+V0ob75s/ZwWhLGMVX6NZIMrI
+        /N4qSeO5VSCzFcXmVVLTz1I=
+X-Google-Smtp-Source: APBJJlHZev/DvqiJieIn4E39AVjyE63qfFfRlV74M5gg22x1ulMAfI6Or6fmHn9LXPFnouH4XUlypA==
+X-Received: by 2002:a05:6808:f8e:b0:3a7:8a1:9cdd with SMTP id o14-20020a0568080f8e00b003a708a19cddmr18794967oiw.28.1691051686270;
+        Thu, 03 Aug 2023 01:34:46 -0700 (PDT)
 Received: from localhost.localdomain ([203.205.141.83])
-        by smtp.googlemail.com with ESMTPSA id r6-20020a63b106000000b00563feb7113dsm12541876pgf.91.2023.08.03.01.34.32
+        by smtp.googlemail.com with ESMTPSA id r6-20020a63b106000000b00563feb7113dsm12541876pgf.91.2023.08.03.01.34.42
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 03 Aug 2023 01:34:35 -0700 (PDT)
+        Thu, 03 Aug 2023 01:34:45 -0700 (PDT)
 From:   Ze Gao <zegao2021@gmail.com>
 X-Google-Original-From: Ze Gao <zegao@tencent.com>
 To:     Adrian Hunter <adrian.hunter@intel.com>,
@@ -64,9 +64,9 @@ To:     Adrian Hunter <adrian.hunter@intel.com>,
         Steven Rostedt <rostedt@goodmis.org>
 Cc:     linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
         linux-trace-kernel@vger.kernel.org, Ze Gao <zegao@tencent.com>
-Subject: [RFC PATCH v6 1/5] perf sched: sync state char array with the kernel
-Date:   Thu,  3 Aug 2023 04:33:48 -0400
-Message-ID: <20230803083352.1585-2-zegao@tencent.com>
+Subject: [RFC PATCH v6 2/5] perf sched: reorganize sched-out task state report code
+Date:   Thu,  3 Aug 2023 04:33:49 -0400
+Message-ID: <20230803083352.1585-3-zegao@tencent.com>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <20230803083352.1585-1-zegao@tencent.com>
 References: <20230803083352.1585-1-zegao@tencent.com>
@@ -82,44 +82,167 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Update state char array and then remove unused and stale
-macros, which are kernel internal representations and not
-encouraged to use anymore.
+Mainly does housekeeping work and not introduce any
+functional change.
 
 Signed-off-by: Ze Gao <zegao@tencent.com>
 ---
- tools/perf/builtin-sched.c | 13 +------------
- 1 file changed, 1 insertion(+), 12 deletions(-)
+ tools/perf/builtin-sched.c | 59 +++++++++++++++++---------------------
+ 1 file changed, 26 insertions(+), 33 deletions(-)
 
 diff --git a/tools/perf/builtin-sched.c b/tools/perf/builtin-sched.c
-index 9ab300b6f131..8dc8f071721c 100644
+index 8dc8f071721c..5042874ba204 100644
 --- a/tools/perf/builtin-sched.c
 +++ b/tools/perf/builtin-sched.c
-@@ -92,23 +92,12 @@ struct sched_atom {
- 	struct task_desc	*wakee;
- };
+@@ -94,11 +94,6 @@ struct sched_atom {
  
--#define TASK_STATE_TO_CHAR_STR "RSDTtZXxKWP"
-+#define TASK_STATE_TO_CHAR_STR "RSDTtXZPI"
+ #define TASK_STATE_TO_CHAR_STR "RSDTtXZPI"
  
- /* task state bitmask, copied from include/linux/sched.h */
- #define TASK_RUNNING		0
- #define TASK_INTERRUPTIBLE	1
- #define TASK_UNINTERRUPTIBLE	2
--#define __TASK_STOPPED		4
--#define __TASK_TRACED		8
--/* in tsk->exit_state */
--#define EXIT_DEAD		16
--#define EXIT_ZOMBIE		32
--#define EXIT_TRACE		(EXIT_ZOMBIE | EXIT_DEAD)
--/* in tsk->state again */
--#define TASK_DEAD		64
--#define TASK_WAKEKILL		128
--#define TASK_WAKING		256
--#define TASK_PARKED		512
- 
+-/* task state bitmask, copied from include/linux/sched.h */
+-#define TASK_RUNNING		0
+-#define TASK_INTERRUPTIBLE	1
+-#define TASK_UNINTERRUPTIBLE	2
+-
  enum thread_state {
  	THREAD_SLEEPING = 0,
+ 	THREAD_WAIT_CPU,
+@@ -255,7 +250,7 @@ struct thread_runtime {
+ 	u64 total_preempt_time;
+ 	u64 total_delay_time;
+ 
+-	int last_state;
++	char last_state;
+ 
+ 	char shortname[3];
+ 	bool comm_changed;
+@@ -425,7 +420,7 @@ static void add_sched_event_wakeup(struct perf_sched *sched, struct task_desc *t
+ }
+ 
+ static void add_sched_event_sleep(struct perf_sched *sched, struct task_desc *task,
+-				  u64 timestamp, u64 task_state __maybe_unused)
++				  u64 timestamp, char task_state __maybe_unused)
+ {
+ 	struct sched_atom *event = get_new_event(task, timestamp);
+ 
+@@ -840,6 +835,22 @@ replay_wakeup_event(struct perf_sched *sched,
+ 	return 0;
+ }
+ 
++static inline char task_state_char(int state)
++{
++	static const char state_to_char[] = "RSDTtXZPI";
++	unsigned int bit = state ? ffs(state) : 0;
++
++	return bit < sizeof(state_to_char) - 1 ? state_to_char[bit] : '?';
++}
++
++static inline char get_task_prev_state(struct evsel *evsel,
++				       struct perf_sample *sample)
++{
++	const int prev_state = evsel__intval(evsel, sample, "prev_state");
++
++	return task_state_char(prev_state);
++}
++
+ static int replay_switch_event(struct perf_sched *sched,
+ 			       struct evsel *evsel,
+ 			       struct perf_sample *sample,
+@@ -849,7 +860,7 @@ static int replay_switch_event(struct perf_sched *sched,
+ 		   *next_comm  = evsel__strval(evsel, sample, "next_comm");
+ 	const u32 prev_pid = evsel__intval(evsel, sample, "prev_pid"),
+ 		  next_pid = evsel__intval(evsel, sample, "next_pid");
+-	const u64 prev_state = evsel__intval(evsel, sample, "prev_state");
++	const char prev_state = get_task_prev_state(evsel, sample);
+ 	struct task_desc *prev, __maybe_unused *next;
+ 	u64 timestamp0, timestamp = sample->time;
+ 	int cpu = sample->cpu;
+@@ -1039,12 +1050,6 @@ static int thread_atoms_insert(struct perf_sched *sched, struct thread *thread)
+ 	return 0;
+ }
+ 
+-static char sched_out_state(u64 prev_state)
+-{
+-	const char *str = TASK_STATE_TO_CHAR_STR;
+-
+-	return str[prev_state];
+-}
+ 
+ static int
+ add_sched_out_event(struct work_atoms *atoms,
+@@ -1121,7 +1126,7 @@ static int latency_switch_event(struct perf_sched *sched,
+ {
+ 	const u32 prev_pid = evsel__intval(evsel, sample, "prev_pid"),
+ 		  next_pid = evsel__intval(evsel, sample, "next_pid");
+-	const u64 prev_state = evsel__intval(evsel, sample, "prev_state");
++	const char prev_state = get_task_prev_state(evsel, sample);
+ 	struct work_atoms *out_events, *in_events;
+ 	struct thread *sched_out, *sched_in;
+ 	u64 timestamp0, timestamp = sample->time;
+@@ -1157,7 +1162,7 @@ static int latency_switch_event(struct perf_sched *sched,
+ 			goto out_put;
+ 		}
+ 	}
+-	if (add_sched_out_event(out_events, sched_out_state(prev_state), timestamp))
++	if (add_sched_out_event(out_events, prev_state, timestamp))
+ 		return -1;
+ 
+ 	in_events = thread_atoms_search(&sched->atom_root, sched_in, &sched->cmp_pid);
+@@ -2022,24 +2027,12 @@ static void timehist_header(struct perf_sched *sched)
+ 	printf("\n");
+ }
+ 
+-static char task_state_char(struct thread *thread, int state)
+-{
+-	static const char state_to_char[] = TASK_STATE_TO_CHAR_STR;
+-	unsigned bit = state ? ffs(state) : 0;
+-
+-	/* 'I' for idle */
+-	if (thread__tid(thread) == 0)
+-		return 'I';
+-
+-	return bit < sizeof(state_to_char) - 1 ? state_to_char[bit] : '?';
+-}
+-
+ static void timehist_print_sample(struct perf_sched *sched,
+ 				  struct evsel *evsel,
+ 				  struct perf_sample *sample,
+ 				  struct addr_location *al,
+ 				  struct thread *thread,
+-				  u64 t, int state)
++				  u64 t, char state)
+ {
+ 	struct thread_runtime *tr = thread__priv(thread);
+ 	const char *next_comm = evsel__strval(evsel, sample, "next_comm");
+@@ -2080,7 +2073,7 @@ static void timehist_print_sample(struct perf_sched *sched,
+ 	print_sched_time(tr->dt_run, 6);
+ 
+ 	if (sched->show_state)
+-		printf(" %5c ", task_state_char(thread, state));
++		printf(" %5c ", thread->tid == 0 ? 'I' : state);
+ 
+ 	if (sched->show_next) {
+ 		snprintf(nstr, sizeof(nstr), "next: %s[%d]", next_comm, next_pid);
+@@ -2152,9 +2145,9 @@ static void timehist_update_runtime_stats(struct thread_runtime *r,
+ 		else if (r->last_time) {
+ 			u64 dt_wait = tprev - r->last_time;
+ 
+-			if (r->last_state == TASK_RUNNING)
++			if (r->last_state == 'R')
+ 				r->dt_preempt = dt_wait;
+-			else if (r->last_state == TASK_UNINTERRUPTIBLE)
++			else if (r->last_state == 'D')
+ 				r->dt_iowait = dt_wait;
+ 			else
+ 				r->dt_sleep = dt_wait;
+@@ -2579,7 +2572,7 @@ static int timehist_sched_change_event(struct perf_tool *tool,
+ 	struct thread_runtime *tr = NULL;
+ 	u64 tprev, t = sample->time;
+ 	int rc = 0;
+-	int state = evsel__intval(evsel, sample, "prev_state");
++	const char state = get_task_prev_state(evsel, sample);
+ 
+ 	addr_location__init(&al);
+ 	if (machine__resolve(machine, &al, sample) < 0) {
 -- 
 2.41.0
 
