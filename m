@@ -2,60 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F261676E5D7
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 12:42:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8752876E5D8
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 12:42:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235391AbjHCKl4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Aug 2023 06:41:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36804 "EHLO
+        id S235421AbjHCKmk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Aug 2023 06:42:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37142 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233213AbjHCKly (ORCPT
+        with ESMTP id S229710AbjHCKmh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Aug 2023 06:41:54 -0400
-Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 599FF2109
-        for <linux-kernel@vger.kernel.org>; Thu,  3 Aug 2023 03:41:53 -0700 (PDT)
-Received: by mail-ej1-x636.google.com with SMTP id a640c23a62f3a-99bf9252eddso118135766b.3
-        for <linux-kernel@vger.kernel.org>; Thu, 03 Aug 2023 03:41:53 -0700 (PDT)
+        Thu, 3 Aug 2023 06:42:37 -0400
+Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39047211E
+        for <linux-kernel@vger.kernel.org>; Thu,  3 Aug 2023 03:42:36 -0700 (PDT)
+Received: by mail-ej1-x635.google.com with SMTP id a640c23a62f3a-99c4923195dso112985066b.2
+        for <linux-kernel@vger.kernel.org>; Thu, 03 Aug 2023 03:42:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1691059311; x=1691664111;
+        d=gmail.com; s=20221208; t=1691059354; x=1691664154;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
          :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=2ZZ+1993PFiL9vsimGluFZaqdjZxW6PFOZVirQWnu4c=;
-        b=lLN4YasPvfDXyEsqgmXjcwmqwQmCsCs6i2izgRd8p9asCAmMCWdYd6Kqn8HMQ97wFY
-         l4E2VJQktKJ17M61ReFUR377fse+rqflWcc1PrHifsdxdjdWR660eBbUoxQc1UpJf1rx
-         7o6uKGqe0qKfAqhL/PzHUtoNUjdE8ow3G2S+Q0d0ODofzSVWG2V0Up7DLl2PsV1GrHNj
-         wtgMeyZ8oG41648pPQJlpJZQDhaXxgvOIJnNGgGK5dhaDRnOQqK05y5B4yZ8iVJFTdwC
-         qQhH503S3ABu+S3eFojY9O2jYMQiFXSCst6GznJBuEGK7FgET8ORa3YP99zJvEMpuuY+
-         VowQ==
+        bh=XbPbhMPVNEeVzbeeIgaxflnjIdmgr2gMBYjVpji1WIA=;
+        b=o2gOO30Wt1efKoG1KegAsqkU3b+hN8NuVghtO3ma3kL8HWxzQpksmPuMnVTXCUk2j8
+         +NNc3FZnDBoXnBZdnAH6xbTVwqhKApwR6SAyV1CkzYOIIO+lEf5XtzfGxF0dVLVhfrkk
+         7Q6LXLcJkuM0fpBcki7vRagHd9eyi55x1DUYyxcMfkn1vCc+FjrjW10re1GrroFEXfB6
+         7jzC+kLM5x7XW3TTnZO2kYt6FeTJxd5a/Qz8j+7jgH4p8VDeL4wO42FCMJdeqlvetuvb
+         BilVVALMIU3V8YKh1UrgKKrw5RchlAhP3kVgnGvUCXUwdp/ltsfCaonUiYNsvuxkkLrl
+         YMSg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691059311; x=1691664111;
+        d=1e100.net; s=20221208; t=1691059354; x=1691664154;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
          :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=2ZZ+1993PFiL9vsimGluFZaqdjZxW6PFOZVirQWnu4c=;
-        b=dSMTzraInlI7/syxW33P3Aen6ApGqhLQd4R/msBLpNLY3KKPx1PkvqS/cnI76A5hBl
-         7lmeouE1dG4q6Ig6kYvIYSRLbIpfq4kGnEDLWbIpfbuZumWpCqdwbUyyp9/7kR/EpFVl
-         xEaq2WXnHowoi3kw6XuUmA7tYgal41JN/3tcK7GHhoWZIXUTpzudZGQjzsCpNBMrXo/7
-         D4n1PfFcpSij9H/amA3FZ+VgiSMcejg2rBlGGDLa5BUNNGkE1Jj5l9T5oNUV86Sl+95W
-         +ZxcF/8X5Bt4rg0Uz8Mgha7SVWFyx9s0etjoRWJghPeLICahAFpYX/LvVZIENk7qkXmn
-         1koQ==
-X-Gm-Message-State: ABy/qLbruKQPAvg9+yJ5B4KQKZ80bQn/pu9cSX3bEg4sEwJqGYtgtsfr
-        gZwdrIjyZYOAJ2syh1OYlI+JKJuQBynn0g==
-X-Google-Smtp-Source: APBJJlEjB15fiXHkbVNtqsWOeFH7FesBMOnIDR97ydxYfBVrc04dYg5Ds1hkUtY3/7FJfRoDqBjZlA==
-X-Received: by 2002:a17:906:10ca:b0:992:42d4:a7dc with SMTP id v10-20020a17090610ca00b0099242d4a7dcmr7678471ejv.21.1691059311571;
-        Thu, 03 Aug 2023 03:41:51 -0700 (PDT)
+        bh=XbPbhMPVNEeVzbeeIgaxflnjIdmgr2gMBYjVpji1WIA=;
+        b=MPN31CI49K9HDfjHcVzEmkV2/ffbuiPtZVCHdWAJpxe1O/pFxmkUEQLfRewo904tp+
+         lyuI2+qzolwlDIGYURbVlPF4+SDllY6iQvs4yxUZFUlWYQEZ+3n0kF+/j6Re9go/9MX8
+         1bfmjrLWCWJIEOnbe08CAh3Dl+c701kQrc3a1LPreQHiV/lReHlDwbvJ7Z1defd0vRZD
+         HW8TSi0SxZP2kY6GLhNKL+mvxRQ6gPWo9fYCJD2uY2ILuHclZdCEzi62RkZHA5Jf/XSH
+         HU/Y/LZh6Yr80H81C782Y4aFe6Txt05ANA2ygbVZhCPfFvK0p/hHs3fCJd/YqXRBSeQ7
+         y+4A==
+X-Gm-Message-State: ABy/qLbG1DxCfR02z+gHlAfaDptaMaX8i/zxR578RG1iKBGTF60OBKVI
+        rEuHRT8CaTT8QU4NQw7Psrv9TZTeZ9aujA==
+X-Google-Smtp-Source: APBJJlGgqrTC8+1LMVZXagZDD6LFQNw9/8Z5hZflR8UD9ynlL2kv6dAkxidC/nIOZq6Rq7+1TqAxzw==
+X-Received: by 2002:a17:906:186:b0:99b:d599:5086 with SMTP id 6-20020a170906018600b0099bd5995086mr7540965ejb.75.1691059354223;
+        Thu, 03 Aug 2023 03:42:34 -0700 (PDT)
 Received: from localhost.localdomain ([78.97.234.98])
-        by smtp.gmail.com with ESMTPSA id i10-20020a170906250a00b009931baa0d44sm10466582ejb.140.2023.08.03.03.41.50
+        by smtp.gmail.com with ESMTPSA id o21-20020a17090637d500b009937e7c4e54sm10320333ejc.39.2023.08.03.03.42.33
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 03 Aug 2023 03:41:51 -0700 (PDT)
+        Thu, 03 Aug 2023 03:42:33 -0700 (PDT)
 From:   Andrei Coardos <aboutphysycs@gmail.com>
 To:     linux-kernel@vger.kernel.org
 Cc:     p.zabel@pengutronix.de, Andrei Coardos <aboutphysycs@gmail.com>,
         Alexandru Ardelean <alex@shruggie.ro>
-Subject: [PATCH] reset: bcm6345: remove unneeded call to platform_set_drvdata()
-Date:   Thu,  3 Aug 2023 13:41:42 +0300
-Message-Id: <20230803104142.29694-1-aboutphysycs@gmail.com>
+Subject: [PATCH] reset: lantiq: remove unneeded call to platform_set_drvdata()
+Date:   Thu,  3 Aug 2023 13:42:25 +0300
+Message-Id: <20230803104225.29740-1-aboutphysycs@gmail.com>
 X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -77,22 +77,21 @@ accessed outside of this driver file.
 Reviewed-by: Alexandru Ardelean <alex@shruggie.ro>
 Signed-off-by: Andrei Coardos <aboutphysycs@gmail.com>
 ---
- drivers/reset/reset-bcm6345.c | 2 --
- 1 file changed, 2 deletions(-)
+ drivers/reset/reset-lantiq.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/drivers/reset/reset-bcm6345.c b/drivers/reset/reset-bcm6345.c
-index ac6c7ad1deda..aa9353439e70 100644
---- a/drivers/reset/reset-bcm6345.c
-+++ b/drivers/reset/reset-bcm6345.c
-@@ -102,8 +102,6 @@ static int bcm6345_reset_probe(struct platform_device *pdev)
- 	if (!bcm6345_reset)
+diff --git a/drivers/reset/reset-lantiq.c b/drivers/reset/reset-lantiq.c
+index 549ba45d8597..652a45890cb2 100644
+--- a/drivers/reset/reset-lantiq.c
++++ b/drivers/reset/reset-lantiq.c
+@@ -173,7 +173,6 @@ static int lantiq_rcu_reset_probe(struct platform_device *pdev)
  		return -ENOMEM;
  
--	platform_set_drvdata(pdev, bcm6345_reset);
--
- 	bcm6345_reset->base = devm_platform_ioremap_resource(pdev, 0);
- 	if (IS_ERR(bcm6345_reset->base))
- 		return PTR_ERR(bcm6345_reset->base);
+ 	priv->dev = &pdev->dev;
+-	platform_set_drvdata(pdev, priv);
+ 
+ 	err = lantiq_rcu_reset_of_parse(pdev, priv);
+ 	if (err)
 -- 
 2.34.1
 
