@@ -2,43 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B72F176F1BE
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 20:21:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B27B676F1BB
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 20:21:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231439AbjHCSVQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Aug 2023 14:21:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47324 "EHLO
+        id S231821AbjHCSVU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Aug 2023 14:21:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47340 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230396AbjHCSUw (ORCPT
+        with ESMTP id S231214AbjHCSUz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Aug 2023 14:20:52 -0400
+        Thu, 3 Aug 2023 14:20:55 -0400
 Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 025B72D70;
-        Thu,  3 Aug 2023 11:20:50 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53A872726;
+        Thu,  3 Aug 2023 11:20:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1691086851; x=1722622851;
+  t=1691086854; x=1722622854;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=6ULYSDvilwFY/6INxKbphno6mzaAbIBgvgBeFj01z+4=;
-  b=fFjQX+3kzIYfvMPFfnLF9+joP9nzf5gJn9OylkZTxEpUehLfM9qqmg8d
-   o9crq/SSJ0a6ztLx6ePvBpRvFZbFlN8evM0GUTP0dDbUqBA6a2h8yl2SO
-   CNC0eA2JcXAfTg9/VspNtpxDeHP+1Pg9RyrmA720bdNv3l4DfHIIFMeUW
-   1SukvN78RwUFzQ3TurTf/ofD1QpdjbPzHWxO4k6MROKAE/Gw4HNDa4lce
-   TSBK7wrbrQT27nbyet5YoeS2AX4mYAOocLKwg3d/JyBOP+1y2WMH64SWl
-   xIptgpVnKmmHVw1S76zX+N31yjOx0NMcIizlfXL1HzDmPKU0lOTgMiDUB
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10791"; a="433811861"
+  bh=/RvGeZgasgv1mj7dNoL3ueQcvj+u+ttPutxwUs7TTE0=;
+  b=KyW6DFdevyemmr6kH6qmMttjpOCNYfskXGh5d76rr6+rgLqDEs8FTtWh
+   2jCXSZKZoOeF/TFpcYY6NWjltUUjl8U0eQRlvpHSJtBk0X7d/STXGvP70
+   VFnYg+hH4COGVJZz6heAUQrOmHb3hT9kwCorzCzkhyYGXRwWETtFVbk17
+   Z6NvVYOqy/s3gVrht/1zM/7SNmBixlFB4EOmjsAioe4CS5igW6fS3SV2k
+   7Hf+LHLavjeyKXdFwr2H5NNdsiDwiMQPr1RrDeyAfb33XP7W7HwtlC4zE
+   Vg+pQuH3LNqSyE7FrWMXWhLhoed4pD0L5/HdZpJgDe20fpkYodNY3/F3h
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10791"; a="433811907"
 X-IronPort-AV: E=Sophos;i="6.01,252,1684825200"; 
-   d="scan'208";a="433811861"
+   d="scan'208";a="433811907"
 Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Aug 2023 11:20:50 -0700
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Aug 2023 11:20:53 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10791"; a="764784553"
+X-IronPort-AV: E=McAfee;i="6600,9927,10791"; a="764784575"
 X-IronPort-AV: E=Sophos;i="6.01,252,1684825200"; 
-   d="scan'208";a="764784553"
+   d="scan'208";a="764784575"
 Received: from newjersey.igk.intel.com ([10.102.20.203])
-  by orsmga001.jf.intel.com with ESMTP; 03 Aug 2023 11:20:47 -0700
+  by orsmga001.jf.intel.com with ESMTP; 03 Aug 2023 11:20:50 -0700
 From:   Alexander Lobakin <aleksander.lobakin@intel.com>
 To:     "David S. Miller" <davem@davemloft.net>,
         Eric Dumazet <edumazet@google.com>,
@@ -53,9 +53,9 @@ Cc:     Alexander Lobakin <aleksander.lobakin@intel.com>,
         Ilias Apalodimas <ilias.apalodimas@linaro.org>,
         Simon Horman <simon.horman@corigine.com>,
         netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH net-next v3 2/6] net: skbuff: don't include <net/page_pool/types.h> to <linux/skbuff.h>
-Date:   Thu,  3 Aug 2023 20:20:34 +0200
-Message-ID: <20230803182038.2646541-3-aleksander.lobakin@intel.com>
+Subject: [PATCH net-next v3 3/6] page_pool: place frag_* fields in one cacheline
+Date:   Thu,  3 Aug 2023 20:20:35 +0200
+Message-ID: <20230803182038.2646541-4-aleksander.lobakin@intel.com>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <20230803182038.2646541-1-aleksander.lobakin@intel.com>
 References: <20230803182038.2646541-1-aleksander.lobakin@intel.com>
@@ -71,197 +71,56 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently, touching <net/page_pool/types.h> triggers a rebuild of more
-than half of the kernel. That's because it's included in
-<linux/skbuff.h>. And each new include to page_pool/types.h adds more
-[useless] data for the toolchain to process per each source file from
-that pile.
+On x86_64, frag_* fields of struct page_pool are scattered across two
+cachelines despite the summary size of 24 bytes. All three fields are
+used in pretty much the same places, but the last field, ::frag_users,
+is pushed out to the next CL, provoking unwanted false-sharing on
+hotpath (frags allocation code).
+There are some holes and cold members to move around. Move frag_* one
+block up, placing them right after &page_pool_params perfectly at the
+beginning of CL2. This doesn't do any meaningful to the second block, as
+those are some destroy-path cold structures, and doesn't do anything to
+::alloc_stats, which still starts at 200-byte offset, 8 bytes after CL3
+(still fitting into 1 cacheline).
+On my setup, this yields 1-2% of Mpps when using PP frags actively.
+When it comes to 32-bit architectures with 32-byte CL: &page_pool_params
+plus ::pad is 44 bytes, the block taken care of is 16 bytes within one
+CL, so there should be at least no regressions from the actual change.
+::pages_state_hold_cnt is not related directly to that triple, but is
+paired currently with ::frags_offset and decoupling them would mean
+either two 4-byte holes or more invasive layout changes.
 
-In commit 6a5bcd84e886 ("page_pool: Allow drivers to hint on SKB
-recycling"), Matteo included it to be able to call a couple of functions
-defined there. Then, in commit 57f05bc2ab24 ("page_pool: keep pp info as
-long as page pool owns the page") one of the calls was removed, so only
-one was left. It's the call to page_pool_return_skb_page() in
-napi_frag_unref(). The function is external and doesn't have any
-dependencies. Having very niche page_pool_types.h included only for that
-looks like an overkill.
-
-As %PP_SIGNATURE is not local to page_pool.c (was only in the
-early submissions), nothing holds this function there. Teleport
-page_pool_return_skb_page() to skbuff.c, just next to the main consumer,
-skb_pp_recycle(), and rename it to napi_pp_put_page(), as it doesn't
-work with skbs at all and the former name tells nothing. The #if guards
-here are only to not compile and have it in the vmlinux when not needed
--- both call sites are already guarded.
-Now, touching page_pool_types.h only triggers rebuilding of the drivers
-using it and a couple of core networking files.
-
-Suggested-by: Jakub Kicinski <kuba@kernel.org> # make skbuff.h less heavy
-Suggested-by: Alexander Duyck <alexanderduyck@fb.com> # move to skbuff.c
 Signed-off-by: Alexander Lobakin <aleksander.lobakin@intel.com>
 ---
- include/linux/skbuff.h        |  5 ++--
- include/net/page_pool/types.h |  2 --
- net/core/page_pool.c          | 39 ------------------------------
- net/core/skbuff.c             | 45 +++++++++++++++++++++++++++++++++--
- 4 files changed, 46 insertions(+), 45 deletions(-)
+ include/net/page_pool/types.h | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
-diff --git a/include/linux/skbuff.h b/include/linux/skbuff.h
-index 888e3d7e74c1..aa57e2eca33b 100644
---- a/include/linux/skbuff.h
-+++ b/include/linux/skbuff.h
-@@ -32,7 +32,6 @@
- #include <linux/if_packet.h>
- #include <linux/llist.h>
- #include <net/flow.h>
--#include <net/page_pool/types.h>
- #if IS_ENABLED(CONFIG_NF_CONNTRACK)
- #include <linux/netfilter/nf_conntrack_common.h>
- #endif
-@@ -3421,13 +3420,15 @@ static inline void skb_frag_ref(struct sk_buff *skb, int f)
- 	__skb_frag_ref(&skb_shinfo(skb)->frags[f]);
- }
- 
-+bool napi_pp_put_page(struct page *page, bool napi_safe);
-+
- static inline void
- napi_frag_unref(skb_frag_t *frag, bool recycle, bool napi_safe)
- {
- 	struct page *page = skb_frag_page(frag);
- 
- #ifdef CONFIG_PAGE_POOL
--	if (recycle && page_pool_return_skb_page(page, napi_safe))
-+	if (recycle && napi_pp_put_page(page, napi_safe))
- 		return;
- #endif
- 	put_page(page);
 diff --git a/include/net/page_pool/types.h b/include/net/page_pool/types.h
-index 9ac39191bed7..fcb846523398 100644
+index fcb846523398..887e7946a597 100644
 --- a/include/net/page_pool/types.h
 +++ b/include/net/page_pool/types.h
-@@ -185,8 +185,6 @@ struct page_pool {
- struct page *page_pool_alloc_pages(struct page_pool *pool, gfp_t gfp);
- struct page *page_pool_alloc_frag(struct page_pool *pool, unsigned int *offset,
- 				  unsigned int size, gfp_t gfp);
--bool page_pool_return_skb_page(struct page *page, bool napi_safe);
--
- struct page_pool *page_pool_create(const struct page_pool_params *params);
+@@ -123,16 +123,16 @@ struct page_pool_stats {
+ struct page_pool {
+ 	struct page_pool_params p;
  
- struct xdp_mem_info;
-diff --git a/net/core/page_pool.c b/net/core/page_pool.c
-index cd28c1f14002..03ad74d25959 100644
---- a/net/core/page_pool.c
-+++ b/net/core/page_pool.c
-@@ -935,42 +935,3 @@ void page_pool_update_nid(struct page_pool *pool, int new_nid)
- 	}
- }
- EXPORT_SYMBOL(page_pool_update_nid);
--
--bool page_pool_return_skb_page(struct page *page, bool napi_safe)
--{
--	struct napi_struct *napi;
--	struct page_pool *pp;
--	bool allow_direct;
--
--	page = compound_head(page);
--
--	/* page->pp_magic is OR'ed with PP_SIGNATURE after the allocation
--	 * in order to preserve any existing bits, such as bit 0 for the
--	 * head page of compound page and bit 1 for pfmemalloc page, so
--	 * mask those bits for freeing side when doing below checking,
--	 * and page_is_pfmemalloc() is checked in __page_pool_put_page()
--	 * to avoid recycling the pfmemalloc page.
--	 */
--	if (unlikely((page->pp_magic & ~0x3UL) != PP_SIGNATURE))
--		return false;
--
--	pp = page->pp;
--
--	/* Allow direct recycle if we have reasons to believe that we are
--	 * in the same context as the consumer would run, so there's
--	 * no possible race.
--	 */
--	napi = READ_ONCE(pp->p.napi);
--	allow_direct = napi_safe && napi &&
--		READ_ONCE(napi->list_owner) == smp_processor_id();
--
--	/* Driver set this to memory recycling info. Reset it on recycle.
--	 * This will *not* work for NIC using a split-page memory model.
--	 * The page will be returned to the pool here regardless of the
--	 * 'flipped' fragment being in use or not.
--	 */
--	page_pool_put_full_page(pp, page, allow_direct);
--
--	return true;
--}
--EXPORT_SYMBOL(page_pool_return_skb_page);
-diff --git a/net/core/skbuff.c b/net/core/skbuff.c
-index d3bed964123c..acc5844a0de1 100644
---- a/net/core/skbuff.c
-+++ b/net/core/skbuff.c
-@@ -73,7 +73,7 @@
- #include <net/mpls.h>
- #include <net/mptcp.h>
- #include <net/mctp.h>
--#include <net/page_pool/types.h>
-+#include <net/page_pool/helpers.h>
- #include <net/dropreason.h>
++	long frag_users;
++	struct page *frag_page;
++	unsigned int frag_offset;
++	u32 pages_state_hold_cnt;
++
+ 	struct delayed_work release_dw;
+ 	void (*disconnect)(void *pool);
+ 	unsigned long defer_start;
+ 	unsigned long defer_warn;
  
- #include <linux/uaccess.h>
-@@ -879,11 +879,52 @@ static void skb_clone_fraglist(struct sk_buff *skb)
- 		skb_get(list);
- }
- 
-+#if IS_ENABLED(CONFIG_PAGE_POOL)
-+bool napi_pp_put_page(struct page *page, bool napi_safe)
-+{
-+	struct napi_struct *napi;
-+	struct page_pool *pp;
-+	bool allow_direct;
-+
-+	page = compound_head(page);
-+
-+	/* page->pp_magic is OR'ed with PP_SIGNATURE after the allocation
-+	 * in order to preserve any existing bits, such as bit 0 for the
-+	 * head page of compound page and bit 1 for pfmemalloc page, so
-+	 * mask those bits for freeing side when doing below checking,
-+	 * and page_is_pfmemalloc() is checked in __page_pool_put_page()
-+	 * to avoid recycling the pfmemalloc page.
-+	 */
-+	if (unlikely((page->pp_magic & ~0x3UL) != PP_SIGNATURE))
-+		return false;
-+
-+	pp = page->pp;
-+
-+	/* Allow direct recycle if we have reasons to believe that we are
-+	 * in the same context as the consumer would run, so there's
-+	 * no possible race.
-+	 */
-+	napi = READ_ONCE(pp->p.napi);
-+	allow_direct = napi_safe && napi &&
-+		READ_ONCE(napi->list_owner) == smp_processor_id();
-+
-+	/* Driver set this to memory recycling info. Reset it on recycle.
-+	 * This will *not* work for NIC using a split-page memory model.
-+	 * The page will be returned to the pool here regardless of the
-+	 * 'flipped' fragment being in use or not.
-+	 */
-+	page_pool_put_full_page(pp, page, allow_direct);
-+
-+	return true;
-+}
-+EXPORT_SYMBOL(napi_pp_put_page);
-+#endif
-+
- static bool skb_pp_recycle(struct sk_buff *skb, void *data, bool napi_safe)
- {
- 	if (!IS_ENABLED(CONFIG_PAGE_POOL) || !skb->pp_recycle)
- 		return false;
--	return page_pool_return_skb_page(virt_to_page(data), napi_safe);
-+	return napi_pp_put_page(virt_to_page(data), napi_safe);
- }
- 
- static void skb_kfree_head(void *head, unsigned int end_offset)
+-	u32 pages_state_hold_cnt;
+-	unsigned int frag_offset;
+-	struct page *frag_page;
+-	long frag_users;
+-
+ #ifdef CONFIG_PAGE_POOL_STATS
+ 	/* these stats are incremented while in softirq context */
+ 	struct page_pool_alloc_stats alloc_stats;
 -- 
 2.41.0
 
