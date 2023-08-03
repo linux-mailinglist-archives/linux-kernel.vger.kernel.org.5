@@ -2,112 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E53F476F308
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 20:52:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9023C76F30A
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 20:53:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231942AbjHCSwq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Aug 2023 14:52:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41326 "EHLO
+        id S232141AbjHCSxQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Aug 2023 14:53:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41900 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230423AbjHCSwo (ORCPT
+        with ESMTP id S234324AbjHCSxI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Aug 2023 14:52:44 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D3FE4219;
-        Thu,  3 Aug 2023 11:52:24 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 4FAD261E67;
-        Thu,  3 Aug 2023 18:52:07 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AD36FC433C7;
-        Thu,  3 Aug 2023 18:52:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691088726;
-        bh=C4EW4wbKCHTYy6MNIaLyL7a1gGIegviHQ8l+Ecex1SQ=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=H2C7gNwNpz8RClNWocDqQRDE8DGjNnPE6tJd4q10HUbE0iwB4z0IsH1/GPe0yB1c5
-         1+bZR2EYET3zvXmCCKtfFMBjVc/6DbZOpMXFvvcWJyltoA3mKnMfXXU1zEuVig+8j3
-         HeXmq2nGSe+vwQdzm5XVpgaTj1i/vNBWJHlrfJDnyUHK6OOcZY/JaYgc9ZzOILxvOf
-         O2XUOZKoarBoCwdyn0bL6Ygc9DBlY68A5Lzq/NC/QSP7CbsEC+5wexdePO4DXvJRdV
-         ydHeSFYXrUgXl85O4TZx/t5VSqUsMKp1H1qlMeCXwp0HO3vC6XefVHpCkoV4I4NKQc
-         S9mlIyA83T0Tg==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 3DE1ACE0AE0; Thu,  3 Aug 2023 11:52:06 -0700 (PDT)
-Date:   Thu, 3 Aug 2023 11:52:06 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     "Joel Fernandes (Google)" <joel@joelfernandes.org>
-Cc:     linux-kernel@vger.kernel.org, rcu@vger.kernel.org,
-        Alan Stern <stern@rowland.harvard.edu>,
-        Andrea Parri <parri.andrea@gmail.com>,
-        Will Deacon <will@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        David Howells <dhowells@redhat.com>,
-        Jade Alglave <j.alglave@ucl.ac.uk>,
-        Luc Maranget <luc.maranget@inria.fr>,
-        Akira Yokosawa <akiyks@gmail.com>,
-        Daniel Lustig <dlustig@nvidia.com>,
-        Jonathan Corbet <corbet@lwn.net>
-Subject: Re: [PATCH 2/2] docs: memory-barriers: Add note on plain-accesses to
- address-dependency barriers
-Message-ID: <626d1b48-de6a-4a0b-95d3-3ac438878757@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <20230803032408.2514989-1-joel@joelfernandes.org>
- <20230803032408.2514989-2-joel@joelfernandes.org>
+        Thu, 3 Aug 2023 14:53:08 -0400
+Received: from mail-lj1-x22a.google.com (mail-lj1-x22a.google.com [IPv6:2a00:1450:4864:20::22a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5448A2D5A
+        for <linux-kernel@vger.kernel.org>; Thu,  3 Aug 2023 11:53:00 -0700 (PDT)
+Received: by mail-lj1-x22a.google.com with SMTP id 38308e7fff4ca-2b9338e4695so20503701fa.2
+        for <linux-kernel@vger.kernel.org>; Thu, 03 Aug 2023 11:53:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1691088778; x=1691693578;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=16O8o09yKlIrWJqVGKmGPXtBxRWH/JyAAhiz2PZ5hMc=;
+        b=GzW5xwJ4SS3NFZxvIos1RPhdVI40cJHjHyRgQFOtkhHPZz7b+nSGci357csx/1V2IB
+         WF/FvNJGDDyqO/t3E1XggUbY9hOBM9OuzEOLda5rk/HOZdxPZ99UbIg5nx5kFScVSxEb
+         lv/ICaBqhOvyMSyCpzHn100B4O3Xlrt3LZcr3JiV5+wHKHd6ztj7RzCygsqmrZhY6dvv
+         pyM5Kdh2l7+Ba4qn5QYe8t68ZnsyC56FMznLyFS9c8erDQnQz5aNcCsr0vgMF5pStmOr
+         xfMftZnQ/q87+szHwrXALvSxxMSMtils8s1jU3ZbaDbZn4DP4akZAjg2dSLbWbGm8Iig
+         vblg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691088778; x=1691693578;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=16O8o09yKlIrWJqVGKmGPXtBxRWH/JyAAhiz2PZ5hMc=;
+        b=f5IPbZY4ppmqGv3cpfM6Rw63nAAsed7F4Z9BAgpH3mqJVGYPNv2VWdep2jG22FyavC
+         sHepNGzaDhPFqgSFyONsOwWo70EbA5mgmMPGCTx9q0jaCqinZpHeWv/z0AjRnhvmGdq6
+         iH6Fl7StBi3mn2GvH7Hy/HBWwVLJYJYo2C4sWzs0aJZzzYb4Ecb7sYE/64by+AgHmA1z
+         Yc54XHGX59ZyZnFNsEkOiTpRjdmWwK37pk+cuCqsorWoarVkNME5uMHrZD1nQ9/9I7Bz
+         nczeSDHVVoj1vb3cmBPpYvLm420gF2WS+BmExM7qtmxobSx/CyvQ8nns0mJSa9pV5QOf
+         QrvQ==
+X-Gm-Message-State: ABy/qLbZU37JoV8pRHL5d/uHDI+aalvu0hUkC0v4D0/j9JxNqH0kMJwy
+        c6T3QfV0sezBuYmBudElWZ5ZHlA1SddExPbLbadV7w==
+X-Google-Smtp-Source: APBJJlG/Kp8wtYMBiWPpzTFP8Ihv2XMSuxMuJWKmxLJB/63skudYdK57L9Kzc8xr7IwRqG5q3hKp0UuZwpqXbfioyZs=
+X-Received: by 2002:a2e:9316:0:b0:2b6:c236:b040 with SMTP id
+ e22-20020a2e9316000000b002b6c236b040mr7662784ljh.12.1691088778226; Thu, 03
+ Aug 2023 11:52:58 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230803032408.2514989-2-joel@joelfernandes.org>
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <20230726153223.821757-1-yosryahmed@google.com>
+ <20230726153223.821757-2-yosryahmed@google.com> <ZMkXDuwD8RFRKnNQ@dhcp22.suse.cz>
+ <CAJD7tkbb8AWR-duWb+at-S9MMz48b0JqnM+b5ok83TzvXvPb+A@mail.gmail.com>
+ <CAJD7tkbZi16w4mYngVK8qA84FMijmHvwzMjHfrJiCsV=WjixOA@mail.gmail.com>
+ <ZMoIYLwITUZzXp4C@dhcp22.suse.cz> <CAJD7tkY4hTTCfqSGa_XexbH=WSTJ4WXWeMXSU+6KW8qfr7agfQ@mail.gmail.com>
+ <CAJD7tkb17x=qwoO37uxyYXLEUVp15BQKR+Xfh7Sg9Hx-wTQ_=w@mail.gmail.com> <ZMu/+ysmksCZqcem@dhcp22.suse.cz>
+In-Reply-To: <ZMu/+ysmksCZqcem@dhcp22.suse.cz>
+From:   Yosry Ahmed <yosryahmed@google.com>
+Date:   Thu, 3 Aug 2023 11:52:21 -0700
+Message-ID: <CAJD7tkZ2u0db3UP3K+2ag12VCRhzjJVrwipsyMV2fb9jdfwCzg@mail.gmail.com>
+Subject: Re: [PATCH v3] mm: memcg: use rstat for non-hierarchical stats
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     Johannes Weiner <hannes@cmpxchg.org>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Shakeel Butt <shakeelb@google.com>,
+        Muchun Song <muchun.song@linux.dev>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
+        linux-mm@kvack.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 03, 2023 at 03:24:07AM +0000, Joel Fernandes (Google) wrote:
-> The compiler has the ability to cause misordering by destroying
-> address-dependency barriers if comparison operations are used. Add a
-> note about this to memory-barriers.txt and point to rcu-dereference.rst
-> for more information.
-> 
-> Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
-> ---
->  Documentation/memory-barriers.txt | 5 +++++
->  1 file changed, 5 insertions(+)
-> 
-> diff --git a/Documentation/memory-barriers.txt b/Documentation/memory-barriers.txt
-> index 06e14efd8662..acc8ec5ce563 100644
-> --- a/Documentation/memory-barriers.txt
-> +++ b/Documentation/memory-barriers.txt
-> @@ -435,6 +435,11 @@ Memory barriers come in four basic varieties:
->       variables such as READ_ONCE() and rcu_dereference() provide implicit
->       address-dependency barriers.
->  
-> +     [!] Note that address dependency barriers can be destroyed by comparison
-> +     of a pointer obtained by a marked accessor such as READ_ONCE() or
-> +     rcu_dereference() with some value.  For an example of this, see
-> +     rcu_dereference.rst (part where the comparison of pointers is discussed).
+On Thu, Aug 3, 2023 at 7:55=E2=80=AFAM Michal Hocko <mhocko@suse.com> wrote=
+:
+>
+> On Wed 02-08-23 15:02:55, Yosry Ahmed wrote:
+> [...]
+> > Let me know if the testing is satisfactory for you. I can send an
+> > updated commit log accordingly with a summary of this conversation.
+>
+> Yes this should be sufficient as it exercises all the CPUs so the
+> overhead in flushing should be visible if this was a real deal. I would
+> have gone with kernel build test as that has a broader code coverage but
+> this artificial test should give some red flags as well. So good enough.
+> Amending the changelog with this would be helpful as well so that future
+> us and others will know what kind of testing has been done.
+>
+> Acked-by: Michal Hocko <mhocko@suse.com>
 
-Hmmm...
+Thanks! I sent a v4 with your Ack and an amended changelog that
+describes the testing done and points to the script attached here.
 
-Given that this is in a section marked "historical" (for the old
-smp_read_barrier_depends() API), why not instead add a pointer to
-Documentation/RCU/rcu_dereference.rst to the beginning of the section,
-noted as the updated material?
-
-							Thanx, Paul
-
-> +
->   (3) Read (or load) memory barriers.
->  
->       A read barrier is an address-dependency barrier plus a guarantee that all
-> -- 
-> 2.41.0.585.gd2178a4bd4-goog
-> 
+>
+> >
+> > > > --
+> > > > Michal Hocko
+> > > > SUSE Labs
+>
+> > #!/bin/bash
+> >
+> > NR_CPUS=3D$(getconf _NPROCESSORS_ONLN)
+> > NR_CGROUPS=3D$(( NR_CPUS * 2 ))
+> > TEST_MB=3D50
+> > TOTAL_MB=3D$((TEST_MB * NR_CGROUPS))
+> > TMPFS=3D$(mktemp -d)
+> > ROOT=3D"/sys/fs/cgroup/"
+> > ZRAM_DEV=3D"/mnt/devtmpfs/zram0"
+> >
+> > cleanup() {
+> >   umount $TMPFS
+> >   rm -rf $TMPFS
+> >   for i in $(seq $NR_CGROUPS); do
+> >     cgroup=3D"$ROOT/cg$i"
+> >     rmdir $cgroup
+> >   done
+> >   swapoff $ZRAM_DEV
+> >   echo 1 > "/sys/block/zram0/reset"
+> > }
+> > trap cleanup INT QUIT EXIT
+> >
+> > # Setup zram
+> > echo $((TOTAL_MB << 20)) > "/sys/block/zram0/disksize"
+> > mkswap $ZRAM_DEV
+> > swapon $ZRAM_DEV
+> > echo "Setup zram done"
+> >
+> > # Create cgroups, set limits
+> > echo "+memory" > "$ROOT/cgroup.subtree_control"
+> > for i in $(seq $NR_CGROUPS); do
+> >   cgroup=3D"$ROOT/cg$i"
+> >   mkdir $cgroup
+> >   echo $(( (TEST_MB << 20) / 4)) > "$cgroup/memory.max"
+> > done
+> > echo "Setup cgroups done"
+> >
+> > # Start workers to allocate tmpfs memory
+> > mount -t tmpfs none $TMPFS
+> > for i in $(seq $NR_CGROUPS); do
+> >   cgroup=3D"$ROOT/cg$i"
+> >   f=3D"$TMPFS/tmp$i"
+> >   (echo 0 > "$cgroup/cgroup.procs" &&
+> >     dd if=3D/dev/zero of=3D$f bs=3D1M count=3D$TEST_MB status=3Dnone &&
+> >     cat $f > /dev/null)&
+> > done
+> >
+> > # Wait for workers
+> > wait
+>
+>
+> --
+> Michal Hocko
+> SUSE Labs
