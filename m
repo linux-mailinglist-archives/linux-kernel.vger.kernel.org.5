@@ -2,65 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AD8B476F56F
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 00:03:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F73476F570
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 00:03:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232413AbjHCWDX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Aug 2023 18:03:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53544 "EHLO
+        id S232455AbjHCWDZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Aug 2023 18:03:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53392 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232455AbjHCWCw (ORCPT
+        with ESMTP id S232851AbjHCWDL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Aug 2023 18:02:52 -0400
-Received: from mail-pg1-x52b.google.com (mail-pg1-x52b.google.com [IPv6:2607:f8b0:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F230C49E6;
-        Thu,  3 Aug 2023 15:02:35 -0700 (PDT)
-Received: by mail-pg1-x52b.google.com with SMTP id 41be03b00d2f7-564b326185bso287439a12.2;
-        Thu, 03 Aug 2023 15:02:35 -0700 (PDT)
+        Thu, 3 Aug 2023 18:03:11 -0400
+Received: from mail-pg1-x530.google.com (mail-pg1-x530.google.com [IPv6:2607:f8b0:4864:20::530])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76C844214;
+        Thu,  3 Aug 2023 15:02:44 -0700 (PDT)
+Received: by mail-pg1-x530.google.com with SMTP id 41be03b00d2f7-517ab9a4a13so977002a12.1;
+        Thu, 03 Aug 2023 15:02:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1691100155; x=1691704955;
+        d=gmail.com; s=20221208; t=1691100157; x=1691704957;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=pMDPDTveGL0XcUxjW8MDNhSNAkJwzlTE+WboD+rmGEU=;
-        b=K5i3GJH74VyDW/Jnmr2wdrMdRA/gKgvGuAvzOT8myorsO3NeQaBOBreJNBjYoNQWNg
-         uzoHb2SP+NRSGHO7/22vPzxXQV+u8VN76aNFfqtsNOH1UumHIyncxW/opHtvgwLqAhGv
-         C6O52woALbRk0uYz3G0YUjWZrJKL86vzOlH4m2uEdRh8JfyoslqeDVIb4+PGbuPaxl5f
-         DsoYpsylrR0sfvi7OsSDYYhOjiWlTjFqF5ByTmRbfsDV2I/dZ2tdGz+iIptnSarAUdAC
-         a4TV+bBzWzsO44QV8hF3UQ/LK7fLhxNs8xs7ym/47qJspRqsZDpqStaRtavsfzElDyXx
-         NSsw==
+        bh=nXZWjfN9jRVe+H33im5sYKdcYpl83+nexah9W681kvs=;
+        b=Af4HYsP21mKSBHrPbKz2NpveemF6uwBT1sqWwDLsPtvM3YsxUwa5D+L114TsYL9LJF
+         qGKv+qE5ecIQtCimduvkKUI6DAwH0wMa7scKIszgw/LUohFbIQuwXJNGIghRVtOM+swX
+         edw4kN4ZMGakALGBXyEWOX/uJpyC686aQwCNpXvu2KXbMPHNoCZu2m7qCQEO5KdEk3LH
+         iAAXYxNpxcu01fJOZJDMeLSftYmzn92ekYN8aRYg5uaLeOcgXqNWcJ5ttwAudypA7dJI
+         RtB8bhKQ+DDQRR2XGbZIrrf1GeGXbIPP9rS4tG9gL9H5b/WVdZ+aIaPWaPxDNl/8xyam
+         8Cuw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691100155; x=1691704955;
+        d=1e100.net; s=20221208; t=1691100157; x=1691704957;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=pMDPDTveGL0XcUxjW8MDNhSNAkJwzlTE+WboD+rmGEU=;
-        b=dq06Hi+7DMRP//QyuuhamYjuvarGYMG+WMKeSMNk2DvBZQLPm0eHKHVFzE6NxemC63
-         cpbZw1XayUCpnyuK7FTDTMpB1nsaYQUny48Z511EWbS1RkP28L9FWmFYtzibWsJfjDJ/
-         fgWIJALVRabuKd1rLNaU5AypTYlsqwRqqa0chtUtcs3Oeppp6x1feILb4CCQJJVWzgzM
-         JwZvF6vb7O23383TeJTDj1GqOrd0cb4ePJys6ZSst1V0GtVOzWOjsgDMotMh+EbjsgtV
-         RYlfNmC8/RVsnNIoOw0YeFVzcKt37quJvr6iQZlI16Zkp9KHXNTkel+rmSnpyqQ5lkjy
-         rWrA==
-X-Gm-Message-State: AOJu0YwCv5V9yU3kZuub8zYPw2aUnSAnXqEI0UQkVMEgoe/6h8Fx5UKs
-        mnL4X8+331tC49sMfWblHlE=
-X-Google-Smtp-Source: AGHT+IGxaayfkSbW7gr+exgp8ER/palrd0d4li5a+dZz8brgaJjEo3IxY3Az+mnAuhnhmiF9IO4AzQ==
-X-Received: by 2002:a17:90a:9482:b0:268:23d7:21c with SMTP id s2-20020a17090a948200b0026823d7021cmr8394pjo.30.1691100155002;
-        Thu, 03 Aug 2023 15:02:35 -0700 (PDT)
+        bh=nXZWjfN9jRVe+H33im5sYKdcYpl83+nexah9W681kvs=;
+        b=V0Yc48ZjgkNpOpgMT+LXdC+IWokjVsGCvZ/ET/ccKr+2eSNTcB8Z1aJ+KzCHjq4+dA
+         iqYNcAWbBrfO31i1puFGsRAG2JVBmPqJW/FCG6Y0/MV+Fl3E7M94VSpq8HYi/4ckb3no
+         ONesWGurXNsSpKBlRzvdFTiVeniIlOHtRFPfY+QuttCELr8OmZdbkVxHwYHdbiSavxIF
+         LvBYo2akenHzY6Kd7uDROWcaI3IrvnCYM+t5SyJNdmcn1aww4jHaHxlwU25vxJyua1BP
+         buI+Vzlawe/8kWTieqyZmmH/eluLwwUb9PI5g99gU5ct6x5J6o9WzOctTDHSOUcfAJnm
+         uHyg==
+X-Gm-Message-State: AOJu0YxElFcfdA/4WVY4B51JcIs+/F4G502ErSrrq2Wlh8DQeiqYfDZY
+        bQ7iZIWhznxEWEOaQey+00XV9KzPoP0=
+X-Google-Smtp-Source: AGHT+IGl2tGbAFvssGQqeZ1wP6XLECY7/4WzZoYSgAMqTT2kydzqs2HGdiQ8789wcCkrTEohoNh2QA==
+X-Received: by 2002:a17:90a:764a:b0:263:6e10:7cdd with SMTP id s10-20020a17090a764a00b002636e107cddmr9864pjl.38.1691100157236;
+        Thu, 03 Aug 2023 15:02:37 -0700 (PDT)
 Received: from localhost ([2a00:79e1:abd:4a00:6c80:7c10:75a0:44f4])
-        by smtp.gmail.com with ESMTPSA id f3-20020a17090a654300b002641a9faa01sm2946613pjs.52.2023.08.03.15.02.34
+        by smtp.gmail.com with ESMTPSA id q9-20020a170902b10900b001b8622c1ad2sm317439plr.130.2023.08.03.15.02.36
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 03 Aug 2023 15:02:34 -0700 (PDT)
+        Thu, 03 Aug 2023 15:02:36 -0700 (PDT)
 From:   Rob Clark <robdclark@gmail.com>
 To:     dri-devel@lists.freedesktop.org
 Cc:     linux-arm-msm@vger.kernel.org, freedreno@lists.freedesktop.org,
         Rob Clark <robdclark@chromium.org>,
-        Luben Tuikov <luben.tuikov@amd.com>,
+        Rob Clark <robdclark@gmail.com>,
+        Abhinav Kumar <quic_abhinavk@quicinc.com>,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        Sean Paul <sean@poorly.run>,
+        Marijn Suijten <marijn.suijten@somainline.org>,
         David Airlie <airlied@gmail.com>,
         Daniel Vetter <daniel@ffwll.ch>,
         linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH v3 8/9] drm/sched: Add (optional) fence signaling annotation
-Date:   Thu,  3 Aug 2023 15:01:56 -0700
-Message-ID: <20230803220202.78036-9-robdclark@gmail.com>
+Subject: [PATCH v3 9/9] drm/msm: Enable fence signalling annotations
+Date:   Thu,  3 Aug 2023 15:01:57 -0700
+Message-ID: <20230803220202.78036-10-robdclark@gmail.com>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <20230803220202.78036-1-robdclark@gmail.com>
 References: <20230803220202.78036-1-robdclark@gmail.com>
@@ -78,68 +82,27 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Rob Clark <robdclark@chromium.org>
 
-Based on
-https://lore.kernel.org/dri-devel/20200604081224.863494-10-daniel.vetter@ffwll.ch/
-but made to be optional.
+Now that the runpm/qos/interconnect lockdep vs reclaim issues are
+solved, we can enable the fence signalling annotations without lockdep
+making it's immediate displeasure known.
 
 Signed-off-by: Rob Clark <robdclark@chromium.org>
-Reviewed-by: Luben Tuikov <luben.tuikov@amd.com>
 ---
- drivers/gpu/drm/scheduler/sched_main.c | 9 +++++++++
- include/drm/gpu_scheduler.h            | 2 ++
- 2 files changed, 11 insertions(+)
+ drivers/gpu/drm/msm/msm_ringbuffer.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/gpu/drm/scheduler/sched_main.c b/drivers/gpu/drm/scheduler/sched_main.c
-index 7b2bfc10c1a5..b0368b815ff5 100644
---- a/drivers/gpu/drm/scheduler/sched_main.c
-+++ b/drivers/gpu/drm/scheduler/sched_main.c
-@@ -1005,10 +1005,15 @@ static bool drm_sched_blocked(struct drm_gpu_scheduler *sched)
- static int drm_sched_main(void *param)
- {
- 	struct drm_gpu_scheduler *sched = (struct drm_gpu_scheduler *)param;
-+	const bool fence_signalling = sched->fence_signalling;
-+	bool fence_cookie;
- 	int r;
+diff --git a/drivers/gpu/drm/msm/msm_ringbuffer.c b/drivers/gpu/drm/msm/msm_ringbuffer.c
+index 7f5e0a961bba..cb9cf41bcb9b 100644
+--- a/drivers/gpu/drm/msm/msm_ringbuffer.c
++++ b/drivers/gpu/drm/msm/msm_ringbuffer.c
+@@ -97,6 +97,7 @@ struct msm_ringbuffer *msm_ringbuffer_new(struct msm_gpu *gpu, int id,
+ 	 /* currently managing hangcheck ourselves: */
+ 	sched_timeout = MAX_SCHEDULE_TIMEOUT;
  
- 	sched_set_fifo_low(current);
- 
-+	if (fence_signalling)
-+		fence_cookie = dma_fence_begin_signalling();
-+
- 	while (!kthread_should_stop()) {
- 		struct drm_sched_entity *entity = NULL;
- 		struct drm_sched_fence *s_fence;
-@@ -1064,6 +1069,10 @@ static int drm_sched_main(void *param)
- 
- 		wake_up(&sched->job_scheduled);
- 	}
-+
-+	if (fence_signalling)
-+		dma_fence_end_signalling(fence_cookie);
-+
- 	return 0;
- }
- 
-diff --git a/include/drm/gpu_scheduler.h b/include/drm/gpu_scheduler.h
-index e95b4837e5a3..58d958ad31a1 100644
---- a/include/drm/gpu_scheduler.h
-+++ b/include/drm/gpu_scheduler.h
-@@ -493,6 +493,7 @@ struct drm_sched_backend_ops {
-  * @ready: marks if the underlying HW is ready to work
-  * @free_guilty: A hit to time out handler to free the guilty job.
-  * @dev: system &struct device
-+ * @fence_signalling: Opt in to fence signalling annotations
-  *
-  * One scheduler is implemented for each hardware ring.
-  */
-@@ -517,6 +518,7 @@ struct drm_gpu_scheduler {
- 	bool				ready;
- 	bool				free_guilty;
- 	struct device			*dev;
-+	bool 				fence_signalling;
- };
- 
- int drm_sched_init(struct drm_gpu_scheduler *sched,
++	ring->sched.fence_signalling = true;
+ 	ret = drm_sched_init(&ring->sched, &msm_sched_ops,
+ 			num_hw_submissions, 0, sched_timeout,
+ 			NULL, NULL, to_msm_bo(ring->bo)->name, gpu->dev->dev);
 -- 
 2.41.0
 
