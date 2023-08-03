@@ -2,86 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F1A076E789
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 13:58:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D5A476E78E
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 13:59:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235681AbjHCL6h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Aug 2023 07:58:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51514 "EHLO
+        id S235689AbjHCL7g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Aug 2023 07:59:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51964 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234690AbjHCL6f (ORCPT
+        with ESMTP id S234690AbjHCL7f (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Aug 2023 07:58:35 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.126])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8845134;
-        Thu,  3 Aug 2023 04:58:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1691063914; x=1722599914;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=pZ4ZPmvSDy8cgfHE33t4fOkzIy0L7uqmxemDhUrl+uc=;
-  b=m8R/q0qYordoirYdlX+qCoHm2g4KqZDjjmwHEQSjPnUo5lGqfPwPljq5
-   G6HVxBk7ArjuxJmfOICRNKqZhEJRPGvmVzC+NON52+10wZFE5yo/dWSkL
-   hCaeCcY1s6sKnoClRJws4BFGw5EYmcCtYf7A6NiJTC3+/LdKzCZx19hiE
-   NGHPbdADK3PraWGdlO6p9vCVQnDV3/weYDe/XKJWmqOOUZ6TxY2rudIW+
-   rhX13fIicRyb11a2K711clQH26XNVmt9IJqiWLaSOmq1q0wLMdV0wqJ6c
-   MITCyu3vXZ7LZLN9v0ssvsX/kwZ0xHFKpVcmeCQCpSNlTBFjk/D3okWv9
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10790"; a="354770096"
-X-IronPort-AV: E=Sophos;i="6.01,252,1684825200"; 
-   d="scan'208";a="354770096"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Aug 2023 04:58:34 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10790"; a="843570211"
-X-IronPort-AV: E=Sophos;i="6.01,252,1684825200"; 
-   d="scan'208";a="843570211"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by fmsmga002.fm.intel.com with ESMTP; 03 Aug 2023 04:58:32 -0700
-Received: from andy by smile.fi.intel.com with local (Exim 4.96)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1qRWyN-00BBt3-0B;
-        Thu, 03 Aug 2023 14:58:31 +0300
-Date:   Thu, 3 Aug 2023 14:58:30 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-Cc:     gregkh@linuxfoundation.org, linux-serial@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Abaci Robot <abaci@linux.alibaba.com>
-Subject: Re: [PATCH] 8250_men_mcb: Fix unsigned comparison with less than zero
-Message-ID: <ZMuWZulcClgyFxR3@smile.fi.intel.com>
-References: <20230803084753.51253-1-jiapeng.chong@linux.alibaba.com>
+        Thu, 3 Aug 2023 07:59:35 -0400
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [213.167.242.64])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A09426BA;
+        Thu,  3 Aug 2023 04:59:34 -0700 (PDT)
+Received: from [192.168.88.20] (91-154-35-171.elisa-laajakaista.fi [91.154.35.171])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 1A8065A4;
+        Thu,  3 Aug 2023 13:58:28 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1691063908;
+        bh=RT7rKebX3umkthzwSncQznVIc6lMU58Y2I9IpWZTk/8=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=tq+ScKaZYYq+H6B6wdd5zeVOtNtUgExQY5hP+bgvKqV06m0VK1FC7Yg33ZCAaCbrs
+         fHIuXquq/ne8ECWvSmU+QkKZPukMbRqp5QMa0kCn+veLRCEZoI/zeV1QarKlCyqPHF
+         tpU26fubATYc8Vy8rbG76j5+itcnONCGI2AuQBrk=
+Message-ID: <fe67a748-e358-71ca-d828-1ff24eb54efa@ideasonboard.com>
+Date:   Thu, 3 Aug 2023 14:59:28 +0300
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230803084753.51253-1-jiapeng.chong@linux.alibaba.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH 1/2] media: i2c: ds90ub9x3: Fix use of uninitialized
+ variables
+Content-Language: en-US
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Hans Verkuil <hverkuil@xs4all.nl>, linux-media@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20230803-ub9xx-uninit-vars-v1-0-284a5455260f@ideasonboard.com>
+ <20230803-ub9xx-uninit-vars-v1-1-284a5455260f@ideasonboard.com>
+ <ZMuWF71x0thq/aTs@smile.fi.intel.com>
+From:   Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
+In-Reply-To: <ZMuWF71x0thq/aTs@smile.fi.intel.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_PASS,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 03, 2023 at 04:47:53PM +0800, Jiapeng Chong wrote:
-> The data->line[i] is defined as unsigned int type, if(data->line[i] < 0)
-> is invalid, so replace data->line[i] with res.
+On 03/08/2023 14:57, Andy Shevchenko wrote:
+> On Thu, Aug 03, 2023 at 11:41:38AM +0300, Tomi Valkeinen wrote:
+>> smatch reports some uninitialized variables:
+>>
+>> drivers/media/i2c/ds90ub913.c:481 ub913_log_status() error: uninitialized symbol 'v1'.
+>> drivers/media/i2c/ds90ub913.c:481 ub913_log_status() error: uninitialized symbol 'v2'.
+>> drivers/media/i2c/ds90ub953.c:655 ub953_log_status() error: uninitialized symbol 'gpio_local_data'.
+>> drivers/media/i2c/ds90ub953.c:655 ub953_log_status() error: uninitialized symbol 'gpio_input_ctrl'.
+>> drivers/media/i2c/ds90ub953.c:655 ub953_log_status() error: uninitialized symbol 'gpio_pin_sts'.
+>>
+>> These are used only for printing debug information, and the use of an
+>> uninitialized variable only happens if an i2c transaction has failed,
+>> which will print an error. Thus, fix the errors just by initializing the
+>> variables to 0.
+>>
+>> Fixes: 6363db1c9d45 ("media: i2c: add DS90UB953 driver")
+>> Fixes: c158d0d4ff15 ("media: i2c: add DS90UB913 driver")
 > 
-> ./drivers/tty/serial/8250/8250_men_mcb.c:223:6-19: WARNING: Unsigned expression compared with zero: data->line[i] < 0.
+> I would prefer two separate changes on per driver basis. This is a good
+> practice to make backporting easier (generally speaking).
 
-Having
+Yes, I almost did that, but then somehow got hit by acute laziness... 
+I'll send a v2 with split patches.
 
- WARNING: Unsigned expression compared with zero: data->line[i] < 0.
-
-is enough.
-
-Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-
--- 
-With Best Regards,
-Andy Shevchenko
-
+  Tomi
 
