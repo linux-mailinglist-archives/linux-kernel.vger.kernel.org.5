@@ -2,44 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 94A3476DD9F
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 03:54:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 045F776DDA7
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 03:54:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232101AbjHCBy1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Aug 2023 21:54:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60734 "EHLO
+        id S232607AbjHCByn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Aug 2023 21:54:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60740 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230088AbjHCBxS (ORCPT
+        with ESMTP id S230143AbjHCBxV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Aug 2023 21:53:18 -0400
-Received: from NAM11-BN8-obe.outbound.protection.outlook.com (mail-bn8nam11on2041.outbound.protection.outlook.com [40.107.236.41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF14C4C09;
-        Wed,  2 Aug 2023 18:50:33 -0700 (PDT)
+        Wed, 2 Aug 2023 21:53:21 -0400
+Received: from NAM12-BN8-obe.outbound.protection.outlook.com (mail-bn8nam12on2063.outbound.protection.outlook.com [40.107.237.63])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 701574C0C;
+        Wed,  2 Aug 2023 18:50:34 -0700 (PDT)
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Pd9/SIB/dq4tngoj2E/6g51tqnoaldJofDiTcwhEJ6wI2hJYCbVU9CzTrn+xGuUmfQ6yzLaTuLYDgBfLYXgm696B8MWwSxZWFXiGm1N0zX1pKHl/78J8tQg1Ci/vDbOelsm2e9pYovsIITqZSgmD4UuyrtApNWLX2EjQJxbbN+ojsHDleNezDAg8WoFYK0J4/7iIfxiKOCG4pxntCE4mV8S+NcNbHYQV2kTRE1syLhjbKPs7xCRP8K+jPMxN6nZf1D/y7ui/wcVOIpNEm/O3HYQnuvC4HGfhJIAkJPJ2nPySPIT/Q5pVHeOrm7Dj2jqsYrhX30dSvaabcIixPPR8hg==
+ b=CRxxu2aiberEzHsZPT2tnxJE8xj8N1UG6bmWjth1GKt0ACMTJYqGrjHwab1JrGrlaV+Rq3/c1FbUL/ghCfMevsJ4pB7/G05LCp7tzuGKngc8dKKKSAQLdH8H1xwMw9LJBFhJs1LmTKSmeXBibMoRQnGnSzHN7BU5cK+xl8hAUMXUWD1ecYPGtf+LD3OGWYQXpKlEZfqB0S2iGeAZwznfjzAprfOz0ZzmDBXZRRsY3OhNShMIJaXJOnU13+66fpr+45Q2DdRV34lXtPapHJKk5bCqxguTbNCfWwvEAWq2JY850/gqbIeDLJ0n5HlzNF/sAr24ctO/tvGkBJ7C6V5+2Q==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=oMOOmqq/eiZlUbhnmu/KV0sSYQzes5GaMDpH8G+Dg4c=;
- b=eT6Pz6MtCKUJqd0XKYI6I7zim6nqE1zUu5RFB+LHbQxYuzt6Nbd22+q3pSs7PBoi5wjqDBC81HE+K9MptKSNYbN7x7zroc+Lv3cS3TNoTvK3FBnIQJ5LlaBZVrYuydTlPytM0+DBXor3Lg8afh1e3rAIKHGGHMCWhSNWGG0J02bb7HUefw67kImF654jqvBuG82pQcokqPjFDUQjVRqkedL7CN91gYkKpildlwyJuRkN6uW/V/enBNV4WuEWx3kwplBhGDoXnh5SK98o2TemnFV/twU9VToOQeZaOaf6t/Ij4CiQ6bHAPLtjcHU/qLGRp396hN0krkzf04KqT4McQQ==
+ bh=SPeAtWGA5IgpMy8bGWlPUebHFttBKKl3kxuGbsfyuYA=;
+ b=PB2sg+FFQSW5uYCR3wCLGhvPIJoCMJp0UOOArWk5jIF5V5wc3v9fDUboJJH1putybKlBSfUheC2M4nzUi/F1PjXLEe5Jkh53yAxXB+ABudW090FDM+H4KNOyFo4ohhNuRFyGY1YdIhprxwx+JpEq+7cfOmJXn4I7L4H/vSvurl4lhqmNGPlJyDbPnc39PmNtfa3ohKshuAlqZjNNX48vTUfRNQf85j4v2vk8Y1Oym9iX6HsQIs/syiBTZvOFBagkVBgurbCIaa1j1HMN1DLYBJKyVxBwC0sUVF5gjsyb/8+iBmnrhD2fUcqGyMUSPDFCQ0slQp2A81Pw/IAvvF6cuw==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
  165.204.84.17) smtp.rcpttodomain=kernel.org smtp.mailfrom=amd.com; dmarc=pass
  (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
  dkim=none (message not signed); arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=oMOOmqq/eiZlUbhnmu/KV0sSYQzes5GaMDpH8G+Dg4c=;
- b=rz+UIt00b05vp/qmI3yBTpSTwqEKfyDmSrnxGOU1SB67YB5T9K6PAAPr5X4TEv4hMnv9MQwa8X6tPOJI/PrkqZDDBJlENb6rdzM491f9WEnnEzlUb/XZ/KRQtXgBJrfuai6XUUoFETaA6fStOw7D8ZSHlic7qd8gmh7eevEjV4c=
-Received: from MW4PR03CA0147.namprd03.prod.outlook.com (2603:10b6:303:8c::32)
- by IA1PR12MB6161.namprd12.prod.outlook.com (2603:10b6:208:3eb::21) with
+ bh=SPeAtWGA5IgpMy8bGWlPUebHFttBKKl3kxuGbsfyuYA=;
+ b=H1EYz20WoFXbFydHlr72xJaWwnGLGjVpaWMCdDKue3OAsgiRPaSuZrvP7vMb6v/BMPqRoHhOTTQjbhb9zWmkvhTko51ivs1iFQEDkwKcA9x0hbIys8qvRST42J60DhkeCDexE6qSElLVfzLsamvj4T2pfH1y9Odfpi9zSrmiyyg=
+Received: from MW4PR03CA0121.namprd03.prod.outlook.com (2603:10b6:303:8c::6)
+ by SA3PR12MB9227.namprd12.prod.outlook.com (2603:10b6:806:398::22) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6609.32; Thu, 3 Aug
- 2023 01:50:31 +0000
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6631.45; Thu, 3 Aug
+ 2023 01:50:32 +0000
 Received: from CO1PEPF000044FD.namprd21.prod.outlook.com
- (2603:10b6:303:8c:cafe::2f) by MW4PR03CA0147.outlook.office365.com
- (2603:10b6:303:8c::32) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6631.45 via Frontend
- Transport; Thu, 3 Aug 2023 01:50:31 +0000
+ (2603:10b6:303:8c:cafe::cf) by MW4PR03CA0121.outlook.office365.com
+ (2603:10b6:303:8c::6) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6652.20 via Frontend
+ Transport; Thu, 3 Aug 2023 01:50:32 +0000
 X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
  smtp.mailfrom=amd.com; dkim=none (message not signed)
  header.d=none;dmarc=pass action=none header.from=amd.com;
@@ -49,19 +49,19 @@ Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
 Received: from SATLEXMB04.amd.com (165.204.84.17) by
  CO1PEPF000044FD.mail.protection.outlook.com (10.167.241.203) with Microsoft
  SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.6652.19 via Frontend Transport; Thu, 3 Aug 2023 01:50:31 +0000
+ 15.20.6652.19 via Frontend Transport; Thu, 3 Aug 2023 01:50:32 +0000
 Received: from SITE-L-T34-2.amd.com (10.180.168.240) by SATLEXMB04.amd.com
  (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Wed, 2 Aug
- 2023 20:50:30 -0500
+ 2023 20:50:31 -0500
 From:   Mario Limonciello <mario.limonciello@amd.com>
 To:     <jarkko@kernel.org>, <peterhuewe@gmx.de>
 CC:     <linux-kernel@vger.kernel.org>, <linux-integrity@vger.kernel.org>,
         <Jason@zx2c4.com>, <dragonn@op.pl>,
         Mario Limonciello <mario.limonciello@amd.com>
-Subject: [PATCH 1/3] tpm: Add a missing check for TPM_CHIP_FLAG_HWRNG_DISABLED
-Date:   Wed, 2 Aug 2023 20:50:13 -0500
-Message-ID: <20230803015015.915-2-mario.limonciello@amd.com>
+Subject: [PATCH 2/3] tpm: Add command line for not trusting tpm for RNG
+Date:   Wed, 2 Aug 2023 20:50:14 -0500
+Message-ID: <20230803015015.915-3-mario.limonciello@amd.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20230803015015.915-1-mario.limonciello@amd.com>
 References: <20230803015015.915-1-mario.limonciello@amd.com>
@@ -73,26 +73,26 @@ X-ClientProxiedBy: SATLEXMB03.amd.com (10.181.40.144) To SATLEXMB04.amd.com
  (10.181.40.145)
 X-EOPAttributedMessage: 0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CO1PEPF000044FD:EE_|IA1PR12MB6161:EE_
-X-MS-Office365-Filtering-Correlation-Id: aff7b205-4aec-4494-b2d4-08db93c40548
+X-MS-TrafficTypeDiagnostic: CO1PEPF000044FD:EE_|SA3PR12MB9227:EE_
+X-MS-Office365-Filtering-Correlation-Id: bd28b192-6db6-4263-4ac7-08db93c405c2
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 1qbkMPpfyqT1K7VzEVtRTk5a73P5xghN1smWbngsDZsLTj3X2xMW6o/ZUIHrid0lRxfibacKKHeXU6e9ars6EjoHjSQ1WHMeVjwZVhraD0amUl7bdlDuDVvb8b8t/yDyfgT1TwP6S+4W6isN8FDNSiSSa4EbWLVW4grO003wvaXrnd9bT2cSG+nyHfuYSIb4Q7Oy607ee3mTuq1PAtML0WO9AgwL99UVDnWZJ1X8SKWauV/EdU7R+ZJA8IJXmQJtUxNlTQFwi9FYgaZKBuqbFtYUEJJC7tEzd9ZGfH03dyZFXhIkDGO55Jdc0HDgwc6VMytmwGQyCnOrM3RpnJi4rtGu2tZcynPrdR09i4qRWD4vA9yC5y4aIyIXSHwt+ELtkPirH6+fbjmvLLoHRra1RkYZ480Vl3yGxDmbXJ4/iQj2CdgRzpR8wdaqKp0Pcq0mxhBpCfyIECkyQ8Jk7Xmce/EiPQxBinKoTfNuxb38t+sdQMDvsjHle83+r0TPGc92gLhO24oE+5GbreW77OPmjFwdFNkrA1Cqo6PndVYHbyG00k+0IpgpMlrOTzZ+sUdB7YFINDYYKYtRH8dYgPxQuqEimbu3IU5BgaM0KpVMjIMZosMhQQPRFPEt8F1ZusXkxNs2FukTMd8WMrCGVXa51i+yRUc4THRsWkrweK1W8ODHN7blOcFT96axMMT0V1nS0co8U0sLnJRqNeB2eQwZaxG82sebXr9kQCnEoJEgVtCYggwVYlRyTg+UnvboxSDDgwkSnwTkt8XTqJVLv/Z2Wg==
-X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230028)(4636009)(136003)(396003)(39860400002)(376002)(346002)(82310400008)(451199021)(36840700001)(46966006)(40470700004)(82740400003)(356005)(8676002)(8936002)(40460700003)(5660300002)(44832011)(36860700001)(2906002)(4744005)(83380400001)(186003)(26005)(1076003)(336012)(86362001)(16526019)(40480700001)(426003)(70586007)(70206006)(2616005)(47076005)(316002)(4326008)(54906003)(110136005)(478600001)(36756003)(7696005)(6666004)(41300700001)(81166007)(36900700001);DIR:OUT;SFP:1101;
+X-Microsoft-Antispam-Message-Info: Y1Hk0i1XIF43XezUu/jk5xTyb+GGxzB+n4V+pA+qxdXnKr4arm75WZHmiT15+jrIJIjgWzRVrhZ9dAdi/3pvvOwv6tncCmqORQ8MFG2NPT0jzjK9rOcXXLuVnUJ/Ur+ycxmZANCam/fFVmhHE1hvHkrmV7Mwr039bIcWUlWi4cRyvpZ2pUv8zGxko9vllGfGDU6+alT0syKPXkAKsOlnC/qy9IZ4Gn+izyr/qewtISLYTIPaVarP7WrdcZeyOKY3q0KFf7y5FNO+4u9R/CfwiwzCdazVm8vmrAEKWUPYCdsG4KoTMvXQ0mp/td598LAEMPTZgENccCCZL0H6heWHJpByAyCHocKHW9eemHXF2zKqCit6AJ+hA1KJF8OypBmoDCge/+st4bJbz68nEtl3xrmAQ0UGQ3cTheq7VB8RVbCZll7N4Is1sURLjp0mH8MYYzTusWe1H4QgOJKzVVTq1S78PBL6hP9ylu1IhRiQAwxOMJSt6QL9VOUKM3uroZ9g+cVx+zBTSyrg6KdTlAQ+hfBQ3rLA3Kl1fmIPKNnzOXUnY7vPIcBawbHLxKgi0K6U1muZX/ovy+17HzbXHVjEbpCjS+WgqOU91o7rNFfLBVEx+vAyw8UaOucGAPhWWCxXpoI0IMo2cfptDXrNip0YnaJdZRWdPZnsk15Lik+6FecsNvZMKKDWSbfqzqjFWI/RCJsplsYsc7ZAduQxK9tSydjaWm5CRrKziMYk1k406XulErqYogQ5z+vhogydast+h/8SeP5oZ5IcAFk70ttQ+w==
+X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230028)(4636009)(376002)(396003)(136003)(39860400002)(346002)(451199021)(82310400008)(36840700001)(46966006)(40470700004)(110136005)(83380400001)(478600001)(54906003)(6666004)(81166007)(7696005)(70206006)(86362001)(70586007)(4326008)(40480700001)(316002)(336012)(186003)(1076003)(26005)(16526019)(82740400003)(47076005)(2616005)(426003)(40460700003)(36860700001)(8936002)(8676002)(356005)(5660300002)(36756003)(44832011)(41300700001)(2906002)(36900700001);DIR:OUT;SFP:1101;
 X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 03 Aug 2023 01:50:31.3018
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 03 Aug 2023 01:50:32.0830
  (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: aff7b205-4aec-4494-b2d4-08db93c40548
+X-MS-Exchange-CrossTenant-Network-Message-Id: bd28b192-6db6-4263-4ac7-08db93c405c2
 X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
 X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
 X-MS-Exchange-CrossTenant-AuthSource: CO1PEPF000044FD.namprd21.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Anonymous
 X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA1PR12MB6161
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA3PR12MB9227
 X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
         T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -100,29 +100,61 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If the TPM is opted out of hwrng the error handling for
-tpm_chip_register() needs to know this so it doesn't try to clean
-up an uninitialized chip->hwrng.
+The kernel supports random.cpu=off and random.bootloader=off.
+As TPM RNG is also registered as a hwrng, add the ability to
+prevent registering the TPM RNG.
 
+Suggested-by: Mateusz Schyboll <dragonn@op.pl>
 Signed-off-by: Mario Limonciello <mario.limonciello@amd.com>
 ---
- drivers/char/tpm/tpm-chip.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ Documentation/admin-guide/kernel-parameters.txt |  5 +++++
+ drivers/char/tpm/tpm-chip.c                     | 10 ++++++++++
+ 2 files changed, 15 insertions(+)
 
+diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
+index a1457995fd41c..9ff602c09f55c 100644
+--- a/Documentation/admin-guide/kernel-parameters.txt
++++ b/Documentation/admin-guide/kernel-parameters.txt
+@@ -4672,6 +4672,11 @@
+ 			passed by the bootloader (if available) to
+ 			initialize the kernel's RNG.
+ 
++	random.trust_tpm=off
++			[KNL] Disable trusting the use of the TPM's
++			random number generator (if available) to
++			initialize the kernel's RNG.
++
+ 	randomize_kstack_offset=
+ 			[KNL] Enable or disable kernel stack offset
+ 			randomization, which provides roughly 5 bits of
 diff --git a/drivers/char/tpm/tpm-chip.c b/drivers/char/tpm/tpm-chip.c
-index e904aae9771be..8f61b784810d6 100644
+index 8f61b784810d6..8fb42232bd7a5 100644
 --- a/drivers/char/tpm/tpm-chip.c
 +++ b/drivers/char/tpm/tpm-chip.c
-@@ -629,7 +629,8 @@ int tpm_chip_register(struct tpm_chip *chip)
- 	return 0;
+@@ -32,6 +32,13 @@ struct class *tpm_class;
+ struct class *tpmrm_class;
+ dev_t tpm_devt;
  
- out_hwrng:
--	if (IS_ENABLED(CONFIG_HW_RANDOM_TPM) && !tpm_is_firmware_upgrade(chip))
-+	if (IS_ENABLED(CONFIG_HW_RANDOM_TPM) && !tpm_is_firmware_upgrade(chip) &&
-+	    !(chip->flags & TPM_CHIP_FLAG_HWRNG_DISABLED))
- 		hwrng_unregister(&chip->hwrng);
- out_ppi:
- 	tpm_bios_log_teardown(chip);
++static bool trust_tpm __initdata = true;
++static int __init parse_trust_tpm(char *arg)
++{
++	return kstrtobool(arg, &trust_tpm);
++}
++early_param("random.trust_tpm", parse_trust_tpm);
++
+ static int tpm_request_locality(struct tpm_chip *chip)
+ {
+ 	int rc;
+@@ -523,6 +530,9 @@ static int tpm_hwrng_read(struct hwrng *rng, void *data, size_t max, bool wait)
+ 
+ static int tpm_add_hwrng(struct tpm_chip *chip)
+ {
++	if (!trust_tpm)
++		chip->flags |= TPM_CHIP_FLAG_HWRNG_DISABLED;
++
+ 	if (!IS_ENABLED(CONFIG_HW_RANDOM_TPM) || tpm_is_firmware_upgrade(chip) ||
+ 	    chip->flags & TPM_CHIP_FLAG_HWRNG_DISABLED)
+ 		return 0;
 -- 
 2.34.1
 
