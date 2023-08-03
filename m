@@ -2,90 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 802B476EBC5
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 16:07:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ABD2F76EBE9
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 16:09:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236155AbjHCOHA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Aug 2023 10:07:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52786 "EHLO
+        id S236432AbjHCOJb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Aug 2023 10:09:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53520 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232999AbjHCOGo (ORCPT
+        with ESMTP id S234889AbjHCOHi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Aug 2023 10:06:44 -0400
-Received: from mail.hugovil.com (mail.hugovil.com [162.243.120.170])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BDD0230E9;
-        Thu,  3 Aug 2023 07:06:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=hugovil.com
-        ; s=x; h=Subject:Content-Transfer-Encoding:MIME-Version:Message-Id:Date:Cc:To
-        :From:Sender:Reply-To:Content-Type:Content-ID:Content-Description:Resent-Date
-        :Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:
-        References:List-Id:List-Help:List-Unsubscribe:List-Subscribe:List-Post:
-        List-Owner:List-Archive; bh=ei2wCQs5a8m/K55enHBWGLUeT7zj3KuxqVqPoZlHPio=; b=b
-        0BgpSixVIJOcmpcWBH6vWBTM1g1yaJTSN4HtX8wh7lf/OB2ViTYXM9e1EJLJGV86gFK+rD52QZEx2
-        StICkocnRmwFKeAKllQHt6vFv3HsJQXrSn1+p6ra36CSKTuVPs9z6FJh1DAqI/BnaxivPMdyqzrSe
-        cALV3c5uZGY+TYEQ=;
-Received: from modemcable061.19-161-184.mc.videotron.ca ([184.161.19.61]:46952 helo=localhost.localdomain)
-        by mail.hugovil.com with esmtpa (Exim 4.92)
-        (envelope-from <hugo@hugovil.com>)
-        id 1qRYxe-0000O1-Vi; Thu, 03 Aug 2023 10:05:55 -0400
-From:   Hugo Villeneuve <hugo@hugovil.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jirislaby@kernel.org>
-Cc:     hugo@hugovil.com, linux-serial@vger.kernel.org,
-        Hugo Villeneuve <hvilleneuve@dimonoff.com>,
-        linux-kernel@vger.kernel.org
-Date:   Thu,  3 Aug 2023 10:05:51 -0400
-Message-Id: <20230803140551.970141-1-hugo@hugovil.com>
-X-Mailer: git-send-email 2.30.2
+        Thu, 3 Aug 2023 10:07:38 -0400
+Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 323AD171D
+        for <linux-kernel@vger.kernel.org>; Thu,  3 Aug 2023 07:07:04 -0700 (PDT)
+Received: by mail-wm1-x332.google.com with SMTP id 5b1f17b1804b1-3fbc59de009so9661415e9.3
+        for <linux-kernel@vger.kernel.org>; Thu, 03 Aug 2023 07:07:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=metaspace-dk.20221208.gappssmtp.com; s=20221208; t=1691071622; x=1691676422;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=UlaTOf8b5xDgcpnz88BTF1oHWeegdnN7LO6qya3yLSU=;
+        b=zPBVmwHRkQl+J3RU6R1o7ia6m+bpMwgPBisDZ2QRme5pKPkPV0BJ+ITYfFDYYXlLeB
+         3JvvrsaMaOsn1lXtSpuKvSP16E7gidkkl4+dtNGWlSF8wwS5naJ+5+YZfz+U3PYrwHFY
+         YoQWA+86q3IkBB9cfBv/PIujAjmis4+l5sOIiQBmGiFlYEYr2eMHJoxWqzpZZ7MfYwfS
+         SE03DqEowHUmZ+CsEH1rrUIGPlOEHeNvu+4NSR5MFOeeY+qVViIRXTS9heTXKTDDeAr6
+         kf0xANVbDYOXoi/TXy3qe3NjYX2gp3MCoPFbluh0ddu2VKDUKSeGLUVgGCaRSEU5wn6T
+         oCgg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691071622; x=1691676422;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=UlaTOf8b5xDgcpnz88BTF1oHWeegdnN7LO6qya3yLSU=;
+        b=CBPX7HpQuyLWYZD9oKQyXPuKbjVglJKxsV0nxwlwhTvT34iH2wrEj6DaKPSqV8xazz
+         HSbXj9TRex1K/KjFw9nR6Rmb+yUgTBP84XWXfKY5Hqq38j1p4xIvBECaPXp9WYmLRq/2
+         7YoqSoSfSd6w1yjWLPyEBp7YDgRGWgZDDVU7nrr/TFjhUxh64+DD6sdM3YEk5CK5pCG5
+         W7RCL7IfH1qu97wK5hTQnH78/hEdCCIx66XNVjUGoeuJkpLfn07fYPUznqUctIpJyeLA
+         kPjKBoq3xZWfkT1Qmcr+USIBE7a8UxRHqycDloFZNSuvRaw+/gwHhEHrqLWDViO2Lc92
+         k4pw==
+X-Gm-Message-State: ABy/qLZ4ZO4XlBiQ533pVC1ymHFgfQkj9vFUpSaD4JMt++RTyEYRwUez
+        p01sc5OvKTh7NbL4pAXiq8lUaA==
+X-Google-Smtp-Source: APBJJlHQdTpk8QeUs0BEWT1UvlrOOOfKBq6pywJj+PepaJ8PqCiwHiv9xiKVOaFD1fb8sfLcExjdug==
+X-Received: by 2002:a05:600c:2a54:b0:3f7:f884:7be3 with SMTP id x20-20020a05600c2a5400b003f7f8847be3mr6793965wme.4.1691071622357;
+        Thu, 03 Aug 2023 07:07:02 -0700 (PDT)
+Received: from localhost ([147.161.155.117])
+        by smtp.gmail.com with ESMTPSA id u25-20020a7bcb19000000b003fe1cac37d8sm4472449wmj.11.2023.08.03.07.07.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 03 Aug 2023 07:07:01 -0700 (PDT)
+From:   "Andreas Hindborg (Samsung)" <nmi@metaspace.dk>
+To:     Ming Lei <ming.lei@redhat.com>
+Cc:     Christoph Hellwig <hch@infradead.org>, gost.dev@samsung.com,
+        linux-block@vger.kernel.org (open list:BLOCK LAYER),
+        Hans Holmberg <Hans.Holmberg@wdc.com>,
+        Matias Bjorling <Matias.Bjorling@wdc.com>,
+        Andreas Hindborg <a.hindborg@samsung.com>,
+        Minwoo Im <minwoo.im.dev@gmail.com>,
+        Jens Axboe <axboe@kernel.dk>,
+        Johannes Thumshirn <jth@kernel.org>,
+        Aravind Ramesh <Aravind.Ramesh@wdc.com>,
+        Damien Le Moal <dlemoal@kernel.org>,
+        linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH v10 0/3] ublk: enable zoned storage support
+Date:   Thu,  3 Aug 2023 16:06:58 +0200
+Message-ID: <20230803140701.18515-1-nmi@metaspace.dk>
+X-Mailer: git-send-email 2.41.0
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 184.161.19.61
-X-SA-Exim-Mail-From: hugo@hugovil.com
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
-Subject: [PATCH] serial: max310x: add comments for membase address workaround
-X-SA-Exim-Version: 4.2.1 (built Wed, 08 May 2019 21:11:16 +0000)
-X-SA-Exim-Scanned: Yes (on mail.hugovil.com)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hugo Villeneuve <hvilleneuve@dimonoff.com>
+From: Andreas Hindborg <a.hindborg@samsung.com>
 
-Add comments about workaround used to configure membase address. This
-follows suggestions made during review of a sc16is7xx driver patch to
-add the same workaround.
+Hi All,
 
-Link: https://lore.kernel.org/lkml/2936e18f-44ea-faed-9fa0-2ddefe7c3194@linux.intel.com
-Link: https://lore.kernel.org/lkml/20230801131655.80bd8f97f018dda6155d65f6@hugovil.com/
-Signed-off-by: Hugo Villeneuve <hvilleneuve@dimonoff.com>
----
- drivers/tty/serial/max310x.c | 5 +++++
- 1 file changed, 5 insertions(+)
+This patch set adds zoned storage support to `ublk`. The first two patches do
+some house cleaning in preparation for the last patch. The last patch adds
+support for report_zones and the following operations:
 
-diff --git a/drivers/tty/serial/max310x.c b/drivers/tty/serial/max310x.c
-index 416d553b73a7..5903dd033fd0 100644
---- a/drivers/tty/serial/max310x.c
-+++ b/drivers/tty/serial/max310x.c
-@@ -1369,6 +1369,11 @@ static int max310x_probe(struct device *dev, const struct max310x_devtype *devty
- 		s->p[i].port.flags	= UPF_FIXED_TYPE | UPF_LOW_LATENCY;
- 		s->p[i].port.iotype	= UPIO_PORT;
- 		s->p[i].port.iobase	= i;
-+		/*
-+		 * Use all ones as membase to make sure uart_configure_port() in
-+		 * serial_core.c does not abort for SPI/I2C devices where the
-+		 * membase address is not applicable.
-+		 */
- 		s->p[i].port.membase	= (void __iomem *)~0;
- 		s->p[i].port.uartclk	= uartclk;
- 		s->p[i].port.rs485_config = max310x_rs485_config;
+ - REQ_OP_ZONE_OPEN
+ - REQ_OP_ZONE_CLOSE
+ - REQ_OP_ZONE_FINISH
+ - REQ_OP_ZONE_RESET
+ - REQ_OP_ZONE_APPEND
 
-base-commit: 426263d5fb400ccde5444748693dc75bda18f01e
+A user space component based on ubdsrv is available for testing [1] with the
+"loop" target.
+
+Read/write and zone operations are tested with zenfs [2].
+
+The zone append path is tested with fio -> zonefs -> ublk -> null_blk.
+
+The series is based on v6.5-rc4.
+
+Changes for v10
+ - Remove IO flag UBLK_IO_FLAG_ZONE_APPEND
+ - Rename ublk_rq_data.nr_sectors to nr_zones
+ - Change UAPI by adding field `nr_zones` in union with
+   `ublksrv_io_desc.nr_sectors` and use zone count instead of sector count when
+   applicable
+ - Add documentation suggested Ming to UAPI `UBLK_IO_OP_REPORT_ZONES` and
+   `ublksrv_io_cmd`
+ - Updated user space component [1]
+
+[1] https://github.com/metaspace/ubdsrv/tree/2966e5f9637b5856d4a4273ae113e31b1c53ff98
+[2] https://github.com/westerndigitalcorporation/zenfs
+[3] https://git.kernel.dk/linux.git
+
+Andreas Hindborg (3):
+  ublk: add helper to check if device supports user copy
+  ublk: move check for empty address field on command submission
+  ublk: enable zoned storage support
+
+ drivers/block/ublk_drv.c      | 353 ++++++++++++++++++++++++++++++++--
+ include/uapi/linux/ublk_cmd.h |  63 +++++-
+ 2 files changed, 388 insertions(+), 28 deletions(-)
+
+
+base-commit: 5d0c230f1de8c7515b6567d9afba1f196fb4e2f4
 -- 
-2.30.2
+2.41.0
 
