@@ -2,231 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 17F3276E5AA
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 12:28:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E0F7276E5AD
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 12:29:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232075AbjHCK2V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Aug 2023 06:28:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59190 "EHLO
+        id S234716AbjHCK3K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Aug 2023 06:29:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59522 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233844AbjHCK1s (ORCPT
+        with ESMTP id S232222AbjHCK3H (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Aug 2023 06:27:48 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 2843C19B0
-        for <linux-kernel@vger.kernel.org>; Thu,  3 Aug 2023 03:27:47 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id DB58D113E;
-        Thu,  3 Aug 2023 03:28:29 -0700 (PDT)
-Received: from [10.1.35.53] (C02Z41KALVDN.cambridge.arm.com [10.1.35.53])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id BBA463F5A1;
-        Thu,  3 Aug 2023 03:27:44 -0700 (PDT)
-Message-ID: <fb12d5bd-de74-a4da-8a38-db64cfb3e5d3@arm.com>
-Date:   Thu, 3 Aug 2023 11:27:43 +0100
+        Thu, 3 Aug 2023 06:29:07 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D38026BA;
+        Thu,  3 Aug 2023 03:29:06 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id D9A1461D2B;
+        Thu,  3 Aug 2023 10:29:05 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4537DC433CB;
+        Thu,  3 Aug 2023 10:29:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1691058545;
+        bh=v/DRRw+g9CsERIBoM2Rssf1Qef98vEpt0K/MhGk43Bk=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=falbu8BQw/Bl6yKqCUl0WFg3jUhkIaDOaRu+gm0deORi0aGb1VuVfQnmpGH0AaiOo
+         i2jmyy386gt8mG9sIRsczo9hofyz+xTirVaKai6LSDh5F8l8NygVXHqP4SR+XmjTAK
+         gz3g77DlPr02au+xUrOyvO3DrdQQxZS+jquk3oit9cLhlZR38uf8I1yTPrvwx4NSxx
+         jT25rCRasn201yRVCquB/5xsp0L+VF8/H+uPt3hjrZnTUHJ+T8fZDvUdrvNEJmmmD+
+         s/IhbkUPTJ/eOS0ODB/RBur9dT19hWpgJXzj62DdFedB9arG/66hLIwywS9wEP0h7L
+         b9qrXEMWgqeLw==
+Received: by mail-ed1-f54.google.com with SMTP id 4fb4d7f45d1cf-5221b90f763so1004180a12.0;
+        Thu, 03 Aug 2023 03:29:05 -0700 (PDT)
+X-Gm-Message-State: AOJu0YwzdFR8OxS0rSr7gXBdCF45iulrHwpO9bQTyEB6ErpMOQmGgQvG
+        fOF3JQT7ddjFyO6EqHXZF6ISGdNc2dJNUq38C48=
+X-Google-Smtp-Source: AGHT+IEWSvoQbFfB9EJsBjyXUwfdwgKeTo7ErdEGCsdslgSeoqDUZLBp+b1SCgQARY8/4/Jl89fU2lzr5OxgihGROBg=
+X-Received: by 2002:aa7:de91:0:b0:523:f4c:afe7 with SMTP id
+ j17-20020aa7de91000000b005230f4cafe7mr970056edv.38.1691058543442; Thu, 03 Aug
+ 2023 03:29:03 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.13.0
-Subject: Re: [PATCH v4 2/5] mm: LARGE_ANON_FOLIO for improved performance
-To:     Yin Fengwei <fengwei.yin@intel.com>, Yu Zhao <yuzhao@google.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        David Hildenbrand <david@redhat.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Yang Shi <shy828301@gmail.com>,
-        "Huang, Ying" <ying.huang@intel.com>, Zi Yan <ziy@nvidia.com>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Itaru Kitayama <itaru.kitayama@gmail.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-References: <20230726095146.2826796-1-ryan.roberts@arm.com>
- <20230726095146.2826796-3-ryan.roberts@arm.com>
- <CAOUHufackQzy+yXOzaej+G6DNYK-k9GAUHAK6Vq79BFHr7KwAQ@mail.gmail.com>
- <CAOUHufZ70cMR=hnMW0_J9BeWRPwXVUDoeRhES+wq19r1SioGuA@mail.gmail.com>
- <8c0710e0-a75a-b315-dae1-dd93092e4bd6@arm.com>
- <4ae53b2a-e069-f579-428d-ac6f744cd19a@intel.com>
- <49142e18-fd4e-6487-113a-3112b1c17dbe@arm.com>
- <2d947a72-c295-e4c5-4176-4c59cc250e39@intel.com>
- <cf71f899-e302-0e60-c21a-6af65205cd39@arm.com>
- <07d060a8-9ffe-16c1-652b-7854730ea572@intel.com>
-From:   Ryan Roberts <ryan.roberts@arm.com>
-In-Reply-To: <07d060a8-9ffe-16c1-652b-7854730ea572@intel.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <20210514200743.3026725-1-alex.kogan@oracle.com>
+ <20210514200743.3026725-4-alex.kogan@oracle.com> <ZMrjPWdWhEhwpZDo@gmail.com> <20230803085004.GF212435@hirez.programming.kicks-ass.net>
+In-Reply-To: <20230803085004.GF212435@hirez.programming.kicks-ass.net>
+From:   Guo Ren <guoren@kernel.org>
+Date:   Thu, 3 Aug 2023 18:28:51 +0800
+X-Gmail-Original-Message-ID: <CAJF2gTQFZEpHK45hd9HXxHxJc4gaCuDQ4wZ2adDzHwGQjA6VFw@mail.gmail.com>
+Message-ID: <CAJF2gTQFZEpHK45hd9HXxHxJc4gaCuDQ4wZ2adDzHwGQjA6VFw@mail.gmail.com>
+Subject: Re: [PATCH v15 3/6] locking/qspinlock: Introduce CNA into the slow
+ path of qspinlock
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Alex Kogan <alex.kogan@oracle.com>, linux@armlinux.org.uk,
+        mingo@redhat.com, will.deacon@arm.com, arnd@arndb.de,
+        longman@redhat.com, linux-arch@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        tglx@linutronix.de, bp@alien8.de, hpa@zytor.com, x86@kernel.org,
+        guohanjun@huawei.com, jglauber@marvell.com,
+        steven.sistare@oracle.com, daniel.m.jordan@oracle.com,
+        dave.dice@oracle.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 03/08/2023 10:58, Yin Fengwei wrote:
-> 
-> 
-> On 8/3/23 17:32, Ryan Roberts wrote:
->> On 03/08/2023 09:37, Yin Fengwei wrote:
->>>
->>>
->>> On 8/3/23 16:21, Ryan Roberts wrote:
->>>> On 03/08/2023 09:05, Yin Fengwei wrote:
->>>>
->>>> ...
->>>>
->>>>>> I've captured run time and peak memory usage, and taken the mean. The stdev for
->>>>>> the peak memory usage is big-ish, but I'm confident this still captures the
->>>>>> central tendancy well:
->>>>>>
->>>>>> | MAX_ORDER_UNHINTED |   real-time |   kern-time |   user-time | peak memory |
->>>>>> |:-------------------|------------:|------------:|------------:|:------------|
->>>>>> | 4k                 |        0.0% |        0.0% |        0.0% |        0.0% |
->>>>>> | 16k                |       -3.6% |      -26.5% |       -0.5% |       -0.1% |
->>>>>> | 32k                |       -4.8% |      -37.4% |       -0.6% |       -0.1% |
->>>>>> | 64k                |       -5.7% |      -42.0% |       -0.6% |       -1.1% |
->>>>>> | 128k               |       -5.6% |      -42.1% |       -0.7% |        1.4% |
->>>>>> | 256k               |       -4.9% |      -41.9% |       -0.4% |        1.9% |
->>>>>
->>>>> Here is my test result:
->>>>>
->>>>> 		real		user		sys
->>>>> hink-4k:	 0%		0%		0%
->>>>> hink-16K:	-3%		0.1%		-18.3%
->>>>> hink-32K:	-4%		0.2%		-27.2%
->>>>> hink-64K:	-4%		0.5%		-31.0%
->>>>> hink-128K:	-4%		0.9%		-33.7%
->>>>> hink-256K:	-5%		1%		-34.6%
->>>>>
->>>>>
->>>>> I used command: 
->>>>> /usr/bin/time -f "\t%E real,\t%U user,\t%S sys" make -skj96 allmodconfig all
->>>>> to build kernel and collect the real time/user time/kernel time.
->>>>> /sys/kernel/mm/transparent_hugepage/enabled is "madvise".
->>>>> Let me know if you have any question about the test.
->>>>
->>>> Thanks for doing this! I have a couple of questions:
->>>>
->>>>  - how many times did you run each test?
->>>      Three times for each ANON_FOLIO_MAX_ORDER_UNHINTED. The stddev is quite
->>>      small like less than %1.
->>
->> And out of interest, were you running on bare metal or in VM? And did you reboot
->> between each run?
-> I run the test on bare metal env. I didn't reboot for every run. But have to reboot
-> for different ANON_FOLIO_MAX_ORDER_UNHINTED size. I do
->    echo 3 > /proc/sys/vm/drop_caches
-> for everything run after "make mrproper" even after a fresh boot.
-> 
-> 
->>
->>>>
->>>>  - how did you configure the large page size? (I sent an email out yesterday
->>>>    saying that I was doing it wrong from my tests, so the 128k and 256k results
->>>>    for my test set are not valid.
->>>      I changed the ANON_FOLIO_MAX_ORDER_UNHINTED definition manually every time.
->>
->> In that case, I think your results are broken in a similar way to mine. This
->> code means that order will never be higher than 3 (32K) on x86:
->>
->> +		order = max(arch_wants_pte_order(), PAGE_ALLOC_COSTLY_ORDER);
->> +
->> +		if (!hugepage_vma_check(vma, vma->vm_flags, false, true, true))
->> +			order = min(order, ANON_FOLIO_MAX_ORDER_UNHINTED);
->>
->> On x86, arch_wants_pte_order() is not implemented and the default returns -1, so
->> you end up with:
-> I added arch_waits_pte_order() for x86 and gave it a very large number. So the
-> order is decided by ANON_FOLIO_MAX_ORDER_UNHINTED. I suppose my data is valid.
+On Thu, Aug 3, 2023 at 4:50=E2=80=AFPM Peter Zijlstra <peterz@infradead.org=
+> wrote:
+>
+> On Wed, Aug 02, 2023 at 07:14:05PM -0400, Guo Ren wrote:
+>
+> > The pv_ops is belongs to x86 custom frame work, and it prevent other
+> > architectures connect to the CNA spinlock.
+>
+> static_call() exists as a arch neutral variant of this.
+Emm... we have used static_call() in the riscv queued_spin_lock_:
+https://lore.kernel.org/all/20230802164701.192791-20-guoren@kernel.org/
 
-Ahh great! ok sorry for the noise.
+But we met a compile problem:
 
-Given part of the rationale for the experiment was to plot perf against memory
-usage, did you collect any memory numbers?
+  GEN     .vmlinux.objs
+  MODPOST Module.symvers
+ERROR: modpost: "__SCK__pv_queued_spin_unlock" [arch/riscv/kvm/kvm.ko]
+undefined!
+ERROR: modpost: "__SCK__pv_queued_spin_unlock"
+[kernel/locking/locktorture.ko] undefined!
+ERROR: modpost: "__SCK__pv_queued_spin_unlock" [mm/z3fold.ko] undefined!
+ERROR: modpost: "__SCK__pv_queued_spin_unlock"
+[fs/nfs_common/grace.ko] undefined!
+ERROR: modpost: "__SCK__pv_queued_spin_unlock" [fs/quota/quota_v1.ko] undef=
+ined!
+ERROR: modpost: "__SCK__pv_queued_spin_unlock" [fs/quota/quota_v2.ko] undef=
+ined!
+ERROR: modpost: "__SCK__pv_queued_spin_unlock"
+[fs/quota/quota_tree.ko] undefined!
+ERROR: modpost: "__SCK__pv_queued_spin_unlock" [fs/fuse/virtiofs.ko] undefi=
+ned!
+ERROR: modpost: "__SCK__pv_queued_spin_unlock" [fs/dlm/dlm.ko] undefined!
+ERROR: modpost: "__SCK__pv_queued_spin_unlock" [fs/fscache/fscache.ko]
+undefined!
+WARNING: modpost: suppressed 839 unresolved symbol warnings because
+there were too many)
+/home/guoren/source/kernel/linux/scripts/Makefile.modpost:144: recipe
+for target 'Module.symvers' failed
 
-> 
->>
->> 	order = min(PAGE_ALLOC_COSTLY_ORDER, ANON_FOLIO_MAX_ORDER_UNHINTED)
->>
->> So your 4k, 16k and 32k results should be valid, but 64k, 128k and 256k results
->> are actually using 32k, I think? Which is odd because you are getting more
->> stddev than the < 1% you quoted above? So perhaps this is down to rebooting
->> (kaslr, or something...?)
->>
->> (on arm64, arch_wants_pte_order() returns 4, so my 64k result is also valid).
->>
->> As a quick hack to work around this, would you be able to change the code to this:
->>
->> +		if (!hugepage_vma_check(vma, vma->vm_flags, false, true, true))
->> +			order = ANON_FOLIO_MAX_ORDER_UNHINTED;
->>
->>>
->>>>
->>>>  - what does "hink" mean??
->>>      Sorry for the typo. It should be ANON_FOLIO_MAX_ORDER_UNHINTED.
->>>
->>>>
->>>>>
->>>>> I also find one strange behavior with this version. It's related with why
->>>>> I need to set the /sys/kernel/mm/transparent_hugepage/enabled to "madvise".
->>>>> If it's "never", the large folio is disabled either.
->>>>> If it's "always", the THP will be active before large folio. So the system is
->>>>> in the mixed mode. it's not suitable for this test.
->>>>
->>>> We had a discussion around this in the THP meeting yesterday. I'm going to write
->>>> this up propoerly so we can have proper systematic discussion. The tentative
->>>> conclusion is that MADV_NOHUGEPAGE must continue to mean "do not fault in more
->>>> than is absolutely necessary". I would assume we need to extend that thinking to
->>>> the process-wide and system-wide knobs (as is done in the patch), but we didn't
->>>> explicitly say so in the meeting.
->>> There are cases that THP is not appreciated because of the latency or memory
->>> consumption. For these cases, large folio may fill the gap as less latency and
->>> memory consumption.
->>>
->>>
->>> So if disabling THP means large folio can't be used, we loose the chance to
->>> benefit those cases with large folio.
->>
->> Yes, I appreciate that. But there are also real use cases that expect
->> MADV_NOHUGEPAGE means "do not fault more than is absolutely necessary" and the
->> use cases break if that's not obeyed (e.g. live migration w/ qemu). So I think
->> we need to be conservitive to start. These apps that are explicitly forbidding
->> THP today, should be updated in the long run to opt-in to large anon folios
->> using some as-yet undefined control.
-> Fair enough.
-> 
-> 
-> Regards
-> Yin, Fengwei
-> 
->>
->>>
->>>
->>> Regards
->>> Yin, Fengwei
->>>
->>>>
->>>> My intention is that if you have requested THP and your vma is big enough for
->>>> PMD-size then you get that, else you fallback to large anon folios. And if you
->>>> have neither opted in nor out, then you get large anon folios.
->>>>
->>>> We talked about the idea of adding a new knob that let's you set the max order,
->>>> but that needs a lot more thought.
->>>>
->>>> Anyway, as I said, I'll write it up so we can all systematically discuss.
->>>>
->>>>>
->>>>> So if it's "never", large folio is disabled. But why "madvise" enables large
->>>>> folio unconditionly? Suppose it's only enabled for the VMA range which user
->>>>> madvise large folio (or THP)?
->>>>>
->>>>> Specific for the hink setting, my understand is that we can't choose it only
->>>>> by this testing. Other workloads may have different behavior with differnt
->>>>> hink setting.
->>>>>
->>>>>
->>>>> Regards
->>>>> Yin, Fengwei
->>>>>
->>>>
->>
+Our solution is:
+EXPORT_SYMBOL(__SCK__pv_queued_spin_unlock);
 
+What do you think about it?
+
+>
+> > I'm working on riscv qspinlock on sg2042 64 cores 2/4 NUMA nodes
+> > platforms. Here are the patches about riscv CNA qspinlock:
+> > https://lore.kernel.org/linux-riscv/20230802164701.192791-19-guoren@ker=
+nel.org/
+> >
+> > What's the next plan for this patch series? I think the two-queue desig=
+n
+> > has satisfied most platforms with two NUMA nodes.
+>
+> What has been your reason for working on CNA? What lock has been so
+> contended you need this?
+I wrote the reason here:
+https://lore.kernel.org/all/20230802164701.192791-1-guoren@kernel.org/
+
+The target platform is: https://www.sophon.ai/
+
+The two NUMA nodes platform has come out, so we want to measure the
+benefit of CNA qspinlock.
+
+Any feedbacks are welcome :)
+
+--=20
+Best Regards
+ Guo Ren
