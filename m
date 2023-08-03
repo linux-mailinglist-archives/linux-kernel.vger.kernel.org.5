@@ -2,228 +2,193 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AE61676DD6B
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 03:44:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E5FC76DD75
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 03:46:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230136AbjHCBoX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Aug 2023 21:44:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58710 "EHLO
+        id S231616AbjHCBqY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Aug 2023 21:46:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59564 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229527AbjHCBoT (ORCPT
+        with ESMTP id S230024AbjHCBqO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Aug 2023 21:44:19 -0400
-Received: from mgamail.intel.com (unknown [192.55.52.120])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81FA5115;
-        Wed,  2 Aug 2023 18:44:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1691027057; x=1722563057;
-  h=message-id:date:subject:to:cc:references:from:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=49y0opWBAYqY/D90gek4GJL7tEOTHo65GDF+50oNtr4=;
-  b=ZX5/UFqvJDigYkoHIQswbo/iSBjChK4kDjz+MmSWqK3cSwDE+oZH6ylP
-   MCPOLsVChiZ7nuSQc4t2fvF6fUhu9cmaQZgrfdOyuvHu+mXDEhwLeAk5x
-   1OuENpPkgy/PtXqsffd1meO0Dv9tY3ICxqsQrUCr5WctQ4ICp8s1odP7w
-   t6g/J3bwuxN8DE/Z9a6Ot+xw74UmMtlbsZgKa6JK3oDpPpz/IJY5hfda+
-   zzYK+jy3TE05GC4aytmgdTIqZQQtUtxpQk/zbwbRz6XJYZWtKCa5zAKlP
-   /Ma/pAI2xdPbXWqHyUEw+OMWIqg9oKknI3QhRowewukqSfOF/68c1uxmp
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10790"; a="368644522"
-X-IronPort-AV: E=Sophos;i="6.01,250,1684825200"; 
-   d="scan'208";a="368644522"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Aug 2023 18:44:11 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10790"; a="853055857"
-X-IronPort-AV: E=Sophos;i="6.01,250,1684825200"; 
-   d="scan'208";a="853055857"
-Received: from orsmsx601.amr.corp.intel.com ([10.22.229.14])
-  by orsmga004.jf.intel.com with ESMTP; 02 Aug 2023 18:44:10 -0700
-Received: from orsmsx611.amr.corp.intel.com (10.22.229.24) by
- ORSMSX601.amr.corp.intel.com (10.22.229.14) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.27; Wed, 2 Aug 2023 18:44:10 -0700
-Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
- ORSMSX611.amr.corp.intel.com (10.22.229.24) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.27; Wed, 2 Aug 2023 18:44:10 -0700
-Received: from ORSEDG601.ED.cps.intel.com (10.7.248.6) by
- orsmsx610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.27 via Frontend Transport; Wed, 2 Aug 2023 18:44:10 -0700
-Received: from NAM04-DM6-obe.outbound.protection.outlook.com (104.47.73.48) by
- edgegateway.intel.com (134.134.137.102) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.27; Wed, 2 Aug 2023 18:44:09 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Ap06djpGxldIlbPzVavq/3uYyTSYrV+XT6/bjJ+x1Wg9uHb8fkH9ZX6Oaahvj0wnE8vS75cAnZDHdrSAz4Vxfk1jtW1gAjkFtGSklTNvBSBRCosdp9X8YORUdcdFiY11Oc6zkYyPvu5mR1Rxc30iPAbmyMYR5AZCP/rf5vQEPNfX+TmKPskVIxipmk3g5c/OBdq5f8q1bl2WURAeYzptrhpEzShOjTkhFRiWJv7lvJqEtJNHA5hpMYfaonzr56sMQAGyNYZEmJMUHgCRleT/mQzE4c/CSHT6mcS5yeAL05yuXC/pxoiuMkT8IVvLE/IXepQt1O6oqbb9LaMnSfcpBg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=K/aAZVW9ozMHewXpwrVwf0XWt0rG3qUS68QxuhEghKY=;
- b=kdyDU8fAfM7L6SBSplJS3zU6zhY8Jy8MsRIQi6lw45yL57fQ22gJtwnJ8f3h8gxPhugWWiK3wMnZZLM0RrWpeC6VcC/9crmC5zY0mWPiDvQL0s+6wIzOl2YOR4gYhfAgcNMdDjqriAVkb5n8B7P0ENRrF2IzaUnpW3tVVlKJyeMpyMLpxswHKnchaXyxR5J4xCQoUHwUTdFaofEPVUcIuBjXzeLP5gB8xXJ+8qQFYIQsaiRn9A3r7S8fKgbBFrYxBUyjgjwItOC2ZOFEDOT3gXQMoDbLD8M70tYti9rIVU2DoLOIliZhjVYADmJpCbo6hgXx2J7oC9bczx7ri6RqRw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from CO1PR11MB4914.namprd11.prod.outlook.com (2603:10b6:303:90::24)
- by SJ0PR11MB5895.namprd11.prod.outlook.com (2603:10b6:a03:42b::19) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6631.47; Thu, 3 Aug
- 2023 01:44:07 +0000
-Received: from CO1PR11MB4914.namprd11.prod.outlook.com
- ([fe80::9c1c:5c49:de36:1cda]) by CO1PR11MB4914.namprd11.prod.outlook.com
- ([fe80::9c1c:5c49:de36:1cda%3]) with mapi id 15.20.6631.046; Thu, 3 Aug 2023
- 01:44:07 +0000
-Message-ID: <e1093991-6f54-2c8d-c713-babac0d216d4@intel.com>
-Date:   Wed, 2 Aug 2023 18:44:00 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Firefox/102.0 Thunderbird/102.13.0
-Subject: Re: [PATCH V5,net-next] net: mana: Add page pool for RX buffers
-Content-Language: en-US
-To:     Haiyang Zhang <haiyangz@microsoft.com>,
-        <linux-hyperv@vger.kernel.org>, <netdev@vger.kernel.org>
-CC:     <decui@microsoft.com>, <kys@microsoft.com>,
-        <paulros@microsoft.com>, <olaf@aepfle.de>, <vkuznets@redhat.com>,
-        <davem@davemloft.net>, <wei.liu@kernel.org>, <edumazet@google.com>,
-        <kuba@kernel.org>, <pabeni@redhat.com>, <leon@kernel.org>,
-        <longli@microsoft.com>, <ssengar@linux.microsoft.com>,
-        <linux-rdma@vger.kernel.org>, <daniel@iogearbox.net>,
-        <john.fastabend@gmail.com>, <bpf@vger.kernel.org>,
-        <ast@kernel.org>, <sharmaajay@microsoft.com>, <hawk@kernel.org>,
-        <tglx@linutronix.de>, <shradhagupta@linux.microsoft.com>,
-        <linux-kernel@vger.kernel.org>
-References: <1690999650-9557-1-git-send-email-haiyangz@microsoft.com>
-From:   Jesse Brandeburg <jesse.brandeburg@intel.com>
-In-Reply-To: <1690999650-9557-1-git-send-email-haiyangz@microsoft.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: MW4PR04CA0343.namprd04.prod.outlook.com
- (2603:10b6:303:8a::18) To CO1PR11MB4914.namprd11.prod.outlook.com
- (2603:10b6:303:90::24)
+        Wed, 2 Aug 2023 21:46:14 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB4763C3A
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Aug 2023 18:45:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1691027102;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=aAsnqIzhgN70MVogLZRUKBp2r2KU3xDPwLa0t6GESpc=;
+        b=jT4gYvap2Tes1KJ16NGrQonjuq8BEmfORkux3HbaYkhvItDdq0gD14b9jj4K/lif0IY3D4
+        Jtp59X7NVptY1iu52q8eVbUiQ5A5uqZ4YzNRDv/TzuPSVDAvSNcJbiqO0L1WmZkhpAH6em
+        /Y627njZkuDgbpTysBfmf05+XvExYvo=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-665-DPmLIw6sOKKoVy9VbKbCMw-1; Wed, 02 Aug 2023 21:44:59 -0400
+X-MC-Unique: DPmLIw6sOKKoVy9VbKbCMw-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.rdu2.redhat.com [10.11.54.4])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id AD12780027F;
+        Thu,  3 Aug 2023 01:44:58 +0000 (UTC)
+Received: from [10.22.18.41] (unknown [10.22.18.41])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 61010200B41D;
+        Thu,  3 Aug 2023 01:44:58 +0000 (UTC)
+Message-ID: <3e6a9ca3-3be5-8207-4923-8ecd141c04eb@redhat.com>
+Date:   Wed, 2 Aug 2023 21:44:58 -0400
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CO1PR11MB4914:EE_|SJ0PR11MB5895:EE_
-X-MS-Office365-Filtering-Correlation-Id: ec261556-1551-4c30-e62b-08db93c32029
-X-LD-Processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: ajl1ZhR7IkKj4JnGVjKaC9nH5BTjG8pbcrSdMNJ6lmTwya9OG12YJqPqYuFJJn3lV7y8jAOX8d0ROhM/fKmp+NYPpw8cRKKJVxUqs6cB0gXCKN8v+zRD/HHVByDZyKLmMkjXXJxezWszzD/LR9foOZ90NMWXNUMHBKx+uP+/+c5+m+sV6WDtr1J8s3E4LA+C09sPk7J6FPbZcsb/glLpOOH9FWYgMBN7+O2nL0HcW0e3VS3BCOcYTMNK5vgo6RBiiblCQ+m3J0zYPBYhEFsCZVA4zYttR/7baTY9H3B5B7edJ2DqkDJgLagtEGrw3s1twAI0oiRhKPmn7zHOE2lxmaB5y8MstMWEtjkKderbi/xjelJiRByFZr6vMpAxJ2eAUtN2c30BhCR/e/hmHR+7cxqQsx7gpCIjyovr2Q4eUC8Jty8Alu4eW5Q3LopjXhBsA12d/x+LHnoqviAeeaJMAVLB5NO3UBIc5xllmgfQGPohonv2IzaGk0Q5/nYtW7uoTb2U6khJbrIAMV7gw8cnAN6EszEEyVZNy55hhDf0+pzPat3xhcYc2SGzuxLd0+L2GlY5SlkR1hNWxB2KeIsWMDHwB1Srk/zqFixcn1nxA/rXpxUC1O6C98Eai1H0U1sXKSj9HqAp7p/3BpAg0cry0g==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CO1PR11MB4914.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(376002)(39860400002)(346002)(366004)(396003)(136003)(451199021)(2616005)(53546011)(6506007)(83380400001)(26005)(186003)(316002)(2906002)(66946007)(4326008)(66476007)(66556008)(5660300002)(7416002)(44832011)(41300700001)(8676002)(8936002)(6666004)(6486002)(6512007)(45080400002)(478600001)(38100700002)(82960400001)(36756003)(31696002)(86362001)(31686004)(43740500002)(45980500001);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?djNkYXpPWk95Y0ptWVVFWTdFRVZOOGQ3MXhKbHBxQlJrSWZqY0djQzkyeito?=
- =?utf-8?B?MDhXRDE3VXRHQXNlaGYwT2twTTNiVk1NVXdJTk5pbEVmQ1p2cWFZNVdTK0ln?=
- =?utf-8?B?UE8yVlVQYmpVcU9QWWZYd1lyS2o2b3ZlZnYxQUw0TjBLMTZ4OEs5ZDFzQkRD?=
- =?utf-8?B?VXcvQmFyYmRITlFqUmpYVjZ2TytXZGVHeFAxQkZCd2dpS0hZVHc3SGprMm9U?=
- =?utf-8?B?NmhXZzkwSG1UaHloVHFNMmU0T1huN29rYVZ5L3prcUJPNkcralgveS9wZzY3?=
- =?utf-8?B?MExwdTdxL0M5eExKVHBYOTc3bXpSTzRVUUwxQXptaXlyQjE0QXBBY2hjbHlq?=
- =?utf-8?B?cFBSSFZHOXVaYnBTZ2tLalpvMW5Yb2wwdXhOZjBXbGV1Wm9GVy8xQkI0bDZC?=
- =?utf-8?B?RDMxbS9Pc1hsQjJ4azZoWGNhYWVBdGkxWkxpd1BTTzRnZ2tHeFZIUmdFZEJP?=
- =?utf-8?B?S1dPbjhKUmo4bm9WUE1TK1hGWFZOTzhiREF4VHlJRlM1ZmY3YjNKbWxPL2dO?=
- =?utf-8?B?UkRlai8xUWdNQXdBTWdZNlRoYzNGV1lFbVZLWnZVZDFkU3NtUWU0TllEdXQw?=
- =?utf-8?B?c25WZ09GeDdNeDEyNUc4cnRNWHdmcWNMamtxbk0zNFdkUjVnb2FLV01BZ3B2?=
- =?utf-8?B?K1BjNU5WbWNDS1ZKOFZKUzRzRlFST3dTQ0docjZld1NBOS93QWQxV3dxYnVF?=
- =?utf-8?B?T1ZmN3hlanVEa2xRZDNsNkN1YjI5di94eXl6bXM2NkZwT1Bza2M2UFZINitk?=
- =?utf-8?B?TWs5WW5PMkJ6ejNzaUtTcUozdGU5ZktlTUpMclBxRjJMT20vbkhUMWhaeFFz?=
- =?utf-8?B?MCtiM2wvcGFUZTdERXpYbnZjYXBCNEYrRGJFbXRLQkRxV21FTzB4dHNQOEtC?=
- =?utf-8?B?M0RqTEs1SjJveCtBY1hTTEg4ZVR5eEdRckNTbkR1Yk1KK0dZYU1SMkx3cUZo?=
- =?utf-8?B?Tk1tVTd1R3EwcUV6MVRsUHhYYU5GdWsyZStncFBoVGZKWUVOaXFTaWhrNVdC?=
- =?utf-8?B?cVBwOFZ2ZmJ2Z2dEL3RmbHNzekxmVHI1aFkzR1pqdDAyY3hHSGJZK3J4REJv?=
- =?utf-8?B?TU5JdXoreW04S1ZqVkh0aGcxekl5TXU2ZFZEUnI0NU9HL3ZESks3MllrR1hB?=
- =?utf-8?B?QzRlZ1lBN3VvOVp2WFNLT3VyRHBiQXhZVWJZVXlIMkZtZWFsUlVuMW9rcFF6?=
- =?utf-8?B?WFpVRVc3dkY4Mk9ycnE4bmRwenVXU2thM2xFQ1hGdGNsRTNYNE00V2t5MHJL?=
- =?utf-8?B?YlozT2tLazdFRThXL2pNc3QyeXgycHdtUFZUUHJqRkdYZWJrNXhjbDN3YXFx?=
- =?utf-8?B?U0daRlRiNW9UbEM1N0RIdGNIWGRnOUNwRkVlbXVEZllZVDVBZVNwb1JqZHVs?=
- =?utf-8?B?bVJtbzlrdGs2OHBjOCtSOFYyazZJS2VPcWNmRHBYMVZWTm5idFlGS1E1Zy8y?=
- =?utf-8?B?TXN5cTg0K1p4bzlXWTA0dUJBL0FKM1NpbWZMNGl1M3YzUFJZSGwzcTZZdFR6?=
- =?utf-8?B?dHdQYnN0dFJWTHk1Q1RkNDQ4ZmU0Rmw0WDBKTzdEQkk3UElncUdHN09kV1p1?=
- =?utf-8?B?UllRdHlzQ1VpOThKSzZIUENqN2FUQWFrM3RzUjN1RzJwRFpBUThCWHp3Y25u?=
- =?utf-8?B?RUVhcnRpc0llNC9LV094SkxVTFlEbHNMcFpIMmNrc1Fnek1KZWtSRzBQRU9i?=
- =?utf-8?B?Y09CK3FaTG9UeTlHTTRtVkhWVHloSy9WRTRCVmRVa1R1RVJjSE1lWm1PbVVr?=
- =?utf-8?B?ZmtSb0FPbTM1NExHcUVQMk9hTDlTTDJMMTdrMy9JcEg2bDhUOHlYUHBzSERY?=
- =?utf-8?B?OHdCUjhuWTZBenVSeHE5T2RzUU1iWkJvSHpma282bUlXNm5ncU5uTWtVdnhm?=
- =?utf-8?B?SVMxa0YrbGRuMldRWFNGcjFlSDJ4M0llL3FLOWIrQTJKU3ZkSC9wR2ZFS2t0?=
- =?utf-8?B?aitUek1PMTB3NjRKUGFLRlBJV0hZMEdPZWYxQzVleXl5cFVmb3FSY3BCT2hz?=
- =?utf-8?B?RmxwZ041Q0dqSGJYMWVBZDRVQzdjVldjWXpndWNJOCtvTUU1bUJZdVBNblZW?=
- =?utf-8?B?a0srNzlBemRmNCttSXc5Q3RZUFRIMkZ2RVJ1SUQ3MXJBZlhIYTNGSDVRYkdD?=
- =?utf-8?B?K0l1ekJ2U2Y2eW9MTDNCNFE4WXNrMTRHZXUxRFNVS3g0SDk2L2xOZ0hGckNi?=
- =?utf-8?B?aXc9PQ==?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: ec261556-1551-4c30-e62b-08db93c32029
-X-MS-Exchange-CrossTenant-AuthSource: CO1PR11MB4914.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 03 Aug 2023 01:44:07.1596
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: S1xv9LzOax3f+iG/177Tos3Yo/2aOTGeJgyxa0CNsx9uscJ/yW7nKSdPOQr7zW8pZ9GXbgcVU14gMg/dAwC1fQh29zg0GQP8VgnFbOhIXMs=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR11MB5895
-X-OriginatorOrg: intel.com
-X-Spam-Status: No, score=-4.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.7.1
+Subject: Re: [PATCH v3] perf/arm-dmc620: Fix
+ dmc620_pmu_irqs_lock/cpu_hotplug_lock circular lock dependency
+Content-Language: en-US
+From:   Waiman Long <longman@redhat.com>
+To:     Will Deacon <will@kernel.org>
+Cc:     Mark Rutland <mark.rutland@arm.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Robin Murphy <robin.murphy@arm.com>
+References: <20230722031729.3913953-1-longman@redhat.com>
+ <20230728150614.GF21718@willie-the-truck>
+ <62d4b353-0237-9ec6-a63e-8a7a6764aba5@redhat.com>
+In-Reply-To: <62d4b353-0237-9ec6-a63e-8a7a6764aba5@redhat.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 3.1 on 10.11.54.4
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/2/2023 11:07 AM, Haiyang Zhang wrote:
-> Add page pool for RX buffers for faster buffer cycle and reduce CPU
-> usage.
-> 
-> The standard page pool API is used.
-> 
-> Signed-off-by: Haiyang Zhang <haiyangz@microsoft.com>
-> ---
-> V5:
-> In err path, set page_pool_put_full_page(..., false) as suggested by
-> Jakub Kicinski
-> V4:
-> Add nid setting, remove page_pool_nid_changed(), as suggested by
-> Jesper Dangaard Brouer
-> V3:
-> Update xdp mem model, pool param, alloc as suggested by Jakub Kicinski
-> V2:
-> Use the standard page pool API as suggested by Jesper Dangaard Brouer
-> ---
 
-> diff --git a/include/net/mana/mana.h b/include/net/mana/mana.h
-> index 024ad8ddb27e..b12859511839 100644
-> --- a/include/net/mana/mana.h
-> +++ b/include/net/mana/mana.h
-> @@ -280,6 +280,7 @@ struct mana_recv_buf_oob {
->  	struct gdma_wqe_request wqe_req;
->  
->  	void *buf_va;
-> +	bool from_pool; /* allocated from a page pool */
+On 8/2/23 21:37, Waiman Long wrote:
+>
+> On 7/28/23 11:06, Will Deacon wrote:
+>> On Fri, Jul 21, 2023 at 11:17:28PM -0400, Waiman Long wrote:
+>>> The following circular locking dependency was reported when running
+>>> cpus online/offline test on an arm64 system.
+>>>
+>>> [   84.195923] Chain exists of:
+>>>                   dmc620_pmu_irqs_lock --> cpu_hotplug_lock --> 
+>>> cpuhp_state-down
+>>>
+>>> [   84.207305]  Possible unsafe locking scenario:
+>>>
+>>> [   84.213212]        CPU0                    CPU1
+>>> [   84.217729]        ----                    ----
+>>> [   84.222247]   lock(cpuhp_state-down);
+>>> [   84.225899] lock(cpu_hotplug_lock);
+>>> [   84.232068] lock(cpuhp_state-down);
+>>> [   84.238237]   lock(dmc620_pmu_irqs_lock);
+>>> [   84.242236]
+>>>                  *** DEADLOCK ***
+>>>
+>>> The problematic locking order seems to be
+>>>
+>>>     lock(dmc620_pmu_irqs_lock) --> lock(cpu_hotplug_lock)
+>>>
+>>> This locking order happens when dmc620_pmu_get_irq() is called from
+>>> dmc620_pmu_device_probe(). Since dmc620_pmu_irqs_lock is used for
+>>> protecting the dmc620_pmu_irqs structure only, we don't actually need
+>>> to hold the lock when adding a new instance to the CPU hotplug 
+>>> subsystem.
+>>>
+>>> Fix this possible deadlock scenario by releasing the lock before
+>>> calling cpuhp_state_add_instance_nocalls() and reacquiring it 
+>>> afterward.
+>>> To avoid the possibility of 2 racing dmc620_pmu_get_irq() calls 
+>>> inserting
+>>> duplicated dmc620_pmu_irq structures with the same irq number, a dummy
+>>> entry is inserted before releasing the lock which will block a 
+>>> competing
+>>> thread from inserting another irq structure of the same irq number.
+>>>
+>>> Suggested-by: Robin Murphy <robin.murphy@arm.com>
+>>> Signed-off-by: Waiman Long <longman@redhat.com>
+>>> ---
+>>>   drivers/perf/arm_dmc620_pmu.c | 28 ++++++++++++++++++++++------
+>>>   1 file changed, 22 insertions(+), 6 deletions(-)
+>>>
+>>> diff --git a/drivers/perf/arm_dmc620_pmu.c 
+>>> b/drivers/perf/arm_dmc620_pmu.c
+>>> index 9d0f01c4455a..7cafd4dd4522 100644
+>>> --- a/drivers/perf/arm_dmc620_pmu.c
+>>> +++ b/drivers/perf/arm_dmc620_pmu.c
+>>> @@ -76,6 +76,7 @@ struct dmc620_pmu_irq {
+>>>       refcount_t refcount;
+>>>       unsigned int irq_num;
+>>>       unsigned int cpu;
+>>> +    unsigned int valid;
+>>>   };
+>>>     struct dmc620_pmu {
+>>> @@ -423,9 +424,14 @@ static struct dmc620_pmu_irq 
+>>> *__dmc620_pmu_get_irq(int irq_num)
+>>>       struct dmc620_pmu_irq *irq;
+>>>       int ret;
+>>>   -    list_for_each_entry(irq, &dmc620_pmu_irqs, irqs_node)
+>>> -        if (irq->irq_num == irq_num && 
+>>> refcount_inc_not_zero(&irq->refcount))
+>>> +    list_for_each_entry(irq, &dmc620_pmu_irqs, irqs_node) {
+>>> +        if (irq->irq_num != irq_num)
+>>> +            continue;
+>>> +        if (!irq->valid)
+>>> +            return ERR_PTR(-EAGAIN);    /* Try again later */
+>> It looks like this can bubble up to the probe() routine. Does the driver
+>> core handle -EAGAIN coming back from a probe routine?
+> Right, I should add code to handle this error condition. I think it 
+> can be handled in dmc620_pmu_get_irq(). The important thing is to 
+> release the mutex, wait a few ms and try again. What do you think?
+>>
+>>> +        if (refcount_inc_not_zero(&irq->refcount))
+>>>               return irq;
+>>> +    }
+>>>         irq = kzalloc(sizeof(*irq), GFP_KERNEL);
+>>>       if (!irq)
+>>> @@ -447,13 +453,23 @@ static struct dmc620_pmu_irq 
+>>> *__dmc620_pmu_get_irq(int irq_num)
+>>>       if (ret)
+>>>           goto out_free_irq;
+>>>   -    ret = cpuhp_state_add_instance_nocalls(cpuhp_state_num, 
+>>> &irq->node);
+>>> -    if (ret)
+>>> -        goto out_free_irq;
+>>> -
+>>>       irq->irq_num = irq_num;
+>>>       list_add(&irq->irqs_node, &dmc620_pmu_irqs);
+>>>   +    /*
+>>> +     * Release dmc620_pmu_irqs_lock before calling
+>>> +     * cpuhp_state_add_instance_nocalls() and reacquire it afterward.
+>>> +     */
+>>> +    mutex_unlock(&dmc620_pmu_irqs_lock);
+>>> +    ret = cpuhp_state_add_instance_nocalls(cpuhp_state_num, 
+>>> &irq->node);
+>>> +    mutex_lock(&dmc620_pmu_irqs_lock);
+>>> +
+>>> +    if (ret) {
+>>> +        list_del(&irq->irqs_node);
+>>> +        goto out_free_irq;
+>>> +    }
+>>> +
+>>> +    irq->valid = true;
+>> Do you actually need a new flag here, or could we use a refcount of zero
+>> to indicate that the irq descriptor is still being constructed?
+>
+> A refcount of zero can also mean that an existing irq is about to be 
+> removed. Right? So I don't think we can use that for this purpose. 
+> Besides, there is a 4-byte hole in the structure anyway for arm64.
 
-suggest you use flags and not bools, as bools waste 7 bits each, plus
-your packing of this struct will be full of holes, made worse by this
-patch. (see pahole tool)
+Alternatively, I can use a special reference count value, say -1, to 
+signal that the irq is not valid yet. What do you think?
 
-
->  
->  	/* SGL of the buffer going to be sent has part of the work request. */
->  	u32 num_sge;
-> @@ -330,6 +331,8 @@ struct mana_rxq {
->  	bool xdp_flush;
->  	int xdp_rc; /* XDP redirect return code */
->  
-> +	struct page_pool *page_pool;
-> +
->  	/* MUST BE THE LAST MEMBER:
->  	 * Each receive buffer has an associated mana_recv_buf_oob.
->  	 */
-
-
-The rest of the patch looks ok and is remarkably compact for a
-conversion to page pool. I'd prefer someone with more page pool exposure
-review this for correctness, but FWIW
-
-Reviewed-by: Jesse Brandeburg <jesse.brandeburg@intel.com>
-
+Cheers,
+Longman
 
