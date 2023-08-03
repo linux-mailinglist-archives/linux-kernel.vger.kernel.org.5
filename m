@@ -2,174 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 46B1576DF40
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 06:02:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B43E976DF59
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 06:18:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229926AbjHCECZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Aug 2023 00:02:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34134 "EHLO
+        id S231903AbjHCEST (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Aug 2023 00:18:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38150 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232013AbjHCECD (ORCPT
+        with ESMTP id S229463AbjHCESP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Aug 2023 00:02:03 -0400
-Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 410943C3A
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Aug 2023 21:01:43 -0700 (PDT)
-Received: by mail-ed1-x534.google.com with SMTP id 4fb4d7f45d1cf-522dd6b6438so541600a12.0
-        for <linux-kernel@vger.kernel.org>; Wed, 02 Aug 2023 21:01:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1691035302; x=1691640102;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=UEjxagX1ha9UkBtXsYKg8a/M1LhAYSchZkCQVHioNKw=;
-        b=L6MckNBosanRieexx3Ken0o7OsS27m/H15wUVvReQA0XEvY1kk//LcvLGjQMnMN+/T
-         UiCK5U3Vub3KKXvySUk/G354nHszOKE20wKyeZMcnc9Nlmp8RfOlqzD7V9X4F5+1obC0
-         nuo+IO3m9MK39HUnN4cwnlT0nkE4ZfsiSMWWBZSvNQ1wbmTXUfpDo3GYupUUnTMdLW+E
-         TUoEWxtE8TZDnRIJCzGCWbZ9lSQYiUF05dtO2MLPE5gEZaconQdfyR3H+dQRXiOJFhQG
-         1wcx/EDSXwuj+Qb9SGQxjPaqj2lvW6rC+J7EXMszcmEFW1kmvSMovN449LKjdyWbZSOl
-         0XZQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691035302; x=1691640102;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=UEjxagX1ha9UkBtXsYKg8a/M1LhAYSchZkCQVHioNKw=;
-        b=lfQogzzuKTAdVR7iT7GOiwvjI33DqeLyK/B5rSoniDZbzrpU5vGixcgyDXeDhZ1u8b
-         n/KErwZsNO9IdeEg0Noz7fkwV4fbugomp8T+nmvO4VQScivENZxpXlFaLkpE312TqBgC
-         hvzDsPIZM4cD3SkGcM6JnlyWIa+UI21g6Vc+FeDCx4R0dbT25zFVuqIesfs+mWV/EJVI
-         nQQmAMUPXXdRQ9Dgsp57gSwypQZgpaFPrWUXOt86piE158xl0aP/d1DV9RR0PuCD5ouh
-         pS1givuIsEzX/Py5w2YcTRAL9IxZVFBb7+kK/QOLOJ2IDomkH4vtssAdDfZD6Pcv6oyS
-         YLDA==
-X-Gm-Message-State: ABy/qLYm/UdOdcg7e0/6+NrcW+b9LmX+yrIuZor/ZwYLtA69x4lWuBtd
-        J5qa4jYTwGDgslqP5S2pcF0=
-X-Google-Smtp-Source: APBJJlErJQNEoLPOnJ89zXgzBb6SuF73dvEG2kCU9/luu3iAoGcPo7AdNAHOk463+WRJXksbGRwuVA==
-X-Received: by 2002:a17:906:7682:b0:993:ec0b:1a24 with SMTP id o2-20020a170906768200b00993ec0b1a24mr6401251ejm.7.1691035301466;
-        Wed, 02 Aug 2023 21:01:41 -0700 (PDT)
-Received: from andrea.. (host-82-57-177-142.retail.telecomitalia.it. [82.57.177.142])
-        by smtp.gmail.com with ESMTPSA id p9-20020a1709060dc900b0099bc038eb2bsm9851388eji.58.2023.08.02.21.01.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 02 Aug 2023 21:01:40 -0700 (PDT)
-From:   Andrea Parri <parri.andrea@gmail.com>
-To:     mathieu.desnoyers@efficios.com, paulmck@kernel.org,
-        paul.walmsley@sifive.com, palmer@dabbelt.com, aou@eecs.berkeley.edu
-Cc:     linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Andrea Parri <parri.andrea@gmail.com>
-Subject: [RFC PATCH] membarrier: riscv: Provide core serializing command
-Date:   Thu,  3 Aug 2023 06:01:11 +0200
-Message-Id: <20230803040111.5101-1-parri.andrea@gmail.com>
-X-Mailer: git-send-email 2.34.1
+        Thu, 3 Aug 2023 00:18:15 -0400
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09F1430C4;
+        Wed,  2 Aug 2023 21:18:14 -0700 (PDT)
+Received: from pps.filterd (m0353722.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3734A8JE027993;
+        Thu, 3 Aug 2023 04:18:06 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=pp1; bh=wqYpOQLG6xcAyGqs0Z8DX2tGZ4y4oXKrYlNsz244xMQ=;
+ b=pZZ/mJJG6926+wW8ShRWeOMRZ7sfxl90XTroEBnjleiR4Zux5HPeeazZ/Ih0Dl20VJlf
+ DaIoZc6B59/1Wd8iwX/dmupsD5HPwxIxlk+d59RvLVrItMTQI3IXLfKP/yQmUtrICXIV
+ 1MRLSh1Rxx3Hh0sm7BvnFfhWrvuEiZ0iHCpnKq5AOCYQt8BPR7+BaktktKjN2T3mmQ3O
+ fw4kTzXZWobFdp7psLjr6d7/qhnBPIU31MsKWJvKgtvWXqqbJxgX39Dq6fUIx+mxPHEk
+ QgCdiqRRyJgcSL8zg/6kLEdtHPV2jZFn2z9qiVcmyAG82MvpzFfoeGjeBB5q7sLZUvY8 Vg== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3s84k9gp2k-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 03 Aug 2023 04:18:06 +0000
+Received: from m0353722.ppops.net (m0353722.ppops.net [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 3734Gdou022880;
+        Thu, 3 Aug 2023 04:18:06 GMT
+Received: from ppma11.dal12v.mail.ibm.com (db.9e.1632.ip4.static.sl-reverse.com [50.22.158.219])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3s84k9gp1h-5
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 03 Aug 2023 04:18:06 +0000
+Received: from pps.filterd (ppma11.dal12v.mail.ibm.com [127.0.0.1])
+        by ppma11.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 3730VeMk014613;
+        Thu, 3 Aug 2023 03:03:47 GMT
+Received: from smtprelay06.fra02v.mail.ibm.com ([9.218.2.230])
+        by ppma11.dal12v.mail.ibm.com (PPS) with ESMTPS id 3s5ft1sb3f-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 03 Aug 2023 03:03:47 +0000
+Received: from smtpav03.fra02v.mail.ibm.com (smtpav03.fra02v.mail.ibm.com [10.20.54.102])
+        by smtprelay06.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 37333iHM41550556
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 3 Aug 2023 03:03:44 GMT
+Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id A4F6A20043;
+        Thu,  3 Aug 2023 03:03:44 +0000 (GMT)
+Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id DD65F20040;
+        Thu,  3 Aug 2023 03:03:41 +0000 (GMT)
+Received: from li-3c92a0cc-27cf-11b2-a85c-b804d9ca68fa.ibm.com (unknown [9.179.18.217])
+        by smtpav03.fra02v.mail.ibm.com (Postfix) with ESMTPS;
+        Thu,  3 Aug 2023 03:03:41 +0000 (GMT)
+Date:   Thu, 3 Aug 2023 08:33:39 +0530
+From:   Aditya Gupta <adityag@linux.ibm.com>
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc:     Ian Rogers <irogers@google.com>, jolsa@kernel.org,
+        namhyung@kernel.org, linux-perf-users@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, maddy@linux.ibm.com,
+        atrajeev@linux.vnet.ibm.com, kjain@linux.ibm.com,
+        disgoel@linux.vnet.ibm.com, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/1] perf tests task_analyzer: Check perf build options
+ for libtraceevent support
+Message-ID: <4qqzt2g2iuo2kri54jyr7tspfxfod4nzsuzajxk3butoxs2rww@rj4quuzpoeg3>
+References: <20230725061649.34937-1-adityag@linux.ibm.com>
+ <ZMPWk5K63tadmDlU@kernel.org>
+ <CAP-5=fW1zkpJ4zr4ngz=6bZQuE6hOHo4AtXwUsVJK9oiDSc_mg@mail.gmail.com>
+ <ZMQJKmV3XtwtZJtO@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZMQJKmV3XtwtZJtO@kernel.org>
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: Y58gOcevs2qCTRcw7SlXh_L9U7PEVPF5
+X-Proofpoint-ORIG-GUID: zY2B3zvG-wzQe4y0jXSC-etIhTUqjt53
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
+ definitions=2023-08-03_01,2023-08-01_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 malwarescore=0
+ phishscore=0 lowpriorityscore=0 clxscore=1015 priorityscore=1501
+ impostorscore=0 suspectscore=0 adultscore=0 spamscore=0 mlxlogscore=668
+ bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2306200000 definitions=main-2308030036
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Signed-off-by: Andrea Parri <parri.andrea@gmail.com>
-Suggested-by: Palmer Dabbelt <palmer@dabbelt.com>
----
-For the MEMBARRIER maintainers:  RISC-V does not have "core serializing
-instructions", meaning that there is no occurence of such a term in the
-RISC-V ISA.  The discussion and git history about the SYNC_CORE command
-suggested the implementation below: a FENCE.I instruction "synchronizes
-the instruction and data streams" [1] on a CPU; in litmus parlance,
+Hi Arnaldo,
+I am working on a patch for 'perf version --has', and will send a patch next
+week using that instead of 'perf version --build-options'.
 
-  (single-hart test)
+You can skip this patch if not needed.
 
-  CPU0
-
-  UPDATE text   ;
-  FENCE.I       ;
-  EXECUTE text  ;  /* <-- will execute the updated/new text */
-
-
-  (message-passing test)
-
-  CPU0             CPU1
-
-  UPDATE text   |  IF (flag) {     ;
-  WMB           |    FENCE.I       ;
-  SET flag      |    EXECUTE text  ;  /* execute the new text */
-                |  }               ;
-
-
-  (and many others, including "maybe"s!  ;-) )
-
-How do these remarks resonate with the semantics of "a core serializing
-instruction" (to be issued before returning to user-space)?
-
-RISCV maintainers, I'm missing some paths to user-space? (besides xRET)
-
-  Andrea
-
-[1] https://github.com/riscv/riscv-isa-manual/blob/main/src/zifencei.adoc
-
-
- .../sched/membarrier-sync-core/arch-support.txt   |  2 +-
- arch/riscv/Kconfig                                |  2 ++
- arch/riscv/include/asm/sync_core.h                | 15 +++++++++++++++
- 3 files changed, 18 insertions(+), 1 deletion(-)
- create mode 100644 arch/riscv/include/asm/sync_core.h
-
-diff --git a/Documentation/features/sched/membarrier-sync-core/arch-support.txt b/Documentation/features/sched/membarrier-sync-core/arch-support.txt
-index 23260ca449468..a17117d76e6d8 100644
---- a/Documentation/features/sched/membarrier-sync-core/arch-support.txt
-+++ b/Documentation/features/sched/membarrier-sync-core/arch-support.txt
-@@ -44,7 +44,7 @@
-     |    openrisc: | TODO |
-     |      parisc: | TODO |
-     |     powerpc: |  ok  |
--    |       riscv: | TODO |
-+    |       riscv: |  ok  |
-     |        s390: |  ok  |
-     |          sh: | TODO |
-     |       sparc: | TODO |
-diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
-index 4c07b9189c867..ed7ddaedc692e 100644
---- a/arch/riscv/Kconfig
-+++ b/arch/riscv/Kconfig
-@@ -27,6 +27,7 @@ config RISCV
- 	select ARCH_HAS_GCOV_PROFILE_ALL
- 	select ARCH_HAS_GIGANTIC_PAGE
- 	select ARCH_HAS_KCOV
-+	select ARCH_HAS_MEMBARRIER_SYNC_CORE
- 	select ARCH_HAS_MMIOWB
- 	select ARCH_HAS_NON_OVERLAPPING_ADDRESS_SPACE
- 	select ARCH_HAS_PMEM_API
-@@ -35,6 +36,7 @@ config RISCV
- 	select ARCH_HAS_SET_MEMORY if MMU
- 	select ARCH_HAS_STRICT_KERNEL_RWX if MMU && !XIP_KERNEL
- 	select ARCH_HAS_STRICT_MODULE_RWX if MMU && !XIP_KERNEL
-+	select ARCH_HAS_SYNC_CORE_BEFORE_USERMODE
- 	select ARCH_HAS_TICK_BROADCAST if GENERIC_CLOCKEVENTS_BROADCAST
- 	select ARCH_HAS_UBSAN_SANITIZE_ALL
- 	select ARCH_HAS_VDSO_DATA
-diff --git a/arch/riscv/include/asm/sync_core.h b/arch/riscv/include/asm/sync_core.h
-new file mode 100644
-index 0000000000000..d3ec6ac47ac9b
---- /dev/null
-+++ b/arch/riscv/include/asm/sync_core.h
-@@ -0,0 +1,15 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+#ifndef _ASM_RISCV_SYNC_CORE_H
-+#define _ASM_RISCV_SYNC_CORE_H
-+
-+/*
-+ * Ensure that a core serializing instruction is issued before returning
-+ * to user-mode.  RISC-V implements return to user-space through an xRET
-+ * instruction, which is not core serializing.
-+ */
-+static inline void sync_core_before_usermode(void)
-+{
-+	asm volatile ("fence.i" ::: "memory");
-+}
-+
-+#endif /* _ASM_RISCV_SYNC_CORE_H */
--- 
-2.34.1
-
+Thanks,
+- Aditya G
