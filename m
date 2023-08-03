@@ -2,160 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B03476EC54
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 16:21:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4338576EBC0
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 16:06:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236681AbjHCOVg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Aug 2023 10:21:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36660 "EHLO
+        id S235470AbjHCOG3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Aug 2023 10:06:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48228 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236677AbjHCOVJ (ORCPT
+        with ESMTP id S235385AbjHCOGB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Aug 2023 10:21:09 -0400
-Received: from pegase1.c-s.fr (pegase1.c-s.fr [93.17.236.30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F26B2684;
-        Thu,  3 Aug 2023 07:20:51 -0700 (PDT)
-Received: from localhost (mailhub3.si.c-s.fr [192.168.12.233])
-        by localhost (Postfix) with ESMTP id 4RGr4t1jffz9t4f;
-        Thu,  3 Aug 2023 15:57:18 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from pegase1.c-s.fr ([192.168.12.234])
-        by localhost (pegase1.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id MCduBF0o_i5C; Thu,  3 Aug 2023 15:57:18 +0200 (CEST)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase1.c-s.fr (Postfix) with ESMTP id 4RGr4m0kFqz9t4n;
-        Thu,  3 Aug 2023 15:57:12 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 13F5B8B773;
-        Thu,  3 Aug 2023 15:57:12 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id SEOQdp5N5PsN; Thu,  3 Aug 2023 15:57:11 +0200 (CEST)
-Received: from PO20335.IDSI0.si.c-s.fr (unknown [192.168.232.144])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id B5E0E8B77A;
-        Thu,  3 Aug 2023 15:57:11 +0200 (CEST)
-Received: from PO20335.IDSI0.si.c-s.fr (localhost [127.0.0.1])
-        by PO20335.IDSI0.si.c-s.fr (8.17.1/8.16.1) with ESMTPS id 373Dv4Yu494213
-        (version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=NOT);
-        Thu, 3 Aug 2023 15:57:04 +0200
-Received: (from chleroy@localhost)
-        by PO20335.IDSI0.si.c-s.fr (8.17.1/8.17.1/Submit) id 373Dv4LC494212;
-        Thu, 3 Aug 2023 15:57:04 +0200
-X-Authentication-Warning: PO20335.IDSI0.si.c-s.fr: chleroy set sender to christophe.leroy@csgroup.eu using -f
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Timur Tabi <timur@kernel.org>
-Cc:     Christophe Leroy <christophe.leroy@csgroup.eu>,
-        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        linux-serial@vger.kernel.org
-Subject: [PATCH v1 12/12] serial: cpm_uart: Remove linux/fs_uart_pd.h
-Date:   Thu,  3 Aug 2023 15:56:53 +0200
-Message-ID: <f2cb444fa2b5776c9c51b5e46ea85edab62d1524.1691068700.git.christophe.leroy@csgroup.eu>
-X-Mailer: git-send-email 2.41.0
-In-Reply-To: <cover.1691068700.git.christophe.leroy@csgroup.eu>
-References: <cover.1691068700.git.christophe.leroy@csgroup.eu>
+        Thu, 3 Aug 2023 10:06:01 -0400
+Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6621B4C0A
+        for <linux-kernel@vger.kernel.org>; Thu,  3 Aug 2023 07:05:11 -0700 (PDT)
+Received: by mail-pl1-x632.google.com with SMTP id d9443c01a7336-1bba2318546so8731515ad.1
+        for <linux-kernel@vger.kernel.org>; Thu, 03 Aug 2023 07:05:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance.com; s=google; t=1691071509; x=1691676309;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=J/VvNs2uIhcAZTPecrKiR+txw4pz0J1IGRiFLglW3T0=;
+        b=OSwzcoDOq6NERRdYfrPstK+ZW351dEAa5g+Y+deWGFfvYUWuFhETUOJ6o5tgWGLxIA
+         659j09hFeGeYePE5RSp+EnmNsHkgmwExFqo5Br7jFBwlYxOCQZhSYTbkvfUfRN5BGrlo
+         Tvb482xPMVsWjkdwPdZlrz8IjfAy9oM/2NC3GPrzALV7jsWdPLhgd5BvCMCZZCLHbiCE
+         rbT12hRqWHh+n7ipPcPcRP9PmiqAAYZ824/aA734gUAFUzK1jfBqrypj1dBeHvEr5Taq
+         R62qFsHHxo9AHuZfiTFwD5qCDcVwLGyS1XAk+BK8mIuvri2TP07hrYnX82BW4vniF6mc
+         ogjQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691071509; x=1691676309;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=J/VvNs2uIhcAZTPecrKiR+txw4pz0J1IGRiFLglW3T0=;
+        b=LDOa0uedTKGdha5hfhNQQ4hnlztpPxO8Mkdx0m/tAb/3HFJjxGOl7TY0csNxZuUgG7
+         00dnvzt9KjJLkO/ELrL6wnhfX2g5Uhw1O0txCLiQT1484bbX2XAHHPppYluou0WnbxBJ
+         XK8LRgXyUufq3d5mTx7FuZZxw1x/238mXICGVrJYttiRErynm4muvX2+kwwj4mTYIl+z
+         NiKY4/tcSMPK7QG94cvahICGhJ13zI5p0xKfUR/lxeHyIGzOa5MXav1rBSxa5b3lMpCh
+         H1jT96UtolIr7XwvDzQgRnqwa3ugyJbBH99pRIoYHg+nAoaiJU7Xyl2ZMOJn1n1KanuG
+         bPgQ==
+X-Gm-Message-State: ABy/qLbqoAo1RozeuMyUpXVzwjmpnmEMzpzQt4cxNWxfdDtRZRY3XiXT
+        qDR/BXBvipdUUBlqCGVY4ldAdw==
+X-Google-Smtp-Source: APBJJlGjmh5nZx44eAfVvPko4njP8rCceoAQXT0fdnZpAfb/mDC9I9WOJMn4Ls7LzubcPSEu0YgK6A==
+X-Received: by 2002:a17:902:8207:b0:1b9:ebe9:5f01 with SMTP id x7-20020a170902820700b001b9ebe95f01mr19539395pln.19.1691071508775;
+        Thu, 03 Aug 2023 07:05:08 -0700 (PDT)
+Received: from C02FG34NMD6R.bytedance.net ([2001:c10:ff04:0:1000::8])
+        by smtp.gmail.com with ESMTPSA id ji11-20020a170903324b00b001b8a897cd26sm14367485plb.195.2023.08.03.07.05.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 03 Aug 2023 07:05:08 -0700 (PDT)
+From:   "huangjie.albert" <huangjie.albert@bytedance.com>
+To:     davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+        pabeni@redhat.com
+Cc:     "huangjie.albert" <huangjie.albert@bytedance.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn@kernel.org>,
+        Magnus Karlsson <magnus.karlsson@intel.com>,
+        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        Pavel Begunkov <asml.silence@gmail.com>,
+        Yunsheng Lin <linyunsheng@huawei.com>,
+        Kees Cook <keescook@chromium.org>,
+        Richard Gobert <richardbgobert@gmail.com>,
+        netdev@vger.kernel.org (open list:NETWORKING DRIVERS),
+        linux-kernel@vger.kernel.org (open list),
+        bpf@vger.kernel.org (open list:XDP (eXpress Data Path))
+Subject: [RFC Optimizing veth xsk performance 00/10]
+Date:   Thu,  3 Aug 2023 22:04:26 +0800
+Message-Id: <20230803140441.53596-1-huangjie.albert@bytedance.com>
+X-Mailer: git-send-email 2.37.1 (Apple Git-137.1)
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1691071001; l=2154; i=christophe.leroy@csgroup.eu; s=20211009; h=from:subject:message-id; bh=HrW+xy1mV9LzVHBn5BKDV/j8NZ7SIr3YuDt4l5zZYWg=; b=SdK5pHkJWllauesE1RX5dyJy0LrcFgHaRXxxuxOaVzLotCbSaMVmZ0KMHIZFsaBKbAfua+39r hiNo4obrsUEAbvpe/ljhUWlxDBpm5I1eK5Q0ABO5zr++3evq4BLo2wD
-X-Developer-Key: i=christophe.leroy@csgroup.eu; a=ed25519; pk=HIzTzUj91asvincQGOFx6+ZF5AoUuP9GdOtQChs7Mm0=
+Content-Type: text/plain; charset=yes
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-linux/fs_uart_pd.h is not used anymore. Remove it.
+AF_XDP is a kernel bypass technology that can greatly improve performance.
+However, for virtual devices like veth, even with the use of AF_XDP sockets,
+there are still many additional software paths that consume CPU resources. 
+This patch series focuses on optimizing the performance of AF_XDP sockets 
+for veth virtual devices. Patches 1 to 4 mainly involve preparatory work. 
+Patch 5 introduces tx queue and tx napi for packet transmission, while 
+patch 9 primarily implements zero-copy, and patch 10 adds support for 
+batch sending of IPv4 UDP packets. These optimizations significantly reduce 
+the software path and support checksum offload.
 
-Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
----
- include/linux/fs_uart_pd.h | 71 --------------------------------------
- 1 file changed, 71 deletions(-)
- delete mode 100644 include/linux/fs_uart_pd.h
+I tested those feature with
+A typical topology is shown below:
+veth<-->veth-peer                                    veth1-peer<--->veth1
+	1       |                                                  |   7
+	        |2                                                6|
+	        |                                                  |
+	      bridge<------->eth0(mlnx5)- switch -eth1(mlnx5)<--->bridge1
+                  3                    4                 5    
+             (machine1)                              (machine2)    
+AF_XDP socket is attach to veth and veth1. and send packets to physical NIC(eth0)
+veth:(172.17.0.2/24)
+bridge:(172.17.0.1/24)
+eth0:(192.168.156.66/24)
 
-diff --git a/include/linux/fs_uart_pd.h b/include/linux/fs_uart_pd.h
-deleted file mode 100644
-index 36b61ff39277..000000000000
---- a/include/linux/fs_uart_pd.h
-+++ /dev/null
-@@ -1,71 +0,0 @@
--/*
-- * Platform information definitions for the CPM Uart driver.
-- *
-- * 2006 (c) MontaVista Software, Inc.
-- * Vitaly Bordug <vbordug@ru.mvista.com>
-- *
-- * This file is licensed under the terms of the GNU General Public License
-- * version 2. This program is licensed "as is" without any warranty of any
-- * kind, whether express or implied.
-- */
--
--#ifndef FS_UART_PD_H
--#define FS_UART_PD_H
--
--#include <asm/types.h>
--
--enum fs_uart_id {
--	fsid_smc1_uart,
--	fsid_smc2_uart,
--	fsid_scc1_uart,
--	fsid_scc2_uart,
--	fsid_scc3_uart,
--	fsid_scc4_uart,
--	fs_uart_nr,
--};
--
--static inline int fs_uart_id_scc2fsid(int id)
--{
--    return fsid_scc1_uart + id - 1;
--}
--
--static inline int fs_uart_id_fsid2scc(int id)
--{
--    return id - fsid_scc1_uart + 1;
--}
--
--static inline int fs_uart_id_smc2fsid(int id)
--{
--    return fsid_smc1_uart + id - 1;
--}
--
--static inline int fs_uart_id_fsid2smc(int id)
--{
--    return id - fsid_smc1_uart + 1;
--}
--
--struct fs_uart_platform_info {
--        void(*init_ioports)(struct fs_uart_platform_info *);
--	/* device specific information */
--	int fs_no;		/* controller index */
--	char fs_type[4];        /* controller type  */
--	u32 uart_clk;
--	u8 tx_num_fifo;
--	u8 tx_buf_size;
--	u8 rx_num_fifo;
--	u8 rx_buf_size;
--	u8 brg;
--	u8 clk_rx;
--	u8 clk_tx;
--};
--
--static inline int fs_uart_get_id(struct fs_uart_platform_info *fpi)
--{
--        if(strstr(fpi->fs_type, "SMC"))
--                return fs_uart_id_smc2fsid(fpi->fs_no);
--        if(strstr(fpi->fs_type, "SCC"))
--                return fs_uart_id_scc2fsid(fpi->fs_no);
--        return fpi->fs_no;
--}
--
--#endif
+eth1(172.17.0.2/24)
+bridge1:(172.17.0.1/24)
+eth0:(192.168.156.88/24)
+
+after set default route、snat、dnat. we can have a tests
+to get the performance results.
+
+packets send from veth to veth1:
+af_xdp test tool:
+link:https://github.com/cclinuxer/libxudp
+send:(veth)
+./objs/xudpperf send --dst 192.168.156.88:6002 -l 1300
+recv:(veth1)
+./objs/xudpperf recv --src 172.17.0.2:6002
+
+udp test tool:iperf3
+send:(veth)
+iperf3 -c 192.168.156.88 -p 6002 -l 1300 -b 60G -u
+recv:(veth1)
+iperf3 -s -p 6002
+
+performance:
+performance:(test weth libxdp lib)
+UDP                              : 250 Kpps (with 100% cpu)
+AF_XDP   no  zerocopy + no batch : 480 Kpps (with ksoftirqd 100% cpu)
+AF_XDP  with zerocopy + no batch : 540 Kpps (with ksoftirqd 100% cpu)
+AF_XDP  with  batch  +  zerocopy : 1.5 Mpps (with ksoftirqd 15% cpu)
+
+With af_xdp batch, the libxdp user-space program reaches a bottleneck.
+Therefore, the softirq did not reach the limit.
+
+This is just an RFC patch series, and some code details still need 
+further consideration. Please review this proposal.
+
+thanks!
+
+huangjie.albert (10):
+  veth: Implement ethtool's get_ringparam() callback
+  xsk: add dma_check_skip for  skipping dma check
+  veth: add support for send queue
+  xsk: add xsk_tx_completed_addr function
+  veth: use send queue tx napi to xmit xsk tx desc
+  veth: add ndo_xsk_wakeup callback for veth
+  sk_buff: add destructor_arg_xsk_pool for zero copy
+  xdp: add xdp_mem_type MEM_TYPE_XSK_BUFF_POOL_TX
+  veth: support zero copy for af xdp
+  veth: af_xdp tx batch support for ipv4 udp
+
+ drivers/net/veth.c          | 729 +++++++++++++++++++++++++++++++++++-
+ include/linux/skbuff.h      |   1 +
+ include/net/xdp.h           |   1 +
+ include/net/xdp_sock_drv.h  |   1 +
+ include/net/xsk_buff_pool.h |   1 +
+ net/xdp/xsk.c               |   6 +
+ net/xdp/xsk_buff_pool.c     |   3 +-
+ net/xdp/xsk_queue.h         |  11 +
+ 8 files changed, 751 insertions(+), 2 deletions(-)
+
 -- 
-2.41.0
+2.20.1
 
