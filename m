@@ -2,118 +2,289 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A187A76F375
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 21:33:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E5FF76F382
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 21:37:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230165AbjHCTd0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Aug 2023 15:33:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33452 "EHLO
+        id S230286AbjHCThJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Aug 2023 15:37:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34256 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229495AbjHCTdY (ORCPT
+        with ESMTP id S230190AbjHCThG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Aug 2023 15:33:24 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7579A3C3B
-        for <linux-kernel@vger.kernel.org>; Thu,  3 Aug 2023 12:33:23 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id DB55160C5B
-        for <linux-kernel@vger.kernel.org>; Thu,  3 Aug 2023 19:33:22 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C1C3AC433C7;
-        Thu,  3 Aug 2023 19:33:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691091202;
-        bh=Na39kC0nP6XiW875V274Re2PU/Nlj2wRY/n4Ot8HLjM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Vq2BHfXd0gAouZIkgnzf1DfzUa8NZDzU1x8y7+3dNLTFUILMcNkIJvKYBfYJQSzW3
-         RYYZmW45VHl7DbGGghUJpfaBpUH7es8pY2cMU1BfFMZQEQ0Iqz4ZnMGRTfEr/XRwBy
-         1bvtHux6jRaWV01Q2gCrU44FeWfqiLUgX1Qmj6zGCNRK+gxK98jY1X++g7wIfP24If
-         a0E9MgRAXWgIB39M4D8d9tda3B8eJkLwYUhbevvI8+k6Nuu8n7GvRO8ULiKUfic2JV
-         G3TZQwTX9hYfUSjPpfhPafGmOTpya0qnfqCkV8UxYslk+fOkc8JquUxObDallXK/R7
-         /lKiMhto7KJrg==
-Date:   Thu, 3 Aug 2023 20:33:15 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Jiaxin Yu =?utf-8?B?KOS/nuWutumRqyk=?= <Jiaxin.Yu@mediatek.com>
-Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-mediatek@lists.infradead.org" 
-        <linux-mediatek@lists.infradead.org>,
-        "ajye_huang@compal.corp-partner.google.com" 
-        <ajye_huang@compal.corp-partner.google.com>,
-        Chunxu Li =?utf-8?B?KOadjuaYpeaXrSk=?= <Chunxu.Li@mediatek.com>,
-        Allen-KH Cheng =?utf-8?B?KOeoi+WGoOWLsik=?= 
-        <Allen-KH.Cheng@mediatek.com>,
-        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
-        "kuninori.morimoto.gx@renesas.com" <kuninori.morimoto.gx@renesas.com>,
-        "andrzej.hajda@intel.com" <andrzej.hajda@intel.com>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        Project_Global_Chrome_Upstream_Group 
-        <Project_Global_Chrome_Upstream_Group@mediatek.com>,
-        "robert.foss@linaro.org" <robert.foss@linaro.org>,
-        "Laurent.pinchart@ideasonboard.com" 
-        <Laurent.pinchart@ideasonboard.com>,
-        "neil.armstrong@linaro.org" <neil.armstrong@linaro.org>,
-        "angelogioacchino.delregno@collabora.com" 
-        <angelogioacchino.delregno@collabora.com>,
-        "nfraprado@collabora.com" <nfraprado@collabora.com>,
-        "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
-Subject: Re: [v3 2/3] ASoC: mediatek: mt8186: correct the HDMI widgets
-Message-ID: <9c90185c-9cd4-4a08-9925-be5d460af54d@sirena.org.uk>
-References: <20230730180803.22570-1-jiaxin.yu@mediatek.com>
- <20230730180803.22570-3-jiaxin.yu@mediatek.com>
- <25e6ab45-ecad-4bc3-bf4d-983243c939ad@sirena.org.uk>
- <c6ae8630d06138b6d0156c19323afebf0718f522.camel@mediatek.com>
- <089fe457-1c61-4b7b-ad37-a67e7f46cb56@sirena.org.uk>
- <6aa6947865795fc534b61f5b8a80b3c42fd5a0cd.camel@mediatek.com>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="+mbNnAHmVhFc8DSv"
-Content-Disposition: inline
-In-Reply-To: <6aa6947865795fc534b61f5b8a80b3c42fd5a0cd.camel@mediatek.com>
-X-Cookie: One Bell System - it works.
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        Thu, 3 Aug 2023 15:37:06 -0400
+Received: from mail-yw1-x1149.google.com (mail-yw1-x1149.google.com [IPv6:2607:f8b0:4864:20::1149])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C2953C3B
+        for <linux-kernel@vger.kernel.org>; Thu,  3 Aug 2023 12:37:05 -0700 (PDT)
+Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-586a5cd0ea9so401997b3.2
+        for <linux-kernel@vger.kernel.org>; Thu, 03 Aug 2023 12:37:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1691091424; x=1691696224;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=/3+2LaUZtSIgyae9U3pa7SONeLjf47F4TsaDo1cDfHY=;
+        b=qWf+koP6WJCj/KpJbCA4hgfI7JomP8DSBT1WVRZ9XD0a2oXEvZlRRXgOJrVujtv1YW
+         MechMeRwb/u4MQn8M/Nyxjk8NjcMg9aqJOtku0z3XdcJ3hUBng2T84IWEYuS8f9msy9D
+         sUQMF1O4ExhUXjey2Re3fPhK3HlMp9uU+wIzDxikzjlLrJG4cArmRA0z+quVWiG4mCN+
+         ws9lWlifMZH0JpePdPAIqz5jShUJB0ATwSGB/9PzCLbfA5hw2+dfuUq4OL9VVWu29xdz
+         z/Q1Ywz6umTlf4m5wNYWzywUHrOzwG8Z0viK0/MVh3px42GqKr+BZ62XoAjlLKmX/9rc
+         2TIg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691091424; x=1691696224;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=/3+2LaUZtSIgyae9U3pa7SONeLjf47F4TsaDo1cDfHY=;
+        b=CwYNJhYAFjndgWBocSdNWdmVdSnOz/v69JkFe1Af93YKtIf7R0oLN/DAbVTjxK13EA
+         rWrWLSqrTWOF53NCxaZAhJz/1VF5Zo8SQn3BWdezP8Q+nN7th/ILL6k5hmaomYZgmb7I
+         3OhlPelm/98D8yrUkTP97K9TMrNylF6hzAiUN4aWVNrrLwKsongk+XmFrCo9v28AcFrw
+         BCqmeLqlw7fBG2wf4yuhhNAdCXh2pgW2XuW8gjsg3WssFF74qH4fR3cEvtufnIjr2wGl
+         RyR28J10prNOUPXEfbm0+Zndr1Yig+TQW1VlXLtSYinha6+90Iywn4HsthswlC3a3dW5
+         9XNA==
+X-Gm-Message-State: ABy/qLbxtSTExaJHWe/CZ3eJVeWpwjil3OownOHOnI6FIKrs43HHrQpr
+        o8uR/iFWNNmn2Y0PtYFFkTcyCz5p5g==
+X-Google-Smtp-Source: APBJJlFewtcWp6F9S7r4b6JAY9jc7zYqO20IVbwPEb0fffWFzRRzwyDDpdsGeydNWYSMn/QXaOeAFHsVGw==
+X-Received: from rmoar-specialist.c.googlers.com ([fda3:e722:ac3:cc00:2b:7d90:c0a8:45d3])
+ (user=rmoar job=sendgmr) by 2002:a25:db82:0:b0:d0d:cce3:d32d with SMTP id
+ g124-20020a25db82000000b00d0dcce3d32dmr151304ybf.6.1691091424358; Thu, 03 Aug
+ 2023 12:37:04 -0700 (PDT)
+Date:   Thu,  3 Aug 2023 19:36:35 +0000
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.41.0.585.gd2178a4bd4-goog
+Message-ID: <20230803193635.1047337-1-rmoar@google.com>
+Subject: [PATCH -next v2] kunit: fix uninitialized variables bug in attributes filtering
+From:   Rae Moar <rmoar@google.com>
+To:     shuah@kernel.org, davidgow@google.com, brendan.higgins@linux.dev
+Cc:     ruanjinjie@huawei.com, linux-kselftest@vger.kernel.org,
+        kunit-dev@googlegroups.com, linux-kernel@vger.kernel.org,
+        Rae Moar <rmoar@google.com>, kernel test robot <lkp@intel.com>,
+        Dan Carpenter <dan.carpenter@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Fix smatch warnings regarding uninitialized variables in the filtering
+patch of the new KUnit Attributes feature.
 
---+mbNnAHmVhFc8DSv
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Fixes: 529534e8cba3 ("kunit: Add ability to filter attributes")
 
-On Thu, Aug 03, 2023 at 07:20:15AM +0000, Jiaxin Yu (=E4=BF=9E=E5=AE=B6=E9=
-=91=AB) wrote:
+Reported-by: kernel test robot <lkp@intel.com>
+Reported-by: Dan Carpenter <dan.carpenter@linaro.org>
+Closes: https://lore.kernel.org/r/202307270610.s0w4NKEn-lkp@intel.com/
 
-> I agree with you, in fact the speaker is indeed doing this way. But
-> about the hdmi that on the board, I did not find a defination link
-> snd_soc_dapm_hdmi, so I use snd_soc_dapm_line to replace. The purpose
-> is to control it link speaker. Or what do you suggest I should do?=20
+Signed-off-by: Rae Moar <rmoar@google.com>
+---
 
-I think the sensible thing here is to define a DIGITAL_OUTPUT() which
-can be used for HDMI, S/PDIF and anything else that comes up and isn't
-clearly wrong like reusing one of the analog descriptions is.
+Change since v1:
+- Changed initialization of filtered to be {NULL, NULL} at the start and
+  only updated when ready to return.
+- Remove unnecessary +1 in memory allocation for parsed_filters in
+  executor test.
 
---+mbNnAHmVhFc8DSv
-Content-Type: application/pgp-signature; name="signature.asc"
+Note that this is rebased on top of the recent fix:
+("kunit: fix possible memory leak in kunit_filter_suites()").
 
------BEGIN PGP SIGNATURE-----
+ lib/kunit/attributes.c    | 40 +++++++++++++++++----------------------
+ lib/kunit/executor.c      | 18 +++++++++++-------
+ lib/kunit/executor_test.c |  2 +-
+ 3 files changed, 29 insertions(+), 31 deletions(-)
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmTMAPoACgkQJNaLcl1U
-h9CWewf/XtBsII8aM+PvwnIJ4Sr4fN16oOfY1UY32SAMvG5kfv55GzqucnYVEkQW
-a1Xs2el6AlSouSelQ12FvpaBAXjHAlQpyUoMwI0BYjncBoJ1aHZEGgwE54710y5H
-eRQmJH2oarBgD4MbO5N1pqUVbajjCg4mtU61yWgPhYlniAMILOmzyF5jxcpE7EET
-7cd0djgpIZHR/osfIG3EA7WQKjuZyMtB/0YKncA1qRoUP0pqZQfetbeHqtchfqJy
-3YvmkidEFoaROm7dSZWbNImhDbRVPNal4iot/8JUghN+yo867eidr/0i1kgzgJ8j
-+A+PCUclKZDIDoGbmL2M5hlTe+Ihbg==
-=3kqt
------END PGP SIGNATURE-----
+diff --git a/lib/kunit/attributes.c b/lib/kunit/attributes.c
+index d37c40c0ce4f..5e3034b6be99 100644
+--- a/lib/kunit/attributes.c
++++ b/lib/kunit/attributes.c
+@@ -102,7 +102,7 @@ static int int_filter(long val, const char *op, int input, int *err)
+ static int attr_enum_filter(void *attr, const char *input, int *err,
+ 		const char * const str_list[], int max)
+ {
+-	int i, j, input_int;
++	int i, j, input_int = -1;
+ 	long test_val = (long)attr;
+ 	const char *input_val = NULL;
+ 
+@@ -124,7 +124,7 @@ static int attr_enum_filter(void *attr, const char *input, int *err,
+ 			input_int = j;
+ 	}
+ 
+-	if (!input_int) {
++	if (input_int < 0) {
+ 		*err = -EINVAL;
+ 		pr_err("kunit executor: invalid filter input: %s\n", input);
+ 		return false;
+@@ -186,8 +186,10 @@ static void *attr_module_get(void *test_or_suite, bool is_test)
+ 	// Suites get their module attribute from their first test_case
+ 	if (test)
+ 		return ((void *) test->module_name);
+-	else
++	else if (kunit_suite_num_test_cases(suite) > 0)
+ 		return ((void *) suite->test_cases[0].module_name);
++	else
++		return (void *) "";
+ }
+ 
+ /* List of all Test Attributes */
+@@ -221,7 +223,7 @@ const char *kunit_attr_filter_name(struct kunit_attr_filter filter)
+ void kunit_print_attr(void *test_or_suite, bool is_test, unsigned int test_level)
+ {
+ 	int i;
+-	bool to_free;
++	bool to_free = false;
+ 	void *attr;
+ 	const char *attr_name, *attr_str;
+ 	struct kunit_suite *suite = is_test ? NULL : test_or_suite;
+@@ -255,7 +257,7 @@ void kunit_print_attr(void *test_or_suite, bool is_test, unsigned int test_level
+ 
+ int kunit_get_filter_count(char *input)
+ {
+-	int i, comma_index, count = 0;
++	int i, comma_index = 0, count = 0;
+ 
+ 	for (i = 0; input[i]; i++) {
+ 		if (input[i] == ',') {
+@@ -272,7 +274,7 @@ int kunit_get_filter_count(char *input)
+ struct kunit_attr_filter kunit_next_attr_filter(char **filters, int *err)
+ {
+ 	struct kunit_attr_filter filter = {};
+-	int i, j, comma_index, new_start_index;
++	int i, j, comma_index = 0, new_start_index = 0;
+ 	int op_index = -1, attr_index = -1;
+ 	char op;
+ 	char *input = *filters;
+@@ -316,7 +318,7 @@ struct kunit_attr_filter kunit_next_attr_filter(char **filters, int *err)
+ 		filter.attr = &kunit_attr_list[attr_index];
+ 	}
+ 
+-	if (comma_index) {
++	if (comma_index > 0) {
+ 		input[comma_index] = '\0';
+ 		filter.input = input + op_index;
+ 		input = input + new_start_index;
+@@ -356,31 +358,22 @@ struct kunit_suite *kunit_filter_attr_tests(const struct kunit_suite *const suit
+ 
+ 	/* Save filtering result on default value */
+ 	default_result = filter.attr->filter(filter.attr->attr_default, filter.input, err);
+-	if (*err) {
+-		kfree(copy);
+-		kfree(filtered);
+-		return NULL;
+-	}
++	if (*err)
++		goto err;
+ 
+ 	/* Save suite attribute value and filtering result on that value */
+ 	suite_val = filter.attr->get_attr((void *)suite, false);
+ 	suite_result = filter.attr->filter(suite_val, filter.input, err);
+-	if (*err) {
+-		kfree(copy);
+-		kfree(filtered);
+-		return NULL;
+-	}
++	if (*err)
++		goto err;
+ 
+ 	/* For each test case, save test case if passes filtering. */
+ 	kunit_suite_for_each_test_case(suite, test_case) {
+ 		test_val = filter.attr->get_attr((void *) test_case, true);
+ 		test_result = filter.attr->filter(filter.attr->get_attr(test_case, true),
+ 				filter.input, err);
+-		if (*err) {
+-			kfree(copy);
+-			kfree(filtered);
+-			return NULL;
+-		}
++		if (*err)
++			goto err;
+ 
+ 		/*
+ 		 * If attribute value of test case is set, filter on that value.
+@@ -406,7 +399,8 @@ struct kunit_suite *kunit_filter_attr_tests(const struct kunit_suite *const suit
+ 		}
+ 	}
+ 
+-	if (n == 0) {
++err:
++	if (n == 0 || *err) {
+ 		kfree(copy);
+ 		kfree(filtered);
+ 		return NULL;
+diff --git a/lib/kunit/executor.c b/lib/kunit/executor.c
+index 481901d245d0..dc295150c4e5 100644
+--- a/lib/kunit/executor.c
++++ b/lib/kunit/executor.c
+@@ -127,19 +127,18 @@ static struct suite_set kunit_filter_suites(const struct suite_set *suite_set,
+ {
+ 	int i, j, k;
+ 	int filter_count = 0;
+-	struct kunit_suite **copy, *filtered_suite, *new_filtered_suite;
+-	struct suite_set filtered;
++	struct kunit_suite **copy, **copy_start, *filtered_suite, *new_filtered_suite;
++	struct suite_set filtered = {NULL, NULL};
+ 	struct kunit_glob_filter parsed_glob;
+-	struct kunit_attr_filter *parsed_filters;
++	struct kunit_attr_filter *parsed_filters = NULL;
+ 
+ 	const size_t max = suite_set->end - suite_set->start;
+ 
+ 	copy = kmalloc_array(max, sizeof(*filtered.start), GFP_KERNEL);
+-	filtered.start = copy;
+ 	if (!copy) { /* won't be able to run anything, return an empty set */
+-		filtered.end = copy;
+ 		return filtered;
+ 	}
++	copy_start = copy;
+ 
+ 	if (filter_glob)
+ 		kunit_parse_glob_filter(&parsed_glob, filter_glob);
+@@ -147,7 +146,11 @@ static struct suite_set kunit_filter_suites(const struct suite_set *suite_set,
+ 	/* Parse attribute filters */
+ 	if (filters) {
+ 		filter_count = kunit_get_filter_count(filters);
+-		parsed_filters = kcalloc(filter_count + 1, sizeof(*parsed_filters), GFP_KERNEL);
++		parsed_filters = kcalloc(filter_count, sizeof(*parsed_filters), GFP_KERNEL);
++		if (!parsed_filters) {
++			kfree(copy);
++			return filtered;
++		}
+ 		for (j = 0; j < filter_count; j++)
+ 			parsed_filters[j] = kunit_next_attr_filter(&filters, err);
+ 		if (*err)
+@@ -166,7 +169,7 @@ static struct suite_set kunit_filter_suites(const struct suite_set *suite_set,
+ 				goto err;
+ 			}
+ 		}
+-		if (filter_count) {
++		if (filter_count > 0 && parsed_filters != NULL) {
+ 			for (k = 0; k < filter_count; k++) {
+ 				new_filtered_suite = kunit_filter_attr_tests(filtered_suite,
+ 						parsed_filters[k], filter_action, err);
+@@ -195,6 +198,7 @@ static struct suite_set kunit_filter_suites(const struct suite_set *suite_set,
+ 
+ 		*copy++ = filtered_suite;
+ 	}
++	filtered.start = copy_start;
+ 	filtered.end = copy;
+ 
+ err:
+diff --git a/lib/kunit/executor_test.c b/lib/kunit/executor_test.c
+index 01280cb8d451..3e0a1c99cb4e 100644
+--- a/lib/kunit/executor_test.c
++++ b/lib/kunit/executor_test.c
+@@ -119,7 +119,7 @@ static void parse_filter_attr_test(struct kunit *test)
+ 	filter_count = kunit_get_filter_count(filters);
+ 	KUNIT_EXPECT_EQ(test, filter_count, 2);
+ 
+-	parsed_filters = kunit_kcalloc(test, filter_count + 1, sizeof(*parsed_filters),
++	parsed_filters = kunit_kcalloc(test, filter_count, sizeof(*parsed_filters),
+ 			GFP_KERNEL);
+ 	for (j = 0; j < filter_count; j++) {
+ 		parsed_filters[j] = kunit_next_attr_filter(&filters, &err);
 
---+mbNnAHmVhFc8DSv--
+base-commit: 3bffe185ad11e408903d2782727877388d08d94e
+-- 
+2.41.0.585.gd2178a4bd4-goog
+
