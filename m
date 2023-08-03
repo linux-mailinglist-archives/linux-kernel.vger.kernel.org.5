@@ -2,49 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EF6CD76ED1D
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 16:47:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7BDF576ED26
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 16:49:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236054AbjHCOrm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Aug 2023 10:47:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57990 "EHLO
+        id S235180AbjHCOta (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Aug 2023 10:49:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60032 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235671AbjHCOrh (ORCPT
+        with ESMTP id S234240AbjHCOt2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Aug 2023 10:47:37 -0400
-Received: from bg4.exmail.qq.com (bg4.exmail.qq.com [43.154.54.12])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E93C1BE4;
-        Thu,  3 Aug 2023 07:47:15 -0700 (PDT)
-X-QQ-mid: bizesmtp78t1691074025tkmonxr9
-Received: from linux-lab-host.localdomain ( [116.30.131.233])
-        by bizesmtp.qq.com (ESMTP) with 
-        id ; Thu, 03 Aug 2023 22:47:04 +0800 (CST)
-X-QQ-SSF: 01200000000000E0X000000A0000000
-X-QQ-FEAT: EKa9/5zJOSjEdzda4qaDuVCtg7Ilp8g7uMOnt2Znfu3gOhN23U58dt8i2H0rQ
-        wL7+pkiMzvAKuxsqW+rE00MFBYMdyTnHePlHshxwQ/zl6vI/IyQEfs3kKI6VG8Pff13TJaR
-        u6BakN1cnrbLslooXXrsyYGIH3Rm+CWvRrE+96D7kdTdSW2e/5zi4nLM1QZ4PKmo3kMkX8B
-        nQH69mtUKZEDlygzHvq2A0U2IDAC3ah9yya5qGoNb4Iw0+zV76LxZvO71ZhHTIIWBMMFrwM
-        GTpRKl1iVuvFCe24lsUjoJj4X7KgSO7qiaYw/6yt/R4BHwq8FCFA+YyRtEMi7qCfrzh0yTd
-        LyIg4XeReqzeXtfo1EZnnMMpLDvrtk8KXiZLihozj35AoYe6/sApd8Ipv+6xpiBeRtF4nU6
-X-QQ-GoodBg: 0
-X-BIZMAIL-ID: 9459210872236914971
-From:   Zhangjin Wu <falcon@tinylab.org>
-To:     thomas@t-8ch.de, w@1wt.eu
-Cc:     falcon@tinylab.org, arnd@arndb.de, linux-kernel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, tanyuan@tinylab.org
-Subject: [PATCH v1 3/3] tools/nolibc: stackprotector.h: make __stack_chk_init static
-Date:   Thu,  3 Aug 2023 22:47:01 +0800
-Message-Id: <d5eb12e6b9238dcb85935cf6af3ed12ff043f900.1691073180.git.falcon@tinylab.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <cover.1691073180.git.falcon@tinylab.org>
-References: <cover.1691073180.git.falcon@tinylab.org>
+        Thu, 3 Aug 2023 10:49:28 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 77139173F;
+        Thu,  3 Aug 2023 07:49:27 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 1EA9B113E;
+        Thu,  3 Aug 2023 07:50:10 -0700 (PDT)
+Received: from donnerap.manchester.arm.com (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id D01A83F5A1;
+        Thu,  3 Aug 2023 07:49:23 -0700 (PDT)
+Date:   Thu, 3 Aug 2023 15:49:21 +0100
+From:   Andre Przywara <andre.przywara@arm.com>
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc:     Martin Botka <martin@biqu3d.com>,
+        Konrad Dybcio <konrad.dybcio@somainline.org>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@somainline.org>,
+        Marijn Suijten <marijn.suijten@somainline.org>,
+        Jami Kettunen <jamipkettunen@somainline.org>,
+        Paul Bouchara <paul.bouchara@somainline.org>,
+        Martin Botka <martin.botka@somainline.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Samuel Holland <samuel@sholland.org>,
+        Andrew Lunn <andrew@lunn.ch>, Icenowy Zheng <uwu@icenowy.me>,
+        Ludwig Kormann <ludwig.kormann@ict42.de>,
+        Heiko Stuebner <heiko@sntech.de>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Chris Morgan <macromorgan@hotmail.com>,
+        Jagan Teki <jagan@edgeble.ai>,
+        Maxime Ripard <mripard@kernel.org>, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v1 6/6] arm64: dts: allwinner: h616: Add BigTreeTech Pi
+ support
+Message-ID: <20230803154921.0d42fc66@donnerap.manchester.arm.com>
+In-Reply-To: <17dec3fb-1bce-77ff-9917-7f565049954d@linaro.org>
+References: <20230802220309.163804-1-martin@biqu3d.com>
+        <DFE9B2F1349F69AE+20230802220309.163804-7-martin@biqu3d.com>
+        <17dec3fb-1bce-77ff-9917-7f565049954d@linaro.org>
+Organization: ARM
+X-Mailer: Claws Mail 3.18.0 (GTK+ 2.24.32; aarch64-unknown-linux-gnu)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-QQ-SENDSIZE: 520
-Feedback-ID: bizesmtp:tinylab.org:qybglogicsvrgz:qybglogicsvrgz5a-1
-X-Spam-Status: No, score=-0.6 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,RCVD_IN_VALIDITY_RPBL,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -52,54 +69,64 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This allows to generate smaller text/data/dec size.
+On Thu, 3 Aug 2023 16:30:06 +0200
+Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org> wrote:
 
-As the _start_c() function added by crt.h, __stack_chk_init() is called
-from _start_c() instead of the assembly _start. So, it is able to mark
-it with static now.
+> On 03/08/2023 00:02, Martin Botka wrote:
+> > The BigTreeTech Pi is an H616 based board based on CB1.
+> > Just in Rpi format board.
+> > 
+> > It features the same internals as BTT CB1 but adds:
+> >     - Fan port
+> >     - IR receiver
+> >     - 24V DC power supply via terminal plugs
+> >     - USB to CAN module connector (The actual USB to CAN happens on the external module)
+> > 
+> > List of currently working things is the same as BTT CB1.
+> > 
+> > Signed-off-by: Martin Botka <martin@biqu3d.com>
+> > ---
+> >  .../allwinner/sun50i-h616-bigtreetech-pi.dts  | 44 +++++++++++++++++++
+> >  1 file changed, 44 insertions(+)
+> >  create mode 100644 arch/arm64/boot/dts/allwinner/sun50i-h616-bigtreetech-pi.dts
+> > 
+> > diff --git a/arch/arm64/boot/dts/allwinner/sun50i-h616-bigtreetech-pi.dts b/arch/arm64/boot/dts/allwinner/sun50i-h616-bigtreetech-pi.dts
+> > new file mode 100644
+> > index 000000000000..05f39b3606ba
+> > --- /dev/null
+> > +++ b/arch/arm64/boot/dts/allwinner/sun50i-h616-bigtreetech-pi.dts
+> > @@ -0,0 +1,44 @@
+> > +// SPDX-License-Identifier: (GPL-2.0+ or MIT)
+> > +/*
+> > + * Copyright (C) 2023 Martin Botka <martin@biqu3d.com>.
+> > + */
+> > +
+> > +/dts-v1/;
+> > +
+> > +#include "sun50i-h616-bigtreetech-cb1.dtsi"  
+> 
+> If this is using CB1 DTSI, does it mean it uses CB1 SoM? If so, I think
+> this should be reflected in the compatibles.
+> 
+> It's a bit confusing because in previous patch you call it "CB1 board"
+> but then with name "Manta"... So what is CB1?
 
-Signed-off-by: Zhangjin Wu <falcon@tinylab.org>
----
- tools/include/nolibc/crt.h            | 2 +-
- tools/include/nolibc/stackprotector.h | 5 ++---
- 2 files changed, 3 insertions(+), 4 deletions(-)
+That's indeed a bit confusing, but from what I got from the BTT webpage:
+"CB1" is the SoM. M8P (and its M4P/M5P siblings) are carrier boards with
+extra hardware for 3D printer support, taking the CB1 SoM.
+The "Bigtreetech BTT Pi" is embedding the same hardware as the SoM, but
+without actually using the SoM, directly on a PCB, so similar to what we
+have with the Pine64 SoPine and the Pine64 LTS board. It doesn't come with
+the extra goodies of the more 3D printer related boards.
 
-diff --git a/tools/include/nolibc/crt.h b/tools/include/nolibc/crt.h
-index 32e128b0fb62..a5f33fef1672 100644
---- a/tools/include/nolibc/crt.h
-+++ b/tools/include/nolibc/crt.h
-@@ -10,7 +10,7 @@
- char **environ __attribute__((weak));
- const unsigned long *_auxv __attribute__((weak));
- 
--void __stack_chk_init(void);
-+static void __stack_chk_init(void);
- static void exit(int);
- 
- void _start_c(long *sp)
-diff --git a/tools/include/nolibc/stackprotector.h b/tools/include/nolibc/stackprotector.h
-index b620f2b9578d..13f1d0e60387 100644
---- a/tools/include/nolibc/stackprotector.h
-+++ b/tools/include/nolibc/stackprotector.h
-@@ -37,8 +37,7 @@ void __stack_chk_fail_local(void)
- __attribute__((weak,section(".data.nolibc_stack_chk")))
- uintptr_t __stack_chk_guard;
- 
--__attribute__((weak,section(".text.nolibc_stack_chk"))) __no_stack_protector
--void __stack_chk_init(void)
-+static __no_stack_protector void __stack_chk_init(void)
- {
- 	my_syscall3(__NR_getrandom, &__stack_chk_guard, sizeof(__stack_chk_guard), 0);
- 	/* a bit more randomness in case getrandom() fails, ensure the guard is never 0 */
-@@ -46,7 +45,7 @@ void __stack_chk_init(void)
- 		__stack_chk_guard ^= (uintptr_t) &__stack_chk_guard;
- }
- #else /* !defined(_NOLIBC_STACKPROTECTOR) */
--__inline__ void __stack_chk_init(void) {}
-+static void __stack_chk_init(void) {}
- #endif /* defined(_NOLIBC_STACKPROTECTOR) */
- 
- #endif /* _NOLIBC_STACKPROTECTOR_H */
--- 
-2.25.1
+I *think* the "BIGTREETECH PI4B Adapter" is a normal dev board using the
+actual SoM, but with an otherwise identical(?) functionality software wise
+- so it can run with the same DTB. I wonder if we should have a separate
+.dts for this, though, since I believe it's not really identical in every
+aspect - starting with the USB ports, for instance.
 
+But for this board and patch here I think it's fine to include the
+cb1.dtsi, but not using the CB1 name in the compatibles list.
+
+Cheers,
+Andre
