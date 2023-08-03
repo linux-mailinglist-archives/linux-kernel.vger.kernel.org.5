@@ -2,200 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C0F4A76F073
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 19:14:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C884276F07E
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 19:19:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230356AbjHCROw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Aug 2023 13:14:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37606 "EHLO
+        id S234123AbjHCRTa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Aug 2023 13:19:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39606 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232400AbjHCROs (ORCPT
+        with ESMTP id S232007AbjHCRT2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Aug 2023 13:14:48 -0400
-Received: from fllv0015.ext.ti.com (fllv0015.ext.ti.com [198.47.19.141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 628171BF0;
-        Thu,  3 Aug 2023 10:14:45 -0700 (PDT)
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 373HEXXO106561;
-        Thu, 3 Aug 2023 12:14:33 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1691082873;
-        bh=M+NDSflbEljMlPMn2zaVb2eVzIkgjG0cGkjKNzfiloA=;
-        h=Date:Subject:To:References:From:In-Reply-To;
-        b=SmRgAJQnoSrHJP3JmEzMjsAGqOB1gq5vuBaHbdg3hQ6SS+/fvOUfiRtiWs9mBZCjL
-         2xd6+owGiAa6XctxaxK8TkOh2pTdt4IyGjBDmSJzJX0pr/TrjCmN/5/P4KfCHD56jl
-         71VcvjphPvwck2zbvzXfnO41V12rk/oNknSVm6Fw=
-Received: from DLEE103.ent.ti.com (dlee103.ent.ti.com [157.170.170.33])
-        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 373HEXiX120868
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 3 Aug 2023 12:14:33 -0500
-Received: from DLEE105.ent.ti.com (157.170.170.35) by DLEE103.ent.ti.com
- (157.170.170.33) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Thu, 3
- Aug 2023 12:14:32 -0500
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE105.ent.ti.com
- (157.170.170.35) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Thu, 3 Aug 2023 12:14:32 -0500
-Received: from [10.24.69.141] (ileaxei01-snat.itg.ti.com [10.180.69.5])
-        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 373HESVF015124;
-        Thu, 3 Aug 2023 12:14:29 -0500
-Message-ID: <80daaf47-02b8-a48d-904e-28d0445a6118@ti.com>
-Date:   Thu, 3 Aug 2023 22:44:28 +0530
+        Thu, 3 Aug 2023 13:19:28 -0400
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E12853A97
+        for <linux-kernel@vger.kernel.org>; Thu,  3 Aug 2023 10:19:26 -0700 (PDT)
+Received: from pps.filterd (m0279870.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 373DlxuW002847;
+        Thu, 3 Aug 2023 17:19:21 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=QEZvBRN1XyEsnpHaGGxlfwRavP7wNOBkAxVCMZ+3ar8=;
+ b=D9s93xL1QsCTTlWWYT7fNEiPIkz/NBU49ESnwWEYA9+VoUAPhgmGisjVLiDiDEKw/I9n
+ A3lg6Dcn0U965uxTB9QH6n2pwPkyb2oZBBhN3uTc3I8PHs2LiW5DoRrbnuGF58TG63nk
+ abVkKqiCsbLBtWbRFKrwE4bpzLLHDMOntAnzm3Ep69v12u6Cu5aCFPWHw9Y3tAFYiJtX
+ jWtYdCQc4O7hATHyIWeog9+DfEu8xelEeWLcdxA62W4nZoE0NGEtWEm5uQ9rP6E5N2ff
+ c+tuxUkO14XxM71PxR3B6UQwy4ilxBrpM25jolePcxk4hlJ5Hha4b3nrKnyvaZmaSlR9 Gw== 
+Received: from nasanppmta04.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3s863a9mya-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 03 Aug 2023 17:19:21 +0000
+Received: from nasanex01b.na.qualcomm.com (nasanex01b.na.qualcomm.com [10.46.141.250])
+        by NASANPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 373HJKnB001066
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 3 Aug 2023 17:19:20 GMT
+Received: from [10.71.109.168] (10.80.80.8) by nasanex01b.na.qualcomm.com
+ (10.46.141.250) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.30; Thu, 3 Aug
+ 2023 10:19:19 -0700
+Message-ID: <2f9a9450-438b-257d-759c-22b273a7b35d@quicinc.com>
+Date:   Thu, 3 Aug 2023 10:19:19 -0700
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.11.0
-Subject: Re: [PATCH v3] arm64: dts: ti: k3-j721s2: Correct pinmux offset for
- ospi
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] drm/panel: Add prepare_prev_first flag to Visionox
+ VTDR6130
 Content-Language: en-US
-To:     Udit Kumar <u-kumar1@ti.com>, <nm@ti.com>, <vigneshr@ti.com>,
-        <kristo@kernel.org>, <robh+dt@kernel.org>,
-        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
-        <sinthu.raja@ti.com>, <t-konduru@ti.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <eblanc@baylibre.com>
-References: <20230803145655.806001-1-u-kumar1@ti.com>
-From:   Vaishnav Achath <vaishnav.a@ti.com>
-In-Reply-To: <20230803145655.806001-1-u-kumar1@ti.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+To:     <neil.armstrong@linaro.org>, Sam Ravnborg <sam@ravnborg.org>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>
+CC:     <quic_abhinavk@quicinc.com>, <quic_parellan@quicinc.com>,
+        <dri-devel@lists.freedesktop.org>, <linux-kernel@vger.kernel.org>
+References: <20230725-visionox-vtdr-prev-first-v1-1-3bc44cec7dc6@quicinc.com>
+ <dde2774e-6f0b-21d0-e9c9-4a5bd1eac4e8@linaro.org>
+From:   Jessica Zhang <quic_jesszhan@quicinc.com>
+In-Reply-To: <dde2774e-6f0b-21d0-e9c9-4a5bd1eac4e8@linaro.org>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nasanex01b.na.qualcomm.com (10.46.141.250)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: w-mz3_XC9XVPkwtQe6UWiFT5QXyVIk73
+X-Proofpoint-GUID: w-mz3_XC9XVPkwtQe6UWiFT5QXyVIk73
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
+ definitions=2023-08-03_17,2023-08-03_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 impostorscore=0
+ malwarescore=0 bulkscore=0 lowpriorityscore=0 phishscore=0 mlxscore=0
+ suspectscore=0 spamscore=0 priorityscore=1501 clxscore=1015
+ mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2306200000 definitions=main-2308030155
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Udit,
-
-Thank you for fixing this,
-
-On 03/08/23 20:26, Udit Kumar wrote:
-> Due to non-addressable regions in J721S2 SOC wkup_pmx was split
-> into four regions from wkup_pmx0 to wkup_pmx3.
-> 
-> After split while updating the pin mux references to newly defined
-> four wkup_pmx, pin mux for OSPI0 was left.
-> Pin mux for OSPI0 is spread over two range wkup_pmx0
-> and wkup_pmx1, correcting pin mux for ospi and
-> adding correct pin mux setting within ospi node.
-> 
-> Also correcting OSPI1 pinmux which falls under wkup_pmx1
-> along with removing unused MCU_OSPI1_CSn1 pin for OSPI.
-> 
-> Fixes: 6bc829ceea41 ("arm64: dts: ti: k3-j721s2: Fix wkup pinmux range")
-> 
-> Signed-off-by: Udit Kumar <u-kumar1@ti.com>
-> ---
-> 
-> Logs with v3
-> https://gist.github.com/uditkumarti/6c8b1b1a0bc0bcfef5e04de37c3cb411
-> 
-> dtbs_check run after applying https://lore.kernel.org/all/20230721082654.27036-1-tony@atomide.com/
-> 
-> Change log:
-> 
-> Changes in v3:
->   - Corrected wkup_pmx for ospi1
->   - Removed unused pin MCU_OSPI1_CSn1, shared with pmic 
->   - v2: https://lore.kernel.org/all/20230802113500.162276-1-u-kumar1@ti.com/
-> 
-> Changes in v2:
->   - Changed name of pin mux to align with
->   https://lore.kernel.org/all/20230721082654.27036-1-tony@atomide.com/ patch
->   - v1: https://lore.kernel.org/all/20230801125626.3287306-1-u-kumar1@ti.com/
-> 
-> 
->  .../dts/ti/k3-j721s2-common-proc-board.dts    | 19 ++++++++++---------
->  arch/arm64/boot/dts/ti/k3-j721s2-som-p0.dtsi  | 13 ++++++++++---
->  2 files changed, 20 insertions(+), 12 deletions(-)
-> 
-> diff --git a/arch/arm64/boot/dts/ti/k3-j721s2-common-proc-board.dts b/arch/arm64/boot/dts/ti/k3-j721s2-common-proc-board.dts
-> index 02b7a559bdf2..88e80996f56b 100644
-> --- a/arch/arm64/boot/dts/ti/k3-j721s2-common-proc-board.dts
-> +++ b/arch/arm64/boot/dts/ti/k3-j721s2-common-proc-board.dts
-> @@ -250,18 +250,19 @@ J721S2_WKUP_IOPAD(0x104, PIN_INPUT, 0) /* (N26) MCU_ADC1_AIN6 */
->  			J721S2_WKUP_IOPAD(0x108, PIN_INPUT, 0) /* (N27) MCU_ADC1_AIN7 */
->  		>;
->  	};
-> +};
->  
-> +&wkup_pmx1 {
->  	mcu_fss0_ospi1_pins_default: mcu-fss0-ospi1-default-pins {
->  		pinctrl-single,pins = <
-> -			J721S2_WKUP_IOPAD(0x040, PIN_OUTPUT, 0) /* (A19) MCU_OSPI1_CLK */
-> -			J721S2_WKUP_IOPAD(0x05c, PIN_OUTPUT, 0) /* (D20) MCU_OSPI1_CSn0 */
-> -			J721S2_WKUP_IOPAD(0x060, PIN_OUTPUT, 0) /* (C21) MCU_OSPI1_CSn1 */
-> -			J721S2_WKUP_IOPAD(0x04c, PIN_INPUT, 0) /* (D21) MCU_OSPI1_D0 */
-> -			J721S2_WKUP_IOPAD(0x050, PIN_INPUT, 0) /* (G20) MCU_OSPI1_D1 */
-> -			J721S2_WKUP_IOPAD(0x054, PIN_INPUT, 0) /* (C20) MCU_OSPI1_D2 */
-> -			J721S2_WKUP_IOPAD(0x058, PIN_INPUT, 0) /* (A20) MCU_OSPI1_D3 */
-> -			J721S2_WKUP_IOPAD(0x048, PIN_INPUT, 0) /* (B19) MCU_OSPI1_DQS */
-> -			J721S2_WKUP_IOPAD(0x044, PIN_INPUT, 0) /* (B20) MCU_OSPI1_LBCLKO */
-> +			J721S2_WKUP_IOPAD(0x008, PIN_OUTPUT, 0) /* (A19) MCU_OSPI1_CLK */
-> +			J721S2_WKUP_IOPAD(0x024, PIN_OUTPUT, 0) /* (D20) MCU_OSPI1_CSn0 */
-> +			J721S2_WKUP_IOPAD(0x014, PIN_INPUT, 0) /* (D21) MCU_OSPI1_D0 */
-> +			J721S2_WKUP_IOPAD(0x018, PIN_INPUT, 0) /* (G20) MCU_OSPI1_D1 */
-> +			J721S2_WKUP_IOPAD(0x01c, PIN_INPUT, 0) /* (C20) MCU_OSPI1_D2 */
-> +			J721S2_WKUP_IOPAD(0x020, PIN_INPUT, 0) /* (A20) MCU_OSPI1_D3 */
-> +			J721S2_WKUP_IOPAD(0x010, PIN_INPUT, 0) /* (B19) MCU_OSPI1_DQS */
-> +			J721S2_WKUP_IOPAD(0x00c, PIN_INPUT, 0) /* (B20) MCU_OSPI1_LBCLKO */
->  		>;
->  	};
->  };
-> diff --git a/arch/arm64/boot/dts/ti/k3-j721s2-som-p0.dtsi b/arch/arm64/boot/dts/ti/k3-j721s2-som-p0.dtsi
-> index d57dd43da0ef..fd1d6c884736 100644
-> --- a/arch/arm64/boot/dts/ti/k3-j721s2-som-p0.dtsi
-> +++ b/arch/arm64/boot/dts/ti/k3-j721s2-som-p0.dtsi
-> @@ -45,8 +45,6 @@ mcu_fss0_ospi0_pins_default: mcu-fss0-ospi0-default-pins {
->  			J721S2_WKUP_IOPAD(0x000, PIN_OUTPUT, 0) /* (D19) MCU_OSPI0_CLK */
->  			J721S2_WKUP_IOPAD(0x02c, PIN_OUTPUT, 0) /* (F15) MCU_OSPI0_CSn0 */
->  			J721S2_WKUP_IOPAD(0x030, PIN_OUTPUT, 0) /* (G17) MCU_OSPI0_CSn1 */
-
-CS1 can be dropped as it is not being used.
-
-> -			J721S2_WKUP_IOPAD(0x038, PIN_OUTPUT, 0) /* (F14) MCU_OSPI0_CSn2 */
-> -			J721S2_WKUP_IOPAD(0x03c, PIN_OUTPUT, 0) /* (F17) MCU_OSPI0_CSn3 */
->  			J721S2_WKUP_IOPAD(0x00c, PIN_INPUT, 0) /* (C19) MCU_OSPI0_D0 */
->  			J721S2_WKUP_IOPAD(0x010, PIN_INPUT, 0) /* (F16) MCU_OSPI0_D1 */
->  			J721S2_WKUP_IOPAD(0x014, PIN_INPUT, 0) /* (G15) MCU_OSPI0_D2 */
-> @@ -61,6 +59,15 @@ J721S2_WKUP_IOPAD(0x004, PIN_INPUT, 0) /* (E20) MCU_OSPI0_LBCLKO */
->  	};
->  };
->  
-> +&wkup_pmx1 {
-> +	mcu_fss0_ospi0_1_pins_default: mcu-fss0-ospi0-1-default-pins {
-> +		pinctrl-single,pins = <
-> +			J721S2_WKUP_IOPAD(0x000, PIN_OUTPUT, 0) /* (F14) MCU_OSPI0_CSn2 */
-> +			J721S2_WKUP_IOPAD(0x004, PIN_OUTPUT, 0) /* (F17) MCU_OSPI0_CSn3 */
-
-These are unused, there is only a single device on CS0, it looks like when
-support for OSPI was added for J721S2, all CS pinmux was being configured even
-though it was not needed. Since you are fixing it, it would be best to drop
-unused ones so that there are no future conflicts.
-
-Thanks and Regards,
-Vaishnav
 
 
-> +		>;
-> +	};
-> +};
-> +
->  &wkup_pmx2 {
->  	wkup_i2c0_pins_default: wkup-i2c0-default-pins {
->  		pinctrl-single,pins = <
-> @@ -127,7 +134,7 @@ &main_mcan16 {
->  &ospi0 {
->  	status = "okay";
->  	pinctrl-names = "default";
-> -	pinctrl-0 = <&mcu_fss0_ospi0_pins_default>;
-> +	pinctrl-0 = <&mcu_fss0_ospi0_pins_default>, <&mcu_fss0_ospi0_1_pins_default>;
->  
->  	flash@0 {
->  		compatible = "jedec,spi-nor";
+On 7/31/2023 6:00 AM, Neil Armstrong wrote:
+> Hi,
+> 
+> On 26/07/2023 00:56, Jessica Zhang wrote:
+>> Due to a recent introduction of the pre_enable_prev_first bridge flag 
+>> [1],
+>> the panel driver will be probed before the DSI is enabled, causing the
+>> DCS commands to fail to send.
+>>
+>> Ensure that DSI is enabled before panel probe by setting the
+>> prepare_prev_first flag for the panel.
+> 
+> Well this is specific to MSM DSI driver, it's not related at all to the 
+> panel.
+
+Hi Neil,
+
+I think there might be some confusion caused by the commit message -- 
+instead of "enabled before panel probe", it should be "enabled before 
+panel pre_enable()" as the panel on commands are sent during prepare(), 
+which is matched to bridge pre_enable().
+
+IIRC the general rule is that the panel driver should set the 
+prepare_prev_first flag if the on commands are sent during pre_enable(), 
+so I'll keep the code change but correct the commit message if that's ok 
+with you.
+
+Thanks,
+
+Jessica Zhang
+
+> 
+> Neil
+> 
+>>
+>> [1] commit 4fb912e5e190 ("drm/bridge: Introduce pre_enable_prev_first 
+>> to alter bridge init order")
+>>
+>> Fixes: 2349183d32d8 ("drm/panel: add visionox vtdr6130 DSI panel driver")
+>> Signed-off-by: Jessica Zhang <quic_jesszhan@quicinc.com>
+>> ---
+>>   drivers/gpu/drm/panel/panel-visionox-vtdr6130.c | 1 +
+>>   1 file changed, 1 insertion(+)
+>>
+>> diff --git a/drivers/gpu/drm/panel/panel-visionox-vtdr6130.c 
+>> b/drivers/gpu/drm/panel/panel-visionox-vtdr6130.c
+>> index bb0dfd86ea67..e1363e128e7e 100644
+>> --- a/drivers/gpu/drm/panel/panel-visionox-vtdr6130.c
+>> +++ b/drivers/gpu/drm/panel/panel-visionox-vtdr6130.c
+>> @@ -296,6 +296,7 @@ static int visionox_vtdr6130_probe(struct 
+>> mipi_dsi_device *dsi)
+>>       dsi->format = MIPI_DSI_FMT_RGB888;
+>>       dsi->mode_flags = MIPI_DSI_MODE_VIDEO | 
+>> MIPI_DSI_MODE_NO_EOT_PACKET |
+>>                 MIPI_DSI_CLOCK_NON_CONTINUOUS;
+>> +    ctx->panel.prepare_prev_first = true;
+>>       drm_panel_init(&ctx->panel, dev, &visionox_vtdr6130_panel_funcs,
+>>                  DRM_MODE_CONNECTOR_DSI);
+>>
+>> ---
+>> base-commit: 28a5c036b05fc5c935cc72d76abd3589825ea9cd
+>> change-id: 20230717-visionox-vtdr-prev-first-e00ae02eec9f
+>>
+>> Best regards,
+> 
