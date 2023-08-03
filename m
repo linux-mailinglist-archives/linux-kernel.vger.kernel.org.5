@@ -2,101 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 03CB376E448
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 11:24:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9EFF876E44B
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 11:25:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234000AbjHCJY2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Aug 2023 05:24:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57166 "EHLO
+        id S234161AbjHCJZf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Aug 2023 05:25:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57612 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231717AbjHCJYX (ORCPT
+        with ESMTP id S229792AbjHCJZb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Aug 2023 05:24:23 -0400
-Received: from lelv0142.ext.ti.com (lelv0142.ext.ti.com [198.47.23.249])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E2E72684;
-        Thu,  3 Aug 2023 02:24:21 -0700 (PDT)
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-        by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 3739O59n122004;
-        Thu, 3 Aug 2023 04:24:05 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1691054646;
-        bh=zqbwm6MC4jGIsnXvhDBCNFfNtjyo4cmP300g52xJ8sI=;
-        h=From:To:CC:Subject:Date;
-        b=eRAVSn1k2cquhYbwU2UAWgjhKx6iu3+zzlbrb7XhVt18tFS5MvmXwl9nRlMmf1CjM
-         618XFwTiwPZadQqdWXhmglLK2dAgONyHsB3cNfafXeywaXuiXQG6DdzP1eQGeNz9qM
-         MFoRPAzQyM3dFvLP4Ke4NpDJ0XMm3mPRmbtHoEi4=
-Received: from DLEE103.ent.ti.com (dlee103.ent.ti.com [157.170.170.33])
-        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 3739O5tt011655
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 3 Aug 2023 04:24:05 -0500
-Received: from DLEE109.ent.ti.com (157.170.170.41) by DLEE103.ent.ti.com
- (157.170.170.33) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Thu, 3
- Aug 2023 04:24:05 -0500
-Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE109.ent.ti.com
- (157.170.170.41) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Thu, 3 Aug 2023 04:24:05 -0500
-Received: from localhost (ileaxei01-snat2.itg.ti.com [10.180.69.6])
-        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 3739O4e8073795;
-        Thu, 3 Aug 2023 04:24:05 -0500
-From:   Dhruva Gole <d-gole@ti.com>
-To:     Linus Walleij <linus.walleij@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Tony Lindgren <tony@atomide.com>
-CC:     <linux-gpio@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-omap@vger.kernel.org>, Dhruva Gole <d-gole@ti.com>,
-        Nishanth Menon <nm@ti.com>,
-        Vignesh Raghavendra <vigneshr@ti.com>
-Subject: [PATCH] dt-bindings: pinctrl: pinctrl-single: add am62x compatible
-Date:   Thu, 3 Aug 2023 14:53:12 +0530
-Message-ID: <20230803092311.604610-1-d-gole@ti.com>
-X-Mailer: git-send-email 2.34.1
+        Thu, 3 Aug 2023 05:25:31 -0400
+Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.153.233])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1587E211B
+        for <linux-kernel@vger.kernel.org>; Thu,  3 Aug 2023 02:25:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1691054727; x=1722590727;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=Wq+v2Oj+6Mxd2a//oJirAmmObJX/ETHVeQsh34JFG4Q=;
+  b=T3v+bpjSEb//g/JN2G2zeMeaARkUgZSv2oZBfa4sbTCfYmwjs5KsuJJY
+   EL76U6LvJXWhu9OFl8Nai7Wvx16azeWC8ncjPZhOP+W0tMuJ/kbpV46eZ
+   wZIjExfCuTMzo3KILUtba3VxWiLZa58AOfz0VSodgXjKgTQMRrwNr43cx
+   9XC4ayKTczs0Sp4DwMoI8dbAqGEj/U+cO5xQW7Hcl5IUaufu61G2G/jzX
+   drNF4CSecdi0G9AJ9LaGvSLcGz2XwyW4r/bT6Zu3Z+jpCFcawNfSCAWw2
+   v5ojOBzvUzrhukCaJ1nGwpnAcAnHNbzfGaFyVAUvVmdX4BlQ+ISfiNLBD
+   g==;
+X-IronPort-AV: E=Sophos;i="6.01,251,1684825200"; 
+   d="asc'?scan'208";a="239547799"
+X-Amp-Result: UNKNOWN
+X-Amp-Original-Verdict: FILE UNKNOWN
+Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
+  by esa1.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 03 Aug 2023 02:25:27 -0700
+Received: from chn-vm-ex01.mchp-main.com (10.10.85.143) by
+ chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.21; Thu, 3 Aug 2023 02:25:25 -0700
+Received: from wendy (10.10.115.15) by chn-vm-ex01.mchp-main.com
+ (10.10.85.143) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.21 via Frontend
+ Transport; Thu, 3 Aug 2023 02:25:24 -0700
+Date:   Thu, 3 Aug 2023 10:24:48 +0100
+From:   Conor Dooley <conor.dooley@microchip.com>
+To:     dylan <dylan@andestech.com>
+CC:     Guo Ren <guoren@kernel.org>,
+        Alexandre Ghiti <alexghiti@rivosinc.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        =?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn@rivosinc.com>,
+        <linux-riscv@lists.infradead.org>, <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH -fixes] riscv: Implement flush_cache_vmap()
+Message-ID: <20230803-stadium-unusable-6cf00e35ec22@wendy>
+References: <20230725132246.817726-1-alexghiti@rivosinc.com>
+ <CAJF2gTRm59RAJvSf=L2uqbb3rHnANVheO+yLqrJGuVBh1w8Oug@mail.gmail.com>
+ <ZMtv5+ut5z3pjlFJ@atctrx.andestech.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="nozptzZSf18sXWvu"
+Content-Disposition: inline
+In-Reply-To: <ZMtv5+ut5z3pjlFJ@atctrx.andestech.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add the am62x compatible property to add support for the new
-wakeup enable and status bits positions
+--nozptzZSf18sXWvu
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Cc: Nishanth Menon <nm@ti.com>
-Cc: Vignesh Raghavendra <vigneshr@ti.com>
-CC: Tony Lindgren <tony@atomide.com>
-Signed-off-by: Dhruva Gole <d-gole@ti.com>
----
+On Thu, Aug 03, 2023 at 05:14:15PM +0800, dylan wrote:
+> On Sun, Jul 30, 2023 at 01:08:17AM -0400, Guo Ren wrote:
+> > On Tue, Jul 25, 2023 at 9:22=E2=80=AFAM Alexandre Ghiti <alexghiti@rivo=
+sinc.com> wrote:
+> > >
+> > > The RISC-V kernel needs a sfence.vma after a page table modification:=
+ we
+> > > used to rely on the vmalloc fault handling to emit an sfence.vma, but
+> > > commit 7d3332be011e ("riscv: mm: Pre-allocate PGD entries for
+> > > vmalloc/modules area") got rid of this path for 64-bit kernels, so no=
+w we
+> > > need to explicitly emit a sfence.vma in flush_cache_vmap().
+> > >
+> > > Note that we don't need to implement flush_cache_vunmap() as the gene=
+ric
+> > > code should emit a flush tlb after unmapping a vmalloc region.
+> > >
+> > > Fixes: 7d3332be011e ("riscv: mm: Pre-allocate PGD entries for vmalloc=
+/modules area")
+> > > Signed-off-by: Alexandre Ghiti <alexghiti@rivosinc.com>
+> > > ---
+> > >  arch/riscv/include/asm/cacheflush.h | 4 ++++
+> > >  1 file changed, 4 insertions(+)
+> > >
+> > > diff --git a/arch/riscv/include/asm/cacheflush.h b/arch/riscv/include=
+/asm/cacheflush.h
+> > > index 8091b8bf4883..b93ffddf8a61 100644
+> > > --- a/arch/riscv/include/asm/cacheflush.h
+> > > +++ b/arch/riscv/include/asm/cacheflush.h
+> > > @@ -37,6 +37,10 @@ static inline void flush_dcache_page(struct page *=
+page)
+> > >  #define flush_icache_user_page(vma, pg, addr, len) \
+> > >         flush_icache_mm(vma->vm_mm, 0)
+> > >
+> > > +#ifdef CONFIG_64BIT
+> > > +#define flush_cache_vmap(start, end)   flush_tlb_kernel_range(start,=
+ end)
+> > Sorry, I couldn't agree with the above in a PIPT cache machine. It's
+> > not worth for.
+> >=20
+> > It would reduce the performance of vmap_pages_range,
+> > ioremap_page_range ... API, which may cause some drivers' performance
+> > issues when they install/uninstall memory frequently.
+> >=20
+>=20
+> Hi All,
+>=20
+> I think functional correctness should be more important than system perfo=
+rmance
+> in this case. The "preventive" SFENCE.VMA became necessary due to the RIS=
+C-V
+> specification allowing invalidation entries to be cached in the TLB.
 
-Base: tag: next-20230731 + below "depends on" patch
-Depends on: https://lore.kernel.org/linux-omap/20230731061908.GG5194@atomide.com/T/
+We are at -rc4 and this stuff is broken. Taking the bigger hammer, which
+can be reverted later when a more targeted fix shows up, to make sure
+that v6.5 doesn't end up broken, sounds rather prudent. Otherwise, the
+original commit should probably be reverted.
 
- Documentation/devicetree/bindings/pinctrl/pinctrl-single.yaml | 1 +
- 1 file changed, 1 insertion(+)
+> The problem[1] we are currently encountering is caused by not updating th=
+e TLB
+> after the page table is created, and the solution to this problem can onl=
+y be
+> solved by updating the TLB immediately after the page table is created.
+>=20
+> There are currently two possible approaches to flush TLB:
+> 1. Flush TLB in flush_cache_vmap()
+> 2. Flush TLB in arch_sync_kernel_mappings()
+>=20
+> But I'm not quite sure if it's a good idea to operate on the TLB inside f=
+lush_cache_vmap().
+> The name of this function indicates that it should be related to cache op=
+erations, maybe
+> it would be more appropriate to do TLB flush in arch_sync_kernel_mappings=
+()?
+>=20
+> [1]: http://lists.infradead.org/pipermail/linux-riscv/2023-August/037503.=
+html
 
-diff --git a/Documentation/devicetree/bindings/pinctrl/pinctrl-single.yaml b/Documentation/devicetree/bindings/pinctrl/pinctrl-single.yaml
-index b6b6bcd7074b..4c98035a1217 100644
---- a/Documentation/devicetree/bindings/pinctrl/pinctrl-single.yaml
-+++ b/Documentation/devicetree/bindings/pinctrl/pinctrl-single.yaml
-@@ -23,6 +23,7 @@ properties:
-           - pinconf-single
-       - items:
-           - enum:
-+              - ti,am6-padconf
-               - ti,am437-padconf
-               - ti,dra7-padconf
-               - ti,omap2420-padconf
--- 
-2.34.1
 
+--nozptzZSf18sXWvu
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZMtyYAAKCRB4tDGHoIJi
+0u/zAP97NUn9kei7lOztrs80Kjn5bphODbu+95FYx7AzN9ltnwEAsbXegqjY7oxy
+Y54cRpYdqg38D3rmo30B74v1GcEJWA0=
+=imZu
+-----END PGP SIGNATURE-----
+
+--nozptzZSf18sXWvu--
