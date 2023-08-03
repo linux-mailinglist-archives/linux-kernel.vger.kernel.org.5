@@ -2,117 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 61CE376DF1C
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 05:44:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3301976DF20
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 05:50:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231484AbjHCDob (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Aug 2023 23:44:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57020 "EHLO
+        id S231219AbjHCDuf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Aug 2023 23:50:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57730 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229613AbjHCDo3 (ORCPT
+        with ESMTP id S229613AbjHCDub (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Aug 2023 23:44:29 -0400
-Received: from BN6PR00CU002.outbound.protection.outlook.com (mail-eastus2azon11021022.outbound.protection.outlook.com [52.101.57.22])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9AFA8272A
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Aug 2023 20:44:24 -0700 (PDT)
+        Wed, 2 Aug 2023 23:50:31 -0400
+Received: from NAM12-BN8-obe.outbound.protection.outlook.com (mail-bn8nam12on2125.outbound.protection.outlook.com [40.107.237.125])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 908842D65
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Aug 2023 20:50:30 -0700 (PDT)
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=BBft6fMaKAPL5TvhcFZX5Ao0DTz8S/mUCj9aFvxFeRrlSEr82JfRJxqwjU1Lc3G97TLyDJvylN0T2q1XH+KfTY3aWhVrVVm3GHCD8z85LGxslKdSzFF36VnSEhZYgJH0UcVHo1R1urKq8ziNHVH5nC7wq00ISXFdReMYIyWCx1xqVcjh+1j5N9YsOIsYeI20HZ2x9TiaNs0MB+4l6RfPNRtOBso79yfF93s37LiD7KED6IANUA6dA4N93AavpVlUXXV6sDQPZEr1sRrQ0DMJpK2rH57zQm/sCHBStJDFICZqir2jGoPdtQmDytSDMI68bd26gdNFBhHPXsWXA9mcxg==
+ b=gcuSVoxKA+QdI9zCNekARX7nFQmO2G6EVEVHm/iw4e2xVY6aTTqgoN78kizYQgeeQGozRVOw6hFJFV8wFdgZvswPuBjUCZek89TKLdYZJqWwvhigWRIWSKbKOcD1aLCyeuX20Vguu4bqHNxAJ3jAZewBl6OJ410hBAk56o/Vz2IgHCnKy+Vs5Voovp8n68v3IQaTuq5rWbAzkGPFGG+STNrgjWFoAKIBKYVmpA0HyEXpkXgVubnMQN8fPn+1C1Ll5XHio6W8rWDLO0p6AZlbwAyumrNUvRPcqwJcb5qSgNsMOsRaXHhhttsFKoWCu5/h22uVJ3slxsG9ynw1+oGxeg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=d6SucAvAAyXAniX6DRKhMDDK/AvcjaX/qpG1GFf/ktg=;
- b=MJuhzmoNEjZTmwOf2KkG3H5RzIgiPYTx5h06Ourj4TVukahnXTrTRPdF7vQj0oCohI++8PdEyMu+xxm2nxPAtexDAmpbLSIe14hWPqUEVFeBBzEmmMq9RFSoEi+8vkvhh4ACydRPAoT9i+7kLp9g/fcIBFGfH6i2E4CuW+oDwCM29qjCm5KKYewydW8sJcTrMrh+XTnJ6v+Gb4DNdfW3OFghCwz2uXIX1I0b2p4RHC3kGX2+uGdTFuAKB6y2D/vMHNy9z8dv5fQ4g7l36yQzcqsETVoj38b9QDJSJusCSjCw/vZAYagLJwr5kjmh5EjxtDnFjspgKEUpRwP31J7PEg==
+ bh=ZYKawFCrBDqSkSE7yHp+1Ifxz9TYZHElwARyIAbIz0A=;
+ b=mmfI7F2j2AHgHmf5YvFx9ZRnA+rcrk+bs877wwY/UdB6bxbNZnJFEX7Vr+koBcshelu9N+spBwcXcxUeJQVpbimzpiVo5aNnzRiAcdXBjJqWodRkytlhEEfjpLtaG6o4rJzBfsfJhe6fOklkqQXr6upLhWekCz+odwoTCuI/TKudBX8lJg8s+6jM4xuSOxIJ5iaOs4TRoe3USIet/dsLeJJEHiWWssO5cFan+S+9piTgvU6DqThglBbS2aiuc/RP5iBs4k/8fZJ0gq36Egl2tpwiO0m5s2oDjZVRWGYQH53dmiPYJvXwckCEtrHP9EbToRj5C+HzEKhyvSLpwxjUPw==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=microsoft.com; dmarc=pass action=none
  header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=d6SucAvAAyXAniX6DRKhMDDK/AvcjaX/qpG1GFf/ktg=;
- b=Fxz59HsQdoAh3X1E0L2NX8s/KlxHyoWZaPHTORXQ9d163sWZr8UAWUcJ3Y3RXzYJ/T48umZsUFbmf9mXu1CizMIreZoYMkJyOLhTqRkJqLvzKXuI8Ei0H0EsdDFeRrtB9ITJi9h9FaNh5SbRzGAo3zDyShX2YQtXgfTLK7h1y+A=
+ bh=ZYKawFCrBDqSkSE7yHp+1Ifxz9TYZHElwARyIAbIz0A=;
+ b=UScGMniEywmr+JIRuTgBW/lJlxeztdoLmEbUE7j1JEGJNtMWr83DWV3h4KxKCum/oDsT22dswh6L8GwNrDHh1ktUtta2N1xiTEmIWqsCq7FxeiRzcadOG7ldkzGArBHVJnlma4W9NJVa4bpqgiMoSrSDTppQR2s7UNh060ZaQgg=
 Received: from BYAPR21MB1688.namprd21.prod.outlook.com (2603:10b6:a02:bf::26)
  by IA1PR21MB3425.namprd21.prod.outlook.com (2603:10b6:208:3e2::5) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6652.3; Thu, 3 Aug
- 2023 03:44:21 +0000
+ 2023 03:50:27 +0000
 Received: from BYAPR21MB1688.namprd21.prod.outlook.com
  ([fe80::b588:458f:b0dd:8b9f]) by BYAPR21MB1688.namprd21.prod.outlook.com
  ([fe80::b588:458f:b0dd:8b9f%3]) with mapi id 15.20.6652.004; Thu, 3 Aug 2023
- 03:44:20 +0000
+ 03:50:27 +0000
 From:   "Michael Kelley (LINUX)" <mikelley@microsoft.com>
 To:     Thomas Gleixner <tglx@linutronix.de>,
         LKML <linux-kernel@vger.kernel.org>
 CC:     "x86@kernel.org" <x86@kernel.org>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
         Andrew Cooper <andrew.cooper3@citrix.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Wei Liu <wei.liu@kernel.org>,
         Arjan van de Ven <arjan@linux.intel.com>,
-        Huang Rui <ray.huang@amd.com>, Juergen Gross <jgross@suse.com>,
-        Dimitri Sivanich <dimitri.sivanich@hpe.com>,
-        Wei Liu <wei.liu@kernel.org>
-Subject: RE: [patch V3 00/40] x86/cpu: Rework the topology evaluation
-Thread-Topic: [patch V3 00/40] x86/cpu: Rework the topology evaluation
-Thread-Index: AQHZxSsK8jaIgs5CLEOe4BzvC0ABka/X7WHg
-Date:   Thu, 3 Aug 2023 03:44:20 +0000
-Message-ID: <BYAPR21MB16884A9AE4AF581B0B1CDB25D708A@BYAPR21MB1688.namprd21.prod.outlook.com>
-References: <20230802101635.459108805@linutronix.de>
-In-Reply-To: <20230802101635.459108805@linutronix.de>
+        Juergen Gross <jgross@suse.com>,
+        Peter Keresztes Schmidt <peter@keresztesschmidt.de>
+Subject: RE: [patch V3 00/60] x86/apic: Decrapification and static calls
+Thread-Topic: [patch V3 00/60] x86/apic: Decrapification and static calls
+Thread-Index: AQHZxGV49eyUF/ezwEuz96/Kw6sqkK/X8RoQ
+Date:   Thu, 3 Aug 2023 03:50:27 +0000
+Message-ID: <BYAPR21MB168880BB447AA37A88D47B89D708A@BYAPR21MB1688.namprd21.prod.outlook.com>
+References: <20230801103042.936020332@linutronix.de>
+In-Reply-To: <20230801103042.936020332@linutronix.de>
 Accept-Language: en-US
 Content-Language: en-US
 X-MS-Has-Attach: 
 X-MS-TNEF-Correlator: 
-msip_labels: MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ActionId=08d24e9c-534a-48ec-bbce-e0a5e8d70d02;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ContentBits=0;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Enabled=true;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Method=Standard;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Name=Internal;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SetDate=2023-08-03T03:37:41Z;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SiteId=72f988bf-86f1-41af-91ab-2d7cd011db47;
+msip_labels: MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ActionId=5ffb9866-069c-47c9-8a3f-61721969371b;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ContentBits=0;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Enabled=true;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Method=Standard;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Name=Internal;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SetDate=2023-08-03T03:45:29Z;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SiteId=72f988bf-86f1-41af-91ab-2d7cd011db47;
 authentication-results: dkim=none (message not signed)
  header.d=none;dmarc=none action=none header.from=microsoft.com;
 x-ms-publictraffictype: Email
 x-ms-traffictypediagnostic: BYAPR21MB1688:EE_|IA1PR21MB3425:EE_
-x-ms-office365-filtering-correlation-id: 3e43daf1-3b77-4132-0816-08db93d3ebb4
+x-ms-office365-filtering-correlation-id: af0cd00e-5145-48a7-b761-08db93d4c676
 x-ms-exchange-senderadcheck: 1
 x-ms-exchange-antispam-relay: 0
 x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: TD8OG5Er/7Gvfa/JnufYaNSKNlKMta9qwBneBdqvD9WRx/OUhN89fIS2DEEKjEt/c9BZgYlx9pOH+cmJm73czfwQDE1Np6ge81RV59/V54N1FR3IzOgMy4Il7U2pRT5eu0aIOXEKd9YUCuN7Z4nBbhlWhRTKJgLVjwLGhWBgUAJZDKjWRswkXbymksXtZ+gsqut1NCbqliA9uGFytEyVQRsHrfyXtY1cQi7z3kKNeIZKKg07yUdiAWHOYETwfRe5Ty3vBSukWCHoywdpeaH0uU/7fBaV3KvBwkjk1FR5huh+zA7Vftq0y+rG/Ain7N5RDqyXdW5nMzzvgPXSEzs5G19HRcKOp7lzYNwbvf8A0fajZheJam8cHXQ4STxfgGZdlVlH9bcrQN/1nF2IE67OyFCORUDtgbqWO66Hepb3hkbDy1UwyzvXGjSNjKzh5yMufEu4lzKQ4Um2iGPtIpL5WPl6V4EyH2ITEQ0ba+yiYr3imq+/wMG7MoH3ULJ4AIvM9T8bIIqriCnJTGEUAUpLoK2n4aWpwY/fmzo/NqLWmgc4UseFElhH+vkPj7D1CyBU0ihduK62kuOuCA9rJyAfMq2+AKNqLteNJ30v60xPXFuc3+tvS2cjNME9cxfg5uHQy81Dvvlq6Yywsp/jeEA+fQ==
+x-microsoft-antispam-message-info: cH1u09bhmOwBH/teGCBETCzpKVc69lXu2DBLNVIwkurt9BBm3GFdqm6l3Xg6082DW4Kcs8WBuj0GEDXRD+16yg2wM6ZpvxHJlV2FgkOilTgrj8DWKbe2VVZ+GW0ER2bcB3NQlIOXn7+Xa36sWKPHpVhrA7WaWNcE3PKbeshEZ6fVZp+xq8UrUukTmooJ0lXlKnGk8oGCypDQ2EFyAzDt6ILDxYC39quZB6OCbnb0ynYV62Nw3joG/KBamznDAmCZUpLZCy7wlpq9I7/wajUEeHMmpereUfv6uufM3hWSnPaktF+AX+ubH4+bEva0r0lrHXpCgj/0KrATZVfyIM62x1Yb8MKUF4v3AI3QaHw1XcohwhYC6nH6Yrfzb9/tL25fMumHM1pegwLuJIMYCFBokELX6B13th3E+Xqt7Wwzs4JWJtkIB0ADPzvKwpC4kG2a2rZptN17FJxNQXKcZ2/C8Z+irJnHia/VhnnQGx59WE4tq7jn/WyHA6SyKKu8+G0IxiiGoAfoqMTgp2Xh2lNdQYWh6xiaNcxMR3cH7TZd7B0xZch0527fIB+PSgmj7G7k/NtQ6t/tUmpdMavh57VvnnlafbyNbqsH1JwRilwTY0Tb58FuGFWzF8PL7m83CYVMRWT5tC8a7rcGvmsGtwEX5A==
 x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR21MB1688.namprd21.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(136003)(376002)(346002)(396003)(39860400002)(366004)(451199021)(86362001)(66476007)(8936002)(8990500004)(2906002)(7416002)(52536014)(5660300002)(41300700001)(66946007)(786003)(76116006)(66556008)(54906003)(64756008)(316002)(66446008)(4326008)(33656002)(110136005)(10290500003)(478600001)(71200400001)(7696005)(9686003)(966005)(26005)(6506007)(186003)(83380400001)(38070700005)(8676002)(122000001)(38100700002)(82950400001)(82960400001)(55016003);DIR:OUT;SFP:1102;
 x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?41JxWHhHZe+GcfpxfMppTCrjOQWuOB4t6HHi/Vp4J/GmgMZMeZCm/N1dIHeM?=
- =?us-ascii?Q?AuW3VVhxj5RtzQV1I1CdNz0xxGkUrPSjD8mLL5WCmc8j0oBxgQk0h1laq0LZ?=
- =?us-ascii?Q?X25hfmcLKVO+Xg328HYWzH0zCHa1d9ZIBYR5xQoJEXAucoAuvaAgZI405L1O?=
- =?us-ascii?Q?DjuDtlulJdZua1TMPpqI3V1mFUWL30L3oXYsO62K3E8L+9Cm5Fbzc4k9spYV?=
- =?us-ascii?Q?lZP8vhzEkKZyTEHEqaBzcb79cOi5edGoGAwE7nE8Gmw1Vr+gRDkwGyoTHGKX?=
- =?us-ascii?Q?KRgbp45mclFy7kgN9SgbZ/z1mWrQNT0b3Kx442Xf8UnfsE20F03Jv3E3IZGh?=
- =?us-ascii?Q?r9V1DaB/oS2/Cqw2kL6k2a5hDbv8QOPRKrAk0NPpBLSNLDAd7iwSblgUaLbg?=
- =?us-ascii?Q?SOUHGtroU7s+VJkw7Q1cIzIkqN0zlLSUoI4GUbdxzkdBgh8OFhxOmWNsh7dW?=
- =?us-ascii?Q?2k6zJ2knR9wqJzdM9UVB5CSCOGYIHwrLod96ZG5HWjoxgFFYeyeK/oyjgmaw?=
- =?us-ascii?Q?Y0AYiAy7rjRuv7OM90DkOpsdrfcRqB1zB1qRQR3Rr538ZOSVtFJB/azXyQm9?=
- =?us-ascii?Q?NQGWOSqdAxn7JdRbOwII9Dumb9ZD3F1shDRHxGY0EUvtTVJS6SwaYWa6Fag2?=
- =?us-ascii?Q?CBHiqSexvQH0XLPlO3+k6SkhEtlZw8oBCWm+emWkalyuq6DKSU9mCntVF7V6?=
- =?us-ascii?Q?8xIN3W4T8JQ6TW2f8SNH6DK1hsCaq/Eh+BA8IoLWnHzcka66wum508ojWrcu?=
- =?us-ascii?Q?CuzOFmf55pYtK6ue2pYw8ntfiDdByVQ459hMVbrtux296PZ7lSTtJmuxP+DP?=
- =?us-ascii?Q?kulnbhABMBbPggJMK3LE0remSFvocu0XnGIDO1Xs68iDWzqLSgr5D+kH0xSx?=
- =?us-ascii?Q?K6B6rjrT8hg27YqjJzG0vj0ex+c0KqxNgfP2zEB9cyqfFZ3AChpaN67HCSSz?=
- =?us-ascii?Q?/YlLQltdaixrl399fYVGC2XgbCFhY9LCjpVA1cGzVk6udUj8aT7/bVygI1iC?=
- =?us-ascii?Q?RZA2iSScZOiGJMyyAY9BAUsyO+vuZORDa30uhyODknYcSXF3LLv1Xasfz2eD?=
- =?us-ascii?Q?Af1VM+l7B0zoAyu0RamRZkcdVZ6TIucXgih5E0Cr9Umc5QvW9MNK/3Pn3IKU?=
- =?us-ascii?Q?vx8IY9wP7Qw5Zv/s+xl+PylSHnQlJqxt/c02OVmo7dIfP9EphHbCCqVwBM2N?=
- =?us-ascii?Q?rW3gT1fiybfD+qEpjGR3OHCgu5pyzDRItd7zNGd+8T8YetIzFp3jWg/bFLLt?=
- =?us-ascii?Q?zchdhr3dQmqYzlSBJu3MjbrR2BUnuIoIi03L1jwmzwjYUyVqlEcI8uOMtdmu?=
- =?us-ascii?Q?oZQoZTj9gE/78w8Kmv/M/m+8sIdfwmv1iZoyL4IyZq/e+Vse9lK5PXEM/PKH?=
- =?us-ascii?Q?hej8lg97O/hxgMAjWith0im+WVWUt24k8uE+yBrm5cUkvWfnExosPkO9Wvw/?=
- =?us-ascii?Q?C5AGAwyGFeqhgNtEFyP/Q9ZtIZm8wCnKZeUIDmgriSpcX/eXZrX4Qv9wu/PF?=
- =?us-ascii?Q?pCWZ+LhSazkr0j7X9JFSAApWHxRGO0SZQrae+BI66tAOtu5wQVIqto778Xa8?=
- =?us-ascii?Q?Cyk43OizX5SweeE5TKtfmenCXmlG682uh4slR4VdYWb8iu0tX3aOxY1OdBvs?=
- =?us-ascii?Q?uw=3D=3D?=
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?m13zw8wffNxuZ8IR4owUn206vsNqp8NbM1nXY4bgPcjMMxS46eqCB9LPYyRQ?=
+ =?us-ascii?Q?eUO3CW8UPBaHeQd+YXLWKJhoshgai+6dFrZNd83UhTKGdzjNKlhsfrHQIOKT?=
+ =?us-ascii?Q?n18Q+Foou+rnfdLP7WmyftesNGNd+aOcNj4z/KUEypTKBYEoBunnVB4c3qQl?=
+ =?us-ascii?Q?/OIjbDX+ksBMRHwHLlj36G64Go4iWPt6i9E0f5KeJRLf0UHbZM6mZMYn5dc5?=
+ =?us-ascii?Q?V0Xyzwp4OZmxbUZ4N6Iq1GakmqWqiY7p8G9ugzHW8hOSti2qqQldg4kroMgB?=
+ =?us-ascii?Q?ETW1QEogmfzl113Q7je+omCvcheKJIPq4Hh7802vj6Y8p0cLoya3kk02xYEb?=
+ =?us-ascii?Q?kIE9ow/hB6LmKLshNEF8ce72Z1YmNKoAAu0uTT1VVfqLf2By9cyyB9Cg0Ytg?=
+ =?us-ascii?Q?P4Le4Ss3E2gkRBDZxUCphWANBxJU9IOwzP3ZuPKDd2yY5kptRYmQQAavSg4Z?=
+ =?us-ascii?Q?g9X/xpbVt04nHPGLW5W/NJHWkGbfBsi4vuFUUrRYA7sPMlvSnmrZYSphOA40?=
+ =?us-ascii?Q?w172sxaiftwVRyMH7f266UKYwWPTsp8/xlOf1/b+mvksYLNbyvbwuLxF34SU?=
+ =?us-ascii?Q?Yria6GjMeHtFM2ZriescmjokejhvlZpTHb0F6KKhlk+ps1SgnhxqajQSnwrH?=
+ =?us-ascii?Q?FAqOmuZdWTBbtOv7+k2JFkjJqu3cq2fT4dQO4ltnhPvbfjTUcJyQvhJAWlik?=
+ =?us-ascii?Q?UTzj/dxYM+QyZGJm3nknaSICnZp1AUQR1V0E4D5IXln/F8Mpgbwjsw1gCL3q?=
+ =?us-ascii?Q?KhYLgseWMi02JEpMnYM2sS2gNVnZQwRSlsOlMjk/swluaaX+QnSvGKTg3E4O?=
+ =?us-ascii?Q?IMYyXLGCXFOYllAei8z3IbKsY7iadbOumUff7vv73DHp/dA9ZWSc6vERUfVz?=
+ =?us-ascii?Q?WsOJvFLzSJ8+TqWf4k/+KN5pNd8BASJA5hNL5oXN+8wFTuK9NFSr7Jeem1mx?=
+ =?us-ascii?Q?4Ub47+Du0TttpUmHL7zcP5OLR8+5DwYpqmF8in0hzXy6jsJAVEY32Pg2WkEt?=
+ =?us-ascii?Q?Es3AMsKhX/Slbl2+gAs8sl9HU19N7d8dOtp4YDwSeF0k1N2zUJrHSaKWPtrx?=
+ =?us-ascii?Q?aIlxPv5YveJcSSR3RYRWkScksfIEYzUuyO9QW1IOiyHyjrYaciLz6c7a+7br?=
+ =?us-ascii?Q?k1OAy7wBHtChueRdD3nI6MLjNHQcT9m8YqkE6c/7JGpNOx7mpqhUfzWtxZRP?=
+ =?us-ascii?Q?fG7CSN6KreIzWaDPw2sktXQ9P8t71yZuxuvj3cfFSAR7Kk3HeqUB7F89noL0?=
+ =?us-ascii?Q?RBwVz6xVXo+ywUOM3f/IbbKqCK+/hkMlA6MpSAqhrhrCFx3Vuo75XzF3rYW3?=
+ =?us-ascii?Q?56+ABnCgVdI+6/7hWMlte6j2ZNfyVXuIesviCZ9vhU5nKNyEmbGsoB+EjtlR?=
+ =?us-ascii?Q?8h2oeGItoiT0T/ShGGxXcMnutvSfFYFhkRtsIoqH0Fqp8rzQWcTV/0Vr/zuL?=
+ =?us-ascii?Q?MtXgX58gny1j3js7i32xetoLiSoFT9sxGUEZ4eSaFEhfCpybxY69yv4FQi/P?=
+ =?us-ascii?Q?Ehw39ksrZIKRFOkkZ4pyVfQjZ2RDjjwYWvwOQ3i25WBLiecx0PPCsGL2raB+?=
+ =?us-ascii?Q?iAvlZAgunb09Uso7Cs731V4iYldj4dzyGMarjf3yNenmesX3zffVzBmEL8bx?=
+ =?us-ascii?Q?Ww=3D=3D?=
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
 X-OriginatorOrg: microsoft.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
 X-MS-Exchange-CrossTenant-AuthSource: BYAPR21MB1688.namprd21.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 3e43daf1-3b77-4132-0816-08db93d3ebb4
-X-MS-Exchange-CrossTenant-originalarrivaltime: 03 Aug 2023 03:44:20.4616
+X-MS-Exchange-CrossTenant-Network-Message-Id: af0cd00e-5145-48a7-b761-08db93d4c676
+X-MS-Exchange-CrossTenant-originalarrivaltime: 03 Aug 2023 03:50:27.5046
  (UTC)
 X-MS-Exchange-CrossTenant-fromentityheader: Hosted
 X-MS-Exchange-CrossTenant-id: 72f988bf-86f1-41af-91ab-2d7cd011db47
 X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: ttH1z/+AqJf8MPlXEUbX1zDWbLeiepKvKPlcf7c4N37PFaFACT34jMiQ6q3PZXWN6fUvLqRdF3Tq9hcWz2K8xhEGZB3I10zK/lPTv9RT9Ao=
+X-MS-Exchange-CrossTenant-userprincipalname: qr12XGzdHxSr+QQbzcFEFbxkfy/OKbSBGvaoXbyvAjOfgn3Tj3FNFKOWjFSnLuNZ2IK8uJeQPHfeTP2vAfKK4s7b0lDGaEVJEVbemcBw6P4=
 X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA1PR21MB3425
 X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
@@ -124,148 +125,118 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Thomas Gleixner <tglx@linutronix.de> Sent: Wednesday, August 2, 2023 =
-3:21 AM
-
+From: Thomas Gleixner <tglx@linutronix.de> Sent: Tuesday, August 1, 2023 3:=
+47 AM
 >=20
 > Hi!
 >=20
-> This is the follow up to V2:
+> This is the follow up to:
 >=20
 >=20
-> https://lore.kernel.org/lkml/20230728105650.565799744@linutronix.de/
+> https://lore.kernel.org/lkml/20230724131206.500814398@linutronix.de/
 >=20
-> which addresses the review feedback and some fallout reported on and
-> off-list.
+> which addresses the XEN PV fallout decoded by Juergen.
 >=20
-> TLDR:
+> TLDR: This cleans up accrued and partially unused gunk in order to conver=
+t
+> the APIC callbacks to static calls.
 >=20
-> This reworks the way how topology information is evaluated via CPUID
-> in preparation for a larger topology management overhaul to address
-> shortcomings of the current code vs. hybrid systems and systems which mak=
-e
-> use of the extended topology domains in leaf 0x1f. Aside of that it's an
-> overdue spring cleaning to get rid of accumulated layers of duct tape and
-> haywire.
+> The changes vs. V2:
 >=20
-> What changed vs. V2:
+>   - Unbreak XEN/PV - Juergen
 >=20
->   - Decoded and fixed the fallout vs. XEN/PV reported by Juergen. Thanks =
-to
->     Juergen for the remote hand debugging sessions!
+>     Resulting delta patch below.
 >=20
->     That's addressed in the first two new patches in this series. Summary=
-:
->     XEN/PV booted by pure chance since the addition of SMT control 5 year=
-s
->     ago.
+>   - Rebased to 6.5-rc4 in preparation for the CPUID overhaul on top, whic=
+h
+>     has some collisions due to the recent mitigation muck.
 >=20
->   - Fixed the off by one in the AMD parser which was debugged by Michael
+> The series is also available from git:
 >=20
->   - Addressed review comments from various people
->=20
-> As discussed in:
->=20
->=20
-> https://lore.kernel.org/lkml/BYAPR21MB16889FD224344B1B28BE22A1D705A@BYAPR=
-21MB1688.namprd21.prod.outlook.com/
->   ....
->=20
-> https://lore.kernel.org/lkml/87r0omjt8c.ffs@tglx/
->=20
-> this series unfortunately brings the Hyper-V BIOS inconsistency into
-> effect, which results in a slight performance impact. The L3 association
-> which "worked" so far by exploiting the inconsistency of the Linux topolo=
-gy
-> code is not longer supportable as we really need to get the actual short
-> comings of our topology management addressed in a consistent way.
->=20
-> The series is based on V3 of the APIC cleanup series:
->=20
->=20
-> https://lore.kernel.org/lkml/20230801103042.936020332@linutronix.de/
->=20
-> and also available on top of that from git:
->=20
->  git://git.kernel.org/pub/scm/linux/kernel/git/tglx/devel.git topo-cpuid-=
-v3
+>   git://git.kernel.org/pub/scm/linux/kernel/git/tglx/devel.git apic-stati=
+c-call-v3
 >=20
 > Thanks,
 >=20
 > 	tglx
 > ---
->  arch/x86/kernel/cpu/topology.c              |  168 -------------------
->  b/Documentation/arch/x86/topology.rst       |   12 -
->  b/arch/x86/events/amd/core.c                |    2
->  b/arch/x86/events/amd/uncore.c              |    2
->  b/arch/x86/events/intel/uncore.c            |    2
->  b/arch/x86/hyperv/hv_vtl.c                  |    2
->  b/arch/x86/include/asm/apic.h               |   32 +--
->  b/arch/x86/include/asm/cacheinfo.h          |    3
->  b/arch/x86/include/asm/cpuid.h              |   36 ++++
->  b/arch/x86/include/asm/mpspec.h             |    2
->  b/arch/x86/include/asm/processor.h          |   60 ++++---
->  b/arch/x86/include/asm/smp.h                |    4
->  b/arch/x86/include/asm/topology.h           |   51 +++++
->  b/arch/x86/include/asm/x86_init.h           |    2
->  b/arch/x86/kernel/acpi/boot.c               |    4
->  b/arch/x86/kernel/amd_nb.c                  |    8
->  b/arch/x86/kernel/apic/apic.c               |   25 +-
->  b/arch/x86/kernel/apic/apic_common.c        |    4
->  b/arch/x86/kernel/apic/apic_flat_64.c       |   13 -
->  b/arch/x86/kernel/apic/apic_noop.c          |    9 -
->  b/arch/x86/kernel/apic/apic_numachip.c      |   21 --
->  b/arch/x86/kernel/apic/bigsmp_32.c          |   10 -
->  b/arch/x86/kernel/apic/local.h              |    6
->  b/arch/x86/kernel/apic/probe_32.c           |   10 -
->  b/arch/x86/kernel/apic/x2apic_cluster.c     |    1
->  b/arch/x86/kernel/apic/x2apic_phys.c        |   10 -
->  b/arch/x86/kernel/apic/x2apic_uv_x.c        |   67 +------
->  b/arch/x86/kernel/cpu/Makefile              |    5
->  b/arch/x86/kernel/cpu/amd.c                 |  156 ------------------
->  b/arch/x86/kernel/cpu/cacheinfo.c           |   51 ++---
->  b/arch/x86/kernel/cpu/centaur.c             |    4
->  b/arch/x86/kernel/cpu/common.c              |  111 +-----------
->  b/arch/x86/kernel/cpu/cpu.h                 |   14 +
->  b/arch/x86/kernel/cpu/debugfs.c             |   97 +++++++++++
->  b/arch/x86/kernel/cpu/hygon.c               |  133 ---------------
->  b/arch/x86/kernel/cpu/intel.c               |   38 ----
->  b/arch/x86/kernel/cpu/mce/amd.c             |    4
->  b/arch/x86/kernel/cpu/mce/apei.c            |    4
->  b/arch/x86/kernel/cpu/mce/core.c            |    4
->  b/arch/x86/kernel/cpu/mce/inject.c          |    7
->  b/arch/x86/kernel/cpu/proc.c                |    8
->  b/arch/x86/kernel/cpu/topology.h            |   51 +++++
->  b/arch/x86/kernel/cpu/topology_amd.c        |  179 ++++++++++++++++++++
->  b/arch/x86/kernel/cpu/topology_common.c     |  240 +++++++++++++++++++++=
-+++++++
->  b/arch/x86/kernel/cpu/topology_ext.c        |  136 +++++++++++++++
->  b/arch/x86/kernel/cpu/zhaoxin.c             |   18 --
->  b/arch/x86/kernel/kvm.c                     |    6
->  b/arch/x86/kernel/sev.c                     |    2
->  b/arch/x86/kernel/smpboot.c                 |   97 ++++++-----
->  b/arch/x86/kernel/vsmp_64.c                 |   13 -
->  b/arch/x86/mm/amdtopology.c                 |   35 +---
->  b/arch/x86/mm/numa.c                        |    4
->  b/arch/x86/xen/apic.c                       |   14 -
->  b/arch/x86/xen/smp_pv.c                     |    3
->  b/drivers/edac/amd64_edac.c                 |    4
->  b/drivers/edac/mce_amd.c                    |    4
->  b/drivers/gpu/drm/amd/amdkfd/kfd_topology.c |    2
->  b/drivers/hwmon/fam15h_power.c              |    7
->  b/drivers/scsi/lpfc/lpfc_init.c             |    8
->  b/drivers/virt/acrn/hsm.c                   |    2
->  b/kernel/cpu.c                              |    6
->  61 files changed, 1077 insertions(+), 956 deletions(-)
+> diff --git a/arch/x86/xen/apic.c b/arch/x86/xen/apic.c
+> index 468406f511ff..7ad91225fdf4 100644
+> --- a/arch/x86/xen/apic.c
+> +++ b/arch/x86/xen/apic.c
+> @@ -155,20 +155,9 @@ static struct apic xen_pv_apic __ro_after_init =3D {
+>  	.icr_read			=3D xen_apic_icr_read,
+>  	.icr_write			=3D xen_apic_icr_write,
+>  };
+> -
+> -static void __init xen_apic_check(void)
+> -{
+> -	apic_install_driver(&xen_pv_apic);
+> -}
+> +apic_driver(xen_pv_apic);
+>=20
+>  void __init xen_init_apic(void)
+>  {
+>  	x86_apic_ops.io_apic_read =3D xen_io_apic_read;
+> -	/* On PV guests the APIC CPUID bit is disabled so none of the
+> -	 * routines end up executing. */
+> -	if (!xen_initial_domain())
+> -		apic_install_driver(&xen_pv_apic);
+> -
+> -	x86_platform.apic_post_init =3D xen_apic_check;
+>  }
+> -apic_driver(xen_pv_apic);
+> diff --git a/arch/x86/xen/enlighten_pv.c b/arch/x86/xen/enlighten_pv.c
+> index 93b658248d01..c393c44892ac 100644
+> --- a/arch/x86/xen/enlighten_pv.c
+> +++ b/arch/x86/xen/enlighten_pv.c
+> @@ -1326,7 +1326,7 @@ asmlinkage __visible void __init xen_start_kernel(s=
+truct
+> start_info *si)
+>=20
+>  	x86_init.resources.memory_setup =3D xen_memory_setup;
+>  	x86_init.irqs.intr_mode_select	=3D x86_init_noop;
+> -	x86_init.irqs.intr_mode_init	=3D x86_init_noop;
+> +	x86_init.irqs.intr_mode_init	=3D x86_64_probe_apic;
+>  	x86_init.oem.arch_setup =3D xen_arch_setup;
+>  	x86_init.oem.banner =3D xen_banner;
+>  	x86_init.hyper.init_platform =3D xen_pv_init_platform;
+> @@ -1366,12 +1366,10 @@ asmlinkage __visible void __init xen_start_kernel=
+(struct
+> start_info *si)
+>=20
+>  	xen_init_capabilities();
+>=20
+> -#ifdef CONFIG_X86_LOCAL_APIC
+>  	/*
+>  	 * set up the basic apic ops.
+>  	 */
+>  	xen_init_apic();
+> -#endif
+>=20
+>  	machine_ops =3D xen_machine_ops;
+>=20
+> diff --git a/arch/x86/xen/smp_pv.c b/arch/x86/xen/smp_pv.c
+> index c6b42c66c60c..a0f07bbfcd6e 100644
+> --- a/arch/x86/xen/smp_pv.c
+> +++ b/arch/x86/xen/smp_pv.c
+> @@ -182,7 +182,8 @@ static void __init _get_smp_config(unsigned int early=
+)
+>  	if (subtract)
+>  		set_nr_cpu_ids(nr_cpu_ids - subtract);
+>  #endif
+> -
+> +	/* Pretend to be a proper enumerated system */
+> +	smp_found_config =3D 1;
+>  }
+>=20
+>  static void __init xen_pv_smp_prepare_boot_cpu(void)
 >=20
 
-Tested a variety of Hyper-V guest sizes running on Intel and AMD
-processors of various generations.  Tested guests configured with
-hyper-threading and with no hyper-threading, single NUMA node
-and multi-NUMA node, etc.  Also tested a hyper-threaded VM with
-the 'nosmt' option.=20
-
-All topologies look good, modulo the identified Hyper-V issue
-with mis-matched APIC IDs that must be fixed by Hyper-V.
+Entire series tested implicitly on Hyper-V guests as part of
+testing the topology series with the scope described here:
+https://lore.kernel.org/lkml/BYAPR21MB16884A9AE4AF581B0B1CDB25D708A@BYAPR21=
+MB1688.namprd21.prod.outlook.com/T/#mf6ccf50e65e214cd6d8ba3e683873bf4139259=
+a1
 
 Tested-by: Michael Kelley <mikelley@microsoft.com>
