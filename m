@@ -2,59 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E11376EA9C
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 15:34:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9296E76EAA2
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 15:35:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236296AbjHCNen (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Aug 2023 09:34:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53244 "EHLO
+        id S235510AbjHCNev (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Aug 2023 09:34:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53640 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235747AbjHCNds (ORCPT
+        with ESMTP id S235889AbjHCNds (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 3 Aug 2023 09:33:48 -0400
-Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 767574C37;
+Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48B2C4C3F;
         Thu,  3 Aug 2023 06:32:35 -0700 (PDT)
 Received: from mail02.huawei.com (unknown [172.30.67.143])
-        by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4RGqXF3VPWz4f4Hw5;
-        Thu,  3 Aug 2023 21:32:29 +0800 (CST)
+        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4RGqXJ1HM7z4f46Rd;
+        Thu,  3 Aug 2023 21:32:32 +0800 (CST)
 Received: from huaweicloud.com (unknown [10.175.104.67])
-        by APP4 (Coremail) with SMTP id gCh0CgAHuKtqrMtkWHLlPQ--.49699S17;
+        by APP4 (Coremail) with SMTP id gCh0CgAHuKtqrMtkWHLlPQ--.49699S18;
         Thu, 03 Aug 2023 21:32:32 +0800 (CST)
 From:   Yu Kuai <yukuai1@huaweicloud.com>
 To:     song@kernel.org, xni@redhat.com
 Cc:     linux-raid@vger.kernel.org, linux-kernel@vger.kernel.org,
         yukuai3@huawei.com, yukuai1@huaweicloud.com, yi.zhang@huawei.com,
         yangerkun@huawei.com
-Subject: [PATCH -next 13/29] md/raid5: use new apis to suspend array for raid5_store_stripe_size()
-Date:   Thu,  3 Aug 2023 21:29:14 +0800
-Message-Id: <20230803132930.2742286-14-yukuai1@huaweicloud.com>
+Subject: [PATCH -next 14/29] md/raid5: use new apis to suspend array for raid5_store_skip_copy()
+Date:   Thu,  3 Aug 2023 21:29:15 +0800
+Message-Id: <20230803132930.2742286-15-yukuai1@huaweicloud.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20230803132930.2742286-1-yukuai1@huaweicloud.com>
 References: <20230803132930.2742286-1-yukuai1@huaweicloud.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: gCh0CgAHuKtqrMtkWHLlPQ--.49699S17
-X-Coremail-Antispam: 1UD129KBjvJXoWrZFWUZF4ftFWrKr4rWr4rXwb_yoW8Jr13pa
-        nF9FWfWr1xu34rXryDZw1DuFy5Gw4DKrWqk3y7X3Z7X3Z7Xry2gw4YgFy5Wry8Ja4ft398
-        Gw15WF95JFy8JrJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUBj14x267AKxVWrJVCq3wAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2048vs2IY020E87I2jVAFwI0_JF0E3s1l82xGYI
-        kIc2x26xkF7I0E14v26ryj6s0DM28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8wA2
-        z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr1j6F
-        4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oVCq
-        3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7
-        IYx2IY67AKxVWUXVWUAwAv7VC2z280aVAFwI0_Gr0_Cr1lOx8S6xCaFVCjc4AY6r1j6r4U
-        M4x0Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwCF04k20xvY0x0EwIxGrw
-        CFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE
-        14v26r106r1rMI8E67AF67kF1VAFwI0_Jw0_GFylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2
-        IY67AKxVW5JVW7JwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Gr1j6F4UJwCI42IY6xAIw20E
-        Y4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Gr0_Cr1lIxAIcVC2z280aVCY1x0267
-        AKxVW8Jr0_Cr1UYxBIdaVFxhVjvjDU0xZFpf9x0JUqiihUUUUU=
+X-CM-TRANSID: gCh0CgAHuKtqrMtkWHLlPQ--.49699S18
+X-Coremail-Antispam: 1UD129KBjvdXoWrZFWUZF4ftFWrKr4rXrWkJFb_yoWkurc_K3
+        Z3uFW3JrySgry5Xw15G3WfZr18ta1kWwn7Xa4YyayjvrW5XF1rKr95Xr4rJrs2vFy2grWU
+        Kry0vw4UZr4jgjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUIcSsGvfJTRUUUbf8FF20E14v26rWj6s0DM7CY07I20VC2zVCF04k26cxKx2IYs7xG
+        6rWj6s0DM7CIcVAFz4kK6r1j6r18M28IrcIa0xkI8VA2jI8067AKxVWUAVCq3wA2048vs2
+        IY020Ec7CjxVAFwI0_Xr0E3s1l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxSw2x7M28E
+        F7xvwVC0I7IYx2IY67AKxVW7JVWDJwA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxVW8Jr0_Cr
+        1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I0E14v26rxl6s0D
+        M2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xIIjx
+        v20xvE14v26r1Y6r17McIj6I8E87Iv67AKxVW8JVWxJwAm72CE4IkC6x0Yz7v_Jr0_Gr1l
+        F7xvr2IYc2Ij64vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7MxAIw28IcxkI7VAKI48JMx
+        C20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAF
+        wI0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20x
+        vE14v26ryj6F1UMIIF0xvE2Ix0cI8IcVCY1x0267AKxVW8Jr0_Cr1UMIIF0xvE42xK8VAv
+        wI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVW8JVWxJwCI42IY6I8E87Iv6xkF7I0E14
+        v26r4UJVWxJrUvcSsGvfC2KfnxnUUI43ZEXa7VUbeMKtUUUUU==
 X-CM-SenderInfo: 51xn3trlr6x35dzhxuhorxvhhfrp/
 X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,KHOP_HELO_FCRDNS,
+        MAY_BE_FORGED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -74,33 +74,30 @@ Signed-off-by: Yu Kuai <yukuai3@huawei.com>
  1 file changed, 2 insertions(+), 4 deletions(-)
 
 diff --git a/drivers/md/raid5.c b/drivers/md/raid5.c
-index d6695fc718c1..624899e95b4d 100644
+index 624899e95b4d..b8dd23357430 100644
 --- a/drivers/md/raid5.c
 +++ b/drivers/md/raid5.c
-@@ -7025,7 +7025,7 @@ raid5_store_stripe_size(struct mddev  *mddev, const char *page, size_t len)
- 			new != roundup_pow_of_two(new))
+@@ -7151,7 +7151,7 @@ raid5_store_skip_copy(struct mddev *mddev, const char *page, size_t len)
  		return -EINVAL;
+ 	new = !!new;
  
 -	err = mddev_lock(mddev);
 +	err = mddev_suspend_and_lock(mddev);
  	if (err)
  		return err;
+ 	conf = mddev->private;
+@@ -7160,15 +7160,13 @@ raid5_store_skip_copy(struct mddev *mddev, const char *page, size_t len)
+ 	else if (new != conf->skip_copy) {
+ 		struct request_queue *q = mddev->queue;
  
-@@ -7049,7 +7049,6 @@ raid5_store_stripe_size(struct mddev  *mddev, const char *page, size_t len)
- 		goto out_unlock;
+-		mddev_suspend(mddev);
+ 		conf->skip_copy = new;
+ 		if (new)
+ 			blk_queue_flag_set(QUEUE_FLAG_STABLE_WRITES, q);
+ 		else
+ 			blk_queue_flag_clear(QUEUE_FLAG_STABLE_WRITES, q);
+-		mddev_resume(mddev);
  	}
- 
--	mddev_suspend(mddev);
- 	mutex_lock(&conf->cache_size_mutex);
- 	size = conf->max_nr_stripes;
- 
-@@ -7064,10 +7063,9 @@ raid5_store_stripe_size(struct mddev  *mddev, const char *page, size_t len)
- 		err = -ENOMEM;
- 	}
- 	mutex_unlock(&conf->cache_size_mutex);
--	mddev_resume(mddev);
- 
- out_unlock:
 -	mddev_unlock(mddev);
 +	mddev_unlock_and_resume(mddev);
  	return err ?: len;
