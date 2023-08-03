@@ -2,58 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D35176F176
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 20:10:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B95C676F178
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 20:10:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230153AbjHCSKS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Aug 2023 14:10:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36500 "EHLO
+        id S229941AbjHCSKa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Aug 2023 14:10:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36934 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230039AbjHCSJ5 (ORCPT
+        with ESMTP id S229815AbjHCSKP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Aug 2023 14:09:57 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C85630D5
-        for <linux-kernel@vger.kernel.org>; Thu,  3 Aug 2023 11:09:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
-        Message-ID:Sender:Reply-To:Content-ID:Content-Description;
-        bh=0dEImclfLlmfTU0yTnFzJTof7y09txrCVp+rAtpvb1A=; b=Q3HG/IqrxhjbWVUPp+QxIv0M1M
-        CQDRO12DZSkGS5jgxTy1lTzGCbAt0VPfKVjWzx5PwJFoM/CNjPu1pDLEfCKrZzwziQHSLvWxbeM2f
-        BZ8VxSXklUYAQlj3+f5Kz6bnN3jqkTjocUVE0SjFPJlb2l9IWU4vM5eSnb3jwpN6adAOIOFzz4A3t
-        9qzqv/mIFVddvR1Tfe8iJx+/ypoasiZODYZhfoMRX0KxmslYD3qhhSKSiKolEpT/6fWl+1OgkK7B0
-        mtQvVTVyt9n9GKsLnj4XvXQ5Iztv4LIMmjLDNSO3r7x5tw6sR0i65zXcsWUMUZ9Hjv55m8RG7LbEo
-        Q7F/U0lg==;
-Received: from [2601:1c2:980:9ec0::2764]
-        by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-        id 1qRclc-00AXuC-0M;
-        Thu, 03 Aug 2023 18:09:44 +0000
-Message-ID: <63bc327d-999a-1654-e7b5-6bcfd7477a32@infradead.org>
-Date:   Thu, 3 Aug 2023 11:09:43 -0700
+        Thu, 3 Aug 2023 14:10:15 -0400
+Received: from phobos.denx.de (phobos.denx.de [IPv6:2a01:238:438b:c500:173d:9f52:ddab:ee01])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F0123C20
+        for <linux-kernel@vger.kernel.org>; Thu,  3 Aug 2023 11:10:13 -0700 (PDT)
+Received: from [127.0.0.1] (p578adb1c.dip0.t-ipconnect.de [87.138.219.28])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: marex@denx.de)
+        by phobos.denx.de (Postfix) with ESMTPSA id C4A3E86839;
+        Thu,  3 Aug 2023 20:10:10 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=denx.de;
+        s=phobos-20191101; t=1691086211;
+        bh=fpuHp8OO6h5mevOgIeHsP5FLeL9qrPSYZmeq+L8xvLk=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=EF1Sp2Z46iR/82qNBP9O0RKnEctp3wFsIYKTiMoZeGS7DoLm8WQRqjiYL3YnnZ7t5
+         pI9yEQap9hzBdXcoM3IQXyJhuEt9F9l9Y/6mzmmI1FQG9OdHE0YBGUJbDLoYfKbuJ3
+         d9g24kE5vjJSRvN/hNBY9mpRmM3oX7cn/5rvNT3TvN5raEgyA63GoDJtpwjNVc2wYJ
+         dvW3IxwagPu0NZ1F1WXc/n66UM7N6oP/1P6v1k0dg7AggfPcRekwXr2O+BbiRNQdWV
+         80TLtTw0fpBuijkV1cx+O60LKIO5QPA5oCHH9z/3+xv6T5jw2p6G7zsmRmOqX8p6sB
+         H/CihvJUVzR5w==
+Message-ID: <25f3026f-3d97-a5ac-862a-da6dc5f8d830@denx.de>
+Date:   Thu, 3 Aug 2023 20:10:10 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v2 RESEND*3] ASoC: fsl MPC52xx drivers require
- PPC_BESTCOMM
+ Thunderbird/102.13.1
+Subject: Re: [PATCH] Revert "drm/bridge: lt9611: Do not generate HFP/HBP/HSA
+ and EOT packet"
 Content-Language: en-US
-To:     Mark Brown <broonie@kernel.org>
-Cc:     linux-kernel@vger.kernel.org,
-        Grant Likely <grant.likely@secretlab.ca>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Shengjiu Wang <shengjiu.wang@gmail.com>,
-        Xiubo Li <Xiubo.Lee@gmail.com>, alsa-devel@alsa-project.org,
-        linuxppc-dev@lists.ozlabs.org, Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>
-References: <20230803025941.24157-1-rdunlap@infradead.org>
- <9581313f-5340-455d-a75d-dc27d2eb3ec0@sirena.org.uk>
-From:   Randy Dunlap <rdunlap@infradead.org>
-In-Reply-To: <9581313f-5340-455d-a75d-dc27d2eb3ec0@sirena.org.uk>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+To:     Rob Clark <robdclark@gmail.com>,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Cc:     Amit Pundir <amit.pundir@linaro.org>,
+        Neil Armstrong <neil.armstrong@linaro.org>,
+        Robert Foss <rfoss@kernel.org>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Abhinav Kumar <quic_abhinavk@quicinc.com>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Andrzej Hajda <andrzej.hajda@intel.com>,
+        Jagan Teki <jagan@amarulasolutions.com>
+References: <20230802-revert-do-not-generate-hfp-hbp-hsa-eot-packet-v1-1-f8a20084e15a@linaro.org>
+ <5cf0e3fa-f66d-06c4-cfda-c48efd8c6508@linaro.org>
+ <bf95af44-2510-1835-dec9-183144de8413@denx.de>
+ <CAA8EJppp_ZJr-DcoZGd1GZmWuo=AECNS+X9zx0dNB4Edn8M2zg@mail.gmail.com>
+ <CAF6AEGsfbUMCS4QTfqoyYetqea_ov-AET-iM54B-HvYpwwZvmg@mail.gmail.com>
+From:   Marek Vasut <marex@denx.de>
+In-Reply-To: <CAF6AEGsfbUMCS4QTfqoyYetqea_ov-AET-iM54B-HvYpwwZvmg@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Virus-Scanned: clamav-milter 0.103.8 at phobos.denx.de
+X-Virus-Status: Clean
 X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -61,18 +72,84 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 8/3/23 04:27, Mark Brown wrote:
-> On Wed, Aug 02, 2023 at 07:59:41PM -0700, Randy Dunlap wrote:
->> Both SND_MPC52xx_SOC_PCM030 and SND_MPC52xx_SOC_EFIKA select
->> SND_SOC_MPC5200_AC97. The latter symbol depends on PPC_BESTCOMM,
->> so the 2 former symbols should also depend on PPC_BESTCOMM since
->> "select" does not follow any dependency chains.
+On 8/2/23 20:49, Rob Clark wrote:
+> On Wed, Aug 2, 2023 at 11:16 AM Dmitry Baryshkov
+> <dmitry.baryshkov@linaro.org> wrote:
+>>
+>> On Wed, 2 Aug 2023 at 20:34, Marek Vasut <marex@denx.de> wrote:
+>>>
+>>> On 8/2/23 15:38, Dmitry Baryshkov wrote:
+>>>> On 02/08/2023 11:52, Neil Armstrong wrote:
+>>>>> This reverts commit [1] to fix display regression on the Dragonboard 845c
+>>>>> (SDM845) devboard.
+>>>>>
+>>>>> There's a mismatch on the real action of the following flags:
+>>>>> - MIPI_DSI_MODE_VIDEO_NO_HSA
+>>>>> - MIPI_DSI_MODE_VIDEO_NO_HFP
+>>>>> - MIPI_DSI_MODE_VIDEO_NO_HBP
+>>>>> which leads to a non-working display on qcom platforms.
+>>>>>
+>>>>> [1] 8ddce13ae696 ("drm/bridge: lt9611: Do not generate HFP/HBP/HSA and
+>>>>> EOT packet")
+>>>>>
+>>>>> Cc: Marek Vasut <marex@denx.de>
+>>>>> Cc: Robert Foss <rfoss@kernel.org>
+>>>>> Cc: Jagan Teki <jagan@amarulasolutions.com>
+>>>>> Cc: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+>>>>> Cc: Abhinav Kumar <quic_abhinavk@quicinc.com>
+>>>>> Fixes: 8ddce13ae69 ("drm/bridge: lt9611: Do not generate HFP/HBP/HSA
+>>>>> and EOT packet")
+>>>>> Reported-by: Amit Pundir <amit.pundir@linaro.org>
+>>>>> Link:
+>>>>> https://lore.kernel.org/r/CAMi1Hd0TD=2z_=bcDrht3H_wiLvAFcv8Z-U_r_KUOoeMc6UMjw@mail.gmail.com/
+>>>>> Signed-off-by: Neil Armstrong <neil.armstrong@linaro.org>
+>>>>> ---
+>>>>>    drivers/gpu/drm/bridge/lontium-lt9611.c | 4 +---
+>>>>>    1 file changed, 1 insertion(+), 3 deletions(-)
+>>>>>
+>>>> Acked-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org> #fix db845c
+>>>>
+>>>> The boards broken by [1] are used in production by different parties
+>>>> since 5.10, breaking them doesn't seem more acceptable than breaking the
+>>>> new out-of-tree iMX8m hardware.
+>>>
+>>> The MX8M is also in-tree, so this does not apply.
+>>
+>> v6.5-rc4:
+>>
+>> $ git grep lontium,lt9611 | grep -v 9611uxc
+>> Documentation/devicetree/bindings/display/bridge/lontium,lt9611.yaml:$id:
+>> http://devicetree.org/schemas/display/bridge/lontium,lt9611.yaml#
+>> Documentation/devicetree/bindings/display/bridge/lontium,lt9611.yaml:
+>>      - lontium,lt9611
+>> Documentation/devicetree/bindings/display/bridge/lontium,lt9611.yaml:
+>>        compatible = "lontium,lt9611";
+>> arch/arm64/boot/dts/qcom/sdm845-db845c.dts: compatible = "lontium,lt9611";
+>> drivers/gpu/drm/bridge/lontium-lt9611.c: { "lontium,lt9611", 0 },
+>> drivers/gpu/drm/bridge/lontium-lt9611.c: { .compatible = "lontium,lt9611" },
+>>
+>> next-20230802:
+>>
+>> $ git grep lontium,lt9611 | grep -v 9611uxc
+>> Documentation/devicetree/bindings/display/bridge/lontium,lt9611.yaml:$id:
+>> http://devicetree.org/schemas/display/bridge/lontium,lt9611.yaml#
+>> Documentation/devicetree/bindings/display/bridge/lontium,lt9611.yaml:
+>>      - lontium,lt9611
+>> Documentation/devicetree/bindings/display/bridge/lontium,lt9611.yaml:
+>>        compatible = "lontium,lt9611";
+>> arch/arm64/boot/dts/qcom/sdm845-db845c.dts: compatible = "lontium,lt9611";
+>> drivers/gpu/drm/bridge/lontium-lt9611.c: { "lontium,lt9611", 0 },
+>> drivers/gpu/drm/bridge/lontium-lt9611.c: { .compatible = "lontium,lt9611" },
+>>
+>> Your device is not in the tree. Your commit broke existing users.
+>>
+>> Can we please end the argument, land the fix (this revert) for 6.5 and
+>> work on the solution for 6.6 or 6.7?
+>>
 > 
-> Take a hint, it's not clear that the patch is tasteful.
+> Even if they were in-tree, breaking existing hw means revert and
+> try-again.  Especially as we get into later -rc's
 
-Thank you for replying.  I'll drop it and just report the build errors.
-
--- 
-~Randy
+Then just apply the revert, I don't have time to debug this right this 
+moment, and it is anyway meaningless until I can look at the bus with 
+DSI bus analyzer.
