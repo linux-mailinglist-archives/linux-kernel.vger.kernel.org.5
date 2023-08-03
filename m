@@ -2,176 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C862576F0A8
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 19:29:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9764E76F0AE
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 19:33:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234917AbjHCR3P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Aug 2023 13:29:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44604 "EHLO
+        id S234752AbjHCRcv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Aug 2023 13:32:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46444 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234734AbjHCR3N (ORCPT
+        with ESMTP id S233056AbjHCRct (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Aug 2023 13:29:13 -0400
-Received: from mail-yb1-xb2d.google.com (mail-yb1-xb2d.google.com [IPv6:2607:f8b0:4864:20::b2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 038AD44A4
-        for <linux-kernel@vger.kernel.org>; Thu,  3 Aug 2023 10:28:47 -0700 (PDT)
-Received: by mail-yb1-xb2d.google.com with SMTP id 3f1490d57ef6-c5ffb6cda23so1381232276.0
-        for <linux-kernel@vger.kernel.org>; Thu, 03 Aug 2023 10:28:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1691083726; x=1691688526;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=QFcyQ1gcNX+fOmKbC9Gh83QONnit8k95E+VA88GAWoM=;
-        b=u+XdrAihfGpvID0yROds2wCTMW8NXs5L1vAOwA1j6Evl2I0RyjyMbiahw4g11/DF6S
-         P/GoFHSSGbs7DEAbzcxQ7+19M0s+k+7DBioD7PnjXyWbiTNKJTS054tH9O3tGhKp0BgG
-         wvK+dhh7Il62fgf21QZcSsGaVqNLAJjenyLNO08gv5TjVACfaB4TUNz6oAe/eQjnZnrr
-         Qt+M91gK0s1NiyeYMArnuSFUkCZBZImkTdDd/jfLfhG6qY3IuCVvnE6z0QzGlSqbUvAL
-         35Fqzp1FdsayCfcFCi4cDy4/N1ff1C71FwcjOCBdayMsKupZtv/D4jvrsxWoTHEwtDpM
-         Knng==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691083726; x=1691688526;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=QFcyQ1gcNX+fOmKbC9Gh83QONnit8k95E+VA88GAWoM=;
-        b=ZP2jmmQbMZuqawRDU4ar0f+rlikGTdm2FI/WNpSX+6S7Fr6QkFyyAauGfH/r/4v+5H
-         9lFAiFfYAVRJthaT/s5Z9kuxNTMMavm5lTq94rqWYXGKOi5FUSl27Gx+nJfYNh1rZUsk
-         IBdsLIJPkHWd6dJmwuj1QKWplAfdbss2N6pufOQLGq5ZnCmoHlxCQ3nAzcAOwAiGJzpz
-         GxBqdLkTq5D/YfoXyWEdCQ1eYvHIwx4O/iwtaalPCGVsdzMuKA5D8KTMBAGhEJs3XbDU
-         1Fw36obzgbGabs+Lm5aA4M3EOORVLPXT7ofhTn9KL4dsy6mGkZVYT+0nnh/QB7KgwbOs
-         1iEQ==
-X-Gm-Message-State: ABy/qLbMRxCgK2x91rZcc8JiXy+Iv7w473NFA/LHbCqhrEr2T8jrFo8q
-        XnQd8YITbN5hCUyS0270o51k/zU600nzA+akg+qe7g==
-X-Google-Smtp-Source: APBJJlH0/4s+VJkKkahHWGlGjtB8xBLjlsvii854DL1sAB7SOFNU6zuSbeBvxcFJ3UFfsm7icMI2KedJ7c38rWwKxBI=
-X-Received: by 2002:a25:4114:0:b0:d1f:6886:854a with SMTP id
- o20-20020a254114000000b00d1f6886854amr17351559yba.9.1691083725840; Thu, 03
- Aug 2023 10:28:45 -0700 (PDT)
+        Thu, 3 Aug 2023 13:32:49 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16B8F30C2
+        for <linux-kernel@vger.kernel.org>; Thu,  3 Aug 2023 10:31:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1691083918;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=V3OZMzxi9fUDHiCuups6Frg0CT+Gs83q33vmZ66OFKg=;
+        b=cabxSyI1q0I7pKjwCA0O72KihGr0C7hwjSkNmwM6t2s3yytKHlFH3DwaSfQNrKXATUacbs
+        u2Qt53c1LKgmoQxLv0imFkr8mG1r4xOOghO+6ifjDihEY+VzxBEH62LQfV5zubucbV9zgR
+        OcoZUmopPSmsIP5/KHwx6hZ1Ou6lMA0=
+Received: from mimecast-mx02.redhat.com (66.187.233.73 [66.187.233.73]) by
+ relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-683-fiEGGAMRMa22QAbY26TX0g-1; Thu, 03 Aug 2023 13:31:53 -0400
+X-MC-Unique: fiEGGAMRMa22QAbY26TX0g-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.rdu2.redhat.com [10.11.54.5])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id E1A5429AA38B;
+        Thu,  3 Aug 2023 17:31:52 +0000 (UTC)
+Received: from dhcp-27-174.brq.redhat.com (unknown [10.45.224.23])
+        by smtp.corp.redhat.com (Postfix) with SMTP id 8396AF7FAF;
+        Thu,  3 Aug 2023 17:31:48 +0000 (UTC)
+Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
+        oleg@redhat.com; Thu,  3 Aug 2023 19:31:11 +0200 (CEST)
+Date:   Thu, 3 Aug 2023 19:31:06 +0200
+From:   Oleg Nesterov <oleg@redhat.com>
+To:     Masami Hiramatsu <mhiramat@kernel.org>
+Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        linux-perf-users@vger.kernel.org,
+        Linux Trace Kernel <linux-trace-kernel@vger.kernel.org>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] perf probe: Show correct error about @symbol for uprobe
+Message-ID: <20230803173106.GA15866@redhat.com>
+References: <169055397023.67089.12693645664676964310.stgit@devnote2>
+ <ZMkAq5yx3+EiQNkF@kernel.org>
+ <20230801225618.06cb86992ae30564e5b87554@kernel.org>
 MIME-Version: 1.0
-References: <20230801220733.1987762-1-surenb@google.com>
-In-Reply-To: <20230801220733.1987762-1-surenb@google.com>
-From:   Suren Baghdasaryan <surenb@google.com>
-Date:   Thu, 3 Aug 2023 10:28:32 -0700
-Message-ID: <CAJuCfpEow+uz5tGgV2y=bAAh2tdwjcqv+hUz0Om68usLaw0jsA@mail.gmail.com>
-Subject: Re: [PATCH v2 0/6] make vma locking more obvious
-To:     akpm@linux-foundation.org
-Cc:     torvalds@linux-foundation.org, jannh@google.com,
-        willy@infradead.org, liam.howlett@oracle.com, david@redhat.com,
-        peterx@redhat.com, ldufour@linux.ibm.com, vbabka@suse.cz,
-        michel@lespinasse.org, jglisse@google.com, mhocko@suse.com,
-        hannes@cmpxchg.org, dave@stgolabs.net, hughd@google.com,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        stable@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230801225618.06cb86992ae30564e5b87554@kernel.org>
+User-Agent: Mutt/1.5.24 (2015-08-30)
+X-Scanned-By: MIMEDefang 3.1 on 10.11.54.5
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 1, 2023 at 3:07=E2=80=AFPM Suren Baghdasaryan <surenb@google.co=
-m> wrote:
->
-> During recent vma locking patch reviews Linus and Jann Horn noted a numbe=
-r
-> of issues with vma locking and suggested improvements:
->
-> 1. walk_page_range() does not have ability to write-lock a vma during the
-> walk when it's done under mmap_write_lock. For example s390_reset_cmma().
->
-> 2. Vma locking is hidden inside vm_flags modifiers and is hard to follow.
-> Suggestion is to change vm_flags_reset{_once} to assert that vma is
-> write-locked and require an explicit locking.
->
-> 3. Same issue with vma_prepare() hiding vma locking.
->
-> 4. In userfaultfd vm_flags are modified after vma->vm_userfaultfd_ctx and
-> page faults can operate on a context while it's changed.
->
-> 5. do_brk_flags() and __install_special_mapping() not locking a newly
-> created vma before adding it into the mm. While not strictly a problem,
-> this is fragile if vma is modified after insertion, as in the
-> mmap_region() case which was recently fixed. Suggestion is to always lock
-> a new vma before inserting it and making it visible to page faults.
->
-> 6. vma_assert_write_locked() for CONFIG_PER_VMA_LOCK=3Dn would benefit fr=
-om
-> being mmap_assert_write_locked() instead of no-op and then any place whic=
-h
-> operates on a vma and calls mmap_assert_write_locked() can be converted
-> into vma_assert_write_locked().
->
-> I CC'ed stable only on the first patch because others are cleanups and th=
-e
-> bug in userfaultfd does not affect stable (lock_vma_under_rcu prevents
-> uffds from being handled under vma lock protection). However I would be
-> happy if the whole series is merged into stable 6.4 since it makes vma
-> locking more maintainable.
->
-> The patches apply cleanly over Linus' ToT and will conflict when applied
-> over mm-unstable due to missing [1]. The conflict can be easily resolved
-> by ignoring conflicting deletions but probably simpler to take [1] into
-> mm-unstable and avoid later conflict.
->
-> [1] commit 6c21e066f925 ("mm/mempolicy: Take VMA lock before replacing po=
-licy")
->
-> Changes since v1:
-> - replace walk_page_range() parameter with mm_walk_ops.walk_lock,
-> per Linus
-> - introduced page_walk_lock enum to allow different locking modes
-> during a walk, per Linus
-> - added Liam's Reviewed-by
+Hi Masami,
 
-v3 is posted at
-https://lore.kernel.org/all/20230803172652.2849981-1-surenb@google.com/
+On 08/01, Masami Hiramatsu wrote:
+>
+> Oleg, what do you think about accessing symbols in data section from
+> uprobes? Can we access it from user-land IP-relative address?
 
->
-> Suren Baghdasaryan (6):
->   mm: enable page walking API to lock vmas during the walk
->   mm: for !CONFIG_PER_VMA_LOCK equate write lock assertion for vma and
->     mmap
->   mm: replace mmap with vma write lock assertions when operating on a
->     vma
->   mm: lock vma explicitly before doing vm_flags_reset and
->     vm_flags_reset_once
->   mm: always lock new vma before inserting into vma tree
->   mm: move vma locking out of vma_prepare
->
->  arch/powerpc/kvm/book3s_hv_uvmem.c      |  1 +
->  arch/powerpc/mm/book3s64/subpage_prot.c |  1 +
->  arch/riscv/mm/pageattr.c                |  1 +
->  arch/s390/mm/gmap.c                     |  5 ++++
->  drivers/infiniband/hw/hfi1/file_ops.c   |  1 +
->  fs/proc/task_mmu.c                      |  5 ++++
->  fs/userfaultfd.c                        |  6 +++++
->  include/linux/mm.h                      | 13 ++++++---
->  include/linux/pagewalk.h                | 11 ++++++++
->  mm/damon/vaddr.c                        |  2 ++
->  mm/hmm.c                                |  1 +
->  mm/hugetlb.c                            |  2 +-
->  mm/khugepaged.c                         |  5 ++--
->  mm/ksm.c                                | 25 ++++++++++-------
->  mm/madvise.c                            |  8 +++---
->  mm/memcontrol.c                         |  2 ++
->  mm/memory-failure.c                     |  1 +
->  mm/memory.c                             |  2 +-
->  mm/mempolicy.c                          | 22 +++++++++------
->  mm/migrate_device.c                     |  1 +
->  mm/mincore.c                            |  1 +
->  mm/mlock.c                              |  4 ++-
->  mm/mmap.c                               | 29 +++++++++++++-------
->  mm/mprotect.c                           |  2 ++
->  mm/pagewalk.c                           | 36 ++++++++++++++++++++++---
->  mm/vmscan.c                             |  1 +
->  26 files changed, 146 insertions(+), 42 deletions(-)
->
-> --
-> 2.41.0.585.gd2178a4bd4-goog
->
+Sorry, I don't I understand... I don't even understand the context, can't
+find the whole thread on lore.kernel.org/lkml. Plus I forgot EVERYTHING
+I knew about tracing/uprobes anyway ;)
+
+but when I look at traceprobe_parse_probe_arg() paths it seems to me that
+uprobe can fetch the IP-relative address, not sure about the syntax but
+perhaps something like xxx=+OFFSET(%ip). The question is how tools/perf
+can calculate this OFFSET. But I am sure you understand this all much
+better than me.
+
+> > > --- a/tools/perf/util/probe-event.c
+> > > +++ b/tools/perf/util/probe-event.c
+> > > @@ -2800,13 +2800,18 @@ static void warn_uprobe_event_compat(struct probe_trace_event *tev)
+> > >  	if (!tev->uprobes || tev->nargs == 0 || !buf)
+> > >  		goto out;
+> > >
+> > > -	for (i = 0; i < tev->nargs; i++)
+> > > -		if (strglobmatch(tev->args[i].value, "[$@+-]*")) {
+> > > -			pr_warning("Please upgrade your kernel to at least "
+> > > -				   "3.14 to have access to feature %s\n",
+> > > +	for (i = 0; i < tev->nargs; i++) {
+> > > +		if (strchr(tev->args[i].value, '@')) {
+> > > +			pr_warning("%s accesses a variable by symbol name, but that is not supported for user application probe.\n",
+> > > +				   tev->args[i].value);
+> > > +			break;
+
+IIUC without this change @symbol will trigger the
+
+			/* uprobes don't support symbols */
+			if (!(ctx->flags & TPARG_FL_KERNEL)) {
+				trace_probe_log_err(ctx->offset, SYM_ON_UPROBE);
+				return -EINVAL;
+			}
+
+in parse_probe_arg(), right?
+
+So FWIW the patch looks fine to me, but as you have mentioned tools/perf
+could probably (try to) turn @symbol into @+symbol_offset_in_file...
+
+In short, sorry for spam, I can't help ;)
+
+And just in case, I am on PTO till Aug 14, won't be able to read emails
+till then.
+
+Oleg.
+
