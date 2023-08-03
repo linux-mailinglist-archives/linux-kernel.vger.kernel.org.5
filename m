@@ -2,51 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B661576F43A
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 22:50:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BD64C76F440
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 22:51:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229779AbjHCUuA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Aug 2023 16:50:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54862 "EHLO
+        id S230335AbjHCUvO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Aug 2023 16:51:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55326 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229707AbjHCUt5 (ORCPT
+        with ESMTP id S230523AbjHCUvL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Aug 2023 16:49:57 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2089911F
-        for <linux-kernel@vger.kernel.org>; Thu,  3 Aug 2023 13:49:56 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id A293061D61
-        for <linux-kernel@vger.kernel.org>; Thu,  3 Aug 2023 20:49:55 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BAE56C433C8;
-        Thu,  3 Aug 2023 20:49:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691095795;
-        bh=3NfRQ0d28NuxQ7YTdnA1Ssgv4V9r5ej0bDprAr+07WU=;
-        h=From:To:Cc:Subject:Date:From;
-        b=SaQONshpMyeW3jk4KBB0Zuh7ZXIRVa2nHciOai8mOHxfSXwmJAHYQOvAwiiQrGQAB
-         FVUikTDqsmorsPSTZEOWiLHZTDXdBDSH9K19x1ADLk8jbgRekP1y5k+SJhd5qGb5P6
-         zw30YplkWu0c2FYCSV4jZ09wfIAU2waaGoXykDJDUscfZ2TBC/QJMsdVdToQPKil/C
-         b83SpM/TNrn7hvK2nWXH1kz6OEETQPWHa5ghEGV/11umk74xCv3RySVt+gOoLimQMD
-         MvA3RG1NVyOVkcNedAAgrD41NbUER0+IJ5Asmh/xNo5DeINGSHZLiSbjyXik8ZyCNV
-         scU2ZuJRgaWQA==
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     torvalds@linux-foundation.org
-Cc:     kuba@kernel.org, davem@davemloft.net, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, pabeni@redhat.com
-Subject: [GIT PULL] Networking for v6.5-rc5
-Date:   Thu,  3 Aug 2023 13:49:53 -0700
-Message-ID: <20230803204953.2556070-1-kuba@kernel.org>
-X-Mailer: git-send-email 2.41.0
+        Thu, 3 Aug 2023 16:51:11 -0400
+Received: from mail-yb1-xb36.google.com (mail-yb1-xb36.google.com [IPv6:2607:f8b0:4864:20::b36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB1A911F
+        for <linux-kernel@vger.kernel.org>; Thu,  3 Aug 2023 13:51:08 -0700 (PDT)
+Received: by mail-yb1-xb36.google.com with SMTP id 3f1490d57ef6-d075a831636so1618519276.3
+        for <linux-kernel@vger.kernel.org>; Thu, 03 Aug 2023 13:51:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1691095868; x=1691700668;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=Lle3BF+qljfXzm4QfhcLwY60F8Zaf6zozvJKdONuFT8=;
+        b=My6Rkj04n6n6T06NCr2vgPgVcqH4THV2yLBKdOugWmZ4SEAxuoGZ3BKRP6qfIUIcVU
+         gK15I84PqvbU8iL1uLBnFzoM4PelaWNZm6CaJMTtYyij3dYzQrP/GfqX9DtOF3uLA8Zk
+         qrf7ZCJInxy0Itoe2nA49o7LmlifbdCKt9/6vtP3EUpaJ0wUP2aaxtk3GCzyJ1SS6cjs
+         llSosyIdiqqjiDJS3jsNHSqTyEu0zFAbOB7Fb9OYyP51JzQ+oItqhKMmVWdPCu651oD2
+         +K1gtgCBNB7AvrGycyQO2iA1IOZcd0zeY0IgKCH9XhFPNQrOit3XiJm0HwBQQG+MgkBU
+         Sosw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691095868; x=1691700668;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Lle3BF+qljfXzm4QfhcLwY60F8Zaf6zozvJKdONuFT8=;
+        b=WEPfVUAAumSX2ZvKIrR1lhFgxvNbSsnI0OfsGcXSNprThi1VRh7MbMl4ySqjU6vnhf
+         BAvF9A8ceD+5NVLxJwQUuu12nhVZ+tpfecVuwpFaArcFixvG+2emgV125ytPPerD6/+v
+         DGHHVG95oe3TdG1rwXuHlFpb3ktS+ljXuADNlVdrogVl8GSR3DO7X//a6hg21gJ2Ij2t
+         m6cZqvo9mF7BGvZ4pdkA3n1u79cIN+2PxPGr39+g2tdM4dyxbdH9axrZtdEBkcT+1qlx
+         3q1JCCSLdQsN8ER6aqcZoymQNDxoSsdegsvYQVNOX9O5q0sWz/M0V64sRaeYWpsz+3PC
+         AlGw==
+X-Gm-Message-State: ABy/qLbYOhdZIN0hJv26WYctiuHhWQHQlYVrY8d5zkuc+vyO5JO5s1Dq
+        P3RalvD03kP9OQHkmxWtPHv90SPnXBdt1MoqYbpgpA==
+X-Google-Smtp-Source: APBJJlFAwqPxGuWnAbWFsKaxQB3e6si3AlKys7bn9vfTjD+Wsshf717lNeNSUAwOCQHBVn1zoq+6xKnDErOGMltFAgU=
+X-Received: by 2002:a25:e653:0:b0:c14:68fd:6e30 with SMTP id
+ d80-20020a25e653000000b00c1468fd6e30mr17517773ybh.16.1691095867957; Thu, 03
+ Aug 2023 13:51:07 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+References: <20230803194724.154591-1-danila@jiaxyga.com> <20230803194724.154591-3-danila@jiaxyga.com>
+In-Reply-To: <20230803194724.154591-3-danila@jiaxyga.com>
+From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Date:   Thu, 3 Aug 2023 23:50:57 +0300
+Message-ID: <CAA8EJpoBZBLYQ5RUW7nGo+wsma2XiON9+rK8N-gjnfWTkb-7rA@mail.gmail.com>
+Subject: Re: [PATCH 2/2] drm/msm/dpu: Add SM7150 support
+To:     Danila Tikhonov <danila@jiaxyga.com>
+Cc:     robdclark@gmail.com, quic_abhinavk@quicinc.com, sean@poorly.run,
+        marijn.suijten@somainline.org, airlied@gmail.com, daniel@ffwll.ch,
+        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+        conor+dt@kernel.org, konrad.dybcio@linaro.org,
+        neil.armstrong@linaro.org, rfoss@kernel.org, andersson@kernel.org,
+        quic_khsieh@quicinc.com, quic_vpolimer@quicinc.com,
+        quic_rmccann@quicinc.com, quic_jesszhan@quicinc.com,
+        liushixin2@huawei.com, linux-arm-msm@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, freedreno@lists.freedesktop.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        davidwronek@gmail.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -54,403 +76,363 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus!
-
-The following changes since commit 57012c57536f8814dec92e74197ee96c3498d24e:
-
-  Merge tag 'net-6.5-rc4' of git://git.kernel.org/pub/scm/linux/kernel/git/netdev/net (2023-07-27 12:27:37 -0700)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/netdev/net.git net-6.5-rc5
-
-for you to fetch changes up to 0765c5f293357ee43eca72e27c3547f9d99ac355:
-
-  MAINTAINERS: update TUN/TAP maintainers (2023-08-03 11:57:38 -0700)
-
-----------------------------------------------------------------
-Including fixes from bpf and wireless.
-
-Nothing scary here. Feels like the first wave of regressions
-from v6.5 is addressed - one outstanding fix still to come
-in TLS for the sendpage rework.
-
-Current release - regressions:
-
- - udp: fix __ip_append_data()'s handling of MSG_SPLICE_PAGES
-
- - dsa: fix older DSA drivers using phylink
-
-Previous releases - regressions:
-
- - gro: fix misuse of CB in udp socket lookup
-
- - mlx5: unregister devlink params in case interface is down
-
- - Revert "wifi: ath11k: Enable threaded NAPI"
-
-Previous releases - always broken:
-
- - sched: cls_u32: fix match key mis-addressing
-
- - sched: bind logic fixes for cls_fw, cls_u32 and cls_route
-
- - add bound checks to a number of places which hand-parse netlink
-
- - bpf: disable preemption in perf_event_output helpers code
-
- - qed: fix scheduling in a tasklet while getting stats
-
- - avoid using APIs which are not hardirq-safe in couple of drivers,
-   when we may be in a hard IRQ (netconsole)
-
- - wifi: cfg80211: fix return value in scan logic, avoid page
-   allocator warning
-
- - wifi: mt76: mt7615: do not advertise 5 GHz on first PHY
-   of MT7615D (DBDC)
-
-Misc:
-
- - drop handful of inactive maintainers, put some new in place
-
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
-
-----------------------------------------------------------------
-Alexandra Winter (1):
-      s390/qeth: Don't call dev_close/dev_open (DOWN/UP)
-
-Alexei Starovoitov (1):
-      Merge branch 'bpf-disable-preemption-in-perf_event_output-helpers-code'
-
-Amir Tzin (1):
-      net/mlx5e: Fix crash moving to switchdev mode when ntuple offload is set
-
-Benjamin Poirier (1):
-      vxlan: Fix nexthop hash size
-
-Brian Norris (1):
-      MAINTAINERS: Update mwifiex maintainer list
-
-Chengfeng Ye (1):
-      mISDN: hfcpci: Fix potential deadlock on &hc->lock
-
-Chris Mi (2):
-      net/mlx5e: Don't hold encap tbl lock if there is no encap action
-      net/mlx5: fs_chains: Fix ft prio if ignore_flow_level is not supported
-
-Dan Carpenter (1):
-      net: ll_temac: fix error checking of irq_of_parse_and_map()
-
-David Howells (1):
-      udp: Fix __ip_append_data()'s handling of MSG_SPLICE_PAGES
-
-David S. Miller (2):
-      Merge branch 'net-data-races'
-      Merge branch 'tun-tap-uid'
-
-Dragos Tatulea (2):
-      net/mlx5e: xsk: Fix invalid buffer access for legacy rq
-      net/mlx5e: xsk: Fix crash on regular rq reactivation
-
-Duoming Zhou (1):
-      net: usb: lan78xx: reorder cleanup operations to avoid UAF bugs
-
-Edward Cree (1):
-      sfc: fix field-spanning memcpy in selftest
-
-Eric Dumazet (18):
-      net: flower: fix stack-out-of-bounds in fl_set_key_cfm()
-      net: annotate data-races around sk->sk_reserved_mem
-      net: annotate data-race around sk->sk_txrehash
-      net: annotate data-races around sk->sk_max_pacing_rate
-      net: add missing READ_ONCE(sk->sk_rcvlowat) annotation
-      net: annotate data-races around sk->sk_{rcv|snd}timeo
-      net: add missing READ_ONCE(sk->sk_sndbuf) annotation
-      net: add missing READ_ONCE(sk->sk_rcvbuf) annotation
-      net: annotate data-races around sk->sk_mark
-      net: add missing data-race annotations around sk->sk_peek_off
-      net: add missing data-race annotation for sk_ll_usec
-      net: annotate data-races around sk->sk_priority
-      tcp_metrics: fix addr_same() helper
-      tcp_metrics: annotate data-races around tm->tcpm_stamp
-      tcp_metrics: annotate data-races around tm->tcpm_lock
-      tcp_metrics: annotate data-races around tm->tcpm_vals[]
-      tcp_metrics: annotate data-races around tm->tcpm_net
-      tcp_metrics: fix data-race in tcpm_suck_dst() vs fastopen
-
-Eugen Hristev (1):
-      dt-bindings: net: rockchip-dwmac: fix {tx|rx}-delay defaults/range in schema
-
-Hans de Goede (1):
-      wifi: brcmfmac: Fix field-spanning write in brcmf_scan_params_v2_to_v1()
-
-Hou Tao (2):
-      bpf, cpumap: Make sure kthread is running before map update returns
-      bpf, cpumap: Handle skb as well when clean up ptr_ring
-
-Ilan Peer (1):
-      wifi: cfg80211: Fix return value in scan logic
-
-Jakub Kicinski (10):
-      MAINTAINERS: stmmac: retire Giuseppe Cavallaro
-      Merge tag 'mlx5-fixes-2023-07-26' of git://git.kernel.org/pub/scm/linux/kernel/git/saeed/linux
-      bnxt: don't handle XDP in netpoll
-      Merge branch 'net-sched-bind-logic-fixes-for-cls_fw-cls_u32-and-cls_route'
-      Merge branch 'bnxt_en-2-xdp-bug-fixes'
-      Merge branch 'mlx5-ipsec-fixes'
-      Merge branch 'tcp_metrics-series-of-fixes'
-      Merge tag 'wireless-2023-08-03' of git://git.kernel.org/pub/scm/linux/kernel/git/wireless/wireless
-      Merge tag 'for-netdev' of https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf
-      MAINTAINERS: update TUN/TAP maintainers
-
-Jamal Hadi Salim (1):
-      net: sched: cls_u32: Fix match key mis-addressing
-
-Jianbo Liu (4):
-      net/mlx5e: Move representor neigh cleanup to profile cleanup_tx
-      net/mlx5e: kTLS, Fix protection domain in use syndrome when devlink reload
-      net/mlx5: fs_core: Make find_closest_ft more generic
-      net/mlx5: fs_core: Skip the FTs in the same FS_TYPE_PRIO_CHAINS fs_prio
-
-Jiri Olsa (2):
-      bpf: Disable preemption in bpf_perf_event_output
-      bpf: Disable preemption in bpf_event_output
-
-Jonas Gorski (1):
-      prestera: fix fallback to previous version on same major version
-
-Kalle Valo (12):
-      Revert "wifi: ath11k: Enable threaded NAPI"
-      Revert "wifi: ath6k: silence false positive -Wno-dangling-pointer warning on GCC 12"
-      MAINTAINERS: wifi: rtw88: change Ping as the maintainer
-      MAINTAINERS: wifi: atmel: mark as orphan
-      MAINTAINERS: wifi: mark cw1200 as orphan
-      MAINTAINERS: wifi: mark ar5523 as orphan
-      MAINTAINERS: wifi: mark rndis_wlan as orphan
-      MAINTAINERS: wifi: mark wl3501 as orphan
-      MAINTAINERS: wifi: mark zd1211rw as orphan
-      MAINTAINERS: wifi: mark b43 as orphan
-      MAINTAINERS: wifi: mark mlw8k as orphan
-      MAINTAINERS: add Jeff as ath10k, ath11k and ath12k maintainer
-
-Kees Cook (1):
-      wifi: ray_cs: Replace 1-element array with flexible array
-
-Konstantin Khorenko (1):
-      qed: Fix scheduling in a tasklet while getting stats
-
-Kuniyuki Iwashima (2):
-      net/sched: taprio: Limit TCA_TAPRIO_ATTR_SCHED_CYCLE_TIME to INT_MAX.
-      selftest: net: Assert on a proper value in so_incoming_cpu.c.
-
-Laszlo Ersek (2):
-      net: tun_chr_open(): set sk_uid from current_fsuid()
-      net: tap_open(): set sk_uid from current_fsuid()
-
-Leon Romanovsky (1):
-      net/mlx5e: Set proper IPsec source port in L4 selector
-
-Lin Ma (3):
-      bpf: Add length check for SK_DIAG_BPF_STORAGE_REQ_MAP_FD parsing
-      rtnetlink: let rtnl_bridge_setlink checks IFLA_BRIDGE_MODE length
-      net: dcb: choose correct policy to parse DCB_ATTR_BCN
-
-Lukasz Majewski (1):
-      net: dsa: microchip: KSZ9477 register regmap alignment to 32 bit boundaries
-
-Mark Brown (1):
-      net: netsec: Ignore 'phy-mode' on SynQuacer in DT mode
-
-Martin KaFai Lau (1):
-      Merge branch 'Two fixes for cpu-map'
-
-Martin Kohn (1):
-      net: usb: qmi_wwan: add Quectel EM05GV2
-
-Michael Chan (1):
-      bnxt_en: Fix max_mtu setting for multi-buf XDP
-
-Michal Schmidt (1):
-      octeon_ep: initialize mbox mutexes
-
-Paul Fertser (1):
-      wifi: mt76: mt7615: do not advertise 5 GHz on first phy of MT7615D (DBDC)
-
-Rafal Rogalski (1):
-      ice: Fix RDMA VSI removal during queue rebuild
-
-Rafał Miłecki (1):
-      dt-bindings: net: mediatek,net: fixup MAC binding
-
-Richard Gobert (1):
-      net: gro: fix misuse of CB in udp socket lookup
-
-Ross Maynard (1):
-      USB: zaurus: Add ID for A-300/B-500/C-700
-
-Russell King (Oracle) (1):
-      net: dsa: fix older DSA drivers using phylink
-
-Shay Drory (3):
-      net/mlx5: Honor user input for migratable port fn attr
-      net/mlx5: DR, Fix peer domain namespace setting
-      net/mlx5: Unregister devlink params in case interface is down
-
-Somnath Kotur (1):
-      bnxt_en: Fix page pool logic for page size >= 64K
-
-Stefano Garzarella (1):
-      test/vsock: remove vsock_perf executable on `make clean`
-
-Thierry Reding (1):
-      net: stmmac: tegra: Properly allocate clock bulk data
-
-Tomas Glozar (1):
-      bpf: sockmap: Remove preempt_disable in sock_map_sk_acquire
-
-Vlad Buslov (1):
-      net/mlx5: Bridge, set debugfs access right to root-only
-
-Yuanjun Gong (3):
-      net/mlx5e: fix return value check in mlx5e_ipsec_remove_trailer()
-      net: dsa: fix value check in bcm_sf2_sw_probe()
-      net: korina: handle clk prepare error in korina_probe()
-
-Yue Haibing (1):
-      ip6mr: Fix skb_under_panic in ip6mr_cache_report()
-
-Zhengchao Shao (3):
-      net/mlx5e: fix double free in macsec_fs_tx_create_crypto_table_groups
-      net/mlx5: DR, fix memory leak in mlx5dr_cmd_create_reformat_ctx
-      net/mlx5: fix potential memory leak in mlx5e_init_rep_rx
-
-valis (3):
-      net/sched: cls_u32: No longer copy tcf_result on update to avoid use-after-free
-      net/sched: cls_fw: No longer copy tcf_result on update to avoid use-after-free
-      net/sched: cls_route: No longer copy tcf_result on update to avoid use-after-free
-
- .../devicetree/bindings/net/mediatek,net.yaml      |   7 +-
- .../devicetree/bindings/net/rockchip-dwmac.yaml    |  10 +-
- MAINTAINERS                                        |  42 ++++----
- drivers/isdn/hardware/mISDN/hfcpci.c               |  10 +-
- drivers/net/dsa/bcm_sf2.c                          |   8 +-
- drivers/net/dsa/microchip/ksz_common.c             |  35 +++----
- drivers/net/ethernet/broadcom/bnxt/bnxt.c          |  85 +++++++++-------
- drivers/net/ethernet/broadcom/bnxt/bnxt.h          |   2 +-
- drivers/net/ethernet/broadcom/bnxt/bnxt_xdp.c      |  14 ++-
- drivers/net/ethernet/broadcom/bnxt/bnxt_xdp.h      |   2 +-
- drivers/net/ethernet/intel/ice/ice_main.c          |  18 ++++
- drivers/net/ethernet/korina.c                      |   3 +-
- .../ethernet/marvell/octeon_ep/octep_ctrl_mbox.c   |   3 +
- .../net/ethernet/marvell/prestera/prestera_pci.c   |   3 +-
- .../ethernet/mellanox/mlx5/core/en/tc_tun_encap.c  |   3 -
- .../net/ethernet/mellanox/mlx5/core/en/xsk/rx.c    |   5 +-
- .../mellanox/mlx5/core/en_accel/ipsec_fs.c         |   4 +-
- .../mellanox/mlx5/core/en_accel/ipsec_rxtx.c       |   4 +-
- .../ethernet/mellanox/mlx5/core/en_accel/ktls.c    |   8 --
- .../ethernet/mellanox/mlx5/core/en_accel/ktls_tx.c |  29 +++++-
- .../mellanox/mlx5/core/en_accel/macsec_fs.c        |   1 +
- drivers/net/ethernet/mellanox/mlx5/core/en_arfs.c  |  10 ++
- drivers/net/ethernet/mellanox/mlx5/core/en_main.c  |  29 ++++--
- drivers/net/ethernet/mellanox/mlx5/core/en_rep.c   |  20 ++--
- drivers/net/ethernet/mellanox/mlx5/core/en_tc.c    |  21 +++-
- .../mellanox/mlx5/core/esw/bridge_debugfs.c        |   2 +-
- .../ethernet/mellanox/mlx5/core/eswitch_offloads.c |  17 ++--
- drivers/net/ethernet/mellanox/mlx5/core/fs_cmd.c   |   2 +-
- drivers/net/ethernet/mellanox/mlx5/core/fs_cmd.h   |   2 +-
- drivers/net/ethernet/mellanox/mlx5/core/fs_core.c  | 109 ++++++++++++++++-----
- drivers/net/ethernet/mellanox/mlx5/core/fs_core.h  |   2 +-
- .../ethernet/mellanox/mlx5/core/lib/fs_chains.c    |   2 +-
- drivers/net/ethernet/mellanox/mlx5/core/main.c     |   1 +
- .../mellanox/mlx5/core/steering/dr_action.c        |   2 +-
- .../ethernet/mellanox/mlx5/core/steering/dr_cmd.c  |   5 +-
- .../mellanox/mlx5/core/steering/dr_domain.c        |  19 ++--
- .../mellanox/mlx5/core/steering/dr_ste_v0.c        |   7 +-
- .../mellanox/mlx5/core/steering/dr_ste_v1.c        |   7 +-
- .../mellanox/mlx5/core/steering/dr_types.h         |   2 +-
- .../ethernet/mellanox/mlx5/core/steering/fs_dr.c   |   4 +-
- .../ethernet/mellanox/mlx5/core/steering/mlx5dr.h  |   2 +-
- drivers/net/ethernet/qlogic/qed/qed_dev_api.h      |  16 +++
- drivers/net/ethernet/qlogic/qed/qed_fcoe.c         |  19 +++-
- drivers/net/ethernet/qlogic/qed/qed_fcoe.h         |  17 +++-
- drivers/net/ethernet/qlogic/qed/qed_hw.c           |  26 ++++-
- drivers/net/ethernet/qlogic/qed/qed_iscsi.c        |  19 +++-
- drivers/net/ethernet/qlogic/qed/qed_iscsi.h        |   8 +-
- drivers/net/ethernet/qlogic/qed/qed_l2.c           |  19 +++-
- drivers/net/ethernet/qlogic/qed/qed_l2.h           |  24 +++++
- drivers/net/ethernet/qlogic/qed/qed_main.c         |   6 +-
- drivers/net/ethernet/sfc/falcon/selftest.c         |  23 +++--
- drivers/net/ethernet/sfc/selftest.c                |  23 +++--
- drivers/net/ethernet/sfc/siena/selftest.c          |  23 +++--
- drivers/net/ethernet/socionext/netsec.c            |  11 +++
- drivers/net/ethernet/stmicro/stmmac/dwmac-tegra.c  |   3 +-
- drivers/net/ethernet/xilinx/ll_temac_main.c        |  12 ++-
- drivers/net/tap.c                                  |   2 +-
- drivers/net/tun.c                                  |   2 +-
- drivers/net/usb/cdc_ether.c                        |  21 ++++
- drivers/net/usb/lan78xx.c                          |   7 +-
- drivers/net/usb/qmi_wwan.c                         |   1 +
- drivers/net/usb/zaurus.c                           |  21 ++++
- drivers/net/wireless/ath/ath11k/ahb.c              |   1 -
- drivers/net/wireless/ath/ath11k/pcic.c             |   1 -
- drivers/net/wireless/ath/ath6kl/Makefile           |   5 -
- .../broadcom/brcm80211/brcmfmac/fwil_types.h       |   7 +-
- drivers/net/wireless/legacy/rayctl.h               |   2 +-
- drivers/net/wireless/mediatek/mt76/mt7615/eeprom.c |   6 +-
- drivers/s390/net/qeth_core.h                       |   1 -
- drivers/s390/net/qeth_core_main.c                  |   2 -
- drivers/s390/net/qeth_l2_main.c                    |   9 +-
- drivers/s390/net/qeth_l3_main.c                    |   8 +-
- include/net/gro.h                                  |  43 ++++++++
- include/net/inet_sock.h                            |   7 +-
- include/net/ip.h                                   |   2 +-
- include/net/route.h                                |   4 +-
- include/net/vxlan.h                                |   4 +-
- include/uapi/linux/pkt_cls.h                       |   4 +-
- kernel/bpf/cpumap.c                                |  35 ++++---
- kernel/trace/bpf_trace.c                           |  17 +++-
- net/can/raw.c                                      |   2 +-
- net/core/bpf_sk_storage.c                          |   5 +-
- net/core/rtnetlink.c                               |   8 +-
- net/core/sock.c                                    |  69 +++++++------
- net/core/sock_map.c                                |   2 -
- net/dcb/dcbnl.c                                    |   2 +-
- net/dccp/ipv6.c                                    |   4 +-
- net/dsa/port.c                                     |   9 +-
- net/ipv4/inet_diag.c                               |   4 +-
- net/ipv4/ip_output.c                               |  17 +++-
- net/ipv4/ip_sockglue.c                             |   2 +-
- net/ipv4/raw.c                                     |   2 +-
- net/ipv4/route.c                                   |   4 +-
- net/ipv4/tcp_ipv4.c                                |   4 +-
- net/ipv4/tcp_metrics.c                             |  70 ++++++++-----
- net/ipv4/udp.c                                     |   8 +-
- net/ipv4/udp_offload.c                             |   7 +-
- net/ipv6/ip6mr.c                                   |   2 +-
- net/ipv6/ping.c                                    |   2 +-
- net/ipv6/raw.c                                     |   6 +-
- net/ipv6/route.c                                   |   7 +-
- net/ipv6/tcp_ipv6.c                                |   9 +-
- net/ipv6/udp.c                                     |  12 ++-
- net/ipv6/udp_offload.c                             |   7 +-
- net/l2tp/l2tp_ip6.c                                |   2 +-
- net/mptcp/sockopt.c                                |   2 +-
- net/netfilter/nft_socket.c                         |   2 +-
- net/netfilter/xt_socket.c                          |   4 +-
- net/packet/af_packet.c                             |  12 +--
- net/sched/cls_flower.c                             |   5 +-
- net/sched/cls_fw.c                                 |   1 -
- net/sched/cls_route.c                              |   1 -
- net/sched/cls_u32.c                                |  57 +++++++++--
- net/sched/em_meta.c                                |   4 +-
- net/sched/sch_taprio.c                             |  15 ++-
- net/smc/af_smc.c                                   |   2 +-
- net/unix/af_unix.c                                 |   2 +-
- net/wireless/scan.c                                |   2 +-
- net/xdp/xsk.c                                      |   2 +-
- net/xfrm/xfrm_policy.c                             |   2 +-
- tools/testing/selftests/net/so_incoming_cpu.c      |   2 +-
- .../tc-testing/tc-tests/qdiscs/taprio.json         |  25 +++++
- tools/testing/vsock/Makefile                       |   2 +-
- 123 files changed, 983 insertions(+), 447 deletions(-)
+On Thu, 3 Aug 2023 at 22:47, Danila Tikhonov <danila@jiaxyga.com> wrote:
+>
+> Add definitions for the display hardware used on the Qualcomm SM7150
+> platform.
+>
+> Signed-off-by: Danila Tikhonov <danila@jiaxyga.com>
+> ---
+>  .../msm/disp/dpu1/catalog/dpu_5_2_sm7150.h    | 277 ++++++++++++++++++
+>  .../gpu/drm/msm/disp/dpu1/dpu_hw_catalog.c    |   1 +
+>  .../gpu/drm/msm/disp/dpu1/dpu_hw_catalog.h    |   1 +
+>  drivers/gpu/drm/msm/disp/dpu1/dpu_kms.c       |   1 +
+>  4 files changed, 280 insertions(+)
+>  create mode 100644 drivers/gpu/drm/msm/disp/dpu1/catalog/dpu_5_2_sm7150.h
+>
+> diff --git a/drivers/gpu/drm/msm/disp/dpu1/catalog/dpu_5_2_sm7150.h b/drivers/gpu/drm/msm/disp/dpu1/catalog/dpu_5_2_sm7150.h
+> new file mode 100644
+> index 000000000000..5823879a705a
+> --- /dev/null
+> +++ b/drivers/gpu/drm/msm/disp/dpu1/catalog/dpu_5_2_sm7150.h
+> @@ -0,0 +1,277 @@
+> +/* SPDX-License-Identifier: GPL-2.0-only */
+> +/*
+> + * Copyright (c) 2018-2019, The Linux Foundation. All rights reserved.
+> + * Copyright (c) 2023, Danila Tikhonov <danila@jiaxyga.com>
+> + */
+> +
+> +#ifndef _DPU_5_2_SM7150_H
+> +#define _DPU_5_2_SM7150_H
+> +
+> +static const struct dpu_caps sm7150_dpu_caps = {
+> +       .max_mixer_width = DEFAULT_DPU_OUTPUT_LINE_WIDTH,
+> +       .max_mixer_blendstages = 0xb,
+> +       .qseed_type = DPU_SSPP_SCALER_QSEED4,
+
+v3lite
+
+> +       .has_src_split = true,
+> +       .has_dim_layer = true,
+> +       .has_idle_pc = true,
+> +       .has_3d_merge = true,
+> +       .max_linewidth = 4096,
+
+2880 according to the vendor DTS file.
+
+> +       .pixel_ram_size = DEFAULT_PIXEL_RAM_SIZE,
+> +       .max_hdeci_exp = MAX_HORZ_DECIMATION,
+> +       .max_vdeci_exp = MAX_VERT_DECIMATION,
+> +};
+> +
+> +static const struct dpu_mdp_cfg sm7150_mdp[] = {
+> +       {
+> +       .name = "top_0",
+> +       .base = 0x0, .len = 0x45c,
+> +       .features = BIT(DPU_MDP_AUDIO_SELECT),
+> +       .clk_ctrls[DPU_CLK_CTRL_VIG0] = { .reg_off = 0x2ac, .bit_off = 0 },
+> +       .clk_ctrls[DPU_CLK_CTRL_VIG1] = { .reg_off = 0x2b4, .bit_off = 0 },
+> +       .clk_ctrls[DPU_CLK_CTRL_DMA0] = { .reg_off = 0x2ac, .bit_off = 8 },
+> +       .clk_ctrls[DPU_CLK_CTRL_DMA1] = { .reg_off = 0x2b4, .bit_off = 8 },
+> +       .clk_ctrls[DPU_CLK_CTRL_DMA2] = { .reg_off = 0x2bc, .bit_off = 8 },
+> +       .clk_ctrls[DPU_CLK_CTRL_WB2] = { .reg_off = 0x3b8, .bit_off = 24 },
+> +       },
+> +};
+> +
+> +static const struct dpu_sspp_cfg sm7150_sspp[] = {
+> +       {
+> +               .name = "sspp_0", .id = SSPP_VIG0,
+> +               .base = 0x4000, .len = 0x1f0,
+> +               .features = VIG_SDM845_MASK,
+> +               .sblk = &sm8250_vig_sblk_0,
+> +               .xin_id = 0,
+> +               .type = SSPP_TYPE_VIG,
+> +               .clk_ctrl = DPU_CLK_CTRL_VIG0,
+> +       }, {
+> +               .name = "sspp_1", .id = SSPP_VIG1,
+> +               .base = 0x6000, .len = 0x1f0,
+> +               .features = VIG_SDM845_MASK,
+> +               .sblk = &sm8250_vig_sblk_1,
+> +               .xin_id = 4,
+> +               .type = SSPP_TYPE_VIG,
+> +               .clk_ctrl = DPU_CLK_CTRL_VIG1,
+> +       }, {
+> +               .name = "sspp_2", .id = SSPP_DMA0,
+> +               .base = 0x24000, .len = 0x1f0,
+> +               .features = DMA_SDM845_MASK,
+> +               .sblk = &sdm845_dma_sblk_0,
+> +               .xin_id = 1,
+> +               .type = SSPP_TYPE_DMA,
+> +               .clk_ctrl = DPU_CLK_CTRL_DMA0,
+> +       }, {
+> +               .name = "sspp_9", .id = SSPP_DMA1,
+> +               .base = 0x26000, .len = 0x1f0,
+> +               .features = DMA_SDM845_MASK,
+> +               .sblk = &sdm845_dma_sblk_1,
+> +               .xin_id = 5,
+> +               .type = SSPP_TYPE_DMA,
+> +               .clk_ctrl = DPU_CLK_CTRL_DMA1,
+> +       }, {
+> +               .name = "sspp_10", .id = SSPP_DMA2,
+> +               .base = 0x28000, .len = 0x1f0,
+> +               .features = DMA_CURSOR_SDM845_MASK,
+> +               .sblk = &sdm845_dma_sblk_2,
+> +               .xin_id = 9,
+> +               .type = SSPP_TYPE_DMA,
+> +               .clk_ctrl = DPU_CLK_CTRL_DMA2,
+> +       },
+> +};
+> +
+> +static const struct dpu_lm_cfg sm7150_lm[] = {
+> +       {
+> +               .name = "lm_0", .id = LM_0,
+> +               .base = 0x44000, .len = 0x320,
+> +               .features = MIXER_SDM845_MASK,
+> +               .sblk = &sdm845_lm_sblk,
+> +               .lm_pair = LM_1,
+> +               .pingpong = PINGPONG_0,
+> +               .dspp = DSPP_0,
+> +       }, {
+> +               .name = "lm_1", .id = LM_1,
+> +               .base = 0x45000, .len = 0x320,
+> +               .features = MIXER_SDM845_MASK,
+> +               .sblk = &sdm845_lm_sblk,
+> +               .lm_pair = LM_0,
+> +               .pingpong = PINGPONG_1,
+> +               .dspp = DSPP_1,
+> +       }, {
+> +               .name = "lm_2", .id = LM_2,
+> +               .base = 0x46000, .len = 0x320,
+> +               .features = MIXER_SDM845_MASK,
+> +               .sblk = &sdm845_lm_sblk,
+> +               .lm_pair = LM_3,
+> +               .pingpong = PINGPONG_2,
+> +       }, {
+> +               .name = "lm_3", .id = LM_3,
+> +               .base = 0x47000, .len = 0x320,
+> +               .features = MIXER_SDM845_MASK,
+> +               .sblk = &sdm845_lm_sblk,
+> +               .lm_pair = LM_2,
+> +               .pingpong = PINGPONG_3,
+> +       }, {
+> +               .name = "lm_4", .id = LM_4,
+> +               .base = 0x0, .len = 0x320,
+> +               .features = MIXER_SDM845_MASK,
+> +               .sblk = &sdm845_lm_sblk,
+> +               .lm_pair = 0,
+> +               .pingpong = PINGPONG_4,
+> +       }, {
+> +               .name = "lm_5", .id = LM_5,
+> +               .base = 0x0, .len = 0x320,
+> +               .features = MIXER_SDM845_MASK,
+> +               .sblk = &sdm845_lm_sblk,
+> +               .lm_pair = 0,
+> +               .pingpong = PINGPONG_5,
+> +       },
+> +};
+> +
+> +static const struct dpu_dspp_cfg sm7150_dspp[] = {
+> +       {
+> +               .name = "dspp_0", .id = DSPP_0,
+> +               .base = 0x54000, .len = 0x1800,
+> +               .features = DSPP_SC7180_MASK,
+> +               .sblk = &sdm845_dspp_sblk,
+> +       }, {
+> +               .name = "dspp_1", .id = DSPP_1,
+> +               .base = 0x56000, .len = 0x1800,
+> +               .features = DSPP_SC7180_MASK,
+> +               .sblk = &sdm845_dspp_sblk,
+> +       },
+> +};
+> +
+> +static const struct dpu_pingpong_cfg sm7150_pp[] = {
+> +       {
+> +               .name = "pingpong_0", .id = PINGPONG_0,
+> +               .base = 0x70000, .len = 0xd4,
+> +               .features = PINGPONG_SM8150_MASK,
+> +               .sblk = &sdm845_pp_sblk,
+> +               .merge_3d = MERGE_3D_0,
+> +               .intr_done = DPU_IRQ_IDX(MDP_SSPP_TOP0_INTR, 8),
+> +               .intr_rdptr = -1,
+> +       }, {
+> +               .name = "pingpong_1", .id = PINGPONG_1,
+> +               .base = 0x70800, .len = 0xd4,
+> +               .features = PINGPONG_SM8150_MASK,
+> +               .sblk = &sdm845_pp_sblk,
+> +               .merge_3d = MERGE_3D_0,
+> +               .intr_done = DPU_IRQ_IDX(MDP_SSPP_TOP0_INTR, 9),
+> +               .intr_rdptr = -1,
+> +       }, {
+> +               .name = "pingpong_2", .id = PINGPONG_2,
+> +               .base = 0x71000, .len = 0xd4,
+> +               .features = PINGPONG_SM8150_MASK,
+> +               .sblk = &sdm845_pp_sblk,
+> +               .merge_3d = MERGE_3D_1,
+> +               .intr_done = DPU_IRQ_IDX(MDP_SSPP_TOP0_INTR, 10),
+> +               .intr_rdptr = -1,
+> +       }, {
+> +               .name = "pingpong_3", .id = PINGPONG_3,
+> +               .base = 0x71800, .len = 0xd4,
+> +               .features = PINGPONG_SM8150_MASK,
+> +               .sblk = &sdm845_pp_sblk,
+> +               .merge_3d = MERGE_3D_1,
+> +               .intr_done = DPU_IRQ_IDX(MDP_SSPP_TOP0_INTR, 11),
+> +               .intr_rdptr = -1,
+> +       },
+> +};
+> +
+> +static const struct dpu_merge_3d_cfg sm7150_merge_3d[] = {
+> +       {
+> +               .name = "merge_3d_0", .id = MERGE_3D_0,
+> +               .base = 0x83000, .len = 0x8,
+> +       }, {
+> +               .name = "merge_3d_1", .id = MERGE_3D_1,
+> +               .base = 0x83100, .len = 0x8,
+> +       },
+> +};
+> +
+> +static const struct dpu_dsc_cfg sm7150_dsc[] = {
+> +       {
+> +               .name = "dsc_0", .id = DSC_0,
+> +               .base = 0x80000, .len = 0x140,
+> +               .features = BIT(DPU_DSC_OUTPUT_CTRL),
+> +       }, {
+> +               .name = "dsc_1", .id = DSC_1,
+> +               .base = 0x80400, .len = 0x140,
+> +               .features = BIT(DPU_DSC_OUTPUT_CTRL),
+> +       },
+> +};
+> +
+> +static const struct dpu_wb_cfg sm7150_wb[] = {
+> +       {
+> +               .name = "wb_2", .id = WB_2,
+> +               .base = 0x65000, .len = 0x2c8,
+> +               .features = WB_SM8250_MASK,
+> +               .format_list = wb2_formats,
+> +               .num_formats = ARRAY_SIZE(wb2_formats),
+> +               .clk_ctrl = DPU_CLK_CTRL_WB2,
+> +               .xin_id = 6,
+> +               .vbif_idx = VBIF_RT,
+> +               .maxlinewidth = 4096,
+> +               .intr_wb_done = DPU_IRQ_IDX(MDP_SSPP_TOP0_INTR, 4),
+> +       },
+> +};
+> +
+> +static const struct dpu_perf_cfg sm7150_perf_data = {
+> +       .max_bw_low = 7100000,
+> +       .max_bw_high = 7100000,
+> +       .min_core_ib = 2400000,
+> +       .min_llcc_ib = 800000,
+> +       .min_dram_ib = 800000,
+> +       .min_prefill_lines = 24,
+> +       .danger_lut_tbl = {0xff, 0xffff, 0x0},
+
+IIUC, first value should be 0xf
+
+> +       .safe_lut_tbl = {0xfff8, 0xf000, 0xffff},
+> +       .qos_lut_tbl = {
+> +               {.nentry = ARRAY_SIZE(sm8150_qos_linear),
+> +               .entries = sm8150_qos_linear
+> +               },
+> +               {.nentry = ARRAY_SIZE(sc7180_qos_macrotile),
+> +               .entries = sc7180_qos_macrotile
+> +               },
+> +               {.nentry = ARRAY_SIZE(sc7180_qos_nrt),
+> +               .entries = sc7180_qos_nrt
+> +               },
+> +       },
+> +       .cdp_cfg = {
+> +               {.rd_enable = 1, .wr_enable = 1},
+> +               {.rd_enable = 1, .wr_enable = 0}
+> +       },
+> +       .clk_inefficiency_factor = 105,
+> +       .bw_inefficiency_factor = 120,
+> +};
+> +
+> +static const struct dpu_mdss_version sm7150_mdss_ver = {
+> +       .core_major_ver = 5,
+> +       .core_minor_ver = 2,
+> +};
+> +
+> +const struct dpu_mdss_cfg dpu_sm7150_cfg = {
+> +       .mdss_ver = &sm7150_mdss_ver,
+> +       .caps = &sm7150_dpu_caps,
+> +       .mdp = sm7150_mdp,
+> +       .ctl_count = ARRAY_SIZE(sm8150_ctl),
+> +       .ctl = sm8150_ctl,
+
+sm7150_ctl, please add it even if it duplicates sm8150_ctl.
+
+The plan is to review duplication between platforms a few majors
+later, when we have more data on SoC similarities and differences.
+
+> +       .sspp_count = ARRAY_SIZE(sm7150_sspp),
+> +       .sspp = sm7150_sspp,
+> +       .mixer_count = ARRAY_SIZE(sm7150_lm),
+> +       .mixer = sm7150_lm,
+> +       .dspp_count = ARRAY_SIZE(sm7150_dspp),
+> +       .dspp = sm7150_dspp,
+> +       .pingpong_count = ARRAY_SIZE(sm7150_pp),
+> +       .pingpong = sm7150_pp,
+> +       .merge_3d_count = ARRAY_SIZE(sm7150_merge_3d),
+> +       .merge_3d = sm7150_merge_3d,
+> +       .dsc_count = ARRAY_SIZE(sm7150_dsc),
+> +       .dsc = sm7150_dsc,
+> +       .intf_count = ARRAY_SIZE(sm8150_intf),
+> +       .intf = sm8150_intf,
+
+sm7150_intf. Also, please add it.
+
+
+> +       .wb_count = ARRAY_SIZE(sm7150_wb),
+> +       .wb = sm7150_wb,
+> +       .vbif_count = ARRAY_SIZE(sdm845_vbif),
+> +       .vbif = sdm845_vbif,
+> +       .perf = &sm7150_perf_data,
+> +};
+> +
+> +#endif
+> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_catalog.c b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_catalog.c
+> index ce369eeffa7d..fea1253cab0a 100644
+> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_catalog.c
+> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_catalog.c
+> @@ -658,6 +658,7 @@ static const struct dpu_qos_lut_entry sc7180_qos_nrt[] = {
+>
+>  #include "catalog/dpu_5_0_sm8150.h"
+>  #include "catalog/dpu_5_1_sc8180x.h"
+> +#include "catalog/dpu_5_2_sm7150.h"
+>  #include "catalog/dpu_5_4_sm6125.h"
+>
+>  #include "catalog/dpu_6_0_sm8250.h"
+> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_catalog.h b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_catalog.h
+> index 6c9634209e9f..86b354ef45e6 100644
+> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_catalog.h
+> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_catalog.h
+> @@ -833,6 +833,7 @@ extern const struct dpu_mdss_cfg dpu_msm8998_cfg;
+>  extern const struct dpu_mdss_cfg dpu_sdm845_cfg;
+>  extern const struct dpu_mdss_cfg dpu_sm8150_cfg;
+>  extern const struct dpu_mdss_cfg dpu_sc8180x_cfg;
+> +extern const struct dpu_mdss_cfg dpu_sm7150_cfg;
+>  extern const struct dpu_mdss_cfg dpu_sm8250_cfg;
+>  extern const struct dpu_mdss_cfg dpu_sc7180_cfg;
+>  extern const struct dpu_mdss_cfg dpu_sm6115_cfg;
+> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_kms.c b/drivers/gpu/drm/msm/disp/dpu1/dpu_kms.c
+> index aa6ba2cf4b84..50ec008b7d56 100644
+> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_kms.c
+> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_kms.c
+> @@ -1371,6 +1371,7 @@ static const struct of_device_id dpu_dt_match[] = {
+>         { .compatible = "qcom,sm6125-dpu", .data = &dpu_sm6125_cfg, },
+>         { .compatible = "qcom,sm6350-dpu", .data = &dpu_sm6350_cfg, },
+>         { .compatible = "qcom,sm6375-dpu", .data = &dpu_sm6375_cfg, },
+> +       { .compatible = "qcom,sm7150-dpu", .data = &dpu_sm7150_cfg, },
+>         { .compatible = "qcom,sm8150-dpu", .data = &dpu_sm8150_cfg, },
+>         { .compatible = "qcom,sm8250-dpu", .data = &dpu_sm8250_cfg, },
+>         { .compatible = "qcom,sm8350-dpu", .data = &dpu_sm8350_cfg, },
+> --
+> 2.41.0
+>
+
+
+--
+With best wishes
+Dmitry
