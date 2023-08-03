@@ -2,128 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1475976F441
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 22:51:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C519476F448
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 22:53:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232135AbjHCUvx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Aug 2023 16:51:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55724 "EHLO
+        id S232342AbjHCUxP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Aug 2023 16:53:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56640 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230523AbjHCUvv (ORCPT
+        with ESMTP id S232408AbjHCUxG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Aug 2023 16:51:51 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 871E811F;
-        Thu,  3 Aug 2023 13:51:50 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 2576861EA5;
-        Thu,  3 Aug 2023 20:51:50 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2F0A4C433C8;
-        Thu,  3 Aug 2023 20:51:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691095909;
-        bh=V7wJi7Pcy7UiUd+kBOXn5BnCLDetBgZyMEtNsqBRtQE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=TxDyQr/rp2VehgeKDNILgILbKe2f43HJdbXTkm9VDeoTf/qFkWd5S1oNSTJWBbInf
-         FeG5syK5QK2w7BP79tRjHj8kll/wCvtg7OO78kpTa72GrI6QzsoDvrz/9d1PDLvywk
-         asElkm2RNXb/dxGQOvRx3JeW0LpHuA+Txrnas6XURqIfMsi7VBay9EeFgLW3yr2fq3
-         4hx3vYPm3rrwDiG6R3FPCmJuAvHrumwloRtlTqO2JVHs6qSOJkPD83y0YQXjcWgcZg
-         kzLI16Q37kP7DOkivNgd6ItfTQ3GoIRxz7JOhjCk26YTnQu0E5TddIp+0IQPpxqrPv
-         1Nf1z+UMYOInQ==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 48C58404DF; Thu,  3 Aug 2023 17:51:46 -0300 (-03)
-Date:   Thu, 3 Aug 2023 17:51:46 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Ian Rogers <irogers@google.com>,
-        Adrian Hunter <adrian.hunter@intel.com>
-Cc:     Jiri Olsa <jolsa@kernel.org>, Namhyung Kim <namhyung@kernel.org>,
-        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org
-Subject: Re: [PATCH 1/3] perf dlfilter: Add a test for resolve_address()
-Message-ID: <ZMwTYsh8KIwphOR5@kernel.org>
-References: <20230731091857.10681-1-adrian.hunter@intel.com>
+        Thu, 3 Aug 2023 16:53:06 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F753272E;
+        Thu,  3 Aug 2023 13:52:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1691095979; x=1722631979;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=zED3kdg3ZRxf/2pJOvBBe7+N26q1v5zZu+U8ltvXaeI=;
+  b=Uro7/8DxWtxJdVOf6pQyOHCveYzdlCwGYp6ltyuhXyIqGnDloAtOFAlL
+   8fMNfi9B+OzuEfuVRhzVtodds+lwtV6/pnOLby78bGZ10CcrRQLTErrSl
+   rgxSIO77MM0o1q05Ukp8x2PuKzblnGpLkj7b4wkz+JYwmfsuEKodQPB8+
+   A/eb7enT9ZktpvbvDy8xG72oLRUynK5OhagrrQ+QyC7Es0kkSz6874n48
+   Ug1yP3n+x5FIyTohGXiKaJ0R9Zyw/tOtN2R1fR90DyZleRaN5knFU3E9l
+   3DwuJIJamTDrEa+SZ6IP7hPvP+nvrsS/qo7MP2oP82yNId8znPZB+uppS
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10791"; a="400953041"
+X-IronPort-AV: E=Sophos;i="6.01,253,1684825200"; 
+   d="scan'208";a="400953041"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Aug 2023 13:52:50 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10791"; a="1060446752"
+X-IronPort-AV: E=Sophos;i="6.01,253,1684825200"; 
+   d="scan'208";a="1060446752"
+Received: from lkp-server01.sh.intel.com (HELO d1ccc7e87e8f) ([10.239.97.150])
+  by fmsmga005.fm.intel.com with ESMTP; 03 Aug 2023 13:52:49 -0700
+Received: from kbuild by d1ccc7e87e8f with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qRfJQ-0002Lb-1Z;
+        Thu, 03 Aug 2023 20:52:48 +0000
+Date:   Fri, 4 Aug 2023 04:52:29 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Nayna Jain <nayna@linux.ibm.com>
+Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        linux-doc@vger.kernel.org
+Subject: arch/powerpc/platforms/pseries/plpks.c:186: warning: This comment
+ starts with '/**', but isn't a kernel-doc comment. Refer
+ Documentation/doc-guide/kernel-doc.rst
+Message-ID: <202308040430.GxmPAnwZ-lkp@intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230731091857.10681-1-adrian.hunter@intel.com>
-X-Url:  http://acmel.wordpress.com
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Mon, Jul 31, 2023 at 12:18:55PM +0300, Adrian Hunter escreveu:
-> Extend the "dlfilter C API" test to test
-> perf_dlfilter_fns.resolve_address(). The test currently fails, but passes
-> after a subsequent patch.
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   7bafbd4027ae86572f308c4ddf93120c90126332
+commit: 2454a7af0f2a42918aa972147a0bec38e6656cd8 powerpc/pseries: define driver for Platform KeyStore
+date:   1 year ago
+config: powerpc-ppc64_defconfig (https://download.01.org/0day-ci/archive/20230804/202308040430.GxmPAnwZ-lkp@intel.com/config)
+compiler: powerpc64-linux-gcc (GCC) 12.3.0
+reproduce: (https://download.01.org/0day-ci/archive/20230804/202308040430.GxmPAnwZ-lkp@intel.com/reproduce)
 
-Ian,
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202308040430.GxmPAnwZ-lkp@intel.com/
 
-	I think this is ok now, can you please take a look and perhaps
-provide an Acked-by or Reviewed-by?
+All warnings (new ones prefixed by >>):
 
-- Arnaldo
- 
-> Signed-off-by: Adrian Hunter <adrian.hunter@intel.com>
-> ---
->  tools/perf/dlfilters/dlfilter-test-api-v0.c | 26 ++++++++++++++++++++-
->  1 file changed, 25 insertions(+), 1 deletion(-)
-> 
-> diff --git a/tools/perf/dlfilters/dlfilter-test-api-v0.c b/tools/perf/dlfilters/dlfilter-test-api-v0.c
-> index b1f51efd67d6..72f263d49121 100644
-> --- a/tools/perf/dlfilters/dlfilter-test-api-v0.c
-> +++ b/tools/perf/dlfilters/dlfilter-test-api-v0.c
-> @@ -254,6 +254,30 @@ static int check_addr_al(void *ctx)
->  	return 0;
->  }
->  
-> +static int check_address_al(void *ctx, const struct perf_dlfilter_sample *sample)
-> +{
-> +	struct perf_dlfilter_al address_al;
-> +	const struct perf_dlfilter_al *al;
-> +
-> +	al = perf_dlfilter_fns.resolve_ip(ctx);
-> +	if (!al)
-> +		return test_fail("resolve_ip() failed");
-> +
-> +	address_al.size = sizeof(address_al);
-> +	if (perf_dlfilter_fns.resolve_address(ctx, sample->ip, &address_al))
-> +		return test_fail("resolve_address() failed");
-> +
-> +	CHECK(address_al.sym && al->sym);
-> +	CHECK(!strcmp(address_al.sym, al->sym));
-> +	CHECK(address_al.addr == al->addr);
-> +	CHECK(address_al.sym_start == al->sym_start);
-> +	CHECK(address_al.sym_end == al->sym_end);
-> +	CHECK(address_al.dso && al->dso);
-> +	CHECK(!strcmp(address_al.dso, al->dso));
-> +
-> +	return 0;
-> +}
-> +
->  static int check_attr(void *ctx)
->  {
->  	struct perf_event_attr *attr = perf_dlfilter_fns.attr(ctx);
-> @@ -290,7 +314,7 @@ static int do_checks(void *data, const struct perf_dlfilter_sample *sample, void
->  	if (early && !d->do_early)
->  		return 0;
->  
-> -	if (check_al(ctx) || check_addr_al(ctx))
-> +	if (check_al(ctx) || check_addr_al(ctx) || check_address_al(ctx, sample))
->  		return -1;
->  
->  	if (early)
-> -- 
-> 2.34.1
-> 
+>> arch/powerpc/platforms/pseries/plpks.c:186: warning: This comment starts with '/**', but isn't a kernel-doc comment. Refer Documentation/doc-guide/kernel-doc.rst
+    * Label is combination of label attributes + name.
+
+
+vim +186 arch/powerpc/platforms/pseries/plpks.c
+
+   184	
+   185	/**
+ > 186	 * Label is combination of label attributes + name.
+   187	 * Label attributes are used internally by kernel and not exposed to the user.
+   188	 */
+   189	static struct label *construct_label(char *component, u8 varos, u8 *name,
+   190					     u16 namelen)
+   191	{
+   192		struct label *label;
+   193		size_t slen;
+   194	
+   195		if (!name || namelen > MAX_NAME_SIZE)
+   196			return ERR_PTR(-EINVAL);
+   197	
+   198		slen = strlen(component);
+   199		if (component && slen > sizeof(label->attr.prefix))
+   200			return ERR_PTR(-EINVAL);
+   201	
+   202		label = kzalloc(sizeof(*label), GFP_KERNEL);
+   203		if (!label)
+   204			return ERR_PTR(-ENOMEM);
+   205	
+   206		if (component)
+   207			memcpy(&label->attr.prefix, component, slen);
+   208	
+   209		label->attr.version = LABEL_VERSION;
+   210		label->attr.os = varos;
+   211		label->attr.length = MAX_LABEL_ATTR_SIZE;
+   212		memcpy(&label->name, name, namelen);
+   213	
+   214		label->size = sizeof(struct label_attr) + namelen;
+   215	
+   216		return label;
+   217	}
+   218	
 
 -- 
-
-- Arnaldo
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
