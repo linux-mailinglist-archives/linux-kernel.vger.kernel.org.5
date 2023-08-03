@@ -2,46 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 70A0976E688
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 13:14:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C5FA376E67C
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 13:13:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234165AbjHCLOs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Aug 2023 07:14:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53370 "EHLO
+        id S232852AbjHCLN1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Aug 2023 07:13:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49952 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233764AbjHCLOq (ORCPT
+        with ESMTP id S235683AbjHCLNQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Aug 2023 07:14:46 -0400
-Received: from SHSQR01.spreadtrum.com (mx1.unisoc.com [222.66.158.135])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E77E9B;
-        Thu,  3 Aug 2023 04:14:43 -0700 (PDT)
-Received: from dlp.unisoc.com ([10.29.3.86])
-        by SHSQR01.spreadtrum.com with ESMTP id 373BEBdF048295;
-        Thu, 3 Aug 2023 19:14:11 +0800 (+08)
-        (envelope-from Zhiguo.Niu@unisoc.com)
-Received: from SHDLP.spreadtrum.com (bjmbx02.spreadtrum.com [10.0.64.8])
-        by dlp.unisoc.com (SkyGuard) with ESMTPS id 4RGmQf3WpJz2Nwpsg;
-        Thu,  3 Aug 2023 19:12:26 +0800 (CST)
-Received: from bj08434pcu.spreadtrum.com (10.0.73.87) by
- BJMBX02.spreadtrum.com (10.0.64.8) with Microsoft SMTP Server (TLS) id
- 15.0.1497.23; Thu, 3 Aug 2023 19:14:09 +0800
-From:   Zhiguo Niu <zhiguo.niu@unisoc.com>
-To:     <axboe@kernel.dk>, <bvanassche@acm.org>
-CC:     <linux-block@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <niuzhiguo84@gmail.com>, <zhiguo.niu@unisoc.com>,
-        <hongyu.jin@unisoc.com>, <yunlong.xing@unisoc.com>
-Subject: [PATCH] block/mq-deadline: use correct way to throttling write requests
-Date:   Thu, 3 Aug 2023 19:12:42 +0800
-Message-ID: <1691061162-22898-1-git-send-email-zhiguo.niu@unisoc.com>
-X-Mailer: git-send-email 1.9.1
+        Thu, 3 Aug 2023 07:13:16 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id CB69DE7D;
+        Thu,  3 Aug 2023 04:13:08 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 69F02113E;
+        Thu,  3 Aug 2023 04:13:51 -0700 (PDT)
+Received: from FVFF77S0Q05N (unknown [10.57.1.139])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 3FCAD3F6C4;
+        Thu,  3 Aug 2023 04:13:06 -0700 (PDT)
+Date:   Thu, 3 Aug 2023 12:13:00 +0100
+From:   Mark Rutland <mark.rutland@arm.com>
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Puranjay Mohan <puranjay12@gmail.com>,
+        Florent Revest <revest@chromium.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        bpf <bpf@vger.kernel.org>, KP Singh <kpsingh@kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH bpf-next v4 0/3] bpf, arm64: use BPF prog pack allocator
+ in BPF JIT
+Message-ID: <ZMuLvKRbPfOK0IpN@FVFF77S0Q05N>
+References: <20230626085811.3192402-1-puranjay12@gmail.com>
+ <7e05efe1-0af0-1896-6f6f-dcb02ed8ca27@iogearbox.net>
+ <ZKMCFtlfJA1LfGNJ@FVFF77S0Q05N>
+ <CANk7y0gTXPBj5U-vFK0cEvVe83tP1FqyD=MuLXT_amWO=EssOA@mail.gmail.com>
+ <CANk7y0hRYzpsYoqcU1tHyZThAgg-cx46C4-n2JYZTa7sDwEk-w@mail.gmail.com>
+ <CAADnVQJJHiSZPZFpu1n-oQLEsUptacSzF7FdOKfO6OEoKz-jXg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.0.73.87]
-X-ClientProxiedBy: SHCAS01.spreadtrum.com (10.0.1.201) To
- BJMBX02.spreadtrum.com (10.0.64.8)
-X-MAIL: SHSQR01.spreadtrum.com 373BEBdF048295
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAADnVQJJHiSZPZFpu1n-oQLEsUptacSzF7FdOKfO6OEoKz-jXg@mail.gmail.com>
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -49,58 +58,72 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The original formula was inaccurate:
-dd->async_depth = max(1UL, 3 * q->nr_requests / 4);
+Hi Alexei,
 
-For write requests, when we assign a tags from sched_tags,
-data->shallow_depth will be passed to sbitmap_find_bit,
-see the following code:
+On Wed, Aug 02, 2023 at 02:02:39PM -0700, Alexei Starovoitov wrote:
+> On Sun, Jul 30, 2023 at 10:22 AM Puranjay Mohan <puranjay12@gmail.com> wrote:
+> >
+> > Hi Mark,
+> > I am really looking forward to your feedback on this series.
+> >
+> > On Mon, Jul 17, 2023 at 9:50 AM Puranjay Mohan <puranjay12@gmail.com> wrote:
+> > >
+> > > Hi Mark,
+> > >
+> > > On Mon, Jul 3, 2023 at 7:15 PM Mark Rutland <mark.rutland@arm.com> wrote:
+> > > >
+> > > > On Mon, Jul 03, 2023 at 06:40:21PM +0200, Daniel Borkmann wrote:
+> > > > > Hi Mark,
+> > > >
+> > > > Hi Daniel,
+> > > >
+> > > > > On 6/26/23 10:58 AM, Puranjay Mohan wrote:
+> > > > > > BPF programs currently consume a page each on ARM64. For systems with many BPF
+> > > > > > programs, this adds significant pressure to instruction TLB. High iTLB pressure
+> > > > > > usually causes slow down for the whole system.
+> > > > > >
+> > > > > > Song Liu introduced the BPF prog pack allocator[1] to mitigate the above issue.
+> > > > > > It packs multiple BPF programs into a single huge page. It is currently only
+> > > > > > enabled for the x86_64 BPF JIT.
+> > > > > >
+> > > > > > This patch series enables the BPF prog pack allocator for the ARM64 BPF JIT.
+> > > >
+> > > > > If you get a chance to take another look at the v4 changes from Puranjay and
+> > > > > in case they look good to you reply with an Ack, that would be great.
+> > > >
+> > > > Sure -- this is on my queue of things to look at; it might just take me a few
+> > > > days to get the time to give this a proper look.
+> > > >
+> > > > Thanks,
+> > > > Mark.
+> > >
+> > > I am eagerly looking forward to your feedback on this series.
+> 
+> Mark, Catalin, Florent, KP,
+> 
+> This patch set was submitted on June 26 !
 
-nr = sbitmap_find_bit_in_word(&sb->map[index],
-			min_t (unsigned int,
-			__map_depth(sb, index),
-			depth),
-			alloc_hint, wrap);
+I appreciate this was sent a while ago, but I have been stuck on some urgent
+bug-fixing for the last few weeks, and my review bandwidth is therfore very
+limited.
 
-The smaller of data->shallow_depth and __map_depth(sb, index)
-will be used as the maximum range when allocating bits.
+Given Puranjay had previously told me he was doing this as a side project for
+fun, and given no-one had told me this was urgent, I assumed that this wasn't a
+major blocker and could wait.
 
-For a mmc device (one hw queue, deadline I/O scheduler):
-q->nr_requests = sched_tags = 128, so according to the previous
-calculation method, dd->async_depth = data->shallow_depth = 96,
-and the platform is 64bits with 8 cpus, sched_tags.bitmap_tags.sb.shift=5,
-sb.maps[]=32/32/32/32, 32 is smaller than 96, whether it is a read or
-a write I/O, tags can be allocated to the maximum range each time,
-which has not throttling effect.
+I should have sent a holding reply to that effect; sorry.
 
-In addition, refer to the methods of bfg/kyber I/O scheduler,
-limit ratiois are calculated base on sched_tags.bitmap_tags.sb.shift.
+The series addresses my original concern. However, in looking at it I think
+there may me a wider potential isssue w.r.t. the way instruction memory gets
+reused, because as writtten today the architecture doesn't seem to have a
+guarantee on when instruction fetches are completed and therefore when it's
+safe to modify instruction memory. Usually we're saved by TLB maintenance,
+which this series avoids by design.
 
-This patch can throttle write requests really.
+I unfortunately haven't had the time to dig into that, poke our architects,
+etc.
 
-Fixes: 07757588e507 ("block/mq-deadline: Reserve 25% of scheduler tags for synchronous requests")
+So how urgent is this?
 
-Signed-off-by: Zhiguo Niu <zhiguo.niu@unisoc.com>
-
----
- block/mq-deadline.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
-
-diff --git a/block/mq-deadline.c b/block/mq-deadline.c
-index 5839a027e0f0..7e043d4a78f8 100644
---- a/block/mq-deadline.c
-+++ b/block/mq-deadline.c
-@@ -620,8 +620,9 @@ static void dd_depth_updated(struct blk_mq_hw_ctx *hctx)
- 	struct request_queue *q = hctx->queue;
- 	struct deadline_data *dd = q->elevator->elevator_data;
- 	struct blk_mq_tags *tags = hctx->sched_tags;
-+	unsigned int shift = tags->bitmap_tags.sb.shift;
- 
--	dd->async_depth = max(1UL, 3 * q->nr_requests / 4);
-+	dd->async_depth = max(1U, 3 * (1U << shift)  / 4);
- 
- 	sbitmap_queue_min_shallow_depth(&tags->bitmap_tags, dd->async_depth);
- }
--- 
-2.37.3
-
+Thanks,
+Mark.
