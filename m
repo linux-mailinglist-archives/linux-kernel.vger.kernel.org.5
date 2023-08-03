@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6BB1276E319
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 10:29:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 920A976E317
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 10:29:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234073AbjHCI3U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Aug 2023 04:29:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51430 "EHLO
+        id S233225AbjHCI30 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Aug 2023 04:29:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51450 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231449AbjHCI2k (ORCPT
+        with ESMTP id S231674AbjHCI2l (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Aug 2023 04:28:40 -0400
+        Thu, 3 Aug 2023 04:28:41 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 758CA3AA6
-        for <linux-kernel@vger.kernel.org>; Thu,  3 Aug 2023 01:26:28 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 958BB3AAC
+        for <linux-kernel@vger.kernel.org>; Thu,  3 Aug 2023 01:26:30 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 09C6D61CC3
-        for <linux-kernel@vger.kernel.org>; Thu,  3 Aug 2023 08:26:28 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C95F4C433C8;
-        Thu,  3 Aug 2023 08:26:25 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 2955161CC6
+        for <linux-kernel@vger.kernel.org>; Thu,  3 Aug 2023 08:26:30 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DC7B5C433C7;
+        Thu,  3 Aug 2023 08:26:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691051187;
-        bh=b22i5cpRysAWrYuPGapjjvgN3RpBjJ402hZ7Cjh+W4g=;
+        s=k20201202; t=1691051189;
+        bh=hMCNeSXwQytHGCgIoVl9q90tknzoEJ95XhZLTksbe2E=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Axcri0FcevtjIyWyFRy1a5qFFZrd6vzwOCz7Z/ps+RSYFEkk6uR+HwBgl3iUiEN8m
-         kSDnYyucz2WNCaq5yd7QWY2BugIJ2A5r4gURnx7g2gITpghL/758+eLqNcYA5EppB2
-         zGVOjJLJ+kbGE/l57DBHLxXIBkjzgyTMFTojw5OfPP9rVcO1ZvsTCsl7XlDH1qfe3E
-         jnps5jXNojeeD71yRcULYbtdX4lqcvUDpPaWcM0dgRpUEtM7422mPg86xa45S+Hsl1
-         CPNt/abaVBEE2yyD0/3j6HaLs4HSI7JWpRa6Vc0ORhT5OMW6gC/jYK4sWTPKMYphSR
-         441cjFyFx48yg==
+        b=AuxYNCGQKNCXWTWgqyDHBWFCFoMrZ5izJ5PJiOCdXR+7iXP1x+RO4EWU5RMJ7wJC0
+         k4Cm+vzZvn39TkxcUa0I9DuCaFb7ckZ/gjA0IkQAk4IRqAvzxSpmDgQ469Eq/oLGIf
+         YWw7F2fIbwFLviztYUcUq7NSI39x1ksjTAt4wc3RDHWidtdCiCe9pNPD5uyx2SpSIl
+         fHeYga/UWaiY/lrFCRgXwiZCyj4zbpwznqZB6h2jQ0jTIlkUNcwm8kPyTH4CcUIS1e
+         6NwDXGbm1Ij1HwzSwHbYLaxrNxsCP2eDLd7vKmNjpcB/LMMeryZkzbOXeC0tOXDX6U
+         2tWBn39fnGSzg==
 From:   Arnd Bergmann <arnd@kernel.org>
 To:     Borislav Petkov <bp@alien8.de>
 Cc:     Thomas Gleixner <tglx@linutronix.de>,
@@ -40,9 +40,9 @@ Cc:     Thomas Gleixner <tglx@linutronix.de>,
         Dave Hansen <dave.hansen@linux.intel.com>,
         linux-kernel@vger.kernel.org, x86@kernel.org,
         Arnd Bergmann <arnd@arndb.de>
-Subject: [PATCH v3 1/7] x86: Fix amd_check_microcode() declaration
-Date:   Thu,  3 Aug 2023 10:26:13 +0200
-Message-Id: <20230803082619.1369127-2-arnd@kernel.org>
+Subject: [PATCH v3 2/7] x86: apic: hide unused safe_smp_processor_id on UP
+Date:   Thu,  3 Aug 2023 10:26:14 +0200
+Message-Id: <20230803082619.1369127-3-arnd@kernel.org>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20230803082619.1369127-1-arnd@kernel.org>
 References: <20230803082619.1369127-1-arnd@kernel.org>
@@ -60,62 +60,36 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Arnd Bergmann <arnd@arndb.de>
 
-The newly added amd_check_microcode() function has two conflicting definitions
-if CONFIG_CPU_SUP_AMD is enabled and CONFIG_MICROCODE_AMD is disabled. Since
-the header with the stub definition is not included in cpu/amd.c, this only
-causes a -Wmissing-prototype warning with W=1
+When CONFIG_SMP is disabled, the prototype for safe_smp_processor_id()
+is hidden, which causes a W=1 warning:
 
-arch/x86/kernel/cpu/amd.c:1289:6: error: no previous prototype for 'amd_check_microcode' [-Werror=missing-prototypes]
+/home/arnd/arm-soc/arch/x86/kernel/apic/ipi.c:316:5: error: no previous prototype for 'safe_smp_processor_id' [-Werror=missing-prototypes]
 
-Adding the missing #include shows the other problem:
+Since there are no callers in this configuration, just hide the definition
+as well.
 
-arch/x86/kernel/cpu/amd.c:1290:6: error: redefinition of 'amd_check_microcode'
-arch/x86/include/asm/microcode_amd.h:58:20: note: previous definition of 'amd_check_microcode' with type 'void(void)'
-
-Move the declaration into a more appropriate header that is already included,
-with the #ifdef check changed to match the definition's.
-
-Fixes: 522b1d69219d8 ("x86/cpu/amd: Add a Zenbleed fix")
 Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 ---
- arch/x86/include/asm/microcode_amd.h | 3 +--
- arch/x86/include/asm/processor.h     | 2 ++
- 2 files changed, 3 insertions(+), 2 deletions(-)
+ arch/x86/kernel/apic/ipi.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/arch/x86/include/asm/microcode_amd.h b/arch/x86/include/asm/microcode_amd.h
-index a9b3f9635727e..81d3294b2b5e2 100644
---- a/arch/x86/include/asm/microcode_amd.h
-+++ b/arch/x86/include/asm/microcode_amd.h
-@@ -47,12 +47,11 @@ struct microcode_amd {
- extern void load_ucode_amd_early(unsigned int cpuid_1_eax);
- extern int __init save_microcode_in_initrd_amd(unsigned int family);
- void reload_ucode_amd(unsigned int cpu);
--extern void amd_check_microcode(void);
- #else
- static inline void load_ucode_amd_early(unsigned int cpuid_1_eax) {}
- static inline int __init
- save_microcode_in_initrd_amd(unsigned int family) { return -EINVAL; }
- static inline void reload_ucode_amd(unsigned int cpu) {}
--static inline void amd_check_microcode(void) {}
- #endif
-+
- #endif /* _ASM_X86_MICROCODE_AMD_H */
-diff --git a/arch/x86/include/asm/processor.h b/arch/x86/include/asm/processor.h
-index d46300e94f853..36d52075fdade 100644
---- a/arch/x86/include/asm/processor.h
-+++ b/arch/x86/include/asm/processor.h
-@@ -682,9 +682,11 @@ extern u16 get_llc_id(unsigned int cpu);
- #ifdef CONFIG_CPU_SUP_AMD
- extern u32 amd_get_nodes_per_socket(void);
- extern u32 amd_get_highest_perf(void);
-+extern void amd_check_microcode(void);
- #else
- static inline u32 amd_get_nodes_per_socket(void)	{ return 0; }
- static inline u32 amd_get_highest_perf(void)		{ return 0; }
-+static inline void amd_check_microcode(void)		{ }
- #endif
+diff --git a/arch/x86/kernel/apic/ipi.c b/arch/x86/kernel/apic/ipi.c
+index 2a6509e8c840d..9bfd6e3973845 100644
+--- a/arch/x86/kernel/apic/ipi.c
++++ b/arch/x86/kernel/apic/ipi.c
+@@ -301,6 +301,7 @@ void default_send_IPI_mask_logical(const struct cpumask *cpumask, int vector)
+ 	local_irq_restore(flags);
+ }
  
- extern unsigned long arch_align_stack(unsigned long sp);
++#ifdef CONFIG_SMP
+ /* must come after the send_IPI functions above for inlining */
+ static int convert_apicid_to_cpu(int apic_id)
+ {
+@@ -329,3 +330,4 @@ int safe_smp_processor_id(void)
+ 	return cpuid >= 0 ? cpuid : 0;
+ }
+ #endif
++#endif
 -- 
 2.39.2
 
