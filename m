@@ -2,56 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D4B9976EB10
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 15:45:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B506376EB0D
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 15:45:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230234AbjHCNpr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Aug 2023 09:45:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34258 "EHLO
+        id S236503AbjHCNpn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Aug 2023 09:45:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34218 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232544AbjHCNpU (ORCPT
+        with ESMTP id S232458AbjHCNpO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Aug 2023 09:45:20 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2F2C46B7;
-        Thu,  3 Aug 2023 06:43:48 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 48AF761DA0;
-        Thu,  3 Aug 2023 13:43:48 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DC810C433C7;
-        Thu,  3 Aug 2023 13:43:46 +0000 (UTC)
-Authentication-Results: smtp.kernel.org;
-        dkim=pass (1024-bit key) header.d=zx2c4.com header.i=@zx2c4.com header.b="SUsln0++"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zx2c4.com; s=20210105;
-        t=1691070224;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=xCU98+BgwiTKpHLQhh9e4UzgsAB86GLhVoIzJKGYlgo=;
-        b=SUsln0++WZ5AA8asjvTLVN+BS2ZUwXUM3ZEM8kz2K/5siBTfIvhIUOHhzt0Ula/B5WaNaY
-        XAP253sX2JOtIMtNlWQ0OQ7+E/RBQyLaojKtY84TER2Q7mEuvSoCqacvCFLSlLbRktATGu
-        E80mhwPMdj9okVXXE0AkTtMMaZwm1/U=
-Received: by mail.zx2c4.com (ZX2C4 Mail Server) with ESMTPSA id eac8e714 (TLSv1.3:TLS_AES_256_GCM_SHA384:256:NO);
-        Thu, 3 Aug 2023 13:43:42 +0000 (UTC)
-Date:   Thu, 3 Aug 2023 15:42:31 +0200
-From:   "Jason A. Donenfeld" <Jason@zx2c4.com>
-To:     Mario Limonciello <mario.limonciello@amd.com>
-Cc:     jarkko@kernel.org, peterhuewe@gmx.de, linux-kernel@vger.kernel.org,
-        linux-integrity@vger.kernel.org, dragonn@op.pl
-Subject: Re: [PATCH 2/3] tpm: Add command line for not trusting tpm for RNG
-Message-ID: <ZMuux5CE1xIR7Mc3@zx2c4.com>
-References: <20230803015015.915-1-mario.limonciello@amd.com>
- <20230803015015.915-3-mario.limonciello@amd.com>
+        Thu, 3 Aug 2023 09:45:14 -0400
+Received: from mgamail.intel.com (unknown [192.55.52.151])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23BED3A92;
+        Thu,  3 Aug 2023 06:43:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1691070216; x=1722606216;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=CdyfmAicdVhiGrzRE4OoQgxtaYf0InFSz3PUvomAixU=;
+  b=F3ZDMaOkjWsucyWCEpae3lEtTHE9vD/+nBN2ycbtmfFh9sfh+vOdWPJQ
+   U+QqJSmMtRZ/5BLulhkiJIC2kAw1YWDuCZxfY3jFomxN2POoi26LFSMQO
+   tebsJ9ASxOH66b4SByLUrnw6VSqCcD11j+H+IkUnnkTOaCQZ9U+j50bbT
+   vxzBfYJRsMMXibkoTCpBey+Lsbvmad6j0z16zFO/MH7B7Bbu0uHsrK2Jn
+   vqEnqk0Qzunx8tx0QDe8Xpu8GECCFLzWjhQNWwiMxPQMlVUNlZ+CRvcoi
+   ZuDNwfOVJ0+Qfx9HZL/Ps1GOHDSfCD0OQgDzk2mtBbgTdbUlYvknzGYCO
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10791"; a="350171460"
+X-IronPort-AV: E=Sophos;i="6.01,252,1684825200"; 
+   d="scan'208";a="350171460"
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Aug 2023 06:43:35 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10791"; a="732765624"
+X-IronPort-AV: E=Sophos;i="6.01,252,1684825200"; 
+   d="scan'208";a="732765624"
+Received: from mylly.fi.intel.com (HELO [10.237.72.67]) ([10.237.72.67])
+  by fmsmga007.fm.intel.com with ESMTP; 03 Aug 2023 06:43:33 -0700
+Message-ID: <2e2f4d7e-2831-9161-9564-3d1e89511727@linux.intel.com>
+Date:   Thu, 3 Aug 2023 16:43:32 +0300
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20230803015015.915-3-mario.limonciello@amd.com>
-X-Spam-Status: No, score=-4.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Firefox/102.0 Thunderbird/102.13.1
+Subject: Re: [PATCH v1 1/9] i2c: designware: Move has_acpi_companion() to
+ common code
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     Andi Shyti <andi.shyti@kernel.org>,
+        Mario Limonciello <mario.limonciello@amd.com>,
+        Wolfram Sang <wsa@kernel.org>, linux-i2c@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Jan Dabros <jsd@semihalf.com>
+References: <20230725143023.86325-1-andriy.shevchenko@linux.intel.com>
+ <20230725143023.86325-2-andriy.shevchenko@linux.intel.com>
+ <20230725214521.zxjqinryvva2zanx@intel.intel>
+ <928d54c4-ec71-5f09-ed66-5f9c52aca6ba@linux.intel.com>
+ <ZMgWJY3w/HhsZvVd@smile.fi.intel.com>
+Content-Language: en-US
+From:   Jarkko Nikula <jarkko.nikula@linux.intel.com>
+In-Reply-To: <ZMgWJY3w/HhsZvVd@smile.fi.intel.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -59,32 +73,55 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 02, 2023 at 08:50:14PM -0500, Mario Limonciello wrote:
-> The kernel supports random.cpu=off and random.bootloader=off.
-> As TPM RNG is also registered as a hwrng, add the ability to
-> prevent registering the TPM RNG.
+On 7/31/23 23:14, Andy Shevchenko wrote:
+> On Fri, Jul 28, 2023 at 02:33:07PM +0300, Jarkko Nikula wrote:
+>> On 7/26/23 00:45, Andi Shyti wrote:
+>>> On Tue, Jul 25, 2023 at 05:30:15PM +0300, Andy Shevchenko wrote:
+> 
+> ...
+> 
+>>>> -int i2c_dw_acpi_configure(struct device *device)
+>>>> +static void i2c_dw_acpi_do_configure(struct dw_i2c_dev *dev, struct device *device)
+>>
+>> Because of this dual dev pointer obscurity which is cleaned in the next
+>> patch and Andi's comment below in my opinion it makes sense to combine
+>> patches 1 and 2.
+> 
+> Besides that these 2 are logically slightly different, the changes don't drop
+> the duality here. And there is also the other patch at the end of the series
+> that makes the below disappear.
+> 
+> Not sure that any of these would be the best approach (Git commit is cheap,
+> maintenance and backporting might be harder). So, ideas are welcome!
+> 
+Unless I'm missing something you won't need to carry both struct 
+dw_i2c_dev *dev and struct device *device since struct dw_i2c_dev 
+carries it already and it's set before calling the dw_i2c_of_configure() 
+and i2c_dw_acpi_configure().
 
-Please do *not* do this. I agree with Jarkko that this doesn't belong.
+Also it feels needless to add new _do_configure() functions since only 
+reason for them seems to be how patches are organized now.
 
-Firstly, you're proposing a flag for the tpm driver, so the `random.`
-namespace is inappropriate. Do not use the `random.` namespace if you're
-not dealing with random.c specifically. Rather, this is very much a
-`tpm.register_hwrng=1/0` flag, which describes better what this is about.
+So if instead of this in i2c_dw_fw_parse_and_configure()
 
-Secondly, I think you're making a mountain out of a molehill. You first
-wanted to also disable Intel devices too, even though they aren't
-affected by this bug. Now you're proposing a way for users to disable
-everything. But so far there's no evidence that this matter goes any
-further than AMD's fTPM. So let's calm a bit and not make too big deal
-of this. If we suddenly get lots of reports that there's broken behavior
-across the board, then maybe we should consider something like this. But
-insofar as this is just an AMD derp, let's keep it simple and not over
-complicate everything with more knobs. Fewer knobs, please!
+	if (is_of_node(fwnode))
+		i2c_dw_of_do_configure(dev, dev->dev);
+	else if (is_acpi_node(fwnode))
+		i2c_dw_acpi_do_configure(dev, dev->dev);
 
-Finally, with regards to AMD, my hope is that eventually the fTPM
-becomes useful as a hwrng, and then we can relax the disabling to
-re-enable it for whatever new revision might come to exist in the
-future.
+let end result be
 
-Thanks,
-Jason
+	if (is_of_node(fwnode))
+		i2c_dw_of_configure(dev);
+	else if (is_acpi_node(fwnode))
+		i2c_dw_acpi_configure(dev);
+
+My gut feeling says patchset would be a bit simpler if we aim for this 
+end result in mind.
+
+Simplest patches like int to void return type conversion first since 
+either i2c_dw_acpi_configure() and dw_i2c_of_configure() return is not 
+used now. Then perhaps dw_i2c_of_configure() renaming.
+
+Moving to common code I don't know how well it's splittable into smaller 
+patches or would single bigger patch look better.
