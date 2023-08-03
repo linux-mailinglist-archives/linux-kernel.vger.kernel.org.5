@@ -2,57 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2BB2E76E556
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 12:15:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E5C276E557
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 12:15:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235268AbjHCKOy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Aug 2023 06:14:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51960 "EHLO
+        id S235366AbjHCKPM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Aug 2023 06:15:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52568 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235312AbjHCKOi (ORCPT
+        with ESMTP id S235329AbjHCKOp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Aug 2023 06:14:38 -0400
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B167A3ABE
-        for <linux-kernel@vger.kernel.org>; Thu,  3 Aug 2023 03:14:26 -0700 (PDT)
-Received: by mail-yb1-xb49.google.com with SMTP id 3f1490d57ef6-d1851c52f3dso819459276.1
-        for <linux-kernel@vger.kernel.org>; Thu, 03 Aug 2023 03:14:26 -0700 (PDT)
+        Thu, 3 Aug 2023 06:14:45 -0400
+Received: from mail-yw1-x114a.google.com (mail-yw1-x114a.google.com [IPv6:2607:f8b0:4864:20::114a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F1A33C38
+        for <linux-kernel@vger.kernel.org>; Thu,  3 Aug 2023 03:14:31 -0700 (PDT)
+Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-5844a99c268so8276687b3.2
+        for <linux-kernel@vger.kernel.org>; Thu, 03 Aug 2023 03:14:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1691057666; x=1691662466;
+        d=google.com; s=20221208; t=1691057670; x=1691662470;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=xOWJ0lqxCqyUuPaPvlunqjXsmwJAIBAp4YS6BHDu6Oc=;
-        b=q8ilSnaU6t9HzGSP25lQgwS3HkEavJ1kpDRxanKDeMxMFpXMt79mwz5/LyAooJlDvA
-         ZFkcNzkxOdJkn+mQlAQajTVdFv7/wktHRMWl9+jtmycAuPJQ443dGFHW9mHfYob5d0dR
-         5gCKHa5Mr+kyEbJAgDyNiqFHQG8H2exc8qDgBJSYDg23RNV0TbdqhxbIdbAAfRYb1jMH
-         hgM5mz2RHJacrXX1YxLeqEnyi0WI3oxPjjDRLSX5c3zy/nPep2zhTSl0jYzYmZaboMSF
-         Yc8Hk93qM/6eAhy29HnpU9HJeSdlYmBnHfXx9w9kfu8bDRKPI6LjT6pzgjlkK/ioJoFh
-         nk/Q==
+        bh=DLa2HUSCTWFTI0X2o3f102hvfCfHBN0tK5dUlzxCyIc=;
+        b=a6jeCmc4bN/A2ChgfTwyYgnoSOjzynwD0hKdab97fxFiQfSeGipLdBD8vrco7vSA/g
+         QOt22+Zq6NX8xu96ciZpkKp4t5eOm+ZaDlxM6cwB96C4VYR8qRCGUhy2F8aLjmrZX7BK
+         lgPFNpSbNKKYhMqQtdmKUOe2mtgb5tKgGOgDmq9z4UUNQSfYVDQitc/nmlYflTh8r71x
+         WHXjiURsl1a7dnvRWS7u0ZIp9NkZQ7glmppXYAaIMaXGtS+Nd08ghmzEF5M9LzrJXJmc
+         KqvH0cWbBfcQls+aRNNfkuVmAcdzik2ZO7MoKwsaPcJ6aKQIAFn69fAb4koX4ECdcQQ0
+         esCA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691057666; x=1691662466;
+        d=1e100.net; s=20221208; t=1691057670; x=1691662470;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=xOWJ0lqxCqyUuPaPvlunqjXsmwJAIBAp4YS6BHDu6Oc=;
-        b=aq1igE94KG/nXRQU42ZOBmQuGPUGJo1V4lzQIjiYoOJINDJh70cB5s/O8viiFUUPm6
-         aOu9nbqrnkiZW/JwsU1lgthzkypmQ+ZlJfd4orIoSZOfrP2qV1tOOayWt8FGE9EDui9r
-         rCLHeSgeW+OjsKDaMNtIUVK/4INxdgoFI28T8oekIh7zh0vhr4L/INAoy4+D88zW7Zrp
-         34zyw6Cc27JYSll4rqm6oXfaSf/C9Y7MOYvWYl8X3SZ6NGOghOsKASoqimk7d+PWrLe4
-         ixd84Zwl1KwJT7hE+0WcHgjwFVPL4HGD31bgLIIBiA4Mk5nGf9+l7d6AZ7qRDLY1QY+I
-         Cgbw==
-X-Gm-Message-State: ABy/qLavevps3RXxQMRn3Vv8FiuApf85g8bfLqYUVsrXFr1adNcV95rl
-        4NC3iz34gdkzgMY4IuOSOqLAVHlkzTH+
-X-Google-Smtp-Source: APBJJlFvhgXCXZP9pdYDhKfOUVlYdwH/SmwuHsXAcZhU925R9DHZabK6vjqUogAiaEDk0wFB/8skMjsyTC09
+        bh=DLa2HUSCTWFTI0X2o3f102hvfCfHBN0tK5dUlzxCyIc=;
+        b=Uor52Kf4esgcfSWHSLZuV0yL7N0wU5fhsALmCqOd/PItm/wh/eaXyigyW5qXMIzqbZ
+         UU/lSckMBI3FW6fiiQx3oq3o0ZZaX3lZs8Oh/yF9js24QBjdor5pAST7d1+YKpUApDos
+         HnhdoJK2HCJgxb36DtY6ReC3rc2j3o9eRWsJl7lq8fMC7FjAye6lyUSNpgE1+m34bjy+
+         aP1DbRi/UvUv/r30sxKG2nJykDmTujoS5Ye+h3/NZm2wI1pA3COCxyoO90AcbpReC8q2
+         o9c6ZdZmU6amhDsJniGyEzSvr7U+DjKStfkTDMsfJ9xuugP9AuE9lEQCh/oWI0M3H6GN
+         cWMQ==
+X-Gm-Message-State: ABy/qLZDcPHXNU4IhfcZzfZQLOS0Dnu1Y95dQiFF6WnzdUpDWxqMO7Kg
+        28o9oYFoSMvsIc2jVLWtojlLF9EqGXt2
+X-Google-Smtp-Source: APBJJlH6RK3TEtZXk1xM04qItMlyJrFzxnsOEH42ZDuBzo1V5QaUS9nSNVNbePa1fe9X8ZQRJ7o7+n5wLnH3
 X-Received: from mshavit.ntc.corp.google.com ([2401:fa00:95:20c:39d1:8774:b733:6210])
- (user=mshavit job=sendgmr) by 2002:a25:2042:0:b0:cb6:6c22:d0f8 with SMTP id
- g63-20020a252042000000b00cb66c22d0f8mr142117ybg.4.1691057665928; Thu, 03 Aug
- 2023 03:14:25 -0700 (PDT)
-Date:   Thu,  3 Aug 2023 18:12:25 +0800
+ (user=mshavit job=sendgmr) by 2002:a81:b625:0:b0:586:50cf:e13f with SMTP id
+ u37-20020a81b625000000b0058650cfe13fmr100164ywh.1.1691057670282; Thu, 03 Aug
+ 2023 03:14:30 -0700 (PDT)
+Date:   Thu,  3 Aug 2023 18:12:26 +0800
 In-Reply-To: <20230803101351.1561031-1-mshavit@google.com>
 Mime-Version: 1.0
 References: <20230803101351.1561031-1-mshavit@google.com>
 X-Mailer: git-send-email 2.41.0.585.gd2178a4bd4-goog
-Message-ID: <20230803181225.v5.5.I6f3fb0734ef5ef746ae7c9b27f632f506197eb30@changeid>
-Subject: [PATCH v5 5/6] iommu/arm-smmu-v3: Free pasid domains on iommu release
+Message-ID: <20230803181225.v5.6.Iff18df41564b9df82bf40b3ec7af26b87f08ef6e@changeid>
+Subject: [PATCH v5 6/6] iommu/arm-smmu-v3: Cleanup arm_smmu_domain_finalise
 From:   Michael Shavit <mshavit@google.com>
 To:     iommu@lists.linux.dev, linux-arm-kernel@lists.infradead.org,
         linux-kernel@vger.kernel.org
@@ -70,110 +70,100 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The iommu core doesn't guarantee that pasid domains will be detached
-before the device is released.
-
-Track the list of domains that a master is attached to with PASID, so
-that they can be freed when the iommu is released.
+Remove unused master parameter now that the CD table is allocated
+elsewhere.
 
 Signed-off-by: Michael Shavit <mshavit@google.com>
 ---
 
-Changes in v5:
-- New commit: Free attached pasid domains on release_device() call
-
- drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c | 22 +++++++++++++++------
- drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.h | 10 +++++++++-
- 2 files changed, 25 insertions(+), 7 deletions(-)
+(no changes since v1)
+---
+ drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c | 17 ++++++-----------
+ 1 file changed, 6 insertions(+), 11 deletions(-)
 
 diff --git a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
-index 7b296458dafec..5fd6c4d4f0ae4 100644
+index 5fd6c4d4f0ae4..db8fd4b3591b5 100644
 --- a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
 +++ b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
-@@ -2587,6 +2587,9 @@ static int arm_smmu_set_dev_pasid(struct iommu_domain *domain,
- 	mutex_unlock(&arm_smmu_asid_lock);
+@@ -2129,7 +2129,6 @@ static void arm_smmu_domain_free(struct iommu_domain *domain)
+ }
  
- 	master->nr_attached_pasid_domains += 1;
-+	list_add(&attached_domain->list_in_master,
-+		 &master->attached_domains);
-+
+ static int arm_smmu_domain_finalise_cd(struct arm_smmu_domain *smmu_domain,
+-				       struct arm_smmu_master *master,
+ 				       struct io_pgtable_cfg *pgtbl_cfg)
+ {
+ 	int ret;
+@@ -2167,7 +2166,6 @@ static int arm_smmu_domain_finalise_cd(struct arm_smmu_domain *smmu_domain,
+ }
+ 
+ static int arm_smmu_domain_finalise_s2(struct arm_smmu_domain *smmu_domain,
+-				       struct arm_smmu_master *master,
+ 				       struct io_pgtable_cfg *pgtbl_cfg)
+ {
+ 	int vmid;
+@@ -2192,8 +2190,7 @@ static int arm_smmu_domain_finalise_s2(struct arm_smmu_domain *smmu_domain,
  	return 0;
  }
  
-@@ -2786,6 +2789,7 @@ static struct iommu_device *arm_smmu_probe_device(struct device *dev)
- 	master->dev = dev;
- 	master->smmu = smmu;
- 	INIT_LIST_HEAD(&master->bonds);
-+	INIT_LIST_HEAD(&master->attached_domains);
- 	dev_iommu_priv_set(dev, master);
- 
- 	ret = arm_smmu_insert_master(smmu, master);
-@@ -2825,16 +2829,21 @@ static struct iommu_device *arm_smmu_probe_device(struct device *dev)
- static void arm_smmu_release_device(struct device *dev)
+-static int arm_smmu_domain_finalise(struct iommu_domain *domain,
+-				    struct arm_smmu_master *master)
++static int arm_smmu_domain_finalise(struct iommu_domain *domain)
  {
- 	struct arm_smmu_master *master = dev_iommu_priv_get(dev);
-+	struct arm_smmu_attached_domain *attached_domain;
-+	struct arm_smmu_domain *smmu_domain;
-+	unsigned long flags;
+ 	int ret;
+ 	unsigned long ias, oas;
+@@ -2201,7 +2198,6 @@ static int arm_smmu_domain_finalise(struct iommu_domain *domain,
+ 	struct io_pgtable_cfg pgtbl_cfg;
+ 	struct io_pgtable_ops *pgtbl_ops;
+ 	int (*finalise_stage_fn)(struct arm_smmu_domain *,
+-				 struct arm_smmu_master *,
+ 				 struct io_pgtable_cfg *);
+ 	struct arm_smmu_domain *smmu_domain = to_smmu_domain(domain);
+ 	struct arm_smmu_device *smmu = smmu_domain->smmu;
+@@ -2253,7 +2249,7 @@ static int arm_smmu_domain_finalise(struct iommu_domain *domain,
+ 	domain->geometry.aperture_end = (1UL << pgtbl_cfg.ias) - 1;
+ 	domain->geometry.force_aperture = true;
  
- 	if (WARN_ON(arm_smmu_master_sva_enabled(master)))
- 		iopf_queue_remove_device(master->smmu->evtq.iopf, dev);
- 	if (WARN_ON(master->nr_attached_pasid_domains != 0)) {
--		/*
--		 * TODO: Do we need to handle this case?
--		 * This requires a mechanism to obtain all the pasid domains
--		 * that this master is attached to so that we can clean up the
--		 * domain's attached_domain list.
--		 */
-+		list_for_each_entry(attached_domain, &master->attached_domains, list_in_master) {
-+			smmu_domain = attached_domain->domain;
-+			spin_lock_irqsave(&smmu_domain->attached_ssids_lock, flags);
-+			list_del(&attached_domain->list);
-+			list_del(&attached_domain->list_in_master);
-+			kfree(&attached_domain->list_in_master);
-+			spin_unlock_irqrestore(&smmu_domain->attached_ssids_lock, flags);
-+		}
- 	}
+-	ret = finalise_stage_fn(smmu_domain, master, &pgtbl_cfg);
++	ret = finalise_stage_fn(smmu_domain, &pgtbl_cfg);
+ 	if (ret < 0) {
+ 		free_io_pgtable_ops(pgtbl_ops);
+ 		return ret;
+@@ -2429,15 +2425,14 @@ static void arm_smmu_detach_dev(struct arm_smmu_master *master)
+ }
  
- 	arm_smmu_detach_dev(master);
-@@ -2995,6 +3004,7 @@ static void arm_smmu_remove_dev_pasid(struct device *dev, ioasid_t pasid)
- 		    attached_domain->ssid != pasid)
- 			continue;
- 		list_del(&attached_domain->list);
-+		list_del(&attached_domain->list_in_master);
- 		master->nr_attached_pasid_domains -= 1;
- 		kfree(attached_domain);
- 		break;
-diff --git a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.h b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.h
-index 433f58bd99dd2..efa428629f4d9 100644
---- a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.h
-+++ b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.h
-@@ -689,9 +689,15 @@ struct arm_smmu_stream {
- 	struct rb_node			node;
- };
+ static int arm_smmu_prepare_domain_for_smmu(struct arm_smmu_device *smmu,
+-					    struct arm_smmu_domain *smmu_domain,
+-					    struct arm_smmu_master *master)
++					    struct arm_smmu_domain *smmu_domain)
+ {
+ 	int ret = 0;
  
--/* List of {masters, ssid} that a domain is attached to */
-+/*
-+ * List of {masters, ssid} that a domain is attached to, and conversely of
-+ * domains that a master is attached to.
-+ */
- struct arm_smmu_attached_domain {
-+	/* List node arm_smmu_domain*/
- 	struct list_head	list;
-+	/* List node in arm_smmu_master*/
-+	struct list_head	list_in_master;
- 	struct arm_smmu_domain  *domain;
- 	struct arm_smmu_master  *master;
- 	int			ssid;
-@@ -714,6 +720,8 @@ struct arm_smmu_master {
- 	struct list_head		bonds;
- 	unsigned int			ssid_bits;
- 	unsigned int			nr_attached_pasid_domains;
-+	/* Locked by the iommu core using the group mutex */
-+	struct list_head		attached_domains;
- };
+ 	mutex_lock(&smmu_domain->init_mutex);
+ 	if (!smmu_domain->smmu) {
+ 		smmu_domain->smmu = smmu;
+-		ret = arm_smmu_domain_finalise(&smmu_domain->domain, master);
++		ret = arm_smmu_domain_finalise(&smmu_domain->domain);
+ 		if (ret)
+ 			smmu_domain->smmu = NULL;
+ 	} else if (smmu_domain->smmu != smmu)
+@@ -2462,7 +2457,7 @@ static int arm_smmu_attach_dev(struct iommu_domain *domain, struct device *dev)
+ 	master = dev_iommu_priv_get(dev);
+ 	smmu = master->smmu;
  
- /* SMMU private data for an IOMMU domain */
+-	ret = arm_smmu_prepare_domain_for_smmu(smmu, smmu_domain, master);
++	ret = arm_smmu_prepare_domain_for_smmu(smmu, smmu_domain);
+ 	if (ret)
+ 		return ret;
+ 
+@@ -2541,7 +2536,7 @@ static int arm_smmu_set_dev_pasid(struct iommu_domain *domain,
+ 	master = dev_iommu_priv_get(dev);
+ 	smmu = master->smmu;
+ 
+-	ret = arm_smmu_prepare_domain_for_smmu(smmu, smmu_domain, master);
++	ret = arm_smmu_prepare_domain_for_smmu(smmu, smmu_domain);
+ 	if (ret)
+ 		return ret;
+ 
 -- 
 2.41.0.585.gd2178a4bd4-goog
 
