@@ -2,376 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9359876E619
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 13:01:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 19FE476E5F2
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 12:58:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235589AbjHCLAB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Aug 2023 07:00:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41080 "EHLO
+        id S235041AbjHCK6U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Aug 2023 06:58:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40376 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235484AbjHCK7Z (ORCPT
+        with ESMTP id S233912AbjHCK6S (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Aug 2023 06:59:25 -0400
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC38E423A;
-        Thu,  3 Aug 2023 03:59:03 -0700 (PDT)
-Received: from pps.filterd (m0279868.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3731rSPY007772;
-        Thu, 3 Aug 2023 10:58:59 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding : content-type; s=qcppdkim1;
- bh=LgQ4C3GUdSQw7QoTxJ2cWTWy1NEDZ8kFpk5lJD7dTok=;
- b=OjrbiKeEJxF/Mlipb/2BskhJYvu5i7kmae3IvsrxNXyJcQFbiA/kYXdwzc4ElhEZouiX
- 2bLnKdEwAI10joPJB67F+8WxIeRjQl/7OHw0PnqkYPKLcppKHSkpUKaETV2fBOEXTDh2
- vB3KmxMwv+m3G7MNZwS9NFHOIQEIcrfDuw5hg/6YvHTabkH5LRhbiwGADidS95FEzKaN
- +SUUaWnf0kT9jWtgF/PNX/57Xzd0tDFtnQ3qk874+urBZbYdlCP+a7L5BFCjSJNwYBBs
- wcoCFIOwRPNAFxGK4XqZ4mO0BCNKOvRW1mG/eOAmXw+kQ6zGXJPtiZtIBF3/yDmd5WEB Pg== 
-Received: from nasanppmta02.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3s82wx8vm5-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 03 Aug 2023 10:58:59 +0000
-Received: from nasanex01a.na.qualcomm.com (nasanex01a.na.qualcomm.com [10.52.223.231])
-        by NASANPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 373AwwJq018105
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 3 Aug 2023 10:58:58 GMT
-Received: from hu-imrashai-hyd.qualcomm.com (10.80.80.8) by
- nasanex01a.na.qualcomm.com (10.52.223.231) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.30; Thu, 3 Aug 2023 03:58:52 -0700
-From:   Imran Shaik <quic_imrashai@quicinc.com>
-To:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>
-CC:     Taniya Das <quic_tdas@quicinc.com>,
-        Imran Shaik <quic_imrashai@quicinc.com>,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        Melody Olvera <quic_molvera@quicinc.com>,
-        <linux-arm-msm@vger.kernel.org>, <linux-clk@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        Jagadeesh Kona <quic_jkona@quicinc.com>,
-        "Ajit Pandey" <quic_ajipan@quicinc.com>,
-        Satya Priya Kakitapalli <quic_skakitap@quicinc.com>
-Subject: [PATCH V5 8/8] clk: qcom: gcc-qdu1000: Update the RCGs ops
-Date:   Thu, 3 Aug 2023 16:27:41 +0530
-Message-ID: <20230803105741.2292309-9-quic_imrashai@quicinc.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20230803105741.2292309-1-quic_imrashai@quicinc.com>
-References: <20230803105741.2292309-1-quic_imrashai@quicinc.com>
+        Thu, 3 Aug 2023 06:58:18 -0400
+Received: from mgamail.intel.com (unknown [192.55.52.43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9FA52129
+        for <linux-kernel@vger.kernel.org>; Thu,  3 Aug 2023 03:58:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1691060297; x=1722596297;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=OFeYZCOnoU+/IO/tSIUv2tG3VRLKkaE9o+9OPWJZ2YQ=;
+  b=KDCKLFXDwGhnmQelMxQUKJhOOlOM4B8TvVO/EwNFnsNgIP5TLl+AXSxM
+   ITYq/gfSAW3kBeub3yDfbUTlacBUiiOUCplZcVrboDxkm0OaTxfEJsd40
+   69EQMkaZVP62jcP2i619QjSkp75WaBPyKoGs8PXiaYydd/t6ONNDu4Jdi
+   0wT5pjxzE5StUFDaUVGdxoZDzJ2ciPtAwasUjoMzM/tKVXii2z8rNolxy
+   vZIZOaRvkm8E2Khd1vZZp4YoWFlI74hKpIKCbYrkU1E5lGThZ5oNMdbGE
+   OmVTO8jHEqgyKPo/0qei0haSwwXnsbDyIFQER2RxIK7SsQYbPK2Hac9S8
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10790"; a="456217617"
+X-IronPort-AV: E=Sophos;i="6.01,252,1684825200"; 
+   d="scan'208";a="456217617"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Aug 2023 03:58:16 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10790"; a="764554234"
+X-IronPort-AV: E=Sophos;i="6.01,252,1684825200"; 
+   d="scan'208";a="764554234"
+Received: from gvarshne-mobl2.gar.corp.intel.com (HELO box.shutemov.name) ([10.252.63.106])
+  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Aug 2023 03:58:13 -0700
+Received: by box.shutemov.name (Postfix, from userid 1000)
+        id 96AE6109FCF; Thu,  3 Aug 2023 13:58:10 +0300 (+03)
+Date:   Thu, 3 Aug 2023 13:58:10 +0300
+From:   "kirill.shutemov@linux.intel.com" <kirill.shutemov@linux.intel.com>
+To:     "Huang, Kai" <kai.huang@intel.com>
+Cc:     "Hansen, Dave" <dave.hansen@intel.com>,
+        "Christopherson,, Sean" <seanjc@google.com>,
+        "x86@kernel.org" <x86@kernel.org>, "bp@alien8.de" <bp@alien8.de>,
+        "peterz@infradead.org" <peterz@infradead.org>,
+        "hpa@zytor.com" <hpa@zytor.com>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "pbonzini@redhat.com" <pbonzini@redhat.com>,
+        "Yamahata, Isaku" <isaku.yamahata@intel.com>,
+        "sathyanarayanan.kuppuswamy@linux.intel.com" 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        "n.borisov.lkml@gmail.com" <n.borisov.lkml@gmail.com>
+Subject: Re: [PATCH v3 05/12] x86/tdx: Pass TDCALL/SEAMCALL input/output
+ registers via a structure
+Message-ID: <20230803105810.xljd2sjqittqey2w@box.shutemov.name>
+References: <cover.1690369495.git.kai.huang@intel.com>
+ <fd9886e5fffe5ccccf5895627be2fff209a69049.1690369495.git.kai.huang@intel.com>
+ <20230727163630.gcsczhebozgf2tsu@box.shutemov.name>
+ <6374fd1aa1e2ff4777eab2421cfc439d259cc603.camel@intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nasanex01a.na.qualcomm.com (10.52.223.231)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: 4-UhPPWSMfGdf0zf_zINMrBkU_iEwjO8
-X-Proofpoint-GUID: 4-UhPPWSMfGdf0zf_zINMrBkU_iEwjO8
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
- definitions=2023-08-03_09,2023-08-03_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 spamscore=0
- lowpriorityscore=0 impostorscore=0 adultscore=0 mlxscore=0 bulkscore=0
- priorityscore=1501 mlxlogscore=999 phishscore=0 clxscore=1015
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2306200000 definitions=main-2308030098
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <6374fd1aa1e2ff4777eab2421cfc439d259cc603.camel@intel.com>
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The clock RCGs are required to be parked at safe clock source(XO)
-during disable as per the hardware expectation and clk_rcg2_shared_ops
-are the closest implementation for the same. Hence update the clock
-RCG ops to clk_rcg2_shared_ops.
+On Thu, Jul 27, 2023 at 10:54:28PM +0000, Huang, Kai wrote:
+> On Thu, 2023-07-27 at 19:36 +0300, kirill.shutemov@linux.intel.com wrote:
+> > On Wed, Jul 26, 2023 at 11:25:07PM +1200, Kai Huang wrote:
+> > > diff --git a/arch/x86/virt/vmx/tdx/tdxcall.S b/arch/x86/virt/vmx/tdx/tdxcall.S
+> > > index 6bdf6e137953..a0e7fe81bf63 100644
+> > > --- a/arch/x86/virt/vmx/tdx/tdxcall.S
+> > > +++ b/arch/x86/virt/vmx/tdx/tdxcall.S
+> > > @@ -17,34 +17,33 @@
+> > >   *            TDX module and hypercalls to the VMM.
+> > >   * SEAMCALL - used by TDX hosts to make requests to the
+> > >   *            TDX module.
+> > > + *
+> > > + *-------------------------------------------------------------------------
+> > > + * TDCALL/SEAMCALL ABI:
+> > > + *-------------------------------------------------------------------------
+> > > + * Input Registers:
+> > > + *
+> > > + * RAX                 - TDCALL/SEAMCALL Leaf number.
+> > > + * RCX,RDX,R8-R9       - TDCALL/SEAMCALL Leaf specific input registers.
+> > > + *
+> > > + * Output Registers:
+> > > + *
+> > > + * RAX                 - TDCALL/SEAMCALL instruction error code.
+> > > + * RCX,RDX,R8-R11      - TDCALL/SEAMCALL Leaf specific output registers.
+> > > + *
+> > > + *-------------------------------------------------------------------------
+> > 
+> > So, you keep the existing asymetry in IN and OUT registers. R10 and R11
+> > are OUT-only registers. It can be confusing for user since it is the same
+> > structure now. I guess it changes in the following patches, but I would
+> > prefer to make them even here if there's no good reason not to.
+> > 
+> 
+> 
+> Do you mean you prefer to use R10/R11 as input too even in this patch?
 
-Signed-off-by: Imran Shaik <quic_imrashai@quicinc.com>
-Reviewed-by: Konrad Dybcio <konrad.dybcio@linaro.org>
----
-Changes since v4:
- - Updated the commit text
-Changes since v3:
- - Split the patch as per the review comments
- - Newly added
+Yes.
 
- drivers/clk/qcom/gcc-qdu1000.c | 58 +++++++++++++++++-----------------
- 1 file changed, 29 insertions(+), 29 deletions(-)
+> I think _logically_ it should be part of the next patch, because w/o extending
+> TDX_MODULE_CALL to support additional TDCALLs/SEAMCALLs, we don't need R10/R11
+> as input.  This patch only changes to take a structure as function argument,
+> rather than taking individual registers as argument.
 
-diff --git a/drivers/clk/qcom/gcc-qdu1000.c b/drivers/clk/qcom/gcc-qdu1000.c
-index 82391918c93e..9f42d2601464 100644
---- a/drivers/clk/qcom/gcc-qdu1000.c
-+++ b/drivers/clk/qcom/gcc-qdu1000.c
-@@ -476,7 +476,7 @@ static struct clk_rcg2 gcc_aggre_noc_ecpri_dma_clk_src = {
- 		.name = "gcc_aggre_noc_ecpri_dma_clk_src",
- 		.parent_data = gcc_parent_data_4,
- 		.num_parents = ARRAY_SIZE(gcc_parent_data_4),
--		.ops = &clk_rcg2_ops,
-+		.ops = &clk_rcg2_shared_ops,
- 	},
- };
- 
-@@ -496,7 +496,7 @@ static struct clk_rcg2 gcc_aggre_noc_ecpri_gsi_clk_src = {
- 		.name = "gcc_aggre_noc_ecpri_gsi_clk_src",
- 		.parent_data = gcc_parent_data_5,
- 		.num_parents = ARRAY_SIZE(gcc_parent_data_5),
--		.ops = &clk_rcg2_ops,
-+		.ops = &clk_rcg2_shared_ops,
- 	},
- };
- 
-@@ -515,7 +515,7 @@ static struct clk_rcg2 gcc_gp1_clk_src = {
- 		.name = "gcc_gp1_clk_src",
- 		.parent_data = gcc_parent_data_1,
- 		.num_parents = ARRAY_SIZE(gcc_parent_data_1),
--		.ops = &clk_rcg2_ops,
-+		.ops = &clk_rcg2_shared_ops,
- 	},
- };
- 
-@@ -529,7 +529,7 @@ static struct clk_rcg2 gcc_gp2_clk_src = {
- 		.name = "gcc_gp2_clk_src",
- 		.parent_data = gcc_parent_data_1,
- 		.num_parents = ARRAY_SIZE(gcc_parent_data_1),
--		.ops = &clk_rcg2_ops,
-+		.ops = &clk_rcg2_shared_ops,
- 	},
- };
- 
-@@ -543,7 +543,7 @@ static struct clk_rcg2 gcc_gp3_clk_src = {
- 		.name = "gcc_gp3_clk_src",
- 		.parent_data = gcc_parent_data_1,
- 		.num_parents = ARRAY_SIZE(gcc_parent_data_1),
--		.ops = &clk_rcg2_ops,
-+		.ops = &clk_rcg2_shared_ops,
- 	},
- };
- 
-@@ -562,7 +562,7 @@ static struct clk_rcg2 gcc_pcie_0_aux_clk_src = {
- 		.name = "gcc_pcie_0_aux_clk_src",
- 		.parent_data = gcc_parent_data_3,
- 		.num_parents = ARRAY_SIZE(gcc_parent_data_3),
--		.ops = &clk_rcg2_ops,
-+		.ops = &clk_rcg2_shared_ops,
- 	},
- };
- 
-@@ -582,7 +582,7 @@ static struct clk_rcg2 gcc_pcie_0_phy_rchng_clk_src = {
- 		.name = "gcc_pcie_0_phy_rchng_clk_src",
- 		.parent_data = gcc_parent_data_0,
- 		.num_parents = ARRAY_SIZE(gcc_parent_data_0),
--		.ops = &clk_rcg2_ops,
-+		.ops = &clk_rcg2_shared_ops,
- 	},
- };
- 
-@@ -601,7 +601,7 @@ static struct clk_rcg2 gcc_pdm2_clk_src = {
- 		.name = "gcc_pdm2_clk_src",
- 		.parent_data = gcc_parent_data_0,
- 		.num_parents = ARRAY_SIZE(gcc_parent_data_0),
--		.ops = &clk_rcg2_ops,
-+		.ops = &clk_rcg2_shared_ops,
- 	},
- };
- 
-@@ -623,7 +623,7 @@ static struct clk_init_data gcc_qupv3_wrap0_s0_clk_src_init = {
- 	.name = "gcc_qupv3_wrap0_s0_clk_src",
- 	.parent_data = gcc_parent_data_0,
- 	.num_parents = ARRAY_SIZE(gcc_parent_data_0),
--	.ops = &clk_rcg2_ops,
-+	.ops = &clk_rcg2_shared_ops,
- };
- 
- static struct clk_rcg2 gcc_qupv3_wrap0_s0_clk_src = {
-@@ -639,7 +639,7 @@ static struct clk_init_data gcc_qupv3_wrap0_s1_clk_src_init = {
- 	.name = "gcc_qupv3_wrap0_s1_clk_src",
- 	.parent_data = gcc_parent_data_0,
- 	.num_parents = ARRAY_SIZE(gcc_parent_data_0),
--	.ops = &clk_rcg2_ops,
-+	.ops = &clk_rcg2_shared_ops,
- };
- 
- static struct clk_rcg2 gcc_qupv3_wrap0_s1_clk_src = {
-@@ -655,7 +655,7 @@ static struct clk_init_data gcc_qupv3_wrap0_s2_clk_src_init = {
- 	.name = "gcc_qupv3_wrap0_s2_clk_src",
- 	.parent_data = gcc_parent_data_0,
- 	.num_parents = ARRAY_SIZE(gcc_parent_data_0),
--	.ops = &clk_rcg2_ops,
-+	.ops = &clk_rcg2_shared_ops,
- };
- 
- static struct clk_rcg2 gcc_qupv3_wrap0_s2_clk_src = {
-@@ -671,7 +671,7 @@ static struct clk_init_data gcc_qupv3_wrap0_s3_clk_src_init = {
- 	.name = "gcc_qupv3_wrap0_s3_clk_src",
- 	.parent_data = gcc_parent_data_0,
- 	.num_parents = ARRAY_SIZE(gcc_parent_data_0),
--	.ops = &clk_rcg2_ops,
-+	.ops = &clk_rcg2_shared_ops,
- };
- 
- static struct clk_rcg2 gcc_qupv3_wrap0_s3_clk_src = {
-@@ -687,7 +687,7 @@ static struct clk_init_data gcc_qupv3_wrap0_s4_clk_src_init = {
- 	.name = "gcc_qupv3_wrap0_s4_clk_src",
- 	.parent_data = gcc_parent_data_0,
- 	.num_parents = ARRAY_SIZE(gcc_parent_data_0),
--	.ops = &clk_rcg2_ops,
-+	.ops = &clk_rcg2_shared_ops,
- };
- 
- static struct clk_rcg2 gcc_qupv3_wrap0_s4_clk_src = {
-@@ -708,7 +708,7 @@ static struct clk_init_data gcc_qupv3_wrap0_s5_clk_src_init = {
- 	.name = "gcc_qupv3_wrap0_s5_clk_src",
- 	.parent_data = gcc_parent_data_0,
- 	.num_parents = ARRAY_SIZE(gcc_parent_data_0),
--	.ops = &clk_rcg2_ops,
-+	.ops = &clk_rcg2_shared_ops,
- };
- 
- static struct clk_rcg2 gcc_qupv3_wrap0_s5_clk_src = {
-@@ -724,7 +724,7 @@ static struct clk_init_data gcc_qupv3_wrap0_s6_clk_src_init = {
- 	.name = "gcc_qupv3_wrap0_s6_clk_src",
- 	.parent_data = gcc_parent_data_0,
- 	.num_parents = ARRAY_SIZE(gcc_parent_data_0),
--	.ops = &clk_rcg2_ops,
-+	.ops = &clk_rcg2_shared_ops,
- };
- 
- static struct clk_rcg2 gcc_qupv3_wrap0_s6_clk_src = {
-@@ -740,7 +740,7 @@ static struct clk_init_data gcc_qupv3_wrap0_s7_clk_src_init = {
- 	.name = "gcc_qupv3_wrap0_s7_clk_src",
- 	.parent_data = gcc_parent_data_0,
- 	.num_parents = ARRAY_SIZE(gcc_parent_data_0),
--	.ops = &clk_rcg2_ops,
-+	.ops = &clk_rcg2_shared_ops,
- };
- 
- static struct clk_rcg2 gcc_qupv3_wrap0_s7_clk_src = {
-@@ -756,7 +756,7 @@ static struct clk_init_data gcc_qupv3_wrap1_s0_clk_src_init = {
- 	.name = "gcc_qupv3_wrap1_s0_clk_src",
- 	.parent_data = gcc_parent_data_0,
- 	.num_parents = ARRAY_SIZE(gcc_parent_data_0),
--	.ops = &clk_rcg2_ops,
-+	.ops = &clk_rcg2_shared_ops,
- };
- 
- static struct clk_rcg2 gcc_qupv3_wrap1_s0_clk_src = {
-@@ -772,7 +772,7 @@ static struct clk_init_data gcc_qupv3_wrap1_s1_clk_src_init = {
- 	.name = "gcc_qupv3_wrap1_s1_clk_src",
- 	.parent_data = gcc_parent_data_0,
- 	.num_parents = ARRAY_SIZE(gcc_parent_data_0),
--	.ops = &clk_rcg2_ops,
-+	.ops = &clk_rcg2_shared_ops,
- };
- 
- static struct clk_rcg2 gcc_qupv3_wrap1_s1_clk_src = {
-@@ -788,7 +788,7 @@ static struct clk_init_data gcc_qupv3_wrap1_s2_clk_src_init = {
- 	.name = "gcc_qupv3_wrap1_s2_clk_src",
- 	.parent_data = gcc_parent_data_0,
- 	.num_parents = ARRAY_SIZE(gcc_parent_data_0),
--	.ops = &clk_rcg2_ops,
-+	.ops = &clk_rcg2_shared_ops,
- };
- 
- static struct clk_rcg2 gcc_qupv3_wrap1_s2_clk_src = {
-@@ -804,7 +804,7 @@ static struct clk_init_data gcc_qupv3_wrap1_s3_clk_src_init = {
- 	.name = "gcc_qupv3_wrap1_s3_clk_src",
- 	.parent_data = gcc_parent_data_0,
- 	.num_parents = ARRAY_SIZE(gcc_parent_data_0),
--	.ops = &clk_rcg2_ops,
-+	.ops = &clk_rcg2_shared_ops,
- };
- 
- static struct clk_rcg2 gcc_qupv3_wrap1_s3_clk_src = {
-@@ -820,7 +820,7 @@ static struct clk_init_data gcc_qupv3_wrap1_s4_clk_src_init = {
- 	.name = "gcc_qupv3_wrap1_s4_clk_src",
- 	.parent_data = gcc_parent_data_0,
- 	.num_parents = ARRAY_SIZE(gcc_parent_data_0),
--	.ops = &clk_rcg2_ops,
-+	.ops = &clk_rcg2_shared_ops,
- };
- 
- static struct clk_rcg2 gcc_qupv3_wrap1_s4_clk_src = {
-@@ -836,7 +836,7 @@ static struct clk_init_data gcc_qupv3_wrap1_s5_clk_src_init = {
- 	.name = "gcc_qupv3_wrap1_s5_clk_src",
- 	.parent_data = gcc_parent_data_0,
- 	.num_parents = ARRAY_SIZE(gcc_parent_data_0),
--	.ops = &clk_rcg2_ops,
-+	.ops = &clk_rcg2_shared_ops,
- };
- 
- static struct clk_rcg2 gcc_qupv3_wrap1_s5_clk_src = {
-@@ -852,7 +852,7 @@ static struct clk_init_data gcc_qupv3_wrap1_s6_clk_src_init = {
- 	.name = "gcc_qupv3_wrap1_s6_clk_src",
- 	.parent_data = gcc_parent_data_0,
- 	.num_parents = ARRAY_SIZE(gcc_parent_data_0),
--	.ops = &clk_rcg2_ops,
-+	.ops = &clk_rcg2_shared_ops,
- };
- 
- static struct clk_rcg2 gcc_qupv3_wrap1_s6_clk_src = {
-@@ -868,7 +868,7 @@ static struct clk_init_data gcc_qupv3_wrap1_s7_clk_src_init = {
- 	.name = "gcc_qupv3_wrap1_s7_clk_src",
- 	.parent_data = gcc_parent_data_0,
- 	.num_parents = ARRAY_SIZE(gcc_parent_data_0),
--	.ops = &clk_rcg2_ops,
-+	.ops = &clk_rcg2_shared_ops,
- };
- 
- static struct clk_rcg2 gcc_qupv3_wrap1_s7_clk_src = {
-@@ -937,7 +937,7 @@ static struct clk_rcg2 gcc_sm_bus_xo_clk_src = {
- 		.name = "gcc_sm_bus_xo_clk_src",
- 		.parent_data = gcc_parent_data_2,
- 		.num_parents = ARRAY_SIZE(gcc_parent_data_2),
--		.ops = &clk_rcg2_ops,
-+		.ops = &clk_rcg2_shared_ops,
- 	},
- };
- 
-@@ -956,7 +956,7 @@ static struct clk_rcg2 gcc_tsc_clk_src = {
- 		.name = "gcc_tsc_clk_src",
- 		.parent_data = gcc_parent_data_9,
- 		.num_parents = ARRAY_SIZE(gcc_parent_data_9),
--		.ops = &clk_rcg2_ops,
-+		.ops = &clk_rcg2_shared_ops,
- 	},
- };
- 
-@@ -976,7 +976,7 @@ static struct clk_rcg2 gcc_usb30_prim_master_clk_src = {
- 		.name = "gcc_usb30_prim_master_clk_src",
- 		.parent_data = gcc_parent_data_0,
- 		.num_parents = ARRAY_SIZE(gcc_parent_data_0),
--		.ops = &clk_rcg2_ops,
-+		.ops = &clk_rcg2_shared_ops,
- 	},
- };
- 
-@@ -990,7 +990,7 @@ static struct clk_rcg2 gcc_usb30_prim_mock_utmi_clk_src = {
- 		.name = "gcc_usb30_prim_mock_utmi_clk_src",
- 		.parent_data = gcc_parent_data_0,
- 		.num_parents = ARRAY_SIZE(gcc_parent_data_0),
--		.ops = &clk_rcg2_ops,
-+		.ops = &clk_rcg2_shared_ops,
- 	},
- };
- 
-@@ -1004,7 +1004,7 @@ static struct clk_rcg2 gcc_usb3_prim_phy_aux_clk_src = {
- 		.name = "gcc_usb3_prim_phy_aux_clk_src",
- 		.parent_data = gcc_parent_data_3,
- 		.num_parents = ARRAY_SIZE(gcc_parent_data_3),
--		.ops = &clk_rcg2_ops,
-+		.ops = &clk_rcg2_shared_ops,
- 	},
- };
- 
+As a user, if I see a struct used for in and out, I would expect that all
+fields have the same rules.
+
+> Also, we have a comment to say this around the structure too:
+> 
+>  /*
+> - * Used in __tdx_module_call() to gather the output registers' values of the
+> + * Used in __tdcall*() to gather the input/output registers' values of the
+>   * TDCALL instruction when requesting services from the TDX module. This is a
+>   * software only structure and not part of the TDX module/VMM ABI
+>   */
+> -struct tdx_module_output {
+> +struct tdx_module_args {
+> +	/* input/output */
+>  	u64 rcx;
+>  	u64 rdx;
+>  	u64 r8;
+>  	u64 r9;
+> +	/* additional output */
+>  	u64 r10;
+>  	u64 r11;
+>  };
+> 
+> So to me there should be no confusion.
+
+Do you always read documentation? :P Maybe it is only me...
+
+> Even consider a theoretical case: someone wants to backport this patch to an old
+> kernel w/o further patches, then it makes little sense to do R10/R11 in
+> TDX_MODULE_CALL here in this patch
+> 
+> :-)
+
+Consider the case whe the patch was (wrongly) backported to use new call
+that uses R10 as input.
+
+I realize that all my objections are rather hand-wavy. I would like to
+have in/out symmetry here. But I would not NAK patch over this.
+
 -- 
-2.25.1
-
+  Kiryl Shutsemau / Kirill A. Shutemov
