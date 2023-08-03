@@ -2,143 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B20C376F1EE
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 20:34:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 02DC176F1F1
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 20:36:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231768AbjHCSey (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Aug 2023 14:34:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55338 "EHLO
+        id S232987AbjHCSgR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Aug 2023 14:36:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55864 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230344AbjHCSew (ORCPT
+        with ESMTP id S229836AbjHCSgP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Aug 2023 14:34:52 -0400
-Received: from mail-yb1-xb35.google.com (mail-yb1-xb35.google.com [IPv6:2607:f8b0:4864:20::b35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0898912B
-        for <linux-kernel@vger.kernel.org>; Thu,  3 Aug 2023 11:34:51 -0700 (PDT)
-Received: by mail-yb1-xb35.google.com with SMTP id 3f1490d57ef6-d0e009433c4so1478999276.2
-        for <linux-kernel@vger.kernel.org>; Thu, 03 Aug 2023 11:34:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1691087690; x=1691692490;
-        h=content-transfer-encoding:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Nyc2gitI2vs2BzBPE2gM4dSf776t2Bqkap6SAX9jGgw=;
-        b=j4ZZTUw3L8tzyfQ60uIIZQLmCPW7V3COQ5bMr151BNflpDbwZu3VUq++3RPLvFn0Vp
-         cVdh6ZtsWZ5DvHoKm6S6btw6qLGyR5o/SsrLEColtzeo3VgcsyKK8EKqoA4MnRul4ruR
-         MRrzpORy5/0mmVYDFe3O4DIfyYHSNc24+AKM1AH5J/jtnYcmHeu5KYeOTtLpJCddfAqr
-         VvBVU7NFqgStEd38t6lIOJsIVydQzvdqsEA0wgQ96LZNS8pK/DKqipMT2ocQthJR/dqr
-         42hq+jAhgmkW/hMi7BukbXPppKS55KTMteXYUlRCdccI8m6cTu7cSMTsWe0hYL9nn+yv
-         D5LA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691087690; x=1691692490;
-        h=content-transfer-encoding:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Nyc2gitI2vs2BzBPE2gM4dSf776t2Bqkap6SAX9jGgw=;
-        b=dvzwgxAMzifNgXyn2e2p8ZN79ZRIHAnue/a5QLS6yMY627EYO4i3ykLlI0tEnJdXhQ
-         1+IHZsFwIJCuC8uUcSgmRR6Ftr43acgZYeN+IIcGH4cMAcet9j3vot0CYV//Tzwh8E+U
-         abuA9tu/nYG271gdtYMG8XfiyrHCLZw0sZzGQLv1fCPucKR7kHS95c/ulXUQkbiTXquT
-         IyObnS/b16SqUm/hqewMULN8oxGc37j0HYcw7J/mNwHEUjlyH8PKP7Zcav4o4nLBwcLU
-         jZgNkK/DPkQ2ytmzXgOEm+1uGPFlFJH4fFVe15GGPbdNBfoNmmbMv4AJsFFbN3/wRD9W
-         IkHA==
-X-Gm-Message-State: ABy/qLZqmgVJN8HeEgvbti9RFHgnY9e6XDIQnZ6rz4bq/BT4/mJMlB7x
-        uvWAfMGySbPn5wNetMnZm5iRkOfzCgWZiml1zB+bsA==
-X-Google-Smtp-Source: APBJJlEG7Mv/Fp2FsNqC1nmgVx/mt5hF/Jf12KZxbp1VyjIkLYpf4NX3BUvGR61e0lC3QkL9nAthftAM244WYxSlgc4=
-X-Received: by 2002:a25:24d:0:b0:c60:982f:680c with SMTP id
- 74-20020a25024d000000b00c60982f680cmr18200156ybc.63.1691087689991; Thu, 03
- Aug 2023 11:34:49 -0700 (PDT)
+        Thu, 3 Aug 2023 14:36:15 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B609312B;
+        Thu,  3 Aug 2023 11:36:14 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 52C4161E48;
+        Thu,  3 Aug 2023 18:36:14 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3A2C5C433C7;
+        Thu,  3 Aug 2023 18:36:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1691087773;
+        bh=EPrIzhnHngRmYcpriOSsv2C4b5KD1vrTxnytJvuJaq0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Q3m576+o47BBOW0zkBUz47OGhhZvDB4sdkQTE+y7N7fCmm010mcLqCDZedn1T5ob1
+         uMwMzjE71THOEPJ9pZb0QnnZEpCheaqphUenUm7XMOyYUarNpGWAD/nmjtHMDGdout
+         oaYx3ASWxF+VsVbwvAu+kNiylGg3EpW35CMpxQIU=
+Date:   Thu, 3 Aug 2023 20:36:10 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Eric DeVolder <eric.devolder@oracle.com>
+Cc:     linux-kernel@vger.kernel.org, david@redhat.com, osalvador@suse.de,
+        corbet@lwn.net, tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
+        dave.hansen@linux.intel.com, x86@kernel.org, bhe@redhat.com,
+        ebiederm@xmission.com, kexec@lists.infradead.org, hpa@zytor.com,
+        rafael@kernel.org, vgoyal@redhat.com, dyoung@redhat.com,
+        lf32.dev@gmail.com, akpm@linux-foundation.org,
+        naveen.n.rao@linux.vnet.ibm.com, zohar@linux.ibm.com,
+        bhelgaas@google.com, vbabka@suse.cz, tiwai@suse.de,
+        seanjc@google.com, linux@weissschuh.net, vschneid@redhat.com,
+        linux-mm@kvack.org, linux-doc@vger.kernel.org,
+        sourabhjain@linux.ibm.com, konrad.wilk@oracle.com,
+        boris.ostrovsky@oracle.com
+Subject: Re: [PATCH v25 01/10] drivers/base: refactor cpu.c to use
+ .is_visible()
+Message-ID: <2023080320-dinner-ravine-7d18@gregkh>
+References: <20230629192119.6613-1-eric.devolder@oracle.com>
+ <20230629192119.6613-2-eric.devolder@oracle.com>
+ <2023070342-human-spill-a62c@gregkh>
+ <31c1393d-4285-0032-7675-737737d21f71@oracle.com>
+ <6d2811f5-a5ee-a49d-012d-b519b2c6ee26@oracle.com>
+ <a6dd6e27-e8a7-09ac-f33d-03318dd5695c@oracle.com>
 MIME-Version: 1.0
-References: <20230803172652.2849981-1-surenb@google.com> <20230803172652.2849981-6-surenb@google.com>
- <CAHk-=wiCrWAoEesBuoGoqqufvesicbGp3cX0LyKgEvsFaZNpDA@mail.gmail.com>
- <20230803181520.yd5ao45rm3rxnsbs@revolver> <CAJuCfpHkTNrJhmQABEvEXBJd-Y0yNz+VUPn+ZX5OKHwQiwCr5A@mail.gmail.com>
-In-Reply-To: <CAJuCfpHkTNrJhmQABEvEXBJd-Y0yNz+VUPn+ZX5OKHwQiwCr5A@mail.gmail.com>
-From:   Suren Baghdasaryan <surenb@google.com>
-Date:   Thu, 3 Aug 2023 11:34:38 -0700
-Message-ID: <CAJuCfpHbWfKTsh1Q_3=Kr1R1d8pgrnXitzGuDxDRtnG5e02y5A@mail.gmail.com>
-Subject: Re: [PATCH v3 5/6] mm: always lock new vma before inserting into vma tree
-To:     "Liam R. Howlett" <Liam.Howlett@oracle.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Suren Baghdasaryan <surenb@google.com>,
-        akpm@linux-foundation.org, jannh@google.com, willy@infradead.org,
-        david@redhat.com, peterx@redhat.com, ldufour@linux.ibm.com,
-        vbabka@suse.cz, michel@lespinasse.org, jglisse@google.com,
-        mhocko@suse.com, hannes@cmpxchg.org, dave@stgolabs.net,
-        hughd@google.com, linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        stable@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <a6dd6e27-e8a7-09ac-f33d-03318dd5695c@oracle.com>
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 3, 2023 at 11:26=E2=80=AFAM Suren Baghdasaryan <surenb@google.c=
-om> wrote:
->
-> On Thu, Aug 3, 2023 at 11:15=E2=80=AFAM Liam R. Howlett <Liam.Howlett@ora=
-cle.com> wrote:
-> >
-> > * Linus Torvalds <torvalds@linux-foundation.org> [230803 14:02]:
-> > > On Thu, 3 Aug 2023 at 10:27, Suren Baghdasaryan <surenb@google.com> w=
-rote:
-> > > >
-> > > > While it's not strictly necessary to lock a newly created vma befor=
-e
-> > > > adding it into the vma tree (as long as no further changes are perf=
-ormed
-> > > > to it), it seems like a good policy to lock it and prevent accident=
-al
-> > > > changes after it becomes visible to the page faults. Lock the vma b=
-efore
-> > > > adding it into the vma tree.
-> > >
-> > > So my main reaction here is that I started to wonder about the vma al=
-location.
-> > >
-> > > Why doesn't vma_init() do something like
-> > >
-> > >         mmap_assert_write_locked(mm);
-> > >         vma->vm_lock_seq =3D mm->mm_lock_seq;
-> > >
-> > > and instead we seem to expect vma_lock_alloc() to do this (and do it
-> > > very badly indeed).
-> > >
-> > > Strange.
-> > >
-> > > Anyway, this observation was just a reaction to that "not strictly
-> > > necessary to lock a newly created vma" part of the commentary. I feel
-> > > like we could/should just make sure that all newly created vma's are
-> > > always simply created write-locked.
-> > >
-> >
-> > I thought the same thing initially, but Suren pointed out that it's not
-> > necessary to hold the vma lock to allocate a vma object.  And it seems
-> > there is at least one user (arch/ia64/mm/init.c) which does allocate
-> > outside the lock during ia64_init_addr_space(), which is fine but I'm
-> > not sure it gains much to do it this way - the insert needs to take the
-> > lock anyways and it is hardly going to be contended.
->
-> Yeah, I remember discussing that. At the time of VMA creation the
-> mmap_lock might not be write-locked, so mmap_assert_write_locked()
-> would trigger and mm->mm_lock_seq is not stable. Maybe we can
-> necessitate holding mmap_lock at the time of VMA creation but that
-> sounds like an unnecessary restriction. IIRC some drivers also create
-> vm_are_structs without holding mmap_lock... I'll double-check.
+On Thu, Aug 03, 2023 at 01:20:28PM -0500, Eric DeVolder wrote:
+> 
+> 
+> On 7/21/23 11:32, Eric DeVolder wrote:
+> > 
+> > 
+> > On 7/3/23 11:53, Eric DeVolder wrote:
+> > > 
+> > > 
+> > > On 7/3/23 08:05, Greg KH wrote:
+> > > > On Thu, Jun 29, 2023 at 03:21:10PM -0400, Eric DeVolder wrote:
+> > > > >   - the function body of the callback functions are now wrapped with
+> > > > >     IS_ENABLED(); as the callback function must exist now that the
+> > > > >     attribute is always compiled-in (though not necessarily visible).
+> > > > 
+> > > > Why do you need to do this last thing?  Is it a code savings goal?  Or
+> > > > something else?  The file will not be present in the system if the
+> > > > option is not enabled, so it should be safe to not do this unless you
+> > > > feel it's necessary for some reason?
+> > > 
+> > > To accommodate the request, all DEVICE_ATTR() must be
+> > > unconditionally present in this file. The DEVICE_ATTR() requires the
+> > > .show() callback. As the callback is referenced from a data
+> > > structure, the callback has to be present for link. All the
+> > > callbacks for these attributes are in this file.
+> > > 
+> > > I have two basic choices for gutting the function body if the config
+> > > feature is not enabled. I can either use #ifdef or IS_ENABLED().
+> > > Thomas has made it clear I need to use IS_ENABLED(). I can certainly
+> > > use #ifdef (which is what I did in v24).
+> > > 
+> > > > 
+> > > > Not doing this would make the diff easier to read :)
+> > > 
+> > > I agree this is messy. I'm not really sure what this request/effort
+> > > achieves as these attributes are not strongly related (unlike
+> > > cacheinfo) and the way the file was before results in less code.
+> > > 
+> > > At any rate, please indicate if you'd rather I use #ifdef.
+> > > Thanks for your time!
+> > > eric
+> > > 
+> > > > 
+> > > > thanks,
+> > > > 
+> > > > greg k-h
+> > 
+> > Hi Greg,
+> > I was wondering if you might weigh-in so that I can proceed.
+> > 
+> > I think there are three options on the table:
+> > - use #ifdef to comment out these function bodies, which keeps the diff much more readable
+> > - use IS_ENABLED() as Thomas has requested I do, but makes the diff more difficult to read
+> > - remove this refactor altogether, perhaps post-poning until after this
+> > crash hotplug series merges, as this refactor is largely unrelated to
+> > crash hotplug.
+> > 
+> > Thank you for your time on this topic!
+> > eric
+> 
+> Hi Greg,
+> If you have an opinion on how to proceed, please provide.
 
-Yeah, there are places like an initcall gate_vma_init() which call
-vma_init(). I don't think these are called with a locked mmap_lock.
+Sorry, totally swamped by "stuff".  I don't know, use your judgement
+here and send a new version, don't wait for me to weigh in on design
+decisions for longer than a week.
 
->
-> >
-> > Anywhere else besides an address space setup would probably introduce a
-> > race.
-> >
-> > Thanks,
-> > Liam
-> >
+thanks,
+
+greg k-h
