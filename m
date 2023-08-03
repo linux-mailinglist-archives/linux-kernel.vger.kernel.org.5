@@ -2,74 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F83076E336
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 10:35:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DF17276E339
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 10:36:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234674AbjHCIfn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Aug 2023 04:35:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55680 "EHLO
+        id S234617AbjHCIfz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Aug 2023 04:35:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55624 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234321AbjHCIfU (ORCPT
+        with ESMTP id S234608AbjHCIff (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Aug 2023 04:35:20 -0400
-Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E30C7290
-        for <linux-kernel@vger.kernel.org>; Thu,  3 Aug 2023 01:32:05 -0700 (PDT)
-Received: by mail-wr1-x436.google.com with SMTP id ffacd0b85a97d-317c3ac7339so306522f8f.0
-        for <linux-kernel@vger.kernel.org>; Thu, 03 Aug 2023 01:32:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1691051524; x=1691656324;
-        h=content-transfer-encoding:mime-version:date:message-id:subject
-         :references:in-reply-to:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=DIBfxub9CM01UtScGp+GlDrmpYqPbe9y/M/0ui+FdrA=;
-        b=u03rVYohPugy5ggUV+yVILLHwa/fApSrXPMLwWpf964VAaPXySwveplGmdXdDuCKVW
-         AEjP9snX0q8hSemntEF1DNi6yBDMfqOp8vxtD94PhM2DwBi7MIeJ10tzTirXCwGO/NeW
-         Ve5tmUQ6nWk7RRJA8HYWQ6yRs2uHNWNSv6N8S+E6kSVLIv8GuL9adgB6sMUPnTPb8JKa
-         Daamc38M7HEuHfyIGoxJSOk4r1BNq2DXqHbPuo+KPz+1nV6R2TQ9pwVyfXrryalsypXt
-         A3Y7IBCYyMLDTZBLbv8jzrIrsMG2duRIWCjgi/2TYE7QFZ6KxZBRWBDSyonwXIAMqdz6
-         sLsQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691051524; x=1691656324;
-        h=content-transfer-encoding:mime-version:date:message-id:subject
-         :references:in-reply-to:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=DIBfxub9CM01UtScGp+GlDrmpYqPbe9y/M/0ui+FdrA=;
-        b=DqhexPZh4zixD85Sm6qRlIrPoHgRTm5FMzvnYDwxJHBWHseCZuTqT82mrFthsZp8qX
-         8ORZGrNTRSBY6jS5VGu8MspcymeZT30prlPn3S+UnLcGg0q48auG8QnZxTSfqGBYCEC9
-         CuoaDnl7fuLH++3dqOqxVhauxYqWKSK7T4P7qQOHubVrOUj7Yo/b1sJgli3GFztsOpu8
-         ekTaDWY9oiX1DESBIZaP+qQtWrjCN0Dzw9JHnOSWOOi7jsjhNBFtPWETWbtPw7PvdHZl
-         qboFOt7CCyf6zZyo3OjsYHdcIqulSTnobhg1/NMRG7A7CZhi1J5KcgGEke5dYPPi/OMB
-         RS/A==
-X-Gm-Message-State: ABy/qLbLghSZrqwUeY/YNa2Fj4jSl2e3Nd0KsHwBg9CCVHh/zyQql8VN
-        DXuudB8EzUrEaumK2xFh63PtlA==
-X-Google-Smtp-Source: APBJJlHh7x7hfbVuixT27Kq22dQd+UEZdFISupP7IvnKRnCX3W9nWlXJcIc6br+n6dnAt0vliCQ04A==
-X-Received: by 2002:a5d:498c:0:b0:317:5b5f:3348 with SMTP id r12-20020a5d498c000000b003175b5f3348mr5633469wrq.71.1691051523868;
-        Thu, 03 Aug 2023 01:32:03 -0700 (PDT)
-Received: from arrakeen.starnux.net ([2a01:e0a:982:cbb0:52eb:f6ff:feb3:451a])
-        by smtp.gmail.com with ESMTPSA id x1-20020a5d60c1000000b00317afc7949csm6676364wrt.50.2023.08.03.01.32.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 03 Aug 2023 01:32:03 -0700 (PDT)
-From:   Neil Armstrong <neil.armstrong@linaro.org>
-To:     Andrzej Hajda <andrzej.hajda@intel.com>,
-        Robert Foss <rfoss@kernel.org>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Pin-yen Lin <treapking@chromium.org>
-Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-In-Reply-To: <20230727100131.2338127-1-treapking@chromium.org>
-References: <20230727100131.2338127-1-treapking@chromium.org>
-Subject: Re: [PATCH] drm/bridge: it6505: Check power state with
- it6505->powered in IRQ handler
-Message-Id: <169105152304.2528955.6714983966012972300.b4-ty@linaro.org>
-Date:   Thu, 03 Aug 2023 10:32:03 +0200
-MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.12.3
+        Thu, 3 Aug 2023 04:35:35 -0400
+Received: from hutie.ust.cz (hutie.ust.cz [IPv6:2a03:3b40:fe:f0::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF75544B8;
+        Thu,  3 Aug 2023 01:32:31 -0700 (PDT)
+Content-Type: text/plain;
+        charset=utf-8
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cutebit.org; s=mail;
+        t=1691051547; bh=I8UUkfnxct2qea8lWvMBTo7oncRQH0XhAYf9TPDGgYI=;
+        h=Subject:From:In-Reply-To:Date:Cc:References:To;
+        b=Z85MqlFGF/LBBt4moBDmsSdf7NH8QQQ2wwDAld9L3Cpb19uA2fYHtkhVEdrClATcp
+         XL2IgVo0Wf7Sn1TibSIFk3wEFfByuUDi6Lkz18oi2r7XoFgmo7LSYJ8zkyviC/Bjwj
+         EW585564lKGaIx7pLytd/gYu9RnvO+EcqcTHIJi0=
+Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3696.120.41.1.1\))
+Subject: Re: [PATCH 2/2] dmaengine: apple-sio: Add Apple SIO driver
+From:   =?utf-8?Q?Martin_Povi=C5=A1er?= <povik+lin@cutebit.org>
+In-Reply-To: <7D43A9F3-892C-4E74-9618-DB37360B7641@cutebit.org>
+Date:   Thu, 3 Aug 2023 10:32:25 +0200
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>, asahi@lists.linux.dev,
+        dmaengine@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <38B71067-7D67-41B7-BF49-87511BAA06CF@cutebit.org>
+References: <20230712133806.4450-1-povik+lin@cutebit.org>
+ <20230712133806.4450-3-povik+lin@cutebit.org> <ZMlLjg9UBi3QO/qV@matsya>
+ <7D43A9F3-892C-4E74-9618-DB37360B7641@cutebit.org>
+To:     Vinod Koul <vkoul@kernel.org>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
@@ -80,24 +49,102 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
 
-On Thu, 27 Jul 2023 18:01:10 +0800, Pin-yen Lin wrote:
-> On system resume, the driver might call it6505_poweron directly if the
-> runtime PM hasn't been enabled. In such case, pm_runtime_get_if_in_use
-> will always return 0 because dev->power.runtime_status stays at
-> RPM_SUSPENDED, and the IRQ will never be handled.
-> 
-> Use it6505->powered from the driver struct fixes this because it always
-> gets updated when it6505_poweron is called.
-> 
-> [...]
+> On 1. 8. 2023, at 23:55, Martin Povi=C5=A1er <povik+lin@cutebit.org> =
+wrote:
+>=20
+> Hi Vinod!
+>=20
+>> On 1. 8. 2023, at 20:14, Vinod Koul <vkoul@kernel.org> wrote:
+>>=20
+>> On 12-07-23, 15:38, Martin Povi=C5=A1er wrote:
+>>=20
+>>> +struct sio_chan {
+>>> +	unsigned int no;
+>>> +	struct sio_data *host;
+>>> +	struct dma_chan chan;
+>>> +	struct tasklet_struct tasklet;
+>>> +	struct work_struct terminate_wq;
+>>> +
+>>> +	spinlock_t lock;
+>>> +	struct sio_tx *current_tx;
+>>> +	/*
+>>> +	 * 'tx_cookie' is used for distinguishing between transactions =
+from
+>>> +	 * within tag ack/nack callbacks. Without it, we would have no =
+way
+>>> +	 * of knowing if the current transaction is the one the callback =
+handler
+>>> +	 * was installed for.
+>>=20
+>> not sure what you mean by here.. I dont see why you would need to =
+store
+>> cookie here, care to explain?
+>=20
+> I could have clarified this is not meant to be the dmaengine cookie, =
+just
+> a driver-level cookie to address a race between
+>=20
+> 	a dmaengine user calling terminate_all to terminate a running
+> 	cyclic transaction, then issuing a new one
+>=20
+> on one hand, and
+>=20
+> 	the coprocessor acking the issuing of one of the coprocessor
+> 	transactions that correspond to the first dmaengine transaction
+>=20
+> on the other hand. With the cookie the driver should not get confused
+> about which dmaengine transaction the ACK belongs to, since if =
+`current_tx`
+> changed in the meantime the cookie won=E2=80=99t match.
+>=20
+> But now that I look at it... huh, I never increment that `tx_cookie` =
+field!
+> I don=E2=80=99t know if I have considered using the dmaengine cookie =
+to the same
+> effect. Maybe we can do that, I see how that would be much desirable.
 
-Thanks, Applied to https://anongit.freedesktop.org/git/drm/drm-misc.git (drm-misc-fixes)
+Indeed nothing is stopping us from matching on the dmaengine cookie to
+address the race, so I will be dropping this `tx_cookie` field in v2.
 
-[1/1] drm/bridge: it6505: Check power state with it6505->powered in IRQ handler
-      https://cgit.freedesktop.org/drm/drm-misc/commit/?id=e9d699af3f65d62cf195f0e7a039400093ab2af2
+>>> +static int sio_alloc_tag(struct sio_data *sio)
+>>> +{
+>>> +	struct sio_tagdata *tags =3D &sio->tags;
+>>> +	int tag, i;
+>>> +
+>>> +	/*
+>>> +	 * Because tag number 0 is special, the usable tag range
+>>> +	 * is 1...(SIO_NTAGS - 1). So, to pick the next usable tag,
+>>> +	 * we do modulo (SIO_NTAGS - 1) *then* plus one.
+>>> +	 */
+>>> +
+>>> +#define SIO_USABLE_TAGS (SIO_NTAGS - 1)
+>>> +	tag =3D (READ_ONCE(tags->last_tag) % SIO_USABLE_TAGS) + 1;
+>>> +
+>>> +	for (i =3D 0; i < SIO_USABLE_TAGS; i++) {
+>>> +		if (!test_and_set_bit(tag, &tags->allocated))
+>>> +			break;
+>>> +
+>>> +		tag =3D (tag % SIO_USABLE_TAGS) + 1;
+>>> +	}
+>>> +
+>>> +	WRITE_ONCE(tags->last_tag, tag);
+>>> +
+>>> +	if (i < SIO_USABLE_TAGS)
+>>> +		return tag;
+>>> +	else
+>>> +		return -EBUSY;
+>>> +#undef SIO_USABLE_TAGS
+>>> +}
+>>=20
+>> can you use kernel mechanisms like ida to alloc and free the tags...
+>=20
+> I can look into that.
 
--- 
-Neil
+Documentation says IDA is deprecated in favour of Xarray, both look
+like they serve to associate a pointer with an ID. I think neither
+structure beats a simple bitfield and a static array for the per-tag
+data. Agree?
+
+Martin
 
