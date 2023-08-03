@@ -2,59 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C342B76EA43
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 15:29:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3296676EA12
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 15:24:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235588AbjHCN1g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Aug 2023 09:27:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47280 "EHLO
+        id S235524AbjHCNYd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Aug 2023 09:24:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44586 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234160AbjHCN1b (ORCPT
+        with ESMTP id S234722AbjHCNYb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Aug 2023 09:27:31 -0400
-Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EAE0B1BFA;
-        Thu,  3 Aug 2023 06:27:30 -0700 (PDT)
-Received: from mail02.huawei.com (unknown [172.30.67.143])
-        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4RGqQQ4c6dz4f3l18;
-        Thu,  3 Aug 2023 21:27:26 +0800 (CST)
-Received: from huaweicloud.com (unknown [10.175.104.67])
-        by APP4 (Coremail) with SMTP id gCh0CgCnD7M6q8tk5SrlPQ--.7420S6;
-        Thu, 03 Aug 2023 21:27:27 +0800 (CST)
-From:   Yu Kuai <yukuai1@huaweicloud.com>
-To:     song@kernel.org, xni@redhat.com
-Cc:     linux-raid@vger.kernel.org, linux-kernel@vger.kernel.org,
-        yukuai3@huawei.com, yukuai1@huaweicloud.com, yi.zhang@huawei.com,
-        yangerkun@huawei.com
-Subject: [PATCH -next 02/13] md: factor out a helper rdev_removeable() from remove_and_add_spares()
-Date:   Thu,  3 Aug 2023 21:24:15 +0800
-Message-Id: <20230803132426.2688608-3-yukuai1@huaweicloud.com>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20230803132426.2688608-1-yukuai1@huaweicloud.com>
-References: <20230803132426.2688608-1-yukuai1@huaweicloud.com>
+        Thu, 3 Aug 2023 09:24:31 -0400
+Received: from out30-124.freemail.mail.aliyun.com (out30-124.freemail.mail.aliyun.com [115.124.30.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BBC291704;
+        Thu,  3 Aug 2023 06:24:28 -0700 (PDT)
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R141e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046059;MF=guangguan.wang@linux.alibaba.com;NM=1;PH=DS;RN=13;SR=0;TI=SMTPD_---0Voz-FPi_1691069063;
+Received: from localhost.localdomain(mailfrom:guangguan.wang@linux.alibaba.com fp:SMTPD_---0Voz-FPi_1691069063)
+          by smtp.aliyun-inc.com;
+          Thu, 03 Aug 2023 21:24:24 +0800
+From:   Guangguan Wang <guangguan.wang@linux.alibaba.com>
+To:     wenjia@linux.ibm.com, jaka@linux.ibm.com, kgraul@linux.ibm.com,
+        tonylu@linux.alibaba.com, davem@davemloft.net, edumazet@google.com,
+        kuba@kernel.org, pabeni@redhat.com
+Cc:     alibuda@linux.alibaba.com, guwen@linux.alibaba.com,
+        linux-s390@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [RFC PATCH net-next 0/6] net/smc: serveral features's implementation for smc v2.1
+Date:   Thu,  3 Aug 2023 21:24:16 +0800
+Message-Id: <20230803132422.6280-1-guangguan.wang@linux.alibaba.com>
+X-Mailer: git-send-email 2.24.3 (Apple Git-128)
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: gCh0CgCnD7M6q8tk5SrlPQ--.7420S6
-X-Coremail-Antispam: 1UD129KBjvJXoW7Kr47Kr4xtr1fuF4UWFy7GFg_yoW8Ar18pa
-        1xKFySkr1UAa47t34kJr4UGa4aqa10ga1IkFyxG34SqasxAr90gw4rKFy5XryqyFZYvF43
-        AF18J3y5Cry0gF7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUU9m14x267AKxVWrJVCq3wAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2048vs2IY020E87I2jVAFwI0_Jryl82xGYIkIc2
-        x26xkF7I0E14v26r4j6ryUM28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8wA2z4x0
-        Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr1j6F4UJw
-        A2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oVCq3wAS
-        0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2
-        IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0
-        Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwCF04k20xvY0x0EwIxGrwCFx2
-        IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v2
-        6r106r1rMI8E67AF67kF1VAFwI0_Jw0_GFylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67
-        AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IY
-        s7xG6r1j6r1xMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr
-        0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x0JUc6pPUUUUU=
-X-CM-SenderInfo: 51xn3trlr6x35dzhxuhorxvhhfrp/
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,KHOP_HELO_FCRDNS,
-        MAY_BE_FORGED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+X-Spam-Status: No, score=-9.9 required=5.0 tests=BAYES_00,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -62,61 +42,29 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yu Kuai <yukuai3@huawei.com>
+This patch set implement serveral new features in SMC v2.1(https://
+www.ibm.com/support/pages/node/7009315), including vendor unique
+experimental options, max connections per lgr negotiation, max links
+per lgr negotiation.
 
-There are no functional changes, just to make the code simpler and
-prepare to refactoer remove_and_add_spares().
+Guangguan Wang (6):
+  net/smc: support smc release version negotiation in clc handshake
+  net/smc: add vendor unique experimental options area in clc handshake
+  net/smc: support smc v2.x features validate
+  net/smc: support max connections per lgr negotiation
+  net/smc: support max links per lgr negotiation in clc handshake
+  net/smc: Extend SMCR v2 linkgroup netlink attribute
 
-Signed-off-by: Yu Kuai <yukuai3@huawei.com>
----
- drivers/md/md.c | 27 ++++++++++++++-------------
- 1 file changed, 14 insertions(+), 13 deletions(-)
+ include/uapi/linux/smc.h |   2 +
+ net/smc/af_smc.c         |  87 +++++++++++++++++------
+ net/smc/smc.h            |   5 +-
+ net/smc/smc_clc.c        | 147 ++++++++++++++++++++++++++++++++-------
+ net/smc/smc_clc.h        |  53 ++++++++++++--
+ net/smc/smc_core.c       |  13 +++-
+ net/smc/smc_core.h       |  10 +++
+ net/smc/smc_llc.c        |  21 ++++--
+ 8 files changed, 284 insertions(+), 54 deletions(-)
 
-diff --git a/drivers/md/md.c b/drivers/md/md.c
-index cd7ac1dee3b8..0d84754027ec 100644
---- a/drivers/md/md.c
-+++ b/drivers/md/md.c
-@@ -9149,6 +9149,14 @@ void md_do_sync(struct md_thread *thread)
- }
- EXPORT_SYMBOL_GPL(md_do_sync);
- 
-+static bool rdev_removeable(struct md_rdev *rdev)
-+{
-+	return rdev->raid_disk >= 0 && !test_bit(Blocked, &rdev->flags) &&
-+	       !test_bit(In_sync, &rdev->flags) &&
-+	       !test_bit(Journal, &rdev->flags) &&
-+	       !atomic_read(&rdev->nr_pending);
-+}
-+
- static int remove_and_add_spares(struct mddev *mddev,
- 				 struct md_rdev *this)
- {
-@@ -9161,19 +9169,12 @@ static int remove_and_add_spares(struct mddev *mddev,
- 		return 0;
- 
- 	rdev_for_each(rdev, mddev) {
--		if ((this == NULL || rdev == this) &&
--		    rdev->raid_disk >= 0 &&
--		    !test_bit(Blocked, &rdev->flags) &&
--		    !test_bit(In_sync, &rdev->flags) &&
--		    !test_bit(Journal, &rdev->flags) &&
--		    atomic_read(&rdev->nr_pending)==0) {
--			if (mddev->pers->hot_remove_disk(
--				    mddev, rdev) == 0) {
--				sysfs_unlink_rdev(mddev, rdev);
--				rdev->saved_raid_disk = rdev->raid_disk;
--				rdev->raid_disk = -1;
--				removed++;
--			}
-+		if ((this == NULL || rdev == this) && rdev_removeable(rdev) &&
-+		    !mddev->pers->hot_remove_disk(mddev, rdev)) {
-+			sysfs_unlink_rdev(mddev, rdev);
-+			rdev->saved_raid_disk = rdev->raid_disk;
-+			rdev->raid_disk = -1;
-+			removed++;
- 		}
- 	}
- 
 -- 
-2.39.2
+2.24.3 (Apple Git-128)
 
