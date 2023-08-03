@@ -2,102 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 882F476E0FA
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 09:10:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E86576E101
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 09:13:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233397AbjHCHKr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Aug 2023 03:10:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34092 "EHLO
+        id S232800AbjHCHN1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Aug 2023 03:13:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35178 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232800AbjHCHKo (ORCPT
+        with ESMTP id S230096AbjHCHNZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Aug 2023 03:10:44 -0400
-Received: from muru.com (muru.com [72.249.23.125])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 9DB23FF;
-        Thu,  3 Aug 2023 00:10:43 -0700 (PDT)
-Received: from hillo.muru.com (localhost [127.0.0.1])
-        by muru.com (Postfix) with ESMTP id 3808380FE;
-        Thu,  3 Aug 2023 07:10:41 +0000 (UTC)
-From:   Tony Lindgren <tony@atomide.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     Andy Shevchenko <andriy.shevchenko@intel.com>,
-        Dhruva Gole <d-gole@ti.com>,
-        =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>,
-        John Ogness <john.ogness@linutronix.de>,
-        Johan Hovold <johan@kernel.org>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org,
-        kernel test robot <oliver.sang@intel.com>
-Subject: [PATCH v2 1/1] serial: core: Fix serial_base_match() after fixing controller port name
-Date:   Thu,  3 Aug 2023 10:10:32 +0300
-Message-ID: <20230803071034.25571-1-tony@atomide.com>
-X-Mailer: git-send-email 2.41.0
+        Thu, 3 Aug 2023 03:13:25 -0400
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A75EFF
+        for <linux-kernel@vger.kernel.org>; Thu,  3 Aug 2023 00:13:24 -0700 (PDT)
+Received: from dggpemm100001.china.huawei.com (unknown [172.30.72.54])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4RGg5Z18SSzrSCD;
+        Thu,  3 Aug 2023 15:12:18 +0800 (CST)
+Received: from [10.174.177.243] (10.174.177.243) by
+ dggpemm100001.china.huawei.com (7.185.36.93) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.27; Thu, 3 Aug 2023 15:13:21 +0800
+Message-ID: <001ee9b0-ea25-a896-e3ae-9a9b05a46546@huawei.com>
+Date:   Thu, 3 Aug 2023 15:13:21 +0800
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.10.1
+From:   Kefeng Wang <wangkefeng.wang@huawei.com>
+Subject: Re: [PATCH 1/4] mm: migrate: use a folio in add_page_for_migration()
+To:     Matthew Wilcox <willy@infradead.org>
+CC:     Andrew Morton <akpm@linux-foundation.org>, <linux-mm@kvack.org>,
+        <linux-kernel@vger.kernel.org>, Huang Ying <ying.huang@intel.com>,
+        David Hildenbrand <david@redhat.com>
+References: <20230802095346.87449-1-wangkefeng.wang@huawei.com>
+ <20230802095346.87449-2-wangkefeng.wang@huawei.com>
+ <ZMpKYfNWA/jNgEuL@casper.infradead.org>
+Content-Language: en-US
+In-Reply-To: <ZMpKYfNWA/jNgEuL@casper.infradead.org>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.177.243]
+X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
+ dggpemm100001.china.huawei.com (7.185.36.93)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-While fixing DEVNAME to be more usable, I broke serial_base_match() as the
-ctrl and port prefix for device names seemed unnecessary.
 
-The prefixes are still needed by serial_base_match() to probe the serial
-base controller port, and serial tx is now broken.
 
-Let's fix the issue by checking against dev->type and drv->name instead
-of the prefixes that are no longer in the DEVNAME.
+On 2023/8/2 20:21, Matthew Wilcox wrote:
+> On Wed, Aug 02, 2023 at 05:53:43PM +0800, Kefeng Wang wrote:
+>>   	err = -EACCES;
+>> -	if (page_mapcount(page) > 1 && !migrate_all)
+>> -		goto out_putpage;
+>> +	if (folio_estimated_sharers(folio) > 1 && !migrate_all)
+>> +		goto out_putfolio;
+> 
+> I do not think this is the correct change.  Maybe leave this line
+> alone.
 
-Fixes: 1ef2c2df1199 ("serial: core: Fix serial core controller port name to show controller id")
-Reported-by: kernel test robot <oliver.sang@intel.com>
-Closes: https://lore.kernel.org/oe-lkp/202308021529.35b3ad6c-oliver.sang@intel.com
-Signed-off-by: Tony Lindgren <tony@atomide.com>
----
+Ok, I am aware of the discussion about this in other mail, will not
+change it(also the next two patch about this function), or wait the
+new work of David.
+> 
+>> -	if (PageHuge(page)) {
+>> -		if (PageHead(page)) {
+>> -			isolated = isolate_hugetlb(page_folio(page), pagelist);
+>> +	if (folio_test_hugetlb(folio)) {
+>> +		if (folio_test_large(folio)) {
+> 
+> This makes no sense when you read it.  All hugetlb folios are large,
+> by definition.  Think about what this code used to do, and what it
+> should be changed to.
 
-Changes since v1:
-- Leave out magic numbers and use str_has_prefix() as suggested by Andy
-  and Greg
+hugetlb folio is self large folio, will drop redundant check
 
-- Improve patch description and add a link for Closes tag as suggested
-  by Jiri
 
-- Check the name against device_type name since we have it and leave
-  out the changes to try to define names in the header because of the
-  issues noted by Jiri
 
-- Leave out Tested-by from Mark and Anders as the patch changed
-
----
- drivers/tty/serial/serial_base_bus.c | 10 ++++++++--
- 1 file changed, 8 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/tty/serial/serial_base_bus.c b/drivers/tty/serial/serial_base_bus.c
---- a/drivers/tty/serial/serial_base_bus.c
-+++ b/drivers/tty/serial/serial_base_bus.c
-@@ -29,9 +29,15 @@ static const struct device_type serial_port_type = {
- 
- static int serial_base_match(struct device *dev, struct device_driver *drv)
- {
--	int len = strlen(drv->name);
-+	if (dev->type == &serial_ctrl_type &&
-+	    str_has_prefix(drv->name, serial_ctrl_type.name))
-+		return 1;
- 
--	return !strncmp(dev_name(dev), drv->name, len);
-+	if (dev->type == &serial_port_type &&
-+	    str_has_prefix(drv->name, serial_port_type.name))
-+		return 1;
-+
-+	return 0;
- }
- 
- static struct bus_type serial_base_bus_type = {
--- 
-2.41.0
