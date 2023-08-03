@@ -2,162 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 145F176E298
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 10:13:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A615876E29C
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 10:14:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233308AbjHCIN2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Aug 2023 04:13:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41472 "EHLO
+        id S234102AbjHCINu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Aug 2023 04:13:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41748 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232755AbjHCIMf (ORCPT
+        with ESMTP id S234401AbjHCINK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Aug 2023 04:12:35 -0400
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0BCB96A54
-        for <linux-kernel@vger.kernel.org>; Thu,  3 Aug 2023 01:04:10 -0700 (PDT)
-Received: from [192.168.0.125] (unknown [82.76.24.202])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits))
-        (No client certificate requested)
-        (Authenticated sender: ehristev)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id A811266003AE;
-        Thu,  3 Aug 2023 09:04:06 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1691049848;
-        bh=olN4dxI1FgVffux81b8zn3MJNrXq8USsOO0KoBkTCFs=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=BlL9QbPlioYXC2hNIEVJBMKioa2AcQ6EjQ7NiyDIMcDgMbcM/28l7xVhptnPgiX4x
-         92SmPsToRA7yGqjMei6q88tORCKN0bEKHyN0UwD6Mw8nukOiWRYezCCOfWJ4CW0esr
-         5Zo6Uy3CCoPDfQca0SERrw925gqaoXGqNdrGKK9of7wqomSgQ1WZcALHdfrlB9MtJ/
-         3uijb4BuTs/jL92gGud8/ERb/EdZnwVq2pF+Vu3B+SK07cdVpibd/rTXi8zodRXPW1
-         9w+tjnnrpBK2H/C54IdNiwBf8JT8mH3z6wrlOaKUHvZWPAn6SGLllBYBONzasNHpF5
-         4j21QxdJPrj0w==
-Message-ID: <e88a1074-ca86-709f-8c26-f875320e728a@collabora.com>
-Date:   Thu, 3 Aug 2023 11:04:03 +0300
+        Thu, 3 Aug 2023 04:13:10 -0400
+Received: from fllv0016.ext.ti.com (fllv0016.ext.ti.com [198.47.19.142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C8566EA2;
+        Thu,  3 Aug 2023 01:04:56 -0700 (PDT)
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 37384gxb109653;
+        Thu, 3 Aug 2023 03:04:42 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1691049882;
+        bh=RgrGWKIam2gDQPqOqi/N8Wd9c9Y7scNdjACokaeVOdU=;
+        h=From:To:CC:Subject:Date;
+        b=t98ru/Mf9aLFBLt77pUq8FOZBc7oqBQ8laijwzuNqN8RX6WkTwJMbRTUhx9rh/ccR
+         PHwqFpRbc1AZZC/jQA26URNLh8fgZdHI70HLeL8SWmyx9HWW45CNIAWDUsaIpRuYxB
+         3gM87ihWkW5425M9ZOznYdHcnsFdDdSRtpivygjw=
+Received: from DLEE102.ent.ti.com (dlee102.ent.ti.com [157.170.170.32])
+        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 37384gIU048720
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Thu, 3 Aug 2023 03:04:42 -0500
+Received: from DLEE102.ent.ti.com (157.170.170.32) by DLEE102.ent.ti.com
+ (157.170.170.32) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Thu, 3
+ Aug 2023 03:04:42 -0500
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE102.ent.ti.com
+ (157.170.170.32) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Thu, 3 Aug 2023 03:04:42 -0500
+Received: from localhost (ileaxei01-snat.itg.ti.com [10.180.69.5])
+        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 37384fue125928;
+        Thu, 3 Aug 2023 03:04:41 -0500
+From:   Jayesh Choudhary <j-choudhary@ti.com>
+To:     <nm@ti.com>, <vigneshr@ti.com>, <afd@ti.com>, <rogerq@kernel.org>
+CC:     <s-vadapalli@ti.com>, <kristo@kernel.org>, <robh+dt@kernel.org>,
+        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
+        <a-bhatia1@ti.com>, <r-ravikumar@ti.com>, <sabiya.d@ti.com>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>, <j-choudhary@ti.com>
+Subject: [PATCH v9 0/5] Enable Display for J784S4 and AM69-SK platform
+Date:   Thu, 3 Aug 2023 13:34:36 +0530
+Message-ID: <20230803080441.367341-1-j-choudhary@ti.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH] ASoC: SOF: mediatek: mt8186 modify dram type as non-cache
-Content-Language: en-US
-To:     Trevor Wu <trevor.wu@mediatek.com>,
-        pierre-louis.bossart@linux.intel.com,
-        peter.ujfalusi@linux.intel.com, yung-chuan.liao@linux.intel.com,
-        ranjani.sridharan@linux.intel.com, kai.vehmanen@linux.intel.com,
-        daniel.baluta@nxp.com, broonie@kernel.org, lgirdwood@gmail.com,
-        tiwai@suse.com, perex@perex.cz, matthias.bgg@gmail.com,
-        angelogioacchino.delregno@collabora.com
-Cc:     yc.hung@mediatek.com, allen-kh.cheng@mediatek.com,
-        sound-open-firmware@alsa-project.org, alsa-devel@alsa-project.org,
-        linux-mediatek@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-References: <20230803075028.32170-1-trevor.wu@mediatek.com>
-From:   Eugen Hristev <eugen.hristev@collabora.com>
-In-Reply-To: <20230803075028.32170-1-trevor.wu@mediatek.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Trevor,
+This series adds support for:
+- DisplayPort for J784S4-EVM
+- Displayport and HDMI for AM69-SK platform
 
-On 8/3/23 10:50, Trevor Wu wrote:
-> To prevent incorrect access between the host and DSP sides, we need to
-> modify DRAM as a non-cache memory type. Additionally, we can retrieve
-> the size of shared DMA from the device tree.
-> 
-> Signed-off-by: Trevor Wu <trevor.wu@mediatek.com>
-> Reviewed-by: Yaochun Hung <yc.hung@mediatek.com>
-> Reviewed-by: Kuan-Hsun Cheng <Allen-KH.Cheng@mediatek.com>
-> ---
->   sound/soc/sof/mediatek/mt8186/mt8186.c | 40 +++++++++++++++-----------
->   1 file changed, 23 insertions(+), 17 deletions(-)
-> 
-> diff --git a/sound/soc/sof/mediatek/mt8186/mt8186.c b/sound/soc/sof/mediatek/mt8186/mt8186.c
-> index 3e0ea0e109e2..f587edf9e0a7 100644
-> --- a/sound/soc/sof/mediatek/mt8186/mt8186.c
-> +++ b/sound/soc/sof/mediatek/mt8186/mt8186.c
-> @@ -111,6 +111,14 @@ static int platform_parse_resource(struct platform_device *pdev, void *data)
->   
->   	dev_dbg(dev, "DMA %pR\n", &res);
->   
-> +	adsp->pa_shared_dram = (phys_addr_t)res.start;
-> +	adsp->shared_size = resource_size(&res);
-> +	if (adsp->pa_shared_dram & DRAM_REMAP_MASK) {
-> +		dev_err(dev, "adsp shared dma memory(%#x) is not 4K-aligned\n",
-> +			(u32)adsp->pa_shared_dram);
-> +		return -EINVAL;
-> +	}
-> +
+Changelog v8->v9:
+- Fix compatible of serdes_ln_ctrl node
+- Fix extra new lines across nodes
+- Fix node-names to keep them generic
 
-Would it be better to just realign to the next 4k boundary ?
-Or, isn't it more usual to use dma_coerce_mask_and_coherent ?
+Changelog v7->v8:
+- rebase on tag next-20230731
+- add AM69 display support
+- fix commit heading for patch [2/5]
 
->   	ret = of_reserved_mem_device_init(dev);
->   	if (ret) {
->   		dev_err(dev, "of_reserved_mem_device_init failed\n");
-> @@ -244,23 +252,18 @@ static int adsp_shared_base_ioremap(struct platform_device *pdev, void *data)
->   {
->   	struct device *dev = &pdev->dev;
->   	struct mtk_adsp_chip_info *adsp = data;
-> -	u32 shared_size;
->   
->   	/* remap shared-dram base to be non-cachable */
-> -	shared_size = TOTAL_SIZE_SHARED_DRAM_FROM_TAIL;
-> -	adsp->pa_shared_dram = adsp->pa_dram + adsp->dramsize - shared_size;
-> -	if (adsp->va_dram) {
-> -		adsp->shared_dram = adsp->va_dram + DSP_DRAM_SIZE - shared_size;
-> -	} else {
-> -		adsp->shared_dram = devm_ioremap(dev, adsp->pa_shared_dram,
-> -						 shared_size);
-> -		if (!adsp->shared_dram) {
-> -			dev_err(dev, "ioremap failed for shared DRAM\n");
-> -			return -ENOMEM;
-> -		}
-> +	adsp->shared_dram = devm_ioremap(dev, adsp->pa_shared_dram,
-> +					 adsp->shared_size);
+Changelog v6->v7:
+- change compatible for scm_conf to 'simple-bus'
+- drop main_cpsw node due to driver dependency on [2]
 
-You cannot use dma_alloc_coherent ? This should take care of all the 
-cache maintainance for you.
+Changelog v5->v6:
+- Change header file according to [1].
+- Add idle-state property in serdes_ln_ctrl node.
+- Fix dtbs_check warning due to clock-frequency property in serdes_refclk
+  node by disabling the node in main.dtsi and enabling it in board file
+  when the clock-frequency node is actually added.
 
-> +	if (!adsp->shared_dram) {
-> +		dev_err(dev, "failed to ioremap base %pa size %#x\n",
-> +			adsp->shared_dram, adsp->shared_size);
-> +		return -ENOMEM;
->   	}
-> -	dev_dbg(dev, "shared-dram vbase=%p, phy addr :%pa, size=%#x\n",
-> -		adsp->shared_dram, &adsp->pa_shared_dram, shared_size);
-> +
-> +	dev_dbg(dev, "shared-dram vbase=%p, phy addr :%pa,  size=%#x\n",
-> +		adsp->shared_dram, &adsp->pa_shared_dram, adsp->shared_size);
->   
->   	return 0;
->   }
-> @@ -307,9 +310,12 @@ static int mt8186_dsp_probe(struct snd_sof_dev *sdev)
->   		return -ENOMEM;
->   	}
->   
-> -	sdev->bar[SOF_FW_BLK_TYPE_SRAM] = devm_ioremap_wc(sdev->dev,
-> -							  priv->adsp->pa_dram,
-> -							  priv->adsp->dramsize);
-> +	priv->adsp->va_sram = sdev->bar[SOF_FW_BLK_TYPE_IRAM];
-> +
-> +	sdev->bar[SOF_FW_BLK_TYPE_SRAM] = devm_ioremap(sdev->dev,
-> +						       priv->adsp->pa_dram,
-> +						       priv->adsp->dramsize);
-> +
-Same here
+Changelog v4->v5:
+- rebased the patches on linux-next tip.
 
->   	if (!sdev->bar[SOF_FW_BLK_TYPE_SRAM]) {
->   		dev_err(sdev->dev, "failed to ioremap base %pa size %#x\n",
->   			&priv->adsp->pa_dram, priv->adsp->dramsize);
+Changelog v3->v4:
+- add reg property to serdes_ln_ctrl and fix the node name again to
+  get rid of dtbs_check error.
+- reorder reg, reg-names and ranges property for main_cpsw1.
+- correct the order for clocks in serdes_wiz nodes to fix dtbs_check
+  warnings.
+- fix indentation in reg, reg-names and clock property for dss node.
+- add comments for the reg type in dss registers.
 
+Changelog v3->v2:
+- fix dtc warnings for 'scm_conf' and 'serdes_ln_ctrl' nodes
+  (Checked all the changes of the series with W=12 option during build)
+- added clock-frequency for serdes_refclk along with other EVM changes
+  This refclk is being used by all the instances of serdes_wiz which
+  are disabled by default. So configuring refclk when the serdes nodes
+  are used for the first time is okay.
 
-Regards,
-Eugen
+Changelog v1->v2:
+- Moved J784S4 EVM changes together to the last patch
+  (Suggested by Andrew)
+
+v8 patch link:
+<https://lore.kernel.org/all/20230801070019.219660-1-j-choudhary@ti.com/>
+
+[1]: <https://lore.kernel.org/all/20230721125732.122421-1-j-choudhary@ti.com/>
+[2]: <https://lore.kernel.org/all/20230605154153.24025-1-afd@ti.com/>
+
+Dasnavis Sabiya (1):
+  arm64: dts: ti: k3-am69-sk: Add DP and HDMI support
+
+Rahul T R (2):
+  arm64: dts: ti: k3-j784s4-main: Add DSS and DP-bridge node
+  arm64: dts: ti: k3-j784s4-evm: Enable DisplayPort-0
+
+Siddharth Vadapalli (2):
+  arm64: dts: ti: k3-j784s4-main: Add system controller and SERDES lane
+    mux
+  arm64: dts: ti: k3-j784s4-main: Add WIZ and SERDES PHY nodes
+
+ arch/arm64/boot/dts/ti/k3-am69-sk.dts      | 234 ++++++++++++++++++
+ arch/arm64/boot/dts/ti/k3-j784s4-evm.dts   | 119 +++++++++
+ arch/arm64/boot/dts/ti/k3-j784s4-main.dtsi | 267 +++++++++++++++++++++
+ 3 files changed, 620 insertions(+)
+
+-- 
+2.25.1
+
