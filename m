@@ -2,101 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B69A76E660
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 13:08:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 928E776E669
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 13:10:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234259AbjHCLIy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Aug 2023 07:08:54 -0400
+        id S235474AbjHCLKv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Aug 2023 07:10:51 -0400
 Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49348 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235829AbjHCLId (ORCPT
+        with ESMTP id S235176AbjHCLKd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Aug 2023 07:08:33 -0400
-Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B458B3AA0;
-        Thu,  3 Aug 2023 04:06:51 -0700 (PDT)
-Received: by mail-lf1-x12f.google.com with SMTP id 2adb3069b0e04-4fe0c566788so1441820e87.0;
-        Thu, 03 Aug 2023 04:06:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1691060784; x=1691665584;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=zXu7inCZnjemglS3ZAdUiIifz464S2TFKVJqbs2kCYw=;
-        b=EEyQkRCWgtSF0AifYVPMWwUzRpHA16eokdlqzUdGBJTt8/Yi+NlcGLtvHRGSchF/7I
-         wuvjk4CiC40CSXfzwbUZo8HjZ4XrdAtin2sTINZXIY46N/t7acUNfoLgqFYZAWXguqRV
-         jPfc7InfO6KYDfI7Fl1I5ON5KC7iuUhcNThgxSq8HUCbknUFfcOsKfVD2vSKavAqgZDk
-         CClINj9py+YdVsJxK5/m90mc9jLYZeHkLKUl8+o2lU0SsYpKlIJ2BmOR2M+VdTuifDs3
-         Z9s4OQv6lCHtetdnlvCXkCFiZy9gtNfBa3BV9mI+dmVGB2f0MdZR0rpB8oCK4tmI6Lyj
-         oj0A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691060784; x=1691665584;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=zXu7inCZnjemglS3ZAdUiIifz464S2TFKVJqbs2kCYw=;
-        b=B5WAU17JZYvxBd/nJOgUw/77GBY5GgFwE4O35msHF8oZiMnkfHkA6VQqLLQHre1Ku5
-         4vGrnQgCgUBfl8mGDpOKfaj2NBW7c1kotWhvyubmkXxtkgzceXUfxTVf9ERH/qG0RdcC
-         fD2phrPHliFh5cotTQ5A4jeY+9nboXkzc5aKQVTSMECcBJvqGc5s62auMQqfC+IzJq7k
-         NFcYJU/jEVnEN6bvfJ1bVCsK4vxy2tP/Em7OQEHzT8wwcz/LwaQibmV+oVwslx988mlf
-         dqPhsUxC7VhXlm6edz+PHjAkuGEw4KrKMTf8fgEk4fyc6dTTfP2aWnyB5vSushY1BkAh
-         WrGw==
-X-Gm-Message-State: ABy/qLYXAvymia5C1Aor5QkqBFcClOOB8Zo1AXKxT11rEiVqqDR+nci9
-        YCIb2NqqSn6z2VFwiq2kvZnYZ69X5EVAwXmW+XY=
-X-Google-Smtp-Source: APBJJlHwYIWcZbS9oAz83v/SlSb5rXIAM+6hK9FfjfNczXplugVL2wp86lTFpptbVcBjVD3299vi7HgR/3qaYiBbMFg=
-X-Received: by 2002:a19:9102:0:b0:4f9:51ac:41eb with SMTP id
- t2-20020a199102000000b004f951ac41ebmr6178816lfd.16.1691060783927; Thu, 03 Aug
- 2023 04:06:23 -0700 (PDT)
+        Thu, 3 Aug 2023 07:10:33 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A216F5595;
+        Thu,  3 Aug 2023 04:08:35 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 5D27761D47;
+        Thu,  3 Aug 2023 11:08:34 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EE34AC433C8;
+        Thu,  3 Aug 2023 11:08:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1691060913;
+        bh=KEAtgOS5jYItBOTrXF1vB31CKUjsHUBpPiB4bpc82fE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=tkEVcdW2O+ztWRu1qNbkdliDPEunSmhcenw/NFYclvicVnhdO/Rh6R3qpcDH344+g
+         FA9niHSKP1An6jyQea4woFOR8RFPcfx+vQYng69aoNJCrGVAap/Zywg9srq7eKSYwR
+         +m29v9qMy09XgX6cnSZL74k/dRuoK6ztkovhoBxlExG/lfiTfetd4Tq9gfpMujRbrr
+         5WSXo3jQxMBRQiRo+0IsBbtMC+GSIAQAueKzEgGR1PhqfZvJHg+875WwWFfwDQR7XA
+         DTm71NsEBWBtKhwQwKUa1VZFl2WPROjZnS1mKtkFYpDMow3NYU48flwydIbYvt1uke
+         e+PJcx9LrsZoQ==
+Date:   Thu, 3 Aug 2023 12:08:28 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     ChiYuan Huang <cy_huang@richtek.com>
+Cc:     Alina Yu <alina_yu@richtek.com>, lgirdwood@gmail.com,
+        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+        conor+dt@kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org
+Subject: Re: [PATCH v5 2/2] regulator: rtq2208: Add Richtek RTQ2208 SubPMIC
+ driver
+Message-ID: <e31b8381-7148-4485-834a-02638e9a81d7@sirena.org.uk>
+References: <1690355592-10920-1-git-send-email-alina_yu@richtek.com>
+ <1690355592-10920-3-git-send-email-alina_yu@richtek.com>
+ <20230803072425.GA22780@linuxcarl2.richtek.com>
 MIME-Version: 1.0
-References: <20230803083352.1585-1-zegao@tencent.com> <20230803083352.1585-4-zegao@tencent.com>
- <20230803085342.GG212435@hirez.programming.kicks-ass.net>
-In-Reply-To: <20230803085342.GG212435@hirez.programming.kicks-ass.net>
-From:   Ze Gao <zegao2021@gmail.com>
-Date:   Thu, 3 Aug 2023 19:06:12 +0800
-Message-ID: <CAD8CoPAgqmgu+M6c1oEJBWq0ScmRsExDtKDi0dGabOo1OK0y+g@mail.gmail.com>
-Subject: Re: [RFC PATCH v6 3/5] sched, tracing: reorganize fields of switch
- event struct
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Adrian Hunter <adrian.hunter@intel.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Ian Rogers <irogers@google.com>,
-        Ingo Molnar <mingo@redhat.com>, Jiri Olsa <jolsa@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
-        linux-trace-kernel@vger.kernel.org, Ze Gao <zegao@tencent.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="4j+GeulFbYEw8OPb"
+Content-Disposition: inline
+In-Reply-To: <20230803072425.GA22780@linuxcarl2.richtek.com>
+X-Cookie: One Bell System - it works.
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 3, 2023 at 4:54=E2=80=AFPM Peter Zijlstra <peterz@infradead.org=
-> wrote:
->
-> On Thu, Aug 03, 2023 at 04:33:50AM -0400, Ze Gao wrote:
-> > Report prioritiy and prev_state in 'short' to save some buffer
-> > space. And also reorder the fields so that we take struct
-> > alignment into consideration to make the record compact.
-> >
-> > Suggested-by: Steven Rostedt (Google) <rostedt@goodmis.org>
-> > Signed-off-by: Ze Gao <zegao@tencent.com>
->
-> I am really getting fed up with this. This again doesn't list any
-> reasons on why this is a sane thing to do.
 
-Lesson learned from Steven's reply,  Will reorganize the changelog.
+--4j+GeulFbYEw8OPb
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Thanks for pointing this out.
+On Thu, Aug 03, 2023 at 03:24:25PM +0800, ChiYuan Huang wrote:
+> On Wed, Jul 26, 2023 at 03:13:12PM +0800, Alina Yu wrote:
 
-Regards,
-Ze
+> > Signed-off-by: Alina Yu <alina_yu@richtek.com>
+> > Reported-by: kernel test robot <lkp@intel.com>
+> This patch series is to add new drivers, not fix.
+> Why do you add the Reported-by tag?
+
+The LKP people have some boilerplate in their reports that tells people
+to add Reported-bys for things they find based on patches, it's a
+constant problem :(
+
+--4j+GeulFbYEw8OPb
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmTLiqsACgkQJNaLcl1U
+h9DctAf+MB91v0Zjw5l0Ud1RAi8ElVYnY4lB3dlp4VTSp+nI5CHQ4IltV4/Pgc8t
+WadUrDkBWs2sXmUQxZ8v7kubjGiP4ortH5aEs9FCa0TWc5GFlwTvi8XVX2yjIkJ7
+CcOFXXAPN5/Lgvf+ony4dD7Y6ToZavnSEYMS4zF1dm1++an7/4Mc0Zl6sC1J7ziR
+pS8aMtuI8J1NQrE0mmqpGSAZn4UqMsOSE/FtGvhlb2X5OYAGR4mYIZPJuYtL/K7x
+92e+eUTraIkJfVauMJI6QXmydg4EDXZajGniu7th6FYRvC24m0r2k1fCon17OUPK
+GRbVy6yC0Ki2AJnr9O8JJtezYGb6IA==
+=JIYC
+-----END PGP SIGNATURE-----
+
+--4j+GeulFbYEw8OPb--
