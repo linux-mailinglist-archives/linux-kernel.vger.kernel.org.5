@@ -2,125 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6BDB376EE92
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 17:47:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 527C476EEA4
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 17:50:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234732AbjHCPrI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Aug 2023 11:47:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37000 "EHLO
+        id S237247AbjHCPuE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Aug 2023 11:50:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37948 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233790AbjHCPrF (ORCPT
+        with ESMTP id S237243AbjHCPuC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Aug 2023 11:47:05 -0400
-Received: from bg4.exmail.qq.com (bg4.exmail.qq.com [43.154.54.12])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 279463C38
-        for <linux-kernel@vger.kernel.org>; Thu,  3 Aug 2023 08:46:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=biqu3d.com;
-        s=tfld2305; t=1691077603;
-        bh=vEUJQiTvEBG1+8Thcde8Im23KjWtFftPqnOmL2GHGV8=;
-        h=Message-ID:Date:MIME-Version:Subject:To:From;
-        b=K2PuctE69nxr0rUot2PNv4ylshdtRVSeIl/yN9hKHhRo7YfKrrppI/h9ygf2x/HqO
-         1cAV+bd0j10nClp1xvNVKLJOqHBRsNrNRSJYoYo/phVTRa5HnaVPObZ/08P8XExgXs
-         irxaSAQHMhaY8rE6awq+vZ4SwUiSBQEky6rCtaO8=
-X-QQ-mid: bizesmtp72t1691077560t8gsk891
-Received: from [192.168.2.144] ( [178.41.211.221])
-        by bizesmtp.qq.com (ESMTP) with 
-        id ; Thu, 03 Aug 2023 23:45:48 +0800 (CST)
-X-QQ-SSF: 01400000000000402000000A0000000
-X-QQ-FEAT: +ynUkgUhZJlN12CIkCekGp9zU8fBqaUp7Mo7KoBT1wwh+SAS/eNdGKnz7i+WE
-        m+5kBwl0ZVCwSs+KuNx/TCAJdo6mzgwucEwIFAkaa3sRNUKszz25vjSrwJJJ3AdzibnQXM9
-        c+tSm3QOjkt2eXcJUmXw6RaKY2T15s3rYtmp6rqltVdNgHypdtwRpCBRzkF/hQRl1PmBFLO
-        lUQSFI+aLUIdWUUKfB/pFt71QC1Q3kHumbf/Nu1yHnNBFuctyhndbjzhsmeN764fN8Y6AiP
-        4hLIWea/DFZ07VCu1LX7vg+lFhBOmeL6SIgVwdsB6KH/ma1RWEF2JvTaDMuUsPuG1K3YjOf
-        s95WRMGUhH9AOkEhAlngWrkrqE1NLZrL9eAqyudOMvHvF2NeGFqgRjcVrshMXZDpslShIbx
-X-QQ-GoodBg: 2
-X-BIZMAIL-ID: 2364252577527369001
-Message-ID: <15C903493507AF24+e69c7dde-58ae-f55d-3d1f-b41891caded7@biqu3d.com>
-Date:   Thu, 3 Aug 2023 17:45:48 +0200
+        Thu, 3 Aug 2023 11:50:02 -0400
+Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 408922109;
+        Thu,  3 Aug 2023 08:50:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+        bh=bajgnuKTGlG0RtP4bwkiUS04QrRESVaCChAJs0W23Eo=; b=y8JmzLyUCI5yi3iS8gD55qA0O5
+        +zQPDSo4EhRJ+CnOBCpcogYWwXnw/l64T1Rzx71B4mDm4pqr4UujbztoVnNX7mFnhm4s5kypAsH8P
+        9ncC4FpwjtlCb26X9870ENwSicYe4a1O3QOuAY9rkiUGnCvI0kWdGvm3SXim8Kd0v5dQ=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+        (envelope-from <andrew@lunn.ch>)
+        id 1qRaa9-00305O-OZ; Thu, 03 Aug 2023 17:49:45 +0200
+Date:   Thu, 3 Aug 2023 17:49:45 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Jiri Pirko <jiri@resnulli.us>
+Cc:     justinlai0215 <justinlai0215@realtek.com>, kuba@kernel.org,
+        davem@davemloft.net, edumazet@google.com, pabeni@redhat.com,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org
+Subject: Re: [PATCH] net/ethernet/realtek: Add Realtek automotive PCIe driver
+Message-ID: <87194ec9-476a-471b-a5b5-d70e8a2cbcd5@lunn.ch>
+References: <20230803082513.6523-1-justinlai0215@realtek.com>
+ <ZMtr+WbURFaynK15@nanopsycho>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.12.0
-Subject: Re: [PATCH v1 1/6] dt-bindings: vendor-prefixes: Add BigTreeTech
-Content-Language: en-US
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc:     Konrad Dybcio <konrad.dybcio@somainline.org>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@somainline.org>,
-        Marijn Suijten <marijn.suijten@somainline.org>,
-        Jami Kettunen <jamipkettunen@somainline.org>,
-        Paul Bouchara <paul.bouchara@somainline.org>,
-        Martin Botka <martin.botka@somainline.org>,
-        Andre Przywara <andre.przywara@arm.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Chen-Yu Tsai <wens@csie.org>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Samuel Holland <samuel@sholland.org>,
-        Andrew Lunn <andrew@lunn.ch>, Icenowy Zheng <uwu@icenowy.me>,
-        Ludwig Kormann <ludwig.kormann@ict42.de>,
-        Heiko Stuebner <heiko@sntech.de>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Chris Morgan <macromorgan@hotmail.com>,
-        Jagan Teki <jagan@edgeble.ai>,
-        Maxime Ripard <mripard@kernel.org>, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev,
-        linux-kernel@vger.kernel.org
-References: <20230802220309.163804-1-martin@biqu3d.com>
- <32C9B4A9A60647F1+20230802220309.163804-2-martin@biqu3d.com>
- <0bb37521-0ea8-b343-b801-d57ee17fde55@linaro.org>
-From:   Martin Botka <martin@biqu3d.com>
-In-Reply-To: <0bb37521-0ea8-b343-b801-d57ee17fde55@linaro.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-QQ-SENDSIZE: 520
-Feedback-ID: bizesmtp:biqu3d.com:qybglogicsvrgz:qybglogicsvrgz5a-1
-X-Spam-Status: No, score=1.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_MUA_MOZILLA,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,RCVD_IN_VALIDITY_RPBL,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZMtr+WbURFaynK15@nanopsycho>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
-X-Spam-Level: *
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Aug 03, 2023 at 10:57:29AM +0200, Jiri Pirko wrote:
+> Thu, Aug 03, 2023 at 10:25:13AM CEST, justinlai0215@realtek.com wrote:
+> >This patch is to add the ethernet device driver for the PCIe interface of Realtek Automotive Ethernet Switch,
+> >applicable to RTL9054, RTL9068, RTL9072, RTL9075, RTL9068, RTL9071.
+> >
+> >Signed-off-by: justinlai0215 <justinlai0215@realtek.com>
+> 
+> [...]
+> 
+> 
+> >+
+> >+static long rtase_swc_ioctl(struct file *p_file, unsigned int cmd, unsigned long arg)
+> 
+> There are *MANY* thing wrong in this patch spotted just during 5 minutes
+> skimming over the code, but this definitelly tops all of them.
+> I didn't see so obvious kernel bypass attempt for a long time. Ugh, you
+> can't be serious :/
+> 
+> I suggest to you take couple of rounds of consulting the patch with
+> some skilled upstream developer internaly before you make another
+> submission in order not not to waste time of reviewers.
 
+I have to agree with Jiri here. This 'vendor crap' driver has no
+chance of being merged as is. You need to reach out to some
+experienced mainline driver developers to help you rewrite it to
+mainline quality.
 
-On 8/3/23 4:27 PM, Krzysztof Kozlowski wrote:
-> On 03/08/2023 00:02, Martin Botka wrote:
->> From: Martin Botka <martin.botka@somainline.org>
->>
->> BigTreeTech is a company based in Shenzhen that makes
->> 3D printers and accessories.
->>
->> Add prefix for it.
->>
->> Signed-off-by: Martin Botka <martin.botka@somainline.org>
->> ---
->>   Documentation/devicetree/bindings/vendor-prefixes.yaml | 2 ++
->>   1 file changed, 2 insertions(+)
->>
->> diff --git a/Documentation/devicetree/bindings/vendor-prefixes.yaml b/Documentation/devicetree/bindings/vendor-prefixes.yaml
->> index af60bf1a6664..1d5f86e3f099 100644
->> --- a/Documentation/devicetree/bindings/vendor-prefixes.yaml
->> +++ b/Documentation/devicetree/bindings/vendor-prefixes.yaml
->> @@ -194,6 +194,8 @@ patternProperties:
->>       description: Beckhoff Automation GmbH & Co. KG
->>     "^bitmain,.*":
->>       description: Bitmain Technologies
->> +  "^bigtreetech,.*":
-> 
-> Please keep alphabetical order.
-Got it.
+    Andrew
 
-Cheers,
-Martin
-> 
-> Best regards,
-> Krzysztof
-> 
-> 
+---
+pw-bot: cr
