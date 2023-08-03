@@ -2,48 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 194E576EC1E
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 16:15:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 56B8776EC21
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 16:15:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235727AbjHCOPJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Aug 2023 10:15:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59146 "EHLO
+        id S233974AbjHCOPk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Aug 2023 10:15:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58948 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235711AbjHCOOu (ORCPT
+        with ESMTP id S231143AbjHCOPc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Aug 2023 10:14:50 -0400
-Received: from mail11.truemail.it (mail11.truemail.it [IPv6:2001:4b7e:0:8::81])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6F06421E;
-        Thu,  3 Aug 2023 07:14:16 -0700 (PDT)
-Received: from francesco-nb.int.toradex.com (93-49-2-63.ip317.fastwebnet.it [93.49.2.63])
-        by mail11.truemail.it (Postfix) with ESMTPA id 07876206B8;
-        Thu,  3 Aug 2023 16:14:13 +0200 (CEST)
-Date:   Thu, 3 Aug 2023 16:14:08 +0200
-From:   Francesco Dolcini <francesco@dolcini.it>
-To:     Aradhya Bhatia <a-bhatia1@ti.com>, Nishanth Menon <nm@ti.com>,
-        Vignesh Raghavendra <vigneshr@ti.com>
-Cc:     Tero Kristo <kristo@kernel.org>, Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Devicetree List <devicetree@vger.kernel.org>,
-        Linux Kernel List <linux-kernel@vger.kernel.org>,
-        Linux ARM Kernel List <linux-arm-kernel@lists.infradead.org>,
-        Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>,
-        Rahul T R <r-ravikumar@ti.com>,
-        Devarsh Thakkar <devarsht@ti.com>,
-        Jai Luthra <j-luthra@ti.com>,
-        Jayesh Choudhary <j-choudhary@ti.com>
-Subject: Re: [PATCH v3 2/8] arm64: dts: ti: k3-am62-main: Add node for DSS
-Message-ID: <ZMu2MMGCXzBu7wf2@francesco-nb.int.toradex.com>
-References: <20230728173438.12995-1-a-bhatia1@ti.com>
- <20230728173438.12995-3-a-bhatia1@ti.com>
+        Thu, 3 Aug 2023 10:15:32 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 3431F1BF6
+        for <linux-kernel@vger.kernel.org>; Thu,  3 Aug 2023 07:15:31 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id E263A113E;
+        Thu,  3 Aug 2023 07:16:13 -0700 (PDT)
+Received: from [10.1.35.53] (C02Z41KALVDN.cambridge.arm.com [10.1.35.53])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 2801C3F5A1;
+        Thu,  3 Aug 2023 07:15:29 -0700 (PDT)
+Message-ID: <bb871b52-526a-d4aa-5249-6105bc06aaba@arm.com>
+Date:   Thu, 3 Aug 2023 15:15:27 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230728173438.12995-3-a-bhatia1@ti.com>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.13.0
+Subject: Re: [PATCH v4 3/3] mm: Batch-zap large anonymous folio PTE mappings
+To:     David Hildenbrand <david@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Yin Fengwei <fengwei.yin@intel.com>,
+        Yu Zhao <yuzhao@google.com>, Yang Shi <shy828301@gmail.com>,
+        "Huang, Ying" <ying.huang@intel.com>, Zi Yan <ziy@nvidia.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Alexander Gordeev <agordeev@linux.ibm.com>,
+        Gerald Schaefer <gerald.schaefer@linux.ibm.com>
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org
+References: <20230727141837.3386072-1-ryan.roberts@arm.com>
+ <20230727141837.3386072-4-ryan.roberts@arm.com>
+ <6cda91b3-bb7a-4c4c-a618-2572b9c8bbf9@redhat.com>
+ <4255e71a-63c9-b2f9-5e97-e46834f7837c@arm.com>
+ <b54e7885-3e49-150f-cf8a-36a880e5dfc9@redhat.com>
+From:   Ryan Roberts <ryan.roberts@arm.com>
+In-Reply-To: <b54e7885-3e49-150f-cf8a-36a880e5dfc9@redhat.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -51,22 +55,62 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Aradhya, Nishanth and Vignesh
-
-On Fri, Jul 28, 2023 at 11:04:32PM +0530, Aradhya Bhatia wrote:
-> Add Display SubSystem (DSS) DT node for the AM625 SoC.
+On 03/08/2023 15:10, David Hildenbrand wrote:
+>>>
+>>> With this patch, you'll might suddenly have mapcount > refcount for a folio, or
+>>> am I wrong?
+>>
+>> Yes you would. Does that break things?
+>>
 > 
-> The DSS supports one each of video pipeline (vid) and video-lite
-> pipeline (vidl1). It outputs OLDI signals on one video port (VP1) and
-> DPI signals on another (VP2). The video ports are connected to the
-> pipelines via 2 identical overlay managers (ovr1 and ovr2).
+> It is problematic whenever you want to check for additional page references that
+> are not from mappings (i.e., GUP refs/pins or anything else)
+> 
+> One example lives in KSM code (!compound only):
+> 
+> page_mapcount(page) + 1 + swapped != page_count(page)
+> 
+> Another one in compaction code:
+> 
+> if (!mapping && (folio_ref_count(folio) - 1) > folio_mapcount(folio))
+> 
+> And another one in khugepaged (is_refcount_suitable)
+> 
+> ... and in THP split can_split_folio() (although that can deal with false
+> positives and false negatives).
+> 
+> 
+> We want to avoid detecting "no other references" if there *are* other
+> references. Detecting "there are other references" although there are not is
+> usually better.
+> 
+> 
+> Assume you have mapcount > refcount for some time due to concurrent unmapping,
+> AND some unrelated reference. You would suddenly pass these checks (mapcount ==
+> refcount) and might not detect other references.
 
-Not sure on the plan on the whole series, but from my point of view it
-would make sense to have (at least) this patch, if deemed correctly,
-applied for v6.6.
+OK. I'll rework with the 2 loop approach, assuming I can calculate the number of
+free slots in the mmu_gather ahead of time.
 
-This will enable others TI AM625 user to start upstreaming their changes
-and testing it.
 
-Francesco
+> 
+>>>
+>>>> +
+>>>> +    for (i = 0; i < nr_pages;) {
+>>>> +        ptent = ptep_get_and_clear_full(mm, addr, pte, tlb->fullmm);
+>>>> +        tlb_remove_tlb_entry(tlb, pte, addr);
+>>>> +        zap_install_uffd_wp_if_needed(vma, addr, pte, details, ptent);
+>>>> +        full = __tlb_remove_page(tlb, page, 0);
+>>>> +
+>>>> +        if (unlikely(page_mapcount(page) < 1))
+>>>> +            print_bad_pte(vma, addr, ptent, page);
+>>>
+>>> Can we avoid new users of page_mapcount() outside rmap code, please? :)
+>>
+>> Sure. This is just trying to replicate the same diagnstics that's done on the
+>> non-batched path. I'm happy to remove it.
+> 
+> Spotted it afterwards in the existing code already, so you're effetively not
+> adding new ones.
+> 
 
