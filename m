@@ -2,143 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C9A876DD21
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 03:26:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8CABC76DD28
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 03:28:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229904AbjHCB0h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Aug 2023 21:26:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53342 "EHLO
+        id S231768AbjHCB2u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Aug 2023 21:28:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54468 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230327AbjHCB0e (ORCPT
+        with ESMTP id S231869AbjHCB2p (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Aug 2023 21:26:34 -0400
-Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com [IPv6:2607:f8b0:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F92E3590
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Aug 2023 18:26:11 -0700 (PDT)
-Received: by mail-pf1-x429.google.com with SMTP id d2e1a72fcca58-686efa1804eso306334b3a.3
-        for <linux-kernel@vger.kernel.org>; Wed, 02 Aug 2023 18:26:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=sifive.com; s=google; t=1691025970; x=1691630770;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=KnkEmzZYZtLV9bJcf/lKsKflsIaYK5O+EUs/jmBBVS8=;
-        b=mW1d1iN57SrWe3nCbYedyyIjo5aVpEAFsdcvOI56OLPAO1wdvj8v71+OP/wjZcuJ+n
-         nFtZYyqycgEH5gdLo7BKz2kb6v6/rM6bcQsLEo5JBupZ1kPGvS0pdKc5hN1p4IQSn0yb
-         KPJc+3bTAi2pirNR+tZbOmjmq6abdFIWz7VmZpSAfQ45iS2LbsiDWAYM3OH4QeUFXYDi
-         RqnAsx3J9XGQNOGuDzWCv7O8JK84QXDyoKdrcfUKDUiBdEzO0KKaefi7e41+DNe0Jd22
-         SGpoWATjtNQru/ZttY9eJjGiluLbHvQz/kPR0hJcS/zvGs8r+8i5hzLMDVYDz2+AryGj
-         BxEw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691025970; x=1691630770;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=KnkEmzZYZtLV9bJcf/lKsKflsIaYK5O+EUs/jmBBVS8=;
-        b=PJhzvOOveebpZwg3fk9Q6kOFM65ZhMLJCMd5XZ7dL0x+i0tYjyj5/znvLMajme0V+l
-         pabHWOuxuXjRfiI/ORXvu4G+gCt1coG7Lk9axxUyQcipx6yBWI7Ok5VexwC3BKzhdmu1
-         cr1LhCtQCImpPpM4fTLiBbIojBtoA45JnChGxhjLsLYnoijkuCDLIerp+7TWJo7lxIKZ
-         azKbg2oZoKHu+5EqaHZo8uvc4qOoXKYhPXLST6+tFCOIAWcg1q8RggOgJyMP/mPaBw6O
-         PUwwM/P04o9rmghEgrhGk5jA6a6jg98XkMoKpXMJKnQXEljB+Rz0m/lYE2dDYJ2lfUnP
-         brjw==
-X-Gm-Message-State: ABy/qLYttIK0hwcG94VYSAv9V03WXWBE/1t83Fq6GiLtyg0BYddfoHNn
-        d0OEZi6MN0SHC648QMVpMbP1EQ==
-X-Google-Smtp-Source: APBJJlEVv6aXJeOnSSSQQWns6Sl8BpWl9aS5x67fhg3fIVNKMvhNnd0rpPfLUYh52tUPu5B+lSL06A==
-X-Received: by 2002:a05:6a20:4cf:b0:134:a478:6061 with SMTP id 15-20020a056a2004cf00b00134a4786061mr16915077pzd.26.1691025970144;
-        Wed, 02 Aug 2023 18:26:10 -0700 (PDT)
-Received: from sw06.internal.sifive.com ([64.62.193.194])
-        by smtp.gmail.com with ESMTPSA id z1-20020a170903018100b001b6a27dff99sm13025734plg.159.2023.08.02.18.26.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 02 Aug 2023 18:26:09 -0700 (PDT)
-From:   Samuel Holland <samuel.holland@sifive.com>
-To:     Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        linux-riscv@lists.infradead.org
-Cc:     linux-kernel@vger.kernel.org,
-        Samuel Holland <samuel.holland@sifive.com>,
-        Palmer Dabbelt <palmer@rivosinc.com>
-Subject: [PATCH] riscv: Fix CPU feature detection with SMP disabled
-Date:   Wed,  2 Aug 2023 18:26:06 -0700
-Message-ID: <20230803012608.3540081-1-samuel.holland@sifive.com>
-X-Mailer: git-send-email 2.41.0
+        Wed, 2 Aug 2023 21:28:45 -0400
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D2C530CA;
+        Wed,  2 Aug 2023 18:28:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1691026112;
+        bh=zzUxoMrW0h/cLUqTaqtv4wQNJt5GODwlXy3Re2dpgPc=;
+        h=Date:From:To:Cc:Subject:From;
+        b=OJXBlizEuP1aN95mUTkyeZ3TZookzhjNn5qkwNwEMkXkEDuo7erl1qm0H1Rf9Be8f
+         d9xCqL3LZIRI+RcKazK0UkeOSlJj6KL2uEQYmbR/P8b9MFhwXWYXqvJSm3Ej1AB7+s
+         f3SrdLY2c5fi0odTVh9ONFSxdlEDvZsdBG5cibJUOzvdKh12B1peL+NtlkJZYjThiL
+         bpGDWWsQIFkicKMBTHMLvQ3ser3auUzx3WKsptRxerJrpdEpPl/whR/3W1iVjfnCjj
+         uajlzadEBFffJtCpbjhTcxNVBtVpo4eJD4Ml6nbQtdxcgDTQdhOWZ2HInXv5VHCaTC
+         Ra0TEpflkLj0A==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4RGWSw52zcz4wbj;
+        Thu,  3 Aug 2023 11:28:31 +1000 (AEST)
+Date:   Thu, 3 Aug 2023 11:28:30 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Jens Axboe <axboe@kernel.dk>, "Darrick J. Wong" <djwong@kernel.org>
+Cc:     Christoph Hellwig <hch@lst.de>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: manual merge of the block tree with the djw-vfs tree
+Message-ID: <20230803112830.21c805a7@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; boundary="Sig_/Buv3IITV=ap.THZsaND54hy";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-commit 914d6f44fc50 ("RISC-V: only iterate over possible CPUs in ISA
-string parser") changed riscv_fill_hwcap() from iterating over CPU DT
-nodes to iterating over logical CPU IDs. Since this function runs long
-before cpu_dev_init() creates CPU devices, it hits the fallback path in
-of_cpu_device_node_get(), which itself iterates over the DT nodes,
-searching for a node with the requested CPU ID. (Incidentally, this
-makes riscv_fill_hwcap() now take quadratic time.)
+--Sig_/Buv3IITV=ap.THZsaND54hy
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-riscv_fill_hwcap() passes a logical CPU ID to of_cpu_device_node_get(),
-which uses the arch_match_cpu_phys_id() hook to translate the logical ID
-to a physical ID as found in the DT.
+Hi all,
 
-arch_match_cpu_phys_id() has a generic weak definition, and RISC-V
-provides a strong definition using cpuid_to_hartid_map(). However, the
-RISC-V specific implementation is located in arch/riscv/kernel/smp.c,
-and that file is only compiled when SMP is enabled.
+Today's linux-next merge of the block tree got a conflict in:
 
-As a result, when SMP is disabled, the generic definition is used, and
-riscv_isa gets initialized based on the ISA string of hart 0, not the
-boot hart. On FU740, this means has_fpu() returns false, and userspace
-crashes when trying to use floating-point instructions.
+  fs/super.c
 
-Fix this by moving arch_match_cpu_phys_id() to a file which is always
-compiled.
+between commit:
 
-Fixes: 70114560b285 ("RISC-V: Add RISC-V specific arch_match_cpu_phys_id")
-Fixes: 914d6f44fc50 ("RISC-V: only iterate over possible CPUs in ISA string parser")
-Reported-by: Palmer Dabbelt <palmer@rivosinc.com>
-Signed-off-by: Samuel Holland <samuel.holland@sifive.com>
----
+  880b9577855e ("fs: distinguish between user initiated freeze and kernel i=
+nitiated freeze")
 
- arch/riscv/kernel/cpu.c | 5 +++++
- arch/riscv/kernel/smp.c | 5 -----
- 2 files changed, 5 insertions(+), 5 deletions(-)
+from the djw-vfs tree and commit:
 
-diff --git a/arch/riscv/kernel/cpu.c b/arch/riscv/kernel/cpu.c
-index a2fc952318e9..35b854cf078e 100644
---- a/arch/riscv/kernel/cpu.c
-+++ b/arch/riscv/kernel/cpu.c
-@@ -17,6 +17,11 @@
- #include <asm/smp.h>
- #include <asm/pgtable.h>
- 
-+bool arch_match_cpu_phys_id(int cpu, u64 phys_id)
-+{
-+	return phys_id == cpuid_to_hartid_map(cpu);
-+}
-+
- /*
-  * Returns the hart ID of the given device tree node, or -ENODEV if the node
-  * isn't an enabled and valid RISC-V hart node.
-diff --git a/arch/riscv/kernel/smp.c b/arch/riscv/kernel/smp.c
-index 85bbce0f758c..40420afbb1a0 100644
---- a/arch/riscv/kernel/smp.c
-+++ b/arch/riscv/kernel/smp.c
-@@ -61,11 +61,6 @@ int riscv_hartid_to_cpuid(unsigned long hartid)
- 	return -ENOENT;
- }
- 
--bool arch_match_cpu_phys_id(int cpu, u64 phys_id)
--{
--	return phys_id == cpuid_to_hartid_map(cpu);
--}
--
- static void ipi_stop(void)
- {
- 	set_cpu_online(smp_processor_id(), false);
--- 
-2.41.0
+  4a8b719f95c0 ("fs: remove emergency_thaw_bdev")
 
+from the block tree.
+
+I fixed it up (see below) and can carry the fix as necessary. This
+is now fixed as far as linux-next is concerned, but any non trivial
+conflicts should be mentioned to your upstream maintainer when your tree
+is submitted for merging.  You may also want to consider cooperating
+with the maintainer of the conflicting tree to minimise any particularly
+complex conflicts.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+diff --cc fs/super.c
+index edc588bca7fc,bc666e7ee1a9..000000000000
+--- a/fs/super.c
++++ b/fs/super.c
+@@@ -1029,8 -1029,10 +1029,10 @@@ static void do_thaw_all_callback(struc
+  {
+  	down_write(&sb->s_umount);
+  	if (sb->s_root && sb->s_flags & SB_BORN) {
+- 		emergency_thaw_bdev(sb);
++ 		if (IS_ENABLED(CONFIG_BLOCK))
++ 			while (sb->s_bdev && !thaw_bdev(sb->s_bdev))
++ 				pr_warn("Emergency Thaw on %pg\n", sb->s_bdev);
+ -		thaw_super_locked(sb);
+ +		thaw_super_locked(sb, FREEZE_HOLDER_USERSPACE);
+  	} else {
+  		up_write(&sb->s_umount);
+  	}
+
+--Sig_/Buv3IITV=ap.THZsaND54hy
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmTLAr4ACgkQAVBC80lX
+0Gy8QQgAjftO2ZUGP9ttUAf7vFwVka82EsCeDhA9uYqiiTOMkcqRy+oEI2ozn1BY
+fM6u0zrcFfaxCNXnenU5pspnEoMajzXJj5kd6mxXvMNz8oyROpxj27Tx/2Ni1hC1
+Qzsdx3B3QF1Qhg7ubUzZ9YN4Nw2AaR/Yqlof1nmAAOPApcdBgd7nhGwPJRrkceh1
+glRMDbt2HPv1JAs9T1BWGAm1pqBtANw15vmeSgxBVHS6VMMAsF8W5kFH/UedwdHQ
+vR5QBWSD26UK92oPL/lsPuDFDTPIYEKQhpJQB+vKLs2cqik0zhABqAk87JCPc5Nf
+5FB+Dg984wMlnnJ5Ky8yuib/v6WF7A==
+=PmkS
+-----END PGP SIGNATURE-----
+
+--Sig_/Buv3IITV=ap.THZsaND54hy--
