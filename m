@@ -2,42 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DA26976EA86
+	by mail.lfdr.de (Postfix) with ESMTP id 3BBFD76EA84
 	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 15:34:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236266AbjHCNeF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Aug 2023 09:34:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53518 "EHLO
+        id S236287AbjHCNeM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Aug 2023 09:34:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53110 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235181AbjHCNdk (ORCPT
+        with ESMTP id S235264AbjHCNdl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Aug 2023 09:33:40 -0400
+        Thu, 3 Aug 2023 09:33:41 -0400
 Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0200046A0;
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9311146AA;
         Thu,  3 Aug 2023 06:32:32 -0700 (PDT)
 Received: from mail02.huawei.com (unknown [172.30.67.143])
-        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4RGqXD16Xwz4f3lVM;
+        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4RGqXD3pLyz4f3lVX;
         Thu,  3 Aug 2023 21:32:28 +0800 (CST)
 Received: from huaweicloud.com (unknown [10.175.104.67])
-        by APP4 (Coremail) with SMTP id gCh0CgAHuKtqrMtkWHLlPQ--.49699S9;
+        by APP4 (Coremail) with SMTP id gCh0CgAHuKtqrMtkWHLlPQ--.49699S10;
         Thu, 03 Aug 2023 21:32:29 +0800 (CST)
 From:   Yu Kuai <yukuai1@huaweicloud.com>
 To:     song@kernel.org, xni@redhat.com
 Cc:     linux-raid@vger.kernel.org, linux-kernel@vger.kernel.org,
         yukuai3@huawei.com, yukuai1@huaweicloud.com, yi.zhang@huawei.com,
         yangerkun@huawei.com
-Subject: [PATCH -next 05/29] md: use new apis to suspend array for suspend_lo/hi/store()
-Date:   Thu,  3 Aug 2023 21:29:06 +0800
-Message-Id: <20230803132930.2742286-6-yukuai1@huaweicloud.com>
+Subject: [PATCH -next 06/29] md: use new apis to suspend array for level_store()
+Date:   Thu,  3 Aug 2023 21:29:07 +0800
+Message-Id: <20230803132930.2742286-7-yukuai1@huaweicloud.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20230803132930.2742286-1-yukuai1@huaweicloud.com>
 References: <20230803132930.2742286-1-yukuai1@huaweicloud.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: gCh0CgAHuKtqrMtkWHLlPQ--.49699S9
-X-Coremail-Antispam: 1UD129KBjvJXoWrZFW8ur1UKr15KFyUCr47CFg_yoW8JF15pF
-        4xtFWfXr1jyrySqryqqa1vkFy5Jw17KrWqyrZruw1kGa4xJw13Gr15ursYqry09a4fGFn8
-        Ja15W3W8ZF48G37anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+X-CM-TRANSID: gCh0CgAHuKtqrMtkWHLlPQ--.49699S10
+X-Coremail-Antispam: 1UD129KBjvJXoW7WF4DuF48CF1rJrykArW5Wrg_yoW8Gr17pa
+        1xKFWrGr1jv3ySqr1DGF4kCa45Jw1jgrWqkrZrZwn7ZF1xXr9rWw1ruFs8XFy8Ja4rArs8
+        Xw45Ga4rXrW8JaDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
         9KBjDU0xBIdaVrnRJUUUBj14x267AKxVWrJVCq3wAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
         rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2048vs2IY020E87I2jVAFwI0_JF0E3s1l82xGYI
         kIc2x26xkF7I0E14v26ryj6s0DM28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8wA2
@@ -66,51 +66,50 @@ From: Yu Kuai <yukuai3@huawei.com>
 
 Convert to use new apis, the old apis will be removed eventually.
 
+This is not hot path, so performance is not concerned.
+
 Signed-off-by: Yu Kuai <yukuai3@huawei.com>
 ---
- drivers/md/md.c | 18 ++++--------------
- 1 file changed, 4 insertions(+), 14 deletions(-)
+ drivers/md/md.c | 6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
 
 diff --git a/drivers/md/md.c b/drivers/md/md.c
-index 3c98f253b980..e516c5000a00 100644
+index e516c5000a00..fc1646f02ef3 100644
 --- a/drivers/md/md.c
 +++ b/drivers/md/md.c
-@@ -5271,15 +5271,10 @@ suspend_lo_store(struct mddev *mddev, const char *buf, size_t len)
- 	if (new != (sector_t)new)
+@@ -4001,7 +4001,7 @@ level_store(struct mddev *mddev, const char *buf, size_t len)
+ 	if (slen == 0 || slen >= sizeof(clevel))
  		return -EINVAL;
  
--	err = mddev_lock(mddev);
--	if (err)
--		return err;
--
+-	rv = mddev_lock(mddev);
++	rv = mddev_suspend_and_lock(mddev);
+ 	if (rv)
+ 		return rv;
+ 
+@@ -4094,7 +4094,6 @@ level_store(struct mddev *mddev, const char *buf, size_t len)
+ 	}
+ 
+ 	/* Looks like we have a winner */
 -	mddev_suspend(mddev);
-+	__mddev_suspend(mddev);
- 	WRITE_ONCE(mddev->suspend_lo, new);
+ 	mddev_detach(mddev);
+ 
+ 	spin_lock(&mddev->lock);
+@@ -4180,14 +4179,13 @@ level_store(struct mddev *mddev, const char *buf, size_t len)
+ 	blk_set_stacking_limits(&mddev->queue->limits);
+ 	pers->run(mddev);
+ 	set_bit(MD_SB_CHANGE_DEVS, &mddev->sb_flags);
 -	mddev_resume(mddev);
-+	__mddev_resume(mddev);
- 
+ 	if (!mddev->thread)
+ 		md_update_sb(mddev, 1);
+ 	sysfs_notify_dirent_safe(mddev->sysfs_level);
+ 	md_new_event();
+ 	rv = len;
+ out_unlock:
 -	mddev_unlock(mddev);
- 	return len;
++	mddev_unlock_and_resume(mddev);
+ 	return rv;
  }
- static struct md_sysfs_entry md_suspend_lo =
-@@ -5304,15 +5299,10 @@ suspend_hi_store(struct mddev *mddev, const char *buf, size_t len)
- 	if (new != (sector_t)new)
- 		return -EINVAL;
  
--	err = mddev_lock(mddev);
--	if (err)
--		return err;
--
--	mddev_suspend(mddev);
-+	__mddev_suspend(mddev);
- 	WRITE_ONCE(mddev->suspend_hi, new);
--	mddev_resume(mddev);
-+	__mddev_resume(mddev);
- 
--	mddev_unlock(mddev);
- 	return len;
- }
- static struct md_sysfs_entry md_suspend_hi =
 -- 
 2.39.2
 
