@@ -2,497 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 45CB076EBE4
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 16:09:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 802B476EBC5
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 16:07:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236322AbjHCOJW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Aug 2023 10:09:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52710 "EHLO
+        id S236155AbjHCOHA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Aug 2023 10:07:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52786 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236737AbjHCOIG (ORCPT
+        with ESMTP id S232999AbjHCOGo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Aug 2023 10:08:06 -0400
-Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ACCBF212B
-        for <linux-kernel@vger.kernel.org>; Thu,  3 Aug 2023 07:07:08 -0700 (PDT)
-Received: by mail-pl1-x62a.google.com with SMTP id d9443c01a7336-1bbf0f36ce4so6971065ad.0
-        for <linux-kernel@vger.kernel.org>; Thu, 03 Aug 2023 07:07:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1691071628; x=1691676428;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=/2IExsisHLl5wetq8sgZJvv6YFTcLdIhC4TMC2ESGVY=;
-        b=Oo5SDTLnzyXY8qDJYDdgxiSm5KInG31WNp+6s7Aw/7vgUIpls7XV7PDYHeze+UBg5n
-         DNl2lunWdtdOaDHXuIxE5JrJyhPZkrGSa5Td1Oqf49qpwWw8PUrIhrB7fyBHyv9odtE/
-         2qhsRMSNlJy/L5ER8K/Vh3MdsTTXMR3Gnygwt5BAmPJvMOF3dflvGX+gQaOJXTqq16QM
-         P5ltuB+AVoHAG8A95Q946y5BIfsKc/I92jLgMKQ0AYzhnBfHhIGGNmOqSujdFbxrxmja
-         ioZjmD0Md1lh9M3POXnCgEhPxjLWOm1sgM3OhCN/Kk0TToqHwyEuF4xyR9Y7y+KH8Otp
-         jFCw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691071628; x=1691676428;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=/2IExsisHLl5wetq8sgZJvv6YFTcLdIhC4TMC2ESGVY=;
-        b=IkXa5jgT5nSfz1BMj6BQo5gzuTP/LyA3YLVsF52qsd/2lbe5vadHAUOu5myo4sG86e
-         dZ/rL7aTBbW/2hpELYrEniwdhWJBQqe5VeuegcggPJdBLeRv4ITXA4ExgcPQ6jLlIH9/
-         ZwKotULfqe4Z6i7WexOQlLsv9HXqWBHROLsXuznfxgGhwm+Q6p9dvMrBY4JlGevouuPI
-         AZ/ZolmY3aSEh2BZ57KWxZLzUsbjgkdtbpV/4rGT9oSj8iRBDyF7qLTMKPYieZEYXi2q
-         tawt0YE0OrUirE4idNLrhqcJoz7BTcf+OCY7feJJfeCHySm9jedVtM50Ilrd2JwenbQC
-         Ttmg==
-X-Gm-Message-State: ABy/qLahbLS9cCTPluT9scEOpp7G7vy4wVUnQD0Gg9ZKjZ79ILoSQUdi
-        RH99rs3IFrSYp292LnyvhnnL+w==
-X-Google-Smtp-Source: APBJJlGM8RoAE6cD3VioW4CUSFeL+hHwLfuzL1GJ4xLv4TINBL02vq+XY8MB4/1oSJTMpPWFx/47lg==
-X-Received: by 2002:a17:902:ea08:b0:1bb:893e:5df5 with SMTP id s8-20020a170902ea0800b001bb893e5df5mr22673401plg.34.1691071627752;
-        Thu, 03 Aug 2023 07:07:07 -0700 (PDT)
-Received: from C02FG34NMD6R.bytedance.net ([2001:c10:ff04:0:1000::8])
-        by smtp.gmail.com with ESMTPSA id ji11-20020a170903324b00b001b8a897cd26sm14367485plb.195.2023.08.03.07.07.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 03 Aug 2023 07:07:07 -0700 (PDT)
-From:   "huangjie.albert" <huangjie.albert@bytedance.com>
-To:     davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
-        pabeni@redhat.com
-Cc:     "huangjie.albert" <huangjie.albert@bytedance.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn@kernel.org>,
-        Magnus Karlsson <magnus.karlsson@intel.com>,
-        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        Pavel Begunkov <asml.silence@gmail.com>,
-        Yunsheng Lin <linyunsheng@huawei.com>,
-        Kees Cook <keescook@chromium.org>,
-        Richard Gobert <richardbgobert@gmail.com>,
-        netdev@vger.kernel.org (open list:NETWORKING DRIVERS),
-        linux-kernel@vger.kernel.org (open list),
-        bpf@vger.kernel.org (open list:XDP (eXpress Data Path))
-Subject: [RFC Optimizing veth xsk performance 10/10] veth: af_xdp tx batch support for ipv4 udp
-Date:   Thu,  3 Aug 2023 22:04:36 +0800
-Message-Id: <20230803140441.53596-11-huangjie.albert@bytedance.com>
-X-Mailer: git-send-email 2.37.1 (Apple Git-137.1)
-In-Reply-To: <20230803140441.53596-1-huangjie.albert@bytedance.com>
-References: <20230803140441.53596-1-huangjie.albert@bytedance.com>
+        Thu, 3 Aug 2023 10:06:44 -0400
+Received: from mail.hugovil.com (mail.hugovil.com [162.243.120.170])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BDD0230E9;
+        Thu,  3 Aug 2023 07:06:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=hugovil.com
+        ; s=x; h=Subject:Content-Transfer-Encoding:MIME-Version:Message-Id:Date:Cc:To
+        :From:Sender:Reply-To:Content-Type:Content-ID:Content-Description:Resent-Date
+        :Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:
+        References:List-Id:List-Help:List-Unsubscribe:List-Subscribe:List-Post:
+        List-Owner:List-Archive; bh=ei2wCQs5a8m/K55enHBWGLUeT7zj3KuxqVqPoZlHPio=; b=b
+        0BgpSixVIJOcmpcWBH6vWBTM1g1yaJTSN4HtX8wh7lf/OB2ViTYXM9e1EJLJGV86gFK+rD52QZEx2
+        StICkocnRmwFKeAKllQHt6vFv3HsJQXrSn1+p6ra36CSKTuVPs9z6FJh1DAqI/BnaxivPMdyqzrSe
+        cALV3c5uZGY+TYEQ=;
+Received: from modemcable061.19-161-184.mc.videotron.ca ([184.161.19.61]:46952 helo=localhost.localdomain)
+        by mail.hugovil.com with esmtpa (Exim 4.92)
+        (envelope-from <hugo@hugovil.com>)
+        id 1qRYxe-0000O1-Vi; Thu, 03 Aug 2023 10:05:55 -0400
+From:   Hugo Villeneuve <hugo@hugovil.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jirislaby@kernel.org>
+Cc:     hugo@hugovil.com, linux-serial@vger.kernel.org,
+        Hugo Villeneuve <hvilleneuve@dimonoff.com>,
+        linux-kernel@vger.kernel.org
+Date:   Thu,  3 Aug 2023 10:05:51 -0400
+Message-Id: <20230803140551.970141-1-hugo@hugovil.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=yes
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-SA-Exim-Connect-IP: 184.161.19.61
+X-SA-Exim-Mail-From: hugo@hugovil.com
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
+Subject: [PATCH] serial: max310x: add comments for membase address workaround
+X-SA-Exim-Version: 4.2.1 (built Wed, 08 May 2019 21:11:16 +0000)
+X-SA-Exim-Scanned: Yes (on mail.hugovil.com)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-A typical topology is shown below:
-veth<--------veth-peer
-	1       |
-		|2
-		|
-	      bridge<------->eth0(such as mlnx5 NIC)
+From: Hugo Villeneuve <hvilleneuve@dimonoff.com>
 
-If you use af_xdp to send packets from veth to a physical NIC,
-it needs to go through some software paths, so we can refer to
-the implementation of kernel GSO. When af_xdp sends packets out
-from veth, consider aggregating packets and send a large packet
-from the veth virtual NIC to the physical NIC.
+Add comments about workaround used to configure membase address. This
+follows suggestions made during review of a sc16is7xx driver patch to
+add the same workaround.
 
-performance:(test weth libxdp lib)
-AF_XDP without batch : 480 Kpps (with ksoftirqd 100% cpu)
-AF_XDP  with   batch : 1.5 Mpps (with ksoftirqd 15% cpu)
-
-With af_xdp batch, the libxdp user-space program reaches a bottleneck.
-Therefore, the softirq did not reach the limit.
-
-Signed-off-by: huangjie.albert <huangjie.albert@bytedance.com>
+Link: https://lore.kernel.org/lkml/2936e18f-44ea-faed-9fa0-2ddefe7c3194@linux.intel.com
+Link: https://lore.kernel.org/lkml/20230801131655.80bd8f97f018dda6155d65f6@hugovil.com/
+Signed-off-by: Hugo Villeneuve <hvilleneuve@dimonoff.com>
 ---
- drivers/net/veth.c | 264 ++++++++++++++++++++++++++++++++++++++++++---
- 1 file changed, 249 insertions(+), 15 deletions(-)
+ drivers/tty/serial/max310x.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-diff --git a/drivers/net/veth.c b/drivers/net/veth.c
-index e4f1a8345f42..b0dbd21089c8 100644
---- a/drivers/net/veth.c
-+++ b/drivers/net/veth.c
-@@ -29,6 +29,7 @@
- #include <net/page_pool.h>
- #include <net/xdp_sock_drv.h>
- #include <net/xdp.h>
-+#include <net/udp.h>
- 
- #define DRV_NAME	"veth"
- #define DRV_VERSION	"1.0"
-@@ -103,6 +104,18 @@ struct veth_xdp_tx_bq {
- 	unsigned int count;
- };
- 
-+struct veth_gso_tuple {
-+	__u8	protocol;
-+	__be32	saddr;
-+	__be32	daddr;
-+	__be16	source;
-+	__be16	dest;
-+	__be16	gso_size;
-+	__be16	gso_segs;
-+	bool gso_enable;
-+	bool gso_flush;
-+};
-+
- struct veth_seg_info {
- 	u32 segs;
- 	u64 desc[] ____cacheline_aligned_in_smp;
-@@ -650,6 +663,84 @@ static int veth_xdp_tx(struct veth_rq *rq, struct xdp_buff *xdp,
- 	return 0;
- }
- 
-+static struct sk_buff *veth_build_gso_head_skb(struct net_device *dev, char *buff, u32 tot_len, u32 headroom, u32 iph_len, u32 th_len)
-+{
-+	struct sk_buff *skb = NULL;
-+	int err = 0;
-+
-+	skb = alloc_skb(tot_len, GFP_KERNEL);
-+	if (unlikely(!skb))
-+		return NULL;
-+
-+	/* header room contains the eth header */
-+	skb_reserve(skb, headroom - ETH_HLEN);
-+
-+	skb_put(skb, ETH_HLEN + iph_len + th_len);
-+
-+	skb_shinfo(skb)->gso_segs = 0;
-+
-+	err = skb_store_bits(skb, 0, buff, ETH_HLEN + iph_len + th_len);
-+	if (unlikely(err)) {
-+		kfree_skb(skb);
-+		return NULL;
-+	}
-+
-+	skb->protocol = eth_type_trans(skb, dev);
-+	skb->network_header = skb->mac_header + ETH_HLEN;
-+	skb->transport_header = skb->network_header + iph_len;
-+	skb->ip_summed = CHECKSUM_PARTIAL;
-+
-+	return skb;
-+}
-+
-+static inline bool gso_segment_match(struct veth_gso_tuple *gso_tuple, struct iphdr *iph, struct udphdr *udph)
-+{
-+	if (gso_tuple->protocol == iph->protocol &&
-+		gso_tuple->saddr == iph->saddr &&
-+		gso_tuple->daddr == iph->daddr &&
-+		gso_tuple->source == udph->source &&
-+		gso_tuple->dest == udph->dest &&
-+		gso_tuple->gso_size == ntohs(udph->len))
-+	{
-+		gso_tuple->gso_flush = false;
-+		return true;
-+	} else {
-+		gso_tuple->gso_flush = true;
-+		return false;
-+	}
-+}
-+
-+static inline void gso_tuple_init(struct veth_gso_tuple *gso_tuple, struct iphdr *iph, struct udphdr *udph)
-+{
-+	gso_tuple->protocol = iph->protocol;
-+	gso_tuple->saddr = iph->saddr;
-+	gso_tuple->daddr = iph->daddr;
-+	gso_tuple->source = udph->source;
-+	gso_tuple->dest = udph->dest;
-+	gso_tuple->gso_flush = false;
-+	gso_tuple->gso_size = ntohs(udph->len);
-+	gso_tuple->gso_segs = 0;
-+}
-+
-+/* only ipv4 udp support gso now */
-+static inline bool ip_hdr_gso_check(unsigned char *buff, u32 len)
-+{
-+	struct iphdr *iph;
-+
-+	if (len <= (ETH_HLEN + sizeof(*iph)))
-+		return false;
-+
-+	iph = (struct iphdr *)(buff + ETH_HLEN);
-+
-+	/*
-+	 * check for ip headers, if the data support gso
-+	 */
-+	if (iph->ihl < 5 || iph->version != 4 || len < (iph->ihl * 4 + ETH_HLEN) || iph->protocol != IPPROTO_UDP)
-+		return false;
-+
-+	return true;
-+}
-+
- static struct sk_buff *veth_build_skb(void *head, int headroom, int len,
- 				      int buflen)
- {
-@@ -686,8 +777,8 @@ static void veth_xsk_destruct_skb(struct sk_buff *skb)
- 	skb_shinfo(skb)->destructor_arg_xsk_pool = NULL;
- }
- 
--static struct sk_buff *veth_build_skb_zerocopy(struct net_device *dev, struct xsk_buff_pool *pool,
--					      struct xdp_desc *desc)
-+static struct sk_buff *veth_build_skb_zerocopy_normal(struct net_device *dev,
-+		struct xsk_buff_pool *pool, struct xdp_desc *desc)
- {
- 	struct veth_seg_info *seg_info;
- 	struct sk_buff *skb;
-@@ -698,45 +789,133 @@ static struct sk_buff *veth_build_skb_zerocopy(struct net_device *dev, struct xs
- 	int headroom;
- 	u64 addr;
- 	u32 index;
--
- 	addr = desc->addr;
- 	len = desc->len;
- 	buffer = xsk_buff_raw_get_data(pool, addr);
- 	ts = pool->unaligned ? len : pool->chunk_size;
--
- 	headroom = offset_in_page(buffer);
--
- 	/* offset in umem pool buffer */
- 	addr = buffer - pool->addrs;
--
- 	/* get the page of the desc */
- 	page = pool->umem->pgs[addr >> PAGE_SHIFT];
--
- 	/* in order to avoid to get freed by kfree_skb */
- 	get_page(page);
--
- 	hard_start = page_to_virt(page);
--
- 	skb = veth_build_skb(hard_start, headroom, len, ts);
- 	seg_info = (struct veth_seg_info *)kmalloc(struct_size(seg_info, desc, MAX_SKB_FRAGS), GFP_KERNEL);
- 	if (!seg_info)
- 	{
- 		printk("here must to deal with\n");
- 	}
--
- 	/* later we will support gso for this */
- 	index = skb_shinfo(skb)->gso_segs;
- 	seg_info->desc[index] = desc->addr;
- 	seg_info->segs = ++index;
--
- 	skb->truesize += ts;
- 	skb->dev = dev;
- 	skb_shinfo(skb)->destructor_arg = (void *)(long)seg_info;
- 	skb_shinfo(skb)->destructor_arg_xsk_pool = (void *)(long)pool;
- 	skb->destructor = veth_xsk_destruct_skb;
--
- 	/* set the mac header */
- 	skb->protocol = eth_type_trans(skb, dev);
-+	/* to do, add skb to sock. may be there is no need to do for this
-+	*  refcount_add(ts, &xs->sk.sk_wmem_alloc);
-+	*/
-+	return skb;
-+}
-+
-+static struct sk_buff *veth_build_skb_zerocopy_gso(struct net_device *dev, struct xsk_buff_pool *pool,
-+					      struct xdp_desc *desc, struct veth_gso_tuple *gso_tuple, struct sk_buff *prev_skb)
-+{
-+	u32 hr, len, ts, index, iph_len, th_len, data_offset, data_len, tot_len;
-+	struct veth_seg_info *seg_info;
-+	void *buffer;
-+	struct udphdr *udph;
-+	struct iphdr *iph;
-+	struct sk_buff *skb;
-+	struct page *page;
-+	int hh_len = 0;
-+	u64 addr;
-+
-+	addr = desc->addr;
-+	len = desc->len;
-+
-+	/* l2 reserved len */
-+	hh_len = LL_RESERVED_SPACE(dev);
-+	hr = max(NET_SKB_PAD, L1_CACHE_ALIGN(hh_len));
-+
-+	/* data points to eth header */
-+	buffer = (unsigned char *)xsk_buff_raw_get_data(pool, addr);
-+
-+	iph = (struct iphdr *)(buffer + ETH_HLEN);
-+	iph_len = iph->ihl * 4;
-+
-+	udph = (struct udphdr *)(buffer + ETH_HLEN + iph_len);
-+	th_len = sizeof(struct udphdr);
-+
-+	if (gso_tuple->gso_flush)
-+		gso_tuple_init(gso_tuple, iph, udph);
-+
-+	ts = pool->unaligned ? len : pool->chunk_size;
-+
-+	data_offset = offset_in_page(buffer) + ETH_HLEN + iph_len + th_len;
-+	data_len = len - (ETH_HLEN + iph_len + th_len);
-+
-+	/* head is null or this is a new 5 tuple */
-+	if (NULL == prev_skb || !gso_segment_match(gso_tuple, iph, udph)) {
-+		tot_len = hr + iph_len + th_len;
-+		skb = veth_build_gso_head_skb(dev, buffer, tot_len, hr, iph_len, th_len);
-+		if (!skb) {
-+			/* to do: handle here for skb */
-+			return NULL;
-+		}
-+
-+		/* store information for gso */
-+		seg_info = (struct veth_seg_info *)kmalloc(struct_size(seg_info, desc, MAX_SKB_FRAGS), GFP_KERNEL);
-+		if (!seg_info) {
-+			/* to do */
-+			kfree_skb(skb);
-+			return NULL;
-+		}
-+	} else {
-+		skb = prev_skb;
-+		skb_shinfo(skb)->gso_type = SKB_GSO_UDP_L4 | SKB_GSO_PARTIAL;
-+		skb_shinfo(skb)->gso_size = data_len;
-+		skb->ip_summed = CHECKSUM_PARTIAL;
-+
-+		/* max segment is MAX_SKB_FRAGS */
-+		if(skb_shinfo(skb)->gso_segs >= MAX_SKB_FRAGS - 1) {
-+			gso_tuple->gso_flush = true;
-+		}
-+		seg_info = (struct veth_seg_info *)skb_shinfo(skb)->destructor_arg;
-+	}
-+
-+	/* offset in umem pool buffer */
-+	addr = buffer - pool->addrs;
-+
-+	/* get the page of the desc */
-+	page = pool->umem->pgs[addr >> PAGE_SHIFT];
-+
-+	/* in order to avoid to get freed by kfree_skb */
-+	get_page(page);
-+
-+	/* desc.data can not hold in two   */
-+	skb_fill_page_desc(skb, skb_shinfo(skb)->gso_segs, page, data_offset, data_len);
-+
-+	skb->len += data_len;
-+	skb->data_len += data_len;
-+	skb->truesize += ts;
-+	skb->dev = dev;
-+
-+	/* later we will support gso for this */
-+	index = skb_shinfo(skb)->gso_segs;
-+	seg_info->desc[index] = desc->addr;
-+	seg_info->segs = ++index;
-+	skb_shinfo(skb)->gso_segs++;
-+
-+	skb_shinfo(skb)->destructor_arg = (void *)(long)seg_info;
-+	skb_shinfo(skb)->destructor_arg_xsk_pool = (void *)(long)pool;
-+	skb->destructor = veth_xsk_destruct_skb;
- 
- 	/* to do, add skb to sock. may be there is no need to do for this
- 	*  refcount_add(ts, &xs->sk.sk_wmem_alloc);
-@@ -744,6 +923,22 @@ static struct sk_buff *veth_build_skb_zerocopy(struct net_device *dev, struct xs
- 	return skb;
- }
- 
-+static inline struct sk_buff *veth_build_skb_zerocopy(struct net_device *dev, struct xsk_buff_pool *pool,
-+					      struct xdp_desc *desc, struct veth_gso_tuple *gso_tuple, struct sk_buff *prev_skb)
-+{
-+	void *buffer;
-+
-+	buffer = xsk_buff_raw_get_data(pool, desc->addr);
-+	if (ip_hdr_gso_check(buffer, desc->len)) {
-+		gso_tuple->gso_enable = true;
-+		return veth_build_skb_zerocopy_gso(dev, pool, desc, gso_tuple, prev_skb);
-+	} else {
-+		gso_tuple->gso_flush = false;
-+		gso_tuple->gso_enable = false;
-+		return veth_build_skb_zerocopy_normal(dev, pool, desc);
-+	}
-+}
-+
- static struct xdp_frame *veth_xdp_rcv_one(struct veth_rq *rq,
- 					  struct xdp_frame *frame,
- 					  struct veth_xdp_tx_bq *bq,
-@@ -1176,16 +1371,33 @@ static inline bool buffer_in_page(void *buffer, u32 len)
- 	}
- }
- 
-+static inline void veth_skb_gso_check_update(struct sk_buff *skb)
-+{
-+	struct iphdr *iph = ip_hdr(skb);
-+	struct udphdr *uh = udp_hdr(skb);
-+	int ip_tot_len = skb->len;
-+	int udp_len = skb->len - (skb->transport_header - skb->network_header);
-+	iph->tot_len = htons(ip_tot_len);
-+	ip_send_check(iph);
-+	uh->len = htons(udp_len);
-+	uh->check = 0;
-+
-+	/* udp4 checksum update */
-+	udp4_hwcsum(skb, iph->saddr, iph->daddr);
-+}
-+
- static int veth_xsk_tx_xmit(struct veth_sq *sq, struct xsk_buff_pool *xsk_pool, int budget)
- {
- 	struct veth_priv *priv, *peer_priv;
- 	struct net_device *dev, *peer_dev;
-+	struct veth_gso_tuple gso_tuple;
- 	struct veth_rq *peer_rq;
- 	struct veth_stats peer_stats = {};
- 	struct veth_stats stats = {};
- 	struct veth_xdp_tx_bq bq;
- 	struct xdp_desc desc;
- 	void *xdpf;
-+	struct sk_buff *prev_skb = NULL;
- 	struct sk_buff *skb = NULL;
- 	bool zc = xsk_pool->umem->zc;
- 	u32 xsk_headroom = xsk_pool->headroom;
-@@ -1200,6 +1412,8 @@ static int veth_xsk_tx_xmit(struct veth_sq *sq, struct xsk_buff_pool *xsk_pool,
- 	/* todo: queue index must set before this */
- 	peer_rq = &peer_priv->rq[sq->queue_index];
- 
-+	memset(&gso_tuple, 0, sizeof(gso_tuple));
-+
- 	/* set xsk wake up flag, to do: where to disable */
- 	if (xsk_uses_need_wakeup(xsk_pool))
- 		xsk_set_tx_need_wakeup(xsk_pool);
-@@ -1279,12 +1493,26 @@ static int veth_xsk_tx_xmit(struct veth_sq *sq, struct xsk_buff_pool *xsk_pool,
- 			/* no need to copy address for af+xdp */
- 			p_frame = veth_xdp_rcv_one(peer_rq, p_frame, &bq, &peer_stats);
- 			if (p_frame) {
--				skb = veth_build_skb_zerocopy(peer_dev, xsk_pool, &desc);
--				if (skb) {
-+				skb = veth_build_skb_zerocopy(peer_dev, xsk_pool, &desc, &gso_tuple, prev_skb);
-+				if (!gso_tuple.gso_enable) {
- 					napi_gro_receive(&peer_rq->xdp_napi, skb);
- 					skb = NULL;
- 				} else {
--					xsk_tx_completed_addr(xsk_pool, desc.addr);
-+					if (prev_skb && gso_tuple.gso_flush) {
-+						veth_skb_gso_check_update(prev_skb);
-+						napi_gro_receive(&peer_rq->xdp_napi, prev_skb);
-+
-+						if (prev_skb == skb) {
-+							skb = NULL;
-+							prev_skb = NULL;
-+						} else {
-+							prev_skb = skb;
-+						}
-+					} else if (NULL == skb){
-+						xsk_tx_completed_addr(xsk_pool, desc.addr);
-+					} else {
-+						prev_skb = skb;
-+					}
- 				}
- 			}
- 		} else {
-@@ -1308,6 +1536,12 @@ static int veth_xsk_tx_xmit(struct veth_sq *sq, struct xsk_buff_pool *xsk_pool,
- 		done++;
- 	}
- 
-+	/* gso skb */
-+	if (NULL!=skb) {
-+		veth_skb_gso_check_update(skb);
-+		napi_gro_receive(&peer_rq->xdp_napi, skb);
-+	}
-+
- 	/* release, move consumer，and wakeup the producer */
- 	if (done) {
- 		napi_schedule(&peer_rq->xdp_napi);
+diff --git a/drivers/tty/serial/max310x.c b/drivers/tty/serial/max310x.c
+index 416d553b73a7..5903dd033fd0 100644
+--- a/drivers/tty/serial/max310x.c
++++ b/drivers/tty/serial/max310x.c
+@@ -1369,6 +1369,11 @@ static int max310x_probe(struct device *dev, const struct max310x_devtype *devty
+ 		s->p[i].port.flags	= UPF_FIXED_TYPE | UPF_LOW_LATENCY;
+ 		s->p[i].port.iotype	= UPIO_PORT;
+ 		s->p[i].port.iobase	= i;
++		/*
++		 * Use all ones as membase to make sure uart_configure_port() in
++		 * serial_core.c does not abort for SPI/I2C devices where the
++		 * membase address is not applicable.
++		 */
+ 		s->p[i].port.membase	= (void __iomem *)~0;
+ 		s->p[i].port.uartclk	= uartclk;
+ 		s->p[i].port.rs485_config = max310x_rs485_config;
+
+base-commit: 426263d5fb400ccde5444748693dc75bda18f01e
 -- 
-2.20.1
+2.30.2
 
