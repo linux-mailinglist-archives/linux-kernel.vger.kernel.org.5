@@ -2,42 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 60D4C76EABD
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 15:36:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 55D7F76EAB0
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 15:36:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236403AbjHCNfK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Aug 2023 09:35:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53382 "EHLO
+        id S236263AbjHCNfX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Aug 2023 09:35:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53452 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233496AbjHCNdx (ORCPT
+        with ESMTP id S234875AbjHCNd4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Aug 2023 09:33:53 -0400
-Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1EFEA4ED8;
-        Thu,  3 Aug 2023 06:32:37 -0700 (PDT)
+        Thu, 3 Aug 2023 09:33:56 -0400
+Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00FEF4EE0;
+        Thu,  3 Aug 2023 06:32:38 -0700 (PDT)
 Received: from mail02.huawei.com (unknown [172.30.67.143])
-        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4RGqXK3nKDz4f3lVM;
-        Thu,  3 Aug 2023 21:32:33 +0800 (CST)
+        by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4RGqXJ1Jkpz4f3lJn;
+        Thu,  3 Aug 2023 21:32:32 +0800 (CST)
 Received: from huaweicloud.com (unknown [10.175.104.67])
-        by APP4 (Coremail) with SMTP id gCh0CgAHuKtqrMtkWHLlPQ--.49699S23;
+        by APP4 (Coremail) with SMTP id gCh0CgAHuKtqrMtkWHLlPQ--.49699S24;
         Thu, 03 Aug 2023 21:32:34 +0800 (CST)
 From:   Yu Kuai <yukuai1@huaweicloud.com>
 To:     song@kernel.org, xni@redhat.com
 Cc:     linux-raid@vger.kernel.org, linux-kernel@vger.kernel.org,
         yukuai3@huawei.com, yukuai1@huaweicloud.com, yi.zhang@huawei.com,
         yangerkun@huawei.com
-Subject: [PATCH -next 19/29] md: use new apis to suspend array for ioctls involed array reconfiguration
-Date:   Thu,  3 Aug 2023 21:29:20 +0800
-Message-Id: <20230803132930.2742286-20-yukuai1@huaweicloud.com>
+Subject: [PATCH -next 20/29] md: use new apis to suspend array for adding/removing rdev from state_store()
+Date:   Thu,  3 Aug 2023 21:29:21 +0800
+Message-Id: <20230803132930.2742286-21-yukuai1@huaweicloud.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20230803132930.2742286-1-yukuai1@huaweicloud.com>
 References: <20230803132930.2742286-1-yukuai1@huaweicloud.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: gCh0CgAHuKtqrMtkWHLlPQ--.49699S23
-X-Coremail-Antispam: 1UD129KBjvJXoWxGF13Cw43KryDJw43GrWrGrg_yoW5AFyxpr
-        WxKan5KrW5tFy3WrWUta4v9a4Fvwn7KrZFyrWfWw15GF1fArnxuF1rWF1rAr1093s7JFn8
-        Jw4Yka48C3WUWFDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+X-CM-TRANSID: gCh0CgAHuKtqrMtkWHLlPQ--.49699S24
+X-Coremail-Antispam: 1UD129KBjvJXoW7Kr4kXFWfAF4DCr48AFW5ZFb_yoW8ZF1kpa
+        17Ka4rWry7Jw45Gw4rZa1kua4Ygwn2grWqkrWa9w1Sy3WxGwnrGFy5tr4DAFyFv3ya9r13
+        Xw4UKw45G34fCrDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
         9KBjDU0xBIdaVrnRJUUUBj14x267AKxVWrJVCq3wAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
         rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2048vs2IY020E87I2jVAFwI0_JF0E3s1l82xGYI
         kIc2x26xkF7I0E14v26ryj6s0DM28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8wA2
@@ -53,8 +53,8 @@ X-Coremail-Antispam: 1UD129KBjvJXoWxGF13Cw43KryDJw43GrWrGrg_yoW5AFyxpr
         AKxVW8Jr0_Cr1UYxBIdaVFxhVjvjDU0xZFpf9x0JUqiihUUUUU=
 X-CM-SenderInfo: 51xn3trlr6x35dzhxuhorxvhhfrp/
 X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,KHOP_HELO_FCRDNS,
-        MAY_BE_FORGED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -64,107 +64,66 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Yu Kuai <yukuai3@huawei.com>
 
-'reconfig_mutex' will be grabbed before these ioctls, suspend array
-before holding the lock, so that io won't concurrent with array
-reconfiguration through ioctls.
-
-This is not hot path, so performance is not concerned.
+User can write 'remove' and 're-add' to trigger array reconfiguration
+through sysfs, suspend array in this case so that io won't concurrent
+with array reconfiguration.
 
 Signed-off-by: Yu Kuai <yukuai3@huawei.com>
 ---
- drivers/md/md.c | 27 +++++++++++++++++++--------
- 1 file changed, 19 insertions(+), 8 deletions(-)
+ drivers/md/md.c | 18 ++++++++++++------
+ 1 file changed, 12 insertions(+), 6 deletions(-)
 
 diff --git a/drivers/md/md.c b/drivers/md/md.c
-index d550bacd0efc..66bb6a585291 100644
+index 66bb6a585291..4a522558a570 100644
 --- a/drivers/md/md.c
 +++ b/drivers/md/md.c
-@@ -7183,7 +7183,6 @@ static int set_bitmap_file(struct mddev *mddev, int fd)
- 			struct bitmap *bitmap;
+@@ -2916,11 +2916,7 @@ static int add_bound_rdev(struct md_rdev *rdev)
+ 		 */
+ 		super_types[mddev->major_version].
+ 			validate_super(mddev, rdev);
+-		if (add_journal)
+-			mddev_suspend(mddev);
+ 		err = mddev->pers->hot_add_disk(mddev, rdev);
+-		if (add_journal)
+-			mddev_resume(mddev);
+ 		if (err) {
+ 			md_kick_rdev_from_array(rdev);
+ 			return err;
+@@ -3687,6 +3683,7 @@ rdev_attr_store(struct kobject *kobj, struct attribute *attr,
+ 	struct rdev_sysfs_entry *entry = container_of(attr, struct rdev_sysfs_entry, attr);
+ 	struct md_rdev *rdev = container_of(kobj, struct md_rdev, kobj);
+ 	struct kernfs_node *kn = NULL;
++	bool suspended = false;
+ 	ssize_t rv;
+ 	struct mddev *mddev = rdev->mddev;
  
- 			bitmap = md_bitmap_create(mddev, -1);
--			mddev_suspend(mddev);
- 			if (!IS_ERR(bitmap)) {
- 				mddev->bitmap = bitmap;
- 				err = md_bitmap_load(mddev);
-@@ -7193,11 +7192,8 @@ static int set_bitmap_file(struct mddev *mddev, int fd)
- 				md_bitmap_destroy(mddev);
- 				fd = -1;
- 			}
--			mddev_resume(mddev);
- 		} else if (fd < 0) {
--			mddev_suspend(mddev);
- 			md_bitmap_destroy(mddev);
--			mddev_resume(mddev);
- 		}
- 	}
- 	if (fd < 0) {
-@@ -7486,7 +7482,6 @@ static int update_array_info(struct mddev *mddev, mdu_array_info_t *info)
- 			mddev->bitmap_info.space =
- 				mddev->bitmap_info.default_space;
- 			bitmap = md_bitmap_create(mddev, -1);
--			mddev_suspend(mddev);
- 			if (!IS_ERR(bitmap)) {
- 				mddev->bitmap = bitmap;
- 				rv = md_bitmap_load(mddev);
-@@ -7494,7 +7489,6 @@ static int update_array_info(struct mddev *mddev, mdu_array_info_t *info)
- 				rv = PTR_ERR(bitmap);
- 			if (rv)
- 				md_bitmap_destroy(mddev);
--			mddev_resume(mddev);
- 		} else {
- 			/* remove the bitmap */
- 			if (!mddev->bitmap) {
-@@ -7519,9 +7513,7 @@ static int update_array_info(struct mddev *mddev, mdu_array_info_t *info)
- 				module_put(md_cluster_mod);
- 				mddev->safemode_delay = DEFAULT_SAFEMODE_DELAY;
- 			}
--			mddev_suspend(mddev);
- 			md_bitmap_destroy(mddev);
--			mddev_resume(mddev);
- 			mddev->bitmap_info.offset = 0;
- 		}
- 	}
-@@ -7592,6 +7584,19 @@ static inline bool md_ioctl_valid(unsigned int cmd)
- 	}
- }
+@@ -3695,8 +3692,14 @@ rdev_attr_store(struct kobject *kobj, struct attribute *attr,
+ 	if (!capable(CAP_SYS_ADMIN))
+ 		return -EACCES;
  
-+static bool md_ioctl_need_suspend(unsigned int cmd)
-+{
-+	switch (cmd) {
-+	case ADD_NEW_DISK:
-+	case HOT_ADD_DISK:
-+	case HOT_REMOVE_DISK:
-+	case SET_BITMAP_FILE:
-+		return true;
-+	default:
-+		return false;
+-	if (entry->store == state_store && cmd_match(page, "remove"))
+-		kn = sysfs_break_active_protection(kobj, attr);
++	if (entry->store == state_store) {
++		if (cmd_match(page, "remove"))
++			kn = sysfs_break_active_protection(kobj, attr);
++		if (cmd_match(page, "remove") || cmd_match(page, "re-add")) {
++			__mddev_suspend(mddev);
++			suspended = true;
++		}
 +	}
-+}
+ 
+ 	rv = mddev ? mddev_lock(mddev) : -ENODEV;
+ 	if (!rv) {
+@@ -3705,6 +3708,9 @@ rdev_attr_store(struct kobject *kobj, struct attribute *attr,
+ 		else
+ 			rv = entry->store(rdev, page, length);
+ 		mddev_unlock(mddev);
 +
- static int __md_set_array_info(struct mddev *mddev, void __user *argp)
- {
- 	mdu_array_info_t info;
-@@ -7720,6 +7725,9 @@ static int md_ioctl(struct block_device *bdev, blk_mode_t mode,
- 		mutex_unlock(&mddev->open_mutex);
- 		sync_blockdev(bdev);
++		if (suspended)
++			__mddev_resume(mddev);
  	}
-+
-+	if (md_ioctl_need_suspend(cmd))
-+		__mddev_suspend(mddev);
- 	err = mddev_lock(mddev);
- 	if (err) {
- 		pr_debug("md: ioctl lock interrupted, reason %d, cmd %d\n",
-@@ -7848,6 +7856,9 @@ static int md_ioctl(struct block_device *bdev, blk_mode_t mode,
- 	if (mddev->hold_active == UNTIL_IOCTL &&
- 	    err != -EINVAL)
- 		mddev->hold_active = 0;
-+
-+	if (md_ioctl_need_suspend(cmd))
-+		__mddev_resume(mddev);
- 	mddev_unlock(mddev);
- out:
- 	if(did_set_md_closing)
+ 
+ 	if (kn)
 -- 
 2.39.2
 
