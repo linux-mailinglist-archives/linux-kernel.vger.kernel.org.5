@@ -2,320 +2,218 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F2DC76F390
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 21:40:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CB6E476F393
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 21:41:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231322AbjHCTj4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Aug 2023 15:39:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35324 "EHLO
+        id S231129AbjHCTkz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Aug 2023 15:40:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35930 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229777AbjHCTjs (ORCPT
+        with ESMTP id S230165AbjHCTkw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Aug 2023 15:39:48 -0400
-Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C867420B
-        for <linux-kernel@vger.kernel.org>; Thu,  3 Aug 2023 12:39:39 -0700 (PDT)
-Received: by mail-ed1-x529.google.com with SMTP id 4fb4d7f45d1cf-51e24210395so3113a12.0
-        for <linux-kernel@vger.kernel.org>; Thu, 03 Aug 2023 12:39:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1691091578; x=1691696378;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=5voU2DobUwvkJAMPVyJE9Vwy5Vfeg1yztnxHd6e8HNU=;
-        b=SecRJl+zE+rpRyTfAYhjLRInvY0a7dzOSq9heEcWYOLaPJN/kBzD/LQ6dcN95s+H35
-         IHcUN3wCtvRp/tiMN55vSePuojmYlP6jdTZRUWeg6MrGCYpECfgLsdjQSnw81ZC30OTj
-         scPSP7ZsFVGZ7Js74691eczlD3/r/T4tqEu5Y1GsCrxCgKsUZZJORYm8vAcLD+gEBvkD
-         /hoa+8WFQDvBXpqe/EbjZFvGVrW+LevGXV1hv1uMsxpRda8pRQAl+Pp/ZwfJJ20VYiAV
-         g4Ey5lqze/kifU8SzoodNF019vuT1SJu0iYzVaOs+aumtgWaGLSsXvSjhLy3w639EnEr
-         G4rg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691091578; x=1691696378;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=5voU2DobUwvkJAMPVyJE9Vwy5Vfeg1yztnxHd6e8HNU=;
-        b=XqGCN1i85LR6LA7xLFZVij+VmBHLcqgu3xqflX/vXJpezNjROj277aT8a2UIGe0NYe
-         /8c4hhs8VMfYMGIAspg4jNomaI82bzNdU5qDsunJPBDQ1euMk65iI8tasCJHgXvLNNzW
-         G+mbL8uuSWgpzYBlunWjY03mN2IzPRtAYHB+rfve3TuNgzV42SySDP5Ts8uYUl6AWfAn
-         BwxVxJvRywKD8hl9HRX8aSmRJPSu/yfJUCHYKyf2kxE/QWaHD1Ywae7V/Mv052QGVKct
-         TbyO9P5Y1OKtVGATQlwxZVM/alHIBOzduzw37aLWgQgefqXebfGQPPyNvLhWA2P9zkH+
-         27yQ==
-X-Gm-Message-State: AOJu0YyibtqThBJocU9IXRrUeot0yutYBoT0n9VI3Z5v9LRlPpi5Oilp
-        0qUSCQihOqdv0fMZzCB/8IE4LpaS9XziTLXZOE2asQ==
-X-Google-Smtp-Source: AGHT+IFMkZB0zQ9qSFpLsqEGAdnPBVsV9TRsnxOXDIUoaDfuP+WVrdcp+hkSjx7Q4Ln+Bg1q31TxAUJsn3N706F3qXw=
-X-Received: by 2002:a50:baeb:0:b0:521:d274:fc81 with SMTP id
- x98-20020a50baeb000000b00521d274fc81mr2848ede.2.1691091578007; Thu, 03 Aug
- 2023 12:39:38 -0700 (PDT)
+        Thu, 3 Aug 2023 15:40:52 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75FDC3C3E;
+        Thu,  3 Aug 2023 12:40:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1691091650; x=1722627650;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:content-transfer-encoding:in-reply-to;
+  bh=J5BmdgRwqzUiKNIDnRcFwp1joEXUv/AmCXQNT0e8s+s=;
+  b=GFY5cwLu7ZSK4PNbo9FmUx951h1wkSWm4CjbtMrRS40+MigXjB5pMh/d
+   zBr737Xqpn03MtXjVh82vkvCkt+C2pY7ZjN60rHsGvtrGtqS6tQHfbiQW
+   ybnKGH1hYYcB0UkxmGNFKtS76eq31QXS4TgoXwOrx0/1TnjBhu6oROTA8
+   bDMbKCYfnTJ+i2eou5o3WbuzhNuNwp+pJeqGJxZAFflyeYg4O2UYGwEle
+   Npr6dTeBIq5dqrRDQvB5zSOaqyw2ExE1fJUSdbLYrEM0is8ziYnCGd2wg
+   gLKKfvU3HXtmimQ9NgVdIAZsjdG5BOU/cPpJRCI6YlWs9GJkgEw6C+dQB
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10791"; a="368881704"
+X-IronPort-AV: E=Sophos;i="6.01,252,1684825200"; 
+   d="scan'208";a="368881704"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Aug 2023 12:40:49 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10791"; a="1060437128"
+X-IronPort-AV: E=Sophos;i="6.01,252,1684825200"; 
+   d="scan'208";a="1060437128"
+Received: from lkp-server01.sh.intel.com (HELO d1ccc7e87e8f) ([10.239.97.150])
+  by fmsmga005.fm.intel.com with ESMTP; 03 Aug 2023 12:40:46 -0700
+Received: from kbuild by d1ccc7e87e8f with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qReBh-0002Jj-34;
+        Thu, 03 Aug 2023 19:40:45 +0000
+Date:   Fri, 4 Aug 2023 03:39:57 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Thippeswamy Havalige <thippeswamy.havalige@amd.com>,
+        linux-kernel@vger.kernel.org, robh+dt@kernel.org,
+        bhelgaas@google.com, linux-pci@vger.kernel.org
+Cc:     oe-kbuild-all@lists.linux.dev, krzysztof.kozlowski@linaro.org,
+        lpieralisi@kernel.org, bharat.kumar.gogada@amd.com,
+        michal.simek@amd.com, linux-arm-kernel@lists.infradead.org,
+        Thippeswamy Havalige <thippeswamy.havalige@amd.com>
+Subject: Re: [PATCH] PCI: xilinx-nwl: Remove unnecessary code and updating
+ ecam default value.
+Message-ID: <202308040330.eMTjX3tF-lkp@intel.com>
+References: <20230803115016.4266-1-thippeswamy.havalige@amd.com>
 MIME-Version: 1.0
-References: <20230802212834.761327-1-rmoar@google.com> <CABVgOSkGL2QhcQ7067NddajXGOJvjN88O7OjdTs3YY2xgMSZPQ@mail.gmail.com>
-In-Reply-To: <CABVgOSkGL2QhcQ7067NddajXGOJvjN88O7OjdTs3YY2xgMSZPQ@mail.gmail.com>
-From:   Rae Moar <rmoar@google.com>
-Date:   Thu, 3 Aug 2023 15:39:25 -0400
-Message-ID: <CA+GJov6MGXUsDjGa0TyoMVz7jrc+zT05KkHar63jj0gOppTKqA@mail.gmail.com>
-Subject: Re: [PATCH -next] kunit: fix uninitialized variables bug in
- attributes filtering
-To:     David Gow <davidgow@google.com>
-Cc:     shuah@kernel.org, brendan.higgins@linux.dev, ruanjinjie@huawei.com,
-        linux-kselftest@vger.kernel.org, kunit-dev@googlegroups.com,
-        linux-kernel@vger.kernel.org, kernel test robot <lkp@intel.com>,
-        Dan Carpenter <dan.carpenter@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20230803115016.4266-1-thippeswamy.havalige@amd.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 3, 2023 at 4:15=E2=80=AFAM David Gow <davidgow@google.com> wrot=
-e:
->
-> On Thu, 3 Aug 2023 at 05:28, Rae Moar <rmoar@google.com> wrote:
-> >
-> > Fix smatch warnings regarding uninitialized variables in the filtering
-> > patch of the new KUnit Attributes feature.
-> >
-> > Fixes: 529534e8cba3 ("kunit: Add ability to filter attributes")
-> >
-> > Reported-by: kernel test robot <lkp@intel.com>
-> > Reported-by: Dan Carpenter <dan.carpenter@linaro.org>
-> > Closes: https://lore.kernel.org/r/202307270610.s0w4NKEn-lkp@intel.com/
-> >
-> > Signed-off-by: Rae Moar <rmoar@google.com>
-> > ---
->
-> These fixes look good, especially the ones in attributes.c.
->
-> There's still a possibility of returning uninitialised or freed
-> pointers in executor.c. If we can keep 'filtered' valid at all times,
-> this should be easier to deal with, e.g.:
->
-> - Initialise 'filtered' to {NULL, NULL}, which is a valid "empty" value.
-> - Only ever set start and end at the same time, so don't set 'start'
-> immediately after allocation.
-> - Wait until the filtering is complete and successful (i.e., where
-> 'end' is set now), and set 'start' there as well.
-> - Then return filtered will definitely either return the completely
-> filtered value, or a valid empty suite_set.
->
+Hi Thippeswamy,
 
-Hi!
+kernel test robot noticed the following build warnings:
 
-Great point. I will definitely change this. This is definitely a flaw
-in the code. I have sent out a v2 of this patch with your suggested
-changes above. Let me know what you think.
+[auto build test WARNING on pci/next]
+[also build test WARNING on pci/for-linus linus/master v6.5-rc4 next-20230803]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-Thanks!
--Rae
+url:    https://github.com/intel-lab-lkp/linux/commits/Thippeswamy-Havalige/PCI-xilinx-nwl-Remove-unnecessary-code-and-updating-ecam-default-value/20230803-195228
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/pci/pci.git next
+patch link:    https://lore.kernel.org/r/20230803115016.4266-1-thippeswamy.havalige%40amd.com
+patch subject: [PATCH] PCI: xilinx-nwl: Remove unnecessary code and updating ecam default value.
+config: x86_64-allyesconfig (https://download.01.org/0day-ci/archive/20230804/202308040330.eMTjX3tF-lkp@intel.com/config)
+compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
+reproduce: (https://download.01.org/0day-ci/archive/20230804/202308040330.eMTjX3tF-lkp@intel.com/reproduce)
 
-> Otherwise, this looks good.
->
-> -- David
->
-> >
-> > Note that this is rebased on top of the recent fix:
-> > ("kunit: fix possible memory leak in kunit_filter_suites()").
-> >
-> >  lib/kunit/attributes.c | 40 +++++++++++++++++-----------------------
-> >  lib/kunit/executor.c   | 10 +++++++---
-> >  2 files changed, 24 insertions(+), 26 deletions(-)
-> >
-> > diff --git a/lib/kunit/attributes.c b/lib/kunit/attributes.c
-> > index d37c40c0ce4f..5e3034b6be99 100644
-> > --- a/lib/kunit/attributes.c
-> > +++ b/lib/kunit/attributes.c
-> > @@ -102,7 +102,7 @@ static int int_filter(long val, const char *op, int=
- input, int *err)
-> >  static int attr_enum_filter(void *attr, const char *input, int *err,
-> >                 const char * const str_list[], int max)
-> >  {
-> > -       int i, j, input_int;
-> > +       int i, j, input_int =3D -1;
-> >         long test_val =3D (long)attr;
-> >         const char *input_val =3D NULL;
-> >
-> > @@ -124,7 +124,7 @@ static int attr_enum_filter(void *attr, const char =
-*input, int *err,
-> >                         input_int =3D j;
-> >         }
-> >
-> > -       if (!input_int) {
-> > +       if (input_int < 0) {
-> >                 *err =3D -EINVAL;
-> >                 pr_err("kunit executor: invalid filter input: %s\n", in=
-put);
-> >                 return false;
-> > @@ -186,8 +186,10 @@ static void *attr_module_get(void *test_or_suite, =
-bool is_test)
-> >         // Suites get their module attribute from their first test_case
-> >         if (test)
-> >                 return ((void *) test->module_name);
-> > -       else
-> > +       else if (kunit_suite_num_test_cases(suite) > 0)
-> >                 return ((void *) suite->test_cases[0].module_name);
-> > +       else
-> > +               return (void *) "";
-> >  }
-> >
-> >  /* List of all Test Attributes */
-> > @@ -221,7 +223,7 @@ const char *kunit_attr_filter_name(struct kunit_att=
-r_filter filter)
-> >  void kunit_print_attr(void *test_or_suite, bool is_test, unsigned int =
-test_level)
-> >  {
-> >         int i;
-> > -       bool to_free;
-> > +       bool to_free =3D false;
-> >         void *attr;
-> >         const char *attr_name, *attr_str;
-> >         struct kunit_suite *suite =3D is_test ? NULL : test_or_suite;
-> > @@ -255,7 +257,7 @@ void kunit_print_attr(void *test_or_suite, bool is_=
-test, unsigned int test_level
-> >
-> >  int kunit_get_filter_count(char *input)
-> >  {
-> > -       int i, comma_index, count =3D 0;
-> > +       int i, comma_index =3D 0, count =3D 0;
-> >
-> >         for (i =3D 0; input[i]; i++) {
-> >                 if (input[i] =3D=3D ',') {
-> > @@ -272,7 +274,7 @@ int kunit_get_filter_count(char *input)
-> >  struct kunit_attr_filter kunit_next_attr_filter(char **filters, int *e=
-rr)
-> >  {
-> >         struct kunit_attr_filter filter =3D {};
-> > -       int i, j, comma_index, new_start_index;
-> > +       int i, j, comma_index =3D 0, new_start_index =3D 0;
-> >         int op_index =3D -1, attr_index =3D -1;
-> >         char op;
-> >         char *input =3D *filters;
-> > @@ -316,7 +318,7 @@ struct kunit_attr_filter kunit_next_attr_filter(cha=
-r **filters, int *err)
-> >                 filter.attr =3D &kunit_attr_list[attr_index];
-> >         }
-> >
-> > -       if (comma_index) {
-> > +       if (comma_index > 0) {
-> >                 input[comma_index] =3D '\0';
-> >                 filter.input =3D input + op_index;
-> >                 input =3D input + new_start_index;
-> > @@ -356,31 +358,22 @@ struct kunit_suite *kunit_filter_attr_tests(const=
- struct kunit_suite *const suit
-> >
-> >         /* Save filtering result on default value */
-> >         default_result =3D filter.attr->filter(filter.attr->attr_defaul=
-t, filter.input, err);
-> > -       if (*err) {
-> > -               kfree(copy);
-> > -               kfree(filtered);
-> > -               return NULL;
-> > -       }
-> > +       if (*err)
-> > +               goto err;
-> >
-> >         /* Save suite attribute value and filtering result on that valu=
-e */
-> >         suite_val =3D filter.attr->get_attr((void *)suite, false);
-> >         suite_result =3D filter.attr->filter(suite_val, filter.input, e=
-rr);
-> > -       if (*err) {
-> > -               kfree(copy);
-> > -               kfree(filtered);
-> > -               return NULL;
-> > -       }
-> > +       if (*err)
-> > +               goto err;
-> >
-> >         /* For each test case, save test case if passes filtering. */
-> >         kunit_suite_for_each_test_case(suite, test_case) {
-> >                 test_val =3D filter.attr->get_attr((void *) test_case, =
-true);
-> >                 test_result =3D filter.attr->filter(filter.attr->get_at=
-tr(test_case, true),
-> >                                 filter.input, err);
-> > -               if (*err) {
-> > -                       kfree(copy);
-> > -                       kfree(filtered);
-> > -                       return NULL;
-> > -               }
-> > +               if (*err)
-> > +                       goto err;
-> >
-> >                 /*
-> >                  * If attribute value of test case is set, filter on th=
-at value.
-> > @@ -406,7 +399,8 @@ struct kunit_suite *kunit_filter_attr_tests(const s=
-truct kunit_suite *const suit
-> >                 }
-> >         }
-> >
-> > -       if (n =3D=3D 0) {
-> > +err:
-> > +       if (n =3D=3D 0 || *err) {
-> >                 kfree(copy);
-> >                 kfree(filtered);
-> >                 return NULL;
-> > diff --git a/lib/kunit/executor.c b/lib/kunit/executor.c
-> > index 481901d245d0..b6e07de2876a 100644
-> > --- a/lib/kunit/executor.c
-> > +++ b/lib/kunit/executor.c
-> > @@ -130,7 +130,7 @@ static struct suite_set kunit_filter_suites(const s=
-truct suite_set *suite_set,
-> >         struct kunit_suite **copy, *filtered_suite, *new_filtered_suite=
-;
-> >         struct suite_set filtered;
-> >         struct kunit_glob_filter parsed_glob;
-> > -       struct kunit_attr_filter *parsed_filters;
-> > +       struct kunit_attr_filter *parsed_filters =3D NULL;
-> >
-> >         const size_t max =3D suite_set->end - suite_set->start;
-> >
-> > @@ -147,7 +147,11 @@ static struct suite_set kunit_filter_suites(const =
-struct suite_set *suite_set,
-> >         /* Parse attribute filters */
-> >         if (filters) {
-> >                 filter_count =3D kunit_get_filter_count(filters);
-> > -               parsed_filters =3D kcalloc(filter_count + 1, sizeof(*pa=
-rsed_filters), GFP_KERNEL);
-> > +               parsed_filters =3D kcalloc(filter_count, sizeof(*parsed=
-_filters), GFP_KERNEL);
-> > +               if (!parsed_filters) {
-> > +                       kfree(copy);
-> > +                       return filtered;
->
-> Is 'filtered' properly initialised here?
-> filtered.start is already set to 'copy' by this point (so, having
-> freed 'copy', this would now be an invalid pointer).
-> filtered.end is uninitialised.
->
-> Can we instead initialise filtered to {NULL, NULL} at the start, and
-> only set start and end after the filtering has succeeded?
->
-> > +               }
-> >                 for (j =3D 0; j < filter_count; j++)
-> >                         parsed_filters[j] =3D kunit_next_attr_filter(&f=
-ilters, err);
-> >                 if (*err)
-> > @@ -166,7 +170,7 @@ static struct suite_set kunit_filter_suites(const s=
-truct suite_set *suite_set,
-> >                                 goto err;
-> >                         }
-> >                 }
-> > -               if (filter_count) {
-> > +               if (filter_count > 0 && parsed_filters !=3D NULL) {
-> >                         for (k =3D 0; k < filter_count; k++) {
-> >                                 new_filtered_suite =3D kunit_filter_att=
-r_tests(filtered_suite,
-> >                                                 parsed_filters[k], filt=
-er_action, err);
-> >
-> > base-commit: 3bffe185ad11e408903d2782727877388d08d94e
-> > --
-> > 2.41.0.585.gd2178a4bd4-goog
-> >
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202308040330.eMTjX3tF-lkp@intel.com/
+
+All warnings (new ones prefixed by >>):
+
+   drivers/pci/controller/pcie-xilinx-nwl.c: In function 'nwl_pcie_bridge_init':
+>> drivers/pci/controller/pcie-xilinx-nwl.c:628:33: warning: unused variable 'first_busno' [-Wunused-variable]
+     628 |         u32 breg_val, ecam_val, first_busno = 0;
+         |                                 ^~~~~~~~~~~
+
+
+vim +/first_busno +628 drivers/pci/controller/pcie-xilinx-nwl.c
+
+ab597d35ef11d2 drivers/pci/host/pcie-xilinx-nwl.c       Bharat Kumar Gogada  2016-03-06  623  
+ab597d35ef11d2 drivers/pci/host/pcie-xilinx-nwl.c       Bharat Kumar Gogada  2016-03-06  624  static int nwl_pcie_bridge_init(struct nwl_pcie *pcie)
+ab597d35ef11d2 drivers/pci/host/pcie-xilinx-nwl.c       Bharat Kumar Gogada  2016-03-06  625  {
+adf9e284b4f76d drivers/pci/host/pcie-xilinx-nwl.c       Bjorn Helgaas        2016-10-06  626  	struct device *dev = pcie->dev;
+adf9e284b4f76d drivers/pci/host/pcie-xilinx-nwl.c       Bjorn Helgaas        2016-10-06  627  	struct platform_device *pdev = to_platform_device(dev);
+ab597d35ef11d2 drivers/pci/host/pcie-xilinx-nwl.c       Bharat Kumar Gogada  2016-03-06 @628  	u32 breg_val, ecam_val, first_busno = 0;
+ab597d35ef11d2 drivers/pci/host/pcie-xilinx-nwl.c       Bharat Kumar Gogada  2016-03-06  629  	int err;
+ab597d35ef11d2 drivers/pci/host/pcie-xilinx-nwl.c       Bharat Kumar Gogada  2016-03-06  630  
+ab597d35ef11d2 drivers/pci/host/pcie-xilinx-nwl.c       Bharat Kumar Gogada  2016-03-06  631  	breg_val = nwl_bridge_readl(pcie, E_BREG_CAPABILITIES) & BREG_PRESENT;
+ab597d35ef11d2 drivers/pci/host/pcie-xilinx-nwl.c       Bharat Kumar Gogada  2016-03-06  632  	if (!breg_val) {
+adf9e284b4f76d drivers/pci/host/pcie-xilinx-nwl.c       Bjorn Helgaas        2016-10-06  633  		dev_err(dev, "BREG is not present\n");
+ab597d35ef11d2 drivers/pci/host/pcie-xilinx-nwl.c       Bharat Kumar Gogada  2016-03-06  634  		return breg_val;
+ab597d35ef11d2 drivers/pci/host/pcie-xilinx-nwl.c       Bharat Kumar Gogada  2016-03-06  635  	}
+ab597d35ef11d2 drivers/pci/host/pcie-xilinx-nwl.c       Bharat Kumar Gogada  2016-03-06  636  
+ab597d35ef11d2 drivers/pci/host/pcie-xilinx-nwl.c       Bharat Kumar Gogada  2016-03-06  637  	/* Write bridge_off to breg base */
+ab597d35ef11d2 drivers/pci/host/pcie-xilinx-nwl.c       Bharat Kumar Gogada  2016-03-06  638  	nwl_bridge_writel(pcie, lower_32_bits(pcie->phys_breg_base),
+ab597d35ef11d2 drivers/pci/host/pcie-xilinx-nwl.c       Bharat Kumar Gogada  2016-03-06  639  			  E_BREG_BASE_LO);
+ab597d35ef11d2 drivers/pci/host/pcie-xilinx-nwl.c       Bharat Kumar Gogada  2016-03-06  640  	nwl_bridge_writel(pcie, upper_32_bits(pcie->phys_breg_base),
+ab597d35ef11d2 drivers/pci/host/pcie-xilinx-nwl.c       Bharat Kumar Gogada  2016-03-06  641  			  E_BREG_BASE_HI);
+ab597d35ef11d2 drivers/pci/host/pcie-xilinx-nwl.c       Bharat Kumar Gogada  2016-03-06  642  
+ab597d35ef11d2 drivers/pci/host/pcie-xilinx-nwl.c       Bharat Kumar Gogada  2016-03-06  643  	/* Enable BREG */
+ab597d35ef11d2 drivers/pci/host/pcie-xilinx-nwl.c       Bharat Kumar Gogada  2016-03-06  644  	nwl_bridge_writel(pcie, ~BREG_ENABLE_FORCE & BREG_ENABLE,
+ab597d35ef11d2 drivers/pci/host/pcie-xilinx-nwl.c       Bharat Kumar Gogada  2016-03-06  645  			  E_BREG_CONTROL);
+ab597d35ef11d2 drivers/pci/host/pcie-xilinx-nwl.c       Bharat Kumar Gogada  2016-03-06  646  
+ab597d35ef11d2 drivers/pci/host/pcie-xilinx-nwl.c       Bharat Kumar Gogada  2016-03-06  647  	/* Disable DMA channel registers */
+ab597d35ef11d2 drivers/pci/host/pcie-xilinx-nwl.c       Bharat Kumar Gogada  2016-03-06  648  	nwl_bridge_writel(pcie, nwl_bridge_readl(pcie, BRCFG_PCIE_RX0) |
+ab597d35ef11d2 drivers/pci/host/pcie-xilinx-nwl.c       Bharat Kumar Gogada  2016-03-06  649  			  CFG_DMA_REG_BAR, BRCFG_PCIE_RX0);
+ab597d35ef11d2 drivers/pci/host/pcie-xilinx-nwl.c       Bharat Kumar Gogada  2016-03-06  650  
+ab597d35ef11d2 drivers/pci/host/pcie-xilinx-nwl.c       Bharat Kumar Gogada  2016-03-06  651  	/* Enable Ingress subtractive decode translation */
+ab597d35ef11d2 drivers/pci/host/pcie-xilinx-nwl.c       Bharat Kumar Gogada  2016-03-06  652  	nwl_bridge_writel(pcie, SET_ISUB_CONTROL, I_ISUB_CONTROL);
+ab597d35ef11d2 drivers/pci/host/pcie-xilinx-nwl.c       Bharat Kumar Gogada  2016-03-06  653  
+ab597d35ef11d2 drivers/pci/host/pcie-xilinx-nwl.c       Bharat Kumar Gogada  2016-03-06  654  	/* Enable msg filtering details */
+ab597d35ef11d2 drivers/pci/host/pcie-xilinx-nwl.c       Bharat Kumar Gogada  2016-03-06  655  	nwl_bridge_writel(pcie, CFG_ENABLE_MSG_FILTER_MASK,
+ab597d35ef11d2 drivers/pci/host/pcie-xilinx-nwl.c       Bharat Kumar Gogada  2016-03-06  656  			  BRCFG_PCIE_RX_MSG_FILTER);
+ab597d35ef11d2 drivers/pci/host/pcie-xilinx-nwl.c       Bharat Kumar Gogada  2016-03-06  657  
+213e1220523288 drivers/pci/controller/pcie-xilinx-nwl.c Bharat Kumar Gogada  2021-02-22  658  	/* This routes the PCIe DMA traffic to go through CCI path */
+213e1220523288 drivers/pci/controller/pcie-xilinx-nwl.c Bharat Kumar Gogada  2021-02-22  659  	if (of_dma_is_coherent(dev->of_node))
+213e1220523288 drivers/pci/controller/pcie-xilinx-nwl.c Bharat Kumar Gogada  2021-02-22  660  		nwl_bridge_writel(pcie, nwl_bridge_readl(pcie, BRCFG_PCIE_RX1) |
+213e1220523288 drivers/pci/controller/pcie-xilinx-nwl.c Bharat Kumar Gogada  2021-02-22  661  				  CFG_PCIE_CACHE, BRCFG_PCIE_RX1);
+213e1220523288 drivers/pci/controller/pcie-xilinx-nwl.c Bharat Kumar Gogada  2021-02-22  662  
+ab597d35ef11d2 drivers/pci/host/pcie-xilinx-nwl.c       Bharat Kumar Gogada  2016-03-06  663  	err = nwl_wait_for_link(pcie);
+ab597d35ef11d2 drivers/pci/host/pcie-xilinx-nwl.c       Bharat Kumar Gogada  2016-03-06  664  	if (err)
+ab597d35ef11d2 drivers/pci/host/pcie-xilinx-nwl.c       Bharat Kumar Gogada  2016-03-06  665  		return err;
+ab597d35ef11d2 drivers/pci/host/pcie-xilinx-nwl.c       Bharat Kumar Gogada  2016-03-06  666  
+ab597d35ef11d2 drivers/pci/host/pcie-xilinx-nwl.c       Bharat Kumar Gogada  2016-03-06  667  	ecam_val = nwl_bridge_readl(pcie, E_ECAM_CAPABILITIES) & E_ECAM_PRESENT;
+ab597d35ef11d2 drivers/pci/host/pcie-xilinx-nwl.c       Bharat Kumar Gogada  2016-03-06  668  	if (!ecam_val) {
+adf9e284b4f76d drivers/pci/host/pcie-xilinx-nwl.c       Bjorn Helgaas        2016-10-06  669  		dev_err(dev, "ECAM is not present\n");
+ab597d35ef11d2 drivers/pci/host/pcie-xilinx-nwl.c       Bharat Kumar Gogada  2016-03-06  670  		return ecam_val;
+ab597d35ef11d2 drivers/pci/host/pcie-xilinx-nwl.c       Bharat Kumar Gogada  2016-03-06  671  	}
+ab597d35ef11d2 drivers/pci/host/pcie-xilinx-nwl.c       Bharat Kumar Gogada  2016-03-06  672  
+ab597d35ef11d2 drivers/pci/host/pcie-xilinx-nwl.c       Bharat Kumar Gogada  2016-03-06  673  	/* Enable ECAM */
+ab597d35ef11d2 drivers/pci/host/pcie-xilinx-nwl.c       Bharat Kumar Gogada  2016-03-06  674  	nwl_bridge_writel(pcie, nwl_bridge_readl(pcie, E_ECAM_CONTROL) |
+ab597d35ef11d2 drivers/pci/host/pcie-xilinx-nwl.c       Bharat Kumar Gogada  2016-03-06  675  			  E_ECAM_CR_ENABLE, E_ECAM_CONTROL);
+ab597d35ef11d2 drivers/pci/host/pcie-xilinx-nwl.c       Bharat Kumar Gogada  2016-03-06  676  
+ab597d35ef11d2 drivers/pci/host/pcie-xilinx-nwl.c       Bharat Kumar Gogada  2016-03-06  677  	nwl_bridge_writel(pcie, nwl_bridge_readl(pcie, E_ECAM_CONTROL) |
+ab597d35ef11d2 drivers/pci/host/pcie-xilinx-nwl.c       Bharat Kumar Gogada  2016-03-06  678  			  (pcie->ecam_value << E_ECAM_SIZE_SHIFT),
+ab597d35ef11d2 drivers/pci/host/pcie-xilinx-nwl.c       Bharat Kumar Gogada  2016-03-06  679  			  E_ECAM_CONTROL);
+ab597d35ef11d2 drivers/pci/host/pcie-xilinx-nwl.c       Bharat Kumar Gogada  2016-03-06  680  
+ab597d35ef11d2 drivers/pci/host/pcie-xilinx-nwl.c       Bharat Kumar Gogada  2016-03-06  681  	nwl_bridge_writel(pcie, lower_32_bits(pcie->phys_ecam_base),
+ab597d35ef11d2 drivers/pci/host/pcie-xilinx-nwl.c       Bharat Kumar Gogada  2016-03-06  682  			  E_ECAM_BASE_LO);
+ab597d35ef11d2 drivers/pci/host/pcie-xilinx-nwl.c       Bharat Kumar Gogada  2016-03-06  683  	nwl_bridge_writel(pcie, upper_32_bits(pcie->phys_ecam_base),
+ab597d35ef11d2 drivers/pci/host/pcie-xilinx-nwl.c       Bharat Kumar Gogada  2016-03-06  684  			  E_ECAM_BASE_HI);
+ab597d35ef11d2 drivers/pci/host/pcie-xilinx-nwl.c       Bharat Kumar Gogada  2016-03-06  685  
+ab597d35ef11d2 drivers/pci/host/pcie-xilinx-nwl.c       Bharat Kumar Gogada  2016-03-06  686  	if (nwl_pcie_link_up(pcie))
+adf9e284b4f76d drivers/pci/host/pcie-xilinx-nwl.c       Bjorn Helgaas        2016-10-06  687  		dev_info(dev, "Link is UP\n");
+ab597d35ef11d2 drivers/pci/host/pcie-xilinx-nwl.c       Bharat Kumar Gogada  2016-03-06  688  	else
+adf9e284b4f76d drivers/pci/host/pcie-xilinx-nwl.c       Bjorn Helgaas        2016-10-06  689  		dev_info(dev, "Link is DOWN\n");
+ab597d35ef11d2 drivers/pci/host/pcie-xilinx-nwl.c       Bharat Kumar Gogada  2016-03-06  690  
+ab597d35ef11d2 drivers/pci/host/pcie-xilinx-nwl.c       Bharat Kumar Gogada  2016-03-06  691  	/* Get misc IRQ number */
+ab597d35ef11d2 drivers/pci/host/pcie-xilinx-nwl.c       Bharat Kumar Gogada  2016-03-06  692  	pcie->irq_misc = platform_get_irq_byname(pdev, "misc");
+caecb05c800081 drivers/pci/controller/pcie-xilinx-nwl.c Krzysztof Wilczyński 2020-08-02  693  	if (pcie->irq_misc < 0)
+ab597d35ef11d2 drivers/pci/host/pcie-xilinx-nwl.c       Bharat Kumar Gogada  2016-03-06  694  		return -EINVAL;
+ab597d35ef11d2 drivers/pci/host/pcie-xilinx-nwl.c       Bharat Kumar Gogada  2016-03-06  695  
+adf9e284b4f76d drivers/pci/host/pcie-xilinx-nwl.c       Bjorn Helgaas        2016-10-06  696  	err = devm_request_irq(dev, pcie->irq_misc,
+ab597d35ef11d2 drivers/pci/host/pcie-xilinx-nwl.c       Bharat Kumar Gogada  2016-03-06  697  			       nwl_pcie_misc_handler, IRQF_SHARED,
+ab597d35ef11d2 drivers/pci/host/pcie-xilinx-nwl.c       Bharat Kumar Gogada  2016-03-06  698  			       "nwl_pcie:misc", pcie);
+ab597d35ef11d2 drivers/pci/host/pcie-xilinx-nwl.c       Bharat Kumar Gogada  2016-03-06  699  	if (err) {
+adf9e284b4f76d drivers/pci/host/pcie-xilinx-nwl.c       Bjorn Helgaas        2016-10-06  700  		dev_err(dev, "fail to register misc IRQ#%d\n",
+ab597d35ef11d2 drivers/pci/host/pcie-xilinx-nwl.c       Bharat Kumar Gogada  2016-03-06  701  			pcie->irq_misc);
+ab597d35ef11d2 drivers/pci/host/pcie-xilinx-nwl.c       Bharat Kumar Gogada  2016-03-06  702  		return err;
+ab597d35ef11d2 drivers/pci/host/pcie-xilinx-nwl.c       Bharat Kumar Gogada  2016-03-06  703  	}
+ab597d35ef11d2 drivers/pci/host/pcie-xilinx-nwl.c       Bharat Kumar Gogada  2016-03-06  704  
+ab597d35ef11d2 drivers/pci/host/pcie-xilinx-nwl.c       Bharat Kumar Gogada  2016-03-06  705  	/* Disable all misc interrupts */
+ab597d35ef11d2 drivers/pci/host/pcie-xilinx-nwl.c       Bharat Kumar Gogada  2016-03-06  706  	nwl_bridge_writel(pcie, (u32)~MSGF_MISC_SR_MASKALL, MSGF_MISC_MASK);
+ab597d35ef11d2 drivers/pci/host/pcie-xilinx-nwl.c       Bharat Kumar Gogada  2016-03-06  707  
+ab597d35ef11d2 drivers/pci/host/pcie-xilinx-nwl.c       Bharat Kumar Gogada  2016-03-06  708  	/* Clear pending misc interrupts */
+ab597d35ef11d2 drivers/pci/host/pcie-xilinx-nwl.c       Bharat Kumar Gogada  2016-03-06  709  	nwl_bridge_writel(pcie, nwl_bridge_readl(pcie, MSGF_MISC_STATUS) &
+ab597d35ef11d2 drivers/pci/host/pcie-xilinx-nwl.c       Bharat Kumar Gogada  2016-03-06  710  			  MSGF_MISC_SR_MASKALL, MSGF_MISC_STATUS);
+ab597d35ef11d2 drivers/pci/host/pcie-xilinx-nwl.c       Bharat Kumar Gogada  2016-03-06  711  
+ab597d35ef11d2 drivers/pci/host/pcie-xilinx-nwl.c       Bharat Kumar Gogada  2016-03-06  712  	/* Enable all misc interrupts */
+ab597d35ef11d2 drivers/pci/host/pcie-xilinx-nwl.c       Bharat Kumar Gogada  2016-03-06  713  	nwl_bridge_writel(pcie, MSGF_MISC_SR_MASKALL, MSGF_MISC_MASK);
+ab597d35ef11d2 drivers/pci/host/pcie-xilinx-nwl.c       Bharat Kumar Gogada  2016-03-06  714  
+ab597d35ef11d2 drivers/pci/host/pcie-xilinx-nwl.c       Bharat Kumar Gogada  2016-03-06  715  	/* Disable all legacy interrupts */
+ab597d35ef11d2 drivers/pci/host/pcie-xilinx-nwl.c       Bharat Kumar Gogada  2016-03-06  716  	nwl_bridge_writel(pcie, (u32)~MSGF_LEG_SR_MASKALL, MSGF_LEG_MASK);
+ab597d35ef11d2 drivers/pci/host/pcie-xilinx-nwl.c       Bharat Kumar Gogada  2016-03-06  717  
+ab597d35ef11d2 drivers/pci/host/pcie-xilinx-nwl.c       Bharat Kumar Gogada  2016-03-06  718  	/* Clear pending legacy interrupts */
+ab597d35ef11d2 drivers/pci/host/pcie-xilinx-nwl.c       Bharat Kumar Gogada  2016-03-06  719  	nwl_bridge_writel(pcie, nwl_bridge_readl(pcie, MSGF_LEG_STATUS) &
+ab597d35ef11d2 drivers/pci/host/pcie-xilinx-nwl.c       Bharat Kumar Gogada  2016-03-06  720  			  MSGF_LEG_SR_MASKALL, MSGF_LEG_STATUS);
+ab597d35ef11d2 drivers/pci/host/pcie-xilinx-nwl.c       Bharat Kumar Gogada  2016-03-06  721  
+ab597d35ef11d2 drivers/pci/host/pcie-xilinx-nwl.c       Bharat Kumar Gogada  2016-03-06  722  	/* Enable all legacy interrupts */
+ab597d35ef11d2 drivers/pci/host/pcie-xilinx-nwl.c       Bharat Kumar Gogada  2016-03-06  723  	nwl_bridge_writel(pcie, MSGF_LEG_SR_MASKALL, MSGF_LEG_MASK);
+ab597d35ef11d2 drivers/pci/host/pcie-xilinx-nwl.c       Bharat Kumar Gogada  2016-03-06  724  
+ab597d35ef11d2 drivers/pci/host/pcie-xilinx-nwl.c       Bharat Kumar Gogada  2016-03-06  725  	/* Enable the bridge config interrupt */
+ab597d35ef11d2 drivers/pci/host/pcie-xilinx-nwl.c       Bharat Kumar Gogada  2016-03-06  726  	nwl_bridge_writel(pcie, nwl_bridge_readl(pcie, BRCFG_INTERRUPT) |
+ab597d35ef11d2 drivers/pci/host/pcie-xilinx-nwl.c       Bharat Kumar Gogada  2016-03-06  727  			  BRCFG_INTERRUPT_MASK, BRCFG_INTERRUPT);
+ab597d35ef11d2 drivers/pci/host/pcie-xilinx-nwl.c       Bharat Kumar Gogada  2016-03-06  728  
+ab597d35ef11d2 drivers/pci/host/pcie-xilinx-nwl.c       Bharat Kumar Gogada  2016-03-06  729  	return 0;
+ab597d35ef11d2 drivers/pci/host/pcie-xilinx-nwl.c       Bharat Kumar Gogada  2016-03-06  730  }
+ab597d35ef11d2 drivers/pci/host/pcie-xilinx-nwl.c       Bharat Kumar Gogada  2016-03-06  731  
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
