@@ -2,78 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E495C76F5F9
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 01:05:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A3C5A76F5F8
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 01:04:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232762AbjHCXFu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Aug 2023 19:05:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45734 "EHLO
+        id S231282AbjHCXER (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Aug 2023 19:04:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44480 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232653AbjHCXFU (ORCPT
+        with ESMTP id S231265AbjHCXEI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Aug 2023 19:05:20 -0400
-X-Greylist: delayed 77 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Thu, 03 Aug 2023 16:04:46 PDT
-Received: from esa1.hc3370-68.iphmx.com (esa1.hc3370-68.iphmx.com [216.71.145.142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3521546A6
-        for <linux-kernel@vger.kernel.org>; Thu,  3 Aug 2023 16:04:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=citrix.com; s=securemail; t=1691103886;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=d2QxI1VIFLr9Zd/T7UXA/F5/G1e1i21XBdqtpHTollM=;
-  b=dZ/JD9osKOelmKpERnBhjdQY5ljF0Oikf4djvLfmqlTt8yZ1r+iUDry8
-   XI8lZDqjhmriS+sPoz9FAq4Eca6K2b60k8fNs6LZZT9wWeeO6k9xMs69l
-   +6dT+jqx3e/vUHorC836aZKvVqM6+Bi80318C6gsKE/22X9Azu8QK+IwB
-   Y=;
-Authentication-Results: esa1.hc3370-68.iphmx.com; dkim=none (message not signed) header.i=none
-X-SBRS: 4.0
-X-MesageID: 118879229
-X-Ironport-Server: esa1.hc3370-68.iphmx.com
-X-Remote-IP: 162.221.156.123
-X-Policy: $RELAYED
-IronPort-Data: A9a23:UdM24Kj3lzIVdJMiBUbWuVmoX161SBAKZh0ujC45NGQN5FlHY01je
- htvDWnVMvaONmr1eNF/bdzkpEMD68LczdQwSAVqpHs0Fy0b9cadCdqndUqhZCn6wu8v7q5Ex
- 55HNoSfdpBcolv0/ErF3m3J9CEkvU2wbuOgTrWCYmYpHlUMpB4J0XpLg/Q+jpNjne+3CgaMv
- cKai8DEMRqu1iUc3lg8sspvkzsx+qyr0N8klgZmP6sT7AeFzyJ94K83fsldEVOpGuG4IcbiL
- wrz5OnR1n/U+R4rFuSknt7TGqHdauePVeQmoiM+t5mK2nCulARrukoIHKN0hXNsoyeIh7hMJ
- OBl7vRcf+uL0prkw4zxWzEAe8130DYvFLXveRBTuuTLp6HKnueFL1yDwyjaMKVBktubD12i+
- tQVKTUHfh6zpNvn56yiZe1l3Ognd9fSadZ3VnFIlVk1DN4jSJHHBa7L+cVZzHE7gcUm8fT2P
- pRDL2A1NVKZPkMJYw1MYH49tL7Aan3XWjtUsl+K44Ew5HDe1ldZ27nxKtvFPNeNQK25m27B/
- zKWoDWjWEBy2Nq30Ty80XKU3+71libwZJA3DYHiyaU0qQjGroAUIEJPDgbqyRWjsWa6WtRCO
- wkX9zAooKwa6kOmVJ/+Uge+rXrCuQQTM/JIHvEgrhmE1K7Jyx2EHWVCRTlEAPQ+udM7Xy4C1
- 1mHhdrlCDVj9rqPRhq19K+TrDa4PiU9LmIYYyIACwwf7LHeTJob10yVCIw5Sejs04OzQGurq
- 9yXkMQgr7gSiMQb2ZWYxAHgnSuDopGTYgpu+DyCCwpJ8ThFTIKiYoWp733S4vBBMJuVQzG9g
- ZQUpySNxLtQVM/QzURhVM1IRej0vKjdbFUwlHY1R/EcGyKRF2lPlGy6yBV3Pw9XP8kNYlcFi
- 2eD6FoKtPe/0JZHBJKbgr5d6exwlcAM9vy/DJg4i+ZzjmBZLlPvwc2XTRf4M5rRuEYti7ojH
- pyQbNyhC30XYYw+kmvvH7dCj+52nn5lrY82eXwc5032uYdymVbPEetVWLdwRr9RAFy4TPX9r
- I8EapriJ+R3W+zieCjHmbP/3nhTRUXX8ave8pQNHsbae1oOJY3UI6OJqV/XU9A/zvs9eyah1
- i3VZ3K0P3Kl1COZc17VNig7AF4tNL4mxU8G0eUXFQ7A8xAejUyHts/zq7NfkWEbydFe
-IronPort-HdrOrdr: A9a23:U0OCAqpB/l0jLOoyamIXvbwaV5oTeYIsimQD101hICG8cqSj+f
- xG+85rsyMc6QxhIE3I9urhBEDtex/hHNtOkOws1NSZLW7bUQmTXeJfBOLZqlWKcUDDH6xmpM
- NdmsBFeaTN5DNB7PoSjjPWLz9Z+qjkzJyV
-X-Talos-CUID: =?us-ascii?q?9a23=3A7JUfkGqsHo+4lgLDvCQvUJHmUc0kd3fNwkfzGh6?=
- =?us-ascii?q?fF39GTLTPZVvL5poxxg=3D=3D?=
-X-Talos-MUID: 9a23:4t+bKwjww5BoH4qRu0L6V8MpLMFRwKSWUUE3mpANh9uhLBAqBGzDpWHi
-X-IronPort-AV: E=Sophos;i="6.01,253,1684814400"; 
-   d="scan'208";a="118879229"
-From:   Andrew Cooper <andrew.cooper3@citrix.com>
-To:     LKML <linux-kernel@vger.kernel.org>
-CC:     Andrew Cooper <andrew.cooper3@citrix.com>,
-        Petr Pavlu <petr.pavlu@suse.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Josh Poimboeuf <jpoimboe@kernel.org>
-Subject: [PATCH] x86/retpoline,kprobes: Fix "Fix position of thunk sections with CONFIG_LTO_CLANG"
-Date:   Fri, 4 Aug 2023 00:03:23 +0100
-Message-ID: <20230803230323.1478869-1-andrew.cooper3@citrix.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20230803215555.zl5oabntc44ry3uc@treble>
-References: <20230803215555.zl5oabntc44ry3uc@treble>
+        Thu, 3 Aug 2023 19:04:08 -0400
+Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CDB6A30FD;
+        Thu,  3 Aug 2023 16:03:35 -0700 (PDT)
+Received: by mail-pl1-x62c.google.com with SMTP id d9443c01a7336-1bc34b32785so10840915ad.3;
+        Thu, 03 Aug 2023 16:03:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1691103815; x=1691708615;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=YxdVo0H4Ogsm6y1B4bh/ICRf8zL9r8pBxK6Ht1YN6QU=;
+        b=B1FXxq3xyAYEetNblcpVr3eqFdEVp27JMD86CR/EggjGafPeF6E0Qu787tQ5KXJGaT
+         v2cPuAg+C1i93EfB4TizxepVrFZH8lbPopNs//XFToHcKPt5EXql5L4sydDrtAEgDsvW
+         f2UVLu+Cpk0mTfsWlJMwdFU4oz6sy4l3L+mV/ekGiYJH1pmF1SfZBDh9hW+9YKLB/FHB
+         QHPhqIEhBEYI0QDXYfS2Fg2SYwf6oa9VXHPJ5cFl9WkyNe5Zhk8E2dYjAKBWGU11l3w1
+         kexodF7CcnK1IgEvhp6oc1Iwrt7FJ/5T8UGjWZXMGMCAd2UhG1T8XjCm6XfX7nwj69t4
+         eDEA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691103815; x=1691708615;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=YxdVo0H4Ogsm6y1B4bh/ICRf8zL9r8pBxK6Ht1YN6QU=;
+        b=MTsrkIo6VRggiZUh0gHi1jahkssDAjDmxYbqdi+oqmYqGJLOyUYmLMgGLUHXhASfGP
+         YVYAWlPqTgXLoZ7x/jhb0SRFKmDk2IQyNcG5LrvSOoFqh9i6S99nwglzHTpsBH8R4tWb
+         RN33fYXy702LNedX5zQH0ZzjZBGrNyXY+uSSgkRGX24rpR1F6iN4WtInDEAm+KGAZonV
+         WPDTYo7in3AQq1e7FGYMRVE4xWxZX+hHb7IgGAPg+qHvQSlI4yblvqWMftLRYRsKQqCp
+         +j0rk/8klPZ5vrz3iVHYCNEGPQoc8Fvx0jzN5z0OJ26HpfO5BnpcXlRFm2GuyyzBK7Ie
+         22LA==
+X-Gm-Message-State: AOJu0Yww5Gks7VAoU7Do6Mchl9vOh+67wlH5k/72VLZoV8ZpZir09Toh
+        kp+BqtF43PwT+bxaYZFY1T0=
+X-Google-Smtp-Source: AGHT+IGTLIqDQyKKtQsXBAKVqKtFN5RUGOE+6K1WmgCYMpo3tJqJIIm02ZnnhklD8xBZED4d9EF6UQ==
+X-Received: by 2002:a17:902:b78c:b0:1bb:809d:ae72 with SMTP id e12-20020a170902b78c00b001bb809dae72mr115625pls.33.1691103815263;
+        Thu, 03 Aug 2023 16:03:35 -0700 (PDT)
+Received: from taoren-fedora-PC23YAB4.thefacebook.com ([2620:10d:c090:500::5:e60a])
+        by smtp.gmail.com with ESMTPSA id y7-20020a17090322c700b001bbb598b8bbsm372349plg.41.2023.08.03.16.03.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 03 Aug 2023 16:03:34 -0700 (PDT)
+From:   rentao.bupt@gmail.com
+To:     Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Joel Stanley <joel@jms.id.au>,
+        Andrew Jeffery <andrew@aj.id.au>, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-aspeed@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        taoren@meta.com
+Cc:     Tao Ren <rentao.bupt@gmail.com>
+Subject: [PATCH 3/3] ARM: dts: aspeed: wedge400: Set eMMC max frequency
+Date:   Thu,  3 Aug 2023 16:03:24 -0700
+Message-Id: <20230803230324.731268-4-rentao.bupt@gmail.com>
+X-Mailer: git-send-email 2.40.1
+In-Reply-To: <20230803230324.731268-1-rentao.bupt@gmail.com>
+References: <20230803230324.731268-1-rentao.bupt@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_NONE,T_SCC_BODY_TEXT_LINE
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -81,41 +78,28 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Lets hope there are no .text..__x86womble sections around.
+From: Tao Ren <rentao.bupt@gmail.com>
 
-Fixes: 973ab2d61f33 ("x86/retpoline,kprobes: Fix position of thunk sections with CONFIG_LTO_CLANG")
-Signed-off-by: Andrew Cooper <andrew.cooper3@citrix.com>
+Set eMMC max frequency to 25MHz to prevent intermittent eMMC access
+failures.
+
+Signed-off-by: Tao Ren <rentao.bupt@gmail.com>
 ---
-CC: Petr Pavlu <petr.pavlu@suse.com>
-CC: Peter Zijlstra (Intel) <peterz@infradead.org>
-CC: Josh Poimboeuf <jpoimboe@kernel.org>
-CC: linux-kernel@vger.kernel.org
+ arch/arm/boot/dts/aspeed/aspeed-bmc-facebook-wedge400.dts | 1 +
+ 1 file changed, 1 insertion(+)
 
-Alternatively,
-
-int strstarts(const char *s1, const char *s2)
-{
-        return strncmp(s1, s2, strlen(s2));
-}
----
- tools/objtool/check.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/tools/objtool/check.c b/tools/objtool/check.c
-index e096eb325acd..e2ee10ce7703 100644
---- a/tools/objtool/check.c
-+++ b/tools/objtool/check.c
-@@ -389,7 +389,7 @@ static int decode_instructions(struct objtool_file *file)
- 		if (!strcmp(sec->name, ".noinstr.text") ||
- 		    !strcmp(sec->name, ".entry.text") ||
- 		    !strcmp(sec->name, ".cpuidle.text") ||
--		    !strncmp(sec->name, ".text..__x86.", 12))
-+		    !strncmp(sec->name, ".text..__x86.", 13))
- 			sec->noinstr = true;
+diff --git a/arch/arm/boot/dts/aspeed/aspeed-bmc-facebook-wedge400.dts b/arch/arm/boot/dts/aspeed/aspeed-bmc-facebook-wedge400.dts
+index 5c55afed946f..d17b977fee9b 100644
+--- a/arch/arm/boot/dts/aspeed/aspeed-bmc-facebook-wedge400.dts
++++ b/arch/arm/boot/dts/aspeed/aspeed-bmc-facebook-wedge400.dts
+@@ -367,6 +367,7 @@ &uhci {
+ };
  
- 		/*
-
-base-commit: 029239c5b0e6484e4443be90e5664fd0bf0f066b
+ &sdhci1 {
++	max-frequency = <25000000>;
+ 	/*
+ 	 * DMA mode needs to be disabled to avoid conflicts with UHCI
+ 	 * Controller in AST2500 SoC.
 -- 
-2.30.2
+2.40.1
 
