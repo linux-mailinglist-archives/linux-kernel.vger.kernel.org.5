@@ -2,159 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DDFF676E755
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 13:50:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F1C5476E75B
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 13:50:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233594AbjHCLuB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Aug 2023 07:50:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46186 "EHLO
+        id S235493AbjHCLuj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Aug 2023 07:50:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46770 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232389AbjHCLt4 (ORCPT
+        with ESMTP id S233825AbjHCLue (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Aug 2023 07:49:56 -0400
-Received: from bg4.exmail.qq.com (bg4.exmail.qq.com [43.154.54.12])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3155273A;
-        Thu,  3 Aug 2023 04:49:54 -0700 (PDT)
-X-QQ-mid: bizesmtp85t1691063384te4q8ams
-Received: from linux-lab-host.localdomain ( [116.30.131.233])
-        by bizesmtp.qq.com (ESMTP) with 
-        id ; Thu, 03 Aug 2023 19:49:43 +0800 (CST)
-X-QQ-SSF: 00200000000000E0X000000A0000000
-X-QQ-FEAT: D6RqbDSxuq6o1BFJvMPxZmvFNphOpNw0XuZ99+v6Fjd2vKxsf2fUQJu6RSHIN
-        U0u7dy8UC93a8gYYBkwuVl2K58yI7Kx7ky6J9aRx1kuHL7egcPyLjNIghnRE5t6P4Fj8Wuv
-        2ntyjBRlIkpEnHRGdVNkQyTtCqZQY+W6Ob8zryxOKa8oLeI07R4NL+DV5wuFB038pju0UCk
-        5+OD4wIosI5TYyES9LTNsD3q22I5HFcnlOo7Tr/uidQLf3GGwwwXV9PZSgshzsZ8AyhguSf
-        cc96B+i/mCUQGpbbLhDy4y5VuQAQZEpyOBf+4cSEUGsqDspdicIt6V20EqcPy2tEXcyKfL8
-        9ymQ0cXN8LkaLXuAQRSjmCylIL9mK6AytBeaQO9wkjPsRqAYZtA8Gtc03+Q2fzQQvdatxep
-        E9HzH8Ny1Cm2Byk6UvMb7w==
-X-QQ-GoodBg: 0
-X-BIZMAIL-ID: 15313618085176429987
-From:   Zhangjin Wu <falcon@tinylab.org>
-To:     thomas@t-8ch.de, w@1wt.eu
-Cc:     falcon@tinylab.org, arnd@arndb.de, linux-kernel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, tanyuan@tinylab.org,
-        =?UTF-8?q?Thomas=20Wei=C3=9Fschuh?= <linux@weissschuh.net>
-Subject: [PATCH v5 6/8] selftests/nolibc: add test support for ppc64
-Date:   Thu,  3 Aug 2023 19:49:42 +0800
-Message-Id: <0d2baf349c6ba8daaa6fd87f550c642286ed03c2.1691062722.git.falcon@tinylab.org>
+        Thu, 3 Aug 2023 07:50:34 -0400
+Received: from NAM11-DM6-obe.outbound.protection.outlook.com (mail-dm6nam11on2050.outbound.protection.outlook.com [40.107.223.50])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92BAB272A;
+        Thu,  3 Aug 2023 04:50:32 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=nACdV3RqJ0q5MmzoVmoxOnmSDvvMLlfS++TLEsThjpmDIXnJyLahI63ub1HiupNdE+YEuvIVZOrNU/5Bev4oJ/iV5bifT2JYbADg8kk2/Cahh7FIbQMhVmgzlLprxtwnOv+k9crvSkurBh41SI6oHbMMkEkBleRDhzudV0qOoG3Oo80qnovviXoPrbNNXcR1hfLp7BCMjrkO+R/USNKz2gYfc9WD1LB1ounOYxK12ASUai6YoQ7BrYHGAcYtYOHZB4YNVQEEardTJsHnhALc65gRtotqZ53jNiirslel/CUr/RGtvM4BBHuKwBLPhdfUfjSrlZSO8W/l9xD5e+m7Sw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=ByXv/8fNtwaQMvLzxFc2CJTJnn2cf+qKtiEZD+GH0Yg=;
+ b=djZP4m31S1NLjwc1Mr7MHUXOTqSyRkXtlxeHz7oPew46HtxLWjbvLKPLR5sq8inUCiyHehFd8jsXf5dCMqSMAf8E7To53ob81VgIl+WO7PGX5ZyqEXbc0OtFwXrn16+tG58yGxMFpWGckEntVVWo9MEPADcBxd8WmEao7ISrhIrigvU+NuSui4f8ZZ7w8s6vPPNkDNuXAfZcOsPnvWHTFH0ioo9Ax3AFCbsyDOpKtbx+2DYKLK5Lmo/sGd+N2g3d7I2a8yeR5pZw9NeLg2BDR6LQccb7BN9d5/voTpHNgepGJdwlwxQXts3bCWbbzk6zSAJdKwqa8la5OIJIC2MJTA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 165.204.84.17) smtp.rcpttodomain=vger.kernel.org smtp.mailfrom=amd.com;
+ dmarc=pass (p=quarantine sp=quarantine pct=100) action=none
+ header.from=amd.com; dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ByXv/8fNtwaQMvLzxFc2CJTJnn2cf+qKtiEZD+GH0Yg=;
+ b=VKcycxZnanvnOvuyWYMhaNAGQ/RgJevYBzao0LpQ1I7Z1cOZj2JWBYiROXCw+eYSrmmruQW1xw4+a+3GmB5uwvBh0WKjo4+kQxAJreyBwz5ytpMws5j/z46Ow+tJqydHjbgOwMVHbquqbidsApMpBcgRp3HkiXwv3pjXTvI+prM=
+Received: from CY5PR20CA0006.namprd20.prod.outlook.com (2603:10b6:930:3::30)
+ by IA0PR12MB7698.namprd12.prod.outlook.com (2603:10b6:208:432::19) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6631.47; Thu, 3 Aug
+ 2023 11:50:28 +0000
+Received: from CY4PEPF0000E9DC.namprd05.prod.outlook.com
+ (2603:10b6:930:3:cafe::88) by CY5PR20CA0006.outlook.office365.com
+ (2603:10b6:930:3::30) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6652.20 via Frontend
+ Transport; Thu, 3 Aug 2023 11:50:28 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
+ smtp.mailfrom=amd.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=amd.com;
+Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
+ 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
+ client-ip=165.204.84.17; helo=SATLEXMB03.amd.com; pr=C
+Received: from SATLEXMB03.amd.com (165.204.84.17) by
+ CY4PEPF0000E9DC.mail.protection.outlook.com (10.167.241.82) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.6652.19 via Frontend Transport; Thu, 3 Aug 2023 11:50:27 +0000
+Received: from SATLEXMB08.amd.com (10.181.40.132) by SATLEXMB03.amd.com
+ (10.181.40.144) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Thu, 3 Aug
+ 2023 06:50:27 -0500
+Received: from SATLEXMB04.amd.com (10.181.40.145) by SATLEXMB08.amd.com
+ (10.181.40.132) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Thu, 3 Aug
+ 2023 04:50:26 -0700
+Received: from xhdthippesw40.xilinx.com (10.180.168.240) by SATLEXMB04.amd.com
+ (10.181.40.145) with Microsoft SMTP Server id 15.1.2507.27 via Frontend
+ Transport; Thu, 3 Aug 2023 06:50:24 -0500
+From:   Thippeswamy Havalige <thippeswamy.havalige@amd.com>
+To:     <linux-kernel@vger.kernel.org>, <robh+dt@kernel.org>,
+        <bhelgaas@google.com>, <linux-pci@vger.kernel.org>
+CC:     <krzysztof.kozlowski@linaro.org>, <lpieralisi@kernel.org>,
+        <bharat.kumar.gogada@amd.com>, <michal.simek@amd.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        Thippeswamy Havalige <thippeswamy.havalige@amd.com>
+Subject: [PATCH] PCI: xilinx-nwl: Remove unnecessary code and updating ecam default value.
+Date:   Thu, 3 Aug 2023 17:20:16 +0530
+Message-ID: <20230803115016.4266-1-thippeswamy.havalige@amd.com>
 X-Mailer: git-send-email 2.25.1
-In-Reply-To: <cover.1691062722.git.falcon@tinylab.org>
-References: <cover.1691062722.git.falcon@tinylab.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-QQ-SENDSIZE: 520
-Feedback-ID: bizesmtp:tinylab.org:qybglogicsvrgz:qybglogicsvrgz5a-1
-X-Spam-Status: No, score=-0.6 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,RCVD_IN_VALIDITY_RPBL,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: CY4PEPF0000E9DC:EE_|IA0PR12MB7698:EE_
+X-MS-Office365-Filtering-Correlation-Id: 9e53c711-81a1-4c21-d0a7-08db9417d4e0
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 2aWX0cktiEN21bPayGpqGrWPWuIUUJmYkEBNw+hSGwCE6uM6II3yJ36t2ICcfCdtT4pFM8gCOpfuox2zCT7CqjfmIEDPpeVKljqwfhekJPhnCUfKAKlM1B4BhV0BJ41cmQwaGX2hZa7czpthM3F3lZ8YYW5hYwiOZnxOXYUYH+rEKaU0i3x7pr+wu7aupLoPlqqcbQw3nAfKwxNV8kBiA1TgE3hCJPznu2MAbsF47n5xQEfEBXp2ymE8UZtd1FTFj9G7BoVAvEaS4RnEhw20mREwBFWHLItUE7KR0lUVoKWnvO50VhyY2a9b7VoOfUc6pWtF00Ks/J+vv4WdZZt+DSNxSaCaDsmtlZKQyZROMCl9u85n6ClAukQ+sEVwLU5rXjKm7ksZFLMXsLgpdA0+VBrxfn4nWigLRdT/MocNFy1g5n2LVu2m/Ixkwy9WkyPQyzr4VSDKKhZiy3vOHfAgegq99jekTW4iSkBzkuPmBeNiNX2lX/GIiTmr+dW4PQgX58rK+hyPNUDUklcGB6Mrh6nBSBDmx72nz4n+CuFi99yL+j+cWOqnc/wOwHADWuAkPG4ptYV/RS33gDZTR3LqsSb2k8ELX+SBkQuerpz/Fd5JXk9eEvvlAHlNKEkNhi9SzCbF02VIcorpSymx6tICyYHwct8jxL6llZEzR/iUVFM2iaOuUgXTfkhkTVDTSoxKhscpLFsyMw2qom3Cp/D7jVY4ZrdXQLetOyyu00e6udYyoUY+FlHlmCuZtjDm2E0jGmKPo5YzSR1ETTH5Qebqwg==
+X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB03.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230028)(4636009)(136003)(396003)(346002)(376002)(39860400002)(451199021)(82310400008)(36840700001)(46966006)(40470700004)(41300700001)(40460700003)(8936002)(8676002)(36860700001)(83380400001)(47076005)(336012)(186003)(1076003)(26005)(86362001)(2616005)(426003)(81166007)(356005)(82740400003)(316002)(6666004)(40480700001)(110136005)(54906003)(478600001)(36756003)(4326008)(70586007)(70206006)(2906002)(5660300002)(44832011)(36900700001);DIR:OUT;SFP:1101;
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 03 Aug 2023 11:50:27.8625
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 9e53c711-81a1-4c21-d0a7-08db9417d4e0
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB03.amd.com]
+X-MS-Exchange-CrossTenant-AuthSource: CY4PEPF0000E9DC.namprd05.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA0PR12MB7698
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Kernel uses ARCH=powerpc for both 32-bit and 64-bit PowerPC, here adds a
-ppc64 variant for big endian 64-bit PowerPC, users can pass XARCH=ppc64
-to test it.
+Remove reduntant code.
+Change NWL_ECAM_VALUE_DEFAULT to 16 to support maximum 256 buses.
 
-The powernv machine of qemu-system-ppc64 is used with
-powernv_be_defconfig.
-
-As the document [1] shows:
-
-  PowerNV (as Non-Virtualized) is the “bare metal” platform using the
-  OPAL firmware. It runs Linux on IBM and OpenPOWER systems and it can be
-  used as an hypervisor OS, running KVM guests, or simply as a host OS.
-
-Notes,
-
-- differs from little endian 64-bit PowerPC, vmlinux is used instead of
-  zImage, because big endian zImage [2] only boot on qemu with x-vof=on
-  (added from qemu v7.0) and a fixup patch [3] for qemu v7.0.51:
-
-- since the VSX support may be disabled in kernel side, to avoid
-  "illegal instruction" errors due to missing VSX kernel support, let's
-  simply let compiler not generate vector/scalar (VSX) instructions via
-  the '-mno-vsx' option.
-
-- as 'man gcc' shows, '-mmultiple' is used to generate code that uses
-  the load multiple word instructions and the store multiple word
-  instructions. Those instructions do not work when the processor is in
-  little-endian mode (except PPC740/PPC750), so, we only enable it
-  for big endian powerpc.
-
-- for big endian ppc64, as the help message from arch/powerpc/Kconfig
-  shows, the V2 ABI is standard for 64-bit little-endian, but for
-  big-endian it is less well tested by kernel and toolchain, so, use
-  elfv1 as-is, no need to explicitly ask toolchain to use elfv2 here.
-
-[1]: https://qemu.readthedocs.io/en/latest/system/ppc/powernv.html
-[2]: https://github.com/linuxppc/issues/issues/402
-[3]: https://lore.kernel.org/qemu-devel/20220504065536.3534488-1-aik@ozlabs.ru/
-
-Suggested-by: Willy Tarreau <w@1wt.eu>
-Link: https://lore.kernel.org/lkml/20230722121019.GD17311@1wt.eu/
-Link: https://lore.kernel.org/lkml/20230719043353.GC5331@1wt.eu/
-Reviewed-by: Thomas Weißschuh <linux@weissschuh.net>
-Signed-off-by: Zhangjin Wu <falcon@tinylab.org>
+Signed-off-by: Thippeswamy Havalige <thippeswamy.havalige@amd.com>
 ---
- tools/testing/selftests/nolibc/Makefile | 6 ++++++
- 1 file changed, 6 insertions(+)
+ drivers/pci/controller/pcie-xilinx-nwl.c | 11 +----------
+ 1 file changed, 1 insertion(+), 10 deletions(-)
 
-diff --git a/tools/testing/selftests/nolibc/Makefile b/tools/testing/selftests/nolibc/Makefile
-index 4d71393e75ef..ec290cd82e21 100644
---- a/tools/testing/selftests/nolibc/Makefile
-+++ b/tools/testing/selftests/nolibc/Makefile
-@@ -35,6 +35,7 @@ XARCH            = $(or $(XARCH_$(ARCH)),$(ARCH))
+diff --git a/drivers/pci/controller/pcie-xilinx-nwl.c b/drivers/pci/controller/pcie-xilinx-nwl.c
+index 176686b..6d40543 100644
+--- a/drivers/pci/controller/pcie-xilinx-nwl.c
++++ b/drivers/pci/controller/pcie-xilinx-nwl.c
+@@ -126,7 +126,7 @@
+ #define E_ECAM_CR_ENABLE		BIT(0)
+ #define E_ECAM_SIZE_LOC			GENMASK(20, 16)
+ #define E_ECAM_SIZE_SHIFT		16
+-#define NWL_ECAM_VALUE_DEFAULT		12
++#define NWL_ECAM_VALUE_DEFAULT		16
  
- # map from user input variants to their kernel supported architectures
- ARCH_ppc         = powerpc
-+ARCH_ppc64       = powerpc
- ARCH_ppc64le     = powerpc
- ARCH            := $(or $(ARCH_$(XARCH)),$(XARCH))
+ #define CFG_DMA_REG_BAR			GENMASK(2, 0)
+ #define CFG_PCIE_CACHE			GENMASK(7, 0)
+@@ -683,15 +683,6 @@ static int nwl_pcie_bridge_init(struct nwl_pcie *pcie)
+ 	nwl_bridge_writel(pcie, upper_32_bits(pcie->phys_ecam_base),
+ 			  E_ECAM_BASE_HI);
  
-@@ -46,6 +47,7 @@ IMAGE_arm64      = arch/arm64/boot/Image
- IMAGE_arm        = arch/arm/boot/zImage
- IMAGE_mips       = vmlinuz
- IMAGE_ppc        = vmlinux
-+IMAGE_ppc64      = vmlinux
- IMAGE_ppc64le    = arch/powerpc/boot/zImage
- IMAGE_riscv      = arch/riscv/boot/Image
- IMAGE_s390       = arch/s390/boot/bzImage
-@@ -61,6 +63,7 @@ DEFCONFIG_arm64      = defconfig
- DEFCONFIG_arm        = multi_v7_defconfig
- DEFCONFIG_mips       = malta_defconfig
- DEFCONFIG_ppc        = pmac32_defconfig
-+DEFCONFIG_ppc64      = powernv_be_defconfig
- DEFCONFIG_ppc64le    = powernv_defconfig
- DEFCONFIG_riscv      = defconfig
- DEFCONFIG_s390       = defconfig
-@@ -78,6 +81,7 @@ QEMU_ARCH_arm64      = aarch64
- QEMU_ARCH_arm        = arm
- QEMU_ARCH_mips       = mipsel  # works with malta_defconfig
- QEMU_ARCH_ppc        = ppc
-+QEMU_ARCH_ppc64      = ppc64
- QEMU_ARCH_ppc64le    = ppc64le
- QEMU_ARCH_riscv      = riscv64
- QEMU_ARCH_s390       = s390x
-@@ -92,6 +96,7 @@ QEMU_ARGS_arm64      = -M virt -cpu cortex-a53 -append "panic=-1 $(TEST:%=NOLIBC
- QEMU_ARGS_arm        = -M virt -append "panic=-1 $(TEST:%=NOLIBC_TEST=%)"
- QEMU_ARGS_mips       = -M malta -append "panic=-1 $(TEST:%=NOLIBC_TEST=%)"
- QEMU_ARGS_ppc        = -M g3beige -append "console=ttyS0 panic=-1 $(TEST:%=NOLIBC_TEST=%)"
-+QEMU_ARGS_ppc64      = -M powernv -append "console=hvc0 panic=-1 $(TEST:%=NOLIBC_TEST=%)"
- QEMU_ARGS_ppc64le    = -M powernv -append "console=hvc0 panic=-1 $(TEST:%=NOLIBC_TEST=%)"
- QEMU_ARGS_riscv      = -M virt -append "console=ttyS0 panic=-1 $(TEST:%=NOLIBC_TEST=%)"
- QEMU_ARGS_s390       = -M s390-ccw-virtio -m 1G -append "console=ttyS0 panic=-1 $(TEST:%=NOLIBC_TEST=%)"
-@@ -109,6 +114,7 @@ Q=@
- endif
- 
- CFLAGS_ppc = -m32 -mbig-endian -Wl,-EB,-melf32ppc -mmultiple -mno-vsx
-+CFLAGS_ppc64 = -m64 -mbig-endian -Wl,-EB,-melf64ppc -mmultiple -mno-vsx
- CFLAGS_ppc64le = -m64 -mlittle-endian -Wl,-EL,-melf64lppc -mno-vsx $(call cc-option,-mabi=elfv2)
- CFLAGS_s390 = -m64
- CFLAGS_mips = -EL
+-	/* Get bus range */
+-	ecam_val = nwl_bridge_readl(pcie, E_ECAM_CONTROL);
+-	pcie->last_busno = (ecam_val & E_ECAM_SIZE_LOC) >> E_ECAM_SIZE_SHIFT;
+-	/* Write primary, secondary and subordinate bus numbers */
+-	ecam_val = first_busno;
+-	ecam_val |= (first_busno + 1) << 8;
+-	ecam_val |= (pcie->last_busno << E_ECAM_SIZE_SHIFT);
+-	writel(ecam_val, (pcie->ecam_base + PCI_PRIMARY_BUS));
+-
+ 	if (nwl_pcie_link_up(pcie))
+ 		dev_info(dev, "Link is UP\n");
+ 	else
 -- 
-2.25.1
+1.8.3.1
 
