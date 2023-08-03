@@ -2,139 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 97C7B76DFDA
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 07:47:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3DDDF76DFE4
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 07:49:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231484AbjHCFrD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Aug 2023 01:47:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57962 "EHLO
+        id S232465AbjHCFto (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Aug 2023 01:49:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58880 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229480AbjHCFq7 (ORCPT
+        with ESMTP id S229924AbjHCFtl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Aug 2023 01:46:59 -0400
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C24C0E45;
-        Wed,  2 Aug 2023 22:46:58 -0700 (PDT)
-Received: from pps.filterd (m0353725.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3735gMq4027036;
-        Thu, 3 Aug 2023 05:46:42 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=dRolJn+krV/ITKG1jffzCOnmUCoH4C2lfFRoAe9Al0U=;
- b=QVGIak8nQY7yNvy3wIg89QKOK9wqvwLEq/hrkWJUJuieqGhH+CIn1B73DOMnOApZyFY0
- t3Q898wKJtm4HlTwUFUSLMVoEZkWQHnF/bwz436Dz/6a7lrLWsApo04ebQ7bNVrEKnEe
- qLKc9hU1yuomASOr42/AazAPXwIQCFV1S3biiNjy9jUdAqqGfTPpFOxWhHfMCWNxgDgS
- TiQRzJurxhX3RpOW+xxOeY4i6ZOnIFru/xLrOd2D1xjOq3IqiSsw6tGTGf3tUbrpLgpR
- qS7vnX5S/imIhujZKn2/I+F10vqBTz2AT/jaIgZs+743FlJ4D4SGrJBGYReXyBQqSbwH CA== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3s865j05ed-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 03 Aug 2023 05:46:41 +0000
-Received: from m0353725.ppops.net (m0353725.ppops.net [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 3735gnuV029965;
-        Thu, 3 Aug 2023 05:46:41 GMT
-Received: from ppma12.dal12v.mail.ibm.com (dc.9e.1632.ip4.static.sl-reverse.com [50.22.158.220])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3s865j05e6-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 03 Aug 2023 05:46:41 +0000
-Received: from pps.filterd (ppma12.dal12v.mail.ibm.com [127.0.0.1])
-        by ppma12.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 37351sWp006161;
-        Thu, 3 Aug 2023 05:46:40 GMT
-Received: from smtprelay04.fra02v.mail.ibm.com ([9.218.2.228])
-        by ppma12.dal12v.mail.ibm.com (PPS) with ESMTPS id 3s5d3sucdx-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 03 Aug 2023 05:46:40 +0000
-Received: from smtpav07.fra02v.mail.ibm.com (smtpav07.fra02v.mail.ibm.com [10.20.54.106])
-        by smtprelay04.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 3735kcEr35979830
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 3 Aug 2023 05:46:38 GMT
-Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 7A8B620040;
-        Thu,  3 Aug 2023 05:46:38 +0000 (GMT)
-Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id EB64820043;
-        Thu,  3 Aug 2023 05:46:37 +0000 (GMT)
-Received: from ozlabs.au.ibm.com (unknown [9.192.253.14])
-        by smtpav07.fra02v.mail.ibm.com (Postfix) with ESMTP;
-        Thu,  3 Aug 2023 05:46:37 +0000 (GMT)
-Received: from [9.43.189.172] (unknown [9.43.189.172])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by ozlabs.au.ibm.com (Postfix) with ESMTPSA id 7108160367;
-        Thu,  3 Aug 2023 15:46:29 +1000 (AEST)
-Message-ID: <dc30eea1-a977-7ee2-9975-d623ba401c84@linux.ibm.com>
-Date:   Thu, 3 Aug 2023 15:46:10 +1000
+        Thu, 3 Aug 2023 01:49:41 -0400
+Received: from mail-yw1-x1135.google.com (mail-yw1-x1135.google.com [IPv6:2607:f8b0:4864:20::1135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B3712D49
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Aug 2023 22:49:40 -0700 (PDT)
+Received: by mail-yw1-x1135.google.com with SMTP id 00721157ae682-583f036d50bso5592807b3.3
+        for <linux-kernel@vger.kernel.org>; Wed, 02 Aug 2023 22:49:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1691041779; x=1691646579;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=kfTUi7xflA+MwfHSQqcAtzP6pql4voH5e7kvmJj7QUs=;
+        b=FnQp7K+goL5kX5YrNjoKe7RMe9oWsPBKNrqPHgFNhF3SoHfOH9xNzAX6lBHYZVXETK
+         ZLbwfN6PBwwbZgZ/VFljDwBmSqtTjVZchhSdiB+sYRwl1E+8NZ0yrUxkexmdtzCSLjeB
+         eQepK/Co4MpNaNGvZ9NG6Dhp2aJY8f1RJgNhk2x3PbIS4fhEpgPbRvW1hDMtbzh4dG2M
+         1a/DKUBjQo+rtiMCqciXA4IKmNzLvbcB2EOmhVq1S7gFZjtjb4H2lxhouJAoSVeC3uFC
+         F38QQCZjxfeksLovgnDZV7iDEJmi9J6HndbV48/lDnzFYJZZfwOPSRgGZF8YMfWKSau6
+         k3mg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691041779; x=1691646579;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=kfTUi7xflA+MwfHSQqcAtzP6pql4voH5e7kvmJj7QUs=;
+        b=cgYdsI/GnSZVshS3MptQcdq2zIhI7/i4EsL+gVylEKDywPapAfFkBYxrs2c5l5fGJL
+         rEW6TK0wJA4JYdgomfzLWKgiHwQqU8Fe1LVT2W2L3bkpKekd0QZfMHQI1Jr9P4ZGffOl
+         4gbtm6f2hDYJkJ9q4R05/di4xdrp0qbGQ/JLeyU7lP7EJUQDtg3nTFTKP8oip0p0NW2d
+         +ylKb2vFy6Vn7mTEVZZ9iguB4FMOA6YQKltJ3DHqoIAYjO55Q8PGaOSCJooDYrDxfjfn
+         H5KLIuSdtpwvALA5/MjV7Ggd7nJxsDpsDzByAwgKX57kT7XmVdSoxu/XBfmSfl7Zmo6B
+         EOWQ==
+X-Gm-Message-State: ABy/qLZayQw+uxhZ7tHuSStSNFrpp4XBnwF6NYDRK3cftJqtmZ+bXULw
+        FVPtCrYKN7V/DZULasMyOGersw==
+X-Google-Smtp-Source: APBJJlFcSTIQ6AYzinujNeqC/VSvrhCiCIXIw1zsLOZIFkGtr7963td1ne5jUS+/eqdVRHBhyxIGXw==
+X-Received: by 2002:a81:5cc1:0:b0:56f:ff55:2b7d with SMTP id q184-20020a815cc1000000b0056fff552b7dmr20769766ywb.17.1691041779473;
+        Wed, 02 Aug 2023 22:49:39 -0700 (PDT)
+Received: from localhost ([122.172.87.195])
+        by smtp.gmail.com with ESMTPSA id hx11-20020a17090b440b00b00267a487f01bsm1881080pjb.48.2023.08.02.22.49.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 02 Aug 2023 22:49:38 -0700 (PDT)
+Date:   Thu, 3 Aug 2023 11:19:35 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Caleb Connolly <caleb.connolly@linaro.org>
+Cc:     Konrad Dybcio <konrad.dybcio@linaro.org>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Viresh Kumar <vireshk@kernel.org>, Nishanth Menon <nm@ti.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Niklas Cassel <nks@flawful.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Robert Marko <robimarko@gmail.com>,
+        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-pm@vger.kernel.org,
+        Jeffrey Hugo <quic_jhugo@quicinc.com>,
+        Marijn Suijten <marijn.suijten@somainline.org>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@somainline.org>
+Subject: Re: [PATCH v13 01/10] cpufreq: blocklist MSM8998 in
+ cpufreq-dt-platdev
+Message-ID: <20230803054935.y36bjdxed4yvitev@vireshk-i7>
+References: <20230217-topic-cpr3h-v13-0-d01cff1c54cf@linaro.org>
+ <20230217-topic-cpr3h-v13-1-d01cff1c54cf@linaro.org>
+ <CUI2S5IGZEHC.P7MUFZVOHCYR@lion.caleb.rex.connolly.tech>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH 2/2] powerpc/xmon: use KSYM_NAME_LEN in array size
-To:     Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
-        Maninder Singh <maninder1.s@samsung.com>
-Cc:     nathanl@linux.ibm.com, bcain@quicinc.com, keescook@chromium.org,
-        gary@garyguo.net, pmladek@suse.com, ustavoars@kernel.org,
-        linux-kernel@vger.kernel.org, Onkarnath <onkarnath.1@samsung.com>,
-        wedsonaf@google.com, npiggin@gmail.com, alex.gaynor@gmail.com,
-        linux-hexagon@vger.kernel.org, ojeda@kernel.org,
-        linuxppc-dev@lists.ozlabs.org
-References: <CGME20230529111404epcas5p2d540d726dcf3e21aae2a6a0958e2eea5@epcas5p2.samsung.com>
- <20230529111337.352990-1-maninder1.s@samsung.com>
- <20230529111337.352990-2-maninder1.s@samsung.com>
- <CANiq72=QeTgtZL4k9=4CJP6C_Hv=rh3fsn3B9S3KFoPXkyWk3w@mail.gmail.com>
-Content-Language: en-US, en-AU
-From:   Benjamin Gray <bgray@linux.ibm.com>
-In-Reply-To: <CANiq72=QeTgtZL4k9=4CJP6C_Hv=rh3fsn3B9S3KFoPXkyWk3w@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: VXRQbZ8dcoq9jXmGaZ_M-e4Fpkx6PrjV
-X-Proofpoint-ORIG-GUID: _w7nMIAEmPg8Yi6WLqxm2fqjtLSpVY_D
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
- definitions=2023-08-03_03,2023-08-01_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 adultscore=0
- lowpriorityscore=0 impostorscore=0 mlxscore=0 malwarescore=0
- suspectscore=0 clxscore=1011 spamscore=0 mlxlogscore=740
- priorityscore=1501 phishscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2306200000 definitions=main-2308030050
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CUI2S5IGZEHC.P7MUFZVOHCYR@lion.caleb.rex.connolly.tech>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_MSPIKE_H5,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 30/5/23 10:54 pm, Miguel Ojeda wrote:
-> Side-note: in `get_function_bounds()`, I see `kallsyms_lookup()` being
-> used, but the name seems discarded? Can
-> `kallsyms_lookup_size_offset()` be used instead, thus avoiding the
-> usage of the buffer there to begin with?
+On 02-08-23, 13:58, Caleb Connolly wrote:
+> On Wed Aug 2, 2023 at 1:37 PM BST, Konrad Dybcio wrote:
+> > From: AngeloGioacchino Del Regno <angelogioacchino.delregno@somainline.org>
+> >
+> > Add the MSM8998 to the blocklist since the CPU scaling on this platform
+> > is handled by a separate driver.
+> >
+> > Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@somainline.org>
+> > Tested-by: Jeffrey Hugo <quic_jhugo@quicinc.com>
+> > Signed-off-by: Konrad Dybcio <konrad.dybcio@linaro.org>
+> 
+> Reviewed-by: Caleb Connolly <caleb.connolly@linaro.org>
+> 
+> // Caleb (they/them)
+> 
+> > ---
+> >  drivers/cpufreq/cpufreq-dt-platdev.c | 1 +
+> >  1 file changed, 1 insertion(+)
+> >
+> > diff --git a/drivers/cpufreq/cpufreq-dt-platdev.c b/drivers/cpufreq/cpufreq-dt-platdev.c
+> > index e2b20080de3a..adb3579a1fee 100644
+> > --- a/drivers/cpufreq/cpufreq-dt-platdev.c
+> > +++ b/drivers/cpufreq/cpufreq-dt-platdev.c
+> > @@ -143,6 +143,7 @@ static const struct of_device_id blocklist[] __initconst = {
+> >  
+> >  	{ .compatible = "qcom,apq8096", },
+> >  	{ .compatible = "qcom,msm8996", },
+> > +	{ .compatible = "qcom,msm8998", },
+> >  	{ .compatible = "qcom,qcs404", },
+> >  	{ .compatible = "qcom,sa8155p" },
+> >  	{ .compatible = "qcom,sa8540p" },
 
-I'm not familiar with the kallsyms infrastructure, but looking over the 
-implementations of kallsyms_lookup() and kallsyms_lookup_size_offset() 
-it looks like the existing kallsyms_lookup()
-  handles an extra case over kallsyms_lookup_size_offset()?
+Applied patch 1/10.
 
-kallsyms_lookup_buildid() (the implementation of kallsyms_lookup()) has
-
-   /* See if it's in a module or a BPF JITed image. */
-   ret = module_address_lookup(addr, symbolsize, offset,
-                               modname, modbuildid, namebuf);
-   if (!ret)
-           ret = bpf_address_lookup(addr, symbolsize,
-                                    offset, modname, namebuf);
-
-   if (!ret)
-           ret = ftrace_mod_address_lookup(addr, symbolsize,
-                                           offset, modname, namebuf);
-
-while kallsyms_lookup_size_offset() is missing the ftrace case
-
-   return !!module_address_lookup(addr, symbolsize, offset,
-                                  NULL, NULL, namebuf) ||
-          !!__bpf_address_lookup(addr, symbolsize, offset, namebuf);
-
-Might this be a concern for xmon?
+-- 
+viresh
