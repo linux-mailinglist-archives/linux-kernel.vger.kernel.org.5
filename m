@@ -2,69 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2802976DFCC
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 07:38:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 61D7176DFD2
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 07:42:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232192AbjHCFiM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Aug 2023 01:38:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55734 "EHLO
+        id S232177AbjHCFmb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Aug 2023 01:42:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56268 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229727AbjHCFiK (ORCPT
+        with ESMTP id S229727AbjHCFm3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Aug 2023 01:38:10 -0400
-Received: from lelv0143.ext.ti.com (lelv0143.ext.ti.com [198.47.23.248])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0EC191FF0;
-        Wed,  2 Aug 2023 22:38:09 -0700 (PDT)
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
-        by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 3735bxdK024645;
-        Thu, 3 Aug 2023 00:37:59 -0500
+        Thu, 3 Aug 2023 01:42:29 -0400
+Received: from lelv0142.ext.ti.com (lelv0142.ext.ti.com [198.47.23.249])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D740E211E;
+        Wed,  2 Aug 2023 22:42:26 -0700 (PDT)
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+        by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 3735gHFo072789;
+        Thu, 3 Aug 2023 00:42:17 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1691041079;
-        bh=IOCqh9FyVxVhLGP96v4mKGC01bgIYtpBTvxSqSJ4/+o=;
-        h=Date:Subject:To:CC:References:From:In-Reply-To;
-        b=XtCsRD5P3K+GJn+fSDNq0hQOir1haPH4L97G17H2G8okuTca1dhrVMjSQPji1QQ9a
-         axyfofmA93ml2tGP05P8vzNSpvXib1yAlriVz1WlG+338mtaYEeesQBg1p+AXNFcHL
-         qh8Szn5zpZbxhuWk5ShFB8kGNnLD8QeZd5HWthik=
-Received: from DFLE105.ent.ti.com (dfle105.ent.ti.com [10.64.6.26])
-        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 3735bxGb094700
+        s=ti-com-17Q1; t=1691041337;
+        bh=JaVDkNh24zeaIa0PzyZdBDMiqrDv32R2mv8TvqwD37k=;
+        h=Date:From:To:CC:Subject:References:In-Reply-To;
+        b=AcstJXErHHqyOY7BBcGwY3t0fKmOX8ioQdG+a0oBcps30HcGhDPYPUurkKRvRCcN+
+         gNYY9C0V9GbH0U39gFu/5gNzXY7iteSAG9crUxatkNUSH1n/Buo31jAt/qiCL3m1SS
+         rxJeyBuvFuiZZ/3t2cNPoWCWsrNXGByMy7/FJtvs=
+Received: from DLEE108.ent.ti.com (dlee108.ent.ti.com [157.170.170.38])
+        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 3735gH2x027381
         (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 3 Aug 2023 00:37:59 -0500
-Received: from DFLE114.ent.ti.com (10.64.6.35) by DFLE105.ent.ti.com
- (10.64.6.26) with Microsoft SMTP Server (version=TLS1_2,
+        Thu, 3 Aug 2023 00:42:17 -0500
+Received: from DLEE112.ent.ti.com (157.170.170.23) by DLEE108.ent.ti.com
+ (157.170.170.38) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Thu, 3
- Aug 2023 00:37:58 -0500
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DFLE114.ent.ti.com
- (10.64.6.35) with Microsoft SMTP Server (version=TLS1_2,
+ Aug 2023 00:42:17 -0500
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE112.ent.ti.com
+ (157.170.170.23) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Thu, 3 Aug 2023 00:37:58 -0500
-Received: from [172.24.227.112] (ileaxei01-snat2.itg.ti.com [10.180.69.6])
-        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 3735brsL128347;
-        Thu, 3 Aug 2023 00:37:54 -0500
-Message-ID: <24c8071f-3ec8-c0e5-8a18-7783cf7af092@ti.com>
-Date:   Thu, 3 Aug 2023 11:07:53 +0530
+ Frontend Transport; Thu, 3 Aug 2023 00:42:17 -0500
+Received: from localhost (ileaxei01-snat.itg.ti.com [10.180.69.5])
+        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 3735gGVG029112;
+        Thu, 3 Aug 2023 00:42:16 -0500
+Date:   Thu, 3 Aug 2023 11:12:20 +0530
+From:   Jai Luthra <j-luthra@ti.com>
+To:     Nishanth Menon <nm@ti.com>, Devarsh Thakkar <devarsht@ti.com>
+CC:     Vignesh Raghavendra <vigneshr@ti.com>,
+        Tero Kristo <kristo@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Jayesh Choudhary <j-choudhary@ti.com>
+Subject: Re: [PATCH 4/5] arm64: dts: ti: k3-am62a7-sk: Enable audio on AM62A
+Message-ID: <g42iwlnxoaocvjglehavfnnfnfxj2z5fhvdbsnefhr2nzl3peb@6b7omnsthzq3>
+References: <20230731-mcasp_am62a-v1-0-8bd137ffa8f1@ti.com>
+ <20230731-mcasp_am62a-v1-4-8bd137ffa8f1@ti.com>
+ <aa8d2aa6-a121-51e6-77de-0e1c8bdac043@ti.com>
+ <52pbbqnp46h33gymoydnjtxoo3dsb6wnytvjnmomtjdtwck536@ewhb2rngomr2>
+ <20230802133502.zjvf7sslmcuayg5z@defog>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v8 2/5] arm64: dts: ti: k3-j784s4-main: Add WIZ and SERDES
- PHY nodes
-Content-Language: en-US
-To:     Roger Quadros <rogerq@kernel.org>, <nm@ti.com>, <vigneshr@ti.com>
-CC:     <s-vadapalli@ti.com>, <afd@ti.com>, <kristo@kernel.org>,
-        <robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
-        <conor+dt@kernel.org>, <a-bhatia1@ti.com>, <r-ravikumar@ti.com>,
-        <sabiya.d@ti.com>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>
-References: <20230801070019.219660-1-j-choudhary@ti.com>
- <20230801070019.219660-3-j-choudhary@ti.com>
- <64ae76ef-a85a-7cc7-6bc3-a8ea46621d73@kernel.org>
-From:   Jayesh Choudhary <j-choudhary@ti.com>
-In-Reply-To: <64ae76ef-a85a-7cc7-6bc3-a8ea46621d73@kernel.org>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="znyrgjgdrrbjtpu2"
+Content-Disposition: inline
+In-Reply-To: <20230802133502.zjvf7sslmcuayg5z@defog>
 X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -73,118 +76,135 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Roger,
+--znyrgjgdrrbjtpu2
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On 01/08/23 22:26, Roger Quadros wrote:
-> 
-> 
-> On 01/08/2023 10:00, Jayesh Choudhary wrote:
->> From: Siddharth Vadapalli <s-vadapalli@ti.com>
->>
->> J784S4 SoC has 4 Serdes instances along with their respective WIZ
->> instances. Add device-tree nodes for them and disable them by default.
->>
->> Signed-off-by: Siddharth Vadapalli <s-vadapalli@ti.com>
->> [j-choudhary@ti.com: fix serdes_wiz clock order & disable serdes refclk]
->> Signed-off-by: Jayesh Choudhary <j-choudhary@ti.com>
->> ---
->>   arch/arm64/boot/dts/ti/k3-j784s4-main.dtsi | 172 +++++++++++++++++++++
->>   1 file changed, 172 insertions(+)
->>
->> diff --git a/arch/arm64/boot/dts/ti/k3-j784s4-main.dtsi b/arch/arm64/boot/dts/ti/k3-j784s4-main.dtsi
->> index 8a816563706b..fbf5ab94d785 100644
->> --- a/arch/arm64/boot/dts/ti/k3-j784s4-main.dtsi
->> +++ b/arch/arm64/boot/dts/ti/k3-j784s4-main.dtsi
->> @@ -6,9 +6,19 @@
->>    */
->>   
->>   #include <dt-bindings/mux/mux.h>
->> +#include <dt-bindings/phy/phy.h>
->> +#include <dt-bindings/phy/phy-ti.h>
->>   
->>   #include "k3-serdes.h"
->>   
->> +/ {
->> +	serdes_refclk: serdes-refclk {
-> 
-> standard name should begin with clock
-> 
->> +		#clock-cells = <0>;
->> +		compatible = "fixed-clock";
->> +		status = "disabled";
->> +	};
->> +};
->> +
->>   &cbass_main {
->>   	msmc_ram: sram@70000000 {
->>   		compatible = "mmio-sram";
->> @@ -709,6 +719,168 @@ main_sdhci1: mmc@4fb0000 {
->>   		status = "disabled";
->>   	};
->>   
->> +	serdes_wiz0: wiz@5060000 {
->> +		compatible = "ti,j784s4-wiz-10g";
->> +		#address-cells = <1>;
->> +		#size-cells = <1>;
->> +		power-domains = <&k3_pds 404 TI_SCI_PD_EXCLUSIVE>;
->> +		clocks = <&k3_clks 404 2>, <&k3_clks 404 6>, <&serdes_refclk>, <&k3_clks 404 5>;
->> +		clock-names = "fck", "core_ref_clk", "ext_ref_clk", "core_ref1_clk";
->> +		assigned-clocks = <&k3_clks 404 6>;
->> +		assigned-clock-parents = <&k3_clks 404 10>;
->> +		num-lanes = <4>;
->> +		#reset-cells = <1>;
->> +		#clock-cells = <1>;
->> +		ranges = <0x5060000 0x00 0x5060000 0x10000>;
->> +> +		status = "disabled";
->> +
-> drop blank lines here and rest of this file where you set status to "disabled".
-> 
->> +		serdes0: serdes@5060000 {
-> 
-> phy@5060000
+Hi Nishanth, Devarsh,
 
-According to the bindings, serdes is valid.
-(./Documentation/devicetree/bindings/phy/ti,phy-j721e-wiz.yaml)
-It would throw dtbs_check errors with phy@.
-If its a binding change that you are suggesting, then it can be picked
-up later on for all platform at once.
+On Aug 02, 2023 at 08:35:02 -0500, Nishanth Menon wrote:
+> On 17:10-20230802, Jai Luthra wrote:
+> > Hi Devarsh,
+> >=20
+> > On Aug 02, 2023 at 16:15:12 +0530, Devarsh Thakkar wrote:
+> > > Hi Jai,
+> > >=20
+> > > Thanks for the patch.
+> > >=20
+> > > On 31/07/23 18:14, Jai Luthra wrote:
+> > > > Add nodes for audio codec and sound card, enable the audio serializ=
+er
+> > > > (McASP1) under use and update pinmux.
+> > > >=20
+> > > > Link: https://www.ti.com/lit/zip/sprr459
+> > > > Signed-off-by: Jai Luthra <j-luthra@ti.com>
+> > > > Reviewed-by: Jayesh Choudhary <j-choudhary@ti.com>
+> > > > ---
+> > > >  arch/arm64/boot/dts/ti/k3-am62a7-sk.dts | 77 +++++++++++++++++++++=
+++++++++++++
+> > > >  1 file changed, 77 insertions(+)
+> > > >=20
+> > > > diff --git a/arch/arm64/boot/dts/ti/k3-am62a7-sk.dts b/arch/arm64/b=
+oot/dts/ti/k3-am62a7-sk.dts
+> > > > index 752c2f640f63..5f68d2eefe0f 100644
+> > > > --- a/arch/arm64/boot/dts/ti/k3-am62a7-sk.dts
+> > > > +++ b/arch/arm64/boot/dts/ti/k3-am62a7-sk.dts
+> > > > @@ -125,6 +125,41 @@ led-0 {
+> > > >  			default-state =3D "off";
+> > > >  		};
+> > > >  	};
+> > > > +
+> > > > +	tlv320_mclk: clk-0 {
+> > > > +		#clock-cells =3D <0>;
+> > > > +		compatible =3D "fixed-clock";
+> > > > +		clock-frequency =3D <12288000>;
+> > > > +	};
+> > > > +
+> > > > +	codec_audio: sound {
+> > > > +		compatible =3D "simple-audio-card";
+> > > > +		simple-audio-card,name =3D "AM62Ax-SKEVM";
+> > >=20
+> > > In my opinion better to give the codec name instead of board name her=
+e.
+> >=20
+> > I agree, maybe calling it "sk-am62a-tlv320aic3106" would be the most=20
+> > clear option.
+> >=20
+> > Running a quick ripgrep on next tree:
+> >=20
+> > $ rg "simple-audio-card,name" arch/*/boot/dts/
+> >=20
+> > I see a healthy mix of using both board and/or codec name here - with T=
+I=20
+> > almost always using the board name. Maybe we can change the convention,=
+=20
+> > but it would be a good idea to at least update SK-AM62 as well to use=
+=20
+> > the new convention.
+> >=20
+> > Is it okay with you if it is handled as a separate series?
+>=20
+> Will this cleanup of existing board break any userspace? If so, NO and
+> follow existing "board" convention - I'd like to maintain consistency,
+> even if that is not exactly clean!
 
-So keeping it as serdes@50*0000 on all the suggested places.
+Upon further inspection, yes changing existing boards can break=20
+userspace applications as some procfs entries are enumerated with the=20
+name of the soundcard. So updating AM62x is out of the question.
 
-> 
->> +			compatible = "ti,j721e-serdes-10g";
->> +			reg = <0x05060000 0x010000>;
+I am in favor of maintaining naming consistency with this board.
 
-[...]
+Devarsh, I notice the current scheme is not entirely opaque, as the pcm=20
+device enumerates both the cpu & codec driver names:
 
->> +
->> +		serdes1: serdes@5070000 {
-> 
-> phy@5070000
->> +			compatible = "ti,j721e-serdes-10g";
->> +			reg = <0x05070000 0x010000>;
->> +			reg-names = "torrent_phy";
+root@am62xx-evm:~# aplay -L
+null
+    Discard all samples (playback) or generate zero samples (capture)
+default:CARD=3DAM62xSKEVM
+    AM62x-SKEVM, davinci-mcasp.0-tlv320aic3x-hifi tlv320aic3x-hifi-0
+    Default Audio Device
+sysdefault:CARD=3DAM62xSKEVM
+    AM62x-SKEVM, davinci-mcasp.0-tlv320aic3x-hifi tlv320aic3x-hifi-0
+    Default Audio Device
 
-[...]
+> If not, cleanup in a later series is fine, but please make sure to=20
+> follow through this week - with this patch following the convention of=20
+> choice.
+>=20
 
->> +
->> +		status = "disabled";
->> +
->> +		serdes2: serdes@5020000 {
-> 
-> phy@5020000
-> 
->> +			compatible = "ti,j721e-serdes-10g";
->> +			reg = <0x05020000 0x010000>;
+Please feel free to pull the current series, if no further comments.
 
-[...]
+> --=20
+> Regards,
+> Nishanth Menon
+> Key (0xDDB5849D1736249D) / Fingerprint: F8A2 8693 54EB 8232 17A3  1A34 DD=
+B5 849D 1736 249D
 
->> +		status = "disabled";
->> +
->> +		serdes4: serdes@5050000 {
-> 
-> phy@5050000
-> 
->> +			/*
+--=20
+Thanks,
+Jai
 
-[...]
+GPG Fingerprint: 4DE0 D818 E5D5 75E8 D45A AFC5 43DE 91F9 249A 7145
+
+--znyrgjgdrrbjtpu2
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCAAdFiEETeDYGOXVdejUWq/FQ96R+SSacUUFAmTLPjkACgkQQ96R+SSa
+cUW5VQ//YJnb0BqpzhvBlAwqL9bHfaAS0ztOySXJc0NdLxv3eNtfsFekteMPTJaU
+gawhb23HqSJy7/J6+2/qrmbjgV1Guz5EAJOgwnm65Y3m1MnfC19xI2/KRPapr9Uq
+clMDqr4ztsR8TPpv0+4uyqVotBPaRGMK7rnTsPb6i7oYq+8FRPnl6cEbiFhlu1pu
+//eCPOswKStCjFeWZbVFJbo2TT9ZDbypZxpS9Z3/FoImGtF99cuACSFHHEFfzq/l
+p7sKRMkKoiSJGBQ1TERw1t6m2cPQLzocG2FiiLxtQAdspPIvHtvcSXWeQfae8lJ2
+NAWRuJsIgoleoBTV+10WROVmyiu42mE+Bdh5lAHBA9WBG2E5h1juNcrWtwIsqyI0
+25YYbnJdOTioC1Q+UWBf7jsvK55qt3s7RaOO1IKbIa4jYcJMlWIeXV546PRqfB9m
+uwWFTGFAV0wHaOdcHvlA9RUayCWkGzUzAgIPfA2pTAvB4ObJD3NUkHfZi/nji+0x
+fUPqM2kDBruiW2SDFZrMJC7aYtrb2mQ+rt3sCMJVxqb+QRuZsN7sHOF6B+GY1RJ7
+puESJVQXEyT3aPKAqMp5wWGFSlS5EhIlfZX8ESEwHShI+IJvAjdybXwYjvrLmt+Z
+tO15Pz8u+lONZ/u58Gsk4tfYv49e6IbSJZFYx6R2syLunSl7AL8=
+=LK09
+-----END PGP SIGNATURE-----
+
+--znyrgjgdrrbjtpu2--
