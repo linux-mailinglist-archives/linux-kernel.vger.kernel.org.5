@@ -2,70 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C46476DDB9
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 03:56:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E4E5176DDBC
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 03:58:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231978AbjHCB4K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Aug 2023 21:56:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35996 "EHLO
+        id S231698AbjHCB6O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Aug 2023 21:58:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35550 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231788AbjHCBzd (ORCPT
+        with ESMTP id S232700AbjHCB5w (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Aug 2023 21:55:33 -0400
-Received: from mail-qt1-x830.google.com (mail-qt1-x830.google.com [IPv6:2607:f8b0:4864:20::830])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23B3430C3;
-        Wed,  2 Aug 2023 18:53:30 -0700 (PDT)
-Received: by mail-qt1-x830.google.com with SMTP id d75a77b69052e-403a7066bc8so3398521cf.0;
-        Wed, 02 Aug 2023 18:53:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1691027609; x=1691632409;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=F0cfSRMb8E/+IOlL1DpOgng7tWBKa/WtU2bVBsu5NVs=;
-        b=FN5rFUW+KXuu0m3Py0CHFvdzPZcji2S44jP87NoaMpyvxq2vKRO52t0046rq8GQcSS
-         6d15lUfaULnoEy3hadtHg91rYLEtoXbf3cKQlq8EPv0iDi1qbTKfqt2qHN8OSVSs4i4z
-         Sxp83MJcGi62+DYC9uY1PEr5m39cK30cEr4bK9vh4f/zPHXb3uP8JPfHSmkEYW6nGr1g
-         WygUx+5GWHNGilIEOmwrRnjPZhodgpuB4aa0EedpWu1pY6GBaOJfXvs5MOpgzcsGaV72
-         2QDolVX4AigKeEqmTAypzqkVIl3tCauurar4YS8vqXGq6tEUyys8ZddoC/rOfQNp5W/h
-         sikQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691027609; x=1691632409;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=F0cfSRMb8E/+IOlL1DpOgng7tWBKa/WtU2bVBsu5NVs=;
-        b=X074T2MdIkE65SZVeCp7+Z33tDMLJ1Hz2EwRFPY8hpF2I1tr4qPVOGn3E4CNppCLy0
-         wVrcH+lAyEkv+Y/Fc6QoGRNhSVkx6Y3f7G11bGm6jUSa2NNk76UOSt60j7l+9ezTPx1l
-         5gxC5FQkzJVw12KGFEK/KuW+kUjZ9b/VF7j1SXf7Qilx+kZdiHaXJtrBR4OWQ5e6Doj8
-         +aw8zYpCHiugkoQXw7clM00hUUg3iaVYwy1zejZGz1c/oO8GkJyIIs6f5dFtBpDLKvX9
-         PWCj0wMEXz6YbJSNmVOPOMvtyVF+KIrsnPVQCm9ypoMolS1Pb6yIx2M+/ZyHhAqdc+0L
-         GDcA==
-X-Gm-Message-State: ABy/qLaxsMXOR+09aDTUhQ27BV/epZ6dbx6w1gh2YL5J69WfQcUSqLPS
-        MYc09M+gEVN08hHIqeS/T1kNSicwDpB7WJ3BHsU=
-X-Google-Smtp-Source: APBJJlE4Y28QmAN312atRv4Dd/yMKEBK5lVckq3p0k+uvln4iVP4+z9gJ5D0U3F713BFX8Dz2cTVuIu9b1hqElbAM0U=
-X-Received: by 2002:a05:622a:1495:b0:405:4043:3641 with SMTP id
- t21-20020a05622a149500b0040540433641mr24433744qtx.67.1691027609127; Wed, 02
- Aug 2023 18:53:29 -0700 (PDT)
-MIME-Version: 1.0
-References: <20230801112337.1856215-1-zhangshida@kylinos.cn>
- <20230801151828.GB11332@frogsfrogsfrogs> <A9ECDF14-95A1-4B1E-A815-4B6ABF4916C6@dilger.ca>
-In-Reply-To: <A9ECDF14-95A1-4B1E-A815-4B6ABF4916C6@dilger.ca>
-From:   Stephen Zhang <starzhangzsd@gmail.com>
-Date:   Thu, 3 Aug 2023 09:52:53 +0800
-Message-ID: <CANubcdUsDfiuGimNXjzoAF5ki8waCoFW31mg4vjpm073rS6+dw@mail.gmail.com>
-Subject: Re: [PATCH v3] ext4: Fix rec_len verify error
-To:     Andreas Dilger <adilger@dilger.ca>
-Cc:     "Darrick J. Wong" <djwong@kernel.org>,
-        "Theodore Ts'o" <tytso@mit.edu>, Zhang Yi <yi.zhang@huawei.com>,
-        Ext4 Developers List <linux-ext4@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        zhangshida@kylinos.cn, stable@kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        Wed, 2 Aug 2023 21:57:52 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04AA830EF;
+        Wed,  2 Aug 2023 18:55:34 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 9650161BAF;
+        Thu,  3 Aug 2023 01:55:33 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9989EC433C7;
+        Thu,  3 Aug 2023 01:55:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1691027733;
+        bh=8bcmBU6UJXfBBUjLouuDS8paEUI0aVBdp/2XqX+Gop4=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=u19FFhV2TK+D+tVZD87Zm5hkMwHS8OoJgc7dVKX0fn9QT9ZTiwGReEZKV3JHR9syR
+         LR76vtAlG1FQ/MK27TEEMQhswKRZ0eL8HARcPWkZTII4h1BlOSxRnhCLrMVF45VxdM
+         kPyw7nK75ayI7lIE8UinDqMdIrS3F+xBspjiHKWd4qtcIzKq8Bh+YZnKGlTokzHFfx
+         IqWBKLjCybEoggTKv58GcbuK/sEh4K6hLoiWcbjCsZ37ghpMhnrStkv+le+4bBzOlt
+         cLPst9olh0Z1hrISOyfLooTy37ojSX7uSCc825cvCZHTHtJVlWr0aDVWJBW9xW9MG/
+         kuVX7cgU09BTw==
+Date:   Thu, 3 Aug 2023 10:55:27 +0900
+From:   Masami Hiramatsu (Google) <mhiramat@kernel.org>
+To:     Florent Revest <revest@chromium.org>
+Cc:     Steven Rostedt <rostedt@goodmis.org>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        linux-trace-kernel@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        bpf <bpf@vger.kernel.org>, Sven Schnelle <svens@linux.ibm.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Alan Maguire <alan.maguire@oracle.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>
+Subject: Re: [PATCH v4 3/9] bpf/btf: Add a function to search a member of a
+ struct/union
+Message-Id: <20230803105527.838017f58531af25c125f577@kernel.org>
+In-Reply-To: <CABRcYm+-tBmM1sUMozPaa8fBfRFhTNpTNtwT5z6xz0nsZA=P0g@mail.gmail.com>
+References: <169078860386.173706.3091034523220945605.stgit@devnote2>
+        <169078863449.173706.2322042687021909241.stgit@devnote2>
+        <CAADnVQ+C64_C1w1kqScZ6C5tr6_juaWFaQdAp9Mt3uzaQp2KOw@mail.gmail.com>
+        <20230801085724.9bb07d2c82e5b6c6a6606848@kernel.org>
+        <CAADnVQLaFpd2OhqP7W3xWB1b9P2GAKgrVQU1FU2yeNYKbCkT=Q@mail.gmail.com>
+        <20230802000228.158f1bd605e497351611739e@kernel.org>
+        <20230801112036.0d4ee60d@gandalf.local.home>
+        <20230801113240.4e625020@gandalf.local.home>
+        <CAADnVQ+N7b8_0UhndjwW9-5Vx2wUVvojujFLOCFr648DUv-Y2Q@mail.gmail.com>
+        <20230801190920.7a1abfd5@gandalf.local.home>
+        <20230802092146.9bda5e49528e6988ab97899c@kernel.org>
+        <20230801204054.3884688e@rorschach.local.home>
+        <20230802225634.f520080cd9de759d687a2b0a@kernel.org>
+        <CABRcYm+-tBmM1sUMozPaa8fBfRFhTNpTNtwT5z6xz0nsZA=P0g@mail.gmail.com>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-7.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_HI,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -73,92 +82,85 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Andreas Dilger <adilger@dilger.ca> =E4=BA=8E2023=E5=B9=B48=E6=9C=882=E6=97=
-=A5=E5=91=A8=E4=B8=89 14:07=E5=86=99=E9=81=93=EF=BC=9A
->
-> Not all of these cases are actual bugs.  The ext4_rec_len_from_disk()
-> function is only different for rec_len >=3D 2^16, so if it is comparing
-> rec_len against "12" or "sizeof(struct ...)" then the inequality will
-> be correct regardless of how it is decoded.
->
-> That said, it makes sense to use ext4_rec_len_from_disk() to access
-> rec_len consistently throughout the code, since that avoids potential
-> bugs in the future.  We know the code will eventually will be copied
-> some place where rec_len >=3D 2^16 is actually important, and we may as
-> well avoid that bug before it happens.
->
->
-> One thing this discussion *does* expose is that ext4_rec_len_from_disk()
-> is hard-coded at compile time to differentiate between PAGE_SIZE > 64k
-> and PAGE_SIZE =3D 4K, because it was never possible to have blocksize >
-> PAGE_SIZE, so only ARM/PPC ever had filesystems with blocksize=3D64KiB
-> (and the Fujitsu Fugaku SPARC system with blocksize=3D256KiB).
->
-> However, with the recent advent of the VM and IO layers allowing
-> blocksize > PAGE_SIZE this function will need to be changed to allow
-> the same on x86 PAGE_SIZE=3D4KiB systems.  Instead of checking
->
->   #if PAGE_SIZE >=3D 65536
->
-> it should handle this based on the filesystem blocksize at runtime:
->
-> static inline
-> unsigned int ext4_rec_len_from_disk(__le16 dlen, unsigned blocksize)
-> {
->         unsigned len =3D le16_to_cpu(dlen);
->
->         if (blocksize < 65536)
->                 return len;
->
->         if (len =3D=3D EXT4_MAX_REC_LEN || len =3D=3D 0)
->                 return blocksize;
->
->         return (len & 65532) | ((len & 3) << 16);
-> }
->
-> Strictly speaking, ((len & 65532) | ((len & 3) << 16) should equal "len"
-> for any filesystem with blocksize < 65536, but IMHO it is more clear if
-> the code is written this way.
->
-> Similarly, the encoding needs to be changed to handle large records at
-> runtime for when we eventually allow ext4 with blocksize > PAGE_SIZE.
->
-> static inline __le16 ext4_rec_len_to_disk(unsigned len, unsigned blocksiz=
-e)
-> {
->         BUG_ON(len > blocksize);
->         BUG_ON(blocksize > (1 << 18));
->         BUG_ON(len & 3);
->
->         if (len < 65536) /* always true for blocksize < 65536 */
->                 return cpu_to_le16(len);
->
->         if (len =3D=3D blocksize) {
->                 if (blocksize =3D=3D 65536)
->                         return cpu_to_le16(EXT4_MAX_REC_LEN);
->
->                 return cpu_to_le16(0);
->         }
->
->         return cpu_to_le16((len & 65532) | ((len >> 16) & 3));
-> }
->
+On Wed, 2 Aug 2023 17:47:03 +0200
+Florent Revest <revest@chromium.org> wrote:
 
-Hmm, at least it sounds reasonable to me based on my limited
-knowledge. However, I am not sure whether you want me to incorporate
-these changes into this particular commit or another patch within this
-submission.
+> On Wed, Aug 2, 2023 at 3:56 PM Masami Hiramatsu <mhiramat@kernel.org> wrote:
+> >
+> > On Tue, 1 Aug 2023 20:40:54 -0400
+> > Steven Rostedt <rostedt@goodmis.org> wrote:
+> >
+> > > On Wed, 2 Aug 2023 09:21:46 +0900
+> > > Masami Hiramatsu (Google) <mhiramat@kernel.org> wrote:
+> > >
+> > > > > Then use kprobes. When I asked Masami what the difference between fprobes
+> > > > > and kprobes was, he told me that it would be that it would no longer rely
+> > > > > on the slower FTRACE_WITH_REGS. But currently, it still does.
+> > > >
+> > > > kprobes needs to keep using pt_regs because software-breakpoint exception
+> > > > handler gets that. And fprobe is used for bpf multi-kprobe interface,
+> > > > but I think it can be optional.
+> > > >
+> > > > So until user-land tool supports the ftrace_regs, you can just disable
+> > > > using fprobes if CONFIG_DYNAMIC_FTRACE_WITH_REGS=n
+> > >
+> > > I'm confused. I asked about the difference between kprobes on ftrace
+> > > and fprobes, and you said it was to get rid of the requirement of
+> > > FTRACE_WITH_REGS.
+> > >
+> > >  https://lore.kernel.org/all/20230120205535.98998636329ca4d5f8325bc3@kernel.org/
+> >
+> > Yes, it is for enabling fprobe (and fprobe-event) on more architectures.
+> > I don't think it's possible to change everything at once. So, it will be
+> > changed step by step. At the first step, I will replace pt_regs with
+> > ftrace_regs, and make bpf_trace.c and fprobe_event depends on
+> > FTRACE_WITH_REGS.
+> >
+> > At this point, we can split the problem into two, how to move bpf on
+> > ftrace_regs and how to move fprobe-event on ftrace_regs. fprobe-event
+> > change is not hard because it is closing in the kernel and I can do it.
+> > But for BPF, I need to ask BPF user-land tools to support ftrace_regs.
+> 
+> Ah! I finally found the branch where I had pushed my proof of concept
+> of fprobe with ftrace_regs... it's a few months old and I didn't get
+> it in a state such that it could be sent to the list but maybe this
+> can save you a little bit of lead time Masami :) (especially the bpf
+> and arm64 specific bits)
+> 
+> https://github.com/FlorentRevest/linux/commits/bpf-arm-complete
+> 
+> 08afb628c6e1 ("ftrace: Add a macro to forge an incomplete pt_regs from
+> a ftrace_regs")
+> 203e96fe1790 ("fprobe, rethook: Use struct ftrace_regs instead of
+> struct pt_regs")
+> 1a9e280b9b16 ("arm64,rethook,kprobes: Replace kretprobe with rethook on arm64")
+> 7751c6db9f9d ("bpf: Fix bpf get_func_ip() on arm64 multi-kprobe programs")
+> a10c49c0d717 ("selftests/bpf: Update the tests deny list on aarch64")
 
-By default, I will simply leave it for further discussion. Please let
-me know if you have any ideas.
+Thanks for the work! I also pushed my patches on 
 
-Cheers,
-Shida
+https://kernel.googlesource.com/pub/scm/linux/kernel/git/mhiramat/linux/+/refs/heads/topic/fprobe-ftrace-regs
 
->
-> Cheers, Andreas
->
->
->
->
->
+628e6c19d7dc ("tracing/fprobe: Enable fprobe events with CONFIG_DYNAMIC_FTRACE_WITH_ARGS")
+311c98c29cfd ("fprobe: Use fprobe_regs in fprobe entry handler")
+
+This doesn't cover arm64 and rethook, but provides ftrace_regs optimized
+fprobe-event code, which uses a correct APIs for ftrace_regs.
+
+For the rethook we still need to provide 2 version for kretprobe(pt_regs)
+and fprobe(ftrace_regs).
+I think eventually we should replace the kretprobe with fprobe, but
+current rethook is tightly coupled with kretprobe and the kretprobe
+needs pt_regs. So, I would like to keep arm64 kretprobe impl, and add
+new rethook with ftrace_regs.
+
+Or, maybe we need these 2 configs intermediately.
+CONFIG_RETHOOK_WITH_REGS - in this case, kretprobe uses rethook
+CONFIG_RETHOOK_WITH_ARGS - in this case, kretprobe uses its own stack
+
+The problem is ftrace_regs only depends on CONFIG_DYNAMIC_FTRACE_WITH_*.
+
+Thank you,
+
+-- 
+Masami Hiramatsu (Google) <mhiramat@kernel.org>
