@@ -2,68 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5480176F3BC
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 21:58:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F3BC176F3D6
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 22:08:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231609AbjHCT6r convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 3 Aug 2023 15:58:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40756 "EHLO
+        id S231701AbjHCUIP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Aug 2023 16:08:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42370 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231547AbjHCT6p (ORCPT
+        with ESMTP id S229867AbjHCUIN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Aug 2023 15:58:45 -0400
-Received: from mail-oo1-f42.google.com (mail-oo1-f42.google.com [209.85.161.42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69C30420F;
-        Thu,  3 Aug 2023 12:58:44 -0700 (PDT)
-Received: by mail-oo1-f42.google.com with SMTP id 006d021491bc7-56d0deeca09so188419eaf.0;
-        Thu, 03 Aug 2023 12:58:44 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691092723; x=1691697523;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=L5lbrYku02MGucWZlgqTufTYfZYAYDVopF3bhZtB7NU=;
-        b=O7d0mAiecBwrknl1PYdSGAQhBY1tQfHHfrAqRoFoUWtWr8hcdwWQlVrWPKjiHMYE0Q
-         qGTZfR+TO7bZ6ux4mzmXB1NGeMXx9dgkux+Yo+5kNOsIXd8X5amTKkMqeRdRQjLjWNR+
-         LD74JRd6hqvYa9hw8XAY5k2QoGYHdCVJxfVATHXrAZVDVQ+GfgllqItv0Kyf1Ojo1WKj
-         gVH4HKSev1ypWGXqR8rI2QB+53RGVHXg22e/De1z6hjzRxCFET2ML4+YwYbo2Gi6IjO2
-         dW7mV6eZyXm92Oj16L7yXA/3vNDFAuVu7wNoO6QI3BnqKkPsbe5Zlrv36RKISrsJts+c
-         Uhkg==
-X-Gm-Message-State: ABy/qLbbH/5HdGQYq+TePwh9v7BT2EuWQWYNaN1ztC8gHKhj8mHXyidC
-        E1q4R+rJd1kJYcX4se+tEicRXYtEjCYTmS5M7ew=
-X-Google-Smtp-Source: APBJJlEFaRUb1D3ofaPFX3gImb+a7isGHR4BOwxQBVGLYqbi8AM4d3+S/zxJiGipzTHQfvRm3JYUepQqqwuz7wcgo3s=
-X-Received: by 2002:a4a:a585:0:b0:56c:484a:923d with SMTP id
- d5-20020a4aa585000000b0056c484a923dmr13794384oom.1.1691092723574; Thu, 03 Aug
- 2023 12:58:43 -0700 (PDT)
+        Thu, 3 Aug 2023 16:08:13 -0400
+X-Greylist: delayed 1221 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Thu, 03 Aug 2023 13:08:11 PDT
+Received: from fallback23.i.mail.ru (fallback23.i.mail.ru [79.137.243.77])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EAD771712
+        for <linux-kernel@vger.kernel.org>; Thu,  3 Aug 2023 13:08:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=jiaxyga.com; s=mailru;
+        h=Content-Transfer-Encoding:MIME-Version:Message-ID:Date:Subject:Cc:To:From:From:Subject:Content-Type:Content-Transfer-Encoding:To:Cc; bh=iTra02Ediikpqje5A6Bp6qJxv4AcXgJrNuCR+ibsPzA=;
+        t=1691093292;x=1691183292; 
+        b=BoNxVkws6GwQbB9Mr9J8dEpUPOlLd+HAW2erOwAxN7VAWMBQTg7RHdHE75QGoaCyFmyDFrKXVTZz9kNHLFL2c4vw9ELKycisletX/Yj3PJSUJeNDJm2AJrf5qT+boMcK64EFm9+9weHlUpqrvJeULfaVgP+PBP/DTMyPQb2OCf4=;
+Received: from [10.12.4.30] (port=43586 helo=smtp55.i.mail.ru)
+        by fallback23.i.mail.ru with esmtp (envelope-from <danila@jiaxyga.com>)
+        id 1qReIW-001rTu-AY; Thu, 03 Aug 2023 22:47:48 +0300
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=jiaxyga.com
+        ; s=mailru; h=Content-Transfer-Encoding:MIME-Version:Message-ID:Date:Subject:
+        Cc:To:From:From:Sender:Reply-To:To:Cc:Content-Type:Content-Transfer-Encoding:
+        Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+        Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive:
+        X-Cloud-Ids:Disposition-Notification-To;
+        bh=iTra02Ediikpqje5A6Bp6qJxv4AcXgJrNuCR+ibsPzA=; t=1691092068; x=1691182068; 
+        b=LtJ1Zwfzp1O0mmZNPC/2GtDgssRfheh+seNTqcmSQP4DCM3xmp8TsYzp3D1ijLJVWjRK3SNTNxV
+        ogfABAUYvg72couU/PhlBD6oJfI1DlZYOcTE1/twqaXCBiy7YIfjWZzX8FaI1SSQM5cMiSh5l5kho
+        +keuEiPYfFOAuhDy8dg=;
+Received: by smtp55.i.mail.ru with esmtpa (envelope-from <danila@jiaxyga.com>)
+        id 1qReIF-000Y8b-1D; Thu, 03 Aug 2023 22:47:32 +0300
+From:   Danila Tikhonov <danila@jiaxyga.com>
+To:     robdclark@gmail.com, quic_abhinavk@quicinc.com,
+        dmitry.baryshkov@linaro.org, sean@poorly.run,
+        marijn.suijten@somainline.org, airlied@gmail.com, daniel@ffwll.ch,
+        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+        conor+dt@kernel.org, konrad.dybcio@linaro.org,
+        neil.armstrong@linaro.org, rfoss@kernel.org, andersson@kernel.org,
+        quic_khsieh@quicinc.com, quic_vpolimer@quicinc.com,
+        quic_rmccann@quicinc.com, quic_jesszhan@quicinc.com,
+        liushixin2@huawei.com
+Cc:     linux-arm-msm@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        freedreno@lists.freedesktop.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, danila@jiaxyga.com,
+        davidwronek@gmail.com
+Subject: [PATCH 0/2] drm/msm/dpu: Add support for SM7150
+Date:   Thu,  3 Aug 2023 22:47:22 +0300
+Message-ID: <20230803194724.154591-1-danila@jiaxyga.com>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-References: <13318886.uLZWGnKmhe@kreacher> <12254967.O9o76ZdvQC@kreacher>
- <4501957.LvFx2qVVIh@kreacher> <2d0315d4-35b4-84db-4dcb-c9528abad825@linaro.org>
- <CAJZ5v0iQDOsTOqWFvbf5nom-b3-pbHPRzJQC-1DM9eoh=0AKjg@mail.gmail.com>
- <eb279cf1-0605-3b87-5cb6-241a91977455@linaro.org> <CAJZ5v0i48=oawDJHoaHhiZRaO_CJokKsOHyNvu2v4PUbS6CH_Q@mail.gmail.com>
- <f8029547-6851-7e0c-00e6-4963ccbc2702@linaro.org> <CAJZ5v0gDQMNSeEU1J7ooJk4Ec=Hw_JuZAtL5k215v7Lf67iTgg@mail.gmail.com>
- <5c93d78d-835e-c740-280b-9d76456aaeda@linaro.org> <CAJZ5v0gtkZTwt-qP0uwvTJNx8cpO1o1esmW9BfVxB67X3Yt++w@mail.gmail.com>
- <b4e474f9-79e8-534b-509e-12eb5995fa0c@linaro.org>
-In-Reply-To: <b4e474f9-79e8-534b-509e-12eb5995fa0c@linaro.org>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Thu, 3 Aug 2023 21:58:32 +0200
-Message-ID: <CAJZ5v0iH+qf6eBuZASPKyA6rT8O6FiA7516MiYYUx6Uc+wR4Ow@mail.gmail.com>
-Subject: Re: [PATCH v3 1/8] thermal: core: Add mechanism for connecting trips
- with driver data
-To:     Daniel Lezcano <daniel.lezcano@linaro.org>
-Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Linux ACPI <linux-acpi@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Michal Wilczynski <michal.wilczynski@intel.com>,
-        Zhang Rui <rui.zhang@intel.com>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
+Content-Transfer-Encoding: 8bit
+X-Mailru-Src: smtp
+X-7564579A: B8F34718100C35BD
+X-77F55803: 4F1203BC0FB41BD969E04B5EED670DC804E38A5F9341E5D89B81E0241E25E490182A05F5380850404956DBABBA104F5FC0371154B7EC49AB4725CEA1E008296B39AA2D5375D91353
+X-7FA49CB5: FF5795518A3D127A4AD6D5ED66289B5278DA827A17800CE792C68BF9CD4C0E9EEA1F7E6F0F101C67BD4B6F7A4D31EC0BCC500DACC3FED6E28638F802B75D45FF8AA50765F790063702DFA59B3C994360EA1F7E6F0F101C6723150C8DA25C47586E58E00D9D99D84E1BDDB23E98D2D38BE5CCB53A13BC8DBAFE95369BFF9F28ACBE51E9D3B700B82ACC7F00164DA146DAFE8445B8C89999728AA50765F790063741F7343E26298569389733CBF5DBD5E9C8A9BA7A39EFB766F5D81C698A659EA7CC7F00164DA146DA9985D098DBDEAEC8B4B51A2BAB7FBE05117882F4460429728AD0CFFFB425014E868A13BD56FB6657D81D268191BDAD3DC09775C1D3CA48CF09122B91796FF21F76E601842F6C81A12EF20D2F80756B5FB606B96278B59C4276E601842F6C81A127C277FBC8AE2E8BC493A577044FAF45D81D268191BDAD3D3666184CF4C3C14F3FC91FA280E0CE3D1A620F70A64A45A98AA50765F79006372E808ACE2090B5E1725E5C173C3A84C3E478A468B35FE767089D37D7C0E48F6C8AA50765F79006378869069EDD29A933EFF80C71ABB335746BA297DBC24807EABDAD6C7F3747799A
+X-C1DE0DAB: 0D63561A33F958A559534B36F856F636C6B9CF6467323EFF3FE6D546EE1A1C12F87CCE6106E1FC07E67D4AC08A07B9B02A336C65186350919C5DF10A05D560A950611B66E3DA6D700B0A020F03D25A0997E3FB2386030E77
+X-C8649E89: 1C3962B70DF3F0ADE00A9FD3E00BEEDF77DD89D51EBB7742D3581295AF09D3DF87807E0823442EA2ED31085941D9CD0AF7F820E7B07EA4CF1C9BDDA6ADD3F3559C0B754327D96BA611C6B588A75B544C32CBB7507AF2458966401EE05C14F77D8553022043D0BC9A573643C06B71491413B3302F2BCC8771D8EBEDE01CE1B1DA4C41F94D744909CE4BCAC77546666B612CC0CD5AA9A1B9887EE09F5AAA95A50543082AE146A756F3
+X-D57D3AED: 3ZO7eAau8CL7WIMRKs4sN3D3tLDjz0dLbV79QFUyzQ2Ujvy7cMT6pYYqY16iZVKkSc3dCLJ7zSJH7+u4VD18S7Vl4ZUrpaVfd2+vE6kuoey4m4VkSEu530nj6fImhcD4MUrOEAnl0W826KZ9Q+tr5ycPtXkTV4k65bRjmOUUP8cvGozZ33TWg5HZplvhhXbhDGzqmQDTd6OAevLeAnq3Ra9uf7zvY2zzsIhlcp/Y7m53TZgf2aB4JOg4gkr2biojbL9S8ysBdXjcAvAxsrA9Nc61Ffb2ik/x
+X-Mailru-Sender: 9EB879F2C80682A09F26F806C7394981B7B6FBA8BC574666C2C88AB10BE24B30A02093AA449391CF643683D8C0F3ED1CA3C71A376745D86BBE86167304C7680C3980CE5AAA35C7CD60F22E8815EDE5EAEAB4BC95F72C04283CDA0F3B3F5B9367
+X-Mras: Ok
+X-7564579A: B8F34718100C35BD
+X-77F55803: 6242723A09DB00B4C2CC63398298511D1E4750FD930E01DF28F9632845AEBDC5049FFFDB7839CE9E588CC25E272B312A963AD72AB2970178919A6105FB5EA3FE856E214AADB1F5AE
+X-D57D3AED: 3ZO7eAau8CL7WIMRKs4sN3D3tLDjz0dLbV79QFUyzQ2Ujvy7cMT6pYYqY16iZVKkSc3dCLJ7zSJH7+u4VD18S7Vl4ZUrpaVfd2+vE6kuoey4m4VkSEu530nj6fImhcD4MUrOEAnl0W826KZ9Q+tr5xhPKz0ZEsZ5k6NOOPWz5QAiZSCXKGQRq3/7KxbCLSB2ESzQkaOXqCBFZPLWFrEGlV1shfWe2EVcxl5toh0c/aCGOghz/frdRhzMe95NxDFd3RriuhA+6EbCfILZkkgHmg==
+X-Mailru-MI: C000000000000800
+X-Mras: Ok
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -71,91 +80,21 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 3, 2023 at 6:20 PM Daniel Lezcano <daniel.lezcano@linaro.org> wrote:
->
-> On 03/08/2023 16:15, Rafael J. Wysocki wrote:
-> > On Thu, Aug 3, 2023 at 3:06 PM Daniel Lezcano <daniel.lezcano@linaro.org> wrote:
-> >>
-> >> On 02/08/2023 18:48, Rafael J. Wysocki wrote:
-> >>
-> >> [ ... ]
-> >>
-> >>>> Let me check if I can do something on top of your series to move it in
-> >>>> the ACPI driver.
-> >>>
-> >>> It doesn't need to be on top of my series, so if you have an idea,
-> >>> please just let me know what it is.
-> >>>
-> >>> It can't be entirely in the ACPI driver AFAICS, though, because
-> >>> trips[i] need to be modified on updates and they belong to the core.
-> >>> Hence, the driver needs some help from the core to get to them.  It
-> >>> can be something like "this is my trip tag and please give me the
-> >>> address of the trip matching it" or similar, but it is needed, because
-> >>> the driver has to assume that the trip indices used by it initially
-> >>> may change.
-> >>
-> >> May be I'm missing something but driver_ref does not seems to be used
-> >> except when assigning it, no?
-> >
-> > It is used on the other side.  That is, the value assigned to the trip
-> > field in it is accessed via trip_ref in the driver.
-> >
-> > The idea is that the driver puts a pointer to its local struct
-> > thermal_trip_ref into a struct thermal_trip and the core stores the
-> > address of that struct thermal_trip in there, which allows the driver
-> > to access the struct thermal_trip via its local struct
-> > thermal_trip_ref going forward.
-> >
-> > Admittedly, this is somewhat convoluted.
-> >
-> > I have an alternative approach in the works, just for illustration
-> > purposes if nothing else, but I have encountered a problem that I
-> > would like to ask you about.
-> >
-> > Namely, zone disabling is not particularly useful for preventing the
-> > zone from being used while the trips are updated, because it has side
-> > effects.  First, it triggers __thermal_zone_device_update() and a
-> > netlink message every time the mode changes, which can be kind of
-> > overcome.
->
-> Right
->
-> > But second, if the mode is "disabled", it does not actually
-> > prevent things like __thermal_zone_get_trip() from running and the
-> > zone lock is the only thing that can be used for that AFAICS.
->  >
-> > So by "disabling" a thermal zone, did you mean changing its mode to
-> > "disabled" or something else?
->
-> Yes, that is what I meant.
->
-> May be the initial proposal by updating the thermal trips pointer can
-> solve that [1]
+This series adds DPU support for Qualcomm SM7150 SoC.
 
-No, it can't.  An existing trips[] table cannot be replaced with a new
-one with different trip indices, because those indices are already in
-use.  And if the indices are the same, there's no reason to replace
-trips.
+Danila Tikhonov (2):
+  dt-bindings: display/msm: document DPU on SM7150
+  drm/msm/dpu: Add SM7150 support
 
-> IMO we can assume the trip point changes are very rare (if any), so
-> rebuilding a new trip array and update the thermal zone with the pointer
-> may solve the situation.
->
-> The routine does a copy of the trips array, so it can reorder it without
-> impacting the array passed as a parameter. And it can take the lock.
+ .../bindings/display/msm/qcom,sm7150-dpu.yaml | 116 ++++++++
+ .../msm/disp/dpu1/catalog/dpu_5_2_sm7150.h    | 277 ++++++++++++++++++
+ .../gpu/drm/msm/disp/dpu1/dpu_hw_catalog.c    |   1 +
+ .../gpu/drm/msm/disp/dpu1/dpu_hw_catalog.h    |   1 +
+ drivers/gpu/drm/msm/disp/dpu1/dpu_kms.c       |   1 +
+ 5 files changed, 396 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/display/msm/qcom,sm7150-dpu.yaml
+ create mode 100644 drivers/gpu/drm/msm/disp/dpu1/catalog/dpu_5_2_sm7150.h
 
-The driver can take a lock as well.  Forbidding drivers to use the
-zone lock is an artificial limitation without technical merit IMV.
+--
+2.41.0
 
-> We just have to constraint the update function to invalidate arrays with
-> a number of trip points different from the one initially passed when
-> creating the thermal zone.
->
-> Alternatively, we can be smarter in the ACPI driver and update the
-> corresponding temperature+hysteresis trip point by using the
-> thermal_zone_set_trip() function.
-
-I don't see why this would make any difference.
-
-> [1]
-> https://lore.kernel.org/all/20230525140135.3589917-5-daniel.lezcano@linaro.org/
