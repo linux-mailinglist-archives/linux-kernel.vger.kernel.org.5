@@ -2,60 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A58D76EFAE
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 18:35:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C9F6676EFAF
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 18:35:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237307AbjHCQfc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Aug 2023 12:35:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38860 "EHLO
+        id S237313AbjHCQfh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Aug 2023 12:35:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38912 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236262AbjHCQfS (ORCPT
+        with ESMTP id S236679AbjHCQfV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Aug 2023 12:35:18 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B7043AAC;
-        Thu,  3 Aug 2023 09:35:16 -0700 (PDT)
+        Thu, 3 Aug 2023 12:35:21 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8FAE6E77;
+        Thu,  3 Aug 2023 09:35:17 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id EF2C161E48;
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 2CF9E61E3A;
+        Thu,  3 Aug 2023 16:35:17 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8FB5EC43140;
         Thu,  3 Aug 2023 16:35:15 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1A256C433C9;
-        Thu,  3 Aug 2023 16:35:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691080515;
-        bh=9GF8dPmqpJDorXIVtKf+9BG4DCxzhozeJx7oB74izKc=;
+        s=k20201202; t=1691080516;
+        bh=G3FOLIfaHoy9tzg1QvyqoSq0xb1ylVr9cA8Be/6Aa04=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=LHY2AgOLT1XO79agb5Nxaz/L5Sn4ZNaQhD5qLSgQj2FU7WbYKMfWL/RKMQ/WKS+dk
-         8G4+JChxklJLmZElnB6mLdQuljxmvPbcA3B0Nue67DkJJtqdMet2PB/3Xs3ZZSUzGF
-         rx0ev1HzU6gL4mtuqE9LWKy11N5dO/QExBcLcKhnhm5sER3luYuAKiYXybkBiG/Ayw
-         iayFz3ZNDmpIycdaWiojgrNrKsOEQlKoS5xpMzLTvQ8NZknacVUF7aYCcThCNqv5+A
-         rxl/yDE2HP9pIEvArQdrjCx8iNBwk6SVu6f+7YfAKfQvRA7QlEIc2Goy2dHQjRPcgP
-         B7CPlL4QBGiGQ==
+        b=gygehvme91Sf5H7MIi14MCcsctKtR+cWv0OE+Uz0LQ1P8P7nVl9dux0olAILFYH/B
+         M6fZxkw+FndYDyBKM9PBkoBWFD27ysd0/692IOdLKBzp17hWsz4UkI5Q4toMTj6iEn
+         +oUqp5b5wJ2f6FylU+Dkek75zNGO3831o7Zyg55qOCZE+oTK/gtoAuWZdPj3KQsBc+
+         N/e7SAlvO0Bfc8jDtX3Je7VkpuF5YdHwIeu24U+jegsVl4mPF+4gM9D6/ZjmCOH/ie
+         Rwso5e7W3KJzkaERGmkvNdhdbXJ9dxHcxeoiqpJ7i8ALOsy4ehtUMTxgCPzUK+OTFb
+         RuVPnYs6QgF/g==
 From:   Bjorn Andersson <andersson@kernel.org>
-To:     Andy Gross <agross@kernel.org>, Conor Dooley <conor+dt@kernel.org>,
-        Jonathan Cameron <jic23@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        cros-qcom-dts-watchers@chromium.org,
-        Marijn Suijten <marijn.suijten@somainline.org>
-Cc:     AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        Jami Kettunen <jami.kettunen@somainline.org>,
+To:     Andy Gross <agross@kernel.org>,
         Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Manivannan Sadhasivam <mani@kernel.org>,
-        Martin Botka <martin.botka@somainline.org>,
-        devicetree@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        ~postmarketos/upstreaming@lists.sr.ht
-Subject: Re: (subset) [PATCH v5 0/2] dts: qcom: Use labels with generic node names for ADC channels
-Date:   Thu,  3 Aug 2023 09:38:05 -0700
-Message-ID: <169108064641.108343.2633623346382690322.b4-ty@kernel.org>
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Bryan O'Donoghue <bryan.odonoghue@linaro.org>,
+        Vinod Koul <vkoul@kernel.org>,
+        Taniya Das <tdas@codeaurora.org>,
+        Venkata Narendra Kumar Gutta <vnkgutta@codeaurora.org>,
+        linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Patrick Whewell <patrick.whewell@sightlineapplications.com>
+Cc:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        William Gray <william.gray@linaro.org>
+Subject: Re: [RESEND PATCH v2] clk: qcom: gcc-sm8250: Fix gcc_sdcc2_apps_clk_src
+Date:   Thu,  3 Aug 2023 09:38:06 -0700
+Message-ID: <169108064631.108343.8315312770270911785.b4-ty@kernel.org>
 X-Mailer: git-send-email 2.41.0
-In-Reply-To: <20230730-generic-adc-channels-v5-0-e6c69bda8034@somainline.org>
-References: <20230730-generic-adc-channels-v5-0-e6c69bda8034@somainline.org>
+In-Reply-To: <20230802210359.408-1-patrick.whewell@sightlineapplications.com>
+References: <20230802210359.408-1-patrick.whewell@sightlineapplications.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -70,24 +67,17 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-On Sun, 30 Jul 2023 22:31:24 +0200, Marijn Suijten wrote:
-> As discussed in [1] it is more convenient to use a generic `channel`
-> node name for ADC channels while storing a friendly - board-specific
-> instead of PMIC-specific - name in the label, if/when desired to
-> overwrite the channel description already contained (but previously
-> unused) in the driver [2].
+On Wed, 02 Aug 2023 14:04:00 -0700, Patrick Whewell wrote:
+> GPLL9 is not on by default, which causes a "gcc_sdcc2_apps_clk_src: rcg
+> didn't update its configuration" error when booting. Set .flags =
+> CLK_OPS_PARENT_ENABLE to fix the error.
 > 
-> The same `channel` node name pattern has also been set in
-> iio/adc/adc.yaml, but this generic binding is not inherited as base for
-> qcom,spmi-vadc bindings due to not having any other generic elements in
-> common, besides the node name rule and reg property.
 > 
-> [...]
 
 Applied, thanks!
 
-[1/2] ARM: dts: qcom: Use labels with generic node names for ADC channels
-      commit: 04601b9b1b67888b7e2987e31ab40637f7c999c0
+[1/1] clk: qcom: gcc-sm8250: Fix gcc_sdcc2_apps_clk_src
+      commit: 783cb693828ce487cf0bc6ad16cbcf2caae6f8d9
 
 Best regards,
 -- 
