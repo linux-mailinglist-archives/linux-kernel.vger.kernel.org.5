@@ -2,64 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 13E1A76EC09
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 16:12:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 78AE776EC27
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 16:16:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235573AbjHCOMe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Aug 2023 10:12:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58942 "EHLO
+        id S234518AbjHCOQQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Aug 2023 10:16:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34250 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233919AbjHCOMO (ORCPT
+        with ESMTP id S233993AbjHCOQK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Aug 2023 10:12:14 -0400
+        Thu, 3 Aug 2023 10:16:10 -0400
 Received: from mgamail.intel.com (unknown [134.134.136.65])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 233E0E69;
-        Thu,  3 Aug 2023 07:11:37 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A801C1B2
+        for <linux-kernel@vger.kernel.org>; Thu,  3 Aug 2023 07:16:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1691071898; x=1722607898;
-  h=date:from:to:cc:subject:in-reply-to:message-id:
-   references:mime-version;
-  bh=F8f4BApASGNCPhtinYIc3rUiCeFOT3UfB6SVX2g7axo=;
-  b=VufsGXUQQSWExSdAEUVDXfVX0xlGilrCTarxQODqfseYbYO25a69g3Mp
-   6OnWbTDC7Erbc5ZxRNdY6uToE/y0EVKaCe1pWkAdLk949DyoIoLHPtWma
-   +4lwR7QF2dReeFojFwhzos/Kf1oWEv26WfIKUjdR22VjQ3kGqTbngs2Es
-   hAOUsxipYbkyiDFpUOCMM0Tvc/eE7fgB19p8rfhQewmDeV69eQn6L4PWc
-   Cmt131VQRWIK8u2YTelWgComBpvks2fwGNCKhZL1H+ZeCcymPtWUJQ/eB
-   uKs5U/YWNgJmjajbdXi4YGQMLF343+x1DScpef5QtAcbHs7DFwl//8k+b
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10791"; a="373517225"
+  t=1691072169; x=1722608169;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=hAFMMXOAM2pzpIk5VcLNkbp6zrSaafTVSYc31s+0CAU=;
+  b=Y1ZhSP1kuOmj3Em6PvGoBcMxzd5KHLhz6cWnm1GF1+JuG2uNZxKx/YhQ
+   cDd6VCUR2TOqmqNmzeKF0k7eVYtC1whzcdu7DeU5EdLTkRCk+huYH1W90
+   wTu/RogUyQG5MYpAkuawGTHDakoHgNWkLUy+aEDdVhcPGU+74Ud3XrDF2
+   riE+6NjmerD+GF4vRLTGBJTcZAw6hSuEJfap7HOsi2fsE9/G9UWRuHZlz
+   guM/PbVsSpQzO70eQzyIwXRoC/SI/sRrL70wsOcN2k+qQSf+o2LqD16Um
+   dQVpdfHmCOxMEZN4mpnDP6lXp167wixw2W8Pa8bVZ7L2BG2WR2EXCjx9V
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10791"; a="373519579"
 X-IronPort-AV: E=Sophos;i="6.01,252,1684825200"; 
-   d="scan'208";a="373517225"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Aug 2023 06:39:16 -0700
+   d="scan'208";a="373519579"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Aug 2023 06:47:31 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10791"; a="819656692"
+X-IronPort-AV: E=McAfee;i="6600,9927,10791"; a="843593493"
 X-IronPort-AV: E=Sophos;i="6.01,252,1684825200"; 
-   d="scan'208";a="819656692"
-Received: from eozturk-mobl.ger.corp.intel.com ([10.249.38.219])
-  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Aug 2023 06:39:11 -0700
-Date:   Thu, 3 Aug 2023 16:39:08 +0300 (EEST)
-From:   =?ISO-8859-15?Q?Ilpo_J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>
-To:     Tony Lindgren <tony@atomide.com>
-cc:     Jiri Slaby <jirislaby@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Andy Shevchenko <andriy.shevchenko@intel.com>,
-        Dhruva Gole <d-gole@ti.com>,
-        John Ogness <john.ogness@linutronix.de>,
-        Johan Hovold <johan@kernel.org>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-serial <linux-serial@vger.kernel.org>
-Subject: Re: [PATCH] MAINTAINERS: Update TTY layer for lists and recently
- added files
-In-Reply-To: <20230802120530.GE14799@atomide.com>
-Message-ID: <61e5675-570-9566-34c2-86975c56d961@linux.intel.com>
-References: <20230721072334.59272-1-tony@atomide.com> <ZLpboaXKVOOjeGJ+@smile.fi.intel.com> <20230724045327.GV5194@atomide.com> <2023072517-onward-payment-569d@gregkh> <2023072530-wired-chaps-c1e3@gregkh> <edb0414f-3808-8651-4956-8ec34b056901@kernel.org>
- <20230802120530.GE14799@atomide.com>
+   d="scan'208";a="843593493"
+Received: from sosterlu-mobl1.ger.corp.intel.com (HELO box.shutemov.name) ([10.251.209.233])
+  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Aug 2023 06:47:27 -0700
+Received: by box.shutemov.name (Postfix, from userid 1000)
+        id 43226109FCF; Thu,  3 Aug 2023 16:47:25 +0300 (+03)
+Date:   Thu, 3 Aug 2023 16:47:25 +0300
+From:   "kirill.shutemov@linux.intel.com" <kirill.shutemov@linux.intel.com>
+To:     "Huang, Kai" <kai.huang@intel.com>
+Cc:     "Hansen, Dave" <dave.hansen@intel.com>,
+        "Christopherson,, Sean" <seanjc@google.com>,
+        "x86@kernel.org" <x86@kernel.org>, "bp@alien8.de" <bp@alien8.de>,
+        "peterz@infradead.org" <peterz@infradead.org>,
+        "hpa@zytor.com" <hpa@zytor.com>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "pbonzini@redhat.com" <pbonzini@redhat.com>,
+        "Yamahata, Isaku" <isaku.yamahata@intel.com>,
+        "sathyanarayanan.kuppuswamy@linux.intel.com" 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        "n.borisov.lkml@gmail.com" <n.borisov.lkml@gmail.com>
+Subject: Re: [PATCH v3 07/12] x86/tdx: Make TDX_HYPERCALL asm similar to
+ TDX_MODULE_CALL
+Message-ID: <20230803134725.eq4uliddd7rlu3ac@box>
+References: <cover.1690369495.git.kai.huang@intel.com>
+ <6f92d08855491b3e9ff1221d2bb7af873d546afd.1690369495.git.kai.huang@intel.com>
+ <20230727171008.aw3z6oxh4vfnahep@box.shutemov.name>
+ <e75603996f88941892a19181c852ecfdc9adf06c.camel@intel.com>
+ <20230803114546.em5qsjs33i5b7ogh@box.shutemov.name>
+ <332547a2332121313bf6d00c9eaf71136b48696b.camel@intel.com>
+ <20230803121207.krvcuj22mdxhugog@box.shutemov.name>
+ <ce045f6ccf9451d177581280c35092de7bd71488.camel@intel.com>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="8323329-294453060-1691069953=:1954"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ce045f6ccf9451d177581280c35092de7bd71488.camel@intel.com>
 X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
@@ -70,90 +82,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-  This message is in MIME format.  The first part should be readable text,
-  while the remaining parts are likely unreadable without MIME-aware tools.
-
---8323329-294453060-1691069953=:1954
-Content-Type: text/plain; charset=ISO-8859-15
-Content-Transfer-Encoding: 8BIT
-
-On Wed, 2 Aug 2023, Tony Lindgren wrote:
-
-> * Jiri Slaby <jirislaby@kernel.org> [230726 10:12]:
-> > On 25. 07. 23, 19:29, Greg Kroah-Hartman wrote:
-> > > On Tue, Jul 25, 2023 at 07:28:46PM +0200, Greg Kroah-Hartman wrote:
-> > > > On Mon, Jul 24, 2023 at 07:53:27AM +0300, Tony Lindgren wrote:
-> > > > > * Andy Shevchenko <andriy.shevchenko@intel.com> [230721 10:19]:
-> > > > > > On Fri, Jul 21, 2023 at 10:23:32AM +0300, Tony Lindgren wrote:
-> > > > > > > Add mailing lists for linux-serial and lkml for the TTY layer. And let's
-> > > > > > > list the recently added files. This makes it easier for get_maintainer.pl
-> > > > > > > to include linux-serial for patches.
+On Thu, Aug 03, 2023 at 12:41:25PM +0000, Huang, Kai wrote:
+> On Thu, 2023-08-03 at 15:12 +0300, kirill.shutemov@linux.intel.com wrote:
+> > On Thu, Aug 03, 2023 at 11:56:40AM +0000, Huang, Kai wrote:
+> > > On Thu, 2023-08-03 at 14:45 +0300, kirill.shutemov@linux.intel.com wrote:
+> > > > > > I would rather keep the struct
+> > > > > > read-only where possible.
 > > > > > > 
-> > > > > > Shouldn't serial_* stuff go to the "SERIAL DRIVERS" section?
 > > > > > 
-> > > > > Not sure if there's some reason we have "TTY LAYER" with serial_core
-> > > > > files. If not, yeah let's move the serial files.
+> > > > > We can achieve this if there's a clean way to do, but I don't see that.
 > > > > 
-> > > > I'll take this patch, can you send a new one that removes the serial
-> > > > files from this entry as I don't think they are needed in here anymore.
+> > > > Keep _ret() and non-_ret() versions?
 > > > 
-> > > Better yet, they should be merged probably.  Although I don't know if
-> > > Jiri wants to be responsible for serial stuff, that's his call...
+> > > The problem is the assembly needs to always turn on the "\ret" so that the R10
+> > > (used as VP.VMCALL leaf return code) can be saved to the structure.  Otherwise
+> > > we are not able to return VP.VMCALL leaf return code.
 > > 
-> > No problem. I actually didn't realize they are separate. So feel free to
-> > submit a patch, so we have a single MAINTAINTERS file entry...
+> > Yeah. This is downside of single assembly macro for all calls.
+> > 
+> > One possible way is to make it in C: non-_ret() version pass to the
+> > assembly helper copy of the caller's struct, keeping original intact.
+> > But, yeah, it is ugly.
+> > 
 > 
-> How about something like this?
-> 
-> Tony
-> 
-> 8< ----------------------
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -19319,13 +19319,6 @@ F:	Documentation/devicetree/bindings/serial/serial.yaml
->  F:	drivers/tty/serdev/
->  F:	include/linux/serdev.h
->  
-> -SERIAL DRIVERS
-> -M:	Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> -L:	linux-serial@vger.kernel.org
-> -S:	Maintained
-> -F:	Documentation/devicetree/bindings/serial/
-> -F:	drivers/tty/serial/
-> -
->  SERIAL IR RECEIVER
->  M:	Sean Young <sean@mess.org>
->  L:	linux-media@vger.kernel.org
-> @@ -21760,20 +21753,16 @@ W:	https://github.com/srcres258/linux-doc
->  T:	git git://github.com/srcres258/linux-doc.git doc-zh-tw
->  F:	Documentation/translations/zh_TW/
->  
-> -TTY LAYER
-> +TTY LAYER AND SERIAL DRIVERS
->  M:	Greg Kroah-Hartman <gregkh@linuxfoundation.org>
->  M:	Jiri Slaby <jirislaby@kernel.org>
->  L:	linux-kernel@vger.kernel.org
->  L:	linux-serial@vger.kernel.org
->  S:	Supported
->  T:	git git://git.kernel.org/pub/scm/linux/kernel/git/gregkh/tty.git
-> +F:	Documentation/devicetree/bindings/serial/
->  F:	Documentation/driver-api/serial/
->  F:	drivers/tty/
-> -F:	drivers/tty/serial/serial_base.h
-> -F:	drivers/tty/serial/serial_base_bus.c
-> -F:	drivers/tty/serial/serial_core.c
-> -F:	drivers/tty/serial/serial_ctrl.c
-> -F:	drivers/tty/serial/serial_port.c
->  F:	include/linux/selection.h
->  F:	include/linux/serial.h
->  F:	include/linux/serial_core.h
+> You sure you want to do this? :-)
 
-The separation of these two has always felt a bit artificial to me.
+No, I am not.
 
-Acked-by: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
+Maybe somebody else has better ideas.
 
 -- 
- i.
-
---8323329-294453060-1691069953=:1954--
+  Kiryl Shutsemau / Kirill A. Shutemov
