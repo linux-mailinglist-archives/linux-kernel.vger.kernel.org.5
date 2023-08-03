@@ -2,137 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9337876DE50
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 04:36:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 72F6F76DE42
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 04:34:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233701AbjHCCgf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Aug 2023 22:36:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53574 "EHLO
+        id S233534AbjHCCcz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Aug 2023 22:32:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50058 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230210AbjHCCgQ (ORCPT
+        with ESMTP id S232919AbjHCCci (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Aug 2023 22:36:16 -0400
-Received: from mout-p-102.mailbox.org (mout-p-102.mailbox.org [80.241.56.152])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75ACF4C0E;
-        Wed,  2 Aug 2023 19:34:36 -0700 (PDT)
-Received: from smtp202.mailbox.org (smtp202.mailbox.org [10.196.197.202])
+        Wed, 2 Aug 2023 22:32:38 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F18944682;
+        Wed,  2 Aug 2023 19:29:34 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by mout-p-102.mailbox.org (Postfix) with ESMTPS id 4RGXl92DZNz9sSv;
-        Thu,  3 Aug 2023 04:25:57 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cyphar.com; s=MBO0001;
-        t=1691029557;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=QDaQQq8N3pV/0zOSm0S8Jmeu7eQz2E5FW0Ju7kYcogY=;
-        b=Y1QMaVE0KtysYE+lwk1MnyWvrQxXJS9qbQlv2SuhvCeiQhrJnugZ6PyoP5TdBjHVlcHA6W
-        61Z7A2b1SDPlD6gmsQsoVh91sHohyYVSGA5TZzJDK/nOlqlfcbPORdD0H9pCU8B35nG2WA
-        Yv4yh7KeNg7PI59PogMuBQvzEGr/M7xCPzPM6t8yBxr3nKcnRIShRimmUiAbhNgukDtjkH
-        92zM38Uv9/yEiWW+aEpxEHex3y3BnhkcH4qsf65XwM0y6Mu/2fwRPGa63Dzox9sZKLyo6V
-        LFZjG+/BfNweZpbLMGAt61Fl8isAN0qJHseIuhGyUKmmJOsKqBiC9nNnHTD1qA==
-Date:   Thu, 3 Aug 2023 12:25:42 +1000
-From:   Aleksa Sarai <cyphar@cyphar.com>
-To:     Jeff Xu <jeffxu@google.com>
-Cc:     Shuah Khan <shuah@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Daniel Verkamp <dverkamp@chromium.org>,
-        Kees Cook <keescook@chromium.org>, linux-mm@kvack.org,
-        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH 3/3] selftests: memfd: error out test process when
- child test fails
-Message-ID: <20230803.022458-mundane.voyage.tricky.kinship-yaSxczr9O6cB@cyphar.com>
-References: <20230713143406.14342-1-cyphar@cyphar.com>
- <20230713143406.14342-4-cyphar@cyphar.com>
- <CALmYWFsusw5H6aa9Po6QyEKr7beUSTN+PmGzc0Er0tuGEmYCbA@mail.gmail.com>
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 808A361A55;
+        Thu,  3 Aug 2023 02:28:42 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DEB01C433C7;
+        Thu,  3 Aug 2023 02:28:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1691029721;
+        bh=BgvTFcE2u4K0+wxe4GvjKEq1YVlpBtvyHHKrVLaiFEY=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=gyuEomxZRpX0SrxHywJ6XkYDOcwFtOUioPx1aolK7mBSQhxdXEa6YSnVREJ7opi4n
+         sgyCPQXqchLsgBzSw+d5vZ9eYBrbJ9XNIK31YOnJJ2JdWVaTISRMm+DpEPRHocebph
+         0peN/fjKTHVZxEx/FKLFV9Ujrf2TIWz4ftu0U72HMwDytxioiewlwH42fUXKm2evUJ
+         jQswICDfO6memyrsk4iLCt5iXldxPcfDuKLGoeQa4Y+SI+uL1xaa2k4ssjYK+bh0OF
+         CZfbSkmkbA2145Z/9FlI7zoDGJAFyUJ0q+3cbwVmtFKRYIteplDbejtae9Z04ROXn+
+         vYn9BFHmsllxQ==
+Received: by mail-oa1-f45.google.com with SMTP id 586e51a60fabf-1bba7717d3bso275126fac.1;
+        Wed, 02 Aug 2023 19:28:41 -0700 (PDT)
+X-Gm-Message-State: ABy/qLau2GI/Y/7TLvyqzm41QEfT2G813Dt/ToAJjnwQxeUrpywTcmOn
+        ingJwgrMa2NQpUr8zbm7LTEJgJnn1GEW/b5mZ/o=
+X-Google-Smtp-Source: APBJJlELbN7rxcW25qLb4oacTTj27yeJseFlXg3oNxqEwQolADUFiVKUtX8tDZnTRGb0hufQVnnqbeyMzZF8kKEROk8=
+X-Received: by 2002:a05:6870:fba3:b0:1bf:9f6:b810 with SMTP id
+ kv35-20020a056870fba300b001bf09f6b810mr7709025oab.36.1691029721131; Wed, 02
+ Aug 2023 19:28:41 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="ol7adjwswqudaxv6"
-Content-Disposition: inline
-In-Reply-To: <CALmYWFsusw5H6aa9Po6QyEKr7beUSTN+PmGzc0Er0tuGEmYCbA@mail.gmail.com>
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+References: <20230801140657.1324086-1-boris@codesynthesis.com> <20230801140657.1324086-2-boris@codesynthesis.com>
+In-Reply-To: <20230801140657.1324086-2-boris@codesynthesis.com>
+From:   Masahiro Yamada <masahiroy@kernel.org>
+Date:   Thu, 3 Aug 2023 11:28:04 +0900
+X-Gmail-Original-Message-ID: <CAK7LNAS=da_jTF77hF0+Est-orBybwReZAkqWLH5sGTp59eH9g@mail.gmail.com>
+Message-ID: <CAK7LNAS=da_jTF77hF0+Est-orBybwReZAkqWLH5sGTp59eH9g@mail.gmail.com>
+Subject: Re: [PATCH v2 1/1] kconfig: port qconf to work with Qt6 in addition
+ to Qt5
+To:     Boris Kolpackov <boris@codesynthesis.com>
+Cc:     linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Aug 1, 2023 at 11:07=E2=80=AFPM Boris Kolpackov <boris@codesynthesi=
+s.com> wrote:
+>
+> Tested with Qt5 5.15 and Qt6 6.4. Note that earlier versions of Qt5
+> are no longer guaranteed to work.
+>
+> Signed-off-by: Boris Kolpackov <boris@codesynthesis.com>
+> ---
 
---ol7adjwswqudaxv6
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On 2023-07-19, Jeff Xu <jeffxu@google.com> wrote:
-> On Thu, Jul 13, 2023 at 7:34=E2=80=AFAM Aleksa Sarai <cyphar@cyphar.com> =
-wrote:
-> >
-> > Before this change, a test runner using this self test would see a
-> > return code of 0 when the tests using a child process (namely the
-> > MFD_NOEXEC_SEAL and MFD_EXEC tests) failed, masking test failures.
-> >
-> > Fixes: 11f75a01448f ("selftests/memfd: add tests for MFD_NOEXEC_SEAL MF=
-D_EXEC")
-> > Signed-off-by: Aleksa Sarai <cyphar@cyphar.com>
-> > ---
-> >  tools/testing/selftests/memfd/memfd_test.c | 19 ++++++++++++++++++-
-> >  1 file changed, 18 insertions(+), 1 deletion(-)
-> >
-> > diff --git a/tools/testing/selftests/memfd/memfd_test.c b/tools/testing=
-/selftests/memfd/memfd_test.c
-> > index d8342989c547..8b7390ad81d1 100644
-> > --- a/tools/testing/selftests/memfd/memfd_test.c
-> > +++ b/tools/testing/selftests/memfd/memfd_test.c
-> > @@ -1219,7 +1219,24 @@ static pid_t spawn_newpid_thread(unsigned int fl=
-ags, int (*fn)(void *))
-> >
-> >  static void join_newpid_thread(pid_t pid)
-> >  {
-> > -       waitpid(pid, NULL, 0);
-> > +       int wstatus;
-> > +
-> > +       if (waitpid(pid, &wstatus, 0) < 0) {
-> > +               printf("newpid thread: waitpid() failed: %m\n");
-> > +               abort();
-> > +       }
-> > +
-> > +       if (WIFEXITED(wstatus) && WEXITSTATUS(wstatus) !=3D 0) {
-> > +               printf("newpid thread: exited with non-zero error code =
-%d\n",
-> > +                      WEXITSTATUS(wstatus));
-> > +               abort();
-> > +       }
-> > +
-> > +       if (WIFSIGNALED(wstatus)) {
-> > +               printf("newpid thread: killed by signal %d\n",
-> > +                      WTERMSIG(wstatus));
-> > +               abort();
-> > +       }
-> >  }
-> >
-> Signed-off-by: Jeff Xu <jeffxu@google.com>
+$ make xconfig
+  HOSTCC  scripts/basic/fixdep
+  HOSTCC  scripts/kconfig/images.o
+  HOSTCC  scripts/kconfig/confdata.o
+  HOSTCC  scripts/kconfig/expr.o
+  LEX     scripts/kconfig/lexer.lex.c
+  YACC    scripts/kconfig/parser.tab.[ch]
+  HOSTCC  scripts/kconfig/lexer.lex.o
+  HOSTCC  scripts/kconfig/menu.o
+  HOSTCC  scripts/kconfig/parser.tab.o
+  HOSTCC  scripts/kconfig/preprocess.o
+  HOSTCC  scripts/kconfig/symbol.o
+  HOSTCC  scripts/kconfig/util.o
+  HOSTCXX scripts/kconfig/qconf.o
+In file included from /usr/include/x86_64-linux-gnu/qt6/QtGui/qtguiglobal.h=
+:7,
+                 from /usr/include/x86_64-linux-gnu/qt6/QtGui/qaction.h:7,
+                 from /usr/include/x86_64-linux-gnu/qt6/QtGui/QAction:1,
+                 from scripts/kconfig/qconf.cc:7:
+/usr/include/x86_64-linux-gnu/qt6/QtCore/qglobal.h:106:6: error:
+#error "Qt requires a C++17 compiler"
+  106 | #    error "Qt requires a C++17 compiler"
+      |      ^~~~~
+/usr/include/x86_64-linux-gnu/qt6/QtCore/qglobal.h:491:11: warning:
+inline variables are only available with =E2=80=98-std=3Dc++17=E2=80=99 or
+=E2=80=98-std=3Dgnu++17=E2=80=99 [-Wc++17-extensions]
+  491 | constexpr inline Deprecated_t Deprecated =3D {};
+      |           ^~~~~~
+/usr/include/x86_64-linux-gnu/qt6/QtCore/qglobal.h:1009:26: error:
+=E2=80=98enable_if_t=E2=80=99 in namespace =E2=80=98std=E2=80=99 does not n=
+ame a template type
+ 1009 |          typename =3D std::enable_if_t<std::is_arithmetic_v<T>
+&& std::is_arithmetic_v<U> &&
+      |                          ^~~~~~~~~~~
+/usr/include/x86_64-linux-gnu/qt6/QtCore/qglobal.h:1009:21: note:
+=E2=80=98std::enable_if_t=E2=80=99 is only available from C++14 onwards
+ 1009 |          typename =3D std::enable_if_t<std::is_arithmetic_v<T>
+&& std::is_arithmetic_v<U> &&
+      |                     ^~~
+[ snip tons of errors]
 
-Did you mean for this to a Reviewed-by?
 
---=20
-Aleksa Sarai
-Senior Software Engineer (Containers)
-SUSE Linux GmbH
-<https://www.cyphar.com/>
 
---ol7adjwswqudaxv6
-Content-Type: application/pgp-signature; name="signature.asc"
 
------BEGIN PGP SIGNATURE-----
 
-iHUEABYKAB0WIQS2TklVsp+j1GPyqQYol/rSt+lEbwUCZMsQJgAKCRAol/rSt+lE
-b6fuAP9ki0uOZxhvg7UYVxVmtgV9baTK8Br1vb4etGtmEfZ1IwEAg8kjMvzzv+mb
-zmU0bhe6uOd5ZHdu5KCubvPCLtWzow0=
-=mmRd
------END PGP SIGNATURE-----
 
---ol7adjwswqudaxv6--
+
+The first error says,  #error "Qt requires a C++17 compiler"
+
+
+Right, g++ defaults to this:
+
+$ g++ --version
+g++ (Debian 12.2.0-14) 12.2.0
+Copyright (C) 2022 Free Software Foundation, Inc.
+This is free software; see the source for copying conditions.  There is NO
+warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+
+
+
+
+
+
+It worked for me with the following fix-up applied.
+
+
+
+diff --git a/scripts/kconfig/qconf-cfg.sh b/scripts/kconfig/qconf-cfg.sh
+index a1b718a7366c..a5d5ed008dc3 100755
+--- a/scripts/kconfig/qconf-cfg.sh
++++ b/scripts/kconfig/qconf-cfg.sh
+@@ -17,6 +17,8 @@ fi
+
+ if ${HOSTPKG_CONFIG} --exists $PKG6; then
+        ${HOSTPKG_CONFIG} --cflags ${PKG6} > ${cflags}
++       # Qt6 requires a C++17 compiler
++       echo -std=3Dc++17 >> ${cflags}
+        ${HOSTPKG_CONFIG} --libs ${PKG6} > ${libs}
+        ${HOSTPKG_CONFIG} --variable=3Dlibexecdir Qt6Core > ${bin}
+        exit 0
+
+
+
+
+
+
+--
+Best Regards
+Masahiro Yamada
