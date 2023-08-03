@@ -2,164 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AC0E576DD50
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 03:36:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6CC0B76DD54
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 03:38:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232278AbjHCBgn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Aug 2023 21:36:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56414 "EHLO
+        id S231383AbjHCBiW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Aug 2023 21:38:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57072 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232524AbjHCBgX (ORCPT
+        with ESMTP id S232525AbjHCBhp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Aug 2023 21:36:23 -0400
+        Wed, 2 Aug 2023 21:37:45 -0400
 Received: from mgamail.intel.com (unknown [134.134.136.20])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 229B935BC;
-        Wed,  2 Aug 2023 18:35:42 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41CE0198C
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Aug 2023 18:37:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1691026543; x=1722562543;
-  h=message-id:date:subject:to:cc:references:from:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=r8vJE8l3zuZ4BobmQd10BxM0ZbmChZQudFLILQ6vHIk=;
-  b=Nuq8orbcxKGi2reIE8M6s8Z1nqObraBQR6t/y3eHLdhWvwSFwFmEZfA1
-   jHydksusq4env2/tmjP6DgEhw3HBh+9lkN9rcXKg7FQGZT8Xd3FOAHheQ
-   e4m7vs8V3ixkxHU8XqMqJbho9uPEG6tBCLk1m3C46jomSBZ4nM2PobHSi
-   0Lu3uhvuQUberJo6k/m3K0n00BO0Ix7ybXyZnSXJD3Gw6oQSAnj445Qrq
-   8lNymerA+2S/pbYtu33uKBD3Kx2i0b0RJp3pDBytCbP0nps5G2Fdzpnyy
-   6Sr0AWn79kLHNisPxR6LO3EyF8EbCcGTxIdxwDBtXTjvc9WzxugZEyAkm
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10790"; a="359784342"
+  t=1691026663; x=1722562663;
+  h=message-id:date:subject:to:references:from:in-reply-to:
+   content-transfer-encoding:mime-version;
+  bh=QflC3FQGq4rMlt8pGjjDJIZzCXARgEYE8T8KATn0ag4=;
+  b=BwTwBUokhRsbPP8QaHNr4hKx3KSQtFx0W8vfBAHMJNGSQ6weGfEci9n2
+   jfZeOrCwSvHFxCRhSuR21k9XHHLUaUsJNojLDHCqIuPHHW7qQ/zCCDevy
+   uqP7y+jOK5dzUBfCIFr8uQabQ2dYDtfX+WRftWRQ/THZ1G+U/L+IxzzWC
+   b9s+GVdOtcAo39Vz+ps06CFc8g3rXKj+v8ekoDw3A8HSeGoeQEUOFPWGb
+   XDVS5JJVsNGKQQBU/j2EC2S1uQHI4wSG1+r9dVYQIFVFFxZC8m8mw1Fzp
+   2froOWrxfvA4bwtjWLbQvbzChkbemJr63F+hr4fZsOclxygaRtmLeeN4u
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10790"; a="359784630"
 X-IronPort-AV: E=Sophos;i="6.01,250,1684825200"; 
-   d="scan'208";a="359784342"
+   d="scan'208";a="359784630"
 Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Aug 2023 18:35:42 -0700
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Aug 2023 18:37:42 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10790"; a="706372859"
+X-IronPort-AV: E=McAfee;i="6600,9927,10790"; a="706373338"
 X-IronPort-AV: E=Sophos;i="6.01,250,1684825200"; 
-   d="scan'208";a="706372859"
-Received: from fmsmsx603.amr.corp.intel.com ([10.18.126.83])
-  by orsmga006.jf.intel.com with ESMTP; 02 Aug 2023 18:35:42 -0700
+   d="scan'208";a="706373338"
+Received: from fmsmsx601.amr.corp.intel.com ([10.18.126.81])
+  by orsmga006.jf.intel.com with ESMTP; 02 Aug 2023 18:37:42 -0700
 Received: from fmsmsx612.amr.corp.intel.com (10.18.126.92) by
- fmsmsx603.amr.corp.intel.com (10.18.126.83) with Microsoft SMTP Server
+ fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.27; Wed, 2 Aug 2023 18:35:41 -0700
+ 15.1.2507.27; Wed, 2 Aug 2023 18:37:42 -0700
 Received: from fmsmsx611.amr.corp.intel.com (10.18.126.91) by
  fmsmsx612.amr.corp.intel.com (10.18.126.92) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.27; Wed, 2 Aug 2023 18:35:41 -0700
+ 15.1.2507.27; Wed, 2 Aug 2023 18:37:41 -0700
 Received: from fmsedg601.ED.cps.intel.com (10.1.192.135) by
  fmsmsx611.amr.corp.intel.com (10.18.126.91) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.27 via Frontend Transport; Wed, 2 Aug 2023 18:35:41 -0700
-Received: from NAM11-BN8-obe.outbound.protection.outlook.com (104.47.58.169)
+ 15.1.2507.27 via Frontend Transport; Wed, 2 Aug 2023 18:37:41 -0700
+Received: from NAM10-BN7-obe.outbound.protection.outlook.com (104.47.70.109)
  by edgegateway.intel.com (192.55.55.70) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.27; Wed, 2 Aug 2023 18:35:41 -0700
+ 15.1.2507.27; Wed, 2 Aug 2023 18:37:41 -0700
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=KvXw911pOhO4EuujoeH801N6Ffbq9bUzxa278ctH5lQmZlk5Z9hmGr11fmAWz760g1WLB/gH2zxle6Vxqovr93E7iFy5fYdkhn9V/vIbmJPBU2ggMBX0eRQXLrmusa84jKS7ZojB/YNFWIKcENfgkQX77/TzRuYW8FWZX5AR6b+ubwb/9G5bM81J6stSG5AHFiyJlfq8ORdOfk+IJEdvZOarol7i8E2xGPTwy3vUm0KYNk9zOd4GYerXUfdEjWgTLEc5WAivBPE7FTrxXcu11kyQJ4eyp7ay4XmNzTsZZ+gbvMNOCpohW5J3jVxE1HjI9qKSuQEK2frYJ/lVHuK9MA==
+ b=eGqajKfg33/s6OfJirJDuM3YCth3neLbKDhUwvDWw0OffJrYe4+1ustS8vcYoMGWVve8nJmM8yckh3w/NFsgIipdDWSSTYR/ETuPQBWwLvGhlWtbWiEQch8Si5xBc4osfRyPS2AzkyjM1oHZWTp1NWDFy/GTCO3TLp03JF4wGt7LPt1LW6YagYzm++jfLiNntP+sQAuYJUHvPyx4Xiye2PIan8tE259YlM15gehEvpf2mksHKwdTSQSxGUyMpj6mu0pla8qIXnhIcTqY5rpLVGuswthsfMaFYK6BQIRlWO1eXKhZVVLk6plmQiKiyHrr4mFZFpa99XS+K06lKNBvAg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=ejs60nj4qdcgnPGIVRV9BbLtVP7irAhx4dI9c1SYTc4=;
- b=B+P5x4E/Rg+hLvpzktffrqN00goGjsnBoODQ4h9jF039dI0Kxsa26uI2wVmiQvFWNMIuRRVNlpyd8m3S+gocaH6G8S3ww+d+hfTo7iBq+ig5e4gq+8eICINCkuRXBNp0hfvKKA52tbGmvRp3eONNqlyml6A+NwUe9xN9K3vUomnUbIUpyzppUMNO8YnWMPD/4To8/wYuff4kulUqaQj4COUu0TbcS40yC8C0RAHjXIePHOoZocnqZ6Au8j6TX3/VqQnIOEn7KdeHQJCtid2wufm7zZD8QGB2U0DfC/zIyxUEMOaxCTBRWo8MoVRuQce8QC+eIFbjpZ0WVytnQ0RHxA==
+ bh=3zMiYGB4/kqWvQhnev23KPV11QG4FvdXGdipP6yNlZg=;
+ b=WwgauHhPouPmiJnSTgrAWIcmBYrQXoJhEuwKn+op8AO2KRm7VmU+q68oI4wyO/agyuaQhiiXtjj6A8wk0EU/ZDrfJzmYJ5c8pwdisBuo29ul6yG15HR59zqOxqe5mTRDfJoYnAe23IXcU7+kjkRBgygnfaHZ5FMJ9yL3QlUeYGbYeb2voSWFabvOUUOUidKA3psxMukpv0sul18H+OuQCNj7DB72lI3HDMsX8kSeuUpb4VQ5nlaSBW1sdYrIcbfoS/qByn6lxJRr9LoGKzy1+u390/J0+qGAqL1666pyVesh7jELlvhZjQ2Klo2+OKkOABLDjvzBh6BIoh9SKqo4Sg==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
  dkim=pass header.d=intel.com; arc=none
 Authentication-Results: dkim=none (message not signed)
  header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from CO1PR11MB4914.namprd11.prod.outlook.com (2603:10b6:303:90::24)
- by LV8PR11MB8679.namprd11.prod.outlook.com (2603:10b6:408:1f9::5) with
+Received: from CO1PR11MB4820.namprd11.prod.outlook.com (2603:10b6:303:6f::8)
+ by SA1PR11MB5922.namprd11.prod.outlook.com (2603:10b6:806:239::20) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6631.29; Thu, 3 Aug
- 2023 01:35:38 +0000
-Received: from CO1PR11MB4914.namprd11.prod.outlook.com
- ([fe80::9c1c:5c49:de36:1cda]) by CO1PR11MB4914.namprd11.prod.outlook.com
- ([fe80::9c1c:5c49:de36:1cda%3]) with mapi id 15.20.6631.046; Thu, 3 Aug 2023
- 01:35:38 +0000
-Message-ID: <d87b30ae-8f4e-611c-1cb4-9fe02abd1845@intel.com>
-Date:   Wed, 2 Aug 2023 18:35:36 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Firefox/102.0 Thunderbird/102.13.0
-Subject: Re: [PATCH V6 net-next] net: mana: Configure hwc timeout from
- hardware
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6631.45; Thu, 3 Aug
+ 2023 01:37:39 +0000
+Received: from CO1PR11MB4820.namprd11.prod.outlook.com
+ ([fe80::221b:d422:710b:c9e6]) by CO1PR11MB4820.namprd11.prod.outlook.com
+ ([fe80::221b:d422:710b:c9e6%3]) with mapi id 15.20.6631.046; Thu, 3 Aug 2023
+ 01:37:39 +0000
+Message-ID: <89dff38d-f047-1d45-d06d-40eb08443d1a@intel.com>
+Date:   Thu, 3 Aug 2023 09:36:09 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Firefox/102.0 Thunderbird/102.11.0
+Subject: Re: [PATCH 1/3] mm: add functions folio_in_range() and
+ folio_within_vma()
 Content-Language: en-US
-To:     Souradeep Chakrabarti <schakrabarti@linux.microsoft.com>,
-        <kys@microsoft.com>, <haiyangz@microsoft.com>,
-        <wei.liu@kernel.org>, <decui@microsoft.com>, <davem@davemloft.net>,
-        <edumazet@google.com>, <kuba@kernel.org>, <pabeni@redhat.com>,
-        <longli@microsoft.com>, <sharmaajay@microsoft.com>,
-        <leon@kernel.org>, <cai.huoqing@linux.dev>,
-        <ssengar@linux.microsoft.com>, <vkuznets@redhat.com>,
-        <tglx@linutronix.de>, <linux-hyperv@vger.kernel.org>,
-        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-rdma@vger.kernel.org>
-CC:     <schakrabarti@microsoft.com>
-References: <1690974460-15660-1-git-send-email-schakrabarti@linux.microsoft.com>
-From:   Jesse Brandeburg <jesse.brandeburg@intel.com>
-In-Reply-To: <1690974460-15660-1-git-send-email-schakrabarti@linux.microsoft.com>
+To:     Ryan Roberts <ryan.roberts@arm.com>, <linux-mm@kvack.org>,
+        <linux-kernel@vger.kernel.org>, <akpm@linux-foundation.org>,
+        <yuzhao@google.com>, <willy@infradead.org>, <david@redhat.com>,
+        <shy828301@gmail.com>, <hughd@google.com>
+References: <20230728070929.2487065-1-fengwei.yin@intel.com>
+ <20230728070929.2487065-2-fengwei.yin@intel.com>
+ <55c9e3f7-099d-6f57-32da-1f318a9688a0@arm.com>
+ <9bba9369-e3f5-53da-bf8f-8ab887d3c3ae@arm.com>
+ <a6ff77ba-18f7-f3ed-3f9a-00f04edccdb3@intel.com>
+ <7c7b8c39-b412-a120-368c-ba4ab2cc2a15@arm.com>
+From:   Yin Fengwei <fengwei.yin@intel.com>
+In-Reply-To: <7c7b8c39-b412-a120-368c-ba4ab2cc2a15@arm.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: MW4P222CA0009.NAMP222.PROD.OUTLOOK.COM
- (2603:10b6:303:114::14) To CO1PR11MB4914.namprd11.prod.outlook.com
- (2603:10b6:303:90::24)
+X-ClientProxiedBy: KL1PR0401CA0025.apcprd04.prod.outlook.com
+ (2603:1096:820:e::12) To CO1PR11MB4820.namprd11.prod.outlook.com
+ (2603:10b6:303:6f::8)
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CO1PR11MB4914:EE_|LV8PR11MB8679:EE_
-X-MS-Office365-Filtering-Correlation-Id: d5843063-1a63-4835-c046-08db93c1f0fd
-X-LD-Processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
+X-MS-TrafficTypeDiagnostic: CO1PR11MB4820:EE_|SA1PR11MB5922:EE_
+X-MS-Office365-Filtering-Correlation-Id: a26f40da-0f7a-4be1-91ed-08db93c238b7
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: NFT5GqZmajmmVg7woQfBByRnEnfz5rXyHerSZSb2/NNOk1kTqOz0gz3NbFAAk2JX2evwFvEAA6O4v1RGhCTDVjJJZ/knbOjFsfh3pkJstcdGWBwEC3N7XccjAiAM3NFq9sON8FXaqGk9FbEFeg1K5WpW9TrfHQBfqYdPz8kzdNclvwpZJIvcKLT9JU+vxMBjwkV8wdb+kEc5FE3fQ8MsKonBJLJT6MDQwEmWuiCQseeIXYxLWPwXbv9PGF2ZovH5fNSDLsisPxpg9c3wxyjBWLC0TPfWEKBniXNTBGXtXGYxeycOS6jYQD79IvGbyDHw8sBSOzVWb5BKHNV+4Eg4jtnwNv2PlyV8cR3SU7TYqW6L/DxvWXYwJ6aiG4rTyrCiJsQ9ssCcwyCaUVcwK77bkS6DyVOqHz8ygR0o/qU9I42Yef3hY+QVEddueKkafAIuJcxGnGu5LrHAvpeQbB/khhxnq3Dr30WeTRXV4dEivfPJEaXU7RGvmWkrvQJtYu2Liju33NkJoxIK20yHrzLQ/SV2HfrJFFI2LANsHVXF+FoNLfihhDAigUCkcinsbFwqcE1cm2Y5+dHAIsGDLFsjVfYj9SQ+hlKnO9ug9HaozZc3vw/oM0O6c0EfekNdvZeCKmOrU9BySy1W9I4XVOIkyQ==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CO1PR11MB4914.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(366004)(39860400002)(376002)(136003)(346002)(396003)(451199021)(83380400001)(86362001)(36756003)(2906002)(2616005)(31696002)(4744005)(38100700002)(921005)(82960400001)(41300700001)(6512007)(966005)(4326008)(316002)(26005)(31686004)(8676002)(8936002)(66556008)(6486002)(7416002)(66946007)(478600001)(66476007)(53546011)(186003)(5660300002)(6506007)(44832011)(45980500001)(43740500002);DIR:OUT;SFP:1102;
+X-Microsoft-Antispam-Message-Info: OwXfutj0jo3qaQDbuagm/ZeyyO4Nj00VqG0gFe3IUMQRPW/TnlBW598s3EUE7Wc3J5Kqfvv0rB3HnMjr5Lf50iStwiyPfRZVfIAszqXuC9RmQXbHlT9wUKY2T0vpXJBXxC5riG7Ls36tSJWTroGJb17/j3b4dm+TbmJsdDnnnkZhO1/eUHVm/LlnqQ0eXOw1LQbwk7+2WKSltmCql5L7BIEduoPgtFMpxnMieYXbv41bVhsigYt5CZ6ndQA9CtY8rDJkbk8ZXc42WWuEpQ38YMZM85CrKq9V0xW3nBTc5m0IyPg0oa5thL2zFRd34QHMH7+9VnddxDEulYArZeNM3PATK/Xs8Q2/qM+CG9VRW/VRanVWKOAtKPzME0xTVguJyzKun0rj9wXVJvFFVpiTLu6lDiKW8kGtwqV0Y/V7PaLT8QCSibKanA0VkbYztQNxC+mbBT0SzEgOl2fepzmbn1IZjW3jdZCAXkon9fRAla7e75gkK4uJCr5LpaD9WrJb+fWBe6C2TETWKU/5Y6jOwZKB7M+loeg13QiT3wHQZzspPE5L80GbCugo/WU8IATa0PSbbXfa2zk9BMqYehITkfzHh6L8ZoIIgeDhZN3KybK5ZCkCi1mxzCdwNZH2xIkSXhX9e3sIKk61ngF1tsTI5A==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CO1PR11MB4820.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(39860400002)(346002)(366004)(136003)(376002)(396003)(451199021)(186003)(2616005)(6512007)(36756003)(316002)(86362001)(478600001)(38100700002)(66556008)(66946007)(6666004)(66476007)(6486002)(82960400001)(31696002)(53546011)(6506007)(41300700001)(26005)(8936002)(8676002)(30864003)(5660300002)(31686004)(2906002)(43740500002)(45980500001);DIR:OUT;SFP:1102;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?M3dPRHZqSnppZjkvSzc3TGpHQVpGcmlJdnN4VlUxSEtVWEtObjVpTnpxZTBD?=
- =?utf-8?B?L21yb2QvVnRTN2JMSVowUGFlUkVUNG5CWU5RUi8wbTRkWXhJQ2c1ckpnOXF4?=
- =?utf-8?B?QUV6MjI3VGxHNnRsVjNjZnM0NGVkcnlLcWxyMEdUQm9zQ3R4Zk5ISnB1REph?=
- =?utf-8?B?V3JuQ1JzK1J5NUI3OUUzd1RIUmtFeTNXR3o2SEI1Zlo5VDJSTmU5bXRSdjM1?=
- =?utf-8?B?Tkl4WkJwdEJQNGtkWFhFdldKWlJGQkxGa2xNYU9WUkdXbHFXOWdSWkowbkRV?=
- =?utf-8?B?L0IwNGcxLzhWdzJhdlZsSklQS1RFNEVMdFlwY0JJaEZtVWk4S3ltN2FoZVds?=
- =?utf-8?B?YTVOUXdXU05kT2E4cmY1M3ZzQ2xzcDJDWEt4eXVJWDhoUzJ2ZXZRNXpJdmVh?=
- =?utf-8?B?YTVycDhReXFub05ndWE5M3F0R1MwSGxycWptaS9ac1YzTndPQkdXYWQrRlZD?=
- =?utf-8?B?blhKd0c1RkFEQ1EyZ3FIdDU5REtVb2JCeWJYbG5RRk5OTkFNUSs0cHdybFdB?=
- =?utf-8?B?Y0RhS0RtQnNUN3BCd3lXak9OS0RVU1NPNjd5Y05uQlN4MHlDWHVCNnpYWjJx?=
- =?utf-8?B?eWEzQ0lPOWV3QmxpWVl4MTFlV1BQcGdpODMrd20yd3VKUjU2U2ovQ3lyTzdZ?=
- =?utf-8?B?aEZSRWVIT0dJN09oVTljQWNYUktoMDZBRVdOa1BsbmI2QU9KYXRUNXpZRW9N?=
- =?utf-8?B?czUybkkxS1RPaCt6R2UvWGtKNVBNcG5wcDJsTnk1VzVCYm5HclVYNGNoYlI3?=
- =?utf-8?B?UWcwSXVEMk56cVdBT1JuWEhHYUJBVGcycXZmTVRTQ3pQcVNqNnFCcXFkcjBu?=
- =?utf-8?B?Z0ZJV1RNS2ZMYitoNlU3M3g5dUJnYU14MElad3RDdFd1ZllJazA3UytZcDc2?=
- =?utf-8?B?OE1VUkI1dFl5Y3VoN1BQR0NIcFBCTkJXSnFZbEtCVWhPb2NQU05LamcvYmcz?=
- =?utf-8?B?MG94UEJnSkJNKzhRbkUxMlRoY1FoTU8yaFcrTVB0ZzUwRzdIQlljN2grYW5D?=
- =?utf-8?B?dWNoTkNZOXJ4dWVzeW5JbFpPOGd5czdTcVhQSGVwZTNwUHdJRllrNDBXNDJK?=
- =?utf-8?B?RVI3SUhsL3h3TVgrUHlITXYyQjZ5b25rUzdacTJ1KzlOem1KNHJydXlaUS9T?=
- =?utf-8?B?b253enN0d2c0R2JlVjRRQ2VGMWJLd2E0WWgwVDN1cHpJRXcrUXFRRDB4bldR?=
- =?utf-8?B?VGovQnF4bktrYlNtajFwb0dMVldKK2dZdmI5YXZBYXRnRmM1aUtoeXIxL0Fu?=
- =?utf-8?B?YVhrdTczc050R2hJenlzMWxBeFRRZTBaOXBwc0tWSllrL09IZUtSSEdGQ2Iv?=
- =?utf-8?B?NXRoOVY4b0NFdEw5WTk5UU5NVjQrdGVITDJSSGkyOGRmUUNqMitPbUEzTm8w?=
- =?utf-8?B?YS9qVTdlYjBvYTZFd1duK2NqNjRLY083eTYyUTQrc2ZFbWRNT1RDVFhNcUda?=
- =?utf-8?B?dnh0MllGMCtCMnF4UkE3bTNpVXBNMnZ3Q0Zocy9QaWw3aFVxa09jQnJ5Y002?=
- =?utf-8?B?SXI2UGUydDA2eFZCR3QrYW0vS3YrTEg0TmRvMW9jZEJLbXJVS1BPMm95UUxp?=
- =?utf-8?B?RGw3M3YrekliOTVJQlAvMWFHR1NPRjhwOHN4RTdhK1RjYVFNTVlEOUpnMWV2?=
- =?utf-8?B?U2tUTThxYndtbWVkdnlRUEpkbkdCbVE4R2JRMlNwMStBa0NHR2RFQ0tTOWlR?=
- =?utf-8?B?QzNHa2FMckM4Z08vNkJiUTdsN0hLcTg4cThTeHQvNWl5cVY3dW1WZDdCR3FG?=
- =?utf-8?B?NzJ3UnJrU1htTkJGQzBzUDlDMU9GSThsZmFsVFd3SFVTWThNcUhERkt2Tm5D?=
- =?utf-8?B?cXIwdG1uTHdqeHdWSk9JanZXaEVJRWluc1lEaG5Ta0tkVWZERno0WUdvdXJn?=
- =?utf-8?B?NUxxcyt5eWYrYzFqaW1sdFAzTDZ0S2RvZjdIUDQycjhxdElPaHhhNTZmUjBC?=
- =?utf-8?B?eEx2aUhyNkkxT0pESDFwenVtOUlaWjVKZ004VnhFMEZqT1Z3QTJLN01DbEFx?=
- =?utf-8?B?YzJGaHFySTZtTmZKOVFwVFMrdDdVWTlzNWxleW5Mc1d5RkdTSEI0emdleUVB?=
- =?utf-8?B?UGJsaGdHTldHK3IvekFFcmZlLzBoMktrQmc5YUpabnk3endETERsY2k2d1Vv?=
- =?utf-8?B?ak04UkUvdEhWZGRWZHp0VmlXWWtvWXBwbEdRQ09ndzlIKzc4bVJlcUFMcU1N?=
- =?utf-8?B?V2c9PQ==?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: d5843063-1a63-4835-c046-08db93c1f0fd
-X-MS-Exchange-CrossTenant-AuthSource: CO1PR11MB4914.namprd11.prod.outlook.com
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?QXdwTmQzcXhEWkFhTnVTRWtSdlFweEk5eEhRNDUxTG5jMC9oa21HV1JlN2l6?=
+ =?utf-8?B?TFc2QXBzQSt5Z0xaWUE0WHhwcmtnREFqZTRTYSsvMHFhOGJ2a3kyOWVuZFJO?=
+ =?utf-8?B?UkFGZ1B3S2VxNTMxQWVpaVFDZEI0cXl1NGlycWM4Mi9QcGR5d3k1cXgyemxa?=
+ =?utf-8?B?MDh0QVZlQTl6bU9CKzNmWWVvN3AvT2ZDWGxWMDRydVVpYklrM2pUdkdlOXZr?=
+ =?utf-8?B?ekpMdGVuamJjRlNFVDNNa3lQT2tCVmZscGtWVXNUNnNpaTVhc21QQnM0eTUz?=
+ =?utf-8?B?NnBaVmVJbmUyWHpHdzR2MUh2eFZZZ1hFYXQ3eTZJb2FEL1hmRGVONllDZG9t?=
+ =?utf-8?B?dGZSQnc0U1g3d09iaFNrMGQyTk1ITlBNRHM2dmt1MGZnOEZ6VzBGQU9kWnBt?=
+ =?utf-8?B?MTgyQzZMemp6YTdCODI4bm9tcU1DOGtXMzVNS3IxUm1ZL1grRWxFV2RIeDBF?=
+ =?utf-8?B?UFRtMWNPd0JqQzhIZjUzc2IrcEhEWnFSbkg4UDJ5aWt3b3ZyOEQwemFlcnEr?=
+ =?utf-8?B?eFlST0p3T0R1eVhMNFg4eFE2V1FoWHlwTTcwbzNnSTA4RmN6N0ZZRWdEVXRy?=
+ =?utf-8?B?c2ZzQ2ExV1c5Z0RHSm5RczJBRGN6Q2YxTFNicXAvNGd0VHJoWWNiOEdPaVlw?=
+ =?utf-8?B?OGE1MHFQQ2xqSVdVQlZFdTVhVVlLSWt1emV5T3ZUQzZPdFpCTXFUem5Hek12?=
+ =?utf-8?B?NWIwR3V6cFBYWEVEZ2NUYlpmMnhBaFpQRW5VcnEzY0o5LzlpNko3STJ5ZU43?=
+ =?utf-8?B?UnBEOEFUeVdQRTMzVlg0UVp2eW8yTENWSkY2dWJDalZDUkdMLy9tRit4eTFy?=
+ =?utf-8?B?UWd5ZFY1cXZ3YSs0Vm4raEZXQysyVWhCSldDOS9FV3ZmQ1hkR3hYdFRzMmdy?=
+ =?utf-8?B?UldkTXNNbklMMkJaa2dsV0U5eEFDK0dhMlBZb2xnQU5wM0NiWEVzQTVsZ0h6?=
+ =?utf-8?B?SDFRbUpwUkVKcnZGa01hQTRFNWdmK1ZTL2ppTldheEdIZHBENkdEdVVpZkVm?=
+ =?utf-8?B?TDY4eHlhT3NDeis3akN2cjNIR1lhTHBGSXNSdFdEZWg1RjJqWlJYdXpSVlpK?=
+ =?utf-8?B?UmRJWkFrcnlJT3dIUU54R2NTbmU0Y2dieFJ3S2RNbTNXTW5xbkdZUmVLdXp5?=
+ =?utf-8?B?U1plbXFMNHM3b05JNFBhcStrdlBtTzdUb2NuQ0lKSWcyR2lqbUFCKzJubTdh?=
+ =?utf-8?B?MjlUWDRLb0hlZ3FocVRUeEcwNkd1cnlSbGxZTGoreFlGYlpTNkV0Q2ZwNXdB?=
+ =?utf-8?B?b0ROaWxvTmt4QzZKMVJsRzQ4eWZUeWtyWVBpb2Y3a3ZjYnhPa2ZldGZ4THBR?=
+ =?utf-8?B?emtHYURsVWVqaS9aWWUyVWpIN3JmM045WWdUS080d3AzVXpiQTRyaFdjNnQ2?=
+ =?utf-8?B?K0ZLM055WUZzRmk1Nmo5ZkJXZEhlQ1R1M2h6WEZrM1lHempBWDNjcFFqL05y?=
+ =?utf-8?B?a0pDdjhFMXdobmErNnJEQmJrSjl2S2RPbWFXamFGZzJKMDlhV255dEZneHNI?=
+ =?utf-8?B?NzNDMWcybGxST2ZaT1JFMmE3OGlYbVhYeThlNEoxOXVaUHR6V3F0MExwZk1p?=
+ =?utf-8?B?RXRyNmxhSzR3RCtYeEo3aEs0MUpIbUZ5d2VzUGVtb0piRUk1Y0N4V0RpdCtj?=
+ =?utf-8?B?MFdRNXQzUmhPaTdGa0NaL0F0L0NyTWFWdEM2bkdVM0RHcGNDb3dVQnBQd3JL?=
+ =?utf-8?B?RFREVHo2cFdvbHQ4d29ObnBPUkkycVdaRTVrTGpnSUI2Rjk4bjhxRlI3TVZt?=
+ =?utf-8?B?WUZvMVl6TU5vZGYvQ1ZyWWNnUEFETU5BMjZ5ak02Y2lzQ0VtY2VaOTlvY0Zn?=
+ =?utf-8?B?VEhpTHJpQVBzb2NqTzN2bXc0MjhLSWlDQ1NLOHVtT205QXgwOW9pOWNqZDUr?=
+ =?utf-8?B?TVlwWU41d3hwWm4wUkJtNkFBeXpoY0lJeFgzU1FUZDBKYjlPZ2pobmdmcmJ2?=
+ =?utf-8?B?MWtybGUxaWZsY0dZTlIxcU8xVmppelNzT1FvMUxBOW4zNTRBSk80eVNFLzB0?=
+ =?utf-8?B?cGIzQXE4ZHNvZXN0amw5R1BqZzE3RTRNdkxwZm56aVF1ZUM5ZmhKUm5TMFIv?=
+ =?utf-8?B?OXRhZlhUcEgzYWppdG9lNGZpWS9RZlF6d0dPWWUzak1nWHQ3K2dyYUpUaUV1?=
+ =?utf-8?B?UmlIYlFTak4zdE5TMXlXUEdCVDUxc3R5a1I2MGlpK0V2aUJJaWdOQllYTVRz?=
+ =?utf-8?B?Mnc9PQ==?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: a26f40da-0f7a-4be1-91ed-08db93c238b7
+X-MS-Exchange-CrossTenant-AuthSource: CO1PR11MB4820.namprd11.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 03 Aug 2023 01:35:38.5352
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 03 Aug 2023 01:37:39.0458
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: F0Lz1H/xF65HvkSvACIdiAa3mFdXitBj/DRbs+YB81Fbh9Uk1I4U3ohW5ZJBMrE1JU84tEpCaOCM46odcvEMRczD+KjmCqxGItBenTbKnFY=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: LV8PR11MB8679
+X-MS-Exchange-CrossTenant-UserPrincipalName: g4Cd69hvmfOPlibn9WgSMsdwiBr0YE4o7ky/epySvHjawcODpk87BEwbdzLRaRn7XuiwczDWtvGhGib7P9iZSA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA1PR11MB5922
 X-OriginatorOrg: intel.com
 X-Spam-Status: No, score=-4.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
@@ -172,27 +169,217 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/2/2023 4:07 AM, Souradeep Chakrabarti wrote:
-> At present hwc timeout value is a fixed value. This patch sets the hwc
-> timeout from the hardware. It now uses a new hardware capability
-> GDMA_DRV_CAP_FLAG_1_HWC_TIMEOUT_RECONFIG to query and set the value
-> in hwc_timeout.
+
+
+On 8/2/23 23:12, Ryan Roberts wrote:
+>>> I also wonder if you should change the name of folio_within_vma() to something
+>>> like folio_test_cont_in_vma() to disambiguate from the case where the folio may
+>>> be fully mapped with a discontiguity (although perhaps that's not possible
+>>> because a mremap would result in distinct vmas... would a new mmap in the hole
+>>> cause a merge of all 3?).
+>> I don't think it's possible as mremap reuse original pgoff of VMA to new VMA. I suppose
+>> it will prevent VMA merging. But I didn't check detail.
 > 
-> Signed-off-by: Souradeep Chakrabarti <schakrabarti@linux.microsoft.com>
+> pgoff is not relevant for anon though, right?
+anonymous folio->index is related with vma->vm_pgoff.
 
-Looks sane, thanks!
+> 
+> FWIW, I wrote a test to check if merging is performed. Interestingly, v5.4 (on x86) *does* merge the VMAs in this case, but v6.5-rc3 (on arm64) *does not* merge the VMAs in this case.
+What if you fault in the pages to the mapped VMAs?
 
-Reviewed-by: Jesse Brandeburg <jesse.brandeburg@intel.com>
-
-For future patches please use imperative mood for your patch
-descriptions, no "This patch" [1]
-
-[1]
-https://docs.kernel.org/process/submitting-patches.html?highlight=imperative+mood#:~:text=Describe%20your%20changes%20in%20imperative%20mood%2C%20e.g.%20%22make%20xyzzy%20do%20frotz%22%20instead%20of%20%22%5BThis%20patch%5D%20makes%20xyzzy%20do%20frotz%22%20or%20%22%5BI%5D%20changed%20xyzzy%20to%20do%20frotz%22%2C%20as%20if%20you%20are%20giving%20orders%20to%20the%20codebase%20to%20change%20its%20behaviour.
-
-
+> 
+> I think you should assume it might be possible in some cases.
+I don't think mremap target VMA could be merged with prev/next
+unless it's merged back (move the pieces large folio together).
 
 
+Regards
+Yin, Fengwei
 
-
-
+> 
+> 
+> #define _GNU_SOURCE
+> #include <stdlib.h>
+> #include <stdio.h>
+> #include <sys/mman.h>
+> #include <unistd.h>
+> 
+> int main(int argc, char **argv)
+> {
+> 	size_t pgsize = getpagesize();
+> 	char *memarea;
+> 	char *memlow;
+> 	char *memmid;
+> 	char *memhigh;
+> 	int ret = 0;
+> 
+> 	// Get a free vm area big enough for 5 pages.
+> 	memarea = mmap(NULL, pgsize * 5,
+> 			PROT_NONE,
+> 			MAP_PRIVATE | MAP_ANONYMOUS,
+> 			-1, 0);
+> 	if (memarea == MAP_FAILED) {
+> 		perror("mmap 1");
+> 		exit(1);
+> 	}
+> 
+> 	// Map 2 pages one page into allocated area.
+> 	memlow = mmap(memarea + pgsize, pgsize * 2,
+> 			PROT_READ | PROT_WRITE,
+> 			MAP_FIXED | MAP_PRIVATE | MAP_ANONYMOUS,
+> 			-1, 0);
+> 	if (memlow == MAP_FAILED) {
+> 		perror("mmap 2");
+> 		exit(1);
+> 	}
+> 
+> 	// Move the second allocated page one page higher.
+> 	memhigh = mremap(memarea + pgsize * 2, pgsize, pgsize,
+> 			MREMAP_FIXED | MREMAP_MAYMOVE,
+> 			memarea + pgsize * 3);
+> 	if (memhigh == MAP_FAILED) {
+> 		perror("mremap");
+> 		exit(1);
+> 	}
+> 
+> 	// We should now have:
+> 	// | page 0 | page 1 | page 2 | page 3 | page 4 |
+> 	// | NONE   | vma 1  | empty  | vma 2  | NONE   |
+> 	printf("Check for 2 vmas with hole: pid=%d, memarea=%p, memlow=%p, memhigh=%p\n",
+> 		getpid(), memarea, memlow, memhigh);
+> 	getchar();
+> 
+> 	// Now map a page in the empty space.
+> 	memmid = mmap(memarea + pgsize * 2, pgsize,
+> 			PROT_READ | PROT_WRITE,
+> 			MAP_FIXED | MAP_PRIVATE | MAP_ANONYMOUS,
+> 			-1, 0);
+> 	if (memmid == MAP_FAILED) {
+> 		perror("mmap 2");
+> 		exit(1);
+> 	}
+> 
+> 	// We should now have:
+> 	// | page 0 | page 1 | page 2 | page 3 | page 4 |
+> 	// | NONE   |          vma 1           | NONE   |
+> 	printf("Check for single merged vma: pid=%d, memarea=%p, memlow=%p, memmid=%p, memhigh=%p\n",
+> 		getpid(), memarea, memlow, memmid, memhigh);
+> 	getchar();
+> 
+> 	return ret;
+> }
+> 
+> 
+> 
+> Output on v5.4:
+> 
+> Check for 2 vmas with hole: pid=171038, memarea=0x7fe6c34d9000, memlow=0x7fe6c34da000, memhigh=0x7fe6c34dc000
+> Check for single merged vma: pid=171038, memarea=0x7fe6c34d9000, memlow=0x7fe6c34da000, memmid=0x7fe6c34db000, memhigh=0x7fe6c34dc000
+> 
+> And maps output at the 2 check points:
+> 
+> (base) ryarob01@e125769:/data_nvme0n1/ryarob01/granule_perf$ cat /proc/171038/maps
+> 55e55c258000-55e55c259000 r--p 00000000 fd:00 5297466                    /data_nvme0n1/ryarob01/granule_perf/merge
+> 55e55c259000-55e55c25a000 r-xp 00001000 fd:00 5297466                    /data_nvme0n1/ryarob01/granule_perf/merge
+> 55e55c25a000-55e55c25b000 r--p 00002000 fd:00 5297466                    /data_nvme0n1/ryarob01/granule_perf/merge
+> 55e55c25b000-55e55c25c000 r--p 00002000 fd:00 5297466                    /data_nvme0n1/ryarob01/granule_perf/merge
+> 55e55c25c000-55e55c25d000 rw-p 00003000 fd:00 5297466                    /data_nvme0n1/ryarob01/granule_perf/merge
+> 55e55c403000-55e55c424000 rw-p 00000000 00:00 0                          [heap]
+> 7fe6c32d2000-7fe6c32f4000 r--p 00000000 fd:02 9573653                    /lib/x86_64-linux-gnu/libc-2.31.so
+> 7fe6c32f4000-7fe6c346c000 r-xp 00022000 fd:02 9573653                    /lib/x86_64-linux-gnu/libc-2.31.so
+> 7fe6c346c000-7fe6c34ba000 r--p 0019a000 fd:02 9573653                    /lib/x86_64-linux-gnu/libc-2.31.so
+> 7fe6c34ba000-7fe6c34be000 r--p 001e7000 fd:02 9573653                    /lib/x86_64-linux-gnu/libc-2.31.so
+> 7fe6c34be000-7fe6c34c0000 rw-p 001eb000 fd:02 9573653                    /lib/x86_64-linux-gnu/libc-2.31.so
+> 7fe6c34c0000-7fe6c34c6000 rw-p 00000000 00:00 0 
+> 7fe6c34d9000-7fe6c34da000 ---p 00000000 00:00 0 
+> 7fe6c34da000-7fe6c34db000 rw-p 00000000 00:00 0 
+> 7fe6c34dc000-7fe6c34dd000 rw-p 00000000 00:00 0 
+> 7fe6c34dd000-7fe6c34de000 ---p 00000000 00:00 0 
+> 7fe6c34de000-7fe6c34df000 r--p 00000000 fd:02 9573649                    /lib/x86_64-linux-gnu/ld-2.31.so
+> 7fe6c34df000-7fe6c3502000 r-xp 00001000 fd:02 9573649                    /lib/x86_64-linux-gnu/ld-2.31.so
+> 7fe6c3502000-7fe6c350a000 r--p 00024000 fd:02 9573649                    /lib/x86_64-linux-gnu/ld-2.31.so
+> 7fe6c350b000-7fe6c350c000 r--p 0002c000 fd:02 9573649                    /lib/x86_64-linux-gnu/ld-2.31.so
+> 7fe6c350c000-7fe6c350d000 rw-p 0002d000 fd:02 9573649                    /lib/x86_64-linux-gnu/ld-2.31.so
+> 7fe6c350d000-7fe6c350e000 rw-p 00000000 00:00 0 
+> 7fff39a11000-7fff39a32000 rw-p 00000000 00:00 0                          [stack]
+> 7fff39a83000-7fff39a86000 r--p 00000000 00:00 0                          [vvar]
+> 7fff39a86000-7fff39a87000 r-xp 00000000 00:00 0                          [vdso]
+> ffffffffff600000-ffffffffff601000 --xp 00000000 00:00 0                  [vsyscall]
+> (base) ryarob01@e125769:/data_nvme0n1/ryarob01/granule_perf$ cat /proc/171038/maps
+> 55e55c258000-55e55c259000 r--p 00000000 fd:00 5297466                    /data_nvme0n1/ryarob01/granule_perf/merge
+> 55e55c259000-55e55c25a000 r-xp 00001000 fd:00 5297466                    /data_nvme0n1/ryarob01/granule_perf/merge
+> 55e55c25a000-55e55c25b000 r--p 00002000 fd:00 5297466                    /data_nvme0n1/ryarob01/granule_perf/merge
+> 55e55c25b000-55e55c25c000 r--p 00002000 fd:00 5297466                    /data_nvme0n1/ryarob01/granule_perf/merge
+> 55e55c25c000-55e55c25d000 rw-p 00003000 fd:00 5297466                    /data_nvme0n1/ryarob01/granule_perf/merge
+> 55e55c403000-55e55c424000 rw-p 00000000 00:00 0                          [heap]
+> 7fe6c32d2000-7fe6c32f4000 r--p 00000000 fd:02 9573653                    /lib/x86_64-linux-gnu/libc-2.31.so
+> 7fe6c32f4000-7fe6c346c000 r-xp 00022000 fd:02 9573653                    /lib/x86_64-linux-gnu/libc-2.31.so
+> 7fe6c346c000-7fe6c34ba000 r--p 0019a000 fd:02 9573653                    /lib/x86_64-linux-gnu/libc-2.31.so
+> 7fe6c34ba000-7fe6c34be000 r--p 001e7000 fd:02 9573653                    /lib/x86_64-linux-gnu/libc-2.31.so
+> 7fe6c34be000-7fe6c34c0000 rw-p 001eb000 fd:02 9573653                    /lib/x86_64-linux-gnu/libc-2.31.so
+> 7fe6c34c0000-7fe6c34c6000 rw-p 00000000 00:00 0 
+> 7fe6c34d9000-7fe6c34da000 ---p 00000000 00:00 0 
+> 7fe6c34da000-7fe6c34dd000 rw-p 00000000 00:00 0 
+> 7fe6c34dd000-7fe6c34de000 ---p 00000000 00:00 0 
+> 7fe6c34de000-7fe6c34df000 r--p 00000000 fd:02 9573649                    /lib/x86_64-linux-gnu/ld-2.31.so
+> 7fe6c34df000-7fe6c3502000 r-xp 00001000 fd:02 9573649                    /lib/x86_64-linux-gnu/ld-2.31.so
+> 7fe6c3502000-7fe6c350a000 r--p 00024000 fd:02 9573649                    /lib/x86_64-linux-gnu/ld-2.31.so
+> 7fe6c350b000-7fe6c350c000 r--p 0002c000 fd:02 9573649                    /lib/x86_64-linux-gnu/ld-2.31.so
+> 7fe6c350c000-7fe6c350d000 rw-p 0002d000 fd:02 9573649                    /lib/x86_64-linux-gnu/ld-2.31.so
+> 7fe6c350d000-7fe6c350e000 rw-p 00000000 00:00 0 
+> 7fff39a11000-7fff39a32000 rw-p 00000000 00:00 0                          [stack]
+> 7fff39a83000-7fff39a86000 r--p 00000000 00:00 0                          [vvar]
+> 7fff39a86000-7fff39a87000 r-xp 00000000 00:00 0                          [vdso]
+> ffffffffff600000-ffffffffff601000 --xp 00000000 00:00 0                  [vsyscall]
+> 
+> 
+> Output on v6.5-rc3:
+> 
+> Check for 2 vmas with hole: pid=3181, memarea=0xfffff7ff2000, memlow=0xfffff7ff3000, memhigh=0xfffff7ff5000
+> Check for single merged vma: pid=3181, memarea=0xfffff7ff2000, memlow=0xfffff7ff3000, memmid=0xfffff7ff4000, memhigh=0xfffff7ff5000
+> 
+> And maps output at the 2 check points:
+> 
+> ubuntu@ubuntuvm:~/linux$ cat /proc/3181/maps 
+> aaaaaaaa0000-aaaaaaaa1000 r-xp 00000000 fe:02 8199010                    /home/ubuntu/merge
+> aaaaaaab0000-aaaaaaab1000 r--p 00000000 fe:02 8199010                    /home/ubuntu/merge
+> aaaaaaab1000-aaaaaaab2000 rw-p 00001000 fe:02 8199010                    /home/ubuntu/merge
+> aaaaaaab2000-aaaaaaad3000 rw-p 00000000 00:00 0                          [heap]
+> fffff7e00000-fffff7f89000 r-xp 00000000 fe:02 41410085                   /usr/lib/aarch64-linux-gnu/libc.so.6
+> fffff7f89000-fffff7f98000 ---p 00189000 fe:02 41410085                   /usr/lib/aarch64-linux-gnu/libc.so.6
+> fffff7f98000-fffff7f9c000 r--p 00188000 fe:02 41410085                   /usr/lib/aarch64-linux-gnu/libc.so.6
+> fffff7f9c000-fffff7f9e000 rw-p 0018c000 fe:02 41410085                   /usr/lib/aarch64-linux-gnu/libc.so.6
+> fffff7f9e000-fffff7faa000 rw-p 00000000 00:00 0 
+> fffff7fc2000-fffff7fed000 r-xp 00000000 fe:02 41316494                   /usr/lib/aarch64-linux-gnu/ld-linux-aarch64.so.1
+> fffff7ff2000-fffff7ff3000 ---p 00000000 00:00 0 
+> fffff7ff3000-fffff7ff4000 rw-p 00000000 00:00 0 
+> fffff7ff5000-fffff7ff6000 rw-p 00000000 00:00 0 
+> fffff7ff6000-fffff7ff7000 ---p 00000000 00:00 0 
+> fffff7ff7000-fffff7ff9000 rw-p 00000000 00:00 0 
+> fffff7ff9000-fffff7ffb000 r--p 00000000 00:00 0                          [vvar]
+> fffff7ffb000-fffff7ffc000 r-xp 00000000 00:00 0                          [vdso]
+> fffff7ffc000-fffff7ffe000 r--p 0002a000 fe:02 41316494                   /usr/lib/aarch64-linux-gnu/ld-linux-aarch64.so.1
+> fffff7ffe000-fffff8000000 rw-p 0002c000 fe:02 41316494                   /usr/lib/aarch64-linux-gnu/ld-linux-aarch64.so.1
+> fffffffdf000-1000000000000 rw-p 00000000 00:00 0                         [stack]
+> ubuntu@ubuntuvm:~/linux$ cat /proc/3181/maps 
+> aaaaaaaa0000-aaaaaaaa1000 r-xp 00000000 fe:02 8199010                    /home/ubuntu/merge
+> aaaaaaab0000-aaaaaaab1000 r--p 00000000 fe:02 8199010                    /home/ubuntu/merge
+> aaaaaaab1000-aaaaaaab2000 rw-p 00001000 fe:02 8199010                    /home/ubuntu/merge
+> aaaaaaab2000-aaaaaaad3000 rw-p 00000000 00:00 0                          [heap]
+> fffff7e00000-fffff7f89000 r-xp 00000000 fe:02 41410085                   /usr/lib/aarch64-linux-gnu/libc.so.6
+> fffff7f89000-fffff7f98000 ---p 00189000 fe:02 41410085                   /usr/lib/aarch64-linux-gnu/libc.so.6
+> fffff7f98000-fffff7f9c000 r--p 00188000 fe:02 41410085                   /usr/lib/aarch64-linux-gnu/libc.so.6
+> fffff7f9c000-fffff7f9e000 rw-p 0018c000 fe:02 41410085                   /usr/lib/aarch64-linux-gnu/libc.so.6
+> fffff7f9e000-fffff7faa000 rw-p 00000000 00:00 0 
+> fffff7fc2000-fffff7fed000 r-xp 00000000 fe:02 41316494                   /usr/lib/aarch64-linux-gnu/ld-linux-aarch64.so.1
+> fffff7ff2000-fffff7ff3000 ---p 00000000 00:00 0 
+> fffff7ff3000-fffff7ff4000 rw-p 00000000 00:00 0 
+> fffff7ff4000-fffff7ff5000 rw-p 00000000 00:00 0 
+> fffff7ff5000-fffff7ff6000 rw-p 00000000 00:00 0 
+> fffff7ff6000-fffff7ff7000 ---p 00000000 00:00 0 
+> fffff7ff7000-fffff7ff9000 rw-p 00000000 00:00 0 
+> fffff7ff9000-fffff7ffb000 r--p 00000000 00:00 0                          [vvar]
+> fffff7ffb000-fffff7ffc000 r-xp 00000000 00:00 0                          [vdso]
+> fffff7ffc000-fffff7ffe000 r--p 0002a000 fe:02 41316494                   /usr/lib/aarch64-linux-gnu/ld-linux-aarch64.so.1
+> fffff7ffe000-fffff8000000 rw-p 0002c000 fe:02 41316494                   /usr/lib/aarch64-linux-gnu/ld-linux-aarch64.so.1
+> fffffffdf000-1000000000000 rw-p 00000000 00:00 0                         [stack]
