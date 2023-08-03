@@ -2,142 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A32476DD04
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 03:10:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5BA6976DD07
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 03:10:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232491AbjHCBJA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Aug 2023 21:09:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47644 "EHLO
+        id S229814AbjHCBKV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Aug 2023 21:10:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48160 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231406AbjHCBI7 (ORCPT
+        with ESMTP id S230185AbjHCBKT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Aug 2023 21:08:59 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A86C1716
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Aug 2023 18:08:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1691024888;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=yNCl3TS6o3J06UrSCjbBrl21cvR06Nfa+qdUrrTWUOw=;
-        b=PPBygaoBGIN+RllqEOPGnP5lT+raEyRWb//MAQuh8KsENi8lJkffn8L3VgzOr3Qww13nPg
-        qvJqMaFFukEvPzugBDjhdA77VJ6hGnT5ok/ahgMJw56wolc19NtSzGjG/yxVKLW3mPzphg
-        6KKbw1tQj5HT8DYKGHsusJfptsqwtCI=
-Received: from mimecast-mx02.redhat.com (66.187.233.73 [66.187.233.73]) by
- relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-86-kT90DbMtPA-AfZ-sdNrgZQ-1; Wed, 02 Aug 2023 21:08:04 -0400
-X-MC-Unique: kT90DbMtPA-AfZ-sdNrgZQ-1
-Received: from smtp.corp.redhat.com (int-mx09.intmail.prod.int.rdu2.redhat.com [10.11.54.9])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        Wed, 2 Aug 2023 21:10:19 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D713187;
+        Wed,  2 Aug 2023 18:10:19 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id A7DC228237CB;
-        Thu,  3 Aug 2023 01:08:03 +0000 (UTC)
-Received: from [10.22.18.41] (unknown [10.22.18.41])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 0C0D7492CA6;
-        Thu,  3 Aug 2023 01:08:01 +0000 (UTC)
-Message-ID: <0c019181-7e9b-0a19-c477-f8630ea98124@redhat.com>
-Date:   Wed, 2 Aug 2023 21:08:01 -0400
+        by dfw.source.kernel.org (Postfix) with ESMTPS id BF78861A17;
+        Thu,  3 Aug 2023 01:10:18 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4F424C433C7;
+        Thu,  3 Aug 2023 01:10:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1691025018;
+        bh=PvrvK37FaEsaLjjz6nuh7mHpARoFCz1TcAgIQKS6LJA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=IGBLr/o7QIYabUi4sk1e1+TsuH86dPdXH/RtViLcrAOqcujXwYM302vg2z549XudC
+         h+V73wN62QM3r3Mrcc+VlxsRpBMwSuAfclW5PLxYtJLzdBl25FzyWp5so7sGjSIN2/
+         YKC3Ne9I4Mfy0IaNVvhpvcwb6Lt98oFku7/QE+1i2OCL+C0vwu+2GLOsjL08R5rDgs
+         Pd+NTEKTT8igb8KNNxLqH5ygzpRLDvJydwMqQjyi/RN3lxL93jRN9jGM2MQySlWxIb
+         3nEdhjQ7IxzzFEJYeYEA3y2UPTyIEaRn21sHQpAwfybr0idSyApk7nspJo02BQkXc0
+         QrjQemHzMzaUw==
+Received: (nullmailer pid 1634744 invoked by uid 1000);
+        Thu, 03 Aug 2023 01:10:16 -0000
+Date:   Wed, 2 Aug 2023 19:10:16 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Lee Jones <lee@kernel.org>
+Cc:     Guru Das Srinagesh <quic_gurus@quicinc.com>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        MyungJoo Ham <myungjoo.ham@samsung.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org
+Subject: Re: [PATCH] treewide: Update Guru Das Srinagesh's email address
+Message-ID: <20230803011016.GA1630536-robh@kernel.org>
+References: <20230728001622.4938-1-quic_gurus@quicinc.com>
+ <20230728075416.GC8175@google.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.7.1
-Subject: Re: [PATCH v5 4/5] cgroup/cpuset: Documentation update for partition
-Content-Language: en-US
-To:     Tejun Heo <tj@kernel.org>
-Cc:     Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Christian Brauner <brauner@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Shuah Khan <shuah@kernel.org>, cgroups@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Juri Lelli <juri.lelli@redhat.com>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        =?UTF-8?Q?Michal_Koutn=c3=bd?= <mkoutny@suse.com>,
-        Giuseppe Scrivano <gscrivan@redhat.com>
-References: <20230713172601.3285847-1-longman@redhat.com>
- <20230713172601.3285847-5-longman@redhat.com>
- <ZMrERWeIeEOGzXHO@slm.duckdns.org>
-From:   Waiman Long <longman@redhat.com>
-In-Reply-To: <ZMrERWeIeEOGzXHO@slm.duckdns.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.9
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230728075416.GC8175@google.com>
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/2/23 17:01, Tejun Heo wrote:
-> Hello, Waiman.
->
-> On Thu, Jul 13, 2023 at 01:26:00PM -0400, Waiman Long wrote:
-> ...
->> +	When a valid partition is created, the value of this file will
->> +	be automatically set to the largest subset of "cpuset.cpus"
->> +	that can be granted for exclusive access from its parent if
->> +	its value isn't explicitly set before.
->> +
->> +	Users can also manually set it to a value that is different from
->> +	"cpuset.cpus".	In this case, its value becomes invariant and
->> +	may no longer reflect the effective value that is being used
->> +	to create a valid partition if some dependent cpuset control
->> +	files are modified.
->> +
->> +	There are constraints on what values are acceptable to this
->> +	control file.  If a null string is provided, it will invalidate a
->> +	valid partition root and reset its invariant state.  Otherwise,
->> +	its value must be a subset of the cgroup's "cpuset.cpus" value
->> +	and the parent cgroup's "cpuset.cpus.exclusive" value.
-> As I wrote before, the hidden state really bothers me. This is fine when
-> there is one person configuring the system, but working with automated
-> management and monitoring tools can be really confusing at scale when there
-> are hidden states like this as there's no way to determine the current state
-> by looking at what's visible at the interface level.
->
-> Can't we do something like the following?
->
-> * cpuset.cpus.exclusive can be set to any possible cpus. While I'm not
->    completely against failing certain writes (e.g. siblings having
->    overlapping masks is never correct or useful), expanding that to
->    hierarchical checking quickly gets into trouble around what happens when
->    an ancestor retracts a CPU.
->
->    I don't think it makes sense to reject writes if the applied rules can't
->    be invariants for the same reason given for avoiding hidden states - the
->    system can be managed by multiple agents at different delegation levels.
->    One layer changing resource configuration shouldn't affect the success or
->    failure of configuration operations in other layers.
->
-> * cpuset.cpus.exclusive.effective shows what's currently available for
->    exclusive usage - ie. what'd be used for a partition if the cgroup is to
->    become a partition at that point.
->
->    This, I think, gets rid of the need for the hidden states. If .exclusive
->    of a child of a partition is empty, its .exclusive.effective can show all
->    the CPUs allowed in it. If .exclusive is set then, .exclusive.effective
->    shows the available subset.
->
-> What do you think?
->
-Sure, I can add cpuset.cpus.exclusive.effective and allow users to set 
-cpuset.cpus.exclusive to whatever they want, just like cpuset.cpus. I 
-will rework the patch series and send out a new version sometimes next 
-week.
+On Fri, Jul 28, 2023 at 08:54:16AM +0100, Lee Jones wrote:
+> On Thu, 27 Jul 2023, Guru Das Srinagesh wrote:
+> 
+> > Clean up my email address as the codeaurora.org address is not used
+> > anymore.
+> > 
+> > Signed-off-by: Guru Das Srinagesh <quic_gurus@quicinc.com>
+> > ---
+> >  Documentation/devicetree/bindings/extcon/qcom,pm8941-misc.yaml | 2 +-
+> >  Documentation/devicetree/bindings/mfd/qcom,pm8008.yaml         | 2 +-
+> 
+> 2 patches isn't exactly 'treewide'.
+> 
+> Anyway, since there are not dependencies between the changes, please
+> separate them out, one per subsystem.
 
-With the new cpuset.cpus.exclusive.effective file, cpuset.cpus.exclusive 
-will really be invariant and become whatever the users set. 
-cpuset.cpus.exclusive.effective file will only have value if 
-cpuset.cpus.exclusive set or it becomes a local partition.
+I'm happy to take these patches via the DT tree. No real advantage to 
+creating more work to split up these trivial changes.
 
-Hopefully this will be the final version.
-
-Cheers,
-Longman
-
+Rob
