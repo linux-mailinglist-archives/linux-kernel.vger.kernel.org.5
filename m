@@ -2,52 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 415D176EFAD
+	by mail.lfdr.de (Postfix) with ESMTP id 6A58D76EFAE
 	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 18:35:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237170AbjHCQf0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Aug 2023 12:35:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38838 "EHLO
+        id S237307AbjHCQfc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Aug 2023 12:35:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38860 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235670AbjHCQfR (ORCPT
+        with ESMTP id S236262AbjHCQfS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Aug 2023 12:35:17 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA02C2698;
-        Thu,  3 Aug 2023 09:35:14 -0700 (PDT)
+        Thu, 3 Aug 2023 12:35:18 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B7043AAC;
+        Thu,  3 Aug 2023 09:35:16 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 782DA61E3D;
+        by dfw.source.kernel.org (Postfix) with ESMTPS id EF2C161E48;
+        Thu,  3 Aug 2023 16:35:15 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1A256C433C9;
         Thu,  3 Aug 2023 16:35:14 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2729CC43395;
-        Thu,  3 Aug 2023 16:35:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691080513;
-        bh=Iv0qdMHHYSPH+rD/oCAF0Tcwgn2U3oH2eQHhmtldJIk=;
-        h=From:To:Subject:Date:In-Reply-To:References:From;
-        b=aNvW/eoC0EtiUH8Sr+KpxKdAV4T9X8NGk5WyeRXg7RsZz906DSP1/4Hv4B8Ly8Bxg
-         XURGhtCGFUFcvjF5x74FqOeLb1gn59ZuP6UGJ519thG8VRUN7EI7pyCHOLROYeTQ9i
-         3IXQ/WHWHw+1vUVXVxik2AuiU8F4AFZayDfjgRzGqmNXeKRLoFfpQVYymbX2Or3QAx
-         AUz7vOTEzSS4Wp3SubEMK0CCR7lYdjeuuDsy+JCuGei1+3LMLDyVeS/Q0xYOTgTD7O
-         LApjjmCWQfeMMW/E2RW+1encBNHmiHhlMpNrY8ogB/e1m1l27Js0zTH2ugyrnmsu7R
-         QCPgNz5VdsQTQ==
+        s=k20201202; t=1691080515;
+        bh=9GF8dPmqpJDorXIVtKf+9BG4DCxzhozeJx7oB74izKc=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=LHY2AgOLT1XO79agb5Nxaz/L5Sn4ZNaQhD5qLSgQj2FU7WbYKMfWL/RKMQ/WKS+dk
+         8G4+JChxklJLmZElnB6mLdQuljxmvPbcA3B0Nue67DkJJtqdMet2PB/3Xs3ZZSUzGF
+         rx0ev1HzU6gL4mtuqE9LWKy11N5dO/QExBcLcKhnhm5sER3luYuAKiYXybkBiG/Ayw
+         iayFz3ZNDmpIycdaWiojgrNrKsOEQlKoS5xpMzLTvQ8NZknacVUF7aYCcThCNqv5+A
+         rxl/yDE2HP9pIEvArQdrjCx8iNBwk6SVu6f+7YfAKfQvRA7QlEIc2Goy2dHQjRPcgP
+         B7CPlL4QBGiGQ==
 From:   Bjorn Andersson <andersson@kernel.org>
-To:     Andy Gross <agross@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
+To:     Andy Gross <agross@kernel.org>, Conor Dooley <conor+dt@kernel.org>,
+        Jonathan Cameron <jic23@kernel.org>,
         Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Subject: Re: [PATCH v2] arm64: dts: qcom: use defines for interrupts
-Date:   Thu,  3 Aug 2023 09:38:04 -0700
-Message-ID: <169108064637.108343.11490080785136956394.b4-ty@kernel.org>
+        Rob Herring <robh+dt@kernel.org>,
+        cros-qcom-dts-watchers@chromium.org,
+        Marijn Suijten <marijn.suijten@somainline.org>
+Cc:     AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        Jami Kettunen <jami.kettunen@somainline.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Manivannan Sadhasivam <mani@kernel.org>,
+        Martin Botka <martin.botka@somainline.org>,
+        devicetree@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        ~postmarketos/upstreaming@lists.sr.ht
+Subject: Re: (subset) [PATCH v5 0/2] dts: qcom: Use labels with generic node names for ADC channels
+Date:   Thu,  3 Aug 2023 09:38:05 -0700
+Message-ID: <169108064641.108343.2633623346382690322.b4-ty@kernel.org>
 X-Mailer: git-send-email 2.41.0
-In-Reply-To: <20230730180638.23539-1-krzysztof.kozlowski@linaro.org>
-References: <20230730180638.23539-1-krzysztof.kozlowski@linaro.org>
+In-Reply-To: <20230730-generic-adc-channels-v5-0-e6c69bda8034@somainline.org>
+References: <20230730-generic-adc-channels-v5-0-e6c69bda8034@somainline.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -62,16 +70,24 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-On Sun, 30 Jul 2023 20:06:38 +0200, Krzysztof Kozlowski wrote:
-> Replace hard-coded interrupt parts (GIC, flags) with standard defines
-> for readability.  No changes in resulting DTBs.
+On Sun, 30 Jul 2023 22:31:24 +0200, Marijn Suijten wrote:
+> As discussed in [1] it is more convenient to use a generic `channel`
+> node name for ADC channels while storing a friendly - board-specific
+> instead of PMIC-specific - name in the label, if/when desired to
+> overwrite the channel description already contained (but previously
+> unused) in the driver [2].
 > 
+> The same `channel` node name pattern has also been set in
+> iio/adc/adc.yaml, but this generic binding is not inherited as base for
+> qcom,spmi-vadc bindings due to not having any other generic elements in
+> common, besides the node name rule and reg property.
 > 
+> [...]
 
 Applied, thanks!
 
-[1/1] arm64: dts: qcom: use defines for interrupts
-      commit: b79663a5515f01307f25206c313997ef6267e0fd
+[1/2] ARM: dts: qcom: Use labels with generic node names for ADC channels
+      commit: 04601b9b1b67888b7e2987e31ab40637f7c999c0
 
 Best regards,
 -- 
