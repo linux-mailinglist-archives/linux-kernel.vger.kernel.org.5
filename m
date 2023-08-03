@@ -2,55 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DCAF076E2F4
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 10:26:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 46CD676E300
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 10:27:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233595AbjHCI0b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Aug 2023 04:26:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48246 "EHLO
+        id S234568AbjHCI1S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Aug 2023 04:27:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48540 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233321AbjHCI0C (ORCPT
+        with ESMTP id S231674AbjHCI0y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Aug 2023 04:26:02 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 0F48C3C23
-        for <linux-kernel@vger.kernel.org>; Thu,  3 Aug 2023 01:21:18 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 5E15D113E;
-        Thu,  3 Aug 2023 01:22:00 -0700 (PDT)
-Received: from [10.57.77.90] (unknown [10.57.77.90])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 12E9D3F5A1;
-        Thu,  3 Aug 2023 01:21:14 -0700 (PDT)
-Message-ID: <49142e18-fd4e-6487-113a-3112b1c17dbe@arm.com>
-Date:   Thu, 3 Aug 2023 09:21:13 +0100
+        Thu, 3 Aug 2023 04:26:54 -0400
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E636C2D49
+        for <linux-kernel@vger.kernel.org>; Thu,  3 Aug 2023 01:23:13 -0700 (PDT)
+Received: from [192.168.1.100] (2-237-20-237.ip236.fastwebnet.it [2.237.20.237])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: kholk11)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id 2B92D6607194;
+        Thu,  3 Aug 2023 09:23:12 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1691050992;
+        bh=oK9desb5EWhnphr9ikanL/R6Rwryfv81Ndw2kNrxKEI=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=WiQJxg4TgF966hL+X2NGTvpIhFDRhPoSiwl8sARMWo+MlrvjqefrCzxXXu6/FLfKz
+         dQtKFkn2sWI9+NvVVBPxXYgFq+iVrBunxOtQhVgydcCnQaCsBK4KsLZJlxf1fVVll9
+         mcfkwQVQfNfQXkOK0RWU3ShDGt+Uw23Lyp2O09aTw71SxmLqwgEhs/W2Y2KaxzsouB
+         dH/V4xDWsIhPMTgOz8xXq4pOCTvECEgLyVTwgleLMF9xxEpzlhiwYFBXzeGdOjkqY1
+         6niWPcZgyNaCi35hRrDHfSixUs/er4+s0yjVHhJ/bWd5hwD8t7AaBkJn0P9/C5PBYv
+         Atrem9ZJAK9zA==
+Message-ID: <f345b310-94c8-e3a6-58c0-770569152a92@collabora.com>
+Date:   Thu, 3 Aug 2023 10:23:09 +0200
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.13.0
-Subject: Re: [PATCH v4 2/5] mm: LARGE_ANON_FOLIO for improved performance
-To:     Yin Fengwei <fengwei.yin@intel.com>, Yu Zhao <yuzhao@google.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        David Hildenbrand <david@redhat.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Yang Shi <shy828301@gmail.com>,
-        "Huang, Ying" <ying.huang@intel.com>, Zi Yan <ziy@nvidia.com>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Itaru Kitayama <itaru.kitayama@gmail.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-References: <20230726095146.2826796-1-ryan.roberts@arm.com>
- <20230726095146.2826796-3-ryan.roberts@arm.com>
- <CAOUHufackQzy+yXOzaej+G6DNYK-k9GAUHAK6Vq79BFHr7KwAQ@mail.gmail.com>
- <CAOUHufZ70cMR=hnMW0_J9BeWRPwXVUDoeRhES+wq19r1SioGuA@mail.gmail.com>
- <8c0710e0-a75a-b315-dae1-dd93092e4bd6@arm.com>
- <4ae53b2a-e069-f579-428d-ac6f744cd19a@intel.com>
-From:   Ryan Roberts <ryan.roberts@arm.com>
-In-Reply-To: <4ae53b2a-e069-f579-428d-ac6f744cd19a@intel.com>
-Content-Type: text/plain; charset=UTF-8
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH v2 3/3] ASoC: mediatek: mt8188-mt6359: add SOF support
+Content-Language: en-US
+To:     Trevor Wu <trevor.wu@mediatek.com>, broonie@kernel.org,
+        lgirdwood@gmail.com, tiwai@suse.com, perex@perex.cz,
+        matthias.bgg@gmail.com
+Cc:     alsa-devel@alsa-project.org, linux-mediatek@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+References: <20230803052607.25843-1-trevor.wu@mediatek.com>
+ <20230803052607.25843-4-trevor.wu@mediatek.com>
+From:   AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>
+In-Reply-To: <20230803052607.25843-4-trevor.wu@mediatek.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -58,84 +61,16 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 03/08/2023 09:05, Yin Fengwei wrote:
-
-...
-
->> I've captured run time and peak memory usage, and taken the mean. The stdev for
->> the peak memory usage is big-ish, but I'm confident this still captures the
->> central tendancy well:
->>
->> | MAX_ORDER_UNHINTED |   real-time |   kern-time |   user-time | peak memory |
->> |:-------------------|------------:|------------:|------------:|:------------|
->> | 4k                 |        0.0% |        0.0% |        0.0% |        0.0% |
->> | 16k                |       -3.6% |      -26.5% |       -0.5% |       -0.1% |
->> | 32k                |       -4.8% |      -37.4% |       -0.6% |       -0.1% |
->> | 64k                |       -5.7% |      -42.0% |       -0.6% |       -1.1% |
->> | 128k               |       -5.6% |      -42.1% |       -0.7% |        1.4% |
->> | 256k               |       -4.9% |      -41.9% |       -0.4% |        1.9% |
+Il 03/08/23 07:26, Trevor Wu ha scritto:
+> SOF is enabled when adsp phandle is assigned to "mediatek,adsp".
+> The required callback will be assigned when SOF is enabled.
 > 
-> Here is my test result:
+> Additionally, "mediatek,dai-link" is introduced to decide the supported
+> dai links for a project, so user can reuse the machine driver regardless
+> of dai link combination.
 > 
-> 		real		user		sys
-> hink-4k:	 0%		0%		0%
-> hink-16K:	-3%		0.1%		-18.3%
-> hink-32K:	-4%		0.2%		-27.2%
-> hink-64K:	-4%		0.5%		-31.0%
-> hink-128K:	-4%		0.9%		-33.7%
-> hink-256K:	-5%		1%		-34.6%
-> 
-> 
-> I used command: 
-> /usr/bin/time -f "\t%E real,\t%U user,\t%S sys" make -skj96 allmodconfig all
-> to build kernel and collect the real time/user time/kernel time.
-> /sys/kernel/mm/transparent_hugepage/enabled is "madvise".
-> Let me know if you have any question about the test.
+> Signed-off-by: Trevor Wu <trevor.wu@mediatek.com>
 
-Thanks for doing this! I have a couple of questions:
+Reviewed-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
 
- - how many times did you run each test?
-
- - how did you configure the large page size? (I sent an email out yesterday
-   saying that I was doing it wrong from my tests, so the 128k and 256k results
-   for my test set are not valid.
-
- - what does "hink" mean??
-
-> 
-> I also find one strange behavior with this version. It's related with why
-> I need to set the /sys/kernel/mm/transparent_hugepage/enabled to "madvise".
-> If it's "never", the large folio is disabled either.
-> If it's "always", the THP will be active before large folio. So the system is
-> in the mixed mode. it's not suitable for this test.
-
-We had a discussion around this in the THP meeting yesterday. I'm going to write
-this up propoerly so we can have proper systematic discussion. The tentative
-conclusion is that MADV_NOHUGEPAGE must continue to mean "do not fault in more
-than is absolutely necessary". I would assume we need to extend that thinking to
-the process-wide and system-wide knobs (as is done in the patch), but we didn't
-explicitly say so in the meeting.
-
-My intention is that if you have requested THP and your vma is big enough for
-PMD-size then you get that, else you fallback to large anon folios. And if you
-have neither opted in nor out, then you get large anon folios.
-
-We talked about the idea of adding a new knob that let's you set the max order,
-but that needs a lot more thought.
-
-Anyway, as I said, I'll write it up so we can all systematically discuss.
-
-> 
-> So if it's "never", large folio is disabled. But why "madvise" enables large
-> folio unconditionly? Suppose it's only enabled for the VMA range which user
-> madvise large folio (or THP)?
-> 
-> Specific for the hink setting, my understand is that we can't choose it only
-> by this testing. Other workloads may have different behavior with differnt
-> hink setting.
-> 
-> 
-> Regards
-> Yin, Fengwei
-> 
 
