@@ -2,154 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CB0C876E261
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 10:03:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2046276E262
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 10:03:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232852AbjHCIDa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Aug 2023 04:03:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36838 "EHLO
+        id S233295AbjHCIDd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Aug 2023 04:03:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36348 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232452AbjHCICh (ORCPT
+        with ESMTP id S234355AbjHCICz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Aug 2023 04:02:37 -0400
-Received: from mgamail.intel.com (unknown [192.55.52.93])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2B784EC4;
-        Thu,  3 Aug 2023 00:54:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1691049267; x=1722585267;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=33UOkSMkM9BomQxxurJheon2QdPZ9/IK7zqKAbWbDF4=;
-  b=Vk4Ko77OAgjNirKX+etXScrOxNkre+tI3797kSrUL+1GsrvYYDkYCSL+
-   FTxQh6dc4iE2ouZ//upLcHwOeGzxErEYnWP4ghZW/R4fay6Li3QxD4YrX
-   +biocdWmZ+jmzbk4D5PCECm0p+wr/SQ6v+/rVeDb7+YtJIVWUVtsMqNd/
-   ft2a0gorfw7wMPIlzB5gqc+EGmWxzRyFBYKZoBgZJku+NhhRAx6ZTt6SO
-   hjIwVgGQ0bcWvm04gVUlPRX0uc/qDV2YDB/rZ+ApcHLrIw8i22X6Ik6Tx
-   gWM3dmXNL+CG/8eBTlHHU8VONV2rzMTDTgD5Iv+bA7kEWwJic5T9buQ6R
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10790"; a="367256916"
-X-IronPort-AV: E=Sophos;i="6.01,251,1684825200"; 
-   d="scan'208";a="367256916"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Aug 2023 00:54:22 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10790"; a="843491920"
-X-IronPort-AV: E=Sophos;i="6.01,251,1684825200"; 
-   d="scan'208";a="843491920"
-Received: from fmsmsx601.amr.corp.intel.com ([10.18.126.81])
-  by fmsmga002.fm.intel.com with ESMTP; 03 Aug 2023 00:53:56 -0700
-Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
- fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.27; Thu, 3 Aug 2023 00:53:56 -0700
-Received: from fmsedg601.ED.cps.intel.com (10.1.192.135) by
- fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.27 via Frontend Transport; Thu, 3 Aug 2023 00:53:56 -0700
-Received: from NAM12-BN8-obe.outbound.protection.outlook.com (104.47.55.174)
- by edgegateway.intel.com (192.55.55.70) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.27; Thu, 3 Aug 2023 00:53:55 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=IhtYSTU3Vf1I+c0s/BTFyT6r8ZJwroKa1JfxTfE02DerqhNduqU6WtOoJk9HesWfUZYM6UinkkiinyuDgxkJBW6YDnXULCPnvkKI7webLUyNm0VGkgyIewwlWU3KzB5tafidg9O2FX/RtrG6AVX3dNIXIwKVSBXHKIvCkfd+jyWJ1V+HhltmfyTIIkCxNkG9Gngi0uUs1lXc2cqx249qcd5olIkXetMXOxcW/Y33535kn5NafdTSdCAtlfQ8RUCfO1s1PLKdp8UEaZRv2oADbwxNCLse9oeEg7IyTexxQJrqY7NAKiRQksrv8PPOfAZmWLIon1PlJTcvpYxQpYCnDw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=mKZjrfVh5co5lerj4AzLabSHy6gR0Diex/5DewhwKRE=;
- b=Ltkm09UpzHNIBvHDjAEVfia48VnNA7bDcwDT9Ck9/A1gGRrUOUT2Hi0osLKTg3wugc1pD8+N2Fme5edpRSO+fEEnsO0QmJOx0aipaNfYA3Sgcw2mg7jh2o+/XVNE1PU3DecJ2Iebpdv37h/4xAg4kINwB/uniUDQJ/yjgJCJjd3w+0eCvw1ACQ7RoptHx8+zUwsqBiJaKjg4LxmlKb6loyQxI5ib5EA6c7x0mE7P+2rdNfHEx/qDfCJQaYwtguL2uENrStXRPmXO+KEer/uwmtBwCoaPhlRabBC3KZ1/jGVOc8Tk1YpcOz2wbYxMT8/2Kr5I/zToM3piex05z0ktDw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Received: from BN9PR11MB5276.namprd11.prod.outlook.com (2603:10b6:408:135::18)
- by PH7PR11MB6881.namprd11.prod.outlook.com (2603:10b6:510:200::19) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6631.47; Thu, 3 Aug
- 2023 07:53:53 +0000
-Received: from BN9PR11MB5276.namprd11.prod.outlook.com
- ([fe80::dcf3:7bac:d274:7bed]) by BN9PR11MB5276.namprd11.prod.outlook.com
- ([fe80::dcf3:7bac:d274:7bed%4]) with mapi id 15.20.6652.020; Thu, 3 Aug 2023
- 07:53:53 +0000
-From:   "Tian, Kevin" <kevin.tian@intel.com>
-To:     Lu Baolu <baolu.lu@linux.intel.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        "Will Deacon" <will@kernel.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        "Jason Gunthorpe" <jgg@ziepe.ca>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        Nicolin Chen <nicolinc@nvidia.com>
-CC:     "Liu, Yi L" <yi.l.liu@intel.com>,
-        Jacob Pan <jacob.jun.pan@linux.intel.com>,
-        "iommu@lists.linux.dev" <iommu@lists.linux.dev>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH v2 01/12] iommu: Move iommu fault data to linux/iommu.h
-Thread-Topic: [PATCH v2 01/12] iommu: Move iommu fault data to linux/iommu.h
-Thread-Index: AQHZwE5Q7SSqgtjPpE6tMKfSHqVBPa/YPliQ
-Date:   Thu, 3 Aug 2023 07:53:53 +0000
-Message-ID: <BN9PR11MB5276D70741353AEE610D53668C08A@BN9PR11MB5276.namprd11.prod.outlook.com>
-References: <20230727054837.147050-1-baolu.lu@linux.intel.com>
- <20230727054837.147050-2-baolu.lu@linux.intel.com>
-In-Reply-To: <20230727054837.147050-2-baolu.lu@linux.intel.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: BN9PR11MB5276:EE_|PH7PR11MB6881:EE_
-x-ms-office365-filtering-correlation-id: c1d1dbec-227a-4993-76ce-08db93f6c837
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: tobp3h8qZ7Nm2xnF5wbXMgmgBAhiZXXUIDHmlKCsbsWufZmfr06g0EboOk8LBpyJsvykcgWGdR557FH2fhdeKptq2MyKmLUXXUmI5L3vvtc8V74cFi9W8ikvoRrifnKHUw6YlCaLn9PqKnOfz6N6SY4jhUbga0gYTWfb6YZKxSkGynBYEow2oR1vz+7O8wYKyXhToRmy+KwFU44FspSgkTblV24w5SN8JQGx22YgKUPaaMX5//6SzHxtE8R6loEm/rpnOMr+9aNA2UORRWOlRsjHEahbme7UQ5XHuMMsdxT12KaqEKkF/8AQXjd0m5Z9vCjLKftVOLXNNYqhwzDE2O1sAGTwffenyGbY9geTzQmjP+jucIgrw6cT5+vf+ByUgkcBRhlKdk2gi07LOkH7nQq2PD49YosAIKSK/FXYUf8CGsqW5+QRbCVCenMsNtZoFHCgx9ApM6HEMUQG83TViuJVhiJETsbN4NSzL/fufexNSLts+A5ysZGqWKMzfKfHPYCaGtLpy4LdB/NX+QFWhhnO4tRp3GsMpJi2vOuUfdqVjatYvvgpHr5qAEs3W43YLPNy5gPE4nD4uwetoPDIEq48PuPRc2fCHA9iiQSBuLKQ/g+66ei65qN4o2Q8n9Q/
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN9PR11MB5276.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(396003)(136003)(346002)(39860400002)(376002)(366004)(451199021)(38070700005)(86362001)(33656002)(54906003)(478600001)(110136005)(55016003)(38100700002)(82960400001)(122000001)(6506007)(186003)(26005)(83380400001)(8676002)(8936002)(41300700001)(52536014)(9686003)(71200400001)(7696005)(316002)(4744005)(66446008)(66476007)(66556008)(5660300002)(4326008)(7416002)(64756008)(66946007)(2906002)(76116006);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?0mGIw3YpStssedKd4xTHdLvg94YswqxByhdMcSP4dtxWeOoweXa0AxMfb0p2?=
- =?us-ascii?Q?Oyj+yqrRnChfyICB76oKBrUu7vrbs93gJSKCL+LVGsqq19i4xzsEaLcbPjgq?=
- =?us-ascii?Q?2NYU9nDI07roVNP0fpQJ/deeegimgR3saTaqD1d/yW634mM/hqEx7/5PqSv6?=
- =?us-ascii?Q?nFxe2vbbAMSefZbQpHAFU7ulAEUjwcr4wMK+zgvDpuEjVR6wgrSy7j1RsLJW?=
- =?us-ascii?Q?hL9tdygLPeVCmetF68eH8YduYJkpQmE2+umNKC3eoZvzMMz28td4I+2Xr5OS?=
- =?us-ascii?Q?PNaI85hYZ2M9r0dmQV59S04uMQELI7dfktVUOs2FJUgsoLvB/xRLgLSSFXWV?=
- =?us-ascii?Q?BqB5PwKivEgg3jIY0SwvI1qYRWGblHKYTrS5E/o9XJUG9iAqX1uWFRX10iIf?=
- =?us-ascii?Q?VXUMSLtUzJF6vvkpYr4wsIWXtYPzR1MJsXd92+JkACbC3ktllkmHo6sWozOP?=
- =?us-ascii?Q?KbM6gs3VJvMzDOBFKdvO/ySBwXpEo2t/83EiavrETb/1qhtlvn6nUVIvaOdI?=
- =?us-ascii?Q?1a6ht9pUt8IK2F0JOTyFzf1s3FvNoShBjOIzdOLQvbWQIfTLTR6ofSElFOtm?=
- =?us-ascii?Q?sQylWsN7U39+V/2Qf9Id6U/8fdK3urwAJWf+oMuQLwvjqOQUGSamtZMe6nrk?=
- =?us-ascii?Q?dEmT7AcRkwgz7B8qgLrH7IQJfIT59Isx+r0Dg7NeInpPSSlzLeL43ZD0jThR?=
- =?us-ascii?Q?zHfadj5KF1R+7hv/YeRUfYDaFJ4N4pTbtrH8KfCpQgeCjTs+rrh6VQbdYlzt?=
- =?us-ascii?Q?vmzmuzWqAwSsVs/WG9LR8VSOj0m04Xo/i4yCAkA6pLXbq0UM/wqdkjIdvuCh?=
- =?us-ascii?Q?8o7pDOvbStT0nFi2HLmT0DIRb3GALGP8+QVxlqAZDUdi5vr8zoNBUlGVNYaM?=
- =?us-ascii?Q?s+rolh7Gh2SYgV2PPwJUlqrzZOIdhiYBeUJF0vm/gz2LjYtX4sFuaP4mixMF?=
- =?us-ascii?Q?K1liz8EvJW7yVXIAaZhFTgmc1J1Pr8cPRiweFlZTZmdNFojAYp3mKoR1mmBx?=
- =?us-ascii?Q?YblJlxlEFc2aSg6H0LsQxgahQD/r8AnFvfIwXa+530GUY3AroaIb4S3f1PPf?=
- =?us-ascii?Q?egO76BvGB/wNHF8ZTq24m2i8hx+Skr1Shut2jFXoo1DpQRyS71Zza1Drtlzt?=
- =?us-ascii?Q?sEq4NSE8zLMOfap9DpkQLNc8F4B0fA/hV1ZgelaND8MLKS+5zciZBqsVTQVO?=
- =?us-ascii?Q?0wSWxtvrEBU3Op/50s/N8ooN7vKXXCAzxaN41AvKXl24T/ifdPqI/avsmGGb?=
- =?us-ascii?Q?Xl0BvEKN5cjNOsErH1j0iK1awqAKE4QQSCe0lEbqRM0f/6upL9hlLzcycSTo?=
- =?us-ascii?Q?ca7JPrfGk60c6iI9I2Dit5diDNGo2d5NQSjT+AI1jYDoX2kcAOdwEQnt62Rl?=
- =?us-ascii?Q?Kbg/TCkO/VfNNjDlA7294bqvPOVxsR9DrqVBlLT/90seYNrzknY01LVhk4+4?=
- =?us-ascii?Q?AtUFzTHSSlfJlAYcVBkjj92QzOirgraCxggJoPcnfC/UwKcZV5QJtzJyq3Yt?=
- =?us-ascii?Q?o4YKCJzEvrHcRif6M6KJV6e/fZGB3uLwmZWgwck1zjyGvjq96vOkTHzWlJ0O?=
- =?us-ascii?Q?2aRYuFILIMIgipeelL3JH6t5rLuXWWHpBJnrWYge?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        Thu, 3 Aug 2023 04:02:55 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65754524F;
+        Thu,  3 Aug 2023 00:54:41 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id D11EC617F2;
+        Thu,  3 Aug 2023 07:54:40 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id ADC0EC433C8;
+        Thu,  3 Aug 2023 07:54:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1691049280;
+        bh=m+eJRCyqdgjnVwAMt8/xLp9WklfLtqb5lfJD69P90as=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=SBaRjhBZi2InmSC1/Sn9RIA2R/5Ad+bfBSJSY1gIdhveK09+5vSbXI5AuVE3EKiQF
+         GK7T/ii+UdX7SIHit2OhuCe1BrdjsVC5TPrNUb+/yo8STqzqvdoylyeBuwf/7f38Fr
+         I6jajHttVaZkd1R3vNMtu2reol0AcqpR3uIo0FVU=
+Date:   Thu, 3 Aug 2023 09:54:37 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Hugo Villeneuve <hugo@hugovil.com>
+Cc:     robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+        conor+dt@kernel.org, jirislaby@kernel.org, jringle@gridpoint.com,
+        isaac.true@canonical.com, jesse.sung@canonical.com,
+        l.perczak@camlintechnologies.com, tomasz.mon@camlingroup.com,
+        linux-serial@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org,
+        Hugo Villeneuve <hvilleneuve@dimonoff.com>,
+        stable@vger.kernel.org,
+        Ilpo =?iso-8859-1?Q?J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>,
+        Lech Perczak <lech.perczak@camlingroup.com>
+Subject: Re: [PATCH v9 01/10] serial: sc16is7xx: fix broken port 0 uart init
+Message-ID: <2023080336-unsalted-dropout-d8f6@gregkh>
+References: <20230725142343.1724130-1-hugo@hugovil.com>
+ <20230725142343.1724130-2-hugo@hugovil.com>
+ <2023073148-marshy-extenuate-2d45@gregkh>
+ <20230801131655.80bd8f97f018dda6155d65f6@hugovil.com>
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: BN9PR11MB5276.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: c1d1dbec-227a-4993-76ce-08db93f6c837
-X-MS-Exchange-CrossTenant-originalarrivaltime: 03 Aug 2023 07:53:53.2817
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: AYYYTKRFjJdF1oba6Tw/sExVUVEgVwE8CJiKDhkqf7GSiG0kjkQkOIP7L7/fUHb1rTn03Tfk0U1DP3qkAk1PUg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR11MB6881
-X-OriginatorOrg: intel.com
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20230801131655.80bd8f97f018dda6155d65f6@hugovil.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -157,24 +64,121 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> From: Lu Baolu <baolu.lu@linux.intel.com>
-> Sent: Thursday, July 27, 2023 1:48 PM
->=20
-> The iommu fault data is currently defined in uapi/linux/iommu.h, but is
-> only used inside the iommu subsystem. Move it to linux/iommu.h, where it
-> will be more accessible to kernel drivers.
->=20
-> With this done, uapi/linux/iommu.h becomes empty and can be removed
-> from
-> the tree.
->=20
-> Signed-off-by: Lu Baolu <baolu.lu@linux.intel.com>
-> ---
->  include/linux/iommu.h      | 152 +++++++++++++++++++++++++++++++++-
->  include/uapi/linux/iommu.h | 161 -------------------------------------
->  MAINTAINERS                |   1 -
->  3 files changed, 151 insertions(+), 163 deletions(-)
->  delete mode 100644 include/uapi/linux/iommu.h
->=20
+On Tue, Aug 01, 2023 at 01:16:55PM -0400, Hugo Villeneuve wrote:
+> On Mon, 31 Jul 2023 17:52:26 +0200
+> Greg KH <gregkh@linuxfoundation.org> wrote:
+> 
+> > On Tue, Jul 25, 2023 at 10:23:33AM -0400, Hugo Villeneuve wrote:
+> > > From: Hugo Villeneuve <hvilleneuve@dimonoff.com>
+> > > 
+> > > The sc16is7xx_config_rs485() function is called only for the second
+> > > port (index 1, channel B), causing initialization problems for the
+> > > first port.
+> > > 
+> > > For the sc16is7xx driver, port->membase and port->mapbase are not set,
+> > > and their default values are 0. And we set port->iobase to the device
+> > > index. This means that when the first device is registered using the
+> > > uart_add_one_port() function, the following values will be in the port
+> > > structure:
+> > >     port->membase = 0
+> > >     port->mapbase = 0
+> > >     port->iobase  = 0
+> > > 
+> > > Therefore, the function uart_configure_port() in serial_core.c will
+> > > exit early because of the following check:
+> > > 	/*
+> > > 	 * If there isn't a port here, don't do anything further.
+> > > 	 */
+> > > 	if (!port->iobase && !port->mapbase && !port->membase)
+> > > 		return;
+> > > 
+> > > Typically, I2C and SPI drivers do not set port->membase and
+> > > port->mapbase.
+> > > 
+> > > The max310x driver sets port->membase to ~0 (all ones). By
+> > > implementing the same change in this driver, uart_configure_port() is
+> > > now correctly executed for all ports.
+> > > 
+> > > Fixes: dfeae619d781 ("serial: sc16is7xx")
+> > 
+> > That commit is in a very old 3.x release.
+> > 
+> > > Cc: <stable@vger.kernel.org> # 6.1.x
+> > 
+> > But you say this should only go to 6.1.y?  Why?  What is wrong with the
+> > older kernels?
+> 
+> Hi Greg,
+> I have read (and reread a couple of times)
+> Documentation/process/stable-kernel-rules.rst to try to understand how
+> to format the tags, but unfortunately it doesn't contain "Everything
+> you ever wanted to know about Linux -stable releases" as the title
+> claims :)
+> 
+> In particular, it doesn't explain or advise which older version we
+> should target, that is why since I was not sure I specified 6.1.y
+> because I could test it properly, but not v3.x.
 
-put this behind patch2/3 then there are less lines to be moved.
+If you think this fixes an issue back to 3.x, then just leave it at
+that, there's no need to have to test all of these.  If when I apply the
+patch to the stable trees, and it does not go back to all of the
+active versions specified by Fixes: then you will get an email saying
+so and can handle it then if you want to.
+
+> Maybe it would be best to simply drop for now all the "Cc:
+> <stable@vger.kernel.org>" tags for this series, and following Option 2,
+> I send an email to stable@vger.kernel.org once the patches have been
+> merged to Linus' tree?
+
+That will just mean more work for both of us, leave it as is, just drop
+the "# 6.1.x" portion please.
+
+> > > Signed-off-by: Hugo Villeneuve <hvilleneuve@dimonoff.com>
+> > > Reviewed-by: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
+> > > Reviewed-by: Lech Perczak <lech.perczak@camlingroup.com>
+> > > Tested-by: Lech Perczak <lech.perczak@camlingroup.com>
+> > > ---
+> > >  drivers/tty/serial/sc16is7xx.c | 1 +
+> > >  1 file changed, 1 insertion(+)
+> > > 
+> > > diff --git a/drivers/tty/serial/sc16is7xx.c b/drivers/tty/serial/sc16is7xx.c
+> > > index 2e7e7c409cf2..8ae2afc76a9b 100644
+> > > --- a/drivers/tty/serial/sc16is7xx.c
+> > > +++ b/drivers/tty/serial/sc16is7xx.c
+> > > @@ -1436,6 +1436,7 @@ static int sc16is7xx_probe(struct device *dev,
+> > >  		s->p[i].port.fifosize	= SC16IS7XX_FIFO_SIZE;
+> > >  		s->p[i].port.flags	= UPF_FIXED_TYPE | UPF_LOW_LATENCY;
+> > >  		s->p[i].port.iobase	= i;
+> > > +		s->p[i].port.membase	= (void __iomem *)~0;
+> > 
+> > That's a magic value, some comment should be added here to explain why
+> > setting all bits is ok.  Why does this work exactly?  You only say that
+> > the max310x driver does this, but not why it does this at all.
+> 
+> I do not understand, because my commit log message is quite long
+> and, it seems to me, well documenting why this works the way it
+> does when calling uart_configure_port() in serial_core.c?
+> 
+> I say that the max310x driver also does this, because there is also no
+> comment in the max310x driver for using the (void __iomem *)~0;
+> construct. I also located the original commit message for the max310x
+> driver but no comments were usefull there also.
+> 
+> So, what about adding this comment:
+> 
+> /*
+>  * Use all ones as membase to make sure uart_configure_port() in
+>  * serial_core.c does not abort for SPI/I2C devices where the
+>  * membase address is not applicable.
+>  */
+>  s->p[i].port.membase	= (void __iomem *)~0;
+
+Yes, that would be good, thank you.
+
+> If wou want, I could also add the same comment to the max310 driver?
+
+Yes please.
+
+thanks,
+
+greg k-h
