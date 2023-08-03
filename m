@@ -2,98 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 349A976F34C
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 21:16:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7889376F350
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 21:18:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231277AbjHCTQK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Aug 2023 15:16:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54980 "EHLO
+        id S229534AbjHCTSg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Aug 2023 15:18:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56776 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231160AbjHCTQC (ORCPT
+        with ESMTP id S229517AbjHCTSd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Aug 2023 15:16:02 -0400
-Received: from mail-pg1-x549.google.com (mail-pg1-x549.google.com [IPv6:2607:f8b0:4864:20::549])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 695BE3A9A
-        for <linux-kernel@vger.kernel.org>; Thu,  3 Aug 2023 12:15:58 -0700 (PDT)
-Received: by mail-pg1-x549.google.com with SMTP id 41be03b00d2f7-5635233876bso892519a12.0
-        for <linux-kernel@vger.kernel.org>; Thu, 03 Aug 2023 12:15:58 -0700 (PDT)
+        Thu, 3 Aug 2023 15:18:33 -0400
+Received: from mail-qv1-xf35.google.com (mail-qv1-xf35.google.com [IPv6:2607:f8b0:4864:20::f35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E8D43588
+        for <linux-kernel@vger.kernel.org>; Thu,  3 Aug 2023 12:18:32 -0700 (PDT)
+Received: by mail-qv1-xf35.google.com with SMTP id 6a1803df08f44-63cf4827630so7273116d6.2
+        for <linux-kernel@vger.kernel.org>; Thu, 03 Aug 2023 12:18:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1691090157; x=1691694957;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=1QAbc+4fCOMN1wq3LOwJ4k1bsXl9R1Q+x4bhgj3rFIg=;
-        b=DSNF3uKlxbN1/j9sGPdV4RLbiLmTPzUp9Zu3X+X+jI/CXp8qoKO4kiLFxh0eWH4ras
-         3UHMbP1YaoUXHaU6RKc0xiD6OqP0/G8GaXsxhmkMXaXcobPCXbuINlBumVapPQ9eL9WI
-         SQMF6MIyr2Twu3rQpgN63Ty4xEmvWMdFcq1qk0s/bO53R4WtT4D6mxqEq84CrHbE24tW
-         R+R0wb7QBQEWXSd0EQn3phD4GyYVVYig+DH6wM230PxAw/bTqhOS8nPt+LaY5XqmbBEo
-         2lNVu9E2Fm9D/OSL8FvXxR34+QmBLtfkxeWiU2TVRkIK5+koZ6XE0PUmvWk9wsqvFkyB
-         PpQQ==
+        d=gmail.com; s=20221208; t=1691090311; x=1691695111;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:to
+         :from:from:to:cc:subject:date:message-id:reply-to;
+        bh=5Ts6rrtwhBM2kYXMJoEZ7KylMiXLVCmUPUbMXJv/yhU=;
+        b=fTqyalQenUN1t45e9GTCSvQ8TWEj8y18XgWwBIYXB3+kyZHWijF1OiWlajlarNFKCk
+         8DAVjj+eExSg7xLd5z8BCTwBEoPaEUb5/UrAWy3Wwk35ol8RQEfa16xf5TIXv65+tqJm
+         GxBNRxIJ/O1/SW1unMSRY8SM9LQUKJ/vb+lrW7Asz2ORs/VhYMT+R5twogtXZ8ZWlcbd
+         Uq7X3mmuI9Vuc+gbQ2/rvgYPLw//Xm/es1tfAXWfuGuVu+rc7n5dt6y2nmjm4mJpyzRC
+         2oMg8ADLKeBKmGATsAue2GDaKmk+NJIEiOvzynXrw0KytpH2j392DCfXPKyvxyBQNkOp
+         pJVg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691090157; x=1691694957;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=1QAbc+4fCOMN1wq3LOwJ4k1bsXl9R1Q+x4bhgj3rFIg=;
-        b=C2WPcLj2qNxxYuhLUWiuLkmYaNvKHrFEcM8Kn1l08YiHud+SpTNmbNGBePzZ88tVNI
-         Sa+WoZY9kqO1sDL6GmYjGLCf8rO0P5dGZ2UoUkONuis+bfQs0DApko6WbQJKMlIQ2gWp
-         GTf7C2bgd07v7hPZgLv/qlpucOZNRFHDzJX1Ur1nIWDABeeR+4IPRmQlFsvCKK06R0Yo
-         OphegXZMMuYUsP/OlAHCuis9GRNhjQtuItPPvzZqnbJkhje+T/7reyNmEejEvUfcCYpb
-         R2r1X62CFKZMat1pStLQwrMk3iNsueFG87W4Bj6mjELzzKLeSnweX0Gu+AahwDq4PRko
-         rXrg==
-X-Gm-Message-State: ABy/qLbl4a7PkxenRBt80i3i8ceByAjojxKBvnArv0IC67kLwciAA/la
-        vzQlgWQnEKnClbrFGTVPz/oBI8Wze6KG
-X-Google-Smtp-Source: APBJJlHtGvcJEMYqDDCqDrlA6FqIV7ZBvnc2RG3ctaXexB6pNXaY+PGUAOnc1N44cMVGOG5WgF6ZzIYHZzSS
-X-Received: from afranji.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:47f1])
- (user=afranji job=sendgmr) by 2002:a63:295a:0:b0:563:5065:9d40 with SMTP id
- bu26-20020a63295a000000b0056350659d40mr129290pgb.5.1691090157410; Thu, 03 Aug
- 2023 12:15:57 -0700 (PDT)
-Date:   Thu,  3 Aug 2023 19:15:54 +0000
-In-Reply-To: <20230718234512.1690985-13-seanjc@google.com>
-Mime-Version: 1.0
-References: <20230718234512.1690985-13-seanjc@google.com>
-X-Mailer: git-send-email 2.41.0.640.ga95def55d0-goog
-Message-ID: <20230803191554.205599-1-afranji@google.com>
-Subject: Re: [RFC PATCH v11 12/29] KVM: Add KVM_CREATE_GUEST_MEMFD ioctl() for
- guest-specific backing memory
-From:   Ryan Afranji <afranji@google.com>
-To:     seanjc@google.com
-Cc:     ackerleytng@google.com, akpm@linux-foundation.org,
-        anup@brainfault.org, aou@eecs.berkeley.edu,
-        chao.p.peng@linux.intel.com, chenhuacai@kernel.org,
-        david@redhat.com, isaku.yamahata@gmail.com, jarkko@kernel.org,
-        jmorris@namei.org, kirill.shutemov@linux.intel.com,
-        kvm-riscv@lists.infradead.org, kvm@vger.kernel.org,
-        kvmarm@lists.linux.dev, liam.merwick@oracle.com,
-        linux-arm-kernel@lists.infradead.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mips@vger.kernel.org, linux-mm@kvack.org,
-        linux-riscv@lists.infradead.org,
-        linux-security-module@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, mail@maciej.szmigiero.name,
-        maz@kernel.org, michael.roth@amd.com, mpe@ellerman.id.au,
-        oliver.upton@linux.dev, palmer@dabbelt.com,
-        paul.walmsley@sifive.com, paul@paul-moore.com, pbonzini@redhat.com,
-        qperret@google.com, serge@hallyn.com, tabba@google.com,
-        vannapurve@google.com, vbabka@suse.cz, wei.w.wang@intel.com,
-        willy@infradead.org, yu.c.zhang@linux.intel.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        d=1e100.net; s=20221208; t=1691090311; x=1691695111;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:to
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=5Ts6rrtwhBM2kYXMJoEZ7KylMiXLVCmUPUbMXJv/yhU=;
+        b=LR1mLPrEgpo+d7oDsCO0wmbu8l+bUJWnwKx9Rx9NnVmeQ8vXvlCHXOAsW0hBRqWD5/
+         /3PDwdaU/rpf4+OsXkUHchJ8g5xXn3FfwJ9A3+mfHOXiLzUfdPM93v1L7Pjfhr2wVVUY
+         mG+OMnahZtYjuMze31kjW6fLOQRTYTgnnNMNy2m+Suddw9I+kPbzteysKDsp2Y+oU8TI
+         +5DV5BibwtfPFbRFvjRYmGg1NtYUW2GcCqnViM3L637q3dN10be+x51s6HnHJLUIaAAc
+         89OHLl2PfPenq+G48nmLfwe98730I6w6irQqVMa2BIZl2XCjxDjD8KXR9ySy3WBykBU8
+         SdhQ==
+X-Gm-Message-State: ABy/qLZYmauZ+bo03JQPkiIpA9IlDoViv+zvkRUgoOJxaQGqQYc05+w1
+        Tiz+rxprbTBp0ha75l17pX2HPRzfcMA=
+X-Google-Smtp-Source: APBJJlFAfKFMamd38vA4pGHTVaEbttFOnWJ4f/GCBc6pgk8vkFMmpPu0rakJapwMeXtO0xcbUac4dw==
+X-Received: by 2002:a0c:b3d8:0:b0:63d:3bde:658e with SMTP id b24-20020a0cb3d8000000b0063d3bde658emr16280469qvf.42.1691090310678;
+        Thu, 03 Aug 2023 12:18:30 -0700 (PDT)
+Received: from localhost.localdomain (pppoe-209-91-167-254.vianet.ca. [209.91.167.254])
+        by smtp.gmail.com with ESMTPSA id n20-20020a0ce494000000b0063762ab2f90sm108897qvl.83.2023.08.03.12.18.29
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 03 Aug 2023 12:18:29 -0700 (PDT)
+From:   Trevor Woerner <twoerner@gmail.com>
+To:     linux-kernel@vger.kernel.org
+Subject: [PATCH 0/4] general defconfig cleanups
+Date:   Thu,  3 Aug 2023 15:18:14 -0400
+Message-ID: <20230803191821.36793-1-twoerner@gmail.com>
+X-Mailer: git-send-email 2.41.0.327.gaa9166bcc0ba
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> +static struct folio *kvm_gmem_get_folio(struct file *file, pgoff_t index)
-> +{
-> +	struct folio *folio;
-> +
-> +	/* TODO: Support huge pages. */
-> +	folio = filemap_grab_folio(file->f_mapping, index);
-> +	if (!folio)
-> +		return NULL;
+Drop config options from defconfigs whose code has been removed.
 
-In Linux 6.4, filemap_grab_folio() may also return an error value.
-Instead of just checking for NULL, "IS_ERR_OR_NULL(folio)" will be needed.
+Trevor Woerner (4):
+  arch/arm/configs/omap2plus_defconfig: drop removed options
+  arch/*/configs/*_defconfig cleanup: drop CONFIG_IP_NF_TARGET_CLUSTERIP
+  arch/arm/configs/*_defconfig cleanup: drop CONFIG_USB_MUSB_AM35X
+  arch/*/configs/*_defconfig cleanup: drop CONFIG_NFT_OBJREF
+
+ arch/arm/configs/keystone_defconfig        | 1 -
+ arch/arm/configs/multi_v7_defconfig        | 1 -
+ arch/arm/configs/omap2plus_defconfig       | 8 --------
+ arch/loongarch/configs/loongson3_defconfig | 2 --
+ arch/mips/configs/ip22_defconfig           | 1 -
+ arch/mips/configs/malta_defconfig          | 1 -
+ arch/mips/configs/malta_kvm_defconfig      | 1 -
+ arch/mips/configs/maltaup_xpa_defconfig    | 1 -
+ arch/mips/configs/rm200_defconfig          | 1 -
+ arch/powerpc/configs/ppc6xx_defconfig      | 1 -
+ 10 files changed, 18 deletions(-)
+
+-- 
+2.41.0.327.gaa9166bcc0ba
+
