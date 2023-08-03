@@ -2,91 +2,381 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A4F7C76F307
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 20:51:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8712F76F304
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 20:51:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229777AbjHCSvw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Aug 2023 14:51:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40552 "EHLO
+        id S231379AbjHCSv2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Aug 2023 14:51:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40150 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230423AbjHCSvu (ORCPT
+        with ESMTP id S229894AbjHCSvZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Aug 2023 14:51:50 -0400
-Received: from mail-pf1-f178.google.com (mail-pf1-f178.google.com [209.85.210.178])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82A3A4219;
-        Thu,  3 Aug 2023 11:51:17 -0700 (PDT)
-Received: by mail-pf1-f178.google.com with SMTP id d2e1a72fcca58-686d8c8fc65so950815b3a.0;
-        Thu, 03 Aug 2023 11:51:17 -0700 (PDT)
+        Thu, 3 Aug 2023 14:51:25 -0400
+Received: from mail-yw1-x114a.google.com (mail-yw1-x114a.google.com [IPv6:2607:f8b0:4864:20::114a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D54B2D69
+        for <linux-kernel@vger.kernel.org>; Thu,  3 Aug 2023 11:50:57 -0700 (PDT)
+Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-5834d9ec5f7so38378177b3.1
+        for <linux-kernel@vger.kernel.org>; Thu, 03 Aug 2023 11:50:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1691088649; x=1691693449;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=1XyQ/ZegLbwguWS1UpeIGzNx959kwuq92WVqqIghPaA=;
+        b=5lrHqege0J6Q+nTQjju/1hs3TARjmexNgoAE2A9oG9GF2NC2KD1hUJ7HaPG/gRMhkQ
+         rRQefydgm0kytCsXqbAgd1S2i3d+MPxOQDcxsSH4Af3Cte4QEiM6ZJlmNkwNNVN7IIiH
+         1XEc6we68gQMUoCp/2JetDLXcbXQIHYLfl1LdUl+vosg84WXC8GWVXbgc6uyLZldxyeT
+         PTOSMPGWfrM0L9cioRb7+Dil5J5+VfpN94tUq/Josdqo5hq3xuHtMIernY6tKkN8d8wr
+         Z7EfeopWF6FEzvu6p1JCiglQluqndliVsPsd1kTtqooCDKQNUF1UFsMM0F3tAsVDZqyA
+         ZR3g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691088633; x=1691693433;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=YArgeg3R+qPNvDbHRIeuLdMldAhO+zIKf3DxPW2KznU=;
-        b=NswcG+EY3wNi3LM/th8U2irX3evODPVKZR91B3h8lF7gxW8Mg8XJe+Mez8vGkqiQn+
-         bfPnEsdhfRHZVL+Z6Lt0VjXpHeqw2SX3tprG6VOsGDWH5i9e2DXp5/o0AjyCL/kLqoj/
-         cP/q/lT+lcRt6WvwbEjZsvn6MOuD/Af+2P2RVE1WVyzlvW8GCMrGDIixbO68wiITEUwu
-         4BAdcfS2CfloFIuPzjD8JTYpKW+wompjNdSmaO1U++9l9VgCfdCOEUZL26FVxuURRHq1
-         IFIeUgm8X5x2EkdQzlWYirztX98p6YfLkEseKZ8eGciub8uThxAUGaT5GA6R6mwtXK+e
-         dlmA==
-X-Gm-Message-State: AOJu0YxKqjrGX5os+/58FwVbeHdmWhqnaNGA/PVgG0xPaV0PDPDjGotA
-        CUKdMkvqn4qtEyqnvv8e2clHj1+bVNbPJfRE9CE=
-X-Google-Smtp-Source: AGHT+IGWP+Ta3kBOZIn0rQ+nRm4a98cxEt/cEydrXsCKO/YlRyUFPGi373eG5NRLBbmefb/mW36skA==
-X-Received: by 2002:aa7:88d3:0:b0:687:82a4:49f8 with SMTP id k19-20020aa788d3000000b0068782a449f8mr4133602pff.30.1691088633463;
-        Thu, 03 Aug 2023 11:50:33 -0700 (PDT)
-Received: from localhost (fpd11144dd.ap.nuro.jp. [209.17.68.221])
-        by smtp.gmail.com with ESMTPSA id fk10-20020a056a003a8a00b0068718f6a035sm186346pfb.33.2023.08.03.11.50.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 03 Aug 2023 11:50:32 -0700 (PDT)
-Date:   Fri, 4 Aug 2023 03:50:31 +0900
-From:   Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>
-To:     Vidya Sagar <vidyas@nvidia.com>
-Cc:     Bjorn Helgaas <helgaas@kernel.org>, lpieralisi@kernel.org,
-        robh@kernel.org, bhelgaas@google.com, thierry.reding@gmail.com,
-        jonathanh@nvidia.com, Sergey.Semin@baikalelectronics.ru,
-        linux-pci@vger.kernel.org, linux-tegra@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kthota@nvidia.com,
-        mmaddireddy@nvidia.com, sagar.tv@gmail.com
-Subject: Re: [PATCH V4] Revert "PCI: tegra194: Enable support for 256 Byte
- payload"
-Message-ID: <20230803185031.GA3849329@rocinante>
-References: <20230801204015.GA49719@bhelgaas>
- <55e8a27b-580f-8b33-f069-a05cc5322cbb@nvidia.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <55e8a27b-580f-8b33-f069-a05cc5322cbb@nvidia.com>
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
-        autolearn_force=no version=3.4.6
+        d=1e100.net; s=20221208; t=1691088649; x=1691693449;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=1XyQ/ZegLbwguWS1UpeIGzNx959kwuq92WVqqIghPaA=;
+        b=idzfp7fEcngro7K0v8AWN5pg+fbAs10FXDyJ9XMBdB+zEpU11pccLGrAq8Oapwk0EN
+         cx3Ox6AI9ojCsGS3KFFKK9aHGcjGkFfUBRgV2I60pt+VgDrhpIQXf5V94SVjaX7aiAqt
+         bruwekC8KJ1NP2jZWxYiga/opbbefeyxig9yy9VOa1TdoNu1AF3RG9AT+yX4Fm3jtn3/
+         ETxryfwQc6vZFb9y5uaAey5sZ1NbWlxMuxcFwZB1r+rn+hCDPw/g0glL5tFkCQl1mwfo
+         h8rjcmhFyF8MwTvfvQIhAJMG+Ohw31gZsOs9Ir3hMAA/8g2crsT32zcLKohru6UV4OqV
+         H5Bw==
+X-Gm-Message-State: ABy/qLYfbXI23VEJ7jptdlOvnw4pXJY8C5VdOhE4TB22nXBAaszNR/Mj
+        v/tamKNIFpaxp8MVnAtZYhg2HQiwQCtV5z+x
+X-Google-Smtp-Source: APBJJlHI2nVKiol9et2npfTT5QKoKbQD2ArkaR13nsAGLsR8kw/O9V61X2Ty/DNHrqH+I1hNa2NJ+dRN6ofI4XIw
+X-Received: from yosry.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:2327])
+ (user=yosryahmed job=sendgmr) by 2002:a81:788e:0:b0:57a:6019:62aa with SMTP
+ id t136-20020a81788e000000b0057a601962aamr263668ywc.5.1691088649209; Thu, 03
+ Aug 2023 11:50:49 -0700 (PDT)
+Date:   Thu,  3 Aug 2023 18:50:46 +0000
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.41.0.585.gd2178a4bd4-goog
+Message-ID: <20230803185046.1385770-1-yosryahmed@google.com>
+Subject: [PATCH v4] mm: memcg: use rstat for non-hierarchical stats
+From:   Yosry Ahmed <yosryahmed@google.com>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Michal Hocko <mhocko@suse.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Shakeel Butt <shakeelb@google.com>,
+        Muchun Song <muchun.song@linux.dev>,
+        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
+        linux-mm@kvack.org, Yosry Ahmed <yosryahmed@google.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        USER_IN_DEF_DKIM_WL autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello!
+Currently, memcg uses rstat to maintain aggregated hierarchical stats.
+Counters are maintained for hierarchical stats at each memcg.  Rstat
+tracks which cgroups have updates on which cpus to keep those counters
+fresh on the read-side.
 
-[...]
-> > > After commit 4fb8e46c1bc4 ("PCI: tegra194: Enable support for 256 Byte
-> > > payload"), we set MPS=256 for tegra194 Root Ports.
-> > > 
-> > > By default (CONFIG_PCIE_BUS_DEFAULT set and no "pci=pcie_bus_*"
-> > > parameter), Linux configures the MPS of every device to match the
-> > > upstream bridge, which is impossible if the Root Port has MPS=256
-> > > and a device only supports MPS=128.
-> > 
-> > Thanks for pointing out that I broke this log by omitting the mention
-> > of a switch.  Is the rewording below better?  If so, Krzysztof can
-> > amend the commit.
-> Yes. The below rewording looks good.
+Non-hierarchical stats are currently not covered by rstat.  Their per-cpu
+counters are summed up on every read, which is expensive.  The original
+implementation did the same.  At some point before rstat, non-hierarchical
+aggregated counters were introduced by commit a983b5ebee57 ("mm:
+memcontrol: fix excessive complexity in memory.stat reporting").  However,
+those counters were updated on the performance critical write-side, which
+caused regressions, so they were later removed by commit 815744d75152
+("mm: memcontrol: don't batch updates of local VM stats and events").  See
+[1] for more detailed history.
 
-Updated commit at:
+Kernel versions in between a983b5ebee57 & 815744d75152 (a year and a half)
+enjoyed cheap reads of non-hierarchical stats, specifically on cgroup v1.
+When moving to more recent kernels, a performance regression for reading
+non-hierarchical stats is observed.
 
-  https://git.kernel.org/pci/pci/c/ebfde1584d9f
+Now that we have rstat, we know exactly which percpu counters have updates
+for each stat.  We can maintain non-hierarchical counters again, making
+reads much more efficient, without affecting the performance critical
+write-side.  Hence, add non-hierarchical (i.e local) counters for the
+stats, and extend rstat flushing to keep those up-to-date.
 
-Thank you everyone!
+A caveat is that we now need a stats flush before reading
+local/non-hierarchical stats through {memcg/lruvec}_page_state_local() or
+memcg_events_local(), where we previously only needed a flush to read
+hierarchical stats.  Most contexts reading non-hierarchical stats are
+already doing a flush, add a flush to the only missing context in
+count_shadow_nodes().
 
-	Krzysztof
+With this patch, reading memory.stat from 1000 memcgs is 3x faster on a
+machine with 256 cpus on cgroup v1:
+
+ # for i in $(seq 1000); do mkdir /sys/fs/cgroup/memory/cg$i; done
+ # time cat /sys/fs/cgroup/memory/cg*/memory.stat > /dev/null
+ real	 0m0.125s
+ user	 0m0.005s
+ sys	 0m0.120s
+
+After:
+ real	 0m0.032s
+ user	 0m0.005s
+ sys	 0m0.027s
+
+To make sure there are no regressions on cgroup v2, I ran an artificial
+reclaim/refault stress test [2] that creates (NR_CPUS *
+2) cgroups, assigns them limits, runs a worker process in each cgroup
+that allocates tmpfs memory equal to quadruple the limit (to invoke
+reclaim continuously), and then reads back the entire file (to invoke
+refaults). All workers are run in parallel, and zram is used as a
+swapping backend. Both reclaim and refault have conditional stats
+flushing. I ran this on a machine with 112 cpus, once on mm-unstable,
+and once on mm-unstable with this patch reverted.
+
+(1) A few runs without this patch:
+
+ # time ./stress_reclaim_refault.sh
+ real 0m9.949s
+ user 0m0.496s
+ sys 14m44.974s
+
+ # time ./stress_reclaim_refault.sh
+ real 0m10.049s
+ user 0m0.486s
+ sys 14m55.791s
+
+ # time ./stress_reclaim_refault.sh
+ real 0m9.984s
+ user 0m0.481s
+ sys 14m53.841s
+
+(2) A few runs with this patch:
+
+ # time ./stress_reclaim_refault.sh
+ real 0m9.885s
+ user 0m0.486s
+ sys 14m48.753s
+
+ # time ./stress_reclaim_refault.sh
+ real 0m9.903s
+ user 0m0.495s
+ sys 14m48.339s
+
+ # time ./stress_reclaim_refault.sh
+ real 0m9.861s
+ user 0m0.507s
+ sys 14m49.317s
+
+No regressions are observed with this patch. There is actually a very
+slight improvement. If I have to guess, maybe it's because we avoid
+the percpu loop in count_shadow_nodes() when calling
+lruvec_page_state_local(), but I could not prove this using perf, it's
+probably in the noise.
+
+[1] https://lore.kernel.org/lkml/20230725201811.GA1231514@cmpxchg.org/
+[2] https://lore.kernel.org/lkml/CAJD7tkb17x=qwoO37uxyYXLEUVp15BQKR+Xfh7Sg9Hx-wTQ_=w@mail.gmail.com/
+
+Link: https://lkml.kernel.org/r/20230726153223.821757-2-yosryahmed@google.com
+Signed-off-by: Yosry Ahmed <yosryahmed@google.com>
+Acked-by: Johannes Weiner <hannes@cmpxchg.org>
+Acked-by: Roman Gushchin <roman.gushchin@linux.dev>
+Acked-by: Michal Hocko <mhocko@suse.com>
+---
+
+v3 -> v4:
+- Added A-b from Michal Hocko (Thanks!).
+- Amended the changelog with additional testing for regressions (as
+  requested by Michal Hocko).
+
+v3: https://lore.kernel.org/lkml/20230726153223.821757-2-yosryahmed@google.com/
+
+---
+ include/linux/memcontrol.h |  7 ++--
+ mm/memcontrol.c            | 67 +++++++++++++++++++++-----------------
+ mm/workingset.c            |  1 +
+ 3 files changed, 43 insertions(+), 32 deletions(-)
+
+diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
+index 058fb748e128..e765d1ff9cbb 100644
+--- a/include/linux/memcontrol.h
++++ b/include/linux/memcontrol.h
+@@ -111,6 +111,9 @@ struct lruvec_stats {
+ 	/* Aggregated (CPU and subtree) state */
+ 	long state[NR_VM_NODE_STAT_ITEMS];
+ 
++	/* Non-hierarchical (CPU aggregated) state */
++	long state_local[NR_VM_NODE_STAT_ITEMS];
++
+ 	/* Pending child counts during tree propagation */
+ 	long state_pending[NR_VM_NODE_STAT_ITEMS];
+ };
+@@ -1019,14 +1022,12 @@ static inline unsigned long lruvec_page_state_local(struct lruvec *lruvec,
+ {
+ 	struct mem_cgroup_per_node *pn;
+ 	long x = 0;
+-	int cpu;
+ 
+ 	if (mem_cgroup_disabled())
+ 		return node_page_state(lruvec_pgdat(lruvec), idx);
+ 
+ 	pn = container_of(lruvec, struct mem_cgroup_per_node, lruvec);
+-	for_each_possible_cpu(cpu)
+-		x += per_cpu(pn->lruvec_stats_percpu->state[idx], cpu);
++	x = READ_ONCE(pn->lruvec_stats.state_local[idx]);
+ #ifdef CONFIG_SMP
+ 	if (x < 0)
+ 		x = 0;
+diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+index 062d925336cb..35d7e66ab032 100644
+--- a/mm/memcontrol.c
++++ b/mm/memcontrol.c
+@@ -742,6 +742,10 @@ struct memcg_vmstats {
+ 	long			state[MEMCG_NR_STAT];
+ 	unsigned long		events[NR_MEMCG_EVENTS];
+ 
++	/* Non-hierarchical (CPU aggregated) page state & events */
++	long			state_local[MEMCG_NR_STAT];
++	unsigned long		events_local[NR_MEMCG_EVENTS];
++
+ 	/* Pending child counts during tree propagation */
+ 	long			state_pending[MEMCG_NR_STAT];
+ 	unsigned long		events_pending[NR_MEMCG_EVENTS];
+@@ -775,11 +779,8 @@ void __mod_memcg_state(struct mem_cgroup *memcg, int idx, int val)
+ /* idx can be of type enum memcg_stat_item or node_stat_item. */
+ static unsigned long memcg_page_state_local(struct mem_cgroup *memcg, int idx)
+ {
+-	long x = 0;
+-	int cpu;
++	long x = READ_ONCE(memcg->vmstats->state_local[idx]);
+ 
+-	for_each_possible_cpu(cpu)
+-		x += per_cpu(memcg->vmstats_percpu->state[idx], cpu);
+ #ifdef CONFIG_SMP
+ 	if (x < 0)
+ 		x = 0;
+@@ -926,16 +927,12 @@ static unsigned long memcg_events(struct mem_cgroup *memcg, int event)
+ 
+ static unsigned long memcg_events_local(struct mem_cgroup *memcg, int event)
+ {
+-	long x = 0;
+-	int cpu;
+ 	int index = memcg_events_index(event);
+ 
+ 	if (index < 0)
+ 		return 0;
+ 
+-	for_each_possible_cpu(cpu)
+-		x += per_cpu(memcg->vmstats_percpu->events[index], cpu);
+-	return x;
++	return READ_ONCE(memcg->vmstats->events_local[index]);
+ }
+ 
+ static void mem_cgroup_charge_statistics(struct mem_cgroup *memcg,
+@@ -5517,7 +5514,7 @@ static void mem_cgroup_css_rstat_flush(struct cgroup_subsys_state *css, int cpu)
+ 	struct mem_cgroup *memcg = mem_cgroup_from_css(css);
+ 	struct mem_cgroup *parent = parent_mem_cgroup(memcg);
+ 	struct memcg_vmstats_percpu *statc;
+-	long delta, v;
++	long delta, delta_cpu, v;
+ 	int i, nid;
+ 
+ 	statc = per_cpu_ptr(memcg->vmstats_percpu, cpu);
+@@ -5533,19 +5530,23 @@ static void mem_cgroup_css_rstat_flush(struct cgroup_subsys_state *css, int cpu)
+ 			memcg->vmstats->state_pending[i] = 0;
+ 
+ 		/* Add CPU changes on this level since the last flush */
++		delta_cpu = 0;
+ 		v = READ_ONCE(statc->state[i]);
+ 		if (v != statc->state_prev[i]) {
+-			delta += v - statc->state_prev[i];
++			delta_cpu = v - statc->state_prev[i];
++			delta += delta_cpu;
+ 			statc->state_prev[i] = v;
+ 		}
+ 
+-		if (!delta)
+-			continue;
+-
+ 		/* Aggregate counts on this level and propagate upwards */
+-		memcg->vmstats->state[i] += delta;
+-		if (parent)
+-			parent->vmstats->state_pending[i] += delta;
++		if (delta_cpu)
++			memcg->vmstats->state_local[i] += delta_cpu;
++
++		if (delta) {
++			memcg->vmstats->state[i] += delta;
++			if (parent)
++				parent->vmstats->state_pending[i] += delta;
++		}
+ 	}
+ 
+ 	for (i = 0; i < NR_MEMCG_EVENTS; i++) {
+@@ -5553,18 +5554,22 @@ static void mem_cgroup_css_rstat_flush(struct cgroup_subsys_state *css, int cpu)
+ 		if (delta)
+ 			memcg->vmstats->events_pending[i] = 0;
+ 
++		delta_cpu = 0;
+ 		v = READ_ONCE(statc->events[i]);
+ 		if (v != statc->events_prev[i]) {
+-			delta += v - statc->events_prev[i];
++			delta_cpu = v - statc->events_prev[i];
++			delta += delta_cpu;
+ 			statc->events_prev[i] = v;
+ 		}
+ 
+-		if (!delta)
+-			continue;
++		if (delta_cpu)
++			memcg->vmstats->events_local[i] += delta_cpu;
+ 
+-		memcg->vmstats->events[i] += delta;
+-		if (parent)
+-			parent->vmstats->events_pending[i] += delta;
++		if (delta) {
++			memcg->vmstats->events[i] += delta;
++			if (parent)
++				parent->vmstats->events_pending[i] += delta;
++		}
+ 	}
+ 
+ 	for_each_node_state(nid, N_MEMORY) {
+@@ -5582,18 +5587,22 @@ static void mem_cgroup_css_rstat_flush(struct cgroup_subsys_state *css, int cpu)
+ 			if (delta)
+ 				pn->lruvec_stats.state_pending[i] = 0;
+ 
++			delta_cpu = 0;
+ 			v = READ_ONCE(lstatc->state[i]);
+ 			if (v != lstatc->state_prev[i]) {
+-				delta += v - lstatc->state_prev[i];
++				delta_cpu = v - lstatc->state_prev[i];
++				delta += delta_cpu;
+ 				lstatc->state_prev[i] = v;
+ 			}
+ 
+-			if (!delta)
+-				continue;
++			if (delta_cpu)
++				pn->lruvec_stats.state_local[i] += delta_cpu;
+ 
+-			pn->lruvec_stats.state[i] += delta;
+-			if (ppn)
+-				ppn->lruvec_stats.state_pending[i] += delta;
++			if (delta) {
++				pn->lruvec_stats.state[i] += delta;
++				if (ppn)
++					ppn->lruvec_stats.state_pending[i] += delta;
++			}
+ 		}
+ 	}
+ }
+diff --git a/mm/workingset.c b/mm/workingset.c
+index 4686ae363000..da58a26d0d4d 100644
+--- a/mm/workingset.c
++++ b/mm/workingset.c
+@@ -664,6 +664,7 @@ static unsigned long count_shadow_nodes(struct shrinker *shrinker,
+ 		struct lruvec *lruvec;
+ 		int i;
+ 
++		mem_cgroup_flush_stats();
+ 		lruvec = mem_cgroup_lruvec(sc->memcg, NODE_DATA(sc->nid));
+ 		for (pages = 0, i = 0; i < NR_LRU_LISTS; i++)
+ 			pages += lruvec_page_state_local(lruvec,
+-- 
+2.41.0.585.gd2178a4bd4-goog
+
