@@ -2,262 +2,254 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4BEA376DCB8
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 02:33:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0EECC76DCBB
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 02:34:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231743AbjHCAdS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Aug 2023 20:33:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36794 "EHLO
+        id S232394AbjHCAeA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Aug 2023 20:34:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37182 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229832AbjHCAdR (ORCPT
+        with ESMTP id S229832AbjHCAd6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Aug 2023 20:33:17 -0400
-Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9AF1C1982;
-        Wed,  2 Aug 2023 17:33:15 -0700 (PDT)
-Received: by mail-ej1-x62e.google.com with SMTP id a640c23a62f3a-99bf3f59905so48875366b.3;
-        Wed, 02 Aug 2023 17:33:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1691022794; x=1691627594;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=VmDQBngkUfZT7Xd42gcofemITc/48pOXICJi21nKB7Y=;
-        b=OJGaD8RZzpICKo/egDvoKyYF3ObJBah3LwvF3MMdEUkKFTsRp79+vLiECUE8EC5ElA
-         h0wX6cqi32v02EAf16jbWp54W9C/pCGVEwmKhcbiAE9iiy9VAjX2LxDket4+qA3arrvx
-         hkgbFDZnO3/GejE+3BhPVZrnVs6+a1q/ynRFZkDm8L2uHRVvMrd15j9+Y2k+Tf6d975i
-         fKaKrr0pvpDEMtSrMDpK8aEzMEb8IAwzVZoKpOrNuYwquwaZ43UfbBw0DJsprAKb0rbF
-         sSSsY2Q9u25xsvFt/Su9yjAaHzYI+TnIXYxJj6TF8GYkfklHjke6rC0NHp0FetzC5O2Z
-         ecTw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691022794; x=1691627594;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=VmDQBngkUfZT7Xd42gcofemITc/48pOXICJi21nKB7Y=;
-        b=jZ7u9m48ep7jdiGeaioY9vYOFZyovpMGLgTTKqZt8Sq7dOZYloSoyI8T/KIy4BwSai
-         Z9yxpHgJ6JfQ15Hf+vDR2wlkT69DCUb3XT7TPESxeGqr2Sj/TaYdfoKvUWW89HbYrWRL
-         v8e9LoMNfDJvaxVDXkxp2nver+BCyUznMgmZLKYm0Oz9UjDQNP4WQlgCLl0J1463K8qx
-         7FqQrZvW0zJHuP/A3cY3uvEfeOy1zc+jpy0lamAJBBQK5BEjhZHCd1Y8Y8Vy+5Ns0q3y
-         VAX4jK33vfg1bphDSDDMEfznSD7RYGKH/4Pp31EDlr97ZUlpACx4ceDtkfiW+ne0IIRF
-         IEFQ==
-X-Gm-Message-State: ABy/qLY+Ok3tBNAyABuuw2ZqyiPJyV0tQksNPWxM2Emdpz5LEw6hWQR8
-        4vRN1ProITmEgfPZtdeQdam5Q6ByiZMsat0kNFM=
-X-Google-Smtp-Source: APBJJlFSACtUiKMpTwyQv1yuTsQzmtg6/opAjGJ1VXAdQaGY8pPkN2x/Aqhch7z7a/U8i3sLR38Ik+nmvim2W8U7ObQ=
-X-Received: by 2002:a17:906:18:b0:997:e79c:99dc with SMTP id
- 24-20020a170906001800b00997e79c99dcmr6226030eja.74.1691022793795; Wed, 02 Aug
- 2023 17:33:13 -0700 (PDT)
-MIME-Version: 1.0
-References: <20230613172054.3959700-1-quic_eberman@quicinc.com> <20230613172054.3959700-7-quic_eberman@quicinc.com>
-In-Reply-To: <20230613172054.3959700-7-quic_eberman@quicinc.com>
-From:   Jassi Brar <jassisinghbrar@gmail.com>
-Date:   Wed, 2 Aug 2023 19:33:02 -0500
-Message-ID: <CABb+yY3LGxDTQDiz8Q5yMwzFDm-ejF+WnQsb0zJKizfxPkx3nQ@mail.gmail.com>
-Subject: Re: [PATCH v14 06/25] mailbox: Add Gunyah message queue mailbox
-To:     Elliot Berman <quic_eberman@quicinc.com>
-Cc:     Alex Elder <elder@linaro.org>,
-        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-        Prakruthi Deepak Heragu <quic_pheragu@quicinc.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Murali Nalajala <quic_mnalajal@quicinc.com>,
-        Trilok Soni <quic_tsoni@quicinc.com>,
-        Srivatsa Vaddagiri <quic_svaddagi@quicinc.com>,
-        Carl van Schaik <quic_cvanscha@quicinc.com>,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Rob Herring <robh+dt@kernel.org>,
+        Wed, 2 Aug 2023 20:33:58 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5AB8E1982;
+        Wed,  2 Aug 2023 17:33:57 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id D422161B6B;
+        Thu,  3 Aug 2023 00:33:56 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 99E3AC433C8;
+        Thu,  3 Aug 2023 00:33:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1691022836;
+        bh=VZfLIkHg/Fv53y9K+d8bMvfkrphMsv+1OEZOJrz/KwY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=gKq34UVVJaybD8lmbevKl8jMO3tjQMTL29Wc7NjsCqwHIlZs47tcN8k4vmNOWy6MQ
+         7uAXl7Sg/BEnjwTiOS6QUoprir590zKsx8bLnxRCiTdoYPmmDdZkqsGcRrk+5u2WS7
+         4ao4jqOhY7+L+huDXu9eomIakTHBQyQ6s26gwFk7oq/BrvavWax3CwUntiPGFHDP99
+         7mPDfokImSBIqI24zbN60qNNrv+2SdkA2fwA7cryusvw33mPKe6Oce/wwZy8WhLwhW
+         Prq1QpqE0hqq4F3+UVKcU5OmcEiZrd3HAd4Valak6P3UdHBKlCR4yIrMHARGiFM1fn
+         FLu1o+Jz0wB4Q==
+Received: (nullmailer pid 1590584 invoked by uid 1000);
+        Thu, 03 Aug 2023 00:33:54 -0000
+Date:   Wed, 2 Aug 2023 18:33:54 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     TY Chang <tychang@realtek.com>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
         Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Bagas Sanjaya <bagasdotme@gmail.com>,
-        Will Deacon <will@kernel.org>, Andy Gross <agross@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        Conor Dooley <conor+dt@kernel.org>, linux-gpio@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 5/7] dt-bindings: pinctrl: realtek: add RTD1315E pinctrl
+ binding
+Message-ID: <20230803003354.GA1586526-robh@kernel.org>
+References: <20230726090409.16606-1-tychang@realtek.com>
+ <20230726090409.16606-6-tychang@realtek.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230726090409.16606-6-tychang@realtek.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 13, 2023 at 12:21=E2=80=AFPM Elliot Berman <quic_eberman@quicin=
-c.com> wrote:
-......
-
-> diff --git a/drivers/mailbox/gunyah-msgq.c b/drivers/mailbox/gunyah-msgq.=
-c
+On Wed, Jul 26, 2023 at 05:04:07PM +0800, TY Chang wrote:
+> Add device tree bindings for RTD1315E.
+> 
+> Signed-off-by: TY Chang <tychang@realtek.com>
+> ---
+>  .../pinctrl/realtek,rtd1315e-pinctrl.yaml     | 165 ++++++++++++++++++
+>  1 file changed, 165 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/pinctrl/realtek,rtd1315e-pinctrl.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/pinctrl/realtek,rtd1315e-pinctrl.yaml b/Documentation/devicetree/bindings/pinctrl/realtek,rtd1315e-pinctrl.yaml
 > new file mode 100644
-> index 0000000000000..7f777339278eb
+> index 000000000000..b8fb6335ed65
 > --- /dev/null
-> +++ b/drivers/mailbox/gunyah-msgq.c
-> @@ -0,0 +1,219 @@
-> +// SPDX-License-Identifier: GPL-2.0-only
-> +/*
-> + * Copyright (c) 2022-2023 Qualcomm Innovation Center, Inc. All rights r=
-eserved.
-> + */
+> +++ b/Documentation/devicetree/bindings/pinctrl/realtek,rtd1315e-pinctrl.yaml
+> @@ -0,0 +1,165 @@
+> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
+> +# Copyright 2023 Realtek Semiconductor Corporation
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/pinctrl/realtek,rtd1315e-pinctrl.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
 > +
-> +#include <linux/mailbox_controller.h>
-> +#include <linux/module.h>
-> +#include <linux/interrupt.h>
-> +#include <linux/gunyah.h>
-> +#include <linux/printk.h>
-> +#include <linux/init.h>
-> +#include <linux/slab.h>
-> +#include <linux/wait.h>
+> +title: Realtek DHC RTD1315E Pin Controller
 > +
-I believe some includes could be removed without issue.
+> +maintainers:
+> +  - TY Chang <tychang@realtek.com>
+> +
+> +description: |
+> +  Binding for Realtek DHC RTD1315E SoC pin control.
+> +
+> +properties:
+> +  compatible:
+> +    const: realtek,rtd13xxe-pinctrl
 
->
-> +#define mbox_chan_to_msgq(chan) (container_of(chan->mbox, struct gh_msgq=
-, mbox))
-> +
-container_of need not be in brackets.
+Don't use wildcards in compatible strings.
 
-> +static irqreturn_t gh_msgq_rx_irq_handler(int irq, void *data)
-> +{
-> +       struct gh_msgq *msgq =3D data;
-> +       struct gh_msgq_rx_data rx_data;
-> +       enum gh_error gh_error;
-> +       bool ready =3D true;
 > +
-Please limit the scope of rx_data and gh_error by moving them inside
-the while() body.
-
-> +       while (ready) {
-> +               gh_error =3D gh_hypercall_msgq_recv(msgq->rx_ghrsc->capid=
-,
-> +                               &rx_data.data, sizeof(rx_data.data),
-> +                               &rx_data.length, &ready);
-> +               if (gh_error !=3D GH_ERROR_OK) {
-> +                       if (gh_error !=3D GH_ERROR_MSGQUEUE_EMPTY)
-> +                               dev_warn(msgq->mbox.dev, "Failed to recei=
-ve data: %d\n", gh_error);
-> +                       break;
-> +               }
-> +               if (likely(gh_msgq_chan(msgq)->cl))
-> +                       mbox_chan_received_data(gh_msgq_chan(msgq), &rx_d=
-ata);
-> +       }
+> +  reg:
+> +    maxItems: 1
 > +
-> +       return IRQ_HANDLED;
-> +}
+> +patternProperties:
+> +  '^.*$':
+> +    if:
+> +      type: object
+
+For new bindings, define a suffix (e.g. "-pins") for the node name. 
+
+> +    then:
+> +      allOf:
+> +        - $ref: pincfg-node.yaml#
+> +        - $ref: pinmux-node.yaml#
 > +
-
-
-> +static int gh_msgq_send_data(struct mbox_chan *chan, void *data)
-> +{
-> +       struct gh_msgq *msgq =3D mbox_chan_to_msgq(chan);
-> +       struct gh_msgq_tx_data *msgq_data =3D data;
-> +       u64 tx_flags =3D 0;
-> +       enum gh_error gh_error;
-> +       bool ready;
+> +      properties:
+> +        pins:
+> +          items:
+> +            enum: [ gpio_0, gpio_1, emmc_rst_n, emmc_dd_sb, emmc_clk, emmc_cmd,
+> +                    gpio_6, gpio_7, gpio_8, gpio_9, gpio_10, gpio_11, gpio_12,
+> +                    gpio_13, gpio_14, gpio_15, gpio_16, gpio_17, gpio_18, gpio_19,
+> +                    gpio_20, emmc_data_0, emmc_data_1, emmc_data_2, usb_cc2, gpio_25,
+> +                    gpio_26, gpio_27, gpio_28, gpio_29, gpio_30, gpio_31, gpio_32,
+> +                    gpio_33, gpio_34, gpio_35, hif_data, hif_en, hif_rdy, hif_clk,
+> +                    gpio_dummy_40, gpio_dummy_41, gpio_dummy_42, gpio_dummy_43,
+> +                    gpio_dummy_44, gpio_dummy_45, gpio_46, gpio_47, gpio_48, gpio_49,
+> +                    gpio_50, usb_cc1, emmc_data_3, emmc_data_4, ir_rx, ur0_rx, ur0_tx,
+> +                    gpio_57, gpio_58, gpio_59, gpio_60, gpio_61, gpio_62, gpio_dummy_63,
+> +                    gpio_dummy_64, gpio_dummy_65, gpio_66, gpio_67, gpio_68, gpio_69,
+> +                    gpio_70, gpio_71, gpio_72, gpio_dummy_73, emmc_data_5, emmc_data_6,
+> +                    emmc_data_7, gpio_dummy_77, gpio_78, gpio_79, gpio_80, gpio_81,
+> +                    ur2_loc, gspi_loc, hi_width, sf_en, arm_trace_dbg_en,
+> +                    ejtag_aucpu_loc, ejtag_acpu_loc, ejtag_vcpu_loc, ejtag_scpu_loc,
+> +                    dmic_loc, vtc_dmic_loc, vtc_tdm_loc, vtc_i2si_loc, tdm_ai_loc,
+> +                    ai_loc, spdif_loc, hif_en_loc, scan_switch, wd_rset, boot_sel,
+> +                    reset_n, testmode ]
 > +
-> +       if (!msgq->tx_ghrsc)
-> +               return -EOPNOTSUPP;
+> +        function:
+> +          enum: [ gpio, nf, emmc, ao, gspi_loc0, gspi_loc1, uart0, uart1,
+> +                  uart2_loc0, uart2_loc1, i2c0, i2c1, i2c4, i2c5, pcie1,
+> +                  etn_led, etn_phy, spi, pwm0_loc0, pwm0_loc1, pwm1_loc0,
+> +                  pwm1_loc1, pwm2_loc0, pwm2_loc1, pwm3_loc0, pwm3_loc1,
+> +                  spdif_optical_loc0, spdif_optical_loc1, usb_cc1, usb_cc2,
+> +                  sd, dmic_loc0, dmic_loc1, ai_loc0, ai_loc1, tdm_ai_loc0,
+> +                  tdm_ai_loc1, hi_loc0, hi_m, vtc_i2so, vtc_i2si_loc0,
+> +                  vtc_i2si_loc1, vtc_dmic_loc0, vtc_dmic_loc1, vtc_tdm_loc0,
+> +                  vtc_tdm_loc1, dc_fan, pll_test_loc0, pll_test_loc1,
+> +                  ir_rx, uart2_disable, gspi_disable, hi_width_disable,
+> +                  hi_width_1bit, sf_disable, sf_enable, scpu_ejtag_loc0,
+> +                  scpu_ejtag_loc1, scpu_ejtag_loc2, scpu_ejtag_loc3,
+> +                  acpu_ejtag_loc0, acpu_ejtag_loc1, acpu_ejtag_loc2,
+> +                  vcpu_ejtag_loc0, vcpu_ejtag_loc1, vcpu_ejtag_loc2,
+> +                  aucpu_ejtag_loc0, aucpu_ejtag_loc1, aucpu_ejtag_loc2,
+> +                  gpu_ejtag, iso_tristate, dbg_out0, dbg_out1, standby_dbg,
+> +                  spdif, arm_trace_debug_disable, arm_trace_debug_enable,
+> +                  aucpu_ejtag_disable, acpu_ejtag_disable, vcpu_ejtag_disable,
+> +                  scpu_ejtag_disable, vtc_dmic_loc_disable, vtc_tdm_disable,
+> +                  vtc_i2si_disable, tdm_ai_disable, ai_disable, spdif_disable,
+> +                  hif_disable, hif_enable, test_loop, pmic_pwrup ]
 > +
-If we hit this error, the fix will still be in the upper layer.
-So please drop the check and, if needed, add one in the client driver.
-
-
-> +       if (msgq_data->push)
-> +               tx_flags |=3D GH_HYPERCALL_MSGQ_TX_FLAGS_PUSH;
 > +
-> +       gh_error =3D gh_hypercall_msgq_send(msgq->tx_ghrsc->capid, msgq_d=
-ata->length, msgq_data->data,
-> +                                               tx_flags, &ready);
+> +        drive-strength:
+> +          enum: [4, 8]
 > +
-> +       /**
-> +        * unlikely because Linux tracks state of msgq and should not try=
- to
-> +        * send message when msgq is full.
-> +        */
-> +       if (unlikely(gh_error =3D=3D GH_ERROR_MSGQUEUE_FULL))
-> +               return -EAGAIN;
+> +        bias-pull-down: true
 > +
-If it is not expected to hit, please remove the check.
-If there can be a 'race' like situation, still remove this and try to
-find an appropriate place to avoid the race.
-
-> +       /**
-> +        * Propagate all other errors to client. If we return error to ma=
-ilbox
-> +        * framework, then no other messages can be sent and nobody will =
-know
-> +        * to retry this message.
-> +        */
-> +       msgq->last_ret =3D gh_error_remap(gh_error);
+> +        bias-pull-up: true
 > +
-> +       /**
-> +        * This message was successfully sent, but message queue isn't re=
-ady to
-> +        * accept more messages because it's now full. Mailbox framework
-> +        * requires that we only report that message was transmitted when
-> +        * we're ready to transmit another message. We'll get that in the=
- form
-> +        * of tx IRQ once the other side starts to drain the msgq.
-> +        */
-> +       if (gh_error =3D=3D GH_ERROR_OK) {
-> +               if (!ready)
-> +                       return 0;
-> +       } else {
-> +               dev_err(msgq->mbox.dev, "Failed to send data: %d (%d)\n",=
- gh_error, msgq->last_ret);
-> +       }
+> +        bias-disable: true
 > +
-> +       /**
-> +        * We can send more messages.
->
-            ... until we can not (when the platform specific queue is full)=
-.
-
->             Mailbox framework requires that tx done
-> +        * happens asynchronously to sending the message.
->
-hence the mailbox api needs to track each transfer's stage.
-
->             Gunyah message queues
-> +        * tell us right away on the hypercall return whether we can send=
- more
-> +        * messages. To work around this, defer the txdone to a tasklet.
-> +        */
->
-If not here, you would still have to put the 'defer' somewhere in the
-upper layer.
-So it is not exactly a "workaround".
-
-> +       tasklet_schedule(&msgq->txdone_tasklet);
+> +        input-schmitt-enable: true
 > +
-> +       return 0;
-> +}
+> +        input-schmitt-disable: true
 > +
+> +        drive-push-pull: true
+> +
+> +        power-source:
+> +          description: |
+> +            Valid arguments are described as below:
+> +            0: power supply of 1.8V
+> +            1: power supply of 3.3V
+> +          enum: [0, 1]
+> +
+> +        realtek,pdrive:
+> +          description: |
+> +            An integer describing the level to adjust PMOS output driving capability.
+> +          $ref: /schemas/types.yaml#/definitions/uint32
+> +          minimum: 0
+> +          maximum: 7
+> +
+> +        realtek,ndrive:
+> +          description: |
+> +            An integer describing the level to adjust NMOS output driving capability.
+> +          $ref: /schemas/types.yaml#/definitions/uint32
+> +          minimum: 0
+> +          maximum: 7
+> +
+> +        realtek,dcycle:
+> +          description: |
+> +            An integer describing the level to adjust output duty cycle.
+> +            Valid arguments are described as below:
+> +            0: 0ns
+> +            2: + 0.25ns
+> +            3: + 0.5ns
+> +            4: -0.25ns
+> +            5: -0.5ns
+> +          $ref: /schemas/types.yaml#/definitions/uint32
+> +          enum: [ 0, 2, 3, 4, 5 ]
+> +
+> +      required:
+> +        - pins
+> +
+> +      additionalProperties: false
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +     pinctrl@4e000 {
+> +         compatible = "realtek,rtd13xxe-pinctrl";
+> +         reg = <0x4e000 0x130>;
+> +
+> +         emmc_pins_hs200 {
 
+Don't use '_' in node names.
 
-> diff --git a/include/linux/gunyah.h b/include/linux/gunyah.h
-> index 01a6f202d037e..982e27d10d57f 100644
-> --- a/include/linux/gunyah.h
-> +++ b/include/linux/gunyah.h
-> @@ -8,11 +8,68 @@
->
->  #include <linux/bitfield.h>
->  #include <linux/errno.h>
-> +#include <linux/interrupt.h>
->  #include <linux/limits.h>
-> +#include <linux/mailbox_controller.h>
-> +#include <linux/mailbox_client.h>
->  #include <linux/types.h>
->
-controller.h and client.h aren't supposed to be in the same header.
-The Client and the Controller driver could include them respectively
-before this header.
-
-Cheers.
+> +             pins = "emmc_clk",
+> +                    "emmc_cmd",
+> +                    "emmc_data_0",
+> +                    "emmc_data_1",
+> +                    "emmc_data_2",
+> +                    "emmc_data_3",
+> +                    "emmc_data_4",
+> +                    "emmc_data_5",
+> +                    "emmc_data_6",
+> +                    "emmc_data_7";
+> +             function = "emmc";
+> +             realtek,pdrive = <0x2>;
+> +             realtek,ndrive = <0x2>;
+> +         };
+> +
+> +         i2c_pins_0 {
+> +             pins = "gpio_12",
+> +                    "gpio_13";
+> +             function = "i2c0";
+> +             drive-strength = <4>;
+> +         };
+> +     };
+> -- 
+> 2.41.0
+> 
