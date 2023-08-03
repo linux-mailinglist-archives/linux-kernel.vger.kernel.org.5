@@ -2,127 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F8DB76EC7A
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 16:27:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0BD7976EC80
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 16:28:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235569AbjHCO11 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Aug 2023 10:27:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41290 "EHLO
+        id S234893AbjHCO2R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Aug 2023 10:28:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41668 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230234AbjHCO10 (ORCPT
+        with ESMTP id S236598AbjHCO16 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Aug 2023 10:27:26 -0400
-Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5FD02F5
-        for <linux-kernel@vger.kernel.org>; Thu,  3 Aug 2023 07:27:24 -0700 (PDT)
-Received: by mail-ej1-x631.google.com with SMTP id a640c23a62f3a-99c10ba30afso466064466b.1
-        for <linux-kernel@vger.kernel.org>; Thu, 03 Aug 2023 07:27:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1691072843; x=1691677643;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=vbQfNecOkQKqfj8owcZIJmrIWpzf3fVGEB2RAsnZvXo=;
-        b=Vt6sayz3PfRfpZfRobgXRCWaGHBMOqrpkpgLFgjYod/R2acQZuB0azEx+kaae4vLUn
-         C1K0+JYc4ACYK7eu/MXCWUwyQtphOTPdzLQFzJ5jw29fL73yWFbPJ7Z01x+34HUtrc84
-         ULT+CC3gX2esWT2kJfNGgJMHdZyCqCezlLA0cqnh82cZy0FpORJerAsbN0Cx9iI7F9iP
-         aICFTpX2cO4NJB3b8K2PTMYu9POJxreO+9FTKiYKQTYmgV7v4T6r5G97P0g75FMqgSIj
-         8DtX2icz/3bvUzzqCYk7uV4IPRUT3WnbHlisUda3kLvuCdt0pRroFh6GwknpHG74wX8p
-         l4tw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691072843; x=1691677643;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=vbQfNecOkQKqfj8owcZIJmrIWpzf3fVGEB2RAsnZvXo=;
-        b=d35XOWeNQ/N5hBEE2UmOfI7MU86E4ENpg4MB8vvgOqhyqJEzuVzdQdb8ONiTaIMrah
-         hsBU+3eYx1n4k4MNXBSZb8FVTvfWzM4UlKM/largRBMqAtm7ksG/H+sF82XVjUgebuaw
-         0J0Z6X33jNC2ngC+pOCBRi38tzKRCzgnh+jPnnvCCOe0+VII7SGMYWjMPglv5VQiaSer
-         2BMHyTHwVzDU34Os/+BDRx2r0Z0f+WInkiLrb81ENd9uaLFmYZG54gXoCjYAo5PMB7me
-         5k9jp3wRKxcE4CegWgry8m6sGOfi/6RJy+/tHXUymYc4XXz7s7lr8s3k2R75WhCYp0Lo
-         068w==
-X-Gm-Message-State: ABy/qLb/lKTzHlZKgf0OZUhqCdBjCKDPLddKo+a6fLMtDcEvqW8giDhT
-        0WOkXodsaING1ilCLKUheqWb0w==
-X-Google-Smtp-Source: APBJJlGCDsZfN8FX81QWj0wYvM83MdJrGMaVp7p1XNbZiFyY3u34pb03l132S1VHTkCoJTJkcrnTLQ==
-X-Received: by 2002:a17:907:1dcd:b0:994:5457:269e with SMTP id og13-20020a1709071dcd00b009945457269emr10870939ejc.0.1691072842866;
-        Thu, 03 Aug 2023 07:27:22 -0700 (PDT)
-Received: from [192.168.1.20] ([178.197.222.245])
-        by smtp.gmail.com with ESMTPSA id q26-20020a1709060e5a00b00992b50fbbe9sm10576733eji.90.2023.08.03.07.27.20
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 03 Aug 2023 07:27:22 -0700 (PDT)
-Message-ID: <0bb37521-0ea8-b343-b801-d57ee17fde55@linaro.org>
-Date:   Thu, 3 Aug 2023 16:27:18 +0200
+        Thu, 3 Aug 2023 10:27:58 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67CE4DA;
+        Thu,  3 Aug 2023 07:27:56 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id EDD0161DD1;
+        Thu,  3 Aug 2023 14:27:55 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 58BC9C433CB;
+        Thu,  3 Aug 2023 14:27:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1691072875;
+        bh=SYezfMKoOwd06i4EdWxJdHq56YPVKCiPJTP05WrmoRw=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=Ce/zqNjzKTx1w0oEMvSeHRwJFaXj5t64SjzqGMBvSrjuRDlSertEXIyMH6eFgCiR4
+         0FzZRKjTZD7J/dSdi3DqzfDqUSH5JWTYDeC7sHxKW4qQJwJ3oazo6As/lYfBHcvIam
+         Mbs7Z/NZEL9fhlCxBOL3BKW5YjA0/A0OEBkMg+2GsezEALvkmp1KnuODa5JlbpkvFI
+         fk5ESeBlo7N+WiTKKW6BVICyWEOv4X9Ptqfydi8AwZrBxqgiNINnejLfVTzLAVC2ec
+         O3FSVvpxkKWNzF/SoCH30FUCBkcIAdzeJyTkkO9plQNPKcBtdtkj5cuEJPIlb8EK+b
+         BHWoMImDB56OA==
+Received: by mail-lj1-f173.google.com with SMTP id 38308e7fff4ca-2b9fa64db41so16109831fa.1;
+        Thu, 03 Aug 2023 07:27:55 -0700 (PDT)
+X-Gm-Message-State: ABy/qLYaZoXJigmzolcLIScSNkVaBf4AMyJ+Ag43KUBMLTX6BdDBpkFa
+        iy5ae16oRhxCqsniY7aT5jC674kNq4qLW/3wCcw=
+X-Google-Smtp-Source: APBJJlE2li6enqKdhY/67+FOLHVsKLoDwihFl4Guijp3+nlazzgS5h35KJKK4NMvZ4fFFAlcETvzQ20xCTP2P0SmadQ=
+X-Received: by 2002:a2e:870a:0:b0:2b9:4821:22b6 with SMTP id
+ m10-20020a2e870a000000b002b9482122b6mr8216088lji.10.1691072873230; Thu, 03
+ Aug 2023 07:27:53 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.1
-Subject: Re: [PATCH v1 1/6] dt-bindings: vendor-prefixes: Add BigTreeTech
-Content-Language: en-US
-To:     Martin Botka <martin@biqu3d.com>
-Cc:     Konrad Dybcio <konrad.dybcio@somainline.org>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@somainline.org>,
-        Marijn Suijten <marijn.suijten@somainline.org>,
-        Jami Kettunen <jamipkettunen@somainline.org>,
-        Paul Bouchara <paul.bouchara@somainline.org>,
-        Martin Botka <martin.botka@somainline.org>,
-        Andre Przywara <andre.przywara@arm.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Chen-Yu Tsai <wens@csie.org>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Samuel Holland <samuel@sholland.org>,
-        Andrew Lunn <andrew@lunn.ch>, Icenowy Zheng <uwu@icenowy.me>,
-        Ludwig Kormann <ludwig.kormann@ict42.de>,
-        Heiko Stuebner <heiko@sntech.de>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Chris Morgan <macromorgan@hotmail.com>,
-        Jagan Teki <jagan@edgeble.ai>,
-        Maxime Ripard <mripard@kernel.org>, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev,
-        linux-kernel@vger.kernel.org
-References: <20230802220309.163804-1-martin@biqu3d.com>
- <32C9B4A9A60647F1+20230802220309.163804-2-martin@biqu3d.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <32C9B4A9A60647F1+20230802220309.163804-2-martin@biqu3d.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <20230713100459.GEZK/MS69XbphJa+tN@fat_crate.local>
+ <CAO7dBbVMNKTSDi5eP4BseEUexsk0Mo0GWJpyHfOcp+tHs6cSUw@mail.gmail.com>
+ <20230717141409.GGZLVMsU6d/9mpJvMO@fat_crate.local> <CAO7dBbXJv9JzDbSa-DLT03+osYCQXNUXFwz63gbq=NGDxEVyEA@mail.gmail.com>
+ <20230728165535.GDZMPzB/ek5QM+xJqA@fat_crate.local> <CAO7dBbVyuLHH6RfdVQkU5ThXaJ-F4yvFAYD1PDNGkOpph9xvnA@mail.gmail.com>
+ <20230802093927.GAZMokT57anC5jBISK@fat_crate.local> <99cb3813-1737-9d10-1f24-77565e460c55@amd.com>
+ <20230802135856.GBZMphIHHLa3dXRRVe@fat_crate.local> <CAMj1kXEM5hGknVGwHh_w99D4L8yrYrTFycwGHZ0CQun70CLipw@mail.gmail.com>
+ <20230802155146.GCZMp7ksDdN2ETVzKV@fat_crate.local> <CAMj1kXHnSzdQw5CMAVXU7EzpnrdRvAqKZVgA+EV35kHmwVULgQ@mail.gmail.com>
+In-Reply-To: <CAMj1kXHnSzdQw5CMAVXU7EzpnrdRvAqKZVgA+EV35kHmwVULgQ@mail.gmail.com>
+From:   Ard Biesheuvel <ardb@kernel.org>
+Date:   Thu, 3 Aug 2023 16:27:41 +0200
+X-Gmail-Original-Message-ID: <CAMj1kXESuCScMLLAS4tSDcYxA3JTb24RuF7ipcKGd65tBvOBWQ@mail.gmail.com>
+Message-ID: <CAMj1kXESuCScMLLAS4tSDcYxA3JTb24RuF7ipcKGd65tBvOBWQ@mail.gmail.com>
+Subject: Re: [PATCH v2] x86/kexec: Add EFI config table identity mapping for
+ kexec kernel
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     =?UTF-8?B?SsO2cmcgUsO2ZGVs?= <joro@8bytes.org>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Tao Liu <ltao@redhat.com>, Michael Roth <michael.roth@amd.com>,
+        tglx@linutronix.de, mingo@redhat.com, dave.hansen@linux.intel.com,
+        x86@kernel.org, hpa@zytor.com, linux-kernel@vger.kernel.org,
+        bhe@redhat.com, dyoung@redhat.com, kexec@lists.infradead.org,
+        linux-efi@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 03/08/2023 00:02, Martin Botka wrote:
-> From: Martin Botka <martin.botka@somainline.org>
-> 
-> BigTreeTech is a company based in Shenzhen that makes
-> 3D printers and accessories.
-> 
-> Add prefix for it.
-> 
-> Signed-off-by: Martin Botka <martin.botka@somainline.org>
-> ---
->  Documentation/devicetree/bindings/vendor-prefixes.yaml | 2 ++
->  1 file changed, 2 insertions(+)
-> 
-> diff --git a/Documentation/devicetree/bindings/vendor-prefixes.yaml b/Documentation/devicetree/bindings/vendor-prefixes.yaml
-> index af60bf1a6664..1d5f86e3f099 100644
-> --- a/Documentation/devicetree/bindings/vendor-prefixes.yaml
-> +++ b/Documentation/devicetree/bindings/vendor-prefixes.yaml
-> @@ -194,6 +194,8 @@ patternProperties:
->      description: Beckhoff Automation GmbH & Co. KG
->    "^bitmain,.*":
->      description: Bitmain Technologies
-> +  "^bigtreetech,.*":
+On Thu, 3 Aug 2023 at 13:11, Ard Biesheuvel <ardb@kernel.org> wrote:
+>
+> On Wed, 2 Aug 2023 at 17:52, Borislav Petkov <bp@alien8.de> wrote:
+> >
+> > On Wed, Aug 02, 2023 at 04:55:27PM +0200, Ard Biesheuvel wrote:
+> > > ... because now, entering via startup_32 is broken, given that it only
+> > > maps the kernel image itself and relies on the #PF handling for
+> > > everything else it accesses, including firmware tables.
+> > >
+> > > AFAICT this also means that entering via startup_32 is broken entirely
+> > > for any configuration that enables the cc blob config table check,
+> > > regardless of the platform.
+> >
+> > Lemme brain-dump what Tom and I just talked on IRC.
+> >
+> > That startup_32 entry path for SNP guests was used with old grubs which
+> > used to enter through there and not anymore, reportedly. Which means,
+> > that must've worked at some point but Joerg would know. CCed.
+> >
+>
+> Sadly, not only 'old' grubs - GRUB mainline only recently added
+> support for booting Linux/x86 via the EFI stub (because I wrote the
+> code for them), but it will still fall back to the previous mode for
+> kernels that are built without EFI stub support, or which are older
+> than ~v5.8 (because their EFI stub does not implement the generic EFI
+> initrd loading mechanism)
+>
+> This fallback still appears to enter via startup_32, even when GRUB
+> itself runs in long mode in the context of EFI.
+>
+> > Newer grubs enter through the 64-bit entry point and thus are fine
+> > - otherwise we would be seeing explosions left and right.
+> >
+>
+> Yeah. what seems to be saving our ass here is that startup_32 maps the
+> first 1G of physical address space 4 times, and x86_64 EFI usually
+> puts firmware tables below 4G. This means the cc blob check doesn't
+> fault, but it may dereference bogus memory traversing the config table
+> array looking for the cc blob GUID. However, the system table field
+> holding the size of the array may also appear as bogus so this may
+> still break in weird ways.
+>
+> > So dependent on what we wanna do, if we kill the 32-bit path, we can
+> > kill the 32-bit C-bit verif code. But that's for later and an item on my
+> > TODO list.
+> >
+>
+> I don't think we can kill it yet, but it would be nice if we could
+> avoid the need to support SNP boot when entering that way.
 
-Please keep alphabetical order.
+https://lists.gnu.org/archive/html/grub-devel/2023-08/msg00005.html
 
-Best regards,
-Krzysztof
-
+Coming to your distro any decade now!
