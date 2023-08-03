@@ -2,198 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CA4E376E00F
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 08:09:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F1FC276E010
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 08:13:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232749AbjHCGJ5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Aug 2023 02:09:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37190 "EHLO
+        id S231758AbjHCGNC convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 3 Aug 2023 02:13:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37624 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230040AbjHCGJy (ORCPT
+        with ESMTP id S232384AbjHCGM5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Aug 2023 02:09:54 -0400
-Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C6D8272C;
-        Wed,  2 Aug 2023 23:09:53 -0700 (PDT)
-Received: by mail-wr1-x435.google.com with SMTP id ffacd0b85a97d-317b31203c7so525384f8f.2;
-        Wed, 02 Aug 2023 23:09:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1691042992; x=1691647792;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=oP3zxtD+0slQxaWy/bQYAlXRzptkEvoefxyTvuaiCok=;
-        b=HMNxIJCou7SwS+TtE4QnYWHt2S8KQSoYGd1YN/g9jxuYx3P6vtpdEdqfDh8WgE7p17
-         iwEie3KCbhbNFHJwJV3HUnWzveUyyOXILWsHMpqcTYImxJtI//OLIh8Em7oxBquLij4X
-         CYU5Limw4/qQH6R6rDdZxz72Nc/X9NrROAGqG+f7jEJvJnVdbHLo2A26AEJ5shBATWwj
-         qCmomT/AtqaesLjX+Hlpyac2kdF80nwl3eNu6yYGsL3aY7/S7ucUOE7UUW6+1dRx8Alb
-         FjBscD5qOMnLZ4PjWAkwZHCMxZ67B7QHkPEnU3YE2DRgz0c913VAYix2+aT7w624oObi
-         40zg==
+        Thu, 3 Aug 2023 02:12:57 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96783272C
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Aug 2023 23:12:10 -0700 (PDT)
+Received: from mail-ot1-f69.google.com (mail-ot1-f69.google.com
+ [209.85.210.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-528--Tk1P5JGNMG5bhsBZ6S_Og-1; Thu, 03 Aug 2023 02:12:08 -0400
+X-MC-Unique: -Tk1P5JGNMG5bhsBZ6S_Og-1
+Received: by mail-ot1-f69.google.com with SMTP id 46e09a7af769-6bc56f23c65so963948a34.2
+        for <linux-kernel@vger.kernel.org>; Wed, 02 Aug 2023 23:12:08 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691042992; x=1691647792;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=oP3zxtD+0slQxaWy/bQYAlXRzptkEvoefxyTvuaiCok=;
-        b=Ql7sqYHjGMbHeu4wYXUu34MaeONZMASD0WnIN2rou+1tttyMpv/J8zv46LSWOUQW/f
-         9X5sOBjHssFBClbnrCorRHcqKu8Z5pF5tAONRrxYLRG9K8v6p+KyZ7jNNSmFfu2VafRp
-         NHW/T+TvJSnv5nWgpjJhXqU+KoyJsUbyNmgsn1FPlMttEUv2TUTHiTSmUAonMQcb7eic
-         x9wTQTJPAp2Yp6UD7c4Bo3gjlvAbGPa8wDV1V37w5x1jgC2EJO6msV4uVnWdr5BZ4cLh
-         YZBCNPdBVpmQRu63OvsG7+uM6qZJ78zodGzVcP2G8G0Fqu48lllLyJDVukU8l598I1SI
-         iLkA==
-X-Gm-Message-State: ABy/qLYelCPKzeYXFn6GD+4MGoELr9k3P1seh+/FWYTMOFfiX7EPNmfK
-        FxM1iU6CP8IKYrp9KAgTzyz2eDfDtEBJdY4O
-X-Google-Smtp-Source: APBJJlHODVz+6Nlhm8leP1y2QQ0r/9vMz4ePXLV1d4C1w/r9evuqeLlIIxWmw82AmthN8vBia5FM4g==
-X-Received: by 2002:adf:d08f:0:b0:317:6310:a616 with SMTP id y15-20020adfd08f000000b003176310a616mr6053018wrh.36.1691042991681;
-        Wed, 02 Aug 2023 23:09:51 -0700 (PDT)
-Received: from localhost.localdomain ([2a05:f480:1000:b09:5400:4ff:fe6f:7099])
-        by smtp.gmail.com with ESMTPSA id l10-20020a5d410a000000b00317495f88fasm20696122wrp.112.2023.08.02.23.09.48
+        d=1e100.net; s=20221208; t=1691043128; x=1691647928;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=PclpYqCH63o/7EbB151IjCBiyPLFzNdla2ERVVKFqV8=;
+        b=lBMqPhSVfgEftsxmeLJelIuMWcWUlIj3A11ShTsFAkFuHpr1657U+VGC6Dy5bWuk3x
+         2kG1kRYLLYhkAYO35m5yAtKC8tF+A3qMjcv7tWrnGMqFqY3csOL9eo7A3S7MJ3bq7mFM
+         XIWOLYGH+P7IYGlloExA2I4Xsu9gQF1k0ZH2BM9mGw2D6dOpBp+nVZpPd4odkUuW+8Kn
+         AXxoD8gnbnCf3zCa5sZfmdlDL7gHLs12akBTS0dk8v/laNlI751KlCiI9auR+82AyanL
+         pu5Bh5H9toQmM1kiyuN4c6v09wL3NX+B9dcSbJVEUzlwH82sf40wS+QoMKFG+YHdWX31
+         OWyg==
+X-Gm-Message-State: ABy/qLaD1qBVsZoh883p7W6//MpmwpvqPlf2Q/9s1pksX7QmgMXFoFHr
+        0talIfRymTaI/JAmrr9T6Az6v1xwEHnnJMI5761rIy99ypGb0i7gNREKeib+4NrPL58Ln5LReJX
+        tKC34J5j2fhzl8k+MeFI9xr7+
+X-Received: by 2002:a05:6871:612:b0:1ad:e92:62e1 with SMTP id w18-20020a056871061200b001ad0e9262e1mr23687273oan.54.1691043127866;
+        Wed, 02 Aug 2023 23:12:07 -0700 (PDT)
+X-Google-Smtp-Source: APBJJlHS2DsU4Eh8oiwpO8PbZCofaG7KV4HOa4kFX9NdmO3QgQN6/y2JXtScFIx0Z/yy0aTGdZ761g==
+X-Received: by 2002:a05:6871:612:b0:1ad:e92:62e1 with SMTP id w18-20020a056871061200b001ad0e9262e1mr23687260oan.54.1691043127621;
+        Wed, 02 Aug 2023 23:12:07 -0700 (PDT)
+Received: from ?IPv6:2804:1b3:a801:d380:694f:4f52:764c:4b7f? ([2804:1b3:a801:d380:694f:4f52:764c:4b7f])
+        by smtp.gmail.com with ESMTPSA id a18-20020a05687103d200b001b047298a44sm7211716oag.52.2023.08.02.23.12.05
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 02 Aug 2023 23:09:51 -0700 (PDT)
-From:   zhangshida <starzhangzsd@gmail.com>
-X-Google-Original-From: zhangshida <zhangshida@kylinos.cn>
-To:     tytso@mit.edu, adilger.kernel@dilger.ca, yi.zhang@huawei.com,
-        djwong@kernel.org
-Cc:     linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
-        zhangshida@kylinos.cn, starzhangzsd@gmail.com, stable@kernel.org,
-        Andreas Dilger <adilger@dilger.ca>
-Subject: [PATCH v4] ext4: Fix rec_len verify error
-Date:   Thu,  3 Aug 2023 14:09:38 +0800
-Message-Id: <20230803060938.1929759-1-zhangshida@kylinos.cn>
-X-Mailer: git-send-email 2.25.1
+        Wed, 02 Aug 2023 23:12:07 -0700 (PDT)
+Message-ID: <e7bbf95cb0b79dc4f508f554675af4d1138fdfe8.camel@redhat.com>
+Subject: Re: [RFC PATCH v1 0/2] Deduplicating RISCV cmpxchg.h macros
+From:   Leonardo =?ISO-8859-1?Q?Br=E1s?= <leobras@redhat.com>
+To:     Andrea Parri <parri.andrea@gmail.com>
+Cc:     Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>, Guo Ren <guoren@kernel.org>,
+        Conor Dooley <conor.dooley@microchip.com>,
+        Palmer Dabbelt <palmer@rivosinc.com>,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
+Date:   Thu, 03 Aug 2023 03:12:03 -0300
+In-Reply-To: <ZMsboVmlrWhjfNJd@andrea>
+References: <20230406082018.70367-1-leobras@redhat.com>
+         <ZC7/LzV53KsZ/cSn@andrea>
+         <2f301cd6c4009248c5eb6af00f12f36f3127ca10.camel@redhat.com>
+         <ZMsboVmlrWhjfNJd@andrea>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+User-Agent: Evolution 3.48.4 
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Shida Zhang <zhangshida@kylinos.cn>
+On Thu, 2023-08-03 at 05:14 +0200, Andrea Parri wrote:
+> > > LGTM.  AFAICT, this would need to be rebased, cf. e.g.
+> > > 
+> > >   a8596dda1fbf7e ("arch: rename all internal names __xchg to __arch_xchg")
+> > > 
+> > > from the tip tree.
+> > > 
+> > >   Andrea
+> > 
+> > Thanks for the heads up!
+> > I will update this and re-send!
+> > 
+> > 
+> > And sorry about the delay :(
+> > For some weird reason neither the cover letter, nor your message reached my
+> > gmail, and just now looking at lore I could find your message. 
+> 
+> All's well that ends well.  ;-)  Thanks,
+> 
+>   Andrea
+> 
 
-With the configuration PAGE_SIZE 64k and filesystem blocksize 64k,
-a problem occurred when more than 13 million files were directly created
-under a directory:
+Superseded by v2:
+https://patchwork.kernel.org/project/linux-riscv/list/?series=772422&state=%2A&archive=both
 
-EXT4-fs error (device xx): ext4_dx_csum_set:492: inode #xxxx: comm xxxxx: dir seems corrupt?  Run e2fsck -D.
-EXT4-fs error (device xx): ext4_dx_csum_verify:463: inode #xxxx: comm xxxxx: dir seems corrupt?  Run e2fsck -D.
-EXT4-fs error (device xx): dx_probe:856: inode #xxxx: block 8188: comm xxxxx: Directory index failed checksum
-
-When enough files are created, the fake_dirent->reclen will be 0xffff.
-it doesn't equal to the blocksize 65536, i.e. 0x10000.
-
-But it is not the same condition when blocksize equals to 4k.
-when enough files are created, the fake_dirent->reclen will be 0x1000.
-it equals to the blocksize 4k, i.e. 0x1000.
-
-The problem seems to be related to the limitation of the 16-bit field
-when the blocksize is set to 64k.
-To address this, helpers like ext4_rec_len_{from,to}_disk has already
-been introduced to complete the conversion between the encoded and the
-plain form of rec_len.
-
-So fix this one by using the helper, and all the other in this file too.
-
-Cc: stable@kernel.org
-Fixes: dbe89444042a ("ext4: Calculate and verify checksums for htree nodes")
-Suggested-by: Andreas Dilger <adilger@dilger.ca>
-Suggested-by: Darrick J. Wong <djwong@kernel.org>
-Signed-off-by: Shida Zhang <zhangshida@kylinos.cn>
----
-v3->v4:
- 1,Convert all the other rec_len, litrerally.
- 2,Lift a helper output to a local variable.
- --Suggested by Darrick.
-v2->v3:
- 1,Convert all the other rec_len if necessary, as suggested by Darrick.
- 2,Rephrase the commit message.
-v1->v2:
- Use the existing helper to covert the rec_len, as suggested by Andreas.
-
- fs/ext4/namei.c | 26 +++++++++++++++-----------
- 1 file changed, 15 insertions(+), 11 deletions(-)
-
-diff --git a/fs/ext4/namei.c b/fs/ext4/namei.c
-index 0caf6c730ce3..34fb2d1e66aa 100644
---- a/fs/ext4/namei.c
-+++ b/fs/ext4/namei.c
-@@ -343,17 +343,17 @@ static struct ext4_dir_entry_tail *get_dirent_tail(struct inode *inode,
- 						   struct buffer_head *bh)
- {
- 	struct ext4_dir_entry_tail *t;
-+	int blocksize = EXT4_BLOCK_SIZE(inode->i_sb);
- 
- #ifdef PARANOID
- 	struct ext4_dir_entry *d, *top;
- 
- 	d = (struct ext4_dir_entry *)bh->b_data;
- 	top = (struct ext4_dir_entry *)(bh->b_data +
--		(EXT4_BLOCK_SIZE(inode->i_sb) -
--		 sizeof(struct ext4_dir_entry_tail)));
--	while (d < top && d->rec_len)
-+		(blocksize - sizeof(struct ext4_dir_entry_tail)));
-+	while (d < top && ext4_rec_len_from_disk(d->rec_len, blocksize))
- 		d = (struct ext4_dir_entry *)(((void *)d) +
--		    le16_to_cpu(d->rec_len));
-+		    ext4_rec_len_from_disk(d->rec_len, blocksize));
- 
- 	if (d != top)
- 		return NULL;
-@@ -364,7 +364,8 @@ static struct ext4_dir_entry_tail *get_dirent_tail(struct inode *inode,
- #endif
- 
- 	if (t->det_reserved_zero1 ||
--	    le16_to_cpu(t->det_rec_len) != sizeof(struct ext4_dir_entry_tail) ||
-+	    (ext4_rec_len_from_disk(t->det_rec_len, blocksize) !=
-+	     sizeof(struct ext4_dir_entry_tail)) ||
- 	    t->det_reserved_zero2 ||
- 	    t->det_reserved_ft != EXT4_FT_DIR_CSUM)
- 		return NULL;
-@@ -445,13 +446,14 @@ static struct dx_countlimit *get_dx_countlimit(struct inode *inode,
- 	struct ext4_dir_entry *dp;
- 	struct dx_root_info *root;
- 	int count_offset;
-+	int blocksize = EXT4_BLOCK_SIZE(inode->i_sb);
-+	unsigned int rlen = ext4_rec_len_from_disk(dirent->rec_len, blocksize);
- 
--	if (le16_to_cpu(dirent->rec_len) == EXT4_BLOCK_SIZE(inode->i_sb))
-+	if (rlen == blocksize)
- 		count_offset = 8;
--	else if (le16_to_cpu(dirent->rec_len) == 12) {
-+	else if (rlen == 12) {
- 		dp = (struct ext4_dir_entry *)(((void *)dirent) + 12);
--		if (le16_to_cpu(dp->rec_len) !=
--		    EXT4_BLOCK_SIZE(inode->i_sb) - 12)
-+		if (ext4_rec_len_from_disk(dp->rec_len, blocksize) != blocksize - 12)
- 			return NULL;
- 		root = (struct dx_root_info *)(((void *)dp + 12));
- 		if (root->reserved_zero ||
-@@ -1315,6 +1317,7 @@ static int dx_make_map(struct inode *dir, struct buffer_head *bh,
- 	unsigned int buflen = bh->b_size;
- 	char *base = bh->b_data;
- 	struct dx_hash_info h = *hinfo;
-+	int blocksize = EXT4_BLOCK_SIZE(dir->i_sb);
- 
- 	if (ext4_has_metadata_csum(dir->i_sb))
- 		buflen -= sizeof(struct ext4_dir_entry_tail);
-@@ -1335,11 +1338,12 @@ static int dx_make_map(struct inode *dir, struct buffer_head *bh,
- 			map_tail--;
- 			map_tail->hash = h.hash;
- 			map_tail->offs = ((char *) de - base)>>2;
--			map_tail->size = le16_to_cpu(de->rec_len);
-+			map_tail->size = ext4_rec_len_from_disk(de->rec_len,
-+								blocksize);
- 			count++;
- 			cond_resched();
- 		}
--		de = ext4_next_entry(de, dir->i_sb->s_blocksize);
-+		de = ext4_next_entry(de, blocksize);
- 	}
- 	return count;
- }
--- 
-2.27.0
+Leo
 
