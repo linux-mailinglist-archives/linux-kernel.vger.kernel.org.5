@@ -2,33 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7463876E0B9
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 09:02:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4619276E0BA
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 09:02:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233944AbjHCHCk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Aug 2023 03:02:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57544 "EHLO
+        id S233949AbjHCHCn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Aug 2023 03:02:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57302 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233819AbjHCHCP (ORCPT
+        with ESMTP id S233821AbjHCHCS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Aug 2023 03:02:15 -0400
+        Thu, 3 Aug 2023 03:02:18 -0400
 Received: from mail.nfschina.com (unknown [42.101.60.195])
-        by lindbergh.monkeyblade.net (Postfix) with SMTP id 0125230C4;
-        Thu,  3 Aug 2023 00:02:06 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with SMTP id ADA7D2D64;
+        Thu,  3 Aug 2023 00:02:14 -0700 (PDT)
 Received: from localhost.localdomain (unknown [180.167.10.98])
-        by mail.nfschina.com (Maildata Gateway V2.8.8) with ESMTPA id 3C5AB608EE259;
-        Thu,  3 Aug 2023 15:02:03 +0800 (CST)
+        by mail.nfschina.com (Maildata Gateway V2.8.8) with ESMTPA id E59EF608EE259;
+        Thu,  3 Aug 2023 15:02:11 +0800 (CST)
 X-MD-Sfrom: yunchuan@nfschina.com
 X-MD-SrcIP: 180.167.10.98
 From:   Wu Yunchuan <yunchuan@nfschina.com>
 To:     kvalo@kernel.org
-Cc:     simon.horman@corigine.com, marex@denx.de,
-        linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org,
+Cc:     linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org,
         kernel-janitors@vger.kernel.org,
         Wu Yunchuan <yunchuan@nfschina.com>
-Subject: [PATCH net-next 6/9] wifi: rsi: Remove unnecessary (void*) conversions
-Date:   Thu,  3 Aug 2023 15:02:02 +0800
-Message-Id: <20230803070202.3654731-1-yunchuan@nfschina.com>
+Subject: [PATCH net-next 7/9] wifi: rsi: Remove unnecessary (void*) conversions
+Date:   Thu,  3 Aug 2023 15:02:10 +0800
+Message-Id: <20230803070210.3654862-1-yunchuan@nfschina.com>
 X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -45,150 +44,63 @@ No need cast (void*) to (struct rsi_91x_sdiodev *).
 
 Signed-off-by: Wu Yunchuan <yunchuan@nfschina.com>
 ---
- drivers/net/wireless/rsi/rsi_91x_sdio.c | 39 +++++++++----------------
- 1 file changed, 14 insertions(+), 25 deletions(-)
+ drivers/net/wireless/rsi/rsi_91x_sdio_ops.c | 15 +++++----------
+ 1 file changed, 5 insertions(+), 10 deletions(-)
 
-diff --git a/drivers/net/wireless/rsi/rsi_91x_sdio.c b/drivers/net/wireless/rsi/rsi_91x_sdio.c
-index 1911fef3bbad..8e7b757475d2 100644
---- a/drivers/net/wireless/rsi/rsi_91x_sdio.c
-+++ b/drivers/net/wireless/rsi/rsi_91x_sdio.c
-@@ -144,8 +144,7 @@ static int rsi_issue_sdiocommand(struct sdio_func *func,
- static void rsi_handle_interrupt(struct sdio_func *function)
+diff --git a/drivers/net/wireless/rsi/rsi_91x_sdio_ops.c b/drivers/net/wireless/rsi/rsi_91x_sdio_ops.c
+index b2b47a0abcbf..597b238e2294 100644
+--- a/drivers/net/wireless/rsi/rsi_91x_sdio_ops.c
++++ b/drivers/net/wireless/rsi/rsi_91x_sdio_ops.c
+@@ -88,8 +88,7 @@ void rsi_sdio_rx_thread(struct rsi_common *common)
+ static int rsi_process_pkt(struct rsi_common *common)
  {
- 	struct rsi_hw *adapter = sdio_get_drvdata(function);
+ 	struct rsi_hw *adapter = common->priv;
 -	struct rsi_91x_sdiodev *dev =
 -		(struct rsi_91x_sdiodev *)adapter->rsi_dev;
 +	struct rsi_91x_sdiodev *dev = adapter->rsi_dev;
- 
- 	if (adapter->priv->fsm_state == FSM_FW_NOT_LOADED)
- 		return;
-@@ -337,8 +336,7 @@ static void rsi_reset_card(struct sdio_func *pfunction)
-  */
- static void rsi_setclock(struct rsi_hw *adapter, u32 freq)
- {
--	struct rsi_91x_sdiodev *dev =
--		(struct rsi_91x_sdiodev *)adapter->rsi_dev;
-+	struct rsi_91x_sdiodev *dev = adapter->rsi_dev;
- 	struct mmc_host *host = dev->pfunction->card->host;
- 	u32 clock;
- 
-@@ -358,8 +356,7 @@ static void rsi_setclock(struct rsi_hw *adapter, u32 freq)
-  */
- static int rsi_setblocklength(struct rsi_hw *adapter, u32 length)
- {
--	struct rsi_91x_sdiodev *dev =
--		(struct rsi_91x_sdiodev *)adapter->rsi_dev;
-+	struct rsi_91x_sdiodev *dev = adapter->rsi_dev;
- 	int status;
- 	rsi_dbg(INIT_ZONE, "%s: Setting the block length\n", __func__);
- 
-@@ -380,8 +377,7 @@ static int rsi_setblocklength(struct rsi_hw *adapter, u32 length)
-  */
- static int rsi_setupcard(struct rsi_hw *adapter)
- {
--	struct rsi_91x_sdiodev *dev =
--		(struct rsi_91x_sdiodev *)adapter->rsi_dev;
-+	struct rsi_91x_sdiodev *dev = adapter->rsi_dev;
+ 	u8 num_blks = 0;
+ 	u32 rcv_pkt_len = 0;
  	int status = 0;
- 
- 	rsi_setclock(adapter, 50000);
-@@ -407,8 +403,7 @@ int rsi_sdio_read_register(struct rsi_hw *adapter,
- 			   u32 addr,
- 			   u8 *data)
+@@ -147,8 +146,7 @@ static int rsi_process_pkt(struct rsi_common *common)
+  */
+ int rsi_init_sdio_slave_regs(struct rsi_hw *adapter)
  {
 -	struct rsi_91x_sdiodev *dev =
 -		(struct rsi_91x_sdiodev *)adapter->rsi_dev;
 +	struct rsi_91x_sdiodev *dev = adapter->rsi_dev;
- 	u8 fun_num = 0;
- 	int status;
- 
-@@ -441,8 +436,7 @@ int rsi_sdio_write_register(struct rsi_hw *adapter,
- 			    u32 addr,
- 			    u8 *data)
- {
--	struct rsi_91x_sdiodev *dev =
--		(struct rsi_91x_sdiodev *)adapter->rsi_dev;
-+	struct rsi_91x_sdiodev *dev = adapter->rsi_dev;
+ 	u8 function = 0;
+ 	u8 byte;
  	int status = 0;
- 
- 	if (likely(dev->sdio_irq_task != current))
-@@ -495,8 +489,7 @@ static int rsi_sdio_read_register_multiple(struct rsi_hw *adapter,
- 					   u8 *data,
- 					   u16 count)
+@@ -233,8 +231,7 @@ int rsi_init_sdio_slave_regs(struct rsi_hw *adapter)
+ static void rsi_rx_handler(struct rsi_hw *adapter)
  {
--	struct rsi_91x_sdiodev *dev =
--		(struct rsi_91x_sdiodev *)adapter->rsi_dev;
-+	struct rsi_91x_sdiodev *dev = adapter->rsi_dev;
- 	u32 status;
- 
- 	if (likely(dev->sdio_irq_task != current))
-@@ -527,8 +520,7 @@ int rsi_sdio_write_register_multiple(struct rsi_hw *adapter,
- 				     u8 *data,
- 				     u16 count)
- {
+ 	struct rsi_common *common = adapter->priv;
 -	struct rsi_91x_sdiodev *dev =
 -		(struct rsi_91x_sdiodev *)adapter->rsi_dev;
 +	struct rsi_91x_sdiodev *dev = adapter->rsi_dev;
  	int status;
- 
- 	if (dev->write_fail > 1) {
-@@ -762,8 +754,7 @@ static int rsi_sdio_host_intf_write_pkt(struct rsi_hw *adapter,
- 					u8 *pkt,
- 					u32 len)
+ 	u8 isr_status = 0;
+ 	u8 fw_status = 0;
+@@ -339,8 +336,7 @@ static void rsi_rx_handler(struct rsi_hw *adapter)
+ int rsi_sdio_check_buffer_status(struct rsi_hw *adapter, u8 q_num)
+ {
+ 	struct rsi_common *common = adapter->priv;
+-	struct rsi_91x_sdiodev *dev =
+-		(struct rsi_91x_sdiodev *)adapter->rsi_dev;
++	struct rsi_91x_sdiodev *dev = adapter->rsi_dev;
+ 	u8 buf_status = 0;
+ 	int status = 0;
+ 	static int counter = 4;
+@@ -409,8 +405,7 @@ int rsi_sdio_check_buffer_status(struct rsi_hw *adapter, u8 q_num)
+  */
+ int rsi_sdio_determine_event_timeout(struct rsi_hw *adapter)
  {
 -	struct rsi_91x_sdiodev *dev =
 -		(struct rsi_91x_sdiodev *)adapter->rsi_dev;
 +	struct rsi_91x_sdiodev *dev = adapter->rsi_dev;
- 	u32 block_size = dev->tx_blk_size;
- 	u32 num_blocks, address, length;
- 	u32 queueno;
-@@ -1045,7 +1036,7 @@ static int rsi_probe(struct sdio_func *pfunction,
- 		goto fail_free_adapter;
- 	}
  
--	sdev = (struct rsi_91x_sdiodev *)adapter->rsi_dev;
-+	sdev = adapter->rsi_dev;
- 	rsi_init_event(&sdev->rx_thread.event);
- 	status = rsi_create_kthread(adapter->priv, &sdev->rx_thread,
- 				    rsi_sdio_rx_thread, "SDIO-RX-Thread");
-@@ -1221,7 +1212,7 @@ static void rsi_disconnect(struct sdio_func *pfunction)
- 	if (!adapter)
- 		return;
- 
--	dev = (struct rsi_91x_sdiodev *)adapter->rsi_dev;
-+	dev = adapter->rsi_dev;
- 
- 	rsi_kill_thread(&dev->rx_thread);
- 	sdio_claim_host(pfunction);
-@@ -1255,8 +1246,7 @@ static void rsi_disconnect(struct sdio_func *pfunction)
- #ifdef CONFIG_PM
- static int rsi_set_sdio_pm_caps(struct rsi_hw *adapter)
- {
--	struct rsi_91x_sdiodev *dev =
--		(struct rsi_91x_sdiodev *)adapter->rsi_dev;
-+	struct rsi_91x_sdiodev *dev = adapter->rsi_dev;
- 	struct sdio_func *func = dev->pfunction;
- 	int ret;
- 
-@@ -1407,7 +1397,7 @@ static int rsi_freeze(struct device *dev)
- 		return -ENODEV;
- 	}
- 	common = adapter->priv;
--	sdev = (struct rsi_91x_sdiodev *)adapter->rsi_dev;
-+	sdev = adapter->rsi_dev;
- 
- 	if ((common->wow_flags & RSI_WOW_ENABLED) &&
- 	    (common->wow_flags & RSI_WOW_NO_CONNECTION))
-@@ -1457,8 +1447,7 @@ static void rsi_shutdown(struct device *dev)
- {
- 	struct sdio_func *pfunction = dev_to_sdio_func(dev);
- 	struct rsi_hw *adapter = sdio_get_drvdata(pfunction);
--	struct rsi_91x_sdiodev *sdev =
--		(struct rsi_91x_sdiodev *)adapter->rsi_dev;
-+	struct rsi_91x_sdiodev *sdev = adapter->rsi_dev;
- 	struct ieee80211_hw *hw = adapter->hw;
- 
- 	rsi_dbg(ERR_ZONE, "SDIO Bus shutdown =====>\n");
+ 	/* Once buffer full is seen, event timeout to occur every 2 msecs */
+ 	if (dev->rx_info.buffer_full)
 -- 
 2.30.2
 
