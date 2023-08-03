@@ -2,84 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B5A8676ECE2
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 16:41:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7863776ECE1
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 16:41:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236784AbjHCOl2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Aug 2023 10:41:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50032 "EHLO
+        id S231474AbjHCOlM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Aug 2023 10:41:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50030 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236028AbjHCOlJ (ORCPT
+        with ESMTP id S234678AbjHCOkw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Aug 2023 10:41:09 -0400
-Received: from eu-smtp-delivery-151.mimecast.com (eu-smtp-delivery-151.mimecast.com [185.58.86.151])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6DAC3A80
-        for <linux-kernel@vger.kernel.org>; Thu,  3 Aug 2023 07:40:16 -0700 (PDT)
-Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) by
- relay.mimecast.com with ESMTP with both STARTTLS and AUTH (version=TLSv1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- uk-mta-93-Yef4x2TXMjORgJxQ4THDUQ-1; Thu, 03 Aug 2023 15:39:39 +0100
-X-MC-Unique: Yef4x2TXMjORgJxQ4THDUQ-1
-Received: from AcuMS.Aculab.com (10.202.163.6) by AcuMS.aculab.com
- (10.202.163.6) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Thu, 3 Aug
- 2023 15:39:38 +0100
-Received: from AcuMS.Aculab.com ([::1]) by AcuMS.aculab.com ([::1]) with mapi
- id 15.00.1497.048; Thu, 3 Aug 2023 15:39:38 +0100
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     "'paulmck@kernel.org'" <paulmck@kernel.org>,
-        Alan Huang <mmpgouride@gmail.com>
-CC:     Joel Fernandes <joel@joelfernandes.org>,
-        Eric Dumazet <edumazet@google.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "rcu@vger.kernel.org" <rcu@vger.kernel.org>,
-        "roman.gushchin@linux.dev" <roman.gushchin@linux.dev>
-Subject: RE: Question about the barrier() in hlist_nulls_for_each_entry_rcu()
-Thread-Topic: Question about the barrier() in hlist_nulls_for_each_entry_rcu()
-Thread-Index: AQHZxhH18xsGyGi6wkSgE8eJxYMp7K/Yo3ZQ
-Date:   Thu, 3 Aug 2023 14:39:38 +0000
-Message-ID: <9905e2f8e28246929be7b77b78c07fb4@AcuMS.aculab.com>
-References: <E9CF24C7-3080-4720-B540-BAF03068336B@gmail.com>
- <1E0741E0-2BD9-4FA3-BA41-4E83315A10A8@joelfernandes.org>
- <1AF98387-B78C-4556-BE2E-E8F88ADACF8A@gmail.com>
- <43d29007-3c59-4497-a1e5-26f182a7f4c5@paulmck-laptop>
- <784ABF9D-303F-4FC8-8AFF-A3FF319B4E7A@gmail.com>
- <bf86abde-6a90-4ea0-a298-abe5b367f4f9@paulmck-laptop>
-In-Reply-To: <bf86abde-6a90-4ea0-a298-abe5b367f4f9@paulmck-laptop>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        Thu, 3 Aug 2023 10:40:52 -0400
+Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52F5046A0
+        for <linux-kernel@vger.kernel.org>; Thu,  3 Aug 2023 07:39:58 -0700 (PDT)
+Received: by mail-ed1-x52f.google.com with SMTP id 4fb4d7f45d1cf-523100882f2so728214a12.2
+        for <linux-kernel@vger.kernel.org>; Thu, 03 Aug 2023 07:39:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1691073596; x=1691678396;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=q4VEn/Qj6DZvyXoC2OX+B5FMkh7YXzHCah+yE83TVaQ=;
+        b=nk14RLzMmv8XbKhQsOFIQD8Rt+OHA35WxL8YUniWZm7lMX/GBGb608+9ysan9+g7K9
+         A/EE1/Z2A5ad5Nqe/PJydhDPyQo40TFAnN3bfjmlfy3Y4l77O5OFcowOs+oOFKOWce3A
+         E1N4MY2RzOLgiftjVpmWl0eTYeCeuc+SB4hX0=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691073596; x=1691678396;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=q4VEn/Qj6DZvyXoC2OX+B5FMkh7YXzHCah+yE83TVaQ=;
+        b=C4VfONtjhLLFN+bIty3zJLFW/+Cvv0B8jDU6f8jfLldhc67Jwtph1r55+W6oAiaWWl
+         HkpBG4wvAyxYUtIYjAwgRMm09cPkSqVVKeYuNlv+27J6WQJ8QgKGm6aCeixFY8qexvV3
+         qica0nRXdWj0Y8V9ZkUZULke325Un4tuGhaqrO5JQeE4XbbTwEFwz/nVmYnyApsSCsu7
+         04Hsf9tRPrLRjlpfO8QLXzDzEV1Q+h8kmERj5vVBCrYYLpS2tOyJlVaRI1kYO5bbaym5
+         9xIitackWIk4DemFsiHU38dpLloMDeczI8JyyFdmRdG7BRdFDjyaMImcE8PyVCi3Yvw4
+         Ok2A==
+X-Gm-Message-State: AOJu0YzJNpNrVEiwbx2qbMFJrgv+A6cqGazZ2az62wWno/n2o0XDfwr/
+        gQvqGq/OPBEM6bbpNLDRJeySRZnLspersZ7t2pvdpQB7
+X-Google-Smtp-Source: AGHT+IFTXYVeDy7NyrEco7Md5hmvEbecclvcBkIyYEwR1I4dUTkntqSQ3C6d2KzlH7AzL52uYplLwA==
+X-Received: by 2002:aa7:c415:0:b0:523:108d:ab18 with SMTP id j21-20020aa7c415000000b00523108dab18mr1049561edq.7.1691073596085;
+        Thu, 03 Aug 2023 07:39:56 -0700 (PDT)
+Received: from mail-ed1-f48.google.com (mail-ed1-f48.google.com. [209.85.208.48])
+        by smtp.gmail.com with ESMTPSA id v18-20020aa7d9d2000000b0052239012c65sm10248308eds.82.2023.08.03.07.39.55
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 03 Aug 2023 07:39:55 -0700 (PDT)
+Received: by mail-ed1-f48.google.com with SMTP id 4fb4d7f45d1cf-5229e0603edso10819a12.1
+        for <linux-kernel@vger.kernel.org>; Thu, 03 Aug 2023 07:39:55 -0700 (PDT)
+X-Received: by 2002:a50:9ea5:0:b0:522:28a1:2095 with SMTP id
+ a34-20020a509ea5000000b0052228a12095mr66436edf.3.1691073595009; Thu, 03 Aug
+ 2023 07:39:55 -0700 (PDT)
 MIME-Version: 1.0
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: base64
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+References: <20230802124947.1355415-1-arnd@kernel.org> <CAD=FV=Um=OsKA8LaHeOx0n=-1PJAdc6DJsWX9zmQZ+syFEa6vg@mail.gmail.com>
+In-Reply-To: <CAD=FV=Um=OsKA8LaHeOx0n=-1PJAdc6DJsWX9zmQZ+syFEa6vg@mail.gmail.com>
+From:   Doug Anderson <dianders@chromium.org>
+Date:   Thu, 3 Aug 2023 07:39:40 -0700
+X-Gmail-Original-Message-ID: <CAD=FV=U7txm2iVYisUWC_gqQ_z3664eFj5mG2ygXiVvn0=pFgw@mail.gmail.com>
+Message-ID: <CAD=FV=U7txm2iVYisUWC_gqQ_z3664eFj5mG2ygXiVvn0=pFgw@mail.gmail.com>
+Subject: Re: [PATCH] HID: i2c-hid: add more DRM dependencies
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     Jiri Kosina <jikos@kernel.org>,
+        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Hans de Goede <hdegoede@redhat.com>,
+        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-RnJvbTogUGF1bCBFLiBNY0tlbm5leQ0KPiBTZW50OiAwMyBBdWd1c3QgMjAyMyAxNDo1NA0KLi4u
-Lg0KPiA+ID4gSWYgYm90aCBhcmUgUkVBRF9PTkNFKCksIHlvdSBzaG91bGQgbm90IG5lZWQgdGhl
-IGJhcnJpZXIoKS4gIFVubGVzcyB0aGVyZQ0KPiA+ID4gaXMgc29tZSBvdGhlciBjb2RlIG5vdCBz
-aG93biBpbiB5b3VyIGV4YW1wbGUgdGhhdCByZXF1aXJlcyBpdCwgdGhhdCBpcy4NCj4gPg0KPiA+
-IEFuZCB1bmxlc3MgdGhlIGNvbXBpbGVyIGhhcyBhIGJ1Zy4gOikNCj4gPg0KPiA+IFNvLCB0aGUg
-YmFycmllcigpIGluIGhsaXN0X251bGxzX2Zvcl9lYWNoX2VudHJ5X3JjdSgpIGlzIGEgd29ya2Fy
-b3VuZCBmb3IgYSBjb21waWxlciBidWcuDQo+IA0KPiBGYWlyIGVub3VnaCEhISAgOy0pDQoNCkV4
-Y2VwdCB0aGF0IGl0IGlzIGxpa2VseSB0aGF0IHRoZSBjb21waWxlciBidWcgaXMgYXZvaWRlZCBi
-eSB0aGUNCmltcGxlbWVudGF0aW9uIG9mIFJFQURfT05DRSgpIHJhdGhlciB0aGFuIEFDQ0VTU19P
-TkNFKCkuDQoNCkFsc28gdGhlIGNvZGUgdGhhdCBsb29wZWQgZm9yZXZlciAoVURQIHJlY2VpdmUg
-c29ja2V0IGxvb2t1cCkNCm5vIGxvbmdlciBoYXMgdGhlIHJldHJ5IC0gd2hpY2ggaXMgYSBkaWZm
-ZXJlbnQgYnVnLg0KSWYgYSBzb2NrZXQgcmVoYXNoIGhpdHMgdGhlIGxvb2t1cCB0aGVuIGFuIGVy
-cm9uZW91cyBJQ01QDQoncG9ydCB1bnJlYWNoYWJsZScgaXMgc2VudCByYXRoZXIgdGhhbiBkb2lu
-ZyBhIHJlc2Nhbi4NCg0KCURhdmlkDQogDQoNCi0NClJlZ2lzdGVyZWQgQWRkcmVzcyBMYWtlc2lk
-ZSwgQnJhbWxleSBSb2FkLCBNb3VudCBGYXJtLCBNaWx0b24gS2V5bmVzLCBNSzEgMVBULCBVSw0K
-UmVnaXN0cmF0aW9uIE5vOiAxMzk3Mzg2IChXYWxlcykNCg==
+Hi,
 
+On Wed, Aug 2, 2023 at 7:16=E2=80=AFAM Doug Anderson <dianders@chromium.org=
+> wrote:
+>
+> Hi,
+>
+> On Wed, Aug 2, 2023 at 5:49=E2=80=AFAM Arnd Bergmann <arnd@kernel.org> wr=
+ote:
+> >
+> > From: Arnd Bergmann <arnd@arndb.de>
+> >
+> > When a symbol is selected that has extra dependencies,
+> > anything that selects it must have the same dependencies.
+> > With the added CONFIG_DRM reference from I2C_HID_CORE,
+> > this broke a couple of drivers that now also depend
+> > on DRM:
+> >
+> > WARNING: unmet direct dependencies detected for I2C_HID_CORE
+> >   Depends on [m]: HID_SUPPORT [=3Dy] && I2C_HID [=3Dy] && (DRM [=3Dm] |=
+| !DRM [=3Dm])
+> >   Selected by [y]:
+> >   - I2C_HID_OF [=3Dy] && HID_SUPPORT [=3Dy] && I2C_HID [=3Dy]
+> >   - I2C_HID_ACPI [=3Dy] && HID_SUPPORT [=3Dy] && I2C_HID [=3Dy] && ACPI=
+ [=3Dy]
+> >   - I2C_HID_OF_GOODIX [=3Dy] && HID_SUPPORT [=3Dy] && I2C_HID [=3Dy] &&=
+ OF [=3Dy]
+> > x86_64-linux-ld: vmlinux.o: in function `i2c_hid_core_remove':
+> > (.text+0xfc8826): undefined reference to `drm_panel_remove_follower'
+> > x86_64-linux-ld: vmlinux.o: in function `i2c_hid_core_probe':
+> > (.text+0xfc8da0): undefined reference to `drm_is_panel_follower'
+> >
+> > Add the corresponding DRM||!DRM dependencies on each one that
+> > is affected.
+> >
+> > Fixes: 96a37bfd232ae ("HID: i2c-hid: Support being a panel follower")
+> > Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> > ---
+> >  drivers/hid/i2c-hid/Kconfig | 4 ++++
+> >  1 file changed, 4 insertions(+)
+>
+> This makes sense. Thanks for the fix!
+>
+> I'm happy to land this in drm-misc-next (where the original patch
+> landed), but I'd prefer an Ack from Benjamin first, if possible. If
+> this is still outstanding tomorrow I'll land it anyway since it's a
+> small fix and he Acked the commit that this is fixing.
+>
+> Reviewed-by: Douglas Anderson <dianders@chromium.org>
+
+It's tomorrow, so I've landed this in drm-misc-next.
+
+a0769f25a3a6 HID: i2c-hid: add more DRM dependencies
+
+
+-Doug
