@@ -2,130 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EC34A76E462
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 11:30:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8967376E467
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 11:31:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235030AbjHCJaw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Aug 2023 05:30:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59814 "EHLO
+        id S235017AbjHCJbG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Aug 2023 05:31:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60058 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234209AbjHCJag (ORCPT
+        with ESMTP id S235054AbjHCJa6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Aug 2023 05:30:36 -0400
-Received: from mail-pg1-x530.google.com (mail-pg1-x530.google.com [IPv6:2607:f8b0:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A6F4213F;
-        Thu,  3 Aug 2023 02:30:35 -0700 (PDT)
-Received: by mail-pg1-x530.google.com with SMTP id 41be03b00d2f7-563dc551518so372225a12.2;
-        Thu, 03 Aug 2023 02:30:35 -0700 (PDT)
+        Thu, 3 Aug 2023 05:30:58 -0400
+Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7187D30ED
+        for <linux-kernel@vger.kernel.org>; Thu,  3 Aug 2023 02:30:56 -0700 (PDT)
+Received: by mail-wr1-x42b.google.com with SMTP id ffacd0b85a97d-317798b359aso607588f8f.1
+        for <linux-kernel@vger.kernel.org>; Thu, 03 Aug 2023 02:30:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1691055035; x=1691659835;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=FUnv55wfTun/T0T1ZYocDcSaWOaVLVKuOcFcMjLuj0c=;
-        b=H9SnDXyJJJnbf7sHjW3Hs8qT0glkUmsvOMhKEiU2yX+JymYzE7F7zVodVtMV7N7Akv
-         zg6ejzDAtd8WeosGfkdMykD4I/W+n5plY1SiEiOLAJEua46hoa7Bg2313YHfxrfcqMi7
-         EEh/ez+EwxEFpoaXBFPmqzye/HLix1jlZ75A7eF1s4yGXZuTAbbr9r+TdbHU/bF/ERRR
-         NAVb5gTklSOGPdXrHlqP12mBQ4AyqjRZBEwZUmkPJlfZPrDFL2iTG5KkHwbjIcyKGlRx
-         0ZA8JWFVMVYIq1q+RtlqG7bdOYtxEPmV4T/4lOz0YkMbVYOvlvJEaCzRum8HdtWG8o9l
-         GtTg==
+        d=linaro.org; s=google; t=1691055054; x=1691659854;
+        h=content-transfer-encoding:in-reply-to:organization:references:to
+         :content-language:subject:reply-to:from:user-agent:mime-version:date
+         :message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=LkIHcBr4D3AWyeFHkNvp/kzN1jYSpCMGS1AHF/o5c9A=;
+        b=KaTNqcmMU8XrC4AlTAK7GLUb0OVSgvQmMe1GzwuMaGkT1bC6Ar+eB8Bex5fmM2UfAs
+         XYnfFEgWij0eey3gAObflxdGhrH7lMy3wuc3h/7KTqOqKAzYIg0OovTKhZAELasTaMIR
+         4/SAmd53zay0A67BoVIri5qIuqAQ0qXSU7wkUcXoqbCQRehQFnuJkzTdlCuG11FXpsZ4
+         4yyQf19kWgnz5e+OCij04nDpXhqGgSWZ83fYkmgwOyeSIqyyku1X240LwQ9TEkwJeLLO
+         QQVDDmJ5EcpRkf7SiK4ipizrKRj3ubccJLF48c27rEwzHbYS31G4mJsH1eSHKm1Ygt6S
+         z/hg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691055035; x=1691659835;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=FUnv55wfTun/T0T1ZYocDcSaWOaVLVKuOcFcMjLuj0c=;
-        b=jV5vXYLyWsbmz68KksckD09AHT8D8LKhJpOfTFG0PzH4FAao7Jbun3EnJSrjKCv83K
-         WvPo9z9YfLffDTDSrgwoHxPSfzzHp7BVyx45GS/wbTND+hhjSwZT1nG2L9bUlTxzzrPM
-         AnaQT3D2WnMOL4KBo+LqIC4GwBS7/5Ian2xNqDQBM8fFN50oYIxVlcWlD4UtxKi+U4Kz
-         Q++mhA7G6GL/NNycTc1oBLHdL2HwnMbpTWmClNz7d5DjKQrHNo4rrpXbseaZhxaDFiFO
-         OFuTTiMmmwjSUqtHGFpr12N6bPWiWM0jR4zFnTQSRsX5+8RGWGY4DGVGNAvytrCVrDfu
-         P/7A==
-X-Gm-Message-State: ABy/qLYQHulLkPcCRxvAnQ/P+aJGTjOadSbWzBJEVO8bBjOlYD7pmZaN
-        p3WIM9eEizrOoXsAd3ijhwQ=
-X-Google-Smtp-Source: APBJJlFFm/tLNbGm0LgXgDpoO0ciWpOBJYmO7ie++yo+qlSpQvSGq5v6Bw0hhAYlDsRLBqzUtEImqg==
-X-Received: by 2002:a17:90b:1d88:b0:268:c569:f2b0 with SMTP id pf8-20020a17090b1d8800b00268c569f2b0mr9641562pjb.1.1691055034957;
-        Thu, 03 Aug 2023 02:30:34 -0700 (PDT)
-Received: from Laptop-X1 ([43.228.180.230])
-        by smtp.gmail.com with ESMTPSA id i14-20020a17090acf8e00b00267ae12b80bsm2237282pju.34.2023.08.03.02.30.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 03 Aug 2023 02:30:34 -0700 (PDT)
-Date:   Thu, 3 Aug 2023 17:30:28 +0800
-From:   Hangbin Liu <liuhangbin@gmail.com>
-To:     Andrea Mayer <andrea.mayer@uniroma2.it>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        David Ahern <dsahern@kernel.org>,
-        Shuah Khan <shuah@kernel.org>, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        Stefano Salsano <stefano.salsano@uniroma2.it>,
-        Paolo Lungaroni <paolo.lungaroni@uniroma2.it>,
-        Ahmed Abdelsalam <ahabdels.dev@gmail.com>
-Subject: Re: [net-next 1/2] seg6: add NEXT-C-SID support for SRv6 End.X
- behavior
-Message-ID: <ZMtztGiOWV6bqCLg@Laptop-X1>
-References: <20230731175117.17376-1-andrea.mayer@uniroma2.it>
- <20230731175117.17376-2-andrea.mayer@uniroma2.it>
+        d=1e100.net; s=20221208; t=1691055054; x=1691659854;
+        h=content-transfer-encoding:in-reply-to:organization:references:to
+         :content-language:subject:reply-to:from:user-agent:mime-version:date
+         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=LkIHcBr4D3AWyeFHkNvp/kzN1jYSpCMGS1AHF/o5c9A=;
+        b=iGByoV/wCpuVbjsnCQcIdAqk71C9fWnWM7ctgydFRQJLdRHwpmT03T9fFr8VOsmMFe
+         sJK1rcZM246kCvDRI4ZL1UZDqIiZH0s6MeFjp9Bh273tIJGA+WDEwzhWOmugxpO/fHLP
+         R4qVX4Mkunvmi/WP6szHISeyAOylIB/e0/mE6Or6b62b5oDGmUxh6XyhALIjO8vpB372
+         vHgqKeElRAydFCv2/EntsRxi/jPuyyDF43guBE+b9OJffNG1ByBDvIlxhTL0NDV7Sici
+         DGb0YGM0jbt76Tr20TIc6OREzhsSAPqsMy+raQg1/mRD0Hb7oYaF5HxU/8NAJFjpteMV
+         Qilw==
+X-Gm-Message-State: ABy/qLaQAoIhvkd0pZCjKeNMD5sIfAnqE9d1U0fl3d5QpYgodqbHiX7y
+        1tzqwX+OlOS5iYOuyFQ90XPAkA==
+X-Google-Smtp-Source: APBJJlFZEiNSoW7XP3KC4CMX4RvkaDRIpCL6qNHmhmh7S6W+5L/Q6Ko5fmVchCDSe4efmQUf8OGYPg==
+X-Received: by 2002:a5d:6782:0:b0:314:182a:3d96 with SMTP id v2-20020a5d6782000000b00314182a3d96mr6148630wru.28.1691055054566;
+        Thu, 03 Aug 2023 02:30:54 -0700 (PDT)
+Received: from ?IPV6:2a01:e0a:982:cbb0:8656:583:d034:d966? ([2a01:e0a:982:cbb0:8656:583:d034:d966])
+        by smtp.gmail.com with ESMTPSA id p16-20020a5d68d0000000b003140f47224csm21286033wrw.15.2023.08.03.02.30.53
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 03 Aug 2023 02:30:53 -0700 (PDT)
+Message-ID: <9f0670a7-6ef6-7823-19c2-de10683f303f@linaro.org>
+Date:   Thu, 3 Aug 2023 11:30:52 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230731175117.17376-2-andrea.mayer@uniroma2.it>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+From:   Neil Armstrong <neil.armstrong@linaro.org>
+Reply-To: neil.armstrong@linaro.org
+Subject: Re: [PATCH 0/4] drm/panel: sitronix-st7789v: add support for partial
+ mode
+Content-Language: en-US
+To:     Maxime Ripard <mripard@kernel.org>,
+        Michael Riesch <michael.riesch@wolfvision.net>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Sebastian Reichel <sre@kernel.org>,
+        Gerald Loacker <gerald.loacker@wolfvision.net>,
+        David Airlie <airlied@gmail.com>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org
+References: <20230718-feature-lcd-panel-v1-0-e9a85d5374fd@wolfvision.net>
+ <292c3e7d-82ea-2631-bd4b-ef747f56287c@linaro.org>
+ <ekmwiy3iuvtqtb6hwjbba2ia3aemt3dxmx6dj3zh6ljfmuim4w@4jzhqdenxth4>
+ <ZMtqraOyGN9JvVj9@phenom.ffwll.local>
+ <qmwtcungahbe2bhty7v2rso2kf3vai6k47muwipifbybmi7o6s@oj6lngnhyhtg>
+Organization: Linaro Developer Services
+In-Reply-To: <qmwtcungahbe2bhty7v2rso2kf3vai6k47muwipifbybmi7o6s@oj6lngnhyhtg>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 31, 2023 at 07:51:16PM +0200, Andrea Mayer wrote:
-> +/* Processing of SRv6 End, End.X, and End.T behaviors can be extended through
-> + * the flavors framework. These behaviors must report the subset of (flavor)
-> + * operations they currently implement. In this way, if a user specifies a
-> + * flavor combination that is not supported by a given End* behavior, the
-> + * kernel refuses to instantiate the tunnel reporting the error.
-> + */
-> +static int seg6_flv_supp_ops_by_action(int action, __u32 *fops)
-> +{
-> +	switch (action) {
-> +	case SEG6_LOCAL_ACTION_END:
-> +		*fops = SEG6_LOCAL_END_FLV_SUPP_OPS;
-> +		break;
-> +	case SEG6_LOCAL_ACTION_END_X:
-> +		*fops = SEG6_LOCAL_END_X_FLV_SUPP_OPS;
-> +		break;
-> +	default:
-> +		return -EOPNOTSUPP;
-> +	}
-> +
-> +	return 0;
->  }
->  
+On 03/08/2023 11:22, Maxime Ripard wrote:
+> On Thu, Aug 03, 2023 at 10:51:57AM +0200, Daniel Vetter wrote:
+>> On Thu, Aug 03, 2023 at 10:48:57AM +0200, Maxime Ripard wrote:
+>>> On Thu, Aug 03, 2023 at 10:11:22AM +0200, Neil Armstrong wrote:
+>>>> Hi,
+>>>>
+>>>> On 18/07/2023 17:31, Michael Riesch wrote:
+>>>>> Hi all,
+>>>>>
+>>>>> This series adds support for the partial display mode to the Sitronix
+>>>>> ST7789V panel driver. This is useful for panels that are partially
+>>>>> occluded by design, such as the Jasonic JT240MHQS-HWT-EK-E3. Support
+>>>>> for this particular panel is added as well.
+>>>>>
+>>>>> Note: This series is already based on
+>>>>> https://lore.kernel.org/lkml/20230714013756.1546769-1-sre@kernel.org/
+>>>>
+>>>> I understand Maxime's arguments, but by looking closely at the code,
+>>>> this doesn't look like an hack at all and uses capabilities of the
+>>>> panel controller to expose a smaller area without depending on any
+>>>> changes or hacks on the display controller side which is coherent.
+>>>>
+>>>> Following's Daniel's summary we cannot compare it to TV overscan
+>>>> because overscan is only on *some* displays, we can still get 100%
+>>>> of the picture from the signal.
+>>>
+>>> Still disagree on the fact that it only affects some display. But it's
+>>> not really relevant for that series.
+>>
+>> See my 2nd point, from a quick grep aside from i915 hdmi support, no one
+>> else sets all the required hdmi infoframes correctly. Which means on a
+>> compliant hdmi tv, you _should_ get overscan. That's how that stuff is
+>> speced.
+>>
+>> Iirc you need to at least set both the VIC and the content type, maybe
+>> even more stuff.
+>>
+>> Unless all that stuff is set I'd say it's a kms driver bug if you get
+>> overscan on a hdmi TV.
+> 
+> I have no doubt that i915 works there. The source of my disagreement is
+> that if all drivers but one don't do that, then userspace will have to
+> care. You kind of said it yourself, i915 is kind of the exception there.
+> 
+> The exception can be (and I'm sure it is) right, but still, it deviates
+> from the norm.
 
-...
+HDMI spec is hidden behind a paywall, HDMI testing is a mess, HDMI real
+implementation on TVs and Displays is mostly broken, and HDMI certification
+devices are too expensive... this is mainly why only i915 handles it correctly.
 
-> @@ -2070,7 +2131,8 @@ static int parse_nla_flavors(struct nlattr **attrs, struct seg6_local_lwt *slwt,
->  {
->  	struct seg6_flavors_info *finfo = &slwt->flv_info;
->  	struct nlattr *tb[SEG6_LOCAL_FLV_MAX + 1];
-> -	unsigned long fops;
-> +	int action = slwt->action;
-> +	__u32 fops, supp_fops = 0;
->  	int rc;
->  
->  	rc = nla_parse_nested_deprecated(tb, SEG6_LOCAL_FLV_MAX,
-> @@ -2086,7 +2148,8 @@ static int parse_nla_flavors(struct nlattr **attrs, struct seg6_local_lwt *slwt,
->  		return -EINVAL;
->  
->  	fops = nla_get_u32(tb[SEG6_LOCAL_FLV_OPERATION]);
-> -	if (fops & ~SEG6_LOCAL_FLV_SUPP_OPS) {
-> +	rc = seg6_flv_supp_ops_by_action(action, &supp_fops);
-> +	if (rc < 0 || !supp_fops || (fops & ~supp_fops)) {
+> 
+>>> I think I'll still like to have something clarified before we merge it:
+>>> if userspace forces a mode, does it contain the margins or not? I don't
+>>> have an opinion there, I just think it should be documented.
+>>
+>> The mode comes with the margins, so if userspace does something really
+>> funny then either it gets garbage (as in, part of it's crtc area isn't
+>> visible, or maybe black bars on the screen), or the driver rejects it
+>> (which I think is the case for panels, they only take their mode and
+>> nothing else).
+> 
+> Panels can usually be quite flexible when it comes to the timings they
+> accept, and we could actually use that to our advantage, but even if we
+> assume that they have a single mode, I don't think we have anything that
+> enforces that, either at the framework or documentation levels?
 
-if rc == 0, the supp_fops won't be 0.
+Yep, this is why we would need a better atomic based panel API that would
+permit us handling dynamic timings for panel and get out of the single-mode
+for modern panels.
 
-Thanks
-Hangbin
+Neil
+
+> 
+> Maxime
+
