@@ -2,102 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 60EDF76EDA0
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 17:10:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 41BAA76EDA4
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 17:10:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236877AbjHCPKH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Aug 2023 11:10:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42048 "EHLO
+        id S236880AbjHCPK1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Aug 2023 11:10:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42310 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233558AbjHCPKF (ORCPT
+        with ESMTP id S235727AbjHCPKZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Aug 2023 11:10:05 -0400
-Received: from netrider.rowland.org (netrider.rowland.org [192.131.102.5])
-        by lindbergh.monkeyblade.net (Postfix) with SMTP id 79C5DE75
-        for <linux-kernel@vger.kernel.org>; Thu,  3 Aug 2023 08:10:02 -0700 (PDT)
-Received: (qmail 246372 invoked by uid 1000); 3 Aug 2023 11:10:01 -0400
-Date:   Thu, 3 Aug 2023 11:10:01 -0400
-From:   Alan Stern <stern@rowland.harvard.edu>
-To:     Dingyan Li <18500469033@163.com>
-Cc:     Greg KH <gregkh@linuxfoundation.org>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Xiaofan Chen <xiaofanc@gmail.com>,
-        Oliver Neukum <oneukum@suse.com>,
-        Tormod Volden <lists.tormod@gmail.com>,
-        sebastian.reichel@collabora.com, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: Re: [PATCH] USB: add usbfs ioctl to get specific superspeedplus
- rates
-Message-ID: <51926ee6-ee81-4543-a1f7-338e65a26670@rowland.harvard.edu>
-References: <2023072105-lethargic-saddling-ad97@gregkh>
- <130b453c.5c8f.1897872ce54.Coremail.18500469033@163.com>
- <2023072159-carol-underfeed-43eb@gregkh>
- <781b3f95-96e7-af83-e089-887ec7f2d255@suse.com>
- <2023072546-denture-half-5ceb@gregkh>
- <CAGjSPUCQ892adFdYm7zCuMpWujwzwoQtYimvp3xXrnnCCyN47w@mail.gmail.com>
- <da536c80-7398-dae0-a22c-16e521be697a@suse.com>
- <CAGjSPUDtn-YMqmNrmku+hkyXCKys4XRue4wdzQwr+yGxe2cJSQ@mail.gmail.com>
- <2a82ba01-38dd-fad9-98b9-ac8591107921@redhat.com>
- <151a5748.3e99.189ba07b110.Coremail.18500469033@163.com>
+        Thu, 3 Aug 2023 11:10:25 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19E5EE73
+        for <linux-kernel@vger.kernel.org>; Thu,  3 Aug 2023 08:10:24 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id A3AC561DDD
+        for <linux-kernel@vger.kernel.org>; Thu,  3 Aug 2023 15:10:23 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 09820C433C8;
+        Thu,  3 Aug 2023 15:10:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1691075423;
+        bh=vFaNgVOf1d9a/Nv1QbSxl/OPoNUBiM1RhE9LpnHf+Lo=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=tDU1II5tvV59psSojipcbWXN4+u0Ol3x5rYJnhE4t3Dkya4wXar5k+19IG6KePPzU
+         YmZ6vMTT5cKHwLTbOGZlLfvdKPIYB4TMdO0bVP4NO43LzzYUdaKTE6eKwCQ+AXUXrI
+         kb2BXzfCjFfcLYvGX66e17KXUNG36jP1sj+ETCqVKhNMHls6syfXjSMsznqUA0KqHN
+         KaZE0hgqsHNo/gNhCC4jSqioO2Cpd1I5oRB55PCTqnb9mryVtxU2xjVCd65LVtcG1A
+         kpresnOnHXiCZWlndJNzoPKzZjWHODdTDoXQCuVdIhChv+Nzhbu3nbCz+OZ47i2u6r
+         kmJjYVzWwfWQQ==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id DDEA6C595C1;
+        Thu,  3 Aug 2023 15:10:22 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <151a5748.3e99.189ba07b110.Coremail.18500469033@163.com>
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH v3 -fixes] RISC-V: ACPI: Fix acpi_os_ioremap to return iomem
+ address
+From:   patchwork-bot+linux-riscv@kernel.org
+Message-Id: <169107542290.19238.2836773902339575620.git-patchwork-notify@kernel.org>
+Date:   Thu, 03 Aug 2023 15:10:22 +0000
+References: <20230724100346.1302937-1-sunilvl@ventanamicro.com>
+In-Reply-To: <20230724100346.1302937-1-sunilvl@ventanamicro.com>
+To:     Sunil V L <sunilvl@ventanamicro.com>
+Cc:     linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+        aou@eecs.berkeley.edu, lkp@intel.com, conor.dooley@microchip.com,
+        palmer@dabbelt.com, paul.walmsley@sifive.com,
+        ajones@ventanamicro.com
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 03, 2023 at 02:13:33PM +0800, Dingyan Li wrote:
+Hello:
+
+This patch was applied to riscv/linux.git (fixes)
+by Palmer Dabbelt <palmer@rivosinc.com>:
+
+On Mon, 24 Jul 2023 15:33:46 +0530 you wrote:
+> acpi_os_ioremap() currently is a wrapper to memremap() on
+> RISC-V. But the callers of acpi_os_ioremap() expect it to
+> return __iomem address and hence sparse tool reports a new
+> warning. Fix this issue by type casting to  __iomem type.
 > 
-> At 2023-07-26 22:39:32, "Hans de Goede" <hdegoede@redhat.com> wrote:
-
-> >Right, so the reason why IOCTL USBDEVFS_GET_SPEED was added is so 
-> >that a confined qemu process which gets just a fd for a /dev/bus/usb/ 
-> >device passed by a more privileged process can still get the speed 
-> >despite it not having sysfs access. This is necessary for correct 
-> >pass-through of USB devices.
-> >
-> >Since USBDEVFS_GET_SPEED now no longer tells the full story I believe 
-> >that the proposed USBDEVFS_GET_SSP_RATE ioctl makes sense.
-> >
-> >The current patch however misses moving the enum usb_ssp_rate 
-> >declaration from include/linux/usb/ch9.h to 
-> >include/uapi/linux/usb/ch9.h so that needs to be fixed in a version 
-> >2. Assuming that with the above explanation of why this is necessary 
-> >Greg and Alan are ok with adding the ioctl.
-> >
-> >Regards,
-> >
-> >Hans
-> >
+> Reported-by: kernel test robot <lkp@intel.com>
+> Closes: https://lore.kernel.org/oe-kbuild-all/202307230357.egcTAefj-lkp@intel.com/
+> Fixes: a91a9ffbd3a5 ("RISC-V: Add support to build the ACPI core")
+> Signed-off-by: Sunil V L <sunilvl@ventanamicro.com>
 > 
-> Hi Greg and Alan,
-> 
-> Could you please share your opinions about Hans' justification?
+> [...]
 
-Instead of adding a new ioctl or modifying an existing one, how about 
-increasing the set of constants in enum usb_device_speed?  Then the 
-existing ioctls could return the newly defined values when appropriate, 
-with no other changes necessary.
+Here is the summary with links:
+  - [v3,-fixes] RISC-V: ACPI: Fix acpi_os_ioremap to return iomem address
+    https://git.kernel.org/riscv/c/568701fee366
 
-(This doesn't mean just moving the definition of usb_ssp_rate from one 
-header file to the other.  The usb_device_speed enumeration should be 
-extended with the new members.  Perhaps omitting USB_SSP_GEN_UNKNOWN 
-since we already have USB_SPEED_SUPER_PLUS, or setting the first equal 
-to the second.)
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
-I don't think there was ever a requirement in the API that the set of 
-values in usb_device_speed could never increase (and in fact it has 
-increased in the past).  Such a requirement wouldn't make any sense, 
-given how the USB-IF keeps defining newer and faster USB bus 
-implementations.
 
-Hans, would that play well with libusb?
-
-Alan Stern
