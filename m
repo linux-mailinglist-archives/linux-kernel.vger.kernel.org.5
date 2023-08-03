@@ -2,153 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6774976F2F5
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 20:47:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2899176F2F1
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 20:46:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234440AbjHCSrU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Aug 2023 14:47:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34504 "EHLO
+        id S233516AbjHCSpa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Aug 2023 14:45:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33694 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234353AbjHCSrC (ORCPT
+        with ESMTP id S234310AbjHCSpH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Aug 2023 14:47:02 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.151])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C15FF49C5;
-        Thu,  3 Aug 2023 11:46:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1691088389; x=1722624389;
-  h=from:to:cc:subject:in-reply-to:references:date:
-   message-id:mime-version;
-  bh=3gq1m1Q2ya0GLFc6+cnheSBbzbHrqHzRXeNNrsdtKU4=;
-  b=bD0zXqidljWnSMboyHAikSW3KU6ayRRDiboKmLZy2GbDWfkzuR9BI/YI
-   SHGnCThzjnIttRD5BZnN3uv6xM2lnH1xUSGrxNyQs3+MfDaB5MakXgmsY
-   dE6eZvxLSJA7GMq6NwhPLaBPtKHjKMKInaTm7LAoAM1OuIvmJo7LPuWwt
-   V6mdY1YZ69OTmyGY03h9DNeDw+M4BGg6invLN/DyYAisKVrKIewPP+BCw
-   ws1n44I+LGXXrqdWhhhCaDaT58W0tofhlkqKsh8mGaPD9Iq5FcnpAmtRT
-   xFLjAjWdYcL7Z1hMLJOVPICIas/yo+Avm70hngHt+/8SnkUXBxIaSIhRs
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10791"; a="350269092"
-X-IronPort-AV: E=Sophos;i="6.01,252,1684825200"; 
-   d="scan'208";a="350269092"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Aug 2023 11:43:18 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10791"; a="1060414875"
-X-IronPort-AV: E=Sophos;i="6.01,252,1684825200"; 
-   d="scan'208";a="1060414875"
-Received: from cgahan-mobl.amr.corp.intel.com (HELO vcostago-mobl3) ([10.212.253.5])
-  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Aug 2023 11:43:17 -0700
-From:   Vinicius Costa Gomes <vinicius.gomes@intel.com>
-To:     Vladimir Oltean <vladimir.oltean@nxp.com>
-Cc:     netdev@vger.kernel.org, "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Jamal Hadi Salim <jhs@mojatatu.com>,
-        Cong Wang <xiyou.wangcong@gmail.com>,
-        Jiri Pirko <jiri@resnulli.us>, linux-kernel@vger.kernel.org,
-        intel-wired-lan@lists.osuosl.org,
-        Muhammad Husaini Zulkifli <muhammad.husaini.zulkifli@intel.com>,
-        Peilin Ye <yepeilin.cs@gmail.com>,
-        Pedro Tammela <pctammela@mojatatu.com>,
-        Richard Cochran <richardcochran@gmail.com>,
-        Zhengchao Shao <shaozhengchao@huawei.com>,
-        Maxim Georgiev <glipus@gmail.com>
-Subject: Re: [PATCH v3 net-next 09/10] selftests/tc-testing: test that
- taprio can only be attached as root
-In-Reply-To: <20230803143347.7hhn27hzjymdvvw6@skbuf>
-References: <20230801182421.1997560-1-vladimir.oltean@nxp.com>
- <20230801182421.1997560-10-vladimir.oltean@nxp.com>
- <87pm4510r0.fsf@intel.com> <20230803143347.7hhn27hzjymdvvw6@skbuf>
-Date:   Thu, 03 Aug 2023 11:43:16 -0700
-Message-ID: <87il9w0xx7.fsf@intel.com>
+        Thu, 3 Aug 2023 14:45:07 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59AD5198A
+        for <linux-kernel@vger.kernel.org>; Thu,  3 Aug 2023 11:44:43 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 40C4861E77
+        for <linux-kernel@vger.kernel.org>; Thu,  3 Aug 2023 18:43:18 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A5E30C433C9;
+        Thu,  3 Aug 2023 18:43:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1691088197;
+        bh=+viZhIzSFXfCpemsNfwE5+wg0IfMl924eGE0IoyuWgg=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=eL8ToXQ43LZ3UPuFsMIMhOIx9kMMIn6mWSlyLFmCUcHy26M6VLmGhfeMBAAJo71L0
+         9ZoMsvZOKuFi5gj9EPcMnXYVFy4rKkuosaUlQ0R0fRn5kESKbjCKJEx3qQEt3V7CZj
+         GUZ5/GNIqBySAzT+p8QT3OYc8Nau5BJVUp87NIgBH8ePc9oY0eRyu0AzpY8jOnFE3m
+         0mK2loxuVaR3yCXhfxFTPP2b9Glp7TIXEb8jwB24FDnY61ITG1kFjUPMsmoRWssMLv
+         bVoDhdge0u0daIL6/+bzjGUnARA6r4wbspTF5fw/7w2QMQJRc3mbl0nCTw6k9ZIvtr
+         2BUGMuq98Rgpw==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id 42575CE0AE0; Thu,  3 Aug 2023 11:43:17 -0700 (PDT)
+Date:   Thu, 3 Aug 2023 11:43:17 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Thomas =?iso-8859-1?Q?Wei=DFschuh?= <linux@weissschuh.net>
+Cc:     linux-kernel@vger.kernel.org, Willy Tarreau <w@1wt.eu>,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        Konstantin Ryabitsev <konstantin@linuxfoundation.org>
+Subject: Re: [PATCH] MAINTAINERS: nolibc: add myself as co-maintainer
+Message-ID: <884b4415-2b6f-44be-aaeb-da1d9d85ea01@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <20230728-nolibc-maintainer-v1-1-5f13daaebf4c@weissschuh.net>
+ <1f85e8c3-e07d-482f-aa90-5e6631bc7873@t-8ch.de>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <1f85e8c3-e07d-482f-aa90-5e6631bc7873@t-8ch.de>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Vladimir Oltean <vladimir.oltean@nxp.com> writes:
+On Thu, Aug 03, 2023 at 08:31:50PM +0200, Thomas Weiﬂschuh wrote:
+> Hi Paul, 
+> 
+> On 2023-07-28 23:21:52+0200, Thomas Weiﬂschuh wrote:
+> > As discussed with Willy, Paul and Shuah add myself as maintainer for
+> > the nolibc subsystem.
+> 
+> it seems I forgot to send the nolibc maintainers update patch to you.
+> 
+> My bad!
+> 
+> Willy and me wondered if the patch could go through your tree?
 
-> Hi Vinicius,
->
-> On Wed, Aug 02, 2023 at 04:29:55PM -0700, Vinicius Costa Gomes wrote:
->> Vladimir Oltean <vladimir.oltean@nxp.com> writes:
->> This test is somehow flaky (all others are fine), 1 in ~4 times, it fails.
->> 
->> Taking a look at the test I couldn't quickly find out the reason for the
->> flakyness.
->> 
->> Here's the verbose output of one of the failures:
->> 
->> vcgomes@otc-cfl-clr-30 ~/src/net-next/tools/testing/selftests/tc-testing $ sudo ./tdc.py -e 39b4 -v
->> All test results:
->> 
->> 1..1
->> not ok 1 39b4 - Reject grafting taprio as child qdisc of software taprio
->> 	Could not match regex pattern. Verify command output:
->> parse error: Objects must consist of key:value pairs at line 1, column 334
->
-> Interesting. I'm not seeing this, and I re-ran it a few times. The error
-> message seems to come from jq, as if it's not able to parse something.
->
-> Sorry, I only have caveman debugging techniques. Could you remove the
-> pipe into jq and rerun a few times, see what it prints when it fails?
->
-> diff --git a/tools/testing/selftests/tc-testing/tc-tests/qdiscs/taprio.json b/tools/testing/selftests/tc-testing/tc-tests/qdiscs/taprio.json
-> index de51408544e2..bb6be1f78e31 100644
-> --- a/tools/testing/selftests/tc-testing/tc-tests/qdiscs/taprio.json
-> +++ b/tools/testing/selftests/tc-testing/tc-tests/qdiscs/taprio.json
-> @@ -148,8 +148,8 @@
->          ],
->          "cmdUnderTest": "$TC qdisc replace dev $ETH parent 8001:7 taprio num_tc 8 map 0 1 2 3 4 5 6 7 queues 1@0 1@1 1@2 1@3 1@4 1@5 1@6 1@7 base-time 200 sched-entry S ff 20000000 clockid CLOCK_TAI",
->          "expExitCode": "2",
-> -        "verifyCmd": "$TC -j qdisc show dev $ETH root | jq '.[].options.base_time'",
-> -        "matchPattern": "0",
-> +        "verifyCmd": "$TC -j qdisc show dev $ETH root",
-> +        "matchPattern": "\\[{\"kind\":\"taprio\",\"handle\":\"8001:\",\"root\":true,\"refcnt\":9,\"options\":{\"tc\":0,\"map\":\\[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0\\],\"queues\":\\[\\],\"clockid\":\"TAI\",\"base_time\":0,\"cycle_time\":20000000,\"cycle_time_extension\":0,\"schedule\":\\[{\"index\":0,\"cmd\":\"S\",\"gatemask\":\"0xff\",\"interval\":20000000}\\],\"max-sdu\":\\[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0\\],\"fp\":\\[\"E\",\"E\",\"E\",\"E\",\"E\",\"E\",\"E\",\"E\",\"E\",\"E\",\"E\",\"E\",\"E\",\"E\",\"E\",\"E\"\\]}}\\]",
->          "matchCount": "1",
->          "teardown": [
->              "$TC qdisc del dev $ETH root",
+It could, but why not just include it in the batch going to Shuah?
+It is not all that long until the merge window opens, plus it is hard
+to argue that this is a regression.
 
-Hmmm, I think that this test discovered another bug (perhaps even two).
-When it fails here's the json I get (edited for clarity):
+> For you convenience the link to this patch on lore (with the Ack from Willy):
+> https://lore.kernel.org/lkml/20230728-nolibc-maintainer-v1-1-5f13daaebf4c@weissschuh.net/
 
-[{"kind":"taprio","handle":"8001:","root":true,"refcnt":9,
-  "options":{
-        "tc":0,
-        "map":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-        "queues":[],
-        "clockid":"TAI",
-        "base_time":0,
-        "cycle_time":0,
-        "cycle_time_extension":0,
-        {
-                "base_time":0,
-                "cycle_time":20000000,
-                "cycle_time_extension":0,
-                "schedule":[{"index":0,"cmd":"S","gatemask":"0xff","interval":20000000}]
-        }}}]
+But if public acknowledgement of your nolibc maintainership would
+help:
 
-Thinking out loud: If I am reading this right, there's no "oper"
-schedule, only an "admin" schedule. So the first bug is probably a
-taprio bug when deciding if it should create an "open" vs. "admin"
-schedule.
+Reviewed-by: Paul E. McKenney <paulmck@kernel.org>
 
-The second bug seems to be in the way that q_taprio in iproute2
-handles the admin schedule, is just an object inside another, which
-seems to be invalid.
+							Thanx, Paul
 
-Does it make sense?
-
-
-Cheers,
--- 
-Vinicius
+> Thomas
+> 
+> > Link: https://lore.kernel.org/lkml/7afafb6c-9664-44a1-bc8f-d20239db1dd5@paulmck-laptop/
+> > Signed-off-by: Thomas Weiﬂschuh <linux@weissschuh.net>
+> > ---
+> >  MAINTAINERS | 1 +
+> >  1 file changed, 1 insertion(+)
+> > 
+> > diff --git a/MAINTAINERS b/MAINTAINERS
+> > index b87fbcecd905..a67b50caea2a 100644
+> > --- a/MAINTAINERS
+> > +++ b/MAINTAINERS
+> > @@ -14993,6 +14993,7 @@ F:	include/linux/power/bq27xxx_battery.h
+> >  
+> >  NOLIBC HEADER FILE
+> >  M:	Willy Tarreau <w@1wt.eu>
+> > +M:	Thomas Weiﬂschuh <linux@weissschuh.net>
+> >  S:	Maintained
+> >  T:	git git://git.kernel.org/pub/scm/linux/kernel/git/wtarreau/nolibc.git
+> >  F:	tools/include/nolibc/
+> > 
+> > ---
+> > base-commit: f837f0a3c94882a29e38ff211a36c1c8a0f07804
+> > change-id: 20230728-nolibc-maintainer-ebdd50c844ed
+> > 
+> > Best regards,
+> > -- 
+> > Thomas Weiﬂschuh <linux@weissschuh.net>
