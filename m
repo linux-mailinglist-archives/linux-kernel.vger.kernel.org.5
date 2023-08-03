@@ -2,59 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EE2AB76EA53
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 15:29:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E77476EA14
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 15:24:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233628AbjHCN1s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Aug 2023 09:27:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47388 "EHLO
+        id S235854AbjHCNYi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Aug 2023 09:24:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44604 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235461AbjHCN1f (ORCPT
+        with ESMTP id S234935AbjHCNYc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Aug 2023 09:27:35 -0400
-Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1216E212B;
-        Thu,  3 Aug 2023 06:27:33 -0700 (PDT)
-Received: from mail02.huawei.com (unknown [172.30.67.143])
-        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4RGqQS5Rv1z4f46Sg;
-        Thu,  3 Aug 2023 21:27:28 +0800 (CST)
-Received: from huaweicloud.com (unknown [10.175.104.67])
-        by APP4 (Coremail) with SMTP id gCh0CgCnD7M6q8tk5SrlPQ--.7420S10;
-        Thu, 03 Aug 2023 21:27:29 +0800 (CST)
-From:   Yu Kuai <yukuai1@huaweicloud.com>
-To:     song@kernel.org, xni@redhat.com
-Cc:     linux-raid@vger.kernel.org, linux-kernel@vger.kernel.org,
-        yukuai3@huawei.com, yukuai1@huaweicloud.com, yi.zhang@huawei.com,
-        yangerkun@huawei.com
-Subject: [PATCH -next 06/13] md: factor out a helper hot_add_rdev() from remove_and_add_spares()
+        Thu, 3 Aug 2023 09:24:32 -0400
+Received: from out30-99.freemail.mail.aliyun.com (out30-99.freemail.mail.aliyun.com [115.124.30.99])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9058B1702;
+        Thu,  3 Aug 2023 06:24:30 -0700 (PDT)
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R171e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046050;MF=guangguan.wang@linux.alibaba.com;NM=1;PH=DS;RN=13;SR=0;TI=SMTPD_---0Voz-FR6_1691069066;
+Received: from localhost.localdomain(mailfrom:guangguan.wang@linux.alibaba.com fp:SMTPD_---0Voz-FR6_1691069066)
+          by smtp.aliyun-inc.com;
+          Thu, 03 Aug 2023 21:24:26 +0800
+From:   Guangguan Wang <guangguan.wang@linux.alibaba.com>
+To:     wenjia@linux.ibm.com, jaka@linux.ibm.com, kgraul@linux.ibm.com,
+        tonylu@linux.alibaba.com, davem@davemloft.net, edumazet@google.com,
+        kuba@kernel.org, pabeni@redhat.com
+Cc:     alibuda@linux.alibaba.com, guwen@linux.alibaba.com,
+        linux-s390@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [RFC PATCH net-next 3/6] net/smc: support smc v2.x features validate
 Date:   Thu,  3 Aug 2023 21:24:19 +0800
-Message-Id: <20230803132426.2688608-7-yukuai1@huaweicloud.com>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20230803132426.2688608-1-yukuai1@huaweicloud.com>
-References: <20230803132426.2688608-1-yukuai1@huaweicloud.com>
+Message-Id: <20230803132422.6280-4-guangguan.wang@linux.alibaba.com>
+X-Mailer: git-send-email 2.24.3 (Apple Git-128)
+In-Reply-To: <20230803132422.6280-1-guangguan.wang@linux.alibaba.com>
+References: <20230803132422.6280-1-guangguan.wang@linux.alibaba.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: gCh0CgCnD7M6q8tk5SrlPQ--.7420S10
-X-Coremail-Antispam: 1UD129KBjvJXoW7Kr47Kr4xtr47XF1kZw47urg_yoW8WFWfpa
-        1SgFy5Kr47ZryfXa1DtF1DGFy5tF1IgrWIkFyak3yfZasxZr98K3WrXFyYq3s8AFZ09F4r
-        Xa15tw4Uu347WF7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUU9K14x267AKxVWrJVCq3wAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2048vs2IY020E87I2jVAFwI0_JF0E3s1l82xGYI
-        kIc2x26xkF7I0E14v26ryj6s0DM28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8wA2
-        z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr1j6F
-        4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oVCq
-        3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7
-        IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r4U
-        M4x0Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwCF04k20xvY0x0EwIxGrw
-        CFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE
-        14v26r106r1rMI8E67AF67kF1VAFwI0_Jw0_GFylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2
-        IY67AKxVWUCVW8JwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Cr0_Gr1UMIIF0xvE42xK8VAv
-        wI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14
-        v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjfUOBTYUUUUU
-X-CM-SenderInfo: 51xn3trlr6x35dzhxuhorxvhhfrp/
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,KHOP_HELO_FCRDNS,
-        MAY_BE_FORGED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+X-Spam-Status: No, score=-9.9 required=5.0 tests=BAYES_00,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -62,68 +44,155 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yu Kuai <yukuai3@huawei.com>
+Support smc v2.x features validate for smc v2.1.
 
-There are no functional changes, just to make the code simpler and
-prepare to refactoer remove_and_add_spares().
-
-Signed-off-by: Yu Kuai <yukuai3@huawei.com>
+Signed-off-by: Guangguan Wang <guangguan.wang@linux.alibaba.com>
+Reviewed-by: Tony Lu <tonylu@linux.alibaba.com>
 ---
- drivers/md/md.c | 34 ++++++++++++++++++++++------------
- 1 file changed, 22 insertions(+), 12 deletions(-)
+ net/smc/af_smc.c  | 18 ++++++++++++++++++
+ net/smc/smc_clc.c | 46 ++++++++++++++++++++++++++++++++++++++++++++++
+ net/smc/smc_clc.h |  7 +++++++
+ 3 files changed, 71 insertions(+)
 
-diff --git a/drivers/md/md.c b/drivers/md/md.c
-index 74ee31f2706b..77c48f7b605c 100644
---- a/drivers/md/md.c
-+++ b/drivers/md/md.c
-@@ -9196,6 +9196,26 @@ static bool hot_remove_rdev(struct md_rdev *rdev)
- 	return true;
+diff --git a/net/smc/af_smc.c b/net/smc/af_smc.c
+index 52279bdc100a..fd58e25beddf 100644
+--- a/net/smc/af_smc.c
++++ b/net/smc/af_smc.c
+@@ -1169,6 +1169,7 @@ static int smc_connect_rdma_v2_prepare(struct smc_sock *smc,
+ 	struct smc_clc_first_contact_ext *fce =
+ 		(struct smc_clc_first_contact_ext *)
+ 			(((u8 *)clc_v2) + sizeof(*clc_v2));
++	int rc;
+ 
+ 	if (!ini->first_contact_peer || aclc->hdr.version == SMC_V1)
+ 		return 0;
+@@ -1191,6 +1192,9 @@ static int smc_connect_rdma_v2_prepare(struct smc_sock *smc,
+ 	if (fce->release > SMC_RELEASE)
+ 		return SMC_CLC_DECL_VERSMISMAT;
+ 	ini->release_ver = fce->release;
++	rc = smc_clc_cli_v2x_features_validate(fce, ini);
++	if (rc)
++		return rc;
+ 
+ 	return 0;
+ }
+@@ -1367,6 +1371,9 @@ static int smc_connect_ism(struct smc_sock *smc,
+ 			if (fce->release > SMC_RELEASE)
+ 				return SMC_CLC_DECL_VERSMISMAT;
+ 			ini->release_ver = fce->release;
++			rc = smc_clc_cli_v2x_features_validate(fce, ini);
++			if (rc)
++				return rc;
+ 		}
+ 
+ 		rc = smc_v2_determine_accepted_chid(aclc_v2, ini);
+@@ -2417,6 +2424,10 @@ static void smc_listen_work(struct work_struct *work)
+ 	if (rc)
+ 		goto out_decl;
+ 
++	rc = smc_clc_srv_v2x_features_validate(pclc, ini);
++	if (rc)
++		goto out_decl;
++
+ 	mutex_lock(&smc_server_lgr_pending);
+ 	smc_close_init(new_smc);
+ 	smc_rx_init(new_smc);
+@@ -2449,6 +2460,13 @@ static void smc_listen_work(struct work_struct *work)
+ 		goto out_decl;
+ 	}
+ 
++	rc = smc_clc_v2x_features_confirm_check(cclc, ini);
++	if (rc) {
++		if (!ini->is_smcd)
++			goto out_unlock;
++		goto out_decl;
++	}
++
+ 	/* finish worker */
+ 	if (!ini->is_smcd) {
+ 		rc = smc_listen_rdma_finish(new_smc, cclc,
+diff --git a/net/smc/smc_clc.c b/net/smc/smc_clc.c
+index df8d17491a25..b25a72f1c9ac 100644
+--- a/net/smc/smc_clc.c
++++ b/net/smc/smc_clc.c
+@@ -1158,6 +1158,52 @@ int smc_clc_send_accept(struct smc_sock *new_smc, bool srv_first_contact,
+ 	return len > 0 ? 0 : len;
  }
  
-+static bool hot_add_rdev(struct md_rdev *rdev)
++int smc_clc_srv_v2x_features_validate(struct smc_clc_msg_proposal *pclc,
++				      struct smc_init_info *ini)
 +{
-+	struct mddev *mddev;
++	struct smc_clc_v2_extension *pclc_v2_ext;
 +
-+	if (!rdev_addable(rdev))
-+		return false;
++	if ((!(ini->smcd_version & SMC_V2) && !(ini->smcr_version & SMC_V2)) ||
++	    ini->release_ver < SMC_RELEASE_1)
++		return 0;
 +
-+	if (!test_bit(Journal, &rdev->flags))
-+		rdev->recovery_offset = 0;
++	pclc_v2_ext = smc_get_clc_v2_ext(pclc);
++	if (!pclc_v2_ext)
++		return SMC_CLC_DECL_NOV2EXT;
 +
-+	mddev = rdev->mddev;
-+	if (mddev->pers->hot_add_disk(mddev, rdev))
-+		return false;
-+
-+	sysfs_link_rdev(mddev, rdev);
-+	md_new_event();
-+	set_bit(MD_SB_CHANGE_DEVS, &mddev->sb_flags);
-+	return true;
++	return 0;
 +}
 +
- static int remove_and_add_spares(struct mddev *mddev,
- 				 struct md_rdev *this)
++int smc_clc_cli_v2x_features_validate(struct smc_clc_first_contact_ext *fce,
++				      struct smc_init_info *ini)
++{
++	if (ini->release_ver < SMC_RELEASE_1)
++		return 0;
++
++	return 0;
++}
++
++int smc_clc_v2x_features_confirm_check(struct smc_clc_msg_accept_confirm *cclc,
++				       struct smc_init_info *ini)
++{
++	struct smc_clc_msg_accept_confirm_v2 *clc_v2 =
++		(struct smc_clc_msg_accept_confirm_v2 *)cclc;
++	struct smc_clc_first_contact_ext *fce =
++		smc_get_clc_first_contact_ext(clc_v2, ini->is_smcd);
++
++	if (cclc->hdr.version == SMC_V1 ||
++	    !(cclc->hdr.typev2 & SMC_FIRST_CONTACT_MASK))
++		return 0;
++
++	if (ini->release_ver != fce->release)
++		return SMC_CLC_DECL_RELEASEERR;
++
++	if (fce->release < SMC_RELEASE_1)
++		return 0;
++
++	return 0;
++}
++
+ void smc_clc_get_hostname(u8 **host)
  {
-@@ -9222,18 +9242,8 @@ static int remove_and_add_spares(struct mddev *mddev,
- 			continue;
- 		if (rdev_is_spare(rdev))
- 			spares++;
--		if (!rdev_addable(rdev))
--			continue;
--		if (!test_bit(Journal, &rdev->flags))
--			rdev->recovery_offset = 0;
--		if (mddev->pers->hot_add_disk(mddev, rdev) == 0) {
--			/* failure here is OK */
--			sysfs_link_rdev(mddev, rdev);
--			if (!test_bit(Journal, &rdev->flags))
--				spares++;
--			md_new_event();
--			set_bit(MD_SB_CHANGE_DEVS, &mddev->sb_flags);
--		}
-+		if (hot_add_rdev(rdev) && !test_bit(Journal, &rdev->flags))
-+			spares++;
- 	}
- no_add:
- 	if (removed)
+ 	*host = &smc_hostname[0];
+diff --git a/net/smc/smc_clc.h b/net/smc/smc_clc.h
+index 6133276a8839..66932bfdc6d0 100644
+--- a/net/smc/smc_clc.h
++++ b/net/smc/smc_clc.h
+@@ -45,6 +45,7 @@
+ #define SMC_CLC_DECL_NOSEID	0x03030006  /* peer sent no SEID	      */
+ #define SMC_CLC_DECL_NOSMCD2DEV	0x03030007  /* no SMC-Dv2 device found	      */
+ #define SMC_CLC_DECL_NOUEID	0x03030008  /* peer sent no UEID	      */
++#define SMC_CLC_DECL_RELEASEERR	0x03030009  /* release version negotiate failed */
+ #define SMC_CLC_DECL_MODEUNSUPP	0x03040000  /* smc modes do not match (R or D)*/
+ #define SMC_CLC_DECL_RMBE_EC	0x03050000  /* peer has eyecatcher in RMBE    */
+ #define SMC_CLC_DECL_OPTUNSUPP	0x03060000  /* fastopen sockopt not supported */
+@@ -415,6 +416,12 @@ int smc_clc_send_confirm(struct smc_sock *smc, bool clnt_first_contact,
+ 			 u8 version, u8 *eid, struct smc_init_info *ini);
+ int smc_clc_send_accept(struct smc_sock *smc, bool srv_first_contact,
+ 			u8 version, u8 *negotiated_eid, struct smc_init_info *ini);
++int smc_clc_srv_v2x_features_validate(struct smc_clc_msg_proposal *pclc,
++				      struct smc_init_info *ini);
++int smc_clc_cli_v2x_features_validate(struct smc_clc_first_contact_ext *fce,
++				      struct smc_init_info *ini);
++int smc_clc_v2x_features_confirm_check(struct smc_clc_msg_accept_confirm *cclc,
++				       struct smc_init_info *ini);
+ void smc_clc_init(void) __init;
+ void smc_clc_exit(void);
+ void smc_clc_get_hostname(u8 **host);
 -- 
-2.39.2
+2.24.3 (Apple Git-128)
 
