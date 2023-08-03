@@ -2,25 +2,25 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A24876DFEE
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 07:57:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D78ED76DFEF
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 07:57:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230523AbjHCF5X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Aug 2023 01:57:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60980 "EHLO
+        id S232825AbjHCF5g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Aug 2023 01:57:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32886 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229944AbjHCF5T (ORCPT
+        with ESMTP id S232735AbjHCF50 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Aug 2023 01:57:19 -0400
+        Thu, 3 Aug 2023 01:57:26 -0400
 Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id A86E630E5
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Aug 2023 22:57:17 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id ACEE9359E
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Aug 2023 22:57:21 -0700 (PDT)
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 80A67113E;
-        Wed,  2 Aug 2023 22:57:59 -0700 (PDT)
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 40AAA113E;
+        Wed,  2 Aug 2023 22:58:04 -0700 (PDT)
 Received: from a077893.blr.arm.com (unknown [10.162.42.10])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 1BA2D3F6C4;
-        Wed,  2 Aug 2023 22:57:11 -0700 (PDT)
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 1E2733F6C4;
+        Wed,  2 Aug 2023 22:57:16 -0700 (PDT)
 From:   Anshuman Khandual <anshuman.khandual@arm.com>
 To:     linux-arm-kernel@lists.infradead.org, suzuki.poulose@arm.com
 Cc:     Anshuman Khandual <anshuman.khandual@arm.com>,
@@ -33,9 +33,9 @@ Cc:     Anshuman Khandual <anshuman.khandual@arm.com>,
         Alexander Shishkin <alexander.shishkin@linux.intel.com>,
         James Clark <james.clark@arm.com>, coresight@lists.linaro.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH V3 2/4] arm_pmu: acpi: Add a representative platform device for TRBE
-Date:   Thu,  3 Aug 2023 11:26:50 +0530
-Message-Id: <20230803055652.1322801-3-anshuman.khandual@arm.com>
+Subject: [PATCH V3 3/4] coresight: trbe: Add a representative coresight_platform_data for TRBE
+Date:   Thu,  3 Aug 2023 11:26:51 +0530
+Message-Id: <20230803055652.1322801-4-anshuman.khandual@arm.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20230803055652.1322801-1-anshuman.khandual@arm.com>
 References: <20230803055652.1322801-1-anshuman.khandual@arm.com>
@@ -50,114 +50,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-ACPI TRBE does not have a HID for identification which could create and add
-a platform device into the platform bus. Also without a platform device, it
-cannot be probed and bound to a platform driver.
+TRBE coresight devices do not need regular connections information, as the
+paths get built between all percpu source and their respective percpu sink
+devices. Please refer 'commit 2cd87a7b293d ("coresight: core: Add support
+for dedicated percpu sinks")' which added support for percpu sink devices.
 
-This creates a dummy platform device for TRBE after ascertaining that ACPI
-provides required interrupts uniformly across all cpus on the system. This
-device gets created inside drivers/perf/arm_pmu_acpi.c to accommodate TRBE
-being built as a module.
+coresight_register() expect device connections via the platform_data. TRBE
+devices do not have any graph connections and thus is empty. With upcoming
+ACPI support for TRBE, we do not get a real acpi_device and thus
+coresight_get_platform_dat() will end up in failures. Hence this allocates
+a zeroed coresight_platform_data structure and assigns that back into the
+device.
 
-Cc: Catalin Marinas <catalin.marinas@arm.com>
-Cc: Will Deacon <will@kernel.org>
-Cc: Mark Rutland <mark.rutland@arm.com>
+Cc: Suzuki K Poulose <suzuki.poulose@arm.com>
+Cc: Mike Leach <mike.leach@linaro.org>
+Cc: Leo Yan <leo.yan@linaro.org>
+Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
+Cc: coresight@lists.linaro.org
 Cc: linux-arm-kernel@lists.infradead.org
 Cc: linux-kernel@vger.kernel.org
 Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
 ---
- arch/arm64/include/asm/acpi.h |  3 +++
- drivers/perf/arm_pmu_acpi.c   | 37 ++++++++++++++++++++++++++++++++++-
- include/linux/perf/arm_pmu.h  |  1 +
- 3 files changed, 40 insertions(+), 1 deletion(-)
+ drivers/hwtracing/coresight/coresight-trbe.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/arch/arm64/include/asm/acpi.h b/arch/arm64/include/asm/acpi.h
-index bd68e1b7f29f..4d537d56eb84 100644
---- a/arch/arm64/include/asm/acpi.h
-+++ b/arch/arm64/include/asm/acpi.h
-@@ -42,6 +42,9 @@
- #define ACPI_MADT_GICC_SPE  (offsetof(struct acpi_madt_generic_interrupt, \
- 	spe_interrupt) + sizeof(u16))
+diff --git a/drivers/hwtracing/coresight/coresight-trbe.c b/drivers/hwtracing/coresight/coresight-trbe.c
+index 7720619909d6..e1d9d06e7725 100644
+--- a/drivers/hwtracing/coresight/coresight-trbe.c
++++ b/drivers/hwtracing/coresight/coresight-trbe.c
+@@ -1494,9 +1494,9 @@ static int arm_trbe_device_probe(struct platform_device *pdev)
+ 	if (!drvdata)
+ 		return -ENOMEM;
  
-+#define ACPI_MADT_GICC_TRBE  (offsetof(struct acpi_madt_generic_interrupt, \
-+	trbe_interrupt) + sizeof(u16))
-+
- /* Basic configuration for ACPI */
- #ifdef	CONFIG_ACPI
- pgprot_t __acpi_get_mem_attribute(phys_addr_t addr);
-diff --git a/drivers/perf/arm_pmu_acpi.c b/drivers/perf/arm_pmu_acpi.c
-index 235c14766a36..79feea548e6e 100644
---- a/drivers/perf/arm_pmu_acpi.c
-+++ b/drivers/perf/arm_pmu_acpi.c
-@@ -69,7 +69,7 @@ static void arm_pmu_acpi_unregister_irq(int cpu)
- 		acpi_unregister_gsi(gsi);
- }
+-	pdata = coresight_get_platform_data(dev);
+-	if (IS_ERR(pdata))
+-		return PTR_ERR(pdata);
++	pdata = devm_kzalloc(dev, sizeof(*pdata), GFP_KERNEL);
++	if (!pdata)
++		return -ENOMEM;
  
--#if IS_ENABLED(CONFIG_ARM_SPE_PMU)
-+#if IS_ENABLED(CONFIG_ARM_SPE_PMU) || IS_ENABLED(CONFIG_CORESIGHT_TRBE)
- static int
- arm_acpi_register_pmu_device(struct platform_device *pdev, u8 len,
- 			     u16 (*parse_gsi)(struct acpi_madt_generic_interrupt *))
-@@ -166,6 +166,40 @@ static inline void arm_spe_acpi_register_device(void)
- }
- #endif /* CONFIG_ARM_SPE_PMU */
- 
-+#ifdef CONFIG_CORESIGHT_TRBE
-+static struct resource trbe_resources[] = {
-+	{
-+		/* irq */
-+		.flags          = IORESOURCE_IRQ,
-+	}
-+};
-+
-+static struct platform_device trbe_dev = {
-+	.name = ARMV8_TRBE_PDEV_NAME,
-+	.id = -1,
-+	.resource = trbe_resources,
-+	.num_resources = ARRAY_SIZE(trbe_resources)
-+};
-+
-+static u16 arm_trbe_parse_gsi(struct acpi_madt_generic_interrupt *gicc)
-+{
-+	return gicc->trbe_interrupt;
-+}
-+
-+static void arm_trbe_acpi_register_device(void)
-+{
-+	int ret = arm_acpi_register_pmu_device(&trbe_dev, ACPI_MADT_GICC_TRBE,
-+					       arm_trbe_parse_gsi);
-+	if (ret)
-+		pr_warn("ACPI: TRBE: Unable to register device\n");
-+}
-+#else
-+static inline void arm_trbe_acpi_register_device(void)
-+{
-+
-+}
-+#endif /* CONFIG_CORESIGHT_TRBE */
-+
- static int arm_pmu_acpi_parse_irqs(void)
- {
- 	int irq, cpu, irq_cpu, err;
-@@ -401,6 +435,7 @@ static int arm_pmu_acpi_init(void)
- 		return 0;
- 
- 	arm_spe_acpi_register_device();
-+	arm_trbe_acpi_register_device();
- 
- 	return 0;
- }
-diff --git a/include/linux/perf/arm_pmu.h b/include/linux/perf/arm_pmu.h
-index a0801f68762b..143fbc10ecfe 100644
---- a/include/linux/perf/arm_pmu.h
-+++ b/include/linux/perf/arm_pmu.h
-@@ -187,5 +187,6 @@ void armpmu_free_irq(int irq, int cpu);
- #endif /* CONFIG_ARM_PMU */
- 
- #define ARMV8_SPE_PDEV_NAME "arm,spe-v1"
-+#define ARMV8_TRBE_PDEV_NAME "arm,trbe"
- 
- #endif /* __ARM_PMU_H__ */
+ 	dev_set_drvdata(dev, drvdata);
+ 	dev->platform_data = pdata;
 -- 
 2.25.1
 
