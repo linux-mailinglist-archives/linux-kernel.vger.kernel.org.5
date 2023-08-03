@@ -2,70 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1891176F31F
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 21:00:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D07A676F324
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 21:02:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230252AbjHCTAg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Aug 2023 15:00:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45516 "EHLO
+        id S231241AbjHCTC3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Aug 2023 15:02:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46562 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229822AbjHCTAe (ORCPT
+        with ESMTP id S229766AbjHCTCY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Aug 2023 15:00:34 -0400
-Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B9802D45;
-        Thu,  3 Aug 2023 12:00:30 -0700 (PDT)
-Received: by mail-ej1-x62d.google.com with SMTP id a640c23a62f3a-99bed101b70so177599466b.3;
-        Thu, 03 Aug 2023 12:00:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1691089229; x=1691694029;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=fpJNHhs8hGi2yDC45xTTVL8bPEioZdZntYr6lajc9vM=;
-        b=k5NDFDrEg+9nNDfAkqK83fDOp8A5hffycEbrlbI1/HFSkoagQYZMmMPYLy72x3L1wF
-         JTyYZl2/V9SuoMJt9V3F/7xfyxu01MSFXa2Xhu/TtBD6BVVPbIYsb+0cN3OSQ4ZzY7qV
-         sLMQfRL+DlBOv9af5SFsYVhKt8Yrf8E+RH9PvIzTXoXF5B3MwM01l3mdjlPDFa94T/5x
-         XIi4lG512p/FVDpSvNiARyeXHw50IbimFnqlTAn/a/o63GlyqwYjJBdWDdtAbFGbfknY
-         PcDd53ab0QCfjsii/z7pcosDnLaQrDL9LBgq9QPpZCYn7XUPYkMAEojnEN9BefiQyZTN
-         77Dg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691089229; x=1691694029;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=fpJNHhs8hGi2yDC45xTTVL8bPEioZdZntYr6lajc9vM=;
-        b=hliGL4XMG/izhD1vc88sC/3AMnwPi5BEVOqy0h4xklm+8uTHpXUUSmaI887BJ3NK6O
-         1AqKAN1wkmWx2kB9NbYCg+ps2kSh3VQW3hWkJdJTLrPZa35lYYRdmv9F6pfPjib7Hb+U
-         aBKr9nAvXdgQ8QhHx7s8I339UDOM8SEM/Q9Y1nJhAvRBV3P4TgsJZWbNVzU+7RwIy3LK
-         kv5cWVi9MUJbRCNAAIZ25z6bX7KUhOHrTIveyi5MJLqG6IkArDPPWlF+vEZybeEjHdfk
-         NFN80W/o8p28qraKQ4CgF68RmOMK/UW4a2GTBAZXpusFrxU8y92fjI/6bADEjPe4Av5N
-         EVTQ==
-X-Gm-Message-State: ABy/qLaQCra+qoNC0DaP69C/xqa1EVABm1BOEeUnSpJuE8ckWQ29PXV0
-        6kbzbVSNNmr10KayXSenttw=
-X-Google-Smtp-Source: APBJJlErSeEumK9R9+wnkEORl7kuxFvXLYgJU3sv1JvX9YTgWXsr9PNifF6jZ1kMyJr/QPo0T+vz+w==
-X-Received: by 2002:a17:906:20d9:b0:994:47a0:c730 with SMTP id c25-20020a17090620d900b0099447a0c730mr8455282ejc.43.1691089228564;
-        Thu, 03 Aug 2023 12:00:28 -0700 (PDT)
-Received: from dev7.kernelcare.com ([2a01:4f8:201:23::2])
-        by smtp.gmail.com with ESMTPSA id d13-20020a1709063ecd00b00992a8a54f32sm182939ejj.139.2023.08.03.12.00.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 03 Aug 2023 12:00:27 -0700 (PDT)
-From:   Andrew Kanner <andrew.kanner@gmail.com>
-To:     davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
-        pabeni@redhat.com, jasowang@redhat.com, netdev@vger.kernel.org,
-        hawk@kernel.org, jbrouer@redhat.com, dsahern@gmail.com,
-        john.fastabend@gmail.com, linux-kernel@vger.kernel.org
-Cc:     linux-kernel-mentees@lists.linuxfoundation.org,
-        syzbot+f817490f5bd20541b90a@syzkaller.appspotmail.com,
-        Andrew Kanner <andrew.kanner@gmail.com>
-Subject: [PATCH net-next v5 1/2] drivers: net: prevent tun_build_skb() to exceed the packet size limit
-Date:   Thu,  3 Aug 2023 20:59:48 +0200
-Message-Id: <20230803185947.2379988-1-andrew.kanner@gmail.com>
-X-Mailer: git-send-email 2.39.3
+        Thu, 3 Aug 2023 15:02:24 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 4C0CE2D4E
+        for <linux-kernel@vger.kernel.org>; Thu,  3 Aug 2023 12:02:22 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id BB056113E;
+        Thu,  3 Aug 2023 12:03:04 -0700 (PDT)
+Received: from usa.arm.com (e103737-lin.cambridge.arm.com [10.1.197.49])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 9D2103F6C4;
+        Thu,  3 Aug 2023 12:02:20 -0700 (PDT)
+From:   Sudeep Holla <sudeep.holla@arm.com>
+To:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc:     Sudeep Holla <sudeep.holla@arm.com>,
+        Jens Wiklander <jens.wiklander@linaro.org>,
+        Lucian Paul-Trifu <lucian.paul-trifu@arm.com>,
+        Marc Bonnici <marc.bonnici@arm.com>,
+        Coboy Chen <coboy.chen@mediatek.com>
+Subject: [PATCH RFT 00/12] firmware: arm_ffa: Add FF-A v1.1 notifications support
+Date:   Thu,  3 Aug 2023 20:02:04 +0100
+Message-ID: <20230803-ffa_v1-1_notif-v1-0-6613ff2b1f81@arm.com>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+X-Mailer: b4 0.12.3
+X-Developer-Signature: v=1; a=openpgp-sha256; l=2116; i=sudeep.holla@arm.com; h=from:subject:message-id; bh=8/+/woPUCsRDrEmBsDXsX8w4wqPx+nhTYySmM06ZPOM=; b=owEBbQKS/ZANAwAIAQBBurwxfuKYAcsmYgBky/iMz/bv2SQtquRo8zplLlxuFD2902QwL9wXR oOLa9lUIUCJAjMEAAEIAB0WIQS6ceUSBvMeskPdk+EAQbq8MX7imAUCZMv4jAAKCRAAQbq8MX7i mFiHD/9bD8jxsi92cJBcC/39MAMec+ZMOWedA2b0H5caXwPAMsgoAKe5pFQJNplH8J6tkhZr4kn dST8VkuH6O/rGDOavshMIEDJwDhNU+D9jO9/hdHYME6EsnG7o0QEmnH+SAaVsl/6WLQJ9cyBpw/ WHV/DJ0bJHf9ZfWYkqdXcuVsuO6IDjslnXYsYROTE7HaF3OwMocITaJEJd1LO6qCNwDqBljodrI Uyuwuna+vBBQS1lDgKoxBcQ71oOV5eEiHC5yaD7T2ZSpCz2Mi7hgl8SFX1Y3iS6G6GH393Q7yUp pY4vwKN0PGucnSYe/s6hu3NN+oTI/NUnZWt3dSejJaag5nsH/zeJVd25b3w5TH/YksnwtmDTPF6 0/GdVoXVz6A1iifP81n9zR00uHORxGYuRSlUi5+/e0xOzpaUMfxkhOsyXb4aen9iAROiaeTt3ww 3gKC7tJdURdFwfUo09eCPlDikcNCSnX613iAQBkQMgVWZViNLHpSHeUZyRen/6Q5pJcqUsmnOMK 9620O90uWeepzP/0SkVCypxFmKc7JrD6dk6g9uzqAMWafoDd+Jxsdh2ULUcH9GKmDMyuZDWS2ex ttaHAfycSU56YfNkGxPidYsoozR/fqmxksrVZtVuvqIKkDKWJVrtUUNxQnkxPE46b5rU1mdObHY 9IiUO1iW
+ Oglfo8g==
+X-Developer-Key: i=sudeep.holla@arm.com; a=openpgp; fpr=7360A21742ADF5A11767C1C139CFD4755FE2D5B4
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -73,71 +48,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Using the syzkaller repro with reduced packet size it was discovered
-that XDP_PACKET_HEADROOM is not checked in tun_can_build_skb(),
-although pad may be incremented in tun_build_skb(). This may end up
-with exceeding the PAGE_SIZE limit in tun_build_skb().
+The series adds initial support for the notifications added in FF-A v1.1
+The notification mechanism enables a requester/sender endpoint to notify
+a service provider/receiver endpoint about an event with non-blocking
+semantics.
 
-Jason Wang <jasowang@redhat.com> proposed to count XDP_PACKET_HEADROOM
-always (e.g. without rcu_access_pointer(tun->xdp_prog)) in
-tun_can_build_skb() since there's a window during which XDP program
-might be attached between tun_can_build_skb() and tun_build_skb().
+A notification is akin to the doorbell between two endpoints in a
+communication protocol that is based upon the doorbell/mailbox mechanism.
 
-Fixes: 7df13219d757 ("tun: reserve extra headroom only when XDP is set")
-Link: https://syzkaller.appspot.com/bug?extid=f817490f5bd20541b90a
-Signed-off-by: Andrew Kanner <andrew.kanner@gmail.com>
+The framework is responsible for the delivery of the notification from the
+sender to the receiver without blocking the sender. The receiver endpoint
+relies on the OS scheduler for allocation of CPU cycles to handle a
+notification.
+
+OS is referred as the receiver’s scheduler in the context of notifications.
+The framework is responsible for informing the receiver’s scheduler that
+the receiver must be run since it has a pending notification.
+
+Signed-off-by: Sudeep Holla <sudeep.holla@arm.com>
 ---
+Sudeep Holla (12):
+      firmware: arm_ffa: Update the FF-A command list with v1.1 additions
+      firmware: arm_ffa: Implement notification bitmap create and destroy interfaces
+      firmware: arm_ffa: Implement the notification bind and unbind interface
+      firmware: arm_ffa: Implement the FFA_RUN interface
+      firmware: arm_ffa: Implement the FFA_NOTIFICATION_SET interface
+      firmware: arm_ffa: Implement the FFA_NOTIFICATION_GET interface
+      firmware: arm_ffa: Implement the NOTIFICATION_INFO_GET interface
+      firmware: arm_ffa: Initial support for scheduler receiver interrupt
+      firmware: arm_ffa: Add schedule receiver callback mechanism
+      firmware: arm_ffa: Add interfaces to request notification callbacks
+      firmware: arm_ffa: Add interface to send a notification to a given partition
+      firmware: arm_ffa: Add notification handling mechanism
 
-Notes (akanner):
-    v5:
-      - always count XDP_PACKET_HEADROOM in tun_can_build_skb() as there's a
-        window between tun_can_build_skb() and tun_build_skb() and XDP
-        program might be attached there.
-      - rcu_read_lock/unlock() for tun->xdp_prog were completely removed and
-        there's no need to use rcu_access_pointer() instead which was noted
-        by David Ahern <dsahern@gmail.com>.
-    v4: https://lore.kernel.org/all/20230801220710.464-1-andrew.kanner@gmail.com/T/
-      - fall back to v1, fixing only missing XDP_PACKET_HEADROOM in pad
-        and removing bpf_xdp_adjust_tail() check for frame_sz.
-      - added rcu read lock, noted by Jason Wang <jasowang@redhat.com> in
-        v1
-      - I decided to leave the packet length check in tun_can_build_skb()
-        instead of moving to tun_build_skb() suggested by Jason Wang
-        <jasowang@redhat.com>. Otherwise extra packets will be dropped
-        without falling back to tun_alloc_skb(). And in the discussion of
-        v3 Jesper Dangaard Brouer <jbrouer@redhat.com> noticed that XDP is
-        ok with a higher order pages if it's a contiguous physical memory
-        allocation, so falling to tun_alloc_skb() -> do_xdp_generic()
-        should be ok.
-    v3: https://lore.kernel.org/all/20230725155403.796-1-andrew.kanner@gmail.com/T/
-      - attach the forgotten changelog
-    v2: https://lore.kernel.org/all/20230725153941.653-1-andrew.kanner@gmail.com/T/
-      - merged 2 patches in 1, fixing both issues: WARN_ON_ONCE with
-        syzkaller repro and missing XDP_PACKET_HEADROOM in pad
-      - changed the title and description of the execution path, suggested
-        by Jason Wang <jasowang@redhat.com>
-      - move the limit check from tun_can_build_skb() to tun_build_skb()
-        to remove duplication and locking issue, and also drop the packet
-        in case of a failed check - noted by Jason Wang
-        <jasowang@redhat.com>
-    v1: https://lore.kernel.org/all/20230724221326.384-1-andrew.kanner@gmail.com/T/
+ drivers/firmware/arm_ffa/driver.c | 700 +++++++++++++++++++++++++++++++++++++-
+ include/linux/arm_ffa.h           |  41 +++
+ 2 files changed, 740 insertions(+), 1 deletion(-)
+---
+base-commit: 5d0c230f1de8c7515b6567d9afba1f196fb4e2f4
+change-id: 20230803-ffa_v1-1_notif-e11bc9459962
 
- drivers/net/tun.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/net/tun.c b/drivers/net/tun.c
-index 25f0191df00b..100339bc8b04 100644
---- a/drivers/net/tun.c
-+++ b/drivers/net/tun.c
-@@ -1594,7 +1594,7 @@ static bool tun_can_build_skb(struct tun_struct *tun, struct tun_file *tfile,
- 	if (zerocopy)
- 		return false;
- 
--	if (SKB_DATA_ALIGN(len + TUN_RX_PAD) +
-+	if (SKB_DATA_ALIGN(len + TUN_RX_PAD + XDP_PACKET_HEADROOM) +
- 	    SKB_DATA_ALIGN(sizeof(struct skb_shared_info)) > PAGE_SIZE)
- 		return false;
- 
+Best regards,
 -- 
-2.39.3
+Regards,
+Sudeep
 
