@@ -2,67 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A779176EA35
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 15:27:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2311576EA6B
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 15:32:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233941AbjHCN1Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Aug 2023 09:27:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47182 "EHLO
+        id S235774AbjHCNcR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Aug 2023 09:32:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48016 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231660AbjHCN1W (ORCPT
+        with ESMTP id S235319AbjHCNcA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Aug 2023 09:27:22 -0400
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8DA80E70
-        for <linux-kernel@vger.kernel.org>; Thu,  3 Aug 2023 06:27:21 -0700 (PDT)
-Received: from [192.168.0.125] (unknown [82.76.24.202])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits))
-        (No client certificate requested)
-        (Authenticated sender: ehristev)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id 6F24966015A0;
-        Thu,  3 Aug 2023 14:27:19 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1691069240;
-        bh=GKxVpL2htb4W/V44J3R/Ch3TGxu315qMlN6i5BaRp1I=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=Oo7mc+GB6YB9oHQ4koa2nFWMb8g7v4RNgRYnrJHXmeh30XNsgyn8zplPvdMUNDlFO
-         BdmZbGx13CeVWR+/isBu7FirOF9+o5xQ4uWaz4789oqKXDk4F5PujVr3zb3idQbDD8
-         eJ/l8O50Hbnolo2AOvdECXDijID+AdjplSkKF+I3BOagFtr1pu3SkH4sia0BCikRBi
-         W/dn8xJk4OMFa/U6h8+tq+iqGv/KbbodwNPsUOcJrYcysqnKchFj0Vh7Aeuw50hEJr
-         +lzzCdiTECDbV2dumyS0ec2Y2lKvt3kHZ47gfP/7bPn6EamnwGNec0ZYR033sBNKa/
-         o2VDfs0neynLw==
-Message-ID: <a0b5ab0a-4c2e-d14c-508c-09a981d7087b@collabora.com>
-Date:   Thu, 3 Aug 2023 16:27:16 +0300
+        Thu, 3 Aug 2023 09:32:00 -0400
+Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3445A2D69;
+        Thu,  3 Aug 2023 06:30:53 -0700 (PDT)
+Received: from mail02.huawei.com (unknown [172.30.67.143])
+        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4RGqVH20Tmz4f400M;
+        Thu,  3 Aug 2023 21:30:47 +0800 (CST)
+Received: from huaweicloud.com (unknown [10.175.104.67])
+        by APP4 (Coremail) with SMTP id gCh0CgCnD7MGrMtkNVvlPQ--.7517S4;
+        Thu, 03 Aug 2023 21:30:47 +0800 (CST)
+From:   Yu Kuai <yukuai1@huaweicloud.com>
+To:     song@kernel.org, xni@redhat.com
+Cc:     linux-raid@vger.kernel.org, linux-kernel@vger.kernel.org,
+        yukuai3@huawei.com, yukuai1@huaweicloud.com, yi.zhang@huawei.com,
+        yangerkun@huawei.com
+Subject: [PATCH -next 0/7] md: initialize 'active_io' while allocating
+Date:   Thu,  3 Aug 2023 21:27:44 +0800
+Message-Id: <20230803132751.2741652-1-yukuai1@huaweicloud.com>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v8 4/8] drm/mediatek: Add encoder_index function to
- mtk_ddp_comp_funcs
-Content-Language: en-US
-To:     "Jason-JH.Lin" <jason-jh.lin@mediatek.com>,
-        Chun-Kuang Hu <chunkuang.hu@kernel.org>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>
-Cc:     Matthias Brugger <matthias.bgg@gmail.com>,
-        Jason-ch Chen <jason-ch.chen@mediatek.com>,
-        Johnson Wang <johnson.wang@mediatek.com>,
-        Singo Chang <singo.chang@mediatek.com>,
-        Nancy Lin <nancy.lin@mediatek.com>,
-        Shawn Sung <shawn.sung@mediatek.com>,
-        dri-devel@lists.freedesktop.org,
-        linux-mediatek@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Project_Global_Chrome_Upstream_Group@mediatek.com
-References: <20230802144802.751-1-jason-jh.lin@mediatek.com>
- <20230802144802.751-5-jason-jh.lin@mediatek.com>
-From:   Eugen Hristev <eugen.hristev@collabora.com>
-In-Reply-To: <20230802144802.751-5-jason-jh.lin@mediatek.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: gCh0CgCnD7MGrMtkNVvlPQ--.7517S4
+X-Coremail-Antispam: 1UD129KBjvJXoW7Ww1fXw17uw1Uuw1UGw1xZrb_yoW8CrWkp3
+        ySqFW3Zw1UWr1fJr43J3y8ur90qws3WrZrKr9xXw4rC3W3ua4kCw1fWa1Fqr9FyFy3A3ZI
+        yr98X348CF18ArDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUyE14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+        1l84ACjcxK6xIIjxv20xvE14v26F1j6w1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
+        JVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
+        CE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
+        2Ix0cI8IcVAFwI0_JrI_JrylYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJV
+        W8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1l42xK82IYc2Ij64vI
+        r41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8Gjc
+        xK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0
+        cI8IcVAFwI0_Gr0_Xr1lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4UJVWxJr1lIxAIcVCF04
+        k26cxKx2IYs7xG6Fyj6rWUJwCI42IY6I8E87Iv67AKxVW8JVWxJwCI42IY6I8E87Iv6xkF
+        7I0E14v26r4UJVWxJrUvcSsGvfC2KfnxnUUI43ZEXa7VU1a9aPUUUUU==
+X-CM-SenderInfo: 51xn3trlr6x35dzhxuhorxvhhfrp/
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,KHOP_HELO_FCRDNS,
+        MAY_BE_FORGED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -70,61 +59,50 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/2/23 17:47, Jason-JH.Lin wrote:
-> 1. Add encoder_index function to mtk_ddp_comp_funcs to support dynamic
-> connector selection for some ddp_comp who has encoder_index.
-> 2. Add mtk_ddp_comp_encoder_index_set function to set encoder_index to
-> each comp.
-> 
+From: Yu Kuai <yukuai3@huawei.com>
 
-Usually a commit that does two things in a list is supposed to be two 
-actual commits.
+This is the 4th patchset to do some preparatory work to synchronize
+io with array reconfiguration.
 
+1) The first patchset refactor 'active_io', make sure that mddev_suspend()
+will wait for io to be done. [1]
 
-> Signed-off-by: Jason-JH.Lin <jason-jh.lin@mediatek.com>
-> ---
->   drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.h | 8 ++++++++
->   1 file changed, 8 insertions(+)
-> 
-> diff --git a/drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.h b/drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.h
-> index febcaeef16a1..8428baca70f4 100644
-> --- a/drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.h
-> +++ b/drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.h
-> @@ -80,6 +80,7 @@ struct mtk_ddp_comp_funcs {
->   	void (*disconnect)(struct device *dev, struct device *mmsys_dev, unsigned int next);
->   	void (*add)(struct device *dev, struct mtk_mutex *mutex);
->   	void (*remove)(struct device *dev, struct mtk_mutex *mutex);
-> +	unsigned int (*encoder_index)(struct device *dev);
->   };
->   
->   struct mtk_ddp_comp {
-> @@ -87,6 +88,7 @@ struct mtk_ddp_comp {
->   	int irq;
->   	unsigned int id;
->   	const struct mtk_ddp_comp_funcs *funcs;
-> +	unsigned int encoder_index;
+2) The second patchset remove 'quiesce' callback from mddev_suspend(), so
+that mddev_suspend() doesn't rely on 'quiesce' callback is registered,
+and can be used for all personalites; [2]
 
-For better alignment I would suggest variables to be declared together 
-and pointers afterwards, not mixed up
+3) Make array reconfiguration independent from daemon thread,
+and synchronize it with io will be much easier because io may rely on
+daemon thread to be done.
 
->   };
->   
->   static inline int mtk_ddp_comp_clk_enable(struct mtk_ddp_comp *comp)
-> @@ -275,6 +277,12 @@ static inline bool mtk_ddp_comp_disconnect(struct mtk_ddp_comp *comp, struct dev
->   	return false;
->   }
->   
-> +static inline void mtk_ddp_comp_encoder_index_set(struct mtk_ddp_comp *comp)
-> +{
-> +	if (comp->funcs && comp->funcs->encoder_index)
-> +		comp->encoder_index = comp->funcs->encoder_index(comp->dev);
-> +}
+4) This patchset move initialization of 'active_io' from md_run() to
+md_alloc(), so that mddev_suspend() won't rely on holding 'reconfig_mutex'
+to check if 'mddev->pers' is set, and it can be called at any time after
+mddev is allocated.(Done by patch 1, and other patches are cleanup)
 
-it's also a bit strange that you added a function that is not used 
-anywhere. Don't you get like a compiler warning for it ?
+Yu Kuai (7):
+  md: initialize 'active_io' while allocating mddev
+  md: initialize 'writes_pending' while allocating mddev
+  md: don't rely on 'mddev->pers' to be set in mddev_suspend()
+  md-bitmap: remove the checking of 'pers->quiesce' from
+    location_store()
+  md-bitmap: suspend array earlier in location_store()
+  md: don't check 'mddev->pers' from suspend_hi_store()
+  md: don't check 'mddev->pers' and 'pers->quiesce' from
+    suspend_lo_store()
 
-> +
->   int mtk_ddp_comp_get_id(struct device_node *node,
->   			enum mtk_ddp_comp_type comp_type);
->   unsigned int mtk_drm_find_possible_crtc_by_comp(struct drm_device *drm,
+[1] https://lore.kernel.org/all/20230621165110.1498313-1-yukuai1@huaweicloud.com/
+[2] https://lore.kernel.org/all/20230628012931.88911-2-yukuai1@huaweicloud.com/
+
+ drivers/md/dm-raid.c   |   7 ++-
+ drivers/md/md-bitmap.c |  47 +++++++++----------
+ drivers/md/md.c        | 100 ++++++++++++++++++++---------------------
+ drivers/md/md.h        |   4 +-
+ drivers/md/raid1.c     |   3 +-
+ drivers/md/raid10.c    |   3 --
+ drivers/md/raid5.c     |   3 --
+ 7 files changed, 78 insertions(+), 89 deletions(-)
+
+-- 
+2.39.2
 
