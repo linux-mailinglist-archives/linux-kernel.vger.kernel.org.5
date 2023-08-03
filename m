@@ -2,115 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2DE3476E76C
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 13:52:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 720CA76E76F
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 13:52:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234715AbjHCLwS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Aug 2023 07:52:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48304 "EHLO
+        id S233677AbjHCLw0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Aug 2023 07:52:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48370 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231474AbjHCLwQ (ORCPT
+        with ESMTP id S229446AbjHCLwX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Aug 2023 07:52:16 -0400
-Received: from bg4.exmail.qq.com (bg4.exmail.qq.com [43.155.65.254])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 606C42737;
-        Thu,  3 Aug 2023 04:52:05 -0700 (PDT)
-X-QQ-mid: bizesmtp73t1691063514tuggi7c1
-Received: from linux-lab-host.localdomain ( [116.30.131.233])
-        by bizesmtp.qq.com (ESMTP) with 
-        id ; Thu, 03 Aug 2023 19:51:53 +0800 (CST)
-X-QQ-SSF: 01200000000000E0X000000A0000000
-X-QQ-FEAT: +ynUkgUhZJk+StiaJH8CjSd7m19whR4AXJZDyTT8ehlxB8pTFlOigr9u1NA37
-        tMGbHQ72gY+2gLRcHazy3aFdX9Hnf2SLC/ubLXX+EbxT9MTPwaIvkb8uDyFgBJgmtHHkPD2
-        SjxnAPJxgYufC07vMBECkqpS2Yi17kORakhJy9Tw5MSeycf/0NQb8mT+SDK+iXSQzSPjQSI
-        0uAbgM7c8zwXf5/Uc9A+dIP1skfQTEQ2zb2ghEffv0Co7xd2Vpo2blf7OptP/xKsPKJ8dpO
-        h2J2M+TGThC+UZIepTZ2vvSiM3BtCqUCpdU0t0tBeUIEWwLsauZ6Kk+4yEkCuiGH/EOD5Pk
-        vvki6kHaEG1siJI6o+8V7Z/giQQxB6dXMzWQhsc+sie7Gp3Ajynm14NFAZM8NRZMnZbFMrK
-        prS+2FB4gUI=
-X-QQ-GoodBg: 0
-X-BIZMAIL-ID: 16267713568485263794
-From:   Zhangjin Wu <falcon@tinylab.org>
-To:     thomas@t-8ch.de, w@1wt.eu
-Cc:     falcon@tinylab.org, arnd@arndb.de, linux-kernel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, tanyuan@tinylab.org
-Subject: [PATCH v5 8/8] selftests/nolibc: customize CROSS_COMPILE for 32/64-bit powerpc
-Date:   Thu,  3 Aug 2023 19:51:52 +0800
-Message-Id: <e61964ff55d55529a34d80c65c7913a6bde0c2ac.1691062722.git.falcon@tinylab.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <cover.1691062722.git.falcon@tinylab.org>
-References: <cover.1691062722.git.falcon@tinylab.org>
+        Thu, 3 Aug 2023 07:52:23 -0400
+Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B434FE6F;
+        Thu,  3 Aug 2023 04:52:18 -0700 (PDT)
+Received: by mail-lf1-x132.google.com with SMTP id 2adb3069b0e04-4fe2de785e7so1553861e87.1;
+        Thu, 03 Aug 2023 04:52:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1691063537; x=1691668337;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=BvfpzHNvraxrRTuqY8Qx7g7HYM0fDeaGxzfbp5eLMZY=;
+        b=KiVP/jJm3Mv4SHlqquH9+PvoWiGwU4w43ceFJW+SVvK1dooJfh1HtQVCCsJQst7wzj
+         191CRtHrTNxg7iyvORcNn2rvdqjIWavgBms97K9kq+ivY7hQBtW/gaNz7ofp6M4HmzDp
+         DN9yCDbGGKmz3sasKBFiPHuKJsi7q4UTfEvnu7OtDbPzlu0GNWeat1z15W8VMrK6IgeF
+         fukNf2GCSLYup8R12ZkJ91letJnvIZj0cOvIjwCJowcA9pf2qg0wwLpsUWhoRwraXB7b
+         nPBtBqfrJwIl9MtUIf+caGzToRM49uz3+yMd49z6r0Z2LaPUC08ZW+V351CEdLPjMVui
+         TSng==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691063537; x=1691668337;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=BvfpzHNvraxrRTuqY8Qx7g7HYM0fDeaGxzfbp5eLMZY=;
+        b=K495OK/KaDCx9EXwCpc9fmDck8bojipxqCqN79q9VxOAiHZPF41Njkt5GhVQ2eH0xm
+         ap0EL+WOE+sTT5gqxqpMxZtOEOSL0gyaQx/QU1FMStC2xDtDjtVfd3oiUfcqhgJETAOl
+         HGTrRNziHDpDIqUGnvqRSyFyCEF7kQ2Ag7jbizihKDqdfDvnFA9LbxtfT8hRvCz9pFWk
+         hxGT2gqtwduZ62G8tpSWgIn2QidbhglqEFzkAFyCrAIRdFm3Ios+oy5H+GuFm0TA2WOt
+         tZJkvT6OnxEbOCmxSHFoERijUE4s1teVHOJSq9iamhUs8b9ghFaRmXIT5lBd6FSf+Ewe
+         IK8A==
+X-Gm-Message-State: ABy/qLbowS5LEJyHN32NKp291M2B+Voh2lPTL4vQbqiwl5QUFCPflZkS
+        NcKOpwo+3Vcup95KYR/Rjhg=
+X-Google-Smtp-Source: APBJJlFCc7jU7XPSLQb+MCmbbcT8NiK3hMDPzGpNm10epcXYfUELg5To/dMsKpdwiHJYRmJAXj+7bQ==
+X-Received: by 2002:ac2:4d97:0:b0:4fb:829b:197c with SMTP id g23-20020ac24d97000000b004fb829b197cmr6396758lfe.52.1691063536736;
+        Thu, 03 Aug 2023 04:52:16 -0700 (PDT)
+Received: from [192.168.0.103] ([77.126.7.132])
+        by smtp.gmail.com with ESMTPSA id lt5-20020a170906fa8500b0098f99048053sm10663624ejb.148.2023.08.03.04.52.14
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 03 Aug 2023 04:52:16 -0700 (PDT)
+Message-ID: <006fc25b-497b-7de0-1d69-b7be66ab31b3@gmail.com>
+Date:   Thu, 3 Aug 2023 14:52:13 +0300
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-QQ-SENDSIZE: 520
-Feedback-ID: bizesmtp:tinylab.org:qybglogicsvrgz:qybglogicsvrgz5a-1
-X-Spam-Status: No, score=-0.6 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,RCVD_IN_VALIDITY_RPBL,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH net-next v10 08/16] tls: Inline do_tcp_sendpages()
+Content-Language: en-US
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     David Howells <dhowells@redhat.com>, netdev@vger.kernel.org,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
+        David Ahern <dsahern@kernel.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Christoph Hellwig <hch@infradead.org>,
+        Jens Axboe <axboe@kernel.dk>, Jeff Layton <jlayton@kernel.org>,
+        Christian Brauner <brauner@kernel.org>,
+        Chuck Lever III <chuck.lever@oracle.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, Boris Pismenny <borisp@nvidia.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Gal Pressman <gal@nvidia.com>, ranro@nvidia.com,
+        samiram@nvidia.com, drort@nvidia.com,
+        Tariq Toukan <tariqt@nvidia.com>
+References: <ecbb5d7e-7238-28e2-1a17-686325e2bb50@gmail.com>
+ <4c49176f-147a-4283-f1b1-32aac7b4b996@gmail.com>
+ <20230522121125.2595254-1-dhowells@redhat.com>
+ <20230522121125.2595254-9-dhowells@redhat.com>
+ <2267272.1686150217@warthog.procyon.org.uk>
+ <5a9d4ffb-a569-3f60-6ac8-070ab5e5f5ad@gmail.com>
+ <776549.1687167344@warthog.procyon.org.uk>
+ <7337a904-231d-201d-397a-7bbe7cae929f@gmail.com>
+ <20230630102143.7deffc30@kernel.org>
+ <f0538006-6641-eaf6-b7b5-b3ef57afc652@gmail.com>
+ <20230705091914.5bee12f8@kernel.org>
+ <bbdce803-0f23-7d3f-f75a-2bc3cfb794af@gmail.com>
+ <20230725173036.442ba8ba@kernel.org>
+ <e9c41176-829a-af5a-65d2-78a2f414cd04@gmail.com>
+ <20230726130819.6cc6aa0c@kernel.org>
+From:   Tariq Toukan <ttoukan.linux@gmail.com>
+In-Reply-To: <20230726130819.6cc6aa0c@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The little-endian powerpc64le compilers provided by Ubuntu and Fedora
-are able to compile big endian kernel and big endian nolibc-test [1].
 
-These default CROSS_COMPILE settings allow to test target architectures
-with:
 
-    $ cd /path/to/tools/testing/selftests/nolibc/
+On 26/07/2023 23:08, Jakub Kicinski wrote:
+> On Wed, 26 Jul 2023 22:20:42 +0300 Tariq Toukan wrote:
+>>> There is a small bug in this commit, we should always set SPLICE.
+>>> But I don't see how that'd cause the warning you're seeing.
+>>> Does your build have CONFIG_DEBUG_VM enabled?
+>>
+>> No.
+>>
+>> # CONFIG_DEBUG_VM is not set
+>> # CONFIG_DEBUG_VM_PGTABLE is not set
+> 
+> Try testing v6.3 with DEBUG_VM enabled or just remove the IS_ENABLED()
+> from: https://github.com/torvalds/linux/blob/v6.4/net/ipv4/tcp.c#L1051
 
-    $ for arch in ppc ppc64 ppc64le; do \
-        make run-user XARCH=$arch | grep "status: "; \
-      done
-
-If want to use another cross compiler, please simply pass CROSS_COMPILE
-or CC as before.
-
-For example, it is able to build 64-bit nolibc-test with the big endian
-powerpc64-linux-gcc crosstool from [2]:
-
-    $ wget -c https://mirrors.edge.kernel.org/pub/tools/crosstool/files/bin/x86_64/13.1.0/x86_64-gcc-13.1.0-nolibc-powerpc64-linux.tar.xz
-    $ tar xvf x86_64-gcc-13.1.0-nolibc-powerpc64-linux.tar.xz
-    $ export PATH=$PWD/gcc-13.1.0-nolibc/powerpc64-linux/bin/:$PATH
-
-    $ export CROSS_COMPILE_ppc=powerpc64-linux-
-    $ export CROSS_COMPILE_ppc64=powerpc64-linux-
-    $ export CROSS_COMPILE_ppc64le=powerpc64-linux-
-    $ for arch in ppc ppc64 ppc64le; do \
-        make run-user XARCH=$arch | grep "status: "; \
-      done
-
-Or specify CC directly with full path:
-
-    $ export CC=$PWD/gcc-13.1.0-nolibc/powerpc64-linux/bin/powerpc64-linux-gcc
-    $ for arch in ppc ppc64 ppc64le; do \
-        make run-user XARCH=$arch | grep "status: "; \
-      done
-
-[1]: https://github.com/open-power/skiboot
-[2]: https://mirrors.edge.kernel.org/pub/tools/crosstool/
-
-Signed-off-by: Zhangjin Wu <falcon@tinylab.org>
----
- tools/testing/selftests/nolibc/Makefile | 3 +++
- 1 file changed, 3 insertions(+)
-
-diff --git a/tools/testing/selftests/nolibc/Makefile b/tools/testing/selftests/nolibc/Makefile
-index 6e34d364a177..16cc33db54e3 100644
---- a/tools/testing/selftests/nolibc/Makefile
-+++ b/tools/testing/selftests/nolibc/Makefile
-@@ -56,6 +56,9 @@ IMAGE            = $(IMAGE_$(XARCH))
- IMAGE_NAME       = $(notdir $(IMAGE))
- 
- # CROSS_COMPILE: cross toolchain prefix by architecture
-+CROSS_COMPILE_ppc       ?= powerpc-linux-gnu-
-+CROSS_COMPILE_ppc64     ?= powerpc64le-linux-gnu-
-+CROSS_COMPILE_ppc64le   ?= powerpc64le-linux-gnu-
- CROSS_COMPILE           ?= $(CROSS_COMPILE_$(XARCH))
- 
- # make sure CC is prefixed with CROSS_COMPILE
--- 
-2.25.1
-
+Tested. It doesn't repro.
