@@ -2,301 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EF13576E29D
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 10:14:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 145F176E298
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 10:13:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232904AbjHCIN4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Aug 2023 04:13:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41566 "EHLO
+        id S233308AbjHCIN2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Aug 2023 04:13:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41472 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234403AbjHCINK (ORCPT
+        with ESMTP id S232755AbjHCIMf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Aug 2023 04:13:10 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39A01A5D1
-        for <linux-kernel@vger.kernel.org>; Thu,  3 Aug 2023 01:04:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1691049845;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=moxKMwUDbhA+vA1Ts0dJ3Yq4Q7IThf0mQEpJ1kG2LAM=;
-        b=NM+14AH6cy6sbFqiGYWyJDyEl11GZTXdXe1PX//mSeCss04PebY4TsBJNVYSXZXazdqQNb
-        GcVPdtJj5xH8l5Le01aU2LXdiN6cEgMof2msIenWi5cyy/UKCrM9T6ug9IuuJSYOALhwfn
-        l78z8WUIyApOwvbdcp2VlBpj0dOPGww=
-Received: from mail-lj1-f200.google.com (mail-lj1-f200.google.com
- [209.85.208.200]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-548-_i5Yl9xcMdyA149h129LPw-1; Thu, 03 Aug 2023 04:04:02 -0400
-X-MC-Unique: _i5Yl9xcMdyA149h129LPw-1
-Received: by mail-lj1-f200.google.com with SMTP id 38308e7fff4ca-2b9e014111fso6700031fa.0
-        for <linux-kernel@vger.kernel.org>; Thu, 03 Aug 2023 01:04:02 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691049840; x=1691654640;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=moxKMwUDbhA+vA1Ts0dJ3Yq4Q7IThf0mQEpJ1kG2LAM=;
-        b=TPw2LbXzu5hiqIem62NN8JUhN3toIibOjT8Y9NDB3/sDs9GLXawCpjvjMkqajd3M4P
-         jGZzEGVnPiJRtOUiMOl1QawyEX6bDwOCHU8PJGxO42Z/QiIZOye013gski2f5G1hhjy7
-         xq9fnusX3l2fKD1d48wVdSFLY4bsBSc1hTxNhb2I2fz0GinIg8u0Pe918crR7FLEddfu
-         bVjJYh/A59LY/SErS94KFZhCtHKd43Z4eIG7hKecgZxw1Xobk981W8a3k+8l47XqSCVL
-         ybXfUcx7iP7G4f5h7iYy37XPbDWfqhQeb5elkPR1dGGz4WA3v8FpYEorNPOL1bGfmGXT
-         OruQ==
-X-Gm-Message-State: ABy/qLbYcD+RTlxFA7Lq1nC1XR2iGhgmRyVac+sWED2nE0XKoFYGy4Qr
-        UuWoTt7SqWsL1DV8QV6b1rImFQvAwgxl099RtLLBBg2YuybcM5ZFANdjSv4drxFXvH3fSUM/8Ub
-        JLuNEY36ixFs3RGc2cn8u4b906GnE8rICJQ+dphWK/naIXKM9fXBzeQ==
-X-Received: by 2002:a2e:97c6:0:b0:2b7:2ea:33c3 with SMTP id m6-20020a2e97c6000000b002b702ea33c3mr7191833ljj.22.1691049840695;
-        Thu, 03 Aug 2023 01:04:00 -0700 (PDT)
-X-Google-Smtp-Source: APBJJlFMDxVwbeHqj4DgdHBE4iuwjdlVVHKrE3/GFhPOK7CvcNV780cC8GDmA4oCFP3zWPdRN0SaVbdmTAK/LBVxNQY=
-X-Received: by 2002:a2e:97c6:0:b0:2b7:2ea:33c3 with SMTP id
- m6-20020a2e97c6000000b002b702ea33c3mr7191814ljj.22.1691049840334; Thu, 03 Aug
- 2023 01:04:00 -0700 (PDT)
+        Thu, 3 Aug 2023 04:12:35 -0400
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0BCB96A54
+        for <linux-kernel@vger.kernel.org>; Thu,  3 Aug 2023 01:04:10 -0700 (PDT)
+Received: from [192.168.0.125] (unknown [82.76.24.202])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits))
+        (No client certificate requested)
+        (Authenticated sender: ehristev)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id A811266003AE;
+        Thu,  3 Aug 2023 09:04:06 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1691049848;
+        bh=olN4dxI1FgVffux81b8zn3MJNrXq8USsOO0KoBkTCFs=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=BlL9QbPlioYXC2hNIEVJBMKioa2AcQ6EjQ7NiyDIMcDgMbcM/28l7xVhptnPgiX4x
+         92SmPsToRA7yGqjMei6q88tORCKN0bEKHyN0UwD6Mw8nukOiWRYezCCOfWJ4CW0esr
+         5Zo6Uy3CCoPDfQca0SERrw925gqaoXGqNdrGKK9of7wqomSgQ1WZcALHdfrlB9MtJ/
+         3uijb4BuTs/jL92gGud8/ERb/EdZnwVq2pF+Vu3B+SK07cdVpibd/rTXi8zodRXPW1
+         9w+tjnnrpBK2H/C54IdNiwBf8JT8mH3z6wrlOaKUHvZWPAn6SGLllBYBONzasNHpF5
+         4j21QxdJPrj0w==
+Message-ID: <e88a1074-ca86-709f-8c26-f875320e728a@collabora.com>
+Date:   Thu, 3 Aug 2023 11:04:03 +0300
 MIME-Version: 1.0
-References: <20230802171231.11001-1-dtatulea@nvidia.com> <20230802171231.11001-3-dtatulea@nvidia.com>
-In-Reply-To: <20230802171231.11001-3-dtatulea@nvidia.com>
-From:   Jason Wang <jasowang@redhat.com>
-Date:   Thu, 3 Aug 2023 16:03:48 +0800
-Message-ID: <CACGkMEsE45k+fqv-biYfOX5VbqZLo_drQV5rPYByuLJZK03hWQ@mail.gmail.com>
-Subject: Re: [PATCH 1/2] vdpa/mlx5: Fix mr->initialized semantics
-To:     Dragos Tatulea <dtatulea@nvidia.com>
-Cc:     "Michael S. Tsirkin" <mst@redhat.com>,
-        Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
-        =?UTF-8?Q?Eugenio_P=C3=A9rez?= <eperezma@redhat.com>,
-        Gal Pressman <gal@nvidia.com>,
-        virtualization@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH] ASoC: SOF: mediatek: mt8186 modify dram type as non-cache
+Content-Language: en-US
+To:     Trevor Wu <trevor.wu@mediatek.com>,
+        pierre-louis.bossart@linux.intel.com,
+        peter.ujfalusi@linux.intel.com, yung-chuan.liao@linux.intel.com,
+        ranjani.sridharan@linux.intel.com, kai.vehmanen@linux.intel.com,
+        daniel.baluta@nxp.com, broonie@kernel.org, lgirdwood@gmail.com,
+        tiwai@suse.com, perex@perex.cz, matthias.bgg@gmail.com,
+        angelogioacchino.delregno@collabora.com
+Cc:     yc.hung@mediatek.com, allen-kh.cheng@mediatek.com,
+        sound-open-firmware@alsa-project.org, alsa-devel@alsa-project.org,
+        linux-mediatek@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+References: <20230803075028.32170-1-trevor.wu@mediatek.com>
+From:   Eugen Hristev <eugen.hristev@collabora.com>
+In-Reply-To: <20230803075028.32170-1-trevor.wu@mediatek.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 3, 2023 at 1:13=E2=80=AFAM Dragos Tatulea <dtatulea@nvidia.com>=
- wrote:
->
-> The mr->initialized flag is shared between the control vq and data vq
-> part of the mr init/uninit. But if the control vq and data vq get placed
-> in different ASIDs, it can happen that initializing the control vq will
-> prevent the data vq mr from being initialized.
->
-> This patch consolidates the control and data vq init parts into their
-> own init functions. The mr->initialized will now be used for the data vq
-> only. The control vq currently doesn't need a flag.
->
-> The uninitializing part is also taken care of: mlx5_vdpa_destroy_mr got
-> split into data and control vq functions which are now also ASID aware.
->
-> Fixes: 8fcd20c30704 ("vdpa/mlx5: Support different address spaces for con=
-trol and data")
-> Signed-off-by: Dragos Tatulea <dtatulea@nvidia.com>
-> Reviewed-by: Eugenio P=C3=A9rez <eperezma@redhat.com>
-> Reviewed-by: Gal Pressman <gal@nvidia.com>
+Hi Trevor,
+
+On 8/3/23 10:50, Trevor Wu wrote:
+> To prevent incorrect access between the host and DSP sides, we need to
+> modify DRAM as a non-cache memory type. Additionally, we can retrieve
+> the size of shared DMA from the device tree.
+> 
+> Signed-off-by: Trevor Wu <trevor.wu@mediatek.com>
+> Reviewed-by: Yaochun Hung <yc.hung@mediatek.com>
+> Reviewed-by: Kuan-Hsun Cheng <Allen-KH.Cheng@mediatek.com>
 > ---
->  drivers/vdpa/mlx5/core/mlx5_vdpa.h |  1 +
->  drivers/vdpa/mlx5/core/mr.c        | 97 +++++++++++++++++++++---------
->  2 files changed, 71 insertions(+), 27 deletions(-)
->
-> diff --git a/drivers/vdpa/mlx5/core/mlx5_vdpa.h b/drivers/vdpa/mlx5/core/=
-mlx5_vdpa.h
-> index 25fc4120b618..a0420be5059f 100644
-> --- a/drivers/vdpa/mlx5/core/mlx5_vdpa.h
-> +++ b/drivers/vdpa/mlx5/core/mlx5_vdpa.h
-> @@ -31,6 +31,7 @@ struct mlx5_vdpa_mr {
->         struct list_head head;
->         unsigned long num_directs;
->         unsigned long num_klms;
-> +       /* state of dvq mr */
->         bool initialized;
->
->         /* serialize mkey creation and destruction */
-> diff --git a/drivers/vdpa/mlx5/core/mr.c b/drivers/vdpa/mlx5/core/mr.c
-> index 03e543229791..4ae14a248a4b 100644
-> --- a/drivers/vdpa/mlx5/core/mr.c
-> +++ b/drivers/vdpa/mlx5/core/mr.c
-> @@ -489,60 +489,103 @@ static void destroy_user_mr(struct mlx5_vdpa_dev *=
-mvdev, struct mlx5_vdpa_mr *mr
->         }
->  }
->
-> -void mlx5_vdpa_destroy_mr(struct mlx5_vdpa_dev *mvdev)
-> +static void _mlx5_vdpa_destroy_cvq_mr(struct mlx5_vdpa_dev *mvdev, unsig=
-ned int asid)
-> +{
-> +       if (mvdev->group2asid[MLX5_VDPA_CVQ_GROUP] !=3D asid)
-> +               return;
+>   sound/soc/sof/mediatek/mt8186/mt8186.c | 40 +++++++++++++++-----------
+>   1 file changed, 23 insertions(+), 17 deletions(-)
+> 
+> diff --git a/sound/soc/sof/mediatek/mt8186/mt8186.c b/sound/soc/sof/mediatek/mt8186/mt8186.c
+> index 3e0ea0e109e2..f587edf9e0a7 100644
+> --- a/sound/soc/sof/mediatek/mt8186/mt8186.c
+> +++ b/sound/soc/sof/mediatek/mt8186/mt8186.c
+> @@ -111,6 +111,14 @@ static int platform_parse_resource(struct platform_device *pdev, void *data)
+>   
+>   	dev_dbg(dev, "DMA %pR\n", &res);
+>   
+> +	adsp->pa_shared_dram = (phys_addr_t)res.start;
+> +	adsp->shared_size = resource_size(&res);
+> +	if (adsp->pa_shared_dram & DRAM_REMAP_MASK) {
+> +		dev_err(dev, "adsp shared dma memory(%#x) is not 4K-aligned\n",
+> +			(u32)adsp->pa_shared_dram);
+> +		return -EINVAL;
+> +	}
 > +
-> +       prune_iotlb(mvdev);
-> +}
+
+Would it be better to just realign to the next 4k boundary ?
+Or, isn't it more usual to use dma_coerce_mask_and_coherent ?
+
+>   	ret = of_reserved_mem_device_init(dev);
+>   	if (ret) {
+>   		dev_err(dev, "of_reserved_mem_device_init failed\n");
+> @@ -244,23 +252,18 @@ static int adsp_shared_base_ioremap(struct platform_device *pdev, void *data)
+>   {
+>   	struct device *dev = &pdev->dev;
+>   	struct mtk_adsp_chip_info *adsp = data;
+> -	u32 shared_size;
+>   
+>   	/* remap shared-dram base to be non-cachable */
+> -	shared_size = TOTAL_SIZE_SHARED_DRAM_FROM_TAIL;
+> -	adsp->pa_shared_dram = adsp->pa_dram + adsp->dramsize - shared_size;
+> -	if (adsp->va_dram) {
+> -		adsp->shared_dram = adsp->va_dram + DSP_DRAM_SIZE - shared_size;
+> -	} else {
+> -		adsp->shared_dram = devm_ioremap(dev, adsp->pa_shared_dram,
+> -						 shared_size);
+> -		if (!adsp->shared_dram) {
+> -			dev_err(dev, "ioremap failed for shared DRAM\n");
+> -			return -ENOMEM;
+> -		}
+> +	adsp->shared_dram = devm_ioremap(dev, adsp->pa_shared_dram,
+> +					 adsp->shared_size);
+
+You cannot use dma_alloc_coherent ? This should take care of all the 
+cache maintainance for you.
+
+> +	if (!adsp->shared_dram) {
+> +		dev_err(dev, "failed to ioremap base %pa size %#x\n",
+> +			adsp->shared_dram, adsp->shared_size);
+> +		return -ENOMEM;
+>   	}
+> -	dev_dbg(dev, "shared-dram vbase=%p, phy addr :%pa, size=%#x\n",
+> -		adsp->shared_dram, &adsp->pa_shared_dram, shared_size);
 > +
-> +static void _mlx5_vdpa_destroy_dvq_mr(struct mlx5_vdpa_dev *mvdev, unsig=
-ned int asid)
->  {
->         struct mlx5_vdpa_mr *mr =3D &mvdev->mr;
->
-> -       mutex_lock(&mr->mkey_mtx);
-> +       if (mvdev->group2asid[MLX5_VDPA_DATAVQ_GROUP] !=3D asid)
-> +               return;
+> +	dev_dbg(dev, "shared-dram vbase=%p, phy addr :%pa,  size=%#x\n",
+> +		adsp->shared_dram, &adsp->pa_shared_dram, adsp->shared_size);
+>   
+>   	return 0;
+>   }
+> @@ -307,9 +310,12 @@ static int mt8186_dsp_probe(struct snd_sof_dev *sdev)
+>   		return -ENOMEM;
+>   	}
+>   
+> -	sdev->bar[SOF_FW_BLK_TYPE_SRAM] = devm_ioremap_wc(sdev->dev,
+> -							  priv->adsp->pa_dram,
+> -							  priv->adsp->dramsize);
+> +	priv->adsp->va_sram = sdev->bar[SOF_FW_BLK_TYPE_IRAM];
 > +
->         if (!mr->initialized)
-> -               goto out;
-> +               return;
->
-> -       prune_iotlb(mvdev);
->         if (mr->user_mr)
->                 destroy_user_mr(mvdev, mr);
->         else
->                 destroy_dma_mr(mvdev, mr);
->
->         mr->initialized =3D false;
-> -out:
-> +}
+> +	sdev->bar[SOF_FW_BLK_TYPE_SRAM] = devm_ioremap(sdev->dev,
+> +						       priv->adsp->pa_dram,
+> +						       priv->adsp->dramsize);
 > +
-> +static void mlx5_vdpa_destroy_mr_asid(struct mlx5_vdpa_dev *mvdev, unsig=
-ned int asid)
-> +{
-> +       struct mlx5_vdpa_mr *mr =3D &mvdev->mr;
-> +
-> +       mutex_lock(&mr->mkey_mtx);
-> +
-> +       _mlx5_vdpa_destroy_dvq_mr(mvdev, asid);
-> +       _mlx5_vdpa_destroy_cvq_mr(mvdev, asid);
-> +
->         mutex_unlock(&mr->mkey_mtx);
->  }
->
-> -static int _mlx5_vdpa_create_mr(struct mlx5_vdpa_dev *mvdev,
-> -                               struct vhost_iotlb *iotlb, unsigned int a=
-sid)
-> +void mlx5_vdpa_destroy_mr(struct mlx5_vdpa_dev *mvdev)
-> +{
-> +       mlx5_vdpa_destroy_mr_asid(mvdev, mvdev->group2asid[MLX5_VDPA_CVQ_=
-GROUP]);
-> +       mlx5_vdpa_destroy_mr_asid(mvdev, mvdev->group2asid[MLX5_VDPA_DATA=
-VQ_GROUP]);
-> +}
-> +
-> +static int _mlx5_vdpa_create_cvq_mr(struct mlx5_vdpa_dev *mvdev,
-> +                                   struct vhost_iotlb *iotlb,
-> +                                   unsigned int asid)
-> +{
-> +       if (mvdev->group2asid[MLX5_VDPA_CVQ_GROUP] !=3D asid)
-> +               return 0;
-> +
-> +       return dup_iotlb(mvdev, iotlb);
+Same here
 
-This worries me as conceptually, there should be no difference between
-dvq mr and cvq mr. The virtqueue should be loosely coupled with mr.
-
-One example is that, if we only do dup_iotlb() but not try to create
-dma mr here, we will break virtio-vdpa:
-
-commit 6f5312f801836e6af9bcbb0bdb44dc423e129206
-Author: Eli Cohen <elic@nvidia.com>
-Date:   Wed Jun 2 11:58:54 2021 +0300
-
-    vdpa/mlx5: Add support for running with virtio_vdpa
-
-    In order to support running vdpa using vritio_vdpa driver, we need  to
-    create a different kind of MR, one that has 1:1 mapping, since the
-    addresses referring to virtqueues are dma addresses.
-
-    We create the 1:1 MR in mlx5_vdpa_dev_add() only in case firmware
-    supports the general capability umem_uid_0. The reason for that is that
-    1:1 MRs must be created with uid =3D=3D 0 while virtqueue objects can b=
-e
-    created with uid =3D=3D 0 only when the firmware capability is on.
-
-    If the set_map() callback is called with new translations provided
-    through iotlb, the driver will destroy the 1:1 MR and create a regular
-    one.
-
-    Signed-off-by: Eli Cohen <elic@nvidia.com>
-    Link: https://lore.kernel.org/r/20210602085854.62690-1-elic@nvidia.com
-    Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
-    Acked-by: Jason Wang <jasowang@redhat.com>
-
-Thanks
+>   	if (!sdev->bar[SOF_FW_BLK_TYPE_SRAM]) {
+>   		dev_err(sdev->dev, "failed to ioremap base %pa size %#x\n",
+>   			&priv->adsp->pa_dram, priv->adsp->dramsize);
 
 
-> +}
-> +
-> +static int _mlx5_vdpa_create_dvq_mr(struct mlx5_vdpa_dev *mvdev,
-> +                                   struct vhost_iotlb *iotlb,
-> +                                   unsigned int asid)
->  {
->         struct mlx5_vdpa_mr *mr =3D &mvdev->mr;
->         int err;
->
-> -       if (mr->initialized)
-> +       if (mvdev->group2asid[MLX5_VDPA_DATAVQ_GROUP] !=3D asid)
->                 return 0;
->
-> -       if (mvdev->group2asid[MLX5_VDPA_DATAVQ_GROUP] =3D=3D asid) {
-> -               if (iotlb)
-> -                       err =3D create_user_mr(mvdev, iotlb);
-> -               else
-> -                       err =3D create_dma_mr(mvdev, mr);
-> +       if (mr->initialized)
-> +               return 0;
->
-> -               if (err)
-> -                       return err;
-> -       }
-> +       if (iotlb)
-> +               err =3D create_user_mr(mvdev, iotlb);
-> +       else
-> +               err =3D create_dma_mr(mvdev, mr);
->
-> -       if (mvdev->group2asid[MLX5_VDPA_CVQ_GROUP] =3D=3D asid) {
-> -               err =3D dup_iotlb(mvdev, iotlb);
-> -               if (err)
-> -                       goto out_err;
-> -       }
-> +       if (err)
-> +               return err;
->
->         mr->initialized =3D true;
-> +
-> +       return 0;
-> +}
-> +
-> +static int _mlx5_vdpa_create_mr(struct mlx5_vdpa_dev *mvdev,
-> +                               struct vhost_iotlb *iotlb, unsigned int a=
-sid)
-> +{
-> +       int err;
-> +
-> +       err =3D _mlx5_vdpa_create_dvq_mr(mvdev, iotlb, asid);
-> +       if (err)
-> +               return err;
-> +
-> +       err =3D _mlx5_vdpa_create_cvq_mr(mvdev, iotlb, asid);
-> +       if (err)
-> +               goto out_err;
-> +
->         return 0;
->
->  out_err:
-> -       if (mvdev->group2asid[MLX5_VDPA_DATAVQ_GROUP] =3D=3D asid) {
-> -               if (iotlb)
-> -                       destroy_user_mr(mvdev, mr);
-> -               else
-> -                       destroy_dma_mr(mvdev, mr);
-> -       }
-> +       _mlx5_vdpa_destroy_dvq_mr(mvdev, asid);
->
->         return err;
->  }
-> --
-> 2.41.0
->
-
+Regards,
+Eugen
