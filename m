@@ -2,170 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4907176DCC3
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 02:39:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 15B6176DCC6
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 02:41:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232465AbjHCAjC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Aug 2023 20:39:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38748 "EHLO
+        id S231133AbjHCAlB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Aug 2023 20:41:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39408 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229534AbjHCAi7 (ORCPT
+        with ESMTP id S229436AbjHCAk7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Aug 2023 20:38:59 -0400
-Received: from mgamail.intel.com (unknown [134.134.136.20])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C711211F;
-        Wed,  2 Aug 2023 17:38:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1691023138; x=1722559138;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=x9Ji+dCSv97hVWyMFbRibi0i/HZ8IXYSTgCjG/JZCa0=;
-  b=kKcA6stV2Bj06CDihttsJQj/6/3IfiQvxblMxYRgdyVGgR2x01clttNR
-   C6oLFyovDYEcA+0BBf/kedw1GVpR+h+L8TF51zOrBiOBsyf4e3SeDhIkR
-   kqH6aK99W4YYOg6WAL+p8arSoP2FKyZSsDjr+6Jlpz8yLlWpWzIDtZJK9
-   7+UyeADW3YrAhUOVrOXdH4Qqj2EHhak5LzHgh+I3qjlJB/1YhJxMeI7QO
-   YXzy5iSGcZo/C2uE9hlmlfb5wXNNpV1oEJiTkgls/ykLHT8dWZo1A6Plr
-   XCPt1JZIYrVzojtTc6H/umXjeQa03Rc8L1amqYOA8yRXJ6UfnPzvait00
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10790"; a="359776702"
-X-IronPort-AV: E=Sophos;i="6.01,250,1684825200"; 
-   d="scan'208";a="359776702"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Aug 2023 17:38:57 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10790"; a="799323200"
-X-IronPort-AV: E=Sophos;i="6.01,250,1684825200"; 
-   d="scan'208";a="799323200"
-Received: from orsmsx602.amr.corp.intel.com ([10.22.229.15])
-  by fmsmga004.fm.intel.com with ESMTP; 02 Aug 2023 17:38:56 -0700
-Received: from orsmsx602.amr.corp.intel.com (10.22.229.15) by
- ORSMSX602.amr.corp.intel.com (10.22.229.15) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.27; Wed, 2 Aug 2023 17:38:55 -0700
-Received: from orsedg603.ED.cps.intel.com (10.7.248.4) by
- orsmsx602.amr.corp.intel.com (10.22.229.15) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.27 via Frontend Transport; Wed, 2 Aug 2023 17:38:55 -0700
-Received: from NAM04-MW2-obe.outbound.protection.outlook.com (104.47.73.170)
- by edgegateway.intel.com (134.134.137.100) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.27; Wed, 2 Aug 2023 17:38:55 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=ily8bq/cXD/BRw64LtPepsWQaMRHKC1BGfF43ghGViHzAyAjbG/KgD6gyiN1BWI43NdlZ6NOB0ckK+UcJocij7/BnxHGaZRARuVH+w5KPBMxZg3ZLRs0wJojoAjZNG+gSI3ChHwZnNYw1wVpKe7uRA51rUNDigeQjs7xFlAurItvz97c1bh8mWowjHllSKFyR1iFBQL4peVm6yq0UfuZqV4fpsnlvPZ1+51IxwrWp3q4YUB/VPsi124rJNXnc9pCA7DJrG48lbIgT2KfZfCcjSNMRom7UA4Jeliu13oHHmIPfgOGPpCoepRdrbyinLiRtV/aTbXyWy4SjALhfEVLRA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=SYypAQ3lfcV+OKrZMH8Ufl+7sAlCk7JBJZTIBiqzn2E=;
- b=hGKXO6FD9MdOrDe3/4LT7zJWS4m4f5AhneYXTZfgXqpXKefsFRpt1GGDWQ7l6/hLXjWzTb0IoZ3dtqTer+mrwD9eaGF0v20QKY/CF0ZhXGIK+mYCK359Ytube8BpoCLqVlLoL6uMPQ/DjjwjaqoW4fGIF2wFILEZPjxbmHwIM6spojSFF+CFIgQVUgOBtY1VLR6TJFFGTHz2NPnnsm8j17BqCXBMgLFcwzxfb1cgcndQTA4wHR6zgZVJIb7qNyH0hwjp2QXv32COmgm+MGw0eRZTOFNN7al4hAcTMBQSxFaUacm7QBA1g7FuC8ZDUL/6yC6cKqHdIqJmSCRxsUFCGQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Received: from BN9PR11MB5276.namprd11.prod.outlook.com (2603:10b6:408:135::18)
- by CY8PR11MB6819.namprd11.prod.outlook.com (2603:10b6:930:61::16) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6652.20; Thu, 3 Aug
- 2023 00:38:54 +0000
-Received: from BN9PR11MB5276.namprd11.prod.outlook.com
- ([fe80::dcf3:7bac:d274:7bed]) by BN9PR11MB5276.namprd11.prod.outlook.com
- ([fe80::dcf3:7bac:d274:7bed%4]) with mapi id 15.20.6652.020; Thu, 3 Aug 2023
- 00:38:53 +0000
-From:   "Tian, Kevin" <kevin.tian@intel.com>
-To:     Jason Gunthorpe <jgg@nvidia.com>
-CC:     "Liu, Yi L" <yi.l.liu@intel.com>,
-        "joro@8bytes.org" <joro@8bytes.org>,
-        "alex.williamson@redhat.com" <alex.williamson@redhat.com>,
-        "robin.murphy@arm.com" <robin.murphy@arm.com>,
-        "baolu.lu@linux.intel.com" <baolu.lu@linux.intel.com>,
-        "cohuck@redhat.com" <cohuck@redhat.com>,
-        "eric.auger@redhat.com" <eric.auger@redhat.com>,
-        "nicolinc@nvidia.com" <nicolinc@nvidia.com>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "mjrosato@linux.ibm.com" <mjrosato@linux.ibm.com>,
-        "chao.p.peng@linux.intel.com" <chao.p.peng@linux.intel.com>,
-        "yi.y.sun@linux.intel.com" <yi.y.sun@linux.intel.com>,
-        "peterx@redhat.com" <peterx@redhat.com>,
-        "jasowang@redhat.com" <jasowang@redhat.com>,
-        "shameerali.kolothum.thodi@huawei.com" 
-        <shameerali.kolothum.thodi@huawei.com>,
-        "lulu@redhat.com" <lulu@redhat.com>,
-        "suravee.suthikulpanit@amd.com" <suravee.suthikulpanit@amd.com>,
-        "iommu@lists.linux.dev" <iommu@lists.linux.dev>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
-        "Duan, Zhenzhong" <zhenzhong.duan@intel.com>
-Subject: RE: [PATCH v4 07/12] iommufd: Add data structure for Intel VT-d
- stage-1 cache invalidation
-Thread-Topic: [PATCH v4 07/12] iommufd: Add data structure for Intel VT-d
- stage-1 cache invalidation
-Thread-Index: AQHZvh/vvq7opaI5PkGCKntULu5FEK/WqARwgABrnICAALSPMA==
-Date:   Thu, 3 Aug 2023 00:38:53 +0000
-Message-ID: <BN9PR11MB5276035683CE2AFB7B0F36D28C08A@BN9PR11MB5276.namprd11.prod.outlook.com>
-References: <20230724111335.107427-1-yi.l.liu@intel.com>
- <20230724111335.107427-8-yi.l.liu@intel.com>
- <BN9PR11MB52763681308D7950A51E18438C0BA@BN9PR11MB5276.namprd11.prod.outlook.com>
- <ZMpei2/CffaW97iU@nvidia.com>
-In-Reply-To: <ZMpei2/CffaW97iU@nvidia.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: BN9PR11MB5276:EE_|CY8PR11MB6819:EE_
-x-ms-office365-filtering-correlation-id: a9ade4b9-4b10-465c-41ee-08db93ba03bc
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: cK7JF1QkD75i89XfObkkrvLM57GGANmNxKVTBJu9pHY0SmWX5I2YTEURmD/bEdbvhyuD+swq/qm9uO/LHJVnb7CpLnujXvKg7pYV72Dl+KO0IhhxlZ0ltoqFYwcEQEQen9yZiqNGKdVi8KpZwKIDrCyUzwdwQZGN6+XiTDDUm9lfgIDArzsXUskyVD+yHzwLvtOboIP44USS2t+wUg9Ls3yyoyt/UZsteC1coPbNOFGoWoseiHIMmSIrRwEAp4ti2S4lB8OHBtrNcBpI9zNzhjhKMBJH+LWAC1YHmNms1rHZs+Q+5eQfSyWmrNqYc53C7tNqfA+pdDDGEohzl+qx2dWZ3bhhjqAtLkiu8ilciQ15uDL7moB+npcuv6hhXmgo6wFW7T0+2Ezvne4dvABNm/V6kpIdYhtgkkv4lnilp9wmVJnGEcQScL766+eyykg6qNwndn0Osb4MmNp8wuu/8bOl/oCHfECVeNXdckHcXjQv1Ufec1x1LodQZxCgXDiN3OuT3sEwwR5kAO8APfKdQeVmLdbHVjqSOiSM+wmBXRTmR0DtPHE+6ANj2/xzhsaQKnOAFvdqHs8pKNkpSuCDAxy0EflK0coqa6y90GXo/3r1zXj54pV5DmkUJOsXLQjt
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN9PR11MB5276.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(376002)(366004)(136003)(39860400002)(346002)(396003)(451199021)(38070700005)(33656002)(86362001)(66899021)(54906003)(478600001)(38100700002)(82960400001)(122000001)(55016003)(186003)(26005)(83380400001)(6506007)(41300700001)(8676002)(8936002)(52536014)(7416002)(9686003)(71200400001)(7696005)(316002)(6916009)(64756008)(66446008)(66476007)(66556008)(5660300002)(4326008)(76116006)(66946007)(2906002);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?MM7CdgXEzX/yWJ+xBDGmjQpa7d3jRJlJ10DzCsUpdEtwcv9hq2TV7O6yBwtT?=
- =?us-ascii?Q?LWz1GLL0HbGmp/9M2BayhNYWih2phxQHQ5JJ19kPVlyMI8KVD0Kbz1hgyHTo?=
- =?us-ascii?Q?r6q5M/t6Cmosgw+J/L/kgYQK678uo9fUdUju26pqeZfQL9EfM0EW9AnsYEUx?=
- =?us-ascii?Q?L85159jvy9EoiGnXt6KPZGAeSyss1RQjj0oy/bGmNMJPxMXydUWQFZjGgYWX?=
- =?us-ascii?Q?4CjGqIYd9NfHIZMhigUpb+GgbVxaXg10YtqST2zoMsUIxH9OzkYKHvxXSj0d?=
- =?us-ascii?Q?9zzfL7QlKukmLf97Z7xupl8cR/cM4ndflxey36ubn9dTafTOKCETJbDRjT6O?=
- =?us-ascii?Q?3Th0vo6IxguqLp198uAOP+NC7+q2BjzpgGHy074fpi5s9FD/9x5k7cw31bG/?=
- =?us-ascii?Q?F6M9BuhIqynUtgTwSNcP8Doznk8EwGGLOXj4ytGkDlHg1DJVwtm3RjBjCsnw?=
- =?us-ascii?Q?9zWNc3ipuI37JiptAv3x/w5k/swRTEvBPeaDYRzLmhQh+vERIHL08wr+D4Gv?=
- =?us-ascii?Q?U6P8s1gnZ6zi5TyL1y4uc9W0o7R/LtWL/JUeOuTUcB73U3RdoK2Xl094RBKK?=
- =?us-ascii?Q?k4DZJnbJNBGECHXCo1rzDnIxZFqv98nemr8TWZ8sPA6/bQ6sIQaYuwt1Cufj?=
- =?us-ascii?Q?sAkH2Q+SnNDO480V49pwn1OY2CdGnPU6Qj/Q+b6zxR8paquQL3tWzYtxk6q+?=
- =?us-ascii?Q?onl5Uvdxbm32/kBEQqcRkDeEGd/RfDy8r/b1VIjx3E5zXo1imXp4Qdn1aKfS?=
- =?us-ascii?Q?KiSL9gCajV5EfprS0RqWn1NRJrK0tocsY7MpRSjeMJMKOyNn8Uv/B4ZlPQei?=
- =?us-ascii?Q?hYSfTXBzl/RA7MA1Mj2xN5jbGgIRG9H2jUj5twZsoEsOAtug1QyedWAKNPoE?=
- =?us-ascii?Q?14lWBsGX7THrGiVwPc9NSRFAHoVxL2xSkKPKDCX3Un/gBKpEZVVXIHK89lU5?=
- =?us-ascii?Q?FQSng5t3bXvmBNgd1VshKyLyb/PoKByXxl7Gd8sxNWqndEk02jsLTYCa7l+7?=
- =?us-ascii?Q?ZFyYlX6oc82kt6sbn6M0M3NaCPwsmNKtAWNYjlqQmwRz5uTXKtIAk5Yx3clW?=
- =?us-ascii?Q?35jLGVLnPgY9c9CcCFMyse96JzjowO4UqI5k+6FtpLFXL3d1aURIbye5fV4x?=
- =?us-ascii?Q?L6aRF7zj4LwR0fcH5tCda28fESZYH+ZLuUIaJMgdvWm+HXK9TqotRMy9o7vO?=
- =?us-ascii?Q?YQBbIHfkooBfGrvGPO2T/L8g+Jog7EpJxyMfrOAfIE6mMPboNQWgnj8sEC/9?=
- =?us-ascii?Q?oubQ6qThPPIvBBoKskl/bKsq90wuPyKR6TNPkT7JD0ZxQTyGLrTMdj0F9hW4?=
- =?us-ascii?Q?phWh6jzop2b0M7QCiuLfh0RSaKFFEt/QuRyE4SDdg/PBIw53CdSzy6l9MtB6?=
- =?us-ascii?Q?iWHsbCDvBHs5b1oHjhllI8Bbm4fky4iXBtUMkQoPDJ7RKbdah4dlGp6cYhO2?=
- =?us-ascii?Q?matS1q+aXiiNL0/OIYsVtcOocmK6J0MyAK2Om0OkGa9NGwRLK54ILw4sHUCx?=
- =?us-ascii?Q?GYztJ4OBeHy3gK9nwbFHSt1vRgtwNso/2tmpWY12sZKkVplZ363mhF6Ags1o?=
- =?us-ascii?Q?uwXz67DyUDu8WtYHsph07jORQXp7SyqKNOHSuKiy?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        Wed, 2 Aug 2023 20:40:59 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9ECB81FF0;
+        Wed,  2 Aug 2023 17:40:58 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 2025661B24;
+        Thu,  3 Aug 2023 00:40:58 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2F4CAC433C8;
+        Thu,  3 Aug 2023 00:40:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1691023257;
+        bh=tEp/sWbVfougAhFALnHoiMdyK5GfeRdB+ZlM8F4WUxs=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=tlveRzwuiCkUf9rLurdfAD1zIUqUpry4CUC/Y7eW4CbExBd+y3jafFVo+SDH+JQq7
+         jWxKb8a+j5gZHoylDfbVjZoN+iSHni65+tST7wxryKBhM510xfCA5KGkd3oYa+zcf3
+         M2/lMMLd9PWBeR5+viMZoWrYEfARi772F1oH/Sxp2eiTkBVzUM9YKNbCx7+Tm1Mgtc
+         p44YFoWSGLLwg5JoIezZ72wFmgNepeDJJJGCFSWVvV9Oj8JYlrQ2G6qjXxlxuxZQhO
+         mkwJ95cZUo1PP06BfMdV2mCmjPs26nphir37iDlvgcZ8p/JBkuQzmFZpGsJN5CrWaA
+         6fuhVEdw4mUtQ==
+Received: (nullmailer pid 1598337 invoked by uid 1000);
+        Thu, 03 Aug 2023 00:40:54 -0000
+Date:   Wed, 2 Aug 2023 18:40:54 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Herve Codina <herve.codina@bootlin.com>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>, Andrew Lunn <andrew@lunn.ch>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>, Lee Jones <lee@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Qiang Zhao <qiang.zhao@nxp.com>, Li Yang <leoyang.li@nxp.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Shengjiu Wang <shengjiu.wang@gmail.com>,
+        Xiubo Li <Xiubo.Lee@gmail.com>,
+        Fabio Estevam <festevam@gmail.com>,
+        Nicolin Chen <nicoleotsuka@gmail.com>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Randy Dunlap <rdunlap@infradead.org>, netdev@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, alsa-devel@alsa-project.org,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>
+Subject: Re: [PATCH v2 21/28] dt-bindings: net: Add the Lantiq PEF2256
+ E1/T1/J1 framer
+Message-ID: <20230803004054.GA1593620-robh@kernel.org>
+References: <20230726150225.483464-1-herve.codina@bootlin.com>
+ <20230726150225.483464-22-herve.codina@bootlin.com>
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: BN9PR11MB5276.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: a9ade4b9-4b10-465c-41ee-08db93ba03bc
-X-MS-Exchange-CrossTenant-originalarrivaltime: 03 Aug 2023 00:38:53.8437
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: wfH5YkoKc9yo8oAMiWM30Q2abKHBAirMBgcm9reqJNU6Aa+9Q2Bm15IrvI0H6qq0sDJplGByIve/I7q7MkpoPw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY8PR11MB6819
-X-OriginatorOrg: intel.com
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230726150225.483464-22-herve.codina@bootlin.com>
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -173,76 +79,166 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> From: Jason Gunthorpe <jgg@nvidia.com>
-> Sent: Wednesday, August 2, 2023 9:48 PM
->=20
-> On Wed, Aug 02, 2023 at 07:41:05AM +0000, Tian, Kevin wrote:
-> > > +/**
-> > > + * struct iommu_hwpt_vtd_s1_invalidate - Intel VT-d cache invalidati=
-on
-> > > + *                                       (IOMMU_HWPT_TYPE_VTD_S1)
-> > > + * @flags: Must be 0
-> > > + * @entry_size: Size in bytes of each cache invalidation request
-> > > + * @entry_nr_uptr: User pointer to the number of invalidation reques=
-ts.
-> > > + *                 Kernel reads it to get the number of requests and
-> > > + *                 updates the buffer with the number of requests th=
-at
-> > > + *                 have been processed successfully. This pointer mu=
-st
-> > > + *                 point to a __u32 type of memory location.
-> > > + * @inv_data_uptr: Pointer to the cache invalidation requests
-> > > + *
-> > > + * The Intel VT-d specific invalidation data for a set of cache inva=
-lidation
-> > > + * requests. Kernel loops the requests one-by-one and stops when
-> failure
-> > > + * is encountered. The number of handled requests is reported to use=
-r
-> by
-> > > + * writing the buffer pointed by @entry_nr_uptr.
-> > > + */
-> > > +struct iommu_hwpt_vtd_s1_invalidate {
-> > > +	__u32 flags;
-> > > +	__u32 entry_size;
-> > > +	__aligned_u64 entry_nr_uptr;
-> > > +	__aligned_u64 inv_data_uptr;
-> > > +};
-> > > +
-> >
-> > I wonder whether this array can be defined directly in the common
-> > struct iommu_hwpt_invalidate so there is no need for underlying
-> > iommu driver to further deal with user buffers, including various
-> > minsz/backward compat. check.
->=20
-> You want to have an array and another chunk of data?
->=20
-> What is the array for? To do batching?
+On Wed, Jul 26, 2023 at 05:02:17PM +0200, Herve Codina wrote:
+> The Lantiq PEF2256 is a framer and line interface component designed to
+> fulfill all required interfacing between an analog E1/T1/J1 line and the
+> digital PCM system highway/H.100 bus.
+> 
+> Signed-off-by: Herve Codina <herve.codina@bootlin.com>
+> ---
+>  .../bindings/net/lantiq,pef2256.yaml          | 226 ++++++++++++++++++
+>  1 file changed, 226 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/net/lantiq,pef2256.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/net/lantiq,pef2256.yaml b/Documentation/devicetree/bindings/net/lantiq,pef2256.yaml
+> new file mode 100644
+> index 000000000000..b369a20d61b1
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/net/lantiq,pef2256.yaml
+> @@ -0,0 +1,226 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/net/lantiq,pef2256.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Lantiq PEF2256
+> +
+> +maintainers:
+> +  - Herve Codina <herve.codina@bootlin.com>
+> +
+> +description:
+> +  The Lantiq PEF2256, also known as Infineon PEF2256 or FALC56, is a framer and
+> +  line interface component designed to fulfill all required interfacing between
+> +  an analog E1/T1/J1 line and the digital PCM system highway/H.100 bus.
+> +
+> +properties:
+> +  compatible:
+> +    items:
+> +      - const: lantiq,pef2256
+> +
+> +  reg:
+> +    maxItems: 1
+> +
+> +  clocks:
+> +    items:
+> +      - description: Master clock
+> +      - description: Receive System Clock
+> +      - description: Transmit System Clock
+> +
+> +  clock-names:
+> +    items:
+> +      - const: mclk
+> +      - const: sclkr
+> +      - const: sclkx
+> +
+> +  interrupts:
+> +    maxItems: 1
+> +
+> +  reset-gpios:
+> +    description:
+> +      GPIO used to reset the device.
+> +    maxItems: 1
+> +
+> +  '#framer-cells':
 
-yes, it's for batching
+Looks generic, but no such property is defined. You don't need something 
+like this unless there are multiple providers and you need each 
+provider to define the number of cells.
 
->=20
-> It means we have to allocate memory on this path, that doesn't seem
-> like the right direction for a performance improvement..
+> +    const: 0
+> +
+> +  pinctrl:
+> +    $ref: /schemas/pinctrl/pinctrl.yaml#
+> +    additionalProperties: false
+> +
+> +    patternProperties:
+> +      '-pins$':
+> +        type: object
+> +        $ref: /schemas/pinctrl/pincfg-node.yaml#
+> +        additionalProperties: false
+> +
+> +        properties:
+> +          pins:
+> +            enum: [ RPA, RPB, RPC, RPD, XPA, XPB, XPC, XPD ]
+> +
+> +          function:
+> +            enum: [ SYPR, RFM, RFMB, RSIGM, RSIG, DLR, FREEZE, RFSP, LOS,
+> +                    SYPX, XFMS, XSIG, TCLK, XMFB, XSIGM, DLX, XCLK, XLT,
+> +                    GPI, GPOH, GPOL ]
+> +
+> +        required:
+> +          - pins
+> +          - function
+> +
+> +  lantiq,data-rate-bps:
+> +    $ref: /schemas/types.yaml#/definitions/uint32
+> +    enum: [2048000, 4096000, 8192000, 16384000]
+> +    default: 2048000
+> +    description:
+> +      Data rate (bit per seconds) on the system highway.
+> +
+> +  lantiq,clock-falling-edge:
+> +    $ref: /schemas/types.yaml#/definitions/flag
+> +    description:
+> +      Data is sent on falling edge of the clock (and received on the rising
+> +      edge). If 'clock-falling-edge' is not present, data is sent on the
+> +      rising edge (and received on the falling edge).
+> +
+> +  lantiq,channel-phase:
+> +    $ref: /schemas/types.yaml#/definitions/uint32
+> +    enum: [0, 1, 2, 3, 4, 5, 6, 7]
+> +    default: 0
+> +    description:
+> +      The pef2256 delivers a full frame (32 8bit time-slots in E1 and 24 8bit
+> +      time-slots 8 8bit signaling in E1/J1) every 125us. This lead to a data
+> +      rate of 2048000 bit/s. When lantiq,data-rate-bps is more than 2048000
+> +      bit/s, the data (all 32 8bit) present in the frame are interleave with
+> +      unused time-slots. The lantiq,channel-phase property allows to set the
+> +      correct alignment of the interleave mechanism.
+> +      For instance, suppose lantiq,data-rate-bps = 8192000 (ie 4*2048000), and
+> +      lantiq,channel-phase = 2, the interleave schema with unused time-slots
+> +      (nu) and used time-slots (XX) for TSi is
+> +        nu nu XX nu nu nu XX nu nu nu XX nu
+> +        <-- TSi --> <- TSi+1 -> <- TSi+2 ->
+> +      With lantiq,data-rate-bps = 8192000, and lantiq,channel-phase = 1, the
+> +      interleave schema is
+> +        nu XX nu nu nu XX nu nu nu XX nu nu
+> +        <-- TSi --> <- TSi+1 -> <- TSi+2 ->
+> +      With lantiq,data-rate-bps = 4096000 (ie 2*2048000), and
+> +      lantiq,channel-phase = 1, the interleave schema is
+> +        nu    XX    nu    XX    nu    XX
+> +        <-- TSi --> <- TSi+1 -> <- TSi+2 ->
+> +
+> +patternProperties:
+> +  '^codec(-([0-9]|[1-2][0-9]|3[0-1]))?$':
+> +    type: object
+> +    $ref: /schemas/sound/dai-common.yaml
+> +    unevaluatedProperties: false
+> +    description:
+> +      Codec provided by the pef2256. This codec allows to use some of the PCM
+> +      system highway time-slots as audio channels to transport audio data over
+> +      the E1/T1/J1 lines.
+> +      The time-slots used by the codec must be set and so, the properties
+> +      'dai-tdm-slot-num', 'dai-tdm-slot-width', 'dai-tdm-slot-tx-mask' and
+> +      'dai-tdm-slot-rx-mask' must be present in the sound card node for
+> +      sub-nodes that involve the codec. The codec uses 8bit time-slots.
+> +      'dai-tdm-tdm-slot-with' must be set to 8.
+> +      The tx and rx masks define the pef2256 time-slots assigned to the codec.
+> +
+> +    properties:
+> +      compatible:
+> +        const: lantiq,pef2256-codec
+> +
+> +      '#sound-dai-cells':
+> +        const: 0
+> +
+> +      framer:
+> +        $ref: /schemas/types.yaml#/definitions/phandle
+> +        description:
+> +          phandle to the framer node
 
-It reuses the ucmd_buffer to avoid memory allocation:
+That's just the parent. Why do you need this?
 
-@@ -485,6 +485,12 @@ union ucmd_buffer {
- #ifdef CONFIG_IOMMUFD_TEST
- 	struct iommu_test_cmd test;
- #endif
-+	/*
-+	 * hwpt_type specific structure used in the cache invalidation
-+	 * path.
-+	 */
-+	struct iommu_hwpt_vtd_s1_invalidate vtd;
-+	struct iommu_hwpt_vtd_s1_invalidate_desc req_vtd;
- };
+Rob
 
-I don't quite like this way.
-
->=20
-> Having the driver copy in a loop might be better
->=20
-
-Can you elaborate?
