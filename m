@@ -2,69 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DDEE676E9E7
+	by mail.lfdr.de (Postfix) with ESMTP id 9364876E9E6
 	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 15:18:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236147AbjHCNSl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Aug 2023 09:18:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36950 "EHLO
+        id S235267AbjHCNSh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Aug 2023 09:18:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39648 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235189AbjHCNSY (ORCPT
+        with ESMTP id S234201AbjHCNST (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Aug 2023 09:18:24 -0400
-Received: from www262.sakura.ne.jp (www262.sakura.ne.jp [202.181.97.72])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F432E6F
-        for <linux-kernel@vger.kernel.org>; Thu,  3 Aug 2023 06:18:23 -0700 (PDT)
-Received: from fsav117.sakura.ne.jp (fsav117.sakura.ne.jp [27.133.134.244])
-        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 373DIL50004362;
-        Thu, 3 Aug 2023 22:18:21 +0900 (JST)
-        (envelope-from penguin-kernel@I-love.SAKURA.ne.jp)
-Received: from www262.sakura.ne.jp (202.181.97.72)
- by fsav117.sakura.ne.jp (F-Secure/fsigk_smtp/550/fsav117.sakura.ne.jp);
- Thu, 03 Aug 2023 22:18:21 +0900 (JST)
-X-Virus-Status: clean(F-Secure/fsigk_smtp/550/fsav117.sakura.ne.jp)
-Received: from [192.168.1.6] (M106072142033.v4.enabler.ne.jp [106.72.142.33])
-        (authenticated bits=0)
-        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 373DIA4l004327
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NO);
-        Thu, 3 Aug 2023 22:18:21 +0900 (JST)
-        (envelope-from penguin-kernel@I-love.SAKURA.ne.jp)
-Message-ID: <60d4dc52-9281-9266-4294-b514bd09e6e8@I-love.SAKURA.ne.jp>
-Date:   Thu, 3 Aug 2023 22:18:10 +0900
+        Thu, 3 Aug 2023 09:18:19 -0400
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05664273A
+        for <linux-kernel@vger.kernel.org>; Thu,  3 Aug 2023 06:18:17 -0700 (PDT)
+Received: from [192.168.0.125] (unknown [82.76.24.202])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: ehristev)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id 7A0966600359;
+        Thu,  3 Aug 2023 14:18:15 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1691068696;
+        bh=ehtnooF4XJa6rGTTWGX8btVhMNGF1adK7GnhGx2DAtI=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=ipwFnpLSOqCnx0wmqJHvBrSv2dMow/rQ+/kB4KqSlAY3JSTm7Tj7+m82MaRDPfAE7
+         +tmY5B9VuWavIYILkiw3ltBLZjuhYo6tqzEaI+DsXCXfq8x1UpJ7LHBj4wNhcz0QYe
+         VOuJ9H8LohHpv4klgjgYz3b5oG/e8v8woDmveqadGeEOA2JkebW8YXS/Y+vEAp6kpm
+         CgbtoJIuVqT4pkD3sg8SYZbHmKSOuI7PSR232FlkYF8Gvhw+UjYPt9QA1ORJWRFdtm
+         gk1yHbOEZKG/YYBIxjDhf9JADiNuFY8//MhhVDyJlhE9LNURJUvFwCNUaK1SL6XnO5
+         8wyKQm3thV+5Q==
+Message-ID: <38720b56-df8e-d25a-0e6f-ca6e1fb3df26@collabora.com>
+Date:   Thu, 3 Aug 2023 16:18:12 +0300
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.14.0
-Subject: Re: [PATCH v2 1/2] seqlock: Do the lockdep annotation before locking
- in do_write_seqcount_begin_nested()
-To:     Michal Hocko <mhocko@suse.com>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Cc:     Petr Mladek <pmladek@suse.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org,
-        "Luis Claudio R. Goncalves" <lgoncalv@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        John Ogness <john.ogness@linutronix.de>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Waiman Long <longman@redhat.com>, Will Deacon <will@kernel.org>
-References: <20230623171232.892937-1-bigeasy@linutronix.de>
- <20230623171232.892937-2-bigeasy@linutronix.de>
- <d9b7c170-ed0d-5d37-e099-20d233115943@I-love.SAKURA.ne.jp>
- <20230626081254.XmorFrhs@linutronix.de> <ZJmkPuqpW-wQAyNz@alley>
- <a1c559b7-335e-5401-d167-301c5b1cd312@I-love.SAKURA.ne.jp>
- <20230727151029.e_M9bi8N@linutronix.de>
- <b6ba16ce-4849-d32c-68fe-07a15aaf9d9c@I-love.SAKURA.ne.jp>
- <649fa1a7-4efd-8cc7-92c7-ac7944adc283@I-love.SAKURA.ne.jp>
- <ZMfETPzGfpPP7F79@dhcp22.suse.cz>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH v8 2/8] drm/mediatevk: Add crtc path enum for all_drm_priv
+ array
 Content-Language: en-US
-From:   Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
-In-Reply-To: <ZMfETPzGfpPP7F79@dhcp22.suse.cz>
-Content-Type: text/plain; charset=UTF-8
+To:     "Jason-JH.Lin" <jason-jh.lin@mediatek.com>,
+        Chun-Kuang Hu <chunkuang.hu@kernel.org>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>
+Cc:     Matthias Brugger <matthias.bgg@gmail.com>,
+        Jason-ch Chen <jason-ch.chen@mediatek.com>,
+        Johnson Wang <johnson.wang@mediatek.com>,
+        Singo Chang <singo.chang@mediatek.com>,
+        Nancy Lin <nancy.lin@mediatek.com>,
+        Shawn Sung <shawn.sung@mediatek.com>,
+        dri-devel@lists.freedesktop.org,
+        linux-mediatek@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Project_Global_Chrome_Upstream_Group@mediatek.com
+References: <20230802144802.751-1-jason-jh.lin@mediatek.com>
+ <20230802144802.751-3-jason-jh.lin@mediatek.com>
+From:   Eugen Hristev <eugen.hristev@collabora.com>
+In-Reply-To: <20230802144802.751-3-jason-jh.lin@mediatek.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -72,58 +70,73 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023/07/31 23:25, Michal Hocko wrote:
-> On Sat 29-07-23 20:05:43, Tetsuo Handa wrote:
->> On 2023/07/29 14:31, Tetsuo Handa wrote:
->>> On 2023/07/28 0:10, Sebastian Andrzej Siewior wrote:
->>>> On 2023-06-28 21:14:16 [+0900], Tetsuo Handa wrote:
->>>>>> Anyway, please do not do this change only because of printk().
->>>>>> IMHO, the current ordering is more logical and the printk() problem
->>>>>> should be solved another way.
->>>>>
->>>>> Then, since [PATCH 1/2] cannot be applied, [PATCH 2/2] is automatically
->>>>> rejected.
->>>>
->>>> My understanding is that this patch gets applied and your objection will
->>>> be noted.
->>>
->>> My preference is that zonelist_update_seq is not checked by !__GFP_DIRECT_RECLAIM
->>> allocations, which is a low-hanging fruit towards GFP_LOCKLESS mentioned at
->>> https://lkml.kernel.org/r/ZG3+l4qcCWTPtSMD@dhcp22.suse.cz and
->>> https://lkml.kernel.org/r/ZJWWpGZMJIADQvRS@dhcp22.suse.cz .
->>>
->>> Maybe we can defer checking zonelist_update_seq till retry check like below,
->>> for this is really an infrequent event.
->>>
->>
->> An updated version with comments added.
+On 8/2/23 17:47, Jason-JH.Lin wrote:
+> Add mtk_drm_crtc_path enum for eatch display path.
+
+Typo: each
+
 > 
-> Seriously, don't you see how hairy all this is? And for what? Nitpicking
-> something that doesn't seem to be a real problem in the first place?
+> Instead of using array index of all_drm_priv in mtk_drm_kms_init(),
+> mtk_drm_crtc_path enum can make more readable.
 
-Seriously, can't you find "zonelist_update_seq is not checked by !__GFP_DIRECT_RECLAIM
-allocations, which is a low-hanging fruit towards GFP_LOCKLESS" !?
-
-My initial proposal was
-"[PATCH] mm/page_alloc: don't check zonelist_update_seq from atomic allocations"
-at https://lkml.kernel.org/r/dfdb9da6-ca8f-7a81-bfdd-d74b4c401f11@I-love.SAKURA.ne.jp .
-Compared to that version, this what-you-call-hairy version has an improvement that
-
--	return read_seqbegin(&zonelist_update_seq);
-+	return data_race(READ_ONCE(zonelist_update_seq));
-
-can eliminate
-
-	while ((__seq = seqprop_sequence(s)) & 1)
-		cpu_relax();
-
-path. There is no need to wait for completion of rebuilding zonelists, for
-rebuilding zonelists being in flight (indicated by zonelist_update_seq being odd)
-does not mean that allocation never succeeds. When allocation did not fail,
-this "while" loop becomes nothing but a waste of CPU time, And it is very likely
-that rebuilding zonelists being not in flight from the beginning.
-
-We can make zonelist_iter_begin() (which is always called as long as
-__alloc_pages_slowpath() is called) faster and simpler, which is an improvement
-even without considering printk() and lockdep/KCSAN related problems.
+can make *code* more readable ?
+> 
+> Signed-off-by: Jason-JH.Lin <jason-jh.lin@mediatek.com>
+> ---
+>   drivers/gpu/drm/mediatek/mtk_drm_drv.c | 6 +++---
+>   drivers/gpu/drm/mediatek/mtk_drm_drv.h | 8 +++++++-
+>   2 files changed, 10 insertions(+), 4 deletions(-)
+> 
+> diff --git a/drivers/gpu/drm/mediatek/mtk_drm_drv.c b/drivers/gpu/drm/mediatek/mtk_drm_drv.c
+> index 249c9fd6347e..89a38561ba27 100644
+> --- a/drivers/gpu/drm/mediatek/mtk_drm_drv.c
+> +++ b/drivers/gpu/drm/mediatek/mtk_drm_drv.c
+> @@ -465,21 +465,21 @@ static int mtk_drm_kms_init(struct drm_device *drm)
+>   		for (j = 0; j < private->data->mmsys_dev_num; j++) {
+>   			priv_n = private->all_drm_private[j];
+>   
+> -			if (i == 0 && priv_n->data->main_len) {
+> +			if (i == CRTC_MAIN && priv_n->data->main_len) {
+>   				ret = mtk_drm_crtc_create(drm, priv_n->data->main_path,
+>   							  priv_n->data->main_len, j);
+>   				if (ret)
+>   					goto err_component_unbind;
+>   
+>   				continue;
+> -			} else if (i == 1 && priv_n->data->ext_len) {
+> +			} else if (i == CRTC_EXT && priv_n->data->ext_len) {
+>   				ret = mtk_drm_crtc_create(drm, priv_n->data->ext_path,
+>   							  priv_n->data->ext_len, j);
+>   				if (ret)
+>   					goto err_component_unbind;
+>   
+>   				continue;
+> -			} else if (i == 2 && priv_n->data->third_len) {
+> +			} else if (i == CRTC_THIRD && priv_n->data->third_len) {
+>   				ret = mtk_drm_crtc_create(drm, priv_n->data->third_path,
+>   							  priv_n->data->third_len, j);
+>   				if (ret)
+> diff --git a/drivers/gpu/drm/mediatek/mtk_drm_drv.h b/drivers/gpu/drm/mediatek/mtk_drm_drv.h
+> index eb2fd45941f0..f4de8bb27685 100644
+> --- a/drivers/gpu/drm/mediatek/mtk_drm_drv.h
+> +++ b/drivers/gpu/drm/mediatek/mtk_drm_drv.h
+> @@ -9,11 +9,17 @@
+>   #include <linux/io.h>
+>   #include "mtk_drm_ddp_comp.h"
+>   
+> -#define MAX_CRTC	3
+>   #define MAX_CONNECTOR	2
+>   #define DDP_COMPONENT_DRM_OVL_ADAPTOR (DDP_COMPONENT_ID_MAX + 1)
+>   #define DDP_COMPONENT_DRM_ID_MAX (DDP_COMPONENT_DRM_OVL_ADAPTOR + 1)
+>   
+> +enum mtk_drm_crtc_path {
+> +	CRTC_MAIN,
+> +	CRTC_EXT,
+> +	CRTC_THIRD,
+> +	MAX_CRTC,
+> +};
+> +
+>   struct device;
+>   struct device_node;
+>   struct drm_crtc;
 
