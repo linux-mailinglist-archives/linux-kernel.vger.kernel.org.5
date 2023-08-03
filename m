@@ -2,159 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EDED776EEB2
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 17:53:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AC82376EEBF
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 17:55:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235474AbjHCPxQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Aug 2023 11:53:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39444 "EHLO
+        id S237253AbjHCPz5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Aug 2023 11:55:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40096 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237283AbjHCPxG (ORCPT
+        with ESMTP id S234972AbjHCPzx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Aug 2023 11:53:06 -0400
-Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 419B72109
-        for <linux-kernel@vger.kernel.org>; Thu,  3 Aug 2023 08:53:02 -0700 (PDT)
-Received: by mail-lf1-x12d.google.com with SMTP id 2adb3069b0e04-4fe4f5290daso1941339e87.1
-        for <linux-kernel@vger.kernel.org>; Thu, 03 Aug 2023 08:53:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20221208.gappssmtp.com; s=20221208; t=1691077980; x=1691682780;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=qX07dZERZtkt2x/Ef7mtKlDJ3pdXlme16vQ71CFcvMg=;
-        b=lNV/1Vm1Sktq6yegwfZDlJ3SHLsUKyqAGLGBzu1JPyDeBhIu08xbuA3BLMGjNQqCYm
-         iKOTVxtsLilYh2IDTRtms4ySeS4gNqlPhGP8bdydEDpB4jmeqW+171mGCPuKN2Z1Jra9
-         0j5V6gm2TDlEG71a3PgUzCu3xsAAWfWhrC1BJK+w8WRlWSEETzlwXnkGd360Lg+2vQc3
-         5U5YL1qYeczsyHzsDnTysthikVxllMooZf5LaKBOrxU1F1VjzK1/k9i2M2Zix9dIUWFo
-         Sc5UbhJqSkXhJERhoas6t+C/Y6XBJf1OeIFZIIAQUN40l+1poXcVRCjQxnSsvCJN8j96
-         Ahiw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691077980; x=1691682780;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=qX07dZERZtkt2x/Ef7mtKlDJ3pdXlme16vQ71CFcvMg=;
-        b=PjYwy8hGgJdMKs0HU1F4cuq8TyWPqJzwjsWi1DamHLEnoWjhsKP7/6WHRGlR2DTnJ/
-         CLVKFXhcZsi0uMXLvQvJHyEYMqn47JlV4xY0HD5gYwpoGH0TdnvCzewxb0PqAdZWXBE0
-         mCDtT2qn2ot8aLEF5E8ri7lgZjtT1pFYMPNUg+icqvl6VeyUQcK6BgEUkcwYtzNG8gNd
-         jWxA2oaDXzM7qP+McenIQOK7Nlj+h93U/hRoKEbJZ7WHUpUuM2cvdwXc15/aMXE7x2Tq
-         nle4cU+jSGMyoZcXguL5VOw5we42vuKJ3nufKzlmDcp0gJd2LRDLii6svwPioOBH5zST
-         dOug==
-X-Gm-Message-State: ABy/qLbHMzrZeKw2BtyflKogdeVi611k45zqxdQvdTket4nc5Tis7NVt
-        LNtRRjvAj7Rt7O6UnleTkviFNA==
-X-Google-Smtp-Source: APBJJlECdy3cAAYllCy6LZlZFybimunVbeOEktk+t7kAzFaSsKLGdyMwALTIzJNGxeecwb/LWFdikg==
-X-Received: by 2002:a05:6512:3e2a:b0:4fb:be3c:d8b7 with SMTP id i42-20020a0565123e2a00b004fbbe3cd8b7mr9692368lfv.51.1691077979984;
-        Thu, 03 Aug 2023 08:52:59 -0700 (PDT)
-Received: from [192.168.1.64] ([85.68.201.192])
-        by smtp.gmail.com with ESMTPSA id s15-20020a170906960f00b00988dbbd1f7esm10685913ejx.213.2023.08.03.08.52.58
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 03 Aug 2023 08:52:59 -0700 (PDT)
-Message-ID: <4ad2998c-69fa-1ffc-ef4b-a45cdffce4ba@baylibre.com>
-Date:   Thu, 3 Aug 2023 17:52:58 +0200
+        Thu, 3 Aug 2023 11:55:53 -0400
+Received: from lelv0143.ext.ti.com (lelv0143.ext.ti.com [198.47.23.248])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 521813A97;
+        Thu,  3 Aug 2023 08:55:52 -0700 (PDT)
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+        by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 373FthPW025615;
+        Thu, 3 Aug 2023 10:55:43 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1691078143;
+        bh=a+EqIwvTgsfqSuxrk8rjov+v37wQp94SbQ4RI/MeEvs=;
+        h=Date:From:To:CC:Subject:References:In-Reply-To;
+        b=tikkqHgEAhrCdIZuKA2YlhEwb0YyFxtVYji068u08J1vvDo+YoOrQmD9s1P09HjVe
+         peqX7gVUfvZLMjTBYsncPDHdPA9teFGdntlZkrLdv3ys2F+26vM5wWrWX45L/SbpUA
+         NwN9UhRNIDUqyFmyaXG8wBEDb4FFSCh3VnCXo4Aw=
+Received: from DLEE109.ent.ti.com (dlee109.ent.ti.com [157.170.170.41])
+        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 373FthDV092109
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Thu, 3 Aug 2023 10:55:43 -0500
+Received: from DLEE112.ent.ti.com (157.170.170.23) by DLEE109.ent.ti.com
+ (157.170.170.41) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Thu, 3
+ Aug 2023 10:55:42 -0500
+Received: from lelv0327.itg.ti.com (10.180.67.183) by DLEE112.ent.ti.com
+ (157.170.170.23) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Thu, 3 Aug 2023 10:55:42 -0500
+Received: from localhost (ileaxei01-snat.itg.ti.com [10.180.69.5])
+        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 373FtgL6010324;
+        Thu, 3 Aug 2023 10:55:42 -0500
+Date:   Thu, 3 Aug 2023 21:25:41 +0530
+From:   Dhruva Gole <d-gole@ti.com>
+To:     Andrew Davis <afd@ti.com>
+CC:     Nishanth Menon <nm@ti.com>, Tero Kristo <kristo@kernel.org>,
+        "Santosh Shilimkar" <ssantosh@kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <linux-pm@vger.kernel.org>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Praneeth Bajjuri <praneeth@ti.com>,
+        Tony Lindgren <tony@atomide.com>,
+        Dave Gerlach <d-gerlach@ti.com>,
+        Vibhore Vardhan <vibhore@ti.com>, Georgi Vlaev <g-vlaev@ti.com>
+Subject: Re: [PATCH V6 4/4] firmware: ti_sci: Introduce system suspend resume
+ support
+Message-ID: <20230803155541.nwsfwobfkbpefoyw@dhruva>
+References: <20230803064247.503036-1-d-gole@ti.com>
+ <20230803064247.503036-5-d-gole@ti.com>
+ <3882f0ac-b74c-6eb2-197c-34ca233cd7a3@ti.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v4 3/6] arm64: dts: ti: k3-j721e-som-p0: Add TP6594 family
- PMICs
-Content-Language: en-US
-To:     Esteban Blanc <eblanc@baylibre.com>, nm@ti.com, vigneshr@ti.com,
-        kristo@kernel.org, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org
-Cc:     linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, u-kumar1@ti.com,
-        aseketeli@baylibre.com, jpanis@baylibre.com
-References: <20230727130908.10656-1-eblanc@baylibre.com>
- <20230727130908.10656-4-eblanc@baylibre.com>
-From:   jerome Neanne <jneanne@baylibre.com>
-In-Reply-To: <20230727130908.10656-4-eblanc@baylibre.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <3882f0ac-b74c-6eb2-197c-34ca233cd7a3@ti.com>
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 27/07/2023 15:09, Esteban Blanc wrote:
-> From: Jerome Neanne <jneanne@baylibre.com>
+On Aug 03, 2023 at 10:26:32 -0500, Andrew Davis wrote:
+> On 8/3/23 1:42 AM, Dhruva Gole wrote:
+> > Introduce system suspend resume calls that will allow the ti_sci
+> > driver to support deep sleep low power mode when the user space issues a
+> > suspend to mem.
+> > 
+> > Also, write a ti_sci_prepare_system_suspend call to be used in the driver
+> > suspend handler to allow the system to identify the low power mode being
+> > entered and if necessary, send TISCI_MSG_PREPARE_SLEEP with information
+> > about the mode is being entered and the address for allocated memory for
+> > storing the context during Deep Sleep.
+> > 
+> > We're using "pm_suspend_target_state" to map the kernel's target suspend
+> > state to SysFW low power mode. Make sure this is available only when
+> > CONFIG_SUSPEND is enabled.
+> > 
+> > Co-developed-by: Dave Gerlach <d-gerlach@ti.com>
+> > Signed-off-by: Dave Gerlach <d-gerlach@ti.com>
+> > Signed-off-by: Vibhore Vardhan <vibhore@ti.com>
+> > Signed-off-by: Georgi Vlaev <g-vlaev@ti.com>
+> > Signed-off-by: Dhruva Gole <d-gole@ti.com>
+> > ---
+> >   drivers/firmware/ti_sci.c | 63 +++++++++++++++++++++++++++++++++++++++
+> >   1 file changed, 63 insertions(+)
+> > 
+[..snip..]
+> > +static int ti_sci_suspend(struct device *dev)
+> > +{
+> > +	struct ti_sci_info *info = dev_get_drvdata(dev);
+> > +	int ret;
+> > +
+> > +	ret = ti_sci_cmd_set_io_isolation(&info->handle, TISCI_MSG_VALUE_IO_ENABLE);
 > 
-[...]
-> +	tps659411: pmic@4c {
-> +		compatible = "ti,tps6594-q1";
-> +		reg = <0x4c>;
-> +		system-power-controller;
-> +		interrupt-parent = <&wkup_gpio0>;
-> +		interrupts = <9 IRQ_TYPE_EDGE_FALLING>;
-> +
-> +		gpio-controller;
-> +		#gpio-cells = <2>;
-> +
-> +		buck1234-supply = <&vsys_3v3>;
-> +		buck5-supply = <&vsys_3v3>;
-> +		ldo1-supply = <&vsys_3v3>;
-> +		ldo2-supply = <&vsys_3v3>;
-> +		ldo3-supply = <&vsys_3v3>;
-> +		ldo4-supply = <&vsys_3v3>;
-> +
-> +		regulators {
-> +			buckb1234: buck1234 {
-> +				regulator-name = "vdd_core_0v8";
-> +				regulator-min-microvolt = <800000>;
-> +				regulator-max-microvolt = <800000>;
-> +				regulator-boot-on;
-> +				regulator-always-on;
-> +			};
-> +
-> +			buckb5: buck5 {
-> +				regulator-name = "vdd_ram_0v85";
-> +				regulator-min-microvolt = <850000>;
-> +				regulator-max-microvolt = <850000>;
-> +				regulator-boot-on;
-> +				regulator-always-on;
-> +			};
-> +
-> +			ldob1: ldo1 {
-> +				regulator-name = "vdd_sd_dv";
-> +				regulator-min-microvolt = <1800000>;
-> +				regulator-max-microvolt = <3300000>;
-> +				regulator-boot-on;
-> +				regulator-always-on;
-> +			};
-> +
-> +			ldob2: ldo2 {
-> +				regulator-name = "vdd_usb_3v3";
-> +				regulator-min-microvolt = <1800000>;
-> +				regulator-max-microvolt = <3300000>;
-> +				regulator-boot-on;
-> +				regulator-always-on;
-> +			};
-This voltage is static 3.3V: regulator-min-microvolt = <3300000>;
+> After this the will the IOs be in isolation? Or does the firmware wait
+> until power down begins later?
 
-> +			ldob3: ldo3 {
-> +				regulator-name = "vdd_io_1v8";
-> +				regulator-min-microvolt = <1800000>;
-> +				regulator-max-microvolt = <1800000>;
-> +				regulator-boot-on;
-> +				regulator-always-on;
-> +			};
-> +
-> +			ldob4: ldo4 {
-> +				regulator-name = "vda_pll_1v8";
-> +				regulator-min-microvolt = <1800000>;
-> +				regulator-max-microvolt = <1800000>;
-> +				regulator-boot-on;
-> +				regulator-always-on;
-> +			};
-> +		};
-> +	};
->   };
->   
->   &ospi0 {
+From what I understand,
+IOs will be in isolation immediately
 
-Regards,
-Jerome.
+> 
+> Andrew
+> 
+> > +	if (ret)
+> > +		return ret;
+> > +	dev_dbg(dev, "%s: set I/O isolation: %d\n", __func__, ret);
+> > +
+> > +	ret = ti_sci_prepare_system_suspend(info);
+> > +	if (ret)
+> > +		return ret;
+> > +
+> > +	return 0;
+> > +}
+> > +
+> > +static int ti_sci_resume(struct device *dev)
+> > +{
+> > +	struct ti_sci_info *info = dev_get_drvdata(dev);
+> > +	int ret;
+> > +
+> > +	ret = ti_sci_cmd_set_io_isolation(&info->handle, TISCI_MSG_VALUE_IO_DISABLE);
+> > +	if (ret)
+> > +		return ret;
+> > +	dev_dbg(dev, "%s: disable I/O isolation: %d\n", __func__, ret);
+> > +
+> > +	return 0;
+> > +}
+> > +
+> > +static DEFINE_SIMPLE_DEV_PM_OPS(ti_sci_pm_ops, ti_sci_suspend, ti_sci_resume);
+> > +
+> >   static int ti_sci_init_suspend(struct platform_device *pdev,
+> >   			       struct ti_sci_info *info)
+> >   {
+> > @@ -3759,6 +3821,7 @@ static struct platform_driver ti_sci_driver = {
+> >   	.driver = {
+> >   		   .name = "ti-sci",
+> >   		   .of_match_table = of_match_ptr(ti_sci_of_match),
+> > +		   .pm = &ti_sci_pm_ops,
+> >   	},
+> >   };
+> >   module_platform_driver(ti_sci_driver);
+
+-- 
+Best regards,
+Dhruva Gole <d-gole@ti.com>
