@@ -2,66 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3991D76EF3C
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 18:16:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 86BF476EF41
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 18:17:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236545AbjHCQQi convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 3 Aug 2023 12:16:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54798 "EHLO
+        id S235264AbjHCQRK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Aug 2023 12:17:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55350 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235264AbjHCQQc (ORCPT
+        with ESMTP id S235637AbjHCQRJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Aug 2023 12:16:32 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 71EE63ABE;
-        Thu,  3 Aug 2023 09:16:27 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id B411B113E;
-        Thu,  3 Aug 2023 09:17:09 -0700 (PDT)
-Received: from donnerap.manchester.arm.com (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 92C573F5A1;
-        Thu,  3 Aug 2023 09:16:23 -0700 (PDT)
-Date:   Thu, 3 Aug 2023 17:16:20 +0100
-From:   Andre Przywara <andre.przywara@arm.com>
-To:     Martin Botka <martin@biqu3d.com>
-Cc:     Konrad Dybcio <konrad.dybcio@somainline.org>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@somainline.org>,
-        Marijn Suijten <marijn.suijten@somainline.org>,
-        Jami Kettunen <jamipkettunen@somainline.org>,
-        Paul Bouchara <paul.bouchara@somainline.org>,
-        Martin Botka <martin.botka@somainline.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Chen-Yu Tsai <wens@csie.org>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Samuel Holland <samuel@sholland.org>,
-        Icenowy Zheng <uwu@icenowy.me>,
-        Ludwig Kormann <ludwig.kormann@ict42.de>,
-        Andrew Lunn <andrew@lunn.ch>, Heiko Stuebner <heiko@sntech.de>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Chris Morgan <macromorgan@hotmail.com>,
-        Jagan Teki <jagan@edgeble.ai>,
-        Maxime Ripard <mripard@kernel.org>, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v1 5/6] arm64: dts: allwinner: h616: Add BigTreeTech CB1
- SoM & boards support
-Message-ID: <20230803171620.0bb28784@donnerap.manchester.arm.com>
-In-Reply-To: <4272045580294B4A+21851d6a-9a8f-8141-bc31-8398a03663c9@biqu3d.com>
-References: <20230802220309.163804-1-martin@biqu3d.com>
-        <85E425AED000D34C+20230802220309.163804-6-martin@biqu3d.com>
-        <20230803133746.20cd7b04@donnerap.manchester.arm.com>
-        <4272045580294B4A+21851d6a-9a8f-8141-bc31-8398a03663c9@biqu3d.com>
-Organization: ARM
-X-Mailer: Claws Mail 3.18.0 (GTK+ 2.24.32; aarch64-unknown-linux-gnu)
+        Thu, 3 Aug 2023 12:17:09 -0400
+Received: from kozue.soulik.info (kozue.soulik.info [IPv6:2001:19f0:7000:8404:5400:ff:fe00:d7d6])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B3253C1F;
+        Thu,  3 Aug 2023 09:16:59 -0700 (PDT)
+Received: from [192.168.10.7] (unknown [10.0.12.132])
+        by kozue.soulik.info (Postfix) with ESMTPSA id 5F27830655C;
+        Fri,  4 Aug 2023 01:16:29 +0900 (JST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 kozue.soulik.info 5F27830655C
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=soulik.info; s=mail;
+        t=1691079393; bh=2cRhygiJP5Ea8at7WCEJOX/seT0t5ZCVIJQiiVgTye8=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=RwcIFxkmdqxOmD7qQFp4NXbbgfhmgargeAW3z7leK46sUduca52bOTGMg6O6UKVQ1
+         TbKRNaP5EhtLY6scwEVKOKjmaT+PeeaTdCm8LT2GGhw1rUkeytEx7J+AuFqXAA7Kpq
+         iJYSUNRNG6Z/TfzyGw8ITKEv02kkJpvhZSDsz5wc=
+Message-ID: <585fdf97-4ed9-7d9a-78a8-e271d5b05301@soulik.info>
+Date:   Fri, 4 Aug 2023 00:16:49 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH 2/2] media: v4l2-mem2mem: add a list for buf used by hw
+To:     Nicolas Dufresne <nicolas@ndufresne.ca>
+Cc:     linux-media@vger.kernel.org, Tomasz Figa <tfiga@chromium.org>,
+        Hsia-Jun Li <Randy.Li@synaptics.com>, mchehab@kernel.org,
+        laurent.pinchart@ideasonboard.com, hiroh@chromium.org,
+        hans.verkuil@cisco.com, hverkuil@xs4all.nl,
+        linux-kernel@vger.kernel.org,
+        Benjamin Gaignard <benjamin.gaignard@collabora.com>,
+        p.zabel@pengutronix.de, ezequiel@vanguardiasur.com.ar,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+References: <20230704040044.681850-1-randy.li@synaptics.com>
+ <20230704040044.681850-3-randy.li@synaptics.com>
+ <20230712093301.nkj2vok2x7esdhb3@chromium.org>
+ <f8f766c0166c502e29b06cda71f6531e44a91a17.camel@ndufresne.ca>
+ <CAAFQd5CO4TS6wMsnaL7ob4CXogj5KT52x85YUUN1ZwDkOxW0oQ@mail.gmail.com>
+ <583e22718b80cc5e1ae631528c83c95e97de5cae.camel@ndufresne.ca>
+ <CAAFQd5CAJ7GxiY5=bBAa+L=1WJth6QZ3+PG83=GX+eEx1S4uhg@mail.gmail.com>
+ <7d340df3-e14c-24de-4fc2-b7dca619447c@synaptics.com>
+ <CAAFQd5BKHQPNVpDvpQaFn-q721BJknJCUB72urc2=EKsAH=OCg@mail.gmail.com>
+ <10ad26e6-b2d0-d0e6-40c8-2cc70613188b@synaptics.com>
+ <70ed7b3197f34c9f3dce9c83c527884c89df5449.camel@ndufresne.ca>
+Content-Language: en-US
+From:   Randy Li <ayaka@soulik.info>
+In-Reply-To: <70ed7b3197f34c9f3dce9c83c527884c89df5449.camel@ndufresne.ca>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -69,432 +66,73 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 3 Aug 2023 17:35:55 +0200
-Martin Botka <martin@biqu3d.com> wrote:
 
-Hi Martin,
+On 2023/7/29 00:19, Nicolas Dufresne wrote:
+> Le vendredi 28 juillet 2023 à 15:37 +0800, Hsia-Jun Li a écrit :
+>>> I think this is one reason to migrate to the stateless decoder design.
+>>>
+>> I didn't know such plan here. I don't think the current stateless API
+>> could export the reconstruction buffers for encoder or post-processing
+>> buffer for decoder to us.
+> Someone suggested introduce auxiliary queues in our meeting in Lyon a while ago,
+> but I bet everyone got too busy with finalizing APIs, fixing fluster tests etc.
+> The suggestion felt like it would be possible to add it after the fact. This was
+> also being discussed in the context of supporting multi-scalers (standalone our
+> inline with the codec, like VC8000D+). It could also cover for primary and
+> secondary buffers, along with encoder primary, and reconstruction buffers, but
+> also auxiliary reference data. This would also be needed to properly support
+> Vulkan Video fwiw, and could also help with a transition to DMABuf Heaps and
+> memory accounting.
+>
+> I've also had corridor discussion around having multi-instance media constroller
+> devices. It wasn't clear how to bind the media instance to the video node
+> instances, but assuming there is a way, it would be a tad more flexible (but
+> massively more complex).
 
-thanks for the reply and the explanations, very helpful.
+I think we should answer to those questions before we decided what we want:
 
-> On 8/3/23 2:37 PM, Andre Przywara wrote:
-> > On Thu,  3 Aug 2023 00:02:38 +0200
-> > Martin Botka <martin@biqu3d.com> wrote:
-> > 
-> > Hi Martin,
-> > 
-> > thanks for sending this!
-> > There are some whitespace errors in here, some leading tabs in the first
-> > section. "git show" should print them in red.
-> >   
-> >> From: Martin Botka <martin.botka@somainline.org>
-> >>
-> >> CB1 is Compute Module style board that plugs into Rpi board style adapter or
-> >> Manta 3D printer boards (M4P/M8P).
-> >>
-> >> The SoM features:
-> >>    - H616 SoC
-> >>    - 1GiB of RAM
-> >>    - AXP313A PMIC
-> >>    - RTL8189FTV WiFi
-> >>
-> >> Boards feature:
-> >>    - 4x USB via USB2 hub (usb1 on SoM).
-> >>    - SDcard slot for loading images.
-> >>    - Ethernet port wired to the internal PHY. (100M)
-> >>    - 2x HDMI 2.0. (Only 1 usable on CB1)
-> >>    - Power and Status LEDs. (Only Status LED usable on CB1)
-> >>    - 40 pin GPIO header
-> >>
-> >> Currently working:
-> >>    - Booting
-> >>    - USB
-> >>    - UART
-> >>    - MMC
-> >>    - Status LED
-> >>    - WiFi (RTL8189FS via out of tree driver)
-> >>
-> >> I didnt want to duplicate things so the manta DTS can also be used on BTT pi4b adapter.
-> >> CB1 SoM has its own DTSI file in case other boards shows up that accept this SoM.
-> >>
-> >> Signed-off-by: Martin Botka <martin.botka@somainline.org>
-> >> ---
-> >>   arch/arm64/boot/dts/allwinner/Makefile        |   1 +
-> >>   .../sun50i-h616-bigtreetech-cb1-manta.dts     |  20 +++
-> >>   .../sun50i-h616-bigtreetech-cb1.dtsi          | 164 ++++++++++++++++++
-> >>   3 files changed, 185 insertions(+)
-> >>   create mode 100644 arch/arm64/boot/dts/allwinner/sun50i-h616-bigtreetech-cb1-manta.dts
-> >>   create mode 100644 arch/arm64/boot/dts/allwinner/sun50i-h616-bigtreetech-cb1.dtsi
-> >>
-> >> diff --git a/arch/arm64/boot/dts/allwinner/Makefile b/arch/arm64/boot/dts/allwinner/Makefile
-> >> index 6a96494a2e0a..7b386428510b 100644
-> >> --- a/arch/arm64/boot/dts/allwinner/Makefile
-> >> +++ b/arch/arm64/boot/dts/allwinner/Makefile
-> >> @@ -38,5 +38,6 @@ dtb-$(CONFIG_ARCH_SUNXI) += sun50i-h6-pine-h64.dtb
-> >>   dtb-$(CONFIG_ARCH_SUNXI) += sun50i-h6-pine-h64-model-b.dtb
-> >>   dtb-$(CONFIG_ARCH_SUNXI) += sun50i-h6-tanix-tx6.dtb
-> >>   dtb-$(CONFIG_ARCH_SUNXI) += sun50i-h6-tanix-tx6-mini.dtb
-> >> +dtb-$(CONFIG_ARCH_SUNXI) += sun50i-h616-bigtreetech-cb1-manta.dtb
-> >>   dtb-$(CONFIG_ARCH_SUNXI) += sun50i-h616-orangepi-zero2.dtb
-> >>   dtb-$(CONFIG_ARCH_SUNXI) += sun50i-h616-x96-mate.dtb
-> >> diff --git a/arch/arm64/boot/dts/allwinner/sun50i-h616-bigtreetech-cb1-manta.dts b/arch/arm64/boot/dts/allwinner/sun50i-h616-bigtreetech-cb1-manta.dts
-> >> new file mode 100644
-> >> index 000000000000..dff5b592a97a
-> >> --- /dev/null
-> >> +++ b/arch/arm64/boot/dts/allwinner/sun50i-h616-bigtreetech-cb1-manta.dts
-> >> @@ -0,0 +1,20 @@
-> >> +// SPDX-License-Identifier: (GPL-2.0+ or MIT)
-> >> +/*
-> >> + * Copyright (C) 2023 Martin Botka <martin.botka@somainline.org>.
-> >> + */
-> >> +
-> >> +/dts-v1/;
-> >> +
-> >> +#include "sun50i-h616-bigtreetech-cb1.dtsi"
-> >> +
-> >> +/ {
-> >> +	compatible = "bigtreetech,cb1-manta", "bigtreetech,cb1", "allwinner,sun50i-h616";
-> >> +};
-> >> +
-> >> +&ehci1 {
-> >> +	status = "okay";
-> >> +};
-> >> +
-> >> +&ohci1 {
-> >> +	status = "okay";
-> >> +};  
-> > 
-> > So how is the STM32 connected? Via SPI? If yes, you should activate the SPI
-> > node and specify the pinctrl.
-> > Even if this requires a patch cable to connect the SPI header coming from
-> > the CB1 to the SPI pins on the STM (does it?), it might be worth stating
-> > the pins used. I don't know for sure if we enable interfaces that are
-> > routed to fixed function header pins, but it might be worth doing so here,
-> > since this is some very obvious use case (I guess you wouldn't buy the M8P
-> > if you don't plan to use all of its goodies).  
-> So the STM32 chip is connected directly via USB. There is USB hub on 
-> Manta boards and Pi adapter (Not on BTT Pi. That one doesnt use USB hub)
-> that uses this USB port and STM32 connects via that. Then on manta 
-> boards there are 2 USB ports and 1 USB port with just pins exposed on
-> XH2.54 4 pin connector. Bit weird but it is what it is :)
+A. Should a queue only has the buffers for the same format and sizes?
 
-Ah, I missed that, and was already wondering where the fourth HUB output
-went to. So USB is fine. Do the hub or the STM need a switched regulator?
-Or is the hub and the STM32 always powered on?
+B. How does an application handle those drivers requests additional queue?
 
-> > And what's the USB-C connector doing? Is that an alternative power supply?
-> > Ann does it connect the port0 D-/D+ pins, so can be used for OTG? If yes,
-> > please enable the usb_otg node here.
-> >   
-> It is indeed an alternative power supply. Or well primary supply in the 
-> case of Pi adapter board.
-> 
-> It should be connected yes. Tho i never really had much luck getting it 
-> to work. Tho i will check again and if i get it to work i will enable it 
-> in V2 :)
+C. How to sync multiple buffers in a v4l2 job.
 
-You could test with FEL. Get
-https://github.com/linux-sunxi/sunxi-tools/raw/master/bin/fel-sdboot.sunxi,
-write that to sector 16 of an SD card, and boot from there.
-That should put the SoC into FEL mode, and you should be able to see the
-BootROM provided USB device ID on a connected host - if the data pins are
-connected to USB port 0.
-I see DP0/DM0 test pads on the SoM, maybe you can chase them down to
-see if they actually go to the SoM connector? But wasn't it that there is
-only one pair of USB pins available on a CM4 pinout? Hence the hub on the
-Mantra boards?
+I asked the same question A when I discuss this with media: v4l2: Add 
+DELETE_BUF ioctl.
 
-> >> diff --git a/arch/arm64/boot/dts/allwinner/sun50i-h616-bigtreetech-cb1.dtsi b/arch/arm64/boot/dts/allwinner/sun50i-h616-bigtreetech-cb1.dtsi
-> >> new file mode 100644
-> >> index 000000000000..e630114f0ce4
-> >> --- /dev/null
-> >> +++ b/arch/arm64/boot/dts/allwinner/sun50i-h616-bigtreetech-cb1.dtsi
-> >> @@ -0,0 +1,164 @@
-> >> +// SPDX-License-Identifier: (GPL-2.0+ or MIT)
-> >> +/*
-> >> + * Copyright (C) 2023 Martin Botka <martin.botka@somainline.org>.
-> >> + */
-> >> +
-> >> +/dts-v1/;
-> >> +
-> >> +#include "sun50i-h616.dtsi"
-> >> +
-> >> +#include <dt-bindings/gpio/gpio.h>
-> >> +#include <dt-bindings/interrupt-controller/arm-gic.h>
-> >> +#include <dt-bindings/leds/common.h>
-> >> +
-> >> +/ {
-> >> +	model = "BigTreeTech CB1";
-> >> +	compatible = "bigtreetech,cb1", "allwinner,sun50i-h616";
-> >> +
-> >> +	aliases {
-> >> +		serial0 = &uart0;
-> >> +		ethernet0 = &rtl8189ftv;
-> >> +	};
-> >> +
-> >> +	chosen {
-> >> +		stdout-path = "serial0:115200n8";
-> >> +	};  
-> > 
-> > I think stdout-path belongs into the board .dts.
-> >  
-> 
-> Got it
-> 
-> >> +	
-> >> +	leds {
-> >> +		compatible = "gpio-leds";
-> >> +
-> >> +		led-0 {
-> >> +			function = LED_FUNCTION_STATUS;
-> >> +			color = <LED_COLOR_ID_GREEN>;
-> >> +			gpios = <&pio 7 5 GPIO_ACTIVE_HIGH>; /* PH5 */
-> >> +		};
-> >> +	};
-> >> +
-> >> +	reg_vcc5v: regulator-vcc5v {
-> >> +		/* board wide 5V supply directly from the USB-C socket */  
-> > 
-> > I guess this "regulator" is still valid, but please adjust the comment,
-> > since there is certainly no USB-C socket on the SoM. I guess it's multiple
-> > pins on the SoM connector that supply the incoming base voltage?  
-> Correct. Its just pins that get the 5V power. My fault for saying 
-> directly from USB-C since it can be from somewhere else :)
-> >   
-> >> +		compatible = "regulator-fixed";
-> >> +		regulator-name = "vcc-5v";
-> >> +		regulator-min-microvolt = <5000000>;
-> >> +		regulator-max-microvolt = <5000000>;
-> >> +		regulator-always-on;
-> >> +	};
-> >> +
-> >> +	reg_usb1_vbus: regulator-usb1-vbus {  
-> > 
-> > So is this regulator really on the SoM? Or is it just PC16 on the SoM
-> > connector, and the actual regulator chip is on the respective carrier
-> > boards?
-> >   
-> 
-> This is my bad. This is completely wrong. The actual regulator is the 5V 
-> one thats turned on when 5V comes in. Its bit weird but i suppose its 
-> done that way for USB-OTG. This will be removed in next revision of this 
-> DTS :)
+If we would not add extra queue here, how does the driver filter out the 
+most proper buffer for the current hardware output(CAPTURE) buffer.
 
-Having fixed 5V supply for USB ports, coming directly from the board power
-supply, is actually quite common, see many Pine64 boards, for instance.
-In this case you don't need to specify a usb<x>_vbus-supply property in
-the PHY node below.
+If we have multiple queues in a direction, how to make driver select 
+between them?
 
-> >> +		compatible = "regulator-fixed";
-> >> +		regulator-name = "usb1-vbus";
-> >> +		regulator-min-microvolt = <5000000>;
-> >> +		regulator-max-microvolt = <5000000>;
-> >> +		vin-supply = <&reg_vcc5v>;
-> >> +		enable-active-high;
-> >> +		gpio = <&pio 2 16 GPIO_ACTIVE_HIGH>; /* PC16 */
-> >> +	};
-> >> +	
-> >> +	reg_vcc33_wifi: vcc33-wifi {
-> >> +		/* Always on 3.3V regulator for WiFi and BT */
-> >> +		compatible = "regulator-fixed";
-> >> +		regulator-name = "vcc33-wifi";
-> >> +		regulator-min-microvolt = <3300000>;
-> >> +		regulator-max-microvolt = <3300000>;
-> >> +		regulator-always-on;
-> >> +		vin-supply = <&reg_vcc5v>;
-> >> +	};
-> >> +	
-> >> +	reg_vcc_wifi_io: vcc-wifi-io {
-> >> +		/* Always on 1.8V/300mA regulator for WiFi and BT IO */
-> >> +		compatible = "regulator-fixed";
-> >> +		regulator-name = "vcc-wifi-io";
-> >> +		regulator-min-microvolt = <1800000>;
-> >> +		regulator-max-microvolt = <1800000>;
-> >> +		regulator-always-on;
-> >> +		vin-supply = <&reg_vcc33_wifi>;
-> >> +	};
-> >> +
-> >> +	wifi_pwrseq: wifi-pwrseq {
-> >> +		compatible = "mmc-pwrseq-simple";
-> >> +		clocks = <&rtc 1>;
-> >> +		clock-names = "ext_clock";
-> >> +		reset-gpios = <&pio 6 18 GPIO_ACTIVE_LOW>;  /* PG18 */
-> >> +		post-power-on-delay-ms = <200>;
-> >> +	};
-> >> +};
-> >> +
-> >> +&mmc0 {
-> >> +	vmmc-supply = <&reg_dldo1>;
-> >> +	broken-cd;  
-> > 
-> > Is there no card detect switch or is it not wired up, or is it really
-> > "broken"? Might be good to have a comment explaining that.
-> > And yeah, I also forgot to do this in my Orange Pi Zero3 .dts ;-)
-> >   
-> Its just straight up not connected. And since documentation specifies 
-> that this should be set when no card detection is available i set it.
-> 
-> Will add a comment specifying that this is due to the pin not being 
-> connected.
 
-Yes, that's correct, broken-cd is the right choice then and works fine. I
-was just asking because it *is* connected on the OrangePi Zero3, but didn't
-work for me there.
+The question B is the debt we made, some applications have gotten used 
+to the case they can't control the lifetime of reconstruction buffer in 
+encoding or turn the post-processing off when the display pipeline could 
+support tile format output.
 
-> >> +	bus-width = <4>;
-> >> +	status = "okay";
-> >> +};
-> >> +
-> >> +&mmc1 {
-> >> +	vmmc-supply = <&reg_vcc33_wifi>;
-> >> +	vqmmc-supply = <&reg_vcc_wifi_io>;
-> >> +	mmc-pwrseq = <&wifi_pwrseq>;
-> >> +	bus-width = <4>;
-> >> +	non-removable;
-> >> +	mmc-ddr-1_8v;
-> >> +	status = "okay";
-> >> +
-> >> +	rtl8189ftv: sdio_wifi@1 {
-> >> +		reg = <1>;
-> >> +	};
-> >> +};
-> >> +
-> >> +&r_i2c {
-> >> +	status = "okay";
-> >> +
-> >> +	axp313a: pmic@36 {
-> >> +		compatible = "x-powers,axp313a";
-> >> +		reg = <0x36>;
-> >> +		interrupt-controller;
-> >> +		#interrupt-cells = <1>;
-> >> +
-> >> +		regulators{
-> >> +			reg_dcdc1: dcdc1 {
-> >> +				regulator-name = "vdd-gpu";
-> >> +				regulator-min-microvolt = <500000>;
-> >> +				regulator-max-microvolt = <3400000>;  
-> > 
-> > So those are the ranges of the PMIC rail, but if this is really connected
-> > to VDD_GPU on the H616, you should limit it to between 0.81V and 0.99V, as
-> > described in the H616 datasheet. Otherwise this risks frying the SoC, I
-> > guess.  
-> 
-> The range here should be correct. It is also the sys rail. Since AXP313a 
-> lacks many rails this was chosen as the sys rail as well.
+We know allow the userspace could decide where we allocate those 
+buffers, but could the userspace decided not to handle their lifetime?
 
-Yes, very common indeed. I think in reality most boards will need all
-rails to be always on.
 
-> >   
-> >> +				regulator-always-on;  
-> > 
-> > So is this connected to something else as well, like VDD_SYS? Please
-> > either mention this as a comment, to justify the always-on, or name the
-> > regulator accordingly, like "vdd-gpu-sys".  
-> Will rename to vdd-gpu-sys.
-> >     
-> >> +			};
-> >> +
-> >> +			reg_dcdc2: dcdc2 {
-> >> +				regulator-name = "vdd-cpu";
-> >> +				regulator-min-microvolt = <500000>;
-> >> +				regulator-max-microvolt = <1540000>;  
-> > 
-> > Same limit problem here, VDD_CPU must be between 0.81V and 1.1V.  
-> That is indeed right. I will test it on the range you provided with OPP 
-> (WIP) and stress test it :)
-> >   
-> >> +				regulator-ramp-delay = <200>;
-> >> +				regulator-always-on;
-> >> +			};
-> >> +
-> >> +			reg_dcdc3: dcdc3 {
-> >> +				regulator-name = "vcc-dram";
-> >> +				regulator-min-microvolt = <500000>;
-> >> +				regulator-max-microvolt = <1840000>;  
-> > 
-> > Is that DDR3 or DDR3L DRAM here? I don't think there is any runtime
-> > adjustments here, so just specify the respective voltage required, with the
-> > same value for both min and max.  
-> it uses Kingston D2516ECMDXGJD so DDR3. I will specify the direct voltage.
+The question C may more be more related to the complex case like camera 
+senor and ISP. With this auxiliary queue, multiple video nodes are not 
+necessary anymore.
 
-But this is DDR3L, so DDR3, just with a slightly lower voltage (1.35V
-instead of 1.5V). Please note that this is different from LPDDR3, which
-uses a different protocol, on top of lowering the voltage.
+But ISP may not request all the data finish its path, ex. the ISP are 
+not satisfied with the focus point that its senor detected or the light 
+level, it may just drop the image data then shot again.
 
-> >   
-> >> +				regulator-always-on;
-> >> +			};
-> >> +
-> >> +			reg_aldo1: aldo1 {
-> >> +				regulator-name = "vcc-1v8";
-> >> +				regulator-min-microvolt = <1800000>;
-> >> +				regulator-max-microvolt = <1800000>;
-> >> +				regulator-always-on;  
-> > 
-> > Please mention what this supplies that justifies always-on.  
-> ALDO1 1.8V gets also converted to 1.8V for DRAM. Thus needs to be on always.
+Also the poll event could only tell us which direction could do the 
+dequeue/enqueue work, it can't tell us which queue is ready. Should we 
+introduce something likes sync point(fence fd) here?
 
-Yes, as seen with other boards, where it more prominently also supplies
-VCC-PLL, which is essential for any clock operation. Might be worth
-checking, if you have access to the complete schematic.
 
-> >> +			};
-> >> +
-> >> +			reg_dldo1: dldo1 {
-> >> +				regulator-name = "vcc-3v3";
-> >> +				regulator-min-microvolt = <3300000>;
-> >> +				regulator-max-microvolt = <3300000>;
-> >> +				regulator-always-on;  
-> > 
-> > Please mention what this supplies that justifies always-on.  
-> SDcard that serves as storage for system. Will add comments for both :)
+We may lead way to V4L3 as Tomasz suggested although I don't want to 
+take the risk to be. If we would make a V4L3 like thing, we have better 
+to decide it correct and could handle any future problem.
 
-SD card alone does not justify always-on, as you reference this regulator
-in the mmc0 node, so a kernel could make the connection. But chances are
-this is also connected to VCC-IO, which is also one of the mandatory supply
-voltages.
-
-> >   
-> >> +			};
-> >> +		};
-> >> +	};
-> >> +};
-> >> +
-> >> +&uart0 {
-> >> +	pinctrl-names = "default";
-> >> +	pinctrl-0 = <&uart0_ph_pins>;
-> >> +	status = "okay";
-> >> +};  
-> > 
-> > This belongs into the board .dts, since the connector/UART bridge is
-> > there.  
-> Actually the SoM has exposed pads to connect UART (Which is what i have 
-> done to get UART) but also the boards get the exact pins wired to GPIO.
-
-Those pad on the lower right corner? In this case it might justify having
-the UART node in the SoM .dtsi, though I don't know if (test)pads qualify
-for enabling peripherals. Generic GPIO pins (say pinmux'ed I2C on some
-GPIO headers) certainly don't.
-
-Cheers,
-Andre
-
-> But since most users would use the GPIO UART i will specify it in 
-> carrier boards and in BTT Pi boards separately.
-> 
-> Cheers,
-> Martin
-> > 
-> > Cheers,
-> > Andre
-> >   
-> >> +
-> >> +&usbphy {
-> >> +	usb1_vbus-supply = <&reg_usb1_vbus>;
-> >> +	status = "okay";
-> >> +};  
-> > 
-> >   
-> 
-> 
-
+>
+> Nicolas
+>
