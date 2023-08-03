@@ -2,255 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 04CB276E8A3
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 14:43:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 278EF76E8AF
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 14:44:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235435AbjHCMnm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Aug 2023 08:43:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44560 "EHLO
+        id S234692AbjHCMoj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Aug 2023 08:44:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45454 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229760AbjHCMni (ORCPT
+        with ESMTP id S229760AbjHCMog (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Aug 2023 08:43:38 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 62B44359A
-        for <linux-kernel@vger.kernel.org>; Thu,  3 Aug 2023 05:43:35 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 1E38C113E;
-        Thu,  3 Aug 2023 05:44:18 -0700 (PDT)
-Received: from [10.1.35.53] (C02Z41KALVDN.cambridge.arm.com [10.1.35.53])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id D22893F6C4;
-        Thu,  3 Aug 2023 05:43:32 -0700 (PDT)
-Message-ID: <c02a95e9-b728-ad64-6942-f23dbd66af0c@arm.com>
-Date:   Thu, 3 Aug 2023 13:43:31 +0100
+        Thu, 3 Aug 2023 08:44:36 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05CCB3586;
+        Thu,  3 Aug 2023 05:44:36 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 89DBF61D80;
+        Thu,  3 Aug 2023 12:44:35 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9848EC433C8;
+        Thu,  3 Aug 2023 12:44:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1691066675;
+        bh=QBxv3qBXN9/E3wvwn5MR0wsDoKPtCS2zOkczh8tpeyw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=lBjBSA7l3sDdf/7fOzX4+S0/7qIN2a1UfGvScxvUsvvnpXgk+n3+kk92KWOWr420W
+         BMEqbNzVp4ESGn59OziDYGfIpKyhd989WUMu8iUcr+ZmwSZfjMQpGiKx44Ok8bDwJK
+         qSSDTGmpPLlvGlwvT8r06TUdC76+Hi7VIYzdFzuM57htxE7BRMUCXgav8VmhgoXQMW
+         XwUwOiOB56tXPV1fUtADRTXcjoGCfkI9a1ik6ttrtWHRzm8L4d/h+gPcNT/WNzA167
+         lKGfdCcmaDYAQlznnZL8qgUdkUsRTaxYNWtxhBEoJmmldzz1jq7NJSm+HgRu/ZHjhh
+         dT2U4+MVa9MmA==
+Date:   Thu, 3 Aug 2023 14:44:32 +0200
+From:   Maxime Ripard <mripard@kernel.org>
+To:     Neil Armstrong <neil.armstrong@linaro.org>
+Cc:     Daniel Vetter <daniel@ffwll.ch>,
+        Michael Riesch <michael.riesch@wolfvision.net>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Sebastian Reichel <sre@kernel.org>,
+        Gerald Loacker <gerald.loacker@wolfvision.net>,
+        David Airlie <airlied@gmail.com>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org
+Subject: Re: [PATCH 0/4] drm/panel: sitronix-st7789v: add support for partial
+ mode
+Message-ID: <6x6wiyjqopz6nytv4wb6wn3iowhnwh2ce25v4v7n7xcwfzjk2a@4gsgjfqa44pt>
+References: <20230718-feature-lcd-panel-v1-0-e9a85d5374fd@wolfvision.net>
+ <292c3e7d-82ea-2631-bd4b-ef747f56287c@linaro.org>
+ <ekmwiy3iuvtqtb6hwjbba2ia3aemt3dxmx6dj3zh6ljfmuim4w@4jzhqdenxth4>
+ <ZMtqraOyGN9JvVj9@phenom.ffwll.local>
+ <qmwtcungahbe2bhty7v2rso2kf3vai6k47muwipifbybmi7o6s@oj6lngnhyhtg>
+ <CAKMK7uFbQURKYvB2JWnwZDEeA-qURpx_GFqR1FxgtuvK7jX4TA@mail.gmail.com>
+ <d2sgj2iap4ouu425buqkorx76kpdqh77k3z36vaegma67pciyv@n3mbiglfidxx>
+ <e8c395e4-23b7-b252-21a1-5f8f8c5c552a@linaro.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.13.0
-Subject: Re: [PATCH v4 2/5] mm: LARGE_ANON_FOLIO for improved performance
-To:     Andrew Morton <akpm@linux-foundation.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Yin Fengwei <fengwei.yin@intel.com>,
-        David Hildenbrand <david@redhat.com>,
-        Yu Zhao <yuzhao@google.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Yang Shi <shy828301@gmail.com>,
-        "Huang, Ying" <ying.huang@intel.com>, Zi Yan <ziy@nvidia.com>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Itaru Kitayama <itaru.kitayama@gmail.com>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-References: <20230726095146.2826796-1-ryan.roberts@arm.com>
- <20230726095146.2826796-3-ryan.roberts@arm.com>
-From:   Ryan Roberts <ryan.roberts@arm.com>
-In-Reply-To: <20230726095146.2826796-3-ryan.roberts@arm.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="hrr6rzrnikjkdjir"
+Content-Disposition: inline
+In-Reply-To: <e8c395e4-23b7-b252-21a1-5f8f8c5c552a@linaro.org>
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-+ Kirill
 
-On 26/07/2023 10:51, Ryan Roberts wrote:
-> Introduce LARGE_ANON_FOLIO feature, which allows anonymous memory to be
-> allocated in large folios of a determined order. All pages of the large
-> folio are pte-mapped during the same page fault, significantly reducing
-> the number of page faults. The number of per-page operations (e.g. ref
-> counting, rmap management lru list management) are also significantly
-> reduced since those ops now become per-folio.
-> 
-> The new behaviour is hidden behind the new LARGE_ANON_FOLIO Kconfig,
-> which defaults to disabled for now; The long term aim is for this to
-> defaut to enabled, but there are some risks around internal
-> fragmentation that need to be better understood first.
-> 
-> When enabled, the folio order is determined as such: For a vma, process
-> or system that has explicitly disabled THP, we continue to allocate
-> order-0. THP is most likely disabled to avoid any possible internal
-> fragmentation so we honour that request.
-> 
-> Otherwise, the return value of arch_wants_pte_order() is used. For vmas
-> that have not explicitly opted-in to use transparent hugepages (e.g.
-> where thp=madvise and the vma does not have MADV_HUGEPAGE), then
-> arch_wants_pte_order() is limited to 64K (or PAGE_SIZE, whichever is
-> bigger). This allows for a performance boost without requiring any
-> explicit opt-in from the workload while limitting internal
-> fragmentation.
-> 
-> If the preferred order can't be used (e.g. because the folio would
-> breach the bounds of the vma, or because ptes in the region are already
-> mapped) then we fall back to a suitable lower order; first
-> PAGE_ALLOC_COSTLY_ORDER, then order-0.
-> 
+--hrr6rzrnikjkdjir
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-...
+On Thu, Aug 03, 2023 at 02:34:58PM +0200, Neil Armstrong wrote:
+> > > > > > I think I'll still like to have something clarified before we m=
+erge it:
+> > > > > > if userspace forces a mode, does it contain the margins or not?=
+ I don't
+> > > > > > have an opinion there, I just think it should be documented.
+> > > > >=20
+> > > > > The mode comes with the margins, so if userspace does something r=
+eally
+> > > > > funny then either it gets garbage (as in, part of it's crtc area =
+isn't
+> > > > > visible, or maybe black bars on the screen), or the driver reject=
+s it
+> > > > > (which I think is the case for panels, they only take their mode =
+and
+> > > > > nothing else).
+> > > >=20
+> > > > Panels can usually be quite flexible when it comes to the timings t=
+hey
+> > > > accept, and we could actually use that to our advantage, but even i=
+f we
+> > > > assume that they have a single mode, I don't think we have anything=
+ that
+> > > > enforces that, either at the framework or documentation levels?
+> > >=20
+> > > Maybe more bugs? We've been slowly filling out all kinds of atomic kms
+> > > validation bugs in core/helper code because as a rule of thumb,
+> > > drivers get it wrong. Developers test until things work, then call it
+> > > good enough, and very few driver teams make a serious effort in trying
+> > > to really validate all invalid input. Because doing that is an
+> > > enormous amount of work.
+> > >=20
+> > > I think for clear-cut cases like drm_panel the fix is to just put more
+> > > stricter validation into shared code (and then if we break something,
+> > > figure out how we can be sufficiently lenient again).
+> >=20
+> > Panels are kind of weird, since they essentially don't exist at all in
+> > the framework so it's difficult to make it handle them or their state.
+> >=20
+> > It's typically handled by encoders directly, so each and every driver
+> > would need to make that check, and from a quick grep, none of them are
+> > (for the reasons you said).
+> >=20
+> > Just like for HDMI, even though we can commit to changing those facts,
+> > it won't happen overnight, so to circle back to that series, I'd like a
+> > comment in the driver when the partial mode is enabled that if userspace
+> > ever pushes a mode different from the expected one, we'll add the margi=
+ns.
+>=20
+> To be fair, a majority of the panel drivers would do the wrong
+> init of the controller with a different mode because:
+> - mainly the controller model is unknown
+> - when it's known the datasheet is missing
+> - when the datasheet is here, most of the registers are missing
+> - and most of the time the timings are buried in the init sequence
+>=20
+> It's sad but it's the real situation.
 
-> +#define ANON_FOLIO_MAX_ORDER_UNHINTED \
-> +		(ilog2(max_t(unsigned long, SZ_64K, PAGE_SIZE)) - PAGE_SHIFT)
-> +
-> +static int anon_folio_order(struct vm_area_struct *vma)
-> +{
-> +	int order;
-> +
-> +	/*
-> +	 * If THP is explicitly disabled for either the vma, the process or the
-> +	 * system, then this is very likely intended to limit internal
-> +	 * fragmentation; in this case, don't attempt to allocate a large
-> +	 * anonymous folio.
-> +	 *
-> +	 * Else, if the vma is eligible for thp, allocate a large folio of the
-> +	 * size preferred by the arch. Or if the arch requested a very small
-> +	 * size or didn't request a size, then use PAGE_ALLOC_COSTLY_ORDER,
-> +	 * which still meets the arch's requirements but means we still take
-> +	 * advantage of SW optimizations (e.g. fewer page faults).
-> +	 *
-> +	 * Finally if thp is enabled but the vma isn't eligible, take the
-> +	 * arch-preferred size and limit it to ANON_FOLIO_MAX_ORDER_UNHINTED.
-> +	 * This ensures workloads that have not explicitly opted-in take benefit
-> +	 * while capping the potential for internal fragmentation.
-> +	 */
-> +
-> +	if ((vma->vm_flags & VM_NOHUGEPAGE) ||
-> +	    test_bit(MMF_DISABLE_THP, &vma->vm_mm->flags) ||
-> +	    !hugepage_flags_enabled())
-> +		order = 0;
-> +	else {
-> +		order = max(arch_wants_pte_order(), PAGE_ALLOC_COSTLY_ORDER);
-> +
-> +		if (!hugepage_vma_check(vma, vma->vm_flags, false, true, true))
-> +			order = min(order, ANON_FOLIO_MAX_ORDER_UNHINTED);
-> +	}
-> +
-> +	return order;
-> +}
+Again, I agree. As far as I'm aware, none of them add arbitrary numbers
+to timings though, so it's easy enough to figure out what the mode is
+meant to be: it's the mode. Here, we add some numbers to the mode, so
+the interaction with the userspace forcing a mode is less clear.
 
+> Only a few drivers can handle a different mode, and we should perhaps
+> add a flag when not set rejecting a different mode for those controllers =
+and
+> mark the few ones who can handle that...
+> And this should be a first step before adding an atomic Panel API.
 
-Hi All,
+I'm really just asking for a comment in the code here.
 
-I'm writing up the conclusions that we arrived at during discussion in the THP
-meeting yesterday, regarding linkage with exiting THP ABIs. It would be great if
-I can get explicit "agree" or disagree + rationale from at least David, Yu and
-Kirill.
+Everything that you mentioned are improvements that we should have on
+our todo list, but I don't see them as pre-requisite for this series and
+we get to it later on.
 
-In summary; I think we are converging on the approach that is already coded, but
-I'd like confirmation.
+Maxime
 
+--hrr6rzrnikjkdjir
+Content-Type: application/pgp-signature; name="signature.asc"
 
+-----BEGIN PGP SIGNATURE-----
 
-The THP situation today
------------------------
+iHUEABYKAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCZMuhLwAKCRDj7w1vZxhR
+xWM9AQD+q7nwioeLqvuLTy7EyE2QFTOY/Afbgj6fm6OTMMZ1awD+JyCCiP7jNIb8
+otqd7ccpMdOLRvFno1dnyuj/TKaamgM=
+=bpPs
+-----END PGP SIGNATURE-----
 
- - At system level: THP can be set to "never", "madvise" or "always"
- - At process level: THP can be "never" or "defer to system setting"
- - At VMA level: no-hint, MADV_HUGEPAGE, MADV_NOHUGEPAGE
-
-That gives us this table to describe how a page fault is handled, according to
-process state (columns) and vma flags (rows):
-
-                | never     | madvise   | always
-----------------|-----------|-----------|-----------
-no hint         | S         | S         | THP>S
-MADV_HUGEPAGE   | S         | THP>S     | THP>S
-MADV_NOHUGEPAGE | S         | S         | S
-
-Legend:
-S	allocate single page (PTE-mapped)
-LAF	allocate lage anon folio (PTE-mapped)
-THP	allocate THP-sized folio (PMD-mapped)
->	fallback (usually because vma size/alignment insufficient for folio)
-
-
-
-Principles for Large Anon Folios (LAF)
---------------------------------------
-
-David tells us there are use cases today (e.g. qemu live migration) which use
-MADV_NOHUGEPAGE to mean "don't fill any PTEs that are not explicitly faulted"
-and these use cases will break (i.e. functionally incorrect) if this request is
-not honoured.
-
-So LAF must at least honour MADV_NOHUGEPAGE to prevent breaking existing use
-cases. And once we do this, then I think the least confusing thing is for it to
-also honor the "never" system/process state; so if either the system, process or
-vma has explicitly opted-out of THP, then LAF should also be bypassed.
-
-Similarly, any case that would previously cause the allocation of PMD-sized THP
-must continue to be honoured, else we risk performance regression.
-
-That leaves the "madvise/no-hint" case, and all THP fallback paths due to the
-VMA not being correctly aligned or sized to hold a PMD-sized mapping. In these
-cases, we will attempt to use LAF first, and fallback to single page if the vma
-size/alignment doesn't permit it.
-
-                | never     | madvise   | always
-----------------|-----------|-----------|-----------
-no hint         | S         | LAF>S     | THP>LAF>S
-MADV_HUGEPAGE   | S         | THP>LAF>S | THP>LAF>S
-MADV_NOHUGEPAGE | S         | S         | S
-
-I think this (perhaps conservative) approach will be the least surprising to
-users. And is the policy that is already implemented in this patch.
-
-
-
-Downsides of this policy
-------------------------
-
-As Yu and Yin have pointed out, there are some workloads which do not perform
-well with THP, due to large fault latency or memory wastage, etc. But which
-_may_ still benefit from LAF. By taking the conservative approach, we exclude
-these workloads from benefiting automatically.
-
-But given they have explicitly opted out of THP, it doesn't seem unreasonable
-that those workloads should be explicitly modified to opt-in to LAF. The
-question is what should a control for this look like? And do we need to
-implement the control for an MVP implementation of LAF? For the latter question,
-I would suggest this can come later - its a tool to further optimize, but its
-absence does not regress today's performance.
-
-What should a control look like?
-
-One suggestion was to expose a "maximum order" tunable, which would limit the
-size of THP that could be allocated. setting it to 1M would cause traditional
-THP to be bypassed (assuming for now PMD-sized THP is 2M) but would permit LAF.
-But Kirill suggested that this type of control might turn out to be restrictive
-in the long run.
-
-Another suggestion was to provide a more abstracted hint to the kernel, which
-the kernel could then derive a policy from, and that policy would be easier to
-change over time.
-
-
-
-Large Anon Folio Size
----------------------
-
-Once we have decided to use LAF (vs THP vs S), we need to decide how big the
-folio should be. If/when we get a control as described above, that will
-obviously place an upper bound on the size. HW may also have a preferred size
-due to tricks it can do in the TLB (arch_wants_pte_order() in this patch) but
-you may still want to allocate a bigger folio than the HW wants (since bigger
-folios will reduce page faults) or you may want to allocate a smaller folio than
-the HW wants (due to concerns about latency or memory wastage).
-
-I've had a stab at addressing this in the patch too, using the same decision as
-for THP (ignoring the vma size/alignment requirement) to decide if we use the HW
-preferred order or if we cap it (currently set at 64K).
-
-Thoughts, comments?
-
-Thanks,
-Ryan
-
-
-
-
-
+--hrr6rzrnikjkdjir--
