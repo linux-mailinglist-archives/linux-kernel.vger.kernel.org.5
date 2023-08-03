@@ -2,50 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 49DE476E542
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 12:10:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0548376E540
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 12:09:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235188AbjHCKJx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Aug 2023 06:09:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49394 "EHLO
+        id S235140AbjHCKJr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Aug 2023 06:09:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49390 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235116AbjHCKJn (ORCPT
+        with ESMTP id S235104AbjHCKJn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 3 Aug 2023 06:09:43 -0400
 Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D600D30FD
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D562630C7
         for <linux-kernel@vger.kernel.org>; Thu,  3 Aug 2023 03:09:40 -0700 (PDT)
 From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1691057378;
+        s=2020; t=1691057379;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=qpjoDTQpFQHCdfIIfIOuJHC3wPs+6uNYjZf1fx8U6Tw=;
-        b=SKNtVp0PYSCMMWIY+YYI0/rEZDFa7CZ1GkKHbTz+l6xNZsH6LGrAbdeTwLinBIEpNiZX5m
-        ci4HrcSp6fFzYwPmLZ+tihX+zykBYtopjxp0DjRcseEBcb7t2OvIEvM81GdqBiUal64qWh
-        Z4bLcqOU1+DldRbE96DIN6qvDbgRYxgISUNNvl9ypQ4bgwh1DBKNGE4yKS+fak1Dcz9l0D
-        7D++X2llN3febj4r/iXA+E1vM3odoUsv8xSDJZx3RaLdfKsdV8rtj1Se2ibUhGmg4NUZEe
-        sPBFWRhOj0zzdqyWEYhQ2gfRziw2T9tQd6XAgtHaGPykTFMIipP1AszkqmPGww==
+        bh=Ad7l9FuC31NWow/lJV/fHJBllejOmCcZbpiHniM7Z+Q=;
+        b=0z/+vymvQCLuGHrgEYbwn4yxHyfod2bOGtQNIik0z+Le1Jb6oZOG210FzMcArEg3KDT/Hq
+        /D97/1T4nvj7BV2nfReSEqchmhgf0MRz+/77xdXepfuSOI29b1LMOMdArFOtqLymFMJtzy
+        GV/mPb5L50mF3rX8PZ2w0foqX8RRH2I5sK8E9PHSIgKadIhn3T+uivAe+/lDx6Sw8R+DfK
+        4M6PagdTPuyNfKJmq0pCHg3zOc5amUHebL1+K8OMt8bLYulzLNvcP2oEJobKv6R72T/Eqf
+        kAbYn7dY7NGtNth4NpKBV+AnLhs3u7qteXhcj6vdcCObwk7u+YYTWbBBHD+mnQ==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1691057378;
+        s=2020e; t=1691057379;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=qpjoDTQpFQHCdfIIfIOuJHC3wPs+6uNYjZf1fx8U6Tw=;
-        b=+2bXTdvUtuFxSFiHu5U1NZAqrLZ+PCmxVtQrWhgnSeFRFbh76UH9GTFiD4hVl16SJgL5gU
-        evxUBWyz9ClA6oBA==
+        bh=Ad7l9FuC31NWow/lJV/fHJBllejOmCcZbpiHniM7Z+Q=;
+        b=Bq1865ba57I5cPKPyN55oWdYTG93v10BQXqtmYoFHViLrOqeBuNC/n90qZcI40QN0Q8EnW
+        mc2ddc5kT/Z5p5Cw==
 To:     linux-kernel@vger.kernel.org
 Cc:     "Eric W. Biederman" <ebiederm@xmission.com>,
         Oleg Nesterov <oleg@redhat.com>,
         Peter Zijlstra <peterz@infradead.org>,
         Thomas Gleixner <tglx@linutronix.de>,
         Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Subject: [PATCH 1/2] signal: Add proper comment about the preempt-disable in ptrace_stop().
-Date:   Thu,  3 Aug 2023 12:09:31 +0200
-Message-Id: <20230803100932.325870-2-bigeasy@linutronix.de>
+Subject: [PATCH 2/2] signal: Don't disable preemption in ptrace_stop() on PREEMPT_RT.
+Date:   Thu,  3 Aug 2023 12:09:32 +0200
+Message-Id: <20230803100932.325870-3-bigeasy@linutronix.de>
 In-Reply-To: <20230803100932.325870-1-bigeasy@linutronix.de>
 References: <20230803100932.325870-1-bigeasy@linutronix.de>
 MIME-Version: 1.0
@@ -60,43 +60,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit 53da1d9456fe7 ("fix ptrace slowness") added a preempt-disable section
-between read_unlock() and the following schedule() invocation without
-explaining why it is needed.
+On PREEMPT_RT keeping preemption disabled during the invocation of
+cgroup_enter_frozen() is a problem because the function acquires css_set_lo=
+ck
+which is a sleeping lock on PREEMPT_RT and must not be acquired with disabl=
+ed
+preemption.
+The preempt-disabled section is only for performance optimisation
+reasons and can be avoided.
 
-Replace the comment with an explanation why this is needed. Clarify that
-it is needed for correctness but for performance reasons.
+Extend the comment and don't disable preemption before scheduling on
+PREEMPT_RT.
 
 Acked-by: Oleg Nesterov <oleg@redhat.com>
 Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 ---
- kernel/signal.c |   17 ++++++++++++++---
- 1 file changed, 14 insertions(+), 3 deletions(-)
+ kernel/signal.c |   13 +++++++++++--
+ 1 file changed, 11 insertions(+), 2 deletions(-)
 
 --- a/kernel/signal.c
 +++ b/kernel/signal.c
-@@ -2318,10 +2318,21 @@ static int ptrace_stop(int exit_code, in
- 		do_notify_parent_cldstop(current, false, why);
-=20
- 	/*
--	 * Don't want to allow preemption here, because
--	 * sys_ptrace() needs this task to be inactive.
-+	 * The previous do_notify_parent_cldstop() invocation woke ptracer.
-+	 * One a PREEMPTION kernel this can result in preemption requirement
-+	 * which will be fulfilled after read_unlock() and the ptracer will be
-+	 * put on the CPU.
-+	 * The ptracer is in wait_task_inactive(, __TASK_TRACED) waiting for
-+	 * this task wait in schedule(). If this task gets preempted then it
-+	 * remains enqueued on the runqueue. The ptracer will observe this and
-+	 * then sleep for a delay of one HZ tick. In the meantime this task
-+	 * gets scheduled, enters schedule() and will wait for the ptracer.
- 	 *
--	 * XXX: implement read_unlock_no_resched().
-+	 * This preemption point is not bad from correctness point of view but
-+	 * extends the runtime by one HZ tick time due to the ptracer's sleep.
-+	 * The preempt-disable section ensures that there will be no preemption
-+	 * between unlock and schedule() and so improving the performance since
-+	 * the ptracer has no reason to sleep.
+@@ -2333,11 +2333,20 @@ static int ptrace_stop(int exit_code, in
+ 	 * The preempt-disable section ensures that there will be no preemption
+ 	 * between unlock and schedule() and so improving the performance since
+ 	 * the ptracer has no reason to sleep.
++	 *
++	 * On PREEMPT_RT locking tasklist_lock does not disable preemption.
++	 * Therefore the task can be preempted (after
++	 * do_notify_parent_cldstop()) before unlocking tasklist_lock so there
++	 * is no benefit in doing this. The optimisation is harmful on
++	 * PEEMPT_RT because the spinlock_t (in cgroup_enter_frozen()) must not
++	 * be acquired with disabled preemption.
  	 */
- 	preempt_disable();
+-	preempt_disable();
++	if (!IS_ENABLED(CONFIG_PREEMPT_RT))
++		preempt_disable();
  	read_unlock(&tasklist_lock);
+ 	cgroup_enter_frozen();
+-	preempt_enable_no_resched();
++	if (!IS_ENABLED(CONFIG_PREEMPT_RT))
++		preempt_enable_no_resched();
+ 	schedule();
+ 	cgroup_leave_frozen(true);
+=20
