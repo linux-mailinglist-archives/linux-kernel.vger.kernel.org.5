@@ -2,154 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DCC7976E09D
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 08:58:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 65B7F76E0A1
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 09:00:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229799AbjHCG6n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Aug 2023 02:58:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55952 "EHLO
+        id S232697AbjHCHAn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Aug 2023 03:00:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56490 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231687AbjHCG6l (ORCPT
+        with ESMTP id S231302AbjHCHAj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Aug 2023 02:58:41 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8B5410EA;
-        Wed,  2 Aug 2023 23:58:39 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 7196B61C1E;
-        Thu,  3 Aug 2023 06:58:39 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5F461C433C9;
-        Thu,  3 Aug 2023 06:58:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691045918;
-        bh=sqSreMbIGrWV0DPZRg5162ALe8Otsvrn0WlWCkXOoKU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=pwpVGu32s8kTis/hGZpdhhczYy+byBo1QyijdUrRpq1agDkzY3ihd9kC3w49MS+MK
-         +sv6t+3TMBnFVclOELLDz99O6cjOTTIP24m5ueEqLfGToNJlECpe4fVCgD4s5VzN+W
-         ZPQdj169c4/sscvY6QFclLuY9Fduv/C8+6pPmbWHkl6J14/jI8ZCt+IpvFpKkK+HkX
-         mbwI1f+WjNHC0hve4CxhG4tJkh5iKmeTN7ZwpVWDonxf7W8G/ICXkg3c2w79rD+svy
-         D2tpDcskFFcTjTwC3kqrzv2zd6plPXwWFKjXfhx9XNRYclsdp2EPfTnCZiAH0ptWFJ
-         thcMc6IGBMsIQ==
-Received: by pali.im (Postfix)
-        id 4A8C167C; Thu,  3 Aug 2023 08:58:35 +0200 (CEST)
-Date:   Thu, 3 Aug 2023 08:58:35 +0200
-From:   Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
-To:     Kevin Xie <kevin.xie@starfivetech.com>
-Cc:     Bjorn Helgaas <helgaas@kernel.org>,
-        Minda Chen <minda.chen@starfivetech.com>,
-        Daire McNamara <daire.mcnamara@microchip.com>,
-        Conor Dooley <conor@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Lorenzo Pieralisi <lpieralisi@kernel.org>,
-        Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-        Emil Renner Berthing <emil.renner.berthing@canonical.com>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-riscv@lists.infradead.org, linux-pci@vger.kernel.org,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Mason Huo <mason.huo@starfivetech.com>,
-        Leyfoon Tan <leyfoon.tan@starfivetech.com>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        "Maciej W. Rozycki" <macro@orcam.me.uk>,
-        Marek =?utf-8?B?QmVow7pu?= <kabel@kernel.org>
-Subject: Re: [PATCH v1 8/9] PCI: PLDA: starfive: Add JH7110 PCIe controller
-Message-ID: <20230803065835.twdicvx62mgzzzqi@pali>
-References: <20230802171805.GA62238@bhelgaas>
- <1c546489-40dd-25c5-3ac2-9e3b3fd5a670@starfivetech.com>
+        Thu, 3 Aug 2023 03:00:39 -0400
+Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E1E9194
+        for <linux-kernel@vger.kernel.org>; Thu,  3 Aug 2023 00:00:38 -0700 (PDT)
+Received: by mail-lf1-x134.google.com with SMTP id 2adb3069b0e04-4fe2de785e7so1066654e87.1
+        for <linux-kernel@vger.kernel.org>; Thu, 03 Aug 2023 00:00:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1691046036; x=1691650836;
+        h=user-agent:in-reply-to:content-disposition:mime-version:references
+         :message-id:subject:cc:to:from:date:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=7erNa/7gWtMsQuK3CJdRoDAQ+93nPpJWVI3LSRtGRa4=;
+        b=mQnkfRlqHe6IyazSlgxiWMaDI8tkKvV4o3s97esAhHN6+uKLBZyWn8+1shPF0JFWU1
+         /tTejz8jz4Tkvk3FxbgISZgrGAAs9qCsKlkl94LB8wJjdwJ+RWh6M1RfwjucgtNVxWds
+         4wga04tS1n78Uvf9CGES8yMMfi19gdIbLJcCFCZwMsJt7Npee+kxwT8+P5XskoVnSM75
+         jbvPcSteb5/HjD0yvrc5wYFEDcsXsQL0YYqsx2oiifjgTdcD23qolqZXhK6K2mSGvfve
+         +VltL4q008xON7RjJYck+sko4uv45AeKVTWR1b4O58Ye5T02RcsGS7mj42OhpzdmVULy
+         IoEg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691046036; x=1691650836;
+        h=user-agent:in-reply-to:content-disposition:mime-version:references
+         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=7erNa/7gWtMsQuK3CJdRoDAQ+93nPpJWVI3LSRtGRa4=;
+        b=F9c3HBQRvG9lW1Ec36n45hB4iEl3jEy0M66htF+zpVTm6awR6FupWti3d1asu+PfFa
+         MK9nrFIB1llyJZDE04wPNIWHGWuezvYFULplFH3L68pEVfHkFPMq9FHWN9eKedozDtkG
+         LWUj3bTvPpyJYHLMbn3MwI8fEwTMXH7i03xhR9T0jl7RDb3+5Dk2DVxrTiuU0FrWFYKi
+         xPip0bEAaMhEMKQ7h5BOcvuG+isEEodTb0OxZMuPS9e2T/lfAARKYSy9DFe6wDw+6MNi
+         TxhtkCRupOX7pxjZu8tlY9Rp+xU1XaoQ4nfDumkG8en+DaeWTmr4NdlJ2AEZPWjZUxi4
+         HvBg==
+X-Gm-Message-State: ABy/qLb8OCA7zZl4bPytfl22WMy47j6FU7zrsnfZpjDoRoj9dbOUHJU5
+        gMNvRsXIdqQK4cwtKggSh32Edw==
+X-Google-Smtp-Source: APBJJlHkEdhjr1rVmo/7mHQtWOp7mJcWbscH3LtniA47Nc5HyRJ36KbKTp6DFwTebvBO3SHtiVqULQ==
+X-Received: by 2002:a19:e048:0:b0:4fe:5fc:9c4b with SMTP id g8-20020a19e048000000b004fe05fc9c4bmr5460612lfj.15.1691046036329;
+        Thu, 03 Aug 2023 00:00:36 -0700 (PDT)
+Received: from mutt (c-9b0ee555.07-21-73746f28.bbcust.telenor.se. [85.229.14.155])
+        by smtp.gmail.com with ESMTPSA id 16-20020ac24850000000b004fbdba4b075sm3261049lfy.57.2023.08.03.00.00.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 03 Aug 2023 00:00:35 -0700 (PDT)
+Date:   Thu, 3 Aug 2023 09:00:33 +0200
+From:   Anders Roxell <anders.roxell@linaro.org>
+To:     Tony Lindgren <tony@atomide.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Andy Shevchenko <andriy.shevchenko@intel.com>,
+        Dhruva Gole <d-gole@ti.com>,
+        Ilpo =?utf-8?B?SsOkcnZpbmVu?= <ilpo.jarvinen@linux.intel.com>,
+        John Ogness <john.ogness@linutronix.de>,
+        Johan Hovold <johan@kernel.org>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org,
+        kernel test robot <oliver.sang@intel.com>
+Subject: Re: [PATCH] serial: core: Fix serial_base_match() after fixing
+ controller port name
+Message-ID: <20230803070033.GD411@mutt>
+References: <20230802114846.21899-1-tony@atomide.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <1c546489-40dd-25c5-3ac2-9e3b3fd5a670@starfivetech.com>
-User-Agent: NeoMutt/20180716
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20230802114846.21899-1-tony@atomide.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thursday 03 August 2023 10:23:47 Kevin Xie wrote:
-> On 2023/8/3 1:18, Bjorn Helgaas wrote:
-> > On Tue, Aug 01, 2023 at 03:05:46PM +0800, Kevin Xie wrote:
-> >> On 2023/8/1 7:12, Bjorn Helgaas wrote:
-> >> ...
-> > 
-> >> > The delay required by sec 6.6.1 is a minimum of 100ms following exit
-> >> > from reset or, for fast links, 100ms after link training completes.
-> >> > 
-> >> > The comment at the call of advk_pcie_wait_for_link() [2] says it is
-> >> > the delay required by sec 6.6.1, but that doesn't seem right to me.
-> >> > 
-> >> > For one thing, I don't think 6.6.1 says anything about "link up" being
-> >> > the end of a delay.  So if we want to do the delay required by 6.6.1,
-> >> > "wait_for_link()" doesn't seem like quite the right name.
-> >> > 
-> >> > For another, all the *_wait_for_link() functions can return success
-> >> > after 0ms, 90ms, 180ms, etc.  They're unlikely to return after 0ms,
-> >> > but 90ms is quite possible.  If we avoided the 0ms return and
-> >> > LINK_WAIT_USLEEP_MIN were 100ms instead of 90ms, that should be enough
-> >> > for slow links, where we need 100ms following "exit from reset."
-> >> > 
-> >> > But it's still not enough for fast links where we need 100ms "after
-> >> > link training completes" because we don't know when training
-> >> > completed.  If training completed 89ms into *_wait_for_link(), we only
-> >> > delay 1ms after that.
-> >> 
-> >> That's the point, we will add a extra 100ms after PERST# de-assert
-> >> in the patch-v3 according to Base Spec r6.0 - 6.6.1:
-> >>         msleep(100);
-> >>         gpiod_set_value_cansleep(pcie->reset_gpio, 0);
-> >> 
-> >> +       /* As the requirement in PCIe base spec r6.0, system must wait a
-> >> +        * minimum of 100 ms following exit from a Conventional Reset
-> >> +        * before sending a Configuration Request to the device.*/
-> >> +       msleep(100);
-> >> +
-> >>         if (starfive_pcie_host_wait_for_link(pcie))
-> >>                 return -EIO;
-> > 
-> > For fast links (links that support > 5.0 GT/s), the 100ms starts
-> > *after* link training completes.  The above looks OK if starfive only
-> > supports slow links, but then I'm not sure why we would need
-> > starfive_pcie_host_wait_for_link().
-> > 
-> Yes, the maximum speed of JH7110 PCIe is 5.0 GT/s (Gen2x1).
+On 2023-08-02 14:48, Tony Lindgren wrote:
+> While fixing DEVNAME to be more usable, I broke serial_base_match() as
+> the ctrl and port prefix for device seemed unnecessary.
 > 
-> About starfive_pcie_host_wait_for_link():
-> JH7110 SoC only has one root port in each PCIe controller (2 in total)
-> and they do not support hot-plug yet.
-
-Beware that even if HW does not support hotplug, endpoint PCIe card
-still may drop the link down and later put it up (for example if FW in
-the card crashes or when card want to do internal reset, etc...; this is
-very common for wifi cards). So drivers for non-hotplug controllers
-still have to handle hotplug events generated by link up/down state.
-
-So it means that, if endpoint PCIe card is not detected during probe
-time, it may be detected later. So this check to completely stop
-registering controller is not a good idea. Note that userspace can
-tell kernel (via sysfs) to rescan all PCIe buses and try to discover new
-PCIea devices.
-
-> Thus, We add starfive_pcie_host_wait_for_link() to poll if it is a empty slot.
-> If nothing here, we will exit the probe() of this controller, and it will not
-> go into pci_host_probe() too.
-> This may not be a very standard logic, should we remove it or rewrite in a better way?
+> Let's fix the issue by checking against dev->type and drv->name.
 > 
-> > Bjorn
+> Fixes: 1ef2c2df1199 ("serial: core: Fix serial core controller port name to show controller id")
+> Reported-by: kernel test robot <oliver.sang@intel.com>
+> Signed-off-by: Tony Lindgren <tony@atomide.com>
 
-Rather to remove this starfive_pcie_host_wait_for_link logic.
+This fixes boot on e850-96.
 
-Better option would be to teach PCI core code to wait for the link
-before trying to read vendor/device ids, like I described in my old
-proposal.
+Tested-by: Anders Roxell <anders.roxell@linaro.org>
