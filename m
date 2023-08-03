@@ -2,134 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8FD4776F590
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 00:19:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A91476F5B1
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 00:23:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232411AbjHCWTO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Aug 2023 18:19:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32798 "EHLO
+        id S231874AbjHCWXw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Aug 2023 18:23:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34062 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229550AbjHCWTM (ORCPT
+        with ESMTP id S230143AbjHCWXu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Aug 2023 18:19:12 -0400
-Received: from mail-io1-xd36.google.com (mail-io1-xd36.google.com [IPv6:2607:f8b0:4864:20::d36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 240F8469C;
-        Thu,  3 Aug 2023 15:18:45 -0700 (PDT)
-Received: by mail-io1-xd36.google.com with SMTP id ca18e2360f4ac-79094ee23e0so52393739f.0;
-        Thu, 03 Aug 2023 15:18:45 -0700 (PDT)
+        Thu, 3 Aug 2023 18:23:50 -0400
+Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8CEB84213
+        for <linux-kernel@vger.kernel.org>; Thu,  3 Aug 2023 15:23:49 -0700 (PDT)
+Received: by mail-pl1-x62d.google.com with SMTP id d9443c01a7336-1bb119be881so12705055ad.3
+        for <linux-kernel@vger.kernel.org>; Thu, 03 Aug 2023 15:23:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1691101124; x=1691705924;
+        d=gmail.com; s=20221208; t=1691101429; x=1691706229;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=uxCty9oc1mjAqHTw6+6YKzajdVIrcQkiZDg/YOH9YWE=;
-        b=DkWgmc1Ffdq00Q6fJ8opmNiefTg0FORhoMBkYdD+HnM/rpp7aIDuxsXIxGtdDIQzWH
-         XhgjoGuap2ineFA4lfUvpezem2i2KRiKgwrVMyBGn+3ywyAdrbqjchS24VgU1SszlCML
-         kgdaEr5nVAt+Td1FyJA9DbuR+qywjXoN6wsSFwAelwKiKEr7frNIP/7XnBinyLMykvUU
-         ZDwBpQ6L+LHLs7adQuapsqRuedYBt3W3kPM4RCN7PKePNMkJftPrYKvgPB8HwSTn8Ppi
-         8pN0JCYWbaMMMjtneCYkawQOpFVoZIRw7m8a6NLsz7t9GoNqPF8d38t4QaH5q49HlaN0
-         9Rmg==
+        bh=+8Cg2kZRT159MfkhH+DbOB4Grpbn6uU0SfeqcgSslkw=;
+        b=MBC0cvUMfx/k57hOALKBcJd55TOJ3tYu16VR0C3BuqBhUx4LUVAqht3S2a2Dm1XMUz
+         lYQUI+wCS67tuobdYFvv8mnYiNi+WMepofzTXu20xdRGD203GrocRTrp8MWyF6hojt86
+         GkDNNyF/X8JeZFxT2QAZw7mCIbbdRlfmfZoYgEn+vPHLH/RMZDH/E9DH1BU6yldJvQZj
+         DQ1Qb/78wWOMDndGkjeBBpANUku12OPkc9ocZTRNbb8uXcyLEfrVtu+3fbuxGvcoGsoF
+         m7Im6l3cyaYJF44e0+qZ5w3XnJCYUg9gV5cMEy7CP4rbLfOawx1VJMHpMqf7wpSDcFF0
+         j/rw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691101124; x=1691705924;
+        d=1e100.net; s=20221208; t=1691101429; x=1691706229;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=uxCty9oc1mjAqHTw6+6YKzajdVIrcQkiZDg/YOH9YWE=;
-        b=GSFODsb4qfYAGPPL+Ggmy5ctlX71p9Lcf898vjvy09Ux9suTlQsIIyiwXdhct/VAN3
-         JzHBQqccK6xq8ARDFB2rQu6CmYJpa58xf6JvapSlKK022uTwff8Cw/fGKlL1w6VdyWAo
-         5KBVAajwp8GDWxT1CFi5eQ1sqvLyvZwczE672496WBAop54v8dUk1tdsz7zgnNTMiA9X
-         2QbWATToillnVA0MQqmRNuJ5R4s8Ig0sXyrTTxgu5kyGXZS7K2BCuvr1YE/cV3EeV9/R
-         psY9T7Lm/CrQwF4f+pfIpGYkXcR08SEU8OqyU0Qw9F2J9vJZGUYgj2NFXTBc4ydI32UE
-         FkTg==
-X-Gm-Message-State: ABy/qLbw/vOuyVaodYqzYfxJA5+UYEQ+uSXTEJPwNMdrYWg2jvQNS/oH
-        VMCcVnF2BA2pjNsabCmkKrM=
-X-Google-Smtp-Source: APBJJlGQIttkqsIPxJTp9SwCtcoAgLB6T8BKrJVjKk9rgx0gL+wgB2mGMwoQX5NXUN7H3EYUlngNrg==
-X-Received: by 2002:a5d:9e14:0:b0:790:a073:f122 with SMTP id h20-20020a5d9e14000000b00790a073f122mr16794925ioh.2.1691101124647;
-        Thu, 03 Aug 2023 15:18:44 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id z11-20020a6b0a0b000000b007791e286fdbsm225354ioi.21.2023.08.03.15.18.43
+        bh=+8Cg2kZRT159MfkhH+DbOB4Grpbn6uU0SfeqcgSslkw=;
+        b=QGoHsZNAKM8W6LwvsvYG2U+M01eZIp16bEalR/msC0AwjBy8Uw9Pc7kIZxVjrbFoLs
+         oySrTNUugg2/oG+tD7ncL+P1OEa5DK052TJ79J3JyC1vuiU2QALGb29jkwnEr2Hgxg0N
+         CLxLA1CS6D6mtmBDgb0orhAAIYqyhzCHy2NOqc3uR9IpAD3kEmGf8hAgG+vSL9iXeYS/
+         o2XkcfBtpJqnEpMqrwZtPK9fo4mEHS8K62n880rYNg/DRnfo2uVXH0cuWbiPsuhAnZAa
+         vwND7kMbdGJYwkI6wLRb+i0Imj9C9oAOTcK/M/BiiouwQrA2/vQvwnHPkb3PP9I6Rho9
+         T3og==
+X-Gm-Message-State: AOJu0YwSDVBVZBEJKpL3DpVOf5yCwQuxsC/chufUCEFdaxvdtzRaM/HR
+        +gvizDemMjOhA6ZZ+T8dudA=
+X-Google-Smtp-Source: AGHT+IG+a3iUtaS/nCojwOyEUokszweAddlSdq3xuJtfZIub4vWdUnX/TAr9aoNrof/CfmKgIMriGg==
+X-Received: by 2002:a17:902:ecc3:b0:1b6:6625:d3a8 with SMTP id a3-20020a170902ecc300b001b66625d3a8mr65164plh.16.1691101428797;
+        Thu, 03 Aug 2023 15:23:48 -0700 (PDT)
+Received: from localhost ([2620:10d:c090:400::5:9d5d])
+        by smtp.gmail.com with ESMTPSA id ji5-20020a170903324500b001bc445e249asm332787plb.124.2023.08.03.15.23.47
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 03 Aug 2023 15:18:44 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Thu, 3 Aug 2023 15:18:42 -0700
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Tony Lindgren <tony@atomide.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Andy Shevchenko <andriy.shevchenko@intel.com>,
-        Dhruva Gole <d-gole@ti.com>,
-        Ilpo =?iso-8859-1?Q?J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>,
-        John Ogness <john.ogness@linutronix.de>,
-        Johan Hovold <johan@kernel.org>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org
-Subject: Re: [PATCH v5 3/3] serial: core: Fix serial core controller port
- name to show controller id
-Message-ID: <6423de18-637e-4ee6-858e-b74e701ff3e5@roeck-us.net>
-References: <20230725054216.45696-1-tony@atomide.com>
- <20230725054216.45696-4-tony@atomide.com>
+        Thu, 03 Aug 2023 15:23:48 -0700 (PDT)
+Sender: Tejun Heo <htejun@gmail.com>
+Date:   Thu, 3 Aug 2023 12:23:46 -1000
+From:   Tejun Heo <tj@kernel.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Petr Mladek <pmladek@suse.com>, Dave Airlie <airlied@gmail.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: arm32 build warnings in workqueue.c
+Message-ID: <ZMwo8rZrRilARZBr@slm.duckdns.org>
+References: <CAPM=9twNnV4zMCvrPkw3H-ajZOH-01JVh_kDrxdPYQErz8ZTdA@mail.gmail.com>
+ <CAHk-=wi=eDN4Ub0qSN27ztBAvHSXCyiY2stu3_XbTpYpQX4x7w@mail.gmail.com>
+ <ZJX27JDyrgvdeCe4@slm.duckdns.org>
+ <ZMdu1YqUI7VIEq1y@alley>
+ <CAHk-=wiJSzSkF-FDcHydR61Q3_q4xCiqq37tfXdijaCxsDF86Q@mail.gmail.com>
+ <ZMgIF_6zCqB0LfjN@slm.duckdns.org>
+ <CAHk-=wgGmV6x1brPoROABozj99hrKo031qq8F8K9Mjx2FC6nfw@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230725054216.45696-4-tony@atomide.com>
-X-Spam-Status: No, score=-1.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
+In-Reply-To: <CAHk-=wgGmV6x1brPoROABozj99hrKo031qq8F8K9Mjx2FC6nfw@mail.gmail.com>
+X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 25, 2023 at 08:42:12AM +0300, Tony Lindgren wrote:
-> We are missing the serial core controller id for the serial core port
-> name. Let's fix the issue for sane sysfs output, and to avoid issues
-> addressing serial ports later on.
-> 
-> And as we're now showing the controller id, the "ctrl" and "port" prefix
-> for the DEVNAME become useless, we can just drop them. Let's standardize on
-> DEVNAME:0 for controller name, where 0 is the controller id. And
-> DEVNAME:0.0 for port name, where 0.0 are the controller id and port id.
-> 
-> This makes the sysfs output nicer, on qemu for example:
-> 
-> $ ls /sys/bus/serial-base/devices
-> 00:04:0         serial8250:0    serial8250:0.2
-> 00:04:0.0       serial8250:0.1  serial8250:0.3
-> 
-> Fixes: 84a9582fd203 ("serial: core: Start managing serial controllers to enable runtime PM")
-> Reported-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> Signed-off-by: Tony Lindgren <tony@atomide.com>
+Hello, Linus.
 
-This patch causes about 50% of my boot tests to fail because the console
-is no longer recognized. Reverting this patch fixes the problem.
-Bisect log attached.
+On Mon, Jul 31, 2023 at 12:22:06PM -0700, Linus Torvalds wrote:
+> We do have that
+> 
+>    scripts/gdb/linux/constants.py.in
+> 
+> thing. Which seems to be the logical place do deal with this all.
+> 
+> That's where other - and arguably much more fundamental - kernel
+> #define's are dealt with.
+> 
+> Now, looking at the particular constants that are listed, I get the
+> feeling that the people who have done that script may be mostly
+> interested in filesystems, but I don't see why it wouldn't be
+> appropriate for the workstruct stuff too...
 
-Guenter
+It can be used but there are some drawbacks:
 
----
-# bad: [35245ef82c5b8206d97d0296017df658fd8ea3d2] Merge branch 'for-linux-next-fixes' of git://anongit.freedesktop.org/drm/drm-misc
-# good: [5d0c230f1de8c7515b6567d9afba1f196fb4e2f4] Linux 6.5-rc4
-git bisect start 'HEAD' 'v6.5-rc4'
-# good: [ec0f64d0666ce02114b11efd3df3234f7a3497d8] Merge branch 'master' of git://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf.git
-git bisect good ec0f64d0666ce02114b11efd3df3234f7a3497d8
-# bad: [8eb8b701a263abed01d3fd7e7f1984ef37b02149] Merge branch 'fixes' of git://git.kernel.org/pub/scm/linux/kernel/git/vkoul/dmaengine.git
-git bisect bad 8eb8b701a263abed01d3fd7e7f1984ef37b02149
-# good: [f29c3a80b329fbfbf92278c29fdcaafb736e3d01] Merge branch 'for-linus' of git://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git
-git bisect good f29c3a80b329fbfbf92278c29fdcaafb736e3d01
-# bad: [eddb92c4c656a669c30e17ce934e5eba8c261392] Merge branch 'fixes-togreg' of git://git.kernel.org/pub/scm/linux/kernel/git/jic23/iio.git
-git bisect bad eddb92c4c656a669c30e17ce934e5eba8c261392
-# good: [6811694eb2f6b7a4e97be2029edc7dd6a39460f8] iio: imu: lsm6dsx: Fix mount matrix retrieval
-git bisect good 6811694eb2f6b7a4e97be2029edc7dd6a39460f8
-# bad: [1ef2c2df11997b8135f34adcf2c200d3b4aacbe9] serial: core: Fix serial core controller port name to show controller id
-git bisect bad 1ef2c2df11997b8135f34adcf2c200d3b4aacbe9
-# good: [83c35180abfdfb22f3d7703b0c85ad2d442ed2c5] serial: core: Controller id cannot be negative
-git bisect good 83c35180abfdfb22f3d7703b0c85ad2d442ed2c5
-# good: [d962de6ae51f9b76ad736220077cda83084090b1] serial: core: Fix serial core port id to not use port->line
-git bisect good d962de6ae51f9b76ad736220077cda83084090b1
-# first bad commit: [1ef2c2df11997b8135f34adcf2c200d3b4aacbe9] serial: core: Fix serial core controller port name to show controller id
+* It requires maintaining external code, which usually doesn't scale that
+  well, especially over extended period of time.
+
+* It requires pre-processing header files and then evaluating the resulting
+  C expressions. It's not a showstopper and some tools can already do so
+  but, for example, to use this with drgn, we'd have to generate this into
+  python expressions using something and then source it. Maybe we can
+  prepackage the pre-processed results but things do get more complicated
+  and likely more error-prone.
+
+* This likely will cover some of the constants but there are also many which
+  aren't readily visible in public header files. It is possible to try to
+  preprocess .c files too but then now each machine has to have full source
+  deployed and so on.
+
+So, not that it's impossible but if you contrast this to having the
+constants available in the debug info:
+
+* There's only one source of truth. No external maintenance is needed.
+
+* The tools already rely heavily on having debug info available for type
+  information and the symbols. As needing debug info is pretty common, most
+  distros and prod environments provide ready access to them, whether kernel
+  or applications.
+  
+* Having constants in debug info doesn't add any complexity or point of
+  possible mistakes. As long as the binary matches the debug info, which is
+  a property that tools and environments watch and maintain closely and easy
+  to notice when broken, you know that you're using the same numers as the
+  running kernel, which is a huge relief.
+
+The downside of using enums is that C's enum is not great in terms of type
+predictability. I personally would much prefer specifying the types
+explicitly, but, as long as the rules are stable, I think it's something we
+can live with. While a bit annoying, the benefits of using them outweighs
+the annoyances in general.
+
+It's just so silly that constants of all the stuff we need for monitoring
+and debugging are the one thing that we can't provide through debug info and
+requires all the special, potentially fragile, workarounds.
+
+Thanks.
+
+-- 
+tejun
