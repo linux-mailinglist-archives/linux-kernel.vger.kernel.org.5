@@ -2,142 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C5A2C76EEAD
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 17:52:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EDED776EEB2
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 17:53:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237250AbjHCPwT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Aug 2023 11:52:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38956 "EHLO
+        id S235474AbjHCPxQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Aug 2023 11:53:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39444 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234594AbjHCPwQ (ORCPT
+        with ESMTP id S237283AbjHCPxG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Aug 2023 11:52:16 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B9442690;
-        Thu,  3 Aug 2023 08:52:16 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 95E9161E16;
-        Thu,  3 Aug 2023 15:52:15 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 100C9C433C8;
-        Thu,  3 Aug 2023 15:52:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691077935;
-        bh=shdLTUl/hzYbRD8G510/eXZG57dpgv2R1y08l4NSUis=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=jqQsbbvug9fDxopaztR1czHBNQ3OAniPfAUled1HxzUfts/5zXHHqEPkwrphh1f1S
-         1F0TBFJnSDipaN8aXHBM8mq6NZMlrmdsRVM5UvvpLqja6mX2TVt4yU5WG0f6SDUc7O
-         i8JLcjlj2YB09/zdeDIow4JnHJIX9Cp/CTPiW9Br809/3iFMwIAF074AUlO29evUUQ
-         hC8RDESoFZYtlOqY7DwcUt57hPZnHLJCw7uGlWdurdWHNQgmL2Pgf75SN6B2I/a0V7
-         CyGSwlhYKJxU3Kf4nQMfjtx4jt69tXjpI+GSO5QJSRxCVKiO2jS+gMUVfrgPA8Hb2A
-         UKcPFj8ez6TRw==
-Date:   Thu, 3 Aug 2023 16:52:09 +0100
-From:   Conor Dooley <conor@kernel.org>
-To:     nick.hawkins@hpe.com
-Cc:     christophe.jaillet@wanadoo.fr, simon.horman@corigine.com,
-        andrew@lunn.ch, verdun@hpe.com, davem@davemloft.net,
-        edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
-        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
-        conor+dt@kernel.org, netdev@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 3/5] dt-bindings: net: Add HPE GXP UMAC
-Message-ID: <20230803-balance-octopus-3d36f784f776@spud>
-References: <20230802201824.3683-1-nick.hawkins@hpe.com>
- <20230802201824.3683-4-nick.hawkins@hpe.com>
+        Thu, 3 Aug 2023 11:53:06 -0400
+Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 419B72109
+        for <linux-kernel@vger.kernel.org>; Thu,  3 Aug 2023 08:53:02 -0700 (PDT)
+Received: by mail-lf1-x12d.google.com with SMTP id 2adb3069b0e04-4fe4f5290daso1941339e87.1
+        for <linux-kernel@vger.kernel.org>; Thu, 03 Aug 2023 08:53:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20221208.gappssmtp.com; s=20221208; t=1691077980; x=1691682780;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=qX07dZERZtkt2x/Ef7mtKlDJ3pdXlme16vQ71CFcvMg=;
+        b=lNV/1Vm1Sktq6yegwfZDlJ3SHLsUKyqAGLGBzu1JPyDeBhIu08xbuA3BLMGjNQqCYm
+         iKOTVxtsLilYh2IDTRtms4ySeS4gNqlPhGP8bdydEDpB4jmeqW+171mGCPuKN2Z1Jra9
+         0j5V6gm2TDlEG71a3PgUzCu3xsAAWfWhrC1BJK+w8WRlWSEETzlwXnkGd360Lg+2vQc3
+         5U5YL1qYeczsyHzsDnTysthikVxllMooZf5LaKBOrxU1F1VjzK1/k9i2M2Zix9dIUWFo
+         Sc5UbhJqSkXhJERhoas6t+C/Y6XBJf1OeIFZIIAQUN40l+1poXcVRCjQxnSsvCJN8j96
+         Ahiw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691077980; x=1691682780;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=qX07dZERZtkt2x/Ef7mtKlDJ3pdXlme16vQ71CFcvMg=;
+        b=PjYwy8hGgJdMKs0HU1F4cuq8TyWPqJzwjsWi1DamHLEnoWjhsKP7/6WHRGlR2DTnJ/
+         CLVKFXhcZsi0uMXLvQvJHyEYMqn47JlV4xY0HD5gYwpoGH0TdnvCzewxb0PqAdZWXBE0
+         mCDtT2qn2ot8aLEF5E8ri7lgZjtT1pFYMPNUg+icqvl6VeyUQcK6BgEUkcwYtzNG8gNd
+         jWxA2oaDXzM7qP+McenIQOK7Nlj+h93U/hRoKEbJZ7WHUpUuM2cvdwXc15/aMXE7x2Tq
+         nle4cU+jSGMyoZcXguL5VOw5we42vuKJ3nufKzlmDcp0gJd2LRDLii6svwPioOBH5zST
+         dOug==
+X-Gm-Message-State: ABy/qLbHMzrZeKw2BtyflKogdeVi611k45zqxdQvdTket4nc5Tis7NVt
+        LNtRRjvAj7Rt7O6UnleTkviFNA==
+X-Google-Smtp-Source: APBJJlECdy3cAAYllCy6LZlZFybimunVbeOEktk+t7kAzFaSsKLGdyMwALTIzJNGxeecwb/LWFdikg==
+X-Received: by 2002:a05:6512:3e2a:b0:4fb:be3c:d8b7 with SMTP id i42-20020a0565123e2a00b004fbbe3cd8b7mr9692368lfv.51.1691077979984;
+        Thu, 03 Aug 2023 08:52:59 -0700 (PDT)
+Received: from [192.168.1.64] ([85.68.201.192])
+        by smtp.gmail.com with ESMTPSA id s15-20020a170906960f00b00988dbbd1f7esm10685913ejx.213.2023.08.03.08.52.58
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 03 Aug 2023 08:52:59 -0700 (PDT)
+Message-ID: <4ad2998c-69fa-1ffc-ef4b-a45cdffce4ba@baylibre.com>
+Date:   Thu, 3 Aug 2023 17:52:58 +0200
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="YjjCSeNwyEiwRtye"
-Content-Disposition: inline
-In-Reply-To: <20230802201824.3683-4-nick.hawkins@hpe.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH v4 3/6] arm64: dts: ti: k3-j721e-som-p0: Add TP6594 family
+ PMICs
+Content-Language: en-US
+To:     Esteban Blanc <eblanc@baylibre.com>, nm@ti.com, vigneshr@ti.com,
+        kristo@kernel.org, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org
+Cc:     linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, u-kumar1@ti.com,
+        aseketeli@baylibre.com, jpanis@baylibre.com
+References: <20230727130908.10656-1-eblanc@baylibre.com>
+ <20230727130908.10656-4-eblanc@baylibre.com>
+From:   jerome Neanne <jneanne@baylibre.com>
+In-Reply-To: <20230727130908.10656-4-eblanc@baylibre.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
---YjjCSeNwyEiwRtye
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Wed, Aug 02, 2023 at 03:18:22PM -0500, nick.hawkins@hpe.com wrote:
-> From: Nick Hawkins <nick.hawkins@hpe.com>
->=20
-> Provide access to the register regions and interrupt for Universal
-> MAC(UMAC). The driver under the hpe,gxp-umac binding will provide an
-> interface for sending and receiving networking data from both of the
-> UMACs on the system.
->=20
-> Signed-off-by: Nick Hawkins <nick.hawkins@hpe.com>
->=20
-> ---
->=20
-> v2:
->  *Move mac-addresses into ports
->  *Remove | where not needed
-> ---
->  .../devicetree/bindings/net/hpe,gxp-umac.yaml | 112 ++++++++++++++++++
->  1 file changed, 112 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/net/hpe,gxp-umac.ya=
-ml
->=20
-> diff --git a/Documentation/devicetree/bindings/net/hpe,gxp-umac.yaml b/Do=
-cumentation/devicetree/bindings/net/hpe,gxp-umac.yaml
-> new file mode 100644
-> index 000000000000..ff1a3a201dcf
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/net/hpe,gxp-umac.yaml
-> @@ -0,0 +1,112 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/net/hpe,gxp-umac.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+On 27/07/2023 15:09, Esteban Blanc wrote:
+> From: Jerome Neanne <jneanne@baylibre.com>
+> 
+[...]
+> +	tps659411: pmic@4c {
+> +		compatible = "ti,tps6594-q1";
+> +		reg = <0x4c>;
+> +		system-power-controller;
+> +		interrupt-parent = <&wkup_gpio0>;
+> +		interrupts = <9 IRQ_TYPE_EDGE_FALLING>;
 > +
-> +title: HPE GXP Unified MAC Controller
+> +		gpio-controller;
+> +		#gpio-cells = <2>;
 > +
-> +maintainers:
-> +  - Nick Hawkins <nick.hawkins@hpe.com>
+> +		buck1234-supply = <&vsys_3v3>;
+> +		buck5-supply = <&vsys_3v3>;
+> +		ldo1-supply = <&vsys_3v3>;
+> +		ldo2-supply = <&vsys_3v3>;
+> +		ldo3-supply = <&vsys_3v3>;
+> +		ldo4-supply = <&vsys_3v3>;
 > +
-> +description:
-> +  HPE GXP 802.3 10/100/1000T Ethernet Unifed MAC controller.
-> +  Device node of the controller has following properties.
+> +		regulators {
+> +			buckb1234: buck1234 {
+> +				regulator-name = "vdd_core_0v8";
+> +				regulator-min-microvolt = <800000>;
+> +				regulator-max-microvolt = <800000>;
+> +				regulator-boot-on;
+> +				regulator-always-on;
+> +			};
 > +
-> +properties:
-> +  compatible:
-> +    const: hpe,gxp-umac
+> +			buckb5: buck5 {
+> +				regulator-name = "vdd_ram_0v85";
+> +				regulator-min-microvolt = <850000>;
+> +				regulator-max-microvolt = <850000>;
+> +				regulator-boot-on;
+> +				regulator-always-on;
+> +			};
 > +
+> +			ldob1: ldo1 {
+> +				regulator-name = "vdd_sd_dv";
+> +				regulator-min-microvolt = <1800000>;
+> +				regulator-max-microvolt = <3300000>;
+> +				regulator-boot-on;
+> +				regulator-always-on;
+> +			};
+> +
+> +			ldob2: ldo2 {
+> +				regulator-name = "vdd_usb_3v3";
+> +				regulator-min-microvolt = <1800000>;
+> +				regulator-max-microvolt = <3300000>;
+> +				regulator-boot-on;
+> +				regulator-always-on;
+> +			};
+This voltage is static 3.3V: regulator-min-microvolt = <3300000>;
 
-> +  use-ncsi:
-> +    type: boolean
-> +    description:
-> +      Indicates if the device should use NCSI (Network Controlled
-> +      Sideband Interface).
+> +			ldob3: ldo3 {
+> +				regulator-name = "vdd_io_1v8";
+> +				regulator-min-microvolt = <1800000>;
+> +				regulator-max-microvolt = <1800000>;
+> +				regulator-boot-on;
+> +				regulator-always-on;
+> +			};
+> +
+> +			ldob4: ldo4 {
+> +				regulator-name = "vda_pll_1v8";
+> +				regulator-min-microvolt = <1800000>;
+> +				regulator-max-microvolt = <1800000>;
+> +				regulator-boot-on;
+> +				regulator-always-on;
+> +			};
+> +		};
+> +	};
+>   };
+>   
+>   &ospi0 {
 
-How is one supposed to know if the device should use NCSI? If the
-property is present does that mean that the mac hardware supports
-it? Or is it determined by what board this mac is on?
-Or is this software configuration?
-
-Thanks,
-Conor.
-
---YjjCSeNwyEiwRtye
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZMvNKQAKCRB4tDGHoIJi
-0vEOAP9KpKkL8uHbXhp1szAIL+d8eDVx+Zy0uYlk5Nh7tT45gQD+NASu+mEXy4Hv
-WnInK04BprIpkAZdykvcmILghGdm8wA=
-=Bm8/
------END PGP SIGNATURE-----
-
---YjjCSeNwyEiwRtye--
+Regards,
+Jerome.
