@@ -2,231 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AD0BD76E35B
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 10:41:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A1FA276E35E
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 10:42:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229547AbjHCIlp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Aug 2023 04:41:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60462 "EHLO
+        id S233534AbjHCImF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Aug 2023 04:42:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60696 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231709AbjHCIlj (ORCPT
+        with ESMTP id S232850AbjHCImB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Aug 2023 04:41:39 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87288DF
-        for <linux-kernel@vger.kernel.org>; Thu,  3 Aug 2023 01:41:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Transfer-Encoding:
-        Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
-        Sender:Reply-To:Content-ID:Content-Description;
-        bh=SACFvnr2rbydFAco2HYqoxJUl3pe8fK1O5C3pDq8h1Q=; b=UAGk95RKrr66JPKNS/fl48luNT
-        TwNx9IwDM+O1skayDM+TdbGftgYAquTeY8umuwAThjF/1ttKcELngO4EBuhT5P90l9VvsJqcOI6a8
-        DO/uFUOGcXPkRRA6lF2xp5MYBnvgesc861EyhiAyIxZ88g85cKUQ6dXkaz8RmQsS7UzB86D8mG6V9
-        N7HkyrTtz6glIa4LNINpv8CcOIUa626R5cIWH6PrvflUo0ie72sjvwnYyDYHV/ninwdlyVkkZiYr/
-        1peFcVtCBgG/uHFSP4t5R/Ccq4bftXUuFmKT0LL1OYSUkiHW2raF0ZcTNx8SU7oKwgnQwJ5GfNY7D
-        KFMezNGg==;
-Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1qRTte-002YZf-Cs; Thu, 03 Aug 2023 08:41:26 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 6C30A30007E;
-        Thu,  3 Aug 2023 10:41:25 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 49F2121094074; Thu,  3 Aug 2023 10:41:25 +0200 (CEST)
-Date:   Thu, 3 Aug 2023 10:41:25 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Yury Norov <yury.norov@gmail.com>
-Cc:     andriy.shevchenko@linux.intel.com, linux@rasmusvillemoes.dk,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Mateusz Guzik <mjguzik@gmail.com>,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        tglx@linutronix.de, rppt@kernel.org
-Subject: Re: [PATCH v2 2/2] mm,nodemask: Use nr_node_ids
-Message-ID: <20230803084125.GE212435@hirez.programming.kicks-ass.net>
-References: <20230802112458.230221601@infradead.org>
- <20230802112525.633758009@infradead.org>
- <20230802193616.GC231007@hirez.programming.kicks-ass.net>
- <ZMr4uBfjKY9dERl2@yury-ThinkPad>
+        Thu, 3 Aug 2023 04:42:01 -0400
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9202ADF;
+        Thu,  3 Aug 2023 01:42:00 -0700 (PDT)
+Received: from [127.0.1.1] (91-154-35-171.elisa-laajakaista.fi [91.154.35.171])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 166465A4;
+        Thu,  3 Aug 2023 10:40:54 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1691052054;
+        bh=OTzk0Qm0yo8Zu9ycksYQ0HDa3rKtirpqqjtreK1RHmw=;
+        h=From:Subject:Date:To:Cc:From;
+        b=ngbOXOZ0Ut+y0nDlT53Uzp5fWlSuRVsPkonFOuErLzbRDmzQ0E5tg2IyHdLie/P6N
+         gax893VaPCdQ4EvNCtuOQ4JDHNVRStP2NKT83FEpoHapiok27vodovQ3Qy4sUuZJU/
+         /+2tER0Uxa+l8uEcWzPDUNXVbAe0cB0v0awsWyO8=
+From:   Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
+Subject: [PATCH 0/2] media: i2c: ds90ubxxx: Fix uninitialized variable uses
+Date:   Thu, 03 Aug 2023 11:41:37 +0300
+Message-Id: <20230803-ub9xx-uninit-vars-v1-0-284a5455260f@ideasonboard.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <ZMr4uBfjKY9dERl2@yury-ThinkPad>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIAEFoy2QC/x2MywqAIBAAfyX23IIm0eNXooPWVnuxWEuE8N+T5
+ jaHmRcCCVOAsXpBKHLg0xfRdQXLYf1OyGtxaFRjVK8MPm5ICR/Pnm+MVgJ2ptA5q1WroXSX0Mb
+ pf05zzh+OtEJ8YwAAAA==
+To:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Hans Verkuil <hverkuil@xs4all.nl>
+Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
+X-Mailer: b4 0.12.3
+X-Developer-Signature: v=1; a=openpgp-sha256; l=640;
+ i=tomi.valkeinen@ideasonboard.com; h=from:subject:message-id;
+ bh=OTzk0Qm0yo8Zu9ycksYQ0HDa3rKtirpqqjtreK1RHmw=;
+ b=owEBbQKS/ZANAwAIAfo9qoy8lh71AcsmYgBky2hPU5xDVk4BMoArrKn8iq34dXcKZhfxWAbMA
+ vzhhjU8NHSJAjMEAAEIAB0WIQTEOAw+ll79gQef86f6PaqMvJYe9QUCZMtoTwAKCRD6PaqMvJYe
+ 9TPtEACgPvWhrDLw8E4QMxTGU9bKXNKw/ycRSdXqAseFVfYOsrG8gCGVR5KvnGIawfLbW1JciDE
+ fCHxrH/uIEGiKbmaobIiNYRFlfn6Tj92EqOwZkz5Gg1zHLmpLM51ooXysUYkvBeWbL1uRMDqCci
+ Lhb1gHgfqMF61C+EtzjNgyaKy7GBKoMxH3Geuq0QAXTFE2UeUrB0gq2F+X4npPW6oPgkUaBMSVr
+ tQS05q9Gdxg/QiKoRGfAiuWZ8+lR/sXSRfALwhF4PyC/t9VSsiQDrHc9SYO30uYVrwX5inq0UEy
+ sqmSO1x0oxELPG066t1buqTDIs34RjPjNb5YFl6LcTerw/MeptRy0zHBxoH/UJlZKxf4NxGjS/f
+ Moico6FBWzJ0HhIAhCoO9buvuowEHw2wK1+Djm6R/KOgboznrEGetg5JSA/MlWjKT8cUZvAnzxS
+ rLsDbcuLdb1Dcwk8OqiSO1FE6wCN4xPFdpGdKm+jKRIUw+qmowJfe5Y1yyKLZ81N1RtU38ULwq6
+ zKi75FNsjC+jeqvgph9aOkpQSqgbS/+HX9sp4EqKBW4Bw/1lUp7i+n8llXHKYFneOZB0VmkHnmY
+ LQ+nzfHzln2wTqH1ywxUIY/R0phN5j+g3N8kF0nQUmZyEP7vkozWYmX9E1IYY/mVQSQNWjdcfH+
+ MJyciyZIqCvC3PQ==
+X-Developer-Key: i=tomi.valkeinen@ideasonboard.com; a=openpgp;
+ fpr=C4380C3E965EFD81079FF3A7FA3DAA8CBC961EF5
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 02, 2023 at 05:45:44PM -0700, Yury Norov wrote:
-> + Linus, Mateusz
-> 
-> On Wed, Aug 02, 2023 at 09:36:16PM +0200, Peter Zijlstra wrote:
-> > 
-> > Just like how cpumask uses nr_cpu_ids to limit the bitmap scanning,
-> > make nodemask use nr_node_ids.
-> > 
-> > Since current users expect MAX_NUMNODES as the end-of-bitmap marker,
-> > retain this behaviour for now.
-> > 
-> > Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-> > Reviewed-by: Mike Rapoport (IBM) <rppt@kernel.org>
-> > ---
-> > Changes since v1:
-> >  - updated and reflowed the 'borrowed' comment some more (rppt)
-> 
-> Hi Peter,
-> 
-> Thanks for the patch! I wanted to do it sooner or later.
-> 
-> Can you mention the commit that you used to borrow the approach.
-> Maybe suggested-by?
+Fix uses of uninitialized variables, reported by smatch.
 
-I borrowed the comment from current include/linux/cpumask.h, not a
-particular commit.
+Signed-off-by: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
+---
+Tomi Valkeinen (2):
+      media: i2c: ds90ub9x3: Fix use of uninitialized variables
+      media: i2c: ds90ub960: Fix PLL config for 1200 MHz CSI rate
 
-> The motivation for the original patch was that the following test
-> revealed broken small_const_nbits() optimization for cpumasks:
-> 
->   On Fri, Mar 3, 2023 at 12:39 PM Mateusz Guzik <mjguzik@gmail.com> wrote:
->   >
->   > as an example here is a one-liner to show crappers which do 0-sized ops:
->   > bpftrace -e 'kprobe:memset,kprobe:memcpy /arg2 == 0/ { @[probe,
->   > kstack(2)] = count(); }'
-> 
-> See:
-> https://lore.kernel.org/lkml/CAHk-=wgfNrMFQCFWFtn+UXjAdJAGAAFFJZ1JpEomTneza32A6g@mail.gmail.com/
-> 
-> Can you make sure your patch doesn't brake the test for nodemasks?
+ drivers/media/i2c/ds90ub913.c | 2 +-
+ drivers/media/i2c/ds90ub953.c | 6 +++---
+ drivers/media/i2c/ds90ub960.c | 1 +
+ 3 files changed, 5 insertions(+), 4 deletions(-)
+---
+base-commit: a0e657a03ffbd26332f316f13c3e5dbc98cb1fca
+change-id: 20230803-ub9xx-uninit-vars-733337ba1051
 
-I've no idea what that even tries to do; I don't speak bpf. And
-typically bpf things don't work on my machines because I refuse to build
-with BTF on since that blows up build times.
+Best regards,
+-- 
+Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
 
-> >  include/linux/nodemask.h |  121 ++++++++++++++++++++++++++++++++++-------------
-> >  1 file changed, 89 insertions(+), 32 deletions(-)
-> > 
-> > --- a/include/linux/nodemask.h
-> > +++ b/include/linux/nodemask.h
-> > @@ -99,6 +99,48 @@
-> >  typedef struct { DECLARE_BITMAP(bits, MAX_NUMNODES); } nodemask_t;
-> >  extern nodemask_t _unused_nodemask_arg_;
-> >  
-> > +#if MAX_NUMNODES > 1
-> > +extern unsigned int nr_node_ids;
-> > +#else
-> > +#define nr_node_ids		1U
-> > +#endif
-> > +
-> > +/*
-> > + * We have several different "preferred sizes" for the nodemask operations,
-> > + * depending on operation.
-> > + *
-> > + * For example, the bitmap scanning and operating operations have optimized
-> > + * routines that work for the single-word case, but only when the size is
-> > + * constant. So if MAX_NUMNODES fits in one single word, we are better off
-> > + * using that small constant, in order to trigger the optimized bit finding.
-> > + * That is 'small_nodemask_size'.
-> > + *
-> > + * The clearing and copying operations will similarly perform better with a
-> 
-> Copying will not, because there's no nodemask_copy(). :-)
-
-Yeah, I know, *shrug*. If you really care, I'd prefer to actually
-implement that instead of fixing the comment.
-
-> > + * constant size, but we limit that size arbitrarily to four words. We call
-> > + * this 'large_nodemask_size'.
-> > + *
-> > + * Finally, some operations just want the exact limit, either because they set
-> > + * bits or just don't have any faster fixed-sized versions. We call this just
-> > + * 'nr_nodemask_bits'.
-> > + *
-> > + * Note that these optional constants are always guaranteed to be at least as
-> > + * big as 'nr_node_ids' itself is, and all our nodemask allocations are at
-> > + * least that size. The optimization comes from being able to potentially use
-> > + * a compile-time constant instead of a run-time generated exact number of
-> > + * nodes.
-> > + */
-> > +#if MAX_NUMNODES <= BITS_PER_LONG
-> > +  #define small_nodemask_bits ((unsigned int)MAX_NUMNODES)
-> > +  #define large_nodemask_bits ((unsigned int)MAX_NUMNODES)
-> > +#elif MAX_NUMNODES <= 4*BITS_PER_LONG
-> > +  #define small_nodemask_bits nr_node_ids
-> > +  #define large_nodemask_bits ((unsigned int)MAX_NUMNODES)
-> > +#else
-> > +  #define small_nodemask_bits nr_node_ids
-> > +  #define large_nodemask_bits nr_node_ids
-> > +#endif
-> > +#define nr_nodemask_bits nr_node_ids
-> 
-> We don't need nr_nodemask_bits. In CPU subsystem nr_cpumask_bits
-> exists (existed) to support dynamic allocation for cpumask_var_t
-> if CPUMASK_OFFSTACK is enabled. And it apparently caused troubles.
-> 
-> In nodemasks we don't have an offstack feature, and don't need the
-> nr_nodemask_bits. Just use nr_node_ids everywhere.
-
-Sure, can do.
-
-> [...]
-> 
-> > -#define nodes_setall(dst) __nodes_setall(&(dst), MAX_NUMNODES)
-> > +#define nodes_setall(dst) __nodes_setall(&(dst), large_nodemask_bits)
-> >  static inline void __nodes_setall(nodemask_t *dstp, unsigned int nbits)
-> >  {
-> >  	bitmap_fill(dstp->bits, nbits);
-> >  }
-> 
-> When MAX_NUMNODES <= 4*BITS_PER_LONG, this breaks the rule that all
-> bits beyond nr_node_ids must be clear. And that in turn may brake
-> nodemask_weight() and others. Refer to this patch for details and
-> correct implementation:
-
-I think I got that right, consider:
-
-#elif MAX_NUMNODES <= 4*BITS_PER_LONG
-  #define small_nodemask_bits nr_node_ids
-  #define large_nodemask_bits ((unsigned int)MAX_NUMNODES)
-
-IOW: small_nodemask_bits <= large_nodemask_bits (as per the naming)
-
-So nodemask_weight() will look at less or all bits set/cleared.
-
-The bug you referred to was using fill with nr_cpumask_bits, using
-large_cpumask_bits would've been sufficient.
-
-> > @@ -452,7 +511,6 @@ static inline unsigned int next_memory_n
-> >  	return next_node(nid, node_states[N_MEMORY]);
-> >  }
-> >  
-> > -extern unsigned int nr_node_ids;
-> >  extern unsigned int nr_online_nodes;
-> >  
-> >  static inline void node_set_online(int nid)
-> > @@ -494,7 +552,6 @@ static inline int num_node_state(enum no
-> >  #define first_memory_node	0
-> >  #define next_online_node(nid)	(MAX_NUMNODES)
-> >  #define next_memory_node(nid)	(MAX_NUMNODES)
-> > -#define nr_node_ids		1U
-> >  #define nr_online_nodes		1U
->  
-> I like how you separated the nr_node_ids from the other ifdefery, and
-> changed it to __ro_after_init. But I think it's better to fold this all
-> into the 1st patch.
-
-This move was needed to make it build -- compiler feels strongly you
-should have declared a variable before using it etc.. No other
-motivation for it. As such it sits in this patch.
-
-> Why don't we make nr_cpu_ids to be a __ro_after_init just as well?
-
-Sure, will add patch. Should've checked :/
