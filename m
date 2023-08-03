@@ -2,104 +2,301 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A3C5A76F5F8
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 01:04:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C954776F5FA
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 01:06:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231282AbjHCXER (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Aug 2023 19:04:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44480 "EHLO
+        id S230457AbjHCXG1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Aug 2023 19:06:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44782 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231265AbjHCXEI (ORCPT
+        with ESMTP id S231597AbjHCXGL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Aug 2023 19:04:08 -0400
-Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CDB6A30FD;
-        Thu,  3 Aug 2023 16:03:35 -0700 (PDT)
-Received: by mail-pl1-x62c.google.com with SMTP id d9443c01a7336-1bc34b32785so10840915ad.3;
-        Thu, 03 Aug 2023 16:03:35 -0700 (PDT)
+        Thu, 3 Aug 2023 19:06:11 -0400
+Received: from mail-qt1-x82d.google.com (mail-qt1-x82d.google.com [IPv6:2607:f8b0:4864:20::82d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6DC6C213F
+        for <linux-kernel@vger.kernel.org>; Thu,  3 Aug 2023 16:06:09 -0700 (PDT)
+Received: by mail-qt1-x82d.google.com with SMTP id d75a77b69052e-40ddc558306so11237801cf.2
+        for <linux-kernel@vger.kernel.org>; Thu, 03 Aug 2023 16:06:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1691103815; x=1691708615;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=YxdVo0H4Ogsm6y1B4bh/ICRf8zL9r8pBxK6Ht1YN6QU=;
-        b=B1FXxq3xyAYEetNblcpVr3eqFdEVp27JMD86CR/EggjGafPeF6E0Qu787tQ5KXJGaT
-         v2cPuAg+C1i93EfB4TizxepVrFZH8lbPopNs//XFToHcKPt5EXql5L4sydDrtAEgDsvW
-         f2UVLu+Cpk0mTfsWlJMwdFU4oz6sy4l3L+mV/ekGiYJH1pmF1SfZBDh9hW+9YKLB/FHB
-         QHPhqIEhBEYI0QDXYfS2Fg2SYwf6oa9VXHPJ5cFl9WkyNe5Zhk8E2dYjAKBWGU11l3w1
-         kexodF7CcnK1IgEvhp6oc1Iwrt7FJ/5T8UGjWZXMGMCAd2UhG1T8XjCm6XfX7nwj69t4
-         eDEA==
+        d=joelfernandes.org; s=google; t=1691103968; x=1691708768;
+        h=to:in-reply-to:cc:references:message-id:date:subject:mime-version
+         :from:content-transfer-encoding:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=pU2Tak4FV3b6LJpZuOHRxW52FQqMy9yZygFfXqU8WA4=;
+        b=IjAZVNRgHzYr5Ug0TnYxVg8ruHh/uj4tzKgh8FhEU5kHckIT4ra024N38qEQI7vdBG
+         zlaFPh37htUEXfYCdsPcyyZbF+3N9TOykE1o+/Cug6aR7iU5D3hcvH/1S+sS1+0gwe3V
+         DXzoVv1PLipx81ovlDq1ykqnsUAQwzeuivd4g=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691103815; x=1691708615;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20221208; t=1691103968; x=1691708768;
+        h=to:in-reply-to:cc:references:message-id:date:subject:mime-version
+         :from:content-transfer-encoding:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=YxdVo0H4Ogsm6y1B4bh/ICRf8zL9r8pBxK6Ht1YN6QU=;
-        b=MTsrkIo6VRggiZUh0gHi1jahkssDAjDmxYbqdi+oqmYqGJLOyUYmLMgGLUHXhASfGP
-         YVYAWlPqTgXLoZ7x/jhb0SRFKmDk2IQyNcG5LrvSOoFqh9i6S99nwglzHTpsBH8R4tWb
-         RN33fYXy702LNedX5zQH0ZzjZBGrNyXY+uSSgkRGX24rpR1F6iN4WtInDEAm+KGAZonV
-         WPDTYo7in3AQq1e7FGYMRVE4xWxZX+hHb7IgGAPg+qHvQSlI4yblvqWMftLRYRsKQqCp
-         +j0rk/8klPZ5vrz3iVHYCNEGPQoc8Fvx0jzN5z0OJ26HpfO5BnpcXlRFm2GuyyzBK7Ie
-         22LA==
-X-Gm-Message-State: AOJu0Yww5Gks7VAoU7Do6Mchl9vOh+67wlH5k/72VLZoV8ZpZir09Toh
-        kp+BqtF43PwT+bxaYZFY1T0=
-X-Google-Smtp-Source: AGHT+IGTLIqDQyKKtQsXBAKVqKtFN5RUGOE+6K1WmgCYMpo3tJqJIIm02ZnnhklD8xBZED4d9EF6UQ==
-X-Received: by 2002:a17:902:b78c:b0:1bb:809d:ae72 with SMTP id e12-20020a170902b78c00b001bb809dae72mr115625pls.33.1691103815263;
-        Thu, 03 Aug 2023 16:03:35 -0700 (PDT)
-Received: from taoren-fedora-PC23YAB4.thefacebook.com ([2620:10d:c090:500::5:e60a])
-        by smtp.gmail.com with ESMTPSA id y7-20020a17090322c700b001bbb598b8bbsm372349plg.41.2023.08.03.16.03.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 03 Aug 2023 16:03:34 -0700 (PDT)
-From:   rentao.bupt@gmail.com
-To:     Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Joel Stanley <joel@jms.id.au>,
-        Andrew Jeffery <andrew@aj.id.au>, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-aspeed@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        taoren@meta.com
-Cc:     Tao Ren <rentao.bupt@gmail.com>
-Subject: [PATCH 3/3] ARM: dts: aspeed: wedge400: Set eMMC max frequency
-Date:   Thu,  3 Aug 2023 16:03:24 -0700
-Message-Id: <20230803230324.731268-4-rentao.bupt@gmail.com>
-X-Mailer: git-send-email 2.40.1
-In-Reply-To: <20230803230324.731268-1-rentao.bupt@gmail.com>
-References: <20230803230324.731268-1-rentao.bupt@gmail.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        bh=pU2Tak4FV3b6LJpZuOHRxW52FQqMy9yZygFfXqU8WA4=;
+        b=WNfrR6Bjc5PG1Sj+lQ3a/AEjNsN3oZ2VmvnonUzCQl+xfZyJS+YtZxCQW5iqzdLZ7F
+         dlgR63aldVwTGtWrSDq98HKg1bsWdPVlkh/6O7DOnPBb6h0o0znrWmhwBOKKoSB/CJpt
+         UzD1K/eyoW2+55YaJkzufoM1C9IRfaLvZOGmVTRVBkWZQI3OdF0kqP3dhetNPx8jpiHF
+         M4a9FYqrBdrbE+hqPvvvz1ypUZb4MGYQ1Mh2uyBOxtdfOslR9KOV2l1OC9q8p1Ly7juw
+         TeB4Ro0pE+/FgPdi8X82GcYJmaZWuV9QdHY1u721PSzxsMwB4YSa80B2bqrhfdCwTeHb
+         yWOg==
+X-Gm-Message-State: AOJu0Yxnbu2pWSHXcxMB8L2edwyscaMHFSyHXuHwyHtvelE/eBOK5JUn
+        EE7I0n+PSsJfgwzXrEU3xyzSJg==
+X-Google-Smtp-Source: AGHT+IEtv2neeCvvH4oLhLI6dbu5PEfP72RyNnSlb9DcLZIuM+ynhaGQ3O7i30BWnaLbsmDY1xpm/w==
+X-Received: by 2002:ac8:5bcc:0:b0:40e:6142:baf with SMTP id b12-20020ac85bcc000000b0040e61420bafmr220686qtb.26.1691103968412;
+        Thu, 03 Aug 2023 16:06:08 -0700 (PDT)
+Received: from smtpclient.apple ([45.85.144.222])
+        by smtp.gmail.com with ESMTPSA id js2-20020a05622a808200b003e0945575dasm259736qtb.1.2023.08.03.16.06.07
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 03 Aug 2023 16:06:07 -0700 (PDT)
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+From:   Joel Fernandes <joel@joelfernandes.org>
+Mime-Version: 1.0 (1.0)
+Subject: Re: [PATCH 1/2] docs: rcu: Add cautionary note on plain-accesses to requirements
+Date:   Thu, 3 Aug 2023 19:05:57 -0400
+Message-Id: <6B0A9441-5DB5-476B-B94C-F0BDF1505095@joelfernandes.org>
+References: <D3D65E05-AC98-43EA-8B66-CA63E94C1C80@gmail.com>
+Cc:     linux-kernel@vger.kernel.org, rcu@vger.kernel.org,
+        Will Deacon <will@kernel.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Zqiang <qiang.zhang1211@gmail.com>,
+        Jonathan Corbet <corbet@lwn.net>
+In-Reply-To: <D3D65E05-AC98-43EA-8B66-CA63E94C1C80@gmail.com>
+To:     Alan Huang <mmpgouride@gmail.com>
+X-Mailer: iPhone Mail (20B101)
+X-Spam-Status: No, score=-0.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLACK autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tao Ren <rentao.bupt@gmail.com>
 
-Set eMMC max frequency to 25MHz to prevent intermittent eMMC access
-failures.
 
-Signed-off-by: Tao Ren <rentao.bupt@gmail.com>
----
- arch/arm/boot/dts/aspeed/aspeed-bmc-facebook-wedge400.dts | 1 +
- 1 file changed, 1 insertion(+)
+> On Aug 3, 2023, at 3:26 PM, Alan Huang <mmpgouride@gmail.com> wrote:
+>=20
+> =EF=BB=BF
+>> 2023=E5=B9=B48=E6=9C=884=E6=97=A5 00:01=EF=BC=8CJoel Fernandes <joel@joel=
+fernandes.org> =E5=86=99=E9=81=93=EF=BC=9A
+>>=20
+>>> On Thu, Aug 3, 2023 at 9:36=E2=80=AFAM Alan Huang <mmpgouride@gmail.com>=
+ wrote:
+>>>=20
+>>>=20
+>>>> 2023=E5=B9=B48=E6=9C=883=E6=97=A5 =E4=B8=8B=E5=8D=888:35=EF=BC=8CJoel Fe=
+rnandes <joel@joelfernandes.org> =E5=86=99=E9=81=93=EF=BC=9A
+>>>>=20
+>>>>=20
+>>>>=20
+>>>>> On Aug 3, 2023, at 8:09 AM, Alan Huang <mmpgouride@gmail.com> wrote:
+>>>>>=20
+>>>>> =EF=BB=BF
+>>>>>> 2023=E5=B9=B48=E6=9C=883=E6=97=A5 11:24=EF=BC=8CJoel Fernandes (Googl=
+e) <joel@joelfernandes.org> =E5=86=99=E9=81=93=EF=BC=9A
+>>>>>>=20
+>>>>>> Add a detailed note to explain the potential side effects of
+>>>>>> plain-accessing the gp pointer using a plain load, without using the
+>>>>>> rcu_dereference() macros; which might trip neighboring code that does=
 
-diff --git a/arch/arm/boot/dts/aspeed/aspeed-bmc-facebook-wedge400.dts b/arch/arm/boot/dts/aspeed/aspeed-bmc-facebook-wedge400.dts
-index 5c55afed946f..d17b977fee9b 100644
---- a/arch/arm/boot/dts/aspeed/aspeed-bmc-facebook-wedge400.dts
-+++ b/arch/arm/boot/dts/aspeed/aspeed-bmc-facebook-wedge400.dts
-@@ -367,6 +367,7 @@ &uhci {
- };
- 
- &sdhci1 {
-+	max-frequency = <25000000>;
- 	/*
- 	 * DMA mode needs to be disabled to avoid conflicts with UHCI
- 	 * Controller in AST2500 SoC.
--- 
-2.40.1
+>>>>>> use rcu_dereference().
+>>>>>>=20
+>>>>>> I haven't verified this with a compiler, but this is what I gather fr=
+om
+>>>>>> the below link using Will's experience with READ_ONCE().
+>>>>>>=20
+>>>>>> Link: https://lore.kernel.org/all/20230728124412.GA21303@willie-the-t=
+ruck/
+>>>>>> Cc: Will Deacon <will@kernel.org>
+>>>>>> Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+>>>>>> ---
+>>>>>> .../RCU/Design/Requirements/Requirements.rst  | 32 ++++++++++++++++++=
++
+>>>>>> 1 file changed, 32 insertions(+)
+>>>>>>=20
+>>>>>> diff --git a/Documentation/RCU/Design/Requirements/Requirements.rst b=
+/Documentation/RCU/Design/Requirements/Requirements.rst
+>>>>>> index f3b605285a87..e0b896d3fb9b 100644
+>>>>>> --- a/Documentation/RCU/Design/Requirements/Requirements.rst
+>>>>>> +++ b/Documentation/RCU/Design/Requirements/Requirements.rst
+>>>>>> @@ -376,6 +376,38 @@ mechanism, most commonly locking or reference co=
+unting
+>>>>>> .. |high-quality implementation of C11 memory_order_consume [PDF]| re=
+place:: high-quality implementation of C11 ``memory_order_consume`` [PDF]
+>>>>>> .. _high-quality implementation of C11 memory_order_consume [PDF]: ht=
+tp://www.rdrop.com/users/paulmck/RCU/consume.2015.07.13a.pdf
+>>>>>>=20
+>>>>>> +Note that, there can be strange side effects (due to compiler optimi=
+zations) if
+>>>>>> +``gp`` is ever accessed using a plain load (i.e. without ``READ_ONCE=
+()`` or
+>>>>>> +``rcu_dereference()``) potentially hurting any succeeding
+>>>>>> +``rcu_dereference()``. For example, consider the code:
+>>>>>> +
+>>>>>> +   ::
+>>>>>> +
+>>>>>> +       1 bool do_something_gp(void)
+>>>>>> +       2 {
+>>>>>> +       3   void *tmp;
+>>>>>> +       4   rcu_read_lock();
+>>>>>> +       5   tmp =3D gp; // Plain-load of GP.
+>>>>>> +       6   printk("Point gp =3D %p\n", tmp);
+>>>>>> +       7
+>>>>>> +       8   p =3D rcu_dereference(gp);
+>>>>>> +       9   if (p) {
+>>>>>> +      10     do_something(p->a, p->b);
+>>>>>> +      11     rcu_read_unlock();
+>>>>>> +      12     return true;
+>>>>>> +      13   }
+>>>>>> +      14   rcu_read_unlock();
+>>>>>> +      15   return false;
+>>>>>> +      16 }
+>>>>>> +
+>>>>>> +The behavior of plain accesses involved in a data race is non-determ=
+inistic in
+>>>>>> +the face of compiler optimizations. Since accesses to the ``gp`` poi=
+nter is
+>>>>>> +by-design a data race, the compiler could trip this code by caching t=
+he value
+>>>>>> +of ``gp`` into a register in line 5, and then using the value of the=
+ register
+>>>>>> +to satisfy the load in line 10. Thus it is important to never mix
+>>>>>=20
+>>>>> Will=E2=80=99s example is:
+>>>>>=20
+>>>>>  // Assume *ptr is initially 0 and somebody else writes it to 1
+>>>>>  // concurrently
+>>>>>=20
+>>>>>  foo =3D *ptr;
+>>>>>  bar =3D READ_ONCE(*ptr);
+>>>>>  baz =3D *ptr;
+>>>>>=20
+>>>>> Then the compiler is within its right to reorder it to:
+>>>>>=20
+>>>>> foo =3D *ptr;
+>>>>> baz =3D *ptr;
+>>>>> bar =3D READ_ONCE(*ptr);
+>>>>>=20
+>>>>> So, the result foo =3D=3D baz =3D=3D 0 but bar =3D=3D 1 is perfectly l=
+egal.
+>>>>=20
+>>>> Yes, a bad outcome is perfectly legal amidst data race. Who said it is n=
+ot legal?
+>>>=20
+>>> My understanding is that it is legal even without data race, and the com=
+piler only keeps the order of volatile access.
+>>=20
+>> Yes, but I can bet on it the author of the code would not have
+>> intended such an outcome, if they did then Will wouldn't have been
+>> debugging it ;-). That's why I called it a bad outcome. The goal of
+>> this patch is to document such a possible unintentional outcome.
 
+Please trim replies if possible.
+
+>>=20
+>>>>> But the example here is different,
+>>>>=20
+>>>> That is intentional. Wills discussion partially triggered this. Though I=
+ am wondering
+>>>> if we should document that as well.
+>>>>=20
+>>>>> the compiler can not use the value loaded from line 5
+>>>>> unless the compiler can deduce that the tmp is equals to p in which ca=
+se the address dependency
+>>>>> doesn=E2=80=99t exist anymore.
+>>>>>=20
+>>>>> What am I missing here?
+>>>>=20
+>>>> Maybe you are trying to rationalize too much that the sequence mentione=
+d cannot result
+>>>> in a counter intuitive outcome like I did?
+>>>>=20
+>>>> The point AFAIU is not just about line 10 but that the compiler can rep=
+lace any of the
+>>>> lines after the plain access with the cached value.
+>>>=20
+>>> Well, IIUC, according to the C standard, the compiler can do anything if=
+ there is a data race (undefined behavior).
+>>>=20
+>>> However, what if a write is not protected with WRITE_ONCE and the read i=
+s marked with READ_ONCE?
+>>> That=E2=80=99s also a data race, right? But the kernel considers it is O=
+kay if the write is machine word aligned.
+>>=20
+>> Yes, but there is a compiler between the HLL code and what the
+>> processor sees which can tear the write. How can not using
+>> WRITE_ONCE() prevent store-tearing? See [1]. My understanding is that
+>> it is OK only if the reader did a NULL check. In that case the torn
+>=20
+> Yes, a write-write data race where the value is the same is also fine.
+>=20
+> But they are still data race, if the compiler is within its right to do an=
+ything it likes (due to data race),
+> we still need WRITE_ONCE() in these cases, though it=E2=80=99s semanticall=
+y safe.
+>=20
+> IIUC, even with _ONCE(), the compiler is within its right do anything acco=
+rding to the standard (at least before the upcoming C23), because the standa=
+rd doesn=E2=80=99t consider a volatile access to be atomic.
+>=20
+> However, the kernel consider the volatile access to be atomic, right?
+>=20
+> BTW, line 5 in the example is likely to be optimized away. And yes, the co=
+mpiler can cache the value loaded from line 5 from the perspective of undefi=
+ned behavior, even if I believe it would be a compiler bug from the perspect=
+ive of kernel.
+
+I am actually a bit lost with what you are trying to say.  Are you saying th=
+at mixing
+plain accesses with marked accesses is an acceptable practice?=20
+
+I would like others to weight in as well since I am not seeing what Alan is s=
+uggesting.
+AFAICS, in the absence of barrier(), any optimization caused by plain access=
+
+makes it a bad practice to mix it.
+
+Thanks,
+
+- Joel
+
+
+
+>=20
+>> result will not change the semantics of the program. But otherwise,
+>> that's bad.
+>>=20
+>> [1] https://lwn.net/Articles/793253/#Store%20Tearing
+>>=20
+>> thanks,
+>>=20
+>> - Joel
+>>=20
+>>=20
+>>>=20
+>>>>=20
+>>>> Thanks.
+>>>>=20
+>>>>=20
+>>>>=20
+>>>>>=20
+>>>>>> +plain accesses of a memory location with rcu_dereference() of the sa=
+me memory
+>>>>>> +location, in code involved in a data race.
+>>>>>> +
+>>>>>> In short, updaters use rcu_assign_pointer() and readers use
+>>>>>> rcu_dereference(), and these two RCU API elements work together to
+>>>>>> ensure that readers have a consistent view of newly added data elemen=
+ts.
+>>>>>> --
+>>>>>> 2.41.0.585.gd2178a4bd4-goog
+>=20
+>=20
