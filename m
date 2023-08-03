@@ -2,123 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0027876E332
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 10:34:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 90A9A76E333
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 10:34:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234464AbjHCIeE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Aug 2023 04:34:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55482 "EHLO
+        id S234681AbjHCIeR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Aug 2023 04:34:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55532 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234395AbjHCIdl (ORCPT
+        with ESMTP id S232766AbjHCIdz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Aug 2023 04:33:41 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE9CF6A64
-        for <linux-kernel@vger.kernel.org>; Thu,  3 Aug 2023 01:30:04 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 04292219A8;
-        Thu,  3 Aug 2023 08:30:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1691051402; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=+A3S/t0eENT61stOMbzhe8kTGnHpYs6gn53RtTgGqxw=;
-        b=WDPCL1KB+i9DJq0kWI350SXRaubwMyrE9JA1gqDdYyQdJl970afGMrX5fJjO2up0EncdaY
-        Z+Y4mC//lJqxFLVE0+Fso8+DPHDblCWF3EsVIMp89yIPfzSz8bI6nWJHNaMBBl0moZrjGi
-        5Wc9B7iqBRKITGEAlkuXqeTmP/RL1CE=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id D8B0A134B0;
-        Thu,  3 Aug 2023 08:30:01 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id AO6QMolly2TrUwAAMHmgww
-        (envelope-from <mhocko@suse.com>); Thu, 03 Aug 2023 08:30:01 +0000
-Date:   Thu, 3 Aug 2023 10:30:01 +0200
-From:   Michal Hocko <mhocko@suse.com>
-To:     Petr Mladek <pmladek@suse.com>
-Cc:     Doug Anderson <dianders@chromium.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        kernel test robot <lkp@intel.com>,
-        Lecopzer Chen <lecopzer.chen@mediatek.com>,
-        Pingfan Liu <kernelfans@gmail.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] watchdog/hardlockup: Avoid large stack frames in
- watchdog_hardlockup_check()
-Message-ID: <ZMtliXUFGptYKEra@dhcp22.suse.cz>
-References: <20230731091754.1.I501ab68cb926ee33a7c87e063d207abf09b9943c@changeid>
- <ZMkBY7K3Dn04YQ65@dhcp22.suse.cz>
- <CAD=FV=V5hx7Zy-XMB=sPYcD_h-iP5VknmEoJwvw3Akd_1wDnRw@mail.gmail.com>
- <ZMkkNpYcaYPAMj0Z@dhcp22.suse.cz>
- <CAD=FV=Ujmyq-1GAvNJsrp=mj_Vg=9b6fmfMfkHq3+8ZQ5KiaRw@mail.gmail.com>
- <ZMoFWK0uGdneJYVc@dhcp22.suse.cz>
- <CAD=FV=XQMH8sun7XCXJNjOC7tP1yt8=mt1NG3f8Xm9-x5TJFsA@mail.gmail.com>
- <ZMthXBpLzbbysTe5@alley>
+        Thu, 3 Aug 2023 04:33:55 -0400
+Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DCEDD4ED6
+        for <linux-kernel@vger.kernel.org>; Thu,  3 Aug 2023 01:30:22 -0700 (PDT)
+Received: by mail-wm1-x335.google.com with SMTP id 5b1f17b1804b1-3fbc244d384so7051925e9.0
+        for <linux-kernel@vger.kernel.org>; Thu, 03 Aug 2023 01:30:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1691051416; x=1691656216;
+        h=content-transfer-encoding:mime-version:date:message-id:subject
+         :references:in-reply-to:to:from:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=nNIwIsxjJmaxEOlzObqYJVtWFyFSXBlHeRED/hdg1QM=;
+        b=zkUcyVf3rAwfq2kXleCApjRklB37tbgUSpZJZcWihX4YqFsXhDPT08HsaeexVppIJN
+         BiU979I05J7Ofco1yJWqA2Selw2anFzQlMJ9b52bRDU5eSQu+4HDT3WaWhqRYYJNXco0
+         607gAj2kCIAI4OOaryKYJVoHAkZqOgEGJCeyy6Kv6afJRG6e8PnwJh82sAfN/mWJaieu
+         mMgdCZhaqDtzx4UUKqHD4XYciCWO4ial6KfutteiIblA0R2kN2yxKpd8vnQeAsp1Vawr
+         1wR4BsZQgBhVIZbRqxJ5os3lbxJnlsjlUtyZgsSFHhPAEDqNcyFQWozO1WWvxAGUcBuy
+         AGOg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691051416; x=1691656216;
+        h=content-transfer-encoding:mime-version:date:message-id:subject
+         :references:in-reply-to:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=nNIwIsxjJmaxEOlzObqYJVtWFyFSXBlHeRED/hdg1QM=;
+        b=G5Z1eJ6wQNf3uj1NQIgfYAAR0F76FYX7CkLD7lLIRy34Qkwug3maXuJj19Trn6oI93
+         Y/BmhwJCcoh1LSdiEe1eGPS9R2AuxOd7mrVlQK6lzz4eKBmjZVPFHOPXrRXxeUYp0q5O
+         sKBTOyEMhhbRrTu6cT0d7p+mo/FvxSnrciMgo4Dgdf9KwmUbI8k6N0inZ3hm6JblPYiW
+         0wPvfosWuHKUg+lfNtRmXKgcI61WsOpfHicd1vUGkV4hJ021U2bX50OEmQil2JkjLUQz
+         VMU4zjVe6g+Vdx0PN9FmIUYaa6bV4P3nUwjv8hUjtPeH366DtR+41WUHAlEmhNy0+iHb
+         3u8w==
+X-Gm-Message-State: ABy/qLYNNyktiS+cw+XWKyanfQCT6EjGu6vsq+Qdl3+of2vyc7kZOSI9
+        1CAjA8BNwPhevk9/tH2RfRZpRQ==
+X-Google-Smtp-Source: APBJJlEmlEgVB4qWrr+du5op9x/yldXQVJG0mpC1p+iIiQpwaJOgPx/9LF3cVhUUTgDcV982JHnuWw==
+X-Received: by 2002:a7b:c4c5:0:b0:3fe:19cf:93c9 with SMTP id g5-20020a7bc4c5000000b003fe19cf93c9mr6412813wmk.1.1691051415958;
+        Thu, 03 Aug 2023 01:30:15 -0700 (PDT)
+Received: from arrakeen.starnux.net ([2a01:e0a:982:cbb0:8261:5fff:fe11:bdda])
+        by smtp.gmail.com with ESMTPSA id e22-20020a05600c219600b003fc080acf68sm3646649wme.34.2023.08.03.01.30.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 03 Aug 2023 01:30:15 -0700 (PDT)
+From:   Neil Armstrong <neil.armstrong@linaro.org>
+To:     andrzej.hajda@intel.com, rfoss@kernel.org,
+        Laurent.pinchart@ideasonboard.com, jonas@kwiboo.se,
+        jernej.skrabec@gmail.com, airlied@gmail.com, daniel@ffwll.ch,
+        u.kleine-koenig@pengutronix.de, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org, Sandor Yu <Sandor.yu@nxp.com>
+In-Reply-To: <20230721124415.1513223-1-Sandor.yu@nxp.com>
+References: <20230721124415.1513223-1-Sandor.yu@nxp.com>
+Subject: Re: [PATCH] drm: bridge: dw_hdmi: Add cec suspend/resume functions
+Message-Id: <169105141513.2515343.11302551139534235865.b4-ty@linaro.org>
+Date:   Thu, 03 Aug 2023 10:30:15 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <ZMthXBpLzbbysTe5@alley>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Mailer: b4 0.12.3
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu 03-08-23 10:12:12, Petr Mladek wrote:
-> On Wed 2023-08-02 07:12:29, Doug Anderson wrote:
-> > Hi,
-> > 
-> > On Wed, Aug 2, 2023 at 12:27 AM Michal Hocko <mhocko@suse.com> wrote:
-> > >
-> > > On Tue 01-08-23 08:41:49, Doug Anderson wrote:
-> > > [...]
-> > > > Ah, I see what you mean. The one issue I have with your solution is
-> > > > that the ordering of the stack crawls is less ideal in the "dump all"
-> > > > case when cpu != this_cpu. We really want to see the stack crawl of
-> > > > the locked up CPU first and _then_ see the stack crawls of other CPUs.
-> > > > With your solution the locked up CPU will be interspersed with all the
-> > > > others and will be harder to find in the output (you've got to match
-> > > > it up with the "Watchdog detected hard LOCKUP on cpu N" message).
-> > > > While that's probably not a huge deal, it's nicer to make the output
-> > > > easy to understand for someone trying to parse it...
-> > >
-> > > Is it worth to waste memory for this arguably nicer output? Identifying
-> > > the stack of the locked up CPU is trivial.
-> > 
-> > I guess it's debatable, but as someone who has spent time staring at
-> > trawling through reports generated like this, I'd say "yes", it's
-> > super helpful in understanding the problem to have the hung CPU first.
-> > Putting the memory usage in perspective:
-> 
-> nmi_trigger_cpumask_backtrace() has its own copy of the cpu mask.
-> What about changing the @exclude_self parameter to @exclude_cpu
-> and do:
-> 
-> 	if (exclude_cpu >= 0)
-> 		cpumask_clear_cpu(exclude_cpu, to_cpumask(backtrace_mask));
-> 
-> 
-> It would require changing also arch_trigger_cpumask_backtrace() to
-> 
-> 	void arch_trigger_cpumask_backtrace(const struct cpumask *mask,
-> 				    int exclude_cpu);
-> 
-> but it looks doable.
+Hi,
 
-Yes, but sparc is doing its own thing so it would require changing that
-as well. But this looks reasonable as well.
+On Fri, 21 Jul 2023 20:44:15 +0800, Sandor Yu wrote:
+> CEC interrupt status/mask and logical address registers
+> will be reset when device enter suspend.
+> It will cause cec fail to work after device resume.
+> Add CEC suspend/resume functions, reinitialize logical address registers
+> and restore interrupt status/mask registers after resume.
+> 
+> 
+> [...]
+
+Thanks, Applied to https://anongit.freedesktop.org/git/drm/drm-misc.git (drm-misc-next)
+
+[1/1] drm: bridge: dw_hdmi: Add cec suspend/resume functions
+      https://cgit.freedesktop.org/drm/drm-misc/commit/?id=db1184e410744a680f92ca21e5acd5ae54510db8
 
 -- 
-Michal Hocko
-SUSE Labs
+Neil
+
