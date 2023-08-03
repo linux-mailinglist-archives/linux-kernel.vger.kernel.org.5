@@ -2,100 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0DFD076F3FE
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 22:21:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AC33576F3F8
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 22:20:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231496AbjHCUVm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Aug 2023 16:21:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47678 "EHLO
+        id S231129AbjHCUUt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Aug 2023 16:20:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47184 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229959AbjHCUVk (ORCPT
+        with ESMTP id S229500AbjHCUUr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Aug 2023 16:21:40 -0400
-Received: from mail-vs1-xe2d.google.com (mail-vs1-xe2d.google.com [IPv6:2607:f8b0:4864:20::e2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0623A4215
-        for <linux-kernel@vger.kernel.org>; Thu,  3 Aug 2023 13:21:40 -0700 (PDT)
-Received: by mail-vs1-xe2d.google.com with SMTP id ada2fe7eead31-4475af775c7so597900137.0
-        for <linux-kernel@vger.kernel.org>; Thu, 03 Aug 2023 13:21:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1691094099; x=1691698899;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=SSaRAjLMTa67lFk5QZwB/CpwmOcN1LDlBkoWiiPNHX0=;
-        b=S2LXdDKSgccv1prhAF8Z0oKo1xmicxyewP0ylBhuICK2rO/fsSjef3jFU/28NJ3Vh1
-         WyXNOi2jAPT0ODKE80piyhpf+XC+KO14qoq4Zoq9pxkFvuS+D2a8yfb562h8HIX6AEVF
-         ch5p1S7/7QdkjxqxTnXku3kQTsVPaQDaUh5EfbRUaCprqY2YJTNY+lFJ8hQOdhtnnyJ8
-         QqTaODyCa/GBNPH6fxj5g2iNTLieOqvxoez8ocqemnPGBtsl+ns4zbS4tkGe113R9mG/
-         EmWP7hTP8mPWwhpZzOshyk7rlRKtsUMGcRFGAd1dhHj6GV5xqfNRF4asRtTybLNxarB7
-         Y1MQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691094099; x=1691698899;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=SSaRAjLMTa67lFk5QZwB/CpwmOcN1LDlBkoWiiPNHX0=;
-        b=aBRwLl9ouM+m0mUYSo5Inyyvh2wAZ/SGJkSoWnU0r+Rqc6NNQuh+QcDdlPGbhPpi26
-         pHlKQ4wC3PKnI+cHr4VtOvz85G3wLaI9K8jawV62exyCm+pH2cQzVfGf98PhVseGth6p
-         t8T2JYswvUoR3aaATyA0FXApXloAS+aZTIeJJguICf0JX/UB/uDM+i9vci4jOuYcjAO/
-         Icvhi/lwQQKyHm8fSS4t1E0KMVOvLUxTEPScTXADhLaLe9LLMFWVw8W66j/sH6yf+DH1
-         O3J4GByTlvGI8cNIW71atzfGvdqbhtXGqtpuU5238CNHLDzrIHgpxg/fl+aAS3HsYNXN
-         t03w==
-X-Gm-Message-State: ABy/qLaJLPNkIXcmsBHsiPKCXHgB/2SsKx64KodfrwdcEo4yzAiZGoPM
-        +BI3NqpVxspiNG9EHYxqoCzKClls4pYtbD8o/UkzZJi4/b/Wkg==
-X-Google-Smtp-Source: APBJJlG1CySCstG+XEKldbhygdyS13vjgjak8avQeTacOxbhbG8cLi/Juych8hTizx9FjNhgErCFMh1d0Escb3V3rHQ=
-X-Received: by 2002:a67:bb04:0:b0:443:895d:1b53 with SMTP id
- m4-20020a67bb04000000b00443895d1b53mr8351230vsn.10.1691094099065; Thu, 03 Aug
- 2023 13:21:39 -0700 (PDT)
+        Thu, 3 Aug 2023 16:20:47 -0400
+Received: from smtpout.efficios.com (unknown [IPv6:2607:5300:203:b2ee::31e5])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 001453C31
+        for <linux-kernel@vger.kernel.org>; Thu,  3 Aug 2023 13:20:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=efficios.com;
+        s=smtpout1; t=1691094045;
+        bh=BwnJAGUwchCSnvzB/KGsSRuhJg4k+rsw5IMNlMkgsp8=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=RSNOnEaMWGmLsv9ODuWXm+7huUquqeLYyuv8Ga2nFPnJy7Fhl0CrrWK3bCkGftXI1
+         gfVDtSRH5es1Da+1DYGyqegKMjsaXllX09j9IsyUFIaE82owtMJwriv3vbRWfcWKqi
+         iFndSuMEqKnmtMKnOIulMQ0zmzfwnCrmlctsqYVB5H/0ez2grPvE5ejh4o+T8Lt+vk
+         Flv6ZOIOGtbDiZpBh14TE2ZM8KjLpUp1xrhsHeaZ/a3dhvQBYV9T6CmwDUxruva6iE
+         U4jVNmxgO9Ng/FHMpJxKzHqDCG4obmaV8s1gNTAvYAiHriK8LTEM2CpPxR7bhxoyIV
+         3HfzKx+gxOnWw==
+Received: from [IPV6:2605:59c8:2711:c800::c66] (unknown [IPv6:2605:59c8:2711:c800::c66])
+        by smtpout.efficios.com (Postfix) with ESMTPSA id 4RH0bJ0pyRz1KHD;
+        Thu,  3 Aug 2023 16:20:44 -0400 (EDT)
+Message-ID: <becdb227-cd7c-7724-f79e-f5ee70692e42@efficios.com>
+Date:   Thu, 3 Aug 2023 16:21:37 -0400
 MIME-Version: 1.0
-References: <20230801170255.163237-21-jim.cromie@gmail.com> <202308031432.fcb4197-oliver.sang@intel.com>
-In-Reply-To: <202308031432.fcb4197-oliver.sang@intel.com>
-From:   jim.cromie@gmail.com
-Date:   Thu, 3 Aug 2023 14:21:13 -0600
-Message-ID: <CAJfuBxzq_5skGRkcdK9kJBE_qL8X_waq88XsUO-FHyVQkQUb4w@mail.gmail.com>
-Subject: Re: [Intel-gfx] [PATCH v5 19/22] drm: restore CONFIG_DRM_USE_DYNAMIC_DEBUG
- un-BROKEN
-To:     kernel test robot <oliver.sang@intel.com>
-Cc:     oe-lkp@lists.linux.dev, lkp@intel.com,
-        dri-devel@lists.freedesktop.org, daniel.vetter@ffwll.ch,
-        daniel@ffwll.ch, jbaron@akamai.com, gregkh@linuxfoundation.org,
-        linux-kernel@vger.kernel.org, amd-gfx@lists.freedesktop.org,
-        intel-gvt-dev@lists.freedesktop.org,
-        intel-gfx@lists.freedesktop.org, jani.nikula@intel.com,
-        linux@rasmusvillemoes.dk, seanpaul@chromium.org, joe@perches.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [RFC PATCH 1/1] sched: Extend cpu idle state for 1ms
+Content-Language: en-US
+To:     Aaron Lu <aaron.lu@intel.com>
+Cc:     Shrikanth Hegde <sshegde@linux.vnet.ibm.com>,
+        linux-kernel@vger.kernel.org, Ingo Molnar <mingo@redhat.com>,
+        Valentin Schneider <vschneid@redhat.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Swapnil Sapkal <Swapnil.Sapkal@amd.com>, x86@kernel.org,
+        Peter Zijlstra <peterz@infradead.org>,
+        Srikar Dronamraju <srikar@linux.vnet.ibm.com>
+References: <20230725193048.124796-1-mathieu.desnoyers@efficios.com>
+ <69076f8e-191b-2e3e-d810-ea72d8ff18bb@linux.vnet.ibm.com>
+ <79fa8a62-a74e-2623-9f03-1f1af85b6c07@efficios.com>
+ <cab82676-27fd-b4e1-2cd8-3d8d26b44aa0@linux.vnet.ibm.com>
+ <447f756c-9c79-f801-8257-a97cc8256efe@efficios.com>
+ <20230801072403.GA20269@ziqianlu-dell>
+From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+In-Reply-To: <20230801072403.GA20269@ziqianlu-dell>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RDNS_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 3, 2023 at 1:14=E2=80=AFAM kernel test robot <oliver.sang@intel=
-.com> wrote:
->
->
-> hi, Jim Cromie,
->
-> we send this report to you to consult that if there is any limitation to =
-use
-> this CONFIG_DRM_USE_DYNAMIC_DEBUG?
-> attached config is a randconfig which has CONFIG_DRM_USE_DYNAMIC_DEBUG, t=
-he
-> kernel built with it failed to boot in our tests, but we also tested with=
- some
-> other config then the issue cannot reproduce.
->
+On 8/1/23 03:24, Aaron Lu wrote:
+> On Wed, Jul 26, 2023 at 02:56:19PM -0400, Mathieu Desnoyers wrote:
+> 
+> ... ...
+> 
+>> The updated patch:
+>>
+>> diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+>> index a68d1276bab0..1c7d5bd2968b 100644
+>> --- a/kernel/sched/core.c
+>> +++ b/kernel/sched/core.c
+>> @@ -7300,6 +7300,10 @@ int idle_cpu(int cpu)
+>>   {
+>>   	struct rq *rq = cpu_rq(cpu);
+>> +	if (READ_ONCE(rq->nr_running) <= IDLE_CPU_DELAY_MAX_RUNNING &&
+>> +	    sched_clock_cpu(cpu_of(rq)) < READ_ONCE(rq->clock_idle) + IDLE_CPU_DELAY_NS)
+>> +		return 1;
+>> +
+>>   	if (rq->curr != rq->idle)
+>>   		return 0;
+>> diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
+>> index 81ac605b9cd5..57a49a5524f0 100644
+>> --- a/kernel/sched/sched.h
+>> +++ b/kernel/sched/sched.h
+>> @@ -97,6 +97,9 @@
+>>   # define SCHED_WARN_ON(x)      ({ (void)(x), 0; })
+>>   #endif
+>> +#define IDLE_CPU_DELAY_NS		1000000		/* 1ms */
+>> +#define IDLE_CPU_DELAY_MAX_RUNNING	4
+>> +
+>>   struct rq;
+>>   struct cpuidle_state;
+>>
+> 
+> I gave this patch a run on Intel SPR(2 sockets/112cores/224cpus) and I
+> also noticed huge improvement when running hackbench, especially for
+> group=32/fds=20 case:
+> 
+> when group=10/fds=20(400 tasks):
+>              time   wakeups/migration  tg->load_avg%
+> base:        43s  27874246/13953871      25%
+> this patch:  32s  33200766/244457         2%
+> my patch:    37s  29186608/16307254       2%
+> 
+> when group=20/fds=20(800 tasks):
+>              time   wakeups/migrations tg->load_avg%
+> base:        65s  27108751/16238701      27%
+> this patch:  45s  35718552/1691220        3%
+> my patch:    48s  37506974/24797284       2%
+> 
+> when group=32/fds=20(1280 tasks):
+>              time   wakeups/migrations tg->load_avg%
+> base:       150s  36902527/16423914      36%
+> this patch:  57s  30536830/6035346        6%
+> my patch:    73s  45264605/21595791       3%
+> 
+> One thing I noticed is, after this patch, the migration on wakeup path
+> has dramatically reduced(see above wakeups/migrations, the number were
+> captured for 5s during the run). I think this makes sense because now a
+> cpu is more likely to be considered idle so a wakeup task will more
+> likely stay on its prev_cpu. And when migrations is reduced, the cost of
+> accessing tg->load_avg is also reduced(tg->load_avg% is the sum of
+> update_cfs_group()% + update_load_avg()% as reported by perf). I think
+> this is part of the reason why performance improved on this machine.
+> 
+> Since I've been working on reducing the cost of accessing tg->load_avg[1],
+> I also gave my patch a run. According to the result, even when the cost
+> of accessing tg->load_avg is smaller for my patch, Mathieu's patch is
+> still faster. It's not clear to me why, maybe it has something to do
+> with cache reuse since my patch doesn't inhibit migration? I suppose ipc
+> could reflect this?
 
-Theres no limitation I know of - particularly not CONFIG related
+I've also noticed a drastic reduction in the number of migrations with 
+my patch. I have noticed that the behavior of select_task_rq changes 
+drastically, but I have not figured out why yet.
 
-on an earlier version, I saw some odd transient / red-herring
-linker-errors (collisions on __UNIQUE_ID constructs)
-on s390, mips, older gcc (iirc - I could go find it in lkp-reports if
-its meaningful)
-that had me hacking at the fallback which uses __LINE__
-But this seems different.
+I tried adding tons of schedstats counters within select_task_rq to try 
+to compare the decisions taken in the baseline vs modified 
+implementations of cpu_idle. I also tried to count how many times the 
+target task rq changes (which implies a migration) with a breakdown by 
+cause (which branch within select_task_rq cause it). I could not find a 
+clear culprit yet though (and I am currently on vacation, so not working 
+on this actively).
+
+Thanks,
+
+Mathieu
+
+
+> 
+> [1]: https://lore.kernel.org/lkml/20230718134120.81199-1-aaron.lu@intel.com/
+> 
+> Thanks,
+> Aaron
+
+-- 
+Mathieu Desnoyers
+EfficiOS Inc.
+https://www.efficios.com
+
