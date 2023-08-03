@@ -2,136 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7941C76EF4A
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 18:21:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2BDC376EF4F
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 18:23:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236326AbjHCQV2 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 3 Aug 2023 12:21:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57750 "EHLO
+        id S236088AbjHCQXd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Aug 2023 12:23:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58730 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235173AbjHCQV0 (ORCPT
+        with ESMTP id S235307AbjHCQXb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Aug 2023 12:21:26 -0400
-Received: from frasgout12.his.huawei.com (ecs-14-137-139-154.compute.hwclouds-dns.com [14.137.139.154])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15BE4E45;
-        Thu,  3 Aug 2023 09:21:25 -0700 (PDT)
-Received: from mail02.huawei.com (unknown [172.18.147.227])
-        by frasgout12.his.huawei.com (SkyGuard) with ESMTP id 4RGtzX3LLsz9v7cL;
-        Fri,  4 Aug 2023 00:07:52 +0800 (CST)
-Received: from [127.0.0.1] (unknown [10.204.63.22])
-        by APP1 (Coremail) with SMTP id LxC2BwAn27rj08tk6HI7AA--.882S2;
-        Thu, 03 Aug 2023 17:21:01 +0100 (CET)
-Message-ID: <5a938ee2f56f9ccf7df82f233fcf9c7ff310b4cb.camel@huaweicloud.com>
-Subject: Re: [RFC][PATCH 00/12] integrity: Introduce a digest cache
-From:   Roberto Sassu <roberto.sassu@huaweicloud.com>
-To:     zohar@linux.ibm.com, dmitry.kasatkin@gmail.com,
-        paul@paul-moore.com, jmorris@namei.org, serge@hallyn.com
-Cc:     linux-kernel@vger.kernel.org, linux-integrity@vger.kernel.org,
-        linux-security-module@vger.kernel.org, bpf@vger.kernel.org,
-        jarkko@kernel.org, pbrobinson@gmail.com, zbyszek@in.waw.pl,
-        hch@lst.de, mjg59@srcf.ucam.org,
-        Roberto Sassu <roberto.sassu@huawei.com>,
-        Panu Matilainen <pmatilai@redhat.com>
-Date:   Thu, 03 Aug 2023 18:20:47 +0200
-In-Reply-To: <20230721163326.4106089-1-roberto.sassu@huaweicloud.com>
-References: <20230721163326.4106089-1-roberto.sassu@huaweicloud.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-User-Agent: Evolution 3.44.4-0ubuntu2 
+        Thu, 3 Aug 2023 12:23:31 -0400
+Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com [67.231.149.25])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83D5230DB
+        for <linux-kernel@vger.kernel.org>; Thu,  3 Aug 2023 09:23:30 -0700 (PDT)
+Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
+        by mx0a-001ae601.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id 37367YIr018231;
+        Thu, 3 Aug 2023 11:23:14 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=
+        from:to:cc:subject:date:message-id:mime-version
+        :content-transfer-encoding:content-type; s=PODMain02222019; bh=z
+        sBLhUvAZHDtEeJFuObfMcXDnu2U4ZsRAv3wWenIgnM=; b=B4Dw/dRrJ+U7JPUPN
+        VaRl8JWuF0sbBjg9+9SC4xiKx007pf2fQ+pT0JCKRqjwr4yRU37Klrp13d0k6Zek
+        uskld2NZ+aWuBfokVhFoptLVWONlV6LfNVFPRMT8XJo+WwBUm1ZeV3Sch8QAqYFb
+        j7m49sUiRB9KBuxI38pxDv/rkzkSp7gAO/SKe+Lg+sZlVKWizRWXVrz9QWXsvqRt
+        KcXwuzN5/3p2qAIzApj9ov3D6xzInVcf1e2eEr0RySZuCnvacfODY7Msfuee/+Yj
+        jKWAAX78VC5oUzJxhvdjEAtDScIx+xNLM16xF9fVw3aEsj5X3jrs51O8n4wt2pSJ
+        xdfaw==
+Received: from ediex02.ad.cirrus.com ([84.19.233.68])
+        by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3s5gk1x6xb-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 03 Aug 2023 11:23:14 -0500 (CDT)
+Received: from ediex01.ad.cirrus.com (198.61.84.80) by ediex02.ad.cirrus.com
+ (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.30; Thu, 3 Aug
+ 2023 17:23:12 +0100
+Received: from ediswmail.ad.cirrus.com (198.61.86.93) by ediex01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server id 15.2.1118.30 via Frontend
+ Transport; Thu, 3 Aug 2023 17:23:12 +0100
+Received: from algalon.ad.cirrus.com (algalon.ad.cirrus.com [198.90.251.122])
+        by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 2BEDD3563;
+        Thu,  3 Aug 2023 16:23:12 +0000 (UTC)
+From:   Charles Keepax <ckeepax@opensource.cirrus.com>
+To:     <broonie@kernel.org>
+CC:     <pierre-louis.bossart@linux.intel.com>, <lgirdwood@gmail.com>,
+        <alsa-devel@alsa-project.org>, <linux-kernel@vger.kernel.org>,
+        <patches@opensource.cirrus.com>
+Subject: [PATCH] ASoC: soc-acpi: Add missing kernel doc
+Date:   Thu, 3 Aug 2023 17:23:12 +0100
+Message-ID: <20230803162312.117771-1-ckeepax@opensource.cirrus.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-X-CM-TRANSID: LxC2BwAn27rj08tk6HI7AA--.882S2
-X-Coremail-Antispam: 1UD129KBjvJXoWxAF4xAr1xZry8tryfJF43ZFb_yoW5WrWkp3
-        43Gr17JF1DJr18Jr17Jw47JryUGwsrJrWUJryrJry8Ar45Ar1kJr18tr1Fq34UCryDJF1U
-        Xr1UXw1UJr1UAaDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUkjb4IE77IF4wAFF20E14v26ryj6rWUM7CY07I20VC2zVCF04k2
-        6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-        vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Jr0_JF4l84ACjcxK6xIIjxv20xvEc7Cj
-        xVAFwI0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW8JVWxJwA2z4x0Y4vEx4A2jsIEc7CjxV
-        AFwI0_Gr0_Gr1UM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
-        x7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
-        0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1l42xK82IYc2Ij
-        64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x
-        8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r4a6rW5MIIYrxkI7VAKI48JMIIF0xvE
-        2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42
-        xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIE
-        c7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x07UZ18PUUUUU=
-X-CM-SenderInfo: purev21wro2thvvxqx5xdzvxpfor3voofrz/1tbiAQASBF1jj5I3JQAHsh
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-0.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_BL,RCVD_IN_MSPIKE_L3,RDNS_DYNAMIC,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=no
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Proofpoint-GUID: E5ZRspWyMbP0Hdb1q7WxMkEWoQYHyjS0
+X-Proofpoint-ORIG-GUID: E5ZRspWyMbP0Hdb1q7WxMkEWoQYHyjS0
+X-Proofpoint-Spam-Reason: safe
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 2023-07-21 at 18:33 +0200, Roberto Sassu wrote:
-> From: Roberto Sassu <roberto.sassu@huawei.com>
+The UID field in snd_soc_acpi_link_adr is not documented, add kernel doc
+for it.
 
-[...]
+Signed-off-by: Charles Keepax <ckeepax@opensource.cirrus.com>
+---
+ include/sound/soc-acpi.h | 1 +
+ 1 file changed, 1 insertion(+)
 
-> The last part I wanted to talk about is about the digest list parsers. This
-> was a long debate. In the original proposal, Matthew Garrett and Christoph
-> Hellwig said that adding parsers in the kernel is not scalable and not a
-> good idea in general. While I do agree with them, I'm also thinking what
-> benefits we get if we relax a bit this requirement. If we merge this patch
-
-I tried to mitigate the risk of adding unsafe code to the kernel by
-verifying the parsers with a formal verification tool, Frama-C.
-
-The verified code can be accessed here, and contains all the necessary
-dependencies (so that the kernel is not involved):
-
-https://github.com/robertosassu/rpm-formal
-
-I added some assertions, to ensure that for any given input, the parser
-does not try to reference memory outside the assigned memory area.
-
-I also tried to enforce finite termination by making the number of
-loops dependent on the passed data length.
-
-The output I get is the following:
-
-[eva:summary] ====== ANALYSIS SUMMARY ======
-  ----------------------------------------------------------------------------
-  13 functions analyzed (out of 13): 100% coverage.
-  In these functions, 232 statements reached (out of 251): 92% coverage.
-  ----------------------------------------------------------------------------
-  Some errors and warnings have been raised during the analysis:
-    by the Eva analyzer:      0 errors    2 warnings
-    by the Frama-C kernel:    0 errors    0 warnings
-  ----------------------------------------------------------------------------
-  0 alarms generated by the analysis.
-  ----------------------------------------------------------------------------
-  Evaluation of the logical properties reached by the analysis:
-    Assertions        5 valid     0 unknown     0 invalid      5 total
-    Preconditions    25 valid     0 unknown     0 invalid     25 total
-  100% of the logical properties reached have been proven.
-  ----------------------------------------------------------------------------
-
-The warnings are:
-
-[eva] validate_tlv.c:353: Warning: 
-  this partitioning parameter cannot be evaluated safely on all states
-
-[eva] validate_tlv.c:381: Warning: 
-  this partitioning parameter cannot be evaluated safely on all states
-
-Not sure how I can make them go away. Anyway, the assertions are
-successful.
-
-I verified the parsers with both deterministic (random but valid) and
-non-deterministic (random and possibly invalid) data. For deterministic
-data, I also verified that bytes at a specific location have the
-expected value.
-
-Due to the increasing complexity, the analysis was not done on
-arbitrary lengths and value ranges (it would probably require a
-different type of analysis).
-
-Thanks
-
-Roberto
+diff --git a/include/sound/soc-acpi.h b/include/sound/soc-acpi.h
+index 630bf7367fe69..6d31d535e8f6d 100644
+--- a/include/sound/soc-acpi.h
++++ b/include/sound/soc-acpi.h
+@@ -151,6 +151,7 @@ struct snd_soc_acpi_link_adr {
+  * all firmware/topology related fields.
+  *
+  * @id: ACPI ID (usually the codec's) used to find a matching machine driver.
++ * @uid: ACPI Unique ID, can be used to disambiguate matches.
+  * @comp_ids: list of compatible audio codecs using the same machine driver,
+  * firmware and topology
+  * @link_mask: describes required board layout, e.g. for SoundWire.
+-- 
+2.30.2
 
