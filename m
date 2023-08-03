@@ -2,71 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F2DB776E679
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 13:12:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F42A76E678
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 13:12:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234768AbjHCLMd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Aug 2023 07:12:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49128 "EHLO
+        id S233866AbjHCLM0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Aug 2023 07:12:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49952 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235377AbjHCLMK (ORCPT
+        with ESMTP id S233753AbjHCLMJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Aug 2023 07:12:10 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE9D0194;
-        Thu,  3 Aug 2023 04:12:08 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 472E961D48;
-        Thu,  3 Aug 2023 11:12:08 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A4482C433C8;
-        Thu,  3 Aug 2023 11:12:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691061127;
-        bh=av6QLmq7mZk/KKzdLsX8yuroV+yWJ1hYNB3yUoBCbMg=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=oB/CyKuZvPVUbfcryARxZqZe0/jZfSTweFqyMMicHkbJoOMJV5QrTBMS1YsKbbsjc
-         nsWD5YMrJ4xfwqJhy8uZgCI/aLm+V09N4tM+Fx1YU0VPBG0WAVzoDogbf9wfpFG+xd
-         5h2/RXGfUbsxVAdVmpDKzX9uZYvYbD+cZlLDjoPVhn5tnEiBfbpwYBouk1POFo2FIE
-         1zWzg0akpt9Jin1PEac/oysrbWbvBF0ogNlZ+LekYxObeaELaYt45QwFiYB1YC+gkx
-         VGFaZBT6jqSsGg5WdUFOvfnRhs9tH39cxNGJ3islaYcZL0fEKH2sTzJJwRFlVJvFD+
-         i+4BaPzywFlOA==
-Received: by mail-lf1-f41.google.com with SMTP id 2adb3069b0e04-4fe457ec6e7so1471553e87.3;
-        Thu, 03 Aug 2023 04:12:07 -0700 (PDT)
-X-Gm-Message-State: ABy/qLazSEGXRL6qrSAbldGcMckh75uRnQaUAHN8SxDj8UGyJMu6/UCv
-        BViS9kWZuLK8Y5gP7/fQaH8hpC1pGh3+Z2R720Q=
-X-Google-Smtp-Source: APBJJlEJ93MvIGUndqu8Si47s/X2+L5bPNIyZxqOnu6uKKEgvE7pJC0uyW9bvGjhrxUNiBKEg7r/N8J9VOt368LcBBU=
-X-Received: by 2002:ac2:4945:0:b0:4fe:1dc8:7ec with SMTP id
- o5-20020ac24945000000b004fe1dc807ecmr6327486lfi.37.1691061125634; Thu, 03 Aug
- 2023 04:12:05 -0700 (PDT)
+        Thu, 3 Aug 2023 07:12:09 -0400
+Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF698122
+        for <linux-kernel@vger.kernel.org>; Thu,  3 Aug 2023 04:12:04 -0700 (PDT)
+Received: by mail-ed1-x534.google.com with SMTP id 4fb4d7f45d1cf-522bc9556f5so1077340a12.0
+        for <linux-kernel@vger.kernel.org>; Thu, 03 Aug 2023 04:12:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1691061123; x=1691665923;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=b0XelJdYR6bFWh5mhR2ZVrgJG5GvsMHFZq9tsYSBv50=;
+        b=RAYVrN3/oSONSI5EIj17kn4cvUfL7T2zcsxJtlY48R+Y5o+63RLn4THxDli5FKyCll
+         ygeNzzIvrImm661r80k9QLnj4MjILAgI0HE587WmYQu7XmuxqYhb5L2e9A0U8Bv2xwpP
+         h8mXXQJqRiD/24TI3k33m/gOM56UALt5l3U1DKpiJhGV9d5V3w44KrqKndfO40ijBhnY
+         1Oc3/VcYW0D76OhTnGguVjFxbHI/ettYfKzLAYDkLxBufjob/s2/7pDH+bYhGKQ1cmhX
+         4QcfI2S+cBEU951S5NNGRl5odvicaIp1JaTdY2vafTSXi5uTvTvRz04otE5inq6lVHBN
+         7XVw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691061123; x=1691665923;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=b0XelJdYR6bFWh5mhR2ZVrgJG5GvsMHFZq9tsYSBv50=;
+        b=YLnXNBWRpDOqnkTTbFm/pmenaprLW4W5h5ij+1X1/ghlR5psfruWuif1dBU7OHwSY/
+         SGHD5API2L/LOZ1d/2HegXbx+VMB1775hkkA2M0pS+sHTbYsGWBe+mKiU5D/mlT78sNN
+         DMc+t1Mpz6c1uvUx6reyT6p/hqf2s2EXQ59eh43hsfX/yTeL6Wisn0hEfcifB9YmEKdX
+         quwhbLFKCKJMtwOCtQ0VZPmcCQn4E+h3LFScjuTtljI4WDvneag4Zgkib5yu7PL6Oc8/
+         zXQxCdVhP+HcY54I5na7cKXoG0NTtPc6tgLpHWx2fmtvD6JVzja7NGtQvXCtkQfDtXpL
+         Ug5w==
+X-Gm-Message-State: ABy/qLby2z+4uNV+hmQfIUIxDLvYXYqvn16uh7G2jah9w4YssLdS9arm
+        D8Nsf8GVa0F0WKfuSkK9ygqRvw==
+X-Google-Smtp-Source: APBJJlGXauZv2QFpBai3rRvQFxkagKCLuV0/Neg15wZhqipdLYpxshqBMsN9vcvFDCmNYPeO+iJEvw==
+X-Received: by 2002:aa7:c0d5:0:b0:522:bff2:dd20 with SMTP id j21-20020aa7c0d5000000b00522bff2dd20mr7473778edp.13.1691061123200;
+        Thu, 03 Aug 2023 04:12:03 -0700 (PDT)
+Received: from [192.168.1.20] ([178.197.222.245])
+        by smtp.gmail.com with ESMTPSA id o12-20020aa7d3cc000000b00522d88e8c55sm4584793edr.91.2023.08.03.04.12.02
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 03 Aug 2023 04:12:02 -0700 (PDT)
+Message-ID: <8b47da4b-ec68-40f1-c3eb-939dcfa7550e@linaro.org>
+Date:   Thu, 3 Aug 2023 13:12:01 +0200
 MIME-Version: 1.0
-References: <20230713100459.GEZK/MS69XbphJa+tN@fat_crate.local>
- <CAO7dBbVMNKTSDi5eP4BseEUexsk0Mo0GWJpyHfOcp+tHs6cSUw@mail.gmail.com>
- <20230717141409.GGZLVMsU6d/9mpJvMO@fat_crate.local> <CAO7dBbXJv9JzDbSa-DLT03+osYCQXNUXFwz63gbq=NGDxEVyEA@mail.gmail.com>
- <20230728165535.GDZMPzB/ek5QM+xJqA@fat_crate.local> <CAO7dBbVyuLHH6RfdVQkU5ThXaJ-F4yvFAYD1PDNGkOpph9xvnA@mail.gmail.com>
- <20230802093927.GAZMokT57anC5jBISK@fat_crate.local> <99cb3813-1737-9d10-1f24-77565e460c55@amd.com>
- <20230802135856.GBZMphIHHLa3dXRRVe@fat_crate.local> <CAMj1kXEM5hGknVGwHh_w99D4L8yrYrTFycwGHZ0CQun70CLipw@mail.gmail.com>
- <20230802155146.GCZMp7ksDdN2ETVzKV@fat_crate.local>
-In-Reply-To: <20230802155146.GCZMp7ksDdN2ETVzKV@fat_crate.local>
-From:   Ard Biesheuvel <ardb@kernel.org>
-Date:   Thu, 3 Aug 2023 13:11:54 +0200
-X-Gmail-Original-Message-ID: <CAMj1kXHnSzdQw5CMAVXU7EzpnrdRvAqKZVgA+EV35kHmwVULgQ@mail.gmail.com>
-Message-ID: <CAMj1kXHnSzdQw5CMAVXU7EzpnrdRvAqKZVgA+EV35kHmwVULgQ@mail.gmail.com>
-Subject: Re: [PATCH v2] x86/kexec: Add EFI config table identity mapping for
- kexec kernel
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     =?UTF-8?B?SsO2cmcgUsO2ZGVs?= <joro@8bytes.org>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Tao Liu <ltao@redhat.com>, Michael Roth <michael.roth@amd.com>,
-        tglx@linutronix.de, mingo@redhat.com, dave.hansen@linux.intel.com,
-        x86@kernel.org, hpa@zytor.com, linux-kernel@vger.kernel.org,
-        bhe@redhat.com, dyoung@redhat.com, kexec@lists.infradead.org,
-        linux-efi@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.1
+Subject: Re: [PATCH v6 1/2] dt-bindings: input: i2c-hid: Introduce Ilitek
+ ili9882t
+To:     Cong Yang <yangcong5@huaqin.corp-partner.google.com>,
+        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+        conor+dt@kernel.org, dmitry.torokhov@gmail.com,
+        dianders@google.com, jikos@kernel.org,
+        benjamin.tissoires@redhat.com, hsinyi@google.com
+Cc:     linux-input@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20230802071947.1683318-1-yangcong5@huaqin.corp-partner.google.com>
+ <20230802071947.1683318-2-yangcong5@huaqin.corp-partner.google.com>
+Content-Language: en-US
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <20230802071947.1683318-2-yangcong5@huaqin.corp-partner.google.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -75,50 +81,23 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2 Aug 2023 at 17:52, Borislav Petkov <bp@alien8.de> wrote:
->
-> On Wed, Aug 02, 2023 at 04:55:27PM +0200, Ard Biesheuvel wrote:
-> > ... because now, entering via startup_32 is broken, given that it only
-> > maps the kernel image itself and relies on the #PF handling for
-> > everything else it accesses, including firmware tables.
-> >
-> > AFAICT this also means that entering via startup_32 is broken entirely
-> > for any configuration that enables the cc blob config table check,
-> > regardless of the platform.
->
-> Lemme brain-dump what Tom and I just talked on IRC.
->
-> That startup_32 entry path for SNP guests was used with old grubs which
-> used to enter through there and not anymore, reportedly. Which means,
-> that must've worked at some point but Joerg would know. CCed.
->
+On 02/08/2023 09:19, Cong Yang wrote:
+> The ili9882t touch screen chip same as Elan eKTH6915 controller
+> has a reset gpio. The difference is that ili9882t needs to use
+> vccio-supply instead of vcc33-supply. Doug's series[1] allows panels
+> and touchscreens to power on/off together, let's add a phandle for this.
+> 
+> [1]: https://lore.kernel.org/r/20230607215224.2067679-1-dianders@chromium.org
+> 
+> Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+> Signed-off-by: Cong Yang <yangcong5@huaqin.corp-partner.google.com>
+> ---
+>  .../bindings/input/ilitek,ili9882t.yaml       | 67 +++++++++++++++++++
+>  1 file changed, 67 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/input/ilitek,ili9882t.yaml
 
-Sadly, not only 'old' grubs - GRUB mainline only recently added
-support for booting Linux/x86 via the EFI stub (because I wrote the
-code for them), but it will still fall back to the previous mode for
-kernels that are built without EFI stub support, or which are older
-than ~v5.8 (because their EFI stub does not implement the generic EFI
-initrd loading mechanism)
+It's v6 but this still misses the changelog.
 
-This fallback still appears to enter via startup_32, even when GRUB
-itself runs in long mode in the context of EFI.
+Best regards,
+Krzysztof
 
-> Newer grubs enter through the 64-bit entry point and thus are fine
-> - otherwise we would be seeing explosions left and right.
->
-
-Yeah. what seems to be saving our ass here is that startup_32 maps the
-first 1G of physical address space 4 times, and x86_64 EFI usually
-puts firmware tables below 4G. This means the cc blob check doesn't
-fault, but it may dereference bogus memory traversing the config table
-array looking for the cc blob GUID. However, the system table field
-holding the size of the array may also appear as bogus so this may
-still break in weird ways.
-
-> So dependent on what we wanna do, if we kill the 32-bit path, we can
-> kill the 32-bit C-bit verif code. But that's for later and an item on my
-> TODO list.
->
-
-I don't think we can kill it yet, but it would be nice if we could
-avoid the need to support SNP boot when entering that way.
