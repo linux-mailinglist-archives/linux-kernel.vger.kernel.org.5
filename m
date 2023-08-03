@@ -2,148 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C1D8076E671
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 13:11:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4AD2376E674
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 13:12:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235056AbjHCLLg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Aug 2023 07:11:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48460 "EHLO
+        id S232648AbjHCLMV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Aug 2023 07:12:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48584 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229446AbjHCLLP (ORCPT
+        with ESMTP id S232519AbjHCLMF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Aug 2023 07:11:15 -0400
-Received: from mailgw01.mediatek.com (unknown [60.244.123.138])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9232E3C34;
-        Thu,  3 Aug 2023 04:10:25 -0700 (PDT)
-X-UUID: 56366f4e31ee11ee9cb5633481061a41-20230803
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Type:Content-Transfer-Encoding:MIME-Version:Message-ID:Date:Subject:CC:To:From; bh=y1/bPs/BxFNXGqv9H1rzERGNtX0OyJ3swYdBbl4atw8=;
-        b=PiwlT4zTQLrBxUTvpO2LqKe3RXbRHrZI5s7jRxkt1Li47C31rASohhHiZ09f8cmFkVQR6Fuq6nimT9R6CgSYGWBLH/m0wH1pkYHLlny1CqPH4dheqMiuw2NwuQiG+oK6Imx+fRN7KtdcrReOXdWjGr5ImyVE2K6V60t1zO9B47k=;
-X-CID-P-RULE: Release_Ham
-X-CID-O-INFO: VERSION:1.1.30,REQID:3ca707d5-4d6d-44b1-9403-71d81f6d01a6,IP:0,U
-        RL:0,TC:0,Content:-5,EDM:0,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTION
-        :release,TS:-5
-X-CID-META: VersionHash:1fcc6f8,CLOUDID:99a6d9a0-0933-4333-8d4f-6c3c53ebd55b,B
-        ulkID:nil,BulkQuantity:0,Recheck:0,SF:102,TC:nil,Content:0,EDM:-3,IP:nil,U
-        RL:11|1,File:nil,Bulk:nil,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:
-        NO,DKR:0,DKP:0,BRR:0,BRE:0
-X-CID-BVR: 0
-X-CID-BAS: 0,_,0,_
-X-CID-FACTOR: TF_CID_SPAM_SNR,TF_CID_SPAM_ULN
-X-UUID: 56366f4e31ee11ee9cb5633481061a41-20230803
-Received: from mtkmbs11n1.mediatek.inc [(172.21.101.185)] by mailgw01.mediatek.com
-        (envelope-from <xiaoyong.lu@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
-        with ESMTP id 1716315439; Thu, 03 Aug 2023 19:10:21 +0800
-Received: from mtkmbs13n1.mediatek.inc (172.21.101.193) by
- mtkmbs10n2.mediatek.inc (172.21.101.183) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.26; Thu, 3 Aug 2023 19:10:19 +0800
-Received: from mhfsdcap04.gcn.mediatek.inc (10.17.3.154) by
- mtkmbs13n1.mediatek.inc (172.21.101.73) with Microsoft SMTP Server id
- 15.2.1118.26 via Frontend Transport; Thu, 3 Aug 2023 19:10:18 +0800
-From:   Xiaoyong Lu <xiaoyong.lu@mediatek.com>
-To:     Yunfei Dong <yunfei.dong@mediatek.com>,
-        Alexandre Courbot <acourbot@chromium.org>,
-        Nicolas Dufresne <nicolas@ndufresne.ca>,
-        "Hans Verkuil" <hverkuil-cisco@xs4all.nl>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        Benjamin Gaignard <benjamin.gaignard@collabora.com>,
-        Tiffany Lin <tiffany.lin@mediatek.com>,
-        Andrew-CT Chen <andrew-ct.chen@mediatek.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Tomasz Figa <tfiga@google.com>
-CC:     George Sun <george.sun@mediatek.com>,
-        Xiaoyong Lu <xiaoyong.lu@mediatek.com>,
-        Hsin-Yi Wang <hsinyi@chromium.org>,
-        Fritz Koenig <frkoenig@chromium.org>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        Irui Wang <irui.wang@mediatek.com>,
-        "Steve Cho" <stevecho@chromium.org>, <linux-media@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>,
-        <Project_Global_Chrome_Upstream_Group@mediatek.com>
-Subject: [v3] media: mediatek: vcodec: fix AV1 decoding on MT8188
-Date:   Thu, 3 Aug 2023 19:10:17 +0800
-Message-ID: <20230803111017.2418-1-xiaoyong.lu@mediatek.com>
-X-Mailer: git-send-email 2.25.1
+        Thu, 3 Aug 2023 07:12:05 -0400
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA68735A6;
+        Thu,  3 Aug 2023 04:11:55 -0700 (PDT)
+Received: from pps.filterd (m0279873.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 373AWJFf027628;
+        Thu, 3 Aug 2023 11:11:52 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=nIhYZQ2o7rdTlb24IfHDbwWufWVPzpCWsdj/IAyGH28=;
+ b=R9Byoya6EIDQFWw0TKmqyMpLIKTMY5egmjyoGa1wcy4//+G7o20KLbp9ma7O7qq/1DD2
+ bkrBrEtENaWqFCB1D4J8G2Nr0BB9mF5BM6iTfjk9jyrCFzkozOXGR0i2T1S+myQnBQHc
+ CqlautRyHZS4ohHoWY8uGwxs9ofMr+vGrtkbbyRpxY/fouoW5SBMVyzD2alDeGKj1NMF
+ xYkd6h53gcYo1vcaX8Ui4g6LhOsyC4+po0g8QXLHVGaDLOgYaN3VpAWP2JO8fYldMTEU
+ 5u5NRH6cXOMWdCXjAQjDtOv737XAS58DQoMHk54D6nPxm2MfEl0owSsf4J/KyZWB2Dvz nw== 
+Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3s87jhgepw-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 03 Aug 2023 11:11:51 +0000
+Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
+        by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 373BBoH7029762
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 3 Aug 2023 11:11:50 GMT
+Received: from [10.201.206.212] (10.80.80.8) by nalasex01c.na.qualcomm.com
+ (10.47.97.35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.30; Thu, 3 Aug
+ 2023 04:11:47 -0700
+Message-ID: <1ac4ec1d-f01e-6ddd-708d-6dec7ca4ea3d@quicinc.com>
+Date:   Thu, 3 Aug 2023 16:41:44 +0530
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-MTK:  N
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,HK_RANDOM_ENVFROM,
-        HK_RANDOM_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,
-        T_SCC_BODY_TEXT_LINE,T_SPF_TEMPERROR,UNPARSEABLE_RELAY autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.12.0
+Subject: Re: [PATCH 1/2] dt-bindings: arm: qcom: document AL02-Cx and AL03-C2
+ boards based on IPQ9574 family
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>, <agross@kernel.org>,
+        <andersson@kernel.org>, <robh+dt@kernel.org>,
+        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
+        <linux-arm-msm@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+References: <20230720084534.6461-1-quic_sridsn@quicinc.com>
+ <20230720084534.6461-2-quic_sridsn@quicinc.com>
+ <87c3a3db-d172-bc98-cf83-89b874c9fee7@linaro.org>
+ <9e401641-1334-c0bc-c49a-481a8a9af2de@linaro.org>
+ <c1903d09-f307-8e80-0482-2040c7af7a2c@quicinc.com>
+ <b57e0199-141f-2a37-4d5a-b98da5276b89@linaro.org>
+Content-Language: en-US
+From:   Sridharan S N <quic_sridsn@quicinc.com>
+In-Reply-To: <b57e0199-141f-2a37-4d5a-b98da5276b89@linaro.org>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01c.na.qualcomm.com (10.47.97.35)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: 5vwHY_BDHPxdfBRppFQg_PzSoLMo5PRx
+X-Proofpoint-ORIG-GUID: 5vwHY_BDHPxdfBRppFQg_PzSoLMo5PRx
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
+ definitions=2023-08-03_09,2023-08-03_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 impostorscore=0
+ lowpriorityscore=0 suspectscore=0 mlxlogscore=999 spamscore=0 bulkscore=0
+ priorityscore=1501 mlxscore=0 malwarescore=0 phishscore=0 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2306200000
+ definitions=main-2308030100
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix AV1 decoding failure when the iova is 36bit.
 
-Before this fix, the decoder was accessing incorrect addresses with 36bit
-iova tile buffer, leading to iommu faults.
+On 7/26/2023 12:51 PM, Krzysztof Kozlowski wrote:
+> On 26/07/2023 07:03, Sridharan S N wrote:
+>> On 7/20/2023 3:18 PM, Konrad Dybcio wrote:
+>>> On 20.07.2023 10:49, Krzysztof Kozlowski wrote:
+>>>> On 20/07/2023 10:45, Sridharan S N wrote:
+>>>>> Document the below listed (Reference Design Platform) RDP boards based on IPQ9574
+>>>>> family of SoCs.
+>>>>>
+>>>>> AL02-C3  - rdp437
+>>>>> AL02-C7  - rdp433-mht-phy
+>>>>> AL02-C10 - rdp433-mht-switch
+>>>>> AL02-C11 - rdp467
+>>>>> AL02-C12 - rdp455
+>>>>> AL02-C13 - rdp459
+>>>>> AL02-C15 - rdp457
+>>>>> AL02-C16 - rdp456
+>>>>> AL02-C17 - rdp469
+>>>>> AL02-C19 - rdp461
+>>>>> AL03-C2  - rdp458
+>>>>>
+>>>>> Signed-off-by: Sridharan S N <quic_sridsn@quicinc.com>
+>>>>> ---
+>>>>>    .../devicetree/bindings/arm/qcom.yaml         | 20 +++++++++++++++++++
+>>>>>    1 file changed, 20 insertions(+)
+>>>>>
+>>>>> diff --git a/Documentation/devicetree/bindings/arm/qcom.yaml b/Documentation/devicetree/bindings/arm/qcom.yaml
+>>>>> index dd66fd872c31..d992261da691 100644
+>>>>> --- a/Documentation/devicetree/bindings/arm/qcom.yaml
+>>>>> +++ b/Documentation/devicetree/bindings/arm/qcom.yaml
+>>>>> @@ -89,10 +89,20 @@ description: |
+>>>>>            adp
+>>>>>            ap-al01-c1
+>>>>>            ap-al02-c2
+>>>>> +        ap-al02-c3
+>>>>>            ap-al02-c6
+>>>>>            ap-al02-c7
+>>>>>            ap-al02-c8
+>>>>>            ap-al02-c9
+>>>>> +        ap-al02-c10
+>>>>> +        ap-al02-c11
+>>>>> +        ap-al02-c12
+>>>>> +        ap-al02-c13
+>>>>> +        ap-al02-c15
+>>>>> +        ap-al02-c16
+>>>>> +        ap-al02-c17
+>>>>> +        ap-al02-c19
+>>>> Why? I asked once, but there was no feedback from Qualcomm.
+>>>>
+>>>> Why do we need to do this? What's the point?
+>>> Another question would be, whether these boards are just one-off test
+>>> prototypes of which there exist like 5-10 units, or are they actually
+>>> going to be supported and useful.
+>>>
+>>> If it's the former, I don't think it makes sense to keep the device
+>>> trees upstream.
+>>>
+>>> Konrad
+>> These are all not test rdps and each rdps has its own configurations.
+>> IPQ9574 has four pcie instances and one QDSP processor. Not all rdps use
+>> all of the interfaces and it will vary for each rdp. In next version ,
+>> will post with each rdp's configuration explicitly
+>
+> So still no answer why do we need to list it as possible boards.
+> Especially that it messes with compatible style, because c[1-9] looks
+> like board version.
+>
+> I suggest don't add these board types and drop existing ones.
+>
+>
+> Best regards,
+> Krzysztof
 
-Fixes: 2f5d0aef37c6 ("media: mediatek: vcodec: support stateless AV1 decoder")
-Signed-off-by: Xiaoyong Lu<xiaoyong.lu@mediatek.com>
----
-Changes from v2:
+Apologize for the late reply. IPQ bootloader doesn't need these info. we 
+will send the patch to drop the existing ones
 
-- refine commit subject and message
+Thanks,
 
-Changes from v1:
-
-- prefer '|' rather than '+'
-- prefer '&' rather than shift operation
-- add comments for address operations
-
-v1:
-- VDEC HW can access tile buffer and decode normally.
-- Test ok by mt8195 32bit and mt8188 36bit iova.
-
----
- .../mediatek/vcodec/vdec/vdec_av1_req_lat_if.c       | 12 ++++++++----
- 1 file changed, 8 insertions(+), 4 deletions(-)
-
-diff --git a/drivers/media/platform/mediatek/vcodec/vdec/vdec_av1_req_lat_if.c b/drivers/media/platform/mediatek/vcodec/vdec/vdec_av1_req_lat_if.c
-index 404a1a23fd402..e9f2393f6a883 100644
---- a/drivers/media/platform/mediatek/vcodec/vdec/vdec_av1_req_lat_if.c
-+++ b/drivers/media/platform/mediatek/vcodec/vdec/vdec_av1_req_lat_if.c
-@@ -1658,9 +1658,9 @@ static void vdec_av1_slice_setup_tile_buffer(struct vdec_av1_slice_instance *ins
- 	u32 allow_update_cdf = 0;
- 	u32 sb_boundary_x_m1 = 0, sb_boundary_y_m1 = 0;
- 	int tile_info_base;
--	u32 tile_buf_pa;
-+	u64 tile_buf_pa;
- 	u32 *tile_info_buf = instance->tile.va;
--	u32 pa = (u32)bs->dma_addr;
-+	u64 pa = (u64)bs->dma_addr;
- 
- 	if (uh->disable_cdf_update == 0)
- 		allow_update_cdf = 1;
-@@ -1673,8 +1673,12 @@ static void vdec_av1_slice_setup_tile_buffer(struct vdec_av1_slice_instance *ins
- 		tile_info_buf[tile_info_base + 0] = (tile_group->tile_size[tile_num] << 3);
- 		tile_buf_pa = pa + tile_group->tile_start_offset[tile_num];
- 
--		tile_info_buf[tile_info_base + 1] = (tile_buf_pa >> 4) << 4;
--		tile_info_buf[tile_info_base + 2] = (tile_buf_pa % 16) << 3;
-+		/* save av1 tile high 4bits(bit 32-35) address in lower 4 bits position
-+		 * and clear original for hw requirement.
-+		 */
-+		tile_info_buf[tile_info_base + 1] = (tile_buf_pa & 0xFFFFFFF0ull) |
-+			((tile_buf_pa & 0xF00000000ull) >> 32);
-+		tile_info_buf[tile_info_base + 2] = (tile_buf_pa & 0xFull) << 3;
- 
- 		sb_boundary_x_m1 =
- 			(tile->mi_col_starts[tile_col + 1] - tile->mi_col_starts[tile_col] - 1) &
--- 
-2.18.0
+Sridharan
 
