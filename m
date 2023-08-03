@@ -2,110 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9924676F3B4
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 21:56:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5480176F3BC
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 21:58:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231496AbjHCT4a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Aug 2023 15:56:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39862 "EHLO
+        id S231609AbjHCT6r convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 3 Aug 2023 15:58:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40756 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230172AbjHCT41 (ORCPT
+        with ESMTP id S231547AbjHCT6p (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Aug 2023 15:56:27 -0400
-Received: from mail-oa1-x2c.google.com (mail-oa1-x2c.google.com [IPv6:2001:4860:4864:20::2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A3DC1706;
-        Thu,  3 Aug 2023 12:56:27 -0700 (PDT)
-Received: by mail-oa1-x2c.google.com with SMTP id 586e51a60fabf-1bf7eb259d5so598507fac.0;
-        Thu, 03 Aug 2023 12:56:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1691092586; x=1691697386;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=FA21cdF3ub2w1qPV3MyZWOJAJ8z0WCJcF7ZXUjUMPYw=;
-        b=Ixygbdk9dAWXPPgsaH5duaOFAPejcKPOehOpKovKOspLOlwQc2QFqDs7h3yMAFuSgr
-         nDGt7bf1zxdC6cRt5qXX9bByWv2QvC06tmlWdoBg9E+W+PiXHe+swHO8zGAgZ0J5wnWm
-         dm+EkczTPhzpO47/xxxQvQRqC5cT9BXsvNXw+z2LDiGWK1hGLrg1TDvkCf+kKrmfxtVn
-         8SkR9BjQsAqiZy7kgIU4P2EF+xyjEP24Na5LsRtU4GxIsmPGUPL0fltOsr6D7L0ruehq
-         P/xdBvl19Rq6RqGdZ/GSLKPHPvxmEpEAiIw2m6N3Kh5dRCTvjBFfgsHn/j1BA/53XmIu
-         lk8w==
+        Thu, 3 Aug 2023 15:58:45 -0400
+Received: from mail-oo1-f42.google.com (mail-oo1-f42.google.com [209.85.161.42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69C30420F;
+        Thu,  3 Aug 2023 12:58:44 -0700 (PDT)
+Received: by mail-oo1-f42.google.com with SMTP id 006d021491bc7-56d0deeca09so188419eaf.0;
+        Thu, 03 Aug 2023 12:58:44 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691092586; x=1691697386;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=FA21cdF3ub2w1qPV3MyZWOJAJ8z0WCJcF7ZXUjUMPYw=;
-        b=f7KpabNwL8hpRkNQyHa/VMcYiwYunqYnUz278V91zIAM0k+cDR7a2N/aXqHFjXP5Xw
-         hQDzZfft6mxXoU+DraZPgZdra2IvahIt35wCf0jbp+EUI+oe5+3UXmDnyyleXu++/7Aj
-         Ly5MWtUr7ZgRKUHZEY+EZ0RrA0bSi38YdyZ1dcqyro4AI+3hMg5YDa/J4MNoJgz+2lhN
-         st4liPSQ8ICheoa7Yb1pKSq/XXGT/21/rSQ3wwvUbC0YSSra2vxkQsbtWWXIS72GJaY7
-         kQ0WrB7POEmURmNBFwiPAO9Q6YeHHFXAFmy+t3io9parhUq/haP3Vb4vvKC5IT9wsW6G
-         ozZA==
-X-Gm-Message-State: ABy/qLZhLfy667CARcqIiqhEBBZBM5BQpsUx/rtp5GDenqHdYPlVLjEE
-        nmw19YLwcjnSGmyczqHxN0I=
-X-Google-Smtp-Source: APBJJlG6VcN8dQbEB6JbHAxHDmeZsOBLfZ9UdvEXJ0dum+BPbm3XOOYyopVIemX2wSQ5WsH8GBH4qA==
-X-Received: by 2002:a05:6870:c111:b0:1a6:8911:61a9 with SMTP id f17-20020a056870c11100b001a6891161a9mr17496810oad.29.1691092586249;
-        Thu, 03 Aug 2023 12:56:26 -0700 (PDT)
-Received: from localhost ([2804:30c:927:dd00:76d4:c2a9:4431:27fe])
-        by smtp.gmail.com with ESMTPSA id dw23-20020a056870771700b001a9911765efsm330787oab.40.2023.08.03.12.56.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 03 Aug 2023 12:56:25 -0700 (PDT)
-Date:   Thu, 3 Aug 2023 16:56:23 -0300
-From:   Marcelo Schmitt <marcelo.schmitt1@gmail.com>
-To:     nuno.sa@analog.com, lars@metafoo.de, Michael.Hennerich@analog.com,
-        jic23@kernel.org, lgirdwood@gmail.com, broonie@kernel.org,
-        Chandrakant.Minajigi@analog.com
-Cc:     linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v2] iio: dac: ad3552r: Correct device IDs
-Message-ID: <011f480220799fbfabdd53896f8a2f251ad995ad.1691091324.git.marcelo.schmitt1@gmail.com>
+        d=1e100.net; s=20221208; t=1691092723; x=1691697523;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=L5lbrYku02MGucWZlgqTufTYfZYAYDVopF3bhZtB7NU=;
+        b=O7d0mAiecBwrknl1PYdSGAQhBY1tQfHHfrAqRoFoUWtWr8hcdwWQlVrWPKjiHMYE0Q
+         qGTZfR+TO7bZ6ux4mzmXB1NGeMXx9dgkux+Yo+5kNOsIXd8X5amTKkMqeRdRQjLjWNR+
+         LD74JRd6hqvYa9hw8XAY5k2QoGYHdCVJxfVATHXrAZVDVQ+GfgllqItv0Kyf1Ojo1WKj
+         gVH4HKSev1ypWGXqR8rI2QB+53RGVHXg22e/De1z6hjzRxCFET2ML4+YwYbo2Gi6IjO2
+         dW7mV6eZyXm92Oj16L7yXA/3vNDFAuVu7wNoO6QI3BnqKkPsbe5Zlrv36RKISrsJts+c
+         Uhkg==
+X-Gm-Message-State: ABy/qLbbH/5HdGQYq+TePwh9v7BT2EuWQWYNaN1ztC8gHKhj8mHXyidC
+        E1q4R+rJd1kJYcX4se+tEicRXYtEjCYTmS5M7ew=
+X-Google-Smtp-Source: APBJJlEFaRUb1D3ofaPFX3gImb+a7isGHR4BOwxQBVGLYqbi8AM4d3+S/zxJiGipzTHQfvRm3JYUepQqqwuz7wcgo3s=
+X-Received: by 2002:a4a:a585:0:b0:56c:484a:923d with SMTP id
+ d5-20020a4aa585000000b0056c484a923dmr13794384oom.1.1691092723574; Thu, 03 Aug
+ 2023 12:58:43 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+References: <13318886.uLZWGnKmhe@kreacher> <12254967.O9o76ZdvQC@kreacher>
+ <4501957.LvFx2qVVIh@kreacher> <2d0315d4-35b4-84db-4dcb-c9528abad825@linaro.org>
+ <CAJZ5v0iQDOsTOqWFvbf5nom-b3-pbHPRzJQC-1DM9eoh=0AKjg@mail.gmail.com>
+ <eb279cf1-0605-3b87-5cb6-241a91977455@linaro.org> <CAJZ5v0i48=oawDJHoaHhiZRaO_CJokKsOHyNvu2v4PUbS6CH_Q@mail.gmail.com>
+ <f8029547-6851-7e0c-00e6-4963ccbc2702@linaro.org> <CAJZ5v0gDQMNSeEU1J7ooJk4Ec=Hw_JuZAtL5k215v7Lf67iTgg@mail.gmail.com>
+ <5c93d78d-835e-c740-280b-9d76456aaeda@linaro.org> <CAJZ5v0gtkZTwt-qP0uwvTJNx8cpO1o1esmW9BfVxB67X3Yt++w@mail.gmail.com>
+ <b4e474f9-79e8-534b-509e-12eb5995fa0c@linaro.org>
+In-Reply-To: <b4e474f9-79e8-534b-509e-12eb5995fa0c@linaro.org>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Thu, 3 Aug 2023 21:58:32 +0200
+Message-ID: <CAJZ5v0iH+qf6eBuZASPKyA6rT8O6FiA7516MiYYUx6Uc+wR4Ow@mail.gmail.com>
+Subject: Re: [PATCH v3 1/8] thermal: core: Add mechanism for connecting trips
+ with driver data
+To:     Daniel Lezcano <daniel.lezcano@linaro.org>
+Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Linux ACPI <linux-acpi@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Michal Wilczynski <michal.wilczynski@intel.com>,
+        Zhang Rui <rui.zhang@intel.com>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Device IDs for AD3542R and AD3552R were swapped leading to unintended
-collection of DAC output ranges being used for each design.
-Change device ID values so they are correct for each DAC chip.
+On Thu, Aug 3, 2023 at 6:20 PM Daniel Lezcano <daniel.lezcano@linaro.org> wrote:
+>
+> On 03/08/2023 16:15, Rafael J. Wysocki wrote:
+> > On Thu, Aug 3, 2023 at 3:06 PM Daniel Lezcano <daniel.lezcano@linaro.org> wrote:
+> >>
+> >> On 02/08/2023 18:48, Rafael J. Wysocki wrote:
+> >>
+> >> [ ... ]
+> >>
+> >>>> Let me check if I can do something on top of your series to move it in
+> >>>> the ACPI driver.
+> >>>
+> >>> It doesn't need to be on top of my series, so if you have an idea,
+> >>> please just let me know what it is.
+> >>>
+> >>> It can't be entirely in the ACPI driver AFAICS, though, because
+> >>> trips[i] need to be modified on updates and they belong to the core.
+> >>> Hence, the driver needs some help from the core to get to them.  It
+> >>> can be something like "this is my trip tag and please give me the
+> >>> address of the trip matching it" or similar, but it is needed, because
+> >>> the driver has to assume that the trip indices used by it initially
+> >>> may change.
+> >>
+> >> May be I'm missing something but driver_ref does not seems to be used
+> >> except when assigning it, no?
+> >
+> > It is used on the other side.  That is, the value assigned to the trip
+> > field in it is accessed via trip_ref in the driver.
+> >
+> > The idea is that the driver puts a pointer to its local struct
+> > thermal_trip_ref into a struct thermal_trip and the core stores the
+> > address of that struct thermal_trip in there, which allows the driver
+> > to access the struct thermal_trip via its local struct
+> > thermal_trip_ref going forward.
+> >
+> > Admittedly, this is somewhat convoluted.
+> >
+> > I have an alternative approach in the works, just for illustration
+> > purposes if nothing else, but I have encountered a problem that I
+> > would like to ask you about.
+> >
+> > Namely, zone disabling is not particularly useful for preventing the
+> > zone from being used while the trips are updated, because it has side
+> > effects.  First, it triggers __thermal_zone_device_update() and a
+> > netlink message every time the mode changes, which can be kind of
+> > overcome.
+>
+> Right
+>
+> > But second, if the mode is "disabled", it does not actually
+> > prevent things like __thermal_zone_get_trip() from running and the
+> > zone lock is the only thing that can be used for that AFAICS.
+>  >
+> > So by "disabling" a thermal zone, did you mean changing its mode to
+> > "disabled" or something else?
+>
+> Yes, that is what I meant.
+>
+> May be the initial proposal by updating the thermal trips pointer can
+> solve that [1]
 
-Fixes: 8f2b54824b28 ("drivers:iio:dac: Add AD3552R driver support")
-Signed-off-by: Marcelo Schmitt <marcelo.schmitt1@gmail.com>
-Reported-by: Chandrakant Minajigi <Chandrakant.Minajigi@analog.com>
----
-A user has reported that the IDs were wrong and the output ranges were not ok.
-Also, the dt-doc and the driver require the adi,output-range-microvolt property
-for ad3542r but not for ad3552r, which could cause actual ad3552r probing to
-fail if the device node did not have that property.
-It's not clear from datasheet if setting the output range is really required for
-ad3542r.
+No, it can't.  An existing trips[] table cannot be replaced with a new
+one with different trip indices, because those indices are already in
+use.  And if the indices are the same, there's no reason to replace
+trips.
 
-Was once better at sending patches. Hope I get used to it again :)
+> IMO we can assume the trip point changes are very rare (if any), so
+> rebuilding a new trip array and update the thermal zone with the pointer
+> may solve the situation.
+>
+> The routine does a copy of the trips array, so it can reorder it without
+> impacting the array passed as a parameter. And it can take the lock.
 
-Thanks
+The driver can take a lock as well.  Forbidding drivers to use the
+zone lock is an artificial limitation without technical merit IMV.
 
- drivers/iio/dac/ad3552r.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+> We just have to constraint the update function to invalidate arrays with
+> a number of trip points different from the one initially passed when
+> creating the thermal zone.
+>
+> Alternatively, we can be smarter in the ACPI driver and update the
+> corresponding temperature+hysteresis trip point by using the
+> thermal_zone_set_trip() function.
 
-diff --git a/drivers/iio/dac/ad3552r.c b/drivers/iio/dac/ad3552r.c
-index d5ea1a1be122..a492e8f2fc0f 100644
---- a/drivers/iio/dac/ad3552r.c
-+++ b/drivers/iio/dac/ad3552r.c
-@@ -140,8 +140,8 @@ enum ad3552r_ch_vref_select {
- };
- 
- enum ad3542r_id {
--	AD3542R_ID = 0x4008,
--	AD3552R_ID = 0x4009,
-+	AD3542R_ID = 0x4009,
-+	AD3552R_ID = 0x4008,
- };
- 
- enum ad3552r_ch_output_range {
--- 
-2.40.1
+I don't see why this would make any difference.
 
+> [1]
+> https://lore.kernel.org/all/20230525140135.3589917-5-daniel.lezcano@linaro.org/
