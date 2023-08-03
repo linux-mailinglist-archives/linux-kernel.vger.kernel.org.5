@@ -2,98 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1074476EEEC
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 18:01:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D745476EEF1
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 18:02:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237324AbjHCQBJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Aug 2023 12:01:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44026 "EHLO
+        id S235836AbjHCQCM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Aug 2023 12:02:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44064 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237276AbjHCQBC (ORCPT
+        with ESMTP id S237332AbjHCQB6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Aug 2023 12:01:02 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68EED422D
-        for <linux-kernel@vger.kernel.org>; Thu,  3 Aug 2023 09:00:42 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id A41A261E0C
-        for <linux-kernel@vger.kernel.org>; Thu,  3 Aug 2023 16:00:31 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 84288C433C7;
-        Thu,  3 Aug 2023 16:00:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691078431;
-        bh=4Kh3ibsHIzFJJq0/G/F3KHIgajbiAH5Vz1Bxyj9o3Vk=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=aHcukMK9r4SsEvRHz5MB3JYRd9vv2nzO2Dhx15gcmTQYg7K5ElnS+h6qO4o+Aaxxf
-         F1+fKsZxAbCJSNfd+x5YLgUTPwYDzF1cH4b5hoXLYIE/TNhRRfwRPi/JyQzg5oRwIJ
-         7o5++3UksN4s9nxdAEUcOSnE9d+utZvJgseu3t9NWr0GPI0WhuZurHyN3WpVFDhqmx
-         g/5hKrabvXUQyxOsYA7lPAyTQpOgJMlAeLLkKXBpdo34MDFacaoBpvO1i+VAMooFQG
-         x4T7YYwvvrf6qXmzcbuvVvdLG31a9OUSp1I6kFdI1J6QmrrAJSgEnmzdKiqStNckTL
-         1mkytn4qKWhEg==
-Date:   Thu, 3 Aug 2023 09:00:29 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Alexander Lobakin <aleksander.lobakin@intel.com>
-Cc:     Yunsheng Lin <linyunsheng@huawei.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
-        Larysa Zaremba <larysa.zaremba@intel.com>,
-        Alexander Duyck <alexanderduyck@fb.com>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        "Ilias Apalodimas" <ilias.apalodimas@linaro.org>,
-        Simon Horman <simon.horman@corigine.com>,
-        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH net-next 5/9] page_pool: don't use driver-set flags
- field directly
-Message-ID: <20230803090029.16a6798d@kernel.org>
-In-Reply-To: <7b77dd3a-fd03-884a-8b8a-f76ab6de5691@intel.com>
-References: <20230727144336.1646454-1-aleksander.lobakin@intel.com>
-        <20230727144336.1646454-6-aleksander.lobakin@intel.com>
-        <a0be882e-558a-9b1d-7514-0aad0080e08c@huawei.com>
-        <6f8147ec-b8ad-3905-5279-16817ed6f5ae@intel.com>
-        <a7782cf1-e04a-e274-6a87-4952008bcc0c@huawei.com>
-        <0fe906a2-5ba1-f24a-efd8-7804ef0683b6@intel.com>
-        <20230802142920.4a777079@kernel.org>
-        <7b77dd3a-fd03-884a-8b8a-f76ab6de5691@intel.com>
+        Thu, 3 Aug 2023 12:01:58 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2C773C01
+        for <linux-kernel@vger.kernel.org>; Thu,  3 Aug 2023 09:01:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1691078459;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
+        bh=cwXRj1KBICVmDyXNwF6/K1df3vGE/T6x9GRpnMzQtuM=;
+        b=fXfuTyl9529XxoXuRK1mBvY3jcrxrtPpo+yFmuET/VL2QOqPRAu1A9YoOkE6eWBrS5OL19
+        h/k77UDupzGe7rCKuwh+WyBDBtY8AWkkMIj/Vx2Uonc/KucOrYzpsI7ioE+RInu/hraBFu
+        PCzyPk9XivrdzH22N0cuGzDoQ1sADHs=
+Received: from mail-qv1-f72.google.com (mail-qv1-f72.google.com
+ [209.85.219.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-63--8sjxjEkN7KDmzvvTrGQ1g-1; Thu, 03 Aug 2023 12:00:58 -0400
+X-MC-Unique: -8sjxjEkN7KDmzvvTrGQ1g-1
+Received: by mail-qv1-f72.google.com with SMTP id 6a1803df08f44-63d245b67abso11438146d6.3
+        for <linux-kernel@vger.kernel.org>; Thu, 03 Aug 2023 09:00:58 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691078458; x=1691683258;
+        h=user-agent:content-disposition:mime-version:message-id:subject:cc
+         :to:from:date:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=cwXRj1KBICVmDyXNwF6/K1df3vGE/T6x9GRpnMzQtuM=;
+        b=U47QA3dFiFtzuH/OLi4d2ULu1dSs8KQFV90SkkCeG/7f32cidSciKP703Y+Lk8rm2P
+         EIJKId9BauB3aBwK8pQiwM3gsSyeZtlLEskQkEF1RHbU/7vFv/DKftsxn6mOCSkoaapU
+         iJOYJ81OZS+moTF0P6taPnu7rYMBfK0x1WMUpuhiT9Rbc7qU2e1sfkKJGK48ieWfhaXw
+         I+qVnAmXiixB6rOF0fC0jcOc5/2bT6W32qc7NDjTUn4UzbplrBZk4w+bU7sIvvaKvX0y
+         IDz4EZWrJ1OHUB+bDEWbUh1MkGLYLQ/x05iZDWNMb8sOBkYNa1Yv+G8F/VG95aV13MYD
+         WEdg==
+X-Gm-Message-State: ABy/qLZlkl+6kps7QZrYEHiBXV2aOt5wuDc/xzvILyynCIVdyFyk5/FD
+        nNiBVjYF9Ra++qEc/g7edER0nYv+PbdKSiTdNcr+l2WhM1I1fXDWLZzsAz56VEIxZqQkp7FHqfs
+        NJGkJNkHeJ4TLVO1t7RniOQ4P
+X-Received: by 2002:a0c:cb86:0:b0:63d:b75:c971 with SMTP id p6-20020a0ccb86000000b0063d0b75c971mr19142303qvk.15.1691078457937;
+        Thu, 03 Aug 2023 09:00:57 -0700 (PDT)
+X-Google-Smtp-Source: APBJJlFCc7WuuoDe+WhLh9WzsibbctR6fIN91ahYBGVYqFqyM7r8CuW7h/Cye78YzhzmJhvadLpnLg==
+X-Received: by 2002:a0c:cb86:0:b0:63d:b75:c971 with SMTP id p6-20020a0ccb86000000b0063d0b75c971mr19142272qvk.15.1691078457517;
+        Thu, 03 Aug 2023 09:00:57 -0700 (PDT)
+Received: from fedora ([174.89.37.244])
+        by smtp.gmail.com with ESMTPSA id w19-20020a0cdf93000000b0062de6537febsm2729qvl.58.2023.08.03.09.00.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 03 Aug 2023 09:00:57 -0700 (PDT)
+Date:   Thu, 3 Aug 2023 12:00:47 -0400
+From:   Lucas Karpinski <lkarpins@redhat.com>
+To:     Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Shakeel Butt <shakeelb@google.com>,
+        Muchun Song <muchun.song@linux.dev>, Tejun Heo <tj@kernel.org>,
+        Zefan Li <lizefan.x@bytedance.com>,
+        Shuah Khan <shuah@kernel.org>
+Cc:     Muchun Song <muchun.song@linux.dev>, cgroups@vger.kernel.org,
+        linux-mm@kvack.org, linux-kselftest@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v2] selftests: cgroup: fix test_kmem_basic slab1 check
+Message-ID: <ix6vzgjqay2x7bskle7pypoint4nj66fwq7odvd5hektatvp2l@kukoifnfj3dr>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: NeoMutt/20230517
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 3 Aug 2023 16:56:22 +0200 Alexander Lobakin wrote:
-> > FWIW I'm tempted to do something like the patch below (an obvious move,
-> > I suspect). I want to add another pointer (netdev) to the params and   
-> 
-> Just take napi->dev as I do in libie :)
+test_kmem_basic creates 100,000 negative dentries, with each one mapping
+to a slab object. After memory.high is set, these are reclaimed through
+the shrink_slab function call which reclaims all 100,000 entries. The
+test passes the majority of the time because when slab1 is calculated,
+it is often above 0, however, 0 is also an acceptable value.
 
-:) The fields have extra semantics, like napi implies that recycling 
-is allowed, and netdev implies that there is only _one_ netdev eating
-from the PP. There's also a way to get the pp <> netdev from the memory
-model registration. But I feel like explicit field is cleanest.
+Signed-off-by: Lucas Karpinski <lkarpins@redhat.com>
+---
+https://lore.kernel.org/all/m6jbt5hzq27ygt3l4xyiaxxb7i5auvb2lahbcj4yaxxigqzu5e@5rn6s2yjzv7u/
+V2: Corrected title
 
-Anyone, conversation for a later time :)
+ tools/testing/selftests/cgroup/test_kmem.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-> > I don't want it to eat up bytes in the first cache line.
-> > The patch is incomplete, we need to stash a one-bit indication in 
-> > the first cache line to know init_callback is not present without
-> > having to look at @slow. I'll defer doing that cleanly until your
-> > patches land.  
-> 
-> I would propose to include it in the series, but it has grown a bunch
-> already and it's better to do that later separately :s
+diff --git a/tools/testing/selftests/cgroup/test_kmem.c b/tools/testing/selftests/cgroup/test_kmem.c
+index 258ddc565deb..ba0a0bfc5a98 100644
+--- a/tools/testing/selftests/cgroup/test_kmem.c
++++ b/tools/testing/selftests/cgroup/test_kmem.c
+@@ -71,7 +71,7 @@ static int test_kmem_basic(const char *root)
+ 
+ 	cg_write(cg, "memory.high", "1M");
+ 	slab1 = cg_read_key_long(cg, "memory.stat", "slab ");
+-	if (slab1 <= 0)
++	if (slab1 < 0)
+ 		goto cleanup;
+ 
+ 	current = cg_read_long(cg, "memory.current");
+-- 
+2.41.0
 
-Yeah.. I'd be trying to split your series up a little to make progress
-rather than add more things :( I was going to suggest that you post
-just the first 3 patches for instance. Should be an easy merge.
