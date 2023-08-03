@@ -2,47 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 74F1976EECB
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 17:57:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8599876EECE
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 17:57:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237257AbjHCP5V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Aug 2023 11:57:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41206 "EHLO
+        id S237259AbjHCP5r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Aug 2023 11:57:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41516 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234972AbjHCP5U (ORCPT
+        with ESMTP id S235687AbjHCP5p (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Aug 2023 11:57:20 -0400
+        Thu, 3 Aug 2023 11:57:45 -0400
 Received: from fllv0016.ext.ti.com (fllv0016.ext.ti.com [198.47.19.142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DAC4A3A93;
-        Thu,  3 Aug 2023 08:57:18 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE8A211F;
+        Thu,  3 Aug 2023 08:57:43 -0700 (PDT)
 Received: from lelv0266.itg.ti.com ([10.180.67.225])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 373FvBxe079735;
-        Thu, 3 Aug 2023 10:57:11 -0500
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 373Fvaa6079791;
+        Thu, 3 Aug 2023 10:57:36 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1691078231;
-        bh=zbceunG6HLkq7CegqrVypMKkS+qXgl2Bk5f+wlEXjo0=;
-        h=Date:From:To:CC:Subject:References:In-Reply-To;
-        b=ZeGlA5Mgo8Byyq1cbaJXcdV3u5p1qbjlvnt33CF2OttRsnjvRkHk3NFNYAzlmRA6g
-         psZx3tUMbjDhprs8jWoigM5eFXVRwUVLKP1jGb9n9iphv4xlN/+7WyryCjldFMDF1q
-         gi5Y6xNxqWzyCtjSMeETGD1T9S8ru9oRKjna/4J0=
-Received: from DLEE104.ent.ti.com (dlee104.ent.ti.com [157.170.170.34])
-        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 373FvBi5111377
+        s=ti-com-17Q1; t=1691078256;
+        bh=ap9tKouw072YkIwIE1OUhTE7tz2wKEeSEURmBKG1QQc=;
+        h=Date:Subject:To:CC:References:From:In-Reply-To;
+        b=Sle5TNoqJlPMEECyl3wVffUDjOuJYimYpvGTFuj9JwJMD+jLLzJubzKJExGD62yFs
+         3D7neFqK8quSne5q+eTGlHnC4sTawI+hHrV+mfuF9Et/00o+ScXLHb/4Ana75h2S2F
+         a7ZzNiP735J9t3ChzY36JLOZlnAHk4WDhq0c1bgU=
+Received: from DLEE100.ent.ti.com (dlee100.ent.ti.com [157.170.170.30])
+        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 373FvaQ2111483
         (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 3 Aug 2023 10:57:11 -0500
-Received: from DLEE107.ent.ti.com (157.170.170.37) by DLEE104.ent.ti.com
- (157.170.170.34) with Microsoft SMTP Server (version=TLS1_2,
+        Thu, 3 Aug 2023 10:57:36 -0500
+Received: from DLEE106.ent.ti.com (157.170.170.36) by DLEE100.ent.ti.com
+ (157.170.170.30) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Thu, 3
- Aug 2023 10:57:11 -0500
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE107.ent.ti.com
- (157.170.170.37) with Microsoft SMTP Server (version=TLS1_2,
+ Aug 2023 10:57:35 -0500
+Received: from fllv0040.itg.ti.com (10.64.41.20) by DLEE106.ent.ti.com
+ (157.170.170.36) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Thu, 3 Aug 2023 10:57:11 -0500
-Received: from localhost (ileaxei01-snat2.itg.ti.com [10.180.69.6])
-        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 373FvATh008664;
-        Thu, 3 Aug 2023 10:57:11 -0500
-Date:   Thu, 3 Aug 2023 21:27:10 +0530
-From:   Dhruva Gole <d-gole@ti.com>
-To:     Andrew Davis <afd@ti.com>
+ Frontend Transport; Thu, 3 Aug 2023 10:57:36 -0500
+Received: from [10.250.36.243] (ileaxei01-snat.itg.ti.com [10.180.69.5])
+        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 373FvZWK025943;
+        Thu, 3 Aug 2023 10:57:35 -0500
+Message-ID: <4019ef37-1c3d-ae2c-3006-17487e69f077@ti.com>
+Date:   Thu, 3 Aug 2023 10:57:34 -0500
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH V6 1/4] firmware: ti_sci: Introduce Power Management Ops
+Content-Language: en-US
+To:     Dhruva Gole <d-gole@ti.com>
 CC:     Nishanth Menon <nm@ti.com>, Tero Kristo <kristo@kernel.org>,
         "Santosh Shilimkar" <ssantosh@kernel.org>,
         <linux-arm-kernel@lists.infradead.org>,
@@ -54,19 +59,17 @@ CC:     Nishanth Menon <nm@ti.com>, Tero Kristo <kristo@kernel.org>,
         Vibhore Vardhan <vibhore@ti.com>,
         Georgi Vlaev <g-vlaev@ti.com>,
         Roger Quadros <rogerq@kernel.org>
-Subject: Re: [PATCH V6 3/4] firmware: ti_sci: Allocate memory for Low Power
- Modes
-Message-ID: <20230803155710.fivxx7hufuravcdr@dhruva>
 References: <20230803064247.503036-1-d-gole@ti.com>
- <20230803064247.503036-4-d-gole@ti.com>
- <7c12b109-d6b9-f0d4-cada-28140a33da21@ti.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <7c12b109-d6b9-f0d4-cada-28140a33da21@ti.com>
+ <20230803064247.503036-2-d-gole@ti.com>
+ <930ffb16-f212-0bcb-4713-2acc138c4035@ti.com>
+ <20230803154204.iyohslrpma7bqqpk@dhruva>
+From:   Andrew Davis <afd@ti.com>
+In-Reply-To: <20230803154204.iyohslrpma7bqqpk@dhruva>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
 X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
         RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,
         T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -75,65 +78,71 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Aug 03, 2023 at 10:23:47 -0500, Andrew Davis wrote:
-> On 8/3/23 1:42 AM, Dhruva Gole wrote:
-> > From: Dave Gerlach <d-gerlach@ti.com>
-> > 
-> > A region of memory in DDR must be used during Deep Sleep for saving
-> > of some system context when using the ti_sci firmware. From DM's point
-> > of view, this can be any contiguous region in the DDR, so can allocate
-> > 512KB of DMA reserved memory in probe(), instead of another carveout.
-> > 
-> > Also send a TISCI_MSG_QUERY_FW_CAPS message to the firmware during
-> > probe to determine if any low power modes are supported and if
-> > ti_sci_init_suspend should be called based on the response received.
-> > 
-> > Signed-off-by: Dave Gerlach <d-gerlach@ti.com>
-> > Signed-off-by: Vibhore Vardhan <vibhore@ti.com>
-> > Signed-off-by: Georgi Vlaev <g-vlaev@ti.com>
-> > Tested-by: Roger Quadros <rogerq@kernel.org>
-> > [d-gole@ti.com: Use dma_alloc_attrs instead of dma_alloc_coherent]
-> > Signed-off-by: Dhruva Gole <d-gole@ti.com>
-> > ---
-> >   drivers/firmware/ti_sci.c | 42 +++++++++++++++++++++++++++++++++++++++
-> >   1 file changed, 42 insertions(+)
-> > 
-[..snip..]
-> >   static const struct ti_sci_desc ti_sci_pmmc_k2g_desc = {
-> >   	.default_host_id = 2,
-> > @@ -3661,6 +3690,15 @@ static int ti_sci_probe(struct platform_device *pdev)
-> >   		}
-> >   	}
-> > +	/*
-> > +	 * Check if the firmware supports any optional low power modes
-> > +	 * and initialize them if present. Old revisions of TIFS (< 08.04)
-> > +	 * will NACK the request.
-> > +	 */
-> > +	ret = ti_sci_msg_cmd_query_fw_caps(&info->handle, &info->fw_caps);
-> > +	if (!ret && (info->fw_caps & MSG_MASK_CAPS_LPM))
-> > +		ti_sci_init_suspend(pdev, info);
-> > +
-> >   	dev_info(dev, "ABI: %d.%d (firmware rev 0x%04x '%s')\n",
-> >   		 info->handle.version.abi_major, info->handle.version.abi_minor,
-> >   		 info->handle.version.firmware_revision,
-> > @@ -3708,6 +3746,10 @@ static int ti_sci_remove(struct platform_device *pdev)
-> >   		mbox_free_channel(info->chan_rx);
-> >   	}
-> > +	if (info->ctx_mem_buf)
-> > +		dma_free_coherent(info->dev, LPM_CTX_MEM_SIZE,
+On 8/3/23 10:42 AM, Dhruva Gole wrote:
+> On Aug 03, 2023 at 10:14:03 -0500, Andrew Davis wrote:
+> [..snip..]
+>>>    #define TI_SCI_IRQ_SECONDARY_HOST_INVALID	0xff
+>>>    /**
+>>> diff --git a/include/linux/soc/ti/ti_sci_protocol.h b/include/linux/soc/ti/ti_sci_protocol.h
+>>> index bd0d11af76c5..f2d1d74ab8fc 100644
+>>> --- a/include/linux/soc/ti/ti_sci_protocol.h
+>>> +++ b/include/linux/soc/ti/ti_sci_protocol.h
+>>> @@ -195,6 +195,49 @@ struct ti_sci_clk_ops {
+>>>    			u64 *current_freq);
+>>>    };
+>>> +/* TISCI LPM wake up sources */
+>>> +#define TISCI_MSG_VALUE_LPM_WAKE_SOURCE_WKUP_I2C0	0x00
+>>> +#define TISCI_MSG_VALUE_LPM_WAKE_SOURCE_WKUP_UART0	0x10
+>>> +#define TISCI_MSG_VALUE_LPM_WAKE_SOURCE_MCU_GPIO0	0x20
+>>> +#define TISCI_MSG_VALUE_LPM_WAKE_SOURCE_WKUP_ICEMELTER0	0x30
+>>> +#define TISCI_MSG_VALUE_LPM_WAKE_SOURCE_WKUP_TIMER0	0x40
+>>> +#define TISCI_MSG_VALUE_LPM_WAKE_SOURCE_WKUP_TIMER1	0x41
+>>> +#define TISCI_MSG_VALUE_LPM_WAKE_SOURCE_WKUP_RTC0	0x50
+>>> +#define TISCI_MSG_VALUE_LPM_WAKE_SOURCE_RESET		0x60
+>>> +#define TISCI_MSG_VALUE_LPM_WAKE_SOURCE_USB0		0x70
+>>> +#define TISCI_MSG_VALUE_LPM_WAKE_SOURCE_USB1		0x71
+>>> +#define TISCI_MSG_VALUE_LPM_WAKE_SOURCE_MAIN_IO		0x80
+>>> +#define TISCI_MSG_VALUE_LPM_WAKE_SOURCE_MCU_IO		0x81
+>>> +#define TISCI_MSG_VALUE_LPM_WAKE_SOURCE_CAN_IO		0x82
+>>> +#define TISCI_MSG_VALUE_LPM_WAKE_SOURCE_INVALID		0xFF
+>>
+>> I don't see these used in this series, do you need them? lpm_wake_reason()
 > 
-> You allocated with dma_alloc_attrs() you should free with dma_free_attrs().
-
-Good catch, will fix this in next revision
-
+> True, we are not currently using these macros. They _maybe required in
+> future.
+> I can remove them if required?
 > 
-> Andrew
+>> doesn't seem used either and I'm not sure how you plan to use it, could
+>> you detail that?
 > 
-> > +				  info->ctx_mem_buf,
-> > +				  info->ctx_mem_addr);
-> >   	return ret;
-> >   }
+> When the system wakes from suspend-to-mem we can check which
+> subsystem has woken us up with the TISCI LPM_WAKEUP_REASON message.
+> There's no hardware event generated and we have to ask the firmware
+> for the actual wake reason.
+> 
+> We may want to add support for a wake up interrupt controller that will
+> generate an interrupt for other subsystems. This might end up using this
+> lpm_wake_reason API, hence even though the function maybe unused today
+> it will be required for above described scenario.
+> 
+> However if you prefer that I remove it and then add it in future when we
+> finally write a working interrupt controller driver, then do let me
+> know.
+> 
 
--- 
-Best regards,
-Dhruva Gole <d-gole@ti.com>
+It's easier to review code that is used. We may go with a
+completely different approach by then, will be easier to unwind
+this if you don't start with it, only add it when used.
+
+Andrew
+
+>>
+>> Andrew
+>>
+>>> +
+>>> +/* TISCI LPM IO isolation control values */
+>>> +#define TISCI_MSG_VALUE_IO_ENABLE			1
+>>> +#define TISCI_MSG_VALUE_IO_DISABLE			0
+>>> +
+> [..snip..]
+> 
