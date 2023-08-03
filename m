@@ -2,71 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 04EFB76DEC3
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 05:13:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 30D7676DEC6
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 05:14:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232387AbjHCDNe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Aug 2023 23:13:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45676 "EHLO
+        id S229731AbjHCDOG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Aug 2023 23:14:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46194 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232384AbjHCDNc (ORCPT
+        with ESMTP id S232183AbjHCDOA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Aug 2023 23:13:32 -0400
-Received: from mail-ua1-x932.google.com (mail-ua1-x932.google.com [IPv6:2607:f8b0:4864:20::932])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B08122685
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Aug 2023 20:13:29 -0700 (PDT)
-Received: by mail-ua1-x932.google.com with SMTP id a1e0cc1a2514c-78a5384a5daso167671241.0
-        for <linux-kernel@vger.kernel.org>; Wed, 02 Aug 2023 20:13:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1691032409; x=1691637209;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=74ywh7TvqUkDUEffoH+37MC/7CbUn0PXoEShSbC3XgA=;
-        b=jvpKU1JeTnRH0lRPSpXd1hPuvjiNX1F+54F74lzkq1m0EYERB/GljY3mULiORAqP8O
-         Aq4oYs1c+N3bjEVoCfdT35oD0B7EgHepRoX5GfQb+5esPFm1ij5FtteEDCEjacIMXuD4
-         G8QunHFkHKX3MZshB7c/LYA3klh6U9qe7axqXXtlc03Zaz3eVa0JIsa3fYWjOLvxy5Wy
-         bKHRtlJfpkqNA7wQhl4WciolMtcvAMQ6ZAgC04gcVpHo0zUuzGdEkxu5Rj8gL2oXt+lt
-         HzKtqpFTe6qwjfV6+1GLjLz0pkeYwTo5MJ9VkqPfLk52fVQHDTAiZtGjKXfnm/Gv4s7v
-         IPjg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691032409; x=1691637209;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=74ywh7TvqUkDUEffoH+37MC/7CbUn0PXoEShSbC3XgA=;
-        b=a2jDAeXh+xqw0D346Vh4YEl3doZj6twvGzHmyqy2SZqJJLxvnJAepE/IphYU2IIrje
-         obUc96KkpyhAFgZV3vQhaUk1BGk0ZhtXvQSi1ucVU60uJP75naMvgxLGvKfg42WLb7NG
-         n8l1rH89ed6VO6DhzjCIgLCJuJYunWbLWloEjy/kvZAC/UeNYWNzB/RUstjsBH/IDUn5
-         UmNIafMnLHr4PUmx9IcFd9lIPTeXWg2eis6cjNKrNDT5bCDeAKxFWwCni7X6x4WswwdN
-         izjGhxbs0gUgUi9FXgQeLD4pFakNM2g53F0/e2G21QB2r8v1B6HY5BCldIacsVZn5pLb
-         BWbA==
-X-Gm-Message-State: ABy/qLbnOWoBN4yPCWma2g7kZVCLiqlq+4W5R4JAAXenAWPMFBGD469s
-        imlE52lXfoUlJktvuPC5HHrp6khoZv/tG1dYT229PrOC+nmv/joEZHo=
-X-Google-Smtp-Source: APBJJlFBfKV7GNDntx7e8wPWkZ7Zgbif1EWmRezCv/jwPoMNWV+5E4mxofmELlIQtxIkm/cZm958RX9eOg23wFq8qv0=
-X-Received: by 2002:a67:fb0c:0:b0:445:907:71e7 with SMTP id
- d12-20020a67fb0c000000b00445090771e7mr4169562vsr.33.1691032408720; Wed, 02
- Aug 2023 20:13:28 -0700 (PDT)
+        Wed, 2 Aug 2023 23:14:00 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9EFE82733;
+        Wed,  2 Aug 2023 20:13:51 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 393B461BBB;
+        Thu,  3 Aug 2023 03:13:51 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5E38EC433C8;
+        Thu,  3 Aug 2023 03:13:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1691032430;
+        bh=uSf3xwCl9efisUoSoRQolXl/7p0nzj1kHz1aHfTxnaQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=uFvnua7i+h2fTCQnHkPAqHkhk4HR3P1ec2xaUq82RSv28DeurXfTFLyeOVT3N6t2T
+         Zi+KP8sQToelogOWDV8DtPiMR8Rqu841G+Vuso7CJTxQ98EG+AF8RqM7YpeLTlpL10
+         /4rLkdHqqROKCyrS3vD9SjL/Rxbarby8sOFZ4Z3IemhHX+8Mvn0S2m+wG5IeJaw0Qv
+         //FtbaC5/s05HRXE2/IJULu1h+H3jOspin6MkVFkt/x5ye+ArRtbSknZeUkLpjePT1
+         lnNdOodIgzRMyXO5qWmI0uFmc1vIVy5l22EvaYnDOJhFV8arl2VglqsgA+KhySREUp
+         /U9Srj+PmyrCQ==
+Date:   Wed, 2 Aug 2023 23:13:34 -0400
+From:   Guo Ren <guoren@kernel.org>
+To:     Haibo Xu <xiaobo55x@gmail.com>
+Cc:     Andrew Jones <ajones@ventanamicro.com>,
+        Haibo Xu <haibo1.xu@intel.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Anup Patel <anup@brainfault.org>,
+        Atish Patra <atishp@atishpatra.org>,
+        Sean Christopherson <seanjc@google.com>,
+        Vipin Sharma <vipinsh@google.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Colton Lewis <coltonlewis@google.com>,
+        Andrew Jones <andrew.jones@linux.dev>,
+        Vishal Annapurve <vannapurve@google.com>,
+        linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org,
+        kvm@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        kvm-riscv@lists.infradead.org
+Subject: Re: [PATCH 1/4] tools: riscv: Add header file csr.h
+Message-ID: <ZMsbXk4JU/Ung7qu@gmail.com>
+References: <cover.1690364259.git.haibo1.xu@intel.com>
+ <35ce2b9f7ca655eb3af13730b1ca9f05b518e08f.1690364259.git.haibo1.xu@intel.com>
+ <20230728-879500f157954d849fb303ec@orel>
+ <CAJve8onDLEC1JFdERi098sTmN3-UkwaJ1aJz3CJNYU-GShkEyg@mail.gmail.com>
 MIME-Version: 1.0
-References: <20230802065501.780725463@linuxfoundation.org>
-In-Reply-To: <20230802065501.780725463@linuxfoundation.org>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Thu, 3 Aug 2023 08:43:17 +0530
-Message-ID: <CA+G9fYvg9jA6MXayVRVrwsvN3qZgoZ-Cm0xQLJ78fKOK=R1tWA@mail.gmail.com>
-Subject: Re: [PATCH 6.4 000/235] 6.4.8-rc2 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     stable@vger.kernel.org, patches@lists.linux.dev,
-        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
-        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
-        jonathanh@nvidia.com, f.fainelli@gmail.com,
-        sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
-        conor@kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAJve8onDLEC1JFdERi098sTmN3-UkwaJ1aJz3CJNYU-GShkEyg@mail.gmail.com>
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -74,174 +75,20 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2 Aug 2023 at 13:12, Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> This is the start of the stable review cycle for the 6.4.8 release.
-> There are 235 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
->
-> Responses should be made by Fri, 04 Aug 2023 06:54:15 +0000.
-> Anything received after that time might be too late.
->
-> The whole patch series can be found in one patch at:
->         https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-=
-6.4.8-rc2.gz
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
--rc.git linux-6.4.y
-> and the diffstat can be found below.
->
-> thanks,
->
-> greg k-h
-
-Results from Linaro=E2=80=99s test farm.
-No regressions on arm64, arm, x86_64, and i386.
-
-Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
-
-## Build
-* kernel: 6.4.8-rc2
-* git: https://gitlab.com/Linaro/lkft/mirrors/stable/linux-stable-rc
-* git branch: linux-6.4.y
-* git commit: 6a44ac630b76f8e6456c466d95148be9a9d61d0b
-* git describe: v6.4.7-236-g6a44ac630b76
-* test details:
-https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-6.4.y/build/v6.4.7=
--236-g6a44ac630b76
-
-## Test Regressions (compared to v6.4.7)
-
-## Metric Regressions (compared to v6.4.7)
-
-## Test Fixes (compared to v6.4.7)
-
-## Metric Fixes (compared to v6.4.7)
-
-## Test result summary
-total: 169252, pass: 147093, fail: 2297, skip: 19700, xfail: 162
-
-## Build Summary
-* arc: 5 total, 5 passed, 0 failed
-* arm: 145 total, 145 passed, 0 failed
-* arm64: 54 total, 53 passed, 1 failed
-* i386: 41 total, 41 passed, 0 failed
-* mips: 30 total, 28 passed, 2 failed
-* parisc: 4 total, 4 passed, 0 failed
-* powerpc: 38 total, 36 passed, 2 failed
-* riscv: 26 total, 25 passed, 1 failed
-* s390: 16 total, 14 passed, 2 failed
-* sh: 14 total, 12 passed, 2 failed
-* sparc: 8 total, 8 passed, 0 failed
-* x86_64: 46 total, 46 passed, 0 failed
-
-## Test suites summary
-* boot
-* kselftest-android
-* kselftest-arm64
-* kselftest-breakpoints
-* kselftest-capabilities
-* kselftest-cgroup
-* kselftest-clone3
-* kselftest-core
-* kselftest-cpu-hotplug
-* kselftest-cpufreq
-* kselftest-drivers-dma-buf
-* kselftest-efivarfs
-* kselftest-exec
-* kselftest-filesystems
-* kselftest-filesystems-binderfs
-* kselftest-filesystems-epoll
-* kselftest-firmware
-* kselftest-fpu
-* kselftest-ftrace
-* kselftest-futex
-* kselftest-gpio
-* kselftest-intel_pstate
-* kselftest-ipc
-* kselftest-ir
-* kselftest-kcmp
-* kselftest-kexec
-* kselftest-kvm
-* kselftest-lib
-* kselftest-livepatch
-* kselftest-membarrier
-* kselftest-memfd
-* kselftest-memory-hotplug
-* kselftest-mincore
-* kselftest-mount
-* kselftest-mqueue
-* kselftest-net
-* kselftest-net-forwarding
-* kselftest-net-mptcp
-* kselftest-netfilter
-* kselftest-nsfs
-* kselftest-openat2
-* kselftest-pid_namespace
-* kselftest-pidfd
-* kselftest-proc
-* kselftest-pstore
-* kselftest-ptrace
-* kselftest-rseq
-* kselftest-rtc
-* kselftest-seccomp
-* kselftest-sigaltstack
-* kselftest-size
-* kselftest-splice
-* kselftest-static_keys
-* kselftest-sync
-* kselftest-sysctl
-* kselftest-tc-testing
-* kselftest-timens
-* kselftest-timers
-* kselftest-tmpfs
-* kselftest-tpm2
-* kselftest-user
-* kselftest-user_events
-* kselftest-vDSO
-* kselftest-vm
-* kselftest-watchdog
-* kselftest-x86
-* kselftest-zram
-* kunit
-* kvm-unit-tests
-* libgpiod
-* libhugetlbfs
-* log-parser-boot
-* log-parser-test
-* ltp-cap_bounds
-* ltp-commands
-* ltp-containers
-* ltp-controllers
-* ltp-cpuhotplug
-* ltp-crypto
-* ltp-cve
-* ltp-dio
-* ltp-fcntl-locktests
-* ltp-filecaps
-* ltp-fs
-* ltp-fs_bind
-* ltp-fs_perms_simple
-* ltp-fsx
-* ltp-hugetlb
-* ltp-io
-* ltp-ipc
-* ltp-math
-* ltp-mm
-* ltp-nptl
-* ltp-pty
-* ltp-sched
-* ltp-securebits
-* ltp-smoke
-* ltp-syscalls
-* ltp-tracing
-* network-basic-tests
-* perf
-* rcutorture
-* v4l2-compliance
-
---
-Linaro LKFT
-https://lkft.linaro.org
+On Wed, Aug 02, 2023 at 10:05:00AM +0800, Haibo Xu wrote:
+> On Fri, Jul 28, 2023 at 5:43 PM Andrew Jones <ajones@ventanamicro.com> wrote:
+> >
+> > On Thu, Jul 27, 2023 at 03:20:05PM +0800, Haibo Xu wrote:
+> > > Borrow some of the csr definitions and operations from kernel's
+> > > arch/riscv/include/asm/csr.h to tools/ for riscv.
+> >
+> > You should copy the entire file verbatim.
+> >
+> 
+> Ok, will copy all the definitions in the original csr.h
+Why not include the original one? Maintain the one csr.h is more
+comfortable.
+> 
+> > Thanks,
+> > drew
+> 
