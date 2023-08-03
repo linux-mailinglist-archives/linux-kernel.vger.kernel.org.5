@@ -2,85 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E49376DEC1
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 05:13:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 04EFB76DEC3
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 05:13:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231923AbjHCDN0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Aug 2023 23:13:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45604 "EHLO
+        id S232387AbjHCDNe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Aug 2023 23:13:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45676 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229864AbjHCDNY (ORCPT
+        with ESMTP id S232384AbjHCDNc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Aug 2023 23:13:24 -0400
-Received: from mgamail.intel.com (unknown [134.134.136.31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 093C11FD6;
-        Wed,  2 Aug 2023 20:13:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1691032403; x=1722568403;
-  h=message-id:date:mime-version:cc:subject:to:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=yPbevtCcZpOeTAiAA2lNuyEOiqfa6vas4KxoyVt3mTA=;
-  b=l5RMvK6L4EaKVttyVzlCDzc6hv+TSMEJ4huwnIYIjuIWpR+PxYx7iMHm
-   zxyQnOR3TzmJ1SffRFpfdrnzQVbcGWtPTtEE+wCZ5iCO+5YYl8ZlrL0C5
-   Ufj8jgKDLD9+2O/kNEkyZsl+3WIEn3QhhmfWDZSh7Ui3zH65iqH6zzp8O
-   tSMytMw0IEn85BsDz18oDI8AKcKGaisKjX2/hBsPuCkNe+7OeDw2y3AUt
-   btQk/I8cMr6fFJ7EpnUiVPh1BHgTux/dR4LB/0bGD1Xgu8Xh9gG8wsvLL
-   9v0GawJqnJxPapFuAqrajLAcyswn5ht4eM7QS9wPx2j/l9MoEIk06ptWB
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10790"; a="433597060"
-X-IronPort-AV: E=Sophos;i="6.01,251,1684825200"; 
-   d="scan'208";a="433597060"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Aug 2023 20:13:22 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10790"; a="843385818"
-X-IronPort-AV: E=Sophos;i="6.01,251,1684825200"; 
-   d="scan'208";a="843385818"
-Received: from blu2-mobl.ccr.corp.intel.com (HELO [10.255.31.34]) ([10.255.31.34])
-  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Aug 2023 20:13:16 -0700
-Message-ID: <d57dc99c-4970-fe0f-53f9-ea6f926910ca@linux.intel.com>
-Date:   Thu, 3 Aug 2023 11:13:14 +0800
+        Wed, 2 Aug 2023 23:13:32 -0400
+Received: from mail-ua1-x932.google.com (mail-ua1-x932.google.com [IPv6:2607:f8b0:4864:20::932])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B08122685
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Aug 2023 20:13:29 -0700 (PDT)
+Received: by mail-ua1-x932.google.com with SMTP id a1e0cc1a2514c-78a5384a5daso167671241.0
+        for <linux-kernel@vger.kernel.org>; Wed, 02 Aug 2023 20:13:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1691032409; x=1691637209;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=74ywh7TvqUkDUEffoH+37MC/7CbUn0PXoEShSbC3XgA=;
+        b=jvpKU1JeTnRH0lRPSpXd1hPuvjiNX1F+54F74lzkq1m0EYERB/GljY3mULiORAqP8O
+         Aq4oYs1c+N3bjEVoCfdT35oD0B7EgHepRoX5GfQb+5esPFm1ij5FtteEDCEjacIMXuD4
+         G8QunHFkHKX3MZshB7c/LYA3klh6U9qe7axqXXtlc03Zaz3eVa0JIsa3fYWjOLvxy5Wy
+         bKHRtlJfpkqNA7wQhl4WciolMtcvAMQ6ZAgC04gcVpHo0zUuzGdEkxu5Rj8gL2oXt+lt
+         HzKtqpFTe6qwjfV6+1GLjLz0pkeYwTo5MJ9VkqPfLk52fVQHDTAiZtGjKXfnm/Gv4s7v
+         IPjg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691032409; x=1691637209;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=74ywh7TvqUkDUEffoH+37MC/7CbUn0PXoEShSbC3XgA=;
+        b=a2jDAeXh+xqw0D346Vh4YEl3doZj6twvGzHmyqy2SZqJJLxvnJAepE/IphYU2IIrje
+         obUc96KkpyhAFgZV3vQhaUk1BGk0ZhtXvQSi1ucVU60uJP75naMvgxLGvKfg42WLb7NG
+         n8l1rH89ed6VO6DhzjCIgLCJuJYunWbLWloEjy/kvZAC/UeNYWNzB/RUstjsBH/IDUn5
+         UmNIafMnLHr4PUmx9IcFd9lIPTeXWg2eis6cjNKrNDT5bCDeAKxFWwCni7X6x4WswwdN
+         izjGhxbs0gUgUi9FXgQeLD4pFakNM2g53F0/e2G21QB2r8v1B6HY5BCldIacsVZn5pLb
+         BWbA==
+X-Gm-Message-State: ABy/qLbnOWoBN4yPCWma2g7kZVCLiqlq+4W5R4JAAXenAWPMFBGD469s
+        imlE52lXfoUlJktvuPC5HHrp6khoZv/tG1dYT229PrOC+nmv/joEZHo=
+X-Google-Smtp-Source: APBJJlFBfKV7GNDntx7e8wPWkZ7Zgbif1EWmRezCv/jwPoMNWV+5E4mxofmELlIQtxIkm/cZm958RX9eOg23wFq8qv0=
+X-Received: by 2002:a67:fb0c:0:b0:445:907:71e7 with SMTP id
+ d12-20020a67fb0c000000b00445090771e7mr4169562vsr.33.1691032408720; Wed, 02
+ Aug 2023 20:13:28 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Cc:     baolu.lu@linux.intel.com, "cohuck@redhat.com" <cohuck@redhat.com>,
-        "eric.auger@redhat.com" <eric.auger@redhat.com>,
-        "nicolinc@nvidia.com" <nicolinc@nvidia.com>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "mjrosato@linux.ibm.com" <mjrosato@linux.ibm.com>,
-        "chao.p.peng@linux.intel.com" <chao.p.peng@linux.intel.com>,
-        "yi.y.sun@linux.intel.com" <yi.y.sun@linux.intel.com>,
-        "peterx@redhat.com" <peterx@redhat.com>,
-        "jasowang@redhat.com" <jasowang@redhat.com>,
-        "shameerali.kolothum.thodi@huawei.com" 
-        <shameerali.kolothum.thodi@huawei.com>,
-        "lulu@redhat.com" <lulu@redhat.com>,
-        "suravee.suthikulpanit@amd.com" <suravee.suthikulpanit@amd.com>,
-        "iommu@lists.linux.dev" <iommu@lists.linux.dev>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
-        "Duan, Zhenzhong" <zhenzhong.duan@intel.com>,
-        Jacob Pan <jacob.jun.pan@linux.intel.com>
-Subject: Re: [PATCH v4 04/12] iommu/vt-d: Add helper to setup pasid nested
- translation
-To:     "Tian, Kevin" <kevin.tian@intel.com>,
-        "Liu, Yi L" <yi.l.liu@intel.com>,
-        "joro@8bytes.org" <joro@8bytes.org>,
-        "alex.williamson@redhat.com" <alex.williamson@redhat.com>,
-        "jgg@nvidia.com" <jgg@nvidia.com>,
-        "robin.murphy@arm.com" <robin.murphy@arm.com>
-References: <20230724111335.107427-1-yi.l.liu@intel.com>
- <20230724111335.107427-5-yi.l.liu@intel.com>
- <BN9PR11MB5276C84A20C48B4041BE07B78C0BA@BN9PR11MB5276.namprd11.prod.outlook.com>
-Content-Language: en-US
-From:   Baolu Lu <baolu.lu@linux.intel.com>
-In-Reply-To: <BN9PR11MB5276C84A20C48B4041BE07B78C0BA@BN9PR11MB5276.namprd11.prod.outlook.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+References: <20230802065501.780725463@linuxfoundation.org>
+In-Reply-To: <20230802065501.780725463@linuxfoundation.org>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Thu, 3 Aug 2023 08:43:17 +0530
+Message-ID: <CA+G9fYvg9jA6MXayVRVrwsvN3qZgoZ-Cm0xQLJ78fKOK=R1tWA@mail.gmail.com>
+Subject: Re: [PATCH 6.4 000/235] 6.4.8-rc2 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     stable@vger.kernel.org, patches@lists.linux.dev,
+        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
+        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
+        jonathanh@nvidia.com, f.fainelli@gmail.com,
+        sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
+        conor@kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -88,73 +74,174 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023/8/2 15:10, Tian, Kevin wrote:
->> From: Liu, Yi L<yi.l.liu@intel.com>
->> Sent: Monday, July 24, 2023 7:13 PM
->>   }
->> +
->> +/**
->> + * intel_pasid_setup_nested() - Set up PASID entry for nested translation.
->> + * This could be used for nested translation based vIOMMU. e.g. guest IOVA
-> s/could be/is/
+On Wed, 2 Aug 2023 at 13:12, Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> This is the start of the stable review cycle for the 6.4.8 release.
+> There are 235 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>
+> Responses should be made by Fri, 04 Aug 2023 06:54:15 +0000.
+> Anything received after that time might be too late.
+>
+> The whole patch series can be found in one patch at:
+>         https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-=
+6.4.8-rc2.gz
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
+-rc.git linux-6.4.y
+> and the diffstat can be found below.
+>
+> thanks,
+>
+> greg k-h
 
-Ack.
+Results from Linaro=E2=80=99s test farm.
+No regressions on arm64, arm, x86_64, and i386.
 
-> 
->> + * and guest shared virtual address. In this case, the first level page
->> + * tables are used for GVA/GIOVA-GPA translation in the guest, second level
->> + * page tables are used for GPA-HPA translation.
-> let's be consistent on using stage-1/stage-2
-> 
-> btw the convention is to have 1-line summary, then the list of
-> parameters followed by detail explanation of the function.
-> 
+Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
 
-This patch just follows the existing code style in this file. Need a
-separated patch to cleanup this.
+## Build
+* kernel: 6.4.8-rc2
+* git: https://gitlab.com/Linaro/lkft/mirrors/stable/linux-stable-rc
+* git branch: linux-6.4.y
+* git commit: 6a44ac630b76f8e6456c466d95148be9a9d61d0b
+* git describe: v6.4.7-236-g6a44ac630b76
+* test details:
+https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-6.4.y/build/v6.4.7=
+-236-g6a44ac630b76
 
->> + *
->> + * @iommu:      IOMMU which the device belong to
->> + * @dev:        Device to be set up for translation
->> + * @pasid:      PASID to be programmed in the device PASID table
->> + * @domain:     User stage-1 domain nested on a s2 domain
->> + */
->> +int intel_pasid_setup_nested(struct intel_iommu *iommu, struct device
->> *dev,
->> +			     u32 pasid, struct dmar_domain *domain)
->> +{
->> +	struct iommu_hwpt_vtd_s1 *s1_cfg = &domain->s1_cfg;
->> +	pgd_t *s1_gpgd = (pgd_t *)(uintptr_t)domain->s1_pgtbl;
->> +	struct dmar_domain *s2_domain = domain->s2_domain;
->> +	u16 did = domain_id_iommu(domain, iommu);
->> +	struct dma_pte *pgd = s2_domain->pgd;
->> +	struct pasid_entry *pte;
->> +
->> +	if (!ecap_nest(iommu->ecap)) {
->> +		pr_err_ratelimited("%s: No nested translation support\n",
->> +				   iommu->name);
->> +		return -ENODEV;
->> +	}
-> -EINVAL
+## Test Regressions (compared to v6.4.7)
 
-This is in the attach domain path. -EINVAL has the special meaning of
-"this domain is not compatible with iommu for the device".
+## Metric Regressions (compared to v6.4.7)
 
-So here, I still think we should return -ENODEV and the caller doesn't
-need to retry anymore.
+## Test Fixes (compared to v6.4.7)
 
-> 
->> +
->> +	if (s2_domain->agaw > iommu->agaw) {
->> +		pr_err_ratelimited("Incompatible agaw %s\n", iommu-
->>> name);
->> +		return -EINVAL;
->> +	}
-> there is a duplicated check in intel_nested_attach_dev().
-> 
+## Metric Fixes (compared to v6.4.7)
 
-Yeah, should be removed.
+## Test result summary
+total: 169252, pass: 147093, fail: 2297, skip: 19700, xfail: 162
 
-Best regards,
-baolu
+## Build Summary
+* arc: 5 total, 5 passed, 0 failed
+* arm: 145 total, 145 passed, 0 failed
+* arm64: 54 total, 53 passed, 1 failed
+* i386: 41 total, 41 passed, 0 failed
+* mips: 30 total, 28 passed, 2 failed
+* parisc: 4 total, 4 passed, 0 failed
+* powerpc: 38 total, 36 passed, 2 failed
+* riscv: 26 total, 25 passed, 1 failed
+* s390: 16 total, 14 passed, 2 failed
+* sh: 14 total, 12 passed, 2 failed
+* sparc: 8 total, 8 passed, 0 failed
+* x86_64: 46 total, 46 passed, 0 failed
 
+## Test suites summary
+* boot
+* kselftest-android
+* kselftest-arm64
+* kselftest-breakpoints
+* kselftest-capabilities
+* kselftest-cgroup
+* kselftest-clone3
+* kselftest-core
+* kselftest-cpu-hotplug
+* kselftest-cpufreq
+* kselftest-drivers-dma-buf
+* kselftest-efivarfs
+* kselftest-exec
+* kselftest-filesystems
+* kselftest-filesystems-binderfs
+* kselftest-filesystems-epoll
+* kselftest-firmware
+* kselftest-fpu
+* kselftest-ftrace
+* kselftest-futex
+* kselftest-gpio
+* kselftest-intel_pstate
+* kselftest-ipc
+* kselftest-ir
+* kselftest-kcmp
+* kselftest-kexec
+* kselftest-kvm
+* kselftest-lib
+* kselftest-livepatch
+* kselftest-membarrier
+* kselftest-memfd
+* kselftest-memory-hotplug
+* kselftest-mincore
+* kselftest-mount
+* kselftest-mqueue
+* kselftest-net
+* kselftest-net-forwarding
+* kselftest-net-mptcp
+* kselftest-netfilter
+* kselftest-nsfs
+* kselftest-openat2
+* kselftest-pid_namespace
+* kselftest-pidfd
+* kselftest-proc
+* kselftest-pstore
+* kselftest-ptrace
+* kselftest-rseq
+* kselftest-rtc
+* kselftest-seccomp
+* kselftest-sigaltstack
+* kselftest-size
+* kselftest-splice
+* kselftest-static_keys
+* kselftest-sync
+* kselftest-sysctl
+* kselftest-tc-testing
+* kselftest-timens
+* kselftest-timers
+* kselftest-tmpfs
+* kselftest-tpm2
+* kselftest-user
+* kselftest-user_events
+* kselftest-vDSO
+* kselftest-vm
+* kselftest-watchdog
+* kselftest-x86
+* kselftest-zram
+* kunit
+* kvm-unit-tests
+* libgpiod
+* libhugetlbfs
+* log-parser-boot
+* log-parser-test
+* ltp-cap_bounds
+* ltp-commands
+* ltp-containers
+* ltp-controllers
+* ltp-cpuhotplug
+* ltp-crypto
+* ltp-cve
+* ltp-dio
+* ltp-fcntl-locktests
+* ltp-filecaps
+* ltp-fs
+* ltp-fs_bind
+* ltp-fs_perms_simple
+* ltp-fsx
+* ltp-hugetlb
+* ltp-io
+* ltp-ipc
+* ltp-math
+* ltp-mm
+* ltp-nptl
+* ltp-pty
+* ltp-sched
+* ltp-securebits
+* ltp-smoke
+* ltp-syscalls
+* ltp-tracing
+* network-basic-tests
+* perf
+* rcutorture
+* v4l2-compliance
+
+--
+Linaro LKFT
+https://lkft.linaro.org
