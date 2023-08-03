@@ -2,122 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 83E9576ED28
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 16:50:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1470776ED2C
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 16:50:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235516AbjHCOt7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Aug 2023 10:49:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60398 "EHLO
+        id S235784AbjHCOu2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Aug 2023 10:50:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60820 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234240AbjHCOt5 (ORCPT
+        with ESMTP id S235671AbjHCOu0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Aug 2023 10:49:57 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 520CCA3
-        for <linux-kernel@vger.kernel.org>; Thu,  3 Aug 2023 07:49:56 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        Thu, 3 Aug 2023 10:50:26 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA2BAF0
+        for <linux-kernel@vger.kernel.org>; Thu,  3 Aug 2023 07:50:25 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 0C2CC21900;
-        Thu,  3 Aug 2023 14:49:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1691074195; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=zNsMn66aPrXCwyWEFx/U4iJZBEPN4KAvlDUuVw6PgmA=;
-        b=cD3jGFizMcCBYzd8B77P+NaaETqeAT5vbTb6+VnG+9wkzOE8XyREcov67jyuR3ZGzMuKJA
-        1vcevKT2NTuV91JMXUty7jRqTGXmK+Nb98Xj9lzsjeGtV80kIwI/M5F2rbxOUfatt895kN
-        rLTMdVvsGJSTU1wX/dWwh21LiKZWLlk=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id D827A1333C;
-        Thu,  3 Aug 2023 14:49:54 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id 8ovRMZK+y2QmHAAAMHmgww
-        (envelope-from <mhocko@suse.com>); Thu, 03 Aug 2023 14:49:54 +0000
-Date:   Thu, 3 Aug 2023 16:49:54 +0200
-From:   Michal Hocko <mhocko@suse.com>
-To:     Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
-Cc:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Petr Mladek <pmladek@suse.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org,
-        "Luis Claudio R. Goncalves" <lgoncalv@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        John Ogness <john.ogness@linutronix.de>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Waiman Long <longman@redhat.com>, Will Deacon <will@kernel.org>
-Subject: Re: [PATCH v2 1/2] seqlock: Do the lockdep annotation before locking
- in do_write_seqcount_begin_nested()
-Message-ID: <ZMu+kn/g4idBcycV@dhcp22.suse.cz>
-References: <20230623171232.892937-2-bigeasy@linutronix.de>
- <d9b7c170-ed0d-5d37-e099-20d233115943@I-love.SAKURA.ne.jp>
- <20230626081254.XmorFrhs@linutronix.de>
- <ZJmkPuqpW-wQAyNz@alley>
- <a1c559b7-335e-5401-d167-301c5b1cd312@I-love.SAKURA.ne.jp>
- <20230727151029.e_M9bi8N@linutronix.de>
- <b6ba16ce-4849-d32c-68fe-07a15aaf9d9c@I-love.SAKURA.ne.jp>
- <649fa1a7-4efd-8cc7-92c7-ac7944adc283@I-love.SAKURA.ne.jp>
- <ZMfETPzGfpPP7F79@dhcp22.suse.cz>
- <60d4dc52-9281-9266-4294-b514bd09e6e8@I-love.SAKURA.ne.jp>
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 5D8AE61DD9
+        for <linux-kernel@vger.kernel.org>; Thu,  3 Aug 2023 14:50:25 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B4E16C433C8;
+        Thu,  3 Aug 2023 14:50:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1691074224;
+        bh=6UZ5Gq0Pftm4pZ1Q4anPSCaaEuJ7ONFvaauXq89PWYk=;
+        h=Date:From:To:Cc:Subject:From;
+        b=dBfX/AKyXewYh0itdzvWTevQIm9Ubf3+i5bVQPUClQhMHUXuoW+iXY8cTJONPsxrR
+         Dx6cwUG22/6EL9vKiUqEkg/bM9S9vtvLqrazAKqOFBWwhPw+Um+47T5rayq3SX7sTB
+         Nq5xh5J+erfVlwoKo0a51J6KGHP9sOYJCDZZRwJkUuvOxvZTbP/RjnAMqlk3isCrdA
+         oVaHjrV5cNLNOOMy8MUJ9Mg5hJ6lOaG6rEfzOMt/Z3xp+GvMFsDfo1/T2a8JtXx/3n
+         KE8eZsxXH7kqJljajkbl/8+Qp3Ohhr66LJfIZDLY9qWWORGMxMPuX7Rtjurm1cX6BT
+         dmaW+H1GPySCw==
+Date:   Thu, 3 Aug 2023 22:50:19 +0800
+From:   Gao Xiang <xiang@kernel.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     linux-erofs@lists.ozlabs.org, LKML <linux-kernel@vger.kernel.org>,
+        Shijie Sun <sunshijie@xiaomi.com>, Yue Hu <huyue2@coolpad.com>,
+        Chao Yu <chao@kernel.org>, Christoph Hellwig <hch@lst.de>,
+        Christian Brauner <brauner@kernel.org>
+Subject: [GIT PULL] erofs fixes for 6.5-rc5
+Message-ID: <ZMu+q8oCAVG6PqK1@debian>
+Mail-Followup-To: Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-erofs@lists.ozlabs.org, LKML <linux-kernel@vger.kernel.org>,
+        Shijie Sun <sunshijie@xiaomi.com>, Yue Hu <huyue2@coolpad.com>,
+        Chao Yu <chao@kernel.org>, Christoph Hellwig <hch@lst.de>,
+        Christian Brauner <brauner@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <60d4dc52-9281-9266-4294-b514bd09e6e8@I-love.SAKURA.ne.jp>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu 03-08-23 22:18:10, Tetsuo Handa wrote:
-> On 2023/07/31 23:25, Michal Hocko wrote:
-> > On Sat 29-07-23 20:05:43, Tetsuo Handa wrote:
-> >> On 2023/07/29 14:31, Tetsuo Handa wrote:
-> >>> On 2023/07/28 0:10, Sebastian Andrzej Siewior wrote:
-> >>>> On 2023-06-28 21:14:16 [+0900], Tetsuo Handa wrote:
-> >>>>>> Anyway, please do not do this change only because of printk().
-> >>>>>> IMHO, the current ordering is more logical and the printk() problem
-> >>>>>> should be solved another way.
-> >>>>>
-> >>>>> Then, since [PATCH 1/2] cannot be applied, [PATCH 2/2] is automatically
-> >>>>> rejected.
-> >>>>
-> >>>> My understanding is that this patch gets applied and your objection will
-> >>>> be noted.
-> >>>
-> >>> My preference is that zonelist_update_seq is not checked by !__GFP_DIRECT_RECLAIM
-> >>> allocations, which is a low-hanging fruit towards GFP_LOCKLESS mentioned at
-> >>> https://lkml.kernel.org/r/ZG3+l4qcCWTPtSMD@dhcp22.suse.cz and
-> >>> https://lkml.kernel.org/r/ZJWWpGZMJIADQvRS@dhcp22.suse.cz .
-> >>>
-> >>> Maybe we can defer checking zonelist_update_seq till retry check like below,
-> >>> for this is really an infrequent event.
-> >>>
-> >>
-> >> An updated version with comments added.
-> > 
-> > Seriously, don't you see how hairy all this is? And for what? Nitpicking
-> > something that doesn't seem to be a real problem in the first place?
-> 
-> Seriously, can't you find "zonelist_update_seq is not checked by !__GFP_DIRECT_RECLAIM
-> allocations, which is a low-hanging fruit towards GFP_LOCKLESS" !?
+Hi Linus,
 
-I do not think we have concluded that we want to support GFP_LOCKLESS.
-This might be trivial straightforward now but it imposes some constrains
-for future maintainability. So far we haven't heard about many usecases
-where this would be needed and a single one is not sufficient IMHO.
--- 
-Michal Hocko
-SUSE Labs
+Sorry about another pull due to new reports this cycle, but could you
+consider these two patches for 6.5-rc5?
+
+One patch addresses a data corruption of compressed data deduplication
+reported by Shijie Sun who is using this feature in their products.
+
+The other one actually drops a useless WARN_ON() in erofs_kill_sb().
+Since the commit is trivial and the WARN_ON() was actually broken in
+the -next tree (and triggered a syzbot report) due to a behavior change
+of .kill_sb() for the next cycle, it'd be better to fix it upstream now.
+
+All commits have been in -next for a while and no potential merge
+conflict is observed.
+
+Thanks,
+Gao Xiang
+
+The following changes since commit 5d0c230f1de8c7515b6567d9afba1f196fb4e2f4:
+
+  Linux 6.5-rc4 (2023-07-30 13:23:47 -0700)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/xiang/erofs.git tags/erofs-for-6.5-rc5-fixes
+
+for you to fetch changes up to 4da3c7183e186afe8196160f16d5a0248a24e45d:
+
+  erofs: drop unnecessary WARN_ON() in erofs_kill_sb() (2023-08-01 16:12:24 +0800)
+
+----------------------------------------------------------------
+Changes since last update:
+
+ - Fix data corruption caused by insufficient decompression on
+   deduplicated compressed extents;
+
+ - Drop a useless s_magic checking in erofs_kill_sb().
+
+----------------------------------------------------------------
+Gao Xiang (2):
+      erofs: fix wrong primary bvec selection on deduplicated extents
+      erofs: drop unnecessary WARN_ON() in erofs_kill_sb()
+
+ fs/erofs/super.c | 2 --
+ fs/erofs/zdata.c | 7 ++++---
+ 2 files changed, 4 insertions(+), 5 deletions(-)
