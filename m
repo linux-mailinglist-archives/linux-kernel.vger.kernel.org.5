@@ -2,74 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 915CF76F630
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 01:38:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A80AB76F62E
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 01:38:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231951AbjHCXit (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Aug 2023 19:38:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54324 "EHLO
+        id S231756AbjHCXiW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Aug 2023 19:38:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53980 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232068AbjHCXiq (ORCPT
+        with ESMTP id S229779AbjHCXiT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Aug 2023 19:38:46 -0400
-Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 179CC3A8C
-        for <linux-kernel@vger.kernel.org>; Thu,  3 Aug 2023 16:38:42 -0700 (PDT)
-Received: by mail-ed1-x535.google.com with SMTP id 4fb4d7f45d1cf-5223910acf2so5508a12.0
-        for <linux-kernel@vger.kernel.org>; Thu, 03 Aug 2023 16:38:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1691105920; x=1691710720;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=HF9Fv1UjGToa7ovm9kjlJdHk4E7DdWLIDqHPV63VLII=;
-        b=tU2QLiE1TKfSuhJ9emNqRap40N0ZD9zGGhFakPKtTMigp0fVMGq6TIVV+XHU+4djDq
-         aL/BcjwOYuYBMpSqV2qrU4AgPoSrJY0ae+dRHbhkoqVeEZkrUjVivhleeIh9kNClMdnC
-         EfWZjjvyLzTSFDVGN52sAUJE7WDB9k6q6js5crFFvSp1Xfw30ze5WC84iAEV6e5M/Xbp
-         aqN8QDDrZN3Q7BFb3ZxNJfIiCn23fXdz4qE4UIdekAUSIdFwbILidpdPVsHzAuRzHtfb
-         IU0BiN6nJOsLbYlVF763PFsBeZxuxJKLoadikBY8ozt7C8uAdKC4S6GSFvH4wiK/JJeR
-         FP7Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691105920; x=1691710720;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=HF9Fv1UjGToa7ovm9kjlJdHk4E7DdWLIDqHPV63VLII=;
-        b=dZ3dBtn9Cx4n0Ve5FILtW/j3QDLOSkvODU47eGznRNASaWAPIWhWuJvJIeKBNM/q0y
-         qto9/R9RUI+krnT+MOBKpdtWSmJOxA15TyZtSMHUNv3AdByK8RtqaW9cePjcNw0OmjbI
-         pFfquEQZwWI7MPCx87lVGl2JOrVT8Vo6GHL9mZNH8n2yNoSdSD5tXMsUSCBnZLM8Xln2
-         jWLjdq2yFzjPujQFaSuSFX7bMF/bpNnOjIyrE5/AGPG0f5fH+viwfBuc/BDz4/HSlmgz
-         tQlDfr7mKvgTIcoqDf1y5FaP4qExb/nlAOBZe9XgTo1Cub7R+5Fda/X0z2AzzSL2tIxc
-         U3cA==
-X-Gm-Message-State: AOJu0YyMOcgMBi5/Zd/OHZLqCbst5KkcShWbW/zVbOtItOglOtEj2Dac
-        8Ppoeku9mkWUnwS7cneZbZF8jGMAPIdMRx0rqinOKRTgj4CsT5k/ZasWRNyZ
-X-Google-Smtp-Source: AGHT+IE8BzcvliGOfpZKZFRaXciucYbDm1vicS2CnPG5JaIqDBHOujD2OJYpt2YbaYt+JeZDnJ0h3dp/UPet8hikz7s=
-X-Received: by 2002:a50:bb41:0:b0:522:28a1:2095 with SMTP id
- y59-20020a50bb41000000b0052228a12095mr7144ede.3.1691105920421; Thu, 03 Aug
- 2023 16:38:40 -0700 (PDT)
+        Thu, 3 Aug 2023 19:38:19 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98C2CE69;
+        Thu,  3 Aug 2023 16:38:18 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 22DB461EEC;
+        Thu,  3 Aug 2023 23:38:18 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C072AC433C7;
+        Thu,  3 Aug 2023 23:38:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1691105897;
+        bh=aLQlhR8HSv2POSv3geI9bcoaAzfbwflFBUhnJPVztHg=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=la4NSnbiNxZ3stnWKrgOJrpkat+ogvN9qenUH8RVXH/e4czSZwcay/ddAhuE0rnue
+         SrxJ8704bIwxzR6b0vvbEjlg1AzO09WwM5YIK1nmf3BC3Q9L5hLkCCnxYXn2Fro5je
+         gAJiuHjyHDGtVoDZkyz9VAIEHwRL9YmUYQWfHOLKkXRrnqs/TohQZdlYrh04iDU7aa
+         ejvJaBtTuKcyaeGWUPMkFIY5OYJNtHL8eglm2w+mOma2MSBmxvXHz9Ya+YZMs6bPC5
+         PLr7Ns/Tc8gPKIZzSJ7S6pLtoFzM1xxGI9Nu/M1QApddPkz6G0Ut015b9OXJ7v7fGU
+         fjmdWBbdiG5AQ==
+Date:   Thu, 3 Aug 2023 16:38:14 -0700
+From:   Nathan Chancellor <nathan@kernel.org>
+To:     "Matthew Wilcox (Oracle)" <willy@infradead.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        linux-arch@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, Mike Rapoport <rppt@kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        linuxppc-dev@lists.ozlabs.org
+Subject: Re: [PATCH v6 21/38] powerpc: Implement the new page table range API
+Message-ID: <20230803233814.GA2515372@dev-arch.thelio-3990X>
+References: <20230802151406.3735276-1-willy@infradead.org>
+ <20230802151406.3735276-22-willy@infradead.org>
 MIME-Version: 1.0
-References: <20230728161356.1784568-1-fengwei.yin@intel.com>
- <3bbfde16-ced1-dca8-6a3f-da893e045bc5@arm.com> <56c8f4f9-b54b-b0bb-250c-ec8643accfc7@intel.com>
- <3541d2de-5cf8-2f84-8153-277e2bfc0101@arm.com> <5f98748a-97ca-6426-1e24-a5675da75381@intel.com>
- <a590da86-0c42-7d46-d320-c661a59a46c1@arm.com> <837ba176-c97f-f81b-c044-eb6aa3d88bb7@intel.com>
- <CAOUHufY9EQ70Pn-n2zVa9=Gm3-WHxxphp7VHia4qv9x2domdbg@mail.gmail.com> <40d49276-fae9-e538-61cf-64bb79233bc3@intel.com>
-In-Reply-To: <40d49276-fae9-e538-61cf-64bb79233bc3@intel.com>
-From:   Yu Zhao <yuzhao@google.com>
-Date:   Thu, 3 Aug 2023 17:38:00 -0600
-Message-ID: <CAOUHufbcAJWUoVuCYtaDZKdcw+JPWVV0EiB=JcDvz1Jt_Au2Tw@mail.gmail.com>
-Subject: Re: [PATCH 0/2] don't use mapcount() to check large folio sharing
-To:     "Yin, Fengwei" <fengwei.yin@intel.com>
-Cc:     Ryan Roberts <ryan.roberts@arm.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        akpm@linux-foundation.org, willy@infradead.org,
-        vishal.moola@gmail.com, wangkefeng.wang@huawei.com,
-        minchan@kernel.org, david@redhat.com, shy828301@gmail.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230802151406.3735276-22-willy@infradead.org>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -77,92 +61,117 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 3, 2023 at 5:27=E2=80=AFPM Yin, Fengwei <fengwei.yin@intel.com>=
- wrote:
->
->
->
-> On 8/4/2023 4:46 AM, Yu Zhao wrote:
-> > On Wed, Aug 2, 2023 at 6:56=E2=80=AFAM Yin, Fengwei <fengwei.yin@intel.=
-com> wrote:
-> >>
-> >>"
-> >>
-> >> On 8/2/2023 8:49 PM, Ryan Roberts wrote:
-> >>> On 02/08/2023 13:42, Yin, Fengwei wrote:
-> >>>>
-> >>>>
-> >>>> On 8/2/2023 8:40 PM, Ryan Roberts wrote:
-> >>>>> On 02/08/2023 13:35, Yin, Fengwei wrote:
-> >>>>>>
-> >>>>>>
-> >>>>>> On 8/2/2023 6:27 PM, Ryan Roberts wrote:
-> >>>>>>> On 28/07/2023 17:13, Yin Fengwei wrote:
-> >>>>>>>> In madvise_cold_or_pageout_pte_range() and madvise_free_pte_rang=
-e(),
-> >>>>>>>> folio_mapcount() is used to check whether the folio is shared. B=
-ut it's
-> >>>>>>>> not correct as folio_mapcount() returns total mapcount of large =
-folio.
-> >>>>>>>>
-> >>>>>>>> Use folio_estimated_sharers() here as the estimated number is en=
-ough.
-> >>>>>>>>
-> >>>>>>>> Yin Fengwei (2):
-> >>>>>>>>   madvise: don't use mapcount() against large folio for sharing =
-check
-> >>>>>>>>   madvise: don't use mapcount() against large folio for sharing =
-check
-> >>>>>>>>
-> >>>>>>>>  mm/huge_memory.c | 2 +-
-> >>>>>>>>  mm/madvise.c     | 6 +++---
-> >>>>>>>>  2 files changed, 4 insertions(+), 4 deletions(-)
-> >>>>>>>>
-> >>>>>>>
-> >>>>>>> As a set of fixes, I agree this is definitely an improvement, so:
-> >>>>>>>
-> >>>>>>> Reviewed-By: Ryan Roberts
-> >>>>>> Thanks.
-> >>>>>>
-> >>>>>>>
-> >>>>>>>
-> >>>>>>> But I have a couple of comments around further improvements;
-> >>>>>>>
-> >>>>>>> Once we have the scheme that David is working on to be able to pr=
-ovide precise
-> >>>>>>> exclusive vs shared info, we will probably want to move to that. =
-Although that
-> >>>>>>> scheme will need access to the mm_struct of a process known to be=
- mapping the
-> >>>>>>> folio. We have that info, but its not passed to folio_estimated_s=
-harers() so we
-> >>>>>>> can't just reimplement folio_estimated_sharers() - we will need t=
-o rework these
-> >>>>>>> call sites again.
-> >>>>>> Yes. This could be extra work. Maybe should delay till David's wor=
-k is done.
-> >>>>>
-> >>>>> What you have is definitely an improvement over what was there befo=
-re. And is
-> >>>>> probably the best we can do without David's scheme. So I wouldn't d=
-elay this.
-> >>>>> Just pointing out that we will be able to make it even better later=
- on (if
-> >>>>> David's stuff goes in).
-> >>>> Yes. I agree that we should wait for David's work ready and do fix b=
-ased on that.
-> >>>
-> >>> I was suggesting the opposite - not waiting. Then we can do separate =
-improvement
-> >>> later.
-> >> Let's wait for David's work ready.
-> >
-> > Waiting is fine as long as we don't miss the next merge window -- we
-> > don't want these two bugs to get into another release. Also I think we
-> > should cc stable, since as David mentioned, they have been causing
-> > selftest failures.
->
-> Stable was CCed.
+Hi Matthew,
 
-Need to add the "Cc: stable@vger.kernel.org" tag:
-Documentation/process/stable-kernel-rules.rst
+On Wed, Aug 02, 2023 at 04:13:49PM +0100, Matthew Wilcox (Oracle) wrote:
+> Add set_ptes(), update_mmu_cache_range() and flush_dcache_folio().
+> Change the PG_arch_1 (aka PG_dcache_dirty) flag from being per-page to
+> per-folio.
+> 
+> Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+> Acked-by: Mike Rapoport (IBM) <rppt@kernel.org>
+> Cc: Michael Ellerman <mpe@ellerman.id.au>
+> Cc: Nicholas Piggin <npiggin@gmail.com>
+> Cc: Christophe Leroy <christophe.leroy@csgroup.eu>
+> Cc: linuxppc-dev@lists.ozlabs.org
+...
+> diff --git a/arch/powerpc/include/asm/kvm_ppc.h b/arch/powerpc/include/asm/kvm_ppc.h
+> index d16d80ad2ae4..b4da8514af43 100644
+> --- a/arch/powerpc/include/asm/kvm_ppc.h
+> +++ b/arch/powerpc/include/asm/kvm_ppc.h
+> @@ -894,7 +894,7 @@ void kvmppc_init_lpid(unsigned long nr_lpids);
+>  
+>  static inline void kvmppc_mmu_flush_icache(kvm_pfn_t pfn)
+>  {
+> -	struct page *page;
+> +	struct folio *folio;
+>  	/*
+>  	 * We can only access pages that the kernel maps
+>  	 * as memory. Bail out for unmapped ones.
+> @@ -903,10 +903,10 @@ static inline void kvmppc_mmu_flush_icache(kvm_pfn_t pfn)
+>  		return;
+>  
+>  	/* Clear i-cache for new pages */
+> -	page = pfn_to_page(pfn);
+> -	if (!test_bit(PG_dcache_clean, &page->flags)) {
+> -		flush_dcache_icache_page(page);
+> -		set_bit(PG_dcache_clean, &page->flags);
+> +	folio = page_folio(pfn_to_page(pfn));
+> +	if (!test_bit(PG_dcache_clean, &folio->flags)) {
+> +		flush_dcache_icache_folio(folio);
+> +		set_bit(PG_dcache_clean, &folio->flags);
+>  	}
+>  }
+...
+> diff --git a/arch/powerpc/mm/cacheflush.c b/arch/powerpc/mm/cacheflush.c
+> index 0e9b4879c0f9..8760d2223abe 100644
+> --- a/arch/powerpc/mm/cacheflush.c
+> +++ b/arch/powerpc/mm/cacheflush.c
+> @@ -148,44 +148,30 @@ static void __flush_dcache_icache(void *p)
+>  	invalidate_icache_range(addr, addr + PAGE_SIZE);
+>  }
+>  
+> -static void flush_dcache_icache_hugepage(struct page *page)
+> +void flush_dcache_icache_folio(struct folio *folio)
+>  {
+> -	int i;
+> -	int nr = compound_nr(page);
+> +	unsigned int i, nr = folio_nr_pages(folio);
+>  
+> -	if (!PageHighMem(page)) {
+> +	if (flush_coherent_icache())
+> +		return;
+> +
+> +	if (!folio_test_highmem(folio)) {
+> +		void *addr = folio_address(folio);
+>  		for (i = 0; i < nr; i++)
+> -			__flush_dcache_icache(lowmem_page_address(page + i));
+> -	} else {
+> +			__flush_dcache_icache(addr + i * PAGE_SIZE);
+> +	} else if (IS_ENABLED(CONFIG_BOOKE) || sizeof(phys_addr_t) > sizeof(void *)) {
+>  		for (i = 0; i < nr; i++) {
+> -			void *start = kmap_local_page(page + i);
+> +			void *start = kmap_local_folio(folio, i * PAGE_SIZE);
+>  
+>  			__flush_dcache_icache(start);
+>  			kunmap_local(start);
+>  		}
+> -	}
+> -}
+> -
+> -void flush_dcache_icache_page(struct page *page)
+> -{
+> -	if (flush_coherent_icache())
+> -		return;
+> -
+> -	if (PageCompound(page))
+> -		return flush_dcache_icache_hugepage(page);
+> -
+> -	if (!PageHighMem(page)) {
+> -		__flush_dcache_icache(lowmem_page_address(page));
+> -	} else if (IS_ENABLED(CONFIG_BOOKE) || sizeof(phys_addr_t) > sizeof(void *)) {
+> -		void *start = kmap_local_page(page);
+> -
+> -		__flush_dcache_icache(start);
+> -		kunmap_local(start);
+>  	} else {
+> -		flush_dcache_icache_phys(page_to_phys(page));
+> +		unsigned long pfn = folio_pfn(folio);
+> +		for (i = 0; i < nr; i++)
+> +			flush_dcache_icache_phys((pfn + i) * PAGE_SIZE);
+>  	}
+>  }
+> -EXPORT_SYMBOL(flush_dcache_icache_page);
+
+Apologies if this has already been fixed or reported, I searched lore
+and did not find anything. The dropping of this export in combination
+with the conversion above appears to cause ARCH=powerpc allmodconfig to
+fail with:
+
+  ERROR: modpost: "flush_dcache_icache_folio" [arch/powerpc/kvm/kvm-pr.ko] undefined!
+
+I don't know if this should be re-exported or not but that does
+obviously resolve the issue.
+
+Cheers,
+Nathan
