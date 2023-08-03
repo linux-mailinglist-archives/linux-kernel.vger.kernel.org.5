@@ -2,115 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 56B8776EC21
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 16:15:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5368976EC24
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 16:15:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233974AbjHCOPk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Aug 2023 10:15:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58948 "EHLO
+        id S234418AbjHCOPr convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 3 Aug 2023 10:15:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33848 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231143AbjHCOPc (ORCPT
+        with ESMTP id S233993AbjHCOPm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Aug 2023 10:15:32 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 3431F1BF6
-        for <linux-kernel@vger.kernel.org>; Thu,  3 Aug 2023 07:15:31 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id E263A113E;
-        Thu,  3 Aug 2023 07:16:13 -0700 (PDT)
-Received: from [10.1.35.53] (C02Z41KALVDN.cambridge.arm.com [10.1.35.53])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 2801C3F5A1;
-        Thu,  3 Aug 2023 07:15:29 -0700 (PDT)
-Message-ID: <bb871b52-526a-d4aa-5249-6105bc06aaba@arm.com>
-Date:   Thu, 3 Aug 2023 15:15:27 +0100
+        Thu, 3 Aug 2023 10:15:42 -0400
+Received: from mail-oo1-f52.google.com (mail-oo1-f52.google.com [209.85.161.52])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF3B2F5;
+        Thu,  3 Aug 2023 07:15:40 -0700 (PDT)
+Received: by mail-oo1-f52.google.com with SMTP id 006d021491bc7-56c9237e0ffso163727eaf.0;
+        Thu, 03 Aug 2023 07:15:40 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691072140; x=1691676940;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=mRiKMMmW2cEh5SQhqz+TDBIJiAGKEt6yCzvh8wO3g0Q=;
+        b=IfUzMcDRF8vy3w/MZ69syqMOBqX6gzCN89jz/HwVCsgglMbAdEUWsa1HlEgyr0iLWS
+         Y7U/aunF4vDjEe52kCwIMsWbxFUzi6P7U25vr/n3ALBWP3WStvsWVtUo9HJMSd1sLezV
+         bl1eURZlLHsxiGig3TdtfSfcre2Ns8s1dcBCq1TQe5E1JzLOgG96bcD3gDfHQ794+dbA
+         G79D1UXINkiLEcJfkP5KWWMWV4bZAzOC3Cq1lHFExDd0ydBqjv91Or1Zpv7ay87cP1TN
+         eBKjQO2n26zsubC+mkyeVoze7SszsMOqRt02qP4gnIzIHp56lmv6AoCj/gdTJcgwd7gJ
+         fpdQ==
+X-Gm-Message-State: ABy/qLZ+tSIZIueHXuyT1JKc8NKVfHKyKp1lce6ngA3lrcOtt8tsjWtX
+        Xut5uWDYOL7kUksOJ2KNgJtVd3hODzFIldBTwHw=
+X-Google-Smtp-Source: APBJJlEjUzlnvDlpJA0bjJJrB1Phr7tRT8XoTuEBC/RX7OM90RU+G2NLk/hA31g2l3iw1O2CNpnVKwqXXMgK2DQ5VHw=
+X-Received: by 2002:a05:6820:2108:b0:56c:5e21:c72d with SMTP id
+ cd8-20020a056820210800b0056c5e21c72dmr13696474oob.1.1691072140128; Thu, 03
+ Aug 2023 07:15:40 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.13.0
-Subject: Re: [PATCH v4 3/3] mm: Batch-zap large anonymous folio PTE mappings
-To:     David Hildenbrand <david@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Yin Fengwei <fengwei.yin@intel.com>,
-        Yu Zhao <yuzhao@google.com>, Yang Shi <shy828301@gmail.com>,
-        "Huang, Ying" <ying.huang@intel.com>, Zi Yan <ziy@nvidia.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Alexander Gordeev <agordeev@linux.ibm.com>,
-        Gerald Schaefer <gerald.schaefer@linux.ibm.com>
-Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org
-References: <20230727141837.3386072-1-ryan.roberts@arm.com>
- <20230727141837.3386072-4-ryan.roberts@arm.com>
- <6cda91b3-bb7a-4c4c-a618-2572b9c8bbf9@redhat.com>
- <4255e71a-63c9-b2f9-5e97-e46834f7837c@arm.com>
- <b54e7885-3e49-150f-cf8a-36a880e5dfc9@redhat.com>
-From:   Ryan Roberts <ryan.roberts@arm.com>
-In-Reply-To: <b54e7885-3e49-150f-cf8a-36a880e5dfc9@redhat.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <13318886.uLZWGnKmhe@kreacher> <12254967.O9o76ZdvQC@kreacher>
+ <4501957.LvFx2qVVIh@kreacher> <2d0315d4-35b4-84db-4dcb-c9528abad825@linaro.org>
+ <CAJZ5v0iQDOsTOqWFvbf5nom-b3-pbHPRzJQC-1DM9eoh=0AKjg@mail.gmail.com>
+ <eb279cf1-0605-3b87-5cb6-241a91977455@linaro.org> <CAJZ5v0i48=oawDJHoaHhiZRaO_CJokKsOHyNvu2v4PUbS6CH_Q@mail.gmail.com>
+ <f8029547-6851-7e0c-00e6-4963ccbc2702@linaro.org> <CAJZ5v0gDQMNSeEU1J7ooJk4Ec=Hw_JuZAtL5k215v7Lf67iTgg@mail.gmail.com>
+ <5c93d78d-835e-c740-280b-9d76456aaeda@linaro.org>
+In-Reply-To: <5c93d78d-835e-c740-280b-9d76456aaeda@linaro.org>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Thu, 3 Aug 2023 16:15:28 +0200
+Message-ID: <CAJZ5v0gtkZTwt-qP0uwvTJNx8cpO1o1esmW9BfVxB67X3Yt++w@mail.gmail.com>
+Subject: Re: [PATCH v3 1/8] thermal: core: Add mechanism for connecting trips
+ with driver data
+To:     Daniel Lezcano <daniel.lezcano@linaro.org>
+Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Linux ACPI <linux-acpi@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Michal Wilczynski <michal.wilczynski@intel.com>,
+        Zhang Rui <rui.zhang@intel.com>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 03/08/2023 15:10, David Hildenbrand wrote:
->>>
->>> With this patch, you'll might suddenly have mapcount > refcount for a folio, or
->>> am I wrong?
->>
->> Yes you would. Does that break things?
->>
-> 
-> It is problematic whenever you want to check for additional page references that
-> are not from mappings (i.e., GUP refs/pins or anything else)
-> 
-> One example lives in KSM code (!compound only):
-> 
-> page_mapcount(page) + 1 + swapped != page_count(page)
-> 
-> Another one in compaction code:
-> 
-> if (!mapping && (folio_ref_count(folio) - 1) > folio_mapcount(folio))
-> 
-> And another one in khugepaged (is_refcount_suitable)
-> 
-> ... and in THP split can_split_folio() (although that can deal with false
-> positives and false negatives).
-> 
-> 
-> We want to avoid detecting "no other references" if there *are* other
-> references. Detecting "there are other references" although there are not is
-> usually better.
-> 
-> 
-> Assume you have mapcount > refcount for some time due to concurrent unmapping,
-> AND some unrelated reference. You would suddenly pass these checks (mapcount ==
-> refcount) and might not detect other references.
+On Thu, Aug 3, 2023 at 3:06 PM Daniel Lezcano <daniel.lezcano@linaro.org> wrote:
+>
+> On 02/08/2023 18:48, Rafael J. Wysocki wrote:
+>
+> [ ... ]
+>
+> >> Let me check if I can do something on top of your series to move it in
+> >> the ACPI driver.
+> >
+> > It doesn't need to be on top of my series, so if you have an idea,
+> > please just let me know what it is.
+> >
+> > It can't be entirely in the ACPI driver AFAICS, though, because
+> > trips[i] need to be modified on updates and they belong to the core.
+> > Hence, the driver needs some help from the core to get to them.  It
+> > can be something like "this is my trip tag and please give me the
+> > address of the trip matching it" or similar, but it is needed, because
+> > the driver has to assume that the trip indices used by it initially
+> > may change.
+>
+> May be I'm missing something but driver_ref does not seems to be used
+> except when assigning it, no?
 
-OK. I'll rework with the 2 loop approach, assuming I can calculate the number of
-free slots in the mmu_gather ahead of time.
+It is used on the other side.  That is, the value assigned to the trip
+field in it is accessed via trip_ref in the driver.
 
+The idea is that the driver puts a pointer to its local struct
+thermal_trip_ref into a struct thermal_trip and the core stores the
+address of that struct thermal_trip in there, which allows the driver
+to access the struct thermal_trip via its local struct
+thermal_trip_ref going forward.
 
-> 
->>>
->>>> +
->>>> +    for (i = 0; i < nr_pages;) {
->>>> +        ptent = ptep_get_and_clear_full(mm, addr, pte, tlb->fullmm);
->>>> +        tlb_remove_tlb_entry(tlb, pte, addr);
->>>> +        zap_install_uffd_wp_if_needed(vma, addr, pte, details, ptent);
->>>> +        full = __tlb_remove_page(tlb, page, 0);
->>>> +
->>>> +        if (unlikely(page_mapcount(page) < 1))
->>>> +            print_bad_pte(vma, addr, ptent, page);
->>>
->>> Can we avoid new users of page_mapcount() outside rmap code, please? :)
->>
->> Sure. This is just trying to replicate the same diagnstics that's done on the
->> non-batched path. I'm happy to remove it.
-> 
-> Spotted it afterwards in the existing code already, so you're effetively not
-> adding new ones.
-> 
+Admittedly, this is somewhat convoluted.
 
+I have an alternative approach in the works, just for illustration
+purposes if nothing else, but I have encountered a problem that I
+would like to ask you about.
+
+Namely, zone disabling is not particularly useful for preventing the
+zone from being used while the trips are updated, because it has side
+effects.  First, it triggers __thermal_zone_device_update() and a
+netlink message every time the mode changes, which can be kind of
+overcome.  But second, if the mode is "disabled", it does not actually
+prevent things like __thermal_zone_get_trip() from running and the
+zone lock is the only thing that can be used for that AFAICS.
+
+So by "disabling" a thermal zone, did you mean changing its mode to
+"disabled" or something else?
