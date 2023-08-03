@@ -2,47 +2,47 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1945576E052
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 08:37:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 357C276E05C
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 08:37:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232844AbjHCGhP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Aug 2023 02:37:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46662 "EHLO
+        id S233423AbjHCGhf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Aug 2023 02:37:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46880 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231192AbjHCGhM (ORCPT
+        with ESMTP id S233352AbjHCGh1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Aug 2023 02:37:12 -0400
-Received: from mg.richtek.com (mg.richtek.com [220.130.44.152])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id C6CD8E7D;
-        Wed,  2 Aug 2023 23:37:08 -0700 (PDT)
-X-MailGates: (SIP:2,PASS,NONE)(compute_score:DELIVER,40,3)
-Received: from 192.168.10.47
-        by mg.richtek.com with MailGates ESMTPS Server V6.0(2288:0:AUTH_RELAY)
-        (envelope-from <cy_huang@richtek.com>)
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256/256); Thu, 03 Aug 2023 14:36:56 +0800 (CST)
-Received: from ex3.rt.l (192.168.10.46) by ex4.rt.l (192.168.10.47) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.25; Thu, 3 Aug
- 2023 14:36:56 +0800
-Received: from linuxcarl2.richtek.com (192.168.10.154) by ex3.rt.l
- (192.168.10.45) with Microsoft SMTP Server id 15.2.1118.25 via Frontend
- Transport; Thu, 3 Aug 2023 14:36:56 +0800
-Date:   Thu, 3 Aug 2023 14:36:56 +0800
-From:   ChiYuan Huang <cy_huang@richtek.com>
-To:     Alina Yu <alina_yu@richtek.com>
-CC:     <lgirdwood@gmail.com>, <broonie@kernel.org>, <robh+dt@kernel.org>,
-        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
-        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>
-Subject: Re: [PATCH v5 1/2] regulator: dt-bindings: rtq2208: Add Richtek
- RTQ2208 SubPMIC
-Message-ID: <20230803063656.GA19124@linuxcarl2.richtek.com>
-References: <1690355592-10920-1-git-send-email-alina_yu@richtek.com>
- <1690355592-10920-2-git-send-email-alina_yu@richtek.com>
+        Thu, 3 Aug 2023 02:37:27 -0400
+Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 04D7130ED;
+        Wed,  2 Aug 2023 23:37:22 -0700 (PDT)
+Received: from loongson.cn (unknown [10.20.42.201])
+        by gateway (Coremail) with SMTP id _____8AxCPIgS8tkD4YPAA--.35983S3;
+        Thu, 03 Aug 2023 14:37:20 +0800 (CST)
+Received: from localhost.localdomain (unknown [10.20.42.201])
+        by localhost.localdomain (Coremail) with SMTP id AQAAf8CxF80aS8tkMsZGAA--.49295S2;
+        Thu, 03 Aug 2023 14:37:17 +0800 (CST)
+From:   Yinbo Zhu <zhuyinbo@loongson.cn>
+To:     Arnd Bergmann <arnd@arndb.de>, Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>, linux-pm@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        soc@kernel.org, Ulf Hansson <ulf.hansson@linaro.org>
+Cc:     Jianmin Lv <lvjianmin@loongson.cn>, wanghongliang@loongson.cn,
+        Liu Peibao <liupeibao@loongson.cn>,
+        loongson-kernel@lists.loongnix.cn,
+        Yinbo Zhu <zhuyinbo@loongson.cn>, loongarch@lists.linux.dev,
+        Liu Yun <liuyun@loongson.cn>
+Subject: [PATCH v6 0/2] soc: loongson2_pm: add power management support
+Date:   Thu,  3 Aug 2023 14:37:01 +0800
+Message-Id: <20230803063703.5659-1-zhuyinbo@loongson.cn>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <1690355592-10920-2-git-send-email-alina_yu@richtek.com>
-User-Agent: Mutt/1.5.21 (2010-09-15)
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: AQAAf8CxF80aS8tkMsZGAA--.49295S2
+X-CM-SenderInfo: 52kx5xhqerqz5rrqw2lrqou0/
+X-Coremail-Antispam: 1Uk129KBjDUn29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7KY7
+        ZEXasCq-sGcSsGvfJ3UbIjqfuFe4nvWSU5nxnvy29KBjDU0xBIdaVrnUUvcSsGvfC2Kfnx
+        nUUI43ZEXa7xR_UUUUUUUUU==
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
@@ -52,234 +52,66 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 26, 2023 at 03:13:11PM +0800, Alina Yu wrote:
-> Add bindings for Richtek RTQ2208 IC controlled SubPMIC
-> 
-> Signed-off-by: Alina Yu <alina_yu@richtek.com>
-Hi,
-> ---
-> v5
-> - Revise filename from $id
-> - Remove "regulator-compatible" for ldos
-> - Add missing "high" for "richtek,mtp-sel-high"
-> - Remove "regulator-mode" property
-> - Add and modify "unevaluatedProperties: false" and "additionalProperties: false"
-> - Remove "richtek,fixed-uV"
-> - Remove redundant space in "buck-a" and "ldo2"
-> v4
-> - Modify filename to "richtek,rtq2208"
-> - Add more desciptions for "regulator-allowed-modes"
-> ---
->  .../bindings/regulator/richtek,rtq2208.yaml        | 196 +++++++++++++++++++++
->  1 file changed, 196 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/regulator/richtek,rtq2208.yaml
-> 
-> diff --git a/Documentation/devicetree/bindings/regulator/richtek,rtq2208.yaml b/Documentation/devicetree/bindings/regulator/richtek,rtq2208.yaml
-> new file mode 100644
-> index 0000000..63453f2
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/regulator/richtek,rtq2208.yaml
-> @@ -0,0 +1,196 @@
-> +# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/regulator/richtek,rtq2208.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Richtek RTQ2208 SubPMIC Regulator
-> +
-> +maintainers:
-> +  - Alina Yu <alina_yu@richtek.com>
-> +
-> +description: |
-> +  RTQ2208 is a highly integrated power converter that offers functional safety dual
-> +  multi-configurable synchronous buck converters and two LDOs.
-> +
-> +  Bucks support "regulator-allowed-modes" and "regulator-mode". The former defines the permitted
-> +  switching operation in normal mode; the latter defines the operation in suspend to RAM mode.
-> +
-> +  No matter the RTQ2208 is configured to normal or suspend to RAM mode, there are two switching
-> +  operation modes for all buck rails, automatic power saving mode (Auto mode) and forced continuous
-> +  conduction mode (FCCM).
-> +
-> +  The definition of modes is in the datasheet which is available in below link
-> +  and their meaning is::
-> +    0 - Auto mode for power saving, which reducing the switching frequency at light load condition
-> +    to maintain high frequency.
-> +    1 - FCCM to meet the strict voltage regulation accuracy, which keeping constant switching frequency.
-> +
-> +  Datasheet will be available soon at
-> +  https://www.richtek.com/assets/Products
-> +
-> +properties:
-> +  compatible:
-> +    enum:
-> +      - richtek,rtq2208
-> +
-> +  reg:
-> +    maxItems: 1
-> +
-> +  interrupts:
-> +    maxItems: 1
-> +    
-> +  richtek,mtp-sel-high:
-> +    type: boolean
-> +    description:
-> +      vout register selection based on this boolean value.
-> +      false - Using DVS0 register setting to adjust vout
-> +      true - Using DVS1 register setting to adjust vout
-> +
-> +  regulators:
-> +    type: object
-Just curious.
-It seems this PMIC only support buck/ldo ouput.
-Since Krzysztof already reviewed it, not sure whether to group it into one node is common or not.
-AFAIK, if there's no more function included, to put all on the top level may be better.
-> +
-> +    patternProperties:
-> +      "^buck-[a-h]$":
-> +        type: object
-> +        $ref: regulator.yaml#
-> +        unevaluatedProperties: false
-> +        description:
-> +          description for buck-[a-h] regulator.
-> +
-> +        properties:
-> +          regulator-allowed-modes:
-> +            description:
-> +              two buck modes in different switching accuracy.
-> +              0 - Auto mode
-> +              1 - FCCM
-> +            items:
-> +              enum: [0, 1]
-> +
-> +      "^ldo[1-2]$":
-> +        type: object
-> +        $ref: regulator.yaml#
-> +        unevaluatedProperties: false
-> +        description:
-> +          regulator description for ldo[1-2].
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +  - regulators
-> +
-> +additionalProperties: false
-> +
-> +examples:
-> +  - |
-> +    #include <dt-bindings/interrupt-controller/irq.h>
-> +    i2c {
-> +      #address-cells = <1>;
-> +      #size-cells = <0>;
-> +
-> +      pmic@10 {
-> +        compatible = "richtek,rtq2208";
-> +        reg = <0x10>;
-> +        interrupts-extended = <&gpio26 0 IRQ_TYPE_LEVEL_LOW>;
-> +        richtek,mtp-sel-high;
-> +
-> +        regulators {
-> +          buck-a {
-> +            regulator-min-microvolt = <400000>;
-> +            regulator-max-microvolt = <2050000>;
-> +            regulator-allowed-modes = <0 1>;
-> +            regulator-always-on;
-> +            regulator-state-mem {
-> +              regulator-on-in-suspend;
-> +              regulator-mode = <1>;
-> +            };
-> +          };
-> +          buck-b {
-> +            regulator-min-microvolt = <400000>;
-> +            regulator-max-microvolt = <2050000>;
-> +            regulator-allowed-modes = <0 1>;
-> +            regulator-always-on;
-> +            regulator-state-mem {
-> +              regulator-on-in-suspend;
-> +              regulator-mode = <1>;
-> +            };
-> +          };
-> +          buck-c {
-> +            regulator-min-microvolt = <400000>;
-> +            regulator-max-microvolt = <2050000>;
-> +            regulator-allowed-modes = <0 1>;
-> +            regulator-always-on;
-> +            regulator-state-mem {
-> +              regulator-on-in-suspend;
-> +              regulator-mode = <1>;
-> +            };
-> +          };
-> +          buck-d {
-> +            regulator-min-microvolt = <400000>;
-> +            regulator-max-microvolt = <2050000>;
-> +            regulator-allowed-modes = <0 1>;
-> +            regulator-always-on;
-> +            regulator-state-mem {
-> +              regulator-on-in-suspend;
-> +              regulator-mode = <1>;
-> +            };
-> +          };
-> +          buck-e {
-> +            regulator-min-microvolt = <400000>;
-> +            regulator-max-microvolt = <2050000>;
-> +            regulator-allowed-modes = <0 1>;
-> +            regulator-always-on;
-> +            regulator-state-mem {
-> +              regulator-on-in-suspend;
-> +              regulator-mode = <1>;
-> +            };
-> +          };
-> +          buck-f {
-> +            regulator-min-microvolt = <400000>;
-> +            regulator-max-microvolt = <2050000>;
-> +            regulator-allowed-modes = <0 1>;
-> +            regulator-always-on;
-> +            regulator-state-mem {
-> +              regulator-on-in-suspend;
-> +              regulator-mode = <1>;
-> +            };
-> +          };
-> +          buck-g {
-> +            regulator-min-microvolt = <400000>;
-> +            regulator-max-microvolt = <2050000>;
-> +            regulator-allowed-modes = <0 1>;
-> +            regulator-always-on;
-> +            regulator-state-mem {
-> +              regulator-on-in-suspend;
-> +              regulator-mode = <1>;
-> +            };
-> +          };
-> +          buck-h {
-> +            regulator-min-microvolt = <400000>;
-> +            regulator-max-microvolt = <2050000>;
-> +            regulator-allowed-modes = <0 1>;
-> +            regulator-always-on;
-> +            regulator-state-mem {
-> +              regulator-on-in-suspend;
-> +              regulator-mode = <1>;
-> +            };
-> +          };
-> +          ldo1 {
-> +            regulator-min-microvolt = <1200000>;
-> +            regulator-max-microvolt = <1200000>;
-> +            regulator-always-on;
-> +            regulator-state-mem {
-> +              regulator-on-in-suspend;
-> +            };
-> +          };
-> +          ldo2 {
-> +            regulator-min-microvolt = <3300000>;
-> +            regulator-max-microvolt = <3300000>;
-> +            regulator-always-on;
-> +            regulator-state-mem {
-> +              regulator-on-in-suspend;
-> +            };
-> +          };
-> +        };
-> +      };
-> +    };
-> -- 
-> 2.7.4
-> 
+Loongson-2 platform support Power Management Controller (ACPI) and this
+series patch was to add PM driver that base on dts and PM binding support.
+
+Change in v6:
+		1. The patch "[PATCH v3 1/3] loongarch: export some arch-specific
+		   pm interfaces" had been merged into mainline tree in v6.5-rc1
+		   thus this v6 series patch need drop it and need depend on it
+		   and it's patch link was:
+https://lore.kernel.org/all/20230615091757.24686-2-zhuyinbo@loongson.cn/
+		2. Adding Ulf Hansson to Cc.
+		3. Adding soc@kernel.org to Cc.
+		4. Keep indented with one tab +2 spaces in Kconfig help text.
+Change in v5:
+		1. The patch "[PATCH v3 1/3] loongarch: export some arch-specific
+		   pm interfaces" had been merged into linux-next tree thus this
+		   v4 series patch need drop it and need depend on it and it's
+		   patch link was:
+https://lore.kernel.org/all/20230615091757.24686-2-zhuyinbo@loongson.cn/
+		2. Swap the positions of compatible for 2k1000 and 2k0500.
+Change in v4:
+		1. The patch "[PATCH v3 1/3] loongarch: export some arch-specific
+		   pm interfaces" had been merged into linux-next tree thus this
+		   v4 series patch need drop it and need depend on it and it's
+		   patch link was:
+https://lore.kernel.org/all/20230615091757.24686-2-zhuyinbo@loongson.cn/
+		2. Remove the pmc label in dt-binding patch.
+		3. Add the Co-developed-by for driver patch.
+		4. Simplify the loongson2_suspend_valid_state that "return
+		   (state == PM_SUSPEND_MEM)".
+		5. Use Using loongson2_pm_irq_enable() to replace.
+		   loongson2_power_button_irq_enable().
+		6. Remove the "oneOf" in dt-bindings patch.
+		7. Replace "suspend-address" that use "loongson,suspend-address".
+		8. Use u64 type that for "loongson,suspend-address".
+		9. Rename "pm" to "power-mangement" in dt-bindings patch.
+		10. Add the reivewed-by for dt-bindings patch.
+Change in v3:
+		1. Reword the [1/3] patch commit log and title.
+		2. Use the old naming for suspend interface for the [1/3] and
+		   [3/3] patch.
+		3. Combine some small function in the driver patch.
+		4. Rename 'pwrbt' to 'button' in the driver patch.
+		5. Use the specific compatible in yaml file.
+Change in v2:
+		1. Fixup the "suspend-address" description.
+		2. Remove the "return -EINVAL" in PM driver probe when firmware
+		   no configure "suspend-address" property in dts in oder to
+		   other PM state to work.
+
+Yinbo Zhu (2):
+  soc: dt-bindings: add loongson-2 pm
+  soc: loongson2_pm: add power management support
+
+ .../soc/loongson/loongson,ls2k-pmc.yaml       |  52 +++++
+ MAINTAINERS                                   |   7 +
+ drivers/soc/loongson/Kconfig                  |  10 +
+ drivers/soc/loongson/Makefile                 |   1 +
+ drivers/soc/loongson/loongson2_pm.c           | 215 ++++++++++++++++++
+ 5 files changed, 285 insertions(+)
+
+-- 
+2.20.1
+
