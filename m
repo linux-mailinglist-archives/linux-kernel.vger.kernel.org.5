@@ -2,99 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D36CA76EE28
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 17:31:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B6EA076EE33
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 17:34:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237142AbjHCPb1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Aug 2023 11:31:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57204 "EHLO
+        id S237152AbjHCPe2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Aug 2023 11:34:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57996 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234572AbjHCPb0 (ORCPT
+        with ESMTP id S235973AbjHCPeZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Aug 2023 11:31:26 -0400
-Received: from mail-4018.proton.ch (mail-4018.proton.ch [185.70.40.18])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D35F180
-        for <linux-kernel@vger.kernel.org>; Thu,  3 Aug 2023 08:31:25 -0700 (PDT)
-Date:   Thu, 03 Aug 2023 15:31:16 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=emersion.fr;
-        s=protonmail2; t=1691076683; x=1691335883;
-        bh=g6RwxWabpbF2BP/ZwpgNOS6SF1FbztL0pxDaVUDDMX8=;
-        h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
-         Feedback-ID:From:To:Cc:Date:Subject:Reply-To:Feedback-ID:
-         Message-ID:BIMI-Selector;
-        b=YMYeMmkP7B8lXECs60rEbVbPbNAGIdW6SdLyouTIqv6YmJLK/wBVabMePZZWt8edL
-         tqXIWtuZ7vioLbjwLXcgFjbWM02PrqkJF2fGQO4rokHVj39qc1SvO6YohCdX7c3Krp
-         e0aVaNOLoLcb8QXIfsQWroTr0+23jw6sjuu1NbkwWyQu+6WtIhkr9rI2q6gwuhaDp1
-         luDVKn0C0Y/dYhsD/ICO3vD5U25dPP2o+cvWajuYNQvS6jPrJyH70lxyN/dxumG/IL
-         HEhgXQCuUFzyqiR3hlEAQMNM1ynJqpLns2vOigYUtmbwHs3P5OkxjjRVuPKrI+yVp0
-         rvyl8tRaTdZsg==
-To:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-From:   Simon Ser <contact@emersion.fr>
-Cc:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Andrzej Hajda <andrzej.hajda@intel.com>,
-        Neil Armstrong <neil.armstrong@linaro.org>,
-        Robert Foss <rfoss@kernel.org>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Janne Grunau <j@jannau.net>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        =?utf-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
-        "Pan, Xinhui" <Xinhui.Pan@amd.com>,
-        Harry Wentland <harry.wentland@amd.com>,
-        Leo Li <sunpeng.li@amd.com>,
-        Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>,
-        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org, intel-gfx@lists.freedesktop.org
-Subject: Re: [PATCH 3/4] drm/uapi: document the USB subconnector type
-Message-ID: <ADjuOeqA6575DKutMPaR9mW9rLhm-wjLc4ruoUkNwImf-GB90FdwDB7v7y6LFdzVG3BC4R52A0RUtStK4_smmGYTUs3UPDOX4T4Zl2YHkxE=@emersion.fr>
-In-Reply-To: <b6oOVz2YMIG4hJDWhq9lTh6R2HYcrpRwHENhplig9KSQMD8dIjTgC5KdH1Ij3URgV2HESp67Ax7QUsByGjMLouvbs-5q7PiPRdLkgJz6Fwk=@emersion.fr>
-References: <20230729004913.215872-1-dmitry.baryshkov@linaro.org> <20230729004913.215872-4-dmitry.baryshkov@linaro.org> <20230802185547.GC32500@pendragon.ideasonboard.com> <a32ce695-038f-0ef8-3584-5bd1ba528131@linaro.org> <20230802191351.GA1407@pendragon.ideasonboard.com> <DE2B4523-D16C-4AFC-8352-212B23548DD5@linaro.org> <b6oOVz2YMIG4hJDWhq9lTh6R2HYcrpRwHENhplig9KSQMD8dIjTgC5KdH1Ij3URgV2HESp67Ax7QUsByGjMLouvbs-5q7PiPRdLkgJz6Fwk=@emersion.fr>
-Feedback-ID: 1358184:user:proton
+        Thu, 3 Aug 2023 11:34:25 -0400
+Received: from frasgout12.his.huawei.com (unknown [14.137.139.154])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B671730FF
+        for <linux-kernel@vger.kernel.org>; Thu,  3 Aug 2023 08:34:23 -0700 (PDT)
+Received: from mail02.huawei.com (unknown [172.18.147.228])
+        by frasgout12.his.huawei.com (SkyGuard) with ESMTP id 4RGsxF1JF7z9xGWx
+        for <linux-kernel@vger.kernel.org>; Thu,  3 Aug 2023 23:20:49 +0800 (CST)
+Received: from [10.81.221.240] (unknown [10.81.221.240])
+        by APP1 (Coremail) with SMTP id LxC2BwBXC7vUyMtkePU6AA--.360S2;
+        Thu, 03 Aug 2023 16:33:52 +0100 (CET)
+Message-ID: <f4d8f17e-384d-866b-5905-94339d41e8ef@huaweicloud.com>
+Date:   Thu, 3 Aug 2023 17:33:37 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 2/3] riscv/purgatory: do not link with string.o and its
+ dependencies
+Content-Language: en-US
+To:     Palmer Dabbelt <palmer@dabbelt.com>,
+        Conor Dooley <conor@kernel.org>
+Cc:     Paul Walmsley <paul.walmsley@sifive.com>, aou@eecs.berkeley.edu,
+        Conor Dooley <conor.dooley@microchip.com>,
+        lihuafei1@huawei.com, liaochang1@huawei.com, masahiroy@kernel.org,
+        keescook@chromium.org, akpm@linux-foundation.org, heiko@sntech.de,
+        ribalda@chromium.org, hi@alyssa.is, lizhengyu3@huawei.com,
+        linux-riscv@lists.infradead.org, kexec@lists.infradead.org,
+        linux-kernel@vger.kernel.org, duwe@suse.de,
+        roberto.sassu@huaweicloud.com, petr@tesarici.cz
+References: <mhng-45e67c5d-6969-43da-9147-b53dc9a78612@palmer-ri-x1c9>
+From:   Petr Tesarik <petrtesarik@huaweicloud.com>
+In-Reply-To: <mhng-45e67c5d-6969-43da-9147-b53dc9a78612@palmer-ri-x1c9>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: LxC2BwBXC7vUyMtkePU6AA--.360S2
+X-Coremail-Antispam: 1UD129KBjvJXoWxZFyUGrWDGFWDuFy8uFW8Crg_yoWrGryrpF
+        4vkF1DKrW8Gr18Cr1Dtr1UZryUtw4UGw1UJryUWFyjyr4Utr1jqF4DWr12gr1DJr48Gr1U
+        JFy7Wr15ur1UZrJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUkK14x267AKxVW5JVWrJwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+        1l84ACjcxK6xIIjxv20xvE14v26r1j6r1xM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4j
+        6F4UM28EF7xvwVC2z280aVAFwI0_Gr0_Cr1l84ACjcxK6I8E87Iv6xkF7I0E14v26r4j6r
+        4UJwAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0
+        I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r
+        4UM4x0Y48IcVAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwACI402YVCY1x02628vn2kI
+        c2xKxwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14
+        v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_GFv_WrylIxkG
+        c2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI
+        0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6rW3Jr0E3s1lIxAIcVC2z280aVAFwI0_Jr0_
+        Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7VUbQVy7
+        UUUUU==
+X-CM-SenderInfo: hshw23xhvd2x3n6k3tpzhluzxrxghudrp/
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-0.9 required=5.0 tests=BAYES_00,MAY_BE_FORGED,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_BL,RCVD_IN_MSPIKE_L3,RDNS_DYNAMIC,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thursday, August 3rd, 2023 at 17:22, Simon Ser <contact@emersion.fr> wro=
-te:
+On 8/3/2023 5:13 PM, Palmer Dabbelt wrote:
+> On Wed, 26 Jul 2023 09:33:49 PDT (-0700), Conor Dooley wrote:
+>> On Wed, Jul 26, 2023 at 11:54:00AM +0200, Petr Tesarik wrote:
+>>> From: Petr Tesarik <petr.tesarik.ext@huawei.com>
+>>>
+>>> Linking with this object file makes kexec_file_load(2) fail because of
+>>> multiple unknown relocation types:
+>>>
+>>> - R_RISCV_ADD16, R_RISCV_SUB16: used by alternatives in strcmp()
+>>> - R_RISCV_GOT_HI20: used to resolve _ctype in strcasecmp()
+>>>
+>>> All this hassle is needed for one single call to memcmp() from
+>>> verify_sha256_digest() to compare 32 bytes of SHA256 checksum.
+>>>
+>>> Simply replace this memcmp() call with an explicit loop over those 32
+>>> bytes
+>>> and remove the need to link with string.o and all the other object files
+>>> that provide undefined symbols from that object file.
+>>>
+>>> Fixes: 838b3e28488f ("RISC-V: Load purgatory in kexec_file")
+>>> Signed-off-by: Petr Tesarik <petr.tesarik.ext@huawei.com>
+>>
+>> This version keeps the automation happy,
+>> Acked-by: Conor Dooley <conor.dooley@microchip.com>
+> 
+> Oddly enough, this breaks my builds.  I tried fixing the first one with
+> something like
 
-> The KMS docs describe "subconnector" to be defined as "downstream port" f=
-or DP.
-> Can USB-C (or USB) be seen as a DP downstream port?
+FTR I have no idea how a patch to the purgatory code and its Makefile
+can have any effect on the compilation of asm-offsets.s in another
+directory.
 
-To expand on this a bit: I'm wondering if we're mixing apples and
-oranges here. The current values of "subconnector" typically describe
-the lower-level protocol tunneled inside DP. For instance, VGA can be
-tunneled inside the DP cable when using DP =E2=86=92 VGA adapter.
+Petr T
 
-However, in the USB-C case, DP itself is tunneled inside USB-C. And you
-might use a USB-C =E2=86=92 DP adapter. So it's not really *sub*connector, =
-it's
-more of a *super*connector, right?
+>    From 41c5a952f77e53bf4201296abff0132725aa19e6 Mon Sep 17 00:00:00 2001
+>    From: Palmer Dabbelt <palmer@rivosinc.com>
+>    Date: Wed, 2 Aug 2023 20:22:33 -0700
+>    Subject: [PATCH] RISC-V: Include io from timex
+>       Without this I get some implicit declarations.
+>         CC      arch/riscv/kernel/asm-offsets.s
+>    In file included from linux/include/linux/timex.h:67,
+>                     from linux/include/linux/time32.h:13,
+>                     from linux/include/linux/time.h:60,
+>                     from linux/include/linux/ktime.h:24,
+>                     from linux/include/linux/timer.h:6,
+>                     from linux/include/linux/workqueue.h:9,
+>                     from linux/include/linux/mm_types.h:19,
+>                     from linux/include/linux/mmzone.h:22,
+>                     from linux/include/linux/gfp.h:7,
+>                     from linux/include/linux/mm.h:7,
+>                     from linux/arch/riscv/kernel/asm-offsets.c:10:
+>    linux/arch/riscv/include/asm/timex.h: In function 'get_cycles':
+>    linux/arch/riscv/include/asm/timex.h:25:16: error: implicit
+> declaration of function 'readl_relaxed'
+> [-Werror=implicit-function-declaration]
+>       25 |         return readl_relaxed(((u32 *)clint_time_val));
+>          |
+>       Signed-off-by: Palmer Dabbelt <palmer@rivosinc.com>
+>    ---
+>     arch/riscv/include/asm/timex.h | 1 +
+>     1 file changed, 1 insertion(+)
+>       diff --git a/arch/riscv/include/asm/timex.h
+> b/arch/riscv/include/asm/timex.h
+>    index a06697846e69..1a4d181193e0 100644
+>    --- a/arch/riscv/include/asm/timex.h
+>    +++ b/arch/riscv/include/asm/timex.h
+>    @@ -7,6 +7,7 @@
+>     #define _ASM_RISCV_TIMEX_H
+>         #include <asm/csr.h>
+>    +#include <asm/io.h>
+>         typedef unsigned long cycles_t;
+> 
+>    --    2.41.0
+> 
+> The other two look fine and are somewhat independent, so I've picked
+> those up
+> for fixes.
+> 
+> Thanks!
+> 
+>>
+>> Thanks,
+>> Conor.
 
-I think [1] is somewhat related, since it also allows user-space to
-discover whether a connector uses USB-C. But relying on sysfs to figure
-this out isn't super optimal perhaps.
-
-[1]: https://lore.kernel.org/dri-devel/20221108185004.2263578-1-wonchung@go=
-ogle.com/
