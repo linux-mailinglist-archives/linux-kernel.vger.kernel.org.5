@@ -2,57 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1034E76DFDF
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 07:48:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DA9FC76DFEC
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 07:57:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231478AbjHCFsd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Aug 2023 01:48:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58474 "EHLO
+        id S232566AbjHCF5K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Aug 2023 01:57:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60866 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230058AbjHCFsb (ORCPT
+        with ESMTP id S229944AbjHCF5J (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Aug 2023 01:48:31 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.24])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D6A82D43;
-        Wed,  2 Aug 2023 22:48:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1691041710; x=1722577710;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=fuHR5vlg0Pj/rQJGG+2yi4N34sEiicrfjR7PExpvW5w=;
-  b=J9jsMy5OLyztTj41clc5neL0vtASw1NM5UePWSe6785DAMQJWyHuLbEb
-   wTKp0YTVH0/nXdAMpdsPo+jum6nWvn1YgcwQz8FdCph8F1OfLwKHVofZn
-   mquKS6QQPuKJZtXkg6EWBd3peXBnW6WTb75/PUquHFVyfH3gd0oHXIm6b
-   sypy9EYzdj5eZD+lhjSXA4hdiJ3eK6oFPDD4NzYfHYsDJdlEQ3HesFvbz
-   TVJZOpAw+eiGjz8gaJKZYACyHEO0PEMzHqrzGbngesu1UJzEcEXnJ+kYw
-   xerAo6G9zeQ5SjbYFUFdYndtLuZI3glNn6wRLKxzxrQVUZ/jfwhKBfQB+
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10790"; a="372510831"
-X-IronPort-AV: E=Sophos;i="6.01,251,1684825200"; 
-   d="scan'208";a="372510831"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Aug 2023 22:48:27 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10790"; a="732629455"
-X-IronPort-AV: E=Sophos;i="6.01,251,1684825200"; 
-   d="scan'208";a="732629455"
-Received: from xiao-desktop.sh.intel.com ([10.239.46.158])
-  by fmsmga007.fm.intel.com with ESMTP; 02 Aug 2023 22:48:25 -0700
-From:   Xiao Wang <xiao.w.wang@intel.com>
-To:     ardb@kernel.org
-Cc:     linux-riscv@lists.infradead.org, linux-efi@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Xiao Wang <xiao.w.wang@intel.com>,
-        stable@vger.kernel.org
-Subject: [PATCH] efi/riscv: libstub: Fix comment about absolute relocation
-Date:   Thu,  3 Aug 2023 13:56:11 +0800
-Message-Id: <20230803055611.2343011-1-xiao.w.wang@intel.com>
+        Thu, 3 Aug 2023 01:57:09 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 05E0D2D43
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Aug 2023 22:57:06 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 8F978113E;
+        Wed,  2 Aug 2023 22:57:49 -0700 (PDT)
+Received: from a077893.blr.arm.com (unknown [10.162.42.10])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 4668D3F6C4;
+        Wed,  2 Aug 2023 22:57:01 -0700 (PDT)
+From:   Anshuman Khandual <anshuman.khandual@arm.com>
+To:     linux-arm-kernel@lists.infradead.org, suzuki.poulose@arm.com
+Cc:     Anshuman Khandual <anshuman.khandual@arm.com>,
+        Sami Mujawar <sami.mujawar@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Mike Leach <mike.leach@linaro.org>,
+        Leo Yan <leo.yan@linaro.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        James Clark <james.clark@arm.com>, coresight@lists.linaro.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH V3 0/4] coresight: trbe: Enable ACPI based devices
+Date:   Thu,  3 Aug 2023 11:26:48 +0530
+Message-Id: <20230803055652.1322801-1-anshuman.khandual@arm.com>
 X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -61,29 +48,61 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We don't want absolute symbols references in the stub, so fix the double
-negation in the comment.
+This series enables detection of ACPI based TRBE devices via a stand alone
+purpose built representative platform device. But as a pre-requisite this
+changes coresight_platform_data structure assignment for the TRBE device.
 
-Fixes: d7071743db31 ("RISC-V: Add EFI stub support.")
-Cc: stable@vger.kernel.org
-Signed-off-by: Xiao Wang <xiao.w.wang@intel.com>
----
- drivers/firmware/efi/libstub/Makefile | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+This series is based on v6.5-rc4 kernel, is also dependent on the following
+EDK2 changes posted earlier by Sami.
 
-diff --git a/drivers/firmware/efi/libstub/Makefile b/drivers/firmware/efi/libstub/Makefile
-index b0f8c495c10f..ed6e8ebd89b4 100644
---- a/drivers/firmware/efi/libstub/Makefile
-+++ b/drivers/firmware/efi/libstub/Makefile
-@@ -146,7 +146,7 @@ STUBCOPY_RELOC-$(CONFIG_ARM64)	:= R_AARCH64_ABS
- 
- # For RISC-V, we don't need anything special other than arm64. Keep all the
- # symbols in .init section and make sure that no absolute symbols references
--# doesn't exist.
-+# exist.
- STUBCOPY_FLAGS-$(CONFIG_RISCV)	+= --prefix-alloc-sections=.init \
- 				   --prefix-symbols=__efistub_
- STUBCOPY_RELOC-$(CONFIG_RISCV)	:= R_RISCV_HI20
+https://edk2.groups.io/g/devel/message/107239
+https://edk2.groups.io/g/devel/message/107241
+
+Changes in V3:
+
+- Changed ARMV8_TRBE_PDEV_NAME from "arm-trbe-acpi" into "arm,trbe"
+- Dropped local variable 'matched'
+- Replaced 'matched' with 'valid gsi' as being already matched once
+- Moved find_acpi_cpu_topology_hetero_id() outside conditional check
+
+Changes in V2:
+
+https://lore.kernel.org/all/20230801094052.750416-1-anshuman.khandual@arm.com/
+
+- Refactored arm_spe_acpi_register_device() in a separate patch
+- Renamed trbe_acpi_resources as trbe_resources
+- Renamed trbe_acpi_dev as trbe_dev
+
+Changes in V1:
+
+https://lore.kernel.org/all/20230728112733.359620-1-anshuman.khandual@arm.com/
+
+Cc: Sami Mujawar <sami.mujawar@arm.com>
+Cc: Catalin Marinas <catalin.marinas@arm.com>
+Cc: Will Deacon <will@kernel.org>
+Cc: Mark Rutland <mark.rutland@arm.com>
+Cc: Suzuki K Poulose <suzuki.poulose@arm.com>
+Cc: Mike Leach <mike.leach@linaro.org>
+Cc: Leo Yan <leo.yan@linaro.org>
+Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
+Cc: James Clark <james.clark@arm.com>
+Cc: coresight@lists.linaro.org
+Cc: linux-arm-kernel@lists.infradead.org
+Cc: linux-kernel@vger.kernel.org
+
+Anshuman Khandual (4):
+  arm_pmu: acpi: Refactor arm_spe_acpi_register_device()
+  arm_pmu: acpi: Add a representative platform device for TRBE
+  coresight: trbe: Add a representative coresight_platform_data for TRBE
+  coresight: trbe: Enable ACPI based TRBE devices
+
+ arch/arm64/include/asm/acpi.h                |   3 +
+ drivers/hwtracing/coresight/coresight-trbe.c |  15 +-
+ drivers/hwtracing/coresight/coresight-trbe.h |   1 +
+ drivers/perf/arm_pmu_acpi.c                  | 142 +++++++++++++------
+ include/linux/perf/arm_pmu.h                 |   1 +
+ 5 files changed, 119 insertions(+), 43 deletions(-)
+
 -- 
 2.25.1
 
