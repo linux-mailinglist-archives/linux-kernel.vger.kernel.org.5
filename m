@@ -2,111 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 02E9D76DEEC
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 05:24:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 45E5B76DEF3
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 05:26:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233582AbjHCDYc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Aug 2023 23:24:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50266 "EHLO
+        id S232069AbjHCDZ4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Aug 2023 23:25:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50910 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233194AbjHCDYS (ORCPT
+        with ESMTP id S232362AbjHCDZN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Aug 2023 23:24:18 -0400
-Received: from mail-yb1-xb35.google.com (mail-yb1-xb35.google.com [IPv6:2607:f8b0:4864:20::b35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0305826B2
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Aug 2023 20:24:16 -0700 (PDT)
-Received: by mail-yb1-xb35.google.com with SMTP id 3f1490d57ef6-bc379e4c1cbso488439276.2
-        for <linux-kernel@vger.kernel.org>; Wed, 02 Aug 2023 20:24:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google; t=1691033055; x=1691637855;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=VMHqujoTuT0RsHzRdVhgkyPvYcb4Kgnj2rbEthA3RMM=;
-        b=jmOMCg3aY1NdBWQ0E/xfB3w00lqf6WPH+O3dT/+EXyF79Cpvo08Pb1daWoPjBSPZT6
-         bqocWqfWMdrhrDRwxYzLemMLfNLaTPpNFlqm6gyTOU4N5ITwyrd3vSnmCCD0lcK8XGzR
-         5WD5DZc70Rq0qy8ulzg0neW+ZH1ryoSqFeF8A=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691033055; x=1691637855;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=VMHqujoTuT0RsHzRdVhgkyPvYcb4Kgnj2rbEthA3RMM=;
-        b=UOJXTidWeqLqqUy2WqXoPDiXuokPSipCU/pq63EYnLEw7pcNezNX87SAZAHpb0kR44
-         TcFDdjDh7B9TF7RKoRLFX1GVKjd+w7veyl2x6htFy/oPkxSt1icbY/TJoxV0lzfACvlD
-         0jwSlCJPTpGPNMt83qBjxI4TzzFx9HPcV10AEokTT0f0rCCRuVjWb0YSp2dO0fYeRlle
-         xoCZpURvqXE0CZDEU4XyOxmcByh+Xz5HxNeeut+MgUKJCjWA0TgYnUI3oS+c2FVrWjSb
-         9ZHCQBehWIvEk6d2kmr1pCjHFUL3MB+NwNEwkNCBkYpRt79x6uAgWyJlkLpZoA2rmI3q
-         1HFw==
-X-Gm-Message-State: ABy/qLYAPWAK6/GSKgVyLzthoqVjEHjLSbuKwZmbN+rbmA78+5qFU7ko
-        SQgeNDiVOhZ1K0aatCI7BZxYvELhM92wkEAKHNs=
-X-Google-Smtp-Source: APBJJlH4GRD9/jRuKtgSZb05B9hoqbfTLgpOFvSbSSnZQlEtSIPmV07jQp3NDVVXj0pcInCGMYURSg==
-X-Received: by 2002:a25:d401:0:b0:d15:a265:4c43 with SMTP id m1-20020a25d401000000b00d15a2654c43mr18622880ybf.61.1691033054767;
-        Wed, 02 Aug 2023 20:24:14 -0700 (PDT)
-Received: from joelboxx5.c.googlers.com.com (156.190.123.34.bc.googleusercontent.com. [34.123.190.156])
-        by smtp.gmail.com with ESMTPSA id a14-20020a02ac0e000000b0042b67b12363sm4535176jao.37.2023.08.02.20.24.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 02 Aug 2023 20:24:13 -0700 (PDT)
-From:   "Joel Fernandes (Google)" <joel@joelfernandes.org>
-To:     linux-kernel@vger.kernel.org, rcu@vger.kernel.org
-Cc:     "Joel Fernandes (Google)" <joel@joelfernandes.org>,
-        Alan Stern <stern@rowland.harvard.edu>,
-        Andrea Parri <parri.andrea@gmail.com>,
-        Will Deacon <will@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        David Howells <dhowells@redhat.com>,
-        Jade Alglave <j.alglave@ucl.ac.uk>,
-        Luc Maranget <luc.maranget@inria.fr>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Akira Yokosawa <akiyks@gmail.com>,
-        Daniel Lustig <dlustig@nvidia.com>,
-        Jonathan Corbet <corbet@lwn.net>
-Subject: [PATCH 2/2] docs: memory-barriers: Add note on plain-accesses to address-dependency barriers
-Date:   Thu,  3 Aug 2023 03:24:07 +0000
-Message-ID: <20230803032408.2514989-2-joel@joelfernandes.org>
-X-Mailer: git-send-email 2.41.0.585.gd2178a4bd4-goog
-In-Reply-To: <20230803032408.2514989-1-joel@joelfernandes.org>
-References: <20230803032408.2514989-1-joel@joelfernandes.org>
+        Wed, 2 Aug 2023 23:25:13 -0400
+Received: from mgamail.intel.com (unknown [192.55.52.151])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 342D230D3;
+        Wed,  2 Aug 2023 20:24:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1691033088; x=1722569088;
+  h=message-id:date:mime-version:cc:subject:to:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=ICQshYmMfbXZrwMngTGz4HUFiYda9PJa/FB3HICeWPs=;
+  b=H/mgz5ldWeM56GcB0a7HhGSHj1imk/vE2u/FSdULKhWYhGX7k+nYxc6x
+   caA761u0lw9iOO5fVotwNNVIlKQ93D1HSwt8ihwJaeagGjJhikWLk6IiF
+   8y6afutuKsOiMhTv5swBNQdC5FY0zDdH9KDtD7vSFys+Isz5Ip1iGvK86
+   Trr9sqwTBRU7iieuHZFtapx+a/gq8CjehmLBfu4yPw7M3iOEryvZoIrYF
+   5ztAa5w8dU+/YiqV+lcT/GCXzkOgMON/7txzh1bjN9CLGFEVCNq6yCWDX
+   J4WzAE4jHeFeYbJ+C0h1LIla/v4Z2YPuKATDtQQ6XzNnYE3I4/1yDAQh8
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10790"; a="350050674"
+X-IronPort-AV: E=Sophos;i="6.01,251,1684825200"; 
+   d="scan'208";a="350050674"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Aug 2023 20:24:47 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10790"; a="1060074437"
+X-IronPort-AV: E=Sophos;i="6.01,251,1684825200"; 
+   d="scan'208";a="1060074437"
+Received: from blu2-mobl.ccr.corp.intel.com (HELO [10.255.31.34]) ([10.255.31.34])
+  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Aug 2023 20:24:42 -0700
+Message-ID: <58ae9095-28f2-a44a-b0e5-be82e1eae9d9@linux.intel.com>
+Date:   Thu, 3 Aug 2023 11:24:40 +0800
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Cc:     baolu.lu@linux.intel.com, "cohuck@redhat.com" <cohuck@redhat.com>,
+        "eric.auger@redhat.com" <eric.auger@redhat.com>,
+        "nicolinc@nvidia.com" <nicolinc@nvidia.com>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "mjrosato@linux.ibm.com" <mjrosato@linux.ibm.com>,
+        "chao.p.peng@linux.intel.com" <chao.p.peng@linux.intel.com>,
+        "yi.y.sun@linux.intel.com" <yi.y.sun@linux.intel.com>,
+        "peterx@redhat.com" <peterx@redhat.com>,
+        "jasowang@redhat.com" <jasowang@redhat.com>,
+        "shameerali.kolothum.thodi@huawei.com" 
+        <shameerali.kolothum.thodi@huawei.com>,
+        "lulu@redhat.com" <lulu@redhat.com>,
+        "suravee.suthikulpanit@amd.com" <suravee.suthikulpanit@amd.com>,
+        "iommu@lists.linux.dev" <iommu@lists.linux.dev>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
+        "Duan, Zhenzhong" <zhenzhong.duan@intel.com>
+Subject: Re: [PATCH v4 09/12] iommu/vt-d: Add iotlb flush for nested domain
+Content-Language: en-US
+To:     "Tian, Kevin" <kevin.tian@intel.com>,
+        "Liu, Yi L" <yi.l.liu@intel.com>,
+        "joro@8bytes.org" <joro@8bytes.org>,
+        "alex.williamson@redhat.com" <alex.williamson@redhat.com>,
+        "jgg@nvidia.com" <jgg@nvidia.com>,
+        "robin.murphy@arm.com" <robin.murphy@arm.com>
+References: <20230724111335.107427-1-yi.l.liu@intel.com>
+ <20230724111335.107427-10-yi.l.liu@intel.com>
+ <BN9PR11MB527690EBAA872A16AE8926F88C0BA@BN9PR11MB5276.namprd11.prod.outlook.com>
+From:   Baolu Lu <baolu.lu@linux.intel.com>
+In-Reply-To: <BN9PR11MB527690EBAA872A16AE8926F88C0BA@BN9PR11MB5276.namprd11.prod.outlook.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The compiler has the ability to cause misordering by destroying
-address-dependency barriers if comparison operations are used. Add a
-note about this to memory-barriers.txt and point to rcu-dereference.rst
-for more information.
+On 2023/8/2 15:46, Tian, Kevin wrote:
+>> From: Liu, Yi L <yi.l.liu@intel.com>
+>> Sent: Monday, July 24, 2023 7:14 PM
+>>
+>> +static int intel_nested_cache_invalidate_user(struct iommu_domain
+>> *domain,
+>> +					      void *user_data)
+>> +{
+>> +	struct iommu_hwpt_vtd_s1_invalidate_desc *req = user_data;
+>> +	struct iommu_hwpt_vtd_s1_invalidate *inv_info = user_data;
+>> +	struct dmar_domain *dmar_domain = to_dmar_domain(domain);
+>> +	unsigned int entry_size = inv_info->entry_size;
+>> +	u64 uptr = inv_info->inv_data_uptr;
+>> +	u64 nr_uptr = inv_info->entry_nr_uptr;
+>> +	struct device_domain_info *info;
+>> +	u32 entry_nr, index;
+>> +	unsigned long flags;
+>> +	int ret = 0;
+>> +
+>> +	if (get_user(entry_nr, (uint32_t __user *)u64_to_user_ptr(nr_uptr)))
+>> +		return -EFAULT;
+>> +
+>> +	for (index = 0; index < entry_nr; index++) {
+>> +		ret = copy_struct_from_user(req, sizeof(*req),
+>> +					    u64_to_user_ptr(uptr + index *
+>> entry_size),
+>> +					    entry_size);
+> 
+> If continuing this direction then the driver should also check minsz etc.
+> for struct iommu_hwpt_vtd_s1_invalidate and iommu_hwpt_vtd_s1_invalidate_desc
+> since they are uAPI and subject to change.
 
-Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
----
- Documentation/memory-barriers.txt | 5 +++++
- 1 file changed, 5 insertions(+)
+Agreed.
 
-diff --git a/Documentation/memory-barriers.txt b/Documentation/memory-barriers.txt
-index 06e14efd8662..acc8ec5ce563 100644
---- a/Documentation/memory-barriers.txt
-+++ b/Documentation/memory-barriers.txt
-@@ -435,6 +435,11 @@ Memory barriers come in four basic varieties:
-      variables such as READ_ONCE() and rcu_dereference() provide implicit
-      address-dependency barriers.
- 
-+     [!] Note that address dependency barriers can be destroyed by comparison
-+     of a pointer obtained by a marked accessor such as READ_ONCE() or
-+     rcu_dereference() with some value.  For an example of this, see
-+     rcu_dereference.rst (part where the comparison of pointers is discussed).
-+
-  (3) Read (or load) memory barriers.
- 
-      A read barrier is an address-dependency barrier plus a guarantee that all
--- 
-2.41.0.585.gd2178a4bd4-goog
+> 
+>> +		if (ret) {
+>> +			pr_err_ratelimited("Failed to fetch invalidation
+>> request\n");
+>> +			break;
+>> +		}
+>> +
+>> +		if (req->__reserved || (req->flags &
+>> ~IOMMU_VTD_QI_FLAGS_LEAF) ||
+>> +		    !IS_ALIGNED(req->addr, VTD_PAGE_SIZE)) {
+>> +			ret = -EINVAL;
+>> +			break;
+>> +		}
+>> +
+>> +		spin_lock_irqsave(&dmar_domain->lock, flags);
+>> +		list_for_each_entry(info, &dmar_domain->devices, link)
+>> +			intel_nested_invalidate(info->dev, dmar_domain,
+>> +						req->addr, req->npages);
+>> +		spin_unlock_irqrestore(&dmar_domain->lock, flags);
+> 
+> Disabling interrupt while invalidating iotlb is certainly unacceptable.
+> 
+> Actually there is no need to walk devices. Under dmar_domain there
+> is already a list of attached iommu's.
 
+Walking device is only necessary when invalidating device TLB. For iotlb
+invalidation, it only needs to know the iommu's.
+
+Best regards,
+baolu
