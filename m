@@ -2,206 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5ABCA76DBFF
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 02:07:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1824D76DC18
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 02:09:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229840AbjHCAHM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Aug 2023 20:07:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53622 "EHLO
+        id S233444AbjHCAJk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Aug 2023 20:09:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54998 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233417AbjHCAGz (ORCPT
+        with ESMTP id S232525AbjHCAJR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Aug 2023 20:06:55 -0400
-Received: from mail-oa1-x30.google.com (mail-oa1-x30.google.com [IPv6:2001:4860:4864:20::30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32DBE30CF
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Aug 2023 17:06:30 -0700 (PDT)
-Received: by mail-oa1-x30.google.com with SMTP id 586e51a60fabf-1bb5c259b44so253315fac.1
-        for <linux-kernel@vger.kernel.org>; Wed, 02 Aug 2023 17:06:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1691021189; x=1691625989;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=C5bV8lUVCZT9FHeRYVjRrJMMVO8kdf2AYYmYfyHoLRc=;
-        b=Q43jhR9FPq4V4QC4bkK60Vp0Apj3fPeT3tJVRErdVrxxqmGP7j8AlgpeIN4vns2sU0
-         tqdIeChLPqzv02ps+kk8oeDO/zymqpAk8uWAdU66q36Oa8hGAF/n+zUkjCAgs8Ohl25w
-         LP5y+j88CgWQDq42U0pMLOE8HrtCd30+O9//8=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691021189; x=1691625989;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=C5bV8lUVCZT9FHeRYVjRrJMMVO8kdf2AYYmYfyHoLRc=;
-        b=fhDDLZMRDovtD3n/xS2wAm1woYPcaPm9j3F3zcE0JD7dhLYpg0fV35jCxhXW946QmN
-         FSR/0HEQ6aVYhCteX3NwTSP0i2hO4+QT9W9XMgjQutY3F7k8XOy1uAkBjLoLLdgsKIAe
-         47DQkmD6EB4ryhT2mnXtpJ6hnFbJ0q9JmNCwgAbVJTEaPVdoBoufvwYBzX2uFH+reENf
-         MBPw+NGPgK9ByOKB1Yf4HA/Zu1oTZhn9bBhaI8cXtpXqoT7SadLKAk2cvmr1izsaBvDO
-         fMzmLvQKyon9sUP89QKXuMk+i7dYso8m4zqZhzjlHphKwQacNhAGWuj+WyBrcUB8Sn6a
-         gO9w==
-X-Gm-Message-State: ABy/qLZkAC5z/+C7zcU+3dk3Tv4MnEH726WuOtnp5fthUyPdVQRsfaY7
-        XafMHFebv52zrTDiHR42HDdqNpaeA+wFEo58xkvH0380PSqDImRAZTw=
-X-Google-Smtp-Source: APBJJlHULcxpHCqbXXv011nCfdvIzK7LvTT08X/UtG0LktiOwZGcV63sf1mW3qYe23ClG3POXFIKjL7Zxpyd3M8n7zw=
-X-Received: by 2002:a05:6871:1c6:b0:1ba:53ed:18c9 with SMTP id
- q6-20020a05687101c600b001ba53ed18c9mr18741812oad.37.1691021189390; Wed, 02
- Aug 2023 17:06:29 -0700 (PDT)
-MIME-Version: 1.0
-References: <20230714114753.170814-1-david@readahead.eu> <CALmYWFsjy2jOfKyM3Gd3Ag+p6u5ejDoBp6RhqcXkcAkMiby4SA@mail.gmail.com>
- <fb464cbf-04c4-4346-a96b-e0b2ab804e16@app.fastmail.com> <CABi2SkUOxngcDwRDtFFD2Uef=BUXVN08dMYhmpuS_b1xC39L7g@mail.gmail.com>
- <dadfd8d3-fe83-4aee-b8aa-3b31d4408f66@app.fastmail.com>
-In-Reply-To: <dadfd8d3-fe83-4aee-b8aa-3b31d4408f66@app.fastmail.com>
-From:   Jeff Xu <jeffxu@chromium.org>
-Date:   Wed, 2 Aug 2023 17:06:17 -0700
-Message-ID: <CABi2SkU1Cf4a99YCyyAie=NQXC7aXvroSTRrzruiXVxupTZrpA@mail.gmail.com>
-Subject: Re: [PATCH] memfd: support MFD_NOEXEC alongside MFD_EXEC
-To:     David Rheinsberg <david@readahead.eu>
-Cc:     Jeff Xu <jeffxu@google.com>, linux-kernel@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Kees Cook <keescook@chromium.org>,
-        Daniel Verkamp <dverkamp@chromium.org>, linux-mm@kvack.org,
-        Peter Xu <peterx@redhat.com>, linux-hardening@vger.kernel.org
+        Wed, 2 Aug 2023 20:09:17 -0400
+Received: from mgamail.intel.com (unknown [192.55.52.136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9BEF8422E
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Aug 2023 17:08:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1691021334; x=1722557334;
+  h=message-id:date:subject:to:cc:references:from:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=2yuG6Jm9Qe48JmOagNHk2nT09/9xRMcaa694TTWzz/s=;
+  b=LtyWwOW1kMjSFxciCkpsNrqoPrn8Ru+nEdF+E0+yXjGC6cou3iZO1D0P
+   Jp3ePvpAJdZxJH1dGJppzE8xjs5HW4KVdd9hepyTMRXbtF8PixiERK/JN
+   KwdEUOCP4+5o6PvnqLXzeaSm7EkSpp34pZY/ZMrDJn+Vk7GXnc3DkYelB
+   XqBSndT2KWdKWaiC//Q6ZUS5QXGIWfrjYCqxtAwoLbwwtvWHu0UrjGDr0
+   MNor3Al1RwbtkXAtVJI36+a/VW5erkPfFN0zb98z4Ss5dl/Zz9TmDVIOU
+   g9Aw8vH95GlnWDjRjDCTr2LA5VDtE1AoMJUjgXwgPnZwtbU1YEK0V6iNM
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10790"; a="349328186"
+X-IronPort-AV: E=Sophos;i="6.01,250,1684825200"; 
+   d="scan'208";a="349328186"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Aug 2023 17:07:31 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10790"; a="794794821"
+X-IronPort-AV: E=Sophos;i="6.01,250,1684825200"; 
+   d="scan'208";a="794794821"
+Received: from orsmsx602.amr.corp.intel.com ([10.22.229.15])
+  by fmsmga008.fm.intel.com with ESMTP; 02 Aug 2023 17:07:31 -0700
+Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
+ ORSMSX602.amr.corp.intel.com (10.22.229.15) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.27; Wed, 2 Aug 2023 17:07:30 -0700
+Received: from ORSEDG602.ED.cps.intel.com (10.7.248.7) by
+ orsmsx610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.27 via Frontend Transport; Wed, 2 Aug 2023 17:07:30 -0700
+Received: from NAM11-CO1-obe.outbound.protection.outlook.com (104.47.56.170)
+ by edgegateway.intel.com (134.134.137.103) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.27; Wed, 2 Aug 2023 17:07:30 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=JZEGf/CmoBpY0POWgaaiuYNvZDdwydE37jE7++VDYTfAVjiz+upaqvlhB89+bH299g1acOAKNeoHiER7ab4kElOKae6Fo6G1uXa61xl3eOCJ8XUBYL2FcvwkAdbVJeqngmSx1kMVsfKmnf8leieNA1dHFHivlQXWT9vyRY3ojXQEEN7pDcqJ8HqNhJgNT5ThdiUr59ymt0TH9pwZDjJG1ROiOyCzwQew4tbjxpTzPzDi1jXBmrfKHubTVbZHfcNPTtaKVfOpClQN3EEmkVpp/0d1hOuvMQUYo+UHy4pI1CeyNzPFtCJQSMyJ/ZRtPq9f7v2PymsH0M4lJg7w8cui3A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=OeX39BiNEfWfT0BlgYfCA0xp2ggrAmybfHjnJ+Vdsbg=;
+ b=iG+I3ncIe8Et83F/oLQ8wDIaKbaAkm0qbkuqZ/N0KryRvAHFbhd2WVq/G/mkSjE4QTcIfrnuEvgQ7W+VksrlLxMjQ5lapeRK3Y6+IG9AKXcp0S0O9Hz+STpqOXfLp2gw6pzKhZxBSpFCuPuJFGxyZ9z0DFYTEQqW1wFgAnD+MYeKPYC6OdqIvPpkcXrmJNxdwjTVLJij5LZDqnGviCvRAUcBi6tp20JHHzc5joyav9Ow0+oSvjxaKQggxPYgai6AjM3d/3ol6wPE6mNh/yQQ6O72KkTRQKE6J16d3kSFxzrqjmPXE0j42jWfoS08zfDb+sjuS7aFKblp0ytpvTOvcA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from BYAPR11MB3320.namprd11.prod.outlook.com (2603:10b6:a03:18::25)
+ by SN7PR11MB7439.namprd11.prod.outlook.com (2603:10b6:806:343::9) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6631.45; Thu, 3 Aug
+ 2023 00:07:28 +0000
+Received: from BYAPR11MB3320.namprd11.prod.outlook.com
+ ([fe80::e96e:8ce2:abd9:c61c]) by BYAPR11MB3320.namprd11.prod.outlook.com
+ ([fe80::e96e:8ce2:abd9:c61c%4]) with mapi id 15.20.6652.019; Thu, 3 Aug 2023
+ 00:07:28 +0000
+Message-ID: <a2d9f27b-2194-3f44-6819-1c7ff1fef5bc@intel.com>
+Date:   Wed, 2 Aug 2023 17:07:25 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [patch V3 00/40] x86/cpu: Rework the topology evaluation
+Content-Language: en-US
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        LKML <linux-kernel@vger.kernel.org>
+CC:     <x86@kernel.org>, Tom Lendacky <thomas.lendacky@amd.com>,
+        Andrew Cooper <andrew.cooper3@citrix.com>,
+        Arjan van de Ven <arjan@linux.intel.com>,
+        "Huang Rui" <ray.huang@amd.com>, Juergen Gross <jgross@suse.com>,
+        Dimitri Sivanich <dimitri.sivanich@hpe.com>,
+        Michael Kelley <mikelley@microsoft.com>,
+        Wei Liu <wei.liu@kernel.org>
+References: <20230802101635.459108805@linutronix.de>
+From:   Sohil Mehta <sohil.mehta@intel.com>
+In-Reply-To: <20230802101635.459108805@linutronix.de>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: SJ0PR03CA0254.namprd03.prod.outlook.com
+ (2603:10b6:a03:3a0::19) To BYAPR11MB3320.namprd11.prod.outlook.com
+ (2603:10b6:a03:18::25)
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: BYAPR11MB3320:EE_|SN7PR11MB7439:EE_
+X-MS-Office365-Filtering-Correlation-Id: 146dee49-c99d-4c24-b23c-08db93b59f6c
+X-LD-Processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: nnMKx/BCfGRGGUtyfNKHAAHLEYBGPYkNCil9yGLCfhkIeLufqjhbifGepyUjmjrrrh38eCqvXq51RsaX8O8tM7ETfZssgiBp2JZ2Q4NX7b688UQ62q1Iti8LtVNNVjcI/QVwhCsskNfIjFaHy4jczUYq86gcM9FZOf0clqZq8kofnonTi/VTjP/XFSmpaau3TVWWV2GJNrNDH4mCDNFbLaPbLb/qkLQFDLs9b1VunVzQlwaT4I5vn+xK/gj4Sx2IN1I1OR+DeQvvVcpwMx8a+jDotQ1hMRmG/QW1KEO4t8r+gYX/3uzA2id55pfMVH5g8AAXI4z0A6oAO4H8duvuPTMDhd4YcVVNuxlUuEUiIZ/WYtPKNPqN8BPDvpNJQeDyxaA2OGCtM2blRFSeoQLGjMksdtdfWlcfvTng3hKY9LBMTOLjMIFpRl4yCO5l21kHIc1gzMjqT+Wlbe2K1iYzWbp8PzdswCHVGHVHafEXdZc6wcmE7LzgOquBLURyWhUAGSfeKinFAqppmmu4tIET8LrJD23PZKAruZnSZUhWvdX0P0JTOegUDRKUX3PcQ44XYYS/opLWuTea00G98FfDlW1Hl1jGfuH7N+1QNlDHAeQsejJsjQvL9gcv96AiIIonK8MySj96T+YhM+hqLHb98w==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR11MB3320.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(366004)(136003)(39860400002)(346002)(376002)(396003)(451199021)(66556008)(44832011)(66476007)(4326008)(66946007)(2906002)(38100700002)(2616005)(186003)(82960400001)(53546011)(6506007)(26005)(7416002)(54906003)(110136005)(86362001)(31696002)(478600001)(36756003)(966005)(6666004)(6512007)(6486002)(4744005)(41300700001)(8936002)(8676002)(31686004)(5660300002)(316002)(45980500001)(43740500002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?dW1TQjVZU1o3WWhKZnhXODRtNUllc3lIUjhXVVNtR25vVlFPWHI1d3RCTlM4?=
+ =?utf-8?B?UjVJaExCaDQyS0lUcDlOYS9sRmFNdTNpY0NncGJNRjdzK1UvQVJFa2hIaUlD?=
+ =?utf-8?B?a0tlWGJENDdMWUI0blJIOHNuU1NNMlh6YUJ2MGhRNC9yeU5qUEFKdC94R3E1?=
+ =?utf-8?B?OFhaSlB2L2VxZmo4VU1nSGVKRkhySHZqWHZWMzlwaEdkRXdzUHdWMGRmN0Ew?=
+ =?utf-8?B?NC9ubWNQUENMbXVSTFVKZlI1TDkyVmlhZ016bDdBWFZFSEFZYkwzajFiYzVY?=
+ =?utf-8?B?SXRSMk1qNC9YbUJ2eGk1SVlCNE9DY0s2bDd4UURDK2FYK3A0bXFtUGQybzFF?=
+ =?utf-8?B?TGFpV1FDS0RBRFp5QmVaeG9uV1FYY3NGT3pYd3BEK0RxbXlQYW1nSWxuOE44?=
+ =?utf-8?B?RDd2SjBSYSswcitZWnlFRm5ET3Y4Lyt5cTFvcUo4NDFSWUxOTGptRE5KS0Vp?=
+ =?utf-8?B?Y2o3RWsrdlVGNGNKZFpwSmR5a3kvcnRtNUQrS2txd0FHUHVaZTljUnc2TG03?=
+ =?utf-8?B?M295cmM4bE5LMUZBOVY2Q1c4Q3FCN2ZPdHc3SzFnTWNHM0hycXVVRFBTNzZy?=
+ =?utf-8?B?L3c3VFBFVXJ2MUFYQWJSSGxGVHl2dEk4dGVVQjhNbE14eVUzVk9Jd25sSWww?=
+ =?utf-8?B?ZEx4elByS2FyWnAyalZlaGdwNDNsbitZTmhaM1JMV29lakFqYlQ1WjI3M05q?=
+ =?utf-8?B?YlNHdkdmTFRtbTlaV3NwVElXOGw0YnB4TjRwcmNuT1FiT3lXcjg5ZFJmN3lT?=
+ =?utf-8?B?cmpvaG5ycUd1ZldPZmNESGUrZWNCanRYM3hGZVU5WlZ0d1AvWXRUb21GdGVi?=
+ =?utf-8?B?VzUxSkw2bWpWYnRLUlpiTU1oV0FTY0tnbkJzNzk3MnV6SzRKSkJIUStPODN6?=
+ =?utf-8?B?cWh4MG5TUUhZWTNCRnI5UFN5ZFd1Q0xLclFELzdZalFEcHFEQ2kvdzRFNGpF?=
+ =?utf-8?B?aEM2S2EzR0orQk1GQU93Z29qVVp5Tmg5RTFEZUxkblRucGpWV2p3SlExWXow?=
+ =?utf-8?B?ckhOZ1gzR3NKc1FZTEg0MTBIMzNpVk1RMEVpRnlxamY0b3liVWNDd29ncVpI?=
+ =?utf-8?B?MFl1SUEyQWNtZXZnemtST20vMmJ3Nk5uNzNxT2o0K2pwUENZYWt6T1dQakh2?=
+ =?utf-8?B?Z2VDTXVXeFY1UGthT2tSbFQraGJXVVZZOXdKN0NvRnBXWitjY1ZaQ3RkRzBS?=
+ =?utf-8?B?bCtoamVEVzZDMjJJY1FnT21sNWJSOEpsd0FIam9WQzkwWkNkR2ZvRnJUenRl?=
+ =?utf-8?B?SU1vaVBkUzBtc25VUk1pOCtQMGlNVUErcXFUT295Qy91bkQzbDdpOUxJOHI0?=
+ =?utf-8?B?eG9FazRwN1JENnloN0FPckpZa21HTjMyaVBXM0FzRXF0enl4ZEpld0lrTk54?=
+ =?utf-8?B?RHhMOFJ5WW5TZ3lCd054bEZKYXpSdXNnNWFjVGR0eVg0MjZ2cnNmWTBrY1Nr?=
+ =?utf-8?B?eEFQMHpOYVVnemlFUE1MclBlQndWdGM4a1BiYW1ROGdUTU5nNjYza1hxeW5X?=
+ =?utf-8?B?cGRFVTJnUXI0VkVrZ2RvbEpidEZsWTZYbDZ0ZGw4RnFGZy9GRUxNZ2RZRW1N?=
+ =?utf-8?B?d25DZnozREpIaStma01nWTNpUTNQOTJuUVhqeWJmYXFpWVNHS0pIaTZxdDZR?=
+ =?utf-8?B?UWc5WVl2Z0RxaHB1TzZQaUltVVBzb1JQQXBkQk4yUzFDZkNaNU9sbS9sK3FY?=
+ =?utf-8?B?OUVsWmpUWG9pRXFmTllIQnY4c2tTLzVvTWtPTkFBVGlLN242M01VeFFMOFhi?=
+ =?utf-8?B?dllvSkgxUzJRWjB5dVoxZVVBQllXZVJibHhlSmxielY1M2xZVzhpUmFrZmE2?=
+ =?utf-8?B?bVB4amVIOWxNV1VmQkVNWms5bTVpcFBoWFBaTTVhRGRKQW9JNkVDT2kxVFpP?=
+ =?utf-8?B?SzRacVozMExNeHpsQ1ZLNmZoTGZ1Qmw5VHAvRnV1OWN6Q1FVYWlEay9XaG9h?=
+ =?utf-8?B?YVBYT3FnOXpHTUJiMElFbUJwYmpOSUEzUzJBZGdjWllCbzNmZWFQaW9vZVRm?=
+ =?utf-8?B?cmpHeVRTZ3FRY2ZXMCtQVlhsbmRDdEFGNVp6S2ltaG9lc0U4UGlGb0dOUmNs?=
+ =?utf-8?B?ZVNDQjhqc3lsbjA3cVduK1d3YTg2bnJPVVFrYWxIN2lvUENRMnlGdTd3ZU9Q?=
+ =?utf-8?Q?EG4nRvf/EyQ/ea1wJQCpdFCB5?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 146dee49-c99d-4c24-b23c-08db93b59f6c
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR11MB3320.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 03 Aug 2023 00:07:28.0224
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 0dFcE/b1akCoFiRX+yT9V6PD+LRlKxq7ELFzHOpSh67ZwzSOvoMYrNjLTD24Nhcw7gjtpAlCm5xMeERPLzZ2AQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN7PR11MB7439
+X-OriginatorOrg: intel.com
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 2, 2023 at 12:58=E2=80=AFAM David Rheinsberg <david@readahead.e=
-u> wrote:
-> >> I think I didn't get my point across. Imagine an application that does=
- *NOT* use sealing, but uses memfds. This application shares memfds with un=
-trusted clients, and does this in a safe way (SIGBUS protected). Everything=
- works fine, unless someone decides to enable `vm.memfd_noexec=3D2`. Sudden=
-ly, the memfd will have sealing enabled *without* the application ever requ=
-esting this. Now any untrusted client that got the memfd can add seals to t=
-he memfd, even though the creator of the memfd did not enable sealing. This=
- client can now seal WRITES on the memfd, even though it really should not =
-be able to do that.
-> >>
-> >> (This is not an hypothetical setup, we have such setups for data shari=
-ng already)
-> >
-> > Thanks, this helps me understand your point better.
-> >
-> > I'm not convinced that sysctl needs to consider the threat model of
-> > "someone" changing and breaking an application.  If we follow that
-> > threat model, there are a lot of other sysctls to worry about.
-> >
-> > Also, in the system that you described, if memfd is handled to an
-> > untrusted process, not only "sealing"  can cause damage, but also
-> > chmod, arbitrary rw,  imo the right approach is to harden the process
-> > or mechanism of passing the memfd.
->
-> No. The model I describe is carefully designed to hand out file-descripto=
-rs to inodes that the clients have *no* access to. They cannot run fchmod(2=
-), unlink(2), etc. All they can do is operate on the open file. And all acc=
-ess to this shared file is properly guarded against possible damage the oth=
-er concurrent clients can do. The entire model is already hardened against =
-malicious actors.
->
-> With the new sysctl, a new attack-vector is introduced, which was not pos=
-sible before.
->
-> I was *explicitly* told to add `MFD_ALLOW_SEALING` for that exact reason =
-when introducing memfd_create(2). So I am a bit baffled why it is now ok to=
- enable sealing behind the users back.
->
-> I agree that the new sysctl is a root-only option. But I fail to see *why=
-* it implies `MFD_ALLOW_SEALING`? This behavior is not documented nor is it=
- explained in the original commit-messages, nor mentioned *anywhere*.
->
-> >> Thus, setting the security-option `memfd_noexec` *breaks* applications=
-, because it enables sealing. If `MFD_NOEXEC_SEAL` would *not* imply `MFD_A=
-LLOW_SEALING`, this would not be an issue. IOW, why does =C2=B4MFD_NOEXEC_S=
-EAL` clear `F_SEAL_SEAL` even if `MFD_ALLOW_SEALING` is not set?
-> >>
-> >
-> > If MFD_NOEXEC_SEAL is not desired, then it should not be used to
-> > overwrite memfd_create() in this system.
-> >
-> > For the question of why the sysctl adding a seal without application
-> > setting it , the rationale here is, as summary of previous/this
-> > emails:
->
-> I still think we are not talking about the same thing. I completely under=
-stand why you add the seal! I am just questioning why you *CLEAR* `F_SEAL_S=
-EAL`? That is, why do you enable `MFD_ALLOW_SEALING` without the user reque=
-sting it? You could just set `F_SEAL_EXEC` without clearing `F_SEAL_SEAL`. =
-And then require `MFD_ALLOW_SEALING` on top to clear `F_SEAL_SEAL`.
->
-Ah, I apologize. I didn't read it carefully enough and misunderstood
-you, thanks for clarification.
+On 8/2/2023 3:20 AM, Thomas Gleixner wrote:
+> The series is based on V3 of the APIC cleanup series:
+> 
+>   https://lore.kernel.org/lkml/20230801103042.936020332@linutronix.de
+> 
+> and also available on top of that from git:
+> 
+>  git://git.kernel.org/pub/scm/linux/kernel/git/tglx/devel.git topo-cpuid-v3
+> 
 
-The reason that F_SEAL_SEAL is cleared, is that MFD_NOEXEC_SEAL
-implies MFD_ALLOW_SEALING, and it seems to be reasonable that
-application might want to use sealing  e.g I image application write
-the content to memfd then adding F_SEAL_WRITE.
-
-Your point is that MFD_ALLOW_SEALING should not be implied by
-MFD_NOEXEC_SEAL. An application should still explicitly set
-MFD_ALLOW_SEALING.
-
-To me, MFD_NOEXEC_SEAL, the _SEAL part implies to allow sealing, but
-of course, this might not be so clear to anyone other than me :-) ,
-documentation is indeed necessary.
-
-And with the context you described,  now I think your approach is better:
-1> application set MFD_NOEXEC_SEAL, with MFD_ALLOW_SEALING
-    F_SEAL_EXEC is set, F_SEAL_SEAL is clear.
-2> Application set MFD_NOEXEC_SEAL, without MFD_ALLOW_SEALING
-    F_SEAL_EXEC and F_SEAL_SEAL are set.
-
-> [...]
-> >> The downside of `MFD_NOEXEC` is that it might be picked over `MFD_NOEX=
-EC_SEAL` by uneducated users, thus reducing security. But right now, the al=
-ternative is that existing code picks `MFD_EXEC` instead and never clears t=
-he executable bit, because it is a hassle to do so.
-> >>
-> >
-> > Yes. This is the downside I was thinking about.
-> >
-> > I lean to believe the kernel API shouldn't be feature rich, it could
-> > be simple, optimized towards the majority of user cases, and ideally,
-> > is self-explained without devs to look through documentation. For
-> > example, if I had to choose one to implement between MFD_NOEXEC and
-> > MFD_NOEXEC_SEAL, I would choose MFD_NOEXEC_SEAL because it should be
-> > what most users care about.
->
-> Well, if we were to go back, we would make MFD_NOEXEC(_SEAL) the default =
-and just add `MFD_EXEC` :)
->
-> >> Or is there another reason *not* to include `MFD_NOEXEC`? I am not sur=
-e I understand fully why you fight it so vehemently?
-> >>
-> >
-> > I wouldn't add it myself, I hope to convince you not to :-).
-> > If you still think it is beneficial to add MFD_NOEXEC (saving one
-> > chmod call and making it easy to use), I wouldn't feel bad about that.
-> > I would suggest going with documentation to help devs to choose
-> > between those two, i.e. recommend MFD_NOEXEC_SEAL in most cases.
->
-> Any application that cannot use `F_SEAL_EXEC` (e.g., because its peers ve=
-rify for historic reasons that the seal is not set) now has to do an extra =
-dance to get the "safer" behavior, rather than getting the "safer" behavior=
- by default. That is, we make it easier to get the unsafe behavior than to =
-get the safe behavior (in this particular scenario).
-> Without `MFD_NOEXEC`, it is easier to end up with a 0777 memfd than not. =
-I want the application that desires `S_IXUSR` to jump through hoops, not th=
-e application that does *not* require it.
->
-I see your points now, i.e.  the "disallow sealing entirely" is at
-least as important as "not able to chmod to add X".
-I think the reasonable mid-ground is perhaps adding MFD_NOEXEC
-support, with some documentation to help dev to choose between
-MFD_NOEXEC and MFD_NOEXEC_SEAL
-
-Would you like to update your patch to the last version on Andrew's
-branch, adding selftest, and perhaps help for documentation ?
-
-Thanks!
--Jeff
+Tested-by: Sohil Mehta <sohil.mehta@intel.com>
