@@ -2,289 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E5FF76F382
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 21:37:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C283476F38A
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 21:39:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230286AbjHCThJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Aug 2023 15:37:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34256 "EHLO
+        id S230364AbjHCTjR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Aug 2023 15:39:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34686 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230190AbjHCThG (ORCPT
+        with ESMTP id S229777AbjHCTjO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Aug 2023 15:37:06 -0400
-Received: from mail-yw1-x1149.google.com (mail-yw1-x1149.google.com [IPv6:2607:f8b0:4864:20::1149])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C2953C3B
-        for <linux-kernel@vger.kernel.org>; Thu,  3 Aug 2023 12:37:05 -0700 (PDT)
-Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-586a5cd0ea9so401997b3.2
-        for <linux-kernel@vger.kernel.org>; Thu, 03 Aug 2023 12:37:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1691091424; x=1691696224;
-        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=/3+2LaUZtSIgyae9U3pa7SONeLjf47F4TsaDo1cDfHY=;
-        b=qWf+koP6WJCj/KpJbCA4hgfI7JomP8DSBT1WVRZ9XD0a2oXEvZlRRXgOJrVujtv1YW
-         MechMeRwb/u4MQn8M/Nyxjk8NjcMg9aqJOtku0z3XdcJ3hUBng2T84IWEYuS8f9msy9D
-         sUQMF1O4ExhUXjey2Re3fPhK3HlMp9uU+wIzDxikzjlLrJG4cArmRA0z+quVWiG4mCN+
-         ws9lWlifMZH0JpePdPAIqz5jShUJB0ATwSGB/9PzCLbfA5hw2+dfuUq4OL9VVWu29xdz
-         z/Q1Ywz6umTlf4m5wNYWzywUHrOzwG8Z0viK0/MVh3px42GqKr+BZ62XoAjlLKmX/9rc
-         2TIg==
+        Thu, 3 Aug 2023 15:39:14 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A6643C3B
+        for <linux-kernel@vger.kernel.org>; Thu,  3 Aug 2023 12:38:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1691091504;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=C8fBRKG84oTUzu4cJ0upEFkniwHWsF/Sd26+sDxvy08=;
+        b=BF+mX3/m5A2fldN7HUGVozMMj68lo8e76Y09mcEEJNRcc8RsZgWrC6WTmvfLc72zE6MeHV
+        EDW4sbdpKA33/QCSKrZ8t2z72594fN2OjAjryJISbPWTsILkdCyWd927pk4Xa4qN7YsY3+
+        FMvs4PH26TxAfUjWg9WN7/U2llluc9E=
+Received: from mail-io1-f69.google.com (mail-io1-f69.google.com
+ [209.85.166.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-493-v7zvVz-5Nsmi4nPLXSLGIw-1; Thu, 03 Aug 2023 15:38:21 -0400
+X-MC-Unique: v7zvVz-5Nsmi4nPLXSLGIw-1
+Received: by mail-io1-f69.google.com with SMTP id ca18e2360f4ac-7873f24e7edso109235239f.3
+        for <linux-kernel@vger.kernel.org>; Thu, 03 Aug 2023 12:38:21 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691091424; x=1691696224;
-        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+        d=1e100.net; s=20221208; t=1691091500; x=1691696300;
+        h=content-transfer-encoding:mime-version:organization:references
+         :in-reply-to:message-id:subject:cc:to:from:date:x-gm-message-state
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=/3+2LaUZtSIgyae9U3pa7SONeLjf47F4TsaDo1cDfHY=;
-        b=CwYNJhYAFjndgWBocSdNWdmVdSnOz/v69JkFe1Af93YKtIf7R0oLN/DAbVTjxK13EA
-         rWrWLSqrTWOF53NCxaZAhJz/1VF5Zo8SQn3BWdezP8Q+nN7th/ILL6k5hmaomYZgmb7I
-         3OhlPelm/98D8yrUkTP97K9TMrNylF6hzAiUN4aWVNrrLwKsongk+XmFrCo9v28AcFrw
-         BCqmeLqlw7fBG2wf4yuhhNAdCXh2pgW2XuW8gjsg3WssFF74qH4fR3cEvtufnIjr2wGl
-         RyR28J10prNOUPXEfbm0+Zndr1Yig+TQW1VlXLtSYinha6+90Iywn4HsthswlC3a3dW5
-         9XNA==
-X-Gm-Message-State: ABy/qLbxtSTExaJHWe/CZ3eJVeWpwjil3OownOHOnI6FIKrs43HHrQpr
-        o8uR/iFWNNmn2Y0PtYFFkTcyCz5p5g==
-X-Google-Smtp-Source: APBJJlFewtcWp6F9S7r4b6JAY9jc7zYqO20IVbwPEb0fffWFzRRzwyDDpdsGeydNWYSMn/QXaOeAFHsVGw==
-X-Received: from rmoar-specialist.c.googlers.com ([fda3:e722:ac3:cc00:2b:7d90:c0a8:45d3])
- (user=rmoar job=sendgmr) by 2002:a25:db82:0:b0:d0d:cce3:d32d with SMTP id
- g124-20020a25db82000000b00d0dcce3d32dmr151304ybf.6.1691091424358; Thu, 03 Aug
- 2023 12:37:04 -0700 (PDT)
-Date:   Thu,  3 Aug 2023 19:36:35 +0000
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.41.0.585.gd2178a4bd4-goog
-Message-ID: <20230803193635.1047337-1-rmoar@google.com>
-Subject: [PATCH -next v2] kunit: fix uninitialized variables bug in attributes filtering
-From:   Rae Moar <rmoar@google.com>
-To:     shuah@kernel.org, davidgow@google.com, brendan.higgins@linux.dev
-Cc:     ruanjinjie@huawei.com, linux-kselftest@vger.kernel.org,
-        kunit-dev@googlegroups.com, linux-kernel@vger.kernel.org,
-        Rae Moar <rmoar@google.com>, kernel test robot <lkp@intel.com>,
-        Dan Carpenter <dan.carpenter@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        bh=C8fBRKG84oTUzu4cJ0upEFkniwHWsF/Sd26+sDxvy08=;
+        b=L8AkKCLq2TU3fTvrCmRLC18WREHH3rDmwmOcApaV50/jrIkmipNwHE64K+ELrioUun
+         D1vPxgYiQcjcLNayFElMkkv78UI1P96Q5UTRFcbJiutddgbymep8YMNoq+uPROvc40C6
+         MMjxSItNW3yrK3ElIGnNc1Ph5c6ske8XI2wp5YnTXZrz0VQC8icWYMx8TTWkNe1fwKBp
+         nz5SK9PGtZxY2AMCDfrwtpV3KVEuqg0bXabTPeHeWMcTvEXtiLxTEvmBA9sYwvoG4xQc
+         M1SkD7i8ZsUA6EsTCH39+bJ0hsfSgYJAuJPgfVJo90pFOK9OxraZwkgxpuFys9U8eYhi
+         Zmhw==
+X-Gm-Message-State: ABy/qLYv3iHzVp7XjFl7bs5A4COt3ozEFLJ1v6792Uc4uwVaf/4w9sYY
+        wdG3iF8hMs6AKbXycocjVsf5j1gTrNXTDA+oUDMdyRxMgmZXsCFDiN3LVSvUtP4zsJ1zCUPRzri
+        L4MO/9x71EYt2fu8GjZL7bY/t
+X-Received: by 2002:a92:d083:0:b0:349:19e:7656 with SMTP id h3-20020a92d083000000b00349019e7656mr13385730ilh.28.1691091500566;
+        Thu, 03 Aug 2023 12:38:20 -0700 (PDT)
+X-Google-Smtp-Source: APBJJlFozrDPoA3AZ5UQWG5fcKBYQDbRoiwLlBgBEKUdt19LvvvypUn54PZ7JdYNXseH/zc0WqTLYA==
+X-Received: by 2002:a92:d083:0:b0:349:19e:7656 with SMTP id h3-20020a92d083000000b00349019e7656mr13385718ilh.28.1691091500314;
+        Thu, 03 Aug 2023 12:38:20 -0700 (PDT)
+Received: from redhat.com ([38.15.60.12])
+        by smtp.gmail.com with ESMTPSA id t7-20020a92cc47000000b00345d6e8ded4sm176994ilq.25.2023.08.03.12.38.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 03 Aug 2023 12:38:19 -0700 (PDT)
+Date:   Thu, 3 Aug 2023 13:38:12 -0600
+From:   Alex Williamson <alex.williamson@redhat.com>
+To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        Sean Christopherson <seanjc@google.com>,
+        Roxana Bradescu <roxabee@google.com>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 1/2] kvm/vfio: ensure kvg instance stays around in
+ kvm_vfio_group_add()
+Message-ID: <20230803133812.491956b9.alex.williamson@redhat.com>
+In-Reply-To: <20230714224538.404793-1-dmitry.torokhov@gmail.com>
+References: <20230714224538.404793-1-dmitry.torokhov@gmail.com>
+Organization: Red Hat
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix smatch warnings regarding uninitialized variables in the filtering
-patch of the new KUnit Attributes feature.
+On Fri, 14 Jul 2023 15:45:32 -0700
+Dmitry Torokhov <dmitry.torokhov@gmail.com> wrote:
 
-Fixes: 529534e8cba3 ("kunit: Add ability to filter attributes")
+> kvm_vfio_group_add() creates kvg instance, links it to kv->group_list,
+> and calls kvm_vfio_file_set_kvm() with kvg->file as an argument after
+> dropping kv->lock. If we race group addition and deletion calls, kvg
+> instance may get freed by the time we get around to calling
+> kvm_vfio_file_set_kvm().
+> 
+> Previous iterations of the code did not reference kvg->file outside of
+> the critical section, but used a temporary variable. Still, they had
+> similar problem of the file reference being owned by kvg structure and
+> potential for kvm_vfio_group_del() dropping it before
+> kvm_vfio_group_add() had a chance to complete.
+> 
+> Fix this by moving call to kvm_vfio_file_set_kvm() under the protection
+> of kv->lock. We already call it while holding the same lock when vfio
+> group is being deleted, so it should be safe here as well.
+> 
+> Fixes: 2fc1bec15883 ("kvm: set/clear kvm to/from vfio_group when group add/delete")
+> Reviewed-by: Alex Williamson <alex.williamson@redhat.com>
+> Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+> ---
 
-Reported-by: kernel test robot <lkp@intel.com>
-Reported-by: Dan Carpenter <dan.carpenter@linaro.org>
-Closes: https://lore.kernel.org/r/202307270610.s0w4NKEn-lkp@intel.com/
+Applied series to vfio next branch for v6.6.  There's a minor rebase
+involved, so please double check the results:
 
-Signed-off-by: Rae Moar <rmoar@google.com>
----
+https://github.com/awilliam/linux-vfio/commits/next
 
-Change since v1:
-- Changed initialization of filtered to be {NULL, NULL} at the start and
-  only updated when ready to return.
-- Remove unnecessary +1 in memory allocation for parsed_filters in
-  executor test.
+Thanks,
+Alex
 
-Note that this is rebased on top of the recent fix:
-("kunit: fix possible memory leak in kunit_filter_suites()").
-
- lib/kunit/attributes.c    | 40 +++++++++++++++++----------------------
- lib/kunit/executor.c      | 18 +++++++++++-------
- lib/kunit/executor_test.c |  2 +-
- 3 files changed, 29 insertions(+), 31 deletions(-)
-
-diff --git a/lib/kunit/attributes.c b/lib/kunit/attributes.c
-index d37c40c0ce4f..5e3034b6be99 100644
---- a/lib/kunit/attributes.c
-+++ b/lib/kunit/attributes.c
-@@ -102,7 +102,7 @@ static int int_filter(long val, const char *op, int input, int *err)
- static int attr_enum_filter(void *attr, const char *input, int *err,
- 		const char * const str_list[], int max)
- {
--	int i, j, input_int;
-+	int i, j, input_int = -1;
- 	long test_val = (long)attr;
- 	const char *input_val = NULL;
- 
-@@ -124,7 +124,7 @@ static int attr_enum_filter(void *attr, const char *input, int *err,
- 			input_int = j;
- 	}
- 
--	if (!input_int) {
-+	if (input_int < 0) {
- 		*err = -EINVAL;
- 		pr_err("kunit executor: invalid filter input: %s\n", input);
- 		return false;
-@@ -186,8 +186,10 @@ static void *attr_module_get(void *test_or_suite, bool is_test)
- 	// Suites get their module attribute from their first test_case
- 	if (test)
- 		return ((void *) test->module_name);
--	else
-+	else if (kunit_suite_num_test_cases(suite) > 0)
- 		return ((void *) suite->test_cases[0].module_name);
-+	else
-+		return (void *) "";
- }
- 
- /* List of all Test Attributes */
-@@ -221,7 +223,7 @@ const char *kunit_attr_filter_name(struct kunit_attr_filter filter)
- void kunit_print_attr(void *test_or_suite, bool is_test, unsigned int test_level)
- {
- 	int i;
--	bool to_free;
-+	bool to_free = false;
- 	void *attr;
- 	const char *attr_name, *attr_str;
- 	struct kunit_suite *suite = is_test ? NULL : test_or_suite;
-@@ -255,7 +257,7 @@ void kunit_print_attr(void *test_or_suite, bool is_test, unsigned int test_level
- 
- int kunit_get_filter_count(char *input)
- {
--	int i, comma_index, count = 0;
-+	int i, comma_index = 0, count = 0;
- 
- 	for (i = 0; input[i]; i++) {
- 		if (input[i] == ',') {
-@@ -272,7 +274,7 @@ int kunit_get_filter_count(char *input)
- struct kunit_attr_filter kunit_next_attr_filter(char **filters, int *err)
- {
- 	struct kunit_attr_filter filter = {};
--	int i, j, comma_index, new_start_index;
-+	int i, j, comma_index = 0, new_start_index = 0;
- 	int op_index = -1, attr_index = -1;
- 	char op;
- 	char *input = *filters;
-@@ -316,7 +318,7 @@ struct kunit_attr_filter kunit_next_attr_filter(char **filters, int *err)
- 		filter.attr = &kunit_attr_list[attr_index];
- 	}
- 
--	if (comma_index) {
-+	if (comma_index > 0) {
- 		input[comma_index] = '\0';
- 		filter.input = input + op_index;
- 		input = input + new_start_index;
-@@ -356,31 +358,22 @@ struct kunit_suite *kunit_filter_attr_tests(const struct kunit_suite *const suit
- 
- 	/* Save filtering result on default value */
- 	default_result = filter.attr->filter(filter.attr->attr_default, filter.input, err);
--	if (*err) {
--		kfree(copy);
--		kfree(filtered);
--		return NULL;
--	}
-+	if (*err)
-+		goto err;
- 
- 	/* Save suite attribute value and filtering result on that value */
- 	suite_val = filter.attr->get_attr((void *)suite, false);
- 	suite_result = filter.attr->filter(suite_val, filter.input, err);
--	if (*err) {
--		kfree(copy);
--		kfree(filtered);
--		return NULL;
--	}
-+	if (*err)
-+		goto err;
- 
- 	/* For each test case, save test case if passes filtering. */
- 	kunit_suite_for_each_test_case(suite, test_case) {
- 		test_val = filter.attr->get_attr((void *) test_case, true);
- 		test_result = filter.attr->filter(filter.attr->get_attr(test_case, true),
- 				filter.input, err);
--		if (*err) {
--			kfree(copy);
--			kfree(filtered);
--			return NULL;
--		}
-+		if (*err)
-+			goto err;
- 
- 		/*
- 		 * If attribute value of test case is set, filter on that value.
-@@ -406,7 +399,8 @@ struct kunit_suite *kunit_filter_attr_tests(const struct kunit_suite *const suit
- 		}
- 	}
- 
--	if (n == 0) {
-+err:
-+	if (n == 0 || *err) {
- 		kfree(copy);
- 		kfree(filtered);
- 		return NULL;
-diff --git a/lib/kunit/executor.c b/lib/kunit/executor.c
-index 481901d245d0..dc295150c4e5 100644
---- a/lib/kunit/executor.c
-+++ b/lib/kunit/executor.c
-@@ -127,19 +127,18 @@ static struct suite_set kunit_filter_suites(const struct suite_set *suite_set,
- {
- 	int i, j, k;
- 	int filter_count = 0;
--	struct kunit_suite **copy, *filtered_suite, *new_filtered_suite;
--	struct suite_set filtered;
-+	struct kunit_suite **copy, **copy_start, *filtered_suite, *new_filtered_suite;
-+	struct suite_set filtered = {NULL, NULL};
- 	struct kunit_glob_filter parsed_glob;
--	struct kunit_attr_filter *parsed_filters;
-+	struct kunit_attr_filter *parsed_filters = NULL;
- 
- 	const size_t max = suite_set->end - suite_set->start;
- 
- 	copy = kmalloc_array(max, sizeof(*filtered.start), GFP_KERNEL);
--	filtered.start = copy;
- 	if (!copy) { /* won't be able to run anything, return an empty set */
--		filtered.end = copy;
- 		return filtered;
- 	}
-+	copy_start = copy;
- 
- 	if (filter_glob)
- 		kunit_parse_glob_filter(&parsed_glob, filter_glob);
-@@ -147,7 +146,11 @@ static struct suite_set kunit_filter_suites(const struct suite_set *suite_set,
- 	/* Parse attribute filters */
- 	if (filters) {
- 		filter_count = kunit_get_filter_count(filters);
--		parsed_filters = kcalloc(filter_count + 1, sizeof(*parsed_filters), GFP_KERNEL);
-+		parsed_filters = kcalloc(filter_count, sizeof(*parsed_filters), GFP_KERNEL);
-+		if (!parsed_filters) {
-+			kfree(copy);
-+			return filtered;
-+		}
- 		for (j = 0; j < filter_count; j++)
- 			parsed_filters[j] = kunit_next_attr_filter(&filters, err);
- 		if (*err)
-@@ -166,7 +169,7 @@ static struct suite_set kunit_filter_suites(const struct suite_set *suite_set,
- 				goto err;
- 			}
- 		}
--		if (filter_count) {
-+		if (filter_count > 0 && parsed_filters != NULL) {
- 			for (k = 0; k < filter_count; k++) {
- 				new_filtered_suite = kunit_filter_attr_tests(filtered_suite,
- 						parsed_filters[k], filter_action, err);
-@@ -195,6 +198,7 @@ static struct suite_set kunit_filter_suites(const struct suite_set *suite_set,
- 
- 		*copy++ = filtered_suite;
- 	}
-+	filtered.start = copy_start;
- 	filtered.end = copy;
- 
- err:
-diff --git a/lib/kunit/executor_test.c b/lib/kunit/executor_test.c
-index 01280cb8d451..3e0a1c99cb4e 100644
---- a/lib/kunit/executor_test.c
-+++ b/lib/kunit/executor_test.c
-@@ -119,7 +119,7 @@ static void parse_filter_attr_test(struct kunit *test)
- 	filter_count = kunit_get_filter_count(filters);
- 	KUNIT_EXPECT_EQ(test, filter_count, 2);
- 
--	parsed_filters = kunit_kcalloc(test, filter_count + 1, sizeof(*parsed_filters),
-+	parsed_filters = kunit_kcalloc(test, filter_count, sizeof(*parsed_filters),
- 			GFP_KERNEL);
- 	for (j = 0; j < filter_count; j++) {
- 		parsed_filters[j] = kunit_next_attr_filter(&filters, &err);
-
-base-commit: 3bffe185ad11e408903d2782727877388d08d94e
--- 
-2.41.0.585.gd2178a4bd4-goog
+> 
+> v3: added Alex's reviewed-by
+> 
+> v2: updated commit description with the correct "Fixes" tag (per Alex),
+>     expanded commit description to mention issues with the earlier
+>     implementation of kvm_vfio_group_add().
+> 
+>  virt/kvm/vfio.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/virt/kvm/vfio.c b/virt/kvm/vfio.c
+> index 9584eb57e0ed..cd46d7ef98d6 100644
+> --- a/virt/kvm/vfio.c
+> +++ b/virt/kvm/vfio.c
+> @@ -179,10 +179,10 @@ static int kvm_vfio_group_add(struct kvm_device *dev, unsigned int fd)
+>  	list_add_tail(&kvg->node, &kv->group_list);
+>  
+>  	kvm_arch_start_assignment(dev->kvm);
+> +	kvm_vfio_file_set_kvm(kvg->file, dev->kvm);
+>  
+>  	mutex_unlock(&kv->lock);
+>  
+> -	kvm_vfio_file_set_kvm(kvg->file, dev->kvm);
+>  	kvm_vfio_update_coherency(dev);
+>  
+>  	return 0;
 
