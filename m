@@ -2,124 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 720CA76E76F
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 13:52:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C17576E774
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 13:55:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233677AbjHCLw0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Aug 2023 07:52:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48370 "EHLO
+        id S234172AbjHCLz3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Aug 2023 07:55:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49418 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229446AbjHCLwX (ORCPT
+        with ESMTP id S229446AbjHCLz1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Aug 2023 07:52:23 -0400
-Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B434FE6F;
-        Thu,  3 Aug 2023 04:52:18 -0700 (PDT)
-Received: by mail-lf1-x132.google.com with SMTP id 2adb3069b0e04-4fe2de785e7so1553861e87.1;
-        Thu, 03 Aug 2023 04:52:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1691063537; x=1691668337;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=BvfpzHNvraxrRTuqY8Qx7g7HYM0fDeaGxzfbp5eLMZY=;
-        b=KiVP/jJm3Mv4SHlqquH9+PvoWiGwU4w43ceFJW+SVvK1dooJfh1HtQVCCsJQst7wzj
-         191CRtHrTNxg7iyvORcNn2rvdqjIWavgBms97K9kq+ivY7hQBtW/gaNz7ofp6M4HmzDp
-         DN9yCDbGGKmz3sasKBFiPHuKJsi7q4UTfEvnu7OtDbPzlu0GNWeat1z15W8VMrK6IgeF
-         fukNf2GCSLYup8R12ZkJ91letJnvIZj0cOvIjwCJowcA9pf2qg0wwLpsUWhoRwraXB7b
-         nPBtBqfrJwIl9MtUIf+caGzToRM49uz3+yMd49z6r0Z2LaPUC08ZW+V351CEdLPjMVui
-         TSng==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691063537; x=1691668337;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=BvfpzHNvraxrRTuqY8Qx7g7HYM0fDeaGxzfbp5eLMZY=;
-        b=K495OK/KaDCx9EXwCpc9fmDck8bojipxqCqN79q9VxOAiHZPF41Njkt5GhVQ2eH0xm
-         ap0EL+WOE+sTT5gqxqpMxZtOEOSL0gyaQx/QU1FMStC2xDtDjtVfd3oiUfcqhgJETAOl
-         HGTrRNziHDpDIqUGnvqRSyFyCEF7kQ2Ag7jbizihKDqdfDvnFA9LbxtfT8hRvCz9pFWk
-         hxGT2gqtwduZ62G8tpSWgIn2QidbhglqEFzkAFyCrAIRdFm3Ios+oy5H+GuFm0TA2WOt
-         tZJkvT6OnxEbOCmxSHFoERijUE4s1teVHOJSq9iamhUs8b9ghFaRmXIT5lBd6FSf+Ewe
-         IK8A==
-X-Gm-Message-State: ABy/qLbowS5LEJyHN32NKp291M2B+Voh2lPTL4vQbqiwl5QUFCPflZkS
-        NcKOpwo+3Vcup95KYR/Rjhg=
-X-Google-Smtp-Source: APBJJlFCc7jU7XPSLQb+MCmbbcT8NiK3hMDPzGpNm10epcXYfUELg5To/dMsKpdwiHJYRmJAXj+7bQ==
-X-Received: by 2002:ac2:4d97:0:b0:4fb:829b:197c with SMTP id g23-20020ac24d97000000b004fb829b197cmr6396758lfe.52.1691063536736;
-        Thu, 03 Aug 2023 04:52:16 -0700 (PDT)
-Received: from [192.168.0.103] ([77.126.7.132])
-        by smtp.gmail.com with ESMTPSA id lt5-20020a170906fa8500b0098f99048053sm10663624ejb.148.2023.08.03.04.52.14
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 03 Aug 2023 04:52:16 -0700 (PDT)
-Message-ID: <006fc25b-497b-7de0-1d69-b7be66ab31b3@gmail.com>
-Date:   Thu, 3 Aug 2023 14:52:13 +0300
+        Thu, 3 Aug 2023 07:55:27 -0400
+Received: from relay6-d.mail.gandi.net (relay6-d.mail.gandi.net [IPv6:2001:4b98:dc4:8::226])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72AE7273B;
+        Thu,  3 Aug 2023 04:55:26 -0700 (PDT)
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 5AECCC0002;
+        Thu,  3 Aug 2023 11:55:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+        t=1691063725;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=OnhyjKVpf0n1sR5WP4gOBdz3FzR1RW0pL4jjoZR/q1Q=;
+        b=YCHWxzu7ACHg1RjcckaCDSLn43AVY60Lykq+uIupNI/4syYi4nWe58LmJukawrEhuTOsiv
+        T1dP0/4bIPZK1vyb4P0DqWEo0daWrt19rPgD63AaIEXqhR6gYM4C81uWQupSn57jL3dPiV
+        SuWwWgCiBlwICWuugOQ8xUWHHsQ7X6T502s4EZHZMGGC94M6VMQC7Tnaz9KEUEurzj5pEm
+        8ZXNilMb8ORZSBD82HliJqIUOiH0+G2s4HrlGXKvUvGBPWJCDo2LYnLmfskTk4/06DKtFB
+        Mfw0z87YqMqWo2ASSyG0ejG5VF73c0HolBvTg4UlolvaDGjrDradCY0KluSA1A==
+Date:   Thu, 3 Aug 2023 13:55:23 +0200
+From:   Herve Codina <herve.codina@bootlin.com>
+To:     Zhu Wang <wangzhu9@huawei.com>
+Cc:     <gregkh@linuxfoundation.org>, <stern@rowland.harvard.edu>,
+        <robh@kernel.org>, <aaro.koskinen@iki.fi>,
+        <linux-usb@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH -next v2] usb: gadget: udc: gr_udc: Do not check 0 for
+ platform_get_irq()
+Message-ID: <20230803135523.3959059c@bootlin.com>
+In-Reply-To: <20230803114246.79820-1-wangzhu9@huawei.com>
+References: <20230803114246.79820-1-wangzhu9@huawei.com>
+Organization: Bootlin
+X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH net-next v10 08/16] tls: Inline do_tcp_sendpages()
-Content-Language: en-US
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     David Howells <dhowells@redhat.com>, netdev@vger.kernel.org,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
-        David Ahern <dsahern@kernel.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Christoph Hellwig <hch@infradead.org>,
-        Jens Axboe <axboe@kernel.dk>, Jeff Layton <jlayton@kernel.org>,
-        Christian Brauner <brauner@kernel.org>,
-        Chuck Lever III <chuck.lever@oracle.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, Boris Pismenny <borisp@nvidia.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Gal Pressman <gal@nvidia.com>, ranro@nvidia.com,
-        samiram@nvidia.com, drort@nvidia.com,
-        Tariq Toukan <tariqt@nvidia.com>
-References: <ecbb5d7e-7238-28e2-1a17-686325e2bb50@gmail.com>
- <4c49176f-147a-4283-f1b1-32aac7b4b996@gmail.com>
- <20230522121125.2595254-1-dhowells@redhat.com>
- <20230522121125.2595254-9-dhowells@redhat.com>
- <2267272.1686150217@warthog.procyon.org.uk>
- <5a9d4ffb-a569-3f60-6ac8-070ab5e5f5ad@gmail.com>
- <776549.1687167344@warthog.procyon.org.uk>
- <7337a904-231d-201d-397a-7bbe7cae929f@gmail.com>
- <20230630102143.7deffc30@kernel.org>
- <f0538006-6641-eaf6-b7b5-b3ef57afc652@gmail.com>
- <20230705091914.5bee12f8@kernel.org>
- <bbdce803-0f23-7d3f-f75a-2bc3cfb794af@gmail.com>
- <20230725173036.442ba8ba@kernel.org>
- <e9c41176-829a-af5a-65d2-78a2f414cd04@gmail.com>
- <20230726130819.6cc6aa0c@kernel.org>
-From:   Tariq Toukan <ttoukan.linux@gmail.com>
-In-Reply-To: <20230726130819.6cc6aa0c@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-GND-Sasl: herve.codina@bootlin.com
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Zhu,
 
+On Thu, 3 Aug 2023 19:42:46 +0800
+Zhu Wang <wangzhu9@huawei.com> wrote:
 
-On 26/07/2023 23:08, Jakub Kicinski wrote:
-> On Wed, 26 Jul 2023 22:20:42 +0300 Tariq Toukan wrote:
->>> There is a small bug in this commit, we should always set SPLICE.
->>> But I don't see how that'd cause the warning you're seeing.
->>> Does your build have CONFIG_DEBUG_VM enabled?
->>
->> No.
->>
->> # CONFIG_DEBUG_VM is not set
->> # CONFIG_DEBUG_VM_PGTABLE is not set
+> When platform_get_irq_byname() is called to get a interrupt number, it
+> may return -EINVAL or -ENXIO when failed, while current code returned
+> -ENODEV, so we replace it with the return value of
+> platform_get_irq_byname(). And we found that platform_get_irq_byname()
+> never returned zero by reading its code.
+
+The function involve in the code is not platform_get_irq_byname() but
+platform_get_irq(). Can you update ?
+
+With this updated,
+Reviewed-by: Herve Codina <herve.codina@bootlin.com>
+
+Best regards,
+Hervé
+
 > 
-> Try testing v6.3 with DEBUG_VM enabled or just remove the IS_ENABLED()
-> from: https://github.com/torvalds/linux/blob/v6.4/net/ipv4/tcp.c#L1051
+> Commit ce753ad1549c ("platform: finally disallow IRQ0 in
+> platform_get_irq() and its ilk") makes sure IRQ0 is not returned.
+> 
+> Signed-off-by: Zhu Wang <wangzhu9@huawei.com>
+> 
+> ---
+> Changes in v2:
+> - Update the commit message, present the reason of replacing the return
+> value of the probe.
+> ---
+>  drivers/usb/gadget/udc/gr_udc.c | 8 ++++----
+>  1 file changed, 4 insertions(+), 4 deletions(-)
+> 
+> diff --git a/drivers/usb/gadget/udc/gr_udc.c b/drivers/usb/gadget/udc/gr_udc.c
+> index 0c3969301a53..c6dfa7cccc11 100644
+> --- a/drivers/usb/gadget/udc/gr_udc.c
+> +++ b/drivers/usb/gadget/udc/gr_udc.c
+> @@ -2136,15 +2136,15 @@ static int gr_probe(struct platform_device *pdev)
+>  		return PTR_ERR(regs);
+>  
+>  	dev->irq = platform_get_irq(pdev, 0);
+> -	if (dev->irq <= 0)
+> -		return -ENODEV;
+> +	if (dev->irq < 0)
+> +		return dev->irq;
+>  
+>  	/* Some core configurations has separate irqs for IN and OUT events */
+>  	dev->irqi = platform_get_irq(pdev, 1);
+>  	if (dev->irqi > 0) {
+>  		dev->irqo = platform_get_irq(pdev, 2);
+> -		if (dev->irqo <= 0)
+> -			return -ENODEV;
+> +		if (dev->irqo < 0)
+> +			return dev->irqo;
+>  	} else {
+>  		dev->irqi = 0;
+>  	}
 
-Tested. It doesn't repro.
+
+
+-- 
+Hervé Codina, Bootlin
+Embedded Linux and Kernel engineering
+https://bootlin.com
