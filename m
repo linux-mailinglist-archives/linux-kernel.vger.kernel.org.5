@@ -2,102 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A65576E80F
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 14:16:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0389E76E822
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 14:26:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235877AbjHCMQb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Aug 2023 08:16:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34934 "EHLO
+        id S235155AbjHCM0f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Aug 2023 08:26:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37130 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235863AbjHCMQ1 (ORCPT
+        with ESMTP id S229548AbjHCM0d (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Aug 2023 08:16:27 -0400
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2CF5B1;
-        Thu,  3 Aug 2023 05:16:25 -0700 (PDT)
-Received: from [127.0.1.1] (91-154-35-171.elisa-laajakaista.fi [91.154.35.171])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 06090EEA;
-        Thu,  3 Aug 2023 14:15:17 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1691064918;
-        bh=X/zAB0Jj0qtm9fUujGG3j4YnlOSerudhleIY+ZFE7Pk=;
-        h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
-        b=pDakRJGS/sF3EpPJcPIuJYXGMRiWHbk47Puxtkb+cID4P0jbPwXt+fCWVbVM99tDd
-         zrcb22Zcbs+nG8/mXPTqdZIksgQswYnA1o6yP3mB2EYFcvqsL7tNF5bIt30Dyu2T3O
-         afAsozyQqTDxm5oQniH+C0rxCdRjOLlES7PuwntM=
-From:   Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
-Date:   Thu, 03 Aug 2023 15:15:47 +0300
-Subject: [PATCH v2 3/3] media: i2c: ds90ub960: Fix PLL config for 1200 MHz
- CSI rate
+        Thu, 3 Aug 2023 08:26:33 -0400
+Received: from mgamail.intel.com (unknown [134.134.136.100])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D66393588;
+        Thu,  3 Aug 2023 05:26:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1691065586; x=1722601586;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=2F5IYI+st9aRDs3eL22xgwh/NWyfWxHGIKX3hSkU1es=;
+  b=SmCRG88uMeD7OY/JymmzY+kLc35jNU5UsYIjd8lupMzVE8/BMDQkJB7z
+   +oJGXKfYufYplTWesPOMIsN7e2HxzwzIZJCwUCpAw+h6fhFOlkFW1OwbO
+   LqQpBAlt3Zb6e/VM78Bqg2/5ABM5mx2TmyRJmqbH9bHWV//Cu42UVEdaN
+   za//qYkON4G/hEWfJ5Q1QxceStCiEl9IZ1fKjEZuCd9ms6DUjHAvYXjzO
+   GxoUkG9Cyp1eTTagvf8DEbEmgP/QRbLW7OzmHebiWImX6M+tvf94g6ggt
+   OBafLrluIgkEBQvQNjbrQy+nq0zhQaLYfsIr5Ycs8uooa/my2dPEPpxKf
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10791"; a="436165444"
+X-IronPort-AV: E=Sophos;i="6.01,252,1684825200"; 
+   d="scan'208";a="436165444"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Aug 2023 05:26:25 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10791"; a="706515734"
+X-IronPort-AV: E=Sophos;i="6.01,252,1684825200"; 
+   d="scan'208";a="706515734"
+Received: from lkp-server01.sh.intel.com (HELO d1ccc7e87e8f) ([10.239.97.150])
+  by orsmga006.jf.intel.com with ESMTP; 03 Aug 2023 05:26:25 -0700
+Received: from kbuild by d1ccc7e87e8f with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qRXPM-00026d-1d;
+        Thu, 03 Aug 2023 12:26:24 +0000
+Date:   Thu, 3 Aug 2023 20:25:45 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Sui Jingfeng <suijingfeng@loongson.cn>
+Cc:     llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
+        bhelgaas@google.com, linux-pci@vger.kernel.org,
+        loongson-kernel@lists.loongnix.cn, linux-kernel@vger.kernel.org,
+        dri-devel@lists.freedesktop.org
+Subject: Re: [PATCH] PCI/VGA: Make the vga_is_firmware_default()
+ arch-independent
+Message-ID: <202308032022.yiZngbbk-lkp@intel.com>
+References: <20230803081758.968742-1-suijingfeng@loongson.cn>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20230803-ub9xx-uninit-vars-v2-3-512570ecb798@ideasonboard.com>
-References: <20230803-ub9xx-uninit-vars-v2-0-512570ecb798@ideasonboard.com>
-In-Reply-To: <20230803-ub9xx-uninit-vars-v2-0-512570ecb798@ideasonboard.com>
-To:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Hans Verkuil <hverkuil@xs4all.nl>
-Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
-X-Mailer: b4 0.12.3
-X-Developer-Signature: v=1; a=openpgp-sha256; l=958;
- i=tomi.valkeinen@ideasonboard.com; h=from:subject:message-id;
- bh=X/zAB0Jj0qtm9fUujGG3j4YnlOSerudhleIY+ZFE7Pk=;
- b=owEBbQKS/ZANAwAIAfo9qoy8lh71AcsmYgBky5qTlwogM7bSwQkRLy7uH14HFuTygXBUZ/UFm
- RoihrGzwX+JAjMEAAEIAB0WIQTEOAw+ll79gQef86f6PaqMvJYe9QUCZMuakwAKCRD6PaqMvJYe
- 9WjID/sEMMwT0p0hDZLH8aL8mh3obRi+owyf43NC174eD0THUq+pyJoTCff0+maEGVri/JvL+EA
- V3NfvuysUJnQ9hbw/iNVqrEAcoRH9nbfePhp919njbqbYOEb5hTN3BdrFPpWvuOsxBdM6e/ub3J
- o/kSPmhgBAv7aS+CnxUHq3gkVBgVXrVasIhrq7VugEBbmZosK1iAvkaRixzSVbjsvqkA0lI8+yD
- BHGasMrR/bZtrk5OEvmNzNPOeNluC4HQxx3bCdKjqZUnYsXb9bZLrP7+C4xmuh+C4kw5Ia3qo2s
- Dm6MBemKuiDkOCj5bD7yPkKowOQP2eFWjYZfMMb0fFwIk8sVgFh3YKPNWHOvztH97vHjafH721o
- j5N8b1KW84wyOqTn0LxxueJOlJVIyWsdhkBS+UrMb6D+igCesY0R1CYR6wqI8AaJDuBL/DZHPe8
- 54X+JVz3D8Vxp0ccGUArl+pHIH/7jbZjET9TOK/2Cd50PGzNNhJ1IvHhzpgh4RQUEoxer8fDxI8
- UGhfZQWAU15ryf/qsRFCfqXSj7RV+1TjyEw3DGmZeIcOwLzcPqDxjRNsvq6TAVfSh7i5t0xPh4W
- Rhsef5JJjz1NyJ8z4IUWXs/qfaJzCuDEPq4ryeN9Rwwxy8UbImfWQKpQhGxMj2vyoLJGU9XkY+Z
- 6ujGJUociowXRIw==
-X-Developer-Key: i=tomi.valkeinen@ideasonboard.com; a=openpgp;
- fpr=C4380C3E965EFD81079FF3A7FA3DAA8CBC961EF5
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230803081758.968742-1-suijingfeng@loongson.cn>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-smatch reports:
+Hi Sui,
 
-drivers/media/i2c/ds90ub960.c:1788 ub960_init_tx_ports() error: uninitialized symbol 'pll_div'.
+kernel test robot noticed the following build errors:
 
-This is caused by 'pll_div' not being set for 1200 MHz CSI rate. Set the
-'pll_div' correctly.
+[auto build test ERROR on pci/next]
+[also build test ERROR on pci/for-linus linus/master v6.5-rc4 next-20230803]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-Fixes: afe267f2d368 ("media: i2c: add DS90UB960 driver")
-Reported-by: Hans Verkuil <hverkuil@xs4all.nl>
-Closes: https://lore.kernel.org/all/8d6daeb1-b62a-bbb2-b840-8759c84f2085@xs4all.nl/
-Signed-off-by: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
----
- drivers/media/i2c/ds90ub960.c | 1 +
- 1 file changed, 1 insertion(+)
+url:    https://github.com/intel-lab-lkp/linux/commits/Sui-Jingfeng/PCI-VGA-Make-the-vga_is_firmware_default-arch-independent/20230803-161838
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/pci/pci.git next
+patch link:    https://lore.kernel.org/r/20230803081758.968742-1-suijingfeng%40loongson.cn
+patch subject: [PATCH] PCI/VGA: Make the vga_is_firmware_default() arch-independent
+config: arm64-randconfig-r026-20230731 (https://download.01.org/0day-ci/archive/20230803/202308032022.yiZngbbk-lkp@intel.com/config)
+compiler: clang version 17.0.0 (https://github.com/llvm/llvm-project.git 4a5ac14ee968ff0ad5d2cc1ffa0299048db4c88a)
+reproduce: (https://download.01.org/0day-ci/archive/20230803/202308032022.yiZngbbk-lkp@intel.com/reproduce)
 
-diff --git a/drivers/media/i2c/ds90ub960.c b/drivers/media/i2c/ds90ub960.c
-index 4833b39b9178..4ab45e326d80 100644
---- a/drivers/media/i2c/ds90ub960.c
-+++ b/drivers/media/i2c/ds90ub960.c
-@@ -1763,6 +1763,7 @@ static int ub960_init_tx_ports(struct ub960_data *priv)
- 		break;
- 	case MHZ(1200):
- 		speed_select = 1;
-+		pll_div = 0x18;
- 		break;
- 	case MHZ(800):
- 		speed_select = 2;
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202308032022.yiZngbbk-lkp@intel.com/
+
+All errors (new ones prefixed by >>):
+
+>> ld.lld: error: undefined symbol: screen_info
+   >>> referenced by vgaarb.c:86 (drivers/pci/vgaarb.c:86)
+   >>>               drivers/pci/vgaarb.o:(vga_arb_firmware_fb_addr_tracker) in archive vmlinux.a
+   >>> referenced by vgaarb.c:86 (drivers/pci/vgaarb.c:86)
+   >>>               drivers/pci/vgaarb.o:(vga_arb_firmware_fb_addr_tracker) in archive vmlinux.a
+   >>> referenced by vgaarb.c:88 (drivers/pci/vgaarb.c:88)
+   >>>               drivers/pci/vgaarb.o:(vga_arb_firmware_fb_addr_tracker) in archive vmlinux.a
+   >>> referenced 3 more times
 
 -- 
-2.34.1
-
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
