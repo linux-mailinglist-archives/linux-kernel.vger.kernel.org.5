@@ -2,71 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1FBBC76DFFA
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 08:01:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C5CB76DFFF
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 08:02:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231641AbjHCGBp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Aug 2023 02:01:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34794 "EHLO
+        id S232766AbjHCGCI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Aug 2023 02:02:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35040 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229446AbjHCGBn (ORCPT
+        with ESMTP id S232659AbjHCGCB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Aug 2023 02:01:43 -0400
-Received: from mail-vs1-xe2d.google.com (mail-vs1-xe2d.google.com [IPv6:2607:f8b0:4864:20::e2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 583EB2102
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Aug 2023 23:01:42 -0700 (PDT)
-Received: by mail-vs1-xe2d.google.com with SMTP id ada2fe7eead31-44768609e0bso277711137.0
-        for <linux-kernel@vger.kernel.org>; Wed, 02 Aug 2023 23:01:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1691042501; x=1691647301;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=fTAvkzB4Ruit3rntKyDlDPed3Oi9TQUtJNoUU/ZhAl8=;
-        b=PfVxs4+Xc213BkTNTnD6vTwb7WtfQmQp1O1Sh1fHubRexnp/gKMnDqrUuTCeamx+zr
-         Lg0bsOkWTmiVSp/y49iF9SDjkA8qn4rMUOLm+ikuObl7raaGHWLLp2l2+uaWhfzAC37e
-         gu8Ql+9vEuDqomrruBIEHquTXZDtYsXw0g5CifrqY8hQbGdMy39XsfnEFeY2F084/AW6
-         8rIvK888cP3pGDgtDgxk2rszGfK3b6Ww+5jSLTXcUrPGp1y60tAcuQRFam9PIv/3dv4m
-         jzH3EjzOAtdlJqLXs2/dTAXA8zaY4jei0Ne/oPLNU2LxmmBE4VMZe9NADKlft7UOTAww
-         gm6A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691042501; x=1691647301;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=fTAvkzB4Ruit3rntKyDlDPed3Oi9TQUtJNoUU/ZhAl8=;
-        b=cW/sCtUAhpw9OI30kVRCUa6G/yCEMxiFbxBDpxc/yqhqLl1qPeoek60VGs9hJrrwXJ
-         +0mrhHelvbZ5dN6XhPgLV/vpzDSYDTyyNt7xBn3QHPkMiNAT2r9XvR8LMo09Wcik8WMF
-         MPfDFYQk8KNaT4fN/7IN5SdTtfhbOAAzUunWSHcVAWzcY5CR2S37hMkRkPMIZoLpN7ic
-         YauvUrZx8Y1YKSDVHD3VDF+D/i0HpuTHY9ArKR9gk3d58j0O2OIezEz2vbgaDV+WbU5V
-         VNbHd1+Gn4s3rg5K7cQCKo2NCT4vnqErHh2/yUacm+wd5SfMyPHaIPiluWa5eMQwlF+I
-         1j8Q==
-X-Gm-Message-State: ABy/qLYE1klnX7A+SjQq5PeNkL0wq/ATZdUAfUshY5swxCrV3LXadPNr
-        WXN96/ya1+eiKUb0MUD4nqtm0BwKznzVH4TTJDIq6A==
-X-Google-Smtp-Source: APBJJlFpEUe3y2CjvvROKYgqXdCQz3t9w1FcmBD7CKmNTkk4zKfssSQ2asisIONnGKAmaMOfKf6vtex9VmIgbDDNmJ0=
-X-Received: by 2002:a67:fb09:0:b0:443:7bbc:e397 with SMTP id
- d9-20020a67fb09000000b004437bbce397mr5674059vsr.26.1691042501194; Wed, 02 Aug
- 2023 23:01:41 -0700 (PDT)
-MIME-Version: 1.0
-References: <20230802065510.869511253@linuxfoundation.org>
-In-Reply-To: <20230802065510.869511253@linuxfoundation.org>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Thu, 3 Aug 2023 11:31:30 +0530
-Message-ID: <CA+G9fYt7d3Ogj7rXZboJ5RtXVTd-K0_0y5BDyfdSg-VXL_3QbA@mail.gmail.com>
-Subject: Re: [PATCH 6.1 000/225] 6.1.43-rc2 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     stable@vger.kernel.org, patches@lists.linux.dev,
-        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
-        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
-        jonathanh@nvidia.com, f.fainelli@gmail.com,
-        sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
-        conor@kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        Thu, 3 Aug 2023 02:02:01 -0400
+Received: from mgamail.intel.com (unknown [134.134.136.20])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61B972D71
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Aug 2023 23:01:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1691042517; x=1722578517;
+  h=date:from:to:cc:subject:message-id;
+  bh=Bp7wNWntXL0HSdHukAdEru6lKVIk9/B/aTDjt/U1PsU=;
+  b=HILCOJ41hqIDRakdmTvc2Zg8N/ZYIS99CwHdVWu4XntoF9OmZBNZpPFL
+   9FOvkWd2V5KF29PzvYHFBHvctea+sg3bnweUJmkhDgWF5rzo6UnRZO8U/
+   3ypSDERhZeQcXU4zo40PUGlUbHxcV8rP5jyYW5miS+2z8I1wAWJczG2Pl
+   oyI9MyHF+MISG07nBkV0AtSIRKf1onhCphpqKneyG7ChiCMko2VT7zvnd
+   2qaUyztf5Z3NWNH8PovPuCUxWV1d1yMx9MW4qKATDdK6uwaISkmXb1BLR
+   LLUWBHcS9wZpp41zm7oV4b0e/zzAwnIWWmLk+wGOIOYZbMVy0Lf9iqeJO
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10790"; a="359817644"
+X-IronPort-AV: E=Sophos;i="6.01,251,1684825200"; 
+   d="scan'208";a="359817644"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Aug 2023 23:01:56 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10790"; a="758984901"
+X-IronPort-AV: E=Sophos;i="6.01,251,1684825200"; 
+   d="scan'208";a="758984901"
+Received: from lkp-server01.sh.intel.com (HELO d1ccc7e87e8f) ([10.239.97.150])
+  by orsmga008.jf.intel.com with ESMTP; 02 Aug 2023 23:01:55 -0700
+Received: from kbuild by d1ccc7e87e8f with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qRRPG-0001mv-2Z;
+        Thu, 03 Aug 2023 06:01:54 +0000
+Date:   Thu, 03 Aug 2023 14:01:34 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "x86-ml" <x86@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [tip:master] BUILD SUCCESS
+ a5f24614110ecb96bb98a88b594f14f88025f916
+Message-ID: <202308031432.lXiaoj4U-lkp@intel.com>
+User-Agent: s-nail v14.9.24
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -74,175 +61,125 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2 Aug 2023 at 13:12, Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> This is the start of the stable review cycle for the 6.1.43 release.
-> There are 225 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
->
-> Responses should be made by Fri, 04 Aug 2023 06:54:28 +0000.
-> Anything received after that time might be too late.
->
-> The whole patch series can be found in one patch at:
->         https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-=
-6.1.43-rc2.gz
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
--rc.git linux-6.1.y
-> and the diffstat can be found below.
->
-> thanks,
->
-> greg k-h
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git master
+branch HEAD: a5f24614110ecb96bb98a88b594f14f88025f916  Merge branch into tip/master: 'x86/core'
 
+elapsed time: 723m
 
-Results from Linaro=E2=80=99s test farm.
-No regressions on arm64, arm, x86_64, and i386.
+configs tested: 106
+configs skipped: 5
 
-Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-## Build
-* kernel: 6.1.43-rc2
-* git: https://gitlab.com/Linaro/lkft/mirrors/stable/linux-stable-rc
-* git branch: linux-6.1.y
-* git commit: bdcf4e82a088a0bc7c5557d08d0c86c67bbda149
-* git describe: v6.1.42-226-gbdcf4e82a088
-* test details:
-https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-6.1.y-sanity/build=
-/v6.1.42-226-gbdcf4e82a088
+tested configs:
+alpha                            allyesconfig   gcc  
+alpha                               defconfig   gcc  
+arc                              allyesconfig   gcc  
+arc                                 defconfig   gcc  
+arc                  randconfig-r005-20230731   gcc  
+arc                  randconfig-r043-20230731   gcc  
+arm                              allmodconfig   gcc  
+arm                              allyesconfig   gcc  
+arm                                 defconfig   gcc  
+arm                  randconfig-r032-20230801   clang
+arm                  randconfig-r046-20230731   gcc  
+arm64                            allyesconfig   gcc  
+arm64                               defconfig   gcc  
+csky                                defconfig   gcc  
+csky                 randconfig-r022-20230801   gcc  
+csky                 randconfig-r034-20230801   gcc  
+hexagon              randconfig-r041-20230731   clang
+hexagon              randconfig-r045-20230731   clang
+i386                             allyesconfig   gcc  
+i386         buildonly-randconfig-r004-20230731   gcc  
+i386         buildonly-randconfig-r005-20230731   gcc  
+i386         buildonly-randconfig-r006-20230731   gcc  
+i386                              debian-10.3   gcc  
+i386                                defconfig   gcc  
+i386                 randconfig-i001-20230801   gcc  
+i386                 randconfig-i002-20230801   gcc  
+i386                 randconfig-i003-20230801   gcc  
+i386                 randconfig-i004-20230801   gcc  
+i386                 randconfig-i005-20230801   gcc  
+i386                 randconfig-i006-20230801   gcc  
+i386                 randconfig-i011-20230801   clang
+i386                 randconfig-i012-20230801   clang
+i386                 randconfig-i013-20230801   clang
+i386                 randconfig-i014-20230801   clang
+i386                 randconfig-i015-20230801   clang
+i386                 randconfig-i016-20230801   clang
+i386                 randconfig-r015-20230801   clang
+i386                 randconfig-r033-20230801   gcc  
+loongarch                        allmodconfig   gcc  
+loongarch                         allnoconfig   gcc  
+loongarch                           defconfig   gcc  
+loongarch            randconfig-r004-20230731   gcc  
+m68k                             allmodconfig   gcc  
+m68k                             allyesconfig   gcc  
+m68k                                defconfig   gcc  
+microblaze           randconfig-r013-20230801   gcc  
+mips                             allmodconfig   gcc  
+mips                             allyesconfig   gcc  
+mips                 randconfig-r002-20230731   clang
+nios2                               defconfig   gcc  
+nios2                randconfig-r026-20230801   gcc  
+parisc                           allyesconfig   gcc  
+parisc                              defconfig   gcc  
+parisc64                            defconfig   gcc  
+powerpc                          allmodconfig   gcc  
+powerpc                           allnoconfig   gcc  
+powerpc              randconfig-r036-20230801   gcc  
+riscv                            allmodconfig   gcc  
+riscv                             allnoconfig   gcc  
+riscv                            allyesconfig   gcc  
+riscv                               defconfig   gcc  
+riscv                randconfig-r025-20230801   clang
+riscv                randconfig-r042-20230731   clang
+riscv                          rv32_defconfig   gcc  
+s390                             allmodconfig   gcc  
+s390                             allyesconfig   gcc  
+s390                                defconfig   gcc  
+s390                 randconfig-r024-20230801   clang
+s390                 randconfig-r035-20230801   gcc  
+s390                 randconfig-r044-20230731   clang
+sh                               allmodconfig   gcc  
+sh                   randconfig-r001-20230731   gcc  
+sh                   randconfig-r006-20230731   gcc  
+sh                   randconfig-r031-20230801   gcc  
+sparc                            allyesconfig   gcc  
+sparc                               defconfig   gcc  
+sparc                randconfig-r021-20230801   gcc  
+um                               allmodconfig   clang
+um                                allnoconfig   clang
+um                               allyesconfig   clang
+um                                  defconfig   gcc  
+um                             i386_defconfig   gcc  
+um                   randconfig-r003-20230731   clang
+um                           x86_64_defconfig   gcc  
+x86_64                           allyesconfig   gcc  
+x86_64       buildonly-randconfig-r001-20230731   gcc  
+x86_64       buildonly-randconfig-r002-20230731   gcc  
+x86_64       buildonly-randconfig-r003-20230731   gcc  
+x86_64                              defconfig   gcc  
+x86_64                                  kexec   gcc  
+x86_64               randconfig-x001-20230801   clang
+x86_64               randconfig-x002-20230801   clang
+x86_64               randconfig-x003-20230801   clang
+x86_64               randconfig-x004-20230801   clang
+x86_64               randconfig-x005-20230801   clang
+x86_64               randconfig-x006-20230801   clang
+x86_64               randconfig-x011-20230731   gcc  
+x86_64               randconfig-x012-20230731   gcc  
+x86_64               randconfig-x013-20230731   gcc  
+x86_64               randconfig-x014-20230731   gcc  
+x86_64               randconfig-x015-20230731   gcc  
+x86_64               randconfig-x016-20230731   gcc  
+x86_64                          rhel-8.3-rust   clang
+x86_64                               rhel-8.3   gcc  
+xtensa               randconfig-r011-20230801   gcc  
+xtensa               randconfig-r023-20230801   gcc  
 
-## Test Regressions (compared to v6.1.42)
-
-## Metric Regressions (compared to v6.1.42)
-
-## Test Fixes (compared to v6.1.42)
-
-## Metric Fixes (compared to v6.1.42)
-
-## Test result summary
-total: 157013, pass: 134713, fail: 2871, skip: 19242, xfail: 187
-
-## Build Summary
-* arc: 5 total, 5 passed, 0 failed
-* arm: 145 total, 145 passed, 0 failed
-* arm64: 54 total, 53 passed, 1 failed
-* i386: 41 total, 41 passed, 0 failed
-* mips: 30 total, 28 passed, 2 failed
-* parisc: 4 total, 4 passed, 0 failed
-* powerpc: 38 total, 36 passed, 2 failed
-* riscv: 26 total, 25 passed, 1 failed
-* s390: 16 total, 14 passed, 2 failed
-* sh: 14 total, 12 passed, 2 failed
-* sparc: 8 total, 8 passed, 0 failed
-* x86_64: 46 total, 46 passed, 0 failed
-
-## Test suites summary
-* boot
-* kselftest-android
-* kselftest-arm64
-* kselftest-breakpoints
-* kselftest-capabilities
-* kselftest-cgroup
-* kselftest-clone3
-* kselftest-core
-* kselftest-cpu-hotplug
-* kselftest-cpufreq
-* kselftest-drivers-dma-buf
-* kselftest-efivarfs
-* kselftest-exec
-* kselftest-filesystems
-* kselftest-filesystems-binderfs
-* kselftest-filesystems-epoll
-* kselftest-firmware
-* kselftest-fpu
-* kselftest-ftrace
-* kselftest-futex
-* kselftest-gpio
-* kselftest-intel_pstate
-* kselftest-ipc
-* kselftest-ir
-* kselftest-kcmp
-* kselftest-kexec
-* kselftest-kvm
-* kselftest-lib
-* kselftest-livepatch
-* kselftest-membarrier
-* kselftest-memfd
-* kselftest-memory-hotplug
-* kselftest-mincore
-* kselftest-mount
-* kselftest-mqueue
-* kselftest-net
-* kselftest-net-forwarding
-* kselftest-net-mptcp
-* kselftest-netfilter
-* kselftest-nsfs
-* kselftest-openat2
-* kselftest-pid_namespace
-* kselftest-pidfd
-* kselftest-proc
-* kselftest-pstore
-* kselftest-ptrace
-* kselftest-rseq
-* kselftest-rtc
-* kselftest-seccomp
-* kselftest-sigaltstack
-* kselftest-size
-* kselftest-splice
-* kselftest-static_keys
-* kselftest-sync
-* kselftest-sysctl
-* kselftest-tc-testing
-* kselftest-timens
-* kselftest-timers
-* kselftest-tmpfs
-* kselftest-tpm2
-* kselftest-user
-* kselftest-user_events
-* kselftest-vDSO
-* kselftest-vm
-* kselftest-watchdog
-* kselftest-x86
-* kselftest-zram
-* kunit
-* kvm-unit-tests
-* libgpiod
-* libhugetlbfs
-* log-parser-boot
-* log-parser-test
-* ltp-cap_bounds
-* ltp-commands
-* ltp-containers
-* ltp-controllers
-* ltp-cpuhotplug
-* ltp-crypto
-* ltp-cve
-* ltp-dio
-* ltp-fcntl-locktests
-* ltp-filecaps
-* ltp-fs
-* ltp-fs_bind
-* ltp-fs_perms_simple
-* ltp-fsx
-* ltp-hugetlb
-* ltp-io
-* ltp-ipc
-* ltp-math
-* ltp-mm
-* ltp-nptl
-* ltp-pty
-* ltp-sched
-* ltp-securebits
-* ltp-smoke
-* ltp-syscalls
-* ltp-tracing
-* network-basic-tests
-* perf
-* rcutorture
-* v4l2-compliance
-
---
-Linaro LKFT
-https://lkft.linaro.org
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
