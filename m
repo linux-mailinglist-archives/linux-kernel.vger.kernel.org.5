@@ -2,226 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 17F6976F5C0
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 00:34:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E62176F5C4
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 00:36:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231449AbjHCWeJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Aug 2023 18:34:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36586 "EHLO
+        id S232249AbjHCWgQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Aug 2023 18:36:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37248 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229626AbjHCWeH (ORCPT
+        with ESMTP id S232155AbjHCWgI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Aug 2023 18:34:07 -0400
-Received: from mail-oi1-x235.google.com (mail-oi1-x235.google.com [IPv6:2607:f8b0:4864:20::235])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B201235AA
-        for <linux-kernel@vger.kernel.org>; Thu,  3 Aug 2023 15:34:05 -0700 (PDT)
-Received: by mail-oi1-x235.google.com with SMTP id 5614622812f47-3a76d882080so728926b6e.2
-        for <linux-kernel@vger.kernel.org>; Thu, 03 Aug 2023 15:34:05 -0700 (PDT)
+        Thu, 3 Aug 2023 18:36:08 -0400
+Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65DFA4214;
+        Thu,  3 Aug 2023 15:36:07 -0700 (PDT)
+Received: by mail-pl1-x62f.google.com with SMTP id d9443c01a7336-1b8ad356f03so10596325ad.1;
+        Thu, 03 Aug 2023 15:36:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=dilger-ca.20221208.gappssmtp.com; s=20221208; t=1691102045; x=1691706845;
-        h=references:to:cc:in-reply-to:date:subject:mime-version:message-id
-         :from:from:to:cc:subject:date:message-id:reply-to;
-        bh=Il7sF5m7oHPCYbM1sIW0/Ql0c7lH57Ga/1AsJBYpWMk=;
-        b=wxeR9Pee7rdbNHisS3bhVrmlEQu8BpPF+I66d0+CCBD+66bmQTprUZaGUaWh63vw2/
-         WoMVb85QPXM9d0zBt8Nv2jSE7tsOeHVXWS37Ls+OPyJ5gk7K6UVXS2+wMIWBvBHqfe7M
-         pNYnbe7M3N62Cw1rUUz/0M65jFStCKr9tWkAlb55bvnUVmoo+2t50/sgJ+sFR16aG1QD
-         Sk4smJE3JOMt3LAIDf9i/Y6XEIphXtXv4nS9OZElctuCJsnXpUr6PCcudatomp0++/qZ
-         MJxBsJrDApsCA4OoGjtT9AIIMDX/7WwB8QtIWs/wV32aCphX+omjP5b5E9CnSCkfXD3Z
-         mIMg==
+        d=gmail.com; s=20221208; t=1691102167; x=1691706967;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=dOiDF1oViVv0HssQmiTYLoC4V/AdLPs2KTPS/2fqvg0=;
+        b=ghiHfuwrbozRBgICCOEVZK9yF7eoGF2tDymceKGZ76d/OkNnm6x6ePqd4zBQ2OxW71
+         mPYxhqoeorXbQKyKNMGMiW4iJ3g2tRcyEK00Yy8JcDMgOpN140AI4U5xcqnYrnxfCpCZ
+         62c2XqSKcRCJpdEwk5c7VYNqOUuK0Y1T+LXcuS8YHusHKV91vMP9Xde+7NUvC6TUr/Hb
+         j5jvF1oooJ49/lUerFcDkzx+6emeSwGCBsYdaxJyEii9toCy0AOWtsLVS3l7i4CHem1X
+         HzLmbnAOiP9fuBXsvwzrXzpwpoouJJqbhjbIUIfdhQdyBFUCLB/CHbBf5y4KUn2L5XTU
+         incA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691102045; x=1691706845;
-        h=references:to:cc:in-reply-to:date:subject:mime-version:message-id
-         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Il7sF5m7oHPCYbM1sIW0/Ql0c7lH57Ga/1AsJBYpWMk=;
-        b=D2BXAOs5L7/4sAbvdSfBGOe2D54zMLobnXMrIBY+46XcHNPduYin6rZFFJ1LN+tyFu
-         eUMBtaE1nUAo7gLCdiGk1tboHXEDhOtRJyFeQor9kErAYhrcAuVm7/wQ8zGIaYjlwqKr
-         xRV3LvjEaDzrOKsRcQN6EpfLXi13xC0e/d4wpVkVb0gspxOICi8rh+OQgTXOEa4XnsXl
-         UidLuDfNhw54AInmCNZoLnU2/CZMyipdGQF3nExXTEIG3Mm96KirteRzgmKB7Y8KF6eY
-         EbFAbj4sYKcDlJ/fyQAa9+zBI76joN0ayNxibbyodt/DaMDXu9lHiUP0io4Ww8GKwQsx
-         URiw==
-X-Gm-Message-State: AOJu0Yw/pkzyUAAKFRe7Pyg2BMgrezm8MTO/JXm6BU2KxMYMP8gIomfG
-        DwEDiiVTJZvsPc4tS9FEsD3oqw==
-X-Google-Smtp-Source: AGHT+IH+LHaygAelFy7PSG0dGkpYt99Q2zFOkLKufIdpZk7vjGLzunBz16NwVvHBtuiHLqlqoJQNBw==
-X-Received: by 2002:a05:6358:8a7:b0:139:d5b9:87d3 with SMTP id m39-20020a05635808a700b00139d5b987d3mr62523rwj.5.1691102044911;
-        Thu, 03 Aug 2023 15:34:04 -0700 (PDT)
-Received: from cabot.adilger.int (S01061cabc081bf83.cg.shawcable.net. [70.77.221.9])
-        by smtp.gmail.com with ESMTPSA id a15-20020a63704f000000b005649cee408fsm316556pgn.0.2023.08.03.15.34.03
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 03 Aug 2023 15:34:04 -0700 (PDT)
-From:   Andreas Dilger <adilger@dilger.ca>
-Message-Id: <12CFFD6D-ED0E-4D36-A7B7-ACCFB698A177@dilger.ca>
-Content-Type: multipart/signed;
- boundary="Apple-Mail=_C8462E92-ED49-4BD8-8977-EF791E645AF1";
- protocol="application/pgp-signature"; micalg=pgp-sha256
-Mime-Version: 1.0 (Mac OS X Mail 10.3 \(3273\))
-Subject: Re: [PATCH v3] ext4: Fix rec_len verify error
-Date:   Thu, 3 Aug 2023 16:34:02 -0600
-In-Reply-To: <20230803030903.GK11377@frogsfrogsfrogs>
-Cc:     Stephen Zhang <starzhangzsd@gmail.com>,
-        Theodore Ts'o <tytso@mit.edu>, Zhang Yi <yi.zhang@huawei.com>,
-        Ext4 Developers List <linux-ext4@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        zhangshida@kylinos.cn, stable@kernel.org
-To:     "Darrick J. Wong" <djwong@kernel.org>
-References: <20230801112337.1856215-1-zhangshida@kylinos.cn>
- <20230801151828.GB11332@frogsfrogsfrogs>
- <A9ECDF14-95A1-4B1E-A815-4B6ABF4916C6@dilger.ca>
- <CANubcdUsDfiuGimNXjzoAF5ki8waCoFW31mg4vjpm073rS6+dw@mail.gmail.com>
- <20230803030903.GK11377@frogsfrogsfrogs>
-X-Mailer: Apple Mail (2.3273)
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+        d=1e100.net; s=20221208; t=1691102167; x=1691706967;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=dOiDF1oViVv0HssQmiTYLoC4V/AdLPs2KTPS/2fqvg0=;
+        b=cWWci9gB90GzrfMJ0rcSBaPeQOGZam6JicaAHHOFfO12VO1vbO/QKVN/mP5buGmimV
+         uKhoAVUiTEu15UW73lyVPVkpffoZoQEnJMKmhp1mRa/aylhQMJEZxhEwMj9LjlMQan7Z
+         3XpuhnRy2ncQcd8XOEeHvpOF1BE6gNt241TRUjp3DSx2kpzvn7P6Tlv+s9cvypg6yRHR
+         pfribA8+L1sdFNldx8GPNyy41iz3k8JdIEWuLxwzWng65Z8I2LtxjAyXwDEtWfEo5YzH
+         EB83lC2lZZeLFG7BtTEVlZ7fF+WkGA4aSa/hkfA2mesvKo1tZOojRdVGNCkeJXjaTgj/
+         zPjQ==
+X-Gm-Message-State: AOJu0YyBGMcZLCgxSGRLtj3QGNbtCOcrN3mkCtYQoBJdVxXJJo4aKxS9
+        YEybVStbVJ1mGP9IaKkgVXg=
+X-Google-Smtp-Source: AGHT+IHBGshNj2NZvckkkcuRexXLEcWTb5yDW1tKta6EGDefC5Cbc43YyEP0Ov6fyQq7rWLBdkAzUQ==
+X-Received: by 2002:a17:902:aa05:b0:1b0:3637:384e with SMTP id be5-20020a170902aa0500b001b03637384emr75406plb.25.1691102166750;
+        Thu, 03 Aug 2023 15:36:06 -0700 (PDT)
+Received: from google.com ([2620:15c:9d:2:6f72:ed5c:19e0:a3d8])
+        by smtp.gmail.com with ESMTPSA id c5-20020a170902c1c500b001bbc9e36d55sm333447plc.268.2023.08.03.15.36.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 03 Aug 2023 15:36:06 -0700 (PDT)
+Date:   Thu, 3 Aug 2023 15:36:03 -0700
+From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
+To:     Alex Williamson <alex.williamson@redhat.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        Sean Christopherson <seanjc@google.com>,
+        Roxana Bradescu <roxabee@google.com>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 1/2] kvm/vfio: ensure kvg instance stays around in
+ kvm_vfio_group_add()
+Message-ID: <ZMwr06W5x/Lb19Wx@google.com>
+References: <20230714224538.404793-1-dmitry.torokhov@gmail.com>
+ <20230803133812.491956b9.alex.williamson@redhat.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230803133812.491956b9.alex.williamson@redhat.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,FSL_HELO_FAKE,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Aug 03, 2023 at 01:38:12PM -0600, Alex Williamson wrote:
+> On Fri, 14 Jul 2023 15:45:32 -0700
+> Dmitry Torokhov <dmitry.torokhov@gmail.com> wrote:
+> 
+> > kvm_vfio_group_add() creates kvg instance, links it to kv->group_list,
+> > and calls kvm_vfio_file_set_kvm() with kvg->file as an argument after
+> > dropping kv->lock. If we race group addition and deletion calls, kvg
+> > instance may get freed by the time we get around to calling
+> > kvm_vfio_file_set_kvm().
+> > 
+> > Previous iterations of the code did not reference kvg->file outside of
+> > the critical section, but used a temporary variable. Still, they had
+> > similar problem of the file reference being owned by kvg structure and
+> > potential for kvm_vfio_group_del() dropping it before
+> > kvm_vfio_group_add() had a chance to complete.
+> > 
+> > Fix this by moving call to kvm_vfio_file_set_kvm() under the protection
+> > of kv->lock. We already call it while holding the same lock when vfio
+> > group is being deleted, so it should be safe here as well.
+> > 
+> > Fixes: 2fc1bec15883 ("kvm: set/clear kvm to/from vfio_group when group add/delete")
+> > Reviewed-by: Alex Williamson <alex.williamson@redhat.com>
+> > Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+> > ---
+> 
+> Applied series to vfio next branch for v6.6.  There's a minor rebase
+> involved, so please double check the results:
+> 
+> https://github.com/awilliam/linux-vfio/commits/next
 
---Apple-Mail=_C8462E92-ED49-4BD8-8977-EF791E645AF1
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain;
-	charset=utf-8
+Looks good to me, thanks!
 
-On Aug 2, 2023, at 9:09 PM, Darrick J. Wong <djwong@kernel.org> wrote:
->=20
-> On Thu, Aug 03, 2023 at 09:52:53AM +0800, Stephen Zhang wrote:
->> Andreas Dilger <adilger@dilger.ca> =E4=BA=8E2023=E5=B9=B48=E6=9C=882=E6=
-=97=A5=E5=91=A8=E4=B8=89 14:07=E5=86=99=E9=81=93=EF=BC=9A
->>>=20
->>> Not all of these cases are actual bugs.  The =
-ext4_rec_len_from_disk()
->>> function is only different for rec_len >=3D 2^16, so if it is =
-comparing
->>> rec_len against "12" or "sizeof(struct ...)" then the inequality =
-will
->>> be correct regardless of how it is decoded.
->>>=20
->>> That said, it makes sense to use ext4_rec_len_from_disk() to access
->>> rec_len consistently throughout the code, since that avoids =
-potential
->>> bugs in the future.  We know the code will eventually will be copied
->>> some place where rec_len >=3D 2^16 is actually important, and we may =
-as
->>> well avoid that bug before it happens.
->>>=20
->>>=20
->>> One thing this discussion *does* expose is that =
-ext4_rec_len_from_disk()
->>> is hard-coded at compile time to differentiate between PAGE_SIZE > =
-64k
->>> and PAGE_SIZE =3D 4K, because it was never possible to have =
-blocksize >
->>> PAGE_SIZE, so only ARM/PPC ever had filesystems with blocksize=3D64KiB=
-
->>> (and the Fujitsu Fugaku SPARC system with blocksize=3D256KiB).
->>>=20
->>> However, with the recent advent of the VM and IO layers allowing
->>> blocksize > PAGE_SIZE this function will need to be changed to allow
->>> the same on x86 PAGE_SIZE=3D4KiB systems.  Instead of checking
->>>=20
->>>  #if PAGE_SIZE >=3D 65536
->>>=20
->>> it should handle this based on the filesystem blocksize at runtime:
->>>=20
->>> static inline
->>> unsigned int ext4_rec_len_from_disk(__le16 dlen, unsigned blocksize)
->>> {
->>>        unsigned len =3D le16_to_cpu(dlen);
->>>=20
->>>        if (blocksize < 65536)
->>>                return len;
->>>=20
->>>        if (len =3D=3D EXT4_MAX_REC_LEN || len =3D=3D 0)
->>>                return blocksize;
->>>=20
->>>        return (len & 65532) | ((len & 3) << 16);
->>> }
->>>=20
->>> Strictly speaking, ((len & 65532) | ((len & 3) << 16) should equal =
-"len"
->>> for any filesystem with blocksize < 65536, but IMHO it is more clear =
-if
->>> the code is written this way.
->>>=20
->>> Similarly, the encoding needs to be changed to handle large records =
-at
->>> runtime for when we eventually allow ext4 with blocksize > =
-PAGE_SIZE.
->>>=20
->>> static inline __le16 ext4_rec_len_to_disk(unsigned len, unsigned =
-blocksize)
->>> {
->>>        BUG_ON(len > blocksize);
->>>        BUG_ON(blocksize > (1 << 18));
->>>        BUG_ON(len & 3);
->>>=20
->>>        if (len < 65536) /* always true for blocksize < 65536 */
->>>                return cpu_to_le16(len);
->>>=20
->>>        if (len =3D=3D blocksize) {
->>>                if (blocksize =3D=3D 65536)
->>>                        return cpu_to_le16(EXT4_MAX_REC_LEN);
->>>=20
->>>                return cpu_to_le16(0);
->>>        }
->>>=20
->>>        return cpu_to_le16((len & 65532) | ((len >> 16) & 3));
->>> }
->>>=20
->>=20
->> Hmm, at least it sounds reasonable to me based on my limited
->> knowledge. However, I am not sure whether you want me to incorporate
->> these changes into this particular commit or another patch within =
-this
->> submission.
->>=20
->> By default, I will simply leave it for further discussion. Please let
->> me know if you have any ideas.
->=20
-> ext4 doesn't support blocksize > PAGE_SIZE yet.  Don't worry about =
-this
-> for now.
-
-I agree it doesn't need to be merged into the current patch.
-
-It's something that could be fixed in a follow-on patch, to have one =
-less
-bug to fix in the future when ext4 *does* support blocksize > PAGE_SIZE,
-which isn't so far away anymore.
-
-Cheers, Andreas
-
-
-
-
-
-
---Apple-Mail=_C8462E92-ED49-4BD8-8977-EF791E645AF1
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment;
-	filename=signature.asc
-Content-Type: application/pgp-signature;
-	name=signature.asc
-Content-Description: Message signed with OpenPGP
-
------BEGIN PGP SIGNATURE-----
-Comment: GPGTools - http://gpgtools.org
-
-iQIzBAEBCAAdFiEEDb73u6ZejP5ZMprvcqXauRfMH+AFAmTMK1oACgkQcqXauRfM
-H+A7sBAAhXmLZ/oDD73vpfMHTdJmdWe0rB/SirU1fQ/f7WZsmyMqMN9gqMI7Fhpq
-sxjn2ML1P9cLUgyjTCf5usJ743ewZX77Jv8y0+J3T6yd5/aFB0e4rqHR9coxN4L9
-sO/3j9r0f+ZPJ4Wl7QHlPr2COjAAEDz0O4KtSKMk/+doGvsitB2oiB9x8Vj/BPBD
-xU6a8OjmLotHzpR99pgVYb1whGTUeG5tFQTPBxAj9NBPQ3mr5wYZ5TfdkOtgpDAh
-DeuKWGc6X1ByrLajuwybSTlxpNcKZr5aOmNuVPPkydBT89U6GdKXtCNYO6KS6ri0
-Zv6LCPeL0A/cVApQ9KXLwJv6ckqMXnjJPoQZ7gceiSNR9kd0kTMGODPyITlo2pM5
-CAcT778lWGWKiC6QyS/iewFXgrcaAyURclIwnckIrgzcEBvP6BLDkQXtQXeCx5D3
-UIwM+MDHec0dTQXt25hVNr5sT6VUWVXGBJVCNt+cPhM5TIqecEYGYHuLS5p+AQhY
-9VF2lisZTuUz/MThYGyzWY7j/kJfFYP1C3aN18VeA5xKLG8I7tHTC1ToWMIgrRk2
-ci5kRUhbpL0ofioFSLSKN/kMNPJqlGoYps3KnC6nLnmlojwRUh9xp/VnxXBO44jd
-gcTPcxOHAR09OiyQqkGMgq78+7zv05VMAIRKmySgpkbWxN1bWdo=
-=1rAp
------END PGP SIGNATURE-----
-
---Apple-Mail=_C8462E92-ED49-4BD8-8977-EF791E645AF1--
+-- 
+Dmitry
