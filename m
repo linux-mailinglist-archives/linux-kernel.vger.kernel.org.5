@@ -2,68 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C17876E72C
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 13:43:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8198176E730
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 13:43:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235175AbjHCLnP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Aug 2023 07:43:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41498 "EHLO
+        id S235622AbjHCLnk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Aug 2023 07:43:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41770 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233875AbjHCLnN (ORCPT
+        with ESMTP id S235519AbjHCLnd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Aug 2023 07:43:13 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1BF13E53;
-        Thu,  3 Aug 2023 04:43:12 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id A905761D5B;
-        Thu,  3 Aug 2023 11:43:11 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 826AFC433C8;
-        Thu,  3 Aug 2023 11:43:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691062991;
-        bh=9+RtIN6wxigYjMridZ3eGb8V8CqhNPEq56t9Do4SBe8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=LgzRWR/pxIxD1kIM2yxRXJvBPiq/JKiSHHDZZE32MO6gDL4jYrlw02euB6ahDFGxY
-         fnEtgWXhsSHUkCwQ2bzyAB6of7MvKroNIaabEf4fg9ybjVu0EfA6tpaG/oXnzxJCH6
-         kBOwcz5zekinskFlDs3Aq46BYLU7zkWw380cCb/G6Fn7ssaoG5z3fTo/9LVpTa3pnU
-         zcs/vSPLvpwQvY5bOeTv81LAYAkeMpdMld6Ha3EdqoOETaWkcnhora5Tht5D/dXjwB
-         lrXlzbqzka/wdi7WLjhu7Gl3hJWk+UCMykpajoa/5Nn6SWrLUwkpAiyFs7kXBDXZ3T
-         8vGyyLxmOCuYQ==
-Date:   Thu, 3 Aug 2023 13:43:08 +0200
-From:   Maxime Ripard <mripard@kernel.org>
-To:     Daniel Vetter <daniel@ffwll.ch>
-Cc:     Neil Armstrong <neil.armstrong@linaro.org>,
-        Michael Riesch <michael.riesch@wolfvision.net>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Sebastian Reichel <sre@kernel.org>,
-        Gerald Loacker <gerald.loacker@wolfvision.net>,
-        David Airlie <airlied@gmail.com>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org
-Subject: Re: [PATCH 0/4] drm/panel: sitronix-st7789v: add support for partial
- mode
-Message-ID: <d2sgj2iap4ouu425buqkorx76kpdqh77k3z36vaegma67pciyv@n3mbiglfidxx>
-References: <20230718-feature-lcd-panel-v1-0-e9a85d5374fd@wolfvision.net>
- <292c3e7d-82ea-2631-bd4b-ef747f56287c@linaro.org>
- <ekmwiy3iuvtqtb6hwjbba2ia3aemt3dxmx6dj3zh6ljfmuim4w@4jzhqdenxth4>
- <ZMtqraOyGN9JvVj9@phenom.ffwll.local>
- <qmwtcungahbe2bhty7v2rso2kf3vai6k47muwipifbybmi7o6s@oj6lngnhyhtg>
- <CAKMK7uFbQURKYvB2JWnwZDEeA-qURpx_GFqR1FxgtuvK7jX4TA@mail.gmail.com>
+        Thu, 3 Aug 2023 07:43:33 -0400
+Received: from bg4.exmail.qq.com (bg4.exmail.qq.com [43.154.54.12])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A8412D7E;
+        Thu,  3 Aug 2023 04:43:26 -0700 (PDT)
+X-QQ-mid: bizesmtp63t1691062991t0zm8hh2
+Received: from linux-lab-host.localdomain ( [116.30.131.233])
+        by bizesmtp.qq.com (ESMTP) with 
+        id ; Thu, 03 Aug 2023 19:43:10 +0800 (CST)
+X-QQ-SSF: 01200000000000E0X000000A0000000
+X-QQ-FEAT: CR3LFp2JE4lznXfczr6G1t9NCj67hAkubVgxBvxPLPz+GeZ878pi4g1Vp6XCr
+        aZeKWFdZsfhkNu0Eutv8sEBXAPMxZ4jxOmvEJZUGCGfcL6t3reRKIU84YK6PG/KjUxRlDLk
+        2fQgFtuK7167+iSCXXLeIi5JKU2AwUckPksH3meyGQv9i83z4mOk/8fyRWQigsfzlEnGnh+
+        lYGU9h3q/IrXNK2z3/+o3n2HQhPSQc/6CJtUcJ28TkpzNTneMps72JJMi1wCdV+2uECTIW3
+        +djV5uJpSPld5p1IVoYR2PJdtzQe5OGiLYOSdVsZsJC6zw+KslrFObgJNGkQmajrhDzd3O0
+        w7ZaW/LefjMz5bXkfUPsubvSCbfqWFMa+yxcNA1+sRGOPAiTzfDQ7J0GgMwm4oQ7Ic3dFSG
+X-QQ-GoodBg: 0
+X-BIZMAIL-ID: 15103492080593092378
+From:   Zhangjin Wu <falcon@tinylab.org>
+To:     thomas@t-8ch.de, w@1wt.eu
+Cc:     falcon@tinylab.org, arnd@arndb.de, linux-kernel@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, tanyuan@tinylab.org
+Subject: [PATCH v5 0/8] tools/nolibc: add 32/64-bit powerpc support
+Date:   Thu,  3 Aug 2023 19:43:09 +0800
+Message-Id: <cover.1691062722.git.falcon@tinylab.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="qfwl5fgt5fndwmia"
-Content-Disposition: inline
-In-Reply-To: <CAKMK7uFbQURKYvB2JWnwZDEeA-qURpx_GFqR1FxgtuvK7jX4TA@mail.gmail.com>
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-QQ-SENDSIZE: 520
+Feedback-ID: bizesmtp:tinylab.org:qybglogicsvrgz:qybglogicsvrgz5a-1
+X-Spam-Status: No, score=-0.6 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,RCVD_IN_VALIDITY_RPBL,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -71,135 +51,87 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi, Willy
 
---qfwl5fgt5fndwmia
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Here is the v5, purely include the ppc parts, with two critical fixups
+for the latest gcc 13.1.0 toolchain, now, both run and run-user pass.
 
-On Thu, Aug 03, 2023 at 12:26:03PM +0200, Daniel Vetter wrote:
-> On Thu, 3 Aug 2023 at 11:22, Maxime Ripard <mripard@kernel.org> wrote:
-> >
-> > On Thu, Aug 03, 2023 at 10:51:57AM +0200, Daniel Vetter wrote:
-> > > On Thu, Aug 03, 2023 at 10:48:57AM +0200, Maxime Ripard wrote:
-> > > > On Thu, Aug 03, 2023 at 10:11:22AM +0200, Neil Armstrong wrote:
-> > > > > Hi,
-> > > > >
-> > > > > On 18/07/2023 17:31, Michael Riesch wrote:
-> > > > > > Hi all,
-> > > > > >
-> > > > > > This series adds support for the partial display mode to the Si=
-tronix
-> > > > > > ST7789V panel driver. This is useful for panels that are partia=
-lly
-> > > > > > occluded by design, such as the Jasonic JT240MHQS-HWT-EK-E3. Su=
-pport
-> > > > > > for this particular panel is added as well.
-> > > > > >
-> > > > > > Note: This series is already based on
-> > > > > > https://lore.kernel.org/lkml/20230714013756.1546769-1-sre@kerne=
-l.org/
-> > > > >
-> > > > > I understand Maxime's arguments, but by looking closely at the co=
-de,
-> > > > > this doesn't look like an hack at all and uses capabilities of the
-> > > > > panel controller to expose a smaller area without depending on any
-> > > > > changes or hacks on the display controller side which is coherent.
-> > > > >
-> > > > > Following's Daniel's summary we cannot compare it to TV overscan
-> > > > > because overscan is only on *some* displays, we can still get 100%
-> > > > > of the picture from the signal.
-> > > >
-> > > > Still disagree on the fact that it only affects some display. But i=
-t's
-> > > > not really relevant for that series.
-> > >
-> > > See my 2nd point, from a quick grep aside from i915 hdmi support, no =
-one
-> > > else sets all the required hdmi infoframes correctly. Which means on a
-> > > compliant hdmi tv, you _should_ get overscan. That's how that stuff is
-> > > speced.
-> > >
-> > > Iirc you need to at least set both the VIC and the content type, maybe
-> > > even more stuff.
-> > >
-> > > Unless all that stuff is set I'd say it's a kms driver bug if you get
-> > > overscan on a hdmi TV.
-> >
-> > I have no doubt that i915 works there. The source of my disagreement is
-> > that if all drivers but one don't do that, then userspace will have to
-> > care. You kind of said it yourself, i915 is kind of the exception there.
-> >
-> > The exception can be (and I'm sure it is) right, but still, it deviates
-> > from the norm.
->=20
-> The right fix for these is sending the right infoframes, _not_ trying
-> to fiddle with overscan margins. Only the kernel can make sure the
-> right infoframes are sent out. If you try to paper over this in
-> userspace, you'll make the situation worse, not better (because
-> fiddling with overscan means you get scaling, and so rescaling
-> artifacts, and for hard contrasts along pixel lines that'll look like
-> crap).
->=20
-> So yeah this is a case of "most upstream hdmi drivers are broken".
-> Please don't try to fix kernel bugs in userspace.
+Here is the run-user test report:
 
-ACK.
+    // with local toolchains
+    $ for arch in ppc ppc64 ppc64le; do make run-user XARCH=$arch | grep "status: "; done
+    165 test(s): 157 passed,   8 skipped,   0 failed => status: warning
+    165 test(s): 157 passed,   8 skipped,   0 failed => status: warning
+    165 test(s): 157 passed,   8 skipped,   0 failed => status: warning
 
-> > > > I think I'll still like to have something clarified before we merge=
- it:
-> > > > if userspace forces a mode, does it contain the margins or not? I d=
-on't
-> > > > have an opinion there, I just think it should be documented.
-> > >
-> > > The mode comes with the margins, so if userspace does something really
-> > > funny then either it gets garbage (as in, part of it's crtc area isn't
-> > > visible, or maybe black bars on the screen), or the driver rejects it
-> > > (which I think is the case for panels, they only take their mode and
-> > > nothing else).
-> >
-> > Panels can usually be quite flexible when it comes to the timings they
-> > accept, and we could actually use that to our advantage, but even if we
-> > assume that they have a single mode, I don't think we have anything that
-> > enforces that, either at the framework or documentation levels?
->=20
-> Maybe more bugs? We've been slowly filling out all kinds of atomic kms
-> validation bugs in core/helper code because as a rule of thumb,
-> drivers get it wrong. Developers test until things work, then call it
-> good enough, and very few driver teams make a serious effort in trying
-> to really validate all invalid input. Because doing that is an
-> enormous amount of work.
->=20
-> I think for clear-cut cases like drm_panel the fix is to just put more
-> stricter validation into shared code (and then if we break something,
-> figure out how we can be sufficiently lenient again).
+    // with latest toolchains
+    $ for arch in ppc ppc64 ppc64le; do make run-user XARCH=$arch CC=/path/to/gcc-13.1.0-nolibc/powerpc64-linux/bin/powerpc64-linux-gcc | grep status; file nolibc-test; done
+    165 test(s): 157 passed,   8 skipped,   0 failed => status: warning
+    nolibc-test: ELF 32-bit MSB executable, PowerPC or cisco 4500, version 1 (SYSV), statically linked, stripped
+    165 test(s): 157 passed,   8 skipped,   0 failed => status: warning
+    nolibc-test: ELF 64-bit MSB executable, 64-bit PowerPC or cisco 7500, version 1 (SYSV), statically linked, stripped
+    165 test(s): 157 passed,   8 skipped,   0 failed => status: warning
+    nolibc-test: ELF 64-bit LSB executable, 64-bit PowerPC or cisco 7500, version 1 (SYSV), statically linked, stripped
 
-Panels are kind of weird, since they essentially don't exist at all in
-the framework so it's difficult to make it handle them or their state.
+Since the missing serial console enabling patch [1] for ppc32 has
+already gotten a Reviewed-by line from the ppc maintainer, now, the ppc
+defconfig aligns with the others', and it is able to simply move the
+nolibc-test-config related stuff to the next tinyconfig series.
 
-It's typically handled by encoders directly, so each and every driver
-would need to make that check, and from a quick grep, none of them are
-(for the reasons you said).
+Based on v4 [2], beside removing several nolibc-test-config related
+patches, two bugs with the latest gcc 13.1.0 have been fixed.
 
-Just like for HDMI, even though we can commit to changing those facts,
-it won't happen overnight, so to circle back to that series, I'd like a
-comment in the driver when the partial mode is enabled that if userspace
-ever pushes a mode different from the expected one, we'll add the margins.
+Changes from v4 --> v5:  
 
-That way, if and when we come back to it, we'll know what the original
-intent and semantics were.
+* tools/nolibc: add support for powerpc64
+  selftests/nolibc: add XARCH and ARCH mapping support
+  selftests/nolibc: add test support for ppc64
+  selftests/nolibc: allow customize CROSS_COMPILE by architecture
+  selftests/nolibc: customize CROSS_COMPILE for 32/64-bit powerpc
 
-Maxime
+    Almost the same as v4.
 
---qfwl5fgt5fndwmia
-Content-Type: application/pgp-signature; name="signature.asc"
+* tools/nolibc: add support for powerpc
 
------BEGIN PGP SIGNATURE-----
+    For 32-bit PowerPC, with newer gcc compilers (e.g. gcc 13.1.0),
+    "omit-frame-pointer" fails with __attribute__((no_stack_protector)) but
+    works with __attribute__((__optimize__("-fno-stack-protector")))
 
-iHUEABYKAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCZMuSzAAKCRDj7w1vZxhR
-xTiFAQCAKpBWUi9Wf0twmjd0EmY3hQCjzZgTSj2tjvO0DPGrNQEA2BGgAZiYrOxU
-oBGMArbzCsWvaYlN5mb8X8Vx97RSggA=
-=8CCn
------END PGP SIGNATURE-----
+    Using the later for ppc32 to workaround the issue.
 
---qfwl5fgt5fndwmia--
+* selftests/nolibc: add test support for ppc
+
+    Add default CFLAGS for ppc to allow build with the
+    latest powerpc64-linux-gcc toolchain from
+    https://mirrors.edge.kernel.org/pub/tools/crosstool/ 
+
+* selftests/nolibc: add test support for ppc64le
+
+    Align with kernel, prefer elfv2 ABI to elfv1 ABI when the toolchain
+    support, otherwise, ABI mismatched binary will not run.
+
+Best regards,
+Zhangjin Wu
+---
+[1]: https://lore.kernel.org/lkml/bb7b5f9958b3e3a20f6573ff7ce7c5dc566e7e32.1690982937.git.tanyuan@tinylab.org/
+[2]: https://lore.kernel.org/lkml/cover.1690916314.git.falcon@tinylab.org/
+
+Zhangjin Wu (8):
+  tools/nolibc: add support for powerpc
+  tools/nolibc: add support for powerpc64
+  selftests/nolibc: add XARCH and ARCH mapping support
+  selftests/nolibc: add test support for ppc
+  selftests/nolibc: add test support for ppc64le
+  selftests/nolibc: add test support for ppc64
+  selftests/nolibc: allow customize CROSS_COMPILE by architecture
+  selftests/nolibc: customize CROSS_COMPILE for 32/64-bit powerpc
+
+ tools/include/nolibc/arch-powerpc.h     | 213 ++++++++++++++++++++++++
+ tools/include/nolibc/arch.h             |   2 +
+ tools/testing/selftests/nolibc/Makefile |  74 ++++++--
+ 3 files changed, 277 insertions(+), 12 deletions(-)
+ create mode 100644 tools/include/nolibc/arch-powerpc.h
+
+-- 
+2.25.1
+
