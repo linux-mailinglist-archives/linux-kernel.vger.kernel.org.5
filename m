@@ -2,68 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B215E76DF08
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 05:30:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B0E8476DF0C
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 05:37:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231382AbjHCDam (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Aug 2023 23:30:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53644 "EHLO
+        id S231648AbjHCDha (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Aug 2023 23:37:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54692 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229613AbjHCDaj (ORCPT
+        with ESMTP id S231204AbjHCDh3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Aug 2023 23:30:39 -0400
-Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 387FEC3;
-        Wed,  2 Aug 2023 20:30:37 -0700 (PDT)
-Received: from loongson.cn (unknown [10.40.46.158])
-        by gateway (Coremail) with SMTP id _____8CxyOhbH8tkH3EPAA--.87S3;
-        Thu, 03 Aug 2023 11:30:35 +0800 (CST)
-Received: from [192.168.124.126] (unknown [10.40.46.158])
-        by localhost.localdomain (Coremail) with SMTP id AQAAf8DxfSNaH8tkaZdGAA--.3392S3;
-        Thu, 03 Aug 2023 11:30:35 +0800 (CST)
-Subject: Re: [PATCH v1 1/4] selftests: kvm: Add kvm selftests header files for
- LoongArch
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     Shuah Khan <shuah@kernel.org>, Paolo Bonzini <pbonzini@redhat.com>,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        Vishal Annapurve <vannapurve@google.com>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        WANG Xuerui <kernel@xen0n.name>, loongarch@lists.linux.dev,
-        Peter Xu <peterx@redhat.com>,
-        Vipin Sharma <vipinsh@google.com>, maobibo@loongson.cn
-References: <20230801020206.1957986-1-zhaotianrui@loongson.cn>
- <20230801020206.1957986-2-zhaotianrui@loongson.cn>
- <ZMqL7qPyngxOH4Y0@google.com>
-From:   zhaotianrui <zhaotianrui@loongson.cn>
-Message-ID: <06a4e9f0-483c-e79c-fc64-7e9e0ce7348d@loongson.cn>
-Date:   Thu, 3 Aug 2023 11:30:34 +0800
-User-Agent: Mozilla/5.0 (X11; Linux loongarch64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        Wed, 2 Aug 2023 23:37:29 -0400
+Received: from mail-il1-x134.google.com (mail-il1-x134.google.com [IPv6:2607:f8b0:4864:20::134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E51626B2
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Aug 2023 20:37:28 -0700 (PDT)
+Received: by mail-il1-x134.google.com with SMTP id e9e14a558f8ab-34941081235so1892655ab.1
+        for <linux-kernel@vger.kernel.org>; Wed, 02 Aug 2023 20:37:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=sifive.com; s=google; t=1691033847; x=1691638647;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=5XezimV1as/cKuTMyLJfYIpzABwFXYSrbRVNfnuICdU=;
+        b=giOWK51Dhn9vReA6OJfd8zvKnuve/uokt8ax23zbCVAwmmR36s9yVrixUyaVE4JA7D
+         oWS+jn9gNn+g8OAAVMQNVW+gzShA5OHjUhoJhM7ZkkoKfPI8kT643pso7Dn7dXLQ0fD8
+         MtD+unY09yWthQYKv4JKiELGU9AbHbs7CIQJUeYXurtQyg3KeSegehAPAiIjicbya9Wu
+         btmRsfa0OtDeg99VO+jVo3Cp2FbYCph1ACEm7RB+66jKoVJzhqe0itR5GEp/LrE9Vqzy
+         ccuMlaOKScPTnpuspxvUA/6DSzjmypFuCndoiTNyhItlnwGtVoz7lisoyGaokTQLk79b
+         PaqQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691033847; x=1691638647;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=5XezimV1as/cKuTMyLJfYIpzABwFXYSrbRVNfnuICdU=;
+        b=kf/3de8eKnF+ud2ZGRIAF074zqRjEcv+FL61BEHIJEoSgPGPXxVD3eTFaFwuQ+twBM
+         NAwq+psw1NZ632DMN6eB5FFiLdAtMLw1PpjlRH/OvwYLYg/cB8kXVaWtRgAW/owqlG3t
+         jMS2QFswqEOEczQgdXpdTNvqRztcsUB4orK1MsING5OTIHueZtqrIFOVlgYyrwS9H9Ec
+         Si2RORviBCtpdkIJ9pp0dX8YaL+r4mIPnsDaFRGqJKrH4dM+xMetuYz6gYvXdkGlDRLR
+         LbQ21DXLDGQcbPJ8Mv/RzYzMcal4OIR2yn+DTslwe1wUNshomXqoWh/k7eTKk6zmqaaH
+         7yVw==
+X-Gm-Message-State: ABy/qLZ/2cGTFNGxXrcxPUndFf/w/VMHkc+oQIH5SkrDuARyVCqBsxZR
+        vCZxh+66G5mBafRbKg+oMaU7Tc04Z2SvLstQgZmPVg==
+X-Google-Smtp-Source: APBJJlE6OdMliq0SpqBmWgqkyB7p9epCcw1sbOElJJhGiT0YKv5ld0XCAhfkil/SqKM9pPRldnE9PG5yRhHEvF45DOI=
+X-Received: by 2002:a05:6e02:2163:b0:345:dcc1:a1c4 with SMTP id
+ s3-20020a056e02216300b00345dcc1a1c4mr18872255ilv.4.1691033847682; Wed, 02 Aug
+ 2023 20:37:27 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <ZMqL7qPyngxOH4Y0@google.com>
-Content-Type: text/plain; charset=gbk; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-CM-TRANSID: AQAAf8DxfSNaH8tkaZdGAA--.3392S3
-X-CM-SenderInfo: p2kd03xldq233l6o00pqjv00gofq/
-X-Coremail-Antispam: 1Uk129KBj93XoWxXr47uw1UZryfXryfXrykXrc_yoWrWw4xp3
-        WkA3WFkF48GF17C34S9an3XryfGws7KF48KrySqryUCwnIq3s7Jr1xKF45ZFy3X395t345
-        Z3Z2g34Y9Fy3XagCm3ZEXasCq-sJn29KB7ZKAUJUUUU5529EdanIXcx71UUUUU7KY7ZEXa
-        sCq-sGcSsGvfJ3Ic02F40EFcxC0VAKzVAqx4xG6I80ebIjqfuFe4nvWSU5nxnvy29KBjDU
-        0xBIdaVrnRJUUUvFb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2
-        IYs7xG6rWj6s0DM7CIcVAFz4kK6r106r15M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48v
-        e4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_JFI_Gr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI
-        0_Jr0_Gr1l84ACjcxK6I8E87Iv67AKxVWxJVW8Jr1l84ACjcxK6I8E87Iv6xkF7I0E14v2
-        6r4j6r4UJwAS0I0E0xvYzxvE52x082IY62kv0487Mc804VCY07AIYIkI8VC2zVCFFI0UMc
-        02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUXVWUAwAv7VC2z280aVAF
-        wI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcVAKI48JMxk0xIA0c2IEe2xFo4
-        CEbIxvr21l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG
-        67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MI
-        IYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E
-        14v26r1j6r4UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWUJV
-        W8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxU7XTm
-        DUUUU
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+References: <cover.1689792825.git.tjeznach@rivosinc.com> <c33c24036c06c023947ecb47177da273569b3ac7.1689792825.git.tjeznach@rivosinc.com>
+ <CANXhq0qRYvTffMnep-aQyTq2tMxbP-s_Lunc+cZ2Rio+BvAE=g@mail.gmail.com> <CAH2o1u5Sr0XigUbhna0E-Zk=U76CLZZ4LbM0u4ahPaN5+nOK6A@mail.gmail.com>
+In-Reply-To: <CAH2o1u5Sr0XigUbhna0E-Zk=U76CLZZ4LbM0u4ahPaN5+nOK6A@mail.gmail.com>
+From:   Zong Li <zong.li@sifive.com>
+Date:   Thu, 3 Aug 2023 11:37:16 +0800
+Message-ID: <CANXhq0o5898J=U5XmKbmO4wLq5VkKHVaSwzzcixUqGkkFddhWw@mail.gmail.com>
+Subject: Re: [PATCH 01/11] RISC-V: drivers/iommu: Add RISC-V IOMMU - Ziommu support.
+To:     Tomasz Jeznach <tjeznach@rivosinc.com>
+Cc:     Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Anup Patel <apatel@ventanamicro.com>,
+        Albert Ou <aou@eecs.berkeley.edu>, linux@rivosinc.com,
+        linux-kernel@vger.kernel.org, Sebastien Boeuf <seb@rivosinc.com>,
+        iommu@lists.linux.dev, Palmer Dabbelt <palmer@dabbelt.com>,
+        Nick Kossifidis <mick@ics.forth.gr>,
+        linux-riscv@lists.infradead.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -72,103 +77,134 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-ÔÚ 2023/8/3 ÉÏÎç1:01, Sean Christopherson Ð´µÀ:
-> On Tue, Aug 01, 2023, Tianrui Zhao wrote:
->> Add kvm selftests header files for LoongArch, including processor.h,
->> sysreg.h, and kvm_util_base.h. Those mainly contain LoongArch CSR
->> register defines and page table information.
->>
->> Based-on: <20230720062813.4126751-1-zhaotianrui@loongson.cn>
->> Signed-off-by: Tianrui Zhao <zhaotianrui@loongson.cn>
->> ---
->>   .../selftests/kvm/include/kvm_util_base.h     |  5 ++
->>   .../kvm/include/loongarch/processor.h         | 28 ++++++
->>   .../selftests/kvm/include/loongarch/sysreg.h  | 89 +++++++++++++++++++
->>   3 files changed, 122 insertions(+)
->>   create mode 100644 tools/testing/selftests/kvm/include/loongarch/processor.h
->>   create mode 100644 tools/testing/selftests/kvm/include/loongarch/sysreg.h
->>
->> diff --git a/tools/testing/selftests/kvm/include/kvm_util_base.h b/tools/testing/selftests/kvm/include/kvm_util_base.h
->> index 07732a157ccd..8747127e0bab 100644
->> --- a/tools/testing/selftests/kvm/include/kvm_util_base.h
->> +++ b/tools/testing/selftests/kvm/include/kvm_util_base.h
->> @@ -197,6 +197,11 @@ extern enum vm_guest_mode vm_mode_default;
->>   #define MIN_PAGE_SHIFT			12U
->>   #define ptes_per_page(page_size)	((page_size) / 8)
->>   
->> +#elif defined(__loongarch__)
->> +#define VM_MODE_DEFAULT			VM_MODE_P36V47_16K
->> +#define MIN_PAGE_SHIFT			14U
->> +#define ptes_per_page(page_size)	((page_size) / 8)
->> +
->>   #endif
->>   
->>   #define MIN_PAGE_SIZE		(1U << MIN_PAGE_SHIFT)
->> diff --git a/tools/testing/selftests/kvm/include/loongarch/processor.h b/tools/testing/selftests/kvm/include/loongarch/processor.h
->> new file mode 100644
->> index 000000000000..d67796af51a0
->> --- /dev/null
->> +++ b/tools/testing/selftests/kvm/include/loongarch/processor.h
->> @@ -0,0 +1,28 @@
->> +/* SPDX-License-Identifier: GPL-2.0-only */
->> +/*
->> + * LoongArch processor specific defines
-> Nit, my preference is to not bother with these types of comments, it should be
-> quite obvious from the file name that that everything in here is LoongArch
-> specific.
-Thanks, I will simplify this comment.
+On Thu, Aug 3, 2023 at 4:15=E2=80=AFAM Tomasz Jeznach <tjeznach@rivosinc.co=
+m> wrote:
 >
->> + */
->> +#ifndef SELFTEST_KVM_PROCESSOR_H
->> +#define SELFTEST_KVM_PROCESSOR_H
->> +
->> +#include <linux/compiler.h>
->> +#define _PAGE_VALID_SHIFT	0
->> +#define _PAGE_DIRTY_SHIFT	1
->> +#define _PAGE_PLV_SHIFT		2  /* 2~3, two bits */
->> +#define _CACHE_SHIFT		4  /* 4~5, two bits */
->> +#define _PAGE_PRESENT_SHIFT	7
->> +#define _PAGE_WRITE_SHIFT	8
->> +
->> +#define PLV_KERN		0
->> +#define PLV_USER		3
->> +#define PLV_MASK		0x3
->> +
->> +#define _PAGE_VALID		(0x1UL << _PAGE_VALID_SHIFT)
->> +#define _PAGE_PRESENT		(0x1UL << _PAGE_PRESENT_SHIFT)
->> +#define _PAGE_WRITE		(0x1UL << _PAGE_WRITE_SHIFT)
->> +#define _PAGE_DIRTY		(0x1UL << _PAGE_DIRTY_SHIFT)
->> +#define _PAGE_USER		(PLV_USER << _PAGE_PLV_SHIFT)
->> +#define __READABLE		(_PAGE_VALID)
->> +#define __WRITEABLE		(_PAGE_DIRTY | _PAGE_WRITE)
->> +#define _CACHE_CC		(0x1UL << _CACHE_SHIFT) /* Coherent Cached */
->> +#endif
->> diff --git a/tools/testing/selftests/kvm/include/loongarch/sysreg.h b/tools/testing/selftests/kvm/include/loongarch/sysreg.h
->> new file mode 100644
->> index 000000000000..04f53674c9d8
->> --- /dev/null
->> +++ b/tools/testing/selftests/kvm/include/loongarch/sysreg.h
-> Any reason these can't simply go in processor.h?  Neither file is particular large,
-> especially for CPU definition files.
-Thanks, I will move the contents of sysreg.h into processor.h to make 
-the file easier.
+> On Thu, Jul 27, 2023 at 7:42=E2=80=AFPM Zong Li <zong.li@sifive.com> wrot=
+e:
+> >
+> > On Thu, Jul 20, 2023 at 3:34=E2=80=AFAM Tomasz Jeznach <tjeznach@rivosi=
+nc.com> wrote:
+> > >
+> > > +static int riscv_iommu_platform_probe(struct platform_device *pdev)
+> > > +{
+> > > +       struct device *dev =3D &pdev->dev;
+> > > +       struct riscv_iommu_device *iommu =3D NULL;
+> > > +       struct resource *res =3D NULL;
+> > > +       int ret =3D 0;
+> > > +
+> > > +       iommu =3D devm_kzalloc(dev, sizeof(*iommu), GFP_KERNEL);
+> > > +       if (!iommu)
+> > > +               return -ENOMEM;
+> > > +
+> > > +       iommu->dev =3D dev;
+> > > +       dev_set_drvdata(dev, iommu);
+> > > +
+> > > +       res =3D platform_get_resource(pdev, IORESOURCE_MEM, 0);
+> > > +       if (!res) {
+> > > +               dev_err(dev, "could not find resource for register re=
+gion\n");
+> > > +               return -EINVAL;
+> > > +       }
+> > > +
+> > > +       iommu->reg =3D devm_platform_get_and_ioremap_resource(pdev, 0=
+, &res);
+> > > +       if (IS_ERR(iommu->reg)) {
+> > > +               ret =3D dev_err_probe(dev, PTR_ERR(iommu->reg),
+> > > +                                   "could not map register region\n"=
+);
+> > > +               goto fail;
+> > > +       };
+> > > +
+> > > +       iommu->reg_phys =3D res->start;
+> > > +
+> > > +       ret =3D -ENODEV;
+> > > +
+> > > +       /* Sanity check: Did we get the whole register space ? */
+> > > +       if ((res->end - res->start + 1) < RISCV_IOMMU_REG_SIZE) {
+> > > +               dev_err(dev, "device region smaller than register fil=
+e (0x%llx)\n",
+> > > +                       res->end - res->start);
+> > > +               goto fail;
+> > > +       }
+> >
+> > Could we assume that DT should be responsible for specifying the right =
+size?
+> >
 >
->> @@ -0,0 +1,89 @@
->> +/* SPDX-License-Identifier: GPL-2.0-only */
->> +#ifndef SELFTEST_KVM_SYSREG_H
->> +#define SELFTEST_KVM_SYSREG_H
->> +
->> +/*
->> + * note that this declaration raises a checkpatch warning, but
->> + * no good way to avoid it.
->> + */
-> Definitely drop this comment, once the patch is applied the fact that checkpatch
-> complains is irrelevant.
-Ok, I will drop this comment.
-
-Thanks
-Tianrui Zhao
+> This only to validate DT provided info and driver expected register
+> file size. Expectation is that DT will provide right size.
 >
->> +#define zero	$r0
+>
+> > > +static struct iommu_domain *riscv_iommu_domain_alloc(unsigned type)
+> > > +{
+> > > +       struct riscv_iommu_domain *domain;
+> > > +
+> > > +       if (type !=3D IOMMU_DOMAIN_IDENTITY &&
+> > > +           type !=3D IOMMU_DOMAIN_BLOCKED)
+> > > +               return NULL;
+> > > +
+> > > +       domain =3D kzalloc(sizeof(*domain), GFP_KERNEL);
+> > > +       if (!domain)
+> > > +               return NULL;
+> > > +
+> > > +       mutex_init(&domain->lock);
+> > > +       INIT_LIST_HEAD(&domain->endpoints);
+> > > +
+> > > +       domain->domain.ops =3D &riscv_iommu_domain_ops;
+> > > +       domain->mode =3D RISCV_IOMMU_DC_FSC_MODE_BARE;
+> > > +       domain->pscid =3D ida_alloc_range(&riscv_iommu_pscids, 1,
+> > > +                                       RISCV_IOMMU_MAX_PSCID, GFP_KE=
+RNEL);
+> > > +
+> > > +       printk("domain type %x alloc %u\n", type, domain->pscid);
+> > > +
+> >
+> > Could it uses pr_xxx instead of printk?
+> >
+>
+> Absolutely, fixed here and elsewhere. Also, used dev_dbg wherever applica=
+ble.
+>
+> > > +
+> > > +static int riscv_iommu_enable(struct riscv_iommu_device *iommu, unsi=
+gned requested_mode)
+> > > +{
+> > > +       struct device *dev =3D iommu->dev;
+> > > +       u64 ddtp =3D 0;
+> > > +       u64 ddtp_paddr =3D 0;
+> > > +       unsigned mode =3D requested_mode;
+> > > +       unsigned mode_readback =3D 0;
+> > > +
+> > > +       ddtp =3D riscv_iommu_get_ddtp(iommu);
+> > > +       if (ddtp & RISCV_IOMMU_DDTP_BUSY)
+> > > +               return -EBUSY;
+> > > +
+> > > +       /* Disallow state transtion from xLVL to xLVL. */
+> > > +       switch (FIELD_GET(RISCV_IOMMU_DDTP_MODE, ddtp)) {
+> > > +       case RISCV_IOMMU_DDTP_MODE_BARE:
+> > > +       case RISCV_IOMMU_DDTP_MODE_OFF:
+> > > +               break;
+> > > +       default:
+> > > +               if ((mode !=3D RISCV_IOMMU_DDTP_MODE_BARE)
+> > > +                   && (mode !=3D RISCV_IOMMU_DDTP_MODE_OFF))
+> > > +                       return -EINVAL;
+> > > +               break;
+> > > +       }
+> > > +
+> > > + retry:
+> >
+> > We need to consider the `iommu.passthrough` before we set up the mode
+> > in switch case, something like
+> >
+>
+> This function is only to execute configuration and set device directory m=
+ode.
+> Handling global iommu.passthrough policy is implemented in
+> riscv_iommu_init() call (patch #7).
 
+Thanks. I saw that in patch #7.
+
+>
+> Best,
+> - Tomasz
