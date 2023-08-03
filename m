@@ -2,216 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5422276EDF4
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 17:21:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BFFF676EDF5
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 17:22:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236346AbjHCPVz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Aug 2023 11:21:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51040 "EHLO
+        id S237059AbjHCPV5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Aug 2023 11:21:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51122 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237051AbjHCPVx (ORCPT
+        with ESMTP id S237053AbjHCPVx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 3 Aug 2023 11:21:53 -0400
-Received: from lelv0142.ext.ti.com (lelv0142.ext.ti.com [198.47.23.249])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 499A630F3;
-        Thu,  3 Aug 2023 08:21:50 -0700 (PDT)
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-        by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 373FLeH9066661;
-        Thu, 3 Aug 2023 10:21:40 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1691076100;
-        bh=0oLLrcALLTvK2D0vhqA42SQmHxM6JCkudEP7Scb6TJ4=;
-        h=Date:Subject:To:CC:References:From:In-Reply-To;
-        b=F+yXRBwp7akwcD6qF5ESDx4Svm1a2TxGCG34MP+gRb7rjJH0QfHFhd6o0Qwd1M223
-         2NOOgFF+Kve8gN8mGVRnHllh13ZU3yp4jlgnoS6+8nscAsf4/N8qI5RG750pjwzIeA
-         c3UYEgvLLEt4Nt1yffV8Np+rTSIq8hnt/DS9GfYA=
-Received: from DFLE115.ent.ti.com (dfle115.ent.ti.com [10.64.6.36])
-        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 373FLefS074267
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 3 Aug 2023 10:21:40 -0500
-Received: from DFLE113.ent.ti.com (10.64.6.34) by DFLE115.ent.ti.com
- (10.64.6.36) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Thu, 3
- Aug 2023 10:21:40 -0500
-Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE113.ent.ti.com
- (10.64.6.34) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Thu, 3 Aug 2023 10:21:40 -0500
-Received: from [10.250.36.243] (ileaxei01-snat2.itg.ti.com [10.180.69.6])
-        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 373FLd7N128726;
-        Thu, 3 Aug 2023 10:21:39 -0500
-Message-ID: <6ac87c33-eb5a-7613-3046-c90b72a20217@ti.com>
-Date:   Thu, 3 Aug 2023 10:21:39 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5703010EA;
+        Thu,  3 Aug 2023 08:21:51 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id B72F261DF4;
+        Thu,  3 Aug 2023 15:21:50 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3A98EC433C7;
+        Thu,  3 Aug 2023 15:21:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1691076110;
+        bh=gGAiitPQSrlb9gSGzmFfSecNyXcwS+MEUkY4CjOGpBY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=O6d4GfSVQIxPehDNOe3a+aR+0QU0zpXlVeXlIAvKo1SRpYZ8dz7YSL0xRWxmpoQJB
+         cFt4/4/3XhbVkf2eK2NYXqtgUF/mg51PLIzclkp6Q90UKULBOrdNHzH3YWOTvc/IC7
+         MXFO2hQgi9MdybP5SoJAG8K4aWXNscluvdFDBfjufLxUa5Z9z+GJIEjgNNqFXg/4II
+         DnRQYivV5p0ErNijc3l2aZYx4sIo3aD6rRdCJNrlEXvbD5DvGC5LJI6sDUBbkF/JjS
+         E77A2TOl/aEI7tt0PeMgefU90GiHQRTitfqFv53c9bNaKQNN0kRY5pask9KDWJGfHa
+         6GII6TGHRtNkw==
+Date:   Thu, 3 Aug 2023 16:21:45 +0100
+From:   Conor Dooley <conor@kernel.org>
+To:     Andrea Collamati <andrea.collamati@gmail.com>
+Cc:     Jonathan Cameron <jic23@kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>, linux-iio@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4 1/2] dt-bindings: iio: dac: add mcp4728.yaml
+Message-ID: <20230803-art-marbles-c57091465420@spud>
+References: <cover.1691066050.git.andrea.collamati@gmail.com>
+ <d93dd116cfa7f958c038c0c62993071ea48451d2.1691066050.git.andrea.collamati@gmail.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH V6 2/4] firmware: ti_sci: Add support for querying the
- firmware caps
-Content-Language: en-US
-To:     Dhruva Gole <d-gole@ti.com>, Nishanth Menon <nm@ti.com>,
-        Tero Kristo <kristo@kernel.org>,
-        Santosh Shilimkar <ssantosh@kernel.org>
-CC:     <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <linux-pm@vger.kernel.org>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        "Praneeth Bajjuri" <praneeth@ti.com>,
-        Tony Lindgren <tony@atomide.com>, Georgi Vlaev <g-vlaev@ti.com>
-References: <20230803064247.503036-1-d-gole@ti.com>
- <20230803064247.503036-3-d-gole@ti.com>
-From:   Andrew Davis <afd@ti.com>
-In-Reply-To: <20230803064247.503036-3-d-gole@ti.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="EwqwCvl+QJ8f9W7n"
+Content-Disposition: inline
+In-Reply-To: <d93dd116cfa7f958c038c0c62993071ea48451d2.1691066050.git.andrea.collamati@gmail.com>
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/3/23 1:42 AM, Dhruva Gole wrote:
-> From: Georgi Vlaev <g-vlaev@ti.com>
-> 
-> This patch adds support for the TISCI_MSG_QUERY_FW_CAPS
-> message, used to retrieve the firmware capabilities of the
-> currently running system firmware. The message belongs to
-> the TISCI general core message API [1] and is available in
-> SysFW version 08.04.03 and above. Currently, the message is
-> supported on devices with split architecture of the system
-> firmware (DM + TIFS) like AM62x. Old revisions or not yet
-> supported platforms will NACK this request.
 
-The API is also buggy on SYSFW 9.00 and below, maybe we should
-check the firmware version in this function and return "not
-supported" or all 0s, instead of returning known bad values.
+--EwqwCvl+QJ8f9W7n
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Andrew
+On Thu, Aug 03, 2023 at 02:56:34PM +0200, Andrea Collamati wrote:
+> Add documentation for MCP4728
+>=20
+> Signed-off-by: Andrea Collamati <andrea.collamati@gmail.com>
 
-> 
-> We're using this message locally in ti_sci.c to get the low
-> power featutes of the FW/SoC. As there's no other kernel
-> consumers yet, this is not added to struct ti_sci_core_ops.
-> 
-> [1] https://software-dl.ti.com/tisci/esd/latest/2_tisci_msgs/general/core.html
-> 
-> Signed-off-by: Georgi Vlaev <g-vlaev@ti.com>
+I gave you a reviewed-by on v3, is there a reason that you dropped it?
+
+Thanks,
+Conor.
+
 > ---
->   drivers/firmware/ti_sci.c | 56 +++++++++++++++++++++++++++++++++++++++
->   drivers/firmware/ti_sci.h | 26 ++++++++++++++++++
->   2 files changed, 82 insertions(+)
-> 
-> diff --git a/drivers/firmware/ti_sci.c b/drivers/firmware/ti_sci.c
-> index 31a71613ca54..3b40f9336b3f 100644
-> --- a/drivers/firmware/ti_sci.c
-> +++ b/drivers/firmware/ti_sci.c
-> @@ -1723,6 +1723,62 @@ static int ti_sci_cmd_prepare_sleep(const struct ti_sci_handle *handle, u8 mode,
->   	return ret;
->   }
->   
-> +/**
-> + * ti_sci_msg_cmd_query_fw_caps() - Get the FW/SoC capabilities
-> + * @handle:		Pointer to TI SCI handle
-> + * @fw_caps:		Each bit in fw_caps indicating one FW/SOC capability
-> + *
-> + * Return: 0 if all went well, else returns appropriate error value.
-> + */
-> +static int ti_sci_msg_cmd_query_fw_caps(const struct ti_sci_handle *handle,
-> +					u64 *fw_caps)
-> +{
-> +	struct ti_sci_info *info;
-> +	struct ti_sci_xfer *xfer;
-> +	struct ti_sci_msg_resp_query_fw_caps *resp;
-> +	struct device *dev;
-> +	int ret = 0;
+>  .../bindings/iio/dac/microchip,mcp4728.yaml   | 49 +++++++++++++++++++
+>  1 file changed, 49 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/iio/dac/microchip,m=
+cp4728.yaml
+>=20
+> diff --git a/Documentation/devicetree/bindings/iio/dac/microchip,mcp4728.=
+yaml b/Documentation/devicetree/bindings/iio/dac/microchip,mcp4728.yaml
+> new file mode 100644
+> index 000000000000..99831d7f1c16
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/iio/dac/microchip,mcp4728.yaml
+> @@ -0,0 +1,49 @@
+> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
 > +
-> +	if (IS_ERR(handle))
-> +		return PTR_ERR(handle);
-> +	if (!handle)
-> +		return -EINVAL;
+> +$id: http://devicetree.org/schemas/iio/dac/microchip,mcp4728.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
 > +
-> +	info = handle_to_ti_sci_info(handle);
-> +	dev = info->dev;
+> +title: Microchip MCP4728 DAC
 > +
-> +	xfer = ti_sci_get_one_xfer(info, TI_SCI_MSG_QUERY_FW_CAPS,
-> +				   TI_SCI_FLAG_REQ_ACK_ON_PROCESSED,
-> +				   sizeof(struct ti_sci_msg_hdr),
-> +				   sizeof(*resp));
-> +	if (IS_ERR(xfer)) {
-> +		ret = PTR_ERR(xfer);
-> +		dev_err(dev, "Message alloc failed(%d)\n", ret);
-> +		return ret;
-> +	}
+> +maintainers:
+> +  - Andrea Collamati <andrea.collamati@gmail.com>
 > +
-> +	ret = ti_sci_do_xfer(info, xfer);
-> +	if (ret) {
-> +		dev_err(dev, "Mbox send fail %d\n", ret);
-> +		goto fail;
-> +	}
+> +description: |
+> +  MCP4728 is a quad channel, 12-bit voltage output
+> +  Digital-to-Analog Converter with non-volatile
+> +  memory and I2C compatible Serial Interface.
+> +  https://www.microchip.com/en-us/product/mcp4728
 > +
-> +	resp = (struct ti_sci_msg_resp_query_fw_caps *)xfer->xfer_buf;
+> +properties:
+> +  compatible:
+> +    const: microchip,mcp4728
 > +
-> +	if (!ti_sci_is_response_ack(resp)) {
-> +		ret = -ENODEV;
-> +		goto fail;
-> +	}
+> +  reg:
+> +    maxItems: 1
 > +
-> +	if (fw_caps)
-> +		*fw_caps = resp->fw_caps;
+> +  vdd-supply:
+> +    description: |
+> +      Provides both power and acts as the reference supply on the MCP4728
+> +      when Internal Vref is not selected.
 > +
-> +fail:
-> +	ti_sci_put_one_xfer(&info->minfo, xfer);
+> +required:
+> +  - compatible
+> +  - reg
+> +  - vdd-supply
 > +
-> +	return ret;
-> +}
+> +additionalProperties: false
 > +
->   /**
->    * ti_sci_msg_cmd_lpm_wake_reason() - Get the wakeup source from LPM
->    * @handle:		Pointer to TI SCI handle
-> diff --git a/drivers/firmware/ti_sci.h b/drivers/firmware/ti_sci.h
-> index e4bfe146c43d..d5b23d91b9b9 100644
-> --- a/drivers/firmware/ti_sci.h
-> +++ b/drivers/firmware/ti_sci.h
-> @@ -19,6 +19,7 @@
->   #define TI_SCI_MSG_WAKE_REASON	0x0003
->   #define TI_SCI_MSG_GOODBYE	0x0004
->   #define TI_SCI_MSG_SYS_RESET	0x0005
-> +#define TI_SCI_MSG_QUERY_FW_CAPS	0x0022
->   
->   /* Device requests */
->   #define TI_SCI_MSG_SET_DEVICE_STATE	0x0200
-> @@ -137,6 +138,31 @@ struct ti_sci_msg_req_reboot {
->   	struct ti_sci_msg_hdr hdr;
->   } __packed;
->   
-> +/**
-> + * struct ti_sci_msg_resp_query_fw_caps - Response for query firmware caps
-> + * @hdr:	Generic header
-> + * @fw_caps:	Each bit in fw_caps indicating one FW/SOC capability
-> + *		MSG_FLAG_CAPS_GENERIC: Generic capability (LPM not supported)
-> + *		MSG_FLAG_CAPS_LPM_DEEP_SLEEP: Deep Sleep LPM
-> + *		MSG_FLAG_CAPS_LPM_MCU_ONLY: MCU only LPM
-> + *		MSG_FLAG_CAPS_LPM_STANDBY: Standby LPM
-> + *		MSG_FLAG_CAPS_LPM_PARTIAL_IO: Partial IO in LPM
-> + *
-> + * Response to a generic message with message type TI_SCI_MSG_QUERY_FW_CAPS
-> + * providing currently available SOC/firmware capabilities. SoC that don't
-> + * support low power modes return only MSG_FLAG_CAPS_GENERIC capability.
-> + */
-> +struct ti_sci_msg_resp_query_fw_caps {
-> +	struct ti_sci_msg_hdr hdr;
-> +#define MSG_FLAG_CAPS_GENERIC		TI_SCI_MSG_FLAG(0)
-> +#define MSG_FLAG_CAPS_LPM_DEEP_SLEEP	TI_SCI_MSG_FLAG(1)
-> +#define MSG_FLAG_CAPS_LPM_MCU_ONLY	TI_SCI_MSG_FLAG(2)
-> +#define MSG_FLAG_CAPS_LPM_STANDBY	TI_SCI_MSG_FLAG(3)
-> +#define MSG_FLAG_CAPS_LPM_PARTIAL_IO	TI_SCI_MSG_FLAG(4)
-> +#define MSG_MASK_CAPS_LPM		GENMASK_ULL(4, 1)
-> +	u64 fw_caps;
-> +} __packed;
+> +examples:
+> +  - |
+> +    i2c {
+> +        #address-cells =3D <1>;
+> +        #size-cells =3D <0>;
 > +
->   /**
->    * struct ti_sci_msg_req_set_device_state - Set the desired state of the device
->    * @hdr:		Generic header
+> +        dac@60 {
+> +            compatible =3D "microchip,mcp4728";
+> +            reg =3D <0x60>;
+> +            vdd-supply =3D <&vdac_vdd>;
+> +        };
+> +    };
+> --=20
+> 2.34.1
+>=20
+
+--EwqwCvl+QJ8f9W7n
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZMvGCQAKCRB4tDGHoIJi
+0rN4AQCOhnmDfmsVYA1hdD3MGTFjz5hcR37JoZKdT7VwZSS0SgD/R5m9BcZE6vS3
+GXL7uB10LZxC/5z/76qfWLEhdCsoWww=
+=BV8Z
+-----END PGP SIGNATURE-----
+
+--EwqwCvl+QJ8f9W7n--
