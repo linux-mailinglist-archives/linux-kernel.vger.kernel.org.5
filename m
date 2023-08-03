@@ -2,164 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A8E3B76E237
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 09:57:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 99FDE76E23A
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 09:58:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230096AbjHCH5L convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 3 Aug 2023 03:57:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32970 "EHLO
+        id S234032AbjHCH57 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Aug 2023 03:57:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32966 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233418AbjHCH4U (ORCPT
+        with ESMTP id S233188AbjHCH5G (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Aug 2023 03:56:20 -0400
-Received: from ex01.ufhost.com (ex01.ufhost.com [61.152.239.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C18193C2;
-        Thu,  3 Aug 2023 00:44:32 -0700 (PDT)
-Received: from EXMBX166.cuchost.com (unknown [175.102.18.54])
-        (using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
-        (Client CN "EXMBX166", Issuer "EXMBX166" (not verified))
-        by ex01.ufhost.com (Postfix) with ESMTP id 45F6E24E267;
-        Thu,  3 Aug 2023 15:43:49 +0800 (CST)
-Received: from EXMBX172.cuchost.com (172.16.6.92) by EXMBX166.cuchost.com
- (172.16.6.76) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Thu, 3 Aug
- 2023 15:43:49 +0800
-Received: from [192.168.125.136] (183.27.98.54) by EXMBX172.cuchost.com
- (172.16.6.92) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Thu, 3 Aug
- 2023 15:43:48 +0800
-Message-ID: <dae4bd27-4ea6-43b1-d65c-225be7b5640b@starfivetech.com>
-Date:   Thu, 3 Aug 2023 15:43:47 +0800
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.6.1
-Subject: Re: [PATCH v1 8/9] PCI: PLDA: starfive: Add JH7110 PCIe controller
-Content-Language: en-US
-To:     =?UTF-8?Q?Pali_Roh=c3=a1r?= <pali@kernel.org>
-CC:     Bjorn Helgaas <helgaas@kernel.org>,
-        Minda Chen <minda.chen@starfivetech.com>,
-        Daire McNamara <daire.mcnamara@microchip.com>,
-        Conor Dooley <conor@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        "Krzysztof Kozlowski" <krzysztof.kozlowski+dt@linaro.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Lorenzo Pieralisi <lpieralisi@kernel.org>,
-        =?UTF-8?Q?Krzysztof_Wilczy=c5=84ski?= <kw@linux.com>,
-        Emil Renner Berthing <emil.renner.berthing@canonical.com>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-riscv@lists.infradead.org>, <linux-pci@vger.kernel.org>,
+        Thu, 3 Aug 2023 03:57:06 -0400
+Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B50F93EA
+        for <linux-kernel@vger.kernel.org>; Thu,  3 Aug 2023 00:44:53 -0700 (PDT)
+Received: by mail-ej1-x62a.google.com with SMTP id a640c23a62f3a-99c10ba30afso381911566b.1
+        for <linux-kernel@vger.kernel.org>; Thu, 03 Aug 2023 00:44:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ventanamicro.com; s=google; t=1691048689; x=1691653489;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=CSSRhpwsXf70z+1rxlQ2+hkymtm2lwEBhyh07kPB2pk=;
+        b=hVshpXD1f4VzOD4XcxN3LbCb5HapivOPgFQ+ILU0E4alQRUTVmJwgTwVgUvmzBMszt
+         NDqQtPAZmoLrTkgoPimF8eEzhIDPdpAKz+2EKqLtmx7HB/j2CAUcEcg/+5rMoDpwE0nO
+         3eWEEAyYy1dNbtgfyBWfxn0dYcGaX5y2VC5pxwRD13Nkz2YIkx8/HrOFqbbgo1cDi1xv
+         RefAjQl5EQ0h6nMKJja2YklPKW0V8kuY+qiTMI5yn3SCwLsVjJpvexcAFsqNgXTVLnRH
+         QkGpbWuDmvFT02VSc55AQg68lHgTe2htKOM4EvvpIE/Tk4ZGfEhGvwHg19itDFbM26AX
+         qdMQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691048689; x=1691653489;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=CSSRhpwsXf70z+1rxlQ2+hkymtm2lwEBhyh07kPB2pk=;
+        b=XZ5uVcV88Xp4EUYetXsreFNz6nluv+bqUS381aDLkaOQ59iSc96KYS1t9FHlAcm5cf
+         UGITqfzxYjGkfQhG+UCo7G0Of/PrvgIGe9PqDNqtoyZDV3OCD81NnkEjhwjG+Rz3gY+L
+         Mpp3p9plYuDAE2H2sX+0nKf0jrsgbXrPEm2xV425Ukc6efNA/fQwglp2C2dJtqZ2LyEc
+         9SXOUqZRzJuDrHUeZF+SSvYzJ/u7sxJ3D/ZgJ644E8H7hMnBlCarQz9n57lMAMWnkMm8
+         h8hxd7ApKW7eiLrkmDSHSrzWF2zzkw1u3RKbPM6L1HhJBQiUu36zFK3TLXo1pKxBvwka
+         ZfUw==
+X-Gm-Message-State: ABy/qLbEM5Y0GMa66wpLxFW4oSScR7W0iIscN0nFa0jJK1w5E2spDzf6
+        xcLm8eRx3qR2bfk0R9QwZ+2ugw==
+X-Google-Smtp-Source: APBJJlHdMEoyrcmNp/byt0aZUIBGbZ/dYH98Vd4bOX3Z9OBMzCaUzxR0W2Ed2cfgzDFl1sbdTUlvww==
+X-Received: by 2002:a17:906:8a4d:b0:993:da0b:8783 with SMTP id gx13-20020a1709068a4d00b00993da0b8783mr8855806ejc.3.1691048689638;
+        Thu, 03 Aug 2023 00:44:49 -0700 (PDT)
+Received: from localhost (212-5-140-29.ip.btc-net.bg. [212.5.140.29])
+        by smtp.gmail.com with ESMTPSA id si15-20020a170906cecf00b00993004239a4sm10128648ejb.215.2023.08.03.00.44.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 03 Aug 2023 00:44:49 -0700 (PDT)
+Date:   Thu, 3 Aug 2023 10:44:47 +0300
+From:   Andrew Jones <ajones@ventanamicro.com>
+To:     Guo Ren <guoren@kernel.org>
+Cc:     Haibo Xu <xiaobo55x@gmail.com>, Haibo Xu <haibo1.xu@intel.com>,
         Paul Walmsley <paul.walmsley@sifive.com>,
-        "Palmer Dabbelt" <palmer@dabbelt.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
         Albert Ou <aou@eecs.berkeley.edu>,
-        "Philipp Zabel" <p.zabel@pengutronix.de>,
-        Mason Huo <mason.huo@starfivetech.com>,
-        Leyfoon Tan <leyfoon.tan@starfivetech.com>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        "Maciej W. Rozycki" <macro@orcam.me.uk>,
-        =?UTF-8?Q?Marek_Beh=c3=ban?= <kabel@kernel.org>
-References: <20230802171805.GA62238@bhelgaas>
- <1c546489-40dd-25c5-3ac2-9e3b3fd5a670@starfivetech.com>
- <20230803065835.twdicvx62mgzzzqi@pali>
-From:   Kevin Xie <kevin.xie@starfivetech.com>
-In-Reply-To: <20230803065835.twdicvx62mgzzzqi@pali>
-Content-Type: text/plain; charset="UTF-8"
-X-Originating-IP: [183.27.98.54]
-X-ClientProxiedBy: EXCAS066.cuchost.com (172.16.6.26) To EXMBX172.cuchost.com
- (172.16.6.92)
-X-YovoleRuleAgent: yovoleflag
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Anup Patel <anup@brainfault.org>,
+        Atish Patra <atishp@atishpatra.org>,
+        Sean Christopherson <seanjc@google.com>,
+        Vipin Sharma <vipinsh@google.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Colton Lewis <coltonlewis@google.com>,
+        Andrew Jones <andrew.jones@linux.dev>,
+        Vishal Annapurve <vannapurve@google.com>,
+        linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org,
+        kvm@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        kvm-riscv@lists.infradead.org
+Subject: Re: [PATCH 1/4] tools: riscv: Add header file csr.h
+Message-ID: <20230803-5b7e7c0d95597b004764a296@orel>
+References: <cover.1690364259.git.haibo1.xu@intel.com>
+ <35ce2b9f7ca655eb3af13730b1ca9f05b518e08f.1690364259.git.haibo1.xu@intel.com>
+ <20230728-879500f157954d849fb303ec@orel>
+ <CAJve8onDLEC1JFdERi098sTmN3-UkwaJ1aJz3CJNYU-GShkEyg@mail.gmail.com>
+ <ZMsbXk4JU/Ung7qu@gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <ZMsbXk4JU/Ung7qu@gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Aug 02, 2023 at 11:13:34PM -0400, Guo Ren wrote:
+> On Wed, Aug 02, 2023 at 10:05:00AM +0800, Haibo Xu wrote:
+> > On Fri, Jul 28, 2023 at 5:43 PM Andrew Jones <ajones@ventanamicro.com> wrote:
+> > >
+> > > On Thu, Jul 27, 2023 at 03:20:05PM +0800, Haibo Xu wrote:
+> > > > Borrow some of the csr definitions and operations from kernel's
+> > > > arch/riscv/include/asm/csr.h to tools/ for riscv.
+> > >
+> > > You should copy the entire file verbatim.
+> > >
+> > 
+> > Ok, will copy all the definitions in the original csr.h
+> Why not include the original one? Maintain the one csr.h is more
+> comfortable.
 
+selftests and other userspace tools can't always compile when including a
+kernel header without modifying the header in some way. Rather than
+polluting headers with #ifdeffery, the practice has been to copy necessary
+headers to tools/include and modify if necessary.
 
-On 2023/8/3 14:58, Pali Rohár wrote:
-> On Thursday 03 August 2023 10:23:47 Kevin Xie wrote:
->> On 2023/8/3 1:18, Bjorn Helgaas wrote:
->> > On Tue, Aug 01, 2023 at 03:05:46PM +0800, Kevin Xie wrote:
->> >> On 2023/8/1 7:12, Bjorn Helgaas wrote:
->> >> ...
->> > 
->> >> > The delay required by sec 6.6.1 is a minimum of 100ms following exit
->> >> > from reset or, for fast links, 100ms after link training completes.
->> >> > 
->> >> > The comment at the call of advk_pcie_wait_for_link() [2] says it is
->> >> > the delay required by sec 6.6.1, but that doesn't seem right to me.
->> >> > 
->> >> > For one thing, I don't think 6.6.1 says anything about "link up" being
->> >> > the end of a delay.  So if we want to do the delay required by 6.6.1,
->> >> > "wait_for_link()" doesn't seem like quite the right name.
->> >> > 
->> >> > For another, all the *_wait_for_link() functions can return success
->> >> > after 0ms, 90ms, 180ms, etc.  They're unlikely to return after 0ms,
->> >> > but 90ms is quite possible.  If we avoided the 0ms return and
->> >> > LINK_WAIT_USLEEP_MIN were 100ms instead of 90ms, that should be enough
->> >> > for slow links, where we need 100ms following "exit from reset."
->> >> > 
->> >> > But it's still not enough for fast links where we need 100ms "after
->> >> > link training completes" because we don't know when training
->> >> > completed.  If training completed 89ms into *_wait_for_link(), we only
->> >> > delay 1ms after that.
->> >> 
->> >> That's the point, we will add a extra 100ms after PERST# de-assert
->> >> in the patch-v3 according to Base Spec r6.0 - 6.6.1:
->> >>         msleep(100);
->> >>         gpiod_set_value_cansleep(pcie->reset_gpio, 0);
->> >> 
->> >> +       /* As the requirement in PCIe base spec r6.0, system must wait a
->> >> +        * minimum of 100 ms following exit from a Conventional Reset
->> >> +        * before sending a Configuration Request to the device.*/
->> >> +       msleep(100);
->> >> +
->> >>         if (starfive_pcie_host_wait_for_link(pcie))
->> >>                 return -EIO;
->> > 
->> > For fast links (links that support > 5.0 GT/s), the 100ms starts
->> > *after* link training completes.  The above looks OK if starfive only
->> > supports slow links, but then I'm not sure why we would need
->> > starfive_pcie_host_wait_for_link().
->> > 
->> Yes, the maximum speed of JH7110 PCIe is 5.0 GT/s (Gen2x1).
->> 
->> About starfive_pcie_host_wait_for_link():
->> JH7110 SoC only has one root port in each PCIe controller (2 in total)
->> and they do not support hot-plug yet.
-> 
-> Beware that even if HW does not support hotplug, endpoint PCIe card
-> still may drop the link down and later put it up (for example if FW in
-> the card crashes or when card want to do internal reset, etc...; this is
-> very common for wifi cards). So drivers for non-hotplug controllers
-> still have to handle hotplug events generated by link up/down state.
-> 
-> So it means that, if endpoint PCIe card is not detected during probe
-> time, it may be detected later. So this check to completely stop
-> registering controller is not a good idea. Note that userspace can
-> tell kernel (via sysfs) to rescan all PCIe buses and try to discover new
-> PCIea devices.
-> 
-
-Yes, we should not ignored this situation.
-
->> Thus, We add starfive_pcie_host_wait_for_link() to poll if it is a empty slot.
->> If nothing here, we will exit the probe() of this controller, and it will not
->> go into pci_host_probe() too.
->> This may not be a very standard logic, should we remove it or rewrite in a better way?
->> 
->> > Bjorn
-> 
-> Rather to remove this starfive_pcie_host_wait_for_link logic.
-> 
-> Better option would be to teach PCI core code to wait for the link
-> before trying to read vendor/device ids, like I described in my old
-> proposal.
-
-Yes, the proposal can prevent us from writing the wrong timing.
-However, as things stand, we have to do the waiting in host controller driver now.
-We will keep the wait for the link, but don't return error when the link is down,
-such as:
-    if (starfive_pcie_host_wait_for_link(pcie))
-	dev_info(dev, "port link down\n");
+Thanks,
+drew
