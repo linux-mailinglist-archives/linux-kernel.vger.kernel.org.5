@@ -2,137 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C96E76E41D
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 11:16:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 74AFC76E420
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 11:17:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234247AbjHCJQp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Aug 2023 05:16:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53006 "EHLO
+        id S234404AbjHCJQs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Aug 2023 05:16:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53078 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234094AbjHCJQk (ORCPT
+        with ESMTP id S234093AbjHCJQl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Aug 2023 05:16:40 -0400
-Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0299AE48
-        for <linux-kernel@vger.kernel.org>; Thu,  3 Aug 2023 02:16:38 -0700 (PDT)
-Received: by mail-wr1-x42a.google.com with SMTP id ffacd0b85a97d-307d58b3efbso606747f8f.0
-        for <linux-kernel@vger.kernel.org>; Thu, 03 Aug 2023 02:16:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1691054196; x=1691658996;
-        h=content-transfer-encoding:in-reply-to:organization:from:references
-         :cc:to:content-language:subject:reply-to:user-agent:mime-version
-         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=3qjTxnd4KtTTOKG14S4/4BnF9x1FwZI+P+SQK+cy1Q0=;
-        b=CNJ2m5qzGE5gwyNdXs1sH6KOgQxlKSIHDjGkj6guZkjEyYkkO/XOqo/bP+FrP1ErPd
-         ezB2MKpzBPnZLymibjrG6yL/pPAXWBRaf1kHrkKZIELELGLRvs0aWl4OEL2NALEGZm6l
-         aAXtdq42NEv4YLPCJ4SKdR1cvpwrQBFAfeNdo93rpxPt3zg64ugXOaGAolNanT8v50w/
-         Wd+kV0GlBFcvgDfQ22Bqnho/zumP59kxYuxJxJaFQpCn8tXOmVUgfjQOJOCcFOwddr9u
-         iq0vcJtAAJ/oLYWvAbZU2qgu8h7/HoL5DBd4NZg7qfXFmT8gYIz1wI4gqiUn2E8yNjCX
-         3m/A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691054196; x=1691658996;
-        h=content-transfer-encoding:in-reply-to:organization:from:references
-         :cc:to:content-language:subject:reply-to:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=3qjTxnd4KtTTOKG14S4/4BnF9x1FwZI+P+SQK+cy1Q0=;
-        b=B6vvdfO1llMHDNFVuhFVIpRyyO/noWONl3iCj5w0auuRsW5sB9JSNwcvkUp49t30/F
-         hqw8JB2VF40YlWQ3o4WM2HiekS24nEb0PVwjOz8yb13xc+GmcJx+5AyH6SBG8sg3MALB
-         CnBlF60655p5zWhfVZZgQsh3qulBAm/LP76FcUFqSpux8llCMO1dOMhOt3jUEtS8cLw3
-         4OreHz69GL0AZIldRU6JY5KaTkLvogpBkaX41f8Mg7vd3d7UKQ7jFq767v/Hhu+jGnz5
-         zOfh5kD0JVWnlOAmkUMMgP4VDrXTt36Ld7UZBmHFxlZUO+xpJxrEnQjdAV7vz4ma7DfB
-         PSTg==
-X-Gm-Message-State: ABy/qLaxUtggOlEd88+AJ9ibTR0eZvai8k78P1ymJYwNYfI3wi1+VL08
-        rxn6iwlD97V0EzueA0qmvf20ZtB2YqxJIGHIbW+rtg==
-X-Google-Smtp-Source: APBJJlEbMgvuYyt6jh+e+n6VqroGKijmgJQ7xQY+spS0oF/gn/I2gqCbv1hokho+dYSXUMUWKBIkAw==
-X-Received: by 2002:a5d:69d1:0:b0:316:ff0e:8213 with SMTP id s17-20020a5d69d1000000b00316ff0e8213mr6661940wrw.15.1691054196274;
-        Thu, 03 Aug 2023 02:16:36 -0700 (PDT)
-Received: from ?IPV6:2a01:e0a:982:cbb0:8656:583:d034:d966? ([2a01:e0a:982:cbb0:8656:583:d034:d966])
-        by smtp.gmail.com with ESMTPSA id y18-20020a5d6212000000b003143c6e09ccsm21481602wru.16.2023.08.03.02.16.35
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 03 Aug 2023 02:16:35 -0700 (PDT)
-Message-ID: <27b8f21c-f705-ba65-5b2e-912fb97a85a9@linaro.org>
-Date:   Thu, 3 Aug 2023 11:16:34 +0200
+        Thu, 3 Aug 2023 05:16:41 -0400
+Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 52A38E7;
+        Thu,  3 Aug 2023 02:16:40 -0700 (PDT)
+Received: from loongson.cn (unknown [10.20.42.43])
+        by gateway (Coremail) with SMTP id _____8CxLOt2cMtkzJoPAA--.30887S3;
+        Thu, 03 Aug 2023 17:16:38 +0800 (CST)
+Received: from openarena.loongson.cn (unknown [10.20.42.43])
+        by localhost.localdomain (Coremail) with SMTP id AQAAf8CxF811cMtkn_lGAA--.49739S2;
+        Thu, 03 Aug 2023 17:16:37 +0800 (CST)
+From:   Sui Jingfeng <suijingfeng@loongson.cn>
+To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Sui Jingfeng <suijingfeng@loongson.cn>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jesse Brandeburg <jesse.brandeburg@intel.com>,
+        Tony Nguyen <anthony.l.nguyen@intel.com>,
+        Lukas Bulwahn <lukas.bulwahn@gmail.com>,
+        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] Mips: loongson3_defconfig: Enable ast drm driver by default
+Date:   Thu,  3 Aug 2023 17:16:37 +0800
+Message-Id: <20230803091637.971924-1-suijingfeng@loongson.cn>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Reply-To: neil.armstrong@linaro.org
-Subject: Re: [PATCH v2 0/1] Add add-maintainer.py script
-Content-Language: en-US
-To:     Guru Das Srinagesh <quic_gurus@quicinc.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Nicolas Schier <nicolas@fjasle.eu>,
-        Kees Cook <keescook@chromium.org>,
-        Bjorn Andersson <andersson@kernel.org>, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, Will Deacon <will@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        quic_pkondeti@quicinc.com, u.kleine-koenig@pengutronix.de
-Cc:     linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-pm@vger.kernel.org
-References: <cover.1691049436.git.quic_gurus@quicinc.com>
-From:   Neil Armstrong <neil.armstrong@linaro.org>
-Organization: Linaro Developer Services
-In-Reply-To: <cover.1691049436.git.quic_gurus@quicinc.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: AQAAf8CxF811cMtkn_lGAA--.49739S2
+X-CM-SenderInfo: xvxlyxpqjiv03j6o00pqjv00gofq/
+X-Coremail-Antispam: 1Uk129KBj9xXoWrZrW8Cw1kGF45tw1fGF1rAFc_yoWfAwc_tF
+        y2k3W8ur4FyFZFgrWxXw1rur4a9a4Uu3WrCF17Jry3Z3yjvr43XryvyryUGFn8W34DK3yf
+        Xay8AFy2kF1ftosvyTuYvTs0mTUanT9S1TB71UUUUUDqnTZGkaVYY2UrUUUUj1kv1TuYvT
+        s0mT0YCTnIWjqI5I8CrVACY4xI64kE6c02F40Ex7xfYxn0WfASr-VFAUDa7-sFnT9fnUUI
+        cSsGvfJTRUUUb28YFVCjjxCrM7AC8VAFwI0_Jr0_Gr1l1xkIjI8I6I8E6xAIw20EY4v20x
+        vaj40_Wr0E3s1l1IIY67AEw4v_Jrv_JF1l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxS
+        w2x7M28EF7xvwVC0I7IYx2IY67AKxVW8JVW5JwA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxV
+        W8JVWxJwA2z4x0Y4vEx4A2jsIE14v26r4UJVWxJr1l84ACjcxK6I8E87Iv6xkF7I0E14v2
+        6r4UJVWxJr1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqjxCEc2xF0cIa020Ex4CE44I27w
+        Aqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jw0_WrylYx0Ex4A2jsIE
+        14v26r4j6F4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwIxGrwCF04k20xvY0x
+        0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E
+        7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jw0_GFylIxkGc2Ij64vIr41lIxAIcV
+        C0I7IYx2IY67AKxVWUCVW8JwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Gr0_Cr1lIxAIcVCF
+        04k26cxKx2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14v26r4j6F4UMIIF0xvEx4A2jsIEc7
+        CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x07josjUUUUUU=
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+ASpeed GPU is typically found on the Loongson server platform, as a
+peripheral device driver, it generally should be compiled as a module.
 
-On 03/08/2023 10:23, Guru Das Srinagesh wrote:
-> When pushing patches to upstream, the `get_maintainer.pl` script is used to
-> determine whom to send the patches to. Instead of having to manually process
-> the output of the script, add a wrapper script to do that for you.
-> 
-> The add-maintainer.py script adds maintainers (and mailing lists) to a patch,
-> editing it in-place.
+Tested on loongson 3B4000 server[1].
 
-FYI the b4 prep command does this:
-https://github.com/mricon/b4/blob/e8045d1353165cc065b2f1b180bf1b0846af510e/b4/ez.py#L2055
+[1] https://github.com/loongson-gfx/loongson_boards/tree/main/ls3b4000x2_server
 
-Perhaps it could be useful to make sure the output is similar ?
+Signed-off-by: Sui Jingfeng <suijingfeng@loongson.cn>
+---
+ arch/mips/configs/loongson3_defconfig | 1 +
+ 1 file changed, 1 insertion(+)
 
-So far I've been very satisfied by the output of b4 auto_to_cc.
-
-Thanks,
-Neil
-
-> 
-> Thanks to Bjorn for being a sounding board to this idea and for his valuable
-> suggestions.
-> 
-> Please try out this script with `--verbosity debug` for verifying that it's
-> doing "the right thing". I've tested this with a patch series from various
-> subsystems to ensure variety of maintainers and lists output and found it to be
-> doing what it is supposed to do.
-> 
-> I referred to the following links during development of this script:
-> - https://stackoverflow.com/questions/4427542/how-to-do-sed-like-text-replace-with-python
-> - https://stackoverflow.com/questions/4146009/python-get-list-indexes-using-regular-expression
-> - https://stackoverflow.com/questions/10507230/insert-line-at-middle-of-file-with-python
-> 
-> v1 -> v2:
-> - Added set-union logic based on Pavan's comments [1] and Bjorn's early suggestion
-> - Expanded audience and added more mailing lists to get more review comments and feedback
-> 
-> [1] https://lore.kernel.org/lkml/63764b84-3ebd-4081-836f-4863af196228@quicinc.com/
-> 
-> Guru Das Srinagesh (1):
->    scripts: Add add-maintainer.py
-> 
->   scripts/add-maintainer.py | 113 ++++++++++++++++++++++++++++++++++++++
->   1 file changed, 113 insertions(+)
->   create mode 100755 scripts/add-maintainer.py
-> 
+diff --git a/arch/mips/configs/loongson3_defconfig b/arch/mips/configs/loongson3_defconfig
+index 3087e64e6ebe..a9fadea72da5 100644
+--- a/arch/mips/configs/loongson3_defconfig
++++ b/arch/mips/configs/loongson3_defconfig
+@@ -283,6 +283,7 @@ CONFIG_DRM_AMDGPU_USERPTR=y
+ CONFIG_DRM_AMD_ACP=y
+ CONFIG_DRM_AMD_DC=y
+ CONFIG_DRM_AMD_DC_SI=y
++CONFIG_DRM_AST=m
+ CONFIG_DRM_RADEON=m
+ CONFIG_DRM_QXL=y
+ CONFIG_DRM_VIRTIO_GPU=y
+-- 
+2.34.1
 
