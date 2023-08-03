@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BEB5376E31D
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 10:29:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 510D376E31F
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 10:30:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234646AbjHCI3p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Aug 2023 04:29:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50938 "EHLO
+        id S234434AbjHCI37 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Aug 2023 04:29:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51568 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233050AbjHCI2n (ORCPT
+        with ESMTP id S234395AbjHCI2u (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Aug 2023 04:28:43 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D058D3C1F
-        for <linux-kernel@vger.kernel.org>; Thu,  3 Aug 2023 01:26:36 -0700 (PDT)
+        Thu, 3 Aug 2023 04:28:50 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 883D64C0D
+        for <linux-kernel@vger.kernel.org>; Thu,  3 Aug 2023 01:26:39 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 6E48D61CBE
-        for <linux-kernel@vger.kernel.org>; Thu,  3 Aug 2023 08:26:36 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 373A7C43142;
-        Thu,  3 Aug 2023 08:26:34 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 8126B61C4B
+        for <linux-kernel@vger.kernel.org>; Thu,  3 Aug 2023 08:26:38 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4F554C43391;
+        Thu,  3 Aug 2023 08:26:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691051195;
-        bh=KR4z8QRNi4pU35qpz87mdf60pT5ISebScYvNacq6P6s=;
+        s=k20201202; t=1691051197;
+        bh=ePyKU1YMopmwzc/Oe51J6v27McxWIDUV7ds7IsNZfvE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=OMIMPZoTbbhICTxT8qGKxBU7CW4vQK1sUfp0/QvJbHEaATPtfrAplsfuLIECI0RP1
-         GiTcPGBEyG3uzuQI99dsh4/OQ294FO5bGnmIgCHGS+cerlwCMv4qNswLyiZeYDwXoC
-         OxGeEoU23O2mRaRoYnD/NMJZX3n+KL30gd4KpQxVxvCfACnvx75rv2ioDlK/lmnQYV
-         nViI0vCqYEfnPMFeSrkuwWNyFCH7ic+L8EfA6aGdFjsn31Q8mBeSikyP2pfFAXgD2e
-         z9o60UMna7JsQ6gYbsnM+JVWPtAkdcj/hgxSf4UoUgVVWBsTTk6IZrD0l5XSGQYL97
-         dfxqGtZUVJ40Q==
+        b=H6tC89azknyzgPThJCu65qkNSwtEz1ekEYAX3ftbBQPgorFF3eBj11bLO8pX8H5Jf
+         CGXvde0vej1G0RlhG0HGIxWKFthslelFSC7Zi4jowqvePOWcrRpFp7zEI3h+p4YdqN
+         ptXZGP2rW/W4uK8dbwrpSU1g9wbWqjDapv0lrlBvjW57vsipb/IsmgSIhWc9Dja52y
+         Rgp3zReGzWZRgIWjE+852ndbVuLRHRnTPuleNTwDPSNEV9XGQ71qUiPaG6hL/8hxm7
+         ymY0aWaVESezPTTOuY+dWkJucxZFAQqst0VG7bJ1ekjLNRYzEH8ZgiOKeplNs23xYE
+         wOVHNhUJK73dg==
 From:   Arnd Bergmann <arnd@kernel.org>
 To:     Borislav Petkov <bp@alien8.de>
 Cc:     Thomas Gleixner <tglx@linutronix.de>,
@@ -40,9 +40,9 @@ Cc:     Thomas Gleixner <tglx@linutronix.de>,
         Dave Hansen <dave.hansen@linux.intel.com>,
         linux-kernel@vger.kernel.org, x86@kernel.org,
         Arnd Bergmann <arnd@arndb.de>
-Subject: [PATCH v3 5/7] x86: alternative: add __alt_reloc_selftest prototype
-Date:   Thu,  3 Aug 2023 10:26:17 +0200
-Message-Id: <20230803082619.1369127-6-arnd@kernel.org>
+Subject: [PATCH v3 6/7] x86: paravirt: shut up unused native_pv_lock_init() function warning
+Date:   Thu,  3 Aug 2023 10:26:18 +0200
+Message-Id: <20230803082619.1369127-7-arnd@kernel.org>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20230803082619.1369127-1-arnd@kernel.org>
 References: <20230803082619.1369127-1-arnd@kernel.org>
@@ -60,31 +60,89 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Arnd Bergmann <arnd@arndb.de>
 
-The newly introduced selftest function causes a warning when -Wmissing-prototypes
-is enabled:
+The native_pv_lock_init function is only used in SMP configurations
+and declared in asm/qspinlock.h, which is not used in UP kernels,
+but the function is still defined for both, which causes a warning:
 
-arch/x86/kernel/alternative.c:1461:32: error: no previous prototype for '__alt_reloc_selftest' [-Werror=missing-prototypes]
+    arch/x86/kernel/paravirt.c:76:13: error: no previous prototype for 'native_pv_lock_init' [-Werror=missing-prototypes]
 
-Since it's only used locally, add the prototype directly in front of it.
+Move the declaration to asm/paravirt.h so it is visible even
+with CONFIG_SMP but short-circuit the definition to turn it
+into an empty function.
 
-Fixes: 270a69c4485d ("x86/alternative: Support relocations in alternatives")
 Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 ---
- arch/x86/kernel/alternative.c | 1 +
- 1 file changed, 1 insertion(+)
+v3: new patch to avoid adding another #ifdef to paravirt.c
+---
+ arch/x86/include/asm/paravirt.h  | 7 +++++++
+ arch/x86/include/asm/qspinlock.h | 7 +------
+ arch/x86/kernel/paravirt.c       | 3 ++-
+ 3 files changed, 10 insertions(+), 7 deletions(-)
 
-diff --git a/arch/x86/kernel/alternative.c b/arch/x86/kernel/alternative.c
-index 2dcf3a06af090..934c23f24a3f8 100644
---- a/arch/x86/kernel/alternative.c
-+++ b/arch/x86/kernel/alternative.c
-@@ -1531,6 +1531,7 @@ static noinline void __init int3_selftest(void)
+diff --git a/arch/x86/include/asm/paravirt.h b/arch/x86/include/asm/paravirt.h
+index b49778664d2be..6c8ff12140aea 100644
+--- a/arch/x86/include/asm/paravirt.h
++++ b/arch/x86/include/asm/paravirt.h
+@@ -739,6 +739,7 @@ static __always_inline unsigned long arch_local_irq_save(void)
+ 	     ".popsection")
  
- static __initdata int __alt_reloc_selftest_addr;
+ extern void default_banner(void);
++void native_pv_lock_init(void) __init;
  
-+extern void __init __alt_reloc_selftest(void *arg);
- __visible noinline void __init __alt_reloc_selftest(void *arg)
+ #else  /* __ASSEMBLY__ */
+ 
+@@ -778,6 +779,12 @@ extern void default_banner(void);
+ #endif /* __ASSEMBLY__ */
+ #else  /* CONFIG_PARAVIRT */
+ # define default_banner x86_init_noop
++
++#ifndef __ASSEMBLY__
++static inline void native_pv_lock_init(void)
++{
++}
++#endif
+ #endif /* !CONFIG_PARAVIRT */
+ 
+ #ifndef __ASSEMBLY__
+diff --git a/arch/x86/include/asm/qspinlock.h b/arch/x86/include/asm/qspinlock.h
+index d87451df480bd..cde8357bb226d 100644
+--- a/arch/x86/include/asm/qspinlock.h
++++ b/arch/x86/include/asm/qspinlock.h
+@@ -74,8 +74,6 @@ static inline bool vcpu_is_preempted(long cpu)
+  */
+ DECLARE_STATIC_KEY_TRUE(virt_spin_lock_key);
+ 
+-void native_pv_lock_init(void) __init;
+-
+ /*
+  * Shortcut for the queued_spin_lock_slowpath() function that allows
+  * virt to hijack it.
+@@ -103,10 +101,7 @@ static inline bool virt_spin_lock(struct qspinlock *lock)
+ 
+ 	return true;
+ }
+-#else
+-static inline void native_pv_lock_init(void)
+-{
+-}
++
+ #endif /* CONFIG_PARAVIRT */
+ 
+ #include <asm-generic/qspinlock.h>
+diff --git a/arch/x86/kernel/paravirt.c b/arch/x86/kernel/paravirt.c
+index 89842bb7ec9cc..066fc19d2568e 100644
+--- a/arch/x86/kernel/paravirt.c
++++ b/arch/x86/kernel/paravirt.c
+@@ -75,7 +75,8 @@ DEFINE_STATIC_KEY_TRUE(virt_spin_lock_key);
+ 
+ void __init native_pv_lock_init(void)
  {
- 	WARN_ON(arg != &__alt_reloc_selftest_addr);
+-	if (!boot_cpu_has(X86_FEATURE_HYPERVISOR))
++	if (IS_ENABLED(CONFIG_PARAVIRT_SPINLOCKS) &&
++	    !boot_cpu_has(X86_FEATURE_HYPERVISOR))
+ 		static_branch_disable(&virt_spin_lock_key);
+ }
+ 
 -- 
 2.39.2
 
