@@ -2,163 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BFFBA76EF36
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 18:15:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D023276EF39
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 18:16:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236143AbjHCQPD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Aug 2023 12:15:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53604 "EHLO
+        id S234224AbjHCQQT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Aug 2023 12:16:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54522 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232465AbjHCQPB (ORCPT
+        with ESMTP id S235967AbjHCQQR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Aug 2023 12:15:01 -0400
-Received: from mail.hugovil.com (mail.hugovil.com [162.243.120.170])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A790173F;
-        Thu,  3 Aug 2023 09:15:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=hugovil.com
-        ; s=x; h=Subject:Content-Transfer-Encoding:Content-Type:Mime-Version:
-        References:In-Reply-To:Message-Id:Cc:To:From:Date:Sender:Reply-To:Content-ID:
-        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-        :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
-        List-Post:List-Owner:List-Archive;
-        bh=jswo9qlkLWf5K8IR24e3YaIGIMYkx7BIxRpgj01F1y4=; b=b0YMXBIZNHNd2NlA9Sq6UijP6q
-        xNsOJWNRwER7BHYGzpnNYEgrDxujdGM6Vtvox2fOsTOj3cbmUnkC7qnhAyPjMXaLnk7iCusRLHbHA
-        MEETnVICaTosKitKi+rKN13b1NwU3k1eQ2lJb0E5ksANth0rMcDBG0laQUVaQav+4vHs=;
-Received: from modemcable061.19-161-184.mc.videotron.ca ([184.161.19.61]:47720 helo=pettiford)
-        by mail.hugovil.com with esmtpa (Exim 4.92)
-        (envelope-from <hugo@hugovil.com>)
-        id 1qRayQ-0001ok-55; Thu, 03 Aug 2023 12:14:50 -0400
-Date:   Thu, 3 Aug 2023 12:14:49 -0400
-From:   Hugo Villeneuve <hugo@hugovil.com>
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
-        conor+dt@kernel.org, jirislaby@kernel.org, jringle@gridpoint.com,
-        isaac.true@canonical.com, jesse.sung@canonical.com,
-        l.perczak@camlintechnologies.com, tomasz.mon@camlingroup.com,
-        linux-serial@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org,
-        Hugo Villeneuve <hvilleneuve@dimonoff.com>,
-        stable@vger.kernel.org, Lech Perczak <lech.perczak@camlingroup.com>
-Message-Id: <20230803121449.bcf74899e062ca39dfb073a3@hugovil.com>
-In-Reply-To: <2023073118-mousiness-sandlot-6258@gregkh>
-References: <20230725142343.1724130-1-hugo@hugovil.com>
-        <20230725142343.1724130-5-hugo@hugovil.com>
-        <2023073118-mousiness-sandlot-6258@gregkh>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-SA-Exim-Connect-IP: 184.161.19.61
-X-SA-Exim-Mail-From: hugo@hugovil.com
+        Thu, 3 Aug 2023 12:16:17 -0400
+Received: from mail-lj1-x22f.google.com (mail-lj1-x22f.google.com [IPv6:2a00:1450:4864:20::22f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 308A73A97;
+        Thu,  3 Aug 2023 09:16:11 -0700 (PDT)
+Received: by mail-lj1-x22f.google.com with SMTP id 38308e7fff4ca-2b9cf2b1309so14943321fa.0;
+        Thu, 03 Aug 2023 09:16:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1691079369; x=1691684169;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Ak2e6qyQw5b5s1FOOu8IqFAFc+5BX1aqKP7dFDqfSkg=;
+        b=LWv3jcuFeu+HQkIEQ6J0LW5YNcp1nRfncRfXPIe5WqVTH7k9FCfWBWVQBYfgDt68uC
+         /MGOfeXglLZMHClwSpOAHGUEvH0LeD7S5ikJu+WfkHGPPn1uv0jy352Q5TXuDVD0zwfX
+         8eix3oqFIqSe2zsj43NMFSZ4eDT9rc4T3mLD6dAQbrrC7KwNz1dWPyDUvkkEMIBuM9iR
+         2vngNLtenYn1jzOe1/Wn0U+uAeFQBOskYIpZFxsT1pfAdVD2MyVhMy5Hg7jt1DEFnNPg
+         1aC35lNIZcWCtqUq+c8o/2609YnYX/uvLz+MZEyAxOeHRFh/kFujzyle6iv816/KVPKC
+         o+Uw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691079369; x=1691684169;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Ak2e6qyQw5b5s1FOOu8IqFAFc+5BX1aqKP7dFDqfSkg=;
+        b=F+DK427nKUnPWtLyRJDVm3AxLxtiYr2dA2duMLJmRmxyOgObTdTzXgYuP8GNjx7gl2
+         hixBbeHzOf29s0/ZX9z8KkYGAog75I+wwc+9EXZoh12eTu0vxQyvQthe4EWjur60DsvO
+         1/0hbgxYv6IOuBVQmYWaIDrJPzx3nLGRyMqFIJszcgt1DaSJbRpMZrJhtHOc7r2brYOa
+         tz0UZMuTKAOEdmBT8Y4IZ+C2htWlq09vM9yUgqTQHQKvtV2tq4J56LVBL9OhbQfxFUn/
+         8w0zT2a19wLwK4ZGLS6oiBAcxdB1zosN845NTCn6C8D3d4Vn9hFpB1LFYuomVTrIuO5y
+         lA5Q==
+X-Gm-Message-State: ABy/qLZr3yv5QxKxKnIqM/NlcVV1AsnSnZpgrMmcdJaE2LTHk40JkKKm
+        bTixJnInUAwcXQdnPduEZfiY7HkfKb665rmOFjY=
+X-Google-Smtp-Source: APBJJlFPy5XddgcUkQ8ldIEwz7iLpQjjQrxx2s2OJio36y38yw8a5auP9RBYgm318xZCRkWZUt2Vqp2Wnbgn5gyK2/A=
+X-Received: by 2002:a2e:9602:0:b0:2b6:c3f9:b86b with SMTP id
+ v2-20020a2e9602000000b002b6c3f9b86bmr3531763ljh.15.1691079368631; Thu, 03 Aug
+ 2023 09:16:08 -0700 (PDT)
+MIME-Version: 1.0
+References: <20230626085811.3192402-1-puranjay12@gmail.com>
+ <7e05efe1-0af0-1896-6f6f-dcb02ed8ca27@iogearbox.net> <ZKMCFtlfJA1LfGNJ@FVFF77S0Q05N>
+ <CANk7y0gTXPBj5U-vFK0cEvVe83tP1FqyD=MuLXT_amWO=EssOA@mail.gmail.com>
+ <CANk7y0hRYzpsYoqcU1tHyZThAgg-cx46C4-n2JYZTa7sDwEk-w@mail.gmail.com>
+ <CAADnVQJJHiSZPZFpu1n-oQLEsUptacSzF7FdOKfO6OEoKz-jXg@mail.gmail.com> <ZMuLvKRbPfOK0IpN@FVFF77S0Q05N>
+In-Reply-To: <ZMuLvKRbPfOK0IpN@FVFF77S0Q05N>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Thu, 3 Aug 2023 09:15:57 -0700
+Message-ID: <CAADnVQJvtLjByy2E6Cy1JO8REiUVtBDSfsLMgN3OvHrDwWOykw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v4 0/3] bpf, arm64: use BPF prog pack allocator
+ in BPF JIT
+To:     Mark Rutland <mark.rutland@arm.com>
+Cc:     Puranjay Mohan <puranjay12@gmail.com>,
+        Florent Revest <revest@chromium.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        bpf <bpf@vger.kernel.org>, KP Singh <kpsingh@kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
-Subject: Re: [PATCH v9 04/10] serial: sc16is7xx: refactor GPIO controller
- registration
-X-SA-Exim-Version: 4.2.1 (built Wed, 08 May 2019 21:11:16 +0000)
-X-SA-Exim-Scanned: Yes (on mail.hugovil.com)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 31 Jul 2023 17:55:42 +0200
-Greg KH <gregkh@linuxfoundation.org> wrote:
+On Thu, Aug 3, 2023 at 4:13=E2=80=AFAM Mark Rutland <mark.rutland@arm.com> =
+wrote:
+>
+> Hi Alexei,
+>
+> On Wed, Aug 02, 2023 at 02:02:39PM -0700, Alexei Starovoitov wrote:
+> > On Sun, Jul 30, 2023 at 10:22=E2=80=AFAM Puranjay Mohan <puranjay12@gma=
+il.com> wrote:
+> > >
+> > > Hi Mark,
+> > > I am really looking forward to your feedback on this series.
+> > >
+> > > On Mon, Jul 17, 2023 at 9:50=E2=80=AFAM Puranjay Mohan <puranjay12@gm=
+ail.com> wrote:
+> > > >
+> > > > Hi Mark,
+> > > >
+> > > > On Mon, Jul 3, 2023 at 7:15=E2=80=AFPM Mark Rutland <mark.rutland@a=
+rm.com> wrote:
+> > > > >
+> > > > > On Mon, Jul 03, 2023 at 06:40:21PM +0200, Daniel Borkmann wrote:
+> > > > > > Hi Mark,
+> > > > >
+> > > > > Hi Daniel,
+> > > > >
+> > > > > > On 6/26/23 10:58 AM, Puranjay Mohan wrote:
+> > > > > > > BPF programs currently consume a page each on ARM64. For syst=
+ems with many BPF
+> > > > > > > programs, this adds significant pressure to instruction TLB. =
+High iTLB pressure
+> > > > > > > usually causes slow down for the whole system.
+> > > > > > >
+> > > > > > > Song Liu introduced the BPF prog pack allocator[1] to mitigat=
+e the above issue.
+> > > > > > > It packs multiple BPF programs into a single huge page. It is=
+ currently only
+> > > > > > > enabled for the x86_64 BPF JIT.
+> > > > > > >
+> > > > > > > This patch series enables the BPF prog pack allocator for the=
+ ARM64 BPF JIT.
+> > > > >
+> > > > > > If you get a chance to take another look at the v4 changes from=
+ Puranjay and
+> > > > > > in case they look good to you reply with an Ack, that would be =
+great.
+> > > > >
+> > > > > Sure -- this is on my queue of things to look at; it might just t=
+ake me a few
+> > > > > days to get the time to give this a proper look.
+> > > > >
+> > > > > Thanks,
+> > > > > Mark.
+> > > >
+> > > > I am eagerly looking forward to your feedback on this series.
+> >
+> > Mark, Catalin, Florent, KP,
+> >
+> > This patch set was submitted on June 26 !
+>
+> I appreciate this was sent a while ago, but I have been stuck on some urg=
+ent
+> bug-fixing for the last few weeks, and my review bandwidth is therfore ve=
+ry
+> limited.
+>
+> Given Puranjay had previously told me he was doing this as a side project=
+ for
+> fun, and given no-one had told me this was urgent, I assumed that this wa=
+sn't a
+> major blocker and could wait.
+>
+> I should have sent a holding reply to that effect; sorry.
+>
+> The series addresses my original concern. However, in looking at it I thi=
+nk
+> there may me a wider potential isssue w.r.t. the way instruction memory g=
+ets
+> reused, because as writtten today the architecture doesn't seem to have a
+> guarantee on when instruction fetches are completed and therefore when it=
+'s
+> safe to modify instruction memory. Usually we're saved by TLB maintenance=
+,
+> which this series avoids by design.
+>
+> I unfortunately haven't had the time to dig into that, poke our architect=
+s,
+> etc.
+>
+> So how urgent is this?
 
-> On Tue, Jul 25, 2023 at 10:23:36AM -0400, Hugo Villeneuve wrote:
-> > From: Hugo Villeneuve <hvilleneuve@dimonoff.com>
-> > 
-> > In preparation for upcoming patch "fix regression with GPIO
-> > configuration". To facilitate review and make code more modular.
-> 
-> I would much rather the issue be fixed _before_ the code is refactored,
-> unless it is impossible to fix it without the refactor?
-
-Hi Greg,
-normally I would agree, but the refactor in this case helps a lot to
-address some issues raised by you and Andy in V7 of this series.
-
-Maybe I could merge it with the actual patch "fix regression with GPIO
-configuration"?
-
-
-> > Cc: <stable@vger.kernel.org> # 6.1.x
-> 
-> What commit id does this fix?
-
-It doesn't fix anything, but I tought that I needed this tag since
-this patch is a prerequisite for the next patch in the series, which
-would be applied to stable kernels. I will remove this tag (assuming
-the patch stays as it is, depending on your answer to the above
-question).
-
- 
-> > Signed-off-by: Hugo Villeneuve <hvilleneuve@dimonoff.com>
-> > Reviewed-by: Lech Perczak <lech.perczak@camlingroup.com>
-> > Tested-by: Lech Perczak <lech.perczak@camlingroup.com>
-> > ---
-> >  drivers/tty/serial/sc16is7xx.c | 40 ++++++++++++++++++++--------------
-> >  1 file changed, 24 insertions(+), 16 deletions(-)
-> > 
-> > diff --git a/drivers/tty/serial/sc16is7xx.c b/drivers/tty/serial/sc16is7xx.c
-> > index 32d43d00a583..5b0aeef9d534 100644
-> > --- a/drivers/tty/serial/sc16is7xx.c
-> > +++ b/drivers/tty/serial/sc16is7xx.c
-> > @@ -332,6 +332,7 @@ struct sc16is7xx_one {
-> >  
-> >  struct sc16is7xx_port {
-> >  	const struct sc16is7xx_devtype	*devtype;
-> > +	struct device			*dev;
-> 
-> Why is this pointer needed?
-> 
-> Why is it grabbed and yet the reference count is never incremented?  Who
-> owns the reference count and when will it go away?
-> 
-> And what device is this?  The parent?  Current device?  What type of
-> device is it?  And why is it needed?
-> 
-> Using "raw" devices is almost never something a driver should do, they
-> are only passed into functions by the driver core, but then the driver
-> should instantly turn them into the "real" structure.
-
-We already discussed that a lot in previous versions (v7)... I am
-trying my best to modify the code to address your concerns, but I am
-not fully understanding what you mean about raw devices, and you didn't
-answer some of my previous questions/interrogations in v7 about that.
-
-So, in the new function that I
-need to implement, sc16is7xx_setup_gpio_chip(), I absolutely need to use
-a raw device to read a device tree property and to set
-s->gpio.parent:
-
-    count = device_property_count_u32(dev, ...
-    ...
-    s->gpio.parent = dev;
-
-Do we agree on that?
-
-Then, how do I pass this raw device to the 
-device_property_count_u32() function and to the s->gpio.parent
-assignment?
-
-Should I modify sc16is7xx_setup_gpio_chip() like so:
-
-    static int sc16is7xx_setup_gpio_chip(struct sc16is7xx_port *s)
-    {
-	struct device *dev = &s->p[0].port.dev;
-
-        count = device_property_count_u32(dev, ...
-        ...
-        s->gpio.parent = dev;
-
-?
-
-If not, can you show me how you would like to do it to avoid me trying
-to guess?
-
-Thank you,
-Hugo.
+The performance wins are substantial.
+We'd like to realize them sooner than later.
