@@ -2,108 +2,196 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 77EC176E912
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 15:03:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7671076E91B
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 15:03:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233769AbjHCNDh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Aug 2023 09:03:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53564 "EHLO
+        id S235915AbjHCNDy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Aug 2023 09:03:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53770 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235328AbjHCNDc (ORCPT
+        with ESMTP id S232507AbjHCNDp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Aug 2023 09:03:32 -0400
-Received: from mx07-00178001.pphosted.com (mx08-00178001.pphosted.com [91.207.212.93])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E17B14226;
-        Thu,  3 Aug 2023 06:03:15 -0700 (PDT)
-Received: from pps.filterd (m0046661.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id 373CeVra009018;
-        Thu, 3 Aug 2023 15:03:02 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=
-        from:to:cc:subject:date:message-id:in-reply-to:references
-        :mime-version:content-transfer-encoding:content-type; s=
-        selector1; bh=8u4d3LvlGUVXnqclczmcYRVp1j8VsBGa+/jN0gq0QF0=; b=qx
-        te2mDKZaPpbobyPTxf0NdlqR2169gtOYY18MhJjhEjNZY6GEnwi8Z0s88d9612z+
-        OsFanHq7SWUNkvFf2pukLcghm7v8f07jfdTdZTFEg1ruwET0nUEzjjY5IFtEbEZZ
-        GGIv2x236sUW5JBLLjkYbZMXq1I6BMp3Z1eQR1IVsSiCaZiXNjDcqP+6sv1HK+ZK
-        6fxFp4AIqdy3+duOaPrPam+5m45dd0WYPTDI9TFmfiGvQL5sQx5YH7nVgFlYdGY8
-        CixfIJlNMqiD9lMmm4X2YkivSLbbNGECCKoCum6f6OjyFRHdh7PNvNkFjo7mtT8E
-        N8s2y9Rtqgy8iOcBmJew==
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3s8cet04np-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 03 Aug 2023 15:03:02 +0200 (MEST)
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 419B010008B;
-        Thu,  3 Aug 2023 15:03:02 +0200 (CEST)
-Received: from Webmail-eu.st.com (shfdag1node1.st.com [10.75.129.69])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 389C62207B5;
-        Thu,  3 Aug 2023 15:03:02 +0200 (CEST)
-Received: from localhost (10.201.20.168) by SHFDAG1NODE1.st.com (10.75.129.69)
- with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.21; Thu, 3 Aug
- 2023 15:03:01 +0200
-From:   Valentin Caron <valentin.caron@foss.st.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-CC:     Jiri Slaby <jirislaby@kernel.org>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Amelie Delaunay <amelie.delaunay@foss.st.com>,
-        <linux-serial@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        Valentin Caron <valentin.caron@foss.st.com>
-Subject: [PATCH 6/6] serial: stm32: synchronize RX DMA channel in shutdown
-Date:   Thu, 3 Aug 2023 15:01:34 +0200
-Message-ID: <20230803130134.155355-7-valentin.caron@foss.st.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20230803130134.155355-1-valentin.caron@foss.st.com>
-References: <20230803130134.155355-1-valentin.caron@foss.st.com>
+        Thu, 3 Aug 2023 09:03:45 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6E2235A8;
+        Thu,  3 Aug 2023 06:03:25 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 5ABE861D85;
+        Thu,  3 Aug 2023 13:03:25 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 37721C433C7;
+        Thu,  3 Aug 2023 13:03:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1691067804;
+        bh=EM39itBcbN7Mjgyn0t1kV7w4owOpAntw0KP1b1TLh4o=;
+        h=From:To:Cc:Subject:Date:From;
+        b=QBdn5p711H9F06/aTeC6MyfO1S9DU2slkYUbUsY/ELHurAJ+cJ/BILBUgDVbilh5R
+         6+LsYkKrENWqX5NOAQViGs8zzn/1sLqsndB95AB/kTqfs3Gjxf42B9bvpiSQju560f
+         lFtZQV0kEE1/52uXdcXWehAZWjY/JTMhdye3TmBJkwM50UhASeXg/e1XLsLiMrRAPx
+         F5eK9Tj2vPlDxklBjilV4Zp7UbPemftVUGy1TYq7f5+fK+KxTY0feTNkKPOVslU5Yf
+         soIbHVGZ12OgS6AA5LvTrXu8HJs+LbIiKYK3/Impko8/8xqoKlztn+ULtOLn7EjbGK
+         49Xwr0yFlbb4g==
+From:   Sasha Levin <sashal@kernel.org>
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc:     Boris Brezillon <boris.brezillon@collabora.com>,
+        Frank Binns <frank.binns@imgtec.com>,
+        Sarah Walker <sarah.walker@imgtec.com>,
+        Donald Robson <donald.robson@imgtec.com>,
+        Luben Tuikov <luben.tuikov@amd.com>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
+        Sasha Levin <sashal@kernel.org>,
+        dri-devel@lists.freedesktop.org, linux-media@vger.kernel.org,
+        linaro-mm-sig@lists.linaro.org
+Subject: [PATCH AUTOSEL 6.4 1/7] drm/sched: Make sure we wait for all dependencies in kill_jobs_cb()
+Date:   Thu,  3 Aug 2023 09:03:14 -0400
+Message-Id: <20230803130321.641516-1-sashal@kernel.org>
+X-Mailer: git-send-email 2.40.1
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+X-stable: review
+X-Patchwork-Hint: Ignore
+X-stable-base: Linux 6.4.7
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [10.201.20.168]
-X-ClientProxiedBy: SHFCAS1NODE2.st.com (10.75.129.73) To SHFDAG1NODE1.st.com
- (10.75.129.69)
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
- definitions=2023-08-03_12,2023-08-03_01,2023-05-22_02
-X-Spam-Status: No, score=-2.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Amelie Delaunay <amelie.delaunay@foss.st.com>
+From: Boris Brezillon <boris.brezillon@collabora.com>
 
-In shutdown, RX DMA channel is terminated. If the DMA RX callback is
-scheduled but not yet executed, while a new RX DMA transfer is started, the
-callback can be executed, and then disturb the ongoing RX DMA transfer.
-To avoid such a case, call dmaengine_synchronize in shutdown, after the
-DMA RX channel is terminated.
+[ Upstream commit e30cb0599799aac099209e3b045379613c80730e ]
 
-Signed-off-by: Amelie Delaunay <amelie.delaunay@foss.st.com>
+drm_sched_entity_kill_jobs_cb() logic is omitting the last fence popped
+from the dependency array that was waited upon before
+drm_sched_entity_kill() was called (drm_sched_entity::dependency field),
+so we're basically waiting for all dependencies except one.
+
+In theory, this wait shouldn't be needed because resources should have
+their users registered to the dma_resv object, thus guaranteeing that
+future jobs wanting to access these resources wait on all the previous
+users (depending on the access type, of course). But we want to keep
+these explicit waits in the kill entity path just in case.
+
+Let's make sure we keep all dependencies in the array in
+drm_sched_job_dependency(), so we can iterate over the array and wait
+in drm_sched_entity_kill_jobs_cb().
+
+We also make sure we wait on drm_sched_fence::finished if we were
+originally asked to wait on drm_sched_fence::scheduled. In that case,
+we assume the intent was to delegate the wait to the firmware/GPU or
+rely on the pipelining done at the entity/scheduler level, but when
+killing jobs, we really want to wait for completion not just scheduling.
+
+v2:
+- Don't evict deps in drm_sched_job_dependency()
+
+v3:
+- Always wait for drm_sched_fence::finished fences in
+  drm_sched_entity_kill_jobs_cb() when we see a sched_fence
+
+v4:
+- Fix commit message
+- Fix a use-after-free bug
+
+v5:
+- Flag deps on which we should only wait for the scheduled event
+  at insertion time
+
+v6:
+- Back to v4 implementation
+- Add Christian's R-b
+
+Cc: Frank Binns <frank.binns@imgtec.com>
+Cc: Sarah Walker <sarah.walker@imgtec.com>
+Cc: Donald Robson <donald.robson@imgtec.com>
+Cc: Luben Tuikov <luben.tuikov@amd.com>
+Cc: David Airlie <airlied@gmail.com>
+Cc: Daniel Vetter <daniel@ffwll.ch>
+Cc: Sumit Semwal <sumit.semwal@linaro.org>
+Cc: "Christian König" <christian.koenig@amd.com>
+Signed-off-by: Boris Brezillon <boris.brezillon@collabora.com>
+Suggested-by: "Christian König" <christian.koenig@amd.com>
+Reviewed-by: "Christian König" <christian.koenig@amd.com>
+Acked-by: Luben Tuikov <luben.tuikov@amd.com>
+Link: https://patchwork.freedesktop.org/patch/msgid/20230619071921.3465992-1-boris.brezillon@collabora.com
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/tty/serial/stm32-usart.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ drivers/gpu/drm/scheduler/sched_entity.c | 41 +++++++++++++++++++-----
+ 1 file changed, 33 insertions(+), 8 deletions(-)
 
-diff --git a/drivers/tty/serial/stm32-usart.c b/drivers/tty/serial/stm32-usart.c
-index 8fc0526be898..5e9cf0c48813 100644
---- a/drivers/tty/serial/stm32-usart.c
-+++ b/drivers/tty/serial/stm32-usart.c
-@@ -1123,8 +1123,10 @@ static void stm32_usart_shutdown(struct uart_port *port)
- 		dev_err(port->dev, "Transmission is not complete\n");
+diff --git a/drivers/gpu/drm/scheduler/sched_entity.c b/drivers/gpu/drm/scheduler/sched_entity.c
+index e0a8890a62e23..42021d1f7e016 100644
+--- a/drivers/gpu/drm/scheduler/sched_entity.c
++++ b/drivers/gpu/drm/scheduler/sched_entity.c
+@@ -155,16 +155,32 @@ static void drm_sched_entity_kill_jobs_cb(struct dma_fence *f,
+ {
+ 	struct drm_sched_job *job = container_of(cb, struct drm_sched_job,
+ 						 finish_cb);
+-	int r;
++	unsigned long index;
  
- 	/* Disable RX DMA. */
--	if (stm32_port->rx_ch)
-+	if (stm32_port->rx_ch) {
- 		stm32_usart_rx_dma_terminate(stm32_port);
-+		dmaengine_synchronize(stm32_port->rx_ch);
+ 	dma_fence_put(f);
+ 
+ 	/* Wait for all dependencies to avoid data corruptions */
+-	while (!xa_empty(&job->dependencies)) {
+-		f = xa_erase(&job->dependencies, job->last_dependency++);
+-		r = dma_fence_add_callback(f, &job->finish_cb,
+-					   drm_sched_entity_kill_jobs_cb);
+-		if (!r)
++	xa_for_each(&job->dependencies, index, f) {
++		struct drm_sched_fence *s_fence = to_drm_sched_fence(f);
++
++		if (s_fence && f == &s_fence->scheduled) {
++			/* The dependencies array had a reference on the scheduled
++			 * fence, and the finished fence refcount might have
++			 * dropped to zero. Use dma_fence_get_rcu() so we get
++			 * a NULL fence in that case.
++			 */
++			f = dma_fence_get_rcu(&s_fence->finished);
++
++			/* Now that we have a reference on the finished fence,
++			 * we can release the reference the dependencies array
++			 * had on the scheduled fence.
++			 */
++			dma_fence_put(&s_fence->scheduled);
++		}
++
++		xa_erase(&job->dependencies, index);
++		if (f && !dma_fence_add_callback(f, &job->finish_cb,
++						 drm_sched_entity_kill_jobs_cb))
+ 			return;
+ 
+ 		dma_fence_put(f);
+@@ -394,8 +410,17 @@ static struct dma_fence *
+ drm_sched_job_dependency(struct drm_sched_job *job,
+ 			 struct drm_sched_entity *entity)
+ {
+-	if (!xa_empty(&job->dependencies))
+-		return xa_erase(&job->dependencies, job->last_dependency++);
++	struct dma_fence *f;
++
++	/* We keep the fence around, so we can iterate over all dependencies
++	 * in drm_sched_entity_kill_jobs_cb() to ensure all deps are signaled
++	 * before killing the job.
++	 */
++	f = xa_load(&job->dependencies, job->last_dependency);
++	if (f) {
++		job->last_dependency++;
++		return dma_fence_get(f);
 +	}
  
- 	/* flush RX & TX FIFO */
- 	if (ofs->rqr != UNDEF_REG)
+ 	if (job->sched->ops->prepare_job)
+ 		return job->sched->ops->prepare_job(job, entity);
 -- 
-2.25.1
+2.40.1
 
