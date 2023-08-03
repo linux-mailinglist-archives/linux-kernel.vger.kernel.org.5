@@ -2,147 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D3A0D76F45A
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 22:58:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 131E476F45F
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 22:59:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229632AbjHCU6D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Aug 2023 16:58:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59078 "EHLO
+        id S231321AbjHCU7i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Aug 2023 16:59:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59794 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230280AbjHCU54 (ORCPT
+        with ESMTP id S229767AbjHCU7g (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Aug 2023 16:57:56 -0400
-Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6750A1BD
-        for <linux-kernel@vger.kernel.org>; Thu,  3 Aug 2023 13:57:55 -0700 (PDT)
-Received: by mail-wm1-x334.google.com with SMTP id 5b1f17b1804b1-3fe32ec7201so7755e9.1
-        for <linux-kernel@vger.kernel.org>; Thu, 03 Aug 2023 13:57:55 -0700 (PDT)
+        Thu, 3 Aug 2023 16:59:36 -0400
+Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 481701AB;
+        Thu,  3 Aug 2023 13:59:34 -0700 (PDT)
+Received: by mail-wm1-x32c.google.com with SMTP id 5b1f17b1804b1-3fe24dd8898so14237945e9.2;
+        Thu, 03 Aug 2023 13:59:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1691096274; x=1691701074;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
+        d=gmail.com; s=20221208; t=1691096373; x=1691701173;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=2ofH5Ap+npATtmlPdgXvqsVXZejSyesTvHQo0nsoVn0=;
-        b=F3+oc/PifQtBQW1MWoCSD0Te/F47iIDr17mmLNFUtx5yQORT+eKAQ3TSD6YGmupbFx
-         MIHMZ4cXNcfxM76/R0yxe+1uODOYG/ZftO8kQ2rmm9LHDywYxVO5ow4X3PLF5JBdFPUP
-         IRChlDHWhtT1mnJL/ljAGGZgFNqEd1eBTtTPEH+D0HHofBW4fRy/dgInc81cYAPKZ6t8
-         55K1le2e+ht7nHovTmTj2ND8KwfXnrAsdEyBV17p/xhHuu1nhN0dB6WtaVewteoXJAYQ
-         o8xxghWACIQBS9XTvZgl0WB7AEqy82Qv/8Es3rf+6ghiEYSxIlDTStH6iaqDLjPJJgWA
-         dKGw==
+        bh=DP2b+AILmlpdJLSBdLdZp7i7Y6kRAXSbaj0B+upIxrM=;
+        b=KzzRQ4S29CvAU+TMW8J+OxQJT0N2VhnDo449Nyam5kEaT/lCE1i/60oslFCK2Hsg9Y
+         GJ8tR5nS/QQr2daknYxum4FyeNCoXDvPajZSppWA6fXsarteFlTEBTQle6I5+qDh5yVh
+         ngnmh8QazL+AyBdq85o1BjPm/64gbyFgTStzkiooUU9Phj5GbPjSBKK5KeinEBVRMQLR
+         MDoaI9uwvFjXnuP2iW6YwDSKktwQRl82ymGuY3S2+HdlfHslVj6n95vbQklGMBrrmdrM
+         8IYb17FZ/8wMlU/YHeTfKrPsbOBC64FDYeO76bYT6bsFN3xrpmEJ2qCgl3q0dXPynKZV
+         LtBQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691096274; x=1691701074;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20221208; t=1691096373; x=1691701173;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=2ofH5Ap+npATtmlPdgXvqsVXZejSyesTvHQo0nsoVn0=;
-        b=IQ0R56hfeCBI340b9wnejrVehYMlCdHL2jDRFUYCIHhuKTMQmzZCJtZGA687fkbxjY
-         UgxSjbhhc8nhdB8qx5Wk6yrKPXNl6kIOEQoD3D2Qy8PWWzP5EV/m188pnZYxBA4iNfkS
-         QLmM0QJ+1PelGDpPf8VKA6r9DRdSOATk18OApSO1kShH/LJEjC6ByEMbDyD3Rh05QsPN
-         Y2kQJzQJTuIdjabSkERwS2aqX5obgPI56NONP54+XPBEDgvcu7SNK59UNh8/VczmSAW6
-         Pg0NWo6txpj9X5LBlLhT7QyQ8JbQ6dLLQIk4CkTuQuZV0aXQbpARCka8YZZPvF/qoSFZ
-         gWiw==
-X-Gm-Message-State: AOJu0YwzUt9KWOEdkeIEsaUkC8/VUhWvDkTe9TWOYO1i2VoxcrnJ98aE
-        M5vvfjjFGBcdraSWY0Ha88LVo+S4Lx53zky5m2FvGA==
-X-Google-Smtp-Source: AGHT+IH0LDzbq4mBhb6+V8+vKGGS4Jwp5flyTLhrxiOBk8c6t4hKgAVe7039h26B5BggqWFzo3z6NGN6iwc2YYqAG1Y=
-X-Received: by 2002:a05:600c:4583:b0:3f1:6fe9:4a95 with SMTP id
- r3-20020a05600c458300b003f16fe94a95mr17322wmo.4.1691096273798; Thu, 03 Aug
- 2023 13:57:53 -0700 (PDT)
+        bh=DP2b+AILmlpdJLSBdLdZp7i7Y6kRAXSbaj0B+upIxrM=;
+        b=IqpQEWhkKFJJM34Eq92X+IYDXm4Iusjd7Cyj8xeRzWmLriZNW+C2ln9Q5o0M+S9TZm
+         CooJxplPy9zhtcShiYUuP//hmEclXnYMAdi87I0ZZPGQlIVaYQ+8UZysxru6M3OfUT/S
+         4yajWg6S2U7PZo/QuPStkDOyyD12lkycW7OvgJqdogYn7EjDSuQbGScwFUslaiKyhaRf
+         +16x0zPvWZjSXe1lcLtIHuYPXRVfVuXLU8IJM1RGKJb4pjNBZLX8pGtwFElQ3in3VEyK
+         pCzAJiQRd3dGP0OBPAwcW7O2Zd6SaUXp+u8RBoiVPFg6VIeQgxwvEgXv/fBhkubjyGXI
+         00PA==
+X-Gm-Message-State: ABy/qLYQf+SWwGc6zgF/3Ygj6NSIDOa+Th/iAD+CUK252N/dItxEtwXo
+        YwLShwR0O9zNTFJqZAblzg0=
+X-Google-Smtp-Source: APBJJlHHfuo6kBelJvqwbXH9kUi+80SC8CQMEFEj5k03HeeeLJcquEgoQREJ2cxFra7O+czacV7ZcQ==
+X-Received: by 2002:a5d:69c1:0:b0:314:c9c:bc96 with SMTP id s1-20020a5d69c1000000b003140c9cbc96mr7821541wrw.7.1691096372657;
+        Thu, 03 Aug 2023 13:59:32 -0700 (PDT)
+Received: from jernej-laptop.localnet (82-149-1-233.dynamic.telemach.net. [82.149.1.233])
+        by smtp.gmail.com with ESMTPSA id u7-20020a5d5147000000b0031437ec7ec1sm770658wrt.2.2023.08.03.13.59.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 03 Aug 2023 13:59:32 -0700 (PDT)
+From:   Jernej =?utf-8?B?xaBrcmFiZWM=?= <jernej.skrabec@gmail.com>
+To:     linux-sunxi@lists.linux.dev, John Watts <contact@jookia.org>
+Cc:     John Watts <contact@jookia.org>, Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Samuel Holland <samuel@sholland.org>,
+        Cristian Ciocaltea <cristian.ciocaltea@collabora.com>,
+        Maksim Kiselev <bigunclemax@gmail.com>,
+        devicetree@vger.kernel.org, linux-riscv@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        mkl@pengutronix.de
+Subject: Re: [PATCH] riscv: dts: allwinner: d1: Specify default CAN pins
+Date:   Thu, 03 Aug 2023 22:59:30 +0200
+Message-ID: <3248110.44csPzL39Z@jernej-laptop>
+In-Reply-To: <20230731023701.2581713-1-contact@jookia.org>
+References: <20230731023701.2581713-1-contact@jookia.org>
 MIME-Version: 1.0
-References: <20230731141021.2854827-5-janusz.krzysztofik@linux.intel.com> <20230731141021.2854827-6-janusz.krzysztofik@linux.intel.com>
-In-Reply-To: <20230731141021.2854827-6-janusz.krzysztofik@linux.intel.com>
-From:   Rae Moar <rmoar@google.com>
-Date:   Thu, 3 Aug 2023 16:57:43 -0400
-Message-ID: <CA+GJov5G_JWJM3Rw14O-CTioEoB_aTf4SyM-G+tCKEP_txc8yw@mail.gmail.com>
-Subject: Re: [PATCH v3 1/3] kunit: Report the count of test suites in a module
-To:     Janusz Krzysztofik <janusz.krzysztofik@linux.intel.com>
-Cc:     Brendan Higgins <brendan.higgins@linux.dev>,
-        David Gow <davidgow@google.com>,
-        linux-kselftest@vger.kernel.org, kunit-dev@googlegroups.com,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        igt-dev@lists.freedesktop.org, intel-xe@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 31, 2023 at 10:12=E2=80=AFAM Janusz Krzysztofik
-<janusz.krzysztofik@linux.intel.com> wrote:
->
-> According to KTAP specification[1], results should always start from a
-> header that provides a TAP protocol version, followed by a test plan with
-> a count of items to be executed.  That pattern should be followed at each
-> nesting level.  In the current implementation of the top-most, i.e., test
-> suite level, those rules apply only for test suites built into the kernel=
-,
-> executed and reported on boot.  Results submitted to dmesg from kunit tes=
-t
-> modules loaded later are missing those top-level headers.
->
-> As a consequence, if a kunit test module provides more than one test suit=
-e
-> then, without the top level test plan, external tools that are parsing
-> dmesg for kunit test output are not able to tell how many test suites
-> should be expected and whether to continue parsing after complete output
-> from the first test suite is collected.
->
-> Submit the top-level headers also from the kunit test module notifier
-> initialization callback.
->
-> [1] https://docs.kernel.org/dev-tools/ktap.html#
->
-> Signed-off-by: Janusz Krzysztofik <janusz.krzysztofik@linux.intel.com>
+/cc Marc
+
+Dne ponedeljek, 31. julij 2023 ob 04:36:59 CEST je John Watts napisal(a):
+> There are only one set of CAN pins available on these chips.
+> Specify these as the default to avoid redundancy in board device trees.
+> 
+> Signed-off-by: John Watts <contact@jookia.org>
 > ---
+>  arch/riscv/boot/dts/allwinner/sunxi-d1s-t113.dtsi | 4 ++++
+>  1 file changed, 4 insertions(+)
+> 
+> diff --git a/arch/riscv/boot/dts/allwinner/sunxi-d1s-t113.dtsi
+> b/arch/riscv/boot/dts/allwinner/sunxi-d1s-t113.dtsi index
+> 4086c0cc0f9d..b27c3fc13b0d 100644
+> --- a/arch/riscv/boot/dts/allwinner/sunxi-d1s-t113.dtsi
+> +++ b/arch/riscv/boot/dts/allwinner/sunxi-d1s-t113.dtsi
+> @@ -898,6 +898,8 @@ can0: can@2504000 {
+>  			interrupts = <SOC_PERIPHERAL_IRQ(21) 
+IRQ_TYPE_LEVEL_HIGH>;
+>  			clocks = <&ccu CLK_BUS_CAN0>;
+>  			resets = <&ccu RST_BUS_CAN0>;
+> +			pinctrl-names = "default";
+> +			pinctrl-0 = <&can0_pins>;
+>  			status = "disabled";
+>  		};
 
-Hi!
+pinctrl-names and pinctrl-0 are usually at the top. However, since there is no 
+hard rule (I've seen it mixed), I'm fine with it.
 
-I think this is a really great idea to improve the KTAP compatibility
-for module output. I do agree with Mauro and I wonder if this could be
-replaced with using kunit_exec_run_tests. However, if the output of
-1..0 for a module with no KUnit tests run is not wanted, I am ok with
-this change as is.
+Acked-by: Jernej Skrabec <jernej.skrabec@gmail.com>
 
-LGTM.
+Since original DT node entry goes through netdev tree, this should be picked 
+there or it can be dropped there and I pick both patches or I can pick patch 
+for later kernel version.
 
-Tested-by: Rae Moar <rmoar@google.com>
+Best regards,
+Jernej
 
--Rae
+> 
+> @@ -907,6 +909,8 @@ can1: can@2504400 {
+>  			interrupts = <SOC_PERIPHERAL_IRQ(22) 
+IRQ_TYPE_LEVEL_HIGH>;
+>  			clocks = <&ccu CLK_BUS_CAN1>;
+>  			resets = <&ccu RST_BUS_CAN1>;
+> +			pinctrl-names = "default";
+> +			pinctrl-0 = <&can1_pins>;
+>  			status = "disabled";
+>  		};
+>  	};
 
->  lib/kunit/test.c | 5 +++++
->  1 file changed, 5 insertions(+)
->
-> diff --git a/lib/kunit/test.c b/lib/kunit/test.c
-> index 84e4666555c94..a29ca1acc4d81 100644
-> --- a/lib/kunit/test.c
-> +++ b/lib/kunit/test.c
-> @@ -729,6 +729,11 @@ EXPORT_SYMBOL_GPL(__kunit_test_suites_exit);
->  #ifdef CONFIG_MODULES
->  static void kunit_module_init(struct module *mod)
->  {
-> +       if (mod->num_kunit_suites > 0) {
-> +               pr_info("KTAP version 1\n");
-> +               pr_info("1..%d\n", mod->num_kunit_suites);
-> +       }
-> +
->         __kunit_test_suites_init(mod->kunit_suites, mod->num_kunit_suites=
-);
->  }
->
-> --
-> 2.41.0
->
-> --
-> You received this message because you are subscribed to the Google Groups=
- "KUnit Development" group.
-> To unsubscribe from this group and stop receiving emails from it, send an=
- email to kunit-dev+unsubscribe@googlegroups.com.
-> To view this discussion on the web visit https://groups.google.com/d/msgi=
-d/kunit-dev/20230731141021.2854827-6-janusz.krzysztofik%40linux.intel.com.
+
+
+
