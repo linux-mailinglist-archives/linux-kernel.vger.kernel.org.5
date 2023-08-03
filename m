@@ -2,25 +2,25 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E04EF76F32C
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 21:03:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3FE7976F32F
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 21:03:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233425AbjHCTCz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Aug 2023 15:02:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47088 "EHLO
+        id S233978AbjHCTDR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Aug 2023 15:03:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46708 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232537AbjHCTCs (ORCPT
+        with ESMTP id S232342AbjHCTCt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Aug 2023 15:02:48 -0400
+        Thu, 3 Aug 2023 15:02:49 -0400
 Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 8E5643ABA
-        for <linux-kernel@vger.kernel.org>; Thu,  3 Aug 2023 12:02:34 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 112334214
+        for <linux-kernel@vger.kernel.org>; Thu,  3 Aug 2023 12:02:35 -0700 (PDT)
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 0106112FC;
-        Thu,  3 Aug 2023 12:03:17 -0700 (PDT)
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 59004113E;
+        Thu,  3 Aug 2023 12:03:18 -0700 (PDT)
 Received: from usa.arm.com (e103737-lin.cambridge.arm.com [10.1.197.49])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id D95F03F6C4;
-        Thu,  3 Aug 2023 12:02:32 -0700 (PDT)
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 3DC7B3F6C4;
+        Thu,  3 Aug 2023 12:02:34 -0700 (PDT)
 From:   Sudeep Holla <sudeep.holla@arm.com>
 To:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
 Cc:     Sudeep Holla <sudeep.holla@arm.com>,
@@ -28,17 +28,17 @@ Cc:     Sudeep Holla <sudeep.holla@arm.com>,
         Lucian Paul-Trifu <lucian.paul-trifu@arm.com>,
         Marc Bonnici <marc.bonnici@arm.com>,
         Coboy Chen <coboy.chen@mediatek.com>
-Subject: [PATCH RFT 09/12] firmware: arm_ffa: Add schedule receiver callback mechanism
-Date:   Thu,  3 Aug 2023 20:02:13 +0100
-Message-ID: <20230803-ffa_v1-1_notif-v1-9-6613ff2b1f81@arm.com>
+Subject: [PATCH RFT 10/12] firmware: arm_ffa: Add interfaces to request notification callbacks
+Date:   Thu,  3 Aug 2023 20:02:14 +0100
+Message-ID: <20230803-ffa_v1-1_notif-v1-10-6613ff2b1f81@arm.com>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <20230803-ffa_v1-1_notif-v1-0-6613ff2b1f81@arm.com>
 References: <20230803-ffa_v1-1_notif-v1-0-6613ff2b1f81@arm.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 X-Mailer: b4 0.12.3
-X-Developer-Signature: v=1; a=openpgp-sha256; l=6832; i=sudeep.holla@arm.com; h=from:subject:message-id; bh=is99x5WtN5I+1PV/Gr1xhpxo7rZkJNsfbfoP44fgG94=; b=owEBbQKS/ZANAwAIAQBBurwxfuKYAcsmYgBky/iN6rgWBsUFDTXfWWyMA5KWKxw/WwXCIKLyy 0R/LP1t79KJAjMEAAEIAB0WIQS6ceUSBvMeskPdk+EAQbq8MX7imAUCZMv4jQAKCRAAQbq8MX7i mJzlD/4nf825CYD8VReXGA+ZJqTwcQzIdq/o3AJhW+cuSTy1+0S44QJe6K0xHFYv67WXTlfTnux 4bXgHDudrmOtgxAYAqOYJNbL8wO00oFLE1ContSBxROX3k/0svjlnUtyDVZUNyhHU6M152IB0jF CZ7ewBYpsbm2Ln2p8csOS/mPdoG4t1AVc3HMxVWJfj8mk7VYcAIK2OdN5S1yLdHTAM1BVpP1NoN kJH/X8HDex/rCmmF08GmekS0UXkzWZo/dexB3nHicLp83U0gUqKfA6maj6Z6cnzeJ+IRmFzUw0y OBmVKP1CrVjN16drccwa+TQIdt2xR0aeIjN1yltHih8U10BrvFwmf/fMCHZALKNTrXEXoF6wtcw lF0h9od3Vfib0umuI5B11miFaBDucFpOKqouW3/zm1iuCupAAI00zp213PK/84joxIrZM5gd6rW h9AeuCnYocRMwiTdU7kk8teoSV0mcMDNDD2Efq+S4WgtyQXQn/6ZhZjq9nv7uuREADy9kzvl3Vw Ymb+rC1JY+z2tQfmJ3OFuWCPhNl3LQTlbMs1aQozOHS1tXNQ8mdACDjZFA6gR6aicjXUXcsmQf2 jTSeNz3RClSoH2YXTAaOhZnhw79enOXXe2G0I9q6BMxsfg7BIGbGCTBdR6cS+PkTJlOn4a1Acgn qRDpxP5H
- Gi0qTbw==
+X-Developer-Signature: v=1; a=openpgp-sha256; l=6618; i=sudeep.holla@arm.com; h=from:subject:message-id; bh=qRF9OB5UOVl/Be6YUQOHzq1xMEFWDG0OS9Avnbmk21A=; b=owEBbQKS/ZANAwAIAQBBurwxfuKYAcsmYgBky/iO9aX61DhQFM6JoVap5dmKBG3eS7G5cKSaq NdhCUr47UeJAjMEAAEIAB0WIQS6ceUSBvMeskPdk+EAQbq8MX7imAUCZMv4jgAKCRAAQbq8MX7i mJehEACbjnTfB37YuPYdsBOXuPhf6FQNyCNBdlRuRWfYG7fL2TClyp9hlhGgkg+8FU7oI1SGPqE Bcl0wKOsd0LKRUpV1QdWHyCA3p9EK/+41J/LtXcDXjB9eNSltAW6+EOFG+m2+Zpe15r/WNXnwhx MnQtDjrE++Z1kcmqhzbyLsi6tfxaBKkLh1LGNzm/CIZ7TLe9blNkltWMehbci2DZvrbtAi21YyM xREdgLLEwZRpmr6V+g+i3X70Spd8e5EyzBo6Z/jJV/59vaMEHw+71gu1wWG5Cbn+es4f31LIIo9 3nBWV2KYB57m08F4GxzKHkwlM/Bm4SuOMw/SGwIJuqbprs9L/SoWVlgNeKykqkmulbeIQs8qVaV l/57wWYuTqBZeFovCvz0fjY6rh1jp8sSOZXI27Z0kVU5rXg85k/65lLRQPktl9snGi2f4NX1064 ORxjrnjCUDzx9uUaiQu6NfyqjnTNWxLfLijQrbzLbnSX5NcLrdJHKnY/L6/UgPPaCVszdfbfn1M JseXJt2/6lea5sZd9UWc/gvlLTWgDlfA7Vzh3r4UD9yGF3PZrcvD74+YK+cU3qj/sO7dQJgOE3U /g5pohHD2Vylk2be6Spzujz0uhDEv+sIQa+CVrdDWQEgGy22Vmn7Ilx8zgmpTDhtP2TF71NsjoN aUFAQX7s
+ xTEUlJQ==
 X-Developer-Key: i=sudeep.holla@arm.com; a=openpgp; fpr=7360A21742ADF5A11767C1C139CFD4755FE2D5B4
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
@@ -50,232 +50,231 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Enable client drivers to register a callback function that will be
-called when one or more notifications are pending for a target partition.
-as part of schedule receiver interrupt handling.
+Add interface to the FFA driver to allow for client drivers to request
+and relinquish a notification as well as provide a callback for the
+notification.
 
 Signed-off-by: Sudeep Holla <sudeep.holla@arm.com>
 ---
- drivers/firmware/arm_ffa/driver.c | 102 ++++++++++++++++++++++++++++++++++++--
- include/linux/arm_ffa.h           |   9 ++++
- 2 files changed, 108 insertions(+), 3 deletions(-)
+ drivers/firmware/arm_ffa/driver.c | 130 ++++++++++++++++++++++++++++++++++++++
+ include/linux/arm_ffa.h           |   5 ++
+ 2 files changed, 135 insertions(+)
 
 diff --git a/drivers/firmware/arm_ffa/driver.c b/drivers/firmware/arm_ffa/driver.c
-index 84c934a0ec14..54fca776e5d8 100644
+index 54fca776e5d8..29f69f7010c9 100644
 --- a/drivers/firmware/arm_ffa/driver.c
 +++ b/drivers/firmware/arm_ffa/driver.c
-@@ -37,6 +37,7 @@
+@@ -27,11 +27,13 @@
+ #include <linux/bitfield.h>
+ #include <linux/cpuhotplug.h>
+ #include <linux/device.h>
++#include <linux/hashtable.h>
+ #include <linux/interrupt.h>
+ #include <linux/io.h>
+ #include <linux/kernel.h>
+ #include <linux/module.h>
+ #include <linux/mm.h>
++#include <linux/mutex.h>
+ #include <linux/of_irq.h>
+ #include <linux/scatterlist.h>
  #include <linux/slab.h>
- #include <linux/smp.h>
- #include <linux/uuid.h>
-+#include <linux/xarray.h>
+@@ -57,6 +59,8 @@
+  */
+ #define RXTX_BUFFER_SIZE	SZ_4K
  
- #include "common.h"
++#define FFA_MAX_NOTIFICATIONS		64
++
+ static ffa_fn *invoke_ffa_fn;
  
-@@ -100,6 +101,8 @@ struct ffa_drv_info {
- 	struct workqueue_struct *notif_pcpu_wq;
- 	struct work_struct irq_work;
+ static const int ffa_linux_errmap[] = {
+@@ -103,6 +107,8 @@ struct ffa_drv_info {
  	bool info_get_64b;
-+	struct xarray partition_info;
-+	unsigned int partition_count;
+ 	struct xarray partition_info;
+ 	unsigned int partition_count;
++	DECLARE_HASHTABLE(notifier_hash, ilog2(FFA_MAX_NOTIFICATIONS));
++	struct mutex notify_lock; /* lock to protect notifier hashtable  */
  };
  
  static struct ffa_drv_info *drv_info;
-@@ -683,9 +686,25 @@ static int ffa_notification_get(u32 flags, struct ffa_notify_bitmaps *notify)
- 	return 0;
- }
+@@ -615,6 +621,9 @@ static int ffa_notification_bitmap_destroy(void)
+ #define MAX_IDS_64				20
+ #define MAX_IDS_32				10
  
--static void __do_sched_recv_cb(u16 partition_id, u16 vcpu, bool is_per_vcpu)
-+struct ffa_dev_part_info {
-+	ffa_sched_recv_cb callback;
-+	void *cb_data;
-+	rwlock_t rw_lock;
-+};
++#define PER_VCPU_NOTIFICATION_FLAG		BIT(0)
++#define ALL_NOTIFICATION_BITMAPS_FLAGS		(0xF)
 +
-+static void __do_sched_recv_cb(u16 part_id, u16 vcpu, bool is_per_vcpu)
+ static int ffa_notification_bind_common(u16 dst_id, u64 bitmap,
+ 					u32 flags, bool is_bind)
  {
--	pr_err("Callback for partition 0x%x failed.\n", partition_id);
-+	struct ffa_dev_part_info *partition;
-+	ffa_sched_recv_cb callback;
-+	void *cb_data;
-+
-+	partition = xa_load(&drv_info->partition_info, part_id);
-+	read_lock(&partition->rw_lock);
-+	callback = partition->callback;
-+	cb_data = partition->cb_data;
-+	read_unlock(&partition->rw_lock);
-+
-+	callback(part_id, vcpu, is_per_vcpu, cb_data);
- }
- 
- static void ffa_notification_info_get(bool is_64b)
-@@ -839,6 +858,39 @@ static int ffa_memory_lend(struct ffa_mem_ops_args *args)
+@@ -858,6 +867,13 @@ static int ffa_memory_lend(struct ffa_mem_ops_args *args)
  	return ffa_memory_ops(FFA_MEM_LEND, args);
  }
  
-+static int ffa_sched_recv_cb_update(u16 part_id, ffa_sched_recv_cb callback,
-+				    void *cb_data, bool is_registration)
++struct notifier_cb_info {
++	struct hlist_node hnode;
++	ffa_notifier_cb cb;
++	void *cb_data;
++	u16 vm_id;
++};
++
+ static int ffa_sched_recv_cb_update(u16 part_id, ffa_sched_recv_cb callback,
+ 				    void *cb_data, bool is_registration)
+ {
+@@ -891,6 +907,114 @@ static int ffa_sched_recv_cb_unregister(struct ffa_device *dev)
+ 	return ffa_sched_recv_cb_update(dev->vm_id, NULL, NULL, false);
+ }
+ 
++static int ffa_notification_bind(u16 dst_id, u64 bitmap, u32 flags)
 +{
-+	struct ffa_dev_part_info *partition;
-+	bool cb_valid;
++	return ffa_notification_bind_common(dst_id, bitmap, flags, true);
++}
 +
-+	partition = xa_load(&drv_info->partition_info, part_id);
-+	write_lock(&partition->rw_lock);
++static int ffa_notification_unbind(u16 dst_id, u64 bitmap)
++{
++	return ffa_notification_bind_common(dst_id, bitmap, 0, false);
++}
 +
-+	cb_valid = !!partition->callback;
-+	if (!(is_registration ^ cb_valid)) {
-+		write_unlock(&partition->rw_lock);
++/* Should be called while the notify_lock is taken */
++static struct notifier_cb_info *
++notifier_hash_node_get(u16 part_id, u16 notify_id)
++{
++	struct notifier_cb_info *node;
++
++	hash_for_each_possible(drv_info->notifier_hash, node, hnode, notify_id)
++		if (part_id == node->vm_id)
++			return node;
++
++	return NULL;
++}
++
++static int
++update_notifier_cb(u16 part_id, int notify_id, ffa_notifier_cb cb,
++		   void *cb_data, bool is_registration)
++{
++	struct notifier_cb_info *cb_info = NULL;
++	bool cb_found;
++
++	cb_info = notifier_hash_node_get(part_id, notify_id);
++	cb_found = !!cb_info;
++
++	if (!(is_registration ^ cb_found))
 +		return -EINVAL;
++
++	if (is_registration) {
++		cb_info = kzalloc(sizeof(*cb_info), GFP_KERNEL);
++		if (!cb_info)
++			return -ENOMEM;
++
++		cb_info->vm_id = part_id;
++		cb_info->cb = cb;
++		cb_info->cb_data = cb_data;
++
++		hash_add(drv_info->notifier_hash, &cb_info->hnode, notify_id);
++	} else {
++		hash_del(&cb_info->hnode);
 +	}
 +
-+	partition->callback = callback;
-+	partition->cb_data = cb_data;
-+
-+	write_unlock(&partition->rw_lock);
 +	return 0;
 +}
 +
-+static int ffa_sched_recv_cb_register(struct ffa_device *dev,
-+				      ffa_sched_recv_cb cb, void *cb_data)
++static int ffa_notify_relinquish(struct ffa_device *dev, int notify_id)
 +{
-+	return ffa_sched_recv_cb_update(dev->vm_id, cb, cb_data, true);
++	int rc;
++
++	if (notify_id >= FFA_MAX_NOTIFICATIONS)
++		return -EINVAL;
++
++	mutex_lock(&drv_info->notify_lock);
++
++	rc = update_notifier_cb(dev->vm_id, notify_id, NULL, NULL, false);
++	if (rc) {
++		pr_err("Could not unregister notifcation callback\n");
++		mutex_unlock(&drv_info->notify_lock);
++		return rc;
++	}
++
++	rc = ffa_notification_unbind(dev->vm_id, BIT(notify_id));
++
++	mutex_unlock(&drv_info->notify_lock);
++
++	return rc;
 +}
 +
-+static int ffa_sched_recv_cb_unregister(struct ffa_device *dev)
++static int ffa_notify_request(struct ffa_device *dev, bool is_per_vcpu,
++			      ffa_notifier_cb cb, void *cb_data, int notify_id)
 +{
-+	return ffa_sched_recv_cb_update(dev->vm_id, NULL, NULL, false);
++	int rc;
++	u32 flags = 0;
++
++	if (notify_id >= FFA_MAX_NOTIFICATIONS)
++		return -EINVAL;
++
++	mutex_lock(&drv_info->notify_lock);
++
++	if (is_per_vcpu)
++		flags = PER_VCPU_NOTIFICATION_FLAG;
++
++	rc = ffa_notification_bind(dev->vm_id, BIT(notify_id), flags);
++	if (rc) {
++		mutex_unlock(&drv_info->notify_lock);
++		return rc;
++	}
++
++	rc = update_notifier_cb(dev->vm_id, notify_id, cb, cb_data, true);
++	if (rc) {
++		pr_err("Failed to register callback for %d - %d\n",
++		       notify_id, rc);
++		ffa_notification_unbind(dev->vm_id, BIT(notify_id));
++		return rc;
++	}
++	mutex_unlock(&drv_info->notify_lock);
++
++	return rc;
 +}
 +
  static const struct ffa_info_ops ffa_drv_info_ops = {
  	.api_version_get = ffa_api_version_get,
  	.partition_info_get = ffa_partition_info_get,
-@@ -859,11 +911,17 @@ static const struct ffa_cpu_ops ffa_drv_cpu_ops = {
- 	.run = ffa_run,
+@@ -914,6 +1038,8 @@ static const struct ffa_cpu_ops ffa_drv_cpu_ops = {
+ static const struct ffa_notifier_ops ffa_drv_notifier_ops = {
+ 	.sched_recv_cb_register = ffa_sched_recv_cb_register,
+ 	.sched_recv_cb_unregister = ffa_sched_recv_cb_unregister,
++	.notify_request = ffa_notify_request,
++	.notify_relinquish = ffa_notify_relinquish,
  };
  
-+static const struct ffa_notifier_ops ffa_drv_notifier_ops = {
-+	.sched_recv_cb_register = ffa_sched_recv_cb_register,
-+	.sched_recv_cb_unregister = ffa_sched_recv_cb_unregister,
-+};
-+
  static const struct ffa_ops ffa_drv_ops = {
- 	.info_ops = &ffa_drv_info_ops,
- 	.msg_ops = &ffa_drv_msg_ops,
- 	.mem_ops = &ffa_drv_mem_ops,
- 	.cpu_ops = &ffa_drv_cpu_ops,
-+	.notifier_ops = &ffa_drv_notifier_ops,
- };
+@@ -1182,6 +1308,10 @@ static int ffa_notifications_setup(void)
+ 		goto cleanup;
  
- void ffa_device_match_uuid(struct ffa_device *ffa_dev, const uuid_t *uuid)
-@@ -894,6 +952,7 @@ static void ffa_setup_partitions(void)
- 	int count, idx;
- 	uuid_t uuid;
- 	struct ffa_device *ffa_dev;
-+	struct ffa_dev_part_info *info;
- 	struct ffa_partition_info *pbuf, *tpbuf;
- 
- 	count = ffa_partition_probe(&uuid_null, &pbuf);
-@@ -902,6 +961,7 @@ static void ffa_setup_partitions(void)
- 		return;
- 	}
- 
-+	xa_init(&drv_info->partition_info);
- 	for (idx = 0, tpbuf = pbuf; idx < count; idx++, tpbuf++) {
- 		import_uuid(&uuid, (u8 *)tpbuf->uuid);
- 
-@@ -921,10 +981,42 @@ static void ffa_setup_partitions(void)
- 		if (drv_info->version > FFA_VERSION_1_0 &&
- 		    !(tpbuf->properties & FFA_PARTITION_AARCH64_EXEC))
- 			_ffa_mode_32bit_set(ffa_dev);
+ 	drv_info->sched_recv_irq = irq;
 +
-+		info = kzalloc(sizeof(*info), GFP_KERNEL);
-+		if (!info) {
-+			ffa_device_unregister(ffa_dev);
-+			continue;
-+		}
-+		xa_store(&drv_info->partition_info, tpbuf->id, info, GFP_KERNEL);
- 	}
-+	drv_info->partition_count = count;
++	hash_init(drv_info->notifier_hash);
++	mutex_init(&drv_info->notify_lock);
 +
- 	kfree(pbuf);
- }
- 
-+static void ffa_partitions_cleanup(void)
-+{
-+	struct ffa_dev_part_info **info;
-+	int idx, count = drv_info->partition_count;
-+
-+	if (!count)
-+		return;
-+
-+	info = kcalloc(count, sizeof(**info), GFP_KERNEL);
-+	if (!info)
-+		return;
-+
-+	xa_extract(&drv_info->partition_info, (void **)info, 0, VM_ID_MASK,
-+		   count, XA_PRESENT);
-+
-+	for (idx = 0; idx < count; idx++)
-+		kfree(info[idx]);
-+	kfree(info);
-+
-+	drv_info->partition_count = 0;
-+	xa_destroy(&drv_info->partition_info);
-+}
-+
- /* FFA FEATURE IDs */
- #define FFA_FEAT_NOTIFICATION_PENDING_INT	(1)
- #define FFA_FEAT_SCHEDULE_RECEIVER_INT		(2)
-@@ -1153,9 +1245,11 @@ static int __init ffa_init(void)
- 
- 	ret = ffa_notifications_setup();
- 	if (ret)
--		goto free_pages;
-+		goto partitions_cleanup;
- 
  	return 0;
-+partitions_cleanup:
-+	ffa_partitions_cleanup();
- free_pages:
- 	if (drv_info->tx_buffer)
- 		free_pages_exact(drv_info->tx_buffer, RXTX_BUFFER_SIZE);
-@@ -1171,9 +1265,11 @@ subsys_initcall(ffa_init);
- static void __exit ffa_exit(void)
- {
+ cleanup:
  	ffa_notifications_cleanup();
-+	ffa_partitions_cleanup();
- 	ffa_rxtx_unmap(drv_info->vm_id);
- 	free_pages_exact(drv_info->tx_buffer, RXTX_BUFFER_SIZE);
- 	free_pages_exact(drv_info->rx_buffer, RXTX_BUFFER_SIZE);
-+	xa_destroy(&drv_info->partition_info);
- 	kfree(drv_info);
- 	arm_ffa_bus_exit();
- }
 diff --git a/include/linux/arm_ffa.h b/include/linux/arm_ffa.h
-index 12fd134bf670..63f2e1f5fdc4 100644
+index 63f2e1f5fdc4..99440129b733 100644
 --- a/include/linux/arm_ffa.h
 +++ b/include/linux/arm_ffa.h
-@@ -391,11 +391,20 @@ struct ffa_cpu_ops {
- 	int (*run)(struct ffa_device *dev, u16 vcpu);
- };
+@@ -393,10 +393,15 @@ struct ffa_cpu_ops {
  
-+typedef void(*ffa_sched_recv_cb)(u16 partition_id, u16 vcpu, bool is_per_vcpu,
-+				 void *cb_data);
-+struct ffa_notifier_ops {
-+	int (*sched_recv_cb_register)(struct ffa_device *dev,
-+				      ffa_sched_recv_cb cb, void *cb_data);
-+	int (*sched_recv_cb_unregister)(struct ffa_device *dev);
-+};
+ typedef void(*ffa_sched_recv_cb)(u16 partition_id, u16 vcpu, bool is_per_vcpu,
+ 				 void *cb_data);
++typedef void (*ffa_notifier_cb)(u16 part_id, int notify_id, void *cb_data);
 +
- struct ffa_ops {
- 	const struct ffa_info_ops *info_ops;
- 	const struct ffa_msg_ops *msg_ops;
- 	const struct ffa_mem_ops *mem_ops;
- 	const struct ffa_cpu_ops *cpu_ops;
-+	const struct ffa_notifier_ops *notifier_ops;
+ struct ffa_notifier_ops {
+ 	int (*sched_recv_cb_register)(struct ffa_device *dev,
+ 				      ffa_sched_recv_cb cb, void *cb_data);
+ 	int (*sched_recv_cb_unregister)(struct ffa_device *dev);
++	int (*notify_request)(struct ffa_device *dev, bool per_vcpu,
++			      ffa_notifier_cb cb, void *cb_data, int notify_id);
++	int (*notify_relinquish)(struct ffa_device *dev, int notify_id);
  };
  
- #endif /* _LINUX_ARM_FFA_H */
+ struct ffa_ops {
 
 -- 
 2.41.0
