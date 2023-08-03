@@ -2,122 +2,213 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 29F2F76DD7C
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 03:48:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 721DD76DD87
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 03:50:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230413AbjHCBsk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Aug 2023 21:48:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60242 "EHLO
+        id S232439AbjHCBuM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Aug 2023 21:50:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60662 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230504AbjHCBsU (ORCPT
+        with ESMTP id S232795AbjHCBtM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Aug 2023 21:48:20 -0400
-Received: from mailout2.samsung.com (mailout2.samsung.com [203.254.224.25])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 806C230C0
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Aug 2023 18:48:18 -0700 (PDT)
-Received: from epcas2p1.samsung.com (unknown [182.195.41.53])
-        by mailout2.samsung.com (KnoxPortal) with ESMTP id 20230803014815epoutp0277025cae46e236f1d356a0c72455eb21~3vF2prkfR2714827148epoutp02e
-        for <linux-kernel@vger.kernel.org>; Thu,  3 Aug 2023 01:48:15 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.samsung.com 20230803014815epoutp0277025cae46e236f1d356a0c72455eb21~3vF2prkfR2714827148epoutp02e
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1691027295;
-        bh=HgBY7lrPaWXKVOL88v/DbQ4RH1S1ZvplAdNDATbtocI=;
-        h=Subject:Reply-To:From:To:CC:In-Reply-To:Date:References:From;
-        b=N/n27RTeK1RwkQlyEVkB/TjRV7uKEtHMwTfRHQWR/4X4A/yOcnehS8hg9MLD6xdQ5
-         +YvRtZBjHLxQTVGVQV6oQCXI2TvY45QzzFF3qrpFCDJwIG8B9uNEnVJG/+LWOXtU1z
-         zAU08PDbO+tx5fsn5hLjOClNfRDkj4kbiP+n4dyw=
-Received: from epsnrtp2.localdomain (unknown [182.195.42.163]) by
-        epcas2p2.samsung.com (KnoxPortal) with ESMTP id
-        20230803014814epcas2p29e71ca25cc489b9c720dee4b14ac3d78~3vF17XHeX1271112711epcas2p2k;
-        Thu,  3 Aug 2023 01:48:14 +0000 (GMT)
-Received: from epsmges2p3.samsung.com (unknown [182.195.36.101]) by
-        epsnrtp2.localdomain (Postfix) with ESMTP id 4RGWvf3MQjz4x9Px; Thu,  3 Aug
-        2023 01:48:14 +0000 (GMT)
-X-AuditID: b6c32a47-9cbff70000007f5e-e0-64cb075e5051
-Received: from epcas2p3.samsung.com ( [182.195.41.55]) by
-        epsmges2p3.samsung.com (Symantec Messaging Gateway) with SMTP id
-        0F.93.32606.E570BC46; Thu,  3 Aug 2023 10:48:14 +0900 (KST)
-Mime-Version: 1.0
-Subject: RE:(2) [PATCH v2 3/4] bio-integrity: cleanup adding integrity pages
- to bip's bvec
-Reply-To: j-young.choi@samsung.com
-Sender: Jinyoung Choi <j-young.choi@samsung.com>
-From:   Jinyoung Choi <j-young.choi@samsung.com>
-To:     Christoph Hellwig <hch@infradead.org>
-CC:     "axboe@kernel.dk" <axboe@kernel.dk>,
-        "kbusch@kernel.org" <kbusch@kernel.org>,
-        "chaitanya.kulkarni@wdc.com" <chaitanya.kulkarni@wdc.com>,
-        "sagi@grimberg.me" <sagi@grimberg.me>,
-        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "martin.petersen@oracle.com" <martin.petersen@oracle.com>
-X-Priority: 3
-X-Content-Kind-Code: NORMAL
-In-Reply-To: <ZMjYYtXgzn86UIF8@infradead.org>
-X-CPGS-Detection: blocking_info_exchange
-X-Drm-Type: N,general
-X-Msg-Generator: Mail
-X-Msg-Type: PERSONAL
-X-Reply-Demand: N
-Message-ID: <20230803014814epcms2p3ed3f8a7e5f53e98d0acf478617445aee@epcms2p3>
-Date:   Thu, 03 Aug 2023 10:48:14 +0900
-X-CMS-MailID: 20230803014814epcms2p3ed3f8a7e5f53e98d0acf478617445aee
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: AUTO_CONFIDENTIAL
-CMS-TYPE: 102P
-X-CPGSPASS: Y
-X-CPGSPASS: Y
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprBJsWRmVeSWpSXmKPExsWy7bCmuW4c++kUg4+TpCxW3+1ns5h1+zWL
-        xctDmhanJyxisph06Bqjxd5b2haXd81hs1h+/B+TxbrX71kcOD3O39vI4rF5hZbH5bOlHptW
-        dbJ5fHx6i8Wjb8sqRo/Pm+Q82g90MwVwRGXbZKQmpqQWKaTmJeenZOal2yp5B8c7x5uaGRjq
-        GlpamCsp5CXmptoqufgE6Lpl5gDdpqRQlphTChQKSCwuVtK3synKLy1JVcjILy6xVUotSMkp
-        MC/QK07MLS7NS9fLSy2xMjQwMDIFKkzIzmh9fYypYCZ7RcuLGcwNjBvZuhg5OSQETCS2bnzF
-        0sXIxSEksINR4nZHI1MXIwcHr4CgxN8dwiA1wgIxEque72AGsYUElCTOrZnFCBE3kGi53cYC
-        YrMJ6EnseL6bHcQWEdCUuLW8nRlkJrPAZyaJmY2XmSCW8UrMaH/KAmFLS2xfvhVsEKeArsTb
-        lZ1QB2lI/FjWywxhi0rcXP2WHcZ+f2w+I4QtItF67yxUjaDEg5+7oeKSEocOfWUDuV9CIF9i
-        w4FAiHCNRNuv91Dl+hLXOjaCncAr4CvxpfkKI0g5i4CqRMdXbYgSF4nTG7aBXcMsoC2xbOFr
-        ZpASZqC31u/ShxiuLHHkFgtEBZ9Ex+G/7DD/NWz8jZW9Y94TJohWNYlFTUYTGJVnIUJ5FpJV
-        sxBWLWBkXsUollpQnJueWmxUYAyP2OT83E2M4CSq5b6DccbbD3qHGJk4GA8xSnAwK4nwSv8+
-        niLEm5JYWZValB9fVJqTWnyI0RTox4nMUqLJ+cA0nlcSb2hiaWBiZmZobmRqYK4kznuvdW6K
-        kEB6YklqdmpqQWoRTB8TB6dUA1Pm1BOFnNrHjh+ZMberpKxt3epJony9wR2mP+YJdnHOtdf8
-        0H/96eRo/l+zvQUuWejcNHp8+dCT5llKmR9M8jQeWT9wrru8LVS+YE8Dw+Sv9rZWTvNsrj8L
-        27okwWh276oy7wtLb1b9vrnqS6jLzc27xdZ9/B1xq8AiJEmg9KQUf0DC5bwfX5MOr1p4u9T/
-        4tmyX86Ls44EcL1vLD+waJpov4PUUwE5l5cTeR99Yc1Q4bp8Kl9+MvvZhSrLwyuPbKhp2812
-        hNXznuPjhJDYIzavHsrxMd/SmHaeo1F4l/Qc7lDm8JPLmr64r5qzvvDE3qZ1kv5Cmzc8Ld/g
-        WMgVZHlk/sRoVauqGY82rtLVPiSmxFKckWioxVxUnAgAjm6LRisEAAA=
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20230731124710epcms2p55b4d1a163b5ee6f15d96bf07817e12a5
-References: <ZMjYYtXgzn86UIF8@infradead.org>
-        <20230731124710epcms2p55b4d1a163b5ee6f15d96bf07817e12a5@epcms2p5>
-        <20230731125459epcms2p177a5cc5caa7ef0a9de35689e96558f43@epcms2p1>
-        <CGME20230731124710epcms2p55b4d1a163b5ee6f15d96bf07817e12a5@epcms2p3>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+        Wed, 2 Aug 2023 21:49:12 -0400
+Received: from mx2.zhaoxin.com (mx2.zhaoxin.com [203.110.167.99])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40C5830D5
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Aug 2023 18:49:07 -0700 (PDT)
+X-ASG-Debug-ID: 1691027343-1eb14e747a09830001-xx1T2L
+Received: from ZXSHMBX2.zhaoxin.com (ZXSHMBX2.zhaoxin.com [10.28.252.164]) by mx2.zhaoxin.com with ESMTP id aqJqCZXaJSdejAKn (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NO); Thu, 03 Aug 2023 09:49:03 +0800 (CST)
+X-Barracuda-Envelope-From: TonyWWang-oc@zhaoxin.com
+X-Barracuda-RBL-Trusted-Forwarder: 10.28.252.164
+Received: from zxbjmbx1.zhaoxin.com (10.29.252.163) by ZXSHMBX2.zhaoxin.com
+ (10.28.252.164) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.16; Thu, 3 Aug
+ 2023 09:49:03 +0800
+Received: from [10.32.65.162] (10.32.65.162) by zxbjmbx1.zhaoxin.com
+ (10.29.252.163) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.16; Thu, 3 Aug
+ 2023 09:49:01 +0800
+X-Barracuda-RBL-Trusted-Forwarder: 10.28.252.164
+Message-ID: <771b24c2-1cc3-94b4-739c-56ff461b4f32@zhaoxin.com>
+X-Barracuda-RBL-Trusted-Forwarder: 10.32.65.162
+Date:   Thu, 3 Aug 2023 09:49:02 +0800
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.11.0
+Subject: Re: [PATCH] crypto: Zhaoxin: Hardware Engine Driver for
+ SHA1/256/384/512
+Content-Language: en-US
+X-ASG-Orig-Subj: Re: [PATCH] crypto: Zhaoxin: Hardware Engine Driver for
+ SHA1/256/384/512
+To:     Dave Hansen <dave.hansen@intel.com>, <tglx@linutronix.de>,
+        <mingo@redhat.com>, <bp@alien8.de>, <dave.hansen@linux.intel.com>,
+        <hpa@zytor.com>, <x86@kernel.org>, <linux-kernel@vger.kernel.org>,
+        <herbert@gondor.apana.org.au>, <davem@davemloft.net>,
+        <seanjc@google.com>, <kim.phillips@amd.com>,
+        <peterz@infradead.org>, <pbonzini@redhat.com>,
+        <pawan.kumar.gupta@linux.intel.com>, <babu.moger@amd.com>,
+        <jiaxi.chen@linux.intel.com>, <jmattson@google.com>,
+        <sandipan.das@amd.com>, <linux-crypto@vger.kernel.org>
+CC:     <CobeChen@zhaoxin.com>, <TimGuo@zhaoxin.com>,
+        <LeoLiu-oc@zhaoxin.com>, <GeorgeXue@zhaoxin.com>
+References: <20230802110741.4077-1-TonyWWang-oc@zhaoxin.com>
+ <bc950efd-b7f7-5fc9-b41d-ebddcf4a459e@intel.com>
+From:   Tony W Wang-oc <TonyWWang-oc@zhaoxin.com>
+In-Reply-To: <bc950efd-b7f7-5fc9-b41d-ebddcf4a459e@intel.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.32.65.162]
+X-ClientProxiedBy: ZXSHCAS2.zhaoxin.com (10.28.252.162) To
+ zxbjmbx1.zhaoxin.com (10.29.252.163)
+X-Barracuda-Connect: ZXSHMBX2.zhaoxin.com[10.28.252.164]
+X-Barracuda-Start-Time: 1691027343
+X-Barracuda-Encrypted: ECDHE-RSA-AES128-GCM-SHA256
+X-Barracuda-URL: https://10.28.252.36:4443/cgi-mod/mark.cgi
+X-Virus-Scanned: by bsmtpd at zhaoxin.com
+X-Barracuda-Scan-Msg-Size: 4190
+X-Barracuda-BRTS-Status: 1
+X-Barracuda-Bayes: INNOCENT GLOBAL 0.0000 1.0000 -2.0210
+X-Barracuda-Spam-Score: -2.02
+X-Barracuda-Spam-Status: No, SCORE=-2.02 using global scores of TAG_LEVEL=1000.0 QUARANTINE_LEVEL=1000.0 KILL_LEVEL=9.0 tests=
+X-Barracuda-Spam-Report: Code version 3.2, rules version 3.2.3.112238
+        Rule breakdown below
+         pts rule name              description
+        ---- ---------------------- --------------------------------------------------
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> On Mon, Jul 31, 2023 at 09:54:59PM +0900, Jinyoung Choi wrote:
-> > The bio_integrity_add_page() returns the set length if the execution
-> > result is successful. Otherwise, return 0.
-> >=20
-> > Unnecessary if statement was removed. And when the result value was les=
-s
-> > than the set value, it was changed to failed.
->=20
-> Maybe word this as
->=20
-> bio_integrity_add_page() returns the add length if successful, else 0,
-> just as bio_add_page.=C2=A0=20Simply=20check=20return=20value=20checking=
-=20in=0D=0A>=20bio_integrity_prep=20to=20not=20deal=20with=20a=20>=200=20bu=
-t=20<=20len=20case=20that=20can't=0D=0A>=20happen.=0D=0A>=20=0D=0A>=20Other=
-wise=20looks=20good:=0D=0A>=20=0D=0A>=20Reviewed-by:=20Christoph=20Hellwig=
-=20<hch=40lst.de>=0D=0A=0D=0AHi,=20Christoph.=0D=0AThank=20you=20for=20your=
-=20review.=20I=20will=20update=20comment=20soon=21=0D=0A=0D=0ABest=20Regard=
-s,=0D=0AJinyoung.
+Dear Dave,
+Thanks for your review. will refactor this patch per your suggestions.
+
+On 8/2/23 22:20, Dave Hansen wrote:
+> This code looks pretty rough.
+> 
+>> +static int zhaoxin_sha1_update(struct shash_desc *desc,
+>> +			const u8 *data,	unsigned int len)
+>> +{
+>> +	struct sha1_state *sctx = shash_desc_ctx(desc);
+>> +	unsigned int partial, done;
+>> +	const u8 *src;
+>> +	/*The PHE require the out buffer must 128 bytes and 16-bytes aligned*/
+>> +	u8 buf[128 + ZHAOXIN_SHA_ALIGNMENT - STACK_ALIGN] __attribute__
+>> +		((aligned(STACK_ALIGN)));
+>> +	u8 *dst = PTR_ALIGN(&buf[0], ZHAOXIN_SHA_ALIGNMENT);
+> 
+> All of the different alignments here are pretty dazzling.
+> 
+>> +	partial = sctx->count & 0x3f;
+> 
+> "0x3f" is a random magic number.
+> 
+>> +	sctx->count += len;
+>> +	done = 0;
+>> +	src = data;
+>> +	memcpy(dst, (u8 *)(sctx->state), SHA1_DIGEST_SIZE);
+>> +
+>> +	if ((partial + len) >= SHA1_BLOCK_SIZE) {
+>> +
+>> +		/* Append the bytes in state's buffer to a block to handle */
+>> +		if (partial) {
+>> +			done = -partial;
+>> +			memcpy(sctx->buffer + partial, data,
+>> +				done + SHA1_BLOCK_SIZE);
+>> +			src = sctx->buffer;
+>> +			asm volatile (".byte 0xf3,0x0f,0xa6,0xc8"
+>> +			: "+S"(src), "+D"(dst)
+>> +			: "a"((long)-1), "c"(1UL));
+> 
+> Please look around the codebase for examples on how to do this.  We
+> usually try to use real instructions when binutils supports them and
+> also don't repeatedly open-code the ".byte ...".
+> 
+>> +			done += SHA1_BLOCK_SIZE;
+>> +			src = data + done;
+>> +		}
+>> +
+>> +		/* Process the left bytes from the input data */
+>> +		if (len - done >= SHA1_BLOCK_SIZE) {
+>> +			asm volatile (".byte 0xf3,0x0f,0xa6,0xc8"
+>> +			: "+S"(src), "+D"(dst)
+>> +			: "a"((long)-1),
+>> +			"c"((unsigned long)((len - done) / SHA1_BLOCK_SIZE)));
+>> +			done += ((len - done) - (len - done) % SHA1_BLOCK_SIZE);
+>> +			src = data + done;
+>> +		}
+>> +		partial = 0;
+>> +	}
+>> +	memcpy((u8 *)(sctx->state), dst, SHA1_DIGEST_SIZE);
+> 
+> What's the purpose of the cast?
+> 
+>> +	memcpy(sctx->buffer + partial, src, len - done);
+>> +
+>> +	return 0;
+>> +}
+>> +
+>> +static int zhaoxin_sha1_final(struct shash_desc *desc, u8 *out)
+>> +{
+>> +	struct sha1_state *state = (struct sha1_state *)shash_desc_ctx(desc);
+> 
+> What's the purpose of *this* cast?
+> 
+>> +	unsigned int partial, padlen;
+>> +	__be64 bits;
+>> +	static const u8 padding[64] = { 0x80, };
+>> +
+>> +	bits = cpu_to_be64(state->count << 3);
+>> +
+>> +	/* Pad out to 56 mod 64 */
+>> +	partial = state->count & 0x3f;
+>> +	padlen = (partial < 56) ? (56 - partial) : ((64+56) - partial);
+>> +	zhaoxin_sha1_update(desc, padding, padlen);
+>> +
+>> +	/* Append length field bytes */
+>> +	zhaoxin_sha1_update(desc, (const u8 *)&bits, sizeof(bits));
+>> +
+>> +	/* Swap to output */
+>> +	zhaoxin_output_block((uint32_t *)(state->state), (uint32_t *)out, 5);
+>> +
+>> +	return 0;
+>> +}
+>> +
+>> +static int zhaoxin_sha256_init(struct shash_desc *desc)
+>> +{
+>> +	struct sha256_state *sctx = shash_desc_ctx(desc);
+>> +
+>> +	*sctx = (struct sha256_state){
+>> +		.state = { SHA256_H0, SHA256_H1, SHA256_H2, SHA256_H3,
+>> +				SHA256_H4, SHA256_H5, SHA256_H6, SHA256_H7},
+>> +	};
+>> +
+>> +	return 0;
+>> +}
+>> +
+>> +static int zhaoxin_sha256_update(struct shash_desc *desc, const u8 *data,
+>> +			  unsigned int len)
+>> +{
+>> +	struct sha256_state *sctx = shash_desc_ctx(desc);
+>> +	unsigned int partial, done;
+>> +	const u8 *src;
+>> +	/*The PHE require the out buffer must 128 bytes and 16-bytes aligned*/
+>> +	u8 buf[128 + ZHAOXIN_SHA_ALIGNMENT - STACK_ALIGN] __attribute__
+>> +		((aligned(STACK_ALIGN)));
+>> +	u8 *dst = PTR_ALIGN(&buf[0], ZHAOXIN_SHA_ALIGNMENT);
+>> +
+>> +	partial = sctx->count & 0x3f;
+>> +	sctx->count += len;
+>> +	done = 0;
+>> +	src = data;
+>> +	memcpy(dst, (u8 *)(sctx->state), SHA256_DIGEST_SIZE);
+> 
+> That looks familiar.
+> 
+> This patch needs some serious cleanups and refactoring.  It seems to be
+> missing even the basics like avoiding copy-and-pasting code.  The
+> changelog is quite sparse.
+> 
+> Could you spend some more time on this and give it another go, please?
