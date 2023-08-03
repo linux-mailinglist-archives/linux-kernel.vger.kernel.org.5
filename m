@@ -2,169 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4AD2376E674
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 13:12:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F2DB776E679
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 13:12:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232648AbjHCLMV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Aug 2023 07:12:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48584 "EHLO
+        id S234768AbjHCLMd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Aug 2023 07:12:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49128 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232519AbjHCLMF (ORCPT
+        with ESMTP id S235377AbjHCLMK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Aug 2023 07:12:05 -0400
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA68735A6;
-        Thu,  3 Aug 2023 04:11:55 -0700 (PDT)
-Received: from pps.filterd (m0279873.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 373AWJFf027628;
-        Thu, 3 Aug 2023 11:11:52 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=nIhYZQ2o7rdTlb24IfHDbwWufWVPzpCWsdj/IAyGH28=;
- b=R9Byoya6EIDQFWw0TKmqyMpLIKTMY5egmjyoGa1wcy4//+G7o20KLbp9ma7O7qq/1DD2
- bkrBrEtENaWqFCB1D4J8G2Nr0BB9mF5BM6iTfjk9jyrCFzkozOXGR0i2T1S+myQnBQHc
- CqlautRyHZS4ohHoWY8uGwxs9ofMr+vGrtkbbyRpxY/fouoW5SBMVyzD2alDeGKj1NMF
- xYkd6h53gcYo1vcaX8Ui4g6LhOsyC4+po0g8QXLHVGaDLOgYaN3VpAWP2JO8fYldMTEU
- 5u5NRH6cXOMWdCXjAQjDtOv737XAS58DQoMHk54D6nPxm2MfEl0owSsf4J/KyZWB2Dvz nw== 
-Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3s87jhgepw-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 03 Aug 2023 11:11:51 +0000
-Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
-        by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 373BBoH7029762
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 3 Aug 2023 11:11:50 GMT
-Received: from [10.201.206.212] (10.80.80.8) by nalasex01c.na.qualcomm.com
- (10.47.97.35) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.30; Thu, 3 Aug
- 2023 04:11:47 -0700
-Message-ID: <1ac4ec1d-f01e-6ddd-708d-6dec7ca4ea3d@quicinc.com>
-Date:   Thu, 3 Aug 2023 16:41:44 +0530
+        Thu, 3 Aug 2023 07:12:10 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE9D0194;
+        Thu,  3 Aug 2023 04:12:08 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 472E961D48;
+        Thu,  3 Aug 2023 11:12:08 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A4482C433C8;
+        Thu,  3 Aug 2023 11:12:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1691061127;
+        bh=av6QLmq7mZk/KKzdLsX8yuroV+yWJ1hYNB3yUoBCbMg=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=oB/CyKuZvPVUbfcryARxZqZe0/jZfSTweFqyMMicHkbJoOMJV5QrTBMS1YsKbbsjc
+         nsWD5YMrJ4xfwqJhy8uZgCI/aLm+V09N4tM+Fx1YU0VPBG0WAVzoDogbf9wfpFG+xd
+         5h2/RXGfUbsxVAdVmpDKzX9uZYvYbD+cZlLDjoPVhn5tnEiBfbpwYBouk1POFo2FIE
+         1zWzg0akpt9Jin1PEac/oysrbWbvBF0ogNlZ+LekYxObeaELaYt45QwFiYB1YC+gkx
+         VGFaZBT6jqSsGg5WdUFOvfnRhs9tH39cxNGJ3islaYcZL0fEKH2sTzJJwRFlVJvFD+
+         i+4BaPzywFlOA==
+Received: by mail-lf1-f41.google.com with SMTP id 2adb3069b0e04-4fe457ec6e7so1471553e87.3;
+        Thu, 03 Aug 2023 04:12:07 -0700 (PDT)
+X-Gm-Message-State: ABy/qLazSEGXRL6qrSAbldGcMckh75uRnQaUAHN8SxDj8UGyJMu6/UCv
+        BViS9kWZuLK8Y5gP7/fQaH8hpC1pGh3+Z2R720Q=
+X-Google-Smtp-Source: APBJJlEJ93MvIGUndqu8Si47s/X2+L5bPNIyZxqOnu6uKKEgvE7pJC0uyW9bvGjhrxUNiBKEg7r/N8J9VOt368LcBBU=
+X-Received: by 2002:ac2:4945:0:b0:4fe:1dc8:7ec with SMTP id
+ o5-20020ac24945000000b004fe1dc807ecmr6327486lfi.37.1691061125634; Thu, 03 Aug
+ 2023 04:12:05 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.12.0
-Subject: Re: [PATCH 1/2] dt-bindings: arm: qcom: document AL02-Cx and AL03-C2
- boards based on IPQ9574 family
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>, <agross@kernel.org>,
-        <andersson@kernel.org>, <robh+dt@kernel.org>,
-        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
-        <linux-arm-msm@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-References: <20230720084534.6461-1-quic_sridsn@quicinc.com>
- <20230720084534.6461-2-quic_sridsn@quicinc.com>
- <87c3a3db-d172-bc98-cf83-89b874c9fee7@linaro.org>
- <9e401641-1334-c0bc-c49a-481a8a9af2de@linaro.org>
- <c1903d09-f307-8e80-0482-2040c7af7a2c@quicinc.com>
- <b57e0199-141f-2a37-4d5a-b98da5276b89@linaro.org>
-Content-Language: en-US
-From:   Sridharan S N <quic_sridsn@quicinc.com>
-In-Reply-To: <b57e0199-141f-2a37-4d5a-b98da5276b89@linaro.org>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01c.na.qualcomm.com (10.47.97.35)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: 5vwHY_BDHPxdfBRppFQg_PzSoLMo5PRx
-X-Proofpoint-ORIG-GUID: 5vwHY_BDHPxdfBRppFQg_PzSoLMo5PRx
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
- definitions=2023-08-03_09,2023-08-03_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 impostorscore=0
- lowpriorityscore=0 suspectscore=0 mlxlogscore=999 spamscore=0 bulkscore=0
- priorityscore=1501 mlxscore=0 malwarescore=0 phishscore=0 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2306200000
- definitions=main-2308030100
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+References: <20230713100459.GEZK/MS69XbphJa+tN@fat_crate.local>
+ <CAO7dBbVMNKTSDi5eP4BseEUexsk0Mo0GWJpyHfOcp+tHs6cSUw@mail.gmail.com>
+ <20230717141409.GGZLVMsU6d/9mpJvMO@fat_crate.local> <CAO7dBbXJv9JzDbSa-DLT03+osYCQXNUXFwz63gbq=NGDxEVyEA@mail.gmail.com>
+ <20230728165535.GDZMPzB/ek5QM+xJqA@fat_crate.local> <CAO7dBbVyuLHH6RfdVQkU5ThXaJ-F4yvFAYD1PDNGkOpph9xvnA@mail.gmail.com>
+ <20230802093927.GAZMokT57anC5jBISK@fat_crate.local> <99cb3813-1737-9d10-1f24-77565e460c55@amd.com>
+ <20230802135856.GBZMphIHHLa3dXRRVe@fat_crate.local> <CAMj1kXEM5hGknVGwHh_w99D4L8yrYrTFycwGHZ0CQun70CLipw@mail.gmail.com>
+ <20230802155146.GCZMp7ksDdN2ETVzKV@fat_crate.local>
+In-Reply-To: <20230802155146.GCZMp7ksDdN2ETVzKV@fat_crate.local>
+From:   Ard Biesheuvel <ardb@kernel.org>
+Date:   Thu, 3 Aug 2023 13:11:54 +0200
+X-Gmail-Original-Message-ID: <CAMj1kXHnSzdQw5CMAVXU7EzpnrdRvAqKZVgA+EV35kHmwVULgQ@mail.gmail.com>
+Message-ID: <CAMj1kXHnSzdQw5CMAVXU7EzpnrdRvAqKZVgA+EV35kHmwVULgQ@mail.gmail.com>
+Subject: Re: [PATCH v2] x86/kexec: Add EFI config table identity mapping for
+ kexec kernel
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     =?UTF-8?B?SsO2cmcgUsO2ZGVs?= <joro@8bytes.org>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Tao Liu <ltao@redhat.com>, Michael Roth <michael.roth@amd.com>,
+        tglx@linutronix.de, mingo@redhat.com, dave.hansen@linux.intel.com,
+        x86@kernel.org, hpa@zytor.com, linux-kernel@vger.kernel.org,
+        bhe@redhat.com, dyoung@redhat.com, kexec@lists.infradead.org,
+        linux-efi@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-On 7/26/2023 12:51 PM, Krzysztof Kozlowski wrote:
-> On 26/07/2023 07:03, Sridharan S N wrote:
->> On 7/20/2023 3:18 PM, Konrad Dybcio wrote:
->>> On 20.07.2023 10:49, Krzysztof Kozlowski wrote:
->>>> On 20/07/2023 10:45, Sridharan S N wrote:
->>>>> Document the below listed (Reference Design Platform) RDP boards based on IPQ9574
->>>>> family of SoCs.
->>>>>
->>>>> AL02-C3  - rdp437
->>>>> AL02-C7  - rdp433-mht-phy
->>>>> AL02-C10 - rdp433-mht-switch
->>>>> AL02-C11 - rdp467
->>>>> AL02-C12 - rdp455
->>>>> AL02-C13 - rdp459
->>>>> AL02-C15 - rdp457
->>>>> AL02-C16 - rdp456
->>>>> AL02-C17 - rdp469
->>>>> AL02-C19 - rdp461
->>>>> AL03-C2  - rdp458
->>>>>
->>>>> Signed-off-by: Sridharan S N <quic_sridsn@quicinc.com>
->>>>> ---
->>>>>    .../devicetree/bindings/arm/qcom.yaml         | 20 +++++++++++++++++++
->>>>>    1 file changed, 20 insertions(+)
->>>>>
->>>>> diff --git a/Documentation/devicetree/bindings/arm/qcom.yaml b/Documentation/devicetree/bindings/arm/qcom.yaml
->>>>> index dd66fd872c31..d992261da691 100644
->>>>> --- a/Documentation/devicetree/bindings/arm/qcom.yaml
->>>>> +++ b/Documentation/devicetree/bindings/arm/qcom.yaml
->>>>> @@ -89,10 +89,20 @@ description: |
->>>>>            adp
->>>>>            ap-al01-c1
->>>>>            ap-al02-c2
->>>>> +        ap-al02-c3
->>>>>            ap-al02-c6
->>>>>            ap-al02-c7
->>>>>            ap-al02-c8
->>>>>            ap-al02-c9
->>>>> +        ap-al02-c10
->>>>> +        ap-al02-c11
->>>>> +        ap-al02-c12
->>>>> +        ap-al02-c13
->>>>> +        ap-al02-c15
->>>>> +        ap-al02-c16
->>>>> +        ap-al02-c17
->>>>> +        ap-al02-c19
->>>> Why? I asked once, but there was no feedback from Qualcomm.
->>>>
->>>> Why do we need to do this? What's the point?
->>> Another question would be, whether these boards are just one-off test
->>> prototypes of which there exist like 5-10 units, or are they actually
->>> going to be supported and useful.
->>>
->>> If it's the former, I don't think it makes sense to keep the device
->>> trees upstream.
->>>
->>> Konrad
->> These are all not test rdps and each rdps has its own configurations.
->> IPQ9574 has four pcie instances and one QDSP processor. Not all rdps use
->> all of the interfaces and it will vary for each rdp. In next version ,
->> will post with each rdp's configuration explicitly
+On Wed, 2 Aug 2023 at 17:52, Borislav Petkov <bp@alien8.de> wrote:
 >
-> So still no answer why do we need to list it as possible boards.
-> Especially that it messes with compatible style, because c[1-9] looks
-> like board version.
+> On Wed, Aug 02, 2023 at 04:55:27PM +0200, Ard Biesheuvel wrote:
+> > ... because now, entering via startup_32 is broken, given that it only
+> > maps the kernel image itself and relies on the #PF handling for
+> > everything else it accesses, including firmware tables.
+> >
+> > AFAICT this also means that entering via startup_32 is broken entirely
+> > for any configuration that enables the cc blob config table check,
+> > regardless of the platform.
 >
-> I suggest don't add these board types and drop existing ones.
+> Lemme brain-dump what Tom and I just talked on IRC.
 >
+> That startup_32 entry path for SNP guests was used with old grubs which
+> used to enter through there and not anymore, reportedly. Which means,
+> that must've worked at some point but Joerg would know. CCed.
 >
-> Best regards,
-> Krzysztof
 
-Apologize for the late reply. IPQ bootloader doesn't need these info. we 
-will send the patch to drop the existing ones
+Sadly, not only 'old' grubs - GRUB mainline only recently added
+support for booting Linux/x86 via the EFI stub (because I wrote the
+code for them), but it will still fall back to the previous mode for
+kernels that are built without EFI stub support, or which are older
+than ~v5.8 (because their EFI stub does not implement the generic EFI
+initrd loading mechanism)
 
-Thanks,
+This fallback still appears to enter via startup_32, even when GRUB
+itself runs in long mode in the context of EFI.
 
-Sridharan
+> Newer grubs enter through the 64-bit entry point and thus are fine
+> - otherwise we would be seeing explosions left and right.
+>
 
+Yeah. what seems to be saving our ass here is that startup_32 maps the
+first 1G of physical address space 4 times, and x86_64 EFI usually
+puts firmware tables below 4G. This means the cc blob check doesn't
+fault, but it may dereference bogus memory traversing the config table
+array looking for the cc blob GUID. However, the system table field
+holding the size of the array may also appear as bogus so this may
+still break in weird ways.
+
+> So dependent on what we wanna do, if we kill the 32-bit path, we can
+> kill the 32-bit C-bit verif code. But that's for later and an item on my
+> TODO list.
+>
+
+I don't think we can kill it yet, but it would be nice if we could
+avoid the need to support SNP boot when entering that way.
