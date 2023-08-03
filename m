@@ -2,76 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2965A76EDBF
+	by mail.lfdr.de (Postfix) with ESMTP id 7204976EDC0
 	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 17:14:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236959AbjHCPOE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Aug 2023 11:14:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44994 "EHLO
+        id S236970AbjHCPOH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Aug 2023 11:14:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45014 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236931AbjHCPNz (ORCPT
+        with ESMTP id S236935AbjHCPN4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Aug 2023 11:13:55 -0400
-Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40A2CE75
-        for <linux-kernel@vger.kernel.org>; Thu,  3 Aug 2023 08:13:54 -0700 (PDT)
-Received: by mail-pl1-x62e.google.com with SMTP id d9443c01a7336-1b8ad8383faso9566375ad.0
-        for <linux-kernel@vger.kernel.org>; Thu, 03 Aug 2023 08:13:54 -0700 (PDT)
+        Thu, 3 Aug 2023 11:13:56 -0400
+Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 511D0E77
+        for <linux-kernel@vger.kernel.org>; Thu,  3 Aug 2023 08:13:55 -0700 (PDT)
+Received: by mail-pl1-x62d.google.com with SMTP id d9443c01a7336-1bbf3da0ea9so7606225ad.2
+        for <linux-kernel@vger.kernel.org>; Thu, 03 Aug 2023 08:13:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rivosinc-com.20221208.gappssmtp.com; s=20221208; t=1691075634; x=1691680434;
-        h=to:from:cc:content-transfer-encoding:mime-version:date:message-id
+        d=rivosinc-com.20221208.gappssmtp.com; s=20221208; t=1691075635; x=1691680435;
+        h=to:from:content-transfer-encoding:mime-version:date:message-id
          :subject:references:in-reply-to:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=FwOPfqP2jqQDqtzxDPpbpkmjqrOiOYyKNAFNDG2M+II=;
-        b=yPARXjcdGStftqjS/oaJ5OYvo5LUnTfmx1JvFnBofb2p/O4qgVB4qczUnlhcdDM9ie
-         jc3iAyKoKYLaOCxs7AxQXXLuTnhHqG2jtdQ8svhSaLSYYOzSPPcBdlWjPfL7J055mVpx
-         H/IbJCrtdcdxcOwQ/XdiIhnxhcGSftrkbPJCqRsJ+1eYgj5MVLRqPrIyUIWI04KbbLeV
-         jvJQGNWJrf6TbAAzmJff/hZiQL1Ld7rMBNC53J3eEwrNKe0Rvdyr/Xts2pB/5GR1hqtQ
-         ZpV/1fA6+tgyO6jX3Ipg8khhn50zxjdbPdfdwU045gNTqdPMTM2MtMX8cKjBM4oCAhfj
-         nqJw==
+        bh=iXVrhCdWLLKcnhxRquAkFhWRRF3he8a60KQeGx3CPwQ=;
+        b=xMOWHjzhIFADI7yI+bdkuIUrM/IveX3fQo2nyRKXgK9FIXFeon8fFR3RBwpf2xJQQo
+         CEmugwQXRO7kOib8f9JtuiUYixYu3qPrGAs7y8mjk54HnrQ28GzK9peVfLzRkMDPY8hy
+         GY9Z6vxcNi3J8Q8L1LH4ZhQNk+/eVY32xwLCwVsNUK3/x6s13Q2VIX2eIY0uiFX1ANiC
+         g/wHAkQR2RLIL48U4u+Y+f3F7zr/NCKZ0y8gkruv5gJ5KirmEN9SvfUYJP3xCbfXkpWB
+         AcJKFSd221SCMZbRzA42l7nX1zwjQFreqtUsOvqKX1v5D/OE+rorkr4BOc/6qxoDGCES
+         CGoQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691075634; x=1691680434;
-        h=to:from:cc:content-transfer-encoding:mime-version:date:message-id
+        d=1e100.net; s=20221208; t=1691075635; x=1691680435;
+        h=to:from:content-transfer-encoding:mime-version:date:message-id
          :subject:references:in-reply-to:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=FwOPfqP2jqQDqtzxDPpbpkmjqrOiOYyKNAFNDG2M+II=;
-        b=f0GhULN0l5Zu9q76PpaFfA44dk8eJmzVc66kDynbZrrsjk5zpV0txomTL/K8uZ/wHi
-         GfqfBKZIdlsMQ0O0ww/F5VEgg124phwjelAhOmxzFyh4FUFsC/InvUlFtuqtvgFs9SDc
-         BLHuI9jWGutWXxYftDNfwTzVSoiWmJ5KI2WfakSJvSDb9Oqx27nRtQnWqK9Wj8W+0apH
-         tmGvp/51Tvor6J+iySCMQextPjvj9O0dRrz2Vi2cxt9mjdgLRJbfJweuLRnfGg9bTGhr
-         B+6gr7gwBMpQdAaV9NwtXFiitqs9QsZbvAdN+DehQ2JKA2TCwbsIxZteuxjXfVXiOBho
-         ultA==
-X-Gm-Message-State: ABy/qLb4TJEh7ynpxooZXuG1YeBR7KG+GlQ2N/9nXCi//XnsuJFBrjQJ
-        UbatQCuH9ayLu16LxsgNQxZTBg==
-X-Google-Smtp-Source: APBJJlF/emt41UduXS9wIVIwn/4gqNBAL9/6FhE5OrvzMvPUxpZj9XYWSKdyhE9O9GMBigEHv6eC3g==
-X-Received: by 2002:a17:903:456:b0:1bb:77a2:edda with SMTP id iw22-20020a170903045600b001bb77a2eddamr17288120plb.36.1691075633664;
-        Thu, 03 Aug 2023 08:13:53 -0700 (PDT)
+        bh=iXVrhCdWLLKcnhxRquAkFhWRRF3he8a60KQeGx3CPwQ=;
+        b=KpEXdtDePdaCW58hpFE9sSrIdzmUbT9pJiasGOZUTCRAR/5/GsMdA7bnYiV7QbZ8id
+         qdDf7l7JD2nITJiebptyBp5RtSd003wQ1Xy6lu0hkAunxlD/4LG68ig4vCC7YPIOYjN5
+         hrS4ipMxqsPPr8FdRGMPjNViml7KYk9r8IHpWS9xPVoprxJ+t3Wi8sOuxJggrbotQSA1
+         hKHRxPTML3aaW04cM2kcuiHygVP0/l+oQIbSn08QBRTBmxqajtCBFP1KGoKYVVLEeYe2
+         4zV7KFlPhleWdd71iYhGrxJBfL7mK8WyCBoMpRjXkazeY0ZYhR/xtOQj3f0wmrIdnna6
+         I6rA==
+X-Gm-Message-State: ABy/qLYfwbRHJZ2y/xiNzOzsin8C/eV5cfMPBhwtYaucDBp+2IyH+0JC
+        cQWRE9vcLQbQt3MNtqHYQZwenQ==
+X-Google-Smtp-Source: APBJJlHJCfL3eK3xXZPgRUSQoa7EWdazreYMd8M6jEbaOfDL0ZFs9AZ4gB01lCbcEKywUcJVa8l19g==
+X-Received: by 2002:a17:902:e803:b0:1b7:e9e9:1004 with SMTP id u3-20020a170902e80300b001b7e9e91004mr19161935plg.30.1691075634839;
+        Thu, 03 Aug 2023 08:13:54 -0700 (PDT)
 Received: from localhost ([135.180.227.0])
-        by smtp.gmail.com with ESMTPSA id y7-20020a170902b48700b001b8b1f6619asm14535688plr.75.2023.08.03.08.13.53
+        by smtp.gmail.com with ESMTPSA id z18-20020a170903019200b001bba7aab838sm14478969plg.162.2023.08.03.08.13.54
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 03 Aug 2023 08:13:53 -0700 (PDT)
-In-Reply-To: <20230724100917.309061-1-suagrfillet@gmail.com>
-References: <20230724100917.309061-1-suagrfillet@gmail.com>
-Subject: Re: [RESEND PATCH -fixes 1/2] riscv: Export va_kernel_pa_offset in
- vmcoreinfo
-Message-Id: <169107392509.27633.2884019260902221664.b4-ty@rivosinc.com>
+        Thu, 03 Aug 2023 08:13:54 -0700 (PDT)
+In-Reply-To: <20230704121837.248976-1-alexghiti@rivosinc.com>
+References: <20230704121837.248976-1-alexghiti@rivosinc.com>
+Subject: Re: [PATCH] riscv: Start of DRAM should at least be aligned on PMD
+ size for the direct mapping
+Message-Id: <169107392510.27633.6639433423515028183.b4-ty@rivosinc.com>
 Date:   Thu, 03 Aug 2023 07:45:25 -0700
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
 X-Mailer: b4 0.13-dev-901c5
-Cc:     kexec@lists.infradead.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org
 From:   Palmer Dabbelt <palmer@rivosinc.com>
-To:     bhe@redhat.com, vgoyal@redhat.com, dyoung@redhat.com,
-        corbet@lwn.net, Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>, aou@eecs.berkeley.edu,
-        xianting.tian@linux.alibaba.com, anup@brainfault.org,
-        robh@kernel.org, ajones@ventanamicro.com, alexghiti@rivosinc.com,
-        Conor Dooley <conor.dooley@microchip.com>,
-        Song Shuai <suagrfillet@gmail.com>
+To:     Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Song Shuai <suagrfillet@gmail.com>,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Alexandre Ghiti <alexghiti@rivosinc.com>
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
         T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -80,22 +77,18 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-On Mon, 24 Jul 2023 18:09:16 +0800, Song Shuai wrote:
-> Since RISC-V Linux v6.4, the commit 3335068f8721 ("riscv: Use
-> PUD/P4D/PGD pages for the linear mapping") changes phys_ram_base
-> from the physical start of the kernel to the actual start of the DRAM.
+On Tue, 04 Jul 2023 14:18:37 +0200, Alexandre Ghiti wrote:
+> So that we do not end up mapping the whole linear mapping using 4K
+> pages, which is slow at boot time, and also very likely at runtime.
 > 
-> The Crash-utility's VTOP() still uses phys_ram_base and kernel_map.virt_addr
-> to translate kernel virtual address, that failed the Crash with Linux v6.4 [1].
+> So make sure we align the start of DRAM on a PMD boundary.
 > 
-> [...]
+> 
 
 Applied, thanks!
 
-[1/2] riscv: Export va_kernel_pa_offset in vmcoreinfo
-      https://git.kernel.org/palmer/c/fbe7d19d2b7f
-[2/2] Documentation: kdump: Add va_kernel_pa_offset for RISCV64
-      https://git.kernel.org/palmer/c/640c503d7dbd
+[1/1] riscv: Start of DRAM should at least be aligned on PMD size for the direct mapping
+      https://git.kernel.org/palmer/c/9d3e8e1ff0d8
 
 Best regards,
 -- 
