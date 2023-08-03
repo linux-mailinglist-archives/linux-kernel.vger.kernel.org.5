@@ -2,52 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D5BC976E74D
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 13:48:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A12A076E750
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 13:49:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234223AbjHCLsx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Aug 2023 07:48:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45466 "EHLO
+        id S234777AbjHCLt3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Aug 2023 07:49:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45772 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231496AbjHCLsv (ORCPT
+        with ESMTP id S231496AbjHCLt1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Aug 2023 07:48:51 -0400
-Received: from bg4.exmail.qq.com (bg4.exmail.qq.com [43.155.65.254])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4CF0E6F;
-        Thu,  3 Aug 2023 04:48:49 -0700 (PDT)
-X-QQ-mid: bizesmtp74t1691063319tvuri5m6
-Received: from linux-lab-host.localdomain ( [116.30.131.233])
-        by bizesmtp.qq.com (ESMTP) with 
-        id ; Thu, 03 Aug 2023 19:48:38 +0800 (CST)
-X-QQ-SSF: 00200000000000E0X000000A0000000
-X-QQ-FEAT: K2/klV1qoGlgQFITSGxVBRsam1EKtASy9rInE71XVAB8zAK2aUOgM8zIkBgPb
-        qCkgBtzdB/GZNd3ylQkg97OMTBSQGw/YDbKnvSsEgQ0NhDoWX6cJDd6tJ4NfDZco9Nu3y0n
-        OAcZ4Mqt1qB9xQLNNF/hOwQnD229SSjnQhhY7GkcEz1YmYPXVj0YrnJcoe5SFwO4xZdYST2
-        dZVlaODubiG8laWFZXtAuPLQ525EYkfGXOO3ZFJPqvnGJxPadd9JJTIjMp3OkXNBwe5Jklj
-        Z7yiksAP3xGvOMhCeG9s47xZ9EziebpRjLvLOO3HpmPmPbF4+gqBQjlRqSWa/2qM0oGpopz
-        jwcWDTB8t33onImHcRUhfRBtJ4zwEsa2iX33EFMsj8KFL0Okdyfz0jl9NkaCH3HAA+TOwgB
-        RJDd4Vz96rFcPWavDkVRig==
-X-QQ-GoodBg: 0
-X-BIZMAIL-ID: 560584784227893315
-From:   Zhangjin Wu <falcon@tinylab.org>
-To:     thomas@t-8ch.de, w@1wt.eu
-Cc:     falcon@tinylab.org, arnd@arndb.de, linux-kernel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, tanyuan@tinylab.org,
-        =?UTF-8?q?Thomas=20Wei=C3=9Fschuh?= <linux@weissschuh.net>
-Subject: [PATCH v5 5/8] selftests/nolibc: add test support for ppc64le
-Date:   Thu,  3 Aug 2023 19:48:38 +0800
-Message-Id: <54b1ac710baee8750c4328c65da0fdcb7f06eae4.1691062722.git.falcon@tinylab.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <cover.1691062722.git.falcon@tinylab.org>
-References: <cover.1691062722.git.falcon@tinylab.org>
+        Thu, 3 Aug 2023 07:49:27 -0400
+Received: from mgamail.intel.com (unknown [134.134.136.65])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37E7A2737;
+        Thu,  3 Aug 2023 04:49:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1691063366; x=1722599366;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=xEo+8ervmGfBamk8ouhbLZLmAQ0j8klZRD1dua5HLuY=;
+  b=Ta+D3Ga511kVvc0dGVVUPbeQUO6//phiZhlLMEPx8xG+rikiKp+P63F/
+   FpwFZAgzpWic1wpZssbBNpV2HQSnBqmEmfa5/U6nLRPmRHS7JhrVHzyPx
+   uDfF7SOjXukPk60ZWSTA8W6KD67iMTZ05xvHh1YGXvp0dbNkgTRfoo9ex
+   HZ5Co7Ot/Jmg7eU4XRt5ehuc7O6wYmysW7kTsJc9qzgx8Q8rkboSi0Jhl
+   8c7YyfFZJj/6dHxDFHNIZlmeAAiNPb09o+WU3aFge4z+mQhXzgvMP4K25
+   eYBG07m2LThWFE7juLKIizrLo4BrVutlR9i1gq5dlg3RrpzCZ5i7+hwCk
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10790"; a="373481153"
+X-IronPort-AV: E=Sophos;i="6.01,252,1684825200"; 
+   d="scan'208";a="373481153"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Aug 2023 04:49:25 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10790"; a="729529863"
+X-IronPort-AV: E=Sophos;i="6.01,252,1684825200"; 
+   d="scan'208";a="729529863"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by orsmga002.jf.intel.com with ESMTP; 03 Aug 2023 04:49:23 -0700
+Received: from andy by smile.fi.intel.com with local (Exim 4.96)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1qRWpV-00AsQj-2S;
+        Thu, 03 Aug 2023 14:49:21 +0300
+Date:   Thu, 3 Aug 2023 14:49:21 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Mario Limonciello <mario.limonciello@amd.com>
+Cc:     Mika Westerberg <mika.westerberg@linux.intel.com>,
+        "Rafael J . Wysocki" <rafael@kernel.org>,
+        Bjorn Helgaas <helgaas@kernel.org>, linux-pci@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-acpi@vger.kernel.org,
+        Iain Lane <iain@orangesquash.org.uk>,
+        Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>
+Subject: Re: [PATCH v8 2/2] PCI/ACPI: Use device constraints instead of dates
+ to opt devices into D3
+Message-ID: <ZMuUQb4AcZpMB2Gq@smile.fi.intel.com>
+References: <20230802201013.910-1-mario.limonciello@amd.com>
+ <20230802201013.910-3-mario.limonciello@amd.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-QQ-SENDSIZE: 520
-Feedback-ID: bizesmtp:tinylab.org:qybglogicsvrgz:qybglogicsvrgz5a-1
-X-Spam-Status: No, score=-0.6 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,RCVD_IN_VALIDITY_RPBL,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230802201013.910-3-mario.limonciello@amd.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -55,92 +73,120 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Kernel uses ARCH=powerpc for both 32-bit and 64-bit PowerPC, here adds a
-ppc64le variant for little endian 64-bit PowerPC, users can pass
-XARCH=ppc64le to test it.
+On Wed, Aug 02, 2023 at 03:10:13PM -0500, Mario Limonciello wrote:
+> Since commit 9d26d3a8f1b0 ("PCI: Put PCIe ports into D3 during suspend")
+> PCIe ports from modern machines (>=2015) are allowed to be put into D3 by
+> storing a value to the `bridge_d3` variable in the `struct pci_dev`
+> structure.
+> 
+> pci_power_manageable() uses this variable to indicate a PCIe port can
+> enter D3.
+> pci_pm_suspend_noirq() uses the return from pci_power_manageable() to
+> decide whether to try to put a device into its target state for a sleep
+> cycle via pci_prepare_to_sleep().
+> 
+> For devices that support D3, the target state is selected by this policy:
+> 1. If platform_pci_power_manageable():
+>    Use platform_pci_choose_state()
+> 2. If the device is armed for wakeup:
+>    Select the deepest D-state that supports a PME.
+> 3. Else:
+>    Use D3hot.
+> 
+> Devices are considered power manageable by the platform when they have
+> one or more objects described in the table in section 7.3 of the ACPI 6.5
+> specification.
+> 
+> When devices are not considered power manageable; specs are ambiguous as
+> to what should happen.  In this situation Windows 11 seems to leave PCIe
+> root ports in D0 while Linux puts them into D3 due to the above mentioned
+> commit.
+> 
+> In Windows systems that support Modern Standby specify hardware
+> pre-conditions for the SoC to achieve the lowest power state by device
+> constraints in a SOC specific "Power Engine Plugin" (PEP) [2] [3].
+> They can be marked as disabled or enabled and when enabled can specify
+> the minimum power state required for an ACPI device.
+> 
+> Instead of using a time based heuristic to decide if a port should go
+> into D3 use device constraints to decide.
+> * If the constraint is not present or disabled then choose D0.
+> * If the constraint is enabled, then enable D3 if the constraint is set
+>   to 3 or greater.
 
-The powernv machine of qemu-system-ppc64le is used for there is just a
-working powernv_defconfig.
+...
 
-As the document [1] shows:
+> +/*
+> + * acpi_get_lps0_constraint - get any LPS0 constraint for an acpi device
+> + * @handle: ACPI handle of the device
+> + *
+> + * If a constraint has been specified in the _DSM method for the device,
+> + * return it.  Otherwise, return -ENODEV.
+> + */
+> +int acpi_get_lps0_constraint(struct device *dev)
+> +{
 
-  PowerNV (as Non-Virtualized) is the “bare metal” platform using the
-  OPAL firmware. It runs Linux on IBM and OpenPOWER systems and it can be
-  used as an hypervisor OS, running KVM guests, or simply as a host OS.
+> +	acpi_handle handle = ACPI_HANDLE(dev);
 
-Notes,
+(see below)
 
-- since the VSX support may be disabled in kernel side, to avoid
-  "illegal instruction" errors due to missing VSX kernel support, let's
-  simply let compiler not generate vector/scalar (VSX) instructions via
-  the '-mno-vsx' option.
+> +	int i;
+> +
+> +	if (!handle)
+> +		return -ENODEV;
+> +
+> +	for (i = 0; i < lpi_constraints_table_size; ++i) {
 
-- little endian ppc64 prefers elfv2 to elfv1 if the toolchain (e.g. gcc
-  13.1.0) supports it, let's align with kernel, otherwise, our elfv1
-  binary will not run on kernel with elfv2 ABI.
+> +		if (lpi_constraints_table[i].handle != handle)
 
-[1]: https://qemu.readthedocs.io/en/latest/system/ppc/powernv.html
+Maybe
 
-Suggested-by: Willy Tarreau <w@1wt.eu>
-Link: https://lore.kernel.org/lkml/20230722120747.GC17311@1wt.eu/
-Reviewed-by: Thomas Weißschuh <linux@weissschuh.net>
-Signed-off-by: Zhangjin Wu <falcon@tinylab.org>
----
- tools/testing/selftests/nolibc/Makefile | 6 ++++++
- 1 file changed, 6 insertions(+)
+	device_match_acpi_handle()
 
-diff --git a/tools/testing/selftests/nolibc/Makefile b/tools/testing/selftests/nolibc/Makefile
-index 53f55aad8f5c..4d71393e75ef 100644
---- a/tools/testing/selftests/nolibc/Makefile
-+++ b/tools/testing/selftests/nolibc/Makefile
-@@ -35,6 +35,7 @@ XARCH            = $(or $(XARCH_$(ARCH)),$(ARCH))
- 
- # map from user input variants to their kernel supported architectures
- ARCH_ppc         = powerpc
-+ARCH_ppc64le     = powerpc
- ARCH            := $(or $(ARCH_$(XARCH)),$(XARCH))
- 
- # kernel image names by architecture
-@@ -45,6 +46,7 @@ IMAGE_arm64      = arch/arm64/boot/Image
- IMAGE_arm        = arch/arm/boot/zImage
- IMAGE_mips       = vmlinuz
- IMAGE_ppc        = vmlinux
-+IMAGE_ppc64le    = arch/powerpc/boot/zImage
- IMAGE_riscv      = arch/riscv/boot/Image
- IMAGE_s390       = arch/s390/boot/bzImage
- IMAGE_loongarch  = arch/loongarch/boot/vmlinuz.efi
-@@ -59,6 +61,7 @@ DEFCONFIG_arm64      = defconfig
- DEFCONFIG_arm        = multi_v7_defconfig
- DEFCONFIG_mips       = malta_defconfig
- DEFCONFIG_ppc        = pmac32_defconfig
-+DEFCONFIG_ppc64le    = powernv_defconfig
- DEFCONFIG_riscv      = defconfig
- DEFCONFIG_s390       = defconfig
- DEFCONFIG_loongarch  = defconfig
-@@ -75,6 +78,7 @@ QEMU_ARCH_arm64      = aarch64
- QEMU_ARCH_arm        = arm
- QEMU_ARCH_mips       = mipsel  # works with malta_defconfig
- QEMU_ARCH_ppc        = ppc
-+QEMU_ARCH_ppc64le    = ppc64le
- QEMU_ARCH_riscv      = riscv64
- QEMU_ARCH_s390       = s390x
- QEMU_ARCH_loongarch  = loongarch64
-@@ -88,6 +92,7 @@ QEMU_ARGS_arm64      = -M virt -cpu cortex-a53 -append "panic=-1 $(TEST:%=NOLIBC
- QEMU_ARGS_arm        = -M virt -append "panic=-1 $(TEST:%=NOLIBC_TEST=%)"
- QEMU_ARGS_mips       = -M malta -append "panic=-1 $(TEST:%=NOLIBC_TEST=%)"
- QEMU_ARGS_ppc        = -M g3beige -append "console=ttyS0 panic=-1 $(TEST:%=NOLIBC_TEST=%)"
-+QEMU_ARGS_ppc64le    = -M powernv -append "console=hvc0 panic=-1 $(TEST:%=NOLIBC_TEST=%)"
- QEMU_ARGS_riscv      = -M virt -append "console=ttyS0 panic=-1 $(TEST:%=NOLIBC_TEST=%)"
- QEMU_ARGS_s390       = -M s390-ccw-virtio -m 1G -append "console=ttyS0 panic=-1 $(TEST:%=NOLIBC_TEST=%)"
- QEMU_ARGS_loongarch  = -M virt -append "console=ttyS0,115200 panic=-1 $(TEST:%=NOLIBC_TEST=%)"
-@@ -104,6 +109,7 @@ Q=@
- endif
- 
- CFLAGS_ppc = -m32 -mbig-endian -Wl,-EB,-melf32ppc -mmultiple -mno-vsx
-+CFLAGS_ppc64le = -m64 -mlittle-endian -Wl,-EL,-melf64lppc -mno-vsx $(call cc-option,-mabi=elfv2)
- CFLAGS_s390 = -m64
- CFLAGS_mips = -EL
- CFLAGS_STACKPROTECTOR ?= $(call cc-option,-mstack-protector-guard=global $(call cc-option,-fstack-protector-all))
+?
+
+> +			continue;
+> +		return lpi_constraints_table[i].min_dstate;
+> +	}
+> +
+> +	return -ENODEV;
+> +}
+
+...
+
+> +/*
+
+Is it deliberately non-kernel-doc while mimicking it?
+
+> + * acpi_pci_device_constraint_d3 - determine if device constraints require D3
+> + * @dev: PCI device to check
+> + *
+> + * Returns true if the PEP constraints for the device is enabled and
+> + * requires D3.
+> + */
+> +bool acpi_pci_device_constraint_d3(struct pci_dev *dev)
+> +{
+
+> +	int constraint = acpi_get_lps0_constraint(&dev->dev);
+> +
+> +	if (constraint < 0) {
+
+I slightly prefer
+
+	int constraint;
+
+	constraint = acpi_get_lps0_constraint(&dev->dev);
+	if (constraint < 0) {
+
+> +		pci_dbg(dev, "ACPI device constraint not present\n");
+> +		return false;
+> +	}
+> +
+> +	return constraint >= 3;
+> +}
+
 -- 
-2.25.1
+With Best Regards,
+Andy Shevchenko
+
 
