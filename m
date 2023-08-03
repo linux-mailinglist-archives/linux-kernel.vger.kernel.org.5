@@ -2,199 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1286C76F2FF
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 20:50:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EDC0D76F300
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 20:50:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232525AbjHCStx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Aug 2023 14:49:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37944 "EHLO
+        id S233640AbjHCSuH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Aug 2023 14:50:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38516 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236194AbjHCStT (ORCPT
+        with ESMTP id S232875AbjHCSt6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Aug 2023 14:49:19 -0400
-Received: from mail-qv1-xf33.google.com (mail-qv1-xf33.google.com [IPv6:2607:f8b0:4864:20::f33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E34993583
-        for <linux-kernel@vger.kernel.org>; Thu,  3 Aug 2023 11:48:49 -0700 (PDT)
-Received: by mail-qv1-xf33.google.com with SMTP id 6a1803df08f44-63cf7cce5fbso8249756d6.0
-        for <linux-kernel@vger.kernel.org>; Thu, 03 Aug 2023 11:48:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1691088528; x=1691693328;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=9tbNHE93nYjXEA/O+xALVAEDc6FnXESddWS3lWiWLV0=;
-        b=6VFzvdxm3YrleojZUDMcow5FlyLkuGEPWo7uL1Sub4U4LzVMQhi5UpSPEaYtXxQig6
-         R78lgZrOqqK6yg0QQv/JfRTYg+AsYws7jCkd8Bg1iujIIi9/A8JGaIKa3nySYUYxYXMD
-         fDeqWcFIbb7KgTxygJUFLUFd9FltJ7Sx1WpUt7PJDnRkqFqEAYX3UY0X49kRyzwn5sdP
-         I37qBWtWNXQq7xllL7dbKsCaawao2B5L/YEZK2kvud+xkjOMxt2YCSPKhd52vD+CcmjX
-         qsvwDpR8y8XyjjIEENEG/wD83xbRHVmg+fosa7E0VP5fHwabw7hE0ggbCtQWbEI9pBLv
-         f8mg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691088528; x=1691693328;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=9tbNHE93nYjXEA/O+xALVAEDc6FnXESddWS3lWiWLV0=;
-        b=AktVOZeR+2ywEoestQ61tqNcwESS3azYXu36B0ZoujXh6jsw3QSL2KGGU2P1uz2jfM
-         Com7RHohAN/Qo1Z8RwYcmeq/Xc43gPwvNrhuHPIaFvKn8Xxgb52BO/8YW2DjXQGa5pmz
-         EXiN02ZoalnPeDwZ6MEWR1UNPZDfq82hFgasWMkHeGUtF0qwIx2ymCkTWiJXRWUTUw2e
-         ctej5bz5TKN+ZTHGf2QkzQ0zfwns4uNz6UGf4DCEJXAoI0H+LxHY8AbDOG4jI8yAmJYd
-         2JTsGDcfT729BQVPzmxRecjKL+4Octa8jbCtXBjj2aZtjtfxh+zpa1q0I5V4re+dUEjL
-         Il2A==
-X-Gm-Message-State: ABy/qLbJNeQmWBP99HkA2pOjrFVbY3BMoYbzzbKRcGabYYmHkc9VXF3/
-        5gZgi5kN1udf9X/Y/Hv/Fd4oFU+I5CRfZTn0nfeaTg==
-X-Google-Smtp-Source: APBJJlHVHOlFaAc7QLzwJ5MQyhcxQ7uez6gZPgXw7RdtP68eZ2qt3tpg4x+z+Z2XW9dTV2WAxlrUtvM5KRnWu0hSBto=
-X-Received: by 2002:a05:6214:3011:b0:63d:a05:256a with SMTP id
- ke17-20020a056214301100b0063d0a05256amr21855102qvb.8.1691088527629; Thu, 03
- Aug 2023 11:48:47 -0700 (PDT)
+        Thu, 3 Aug 2023 14:49:58 -0400
+Received: from pandora.armlinux.org.uk (unknown [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BEE792D5A;
+        Thu,  3 Aug 2023 11:49:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:
+        Content-Transfer-Encoding:Content-Type:MIME-Version:References:Message-ID:
+        Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=uflcrixw6nCghznSfpjIdEg8Z/0V2WwrsF757Ri68QM=; b=yZ4xfzN3KxRSxQXFgH5pEZ5UDS
+        ZKN0bp0nCAS+X+TZJW1kOMqfgeHntqkThktxc97CIl4mwO5l0tAEBLNQrT/a+1QKS+W1gkFBtFBaH
+        cFWM8c0u9tem1TxlvQZ1Bn1kiglukxknmU8+N2qnSkaaIGyssQTxO36q6I3283BBDkJHKxups7Chy
+        +OicRaaFOJFCLdM9P2LHorQAMT58tGG6j2cHVCCNlE6MbDYZq9X+xpL+16o0hZrjUsP2zSMqxyfB9
+        aNM/cIslnhJf8etVT36eotThMRVvTT7xVXsPijazTJAyik4+Zh0YP4CHxmpNEysWdfJy3bytoZx3x
+        9GMwE8CQ==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:46050)
+        by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.96)
+        (envelope-from <linux@armlinux.org.uk>)
+        id 1qRdNy-0007Lp-0p;
+        Thu, 03 Aug 2023 19:49:22 +0100
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
+        (envelope-from <linux@shell.armlinux.org.uk>)
+        id 1qRdNs-0003AM-NG; Thu, 03 Aug 2023 19:49:16 +0100
+Date:   Thu, 3 Aug 2023 19:49:16 +0100
+From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
+To:     Florian Fainelli <f.fainelli@gmail.com>
+Cc:     Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
+        <u.kleine-koenig@pengutronix.de>,
+        Ioana Ciornei <ciorneiioana@gmail.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Ioana Ciornei <ioana.ciornei@nxp.com>,
+        Alexandru Ardelean <alexandru.ardelean@analog.com>,
+        Andre Edich <andre.edich@microchip.com>,
+        Antoine Tenart <atenart@kernel.org>,
+        Baruch Siach <baruch@tkos.co.il>,
+        Christophe Leroy <christophe.leroy@c-s.fr>,
+        Divya Koppera <Divya.Koppera@microchip.com>,
+        Hauke Mehrtens <hauke@hauke-m.de>,
+        Jerome Brunet <jbrunet@baylibre.com>,
+        Kavya Sree Kotagiri <kavyasree.kotagiri@microchip.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Marco Felsch <m.felsch@pengutronix.de>,
+        Marek Vasut <marex@denx.de>,
+        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
+        Mathias Kresin <dev@kresin.me>,
+        Maxim Kochetkov <fido_max@inbox.ru>,
+        Michael Walle <michael@walle.cc>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Nisar Sayed <Nisar.Sayed@microchip.com>,
+        Oleksij Rempel <o.rempel@pengutronix.de>,
+        Philippe Schenker <philippe.schenker@toradex.com>,
+        Willy Liu <willy.liu@realtek.com>,
+        Yuiko Oshino <yuiko.oshino@microchip.com>
+Subject: Re: [PATCH net-next v2 02/19] net: phy: add a shutdown procedure
+Message-ID: <ZMv2rC8CACihovLl@shell.armlinux.org.uk>
+References: <20201101125114.1316879-1-ciorneiioana@gmail.com>
+ <20201101125114.1316879-3-ciorneiioana@gmail.com>
+ <20230803181640.yzxsk2xphwryxww4@pengutronix.de>
+ <7e365fa4-7a50-382c-5a99-288a417a82a7@gmail.com>
 MIME-Version: 1.0
-References: <20230803-ppc_tlbilxlpid-v3-1-ca84739bfd73@google.com> <31b387c5-c6a4-2911-b337-b7af6a15c29e@csgroup.eu>
-In-Reply-To: <31b387c5-c6a4-2911-b337-b7af6a15c29e@csgroup.eu>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Thu, 3 Aug 2023 11:48:36 -0700
-Message-ID: <CAKwvOdm7ftWse5LVwM_0b_Zk_H-qavXsjsSyUmd0onZzvYcasw@mail.gmail.com>
-Subject: Re: [PATCH v3] powerpc/inst: add PPC_TLBILX_LPID
-To:     Christophe Leroy <christophe.leroy@csgroup.eu>
-Cc:     Michael Ellerman <mpe@ellerman.id.au>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Tom Rix <trix@redhat.com>,
-        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "llvm@lists.linux.dev" <llvm@lists.linux.dev>,
-        kernel test robot <lkp@intel.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <7e365fa4-7a50-382c-5a99-288a417a82a7@gmail.com>
+Sender: Russell King (Oracle) <linux@armlinux.org.uk>
+X-Spam-Status: No, score=-1.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,RDNS_NONE,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 3, 2023 at 11:47=E2=80=AFAM Christophe Leroy
-<christophe.leroy@csgroup.eu> wrote:
->
->
->
-> Le 03/08/2023 =C3=A0 20:33, Nick Desaulniers a =C3=A9crit :
-> > Clang didn't recognize the instruction tlbilxlpid. This was fixed in
-> > clang-18 [0] then backported to clang-17 [1].  To support clang-16 and
-> > older, rather than using that instruction bare in inline asm, add it to
-> > ppc-opcode.h and use that macro as is done elsewhere for other
-> > instructions.
-> >
-> > Link: https://github.com/ClangBuiltLinux/linux/issues/1891
-> > Link: https://github.com/llvm/llvm-project/issues/64080
-> > Link: https://github.com/llvm/llvm-project/commit/53648ac1d0c953ae6d008=
-864dd2eddb437a92468 [0]
-> > Link: https://github.com/llvm/llvm-project-release-prs/commit/0af7e5e54=
-a8c7ac665773ac1ada328713e8338f5 [1]
-> > Reported-by: kernel test robot <lkp@intel.com>
-> > Closes: https://lore.kernel.org/llvm/202307211945.TSPcyOhh-lkp@intel.co=
-m/
-> > Suggested-by: Michael Ellerman <mpe@ellerman.id.au>
-> > Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
->
-> Not sure why you changed the order of #includes , nevertheless
+On Thu, Aug 03, 2023 at 11:24:04AM -0700, Florian Fainelli wrote:
+> On 8/3/23 11:16, Uwe Kleine-König wrote:
+> > Hello,
+> > 
+> > this patch became commit e2f016cf775129c050d6c79483073423db15c79a and is
+> > contained in v5.11-rc1.
+> > 
+> > It broke wake-on-lan on my NAS (an ARM machine with an Armada 370 SoC,
+> > armada-370-netgear-rn104.dts). The used phy driver is marvell.c. I only
+> > report it now as I just upgraded that machine from Debian 11 (with
+> > kernel 5.10.x) to Debian 12 (with kernel 6.1.x).
+> > 
+> > Commenting out phy_disable_interrupts(...) in v6.1.41's phy_shutdown()
+> > fixes the problem for me.
+> > 
+> > On Sun, Nov 01, 2020 at 02:50:57PM +0200, Ioana Ciornei wrote:
+> > > In case of a board which uses a shared IRQ we can easily end up with an
+> > > IRQ storm after a forced reboot.
+> > > 
+> > > For example, a 'reboot -f' will trigger a call to the .shutdown()
+> > > callbacks of all devices. Because phylib does not implement that hook,
+> > > the PHY is not quiesced, thus it can very well leave its IRQ enabled.
+> > > 
+> > > At the next boot, if that IRQ line is found asserted by the first PHY
+> > > driver that uses it, but _before_ the driver that is _actually_ keeping
+> > > the shared IRQ asserted is probed, the IRQ is not going to be
+> > > acknowledged, thus it will keep being fired preventing the boot process
+> > > of the kernel to continue. This is even worse when the second PHY driver
+> > > is a module.
+> > > 
+> > > To fix this, implement the .shutdown() callback and disable the
+> > > interrupts if these are used.
+> > 
+> > I don't know how this should interact with wake-on-lan, but I would
+> > expect that there is a way to fix this without reintroducing the problem
+> > fixed by this change. However I cannot say if this needs fixing in the
+> > generic phy code or the phy driver. Any hints?
+> 
+> It depends upon what the PHY drivers and underlying hardware are capable and
+> willing to do. Some PHY drivers will shutdown the TX path completely since
+> you do not need that part to receive Wake-on-LAN packets and pass them up to
+> the PHY and/or MAC Wake-on-LAN matching logic. This would invite us to let
+> individual PHY drivers make a decision as to what they want to do in a
+> .shutdown() routine that would then need to be added to each and every
+> driver that wants to do something special. In the absence of said routine,
+> you could default to calling phy_disable_interrupts() unless the PHY has WoL
+> enabled?
+> 
+> phydev::wol_enabled reflects whether the PHY and/or the MAC has Wake-on-LAN
+> enabled which could you could key off to "nullify" what the shutdown does.
 
-Habit to sort; can drop if maintaining git blame is more important
-than cleaning that up.
+If the shutdown method is being called, doesn't that imply that we're
+going to be hibernating rather than suspend-to-RAM - because suspend-to
+RAM doesn't involve powering down the system, whereas hibernating does.
 
->
-> Reviewed-by: Christophe Leroy <christophe.leroy@csgroup.eu>
->
-> > ---
-> > Changes in v3:
-> > - left comment @ https://github.com/linuxppc/issues/issues/350#issuecom=
-ment-1664417212
-> > - restore PPC_RAW_TLBILX previous definition
-> > - fix comment style
-> > - Link to v2: https://lore.kernel.org/r/20230803-ppc_tlbilxlpid-v2-1-21=
-1ffa1df194@google.com
-> >
-> > Changes in v2:
-> > - add 2 missing tabs to PPC_RAW_TLBILX_LPID
-> > - Link to v1: https://lore.kernel.org/r/20230803-ppc_tlbilxlpid-v1-1-84=
-a1bc5cf963@google.com
-> > ---
-> >   arch/powerpc/include/asm/ppc-opcode.h |  2 ++
-> >   arch/powerpc/kvm/e500mc.c             | 11 ++++++++---
-> >   2 files changed, 10 insertions(+), 3 deletions(-)
-> >
-> > diff --git a/arch/powerpc/include/asm/ppc-opcode.h b/arch/powerpc/inclu=
-de/asm/ppc-opcode.h
-> > index ef6972aa33b9..005601243dda 100644
-> > --- a/arch/powerpc/include/asm/ppc-opcode.h
-> > +++ b/arch/powerpc/include/asm/ppc-opcode.h
-> > @@ -397,6 +397,7 @@
-> >   #define PPC_RAW_RFCI                        (0x4c000066)
-> >   #define PPC_RAW_RFDI                        (0x4c00004e)
-> >   #define PPC_RAW_RFMCI                       (0x4c00004c)
-> > +#define PPC_RAW_TLBILX_LPID          (0x7c000024)
-> >   #define PPC_RAW_TLBILX(t, a, b)             (0x7c000024 | __PPC_T_TLB=
-(t) |  __PPC_RA0(a) | __PPC_RB(b))
-> >   #define PPC_RAW_WAIT_v203           (0x7c00007c)
-> >   #define PPC_RAW_WAIT(w, p)          (0x7c00003c | __PPC_WC(w) | __PPC=
-_PL(p))
-> > @@ -616,6 +617,7 @@
-> >   #define PPC_TLBILX(t, a, b) stringify_in_c(.long PPC_RAW_TLBILX(t, a,=
- b))
-> >   #define PPC_TLBILX_ALL(a, b)        PPC_TLBILX(0, a, b)
-> >   #define PPC_TLBILX_PID(a, b)        PPC_TLBILX(1, a, b)
-> > +#define PPC_TLBILX_LPID              stringify_in_c(.long PPC_RAW_TLBI=
-LX_LPID)
-> >   #define PPC_TLBILX_VA(a, b) PPC_TLBILX(3, a, b)
-> >   #define PPC_WAIT_v203               stringify_in_c(.long PPC_RAW_WAIT=
-_v203)
-> >   #define PPC_WAIT(w, p)              stringify_in_c(.long PPC_RAW_WAIT=
-(w, p))
-> > diff --git a/arch/powerpc/kvm/e500mc.c b/arch/powerpc/kvm/e500mc.c
-> > index d58df71ace58..7c09c000c330 100644
-> > --- a/arch/powerpc/kvm/e500mc.c
-> > +++ b/arch/powerpc/kvm/e500mc.c
-> > @@ -16,10 +16,11 @@
-> >   #include <linux/miscdevice.h>
-> >   #include <linux/module.h>
-> >
-> > -#include <asm/reg.h>
-> >   #include <asm/cputable.h>
-> > -#include <asm/kvm_ppc.h>
-> >   #include <asm/dbell.h>
-> > +#include <asm/kvm_ppc.h>
-> > +#include <asm/ppc-opcode.h>
-> > +#include <asm/reg.h>
-> >
-> >   #include "booke.h"
-> >   #include "e500.h"
-> > @@ -92,7 +93,11 @@ void kvmppc_e500_tlbil_all(struct kvmppc_vcpu_e500 *=
-vcpu_e500)
-> >
-> >       local_irq_save(flags);
-> >       mtspr(SPRN_MAS5, MAS5_SGS | get_lpid(&vcpu_e500->vcpu));
-> > -     asm volatile("tlbilxlpid");
-> > +     /*
-> > +      * clang-17 and older could not assemble tlbilxlpid.
-> > +      * https://github.com/ClangBuiltLinux/linux/issues/1891
-> > +      */
-> > +     asm volatile (PPC_TLBILX_LPID);
-> >       mtspr(SPRN_MAS5, 0);
-> >       local_irq_restore(flags);
-> >   }
-> >
-> > ---
-> > base-commit: 7bafbd4027ae86572f308c4ddf93120c90126332
-> > change-id: 20230803-ppc_tlbilxlpid-cfdbf4fd4f7f
-> >
-> > Best regards,
+I think the problem is that when placing the system into hibernate mode
+with WoL enabled, there are PHYs which use their interrupt pin to signal
+that a WoL event has happened. The problem comes with the aforementioned
+commit that the core PHY code now _always_ disables interrupts on the
+PHY, even if WoL is active and we're entering hibernate mode.
 
+That's clearly the wrong thing to be doing when people expect WoL to
+be able to wake their systems up from hibernate.
 
+The more I think about it, the more I'm coming to the conclusion that
+the blamed commit is wrong as it is coded today.
 
---=20
-Thanks,
-~Nick Desaulniers
+It also occurs to me that systems need to cope with the PHY's INT signal
+being asserted through boot, because in the case of WoL-triggered resume
+from hibernate mode, the PHY's INT signal will be asserted _while_ the
+system is booting up (and remember, recovery from hibernate mode is
+essentially no different from a normal system boot with the exception
+that the kernel notices a special signature in the swap partition, and
+then reloads state from there.)
+
+So, boot has to cope properly with the PHY's interrupt being asserted
+in order for WoL from hibernate to work.
+
+It seems to me that a revert of the blamed commit is in order, and a
+different approach is needed?
+
+-- 
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
