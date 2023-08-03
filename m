@@ -2,52 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 62DD476E74B
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 13:48:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C858076E746
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 13:47:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235155AbjHCLsK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Aug 2023 07:48:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44660 "EHLO
+        id S234274AbjHCLrm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Aug 2023 07:47:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44486 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235656AbjHCLrw (ORCPT
+        with ESMTP id S232462AbjHCLrl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Aug 2023 07:47:52 -0400
-Received: from bg4.exmail.qq.com (bg4.exmail.qq.com [43.154.54.12])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 915A02D4E;
-        Thu,  3 Aug 2023 04:47:45 -0700 (PDT)
-X-QQ-mid: bizesmtp89t1691063255tvh5cy8g
-Received: from linux-lab-host.localdomain ( [116.30.131.233])
-        by bizesmtp.qq.com (ESMTP) with 
-        id ; Thu, 03 Aug 2023 19:47:34 +0800 (CST)
-X-QQ-SSF: 01200000000000E0X000000A0000000
-X-QQ-FEAT: CR3LFp2JE4nMMqXQGIxJlZVHZNohvWihGvUS/GtKN6fXiV/OB20czuRGfCid6
-        FHnLdJl2ZKbOXp6OVlzv8eAc6iEN/XhX3ZrGF1QquF8U3Jx2BuphtfQe28H0SDrSr7ghHDs
-        DAlsEhuEVC/x3ocUXOsJYb9mfPeJ10BSdR2t7iOiM2Gxh2KLnb2edtH8fnZFiRRKAhSJh0K
-        288io6Z6ADopxuVQ6faUT0i/SCDwhHGB7g60wf1v2mE7Y2lEU/yb7qJojlCwLsiG/8ddwaR
-        UCyP9ZDrtc9D/VW9tCzTlIi0hrbRodOJkapkCcXr+lTsWtbz7DsK3uWGSDLR0yzl0xBIN3x
-        qnTA1uXrg8hDCPl4oaxHBcLyEoYXsvlBZc7YrhBhF3C4M7lwh8jR3XTGlBXt6BbKsToXYF1
-        AO19W+dJv2LHwacGxtGbMQ==
-X-QQ-GoodBg: 0
-X-BIZMAIL-ID: 11713627082898331898
-From:   Zhangjin Wu <falcon@tinylab.org>
-To:     thomas@t-8ch.de, w@1wt.eu
-Cc:     falcon@tinylab.org, arnd@arndb.de, linux-kernel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, tanyuan@tinylab.org,
-        =?UTF-8?q?Thomas=20Wei=C3=9Fschuh?= <linux@weissschuh.net>
-Subject: [PATCH v5 4/8] selftests/nolibc: add test support for ppc
-Date:   Thu,  3 Aug 2023 19:47:33 +0800
-Message-Id: <f3138031e351c45cd798b756ad3ee6ec46bee084.1691062722.git.falcon@tinylab.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <cover.1691062722.git.falcon@tinylab.org>
-References: <cover.1691062722.git.falcon@tinylab.org>
+        Thu, 3 Aug 2023 07:47:41 -0400
+Received: from mgamail.intel.com (unknown [134.134.136.126])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E03A1B2
+        for <linux-kernel@vger.kernel.org>; Thu,  3 Aug 2023 04:47:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1691063260; x=1722599260;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:content-transfer-encoding:in-reply-to;
+  bh=NECvDcbl4RY3HoONUpgHbSjVbKKlVEed2eIkDFxsnN4=;
+  b=WctlWWcJrcjO4Fg4FD+oyU6DQ/ljW3QcZxQW+IoqmnauYHeR5yOFGiAu
+   Ab0Uo2WCyKnU4kVGVTni8nO7m7fuNyVfPMVK0wJAaQrS3MZql2fuk0dby
+   4CkmwDOHDJiTT8kxxFBVHtinnkIdYCv4B4G6+UNtUXQb8KqZem7EysQxT
+   EPa5iFkbFthI/WeDudOnsnrWdmytZvAJFgPSeUgUyYnYx/cnUDlBUtgy5
+   YelJyorzzpuCZi0kZb1dtab+PegeK4RvW4YRx6CJcm83Lnf6rSf378nUd
+   C67PecC8P7t2009C55whAAkKZ1ku/WR1WoeB1e99dBJtuBpqGJ9b4uvgx
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10790"; a="354767736"
+X-IronPort-AV: E=Sophos;i="6.01,252,1684825200"; 
+   d="scan'208";a="354767736"
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Aug 2023 04:47:40 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10790"; a="732726385"
+X-IronPort-AV: E=Sophos;i="6.01,252,1684825200"; 
+   d="scan'208";a="732726385"
+Received: from gvarshne-mobl2.gar.corp.intel.com (HELO box.shutemov.name) ([10.252.63.106])
+  by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Aug 2023 04:47:36 -0700
+Received: by box.shutemov.name (Postfix, from userid 1000)
+        id 1F176109FCF; Thu,  3 Aug 2023 14:47:34 +0300 (+03)
+Date:   Thu, 3 Aug 2023 14:47:34 +0300
+From:   "kirill.shutemov@linux.intel.com" <kirill.shutemov@linux.intel.com>
+To:     "Huang, Kai" <kai.huang@intel.com>
+Cc:     "Hansen, Dave" <dave.hansen@intel.com>,
+        "Christopherson,, Sean" <seanjc@google.com>,
+        "x86@kernel.org" <x86@kernel.org>, "bp@alien8.de" <bp@alien8.de>,
+        "peterz@infradead.org" <peterz@infradead.org>,
+        "hpa@zytor.com" <hpa@zytor.com>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "pbonzini@redhat.com" <pbonzini@redhat.com>,
+        "Yamahata, Isaku" <isaku.yamahata@intel.com>,
+        "sathyanarayanan.kuppuswamy@linux.intel.com" 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        "n.borisov.lkml@gmail.com" <n.borisov.lkml@gmail.com>
+Subject: Re: [PATCH v3 05/12] x86/tdx: Pass TDCALL/SEAMCALL input/output
+ registers via a structure
+Message-ID: <20230803114734.nclbrrahhjbypdzd@box.shutemov.name>
+References: <cover.1690369495.git.kai.huang@intel.com>
+ <fd9886e5fffe5ccccf5895627be2fff209a69049.1690369495.git.kai.huang@intel.com>
+ <20230727163630.gcsczhebozgf2tsu@box.shutemov.name>
+ <6374fd1aa1e2ff4777eab2421cfc439d259cc603.camel@intel.com>
+ <20230803105810.xljd2sjqittqey2w@box.shutemov.name>
+ <1d402ce98cdcf71098783e7fe584bbf477e47eb9.camel@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-QQ-SENDSIZE: 520
-Feedback-ID: bizesmtp:tinylab.org:qybglogicsvrgz:qybglogicsvrgz5a-1
-X-Spam-Status: No, score=-0.6 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,RCVD_IN_VALIDITY_RPBL,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
+In-Reply-To: <1d402ce98cdcf71098783e7fe584bbf477e47eb9.camel@intel.com>
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -55,99 +81,17 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Kernel uses ARCH=powerpc for both 32-bit and 64-bit PowerPC, here adds a
-ppc variant for 32-bit PowerPC and uses it as the default variant of
-powerpc architecture.
+On Thu, Aug 03, 2023 at 11:35:48AM +0000, Huang, Kai wrote:
+> Btw, should I say something like below in the changelog to justify this
+> additional logic:
+> 
+> 	Also use R10/R11 as input registers too to make the input/output†
+> 	registers symmetric, although currently no TDCALL/SEAMCALL use
+> 	them as input registers.
+> 
+> ?
 
-Users can pass XARCH=ppc (or ARCH=powerpc) to test 32-bit PowerPC.
+LGTM.
 
-The default qemu-system-ppc g3beige machine [1] is used to run 32-bit
-powerpc kernel with pmac32_defconfig. The missing PMACZILOG serial tty
-and console are enabled in another patch [2].
-
-Note,
-
-- zImage doesn't boot due to "qemu-system-ppc: Some ROM regions are
-  overlapping" error, so, vmlinux is used instead.
-
-- since the VSX support may be disabled in kernel side, to avoid
-  "illegal instruction" errors due to missing VSX kernel support, let's
-  simply let compiler not generate vector/scalar (VSX) instructions via
-  the '-mno-vsx' option.
-
-- as 'man gcc' shows, '-mmultiple' is used to generate code that uses
-  the load multiple word instructions and the store multiple word
-  instructions. Those instructions do not work when the processor is in
-  little-endian mode (except PPC740/PPC750), so, we only enable it
-  for big endian powerpc.
-
-[1]: https://qemu.readthedocs.io/en/latest/system/ppc/powermac.html
-[2]: https://lore.kernel.org/lkml/bb7b5f9958b3e3a20f6573ff7ce7c5dc566e7e32.1690982937.git.tanyuan@tinylab.org/
-
-Suggested-by: Willy Tarreau <w@1wt.eu>
-Link: https://lore.kernel.org/lkml/ZL9leVOI25S2+0+g@1wt.eu/
-Reviewed-by: Thomas Wei√üschuh <linux@weissschuh.net>
-Signed-off-by: Zhangjin Wu <falcon@tinylab.org>
----
- tools/testing/selftests/nolibc/Makefile | 7 +++++++
- 1 file changed, 7 insertions(+)
-
-diff --git a/tools/testing/selftests/nolibc/Makefile b/tools/testing/selftests/nolibc/Makefile
-index 46a2312b06f5..53f55aad8f5c 100644
---- a/tools/testing/selftests/nolibc/Makefile
-+++ b/tools/testing/selftests/nolibc/Makefile
-@@ -30,9 +30,11 @@ endif
- # architectures where both are equal.
- 
- # configure default variants for target kernel supported architectures
-+XARCH_powerpc    = ppc
- XARCH            = $(or $(XARCH_$(ARCH)),$(ARCH))
- 
- # map from user input variants to their kernel supported architectures
-+ARCH_ppc         = powerpc
- ARCH            := $(or $(ARCH_$(XARCH)),$(XARCH))
- 
- # kernel image names by architecture
-@@ -42,6 +44,7 @@ IMAGE_x86        = arch/x86/boot/bzImage
- IMAGE_arm64      = arch/arm64/boot/Image
- IMAGE_arm        = arch/arm/boot/zImage
- IMAGE_mips       = vmlinuz
-+IMAGE_ppc        = vmlinux
- IMAGE_riscv      = arch/riscv/boot/Image
- IMAGE_s390       = arch/s390/boot/bzImage
- IMAGE_loongarch  = arch/loongarch/boot/vmlinuz.efi
-@@ -55,6 +58,7 @@ DEFCONFIG_x86        = defconfig
- DEFCONFIG_arm64      = defconfig
- DEFCONFIG_arm        = multi_v7_defconfig
- DEFCONFIG_mips       = malta_defconfig
-+DEFCONFIG_ppc        = pmac32_defconfig
- DEFCONFIG_riscv      = defconfig
- DEFCONFIG_s390       = defconfig
- DEFCONFIG_loongarch  = defconfig
-@@ -70,6 +74,7 @@ QEMU_ARCH_x86        = x86_64
- QEMU_ARCH_arm64      = aarch64
- QEMU_ARCH_arm        = arm
- QEMU_ARCH_mips       = mipsel  # works with malta_defconfig
-+QEMU_ARCH_ppc        = ppc
- QEMU_ARCH_riscv      = riscv64
- QEMU_ARCH_s390       = s390x
- QEMU_ARCH_loongarch  = loongarch64
-@@ -82,6 +87,7 @@ QEMU_ARGS_x86        = -M pc -append "console=ttyS0,9600 i8042.noaux panic=-1 $(
- QEMU_ARGS_arm64      = -M virt -cpu cortex-a53 -append "panic=-1 $(TEST:%=NOLIBC_TEST=%)"
- QEMU_ARGS_arm        = -M virt -append "panic=-1 $(TEST:%=NOLIBC_TEST=%)"
- QEMU_ARGS_mips       = -M malta -append "panic=-1 $(TEST:%=NOLIBC_TEST=%)"
-+QEMU_ARGS_ppc        = -M g3beige -append "console=ttyS0 panic=-1 $(TEST:%=NOLIBC_TEST=%)"
- QEMU_ARGS_riscv      = -M virt -append "console=ttyS0 panic=-1 $(TEST:%=NOLIBC_TEST=%)"
- QEMU_ARGS_s390       = -M s390-ccw-virtio -m 1G -append "console=ttyS0 panic=-1 $(TEST:%=NOLIBC_TEST=%)"
- QEMU_ARGS_loongarch  = -M virt -append "console=ttyS0,115200 panic=-1 $(TEST:%=NOLIBC_TEST=%)"
-@@ -97,6 +103,7 @@ else
- Q=@
- endif
- 
-+CFLAGS_ppc = -m32 -mbig-endian -Wl,-EB,-melf32ppc -mmultiple -mno-vsx
- CFLAGS_s390 = -m64
- CFLAGS_mips = -EL
- CFLAGS_STACKPROTECTOR ?= $(call cc-option,-mstack-protector-guard=global $(call cc-option,-fstack-protector-all))
 -- 
-2.25.1
-
+  Kiryl Shutsemau / Kirill A. Shutemov
