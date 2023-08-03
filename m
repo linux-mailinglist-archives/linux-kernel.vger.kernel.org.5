@@ -2,120 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B44E776EDDC
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 17:17:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C69A276EDDD
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 17:17:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237003AbjHCPRd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Aug 2023 11:17:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48278 "EHLO
+        id S237015AbjHCPRk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Aug 2023 11:17:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48090 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236976AbjHCPRb (ORCPT
+        with ESMTP id S237005AbjHCPRf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Aug 2023 11:17:31 -0400
-Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4C8F2103
-        for <linux-kernel@vger.kernel.org>; Thu,  3 Aug 2023 08:17:28 -0700 (PDT)
-Received: by mail-lf1-x134.google.com with SMTP id 2adb3069b0e04-4fe4762173bso1888697e87.3
-        for <linux-kernel@vger.kernel.org>; Thu, 03 Aug 2023 08:17:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1691075847; x=1691680647;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=enm0pFmYuJxzhgy70v9/Jc8aeF+nFOmjn4BgA7ozdyI=;
-        b=emlbF4LPp9bzwNdboKoIBUVISTC5cPRub8R67C/v+HVIBD6elzdAUaaG+fmj1+S9fB
-         R9OY0f4gZPHTAEa5wZ3zlcqpC5l/d8+bD1VYyi71vC040njzOco8goX4t6XFywrvZtrf
-         /CmNDu4iufpJ+HIvBPtt7/SsrrSs8ixWgc/eFVLtdwb5Ms35NTW9D8Y9Wi29HiB8wZhQ
-         XQ1oybEfiT+3YqMGdo3StJz+FOSclx26m57VWCHZnABlgYR8p/PaU0PAcZhPlkkapjcV
-         Ob6I8dEAvTp1491lIx9G73/AhlUDlizH4TiZ67Xatd+WFOuyzASzb/xseZx3SujFAaKW
-         PzSw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691075847; x=1691680647;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=enm0pFmYuJxzhgy70v9/Jc8aeF+nFOmjn4BgA7ozdyI=;
-        b=hLsAYsqT7ViqaMX9UTTQTeOqGywsCsrjOnOu9VU+SjrJrlN9jgbkQZpJDsZXBTlWZc
-         Ze+n7JTeGV4uJ6Nls7Ej65NCWSb740KMHvv7OzqP3FDG9NQBiJvT21MDet0o4tYRP3JL
-         0S5K+7VK8zF+kNx5Ew70NMN+Bj5v6VvVYN9VmX0LuBcaPqXjc17AkFKGRP/7+eINMD7u
-         JRBmpLHpu66gJ1jOWhfavV+Y/ey7x2vPmok2pScwQQpwDGV+9WCn/9Tb4a9E09qnaKxw
-         aO4zrQ6OAAsVjfA2eD1Zgkj6AS3VU977n2aoE4n3NsJsh8DMNF5Uw963Dn/siK0lL5xA
-         lY1g==
-X-Gm-Message-State: ABy/qLZ1BO4Fyv1LPcNeooMjzLlG1q4W63Ug+L15GulSg1h/lwI67O1s
-        ei1XzRXH4sQoPrI6zi8ePeWjhQ==
-X-Google-Smtp-Source: APBJJlEXMFYac5iOxwd5JOdRqqkNdQMF+5Ih+zFUJ/KOAqRSysM3BujOKR+AuDZqEoWH2n1msgqtlQ==
-X-Received: by 2002:ac2:4a64:0:b0:4fd:f590:1ff7 with SMTP id q4-20020ac24a64000000b004fdf5901ff7mr6669395lfp.40.1691075847312;
-        Thu, 03 Aug 2023 08:17:27 -0700 (PDT)
-Received: from [192.168.1.101] (abyk53.neoplus.adsl.tpnet.pl. [83.9.30.53])
-        by smtp.gmail.com with ESMTPSA id z25-20020ac25df9000000b004fe37339f8esm7340lfq.149.2023.08.03.08.17.25
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 03 Aug 2023 08:17:26 -0700 (PDT)
-Message-ID: <d09d093e-214c-8f48-3ad3-40caeb72a6b4@linaro.org>
-Date:   Thu, 3 Aug 2023 17:17:25 +0200
+        Thu, 3 Aug 2023 11:17:35 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D3761734
+        for <linux-kernel@vger.kernel.org>; Thu,  3 Aug 2023 08:17:33 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 2242061DF0
+        for <linux-kernel@vger.kernel.org>; Thu,  3 Aug 2023 15:17:33 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A5B6EC433C8;
+        Thu,  3 Aug 2023 15:17:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1691075852;
+        bh=JOtFsu4qKmc9AW5VOUQjU18SjRDgCLlAIYX0MJ1PV5U=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=O69IF48qzzndoTOv9OXwlGg9LS5RbsTklNaedcNctCKKvUzLOj22sDlOq/FXNjj+e
+         VYD8tfdH9weG0OucMALKPFLSJSegdIeNmqoZU3LU78trZn5szQyuPXI8u9EmIcMgA2
+         GqHdzbax5G5U5N41PsTZM1HJeloSmhKhYGMneR15BEdrNleuafAneq3utGvK3LyC5Q
+         VQZZSS45877+WeDlRihmWibGFWaoUS8/kYzTHZfknAOCnAMeV73YxjVvCcywoaVXXu
+         VLxjhPUM0X+vGftlUtVz+Pb+OCAx3YbhI6/vZb4JFDc0JIWkr9W/yvKJlTSPnMQDAa
+         8t2V43ROmh+Pw==
+Date:   Thu, 3 Aug 2023 16:17:26 +0100
+From:   Conor Dooley <conor@kernel.org>
+To:     Palmer Dabbelt <palmer@dabbelt.com>
+Cc:     petrtesarik@huaweicloud.com,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        aou@eecs.berkeley.edu, Conor Dooley <conor.dooley@microchip.com>,
+        lihuafei1@huawei.com, liaochang1@huawei.com, masahiroy@kernel.org,
+        keescook@chromium.org, akpm@linux-foundation.org, heiko@sntech.de,
+        ribalda@chromium.org, hi@alyssa.is, lizhengyu3@huawei.com,
+        linux-riscv@lists.infradead.org, kexec@lists.infradead.org,
+        linux-kernel@vger.kernel.org, duwe@suse.de,
+        roberto.sassu@huaweicloud.com, petr@tesarici.cz
+Subject: Re: [PATCH v2 2/3] riscv/purgatory: do not link with string.o and
+ its dependencies
+Message-ID: <20230803-buddhism-hardwood-eea45fdedd6e@spud>
+References: <20230726-excavate-swoosh-424ede98f63d@spud>
+ <mhng-45e67c5d-6969-43da-9147-b53dc9a78612@palmer-ri-x1c9>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH V5 5/8] clk: qcom: gcc-qdu1000: Add
- gcc_ddrss_ecpri_gsi_clk support
-Content-Language: en-US
-To:     Imran Shaik <quic_imrashai@quicinc.com>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>
-Cc:     Taniya Das <quic_tdas@quicinc.com>,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        Melody Olvera <quic_molvera@quicinc.com>,
-        linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Jagadeesh Kona <quic_jkona@quicinc.com>,
-        Ajit Pandey <quic_ajipan@quicinc.com>,
-        Satya Priya Kakitapalli <quic_skakitap@quicinc.com>
-References: <20230803105741.2292309-1-quic_imrashai@quicinc.com>
- <20230803105741.2292309-6-quic_imrashai@quicinc.com>
-From:   Konrad Dybcio <konrad.dybcio@linaro.org>
-Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
- 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
- izWDgYvmBE8=
-In-Reply-To: <20230803105741.2292309-6-quic_imrashai@quicinc.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="Nf/A7HXcD+iE9Bxb"
+Content-Disposition: inline
+In-Reply-To: <mhng-45e67c5d-6969-43da-9147-b53dc9a78612@palmer-ri-x1c9>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -124,12 +65,106 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3.08.2023 12:57, Imran Shaik wrote:
-> Add the gcc_ddrss_ecpri_gsi_clk support as per the latest hardware
-> version of QDU1000 and QRU100 SoCs.
-> 
-> Signed-off-by: Imran Shaik <quic_imrashai@quicinc.com>
-> ---
-Reviewed-by: Konrad Dybcio <konrad.dybcio@linaro.org>
 
-Konrad
+--Nf/A7HXcD+iE9Bxb
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Thu, Aug 03, 2023 at 08:13:48AM -0700, Palmer Dabbelt wrote:
+> On Wed, 26 Jul 2023 09:33:49 PDT (-0700), Conor Dooley wrote:
+> > On Wed, Jul 26, 2023 at 11:54:00AM +0200, Petr Tesarik wrote:
+> > > From: Petr Tesarik <petr.tesarik.ext@huawei.com>
+> > >=20
+> > > Linking with this object file makes kexec_file_load(2) fail because of
+> > > multiple unknown relocation types:
+> > >=20
+> > > - R_RISCV_ADD16, R_RISCV_SUB16: used by alternatives in strcmp()
+> > > - R_RISCV_GOT_HI20: used to resolve _ctype in strcasecmp()
+> > >=20
+> > > All this hassle is needed for one single call to memcmp() from
+> > > verify_sha256_digest() to compare 32 bytes of SHA256 checksum.
+> > >=20
+> > > Simply replace this memcmp() call with an explicit loop over those 32=
+ bytes
+> > > and remove the need to link with string.o and all the other object fi=
+les
+> > > that provide undefined symbols from that object file.
+> > >=20
+> > > Fixes: 838b3e28488f ("RISC-V: Load purgatory in kexec_file")
+> > > Signed-off-by: Petr Tesarik <petr.tesarik.ext@huawei.com>
+> >=20
+> > This version keeps the automation happy,
+> > Acked-by: Conor Dooley <conor.dooley@microchip.com>
+>=20
+> Oddly enough, this breaks my builds.  I tried fixing the first one with
+> something like
+
+You say "tried", does that mean it also didn't work?
+What's the config?
+
+Cheers,
+Conor.
+
+>=20
+>    From 41c5a952f77e53bf4201296abff0132725aa19e6 Mon Sep 17 00:00:00 2001
+>    From: Palmer Dabbelt <palmer@rivosinc.com>
+>    Date: Wed, 2 Aug 2023 20:22:33 -0700
+>    Subject: [PATCH] RISC-V: Include io from timex
+>    Without this I get some implicit declarations.
+>      CC      arch/riscv/kernel/asm-offsets.s
+>    In file included from linux/include/linux/timex.h:67,
+>                     from linux/include/linux/time32.h:13,
+>                     from linux/include/linux/time.h:60,
+>                     from linux/include/linux/ktime.h:24,
+>                     from linux/include/linux/timer.h:6,
+>                     from linux/include/linux/workqueue.h:9,
+>                     from linux/include/linux/mm_types.h:19,
+>                     from linux/include/linux/mmzone.h:22,
+>                     from linux/include/linux/gfp.h:7,
+>                     from linux/include/linux/mm.h:7,
+>                     from linux/arch/riscv/kernel/asm-offsets.c:10:
+>    linux/arch/riscv/include/asm/timex.h: In function 'get_cycles':
+>    linux/arch/riscv/include/asm/timex.h:25:16: error: implicit declaratio=
+n of function 'readl_relaxed' [-Werror=3Dimplicit-function-declaration]
+>       25 |         return readl_relaxed(((u32 *)clint_time_val));
+>          |
+>    Signed-off-by: Palmer Dabbelt <palmer@rivosinc.com>
+>    ---
+>     arch/riscv/include/asm/timex.h | 1 +
+>     1 file changed, 1 insertion(+)
+>    diff --git a/arch/riscv/include/asm/timex.h b/arch/riscv/include/asm/t=
+imex.h
+>    index a06697846e69..1a4d181193e0 100644
+>    --- a/arch/riscv/include/asm/timex.h
+>    +++ b/arch/riscv/include/asm/timex.h
+>    @@ -7,6 +7,7 @@
+>     #define _ASM_RISCV_TIMEX_H
+>     #include <asm/csr.h>
+>    +#include <asm/io.h>
+>     typedef unsigned long cycles_t;
+>=20
+>    --    2.41.0
+>=20
+> The other two look fine and are somewhat independent, so I've picked thos=
+e up
+> for fixes.
+>=20
+> Thanks!
+>=20
+> >=20
+> > Thanks,
+> > Conor.
+
+--Nf/A7HXcD+iE9Bxb
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZMvFBgAKCRB4tDGHoIJi
+0krhAPsHeWuR7/VBvITrvcsf0/CMFwYy6FCA83Pn8tfUoHHlAwD/XbC/Sm5QCAXk
+tXpKIgYHUYa+igPS8LCenkLVW9qHyQs=
+=/RnV
+-----END PGP SIGNATURE-----
+
+--Nf/A7HXcD+iE9Bxb--
