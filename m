@@ -2,46 +2,47 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 27A1876E928
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 15:04:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C2D7076E92D
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 15:04:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235986AbjHCNEQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Aug 2023 09:04:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53630 "EHLO
+        id S235974AbjHCNEI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Aug 2023 09:04:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53916 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235867AbjHCNDv (ORCPT
+        with ESMTP id S235887AbjHCNDw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Aug 2023 09:03:51 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3FE61702;
-        Thu,  3 Aug 2023 06:03:31 -0700 (PDT)
+        Thu, 3 Aug 2023 09:03:52 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 541312130;
+        Thu,  3 Aug 2023 06:03:36 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 356FB61D9D;
-        Thu,  3 Aug 2023 13:03:31 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7A121C433C9;
-        Thu,  3 Aug 2023 13:03:29 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 858E661D96;
+        Thu,  3 Aug 2023 13:03:32 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1656EC433CA;
+        Thu,  3 Aug 2023 13:03:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691067810;
-        bh=EPikV/PRmu4Q4MQ/8jF1ykyFZwdSFeXvbtsbFXlTz4I=;
+        s=k20201202; t=1691067811;
+        bh=/KZ+NBYj5oRfUIy4ch/kbLxHnSNCemURov2WCN6qSuk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Ev0hFd6+hVftG4l0sb7Rmq5mU+by/GzZA9JwgXYabccV977W7iIosgLrttBfMHZTe
-         iExkyAfso1ioOe7CpWYG1TRlWgPczVw+OAQnoFPwqoqfzG68e91XcFYZO/GfiG9+hj
-         xJoE6BySP+7xlD0zRYN8UyKtCn3MFkUHrVUiiRAJtkMHzEMK9KuF6+3/ObD05Ptz80
-         3/HYximGjGPNcJVnWr2Ujz40CLihWjUp4O4tmOgAVbLTBgmeCoy6vgKDA6QV9At6R9
-         BQPWsn2Z1LnJKSn0mPhu6gXTCvhq7t5pAnNC89GbLGrjpUXggsADsWbywdTtj5UMcM
-         s5y9nd1rphSZw==
+        b=pXd/MeKhTfGFktebqNzN+XfFV4NT5F5n2WPdcjXRPg8vy6BYsQIOaQFW1OBlyj3nX
+         U2W2Nmzd4sxtqCvcrIO6I2BunKXxJtuzkQ/HEZUGrid04DT+Q67fDE7cpxKnLA6BJM
+         u+sFYIHjrPUIY/awOWgF2qO6SWx7nqbFOPeAE3rG8+iaMruTQTLECXuqbVHDKI/8LK
+         7OyEZdmQIiAInkAC156BIEufYtdk6icEpgOOV0+jKxKacj9geNypawGjE77kDQLJzn
+         XjbndDGMHWYpEThnRzf8yG3c32Evkx1IyBl4ZYx2CmqbE4OyZY12LThV2vuZs9eh3g
+         7MKpkKIypNvzg==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     ruanjinjie <ruanjinjie@huawei.com>, Jon Mason <jdmason@kudzu.us>,
-        Sasha Levin <sashal@kernel.org>, dave.jiang@intel.com,
-        allenbh@gmail.com, lpieralisi@kernel.org, kw@linux.com,
-        bhelgaas@google.com, ntb@lists.linux.dev, linux-pci@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.4 5/7] NTB: EPF: fix possible memory leak in pci_vntb_probe()
-Date:   Thu,  3 Aug 2023 09:03:18 -0400
-Message-Id: <20230803130321.641516-5-sashal@kernel.org>
+Cc:     Stuart Hayhurst <stuart.a.hayhurst@gmail.com>,
+        Bastien Nocera <hadess@hadess.net>,
+        Benjamin Tissoires <bentiss@kernel.org>,
+        Sasha Levin <sashal@kernel.org>, jikos@kernel.org,
+        benjamin.tissoires@redhat.com, linux-input@vger.kernel.org
+Subject: [PATCH AUTOSEL 6.4 6/7] HID: logitech-hidpp: Add wired USB id for Logitech G502 Lightspeed
+Date:   Thu,  3 Aug 2023 09:03:19 -0400
+Message-Id: <20230803130321.641516-6-sashal@kernel.org>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20230803130321.641516-1-sashal@kernel.org>
 References: <20230803130321.641516-1-sashal@kernel.org>
@@ -50,8 +51,8 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 X-stable-base: Linux 6.4.7
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -60,37 +61,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: ruanjinjie <ruanjinjie@huawei.com>
+From: Stuart Hayhurst <stuart.a.hayhurst@gmail.com>
 
-[ Upstream commit 956578e3d397e00d6254dc7b5194d28587f98518 ]
+[ Upstream commit a343a7682acc56182d4b54777c358f5ec6d274e7 ]
 
-As ntb_register_device() don't handle error of device_register(),
-if ntb_register_device() returns error in pci_vntb_probe(), name of kobject
-which is allocated in dev_set_name() called in device_add() is leaked.
+Previously, support for the G502 had been attempted in commit
+'27fc32fd9417 ("HID: logitech-hidpp: add USB PID for a few more supported
+mice")'
 
-As comment of device_add() says, it should call put_device() to drop the
-reference count that was set in device_initialize()
-when it fails, so the name can be freed in kobject_cleanup().
+This caused some issues and was reverted by
+'addf3382c47c ("Revert "HID: logitech-hidpp: add USB PID for a few more
+supported mice"")'.
 
-Signed-off-by: ruanjinjie <ruanjinjie@huawei.com>
-Signed-off-by: Jon Mason <jdmason@kudzu.us>
+Since then, a new version of this mouse has been released (Lightpseed
+Wireless), and works correctly.
+
+This device has support for battery reporting with the driver
+
+Signed-off-by: Stuart Hayhurst <stuart.a.hayhurst@gmail.com>
+Reviewed-by: Bastien Nocera <hadess@hadess.net>
+Link: https://lore.kernel.org/r/20230630113818.13005-1-stuart.a.hayhurst@gmail.com
+Signed-off-by: Benjamin Tissoires <bentiss@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/pci/endpoint/functions/pci-epf-vntb.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/hid/hid-logitech-hidpp.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/drivers/pci/endpoint/functions/pci-epf-vntb.c b/drivers/pci/endpoint/functions/pci-epf-vntb.c
-index b7c7a8af99f4f..77306983ac456 100644
---- a/drivers/pci/endpoint/functions/pci-epf-vntb.c
-+++ b/drivers/pci/endpoint/functions/pci-epf-vntb.c
-@@ -1285,6 +1285,7 @@ static int pci_vntb_probe(struct pci_dev *pdev, const struct pci_device_id *id)
- 	return 0;
+diff --git a/drivers/hid/hid-logitech-hidpp.c b/drivers/hid/hid-logitech-hidpp.c
+index f7e06d433a915..22d5ba88954fc 100644
+--- a/drivers/hid/hid-logitech-hidpp.c
++++ b/drivers/hid/hid-logitech-hidpp.c
+@@ -4598,6 +4598,8 @@ static const struct hid_device_id hidpp_devices[] = {
  
- err_register_dev:
-+	put_device(&ndev->ntb.dev);
- 	return -EINVAL;
- }
- 
+ 	{ /* Logitech G403 Wireless Gaming Mouse over USB */
+ 	  HID_USB_DEVICE(USB_VENDOR_ID_LOGITECH, 0xC082) },
++	{ /* Logitech G502 Lightspeed Wireless Gaming Mouse over USB */
++	  HID_USB_DEVICE(USB_VENDOR_ID_LOGITECH, 0xC08D) },
+ 	{ /* Logitech G703 Gaming Mouse over USB */
+ 	  HID_USB_DEVICE(USB_VENDOR_ID_LOGITECH, 0xC087) },
+ 	{ /* Logitech G703 Hero Gaming Mouse over USB */
 -- 
 2.40.1
 
