@@ -2,44 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1EA6E76DE88
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 04:50:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D16DE76DE8A
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 04:51:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233753AbjHCCuM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Aug 2023 22:50:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36126 "EHLO
+        id S231952AbjHCCvH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Aug 2023 22:51:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36924 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233742AbjHCCuE (ORCPT
+        with ESMTP id S231354AbjHCCvE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Aug 2023 22:50:04 -0400
+        Wed, 2 Aug 2023 22:51:04 -0400
 Received: from mailout1.samsung.com (mailout1.samsung.com [203.254.224.24])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 262E0E53
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Aug 2023 19:50:00 -0700 (PDT)
-Received: from epcas2p1.samsung.com (unknown [182.195.41.53])
-        by mailout1.samsung.com (KnoxPortal) with ESMTP id 20230803024958epoutp01e4c80c46a922b2f3e9a76f1dae53e0a9~3v7vQiZZM2949529495epoutp01T
-        for <linux-kernel@vger.kernel.org>; Thu,  3 Aug 2023 02:49:58 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.samsung.com 20230803024958epoutp01e4c80c46a922b2f3e9a76f1dae53e0a9~3v7vQiZZM2949529495epoutp01T
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6CC5C103
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Aug 2023 19:51:03 -0700 (PDT)
+Received: from epcas2p3.samsung.com (unknown [182.195.41.55])
+        by mailout1.samsung.com (KnoxPortal) with ESMTP id 20230803025101epoutp01595a198f93395b673df99144dd11255d~3v8qWqkAA3015830158epoutp01d
+        for <linux-kernel@vger.kernel.org>; Thu,  3 Aug 2023 02:51:01 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.samsung.com 20230803025101epoutp01595a198f93395b673df99144dd11255d~3v8qWqkAA3015830158epoutp01d
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1691030998;
-        bh=lONrHNsEkCBmY0gtyPzxjck/4+ABThiyZREGBOSdSJI=;
+        s=mail20170921; t=1691031061;
+        bh=GgZEpQKj5vGYyF34El8cqciXDkasij1/6nECeUJEU8w=;
         h=Subject:Reply-To:From:To:In-Reply-To:Date:References:From;
-        b=V+eK/hB4X46Gop1awZNZec0RgAqITRz+SZs6DQildHdoA0sSwHyvmhOuAaMeEGYk0
-         YIe46OyoK7RdHYEcL9IVFXrjAYTPgtaQwFueDy8agdChIjdY4sz+zUcoO3OIchIX1W
-         h9m3k/g+bzumNw77oNOKLgRFa3FbDatOV5vFoIAc=
-Received: from epsnrtp2.localdomain (unknown [182.195.42.163]) by
-        epcas2p3.samsung.com (KnoxPortal) with ESMTP id
-        20230803024957epcas2p31983d25d59b29e60b32e8101169c09af~3v7usJOwG2133421334epcas2p3I;
-        Thu,  3 Aug 2023 02:49:57 +0000 (GMT)
-Received: from epsmges2p1.samsung.com (unknown [182.195.36.102]) by
-        epsnrtp2.localdomain (Postfix) with ESMTP id 4RGYGs2487z4x9Pt; Thu,  3 Aug
-        2023 02:49:57 +0000 (GMT)
-X-AuditID: b6c32a45-83dfd7000000c2f9-9c-64cb15d5f7f2
-Received: from epcas2p3.samsung.com ( [182.195.41.55]) by
-        epsmges2p1.samsung.com (Symantec Messaging Gateway) with SMTP id
-        F0.AA.49913.5D51BC46; Thu,  3 Aug 2023 11:49:57 +0900 (KST)
+        b=lG6g6KM0H5iTchjUnUVs4vAwUs7AdYdVHA6MXcQIoLxuL0M0ohLrDzbfWaQDPDG24
+         kcWdRIcNUD6+QPWMP1vdobBe6DeqFLhQpZcuiANsjJoJOAIFZ07RnXI/rzR6+g+tfB
+         EvGFEcJzUsepMh0i280gVPDV8qUUTm91ugpl7kvs=
+Received: from epsnrtp1.localdomain (unknown [182.195.42.162]) by
+        epcas2p1.samsung.com (KnoxPortal) with ESMTP id
+        20230803025100epcas2p19ca34ccc42f2fccb928a183efe4589de~3v8opgKQX1952119521epcas2p1D;
+        Thu,  3 Aug 2023 02:51:00 +0000 (GMT)
+Received: from epsmgec2p1-new.samsung.com (unknown [182.195.36.91]) by
+        epsnrtp1.localdomain (Postfix) with ESMTP id 4RGYJ33WbNz4x9Ps; Thu,  3 Aug
+        2023 02:50:59 +0000 (GMT)
+X-AuditID: b6c32a4d-637c170000047356-e5-64cb1613582c
+Received: from epcas2p4.samsung.com ( [182.195.41.56]) by
+        epsmgec2p1-new.samsung.com (Symantec Messaging Gateway) with SMTP id
+        E4.EA.29526.3161BC46; Thu,  3 Aug 2023 11:50:59 +0900 (KST)
 Mime-Version: 1.0
-Subject: [PATCH v3 2/4] bio-integrity: update the payload size in
- bio_integrity_add_page()
+Subject: [PATCH v3 3/4] bio-integrity: cleanup adding integrity pages to
+ bip's bvec.
 Reply-To: j-young.choi@samsung.com
 Sender: Jinyoung Choi <j-young.choi@samsung.com>
 From:   Jinyoung Choi <j-young.choi@samsung.com>
@@ -53,63 +53,58 @@ To:     Christoph Hellwig <hch@infradead.org>,
         "martin.petersen@oracle.com" <martin.petersen@oracle.com>
 X-Priority: 3
 X-Content-Kind-Code: NORMAL
-In-Reply-To: <20230803024827epcms2p838d9e9131492c86a159fff25d195658f@epcms2p8>
+In-Reply-To: <20230803024656epcms2p4da6defb8e1e9b050fe2fbd52cb2e9524@epcms2p4>
 X-CPGS-Detection: blocking_info_exchange
 X-Drm-Type: N,general
 X-Msg-Generator: Mail
 X-Msg-Type: PERSONAL
 X-Reply-Demand: N
-Message-ID: <20230803024956epcms2p38186a17392706650c582d38ef3dbcd32@epcms2p3>
-Date:   Thu, 03 Aug 2023 11:49:56 +0900
-X-CMS-MailID: 20230803024956epcms2p38186a17392706650c582d38ef3dbcd32
+Message-ID: <20230803025058epcms2p5a4d0db5da2ad967668932d463661c633@epcms2p5>
+Date:   Thu, 03 Aug 2023 11:50:58 +0900
+X-CMS-MailID: 20230803025058epcms2p5a4d0db5da2ad967668932d463661c633
 Content-Transfer-Encoding: 7bit
 Content-Type: text/plain; charset="utf-8"
 X-Sendblock-Type: AUTO_CONFIDENTIAL
 CMS-TYPE: 102P
 X-CPGSPASS: Y
 X-CPGSPASS: Y
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprBJsWRmVeSWpSXmKPExsWy7bCmue5V0dMpBt/f8FisvtvPZjHr9msW
-        i5eHNC1OT1jEZDHp0DVGi723tC0u75rDZrH8+D8mi3Wv37M4cHqcv7eRxWPzCi2Py2dLPTat
-        6mTz+Pj0FotH35ZVjB6fN8l5tB/oZgrgiMq2yUhNTEktUkjNS85PycxLt1XyDo53jjc1MzDU
-        NbS0MFdSyEvMTbVVcvEJ0HXLzAG6TUmhLDGnFCgUkFhcrKRvZ1OUX1qSqpCRX1xiq5RakJJT
-        YF6gV5yYW1yal66Xl1piZWhgYGQKVJiQnbFy+1H2gosKFTuW7WRrYNwg3cXIySEhYCIxc+Zv
-        1i5GLg4hgR2MEq3L9rB1MXJw8AoISvzdIQxiCgvESHzdygJSLiSgJHFuzSxGEFtYwECi5XYb
-        WJxNQE9ix/Pd7CBjRATmMEtcWrOMFWI+r8SM9qcsELa0xPblW8GaOQX8JKZMbGSEiGtI/FjW
-        ywxhi0rcXP2WHcZ+f2w+VI2IROu9s1A1ghIPfu6GiktKHDr0FexkCYF8iQ0HAiHCNRJtv95D
-        letLXOvYCHYCr4CvxK+vb8FaWQRUJZou74U6zUViatt8sJOZBeQltr+dwwwykllAU2L9Ln2I
-        6coSR26xQFTwSXQc/ssO82DDxt9Y2TvmPWGCaFWTWNRkBBGWkfh6eD77BEalWYhQnoVk7SyE
-        tQsYmVcxiqUWFOempxYbFRjCIzY5P3cTIziJarnuYJz89oPeIUYmDsZDjBIczEoivNK/j6cI
-        8aYkVlalFuXHF5XmpBYfYjQFengis5Rocj4wjeeVxBuaWBqYmJkZmhuZGpgrifPea52bIiSQ
-        nliSmp2aWpBaBNPHxMEp1cAUKZGU0zQlJtr3cJqo4GUx/W8Z+4T2bVzC8uvAPIeaf6IL13VI
-        z5uZlDJFln86i+Dph31xe3/ltpXuuS6/bnfYU7+f76ecKPT8J/879a72Dt33mRrhHsx79l3L
-        ucZXO+u5AzuLLOfDVs6ix/ZJEfLsIld6hCYKHLY9Htexe/99B/YrizpXePq6L/EQlly25d2c
-        i5m7zx8L1Wj6evE149MH04XWvHSRd85OdFjsq1otVTHxjbZxcHXOgamC93qXbF3ZM2f3RyVm
-        f8GUh3u/RH36mdM1q23W9Mlcew5/eC0mNeWva3rZW0lzfb8//qvuxjGwzd565Edn4uTHFpvb
-        rp78fmvj0QcN/zh0XlbEfDi4RYmlOCPRUIu5qDgRACILMk4rBAAA
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprNJsWRmVeSWpSXmKPExsWy7bCmha6w2OkUg/dPxS1W3+1ns5h1+zWL
+        xctDmhanJyxisph06Bqjxd5b2haXd81hs1h+/B+TxbrX71kcOD3O39vI4rF5hZbH5bOlHptW
+        dbJ5fHx6i8Wjb8sqRo/Pm+Q82g90MwVwRGXbZKQmpqQWKaTmJeenZOal2yp5B8c7x5uaGRjq
+        GlpamCsp5CXmptoqufgE6Lpl5gDdpqRQlphTChQKSCwuVtK3synKLy1JVcjILy6xVUotSMkp
+        MC/QK07MLS7NS9fLSy2xMjQwMDIFKkzIzpi0/w1TwSKeiqmzjzI3MB7m7GLk5JAQMJHYvGsK
+        O4gtJLCHUeLfX7MuRg4OXgFBib87hEHCwgJhEov//2GGKFGSOLdmFiNE3ECi5XYbC4jNJqAn
+        seP5bqAxXBwiAnOYJS6tWcYKMZ9XYkb7UxYIW1pi+/KtYM2cAn4Sl6bNhoprSPxY1ssMYYtK
+        3Fz9lh3Gfn9sPiOELSLReu8sVI2gxIOfu6HikhKHDn1lA7lZQiBfYsOBQIhwjUTbr/dQ5foS
+        1zo2gq3iFfCVmLZ7OxuIzSKgKrFw5kQWiFYXiaer80HCzALyEtvfzmEGCTMLaEqs36UPUaEs
+        ceQWC0QFn0TH4b/sMP81bPyNlb1j3hMmiFY1iUVNRhBhGYmvh+ezT2BUmoUI5VlI1s5CWLuA
+        kXkVo1RqQXFuemqyUYGhbl5qOTxuk/NzNzGCU6mW7w7G1+v/6h1iZOJgPMQowcGsJMIr/ft4
+        ihBvSmJlVWpRfnxRaU5q8SFGU6CfJzJLiSbnA5N5Xkm8oYmlgYmZmaG5kamBuZI4773WuSlC
+        AumJJanZqakFqUUwfUwcnFINTDrXX2/ZyO3zTGPD+8Ygaa5gp+5TyrIzf0t8mNduffp8gcjf
+        6UFium1za/w1Hl7Iedz4d8M21sIG02tP7nls7b1141jFS5mp788fZhDYt45VqT3s155HjEb9
+        5/kWSvovNRFZdCHk4+apwT/CXjJZmcRM3VlvWReRvpiHa7ZvjrNviGOBc73HSzXNph7fnqcd
+        dUa7GjRM76/Zt/ZVtM8J7vtP/IUOfNKNnLQihS+E5/G8vSuWXWLYcGeqYHeY4hnhfQya5pMa
+        Nmz4vmHaHc/LQo0uSxlebFv0X8J53b75HJ56blqWgSyVke+Fd5yzeD6Jt+Y/n5DUj/Cny454
+        8YTxKPqeun/XTe5evFjzbCZXCyWW4oxEQy3mouJEAD1waQUuBAAA
 DLP-Filter: Pass
 X-CFilter-Loop: Reflected
 X-CMS-RootMailID: 20230803024656epcms2p4da6defb8e1e9b050fe2fbd52cb2e9524
-References: <20230803024827epcms2p838d9e9131492c86a159fff25d195658f@epcms2p8>
-        <20230803024656epcms2p4da6defb8e1e9b050fe2fbd52cb2e9524@epcms2p4>
-        <CGME20230803024656epcms2p4da6defb8e1e9b050fe2fbd52cb2e9524@epcms2p3>
+References: <20230803024656epcms2p4da6defb8e1e9b050fe2fbd52cb2e9524@epcms2p4>
+        <CGME20230803024656epcms2p4da6defb8e1e9b050fe2fbd52cb2e9524@epcms2p5>
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Previously, the bip's bi_size has been set before an integrity pages
-were added. If a problem occurs in the process of adding pages for
-bip, the bi_size mismatch problem must be dealt with.
-
-When the page is successfully added to bvec, the bi_size is updated.
-
-The parts affected by the change were also contained in this commit.
+bio_integrity_add_page() returns the add length if successful, else 0,
+just as bio_add_page.  Simply check return value checking in
+bio_integrity_prep to not deal with a > 0 but < len case that can't
+happen.
 
 Cc: Christoph Hellwig <hch@lst.de>
 Cc: Martin K. Petersen <martin.petersen@oracle.com>
@@ -117,95 +112,51 @@ Cc: Martin K. Petersen <martin.petersen@oracle.com>
 Reviewed-by: Christoph Hellwig <hch@lst.de>
 Signed-off-by: Jinyoung Choi <j-young.choi@samsung.com>
 ---
- block/bio-integrity.c               | 2 +-
- drivers/md/dm-crypt.c               | 1 -
- drivers/nvme/host/ioctl.c           | 1 -
- drivers/nvme/target/io-cmd-bdev.c   | 3 +--
- drivers/target/target_core_iblock.c | 3 +--
- 5 files changed, 3 insertions(+), 7 deletions(-)
+ block/bio-integrity.c | 16 +++-------------
+ 1 file changed, 3 insertions(+), 13 deletions(-)
 
 diff --git a/block/bio-integrity.c b/block/bio-integrity.c
-index 045553a164e0..6220a99977a4 100644
+index 6220a99977a4..c6b3bc86e1f9 100644
 --- a/block/bio-integrity.c
 +++ b/block/bio-integrity.c
-@@ -137,6 +137,7 @@ int bio_integrity_add_page(struct bio *bio, struct page *page,
+@@ -252,27 +252,18 @@ bool bio_integrity_prep(struct bio *bio)
  
- 	bvec_set_page(&bip->bip_vec[bip->bip_vcnt], page, len, offset);
- 	bip->bip_vcnt++;
-+	bip->bip_iter.bi_size += len;
+ 	/* Map it */
+ 	offset = offset_in_page(buf);
+-	for (i = 0 ; i < nr_pages ; i++) {
+-		int ret;
++	for (i = 0; i < nr_pages && len > 0; i++) {
+ 		bytes = PAGE_SIZE - offset;
  
- 	return len;
+-		if (len <= 0)
+-			break;
+-
+ 		if (bytes > len)
+ 			bytes = len;
+ 
+-		ret = bio_integrity_add_page(bio, virt_to_page(buf),
+-					     bytes, offset);
+-
+-		if (ret == 0) {
++		if (bio_integrity_add_page(bio, virt_to_page(buf),
++					   bytes, offset) < bytes) {
+ 			printk(KERN_ERR "could not attach integrity payload\n");
+ 			goto err_end_io;
+ 		}
+ 
+-		if (ret < bytes)
+-			break;
+-
+ 		buf += bytes;
+ 		len -= bytes;
+ 		offset = 0;
+@@ -291,7 +282,6 @@ bool bio_integrity_prep(struct bio *bio)
+ 	bio->bi_status = BLK_STS_RESOURCE;
+ 	bio_endio(bio);
+ 	return false;
+-
  }
-@@ -244,7 +245,6 @@ bool bio_integrity_prep(struct bio *bio)
- 	}
+ EXPORT_SYMBOL(bio_integrity_prep);
  
- 	bip->bip_flags |= BIP_BLOCK_INTEGRITY;
--	bip->bip_iter.bi_size = len;
- 	bip_set_seed(bip, bio->bi_iter.bi_sector);
- 
- 	if (bi->flags & BLK_INTEGRITY_IP_CHECKSUM)
-diff --git a/drivers/md/dm-crypt.c b/drivers/md/dm-crypt.c
-index 1dc6227d353e..f2662c21a6df 100644
---- a/drivers/md/dm-crypt.c
-+++ b/drivers/md/dm-crypt.c
-@@ -1160,7 +1160,6 @@ static int dm_crypt_integrity_io_alloc(struct dm_crypt_io *io, struct bio *bio)
- 
- 	tag_len = io->cc->on_disk_tag_size * (bio_sectors(bio) >> io->cc->sector_shift);
- 
--	bip->bip_iter.bi_size = tag_len;
- 	bip->bip_iter.bi_sector = io->cc->start + io->sector;
- 
- 	ret = bio_integrity_add_page(bio, virt_to_page(io->integrity_metadata),
-diff --git a/drivers/nvme/host/ioctl.c b/drivers/nvme/host/ioctl.c
-index 5c3250f36ce7..19a5177bc360 100644
---- a/drivers/nvme/host/ioctl.c
-+++ b/drivers/nvme/host/ioctl.c
-@@ -118,7 +118,6 @@ static void *nvme_add_user_metadata(struct request *req, void __user *ubuf,
- 		goto out_free_meta;
- 	}
- 
--	bip->bip_iter.bi_size = len;
- 	bip->bip_iter.bi_sector = seed;
- 	ret = bio_integrity_add_page(bio, virt_to_page(buf), len,
- 			offset_in_page(buf));
-diff --git a/drivers/nvme/target/io-cmd-bdev.c b/drivers/nvme/target/io-cmd-bdev.c
-index 2733e0158585..468833675cc9 100644
---- a/drivers/nvme/target/io-cmd-bdev.c
-+++ b/drivers/nvme/target/io-cmd-bdev.c
-@@ -206,12 +206,11 @@ static int nvmet_bdev_alloc_bip(struct nvmet_req *req, struct bio *bio,
- 		return PTR_ERR(bip);
- 	}
- 
--	bip->bip_iter.bi_size = bio_integrity_bytes(bi, bio_sectors(bio));
- 	/* virtual start sector must be in integrity interval units */
- 	bip_set_seed(bip, bio->bi_iter.bi_sector >>
- 		     (bi->interval_exp - SECTOR_SHIFT));
- 
--	resid = bip->bip_iter.bi_size;
-+	resid = bio_integrity_bytes(bi, bio_sectors(bio));
- 	while (resid > 0 && sg_miter_next(miter)) {
- 		len = min_t(size_t, miter->length, resid);
- 		rc = bio_integrity_add_page(bio, miter->page, len,
-diff --git a/drivers/target/target_core_iblock.c b/drivers/target/target_core_iblock.c
-index 3d1b511ea284..a7050f63b7cc 100644
---- a/drivers/target/target_core_iblock.c
-+++ b/drivers/target/target_core_iblock.c
-@@ -689,7 +689,6 @@ iblock_alloc_bip(struct se_cmd *cmd, struct bio *bio,
- 		return PTR_ERR(bip);
- 	}
- 
--	bip->bip_iter.bi_size = bio_integrity_bytes(bi, bio_sectors(bio));
- 	/* virtual start sector must be in integrity interval units */
- 	bip_set_seed(bip, bio->bi_iter.bi_sector >>
- 				  (bi->interval_exp - SECTOR_SHIFT));
-@@ -697,7 +696,7 @@ iblock_alloc_bip(struct se_cmd *cmd, struct bio *bio,
- 	pr_debug("IBLOCK BIP Size: %u Sector: %llu\n", bip->bip_iter.bi_size,
- 		 (unsigned long long)bip->bip_iter.bi_sector);
- 
--	resid = bip->bip_iter.bi_size;
-+	resid = bio_integrity_bytes(bi, bio_sectors(bio));
- 	while (resid > 0 && sg_miter_next(miter)) {
- 
- 		len = min_t(size_t, miter->length, resid);
 -- 
 2.34.1
