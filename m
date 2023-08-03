@@ -2,55 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D215176E551
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 12:14:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8113576E552
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 12:14:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235247AbjHCKOK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Aug 2023 06:14:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51640 "EHLO
+        id S235259AbjHCKOO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Aug 2023 06:14:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51830 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233823AbjHCKOE (ORCPT
+        with ESMTP id S235252AbjHCKOK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Aug 2023 06:14:04 -0400
-Received: from mail-yw1-x114a.google.com (mail-yw1-x114a.google.com [IPv6:2607:f8b0:4864:20::114a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C50C272E
-        for <linux-kernel@vger.kernel.org>; Thu,  3 Aug 2023 03:14:03 -0700 (PDT)
-Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-5840614b13cso13813747b3.0
-        for <linux-kernel@vger.kernel.org>; Thu, 03 Aug 2023 03:14:03 -0700 (PDT)
+        Thu, 3 Aug 2023 06:14:10 -0400
+Received: from mail-yw1-x1149.google.com (mail-yw1-x1149.google.com [IPv6:2607:f8b0:4864:20::1149])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57C04272E
+        for <linux-kernel@vger.kernel.org>; Thu,  3 Aug 2023 03:14:08 -0700 (PDT)
+Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-5840614b13cso13814577b3.0
+        for <linux-kernel@vger.kernel.org>; Thu, 03 Aug 2023 03:14:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1691057643; x=1691662443;
-        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=fVgHMX1sr8AcQcx105vokEVgUIzKx0M+De6kyi4f2qE=;
-        b=niZqGqYtr3p2xGfUmasZnjAPX/OeMRTw6aza5d9thhbKzKRn5xtIhhPsfN98IeD9AQ
-         nq/pYNbt3XnGZLQGfnzlqvb/SxjxaCHe6Q93XBBw8LXkdlk14twmjVxXS/Kw90l9VWmj
-         2lu7pMOhy+G9hJ85UuI1rG7VSwMJoYvZneZteBMhnFpfanEtugrvn1/fKGg2bgKzSKPJ
-         VqE34s3jgXyaBxy5t0Nr+P/tqiYGaweLEcYLOL4ntzOiCRyh8LEtLhZkKkXiWkhzPdYx
-         TRvssOHwpMK9bdLyPX2Y0Kg1bXpeVimpwCEzgCBbGobM6a2bebWJT+H6m/oHzjl7K2LJ
-         tquA==
+        d=google.com; s=20221208; t=1691057647; x=1691662447;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=Y1wRhIRrggJAZYs6e7aV6RdIU6iSXzW0ONi/CWI4qUk=;
+        b=v8M8EpvgykyvNj5+VFK4+5VS1GCx+4thN93X5qGdv2Q6mDg+Q9BprkKi/ZqVY1cMB5
+         hgughi4UN1aYu/EXNqY13NPNEQutZvvu2GYwDAvr8QOh2o+EQF3P9BYp4pftEx0ox7R7
+         H293Y2C2VTDWZWO6xMfqIKxlFoQitde1l6TRNNpWpcVfHJP20iQVEqHd2/LLHggfZnBa
+         ZYsMt0hplLT0HqFF4jX+LVen+NA6yXSnT9/tIhVW1iyXGrZn3ULvFc83mH9XfV5ftRLp
+         iOKnNntwlT0uTtypEVze4RGIkmvLieWvFRULXEHMTA02TJWP0zXal6LCAjTnDjAfnCr4
+         3weA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691057643; x=1691662443;
-        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=fVgHMX1sr8AcQcx105vokEVgUIzKx0M+De6kyi4f2qE=;
-        b=lQjU2tsbfmueQQthiDoJh1xOBycTfEiyooiEDVMARXbG2UwYM6x3RpIQl3tbqU3h9Y
-         QiZUybrCBCUnjq1G1R0oXUXwWrLZ456OQbJns9rYT+MMJ+NOduZCm1l9ItMbiZ4XUfqx
-         lnmiCXU2qRCPV6/q3MVi0jqVJnM/azvmDdVh9K/1kjeXxbvrjWBy4FPFtLki73inRqQc
-         eP764Yf8kJMLtp5HIYVUAaUu1jQBaXP6w03k0ss6XUvmCk8tfP3wz2bBsQjwG9YugbcU
-         cxuqb2n/0ctWyYwmQBqF0ijdSce/5K1/tMkguKplA8op5fZkouuedKOZsXKxioUywsHc
-         ianA==
-X-Gm-Message-State: ABy/qLZXkgyGomKxQjjO7yqH+ZifH/DvbRgL3VDA4W9/Vz6TOiRTxFoq
-        5nE/Rn85pew7W9PpBCx0YJTQZxhqr8A4
-X-Google-Smtp-Source: APBJJlE7K1GSQsi/VVVhGXbw+cVlEoPlz/1jiaXcsCJSXM0lTDGJSv6Hq6VtqV5ijgB/OdXi4eqaBHyIpx8i
+        d=1e100.net; s=20221208; t=1691057647; x=1691662447;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Y1wRhIRrggJAZYs6e7aV6RdIU6iSXzW0ONi/CWI4qUk=;
+        b=IVTFdUOHs+O8L1KJaGQnOswhWScW4j+u8aHjX2ClOBPUPW+2Eu5+roOdKf1gQO53Bv
+         eQDMmznvjvJzfy7cEW9Y1jmU2gYukZk1QPrc24uucrSAkBByZAchlhOCnEj2fl5QW/W/
+         XMmF10CnSbdO0DFsrxFjZq5bvyKJA0cHYQPSjduK+40PWxPmbgOrr+lucCDL9V0mtFYI
+         D2mC8nrWhAB41415YMccg2+eDGJi/2Nd5up14nQS97j/bOewATLzI9o54MwQ2lTGpd8b
+         0Ff4B+gKLj0rZZJZmlsq8GmxsEtU864SViWL8K2nRtPv3Fx7Q1vcr/+uu3yE+u4a0vlR
+         J3kA==
+X-Gm-Message-State: ABy/qLaJ0vr/5sYIYFwePexhynT3DsUJZF+Lj1TtkWK1L53wdFDYFW8q
+        5dRqWqLeLmq3RHo6WXDO7K4X+7HOhVsv
+X-Google-Smtp-Source: APBJJlGq7z9/Y1wQFTi6d5yV5b9fzok7EZ8JGI+3DYlCHleYWyG2dZOEveRtsUS2kTL+q5mmdG0WEODi8+D8
 X-Received: from mshavit.ntc.corp.google.com ([2401:fa00:95:20c:39d1:8774:b733:6210])
- (user=mshavit job=sendgmr) by 2002:a81:788e:0:b0:57a:6019:62aa with SMTP id
- t136-20020a81788e000000b0057a601962aamr244992ywc.5.1691057642789; Thu, 03 Aug
- 2023 03:14:02 -0700 (PDT)
-Date:   Thu,  3 Aug 2023 18:12:20 +0800
+ (user=mshavit job=sendgmr) by 2002:a81:b301:0:b0:573:54d8:e5be with SMTP id
+ r1-20020a81b301000000b0057354d8e5bemr268745ywh.3.1691057647550; Thu, 03 Aug
+ 2023 03:14:07 -0700 (PDT)
+Date:   Thu,  3 Aug 2023 18:12:21 +0800
+In-Reply-To: <20230803101351.1561031-1-mshavit@google.com>
 Mime-Version: 1.0
+References: <20230803101351.1561031-1-mshavit@google.com>
 X-Mailer: git-send-email 2.41.0.585.gd2178a4bd4-goog
-Message-ID: <20230803101351.1561031-1-mshavit@google.com>
-Subject: [PATCH v5 0/6] Add PASID support to SMMUv3 unmanaged domains
+Message-ID: <20230803181225.v5.1.I18d69f4908b8a9f801239117d2a6c3f5aa1e2e76@changeid>
+Subject: [PATCH v5 1/6] iommu/arm-smmu-v3: Simplify arm_smmu_enable_ats
 From:   Michael Shavit <mshavit@google.com>
 To:     iommu@lists.linux.dev, linux-arm-kernel@lists.infradead.org,
         linux-kernel@vger.kernel.org
@@ -68,73 +70,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch series implements the set_dev_pasid operation for DMA and UNMANAGED
-iommu domains. The series depends on the CD table refactor patch series as a
-pre-requisite.
+arm_smmu_enable_ats's call to inv_domain would trigger an invalidation
+for all masters that a domain is attached to everytime it's attached to
+another ATS-enabled master. It doesn't seem like those invalidations are
+necessary, and it's easier to reason about arm_smmu_enable_ats if it
+only issues invalidation commands for the current master.
 
-This patch series is also available on gerrit with Jean's SMMU test
-engine patches cherry-picked along with an additional set of tests for
-this feature: https://linux-review.googlesource.com/c/linux/kernel/git/torvalds/linux/+/24770/6
+Signed-off-by: Michael Shavit <mshavit@google.com>
+---
 
-Thanks,
-Michael Shavit
-
-Changes in v5:
-- Renamed domain_head to list for consistency with other lists
-- Renamed attached_domains to attached_ssids to avoid confusion. This is
-  a list of master/ssid pairs the domain is attached to, not a list of
-  other domains.
-- Fix missing error value return in set_dev_pasid
-- Fix issue where nr_attached_pasid_domains isn't updated when
-  arm_smmu_write_ctx_desc fails
-- Fix missing free of the attached_domain node
-- Split off the CD table refactor to separate patch series: https://lore.kernel.org/all/20230802163328.2623773-1-mshavit@google.com/
-- Link to v4: https://lore.kernel.org/all/20230621063825.268890-1-mshavit@google.com/
-- New commit: Free attached pasid domains on release_device() call
-
-Changes in v4:
-- Fix build warning and error on patch 07. The error was introduced
-  during a v1->v2 rebase and hidden by patch 09 which removed the
-  offending line.
-- Link to v3: https://lore.kernel.org/all/20230614154304.2860121-1-mshavit@google.com/
-
-Changes in v3:
-- Dropped the bulk of the SVA refactoring to re-work as a follow-up
-  series.
-- Reworded cover letter to omit dropped changes.
-- Rebased on 6.4 tip
-- Link to v2: https://lore.kernel.org/all/20230606120854.4170244-1-mshavit@google.com/
+(no changes since v2)
 
 Changes in v2:
-- Reworded cover letter and commits based on v1 feedback.
-- Split and reworked `iommu/arm-smmu-v3: Move cdtable to arm_smmu_master`
-- Added SVA clean-up and refactor.
-- A few other small bug fixes and cosmetics.
-- Link to v1: https://lore.kernel.org/all/20230510205054.2667898-1-mshavit@google.com/
+- Fix commit message wrapping
 
-Michael Shavit (6):
-  iommu/arm-smmu-v3: Simplify arm_smmu_enable_ats
-  iommu/arm-smmu-v3: Keep track of attached ssids
-  iommu/arm-smmu-v3: Add helper for atc invalidation
-  iommu/arm-smmu-v3: Implement set_dev_pasid
-  iommu/arm-smmu-v3: Free pasid domains on iommu release
-  iommu/arm-smmu-v3: Cleanup arm_smmu_domain_finalise
+ drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
- .../iommu/arm/arm-smmu-v3/arm-smmu-v3-sva.c   |  28 +-
- drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c   | 283 ++++++++++++++----
- drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.h   |  31 +-
- 3 files changed, 267 insertions(+), 75 deletions(-)
-
-
-base-commit: 5d0c230f1de8c7515b6567d9afba1f196fb4e2f4
-prerequisite-patch-id: c8d21ff19c2c1dd18799a6b83f483add654d187e
-prerequisite-patch-id: bdeb88498393e7049fd22cfc24d2b7674e81bb85
-prerequisite-patch-id: b84be729e187aa2d67a7f90ec396e2b878c76243
-prerequisite-patch-id: 0ee7da8eaae46e2f8a0a791808f421025e148d79
-prerequisite-patch-id: 2d80d99964059ecb31065ec4954130c817b9046c
-prerequisite-patch-id: 49910462ec68b834c6af18ae9c58de25982e2752
-prerequisite-patch-id: 1daf192523b0b7ed24a670b47ad07366aca6d26d
-prerequisite-patch-id: 96101f0f4fd95cdb442cfe0881d80c3a61a93716
+diff --git a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
+index 61de66d17a5d5..4df335424b266 100644
+--- a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
++++ b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
+@@ -2305,7 +2305,7 @@ static void arm_smmu_enable_ats(struct arm_smmu_master *master)
+ 	pdev = to_pci_dev(master->dev);
+ 
+ 	atomic_inc(&smmu_domain->nr_ats_masters);
+-	arm_smmu_atc_inv_domain(smmu_domain, 0, 0, 0);
++	arm_smmu_atc_inv_master(master);
+ 	if (pci_enable_ats(pdev, stu))
+ 		dev_err(master->dev, "Failed to enable ATS (STU %zu)\n", stu);
+ }
 -- 
 2.41.0.585.gd2178a4bd4-goog
 
