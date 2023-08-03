@@ -2,259 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D50B76E246
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 10:00:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 219FE76E24A
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 10:01:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234074AbjHCIAg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Aug 2023 04:00:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32870 "EHLO
+        id S234286AbjHCIA5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Aug 2023 04:00:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32954 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231978AbjHCIAF (ORCPT
+        with ESMTP id S232519AbjHCIAL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Aug 2023 04:00:05 -0400
-Received: from mail-qt1-x836.google.com (mail-qt1-x836.google.com [IPv6:2607:f8b0:4864:20::836])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 121BF4ED3
-        for <linux-kernel@vger.kernel.org>; Thu,  3 Aug 2023 00:47:56 -0700 (PDT)
-Received: by mail-qt1-x836.google.com with SMTP id d75a77b69052e-40a47e8e38dso157391cf.1
-        for <linux-kernel@vger.kernel.org>; Thu, 03 Aug 2023 00:47:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1691048875; x=1691653675;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=HX2QjhAjm1VtIJ7aq9ETcIbROYuaT4rznxqM4xCkPNc=;
-        b=fsKM8DoTuZOfwAzvF0ApPYf/k3QnUZq6zjoVqUZ66DKlTqfk9ykOVtIpCTWOAmTvGx
-         GzUI4DgtRAELLR5d/EA5m9OQRDHAL9mu5XIB+hjPL5HYyjlxVqWFFM+GaVQ0PIt/ptW9
-         9+u4+TX2wnOxcAybwVOGP4xLrCwNTMgiYJBYqqEpQf+1jVVqHFEgpc80mUBCbWk0aWsd
-         6uyGbu3RiHdpJFAoQ0y5brfpm6PCsRZrKVk6xGnNpA/3CJ9llTZ7KqYOGsSHGEx+J8cu
-         Q12sYbRU6HcARk3EZYUQy8vF0cp0IdnVyNbt0lq9XLQcYI+BV2BBo2DPme4IyShYZ115
-         gQoQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691048875; x=1691653675;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=HX2QjhAjm1VtIJ7aq9ETcIbROYuaT4rznxqM4xCkPNc=;
-        b=NyMmZ8UvBuZr1xuBIzbfsdB4csjNfNvIaHVuXFHasLH+mfjSiaGtLG4JEWKQZIetwK
-         duIE0Oa6atotBSeMokFKjmfhUgT5i/CA16GRgUXbxzuJiU48yDnPd1P5ZHGVUr6gt0hA
-         FQVgez2mpDfYunvcsGGET/+zukWdar2r88sSeHYLjFUgdREJFlB7pWZPpGCuc0iWPK+D
-         bHfokciuxC9FKmU8bFtLDM4mK5BGzwzMtV/WWdanN1ivNAv+Q3rOFZFI/RFGwFC5brho
-         VqMQwsb8UxhTmMrk0jmim2rv9f2mtsJXvw9oshbGZaun3LcQC3U78SzbotJoyAjx53fR
-         1iwg==
-X-Gm-Message-State: ABy/qLZzwyyBpsVGvK2Q8Cn+4Zg6FsnfBrPtospByx3pte1Q1NcpjBmK
-        ds7PS+eMoDl0Drd8ub1QNZMfPb7OQmZwRuez0TStHMCo74MPZ00jLQ225Q==
-X-Google-Smtp-Source: APBJJlEvSoUL4BFDEsByLxH9z9PduXUo16Ko724GHnU1ikgKnpUSJIYzWcxXfB79sgXW5CD3nvoFVi7DjptAMpL6xTE=
-X-Received: by 2002:a05:622a:1aa2:b0:405:3a65:b3d6 with SMTP id
- s34-20020a05622a1aa200b004053a65b3d6mr1183790qtc.13.1691048874911; Thu, 03
- Aug 2023 00:47:54 -0700 (PDT)
+        Thu, 3 Aug 2023 04:00:11 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3605A4239
+        for <linux-kernel@vger.kernel.org>; Thu,  3 Aug 2023 00:48:16 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id DC52A219C4;
+        Thu,  3 Aug 2023 07:48:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1691048894; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=WeMsOzXlxvCejYnrxUhfCgP4tceAgG/CNRKt23OGuuA=;
+        b=gOTje9xmo+3RbqEQOJvHyFL3yKgE9G9NwkYHgx/Sk31KKd6F4WHPaaIxHgTx2hF2dovYTi
+        rIG4FwaGyT5f1VxZZhipTN26Db9adIv+OkxVTj40uG9MnzWL9zA2oPQWw+4JFQMJoTA4i1
+        7FP/8MhxFACPjCslca41aDbGjYsthA0=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id B4C521333C;
+        Thu,  3 Aug 2023 07:48:14 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id Y5T2KL5by2RGPAAAMHmgww
+        (envelope-from <mhocko@suse.com>); Thu, 03 Aug 2023 07:48:14 +0000
+Date:   Thu, 3 Aug 2023 09:48:14 +0200
+From:   Michal Hocko <mhocko@suse.com>
+To:     Douglas Anderson <dianders@chromium.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Petr Mladek <pmladek@suse.com>,
+        kernel test robot <lkp@intel.com>,
+        Lecopzer Chen <lecopzer.chen@mediatek.com>,
+        Pingfan Liu <kernelfans@gmail.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] watchdog/hardlockup: Avoid large stack frames in
+ watchdog_hardlockup_check()
+Message-ID: <ZMtbvscFCtu9WRCe@dhcp22.suse.cz>
+References: <20230802122555.v2.1.I501ab68cb926ee33a7c87e063d207abf09b9943c@changeid>
 MIME-Version: 1.0
-References: <20230801100533.3350037-1-leitao@debian.org>
-In-Reply-To: <20230801100533.3350037-1-leitao@debian.org>
-From:   Eric Dumazet <edumazet@google.com>
-Date:   Thu, 3 Aug 2023 09:47:43 +0200
-Message-ID: <CANn89iKuHxUGphhDkKz2ZWS3YR3-BkieTb4b4gKMR9B7jxKpWQ@mail.gmail.com>
-Subject: Re: [PATCH net-next v3] netconsole: Enable compile time configuration
-To:     Breno Leitao <leitao@debian.org>
-Cc:     rdunlap@infradead.org, benjamin.poirier@gmail.com,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, leit@meta.com,
-        "open list:NETWORKING DRIVERS" <netdev@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230802122555.v2.1.I501ab68cb926ee33a7c87e063d207abf09b9943c@changeid>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 1, 2023 at 12:06=E2=80=AFPM Breno Leitao <leitao@debian.org> wr=
-ote:
->
-> Enable netconsole features to be set at compilation time. Create two
-> Kconfig options that allow users to set extended logs and release
-> prepending features at compilation time.
->
-> Right now, the user needs to pass command line parameters to netconsole,
-> such as "+"/"r" to enable extended logs and version prepending features.
->
-> With these two options, the user could set the default values for the
-> features at compile time, and don't need to pass it in the command line
-> to get them enabled, simplifying the command line.
->
-> Signed-off-by: Breno Leitao <leitao@debian.org>
+On Wed 02-08-23 12:26:00, Douglas Anderson wrote:
+> After commit 77c12fc95980 ("watchdog/hardlockup: add a "cpu" param to
+> watchdog_hardlockup_check()") we started storing a `struct cpumask` on
+> the stack in watchdog_hardlockup_check(). On systems with
+> CONFIG_NR_CPUS set to 8192 this takes up 1K on the stack. That
+> triggers warnings with `CONFIG_FRAME_WARN` set to 1024.
+> 
+> Instead of putting this `struct cpumask` on the stack, we'll allocate
+> it on the heap whenever userspace tells us that they want to backtrace
+> all CPUs upon a hardlockup.
+> 
+> NOTE: the reason that this mask is even needed is to make sure that we
+> can print the hung CPU first, which makes the logs much easier to
+> understand.
+> 
+> Fixes: 77c12fc95980 ("watchdog/hardlockup: add a "cpu" param to watchdog_hardlockup_check()")
+> Reported-by: kernel test robot <lkp@intel.com>
+> Closes: https://lore.kernel.org/r/202307310955.pLZDhpnl-lkp@intel.com
+> Signed-off-by: Douglas Anderson <dianders@chromium.org>
 > ---
->   v1 -> v2:
->         * Improvements in the Kconfig help section.
->   v2 -> v3:
->         * Honour the Kconfig settings when creating sysfs targets
->         * Add "by default" in a Kconfig help.
-> ---
->  drivers/net/Kconfig      | 22 ++++++++++++++++++++++
->  drivers/net/netconsole.c | 10 ++++++++++
->  2 files changed, 32 insertions(+)
->
-> diff --git a/drivers/net/Kconfig b/drivers/net/Kconfig
-> index 368c6f5b327e..55fb9509bcae 100644
-> --- a/drivers/net/Kconfig
-> +++ b/drivers/net/Kconfig
-> @@ -332,6 +332,28 @@ config NETCONSOLE_DYNAMIC
->           at runtime through a userspace interface exported using configf=
-s.
->           See <file:Documentation/networking/netconsole.rst> for details.
->
-> +config NETCONSOLE_EXTENDED_LOG
-> +       bool "Set kernel extended message by default"
-> +       depends on NETCONSOLE
-> +       default n
-> +       help
-> +         Set extended log support for netconsole message. If this option=
- is
-> +         set, log messages are transmitted with extended metadata header=
- in a
-> +         format similar to /dev/kmsg.  See
-> +         <file:Documentation/networking/netconsole.rst> for details.
+> 
+> Changes in v2:
+> - Allocate space when userspace requests all cpus be backtraced.
+> 
+>  kernel/watchdog.c | 44 ++++++++++++++++++++++++++++++++++----------
+>  1 file changed, 34 insertions(+), 10 deletions(-)
+> 
+> diff --git a/kernel/watchdog.c b/kernel/watchdog.c
+> index be38276a365f..25d5627a6580 100644
+> --- a/kernel/watchdog.c
+> +++ b/kernel/watchdog.c
+> @@ -93,6 +93,8 @@ static DEFINE_PER_CPU(bool, watchdog_hardlockup_warned);
+>  static DEFINE_PER_CPU(bool, watchdog_hardlockup_touched);
+>  static unsigned long watchdog_hardlockup_all_cpu_dumped;
+>  
+> +static struct cpumask *hardlockup_backtrace_mask;
 > +
-> +config NETCONSOLE_PREPEND_RELEASE
-> +       bool "Prepend kernel release version in the message by default"
-> +       depends on NETCONSOLE_EXTENDED_LOG
-> +       default n
-> +       help
-> +         Set kernel release to be prepended to each netconsole message b=
-y
-> +         default. If this option is set, the kernel release is prepended=
- into
-> +         the first field of every netconsole message, so, the netconsole
-> +         server/peer can easily identify what kernel release is logging =
-each
-> +         message.  See <file:Documentation/networking/netconsole.rst> fo=
-r
-> +         details.
+>  notrace void arch_touch_nmi_watchdog(void)
+>  {
+>  	/*
+> @@ -106,6 +108,29 @@ notrace void arch_touch_nmi_watchdog(void)
+>  }
+>  EXPORT_SYMBOL(arch_touch_nmi_watchdog);
+>  
+> +static int hardlockup_all_cpu_backtrace_proc_handler(struct ctl_table *table, int write,
+> +		  void *buffer, size_t *lenp, loff_t *ppos)
+> +{
+> +	int ret;
 > +
->  config NETPOLL
->         def_bool NETCONSOLE
->
-> diff --git a/drivers/net/netconsole.c b/drivers/net/netconsole.c
-> index 87f18aedd3bd..e3b6155f4529 100644
-> --- a/drivers/net/netconsole.c
-> +++ b/drivers/net/netconsole.c
-> @@ -181,6 +181,11 @@ static struct netconsole_target *alloc_param_target(=
-char *target_config)
->         if (!nt)
->                 goto fail;
->
-> +       if (IS_ENABLED(CONFIG_NETCONSOLE_EXTENDED_LOG))
-> +               nt->extended =3D true;
-> +       if (IS_ENABLED(CONFIG_NETCONSOLE_PREPEND_RELEASE))
-> +               nt->release =3D true;
+> +	ret = proc_dointvec_minmax(table, write, buffer, lenp, ppos);
 > +
->         nt->np.name =3D "netconsole";
->         strscpy(nt->np.dev_name, "eth0", IFNAMSIZ);
->         nt->np.local_port =3D 6665;
-> @@ -681,6 +686,11 @@ static struct config_item *make_netconsole_target(st=
-ruct config_group *group,
->         nt->np.remote_port =3D 6666;
->         eth_broadcast_addr(nt->np.remote_mac);
->
-> +       if (IS_ENABLED(CONFIG_NETCONSOLE_EXTENDED_LOG))
-> +               nt->extended =3D true;
-> +       if (IS_ENABLED(CONFIG_NETCONSOLE_PREPEND_RELEASE))
-> +               nt->release =3D true;
-> +
+> +	/*
+> +	 * Only allocate memory for the backtrace mask if userspace actually
+> +	 * wants to trace all CPUs since this can take up 1K of space on a
+> +	 * system with CONFIG_NR_CPUS=8192.
+> +	 */
+> +	if (sysctl_hardlockup_all_cpu_backtrace && !hardlockup_backtrace_mask) {
+> +		hardlockup_backtrace_mask =
+> +			   kzalloc(sizeof(*hardlockup_backtrace_mask), GFP_KERNEL);
+> +	} else if (!sysctl_hardlockup_all_cpu_backtrace && hardlockup_backtrace_mask) {
+> +		kfree(hardlockup_backtrace_mask);
+> +		hardlockup_backtrace_mask = NULL;
+> +	}
 
-Instead of duplicating these, what about adding a preliminary helper
-in a separate patch ?
-
-Something like this:
-
- drivers/net/netconsole.c |   45 ++++++++++++++++++++----------------------=
----
- 1 file changed, 20 insertions(+), 25 deletions(-)
-
-diff --git a/drivers/net/netconsole.c b/drivers/net/netconsole.c
-index 87f18aedd3bd7b3da9d2481dc9898e94dd75917b..a022ceaa2e3c4783ca0ea61c1c7=
-b9f911d087abc
-100644
---- a/drivers/net/netconsole.c
-+++ b/drivers/net/netconsole.c
-@@ -167,26 +167,32 @@ static void netconsole_target_put(struct
-netconsole_target *nt)
-
- #endif /* CONFIG_NETCONSOLE_DYNAMIC */
-
-+/*
-+ * Allocate and initialize with defaults.
-+ * Note that these targets get their config_item fields zeroed-out.
-+ */
-+static struct netconsole_target *alloc_and_init(void)
-+{
-+       struct netconsole_target *nt =3D kzalloc(sizeof(*nt), GFP_KERNEL);
-+
-+       if (nt) {
-+               nt->np.name =3D "netconsole";
-+               strscpy(nt->np.dev_name, "eth0", IFNAMSIZ);
-+               nt->np.local_port =3D 6665;
-+               nt->np.remote_port =3D 6666;
-+               eth_broadcast_addr(nt->np.remote_mac);
-+       }
-+       return nt;
-+}
-+
- /* Allocate new target (from boot/module param) and setup netpoll for it *=
-/
- static struct netconsole_target *alloc_param_target(char *target_config)
- {
-+       struct netconsole_target *nt =3D alloc_and_init();
-        int err =3D -ENOMEM;
--       struct netconsole_target *nt;
-
--       /*
--        * Allocate and initialize with defaults.
--        * Note that these targets get their config_item fields zeroed-out.
--        */
--       nt =3D kzalloc(sizeof(*nt), GFP_KERNEL);
-        if (!nt)
-                goto fail;
--
--       nt->np.name =3D "netconsole";
--       strscpy(nt->np.dev_name, "eth0", IFNAMSIZ);
--       nt->np.local_port =3D 6665;
--       nt->np.remote_port =3D 6666;
--       eth_broadcast_addr(nt->np.remote_mac);
--
-        if (*target_config =3D=3D '+') {
-                nt->extended =3D true;
-                target_config++;
-@@ -664,23 +670,12 @@ static const struct config_item_type
-netconsole_target_type =3D {
- static struct config_item *make_netconsole_target(struct config_group *gro=
-up,
-                                                  const char *name)
- {
-+       struct netconsole_target *nt =3D alloc_and_init();
-        unsigned long flags;
--       struct netconsole_target *nt;
-
--       /*
--        * Allocate and initialize with defaults.
--        * Target is disabled at creation (!enabled).
--        */
--       nt =3D kzalloc(sizeof(*nt), GFP_KERNEL);
-        if (!nt)
-                return ERR_PTR(-ENOMEM);
-
--       nt->np.name =3D "netconsole";
--       strscpy(nt->np.dev_name, "eth0", IFNAMSIZ);
--       nt->np.local_port =3D 6665;
--       nt->np.remote_port =3D 6666;
--       eth_broadcast_addr(nt->np.remote_mac);
--
-        /* Initialize the config_item member */
-        config_item_init_type_name(&nt->item, name, &netconsole_target_type=
-);
+While unlikely, this can race with the consumer and cause either
+use-after-free or NULL ptr deref.
+-- 
+Michal Hocko
+SUSE Labs
