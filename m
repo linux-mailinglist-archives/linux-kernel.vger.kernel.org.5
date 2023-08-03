@@ -2,57 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F0C2776E024
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 08:24:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BF03276E026
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 08:24:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233055AbjHCGYQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Aug 2023 02:24:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40672 "EHLO
+        id S233120AbjHCGY0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Aug 2023 02:24:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41064 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233201AbjHCGYE (ORCPT
+        with ESMTP id S232177AbjHCGYU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Aug 2023 02:24:04 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD8C0272C;
-        Wed,  2 Aug 2023 23:23:54 -0700 (PDT)
+        Thu, 3 Aug 2023 02:24:20 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F41DC10FB;
+        Wed,  2 Aug 2023 23:24:18 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 6B04A61BCB;
-        Thu,  3 Aug 2023 06:23:54 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C7002C433C7;
-        Thu,  3 Aug 2023 06:23:53 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 753D061BCB;
+        Thu,  3 Aug 2023 06:24:18 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9E031C433C7;
+        Thu,  3 Aug 2023 06:24:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691043833;
-        bh=c0JHcFWSrvgrEKbKHMqRatXBy4xurhcTfvhzOa3/rMA=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=LhJ4s0mBnqlUpKTpz/ZfiLWMAjkBfJivhO78YYpjvpp98K/7XaxMJ22R5MjmUxYiY
-         DnF7xEnVJ5JgVMMSDmPTwgljaEs0+Fm7gfXFUWsft+g60DivdUP2JdCYomlhxFQ7ku
-         hbtzC2txmSbDwvz2x1eaHIfPE14coONsAPoPgS/W7cDYmjow6py2tn5E2i1ajDM7gG
-         XQvW6Y2e0miNnZ4zGuXmSSzUlecDaXKwCQDfruoTosK2GYmRFoBSBPWb0eovodb4Nm
-         U6MFoAkDJUsi4pN7PkcsVLMMPD07P4csc0kr5mbE9OdamDbZacBOe+yQgmViU0hAB9
-         /F6ir3ZcA37VA==
-Received: by mail-oa1-f54.google.com with SMTP id 586e51a60fabf-1bbaa549bcbso408017fac.3;
-        Wed, 02 Aug 2023 23:23:53 -0700 (PDT)
-X-Gm-Message-State: AOJu0Yy/g9OIKeiqX4GbX5dAiI7bK1sE8KM2HI5T2J3PPQvZifb1OjLg
-        RPyZX2bSAeAIMCgvxoDd7xJ1jI4cRUO4bT0oDhw=
-X-Google-Smtp-Source: APBJJlHZISAIW58S4+F0CHFF+rfZwlOud1fMZQMIsCAoK6tWr6hhNrVRwg0zBE6v1lrQ2I6RwEDqVDogSJMiuviPelI=
-X-Received: by 2002:a05:6871:89f:b0:1bf:61d1:a4d4 with SMTP id
- r31-20020a056871089f00b001bf61d1a4d4mr3405692oaq.6.1691043833000; Wed, 02 Aug
- 2023 23:23:53 -0700 (PDT)
+        s=k20201202; t=1691043857;
+        bh=Hm/g9aC+hWCP6Ihz8zX5wVSTOllY15bZ3NwCc3kbbXs=;
+        h=From:To:Cc:Subject:Date:From;
+        b=MhDJKaWU3OZYGs1YbKGpCvZibYbdqtXrXFjQ1yFISxxL9XuMUQ5MEOcl1szgXM/n+
+         wjIzkIVu7a8b7lm9ukhqSpq0ASJ27Ly+1CXGVfy0vStxh665KZ4lb5FxlNUFzboYcu
+         A9Y2D1rps7TOBWdfP961uYc2Vj6bJgP/ACq3SoRjAiCAFldEtNdnOQxeroZmVNdmDy
+         5l6mU41FvLLJ94rGY0rqZZjq36yBc16zWpgagBZcxfT943TN+zMf4LWy9iSVaqXBno
+         VEbxidfHHx+ba/Oh5QpOJxXfsAAM9mbQI5KKHuA85iU2UEHf87X26O5p8JmgkNb0M9
+         W8nkVm/1udWxQ==
+From:   Mike Rapoport <rppt@kernel.org>
+To:     Helge Deller <deller@gmx.de>
+Cc:     Christoph Biedl <linux-kernel.bfrz@manchmal.in-ulm.de>,
+        "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
+        John David Anglin <dave.anglin@bell.net>,
+        Mike Rapoport <rppt@kernel.org>,
+        Vlastimil Babka <vbabka@suse.cz>, linux-parisc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] parisc/mm: preallocate fixmap page tables at init
+Date:   Thu,  3 Aug 2023 09:24:04 +0300
+Message-Id: <20230803062404.2373480-1-rppt@kernel.org>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
-References: <20230801174922.333700-1-bmasney@redhat.com> <20230801174922.333700-3-bmasney@redhat.com>
-In-Reply-To: <20230801174922.333700-3-bmasney@redhat.com>
-From:   Masahiro Yamada <masahiroy@kernel.org>
-Date:   Thu, 3 Aug 2023 15:23:16 +0900
-X-Gmail-Original-Message-ID: <CAK7LNAQ-nhy1_xFYiwuvOKvfUVSjvnEb4ZnJ8EMWo7uJun89Zg@mail.gmail.com>
-Message-ID: <CAK7LNAQ-nhy1_xFYiwuvOKvfUVSjvnEb4ZnJ8EMWo7uJun89Zg@mail.gmail.com>
-Subject: Re: [PATCH 2/2] scripts: add kconfig lookup script
-To:     Brian Masney <bmasney@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, linux-kbuild@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
@@ -63,180 +57,163 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 2, 2023 at 2:49=E2=80=AFAM Brian Masney <bmasney@redhat.com> wr=
-ote:
->
-> Add a script that allows looking up the full Kconfig entry based on
-> the symbol name. Documentation and example usage is found at the top
-> of the script itself.
->
-> Signed-off-by: Brian Masney <bmasney@redhat.com>
-> ---
->  scripts/kconfig/lookup.sh | 77 +++++++++++++++++++++++++++++++++++++++
->  1 file changed, 77 insertions(+)
->  create mode 100755 scripts/kconfig/lookup.sh
+From: "Mike Rapoport (IBM)" <rppt@kernel.org>
 
+Christoph Biedl reported early OOM on recent kernels:
 
+    swapper: page allocation failure: order:0, mode:0x100(__GFP_ZERO),
+nodemask=(null)
+    CPU: 0 PID: 0 Comm: swapper Not tainted 6.3.0-rc4+ #16
+    Hardware name: 9000/785/C3600
+    Backtrace:
+     [<10408594>] show_stack+0x48/0x5c
+     [<10e152d8>] dump_stack_lvl+0x48/0x64
+     [<10e15318>] dump_stack+0x24/0x34
+     [<105cf7f8>] warn_alloc+0x10c/0x1c8
+     [<105d068c>] __alloc_pages+0xbbc/0xcf8
+     [<105d0e4c>] __get_free_pages+0x28/0x78
+     [<105ad10c>] __pte_alloc_kernel+0x30/0x98
+     [<10406934>] set_fixmap+0xec/0xf4
+     [<10411ad4>] patch_map.constprop.0+0xa8/0xdc
+     [<10411bb0>] __patch_text_multiple+0xa8/0x208
+     [<10411d78>] patch_text+0x30/0x48
+     [<1041246c>] arch_jump_label_transform+0x90/0xcc
+     [<1056f734>] jump_label_update+0xd4/0x184
+     [<1056fc9c>] static_key_enable_cpuslocked+0xc0/0x110
+     [<1056fd08>] static_key_enable+0x1c/0x2c
+     [<1011362c>] init_mem_debugging_and_hardening+0xdc/0xf8
+     [<1010141c>] start_kernel+0x5f0/0xa98
+     [<10105da8>] start_parisc+0xb8/0xe4
 
-Everyone tends to have their own utility scripts
-on their machines.
+    Mem-Info:
+    active_anon:0 inactive_anon:0 isolated_anon:0
+     active_file:0 inactive_file:0 isolated_file:0
+     unevictable:0 dirty:0 writeback:0
+     slab_reclaimable:0 slab_unreclaimable:0
+     mapped:0 shmem:0 pagetables:0
+     sec_pagetables:0 bounce:0
+     kernel_misc_reclaimable:0
+     free:0 free_pcp:0 free_cma:0
+    Node 0 active_anon:0kB inactive_anon:0kB active_file:0kB
+inactive_file:0kB unevictable:0kB isolated(anon):0kB isolated(file):0kB
+mapped:0kB dirty:0kB writeback:0kB shmem:0kB
++writeback_tmp:0kB kernel_stack:0kB pagetables:0kB sec_pagetables:0kB
+all_unreclaimable? no
+    Normal free:0kB boost:0kB min:0kB low:0kB high:0kB
+reserved_highatomic:0KB active_anon:0kB inactive_anon:0kB active_file:0kB
+inactive_file:0kB unevictable:0kB writepending:0kB
++present:1048576kB managed:1039360kB mlocked:0kB bounce:0kB free_pcp:0kB
+local_pcp:0kB free_cma:0kB
+    lowmem_reserve[]: 0 0
+    Normal: 0*4kB 0*8kB 0*16kB 0*32kB 0*64kB 0*128kB 0*256kB 0*512kB
+0*1024kB 0*2048kB 0*4096kB = 0kB
+    0 total pagecache pages
+    0 pages in swap cache
+    Free swap  = 0kB
+    Total swap = 0kB
+    262144 pages RAM
+    0 pages HighMem/MovableOnly
+    2304 pages reserved
+    Backtrace:
+     [<10411d78>] patch_text+0x30/0x48
+     [<1041246c>] arch_jump_label_transform+0x90/0xcc
+     [<1056f734>] jump_label_update+0xd4/0x184
+     [<1056fc9c>] static_key_enable_cpuslocked+0xc0/0x110
+     [<1056fd08>] static_key_enable+0x1c/0x2c
+     [<1011362c>] init_mem_debugging_and_hardening+0xdc/0xf8
+     [<1010141c>] start_kernel+0x5f0/0xa98
+     [<10105da8>] start_parisc+0xb8/0xe4
 
-I think this patch set falls into that category
-as "create a wrapper script of grep" is what everyone
-does to reduce typing.
+    Kernel Fault: Code=15 (Data TLB miss fault) at addr 0f7fe3c0
+    CPU: 0 PID: 0 Comm: swapper Not tainted 6.3.0-rc4+ #16
+    Hardware name: 9000/785/C3600
 
+This happens because patching static key code temporarily maps it via
+fixmap and if it happens before page allocator is initialized set_fixmap()
+cannot allocate memory using pte_alloc_kernel().
 
+Make sure that fixmap page tables are preallocated early so that
+pte_offset_kernel() in set_fixmap() never resorts to pte allocation.
 
+Signed-off-by: Mike Rapoport (IBM) <rppt@kernel.org>
+---
 
-FWIW, I have the following scripts in my ~/bin directory.
+I didn't add Fixes tag with the commit Christoph bisected because that
+commit didn't change anything in the initialization of the static keys
+and I really doubt it is the actual cause of the issue.
 
+ arch/parisc/mm/fixmap.c |  3 ---
+ arch/parisc/mm/init.c   | 34 ++++++++++++++++++++++++++++++++++
+ 2 files changed, 34 insertions(+), 3 deletions(-)
 
+diff --git a/arch/parisc/mm/fixmap.c b/arch/parisc/mm/fixmap.c
+index cc15d737fda6..ae3493dae9dc 100644
+--- a/arch/parisc/mm/fixmap.c
++++ b/arch/parisc/mm/fixmap.c
+@@ -19,9 +19,6 @@ void notrace set_fixmap(enum fixed_addresses idx, phys_addr_t phys)
+ 	pmd_t *pmd = pmd_offset(pud, vaddr);
+ 	pte_t *pte;
+ 
+-	if (pmd_none(*pmd))
+-		pte = pte_alloc_kernel(pmd, vaddr);
+-
+ 	pte = pte_offset_kernel(pmd, vaddr);
+ 	set_pte_at(&init_mm, vaddr, pte, __mk_pte(phys, PAGE_KERNEL_RWX));
+ 	flush_tlb_kernel_range(vaddr, vaddr + PAGE_SIZE);
+diff --git a/arch/parisc/mm/init.c b/arch/parisc/mm/init.c
+index 406c52fe23d5..389941c7f209 100644
+--- a/arch/parisc/mm/init.c
++++ b/arch/parisc/mm/init.c
+@@ -669,6 +669,39 @@ static void __init gateway_init(void)
+ 		  PAGE_SIZE, PAGE_GATEWAY, 1);
+ }
+ 
++static void __init fixmap_init(void)
++{
++	unsigned long addr = FIXMAP_START;
++	unsigned long end = FIXMAP_START + FIXMAP_SIZE;
++	pgd_t *pgd = pgd_offset_k(addr);
++	p4d_t *p4d = p4d_offset(pgd, addr);
++	pud_t *pud = pud_offset(p4d, addr);
++	pmd_t *pmd;
++
++	BUILD_BUG_ON(FIXMAP_SIZE > PMD_SIZE);
++
++#if CONFIG_PGTABLE_LEVELS == 3
++	if (pud_none(*pud)) {
++		pmd = memblock_alloc(PAGE_SIZE << PMD_TABLE_ORDER,
++				     PAGE_SIZE << PMD_TABLE_ORDER);
++		if (!pmd)
++			panic("fixmap: pmd allocation failed.\n");
++		pud_populate(NULL, pud, pmd);
++	}
++#endif
++
++	pmd = pmd_offset(pud, addr);
++	do {
++		pte_t *pte = memblock_alloc(PAGE_SIZE, PAGE_SIZE);
++		if (!pte)
++			panic("fixmap: pte allocation failed.\n");
++
++		pmd_populate_kernel(&init_mm, pmd, pte);
++
++		addr += PAGE_SIZE;
++	} while (addr < end);
++}
++
+ static void __init parisc_bootmem_free(void)
+ {
+ 	unsigned long max_zone_pfn[MAX_NR_ZONES] = { 0, };
+@@ -683,6 +716,7 @@ void __init paging_init(void)
+ 	setup_bootmem();
+ 	pagetable_init();
+ 	gateway_init();
++	fixmap_init();
+ 	flush_cache_all_local(); /* start with known state */
+ 	flush_tlb_all_local(NULL);
+ 
 
-$ cat ~/bin/kgrep
-#!/bin/sh
+base-commit: 5d0c230f1de8c7515b6567d9afba1f196fb4e2f4
+-- 
+2.34.1
 
-exec find . -name .repo -prune -o -name .git -prune -o -type f \
-\( -name 'Kconfig*' -o -name 'Config.in' \) \
--print0 | xargs -0 grep --color -n "$@"
-
-
-$ cat ~/bin/mgrep
-#!/bin/sh
-
-exec find . -name .repo -prune -o -name .git -prune -o -type f \
-\( -name 'Makefile*' -o -name 'Kbuild*' -o -name "*.mk" \) \
--print0 | xargs -0 grep --color -n "$@"
-
-
-
-
-masahiro@zoe:~/ref/linux(master)$ kgrep -A5 TSL2772
-./drivers/iio/light/Kconfig:564:config TSL2772
-./drivers/iio/light/Kconfig-565- tristate "TAOS TSL/TMD2x71 and
-TSL/TMD2x72 Family of light and proximity sensors"
-./drivers/iio/light/Kconfig-566- depends on I2C
-./drivers/iio/light/Kconfig-567- help
-./drivers/iio/light/Kconfig-568-   Support for: tsl2571, tsl2671,
-tmd2671, tsl2771, tmd2771, tsl2572, tsl2672,
-./drivers/iio/light/Kconfig-569-   tmd2672, tsl2772, tmd2772 devices.
-
-masahiro@zoe:~/ref/linux(master)$ mgrep efivarfs.o
-./fs/efivarfs/Makefile:6:obj-$(CONFIG_EFIVAR_FS) +=3D efivarfs.o
-./fs/efivarfs/Makefile:8:efivarfs-objs :=3D inode.o file.o super.o vars.o
-
-
-
-That's my local way to satisfy my demand.
-I do not intend to force my way or merge it in the upstream.
-
-
-
-
-
-
-
-
-
-
->
-> diff --git a/scripts/kconfig/lookup.sh b/scripts/kconfig/lookup.sh
-> new file mode 100755
-> index 000000000000..d1ff52b23835
-> --- /dev/null
-> +++ b/scripts/kconfig/lookup.sh
-> @@ -0,0 +1,77 @@
-> +#!/usr/bin/env bash
-> +# SPDX-License-Identifier: GPL-2.0-only
-> +#
-> +# Copyright (C) 2023 Red Hat, Inc. All Rights Reserved.
-> +# Written by Brian Masney <bmasney@redhat.com>
-> +#
-> +# This script takes as input one or more Kconfig symbols and outputs the=
- full
-> +# entry from the Kconfig file. It can be invoked by reading a list of sy=
-mbol
-> +# names from either stdin or as command line arguments. Example output:
-> +#
-> +#   x1:~/src/linux$ ./scripts/kconfig/lookup.sh TSL2772 SOUND
-> +#   # drivers/iio/light/Kconfig
-> +#   config TSL2772
-> +#     tristate "TAOS TSL/TMD2x71 and TSL/TMD2x72 Family of light and pro=
-ximity sensors"
-> +#     depends on I2C
-> +#     help
-> +#       Support for: tsl2571, tsl2671, tmd2671, tsl2771, tmd2771, tsl257=
-2, tsl2672,
-> +#       tmd2672, tsl2772, tmd2772 devices.
-> +#       Provides iio_events and direct access via sysfs.
-> +#
-> +#   # arch/um/drivers/Kconfig
-> +#   config SOUND
-> +#     tristate
-> +#     default UML_SOUND
-> +#
-> +#   # sound/Kconfig
-> +#   menuconfig SOUND
-> +#     tristate "Sound card support"
-> +#     depends on HAS_IOMEM
-> +#     help
-> +#       If you have a sound card in your computer, i.e. if it can say mo=
-re
-> +#       than an occasional beep, say Y.
-> +
-> +
-> +process_kconfig()
-> +{
-> +       KCONFIG=3D"${1/CONFIG_/}"
-> +
-> +       FOUND=3D0
-> +       for KCONFIG_FILE in $(git grep -E "^(config|menuconfig) ${KCONFIG=
-}$" | \
-> +                             awk -F: '{print $1}') ; do
-> +               echo "# ${KCONFIG_FILE}"
-> +               awk "/^(config|menuconfig) ${KCONFIG}$/{ m=3D1; print; ne=
-xt; } \
-> +                    /^(choice|comment|config|end|if|menuconfig|source)/ =
-{ m=3D0; } m" \
-> +                   "${KCONFIG_FILE}"
-> +               FOUND=3D1
-> +       done
-> +
-> +       if [[ "${FOUND}" =3D "0" ]] ; then
-> +               echo "Skipping ${KCONFIG} since Kconfig symbol is not fou=
-nd" >&2
-> +               return 1
-> +       fi
-> +
-> +}
-> +
-> +# Run this script from the toplevel kernel source directory.
-> +SCRIPT_PATH=3D$(readlink -f "$0")
-> +cd "$(dirname "${SCRIPT_PATH}")/../.." || exit 1
-> +
-> +RET=3D0
-> +if [[ $# =3D=3D 0 ]] ; then
-> +       # Read Kconfig names from stdin
-> +       while read -r KCONFIG ; do
-> +               if ! process_kconfig "${KCONFIG}" ; then
-> +                       RET=3D1
-> +               fi
-> +       done
-> +else
-> +       # Read Kconfig names from the command line arguments
-> +       for NUM in $(seq 1 "$#") ; do
-> +               if ! process_kconfig "${!NUM}" ; then
-> +                       RET=3D1
-> +               fi
-> +       done
-> +fi
-> +
-> +exit "${RET}"
-> --
-> 2.41.0
->
-
-
---
-Best Regards
-
-Masahiro Yamada
