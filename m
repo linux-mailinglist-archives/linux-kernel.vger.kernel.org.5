@@ -2,276 +2,393 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D99876E355
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 10:40:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8417976E34F
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 10:39:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234446AbjHCIkZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Aug 2023 04:40:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59196 "EHLO
+        id S229446AbjHCIjq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Aug 2023 04:39:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59010 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234372AbjHCIkI (ORCPT
+        with ESMTP id S234648AbjHCIj0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Aug 2023 04:40:08 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A7532D69
-        for <linux-kernel@vger.kernel.org>; Thu,  3 Aug 2023 01:39:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1691051975; x=1722587975;
-  h=message-id:date:subject:to:cc:references:from:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=mOyeXUV0blgcbrDtyOItVlDiAOyW6a5YD1uTPB7bdNg=;
-  b=j7xeKxZRWepRTV/JhduujEqcH9sPujh8yzmWCtAshm940PplpbJaaiNZ
-   TbJUIpkILPDsjrVRqtWdCpot+Q+w9q1TaDc1Ir4p5ByAahcZvU4cfYJkT
-   xw49mxnks1xijbN8Q9CKaL0hJkWDcHfmN4AvsYhOe41H7rbeSOmFDaAVr
-   whmaq7BfxYYW33mvqyEZ54fto5hI+OJ+gCBTkFiBKcJHaPeVc+FqLwasj
-   8baPFN79fSJE8nQCkxWHcc6POQgmZg9e7XejE1RledemWIVXxHuYhYmRu
-   bYuqKP03owRmABKxsVsJIwiKoJr2Gv1lLvP1AIUNW52wRiDtZFskAA3fU
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10790"; a="368713414"
-X-IronPort-AV: E=Sophos;i="6.01,251,1684825200"; 
-   d="scan'208";a="368713414"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Aug 2023 01:39:34 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.01,202,1684825200"; 
-   d="scan'208";a="872844459"
-Received: from fmsmsx603.amr.corp.intel.com ([10.18.126.83])
-  by fmsmga001.fm.intel.com with ESMTP; 03 Aug 2023 01:39:36 -0700
-Received: from fmsmsx603.amr.corp.intel.com (10.18.126.83) by
- fmsmsx603.amr.corp.intel.com (10.18.126.83) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.27; Thu, 3 Aug 2023 01:39:34 -0700
-Received: from fmsedg601.ED.cps.intel.com (10.1.192.135) by
- fmsmsx603.amr.corp.intel.com (10.18.126.83) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.27 via Frontend Transport; Thu, 3 Aug 2023 01:39:34 -0700
-Received: from NAM11-CO1-obe.outbound.protection.outlook.com (104.47.56.171)
- by edgegateway.intel.com (192.55.55.70) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.27; Thu, 3 Aug 2023 01:39:33 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=j1hasWidc+Ob9vCTyfeIw8vUwyFnWgYxKMlu6tZU1z4LkHH+UjeknUY1btgq/JwDAkM5emfgQX1Hk0cPZO2EKplMbhaY92epsKW4bTbcdcNuvFBN7ZhVwmsI02XS/lJjVo23k5VJDEdOlSSnNR1CaLidwo2GiO+0W6iTMgthFsd+s0TC3H8kZPLzLlONUYqwlURi5OwUWtqV5zy5qj6ZwX0W/el4nS9gmmEILvz84LqRwrXco70ZjOHDPhVSEYWt/DZpuPrBNYfnFLO2ext/LOs9Q2GUHP02cjPUciAuVt/8kEcGkl/QcovU5mG7XMXP+tDy0cePtnZm2hVI/Krzgw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=0rYPJrBuM4cbcJaXx7JUOQNGiBHAG+RUQ1kV0J08sms=;
- b=QH9XX0ggtQcgMpUFnBEKlJ1ZN0kpd7cFzsgJhze89aXDOxCWgVYQEa+boaL3/k/Vi4UdXj2DqhJcIPUVrJkVQ8l27rQvzXFwc2SbakIcEwQ4Zm9MFxZ+gfZTcNXed3dgTkakquMAuUH24KKmTelGe5IeDANPFsIY+8zfN5fmeOIZIoCFTTDHao9AOPNaPPISGjzpJQiXS+cGGOsZ/tXsm75cDr50j5rs7M8MYwYID5TyEB9VHu7nlG42fsJQFxd/kiiulpwSj7lCZrkqyn0q8D9GTjMx4yNmK+qem/UOD30+1aWqKQhn/RYInP2eA0GFf8lpPWlEumrgPaTH+80rWw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from CO1PR11MB4820.namprd11.prod.outlook.com (2603:10b6:303:6f::8)
- by IA1PR11MB6172.namprd11.prod.outlook.com (2603:10b6:208:3e8::5) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6631.47; Thu, 3 Aug
- 2023 08:39:32 +0000
-Received: from CO1PR11MB4820.namprd11.prod.outlook.com
- ([fe80::221b:d422:710b:c9e6]) by CO1PR11MB4820.namprd11.prod.outlook.com
- ([fe80::221b:d422:710b:c9e6%3]) with mapi id 15.20.6631.046; Thu, 3 Aug 2023
- 08:39:31 +0000
-Message-ID: <2d947a72-c295-e4c5-4176-4c59cc250e39@intel.com>
-Date:   Thu, 3 Aug 2023 16:37:56 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Firefox/102.0 Thunderbird/102.11.0
-Subject: Re: [PATCH v4 2/5] mm: LARGE_ANON_FOLIO for improved performance
-Content-Language: en-US
-To:     Ryan Roberts <ryan.roberts@arm.com>, Yu Zhao <yuzhao@google.com>
-CC:     Andrew Morton <akpm@linux-foundation.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        David Hildenbrand <david@redhat.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Yang Shi <shy828301@gmail.com>,
-        "Huang, Ying" <ying.huang@intel.com>, Zi Yan <ziy@nvidia.com>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Itaru Kitayama <itaru.kitayama@gmail.com>,
-        <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>
-References: <20230726095146.2826796-1-ryan.roberts@arm.com>
- <20230726095146.2826796-3-ryan.roberts@arm.com>
- <CAOUHufackQzy+yXOzaej+G6DNYK-k9GAUHAK6Vq79BFHr7KwAQ@mail.gmail.com>
- <CAOUHufZ70cMR=hnMW0_J9BeWRPwXVUDoeRhES+wq19r1SioGuA@mail.gmail.com>
- <8c0710e0-a75a-b315-dae1-dd93092e4bd6@arm.com>
- <4ae53b2a-e069-f579-428d-ac6f744cd19a@intel.com>
- <49142e18-fd4e-6487-113a-3112b1c17dbe@arm.com>
-From:   Yin Fengwei <fengwei.yin@intel.com>
-In-Reply-To: <49142e18-fd4e-6487-113a-3112b1c17dbe@arm.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: SI1PR02CA0059.apcprd02.prod.outlook.com
- (2603:1096:4:1f5::19) To CO1PR11MB4820.namprd11.prod.outlook.com
- (2603:10b6:303:6f::8)
+        Thu, 3 Aug 2023 04:39:26 -0400
+Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1FC9A422A
+        for <linux-kernel@vger.kernel.org>; Thu,  3 Aug 2023 01:38:03 -0700 (PDT)
+Received: by mail-ej1-x62a.google.com with SMTP id a640c23a62f3a-98273ae42d0so21205366b.0
+        for <linux-kernel@vger.kernel.org>; Thu, 03 Aug 2023 01:38:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ffwll.ch; s=google; t=1691051881; x=1691656681;
+        h=in-reply-to:content-disposition:mime-version:references
+         :mail-followup-to:message-id:subject:cc:to:from:date:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=YLeBA2gvCKSwrQ2IvmVGA7dsAuidJbK+oOtl2KRNGpE=;
+        b=dkoz6pqa4E8bxR4RkItrXILd3Y/VJzIvTG++n03jk/d8c59UylipU/Ba3IwteUXleg
+         DnpklusI8Og2PfgPLyG6IY//WsWP/Fl3CKJ8K91058WfHk5snuYIzZLwBjcT1MPiQ5gs
+         GQi6UsHsMfrjgwhiHG7GBTtxJRlCmOAfdTMGE=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691051881; x=1691656681;
+        h=in-reply-to:content-disposition:mime-version:references
+         :mail-followup-to:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=YLeBA2gvCKSwrQ2IvmVGA7dsAuidJbK+oOtl2KRNGpE=;
+        b=Lym12kRHFr2NfbD5HiNrso9lJ2tqANIoQt4wglyQYwNw9HX1voNGI3CcZN2nqBsyeD
+         mK+59N8oJeWalZrhDiMZl1QYZ4Hnsip9HEzxJF/16CJidQdfKbNprA/fzGjVkksNfEv0
+         aodNOzu8p/dOfI+bjZlJxSodOCKK4NfGTdx2DIj5+tr7ixQkma7FUU014C03pCJ4PwLe
+         gXp0IUVkiWR3RxnMY0O6Ck2G15JXT9ju4sENh1czwI89aIX/rVJZfPqB71eRf5vINf0N
+         /BoVXRNL2C6mnYVqRKC1N5+f20l+JmTqccJcgx5Lp3Ia/2Y9T7wi48yW5hDLNE5Ok4YR
+         H3YQ==
+X-Gm-Message-State: ABy/qLbmXbrZvv+zPFyGZ2AMvCqXE0ugOJvt56yBxSuBdMkxA01IKm84
+        8ciYvbF7OYAogF1COkf6tgITmw==
+X-Google-Smtp-Source: APBJJlEPTLJ8mnYKZG5mALpz1XgrinUrw5SQRSvDFIWcwmGgjU0tebOBnTwaHBT9+oxIBjM2QZQkWA==
+X-Received: by 2002:a17:906:112:b0:99b:c845:7917 with SMTP id 18-20020a170906011200b0099bc8457917mr13076136eje.4.1691051881488;
+        Thu, 03 Aug 2023 01:38:01 -0700 (PDT)
+Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
+        by smtp.gmail.com with ESMTPSA id y9-20020a170906470900b0099bc8db97bcsm10143956ejq.131.2023.08.03.01.38.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 03 Aug 2023 01:38:00 -0700 (PDT)
+Date:   Thu, 3 Aug 2023 10:37:58 +0200
+From:   Daniel Vetter <daniel@ffwll.ch>
+To:     Rob Clark <robdclark@gmail.com>
+Cc:     dri-devel@lists.freedesktop.org, freedreno@lists.freedesktop.org,
+        linux-arm-msm@vger.kernel.org, Rob Clark <robdclark@chromium.org>,
+        Abhinav Kumar <quic_abhinavk@quicinc.com>,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        Sean Paul <sean@poorly.run>,
+        Marijn Suijten <marijn.suijten@somainline.org>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 4/4] drm/msm: Remove vma use tracking
+Message-ID: <ZMtnZgpv4TQtYybA@phenom.ffwll.local>
+Mail-Followup-To: Rob Clark <robdclark@gmail.com>,
+        dri-devel@lists.freedesktop.org, freedreno@lists.freedesktop.org,
+        linux-arm-msm@vger.kernel.org, Rob Clark <robdclark@chromium.org>,
+        Abhinav Kumar <quic_abhinavk@quicinc.com>,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        Sean Paul <sean@poorly.run>,
+        Marijn Suijten <marijn.suijten@somainline.org>,
+        David Airlie <airlied@gmail.com>,
+        open list <linux-kernel@vger.kernel.org>
+References: <20230802222158.11838-1-robdclark@gmail.com>
+ <20230802222158.11838-5-robdclark@gmail.com>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CO1PR11MB4820:EE_|IA1PR11MB6172:EE_
-X-MS-Office365-Filtering-Correlation-Id: d8725058-296b-4b5e-0ec6-08db93fd2878
-X-LD-Processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: c28u5H8PD2FZtFh7PriFsKo59WRA5m8YIO5sZsMdaslIyPm0InXTvUWU2hEmEZ5SH0EQagM1E573ldqDMuWxpZpFkPuWkxOBzzFF+APQS3SaQ4+mMBweppOJJ6KhOQ+fI7YiIXQfs2P4dlRVbTiN05H6sTidg9PoDdV+3A31yeGV4uhKH3xHGI7HUcZ553ujG5xeQ+ukXG/SnsChb4z62JG4foxRxf2exl9MAv4AcnGM9TMRphexSTDY/si58mKxQRaoZMJwbC5Zjhfr7GHCSzvwOxrklRrKCzrKr0NldKtfjTcrHB7+H803oM/n/myQoLnPG+fUTBn9k2aRGLFIoDi1yCFaIEbgT9wWyltlYrmbxzK9JrawnJvemEq5xQjZ0rNdDVwNNJheDnv6q0TsoZD6wsr1f7C3zExOkMdwqF6ULnrO6Ot2n96cU+nO6v4ick9Q4of4WRZ7Fl/UL5jRdVmdKwfMSxgpsu2dHsawAfQdoAGd7/YpV3PLgKNuJp097JJL2YOzo+474wF9TKKM/NjkRzVJadfcNDLtBvDQprKYo0VG6uTkX2Aa2khPyYsLxk2tqh8dC/iL5H7CZXNuABeVY6ZSxGD7AkX5IvMrr1fD9CwWBNMk5fWDv56AZQoGu09xUBmUWPguKEDZ4/SIrA==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CO1PR11MB4820.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(346002)(39860400002)(366004)(136003)(396003)(376002)(451199021)(86362001)(36756003)(31696002)(31686004)(54906003)(478600001)(110136005)(38100700002)(82960400001)(2616005)(6506007)(186003)(26005)(83380400001)(53546011)(8676002)(8936002)(6666004)(41300700001)(6512007)(6486002)(316002)(66476007)(66556008)(5660300002)(4326008)(7416002)(66946007)(2906002)(45980500001)(43740500002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?NTVyQzZ3dXFmTkE3NXc4RXBPa1hpQzBrbGg3TEJKT1VreERwRld3bVhHZ3BR?=
- =?utf-8?B?bWtaRlNzSFNjNkkyRVNnY0tudzRKU1VqbEVCZ2I2cjR2bzRqZEZkVTVQMzVG?=
- =?utf-8?B?UXdmc0ZmZnJKaks5c2pudnVlTU5yU2xWMXMzc3hhbUM1Uy9uNTVQWm1mb2I5?=
- =?utf-8?B?OW94RXVHTGlDV0hscTZUdXlWK04yL1JHbU0wKzM4eFBGVWFzZDh2a3RJemFH?=
- =?utf-8?B?QjNheVlyQlVJSU9DVEpUcjB4eWdhU093SDM1Q3B5Z05IdWcwcDA5dFI4ODZP?=
- =?utf-8?B?d1hCaFJaU28yK2Z6RTI2d0RVeVk0SDB3RVZrNjdMRHZUendxdHc2TjNXUkpn?=
- =?utf-8?B?NWZHallleEp6NjNTMlQ0RzB2SWdnRGhpTGFCNzZFMVZTVXR1dU53VTVKMDJG?=
- =?utf-8?B?Mys5N0lUbU95NFVXTVhzTWgrODBtbU4xR2RMck1nU1QrN0N1OWwvTitDdHpV?=
- =?utf-8?B?ZVBtNmQ5NTFaZUxzZVlvVXNkWXpnaHhTb1FIRmRyUkRrVnNvNVJGVHAvMng0?=
- =?utf-8?B?OGw4Q3FrbVlTZ2oxd1VqVzV2WlBkaVk5YTUrMzBDN21GZWZXaUlsUS96b205?=
- =?utf-8?B?OG9JTTFZS0FCbjhZRUM3Zjc2dXhyaHQxZE81Z3hjSjUzS3lhRkU4aktzd21F?=
- =?utf-8?B?bkpxMjloSkpYbUpFMHJYM2srYVlUVGZMYVBhc3ZWdnpuL1V1Mkw5OXZJZUNi?=
- =?utf-8?B?NDVJVjd0ZkwrQTlYNFJnTUorUkhIa3pNS0FTTktSU1ZRTklBNHQ5QVZWNlZ4?=
- =?utf-8?B?QkVaUExMZXczcnJjUXhhbXh5TVdZcFpyZkNFanAxVEx5K3hjMTFpY004c1ZE?=
- =?utf-8?B?eEtHUmxXRjB4dCsybjIrWjBiQTN6R3Fucld4VmVOTU9VWnlZTmduTXlQcDF1?=
- =?utf-8?B?V2Y5d3VFdkZGbXBoYVI1TWV4YmFpZUZTQlNOWk9UN2Y3ei9aZTJmQ2VScUEw?=
- =?utf-8?B?U3BhWHljdXZCRFFJSWpEYXl2a2JFNm5BVU1nbkpSRHU3VU9WM3BkbW5nK0dD?=
- =?utf-8?B?YXpoODNEdEVEbkk3dlNaY1FoUm53ZzliNE5VWkZqQW0wNVdOZDAvOUNKVEdp?=
- =?utf-8?B?VFcyWm5WNDhlMHg3cHRIRlpxT3hoY2RPUnhNdm9uVDZUQ0JiK201MnlqcXo4?=
- =?utf-8?B?ZW5wZmYxN1JPL2taRFNxYmlGdklTNkNqNGFDUFFGTVJvMzFzZXJPWFUxZlNV?=
- =?utf-8?B?TW10Z1ozNnJSK0ZUWnBaK0J2cUlxeG1KbnRGOHQ0TzdIVXBrNEF3aXQyMEli?=
- =?utf-8?B?dnlrOUJzWTZOZFRNbHpVeHBESHkzVWp2NDZuSEEzUmtmOFJyOU54RFlXNUpn?=
- =?utf-8?B?WVZZTnRXMzd2N0I5T2VDdVFnMnRWeWQ5MWtqNitvQ2ZqZmprMzZMSlVSaGtX?=
- =?utf-8?B?ajRvaGxCb04wNUcxTEVINWp3cUhlVS9WdEptS05kMTBBOGYzakRqSG5FTEht?=
- =?utf-8?B?Zy9rdmNNSk9VNEN4UEZnT2R2Wk13MGxNdXpEV2doVm1vYlFTWDMyWFB6bnZh?=
- =?utf-8?B?SC9WeXRWNldUbEtDYy9oemsrdXlyelVWNksra1JJRmJwMWRscmtnNzZtWkEx?=
- =?utf-8?B?N3VsaFZsTWpGY01TbVlaME9hSzRITTVmMU1iSE5UMUZLS0FqL3hYeTdRMUNh?=
- =?utf-8?B?S2c1aXR5czVNaFdNUW9DeithaHZKbjd4T21Gcm1lTmQ2ZVJ4dmVPenUrYitE?=
- =?utf-8?B?ZnlmQSsrTXl6Z3kyckJ5OW9NcXlHeFpvRnN2MWg3UG1sekxMZmV1TDVlTGR1?=
- =?utf-8?B?Z0R5cmMrRTRFdVgveGQ2b0FBVEFHVUVWMDNnMm0yd1RFRWxXS2hzUTdHanRu?=
- =?utf-8?B?UmxpTHVVU2dYRitJTVRlWWlGc2F5S3phR1lFM3VIbXNvZTVrS0dmK2F6SnNP?=
- =?utf-8?B?bDVUMHJIWUhlTlFoYlllRGZkY1d1d212VmlGS3UwMkNSQm1LdjhwTWMrSkVD?=
- =?utf-8?B?MFZmeDg4a0FPQ2hNT01CSHhyQkRQekVFa0ZmK3l5Q3V0dUhBQ25HdmYxU3lq?=
- =?utf-8?B?ZTNZNkFhREFsZEphNDZkd3ZnNUpFRmkrUVNoQTJHSlJIa2RicWxwUW1seTh6?=
- =?utf-8?B?L0l0cDdHTWNyN3h4c3JsU2hRQ3ZlbDNOb3g3Uml6aUhMRlk1NFk5bWp2YXZu?=
- =?utf-8?B?RWpOSWtvSEtBRFZ6T1VxcEtobTdWWVNjUjY3a21UVGdncFJabmRmRlVyTWVS?=
- =?utf-8?B?RUE9PQ==?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: d8725058-296b-4b5e-0ec6-08db93fd2878
-X-MS-Exchange-CrossTenant-AuthSource: CO1PR11MB4820.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 03 Aug 2023 08:39:31.9072
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: BbbNSw3XmykUIVVAgNhZ10fdy5KFMIzyvVmMKhyhUWYF4osMultLtwbSD5AnuM+sAqBQjFtVKt4v5YK1mtFZRA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA1PR11MB6172
-X-OriginatorOrg: intel.com
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230802222158.11838-5-robdclark@gmail.com>
+X-Operating-System: Linux phenom 6.3.0-2-amd64 
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Aug 02, 2023 at 03:21:52PM -0700, Rob Clark wrote:
+> From: Rob Clark <robdclark@chromium.org>
+> 
+> This was not strictly necessary, as page unpinning (ie. shrinker) only
+> cares about the resv.  It did give us some extra sanity checking for
+> userspace controlled iova, and was useful to catch issues on kernel and
+> userspace side when enabling userspace iova.  But if userspace screws
+> this up, it just corrupts it's own gpu buffers and/or gets iova faults.
+> So we can just let userspace shoot it's own foot and drop the extra per-
+> buffer SUBMIT overhead.
+> 
+> Signed-off-by: Rob Clark <robdclark@chromium.org>
 
+I did check a few things (like that the gem lru helpers have all the
+needed lockdep_assert_held) and I think aside from the optimization this
+is a nice semantic cleanup. Since iirc we've had a locking inversion
+discussion and the vma tracking here came up as a culprit. On the series:
 
-On 8/3/23 16:21, Ryan Roberts wrote:
-> On 03/08/2023 09:05, Yin Fengwei wrote:
-> 
-> ...
-> 
->>> I've captured run time and peak memory usage, and taken the mean. The stdev for
->>> the peak memory usage is big-ish, but I'm confident this still captures the
->>> central tendancy well:
->>>
->>> | MAX_ORDER_UNHINTED |   real-time |   kern-time |   user-time | peak memory |
->>> |:-------------------|------------:|------------:|------------:|:------------|
->>> | 4k                 |        0.0% |        0.0% |        0.0% |        0.0% |
->>> | 16k                |       -3.6% |      -26.5% |       -0.5% |       -0.1% |
->>> | 32k                |       -4.8% |      -37.4% |       -0.6% |       -0.1% |
->>> | 64k                |       -5.7% |      -42.0% |       -0.6% |       -1.1% |
->>> | 128k               |       -5.6% |      -42.1% |       -0.7% |        1.4% |
->>> | 256k               |       -4.9% |      -41.9% |       -0.4% |        1.9% |
->>
->> Here is my test result:
->>
->> 		real		user		sys
->> hink-4k:	 0%		0%		0%
->> hink-16K:	-3%		0.1%		-18.3%
->> hink-32K:	-4%		0.2%		-27.2%
->> hink-64K:	-4%		0.5%		-31.0%
->> hink-128K:	-4%		0.9%		-33.7%
->> hink-256K:	-5%		1%		-34.6%
->>
->>
->> I used command: 
->> /usr/bin/time -f "\t%E real,\t%U user,\t%S sys" make -skj96 allmodconfig all
->> to build kernel and collect the real time/user time/kernel time.
->> /sys/kernel/mm/transparent_hugepage/enabled is "madvise".
->> Let me know if you have any question about the test.
-> 
-> Thanks for doing this! I have a couple of questions:
-> 
->  - how many times did you run each test?
-     Three times for each ANON_FOLIO_MAX_ORDER_UNHINTED. The stddev is quite
-     small like less than %1.
-> 
->  - how did you configure the large page size? (I sent an email out yesterday
->    saying that I was doing it wrong from my tests, so the 128k and 256k results
->    for my test set are not valid.
-     I changed the ANON_FOLIO_MAX_ORDER_UNHINTED definition manually every time.
+Acked-by: Daniel Vetter <daniel.vetter@ffwll.ch>
 
+> ---
+>  drivers/gpu/drm/msm/msm_gem.c        |  9 +---
+>  drivers/gpu/drm/msm/msm_gem.h        | 12 +----
+>  drivers/gpu/drm/msm/msm_gem_submit.c | 14 ++----
+>  drivers/gpu/drm/msm/msm_gem_vma.c    | 67 +---------------------------
+>  drivers/gpu/drm/msm/msm_ringbuffer.c |  3 +-
+>  5 files changed, 9 insertions(+), 96 deletions(-)
 > 
->  - what does "hink" mean??
-     Sorry for the typo. It should be ANON_FOLIO_MAX_ORDER_UNHINTED.
+> diff --git a/drivers/gpu/drm/msm/msm_gem.c b/drivers/gpu/drm/msm/msm_gem.c
+> index 1c81ff6115ac..ce1ed0f9ad2d 100644
+> --- a/drivers/gpu/drm/msm/msm_gem.c
+> +++ b/drivers/gpu/drm/msm/msm_gem.c
+> @@ -607,9 +607,6 @@ static int clear_iova(struct drm_gem_object *obj,
+>  	if (!vma)
+>  		return 0;
+>  
+> -	if (msm_gem_vma_inuse(vma))
+> -		return -EBUSY;
+> -
+>  	msm_gem_vma_purge(vma);
+>  	msm_gem_vma_close(vma);
+>  	del_vma(vma);
+> @@ -660,7 +657,6 @@ void msm_gem_unpin_iova(struct drm_gem_object *obj,
+>  	msm_gem_lock(obj);
+>  	vma = lookup_vma(obj, aspace);
+>  	if (!GEM_WARN_ON(!vma)) {
+> -		msm_gem_vma_unpin(vma);
+>  		msm_gem_unpin_locked(obj);
+>  	}
+>  	msm_gem_unlock(obj);
+> @@ -991,11 +987,10 @@ void msm_gem_describe(struct drm_gem_object *obj, struct seq_file *m,
+>  			} else {
+>  				name = comm = NULL;
+>  			}
+> -			seq_printf(m, " [%s%s%s: aspace=%p, %08llx,%s,inuse=%d]",
+> +			seq_printf(m, " [%s%s%s: aspace=%p, %08llx,%s]",
+>  				name, comm ? ":" : "", comm ? comm : "",
+>  				vma->aspace, vma->iova,
+> -				vma->mapped ? "mapped" : "unmapped",
+> -				msm_gem_vma_inuse(vma));
+> +				vma->mapped ? "mapped" : "unmapped");
+>  			kfree(comm);
+>  		}
+>  
+> diff --git a/drivers/gpu/drm/msm/msm_gem.h b/drivers/gpu/drm/msm/msm_gem.h
+> index 2ddd896aac68..8ddef5443140 100644
+> --- a/drivers/gpu/drm/msm/msm_gem.h
+> +++ b/drivers/gpu/drm/msm/msm_gem.h
+> @@ -59,24 +59,16 @@ struct msm_fence_context;
+>  
+>  struct msm_gem_vma {
+>  	struct drm_mm_node node;
+> -	spinlock_t lock;
+>  	uint64_t iova;
+>  	struct msm_gem_address_space *aspace;
+>  	struct list_head list;    /* node in msm_gem_object::vmas */
+>  	bool mapped;
+> -	int inuse;
+> -	uint32_t fence_mask;
+> -	uint32_t fence[MSM_GPU_MAX_RINGS];
+> -	struct msm_fence_context *fctx[MSM_GPU_MAX_RINGS];
+>  };
+>  
+>  struct msm_gem_vma *msm_gem_vma_new(struct msm_gem_address_space *aspace);
+>  int msm_gem_vma_init(struct msm_gem_vma *vma, int size,
+>  		u64 range_start, u64 range_end);
+> -bool msm_gem_vma_inuse(struct msm_gem_vma *vma);
+>  void msm_gem_vma_purge(struct msm_gem_vma *vma);
+> -void msm_gem_vma_unpin(struct msm_gem_vma *vma);
+> -void msm_gem_vma_unpin_fenced(struct msm_gem_vma *vma, struct msm_fence_context *fctx);
+>  int msm_gem_vma_map(struct msm_gem_vma *vma, int prot, struct sg_table *sgt, int size);
+>  void msm_gem_vma_close(struct msm_gem_vma *vma);
+>  
+> @@ -298,15 +290,13 @@ struct msm_gem_submit {
+>  /* make sure these don't conflict w/ MSM_SUBMIT_BO_x */
+>  #define BO_VALID	0x8000	/* is current addr in cmdstream correct/valid? */
+>  #define BO_LOCKED	0x4000	/* obj lock is held */
+> -#define BO_OBJ_PINNED	0x2000	/* obj (pages) is pinned and on active list */
+> -#define BO_VMA_PINNED	0x1000	/* vma (virtual address) is pinned */
+> +#define BO_PINNED	0x2000	/* obj (pages) is pinned and on active list */
+>  		uint32_t flags;
+>  		union {
+>  			struct drm_gem_object *obj;
+>  			uint32_t handle;
+>  		};
+>  		uint64_t iova;
+> -		struct msm_gem_vma *vma;
+>  	} bos[];
+>  };
+>  
+> diff --git a/drivers/gpu/drm/msm/msm_gem_submit.c b/drivers/gpu/drm/msm/msm_gem_submit.c
+> index b17561ebd518..5f90cc8e7b7f 100644
+> --- a/drivers/gpu/drm/msm/msm_gem_submit.c
+> +++ b/drivers/gpu/drm/msm/msm_gem_submit.c
+> @@ -261,10 +261,7 @@ static void submit_cleanup_bo(struct msm_gem_submit *submit, int i,
+>  	 */
+>  	submit->bos[i].flags &= ~cleanup_flags;
+>  
+> -	if (flags & BO_VMA_PINNED)
+> -		msm_gem_vma_unpin(submit->bos[i].vma);
+> -
+> -	if (flags & BO_OBJ_PINNED)
+> +	if (flags & BO_PINNED)
+>  		msm_gem_unpin_locked(obj);
+>  
+>  	if (flags & BO_LOCKED)
+> @@ -273,7 +270,7 @@ static void submit_cleanup_bo(struct msm_gem_submit *submit, int i,
+>  
+>  static void submit_unlock_unpin_bo(struct msm_gem_submit *submit, int i)
+>  {
+> -	unsigned cleanup_flags = BO_VMA_PINNED | BO_OBJ_PINNED | BO_LOCKED;
+> +	unsigned cleanup_flags = BO_PINNED | BO_LOCKED;
+>  	submit_cleanup_bo(submit, i, cleanup_flags);
+>  
+>  	if (!(submit->bos[i].flags & BO_VALID))
+> @@ -404,9 +401,6 @@ static int submit_pin_objects(struct msm_gem_submit *submit)
+>  		if (ret)
+>  			break;
+>  
+> -		submit->bos[i].flags |= BO_VMA_PINNED;
+> -		submit->bos[i].vma = vma;
+> -
+>  		if (vma->iova == submit->bos[i].iova) {
+>  			submit->bos[i].flags |= BO_VALID;
+>  		} else {
+> @@ -420,7 +414,7 @@ static int submit_pin_objects(struct msm_gem_submit *submit)
+>  	mutex_lock(&priv->lru.lock);
+>  	for (i = 0; i < submit->nr_bos; i++) {
+>  		msm_gem_pin_obj_locked(submit->bos[i].obj);
+> -		submit->bos[i].flags |= BO_OBJ_PINNED;
+> +		submit->bos[i].flags |= BO_PINNED;
+>  	}
+>  	mutex_unlock(&priv->lru.lock);
+>  
+> @@ -547,7 +541,7 @@ static void submit_cleanup(struct msm_gem_submit *submit, bool error)
+>  	unsigned i;
+>  
+>  	if (error)
+> -		cleanup_flags |= BO_VMA_PINNED | BO_OBJ_PINNED;
+> +		cleanup_flags |= BO_PINNED;
+>  
+>  	for (i = 0; i < submit->nr_bos; i++) {
+>  		struct drm_gem_object *obj = submit->bos[i].obj;
+> diff --git a/drivers/gpu/drm/msm/msm_gem_vma.c b/drivers/gpu/drm/msm/msm_gem_vma.c
+> index 98287ed99960..11e842dda73c 100644
+> --- a/drivers/gpu/drm/msm/msm_gem_vma.c
+> +++ b/drivers/gpu/drm/msm/msm_gem_vma.c
+> @@ -38,41 +38,12 @@ msm_gem_address_space_get(struct msm_gem_address_space *aspace)
+>  	return aspace;
+>  }
+>  
+> -bool msm_gem_vma_inuse(struct msm_gem_vma *vma)
+> -{
+> -	bool ret = true;
+> -
+> -	spin_lock(&vma->lock);
+> -
+> -	if (vma->inuse > 0)
+> -		goto out;
+> -
+> -	while (vma->fence_mask) {
+> -		unsigned idx = ffs(vma->fence_mask) - 1;
+> -
+> -		if (!msm_fence_completed(vma->fctx[idx], vma->fence[idx]))
+> -			goto out;
+> -
+> -		vma->fence_mask &= ~BIT(idx);
+> -	}
+> -
+> -	ret = false;
+> -
+> -out:
+> -	spin_unlock(&vma->lock);
+> -
+> -	return ret;
+> -}
+> -
+>  /* Actually unmap memory for the vma */
+>  void msm_gem_vma_purge(struct msm_gem_vma *vma)
+>  {
+>  	struct msm_gem_address_space *aspace = vma->aspace;
+>  	unsigned size = vma->node.size;
+>  
+> -	/* Print a message if we try to purge a vma in use */
+> -	GEM_WARN_ON(msm_gem_vma_inuse(vma));
+> -
+>  	/* Don't do anything if the memory isn't mapped */
+>  	if (!vma->mapped)
+>  		return;
+> @@ -82,33 +53,6 @@ void msm_gem_vma_purge(struct msm_gem_vma *vma)
+>  	vma->mapped = false;
+>  }
+>  
+> -static void vma_unpin_locked(struct msm_gem_vma *vma)
+> -{
+> -	if (GEM_WARN_ON(!vma->inuse))
+> -		return;
+> -	if (!GEM_WARN_ON(!vma->iova))
+> -		vma->inuse--;
+> -}
+> -
+> -/* Remove reference counts for the mapping */
+> -void msm_gem_vma_unpin(struct msm_gem_vma *vma)
+> -{
+> -	spin_lock(&vma->lock);
+> -	vma_unpin_locked(vma);
+> -	spin_unlock(&vma->lock);
+> -}
+> -
+> -/* Replace pin reference with fence: */
+> -void msm_gem_vma_unpin_fenced(struct msm_gem_vma *vma, struct msm_fence_context *fctx)
+> -{
+> -	spin_lock(&vma->lock);
+> -	vma->fctx[fctx->index] = fctx;
+> -	vma->fence[fctx->index] = fctx->last_fence;
+> -	vma->fence_mask |= BIT(fctx->index);
+> -	vma_unpin_locked(vma);
+> -	spin_unlock(&vma->lock);
+> -}
+> -
+>  /* Map and pin vma: */
+>  int
+>  msm_gem_vma_map(struct msm_gem_vma *vma, int prot,
+> @@ -120,11 +64,6 @@ msm_gem_vma_map(struct msm_gem_vma *vma, int prot,
+>  	if (GEM_WARN_ON(!vma->iova))
+>  		return -EINVAL;
+>  
+> -	/* Increase the usage counter */
+> -	spin_lock(&vma->lock);
+> -	vma->inuse++;
+> -	spin_unlock(&vma->lock);
+> -
+>  	if (vma->mapped)
+>  		return 0;
+>  
+> @@ -146,9 +85,6 @@ msm_gem_vma_map(struct msm_gem_vma *vma, int prot,
+>  
+>  	if (ret) {
+>  		vma->mapped = false;
+> -		spin_lock(&vma->lock);
+> -		vma->inuse--;
+> -		spin_unlock(&vma->lock);
+>  	}
+>  
+>  	return ret;
+> @@ -159,7 +95,7 @@ void msm_gem_vma_close(struct msm_gem_vma *vma)
+>  {
+>  	struct msm_gem_address_space *aspace = vma->aspace;
+>  
+> -	GEM_WARN_ON(msm_gem_vma_inuse(vma) || vma->mapped);
+> +	GEM_WARN_ON(vma->mapped);
+>  
+>  	spin_lock(&aspace->lock);
+>  	if (vma->iova)
+> @@ -179,7 +115,6 @@ struct msm_gem_vma *msm_gem_vma_new(struct msm_gem_address_space *aspace)
+>  	if (!vma)
+>  		return NULL;
+>  
+> -	spin_lock_init(&vma->lock);
+>  	vma->aspace = aspace;
+>  
+>  	return vma;
+> diff --git a/drivers/gpu/drm/msm/msm_ringbuffer.c b/drivers/gpu/drm/msm/msm_ringbuffer.c
+> index 6fa427d2992e..7f5e0a961bba 100644
+> --- a/drivers/gpu/drm/msm/msm_ringbuffer.c
+> +++ b/drivers/gpu/drm/msm/msm_ringbuffer.c
+> @@ -26,9 +26,8 @@ static struct dma_fence *msm_job_run(struct drm_sched_job *job)
+>  	for (i = 0; i < submit->nr_bos; i++) {
+>  		struct drm_gem_object *obj = submit->bos[i].obj;
+>  
+> -		msm_gem_vma_unpin_fenced(submit->bos[i].vma, fctx);
+>  		msm_gem_unpin_active(obj);
+> -		submit->bos[i].flags &= ~(BO_VMA_PINNED | BO_OBJ_PINNED);
+> +		submit->bos[i].flags &= ~BO_PINNED;
+>  	}
+>  
+>  	mutex_unlock(&priv->lru.lock);
+> -- 
+> 2.41.0
+> 
 
-> 
->>
->> I also find one strange behavior with this version. It's related with why
->> I need to set the /sys/kernel/mm/transparent_hugepage/enabled to "madvise".
->> If it's "never", the large folio is disabled either.
->> If it's "always", the THP will be active before large folio. So the system is
->> in the mixed mode. it's not suitable for this test.
-> 
-> We had a discussion around this in the THP meeting yesterday. I'm going to write
-> this up propoerly so we can have proper systematic discussion. The tentative
-> conclusion is that MADV_NOHUGEPAGE must continue to mean "do not fault in more
-> than is absolutely necessary". I would assume we need to extend that thinking to
-> the process-wide and system-wide knobs (as is done in the patch), but we didn't
-> explicitly say so in the meeting.
-There are cases that THP is not appreciated because of the latency or memory
-consumption. For these cases, large folio may fill the gap as less latency and
-memory consumption.
-
-
-So if disabling THP means large folio can't be used, we loose the chance to
-benefit those cases with large folio.
-
-
-Regards
-Yin, Fengwei
-
-> 
-> My intention is that if you have requested THP and your vma is big enough for
-> PMD-size then you get that, else you fallback to large anon folios. And if you
-> have neither opted in nor out, then you get large anon folios.
-> 
-> We talked about the idea of adding a new knob that let's you set the max order,
-> but that needs a lot more thought.
-> 
-> Anyway, as I said, I'll write it up so we can all systematically discuss.
-> 
->>
->> So if it's "never", large folio is disabled. But why "madvise" enables large
->> folio unconditionly? Suppose it's only enabled for the VMA range which user
->> madvise large folio (or THP)?
->>
->> Specific for the hink setting, my understand is that we can't choose it only
->> by this testing. Other workloads may have different behavior with differnt
->> hink setting.
->>
->>
->> Regards
->> Yin, Fengwei
->>
-> 
+-- 
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
