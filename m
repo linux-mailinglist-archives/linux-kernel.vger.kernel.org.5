@@ -2,131 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7BDF576ED26
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 16:49:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 83E9576ED28
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 16:50:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235180AbjHCOta (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Aug 2023 10:49:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60032 "EHLO
+        id S235516AbjHCOt7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Aug 2023 10:49:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60398 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234240AbjHCOt2 (ORCPT
+        with ESMTP id S234240AbjHCOt5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Aug 2023 10:49:28 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 77139173F;
-        Thu,  3 Aug 2023 07:49:27 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 1EA9B113E;
-        Thu,  3 Aug 2023 07:50:10 -0700 (PDT)
-Received: from donnerap.manchester.arm.com (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id D01A83F5A1;
-        Thu,  3 Aug 2023 07:49:23 -0700 (PDT)
-Date:   Thu, 3 Aug 2023 15:49:21 +0100
-From:   Andre Przywara <andre.przywara@arm.com>
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc:     Martin Botka <martin@biqu3d.com>,
-        Konrad Dybcio <konrad.dybcio@somainline.org>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@somainline.org>,
-        Marijn Suijten <marijn.suijten@somainline.org>,
-        Jami Kettunen <jamipkettunen@somainline.org>,
-        Paul Bouchara <paul.bouchara@somainline.org>,
-        Martin Botka <martin.botka@somainline.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Chen-Yu Tsai <wens@csie.org>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Samuel Holland <samuel@sholland.org>,
-        Andrew Lunn <andrew@lunn.ch>, Icenowy Zheng <uwu@icenowy.me>,
-        Ludwig Kormann <ludwig.kormann@ict42.de>,
-        Heiko Stuebner <heiko@sntech.de>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Chris Morgan <macromorgan@hotmail.com>,
-        Jagan Teki <jagan@edgeble.ai>,
-        Maxime Ripard <mripard@kernel.org>, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v1 6/6] arm64: dts: allwinner: h616: Add BigTreeTech Pi
- support
-Message-ID: <20230803154921.0d42fc66@donnerap.manchester.arm.com>
-In-Reply-To: <17dec3fb-1bce-77ff-9917-7f565049954d@linaro.org>
-References: <20230802220309.163804-1-martin@biqu3d.com>
-        <DFE9B2F1349F69AE+20230802220309.163804-7-martin@biqu3d.com>
-        <17dec3fb-1bce-77ff-9917-7f565049954d@linaro.org>
-Organization: ARM
-X-Mailer: Claws Mail 3.18.0 (GTK+ 2.24.32; aarch64-unknown-linux-gnu)
+        Thu, 3 Aug 2023 10:49:57 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 520CCA3
+        for <linux-kernel@vger.kernel.org>; Thu,  3 Aug 2023 07:49:56 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 0C2CC21900;
+        Thu,  3 Aug 2023 14:49:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1691074195; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=zNsMn66aPrXCwyWEFx/U4iJZBEPN4KAvlDUuVw6PgmA=;
+        b=cD3jGFizMcCBYzd8B77P+NaaETqeAT5vbTb6+VnG+9wkzOE8XyREcov67jyuR3ZGzMuKJA
+        1vcevKT2NTuV91JMXUty7jRqTGXmK+Nb98Xj9lzsjeGtV80kIwI/M5F2rbxOUfatt895kN
+        rLTMdVvsGJSTU1wX/dWwh21LiKZWLlk=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id D827A1333C;
+        Thu,  3 Aug 2023 14:49:54 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id 8ovRMZK+y2QmHAAAMHmgww
+        (envelope-from <mhocko@suse.com>); Thu, 03 Aug 2023 14:49:54 +0000
+Date:   Thu, 3 Aug 2023 16:49:54 +0200
+From:   Michal Hocko <mhocko@suse.com>
+To:     Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
+Cc:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Petr Mladek <pmladek@suse.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org,
+        "Luis Claudio R. Goncalves" <lgoncalv@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        John Ogness <john.ogness@linutronix.de>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Waiman Long <longman@redhat.com>, Will Deacon <will@kernel.org>
+Subject: Re: [PATCH v2 1/2] seqlock: Do the lockdep annotation before locking
+ in do_write_seqcount_begin_nested()
+Message-ID: <ZMu+kn/g4idBcycV@dhcp22.suse.cz>
+References: <20230623171232.892937-2-bigeasy@linutronix.de>
+ <d9b7c170-ed0d-5d37-e099-20d233115943@I-love.SAKURA.ne.jp>
+ <20230626081254.XmorFrhs@linutronix.de>
+ <ZJmkPuqpW-wQAyNz@alley>
+ <a1c559b7-335e-5401-d167-301c5b1cd312@I-love.SAKURA.ne.jp>
+ <20230727151029.e_M9bi8N@linutronix.de>
+ <b6ba16ce-4849-d32c-68fe-07a15aaf9d9c@I-love.SAKURA.ne.jp>
+ <649fa1a7-4efd-8cc7-92c7-ac7944adc283@I-love.SAKURA.ne.jp>
+ <ZMfETPzGfpPP7F79@dhcp22.suse.cz>
+ <60d4dc52-9281-9266-4294-b514bd09e6e8@I-love.SAKURA.ne.jp>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <60d4dc52-9281-9266-4294-b514bd09e6e8@I-love.SAKURA.ne.jp>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 3 Aug 2023 16:30:06 +0200
-Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org> wrote:
-
-> On 03/08/2023 00:02, Martin Botka wrote:
-> > The BigTreeTech Pi is an H616 based board based on CB1.
-> > Just in Rpi format board.
+On Thu 03-08-23 22:18:10, Tetsuo Handa wrote:
+> On 2023/07/31 23:25, Michal Hocko wrote:
+> > On Sat 29-07-23 20:05:43, Tetsuo Handa wrote:
+> >> On 2023/07/29 14:31, Tetsuo Handa wrote:
+> >>> On 2023/07/28 0:10, Sebastian Andrzej Siewior wrote:
+> >>>> On 2023-06-28 21:14:16 [+0900], Tetsuo Handa wrote:
+> >>>>>> Anyway, please do not do this change only because of printk().
+> >>>>>> IMHO, the current ordering is more logical and the printk() problem
+> >>>>>> should be solved another way.
+> >>>>>
+> >>>>> Then, since [PATCH 1/2] cannot be applied, [PATCH 2/2] is automatically
+> >>>>> rejected.
+> >>>>
+> >>>> My understanding is that this patch gets applied and your objection will
+> >>>> be noted.
+> >>>
+> >>> My preference is that zonelist_update_seq is not checked by !__GFP_DIRECT_RECLAIM
+> >>> allocations, which is a low-hanging fruit towards GFP_LOCKLESS mentioned at
+> >>> https://lkml.kernel.org/r/ZG3+l4qcCWTPtSMD@dhcp22.suse.cz and
+> >>> https://lkml.kernel.org/r/ZJWWpGZMJIADQvRS@dhcp22.suse.cz .
+> >>>
+> >>> Maybe we can defer checking zonelist_update_seq till retry check like below,
+> >>> for this is really an infrequent event.
+> >>>
+> >>
+> >> An updated version with comments added.
 > > 
-> > It features the same internals as BTT CB1 but adds:
-> >     - Fan port
-> >     - IR receiver
-> >     - 24V DC power supply via terminal plugs
-> >     - USB to CAN module connector (The actual USB to CAN happens on the external module)
-> > 
-> > List of currently working things is the same as BTT CB1.
-> > 
-> > Signed-off-by: Martin Botka <martin@biqu3d.com>
-> > ---
-> >  .../allwinner/sun50i-h616-bigtreetech-pi.dts  | 44 +++++++++++++++++++
-> >  1 file changed, 44 insertions(+)
-> >  create mode 100644 arch/arm64/boot/dts/allwinner/sun50i-h616-bigtreetech-pi.dts
-> > 
-> > diff --git a/arch/arm64/boot/dts/allwinner/sun50i-h616-bigtreetech-pi.dts b/arch/arm64/boot/dts/allwinner/sun50i-h616-bigtreetech-pi.dts
-> > new file mode 100644
-> > index 000000000000..05f39b3606ba
-> > --- /dev/null
-> > +++ b/arch/arm64/boot/dts/allwinner/sun50i-h616-bigtreetech-pi.dts
-> > @@ -0,0 +1,44 @@
-> > +// SPDX-License-Identifier: (GPL-2.0+ or MIT)
-> > +/*
-> > + * Copyright (C) 2023 Martin Botka <martin@biqu3d.com>.
-> > + */
-> > +
-> > +/dts-v1/;
-> > +
-> > +#include "sun50i-h616-bigtreetech-cb1.dtsi"  
+> > Seriously, don't you see how hairy all this is? And for what? Nitpicking
+> > something that doesn't seem to be a real problem in the first place?
 > 
-> If this is using CB1 DTSI, does it mean it uses CB1 SoM? If so, I think
-> this should be reflected in the compatibles.
-> 
-> It's a bit confusing because in previous patch you call it "CB1 board"
-> but then with name "Manta"... So what is CB1?
+> Seriously, can't you find "zonelist_update_seq is not checked by !__GFP_DIRECT_RECLAIM
+> allocations, which is a low-hanging fruit towards GFP_LOCKLESS" !?
 
-That's indeed a bit confusing, but from what I got from the BTT webpage:
-"CB1" is the SoM. M8P (and its M4P/M5P siblings) are carrier boards with
-extra hardware for 3D printer support, taking the CB1 SoM.
-The "Bigtreetech BTT Pi" is embedding the same hardware as the SoM, but
-without actually using the SoM, directly on a PCB, so similar to what we
-have with the Pine64 SoPine and the Pine64 LTS board. It doesn't come with
-the extra goodies of the more 3D printer related boards.
-
-I *think* the "BIGTREETECH PI4B Adapter" is a normal dev board using the
-actual SoM, but with an otherwise identical(?) functionality software wise
-- so it can run with the same DTB. I wonder if we should have a separate
-.dts for this, though, since I believe it's not really identical in every
-aspect - starting with the USB ports, for instance.
-
-But for this board and patch here I think it's fine to include the
-cb1.dtsi, but not using the CB1 name in the compatibles list.
-
-Cheers,
-Andre
+I do not think we have concluded that we want to support GFP_LOCKLESS.
+This might be trivial straightforward now but it imposes some constrains
+for future maintainability. So far we haven't heard about many usecases
+where this would be needed and a single one is not sufficient IMHO.
+-- 
+Michal Hocko
+SUSE Labs
