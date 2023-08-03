@@ -2,55 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C59AB76EEDA
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 17:59:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A849676EEDF
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 17:59:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237214AbjHCP7S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Aug 2023 11:59:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42066 "EHLO
+        id S237279AbjHCP7V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Aug 2023 11:59:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42064 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232768AbjHCP7R (ORCPT
+        with ESMTP id S233758AbjHCP7R (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 3 Aug 2023 11:59:17 -0400
 Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B676211B;
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B46F11F;
         Thu,  3 Aug 2023 08:59:15 -0700 (PDT)
-Date:   Thu, 03 Aug 2023 15:59:12 -0000
+Date:   Thu, 03 Aug 2023 15:59:13 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1691078353;
+        s=2020; t=1691078354;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=3Z4xD1qwh1zepzOUtE/MTHsMbJqTZfxO85iXeVBf80s=;
-        b=2LIfbwQRNpgb0sQXpdgARcCpd14iim/iwCZMmD+JgYVylDqB2ASPcx/mMzDP1jl3YipXSV
-        96a1N6nGQTCaJsXvuF1xDsxR5TTd/GAgAkwOgva1zlWFsKDb466RBL5fG0pHvHekLgGxC3
-        v9p61SmoOlIzg6ayhp10IVFMiN+XKRX7VSO9coay+qllHiOPpN+QTBrKFhes74hVZbm/ge
-        XhL68e88nQyY+pZ2ShGYsmOHBNsKrVSt6y4DN3iQ5jAxyeYyzdKhyeBC7Pezyy99wLAnMo
-        wu0kZpPsRFDqoF2J8pqxvcmYeQUYqNWg+AzIy7bhQOJ+ap+dNRN0zpkzuL71Eg==
+        bh=8roA7YqrbXNK1Oco/Q8gJvVYSq/5quxwD8UmRyfAEZY=;
+        b=zZDQsMPUMcYDRlea/6iCvit1yAocz2P/2rmrybsgLLDyDPa0ld4EwEk40WS6UOxTqeA0Yt
+        VYBhjZAcOyRjfdKmJJBNfHkOt2yA8L1bJkoRoGFZJDTNtsLZg4r3Br8pDgtimFCsFJ0bp6
+        3tugYW2VtN14iUwEkTUwSopQjS0CxzPeDHdr6XWzHhOc95g0AhGkVmt9KFUQQdk3cfxfIF
+        rQTsUv1wbG7Lpnb6aVU/1TzJLhsWNU/8/oDqJ0lLuUsMRJAi5iaOd0zxC5umnYQVGeov+t
+        h85yR7XKV5pn9K/7U/v+iNJpG+d4BRqJn5V4TshZF3X/cxBA0nAoqGnTnz+uDQ==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1691078353;
+        s=2020e; t=1691078354;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=3Z4xD1qwh1zepzOUtE/MTHsMbJqTZfxO85iXeVBf80s=;
-        b=X0bBKytVVJPTh3uUNJgKmwRNbEUe9mb94OFl1vxwFDE1o1EUPZDHMMgTeLIzBm+BAJlIaG
-        5v9kHiQpt8eHvCAA==
+        bh=8roA7YqrbXNK1Oco/Q8gJvVYSq/5quxwD8UmRyfAEZY=;
+        b=hgiYzWSKGksy1zkLOipRTdnzbTVJpuyvcnZuObi6qy+g3ucJo3Ls6ptXva4SILcJhZYOPg
+        FsppeITN4ObZNaCQ==
 From:   "tip-bot2 for Arnd Bergmann" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/cleanups] x86/qspinlock-paravirt: Fix missing-prototype warning
+Subject: [tip: x86/cleanups] x86/alternative: Add a __alt_reloc_selftest() prototype
 Cc:     Arnd Bergmann <arnd@arndb.de>,
         "Borislav Petkov (AMD)" <bp@alien8.de>, x86@kernel.org,
         linux-kernel@vger.kernel.org
-In-Reply-To: <20230803082619.1369127-8-arnd@kernel.org>
-References: <20230803082619.1369127-8-arnd@kernel.org>
+In-Reply-To: <20230803082619.1369127-6-arnd@kernel.org>
+References: <20230803082619.1369127-6-arnd@kernel.org>
 MIME-Version: 1.0
-Message-ID: <169107835290.28540.5117595767740504105.tip-bot2@tip-bot2>
+Message-ID: <169107835389.28540.5714032870565906912.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2@linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -67,82 +67,39 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the x86/cleanups branch of tip:
 
-Commit-ID:     8874a414f8f706daf1de467cbf2550988ebec09d
-Gitweb:        https://git.kernel.org/tip/8874a414f8f706daf1de467cbf2550988ebec09d
+Commit-ID:     1a3e4b4da39bbf540a379e21869faa74bb19d16f
+Gitweb:        https://git.kernel.org/tip/1a3e4b4da39bbf540a379e21869faa74bb19d16f
 Author:        Arnd Bergmann <arnd@arndb.de>
-AuthorDate:    Thu, 03 Aug 2023 10:26:19 +02:00
+AuthorDate:    Thu, 03 Aug 2023 10:26:17 +02:00
 Committer:     Borislav Petkov (AMD) <bp@alien8.de>
-CommitterDate: Thu, 03 Aug 2023 17:15:05 +02:00
+CommitterDate: Thu, 03 Aug 2023 16:40:50 +02:00
 
-x86/qspinlock-paravirt: Fix missing-prototype warning
+x86/alternative: Add a __alt_reloc_selftest() prototype
 
-__pv_queued_spin_unlock_slowpath() is defined in a header file as
-a global function, and designed to be called from inline asm, but
-there is no prototype visible in the definition:
+The newly introduced selftest function causes a warning when -Wmissing-prototypes
+is enabled:
 
-  kernel/locking/qspinlock_paravirt.h:493:1: error: no previous \
-    prototype for '__pv_queued_spin_unlock_slowpath' [-Werror=missing-prototypes]
+  arch/x86/kernel/alternative.c:1461:32: error: no previous prototype for '__alt_reloc_selftest' [-Werror=missing-prototypes]
 
-Add this to the x86 header that contains the inline asm calling it,
-and ensure this gets included before the definition, rather than
-after it.
+Since it's only used locally, add the prototype directly in front of it.
 
+Fixes: 270a69c4485d ("x86/alternative: Support relocations in alternatives")
 Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 Signed-off-by: Borislav Petkov (AMD) <bp@alien8.de>
-Link: https://lore.kernel.org/r/20230803082619.1369127-8-arnd@kernel.org
+Link: https://lore.kernel.org/r/20230803082619.1369127-6-arnd@kernel.org
 ---
- arch/x86/include/asm/qspinlock_paravirt.h |  2 ++
- kernel/locking/qspinlock_paravirt.h       | 20 ++++++++++----------
- 2 files changed, 12 insertions(+), 10 deletions(-)
+ arch/x86/kernel/alternative.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/arch/x86/include/asm/qspinlock_paravirt.h b/arch/x86/include/asm/qspinlock_paravirt.h
-index 42b17cf..85b6e36 100644
---- a/arch/x86/include/asm/qspinlock_paravirt.h
-+++ b/arch/x86/include/asm/qspinlock_paravirt.h
-@@ -4,6 +4,8 @@
+diff --git a/arch/x86/kernel/alternative.c b/arch/x86/kernel/alternative.c
+index 2dcf3a0..934c23f 100644
+--- a/arch/x86/kernel/alternative.c
++++ b/arch/x86/kernel/alternative.c
+@@ -1531,6 +1531,7 @@ static noinline void __init int3_selftest(void)
  
- #include <asm/ibt.h>
+ static __initdata int __alt_reloc_selftest_addr;
  
-+void __lockfunc __pv_queued_spin_unlock_slowpath(struct qspinlock *lock, u8 locked);
-+
- /*
-  * For x86-64, PV_CALLEE_SAVE_REGS_THUNK() saves and restores 8 64-bit
-  * registers. For i386, however, only 1 32-bit register needs to be saved
-diff --git a/kernel/locking/qspinlock_paravirt.h b/kernel/locking/qspinlock_paravirt.h
-index 6afc249..6a0184e 100644
---- a/kernel/locking/qspinlock_paravirt.h
-+++ b/kernel/locking/qspinlock_paravirt.h
-@@ -486,6 +486,16 @@ gotlock:
- }
- 
- /*
-+ * Include the architecture specific callee-save thunk of the
-+ * __pv_queued_spin_unlock(). This thunk is put together with
-+ * __pv_queued_spin_unlock() to make the callee-save thunk and the real unlock
-+ * function close to each other sharing consecutive instruction cachelines.
-+ * Alternatively, architecture specific version of __pv_queued_spin_unlock()
-+ * can be defined.
-+ */
-+#include <asm/qspinlock_paravirt.h>
-+
-+/*
-  * PV versions of the unlock fastpath and slowpath functions to be used
-  * instead of queued_spin_unlock().
-  */
-@@ -533,16 +543,6 @@ __pv_queued_spin_unlock_slowpath(struct qspinlock *lock, u8 locked)
- 	pv_kick(node->cpu);
- }
- 
--/*
-- * Include the architecture specific callee-save thunk of the
-- * __pv_queued_spin_unlock(). This thunk is put together with
-- * __pv_queued_spin_unlock() to make the callee-save thunk and the real unlock
-- * function close to each other sharing consecutive instruction cachelines.
-- * Alternatively, architecture specific version of __pv_queued_spin_unlock()
-- * can be defined.
-- */
--#include <asm/qspinlock_paravirt.h>
--
- #ifndef __pv_queued_spin_unlock
- __visible __lockfunc void __pv_queued_spin_unlock(struct qspinlock *lock)
++extern void __init __alt_reloc_selftest(void *arg);
+ __visible noinline void __init __alt_reloc_selftest(void *arg)
  {
+ 	WARN_ON(arg != &__alt_reloc_selftest_addr);
