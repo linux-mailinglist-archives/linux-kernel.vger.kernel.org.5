@@ -2,58 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 61A8076ED0C
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 16:46:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F21076ED10
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 16:46:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236144AbjHCOq1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Aug 2023 10:46:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56822 "EHLO
+        id S236112AbjHCOqa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Aug 2023 10:46:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56814 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236007AbjHCOqU (ORCPT
+        with ESMTP id S235572AbjHCOqV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Aug 2023 10:46:20 -0400
+        Thu, 3 Aug 2023 10:46:21 -0400
 Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64C701BFD;
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC43B2D71;
         Thu,  3 Aug 2023 07:46:15 -0700 (PDT)
-Received: from pps.filterd (m0353726.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 373Eg9WA011702;
+Received: from pps.filterd (m0353728.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 373EgABD010920;
         Thu, 3 Aug 2023 14:46:12 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : date : message-id : content-type : content-transfer-encoding :
- mime-version; s=pp1; bh=KSzO+DJi2m7hGqUcW+/j+Cty0iuxk0Q1Nr6NiQLzLnw=;
- b=qBbM49Ti7g+h72vkxtknlVZKC24LUljc33M/vpQiVvpILYXWid0HLriE8LwBtMiS+v7P
- AWK4ddoyz7VyNjXKDbcm6r5YUUwirBKMGPFgVD8r/jHzEZUOMGRmoNcU5ouq+7JLf7uW
- 4Kq+AJ1oRV9wicVHI0+2rNxZXxBNUdLWHcIIbzELMNZK0sp9pl9hlmv+Q4suPCUu7xtm
- klHDVnpIVEV+FKpsSK8lmvRdug0Ga8sie4wGQ1eIhIwVBDiYkHRowkuC0C/VQNfL8Et/
- YCCOLOs/z6WqWjZJK0EE7K921hgoiOjcJ5/yuxXn6I/I7ip9DGYmRr/EkTr2yPaLCn6A 9g== 
+ : date : message-id : in-reply-to : references : mime-version :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=YTsznr4HcKqxh6ljKvCLqIYqfoXP9uGFaCk/u+QGN7Q=;
+ b=h2SUrt5A7GB+xn+891Uv8m5UjGmKnXYiMfo5b+V6zOcv6yl7IkC44mODFvheL+9bzonz
+ k5M0ojyAXwv2Jo1oo3YEVYpd3Vau+B9mygtOJHRerrCpW/r+Ldx8WCyOQRRcme1F0QAR
+ CvlDNasGYec7/a0s9vyEhiITMOMDmjEzKFlxW3OijeKkzbDhGPaxRiHQHp1I9i6QgFcP
+ 4l5e+7BnTvd3D8nzdvhm6qmyB4MfHhNb/DKblm5H/BDkZUBIxDFUYlw9LXXZyLHBeCNq
+ YSaZDIG+1uUsF4mWihHs1Yo0UACb62Y8aBmS1LlKYHNfj+fRAar366kUf+E5bWTpCLbI ew== 
 Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3s8e7wr4wh-1
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3s8e7wg5b9-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
         Thu, 03 Aug 2023 14:46:12 +0000
-Received: from m0353726.ppops.net (m0353726.ppops.net [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 373Egc24014493;
+Received: from m0353728.ppops.net (m0353728.ppops.net [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 373EgP1d012104;
         Thu, 3 Aug 2023 14:46:11 GMT
-Received: from ppma22.wdc07v.mail.ibm.com (5c.69.3da9.ip4.static.sl-reverse.com [169.61.105.92])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3s8e7wr4vh-1
+Received: from ppma11.dal12v.mail.ibm.com (db.9e.1632.ip4.static.sl-reverse.com [50.22.158.219])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3s8e7wg5am-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
         Thu, 03 Aug 2023 14:46:11 +0000
-Received: from pps.filterd (ppma22.wdc07v.mail.ibm.com [127.0.0.1])
-        by ppma22.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 373EaOKb017041;
+Received: from pps.filterd (ppma11.dal12v.mail.ibm.com [127.0.0.1])
+        by ppma11.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 373D4oSt014537;
         Thu, 3 Aug 2023 14:46:10 GMT
 Received: from smtprelay06.fra02v.mail.ibm.com ([9.218.2.230])
-        by ppma22.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3s5dfypgg8-1
+        by ppma11.dal12v.mail.ibm.com (PPS) with ESMTPS id 3s5ft1wmnv-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
         Thu, 03 Aug 2023 14:46:10 +0000
 Received: from smtpav01.fra02v.mail.ibm.com (smtpav01.fra02v.mail.ibm.com [10.20.54.100])
-        by smtprelay06.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 373Ek71r23724654
+        by smtprelay06.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 373Ek7gj27263390
         (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
         Thu, 3 Aug 2023 14:46:07 GMT
 Received: from smtpav01.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id EF69C20043;
-        Thu,  3 Aug 2023 14:46:06 +0000 (GMT)
+        by IMSVA (Postfix) with ESMTP id 8246520040;
+        Thu,  3 Aug 2023 14:46:07 +0000 (GMT)
 Received: from smtpav01.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 8410920040;
-        Thu,  3 Aug 2023 14:46:06 +0000 (GMT)
+        by IMSVA (Postfix) with ESMTP id 099212004E;
+        Thu,  3 Aug 2023 14:46:07 +0000 (GMT)
 Received: from dilbert5.boeblingen.de.ibm.com (unknown [9.155.208.153])
         by smtpav01.fra02v.mail.ibm.com (Postfix) with ESMTP;
         Thu,  3 Aug 2023 14:46:06 +0000 (GMT)
@@ -69,25 +70,26 @@ Cc:     Karsten Graul <kgraul@linux.ibm.com>,
         Eric Dumazet <edumazet@google.com>,
         Jakub Kicinski <kuba@kernel.org>, linux-s390@vger.kernel.org,
         netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH net v2 0/2] net/smc: Fix effective buffer size
-Date:   Thu,  3 Aug 2023 16:46:03 +0200
-Message-ID: <20230803144605.477903-1-gbayer@linux.ibm.com>
+Subject: [PATCH net v2 1/2] net/smc: Fix setsockopt and sysctl to specify same buffer size again
+Date:   Thu,  3 Aug 2023 16:46:04 +0200
+Message-ID: <20230803144605.477903-2-gbayer@linux.ibm.com>
 X-Mailer: git-send-email 2.41.0
-Content-Type: text/plain; charset=UTF-8
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: Xkye_Trlwdbr_5uRwckIT_sjtBRWogOM
-X-Proofpoint-ORIG-GUID: h-yGqPYQVqSNj0_F7Qm1Ow16vgQDtoik
-Content-Transfer-Encoding: 8bit
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+In-Reply-To: <20230803144605.477903-1-gbayer@linux.ibm.com>
+References: <20230803144605.477903-1-gbayer@linux.ibm.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: TpLhauTwof7kcbVzBGPnHai6C2EAtSDI
+X-Proofpoint-GUID: LDHSWsjJeGkSVzHJSxEZXjpxfi5z0KKu
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
  definitions=2023-08-03_14,2023-08-03_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 spamscore=0
- impostorscore=0 priorityscore=1501 mlxscore=0 adultscore=0 malwarescore=0
- mlxlogscore=695 bulkscore=0 lowpriorityscore=0 suspectscore=0 phishscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2306200000
- definitions=main-2308030131
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0
+ impostorscore=0 spamscore=0 adultscore=0 priorityscore=1501 bulkscore=0
+ lowpriorityscore=0 phishscore=0 suspectscore=0 mlxscore=0 clxscore=1015
+ mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2306200000 definitions=main-2308030131
 X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
@@ -98,53 +100,228 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi all,
+Commit 0227f058aa29 ("net/smc: Unbind r/w buffer size from clcsock
+and make them tunable") introduced the net.smc.rmem and net.smc.wmem
+sysctls to specify the size of buffers to be used for SMC type
+connections. This created a regression for users that specified the
+buffer size via setsockopt() as the effective buffer size was now
+doubled.
 
-commit 0227f058aa29 ("net/smc: Unbind r/w buffer size from clcsock
-and make them tunable") started to derive the effective buffer size for
-SMC connections inconsistently in case a TCP fallback was used and
-memory consumption of SMC with the default settings was doubled when
-a connection negotiated SMC. That was not what we want.
+Re-introduce the division by 2 in the SMC buffer create code and level
+this out by duplicating the net.smc.[rw]mem values used for initializing
+sk_rcvbuf/sk_sndbuf at socket creation time. This gives users of both
+methods (setsockopt or sysctl) the effective buffer size that they
+expect.
 
-This series consolidates the resulting effective buffer size that is
-used with SMC sockets, which is based on Jan Karcher's effort (see 
-[1]). For all TCP exchanges (in particular in case of a fall back when
-no SMC connection was possible) the values from net.ipv4.tcp_[rw]mem
-are used. If SMC succeeds in establishing a SMC connection, the newly
-introduced values from net.smc.[rw]mem are used.
+Initialize net.smc.[rw]mem from its own constant of 64kB, respectively.
+Internal performance tests show that this value is a good compromise
+between throughput/latency and memory consumption. Also, this decouples
+it from any tuning that was done to net.ipv4.tcp_[rw]mem[1] before the
+module for SMC protocol was loaded. Check that no more than INT_MAX / 2
+is assigned to net.smc.[rw]mem, in order to avoid any overflow condition
+when that is doubled for use in sk_sndbuf or sk_rcvbuf.
 
-net.smc.[rw]mem is initialized to 64kB, respectively. Internal test 
-have show this to be a good compromise between throughput/latency 
-and memory consumption. Also net.smc.[rw]mem is now decoupled completely
-from any tuning through net.ipv4.tcp_[rw]mem.
+While at it, drop the confusing sk_buf_size variable from
+__smc_buf_create and name "compressed" buffer size variables more
+consistently.
 
-If a user chose to tune a socket's receive or send buffer size with
-setsockopt, this tuning is now consistently applied to either fall-back
-TCP or proper SMC connections over the socket.
+Background:
 
-Thanks,
-Gerd 
+Before the commit mentioned above, SMC's buffer allocator in
+__smc_buf_create() always used half of the sockets' sk_rcvbuf/sk_sndbuf
+value as initial value to search for appropriate buffers. If the search
+resorted to using a bigger buffer when all buffers of the specified
+size were busy, the duplicate of the used effective buffer size is
+stored back to sk_rcvbuf/sk_sndbuf.
 
-v1 - v2:
- - In second patch, use sock_net() helper as suggested by Tony and demanded
-   by kernel test robot.
+When available, buffers of exactly the size that a user had specified as
+input to setsockopt() were used, despite setsockopt()'s documentation in
+"man 7 socket" talking of a mandatory duplication:
 
-[1] https://lore.kernel.org/netdev/20221123104907.14624-1-jaka@linux.ibm.com
+[...]
+       SO_SNDBUF
+              Sets  or  gets the maximum socket send buffer in bytes.
+              The kernel doubles this value (to allow space for book‐
+              keeping  overhead)  when it is set using setsockopt(2),
+              and this doubled value is  returned  by  getsockopt(2).
+              The     default     value     is     set     by     the
+              /proc/sys/net/core/wmem_default file  and  the  maximum
+              allowed value is set by the /proc/sys/net/core/wmem_max
+              file.  The minimum (doubled) value for this  option  is
+              2048.
+[...]
 
-
-Gerd Bayer (2):
-  net/smc: Fix setsockopt and sysctl to specify same buffer size again
-  net/smc: Use correct buffer sizes when switching between TCP and SMC
-
- net/smc/af_smc.c     | 77 ++++++++++++++++++++++++++++++--------------
+Fixes: 0227f058aa29 ("net/smc: Unbind r/w buffer size from clcsock and make them tunable")
+Co-developed-by: Jan Karcher <jaka@linux.ibm.com>
+Signed-off-by: Jan Karcher <jaka@linux.ibm.com>
+Signed-off-by: Gerd Bayer <gbayer@linux.ibm.com>
+Reviewed-by: Wenjia Zhang <wenjia@linux.ibm.com>
+Reviewed-by: Tony Lu <tonylu@linux.alibaba.com>
+---
+ net/smc/af_smc.c     |  4 ++--
  net/smc/smc.h        |  2 +-
- net/smc/smc_clc.c    |  4 +--
- net/smc/smc_core.c   | 25 +++++++-------
- net/smc/smc_sysctl.c | 10 ++++--
- 5 files changed, 76 insertions(+), 42 deletions(-)
+ net/smc/smc_clc.c    |  4 ++--
+ net/smc/smc_core.c   | 25 ++++++++++++-------------
+ net/smc/smc_sysctl.c | 10 ++++++++--
+ 5 files changed, 25 insertions(+), 20 deletions(-)
 
-
-base-commit: 5d0c230f1de8c7515b6567d9afba1f196fb4e2f4
+diff --git a/net/smc/af_smc.c b/net/smc/af_smc.c
+index a7f887d91d89..1fcf1e42474a 100644
+--- a/net/smc/af_smc.c
++++ b/net/smc/af_smc.c
+@@ -378,8 +378,8 @@ static struct sock *smc_sock_alloc(struct net *net, struct socket *sock,
+ 	sk->sk_state = SMC_INIT;
+ 	sk->sk_destruct = smc_destruct;
+ 	sk->sk_protocol = protocol;
+-	WRITE_ONCE(sk->sk_sndbuf, READ_ONCE(net->smc.sysctl_wmem));
+-	WRITE_ONCE(sk->sk_rcvbuf, READ_ONCE(net->smc.sysctl_rmem));
++	WRITE_ONCE(sk->sk_sndbuf, 2 * READ_ONCE(net->smc.sysctl_wmem));
++	WRITE_ONCE(sk->sk_rcvbuf, 2 * READ_ONCE(net->smc.sysctl_rmem));
+ 	smc = smc_sk(sk);
+ 	INIT_WORK(&smc->tcp_listen_work, smc_tcp_listen_work);
+ 	INIT_WORK(&smc->connect_work, smc_connect_work);
+diff --git a/net/smc/smc.h b/net/smc/smc.h
+index 2eeea4cdc718..1f2b912c43d1 100644
+--- a/net/smc/smc.h
++++ b/net/smc/smc.h
+@@ -161,7 +161,7 @@ struct smc_connection {
+ 
+ 	struct smc_buf_desc	*sndbuf_desc;	/* send buffer descriptor */
+ 	struct smc_buf_desc	*rmb_desc;	/* RMBE descriptor */
+-	int			rmbe_size_short;/* compressed notation */
++	int                     rmbe_size_comp; /* compressed notation */
+ 	int			rmbe_update_limit;
+ 						/* lower limit for consumer
+ 						 * cursor update
+diff --git a/net/smc/smc_clc.c b/net/smc/smc_clc.c
+index b9b8b07aa702..c90d9e5dda54 100644
+--- a/net/smc/smc_clc.c
++++ b/net/smc/smc_clc.c
+@@ -1007,7 +1007,7 @@ static int smc_clc_send_confirm_accept(struct smc_sock *smc,
+ 		clc->d0.gid =
+ 			conn->lgr->smcd->ops->get_local_gid(conn->lgr->smcd);
+ 		clc->d0.token = conn->rmb_desc->token;
+-		clc->d0.dmbe_size = conn->rmbe_size_short;
++		clc->d0.dmbe_size = conn->rmbe_size_comp;
+ 		clc->d0.dmbe_idx = 0;
+ 		memcpy(&clc->d0.linkid, conn->lgr->id, SMC_LGR_ID_SIZE);
+ 		if (version == SMC_V1) {
+@@ -1050,7 +1050,7 @@ static int smc_clc_send_confirm_accept(struct smc_sock *smc,
+ 			clc->r0.qp_mtu = min(link->path_mtu, link->peer_mtu);
+ 			break;
+ 		}
+-		clc->r0.rmbe_size = conn->rmbe_size_short;
++		clc->r0.rmbe_size = conn->rmbe_size_comp;
+ 		clc->r0.rmb_dma_addr = conn->rmb_desc->is_vm ?
+ 			cpu_to_be64((uintptr_t)conn->rmb_desc->cpu_addr) :
+ 			cpu_to_be64((u64)sg_dma_address
+diff --git a/net/smc/smc_core.c b/net/smc/smc_core.c
+index 3f465faf2b68..6b78075404d7 100644
+--- a/net/smc/smc_core.c
++++ b/net/smc/smc_core.c
+@@ -2309,31 +2309,30 @@ static int __smc_buf_create(struct smc_sock *smc, bool is_smcd, bool is_rmb)
+ 	struct smc_connection *conn = &smc->conn;
+ 	struct smc_link_group *lgr = conn->lgr;
+ 	struct list_head *buf_list;
+-	int bufsize, bufsize_short;
++	int bufsize, bufsize_comp;
+ 	struct rw_semaphore *lock;	/* lock buffer list */
+ 	bool is_dgraded = false;
+-	int sk_buf_size;
+ 
+ 	if (is_rmb)
+ 		/* use socket recv buffer size (w/o overhead) as start value */
+-		sk_buf_size = smc->sk.sk_rcvbuf;
++		bufsize = smc->sk.sk_rcvbuf / 2;
+ 	else
+ 		/* use socket send buffer size (w/o overhead) as start value */
+-		sk_buf_size = smc->sk.sk_sndbuf;
++		bufsize = smc->sk.sk_sndbuf / 2;
+ 
+-	for (bufsize_short = smc_compress_bufsize(sk_buf_size, is_smcd, is_rmb);
+-	     bufsize_short >= 0; bufsize_short--) {
++	for (bufsize_comp = smc_compress_bufsize(bufsize, is_smcd, is_rmb);
++	     bufsize_comp >= 0; bufsize_comp--) {
+ 		if (is_rmb) {
+ 			lock = &lgr->rmbs_lock;
+-			buf_list = &lgr->rmbs[bufsize_short];
++			buf_list = &lgr->rmbs[bufsize_comp];
+ 		} else {
+ 			lock = &lgr->sndbufs_lock;
+-			buf_list = &lgr->sndbufs[bufsize_short];
++			buf_list = &lgr->sndbufs[bufsize_comp];
+ 		}
+-		bufsize = smc_uncompress_bufsize(bufsize_short);
++		bufsize = smc_uncompress_bufsize(bufsize_comp);
+ 
+ 		/* check for reusable slot in the link group */
+-		buf_desc = smc_buf_get_slot(bufsize_short, lock, buf_list);
++		buf_desc = smc_buf_get_slot(bufsize_comp, lock, buf_list);
+ 		if (buf_desc) {
+ 			buf_desc->is_dma_need_sync = 0;
+ 			SMC_STAT_RMB_SIZE(smc, is_smcd, is_rmb, bufsize);
+@@ -2377,8 +2376,8 @@ static int __smc_buf_create(struct smc_sock *smc, bool is_smcd, bool is_rmb)
+ 
+ 	if (is_rmb) {
+ 		conn->rmb_desc = buf_desc;
+-		conn->rmbe_size_short = bufsize_short;
+-		smc->sk.sk_rcvbuf = bufsize;
++		conn->rmbe_size_comp = bufsize_comp;
++		smc->sk.sk_rcvbuf = bufsize * 2;
+ 		atomic_set(&conn->bytes_to_rcv, 0);
+ 		conn->rmbe_update_limit =
+ 			smc_rmb_wnd_update_limit(buf_desc->len);
+@@ -2386,7 +2385,7 @@ static int __smc_buf_create(struct smc_sock *smc, bool is_smcd, bool is_rmb)
+ 			smc_ism_set_conn(conn); /* map RMB/smcd_dev to conn */
+ 	} else {
+ 		conn->sndbuf_desc = buf_desc;
+-		smc->sk.sk_sndbuf = bufsize;
++		smc->sk.sk_sndbuf = bufsize * 2;
+ 		atomic_set(&conn->sndbuf_space, bufsize);
+ 	}
+ 	return 0;
+diff --git a/net/smc/smc_sysctl.c b/net/smc/smc_sysctl.c
+index b6f79fabb9d3..0b2a957ca5f5 100644
+--- a/net/smc/smc_sysctl.c
++++ b/net/smc/smc_sysctl.c
+@@ -21,6 +21,10 @@
+ 
+ static int min_sndbuf = SMC_BUF_MIN_SIZE;
+ static int min_rcvbuf = SMC_BUF_MIN_SIZE;
++static int max_sndbuf = INT_MAX / 2;
++static int max_rcvbuf = INT_MAX / 2;
++static const int net_smc_wmem_init = (64 * 1024);
++static const int net_smc_rmem_init = (64 * 1024);
+ 
+ static struct ctl_table smc_table[] = {
+ 	{
+@@ -53,6 +57,7 @@ static struct ctl_table smc_table[] = {
+ 		.mode		= 0644,
+ 		.proc_handler	= proc_dointvec_minmax,
+ 		.extra1		= &min_sndbuf,
++		.extra2		= &max_sndbuf,
+ 	},
+ 	{
+ 		.procname	= "rmem",
+@@ -61,6 +66,7 @@ static struct ctl_table smc_table[] = {
+ 		.mode		= 0644,
+ 		.proc_handler	= proc_dointvec_minmax,
+ 		.extra1		= &min_rcvbuf,
++		.extra2		= &max_rcvbuf,
+ 	},
+ 	{  }
+ };
+@@ -88,8 +94,8 @@ int __net_init smc_sysctl_net_init(struct net *net)
+ 	net->smc.sysctl_autocorking_size = SMC_AUTOCORKING_DEFAULT_SIZE;
+ 	net->smc.sysctl_smcr_buf_type = SMCR_PHYS_CONT_BUFS;
+ 	net->smc.sysctl_smcr_testlink_time = SMC_LLC_TESTLINK_DEFAULT_TIME;
+-	WRITE_ONCE(net->smc.sysctl_wmem, READ_ONCE(net->ipv4.sysctl_tcp_wmem[1]));
+-	WRITE_ONCE(net->smc.sysctl_rmem, READ_ONCE(net->ipv4.sysctl_tcp_rmem[1]));
++	WRITE_ONCE(net->smc.sysctl_wmem, net_smc_wmem_init);
++	WRITE_ONCE(net->smc.sysctl_rmem, net_smc_rmem_init);
+ 
+ 	return 0;
+ 
 -- 
 2.41.0
 
