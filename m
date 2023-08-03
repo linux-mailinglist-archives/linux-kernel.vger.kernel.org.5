@@ -2,142 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5694D76EC87
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 16:30:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B889876ECC6
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 16:37:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235996AbjHCOaP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Aug 2023 10:30:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43312 "EHLO
+        id S236827AbjHCOho (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Aug 2023 10:37:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45462 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235166AbjHCOaN (ORCPT
+        with ESMTP id S235381AbjHCOhU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Aug 2023 10:30:13 -0400
-Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63ECD1728
-        for <linux-kernel@vger.kernel.org>; Thu,  3 Aug 2023 07:30:11 -0700 (PDT)
-Received: by mail-ed1-x52c.google.com with SMTP id 4fb4d7f45d1cf-522ab301692so1356032a12.2
-        for <linux-kernel@vger.kernel.org>; Thu, 03 Aug 2023 07:30:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1691073010; x=1691677810;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=TLGQIBcmnPlkP1H90L4arPiKiIXchPemEGcuJPAOma0=;
-        b=V+wQrfpbow5/ttxZyUaV1RdKWQBC7AlUZ+3pcXXgdBtzPOqOmhWAJj48MQ2U9Uu1Uh
-         0hnPC98eznmSl92mH0pwquOMr4wm2BVnKGHKU9b6cP2b9g0NzW5jsIZ9WigeqeG5wMpP
-         WAKPsyO7mcI6WXaLmxpP13y2dwywJxIuOQbO7Voz9sPm7KK4bdzTpEhKCamLxREpsZDK
-         u/s1C64p5ogdHE6+0YMBAlD+f1hiY6xh6x+Xg65Erhk9UkBCxZ+pqKQXXIjXy4r9pHOR
-         XC/z3K4SP2DpXMumtmvd5xcVevAlg0cNvG7rQ2ljBVr6wsL9uq222QCYvEBiUnzG3gyA
-         Xx7Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691073010; x=1691677810;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=TLGQIBcmnPlkP1H90L4arPiKiIXchPemEGcuJPAOma0=;
-        b=DSJNdLLbeCzFeAycuOSk0pgMC8H0VU7kE36qZa21sSf+12TX6Qb7BCY+dyPwodvinh
-         rReTdDHh9qVHWdyS8PSpA3Ib0CQSh0TeSQC6QKwIMnpuVFj6c0dh+EJjfyWoSrf10gSv
-         H1ZY28P2k57jrcMiYN3hjQPgZxw6O4pLSJ5nTqg4pS0O5WtF1TSCeiK1r26EcqgvM9qB
-         lEbmpMly38myEm1kEMV8as35gm35DLT036e/4Cq/puqO7RHsIogLrfz1a45Zc9TzDLko
-         oEn5e6OMKYoSpRWfvbJmppHje7kaVpSeS6j8vSDGrnIP4JDlCgxAx02RDC/icyQWDZWw
-         RXYQ==
-X-Gm-Message-State: ABy/qLZdm4bpp+jMCQr1dyxZrJLv3d7hGVo1IlERDuh8fuCWZZjBlbsW
-        X6XhpXrjQx+IUVyifbnnPsEvgw==
-X-Google-Smtp-Source: APBJJlHOlI75QhDtYFAg9HERhBvyV2JLY/tIUjauBt+B1yJGtKwFW58txzygi3y9gEXeh2orqraKGw==
-X-Received: by 2002:aa7:d705:0:b0:521:e502:baf8 with SMTP id t5-20020aa7d705000000b00521e502baf8mr7841254edq.11.1691073009875;
-        Thu, 03 Aug 2023 07:30:09 -0700 (PDT)
-Received: from [192.168.1.20] ([178.197.222.245])
-        by smtp.gmail.com with ESMTPSA id d7-20020a056402078700b005221ce96801sm10344275edy.35.2023.08.03.07.30.07
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 03 Aug 2023 07:30:09 -0700 (PDT)
-Message-ID: <17dec3fb-1bce-77ff-9917-7f565049954d@linaro.org>
-Date:   Thu, 3 Aug 2023 16:30:06 +0200
+        Thu, 3 Aug 2023 10:37:20 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.24])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E81BA5256;
+        Thu,  3 Aug 2023 07:36:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1691073383; x=1722609383;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=5XOAANYi6PhPbrJ+klTCobbNvd+SaqKSvWlM8mBjHuA=;
+  b=jcNrFXIcGGPbGs/XZ/Wthsm8DY8KT7w5UAgREcZGaY6f8505HMNxjrbd
+   nnYN/jsm1wtGnBAIlSIt9D0F7nEtLNMrFUv0CXQcyj8IP9S5G8XoADo9V
+   47bRzyowJMyyT0op6/sBRFgY45tOGvy6lkeCGpiuUzywjSRQDclaPm13C
+   +qbt9I+Uu7vJfQK0Bu7HByrEM3X6XYksleKQS3cR/kGOAO/XSfDP96e1T
+   t/0ZQ1zM+kQu9p6Ro8RKielCNUnC0MrqdvqUlrnYSz823X9WMHsetYchS
+   hZR7BEmIcnldVi5Rv97gssk0UVZOKMJLdSHqjE6wYobtaX+gF+JiRJG/4
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10791"; a="372643344"
+X-IronPort-AV: E=Sophos;i="6.01,252,1684825200"; 
+   d="scan'208";a="372643344"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Aug 2023 07:31:45 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10791"; a="759153147"
+X-IronPort-AV: E=Sophos;i="6.01,252,1684825200"; 
+   d="scan'208";a="759153147"
+Received: from 984fee00a4c6.jf.intel.com ([10.165.58.231])
+  by orsmga008.jf.intel.com with ESMTP; 03 Aug 2023 07:31:45 -0700
+From:   Yi Liu <yi.l.liu@intel.com>
+To:     joro@8bytes.org, alex.williamson@redhat.com, jgg@nvidia.com,
+        kevin.tian@intel.com, robin.murphy@arm.com,
+        baolu.lu@linux.intel.com
+Cc:     cohuck@redhat.com, eric.auger@redhat.com, nicolinc@nvidia.com,
+        kvm@vger.kernel.org, mjrosato@linux.ibm.com,
+        chao.p.peng@linux.intel.com, yi.l.liu@intel.com,
+        yi.y.sun@linux.intel.com, peterx@redhat.com, jasowang@redhat.com,
+        shameerali.kolothum.thodi@huawei.com, lulu@redhat.com,
+        suravee.suthikulpanit@amd.com, iommu@lists.linux.dev,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        zhenzhong.duan@intel.com
+Subject: [PATCH v5 0/4] iommufd: Add iommu hardware info reporting
+Date:   Thu,  3 Aug 2023 07:31:40 -0700
+Message-Id: <20230803143144.200945-1-yi.l.liu@intel.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.1
-Subject: Re: [PATCH v1 6/6] arm64: dts: allwinner: h616: Add BigTreeTech Pi
- support
-Content-Language: en-US
-To:     Martin Botka <martin@biqu3d.com>
-Cc:     Konrad Dybcio <konrad.dybcio@somainline.org>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@somainline.org>,
-        Marijn Suijten <marijn.suijten@somainline.org>,
-        Jami Kettunen <jamipkettunen@somainline.org>,
-        Paul Bouchara <paul.bouchara@somainline.org>,
-        Martin Botka <martin.botka@somainline.org>,
-        Andre Przywara <andre.przywara@arm.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Chen-Yu Tsai <wens@csie.org>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Samuel Holland <samuel@sholland.org>,
-        Andrew Lunn <andrew@lunn.ch>, Icenowy Zheng <uwu@icenowy.me>,
-        Ludwig Kormann <ludwig.kormann@ict42.de>,
-        Heiko Stuebner <heiko@sntech.de>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Chris Morgan <macromorgan@hotmail.com>,
-        Jagan Teki <jagan@edgeble.ai>,
-        Maxime Ripard <mripard@kernel.org>, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev,
-        linux-kernel@vger.kernel.org
-References: <20230802220309.163804-1-martin@biqu3d.com>
- <DFE9B2F1349F69AE+20230802220309.163804-7-martin@biqu3d.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <DFE9B2F1349F69AE+20230802220309.163804-7-martin@biqu3d.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 03/08/2023 00:02, Martin Botka wrote:
-> The BigTreeTech Pi is an H616 based board based on CB1.
-> Just in Rpi format board.
-> 
-> It features the same internals as BTT CB1 but adds:
->     - Fan port
->     - IR receiver
->     - 24V DC power supply via terminal plugs
->     - USB to CAN module connector (The actual USB to CAN happens on the external module)
-> 
-> List of currently working things is the same as BTT CB1.
-> 
-> Signed-off-by: Martin Botka <martin@biqu3d.com>
-> ---
->  .../allwinner/sun50i-h616-bigtreetech-pi.dts  | 44 +++++++++++++++++++
->  1 file changed, 44 insertions(+)
->  create mode 100644 arch/arm64/boot/dts/allwinner/sun50i-h616-bigtreetech-pi.dts
-> 
-> diff --git a/arch/arm64/boot/dts/allwinner/sun50i-h616-bigtreetech-pi.dts b/arch/arm64/boot/dts/allwinner/sun50i-h616-bigtreetech-pi.dts
-> new file mode 100644
-> index 000000000000..05f39b3606ba
-> --- /dev/null
-> +++ b/arch/arm64/boot/dts/allwinner/sun50i-h616-bigtreetech-pi.dts
-> @@ -0,0 +1,44 @@
-> +// SPDX-License-Identifier: (GPL-2.0+ or MIT)
-> +/*
-> + * Copyright (C) 2023 Martin Botka <martin@biqu3d.com>.
-> + */
-> +
-> +/dts-v1/;
-> +
-> +#include "sun50i-h616-bigtreetech-cb1.dtsi"
+iommufd gives userspace the capability to manipulate iommu subsytem.
+e.g. DMA map/unmap etc. In the near future, it will support iommu nested
+translation. Different platform vendors have different implementation for
+the nested translation. For example, Intel VT-d supports using guest I/O
+page table as the stage-1 translation table. This requires guest I/O page
+table be compatible with hardware IOMMU. So before set up nested translation,
+userspace needs to know the hardware iommu information to understand the
+nested translation requirements.
 
-If this is using CB1 DTSI, does it mean it uses CB1 SoM? If so, I think
-this should be reflected in the compatibles.
+This series reports the iommu hardware information for a given device
+which has been bound to iommufd. It is preparation work for userspace to
+allocate hwpt for given device. Like the nested translation support[1].
 
-It's a bit confusing because in previous patch you call it "CB1 board"
-but then with name "Manta"... So what is CB1?
+This series introduces an iommu op to report the iommu hardware info,
+and an ioctl IOMMU_GET_HW_INFO is added to report such hardware info to
+user. enum iommu_hw_info_type is defined to differentiate the iommu hardware
+info reported to user hence user can decode them. This series only adds the
+framework for iommu hw info reporting, the complete reporting path needs vendor
+specific definition and driver support. The full code is available in [1]
+as well.
 
-Best regards,
-Krzysztof
+[1] https://github.com/yiliu1765/iommufd/tree/wip/iommufd_nesting_08032023-yi
+(only the hw_info report path is the latest, other parts is wip)
+
+Change log:
+
+v5:
+ - Return hw_info_type in the .hw_info op, hence drop hw_info_type field in iommu_ops (Kevin)
+ - Add Jason's r-b for patch 01
+ - Address coding style comments from Jason and Kevin w.r.t. patch 02, 03 and 04
+
+v4: https://lore.kernel.org/linux-iommu/20230724105936.107042-1-yi.l.liu@intel.com/
+ - Rename ioctl to IOMMU_GET_HW_INFO and structure to iommu_hw_info
+ - Move the iommufd_get_hw_info handler to main.c
+ - Place iommu_hw_info prior to iommu_hwpt_alloc
+ - Update the function namings accordingly
+ - Update uapi kdocs
+
+v3: https://lore.kernel.org/linux-iommu/20230511143024.19542-1-yi.l.liu@intel.com/#t
+ - Add r-b from Baolu
+ - Rename IOMMU_HW_INFO_TYPE_DEFAULT to be IOMMU_HW_INFO_TYPE_NONE to
+   better suit what it means
+ - Let IOMMU_DEVICE_GET_HW_INFO succeed even the underlying iommu driver
+   does not have driver-specific data to report per below remark.
+   https://lore.kernel.org/kvm/ZAcwJSK%2F9UVI9LXu@nvidia.com/
+
+v2: https://lore.kernel.org/linux-iommu/20230309075358.571567-1-yi.l.liu@intel.com/
+ - Drop patch 05 of v1 as it is already covered by other series
+ - Rename the capability info to be iommu hardware info
+
+v1: https://lore.kernel.org/linux-iommu/20230209041642.9346-1-yi.l.liu@intel.com/
+
+Regards,
+	Yi Liu
+
+Lu Baolu (1):
+  iommu: Add new iommu op to get iommu hardware information
+
+Nicolin Chen (1):
+  iommufd/selftest: Add coverage for IOMMU_GET_HW_INFO ioctl
+
+Yi Liu (2):
+  iommu: Move dev_iommu_ops() to private header
+  iommufd: Add IOMMU_GET_HW_INFO
+
+ drivers/iommu/iommu-priv.h                    | 11 +++
+ drivers/iommu/iommufd/iommufd_test.h          |  9 +++
+ drivers/iommu/iommufd/main.c                  | 79 +++++++++++++++++++
+ drivers/iommu/iommufd/selftest.c              | 16 ++++
+ include/linux/iommu.h                         | 20 +++--
+ include/uapi/linux/iommufd.h                  | 44 +++++++++++
+ tools/testing/selftests/iommu/iommufd.c       | 17 +++-
+ tools/testing/selftests/iommu/iommufd_utils.h | 26 ++++++
+ 8 files changed, 210 insertions(+), 12 deletions(-)
+
+-- 
+2.34.1
 
