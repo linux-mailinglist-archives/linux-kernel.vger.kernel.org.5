@@ -2,324 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E380376FB48
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 09:36:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E8AB476FB54
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 09:42:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231156AbjHDHgY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Aug 2023 03:36:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39532 "EHLO
+        id S232626AbjHDHmr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Aug 2023 03:42:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41044 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230011AbjHDHgV (ORCPT
+        with ESMTP id S229882AbjHDHmo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Aug 2023 03:36:21 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7407D127;
-        Fri,  4 Aug 2023 00:36:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1691134580; x=1722670580;
-  h=message-id:date:subject:to:cc:references:from:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=LSHEHlVXA+0KLNAxwwvTot+i4R4uxys2a+aVFam7alU=;
-  b=PcwBj9JUfqAzgejCS7OT3Iv0+GjrqZZUDPzaqYZ/PRq0WxrQEnBTKPfc
-   cdA4cYBXSoDT16d3+fw3f9Sluehn+Vbf5h6+W3k3kNoquacLD9jVoFcmn
-   fyKQpsT7NUe6MiXIAqidyh5BHT4KhQqSdj759g8wgsaR3SQGOirWr4xMm
-   b6lSTRwLLKPQ1TteRRMdmiULbBqvOafZazJDWQ4VBX14A4aGsCrSaskVC
-   juf4avxmG/WrER0vKgdU7QtNhTPudzVmFdzRlG45C9Tq+0TAHrnqyXOb0
-   Wt6NcSKIaVFUKjK2dU4FIit30b9jRSiEaORTUjH5gMpqHiGXU/Or6kb9b
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10791"; a="349687478"
-X-IronPort-AV: E=Sophos;i="6.01,254,1684825200"; 
-   d="scan'208";a="349687478"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Aug 2023 00:36:18 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10791"; a="903779140"
-X-IronPort-AV: E=Sophos;i="6.01,254,1684825200"; 
-   d="scan'208";a="903779140"
-Received: from orsmsx602.amr.corp.intel.com ([10.22.229.15])
-  by orsmga005.jf.intel.com with ESMTP; 04 Aug 2023 00:36:18 -0700
-Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
- ORSMSX602.amr.corp.intel.com (10.22.229.15) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.27; Fri, 4 Aug 2023 00:36:18 -0700
-Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
- ORSMSX610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.27; Fri, 4 Aug 2023 00:36:17 -0700
-Received: from ORSEDG602.ED.cps.intel.com (10.7.248.7) by
- orsmsx610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.27 via Frontend Transport; Fri, 4 Aug 2023 00:36:17 -0700
-Received: from NAM12-DM6-obe.outbound.protection.outlook.com (104.47.59.169)
- by edgegateway.intel.com (134.134.137.103) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.27; Fri, 4 Aug 2023 00:36:17 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=ffSih8vp4y3MwUiSGNee2EWXFXPkXwjWT7i1zSxQs1vCS3clFjAg83/Tr1S7pfSZn2oaasEQ3P2tsyCZOXVvNl5a1X7U6ljD7nIMvpgCyEAQob+Naxe6pVKXR/6dqY95rQE7UkmGLebyU0zEmky43Uh8qyypyO5vljRS/MhLUrJzqeaxeDHAsFGDACplDUxzn4tJmuXkVLFuNKQovgSqwFHhle27VCqlTCbBiU8xV3BE6F5G+85sA9I61NFkCJCDhy3NBD7/AK5fZ2iK2TLt/68lsbbUMXOlqTZlXmO37bzK9kSqoSnn8S8gU+yIcYTKUWngS4FscUcxhtNu0Cf5hA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=fHaWI2indlh3V7lRa5vg1Uq8wQ+CpTiTNaqJVn1P9DA=;
- b=Gt8pv1OJ702Jt2qNRl9FDTCjgTnnnOk9cakvdLX6Sgr4VafrIxaq0wzua/DHZ/vrM056jiFb3+ojgLi9f9y/X3UsNateFKRc77L5BgH5ROLX4u/j6/NDhfv8sgCHpHH70OCbRXgsI5Ua3px5WWQCUcunmdR/3sVu+nhyi2Jt7ErDuDbuGa/C53YQ+gICut+i1MEAve1hLkzu0TGQBczH5pWirLqJxnKszPIF1GjZSQ4ekI4mReVxbpETZ4Yu9h8Da0hnp0FRkLn8HyHNGg+Pf4oTfMInb91/z4GZjSz43XbfyduuoAfpHMXZccHv8woK4W62kyQ4AfEyOnHzEUyzjw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from CO1PR11MB4820.namprd11.prod.outlook.com (2603:10b6:303:6f::8)
- by CY8PR11MB6842.namprd11.prod.outlook.com (2603:10b6:930:61::11) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6652.21; Fri, 4 Aug
- 2023 07:36:15 +0000
-Received: from CO1PR11MB4820.namprd11.prod.outlook.com
- ([fe80::221b:d422:710b:c9e6]) by CO1PR11MB4820.namprd11.prod.outlook.com
- ([fe80::221b:d422:710b:c9e6%3]) with mapi id 15.20.6631.046; Fri, 4 Aug 2023
- 07:36:15 +0000
-Message-ID: <959095f6-8574-f5fc-812c-b0b9b9a3c101@intel.com>
-Date:   Fri, 4 Aug 2023 15:36:05 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Firefox/102.0 Thunderbird/102.13.0
-Subject: Re: [PATCH 0/2] don't use mapcount() to check large folio sharing
-Content-Language: en-US
-To:     David Hildenbrand <david@redhat.com>,
-        "Yin, Fengwei" <fengwei.yin@intel.com>, Yu Zhao <yuzhao@google.com>
-CC:     Ryan Roberts <ryan.roberts@arm.com>, <linux-mm@kvack.org>,
-        <linux-kernel@vger.kernel.org>, <stable@vger.kernel.org>,
-        <akpm@linux-foundation.org>, <willy@infradead.org>,
-        <vishal.moola@gmail.com>, <wangkefeng.wang@huawei.com>,
-        <minchan@kernel.org>, <shy828301@gmail.com>
-References: <20230728161356.1784568-1-fengwei.yin@intel.com>
- <3bbfde16-ced1-dca8-6a3f-da893e045bc5@arm.com>
- <56c8f4f9-b54b-b0bb-250c-ec8643accfc7@intel.com>
- <3541d2de-5cf8-2f84-8153-277e2bfc0101@arm.com>
- <5f98748a-97ca-6426-1e24-a5675da75381@intel.com>
- <a590da86-0c42-7d46-d320-c661a59a46c1@arm.com>
- <837ba176-c97f-f81b-c044-eb6aa3d88bb7@intel.com>
- <CAOUHufY9EQ70Pn-n2zVa9=Gm3-WHxxphp7VHia4qv9x2domdbg@mail.gmail.com>
- <40d49276-fae9-e538-61cf-64bb79233bc3@intel.com>
- <CAOUHufbcAJWUoVuCYtaDZKdcw+JPWVV0EiB=JcDvz1Jt_Au2Tw@mail.gmail.com>
- <45457815-66c4-029f-42f9-6c377e4eb1e3@intel.com>
- <75996f6b-63fe-4878-c19d-bf35ee2ad20b@redhat.com>
-From:   "Yin, Fengwei" <fengwei.yin@intel.com>
-In-Reply-To: <75996f6b-63fe-4878-c19d-bf35ee2ad20b@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: SG2PR01CA0189.apcprd01.prod.exchangelabs.com
- (2603:1096:4:189::15) To CO1PR11MB4820.namprd11.prod.outlook.com
- (2603:10b6:303:6f::8)
+        Fri, 4 Aug 2023 03:42:44 -0400
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C3A5E70;
+        Fri,  4 Aug 2023 00:42:43 -0700 (PDT)
+Received: from pps.filterd (m0353729.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3747eJqC030490;
+        Fri, 4 Aug 2023 07:42:42 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
+ mime-version : to : from : subject : content-type :
+ content-transfer-encoding; s=pp1;
+ bh=i7ZCOVWntLpopjLEQzPFburq/bPGQLc/fpmHL1zpqbg=;
+ b=egl0mVrG4oriws6Gx5nwk1rgTxia44ZkjEE05Y/Kf7f1N7b71x6Jvh8b/CQ3PeuOFsPn
+ txryM+m8p7g8BXhhcVBDamuMehf02sfuIcs+Kqfwzdj0TuahTdCyrUlhYIyFK+g7fE8r
+ gItvy6YgVMAMgR+cemoX1RIyjS+E9iCou9F05hkPw5vianJeUD+ZtKwtV0H8uU2kpj+v
+ UhAXiAlbtkahrAkH80a08LZuUiiT8zxB0B+cy76KxcMu22v2P1rzGK5TnRjEuQT+cUxV
+ D888aOZu6C+QLCdxgwGbHbKSJa60CZVgOjN+VfrAVp/th9NyTxOJ/r4Ve8rba6tQdr1b jQ== 
+Received: from ppma11.dal12v.mail.ibm.com (db.9e.1632.ip4.static.sl-reverse.com [50.22.158.219])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3s8vyf88c6-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 04 Aug 2023 07:42:42 +0000
+Received: from pps.filterd (ppma11.dal12v.mail.ibm.com [127.0.0.1])
+        by ppma11.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 3746ub3w022110;
+        Fri, 4 Aug 2023 07:37:40 GMT
+Received: from smtprelay01.wdc07v.mail.ibm.com ([172.16.1.68])
+        by ppma11.dal12v.mail.ibm.com (PPS) with ESMTPS id 3s8kp2uq36-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 04 Aug 2023 07:37:40 +0000
+Received: from smtpav01.dal12v.mail.ibm.com (smtpav01.dal12v.mail.ibm.com [10.241.53.100])
+        by smtprelay01.wdc07v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 3747bdEL36372910
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 4 Aug 2023 07:37:40 GMT
+Received: from smtpav01.dal12v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id B59D058058;
+        Fri,  4 Aug 2023 07:37:39 +0000 (GMT)
+Received: from smtpav01.dal12v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id F3BE658057;
+        Fri,  4 Aug 2023 07:37:37 +0000 (GMT)
+Received: from [9.43.75.26] (unknown [9.43.75.26])
+        by smtpav01.dal12v.mail.ibm.com (Postfix) with ESMTP;
+        Fri,  4 Aug 2023 07:37:37 +0000 (GMT)
+Message-ID: <f14a90b9-c334-3c6b-6b9d-16fc578e8346@linux.vnet.ibm.com>
+Date:   Fri, 4 Aug 2023 13:07:36 +0530
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CO1PR11MB4820:EE_|CY8PR11MB6842:EE_
-X-MS-Office365-Filtering-Correlation-Id: 8c702604-db59-48d7-1519-08db94bd7bee
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 3QxXH0+WN7118/ntSN8+EGz+mimf4zqQzkPQJ1QtuVz+elQRyJ/O8Sh5SBDlgF55DS21bUiHhrpELmWPh66xknXdLplAh4gxgMQHsfGHeTH/42NI+7bgmTqAYMxsLeSo5Diuym5cCgeWWEkonk/Muc5UG7RuM2FgC+dU3Ga0PVkz3xfEshgx/og60T+1wLFA/70nKnLhEldT55HwBaYxKjRKoh6dff+nIvZHUa7ssqSPdMuGc/3l6uaEQ0wQMu+vkD7wMya592MppG3o5ZkozTzZSwR6fFfdoH07uAjq5P8WAuhGtwoxiD20vqjeGZy1cwLYOY1pJyS2bHnHjx+eCR6J1x8BbO8xh8oZEcS8OM80HqVDdySZKaYyRWKzryQoxolAiiuEK0+OSo44vlhH2GelbDFqF+aUJdjdICvQr41aoAp4K3qVc2q8wV57h3dIqNgfkh2DwTtJ2RA/wuIRpqu7in1oWCZJUQqRxETm7y6NW3Cvgj+dDn20WGZfZY3OcFitOaca6PMraFr1+BB67glKgn75mteHoNW5Qj+iZC61212TFAaWt5scDbTTNtuMV9cy30bZSlS1vws8JEUAiR5QGbclUVFakm0p937ENkPQOwNuLqqW8rxOz+vINI4Rq4Jl23GaoBIWfjdVfHkSPQ==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CO1PR11MB4820.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(136003)(346002)(376002)(39860400002)(396003)(366004)(186006)(451199021)(1800799003)(66476007)(66946007)(66556008)(4326008)(2906002)(82960400001)(38100700002)(2616005)(53546011)(6506007)(7416002)(83380400001)(110136005)(86362001)(966005)(6512007)(31696002)(26005)(478600001)(36756003)(6486002)(6666004)(8936002)(8676002)(5660300002)(41300700001)(31686004)(316002)(45980500001)(43740500002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?NHNSaEI3MlhTT1lsQXBZN1QzRnd3T3ZBWGRDOXNqVnh0VWwzYU1KdzdldWhw?=
- =?utf-8?B?TGFvKzdBd25mMFlRYW1NWGtnbXpVc3lRdnZXS1NpWkNNM3dsS0k0WnJoUlA1?=
- =?utf-8?B?T0tsRy9HSTRPV3RvZ2xWY1ErUmFIZkozVDBaVnUxMkRtVUdBa3JoK0k4em1p?=
- =?utf-8?B?WnQyc1B2ZUVDc0FQNlJ5ZDQvL3daUnhEZmszQWZCTVp2Q0ZZTFNObmxJSi9m?=
- =?utf-8?B?SllIRUJuRE81bDl0N001Q0grNXQ5c3IzNlpZSUV5Uk83ZDlmUGhlSkx1OG5N?=
- =?utf-8?B?RkVUbk0yU3pFY25FZGlkV3BMc1NZdThyLzRBRE54UjBkM2JnZXRqbEI4UUFE?=
- =?utf-8?B?SXFQNWJlY2x2b2NQZmpjVXdRVzhQK05VSTZsTGhNbHN0UGxtZEUxRW13bTRo?=
- =?utf-8?B?MC83NGdxQXJDeEgwVDFmQk5nTSs2Qm5hTXU1OWRua2RxTjF3bmNpZlc3Y1l2?=
- =?utf-8?B?eGVNT08xSFZOYjhyaTZXMTlHYTl3dm11NCt4aGxnOWhhOFVGSU9ISjRvSzU4?=
- =?utf-8?B?dmF0TTZ1c29JU28yT0VvVkh4WFlkNVRlRUpVYkV0Sis2THdheDQrbGRhVUNa?=
- =?utf-8?B?WExqb1YyaVRjZzdmc29WY001aFFZdDNYRDM1a0pMRTdheCt4UkJDZTdiYUEv?=
- =?utf-8?B?YTdxYnR1UG5JT1loVWdQQWhWeExxNk55NVVwbHRSeUNWdFg3R3MzQVV3UStr?=
- =?utf-8?B?eFB0cHM3aE10WVhMd0RkTkpOaGx1SWVyZlRVQzVuVFV1dVBXSHJGMmR1OGpG?=
- =?utf-8?B?aU5BYjBMSVI2ZUtGWlhiWldXR3BuVFlERkljNW5iSmFLeDNPY3ZjT2RIemlo?=
- =?utf-8?B?Y0g5VDM5V2dvYWdzSG9FVEwyaUJWbHpkVVQ4YVNSMC9OZGpNV1VSQy9SempF?=
- =?utf-8?B?cnI2d21QNnpjaUpiOEZyelFLVXQwSmVGQ3Zyc3RkNVdCQ1FJSzJKdUJJNE1x?=
- =?utf-8?B?SDdST3Y0dFNJMmtjc0dJUk40cU01WEhOWVdBZ0FZd1ZLU2pmQmlaQ1RDL2RI?=
- =?utf-8?B?aS9EQUxDclBXNURYMW1nczRub3l1OXZmMWVEVjZ6WkIvV0daZWozc0RuZlMy?=
- =?utf-8?B?cFR4U3E2bUlFQjdMRnZkendaS1grVnB1T3pkelhsUE1mVzBOWC9qYjcxZmUr?=
- =?utf-8?B?K0xHMi83cExTbFEwMnQ4eGhXOEo4VVZueGVCb2llTzRwOEJXTXkzdXBIb2tr?=
- =?utf-8?B?YjI5bmh5VGc4ZFBtNkZ3TnA4WWdqVDcxZ09NeXJJTFJzY3pwZTZwS1k4Q3dG?=
- =?utf-8?B?aGh4R213Vm5HRGRjcXhtL2hJazhsWWJxamt0Vko5UjQ0YnNwaWorM3dBV243?=
- =?utf-8?B?L0ZtbXFjR2ZLV0pHaFFwd3F3eWt3bUNiWis2aXJtM0JMYjl4RS8xRVRtRmQ4?=
- =?utf-8?B?VDc4cURwYUlLaEQyazFYdmxXd2RoOEhEL1ZTZjlqSHhVYkFRQ1RTS2c3QU5X?=
- =?utf-8?B?QWNBVURNTjlNSmNCYWYrUUU3MS9vdHZSdEhWTVdVZ1haWEw2TGNySjZSRUpB?=
- =?utf-8?B?YjdWaDZ1NzlIcW9CeUdMVWc1V1dwQ1NBL2NtOFFJY1R1a0RkaTl0NGI4WVEr?=
- =?utf-8?B?aEVIRytEellKUnE5Zkt3RkltcUlFNmR3aGRJT0JZWmE4VGcvZlB2RHdKSGxv?=
- =?utf-8?B?M3dDajFDRlJIM0J5UzhRN3hiNHE1aFlsN3poQ1VMNzFJaUpOM2NtK3NhMjYy?=
- =?utf-8?B?Q2JlRitMWmMwOEZKY2R3T0tBRTZYb0tPWlhGQ09iVnl5Wk05U21Ka1JxcnJm?=
- =?utf-8?B?RTNsTm5QRm1jQTFlOU1XQmlQUDZieGgvRUh1c082SmtPZXU2ZnZlVEN1bytI?=
- =?utf-8?B?RjZqb2kycEpqekMwUjU1R0p5NEp0Tnk2VnNMcXRvRG8zelloMk9nalJVdzE4?=
- =?utf-8?B?eUNRS3VaN3JWZWpYV0RzWGsvRUVhbkEyQitsUVU0SjBkNUtRc1djVlFPbTMr?=
- =?utf-8?B?TktiQnVWM09lby9JU2xva0lKYkxkS29WT3V3a2JTOTh3OTNOMGJWbGxXd3g1?=
- =?utf-8?B?M2hYaFRTTlpMNDlDME9GYzg5cDREb2Q1N3B6alcwTHdsRnNrVThNMVBBbU1U?=
- =?utf-8?B?M1ViUUZnK1NUOGxIbC9NSUFyNG5zQTZ5SmlqNGJVZmVFR1ZmVlY3M3hIU0tI?=
- =?utf-8?B?dGI1TldLSkVMOWhidFg2UjFlOEVuV3JKeW03cW5TNTBiNlNEbjFuWDFGR2Jl?=
- =?utf-8?B?T0E9PQ==?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 8c702604-db59-48d7-1519-08db94bd7bee
-X-MS-Exchange-CrossTenant-AuthSource: CO1PR11MB4820.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 Aug 2023 07:36:15.4725
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: KwiJILftbVmVRrWfKGbBQVm0HQbhpVfOINIcuGnHccXlkLpDGjztcss44sOJFnm/SoRu5CTgHvV/NhmLci5E6Q==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY8PR11MB6842
-X-OriginatorOrg: intel.com
-X-Spam-Status: No, score=-4.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.12.0
+Content-Language: en-US
+To:     linux-kernel@vger.kernel.org, abdhalee@linux.vnet.ibm.com,
+        mputtash@linux.vnet.com, sachinp@linux.vnet.com,
+        linux-block@vger.kernel.org
+From:   Tasmiya Nalatwad <tasmiya@linux.vnet.ibm.com>
+Subject: [linux mainline/master] [6.5.0-rc4] WARNING: CPU: 23 PID: 138 at
+ arch/powerpc/kernel/eeh_pe.c:439 eeh_pe_tree_remove+0xd0/0x250
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: sWcv7pyVNrdzu-k46gETLpcl5rp4gUsL
+X-Proofpoint-ORIG-GUID: sWcv7pyVNrdzu-k46gETLpcl5rp4gUsL
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
+ definitions=2023-08-04_06,2023-08-03_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 impostorscore=0
+ malwarescore=0 lowpriorityscore=0 mlxlogscore=874 priorityscore=1501
+ adultscore=0 bulkscore=0 suspectscore=0 spamscore=0 mlxscore=0
+ phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2306200000 definitions=main-2308040066
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi David,
+Greetings,
 
-On 8/4/2023 3:31 PM, David Hildenbrand wrote:
-> On 04.08.23 02:17, Yin, Fengwei wrote:
->>
->>
->> On 8/4/2023 7:38 AM, Yu Zhao wrote:
->>> On Thu, Aug 3, 2023 at 5:27 PM Yin, Fengwei <fengwei.yin@intel.com> wrote:
->>>>
->>>>
->>>>
->>>> On 8/4/2023 4:46 AM, Yu Zhao wrote:
->>>>> On Wed, Aug 2, 2023 at 6:56 AM Yin, Fengwei <fengwei.yin@intel.com> wrote:
->>>>>>
->>>>>> "
->>>>>>
->>>>>> On 8/2/2023 8:49 PM, Ryan Roberts wrote:
->>>>>>> On 02/08/2023 13:42, Yin, Fengwei wrote:
->>>>>>>>
->>>>>>>>
->>>>>>>> On 8/2/2023 8:40 PM, Ryan Roberts wrote:
->>>>>>>>> On 02/08/2023 13:35, Yin, Fengwei wrote:
->>>>>>>>>>
->>>>>>>>>>
->>>>>>>>>> On 8/2/2023 6:27 PM, Ryan Roberts wrote:
->>>>>>>>>>> On 28/07/2023 17:13, Yin Fengwei wrote:
->>>>>>>>>>>> In madvise_cold_or_pageout_pte_range() and madvise_free_pte_range(),
->>>>>>>>>>>> folio_mapcount() is used to check whether the folio is shared. But it's
->>>>>>>>>>>> not correct as folio_mapcount() returns total mapcount of large folio.
->>>>>>>>>>>>
->>>>>>>>>>>> Use folio_estimated_sharers() here as the estimated number is enough.
->>>>>>>>>>>>
->>>>>>>>>>>> Yin Fengwei (2):
->>>>>>>>>>>>    madvise: don't use mapcount() against large folio for sharing check
->>>>>>>>>>>>    madvise: don't use mapcount() against large folio for sharing check
->>>>>>>>>>>>
->>>>>>>>>>>>   mm/huge_memory.c | 2 +-
->>>>>>>>>>>>   mm/madvise.c     | 6 +++---
->>>>>>>>>>>>   2 files changed, 4 insertions(+), 4 deletions(-)
->>>>>>>>>>>>
->>>>>>>>>>>
->>>>>>>>>>> As a set of fixes, I agree this is definitely an improvement, so:
->>>>>>>>>>>
->>>>>>>>>>> Reviewed-By: Ryan Roberts
->>>>>>>>>> Thanks.
->>>>>>>>>>
->>>>>>>>>>>
->>>>>>>>>>>
->>>>>>>>>>> But I have a couple of comments around further improvements;
->>>>>>>>>>>
->>>>>>>>>>> Once we have the scheme that David is working on to be able to provide precise
->>>>>>>>>>> exclusive vs shared info, we will probably want to move to that. Although that
->>>>>>>>>>> scheme will need access to the mm_struct of a process known to be mapping the
->>>>>>>>>>> folio. We have that info, but its not passed to folio_estimated_sharers() so we
->>>>>>>>>>> can't just reimplement folio_estimated_sharers() - we will need to rework these
->>>>>>>>>>> call sites again.
->>>>>>>>>> Yes. This could be extra work. Maybe should delay till David's work is done.
->>>>>>>>>
->>>>>>>>> What you have is definitely an improvement over what was there before. And is
->>>>>>>>> probably the best we can do without David's scheme. So I wouldn't delay this.
->>>>>>>>> Just pointing out that we will be able to make it even better later on (if
->>>>>>>>> David's stuff goes in).
->>>>>>>> Yes. I agree that we should wait for David's work ready and do fix based on that.
->>>>>>>
->>>>>>> I was suggesting the opposite - not waiting. Then we can do separate improvement
->>>>>>> later.
->>>>>> Let's wait for David's work ready.
->>>>>
->>>>> Waiting is fine as long as we don't miss the next merge window -- we
->>>>> don't want these two bugs to get into another release. Also I think we
->>>>> should cc stable, since as David mentioned, they have been causing
->>>>> selftest failures.
->>>>
->>>> Stable was CCed.
->>>
->>> Need to add the "Cc: stable@vger.kernel.org" tag:
->>> Documentation/process/stable-kernel-rules.rst
->> OK. Thanks for clarification. I totally mis-understanded this. :).
->>
->> I'd like to wait for answer from Andrew whether these patches are suitable
->> for stable (I suppose you think so) branch.
-> 
-> Note that the COW test does not fail -- it skips -- but the behavir changed:
-> 
-> $ ./cow
-> # [INFO] detected THP size: 2048 KiB
-> # [INFO] detected hugetlb page size: 2048 KiB
-> # [INFO] detected hugetlb page size: 1048576 KiB
-> # [INFO] huge zeropage is enabled
-> TAP version 13
-> 1..190
-> # [INFO] Anonymous memory tests in private mappings
-> # [RUN] Basic COW after fork() ... with base page
-> ok 1 No leak from parent into child
-> # [RUN] Basic COW after fork() ... with swapped out base page
-> ok 2 No leak from parent into child
-> # [RUN] Basic COW after fork() ... with THP
-> ok 3 No leak from parent into child
-> # [RUN] Basic COW after fork() ... with swapped-out THP
-> ok 4 No leak from parent into child
-> # [RUN] Basic COW after fork() ... with PTE-mapped THP
-> ok 5 No leak from parent into child
-> # [RUN] Basic COW after fork() ... with swapped-out, PTE-mapped THP
-> ok 6 # SKIP MADV_PAGEOUT did not work, is swap enabled?
-> # [RUN] Basic COW after fork() ... with single PTE of THP
-> ok 7 No leak from parent into child
-> # [RUN] Basic COW after fork() ... with single PTE of swapped-out THP
-> ok 8 No leak from parent into child
-> # [RUN] Basic COW after fork() ... with partially mremap()'ed THP
-> ok 9 No leak from parent into child
-> # [RUN] Basic COW after fork() ... with partially shared THP
-> ok 10 No leak from parent into child
-> ...
-> 
-> Observe how patch #6 skips because the MADV_PAGEOUT was not effective (which might have happened due to other reasons as well, thus no failure).
-> 
-> The code that broke it is
-> 
-> commit 07e8c82b5eff8ef34b74210eacb8d9c4a2886b82
-> Author: Vishal Moola (Oracle) <vishal.moola@gmail.com>
-> Date:   Wed Dec 21 10:08:46 2022 -0800
-> 
->     madvise: convert madvise_cold_or_pageout_pte_range() to use folios
->         This change removes a number of calls to compound_head(), and saves
->     1729 bytes of kernel text.
->         Link: https://lkml.kernel.org/r/20221221180848.20774-3-vishal.moola@gmail.com
->     Signed-off-by: Vishal Moola (Oracle) <vishal.moola@gmail.com>
->     Reviewed-by: Matthew Wilcox (Oracle) <willy@infradead.org>
->     Cc: SeongJae Park <sj@kernel.org>
->     Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-> 
-> 
-> Ever since v6.3.
-> 
-> The simplest way to fix it would be to revert the page_mapcount() -> folio_mapcount(),
-> conversion.
-> 
-> 
-> Probably all that is information worth having in the patch description.
-Thanks a lot for checking this. I will try this patchset to see whether
-it can restore the behavior (I suppose so from your broken commit info
-but want to confirm).
+[linux mainline/master] [6.5.0-rc4] WARNING: CPU: 23 PID: 138 at 
+arch/powerpc/kernel/eeh_pe.c:439 eeh_pe_tree_remove+0xd0/0x250
 
-Regards
-Yin, Fengwei
+---Traces---
 
+[  145.751661] WARNING: CPU: 23 PID: 138 at 
+arch/powerpc/kernel/eeh_pe.c:439 eeh_pe_tree_remove+0xd0/0x250
+[  145.751670] Modules linked in: pseries_rng vmx_crypto 
+aes_gcm_p10_crypto binfmt_misc xfs libcrc32c dm_service_time sd_mod 
+t10_pi crc64_rocksoft crc64 sg ibmvfc mlx5_core scsi_transport_fc 
+ibmveth mlxfw psample dm_multipath dm_mirror dm_region_hash dm_log 
+dm_mod fuse
+[  145.751691] CPU: 23 PID: 138 Comm: eehd Not tainted 
+6.5.0-rc4-auto-gc1a515d3c027 #1
+[  145.751695] Hardware name: IBM,9080-HEX POWER10 (raw) 0x800200 
+0xf000006 of:IBM,FW1030.20 (NH1030_047) hv:phyp pSeries
+[  145.751699] NIP:  c0000000000561e0 LR: c000000000056160 CTR: 
+c000000000056f90
+[  145.751702] REGS: c00000000d003a20 TRAP: 0700   Not tainted 
+(6.5.0-rc4-auto-gc1a515d3c027)
+[  145.751705] MSR:  800000000282b033 <SF,VEC,VSX,EE,FP,ME,IR,DR,RI,LE>  
+CR: 44002222  XER: 20040008
+[  145.751715] CFAR: c00000000082cbbc IRQMASK: 0
+[  145.751715] GPR00: c000000000056fec c00000000d003cc0 c000000001431800 
+0000000000000000
+[  145.751715] GPR04: c000000004211330 c000000004211330 c000000050541068 
+fffffffffffe0000
+[  145.751715] GPR08: c000000050541068 0000000000000100 0000000000000004 
+0000000000000000
+[  145.751715] GPR12: c000000000056f90 c000000743dce300 c000000000196098 
+c000000004048e00
+[  145.751715] GPR16: 0000000000000000 0000000000000000 0000000000000000 
+0000000000000000
+[  145.751715] GPR20: 0000000000000000 0000000000000000 0000000000000000 
+c000000050541068
+[  145.751715] GPR24: 0000000000000000 0000000000000000 0000000000000003 
+0000000000000002
+[  145.751715] GPR28: 5deadbeef0000100 5deadbeef0000122 c00000000d233400 
+c000000050541000
+[  145.751753] NIP [c0000000000561e0] eeh_pe_tree_remove+0xd0/0x250
+[  145.751757] LR [c000000000056160] eeh_pe_tree_remove+0x50/0x250
+[  145.751760] Call Trace:
+[  145.751762] [c00000000d003cc0] [c00000000d003d00] 0xc00000000d003d00 
+(unreliable)
+[  145.751767] [c00000000d003d40] [c000000000056fec] 
+eeh_pe_detach_dev+0x5c/0xa0
+[  145.751772] [c00000000d003d70] [c000000000055a7c] 
+eeh_pe_traverse+0x6c/0x110
+[  145.751775] [c00000000d003db0] [c000000000058cd0] 
+eeh_reset_device+0x1b4/0x250
+[  145.751779] [c00000000d003e50] [c000000000058398] 
+eeh_handle_normal_event+0x758/0xa30
+[  145.751784] [c00000000d003f30] [c000000000059608] 
+eeh_event_handler+0x118/0x1a0
+[  145.751788] [c00000000d003f90] [c0000000001961c8] kthread+0x138/0x140
+[  145.751793] [c00000000d003fe0] [c00000000000df98] 
+start_kernel_thread+0x14/0x18
+[  145.751797] Code: ebdf0038 71490002 4082004c 60000000 e93f0006 
+391f0068 552307bc 71290100 7c6307b4 2fa30000 41820098 409e0008 
+<0fe00000> e93f0068 7fa94040 419e0044
+[  145.751809] ---[ end trace 0000000000000000 ]---
+
+
+-- 
+Regards,
+Tasmiya Nalatwad
+IBM Linux Technology Center
 
