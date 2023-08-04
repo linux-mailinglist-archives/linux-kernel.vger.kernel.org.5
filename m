@@ -2,66 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A671676F7C0
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 04:20:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E90676F7C2
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 04:20:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233738AbjHDCUo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Aug 2023 22:20:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44876 "EHLO
+        id S233784AbjHDCUr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Aug 2023 22:20:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44990 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233417AbjHDCUY (ORCPT
+        with ESMTP id S233470AbjHDCU0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Aug 2023 22:20:24 -0400
-Received: from mail-qv1-xf33.google.com (mail-qv1-xf33.google.com [IPv6:2607:f8b0:4864:20::f33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 255B73A90
+        Thu, 3 Aug 2023 22:20:26 -0400
+Received: from mail-qv1-xf2e.google.com (mail-qv1-xf2e.google.com [IPv6:2607:f8b0:4864:20::f2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2DF744B0
         for <linux-kernel@vger.kernel.org>; Thu,  3 Aug 2023 19:20:23 -0700 (PDT)
-Received: by mail-qv1-xf33.google.com with SMTP id 6a1803df08f44-63d4b5890a0so10197166d6.2
+Received: by mail-qv1-xf2e.google.com with SMTP id 6a1803df08f44-63d30554eefso9564846d6.3
         for <linux-kernel@vger.kernel.org>; Thu, 03 Aug 2023 19:20:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paul-moore.com; s=google; t=1691115622; x=1691720422;
+        d=paul-moore.com; s=google; t=1691115623; x=1691720423;
         h=in-reply-to:references:subject:cc:to:from:message-id:date:from:to
          :cc:subject:date:message-id:reply-to;
-        bh=DL7QqO7gdzDeLZ4Lt5CqIM0zO9j+hCqUuNJLaJnYEts=;
-        b=YO6AR1bylUT5ii8VCBNh9R0U4hbO7k4kTFszkplDtOGaEUPqA9/wpEt9bK3SlDEw9Q
-         DhzcmaWXYWqNuMlAD22xpOR7fEkvyspILNenTSW1NHgMSAKDMWSWnK9nbyEDJntCR/hL
-         GFKR7kSjx38aS3Ulw7ODbw9f1GgujM5RNMh8qiPCWhn9NxSfDXmhtoEMxtcBtHL1mkZz
-         aQMk+Vpd+n9bPQhaoH/kUe0HyDRtgYcXzgVEQyfdAY6d2qKTO/XwVj2oyBOijJrKrHOK
-         D8dkUjOz/iJtRKNL5LGnp7Ur4e1Xv+F4eyA6uqG8ATpZnBOfRxty2kExP7Lf240FKb6M
-         mPlQ==
+        bh=WCtKRV7b+epJAAEXM2TZFXGiCSj243meGoK8CGC4Js4=;
+        b=DlPXRmHvBtbIVEg/TQL4KDpt1sq7TYTm38bx3KiI6PY+OzFa7r2re2OmLFeR+rFEJG
+         oHopXyMDnpSNps8cMOD64hN2pOb6JYsVtVslAyFQokUsjrKkF+tGk/TJON8GObDRyP9i
+         M3KTKFLDpvKNnyWqez4x3OhjWN3R5+OK6C3j0N2TjS4tbKBfTiZuVAufTPleupn6FURD
+         tCNrSMzpSlMhzXvGodq6FBnJmTj8lTixDhrmRjRUHmYDsKHLIcxT37r0KiZnaT8setNC
+         TaQNfcMbpGgjhaSfFtPrZ/lUE00NoNAUe2X7aZwnrgYfJXYCeknVdTRb8xI6dgvWJRkJ
+         /K8Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691115622; x=1691720422;
+        d=1e100.net; s=20221208; t=1691115623; x=1691720423;
         h=in-reply-to:references:subject:cc:to:from:message-id:date
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=DL7QqO7gdzDeLZ4Lt5CqIM0zO9j+hCqUuNJLaJnYEts=;
-        b=O1/F5U510hFSZGYGKykWOzJYv5dgmOiP1JxS+odRjwAYoqWQqtIftYC/KYTCQnrXsa
-         4mzojltt8ALvgxCgXd0+eoer0/hTxNqFK2GG3BbtvB4gRvt0YlrZsNDxq/JoEZrQwuPU
-         5giOohOYWYYoESqDxBIH1rhhL6in+x54uran1jBJ2w0B+GlK75CvOvtBN2uIsLDiVcwz
-         lKdh7e6fjjzRXlohWq1U0y5Pu/DgSKAqr/PzZLg5htL7iOBxRip8ILqZHZZ/u/UnMdLH
-         HQFqdf3H08a28q7Lnl4Jb+2lr46BS4czqIr6gB003iSsxQAwDcF6H+1bH2wQ/3D1sdGM
-         Cvag==
-X-Gm-Message-State: AOJu0Ywlr3DfdXQvy3ip483uB8e1Kv63/Zg9O7/HqS95kaGXVevW2S6t
-        Zgs6QkWUN3Oy4aaKU+dRaHFD
-X-Google-Smtp-Source: AGHT+IHgyO6fkDjwMzmm5bVGuOPfS6kqod4OR8dR2047XqNcjl4XCrQSIlI7QK2pPaj94P9T+xRxQQ==
-X-Received: by 2002:a0c:f40e:0:b0:626:1163:b446 with SMTP id h14-20020a0cf40e000000b006261163b446mr426720qvl.4.1691115621940;
-        Thu, 03 Aug 2023 19:20:21 -0700 (PDT)
+        bh=WCtKRV7b+epJAAEXM2TZFXGiCSj243meGoK8CGC4Js4=;
+        b=YQJjgekBvEUs3omvKEhUWC5u2Jv46j4cvdVMeFzbe9kRXIHltzLj5/5DrlvhNtlsMW
+         AIx7kI9nNN1jX4qHuDmJG2IZXTEvFvZ+c/NF8Z4K7xYI7rdwny2qrtL0EKghO31FWVhH
+         I1uWdPi3YC0+JxW9uPXXzUB4UYLaVWqMOXGolQsv0m841GD0Po4gC4di/yOlurrdHg13
+         x+NOeA7zoohJ84tK3cC/TF7lI6W6r1HTPY1juXbcxHkIZof7kni+T7TlE83VGs9ibbtQ
+         tHb28mmzlkT1ypxccJgQ3/bQMdvG0Xt0kurvdmVCEgszedjpVlyc176E31rgkwz6NZ/y
+         ZLgg==
+X-Gm-Message-State: AOJu0Yy6iLQKP5W9CrLOV9Ngg0Sl+JNpDS/Rvrs9mN2SWGUJyh8VYnUo
+        xzj2uKLGwpQKEHSsQFKf8Dnq
+X-Google-Smtp-Source: AGHT+IH+7NG8bzD2w66luBoKir2wyDLXvKAHHE9GAHJjXSenmZo2cvAXXITlkdxkqabvs9MWAZ7QHw==
+X-Received: by 2002:a0c:e38f:0:b0:63d:2fa3:441f with SMTP id a15-20020a0ce38f000000b0063d2fa3441fmr421199qvl.11.1691115622724;
+        Thu, 03 Aug 2023 19:20:22 -0700 (PDT)
 Received: from localhost ([70.22.175.108])
-        by smtp.gmail.com with ESMTPSA id q7-20020a05620a038700b00767db6f47bbsm331331qkm.73.2023.08.03.19.20.21
+        by smtp.gmail.com with ESMTPSA id l9-20020a0ce089000000b0063d5a7871d4sm325603qvk.78.2023.08.03.19.20.22
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 03 Aug 2023 19:20:21 -0700 (PDT)
-Date:   Thu, 03 Aug 2023 22:20:21 -0400
-Message-ID: <80ff0d20d4d796ecf57bb5f08d3aaf7d.paul@paul-moore.com>
+        Thu, 03 Aug 2023 19:20:22 -0700 (PDT)
+Date:   Thu, 03 Aug 2023 22:20:22 -0400
+Message-ID: <f37d02a675208bebc7025443e6cd74da.paul@paul-moore.com>
 From:   Paul Moore <paul@paul-moore.com>
 To:     =?UTF-8?q?Christian=20G=C3=B6ttsche?= <cgzones@googlemail.com>,
         selinux@vger.kernel.org
 Cc:     Stephen Smalley <stephen.smalley.work@gmail.com>,
         Eric Paris <eparis@parisplace.org>,
-        Ondrej Mosnacek <omosnace@redhat.com>,
-        Casey Schaufler <casey@schaufler-ca.com>,
-        Xiu Jianfeng <xiujianfeng@huaweicloud.com>,
-        "GONG, Ruiqi" <gongruiqi1@huawei.com>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 6/9] selinux: avoid implicit conversions in services  code
-References: <20230728155501.39632-5-cgzones@googlemail.com>
-In-Reply-To: <20230728155501.39632-5-cgzones@googlemail.com>
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 7/9] selinux: avoid implicit conversions in selinuxfs  code
+References: <20230728155501.39632-6-cgzones@googlemail.com>
+In-Reply-To: <20230728155501.39632-6-cgzones@googlemail.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,PP_MIME_FAKE_ASCII_TEXT,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
@@ -74,28 +71,64 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 On Jul 28, 2023 =?UTF-8?q?Christian=20G=C3=B6ttsche?= <cgzones@googlemail.com> wrote:
 > 
-> Use u32 as the output parameter type in security_get_classes() and
-> security_get_permissions(), based on the type of the symtab nprim
-> member.
+> Use umode_t as parameter type for sel_make_inode(), which assigns the
+> value to the member i_mode of struct inode.
 > 
-> Declare the read-only class string parameter of
-> security_get_permissions() const.
-> 
-> Avoid several implicit conversions by using the identical type for the
-> destination.
-> 
-> Use the type identical to the source for local variables.
+> Use identical type for loop iterator.
 > 
 > Signed-off-by: Christian Göttsche <cgzones@googlemail.com>
 > ---
 > v2: avoid declarations in init-clauses of for loops
 > ---
->  security/selinux/include/security.h |  4 ++--
->  security/selinux/selinuxfs.c        |  7 ++++---
->  security/selinux/ss/services.c      | 23 ++++++++++++-----------
->  3 files changed, 18 insertions(+), 16 deletions(-)
+>  security/selinux/selinuxfs.c | 15 +++++++--------
+>  1 file changed, 7 insertions(+), 8 deletions(-)
+> 
+> diff --git a/security/selinux/selinuxfs.c b/security/selinux/selinuxfs.c
+> index b969e87fd870..7d7931d1758e 100644
+> --- a/security/selinux/selinuxfs.c
+> +++ b/security/selinux/selinuxfs.c
 
-Merged into selinux/next, thanks.
+...
+
+> @@ -1623,7 +1622,7 @@ static int sel_make_avc_files(struct dentry *dir)
+>  #endif
+>  	};
+>  
+> -	for (i = 0; i < ARRAY_SIZE(files); i++) {
+> +	for (u32 i = 0; i < ARRAY_SIZE(files); i++) {
+
+No initializers in the for-loop ;)
+
+Also, how did you decide 'i' should be a u32?
+
+>  		struct inode *inode;
+>  		struct dentry *dentry;
+>  
+> @@ -1649,7 +1648,7 @@ static int sel_make_ss_files(struct dentry *dir)
+>  {
+>  	struct super_block *sb = dir->d_sb;
+>  	struct selinux_fs_info *fsi = sb->s_fs_info;
+> -	int i;
+> +	u32 i;
+
+Same as above, why u32?
+
+>  	static const struct tree_descr files[] = {
+>  		{ "sidtab_hash_stats", &sel_sidtab_hash_stats_ops, S_IRUGO },
+>  	};
+> @@ -1700,7 +1699,7 @@ static const struct file_operations sel_initcon_ops = {
+>  
+>  static int sel_make_initcon_files(struct dentry *dir)
+>  {
+> -	int i;
+> +	u32 i;
+
+Again, why u32?
+
+>  	for (i = 1; i <= SECINITSID_NUM; i++) {
+>  		struct inode *inode;
+> -- 
+> 2.40.1
 
 --
 paul-moore.com
