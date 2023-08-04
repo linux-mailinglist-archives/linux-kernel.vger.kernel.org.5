@@ -2,59 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6920D76FF1C
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 12:58:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E090776FF1B
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 12:58:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230391AbjHDK6o convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 4 Aug 2023 06:58:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55204 "EHLO
+        id S229910AbjHDK6k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Aug 2023 06:58:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55154 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231654AbjHDK5f (ORCPT
+        with ESMTP id S231799AbjHDK55 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Aug 2023 06:57:35 -0400
-Received: from eu-smtp-delivery-151.mimecast.com (eu-smtp-delivery-151.mimecast.com [185.58.86.151])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 712AA524D
-        for <linux-kernel@vger.kernel.org>; Fri,  4 Aug 2023 03:56:45 -0700 (PDT)
-Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) by
- relay.mimecast.com with ESMTP with both STARTTLS and AUTH (version=TLSv1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- uk-mtapsc-5-bkO1WbUpNhKPKRaGR9bvIg-1; Fri, 04 Aug 2023 11:56:23 +0100
-X-MC-Unique: bkO1WbUpNhKPKRaGR9bvIg-1
-Received: from AcuMS.Aculab.com (10.202.163.6) by AcuMS.aculab.com
- (10.202.163.6) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Fri, 4 Aug
- 2023 11:56:21 +0100
-Received: from AcuMS.Aculab.com ([::1]) by AcuMS.aculab.com ([::1]) with mapi
- id 15.00.1497.048; Fri, 4 Aug 2023 11:56:21 +0100
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     "'linux-kernel@vger.kernel.org'" <linux-kernel@vger.kernel.org>,
-        "'Andy Shevchenko'" <andriy.shevchenko@linux.intel.com>,
-        'Andrew Morton' <akpm@linux-foundation.org>,
-        "'Matthew Wilcox (Oracle)'" <willy@infradead.org>,
-        'Christoph Hellwig' <hch@infradead.org>,
-        "'Jason A. Donenfeld'" <Jason@zx2c4.com>,
-        'Linus Torvalds' <torvalds@linux-foundation.org>
-Subject: [PATCH v3 5/5] minmax: Relax check to allow comparison between int
- and small unsigned constants.
-Thread-Topic: [PATCH v3 5/5] minmax: Relax check to allow comparison between
- int and small unsigned constants.
-Thread-Index: AdnGwkt6hGqNS4p3Ts2CQBK2yLMoFA==
-Date:   Fri, 4 Aug 2023 10:56:21 +0000
-Message-ID: <b6a49ed73aba427ca8bb433763fa94e9@AcuMS.aculab.com>
-References: <01e3e09005e9434b8f558a893a47c053@AcuMS.aculab.com>
-In-Reply-To: <01e3e09005e9434b8f558a893a47c053@AcuMS.aculab.com>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        Fri, 4 Aug 2023 06:57:57 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E09D49C5;
+        Fri,  4 Aug 2023 03:57:10 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id AF1B361F9C;
+        Fri,  4 Aug 2023 10:57:09 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1AB21C433CD;
+        Fri,  4 Aug 2023 10:57:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1691146629;
+        bh=lbZSdb+lLKV7Au60KMEayyUewgOND9KVkB1sK/VtkaI=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=ElMIgrdmQPa8MNuUwQEyj7DYZJlNj2Fsni842WjWaDpm4IwKqLGpXUcFoKWYvOtaD
+         UWXKg/aA3e8tu1i2k0WHTzze42dGsJobD7kbcYNsnqVRHYl3SplcjpwKe5HxT7x9QA
+         JMaOx9/uTuKxk0De+9tgQEvnJ08g5e3ajvleUVsxBj6W5pPrlcDswKoDtZCnFbOvB+
+         rQlMW3iaADwiQmZFdGJ90g7YT+EsobmZc4OzTS7spZnAiV/6BsSi+HK6A5ATMkHtOO
+         zKU7C9gXJTGWlygb4MwbcVXMK2bmm7h0TXeKEVefBB/R5DOyedd11b7rv1V/NYsZPu
+         sByOUmtKlPYKQ==
+Received: by mail-lf1-f49.google.com with SMTP id 2adb3069b0e04-4fe3c7f16bbso3332203e87.0;
+        Fri, 04 Aug 2023 03:57:09 -0700 (PDT)
+X-Gm-Message-State: AOJu0YzLKY/XlDa5cJs14AHu49a43+uRNlrugcjHSAjJ+h2WtS5Sbygp
+        VM++KvMk/PydKjnHdNND7X6EoRFDQmluRQ0wnNg=
+X-Google-Smtp-Source: AGHT+IGOHqdFKuXv2e7rHiHuv5FYKwvdoYzd5DLCmJynTbIFaIbrkNLqDWnU2KUgGZ3Dpa2Xxu5tbHcP//ZVwIpG9B8=
+X-Received: by 2002:a05:6512:1cd:b0:4fb:8f79:631 with SMTP id
+ f13-20020a05651201cd00b004fb8f790631mr942049lfp.46.1691146626978; Fri, 04 Aug
+ 2023 03:57:06 -0700 (PDT)
 MIME-Version: 1.0
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+References: <20230730161906.606163-1-luzmaximilian@gmail.com>
+ <20230730161906.606163-4-luzmaximilian@gmail.com> <CAMj1kXHOaEuP2Wds9ZU4RLx9oKhthvE=yR-Ju_Ka2boqTmTYNw@mail.gmail.com>
+ <b8b82aee-45a5-5e56-1737-4ec78f6279c2@gmail.com>
+In-Reply-To: <b8b82aee-45a5-5e56-1737-4ec78f6279c2@gmail.com>
+From:   Ard Biesheuvel <ardb@kernel.org>
+Date:   Fri, 4 Aug 2023 12:56:55 +0200
+X-Gmail-Original-Message-ID: <CAMj1kXEWf=Wd8kgt=3AHUquE+NOZ6DMXUZam75_44qD8YPXHkg@mail.gmail.com>
+Message-ID: <CAMj1kXEWf=Wd8kgt=3AHUquE+NOZ6DMXUZam75_44qD8YPXHkg@mail.gmail.com>
+Subject: Re: [PATCH v5 3/3] firmware: Add support for Qualcomm UEFI Secure Application
+To:     Maximilian Luz <luzmaximilian@gmail.com>
+Cc:     Bjorn Andersson <andersson@kernel.org>,
+        Andy Gross <agross@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        Johan Hovold <johan@kernel.org>,
+        Steev Klimaszewski <steev@kali.org>,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -62,94 +71,70 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Convert constants between 0 and INT_MAX to 'int' prior to comparisons
-so that min(signed_var, 20u) and, more commonly, min(signed_var, sizeof())
-are both valid.
+On Thu, 3 Aug 2023 at 19:09, Maximilian Luz <luzmaximilian@gmail.com> wrote:
+>
+> On 8/3/23 17:44, Ard Biesheuvel wrote:
+> > On Sun, 30 Jul 2023 at 18:19, Maximilian Luz <luzmaximilian@gmail.com> wrote:
+>
+> [...]
+>
+> >> +/* -- Driver setup. --------------------------------------------------------- */
+> >> +
+> >> +static int qcom_uefisecapp_probe(struct auxiliary_device *aux_dev,
+> >> +                                const struct auxiliary_device_id *aux_dev_id)
+> >> +{
+> >> +       struct qcuefi_client *qcuefi;
+> >> +       int status;
+> >> +
+> >> +       qcuefi = devm_kzalloc(&aux_dev->dev, sizeof(*qcuefi), GFP_KERNEL);
+> >> +       if (!qcuefi)
+> >> +               return -ENOMEM;
+> >> +
+> >> +       qcuefi->client = container_of(aux_dev, struct qseecom_client, aux_dev);
+> >> +
+> >> +       auxiliary_set_drvdata(aux_dev, qcuefi);
+> >> +       status = qcuefi_set_reference(qcuefi);
+> >> +       if (status)
+> >> +               return status;
+> >> +
+> >> +       status = efivars_register(&qcuefi->efivars, &qcom_efivar_ops);
+> >
+> > Will this also work if the EFI runtime services were already
+> > registered by the time we reach this point?
+>
+> That's actually a good question. In short: No. However, let me explain
+> that a bit:
+>
+> First, we assume that we're the only other non-generic provider
+> (arguably, multiple non-generic providers don't make much sense on a
+> single platform anyway, so I'd say in that case it's okay to fail here).
+>
+> Second, we assume that the generic ops are not going to be registered at
+> all on the platforms that this implementation is used. In particular, on
+> the platforms I've tested and heard reports from so far, "standard"
+> efivars either aren't actively advertised as "supported" or they return
+> EFI_UNSUPPORTED for all calls. So we assume that either the check in
+> efisubsys_init() or in generic_ops_supported() prevents registration
+> of the generic ops.
+>
+> Further, I'd hope that the uefisecapp would not be loaded if generic ops
+> would be supported on such a platform, thus preventing instantiation of
+> the respective client device.
+>
+> So the only issue that I can see is that if uefisecapp is loaded and
+> generic ops are supported, we would need a way to choose one over the
+> other. But I think that is fairly unlikely to happen and I think it
+> would probably be best to sort that out then (e.g. by refusing to load
+> this new driver with some additional check).
+>
+> Apart from that case, there should not be any timing issues that could
+> cause registration to fail spuriously.
+>
 
-Signed-off-by: David Laight <david.laight@aculab.com>
----
-v3: Fix compiler warnings for 'x >= 0' with unsigned/pointer types.
-v2: Add cast to fix min/max with pointer types.
- include/linux/minmax.h | 34 ++++++++++++++++++++++------------
- 1 file changed, 22 insertions(+), 12 deletions(-)
+Fair enough.
 
-diff --git a/include/linux/minmax.h b/include/linux/minmax.h
-index f56611ab486a..8d292aa55f5f 100644
---- a/include/linux/minmax.h
-+++ b/include/linux/minmax.h
-@@ -8,11 +8,13 @@
- /*
-  * min()/max()/clamp() macros must accomplish three things:
-  *
-- * - avoid multiple evaluations of the arguments (so side-effects like
-+ * - Avoid multiple evaluations of the arguments (so side-effects like
-  *   "x++" happen only once) when non-constant.
-- * - perform signed v unsigned type-checking (to generate compile
-+ * - Perform signed v unsigned type-checking (to generate compile
-  *   errors instead of nasty runtime surprises).
-- * - retain result as a constant expressions when called with only
-+ *   Constants from 0 to INT_MAX are cast to (int) so can be used
-+ *   in comparisons with signed types.
-+ * - Retain result as a constant expressions when called with only
-  *   constant expressions (to avoid tripping VLA warnings in stack
-  *   allocation usage).
-  */
-@@ -24,9 +26,17 @@
- 	__builtin_choose_expr(__is_constexpr(is_signed_type(typeof(x))),	\
- 		is_signed_type(typeof(x)), 0)
- 
--#define __types_ok(x, y) 			\
--	(__is_signed(x) == __is_signed(y) ||	\
--		__is_signed((x) + 0) == __is_signed((y) + 0))
-+#define __is_noneg_int(x)						\
-+	(__builtin_choose_expr(!__is_constexpr(x), false, 		\
-+		__builtin_choose_expr(__is_signed(x), x, 0) >= 0 &&	\
-+			(x) <= (typeof((x) + 0))(long)__INT_MAX__))
-+
-+#define __int_const(x)	__builtin_choose_expr(__is_noneg_int(x), (int)(long)(x), (x))
-+
-+#define __types_ok(x, y) 					\
-+	(__is_signed(x) == __is_signed(y) ||			\
-+		__is_signed((x) + 0) == __is_signed((y) + 0) ||	\
-+		__is_noneg_int(x) || __is_noneg_int(y))
- 
- #define __cmp_op_min <
- #define __cmp_op_max >
-@@ -34,24 +44,24 @@
- #define __cmp(op, x, y)	((x) __cmp_op_##op (y) ? (x) : (y))
- 
- #define __cmp_once(op, x, y, unique_x, unique_y) ({	\
--	typeof(x) unique_x = (x);			\
--	typeof(y) unique_y = (y);			\
-+	typeof(__int_const(x)) unique_x = (x);		\
-+	typeof(__int_const(y)) unique_y = (y);		\
- 	static_assert(__types_ok(x, y),			\
- 		#op "(" #x ", " #y ") signedness error, fix types or consider " #op "_unsigned() before " #op "_t()"); \
- 	__cmp(op, unique_x, unique_y); })
- 
- #define __careful_cmp(op, x, y)					\
- 	__builtin_choose_expr(__is_constexpr((x) - (y)),	\
--		__cmp(op, x, y),				\
-+		__cmp(op, __int_const(x), __int_const(y)),	\
- 		__cmp_once(op, x, y, __UNIQUE_ID(__x), __UNIQUE_ID(__y)))
- 
- #define __clamp(val, lo, hi)	\
- 	((val) >= (hi) ? (hi) : ((val) <= (lo) ? (lo) : (val)))
- 
- #define __clamp_once(val, lo, hi, unique_val, unique_lo, unique_hi) ({		\
--	typeof(val) unique_val = (val);						\
--	typeof(lo) unique_lo = (lo);						\
--	typeof(hi) unique_hi = (hi);						\
-+	typeof(__int_const(val)) unique_val = (val);				\
-+	typeof(__int_const(lo)) unique_lo = (lo);				\
-+	typeof(__int_const(hi)) unique_hi = (hi);				\
- 	static_assert(__builtin_choose_expr(__is_constexpr((lo) > (hi)), 	\
- 			(lo) <= (hi), true),					\
- 		"clamp() low limit " #lo " greater than high limit " #hi);	\
--- 
-2.17.1
+The series looks good to me.
 
--
-Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
-Registration No: 1397386 (Wales)
+Acked-by: Ard Biesheuvel <ardb@kernel.org>
 
+I take it this will go via the QCOM tree?
