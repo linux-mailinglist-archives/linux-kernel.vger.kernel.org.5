@@ -2,161 +2,184 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 56E8F7708C6
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 21:16:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 839DE7708CA
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 21:17:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229955AbjHDTQa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Aug 2023 15:16:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47976 "EHLO
+        id S230009AbjHDTRp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Aug 2023 15:17:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48418 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229510AbjHDTQ2 (ORCPT
+        with ESMTP id S229510AbjHDTRm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Aug 2023 15:16:28 -0400
-Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F2F213E
-        for <linux-kernel@vger.kernel.org>; Fri,  4 Aug 2023 12:16:27 -0700 (PDT)
-Received: by mail-ej1-x636.google.com with SMTP id a640c23a62f3a-99c136ee106so336602966b.1
-        for <linux-kernel@vger.kernel.org>; Fri, 04 Aug 2023 12:16:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1691176585; x=1691781385;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=TpiHH7yxmEW4ZBDV3OldglgWshd7L0knNrNdUQpdioM=;
-        b=YAJzdBxxg5mIQRYms2BEh1R5Vm+87M4Q4TxeLUT6RyrNijHzA/zfWa8H8kWGxrNPHb
-         pLSQGkFGRC+bMMLmtKGGjHbeBd7mRqnaM0RKHQ2SMoRcTLsMqb2dROGdWVGPAC4ALPFF
-         p1+gVQ4GPOE3Cm6pvuRdA+HVsql1vapaQmn19SIqM+B3mtcjWWQBA2y/6aduYUN4jb+t
-         CcZst0NISMfL4c15+SsZy4YBTodkMOkR0y62BIV5NxDTS3XIY4ZukAzfDH8UEOmg/qkZ
-         ocgWF8BBF4w8GT1kFaFlkO+lMdUN61/bXJOa6YS6Dj8y40C6WWgdChIiQ6VVDs1Yl3hO
-         TP2Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691176585; x=1691781385;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=TpiHH7yxmEW4ZBDV3OldglgWshd7L0knNrNdUQpdioM=;
-        b=gwSAkKhX/X8ExYIiYLPgx+jj85T5Th7+aSJ1LK/WnSglWmIzaX1m6JmYcTu5vjU7Rk
-         g8bvTpWP59sbzj1153WRYCjJCOVONG21jh0iWyOVD88u+pR3D+eU/aMMx3kmZRoVIY0k
-         5BdUAsCrocbDXj3FziyLM5Wja2W0g1tbayVhabJzTSXx4Mp2DLZlUFyS33eZ3ZtGrgzg
-         KhiOOZWl7QBk/YloMaLCl7x2hiRNB8D96rb03xd3ltQL+pKVyRBfplzfVR3lLoJwXh4a
-         bAI/60JvJne9hFxJWA108JcrtM4EHtFHcCCUjTFhxRViS6isZ7XWbhbGDj/ZkA+5sOTt
-         sqgQ==
-X-Gm-Message-State: AOJu0YwV+ymfzQ0Nt2qLghEqTFae03jRuiQD/irFfaZ1bL7pZoejO28U
-        Nyi+2of1MvAhknwSGDjK3WQ=
-X-Google-Smtp-Source: AGHT+IGjiRI/I3SynytvWznDJVkkJOCwpXVTgQMOfC1uzhrWOpNOGeKDVgG0KCt2koY6YDgn1s2Ftg==
-X-Received: by 2002:a17:906:2182:b0:991:e7c2:d0be with SMTP id 2-20020a170906218200b00991e7c2d0bemr2435265eju.63.1691176585274;
-        Fri, 04 Aug 2023 12:16:25 -0700 (PDT)
-Received: from andrea (host-82-57-177-142.retail.telecomitalia.it. [82.57.177.142])
-        by smtp.gmail.com with ESMTPSA id d24-20020a170906c21800b00989828a42e8sm1693018ejz.154.2023.08.04.12.16.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 04 Aug 2023 12:16:24 -0700 (PDT)
-Date:   Fri, 4 Aug 2023 21:16:20 +0200
-From:   Andrea Parri <parri.andrea@gmail.com>
-To:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Cc:     paulmck@kernel.org, paul.walmsley@sifive.com, palmer@dabbelt.com,
-        aou@eecs.berkeley.edu, linux-riscv@lists.infradead.org,
-        linux-kernel@vger.kernel.org, mmaas@google.com, hboehm@google.com,
-        striker@us.ibm.com
-Subject: Re: [RFC PATCH] membarrier: riscv: Provide core serializing command
-Message-ID: <ZM1OhJY8/PZ/osTH@andrea>
-References: <20230803040111.5101-1-parri.andrea@gmail.com>
- <ZMvLoI6PxLR8RJvR@andrea>
- <4bf79f06-4593-134a-04dd-b8f89e96a1b8@efficios.com>
- <ZMxDe0gXKYbY5jgt@andrea>
- <65350c17-3fcf-a057-a280-f6a5d36dcb21@efficios.com>
- <ZM0STfpkRSfNQBt8@andrea>
- <ab562167-e4a5-4a7d-7722-a4f99848d63e@efficios.com>
+        Fri, 4 Aug 2023 15:17:42 -0400
+Received: from bg4.exmail.qq.com (bg4.exmail.qq.com [43.155.65.254])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 891A8B9;
+        Fri,  4 Aug 2023 12:17:33 -0700 (PDT)
+X-QQ-mid: bizesmtp85t1691176641tm8sx53q
+Received: from linux-lab-host.localdomain ( [116.30.131.233])
+        by bizesmtp.qq.com (ESMTP) with 
+        id ; Sat, 05 Aug 2023 03:17:20 +0800 (CST)
+X-QQ-SSF: 01200000000000E0X000000A0000000
+X-QQ-FEAT: CR3LFp2JE4lYbqaaZM+OIeBxhpPfHwNf6FKIYa/5hIfNhQALqcHrQX6AQHnj9
+        XD7O5WO7YseMp4dKhzKzkWvz0X2v4zXDwYFcdKN/LYO36c+81Ae6CFjM7e2qwrZqxlST7Hf
+        hTGSfwM5MkGVnPQENxXNPtaoczWvPt4+/azy1enEF2NAEeGckk5C5x3sC9amyVHtkfUZqFu
+        7bEnqYoOUfoK9gUWBym28UUtqaFuw4VbqAaN4swt3ienM6MZAlVKAYMoIH+zhwROK4Nc25f
+        BOxVJwJj49L8HuYNowFtueyaPHe9tyDWpeAZbTeeH8q39COL/NhC2xtNSRg0lyIcrm3BFbM
+        nEH8KoYoWa/2qskOZqleIzkApgC3JLYz0+i09/jxWkUzF8BMKG18Vi+tpKfCg==
+X-QQ-GoodBg: 0
+X-BIZMAIL-ID: 426980743630132163
+From:   Zhangjin Wu <falcon@tinylab.org>
+To:     w@1wt.eu
+Cc:     arnd@arndb.de, falcon@tinylab.org, linux-kernel@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, tanyuan@tinylab.org,
+        thomas@t-8ch.de
+Subject: Re: [PATCH v1 2/3] selftests/nolibc: fix up O= option support
+Date:   Sat,  5 Aug 2023 03:17:15 +0800
+Message-Id: <20230804191715.379716-1-falcon@tinylab.org>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20230804184348.GA31470@1wt.eu>
+References: <20230804184348.GA31470@1wt.eu>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <ab562167-e4a5-4a7d-7722-a4f99848d63e@efficios.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-QQ-SENDSIZE: 520
+Feedback-ID: bizesmtp:tinylab.org:qybglogicsvrgz:qybglogicsvrgz5a-1
+X-Spam-Status: No, score=-0.6 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,RCVD_IN_VALIDITY_RPBL,
+        T_SPF_HELO_TEMPERROR,T_SPF_TEMPERROR autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 04, 2023 at 02:05:55PM -0400, Mathieu Desnoyers wrote:
-> On 8/4/23 10:59, Andrea Parri wrote:
-> > > What is the relationship between FENCE.I and instruction cache flush on
-> > > RISC-V ?
+> On Sat, Aug 05, 2023 at 02:40:23AM +0800, Zhangjin Wu wrote:
+> > > On Fri, Aug 04, 2023 at 07:51:50PM +0200, Thomas Wei?schuh wrote:
+> > > > On 2023-08-05 00:29:10+0800, Zhangjin Wu wrote:
+> > [...]
+> > > > > Do you mean here?
+> > > > > 
+> > > > >     # kernel image names by architecture
+> > > > >     IMAGE_i386    = arch/x86/boot/bzImage
+> > > > >     IMAGE_x86     = arch/x86/boot/bzImage
+> > > > >     IMAGE_arm64   = arch/arm64/boot/Image
+> > > > >     IMAGE_arm     = arch/arm/boot/zImage
+> > > > >     IMAGE_mips    = vmlinuz
+> > > > >     IMAGE_riscv   = arch/riscv/boot/Image
+> > > > >     IMAGE         = $(IMAGE_$(ARCH))
+> > > > >     IMAGE_NAME    = $(notdir $(IMAGE))
+> > > > > 
+> > > > > It does save another KERNEL_IMAGE macro in my future patch ;-)
+> > > > > 
+> > > > > But without O=, OUTPUT is also empty like objtree and when empty, it is
+> > > > > assigned as $(CURDIR), not $(srctree) as we expected for IMAGE and .config. To
+> > > > > be cleaner, objtree should also be used:
+> > > > > 
+> > > > >     - IMAGE         = $(IMAGE_$(ARCH))
+> > > > >     + IMAGE         = $(objtree)/$(IMAGE_$(ARCH))
+> > > > > 
+> > > > > Is this what you want?
+> > > > 
+> > > > More like:
+> > > > 
+> > > > -	$(Q)qemu-system-$(QEMU_ARCH) -display none -no-reboot -kernel "$(srctree)/$(IMAGE)" -serial stdio $(QEMU_ARGS) > "$(CURDIR)/run.out"
+> > > > +	$(Q)qemu-system-$(QEMU_ARCH) -display none -no-reboot -kernel "$(OUTPUT)$(IMAGE)" -serial stdio $(QEMU_ARGS) > "$(CURDIR)/run.out"
+> > > > 
+> > > > My assumption was that it's weird that we need to define such variables
+> > > > ourselves.
+> > > > 
+> > > > Using an empty $(OUTPUT) would have been fine if make is run from the
+> > > > root of the kernel tree. But that is not the case.
+> > > > 
+> > > > It still feels weird but I can't think of a nicer way, and it's not
+> > > > a big issue. So let's keep that part the same.
+> > > > 
+> > > > Or maybe Willy has a better idea.
+> > > 
+> > > I've just glanced over the discussion, but I'm wondering, why not
+> > > "$(objtree)/$(IMAGE)" instead ?
+> > >
 > > 
-> > The exact nature of this relationship is implementation-dependent.  From
-> > commentary included in the ISA portion referred to in the changelog:
+> > We used "$(objtree)/$(IMAGE)" originally, I thought of Thomas asked me to
+> > further add "$(objtree)" in the first place of IMAGE,
 > > 
-> >    A simple implementation can flush the local instruction cache and
-> >    the instruction pipeline when the FENCE.I is executed.  A more
-> >    complex implementation might snoop the instruction (data) cache on
-> >    every data (instruction) cache miss, or use an inclusive unified
-> >    private L2 cache to invalidate lines from the primary instruction
-> >    cache when they are being written by a local store instruction.  If
-> >    instruction and data caches are kept coherent in this way, or if
-> >    the memory system consists of only uncached RAMs, then just the
-> >    fetch pipeline needs to be flushed at a FENCE.I.  [..]
+> >      - IMAGE         = $(IMAGE_$(ARCH))
+> >      + IMAGE         = $(objtree)/$(IMAGE_$(ARCH))
 > > 
-> > Mmh, does this help?
+> > And then, we can use "IMAGE" directly in the qemu run & rerun targets:
+> > 
+> >     # run the tests after building the kernel
+> >     run: kernel
+> >     -	$(Q)qemu-system-$(QEMU_ARCH) -display none -no-reboot -kernel "$(objtree)/$(IMAGE)" -serial stdio $(QEMU_ARGS) > "$(RUN_OUT)"
+> >     +	$(Q)qemu-system-$(QEMU_ARCH) -display none -no-reboot -kernel "$(IMAGE)" -serial stdio $(QEMU_ARGS) > "$(RUN_OUT)"
+> >     	$(Q)$(REPORT) "$(RUN_OUT)"
+> >     
+> >     # re-run the tests from an existing kernel
+> >     rerun:
+> >     -	$(Q)qemu-system-$(QEMU_ARCH) -display none -no-reboot -kernel "$(objtree)/$(IMAGE)" -serial stdio $(QEMU_ARGS) > "$(RUN_OUT)"
+> >     +	$(Q)qemu-system-$(QEMU_ARCH) -display none -no-reboot -kernel "$(IMAGE)" -serial stdio $(QEMU_ARGS) > "$(RUN_OUT)"
+> >     	$(Q)$(REPORT) "$(RUN_OUT)"
+> > 
+> > Which one do you prefer? will renew this series soon.
 > 
-> Quoting
-> 
-> https://github.com/riscv/riscv-isa-manual/releases/download/Ratified-IMAFDQC/riscv-spec-20191213.pdf
-> 
-> Chapter 3 "“Zifencei” Instruction-Fetch Fence, Version 2.0"
-> 
-> "First, it has been recognized that on some systems, FENCE.I will be expensive to implement
-> and alternate mechanisms are being discussed in the memory model task group. In particular,
-> for designs that have an incoherent instruction cache and an incoherent data cache, or where
-> the instruction cache refill does not snoop a coherent data cache, both caches must be completely
-> flushed when a FENCE.I instruction is encountered. This problem is exacerbated when there are
-> multiple levels of I and D cache in front of a unified cache or outer memory system.
-> 
-> Second, the instruction is not powerful enough to make available at user level in a Unix-like
-> operating system environment. The FENCE.I only synchronizes the local hart, and the OS can
-> reschedule the user hart to a different physical hart after the FENCE.I. This would require the
-> OS to execute an additional FENCE.I as part of every context migration. For this reason, the
-> standard Linux ABI has removed FENCE.I from user-level and now requires a system call to
-> maintain instruction-fetch coherence, which allows the OS to minimize the number of FENCE.I
-> executions required on current systems and provides forward-compatibility with future improved
-> instruction-fetch coherence mechanisms.
-> 
-> Future approaches to instruction-fetch coherence under discussion include providing more
-> restricted versions of FENCE.I that only target a given address specified in rs1, and/or allowing
-> software to use an ABI that relies on machine-mode cache-maintenance operations."
-> 
-> I start to suspect that even the people working on the riscv memory model have noticed
-> that letting a single instruction such as FENCE.I take care of both cache coherency
-> *and* flush the instruction pipeline will be a performance bottleneck, because it
-> can only clear the whole instruction cache.
-> 
-> Other architectures are either cache-coherent, or have cache flushing which can be
-> performed on a range of addresses. This is kept apart from whatever instruction
-> flushes the instruction pipeline of the processor.
-> 
-> By keeping instruction cache flushing separate from instruction pipeline flush, we can
-> let membarrier (and context switches, including thread migration) only care about the
-> instruction pipeline part, and leave instruction cache flush to either a dedicated
-> system call, or to specialized instructions which are available from user-mode.
-> 
-> Considering that FENCE.I is forced to invalidate the whole i-cache, I don't think you
-> will get away with executing it from switch_mm without making performance go down the
-> drain on cache incoherent implementations.
-> 
-> In my opinion, what we would need from RISC-V for membarrier (and context switch) is a
-> lightweight version of FENCE.I which only flushes the instruction pipeline of the local
-> processor. This should ideally come with a way for architectures with incoherent caches
-> to flush the relevant address ranges of the i-cache which are modified by a JIT. This
-> i-cache flush would not be required to flush the instruction pipeline, as it is typical
-> to batch invalidation of various address ranges together and issue a single instruction
-> pipeline flush on each CPU at the end. The i-cache flush could either be done by new
-> instructions available from user-space (similar to aarch64), or through privileged
-> instructions available through system calls (similar to arm cacheflush).
+> It's not a matter of preference but which solution really works. In short
+> it should work fine and consistently when launched from topdir and from
+> the nolibc-test dir. I personally don't know the effect of O= when run
+> from a subdir (is it relative to the current dir or topdir?).
+>
 
-Thanks for the remarks, Mathieu.  I think it will be very helpful to
-RISC-V architects (and memory model people) to have this context and
-reasoning written down.
+As suggested by Thomas, $(COMMAND_O) will be used to pass the absolute
+$(O) for every sub $(MAKE), O= will work like this:
 
-  Andrea
+    // subdir
+    $ pwd
+    /labs/linux-lab/src/linux-stable/tools/testing/selftests/nolibc
+    $ mkdir -p out
+    $ make run-user O=out -C /labs/linux-lab/src/linux-stable/tools/testing/selftests/nolibc/ -j4 | grep status
+    Makefile:122: srctree=/labs/linux-lab/src/linux-stable
+    Makefile:123: objtree: out
+    Makefile:124: COMMAND_O: O=/labs/linux-lab/src/linux-stable/tools/testing/selftests/nolibc/out
+    Makefile:125: OUTPUT=/labs/linux-lab/src/linux-stable/tools/testing/selftests/nolibc/out/
+    166 test(s): 158 passed,   8 skipped,   0 failed => status: warning
+
+    // topdir
+    $ pwd
+    /labs/linux-lab/src/linux-stable
+    $ mkdir -p out
+    $ make run-user O=out -C /labs/linux-lab/src/linux-stable/tools/testing/selftests/nolibc/ -j4 | grep status
+    Makefile:122: srctree=/labs/linux-lab/src/linux-stable
+    Makefile:123: objtree: out
+    Makefile:124: COMMAND_O: O=/labs/linux-lab/src/linux-stable/out
+    Makefile:125: OUTPUT=/labs/linux-lab/src/linux-stable/out/
+    166 test(s): 158 passed,   8 skipped,   0 failed => status: warning
+
+    // outside
+    $ pwd
+    /labs/linux-lab/build
+    $ mkdir -p out
+    $ make run-user O=out -C /labs/linux-lab/src/linux-stable/tools/testing/selftests/nolibc/ -j4 | grep status
+    Makefile:122: srctree=/labs/linux-lab/src/linux-stable
+    Makefile:123: objtree: out
+    Makefile:124: COMMAND_O: O=/labs/linux-lab/build/out
+    Makefile:125: OUTPUT=/labs/linux-lab/build/out/
+    166 test(s): 158 passed,   8 skipped,   0 failed => status: warning
+
+The change:
+
+    $ grep COMMAND_O -ur tools/testing/selftests/nolibc/Makefile 
+    	$(Q)$(MAKE) -C ../../../include/nolibc $(COMMAND_O) ARCH=$(ARCH) OUTPUT=$(OUTPUT)sysroot/ headers_standalone
+    	$(Q)$(MAKE) -C $(srctree) $(COMMAND_O) ARCH=$(ARCH) CC=$(CC) CROSS_COMPILE=$(CROSS_COMPILE) mrproper $(DEFCONFIG) prepare
+    	$(Q)$(MAKE) -C $(srctree) $(COMMAND_O) ARCH=$(ARCH) CC=$(CC) CROSS_COMPILE=$(CROSS_COMPILE) $(IMAGE_NAME) CONFIG_INITRAMFS_SOURCE=$(CURDIR)/initramfs
+
+> > And even further, I thought of puting everything to $(OUTPUT), but the
+> > change is very ugly and not good for v6.6, If you like, I will send that
+> > patch only as a discuss stuff.
+> 
+> Yeah I'd rather avoid ugly things for 6.6 now.
+>
+
+Ok, since you also suggested let's develop in outside directory, it is better
+to reserve the left parts as-is ;-)
+
+> Thanks,
+> Willy
