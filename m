@@ -2,154 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6711B76FC9B
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 10:51:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8867576FC94
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 10:51:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229963AbjHDIvm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Aug 2023 04:51:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43980 "EHLO
+        id S229932AbjHDIvU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Aug 2023 04:51:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44038 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229818AbjHDIuQ (ORCPT
+        with ESMTP id S229659AbjHDIts (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Aug 2023 04:50:16 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 013604C05
-        for <linux-kernel@vger.kernel.org>; Fri,  4 Aug 2023 01:49:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1691138963;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=1Vur9vhFgQMc0z7IU3gYJPoDLW/uQBhNiS46lcgbsys=;
-        b=NqTL8Fv6JIjrzlWrA0/skaF5yZgMwZKeGnpzKvpZowPh7x4BlGmy9k36kmjJzeQyZVaF+r
-        UaqrY7qEzNRtT3SgJS1cZhKagwGv9nbW//U6m/cdXc0FAnmQBKgpl10oiAnHWL5iZFru07
-        WtzSyBRu1BBNiICXl+0JyMDOKznW0Sg=
-Received: from mail-oo1-f70.google.com (mail-oo1-f70.google.com
- [209.85.161.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-336-HTwv9_S3OTS5fMxuhjf3Gw-1; Fri, 04 Aug 2023 04:49:22 -0400
-X-MC-Unique: HTwv9_S3OTS5fMxuhjf3Gw-1
-Received: by mail-oo1-f70.google.com with SMTP id 006d021491bc7-560c7abdbdcso2620019eaf.0
-        for <linux-kernel@vger.kernel.org>; Fri, 04 Aug 2023 01:49:21 -0700 (PDT)
+        Fri, 4 Aug 2023 04:49:48 -0400
+Received: from smtp-relay-internal-1.canonical.com (smtp-relay-internal-1.canonical.com [185.125.188.123])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A39AE4EC4
+        for <linux-kernel@vger.kernel.org>; Fri,  4 Aug 2023 01:49:44 -0700 (PDT)
+Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com [209.85.218.71])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id 5C40D417C1
+        for <linux-kernel@vger.kernel.org>; Fri,  4 Aug 2023 08:49:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1691138983;
+        bh=nLZMqtT0BTuD0r3ld9T+VcVOIz8LP+RVDN6gyhT7tPs=;
+        h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+         MIME-Version;
+        b=kPXWFDv4IaWNdstC8tRD6ftykQZ0hcsdvqVN3fA48GNJBDTmBaxh4X5ucm/Crxo7w
+         3xWVR9TV9WLcHPqVmXHFe858m1qWaIAuifPvsWeUFi0Rt0yrx32vkzItQnu/m/1th3
+         8+XO/a8mdmT1XO2gPYgHjMUP+8aR9VHL1kRLfvcr6lEXprQgQU3dDJ93Ts9s4Ueel5
+         xIyW6+xmKOaWIBLNeWAhQSywywqMM+VnxLbB4AvbwOu5NiNwh45BhMjLUk9NcxCnJ6
+         MRr980wphPQX2bl7iE67KCRSLYcokPTy/fw5OwOBS11QppxaFFln/o+P2Tqbms3eCu
+         Sg9HBS+RvHg6g==
+Received: by mail-ej1-f71.google.com with SMTP id a640c23a62f3a-94f7a2b21fdso132783966b.2
+        for <linux-kernel@vger.kernel.org>; Fri, 04 Aug 2023 01:49:43 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691138961; x=1691743761;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=1Vur9vhFgQMc0z7IU3gYJPoDLW/uQBhNiS46lcgbsys=;
-        b=hX4XlVINO+kj6ITU4oZiTmNC850rsaDGOKY3WDzAfAhnvpmJr8TuROSt+7/q4Y2k7d
-         UL02s/50JHmkoVHBKz8THPgag34EidBGtSa/0ntepaeVkFXZeexpxKFgisMRYUN3kWyH
-         KFH5Q8omlOmtdZsDkS1hWCT6uq+YNte8XzG7wBc6QlfaBsaBcii3ctjCzS8PCtPUYDkP
-         Wa6XnLPye1Nqmf49vFZydRyAfH0WZ/INVclQxBPVWwkGMab/9WPZEUCxS3FaVH1l80X6
-         9RoP+Z2dg7d7zhS9r6noqQ4bGokzjQuhcIPdWbVjrLQOkAWUYu1jkQUi/xCSlsJoeyt7
-         1Gpg==
-X-Gm-Message-State: AOJu0YzI5b9YGSDy8N5LRXQmt4nmF5P9zICJT94/6RZW5p4g09YxMC04
-        pt6jXAe8bssufTO67YoG4kxZxgFtmUV053Tn+z9HTxeBLrD4Vs3GCKHhB80yi2r+Yfzmfqh47D3
-        ABd4koBupDYz89JSHHSxCtK9q+ijcYNXz
-X-Received: by 2002:a4a:3947:0:b0:566:f763:8fb7 with SMTP id x7-20020a4a3947000000b00566f7638fb7mr1209711oog.2.1691138960723;
-        Fri, 04 Aug 2023 01:49:20 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IH+UFfE5kIqjMnJEnmHBbkiyastZJTrRw0+4RxwlYLXQBsPZsV+LE6/4Sbj30UIpvzm+AUyKg==
-X-Received: by 2002:a4a:3947:0:b0:566:f763:8fb7 with SMTP id x7-20020a4a3947000000b00566f7638fb7mr1209698oog.2.1691138960284;
-        Fri, 04 Aug 2023 01:49:20 -0700 (PDT)
-Received: from localhost.localdomain ([2804:1b3:a801:d380:694f:4f52:764c:4b7f])
-        by smtp.gmail.com with ESMTPSA id f8-20020a4ab008000000b0055516447257sm685679oon.29.2023.08.04.01.49.16
+        d=1e100.net; s=20221208; t=1691138983; x=1691743783;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=nLZMqtT0BTuD0r3ld9T+VcVOIz8LP+RVDN6gyhT7tPs=;
+        b=brFugBxzGLR4WRsn+/9jbHuFOihPQlI7ZRBO+4WtTrBueg9G7wGM0WdhoEd+i8TfNV
+         lBPK7SyAHVtB8rgEVyKqHNUPEHi2xiqz2x7CBLY1jbq8dMDZaCldgz+MUo02oyG2QZA9
+         rCKAwC7dSmmf2qbf7PSHoUSnhMg9ABXIpKgOHDxa70XbDvk/6j5HmFYoN9oZCnan2zjp
+         wyRP/dKma8hXOvdwnBxuTTKkLnRIpGcJmGkYuPnamwZDb+ydhZTKuWnC6Xzv0DaehbQ+
+         dPjMX5M7k50SNEoPK53FUXkcOJZAplVujpwxa41bpWQ8wva+til4fKgr+yaJaSWx7VZh
+         5lMQ==
+X-Gm-Message-State: AOJu0Yz3hWe4m779DD4or68Li+8IAN+5JgdcYJd3eAWyinvVyvLIPSwx
+        x7F/2AZlpnQz3tmBzBC+HpwoB06ipBosVSlIE7jorlRqRE6Vh0aefivCY5ydBJv3W2KIQvaMJNX
+        fEUe1JaOCoLgihZyLlBTv1AO6p6/Yzfsq5dvkKEDM8w==
+X-Received: by 2002:a17:906:3002:b0:99b:f66a:3189 with SMTP id 2-20020a170906300200b0099bf66a3189mr1057461ejz.8.1691138983095;
+        Fri, 04 Aug 2023 01:49:43 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IHYz1ENmxKq5uJlqK2BTiCUQ/3Q6puy0cdofBV5YjhsVwU4EydDgdIUCcgv/xVB11YsU0I69w==
+X-Received: by 2002:a17:906:3002:b0:99b:f66a:3189 with SMTP id 2-20020a170906300200b0099bf66a3189mr1057451ejz.8.1691138982931;
+        Fri, 04 Aug 2023 01:49:42 -0700 (PDT)
+Received: from amikhalitsyn.local (dslb-088-066-182-192.088.066.pools.vodafone-ip.de. [88.66.182.192])
+        by smtp.gmail.com with ESMTPSA id k25-20020a17090646d900b00992e94bcfabsm979279ejs.167.2023.08.04.01.49.41
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 04 Aug 2023 01:49:19 -0700 (PDT)
-From:   Leonardo Bras <leobras@redhat.com>
-To:     Will Deacon <will@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Leonardo Bras <leobras@redhat.com>,
-        Andrea Parri <parri.andrea@gmail.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Andrzej Hajda <andrzej.hajda@intel.com>,
-        Palmer Dabbelt <palmer@rivosinc.com>,
-        Guo Ren <guoren@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org
-Subject: [RFC PATCH v3 0/5] Rework & improve riscv cmpxchg.h and atomic.h
-Date:   Fri,  4 Aug 2023 05:48:53 -0300
-Message-ID: <20230804084900.1135660-2-leobras@redhat.com>
-X-Mailer: git-send-email 2.41.0
+        Fri, 04 Aug 2023 01:49:42 -0700 (PDT)
+From:   Alexander Mikhalitsyn <aleksandr.mikhalitsyn@canonical.com>
+To:     xiubli@redhat.com
+Cc:     brauner@kernel.org, stgraber@ubuntu.com,
+        linux-fsdevel@vger.kernel.org, Jeff Layton <jlayton@kernel.org>,
+        Ilya Dryomov <idryomov@gmail.com>, ceph-devel@vger.kernel.org,
+        Alexander Mikhalitsyn <aleksandr.mikhalitsyn@canonical.com>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v9 08/12] ceph: pass idmap to __ceph_setattr
+Date:   Fri,  4 Aug 2023 10:48:54 +0200
+Message-Id: <20230804084858.126104-9-aleksandr.mikhalitsyn@canonical.com>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20230804084858.126104-1-aleksandr.mikhalitsyn@canonical.com>
+References: <20230804084858.126104-1-aleksandr.mikhalitsyn@canonical.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-While studying riscv's cmpxchg.h file, I got really interested in
-understanding how RISCV asm implemented the different versions of
-{cmp,}xchg.
+Just pass down the mount's idmapping to __ceph_setattr,
+because we will need it later.
 
-When I understood the pattern, it made sense for me to remove the
-duplications and create macros to make it easier to understand what exactly
-changes between the versions: Instruction sufixes & barriers.
+Cc: Xiubo Li <xiubli@redhat.com>
+Cc: Jeff Layton <jlayton@kernel.org>
+Cc: Ilya Dryomov <idryomov@gmail.com>
+Cc: brauner@kernel.org
+Cc: ceph-devel@vger.kernel.org
+Signed-off-by: Alexander Mikhalitsyn <aleksandr.mikhalitsyn@canonical.com>
+---
+ fs/ceph/acl.c    | 4 ++--
+ fs/ceph/crypto.c | 2 +-
+ fs/ceph/inode.c  | 5 +++--
+ fs/ceph/super.h  | 3 ++-
+ 4 files changed, 8 insertions(+), 6 deletions(-)
 
-Also, did the same kind of work on atomic.c.
-
-After that, I noted both cmpxchg and xchg only accept variables of 
-size 4 and 8, compared to x86 and arm64 which do 1,2,4,8.
-
-Now that deduplication is done, it is quite direct to implement them
-for variable sizes 1 and 2, so I did it. Then Guo Ren already presented
-me some possible users :)
-
-I did compare the generated asm on a test.c that contained usage for every
-changed function, and could not detect any change on patches 1 + 2 + 3 
-compared with upstream.
-
-Pathes 4 & 5 were compiled-tested, but I could not run-test them yet.
-
-Thanks!
-Leo
-
-
-Changes since squashed cmpxchg RFCv2:
-- Removed rc parameter from the new macro: it can be internal to the macro
-- 2 new patches: cmpxchg size 1 and 2, xchg size 1 and 2
-https://lore.kernel.org/all/20230803051401.710236-2-leobras@redhat.com/
-
-Changes since squashed cmpxchg RFCv1:
-- Unified with atomic.c patchset
-- Rebased on top of torvalds/master (thanks Andrea Parri!)
-- Removed helper macros that were not being used elsewhere in the kernel.
-https://lore.kernel.org/all/20230419062505.257231-1-leobras@redhat.com/
-https://lore.kernel.org/all/20230406082018.70367-1-leobras@redhat.com/
-
-Changes since (cmpxchg) RFCv3:
-- Squashed the 6 original patches in 2: one for cmpxchg and one for xchg
-https://lore.kernel.org/all/20230404163741.2762165-1-leobras@redhat.com/
-
-Changes since (cmpxchg) RFCv2:
-- Fixed  macros that depend on having a local variable with a magic name
-- Previous cast to (long) is now only applied on 4-bytes cmpxchg
-https://lore.kernel.org/all/20230321074249.2221674-1-leobras@redhat.com/
-
-Changes since (cmpxchg) RFCv1:
-- Fixed patch 4/6 suffix from 'w.aqrl' to '.w.aqrl', to avoid build error
-https://lore.kernel.org/all/20230318080059.1109286-1-leobras@redhat.com/
-
-
-Leonardo Bras (5):
-  riscv/cmpxchg: Deduplicate xchg() asm functions
-  riscv/cmpxchg: Deduplicate cmpxchg() asm and macros
-  riscv/atomic.h : Deduplicate arch_atomic.*
-  riscv/cmpxchg: Implement cmpxchg for variables of size 1 and 2
-  riscv/cmpxchg: Implement xchg for variables of size 1 and 2
-
- arch/riscv/include/asm/atomic.h  | 164 ++++++-------
- arch/riscv/include/asm/cmpxchg.h | 393 ++++++++++---------------------
- 2 files changed, 195 insertions(+), 362 deletions(-)
-
+diff --git a/fs/ceph/acl.c b/fs/ceph/acl.c
+index 32b26deb1741..89280c168acb 100644
+--- a/fs/ceph/acl.c
++++ b/fs/ceph/acl.c
+@@ -142,7 +142,7 @@ int ceph_set_acl(struct mnt_idmap *idmap, struct dentry *dentry,
+ 		newattrs.ia_ctime = current_time(inode);
+ 		newattrs.ia_mode = new_mode;
+ 		newattrs.ia_valid = ATTR_MODE | ATTR_CTIME;
+-		ret = __ceph_setattr(inode, &newattrs, NULL);
++		ret = __ceph_setattr(idmap, inode, &newattrs, NULL);
+ 		if (ret)
+ 			goto out_free;
+ 	}
+@@ -153,7 +153,7 @@ int ceph_set_acl(struct mnt_idmap *idmap, struct dentry *dentry,
+ 			newattrs.ia_ctime = old_ctime;
+ 			newattrs.ia_mode = old_mode;
+ 			newattrs.ia_valid = ATTR_MODE | ATTR_CTIME;
+-			__ceph_setattr(inode, &newattrs, NULL);
++			__ceph_setattr(idmap, inode, &newattrs, NULL);
+ 		}
+ 		goto out_free;
+ 	}
+diff --git a/fs/ceph/crypto.c b/fs/ceph/crypto.c
+index b9071bba3b08..8cf32e7f59bf 100644
+--- a/fs/ceph/crypto.c
++++ b/fs/ceph/crypto.c
+@@ -112,7 +112,7 @@ static int ceph_crypt_set_context(struct inode *inode, const void *ctx, size_t l
+ 
+ 	cia.fscrypt_auth = cfa;
+ 
+-	ret = __ceph_setattr(inode, &attr, &cia);
++	ret = __ceph_setattr(&nop_mnt_idmap, inode, &attr, &cia);
+ 	if (ret == 0)
+ 		inode_set_flags(inode, S_ENCRYPTED, S_ENCRYPTED);
+ 	kfree(cia.fscrypt_auth);
+diff --git a/fs/ceph/inode.c b/fs/ceph/inode.c
+index 9b50861bd2b5..6c4cc009d819 100644
+--- a/fs/ceph/inode.c
++++ b/fs/ceph/inode.c
+@@ -2466,7 +2466,8 @@ static int fill_fscrypt_truncate(struct inode *inode,
+ 	return ret;
+ }
+ 
+-int __ceph_setattr(struct inode *inode, struct iattr *attr, struct ceph_iattr *cia)
++int __ceph_setattr(struct mnt_idmap *idmap, struct inode *inode,
++		   struct iattr *attr, struct ceph_iattr *cia)
+ {
+ 	struct ceph_inode_info *ci = ceph_inode(inode);
+ 	unsigned int ia_valid = attr->ia_valid;
+@@ -2818,7 +2819,7 @@ int ceph_setattr(struct mnt_idmap *idmap, struct dentry *dentry,
+ 	    ceph_quota_is_max_bytes_exceeded(inode, attr->ia_size))
+ 		return -EDQUOT;
+ 
+-	err = __ceph_setattr(inode, attr, NULL);
++	err = __ceph_setattr(idmap, inode, attr, NULL);
+ 
+ 	if (err >= 0 && (attr->ia_valid & ATTR_MODE))
+ 		err = posix_acl_chmod(&nop_mnt_idmap, dentry, attr->ia_mode);
+diff --git a/fs/ceph/super.h b/fs/ceph/super.h
+index 4e78de1be23e..e729cde7b4a0 100644
+--- a/fs/ceph/super.h
++++ b/fs/ceph/super.h
+@@ -1101,7 +1101,8 @@ struct ceph_iattr {
+ 	struct ceph_fscrypt_auth	*fscrypt_auth;
+ };
+ 
+-extern int __ceph_setattr(struct inode *inode, struct iattr *attr, struct ceph_iattr *cia);
++extern int __ceph_setattr(struct mnt_idmap *idmap, struct inode *inode,
++			  struct iattr *attr, struct ceph_iattr *cia);
+ extern int ceph_setattr(struct mnt_idmap *idmap,
+ 			struct dentry *dentry, struct iattr *attr);
+ extern int ceph_getattr(struct mnt_idmap *idmap,
 -- 
-2.41.0
+2.34.1
 
