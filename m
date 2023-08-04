@@ -2,32 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5367276FE73
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 12:28:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A84A76FE75
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 12:28:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231379AbjHDK17 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Aug 2023 06:27:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39358 "EHLO
+        id S229954AbjHDK2F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Aug 2023 06:28:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39402 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229792AbjHDK14 (ORCPT
+        with ESMTP id S231414AbjHDK2B (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Aug 2023 06:27:56 -0400
-Received: from out28-75.mail.aliyun.com (out28-75.mail.aliyun.com [115.124.28.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88BD649CB;
-        Fri,  4 Aug 2023 03:27:53 -0700 (PDT)
-X-Alimail-AntiSpam: AC=CONTINUE;BC=0.07436267|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_alarm|0.00591623-0.000349149-0.993735;FP=0|0|0|0|0|-1|-1|-1;HT=ay29a033018047192;MF=like@awinic.com;NM=1;PH=DS;RN=11;RT=11;SR=0;TI=SMTPD_---.U8So1JI_1691144844;
-Received: from awinic..(mailfrom:like@awinic.com fp:SMTPD_---.U8So1JI_1691144844)
+        Fri, 4 Aug 2023 06:28:01 -0400
+Received: from out28-218.mail.aliyun.com (out28-218.mail.aliyun.com [115.124.28.218])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EAA2646B1;
+        Fri,  4 Aug 2023 03:27:59 -0700 (PDT)
+X-Alimail-AntiSpam: AC=CONTINUE;BC=0.1634501|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_system_inform|0.0556458-0.000628824-0.943725;FP=0|0|0|0|0|-1|-1|-1;HT=ay29a033018047194;MF=like@awinic.com;NM=1;PH=DS;RN=11;RT=11;SR=0;TI=SMTPD_---.U8So1lO_1691144869;
+Received: from awinic..(mailfrom:like@awinic.com fp:SMTPD_---.U8So1lO_1691144869)
           by smtp.aliyun-inc.com;
-          Fri, 04 Aug 2023 18:27:48 +0800
+          Fri, 04 Aug 2023 18:27:55 +0800
 From:   like@awinic.com
 To:     lgirdwood@gmail.com, broonie@kernel.org, robh+dt@kernel.org,
         krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org
 Cc:     linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
         liweilei@awinic.com, liangdong@awinic.com,
         wangweidong.a@awinic.com, Alec Li <like@awinic.com>
-Subject: [PATCH v2 1/2] regulator: aw37503: Remove unneeded fields and switch to using dev_err_probe()
-Date:   Fri,  4 Aug 2023 10:27:02 +0000
-Message-ID: <20230804102703.931418-2-like@awinic.com>
+Subject: [PATCH v2 2/2] regulator: dt-bindings: Correct yamllint warnings/errors
+Date:   Fri,  4 Aug 2023 10:27:03 +0000
+Message-ID: <20230804102703.931418-3-like@awinic.com>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <20230804102703.931418-1-like@awinic.com>
 References: <20230804102703.931418-1-like@awinic.com>
@@ -45,294 +45,84 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Alec Li <like@awinic.com>
 
-These fields are not really need, remove them.
-Switching to use the dev_err_probe() will be easier.
-Keep the Kconfig and Makefile sorted.
+These yamllint warnings/errors have been corrected.
 
 Signed-off-by: Alec Li <like@awinic.com>
 ---
- drivers/regulator/Kconfig             |   8 +
- drivers/regulator/Makefile            |   1 +
- drivers/regulator/aw37503-regulator.c | 240 ++++++++++++++++++++++++++
- 3 files changed, 249 insertions(+)
- create mode 100644 drivers/regulator/aw37503-regulator.c
+ .../bindings/regulator/awinic,aw37503.yaml    | 65 +++++++++++++++++++
+ 1 file changed, 65 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/regulator/awinic,aw37503.yaml
 
-diff --git a/drivers/regulator/Kconfig b/drivers/regulator/Kconfig
-index 823f8e6e4801..6327201e8bb4 100644
---- a/drivers/regulator/Kconfig
-+++ b/drivers/regulator/Kconfig
-@@ -178,6 +178,14 @@ config REGULATOR_ATC260X
- 	  ATC260x PMICs. This will enable support for all the software
- 	  controllable DCDC/LDO regulators.
- 
-+config REGULATOR_AW37503
-+	tristate "AWINIC AW37503 Dual Output Power regulators"
-+	depends on I2C && GPIOLIB
-+	select REGMAP_I2C
-+	help
-+	  This driver supports AW37503 single inductor - dual output
-+	  power supply specifically designed for display panels.
-+
- config REGULATOR_AXP20X
- 	tristate "X-POWERS AXP20X PMIC Regulators"
- 	depends on MFD_AXP20X
-diff --git a/drivers/regulator/Makefile b/drivers/regulator/Makefile
-index 15e0d614ff66..f0e5cf7350a4 100644
---- a/drivers/regulator/Makefile
-+++ b/drivers/regulator/Makefile
-@@ -27,6 +27,7 @@ obj-$(CONFIG_REGULATOR_ARM_SCMI) += scmi-regulator.o
- obj-$(CONFIG_REGULATOR_AS3711) += as3711-regulator.o
- obj-$(CONFIG_REGULATOR_AS3722) += as3722-regulator.o
- obj-$(CONFIG_REGULATOR_ATC260X) += atc260x-regulator.o
-+obj-$(CONFIG_REGULATOR_AW37503) += aw37503-regulator.o
- obj-$(CONFIG_REGULATOR_AXP20X) += axp20x-regulator.o
- obj-$(CONFIG_REGULATOR_BCM590XX) += bcm590xx-regulator.o
- obj-$(CONFIG_REGULATOR_BD71815)	+= bd71815-regulator.o
-diff --git a/drivers/regulator/aw37503-regulator.c b/drivers/regulator/aw37503-regulator.c
-index 000000000000..e01ef6ad3eb8
+diff --git a/Documentation/devicetree/bindings/regulator/awinic,aw37503.yaml b/Documentation/devicetree/bindings/regulator/awinic,aw37503.yaml
+index 000000000000..bb551f6cbccd
 --- /dev/null
-+++ b/drivers/regulator/aw37503-regulator.c
-@@ -0,0 +1,240 @@
-+// SPDX-License-Identifier: GPL-2.0
-+//
-+// AWINIC AW37503 Regulator Driver
-+//
-+// Copyright (C) 2023 awinic. All Rights Reserved
-+//
-+// Author: <like@awinic.com>
++++ b/Documentation/devicetree/bindings/regulator/awinic,aw37503.yaml
+@@ -0,0 +1,65 @@
++# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/regulator/awinic,aw37503.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
 +
-+#include <linux/err.h>
-+#include <linux/gpio/consumer.h>
-+#include <linux/i2c.h>
-+#include <linux/module.h>
-+#include <linux/regmap.h>
-+#include <linux/regulator/driver.h>
-+#include <linux/regulator/machine.h>
++title: Awinic AW37503 Voltage Regulator
 +
-+#define AW37503_REG_VPOS		0x00
-+#define AW37503_REG_VNEG		0x01
-+#define AW37503_REG_APPS		0x03
-+#define AW37503_REG_CONTROL		0x04
-+#define AW37503_REG_WPRTEN		0x21
++maintainers:
++  - Alec Li <like@awinic.com>
 +
-+#define AW37503_VOUT_MASK		0x1F
-+#define AW37503_VOUT_N_VOLTAGE		0x15
-+#define AW37503_VOUT_VMIN		4000000
-+#define AW37503_VOUT_VMAX		6000000
-+#define AW37503_VOUT_STEP		100000
++description:
++  The AW37503 are dual voltage regulator, designed to support positive/negative
++  supply for driving TFT-LCD panels. It support software-configurable output
++  switching and monitoring. The output voltages can be programmed via an I2C
++  compatible interface.
 +
-+#define AW37503_REG_APPS_DIS_VPOS	BIT(1)
-+#define AW37503_REG_APPS_DIS_VNEG	BIT(0)
++properties:
++  compatible:
++    const: awinic,aw37503
 +
-+#define AW37503_REGULATOR_ID_VPOS	0
-+#define AW37503_REGULATOR_ID_VNEG	1
-+#define AW37503_MAX_REGULATORS		2
++  reg:
++    maxItems: 1
 +
-+struct aw37503_reg_pdata {
-+	struct gpio_desc *en_gpiod;
-+	int ena_gpio_state;
-+};
++patternProperties:
++  "^out[pn]$":
++    type: object
++    $ref: regulator.yaml#
 +
-+struct aw37503_regulator {
-+	struct device *dev;
-+	struct aw37503_reg_pdata reg_pdata[AW37503_MAX_REGULATORS];
-+};
++additionalProperties: false
 +
-+static int aw37503_regulator_enable(struct regulator_dev *rdev)
-+{
-+	struct aw37503_regulator *chip = rdev_get_drvdata(rdev);
-+	int id = rdev_get_id(rdev);
-+	struct aw37503_reg_pdata *rpdata = &chip->reg_pdata[id];
-+	int ret;
++required:
++  - compatible
++  - reg
++  - outp
++  - outn
 +
-+	if (!IS_ERR(rpdata->en_gpiod)) {
-+		gpiod_set_value_cansleep(rpdata->en_gpiod, 1);
-+		rpdata->ena_gpio_state = 1;
-+	}
++examples:
++  - |
++    #include <dt-bindings/gpio/gpio.h>
 +
-+	/* Hardware automatically enable discharge bit in enable */
-+	if (rdev->constraints->active_discharge ==
-+			REGULATOR_ACTIVE_DISCHARGE_DISABLE) {
-+		ret = regulator_set_active_discharge_regmap(rdev, false);
-+		if (ret < 0) {
-+			dev_err(chip->dev, "Failed to disable active discharge: %d\n",
-+				ret);
-+			return ret;
-+		}
-+	}
++    i2c {
++        #address-cells = <1>;
++        #size-cells = <0>;
 +
-+	return 0;
-+}
++        regulator@3e {
++            compatible = "awinic,aw37503";
++            reg = <0x3e>;
 +
-+static int aw37503_regulator_disable(struct regulator_dev *rdev)
-+{
-+	struct aw37503_regulator *chip = rdev_get_drvdata(rdev);
-+	int id = rdev_get_id(rdev);
-+	struct aw37503_reg_pdata *rpdata = &chip->reg_pdata[id];
++            outp {
++                regulator-name = "outp";
++                regulator-boot-on;
++                regulator-always-on;
++                enable-gpios = <&gpio 17 0>;
++            };
 +
-+	if (!IS_ERR(rpdata->en_gpiod)) {
-+		gpiod_set_value_cansleep(rpdata->en_gpiod, 0);
-+		rpdata->ena_gpio_state = 0;
-+	}
-+
-+	return 0;
-+}
-+
-+static int aw37503_regulator_is_enabled(struct regulator_dev *rdev)
-+{
-+	struct aw37503_regulator *chip = rdev_get_drvdata(rdev);
-+	int id = rdev_get_id(rdev);
-+	struct aw37503_reg_pdata *rpdata = &chip->reg_pdata[id];
-+
-+	if (!IS_ERR(rpdata->en_gpiod))
-+		return rpdata->ena_gpio_state;
-+
-+	return 1;
-+}
-+
-+static const struct regulator_ops aw37503_regulator_ops = {
-+	.enable = aw37503_regulator_enable,
-+	.disable = aw37503_regulator_disable,
-+	.is_enabled = aw37503_regulator_is_enabled,
-+	.list_voltage = regulator_list_voltage_linear,
-+	.map_voltage = regulator_map_voltage_linear,
-+	.get_voltage_sel = regulator_get_voltage_sel_regmap,
-+	.set_voltage_sel = regulator_set_voltage_sel_regmap,
-+	.set_active_discharge = regulator_set_active_discharge_regmap,
-+};
-+
-+static int aw37503_of_parse_cb(struct device_node *np,
-+				const struct regulator_desc *desc,
-+				struct regulator_config *config)
-+{
-+	struct aw37503_regulator *chip = config->driver_data;
-+	struct aw37503_reg_pdata *rpdata = &chip->reg_pdata[desc->id];
-+	int ret;
-+
-+	rpdata->en_gpiod = devm_fwnode_gpiod_get(chip->dev, of_fwnode_handle(np),
-+						 "enable", GPIOD_OUT_LOW,
-+						 "enable");
-+
-+	if (IS_ERR(rpdata->en_gpiod)) {
-+		ret = PTR_ERR(rpdata->en_gpiod);
-+
-+		/* Ignore the error other than probe defer */
-+		if (ret == -EPROBE_DEFER)
-+			return ret;
-+		return 0;
-+	}
-+
-+	return 0;
-+}
-+
-+#define AW37503_REGULATOR_DESC(_id, _name)		\
-+	[AW37503_REGULATOR_ID_##_id] = {		\
-+		.name = "aw37503-"#_name,		\
-+		.supply_name = "vin",			\
-+		.id = AW37503_REGULATOR_ID_##_id,	\
-+		.of_match = of_match_ptr(#_name),	\
-+		.of_parse_cb = aw37503_of_parse_cb,	\
-+		.ops = &aw37503_regulator_ops,		\
-+		.n_voltages = AW37503_VOUT_N_VOLTAGE,	\
-+		.min_uV = AW37503_VOUT_VMIN,		\
-+		.uV_step = AW37503_VOUT_STEP,		\
-+		.enable_time = 500,			\
-+		.vsel_mask = AW37503_VOUT_MASK,	\
-+		.vsel_reg = AW37503_REG_##_id,		\
-+		.active_discharge_off = 0,			\
-+		.active_discharge_on = AW37503_REG_APPS_DIS_##_id, \
-+		.active_discharge_mask = AW37503_REG_APPS_DIS_##_id, \
-+		.active_discharge_reg = AW37503_REG_APPS, \
-+		.type = REGULATOR_VOLTAGE,		\
-+		.owner = THIS_MODULE,			\
-+	}
-+
-+static const struct regulator_desc aw_regs_desc[AW37503_MAX_REGULATORS] = {
-+	AW37503_REGULATOR_DESC(VPOS, outp),
-+	AW37503_REGULATOR_DESC(VNEG, outn),
-+};
-+
-+static const struct regmap_range aw37503_no_reg_ranges[] = {
-+	regmap_reg_range(AW37503_REG_CONTROL + 1,
-+			 AW37503_REG_WPRTEN - 1),
-+};
-+
-+static const struct regmap_access_table aw37503_no_reg_table = {
-+	.no_ranges = aw37503_no_reg_ranges,
-+	.n_no_ranges = ARRAY_SIZE(aw37503_no_reg_ranges),
-+};
-+
-+static const struct regmap_config aw37503_regmap_config = {
-+	.reg_bits	= 8,
-+	.val_bits	= 8,
-+	.max_register	= AW37503_REG_WPRTEN,
-+	.rd_table	= &aw37503_no_reg_table,
-+	.wr_table	= &aw37503_no_reg_table,
-+};
-+
-+static int aw37503_probe(struct i2c_client *client)
-+{
-+	struct device *dev = &client->dev;
-+	struct aw37503_regulator *chip;
-+	struct regulator_dev *rdev;
-+	struct regmap *regmap;
-+	struct regulator_config config = { };
-+	int id;
-+
-+	chip = devm_kzalloc(dev, sizeof(*chip), GFP_KERNEL);
-+	if (!chip)
-+		return -ENOMEM;
-+
-+	regmap = devm_regmap_init_i2c(client, &aw37503_regmap_config);
-+	if (IS_ERR(regmap))
-+		return dev_err_probe(dev, PTR_ERR(regmap),
-+				     "Failed to init regmap\n");
-+
-+	i2c_set_clientdata(client, chip);
-+	chip->dev = dev;
-+
-+	config.regmap = regmap;
-+	config.dev = dev;
-+	config.driver_data = chip;
-+
-+	for (id = 0; id < AW37503_MAX_REGULATORS; ++id) {
-+		rdev = devm_regulator_register(dev, &aw_regs_desc[id],
-+					       &config);
-+		if (IS_ERR(rdev))
-+			return dev_err_probe(dev, PTR_ERR(rdev),
-+					     "Failed to register regulator %s\n",
-+					     aw_regs_desc[id].name);
-+	}
-+	return 0;
-+}
-+
-+static const struct i2c_device_id aw37503_id[] = {
-+	{.name = "aw37503",},
-+	{},
-+};
-+MODULE_DEVICE_TABLE(i2c, aw37503_id);
-+
-+static const struct of_device_id aw37503_of_match[] = {
-+	{.compatible = "awinic,aw37503",},
-+	{ /* Sentinel */ },
-+};
-+
-+MODULE_DEVICE_TABLE(of, aw37503_of_match);
-+
-+static struct i2c_driver aw37503_i2c_driver = {
-+	.driver = {
-+		.name = "aw37503",
-+		.of_match_table = aw37503_of_match,
-+	},
-+	.probe_new = aw37503_probe,
-+	.id_table = aw37503_id,
-+};
-+
-+module_i2c_driver(aw37503_i2c_driver);
-+
-+MODULE_DESCRIPTION("aw37503 regulator driver");
-+MODULE_AUTHOR("Alec Li <like@awinic.com>");
-+MODULE_LICENSE("GPL");
++            outn {
++                regulator-name = "outn";
++                regulator-boot-on;
++                regulator-always-on;
++                enable-gpios = <&gpio 27 0>;
++            };
++        };
++    };
++...
 -- 
 2.41.0
 
