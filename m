@@ -2,34 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CEEC876FE9A
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 12:38:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E1A376FE9C
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 12:39:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231424AbjHDKiM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Aug 2023 06:38:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43912 "EHLO
+        id S231443AbjHDKjJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Aug 2023 06:39:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44248 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229791AbjHDKiK (ORCPT
+        with ESMTP id S229791AbjHDKjH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Aug 2023 06:38:10 -0400
-Received: from verein.lst.de (verein.lst.de [213.95.11.211])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C33046B2;
-        Fri,  4 Aug 2023 03:38:09 -0700 (PDT)
-Received: by verein.lst.de (Postfix, from userid 2407)
-        id 43E5E68AA6; Fri,  4 Aug 2023 12:38:06 +0200 (CEST)
-Date:   Fri, 4 Aug 2023 12:38:05 +0200
-From:   Christoph Hellwig <hch@lst.de>
-To:     Christoph Hellwig <hch@infradead.org>
-Cc:     axboe@kernel.dk, lizetao1@huawei.com, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Christoph Hellwig <hch@lst.de>
-Subject: Re: [PATCH] romfs: only select BUFFER_HEAD for the block based path
-Message-ID: <20230804103805.GA23794@lst.de>
-References: <20230804102648.78683-1-hch@infradead.org>
+        Fri, 4 Aug 2023 06:39:07 -0400
+Received: from muru.com (muru.com [72.249.23.125])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 9FCD646B3;
+        Fri,  4 Aug 2023 03:39:06 -0700 (PDT)
+Received: from hillo.muru.com (localhost [127.0.0.1])
+        by muru.com (Postfix) with ESMTP id AF63880F7;
+        Fri,  4 Aug 2023 10:39:04 +0000 (UTC)
+From:   Tony Lindgren <tony@atomide.com>
+To:     linux-omap@vger.kernel.org
+Cc:     Dave Gerlach <d-gerlach@ti.com>, Dhruva Gole <d-gole@ti.com>,
+        Faiz Abbas <faiz_abbas@ti.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Keerthy <j-keerthy@ti.com>, Kevin Hilman <khilman@baylibre.com>,
+        Nishanth Menon <nm@ti.com>, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+Subject: [PATCH 1/3] bus: ti-sysc: Fix build warning for 64-bit build
+Date:   Fri,  4 Aug 2023 13:38:57 +0300
+Message-ID: <20230804103859.57458-1-tony@atomide.com>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230804102648.78683-1-hch@infradead.org>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
         autolearn_force=no version=3.4.6
@@ -39,44 +41,29 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Sorry, this should be:
+Fix "warning: cast from pointer to integer of different size" on 64-bit
+builds.
 
-From: Christoph Hellwig <hch@lst.de>
+Note that this is a cosmetic fix at this point as the driver is not yet
+used for 64-bit systems.
 
-to match the signoff.  I managed to mess my mail setup, but it should
-be fixed now.
+Fixes: feaa8baee82a ("bus: ti-sysc: Implement SoC revision handling")
+Signed-off-by: Tony Lindgren <tony@atomide.com>
+---
+ drivers/bus/ti-sysc.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-
-On Fri, Aug 04, 2023 at 12:26:48PM +0200, Christoph Hellwig wrote:
-> selecting BUFFER_HEAD unconditionally does not work as romfs can also
-> be built with only the MTD backend and thus without CONFIG_BLOCK.
-> 
-> Fixes: 0f842210d97a ("fs/Kconfig: Fix compile error for romfs")
-> Signed-off-by: Christoph Hellwig <hch@lst.de>
-> ---
->  fs/romfs/Kconfig | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/fs/romfs/Kconfig b/fs/romfs/Kconfig
-> index 3f6b550eee6192..f24a96a331af1b 100644
-> --- a/fs/romfs/Kconfig
-> +++ b/fs/romfs/Kconfig
-> @@ -2,7 +2,6 @@
->  config ROMFS_FS
->  	tristate "ROM file system support"
->  	depends on BLOCK || MTD
-> -	select BUFFER_HEAD
->  	help
->  	  This is a very small read-only file system mainly intended for
->  	  initial ram disks of installation disks, but it could be used for
-> @@ -58,6 +57,7 @@ endchoice
->  config ROMFS_ON_BLOCK
->  	bool
->  	default y if ROMFS_BACKED_BY_BLOCK || ROMFS_BACKED_BY_BOTH
-> +	select BUFFER_HEAD
->  
->  config ROMFS_ON_MTD
->  	bool
-> -- 
-> 2.39.2
----end quoted text---
+diff --git a/drivers/bus/ti-sysc.c b/drivers/bus/ti-sysc.c
+--- a/drivers/bus/ti-sysc.c
++++ b/drivers/bus/ti-sysc.c
+@@ -3104,7 +3104,7 @@ static int sysc_init_static_data(struct sysc *ddata)
+ 
+ 	match = soc_device_match(sysc_soc_match);
+ 	if (match && match->data)
+-		sysc_soc->soc = (int)match->data;
++		sysc_soc->soc = (unsigned long)match->data;
+ 
+ 	/*
+ 	 * Check and warn about possible old incomplete dtb. We now want to see
+-- 
+2.41.0
