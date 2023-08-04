@@ -2,198 +2,183 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 98D7476F707
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 03:38:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1EEA176F70B
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 03:39:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231269AbjHDBiX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Aug 2023 21:38:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52974 "EHLO
+        id S231641AbjHDBj1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Aug 2023 21:39:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53696 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229513AbjHDBiW (ORCPT
+        with ESMTP id S231542AbjHDBjT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Aug 2023 21:38:22 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DAE29E7;
-        Thu,  3 Aug 2023 18:38:20 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 6C10361EE6;
-        Fri,  4 Aug 2023 01:38:20 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C5C0EC43397;
-        Fri,  4 Aug 2023 01:38:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691113099;
-        bh=6qeC0Iv1GFQRmaVD75/FwHHjugHHOsjLKJQ8l8kFABk=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=YtbWO8qkENQ77pza8i5wnqYNdqxush+O++/dtrsAcWmwys+eyokVowS0OBVxUEdKM
-         uMc9TV10FTmVetkNUcnsB+GgO0WUeiuXLisKZvFVUCugQLzJuma5if6wQ9EK8CqgzY
-         Sy0N5ngAy6nYdZuXLQeocvh7lL85ExtGBGDbkkV1+f8vD5jEr7xPl7NDtXXZO7xuo1
-         O7Am2iPmdsFXXH90QM3GsI+kJbLoyAZawAPh/9hXWz2SeM/RypMMz9K3MsvJEpQIDB
-         U+//Ae9gbozR+HKZeFY20aIa9z4zkakLIJ6TBoh7EFOh6AFPJfq1irxuLNHW4wCxvn
-         GRrPx7xeO9jRg==
-Received: by mail-ed1-f51.google.com with SMTP id 4fb4d7f45d1cf-52256241c66so3421029a12.1;
-        Thu, 03 Aug 2023 18:38:19 -0700 (PDT)
-X-Gm-Message-State: AOJu0Yzb1HxY6ZNf3dH8b/0o5JM0H/biJ3q9/kFmsNy20ec+SIKf+dfP
-        y4oockMjSK4w50GwuOWLB+538SPMnE+kRhlPTvU=
-X-Google-Smtp-Source: AGHT+IHGdl+3u1eeNYAlAMvsAvH7XeSH+JF+iR2tAo8oIjL0sT4latMS64a1wdROFbb12sOLiIoRnUfSYMrCmA3xU/A=
-X-Received: by 2002:aa7:c989:0:b0:522:18b6:c01f with SMTP id
- c9-20020aa7c989000000b0052218b6c01fmr443469edt.3.1691113097908; Thu, 03 Aug
- 2023 18:38:17 -0700 (PDT)
+        Thu, 3 Aug 2023 21:39:19 -0400
+Received: from out30-131.freemail.mail.aliyun.com (out30-131.freemail.mail.aliyun.com [115.124.30.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8AEE544A6;
+        Thu,  3 Aug 2023 18:39:10 -0700 (PDT)
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R791e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045170;MF=xueshuai@linux.alibaba.com;NM=1;PH=DS;RN=15;SR=0;TI=SMTPD_---0Vp-Qx-N_1691113145;
+Received: from 30.240.114.112(mailfrom:xueshuai@linux.alibaba.com fp:SMTPD_---0Vp-Qx-N_1691113145)
+          by smtp.aliyun-inc.com;
+          Fri, 04 Aug 2023 09:39:07 +0800
+Message-ID: <10176239-78c1-e276-e74f-a6e79b9c0751@linux.alibaba.com>
+Date:   Fri, 4 Aug 2023 09:39:03 +0800
 MIME-Version: 1.0
-References: <20210514200743.3026725-1-alex.kogan@oracle.com>
- <20210514200743.3026725-4-alex.kogan@oracle.com> <ZMrjPWdWhEhwpZDo@gmail.com>
- <20230803085004.GF212435@hirez.programming.kicks-ass.net> <CAJF2gTQFZEpHK45hd9HXxHxJc4gaCuDQ4wZ2adDzHwGQjA6VFw@mail.gmail.com>
- <20230803115610.GC214207@hirez.programming.kicks-ass.net> <CAJF2gTQkZ_dVgrdyxRjb=HHgMkBxCkJy0cX_C-FF_ZSQ1ODj-g@mail.gmail.com>
-In-Reply-To: <CAJF2gTQkZ_dVgrdyxRjb=HHgMkBxCkJy0cX_C-FF_ZSQ1ODj-g@mail.gmail.com>
-From:   Guo Ren <guoren@kernel.org>
-Date:   Fri, 4 Aug 2023 09:38:05 +0800
-X-Gmail-Original-Message-ID: <CAJF2gTSt8+NQwVPeR=78=s78AZM_o8+p8j2H25xg1yZR-2v5XA@mail.gmail.com>
-Message-ID: <CAJF2gTSt8+NQwVPeR=78=s78AZM_o8+p8j2H25xg1yZR-2v5XA@mail.gmail.com>
-Subject: Re: [PATCH v15 3/6] locking/qspinlock: Introduce CNA into the slow
- path of qspinlock
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Alex Kogan <alex.kogan@oracle.com>, linux@armlinux.org.uk,
-        mingo@redhat.com, will.deacon@arm.com, arnd@arndb.de,
-        longman@redhat.com, linux-arch@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        tglx@linutronix.de, bp@alien8.de, hpa@zytor.com, x86@kernel.org,
-        guohanjun@huawei.com, jglauber@marvell.com,
-        steven.sistare@oracle.com, daniel.m.jordan@oracle.com,
-        dave.dice@oracle.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.13.1
+Subject: Re: [PATCH v6 3/4] drivers/perf: add DesignWare PCIe PMU driver
+Content-Language: en-US
+To:     Yicong Yang <yangyicong@huawei.com>,
+        Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+Cc:     yangyicong@hisilicon.com, chengyou@linux.alibaba.com,
+        kaishen@linux.alibaba.com, helgaas@kernel.org, will@kernel.org,
+        baolin.wang@linux.alibaba.com, robin.murphy@arm.com,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-pci@vger.kernel.org, rdunlap@infradead.org,
+        mark.rutland@arm.com, zhuo.song@linux.alibaba.com
+References: <20230606074938.97724-1-xueshuai@linux.alibaba.com>
+ <20230606074938.97724-4-xueshuai@linux.alibaba.com>
+ <31e2b012-3a29-d063-842d-e3f7736816e7@huawei.com>
+ <20230727103929.00000544@Huawei.com>
+ <12958abe-4bdb-8532-bf67-8e772ed2a9dd@linux.alibaba.com>
+ <edc056aa-1c53-a31e-087f-6076b795d5cc@huawei.com>
+From:   Shuai Xue <xueshuai@linux.alibaba.com>
+In-Reply-To: <edc056aa-1c53-a31e-087f-6076b795d5cc@huawei.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-10.0 required=5.0 tests=BAYES_00,
+        ENV_AND_HDR_SPF_MATCH,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 4, 2023 at 9:33=E2=80=AFAM Guo Ren <guoren@kernel.org> wrote:
->
-> On Thu, Aug 3, 2023 at 7:57=E2=80=AFPM Peter Zijlstra <peterz@infradead.o=
-rg> wrote:
-> >
-> > On Thu, Aug 03, 2023 at 06:28:51PM +0800, Guo Ren wrote:
-> > > On Thu, Aug 3, 2023 at 4:50=E2=80=AFPM Peter Zijlstra <peterz@infrade=
-ad.org> wrote:
-> > > >
-> > > > On Wed, Aug 02, 2023 at 07:14:05PM -0400, Guo Ren wrote:
-> > > >
-> > > > > The pv_ops is belongs to x86 custom frame work, and it prevent ot=
-her
-> > > > > architectures connect to the CNA spinlock.
-> > > >
-> > > > static_call() exists as a arch neutral variant of this.
-> > > Emm... we have used static_call() in the riscv queued_spin_lock_:
-> > > https://lore.kernel.org/all/20230802164701.192791-20-guoren@kernel.or=
-g/
-> >
-> > Yeah, I think I saw that land in the INBOX, just haven't had time to
-> > look at it.
-> >
-> > > But we met a compile problem:
-> > >
-> > >   GEN     .vmlinux.objs
-> > >   MODPOST Module.symvers
-> > > ERROR: modpost: "__SCK__pv_queued_spin_unlock" [arch/riscv/kvm/kvm.ko=
-]
-> > > undefined!
-> > > ERROR: modpost: "__SCK__pv_queued_spin_unlock"
-> > > [kernel/locking/locktorture.ko] undefined!
-> > > ERROR: modpost: "__SCK__pv_queued_spin_unlock" [mm/z3fold.ko] undefin=
-ed!
-> > > ERROR: modpost: "__SCK__pv_queued_spin_unlock"
-> > > [fs/nfs_common/grace.ko] undefined!
-> > > ERROR: modpost: "__SCK__pv_queued_spin_unlock" [fs/quota/quota_v1.ko]=
- undefined!
-> > > ERROR: modpost: "__SCK__pv_queued_spin_unlock" [fs/quota/quota_v2.ko]=
- undefined!
-> > > ERROR: modpost: "__SCK__pv_queued_spin_unlock"
-> > > [fs/quota/quota_tree.ko] undefined!
-> > > ERROR: modpost: "__SCK__pv_queued_spin_unlock" [fs/fuse/virtiofs.ko] =
-undefined!
-> > > ERROR: modpost: "__SCK__pv_queued_spin_unlock" [fs/dlm/dlm.ko] undefi=
-ned!
-> > > ERROR: modpost: "__SCK__pv_queued_spin_unlock" [fs/fscache/fscache.ko=
-]
-> > > undefined!
-> > > WARNING: modpost: suppressed 839 unresolved symbol warnings because
-> > > there were too many)
-> > > /home/guoren/source/kernel/linux/scripts/Makefile.modpost:144: recipe
-> > > for target 'Module.symvers' failed
-> > >
-> > > Our solution is:
-> > > EXPORT_SYMBOL(__SCK__pv_queued_spin_unlock);
-> > >
-> > > What do you think about it?
-> >
-> > Could be you're not using static_call_mod() to go with
-> > EXPORT_STATIC_CALL_TRAMP()
-> Thx, that's what I want.
->
-> >
-> > > > > I'm working on riscv qspinlock on sg2042 64 cores 2/4 NUMA nodes
-> > > > > platforms. Here are the patches about riscv CNA qspinlock:
-> > > > > https://lore.kernel.org/linux-riscv/20230802164701.192791-19-guor=
-en@kernel.org/
-> > > > >
-> > > > > What's the next plan for this patch series? I think the two-queue=
- design
-> > > > > has satisfied most platforms with two NUMA nodes.
-> > > >
-> > > > What has been your reason for working on CNA? What lock has been so
-> > > > contended you need this?
-> > > I wrote the reason here:
-> > > https://lore.kernel.org/all/20230802164701.192791-1-guoren@kernel.org=
-/
-> > >
-> > > The target platform is: https://www.sophon.ai/
-> > >
-> > > The two NUMA nodes platform has come out, so we want to measure the
-> > > benefit of CNA qspinlock.
-> >
-> > CNA should only show a benefit when there is strong inter-node
-> > contention, and in that case it is typically best to fix the kernel sid=
-e
-> > locking.
-> >
-> > Hence the question as to what lock prompted you to look at this.
-> I met the long lock queue situation when the hardware gave an overly
-> aggressive store queue merge buffer delay mechanism. See:
-> https://lore.kernel.org/linux-riscv/20230802164701.192791-8-guoren@kernel=
-.org/
->
-> This also let me consider improving the efficiency of the long lock
-> queue release. For example, if the queue is like this:
->
-> (Node0 cpu0) -> (Node1 cpu64) -> (Node0 cpu1) -> (Node1 cpu65) ->
-> (Node0 cpu2) -> (Node1 cpu66) -> ...
->
-> Then every mcs_unlock would cause a cross-NUMA transaction. But if we
-> could make the queue like this:
->
-> (Node0 cpu0) -> (Node0 cpu1) -> (Node0 cpu2) -> (Node1 cpu65) ->
-> (Node1 cpu66) -> (Node1 cpu64) -> ...
->
-> Only one cross-NUMA transaction is needed. Although it would cause
-> starvation problems, qspinlock.numa_spinlock_threshold_ns could give a
-> basic guarantee.
-I thought it was a tradeoff for the balance between fairness and efficiency=
-.
-
->
-> --
-> Best Regards
->  Guo Ren
 
 
+On 2023/8/1 19:46, Yicong Yang wrote:
+> On 2023/7/28 20:41, Shuai Xue wrote:
+>>
+>>
+>> On 2023/7/27 17:39, Jonathan Cameron wrote:
+>>> On Tue, 6 Jun 2023 23:14:07 +0800
+>>> Yicong Yang <yangyicong@huawei.com> wrote:
+>>>
+>>>> On 2023/6/6 15:49, Shuai Xue wrote:
+>>>>> This commit adds the PCIe Performance Monitoring Unit (PMU) driver support
+>>>>> for T-Head Yitian SoC chip. Yitian is based on the Synopsys PCI Express
+>>>>> Core controller IP which provides statistics feature. The PMU is not a PCIe
+>>>>> Root Complex integrated End Point(RCiEP) device but only register counters
+>>>>> provided by each PCIe Root Port.
+>>>>>
+>>>>> To facilitate collection of statistics the controller provides the
+>>>>> following two features for each Root Port:
+>>>>>
+>>>>> - Time Based Analysis (RX/TX data throughput and time spent in each
+>>>>>   low-power LTSSM state)
+>>>>> - Event counters (Error and Non-Error for lanes)
+>>>>>
+>>>>> Note, only one counter for each type and does not overflow interrupt.
+>>>>>
+>>>>> This driver adds PMU devices for each PCIe Root Port. And the PMU device is
+>>>>> named based the BDF of Root Port. For example,
+>>>>>
+>>>>>     30:03.0 PCI bridge: Device 1ded:8000 (rev 01)
+>>>>>
+>>>>> the PMU device name for this Root Port is dwc_rootport_3018.
+>>>>>
+>>>>> Example usage of counting PCIe RX TLP data payload (Units of 16 bytes)::
+>>>>>
+>>>>>     $# perf stat -a -e dwc_rootport_3018/Rx_PCIe_TLP_Data_Payload/
+>>>>>
+>>>>> average RX bandwidth can be calculated like this:
+>>>>>
+>>>>>     PCIe TX Bandwidth = PCIE_TX_DATA * 16B / Measure_Time_Window
+>>>>>
+>>>>> Signed-off-by: Shuai Xue <xueshuai@linux.alibaba.com>
+>>>>> Reported-by: kernel test robot <lkp@intel.com>
+>>>>> Link: https://lore.kernel.org/oe-kbuild-all/202305170639.XU3djFZX-lkp@intel.com/
+>>>>> Reviewed-by: Baolin Wang <baolin.wang@linux.alibaba.com>
+>>>
+>>> I'll review on top to avoid any duplication with Yicong.
+>>
+>> Thank you! It also served as a reminder that I missed Yicong's email. It appears
+>> that Thunderbird mistakenly moved his email to the junk folder, resulting in me
+>> overlooking it.
+>>
+>>>
+>>> Note I've cropped the stuff neither of us commented on so it's
+>>> easier to spot the feedback.
+>>
+>> Thank you for noting that. My feedback is replied inline.
+>>
+>>>
+>>> Jonathan
+>>>
+>>>>> ---
+>>>>>  drivers/perf/Kconfig        |   7 +
+>>>>>  drivers/perf/Makefile       |   1 +
+>>>>>  drivers/perf/dwc_pcie_pmu.c | 706 ++++++++++++++++++++++++++++++++++++
+>>>>>  3 files changed, 714 insertions(+)
+>>>>>  create mode 100644 drivers/perf/dwc_pcie_pmu.c
+>>>>>
+>>>>> diff --git a/drivers/perf/Kconfig b/drivers/perf/Kconfig
+>>>>> index 711f82400086..6ff3921d7a62 100644
+>>>>> --- a/drivers/perf/Kconfig
+>>>>> +++ b/drivers/perf/Kconfig
+>>>>> @@ -209,6 +209,13 @@ config MARVELL_CN10K_DDR_PMU
+>>>>>  	  Enable perf support for Marvell DDR Performance monitoring
+>>>>>  	  event on CN10K platform.
+>>>>>  
+>>>>> +config DWC_PCIE_PMU
+>>>>> +	tristate "Enable Synopsys DesignWare PCIe PMU Support"
+>>>>> +	depends on (ARM64 && PCI)
+>>>>> +	help
+>>>>> +	  Enable perf support for Synopsys DesignWare PCIe PMU Performance
+>>>>> +	  monitoring event on Yitian 710 platform.
+>>>
+>>> The documentation kind of implies this isn't platform specific.
+>>> If some parts are (such as which events exist) then you may want to push
+>>> that to userspace / perftool with appropriate matching against specific SoC.
+>>>
+>>> If it is generic, then change this text to "event on platform including the Yitian 710."
+>>
+>> It is generic without any platform specific, so I will change it as you expected.
+>>
+>>>
+>>>>> +
+>>>>>  source "drivers/perf/arm_cspmu/Kconfig"
+>>>>>  
+>>>>>  source "drivers/perf/amlogic/Kconfig"
+>>>
+>>>>> new file mode 100644
+>>>>> index 000000000000..8bfcf6e0662d
+>>>>> --- /dev/null
+>>>>> +++ b/drivers/perf/dwc_pcie_pmu.c
+>>>>> @@ -0,0 +1,706 @@
+>>>
+>>> ...
+>>>
+>>>>> +
+>>>>> +struct dwc_pcie_pmu {
+>>>>> +	struct pci_dev		*pdev;		/* Root Port device */  
+>>>>
+>>>> If the root port removed after the probe of this PCIe PMU driver, we'll access the NULL
+>>>> pointer. I didn't see you hold the root port to avoid the removal.
+>>
+>> Do you mean that I should have a reference count of rootport by pci_dev_get() when allocating
+>> pcie_pmu?
+>>
+>>      pcie_pmu->pdev = pci_dev_get();
+> 
+> It could be one option, but will block the removal of device from userspace. Another option
+> is to register a PCI bus notifier then on removal/added the driver can get notified and handle
+> it, for example, remove the related PMU on the removal of the root ports.
 
---=20
-Best Regards
- Guo Ren
+I see, but can root port be removed from userspace? I check the hotplug slot interface, no root
+port is available to power off.
+
+Thank you.
+
+Best Regards,
+Shuai
