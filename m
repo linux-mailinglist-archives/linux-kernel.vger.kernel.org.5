@@ -2,116 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D00A676FD8E
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 11:39:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B76976FD85
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 11:39:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231150AbjHDJj4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Aug 2023 05:39:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46542 "EHLO
+        id S230514AbjHDJjC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Aug 2023 05:39:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46230 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230480AbjHDJj1 (ORCPT
+        with ESMTP id S231145AbjHDJis (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Aug 2023 05:39:27 -0400
-Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ABE1F4ED9
-        for <linux-kernel@vger.kernel.org>; Fri,  4 Aug 2023 02:39:23 -0700 (PDT)
-Received: by mail-ej1-x632.google.com with SMTP id a640c23a62f3a-977e0fbd742so254697366b.2
-        for <linux-kernel@vger.kernel.org>; Fri, 04 Aug 2023 02:39:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1691141962; x=1691746762;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=SqFgyxgqKy35egMtAQEDXFAX67wWyryg2XIdy5uYFb0=;
-        b=klneINchgp12vI4XsOnGJdC/i6io2p0bGAbVYSLuLGGSKaI4DCgPyT6EXqHyJlj5f6
-         oVoR5gVtEn8dcNnZrKI2TKFQn9BvurZMt9sTQgURH0ED6AhIQLb2eyDWX4NRCnHTxhGI
-         Y6HBt+IeM/iPvkVk5jc6MeACweiXFf0loc6kzYrIGt/4kHGiWnSMxt7O4aLAMWACa8tB
-         pRhnbJjU1Rr+HzlfPTvsJRgTiVU3ENTVM06HalwlATMrKjy7kf1fkN/KVd2RTAJLb4IV
-         a8ee3uHaX90n4uKJHM+oc3pg1yKqSOr8FSfvAdnqq+IU9hW2g+ay7mTrz3xg2IqO2JWN
-         CC/g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691141962; x=1691746762;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=SqFgyxgqKy35egMtAQEDXFAX67wWyryg2XIdy5uYFb0=;
-        b=V1cB6d4vJU2OBqgOi2+6vCo99Gcj8W/dwHrFVhqlLJh+eXJyfH3HO3QIhN8OtGeqgg
-         9JtF92l7sE/ny1zQTXmuIiP31t8aSMJSGrd4DW6dX8f+5FOX8+u//7diBkkdmRyvITHY
-         Vv2qqVpopSnbEiA0Kk1QWCObPfcc2JQPtiVdmM+tmrcCkN8PRlUqGjCqCXU9cP68jsA7
-         wDWxGiMBJH2e1NK0wPapSHk3Fnn3jGY5a7HlVqJdHl9QnpbpD6fhDQG/eFCqg5DLBwX2
-         xE/4Vid1afJaiBgKMll/R2obPRIUSHa6UPUlowzJOf/oTZwf6B7tPb6ejU3yFB11A/QD
-         y1+Q==
-X-Gm-Message-State: AOJu0Yw6fFvAo8bG9THZIBSbvRHA+x7L6S/hNsbj4qtvyk3u49BgCMVf
-        67mM8x37NZOJzx2s4ZQRwXfQ2w==
-X-Google-Smtp-Source: AGHT+IHYGRFd8aUGz4ZpQSn8X692eIjgbM4iTHu71H0jGFofVuKtYwFdPegnaRkxfeBlJ+vOWRygLw==
-X-Received: by 2002:a17:907:75c8:b0:993:d75b:63ea with SMTP id jl8-20020a17090775c800b00993d75b63eamr1114333ejc.16.1691141962066;
-        Fri, 04 Aug 2023 02:39:22 -0700 (PDT)
-Received: from [192.168.1.20] ([178.197.222.245])
-        by smtp.gmail.com with ESMTPSA id bn10-20020a170906c0ca00b00992b0745548sm1047976ejb.152.2023.08.04.02.39.20
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 04 Aug 2023 02:39:21 -0700 (PDT)
-Message-ID: <f17d22ad-97c4-3e9c-7e98-6251be4be58e@linaro.org>
-Date:   Fri, 4 Aug 2023 11:39:19 +0200
+        Fri, 4 Aug 2023 05:38:48 -0400
+Received: from relay1-d.mail.gandi.net (relay1-d.mail.gandi.net [IPv6:2001:4b98:dc4:8::221])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74B5249F0;
+        Fri,  4 Aug 2023 02:38:41 -0700 (PDT)
+Received: by mail.gandi.net (Postfix) with ESMTPSA id DC33724000B;
+        Fri,  4 Aug 2023 09:38:36 +0000 (UTC)
+From:   Remi Pommarel <repk@triplefau.lt>
+To:     Marek Lindner <mareklindner@neomailbox.ch>,
+        Simon Wunderlich <sw@simonwunderlich.de>,
+        Antonio Quartulli <a@unstable.cc>,
+        Sven Eckelmann <sven@narfation.org>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        b.a.t.m.a.n@lists.open-mesh.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Remi Pommarel <repk@triplefau.lt>,
+        stable@vger.kernel.org
+Subject: [PATCH net] batman-adv: Fix TT global entry leak when client roamed back
+Date:   Fri,  4 Aug 2023 11:39:36 +0200
+Message-Id: <20230804093936.22257-1-repk@triplefau.lt>
+X-Mailer: git-send-email 2.40.0
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.14.0
-Subject: Re: [PATCH v2 2/4] dt-bindings: arm: sunxi: Add BigTreeTech boards
-Content-Language: en-US
-To:     Martin Botka <martin@biqu3d.com>, martin.botka1@gmail.com
-Cc:     Konrad Dybcio <konrad.dybcio@somainline.org>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@somainline.org>,
-        Marijn Suijten <marijn.suijten@somainline.org>,
-        Jami Kettunen <jamipkettunen@somainline.org>,
-        Paul Bouchara <paul.bouchara@somainline.org>,
-        Martin Botka <martin.botka@somainline.org>,
-        Andre Przywara <andre.przywara@arm.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Chen-Yu Tsai <wens@csie.org>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Samuel Holland <samuel@sholland.org>,
-        Andrew Lunn <andrew@lunn.ch>, Icenowy Zheng <uwu@icenowy.me>,
-        Ludwig Kormann <ludwig.kormann@ict42.de>,
-        Heiko Stuebner <heiko@sntech.de>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Chris Morgan <macromorgan@hotmail.com>,
-        Jagan Teki <jagan@edgeble.ai>,
-        Maxime Ripard <mripard@kernel.org>, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev,
-        linux-kernel@vger.kernel.org
-References: <20230804090102.273029-1-martin@biqu3d.com>
- <7029E91796EC6A20+20230804090102.273029-3-martin@biqu3d.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <7029E91796EC6A20+20230804090102.273029-3-martin@biqu3d.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-GND-Sasl: repk@triplefau.lt
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 04/08/2023 11:00, Martin Botka wrote:
-> From: Martin Botka <martin.botka@somainline.org>
-> 
-> Add name & compatible for BigTreeTech Manta boards and
-> BigTreeTech Pi
-> 
-> Signed-off-by: Martin Botka <martin.botka@somainline.org>
-> ---
-> Changes in V2:
->     - Remove CB1 SoM as its own entry
+When a client roamed back to a node before it got time to destroy the
+pending local entry (i.e. within the same originator interval) the old
+global one is directly removed from hash table and left as such.
 
+But because this entry had an extra reference taken at lookup (i.e using
+batadv_tt_global_hash_find) there is no way its memory will be reclaimed
+at any time causing the following memory leak:
 
-Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+  unreferenced object 0xffff0000073c8000 (size 18560):
+    comm "softirq", pid 0, jiffies 4294907738 (age 228.644s)
+    hex dump (first 32 bytes):
+      06 31 ac 12 c7 7a 05 00 01 00 00 00 00 00 00 00  .1...z..........
+      2c ad be 08 00 80 ff ff 6c b6 be 08 00 80 ff ff  ,.......l.......
+    backtrace:
+      [<00000000ee6e0ffa>] kmem_cache_alloc+0x1b4/0x300
+      [<000000000ff2fdbc>] batadv_tt_global_add+0x700/0xe20
+      [<00000000443897c7>] _batadv_tt_update_changes+0x21c/0x790
+      [<000000005dd90463>] batadv_tt_update_changes+0x3c/0x110
+      [<00000000a2d7fc57>] batadv_tt_tvlv_unicast_handler_v1+0xafc/0xe10
+      [<0000000011793f2a>] batadv_tvlv_containers_process+0x168/0x2b0
+      [<00000000b7cbe2ef>] batadv_recv_unicast_tvlv+0xec/0x1f4
+      [<0000000042aef1d8>] batadv_batman_skb_recv+0x25c/0x3a0
+      [<00000000bbd8b0a2>] __netif_receive_skb_core.isra.0+0x7a8/0xe90
+      [<000000004033d428>] __netif_receive_skb_one_core+0x64/0x74
+      [<000000000f39a009>] __netif_receive_skb+0x48/0xe0
+      [<00000000f2cd8888>] process_backlog+0x174/0x344
+      [<00000000507d6564>] __napi_poll+0x58/0x1f4
+      [<00000000b64ef9eb>] net_rx_action+0x504/0x590
+      [<00000000056fa5e4>] _stext+0x1b8/0x418
+      [<00000000878879d6>] run_ksoftirqd+0x74/0xa4
+  unreferenced object 0xffff00000bae1a80 (size 56):
+    comm "softirq", pid 0, jiffies 4294910888 (age 216.092s)
+    hex dump (first 32 bytes):
+      00 78 b1 0b 00 00 ff ff 0d 50 00 00 00 00 00 00  .x.......P......
+      00 00 00 00 00 00 00 00 50 c8 3c 07 00 00 ff ff  ........P.<.....
+    backtrace:
+      [<00000000ee6e0ffa>] kmem_cache_alloc+0x1b4/0x300
+      [<00000000d9aaa49e>] batadv_tt_global_add+0x53c/0xe20
+      [<00000000443897c7>] _batadv_tt_update_changes+0x21c/0x790
+      [<000000005dd90463>] batadv_tt_update_changes+0x3c/0x110
+      [<00000000a2d7fc57>] batadv_tt_tvlv_unicast_handler_v1+0xafc/0xe10
+      [<0000000011793f2a>] batadv_tvlv_containers_process+0x168/0x2b0
+      [<00000000b7cbe2ef>] batadv_recv_unicast_tvlv+0xec/0x1f4
+      [<0000000042aef1d8>] batadv_batman_skb_recv+0x25c/0x3a0
+      [<00000000bbd8b0a2>] __netif_receive_skb_core.isra.0+0x7a8/0xe90
+      [<000000004033d428>] __netif_receive_skb_one_core+0x64/0x74
+      [<000000000f39a009>] __netif_receive_skb+0x48/0xe0
+      [<00000000f2cd8888>] process_backlog+0x174/0x344
+      [<00000000507d6564>] __napi_poll+0x58/0x1f4
+      [<00000000b64ef9eb>] net_rx_action+0x504/0x590
+      [<00000000056fa5e4>] _stext+0x1b8/0x418
+      [<00000000878879d6>] run_ksoftirqd+0x74/0xa4
 
-Best regards,
-Krzysztof
+Releasing the extra reference from batadv_tt_global_hash_find even at
+roam back when batadv_tt_global_free is called fixes this memory leak.
+
+Cc: stable@vger.kernel.org
+Fixes: 068ee6e204e1 ("batman-adv: roaming handling mechanism redesign")
+Signed-off-by: Remi Pommarel <repk@triplefau.lt>
+---
+ net/batman-adv/translation-table.c | 1 -
+ 1 file changed, 1 deletion(-)
+
+diff --git a/net/batman-adv/translation-table.c b/net/batman-adv/translation-table.c
+index 36ca31252a73..b95c36765d04 100644
+--- a/net/batman-adv/translation-table.c
++++ b/net/batman-adv/translation-table.c
+@@ -774,7 +774,6 @@ bool batadv_tt_local_add(struct net_device *soft_iface, const u8 *addr,
+ 		if (roamed_back) {
+ 			batadv_tt_global_free(bat_priv, tt_global,
+ 					      "Roaming canceled");
+-			tt_global = NULL;
+ 		} else {
+ 			/* The global entry has to be marked as ROAMING and
+ 			 * has to be kept for consistency purpose
+-- 
+2.40.0
 
