@@ -2,154 +2,202 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E14137701EA
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 15:36:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E46597701ED
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 15:37:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231264AbjHDNgF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Aug 2023 09:36:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48202 "EHLO
+        id S231332AbjHDNhW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Aug 2023 09:37:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47954 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231348AbjHDNfs (ORCPT
+        with ESMTP id S231386AbjHDNhE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Aug 2023 09:35:48 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 689D635AA;
-        Fri,  4 Aug 2023 06:35:17 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 5E8BE62012;
-        Fri,  4 Aug 2023 13:35:16 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 12B48C433C9;
-        Fri,  4 Aug 2023 13:35:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691156115;
-        bh=55GKLfQUDd7jd/htYCG3E6Mbp9SgTzcWlvaJcSZqRy4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=fYv5dwwduUmp20l4s/RiGDtReNDfaU0i2nKybfHSOEShyjHIZO5UiwcWGoo5NBaiw
-         PnBKGVfC8lZYoXBZP8twEI+49N0QPMrEQp7lRfu9yvFuVqmbmACU2HpLuz3+wXL3ZZ
-         BbB4G0Ewf0xTPeHTJIilW9g9L9iFhEZXtBa7MYKp+i7oMGtyJSnh5qhDcfch2lvhCy
-         z7dUXnMFIJYzxUGeYMm12pA3Pn/qxu+N3xJ2+AOWTK4I4kJD72JoVKASRi/pCmJLgd
-         7yZ20Ep3ZXZv7GQy7KxwlUAC/GpMFX6wCQ+7CJXsTtfjgv/2NDSXLq1s60R4iNugbI
-         2nrtSSP2AQmHQ==
-Date:   Fri, 4 Aug 2023 15:35:12 +0200
-From:   Maxime Ripard <mripard@kernel.org>
-To:     Michael Riesch <michael.riesch@wolfvision.net>
-Cc:     Rob Herring <robh+dt@kernel.org>,
+        Fri, 4 Aug 2023 09:37:04 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 28510524D;
+        Fri,  4 Aug 2023 06:36:29 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 6705A1007;
+        Fri,  4 Aug 2023 06:36:25 -0700 (PDT)
+Received: from donnerap.manchester.arm.com (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 653133F5A1;
+        Fri,  4 Aug 2023 06:35:39 -0700 (PDT)
+Date:   Fri, 4 Aug 2023 14:35:37 +0100
+From:   Andre Przywara <andre.przywara@arm.com>
+To:     Martin Botka <martin@biqu3d.com>
+Cc:     martin.botka1@gmail.com,
+        Konrad Dybcio <konrad.dybcio@somainline.org>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@somainline.org>,
+        Marijn Suijten <marijn.suijten@somainline.org>,
+        Jami Kettunen <jamipkettunen@somainline.org>,
+        Paul Bouchara <paul.bouchara@somainline.org>,
+        Martin Botka <martin.botka@somainline.org>,
+        Rob Herring <robh+dt@kernel.org>,
         Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
         Conor Dooley <conor+dt@kernel.org>,
-        Neil Armstrong <neil.armstrong@linaro.org>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Sebastian Reichel <sre@kernel.org>,
-        Gerald Loacker <gerald.loacker@wolfvision.net>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        dri-devel@lists.freedesktop.org
-Subject: Re: [PATCH v2 3/4] drm/panel: sitronix-st7789v: add support for
- partial mode
-Message-ID: <s3fybvufmrmu4mkksbmbxec25nfkwxp5ts5hfk7pgult2aaoyc@724uq3ei3ch7>
-References: <20230718-feature-lcd-panel-v2-0-2485ca07b49d@wolfvision.net>
- <20230718-feature-lcd-panel-v2-3-2485ca07b49d@wolfvision.net>
+        Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Samuel Holland <samuel@sholland.org>,
+        Andrew Lunn <andrew@lunn.ch>, Icenowy Zheng <uwu@icenowy.me>,
+        Ludwig Kormann <ludwig.kormann@ict42.de>,
+        Heiko Stuebner <heiko@sntech.de>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Chris Morgan <macromorgan@hotmail.com>,
+        Jagan Teki <jagan@edgeble.ai>,
+        Maxime Ripard <mripard@kernel.org>, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 4/4] arm64: dts: allwinner: h616: Add BigTreeTech Pi
+ support
+Message-ID: <20230804143537.0c91e802@donnerap.manchester.arm.com>
+In-Reply-To: <92B0AD8F9717BDE3+20230804090102.273029-5-martin@biqu3d.com>
+References: <20230804090102.273029-1-martin@biqu3d.com>
+        <92B0AD8F9717BDE3+20230804090102.273029-5-martin@biqu3d.com>
+Organization: ARM
+X-Mailer: Claws Mail 3.18.0 (GTK+ 2.24.32; aarch64-unknown-linux-gnu)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="narolssei6psadaw"
-Content-Disposition: inline
-In-Reply-To: <20230718-feature-lcd-panel-v2-3-2485ca07b49d@wolfvision.net>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri,  4 Aug 2023 11:00:32 +0200
+Martin Botka <martin@biqu3d.com> wrote:
 
---narolssei6psadaw
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Hi,
 
-On Fri, Aug 04, 2023 at 03:02:34PM +0200, Michael Riesch wrote:
-> The ST7789V controller features support for the partial mode. Here,
-> the area to be displayed can be restricted in one direction (by default,
-> in vertical direction). This is useful for panels that are partially
-> occluded by design. Add support for the partial mode.
->=20
-> Signed-off-by: Michael Riesch <michael.riesch@wolfvision.net>
+> The BigTreeTech Pi is an H616 based board based on CB1.
+> Just in Rpi format board.
+> 
+> It features the same internals as BTT CB1 but adds:
+>     - Fan port
+>     - IR receiver
+>     - ADXL345 Accelerometer connector via SPI
+>     - 24V DC power supply via terminal plugs
+>     - USB to CAN module connector (The actual USB to CAN happens on the external module)
+> 
+> List of currently working things is same as BTT CB1 but also:
+>     - IR receiver
+>     - ADXL345 connector
+> 
+> Signed-off-by: Martin Botka <martin@biqu3d.com>
 > ---
->  drivers/gpu/drm/panel/panel-sitronix-st7789v.c | 43 ++++++++++++++++++++=
-++++--
->  1 file changed, 41 insertions(+), 2 deletions(-)
->=20
-> diff --git a/drivers/gpu/drm/panel/panel-sitronix-st7789v.c b/drivers/gpu=
-/drm/panel/panel-sitronix-st7789v.c
-> index 0ded72ed2fcd..ebc9a3bd6db3 100644
-> --- a/drivers/gpu/drm/panel/panel-sitronix-st7789v.c
-> +++ b/drivers/gpu/drm/panel/panel-sitronix-st7789v.c
-> @@ -118,6 +118,9 @@ struct st7789_panel_info {
->  	u32 bus_format;
->  	u32 bus_flags;
->  	bool invert_mode;
-> +	bool partial_mode;
-> +	u16 partial_start;
-> +	u16 partial_end;
->  };
-> =20
->  struct st7789v {
-> @@ -345,9 +348,14 @@ static enum drm_panel_orientation st7789v_get_orient=
-ation(struct drm_panel *p)
->  static int st7789v_prepare(struct drm_panel *panel)
->  {
->  	struct st7789v *ctx =3D panel_to_st7789v(panel);
-> -	u8 pixel_fmt, polarity;
-> +	u8 mode, pixel_fmt, polarity;
->  	int ret;
-> =20
-> +	if (!ctx->info->partial_mode)
-> +		mode =3D ST7789V_RGBCTRL_WO;
-> +	else
-> +		mode =3D 0;
+> Changes in V2:
+>     - Add UART alongside aliases and chosen for it
+>     - Add model string
+>     - Enable IR receiver
+>     - Enable SPI0 for ADXL345 connector
+> 
+>  arch/arm64/boot/dts/allwinner/Makefile        |  1 +
+>  .../allwinner/sun50i-h616-bigtreetech-pi.dts  | 68 +++++++++++++++++++
+>  2 files changed, 69 insertions(+)
+>  create mode 100644 arch/arm64/boot/dts/allwinner/sun50i-h616-bigtreetech-pi.dts
+> 
+> diff --git a/arch/arm64/boot/dts/allwinner/Makefile b/arch/arm64/boot/dts/allwinner/Makefile
+> index 7b386428510b..0b6232a7f328 100644
+> --- a/arch/arm64/boot/dts/allwinner/Makefile
+> +++ b/arch/arm64/boot/dts/allwinner/Makefile
+> @@ -39,5 +39,6 @@ dtb-$(CONFIG_ARCH_SUNXI) += sun50i-h6-pine-h64-model-b.dtb
+>  dtb-$(CONFIG_ARCH_SUNXI) += sun50i-h6-tanix-tx6.dtb
+>  dtb-$(CONFIG_ARCH_SUNXI) += sun50i-h6-tanix-tx6-mini.dtb
+>  dtb-$(CONFIG_ARCH_SUNXI) += sun50i-h616-bigtreetech-cb1-manta.dtb
+> +dtb-$(CONFIG_ARCH_SUNXI) += sun50i-h616-bigtreetech-pi.dtb
+>  dtb-$(CONFIG_ARCH_SUNXI) += sun50i-h616-orangepi-zero2.dtb
+>  dtb-$(CONFIG_ARCH_SUNXI) += sun50i-h616-x96-mate.dtb
+> diff --git a/arch/arm64/boot/dts/allwinner/sun50i-h616-bigtreetech-pi.dts b/arch/arm64/boot/dts/allwinner/sun50i-h616-bigtreetech-pi.dts
+> new file mode 100644
+> index 000000000000..cbeedf147ab6
+> --- /dev/null
+> +++ b/arch/arm64/boot/dts/allwinner/sun50i-h616-bigtreetech-pi.dts
+> @@ -0,0 +1,68 @@
+> +// SPDX-License-Identifier: (GPL-2.0+ or MIT)
+> +/*
+> + * Copyright (C) 2023 Martin Botka <martin@biqu3d.com>.
+> + */
 > +
->  	switch (ctx->info->bus_format) {
->  	case MEDIA_BUS_FMT_RGB666_1X18:
->  		pixel_fmt =3D MIPI_DCS_PIXEL_FMT_18BIT;
-> @@ -487,6 +495,37 @@ static int st7789v_prepare(struct drm_panel *panel)
->  						MIPI_DCS_EXIT_INVERT_MODE));
->  	}
-> =20
-> +	if (ctx->info->partial_mode) {
-> +		u8 area_data[4] =3D {
-> +			(ctx->info->partial_start >> 8) & 0xff,
-> +			(ctx->info->partial_start >> 0) & 0xff,
-> +			((ctx->info->partial_end - 1) >> 8) & 0xff,
-> +			((ctx->info->partial_end - 1) >> 0) & 0xff,
-> +		};
+> +/dts-v1/;
 > +
-> +		/* Caution: if userspace ever pushes a mode different from the
-> +		 * expected one (i.e., the one advertised by get_modes), we'll
-> +		 * add margins.
-> +		 */
+> +#include "sun50i-h616-bigtreetech-cb1.dtsi"
+> +
+> +/ {
+> +	model = "BigTreeTech Pi"
 
-The comment format is incorrect. Since Neil applied the patches already,
-please send a patch to fix it.
+missing semicolon
 
-Looks good to me otherwise, thanks for sticking up with this :)
+> +	compatible = "bigtreetech,pi", "allwinner,sun50i-h616";
+> +
+> +	aliases {
+> +		serial0 = &uart0;
+> +	};
+> +
+> +	chosen {
+> +		stdout-path = "serial0:115200n8";
+> +	};
+> +};
+> +
+> +&ehci0 {
+> +	status = "okay";
+> +};
+> +
+> +&ehci1 {
+> +	status = "okay";
+> +};
+> +
+> +&ehci2 {
+> +	status = "okay";
+> +};
+> +
+> +&ehci3 {
+> +	status = "okay";
+> +};
+> +
+> +&ir {
+> +	status = "okay";
+> +};
+> +
+> +&ohci0 {
+> +	status = "okay";
+> +};
+> +
+> +&ohci1 {
+> +	status = "okay";
+> +};
+> +
+> +&ohci2 {
+> +	status = "okay";
+> +};
+> +
+> +&ohci3 {
+> +	status = "okay";
+> +};
+> +
+> +&spi0 {
+> +	/* SPI connection for onboard connector for ADXL345 accelerometer */
 
-Maxime
+You need to specify the pinctrl properties here, since there is no
+default. I guess it's PortC? Then you can copy from the OPiZero2, just
+check the CS situation.
 
---narolssei6psadaw
-Content-Type: application/pgp-signature; name="signature.asc"
+> +	status = "okay";
+> +}
 
------BEGIN PGP SIGNATURE-----
+missing semicolon;
 
-iHUEABYKAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCZMz+iwAKCRDj7w1vZxhR
-xXakAPkBwCoM6Xdg4Yxk/nzhw+E46uELeruCkDx9+pXmw0lYbQEAmyRaw6DpdZQR
-ymcJ0NxItol7pxU8jgaXkHxCk3J6HAU=
-=Lie8
------END PGP SIGNATURE-----
+Rest looks fine.
 
---narolssei6psadaw--
+Thanks,
+Andre
+
+> +
+> +&uart0 {
+> +	pinctrl-names = "default";
+> +	pinctrl-0 = <&uart0_ph_pins>;
+> +	status = "okay";
+> +};
+
