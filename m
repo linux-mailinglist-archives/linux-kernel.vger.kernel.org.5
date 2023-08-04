@@ -2,1036 +2,254 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1190E76F9F8
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 08:21:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 97CD276F9EE
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 08:20:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233053AbjHDGVy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Aug 2023 02:21:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59644 "EHLO
+        id S232170AbjHDGUe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Aug 2023 02:20:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59216 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232658AbjHDGVi (ORCPT
+        with ESMTP id S230002AbjHDGUb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Aug 2023 02:21:38 -0400
-Received: from invmail4.hynix.com (exvmail4.skhynix.com [166.125.252.92])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 0C5443A8C
-        for <linux-kernel@vger.kernel.org>; Thu,  3 Aug 2023 23:21:34 -0700 (PDT)
-X-AuditID: a67dfc5b-d85ff70000001748-37-64cc98e6d364
-From:   Byungchul Park <byungchul@sk.com>
-To:     linux-kernel@vger.kernel.org, linux-mm@kvack.org
-Cc:     kernel_team@skhynix.com, akpm@linux-foundation.org,
-        ying.huang@intel.com, namit@vmware.com, xhao@linux.alibaba.com,
-        mgorman@techsingularity.net, hughd@google.com, willy@infradead.org,
-        david@redhat.com
-Subject: [RFC 2/2] mm: Defer TLB flush by keeping both src and dst folios at migration
-Date:   Fri,  4 Aug 2023 15:18:50 +0900
-Message-Id: <20230804061850.21498-3-byungchul@sk.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20230804061850.21498-1-byungchul@sk.com>
-References: <20230804061850.21498-1-byungchul@sk.com>
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrGLMWRmVeSWpSXmKPExsXC9ZZnoe7zGWdSDDZOZ7SYs34Nm8XX9b+Y
-        LZ5+6mOxuLxrDpvFvTX/WS12LN3HZHF910NGi98/gGJzplhZnJw1mcWBy2PBplKPzSu0PBbv
-        ecnksenTJHaPEzN+s3jsfGjp8X7fVTaPrb/sPD5vkvN4N/8tWwBXFJdNSmpOZllqkb5dAlfG
-        lMYjbAXrbzBWbJ+1kr2Bcdo6xi5GTg4JAROJC+vb4ezD6w+ygNhsAuoSN278ZAaxRQTMJA62
-        /mHvYuTiYBa4wyhxeFcjE0hCWCBM4tLpfjCbRUBVomH3XLAGXgFTianHJzBDDJWXWL3hAJjN
-        CTToyMMXYMuEgGrufeoEGyohsIZN4sfsfewQDZISB1fcYJnAyLuAkWEVo1BmXlluYmaOiV5G
-        ZV5mhV5yfu4mRmBoLqv9E72D8dOF4EOMAhyMSjy8Hw6cThFiTSwrrsw9xCjBwawkwnvtPVCI
-        NyWxsiq1KD++qDQntfgQozQHi5I4r9G38hQhgfTEktTs1NSC1CKYLBMHp1QDo2KJhxA78+zM
-        O3srE7QPzowqzbrKu84lsqHQucPnxwz3zs7dnLMDvl/d595s8Kb70GbG2cdU2ZYeuXDSbPqD
-        2TFRNltMIrWFi7d4MU7fvXlW9/EdN6uKvTZYHuRa7mZuvlzEf3+QuN+cOJOSReK1OWu35812
-        nqS7YpOA/btJ3FKHEy8JrOX2VmIpzkg01GIuKk4EACDko3FJAgAA
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprLLMWRmVeSWpSXmKPExsXC5WfdrPtsxpkUg+udBhZz1q9hs/i6/hez
-        xdNPfSwWh+eeZLW4vGsOm8W9Nf9ZLXYs3cdkcX3XQ0aL3z+AYnOmWFmcnDWZxYHbY8GmUo/N
-        K7Q8Fu95yeSx6dMkdo8TM36zeOx8aOnxft9VNo/FLz4weWz9ZefxeZOcx7v5b9kCuKO4bFJS
-        czLLUov07RK4MqY0HmErWH+DsWL7rJXsDYzT1jF2MXJySAiYSBxef5AFxGYTUJe4ceMnM4gt
-        ImAmcbD1D3sXIxcHs8AdRonDuxqZQBLCAmESl073g9ksAqoSDbvngjXwCphKTD0+gRliqLzE
-        6g0HwGxOoEFHHr4AWyYEVHPvUyf7BEauBYwMqxhFMvPKchMzc0z1irMzKvMyK/SS83M3MQID
-        bVntn4k7GL9cdj/EKMDBqMTD++HA6RQh1sSy4srcQ4wSHMxKIrzX3gOFeFMSK6tSi/Lji0pz
-        UosPMUpzsCiJ83qFpyYICaQnlqRmp6YWpBbBZJk4OKUaGO9rMkv13z66jC0nnyk8qd09wYp3
-        KuNPh++B935lLn/8MOxFzJ0dHtKpE/IDWs/uFPg6Z7plYH7Qk/pFV+80lOp9nLX3qcallizj
-        S/xiX2Z2t82csmTvjhnc1y7u/2f5tOn5b4GipT8T0izeykmt3l+Q+Fq/4tEJrutuv/5M106V
-        0IqfEjYhbKMSS3FGoqEWc1FxIgB2nmz/MAIAAA==
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+        Fri, 4 Aug 2023 02:20:31 -0400
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 986EDE70
+        for <linux-kernel@vger.kernel.org>; Thu,  3 Aug 2023 23:20:29 -0700 (PDT)
+Received: from pps.filterd (m0356516.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3746GMsn025766;
+        Fri, 4 Aug 2023 06:20:27 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id : content-type : content-transfer-encoding :
+ mime-version; s=pp1; bh=gJ3SOok65eAVpTYJuD8sRliwPADnpXU7i1PauxghA0s=;
+ b=YHwTTH4b40/9az9M11LgeTPjKkY7UVua8yexwzohvko/1ET7RFiSyVA0yEcuLjckRSbo
+ qKIwNBdAiiq+1QlOCM72kPZ6hu3gDihDRetjGsXDOvO7pF4SOqdwY0bm3WiwDb7zkpGg
+ QTPSRU9VG2m19KJIo7CYJcAGc3PRBEayHCSRkfiNjs/5fXsbZ90eyC6FH0OWbb1wMhXl
+ KScOptkfvIaJGzODvRN2cjgP7Fw8S8HFqUL1NNgOU5IzzcV85YU1KF1ihnTgcCmrK/I8
+ tc4fptUw5fSJQ2+AH/8YXWzI7Wezi0aFEgtcQhjkArpuGuOpwLnaQNurgsBYCDRF8bWy gg== 
+Received: from ppma22.wdc07v.mail.ibm.com (5c.69.3da9.ip4.static.sl-reverse.com [169.61.105.92])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3s8uww01wr-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 04 Aug 2023 06:20:27 +0000
+Received: from pps.filterd (ppma22.wdc07v.mail.ibm.com [127.0.0.1])
+        by ppma22.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 3744Whf2027806;
+        Fri, 4 Aug 2023 06:20:26 GMT
+Received: from smtprelay07.fra02v.mail.ibm.com ([9.218.2.229])
+        by ppma22.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3s8kp2u7w8-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 04 Aug 2023 06:20:26 +0000
+Received: from smtpav01.fra02v.mail.ibm.com (smtpav01.fra02v.mail.ibm.com [10.20.54.100])
+        by smtprelay07.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 3746KOI436635048
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 4 Aug 2023 06:20:24 GMT
+Received: from smtpav01.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 65F4D20040;
+        Fri,  4 Aug 2023 06:20:24 +0000 (GMT)
+Received: from smtpav01.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 34F4D2004B;
+        Fri,  4 Aug 2023 06:20:24 +0000 (GMT)
+Received: from tuxmaker.linux.ibm.com (unknown [9.152.85.9])
+        by smtpav01.fra02v.mail.ibm.com (Postfix) with ESMTPS;
+        Fri,  4 Aug 2023 06:20:24 +0000 (GMT)
+From:   Sven Schnelle <svens@linux.ibm.com>
+To:     Steven Rostedt (Google) <rostedt@goodmis.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: BUG: KASAN: slab-out-of-bounds in print_synth_event+0xa68/0xa78
+Date:   Fri, 04 Aug 2023 08:20:23 +0200
+Message-ID: <yt9dsf8zfhw8.fsf@linux.ibm.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.0.50 (gnu/linux)
+Content-Type: text/plain; charset=utf-8
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: TyjEjbAUzv2FPI_T9aCQOIu-sZ19wCA3
+X-Proofpoint-GUID: TyjEjbAUzv2FPI_T9aCQOIu-sZ19wCA3
+Content-Transfer-Encoding: quoted-printable
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+MIME-Version: 1.0
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
+ definitions=2023-08-04_03,2023-08-03_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0
+ priorityscore=1501 clxscore=1015 bulkscore=0 spamscore=0 impostorscore=0
+ phishscore=0 lowpriorityscore=0 mlxscore=0 mlxlogscore=999 malwarescore=0
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2306200000 definitions=main-2308040053
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Implementation of CONFIG_MIGRC that stands for 'Migration Read Copy'.
+Hi Steven,
 
-We always face the migration overhead at either promotion or demotion,
-while working with tiered memory e.g. CXL memory and found out TLB
-shootdown is a quite big one that is needed to get rid of if possible.
+i noticed the following KASAN splat in CI (on s390):
 
-Fortunately, TLB flush can be defered or even skipped if both source and
-destination of folios during migration are kept until all TLB flushes
-required will have been done, of course, only if the target PTE entries
-have read only permission, more precisely speaking, don't have write
-permission. Otherwise, no doubt the folio might get messed up.
+[  218.586476] /home/svens/linux/tools/testing/selftests/ftrace/test.d/trig=
+ger/inter-event/trigger-synthetic-event-stack.tc
+[  221.610410] =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+[  221.610424] BUG: KASAN: slab-out-of-bounds in print_synth_event+0xa68/0x=
+a78
+[  221.610440] Read of size 8 at addr 0000000087753ebc by task grep/1321
+[  221.610445]
+[  221.610451] CPU: 9 PID: 1321 Comm: grep Not tainted 6.4.0-rc3-00008-g4b5=
+12860bdbd #716
+[  221.610457] Hardware name: IBM 3906 M04 704 (z/VM 7.1.0)
+[  221.610462] Call Trace:
+[  221.610466]  [<00000000026026e6>] dump_stack_lvl+0x106/0x1c8
+[  221.610479]  [<00000000009cdbbc>] print_address_description.constprop.0+=
+0x34/0x378
+[  221.610488]  [<00000000009cdfac>] print_report+0xac/0x240
+[  221.610494]  [<00000000009ce32a>] kasan_report+0xf2/0x130
+[  221.610501]  [<00000000005e4f60>] print_synth_event+0xa68/0xa78
+[  221.610508]  [<00000000005809c0>] print_trace_line+0x2a8/0xc00
+[  221.610516]  [<0000000000582d4a>] s_show+0xc2/0x3d0
+[  221.610522]  [<0000000000b09db2>] seq_read_iter+0x912/0xf88
+[  221.610530]  [<0000000000b0a582>] seq_read+0x15a/0x1d8
+[  221.610535]  [<0000000000a75f66>] vfs_read+0x186/0x778
+[  221.610551]  [<0000000000a77b26>] ksys_read+0x126/0x210
+[  221.610557]  [<000000000010d044>] do_syscall+0x22c/0x328
+[  221.610564]  [<000000000266ea02>] __do_syscall+0x9a/0xf8
+[  221.610571]  [<000000000269f068>] system_call+0x70/0x98
+[  221.610577] 3 locks held by grep/1321:
+[  221.610580]  #0: 00000000a99db2f8 (&p->lock){+.+.}-{3:3}, at: seq_read_i=
+ter+0xca/0xf88
+[  221.610595]  #1: 00000000032d0c18 (trace_event_sem){++++}-{3:3}, at: s_s=
+tart+0x3c2/0x7c0
+[  221.610606]  #2: 00000000032c8cb8 (all_cpu_access_lock){+.+.}-{3:3}, at:=
+ s_start+0x502/0x7c0
+[  221.610617]
+[  221.610619] Allocated by task 1:
+[  221.610623]  kasan_save_stack+0x40/0x68
+[  221.610628]  kasan_set_track+0x36/0x48
+[  221.610632]  __kasan_kmalloc+0xbc/0xe8
+[  221.610636]  bdi_alloc+0x58/0x160
+[  221.610642]  __alloc_disk_node+0x96/0x558
+[  221.610648]  __blk_alloc_disk+0x42/0x88
+[  221.610652]  brd_alloc+0x2d8/0x730
+[  221.610659]  brd_init+0xd4/0x150
+[  221.610668]  do_one_initcall+0x17c/0x750
+[  221.610672]  do_initcalls+0x256/0x500
+[  221.610677]  kernel_init_freeable+0x59a/0xa60
+[  221.610681]  kernel_init+0x2e/0x1f8
+[  221.610685]  __ret_from_fork+0x8a/0xe8
+[  221.610689]  ret_from_fork+0xa/0x30
+[  221.610695] The buggy address belongs to the object at 0000000087754000
+[  221.610695]  which belongs to the cache kmalloc-4k of size 4096
+[  221.610700] The buggy address is located 324 bytes to the left of
+[  221.610700]  allocated 2464-byte region [0000000087754000, 0000000087754=
+9a0)
+[  221.610705]
+[  221.610708] The buggy address belongs to the physical page:
+[  221.610711] page:00004000021dd400 refcount:1 mapcount:0 mapping:00000000=
+00000000 index:0x0 pfn:0x87750
+[  221.610718] head:00004000021dd400 order:3 entire_mapcount:0 nr_pages_map=
+ped:0 pincount:0
+[  221.610722] flags: 0x3ffff00000010200(slab|head|node=3D0|zone=3D1|lastcp=
+upid=3D0x1ffff)
+[  221.610729] page_type: 0xffffffff()
+[  221.610735] raw: 3ffff00000010200 000000008008e800 000040000259cc10 0000=
+000080081470
+[  221.610739] raw: 0000000000000000 0002000400000000 ffffffff00000001 0000=
+000000000000
+[  221.610743] page dumped because: kasan: bad access detected
+[  221.610746]
+[  221.610748] Memory state around the buggy address:
+[  221.610752]  0000000087753d80: fc fc fc fc fc fc fc fc fc fc fc fc fc fc=
+ fc fc
+[  221.610755]  0000000087753e00: fc fc fc fc fc fc fc fc fc fc fc fc fc fc=
+ fc fc
+[  221.610759] >0000000087753e80: fc fc fc fc fc fc fc fc fc fc fc fc fc fc=
+ fc fc
+[  221.610762]                                         ^
+[  221.610766]  0000000087753f00: fc fc fc fc fc fc fc fc fc fc fc fc fc fc=
+ fc fc
+[  221.610770]  0000000087753f80: fc fc fc fc fc fc fc fc fc fc fc fc fc fc=
+ fc fc
+[  221.610773] =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
 
-To achieve that:
+git bisect says:
 
-   1. For the folios that have only non-writable TLB entries, prevent
-      TLB flush by keeping both source and destination of folios during
-      migration, which will be handled later at a better time.
+% git bisect log                                                           =
+                                                                           =
+       git:(eaa2fa66c0a1|=E2=80=A61=E2=9A=9132
+git bisect start
+# status: waiting for both good and bad commits
+# good: [457391b0380335d5e9a5babdec90ac53928b23b4] Linux 6.3
+git bisect good 457391b0380335d5e9a5babdec90ac53928b23b4
+# status: waiting for bad commit, 1 good commit known
+# bad: [57012c57536f8814dec92e74197ee96c3498d24e] Merge tag 'net-6.5-rc4' o=
+f git://git.kernel.org/pub/scm/linux/kernel/git/netdev/net
+git bisect bad 57012c57536f8814dec92e74197ee96c3498d24e
+# good: [50fb587e6a56dba74c3c56a7a09c48bff25cc5fa] Merge tag 'net-6.4-rc4' =
+of git://git.kernel.org/pub/scm/linux/kernel/git/netdev/net
+git bisect good 50fb587e6a56dba74c3c56a7a09c48bff25cc5fa
+# bad: [f8824e151fbfa0ac0a258015d606ea6f4a10251b] Merge tag 'sound-6.5-rc1'=
+ of git://git.kernel.org/pub/scm/linux/kernel/git/tiwai/sound
+git bisect bad f8824e151fbfa0ac0a258015d606ea6f4a10251b
+# bad: [6aeadf7896bff4ca230702daba8788455e6b866e] Merge tag 'docs-arm64-mov=
+e' of git://git.lwn.net/linux
+git bisect bad 6aeadf7896bff4ca230702daba8788455e6b866e
+# bad: [e940efa936be65866db9ce20798b13fdc6b3891a] Merge tag 'zonefs-6.5-rc1=
+' of git://git.kernel.org/pub/scm/linux/kernel/git/dlemoal/zonefs
+git bisect bad e940efa936be65866db9ce20798b13fdc6b3891a
+# bad: [8f0e3703571fe771d06235870ccbbf4ad41e63e8] Merge branch 'udplite-dcc=
+p-print-deprecation-notice'
+git bisect bad 8f0e3703571fe771d06235870ccbbf4ad41e63e8
+# bad: [e684ab76afebcaccd428f7d55361d5669ccc3e2d] Merge tag 'wireless-2023-=
+06-06' of git://git.kernel.org/pub/scm/linux/kernel/git/wireless/wireless
+git bisect bad e684ab76afebcaccd428f7d55361d5669ccc3e2d
+# bad: [1683c329b6a2ee54989811089854a8ac2d5b5fc1] Merge tag 'regmap-fix-v6.=
+4-rc4' of git://git.kernel.org/pub/scm/linux/kernel/git/broonie/regmap
+git bisect bad 1683c329b6a2ee54989811089854a8ac2d5b5fc1
+# good: [18713e8a689377386f639d9317f958244825bd7b] Merge tag 'arm-fixes-6.4=
+-1' of git://git.kernel.org/pub/scm/linux/kernel/git/soc/soc
+git bisect good 18713e8a689377386f639d9317f958244825bd7b
+# good: [2d5438f4c6fdaa34c5d7de89a5331b8dbcd920af] Merge tag 'perf-urgent-2=
+023-05-28' of git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip
+git bisect good 2d5438f4c6fdaa34c5d7de89a5331b8dbcd920af
+# good: [7a6c8e512fa072cfe8ad7a3b26666b6f26435870] Merge tag 'v6.4-p3' of g=
+it://git.kernel.org/pub/scm/linux/kernel/git/herbert/crypto-2.6
+git bisect good 7a6c8e512fa072cfe8ad7a3b26666b6f26435870
+# bad: [9da705d432a07927526005a0688d81fbbf30e349] tracing: Have tracer self=
+tests call cond_resched() before running
+git bisect bad 9da705d432a07927526005a0688d81fbbf30e349
+# good: [dcbd1ac2668b5fa02069ea96d581ca3f70a7543c] tracing/user_events: Ren=
+ame link fields for clarity
+git bisect good dcbd1ac2668b5fa02069ea96d581ca3f70a7543c
+# bad: [4b512860bdbdddcf41467ebd394f27cb8dfb528c] tracing: Rename stacktrac=
+e field to common_stacktrace
+git bisect bad 4b512860bdbdddcf41467ebd394f27cb8dfb528c
+# good: [e30fbc618e97b38dbb49f1d44dcd0778d3f23b8c] tracing/histograms: Allo=
+w variables to have some modifiers
+git bisect good e30fbc618e97b38dbb49f1d44dcd0778d3f23b8c
+# first bad commit: [4b512860bdbdddcf41467ebd394f27cb8dfb528c] tracing: Ren=
+ame stacktrace field to common_stacktrace
 
-   2. When any non-writable TLB entry changes to writable e.g. through
-      fault handler, give up CONFIG_MIGRC mechanism so as to perform
-      TLB flush required right away.
+I don't see how 4b512860 might cause this, but i haven't spent much time
+on it, maybe someone who knows the code recognize the problem much
+quicker. I did the bisect twice, and it always ended up at that commit.
+manually compiling and testing the revision before also shows that
+it happens only with 4b512860.
 
-   3. TLB flushes can be skipped if all TLB flushes required to free the
-      duplicated folios have been done by any reason, which doesn't have
-      to be done from migrations.
+For reproducing, the following script is good enough to trigger it
+reliably on my system:
 
-   4. Adjust watermark check routine, __zone_watermark_ok(), with the
-      number of duplicated folios because those folios can be freed
-      and obtained right away through appropreate TLB flushes.
+cd /home/svens/linux/tools/testing/selftests/ftrace
+for i in $(seq 1 10); do
+	./ftracetest -v /home/svens/linux/tools/testing/selftests/ftrace/test.d/tr=
+igger/inter-event/trigger-synthetic-event-stack.tc
+	dmesg|grep "BUG: KASAN"
+	if [ "$?" -eq 0 ]; then
+		exit 1
+	fi
+done
+exit 0
 
-   5. Perform TLB flushes and free the duplicated folios pending the
-      flushes if page allocation routine is in trouble due to memory
-      pressure, even more aggresively for high order allocation.
-
-The measurement result:
-
-   Architecture - x86_64
-   QEMU - kvm enabled, host cpu, 2nodes((4cpus, 2GB)+(cpuless, 6GB))
-   Linux Kernel - v6.4, numa balancing tiering on, demotion enabled
-   Benchmark - XSBench with no parameter changed
-
-   run 'perf stat' using events:
-   (FYI, process wide result ~= system wide result(-a option))
-      1) itlb.itlb_flush
-      2) tlb_flush.dtlb_thread
-      3) tlb_flush.stlb_any
-
-   run 'cat /proc/vmstat' and pick up:
-      1) pgdemote_kswapd
-      2) numa_pages_migrated
-      3) pgmigrate_success
-      4) nr_tlb_remote_flush
-      5) nr_tlb_remote_flush_received
-      6) nr_tlb_local_flush_all
-      7) nr_tlb_local_flush_one
-
-   BEFORE - mainline v6.4
-   ==========================================
-
-   $ perf stat -e itlb.itlb_flush,tlb_flush.dtlb_thread,tlb_flush.stlb_any ./XSBench
-
-   Performance counter stats for './XSBench':
-
-      426856       itlb.itlb_flush
-      6900414      tlb_flush.dtlb_thread
-      7303137      tlb_flush.stlb_any
-
-   33.500486566 seconds time elapsed
-   92.852128000 seconds user
-   10.526718000 seconds sys
-
-   $ cat /proc/vmstat
-
-   ...
-   pgdemote_kswapd 1052596
-   numa_pages_migrated 1052359
-   pgmigrate_success 2161846
-   nr_tlb_remote_flush 72370
-   nr_tlb_remote_flush_received 213711
-   nr_tlb_local_flush_all 3385
-   nr_tlb_local_flush_one 198679
-   ...
-
-   AFTER - mainline v6.4 + CONFIG_MIGRC
-   ==========================================
-
-   $ perf stat -e itlb.itlb_flush,tlb_flush.dtlb_thread,tlb_flush.stlb_any ./XSBench
-
-   Performance counter stats for './XSBench':
-
-      179537       itlb.itlb_flush
-      6131135      tlb_flush.dtlb_thread
-      6920979      tlb_flush.stlb_any
-
-   30.396700625 seconds time elapsed
-   80.331252000 seconds user
-   10.303761000 seconds sys
-
-   $ cat /proc/vmstat
-
-   ...
-   pgdemote_kswapd 1044602
-   numa_pages_migrated 1044202
-   pgmigrate_success 2157808
-   nr_tlb_remote_flush 30453
-   nr_tlb_remote_flush_received 88840
-   nr_tlb_local_flush_all 3039
-   nr_tlb_local_flush_one 198875
-   ...
-
-Signed-off-by: Byungchul Park <byungchul@sk.com>
----
- arch/x86/include/asm/tlbflush.h |   7 +
- arch/x86/mm/tlb.c               |  52 ++++++
- include/linux/mm.h              |  30 ++++
- include/linux/mm_types.h        |  34 ++++
- include/linux/mmzone.h          |   6 +
- include/linux/sched.h           |   4 +
- init/Kconfig                    |  12 ++
- mm/internal.h                   |  10 ++
- mm/memory.c                     |   9 +-
- mm/migrate.c                    | 287 +++++++++++++++++++++++++++++++-
- mm/mm_init.c                    |   1 +
- mm/page_alloc.c                 |  16 ++
- mm/rmap.c                       |  92 ++++++++++
- 13 files changed, 555 insertions(+), 5 deletions(-)
-
-diff --git a/arch/x86/include/asm/tlbflush.h b/arch/x86/include/asm/tlbflush.h
-index 63504cde364b..da987c15049e 100644
---- a/arch/x86/include/asm/tlbflush.h
-+++ b/arch/x86/include/asm/tlbflush.h
-@@ -279,9 +279,16 @@ static inline void arch_tlbbatch_add_mm(struct arch_tlbflush_unmap_batch *batch,
- }
- 
- extern void arch_tlbbatch_flush(struct arch_tlbflush_unmap_batch *batch);
-+extern void arch_tlbbatch_clean(struct arch_tlbflush_unmap_batch *batch);
- extern void arch_tlbbatch_fold(struct arch_tlbflush_unmap_batch *bdst,
- 			       struct arch_tlbflush_unmap_batch *bsrc);
- 
-+#ifdef CONFIG_MIGRC
-+extern void arch_migrc_adj(struct arch_tlbflush_unmap_batch *batch, int gen);
-+#else
-+static inline void arch_migrc_adj(struct arch_tlbflush_unmap_batch *batch, int gen) {}
-+#endif
-+
- static inline bool pte_flags_need_flush(unsigned long oldflags,
- 					unsigned long newflags,
- 					bool ignore_access)
-diff --git a/arch/x86/mm/tlb.c b/arch/x86/mm/tlb.c
-index 69d145f1fff1..54f98a50fd59 100644
---- a/arch/x86/mm/tlb.c
-+++ b/arch/x86/mm/tlb.c
-@@ -1210,9 +1210,40 @@ STATIC_NOPV void native_flush_tlb_local(void)
- 	native_write_cr3(__native_read_cr3());
- }
- 
-+#ifdef CONFIG_MIGRC
-+DEFINE_PER_CPU(int, migrc_done);
-+
-+static inline int migrc_tlb_local_begin(void)
-+{
-+	int ret = atomic_read(&migrc_gen);
-+
-+	smp_mb__after_atomic();
-+	return ret;
-+}
-+
-+static inline void migrc_tlb_local_end(int gen)
-+{
-+	smp_mb();
-+	WRITE_ONCE(*this_cpu_ptr(&migrc_done), gen);
-+}
-+#else
-+static inline int migrc_tlb_local_begin(void)
-+{
-+	return 0;
-+}
-+
-+static inline void migrc_tlb_local_end(int gen)
-+{
-+}
-+#endif
-+
- void flush_tlb_local(void)
- {
-+	unsigned int gen;
-+
-+	gen = migrc_tlb_local_begin();
- 	__flush_tlb_local();
-+	migrc_tlb_local_end(gen);
- }
- 
- /*
-@@ -1237,6 +1268,22 @@ void __flush_tlb_all(void)
- }
- EXPORT_SYMBOL_GPL(__flush_tlb_all);
- 
-+#ifdef CONFIG_MIGRC
-+static inline bool before(int a, int b)
-+{
-+	return a - b < 0;
-+}
-+
-+void arch_migrc_adj(struct arch_tlbflush_unmap_batch *batch, int gen)
-+{
-+	int cpu;
-+
-+	for_each_cpu(cpu, &batch->cpumask)
-+		if (!before(READ_ONCE(*per_cpu_ptr(&migrc_done, cpu)), gen))
-+			cpumask_clear_cpu(cpu, &batch->cpumask);
-+}
-+#endif
-+
- void arch_tlbbatch_flush(struct arch_tlbflush_unmap_batch *batch)
- {
- 	struct flush_tlb_info *info;
-@@ -1265,6 +1312,11 @@ void arch_tlbbatch_flush(struct arch_tlbflush_unmap_batch *batch)
- 	put_cpu();
- }
- 
-+void arch_tlbbatch_clean(struct arch_tlbflush_unmap_batch *batch)
-+{
-+	cpumask_clear(&batch->cpumask);
-+}
-+
- void arch_tlbbatch_fold(struct arch_tlbflush_unmap_batch *bdst,
- 			struct arch_tlbflush_unmap_batch *bsrc)
- {
-diff --git a/include/linux/mm.h b/include/linux/mm.h
-index 27ce77080c79..e1f6e1fdab18 100644
---- a/include/linux/mm.h
-+++ b/include/linux/mm.h
-@@ -3816,4 +3816,34 @@ madvise_set_anon_name(struct mm_struct *mm, unsigned long start,
- }
- #endif
- 
-+#ifdef CONFIG_MIGRC
-+void migrc_init_page(struct page *p);
-+bool migrc_pending(struct folio *f);
-+void migrc_shrink(struct llist_head *h);
-+void migrc_req_start(void);
-+void migrc_req_end(void);
-+bool migrc_req_processing(void);
-+bool migrc_try_flush(void);
-+void migrc_try_flush_dirty(void);
-+struct migrc_req *fold_ubc_nowr_migrc_req(void);
-+void free_migrc_req(struct migrc_req *req);
-+int migrc_pending_nr_in_zone(struct zone *z);
-+
-+extern atomic_t migrc_gen;
-+extern struct llist_head migrc_reqs;
-+extern struct llist_head migrc_reqs_dirty;
-+#else
-+static inline void migrc_init_page(struct page *p) {}
-+static inline bool migrc_pending(struct folio *f) { return false; }
-+static inline void migrc_shrink(struct llist_head *h) {}
-+static inline void migrc_req_start(void) {}
-+static inline void migrc_req_end(void) {}
-+static inline bool migrc_req_processing(void) { return false; }
-+static inline bool migrc_try_flush(void) { return false; }
-+static inline void migrc_try_flush_dirty(void) {}
-+static inline struct migrc_req *fold_ubc_nowr_migrc_req(void) { return NULL; }
-+static inline void free_migrc_req(struct migrc_req *req) {}
-+static inline int migrc_pending_nr_in_zone(struct zone *z) { return 0; }
-+#endif
-+
- #endif /* _LINUX_MM_H */
-diff --git a/include/linux/mm_types.h b/include/linux/mm_types.h
-index 306a3d1a0fa6..3be66d3eabd2 100644
---- a/include/linux/mm_types.h
-+++ b/include/linux/mm_types.h
-@@ -228,6 +228,10 @@ struct page {
- #ifdef LAST_CPUPID_NOT_IN_PAGE_FLAGS
- 	int _last_cpupid;
- #endif
-+#ifdef CONFIG_MIGRC
-+	struct llist_node migrc_node;
-+	unsigned int migrc_state;
-+#endif
- } _struct_page_alignment;
- 
- /*
-@@ -1255,4 +1259,34 @@ enum {
- 	/* See also internal only FOLL flags in mm/internal.h */
- };
- 
-+#ifdef CONFIG_MIGRC
-+struct migrc_req {
-+	/*
-+	 * pages pending for TLB flush
-+	 */
-+	struct llist_head pages;
-+
-+	/*
-+	 * llist_node of the last page in pages llist
-+	 */
-+	struct llist_node *last;
-+
-+	/*
-+	 * for hanging onto migrc_reqs llist
-+	 */
-+	struct llist_node llnode;
-+
-+	/*
-+	 * architecture specific batch information
-+	 */
-+	struct arch_tlbflush_unmap_batch arch;
-+
-+	/*
-+	 * when the request hung onto migrc_reqs llist
-+	 */
-+	int gen;
-+};
-+#else
-+struct migrc_req {};
-+#endif
- #endif /* _LINUX_MM_TYPES_H */
-diff --git a/include/linux/mmzone.h b/include/linux/mmzone.h
-index a4889c9d4055..1ec79bb63ba7 100644
---- a/include/linux/mmzone.h
-+++ b/include/linux/mmzone.h
-@@ -958,6 +958,9 @@ struct zone {
- 	/* Zone statistics */
- 	atomic_long_t		vm_stat[NR_VM_ZONE_STAT_ITEMS];
- 	atomic_long_t		vm_numa_event[NR_VM_NUMA_EVENT_ITEMS];
-+#ifdef CONFIG_MIGRC
-+	atomic_t		migrc_pending_nr;
-+#endif
- } ____cacheline_internodealigned_in_smp;
- 
- enum pgdat_flags {
-@@ -1371,6 +1374,9 @@ typedef struct pglist_data {
- #ifdef CONFIG_MEMORY_FAILURE
- 	struct memory_failure_stats mf_stats;
- #endif
-+#ifdef CONFIG_MIGRC
-+	atomic_t migrc_pending_nr;
-+#endif
- } pg_data_t;
- 
- #define node_present_pages(nid)	(NODE_DATA(nid)->node_present_pages)
-diff --git a/include/linux/sched.h b/include/linux/sched.h
-index 2232b2cdfce8..d0a46089959d 100644
---- a/include/linux/sched.h
-+++ b/include/linux/sched.h
-@@ -1323,6 +1323,10 @@ struct task_struct {
- 
- 	struct tlbflush_unmap_batch	tlb_ubc;
- 	struct tlbflush_unmap_batch	tlb_ubc_nowr;
-+#ifdef CONFIG_MIGRC
-+	struct migrc_req		*mreq;
-+	struct migrc_req		*mreq_dirty;
-+#endif
- 
- 	/* Cache last used pipe for splice(): */
- 	struct pipe_inode_info		*splice_pipe;
-diff --git a/init/Kconfig b/init/Kconfig
-index 32c24950c4ce..f4882c1be364 100644
---- a/init/Kconfig
-+++ b/init/Kconfig
-@@ -907,6 +907,18 @@ config NUMA_BALANCING_DEFAULT_ENABLED
- 	  If set, automatic NUMA balancing will be enabled if running on a NUMA
- 	  machine.
- 
-+config MIGRC
-+	bool "Deferring TLB flush by keeping read copies on migration"
-+	depends on ARCH_WANT_BATCHED_UNMAP_TLB_FLUSH
-+	depends on NUMA_BALANCING
-+	default n
-+	help
-+	  TLB flush is necessary when PTE changes by migration. However,
-+	  TLB flush can be deferred if both copies of the src page and
-+	  the dst page are kept until TLB flush if they are non-writable.
-+	  System performance will be improved especially in case that
-+	  promotion and demotion type of migration is heavily happening.
-+
- menuconfig CGROUPS
- 	bool "Control Group support"
- 	select KERNFS
-diff --git a/mm/internal.h b/mm/internal.h
-index b90d516ad41f..a8e3168614d6 100644
---- a/mm/internal.h
-+++ b/mm/internal.h
-@@ -841,6 +841,8 @@ void try_to_unmap_flush(void);
- void try_to_unmap_flush_dirty(void);
- void flush_tlb_batched_pending(struct mm_struct *mm);
- void fold_ubc_nowr(void);
-+int nr_flush_required(void);
-+int nr_flush_required_nowr(void);
- #else
- static inline void try_to_unmap_flush(void)
- {
-@@ -854,6 +856,14 @@ static inline void flush_tlb_batched_pending(struct mm_struct *mm)
- static inline void fold_ubc_nowr(void)
- {
- }
-+static inline int nr_flush_required(void)
-+{
-+	return 0;
-+}
-+static inline int nr_flush_required_nowr(void)
-+{
-+	return 0;
-+}
- #endif /* CONFIG_ARCH_WANT_BATCHED_UNMAP_TLB_FLUSH */
- 
- extern const struct trace_print_flags pageflag_names[];
-diff --git a/mm/memory.c b/mm/memory.c
-index f69fbc251198..061f23e34d69 100644
---- a/mm/memory.c
-+++ b/mm/memory.c
-@@ -3345,6 +3345,12 @@ static vm_fault_t do_wp_page(struct vm_fault *vmf)
- 
- 	vmf->page = vm_normal_page(vma, vmf->address, vmf->orig_pte);
- 
-+	if (vmf->page)
-+		folio = page_folio(vmf->page);
-+
-+	if (folio && migrc_pending(folio))
-+		migrc_try_flush();
-+
- 	/*
- 	 * Shared mapping: we are guaranteed to have VM_WRITE and
- 	 * FAULT_FLAG_WRITE set at this point.
-@@ -3362,9 +3368,6 @@ static vm_fault_t do_wp_page(struct vm_fault *vmf)
- 		return wp_page_shared(vmf);
- 	}
- 
--	if (vmf->page)
--		folio = page_folio(vmf->page);
--
- 	/*
- 	 * Private mapping: create an exclusive anonymous page copy if reuse
- 	 * is impossible. We might miss VM_WRITE for FOLL_FORCE handling.
-diff --git a/mm/migrate.c b/mm/migrate.c
-index 01cac26a3127..944c7e179288 100644
---- a/mm/migrate.c
-+++ b/mm/migrate.c
-@@ -58,6 +58,244 @@
- 
- #include "internal.h"
- 
-+#ifdef CONFIG_MIGRC
-+static int sysctl_migrc_enable = 1;
-+#ifdef CONFIG_SYSCTL
-+static int sysctl_migrc_enable_handler(struct ctl_table *table, int write,
-+		void *buffer, size_t *lenp, loff_t *ppos)
-+{
-+	struct ctl_table t;
-+	int err;
-+	int enabled = sysctl_migrc_enable;
-+
-+	if (write && !capable(CAP_SYS_ADMIN))
-+		return -EPERM;
-+
-+	t = *table;
-+	t.data = &enabled;
-+	err = proc_dointvec_minmax(&t, write, buffer, lenp, ppos);
-+	if (err < 0)
-+		return err;
-+	if (write)
-+		sysctl_migrc_enable = enabled;
-+	return err;
-+}
-+
-+static struct ctl_table migrc_sysctls[] = {
-+	{
-+		.procname	= "migrc_enable",
-+		.data		= NULL, /* filled in by handler */
-+		.maxlen		= sizeof(int),
-+		.mode		= 0644,
-+		.proc_handler	= sysctl_migrc_enable_handler,
-+		.extra1         = SYSCTL_ZERO,
-+		.extra2         = SYSCTL_ONE,
-+	},
-+	{}
-+};
-+
-+static int __init migrc_sysctl_init(void)
-+{
-+	register_sysctl_init("vm", migrc_sysctls);
-+	return 0;
-+}
-+late_initcall(migrc_sysctl_init);
-+#endif
-+
-+/*
-+ * TODO: Yeah, it's a non-sense magic number. This simple value manages
-+ * to work conservatively anyway. However, the value needs to be
-+ * tuned and adjusted based on the internal condition of memory
-+ * management subsystem later.
-+ *
-+ * Let's start with a simple value for now.
-+ */
-+static const int migrc_pending_max = 512; /* unit: page */
-+
-+atomic_t migrc_gen;
-+LLIST_HEAD(migrc_reqs);
-+LLIST_HEAD(migrc_reqs_dirty);
-+
-+enum {
-+	MIGRC_STATE_NONE,
-+	MIGRC_SRC_PENDING,
-+	MIGRC_DST_PENDING,
-+};
-+
-+#define MAX_MIGRC_REQ_NR	4096
-+static struct migrc_req migrc_req_pool_static[MAX_MIGRC_REQ_NR];
-+static atomic_t migrc_req_pool_idx = ATOMIC_INIT(-1);
-+static LLIST_HEAD(migrc_req_pool_llist);
-+static DEFINE_SPINLOCK(migrc_req_pool_lock);
-+
-+static struct migrc_req *alloc_migrc_req(void)
-+{
-+	int idx = atomic_read(&migrc_req_pool_idx);
-+	struct llist_node *n;
-+
-+	if (idx < MAX_MIGRC_REQ_NR - 1) {
-+		idx = atomic_inc_return(&migrc_req_pool_idx);
-+		if (idx < MAX_MIGRC_REQ_NR)
-+			return migrc_req_pool_static + idx;
-+	}
-+
-+	spin_lock(&migrc_req_pool_lock);
-+	n = llist_del_first(&migrc_req_pool_llist);
-+	spin_unlock(&migrc_req_pool_lock);
-+
-+	return n ? llist_entry(n, struct migrc_req, llnode) : NULL;
-+}
-+
-+void free_migrc_req(struct migrc_req *req)
-+{
-+	llist_add(&req->llnode, &migrc_req_pool_llist);
-+}
-+
-+static bool migrc_full(int nid)
-+{
-+	struct pglist_data *node = NODE_DATA(nid);
-+
-+	if (migrc_pending_max == -1)
-+		return false;
-+
-+	return atomic_read(&node->migrc_pending_nr) >= migrc_pending_max;
-+}
-+
-+void migrc_init_page(struct page *p)
-+{
-+	WRITE_ONCE(p->migrc_state, MIGRC_STATE_NONE);
-+}
-+
-+/*
-+ * The list should be isolated before.
-+ */
-+void migrc_shrink(struct llist_head *h)
-+{
-+	struct page *p;
-+	struct llist_node *n;
-+
-+	n = llist_del_all(h);
-+	llist_for_each_entry(p, n, migrc_node) {
-+		if (p->migrc_state == MIGRC_SRC_PENDING) {
-+			struct pglist_data *node;
-+			struct zone *zone;
-+
-+			node = NODE_DATA(page_to_nid(p));
-+			zone = page_zone(p);
-+			atomic_dec(&node->migrc_pending_nr);
-+			atomic_dec(&zone->migrc_pending_nr);
-+		}
-+		WRITE_ONCE(p->migrc_state, MIGRC_STATE_NONE);
-+		folio_put(page_folio(p));
-+	}
-+}
-+
-+bool migrc_pending(struct folio *f)
-+{
-+	return READ_ONCE(f->page.migrc_state) != MIGRC_STATE_NONE;
-+}
-+
-+static void migrc_expand_req(struct folio *fsrc, struct folio *fdst)
-+{
-+	struct migrc_req *req;
-+	struct pglist_data *node;
-+	struct zone *zone;
-+
-+	req = fold_ubc_nowr_migrc_req();
-+	if (!req)
-+		return;
-+
-+	folio_get(fsrc);
-+	folio_get(fdst);
-+	WRITE_ONCE(fsrc->page.migrc_state, MIGRC_SRC_PENDING);
-+	WRITE_ONCE(fdst->page.migrc_state, MIGRC_DST_PENDING);
-+
-+	if (llist_add(&fsrc->page.migrc_node, &req->pages))
-+		req->last = &fsrc->page.migrc_node;
-+	llist_add(&fdst->page.migrc_node, &req->pages);
-+
-+	node = NODE_DATA(folio_nid(fsrc));
-+	zone = page_zone(&fsrc->page);
-+	atomic_inc(&node->migrc_pending_nr);
-+	atomic_inc(&zone->migrc_pending_nr);
-+
-+	if (migrc_full(folio_nid(fsrc)))
-+		migrc_try_flush();
-+}
-+
-+void migrc_req_start(void)
-+{
-+	struct migrc_req *req;
-+	struct migrc_req *req_dirty;
-+
-+	if (WARN_ON(current->mreq || current->mreq_dirty))
-+		return;
-+
-+	req = alloc_migrc_req();
-+	req_dirty = alloc_migrc_req();
-+
-+	if (!req || !req_dirty)
-+		goto fail;
-+
-+	arch_tlbbatch_clean(&req->arch);
-+	init_llist_head(&req->pages);
-+	req->last = NULL;
-+	current->mreq = req;
-+
-+	arch_tlbbatch_clean(&req_dirty->arch);
-+	init_llist_head(&req_dirty->pages);
-+	req_dirty->last = NULL;
-+	current->mreq_dirty = req_dirty;
-+	return;
-+fail:
-+	if (req_dirty)
-+		free_migrc_req(req_dirty);
-+	if (req)
-+		free_migrc_req(req);
-+}
-+
-+void migrc_req_end(void)
-+{
-+	struct migrc_req *req = current->mreq;
-+	struct migrc_req *req_dirty = current->mreq_dirty;
-+
-+	WARN_ON((!req && req_dirty) || (req && !req_dirty));
-+
-+	if (!req || !req_dirty)
-+		return;
-+
-+	if (llist_empty(&req->pages)) {
-+		free_migrc_req(req);
-+	} else {
-+		req->gen = atomic_inc_return(&migrc_gen);
-+		llist_add(&req->llnode, &migrc_reqs);
-+	}
-+	current->mreq = NULL;
-+
-+	if (llist_empty(&req_dirty->pages)) {
-+		free_migrc_req(req_dirty);
-+	} else {
-+		req_dirty->gen = atomic_inc_return(&migrc_gen);
-+		llist_add(&req_dirty->llnode, &migrc_reqs_dirty);
-+	}
-+	current->mreq_dirty = NULL;
-+}
-+
-+bool migrc_req_processing(void)
-+{
-+	return current->mreq && current->mreq_dirty;
-+}
-+
-+int migrc_pending_nr_in_zone(struct zone *z)
-+{
-+	return atomic_read(&z->migrc_pending_nr);
-+}
-+#else
-+static const int sysctl_migrc_enable;
-+static bool migrc_full(int nid) { return true; }
-+static void migrc_expand_req(struct folio *fsrc, struct folio *fdst) {}
-+#endif
-+
- bool isolate_movable_page(struct page *page, isolate_mode_t mode)
- {
- 	struct folio *folio = folio_get_nontail_page(page);
-@@ -383,6 +621,9 @@ static int folio_expected_refs(struct address_space *mapping,
- 		struct folio *folio)
- {
- 	int refs = 1;
-+
-+	refs += migrc_pending(folio) ? 1 : 0;
-+
- 	if (!mapping)
- 		return refs;
- 
-@@ -1060,6 +1301,12 @@ static void migrate_folio_undo_src(struct folio *src,
- 				   bool locked,
- 				   struct list_head *ret)
- {
-+	/*
-+	 * TODO: There might be folios already pending for migrc.
-+	 * However, there's no way to cancel those on failure for now.
-+	 * Let's reflect the requirement when needed.
-+	 */
-+
- 	if (page_was_mapped)
- 		remove_migration_ptes(src, src, false);
- 	/* Drop an anon_vma reference if we took one */
-@@ -1627,10 +1874,17 @@ static int migrate_pages_batch(struct list_head *from, new_page_t get_new_page,
- 	LIST_HEAD(unmap_folios);
- 	LIST_HEAD(dst_folios);
- 	bool nosplit = (reason == MR_NUMA_MISPLACED);
-+	bool migrc_cond1;
- 
- 	VM_WARN_ON_ONCE(mode != MIGRATE_ASYNC &&
- 			!list_empty(from) && !list_is_singular(from));
- 
-+	migrc_cond1 = sysctl_migrc_enable &&
-+		((reason == MR_DEMOTION && current_is_kswapd()) ||
-+		 reason == MR_NUMA_MISPLACED);
-+
-+	if (migrc_cond1)
-+		migrc_req_start();
- 	for (pass = 0; pass < nr_pass && (retry || large_retry); pass++) {
- 		retry = 0;
- 		large_retry = 0;
-@@ -1638,6 +1892,10 @@ static int migrate_pages_batch(struct list_head *from, new_page_t get_new_page,
- 		nr_retry_pages = 0;
- 
- 		list_for_each_entry_safe(folio, folio2, from, lru) {
-+			int nr_required;
-+			bool migrc_cond2;
-+			bool migrc;
-+
- 			/*
- 			 * Large folio statistics is based on the source large
- 			 * folio. Capture required information that might get
-@@ -1671,8 +1929,14 @@ static int migrate_pages_batch(struct list_head *from, new_page_t get_new_page,
- 				continue;
- 			}
- 
-+			nr_required = nr_flush_required();
- 			rc = migrate_folio_unmap(get_new_page, put_new_page, private,
- 						 folio, &dst, mode, reason, ret_folios);
-+			migrc_cond2 = nr_required == nr_flush_required() &&
-+				      nr_flush_required_nowr() &&
-+				      !migrc_full(folio_nid(folio));
-+			migrc = migrc_cond1 && migrc_cond2;
-+
- 			/*
- 			 * The rules are:
- 			 *	Success: folio will be freed
-@@ -1722,9 +1986,11 @@ static int migrate_pages_batch(struct list_head *from, new_page_t get_new_page,
- 				nr_large_failed += large_retry;
- 				stats->nr_thp_failed += thp_retry;
- 				rc_saved = rc;
--				if (list_empty(&unmap_folios))
-+				if (list_empty(&unmap_folios)) {
-+					if (migrc_cond1)
-+						migrc_req_end();
- 					goto out;
--				else
-+				} else
- 					goto move;
- 			case -EAGAIN:
- 				if (is_large) {
-@@ -1742,6 +2008,13 @@ static int migrate_pages_batch(struct list_head *from, new_page_t get_new_page,
- 			case MIGRATEPAGE_UNMAP:
- 				list_move_tail(&folio->lru, &unmap_folios);
- 				list_add_tail(&dst->lru, &dst_folios);
-+
-+				if (migrc)
-+					/*
-+					 * XXX: On migration failure,
-+					 * extra TLB flush might happen.
-+					 */
-+					migrc_expand_req(folio, dst);
- 				break;
- 			default:
- 				/*
-@@ -1760,6 +2033,7 @@ static int migrate_pages_batch(struct list_head *from, new_page_t get_new_page,
- 				stats->nr_failed_pages += nr_pages;
- 				break;
- 			}
-+			fold_ubc_nowr();
- 		}
- 	}
- 	nr_failed += retry;
-@@ -1767,6 +2041,15 @@ static int migrate_pages_batch(struct list_head *from, new_page_t get_new_page,
- 	stats->nr_thp_failed += thp_retry;
- 	stats->nr_failed_pages += nr_retry_pages;
- move:
-+	/*
-+	 * Should be prior to try_to_unmap_flush() so that
-+	 * migrc_try_flush() that will be performed later based on the
-+	 * gen # assigned in migrc_req_end(), can take benefit of the
-+	 * TLB flushes in try_to_unmap_flush().
-+	 */
-+	if (migrc_cond1)
-+		migrc_req_end();
-+
- 	/* Flush TLBs for all unmapped folios */
- 	try_to_unmap_flush();
- 
-diff --git a/mm/mm_init.c b/mm/mm_init.c
-index 7f7f9c677854..87cbddc7d780 100644
---- a/mm/mm_init.c
-+++ b/mm/mm_init.c
-@@ -558,6 +558,7 @@ static void __meminit __init_single_page(struct page *page, unsigned long pfn,
- 	page_mapcount_reset(page);
- 	page_cpupid_reset_last(page);
- 	page_kasan_tag_reset(page);
-+	migrc_init_page(page);
- 
- 	INIT_LIST_HEAD(&page->lru);
- #ifdef WANT_PAGE_VIRTUAL
-diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-index 47421bedc12b..167dadb0d817 100644
---- a/mm/page_alloc.c
-+++ b/mm/page_alloc.c
-@@ -3176,6 +3176,11 @@ bool __zone_watermark_ok(struct zone *z, unsigned int order, unsigned long mark,
- 	long min = mark;
- 	int o;
- 
-+	/*
-+	 * There are pages that can be freed by migrc_try_flush().
-+	 */
-+	free_pages += migrc_pending_nr_in_zone(z);
-+
- 	/* free_pages may go negative - that's OK */
- 	free_pages -= __zone_watermark_unusable_free(z, order, alloc_flags);
- 
-@@ -4254,6 +4259,7 @@ __alloc_pages_slowpath(gfp_t gfp_mask, unsigned int order,
- 	unsigned int zonelist_iter_cookie;
- 	int reserve_flags;
- 
-+	migrc_try_flush();
- restart:
- 	compaction_retries = 0;
- 	no_progress_loops = 0;
-@@ -4769,6 +4775,16 @@ struct page *__alloc_pages(gfp_t gfp, unsigned int order, int preferred_nid,
- 	if (likely(page))
- 		goto out;
- 
-+	if (order && migrc_try_flush()) {
-+		/*
-+		 * Try again after freeing migrc's pending pages in case
-+		 * of high order allocation.
-+		 */
-+		page = get_page_from_freelist(alloc_gfp, order, alloc_flags, &ac);
-+		if (likely(page))
-+			goto out;
-+	}
-+
- 	alloc_gfp = gfp;
- 	ac.spread_dirty_pages = false;
- 
-diff --git a/mm/rmap.c b/mm/rmap.c
-index d18460a48485..5b251eb01cd4 100644
---- a/mm/rmap.c
-+++ b/mm/rmap.c
-@@ -606,6 +606,86 @@ struct anon_vma *folio_lock_anon_vma_read(struct folio *folio,
- 
- #ifdef CONFIG_ARCH_WANT_BATCHED_UNMAP_TLB_FLUSH
- 
-+#ifdef CONFIG_MIGRC
-+static bool __migrc_try_flush(struct llist_head *h)
-+{
-+	struct arch_tlbflush_unmap_batch arch;
-+	struct llist_node *reqs;
-+	struct migrc_req *req;
-+	struct migrc_req *req2;
-+	LLIST_HEAD(pages);
-+
-+	reqs = llist_del_all(h);
-+	if (!reqs)
-+		return false;
-+
-+	arch_tlbbatch_clean(&arch);
-+
-+	/*
-+	 * TODO: Optimize the time complexity.
-+	 */
-+	llist_for_each_entry_safe(req, req2, reqs, llnode) {
-+		struct llist_node *n;
-+
-+		arch_migrc_adj(&req->arch, req->gen);
-+		arch_tlbbatch_fold(&arch, &req->arch);
-+
-+		n = llist_del_all(&req->pages);
-+		llist_add_batch(n, req->last, &pages);
-+		free_migrc_req(req);
-+	}
-+
-+	arch_tlbbatch_flush(&arch);
-+	migrc_shrink(&pages);
-+	return true;
-+}
-+
-+bool migrc_try_flush(void)
-+{
-+	bool ret;
-+
-+	if (migrc_req_processing()) {
-+		migrc_req_end();
-+		migrc_req_start();
-+	}
-+	ret = __migrc_try_flush(&migrc_reqs);
-+	ret = ret || __migrc_try_flush(&migrc_reqs_dirty);
-+
-+	return ret;
-+}
-+
-+void migrc_try_flush_dirty(void)
-+{
-+	if (migrc_req_processing()) {
-+		migrc_req_end();
-+		migrc_req_start();
-+	}
-+	__migrc_try_flush(&migrc_reqs_dirty);
-+}
-+
-+struct migrc_req *fold_ubc_nowr_migrc_req(void)
-+{
-+	struct tlbflush_unmap_batch *tlb_ubc_nowr = &current->tlb_ubc_nowr;
-+	struct migrc_req *req;
-+	bool dirty;
-+
-+	if (!tlb_ubc_nowr->nr_flush_required)
-+		return NULL;
-+
-+	dirty = tlb_ubc_nowr->writable;
-+	req = dirty ? current->mreq_dirty : current->mreq;
-+	if (!req) {
-+		fold_ubc_nowr();
-+		return NULL;
-+	}
-+
-+	arch_tlbbatch_fold(&req->arch, &tlb_ubc_nowr->arch);
-+	tlb_ubc_nowr->nr_flush_required = 0;
-+	tlb_ubc_nowr->writable = false;
-+	return req;
-+}
-+#endif
-+
- void fold_ubc_nowr(void)
- {
- 	struct tlbflush_unmap_batch *tlb_ubc = &current->tlb_ubc;
-@@ -621,6 +701,16 @@ void fold_ubc_nowr(void)
- 	tlb_ubc_nowr->writable = false;
- }
- 
-+int nr_flush_required(void)
-+{
-+	return current->tlb_ubc.nr_flush_required;
-+}
-+
-+int nr_flush_required_nowr(void)
-+{
-+	return current->tlb_ubc_nowr.nr_flush_required;
-+}
-+
- /*
-  * Flush TLB entries for recently unmapped pages from remote CPUs. It is
-  * important if a PTE was dirty when it was unmapped that it's flushed
-@@ -648,6 +738,8 @@ void try_to_unmap_flush_dirty(void)
- 
- 	if (tlb_ubc->writable || tlb_ubc_nowr->writable)
- 		try_to_unmap_flush();
-+
-+	migrc_try_flush_dirty();
- }
- 
- /*
--- 
-2.17.1
-
+Regards
+Sven
