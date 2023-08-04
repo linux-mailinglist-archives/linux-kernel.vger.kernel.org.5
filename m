@@ -2,151 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D72A77076A
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 20:01:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C4AEF77076E
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 20:03:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229990AbjHDSBZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Aug 2023 14:01:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40312 "EHLO
+        id S229676AbjHDSCu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Aug 2023 14:02:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41074 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229541AbjHDSBV (ORCPT
+        with ESMTP id S229447AbjHDSCt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Aug 2023 14:01:21 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B01546A8
-        for <linux-kernel@vger.kernel.org>; Fri,  4 Aug 2023 11:00:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1691172034;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=plknfH3SDQ/AujyL8eWFqeOy7h7VD7A1dUfZFnOOKDM=;
-        b=BbimRuwNeLcqubjf0P0fbZemwkJ/NWqiM3ZiVKsJwsug3oTlOFgHNXY2gbYXArmCqnFED/
-        LvZXeAGLDMd5S7Ss1qB20C8QjvUWHu+0bT9+NSm+Fgju3akmuG7mk0i3ZRJeG6Jl6a1aqo
-        KPRiYcEDr65oOQKm1dGuTJdJbcaMn6Y=
-Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
- [209.85.221.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-635-zD1dSulTMcKEwRfLJPGtMA-1; Fri, 04 Aug 2023 14:00:29 -0400
-X-MC-Unique: zD1dSulTMcKEwRfLJPGtMA-1
-Received: by mail-wr1-f70.google.com with SMTP id ffacd0b85a97d-3176c4de5bbso1189051f8f.0
-        for <linux-kernel@vger.kernel.org>; Fri, 04 Aug 2023 11:00:29 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691172028; x=1691776828;
-        h=content-transfer-encoding:in-reply-to:organization:from:references
-         :cc:to:content-language:subject:user-agent:mime-version:date
-         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=plknfH3SDQ/AujyL8eWFqeOy7h7VD7A1dUfZFnOOKDM=;
-        b=lp73QBeqlF7ZtrhKy66xxyMDVXhjvIfmukCKeFASeQ3V5FXCuBNILk2df7HAac89Bm
-         y5t5aZqbVidZPqnZx7oTz+OkFArDlZcpnO3aTU0kx84BSxKEQBsaVYhD0XRYDqFHzEUB
-         0YhHE/Bl4kRGp+nic1BaQVO3M+nBVD8K9tanMy2CmTwxm26dwPpBaQdt4f3b6HGY7O7R
-         mkUOA5RPMjhikDjsYTdZUQfUHyt42LWlKAjXvd5+WiI2IfZY966QGKYDDObRl3DXiZPx
-         rwoy9tFYJBNhactF4o1ngZ9+rjFarro0O6j2sq5SvaW7hycYI9goEPy7h9SdYAZyEusf
-         uFCg==
-X-Gm-Message-State: AOJu0YxcNd3uexpEc9KjuPafsbiBwgOjD2JeAaQ8zSFnz8G7RYDAvWYs
-        V0EpRiSiat5gvxxpxJ3o0QPNePnDlo9BSpwb7RezXIQnyabPmbaDUE5T4jucbH1Ub5dthuJ16nm
-        h1Z7weAlGo3rnHAWlAAtUqKWJ
-X-Received: by 2002:adf:e90b:0:b0:314:49e4:b0c4 with SMTP id f11-20020adfe90b000000b0031449e4b0c4mr1906972wrm.70.1691172028376;
-        Fri, 04 Aug 2023 11:00:28 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IHxHfzUz1EPw43upa/7C1PthJlkuVCBp6Z+blRveCGIYkYDQyDnvZ5j7WD7RCluzgxUr1F+kA==
-X-Received: by 2002:adf:e90b:0:b0:314:49e4:b0c4 with SMTP id f11-20020adfe90b000000b0031449e4b0c4mr1906951wrm.70.1691172027948;
-        Fri, 04 Aug 2023 11:00:27 -0700 (PDT)
-Received: from ?IPV6:2003:d8:2f2d:8e00:a20e:59bc:3c13:4806? (p200300d82f2d8e00a20e59bc3c134806.dip0.t-ipconnect.de. [2003:d8:2f2d:8e00:a20e:59bc:3c13:4806])
-        by smtp.gmail.com with ESMTPSA id m15-20020a056000008f00b0031417b0d338sm3082057wrx.87.2023.08.04.11.00.26
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 04 Aug 2023 11:00:27 -0700 (PDT)
-Message-ID: <dff76f35-8564-1908-2a17-1479c53e56cf@redhat.com>
-Date:   Fri, 4 Aug 2023 20:00:26 +0200
+        Fri, 4 Aug 2023 14:02:49 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33E09122;
+        Fri,  4 Aug 2023 11:02:48 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id AC43C620DD;
+        Fri,  4 Aug 2023 18:02:47 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0B782C433C7;
+        Fri,  4 Aug 2023 18:02:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1691172167;
+        bh=2TvmXhNnlzrlxfa1YleRyPaLS686Vc214nW78iEHJIE=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=DLoyn0XMIWLZLuaWV44AG7aZS8BoWqfiBwaq9zIq7p56W3ckyaHI2bJQL0ZBBeORC
+         bGY5sgnQq7XjgRDxVIx96myD/7xHQALOKYSZpRdKgO0ckkBmIY8z+SGyEYfPF0X3HN
+         pjzue1NE6JCEIVb5QdHw9KFveO2jtdspoBrS0a/d39yC/uPF+RS5CRijUeo1UmHil2
+         M1ezE8yB2VjQ6rA3mV3+qtLr5CD3Sf8v4yGtwa+IzVVdiMuvuWOPoKe0mF5vb5AqmO
+         Q3Qr06373/9rmjcHWZcNAAT3HWfZbBt4lWcocHq6AFMKlly4GI3NpvI2+cjZfd0lLr
+         gQb6Qh065jrgg==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id 94D87CE0591; Fri,  4 Aug 2023 11:02:46 -0700 (PDT)
+Date:   Fri, 4 Aug 2023 11:02:46 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Joel Fernandes <joel@joelfernandes.org>
+Cc:     linux-kernel@vger.kernel.org, rcu@vger.kernel.org,
+        Alan Stern <stern@rowland.harvard.edu>,
+        Andrea Parri <parri.andrea@gmail.com>,
+        Will Deacon <will@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        David Howells <dhowells@redhat.com>,
+        Jade Alglave <j.alglave@ucl.ac.uk>,
+        Luc Maranget <luc.maranget@inria.fr>,
+        Akira Yokosawa <akiyks@gmail.com>,
+        Daniel Lustig <dlustig@nvidia.com>,
+        Jonathan Corbet <corbet@lwn.net>
+Subject: Re: [PATCH 2/2] docs: memory-barriers: Add note on plain-accesses to
+ address-dependency barriers
+Message-ID: <dbde9441-e749-46fa-b842-8d2a9390bf3c@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <20230803032408.2514989-1-joel@joelfernandes.org>
+ <20230803032408.2514989-2-joel@joelfernandes.org>
+ <626d1b48-de6a-4a0b-95d3-3ac438878757@paulmck-laptop>
+ <20230804051127.GA3860381@google.com>
+ <3f53035f-3251-4531-b9b9-e12f371c1051@paulmck-laptop>
+ <20230804162745.GA256944@google.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v3 7/7] selftest/mm: ksm_functional_tests: Add PROT_NONE
- test
-Content-Language: en-US
-To:     Peter Xu <peterx@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        linux-fsdevel@vger.kernel.org, kvm@vger.kernel.org,
-        linux-kselftest@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        liubo <liubo254@huawei.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Hugh Dickins <hughd@google.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Mel Gorman <mgorman@suse.de>, Shuah Khan <shuah@kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>
-References: <20230803143208.383663-1-david@redhat.com>
- <20230803143208.383663-8-david@redhat.com> <ZMv6wG7PqehMp6vT@x1n>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat
-In-Reply-To: <ZMv6wG7PqehMp6vT@x1n>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_NONE autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230804162745.GA256944@google.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 03.08.23 21:06, Peter Xu wrote:
-> On Thu, Aug 03, 2023 at 04:32:08PM +0200, David Hildenbrand wrote:
->> Let's test whether merging and unmerging in PROT_NONE areas works as
->> expected.
->>
->> Pass a page protection to mmap_and_merge_range(), which will trigger
->> an mprotect() after writing to the pages, but before enabling merging.
->>
->> Make sure that unsharing works as expected, by performing a ptrace write
->> (using /proc/self/mem) and by setting MADV_UNMERGEABLE.
->>
->> Note that this implicitly tests that ptrace writes in an inaccessible
->> (PROT_NONE) mapping work as expected.
->>
->> Signed-off-by: David Hildenbrand <david@redhat.com>
+On Fri, Aug 04, 2023 at 04:27:45PM +0000, Joel Fernandes wrote:
+> On Fri, Aug 04, 2023 at 06:52:32AM -0700, Paul E. McKenney wrote:
+> > On Fri, Aug 04, 2023 at 05:11:27AM +0000, Joel Fernandes wrote:
+> > > On Thu, Aug 03, 2023 at 11:52:06AM -0700, Paul E. McKenney wrote:
+> > > > On Thu, Aug 03, 2023 at 03:24:07AM +0000, Joel Fernandes (Google) wrote:
+> > > > > The compiler has the ability to cause misordering by destroying
+> > > > > address-dependency barriers if comparison operations are used. Add a
+> > > > > note about this to memory-barriers.txt and point to rcu-dereference.rst
+> > > > > for more information.
+> > > > > 
+> > > > > Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+> > > > > ---
+> > > > >  Documentation/memory-barriers.txt | 5 +++++
+> > > > >  1 file changed, 5 insertions(+)
+> > > > > 
+> > > > > diff --git a/Documentation/memory-barriers.txt b/Documentation/memory-barriers.txt
+> > > > > index 06e14efd8662..acc8ec5ce563 100644
+> > > > > --- a/Documentation/memory-barriers.txt
+> > > > > +++ b/Documentation/memory-barriers.txt
+> > > > > @@ -435,6 +435,11 @@ Memory barriers come in four basic varieties:
+> > > > >       variables such as READ_ONCE() and rcu_dereference() provide implicit
+> > > > >       address-dependency barriers.
+> > > > >  
+> > > > > +     [!] Note that address dependency barriers can be destroyed by comparison
+> > > > > +     of a pointer obtained by a marked accessor such as READ_ONCE() or
+> > > > > +     rcu_dereference() with some value.  For an example of this, see
+> > > > > +     rcu_dereference.rst (part where the comparison of pointers is discussed).
+> > > > 
+> > > > Hmmm...
+> > > > 
+> > > > Given that this is in a section marked "historical" (for the old
+> > > > smp_read_barrier_depends() API), why not instead add a pointer to
+> > > > Documentation/RCU/rcu_dereference.rst to the beginning of the section,
+> > > > noted as the updated material?
+> > > 
+> > > Sounds good. There's also another section in the same file on Address
+> > > dependency barriers (also marked historical). So something like the
+> > > following?
+> > 
+> > Given a Signed-off-by and so forth, I would be happy to take this one.
 > 
-> [...]
+> Thank you for helping me improve the docs, here it goes:
 > 
->> +static void test_prot_none(void)
->> +{
->> +	const unsigned int size = 2 * MiB;
->> +	char *map;
->> +	int i;
->> +
->> +	ksft_print_msg("[RUN] %s\n", __func__);
->> +
->> +	map = mmap_and_merge_range(0x11, size, PROT_NONE, false);
->> +	if (map == MAP_FAILED)
->> +		goto unmap;
->> +
->> +	/* Store a unique value in each page on one half using ptrace */
->> +	for (i = 0; i < size / 2; i += pagesize) {
->> +		lseek(mem_fd, (uintptr_t) map + i, SEEK_SET);
->> +		if (write(mem_fd, &i, sizeof(size)) != sizeof(size)) {
+> ---8<-----------------------
 > 
-> sizeof(i)?  May not matter a huge lot, though..
-
-Oh, indeed, thanks!
-
+> From: "Joel Fernandes (Google)" <joel@joelfernandes.org>
+> Subject: [PATCH] docs: memory-barriers: Add note on compiler transformation
+>  and address deps
 > 
->> +			ksft_test_result_fail("ptrace write failed\n");
->> +			goto unmap;
->> +		}
->> +	}
+> The compiler has the ability to cause misordering by destroying
+> address-dependency barriers if comparison operations are used. Add a
+> note about this to memory-barriers.txt in the beginning of both the
+> historical address-dependency sections and point to rcu-dereference.rst
+> for more information.
 > 
-> Acked-by: Peter Xu <peterx@redhat.com>
+> Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+
+Queued and pushed, thank you!
+
+							Thanx, Paul
+
+> ---
+>  Documentation/memory-barriers.txt | 7 +++++++
+>  1 file changed, 7 insertions(+)
 > 
-
-Thanks!
-
--- 
-Cheers,
-
-David / dhildenb
-
+> diff --git a/Documentation/memory-barriers.txt b/Documentation/memory-barriers.txt
+> index acc8ec5ce563..ba50220716ca 100644
+> --- a/Documentation/memory-barriers.txt
+> +++ b/Documentation/memory-barriers.txt
+> @@ -396,6 +396,10 @@ Memory barriers come in four basic varieties:
+>  
+>  
+>   (2) Address-dependency barriers (historical).
+> +     [!] This section is marked as HISTORICAL: For more up-to-date
+> +     information, including how compiler transformations related to pointer
+> +     comparisons can sometimes cause problems, see
+> +     Documentation/RCU/rcu_dereference.rst.
+>  
+>       An address-dependency barrier is a weaker form of read barrier.  In the
+>       case where two loads are performed such that the second depends on the
+> @@ -561,6 +565,9 @@ There are certain things that the Linux kernel memory barriers do not guarantee:
+>  
+>  ADDRESS-DEPENDENCY BARRIERS (HISTORICAL)
+>  ----------------------------------------
+> +[!] This section is marked as HISTORICAL: For more up-to-date information,
+> +including how compiler transformations related to pointer comparisons can
+> +sometimes cause problems, see Documentation/RCU/rcu_dereference.rst.
+>  
+>  As of v4.15 of the Linux kernel, an smp_mb() was added to READ_ONCE() for
+>  DEC Alpha, which means that about the only people who need to pay attention
+> -- 
+> 2.41.0.585.gd2178a4bd4-goog
+> 
