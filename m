@@ -2,151 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F392776FB8D
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 10:00:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9130976FB8B
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 10:00:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233056AbjHDIA1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Aug 2023 04:00:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48096 "EHLO
+        id S233473AbjHDH77 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Aug 2023 03:59:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47748 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232507AbjHDIAY (ORCPT
+        with ESMTP id S232661AbjHDH75 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Aug 2023 04:00:24 -0400
-Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.154.123])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E3BA1704;
-        Fri,  4 Aug 2023 01:00:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1691136023; x=1722672023;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=mozKuYzJnKHA2aKr3eiYDtSGyCx3d+I7fkTRCyvB7W0=;
-  b=S9meV5hrPUbBWAY9o6CBbP4zp+xjTUOqzEz4V6ZlpD8H2B8tHo8L1nwn
-   J+cxYIHYcDIgWTY2rLLlG3UhfVIB554mdIApG5n6sVzQMbMid3158CjkH
-   v/rNMykvOYsJ49x2MXBs1YjEVpZlQTA+Li9qoAZJVc86SfwWzIp/+RIHq
-   C0o7scN3tX+VkKR/L+J5S+dFJK5K7cDvlqF3d42Pk4MR0XiKzXV6bm8hK
-   W6ISf0f/5EQPsoIdmAlr3tcyz+F72jnKDnepDDHxGslQ76uyFlcoyIogo
-   H8xoAXe/MiIZPQ1mhshb9FWdRwKYEmZwvCbhM0ZHqoAGTLBeefzP/VehU
-   g==;
-X-IronPort-AV: E=Sophos;i="6.01,254,1684825200"; 
-   d="asc'?scan'208";a="164824311"
-X-Amp-Result: UNKNOWN
-X-Amp-Original-Verdict: FILE UNKNOWN
-Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
-  by esa6.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 04 Aug 2023 01:00:21 -0700
-Received: from chn-vm-ex03.mchp-main.com (10.10.85.151) by
- chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.21; Fri, 4 Aug 2023 01:00:06 -0700
-Received: from wendy (10.10.115.15) by chn-vm-ex03.mchp-main.com
- (10.10.85.151) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.21 via Frontend
- Transport; Fri, 4 Aug 2023 01:00:01 -0700
-Date:   Fri, 4 Aug 2023 08:59:24 +0100
-From:   Conor Dooley <conor.dooley@microchip.com>
-To:     Charlie Jenkins <charlie@rivosinc.com>
-CC:     <linux-riscv@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
-        <kvm@vger.kernel.org>, <kvm-riscv@lists.infradead.org>,
-        <bpf@vger.kernel.org>, Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Josh Poimboeuf <jpoimboe@kernel.org>,
-        Jason Baron <jbaron@akamai.com>,
+        Fri, 4 Aug 2023 03:59:57 -0400
+Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 380051702
+        for <linux-kernel@vger.kernel.org>; Fri,  4 Aug 2023 00:59:56 -0700 (PDT)
+Received: by mail-pl1-x62f.google.com with SMTP id d9443c01a7336-1bbff6b2679so12995245ad.1
+        for <linux-kernel@vger.kernel.org>; Fri, 04 Aug 2023 00:59:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1691135995; x=1691740795;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=O9Gcb+QDtSTT+tNrxhCWxJPsPV30mS5AUZDQJsHHC4s=;
+        b=IoAZjC00BnFRG2TxI/YGBXZM+XqqgZ3hnKWejZgHB7aNAWjwo186hocmF7jX+4l8er
+         xj9Gkp/TeSZTsslK3dAyVjqzkSgnZ/IVeENgShXd9QCgzE91ErIcTQNndiumXAtJQgOr
+         +vrXWNgdAy+MVf/Pp2ZqhiLSBUrSV1LJzpHfs=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691135996; x=1691740796;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=O9Gcb+QDtSTT+tNrxhCWxJPsPV30mS5AUZDQJsHHC4s=;
+        b=IqtXKL2QXgTwwN3EIEN7e/ir87OrO388TLiWgG7KAACK7AEFNwqguT6K4iPpea8hBE
+         dFd9urKNzG80+3YmPiDYZtzIw/6lxNrWS7mvBpOkc34DZT8Hrf3mh9r6y8M0sIxYR0OM
+         5m7n4G4KX9RRgF7hLZDwNq8ziY+vVYjgczHJjq6zXE2uQ57WsFyS8OnBS/gUCY3W4+20
+         2CbSNECnVSz+EGYf0Xa1RFlyq3NEhvzmjCstl75xDwJshNKdHHm0v/8+ExeT35mrqUcR
+         1YT+CA/HThfGGRzBxkxaYDL9/VKtVhvwqbeBbZtNQ6p93XbpfvJHFU6ZzkDBggdeROn4
+         fpEg==
+X-Gm-Message-State: AOJu0YxtLsRxl6auycay4OZ8curtWmZqWCsBbOeAcbs14Z2DNtZNghIh
+        Lfy4wUo/GujfW/jyZg28BYKPHw==
+X-Google-Smtp-Source: AGHT+IHQU8oawqqvi5y8u+MMjLWlbxUnrI9mvTQCGsv987U85hgsaxgLUeltMRH9QKy6jGgwxbloJw==
+X-Received: by 2002:a17:902:c103:b0:1b1:753a:49ce with SMTP id 3-20020a170902c10300b001b1753a49cemr741796pli.53.1691135995649;
+        Fri, 04 Aug 2023 00:59:55 -0700 (PDT)
+Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id a2-20020a1709027d8200b001bc39aa63ebsm1102101plm.121.2023.08.04.00.59.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 04 Aug 2023 00:59:54 -0700 (PDT)
+Date:   Fri, 4 Aug 2023 00:59:54 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Vijay Balakrishna <vijayb@linux.microsoft.com>
+Cc:     Petr Mladek <pmladek@suse.com>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
         Steven Rostedt <rostedt@goodmis.org>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Anup Patel <anup@brainfault.org>,
-        Atish Patra <atishp@atishpatra.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        =?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn@kernel.org>,
-        Luke Nelson <luke.r.nels@gmail.com>,
-        Xi Wang <xi.wang@gmail.com>, Nam Cao <namcaov@gmail.com>
-Subject: Re: [PATCH 01/10] RISC-V: Expand instruction definitions
-Message-ID: <20230804-barterer-heritage-ed191081bc47@wendy>
-References: <20230803-master-refactor-instructions-v4-v1-0-2128e61fa4ff@rivosinc.com>
- <20230803-master-refactor-instructions-v4-v1-1-2128e61fa4ff@rivosinc.com>
+        John Ogness <john.ogness@linutronix.de>,
+        Colin Cross <ccross@android.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Anton Vorontsov <anton@enomsg.org>,
+        linux-kernel@vger.kernel.org
+Subject: Re: pstore/ram: printk: NULL characters in pstore ramoops area
+Message-ID: <202308040053.7F38C6D@keescook>
+References: <f28990eb-03bc-2259-54d0-9f2254abfe62@linux.microsoft.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="giltLFM/xoeS/K8e"
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <20230803-master-refactor-instructions-v4-v1-1-2128e61fa4ff@rivosinc.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <f28990eb-03bc-2259-54d0-9f2254abfe62@linux.microsoft.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_PASS,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---giltLFM/xoeS/K8e
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+On Thu, Aug 03, 2023 at 04:34:09PM -0700, Vijay Balakrishna wrote:
+> Hello,
+> 
+> We are noticing NULL characters in ramoops/pstore memory after a warm or a
+> kexec reboot [1] in our 5.10 ARM64 product kernel after moving from 5.4
+> kernel.  I ruled out fs/pstore/* as the source from where NULL characters
+> originate by adding debug code [2] and confirming from collected output
+> [3].  Then isolated further to printk log/ring buffer area, the NULL
+> characters were already present in buffer in kmsg_dump_get_buffer() when
+> kmsg log lines are read.  After looking at printk merges in mainline kernel,
+> I cherry-picked following which looked related to our 5.10 kernel and still
+> see NULL characters.
+> 
+>    4260e0e5510158d704898603331e5365ebe957de printk: consolidate
+>    kmsg_dump_get_buffer/syslog_print_all code
+>    726b5097701a8d46f5354be780e1a11fc4ca1187 printk: refactor
+>    kmsg_dump_get_buffer()
+>    bb07b16c44b2c6ddbafa44bb06454719002e828e printk: limit second loop
+>    of syslog_print_all
 
-On Thu, Aug 03, 2023 at 07:10:26PM -0700, Charlie Jenkins wrote:
-> There are many systems across the kernel that rely on directly creating
-> and modifying instructions. In order to unify them, create shared
-> definitions for instructions and registers.
->=20
-> Signed-off-by: Charlie Jenkins <charlie@rivosinc.com>
-> ---
->  arch/riscv/include/asm/insn.h            | 2742 ++++++++++++++++++++++++=
-+++---
+Do you mean that you took a working v5.4 kernel and backported the above
+3 commits and it starting showing the %NUL characters?
 
-"I did a lot of copy-pasting from the RISC-V spec"
+> [...]
+> diff --git a/fs/pstore/ram.c b/fs/pstore/ram.c
+> index ade66dbe5f39..1825972151b2 100644
+> --- a/fs/pstore/ram.c
+> +++ b/fs/pstore/ram.c
+> @@ -383,6 +383,10 @@ static int notrace ramoops_pstore_write(struct
+> pstore_record *record)
+>      size = record->size;
+>      if (size + hlen > prz->buffer_size)
+>          size = prz->buffer_size - hlen;
+> +    if (null_char(record->buf, size))
+> +        pr_crit("%s: A NULL char in record buf, size %zu\n", __func__,
+> size);
+> +    else
+> +        pr_crit("%s: No NULL char in record buf, size %zu\n", __func__,
+> size);
+>      persistent_ram_write(prz, record->buf, size);
+> [...]
+> root@localhost:~# reboot
+> [ 2188.073362] systemd-shutdown[1]: Could not detach loopback /dev/loop1: Device or resource busy
+> [ 2188.082272] systemd-shutdown[1]: Could not detach loopback /dev/loop0: Device or resource busy
+> [ 2188.091873] watchdog: watchdog0: watchdog did not stop!
+> [ 2188.099227] systemd-shutdown[1]: Failed to finalize loop devices, DM devices, ignoring.
+> [ 2188.306671] reboot: Restarting system
+> [ 2188.316932] ramoops: ramoops_pstore_write: A NULL char in record buf, size 88190
 
-How is anyone supposed to cross check this when there's 1000s of lines
-of a diff here? We've had some subtle bugs in some of the definitions in
-the past, so I would like to be able to check at this opportune moment
-that things are correct.
+Well that does seem pretty definitive that it's a problem with the
+printk/kmsg infrastructure: the %NULs are present in the buffer being
+handed to pstore. :(
 
->  arch/riscv/include/asm/reg.h             |   88 +
->  arch/riscv/kernel/kgdb.c                 |    4 +-
->  arch/riscv/kernel/probes/simulate-insn.c |   39 +-
->  arch/riscv/kernel/vector.c               |    2 +-
+I have had a growing suspicion that there is a hard-to-find memory
+corruption issue with recent printk work (seen during early-boot UBSAN
+reporting), but v5.10 is pretty old, so it's probably not related.
 
-You need to at least split this up. I doubt a 2742 change diff for
-insn.h was required to make the changes in these 4 files.
+Is the issue present in modern kernels?
 
-Then after that, it would be so much easier to reason about these
-changes if the additions to insn.h happened at the same time as the
-removals from the affected locations.
+-Kees
 
-I would probably split this so that things are done in more stages,
-with the larger patches split between changes that require no new
-definitions and changes that require moving things to insn.h
-
->  5 files changed, 2629 insertions(+), 246 deletions(-)
-
-What you would want to see if this arrived in your inbox as a reviewer?
-
-Don't get me wrong, I do like what you are doing here, the BPF JIT
-especially is filled with "uhh okay, I guess those offsets are right",
-so I don't mean to be discouraging.
-
-Thanks,
-Conor.
-
---giltLFM/xoeS/K8e
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZMyvzwAKCRB4tDGHoIJi
-0gQYAP0UlvSWYX6mB67CAGmIVZwnT0CwyiNPOEXW+G0t9GnWngD+PxdgtapB+DMY
-MPJ1zDp8mSYyzU+MKQ++56q8pPpFyQg=
-=yGw/
------END PGP SIGNATURE-----
-
---giltLFM/xoeS/K8e--
+-- 
+Kees Cook
