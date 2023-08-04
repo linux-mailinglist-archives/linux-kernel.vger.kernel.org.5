@@ -2,174 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E34177042B
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 17:15:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4EC8D770433
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 17:17:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231772AbjHDPPW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Aug 2023 11:15:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53658 "EHLO
+        id S230235AbjHDPRN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Aug 2023 11:17:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54010 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229726AbjHDPPU (ORCPT
+        with ESMTP id S229572AbjHDPRL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Aug 2023 11:15:20 -0400
-Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.154.123])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFB2846B2;
-        Fri,  4 Aug 2023 08:15:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1691162119; x=1722698119;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=atf6awQZSaLep4xKPbRypTbT3WBxXblEP6kiO8HAjXs=;
-  b=kEAHQwNrbR2VvfZ3fxQZdL4/bkvzoIf7k/5U54GcL7/DhszfpA1wIDJQ
-   7wbO3xfIS9ko7teYq+7PZ2sB8/am2O7Xv+J1pUH9lWOCAbKx1GeEkuv2m
-   mFavwuHGYfgL2DtopfKW3gL+Br3qTGmPkpQSEY2+r/Y1J2IKQyTtKRNVT
-   HVfS6BJRq1fCFodmccg8o6GldlwVNN+SBTH0VSvwRPnEPU5HXopTQsHrc
-   srMBTbZcGz6UVxAnTWktoFoJJvYBPYxeeCsE3Ewhw5hxRr7m9Rj8uGulA
-   sc2r1jza6/C4Ig2tBWmfJcOVrA5pAyKyV3WdEvolo4oXrWLkxWMSnKX2c
-   g==;
-X-IronPort-AV: E=Sophos;i="6.01,255,1684825200"; 
-   d="scan'208";a="228222022"
-X-Amp-Result: SKIPPED(no attachment in message)
-Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
-  by esa2.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 04 Aug 2023 08:15:18 -0700
-Received: from chn-vm-ex01.mchp-main.com (10.10.85.143) by
- chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.21; Fri, 4 Aug 2023 08:15:18 -0700
-Received: from microchip1-OptiPlex-9020.microchip.com (10.10.115.15) by
- chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server id
- 15.1.2507.21 via Frontend Transport; Fri, 4 Aug 2023 08:15:15 -0700
-From:   shravan kumar <shravan.chippa@microchip.com>
-To:     <paul.j.murphy@intel.com>, <daniele.alessandrelli@intel.com>,
-        <mchehab@kernel.org>
-CC:     <sakari.ailus@iki.fi>, <linux-media@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        Shravan Chippa <shravan.chippa@microchip.com>
-Subject: [PATCH v2] media: i2c: imx334: add support for test pattern generator
-Date:   Fri, 4 Aug 2023 20:45:41 +0530
-Message-ID: <20230804151541.3162667-1-shravan.chippa@microchip.com>
-X-Mailer: git-send-email 2.34.1
+        Fri, 4 Aug 2023 11:17:11 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61B7449C1
+        for <linux-kernel@vger.kernel.org>; Fri,  4 Aug 2023 08:16:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1691162184;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=obUjDUYXYeTUDK2opFgvx08zifi9IeBL/RTGGVT6YBY=;
+        b=ZIbsa4aNtshYxMAsSlTlNSEdBZUtoJGZQvCWy5Ild8o/yqGeX2YZ0FhsPiGfz4ApeNPORj
+        rXSeLz5LvU0dIKMIcCiIXD7QBVuyObCCetr9FY7UvGZ/wdlxkdh0/hWys6CrZ/ZFd9SStm
+        9cGgLX9tXZ9ori+gNhrUWUHlfIKeW3E=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-93-1FSrIDZ_MvOnd_-k6mrKOQ-1; Fri, 04 Aug 2023 11:16:22 -0400
+X-MC-Unique: 1FSrIDZ_MvOnd_-k6mrKOQ-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.rdu2.redhat.com [10.11.54.6])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 6DEDE856F67;
+        Fri,  4 Aug 2023 15:16:21 +0000 (UTC)
+Received: from warthog.procyon.org.uk (unknown [10.42.28.131])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id CBD192166B25;
+        Fri,  4 Aug 2023 15:16:18 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+        Kingdom.
+        Registered in England and Wales under Company Registration No. 3798903
+From:   David Howells <dhowells@redhat.com>
+In-Reply-To: <bac543537058619345b363bbfc745927.paul@paul-moore.com>
+References: <bac543537058619345b363bbfc745927.paul@paul-moore.com> <20230802-master-v6-1-45d48299168b@kernel.org>
+To:     Paul Moore <paul@paul-moore.com>
+Cc:     dhowells@redhat.com, Jeff Layton <jlayton@kernel.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Christian Brauner <brauner@kernel.org>,
+        Trond Myklebust <trond.myklebust@hammerspace.com>,
+        Anna Schumaker <anna@kernel.org>,
+        James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        Stephen Smalley <stephen.smalley.work@gmail.com>,
+        Eric Paris <eparis@parisplace.org>,
+        Casey Schaufler <casey@schaufler-ca.com>,
+        Scott Mayhew <smayhew@redhat.com>,
+        Stephen Smalley <sds@tycho.nsa.gov>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-nfs@vger.kernel.org, linux-security-module@vger.kernel.org,
+        selinux@vger.kernel.org
+Subject: Re: [PATCH v6] vfs, security: Fix automount superblock LSM init problem, preventing NFS sb sharing
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_NONE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <2678221.1691162178.1@warthog.procyon.org.uk>
+Content-Transfer-Encoding: quoted-printable
+Date:   Fri, 04 Aug 2023 16:16:18 +0100
+Message-ID: <2678222.1691162178@warthog.procyon.org.uk>
+X-Scanned-By: MIMEDefang 3.1 on 10.11.54.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Shravan Chippa <shravan.chippa@microchip.com>
+Paul Moore <paul@paul-moore.com> wrote:
 
-Add support for the imx334's test pattern generator.
-By default the test pattern generator is disabled, so add support for
-enabling and disabling horizontal and vertical colour bars.
+> =
 
-Signed-off-by: Shravan Chippa <shravan.chippa@microchip.com>
----
- drivers/media/i2c/imx334.c | 57 +++++++++++++++++++++++++++++++++++++-
- 1 file changed, 56 insertions(+), 1 deletion(-)
+> I generally dislike core kernel code which makes LSM calls conditional
+> on some kernel state maintained outside the LSM.  Sometimes it has to
+> be done as there is no other good options, but I would like us to try
+> and avoid it if possible.  The commit description mentioned that this
+> was put here to avoid a SELinux complaint, can you provide an example
+> of the complain?  Does it complain about a double/invalid mount, e.g.
+> "SELinux: mount invalid.  Same superblock, different security ..."?
+> =
 
-diff --git a/drivers/media/i2c/imx334.c b/drivers/media/i2c/imx334.c
-index d722c9b7cd31..91c79af70734 100644
---- a/drivers/media/i2c/imx334.c
-+++ b/drivers/media/i2c/imx334.c
-@@ -56,6 +56,24 @@
- #define IMX334_REG_MIN		0x00
- #define IMX334_REG_MAX		0xfffff
- 
-+/* Test Pattern Control */
-+#define IMX334_REG_TP		0x329e
-+#define IMX334_TP_COLOR_HBARS	0xA
-+#define IMX334_TP_COLOR_VBARS	0xB
-+
-+#define IMX334_TPG_EN_DOUT	0x329c
-+#define IMX334_TP_ENABLE	0x1
-+#define IMX334_TP_DISABLE	0x0
-+
-+#define IMX334_TPG_COLORW	0x32a0
-+#define IMX334_TPG_COLORW_120P	0x13
-+
-+#define IMX334_TP_CLK_EN	0x3148
-+#define IMX334_TP_CLK_EN_VAL	0x10
-+#define IMX334_TP_CLK_DIS_VAL	0x0
-+
-+#define IMX334_DIG_CLP_MODE	0x3280
-+
- /**
-  * struct imx334_reg - imx334 sensor register
-  * @address: Register address
-@@ -430,6 +448,18 @@ static const struct imx334_reg mode_3840x2160_regs[] = {
- 	{0x3a29, 0x00},
- };
- 
-+static const char * const imx334_test_pattern_menu[] = {
-+	"Disabled",
-+	"Vertical Color Bars",
-+	"Horizontal Color Bars",
-+};
-+
-+static const int imx334_test_pattern_val[] = {
-+	IMX334_TP_DISABLE,
-+	IMX334_TP_COLOR_HBARS,
-+	IMX334_TP_COLOR_VBARS,
-+};
-+
- static const struct imx334_reg raw10_framefmt_regs[] = {
- 	{0x3050, 0x00},
- 	{0x319d, 0x00},
-@@ -716,6 +746,26 @@ static int imx334_set_ctrl(struct v4l2_ctrl *ctrl)
- 	case V4L2_CID_HBLANK:
- 		ret = 0;
- 		break;
-+	case V4L2_CID_TEST_PATTERN:
-+		if (ctrl->val) {
-+			imx334_write_reg(imx334, IMX334_TP_CLK_EN, 1,
-+					 IMX334_TP_CLK_EN_VAL);
-+			imx334_write_reg(imx334, IMX334_DIG_CLP_MODE, 1, 0x0);
-+			imx334_write_reg(imx334, IMX334_TPG_COLORW, 1,
-+					 IMX334_TPG_COLORW_120P);
-+			imx334_write_reg(imx334, IMX334_REG_TP, 1,
-+					 imx334_test_pattern_val[ctrl->val]);
-+			imx334_write_reg(imx334, IMX334_TPG_EN_DOUT, 1,
-+					 IMX334_TP_ENABLE);
-+		} else {
-+			imx334_write_reg(imx334, IMX334_DIG_CLP_MODE, 1, 0x1);
-+			imx334_write_reg(imx334, IMX334_TP_CLK_EN, 1,
-+					 IMX334_TP_CLK_DIS_VAL);
-+			imx334_write_reg(imx334, IMX334_TPG_EN_DOUT, 1,
-+					 IMX334_TP_DISABLE);
-+		}
-+		ret = 0;
-+		break;
- 	default:
- 		dev_err(imx334->dev, "Invalid control %d", ctrl->id);
- 		ret = -EINVAL;
-@@ -1222,7 +1272,7 @@ static int imx334_init_controls(struct imx334 *imx334)
- 	u32 lpfr;
- 	int ret;
- 
--	ret = v4l2_ctrl_handler_init(ctrl_hdlr, 6);
-+	ret = v4l2_ctrl_handler_init(ctrl_hdlr, 7);
- 	if (ret)
- 		return ret;
- 
-@@ -1282,6 +1332,11 @@ static int imx334_init_controls(struct imx334 *imx334)
- 	if (imx334->hblank_ctrl)
- 		imx334->hblank_ctrl->flags |= V4L2_CTRL_FLAG_READ_ONLY;
- 
-+	v4l2_ctrl_new_std_menu_items(ctrl_hdlr, &imx334_ctrl_ops,
-+				     V4L2_CID_TEST_PATTERN,
-+				     ARRAY_SIZE(imx334_test_pattern_menu) - 1,
-+				     0, 0, imx334_test_pattern_menu);
-+
- 	if (ctrl_hdlr->error) {
- 		dev_err(imx334->dev, "control init failed: %d",
- 			ctrl_hdlr->error);
--- 
-2.34.1
+> I'd like to understand why the sb_set_mnt_opts() call fails when it
+> comes after the fs_context_init() call.  I'm particulary curious to
+> know if the failure is due to conflicting SELinux state in the
+> fs_context, or if it is simply an issue of sb_set_mnt_opts() not
+> properly handling existing values.  Perhaps I'm being overly naive,
+> but I'm hopeful that we can address both of these within the SELinux
+> code itself.
+> =
+
+> In a worst case situation, we could always implement a flag *inside*
+> the SELinux code, similar to what has been done with 'lsm_set' here.
+
+IIRC, the issue is when you make a mount with an explicit context=3D setti=
+ng and
+make another mount from some way down the export tree that doesn't have an
+explicit setting, e.g.:
+
+	mount carina:/ /mnt -o context=3Dsystem_u:object_r:root_t:s0
+	mount carina:/nfs/scratch /mnt2
+
+and then cause an automount to walk from one to the other:
+
+	stat /mnt/nfs/scratch/foo
+
+For reference, my server has:
+
+	/nfs/scratch 192.168.6.0/255.255.255.0,90.155.74.16/255.255.255.248
+	/nfs         192.168.6.0/255.255.255.0,90.155.74.16/255.255.255.248
+	/            192.168.6.0/255.255.255.0,90.155.74.16/255.255.255.248
+
+and if I look in /proc/fs/nfsfs/volumes, I can see the individual superblo=
+cks:
+
+	NV SERVER   PORT DEV          FSID                              FSC
+	v4 c0a80601  801 0:51         0:0                               no =
+
+	v4 c0a80601  801 0:56         3:0                               no =
+
+	v4 c0a80601  801 0:52         1:0                               no =
+
+	v4 c0a80601  801 0:55         3:0                               no =
+
+
+As you can see, there are two referring to the same 'volume'.
+
+Without the "fc->lsm_set=3Dtrue" bit, you get an error something like:
+
+	SELinux: mount invalid.  Same superblock, different security settings for=
+ (dev 0:56, type nfs4)
+
+One important question is how should sharing of a mount with unspecified
+context be handled when we try to unify it with a mount that has an explic=
+it
+context?
+
+David
 
