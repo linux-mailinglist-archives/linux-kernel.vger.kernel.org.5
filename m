@@ -2,206 +2,198 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B0422770AA6
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 23:13:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DB15B770ADA
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 23:26:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230441AbjHDVNr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Aug 2023 17:13:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39822 "EHLO
+        id S231240AbjHDV0V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Aug 2023 17:26:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44046 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230195AbjHDVNo (ORCPT
+        with ESMTP id S230488AbjHDV0K (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Aug 2023 17:13:44 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F46C524C
-        for <linux-kernel@vger.kernel.org>; Fri,  4 Aug 2023 14:13:02 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        Fri, 4 Aug 2023 17:26:10 -0400
+Received: from cloudserver094114.home.pl (cloudserver094114.home.pl [79.96.170.134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23EC8B1;
+        Fri,  4 Aug 2023 14:26:08 -0700 (PDT)
+Received: from localhost (127.0.0.1) (HELO v370.home.net.pl)
+ by /usr/run/smtp (/usr/run/postfix/private/idea_relay_lmtp) via UNIX with SMTP (IdeaSmtpServer 5.2.0)
+ id 6d6d931799418004; Fri, 4 Aug 2023 23:26:07 +0200
+Authentication-Results: v370.home.net.pl; spf=softfail (domain owner 
+   discourages use of this host) smtp.mailfrom=rjwysocki.net 
+   (client-ip=195.136.19.94; helo=[195.136.19.94]; 
+   envelope-from=rjw@rjwysocki.net; receiver=<UNKNOWN>)
+Received: from kreacher.localnet (unknown [195.136.19.94])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 1BA9162137
-        for <linux-kernel@vger.kernel.org>; Fri,  4 Aug 2023 21:13:01 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C0E5EC433C8;
-        Fri,  4 Aug 2023 21:12:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691183580;
-        bh=Didgavb7lNnwSvMWDhpBxQbZbMpxnpv2uXjDXw5Px9g=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=J5AGU/PC3UclBZNQb+pv82bqd3iu89edndRD6B/37TSHK7zVvSXlPJ+wQVZHXUtW1
-         7Swi0SkEMRhJ+T6SESaQjsAeuRhqReFz4PnC4JhEime7yJsAjTvLLDqAWBnE26BEt9
-         0IqiNnTTDR04sb+rBblZIg7XlgXepFTB8Wxy2cvFR1qgh72GiNzPzPKn4PCUxKp5iR
-         gX9fkWigB/8f/SocWcecoVvRthW8jEoSsbEcv1B9E8xMgiBl7nLEbfNIqyd1b8+gBJ
-         +vVXpry9jdxC3vA62yZDIiO0nUAaXPeAW93dstHsf+nKmAqIezanRah1C+d7NCx4bP
-         djbdIoTBVlXBg==
-Date:   Fri, 4 Aug 2023 23:12:54 +0200
-From:   Simon Horman <horms@kernel.org>
-To:     "huangjie.albert" <huangjie.albert@bytedance.com>
-Cc:     davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
-        pabeni@redhat.com, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        =?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
-        Magnus Karlsson <magnus.karlsson@intel.com>,
-        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        Pavel Begunkov <asml.silence@gmail.com>,
-        Yunsheng Lin <linyunsheng@huawei.com>,
-        Kees Cook <keescook@chromium.org>,
-        Richard Gobert <richardbgobert@gmail.com>,
-        "open list:NETWORKING DRIVERS" <netdev@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        "open list:XDP (eXpress Data Path)" <bpf@vger.kernel.org>
-Subject: Re: [RFC Optimizing veth xsk performance 10/10] veth: af_xdp tx
- batch support for ipv4 udp
-Message-ID: <ZM1p1qU/RIQYiACP@vergenet.net>
-References: <20230803140441.53596-1-huangjie.albert@bytedance.com>
- <20230803140441.53596-11-huangjie.albert@bytedance.com>
+        by v370.home.net.pl (Postfix) with ESMTPSA id F0C4C661680;
+        Fri,  4 Aug 2023 23:26:06 +0200 (CEST)
+From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
+To:     Linux ACPI <linux-acpi@vger.kernel.org>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Michal Wilczynski <michal.wilczynski@intel.com>,
+        Zhang Rui <rui.zhang@intel.com>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
+Subject: [PATCH v4 06/10] ACPI: thermal: Carry out trip point updates under zone lock
+Date:   Fri, 04 Aug 2023 23:13:08 +0200
+Message-ID: <3205670.5fSG56mABF@kreacher>
+In-Reply-To: <4878513.31r3eYUQgx@kreacher>
+References: <13318886.uLZWGnKmhe@kreacher> <4878513.31r3eYUQgx@kreacher>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230803140441.53596-11-huangjie.albert@bytedance.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="UTF-8"
+X-CLIENT-IP: 195.136.19.94
+X-CLIENT-HOSTNAME: 195.136.19.94
+X-VADE-SPAMSTATE: clean
+X-VADE-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedviedrkeeggdduheekucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecujffqoffgrffnpdggtffipffknecuuegrihhlohhuthemucduhedtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjughrpefhvfevufffkfgjfhgggfgtsehtufertddttdejnecuhfhrohhmpedftfgrfhgrvghlucflrdcuhgihshhotghkihdfuceorhhjfiesrhhjfiihshhotghkihdrnhgvtheqnecuggftrfgrthhtvghrnhepvdffueeitdfgvddtudegueejtdffteetgeefkeffvdeftddttdeuhfegfedvjefhnecukfhppeduleehrddufeeirdduledrleegnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehinhgvthepudelhedrudefiedrudelrdelgedphhgvlhhopehkrhgvrggthhgvrhdrlhhotggrlhhnvghtpdhmrghilhhfrhhomhepfdftrghfrggvlhculfdrucghhihsohgtkhhifdcuoehrjhifsehrjhifhihsohgtkhhirdhnvghtqedpnhgspghrtghpthhtohepjedprhgtphhtthhopehlihhnuhigqdgrtghpihesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopegurghnihgvlhdrlhgviigtrghnoheslhhinhgrrhhordhorhhgpdhrtghpthhtoheplhhinhhugidqkhgvrhhnvghlsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtoheplhhinhhugidqphhmsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghp
+ thhtohepmhhitghhrghlrdifihhltgiihihnshhkihesihhnthgvlhdrtghomhdprhgtphhtthhopehruhhirdiihhgrnhhgsehinhhtvghlrdgtohhm
+X-DCC--Metrics: v370.home.net.pl 1024; Body=7 Fuz1=7 Fuz2=7
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 03, 2023 at 10:04:36PM +0800, huangjie.albert wrote:
+From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 
-...
+There is a race condition between acpi_thermal_trips_update() and
+acpi_thermal_check_fn(), because the trip points may get updated while
+the latter is running which in theory may lead to inconsistent results.
+For example, if two trips are updated together, using the temperature
+value of one of them from before the update and the temperature value
+of the other one from after the update may not lead to the expected
+outcome.
 
-> @@ -103,6 +104,18 @@ struct veth_xdp_tx_bq {
->  	unsigned int count;
->  };
->  
-> +struct veth_gso_tuple {
-> +	__u8	protocol;
-> +	__be32	saddr;
-> +	__be32	daddr;
-> +	__be16	source;
-> +	__be16	dest;
-> +	__be16	gso_size;
-> +	__be16	gso_segs;
-> +	bool gso_enable;
-> +	bool gso_flush;
-> +};
-> +
->  struct veth_seg_info {
->  	u32 segs;
->  	u64 desc[] ____cacheline_aligned_in_smp;
+Moreover, if thermal_get_trend() runs when a trip points update is in
+progress, it may end up using stale trip point temperatures.
 
-...
+To address this, make acpi_thermal_trips_update() call
+thermal_zone_device_adjust() to carry out the trip points update and
+provide a new  acpi_thermal_adjust_thermal_zone() wrapper around
+__acpi_thermal_trips_update() as the callback function for the latter.
 
-> +static inline bool gso_segment_match(struct veth_gso_tuple *gso_tuple, struct iphdr *iph, struct udphdr *udph)
-> +{
-> +	if (gso_tuple->protocol == iph->protocol &&
-> +		gso_tuple->saddr == iph->saddr &&
-> +		gso_tuple->daddr == iph->daddr &&
-> +		gso_tuple->source == udph->source &&
-> +		gso_tuple->dest == udph->dest &&
-> +		gso_tuple->gso_size == ntohs(udph->len))
+While at it, change the acpi_thermal_trips_update() return data type
+to void as that function always returns 0 anyway.
 
-The type of the gso_size field is __be16,
-but it is being assigned a host byte order value.
+Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+---
 
-> +	{
-> +		gso_tuple->gso_flush = false;
-> +		return true;
-> +	} else {
-> +		gso_tuple->gso_flush = true;
-> +		return false;
-> +	}
-> +}
-> +
-> +static inline void gso_tuple_init(struct veth_gso_tuple *gso_tuple, struct iphdr *iph, struct udphdr *udph)
-> +{
-> +	gso_tuple->protocol = iph->protocol;
-> +	gso_tuple->saddr = iph->saddr;
-> +	gso_tuple->daddr = iph->daddr;
-> +	gso_tuple->source = udph->source;
-> +	gso_tuple->dest = udph->dest;
-> +	gso_tuple->gso_flush = false;
-> +	gso_tuple->gso_size = ntohs(udph->len);
+v3 -> v4:
+   * Rework to use thermal_zone_device_adjust() and the .update() callback
+     instead of using the (exported) zone lock directly.
+   * Call acpi_queue_thermal_check() from acpi_thermal_trips_update() which
+     allows code duplication in acpi_thermal_notify() to be reduced.
+
+v2 -> v3: No changes.
+
+v1 -> v2:
+   * Hold the thermal zone lock instead of thermal_check_lock around trip
+     point updates (this also helps to protect thermal_get_trend() from using
+     stale trip temperatures).
+   * Add a comment documenting the purpose of the locking.
+   * Make acpi_thermal_trips_update() void.
+
+---
+ drivers/acpi/thermal.c |   41 ++++++++++++++++++++++++++++-------------
+ 1 file changed, 28 insertions(+), 13 deletions(-)
+
+Index: linux-pm/drivers/acpi/thermal.c
+===================================================================
+--- linux-pm.orig/drivers/acpi/thermal.c
++++ linux-pm/drivers/acpi/thermal.c
+@@ -190,7 +190,7 @@ static int acpi_thermal_get_polling_freq
+ 	return 0;
+ }
+ 
+-static int acpi_thermal_trips_update(struct acpi_thermal *tz, int flag)
++static void __acpi_thermal_trips_update(struct acpi_thermal *tz, int flag)
+ {
+ 	acpi_status status;
+ 	unsigned long long tmp;
+@@ -398,17 +398,39 @@ static int acpi_thermal_trips_update(str
+ 			ACPI_THERMAL_TRIPS_EXCEPTION(flag, tz, "device");
+ 		}
+ 	}
++}
+ 
+-	return 0;
++static void acpi_thermal_adjust_thermal_zone(struct thermal_zone_device *thermal,
++					     unsigned long data)
++{
++	__acpi_thermal_trips_update(thermal_zone_device_priv(thermal), data);
++}
++
++static void acpi_queue_thermal_check(struct acpi_thermal *tz)
++{
++	if (!work_pending(&tz->thermal_check_work))
++		queue_work(acpi_thermal_pm_queue, &tz->thermal_check_work);
++}
++
++static void acpi_thermal_trips_update(struct acpi_thermal *tz, int flag)
++{
++	/*
++	 * Use thermal_zone_device_adjust() to carry out the trip points
++	 * update, so as to protect thermal_get_trend() from getting stale
++	 * trip point temperatures and to prevent thermal_zone_device_update()
++	 * invoked from acpi_thermal_check_fn() from producing inconsistent
++	 * results.
++	 */
++	thermal_zone_device_adjust(tz->thermal_zone, flag);
++	acpi_queue_thermal_check(tz);
+ }
+ 
+ static int acpi_thermal_get_trip_points(struct acpi_thermal *tz)
+ {
+-	int i, ret = acpi_thermal_trips_update(tz, ACPI_TRIPS_INIT);
+ 	bool valid;
++	int i;
+ 
+-	if (ret)
+-		return ret;
++	__acpi_thermal_trips_update(tz, ACPI_TRIPS_INIT);
+ 
+ 	valid = tz->trips.critical.valid |
+ 		tz->trips.hot.valid |
+@@ -715,6 +737,7 @@ static struct thermal_zone_device_ops ac
+ 	.get_trend = thermal_get_trend,
+ 	.hot = acpi_thermal_zone_device_hot,
+ 	.critical = acpi_thermal_zone_device_critical,
++	.update = acpi_thermal_adjust_thermal_zone,
+ };
+ 
+ static int acpi_thermal_zone_sysfs_add(struct acpi_thermal *tz)
+@@ -815,12 +838,6 @@ static void acpi_thermal_unregister_ther
+                                  Driver Interface
+    -------------------------------------------------------------------------- */
+ 
+-static void acpi_queue_thermal_check(struct acpi_thermal *tz)
+-{
+-	if (!work_pending(&tz->thermal_check_work))
+-		queue_work(acpi_thermal_pm_queue, &tz->thermal_check_work);
+-}
+-
+ static void acpi_thermal_notify(acpi_handle handle, u32 event, void *data)
+ {
+ 	struct acpi_device *device = data;
+@@ -835,13 +852,11 @@ static void acpi_thermal_notify(acpi_han
+ 		break;
+ 	case ACPI_THERMAL_NOTIFY_THRESHOLDS:
+ 		acpi_thermal_trips_update(tz, ACPI_TRIPS_THRESHOLDS);
+-		acpi_queue_thermal_check(tz);
+ 		acpi_bus_generate_netlink_event(device->pnp.device_class,
+ 						dev_name(&device->dev), event, 0);
+ 		break;
+ 	case ACPI_THERMAL_NOTIFY_DEVICES:
+ 		acpi_thermal_trips_update(tz, ACPI_TRIPS_DEVICES);
+-		acpi_queue_thermal_check(tz);
+ 		acpi_bus_generate_netlink_event(device->pnp.device_class,
+ 						dev_name(&device->dev), event, 0);
+ 		break;
 
 
-Likewise, here.
 
-As flagged by Sparse.
-
-  .../veth.c:721:29: warning: incorrect type in assignment (different base types)
-  .../veth.c:721:29:    expected restricted __be16 [usertype] gso_size
-  .../veth.c:721:29:    got unsigned short [usertype]
-  .../veth.c:703:26: warning: restricted __be16 degrades to integer
-
-> +	gso_tuple->gso_segs = 0;
-> +}
-
-...
-
-> +static struct sk_buff *veth_build_skb_zerocopy_gso(struct net_device *dev, struct xsk_buff_pool *pool,
-> +					      struct xdp_desc *desc, struct veth_gso_tuple *gso_tuple, struct sk_buff *prev_skb)
-
-Please consider constraining line length to 80 columns.
-
-> +{
-> +	u32 hr, len, ts, index, iph_len, th_len, data_offset, data_len, tot_len;
-> +	struct veth_seg_info *seg_info;
-> +	void *buffer;
-> +	struct udphdr *udph;
-> +	struct iphdr *iph;
-> +	struct sk_buff *skb;
-> +	struct page *page;
-> +	int hh_len = 0;
-> +	u64 addr;
-> +
-> +	addr = desc->addr;
-> +	len = desc->len;
-> +
-> +	/* l2 reserved len */
-> +	hh_len = LL_RESERVED_SPACE(dev);
-> +	hr = max(NET_SKB_PAD, L1_CACHE_ALIGN(hh_len));
-> +
-> +	/* data points to eth header */
-> +	buffer = (unsigned char *)xsk_buff_raw_get_data(pool, addr);
-> +
-> +	iph = (struct iphdr *)(buffer + ETH_HLEN);
-> +	iph_len = iph->ihl * 4;
-> +
-> +	udph = (struct udphdr *)(buffer + ETH_HLEN + iph_len);
-> +	th_len = sizeof(struct udphdr);
-> +
-> +	if (gso_tuple->gso_flush)
-> +		gso_tuple_init(gso_tuple, iph, udph);
-> +
-> +	ts = pool->unaligned ? len : pool->chunk_size;
-> +
-> +	data_offset = offset_in_page(buffer) + ETH_HLEN + iph_len + th_len;
-> +	data_len = len - (ETH_HLEN + iph_len + th_len);
-> +
-> +	/* head is null or this is a new 5 tuple */
-> +	if (NULL == prev_skb || !gso_segment_match(gso_tuple, iph, udph)) {
-> +		tot_len = hr + iph_len + th_len;
-> +		skb = veth_build_gso_head_skb(dev, buffer, tot_len, hr, iph_len, th_len);
-> +		if (!skb) {
-> +			/* to do: handle here for skb */
-> +			return NULL;
-> +		}
-> +
-> +		/* store information for gso */
-> +		seg_info = (struct veth_seg_info *)kmalloc(struct_size(seg_info, desc, MAX_SKB_FRAGS), GFP_KERNEL);
-
-No need to case the return value of kmalloc, it's type is void *.
-
-		seg_info = kmalloc(struct_size(seg_info, desc, MAX_SKB_FRAGS),
-				   GFP_KERNEL);
-> +		if (!seg_info) {
-> +			/* to do */
-> +			kfree_skb(skb);
-> +			return NULL;
-> +		}
-
-...
