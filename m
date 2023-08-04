@@ -2,39 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A14576FF7E
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 13:30:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E4DB976FF7D
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 13:30:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230158AbjHDLaz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Aug 2023 07:30:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41978 "EHLO
+        id S230021AbjHDLax (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Aug 2023 07:30:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41976 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229554AbjHDLau (ORCPT
+        with ESMTP id S229599AbjHDLau (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 4 Aug 2023 07:30:50 -0400
 Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BFB4B11B
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BFA43E7
         for <linux-kernel@vger.kernel.org>; Fri,  4 Aug 2023 04:30:48 -0700 (PDT)
 From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
         s=2020; t=1691148646;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=JQwdy939tDLgVEjU3blR0W4WS7PLhzs+UNZZN7ZNvYc=;
-        b=u7DpROMPSeu4vLTyIm1eQKV6AbU1077urtQngtOmaPkRgbmRLfpFktW96jij24kXRifHaQ
-        25ZddmiOukvhvRuadw1bg+HjorgrZCwomriEoOycWP9tfcEW4X6Us0GZWGxp6nYEmH/Q2M
-        MWESta7ZCQi0Dtq7Yg9IB8SjrHNQ0MZc3AC6N9Bv4C6r3NfD1ohydrd0e6StqG5Yd2JNqc
-        ZmfNdOvq4ktq9WetLKye7PXN3NVm7Ud30lETVgpyONS9bBq2zS2Y1rLXQN2+g/523vG7B5
-        QOVbCrh/2OpdyHAtZmrGnUQqIOG6JjrzAK5Wr9Pg68AivHCgTh8gaEla3Xy9tA==
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=1T2AeWiya68KJLNtsfeN+eBKy/0/70O9BggovBkInGY=;
+        b=TMbtZKjleCooMYS4uB+lFWSsOnrkfX78pGv4mnOlxMBKg3E2ejw5zXx0u3O6gMNvieET3J
+        04ATwz6F+0bDOXBWORbVMRd8OJAAccCU4CWW4K6uPliemgFaKdv7BGUUhByp+XLMLA+9ns
+        1HsIoYmrY1yzqNWCpYmpA9wWKGZWR4rWpp3QgtIN+6EtfYTUakId2RVn6tGcDRz6SK2jb0
+        cWjoXqT9vE0NmHUsdlBLnGltEBavXcuWF8YCgvOPGbA+azZnx2EtSqfweNQjuPMZg14I9E
+        fWA0NlOc04Zdqf7F5lTvaAQgq+IS1SqEROuTeer8O5CfIbS8fxi8NHdqDXXiWg==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
         s=2020e; t=1691148646;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=JQwdy939tDLgVEjU3blR0W4WS7PLhzs+UNZZN7ZNvYc=;
-        b=j73gmz9aXFfEpLj5gg5Z7vx/JyB15i+p+/gjPMtAXG7FtP7cj+VQSTQ33k1SvFynyH2MtV
-        R7vygNyOfBNVCvCw==
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=1T2AeWiya68KJLNtsfeN+eBKy/0/70O9BggovBkInGY=;
+        b=t4Ak2F4YBaw6B5zQGDc8F5Hl/F8C2wCrFjOfUK3CFag/dBDbS/qZKLFT52bbDHmN1EYuQZ
+        I/hCb6EvOE6K6LAg==
 To:     linux-kernel@vger.kernel.org
 Cc:     Ben Segall <bsegall@google.com>,
         Daniel Bristot de Oliveira <bristot@redhat.com>,
@@ -49,10 +51,13 @@ Cc:     Ben Segall <bsegall@google.com>,
         Steven Rostedt <rostedt@goodmis.org>,
         Thomas Gleixner <tglx@linutronix.de>,
         Valentin Schneider <vschneid@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>
-Subject: [RFC PATCH 0/3] Allow to preempt a timer softirq on PREEMPT_RT.
-Date:   Fri,  4 Aug 2023 13:30:36 +0200
-Message-Id: <20230804113039.419794-1-bigeasy@linutronix.de>
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Subject: [RFC PATCH 1/3] sched/core: Provide a method to check if a task is PI-boosted.
+Date:   Fri,  4 Aug 2023 13:30:37 +0200
+Message-Id: <20230804113039.419794-2-bigeasy@linutronix.de>
+In-Reply-To: <20230804113039.419794-1-bigeasy@linutronix.de>
+References: <20230804113039.419794-1-bigeasy@linutronix.de>
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -64,43 +69,58 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Provide a method to check if a task inherited the priority from another
+task. This happens if a task owns a lock which is requested by a task
+with higher priority. This can be used as a hint to add a preemption
+point to the critical section.
 
-while the softirqs are served, bottom halves are disabled. By disabling
-bottom halves (as per local_bh_disable()) PREEMPT_RT acquires a
-local_lock_t. This lock ensures that the softirq is synchronized against
-other softirq user on that CPU while keeping the context preemptible.
+Provide a function which reports true if the task is PI-boosted.
 
-This leads to a scenario where context itself is preemptible but needs
-to "complete" before the system can make progress. For instance, the
-timer callback (in TIMER_SOFTIRQ) gets preempted because a
-force-threaded interrupt thread, with higher priority, gets woken up.
-Before the handler of the forced-threaded interrupt can be invoked,
-bottom halves get disabled and this blocks on the same per-CPU lock.
-This in turn leads to a PI-boost and the preempted timer softirq is back
-on the CPU with higher priority completing its job (not just the timer,
-all pending softirqs).
+Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+---
+ include/linux/sched.h |  1 +
+ kernel/sched/core.c   | 15 +++++++++++++++
+ 2 files changed, 16 insertions(+)
 
-In the end the force threaded interrupt is blocked until all pending
-softirqs have been served.
-
-The PI-boost is usually intended to allow the thread with lower priority
-to "quickly" finish what it was doing and leave the critical section
-ASAP. This is not the case with softirqs and how this is handled by the
-individual callbacks. Additionally the need_resched() check in
-__do_softirq() is never true due to the boost. This means in worst case
-this can run for MAX_SOFTIRQ_TIME or MAX_SOFTIRQ_RESTART.
-
-One way of out would be to add preemption within the softirq handling at
-which point the softirq-BKL can be dropped. This can be after all
-softirqs have been served (__do_softirq() where the need_resched() check
-is located), after each softirq handler or within the softirq handler
-where it is considered safe to do so.
-
-This series adds as an example such a preemption point to the timer
-softirq handler. Should this fly then it would be needed the remaining
-handlers as well.
-
-Sebastian
-
+diff --git a/include/linux/sched.h b/include/linux/sched.h
+index 609bde814cb06..77fd274133750 100644
+--- a/include/linux/sched.h
++++ b/include/linux/sched.h
+@@ -1887,6 +1887,7 @@ static inline int dl_task_check_affinity(struct task_=
+struct *p, const struct cpu
+ }
+ #endif
+=20
++extern bool task_is_pi_boosted(const struct task_struct *p);
+ extern int yield_to(struct task_struct *p, bool preempt);
+ extern void set_user_nice(struct task_struct *p, long nice);
+ extern int task_prio(const struct task_struct *p);
+diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+index c52c2eba7c739..132f06522efa0 100644
+--- a/kernel/sched/core.c
++++ b/kernel/sched/core.c
+@@ -8886,6 +8886,21 @@ static inline void preempt_dynamic_init(void) { }
+=20
+ #endif /* #ifdef CONFIG_PREEMPT_DYNAMIC */
+=20
++/*
++ * task_is_pi_boosted - Check if task has been PI boosted.
++ * @p:	Task to check.
++ *
++ * Return true if task is subject to priority inheritance.
++ */
++bool task_is_pi_boosted(const struct task_struct *p)
++{
++	int prio =3D p->prio;
++
++	if (!rt_prio(prio))
++		return false;
++	return prio !=3D p->normal_prio;
++}
++
+ /**
+  * yield - yield the current processor to other threads.
+  *
+--=20
+2.40.1
 
