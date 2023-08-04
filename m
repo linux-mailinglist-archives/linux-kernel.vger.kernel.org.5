@@ -2,107 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 64DE476F9ED
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 08:19:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 08EDF76F9F6
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 08:21:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232432AbjHDGTW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Aug 2023 02:19:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58822 "EHLO
+        id S231501AbjHDGVe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Aug 2023 02:21:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59618 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230002AbjHDGTR (ORCPT
+        with ESMTP id S230002AbjHDGVc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Aug 2023 02:19:17 -0400
-Received: from fllv0016.ext.ti.com (fllv0016.ext.ti.com [198.47.19.142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7DE7D3A8C;
-        Thu,  3 Aug 2023 23:18:57 -0700 (PDT)
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 3746IIPf001350;
-        Fri, 4 Aug 2023 01:18:18 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1691129898;
-        bh=Pw2LqGc7Wq1/UxXifDmG2qrr0CA8l3Bayh0Rtpz3CAw=;
-        h=From:To:CC:Subject:Date;
-        b=cV3XpJf35vqPk3DtZnkyIFYMgGoky5iXFzHuzniVOxn/YDOpsFYe/8Du7LWe7PVcr
-         OeDs0EMkBEfdpZoLpEfUSyZs4Tb73poyqQwhjcz19s3V2e11XjBlNp3hByqXYQEiZ+
-         RwigLR7LI8cG5cPMS+XS7K62A336zDE4shhQpjEQ=
-Received: from DLEE109.ent.ti.com (dlee109.ent.ti.com [157.170.170.41])
-        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 3746IIQB092721
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Fri, 4 Aug 2023 01:18:18 -0500
-Received: from DLEE108.ent.ti.com (157.170.170.38) by DLEE109.ent.ti.com
- (157.170.170.41) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Fri, 4
- Aug 2023 01:18:17 -0500
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DLEE108.ent.ti.com
- (157.170.170.38) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Fri, 4 Aug 2023 01:18:17 -0500
-Received: from fllv0122.itg.ti.com (fllv0122.itg.ti.com [10.247.120.72])
-        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 3746IHMx106154;
-        Fri, 4 Aug 2023 01:18:17 -0500
-Received: from localhost (uda0501179.dhcp.ti.com [172.24.227.217])
-        by fllv0122.itg.ti.com (8.14.7/8.14.7) with ESMTP id 3746IGhd029639;
-        Fri, 4 Aug 2023 01:18:17 -0500
-From:   MD Danish Anwar <danishanwar@ti.com>
-To:     Peng Fan <peng.fan@nxp.com>,
-        =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <rafal@milecki.pl>,
-        =?UTF-8?q?N=C3=ADcolas=20F=2E=20R=2E=20A=2E=20Prado?= 
-        <nfraprado@collabora.com>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Bjorn Andersson <quic_bjorande@quicinc.com>,
-        Will Deacon <will@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>, <srk@ti.com>,
-        <nm@ti.com>, <vigneshr@ti.com>
-CC:     <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-omap@vger.kernel.org>
-Subject: [PATCH v2] arm64: defconfig: Enable PRUSS as module
-Date:   Fri, 4 Aug 2023 11:48:11 +0530
-Message-ID: <20230804061811.3999129-1-danishanwar@ti.com>
-X-Mailer: git-send-email 2.34.1
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+        Fri, 4 Aug 2023 02:21:32 -0400
+Received: from invmail4.hynix.com (exvmail4.skhynix.com [166.125.252.92])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 0F774E70
+        for <linux-kernel@vger.kernel.org>; Thu,  3 Aug 2023 23:21:29 -0700 (PDT)
+X-AuditID: a67dfc5b-d85ff70000001748-31-64cc98e6931c
+From:   Byungchul Park <byungchul@sk.com>
+To:     linux-kernel@vger.kernel.org, linux-mm@kvack.org
+Cc:     kernel_team@skhynix.com, akpm@linux-foundation.org,
+        ying.huang@intel.com, namit@vmware.com, xhao@linux.alibaba.com,
+        mgorman@techsingularity.net, hughd@google.com, willy@infradead.org,
+        david@redhat.com
+Subject: [RFC 0/2] Reduce TLB flushes under some specific conditions
+Date:   Fri,  4 Aug 2023 15:18:48 +0900
+Message-Id: <20230804061850.21498-1-byungchul@sk.com>
+X-Mailer: git-send-email 2.17.1
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprDLMWRmVeSWpSXmKPExsXC9ZZnoe6zGWdSDPbuMbSYs34Nm8XX9b+Y
+        LZ5+6mOxuLxrDpvFvTX/WS12LN3HZHF910NGi98/gGJzplhZnJw1mcWBy2PBplKPzSu0PBbv
+        ecnksenTJHaPEzN+s3jsfGjp8X7fVTaPrb/sPD5vkvN4N/8tWwBXFJdNSmpOZllqkb5dAlfG
+        lB0L2Ase8lfMftXA3MC4hruLkZNDQsBE4vnFh4wwdv+3DUwgNpuAusSNGz+ZQWwRATOJg61/
+        2LsYuTiYBe4wShze1QhWJCzgInHp12Q2EJtFQFViydvprCA2r4CpxJOP/awQQ+UlVm84wAzS
+        LCEwgU1i+tcPzBAJSYmDK26wTGDkXsDIsIpRKDOvLDcxM8dEL6MyL7NCLzk/dxMjMMyW1f6J
+        3sH46ULwIUYBDkYlHt4PB06nCLEmlhVX5h5ilOBgVhLhvfYeKMSbklhZlVqUH19UmpNafIhR
+        moNFSZzX6Ft5ipBAemJJanZqakFqEUyWiYNTqoFRYlPMoaXFsgo9O5dYq6610Gp1+eEV963o
+        yd38FOF1e2vC7aLzTjibfy9l6/L47XNpj8Zsx7+Mr6aFZx7/V31uMZuC9t8Dq75NKlkzOY/1
+        xq+W1myG1IXHpoZV6Fy+ysvZ4bkk+mp9g2zfj7AH75ZGcmfJfDiwStRSdULoXb9lXBlXsgtz
+        1F8rsRRnJBpqMRcVJwIA+5w9QS8CAAA=
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFmpmluLIzCtJLcpLzFFi42Lh8rNu1n0240yKwcPPahZz1q9hs/i6/hez
+        xdNPfSwWh+eeZLW4vGsOm8W9Nf9ZLXYs3cdkcX3XQ0aL3z+AYnOmWFmcnDWZxYHbY8GmUo/N
+        K7Q8Fu95yeSx6dMkdo8TM36zeOx8aOnxft9VNo/FLz4weWz9ZefxeZOcx7v5b9kCuKO4bFJS
+        czLLUov07RK4MqbsWMBe8JC/YvarBuYGxjXcXYycHBICJhL93zYwgdhsAuoSN278ZAaxRQTM
+        JA62/mHvYuTiYBa4wyhxeFcjWJGwgIvEpV+T2UBsFgFViSVvp7OC2LwCphJPPvazQgyVl1i9
+        4QDzBEaOBYwMqxhFMvPKchMzc0z1irMzKvMyK/SS83M3MQKDZlntn4k7GL9cdj/EKMDBqMTD
+        ++HA6RQh1sSy4srcQ4wSHMxKIrzX3gOFeFMSK6tSi/Lji0pzUosPMUpzsCiJ83qFpyYICaQn
+        lqRmp6YWpBbBZJk4OKUaGIUDVj3yip1Vq/X1Zprx1P8de8XZCuaacViu33i0diPrcgU59tzO
+        y8p5rjPOK8b9+/Xvo6b/Zme5dI2Xh1dt2/ByYmqtFq/iv4NpXqJ7I5P1Vhy76/i6gWm1NwN7
+        6V63+ftf3ow+NG9lv8iPwIhpE0+J9BgKxRlWVVmzy/hHMrI1G19w8XV9ocRSnJFoqMVcVJwI
+        AKmbY+YWAgAA
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Enables PRUSS as kernel module for TI SoCs.
+Hi,
 
-Reviewed-by: Christian Gmeiner <christian.gmeiner@gmail.com>
-Signed-off-by: MD Danish Anwar <danishanwar@ti.com>
----
-Changes from v1 to v2:
-*) Rebased on the latest linux-next
+While I'm working with CXL, I have been facing migraion overhead esp.
+TLB shootdown on promotion or demotion between different tiers. Yeah..
+most TLB shootdowns on migration through hinting fault can be avoided
+thanks to Huang Ying's work, commit 4d4b6d66db ("mm,unmap: avoid
+flushing TLB in batch if PTE is inaccessible").
 
-v1: https://lore.kernel.org/all/20230419095051.3269777-1-danishanwar@ti.com/
+However, it's only for ones using hinting fault. I thought it'd be much
+better if we have a general mechanism to reduce # of TLB flushes that
+we can apply to any type of migration. I tried it only for tiering
+migration for now tho.
 
- arch/arm64/configs/defconfig | 1 +
- 1 file changed, 1 insertion(+)
+I'm suggesting a mechanism to reduce TLB flushes by keeping source and
+destination of folios participated in the migrations until all TLB
+flushes required are done, only if those folios are not mapped with
+write permission PTE entries at all.
 
-diff --git a/arch/arm64/configs/defconfig b/arch/arm64/configs/defconfig
-index bf13d5c46578..0aecdf43a5d1 100644
---- a/arch/arm64/configs/defconfig
-+++ b/arch/arm64/configs/defconfig
-@@ -1339,6 +1339,7 @@ CONFIG_ARCH_TEGRA_186_SOC=y
- CONFIG_ARCH_TEGRA_194_SOC=y
- CONFIG_ARCH_TEGRA_234_SOC=y
- CONFIG_TI_SCI_PM_DOMAINS=y
-+CONFIG_TI_PRUSS=m
- CONFIG_ARM_IMX_BUS_DEVFREQ=y
- CONFIG_ARM_IMX8M_DDRC_DEVFREQ=m
- CONFIG_ARM_MEDIATEK_CCI_DEVFREQ=m
+I saw the number of TLB full flush reduced over 50% and the performance
+a little bit improved but not that big with the workload I tested with,
+XSBench. However, I believe that it would help more with other ones or
+any real ones. It'd be appreciated to tell me if I'm missing something.
+
+	Byungchul
+
+Byungchul Park (2):
+  mm/rmap: Recognize non-writable TLB entries during TLB batch flush
+  mm: Defer TLB flush by keeping both src and dst folios at migration
+
+ arch/x86/include/asm/tlbflush.h |   9 +
+ arch/x86/mm/tlb.c               |  59 +++++++
+ include/linux/mm.h              |  30 ++++
+ include/linux/mm_types.h        |  34 ++++
+ include/linux/mm_types_task.h   |   4 +-
+ include/linux/mmzone.h          |   6 +
+ include/linux/sched.h           |   5 +
+ init/Kconfig                    |  12 ++
+ mm/internal.h                   |  14 ++
+ mm/memory.c                     |   9 +-
+ mm/migrate.c                    | 287 +++++++++++++++++++++++++++++++-
+ mm/mm_init.c                    |   1 +
+ mm/page_alloc.c                 |  16 ++
+ mm/rmap.c                       | 121 +++++++++++++-
+ 14 files changed, 595 insertions(+), 12 deletions(-)
+
 -- 
-2.34.1
+2.17.1
 
