@@ -2,137 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B539076F87E
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 05:50:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6564976F881
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 05:50:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232537AbjHDDt7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Aug 2023 23:49:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51046 "EHLO
+        id S232554AbjHDDua (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Aug 2023 23:50:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51210 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232249AbjHDDtz (ORCPT
+        with ESMTP id S232249AbjHDDuV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Aug 2023 23:49:55 -0400
-Received: from mail-vk1-xa2f.google.com (mail-vk1-xa2f.google.com [IPv6:2607:f8b0:4864:20::a2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7575E3A90
-        for <linux-kernel@vger.kernel.org>; Thu,  3 Aug 2023 20:49:54 -0700 (PDT)
-Received: by mail-vk1-xa2f.google.com with SMTP id 71dfb90a1353d-48642554ef1so619167e0c.3
-        for <linux-kernel@vger.kernel.org>; Thu, 03 Aug 2023 20:49:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1691120993; x=1691725793;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=LVSXp7pt1ynfIFYVxUfKRmE0SvUQ9GE4LWveQ3EWr04=;
-        b=kuZVbEqhHTsnlhU4yOn7K+V0x//RYjK4AwrNZf3Pi5jTwku1adyhSoQ6KkKQ+LLqDh
-         Qa+Vf7E/P3XbgbKMEG3wnNn0cu1Nh1j+fzr7YFAmPi4NyCBd2T41h2s5+r822Dk25Dbd
-         sLCHjo4nM1pZUy5NDn8ET+YoCmMJsWoQNUWWk=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691120993; x=1691725793;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=LVSXp7pt1ynfIFYVxUfKRmE0SvUQ9GE4LWveQ3EWr04=;
-        b=LU+ChAdmKZq6UgNS7Ax214AkHXUo3JQs5tuUOWek0fP1tLt9kDQe2bZWWmdpJsisap
-         VYmJxKNUbYsLEYnXxD8NRrchZqqxQ3XDVMu3RZwfyfHfziubrbgtRrCVu/v4j7AOSvPb
-         dO2QRDXC//PJLy0o/zE0ZGIPDf8b5X8GbSsV9DbJo2F9LCYfW7d+bHMB8DPtcT8IBps9
-         I3NjosLleKUuAJcWX5R1qXXR0T7xJpxnfDu/awKiwKbMZ0AMTy8APZKrm3+DmBKM+yWb
-         sY9dekCzUGKtERRBDqozkRpFjmZrtNf5fBuXThvUm0q7xVOf7qnkGHP3vcO2+4ZXrKLn
-         W6zw==
-X-Gm-Message-State: AOJu0YwQWs2SMQqDE2CxZpv4D9e3BE53G9qS2/9XILWQXvcwT25UFgMP
-        VdODS8Bg38zv/U9H6hgOxQ0Vlo5lQiwgtcsODLoEIQ==
-X-Google-Smtp-Source: AGHT+IHYBwhOGTrCuCN8IOCqvpmaj2FCreDh6icca0SFM57jjcqreajpJTjlRkJ6xgR7wTok6XJeu9AaAfRKP49caHs=
-X-Received: by 2002:a1f:e081:0:b0:486:556c:a0bb with SMTP id
- x123-20020a1fe081000000b00486556ca0bbmr269439vkg.9.1691120993526; Thu, 03 Aug
- 2023 20:49:53 -0700 (PDT)
+        Thu, 3 Aug 2023 23:50:21 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3DB84684;
+        Thu,  3 Aug 2023 20:50:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=F+lJKFltZ+yQxd96NjAiSlGEaIJzdn+HIXjUUFBSS5c=; b=UKi7MCXmu/eFaLtMvBvufRKVdU
+        DaCDf7FpNDWKsVmLjSyGc6/yxeFqe3Y81Jv2wMiXxhN/acrrYIe+cLWVA8Ngm3flCWpw67hZ8Cq4h
+        8XatmpxPtkcPu+sDGM5Cv6LLrV48z7za5rh77704UnbEhMUUkjRA9o79maxq1G6k7Ln4V5cixK8H2
+        a3fsMVVuWgMsVAnQo2mUm+DynVTptf6Dewygne5j2FslBjF8LOOfG+zqFWNk2xZgABdUpXOFJoksb
+        QfmLEyGJDj8wEgWRD3ZdYiXVJzfDHWttImP7dp1vRY5vAlUPDEydhyidN3Jx5OrS6NKXkVdN48mXp
+        yq8AMDtg==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1qRlpN-007del-Ap; Fri, 04 Aug 2023 03:50:13 +0000
+Date:   Fri, 4 Aug 2023 04:50:13 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Nathan Chancellor <nathan@kernel.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        linux-arch@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, Mike Rapoport <rppt@kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        linuxppc-dev@lists.ozlabs.org
+Subject: Re: [PATCH v6 21/38] powerpc: Implement the new page table range API
+Message-ID: <ZMx1daYwvD9EM7Cv@casper.infradead.org>
+References: <20230802151406.3735276-1-willy@infradead.org>
+ <20230802151406.3735276-22-willy@infradead.org>
+ <20230803233814.GA2515372@dev-arch.thelio-3990X>
 MIME-Version: 1.0
-References: <20230803074249.3065586-1-wenst@chromium.org> <20230803074249.3065586-10-wenst@chromium.org>
- <e9c38029-f27d-7800-2ba8-d9ee19d999e4@collabora.com>
-In-Reply-To: <e9c38029-f27d-7800-2ba8-d9ee19d999e4@collabora.com>
-From:   Chen-Yu Tsai <wenst@chromium.org>
-Date:   Fri, 4 Aug 2023 11:49:42 +0800
-Message-ID: <CAGXv+5G+kLNaj3F1NG+Y2zQuc7Xv_wczHeFUEUNGo8ZdVWYM1w@mail.gmail.com>
-Subject: Re: [PATCH 9/9] soc: mediatek: pwrap: add support for MT6366 PMIC
-To:     AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>
-Cc:     Lee Jones <lee@kernel.org>, Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Zhiyong Tao <zhiyong.tao@mediatek.com>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230803233814.GA2515372@dev-arch.thelio-3990X>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 3, 2023 at 5:01=E2=80=AFPM AngeloGioacchino Del Regno
-<angelogioacchino.delregno@collabora.com> wrote:
->
-> Il 03/08/23 09:42, Chen-Yu Tsai ha scritto:
-> > The MT6366 PMIC is mostly, but not fully, compatible with MT6358. It ha=
-s
-> > a different set of regulators. Specifically, it lacks the camera relate=
-d
-> > VCAM* LDOs, but has additional VM18, VMDDR, and VSRAM_CORE LDOs.
-> >
-> > Add a separate compatible for the MT6366 PMIC.
-> >
-> > Signed-off-by: Chen-Yu Tsai <wenst@chromium.org>
->
-> We can express the same partial-compatibility state with bindings, adding=
- a
-> new compatible here with the same platform data doesn't really add any va=
-lue...
->
-> ...also because in DT we'll have something like
->         compatible =3D "mediatek,mt6366", "mediatek,mt6358";
->
-> so if any variation of platform data in mtk-pmic-wrap will ever be needed=
-, we
-> would still be able to do that in the future without any headache.
->
-> In my opinion, this commit can be dropped.
+On Thu, Aug 03, 2023 at 04:38:14PM -0700, Nathan Chancellor wrote:
+> > -EXPORT_SYMBOL(flush_dcache_icache_page);
+> 
+> Apologies if this has already been fixed or reported, I searched lore
+> and did not find anything. The dropping of this export in combination
+> with the conversion above appears to cause ARCH=powerpc allmodconfig to
+> fail with:
+> 
+>   ERROR: modpost: "flush_dcache_icache_folio" [arch/powerpc/kvm/kvm-pr.ko] undefined!
+> 
+> I don't know if this should be re-exported or not but that does
+> obviously resolve the issue.
 
-As mentioned in my reply to the mfd patch, this might not be doable. There
-are limitations on both the DT bindings and mfd driver sides.
+Well, that was clumsy of me.  I (and the Intel build bot) did test several
+build combos, but clearly didn't manage to find a config that showed
+this problem.  Andrew, a fix patch for you to integrate, if you would:
 
-ChenYu
-
-> P.S.: We could add a comment in the mt6366.dtsi pmic devicetree for that,=
- too?
->
-> Cheers,
-> Angelo
->
-> > ---
-> >   drivers/soc/mediatek/mtk-pmic-wrap.c | 2 ++
-> >   1 file changed, 2 insertions(+)
-> >
-> > diff --git a/drivers/soc/mediatek/mtk-pmic-wrap.c b/drivers/soc/mediate=
-k/mtk-pmic-wrap.c
-> > index 11095b8de71a..e3c0e767033b 100644
-> > --- a/drivers/soc/mediatek/mtk-pmic-wrap.c
-> > +++ b/drivers/soc/mediatek/mtk-pmic-wrap.c
-> > @@ -2257,6 +2257,8 @@ static const struct of_device_id of_slave_match_t=
-bl[] =3D {
-> >       { .compatible =3D "mediatek,mt6357", .data =3D &pmic_mt6357 },
-> >       { .compatible =3D "mediatek,mt6358", .data =3D &pmic_mt6358 },
-> >       { .compatible =3D "mediatek,mt6359", .data =3D &pmic_mt6359 },
-> > +     /* MT6366 is mostly compatible with MT6358, except for slightly d=
-ifferent regulators. */
-> > +     { .compatible =3D "mediatek,mt6366", .data =3D &pmic_mt6358 },
-> >
-> >       /* The MT6380 PMIC only implements a regulator, so we bind it
-> >        * directly instead of using a MFD.
->
->
+diff --git a/arch/powerpc/mm/cacheflush.c b/arch/powerpc/mm/cacheflush.c
+index 8760d2223abe..15189592da09 100644
+--- a/arch/powerpc/mm/cacheflush.c
++++ b/arch/powerpc/mm/cacheflush.c
+@@ -172,6 +172,7 @@ void flush_dcache_icache_folio(struct folio *folio)
+ 			flush_dcache_icache_phys((pfn + i) * PAGE_SIZE);
+ 	}
+ }
++EXPORT_SYMBOL(flush_dcache_icache_folio);
+ 
+ void clear_user_page(void *page, unsigned long vaddr, struct page *pg)
+ {
