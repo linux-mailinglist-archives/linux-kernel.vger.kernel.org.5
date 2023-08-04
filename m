@@ -2,169 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6BB1A770915
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 21:33:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E27EB77091D
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 21:36:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230088AbjHDTdW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Aug 2023 15:33:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55200 "EHLO
+        id S229534AbjHDTgn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Aug 2023 15:36:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55708 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229932AbjHDTdT (ORCPT
+        with ESMTP id S229514AbjHDTgk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Aug 2023 15:33:19 -0400
-Received: from fllv0016.ext.ti.com (fllv0016.ext.ti.com [198.47.19.142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8587B1BF;
-        Fri,  4 Aug 2023 12:33:16 -0700 (PDT)
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 374JX9x3046270;
-        Fri, 4 Aug 2023 14:33:09 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1691177589;
-        bh=mQDQFqa0n+H60Oqqvk7momwKMAfsiO5YEfswGwzqRk4=;
-        h=Date:Subject:To:CC:References:From:In-Reply-To;
-        b=kFBy5faYyBY/j02HXvvb+R4dMFQjiEapyNabpX6rHUYycvd22c6p0tVq5C0TFAsB+
-         psEwKeVU9+HVT7bvUlxSyNR6NCN0vqlmiwpMw9UjfKUOOnNOO0rTDNdJt6bPjU2c8H
-         /ZaW89p3N2lfaZqHRd83bt/Kqr5LzGb9n+lRzteg=
-Received: from DFLE103.ent.ti.com (dfle103.ent.ti.com [10.64.6.24])
-        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 374JX9NQ003385
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Fri, 4 Aug 2023 14:33:09 -0500
-Received: from DFLE108.ent.ti.com (10.64.6.29) by DFLE103.ent.ti.com
- (10.64.6.24) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Fri, 4
- Aug 2023 14:33:08 -0500
-Received: from lelv0327.itg.ti.com (10.180.67.183) by DFLE108.ent.ti.com
- (10.64.6.29) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Fri, 4 Aug 2023 14:33:08 -0500
-Received: from [10.249.132.69] (ileaxei01-snat2.itg.ti.com [10.180.69.6])
-        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 374JX38u034091;
-        Fri, 4 Aug 2023 14:33:04 -0500
-Message-ID: <db05ca30-c31e-1c4a-95b5-ae15b85ce3bc@ti.com>
-Date:   Sat, 5 Aug 2023 01:03:02 +0530
+        Fri, 4 Aug 2023 15:36:40 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08CDB1BF
+        for <linux-kernel@vger.kernel.org>; Fri,  4 Aug 2023 12:35:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1691177753;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
+        bh=/fEGLQTPa3ePRn0SUruCR/akdAF06PibGk+SoDw6oqs=;
+        b=EKepgm59iEW0B4OmUB2n2dIYEg80eS9pWxANbLzawBzMWgFpg6+l4s5Ruko2L5Ly5/KabE
+        KasgEN0ynKNy8fxLQDBeP7t3iisxryDBy6YvUmnFIr1vCi6Kz3ob9aVvxsa7cmmIMULOFc
+        NmCw4HnM4J3dxnEklTAxl+oVQ9xWBlM=
+Received: from mail-qk1-f197.google.com (mail-qk1-f197.google.com
+ [209.85.222.197]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-695-n8H82iVCPP2op9dPsI0c9Q-1; Fri, 04 Aug 2023 15:35:51 -0400
+X-MC-Unique: n8H82iVCPP2op9dPsI0c9Q-1
+Received: by mail-qk1-f197.google.com with SMTP id af79cd13be357-7659c6caeaeso319685885a.3
+        for <linux-kernel@vger.kernel.org>; Fri, 04 Aug 2023 12:35:51 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691177751; x=1691782551;
+        h=user-agent:content-disposition:mime-version:message-id:subject:cc
+         :to:from:date:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=/fEGLQTPa3ePRn0SUruCR/akdAF06PibGk+SoDw6oqs=;
+        b=TrLRAqqvnjlL8aNcUnQe4NExsG3/+qbpREvUPEEhsGYdaCN018HPc9k6DWRiEbBL8J
+         ScY8y6GMuIP80Wqs9w9fCX5Tm1m7fKB8J8GPjhNUIvHwPpsHdT5ubkUi9IsGhgso+k7p
+         Q9y3N9oW+FtWCGoFrTznRqWk/KcsxVRsAbCi/vOdNkFBW8Xtw3hVZapkdkhq6tCL7/TE
+         6IlRpeeh2Hp+s+jYnFQqVAlU93yFGf15xvm1dkWAuQnpLX+ToH3gFz8NdaC/2bR2TRXU
+         4si7mGOKb0BEn6eoq/WCMa//ApaLXljSAgMtoa43pl9FMBTLG0N3tFXYp9LxDJFL6D9l
+         AdLg==
+X-Gm-Message-State: AOJu0Yzq38NMZb6VAL7HCdEsk0OC4a2reEs5aJinX3lkCGcCd91EsNex
+        cQ54wDImyijUMDU+5ZX6rcL4IXRLFvVDYG3EQs0fRl6VtOREkK01vYw4n8bfvTg9twECPCMHFNc
+        r/CTNRTEkQAEnl4cGCzDdNqY7
+X-Received: by 2002:a05:620a:4456:b0:76c:b476:f712 with SMTP id w22-20020a05620a445600b0076cb476f712mr3876342qkp.51.1691177751274;
+        Fri, 04 Aug 2023 12:35:51 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IF+9eMVqPJLY6YIUSKa4NNv1paAfI3JX7M2BAluopih9iKnho0rRGuzu78ZOQHGnUECV5Khzw==
+X-Received: by 2002:a05:620a:4456:b0:76c:b476:f712 with SMTP id w22-20020a05620a445600b0076cb476f712mr3876330qkp.51.1691177751036;
+        Fri, 04 Aug 2023 12:35:51 -0700 (PDT)
+Received: from fedora ([174.89.37.244])
+        by smtp.gmail.com with ESMTPSA id 4-20020a05620a070400b0076745f352adsm847974qkc.59.2023.08.04.12.35.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 04 Aug 2023 12:35:45 -0700 (PDT)
+Date:   Fri, 4 Aug 2023 15:35:29 -0400
+From:   Lucas Karpinski <lkarpins@redhat.com>
+To:     Andrew Morton <akpm@linux-foundation.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Shakeel Butt <shakeelb@google.com>,
+        Muchun Song <muchun.song@linux.dev>, Tejun Heo <tj@kernel.org>,
+        Zefan Li <lizefan.x@bytedance.com>,
+        Shuah Khan <shuah@kernel.org>
+Cc:     Muchun Song <muchun.song@linux.dev>, cgroups@vger.kernel.org,
+        linux-mm@kvack.org, linux-kselftest@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v3] selftests: cgroup: fix test_kmem_basic less than error
+Message-ID: <7d6gcuyzdjcice6qbphrmpmv5skr5jtglg375unnjxqhstvhxc@qkn6dw6bao6v>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.14.0
-Subject: Re: [PATCH v9 3/5] arm64: dts: ti: k3-j784s4-main: Add DSS and
- DP-bridge node
-Content-Language: en-US
-To:     Jayesh Choudhary <j-choudhary@ti.com>, <nm@ti.com>,
-        <vigneshr@ti.com>, <afd@ti.com>, <rogerq@kernel.org>
-CC:     <s-vadapalli@ti.com>, <kristo@kernel.org>, <robh+dt@kernel.org>,
-        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
-        <r-ravikumar@ti.com>, <sabiya.d@ti.com>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>
-References: <20230803080441.367341-1-j-choudhary@ti.com>
- <20230803080441.367341-4-j-choudhary@ti.com>
-From:   Aradhya Bhatia <a-bhatia1@ti.com>
-In-Reply-To: <20230803080441.367341-4-j-choudhary@ti.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: NeoMutt/20230517
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+test_kmem_basic creates 100,000 negative dentries, with each one mapping
+to a slab object. After memory.high is set, these are reclaimed through
+the shrink_slab function call which reclaims all 100,000 entries. The
+test passes the majority of the time because when slab1 or current is
+calculated, it is often above 0, however, 0 is also an acceptable value.
 
+Signed-off-by: Lucas Karpinski <lkarpins@redhat.com>
+---
+In the previous patch, I missed a change to the variable 'current' even
+after some testing as the issue was so sporadic. Current takes the slab
+size into account and can also face the same issue where it fails since
+the reported value is 0, which is an acceptable value.
 
-On 03-Aug-23 13:34, Jayesh Choudhary wrote:
-> From: Rahul T R <r-ravikumar@ti.com>
-> 
-> Add DSS and DP-bridge node for J784S4 SoC. DSS IP in J784S4 is
-> same as DSS IP in J721E, so same compatible is being used.
-> The DP is Cadence MHDP8546.
-DP-bridge
+Drop: b4abfc19 in mm-unstable
+V2: https://lore.kernel.org/all/ix6vzgjqay2x7bskle7pypoint4nj66fwq7odvd5hektatvp2l@kukoifnfj3dr/
 
-> 
-> Signed-off-by: Rahul T R <r-ravikumar@ti.com>
-> [j-choudhary@ti.com: move dss & mhdp node together in main, fix dss node]
-> Signed-off-by: Jayesh Choudhary <j-choudhary@ti.com>
+ tools/testing/selftests/cgroup/test_kmem.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-Given that you make appropriate changes with properties in this patch,
-wrt patches 4/5 and 5/5,
+diff --git a/tools/testing/selftests/cgroup/test_kmem.c b/tools/testing/selftests/cgroup/test_kmem.c
+index 1b2cec9d18a4..ed2e50bb1e76 100644
+--- a/tools/testing/selftests/cgroup/test_kmem.c
++++ b/tools/testing/selftests/cgroup/test_kmem.c
+@@ -75,11 +75,11 @@ static int test_kmem_basic(const char *root)
+ 	sleep(1);
+ 
+ 	slab1 = cg_read_key_long(cg, "memory.stat", "slab ");
+-	if (slab1 <= 0)
++	if (slab1 < 0)
+ 		goto cleanup;
+ 
+ 	current = cg_read_long(cg, "memory.current");
+-	if (current <= 0)
++	if (current < 0)
+ 		goto cleanup;
+ 
+ 	if (slab1 < slab0 / 2 && current < slab0 / 2)
+-- 
+2.41.0
 
-Reviewed-by: Aradhya Bhatia <a-bhatia1@ti.com>
-
-> ---
->  arch/arm64/boot/dts/ti/k3-j784s4-main.dtsi | 63 ++++++++++++++++++++++
->  1 file changed, 63 insertions(+)
-> 
-> diff --git a/arch/arm64/boot/dts/ti/k3-j784s4-main.dtsi b/arch/arm64/boot/dts/ti/k3-j784s4-main.dtsi
-> index 446d7efa715f..824312b9ef9f 100644
-> --- a/arch/arm64/boot/dts/ti/k3-j784s4-main.dtsi
-> +++ b/arch/arm64/boot/dts/ti/k3-j784s4-main.dtsi
-> @@ -1741,4 +1741,67 @@ c71_3: dsp@67800000 {
->  		resets = <&k3_reset 40 1>;
->  		firmware-name = "j784s4-c71_3-fw";
->  	};
-> +
-> +	mhdp: bridge@a000000 {
-> +		compatible = "ti,j721e-mhdp8546";
-> +		reg = <0x0 0xa000000 0x0 0x30a00>,
-> +		      <0x0 0x4f40000 0x0 0x20>;
-> +		reg-names = "mhdptx", "j721e-intg";
-> +		clocks = <&k3_clks 217 11>;
-> +		interrupt-parent = <&gic500>;
-> +		interrupts = <GIC_SPI 614 IRQ_TYPE_LEVEL_HIGH>;
-> +		power-domains = <&k3_pds 217 TI_SCI_PD_EXCLUSIVE>;
-> +		status = "disabled";
-> +
-> +		dp0_ports: ports {
-> +			#address-cells = <1>;
-> +			#size-cells = <0>;
-> +		};
-> +	};
-> +
-> +	dss: dss@4a00000 {
-> +		compatible = "ti,j721e-dss";
-> +		reg = <0x00 0x04a00000 0x00 0x10000>, /* common_m */
-> +		      <0x00 0x04a10000 0x00 0x10000>, /* common_s0*/
-> +		      <0x00 0x04b00000 0x00 0x10000>, /* common_s1*/
-> +		      <0x00 0x04b10000 0x00 0x10000>, /* common_s2*/
-> +		      <0x00 0x04a20000 0x00 0x10000>, /* vidl1 */
-> +		      <0x00 0x04a30000 0x00 0x10000>, /* vidl2 */
-> +		      <0x00 0x04a50000 0x00 0x10000>, /* vid1 */
-> +		      <0x00 0x04a60000 0x00 0x10000>, /* vid2 */
-> +		      <0x00 0x04a70000 0x00 0x10000>, /* ovr1 */
-> +		      <0x00 0x04a90000 0x00 0x10000>, /* ovr2 */
-> +		      <0x00 0x04ab0000 0x00 0x10000>, /* ovr3 */
-> +		      <0x00 0x04ad0000 0x00 0x10000>, /* ovr4 */
-> +		      <0x00 0x04a80000 0x00 0x10000>, /* vp1 */
-> +		      <0x00 0x04aa0000 0x00 0x10000>, /* vp1 */
-> +		      <0x00 0x04ac0000 0x00 0x10000>, /* vp1 */
-> +		      <0x00 0x04ae0000 0x00 0x10000>, /* vp4 */
-> +		      <0x00 0x04af0000 0x00 0x10000>; /* wb */
-> +		reg-names = "common_m", "common_s0",
-> +			    "common_s1", "common_s2",
-> +			    "vidl1", "vidl2","vid1","vid2",
-> +			    "ovr1", "ovr2", "ovr3", "ovr4",
-> +			    "vp1", "vp2", "vp3", "vp4",
-> +			    "wb";
-> +		clocks = <&k3_clks 218 0>,
-> +			 <&k3_clks 218 2>,
-> +			 <&k3_clks 218 5>,
-> +			 <&k3_clks 218 14>,
-> +			 <&k3_clks 218 18>;
-> +		clock-names = "fck", "vp1", "vp2", "vp3", "vp4";
-> +		power-domains = <&k3_pds 218 TI_SCI_PD_EXCLUSIVE>;
-> +		interrupts = <GIC_SPI 602 IRQ_TYPE_LEVEL_HIGH>,
-> +			     <GIC_SPI 603 IRQ_TYPE_LEVEL_HIGH>,
-> +			     <GIC_SPI 604 IRQ_TYPE_LEVEL_HIGH>,
-> +			     <GIC_SPI 605 IRQ_TYPE_LEVEL_HIGH>;
-> +		interrupt-names = "common_m",
-> +				  "common_s0",
-> +				  "common_s1",
-> +				  "common_s2";
-> +		status = "disabled";
-> +
-> +		dss_ports: ports {
-> +		};
-> +	};
->  };
