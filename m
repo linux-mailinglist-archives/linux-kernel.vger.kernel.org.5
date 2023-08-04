@@ -2,214 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DAC99770413
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 17:09:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 906B8770418
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 17:10:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229475AbjHDPJm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Aug 2023 11:09:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49396 "EHLO
+        id S231768AbjHDPKv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Aug 2023 11:10:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50580 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229983AbjHDPJj (ORCPT
+        with ESMTP id S231286AbjHDPKo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Aug 2023 11:09:39 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9D9F49F8;
-        Fri,  4 Aug 2023 08:09:17 -0700 (PDT)
+        Fri, 4 Aug 2023 11:10:44 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4D4D4EE5
+        for <linux-kernel@vger.kernel.org>; Fri,  4 Aug 2023 08:10:25 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 1C53962051;
-        Fri,  4 Aug 2023 15:09:17 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E93CFC433C7;
-        Fri,  4 Aug 2023 15:09:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1691161756;
-        bh=8O0Wjzo18Eeo3bT1GIVVN1lfiYXzL8s5iSHfE8UYuNo=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=QyU85AmKeiVXq66XUP+H0XDDgcPvxIpbACZeWDKtLLR3QFGZ7durVVMkZxppxkUXc
-         +u0Na11dmOF+KYDuVjDD6pBxtZXeFwxhQlJFwbyTBJu1t62t4eVd/Qpq+ZOJlauo/W
-         ZK281c9fsSGh2WurVCYSsX2H802Obf/Cmf9vGt7k=
-Date:   Fri, 4 Aug 2023 17:09:13 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Hugo Villeneuve <hugo@hugovil.com>
-Cc:     robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
-        conor+dt@kernel.org, jirislaby@kernel.org, jringle@gridpoint.com,
-        isaac.true@canonical.com, jesse.sung@canonical.com,
-        l.perczak@camlintechnologies.com, tomasz.mon@camlingroup.com,
-        linux-serial@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org,
-        Hugo Villeneuve <hvilleneuve@dimonoff.com>,
-        stable@vger.kernel.org, Lech Perczak <lech.perczak@camlingroup.com>
-Subject: Re: [PATCH v9 04/10] serial: sc16is7xx: refactor GPIO controller
- registration
-Message-ID: <2023080433-depravity-debate-57d3@gregkh>
-References: <20230725142343.1724130-1-hugo@hugovil.com>
- <20230725142343.1724130-5-hugo@hugovil.com>
- <2023073118-mousiness-sandlot-6258@gregkh>
- <20230803121449.bcf74899e062ca39dfb073a3@hugovil.com>
- <2023080415-kinetic-repurpose-030a@gregkh>
- <20230804101554.c63202df93481bd5728bd3f1@hugovil.com>
+        by dfw.source.kernel.org (Postfix) with ESMTPS id CA05362064
+        for <linux-kernel@vger.kernel.org>; Fri,  4 Aug 2023 15:10:12 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 35E6BC43395
+        for <linux-kernel@vger.kernel.org>; Fri,  4 Aug 2023 15:10:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1691161812;
+        bh=k/WEV4wChuXrYdiVjfZQg92NekohcL6BMfLucYkhImI=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=DeqIpYcYPsJrb5GoacN0Bs+9uHCfU0qlOXefyRIw345uQW+COgwQECJGhZLwO6oX9
+         NaMp+PQGGsKq3Nk1G17T4KJspQgLBpKj2OPesmFXhaWlTY6qeCA7nF+2jN+EsezlHZ
+         IWGQOi9d23l2uwqOdptBKqKjUZ20qQfVfSBsvb7AQQHTfTrII6k0e4CuhsXW9150KP
+         EG83O95mTUJw5XHZzDdQHMSZ4n1+1Du4uQB1b82S6zuDFC/v4rxzAY3zKn13edqom/
+         Oy+RyimmjBoNBQDzZmEXP62o+KVcUmm1+VJKS99rM40pkEilOG2LNaZEWAhJXzp/3v
+         yenJZ/ZH6dBcw==
+Received: by mail-pl1-f172.google.com with SMTP id d9443c01a7336-1bbc7b2133fso15629695ad.1
+        for <linux-kernel@vger.kernel.org>; Fri, 04 Aug 2023 08:10:12 -0700 (PDT)
+X-Gm-Message-State: AOJu0YwlR7mDkEOeqsB2kr8Gr6lGvpEd6sx/3EG5YRHeWqFhTI0iWJ8f
+        4LCRbJX8TWvk0GnVuQUXi7mLq8cQcqIrRn9NO1Q0PQ==
+X-Google-Smtp-Source: AGHT+IElvAxN2zei6BanZFW0NwWKaaCidPWt1sbwnVPv5pTqIYIdvy4XQVOTTtbdkHsd177fmMf8SmGydpiw77jCVmM=
+X-Received: by 2002:a17:90a:1bc6:b0:267:e011:3e9a with SMTP id
+ r6-20020a17090a1bc600b00267e0113e9amr1495780pjr.3.1691161811724; Fri, 04 Aug
+ 2023 08:10:11 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230804101554.c63202df93481bd5728bd3f1@hugovil.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+References: <20230804-lt8912b-v1-0-c542692c6a2f@ideasonboard.com> <20230804-lt8912b-v1-1-c542692c6a2f@ideasonboard.com>
+In-Reply-To: <20230804-lt8912b-v1-1-c542692c6a2f@ideasonboard.com>
+From:   Robert Foss <rfoss@kernel.org>
+Date:   Fri, 4 Aug 2023 17:10:01 +0200
+X-Gmail-Original-Message-ID: <CAN6tsi7yxLNvXTVz-xzksr-E9SRmB5Hscc=Hue1G5T+5QZb5HA@mail.gmail.com>
+Message-ID: <CAN6tsi7yxLNvXTVz-xzksr-E9SRmB5Hscc=Hue1G5T+5QZb5HA@mail.gmail.com>
+Subject: Re: [PATCH 1/4] drm/bridge: lt8912b: Fix bridge_detach
+To:     Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
+Cc:     Adrien Grassein <adrien.grassein@gmail.com>,
+        Andrzej Hajda <andrzej.hajda@intel.com>,
+        Neil Armstrong <neil.armstrong@linaro.org>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Francesco Dolcini <francesco.dolcini@toradex.com>,
+        Stefan Eichenberger <stefan.eichenberger@toradex.com>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 04, 2023 at 10:15:54AM -0400, Hugo Villeneuve wrote:
-> On Fri, 4 Aug 2023 15:14:18 +0200
-> Greg KH <gregkh@linuxfoundation.org> wrote:
-> 
-> > On Thu, Aug 03, 2023 at 12:14:49PM -0400, Hugo Villeneuve wrote:
-> > > On Mon, 31 Jul 2023 17:55:42 +0200
-> > > Greg KH <gregkh@linuxfoundation.org> wrote:
-> > > 
-> > > > On Tue, Jul 25, 2023 at 10:23:36AM -0400, Hugo Villeneuve wrote:
-> > > > > From: Hugo Villeneuve <hvilleneuve@dimonoff.com>
-> > > > > 
-> > > > > In preparation for upcoming patch "fix regression with GPIO
-> > > > > configuration". To facilitate review and make code more modular.
-> > > > 
-> > > > I would much rather the issue be fixed _before_ the code is refactored,
-> > > > unless it is impossible to fix it without the refactor?
-> > > 
-> > > Hi Greg,
-> > > normally I would agree, but the refactor in this case helps a lot to
-> > > address some issues raised by you and Andy in V7 of this series.
-> > > 
-> > > Maybe I could merge it with the actual patch "fix regression with GPIO
-> > > configuration"?
-> > 
-> > Sure.
-> 
-> Hi Greg,
-> will do.
-> 
->  
-> > > > > Cc: <stable@vger.kernel.org> # 6.1.x
-> > > > 
-> > > > What commit id does this fix?
-> > > 
-> > > It doesn't fix anything, but I tought that I needed this tag since
-> > > this patch is a prerequisite for the next patch in the series, which
-> > > would be applied to stable kernels. I will remove this tag (assuming
-> > > the patch stays as it is, depending on your answer to the above
-> > > question).
-> > > 
-> > >  
-> > > > > Signed-off-by: Hugo Villeneuve <hvilleneuve@dimonoff.com>
-> > > > > Reviewed-by: Lech Perczak <lech.perczak@camlingroup.com>
-> > > > > Tested-by: Lech Perczak <lech.perczak@camlingroup.com>
-> > > > > ---
-> > > > >  drivers/tty/serial/sc16is7xx.c | 40 ++++++++++++++++++++--------------
-> > > > >  1 file changed, 24 insertions(+), 16 deletions(-)
-> > > > > 
-> > > > > diff --git a/drivers/tty/serial/sc16is7xx.c b/drivers/tty/serial/sc16is7xx.c
-> > > > > index 32d43d00a583..5b0aeef9d534 100644
-> > > > > --- a/drivers/tty/serial/sc16is7xx.c
-> > > > > +++ b/drivers/tty/serial/sc16is7xx.c
-> > > > > @@ -332,6 +332,7 @@ struct sc16is7xx_one {
-> > > > >  
-> > > > >  struct sc16is7xx_port {
-> > > > >  	const struct sc16is7xx_devtype	*devtype;
-> > > > > +	struct device			*dev;
-> > > > 
-> > > > Why is this pointer needed?
-> > > > 
-> > > > Why is it grabbed and yet the reference count is never incremented?  Who
-> > > > owns the reference count and when will it go away?
-> > > > 
-> > > > And what device is this?  The parent?  Current device?  What type of
-> > > > device is it?  And why is it needed?
-> > > > 
-> > > > Using "raw" devices is almost never something a driver should do, they
-> > > > are only passed into functions by the driver core, but then the driver
-> > > > should instantly turn them into the "real" structure.
-> > > 
-> > > We already discussed that a lot in previous versions (v7)... I am
-> > > trying my best to modify the code to address your concerns, but I am
-> > > not fully understanding what you mean about raw devices, and you didn't
-> > > answer some of my previous questions/interrogations in v7 about that.
-> > 
-> > I don't have time to answer all questions, sorry.
-> > 
-> > Please help review submitted patches to reduce my load and allow me to
-> > answer other stuff :)
-> 
-> Ok.
-> 
-> 
-> > > So, in the new function that I
-> > > need to implement, sc16is7xx_setup_gpio_chip(), I absolutely need to use
-> > > a raw device to read a device tree property and to set
-> > > s->gpio.parent:
-> > > 
-> > >     count = device_property_count_u32(dev, ...
-> > >     ...
-> > >     s->gpio.parent = dev;
-> > > 
-> > > Do we agree on that?
-> > 
-> > Yes, but what type of parent is that?
-> 
-> I am confused by your question. I do not understand why the type of
-> parent matters... And what do you call the parent: s, s->gpio or
-> s->gpio.parent?
-> 
-> For me, the way I understand it, the only question that matters is how I
-> can extract the raw device structure pointer from maybe "struct
-> sc16is7xx_port" or some other structure, and then use it in my
-> new function...
-> 
-> I should not have put "s->gpio.parent = dev" in the example, I think it
-> just complexifies things. Lets start over with a more simple example and
-> only:
-> 
->     count = device_property_count_u32(dev, ...
-> 
-> 
-> > > Then, how do I pass this raw device to the 
-> > > device_property_count_u32() function and to the s->gpio.parent
-> > > assignment?
-> > > 
-> > > Should I modify sc16is7xx_setup_gpio_chip() like so:
-> > > 
-> > >     static int sc16is7xx_setup_gpio_chip(struct sc16is7xx_port *s)
-> > >     {
-> > > 	struct device *dev = &s->p[0].port.dev;
-> > > 
-> > >         count = device_property_count_u32(dev, ...
-> > >         ...
-> > >         s->gpio.parent = dev;
-> > 
-> > Again, what is the real type of that parent?  It's a port, right, so
-> > pass in the port to this function and then do the "take the struct
-> > device of the port" at that point in time.
-> 
-> With the simplified example, is the following ok:
-> 
-> static int sc16is7xx_setup_gpio_chip(struct sc16is7xx_port *s)
-> {
->     struct device *dev = &s->p[0].port.dev;
-> 
->     count = device_property_count_u32(dev, ...
->     ...
-> }
-> 
-> If not, please indicate how you would do it with an actual example...
+On Fri, Aug 4, 2023 at 12:48=E2=80=AFPM Tomi Valkeinen
+<tomi.valkeinen@ideasonboard.com> wrote:
+>
+> The driver calls lt8912_bridge_detach() from its lt8912_remove()
+> function. As the DRM core detaches bridges automatically, this leads to
+> calling lt8912_bridge_detach() twice. The code probably has tried to
+> manage the double-call with the 'is_attached' variable, but the driver
+> never sets the variable to false, so its of no help.
+>
+> Fix the issue by dropping the call to lt8912_bridge_detach() from
+> lt8912_remove(), as the DRM core will handle the detach call for us,
+> and also drop the useless is_attached field.
+>
+> Fixes: 88abfc2b9e61 ("drm/bridge: Introduce LT8912B DSI to HDMI bridge")
+> Signed-off-by: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
+> ---
+>  drivers/gpu/drm/bridge/lontium-lt8912b.c | 16 +++++-----------
+>  1 file changed, 5 insertions(+), 11 deletions(-)
+>
+> diff --git a/drivers/gpu/drm/bridge/lontium-lt8912b.c b/drivers/gpu/drm/b=
+ridge/lontium-lt8912b.c
+> index 4eaea67fb71c..0e581f6e3c88 100644
+> --- a/drivers/gpu/drm/bridge/lontium-lt8912b.c
+> +++ b/drivers/gpu/drm/bridge/lontium-lt8912b.c
+> @@ -45,7 +45,6 @@ struct lt8912 {
+>
+>         u8 data_lanes;
+>         bool is_power_on;
+> -       bool is_attached;
+>  };
+>
+>  static int lt8912_write_init_config(struct lt8912 *lt)
+> @@ -575,8 +574,6 @@ static int lt8912_bridge_attach(struct drm_bridge *br=
+idge,
+>         if (ret)
+>                 goto error;
+>
+> -       lt->is_attached =3D true;
+> -
+>         return 0;
+>
+>  error:
+> @@ -588,15 +585,13 @@ static void lt8912_bridge_detach(struct drm_bridge =
+*bridge)
+>  {
+>         struct lt8912 *lt =3D bridge_to_lt8912(bridge);
+>
+> -       if (lt->is_attached) {
+> -               lt8912_hard_power_off(lt);
+> +       lt8912_hard_power_off(lt);
+>
+> -               if (lt->hdmi_port->ops & DRM_BRIDGE_OP_HPD)
+> -                       drm_bridge_hpd_disable(lt->hdmi_port);
+> +       if (lt->hdmi_port->ops & DRM_BRIDGE_OP_HPD)
+> +               drm_bridge_hpd_disable(lt->hdmi_port);
+>
+> -               drm_connector_unregister(&lt->connector);
+> -               drm_connector_cleanup(&lt->connector);
+> -       }
+> +       drm_connector_unregister(&lt->connector);
+> +       drm_connector_cleanup(&lt->connector);
+>  }
+>
+>  static enum drm_connector_status
+> @@ -750,7 +745,6 @@ static void lt8912_remove(struct i2c_client *client)
+>  {
+>         struct lt8912 *lt =3D i2c_get_clientdata(client);
+>
+> -       lt8912_bridge_detach(&lt->bridge);
+>         drm_bridge_remove(&lt->bridge);
+>         lt8912_free_i2c(lt);
+>         lt8912_put_dt(lt);
+>
+> --
+> 2.34.1
+>
 
-At this point, after reviewing 500+ patches today, I really have no
-idea, my brain is fried.  Do what you think is right here and submit a
-new series and I'll be glad to review it.
 
-thanks,
-
-greg k-h
+Reviewed-by: Robert Foss <rfoss@kernel.org>
