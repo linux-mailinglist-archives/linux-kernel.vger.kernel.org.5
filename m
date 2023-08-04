@@ -2,88 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A470B76FBCB
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 10:17:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AC51276FBCF
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 10:18:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232238AbjHDIRh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Aug 2023 04:17:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54534 "EHLO
+        id S233076AbjHDISV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Aug 2023 04:18:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55182 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230526AbjHDIRd (ORCPT
+        with ESMTP id S234493AbjHDISR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Aug 2023 04:17:33 -0400
-Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com [IPv6:2a00:1450:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10F6B469A
-        for <linux-kernel@vger.kernel.org>; Fri,  4 Aug 2023 01:17:31 -0700 (PDT)
-Received: by mail-wr1-x42f.google.com with SMTP id ffacd0b85a97d-31783d02093so1631051f8f.0
-        for <linux-kernel@vger.kernel.org>; Fri, 04 Aug 2023 01:17:30 -0700 (PDT)
+        Fri, 4 Aug 2023 04:18:17 -0400
+Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2CBA4697
+        for <linux-kernel@vger.kernel.org>; Fri,  4 Aug 2023 01:18:06 -0700 (PDT)
+Received: by mail-pf1-x42e.google.com with SMTP id d2e1a72fcca58-686f19b6dd2so1361693b3a.2
+        for <linux-kernel@vger.kernel.org>; Fri, 04 Aug 2023 01:18:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1691137049; x=1691741849;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=BtpPWtmTMtrxIoIHR4Tp9VLaeBaBImgFjEFb4F44FV8=;
-        b=OuGXWl9mN/2k8BpWiNjcnO2kR/5nOmkrTRFk1rN7pwJ9wE2IgfWd9FMoehMZqN4MOL
-         zHd4UnZofLCYqRgquW77v+Ix2miH2/oojPTw9NA08XlMbkKD1pe7Ndrfk4IJyfxL+8WG
-         VGSFhhGWGSNn/zY3JL9tdwcv+zDLLZHK7GTJTHmOAbaYLP6oWVwxnKg41cc1TdRBD9/+
-         iHilPYZIXSzn9QZ8dHeDvwDxMOO4Jm1cevvYPGjpMIDkVhwSEEZOSkqR/PVNBOeKF8G5
-         KNSM7RLHNhXHeiCjRssEhMkxsQFtb74ROlIcI5cscuJ2q8SWvdgsfs2Bbb/j+C467vXQ
-         siOw==
+        d=chromium.org; s=google; t=1691137086; x=1691741886;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=Gg5cVCUNV3XHGOdEED3Q5WLBVqpxV2U0ovPUur9voag=;
+        b=F4u5Br/6x69AAvjAgMCxCTVIJ5ywKIpqh2D36RfYxFp2q7yHZ27dzUJAmOqKW9pJqH
+         h77oI985AoKugoObOdc3Mc/zCJp8iWso0lLemKvy9Xmn/8pVTaoSBFtTAJ59BV5ZBr+5
+         c8P+FQ2fMtbyDkgiyzeqgrZDCOyvhFNWzy4zo=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691137049; x=1691741849;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=BtpPWtmTMtrxIoIHR4Tp9VLaeBaBImgFjEFb4F44FV8=;
-        b=JMsqNtSH7JIxRUlsWn9ktyun2jleca64kVe0U860g+O0Kx4648trWyb91x1VGgbLGS
-         tUbSW2FBm196AUWDkpMiWXqujb0wXA1QJ1sKLfBuwMyH+DzL4XB9e3QsWm/egak4tHGO
-         LtkiAJ5ejNFaLE9L3TVGSgqOsRBorUmnLyaq7HOizJO3kPDsM4eWXbcATdgKON4xOI7Z
-         qak6EEiHFwTwHw/GaOD0ZLktUpMCuh82Qz915hEf5wAxaeJc3mzEnfmkIwqISzbPmGJa
-         krgz1lDxfhivYEBKkh+RDPtHLVjK2IOcSEVc3i5DAbrK4HyfQCxnYgPsiBLBqS/CrGZK
-         x4kg==
-X-Gm-Message-State: AOJu0Ywf748IZCl6xlGMycI+7Xn4hEmPThnc0R+yoOKYXWDvDzlMmfWR
-        SqrVvJhdz0oswt/8BuQfrQmBofTvipp5yKw/UlU=
-X-Google-Smtp-Source: AGHT+IGgX/IfuWOTGmQUfDoIrgeXHHPS9RMUliwMNOygIkLHwq4te6gwJtnUBoUHbvEvzc44DFDCbQ==
-X-Received: by 2002:adf:fd12:0:b0:313:dfa3:4f7b with SMTP id e18-20020adffd12000000b00313dfa34f7bmr735709wrr.20.1691137049217;
-        Fri, 04 Aug 2023 01:17:29 -0700 (PDT)
-Received: from [192.168.10.46] (146725694.box.freepro.com. [130.180.211.218])
-        by smtp.googlemail.com with ESMTPSA id u10-20020adfed4a000000b003144b95e1ecsm1866611wro.93.2023.08.04.01.17.28
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 04 Aug 2023 01:17:28 -0700 (PDT)
-Message-ID: <03643466-2f5c-2d68-424d-19836dcceb78@linaro.org>
-Date:   Fri, 4 Aug 2023 10:17:28 +0200
+        d=1e100.net; s=20221208; t=1691137086; x=1691741886;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Gg5cVCUNV3XHGOdEED3Q5WLBVqpxV2U0ovPUur9voag=;
+        b=TN0cBBd1ihF5RKtQv/fEvq+GeR59bFr9qrPcfnqtV45NgA8co13qwvpPQEnkjm+qW7
+         clkPqlNpkGzhEHzVFYPdypZGhNSi3cxq3cyGvBtlEs0EZeEO0MFev4HA8r7u+BWvBT7P
+         fRovmBeAEUnWPFpJaux0XeU5ecAFrGpacXtkiSf3YKfOIbfqyro6NSe3LUUtIW0GSiW9
+         9nU0NHSAJ2oZg0kBySPCnMFqU0sN4iFN+0ugM0gM6vxeyA1RsRZ8gXUg/MFF84bSxtpl
+         CWOKpQjFcFlEzUBKOrSxqn4le2V7/EzCAAWglgPBTxmHGrI81cp8v5otiG3HxBDOx7Mz
+         z4LQ==
+X-Gm-Message-State: AOJu0YzdqxXRXz/fgH8BPCLajMgs3F2firh7Qdv6H6PBhPOqVk2zV3YX
+        LvJ4Dvsrx9ozCh7Q4Mgs8GUNwQ==
+X-Google-Smtp-Source: AGHT+IF0p+Ad31RQ2e8xZC4taMCW7aZqthbtutqmacSexOFcs3y+7j334dkNht2sO4v7wQdkEBZOuQ==
+X-Received: by 2002:a05:6a20:2452:b0:13e:82ad:ff0a with SMTP id t18-20020a056a20245200b0013e82adff0amr1046163pzc.23.1691137086366;
+        Fri, 04 Aug 2023 01:18:06 -0700 (PDT)
+Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id ff12-20020a056a002f4c00b0067f2f7eccdcsm1043514pfb.193.2023.08.04.01.18.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 04 Aug 2023 01:18:05 -0700 (PDT)
+Date:   Fri, 4 Aug 2023 01:18:05 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Maximilian Luz <luzmaximilian@gmail.com>
+Cc:     Bjorn Andersson <andersson@kernel.org>,
+        Andy Gross <agross@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        Johan Hovold <johan@kernel.org>,
+        Steev Klimaszewski <steev@kali.org>,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v5 1/3] lib/ucs2_string: Add UCS-2 strscpy function
+Message-ID: <202308040115.A4643B8@keescook>
+References: <20230730161906.606163-1-luzmaximilian@gmail.com>
+ <20230730161906.606163-2-luzmaximilian@gmail.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.11.0
-Subject: Re: [PATCH v3 1/8] thermal: core: Add mechanism for connecting trips
- with driver data
-Content-Language: en-US
-To:     "Rafael J. Wysocki" <rafael@kernel.org>
-Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Linux ACPI <linux-acpi@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Michal Wilczynski <michal.wilczynski@intel.com>,
-        Zhang Rui <rui.zhang@intel.com>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
-References: <13318886.uLZWGnKmhe@kreacher> <12254967.O9o76ZdvQC@kreacher>
- <4501957.LvFx2qVVIh@kreacher>
- <2d0315d4-35b4-84db-4dcb-c9528abad825@linaro.org>
- <CAJZ5v0iQDOsTOqWFvbf5nom-b3-pbHPRzJQC-1DM9eoh=0AKjg@mail.gmail.com>
- <eb279cf1-0605-3b87-5cb6-241a91977455@linaro.org>
- <CAJZ5v0i48=oawDJHoaHhiZRaO_CJokKsOHyNvu2v4PUbS6CH_Q@mail.gmail.com>
- <f8029547-6851-7e0c-00e6-4963ccbc2702@linaro.org>
- <CAJZ5v0gDQMNSeEU1J7ooJk4Ec=Hw_JuZAtL5k215v7Lf67iTgg@mail.gmail.com>
- <5c93d78d-835e-c740-280b-9d76456aaeda@linaro.org>
- <CAJZ5v0gtkZTwt-qP0uwvTJNx8cpO1o1esmW9BfVxB67X3Yt++w@mail.gmail.com>
- <b4e474f9-79e8-534b-509e-12eb5995fa0c@linaro.org>
- <CAJZ5v0iH+qf6eBuZASPKyA6rT8O6FiA7516MiYYUx6Uc+wR4Ow@mail.gmail.com>
-From:   Daniel Lezcano <daniel.lezcano@linaro.org>
-In-Reply-To: <CAJZ5v0iH+qf6eBuZASPKyA6rT8O6FiA7516MiYYUx6Uc+wR4Ow@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230730161906.606163-2-luzmaximilian@gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
         autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -92,116 +77,96 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 03/08/2023 21:58, Rafael J. Wysocki wrote:
-> On Thu, Aug 3, 2023 at 6:20 PM Daniel Lezcano <daniel.lezcano@linaro.org> wrote:
->>
->> On 03/08/2023 16:15, Rafael J. Wysocki wrote:
->>> On Thu, Aug 3, 2023 at 3:06 PM Daniel Lezcano <daniel.lezcano@linaro.org> wrote:
->>>>
->>>> On 02/08/2023 18:48, Rafael J. Wysocki wrote:
->>>>
->>>> [ ... ]
->>>>
->>>>>> Let me check if I can do something on top of your series to move it in
->>>>>> the ACPI driver.
->>>>>
->>>>> It doesn't need to be on top of my series, so if you have an idea,
->>>>> please just let me know what it is.
->>>>>
->>>>> It can't be entirely in the ACPI driver AFAICS, though, because
->>>>> trips[i] need to be modified on updates and they belong to the core.
->>>>> Hence, the driver needs some help from the core to get to them.  It
->>>>> can be something like "this is my trip tag and please give me the
->>>>> address of the trip matching it" or similar, but it is needed, because
->>>>> the driver has to assume that the trip indices used by it initially
->>>>> may change.
->>>>
->>>> May be I'm missing something but driver_ref does not seems to be used
->>>> except when assigning it, no?
->>>
->>> It is used on the other side.  That is, the value assigned to the trip
->>> field in it is accessed via trip_ref in the driver.
->>>
->>> The idea is that the driver puts a pointer to its local struct
->>> thermal_trip_ref into a struct thermal_trip and the core stores the
->>> address of that struct thermal_trip in there, which allows the driver
->>> to access the struct thermal_trip via its local struct
->>> thermal_trip_ref going forward.
->>>
->>> Admittedly, this is somewhat convoluted.
->>>
->>> I have an alternative approach in the works, just for illustration
->>> purposes if nothing else, but I have encountered a problem that I
->>> would like to ask you about.
->>>
->>> Namely, zone disabling is not particularly useful for preventing the
->>> zone from being used while the trips are updated, because it has side
->>> effects.  First, it triggers __thermal_zone_device_update() and a
->>> netlink message every time the mode changes, which can be kind of
->>> overcome.
->>
->> Right
->>
->>> But second, if the mode is "disabled", it does not actually
->>> prevent things like __thermal_zone_get_trip() from running and the
->>> zone lock is the only thing that can be used for that AFAICS.
->>   >
->>> So by "disabling" a thermal zone, did you mean changing its mode to
->>> "disabled" or something else?
->>
->> Yes, that is what I meant.
->>
->> May be the initial proposal by updating the thermal trips pointer can
->> solve that [1]
+On Sun, Jul 30, 2023 at 06:19:02PM +0200, Maximilian Luz wrote:
+> Add a ucs2_strscpy() function for UCS-2 strings. The behavior is
+> equivalent to the standard strscpy() function, just for 16-bit character
+> UCS-2 strings.
 > 
-> No, it can't.  An existing trips[] table cannot be replaced with a new
-> one with different trip indices, because those indices are already in
-> use.  And if the indices are the same, there's no reason to replace
-> trips.
+> Signed-off-by: Maximilian Luz <luzmaximilian@gmail.com>
+> ---
 > 
->> IMO we can assume the trip point changes are very rare (if any), so
->> rebuilding a new trip array and update the thermal zone with the pointer
->> may solve the situation.
->>
->> The routine does a copy of the trips array, so it can reorder it without
->> impacting the array passed as a parameter. And it can take the lock.
+> Changes in v5:
+>  - Add ucs2_strscpy() instead of ucs2_strlcpy()
 > 
-> The driver can take a lock as well.  Forbidding drivers to use the
-> zone lock is an artificial limitation without technical merit IMV.
-
-Yes, it is technically possible to take a lock from a driver. However, 
-from a higher perspective, we have a core framework which is 
-self-contained and we have a back-end which forces us to export this lock.
-
-Even if it is possible, it is not desirable because we break the 
-self-containment and thus that will make future changes in the core 
-framework complicated because of the interactions with back-end drivers.
-
-I'm not putting in question your changes in general but just want to 
-keep the direction of having the core framework and the drivers 
-interacting with the ops and a few high level functions where the core 
-framework handle the logic.
-
-The clocksource/clockevent drivers are an example on how the time 
-framework and the drivers are clearly separated.
-
->> We just have to constraint the update function to invalidate arrays with
->> a number of trip points different from the one initially passed when
->> creating the thermal zone.
->>
->> Alternatively, we can be smarter in the ACPI driver and update the
->> corresponding temperature+hysteresis trip point by using the
->> thermal_zone_set_trip() function.
+> Patch introduced in v4.
 > 
-> I don't see why this would make any difference.
+> ---
+>  include/linux/ucs2_string.h |  1 +
+>  lib/ucs2_string.c           | 35 +++++++++++++++++++++++++++++++++++
+>  2 files changed, 36 insertions(+)
+> 
+> diff --git a/include/linux/ucs2_string.h b/include/linux/ucs2_string.h
+> index cf3ada3e820e..c499ae809c7d 100644
+> --- a/include/linux/ucs2_string.h
+> +++ b/include/linux/ucs2_string.h
+> @@ -10,6 +10,7 @@ typedef u16 ucs2_char_t;
+>  unsigned long ucs2_strnlen(const ucs2_char_t *s, size_t maxlength);
+>  unsigned long ucs2_strlen(const ucs2_char_t *s);
+>  unsigned long ucs2_strsize(const ucs2_char_t *data, unsigned long maxlength);
+> +ssize_t ucs2_strscpy(ucs2_char_t *dst, const ucs2_char_t *src, size_t count);
+>  int ucs2_strncmp(const ucs2_char_t *a, const ucs2_char_t *b, size_t len);
+>  
+>  unsigned long ucs2_utf8size(const ucs2_char_t *src);
+> diff --git a/lib/ucs2_string.c b/lib/ucs2_string.c
+> index 0a559a42359b..b608129fcbdc 100644
+> --- a/lib/ucs2_string.c
+> +++ b/lib/ucs2_string.c
+> @@ -32,6 +32,41 @@ ucs2_strsize(const ucs2_char_t *data, unsigned long maxlength)
+>  }
+>  EXPORT_SYMBOL(ucs2_strsize);
+>  
+> +ssize_t ucs2_strscpy(ucs2_char_t *dst, const ucs2_char_t *src, size_t count)
+> +{
+> +	long res;
+> +
+> +	/*
+> +	 * Ensure that we have a valid amount of space. We need to store at
+> +	 * least one NUL-character.
+> +	 */
+> +	if (count == 0 || WARN_ON_ONCE(count > INT_MAX))
 
-The function thermal_zone_set_trip() takes the lock.
+Is "count" a measure of bytes or characters? It seems to be characters.
+can you please add some kern-doc for this function to clarify this.
+Also, I wonder if the above check should be "count > INT_MAX / 2" since
+the INT_MAX is, generally, done in byte counts.
 
+> +		return -E2BIG;
+> +
+> +	/*
+> +	 * Copy at most 'count' bytes, return early if we find a
+
+If "count" is characters, this comment should not say "bytes". :)
+
+> +	 * NUL-terminator.
+> +	 */
+> +	for (res = 0; res < count; res++) {
+> +		ucs2_char_t c;
+> +
+> +		c = src[res];
+> +		dst[res] = c;
+> +
+> +		if (!c)
+> +			return res;
+> +	}
+> +
+> +	/*
+> +	 * The loop above terminated without finding a NUL-terminator,
+> +	 * exceeding the 'count': Enforce proper NUL-termination and return
+> +	 * error.
+> +	 */
+> +	dst[count - 1] = 0;
+> +	return -E2BIG;
+> +}
+> +EXPORT_SYMBOL(ucs2_strscpy);
+> +
+>  int
+>  ucs2_strncmp(const ucs2_char_t *a, const ucs2_char_t *b, size_t len)
+>  {
+> -- 
+> 2.41.0
+> 
+
+Otherwise looks good to me!
 
 -- 
-<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
-
-Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
-<http://twitter.com/#!/linaroorg> Twitter |
-<http://www.linaro.org/linaro-blog/> Blog
-
+Kees Cook
