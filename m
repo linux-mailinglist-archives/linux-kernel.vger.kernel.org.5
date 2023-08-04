@@ -2,62 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 28CD1770A7F
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 23:08:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EF50D770A81
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 23:08:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229816AbjHDVIU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Aug 2023 17:08:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35342 "EHLO
+        id S230467AbjHDVIc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Aug 2023 17:08:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35340 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231174AbjHDVIK (ORCPT
+        with ESMTP id S231172AbjHDVIK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 4 Aug 2023 17:08:10 -0400
 Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F36D655A5
-        for <linux-kernel@vger.kernel.org>; Fri,  4 Aug 2023 14:07:20 -0700 (PDT)
-Received: by mail-pf1-x42a.google.com with SMTP id d2e1a72fcca58-686f94328a4so1744043b3a.0
-        for <linux-kernel@vger.kernel.org>; Fri, 04 Aug 2023 14:07:20 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2FFF6E46
+        for <linux-kernel@vger.kernel.org>; Fri,  4 Aug 2023 14:07:22 -0700 (PDT)
+Received: by mail-pf1-x42a.google.com with SMTP id d2e1a72fcca58-686be3cbea0so2475633b3a.0
+        for <linux-kernel@vger.kernel.org>; Fri, 04 Aug 2023 14:07:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1691183239; x=1691788039;
+        d=chromium.org; s=google; t=1691183241; x=1691788041;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=Zs0Gv4Fg+9bXbPDS+x5MeuiOn4j7KTC6rQDcvADWb+8=;
-        b=TFhIf+Y92Yutq1q3r5QXOVtSDF6+EmNeMvB5c54nDo5/RLID3p2uAWC+vf3ZkgRLgr
-         5lVq8JsIHNr5sA1uIXxUjC0RY8/VDxXP02vT4SK9+Cx6ej0mEB22eYcCWFY8MFDlmbTm
-         vgGaUnrtDEb268mi/DcLufyaS3DzHeChCP1/g=
+        bh=OgZd04X0Jnac/fFUkos5qfSoj7pVaTLYh5udS8UWgcQ=;
+        b=dWh3dGKdYpdYdRJj8hocS/Jx852k0NaOXKh3si1et2/K0fsZUcbFeMkfTyTNYq5AhB
+         cJNWWInbDx8vJsvS+phmgohWTE73bsjN/5Z80kAS0A//0yp2Xzm9tudwtnQygKNbWH95
+         K/Xrfpa2vyLkXmYwfbCkA4JEa0g85HOvBrD4E=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691183239; x=1691788039;
+        d=1e100.net; s=20221208; t=1691183241; x=1691788041;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=Zs0Gv4Fg+9bXbPDS+x5MeuiOn4j7KTC6rQDcvADWb+8=;
-        b=iyWLiisJ/j5v/2sgzI/cXQQGRjK48JZsm8ZVskDUID4frFKViEJn1yOG8i8BIGI+WF
-         ldZhpSNScahEv/1WpvfudSyQTwd+R8M2bjtiD8cTwmC7jziCUN+j9mgMp9SYTDBfI6cC
-         Fezn7cjAQs6ER20BjbmEg1y3wK9YNPERbN1nQgywjYhG40b3E1bxwM1uwfBKLk64uH2l
-         DG8eRkV/HwnBNOlEJfWcsz6kaHWYjbjt+90nFsoRVx/gCazURakEQ9k8vJmSFGxDI/dS
-         xwX9LG0MKi/KsHC1kqBGUcEFyJ/CDzJZNXAoVaCvYFIRKMkyjXecBMiFGhsJ5s32dahB
-         4Cjg==
-X-Gm-Message-State: AOJu0YwWcx9nIJmyuqyI/0feaSluUo3BGTki9TdHGF+yAqKKe0xTR1Fv
-        S8gtPZGUtcXEA5uTAvwdogq2mQ==
-X-Google-Smtp-Source: AGHT+IH+1u2vz/+hPiEdDmFCaY5UcWnHhuoQ/4+7m/iN7gksQgGInNJt1xM7GfEqn1Jrxnt9mXGsqw==
-X-Received: by 2002:a05:6a20:2587:b0:137:c971:6a0c with SMTP id k7-20020a056a20258700b00137c9716a0cmr852950pzd.31.1691183238826;
-        Fri, 04 Aug 2023 14:07:18 -0700 (PDT)
+        bh=OgZd04X0Jnac/fFUkos5qfSoj7pVaTLYh5udS8UWgcQ=;
+        b=OmAmtqvNvR/XqDBsJY1n9rwemQ0Y00W9q2304Il+9wvyC+7dDRJk/fOtO6vrG8AnM+
+         DMYYyjY+tR04GDTVO58QAFiaJHTf4KXfkr8OeJ6F/9V7/sIo99WUZ/yQ9LYfZupdfBqR
+         K9/g99zOHHpWFo158/M1AxUyQdJJD4999L/aVfENTvsTXBl1k8/361zU4qseakR4nZ9N
+         V1YjaLWjtQclxlObTMRuHL/nM0aD4VK2EidnHLjb5Tz0Y1HfU8mTklrxKFTYft1dvXmJ
+         siwKanZ0unGHQPeMRtE6fdK4YDsjSx9AcwGw+PZwF94kNai3Qq7gEaDUr2fMEOBGvPw3
+         Xv3g==
+X-Gm-Message-State: AOJu0Yy00rydpNfkHhlJEEaszQUYFbG9w7u0e/0spXj+n2jQOPVM+bKd
+        0tP3yHCl5lROQPuLboQ1M8OxrA==
+X-Google-Smtp-Source: AGHT+IEbxPqp6oqwMPfwc7PpRL6ZB+4GzifFwsSYO2+bjpdObcW4hQ6c42ATbNHl6lOFiZwol+g7yw==
+X-Received: by 2002:a05:6a20:548e:b0:127:72c3:6428 with SMTP id i14-20020a056a20548e00b0012772c36428mr1108268pzk.18.1691183240969;
+        Fri, 04 Aug 2023 14:07:20 -0700 (PDT)
 Received: from tictac2.mtv.corp.google.com ([2620:15c:9d:2:e186:e5d2:e60:bad3])
-        by smtp.gmail.com with ESMTPSA id n22-20020aa78a56000000b0068664ace38asm2037584pfa.19.2023.08.04.14.07.17
+        by smtp.gmail.com with ESMTPSA id n22-20020aa78a56000000b0068664ace38asm2037584pfa.19.2023.08.04.14.07.19
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 04 Aug 2023 14:07:18 -0700 (PDT)
+        Fri, 04 Aug 2023 14:07:20 -0700 (PDT)
 From:   Douglas Anderson <dianders@chromium.org>
 To:     dri-devel@lists.freedesktop.org, Maxime Ripard <mripard@kernel.org>
 Cc:     Linus Walleij <linus.walleij@linaro.org>,
         Douglas Anderson <dianders@chromium.org>,
         Daniel Vetter <daniel@ffwll.ch>,
         David Airlie <airlied@gmail.com>,
-        Neil Armstrong <neil.armstrong@linaro.org>,
-        Sam Ravnborg <sam@ravnborg.org>, linux-kernel@vger.kernel.org
-Subject: [RFC PATCH 03/10] drm/panel: otm8009a: Don't double check prepared/enabled
-Date:   Fri,  4 Aug 2023 14:06:06 -0700
-Message-ID: <20230804140605.RFC.3.I6a4a3c81c78acf5acdc2e5b5d936e19bf57ec07a@changeid>
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        linux-kernel@vger.kernel.org
+Subject: [RFC PATCH 04/10] drm/panel_helper: Introduce drm_panel_helper
+Date:   Fri,  4 Aug 2023 14:06:07 -0700
+Message-ID: <20230804140605.RFC.4.I930069a32baab6faf46d6b234f89613b5cec0f14@changeid>
 X-Mailer: git-send-email 2.41.0.585.gd2178a4bd4-goog
 In-Reply-To: <20230804210644.1862287-1-dianders@chromium.org>
 References: <20230804210644.1862287-1-dianders@chromium.org>
@@ -73,111 +74,101 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-As talked about in commit d2aacaf07395 ("drm/panel: Check for already
-prepared/enabled in drm_panel"), we want to remove needless code from
-panel drivers that was storing and double-checking the
-prepared/enabled state. Even if someone was relying on the
-double-check before, that double-check is now in the core and not
-needed in individual drivers.
+The goal of this file is to contain helper functions for panel drivers
+to use. To start off with, let's add drm_panel_helper_shutdown() for
+use by panels that want to make sure they're powered off at
+shutdown/remove time if they happen to be powered on.
 
-For the "otm8009a" driver we fully remove the storing of the "enabled"
-state and we remove the double-checking, but we still keep the storing
-of the "prepared" state since the backlight code in the driver checks
-it. This backlight code may not be perfectly safe since there doesn't
-appear to be sufficient synchronization between the backlight driver
-(which userspace can call into directly) and the code that's
-unpreparing the panel. However, this lack of safety is not new and can
-be addressed in a future patch.
+The main goal of introducting this function is so that panel drivers
+don't need to track the enabled/prepared state themselves.
 
 Signed-off-by: Douglas Anderson <dianders@chromium.org>
 ---
-From quick inspection, I think the right way to handle the backlight
-properly is:
-1. Start calling backlight_get_brightness() instead of directly
-   getting "bd->props.brightness" and bd->props.power. This should
-   return 0 for a disabled (or blanked or powered off) backlight.
-2. Cache the backlight level in "struct otm8009a"
-3. If the backlight isn't changing compared to the cached value, make
-   otm8009a_backlight_update_status() a no-op.
-4. Remove the caching of the "prepared" value.
+If I've misunderstood and the drm_panel_helper_shutdown() should
+belong in some other file and we don't need to introduce a "helper"
+for this then please le me know.
 
-That should work and always be safe because we always enable/disable
-the backlight in the panel's enable() and disable() functions. The
-backlight core has proper locking in this case. A disabled backlight
-will always return a level of 0 which will always make the backlight's
-update_status a no-op when the panel is disabled and keep us from
-trying to talk to the panel when it's off. Userspace can't directly
-cause a backlight to be enabled/disabled, it can only affect the other
-blanking modes.
+ drivers/gpu/drm/Makefile           |  1 +
+ drivers/gpu/drm/drm_panel_helper.c | 37 ++++++++++++++++++++++++++++++
+ include/drm/drm_panel_helper.h     | 13 +++++++++++
+ 3 files changed, 51 insertions(+)
+ create mode 100644 drivers/gpu/drm/drm_panel_helper.c
+ create mode 100644 include/drm/drm_panel_helper.h
 
- .../gpu/drm/panel/panel-orisetech-otm8009a.c    | 17 -----------------
- 1 file changed, 17 deletions(-)
-
-diff --git a/drivers/gpu/drm/panel/panel-orisetech-otm8009a.c b/drivers/gpu/drm/panel/panel-orisetech-otm8009a.c
-index 898b892f1143..93183f30d7d6 100644
---- a/drivers/gpu/drm/panel/panel-orisetech-otm8009a.c
-+++ b/drivers/gpu/drm/panel/panel-orisetech-otm8009a.c
-@@ -70,7 +70,6 @@ struct otm8009a {
- 	struct gpio_desc *reset_gpio;
- 	struct regulator *supply;
- 	bool prepared;
--	bool enabled;
- };
- 
- static const struct drm_display_mode modes[] = {
-@@ -267,9 +266,6 @@ static int otm8009a_disable(struct drm_panel *panel)
- 	struct mipi_dsi_device *dsi = to_mipi_dsi_device(ctx->dev);
- 	int ret;
- 
--	if (!ctx->enabled)
--		return 0; /* This is not an issue so we return 0 here */
--
- 	backlight_disable(ctx->bl_dev);
- 
- 	ret = mipi_dsi_dcs_set_display_off(dsi);
-@@ -282,8 +278,6 @@ static int otm8009a_disable(struct drm_panel *panel)
- 
- 	msleep(120);
- 
--	ctx->enabled = false;
--
- 	return 0;
- }
- 
-@@ -291,9 +285,6 @@ static int otm8009a_unprepare(struct drm_panel *panel)
- {
- 	struct otm8009a *ctx = panel_to_otm8009a(panel);
- 
--	if (!ctx->prepared)
--		return 0;
--
- 	if (ctx->reset_gpio) {
- 		gpiod_set_value_cansleep(ctx->reset_gpio, 1);
- 		msleep(20);
-@@ -311,9 +302,6 @@ static int otm8009a_prepare(struct drm_panel *panel)
- 	struct otm8009a *ctx = panel_to_otm8009a(panel);
- 	int ret;
- 
--	if (ctx->prepared)
--		return 0;
--
- 	ret = regulator_enable(ctx->supply);
- 	if (ret < 0) {
- 		dev_err(panel->dev, "failed to enable supply: %d\n", ret);
-@@ -341,13 +329,8 @@ static int otm8009a_enable(struct drm_panel *panel)
- {
- 	struct otm8009a *ctx = panel_to_otm8009a(panel);
- 
--	if (ctx->enabled)
--		return 0;
--
- 	backlight_enable(ctx->bl_dev);
- 
--	ctx->enabled = true;
--
- 	return 0;
- }
- 
+diff --git a/drivers/gpu/drm/Makefile b/drivers/gpu/drm/Makefile
+index 215e78e79125..e811f3d68235 100644
+--- a/drivers/gpu/drm/Makefile
++++ b/drivers/gpu/drm/Makefile
+@@ -118,6 +118,7 @@ drm_kms_helper-y := \
+ 	drm_gem_framebuffer_helper.o \
+ 	drm_kms_helper_common.o \
+ 	drm_modeset_helper.o \
++	drm_panel_helper.o \
+ 	drm_plane_helper.o \
+ 	drm_probe_helper.o \
+ 	drm_rect.o \
+diff --git a/drivers/gpu/drm/drm_panel_helper.c b/drivers/gpu/drm/drm_panel_helper.c
+new file mode 100644
+index 000000000000..85a55b5731cf
+--- /dev/null
++++ b/drivers/gpu/drm/drm_panel_helper.c
+@@ -0,0 +1,37 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * Copyright 2023 Google Inc.
++ */
++
++#include <linux/dev_printk.h>
++
++#include <drm/drm_panel.h>
++#include <drm/drm_panel_helper.h>
++
++/**
++ * drm_panel_helper_shutdown - helper for panels to use at shutdown time
++ * @panel: DRM panel
++ *
++ * Panels may call this function unconditionally at shutdown time to ensure
++ * that they are disabled and unprepared if necessary.
++ *
++ * As part of this function:
++ * - The backlight will be turned off, if it was on.
++ * - Any panel followers will be power sequenced.
++ */
++void drm_panel_helper_shutdown(struct drm_panel *panel)
++{
++	int ret;
++
++	if (panel->enabled) {
++		ret = drm_panel_disable(panel);
++		if (ret)
++			dev_warn(panel->dev, "Error disabling panel %d\n", ret);
++	}
++	if (panel->prepared) {
++		ret = drm_panel_unprepare(panel);
++		if (ret)
++			dev_warn(panel->dev, "Error unpreparing panel %d\n", ret);
++	}
++}
++EXPORT_SYMBOL_GPL(drm_panel_helper_shutdown);
+diff --git a/include/drm/drm_panel_helper.h b/include/drm/drm_panel_helper.h
+new file mode 100644
+index 000000000000..5621482053a9
+--- /dev/null
++++ b/include/drm/drm_panel_helper.h
+@@ -0,0 +1,13 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++/*
++ * Copyright 2023 Google Inc.
++ */
++
++#ifndef DRM_PANEL_HELPER_H
++#define DRM_PANEL_HELPER_H
++
++struct drm_panel;
++
++void drm_panel_helper_shutdown(struct drm_panel *panel);
++
++#endif /* DRM_PANEL_HELPER_H */
 -- 
 2.41.0.585.gd2178a4bd4-goog
 
