@@ -2,116 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CCE7776F948
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 07:08:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A918576F977
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 07:15:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233285AbjHDFHw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Aug 2023 01:07:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41350 "EHLO
+        id S233641AbjHDFPO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Aug 2023 01:15:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43534 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229618AbjHDFFX (ORCPT
+        with ESMTP id S233825AbjHDFNO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Aug 2023 01:05:23 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 888BC5588
-        for <linux-kernel@vger.kernel.org>; Thu,  3 Aug 2023 22:01:56 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 499B261F26
-        for <linux-kernel@vger.kernel.org>; Fri,  4 Aug 2023 05:01:55 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 58969C433C8;
-        Fri,  4 Aug 2023 05:01:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1691125314;
-        bh=ayVx67NI7whJIEYM/PRTa+Z5Dqnme7NKXeSusGW3xoM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=cPxCnF3eK2hlZbSFjh/cXLqmvBWOJsXEZJ6gv1SmPMfdNreoNc/jZwvWlcVS3CPHV
-         G8bg68ve2U+2olqN3F48L9mH52Gex/LYAN5lRgHS4cV8DH0g+VvAqqpYMRG5oeQ6QU
-         TaPKASXVXbp5mK3/ce8xuMmKkjQ7kSCF08W0X//Y=
-Date:   Fri, 4 Aug 2023 07:01:52 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Atul Raut <rauji.raut@gmail.com>
-Cc:     linux-kernel@vger.kernel.org,
-        linux-kernel-mentees@lists.linuxfoundation.org
-Subject: Re: [PATCH v2] ipc:msg: replace one-element array with
- flexible-array member
-Message-ID: <2023080434-angrily-colossal-22b5@gregkh>
-References: <20230804041949.5724-1-rauji.raut@gmail.com>
+        Fri, 4 Aug 2023 01:13:14 -0400
+Received: from lelv0143.ext.ti.com (lelv0143.ext.ti.com [198.47.23.248])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25F274C31;
+        Thu,  3 Aug 2023 22:11:02 -0700 (PDT)
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+        by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 3745AnGQ062380;
+        Fri, 4 Aug 2023 00:10:49 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1691125849;
+        bh=iZSGhXWJkcvSWSPFW2Rh05BrDy/p5Iyo5jUkOGaRns0=;
+        h=From:To:CC:Subject:Date;
+        b=qBeu2H0eoaLjzgVvcbp3wmvoMfldYY74bfrEfwxZTPtxyy9nvkaY7M0q9UJZs9hwW
+         /1J3x40elIINxCaWv+7cEULeoK1F09gGlYJ0SPS+W6V4bJ99ZDRy98eZbOwC0XzGeB
+         DCrVwjZZFh/cJy/TZLB/UJ89CH4rbKx5WTyt6oAw=
+Received: from DFLE115.ent.ti.com (dfle115.ent.ti.com [10.64.6.36])
+        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 3745AnRB035482
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Fri, 4 Aug 2023 00:10:49 -0500
+Received: from DFLE108.ent.ti.com (10.64.6.29) by DFLE115.ent.ti.com
+ (10.64.6.36) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Fri, 4
+ Aug 2023 00:10:49 -0500
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE108.ent.ti.com
+ (10.64.6.29) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Fri, 4 Aug 2023 00:10:49 -0500
+Received: from localhost (ileaxei01-snat2.itg.ti.com [10.180.69.6])
+        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 3745Am9R025754;
+        Fri, 4 Aug 2023 00:10:49 -0500
+From:   Dhruva Gole <d-gole@ti.com>
+To:     Linus Walleij <linus.walleij@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Tony Lindgren <tony@atomide.com>
+CC:     <linux-gpio@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-omap@vger.kernel.org>, Dhruva Gole <d-gole@ti.com>,
+        Nishanth Menon <nm@ti.com>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Conor Dooley <conor.dooley@microchip.com>
+Subject: [PATCH V3] dt-bindings: pinctrl: pinctrl-single: add am625 compatible
+Date:   Fri, 4 Aug 2023 10:37:37 +0530
+Message-ID: <20230804050737.635186-1-d-gole@ti.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230804041949.5724-1-rauji.raut@gmail.com>
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 03, 2023 at 09:19:49PM -0700, Atul Raut wrote:
-> One-element arrays are obsolete, and flexible
-> array members have taken their place. So, in
-> struct compat_msgbuf, replace the one-element
-> array with a flexible-array member.
-> 
-> This fixes warnings such as:
-> ./ipc/msg.c:981:6-11: WARNING use flexible-array member instead (https://www.kernel.org/doc/html/latest/process/deprecated.html#zero-length-and-one-element-arrays)
-> 
-> Signed-off-by: Atul Raut <rauji.raut@gmail.com>
-> ---
->  ipc/msg.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/ipc/msg.c b/ipc/msg.c
-> index fd08b3cb36d7..ee6af4fe52bf 100644
-> --- a/ipc/msg.c
-> +++ b/ipc/msg.c
-> @@ -978,7 +978,7 @@ SYSCALL_DEFINE4(msgsnd, int, msqid, struct msgbuf __user *, msgp, size_t, msgsz,
->  
->  struct compat_msgbuf {
->  	compat_long_t mtype;
-> -	char mtext[1];
-> +	char mtext[];
->  };
->  
->  long compat_ksys_msgsnd(int msqid, compat_uptr_t msgp,
-> -- 
-> 2.34.1
-> 
-> _______________________________________________
-> Linux-kernel-mentees mailing list
-> Linux-kernel-mentees@lists.linuxfoundation.org
-> https://lists.linuxfoundation.org/mailman/listinfo/linux-kernel-mentees
+Add the am625 compatible property to add support for the new
+wakeup enable and status bits positions
 
-Hi,
+Cc: Nishanth Menon <nm@ti.com>
+Cc: Vignesh Raghavendra <vigneshr@ti.com>
+CC: Tony Lindgren <tony@atomide.com>
+Acked-by: Conor Dooley <conor.dooley@microchip.com>
+Signed-off-by: Dhruva Gole <d-gole@ti.com>
+---
 
-This is the friendly patch-bot of Greg Kroah-Hartman.  You have sent him
-a patch that has triggered this response.  He used to manually respond
-to these common problems, but in order to save his sanity (he kept
-writing the same thing over and over, yet to different people), I was
-created.  Hopefully you will not take offence and will fix the problem
-in your patch and resubmit it so that it can be accepted into the Linux
-kernel tree.
+Base: tag: next-20230731 + below "depends on" patch
+Depends on: https://lore.kernel.org/linux-omap/20230731061908.GG5194@atomide.com/T/
 
-You are receiving this message because of the following common error(s)
-as indicated below:
+Changelog:
 
-- This looks like a new version of a previously submitted patch, but you
-  did not list below the --- line any changes from the previous version.
-  Please read the section entitled "The canonical patch format" in the
-  kernel file, Documentation/process/submitting-patches.rst for what
-  needs to be done here to properly describe this.
+* v2 -> v3:
+keep order sorted, Suggested-by: Nishanth Menon <nm@ti.com>
+link to v2: https://lore.kernel.org/all/20230803150955.611717-1-d-gole@ti.com/
 
-If you wish to discuss this problem further, or you have questions about
-how to resolve this issue, please feel free to respond to this email and
-Greg will reply once he has dug out from the pending patches received
-from other developers.
+* v1 -> v2 changes:
+rename to use am625 instead of am6
+link to v1:
+https://lore.kernel.org/all/20230803092311.604610-1-d-gole@ti.com/
 
-thanks,
 
-greg k-h's patch email bot
+ Documentation/devicetree/bindings/pinctrl/pinctrl-single.yaml | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/Documentation/devicetree/bindings/pinctrl/pinctrl-single.yaml b/Documentation/devicetree/bindings/pinctrl/pinctrl-single.yaml
+index b6b6bcd7074b..b0a10ab22b74 100644
+--- a/Documentation/devicetree/bindings/pinctrl/pinctrl-single.yaml
++++ b/Documentation/devicetree/bindings/pinctrl/pinctrl-single.yaml
+@@ -24,6 +24,7 @@ properties:
+       - items:
+           - enum:
+               - ti,am437-padconf
++              - ti,am625-padconf
+               - ti,dra7-padconf
+               - ti,omap2420-padconf
+               - ti,omap2430-padconf
+-- 
+2.34.1
+
