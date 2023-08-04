@@ -2,172 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 98C7A76FF46
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 13:14:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1203776FF49
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 13:14:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229999AbjHDLOR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Aug 2023 07:14:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35454 "EHLO
+        id S230071AbjHDLOe convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 4 Aug 2023 07:14:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35652 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229796AbjHDLOP (ORCPT
+        with ESMTP id S229643AbjHDLOa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Aug 2023 07:14:15 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED2D9EA;
-        Fri,  4 Aug 2023 04:14:13 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 7233061F9F;
-        Fri,  4 Aug 2023 11:14:13 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A8FD7C433C7;
-        Fri,  4 Aug 2023 11:14:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691147652;
-        bh=JVIKIVP6jH+DMGB4nfqfFhN+jPBpeIIndyqUb83cE/4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=OugvZtVdIdPlnCOVwjBjxCOFfLvSmaGbl8S4BAH1YIIUv4knOp6uYrk+m8zXEeWov
-         YacV5nAGCwzjiGoP2pFzoNtOU4dU03jcUWiAK7iw7wP+xsgv1HoCPrexZkOfi+vfSd
-         7eO8RW7a3Gw/vVyyfIVLeEuWZWjfIV73xjUGJr9nqDsKrq4L+YUfmgJKrv9a5NAH8K
-         incUndsQt2D6cnQAueemTtQPz/H5UZQjOx02K5BtQww3Az5g4V1EkmxCSw3GFb/8Vz
-         tVkbKlN+18+9JbxpPYBDnMq2/WXYpbDGpJpuQYUbHixg7iGYnASaPNf8vdzQnO1xIH
-         ukI9MDGRgzZUA==
-Date:   Fri, 4 Aug 2023 13:14:07 +0200
-From:   Christian Brauner <brauner@kernel.org>
-To:     Ian Kent <raven@themaw.net>
-Cc:     Al Viro <viro@ZenIV.linux.org.uk>,
-        autofs mailing list <autofs@vger.kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Fedor Pchelkin <pchelkin@ispras.ru>,
-        Takeshi Misawa <jeliantsurux@gmail.com>,
-        Alexey Khoroshilov <khoroshilov@ispras.ru>,
-        Matthew Wilcox <willy@infradead.org>,
-        Andrey Vagin <avagin@openvz.org>
-Subject: Re: [PATCH 1/2] autofs: fix memory leak of waitqueues in
- autofs_catatonic_mode
-Message-ID: <20230804-siegen-moralisieren-dd3dc2595ee2@brauner>
-References: <169112719161.7590.6700123246297365841.stgit@donald.themaw.net>
+        Fri, 4 Aug 2023 07:14:30 -0400
+Received: from mail-oo1-f49.google.com (mail-oo1-f49.google.com [209.85.161.49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3291128;
+        Fri,  4 Aug 2023 04:14:27 -0700 (PDT)
+Received: by mail-oo1-f49.google.com with SMTP id 006d021491bc7-56c9237e0ffso328094eaf.0;
+        Fri, 04 Aug 2023 04:14:27 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691147666; x=1691752466;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=2FtZw5JD0Id14VDUR651hXWOBYEpEEnj1729H5cCCn8=;
+        b=Nu8+eB+FFHJ2TCwF4llePROgNYd9gNlzZczzmPpYxt0bwJZH8BIg65JBsyaRl+WYh5
+         jIYnYClLppIcjTiLTHABFi+cWSwrgTuAraS5BfSB66LTcBp8KFfWNp1lO0+rFYFJDH5e
+         I2kkBT8yFlVAxclYmjFJmjDFSTygeajepMKNksniGA7dENF3oSOW8oFxh/zNvxxmZrcm
+         8UJ2z+oHuwybLmZSRYaiz4Pxk25tQTw9iPjF9PqJnZ3kkF+7kS34LBnWSpRsZhDvDQmj
+         +g+0rKBmEh+wT3vpE644hQpVPVC36juZYMZtH9tXdDr2BhXZOdmvRSetpoMrgRn/JXTV
+         63Zg==
+X-Gm-Message-State: ABy/qLaZhOrzR6J4Nzzpb5mzCgAh0oUO5X6AZP3rVXQNDl/SDnBZMJ3D
+        8qr5B6oh242NSCtsMNPt0Vd0soXfgt/YxJpPfRE=
+X-Google-Smtp-Source: APBJJlEARgqCNvSy/FCvSyr6voUjpqqIE393Ojf6di9EGjFZFmV36adcfRjip4L4fyZ9t2OS7a3IlHsiL6x07n07ZsY=
+X-Received: by 2002:a05:6820:2108:b0:56c:5e21:c72d with SMTP id
+ cd8-20020a056820210800b0056c5e21c72dmr16406902oob.1.1691147665667; Fri, 04
+ Aug 2023 04:14:25 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <169112719161.7590.6700123246297365841.stgit@donald.themaw.net>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <13318886.uLZWGnKmhe@kreacher> <12254967.O9o76ZdvQC@kreacher>
+ <4501957.LvFx2qVVIh@kreacher> <2d0315d4-35b4-84db-4dcb-c9528abad825@linaro.org>
+ <CAJZ5v0iQDOsTOqWFvbf5nom-b3-pbHPRzJQC-1DM9eoh=0AKjg@mail.gmail.com>
+ <eb279cf1-0605-3b87-5cb6-241a91977455@linaro.org> <CAJZ5v0i48=oawDJHoaHhiZRaO_CJokKsOHyNvu2v4PUbS6CH_Q@mail.gmail.com>
+ <f8029547-6851-7e0c-00e6-4963ccbc2702@linaro.org> <CAJZ5v0gDQMNSeEU1J7ooJk4Ec=Hw_JuZAtL5k215v7Lf67iTgg@mail.gmail.com>
+ <5c93d78d-835e-c740-280b-9d76456aaeda@linaro.org> <CAJZ5v0gtkZTwt-qP0uwvTJNx8cpO1o1esmW9BfVxB67X3Yt++w@mail.gmail.com>
+ <b4e474f9-79e8-534b-509e-12eb5995fa0c@linaro.org> <CAJZ5v0iH+qf6eBuZASPKyA6rT8O6FiA7516MiYYUx6Uc+wR4Ow@mail.gmail.com>
+ <03643466-2f5c-2d68-424d-19836dcceb78@linaro.org>
+In-Reply-To: <03643466-2f5c-2d68-424d-19836dcceb78@linaro.org>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Fri, 4 Aug 2023 13:14:14 +0200
+Message-ID: <CAJZ5v0iaUxL7W6Dj1HCz=vU5t4CAUOx0LJ6zGJ0S+Lw07nS62A@mail.gmail.com>
+Subject: Re: [PATCH v3 1/8] thermal: core: Add mechanism for connecting trips
+ with driver data
+To:     Daniel Lezcano <daniel.lezcano@linaro.org>
+Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Linux ACPI <linux-acpi@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Michal Wilczynski <michal.wilczynski@intel.com>,
+        Zhang Rui <rui.zhang@intel.com>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 04, 2023 at 01:33:12PM +0800, Ian Kent wrote:
-> From: Fedor Pchelkin <pchelkin@ispras.ru>
-> 
-> Syzkaller reports a memory leak:
-> 
-> BUG: memory leak
-> unreferenced object 0xffff88810b279e00 (size 96):
->   comm "syz-executor399", pid 3631, jiffies 4294964921 (age 23.870s)
->   hex dump (first 32 bytes):
->     00 00 00 00 00 00 00 00 08 9e 27 0b 81 88 ff ff  ..........'.....
->     08 9e 27 0b 81 88 ff ff 00 00 00 00 00 00 00 00  ..'.............
->   backtrace:
->     [<ffffffff814cfc90>] kmalloc_trace+0x20/0x90 mm/slab_common.c:1046
->     [<ffffffff81bb75ca>] kmalloc include/linux/slab.h:576 [inline]
->     [<ffffffff81bb75ca>] autofs_wait+0x3fa/0x9a0 fs/autofs/waitq.c:378
->     [<ffffffff81bb88a7>] autofs_do_expire_multi+0xa7/0x3e0 fs/autofs/expire.c:593
->     [<ffffffff81bb8c33>] autofs_expire_multi+0x53/0x80 fs/autofs/expire.c:619
->     [<ffffffff81bb6972>] autofs_root_ioctl_unlocked+0x322/0x3b0 fs/autofs/root.c:897
->     [<ffffffff81bb6a95>] autofs_root_ioctl+0x25/0x30 fs/autofs/root.c:910
->     [<ffffffff81602a9c>] vfs_ioctl fs/ioctl.c:51 [inline]
->     [<ffffffff81602a9c>] __do_sys_ioctl fs/ioctl.c:870 [inline]
->     [<ffffffff81602a9c>] __se_sys_ioctl fs/ioctl.c:856 [inline]
->     [<ffffffff81602a9c>] __x64_sys_ioctl+0xfc/0x140 fs/ioctl.c:856
->     [<ffffffff84608225>] do_syscall_x64 arch/x86/entry/common.c:50 [inline]
->     [<ffffffff84608225>] do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
->     [<ffffffff84800087>] entry_SYSCALL_64_after_hwframe+0x63/0xcd
-> 
-> autofs_wait_queue structs should be freed if their wait_ctr becomes zero.
-> Otherwise they will be lost.
-> 
-> In this case an AUTOFS_IOC_EXPIRE_MULTI ioctl is done, then a new
-> waitqueue struct is allocated in autofs_wait(), its initial wait_ctr
-> equals 2. After that wait_event_killable() is interrupted (it returns
-> -ERESTARTSYS), so that 'wq->name.name == NULL' condition may be not
-> satisfied. Actually, this condition can be satisfied when
-> autofs_wait_release() or autofs_catatonic_mode() is called and, what is
-> also important, wait_ctr is decremented in those places. Upon the exit of
-> autofs_wait(), wait_ctr is decremented to 1. Then the unmounting process
-> begins: kill_sb calls autofs_catatonic_mode(), which should have freed the
-> waitqueues, but it only decrements its usage counter to zero which is not
-> a correct behaviour.
-> 
-> edit:imk
-> This description is of course not correct. The umount performed as a result
-> of an expire is a umount of a mount that has been automounted, it's not the
-> autofs mount itself. They happen independently, usually after everything
-> mounted within the autofs file system has been expired away. If everything
-> hasn't been expired away the automount daemon can still exit leaving mounts
-> in place. But expires done in both cases will result in a notification that
-> calls autofs_wait_release() with a result status. The problem case is the
-> summary execution of of the automount daemon. In this case any waiting
-> processes won't be woken up until either they are terminated or the mount
-> is umounted.
-> end edit: imk
-> 
-> So in catatonic mode we should free waitqueues which counter becomes zero.
-> 
-> edit: imk
-> Initially I was concerned that the calling of autofs_wait_release() and
-> autofs_catatonic_mode() was not mutually exclusive but that can't be the
-> case (obviously) because the queue entry (or entries) is removed from the
-> list when either of these two functions are called. Consequently the wait
-> entry will be freed by only one of these functions or by the woken process
-> in autofs_wait() depending on the order of the calls.
-> end edit: imk
-> 
-> Reported-by: syzbot+5e53f70e69ff0c0a1c0c@syzkaller.appspotmail.com
-> Suggested-by: Takeshi Misawa <jeliantsurux@gmail.com>
-> Signed-off-by: Fedor Pchelkin <pchelkin@ispras.ru>
-> Signed-off-by: Alexey Khoroshilov <khoroshilov@ispras.ru>
-> Signed-off-by: Ian Kent <raven@themaw.net>
-> Cc: Matthew Wilcox <willy@infradead.org>
-> Cc: Andrei Vagin <avagin@gmail.com>
-> Cc: autofs@vger.kernel.org
-> Cc: linux-kernel@vger.kernel.org
-> ---
->  fs/autofs/waitq.c |    3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
-> 
-> diff --git a/fs/autofs/waitq.c b/fs/autofs/waitq.c
-> index 54c1f8b8b075..efdc76732fae 100644
-> --- a/fs/autofs/waitq.c
-> +++ b/fs/autofs/waitq.c
-> @@ -32,8 +32,9 @@ void autofs_catatonic_mode(struct autofs_sb_info *sbi)
->  		wq->status = -ENOENT; /* Magic is gone - report failure */
->  		kfree(wq->name.name - wq->offset);
->  		wq->name.name = NULL;
-> -		wq->wait_ctr--;
->  		wake_up_interruptible(&wq->queue);
-> +		if (!--wq->wait_ctr)
-> +			kfree(wq);
+On Fri, Aug 4, 2023 at 10:17 AM Daniel Lezcano
+<daniel.lezcano@linaro.org> wrote:
+>
+> On 03/08/2023 21:58, Rafael J. Wysocki wrote:
+> > On Thu, Aug 3, 2023 at 6:20 PM Daniel Lezcano <daniel.lezcano@linaro.org> wrote:
+> >>
+> >> On 03/08/2023 16:15, Rafael J. Wysocki wrote:
+> >>> On Thu, Aug 3, 2023 at 3:06 PM Daniel Lezcano <daniel.lezcano@linaro.org> wrote:
+> >>>>
+> >>>> On 02/08/2023 18:48, Rafael J. Wysocki wrote:
+> >>>>
+> >>>> [ ... ]
+> >>>>
+> >>>>>> Let me check if I can do something on top of your series to move it in
+> >>>>>> the ACPI driver.
+> >>>>>
+> >>>>> It doesn't need to be on top of my series, so if you have an idea,
+> >>>>> please just let me know what it is.
+> >>>>>
+> >>>>> It can't be entirely in the ACPI driver AFAICS, though, because
+> >>>>> trips[i] need to be modified on updates and they belong to the core.
+> >>>>> Hence, the driver needs some help from the core to get to them.  It
+> >>>>> can be something like "this is my trip tag and please give me the
+> >>>>> address of the trip matching it" or similar, but it is needed, because
+> >>>>> the driver has to assume that the trip indices used by it initially
+> >>>>> may change.
+> >>>>
+> >>>> May be I'm missing something but driver_ref does not seems to be used
+> >>>> except when assigning it, no?
+> >>>
+> >>> It is used on the other side.  That is, the value assigned to the trip
+> >>> field in it is accessed via trip_ref in the driver.
+> >>>
+> >>> The idea is that the driver puts a pointer to its local struct
+> >>> thermal_trip_ref into a struct thermal_trip and the core stores the
+> >>> address of that struct thermal_trip in there, which allows the driver
+> >>> to access the struct thermal_trip via its local struct
+> >>> thermal_trip_ref going forward.
+> >>>
+> >>> Admittedly, this is somewhat convoluted.
+> >>>
+> >>> I have an alternative approach in the works, just for illustration
+> >>> purposes if nothing else, but I have encountered a problem that I
+> >>> would like to ask you about.
+> >>>
+> >>> Namely, zone disabling is not particularly useful for preventing the
+> >>> zone from being used while the trips are updated, because it has side
+> >>> effects.  First, it triggers __thermal_zone_device_update() and a
+> >>> netlink message every time the mode changes, which can be kind of
+> >>> overcome.
+> >>
+> >> Right
+> >>
+> >>> But second, if the mode is "disabled", it does not actually
+> >>> prevent things like __thermal_zone_get_trip() from running and the
+> >>> zone lock is the only thing that can be used for that AFAICS.
+> >>   >
+> >>> So by "disabling" a thermal zone, did you mean changing its mode to
+> >>> "disabled" or something else?
+> >>
+> >> Yes, that is what I meant.
+> >>
+> >> May be the initial proposal by updating the thermal trips pointer can
+> >> solve that [1]
+> >
+> > No, it can't.  An existing trips[] table cannot be replaced with a new
+> > one with different trip indices, because those indices are already in
+> > use.  And if the indices are the same, there's no reason to replace
+> > trips.
+> >
+> >> IMO we can assume the trip point changes are very rare (if any), so
+> >> rebuilding a new trip array and update the thermal zone with the pointer
+> >> may solve the situation.
+> >>
+> >> The routine does a copy of the trips array, so it can reorder it without
+> >> impacting the array passed as a parameter. And it can take the lock.
+> >
+> > The driver can take a lock as well.  Forbidding drivers to use the
+> > zone lock is an artificial limitation without technical merit IMV.
+>
+> Yes, it is technically possible to take a lock from a driver. However,
+> from a higher perspective, we have a core framework which is
+> self-contained and we have a back-end which forces us to export this lock.
+>
+> Even if it is possible, it is not desirable because we break the
+> self-containment and thus that will make future changes in the core
+> framework complicated because of the interactions with back-end drivers.
 
-The only thing that peeked my interest was:
+So the counter argument here is that using the zone lock directly in
+the driver is the most straightforward way of addressing the use case
+at hand, which is the need to update trip points in a non-racy way.
+Everything else is more complex and the reasons for adding the extra
+complexity can be questioned.
 
-autofs_wait()
--> if (!wq)
-   -> wq->wait_ctr = 2;
-   -> autofs_notify_daemon()
+Self-containment is nice, but in some cases it is just not worth
+enforcing it all the way through at the cost of increased code
+complexity.
 
-Let's say autofs_write() fails with -EIO or for whatever reason and so
-we end up calling:
-
-      -> autofs_catatonic_mode()
-
-If wait_ctr can be decremented in between so that
-autofs_catatonic_mode() frees it and then autofs_wait() would cause a
-UAF when it tries to much with wq again. But afaict, this can't happen
-because and would also affect autofs_notify_daemon() then.
+Anyway, I'm going to post a new version of this patch series later
+today which uses a somewhat different approach. It is a bit more
+complex, but maybe this is fine.
