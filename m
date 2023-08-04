@@ -2,151 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 14DDE76FBD5
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 10:19:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8FBEC76FBD7
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 10:21:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232559AbjHDITl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Aug 2023 04:19:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55918 "EHLO
+        id S231576AbjHDIVM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Aug 2023 04:21:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56494 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232403AbjHDITj (ORCPT
+        with ESMTP id S231235AbjHDIVK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Aug 2023 04:19:39 -0400
-Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com [IPv6:2607:f8b0:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F5E3E6E
-        for <linux-kernel@vger.kernel.org>; Fri,  4 Aug 2023 01:19:38 -0700 (PDT)
-Received: by mail-pf1-x429.google.com with SMTP id d2e1a72fcca58-686be28e1a8so1311115b3a.0
-        for <linux-kernel@vger.kernel.org>; Fri, 04 Aug 2023 01:19:38 -0700 (PDT)
+        Fri, 4 Aug 2023 04:21:10 -0400
+Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF91FFC
+        for <linux-kernel@vger.kernel.org>; Fri,  4 Aug 2023 01:21:08 -0700 (PDT)
+Received: by mail-pl1-x635.google.com with SMTP id d9443c01a7336-1bba2318546so15896255ad.1
+        for <linux-kernel@vger.kernel.org>; Fri, 04 Aug 2023 01:21:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ventanamicro.com; s=google; t=1691137178; x=1691741978;
+        d=chromium.org; s=google; t=1691137268; x=1691742068;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=+6p8ZmyjWt9EkIhx2x7mQdHkPI32JR/rPIgt/KaUyrM=;
-        b=Xy7UXj5rKhL+uu8tkHk9ALkF9uUbocA2LUGuUDTCT+UGGvvTrismPG1zBkJkoUphar
-         GFIBh9B6MWwxSsxdU7gxlE57mN66vXeN52obzKwYx5CxoHQybxqezGy7NIg+855c764S
-         XNF/oYMsJJ5Rt/2MYOeT2lTd6jXCIw8p1xhmuAbrL+ZL+sCs0RmmNBE1mk+AOBq6Eq9W
-         F4pwgeCm+zv78ejFX6n1IKU186BdKmiIkBCc3ojk6wDZAKKAN2w8IQf6CZtDJd5Pa6Dq
-         /f/CXnPRCEHLAkvvcZXchDfjlnHhtZnzkRvEjbeedsy/ciaI5ykfwG3vd5RKwNUEGKzl
-         UCZg==
+        bh=xSQz11o3ul0yNyVq0pFtGQung0CwKOFZmwNl8PJxv+Q=;
+        b=oBVOMrt4+1w1zDz9OfBIdQ+ZbW3KAVLf/anefxKNO2eHmC4q38EUevTtWu2e22kSrF
+         VZHd6G8nwCuKTK0yXoCVWhIylifzK96pEGW2UDfzliIQe1Bv3oj41TkXX+MWRUizb1m3
+         YwJF8o9P6g0JOvBWpytfxl/9hsl1K47r3/JOQ=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691137178; x=1691741978;
+        d=1e100.net; s=20221208; t=1691137268; x=1691742068;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=+6p8ZmyjWt9EkIhx2x7mQdHkPI32JR/rPIgt/KaUyrM=;
-        b=hl/kq1N1R6Uw1pLaU8iu78qKze4WRR/G+b4py+E1p2AxWBoqtro81OihKrzYh6Ka28
-         pEcInaTQa7QZzVVI7w1j7W5f9x2b1lZdMYyTuRHolm0YK1CrVEG2wtehaPHKQIh14yDV
-         9F1ozrLjKOLnTPANTb3nymnCLGI758CC11mK4H/Lgj1ZiicdCvHIfC933hwhdB4qpxmO
-         UjGYvUaLEKHLdk0U+yuKdVSj5XY222POgmfIpWJuqj3kM7iic1GYgEqCfxOwJRTqKy+L
-         g5g4K2tQZZ3r9f73DCh2ZKEy/mh4gJPxGyFyFf06MWZGAwLKASz+JI5tA3T+sJif3+1W
-         0HDA==
-X-Gm-Message-State: AOJu0YzG+xmHyv9+EBYTwrqR+ckui0TMlduEyK/yMybFPMJ76mA8zgxa
-        +BWD9b2e4CqUq2OGN/E+RR5V9g==
-X-Google-Smtp-Source: AGHT+IFmU2okWiufqxbBgTJlqhXztctK8e0s9XMhsjLRvyxOqapi7NDJcuaofoqHVSzZkHv7M/zO9Q==
-X-Received: by 2002:a05:6a20:938a:b0:13e:8ce5:cacd with SMTP id x10-20020a056a20938a00b0013e8ce5cacdmr944703pzh.26.1691137177799;
-        Fri, 04 Aug 2023 01:19:37 -0700 (PDT)
-Received: from sunil-laptop ([106.51.190.143])
-        by smtp.gmail.com with ESMTPSA id e18-20020aa78c52000000b0068620bee456sm1046915pfd.209.2023.08.04.01.19.28
+        bh=xSQz11o3ul0yNyVq0pFtGQung0CwKOFZmwNl8PJxv+Q=;
+        b=epxwj3ZrnC+dqTvxGnUf/01R2/oP2vhtyhzBLCiNYAABrJ7iNZElesbZ1cjl6rnL3Z
+         Gb0aPHccfN5xIBzipomWLgd2Blsa6uX+heTP8ybHpqqJq5cKT1VM2qBYsJFJrGwEAC8f
+         YWf+CJl7j5D3B7LIJmTX/JtiVEBCc87Fg/E+Qhp/fbqdXzeLvUugPWNz8E7Nhtsy+UM4
+         xgK+rGSqAPuRmEoCNTkRaTJCOFXKQV97JnZNdQjkNrg3si67Fj3QLk4CJieWdDYJN3dZ
+         E+WjROSZ6llhhIPgkpqREEoG2BPhwMRwNfKaFfzxNEa3iA0lzsljKtdfjo/7ieGF7JAG
+         STJg==
+X-Gm-Message-State: AOJu0YwW4wBIf9IVz1UMreUmX8CqnfjWBQ61qgIea3nI578KpKt1/6qX
+        W/OYInDPXNO3zqr7DIIT1rd5Kw==
+X-Google-Smtp-Source: AGHT+IGJZB0215YHu30q3ARos/W+RSG09nTjMIKs8Qq2qlMv9bvhWlg0eKZX7tJXcm8qtw+8Dm1UVQ==
+X-Received: by 2002:a17:902:f809:b0:1b8:76fc:5bf6 with SMTP id ix9-20020a170902f80900b001b876fc5bf6mr978656plb.43.1691137268446;
+        Fri, 04 Aug 2023 01:21:08 -0700 (PDT)
+Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id q9-20020a170902b10900b001b8622c1ad2sm1138143plr.130.2023.08.04.01.21.07
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 04 Aug 2023 01:19:37 -0700 (PDT)
-Date:   Fri, 4 Aug 2023 13:49:24 +0530
-From:   Sunil V L <sunilvl@ventanamicro.com>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     linux-doc@vger.kernel.org, linux-riscv@lists.infradead.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-acpi@vger.kernel.org, linux-pci@vger.kernel.org,
-        Jonathan Corbet <corbet@lwn.net>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        "Rafael J . Wysocki" <rafael@kernel.org>,
-        Len Brown <lenb@kernel.org>,
-        Daniel Scally <djrscally@gmail.com>,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Anup Patel <anup@brainfault.org>,
-        Marc Zyngier <maz@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Robert Moore <robert.moore@intel.com>,
-        Haibo Xu <haibo1.xu@intel.com>,
-        Andrew Jones <ajones@ventanamicro.com>,
-        Conor Dooley <conor.dooley@microchip.com>,
-        Atish Kumar Patra <atishp@rivosinc.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Alexandre Ghiti <alexghiti@rivosinc.com>
-Subject: Re: [RFC PATCH v1 04/21] RISC-V: ACPI: Enhance acpi_os_ioremap with
- MMIO remapping
-Message-ID: <ZMy0jC55N0+nKEye@sunil-laptop>
-References: <20230803175916.3174453-1-sunilvl@ventanamicro.com>
- <20230803175916.3174453-5-sunilvl@ventanamicro.com>
- <ZMyRCRRkTnR/sK0u@smile.fi.intel.com>
+        Fri, 04 Aug 2023 01:21:07 -0700 (PDT)
+Date:   Fri, 4 Aug 2023 01:21:07 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Justin Stitt <justinstitt@google.com>
+Cc:     Stanislav Yakovlev <stas.yakovlev@gmail.com>,
+        Kalle Valo <kvalo@kernel.org>, linux-wireless@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
+Subject: Re: [PATCH v2] wifi: ipw2x00: refactor to use kstrtoul
+Message-ID: <202308040120.183400A04@keescook>
+References: <20230802-wifi-ipw2x00-refactor-v2-1-d33f765e9cd5@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ZMyRCRRkTnR/sK0u@smile.fi.intel.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+In-Reply-To: <20230802-wifi-ipw2x00-refactor-v2-1-d33f765e9cd5@google.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 04, 2023 at 08:47:53AM +0300, Andy Shevchenko wrote:
-> On Thu, Aug 03, 2023 at 11:28:59PM +0530, Sunil V L wrote:
-> > Enhance the acpi_os_ioremap() to support opregions in MMIO
-> > space. Also, have strict checks using EFI memory map
-> > to allow remapping the RAM similar to arm64.
-> > 
-> > Cc: Ard Biesheuvel <ardb@kernel.org>
-> > Cc: Alexandre Ghiti <alexghiti@rivosinc.com>
+On Wed, Aug 02, 2023 at 01:23:06AM +0000, Justin Stitt wrote:
+> The current implementation seems to reinvent what `kstrtoul` already does
+> in terms of functionality and error handling. Remove uses of `simple_strtoul()`
+> in favor of `kstrtoul()`.
 > 
-> You may use --cc to the command line when forming patches.
+> There is the following note at `lib/vsprintf.c:simple_strtoull()` which
+> further backs this change:
+> | * This function has caveats. Please use kstrtoull (or kstrtoul) instead.
 > 
-> Also we usually consider Cc: as a part of the tag block, meaning no blank line
-> should be here.
+> And here, simple_str* are explicitly deprecated [3].
 > 
-Thanks!, Andy. I specifically wanted Ard and Alex to look at this patch
-and hence added Cc. I was not aware that no blank line should be there.
-Thanks for letting me know.
+> This patch also removes an instance of the deprecated `strncpy` which helps [2].
+> 
+> Link: https://lore.kernel.org/all/202308011602.3CC1C0244C@keescook/ [1]
+> Link: https://github.com/KSPP/linux/issues/90 [2]
+> Link: https://docs.kernel.org/process/deprecated.html#simple-strtol-simple-strtoll-simple-strtoul-simple-strtoull [3]
+> Cc: linux-hardening@vger.kernel.org
+> Suggested-by: Kees Cook <keescook@chromium.org>
+> Signed-off-by: Justin Stitt <justinstitt@google.com>
 
-> > Signed-off-by: Sunil V L <sunilvl@ventanamicro.com>
-> 
-> ...
-> 
-> >  #include <linux/io.h>
-> >  #include <linux/pci.h>
-> >  #include <linux/efi.h>
-> > +#include <linux/memblock.h>
-> 
-> Can you squeeze it to have some order, like to be after io.h (taking into
-> account given context)?
-> 
-Yeah, sure. Let me update in next version.
+This looks correct to me. I would be curious to hear back from the intel
+folks if the interface continues to work correctly with real hardware.
 
-> ...
-> 
-> > +			if (memblock_is_map_memory(phys) ||
-> > +			    !memblock_is_region_memory(phys, size)) {
-> > +				pr_warn(FW_BUG "requested region covers kernel memory @ %p\n",
-> > +					&phys);
-> 
-> How %p can be useful here (it's mangled), but also wouldn't this give a hint to
-> an attacker about the kernel memory location and diminish the KASLR protection?
-> (IIRC after boot we always have the same salt for the mangling the pointers when
->  printing, so at least theoretically it might be possible to bruteforce the
->  printing algo to give a clue about the kernel address.)
-> 
-Okay. This is copied from arm64 version. But I think this is a good
-point. Let me just print the warning message without address in the next
-version.
+Reviewed-by: Kees Cook <keescook@chromium.org>
 
-Thanks!
-Sunil
+-- 
+Kees Cook
