@@ -2,56 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3CEAD76FCEA
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 11:10:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 14F7A76FCEB
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 11:10:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229741AbjHDJKJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Aug 2023 05:10:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57890 "EHLO
+        id S229776AbjHDJKO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Aug 2023 05:10:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57948 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229692AbjHDJJh (ORCPT
+        with ESMTP id S229742AbjHDJJk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Aug 2023 05:09:37 -0400
+        Fri, 4 Aug 2023 05:09:40 -0400
 Received: from mail-wr1-x449.google.com (mail-wr1-x449.google.com [IPv6:2a00:1450:4864:20::449])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E4746587
-        for <linux-kernel@vger.kernel.org>; Fri,  4 Aug 2023 02:06:51 -0700 (PDT)
-Received: by mail-wr1-x449.google.com with SMTP id ffacd0b85a97d-31797adfe97so1022703f8f.3
-        for <linux-kernel@vger.kernel.org>; Fri, 04 Aug 2023 02:06:51 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7FF2B658F
+        for <linux-kernel@vger.kernel.org>; Fri,  4 Aug 2023 02:06:54 -0700 (PDT)
+Received: by mail-wr1-x449.google.com with SMTP id ffacd0b85a97d-31400956ce8so1160212f8f.3
+        for <linux-kernel@vger.kernel.org>; Fri, 04 Aug 2023 02:06:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1691140010; x=1691744810;
-        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=mbDuRBO1V21kY8Ln+XMGj8tah/dM0ZngOK9DCSez6Ds=;
-        b=5+NdHYLigl8F6LR7td6fJwq4mY9o+g31biS6M/x67uOl9aEZNMw4T8nENGruiRPiRB
-         +Gw5NEcsPnW4zysL4GKnQBPK9MO8u0Fsh1G5fWlgkmiENC1pguO3W0zZ0X/9KVUs9XYc
-         Tobr1N4uOqLruYOpHjKAtJJ2mDS90eZzDY6tlw9DthEFZ7ugqCsD5LBgD4MRn1hh6V3W
-         c6lem7rrbgF4amzGiob51SzurdoFT2U3i2F0AvVFAwCHWg57HOfRNXyQL4/kaXiOsTGY
-         Q4BSyO6jSC8eDLVGZOooU1CA1YZfiIB3t/WuaZY5AlYApLPEZnbtXoouz1qw8nB4BnEV
-         78og==
+        d=google.com; s=20221208; t=1691140013; x=1691744813;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=GKmfKWa1C9dNl3H8pIKLebOm0SSKHLFe115my+PvGn0=;
+        b=2ZPhM3agmEsbxcqIzSenTzOTGpZ1asd1w1Q2izGb4kgJmfmxUYGz5Y9l6+EQeZrOBE
+         wKNBntVb39K0eFYcJF0q4Es5nWqxHHrmUx+v1Q/g0CkO2lOICunT8LA+Vx4EqT2mdLzK
+         cRWPMBoIUiovuVrezWfy5xGenDsixAjKv/5i0TSx4k1iLk6obBIMG2LYCuzlFGn3VAks
+         5WkXmXZihY4ic5RGw4NuwPhAR0NgdnMdfTxwUNhSzbzRS4sx30z/hws6Fm9aRaveEx7V
+         u57wZrcpE/D0hKVRYaMo+T6207xMAPr2dei4NhD4al1cMBvDnRZaf1WlEA36L9tlh2l1
+         5ZuA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691140010; x=1691744810;
-        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=mbDuRBO1V21kY8Ln+XMGj8tah/dM0ZngOK9DCSez6Ds=;
-        b=WHFc5rwDiGqUO04zOvfdqfhSPUDeKbIoVEyu9gP8p3Yfw8EOjXW8Bj8LTnFL3gmTEX
-         KmJmyYn0GsGb5TrkXPCDB69fCOf899LwjjxkvjY5wTlkgSVLieFLfA+ENO2wfha+v7Se
-         tBLYZQ32D4r8BfqsfV9VlXxPUCa3mYN6HfBJ3bRAzV0HAusKXEty66XooMGVjfQgXnR5
-         /CMoaKoY3yJDS/vqUZPIqW9nk7kqEcNO4/EenEB+nsj9k06l7HyW/+3Hz5iCnKnDwkC/
-         EQxrnQAKw8ZPjyrosdRH7r/4b0uNXnGHeQh4a2JtgXNBJa8h6+bmw1CzuJ+2juiZ6+7K
-         L4Xw==
-X-Gm-Message-State: AOJu0Yy4HAHGRuYHIeLDftN+CfhZ/RGr4Zz4S6W5rjG1ffyv0q3SLWo8
-        SRE05Ag2oW7x2pxI6e0zXA+qMLnRZA==
-X-Google-Smtp-Source: AGHT+IEPvozwf23yi22U6OKa9kIgIghSUiAWRzblYbPC2JjxGfCAqNsiEHfVbqNraFFYkBMktGuoEKz+Fw==
+        d=1e100.net; s=20221208; t=1691140013; x=1691744813;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=GKmfKWa1C9dNl3H8pIKLebOm0SSKHLFe115my+PvGn0=;
+        b=XAt/jmOKZemlkEy6n45iUfBRqBk8xwxt5X6IgoUhLcatSFwGfG7FoTEJSJ5VkVoS5M
+         H1Q1EcIVySKsReo0BpeFWo/BCf5I5F7bsKY9REgj+w8MSN3vN+iL3bW3okRyh8HtzDKl
+         Q1Hpw28dEEfv5I/ZxZz1rK6/4lp500qV7EQv2kWKKYICgP6DHvFownv5YiZ4jUoOuyzh
+         olTLNM7mqYWJNxOshsoI04pRNpUTvhLwMPvYikqGr4348XYXm2nE+FZ8rnhQk8wMTdpP
+         sTJRqaVFmJLDUQM1XGOsioTTRg1XIrgBybjdJ8yKq1hoI6XgUGJzIgjXXpJyLwcyk6AD
+         2tBQ==
+X-Gm-Message-State: AOJu0YzOIiQDkd9Chin1upMszG93gunc9jlCabkBO8kpIXevw9KjuNx0
+        +7ECWmjrt9b1HRqw9ishblpUI1IL9g==
+X-Google-Smtp-Source: AGHT+IE7VnI4i6X3QPJu2b4ARgq1Vxe4AP1Aorl0SMtRyhheu21XgeM+lzw0MQMQiOQdWXUYokuSwpw2pg==
 X-Received: from elver.muc.corp.google.com ([2a00:79e0:9c:201:2ebf:f3ea:4841:53b6])
- (user=elver job=sendgmr) by 2002:adf:f587:0:b0:313:e68e:885d with SMTP id
- f7-20020adff587000000b00313e68e885dmr6006wro.13.1691140009920; Fri, 04 Aug
- 2023 02:06:49 -0700 (PDT)
-Date:   Fri,  4 Aug 2023 11:02:56 +0200
+ (user=elver job=sendgmr) by 2002:a5d:457c:0:b0:317:4ce5:c4b4 with SMTP id
+ a28-20020a5d457c000000b003174ce5c4b4mr6475wrc.13.1691140012752; Fri, 04 Aug
+ 2023 02:06:52 -0700 (PDT)
+Date:   Fri,  4 Aug 2023 11:02:57 +0200
+In-Reply-To: <20230804090621.400-1-elver@google.com>
 Mime-Version: 1.0
+References: <20230804090621.400-1-elver@google.com>
 X-Mailer: git-send-email 2.41.0.640.ga95def55d0-goog
-Message-ID: <20230804090621.400-1-elver@google.com>
-Subject: [PATCH v2 1/3] compiler_types: Introduce the Clang __preserve_most
- function attribute
+Message-ID: <20230804090621.400-2-elver@google.com>
+Subject: [PATCH v2 2/3] list_debug: Introduce inline wrappers for debug checks
 From:   Marco Elver <elver@google.com>
 To:     elver@google.com, Andrew Morton <akpm@linux-foundation.org>,
         Kees Cook <keescook@chromium.org>
@@ -77,85 +78,118 @@ Cc:     Guenter Roeck <linux@roeck-us.net>,
 Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
-        USER_IN_DEF_DKIM_WL autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-[1]: "On X86-64 and AArch64 targets, this attribute changes the calling
-convention of a function. The preserve_most calling convention attempts
-to make the code in the caller as unintrusive as possible. This
-convention behaves identically to the C calling convention on how
-arguments and return values are passed, but it uses a different set of
-caller/callee-saved registers. This alleviates the burden of saving and
-recovering a large register set before and after the call in the
-caller."
+Turn the list debug checking functions __list_*_valid() into inline
+functions that wrap the out-of-line functions. Care is taken to ensure
+the inline wrappers are always inlined, so that additional compiler
+instrumentation (such as sanitizers) does not result in redundant
+outlining.
 
-[1] https://clang.llvm.org/docs/AttributeReference.html#preserve-most
+This change is preparation for performing checks in the inline wrappers.
 
-Introduce the attribute to compiler_types.h as __preserve_most.
-
-Use of this attribute results in better code generation for calls to
-very rarely called functions, such as error-reporting functions, or
-rarely executed slow paths.
-
-Beware that the attribute conflicts with instrumentation calls inserted
-on function entry which do not use __preserve_most themselves. Notably,
-function tracing which assumes the normal C calling convention for the
-given architecture.  Where the attribute is supported, __preserve_most
-will imply notrace. It is recommended to restrict use of the attribute
-to functions that should or already disable tracing.
+No functional change intended.
 
 Signed-off-by: Marco Elver <elver@google.com>
 ---
-v2:
-* Imply notrace, to avoid any conflicts with tracing which is inserted
-  on function entry. See added comments.
----
- include/linux/compiler_types.h | 27 +++++++++++++++++++++++++++
- 1 file changed, 27 insertions(+)
+ arch/arm64/kvm/hyp/nvhe/list_debug.c |  6 +++---
+ include/linux/list.h                 | 15 +++++++++++++--
+ lib/list_debug.c                     | 11 +++++------
+ 3 files changed, 21 insertions(+), 11 deletions(-)
 
-diff --git a/include/linux/compiler_types.h b/include/linux/compiler_types.h
-index 547ea1ff806e..12c4540335b7 100644
---- a/include/linux/compiler_types.h
-+++ b/include/linux/compiler_types.h
-@@ -106,6 +106,33 @@ static inline void __chk_io_ptr(const volatile void __iomem *ptr) { }
- #define __cold
- #endif
+diff --git a/arch/arm64/kvm/hyp/nvhe/list_debug.c b/arch/arm64/kvm/hyp/nvhe/list_debug.c
+index d68abd7ea124..589284496ac5 100644
+--- a/arch/arm64/kvm/hyp/nvhe/list_debug.c
++++ b/arch/arm64/kvm/hyp/nvhe/list_debug.c
+@@ -26,8 +26,8 @@ static inline __must_check bool nvhe_check_data_corruption(bool v)
  
-+/*
-+ * On x86-64 and arm64 targets, __preserve_most changes the calling convention
-+ * of a function to make the code in the caller as unintrusive as possible. This
-+ * convention behaves identically to the C calling convention on how arguments
-+ * and return values are passed, but uses a different set of caller- and callee-
-+ * saved registers.
-+ *
-+ * The purpose is to alleviates the burden of saving and recovering a large
-+ * register set before and after the call in the caller.  This is beneficial for
-+ * rarely taken slow paths, such as error-reporting functions that may be called
-+ * from hot paths.
-+ *
-+ * Note: This may conflict with instrumentation inserted on function entry which
-+ * does not use __preserve_most or equivalent convention (if in assembly). Since
-+ * function tracing assumes the normal C calling convention, where the attribute
-+ * is supported, __preserve_most implies notrace.
-+ *
-+ * Optional: not supported by gcc.
-+ *
-+ * clang: https://clang.llvm.org/docs/AttributeReference.html#preserve-most
-+ */
-+#if __has_attribute(__preserve_most__)
-+# define __preserve_most notrace __attribute__((__preserve_most__))
-+#else
-+# define __preserve_most
-+#endif
+ /* The predicates checked here are taken from lib/list_debug.c. */
+ 
+-bool __list_add_valid(struct list_head *new, struct list_head *prev,
+-		      struct list_head *next)
++bool ___list_add_valid(struct list_head *new, struct list_head *prev,
++		       struct list_head *next)
+ {
+ 	if (NVHE_CHECK_DATA_CORRUPTION(next->prev != prev) ||
+ 	    NVHE_CHECK_DATA_CORRUPTION(prev->next != next) ||
+@@ -37,7 +37,7 @@ bool __list_add_valid(struct list_head *new, struct list_head *prev,
+ 	return true;
+ }
+ 
+-bool __list_del_entry_valid(struct list_head *entry)
++bool ___list_del_entry_valid(struct list_head *entry)
+ {
+ 	struct list_head *prev, *next;
+ 
+diff --git a/include/linux/list.h b/include/linux/list.h
+index f10344dbad4d..e0b2cf904409 100644
+--- a/include/linux/list.h
++++ b/include/linux/list.h
+@@ -39,10 +39,21 @@ static inline void INIT_LIST_HEAD(struct list_head *list)
+ }
+ 
+ #ifdef CONFIG_DEBUG_LIST
+-extern bool __list_add_valid(struct list_head *new,
++extern bool ___list_add_valid(struct list_head *new,
+ 			      struct list_head *prev,
+ 			      struct list_head *next);
+-extern bool __list_del_entry_valid(struct list_head *entry);
++static __always_inline bool __list_add_valid(struct list_head *new,
++					     struct list_head *prev,
++					     struct list_head *next)
++{
++	return ___list_add_valid(new, prev, next);
++}
 +
- /* Builtins */
++extern bool ___list_del_entry_valid(struct list_head *entry);
++static __always_inline bool __list_del_entry_valid(struct list_head *entry)
++{
++	return ___list_del_entry_valid(entry);
++}
+ #else
+ static inline bool __list_add_valid(struct list_head *new,
+ 				struct list_head *prev,
+diff --git a/lib/list_debug.c b/lib/list_debug.c
+index d98d43f80958..fd69009cc696 100644
+--- a/lib/list_debug.c
++++ b/lib/list_debug.c
+@@ -17,8 +17,8 @@
+  * attempt).
+  */
  
- /*
+-bool __list_add_valid(struct list_head *new, struct list_head *prev,
+-		      struct list_head *next)
++bool ___list_add_valid(struct list_head *new, struct list_head *prev,
++		       struct list_head *next)
+ {
+ 	if (CHECK_DATA_CORRUPTION(prev == NULL,
+ 			"list_add corruption. prev is NULL.\n") ||
+@@ -37,9 +37,9 @@ bool __list_add_valid(struct list_head *new, struct list_head *prev,
+ 
+ 	return true;
+ }
+-EXPORT_SYMBOL(__list_add_valid);
++EXPORT_SYMBOL(___list_add_valid);
+ 
+-bool __list_del_entry_valid(struct list_head *entry)
++bool ___list_del_entry_valid(struct list_head *entry)
+ {
+ 	struct list_head *prev, *next;
+ 
+@@ -65,6 +65,5 @@ bool __list_del_entry_valid(struct list_head *entry)
+ 		return false;
+ 
+ 	return true;
+-
+ }
+-EXPORT_SYMBOL(__list_del_entry_valid);
++EXPORT_SYMBOL(___list_del_entry_valid);
 -- 
 2.41.0.640.ga95def55d0-goog
 
