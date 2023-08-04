@@ -2,86 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3AF9E77063E
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 18:46:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DC8F3770644
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 18:48:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230458AbjHDQqg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Aug 2023 12:46:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53692 "EHLO
+        id S230479AbjHDQsK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Aug 2023 12:48:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54630 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229708AbjHDQqd (ORCPT
+        with ESMTP id S229848AbjHDQsG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Aug 2023 12:46:33 -0400
-Received: from out-110.mta0.migadu.com (out-110.mta0.migadu.com [IPv6:2001:41d0:1004:224b::6e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36D714C0B
-        for <linux-kernel@vger.kernel.org>; Fri,  4 Aug 2023 09:46:28 -0700 (PDT)
-Date:   Fri, 4 Aug 2023 16:46:22 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1691167586;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=qaR2G5Chx/VcUIaTYRuVF0uwhqVmW9NgGj+Bf+hZY7o=;
-        b=r+7WDHTAnuE6UxfVFf9fmVXWZrmioqVjtqh2KCn/L35YcmjQRsSJVd/v1z+Ks6eJx8J4jA
-        LS+cxW2YC2JZ/gzgc8G8izhmj/IUaH3i22/t7+ES3S7mAYiT5/wal8BUgHjTB9cBHWagSe
-        11Un/V39kIbT2E0Q/LNoUv+MPvnz+qU=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Oliver Upton <oliver.upton@linux.dev>
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     Marc Zyngier <maz@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
-        linux-kernel@vger.kernel.org, Michal Luczaj <mhal@rbox.co>
-Subject: Re: [PATCH 2/4] KVM: selftests: Add helper macros for ioctl()s that
- return file descriptors
-Message-ID: <ZM0rXgKvb912k5BE@linux.dev>
-References: <20230804004226.1984505-1-seanjc@google.com>
- <20230804004226.1984505-3-seanjc@google.com>
+        Fri, 4 Aug 2023 12:48:06 -0400
+Received: from pandora.armlinux.org.uk (unknown [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D322B2D5F;
+        Fri,  4 Aug 2023 09:48:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:
+        Content-Transfer-Encoding:Content-Type:MIME-Version:References:Message-ID:
+        Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=RO4eJJfHRg8JOKGHnZzYhOFDDcQwqh/3jOnjYiqw8e0=; b=UbnbJ9890f1fQ9/fLFUZ28vKyU
+        HAWNJQeq5/GgnN0yxRdgYFrGrXn9Hq2lH3mYRviTPvojAfw3EokKG38IypVaaMGofzK45jWxnvhDn
+        AOYVOyyd+yWvROJdIb9tZF+/Kck9Jhgv+zDE/XgbMOzZPEkTyDdtbrAB614BS140Rg0S5LRB6hSJh
+        IO7u5wHLpg8JF+bw6V+aEhueLmzI79pYNj/iH1kNWhw6qjzHRw3Y6EBaQI7SxDPIYsF5VSTWSn1QL
+        Q3sCjqQCERdHixBetKi8/ZGIkXqe3+1MMNGkgh8Vr1n68IMPSFzR8b+evsShcm8JzDe075OLnCweY
+        AoBDfZPQ==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:50246)
+        by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.96)
+        (envelope-from <linux@armlinux.org.uk>)
+        id 1qRxy1-0000T8-1b;
+        Fri, 04 Aug 2023 17:47:57 +0100
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
+        (envelope-from <linux@shell.armlinux.org.uk>)
+        id 1qRxy1-000493-1S; Fri, 04 Aug 2023 17:47:57 +0100
+Date:   Fri, 4 Aug 2023 17:47:56 +0100
+From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
+To:     Nick Bowler <nbowler@draconx.ca>
+Cc:     Rob Herring <robh@kernel.org>, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, netdev@vger.kernel.org,
+        regressions@lists.linux.dev
+Subject: Re: PROBLEM: Broken or delayed ethernet on Xilinx ZCU104 since 5.18
+ (regression)
+Message-ID: <ZM0rvEkQ3XLlrbQC@shell.armlinux.org.uk>
+References: <CADyTPEzqf8oQAPSFRWJLxAhd-WE4fX2zdoe9Vu6V9hZMn1Yc8g@mail.gmail.com>
+ <CAL_JsqLrErF__GGHfanRFCpfbOh6fvz4-aJv32h8OfDjUeZPSg@mail.gmail.com>
+ <CADyTPEwgG0=R_b5DNBP0J0auDXu2BNTOwkSUFg-s7pLJUPC+Tg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20230804004226.1984505-3-seanjc@google.com>
-X-Migadu-Flow: FLOW_OUT
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CADyTPEwgG0=R_b5DNBP0J0auDXu2BNTOwkSUFg-s7pLJUPC+Tg@mail.gmail.com>
+Sender: Russell King (Oracle) <linux@armlinux.org.uk>
+X-Spam-Status: No, score=-1.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,RDNS_NONE,
+        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Sean,
-
-On Thu, Aug 03, 2023 at 05:42:24PM -0700, Sean Christopherson wrote:
-> Add KVM, VM, and vCPU scoped helpers for ioctl()s that return file
-> descriptors, i.e. deduplicate code for asserting success on ioctls() for
-> which a positive return value, not just zero, is considered success.
+On Fri, Aug 04, 2023 at 12:24:02PM -0400, Nick Bowler wrote:
+> On 04/08/2023, Rob Herring <robh@kernel.org> wrote:
+> > On Fri, Aug 4, 2023 at 9:27 AM Nick Bowler <nbowler@draconx.ca> wrote:
+> >>   commit e461bd6f43f4e568f7436a8b6bc21c4ce6914c36
+> >>   Author: Robert Hancock <robert.hancock@calian.com>
+> >>   Date:   Thu Jan 27 10:37:36 2022 -0600
+> >>
+> >>       arm64: dts: zynqmp: Added GEM reset definitions
+> >>
+> >> Reverting this fixes the problem on 5.18.  Reverting this fixes the
+> >> problem on 6.1.  Reverting this fixes the problem on 6.4.  In all of
+> >> these versions, with this change reverted, the network device appears
+> >> without delay.
+> >
+> > With the above change, the kernel is going to be waiting for the reset
+> > driver which either didn't exist or wasn't enabled in your config
+> > (maybe kconfig needs to be tweaked to enable it automatically).
 > 
-> Signed-off-by: Sean Christopherson <seanjc@google.com>
+> The dts defines a reset-controller node with
+> 
+>   compatible = "xlnx,zynqmp-reset"
+> 
+> As far as I can see, this is supposed to be handled by the code in
+> drivers/reset/zynqmp-reset.c driver, it is enabled by CONFIG_ARCH_ZYNQMP,
+> and I have that set to "y", and it appears to be getting compiled in (that
+> is, there is a drivers/reset/zynqmp-reset.o file in the build directory).
 
-I appreciate the desire to eliminate duplicate code, but I think the
-naming just muddies the waters. TBH, when I first read the diff w/o the
-changelog, I thought you were describing the input fd (i.e. 'kvm_fd',
-'vm_fd', 'vcpu_fd'). I don't think explicitly spelling out the condition
-each time (i.e. ret >= 0) is all that difficult.
+Isn't the driver called reset-zynqmp.c and reset-zynqmp.o ?
 
-[...]
+> However, unlike with the other firmware devices, I do not see this driver
+> under /sys/bus/platform/drivers, and there is no "driver" symlink under
+> /sys/bus/platform/devices/firmware:zynqmp-firmware:reset-controller
 
->  /*
->   * Looks up and returns the value corresponding to the capability
->   * (KVM_CAP_*) given by cap.
->   */
->  static inline int vm_check_cap(struct kvm_vm *vm, long cap)
->  {
-> -	int ret =  __vm_ioctl(vm, KVM_CHECK_EXTENSION, (void *)cap);
-> -
-> -	TEST_ASSERT(ret >= 0, KVM_IOCTL_ERROR(KVM_CHECK_EXTENSION, ret));
-> -	return ret;
-> +	return vm_fd_ioctl(vm, KVM_CHECK_EXTENSION, (void *)cap);
->  }
+The driver name would be the kbuild modname, which would be
+reset-zynqmp rather than zynqmp-reset - given how often you're typing
+zynqmp-reset rather than zynqmp-reset, could you have missed it
+through looking for the wrong name?
 
-Though the same error condition, this isn't returning an fd.
+If the driver is built-in, there is no reason it should fail to show
+up in /sys/bus/platform/drivers/reset-zynqmp.
 
 -- 
-Thanks,
-Oliver
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
