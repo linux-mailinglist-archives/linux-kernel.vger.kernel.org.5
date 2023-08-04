@@ -2,134 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 93099770B9A
-	for <lists+linux-kernel@lfdr.de>; Sat,  5 Aug 2023 00:02:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CD375770B98
+	for <lists+linux-kernel@lfdr.de>; Sat,  5 Aug 2023 00:01:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230290AbjHDWCJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Aug 2023 18:02:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58214 "EHLO
+        id S230259AbjHDWBw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Aug 2023 18:01:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58270 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230283AbjHDWCE (ORCPT
+        with ESMTP id S229826AbjHDWBu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Aug 2023 18:02:04 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF6D318B
-        for <linux-kernel@vger.kernel.org>; Fri,  4 Aug 2023 15:01:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1691186480;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=C4ZlchCpS+xdEdLXvT+0MxcrrN1dXUfPKwcsJ3NX33I=;
-        b=fuj6T2xSazRMF8DkJkkvvb9ZMLQ60WNyziaE0QAgPca8eFB7bgoz39Sknj0E2XYtFMvyUr
-        CBGeCoVgvJvEzIZHRitTnORRqMM/Nl5rnPuyBJCjzcKKT4X7/S1l55gPZYsBV73p4N3nXy
-        /OIZ7RLjMwOsbp9y7q6D4539il0h+zk=
-Received: from mail-lf1-f71.google.com (mail-lf1-f71.google.com
- [209.85.167.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-589-VZoRVs12NROjzZR7OYvG1w-1; Fri, 04 Aug 2023 18:01:18 -0400
-X-MC-Unique: VZoRVs12NROjzZR7OYvG1w-1
-Received: by mail-lf1-f71.google.com with SMTP id 2adb3069b0e04-4fe356c71d6so2640870e87.1
-        for <linux-kernel@vger.kernel.org>; Fri, 04 Aug 2023 15:01:18 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691186477; x=1691791277;
-        h=content-transfer-encoding:in-reply-to:subject:from:references:cc:to
-         :content-language:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=C4ZlchCpS+xdEdLXvT+0MxcrrN1dXUfPKwcsJ3NX33I=;
-        b=FsIDokTUggTXNt4/+1p79g5sasnAFxXukf5MZ8lyzihaQyEyyqH2ErHjX8zln/xhRd
-         tcEn1w2lLPDihITj4PuWSY9odqv/qxlUVjrQ++0Obqpx2yaXeOGEN8N7The6i7l4wB+x
-         /SsvrR97MCX/4ANxdEXS7Pk9wqWEpDlaD9XofGm5250g2xSBJQOytoVLrw4QHtxNByVc
-         vU6cjj9gEa4PH+h4xwbsJoGcWBrZgk1A88cyeX8RyvPG0EmsRny7N96ErL0FW5xgc2++
-         Mn2M0WWyopY9++/ZAmpjDOL88slx1Am03hKQ2daiNEe1MIPX3BrSHxaliY/tLEoPmZQX
-         J6JA==
-X-Gm-Message-State: AOJu0YzV1zC14P/Fy3EAu1NT+hajNDyoi9Vx+C7KRZaWrow7Juvddq/s
-        LNs0n/phfUlG3FU6bxdAQwAQgE/7fuv4xt0iwqn22UmSnYzSCkaaMPHagA7la2N9WY2IUtr0Hku
-        J9yUF4RWdTN+nUWHBOB3oD40j
-X-Received: by 2002:a05:6512:2347:b0:4f9:5580:1894 with SMTP id p7-20020a056512234700b004f955801894mr2395926lfu.15.1691186477248;
-        Fri, 04 Aug 2023 15:01:17 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IE+X0WyGO3YB7grTu4yDV4Lgm+3Fv/SY4n88cExgzEYZ/7oCme+ofhjKPukd4Wt4mDEkWRpnA==
-X-Received: by 2002:a05:6512:2347:b0:4f9:5580:1894 with SMTP id p7-20020a056512234700b004f955801894mr2395917lfu.15.1691186476918;
-        Fri, 04 Aug 2023 15:01:16 -0700 (PDT)
-Received: from ?IPV6:2001:b07:6468:f312:63a7:c72e:ea0e:6045? ([2001:b07:6468:f312:63a7:c72e:ea0e:6045])
-        by smtp.googlemail.com with ESMTPSA id s15-20020aa7c54f000000b00523220e375bsm875875edr.32.2023.08.04.15.01.15
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 04 Aug 2023 15:01:16 -0700 (PDT)
-Message-ID: <b2440b12-9783-6a86-91e1-066397189e40@redhat.com>
-Date:   Sat, 5 Aug 2023 00:01:15 +0200
+        Fri, 4 Aug 2023 18:01:50 -0400
+Received: from fllv0015.ext.ti.com (fllv0015.ext.ti.com [198.47.19.141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE8B5E4D;
+        Fri,  4 Aug 2023 15:01:48 -0700 (PDT)
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 374M1cR7083782;
+        Fri, 4 Aug 2023 17:01:38 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1691186498;
+        bh=xh4QWflwFh1VrWsPfERiHsrWdrU5pmhbYrYKpe1LEqw=;
+        h=From:To:CC:Subject:Date;
+        b=g4KAwgDyCbkFsFvbJexA1wQFOV6+lyTvM5mUr3s0iz4sFRi08a1lNfKPbyKbX+IJA
+         mUjPB6TBmQ5fH0Tn5IA14vAeZIiYyNGjgCU5vdjuL6Ir2wTV8dkaYLze5D595dsBCZ
+         WHb9kCO3Mi5bXb+VWK7jy6ZzLo+4s00tmQ0Vy3Dk=
+Received: from DFLE108.ent.ti.com (dfle108.ent.ti.com [10.64.6.29])
+        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 374M1ciK121296
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Fri, 4 Aug 2023 17:01:38 -0500
+Received: from DFLE107.ent.ti.com (10.64.6.28) by DFLE108.ent.ti.com
+ (10.64.6.29) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Fri, 4
+ Aug 2023 17:01:37 -0500
+Received: from fllv0040.itg.ti.com (10.64.41.20) by DFLE107.ent.ti.com
+ (10.64.6.28) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Fri, 4 Aug 2023 17:01:37 -0500
+Received: from uda0498204.dhcp.ti.com (ileaxei01-snat.itg.ti.com [10.180.69.5])
+        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 374M1bM8014195;
+        Fri, 4 Aug 2023 17:01:37 -0500
+From:   Judith Mendez <jm@ti.com>
+To:     Nishanth Menon <nm@ti.com>, Vignesh Raghavendra <vigneshr@ti.com>,
+        Tero Kristo <kristo@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>
+CC:     <linux-arm-kernel@lists.infradead.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: [PATCH v2]  arm64: dts: ti: k3-am62a7: Add MCU MCAN nodes
+Date:   Fri, 4 Aug 2023 17:01:37 -0500
+Message-ID: <20230804220137.425442-1-jm@ti.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Content-Language: en-US
-To:     Sean Christopherson <seanjc@google.com>,
-        Chao Gao <chao.gao@intel.com>
-Cc:     Weijiang Yang <weijiang.yang@intel.com>, peterz@infradead.org,
-        john.allen@amd.com, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, rick.p.edgecombe@intel.com,
-        binbin.wu@linux.intel.com
-References: <20230803042732.88515-1-weijiang.yang@intel.com>
- <20230803042732.88515-9-weijiang.yang@intel.com>
- <ZMuDyzxqtIpeoy34@chao-email>
- <83d767df-c9ef-1bee-40c0-2360598aafa8@intel.com>
- <ZMyR5Ztfjd9EMgIR@chao-email> <ZM1IlPrWz/R6D0O5@google.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Subject: Re: [PATCH v5 08/19] KVM:x86: Report KVM supported CET MSRs as
- to-be-saved
-In-Reply-To: <ZM1IlPrWz/R6D0O5@google.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/4/23 20:51, Sean Christopherson wrote:
->>>>> +	case MSR_IA32_PL0_SSP ... MSR_IA32_INT_SSP_TAB:
->>>>> +		if (!kvm_is_cet_supported())
->>>> shall we consider the case where IBT is supported while SS isn't
->>>> (e.g., in L1 guest)?
->>>
->>> Yes, but userspace should be able to access SHSTK MSRs even only IBT is
->>> exposed to guest so far as KVM can support SHSTK MSRs.
->>
->> Why should userspace be allowed to access SHSTK MSRs in this case? L1 may not
->> even enumerate SHSTK (qemu removes -shstk explicitly but keeps IBT), how KVM in
->> L1 can allow its userspace to do that?
->
-> +1.  And specifically, this isn't about SHSTK being exposed to the guest, it's about
-> SHSTK being _supported by KVM_.  This is all about KVM telling userspace what MSRs
-> are valid and/or need to be saved+restored.  If KVM doesn't support a feature,
-> then the MSRs are invalid and there is no reason for userspace to save+restore
-> the MSRs on live migration.
+On AM62ax there are no hardware interrupts routed to A53 GIC
+interrupt controller for MCU MCAN IPs, so MCU MCAN nodes were
+omitted from MCU dtsi.
 
-I think you three are talking past each other.
+Timer polling was introduced in commits [1][2] enabling 3x MCAN
+on AM62ax, so now add MCU MCAN nodes to the mcu dtsi for the Cortex A53.
 
-There are four cases:
+[1] commit b382380c0d2d ("can: m_can: Add hrtimer to generate software interrupt")
+[2] commit bb410c03b999 ("dt-bindings: net: can: Remove interrupt properties for MCAN")
 
-- U_CET/S_CET supported by the host and exposed (obvious).
+Signed-off-by: Judith Mendez <jm@ti.com>
+---
+Changes since v1:
+- fixed CAN node name can@4e0000 to can@4e08000
+---
+ arch/arm64/boot/dts/ti/k3-am62a-mcu.dtsi | 24 ++++++++++++++++++++++++
+ 1 file changed, 24 insertions(+)
 
-- U_CET/S_CET supported by the host, IBT or SHSTK partially exposed.  The
-MSRs should still be guest-accessible and bits that apply to absent features
-should be reserved (bits 0-1 for SHSTK, bits 2-63 for IBT).
-
-- U_CET/S_CET supported by the host, IBT or SHSTK not exposed.  The MSRs
-should still be host-accessible and writable to the default value.  This is
-clearer if you think that KVM_GET_MSR_INDEX_LIST is a system ioctl.  Whether
-to allow writing 0 from the guest is debatable.
-
-- U_CET/S_CET not supported by the host.  Then the MSRs should not be
-enabled and should not be in KVM_GET_MSR_INDEX_LIST, and also IBT/SHSTK
-should not be in KVM_GET_SUPPORTED_CPUID.
-
-In my opinion it is reasonable to require both U_CET and S_CET to be
-supported from the beginning in the host in order to support CET.  It
-is simpler and keeps the feature matrix at bay.
-
-Paolo
+diff --git a/arch/arm64/boot/dts/ti/k3-am62a-mcu.dtsi b/arch/arm64/boot/dts/ti/k3-am62a-mcu.dtsi
+index 04599762c2b7..a6d16a94088c 100644
+--- a/arch/arm64/boot/dts/ti/k3-am62a-mcu.dtsi
++++ b/arch/arm64/boot/dts/ti/k3-am62a-mcu.dtsi
+@@ -143,4 +143,28 @@ mcu_rti0: watchdog@4880000 {
+ 		/* Tightly coupled to M4F */
+ 		status = "reserved";
+ 	};
++
++	mcu_mcan0: can@4e08000 {
++		compatible = "bosch,m_can";
++		reg = <0x00 0x4e08000 0x00 0x200>,
++		      <0x00 0x4e00000 0x00 0x8000>;
++		reg-names = "m_can", "message_ram";
++		power-domains = <&k3_pds 188 TI_SCI_PD_EXCLUSIVE>;
++		clocks = <&k3_clks 188 6>, <&k3_clks 188 1>;
++		clock-names = "hclk", "cclk";
++		bosch,mram-cfg = <0x0 128 64 64 64 64 32 32>;
++		status = "disabled";
++	};
++
++	mcu_mcan1: can@4e18000 {
++		compatible = "bosch,m_can";
++		reg = <0x00 0x4e18000 0x00 0x200>,
++		      <0x00 0x4e10000 0x00 0x8000>;
++		reg-names = "m_can", "message_ram";
++		power-domains = <&k3_pds 189 TI_SCI_PD_EXCLUSIVE>;
++		clocks = <&k3_clks 189 6>, <&k3_clks 189 1>;
++		clock-names = "hclk", "cclk";
++		bosch,mram-cfg = <0x0 128 64 64 64 64 32 32>;
++		status = "disabled";
++	};
+ };
+-- 
+2.34.1
 
