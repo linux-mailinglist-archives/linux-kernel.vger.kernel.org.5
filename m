@@ -2,73 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 97F6C76FEFE
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 12:51:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C4B9676FF01
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 12:51:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231723AbjHDKvT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Aug 2023 06:51:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51764 "EHLO
+        id S231558AbjHDKvW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Aug 2023 06:51:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51790 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231666AbjHDKul (ORCPT
+        with ESMTP id S230227AbjHDKun (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Aug 2023 06:50:41 -0400
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [213.167.242.64])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED22D49F2
-        for <linux-kernel@vger.kernel.org>; Fri,  4 Aug 2023 03:48:39 -0700 (PDT)
-Received: from [127.0.1.1] (91-154-35-171.elisa-laajakaista.fi [91.154.35.171])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 6299F1BAD;
-        Fri,  4 Aug 2023 12:47:27 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1691146048;
-        bh=wWBZWiT0oUkuBhlljvcPfDGweqQW3nGwmkQPCsaA5Vo=;
-        h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
-        b=EqUPkYNaZfDDCDY6q/bvUzfiH177DTQIYGWGLt+YJ7gTR5MuEkuW1reL3elT3R4/B
-         08tCCc0b8ZCpWDhj0QOMKdxod9okn6nm63Afosmz+nGMaRlYktlWFPF8ZKpke38AN4
-         Ft6YnhfuxCKkIEs3xhNyJ+25v61M0t2NFQCuZsME=
-From:   Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
-Date:   Fri, 04 Aug 2023 13:48:13 +0300
-Subject: [PATCH 4/4] drm/bridge: lt8912b: Add missing drm_bridge_attach
- call
-MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20230804-lt8912b-v1-4-c542692c6a2f@ideasonboard.com>
-References: <20230804-lt8912b-v1-0-c542692c6a2f@ideasonboard.com>
-In-Reply-To: <20230804-lt8912b-v1-0-c542692c6a2f@ideasonboard.com>
-To:     Adrien Grassein <adrien.grassein@gmail.com>,
-        Andrzej Hajda <andrzej.hajda@intel.com>,
-        Neil Armstrong <neil.armstrong@linaro.org>,
-        Robert Foss <rfoss@kernel.org>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Francesco Dolcini <francesco.dolcini@toradex.com>,
-        Stefan Eichenberger <stefan.eichenberger@toradex.com>
-Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
-X-Mailer: b4 0.12.3
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1199;
- i=tomi.valkeinen@ideasonboard.com; h=from:subject:message-id;
- bh=wWBZWiT0oUkuBhlljvcPfDGweqQW3nGwmkQPCsaA5Vo=;
- b=owEBbQKS/ZANAwAIAfo9qoy8lh71AcsmYgBkzNd7/XHP9tGXxHiTXMJmJFkR3wv/kVdAl1HQk
- 1EWlPEUruGJAjMEAAEIAB0WIQTEOAw+ll79gQef86f6PaqMvJYe9QUCZMzXewAKCRD6PaqMvJYe
- 9TksD/kBNffp85lXTu9sLgSmeOZqRazAJ3G3IkXbZbjX/G1+zevQp7wRgWCjS1uB+7rpsmpF0mY
- EsJmSQ6k/oUG0AwZfPQ4rgQiINe4rA6QHh5xOE793rl8ahyhf3tv4v7/yGl/m52SwVHm3tqFy+v
- LJTghF5RZxxDL7HSgv1LYK+38q9pF+v2DhkOOXtPwLxAeN61jtngSpZztzFRWOUKV5aIeyQEbi9
- FYTctfPh6zq1jN1IKMo7754SbBb/2ftLq+wWeaTDBE1AILg3J6VKopJUixt4wsvqp5sFtjV+m7y
- 0hw2t8zhG+jC+blWL9zdfyTzyyg4IFQTQCNLIB4rqmJE7Q1qG7j9E0rael1+47v0WMPfPFQTvFH
- DDyK7JSBI9F9FA/AeivgbM7M7PqvcEKpcx1eAP6nkdO6tM34ToALLDzduAkMz2Emn5qvt5/mGGq
- HYL6yzEwMFGatseQHnyb+C31YlkqixNKUGPvZ1fVRvDLUp7ymwUGZaMLWPUfr5XCanrSrkw+z5n
- INifX2p5sRAAkuqB7O9Yfeq/LQW9e29KBSDYLLvBMXIffb1CwZz1Q2m8gS8p+Tr25vASn3ECGQz
- /e1NBg+HY45zHyE34cXMD9aE0p4KsYH7sd1kX4GQvginwbDS9JvpRPhEc2Qkt2grvaC0Cq9F1Vn
- o0NR/Nhe0RZlMrQ==
-X-Developer-Key: i=tomi.valkeinen@ideasonboard.com; a=openpgp;
- fpr=C4380C3E965EFD81079FF3A7FA3DAA8CBC961EF5
+        Fri, 4 Aug 2023 06:50:43 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A476246BB
+        for <linux-kernel@vger.kernel.org>; Fri,  4 Aug 2023 03:48:50 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 5178A21867;
+        Fri,  4 Aug 2023 10:48:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1691146129; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=rpza79Iiy2YD7BExWRThaSJL3I98xI1r05EfxEEAiak=;
+        b=j79NYrYaOgwNkCswSqD9K5Klp8RB1hjuqBG/Ogm/H/RXjtWR2x1lL+U4PEebkXER8b584u
+        csfdcL2lU+nPRMIhJd8hKnlrui3uOlbhPZopH9RBjV/E6KlILDfufkYeAnWQ86nerpp1Ue
+        t3ihJK26ezgkpBDntw49x+Y2kYpBicg=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1691146129;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=rpza79Iiy2YD7BExWRThaSJL3I98xI1r05EfxEEAiak=;
+        b=OCd88Ixk+z+76VzqepMPfHsHe8UurS7XjXMGuMLAzWCB5Bx9Ckrf+EbH09tHYeyGn2LFdj
+        TFH/pvDk48W0piAw==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 2995F133B5;
+        Fri,  4 Aug 2023 10:48:49 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id wRwrCZHXzGRkPwAAMHmgww
+        (envelope-from <tiwai@suse.de>); Fri, 04 Aug 2023 10:48:49 +0000
+Date:   Fri, 04 Aug 2023 12:48:48 +0200
+Message-ID: <87leer9j73.wl-tiwai@suse.de>
+From:   Takashi Iwai <tiwai@suse.de>
+To:     dengxiang <dengxiang@nfschina.com>
+Cc:     tiwai@suse.com, perex@perex.cz, alsa-devel@alsa-project.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] ALSA: usb-audio: Add support for Mythware XA001AU capture and playback interfaces.
+In-Reply-To: <20230803024437.370069-1-dengxiang@nfschina.com>
+References: <20230803024437.370069-1-dengxiang@nfschina.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -76,37 +69,14 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The driver does not call drm_bridge_attach(), which causes the next
-bridge to not be added to the bridge chain. This causes the pipeline
-init to fail when DRM_BRIDGE_ATTACH_NO_CONNECTOR is used.
+On Thu, 03 Aug 2023 04:44:37 +0200,
+dengxiang wrote:
+> 
+> This patch adds a USB quirk for Mythware XA001AU USB interface.
+> 
+> Signed-off-by: dengxiang <dengxiang@nfschina.com>
 
-Add the call to drm_bridge_attach().
+Thanks, applied now.
 
-Fixes: 30e2ae943c26 ("drm/bridge: Introduce LT8912B DSI to HDMI bridge")
-Signed-off-by: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
----
- drivers/gpu/drm/bridge/lontium-lt8912b.c | 7 +++++++
- 1 file changed, 7 insertions(+)
 
-diff --git a/drivers/gpu/drm/bridge/lontium-lt8912b.c b/drivers/gpu/drm/bridge/lontium-lt8912b.c
-index 9ee639e75a1c..03532efb893b 100644
---- a/drivers/gpu/drm/bridge/lontium-lt8912b.c
-+++ b/drivers/gpu/drm/bridge/lontium-lt8912b.c
-@@ -558,6 +558,13 @@ static int lt8912_bridge_attach(struct drm_bridge *bridge,
- 	struct lt8912 *lt = bridge_to_lt8912(bridge);
- 	int ret;
- 
-+	ret = drm_bridge_attach(bridge->encoder, lt->hdmi_port, bridge,
-+				DRM_BRIDGE_ATTACH_NO_CONNECTOR);
-+	if (ret < 0) {
-+		dev_err(lt->dev, "Failed to attach next bridge (%d)\n", ret);
-+		return ret;
-+	}
-+
- 	if (!(flags & DRM_BRIDGE_ATTACH_NO_CONNECTOR)) {
- 		ret = lt8912_bridge_connector_init(bridge);
- 		if (ret) {
-
--- 
-2.34.1
-
+Takashi
