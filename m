@@ -2,67 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B96A7700D1
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 15:07:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 282F87700D3
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 15:08:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230271AbjHDNHi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Aug 2023 09:07:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53498 "EHLO
+        id S230289AbjHDNH7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Aug 2023 09:07:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53772 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230245AbjHDNHg (ORCPT
+        with ESMTP id S230294AbjHDNHy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Aug 2023 09:07:36 -0400
-Received: from mail-oi1-x234.google.com (mail-oi1-x234.google.com [IPv6:2607:f8b0:4864:20::234])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62B5F49EA
-        for <linux-kernel@vger.kernel.org>; Fri,  4 Aug 2023 06:07:30 -0700 (PDT)
-Received: by mail-oi1-x234.google.com with SMTP id 5614622812f47-3a776cf15c8so153287b6e.0
-        for <linux-kernel@vger.kernel.org>; Fri, 04 Aug 2023 06:07:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google; t=1691154449; x=1691759249;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=i/yigF2fpJEDnCMVE9c09FwuzpR2+S6iapzBaTvFv5A=;
-        b=VKc6oV/RW7zPDTNHZ48iKQLRzTzlxRj54KzrC6OtsJsHsW+LFIGmDl3mkl5vOVCjS5
-         556DxYCyryRDMXvZeyl8r90Zig5Sw1zY+yZQoChdvd5+wLloxiC65J8oA1RwcZausrW6
-         PUh4M62bnqpMIFPa6HR2WbrTfl+EXVUNEjIDQ=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691154449; x=1691759249;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=i/yigF2fpJEDnCMVE9c09FwuzpR2+S6iapzBaTvFv5A=;
-        b=ShY/d/5ZwEjXuwW+SeRnbTg4870j420MKqWetp0cLUJElsiNpbhrmy2T5rHjmkY9Gr
-         bTBkeaOw4q3E+BcHZnm1RTiRYV/38RXDryh0OlfgaG5ArQnhxHM6D9LibMpitMiZfIFm
-         5nVOOLVsDhZm0EeXJBV90yWRDSbSu3tO+uNxhLrgE75NNksfsylTgQgE12L8zx7A1oxY
-         gMmvP8oochKtWnGu+Ia137h2CkHJQC0BGxh3kVZjXyFHYFNyox+gtpabTfrGKfGmlp5H
-         EYsgaBkUvsIj8QZQT7jr5k+7OfYC7LSBRruJjmagXcyOtmzDDE5rNvUfECGHz/EgWDvE
-         Q7xg==
-X-Gm-Message-State: ABy/qLbTmntdPqhkQX/k5MuTAWFxnEXCsr9C5e3rwWVrqvQFNvrVo+RU
-        P/uXqhIfljJ/N6zOXsLGHmYoQ4n2yP896QQgUDi8NA==
-X-Google-Smtp-Source: APBJJlF/EzkMaNQX2p63/4kVk/OEtEEV3E3kIOdMxEM5Wf7EX2fTtw0QjKGuyqON5R2OoE5HPZXiblVHLDX55eUPV0A=
-X-Received: by 2002:a05:6808:3616:b0:3a1:d457:83b5 with SMTP id
- ct22-20020a056808361600b003a1d45783b5mr17111363oib.3.1691154449755; Fri, 04
- Aug 2023 06:07:29 -0700 (PDT)
+        Fri, 4 Aug 2023 09:07:54 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0AD0646B3;
+        Fri,  4 Aug 2023 06:07:54 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 95BA761FEA;
+        Fri,  4 Aug 2023 13:07:53 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 99C69C433C8;
+        Fri,  4 Aug 2023 13:07:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1691154473;
+        bh=Ix21ZoIpr3Zj2///A+pnY9xaodUdrVwtTiATphHyP0M=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=jSl2/lv/cAXX3fUVQ9tWUTRmLeyH2YEBQVpGq6HZwuuTYfrBK6kJqxtZraR7RDf84
+         E2zwvZZvtKFqzDEsE6vfDCtekxxp02bwjETxsKhA0/6q/B0+jQMhaWElzYfOym9uL0
+         ty5d0ksPw8XoiGiAigzm8BXsI4+ewQzVEUPrQaCQ=
+Date:   Fri, 4 Aug 2023 15:07:50 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Hugo Villeneuve <hugo@hugovil.com>
+Cc:     Jiri Slaby <jirislaby@kernel.org>, linux-serial@vger.kernel.org,
+        Hugo Villeneuve <hvilleneuve@dimonoff.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] serial: max310x: add comments for membase address
+ workaround
+Message-ID: <2023080417-surname-sizzling-591e@gregkh>
+References: <20230803140551.970141-1-hugo@hugovil.com>
 MIME-Version: 1.0
-References: <20230804125156.1387542-1-javierm@redhat.com>
-In-Reply-To: <20230804125156.1387542-1-javierm@redhat.com>
-From:   Daniel Vetter <daniel@ffwll.ch>
-Date:   Fri, 4 Aug 2023 15:07:17 +0200
-Message-ID: <CAKMK7uH=7m=2Y0SxPm2Q1J+u2MRWHNQrYy7M5se7Ua9ZA19y=A@mail.gmail.com>
-Subject: Re: [PATCH] drm: Drop select FRAMEBUFFER_CONSOLE for DRM_FBDEV_EMULATION
-To:     Javier Martinez Canillas <javierm@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
-        Arthur Grillo <arthurgrillo@riseup.net>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        David Airlie <airlied@gmail.com>, Helge Deller <deller@gmx.de>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        dri-devel@lists.freedesktop.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20230803140551.970141-1-hugo@hugovil.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -70,63 +55,52 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 4 Aug 2023 at 14:52, Javier Martinez Canillas
-<javierm@redhat.com> wrote:
->
-> The commit c242f48433e7 ("drm: Make FB_CORE to be selected if DRM fbdev
-> emulation is enabled") changed DRM_FBDEV_EMULATION from 'depends on FB'
-> to an effective 'select FB_CORE', so any config that previously had DRM=y
-> and FB=n now has FB_CORE=y and FRAMEBUFFER_CONSOLE=y.
->
-> This leads to unmet direct dependencies detected for FRAMEBUFFER_CONSOLE
-> as reported by Arthur Grillo, e.g:
->
-> WARNING: unmet direct dependencies detected for FRAMEBUFFER_CONSOLE
->   Depends on [n]: VT [=n] && FB_CORE [=y] && !UML [=y]
->   Selected by [y]:
->   - DRM_FBDEV_EMULATION [=y] && HAS_IOMEM [=y] && DRM [=y] && !EXPERT [=n]
->
-> Arnd Bergmann suggests to drop the select FRAMEBUFFER_CONSOLE for the
-> DRM_FBDEV_EMULATION Kconfig symbol, since a possible use case could
-> be to enable DRM fbdev emulation but without a framebuffer console.
->
-> Fixes: c242f48433e7 ("drm: Make FB_CORE to be selected if DRM fbdev emulation is enabled")
-> Reported-by: Arthur Grillo <arthurgrillo@riseup.net>
-> Closes: https://lore.kernel.org/dri-devel/20230726220325.278976-1-arthurgrillo@riseup.net
-> Suggested-by: Arnd Bergmann <arnd@arndb.de>
-> Signed-off-by: Javier Martinez Canillas <javierm@redhat.com>
-
-Yeah originally this was just to help people not misconfigure their
-kernels and end up with a black screen. But select is really not a
-nice way to do that, imo we could drop the FB_CORE select too :-)
-
-Acked-by: Daniel Vetter <daniel.vetter@ffwll.ch>
-
-Cheers, Sima
-
+On Thu, Aug 03, 2023 at 10:05:51AM -0400, Hugo Villeneuve wrote:
+> From: Hugo Villeneuve <hvilleneuve@dimonoff.com>
+> 
+> Add comments about workaround used to configure membase address. This
+> follows suggestions made during review of a sc16is7xx driver patch to
+> add the same workaround.
+> 
+> Link: https://lore.kernel.org/lkml/2936e18f-44ea-faed-9fa0-2ddefe7c3194@linux.intel.com
+> Link: https://lore.kernel.org/lkml/20230801131655.80bd8f97f018dda6155d65f6@hugovil.com/
+> Signed-off-by: Hugo Villeneuve <hvilleneuve@dimonoff.com>
 > ---
->
->  drivers/gpu/drm/Kconfig | 1 -
->  1 file changed, 1 deletion(-)
->
-> diff --git a/drivers/gpu/drm/Kconfig b/drivers/gpu/drm/Kconfig
-> index b51c6a141dfa..2a44b9419d4d 100644
-> --- a/drivers/gpu/drm/Kconfig
-> +++ b/drivers/gpu/drm/Kconfig
-> @@ -135,7 +135,6 @@ config DRM_DEBUG_MODESET_LOCK
->  config DRM_FBDEV_EMULATION
->         bool "Enable legacy fbdev support for your modesetting driver"
->         depends on DRM
-> -       select FRAMEBUFFER_CONSOLE if !EXPERT
->         select FRAMEBUFFER_CONSOLE_DETECT_PRIMARY if FRAMEBUFFER_CONSOLE
->         default y
->         help
-> --
-> 2.41.0
->
+>  drivers/tty/serial/max310x.c | 5 +++++
+>  1 file changed, 5 insertions(+)
+> 
+> diff --git a/drivers/tty/serial/max310x.c b/drivers/tty/serial/max310x.c
+> index 416d553b73a7..5903dd033fd0 100644
+> --- a/drivers/tty/serial/max310x.c
+> +++ b/drivers/tty/serial/max310x.c
+> @@ -1369,6 +1369,11 @@ static int max310x_probe(struct device *dev, const struct max310x_devtype *devty
+>  		s->p[i].port.flags	= UPF_FIXED_TYPE | UPF_LOW_LATENCY;
+>  		s->p[i].port.iotype	= UPIO_PORT;
+>  		s->p[i].port.iobase	= i;
+> +		/*
+> +		 * Use all ones as membase to make sure uart_configure_port() in
+> +		 * serial_core.c does not abort for SPI/I2C devices where the
+> +		 * membase address is not applicable.
+> +		 */
+>  		s->p[i].port.membase	= (void __iomem *)~0;
+>  		s->p[i].port.uartclk	= uartclk;
+>  		s->p[i].port.rs485_config = max310x_rs485_config;
+> 
+> base-commit: 426263d5fb400ccde5444748693dc75bda18f01e
+> -- 
+> 2.30.2
+> 
 
+Meta-comment, your email system is not correct and is not able to be
+verified as I get the following when attempting to apply your patch:
 
--- 
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
+---
+  ✗ [PATCH] serial: max310x: add comments for membase address workaround
+  ---
+  ✗ BADSIG: DKIM/hugovil.com
+
+Please fix up for future submissions.
+
+thanks,
+
+greg k-h
