@@ -2,250 +2,305 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F2B676F676
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 02:17:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E94276F67C
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 02:19:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232391AbjHDARt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Aug 2023 20:17:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34862 "EHLO
+        id S231664AbjHDATq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Aug 2023 20:19:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35468 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229659AbjHDARr (ORCPT
+        with ESMTP id S229632AbjHDATo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Aug 2023 20:17:47 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59DF53AB1;
-        Thu,  3 Aug 2023 17:17:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1691108266; x=1722644266;
-  h=message-id:date:subject:to:cc:references:from:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=784A0RTF5iH0nqCR3z1UnX5aUrE78UQ2T7+BHcP1OA8=;
-  b=ZLJVmlIlVLJyZUX7JvahhgBtodf0r2aSDLi51gZGfJSHBgC2ZTbZyeAs
-   dZCNdY/Au8hyCHho0bWtmm2nF2wjdVT2W6eSfRvnjrsGb1OKFVkYb66GI
-   FPkarbw76LvPKDMZZ+dLcc1WaAdFobWWzvdDjAyIhUIx7WBub61XKV87k
-   uG4Rq9BT7ls5Br8IpXtigLUh0/dEdr4Zv0mvxLlsMXM3ny01VDCbkSiVU
-   0vpJntxTgnyzhc87gNB6eC02FVI7d3W+JNtn4pFwmYSV+7lUMV3ZQVWzC
-   2hA8nj0yZVANEAMWaI38b9Ncsw7TCje8CXOoF+vS0oii+4MRrZ0RetV8h
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10791"; a="456399688"
-X-IronPort-AV: E=Sophos;i="6.01,253,1684825200"; 
-   d="scan'208";a="456399688"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Aug 2023 17:17:39 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10791"; a="764883141"
-X-IronPort-AV: E=Sophos;i="6.01,253,1684825200"; 
-   d="scan'208";a="764883141"
-Received: from fmsmsx601.amr.corp.intel.com ([10.18.126.81])
-  by orsmga001.jf.intel.com with ESMTP; 03 Aug 2023 17:17:37 -0700
-Received: from fmsmsx611.amr.corp.intel.com (10.18.126.91) by
- fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.27; Thu, 3 Aug 2023 17:17:37 -0700
-Received: from fmsedg602.ED.cps.intel.com (10.1.192.136) by
- fmsmsx611.amr.corp.intel.com (10.18.126.91) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.27 via Frontend Transport; Thu, 3 Aug 2023 17:17:37 -0700
-Received: from NAM10-DM6-obe.outbound.protection.outlook.com (104.47.58.104)
- by edgegateway.intel.com (192.55.55.71) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.27; Thu, 3 Aug 2023 17:17:37 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=HMakeNkQTJ/yUY1S8Z5x6ranl2tArUzNd6rwv1/oepdYNIKgjdQ8Gt//p49rOVqMIvpJnRqQEO370OcOo7PcJ5gsSNHe941FF5tL3Y3d1J6nL1KJ9zYiKoEsfhzJy9YQ5MuF2UDsiVoqVU2+0wP+H/DKtr4CnZldxTgzikbRaQ+RCLbN3EJmSBnnG5DzR2gqr13MVXg9a1vUfuiiz3P95gMQ7KEJqnQuWC02k1WFSSrXshWzULcMLksnvQ2qcI8Kkiu2K7O9z7x2wCtubha5vUS+xc9zjva/qwelCeX2WRiB7G+BtzVwBBNkY6ontBmpF6SW6O2+i+NXCjyIdSY+hA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=hvDc8kG3LyvPX2X2vJR769nvg62ac/uGtLaSvOpbkPA=;
- b=MMNNOs/PQuziUqAUx9+AD/1zL5+NzunDDnPtkLKwb5Jo4di1b4SWboFSBSZN432kttTO1rDpoHToScvBelwA+PzZ52p9e184iuTnLD69DwRxCOO9j9lWJreXiNJ8onUPbuJ3v4Rq21UCNaX8MDhNGcvGSQDUsjRpy5i+R+sfuUWKKpxHIVjn6XmN80ujokOyb8pUZMXgwlmMkzNTuMr5GpEacppZps3rCn2SkMDChLtV8LBcfmrhuFXKoSlU3dExz5AzX8H4gXk7msgDZmN/tMo9VIwGibEQm0YF1lHruHYbRhnXuqMGMxMkzhzTyb3aUMCY5DNj17y4uvvOTw5LNw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from CO1PR11MB4820.namprd11.prod.outlook.com (2603:10b6:303:6f::8)
- by SJ2PR11MB8298.namprd11.prod.outlook.com (2603:10b6:a03:545::19) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6631.47; Fri, 4 Aug
- 2023 00:17:35 +0000
-Received: from CO1PR11MB4820.namprd11.prod.outlook.com
- ([fe80::221b:d422:710b:c9e6]) by CO1PR11MB4820.namprd11.prod.outlook.com
- ([fe80::221b:d422:710b:c9e6%3]) with mapi id 15.20.6631.046; Fri, 4 Aug 2023
- 00:17:35 +0000
-Message-ID: <45457815-66c4-029f-42f9-6c377e4eb1e3@intel.com>
-Date:   Fri, 4 Aug 2023 08:17:25 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Firefox/102.0 Thunderbird/102.13.0
-Subject: Re: [PATCH 0/2] don't use mapcount() to check large folio sharing
-Content-Language: en-US
-To:     Yu Zhao <yuzhao@google.com>
-CC:     Ryan Roberts <ryan.roberts@arm.com>, <linux-mm@kvack.org>,
-        <linux-kernel@vger.kernel.org>, <stable@vger.kernel.org>,
-        <akpm@linux-foundation.org>, <willy@infradead.org>,
-        <vishal.moola@gmail.com>, <wangkefeng.wang@huawei.com>,
-        <minchan@kernel.org>, <david@redhat.com>, <shy828301@gmail.com>
-References: <20230728161356.1784568-1-fengwei.yin@intel.com>
- <3bbfde16-ced1-dca8-6a3f-da893e045bc5@arm.com>
- <56c8f4f9-b54b-b0bb-250c-ec8643accfc7@intel.com>
- <3541d2de-5cf8-2f84-8153-277e2bfc0101@arm.com>
- <5f98748a-97ca-6426-1e24-a5675da75381@intel.com>
- <a590da86-0c42-7d46-d320-c661a59a46c1@arm.com>
- <837ba176-c97f-f81b-c044-eb6aa3d88bb7@intel.com>
- <CAOUHufY9EQ70Pn-n2zVa9=Gm3-WHxxphp7VHia4qv9x2domdbg@mail.gmail.com>
- <40d49276-fae9-e538-61cf-64bb79233bc3@intel.com>
- <CAOUHufbcAJWUoVuCYtaDZKdcw+JPWVV0EiB=JcDvz1Jt_Au2Tw@mail.gmail.com>
-From:   "Yin, Fengwei" <fengwei.yin@intel.com>
-In-Reply-To: <CAOUHufbcAJWUoVuCYtaDZKdcw+JPWVV0EiB=JcDvz1Jt_Au2Tw@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: SG2P153CA0046.APCP153.PROD.OUTLOOK.COM (2603:1096:4:c6::15)
- To CO1PR11MB4820.namprd11.prod.outlook.com (2603:10b6:303:6f::8)
+        Thu, 3 Aug 2023 20:19:44 -0400
+Received: from mail-qt1-x82f.google.com (mail-qt1-x82f.google.com [IPv6:2607:f8b0:4864:20::82f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17AF73AB1
+        for <linux-kernel@vger.kernel.org>; Thu,  3 Aug 2023 17:19:43 -0700 (PDT)
+Received: by mail-qt1-x82f.google.com with SMTP id d75a77b69052e-407db3e9669so72601cf.1
+        for <linux-kernel@vger.kernel.org>; Thu, 03 Aug 2023 17:19:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1691108382; x=1691713182;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=mA32fM9ZbOqMt7s1gfEqOlzSy+fN/PuS60CGam21os0=;
+        b=PbTefRq9UzzDT25XxODA4kLZgtaubzDeg4foCwvMb2f8nS81Fq6JsW+YfaeyIooskj
+         uvLYsfRkzXBTKPVf8djXijxIxNs5Rcdp9iGQZWSpIpQt+Dz9MbUjuI54cYFjv1G27Hto
+         Iwl1It6sezNLVkHog+E+G5pB9EIIjZiwQt6gBw9dHbvw50bO8O38KjOLDgvDG4JaRevO
+         0Yi2L/SYMLEoJp87kkQrg8T/Ac0ukjeu7tMcYI5Hp++5WqeQuANjkR36khbSmbrn3NI8
+         EogsNIQXLWaufdp9TiBIE7KDcx6ah8Q65+ywMWIKeaQnbMyX+2q5rL9Gb7NNeBJch6Hl
+         lbZQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691108382; x=1691713182;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=mA32fM9ZbOqMt7s1gfEqOlzSy+fN/PuS60CGam21os0=;
+        b=FSBk6tLg7d8u1e2/DApG5EAEvDy5bsVq1NGulPOHLC39zJmyoC8E8oY1ZSo7/xQjhc
+         aE6gcz/JcEAvxPMqBPSNaSC56aTdas4Zc1jdXIBtYCqrFJWA8m0XfCnGFIXsp9YElOiV
+         iOu9k8UbqA031y9FmUYPEuyQJ4edbQMOTnJaGBQZF4s/TPoYCyvg5mCPQxUeE8CQ5X35
+         4uVQ4zBK0/Kwa/ibQhWTVdMv0oviDbWe3ceY+F0DsflQGkbdEPHrIf44QaALzArzpwNU
+         BWab5NdkcLCv8jal3onZ4KAxlpFxWNyBZ0y206KgQyW2f483xjVmIzGUYyr9mrF9juDu
+         kq+A==
+X-Gm-Message-State: AOJu0Yzh9NNvL8KUf/G28+/T2G7idUb27OREgKRsRvWBgoQre6B9j/8K
+        3zmUIBgtZnygbO0z0HggFJKQSYsvxMyljPFbhr9iKQ==
+X-Google-Smtp-Source: AGHT+IFy6SfL78iO/AoS+JkTZxkf9rSPiwDIAvWe4E9K9Ho7qgFmfL+RvoLDrQE4H/giQawLq7h21Dn16OgTMQqU3iw=
+X-Received: by 2002:a05:622a:15d4:b0:3f9:a770:7279 with SMTP id
+ d20-20020a05622a15d400b003f9a7707279mr41199qty.9.1691108382007; Thu, 03 Aug
+ 2023 17:19:42 -0700 (PDT)
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CO1PR11MB4820:EE_|SJ2PR11MB8298:EE_
-X-MS-Office365-Filtering-Correlation-Id: d3c4b7c6-ba19-452a-0825-08db9480340c
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: NuChHemPkfd4RHLJIwMH5MLdDRU+X++Yf+vNduHCpSt7U655U98GVZrIzHOItnW4eZgBpd2UxM2IEEI6U3XuFfxRH8KsvrZmvOIsKuQiTNBpR9vV58pzNBdn8qXJyoh0DWPUUeqcN+t+eDCzLYCdc75B0NTckaT/AVGYA78MzeDiSBiV/dXc7CwXu/FSPptQS9GSeA7DGsRgvLcpr9aaObfTO++XGkmt//M7OU3Pt9U8axvEoI/cyDVsAkvtN0q6Ye2ngwUEu3j+iL/WApg8kpgxyFrRo63WGrh0iaVhsb4nUUGiUfJp0krbqAABX1fgn7MIxw/UHoqtJI4ZIzd1ltrzrZl022Z6tCVvEFp4P139Br1A2CMaVneoHhnLp1moq5jgf8/3eabicMXoG2FPer4aINOoXaJLHSTvE+0WzF5Th49p040/9Evbfk3s0uqE2qsu6V5JYpUxWLL+4+pOV/JTApUYTZyoEUt1/JGxndzZF6TeRnrkt1HukBmwCSkjV0yHqGB9DOUUAtxLiWPw3i4LzSnqSyjGgYmhjgnrRPeDleQ0KNyksPEjFvsxy70ATezXZWmOobGEeVYlkIr/sUii2m2mC5MVgMS+FqWWeeTHcE/USiNq0VTXoBdR1WHhGrei3Q00adj33zoS+iUArg==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CO1PR11MB4820.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(376002)(346002)(366004)(39860400002)(396003)(136003)(186006)(451199021)(1800799003)(82960400001)(2906002)(31686004)(7416002)(5660300002)(66476007)(66556008)(66946007)(8676002)(83380400001)(41300700001)(8936002)(4326008)(316002)(6666004)(6916009)(36756003)(6486002)(6512007)(478600001)(86362001)(38100700002)(2616005)(31696002)(53546011)(6506007)(26005)(43740500002)(45980500001);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?aHpnNzE2aHlhSlVMSGU2RStraVcwVzNzRjE0cUpGaXNjODRtcWd3MFh4UFJ0?=
- =?utf-8?B?bXpPWGkzcTBMSFpOZDlCMm91WEQ5bFI0dEdiZEtBVDBaR3FqMFR4K1VFdnZq?=
- =?utf-8?B?eFJRYVc4eUo1YzRMbXplNFFXdWlXU2VMK1BrY3k1aW10RmtlU3NkZEVKd1ZJ?=
- =?utf-8?B?SWpQZk9zR1Q5MTlRMkZULzdBd1o4VStHaUhxM0tiRDgwRUtJcEg4aXg2b2s5?=
- =?utf-8?B?UTR4YUlTZzVXaWZjUURsckdxUk9PTVZHQ1Q2dHh2ZldsTTBHajJQY1RFbjRQ?=
- =?utf-8?B?by83Ynp6a2RFd0hFYkVVRDB4a1loVHF4NnRyT0lNTEJ1Z21qUEJaVXc2Nnox?=
- =?utf-8?B?Vnl0d0E1U1ZLYk5WbjlYZkxMRU95Y2U0Y0VZcWNMbnc5dWpsanZuZ243Mjlz?=
- =?utf-8?B?VjJtdC8vQm1GYmYvdm9JaytaVFBEUWxNczFGaFp5TjJYb3kvWGJ2THF4RTho?=
- =?utf-8?B?YUpwQ3l0RFV1QXpTT1JwWDFGaWNYNmJ5RTY1elNHaEVaNHQrUVJrUU1pRkVm?=
- =?utf-8?B?L2NtQWtOZnE1bzJwWXRUTXl1S1VXOSsrbmtLc2pLUWxRdjlMS2txelRkZnhQ?=
- =?utf-8?B?d29KSExIb0c1Q3NZRlF3bm51dyswdG1TbXd0MzRRSlNZME85SGY2WkRKNnI0?=
- =?utf-8?B?Ry9EQ1JnYks0RnBSK1d6TmFtN3pJV0NZN0ExSmp2RkhGWE5ORWxuQzBkaHFo?=
- =?utf-8?B?Z0k2SWFzVGNXeWR6Z3pIS0hlNDhKQ1ZBZWZHS2VEdGtRMDRuTlFRczNIZWJ6?=
- =?utf-8?B?S283V0tFcGdMVnREeDhsUlZta3dwL25hcElCSDRBSVZ1TnFtditBMlpsWGRC?=
- =?utf-8?B?WElIY2ZrK2VDS1RKRWZPRU1MQkh6TXNaZXNVb3d5M2l3dzhFZWxTdW41bXdh?=
- =?utf-8?B?SFJGVzU1end6WVFUNitKT1Q5YWVMOWdJSXFRTnhrbDFWMGtnb0pJdTBSbFg1?=
- =?utf-8?B?QjZnanJLY2pMQk8wR0xFU0NjRk5FMmRqSklEZFhoU1ZTYmhQVE5ZWXlualVH?=
- =?utf-8?B?TUpyWXZycjZGZDBpa2hjN09iTElwWHlmNUJMeW5yTDVqdVcwMFVERFBQcjFk?=
- =?utf-8?B?UFdiaTdidXNGeTlSUkRrYmNSS2w1Y1AyMllVdUI0b2IyWmZsd1B3UUxWV2pZ?=
- =?utf-8?B?MUl4am51ZHIzcTlTQmJBRWJTZE5GOTVjMkZicjN4dDIwM0MyVGkxYVcxYXJP?=
- =?utf-8?B?UlBnYlpuMDdqMG93WUw0Q05wWnU2bHdzcS9YVXRSaVhLUnpoeEorSDUyVWlH?=
- =?utf-8?B?TlVLODVoWFRwNXVsclBiTlpsMVVWNWFFdXZlR2Q4Ylp5alFPbTBlSS90aHNp?=
- =?utf-8?B?bHlZTW9MOU52dDBGa1B2K1FXblNFdXUxZm05RDg2NGs0YktBRjRYR2JOOUE5?=
- =?utf-8?B?VjF6MENyYWlTZlR5WmcyUU9vNmZBZjlMbGE0bHFwRGxzcUNmRVVFdGt3UmxT?=
- =?utf-8?B?NWtiZDI4RVptMUFWalMwZUNUcWJYcGhaVlNUUThYQWg5MldLem1kWDhTdmNZ?=
- =?utf-8?B?RkRLd09MWFVGZ3RyY3pwRHFSYWZPYWlrOC9MNmtvU2h4cUx3eFltQTlVaWo0?=
- =?utf-8?B?ZVphWjBJQTg5SThoSzFCWkxndWlRbW9LMGI2YmFpWlFZYWlNZVc3U0lYeXhN?=
- =?utf-8?B?NE5CV0JOc3R1MURHakdmN0JFZmE0R1ZFODIyOW9GL29LR2J3bE5ZSGJNYWJy?=
- =?utf-8?B?K2g0TzM5NWxQc1g2YjZTeFFsdWg0akNBdTVsaXZNcnlkYTVlNmdOVDJyOU9p?=
- =?utf-8?B?VzE3YnVVcjU4TFhIWGNQS0p1RWR5WEJIcFg2ZGVIaGtiVlhCdkE1T1pYajdl?=
- =?utf-8?B?WGYyNVZpOUlaVEx4bUlwSERKZXhjRVN3T2x5WlVud1p6WXhRMGhnMHkzWWRN?=
- =?utf-8?B?VFdpYXpQTzUxK3RiK1BvOU1rcllUNWJhanBoRWEwY3J5dFRlZVVYaWgxelg0?=
- =?utf-8?B?RU9pNnJUbEhFK05KaTRYK05vcGgvTFczOVNLZnV2clc5Z1phTVMvdEI4ZDc1?=
- =?utf-8?B?bVVwRElLQ291QkdIaTk0bWd4WGwwT3oyYWxteTcycC9YOFVaWi9Nb0ZhYm5W?=
- =?utf-8?B?dkgwaytZNUYvQkxKOFBwSnkxekhHRkYvWm8zKytxUEVJczF1U1ZKMmkxODZF?=
- =?utf-8?B?dzEwNEgrZ3JjcWdqVk83eHhkRllIME5JblpFbmttZlp5dG4zY3RMMDR6Z3BJ?=
- =?utf-8?B?bHc9PQ==?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: d3c4b7c6-ba19-452a-0825-08db9480340c
-X-MS-Exchange-CrossTenant-AuthSource: CO1PR11MB4820.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 Aug 2023 00:17:35.5871
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: jRJN+ROXUUZDn8yB7iNRX8G7LKblKHRKlSuTjY88T3zohy3O36DtUMBsGqPwZ3KxvpMl5e+uDpxuU8Fp/E0mXA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ2PR11MB8298
-X-OriginatorOrg: intel.com
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+References: <20230726095146.2826796-1-ryan.roberts@arm.com>
+ <20230726095146.2826796-3-ryan.roberts@arm.com> <c02a95e9-b728-ad64-6942-f23dbd66af0c@arm.com>
+ <20230803142154.nvgkavg33uyn6f72@box.shutemov.name>
+In-Reply-To: <20230803142154.nvgkavg33uyn6f72@box.shutemov.name>
+From:   Yu Zhao <yuzhao@google.com>
+Date:   Thu, 3 Aug 2023 18:19:05 -0600
+Message-ID: <CAOUHufZWTdpF0vdPkyOafVNFOOY7Wui+Q-O83=SZcfv4KZcHbg@mail.gmail.com>
+Subject: Re: [PATCH v4 2/5] mm: LARGE_ANON_FOLIO for improved performance
+To:     "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
+Cc:     Ryan Roberts <ryan.roberts@arm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Yin Fengwei <fengwei.yin@intel.com>,
+        David Hildenbrand <david@redhat.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Yang Shi <shy828301@gmail.com>,
+        "Huang, Ying" <ying.huang@intel.com>, Zi Yan <ziy@nvidia.com>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Itaru Kitayama <itaru.kitayama@gmail.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Aug 3, 2023 at 8:27=E2=80=AFAM Kirill A. Shutemov
+<kirill.shutemov@linux.intel.com> wrote:
+>
+> On Thu, Aug 03, 2023 at 01:43:31PM +0100, Ryan Roberts wrote:
+> > + Kirill
+> >
+> > On 26/07/2023 10:51, Ryan Roberts wrote:
+> > > Introduce LARGE_ANON_FOLIO feature, which allows anonymous memory to =
+be
+> > > allocated in large folios of a determined order. All pages of the lar=
+ge
+> > > folio are pte-mapped during the same page fault, significantly reduci=
+ng
+> > > the number of page faults. The number of per-page operations (e.g. re=
+f
+> > > counting, rmap management lru list management) are also significantly
+> > > reduced since those ops now become per-folio.
+> > >
+> > > The new behaviour is hidden behind the new LARGE_ANON_FOLIO Kconfig,
+> > > which defaults to disabled for now; The long term aim is for this to
+> > > defaut to enabled, but there are some risks around internal
+> > > fragmentation that need to be better understood first.
+> > >
+> > > When enabled, the folio order is determined as such: For a vma, proce=
+ss
+> > > or system that has explicitly disabled THP, we continue to allocate
+> > > order-0. THP is most likely disabled to avoid any possible internal
+> > > fragmentation so we honour that request.
+> > >
+> > > Otherwise, the return value of arch_wants_pte_order() is used. For vm=
+as
+> > > that have not explicitly opted-in to use transparent hugepages (e.g.
+> > > where thp=3Dmadvise and the vma does not have MADV_HUGEPAGE), then
+> > > arch_wants_pte_order() is limited to 64K (or PAGE_SIZE, whichever is
+> > > bigger). This allows for a performance boost without requiring any
+> > > explicit opt-in from the workload while limitting internal
+> > > fragmentation.
+> > >
+> > > If the preferred order can't be used (e.g. because the folio would
+> > > breach the bounds of the vma, or because ptes in the region are alrea=
+dy
+> > > mapped) then we fall back to a suitable lower order; first
+> > > PAGE_ALLOC_COSTLY_ORDER, then order-0.
+> > >
+> >
+> > ...
+> >
+> > > +#define ANON_FOLIO_MAX_ORDER_UNHINTED \
+> > > +           (ilog2(max_t(unsigned long, SZ_64K, PAGE_SIZE)) - PAGE_SH=
+IFT)
+> > > +
+> > > +static int anon_folio_order(struct vm_area_struct *vma)
+> > > +{
+> > > +   int order;
+> > > +
+> > > +   /*
+> > > +    * If THP is explicitly disabled for either the vma, the process =
+or the
+> > > +    * system, then this is very likely intended to limit internal
+> > > +    * fragmentation; in this case, don't attempt to allocate a large
+> > > +    * anonymous folio.
+> > > +    *
+> > > +    * Else, if the vma is eligible for thp, allocate a large folio o=
+f the
+> > > +    * size preferred by the arch. Or if the arch requested a very sm=
+all
+> > > +    * size or didn't request a size, then use PAGE_ALLOC_COSTLY_ORDE=
+R,
+> > > +    * which still meets the arch's requirements but means we still t=
+ake
+> > > +    * advantage of SW optimizations (e.g. fewer page faults).
+> > > +    *
+> > > +    * Finally if thp is enabled but the vma isn't eligible, take the
+> > > +    * arch-preferred size and limit it to ANON_FOLIO_MAX_ORDER_UNHIN=
+TED.
+> > > +    * This ensures workloads that have not explicitly opted-in take =
+benefit
+> > > +    * while capping the potential for internal fragmentation.
+> > > +    */
+> > > +
+> > > +   if ((vma->vm_flags & VM_NOHUGEPAGE) ||
+> > > +       test_bit(MMF_DISABLE_THP, &vma->vm_mm->flags) ||
+> > > +       !hugepage_flags_enabled())
+> > > +           order =3D 0;
+> > > +   else {
+> > > +           order =3D max(arch_wants_pte_order(), PAGE_ALLOC_COSTLY_O=
+RDER);
+> > > +
+> > > +           if (!hugepage_vma_check(vma, vma->vm_flags, false, true, =
+true))
+> > > +                   order =3D min(order, ANON_FOLIO_MAX_ORDER_UNHINTE=
+D);
+> > > +   }
+> > > +
+> > > +   return order;
+> > > +}
+> >
+> >
+> > Hi All,
+> >
+> > I'm writing up the conclusions that we arrived at during discussion in =
+the THP
+> > meeting yesterday, regarding linkage with exiting THP ABIs. It would be=
+ great if
+> > I can get explicit "agree" or disagree + rationale from at least David,=
+ Yu and
+> > Kirill.
+> >
+> > In summary; I think we are converging on the approach that is already c=
+oded, but
+> > I'd like confirmation.
+> >
+> >
+> >
+> > The THP situation today
+> > -----------------------
+> >
+> >  - At system level: THP can be set to "never", "madvise" or "always"
+> >  - At process level: THP can be "never" or "defer to system setting"
+> >  - At VMA level: no-hint, MADV_HUGEPAGE, MADV_NOHUGEPAGE
+> >
+> > That gives us this table to describe how a page fault is handled, accor=
+ding to
+> > process state (columns) and vma flags (rows):
+> >
+> >                 | never     | madvise   | always
+> > ----------------|-----------|-----------|-----------
+> > no hint         | S         | S         | THP>S
+> > MADV_HUGEPAGE   | S         | THP>S     | THP>S
+> > MADV_NOHUGEPAGE | S         | S         | S
+> >
+> > Legend:
+> > S     allocate single page (PTE-mapped)
+> > LAF   allocate lage anon folio (PTE-mapped)
+> > THP   allocate THP-sized folio (PMD-mapped)
+> > >     fallback (usually because vma size/alignment insufficient for fol=
+io)
+> >
+> >
+> >
+> > Principles for Large Anon Folios (LAF)
+> > --------------------------------------
+> >
+> > David tells us there are use cases today (e.g. qemu live migration) whi=
+ch use
+> > MADV_NOHUGEPAGE to mean "don't fill any PTEs that are not explicitly fa=
+ulted"
+> > and these use cases will break (i.e. functionally incorrect) if this re=
+quest is
+> > not honoured.
+> >
+> > So LAF must at least honour MADV_NOHUGEPAGE to prevent breaking existin=
+g use
+> > cases. And once we do this, then I think the least confusing thing is f=
+or it to
+> > also honor the "never" system/process state; so if either the system, p=
+rocess or
+> > vma has explicitly opted-out of THP, then LAF should also be bypassed.
+> >
+> > Similarly, any case that would previously cause the allocation of PMD-s=
+ized THP
+> > must continue to be honoured, else we risk performance regression.
+> >
+> > That leaves the "madvise/no-hint" case, and all THP fallback paths due =
+to the
+> > VMA not being correctly aligned or sized to hold a PMD-sized mapping. I=
+n these
+> > cases, we will attempt to use LAF first, and fallback to single page if=
+ the vma
+> > size/alignment doesn't permit it.
+> >
+> >                 | never     | madvise   | always
+> > ----------------|-----------|-----------|-----------
+> > no hint         | S         | LAF>S     | THP>LAF>S
+> > MADV_HUGEPAGE   | S         | THP>LAF>S | THP>LAF>S
+> > MADV_NOHUGEPAGE | S         | S         | S
+> >
+> > I think this (perhaps conservative) approach will be the least surprisi=
+ng to
+> > users. And is the policy that is already implemented in this patch.
+>
+> This looks very reasonable.
+>
+> The only questionable field is no-hint/madvise. I can argue for both LAF>=
+S
+> and S here. I think LAF>S is fine as long as we are not too aggressive
+> with allocation order.
+>
+> I think we need to work on eliminating reasons for users to set 'never'.
+> If something behaves better with 'never' kernel has failed user.
+>
+> > Downsides of this policy
+> > ------------------------
+> >
+> > As Yu and Yin have pointed out, there are some workloads which do not p=
+erform
+> > well with THP, due to large fault latency or memory wastage, etc. But w=
+hich
+> > _may_ still benefit from LAF. By taking the conservative approach, we e=
+xclude
+> > these workloads from benefiting automatically.
+>
+> Hm. I don't buy it. Why THP with order-9 is too much, but order-8 LAF is
+> fine?
 
+No, it's not. And no one said order-8 LAF is fine :) The starting
+order for LAF that we have been discussing is at most 64KB (vs 2MB
+THP). For my taste, it's still too large. I'd go with 32KB/16KB.
 
-On 8/4/2023 7:38 AM, Yu Zhao wrote:
-> On Thu, Aug 3, 2023 at 5:27 PM Yin, Fengwei <fengwei.yin@intel.com> wrote:
->>
->>
->>
->> On 8/4/2023 4:46 AM, Yu Zhao wrote:
->>> On Wed, Aug 2, 2023 at 6:56 AM Yin, Fengwei <fengwei.yin@intel.com> wrote:
->>>>
->>>> "
->>>>
->>>> On 8/2/2023 8:49 PM, Ryan Roberts wrote:
->>>>> On 02/08/2023 13:42, Yin, Fengwei wrote:
->>>>>>
->>>>>>
->>>>>> On 8/2/2023 8:40 PM, Ryan Roberts wrote:
->>>>>>> On 02/08/2023 13:35, Yin, Fengwei wrote:
->>>>>>>>
->>>>>>>>
->>>>>>>> On 8/2/2023 6:27 PM, Ryan Roberts wrote:
->>>>>>>>> On 28/07/2023 17:13, Yin Fengwei wrote:
->>>>>>>>>> In madvise_cold_or_pageout_pte_range() and madvise_free_pte_range(),
->>>>>>>>>> folio_mapcount() is used to check whether the folio is shared. But it's
->>>>>>>>>> not correct as folio_mapcount() returns total mapcount of large folio.
->>>>>>>>>>
->>>>>>>>>> Use folio_estimated_sharers() here as the estimated number is enough.
->>>>>>>>>>
->>>>>>>>>> Yin Fengwei (2):
->>>>>>>>>>   madvise: don't use mapcount() against large folio for sharing check
->>>>>>>>>>   madvise: don't use mapcount() against large folio for sharing check
->>>>>>>>>>
->>>>>>>>>>  mm/huge_memory.c | 2 +-
->>>>>>>>>>  mm/madvise.c     | 6 +++---
->>>>>>>>>>  2 files changed, 4 insertions(+), 4 deletions(-)
->>>>>>>>>>
->>>>>>>>>
->>>>>>>>> As a set of fixes, I agree this is definitely an improvement, so:
->>>>>>>>>
->>>>>>>>> Reviewed-By: Ryan Roberts
->>>>>>>> Thanks.
->>>>>>>>
->>>>>>>>>
->>>>>>>>>
->>>>>>>>> But I have a couple of comments around further improvements;
->>>>>>>>>
->>>>>>>>> Once we have the scheme that David is working on to be able to provide precise
->>>>>>>>> exclusive vs shared info, we will probably want to move to that. Although that
->>>>>>>>> scheme will need access to the mm_struct of a process known to be mapping the
->>>>>>>>> folio. We have that info, but its not passed to folio_estimated_sharers() so we
->>>>>>>>> can't just reimplement folio_estimated_sharers() - we will need to rework these
->>>>>>>>> call sites again.
->>>>>>>> Yes. This could be extra work. Maybe should delay till David's work is done.
->>>>>>>
->>>>>>> What you have is definitely an improvement over what was there before. And is
->>>>>>> probably the best we can do without David's scheme. So I wouldn't delay this.
->>>>>>> Just pointing out that we will be able to make it even better later on (if
->>>>>>> David's stuff goes in).
->>>>>> Yes. I agree that we should wait for David's work ready and do fix based on that.
->>>>>
->>>>> I was suggesting the opposite - not waiting. Then we can do separate improvement
->>>>> later.
->>>> Let's wait for David's work ready.
->>>
->>> Waiting is fine as long as we don't miss the next merge window -- we
->>> don't want these two bugs to get into another release. Also I think we
->>> should cc stable, since as David mentioned, they have been causing
->>> selftest failures.
->>
->> Stable was CCed.
-> 
-> Need to add the "Cc: stable@vger.kernel.org" tag:
-> Documentation/process/stable-kernel-rules.rst
-OK. Thanks for clarification. I totally mis-understanded this. :).
+However, the same argument can be used to argue against the policy
+Ryan listed above: why order-10 LAF is ok for madvise but not order-11
+(which becomes "always")?
 
-I'd like to wait for answer from Andrew whether these patches are suitable
-for stable (I suppose you think so) branch.
-
-
-Regards
-Yin, Fengwei
+I'm strongly against this policy for two practical reasons I learned
+from tuning THPs in our data centers:
+1. By doing the above, we are blurring the lines between those values
+and making real-world performance tuning extremely hard if not
+impractice.
+2. As I previously pointed out: if we mix LAFs with THPs, we actually
+risk causing performance regressions because giving smaller VMAs LAFs
+can deprive large VMAs of THPs.
