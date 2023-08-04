@@ -2,115 +2,270 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 49FFE77070E
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 19:28:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D2F5770718
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 19:29:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232281AbjHDR2P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Aug 2023 13:28:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53972 "EHLO
+        id S231350AbjHDR3h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Aug 2023 13:29:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54802 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231146AbjHDR2N (ORCPT
+        with ESMTP id S229952AbjHDR3f (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Aug 2023 13:28:13 -0400
-Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 153AB49C1;
-        Fri,  4 Aug 2023 10:28:12 -0700 (PDT)
-Received: by mail-wr1-x432.google.com with SMTP id ffacd0b85a97d-3159d5e409dso2171908f8f.0;
-        Fri, 04 Aug 2023 10:28:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1691170090; x=1691774890;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=xJurCnFb19/xTjtoQWvlbIXrIzYRUxZWI+vBYnNya6Y=;
-        b=lUzBTPdKkEmsXjFsH+m4uEssQONxx92ha5AzO5LlALONSxHVCQa6xTNTdy9+5hhdcK
-         C3fr8tq1nUpfHt+F+W5/QmKwkfwdOhxvPp4Ep/8GzeFj8Cgx0ZcD5ZnP/+Mkn3yspV2l
-         tSeKIw8EgUGDO73tF3w0qG2AEkiNyHgN2JloDui1z4fVSSqdYhoqzLu0ULKfsgMW46Sb
-         fHA9yR6rhJR66ffyXPEj4cmPAnkRAe8Q4qIhS4n5HGj9BED10m0JEbfy2X8oMEy+RhBJ
-         RrsYoQdPNr1qnYDxkkO/e/Dxxxzf64G/3KvmNprwOaWp/dsEyyCngJawjeHkr8b/aQ2O
-         6qlg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691170090; x=1691774890;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=xJurCnFb19/xTjtoQWvlbIXrIzYRUxZWI+vBYnNya6Y=;
-        b=NK+IcyvwVpWC9sHfa8g3W90QFKlGQsjZDmJ5q+67epHcVkiHZKL3g0flKqsLHarcgB
-         qtrLiqZUiE3wyNIxyls4w5NOm8hqUMLsmuRbjSV274yPHmf0/E8az+TdUgjTaE2F7bSX
-         qOgRsSy3hvL3hqrD5r6c7YLKPy8ob1ETdNavTUqxq0XPYRYq6dBf96Zg+aMK3u0fN0h2
-         YKAxjpdVQm9wm28C/2TLe8f4ISWoKCuBAmFRwfXlF+Vko1VxRjFWxxWFfjGLH/EFEioc
-         pQGhbPpY1fTFc+k1BupBK8nok5tod22v+b/v39Neu5LBUzs8v/OXokFSbSoRw1z/e1/P
-         WO2A==
-X-Gm-Message-State: AOJu0YwcFFwh+rPWifn7jgPKzIygB9gx6YGpWMJ7R4ixhZhQZGCKhjo8
-        7zKLVIV9WmxxWUvzd7pbqg==
-X-Google-Smtp-Source: AGHT+IEyX90MMJYcVkqtrHDU5UbrucNNfHXCFY/L05rBr9zCZl/fJH0VaLfIsD0z8OawFnR+x8GbJQ==
-X-Received: by 2002:adf:f8ca:0:b0:317:59a6:6f68 with SMTP id f10-20020adff8ca000000b0031759a66f68mr328336wrq.0.1691170090391;
-        Fri, 04 Aug 2023 10:28:10 -0700 (PDT)
-Received: from p183 ([46.53.252.19])
-        by smtp.gmail.com with ESMTPSA id t6-20020a5d6a46000000b003142e438e8csm2994480wrw.26.2023.08.04.10.28.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 04 Aug 2023 10:28:10 -0700 (PDT)
-Date:   Fri, 4 Aug 2023 20:28:08 +0300
-From:   Alexey Dobriyan <adobriyan@gmail.com>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     akpm@linux-foundation.org, mhiramat@kernel.org, arnd@kernel.org,
-        ndesaulniers@google.com, sfr@canb.auug.org.au,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-team@meta.com
-Subject: Re: [PATCH RFC bootconfig] 2/2] fs/proc: Add /proc/cmdline_image for
- embedded arguments
-Message-ID: <aff81f30-e20d-40a0-adb3-893781459475@p183>
-References: <197cba95-3989-4d2f-a9f1-8b192ad08c49@paulmck-laptop>
- <20230728033701.817094-2-paulmck@kernel.org>
+        Fri, 4 Aug 2023 13:29:35 -0400
+Received: from NAM10-DM6-obe.outbound.protection.outlook.com (mail-dm6nam10on2043.outbound.protection.outlook.com [40.107.93.43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E66173C25;
+        Fri,  4 Aug 2023 10:29:30 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Tyd6UftbNxuwg8tGzuLcuT7AnHZw7G5sYhxNX1HkizbMfPQFtMVNey3QzyDzWb7ZvwWzEGIrvRwFQ5su52IwHIrsqOJZItE0hcP+b+Qy4nUgz90ckuz3aWrGZlHcz6LNw/IF/EgBy+tINSKLU7cF7u3L6SDV+rffC3UjzSxu295C00ukcJLdAaL4fOYSXHlzJzsygRIqcgUDBuNWVguSYV19BXPldHRyrNHsTWwkMPGBcLhtUCIkGWhW/a/+C4hTCwR0T7yBzRRiLmW5cQE7GDVNa3BIDLRSZvC+bI/2DmTX57UIGv9+pkTCpctZAO6cvTEUG1Qnj+6YlfY1faSVHw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=9UeRA0V/IUjHtKcSqukMXqoPmIiycka/e1phoSv0vBI=;
+ b=LEPbH5DTxvoqA+QQKlSJUd7Anjd/x0ltrsJtSNmA1meXUYL45SnQLO6Uav+J5nOFlQuwXZjsovtm74tGWGAjPj7XxBIF5LaqgQ7fiqe49awhfhz2PzXQPwfqFxohnl5MOYo0sG3qloIf49JLCf8DXTONxks37rYBqh15nGwZdJC32+Rd3JeeHDdm85OfjXkv68Pk64MC3lHswvdkwF9m7gLHe2slvYJ/Ip94/TtEpG2BbBGyq7RtLCYlsNLi3ODeUMSb3iyCl+MJGBjT9G+tCxLotUfb27st1cgE6cTuzsY42LhGG/T4F9MT6Q8Ab1uFaiD1ZFssfYpyxJUKphL8sw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=9UeRA0V/IUjHtKcSqukMXqoPmIiycka/e1phoSv0vBI=;
+ b=HgdvEp9OK7NMaRv/2AZTv0CUEFE2XF4cgmGBfffMGTqXw33X15sxNs+xVxSBRdWKpdJMpSt3ltJ4Dp43W+5Sl86Gjr0FwETqnD10G3ZHZ0D8hd1WrrW7kFaru7OcjYAXGS5qBHaxvadUbZummj4qxpR43qO6CQpTuyrcJ4luDo0=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amd.com;
+Received: from CO6PR12MB5427.namprd12.prod.outlook.com (2603:10b6:5:358::13)
+ by DM4PR12MB5843.namprd12.prod.outlook.com (2603:10b6:8:66::11) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6652.21; Fri, 4 Aug
+ 2023 17:29:27 +0000
+Received: from CO6PR12MB5427.namprd12.prod.outlook.com
+ ([fe80::236b:d4e2:6fbf:6c2b]) by CO6PR12MB5427.namprd12.prod.outlook.com
+ ([fe80::236b:d4e2:6fbf:6c2b%5]) with mapi id 15.20.6652.021; Fri, 4 Aug 2023
+ 17:29:27 +0000
+Message-ID: <047be9da-5757-4793-a288-90e51fd0d899@amd.com>
+Date:   Fri, 4 Aug 2023 13:29:08 -0400
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] drm/amd/display: ensure async flips are only accepted for
+ fast updates
+To:     Hamza Mahfooz <hamza.mahfooz@amd.com>,
+        amd-gfx@lists.freedesktop.org
+Cc:     stable@vger.kernel.org, Marcus Seyfarth <m.seyfarth@gmail.com>,
+        Leo Li <sunpeng.li@amd.com>,
+        Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+        "Pan, Xinhui" <Xinhui.Pan@amd.com>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Qingqing Zhuo <qingqing.zhuo@amd.com>,
+        Aurabindo Pillai <aurabindo.pillai@amd.com>,
+        Hersen Wu <hersenxs.wu@amd.com>,
+        Srinivasan Shanmugam <srinivasan.shanmugam@amd.com>,
+        Stylon Wang <stylon.wang@amd.com>,
+        Wayne Lin <wayne.lin@amd.com>, Alan Liu <haoping.liu@amd.com>,
+        Melissa Wen <mwen@igalia.com>,
+        David Tadokoro <davidbtadokoro@usp.br>,
+        Simon Ser <contact@emersion.fr>,
+        =?UTF-8?Q?Andr=C3=A9_Almeida?= <andrealmeid@igalia.com>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+References: <20230804155613.117310-1-hamza.mahfooz@amd.com>
+Content-Language: en-US
+From:   Harry Wentland <harry.wentland@amd.com>
+In-Reply-To: <20230804155613.117310-1-hamza.mahfooz@amd.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: YT1PR01CA0146.CANPRD01.PROD.OUTLOOK.COM
+ (2603:10b6:b01:2f::25) To CO6PR12MB5427.namprd12.prod.outlook.com
+ (2603:10b6:5:358::13)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20230728033701.817094-2-paulmck@kernel.org>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: CO6PR12MB5427:EE_|DM4PR12MB5843:EE_
+X-MS-Office365-Filtering-Correlation-Id: 36b18842-0fd4-44b5-0ac7-08db95105a39
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: v3QE5C9Ww0oLmm2AFn/vUKhPkp5+3zWBwvbuLVTdk6noyGaK7WADAD8L+HQoU7IAmmLrqim2qhDajZcnHnfsW+Lymyki1MKt+j+u8Aqsr0uiOh2NMKpgkHDQcWx2rHkP1H9uTEoGIQJCgGx9c6jFkDtMrjzGFv6bQIKCSglT8zCVRpiby4OwGIW6GVQwlKmhPryZkROmBLlY/D60ajjYrOeuY5jH1LEiONRB+Ntc49cGV6oCx/nKvUrC9b3ZsfT2dz90OZQQCsYwm+aoYaJckJAySpH7/llgmuMOC3KZ++iHqzp4mks4NjbWmQTmel4qfswdhryJXsjRA8tqYvZYwV+iRZzY3+6/SwRRl7dgVE7Hvjm8dLnk2ko2nlpD6qRG5XU1YtpOmYJO0JUOWOQP2JWPkkYEZTtJYYJbSe12xbHYrrfS5+KGHMEMbeo963ZQY6JXLr9HD5NuU6TnLkG0FWbpK885zsi/RpDrzoC6JNYP9h8ZsTnpDFXhe46W6PEAekQLrfSpFANcTxPhkZG/xrbpL7jfyOLaKLJaINC700DUV+HVv9NFye1EzK7ZBl26ZyuCUMG6etmIGgttmDn4YK31tdV+S5NK/eO9XxNlD4QX7WdDSg/sTrOiY0je7j6nE7TykNhAcBWNW3ZFHBCcsg==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CO6PR12MB5427.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(346002)(376002)(136003)(366004)(396003)(39860400002)(186006)(451199021)(1800799003)(44832011)(66476007)(66946007)(66556008)(4326008)(2906002)(38100700002)(2616005)(53546011)(6506007)(7416002)(83380400001)(54906003)(86362001)(6512007)(31696002)(26005)(478600001)(36756003)(6486002)(6666004)(8936002)(8676002)(5660300002)(15650500001)(41300700001)(316002)(31686004)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?SVJwL05nMFlHaENrTVNWaE9wUTZ0blkwc1NhRmEvWW5rUXdvbVlnY1pMYlVl?=
+ =?utf-8?B?NkpCMFBXTlNMQU1xN0RDZFVMc0s3S0t5clpJZXJqRGNxUWN3T1VKeTIvOUVS?=
+ =?utf-8?B?UFVGY2s1NUlIMk40anROa216aklGVUcxdGNTS1N5RVJnMVBwQVJnM240alVh?=
+ =?utf-8?B?NnYwRW16dC9tT1d4SUNubWNjRllGaXhmNmJwWDJmQkF2NU54RGtJakNiSWY3?=
+ =?utf-8?B?Tktza2JIVFdmdHhVTVZCMlFLdTEvby9zL3NDRTVNOENuR0tmeDhFeU9SYXM1?=
+ =?utf-8?B?YkRPTkY5Rmhxb01PbXhod1BwZHpJVjhrU2pRUElSVGZzWGd3YTlnVS83SHhi?=
+ =?utf-8?B?UU1hQ29GVU5uS3cxRnJ2OHZUVlQ0dUM4ZEhDd2hSejJKaTA4WmlBcmthWFkx?=
+ =?utf-8?B?R1BSdStzVmlZeU9PZlNmN3VBVUFqMkQ5elhHQzFGdXZkN1BvZ0htY3NaUmw1?=
+ =?utf-8?B?a250eCtZaFNGMHBFZExtZXpRR3VXRUxOWjNLWjdLd1ZHd1NGZFhnRWVseWcv?=
+ =?utf-8?B?SGgvVXNEc1gzeTBVMHlFZWx0RW1YNnJ0dDdhWHhRemxQRGd5VVFSUE1FTXNk?=
+ =?utf-8?B?K3hzWURqUUI4N0d6TkRiSStWV0FLYlpZWFFOdlUyb0RoMS9SK29ZN3NmM09T?=
+ =?utf-8?B?SjI2WFZmblVTUFJQZTR1MzZkN2VLRllDQXlFNFNMRmQ0aEkwY3ViOVU0K2V5?=
+ =?utf-8?B?dTFXQzVHaGhvTERqM05kVjRNSmtuZ0JyYVZlZjVBRWVCTFFKT2krNm5SMjBI?=
+ =?utf-8?B?T3dGSXZYQjVpL3FhczNUQmNWRjNzYmhSa1B5Um9RM3pCejNIajIzZjMzVXpn?=
+ =?utf-8?B?aFhJalVzTnV2QjdmN04wUWRicHdtOWV4NGNodWVaZHp1OVl2ZTl2WjY4Rjll?=
+ =?utf-8?B?V0tSRGkrcHlKblovSkhxcGlHTjZqbU9tcFpOeENMTExBMlBsQUpSOFIxa05O?=
+ =?utf-8?B?N3JOdlJSdzRwWE5pRHdsZ2JvQUY1SVpvMHJ1U2NGbmNaelY4SHArN0dzQnN6?=
+ =?utf-8?B?SUl2ZTNMRUswS2ovSGpzMTUvQlZobEZCTlEzaWdhL0FlbXo3Wko2SFZDbzdy?=
+ =?utf-8?B?L0JZaVQrbUlKRUtzcWRSbkE1aTZwK3ZEYUlBT2FYKytUQWhka29jZVNuSjJS?=
+ =?utf-8?B?RlNBR2RoVWVhZjdBVVkxNGp3RStHRnBaYkxEUXFxZTBvZERzYnpiZ1RKYlJ2?=
+ =?utf-8?B?RGxyODJwTkJqOVlUL2h6cWhLQ2ZONDJHTWxHalBGc1MzMXBnd0kyRXlkVUtv?=
+ =?utf-8?B?ei9uaVZ1K1JWMmVxc0xFTkllYzNSUFZVVUdUVHFWemd4MkxNZEpxRDNSRW5T?=
+ =?utf-8?B?aDZvQXZCUXJEVjQva3VxSHVNRFVNQm44QnNOd3BGUG4zTitPcGpDdmxmVmlm?=
+ =?utf-8?B?SW42dkF1M2VmZ1V5VE0xMTl6NE5GbS9LeVNIN1ZMbFVlYnNPalhqTS94UHBI?=
+ =?utf-8?B?aDdjNlp5bTF1dys5cUszdm1jY3hJYkFXaWlIM244QnBpMUhZSDFUMkpVZm5r?=
+ =?utf-8?B?UnNEdE8yOEdqdVFXSDhpSjVTRnZ2dWNsUWpwc2NRelJ3M0x4MVBzYW9TN0Zp?=
+ =?utf-8?B?M2M4OVhqZjU4N0RuRFMxSzl5cHVoVXE2alIyVHppVkp3RWtGYkZjaDNQSENz?=
+ =?utf-8?B?U1IwdGxVUVc2ODFjVC8rNitPWkxjMnNWY3NsOXQyNVNZamlwYWFNMDZYS1Bk?=
+ =?utf-8?B?Qmh5clJOSXQ2eTVRVS8xUkhzUEN3SWpxckhidll1UFRtY3NKbDY3Rnp1aXYx?=
+ =?utf-8?B?N2hjMkhTZjJ4YWN0NHUxVXNoZWptRmI3WGlvV0hQV3Z2Slo3VjQ1b1Z0Ynpr?=
+ =?utf-8?B?QmE5UVZycUczTGUzMVFyOGZXSTk5SFNFUzdveExTWnpJTDFySStkUEtBSXpO?=
+ =?utf-8?B?OHQvTnVCakRzYUl5MklnVW9rMnphT2VGVlB3d3VQd3RieWVWQjBhTEFEMm13?=
+ =?utf-8?B?WUdLUnQ5bmxjMmwyMndncTN5RGdFMlJxYkZzNnl0NmZSOE52L1ROM3FwK0dJ?=
+ =?utf-8?B?VG4ydGNnbXA1a0dieWlRaGN1bERpWTgzTEtNelZGcml5M0JzaG1aV09IQXlp?=
+ =?utf-8?B?dWpwZ08xUnpETk5HUVNSTWh3S0pjcjZ3bDNzSk9iWlFaWWpWbDlRL2xHODBG?=
+ =?utf-8?Q?pwFmDRxM0PkiuTWPGdvvG1s1o?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 36b18842-0fd4-44b5-0ac7-08db95105a39
+X-MS-Exchange-CrossTenant-AuthSource: CO6PR12MB5427.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 Aug 2023 17:29:27.1093
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: c6GvBynyZ/dWiO/8wcEbL+OoXAskdAyNKhynI/dAIrCfVieOIcLk5YMq7xymS1trF3ntXpJ0GuCXPtqzM1/6BQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR12MB5843
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 27, 2023 at 08:37:01PM -0700, Paul E. McKenney wrote:
-> In kernels built with CONFIG_BOOT_CONFIG_FORCE=y, /proc/cmdline will show
-> all kernel boot parameters, both those supplied by the boot loader and
-> those embedded in the kernel image.  This works well for those who just
-> want to see all of the kernel boot parameters, but is not helpful to those
-> who need to see only those parameters that were embedded into the kernel
-> image.  This is especially important in situations where there are many
-> kernel images for different kernel versions and kernel configurations,
-> all of which opens the door to a great deal of human error.
+
+
+On 2023-08-04 11:56, Hamza Mahfooz wrote:
+> We should be checking to see if async flips are supported in
+> amdgpu_dm_atomic_check() (i.e. not dm_crtc_helper_atomic_check()). Also,
+> async flipping isn't supported if a plane's framebuffer changes memory
+> domains during an atomic commit. So, move the check from
+> dm_crtc_helper_atomic_check() to amdgpu_dm_atomic_check() and check if
+> the memory domain has changed in amdgpu_dm_atomic_check().
 > 
-> Therefore, provide a /proc/cmdline_image file that shows only those kernel
-> boot parameters that were embedded in the kernel image.  The output
-> is in boot-image format, which allows easy reconcilation against the
-> boot-config source file.
-> 
-> Why put this in /proc?  Because it is quite similar to /proc/cmdline, so
-> it makes sense to put it in the same place that /proc/cmdline is located.
-> 
-> Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-> Cc: Andrew Morton <akpm@linux-foundation.org>
-> Cc: Alexey Dobriyan <adobriyan@gmail.com>
-> Cc: Masami Hiramatsu <mhiramat@kernel.org>
-> Cc: <linux-fsdevel@vger.kernel.org>
-> 
-> Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+> Cc: stable@vger.kernel.org
+> Fixes: 3f86b60691e6 ("drm/amd/display: only accept async flips for fast updates")
+> Tested-by: Marcus Seyfarth <m.seyfarth@gmail.com>
+> Signed-off-by: Hamza Mahfooz <hamza.mahfooz@amd.com>
 > ---
->  fs/proc/cmdline.c    | 12 ++++++++++++
->  include/linux/init.h | 11 ++++++-----
->  init/main.c          |  9 +++++++++
+>  .../gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c | 25 ++++++++++++++++---
+>  .../amd/display/amdgpu_dm/amdgpu_dm_crtc.c    | 12 ---------
+>  2 files changed, 21 insertions(+), 16 deletions(-)
+> 
+> diff --git a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
+> index 32fb551862b0..e561d99b3f40 100644
+> --- a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
+> +++ b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
+> @@ -8086,7 +8086,8 @@ static void amdgpu_dm_commit_planes(struct drm_atomic_state *state,
+>  		 * fast updates.
+>  		 */
+>  		if (crtc->state->async_flip &&
+> -		    acrtc_state->update_type != UPDATE_TYPE_FAST)
+> +		    (acrtc_state->update_type != UPDATE_TYPE_FAST ||
+> +		     get_mem_type(old_plane_state->fb) != get_mem_type(fb)))
+>  			drm_warn_once(state->dev,
+>  				      "[PLANE:%d:%s] async flip with non-fast update\n",
+>  				      plane->base.id, plane->name);
+> @@ -10050,12 +10051,18 @@ static int amdgpu_dm_atomic_check(struct drm_device *dev,
+>  
+>  	/* Remove exiting planes if they are modified */
+>  	for_each_oldnew_plane_in_state_reverse(state, plane, old_plane_state, new_plane_state, i) {
+> +		if (old_plane_state->fb && new_plane_state->fb &&
+> +		    get_mem_type(old_plane_state->fb) !=
+> +		    get_mem_type(new_plane_state->fb))
+> +			lock_and_validation_needed = true;
+> +
+>  		ret = dm_update_plane_state(dc, state, plane,
+>  					    old_plane_state,
+>  					    new_plane_state,
+>  					    false,
+>  					    &lock_and_validation_needed,
+>  					    &is_top_most_overlay);
+> +
 
-Same thing,
+nit: extraneous newline
 
-Please if possible put /proc/x into fs/proc/x.c so that it is easier to
-find source. Not all /proc follows this convention but still.
+>  		if (ret) {
+>  			DRM_DEBUG_DRIVER("dm_update_plane_state() failed\n");
+>  			goto fail;
+> @@ -10069,6 +10076,7 @@ static int amdgpu_dm_atomic_check(struct drm_device *dev,
+>  					   new_crtc_state,
+>  					   false,
+>  					   &lock_and_validation_needed);
+> +
 
-I don't like this name too (but less than the other one).
-Is it Boot Image Format (BIF). If yes, maybe add it as /proc/cmdline.bif ?
+nit: extraneous newline
 
-I don't know what's the good name.
+>  		if (ret) {
+>  			DRM_DEBUG_DRIVER("DISABLE: dm_update_crtc_state() failed\n");
+>  			goto fail;
+> @@ -10297,9 +10305,18 @@ static int amdgpu_dm_atomic_check(struct drm_device *dev,
+>  		struct dm_crtc_state *dm_new_crtc_state =
+>  			to_dm_crtc_state(new_crtc_state);
+>  
+> -		dm_new_crtc_state->update_type = lock_and_validation_needed ?
+> -							 UPDATE_TYPE_FULL :
+> -							 UPDATE_TYPE_FAST;
+> +		/*
+> +		 * Only allow async flips for fast updates that don't change
+> +		 * the FB pitch, the DCC state, rotation, etc.
+> +		 */
+> +		if (new_crtc_state->async_flip && lock_and_validation_needed) {
+> +			drm_dbg_atomic(crtc->dev,
+> +				       "[CRTC:%d:%s] async flips are only supported for fast updates\n",
+> +				       crtc->base.id, crtc->name);
+> +			ret = -EINVAL;
+> +			goto fail;
+> +		} else
+
+nit: Add braces here as well
+
+> +			dm_new_crtc_state->update_type = UPDATE_TYPE_FAST;
+
+If async_flip is false you'll be setting update_type to FAST here
+uncoditionally.
+
+You'll still need the lock_and_validation check here, i.e. this:
+
+> 		dm_new_crtc_state->update_type = lock_and_validation_needed ?
+> 							 UPDATE_TYPE_FULL :
+> 							 UPDATE_TYPE_FAST;
+
+Harry
+
+>  	}
+>  
+>  	/* Must be success */
+> diff --git a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_crtc.c b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_crtc.c
+> index 30d4c6fd95f5..440fc0869a34 100644
+> --- a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_crtc.c
+> +++ b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_crtc.c
+> @@ -398,18 +398,6 @@ static int dm_crtc_helper_atomic_check(struct drm_crtc *crtc,
+>  		return -EINVAL;
+>  	}
+>  
+> -	/*
+> -	 * Only allow async flips for fast updates that don't change the FB
+> -	 * pitch, the DCC state, rotation, etc.
+> -	 */
+> -	if (crtc_state->async_flip &&
+> -	    dm_crtc_state->update_type != UPDATE_TYPE_FAST) {
+> -		drm_dbg_atomic(crtc->dev,
+> -			       "[CRTC:%d:%s] async flips are only supported for fast updates\n",
+> -			       crtc->base.id, crtc->name);
+> -		return -EINVAL;
+> -	}
+> -
+>  	/* In some use cases, like reset, no stream is attached */
+>  	if (!dm_crtc_state->stream)
+>  		return 0;
+
