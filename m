@@ -2,393 +2,335 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 05B7D76FC46
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 10:46:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2646976FC47
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 10:46:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229567AbjHDIqV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Aug 2023 04:46:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41354 "EHLO
+        id S229584AbjHDIqg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Aug 2023 04:46:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41472 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229496AbjHDIqS (ORCPT
+        with ESMTP id S229585AbjHDIqd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Aug 2023 04:46:18 -0400
-Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com [IPv6:2a00:1450:4864:20::331])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F42C30F4
-        for <linux-kernel@vger.kernel.org>; Fri,  4 Aug 2023 01:46:16 -0700 (PDT)
-Received: by mail-wm1-x331.google.com with SMTP id 5b1f17b1804b1-3fbea14706eso17818795e9.2
-        for <linux-kernel@vger.kernel.org>; Fri, 04 Aug 2023 01:46:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1691138774; x=1691743574;
-        h=content-transfer-encoding:in-reply-to:organization:references:cc:to
-         :content-language:subject:reply-to:from:user-agent:mime-version:date
-         :message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=8/2epN71DffLwBWhZlwSr6qgtOgEJN1dllV/1/DX8b4=;
-        b=T1rvrGSHsbHhc2NkBJrzGuI/Z2XJzkQP8vMpV2km3yg17tnd2qj4b4KVA8viOkVK4y
-         UrqIIamqmT8WZmM9/H8KlAgYdCLWrwqfqyPNMMYfeRAojXhx1+dCLiYL/V/MpNaVNhxn
-         PfpxG9VqMHldniAan8t8+DiCTMk3Irn7ygCipIp0vigjzDZn3h/dl+ECBVvUSCPdHtSx
-         aXymiTv8WIxC0sW8TSNYy76XQFKlZRUhwpkeIyMzq8o7gBWnKgW8AJxHDRgmb2bjJnok
-         d3PymPfj/qHb4w9NdhNc/1XZ5CMZAA6JeA0xl7oKlU38TL1YJfpxrTm1kQvn5NpJQYQ4
-         aGIg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691138774; x=1691743574;
-        h=content-transfer-encoding:in-reply-to:organization:references:cc:to
-         :content-language:subject:reply-to:from:user-agent:mime-version:date
-         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=8/2epN71DffLwBWhZlwSr6qgtOgEJN1dllV/1/DX8b4=;
-        b=RBZdnAXUhzDMUpn7dYZy7zQGPl76fGJin6XUSdiGwKE15QSR3ZAZKMWelwR4zSB46I
-         UxMJseP1eLkyxCvndNHl9S/336XeU0YyBt39KAilBth+y9vzvQ96ZG96aZKwMFWLbj8l
-         wDTaUNan8Lfnb8CQCC3jdwueqa8OAVMJ1uZCZCjUqoZDA+/+5gh8uJNevoudBiKR9WP9
-         /OBIY7ky+NEpMx7Oq7E+cuxXLEOeo9XRDvWuccEzYutOVeO2lyqBNwTMgMdfcUbeNNMs
-         7loiplQ+oUB9Ho94C8jUguHt7oiXu/dbeYfSQqGioByoO9NpzAtOKF2O2I5sodFX/RLi
-         wqLw==
-X-Gm-Message-State: AOJu0Yzd/JbMcMIAdZWxlRCLqRbrnjIeu7HuQ4X605BsC5mMHsAFaCd9
-        w6jPHJF0OIV/7LxFeiHMhSiBmQ==
-X-Google-Smtp-Source: AGHT+IEXfc2HyMKRUwROboiBvMsrvQ2EBr3c0K0nVutboAbfHnMsN4bJm+HSXSoaklbeeraThsaQxA==
-X-Received: by 2002:a05:600c:208:b0:3fb:4055:1ddd with SMTP id 8-20020a05600c020800b003fb40551dddmr962143wmi.28.1691138774486;
-        Fri, 04 Aug 2023 01:46:14 -0700 (PDT)
-Received: from ?IPV6:2a01:e0a:982:cbb0:b526:9083:f5a6:4af1? ([2a01:e0a:982:cbb0:b526:9083:f5a6:4af1])
-        by smtp.gmail.com with ESMTPSA id a25-20020a05600c225900b003fc00892c13sm1807034wmm.35.2023.08.04.01.46.13
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 04 Aug 2023 01:46:13 -0700 (PDT)
-Message-ID: <cdc50fd9-fbc8-81b2-18b9-94be60eda375@linaro.org>
-Date:   Fri, 4 Aug 2023 10:46:12 +0200
+        Fri, 4 Aug 2023 04:46:33 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id B18944234
+        for <linux-kernel@vger.kernel.org>; Fri,  4 Aug 2023 01:46:29 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 5E1182F4;
+        Fri,  4 Aug 2023 01:47:12 -0700 (PDT)
+Received: from [10.57.77.247] (unknown [10.57.77.247])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 14D9E3F6C4;
+        Fri,  4 Aug 2023 01:46:27 -0700 (PDT)
+Message-ID: <a2d71d20-973a-3642-877c-79f86e1acd97@arm.com>
+Date:   Fri, 4 Aug 2023 09:46:26 +0100
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-From:   Neil Armstrong <neil.armstrong@linaro.org>
-Reply-To: neil.armstrong@linaro.org
-Subject: Re: [PATCH v7 3/9] clk: meson: add vclk driver
-Content-Language: en-US
-To:     Jerome Brunet <jbrunet@baylibre.com>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Kevin Hilman <khilman@baylibre.com>,
-        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Jagan Teki <jagan@amarulasolutions.com>,
-        Nicolas Belin <nbelin@baylibre.com>
-Cc:     linux-clk@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-amlogic@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org,
-        dri-devel@lists.freedesktop.org
-References: <20230803-amlogic-v6-4-upstream-dsi-ccf-vim3-v7-0-762219fc5b28@linaro.org>
- <20230803-amlogic-v6-4-upstream-dsi-ccf-vim3-v7-3-762219fc5b28@linaro.org>
- <1j5y5vp88v.fsf@starbuckisacylon.baylibre.com>
-Organization: Linaro Developer Services
-In-Reply-To: <1j5y5vp88v.fsf@starbuckisacylon.baylibre.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.13.0
+Subject: Re: [PATCH 1/3] mm: add functions folio_in_range() and
+ folio_within_vma()
+To:     "Yin, Fengwei" <fengwei.yin@intel.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, akpm@linux-foundation.org,
+        yuzhao@google.com, willy@infradead.org, david@redhat.com,
+        shy828301@gmail.com, hughd@google.com
+References: <20230728070929.2487065-1-fengwei.yin@intel.com>
+ <20230728070929.2487065-2-fengwei.yin@intel.com>
+ <502afc9c-0760-76af-d224-2a3428089850@arm.com>
+ <66332544-c102-9134-a1a5-c4e4a82b66b9@intel.com>
+ <0e7c6b9d-77c4-8c06-4c5a-fdf24c3b003d@arm.com>
+ <b9ec207a-8cbc-4014-1fb1-f1f437afd957@intel.com>
+From:   Ryan Roberts <ryan.roberts@arm.com>
+In-Reply-To: <b9ec207a-8cbc-4014-1fb1-f1f437afd957@intel.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=unavailable autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 04/08/2023 09:33, Jerome Brunet wrote:
+On 04/08/2023 00:15, Yin, Fengwei wrote:
 > 
-> On Thu 03 Aug 2023 at 14:03, Neil Armstrong <neil.armstrong@linaro.org> wrote:
 > 
->> The VCLK and VCLK_DIV clocks have supplementary bits.
+> On 8/3/2023 9:20 PM, Ryan Roberts wrote:
+>> On 03/08/2023 11:48, Yin Fengwei wrote:
+>>>
+>>>
+>>> On 8/3/23 17:58, Ryan Roberts wrote:
+>>>> On 28/07/2023 08:09, Yin Fengwei wrote:
+>>>>> It will be used to check whether the folio is mapped to specific
+>>>>> VMA and whether the mapping address of folio is in the range.
+>>>>>
+>>>>> Also a helper function folio_within_vma() to check whether folio
+>>>>> is in the range of vma based on folio_in_range().
+>>>>>
+>>>>> Signed-off-by: Yin Fengwei <fengwei.yin@intel.com>
+>>>>> ---
+>>>>>  mm/internal.h | 69 +++++++++++++++++++++++++++++++++++++++++++++++++++
+>>>>>  1 file changed, 69 insertions(+)
+>>>>>
+>>>>> diff --git a/mm/internal.h b/mm/internal.h
+>>>>> index 5a03bc4782a2..63de32154a48 100644
+>>>>> --- a/mm/internal.h
+>>>>> +++ b/mm/internal.h
+>>>>> @@ -585,6 +585,75 @@ extern long faultin_vma_page_range(struct vm_area_struct *vma,
+>>>>>  				   bool write, int *locked);
+>>>>>  extern bool mlock_future_ok(struct mm_struct *mm, unsigned long flags,
+>>>>>  			       unsigned long bytes);
+>>>>> +
+>>>>
+>>>> Hi Yin,
+>>>>
+>>>> I wanted to take a step back and consolidate my concerns about this function. I
+>>>> should say that my understanding of the pgoff and index stuff is shaky and I
+>>>> could therefore be wrong about some of this; if this is the case, then sorry for
+>>>> the noise! But something about this function doesn't smell right to me, so I
+>>>> figure its better to raise it...
+>>> No worries. And thank you for looking at the code ans share the comments.
+>>> That helps me a lot. Really appreciate it.
+>>>
+>>>>
+>>>>> +/*
+>>>>> + * Check whether the folio is in specific range
+>>>>
+>>>> What exactly is the function trying to do? I *think* the intention is to figure
+>>>> out if a folio is fully and contiguously mapped within a range of virtual
+>>>> addresses belonging to a specific virtual address space? And I assume you want
+>>>> the answer to be precise? I'm assuming 'yes' for the below.
+>>>>
+>>>> I think the only way to do this is to actually check each PTE. And that causes a
+>>>> problem, because a folio can straddle multiple PTE tables, which causes PTL
+>>>> locking issues, and means having just a *pte pointer is insufficient if we need
+>>>> to traverse multiple pte tables. So perhaps you need to allow for a false
+>>>> negative in the case that the folio is not contained within a single pte table.
+>>> Let's check the users of this function first:
+>>>  mlock/munlock: Needs only care whether the folio is in the range of VM_LOCKED VMA
+>>>  madvise: Needs to check whether the folio is in the range of VMA and
+>>>           range [start, end).
 >>
->> The VCLK has a "SOFT RESET" bit to toggle after the whole
->> VCLK sub-tree rate has been set, this is implemented in
->> the gate enable callback.
+>> Sure but those 2 ranges (the vma and the user-supplied range) are known to
+>> intersect, right? So really there is only one range of interest; the
+>> intersection. I would argue that should be done in a higher level wrapper, and
+>> is not part of the core primitive to work out if a folio is mapped to a
+>> particular range of virtual addresses.
+>>> This range is from user space. It could contain
+>>>           VMA range (in this case, we only need to check VMA range) or is contained
+>>>           by VMA range.
+>>>
+>>> So we check:
+>>>   1. Whether the folio is in the range.
+>>>
+>>>      To do this, we need to first check whether the folio->index is in the
+>>>      VMA range. If not, we know the folio is not in VMA range. Just return false
+>>>      without further check.
 >>
->> The VCLK_DIV clocks as enable and reset bits used to disable
->> and reset the divider, associated with CLK_SET_RATE_GATE it ensures
->> the rate is set while the divider is disabled and in reset mode.
->>
->> The VCLK_DIV enable bit isn't implemented as a gate since it's part
->> of the divider logic and vendor does this exact sequence to ensure
->> the divider is correctly set.
+>> Right, so if the check fails, the folio is definitely not mapped by the vma, but
+>> if it passes, it *might* be. Further checks are required. So why is this useful?
+>> Why not just do the check that gives you the precise answer and skip this?
+> What check can give precise answer? I don't think checking PTE is right at this
+> stage. For following case (assume the folio is mapped in same page table and just
+> care about the VMA2 range):
 > 
-> Unless there is reason, I'd prefer if this driver was using 'struct
-> parm', like the rest of amlogic custom clock drivers, for consistency.
+> |-----------vma1-----------|------------vma2---------|
+>                     |-------folio-----|
+> 
+> How can we tell whether the folio is in the range of VMA2 by just checking PTE?
+> And in this case, why not bail out if we see folio is out range of VMA2?
+> 
+> 
+> So only need to check PTE if we are sure the folio is in the range of VMA2:
+> |-----------vma1-----------|------------vma2---------|
+>                               |-------folio-----|
+> 
+>>
+>>>
+>>>      Then, we will check whether the folio is in the range which is defined as
+>>>      [max(start, vma->vm_start), min(end, vma->vm_end)).
+>>
+>> As par above comment, I would personally factor this out of the primitive.
+>>
+>>>
+>>>
+>>>      This is the version in RFC as I was not aware of mremap case and forgot the
+>>>      page cache case. So if no mremap with an anonymous folio, this check is enough.
+>>>      But we need to add PTE check for mremap and page cache cases.
+>>>
+>>>   2. Check PTE for mremap in middle of large folio and page cache
+>>>      If the folio is normal 4K and if the folio is in the range, it's not possible
+>>>      the folio is partially mapped to two different VMA. So we are sure this folio
+>>>      is in the range.
+>>
+>> But you test for small folio and exit early without checking the PTE. Given the
+>> index check only told you that the folio *might be* mapped, I don't see how you
+>> can return true at this point for a small folio, without looking at the PTE?
+> Yes. We can do this. You can check the discussion on the RFC version. I did move
+> the normal 4K folio check out of this function. Yu and Huge suggested to just ignore
+> the normal 4K as this API can' handle it.
+> 
+> The thing changed from RFC is that we need to check PTE here. I tried to avoid to
+> check PTE even for normal 4K folio.
 
-Ack
-
-thx,
-Neil
+I'll go read the RFC. I've made my point; if you and others are convinced this
+is correct, then fair enough.
 
 > 
 >>
->> Signed-off-by: Neil Armstrong <neil.armstrong@linaro.org>
->> ---
->>   drivers/clk/meson/Kconfig  |   5 ++
->>   drivers/clk/meson/Makefile |   1 +
->>   drivers/clk/meson/vclk.c   | 146 +++++++++++++++++++++++++++++++++++++++++++++
->>   drivers/clk/meson/vclk.h   |  68 +++++++++++++++++++++
->>   4 files changed, 220 insertions(+)
+>> folio->index is just the page offset within the file it maps (or the (original)
+>> VA/PAGE_SIZE for anon memory - I think?). And vma->vm_pgoff is the page offset
+>> within the file that the vma starts at. So you could have a folio that contains
+>> the contents of 1 file and a vma that maps another file, and the folio's index
+>> might fall within the VMA, but it doesn't mean the folio is mapped by the vma;
+>> its a different file.
 >>
->> diff --git a/drivers/clk/meson/Kconfig b/drivers/clk/meson/Kconfig
->> index 135da8f2d0b1..83f629515e96 100644
->> --- a/drivers/clk/meson/Kconfig
->> +++ b/drivers/clk/meson/Kconfig
->> @@ -30,6 +30,10 @@ config COMMON_CLK_MESON_VID_PLL_DIV
->>   	tristate
->>   	select COMMON_CLK_MESON_REGMAP
->>   
->> +config COMMON_CLK_MESON_VCLK
->> +	tristate
->> +	select COMMON_CLK_MESON_REGMAP
->> +
->>   config COMMON_CLK_MESON_CLKC_UTILS
->>   	tristate
->>   
->> @@ -140,6 +144,7 @@ config COMMON_CLK_G12A
->>   	select COMMON_CLK_MESON_EE_CLKC
->>   	select COMMON_CLK_MESON_CPU_DYNDIV
->>   	select COMMON_CLK_MESON_VID_PLL_DIV
->> +	select COMMON_CLK_MESON_VCLK
->>   	select MFD_SYSCON
->>   	help
->>   	  Support for the clock controller on Amlogic S905D2, S905X2 and S905Y2
->> diff --git a/drivers/clk/meson/Makefile b/drivers/clk/meson/Makefile
->> index cd961cc4f4db..6efeb8c7bd2a 100644
->> --- a/drivers/clk/meson/Makefile
->> +++ b/drivers/clk/meson/Makefile
->> @@ -12,6 +12,7 @@ obj-$(CONFIG_COMMON_CLK_MESON_PLL) += clk-pll.o
->>   obj-$(CONFIG_COMMON_CLK_MESON_REGMAP) += clk-regmap.o
->>   obj-$(CONFIG_COMMON_CLK_MESON_SCLK_DIV) += sclk-div.o
->>   obj-$(CONFIG_COMMON_CLK_MESON_VID_PLL_DIV) += vid-pll-div.o
->> +obj-$(CONFIG_COMMON_CLK_MESON_VCLK) += vclk.o
->>   
->>   # Amlogic Clock controllers
->>   
->> diff --git a/drivers/clk/meson/vclk.c b/drivers/clk/meson/vclk.c
->> new file mode 100644
->> index 000000000000..0df84403b17f
->> --- /dev/null
->> +++ b/drivers/clk/meson/vclk.c
->> @@ -0,0 +1,146 @@
->> +// SPDX-License-Identifier: GPL-2.0
->> +/*
->> + * Copyright (c) 2023 Neil Armstrong <neil.armstrong@linaro.org>
->> + */
->> +
->> +#include <linux/module.h>
->> +#include "vclk.h"
->> +
->> +/* The VCLK gate has a supplementary reset bit to pulse after ungating */
->> +
->> +static int clk_regmap_vclk_enable(struct clk_hw *hw)
->> +{
->> +	struct clk_regmap *clk = to_clk_regmap(hw);
->> +	struct clk_regmap_vclk_data *vclk = clk_get_regmap_vclk_data(clk);
->> +
->> +	regmap_set_bits(clk->map, vclk->offset, BIT(vclk->enable_bit_idx));
->> +
->> +	/* Do a reset pulse */
->> +	regmap_set_bits(clk->map, vclk->offset, BIT(vclk->reset_bit_idx));
->> +	regmap_clear_bits(clk->map, vclk->offset, BIT(vclk->reset_bit_idx));
->> +
->> +	return 0;
->> +}
->> +
->> +static void clk_regmap_vclk_disable(struct clk_hw *hw)
->> +{
->> +	struct clk_regmap *clk = to_clk_regmap(hw);
->> +	struct clk_regmap_vclk_data *vclk = clk_get_regmap_vclk_data(clk);
->> +
->> +	regmap_clear_bits(clk->map, vclk->offset, BIT(vclk->enable_bit_idx));
->> +}
->> +
->> +static int clk_regmap_vclk_is_enabled(struct clk_hw *hw)
->> +{
->> +	struct clk_regmap *clk = to_clk_regmap(hw);
->> +	struct clk_regmap_vclk_data *vclk = clk_get_regmap_vclk_data(clk);
->> +	unsigned int val;
->> +
->> +	regmap_read(clk->map, vclk->offset, &val);
->> +
->> +	return val & BIT(vclk->enable_bit_idx) ? 1 : 0;
->> +}
->> +
->> +const struct clk_ops clk_regmap_vclk_ops = {
->> +	.enable = clk_regmap_vclk_enable,
->> +	.disable = clk_regmap_vclk_disable,
->> +	.is_enabled = clk_regmap_vclk_is_enabled,
->> +};
->> +EXPORT_SYMBOL_GPL(clk_regmap_vclk_ops);
->> +
->> +/* The VCLK Divider has supplementary reset & enable bits */
->> +
->> +static unsigned long clk_regmap_vclk_div_recalc_rate(struct clk_hw *hw,
->> +						     unsigned long prate)
->> +{
->> +	struct clk_regmap *clk = to_clk_regmap(hw);
->> +	struct clk_regmap_vclk_div_data *vclk = clk_get_regmap_vclk_div_data(clk);
->> +	unsigned int val;
->> +	int ret;
->> +
->> +	ret = regmap_read(clk->map, vclk->offset, &val);
->> +	if (ret)
->> +		/* Gives a hint that something is wrong */
->> +		return 0;
->> +
->> +	val >>= vclk->shift;
->> +	val &= clk_div_mask(vclk->width);
->> +
->> +	return divider_recalc_rate(hw, prate, val, vclk->table, vclk->flags,
->> +				   vclk->width);
->> +}
->> +
->> +static int clk_regmap_vclk_div_determine_rate(struct clk_hw *hw,
->> +					      struct clk_rate_request *req)
->> +{
->> +	struct clk_regmap *clk = to_clk_regmap(hw);
->> +	struct clk_regmap_vclk_div_data *vclk = clk_get_regmap_vclk_div_data(clk);
->> +
->> +	return divider_determine_rate(hw, req, vclk->table, vclk->width,
->> +				      vclk->flags);
->> +}
->> +
->> +static int clk_regmap_vclk_div_set_rate(struct clk_hw *hw, unsigned long rate,
->> +					unsigned long parent_rate)
->> +{
->> +	struct clk_regmap *clk = to_clk_regmap(hw);
->> +	struct clk_regmap_vclk_div_data *vclk = clk_get_regmap_vclk_div_data(clk);
->> +	unsigned int val;
->> +	int ret;
->> +
->> +	ret = divider_get_val(rate, parent_rate, vclk->table, vclk->width,
->> +			      vclk->flags);
->> +	if (ret < 0)
->> +		return ret;
->> +
->> +	val = (unsigned int)ret << vclk->shift;
->> +	return regmap_update_bits(clk->map, vclk->offset,
->> +				  clk_div_mask(vclk->width) << vclk->shift, val);
->> +};
->> +
->> +static int clk_regmap_vclk_div_enable(struct clk_hw *hw)
->> +{
->> +	struct clk_regmap *clk = to_clk_regmap(hw);
->> +	struct clk_regmap_vclk_div_data *vclk = clk_get_regmap_vclk_div_data(clk);
->> +
->> +	/* Unreset the divider when ungating */
->> +	regmap_clear_bits(clk->map, vclk->offset, BIT(vclk->reset_bit_idx));
->> +
->> +	return regmap_set_bits(clk->map, vclk->offset, BIT(vclk->enable_bit_idx));
->> +}
->> +
->> +static void clk_regmap_vclk_div_disable(struct clk_hw *hw)
->> +{
->> +	struct clk_regmap *clk = to_clk_regmap(hw);
->> +	struct clk_regmap_vclk_div_data *vclk = clk_get_regmap_vclk_div_data(clk);
->> +
->> +	/* Reset the divider when gating */
->> +	regmap_clear_bits(clk->map, vclk->offset, BIT(vclk->enable_bit_idx));
->> +
->> +	regmap_set_bits(clk->map, vclk->offset, BIT(vclk->reset_bit_idx));
->> +}
->> +
->> +static int clk_regmap_vclk_div_is_enabled(struct clk_hw *hw)
->> +{
->> +	struct clk_regmap *clk = to_clk_regmap(hw);
->> +	struct clk_regmap_vclk_div_data *vclk = clk_get_regmap_vclk_div_data(clk);
->> +	unsigned int val;
->> +
->> +	regmap_read(clk->map, vclk->offset, &val);
->> +
->> +	return val & BIT(vclk->enable_bit_idx) ? 1 : 0;
->> +}
->> +
->> +const struct clk_ops clk_regmap_vclk_div_ops = {
->> +	.recalc_rate = clk_regmap_vclk_div_recalc_rate,
->> +	.determine_rate = clk_regmap_vclk_div_determine_rate,
->> +	.set_rate = clk_regmap_vclk_div_set_rate,
->> +	.enable = clk_regmap_vclk_div_enable,
->> +	.disable = clk_regmap_vclk_div_disable,
->> +	.is_enabled = clk_regmap_vclk_div_is_enabled,
->> +};
->> +EXPORT_SYMBOL_GPL(clk_regmap_vclk_div_ops);
->> +
->> +MODULE_DESCRIPTION("Amlogic vclk clock driver");
->> +MODULE_AUTHOR("Neil Armstrong <neil.armstrong@linaro.org>");
->> +MODULE_LICENSE("GPL v2");
->> diff --git a/drivers/clk/meson/vclk.h b/drivers/clk/meson/vclk.h
->> new file mode 100644
->> index 000000000000..90786552a7f3
->> --- /dev/null
->> +++ b/drivers/clk/meson/vclk.h
->> @@ -0,0 +1,68 @@
->> +/* SPDX-License-Identifier: GPL-2.0 */
->> +/*
->> + * Copyright (c) 2023 Neil Armstrong <neil.armstrong@linaro.org>
->> + */
->> +
->> +#ifndef __VCLK_H
->> +#define __VCLK_H
->> +
->> +#include "clk-regmap.h"
->> +
->> +/**
->> + * struct clk_regmap_vclk_data - vclk regmap backed specific data
->> + *
->> + * @offset:		offset of the register controlling gate
->> + * @enable_bit_idx:	single bit controlling vclk enable
->> + * @reset_bit_idx:	single bit controlling vclk reset
->> + * @flags:		hardware-specific flags
->> + *
->> + * Flags:
->> + * Same as clk_gate except CLK_GATE_HIWORD_MASK which is ignored
->> + */
->> +struct clk_regmap_vclk_data {
->> +	unsigned int	offset;
->> +	u8		enable_bit_idx;
->> +	u8		reset_bit_idx;
->> +	u8		flags;
->> +};
->> +
->> +static inline struct clk_regmap_vclk_data *
->> +clk_get_regmap_vclk_data(struct clk_regmap *clk)
->> +{
->> +	return (struct clk_regmap_vclk_data *)clk->data;
->> +}
->> +
->> +extern const struct clk_ops clk_regmap_vclk_ops;
->> +
->> +/**
->> + * struct clk_regmap_vclk_div_data - vclk_div regmap back specific data
->> + *
->> + * @offset:	offset of the register controlling the divider
->> + * @shift:	shift to the divider bit field
->> + * @width:	width of the divider bit field
->> + * @enable_bit_idx:	single bit controlling vclk divider enable
->> + * @reset_bit_idx:	single bit controlling vclk divider reset
->> + * @table:	array of value/divider pairs, last entry should have div = 0
->> + *
->> + * Flags:
->> + * Same as clk_divider except CLK_DIVIDER_HIWORD_MASK which is ignored
->> + */
->> +struct clk_regmap_vclk_div_data {
->> +	unsigned int	offset;
->> +	u8		shift;
->> +	u8		width;
->> +	u8		enable_bit_idx;
->> +	u8		reset_bit_idx;
->> +	const struct clk_div_table      *table;
->> +	u8		flags;
->> +};
->> +
->> +static inline struct clk_regmap_vclk_div_data *
->> +clk_get_regmap_vclk_div_data(struct clk_regmap *clk)
->> +{
->> +	return (struct clk_regmap_vclk_div_data *)clk->data;
->> +}
->> +
->> +extern const struct clk_ops clk_regmap_vclk_div_ops;
->> +
->> +#endif /* __VCLK_H */
+>> Or perhaps there is an assumption in the function's spec that the folio is known
+>> to have at least one page mapped in the vma? That would change things... but you
+>> should make that very clear in the spec. And in that case, you can move the
+>> small folio check to the start and return true immediately.
+> Yes. "At least one page mapped in VMA" is assumption here. I will make it clear in
+> the comment.
 > 
+> 
+> Regards
+> Yin, Fengwei
+> 
+>>
+>>>
+>>>      Currently, check PTE didn't handle the case you mentioned. But my plan is
+>>>      checking whether the folio is mapped cross page table (by checking whether
+>>>      the folio start vaddr and end vaddr has same value for low aligned to PMD_SIZE).
+>>>      If it cross, I will treat it as out of VMA range. Otherwise, we can reuse
+>>>      current check because we know the PTE pointer is always valid.
+>>>
+>>>      Obviously, the PTE checking needs hold pte lock as you pointed out.
+>>>
+>>>
+>>> My understanding:
+>>> pgoff is important if we have folio and VMA and want to know the virtual address of
+>>> the folio mapped to. Like first, check whether pgoff of folio belongs to VMA, then get
+>>> vaddr by:
+>>>       addr = vma->vm_start + ((pgoff - vma->vm_pgoff) << PAGE_SHIFT);
+>>> rmap_walk() also depends on pgoff. You can check the vma_address() and rmap_walk()
+>>> implementation.
+>>
+>> Yes but the rmap is only traversing vmas that are already known to map the same
+>> file that the folio contains pages for. (See rmap_walk_file(): it grabs the
+>> "mapping" from the folio, then traverses the list of vmas within the range of
+>> interest "vma_interval_tree_foreach"). Its a bit more complicated for anon
+>> memory but I think the princple is the same.
+>>
+>>>
+>>>>
+>>>>> + *
+>>>>> + * First, check whether the folio is in the range of vma.
+>>>>> + * Then, check whether the folio is mapped to the range of [start, end].
+>>>>> + * In the end, check whether the folio is fully mapped to the range.
+>>>>> + *
+>>>>> + * @pte page table pointer will be checked whether the large folio
+>>>>> + *      is fully mapped to. Currently, if mremap in the middle of
+>>>>> + *      large folio, the large folio could be mapped to to different
+>>>>> + *      VMA and address check can't identify this situation.
+>>>>> + */
+>>>>> +static inline bool
+>>>>> +folio_in_range(struct folio *folio, struct vm_area_struct *vma,
+>>>>> +		unsigned long start, unsigned long end, pte_t *pte)
+>>>>
+>>>> The prototype looks odd to me; Fundamentally it seems to me that you need the
+>>>> folio, start and end virtual addresses (the range you want to check that it is
+>>>> in), the pte pointer and the virtual address that the pte represents. That
+>>>> virtual address allows you to figure out the offset between the pa and va. Then
+>>>> you can look at all the ptes to figure out if they reference the folio's pfns,
+>>>> and use the va to pa mapping info to figure out if its within the specified range.
+>>>>
+>>>> I don't really understand why the vma is useful.
+>>>>
+>>>>> +{
+>>>>> +	pte_t ptent;
+>>>>> +	unsigned long i, nr = folio_nr_pages(folio);
+>>>>> +	pgoff_t pgoff, addr;
+>>>>> +	unsigned long vma_pglen = (vma->vm_end - vma->vm_start) >> PAGE_SHIFT;
+>>>>> +
+>>>>> +	VM_WARN_ON_FOLIO(folio_test_ksm(folio), folio);
+>>>>> +
+>>>>> +	if (start < vma->vm_start)
+>>>>> +		start = vma->vm_start;
+>>>>> +	if (end > vma->vm_end)
+>>>>> +		end = vma->vm_end;
+>>>>> +
+>>>>> +	pgoff = folio_pgoff(folio);
+>>>>> +	/* if folio start address is not in vma range */
+>>>>> +	if (pgoff < vma->vm_pgoff || pgoff > vma->vm_pgoff + vma_pglen)
+>>>>> +		return false;
+>>>>
+>>>> Why is this pgoff calculation helpful? Surely it's only useful if the folio
+>>>> belongs to the same file that the vma is mapping? Otherwise the folio's pgoff
+>>>> might be referring to a completely different file than the vma's vm_pgoff. So
+>>>> you will get spurious results.
+>>>>
+>>>>> +
+>>>>> +	addr = vma->vm_start + ((pgoff - vma->vm_pgoff) << PAGE_SHIFT);
+>>>>> +	if (addr < start || end - addr < folio_size(folio))
+>>>>> +		return false;
+>>>>> +
+>>>>> +	/* not necessary to check pte for none large folio */
+>>>>> +	if (!folio_test_large(folio))
+>>>>> +		return true;
+>>>>
+>>>> I don't understand why you don't need to check the pte for a small folio? As
+>>>> above, if the folio doesn't belong to the file that the vma is mapping the above
+>>>> checks seem wrong and you can't conclude that the folio is mapped in the range
+>>>> without looking at the pte?
+>>>>
+>>>>> +
+>>>>> +	if (!pte)
+>>>>> +		return false;
+>>>>> +
+>>>>> +	/* check whether parameter pte is associated with folio */
+>>>>> +	ptent = ptep_get(pte);
+>>>>> +	if (pte_none(ptent) || !pte_present(ptent) ||
+>>>>> +			pte_pfn(ptent) - folio_pfn(folio) >= nr)
+>>>>> +		return false;
+>>>>> +
+>>>>> +	pte -= pte_pfn(ptent) - folio_pfn(folio);
+>>>>
+>>>> I think this could wander off the front or back of the pte table into arbitrary
+>>>> memory if the folio is strddling multiple pte tables.
+>>>>
+>>>>> +	for (i = 0; i < nr; i++, pte++) {
+>>>>> +		ptent = ptep_get(pte);
+>>>>> +
+>>>>> +		if (pte_none(ptent) || !pte_present(ptent) ||
+>>>>> +				pte_pfn(ptent) - folio_pfn(folio) >= nr)
+>>>>
+>>>> Doesn't !pte_present() also cover pte_none()? So I think the pte_none() check is
+>>>> redundant?
+>>> I think you are right. pte_none() can be removed here.
+>>>
+>>>
+>>> Regards
+>>> Yin, Fengwei
+>>>
+>>>>
+>>>> Thanks,
+>>>> Ryan
+>>>>
+>>>>
+>>>>> +			return false;
+>>>>> +	}
+>>>>> +
+>>>>> +	return true;
+>>>>> +}
+>>>>> +
+>>>>> +static inline bool
+>>>>> +folio_within_vma(struct folio *folio, struct vm_area_struct *vma, pte_t *pte)
+>>>>> +{
+>>>>> +	return folio_in_range(folio, vma, vma->vm_start, vma->vm_end, pte);
+>>>>> +}
+>>>>> +
+>>>>>  /*
+>>>>>   * mlock_vma_folio() and munlock_vma_folio():
+>>>>>   * should be called with vma's mmap_lock held for read or write,
+>>>>
+>>
 
