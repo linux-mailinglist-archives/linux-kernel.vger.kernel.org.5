@@ -2,68 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A918576F977
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 07:15:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 321C176F96C
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 07:10:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233641AbjHDFPO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Aug 2023 01:15:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43534 "EHLO
+        id S231638AbjHDFKg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Aug 2023 01:10:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42224 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233825AbjHDFNO (ORCPT
+        with ESMTP id S232594AbjHDFIS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Aug 2023 01:13:14 -0400
-Received: from lelv0143.ext.ti.com (lelv0143.ext.ti.com [198.47.23.248])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25F274C31;
-        Thu,  3 Aug 2023 22:11:02 -0700 (PDT)
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-        by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 3745AnGQ062380;
-        Fri, 4 Aug 2023 00:10:49 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1691125849;
-        bh=iZSGhXWJkcvSWSPFW2Rh05BrDy/p5Iyo5jUkOGaRns0=;
-        h=From:To:CC:Subject:Date;
-        b=qBeu2H0eoaLjzgVvcbp3wmvoMfldYY74bfrEfwxZTPtxyy9nvkaY7M0q9UJZs9hwW
-         /1J3x40elIINxCaWv+7cEULeoK1F09gGlYJ0SPS+W6V4bJ99ZDRy98eZbOwC0XzGeB
-         DCrVwjZZFh/cJy/TZLB/UJ89CH4rbKx5WTyt6oAw=
-Received: from DFLE115.ent.ti.com (dfle115.ent.ti.com [10.64.6.36])
-        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 3745AnRB035482
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Fri, 4 Aug 2023 00:10:49 -0500
-Received: from DFLE108.ent.ti.com (10.64.6.29) by DFLE115.ent.ti.com
- (10.64.6.36) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Fri, 4
- Aug 2023 00:10:49 -0500
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE108.ent.ti.com
- (10.64.6.29) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Fri, 4 Aug 2023 00:10:49 -0500
-Received: from localhost (ileaxei01-snat2.itg.ti.com [10.180.69.6])
-        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 3745Am9R025754;
-        Fri, 4 Aug 2023 00:10:49 -0500
-From:   Dhruva Gole <d-gole@ti.com>
-To:     Linus Walleij <linus.walleij@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Tony Lindgren <tony@atomide.com>
-CC:     <linux-gpio@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-omap@vger.kernel.org>, Dhruva Gole <d-gole@ti.com>,
-        Nishanth Menon <nm@ti.com>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Conor Dooley <conor.dooley@microchip.com>
-Subject: [PATCH V3] dt-bindings: pinctrl: pinctrl-single: add am625 compatible
-Date:   Fri, 4 Aug 2023 10:37:37 +0530
-Message-ID: <20230804050737.635186-1-d-gole@ti.com>
-X-Mailer: git-send-email 2.34.1
+        Fri, 4 Aug 2023 01:08:18 -0400
+Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 229724237
+        for <linux-kernel@vger.kernel.org>; Thu,  3 Aug 2023 22:08:10 -0700 (PDT)
+Received: by mail-ej1-x62c.google.com with SMTP id a640c23a62f3a-99c1f6f3884so229205966b.0
+        for <linux-kernel@vger.kernel.org>; Thu, 03 Aug 2023 22:08:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1691125688; x=1691730488;
+        h=cc:to:subject:message-id:date:from:mime-version:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=5nqqRfBNPBQ+VMaK2HsDYoXmhmlAtvK4SXNfFFGzlpo=;
+        b=lACS6lI/ekoOHa/nyz59RAxxBRYorYg619oLE4WoJ+0tHRIgbsotkGfTrETXBdJ90K
+         YLnSGJgpcAwEc9JknkHlswmASGDd1UEwpJeGg9Fvl49cbVJuiTX16G5Isdg4fVPg4oPl
+         veMGoNBjt6umC24dlFxaL/I/2vljGKTAUH5hxF71qLZ5N7oal9OKMFBa+avD2IpFFS3p
+         5M/xEYCP99dE/MiOLV5yDNC2gDsytIsIrTx3I0owIRf5NxEFW1W0UMmm4Tn1wWnPB/2A
+         V2EuGzRFrcc6mAAjv4HsB296hjBHh9kbyCc5fH7s3xHuzU9eljjl780gbVpI6KPYgsVu
+         4xvA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691125688; x=1691730488;
+        h=cc:to:subject:message-id:date:from:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=5nqqRfBNPBQ+VMaK2HsDYoXmhmlAtvK4SXNfFFGzlpo=;
+        b=b+NzwS8+cFDiep0p/TiMZK1XUrenyeopb0xmNzk8gfeN860JTOTYrna7HDCaO6DXWr
+         Q2GsRKFB5ytEGSbB1OZfns4t24AmGMJvarT1jCCeXMm96BpWa41dxbb5TLo/bLrKPTk1
+         T9NJ8cOFRGVxkQOIkbdwrsF0xXUWu3ncI+5oFmI9Z8nS5jB69c86aaapF/PPeb/+9oT1
+         eZpi72pMDqVfQyeGHg2weRa6XPLco+Ob093p+N6YBW9HAy3+IIGa5hKvDoWwMWBAfQxn
+         q/90HadPdLuUU4bJywSrE04JJO1JV3X4qWxWwlYe50qnzdRL0BHY1Dxysq9/CKQXuPAj
+         CYmw==
+X-Gm-Message-State: AOJu0Yx0PkM8SMMfVgO8Q06Iugxvt6Gh6Gjsn3YhTkJvBjGEL6SB2TL5
+        KSKCH8aXrhdz2Sp1MIp+uqNSzHaWvfPcaqogwgs=
+X-Google-Smtp-Source: AGHT+IEEFONMLQ+vBml2My8FR537suOeUVDgX4piJXXblwaS9SHtCdQfAVRo6JcqNmAlLjUPfTOHkrPlZKOGl2+aFPU=
+X-Received: by 2002:a17:907:78c5:b0:99b:ef8a:d64a with SMTP id
+ kv5-20020a17090778c500b0099bef8ad64amr612269ejc.0.1691125688392; Thu, 03 Aug
+ 2023 22:08:08 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+From:   Dave Airlie <airlied@gmail.com>
+Date:   Fri, 4 Aug 2023 15:07:56 +1000
+Message-ID: <CAPM=9ty0b5R=rfu21PD=V1dh91XMit2wzAuAcrJA0E8h2EuUng@mail.gmail.com>
+Subject: [git pull] drm fixes for 6.5-rc5
+To:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>
+Cc:     dri-devel <dri-devel@lists.freedesktop.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
         URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -71,46 +65,106 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add the am625 compatible property to add support for the new
-wakeup enable and status bits positions
+Hi Linus,
 
-Cc: Nishanth Menon <nm@ti.com>
-Cc: Vignesh Raghavendra <vigneshr@ti.com>
-CC: Tony Lindgren <tony@atomide.com>
-Acked-by: Conor Dooley <conor.dooley@microchip.com>
-Signed-off-by: Dhruva Gole <d-gole@ti.com>
----
+Small set of fixes this week, i915 and a few misc ones. I didn't see
+an amd pull so maybe next week it'll have a few more on that driver.
 
-Base: tag: next-20230731 + below "depends on" patch
-Depends on: https://lore.kernel.org/linux-omap/20230731061908.GG5194@atomide.com/T/
+Dave.
 
-Changelog:
+drm-fixes-2023-08-04:
+drm fixes for 6.5-rc5
 
-* v2 -> v3:
-keep order sorted, Suggested-by: Nishanth Menon <nm@ti.com>
-link to v2: https://lore.kernel.org/all/20230803150955.611717-1-d-gole@ti.com/
+ttm:
+- NULL ptr deref fix
 
-* v1 -> v2 changes:
-rename to use am625 instead of am6
-link to v1:
-https://lore.kernel.org/all/20230803092311.604610-1-d-gole@ti.com/
+panel:
+- add missing MODULE_DEVICE_TABLE
 
+imx/ipuv3:
+- timing fix
 
- Documentation/devicetree/bindings/pinctrl/pinctrl-single.yaml | 1 +
- 1 file changed, 1 insertion(+)
+i915:
+- Fix bug in getting msg length in AUX CH registers handler
+- Gen12 AUX invalidation fixes
+- Fix premature release of request's reusable memory
+The following changes since commit 5d0c230f1de8c7515b6567d9afba1f196fb4e2f4:
 
-diff --git a/Documentation/devicetree/bindings/pinctrl/pinctrl-single.yaml b/Documentation/devicetree/bindings/pinctrl/pinctrl-single.yaml
-index b6b6bcd7074b..b0a10ab22b74 100644
---- a/Documentation/devicetree/bindings/pinctrl/pinctrl-single.yaml
-+++ b/Documentation/devicetree/bindings/pinctrl/pinctrl-single.yaml
-@@ -24,6 +24,7 @@ properties:
-       - items:
-           - enum:
-               - ti,am437-padconf
-+              - ti,am625-padconf
-               - ti,dra7-padconf
-               - ti,omap2420-padconf
-               - ti,omap2430-padconf
--- 
-2.34.1
+  Linux 6.5-rc4 (2023-07-30 13:23:47 -0700)
 
+are available in the Git repository at:
+
+  git://anongit.freedesktop.org/drm/drm tags/drm-fixes-2023-08-04
+
+for you to fetch changes up to 1958b0f95a35e4443573c4c3ec2efd89d2d00d82:
+
+  Merge tag 'drm-intel-fixes-2023-08-03' of
+git://anongit.freedesktop.org/drm/drm-intel into drm-fixes (2023-08-04
+09:38:38 +1000)
+
+----------------------------------------------------------------
+drm fixes for 6.5-rc5
+
+ttm:
+- NULL ptr deref fix
+
+panel:
+- add missing MODULE_DEVICE_TABLE
+
+imx/ipuv3:
+- timing fix
+
+i915:
+- Fix bug in getting msg length in AUX CH registers handler
+- Gen12 AUX invalidation fixes
+- Fix premature release of request's reusable memory
+
+----------------------------------------------------------------
+Alexander Stein (1):
+      drm/imx/ipuv3: Fix front porch adjustment upon hactive aligning
+
+Andi Shyti (5):
+      drm/i915/gt: Cleanup aux invalidation registers
+      drm/i915: Add the gen12_needs_ccs_aux_inv helper
+      drm/i915/gt: Rename flags with bit_group_X according to the datasheet
+      drm/i915/gt: Enable the CCS_FLUSH bit in the pipe control and in the CS
+      drm/i915/gt: Support aux invalidation on all engines
+
+Dave Airlie (2):
+      Merge tag 'drm-misc-fixes-2023-08-03' of
+ssh://git.freedesktop.org/git/drm/drm-misc into drm-fixes
+      Merge tag 'drm-intel-fixes-2023-08-03' of
+git://anongit.freedesktop.org/drm/drm-intel into drm-fixes
+
+Guchun Chen (1):
+      drm/ttm: check null pointer before accessing when swapping
+
+Janusz Krzysztofik (1):
+      drm/i915: Fix premature release of request's reusable memory
+
+Jonathan Cavitt (2):
+      drm/i915/gt: Ensure memory quiesced before invalidation
+      drm/i915/gt: Poll aux invalidation register bit on invalidation
+
+Nikita Travkin (1):
+      drm/panel: samsung-s6d7aa0: Add MODULE_DEVICE_TABLE
+
+Tvrtko Ursulin (1):
+      Merge tag 'gvt-fixes-2023-08-02' of
+https://github.com/intel/gvt-linux into drm-intel-fixes
+
+Yan Zhao (1):
+      drm/i915/gvt: Fix bug in getting msg length in AUX CH registers handler
+
+ drivers/gpu/drm/i915/gt/gen8_engine_cs.c      | 140 +++++++++++++++++---------
+ drivers/gpu/drm/i915/gt/gen8_engine_cs.h      |  21 ++--
+ drivers/gpu/drm/i915/gt/intel_gpu_commands.h  |   2 +
+ drivers/gpu/drm/i915/gt/intel_gt_regs.h       |  16 +--
+ drivers/gpu/drm/i915/gt/intel_lrc.c           |  17 +---
+ drivers/gpu/drm/i915/gvt/edid.c               |   2 +-
+ drivers/gpu/drm/i915/i915_active.c            |  99 ++++++++++++------
+ drivers/gpu/drm/i915/i915_request.c           |  11 ++
+ drivers/gpu/drm/imx/ipuv3/ipuv3-crtc.c        |   2 +-
+ drivers/gpu/drm/panel/panel-samsung-s6d7aa0.c |   1 +
+ drivers/gpu/drm/ttm/ttm_bo.c                  |   3 +-
+ 11 files changed, 203 insertions(+), 111 deletions(-)
