@@ -2,107 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A4F7377001F
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 14:22:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F04B770022
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 14:23:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229720AbjHDMWi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Aug 2023 08:22:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33802 "EHLO
+        id S230020AbjHDMXZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Aug 2023 08:23:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34324 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229379AbjHDMWg (ORCPT
+        with ESMTP id S229379AbjHDMXX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Aug 2023 08:22:36 -0400
-Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2DEDA46A6
-        for <linux-kernel@vger.kernel.org>; Fri,  4 Aug 2023 05:22:36 -0700 (PDT)
-Received: by mail-pl1-x62f.google.com with SMTP id d9443c01a7336-1bc1c1c68e2so14198825ad.3
-        for <linux-kernel@vger.kernel.org>; Fri, 04 Aug 2023 05:22:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1691151755; x=1691756555;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=o3PEClLdiiliH1dtsL2h+XTbEz6roLIfQbCqPY68CHc=;
-        b=OFwVFmRsJuV6UUqxTdx++WeXscIG9wz3qJqRrDuAXHg7p82x3VGU2mwIUaxTx6orxM
-         dUqfrQE64FTMZxaB4Fm9qEk8aswDQ8xR11o1GRizBmyTaX78xDUuy9UFrqFUankR3mlv
-         SkA/DRSfyuydkQ9bpZDlXgcFxTrsR1ZstGwieEGBIZej4WUgYPT4xRuFrXfDa5IeO3So
-         wA+0+7pj+nIkGdNlhlchKSVBKl07QYHhSUN0zeZ8WQxZRaR3SsMOsVftI6Q98/4LemJS
-         GmHRP5ZpS9el+YQ7EjTn8vcnFc5DX4CgPJVTPs14zmKsoGTMq/6yt44ltY+yxqD57Sku
-         iXDg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691151755; x=1691756555;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=o3PEClLdiiliH1dtsL2h+XTbEz6roLIfQbCqPY68CHc=;
-        b=f9dKJUgY7GKxbT8HHhFW1o4fWChf+OmHv4BTZarQJpKHFRbYRFMukh70XqrXH6YCAM
-         lWTxmTZg7pZSnk/Oq0FSCosWvHLzV3s7eBDx3F249N66GQS3est5vRGjCZC03exK9zCv
-         XCrYTSZiqgwrY1DWOhr2ifHfgLaT5iISy8X87ryDeMmJVTcKcqHcGMNT2rjlvDfj/2Mc
-         G1C3cYrfJlb3fh++Ks+9K2Dkfnx7iMfZWWsKF+LDmXC9Yu8C8V04mw2LglOlMFMcttNY
-         WJ2KqQe7HqyUNQ9wRQztjbRWOoqfiVjV1W/jEnUbK7Xxm+0oREaCWiJXRUWxuVEe/Tw+
-         JcCg==
-X-Gm-Message-State: AOJu0YxurGgx+a7ca5XxknDUBaVoj8Iv8MnUvr7OuPCv87yiyI+W2mBt
-        wlt4iJ5/1aB/mUuURbk//hE=
-X-Google-Smtp-Source: AGHT+IHpYA7orGRpAw8gM8JsOK9s+I3bvjORcwLq4xVjARLrP7QPuxGl5Oo/M4efK1MNCgDs7GIjRg==
-X-Received: by 2002:a17:903:32d0:b0:1bb:14e7:4fd0 with SMTP id i16-20020a17090332d000b001bb14e74fd0mr1598438plr.7.1691151755615;
-        Fri, 04 Aug 2023 05:22:35 -0700 (PDT)
-Received: from ubuntu.myguest.virtualbox.org ([122.173.209.14])
-        by smtp.gmail.com with ESMTPSA id y22-20020a17090a6c9600b00267b7c5d232sm4364965pjj.48.2023.08.04.05.22.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 04 Aug 2023 05:22:35 -0700 (PDT)
-Date:   Fri, 4 Aug 2023 17:52:25 +0530
-From:   Pavan Bobba <opensource206@gmail.com>
-To:     Forest Bond <forest@alittletooquiet.net>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Michael Straube <straube.linux@gmail.com>,
-        Philipp Hortmann <philipp.g.hortmann@gmail.com>,
-        outreachy@lists.linux.dev
-Cc:     linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: [PATCH] staging: vt6655: replace camel case by snake case
-Message-ID: <ZMztgcr3GYqSF9sW@ubuntu.myguest.virtualbox.org>
+        Fri, 4 Aug 2023 08:23:23 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 423F446AA
+        for <linux-kernel@vger.kernel.org>; Fri,  4 Aug 2023 05:23:22 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 911F31007;
+        Fri,  4 Aug 2023 05:24:04 -0700 (PDT)
+Received: from usa.arm.com (e103737-lin.cambridge.arm.com [10.1.197.49])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 3AD4C3F5A1;
+        Fri,  4 Aug 2023 05:23:20 -0700 (PDT)
+From:   Sudeep Holla <sudeep.holla@arm.com>
+To:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        Cristian Marussi <cristian.marussi@arm.com>
+Cc:     Sudeep Holla <sudeep.holla@arm.com>, james.quinlan@broadcom.com,
+        f.fainelli@gmail.com, vincent.guittot@linaro.org,
+        aidapala@qti.qualcomm.com, souvik.chakravarty@arm.com,
+        satyakim@qti.qualcomm.com, atouzni@qti.qualcomm.com
+Subject: Re: [PATCH 0/2] Introduce SCMI v3.2 PERF Indexing support
+Date:   Fri,  4 Aug 2023 13:23:17 +0100
+Message-ID: <169115173585.3256098.11692682854165418378.b4-ty@arm.com>
+X-Mailer: git-send-email 2.41.0
+In-Reply-To: <20230717161246.1761777-1-cristian.marussi@arm.com>
+References: <20230717161246.1761777-1-cristian.marussi@arm.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Replace array name of camel case by snake case. Issue found
-by checkpatch
+On Mon, 17 Jul 2023 17:12:44 +0100, Cristian Marussi wrote:
+> this small series adds support for the upcoming optional support for
+> Performance domains Level Indexing mode.
+> 
+> PERF Protocol Level Indexing mode was introduced in SCMI V3.2 [1] as an
+> optional way to describe Performance levels using a non-linear scale.
+> 
+> SCMI platform can now optionally declare a Performance domain as
+> supporting Level Indexing and report when queried a level-index and an
+> indicative frequency that do not need to fit into a linear-scale.
+> 
+> [...]
 
-Signed-off-by: Pavan Bobba <opensource206@gmail.com>
----
- drivers/staging/vt6655/baseband.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+Applied to sudeep.holla/linux (for-next/scmi/updates), thanks!
 
-diff --git a/drivers/staging/vt6655/baseband.c b/drivers/staging/vt6655/baseband.c
-index 0e135af8316b..8b913c64845c 100644
---- a/drivers/staging/vt6655/baseband.c
-+++ b/drivers/staging/vt6655/baseband.c
-@@ -499,7 +499,7 @@ static const unsigned char by_vt3253_init_tab_rfmd[CB_VT3253_INIT_FOR_RFMD][2] =
- };
- 
- #define CB_VT3253B0_INIT_FOR_RFMD 256
--static const unsigned char byVT3253B0_RFMD[CB_VT3253B0_INIT_FOR_RFMD][2] = {
-+static const unsigned char byvt3253b0_rfmd[CB_VT3253B0_INIT_FOR_RFMD][2] = {
- 	{0x00, 0x31},
- 	{0x01, 0x00},
- 	{0x02, 0x00},
-@@ -2005,8 +2005,8 @@ bool bb_vt3253_init(struct vnt_private *priv)
- 		} else {
- 			for (ii = 0; ii < CB_VT3253B0_INIT_FOR_RFMD; ii++)
- 				result &= bb_write_embedded(priv,
--					byVT3253B0_RFMD[ii][0],
--					byVT3253B0_RFMD[ii][1]);
-+					byvt3253b0_rfmd[ii][0],
-+					byvt3253b0_rfmd[ii][1]);
- 
- 			for (ii = 0; ii < CB_VT3253B0_AGC_FOR_RFMD2959; ii++)
- 				result &= bb_write_embedded(priv,
--- 
-2.34.1
+[1/2] firmware: arm_scmi: Harden PERF domain info access
+      https://git.kernel.org/sudeep.holla/c/ecbe7c54a822
+[2/2] firmware: arm_scmi: Add v3.2 PERF Level Indexing mode support
+      https://git.kernel.org/sudeep.holla/c/6e6d9a1ecb8a
+--
+Regards,
+Sudeep
 
