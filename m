@@ -2,161 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C4ED476FB7F
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 09:56:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F43576FB80
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 09:57:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234088AbjHDH4u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Aug 2023 03:56:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45866 "EHLO
+        id S234164AbjHDH5g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Aug 2023 03:57:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46190 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229902AbjHDH4r (ORCPT
+        with ESMTP id S233076AbjHDH5e (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Aug 2023 03:56:47 -0400
-Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65B574228
-        for <linux-kernel@vger.kernel.org>; Fri,  4 Aug 2023 00:56:45 -0700 (PDT)
-Received: from canpemm500005.china.huawei.com (unknown [172.30.72.55])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4RHJ0H5b13zVjyc;
-        Fri,  4 Aug 2023 15:54:55 +0800 (CST)
-Received: from huawei.com (10.90.53.73) by canpemm500005.china.huawei.com
- (7.192.104.229) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Fri, 4 Aug
- 2023 15:56:42 +0800
-From:   Zhang Jianhua <chris.zjh@huawei.com>
-To:     <catalin.marinas@arm.com>, <will@kernel.org>, <ardb@kernel.org>,
-        <mark.rutland@arm.com>, <ryan.roberts@arm.com>,
-        <anshuman.khandual@arm.com>, <joey.gouly@arm.com>,
-        <thunder.leizhen@huawei.com>, <bhe@redhat.com>,
-        <kristina.martsenko@arm.com>, <yajun.deng@linux.dev>
-CC:     <chris.zjh@huawei.com>, <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: [PATCH -next v4] arm64: fix build warning for ARM64_MEMSTART_SHIFT
-Date:   Fri, 4 Aug 2023 15:56:15 +0800
-Message-ID: <20230804075615.3334756-1-chris.zjh@huawei.com>
-X-Mailer: git-send-email 2.34.1
+        Fri, 4 Aug 2023 03:57:34 -0400
+Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A2864228
+        for <linux-kernel@vger.kernel.org>; Fri,  4 Aug 2023 00:57:32 -0700 (PDT)
+Received: by mail-pf1-x42c.google.com with SMTP id d2e1a72fcca58-686f8614ce5so1694092b3a.3
+        for <linux-kernel@vger.kernel.org>; Fri, 04 Aug 2023 00:57:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance.com; s=google; t=1691135852; x=1691740652;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=rG4+kOpeg7A78jhutmi+pmLSeK2TMW5Crpxh1v3NLCg=;
+        b=PPDqJV2pkFNJHNQaw3+BhtMGjHyrERQm5XAh5t0a5vWBqtdpVhLn3oHVBXPLf4Mnyn
+         vEe7DWeUU1qceoplDuR9I1bCscMs+2qhw7dOR4oNxlza+ZIPx/bofBdkR6HlsD+UvLsO
+         qLsxlP/Qg3XH6Lrfyq08v8VddcQLDaSbYoNDvuhdQNE8jy75soPp08ctNZ2k94L95pET
+         kzsalaBbJmlFlzZ8OqymsWR2lrx2e40NkZYAXYWaTbcdFx86P8t6Bwg90U8sXZvBjQB/
+         RXY9DkxMcN2MnGm+m9tNwk5D5GFNaJ4mwwWG3yMgQk75uYg4mhfW1BeaRITDUHT7v0lT
+         UV2g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691135852; x=1691740652;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=rG4+kOpeg7A78jhutmi+pmLSeK2TMW5Crpxh1v3NLCg=;
+        b=KLMuUs0OfJy/dRbA48/83p2DuUuGsFfvw71NaDTSx4SQ7Z2UXLsTA4lp5b4T9nglME
+         bxvg7xn1sMel9inpmusu8QKX+fnbU7KPzT4T3rXA9tejW0pCiK+vWgYESWus5qlD9hHF
+         k7qFNiUT5Pc0tS4+chSNQiuIPzXboL+Tzi6MoXTkand3jNZfLBsawpraDs/3ZzH4hW0s
+         AR5SVg7AungpCWZJbBomt/4Z9PZ/1rbeYXMSjTZ84WIZg9DtXUUYtgvnZH+jTICfBjc2
+         9n4dXRl5mN9Dvzzoag/5k4omL0m+EETRHix7Ydi7KJcB1dEX3gC94YUIKRm8p1a7OTcU
+         y/DQ==
+X-Gm-Message-State: AOJu0YwXSHze1oIO4KJPjhvm4hetbwXvWJsRKMdRrIcxTJGyg2J4YN4I
+        e/9RiB3ziYpIQAiNGYC9zf3vjA==
+X-Google-Smtp-Source: AGHT+IEt7HGaPrPteBwIU1n3ZevOva5VIISA2YP7MmTzWbf+MJj9gTQGy9uSwIeKmudb+/ofm4T4wg==
+X-Received: by 2002:a05:6a21:6d88:b0:13f:68fd:6ae8 with SMTP id wl8-20020a056a216d8800b0013f68fd6ae8mr1357604pzb.57.1691135852009;
+        Fri, 04 Aug 2023 00:57:32 -0700 (PDT)
+Received: from Tower.bytedance.net ([203.208.167.146])
+        by smtp.gmail.com with ESMTPSA id p26-20020a62ab1a000000b006871fdde2c7sm1008676pff.110.2023.08.04.00.57.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 04 Aug 2023 00:57:31 -0700 (PDT)
+From:   Zhongkun He <hezhongkun.hzk@bytedance.com>
+To:     minchan@kernel.org, senozhatsky@chromium.org, mhocko@suse.com
+Cc:     david@redhat.com, yosryahmed@google.com, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org,
+        Zhongkun He <hezhongkun.hzk@bytedance.com>
+Subject: [RFC PATCH RESEND v2 0/2] zram: memcg accounting
+Date:   Fri,  4 Aug 2023 15:57:20 +0800
+Message-Id: <20230804075720.207943-1-hezhongkun.hzk@bytedance.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.90.53.73]
-X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
- canpemm500005.china.huawei.com (7.192.104.229)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When building with W=1, the following warning occurs.
+Applications can currently escape their cgroup memory
+containment when zram is used. This patchset adds
+per-cgroup limiting of zram compressed memory to fix it.
 
-arch/arm64/include/asm/kernel-pgtable.h:129:41: error: "PUD_SHIFT" is not defined, evaluates to 0 [-Werror=undef]
-  129 | #define ARM64_MEMSTART_SHIFT            PUD_SHIFT
-      |                                         ^~~~~~~~~
-arch/arm64/include/asm/kernel-pgtable.h:142:5: note: in expansion of macro ‘ARM64_MEMSTART_SHIFT’
-  142 | #if ARM64_MEMSTART_SHIFT < SECTION_SIZE_BITS
-      |     ^~~~~~~~~~~~~~~~~~~~
+As we know, zram can be used in two ways, direct and
+indirect, this patchset can charge memory in both cases.
+Direct zram usage by process within a cgroup will fail
+to charge if there is no memory. Indirect zram usage by
+process within a cgroup via swap in PF_MEMALLOC context,
+will charge successfully.
 
-The generic PUD_SHIFT was defined in include/asm-generic/pgtable-nopud.h,
-however the #ifndef __ASSEMBLY__ guard in this header file makes it unavailable
-for assembly files. While someone .S file include the <asm/kernel-pgtable.h>,
-the build warning would occur. Now move the macro ARM64_MEMSTART_SHIFT and
-ARM64_MEMSTART_ALIGN to arch/arm64/mm/init.c where it is used only, to avoid
-this issue.
+This allows some limit overrun, but not enough to matter
+in practice.Charge compressed page once, mean a page will
+be freed.the size of compressed page is less than or equal
+to the page to be freed. The numbers of excess depend on the
+compression ratio only. The maximum amount will not exceed
+400KB, and will be smaller than the hard limit finally,
+So not an unbounded way.
 
-Signed-off-by: Zhang Jianhua <chris.zjh@huawei.com>
----
-v4:
-	Modify the commit message to be more correct
-v3:
-	Move the defination of macro ARM64_MEMSTART_SHIFT and ARM64_MEMSTART_ALIGN
-	from arch/arm64/include/asm/kernel-pgtable.h to arch/arm64/mm/init.c
+Changes from V1:
+- remove memalloc_noreclaim_save in zram_recompress()
+- add gfp_t flag in obj_cgroup_charge_zram()
 
-v2:
-	Add define judgement of PUD_SHIFT/CONT_PMD_SHIFT/CONT_PMD_SHIFT
-	before use them, instead of define PUD_SHIFT only.
----
----
- arch/arm64/include/asm/kernel-pgtable.h | 27 -------------------------
- arch/arm64/mm/init.c                    | 27 +++++++++++++++++++++++++
- 2 files changed, 27 insertions(+), 27 deletions(-)
+V1's link:
+https://lore.kernel.org/all/20230707044613.1169103-1-hezhongkun.hzk@bytedance.com/
 
-diff --git a/arch/arm64/include/asm/kernel-pgtable.h b/arch/arm64/include/asm/kernel-pgtable.h
-index 577773870b66..85d26143faa5 100644
---- a/arch/arm64/include/asm/kernel-pgtable.h
-+++ b/arch/arm64/include/asm/kernel-pgtable.h
-@@ -118,31 +118,4 @@
- #define SWAPPER_RX_MMUFLAGS	(SWAPPER_RW_MMUFLAGS | PTE_RDONLY)
- #endif
- 
--/*
-- * To make optimal use of block mappings when laying out the linear
-- * mapping, round down the base of physical memory to a size that can
-- * be mapped efficiently, i.e., either PUD_SIZE (4k granule) or PMD_SIZE
-- * (64k granule), or a multiple that can be mapped using contiguous bits
-- * in the page tables: 32 * PMD_SIZE (16k granule)
-- */
--#if defined(CONFIG_ARM64_4K_PAGES)
--#define ARM64_MEMSTART_SHIFT		PUD_SHIFT
--#elif defined(CONFIG_ARM64_16K_PAGES)
--#define ARM64_MEMSTART_SHIFT		CONT_PMD_SHIFT
--#else
--#define ARM64_MEMSTART_SHIFT		PMD_SHIFT
--#endif
--
--/*
-- * sparsemem vmemmap imposes an additional requirement on the alignment of
-- * memstart_addr, due to the fact that the base of the vmemmap region
-- * has a direct correspondence, and needs to appear sufficiently aligned
-- * in the virtual address space.
-- */
--#if ARM64_MEMSTART_SHIFT < SECTION_SIZE_BITS
--#define ARM64_MEMSTART_ALIGN	(1UL << SECTION_SIZE_BITS)
--#else
--#define ARM64_MEMSTART_ALIGN	(1UL << ARM64_MEMSTART_SHIFT)
--#endif
--
- #endif	/* __ASM_KERNEL_PGTABLE_H */
-diff --git a/arch/arm64/mm/init.c b/arch/arm64/mm/init.c
-index 527b0057434b..8a0f8604348b 100644
---- a/arch/arm64/mm/init.c
-+++ b/arch/arm64/mm/init.c
-@@ -73,6 +73,33 @@ phys_addr_t __ro_after_init arm64_dma_phys_limit;
- 
- #define DEFAULT_CRASH_KERNEL_LOW_SIZE	(128UL << 20)
- 
-+/*
-+ * To make optimal use of block mappings when laying out the linear
-+ * mapping, round down the base of physical memory to a size that can
-+ * be mapped efficiently, i.e., either PUD_SIZE (4k granule) or PMD_SIZE
-+ * (64k granule), or a multiple that can be mapped using contiguous bits
-+ * in the page tables: 32 * PMD_SIZE (16k granule)
-+ */
-+#if defined(CONFIG_ARM64_4K_PAGES)
-+#define ARM64_MEMSTART_SHIFT		PUD_SHIFT
-+#elif defined(CONFIG_ARM64_16K_PAGES)
-+#define ARM64_MEMSTART_SHIFT		CONT_PMD_SHIFT
-+#else
-+#define ARM64_MEMSTART_SHIFT		PMD_SHIFT
-+#endif
-+
-+/*
-+ * sparsemem vmemmap imposes an additional requirement on the alignment of
-+ * memstart_addr, due to the fact that the base of the vmemmap region
-+ * has a direct correspondence, and needs to appear sufficiently aligned
-+ * in the virtual address space.
-+ */
-+#if ARM64_MEMSTART_SHIFT < SECTION_SIZE_BITS
-+#define ARM64_MEMSTART_ALIGN	(1UL << SECTION_SIZE_BITS)
-+#else
-+#define ARM64_MEMSTART_ALIGN	(1UL << ARM64_MEMSTART_SHIFT)
-+#endif
-+
- static int __init reserve_crashkernel_low(unsigned long long low_size)
- {
- 	unsigned long long low_base;
+The first patch charged in zsmalloc, now aborted:
+https://lore.kernel.org/all/20230615034830.1361853-1-hezhongkun.hzk@bytedance.com/
+
+We charge compressed memory directly in the zram module
+instead of in the zsmalloc module because zsmallc may
+be used by zswap, zswap objects has been charged once
+in the zswap module, so zsmallc will double charge.
+
+
+Summarize the previous discussion:
+
+[1]Michal's concern is that the hard limit reclaim would fail.
+
+Chage compressed page once, mean a page will be freed, so
+allows some limit overrun not exceed 400KB.
+
+[2]David's concern is that if there is a page in the BIO that
+is not charged,we can not charge the compressed page for the
+fs->zram and whether the recompress case is charged.
+
+As i can see, page caches are alloced by user with cgroup.
+For the corner case, ZERO_PAGE will not take up space after
+compression. Besides,the recompress case is charged.
+
+
+
+
+Zhongkun He (2):
+  memcg: Add support for zram object charge
+  zram: charge the compressed RAM to the page's memcgroup
+
+ drivers/block/zram/zram_drv.c | 45 +++++++++++++++++++++++++++++++++++
+ drivers/block/zram/zram_drv.h |  1 +
+ include/linux/memcontrol.h    | 12 ++++++++++
+ mm/memcontrol.c               | 24 +++++++++++++++++++
+ 4 files changed, 82 insertions(+)
+
 -- 
-2.34.1
+2.25.1
 
