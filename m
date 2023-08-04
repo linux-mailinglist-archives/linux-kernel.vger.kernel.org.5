@@ -2,125 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DC6B0770622
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 18:38:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2944A770627
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 18:38:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230313AbjHDQiS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Aug 2023 12:38:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49558 "EHLO
+        id S230359AbjHDQiv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Aug 2023 12:38:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49964 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229770AbjHDQiQ (ORCPT
+        with ESMTP id S231176AbjHDQim (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Aug 2023 12:38:16 -0400
+        Fri, 4 Aug 2023 12:38:42 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CFAF3B2;
-        Fri,  4 Aug 2023 09:38:14 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E44CE7
+        for <linux-kernel@vger.kernel.org>; Fri,  4 Aug 2023 09:38:41 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 6BF2B62097;
-        Fri,  4 Aug 2023 16:38:14 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7E2A0C433C7;
-        Fri,  4 Aug 2023 16:38:13 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id D0880620A6
+        for <linux-kernel@vger.kernel.org>; Fri,  4 Aug 2023 16:38:40 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 140F2C433C7;
+        Fri,  4 Aug 2023 16:38:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691167093;
-        bh=Eby5n4ZE0AMvm51ITihJARaywMHTaI7+TdCZEB4JlBI=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=EkYEymErHlsBYfc6voP/I5ipDUFZRX2PW1a0Dzn5Z52S+nlaFxKTFbCDZ4nzjTEAs
-         G9AGKljmTcXzTTcO3fyjbOdtCB5aa31CKRvKZxZjx4q2zX1d55WJeuC8A1uhEBJ7Cr
-         DfZ2z5kevHi7QuwwYHc+1qFUSoqRf1nlpS4mLi9gSStEHd/XFFbYG8X6qvz4Nbq8RF
-         PVwLGTO47E8PcYGKpQeGGRIFrUMqbgKmkMd0zrW+NSUMKhsq+CEPqdOKkV7PX91S8n
-         Ebw6qL0cZ/EEMaC9X3sqcZ/Y/stiL8kaZFgl1leJs3ZA7jVac9poDnPJJkwaxxKWMs
-         7lMKwPPtVLU0A==
-Date:   Fri, 4 Aug 2023 11:38:11 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     suijingfeng <suijingfeng@loongson.cn>
-Cc:     kernel test robot <lkp@intel.com>, linux-pci@vger.kernel.org,
-        llvm@lists.linux.dev, linux-kernel@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, loongson-kernel@lists.loongnix.cn,
-        oe-kbuild-all@lists.linux.dev, bhelgaas@google.com
-Subject: Re: [PATCH] PCI/VGA: Make the vga_is_firmware_default()
- arch-independent
-Message-ID: <20230804163811.GA144900@bhelgaas>
+        s=k20201202; t=1691167120;
+        bh=qcJmbyKrYS1D8pZSxSWl2IPsapUnOSqx7XtwpMAymew=;
+        h=Date:From:To:Cc:Subject:From;
+        b=sdwHziPjIpgFr0QXhr0cMolYytboK7rTwF4y1BjYwfNLHd/bndW6VrIhxURbu5rb5
+         bRDTEhq2bgT5hMt1CbYqaaHF0Wi0MfwlUOHOLy6R0q9pBlRHaaEtyytzC8XFGbQpwt
+         L84eKKYhavD3pBeSSwi2jBbyYykUTBtGgsjMhnsbFa9h/VoBo++AaRyU8UqaFTW718
+         aEVvpeIOS2WuLJFws6PuZXNBLxiUQJZ6A6i5kD0LgTkjW6JFRxdom7qcP+oJ3K2cjD
+         SRCPQR6rsc5fEi1c8pVfVuyKLPH5zc6kq4ZFlsTtgZl2DHMA6VQiLl0wQ+fw4UoSlb
+         aJVf8mzqia0jg==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 7A6AC404DF; Fri,  4 Aug 2023 13:38:37 -0300 (-03)
+Date:   Fri, 4 Aug 2023 13:38:37 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Masami Hiramatsu <mhiramat@kernel.org>
+Cc:     Adrian Hunter <adrian.hunter@intel.com>,
+        Ian Rogers <irogers@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: [PATCH 1/1] perf probe: Make synthesize_perf_probe_point() private
+ to probe-event.c
+Message-ID: <ZM0pjfOe6R4X/cql@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <8e51eb50-aa7b-f771-e53b-499bf899e22e@loongson.cn>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 04, 2023 at 11:11:12AM +0800, suijingfeng wrote:
-> On 2023/8/3 20:25, kernel test robot wrote:
-> > Hi Sui,
-> > 
-> > kernel test robot noticed the following build errors:
-> > 
-> > [auto build test ERROR on pci/next]
-> > [also build test ERROR on pci/for-linus linus/master v6.5-rc4 next-20230803]
-> > [If your patch is applied to the wrong git tree, kindly drop us a note.
-> > And when submitting patch, we suggest to use '--base' as documented in
-> > https://git-scm.com/docs/git-format-patch#_base_tree_information]
-> > 
-> > url:    https://github.com/intel-lab-lkp/linux/commits/Sui-Jingfeng/PCI-VGA-Make-the-vga_is_firmware_default-arch-independent/20230803-161838
-> > base:   https://git.kernel.org/pub/scm/linux/kernel/git/pci/pci.git next
-> > patch link:    https://lore.kernel.org/r/20230803081758.968742-1-suijingfeng%40loongson.cn
-> > patch subject: [PATCH] PCI/VGA: Make the vga_is_firmware_default() arch-independent
-> > config: arm64-randconfig-r026-20230731 (https://download.01.org/0day-ci/archive/20230803/202308032022.yiZngbbk-lkp@intel.com/config)
-> > compiler: clang version 17.0.0 (https://github.com/llvm/llvm-project.git 4a5ac14ee968ff0ad5d2cc1ffa0299048db4c88a)
-> > reproduce: (https://download.01.org/0day-ci/archive/20230803/202308032022.yiZngbbk-lkp@intel.com/reproduce)
-> > 
-> > If you fix the issue in a separate patch/commit (i.e. not just a new version of
-> > the same patch/commit), kindly add following tags
-> > | Reported-by: kernel test robot <lkp@intel.com>
-> > | Closes: https://lore.kernel.org/oe-kbuild-all/202308032022.yiZngbbk-lkp@intel.com/
-> > 
-> > All errors (new ones prefixed by >>):
-> > 
-> > > > ld.lld: error: undefined symbol: screen_info
-> >     >>> referenced by vgaarb.c:86 (drivers/pci/vgaarb.c:86)
-> >     >>>               drivers/pci/vgaarb.o:(vga_arb_firmware_fb_addr_tracker) in archive vmlinux.a
-> >     >>> referenced by vgaarb.c:86 (drivers/pci/vgaarb.c:86)
-> >     >>>               drivers/pci/vgaarb.o:(vga_arb_firmware_fb_addr_tracker) in archive vmlinux.a
-> >     >>> referenced by vgaarb.c:88 (drivers/pci/vgaarb.c:88)
-> >     >>>               drivers/pci/vgaarb.o:(vga_arb_firmware_fb_addr_tracker) in archive vmlinux.a
-> >     >>> referenced 3 more times
-> > 
-> This is a more like arch-specific problem, It will be pain at many places on platforms
-> that do not export the screen_info symbol. Not only here.
-> 
-> I have already explained that screen_info is arch-dependent many times, but no one cares about me.
-> By using (looking at) screen_info, vgaarb gets infected, and becomes arch-dependent as well.
-> vgaarb deals with VGA class (pdev->class == 0x0300XX) devices only, This makes it device-dependent.
-> Hence, It only works correctly for a small set of PCIe devices on x86.
+Not used in any other place, so just make it static.
 
-This build error report is from an automated service; there's nothing
-personal about it and the automated service isn't going to respond to
-you.
+Cc: Adrian Hunter <adrian.hunter@intel.com>
+Cc: Ian Rogers <irogers@google.com>
+Cc: Jiri Olsa <jolsa@kernel.org>
+Cc: Masami Hiramatsu <mhiramat@kernel.org>
+Cc: Namhyung Kim <namhyung@kernel.org>
+Link: https://lore.kernel.org/lkml/
+Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
+---
+ tools/perf/util/probe-event.c | 4 +++-
+ tools/perf/util/probe-event.h | 1 -
+ 2 files changed, 3 insertions(+), 2 deletions(-)
 
-The build issue is just something that will have to be resolved before
-we can consider merging the patch.
+diff --git a/tools/perf/util/probe-event.c b/tools/perf/util/probe-event.c
+index 2835d87cb97771f9..1a5b7fa459b23204 100644
+--- a/tools/perf/util/probe-event.c
++++ b/tools/perf/util/probe-event.c
+@@ -53,6 +53,8 @@
+ bool probe_event_dry_run;	/* Dry run flag */
+ struct probe_conf probe_conf = { .magic_num = DEFAULT_PROBE_MAGIC_NUM };
+ 
++static char *synthesize_perf_probe_point(struct perf_probe_point *pp);
++
+ #define semantic_error(msg ...) pr_err("Semantic error :" msg)
+ 
+ int e_snprintf(char *str, size_t size, const char *format, ...)
+@@ -2010,7 +2012,7 @@ char *synthesize_perf_probe_arg(struct perf_probe_arg *pa)
+ }
+ 
+ /* Compose only probe point (not argument) */
+-char *synthesize_perf_probe_point(struct perf_probe_point *pp)
++static char *synthesize_perf_probe_point(struct perf_probe_point *pp)
+ {
+ 	struct strbuf buf;
+ 	char *tmp, *ret = NULL;
+diff --git a/tools/perf/util/probe-event.h b/tools/perf/util/probe-event.h
+index 8ad5b1579f1d37b6..7e3b6c3d1f7447a7 100644
+--- a/tools/perf/util/probe-event.h
++++ b/tools/perf/util/probe-event.h
+@@ -137,7 +137,6 @@ int parse_probe_trace_command(const char *cmd, struct probe_trace_event *tev);
+ char *synthesize_perf_probe_command(struct perf_probe_event *pev);
+ char *synthesize_probe_trace_command(struct probe_trace_event *tev);
+ char *synthesize_perf_probe_arg(struct perf_probe_arg *pa);
+-char *synthesize_perf_probe_point(struct perf_probe_point *pp);
+ 
+ int perf_probe_event__copy(struct perf_probe_event *dst,
+ 			   struct perf_probe_event *src);
+-- 
+2.37.1
 
-Any explanation needs to go in the commit logs for the relevant
-patches.
-
-> arch-dependent, device-dependent, subsystem-dependent (part of it rely on ACPI) and
-> loading order dependent, those dependent itself are the problems.
-> It results in various undefined (uncertain) behaviors on non-x86 architectures.
-> 
-> Even on x86, some platform choose to relay on the firmware to solve the multiple GPU coexist problem.
-> so it is also firmware-dependent.
-> 
-> This patch solves part of the above problems listed, target at the *device level*, as early as possible.
-> while they still a few problems could be only solved at the *driver level*.
-> For an example, The display controller in Intel N2000 and d2000 series don't has a dedicated VRAM bar.
-> they use the "stolen memory", which is carve out by somebody (either bios or kernel?).
-> 
-> 
