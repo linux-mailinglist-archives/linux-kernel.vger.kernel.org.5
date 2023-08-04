@@ -2,95 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 106DC76FCF6
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 11:13:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E848D76FE36
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 12:13:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230209AbjHDJNi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Aug 2023 05:13:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59422 "EHLO
+        id S231397AbjHDKM5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Aug 2023 06:12:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59914 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230281AbjHDJNC (ORCPT
+        with ESMTP id S231351AbjHDKMZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Aug 2023 05:13:02 -0400
-X-Greylist: delayed 585 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Fri, 04 Aug 2023 02:10:06 PDT
-Received: from mail.diputados.gov.py (mail.diputados.gov.py [168.90.176.51])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24ECA558F
-        for <linux-kernel@vger.kernel.org>; Fri,  4 Aug 2023 02:10:05 -0700 (PDT)
-Received: from localhost (localhost [127.0.0.1])
-        by mail.diputados.gov.py (Postfix) with ESMTP id 29AA9624BF;
-        Fri,  4 Aug 2023 04:38:49 -0400 (PYT)
-Received: from mail.diputados.gov.py ([127.0.0.1])
-        by localhost (mail.diputados.gov.py [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id 7Qn3Bp7a-DjJ; Fri,  4 Aug 2023 04:38:48 -0400 (PYT)
-Received: from localhost (localhost [127.0.0.1])
-        by mail.diputados.gov.py (Postfix) with ESMTP id 5F2D162837;
-        Fri,  4 Aug 2023 04:37:13 -0400 (PYT)
-DKIM-Filter: OpenDKIM Filter v2.10.3 mail.diputados.gov.py 5F2D162837
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=diputados.gov.py;
-        s=41BE65EE-5FC6-11E8-8EC9-1FE644A38A75; t=1691138233;
-        bh=mAhvhhVt0FojqIoI5vUL967LmtKhh/nKngvxnrO5ImE=;
-        h=MIME-Version:To:From:Date:Message-Id;
-        b=ak+4qveo0UBxsoicjp7I+XR3XkaPnoFw645bIBg6iGPlQIHNMsgFYW8UiLtwwjvxh
-         qf5SYB2m6y6zjnWc7dXCGsW+Bg4WOmc13L2IVrWYEupIrqKCaylpc5VO1d7fVShIWM
-         +ggjzojsXvwUGkIY8CVUtpiWx422B8kVPQ+68Vprp85tBbuA2K0Xpf+MdiLccPyW9J
-         sqnXnhlGA4nMgpBdcEqK/3sIFJsi8kNADLU1cvMuTg/BcsCo97Z7tYoAASVrZRv3HY
-         V/qpZb9+1frau6Z7wyemMsO//CR6takiq7C+gA9mausL7kSM7NBbKRXe1sGLP9eMMs
-         kaJJ/AUyIXGiw==
-X-Virus-Scanned: amavisd-new at diputados.gov.py
-Received: from mail.diputados.gov.py ([127.0.0.1])
-        by localhost (mail.diputados.gov.py [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id coFKoji7bund; Fri,  4 Aug 2023 04:37:11 -0400 (PYT)
-Received: from [156.96.56.88] (unknown [156.96.56.88])
-        by mail.diputados.gov.py (Postfix) with ESMTPSA id 8AF4562AB6;
-        Fri,  4 Aug 2023 04:35:48 -0400 (PYT)
-Content-Type: text/plain; charset="iso-8859-1"
+        Fri, 4 Aug 2023 06:12:25 -0400
+Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5EB404C0A
+        for <linux-kernel@vger.kernel.org>; Fri,  4 Aug 2023 03:12:04 -0700 (PDT)
+Received: by mail-ej1-x636.google.com with SMTP id a640c23a62f3a-98377c5d53eso262005766b.0
+        for <linux-kernel@vger.kernel.org>; Fri, 04 Aug 2023 03:12:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=metaspace-dk.20221208.gappssmtp.com; s=20221208; t=1691143923; x=1691748723;
+        h=mime-version:message-id:in-reply-to:date:subject:cc:to:from
+         :user-agent:references:from:to:cc:subject:date:message-id:reply-to;
+        bh=2Z/BBpUHOKZw/yM1RuCQetqt09D0HDNroD0eqExzLP8=;
+        b=qAglTcQHAi7J5xkbECHo54idHG5ZAssxJuX7Bl8jhY5e6BcEvoSnwYAtj906AH7vaw
+         vrWT4UXqR0II5BN3LA6AiibMSxFA+FE6yqGJx+8FJGjhZX9A9YbPHaTiJWNg1Yq1rEcY
+         pv0hFIFi8pQXYNvwxG5tY34DjPZiGZAdQlqAE/V1+iu/UAhwRW/HeeSgFvHhEchU34nb
+         OB1jkg2RhaqRiiG6gf/XgsfdCdbNjD2e59ueeMEWLD5XYki239eHKX2LzRoruGWgqOZK
+         ueExBqMb3mAfVj10y2bfP4Bq8+uXoWt6ZIl+242+Pq/vCnOLHT0NAp1jlQ/eegnRwlw2
+         Y+3w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691143923; x=1691748723;
+        h=mime-version:message-id:in-reply-to:date:subject:cc:to:from
+         :user-agent:references:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=2Z/BBpUHOKZw/yM1RuCQetqt09D0HDNroD0eqExzLP8=;
+        b=bvPN8d/9XodZjwOwxkQ2xVzHSDBWJDlVHMTLC5L740JKKYb38JlEnVRAgN2/a7sOtp
+         Y63UpRUq1TyEjmYtnB3QfdKWbqovTQ42d9HikDY5wwFcYljJeFNlNqcL80uuGeKd1txz
+         qoNN7G9Xz7cy7OpGYIJvtu14qfgVK39ZI78HEN9zHdov+aV6t1Ci3XjeHKpz4afgzDoh
+         HVaIGK8Q36cnzD0HsOwUCw0GR9Oy8Zxn9TtjYgyL9USPsFPJ7/M5TcS2R9YRV2TvKzep
+         f7KGqKJYDnCXlGinU6Wxpgl68IGnFWt4u3aOFykNAR7rPdgbHDOZx+f7aAtVNO1a7jqh
+         Y+GA==
+X-Gm-Message-State: AOJu0Yzl7DrtqRrx5PAKz9PFCf6OJEjjJFaAmlcTNnU/o0yctk8U14c7
+        Khu8PnT/CPlHNU+OrNAYb+sFBg==
+X-Google-Smtp-Source: AGHT+IGgKoqlVBCCrx+yDVP8YPkTx4bOULHiCzASIQ6ASvusb2sFAvk0zdDN7Fy3ljAWpk5UEIazDw==
+X-Received: by 2002:a17:906:28c:b0:99b:bca6:cf90 with SMTP id 12-20020a170906028c00b0099bbca6cf90mr1137092ejf.9.1691143922719;
+        Fri, 04 Aug 2023 03:12:02 -0700 (PDT)
+Received: from localhost ([194.62.217.4])
+        by smtp.gmail.com with ESMTPSA id gt7-20020a170906f20700b00988b86d6c7csm1082249ejb.132.2023.08.04.03.12.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 04 Aug 2023 03:12:02 -0700 (PDT)
+References: <20230803140701.18515-1-nmi@metaspace.dk>
+ <20230803140701.18515-4-nmi@metaspace.dk>
+ <f339913a-3f73-5fc3-27d1-73491a8028a7@wdc.com>
+User-agent: mu4e 1.10.5; emacs 28.2.50
+From:   "Andreas Hindborg (Samsung)" <nmi@metaspace.dk>
+To:     Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
+Cc:     Ming Lei <ming.lei@redhat.com>,
+        "hch@infradead.org" <hch@infradead.org>,
+        "gost.dev@samsung.com" <gost.dev@samsung.com>,
+        "open list:BLOCK LAYER" <linux-block@vger.kernel.org>,
+        Hans Holmberg <Hans.Holmberg@wdc.com>,
+        Matias =?utf-8?Q?Bj=C3=B8rling?= <Matias.Bjorling@wdc.com>,
+        Minwoo Im <minwoo.im.dev@gmail.com>,
+        Jens Axboe <axboe@kernel.dk>,
+        Johannes Thumshirn <jth@kernel.org>,
+        Aravind Ramesh <Aravind.Ramesh@wdc.com>,
+        Damien Le Moal <dlemoal@kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v10 3/3] ublk: enable zoned storage support
+Date:   Fri, 04 Aug 2023 10:59:03 +0200
+In-reply-to: <f339913a-3f73-5fc3-27d1-73491a8028a7@wdc.com>
+Message-ID: <87y1irw1zh.fsf@metaspace.dk>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Description: Mail message body
-Subject: =?utf-8?q?Cuenta_verificaci=C3=B3n_/_actualizaci=C3=B3n?=
-To:     Recipients <pvbejarano@diputados.gov.py>
-From:   "@zimbra" <pvbejarano@diputados.gov.py>
-Date:   Fri, 04 Aug 2023 04:56:14 -0700
-Reply-To: webmasterzimbra1@gmail.com
-Message-Id: <20230804083548.8AF4562AB6@mail.diputados.gov.py>
-X-Spam-Status: No, score=3.5 required=5.0 tests=BAYES_50,DKIM_INVALID,
-        DKIM_SIGNED,FREEMAIL_FORGED_REPLYTO,FREEMAIL_REPLYTO_END_DIGIT,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_SBL,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=no autolearn_force=no version=3.4.6
-X-Spam-Level: ***
+Content-Type: text/plain
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Su cuenta no ha pasado por el proceso de verificaci=F3n / actualizaci=F3n. =
-Los titulares de cuentas deben actualizar sus cuentas dentro de los 5 d=EDa=
-s h=E1biles posteriores a la recepci=F3n de este aviso. El incumplimiento d=
-e este aviso dentro de la fecha l=EDmite puede no ser capaz de enviar o rec=
-ibir todos los mensajes y el propietario correr=E1 el riesgo de perder su c=
-uenta.
 
-Confirme los detalles de la cuenta a continuaci=F3n.
-_____________________________________
-1. Nombre y apellido:
-2. Correo electr=F3nico completo en:
-3. Nombre de usuario:
-4. Contrase=F1a:
-5. Vuelva a escribir la contrase=F1a:
-_____________________________________
- =
+Johannes Thumshirn <Johannes.Thumshirn@wdc.com> writes:
 
-NOTA !!! Si no actualiza su cuenta, su cuenta se eliminar=E1 autom=E1ticame=
-nte de nuestro sistema.
- =
+> On 03.08.23 16:09, Andreas Hindborg (Samsung) wrote:
+>> + buf = __vmalloc(bufsize, GFP_KERNEL | __GFP_NORETRY);
+>
+> Missing #include <linux/vmalloc.h> so the bot doesn't complain.
 
-Nos disculpamos por cualquier inconveniente causado.
- =
+Thanks, gotta add that so code compiles for Sega Dreamcast!
 
-Sinceramente
-Atenci=F3n al cliente
-Equipo de soporte t=E9cnico de Zimbra.
- =
+> But while we're at it, why can't you just use kvmalloc() here?
 
-Copyright =A9 2005-2023 Synacor, Inc. Todos los derechos reservados
+I don't see why not. It should be better for small reports I guess. I will change it.
+
+BR Andreas
+
