@@ -2,200 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A521A76F93D
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 07:01:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CCE7776F948
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 07:08:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231901AbjHDFB2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Aug 2023 01:01:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40170 "EHLO
+        id S233285AbjHDFHw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Aug 2023 01:07:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41350 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233160AbjHDFAX (ORCPT
+        with ESMTP id S229618AbjHDFFX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Aug 2023 01:00:23 -0400
-Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7242B44A4
-        for <linux-kernel@vger.kernel.org>; Thu,  3 Aug 2023 22:00:20 -0700 (PDT)
-Received: by mail-ej1-x634.google.com with SMTP id a640c23a62f3a-99c4923195dso225812866b.2
-        for <linux-kernel@vger.kernel.org>; Thu, 03 Aug 2023 22:00:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=tuxon.dev; s=google; t=1691125219; x=1691730019;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=IX2gVzlYc0IbH9Z7O7YhUyubEeByOYaVbMRDVDTozoA=;
-        b=KnSGNk6Z82yrDmK03jM+I9bXhjU13Pk9eDIzJDCs/BYwlVxGdZc+Rwm7Sdb9+6mtg7
-         SMGGFUfGkD/ErYSUGSRIlRW+k9eyJGFvRBadQsI08T5TuzUhdmCkp8pLs4AE0T9qG557
-         JzuuDOWdmK9LIGsSLDQhFe0B9OlZ/oefx2a4kMPKyHNsEovwjJoVAPN667dygI2ol8xp
-         ZLnXFV7N16b4o0+p1cv+tiV8Z2m94grJLvPlyxwC4+2T8rNAXlNyAbnyMAUzArqTVCeH
-         dRBQcIOj5jAhJ56o3GkCVFRDpBM67zYrQMRiAWleEHR7x/dWNTPLHP5IB2xMbPGHKsyq
-         HofQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691125219; x=1691730019;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=IX2gVzlYc0IbH9Z7O7YhUyubEeByOYaVbMRDVDTozoA=;
-        b=NPSh8WcpK74NE8nuPoUJLjFPCwu11Y4KPLAXznyet0MJJB9sMcxoJv/0VZuGntgrVl
-         PxtuOM4vJH+URnUbRu83n5H99Npwr+Gz1p/p04ONyo0VRWBk01dHn899uSduakXfqrEp
-         QetQ+jaBWoPMcoqGFGbDU8mLat7ZLwPp10TcIQPRU8iExvMNDlFOR4g/Htsd8N24k5aW
-         ZQ9FqNhEW3/VgTJmX6OLWrvV+kmsdf11KGHXBgdkg/GV3Xc7hRYdbQjX+PZYJZxNydWS
-         IK/BwM6uz3EcDwCUw/hvRdRUr2Su99fLAQhTZ6Xuj0pA4MTKmgba4n1leUtKIwlXv/1r
-         umCQ==
-X-Gm-Message-State: AOJu0Yya49t3nApYwXk5BkoeVsj46SvbhvLoJ+W8TugEcUaWPI4AsW1H
-        RqXBSpSLHIf0hxxTTemhlmduQg==
-X-Google-Smtp-Source: AGHT+IFCUZU9a4TKGl8P9srlXXK67nKOj0/XpD0wzNap0FS0y6wrAkbSOoO8HEMn1dV4NkwEfAHfpQ==
-X-Received: by 2002:a17:906:290:b0:99b:c7dc:b02 with SMTP id 16-20020a170906029000b0099bc7dc0b02mr609013ejf.57.1691125218978;
-        Thu, 03 Aug 2023 22:00:18 -0700 (PDT)
-Received: from localhost.localdomain ([82.78.167.79])
-        by smtp.gmail.com with ESMTPSA id x14-20020a1709064bce00b0098f33157e7dsm739999ejv.82.2023.08.03.22.00.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 03 Aug 2023 22:00:18 -0700 (PDT)
-From:   Claudiu Beznea <claudiu.beznea@tuxon.dev>
-To:     nicolas.ferre@microchip.com, conor.dooley@microchip.com,
-        davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
-        pabeni@redhat.com, lgirdwood@gmail.com, broonie@kernel.org,
-        perex@perex.cz, tiwai@suse.com, maz@kernel.org,
-        srinivas.kandagatla@linaro.org, thierry.reding@gmail.com,
-        u.kleine-koenig@pengutronix.de, sre@kernel.org
-Cc:     linux-arm-kernel@lists.infradead.org, linux-pm@vger.kernel.org,
-        linux-pwm@vger.kernel.org, alsa-devel@alsa-project.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Claudiu Beznea <claudiu.beznea@tuxon.dev>
-Subject: [PATCH] MAINTAINERS: update Claudiu Beznea's email address
-Date:   Fri,  4 Aug 2023 08:00:07 +0300
-Message-Id: <20230804050007.235799-1-claudiu.beznea@tuxon.dev>
-X-Mailer: git-send-email 2.39.2
+        Fri, 4 Aug 2023 01:05:23 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 888BC5588
+        for <linux-kernel@vger.kernel.org>; Thu,  3 Aug 2023 22:01:56 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 499B261F26
+        for <linux-kernel@vger.kernel.org>; Fri,  4 Aug 2023 05:01:55 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 58969C433C8;
+        Fri,  4 Aug 2023 05:01:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1691125314;
+        bh=ayVx67NI7whJIEYM/PRTa+Z5Dqnme7NKXeSusGW3xoM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=cPxCnF3eK2hlZbSFjh/cXLqmvBWOJsXEZJ6gv1SmPMfdNreoNc/jZwvWlcVS3CPHV
+         G8bg68ve2U+2olqN3F48L9mH52Gex/LYAN5lRgHS4cV8DH0g+VvAqqpYMRG5oeQ6QU
+         TaPKASXVXbp5mK3/ce8xuMmKkjQ7kSCF08W0X//Y=
+Date:   Fri, 4 Aug 2023 07:01:52 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Atul Raut <rauji.raut@gmail.com>
+Cc:     linux-kernel@vger.kernel.org,
+        linux-kernel-mentees@lists.linuxfoundation.org
+Subject: Re: [PATCH v2] ipc:msg: replace one-element array with
+ flexible-array member
+Message-ID: <2023080434-angrily-colossal-22b5@gregkh>
+References: <20230804041949.5724-1-rauji.raut@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230804041949.5724-1-rauji.raut@gmail.com>
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Update MAINTAINERS entries with a valid email address as the Microchip
-one is no longer valid.
+On Thu, Aug 03, 2023 at 09:19:49PM -0700, Atul Raut wrote:
+> One-element arrays are obsolete, and flexible
+> array members have taken their place. So, in
+> struct compat_msgbuf, replace the one-element
+> array with a flexible-array member.
+> 
+> This fixes warnings such as:
+> ./ipc/msg.c:981:6-11: WARNING use flexible-array member instead (https://www.kernel.org/doc/html/latest/process/deprecated.html#zero-length-and-one-element-arrays)
+> 
+> Signed-off-by: Atul Raut <rauji.raut@gmail.com>
+> ---
+>  ipc/msg.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/ipc/msg.c b/ipc/msg.c
+> index fd08b3cb36d7..ee6af4fe52bf 100644
+> --- a/ipc/msg.c
+> +++ b/ipc/msg.c
+> @@ -978,7 +978,7 @@ SYSCALL_DEFINE4(msgsnd, int, msqid, struct msgbuf __user *, msgp, size_t, msgsz,
+>  
+>  struct compat_msgbuf {
+>  	compat_long_t mtype;
+> -	char mtext[1];
+> +	char mtext[];
+>  };
+>  
+>  long compat_ksys_msgsnd(int msqid, compat_uptr_t msgp,
+> -- 
+> 2.34.1
+> 
+> _______________________________________________
+> Linux-kernel-mentees mailing list
+> Linux-kernel-mentees@lists.linuxfoundation.org
+> https://lists.linuxfoundation.org/mailman/listinfo/linux-kernel-mentees
 
-Acked-by: Conor Dooley <conor.dooley@microchip.com>
-Acked-by: Nicolas Ferre <nicolas.ferre@microchip.com>
-Signed-off-by: Claudiu Beznea <claudiu.beznea@tuxon.dev>
----
+Hi,
 
-Changes in v2:
-- collected tags
-- extended the recipients list to include individual subsystem
-  maintainers and lists instead using only linux-kernel@vger.kernel.org
-  as suggested initially by get_maintainers.pl
+This is the friendly patch-bot of Greg Kroah-Hartman.  You have sent him
+a patch that has triggered this response.  He used to manually respond
+to these common problems, but in order to save his sanity (he kept
+writing the same thing over and over, yet to different people), I was
+created.  Hopefully you will not take offence and will fix the problem
+in your patch and resubmit it so that it can be accepted into the Linux
+kernel tree.
 
- MAINTAINERS | 22 +++++++++++-----------
- 1 file changed, 11 insertions(+), 11 deletions(-)
+You are receiving this message because of the following common error(s)
+as indicated below:
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 128fd295f86f..d48d8e857f57 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -2351,7 +2351,7 @@ F:	drivers/phy/mediatek/
- ARM/MICROCHIP (ARM64) SoC support
- M:	Conor Dooley <conor@kernel.org>
- M:	Nicolas Ferre <nicolas.ferre@microchip.com>
--M:	Claudiu Beznea <claudiu.beznea@microchip.com>
-+M:	Claudiu Beznea <claudiu.beznea@tuxon.dev>
- L:	linux-arm-kernel@lists.infradead.org (moderated for non-subscribers)
- S:	Supported
- T:	git https://git.kernel.org/pub/scm/linux/kernel/git/at91/linux.git
-@@ -2360,7 +2360,7 @@ F:	arch/arm64/boot/dts/microchip/
- ARM/Microchip (AT91) SoC support
- M:	Nicolas Ferre <nicolas.ferre@microchip.com>
- M:	Alexandre Belloni <alexandre.belloni@bootlin.com>
--M:	Claudiu Beznea <claudiu.beznea@microchip.com>
-+M:	Claudiu Beznea <claudiu.beznea@tuxon.dev>
- L:	linux-arm-kernel@lists.infradead.org (moderated for non-subscribers)
- S:	Supported
- W:	http://www.linux4sam.org
-@@ -3265,7 +3265,7 @@ F:	include/uapi/linux/atm*
- 
- ATMEL MACB ETHERNET DRIVER
- M:	Nicolas Ferre <nicolas.ferre@microchip.com>
--M:	Claudiu Beznea <claudiu.beznea@microchip.com>
-+M:	Claudiu Beznea <claudiu.beznea@tuxon.dev>
- S:	Supported
- F:	drivers/net/ethernet/cadence/
- 
-@@ -13880,7 +13880,7 @@ F:	Documentation/devicetree/bindings/serial/atmel,at91-usart.yaml
- F:	drivers/spi/spi-at91-usart.c
- 
- MICROCHIP AUDIO ASOC DRIVERS
--M:	Claudiu Beznea <claudiu.beznea@microchip.com>
-+M:	Claudiu Beznea <claudiu.beznea@tuxon.dev>
- L:	alsa-devel@alsa-project.org (moderated for non-subscribers)
- S:	Supported
- F:	Documentation/devicetree/bindings/sound/atmel*
-@@ -13903,7 +13903,7 @@ S:	Maintained
- F:	drivers/crypto/atmel-ecc.*
- 
- MICROCHIP EIC DRIVER
--M:	Claudiu Beznea <claudiu.beznea@microchip.com>
-+M:	Claudiu Beznea <claudiu.beznea@tuxon.dev>
- L:	linux-arm-kernel@lists.infradead.org (moderated for non-subscribers)
- S:	Supported
- F:	Documentation/devicetree/bindings/interrupt-controller/microchip,sama7g5-eic.yaml
-@@ -13976,7 +13976,7 @@ F:	drivers/video/fbdev/atmel_lcdfb.c
- F:	include/video/atmel_lcdc.h
- 
- MICROCHIP MCP16502 PMIC DRIVER
--M:	Claudiu Beznea <claudiu.beznea@microchip.com>
-+M:	Claudiu Beznea <claudiu.beznea@tuxon.dev>
- L:	linux-arm-kernel@lists.infradead.org (moderated for non-subscribers)
- S:	Supported
- F:	Documentation/devicetree/bindings/regulator/mcp16502-regulator.txt
-@@ -14003,7 +14003,7 @@ F:	Documentation/devicetree/bindings/mtd/atmel-nand.txt
- F:	drivers/mtd/nand/raw/atmel/*
- 
- MICROCHIP OTPC DRIVER
--M:	Claudiu Beznea <claudiu.beznea@microchip.com>
-+M:	Claudiu Beznea <claudiu.beznea@tuxon.dev>
- L:	linux-arm-kernel@lists.infradead.org (moderated for non-subscribers)
- S:	Supported
- F:	Documentation/devicetree/bindings/nvmem/microchip,sama7g5-otpc.yaml
-@@ -14042,7 +14042,7 @@ F:	Documentation/devicetree/bindings/fpga/microchip,mpf-spi-fpga-mgr.yaml
- F:	drivers/fpga/microchip-spi.c
- 
- MICROCHIP PWM DRIVER
--M:	Claudiu Beznea <claudiu.beznea@microchip.com>
-+M:	Claudiu Beznea <claudiu.beznea@tuxon.dev>
- L:	linux-arm-kernel@lists.infradead.org (moderated for non-subscribers)
- L:	linux-pwm@vger.kernel.org
- S:	Supported
-@@ -14058,7 +14058,7 @@ F:	drivers/iio/adc/at91-sama5d2_adc.c
- F:	include/dt-bindings/iio/adc/at91-sama5d2_adc.h
- 
- MICROCHIP SAMA5D2-COMPATIBLE SHUTDOWN CONTROLLER
--M:	Claudiu Beznea <claudiu.beznea@microchip.com>
-+M:	Claudiu Beznea <claudiu.beznea@tuxon.dev>
- S:	Supported
- F:	Documentation/devicetree/bindings/power/reset/atmel,sama5d2-shdwc.yaml
- F:	drivers/power/reset/at91-sama5d2_shdwc.c
-@@ -14075,7 +14075,7 @@ S:	Supported
- F:	drivers/spi/spi-atmel.*
- 
- MICROCHIP SSC DRIVER
--M:	Claudiu Beznea <claudiu.beznea@microchip.com>
-+M:	Claudiu Beznea <claudiu.beznea@tuxon.dev>
- L:	linux-arm-kernel@lists.infradead.org (moderated for non-subscribers)
- S:	Supported
- F:	Documentation/devicetree/bindings/misc/atmel-ssc.txt
-@@ -14104,7 +14104,7 @@ F:	drivers/usb/gadget/udc/atmel_usba_udc.*
- 
- MICROCHIP WILC1000 WIFI DRIVER
- M:	Ajay Singh <ajay.kathat@microchip.com>
--M:	Claudiu Beznea <claudiu.beznea@microchip.com>
-+M:	Claudiu Beznea <claudiu.beznea@tuxon.dev>
- L:	linux-wireless@vger.kernel.org
- S:	Supported
- F:	drivers/net/wireless/microchip/wilc1000/
--- 
-2.39.2
+- This looks like a new version of a previously submitted patch, but you
+  did not list below the --- line any changes from the previous version.
+  Please read the section entitled "The canonical patch format" in the
+  kernel file, Documentation/process/submitting-patches.rst for what
+  needs to be done here to properly describe this.
 
+If you wish to discuss this problem further, or you have questions about
+how to resolve this issue, please feel free to respond to this email and
+Greg will reply once he has dug out from the pending patches received
+from other developers.
+
+thanks,
+
+greg k-h's patch email bot
