@@ -2,286 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 988B3770142
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 15:18:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 542F2770109
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 15:16:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230476AbjHDNRs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Aug 2023 09:17:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57864 "EHLO
+        id S230447AbjHDNQG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Aug 2023 09:16:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57870 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230466AbjHDNQq (ORCPT
+        with ESMTP id S230343AbjHDNP5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Aug 2023 09:16:46 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E11724ED9
-        for <linux-kernel@vger.kernel.org>; Fri,  4 Aug 2023 06:14:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1691154850;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=f/BKSXxxhhMTfoeqsWRqFb0Oq6eukia0RhTi4EGOEeI=;
-        b=XIsEsi9bGPcV9jdhZ1+CVDecrYtoCC+a6eSTuKOji+4BgRxjHNhVyyZ6UertO/rtyFEve8
-        5qY092FUQo78+CkVAbq1E76EnocWMR9tmNkP/NYmPfFrlJfc72HOPwUG+Vz/VD51Rd3Prc
-        UQy36xg7H+xOBsyHhXpICQVmnFLOZGo=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-625-EwXe6hFBMXSXqLNuy816gg-1; Fri, 04 Aug 2023 09:14:07 -0400
-X-MC-Unique: EwXe6hFBMXSXqLNuy816gg-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.rdu2.redhat.com [10.11.54.4])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        Fri, 4 Aug 2023 09:15:57 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0EB011B;
+        Fri,  4 Aug 2023 06:14:21 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 585A9805951;
-        Fri,  4 Aug 2023 13:14:06 +0000 (UTC)
-Received: from warthog.procyon.org.uk (unknown [10.42.28.131])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 37D29201EE6E;
-        Fri,  4 Aug 2023 13:14:05 +0000 (UTC)
-From:   David Howells <dhowells@redhat.com>
-To:     Ilya Dryomov <idryomov@gmail.com>, Xiubo Li <xiubli@redhat.com>
-Cc:     David Howells <dhowells@redhat.com>,
-        Jeff Layton <jlayton@kernel.org>,
-        Dongsheng Yang <dongsheng.yang@easystack.cn>,
-        ceph-devel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [RFC PATCH 18/18] ceph: Don't use data_pages
-Date:   Fri,  4 Aug 2023 14:13:27 +0100
-Message-ID: <20230804131327.2574082-19-dhowells@redhat.com>
-In-Reply-To: <20230804131327.2574082-1-dhowells@redhat.com>
-References: <20230804131327.2574082-1-dhowells@redhat.com>
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 2860F61FF8;
+        Fri,  4 Aug 2023 13:14:21 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 07F31C433C8;
+        Fri,  4 Aug 2023 13:14:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1691154860;
+        bh=JRE8h+VxG5Sd0jsKXzMVWXS7hQJqeXSQ/aS/ksekctE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=kiXa8ellOolgBX83CbkFAS4DexJZLm4NO9bEkXxWKDp2PRndVu92Fl8me2/AuA2iW
+         kAyX6ZYB8BHKmENnZohPpK8n/tItrWyZz3yDJt3zsoPqQBM4J+b+jI7prCAVlroolS
+         eC+syGFi33IAs2OJ/bVkE2Lueby6EfFjTC8uOsl8=
+Date:   Fri, 4 Aug 2023 15:14:18 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Hugo Villeneuve <hugo@hugovil.com>
+Cc:     robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+        conor+dt@kernel.org, jirislaby@kernel.org, jringle@gridpoint.com,
+        isaac.true@canonical.com, jesse.sung@canonical.com,
+        l.perczak@camlintechnologies.com, tomasz.mon@camlingroup.com,
+        linux-serial@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org,
+        Hugo Villeneuve <hvilleneuve@dimonoff.com>,
+        stable@vger.kernel.org, Lech Perczak <lech.perczak@camlingroup.com>
+Subject: Re: [PATCH v9 04/10] serial: sc16is7xx: refactor GPIO controller
+ registration
+Message-ID: <2023080415-kinetic-repurpose-030a@gregkh>
+References: <20230725142343.1724130-1-hugo@hugovil.com>
+ <20230725142343.1724130-5-hugo@hugovil.com>
+ <2023073118-mousiness-sandlot-6258@gregkh>
+ <20230803121449.bcf74899e062ca39dfb073a3@hugovil.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.4
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230803121449.bcf74899e062ca39dfb073a3@hugovil.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
----
- fs/ceph/addr.c                  | 16 +++++-----------
- fs/ceph/file.c                  | 34 +++++++++++++++------------------
- include/linux/ceph/osd_client.h |  1 +
- net/ceph/osd_client.c           | 16 ++--------------
- 4 files changed, 23 insertions(+), 44 deletions(-)
+On Thu, Aug 03, 2023 at 12:14:49PM -0400, Hugo Villeneuve wrote:
+> On Mon, 31 Jul 2023 17:55:42 +0200
+> Greg KH <gregkh@linuxfoundation.org> wrote:
+> 
+> > On Tue, Jul 25, 2023 at 10:23:36AM -0400, Hugo Villeneuve wrote:
+> > > From: Hugo Villeneuve <hvilleneuve@dimonoff.com>
+> > > 
+> > > In preparation for upcoming patch "fix regression with GPIO
+> > > configuration". To facilitate review and make code more modular.
+> > 
+> > I would much rather the issue be fixed _before_ the code is refactored,
+> > unless it is impossible to fix it without the refactor?
+> 
+> Hi Greg,
+> normally I would agree, but the refactor in this case helps a lot to
+> address some issues raised by you and Andy in V7 of this series.
+> 
+> Maybe I could merge it with the actual patch "fix regression with GPIO
+> configuration"?
 
-diff --git a/fs/ceph/addr.c b/fs/ceph/addr.c
-index 7571606cf61f..7557f4a85ef0 100644
---- a/fs/ceph/addr.c
-+++ b/fs/ceph/addr.c
-@@ -277,11 +277,6 @@ static void finish_netfs_read(struct ceph_osd_request *req)
- 		}
- 	}
- 
--	if (osd_data->type == CEPH_OSD_DATA_TYPE_PAGES) {
--		ceph_put_page_vector(osd_data->pages,
--				     calc_pages_for(osd_data->offset,
--					osd_data->length), false);
--	}
- 	netfs_subreq_terminated(subreq, err, false);
- 	iput(req->r_inode);
- 	ceph_dec_osd_stopping_blocker(fsc->mdsc);
-@@ -2007,7 +2002,7 @@ static int __ceph_pool_perm_get(struct ceph_inode_info *ci,
- 	struct ceph_osd_request *rd_req = NULL, *wr_req = NULL;
- 	struct rb_node **p, *parent;
- 	struct ceph_pool_perm *perm;
--	struct page **pages;
-+	struct ceph_databuf *dbuf;
- 	size_t pool_ns_len;
- 	int err = 0, err2 = 0, have = 0;
- 
-@@ -2107,14 +2102,13 @@ static int __ceph_pool_perm_get(struct ceph_inode_info *ci,
- 		goto out_unlock;
- 
- 	/* one page should be large enough for STAT data */
--	pages = ceph_alloc_page_vector(1, GFP_KERNEL);
--	if (IS_ERR(pages)) {
--		err = PTR_ERR(pages);
-+	dbuf = ceph_databuf_alloc(1, PAGE_SIZE, GFP_KERNEL);
-+	if (!dbuf) {
-+		err = -ENOMEM;
- 		goto out_unlock;
- 	}
- 
--	osd_req_op_raw_data_in_pages(rd_req, 0, pages, PAGE_SIZE,
--				     0, false, true);
-+	osd_req_op_raw_data_in_databuf(rd_req, 0, dbuf);
- 	ceph_osdc_start_request(&fsc->client->osdc, rd_req);
- 
- 	wr_req->r_mtime = ci->netfs.inode.i_mtime;
-diff --git a/fs/ceph/file.c b/fs/ceph/file.c
-index 5d16469a3690..caf557187ca8 100644
---- a/fs/ceph/file.c
-+++ b/fs/ceph/file.c
-@@ -977,6 +977,7 @@ ssize_t __ceph_sync_read(struct inode *inode, loff_t *ki_pos,
- 	struct ceph_fs_client *fsc = ceph_inode_to_fs_client(inode);
- 	struct ceph_client *cl = fsc->client;
- 	struct ceph_osd_client *osdc = &fsc->client->osdc;
-+	struct ceph_databuf *dbuf;
- 	ssize_t ret;
- 	u64 off = *ki_pos;
- 	u64 len = iov_iter_count(to);
-@@ -1041,16 +1042,14 @@ ssize_t __ceph_sync_read(struct inode *inode, loff_t *ki_pos,
- 
- 		num_pages = calc_pages_for(read_off, read_len);
- 		page_off = offset_in_page(off);
--		pages = ceph_alloc_page_vector(num_pages, GFP_KERNEL);
--		if (IS_ERR(pages)) {
-+		dbuf = ceph_databuf_alloc(num_pages, read_len, GFP_KERNEL);
-+		if (!dbuf) {
- 			ceph_osdc_put_request(req);
--			ret = PTR_ERR(pages);
-+			ret = -ENOMEM;
- 			break;
- 		}
- 
--		osd_req_op_extent_osd_data_pages(req, 0, pages, read_len,
--						 offset_in_page(read_off),
--						 false, false);
-+		osd_req_op_extent_osd_databuf(req, 0, dbuf);
- 
- 		op = &req->r_ops[0];
- 		if (sparse) {
-@@ -1137,7 +1136,7 @@ ssize_t __ceph_sync_read(struct inode *inode, loff_t *ki_pos,
- 				break;
- 			}
- 		}
--		ceph_release_page_vector(pages, num_pages);
-+		ceph_databuf_release(dbuf);
- 
- 		if (ret < 0) {
- 			if (ret == -EBLOCKLISTED)
-@@ -1625,7 +1624,7 @@ ceph_sync_write(struct kiocb *iocb, struct iov_iter *from, loff_t pos,
- 	struct ceph_client *cl = fsc->client;
- 	struct ceph_osd_client *osdc = &fsc->client->osdc;
- 	struct ceph_osd_request *req;
--	struct page **pages;
-+	struct ceph_databuf *dbuf = NULL;
- 	u64 len;
- 	int num_pages;
- 	int written = 0;
-@@ -1691,9 +1690,9 @@ ceph_sync_write(struct kiocb *iocb, struct iov_iter *from, loff_t pos,
- 		 * an array of pagecache pages.
- 		 */
- 		num_pages = calc_pages_for(write_pos, write_len);
--		pages = ceph_alloc_page_vector(num_pages, GFP_KERNEL);
--		if (IS_ERR(pages)) {
--			ret = PTR_ERR(pages);
-+		dbuf = ceph_databuf_alloc(num_pages, num_pages * PAGE_SIZE, GFP_KERNEL);
-+		if (!dbuf) {
-+			ret = -ENOMEM;
- 			break;
- 		}
- 
-@@ -1722,7 +1721,6 @@ ceph_sync_write(struct kiocb *iocb, struct iov_iter *from, loff_t pos,
- 					NULL, ci->i_truncate_seq,
- 					ci->i_truncate_size, false);
- 			if (IS_ERR(req)) {
--				ceph_release_page_vector(pages, num_pages);
- 				ret = PTR_ERR(req);
- 				break;
- 			}
-@@ -1730,7 +1728,6 @@ ceph_sync_write(struct kiocb *iocb, struct iov_iter *from, loff_t pos,
- 			/* Something is misaligned! */
- 			if (read_len != CEPH_FSCRYPT_BLOCK_SIZE) {
- 				ceph_osdc_put_request(req);
--				ceph_release_page_vector(pages, num_pages);
- 				ret = -EIO;
- 				break;
- 			}
-@@ -1739,15 +1736,14 @@ ceph_sync_write(struct kiocb *iocb, struct iov_iter *from, loff_t pos,
- 			op = &req->r_ops[0];
- 
- 			if (first) {
--				osd_req_op_extent_osd_data_pages(req, 0, pages,
--							 CEPH_FSCRYPT_BLOCK_SIZE,
--							 offset_in_page(first_pos),
--							 false, false);
-+				iov_iter_advance(&dbuf->iter, offset_in_page(first_pos));
-+				osd_req_op_extent_osd_databuf(req, 0, dbuf,
-+							 CEPH_FSCRYPT_BLOCK_SIZE);
-+				dbuf = NULL;
- 				/* We only expect a single extent here */
- 				ret = __ceph_alloc_sparse_ext_map(op, 1);
- 				if (ret) {
- 					ceph_osdc_put_request(req);
--					ceph_release_page_vector(pages, num_pages);
- 					break;
- 				}
- 			}
-@@ -1766,7 +1762,6 @@ ceph_sync_write(struct kiocb *iocb, struct iov_iter *from, loff_t pos,
- 				ret = __ceph_alloc_sparse_ext_map(op, 1);
- 				if (ret) {
- 					ceph_osdc_put_request(req);
--					ceph_release_page_vector(pages, num_pages);
- 					break;
- 				}
- 
-@@ -1998,6 +1993,7 @@ ceph_sync_write(struct kiocb *iocb, struct iov_iter *from, loff_t pos,
- 
- 	}
- 
-+	ceph_databuf_release(dbuf);
- 	if (ret != -EOLDSNAPC && written > 0) {
- 		ret = written;
- 		iocb->ki_pos = pos;
-diff --git a/include/linux/ceph/osd_client.h b/include/linux/ceph/osd_client.h
-index 1a1137787487..c26a7866695a 100644
---- a/include/linux/ceph/osd_client.h
-+++ b/include/linux/ceph/osd_client.h
-@@ -110,6 +110,7 @@ struct ceph_osd_data {
- 	enum ceph_osd_data_type	type;
- 	struct ceph_databuf	*dbuf;
- 	struct iov_iter		iter;
-+	size_t			length;
- };
- 
- struct ceph_osd_req_op {
-diff --git a/net/ceph/osd_client.c b/net/ceph/osd_client.c
-index 6fb78ae14f03..95daf4cdb07b 100644
---- a/net/ceph/osd_client.c
-+++ b/net/ceph/osd_client.c
-@@ -127,6 +127,7 @@ static void ceph_osd_iter_init(struct ceph_osd_data *osd_data,
- {
- 	osd_data->type = CEPH_OSD_DATA_TYPE_ITER;
- 	osd_data->iter = *iter;
-+	osd_data->length = iter->count;
- }
- 
- /*
-@@ -239,19 +240,6 @@ void osd_req_op_cls_response_databuf(struct ceph_osd_request *osd_req,
- }
- EXPORT_SYMBOL(osd_req_op_cls_response_databuf);
- 
--static u64 ceph_osd_data_length(struct ceph_osd_data *osd_data)
--{
--	switch (osd_data->type) {
--	case CEPH_OSD_DATA_TYPE_NONE:
--		return 0;
--	case CEPH_OSD_DATA_TYPE_ITER:
--		return iov_iter_count(&osd_data->iter);
--	default:
--		WARN(true, "unrecognized data type %d\n", (int)osd_data->type);
--		return 0;
--	}
--}
--
- static void ceph_osd_data_release(struct ceph_osd_data *osd_data)
- {
- 	ceph_osd_data_init(osd_data);
-@@ -4475,7 +4463,7 @@ static void handle_watch_notify(struct ceph_osd_client *osdc,
- 			if (data) {
- 				if (lreq->reply) {
- 					WARN_ON(data->type !=
--							CEPH_MSG_DATA_PAGES);
-+							CEPH_MSG_DATA_DATABUF);
- 					*lreq->preply_pages = data->pages;
- 					*lreq->preply_len = data->length;
- 					data->own_pages = false;
+Sure.
 
+> > > Cc: <stable@vger.kernel.org> # 6.1.x
+> > 
+> > What commit id does this fix?
+> 
+> It doesn't fix anything, but I tought that I needed this tag since
+> this patch is a prerequisite for the next patch in the series, which
+> would be applied to stable kernels. I will remove this tag (assuming
+> the patch stays as it is, depending on your answer to the above
+> question).
+> 
+>  
+> > > Signed-off-by: Hugo Villeneuve <hvilleneuve@dimonoff.com>
+> > > Reviewed-by: Lech Perczak <lech.perczak@camlingroup.com>
+> > > Tested-by: Lech Perczak <lech.perczak@camlingroup.com>
+> > > ---
+> > >  drivers/tty/serial/sc16is7xx.c | 40 ++++++++++++++++++++--------------
+> > >  1 file changed, 24 insertions(+), 16 deletions(-)
+> > > 
+> > > diff --git a/drivers/tty/serial/sc16is7xx.c b/drivers/tty/serial/sc16is7xx.c
+> > > index 32d43d00a583..5b0aeef9d534 100644
+> > > --- a/drivers/tty/serial/sc16is7xx.c
+> > > +++ b/drivers/tty/serial/sc16is7xx.c
+> > > @@ -332,6 +332,7 @@ struct sc16is7xx_one {
+> > >  
+> > >  struct sc16is7xx_port {
+> > >  	const struct sc16is7xx_devtype	*devtype;
+> > > +	struct device			*dev;
+> > 
+> > Why is this pointer needed?
+> > 
+> > Why is it grabbed and yet the reference count is never incremented?  Who
+> > owns the reference count and when will it go away?
+> > 
+> > And what device is this?  The parent?  Current device?  What type of
+> > device is it?  And why is it needed?
+> > 
+> > Using "raw" devices is almost never something a driver should do, they
+> > are only passed into functions by the driver core, but then the driver
+> > should instantly turn them into the "real" structure.
+> 
+> We already discussed that a lot in previous versions (v7)... I am
+> trying my best to modify the code to address your concerns, but I am
+> not fully understanding what you mean about raw devices, and you didn't
+> answer some of my previous questions/interrogations in v7 about that.
+
+I don't have time to answer all questions, sorry.
+
+Please help review submitted patches to reduce my load and allow me to
+answer other stuff :)
+
+> So, in the new function that I
+> need to implement, sc16is7xx_setup_gpio_chip(), I absolutely need to use
+> a raw device to read a device tree property and to set
+> s->gpio.parent:
+> 
+>     count = device_property_count_u32(dev, ...
+>     ...
+>     s->gpio.parent = dev;
+> 
+> Do we agree on that?
+
+Yes, but what type of parent is that?
+
+> Then, how do I pass this raw device to the 
+> device_property_count_u32() function and to the s->gpio.parent
+> assignment?
+> 
+> Should I modify sc16is7xx_setup_gpio_chip() like so:
+> 
+>     static int sc16is7xx_setup_gpio_chip(struct sc16is7xx_port *s)
+>     {
+> 	struct device *dev = &s->p[0].port.dev;
+> 
+>         count = device_property_count_u32(dev, ...
+>         ...
+>         s->gpio.parent = dev;
+
+Again, what is the real type of that parent?  It's a port, right, so
+pass in the port to this function and then do the "take the struct
+device of the port" at that point in time.
+
+thanks,
+
+greg k-h
