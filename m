@@ -2,114 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B7D47708C3
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 21:14:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AD6FE7708C5
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 21:15:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229872AbjHDTOu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Aug 2023 15:14:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47198 "EHLO
+        id S229917AbjHDTP4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Aug 2023 15:15:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47622 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229488AbjHDTOr (ORCPT
+        with ESMTP id S229686AbjHDTPy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Aug 2023 15:14:47 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ABD93B9
-        for <linux-kernel@vger.kernel.org>; Fri,  4 Aug 2023 12:14:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
-        Message-ID:Sender:Reply-To:Content-ID:Content-Description;
-        bh=aREuGkA6w6ZICk1lacHviCDE3QhBS3vYAP3oRmfIz2g=; b=UN53eR/oleMlzX8th93EgvH1hM
-        h6VWPT4wWPTy7mBKrB9su6MXRV2bAgQBHnQMUihJ7UVVSfPDTKZ0C4UQ9fens3ReZLB6hzTsm6uDP
-        Jwd7saRxo3qI6xqyc/vrFkg+lrY3cZvqXwMx0Et4EmwrCurvVM3As9CMIHt2b4YZZMueGLcJOfpS0
-        ZXjkQEf2cL81PovwJVdvKHSpJ55FhflIq80v3Fbv1u5ATYFo3di+ETGZS95UwuQ8HntRq/z5/yphT
-        sj8qdXeBvgSqaT5gT45X/+us0kOW0ufyQINfBmPXOO0OmamY0gTajROqUyI52CVZmPRPwjuCXZKWC
-        GlYC7e8g==;
-Received: from [2601:1c2:980:9ec0::2764]
-        by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-        id 1qS0G5-00D5rN-31;
-        Fri, 04 Aug 2023 19:14:45 +0000
-Message-ID: <77cdbbed-e64d-0c55-bf0a-6dfcfbdb8b20@infradead.org>
-Date:   Fri, 4 Aug 2023 12:14:44 -0700
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH] drm: Drop select FRAMEBUFFER_CONSOLE for
- DRM_FBDEV_EMULATION
-Content-Language: en-US
-To:     Javier Martinez Canillas <javierm@redhat.com>,
-        linux-kernel@vger.kernel.org
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        Arthur Grillo <arthurgrillo@riseup.net>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        David Airlie <airlied@gmail.com>, Helge Deller <deller@gmx.de>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        dri-devel@lists.freedesktop.org
-References: <20230804125156.1387542-1-javierm@redhat.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-In-Reply-To: <20230804125156.1387542-1-javierm@redhat.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+        Fri, 4 Aug 2023 15:15:54 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0B8CAC
+        for <linux-kernel@vger.kernel.org>; Fri,  4 Aug 2023 12:15:53 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 7E05462104
+        for <linux-kernel@vger.kernel.org>; Fri,  4 Aug 2023 19:15:53 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id D95CFC433C8;
+        Fri,  4 Aug 2023 19:15:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1691176552;
+        bh=BTDmvF98QBBNdLFLZxQgPplXlHOWc41jczuAih7K3dM=;
+        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+        b=VjPK5a4D/Sm2mSMjc+SrHxH7qcl73djH8HPFehkSa6G83uOu03R/uwDX8wp951The
+         eei2nuQQMexaaGlnPlG7Wivc7bQBDupYyGL/+ObNn2WdY+2HGkxrZepanUWRiG2PsX
+         WU4ex8wnSGX29RZWFvssvW1D3z78CQ3mXSar8EaA9ekSUeWu4f+Z6njl9qJVEdfFqn
+         qj6FLIBswYJHbzKhZe0mw3vP6Dxljl3ngp8bWXktT/NRZ+iqMR5tocgfFBNVEasdgc
+         iURznPIZbtXy6IjjIGcTcdrOGdBqgwO1CERjspSo8YoaoFJp7g5yihT/P4Kdp1rCMk
+         0pa1XDZ4XYFZA==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id C2F7CC43168;
+        Fri,  4 Aug 2023 19:15:52 +0000 (UTC)
+Subject: Re: [GIT PULL] arm64 fixes for 6.5-rc5
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <ZM1J35gT1jjr96Vh@arm.com>
+References: <ZM1J35gT1jjr96Vh@arm.com>
+X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <ZM1J35gT1jjr96Vh@arm.com>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux tags/arm64-fixes
+X-PR-Tracked-Commit-Id: 69af56ae56a48a2522aad906c4461c6c7c092737
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: e6fda526d9db2c7897dacb9daff8c80e13ce893d
+Message-Id: <169117655278.26898.8565972763430081977.pr-tracker-bot@kernel.org>
+Date:   Fri, 04 Aug 2023 19:15:52 +0000
+To:     Catalin Marinas <catalin.marinas@arm.com>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Will Deacon <will@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+The pull request you sent on Fri, 4 Aug 2023 19:56:31 +0100:
 
+> git://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux tags/arm64-fixes
 
-On 8/4/23 05:51, Javier Martinez Canillas wrote:
-> The commit c242f48433e7 ("drm: Make FB_CORE to be selected if DRM fbdev
-> emulation is enabled") changed DRM_FBDEV_EMULATION from 'depends on FB'
-> to an effective 'select FB_CORE', so any config that previously had DRM=y
-> and FB=n now has FB_CORE=y and FRAMEBUFFER_CONSOLE=y.
-> 
-> This leads to unmet direct dependencies detected for FRAMEBUFFER_CONSOLE
-> as reported by Arthur Grillo, e.g:
-> 
-> WARNING: unmet direct dependencies detected for FRAMEBUFFER_CONSOLE
->   Depends on [n]: VT [=n] && FB_CORE [=y] && !UML [=y]
->   Selected by [y]:
->   - DRM_FBDEV_EMULATION [=y] && HAS_IOMEM [=y] && DRM [=y] && !EXPERT [=n]
-> 
-> Arnd Bergmann suggests to drop the select FRAMEBUFFER_CONSOLE for the
-> DRM_FBDEV_EMULATION Kconfig symbol, since a possible use case could
-> be to enable DRM fbdev emulation but without a framebuffer console.
-> 
-> Fixes: c242f48433e7 ("drm: Make FB_CORE to be selected if DRM fbdev emulation is enabled")
-> Reported-by: Arthur Grillo <arthurgrillo@riseup.net>
-> Closes: https://lore.kernel.org/dri-devel/20230726220325.278976-1-arthurgrillo@riseup.net
-> Suggested-by: Arnd Bergmann <arnd@arndb.de>
-> Signed-off-by: Javier Martinez Canillas <javierm@redhat.com>
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/e6fda526d9db2c7897dacb9daff8c80e13ce893d
 
-Acked-by: Randy Dunlap <rdunlap@infradead.org>
-Tested-by: Randy Dunlap <rdunlap@infradead.org> # build-tested
-
-Thanks.
-
-> ---
-> 
->  drivers/gpu/drm/Kconfig | 1 -
->  1 file changed, 1 deletion(-)
-> 
-> diff --git a/drivers/gpu/drm/Kconfig b/drivers/gpu/drm/Kconfig
-> index b51c6a141dfa..2a44b9419d4d 100644
-> --- a/drivers/gpu/drm/Kconfig
-> +++ b/drivers/gpu/drm/Kconfig
-> @@ -135,7 +135,6 @@ config DRM_DEBUG_MODESET_LOCK
->  config DRM_FBDEV_EMULATION
->  	bool "Enable legacy fbdev support for your modesetting driver"
->  	depends on DRM
-> -	select FRAMEBUFFER_CONSOLE if !EXPERT
->  	select FRAMEBUFFER_CONSOLE_DETECT_PRIMARY if FRAMEBUFFER_CONSOLE
->  	default y
->  	help
+Thank you!
 
 -- 
-~Randy
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
