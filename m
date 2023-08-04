@@ -2,19 +2,19 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0771076FF7F
+	by mail.lfdr.de (Postfix) with ESMTP id 5106876FF80
 	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 13:31:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230377AbjHDLbA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Aug 2023 07:31:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41982 "EHLO
+        id S230248AbjHDLa5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Aug 2023 07:30:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41980 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229790AbjHDLau (ORCPT
+        with ESMTP id S229658AbjHDLau (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 4 Aug 2023 07:30:50 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4BE67126
-        for <linux-kernel@vger.kernel.org>; Fri,  4 Aug 2023 04:30:49 -0700 (PDT)
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D321122
+        for <linux-kernel@vger.kernel.org>; Fri,  4 Aug 2023 04:30:48 -0700 (PDT)
 From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
         s=2020; t=1691148647;
@@ -22,21 +22,21 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=pyi0hihZY2jn2pAnNhMOJoJ7pshtJwt3VPheJEyFbQY=;
-        b=T1VtCb5summwfo85838+uP2xHDFvzN6L8pIbSEkwnY/Bt+cKFhCDOm9QsKgH4oyCZ/7jis
-        cdVHWkciqXSseqEOQwiDr+0vLtRzh1TBFxBElnlhE+AhRmfVBFfLxYswhBp7tk/7vWEjdh
-        V71wZ7ucT+37ZAq7H8oGEKgfxsDBzGMFchyUMxZLF8BUr8UQZs5L8MacZjkfP4dueYS5JA
-        eztj6HLBkd3Yy+m3AuayEymhBBb2jgCsRyXAPLSAh/r9pZLBfIG9eV4RsHIOQSVLTE7HgY
-        HRLp90yFXYXk4bKbOByTwwYmEyrZwHwnpwmXfVz6y5HklIJWVAeZp8vFknmC2A==
+        bh=u9DRriWNDJonfqILcAsrrLxxJbWS0AzfymHX8jUCjo8=;
+        b=fk745ondrh8eLE4m+TZCnu5htor3AbCLsT4+gFHOWDRVKIbdOc2TCz6/3Rf3T9RhXPsMNG
+        +IqdHUMAIID8mVdpg3Y9QmcRvEf4at/XN1X9ZCQYAXrVspw6fUL+TdrTIWzjagne9uHgoL
+        R2VhE9VJuQ9xSOqdTCNZYoZ7klEeTxH5DglueMXM8samBWOEi3VcICroY+KLuV0OA/05pJ
+        O+WNMMcWkJHgRfxm2gL3I2O2seurRBpcZSLFdzWrMnWTUAg8jiGVT98xViKDo20s4XLuRw
+        /XTSpZVmctAOtP2fIA5N36/N3omJ/I/ZBa871vz5UAqUaMpfpvZKPcOZTvy+SQ==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
         s=2020e; t=1691148647;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=pyi0hihZY2jn2pAnNhMOJoJ7pshtJwt3VPheJEyFbQY=;
-        b=WV6XnA1MUccjmajKxXKw6rjDjDZMqwO4T7Nxv7DOikc6Mw/KSWSxDZE7hZL6AKXlo5BpEg
-        ktbaUx5mCTI4yADw==
+        bh=u9DRriWNDJonfqILcAsrrLxxJbWS0AzfymHX8jUCjo8=;
+        b=GmBffpV5Rx7yoUp7D7U90VSB2AeDuKYy9aGkOaDP6w1kbSCJCZkUAhLR0rDVNZamigz879
+        akaXrATbou6VVCBg==
 To:     linux-kernel@vger.kernel.org
 Cc:     Ben Segall <bsegall@google.com>,
         Daniel Bristot de Oliveira <bristot@redhat.com>,
@@ -53,82 +53,66 @@ Cc:     Ben Segall <bsegall@google.com>,
         Valentin Schneider <vschneid@redhat.com>,
         Vincent Guittot <vincent.guittot@linaro.org>,
         Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Subject: [RFC PATCH 2/3] softirq: Add function to preempt serving softirqs.
-Date:   Fri,  4 Aug 2023 13:30:38 +0200
-Message-Id: <20230804113039.419794-3-bigeasy@linutronix.de>
+Subject: [RFC PATCH 3/3] time: Allow to preempt after a callback.
+Date:   Fri,  4 Aug 2023 13:30:39 +0200
+Message-Id: <20230804113039.419794-4-bigeasy@linutronix.de>
 In-Reply-To: <20230804113039.419794-1-bigeasy@linutronix.de>
 References: <20230804113039.419794-1-bigeasy@linutronix.de>
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add a functionality for the softirq handler to preempt its current work
-if needed. The softirq core has no particular state. It reads and resets
-the pending softirq bits and then processes one after the other.
-It can already be preempted while it invokes a certain softirq handler.
+The TIMER_SOFTIRQ handler invokes timer callbacks of the expired timers.
+Before each invocation the timer_base::lock is dropped. The only lock
+that is still held is the timer_base::expiry_lock and the per-CPU
+bh-lock as part of local_bh_disable(). The former is released as part
+of lock up prevention if the timer is preempted by the caller which is
+waiting for its completion.
 
-By enabling the BH the softirq core releases the per-CPU bh lock which
-serializes all softirq handler. It is safe to do as long as the code
-does not expect any serialisation in between. A typical scenarion would
-after the invocation of callback where no state needs to be preserved
-before the next callback is invoked.
+Both locks are already released as part of timer_sync_wait_running().
+This can be extended by also releasing in bh-lock. The timer core does
+not rely on any state that is serialized by the bh-lock. The timer
+callback expects the bh-state to be serialized by the lock but there is
+no need to keep state synchronized while invoking multiple callbacks.
 
-Add functionaliry to preempt the serving softirqs.
+Preempt handling softirqs and release all locks after a timer invocation
+if the current has inherited priority.
 
 Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 ---
- include/linux/bottom_half.h |  2 ++
- kernel/softirq.c            | 13 +++++++++++++
- 2 files changed, 15 insertions(+)
+ kernel/time/timer.c | 9 ++++++++-
+ 1 file changed, 8 insertions(+), 1 deletion(-)
 
-diff --git a/include/linux/bottom_half.h b/include/linux/bottom_half.h
-index fc53e0ad56d90..448bbef474564 100644
---- a/include/linux/bottom_half.h
-+++ b/include/linux/bottom_half.h
-@@ -35,8 +35,10 @@ static inline void local_bh_enable(void)
-=20
- #ifdef CONFIG_PREEMPT_RT
- extern bool local_bh_blocked(void);
-+extern void softirq_preempt(void);
- #else
- static inline bool local_bh_blocked(void) { return false; }
-+static inline void softirq_preempt(void) { }
- #endif
-=20
- #endif /* _LINUX_BH_H */
-diff --git a/kernel/softirq.c b/kernel/softirq.c
-index 807b34ccd7973..dd3307a619af7 100644
---- a/kernel/softirq.c
-+++ b/kernel/softirq.c
-@@ -247,6 +247,19 @@ void __local_bh_enable_ip(unsigned long ip, unsigned i=
-nt cnt)
- }
- EXPORT_SYMBOL(__local_bh_enable_ip);
-=20
-+void softirq_preempt(void)
-+{
-+	if (WARN_ON_ONCE(!preemptible()))
-+		return;
+diff --git a/kernel/time/timer.c b/kernel/time/timer.c
+index 63a8ce7177dd4..b76856bc2edd2 100644
+--- a/kernel/time/timer.c
++++ b/kernel/time/timer.c
+@@ -1470,9 +1470,16 @@ static inline void timer_base_unlock_expiry(struct t=
+imer_base *base)
+  */
+ static void timer_sync_wait_running(struct timer_base *base)
+ {
+-	if (atomic_read(&base->timer_waiters)) {
++	bool need_preempt;
 +
-+	if (WARN_ON_ONCE(__this_cpu_read(softirq_ctrl.cnt) !=3D SOFTIRQ_OFFSET))
-+		return;
++	need_preempt =3D task_is_pi_boosted(current);
++	if (need_preempt || atomic_read(&base->timer_waiters)) {
+ 		raw_spin_unlock_irq(&base->lock);
+ 		spin_unlock(&base->expiry_lock);
 +
-+	__local_bh_enable(SOFTIRQ_OFFSET, true);
-+	/* preemption point */
-+	__local_bh_disable_ip(_RET_IP_, SOFTIRQ_OFFSET);
-+}
++		if (need_preempt)
++			softirq_preempt();
 +
- /*
-  * Invoked from ksoftirqd_run() outside of the interrupt disabled section
-  * to acquire the per CPU local lock for reentrancy protection.
+ 		spin_lock(&base->expiry_lock);
+ 		raw_spin_lock_irq(&base->lock);
+ 	}
 --=20
 2.40.1
 
