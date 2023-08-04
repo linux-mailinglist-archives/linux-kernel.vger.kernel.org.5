@@ -2,88 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 08059770A04
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 22:48:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EE0EA770A06
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 22:48:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229991AbjHDUsO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Aug 2023 16:48:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53058 "EHLO
+        id S230023AbjHDUsp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Aug 2023 16:48:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53396 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229618AbjHDUsL (ORCPT
+        with ESMTP id S229618AbjHDUsn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Aug 2023 16:48:11 -0400
-Received: from mail-4319.protonmail.ch (mail-4319.protonmail.ch [185.70.43.19])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 009264C38
-        for <linux-kernel@vger.kernel.org>; Fri,  4 Aug 2023 13:48:06 -0700 (PDT)
-Date:   Fri, 04 Aug 2023 20:47:52 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=proton.me;
-        s=protonmail; t=1691182083; x=1691441283;
-        bh=dVK5thJG/d4WivXGlKQOT3yBXYSFaIU8V67BLTyAtb8=;
-        h=Date:To:From:Cc:Subject:Message-ID:Feedback-ID:From:To:Cc:Date:
-         Subject:Reply-To:Feedback-ID:Message-ID:BIMI-Selector;
-        b=WrMiBN4JgBzYbnlldhzOUEst9xyxM54o6kIsL1GtXaGkqVm5cEocmJBXdDtKRn8Lg
-         Qzk8ONS+yURsMPyghqTePuido4SQW5ifAs+lm5eYtZqKTXIjoJaIX3V9Z7S6VTX/nK
-         3gDloL6sB0nIYCpymefriFIGgeqnxnml3lm5lKZ9qH6dMAxf/MjxPLW3ic/3tEcEdE
-         qYIPTs40hsOfP9xltxgCg871XujGp+gERqh8CkKKvjp8ZwSUI0rW6TMqdCFcuo1lMe
-         XnXPbrgmT908dfTcUE/FAfxThrjErBKp+2wHaR7fWkPsUgDeRIicXfWbg07lzKEBDu
-         /ytbabGE0JqpQ==
-To:     "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "asahi@lists.linux.dev" <asahi@lists.linux.dev>
-From:   a20line <a20line@proton.me>
-Cc:     "arnd@arndb.de" <arnd@arndb.de>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "marcan@marcan.st" <marcan@marcan.st>,
-        "sven@svenpeter.dev" <sven@svenpeter.dev>,
-        "alyssa@rosenzweig.io" <alyssa@rosenzweig.io>
-Subject: Discrepancies in Asahi Linux patch submissions
-Message-ID: <T3ZEuG8R3BUdqIoCdT3Yp_hQSvz4M0zTtZR3teIKQaaxI3VCxOm6QXDzq-Ub46rkpT-v688CZNmBwnjFP2x5LWhMeWUr-rjOdTKrL_L7k50=@proton.me>
-Feedback-ID: 82752623:user:proton
+        Fri, 4 Aug 2023 16:48:43 -0400
+Received: from mail-oa1-f43.google.com (mail-oa1-f43.google.com [209.85.160.43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8452C4C2F;
+        Fri,  4 Aug 2023 13:48:42 -0700 (PDT)
+Received: by mail-oa1-f43.google.com with SMTP id 586e51a60fabf-1a2dd615ddcso368078fac.0;
+        Fri, 04 Aug 2023 13:48:42 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691182121; x=1691786921;
+        h=cc:to:subject:message-id:date:from:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=dbQ+WITNP3Wm+BUgw20KhrHawBzvFk2I60KIA8i0d6Q=;
+        b=JAoVJnq9V1PnRMvHx7M/GcEW2qPObzK5xwBh+mR3DQ9kqtMABdYPRFvpgefJj8b4rT
+         3XlDdHFmyU4Jt8SqIXOB3IaEKGexZo7dX2G871mpsISi2hBIFiu3bL3WdcdR0wToUVmF
+         IEyDliahmzH9v/qUDD8XVBs7l44jREeRg9GihkABYPQi+jFkLYimDGd/8OTV9QRnum2Z
+         N89r3kQxCL38IwKfPOaUGfsBIBZMPuLcaVPZJ7XtQSRnjvE0Fl+Toyg5BUVhGStWowMU
+         Z7WOduQCn6h5c+9fiaxwgKtypbbAL2zKe0rGKfXmeNf630QR99xaaHASl+uPed0YIazi
+         4dNQ==
+X-Gm-Message-State: ABy/qLZ8zjJHaxzmf1Wp08QjQITFXwkVlL1JLKmLVC9uGUXMtdHY5scN
+        cjzSJewe61UGF0emmvc10ae14h85bd+yBpXT6MCDgunGkpM=
+X-Google-Smtp-Source: APBJJlGaqee6qfyhmG6Kq15SpnAEy7PdOGVHTYIV5X9OMUutQBpVH1idaYJSAYsFjfVHlrmMEfgxYrpIuFCcoA/MR/c=
+X-Received: by 2002:a05:6870:658a:b0:1bb:b9d1:37fe with SMTP id
+ fp10-20020a056870658a00b001bbb9d137femr19671059oab.2.1691182121664; Fri, 04
+ Aug 2023 13:48:41 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Fri, 4 Aug 2023 22:48:30 +0200
+Message-ID: <CAJZ5v0jz05KdjX51tAbLMUCnLVF_CUhadUt1VVrk7KD-ngrPDg@mail.gmail.com>
+Subject: [GIT PULL] Power management fix for v6.5-rc5
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Linux PM <linux-pm@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-An investigation has uncovered that many Linux patches regarding the Linux =
-on Apple Silicon project, otherwise known as "Asahi Linux", are being submi=
-tted under false pretenses.
+Hi Linus,
 
-Specifically, the person that calls themselves "Asahi Lina" is actually Hec=
-tor Marcan. There is no such person as "Asahi Lina", and Kernel policy spec=
-ifically prohibits the submission of patches under fake names or anonymous =
-aliases. The developer code of origin states that real names must be used a=
-nd that "pseudonyms or anonymous contributions" are not allowed.
+Please pull from the tag
 
-How do we know that Asahi Lina is Hector?
+ git://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-pm.git \
+ pm-6.5-rc5
 
-This screencap was taken from one of Asahi Lina's streams: https://files.ca=
-tbox.moe/bcmnmr.png. You can clearly see that he breaks character for a mom=
-ent when he tries to switch his home directory from his "Asahi" persona to =
-his real world identity as Hector Marcan.
+with top-most commit 16e95a62eed18864aecac404f1e4eed764c363f2
 
-He has also done streams were he seamlessly transitions from his "Hector" i=
-dentity to his "Asahi Lina" identity, like this one: https://www.youtube.co=
-m/watch?v=3DeffHrj0qmwk (archived: https://ghostarchive.org/varchive/effHrj=
-0qmwk).
+ powercap: intel_rapl: Fix a sparse warning in TPMI interface
 
-Asahi Lina has also made statements such as: "If you want to support my wor=
-k, you can donate to marcan=E2=80=99s Asahi Linux support fund on GitHub Sp=
-onsors or Patreon, which helps me out too!"
-This is only some of the evidence that corroborates to Hector Marcan being =
-Asahi Lina.
+on top of commit 5d0c230f1de8c7515b6567d9afba1f196fb4e2f4
 
-Each piece of evidence, on their own, might not mean much. But put together=
- it puts a compelling argument that Asahi Lina *is* Hector Marcan. There ar=
-e countless patches that have been submitted under these false pretenses, s=
-uch as https://lore.kernel.org/asahi/5780e4c4-b0a0-382f-d659-9c4722a3582c@a=
-sahilina.net/ . To ensure fairness in Kernel submission processes, Hector s=
-hould retire the use of the "Asahi Lina" character when it regards to the s=
-ubmission of patches to the Linux Kernel.
+ Linux 6.5-rc4
+
+to receive a power management fix for 6.5-rc5.
+
+This fixes a sparse warning triggered by the TPMI interface recently
+added to the Intel RAPL power capping driver (Zhang Rui).
+
+Thanks!
+
+
+---------------
+
+Zhang Rui (1):
+      powercap: intel_rapl: Fix a sparse warning in TPMI interface
+
+---------------
+
+ drivers/powercap/intel_rapl_common.c               | 14 +++----
+ drivers/powercap/intel_rapl_msr.c                  | 49 +++++++++++-----------
+ drivers/powercap/intel_rapl_tpmi.c                 | 17 ++++----
+ .../intel/int340x_thermal/processor_thermal_rapl.c | 16 +++----
+ include/linux/intel_rapl.h                         | 14 +++++--
+ 5 files changed, 58 insertions(+), 52 deletions(-)
