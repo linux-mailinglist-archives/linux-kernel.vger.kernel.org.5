@@ -2,194 +2,188 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8202A76FC6B
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 10:49:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2831976FC40
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 10:45:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229674AbjHDItC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Aug 2023 04:49:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42422 "EHLO
+        id S229537AbjHDIps (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Aug 2023 04:45:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41008 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229697AbjHDIse (ORCPT
+        with ESMTP id S229460AbjHDIpp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Aug 2023 04:48:34 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D36830EA;
-        Fri,  4 Aug 2023 01:48:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1691138913; x=1722674913;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=SxjVHGiN7hS1KZCKUjEw/sIjBaSoR9+Z8Xrm4m78es4=;
-  b=cMhTfAUQPH9hnKnP6rR5BklNP4TQBhVWDb/JMUAGDdOETpmw7GU8bKns
-   OQGeYA6s4I6HtTtpcYFRuICW+jOT/UVNm+mkyQWgZzaF8hNXHPANM+wHO
-   Qf8r7jr1n4wh1Fi22wlmTbsjxpUdQYMFrA5+/rkgD42yfbDCaZ2pexweh
-   0a1VJMhBEk6EZdtpt/K8th43jmoYMMFB4EBoiwjTJ9HpmSN8s33FeW6pn
-   ciDnNn878lsRBOMAew6JcA7mAx80qgQVZR6kd7BCVr+V/hRtVIgEktZ6P
-   HvBfDYfaAn2O0EVX8L+3Ru5XwjouPnqlDh6Efqd5/2Xy7wkNg11R0BYru
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10791"; a="456478823"
-X-IronPort-AV: E=Sophos;i="6.01,254,1684825200"; 
-   d="scan'208";a="456478823"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Aug 2023 01:48:07 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10791"; a="765018428"
-X-IronPort-AV: E=Sophos;i="6.01,254,1684825200"; 
-   d="scan'208";a="765018428"
-Received: from yongliang-ubuntu20-ilbpg12.png.intel.com ([10.88.229.33])
-  by orsmga001.jf.intel.com with ESMTP; 04 Aug 2023 01:47:57 -0700
-From:   Choong Yong Liang <yong.liang.choong@linux.intel.com>
-To:     Rajneesh Bhardwaj <irenic.rajneesh@gmail.com>,
-        David E Box <david.e.box@linux.intel.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Mark Gross <markgross@kernel.org>,
-        Jose Abreu <Jose.Abreu@synopsys.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        "David S . Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        =?UTF-8?q?Marek=20Beh=C3=BAn?= <kabel@kernel.org>,
-        Jean Delvare <jdelvare@suse.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Jose Abreu <joabreu@synopsys.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Richard Cochran <richardcochran@gmail.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Wong Vee Khee <veekhee@apple.com>,
-        Jon Hunter <jonathanh@nvidia.com>,
-        Jesse Brandeburg <jesse.brandeburg@intel.com>,
-        Revanth Kumar Uppala <ruppala@nvidia.com>,
-        Shenwei Wang <shenwei.wang@nxp.com>,
-        Andrey Konovalov <andrey.konovalov@linaro.org>,
-        Jochen Henneberg <jh@henneberg-systemdesign.com>
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org,
-        platform-driver-x86@vger.kernel.org, linux-hwmon@vger.kernel.org,
-        bpf@vger.kernel.org, Voon Wei Feng <weifeng.voon@intel.com>,
-        Tan Tee Min <tee.min.tan@linux.intel.com>,
-        Michael Sit Wei Hong <michael.wei.hong.sit@intel.com>,
-        Lai Peter Jun Ann <jun.ann.lai@intel.com>
-Subject: [PATCH net-next v2 5/5] stmmac: intel: Add 1G/2.5G auto-negotiation support for ADL-N
-Date:   Fri,  4 Aug 2023 16:45:27 +0800
-Message-Id: <20230804084527.2082302-6-yong.liang.choong@linux.intel.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20230804084527.2082302-1-yong.liang.choong@linux.intel.com>
-References: <20230804084527.2082302-1-yong.liang.choong@linux.intel.com>
+        Fri, 4 Aug 2023 04:45:45 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 2C79430EA;
+        Fri,  4 Aug 2023 01:45:44 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id DA3F32F4;
+        Fri,  4 Aug 2023 01:46:26 -0700 (PDT)
+Received: from [10.163.54.21] (unknown [10.163.54.21])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id C4C263F6C4;
+        Fri,  4 Aug 2023 01:45:41 -0700 (PDT)
+Message-ID: <92a176f4-c8ff-2ce0-c667-b134436452ee@arm.com>
+Date:   Fri, 4 Aug 2023 14:15:38 +0530
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH] coresight: etm: Make cycle count threshold user
+ configurable
+Content-Language: en-US
+To:     Al Grant <Al.Grant@arm.com>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>
+Cc:     Mike Leach <mike.leach@linaro.org>,
+        "coresight@lists.linaro.org" <coresight@lists.linaro.org>,
+        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <20230804044720.1478900-1-anshuman.khandual@arm.com>
+ <DB9PR08MB7512B9A03A86B8983884B1C98609A@DB9PR08MB7512.eurprd08.prod.outlook.com>
+From:   Anshuman Khandual <anshuman.khandual@arm.com>
+In-Reply-To: <DB9PR08MB7512B9A03A86B8983884B1C98609A@DB9PR08MB7512.eurprd08.prod.outlook.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add modphy register lane to have 1G/2.5G auto-negotiation support for
-ADL-N.
 
-Signed-off-by: Michael Sit Wei Hong <michael.wei.hong.sit@intel.com>
-Signed-off-by: Choong Yong Liang <yong.liang.choong@linux.intel.com>
----
- .../net/ethernet/stmicro/stmmac/dwmac-intel.c | 49 ++++++++++++++++++-
- .../net/ethernet/stmicro/stmmac/dwmac-intel.h |  2 +
- 2 files changed, 50 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/net/ethernet/stmicro/stmmac/dwmac-intel.c b/drivers/net/ethernet/stmicro/stmmac/dwmac-intel.c
-index 9f560f18132a..437c7697640f 100644
---- a/drivers/net/ethernet/stmicro/stmmac/dwmac-intel.c
-+++ b/drivers/net/ethernet/stmicro/stmmac/dwmac-intel.c
-@@ -960,6 +960,53 @@ static int adls_sgmii_phy1_data(struct pci_dev *pdev,
- static struct stmmac_pci_info adls_sgmii1g_phy1_info = {
- 	.setup = adls_sgmii_phy1_data,
- };
-+
-+static int adln_common_data(struct pci_dev *pdev,
-+			    struct plat_stmmacenet_data *plat)
-+{
-+	struct intel_priv_data *intel_priv = plat->bsp_priv;
-+
-+	plat->rx_queues_to_use = 6;
-+	plat->tx_queues_to_use = 4;
-+	plat->clk_ptp_rate = 204800000;
-+
-+	plat->safety_feat_cfg->tsoee = 1;
-+	plat->safety_feat_cfg->mrxpee = 0;
-+	plat->safety_feat_cfg->mestee = 1;
-+	plat->safety_feat_cfg->mrxee = 1;
-+	plat->safety_feat_cfg->mtxee = 1;
-+	plat->safety_feat_cfg->epsi = 0;
-+	plat->safety_feat_cfg->edpp = 0;
-+	plat->safety_feat_cfg->prtyen = 0;
-+	plat->safety_feat_cfg->tmouten = 0;
-+
-+	intel_priv->tsn_lane_registers = adln_tsn_lane_registers;
-+	intel_priv->max_tsn_lane_registers = ARRAY_SIZE(adln_tsn_lane_registers);
-+
-+	return intel_mgbe_common_data(pdev, plat);
-+}
-+
-+static int adln_sgmii_phy0_data(struct pci_dev *pdev,
-+				struct plat_stmmacenet_data *plat)
-+{
-+	struct intel_priv_data *intel_priv = plat->bsp_priv;
-+
-+	plat->bus_id = 1;
-+	plat->phy_interface = PHY_INTERFACE_MODE_SGMII;
-+	plat->max_speed = SPEED_2500;
-+	plat->serdes_powerup = intel_serdes_powerup;
-+	plat->serdes_powerdown = intel_serdes_powerdown;
-+	plat->config_serdes = intel_config_serdes;
-+
-+	intel_priv->pid_modphy = PID_MODPHY1;
-+
-+	return adln_common_data(pdev, plat);
-+}
-+
-+static struct stmmac_pci_info adln_sgmii1g_phy0_info = {
-+	.setup = adln_sgmii_phy0_data,
-+};
-+
- static const struct stmmac_pci_func_data galileo_stmmac_func_data[] = {
- 	{
- 		.func = 6,
-@@ -1342,7 +1389,7 @@ static const struct pci_device_id intel_eth_pci_id_table[] = {
- 	{ PCI_DEVICE_DATA(INTEL, TGLH_SGMII1G_1, &tgl_sgmii1g_phy1_info) },
- 	{ PCI_DEVICE_DATA(INTEL, ADLS_SGMII1G_0, &adls_sgmii1g_phy0_info) },
- 	{ PCI_DEVICE_DATA(INTEL, ADLS_SGMII1G_1, &adls_sgmii1g_phy1_info) },
--	{ PCI_DEVICE_DATA(INTEL, ADLN_SGMII1G, &tgl_sgmii1g_phy0_info) },
-+	{ PCI_DEVICE_DATA(INTEL, ADLN_SGMII1G, &adln_sgmii1g_phy0_info) },
- 	{ PCI_DEVICE_DATA(INTEL, RPLP_SGMII1G, &tgl_sgmii1g_phy0_info) },
- 	{}
- };
-diff --git a/drivers/net/ethernet/stmicro/stmmac/dwmac-intel.h b/drivers/net/ethernet/stmicro/stmmac/dwmac-intel.h
-index 75a336cf8af1..349c160c17b3 100644
---- a/drivers/net/ethernet/stmicro/stmmac/dwmac-intel.h
-+++ b/drivers/net/ethernet/stmicro/stmmac/dwmac-intel.h
-@@ -124,8 +124,10 @@ static const struct pmc_serdes_regs pid_modphy1_2p5g_regs[] = {
- 	{}
- };
- 
-+static const int adln_tsn_lane_registers[] = {6};
- static const int ehl_tsn_lane_registers[] = {7, 8, 9, 10, 11};
- #else
-+static const int adln_tsn_lane_registers[] = {};
- static const int ehl_tsn_lane_registers[] = {};
- #endif /* CONFIG_INTEL_PMC_CORE */
- 
--- 
-2.25.1
+On 8/4/23 13:34, Al Grant wrote:
+> 
+> 
+>> -----Original Message-----
+>> From: Anshuman Khandual <anshuman.khandual@arm.com>
+>> Sent: Friday, August 4, 2023 5:47 AM
+>> To: linux-arm-kernel@lists.infradead.org
+>> Cc: Anshuman Khandual <Anshuman.Khandual@arm.com>; Mike Leach
+>> <mike.leach@linaro.org>; coresight@lists.linaro.org; linux-doc@vger.kernel.org;
+>> linux-kernel@vger.kernel.org
+>> Subject: [PATCH] coresight: etm: Make cycle count threshold user configurable
+>>
+>> Cycle counting is enabled, when requested and supported but with a default
+>> threshold value ETM_CYC_THRESHOLD_DEFAULT i.e 0x100 getting into
+>> TRCCCCTLR, representing the minimum interval between cycle count trace
+>> packets.
+>>
+>> This makes cycle threshold user configurable, from the user space via perf event
+>> attributes. Although it falls back using ETM_CYC_THRESHOLD_DEFAULT, in case
+>> no explicit request. As expected it creates a sysfs file as well.
+>>
+>> /sys/bus/event_source/devices/cs_etm/format/cc_threshold
+>>
+>> New 'cc_threshold' uses 'event->attr.config3' as no more space is available in
+>> 'event->attr.config1' or 'event->attr.config2'.
+>>
+>> Cc: Suzuki K Poulose <suzuki.poulose@arm.com>
+>> Cc: Mike Leach <mike.leach@linaro.org>
+>> Cc: James Clark <james.clark@arm.com>
+>> Cc: Leo Yan <leo.yan@linaro.org>
+>> Cc: coresight@lists.linaro.org
+>> Cc: linux-arm-kernel@lists.infradead.org
+>> Cc: linux-doc@vger.kernel.org
+>> Cc: linux-kernel@vger.kernel.org
+>> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
+>> ---
+>>  Documentation/trace/coresight/coresight.rst        |  2 ++
+>>  drivers/hwtracing/coresight/coresight-etm-perf.c   |  2 ++
+>>  drivers/hwtracing/coresight/coresight-etm4x-core.c | 12 ++++++++++--
+>>  3 files changed, 14 insertions(+), 2 deletions(-)
+>>
+>> diff --git a/Documentation/trace/coresight/coresight.rst
+>> b/Documentation/trace/coresight/coresight.rst
+>> index 4a71ea6cb390..b88d83b59531 100644
+>> --- a/Documentation/trace/coresight/coresight.rst
+>> +++ b/Documentation/trace/coresight/coresight.rst
+>> @@ -624,6 +624,8 @@ They are also listed in the folder
+>> /sys/bus/event_source/devices/cs_etm/format/
+>>     * - timestamp
+>>       - Session local version of the system wide setting:
+>> :ref:`ETMv4_MODE_TIMESTAMP
+>>         <coresight-timestamp>`
+>> +   * - cc_treshold
+> 
+> Spelling: cc_threshold
 
+Will fix this, besides does it require some more description for
+this new config option i.e cc_threshold ?
+
+> 
+>> +     - Cycle count treshhold value
+>>
+>>  How to use the STM module
+>>  -------------------------
+>> diff --git a/drivers/hwtracing/coresight/coresight-etm-perf.c
+>> b/drivers/hwtracing/coresight/coresight-etm-perf.c
+>> index 5ca6278baff4..09f75dffae60 100644
+>> --- a/drivers/hwtracing/coresight/coresight-etm-perf.c
+>> +++ b/drivers/hwtracing/coresight/coresight-etm-perf.c
+>> @@ -68,6 +68,7 @@ PMU_FORMAT_ATTR(preset,		"config:0-3");
+>>  PMU_FORMAT_ATTR(sinkid,		"config2:0-31");
+>>  /* config ID - set if a system configuration is selected */
+>>  PMU_FORMAT_ATTR(configid,	"config2:32-63");
+>> +PMU_FORMAT_ATTR(cc_threshold,	"config3:0-11");
+>>
+>>
+>>  /*
+>> @@ -101,6 +102,7 @@ static struct attribute *etm_config_formats_attr[] = {
+>>  	&format_attr_preset.attr,
+>>  	&format_attr_configid.attr,
+>>  	&format_attr_branch_broadcast.attr,
+>> +	&format_attr_cc_threshold.attr,
+>>  	NULL,
+>>  };
+>>
+>> diff --git a/drivers/hwtracing/coresight/coresight-etm4x-core.c
+>> b/drivers/hwtracing/coresight/coresight-etm4x-core.c
+>> index 9d186af81ea0..9a2766f68416 100644
+>> --- a/drivers/hwtracing/coresight/coresight-etm4x-core.c
+>> +++ b/drivers/hwtracing/coresight/coresight-etm4x-core.c
+>> @@ -644,7 +644,7 @@ static int etm4_parse_event_config(struct
+>> coresight_device *csdev,
+>>  	struct etmv4_config *config = &drvdata->config;
+>>  	struct perf_event_attr *attr = &event->attr;
+>>  	unsigned long cfg_hash;
+>> -	int preset;
+>> +	int preset, cc_threshold;
+>>
+>>  	/* Clear configuration from previous run */
+>>  	memset(config, 0, sizeof(struct etmv4_config)); @@ -667,7 +667,15 @@
+>> static int etm4_parse_event_config(struct coresight_device *csdev,
+>>  	if (attr->config & BIT(ETM_OPT_CYCACC)) {
+>>  		config->cfg |= TRCCONFIGR_CCI;
+>>  		/* TRM: Must program this for cycacc to work */
+>> -		config->ccctlr = ETM_CYC_THRESHOLD_DEFAULT;
+>> +		cc_treshold = attr->config3 & ETM_CYC_THRESHOLD_MASK;
+> 
+> Spelling again
+
+Yikes, this does not even build. Seems like I had missed the applicable
+config i.e CONFIG_CORESIGHT_SOURCE_ETM4X this time around. Apologies.
+
+> 
+>> +		if (cc_treshold) {
+>> +			if (cc_treshold < drvdata->ccitmin)
+>> +				config->ccctlr = drvdata->ccitmin;
+>> +			else
+>> +				config->ccctlr = cc_threshold;
+>> +		} else {
+>> +			config->ccctlr = ETM_CYC_THRESHOLD_DEFAULT;
+>> +		}
+> 
+> Consider dropping the check against CCITMIN. There are CPUs where
+> CCITMIN is incorrect, e.g. see published errata 1490853 where the
+> value 0x100 should be 0b100 i.e. 4. On these ETMs it is possible to
+> set the timing threshold to four cycles instead of 256 cycles, providing
+> much better timing resolution. The kernel currently does not work
+> around this errata and uses the incorrect value of ccitmin. If you drop
+> the check, and trust the value provided by userspace, you allow
+> userspace to work around it.
+Why ? We could just work around the errata #1490853 while initializing
+the drvdata->ccitmin if that is where the problem exists. I dont think
+user space should be required to know about the erratas, and provide a
+right value instead.
