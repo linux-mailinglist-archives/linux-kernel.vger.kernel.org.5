@@ -2,115 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1CAB0770C23
-	for <lists+linux-kernel@lfdr.de>; Sat,  5 Aug 2023 00:52:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 90BE1770C28
+	for <lists+linux-kernel@lfdr.de>; Sat,  5 Aug 2023 00:55:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229579AbjHDWwY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Aug 2023 18:52:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49160 "EHLO
+        id S229699AbjHDWz0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Aug 2023 18:55:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49732 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229476AbjHDWwW (ORCPT
+        with ESMTP id S229436AbjHDWzY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Aug 2023 18:52:22 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B030E1BE;
-        Fri,  4 Aug 2023 15:52:21 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 4A69262153;
-        Fri,  4 Aug 2023 22:52:21 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 60FF5C433C8;
-        Fri,  4 Aug 2023 22:52:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691189540;
-        bh=JTeFe3yU6FTfVxHVzbN6FFW+rwd+24FgVbF4IkXJvlw=;
-        h=Date:Cc:Subject:From:To:References:In-Reply-To:From;
-        b=DAi1vg4eGxZeRFG/j0+u3c83hJLIbyd5rrNPN+GakXezFYR7UzPD4UHChAxacNgfJ
-         DcHb5ebX5RuJU9SDUDhWp7T10+i/KIChH3R+I/R1AY/bBii49/ffrK4qqlt+11sLTZ
-         WMkUwGvNs5uDHae2qEcp2LQGpBVcV7kknLzhad2qf9XpbYa+ENQ90hEVHzt+y73UEj
-         pWDVwAtSpidxjyqKN8gZguNdOuJXaMTGrMVNlEyQZoYE+zl6Yk+nmQW8nOzxknDgQX
-         i++eBS8qKRsmFzwEd2SWdBTN3lCynHfhK0OLxWTqcyf1rvGdThOrxomXXiplL3HMFp
-         xZT3e6RUognhQ==
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
-Date:   Sat, 05 Aug 2023 01:52:17 +0300
-Message-Id: <CUK4NNTX7G6W.669WZVTTH2SD@wks-101042-mac.ad.tuni.fi>
-Cc:     <peterhuewe@gmx.de>, <linux-kernel@vger.kernel.org>,
-        <linux-integrity@vger.kernel.org>, <dragonn@op.pl>
-Subject: Re: [PATCH 1/3] tpm: Add a missing check for
- TPM_CHIP_FLAG_HWRNG_DISABLED
-From:   "Jarkko Sakkinen" <jarkko@kernel.org>
-To:     "Jason A. Donenfeld" <Jason@zx2c4.com>,
-        "Mario Limonciello" <mario.limonciello@amd.com>
-X-Mailer: aerc 0.15.2
-References: <20230803015015.915-1-mario.limonciello@amd.com>
- <20230803015015.915-2-mario.limonciello@amd.com>
- <CUISBN0W36B2.1DXXNNGS6P7JC@suppilovahvero>
- <d19d0e9a-a788-8b33-506d-8a080d566366@amd.com> <ZMuwtE2IA-Hd3Vyd@zx2c4.com>
-In-Reply-To: <ZMuwtE2IA-Hd3Vyd@zx2c4.com>
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        Fri, 4 Aug 2023 18:55:24 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47F6A1BE;
+        Fri,  4 Aug 2023 15:55:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1691189723; x=1722725723;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=74eJtOZ8h+3nyHZJZk3ePstWB6ItvCo3PtaMJEcyxlA=;
+  b=HKSJ17WzrSVsz0rc3IB8P3Hc+arD0iBNW9keGDlcjnQJzg8yPddg1mpo
+   DArsuqnE+XAvFNFJfbr0tZkeWy0pfuPXzbIWvH9qBNf71d7KUrQl9GSiB
+   31SLIWENEiOOFHkXD+IHXuepkHNYIa1Vqldg5SC18EBdt+4mzU288xT8Z
+   8EG+WQSnrSENsiwDNEjUxC5Jx8BILMdI3GVPXScFN4udwLXBkJdF6r6Xt
+   P3xDmvtCkD02xW+mu9WeK9sHztIpn1xPkL4kaF98Lr9JEXOjxsT3PYGeJ
+   wIL5Pp8aJfxJLxU3EKj6M60ka+MTqia/S8T/dB26fOzmoZ4PQX0nePHQ2
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10792"; a="360325192"
+X-IronPort-AV: E=Sophos;i="6.01,256,1684825200"; 
+   d="scan'208";a="360325192"
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Aug 2023 15:55:22 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10792"; a="733445155"
+X-IronPort-AV: E=Sophos;i="6.01,256,1684825200"; 
+   d="scan'208";a="733445155"
+Received: from jkrzyszt-mobl2.ger.corp.intel.com (HELO jkrzyszt-mobl2.intranet) ([10.213.4.149])
+  by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Aug 2023 15:55:15 -0700
+From:   Janusz Krzysztofik <janusz.krzysztofik@linux.intel.com>
+To:     Brendan Higgins <brendan.higgins@linux.dev>,
+        David Gow <davidgow@google.com>
+Cc:     linux-kselftest@vger.kernel.org, kunit-dev@googlegroups.com,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        igt-dev@lists.freedesktop.org, intel-xe@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org, Rae Moar <rmoar@google.com>,
+        Janusz Krzysztofik <janusz.krzysztofik@linux.intel.com>
+Subject: [PATCH v4 0/3] kunit: Expose some built-in features to modules
+Date:   Sat,  5 Aug 2023 00:52:21 +0200
+Message-ID: <20230804225220.8005-5-janusz.krzysztofik@linux.intel.com>
+X-Mailer: git-send-email 2.41.0
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu Aug 3, 2023 at 4:50 PM EEST, Jason A. Donenfeld wrote:
-> On Thu, Aug 03, 2023 at 06:35:36AM -0500, Mario Limonciello wrote:
-> > On 8/3/23 03:59, Jarkko Sakkinen wrote:
-> > > On Thu Aug 3, 2023 at 4:50 AM EEST, Mario Limonciello wrote:
-> > >> If the TPM is opted out of hwrng the error handling for
-> > >> tpm_chip_register() needs to know this so it doesn't try to clean
-> > >> up an uninitialized chip->hwrng.
-> > >>
-> > >> Signed-off-by: Mario Limonciello <mario.limonciello@amd.com>
-> > >> ---
-> > >>   drivers/char/tpm/tpm-chip.c | 3 ++-
-> > >>   1 file changed, 2 insertions(+), 1 deletion(-)
-> > >>
-> > >> diff --git a/drivers/char/tpm/tpm-chip.c b/drivers/char/tpm/tpm-chip=
-.c
-> > >> index e904aae9771be..8f61b784810d6 100644
-> > >> --- a/drivers/char/tpm/tpm-chip.c
-> > >> +++ b/drivers/char/tpm/tpm-chip.c
-> > >> @@ -629,7 +629,8 @@ int tpm_chip_register(struct tpm_chip *chip)
-> > >>   	return 0;
-> > >>  =20
-> > >>   out_hwrng:
-> > >> -	if (IS_ENABLED(CONFIG_HW_RANDOM_TPM) && !tpm_is_firmware_upgrade(c=
-hip))
-> > >> +	if (IS_ENABLED(CONFIG_HW_RANDOM_TPM) && !tpm_is_firmware_upgrade(c=
-hip) &&
-> > >> +	    !(chip->flags & TPM_CHIP_FLAG_HWRNG_DISABLED))
-> > >>   		hwrng_unregister(&chip->hwrng);
-> > >>   out_ppi:
-> > >>   	tpm_bios_log_teardown(chip);
-> > >> --=20
-> > >> 2.34.1
-> > >=20
-> > > Please add a fixes tag.
-> > >=20
-> > > BR, Jarkko
-> >=20
-> > I didn't add a fixes tag because you hadn't sent a PR for the other one=
-=20
-> > yet so I wasn't sure the hash would be stable.  Also I thought it might=
-=20
-> > just make sense to squash into it.
-> >=20
-> > If the hash is now stable, could you just just commit and add that tag=
-=20
-> > with it yourself?  Or do you want me to re-send as a v2 with that?
->
-> What about just sending a v3 of the patch that this patch fixes? The
-> stable@/fixes tags in that are wrong/incomplete so Jarkko's tree will
-> need to be fixed before pushing to Linus anyway.
+Submit the top-level headers also from the kunit test module notifier
+initialization callback, so external tools that are parsing dmesg for
+kunit test output are able to tell how many test suites should be expected
+and whether to continue parsing after complete output from the first test
+suite is collected.
 
-Sounds reasonable. I can hold the PR to rc6 and send it on Monday.
+Extend kunit module notifier initialization callback with a processing
+path for only listing the tests provided by a module if the kunit action
+parameter is set to "list", so external tools can obtain a list of test
+cases to be executed in advance and can make a better job on assigning
+kernel messages interleaved with kunit output to specific tests. 
 
-BR, Jarkko
+Use test filtering functions in kunit module notifier callback functions,
+so external tools are able to execute individual test cases from kunit
+test modules in order to still better isolate their potential impact on
+kernel messages that appear interleaved with output from other tests.
+    
+v4: Use kunit_exec_run_tests() (Mauro, Rae), but prevent it from
+    emitting the headers when called on load of non-test modules, 
+  - don't use a different list format, use kunit_exec_list_tests() (Rae),
+  - refresh on top of newly introduced attributes patches, handle newly
+    introduced kunit.action=list_attr case (Rae).
+v3: Fix CONFIG_GLOB, required by filtering functions, not selected when
+    building as a module.
+v2: Fix new name of a structure moved to kunit namespace not updated
+    across all uses.
+
+Janusz Krzysztofik (3):
+  kunit: Report the count of test suites in a module
+  kunit: Make 'list' action available to kunit test modules
+  kunit: Allow kunit test modules to use test filtering
+
+ include/kunit/test.h |  21 ++++++++
+ lib/kunit/Kconfig    |   2 +-
+ lib/kunit/executor.c | 115 +++++++++++++++++++++++++------------------
+ lib/kunit/test.c     |  40 ++++++++++++++-
+ 4 files changed, 128 insertions(+), 50 deletions(-)
+
+
+base-commit: 5a175d369c702ce08c9feb630125c9fc7a9e1370
+-- 
+2.41.0
+
