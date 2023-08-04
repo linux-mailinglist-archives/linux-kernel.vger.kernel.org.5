@@ -2,61 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B6C3D77096D
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 22:09:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D2401770970
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 22:09:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230183AbjHDUJZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Aug 2023 16:09:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37168 "EHLO
+        id S229870AbjHDUJ3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Aug 2023 16:09:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37178 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230024AbjHDUJT (ORCPT
+        with ESMTP id S229963AbjHDUJT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 4 Aug 2023 16:09:19 -0400
-Received: from mail-lj1-x234.google.com (mail-lj1-x234.google.com [IPv6:2a00:1450:4864:20::234])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97A0410C7
-        for <linux-kernel@vger.kernel.org>; Fri,  4 Aug 2023 13:09:16 -0700 (PDT)
-Received: by mail-lj1-x234.google.com with SMTP id 38308e7fff4ca-2ba0f27a4c2so35967451fa.2
-        for <linux-kernel@vger.kernel.org>; Fri, 04 Aug 2023 13:09:16 -0700 (PDT)
+Received: from mail-lj1-x236.google.com (mail-lj1-x236.google.com [IPv6:2a00:1450:4864:20::236])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F12A210F0
+        for <linux-kernel@vger.kernel.org>; Fri,  4 Aug 2023 13:09:17 -0700 (PDT)
+Received: by mail-lj1-x236.google.com with SMTP id 38308e7fff4ca-2b9cd6a554cso38816661fa.3
+        for <linux-kernel@vger.kernel.org>; Fri, 04 Aug 2023 13:09:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1691179755; x=1691784555;
+        d=linaro.org; s=google; t=1691179756; x=1691784556;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=zppFytEjzdHvnbASXFRnuQvztJWuz3oKHgr/oM9IyFM=;
-        b=uaPvqbdJ+8Sz28g0QMV8w5OoEdrDJRlM3fseWXCAJt/7UPBzNZ5AYJValvIvpDBXU6
-         w0fH3gQeRfMQ4mPsM5ClwRCSu2IRbxOdGQBCjzUV21RgK1i0uuD+Z7LEUgK4wUHhH3ZD
-         dXxRwe3tvheb9HJVoDgbHria3Apg+AGB3U/4pvMM0dKR8CekSlhMgZ8ioptMlBb8hU3F
-         uFXzyZqk7AYJUXLnjnjEJNek5J3h014cJLfrlvQd/BpiLpWXjV1vP093s8uP4tmPp6oG
-         XqC/EtWGRotoDOd+H/zdtNx8uwcy65xKFs3D+Zd40UtP8iKQn6yZFt7UIzvIDhOEMLZz
-         J45w==
+        bh=L2aRe3VQp3ojn2kNtDYANj+Z9eCgQlqJ0LeM/h4iA00=;
+        b=hcAIZoGIdxlAiQaQ6GwtRgDX+C4CwZ6/hkARq/ty92dtBNOoGHxGy8sYXlfPflHqQX
+         Jo8YNfPQu6O4OssNeVRtO0cvfGPwGkF3qeW4JYW2/rW2C7ZbMn+7lD0I5ng3uhjWnMMO
+         DMsnpDdlfAEMc3opeoWhRN69H5n051OuBiqqUS28QkK/WKJU2uc6de3hnmtMYRbsHiHq
+         ItRkVGVGfkw8ZvN881MjXnAekk8gUWaIe3RWShNUdb7SIE72P7b8Ni8GbJlzEo+dRmRE
+         S5oDA3cYHn4uLMP/v10mz5xjmFtumyU5mi1I7ihN6V9dQ2UjRJ9y547GTMSUrXUkbs9Q
+         wxYw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691179755; x=1691784555;
+        d=1e100.net; s=20221208; t=1691179756; x=1691784556;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=zppFytEjzdHvnbASXFRnuQvztJWuz3oKHgr/oM9IyFM=;
-        b=CIw7L6ddTVmWAcUWGpq7JBe+AyCuMx6okSZYed/rGoSfoUwcyRnEojtCpjOHKxckAz
-         EAttktzUVn2TTVDsfyTNbo6v+LeS2BDfGJjdkn1IVLcR6jsrlUylvn3a2xugkB4bA2Bw
-         5VXZlvH0EvMsv8cDzkxM/0RaqtJjJiYrbLHDkM3GLmoG9eRyBOtFXERud/AphCyLIlz/
-         uLYRvsJ+7Meald6ZoLhi8tL63S5QsXYVHDxBjhVpOLsytkkp+mdsGLXO+uDexTELz/4+
-         G/37VkHXCqfygKUr7ev7V80nNb1dl3Rf5nxRL+Ky7ayhQVEDyHgG5Rfp9PNERzTQnFHP
-         V5dA==
-X-Gm-Message-State: AOJu0YwSVP3BRPL/BEcWhozuzjE2CbqGO6AqYRRKTROnl545UhINiHiM
-        77Rbpg0vXJIisGsoWdJICLFEbw==
-X-Google-Smtp-Source: AGHT+IG8BSjBDzziHjw+PUzb2/Vt8+oru2DyEWxz4GlUAhErpY418rmZ1wlzR06q7pEU9Q0GsUIHnA==
-X-Received: by 2002:a2e:9316:0:b0:2b9:bcac:7ba6 with SMTP id e22-20020a2e9316000000b002b9bcac7ba6mr2056339ljh.46.1691179754751;
-        Fri, 04 Aug 2023 13:09:14 -0700 (PDT)
+        bh=L2aRe3VQp3ojn2kNtDYANj+Z9eCgQlqJ0LeM/h4iA00=;
+        b=VWzMLctuNDZprmMlo54HDFvCXqTn8vSPkCOgeG14wW+2KbRowSv7OXbLmJf8rLCiIV
+         npfFy+KgbWU1rBNYBixjtKb2t7G4QMWFBCKa8ZEKR8UbVm5a5Eo2cplKdVXN+5WL0uWG
+         iXVG7+y4I/rt0DbtlGL/r5/W0+MtMtYj5/qQxSGkOugDCozcDGy7NXiv369B3Bh+1mnb
+         5VVu1NMHD+PryOODxzN0Sw1WQhcJh1Krz4DUCUVFUZhSTXDop3Z2jhmRsbW8gkkS53UA
+         oKBliPwqDgsoJ4KrDkrUV/S5FIHvWdMMNVqV4faKrpIOhZUbcyMWSRYU5UsrR1QJxtI5
+         wAlg==
+X-Gm-Message-State: AOJu0YyjZ7wUemb7rvqNPpuzyarY0X7ZMR/BjUJMUKLBaBRdYAJHJfke
+        7Jqv7t8RtkM2cmf5xfJXlXH3Nw==
+X-Google-Smtp-Source: AGHT+IEtkvzoEdpSQR+7jN6IqyrrTbl5bBwSCc7JakEvciOl5bN8auvHh48JxKAMearZGFhjI8ljJA==
+X-Received: by 2002:a2e:7014:0:b0:2b6:c8ba:90dc with SMTP id l20-20020a2e7014000000b002b6c8ba90dcmr2120012ljc.36.1691179756151;
+        Fri, 04 Aug 2023 13:09:16 -0700 (PDT)
 Received: from [192.168.1.101] (abym15.neoplus.adsl.tpnet.pl. [83.9.32.15])
-        by smtp.gmail.com with ESMTPSA id m8-20020a2e97c8000000b002b6fed37b18sm580048ljj.101.2023.08.04.13.09.11
+        by smtp.gmail.com with ESMTPSA id m8-20020a2e97c8000000b002b6fed37b18sm580048ljj.101.2023.08.04.13.09.14
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 04 Aug 2023 13:09:14 -0700 (PDT)
+        Fri, 04 Aug 2023 13:09:15 -0700 (PDT)
 From:   Konrad Dybcio <konrad.dybcio@linaro.org>
-Date:   Fri, 04 Aug 2023 22:09:08 +0200
-Subject: [PATCH 1/6] media: dt-bindings: Document SC8280XP/SM8350 Venus
+Date:   Fri, 04 Aug 2023 22:09:09 +0200
+Subject: [PATCH 2/6] media: venus: core: Remove trailing commas from of
+ match entries
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20230731-topic-8280_venus-v1-1-8c8bbe1983a5@linaro.org>
+Message-Id: <20230731-topic-8280_venus-v1-2-8c8bbe1983a5@linaro.org>
 References: <20230731-topic-8280_venus-v1-0-8c8bbe1983a5@linaro.org>
 In-Reply-To: <20230731-topic-8280_venus-v1-0-8c8bbe1983a5@linaro.org>
 To:     Stanimir Varbanov <stanimir.k.varbanov@gmail.com>,
@@ -74,188 +75,58 @@ Cc:     Marijn Suijten <marijn.suijten@somainline.org>,
         devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
         Konrad Dybcio <konrad.dybcio@linaro.org>
 X-Mailer: b4 0.12.2
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1691179750; l=4196;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1691179750; l=1757;
  i=konrad.dybcio@linaro.org; s=20230215; h=from:subject:message-id;
- bh=qPZ+tkyKC+Whn4SENKO8Du3EyX1XBNWI1sx5+8QX9+M=;
- b=XrOc4Lb7+7O/RxyzONJjYO8r9ksbbpY08duzDjb89Qfu5iuQUFWH4iDxA3kgtp5gODXME0wjd
- V2An/YoZJrEC/bxGjyWXa6UjA6yY2AgD/tHWXB1LrczKbQcHyJ1Cjyu
+ bh=3ekrTJqxADKrttESDrJNAWhd4a80z1h8dYphERsMjIo=;
+ b=Rii9oUopQl4KfHN4hLHALB6KJGSQQ+1pSmE51EkW0V94JkuEKChVeZn+hftUHQHB5cSRfWfLi
+ sZJna2KT8NhAoEidXZneuk4u1/ElO9aOD+b6XKoaxUiIJJ62GhfKcSB
 X-Developer-Key: i=konrad.dybcio@linaro.org; a=ed25519;
  pk=iclgkYvtl2w05SSXO5EjjSYlhFKsJ+5OSZBjOkQuEms=
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Both of these SoCs implement an IRIS2 block, with SC8280XP being able
-to clock it a bit higher.
-
-Document it.
+Even though it has zero effect on functionality, remove them for coherency
+with other drivers.
 
 Signed-off-by: Konrad Dybcio <konrad.dybcio@linaro.org>
 ---
- .../bindings/media/qcom,sm8350-venus.yaml          | 149 +++++++++++++++++++++
- 1 file changed, 149 insertions(+)
+ drivers/media/platform/qcom/venus/core.c | 16 ++++++++--------
+ 1 file changed, 8 insertions(+), 8 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/media/qcom,sm8350-venus.yaml b/Documentation/devicetree/bindings/media/qcom,sm8350-venus.yaml
-new file mode 100644
-index 000000000000..8a31bce27c18
---- /dev/null
-+++ b/Documentation/devicetree/bindings/media/qcom,sm8350-venus.yaml
-@@ -0,0 +1,149 @@
-+# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/media/qcom,sm8350-venus.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: Qualcomm SM8350 Venus video encode and decode accelerators
-+
-+maintainers:
-+  - Konrad Dybcio <konradybcio@kernel.org>
-+
-+description: |
-+  The Venus Iris2 IP is a video encode and decode accelerator present
-+  on Qualcomm platforms
-+
-+allOf:
-+  - $ref: qcom,venus-common.yaml#
-+
-+properties:
-+  compatible:
-+    enum:
-+      - qcom,sc8280xp-venus
-+      - qcom,sm8350-venus
-+
-+  clocks:
-+    maxItems: 3
-+
-+  clock-names:
-+    items:
-+      - const: iface
-+      - const: core
-+      - const: vcodec0_core
-+
-+  resets:
-+    maxItems: 1
-+
-+  reset-names:
-+    items:
-+      - const: core
-+
-+  power-domains:
-+    maxItems: 3
-+
-+  power-domain-names:
-+    items:
-+      - const: venus
-+      - const: vcodec0
-+      - const: mx
-+
-+  interconnects:
-+    maxItems: 3
-+
-+  interconnect-names:
-+    items:
-+      - const: cpu-cfg
-+      - const: video-mem
-+      - const: video-llcc
-+
-+  operating-points-v2: true
-+  opp-table:
-+    type: object
-+
-+  iommus:
-+    maxItems: 1
-+
-+  video-decoder:
-+    type: object
-+
-+    properties:
-+      compatible:
-+        const: venus-decoder
-+
-+    required:
-+      - compatible
-+
-+    additionalProperties: false
-+
-+  video-encoder:
-+    type: object
-+
-+    properties:
-+      compatible:
-+        const: venus-encoder
-+
-+    required:
-+      - compatible
-+
-+    additionalProperties: false
-+
-+required:
-+  - compatible
-+  - power-domain-names
-+  - iommus
-+  - video-decoder
-+  - video-encoder
-+
-+unevaluatedProperties: false
-+
-+examples:
-+  - |
-+    #include <dt-bindings/interrupt-controller/arm-gic.h>
-+    #include <dt-bindings/clock/qcom,gcc-sm8350.h>
-+    #include <dt-bindings/clock/qcom,sm8350-videocc.h>
-+    #include <dt-bindings/interconnect/qcom,sm8350.h>
-+    #include <dt-bindings/power/qcom-rpmpd.h>
-+
-+    venus: video-codec@aa00000 {
-+        compatible = "qcom,sm8350-venus";
-+        reg = <0x0aa00000 0x100000>;
-+        interrupts = <GIC_SPI 174 IRQ_TYPE_LEVEL_HIGH>;
-+
-+        clocks = <&gcc GCC_VIDEO_AXI0_CLK>,
-+                 <&videocc VIDEO_CC_MVS0C_CLK>,
-+                 <&videocc VIDEO_CC_MVS0_CLK>;
-+        clock-names = "iface",
-+                      "core",
-+                      "vcodec0_core";
-+
-+        resets = <&gcc GCC_VIDEO_AXI0_CLK_ARES>;
-+        reset-names = "core";
-+
-+        power-domains = <&videocc MVS0C_GDSC>,
-+                        <&videocc MVS0_GDSC>,
-+                        <&rpmhpd SM8350_MX>;
-+        power-domain-names = "venus",
-+                             "vcodec0",
-+                             "mx";
-+
-+        interconnects = <&gem_noc MASTER_APPSS_PROC 0 &config_noc SLAVE_VENUS_CFG 0>,
-+                        <&mmss_noc MASTER_VIDEO_P0 0 &mc_virt SLAVE_EBI1 0>,
-+                        <&mmss_noc MASTER_VIDEO_P0 0 &gem_noc SLAVE_LLCC 0>;
-+        interconnect-names = "cpu-cfg",
-+                             "video-mem",
-+                             "video-llcc";
-+
-+        operating-points-v2 = <&venus_opp_table>;
-+        iommus = <&apps_smmu 0x2100 0x400>;
-+        memory-region = <&pil_video_mem>;
-+
-+        status = "disabled";
-+
-+        video-decoder {
-+            compatible = "venus-decoder";
-+        };
-+
-+        video-encoder {
-+            compatible = "venus-encoder";
-+        };
-+    };
+diff --git a/drivers/media/platform/qcom/venus/core.c b/drivers/media/platform/qcom/venus/core.c
+index 3cc38881d4f6..0af45faec247 100644
+--- a/drivers/media/platform/qcom/venus/core.c
++++ b/drivers/media/platform/qcom/venus/core.c
+@@ -884,14 +884,14 @@ static const struct venus_resources sc7280_res = {
+ };
+ 
+ static const struct of_device_id venus_dt_match[] = {
+-	{ .compatible = "qcom,msm8916-venus", .data = &msm8916_res, },
+-	{ .compatible = "qcom,msm8996-venus", .data = &msm8996_res, },
+-	{ .compatible = "qcom,sdm660-venus", .data = &sdm660_res, },
+-	{ .compatible = "qcom,sdm845-venus", .data = &sdm845_res, },
+-	{ .compatible = "qcom,sdm845-venus-v2", .data = &sdm845_res_v2, },
+-	{ .compatible = "qcom,sc7180-venus", .data = &sc7180_res, },
+-	{ .compatible = "qcom,sc7280-venus", .data = &sc7280_res, },
+-	{ .compatible = "qcom,sm8250-venus", .data = &sm8250_res, },
++	{ .compatible = "qcom,msm8916-venus", .data = &msm8916_res },
++	{ .compatible = "qcom,msm8996-venus", .data = &msm8996_res },
++	{ .compatible = "qcom,sdm660-venus", .data = &sdm660_res },
++	{ .compatible = "qcom,sdm845-venus", .data = &sdm845_res },
++	{ .compatible = "qcom,sdm845-venus-v2", .data = &sdm845_res_v2 },
++	{ .compatible = "qcom,sc7180-venus", .data = &sc7180_res },
++	{ .compatible = "qcom,sc7280-venus", .data = &sc7280_res },
++	{ .compatible = "qcom,sm8250-venus", .data = &sm8250_res },
+ 	{ }
+ };
+ MODULE_DEVICE_TABLE(of, venus_dt_match);
 
 -- 
 2.41.0
