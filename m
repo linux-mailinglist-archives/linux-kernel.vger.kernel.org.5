@@ -2,202 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E46597701ED
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 15:37:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 80B877701F8
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 15:38:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231332AbjHDNhW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Aug 2023 09:37:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47954 "EHLO
+        id S231200AbjHDNis (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Aug 2023 09:38:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51756 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231386AbjHDNhE (ORCPT
+        with ESMTP id S229981AbjHDNin (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Aug 2023 09:37:04 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 28510524D;
-        Fri,  4 Aug 2023 06:36:29 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 6705A1007;
-        Fri,  4 Aug 2023 06:36:25 -0700 (PDT)
-Received: from donnerap.manchester.arm.com (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 653133F5A1;
-        Fri,  4 Aug 2023 06:35:39 -0700 (PDT)
-Date:   Fri, 4 Aug 2023 14:35:37 +0100
-From:   Andre Przywara <andre.przywara@arm.com>
-To:     Martin Botka <martin@biqu3d.com>
-Cc:     martin.botka1@gmail.com,
-        Konrad Dybcio <konrad.dybcio@somainline.org>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@somainline.org>,
-        Marijn Suijten <marijn.suijten@somainline.org>,
-        Jami Kettunen <jamipkettunen@somainline.org>,
-        Paul Bouchara <paul.bouchara@somainline.org>,
-        Martin Botka <martin.botka@somainline.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Chen-Yu Tsai <wens@csie.org>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Samuel Holland <samuel@sholland.org>,
-        Andrew Lunn <andrew@lunn.ch>, Icenowy Zheng <uwu@icenowy.me>,
-        Ludwig Kormann <ludwig.kormann@ict42.de>,
-        Heiko Stuebner <heiko@sntech.de>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Chris Morgan <macromorgan@hotmail.com>,
-        Jagan Teki <jagan@edgeble.ai>,
-        Maxime Ripard <mripard@kernel.org>, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 4/4] arm64: dts: allwinner: h616: Add BigTreeTech Pi
- support
-Message-ID: <20230804143537.0c91e802@donnerap.manchester.arm.com>
-In-Reply-To: <92B0AD8F9717BDE3+20230804090102.273029-5-martin@biqu3d.com>
-References: <20230804090102.273029-1-martin@biqu3d.com>
-        <92B0AD8F9717BDE3+20230804090102.273029-5-martin@biqu3d.com>
-Organization: ARM
-X-Mailer: Claws Mail 3.18.0 (GTK+ 2.24.32; aarch64-unknown-linux-gnu)
+        Fri, 4 Aug 2023 09:38:43 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC96049F0;
+        Fri,  4 Aug 2023 06:38:22 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 1D6C962023;
+        Fri,  4 Aug 2023 13:38:20 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A6D02C433C7;
+        Fri,  4 Aug 2023 13:38:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1691156299;
+        bh=wz8HX6muu9LEz/2ek8kzkra/H24iTN93xTauZhv3QGs=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=pKWFc+S5JQzJIvia/Cee11Wc7lC17Yfs17ShI7jFKpqMYVJ6USFNAEIyrZROgkamJ
+         9eDQFB0x2XjaK/28bV2LKBLOuQ6vuy7TbjLAZtQCwqw4iCfihs9wTmszLFoO9oRbnr
+         JJmj8c3cIfcozr6pDH2j5JPmEh0V8jJXlPF9UmlVO3nrB+QoiVGpF1TO/hnkJDzpwq
+         QibstZcUH8jSdOliLu6T2qRWJjx6M450vEyW8nWXsWYJ+a/XKVP1CPX/ytlFMIvE0x
+         Zp4Xa0yF3k1t51L4SPW6Xv0UIn1kEs5u6H0y43HR4NK7dDMCNb+qVj6fL3E6RMthax
+         XYN/sfX3+6sCg==
+Date:   Fri, 4 Aug 2023 14:38:10 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>
+Cc:     "corbet@lwn.net" <corbet@lwn.net>,
+        "ardb@kernel.org" <ardb@kernel.org>,
+        "keescook@chromium.org" <keescook@chromium.org>,
+        "Szabolcs.Nagy@arm.com" <Szabolcs.Nagy@arm.com>,
+        "shuah@kernel.org" <shuah@kernel.org>,
+        "maz@kernel.org" <maz@kernel.org>,
+        "james.morse@arm.com" <james.morse@arm.com>,
+        "debug@rivosinc.com" <debug@rivosinc.com>,
+        "aou@eecs.berkeley.edu" <aou@eecs.berkeley.edu>,
+        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
+        "catalin.marinas@arm.com" <catalin.marinas@arm.com>,
+        "hjl.tools@gmail.com" <hjl.tools@gmail.com>,
+        "paul.walmsley@sifive.com" <paul.walmsley@sifive.com>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "palmer@dabbelt.com" <palmer@dabbelt.com>,
+        "oleg@redhat.com" <oleg@redhat.com>,
+        "arnd@arndb.de" <arnd@arndb.de>,
+        "ebiederm@xmission.com" <ebiederm@xmission.com>,
+        "will@kernel.org" <will@kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "suzuki.poulose@arm.com" <suzuki.poulose@arm.com>,
+        "kvmarm@lists.linux.dev" <kvmarm@lists.linux.dev>,
+        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
+        "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>,
+        "oliver.upton@linux.dev" <oliver.upton@linux.dev>,
+        "linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>
+Subject: Re: [PATCH v3 21/36] arm64/mm: Implement map_shadow_stack()
+Message-ID: <9902dd7e-1427-4c7e-b602-c1fbf6512f10@sirena.org.uk>
+References: <20230731-arm64-gcs-v3-0-cddf9f980d98@kernel.org>
+ <20230731-arm64-gcs-v3-21-cddf9f980d98@kernel.org>
+ <5461c56cf4896f18bddaa66c3beec7b909fc8fb9.camel@intel.com>
+ <0a6c90d6-f790-4036-a364-d4761fdd0e95@sirena.org.uk>
+ <e827138f9d8800e3db158831bca88d1ea8b559af.camel@intel.com>
+ <21d7e814-8608-40ce-b5d3-401f2110ad91@sirena.org.uk>
+ <a9ea33d31aad0c45eab41b0dcbd4913d863cc930.camel@intel.com>
+ <55c629cc-0545-460b-91cb-2ebdb8ae9051@sirena.org.uk>
+ <7d03be1277a5f4be23df35ca96f4d6cd77735e2b.camel@intel.com>
+ <475f31e1-0f6f-44a9-b93a-540c1d43e1bb@sirena.org.uk>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="EaObfDz4CndjI5sX"
+Content-Disposition: inline
+In-Reply-To: <475f31e1-0f6f-44a9-b93a-540c1d43e1bb@sirena.org.uk>
+X-Cookie: I'm hungry, time to eat lunch.
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri,  4 Aug 2023 11:00:32 +0200
-Martin Botka <martin@biqu3d.com> wrote:
 
-Hi,
+--EaObfDz4CndjI5sX
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> The BigTreeTech Pi is an H616 based board based on CB1.
-> Just in Rpi format board.
-> 
-> It features the same internals as BTT CB1 but adds:
->     - Fan port
->     - IR receiver
->     - ADXL345 Accelerometer connector via SPI
->     - 24V DC power supply via terminal plugs
->     - USB to CAN module connector (The actual USB to CAN happens on the external module)
-> 
-> List of currently working things is same as BTT CB1 but also:
->     - IR receiver
->     - ADXL345 connector
-> 
-> Signed-off-by: Martin Botka <martin@biqu3d.com>
-> ---
-> Changes in V2:
->     - Add UART alongside aliases and chosen for it
->     - Add model string
->     - Enable IR receiver
->     - Enable SPI0 for ADXL345 connector
-> 
->  arch/arm64/boot/dts/allwinner/Makefile        |  1 +
->  .../allwinner/sun50i-h616-bigtreetech-pi.dts  | 68 +++++++++++++++++++
->  2 files changed, 69 insertions(+)
->  create mode 100644 arch/arm64/boot/dts/allwinner/sun50i-h616-bigtreetech-pi.dts
-> 
-> diff --git a/arch/arm64/boot/dts/allwinner/Makefile b/arch/arm64/boot/dts/allwinner/Makefile
-> index 7b386428510b..0b6232a7f328 100644
-> --- a/arch/arm64/boot/dts/allwinner/Makefile
-> +++ b/arch/arm64/boot/dts/allwinner/Makefile
-> @@ -39,5 +39,6 @@ dtb-$(CONFIG_ARCH_SUNXI) += sun50i-h6-pine-h64-model-b.dtb
->  dtb-$(CONFIG_ARCH_SUNXI) += sun50i-h6-tanix-tx6.dtb
->  dtb-$(CONFIG_ARCH_SUNXI) += sun50i-h6-tanix-tx6-mini.dtb
->  dtb-$(CONFIG_ARCH_SUNXI) += sun50i-h616-bigtreetech-cb1-manta.dtb
-> +dtb-$(CONFIG_ARCH_SUNXI) += sun50i-h616-bigtreetech-pi.dtb
->  dtb-$(CONFIG_ARCH_SUNXI) += sun50i-h616-orangepi-zero2.dtb
->  dtb-$(CONFIG_ARCH_SUNXI) += sun50i-h616-x96-mate.dtb
-> diff --git a/arch/arm64/boot/dts/allwinner/sun50i-h616-bigtreetech-pi.dts b/arch/arm64/boot/dts/allwinner/sun50i-h616-bigtreetech-pi.dts
-> new file mode 100644
-> index 000000000000..cbeedf147ab6
-> --- /dev/null
-> +++ b/arch/arm64/boot/dts/allwinner/sun50i-h616-bigtreetech-pi.dts
-> @@ -0,0 +1,68 @@
-> +// SPDX-License-Identifier: (GPL-2.0+ or MIT)
-> +/*
-> + * Copyright (C) 2023 Martin Botka <martin@biqu3d.com>.
-> + */
-> +
-> +/dts-v1/;
-> +
-> +#include "sun50i-h616-bigtreetech-cb1.dtsi"
-> +
-> +/ {
-> +	model = "BigTreeTech Pi"
+On Wed, Aug 02, 2023 at 05:27:54PM +0100, Mark Brown wrote:
+> On Tue, Aug 01, 2023 at 08:57:59PM +0000, Edgecombe, Rick P wrote:
 
-missing semicolon
+> > To make sure we are on the same page: What I'm saying is say we do
+> > something like add another flag SHADOW_STACK_SET_MARKER that means add
+> > a marker at the end (making the token off by one frame). Then you can
+> > just reject any flags !=3D (SHADOW_STACK_SET_MARKER |
+> > SHADOW_STACK_SET_TOKEN) value, and leave the rest of the code as is. So
+> > not really implementing anything new.=A0
 
-> +	compatible = "bigtreetech,pi", "allwinner,sun50i-h616";
-> +
-> +	aliases {
-> +		serial0 = &uart0;
-> +	};
-> +
-> +	chosen {
-> +		stdout-path = "serial0:115200n8";
-> +	};
-> +};
-> +
-> +&ehci0 {
-> +	status = "okay";
-> +};
-> +
-> +&ehci1 {
-> +	status = "okay";
-> +};
-> +
-> +&ehci2 {
-> +	status = "okay";
-> +};
-> +
-> +&ehci3 {
-> +	status = "okay";
-> +};
-> +
-> +&ir {
-> +	status = "okay";
-> +};
-> +
-> +&ohci0 {
-> +	status = "okay";
-> +};
-> +
-> +&ohci1 {
-> +	status = "okay";
-> +};
-> +
-> +&ohci2 {
-> +	status = "okay";
-> +};
-> +
-> +&ohci3 {
-> +	status = "okay";
-> +};
-> +
-> +&spi0 {
-> +	/* SPI connection for onboard connector for ADXL345 accelerometer */
+> > Then x86 could use the same flag meanings if/when it implements end
+> > markers. If it doesn't seem worth it, it's not a big deal on my end.
+> > Just seemed that they were needlessly diverging.
 
-You need to specify the pinctrl properties here, since there is no
-default. I guess it's PortC? Then you can copy from the OPiZero2, just
-check the CS situation.
+> Yes, my understanding of the flags is the same.  I'll definitely
+> implement omitting the cap since there's an actual use case for that
+> (extending an existing stack, it's marginally safer to not have any
+> opportunity to pivot into the newly allocated region).
 
-> +	status = "okay";
-> +}
+BTW are you planning to repost the series for this release?  We're
+almost at -rc5 which is pretty late and I didn't see anything yet.  It
+looks like there's a branch in tip that's getting some updates but it's
+not getting merged for -next.
 
-missing semicolon;
+--EaObfDz4CndjI5sX
+Content-Type: application/pgp-signature; name="signature.asc"
 
-Rest looks fine.
+-----BEGIN PGP SIGNATURE-----
 
-Thanks,
-Andre
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmTM/0EACgkQJNaLcl1U
+h9Dhngf9HaBpp4WdjxabvyUIkHFeitGGLlR98c80xyh19bY1UWx4BOojqe0fcQqc
+K1kS+mCmTH9c1RZEdUe+O5upQl099AzBqsJUu8aXBh/Pf6wDXwxinNVPL/WSO00B
+9jlg3iozKyd5PQJjJIbbJwHoCTkHLe+Wun/qG9P75FL4w+7REzD+pOpSZBwoPqYR
+2h00HfuO1pAX54ubVTARphHAZEIBJHYusx2fJQ8pP4JjLdYU7ot48CfVZa35VPuM
+JJFU92h6YEdnqQPfc79hwp/UqvGWAowJ5QMM/3E8s6CDE7n4dTP8wXihArd0rlrk
+OzsV73Hx8i3GvjV1DR1vc4vAC7DxRA==
+=G9bO
+-----END PGP SIGNATURE-----
 
-> +
-> +&uart0 {
-> +	pinctrl-names = "default";
-> +	pinctrl-0 = <&uart0_ph_pins>;
-> +	status = "okay";
-> +};
-
+--EaObfDz4CndjI5sX--
