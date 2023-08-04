@@ -2,76 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 055CB770BC8
-	for <lists+linux-kernel@lfdr.de>; Sat,  5 Aug 2023 00:11:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3BCDD770BCA
+	for <lists+linux-kernel@lfdr.de>; Sat,  5 Aug 2023 00:13:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230248AbjHDWLN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Aug 2023 18:11:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33460 "EHLO
+        id S229810AbjHDWNd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Aug 2023 18:13:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34136 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229723AbjHDWLL (ORCPT
+        with ESMTP id S229723AbjHDWNb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Aug 2023 18:11:11 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D485E10D2;
-        Fri,  4 Aug 2023 15:11:05 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 731A96213C;
-        Fri,  4 Aug 2023 22:11:05 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 55C03C433C7;
-        Fri,  4 Aug 2023 22:11:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691187064;
-        bh=1T+OCT3e+BN09TUMdtfFEkioQzLfCNFE/X9MgWNdROc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=MqD1dkhCWLwSDA1SwOcMgf12EFxBzgLcq2q4DNOskkbULFASr8gla8GxWuxhg6UG8
-         6SC7YtheS++wGLVS8tC5M4YnpVfcKklIFBbYYM5Bly2679OijJP3bdvV5gGfWH/bV8
-         t+UBuSnfyzRTPpJB7X7HDlJIZ6jTKoL2j19Uft0wLHcDweIAdKLAIkNC8JaSuy53pr
-         IYxjjJo4n4juGA8HCpaiToWG/RDp42ocpR1j3ySPQlDiatycwI/EJ855fCU0eFyaaC
-         AYOchlXcN2ChVcC+Q1rcHfsHtjGgLS/5tTxZ/Ln8S2e0F9A6mMULDINx4kF8sUM1Qe
-         BWVv8vB3kWS1w==
-Date:   Sat, 5 Aug 2023 00:11:02 +0200
-From:   Andi Shyti <andi.shyti@kernel.org>
-To:     Liao Chang <liaochang1@huawei.com>
-Cc:     florian.fainelli@broadcom.com,
-        bcm-kernel-feedback-list@broadcom.com, rjui@broadcom.com,
-        sbranden@broadcom.com, yangyicong@hisilicon.com,
-        aisheng.dong@nxp.com, shawnguo@kernel.org, s.hauer@pengutronix.de,
-        kernel@pengutronix.de, festevam@gmail.com, linux-imx@nxp.com,
-        kblaiech@nvidia.com, asmaa@nvidia.com, loic.poulain@linaro.org,
-        rfoss@kernel.org, ardb@kernel.org, gcherian@marvell.com,
-        linux-i2c@vger.kernel.org, linux-rpi-kernel@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org
-Subject: Re: [PATCH 2/9] i2c: mlxbf: Use dev_err_probe in probe function
-Message-ID: <20230804221102.iw4ikxysfyz5as5r@intel.intel>
-References: <20230802095737.3957587-1-liaochang1@huawei.com>
- <20230802095737.3957587-3-liaochang1@huawei.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230802095737.3957587-3-liaochang1@huawei.com>
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        Fri, 4 Aug 2023 18:13:31 -0400
+Received: from mail-pl1-x64a.google.com (mail-pl1-x64a.google.com [IPv6:2607:f8b0:4864:20::64a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A377E69
+        for <linux-kernel@vger.kernel.org>; Fri,  4 Aug 2023 15:13:30 -0700 (PDT)
+Received: by mail-pl1-x64a.google.com with SMTP id d9443c01a7336-1bbf8cb6143so22350525ad.1
+        for <linux-kernel@vger.kernel.org>; Fri, 04 Aug 2023 15:13:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1691187209; x=1691792009;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=bLXEZoOUsnNHXqyjOtZVO1kviAvs7+VEh7RjIbw2pVY=;
+        b=JGKdP0TBOoAh4OTz3MaM2IVM7DNxpwffVrtvvm9L1o79RXyJJAtpHpBOvSgcwNdZX2
+         vHXD6HINgJiiuqhmdNnnwrsvRAC5uXwbr4/yFPm5W55eHiXmAAQ+azo922WuaMeEHnwD
+         GcFXe8chvE/OJA1hk3iiLxhDb/q7nW0Opovw9JghaSBACG/CIL++au9Wf+Sy6uFggGsS
+         74vZWjiO8jTtvZQNWHk13gz+ww0O0agOHpetcqnEEQg/505syvmAKoAo9UvZQ01kgz/A
+         ieoG4BvFz3Fl52WQpDm7sIF/AxiRpURNb8XYluL3Y4LD+4Ket+eZh1V3em5Ru9tcVeVD
+         Cscg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691187209; x=1691792009;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=bLXEZoOUsnNHXqyjOtZVO1kviAvs7+VEh7RjIbw2pVY=;
+        b=cxU7GdE+lobG6ZXFp6DK3+n342e+8veHSPl7w6hdeEGDVL3vKcelAt6FPk4CYTnbZg
+         VvqiGJyOFBXAzmJuLpttVnCJRt4gErPBeuFqwSYcqonp9McizlWUbLNzA2MVp28aGabO
+         22GQwHwX6f3qoxXfiZEIVK3c8ocZPyqfY/nB3l3dFL+qkYaScTDqVUA5pfgkUjYyChsp
+         sHIMFSguxmKC5h8P+rsJUKwVM+4pg89DsE+zoI4eG3B/vECsawriAMLm8vA0U75FaOIY
+         34shtSCXMSDzinHRpdkUKaiK3Sjqu3ukGsY9XEvZ1tYsHUTyi2KJvi7dojPago07iHVV
+         LReg==
+X-Gm-Message-State: AOJu0Yy7HpTJX7+4nZVY2o2g4d98qmLheRmOc9itlYVopziwyEtpEtYR
+        A7jfMRwvBgVXIUBhSKIxUglhW0/sYWU=
+X-Google-Smtp-Source: AGHT+IFFa6OQWPgXCVghPOvFrLXoLg027dv5kKy0zEJuMmkaxG1AU5Kgm6Ipp0dVxLufrqFjcx7hU8Umd6E=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a17:903:2448:b0:1b8:3c5e:2289 with SMTP id
+ l8-20020a170903244800b001b83c5e2289mr9543pls.2.1691187209565; Fri, 04 Aug
+ 2023 15:13:29 -0700 (PDT)
+Date:   Fri, 4 Aug 2023 15:13:28 -0700
+In-Reply-To: <20230704075054.3344915-3-stevensd@google.com>
+Mime-Version: 1.0
+References: <20230704075054.3344915-1-stevensd@google.com> <20230704075054.3344915-3-stevensd@google.com>
+Message-ID: <ZM14CHeY4DvjAlqG@google.com>
+Subject: Re: [PATCH v7 2/8] KVM: Introduce __kvm_follow_pfn function
+From:   Sean Christopherson <seanjc@google.com>
+To:     David Stevens <stevensd@chromium.org>
+Cc:     Marc Zyngier <maz@kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Peter Xu <peterx@redhat.com>,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
+        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        kvm@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Liao,
-
-On Wed, Aug 02, 2023 at 05:57:30PM +0800, Liao Chang wrote:
-> Use the dev_err_probe function instead of dev_err in the probe function
-> so that the printed messge includes the return value and also handles
-> -EPROBE_DEFER nicely.
+On Tue, Jul 04, 2023, David Stevens wrote:
+> From: David Stevens <stevensd@chromium.org>
 > 
-> Signed-off-by: Liao Chang <liaochang1@huawei.com>
+> Introduce __kvm_follow_pfn, which will replace __gfn_to_pfn_memslot.
+> __kvm_follow_pfn refactors the old API's arguments into a struct and,
+> where possible, combines the boolean arguments into a single flags
+> argument.
+> 
+> Signed-off-by: David Stevens <stevensd@chromium.org>
+> ---
+>  include/linux/kvm_host.h |  16 ++++
+>  virt/kvm/kvm_main.c      | 171 ++++++++++++++++++++++-----------------
+>  virt/kvm/kvm_mm.h        |   3 +-
+>  virt/kvm/pfncache.c      |   8 +-
+>  4 files changed, 122 insertions(+), 76 deletions(-)
+> 
+> diff --git a/include/linux/kvm_host.h b/include/linux/kvm_host.h
+> index 9d3ac7720da9..ef2763c2b12e 100644
+> --- a/include/linux/kvm_host.h
+> +++ b/include/linux/kvm_host.h
+> @@ -97,6 +97,7 @@
+>  #define KVM_PFN_ERR_HWPOISON	(KVM_PFN_ERR_MASK + 1)
+>  #define KVM_PFN_ERR_RO_FAULT	(KVM_PFN_ERR_MASK + 2)
+>  #define KVM_PFN_ERR_SIGPENDING	(KVM_PFN_ERR_MASK + 3)
+> +#define KVM_PFN_ERR_NEEDS_IO	(KVM_PFN_ERR_MASK + 4)
 
-Reviewed-by: Andi Shyti <andi.shyti@kernel.org> 
+Hmm, ideally KVM_PFN_ERR_NEEDS_IO would be introduced in a separate prep patch,
+e.g. by changing "bool *async" to "bool no_wait".  At a glance, I can't tell if
+that's feasible though, so consider it more of a "wish" than a request.
 
-Andi
+> @@ -2572,23 +2561,23 @@ static int kvm_try_get_pfn(kvm_pfn_t pfn)
+>  	return get_page_unless_zero(page);
+>  }
+>  
+> -static int hva_to_pfn_remapped(struct vm_area_struct *vma,
+> -			       unsigned long addr, bool write_fault,
+> -			       bool *writable, kvm_pfn_t *p_pfn)
+> +static int hva_to_pfn_remapped(struct vm_area_struct *vma, struct kvm_follow_pfn *foll,
+> +			       kvm_pfn_t *p_pfn)
+
+Please wrap.  KVM still honors the 80 char soft limit unless there's a reason not
+to, and in this case it's already wrapping
+
+static int hva_to_pfn_remapped(struct vm_area_struct *vma,
+			       struct kvm_follow_pfn *foll, kvm_pfn_t *p_pfn)
+
+> @@ -2606,8 +2595,7 @@ static int hva_to_pfn_remapped(struct vm_area_struct *vma,
+>  		goto out;
+>  	}
+>  
+> -	if (writable)
+> -		*writable = pte_write(*ptep);
+> +	foll->writable = pte_write(*ptep) && foll->allow_write_mapping;
+
+Similar to feedback in my other response, don't condition this on try_map_writable,
+i.e. just do:
+
+	foll->writable = pte_write(...);
+
+>  	pfn = pte_pfn(*ptep);
+>  
+>  	/*
+> @@ -2652,24 +2640,22 @@ static int hva_to_pfn_remapped(struct vm_area_struct *vma,
+>   * 2): @write_fault = false && @writable, @writable will tell the caller
+>   *     whether the mapping is writable.
+>   */
+> -kvm_pfn_t hva_to_pfn(unsigned long addr, bool atomic, bool interruptible,
+> -		     bool *async, bool write_fault, bool *writable)
+> +kvm_pfn_t hva_to_pfn(struct kvm_follow_pfn *foll)
+>  {
+>  	struct vm_area_struct *vma;
+>  	kvm_pfn_t pfn;
+>  	int npages, r;
+>  
+>  	/* we can do it either atomically or asynchronously, not both */
+> -	BUG_ON(atomic && async);
+> +	BUG_ON(foll->atomic && (foll->flags & FOLL_NOWAIT));
+>  
+> -	if (hva_to_pfn_fast(addr, write_fault, writable, &pfn))
+> +	if (hva_to_pfn_fast(foll, &pfn))
+>  		return pfn;
+>  
+> -	if (atomic)
+> +	if (foll->atomic)
+>  		return KVM_PFN_ERR_FAULT;
+>  
+> -	npages = hva_to_pfn_slow(addr, async, write_fault, interruptible,
+> -				 writable, &pfn);
+> +	npages = hva_to_pfn_slow(foll, &pfn);
+>  	if (npages == 1)
+>  		return pfn;
+>  	if (npages == -EINTR)
+> @@ -2677,83 +2663,122 @@ kvm_pfn_t hva_to_pfn(unsigned long addr, bool atomic, bool interruptible,
+>  
+>  	mmap_read_lock(current->mm);
+>  	if (npages == -EHWPOISON ||
+> -	      (!async && check_user_page_hwpoison(addr))) {
+> +	      (!(foll->flags & FOLL_NOWAIT) && check_user_page_hwpoison(foll->hva))) {
+
+Opportunistically align the indentation, as an added bonus that makes the line
+length a few chars shorter, i.e.
+
+	if (npages == -EHWPOISON ||
+	    (!(foll->flags & FOLL_NOWAIT) && check_user_page_hwpoison(foll->hva))) {
+		pfn = KVM_PFN_ERR_HWPOISON;
+		goto exit;
+	}
