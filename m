@@ -2,72 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 545DF77074C
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 19:45:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 372C577074E
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 19:50:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229732AbjHDRp2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Aug 2023 13:45:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34838 "EHLO
+        id S229596AbjHDRua (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Aug 2023 13:50:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35682 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229436AbjHDRp0 (ORCPT
+        with ESMTP id S229539AbjHDRu2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Aug 2023 13:45:26 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E200449FF
-        for <linux-kernel@vger.kernel.org>; Fri,  4 Aug 2023 10:45:25 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 77768620DA
-        for <linux-kernel@vger.kernel.org>; Fri,  4 Aug 2023 17:45:25 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DD669C433CA
-        for <linux-kernel@vger.kernel.org>; Fri,  4 Aug 2023 17:45:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691171124;
-        bh=SKdiKrmN6Sz1OpEH5WWRpir+7XEJOPyBzfO1EenofaM=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=kfPIraGFvEpUrGS+gImT2Qno7RQ0JMZ1iGUq1l7fjX9puYZKEPdW5IIM07uO3vOQE
-         ChaAujL92NyvxKUCLNFl0SGA5/UwP3pPWNj22C7TBX+U4BFA9EePygHpXblwAOCAHB
-         aNjyvdTTKzEY0TpVpW16SsxyPIuKD13oeJ/LkKHf1eFF1j6CgkV6PM/+WAocr8/7A6
-         9zhbexwxW3FjcJ7Lfo0o7V+MjEoWzaGaDB3utQKHYjOj2VFdi52ap7y4a18pggY7/s
-         CcxAZRb60yQPIxmbDu+kIF5pKOfRCpWatzbV+m4EsZTDmLJyQ0fBiq7ggrRR6DyyGM
-         Wf6CfGEAQ84aA==
-Received: by mail-ed1-f48.google.com with SMTP id 4fb4d7f45d1cf-5222c5d71b8so3023663a12.2
-        for <linux-kernel@vger.kernel.org>; Fri, 04 Aug 2023 10:45:24 -0700 (PDT)
-X-Gm-Message-State: AOJu0YzF1BZtP8iuRS/HS8bqxIIW/n99JAyi12mCAuWPJ77xkQEWombR
-        I0R2MJhy/rb3ifEwfPV/VYsCzCQ9vYtBVUXPBwk=
-X-Google-Smtp-Source: AGHT+IH+SIdKRya90YSfxgWiDDPb9HOv3hMCFwPS0M+dlzO2VBsw5mk01hdh3i47Uyuzz4oeEBG88U4ZxuEPJrNlePk=
-X-Received: by 2002:aa7:d690:0:b0:522:4f6d:c443 with SMTP id
- d16-20020aa7d690000000b005224f6dc443mr2343632edr.23.1691171123123; Fri, 04
- Aug 2023 10:45:23 -0700 (PDT)
+        Fri, 4 Aug 2023 13:50:28 -0400
+Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 707334C03
+        for <linux-kernel@vger.kernel.org>; Fri,  4 Aug 2023 10:50:27 -0700 (PDT)
+Received: by mail-wm1-x32c.google.com with SMTP id 5b1f17b1804b1-3fe4cdb724cso3862935e9.1
+        for <linux-kernel@vger.kernel.org>; Fri, 04 Aug 2023 10:50:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1691171426; x=1691776226;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=Im4dcEZwNsAe1Y2oMqCTaJQsYwxClHXtIW7/6pymoyo=;
+        b=UphmCrMdpkSP7a4kk/vE3lUOeIiuyB34qLRvc1hVE1UR5N24Pb2doPpops1e0fJZO3
+         l7+Bk3H7d5jOmKNeKhcDLsMZJNuIyHqNmGr75RUO5jWp2HPE5ptjfRqhQ0IrbU7mEv97
+         MuSxSto9os2ONR7Oe9dcetZWP8f9vvHSvb+t8rF4ZYgDh27z2ODAr7TqttRRHIADws9s
+         Ae5OPXRm1TlbOsahEMKzhYUMk1sQ9dGAdCwA0kmpXEK+3dKfbfK4mxVDVwPW58H6cw05
+         yLRe304WmuDsKIOPh9865os6tl4CxYMAVH/YKDrjCu9dUNU4OoRCLk4W+tWKgRLfg3Nw
+         KRtg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691171426; x=1691776226;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Im4dcEZwNsAe1Y2oMqCTaJQsYwxClHXtIW7/6pymoyo=;
+        b=iUpX0aHI8GmiGeI6hCoWzsTmeddpxOf8dlaeqf11aIbqfe+E9BAWZjvojqqG5HVkbg
+         mhz6ozDzmy9eLf1i7JSWAjvbx1sb9Hi8D+zvTkoW1uNzIgdR+um22NsDpJpHdSE5CbOo
+         7ORCgjpqz9c92ngT/2dWViP9kCk29m1t6uUE+irv/qbeNGc4LJxamGMAetRH5FG4TJuv
+         ZEdIx2ZI8F1K0gtOLzMrkZijgM311RvICzt5k5kSpUjsv8DxdNfqkJx+YSPXAoGuSGZq
+         uPleYx3Wqu/DHMWZw1oknDfI3DO2TZME7o+wWkZoLoZM3xOpZNAnLFylbWiOno20ASlt
+         Gmwg==
+X-Gm-Message-State: AOJu0Yxj07QZ18Fe3zwV87h4VuJDyyo2QS5M1SZda2swI+CBPahiteJq
+        OReCABNNyS+HhaxIMnaCEmR3xDA4sKn1GGaxzySqOg==
+X-Google-Smtp-Source: AGHT+IFCpKdw5xT0hmDqmMcqVOJlFAgL0wRRdu5YxGtWnPb4KKrgp8kcqaD2UASnRwTjmhmQD6u7JjQJgAG5sZzFLQo=
+X-Received: by 2002:a1c:cc08:0:b0:3fe:485f:ed13 with SMTP id
+ h8-20020a1ccc08000000b003fe485fed13mr2162276wmb.29.1691171425779; Fri, 04 Aug
+ 2023 10:50:25 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230804084900.1135660-2-leobras@redhat.com> <20230804084900.1135660-6-leobras@redhat.com>
-In-Reply-To: <20230804084900.1135660-6-leobras@redhat.com>
-From:   Guo Ren <guoren@kernel.org>
-Date:   Fri, 4 Aug 2023 13:45:11 -0400
-X-Gmail-Original-Message-ID: <CAJF2gTTOT3_3K_cWNY9n_DgRoPhYEhBLno=bh57r9D--OavREQ@mail.gmail.com>
-Message-ID: <CAJF2gTTOT3_3K_cWNY9n_DgRoPhYEhBLno=bh57r9D--OavREQ@mail.gmail.com>
-Subject: Re: [RFC PATCH v3 4/5] riscv/cmpxchg: Implement cmpxchg for variables
- of size 1 and 2
-To:     Leonardo Bras <leobras@redhat.com>
-Cc:     Will Deacon <will@kernel.org>,
+References: <20230804090621.400-1-elver@google.com> <20230804090621.400-2-elver@google.com>
+ <20230804120308.253c5521@gandalf.local.home>
+In-Reply-To: <20230804120308.253c5521@gandalf.local.home>
+From:   Marco Elver <elver@google.com>
+Date:   Fri, 4 Aug 2023 19:49:48 +0200
+Message-ID: <CANpmjNNN6b9L72DoLzu5usGGjLw5Li8rnfu0VuaCsL-p2iKTgg@mail.gmail.com>
+Subject: Re: [PATCH v2 2/3] list_debug: Introduce inline wrappers for debug checks
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Kees Cook <keescook@chromium.org>,
+        Guenter Roeck <linux@roeck-us.net>,
         Peter Zijlstra <peterz@infradead.org>,
-        Boqun Feng <boqun.feng@gmail.com>,
         Mark Rutland <mark.rutland@arm.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Andrea Parri <parri.andrea@gmail.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Andrzej Hajda <andrzej.hajda@intel.com>,
-        Palmer Dabbelt <palmer@rivosinc.com>,
-        linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org
+        Marc Zyngier <maz@kernel.org>,
+        Oliver Upton <oliver.upton@linux.dev>,
+        James Morse <james.morse@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Zenghui Yu <yuzenghui@huawei.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Tom Rix <trix@redhat.com>, Miguel Ojeda <ojeda@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
+        linux-kernel@vger.kernel.org, llvm@lists.linux.dev,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Alexander Potapenko <glider@google.com>,
+        kasan-dev@googlegroups.com, linux-toolchains@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -75,99 +87,30 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 4, 2023 at 4:49=E2=80=AFAM Leonardo Bras <leobras@redhat.com> w=
-rote:
+On Fri, 4 Aug 2023 at 18:03, Steven Rostedt <rostedt@goodmis.org> wrote:
 >
-> cmpxchg for variables of size 1-byte and 2-bytes is not yet available for
-> riscv, even though its present in other architectures such as arm64 and
-> x86. This could lead to not being able to implement some locking mechanis=
-ms
-> or requiring some rework to make it work properly.
+> On Fri,  4 Aug 2023 11:02:57 +0200
+> Marco Elver <elver@google.com> wrote:
 >
-> Implement 1-byte and 2-bytes cmpxchg in order to achieve parity with othe=
-r
-> architectures.
+> > Turn the list debug checking functions __list_*_valid() into inline
+> > functions that wrap the out-of-line functions. Care is taken to ensure
+> > the inline wrappers are always inlined, so that additional compiler
+> > instrumentation (such as sanitizers) does not result in redundant
+> > outlining.
+> >
+> > This change is preparation for performing checks in the inline wrappers.
+> >
+> > No functional change intended.
 >
-> Signed-off-by: Leonardo Bras <leobras@redhat.com>
-> ---
->  arch/riscv/include/asm/cmpxchg.h | 35 ++++++++++++++++++++++++++++++++
->  1 file changed, 35 insertions(+)
+> I think the entire underscoring functions calling more underscoring
+> functions in the kernel is an abomination. Yes, there's lots of precedence
+> to this craziness, but let's not extend it.
 >
-> diff --git a/arch/riscv/include/asm/cmpxchg.h b/arch/riscv/include/asm/cm=
-pxchg.h
-> index 5a07646fae65..dfb433ac544f 100644
-> --- a/arch/riscv/include/asm/cmpxchg.h
-> +++ b/arch/riscv/include/asm/cmpxchg.h
-> @@ -72,6 +72,36 @@
->   * indicated by comparing RETURN with OLD.
->   */
+> Can we give actual real names to why the function is "special" besides that
+> it now has another underscore added to it?
 >
-> +#define __arch_cmpxchg_mask(sc_sfx, prepend, append, r, p, o, n)       \
-> +({                                                                     \
-> +       /* Depends on 2-byte variables being 2-byte aligned */          \
-> +       ulong __s =3D ((ulong)(p) & 0x3) * BITS_PER_BYTE;                =
- \
-> +       ulong __mask =3D GENMASK(((sizeof(*p)) * BITS_PER_BYTE) - 1, 0)  =
- \
-> +                       << __s;                                         \
-> +       ulong __newx =3D (ulong)(n) << __s;                              =
- \
-> +       ulong __oldx =3D (ulong)(o) << __s;                              =
- \
-> +       ulong __retx;                                                   \
-> +       register unsigned int __rc;                                     \
-> +                                                                       \
-> +       __asm__ __volatile__ (                                          \
-> +               prepend                                                 \
-> +               "0:     lr.w %0, %2\n"                                  \
-> +               "       and  %0, %0, %z5\n"                             \
-> +               "       bne  %0, %z3, 1f\n"                             \
-bug:
--               "       and  %0, %0, %z5\n"                             \
--               "       bne  %0, %z3, 1f\n"                             \
-+               "       and  %1, %0, %z5\n"                             \
-+               "       bne  %1, %z3, 1f\n"                             \
-Your code breaks the %0.
+> I've been guilty of this madness myself, but I have learned the errors of
+> my ways, and have been avoiding doing so in any new code I write.
 
-
-
-> +               "       and  %1, %0, %z6\n"                             \
-> +               "       or   %1, %1, %z4\n"                             \
-> +               "       sc.w" sc_sfx " %1, %1, %2\n"                    \
-> +               "       bnez %1, 0b\n"                                  \
-> +               append                                                  \
-> +               "1:\n"                                                  \
-> +               : "=3D&r" (__retx), "=3D&r" (__rc), "+A" (*(p))          =
-   \
-> +               : "rJ" ((long)__oldx), "rJ" (__newx),                   \
-> +                 "rJ" (__mask), "rJ" (~__mask)                         \
-> +               : "memory");                                            \
-> +                                                                       \
-> +       r =3D (__typeof__(*(p)))(__retx >> __s);                         =
- \
-> +})
-> +
->
->  #define __arch_cmpxchg(lr_sfx, sc_sfx, prepend, append, r, p, co, o, n) =
-       \
->  ({                                                                     \
-> @@ -98,6 +128,11 @@
->         __typeof__(*(ptr)) __ret;                                       \
->                                                                         \
->         switch (sizeof(*__ptr)) {                                       \
-> +       case 1:                                                         \
-> +       case 2:                                                         \
-> +               __arch_cmpxchg_mask(sc_sfx, prepend, append,            \
-> +                                       __ret, __ptr, __old, __new);    \
-> +               break;                                                  \
->         case 4:                                                         \
->                 __arch_cmpxchg(".w", ".w" sc_sfx, prepend, append,      \
->                                 __ret, __ptr, (long), __old, __new);    \
-> --
-> 2.41.0
->
-
-
---=20
-Best Regards
- Guo Ren
+That's fair. We can call them __list_*_valid() (inline), and
+__list_*_valid_or_report() ?
