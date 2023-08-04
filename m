@@ -2,62 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C027576F6DF
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 03:21:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6EC8176F6E2
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 03:23:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231540AbjHDBVa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Aug 2023 21:21:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48434 "EHLO
+        id S231664AbjHDBXO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Aug 2023 21:23:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48926 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229496AbjHDBVZ (ORCPT
+        with ESMTP id S231593AbjHDBXM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Aug 2023 21:21:25 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 526A9420A
-        for <linux-kernel@vger.kernel.org>; Thu,  3 Aug 2023 18:21:24 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id E267261EE2
-        for <linux-kernel@vger.kernel.org>; Fri,  4 Aug 2023 01:21:23 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C4599C433C8;
-        Fri,  4 Aug 2023 01:21:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691112083;
-        bh=5orjVrOpDSU7lC6XWYb50yRi3CyLxe0uhFWTNPZ+CRY=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=m5xBf9GI8DX3y/fuXlCBtDK7cRcob9oC8Nz1sKXUNYSwMPCiymCrXi011oT3l6X7E
-         evYGDzSyATBaYUJ2X5VeLV++MpTgO6qE35b7x/mBrxrnUGI+O7R/Q686iwiDlpOMgO
-         auxX8vIb+KjPjtjY2giFU2+uxsPCpkA0kOiCF/fAh7xaG8JLra2ufaFS4AibNzYQch
-         XjtUrmJlPIA7lSDaGgxujKvP+C29ywGsY48NePl/yKiCrbI0CtFvZ98AAoFZL/Xpdi
-         mDgswrsF5MHBJNFNg3Nnics9Hj4yptqC/tjydyXI0738RIAj9zvBtpEjFmjEzZ95jn
-         Z6d4XEpuDHiww==
-Date:   Thu, 3 Aug 2023 18:21:21 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Alexander Lobakin <aleksander.lobakin@intel.com>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
-        Larysa Zaremba <larysa.zaremba@intel.com>,
-        Yunsheng Lin <linyunsheng@huawei.com>,
-        Alexander Duyck <alexanderduyck@fb.com>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
-        Simon Horman <simon.horman@corigine.com>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net-next v3 0/6] page_pool: a couple of assorted
- optimizations
-Message-ID: <20230803182121.1baf4c13@kernel.org>
-In-Reply-To: <20230803182038.2646541-1-aleksander.lobakin@intel.com>
-References: <20230803182038.2646541-1-aleksander.lobakin@intel.com>
+        Thu, 3 Aug 2023 21:23:12 -0400
+Received: from out30-98.freemail.mail.aliyun.com (out30-98.freemail.mail.aliyun.com [115.124.30.98])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52B75423E
+        for <linux-kernel@vger.kernel.org>; Thu,  3 Aug 2023 18:23:10 -0700 (PDT)
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R151e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046049;MF=joseph.qi@linux.alibaba.com;NM=1;PH=DS;RN=8;SR=0;TI=SMTPD_---0Vp-Iz30_1691112186;
+Received: from 30.221.128.131(mailfrom:joseph.qi@linux.alibaba.com fp:SMTPD_---0Vp-Iz30_1691112186)
+          by smtp.aliyun-inc.com;
+          Fri, 04 Aug 2023 09:23:07 +0800
+Message-ID: <2c123597-e8bd-a0a0-cfb1-2236aa035870@linux.alibaba.com>
+Date:   Fri, 4 Aug 2023 09:23:06 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.13.0
+Subject: Re: [PATCH] fs: ocfs2: namei: Check return value of ocfs2_add_entry()
+Content-Language: en-US
+To:     Artem Chernyshev <artem.chernyshev@red-soft.ru>,
+        Joel Becker <jlbec@evilplan.org>,
+        Mark Fasheh <mark@fasheh.com>, akpm <akpm@linux-foundation.org>
+Cc:     Kurt Hackel <kurt.hackel@oracle.com>, ocfs2-devel@lists.linux.dev,
+        linux-kernel@vger.kernel.org, lvc-project@linuxtesting.org
+References: <20230803145417.177649-1-artem.chernyshev@red-soft.ru>
+From:   Joseph Qi <joseph.qi@linux.alibaba.com>
+In-Reply-To: <20230803145417.177649-1-artem.chernyshev@red-soft.ru>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+X-Spam-Status: No, score=-10.0 required=5.0 tests=BAYES_00,
+        ENV_AND_HDR_SPF_MATCH,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -65,25 +46,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu,  3 Aug 2023 20:20:32 +0200 Alexander Lobakin wrote:
-> That initially was a spin-off of the IAVF PP series[0], but has grown
-> (and shrunk) since then a bunch. In fact, it consists of three
-> semi-independent blocks:
-> 
-> * #1-2: Compile-time optimization. Split page_pool.h into 2 headers to
->   not overbloat the consumers not needing complex inline helpers and
->   then stop including it in skbuff.h at all. The first patch is also
->   prereq for the whole series.
-> * #3: Improve cacheline locality for users of the Page Pool frag API.
-> * #4-6: Use direct cache recycling more aggressively, when it is safe
->   obviously. In addition, make sure nobody wants to use Page Pool API
->   with disabled interrupts.
-> 
-> Patches #1 and #5 are authored by Yunsheng and Jakub respectively, with
-> small modifications from my side as per ML discussions.
-> For the perf numbers for #3-6, please see individual commit messages.
 
-Our scheming didn't help much, the series also conflicts
-with the net/xdp.h includes which came in via bpf-next :(
--- 
-pw-bot: cr
+
+On 8/3/23 10:54 PM, Artem Chernyshev wrote:
+> Process result of ocfs2_add_entry() in case we have an error
+> value.
+> 
+> Found by Linux Verification Center (linuxtesting.org) with SVACE.
+> 
+> Fixes: ccd979bdbce9 ("[PATCH] OCFS2: The Second Oracle Cluster Filesystem")
+> Signed-off-by: Artem Chernyshev <artem.chernyshev@red-soft.ru>
+
+Reviewed-by: Joseph Qi <joseph.qi@linux.alibaba.com>
+
+> ---
+>  fs/ocfs2/namei.c | 4 ++++
+>  1 file changed, 4 insertions(+)
+> 
+> diff --git a/fs/ocfs2/namei.c b/fs/ocfs2/namei.c
+> index 17c52225b87d..03bccfd183f3 100644
+> --- a/fs/ocfs2/namei.c
+> +++ b/fs/ocfs2/namei.c
+> @@ -1535,6 +1535,10 @@ static int ocfs2_rename(struct mnt_idmap *idmap,
+>  		status = ocfs2_add_entry(handle, new_dentry, old_inode,
+>  					 OCFS2_I(old_inode)->ip_blkno,
+>  					 new_dir_bh, &target_insert);
+> +		if (status < 0) {
+> +			mlog_errno(status);
+> +			goto bail;
+> +		}
+>  	}
+>  
+>  	old_inode->i_ctime = current_time(old_inode);
