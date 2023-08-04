@@ -2,30 +2,30 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 77C8776F776
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 04:03:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7FD8976F777
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 04:03:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232799AbjHDCDE convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 3 Aug 2023 22:03:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33506 "EHLO
+        id S232804AbjHDCDH convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 3 Aug 2023 22:03:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33504 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231528AbjHDCDB (ORCPT
+        with ESMTP id S231594AbjHDCDB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 3 Aug 2023 22:03:01 -0400
 Received: from ex01.ufhost.com (ex01.ufhost.com [61.152.239.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA04B448B;
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C975FE69;
         Thu,  3 Aug 2023 19:02:59 -0700 (PDT)
-Received: from EXMBX165.cuchost.com (unknown [175.102.18.54])
+Received: from EXMBX166.cuchost.com (unknown [175.102.18.54])
         (using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
-        (Client CN "EXMBX165", Issuer "EXMBX165" (not verified))
-        by ex01.ufhost.com (Postfix) with ESMTP id 5724124DCFA;
-        Fri,  4 Aug 2023 10:02:57 +0800 (CST)
-Received: from EXMBX068.cuchost.com (172.16.6.68) by EXMBX165.cuchost.com
- (172.16.6.75) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Fri, 4 Aug
- 2023 10:02:57 +0800
+        (Client CN "EXMBX166", Issuer "EXMBX166" (not verified))
+        by ex01.ufhost.com (Postfix) with ESMTP id 041E724E188;
+        Fri,  4 Aug 2023 10:02:58 +0800 (CST)
+Received: from EXMBX068.cuchost.com (172.16.6.68) by EXMBX166.cuchost.com
+ (172.16.6.76) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Fri, 4 Aug
+ 2023 10:02:58 +0800
 Received: from williamqiu-virtual-machine.starfivetech.com (171.223.208.138)
  by EXMBX068.cuchost.com (172.16.6.68) with Microsoft SMTP Server (TLS) id
- 15.0.1497.42; Fri, 4 Aug 2023 10:02:56 +0800
+ 15.0.1497.42; Fri, 4 Aug 2023 10:02:57 +0800
 From:   William Qiu <william.qiu@starfivetech.com>
 To:     <devicetree@vger.kernel.org>, <linux-spi@vger.kernel.org>,
         <linux-kernel@vger.kernel.org>, <linux-riscv@lists.infradead.org>
@@ -35,9 +35,9 @@ CC:     Mark Brown <broonie@kernel.org>, Rob Herring <robh+dt@kernel.org>,
         Emil Renner Berthing <kernel@esmil.dk>,
         Ziv Xu <ziv.xu@starfivetech.com>,
         William Qiu <william.qiu@starfivetech.com>
-Subject: [PATCH v6 2/3] spi: cadence-quadspi: Add clock configuration for StarFive JH7110 QSPI
-Date:   Fri, 4 Aug 2023 10:02:53 +0800
-Message-ID: <20230804020254.291239-3-william.qiu@starfivetech.com>
+Subject: [PATCH v6 3/3] riscv: dts: starfive: Add QSPI controller node for StarFive JH7110 SoC
+Date:   Fri, 4 Aug 2023 10:02:54 +0800
+Message-ID: <20230804020254.291239-4-william.qiu@starfivetech.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20230804020254.291239-1-william.qiu@starfivetech.com>
 References: <20230804020254.291239-1-william.qiu@starfivetech.com>
@@ -57,148 +57,94 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add JH7110's clock initialization code to the driver.
+Add the quad spi controller node for the StarFive JH7110 SoC.
 
+Co-developed-by: Ziv Xu <ziv.xu@starfivetech.com>
+Signed-off-by: Ziv Xu <ziv.xu@starfivetech.com>
 Signed-off-by: William Qiu <william.qiu@starfivetech.com>
 Reviewed-by: Hal Feng <hal.feng@starfivetech.com>
 ---
- drivers/spi/spi-cadence-quadspi.c | 67 +++++++++++++++++++++++++++++++
- 1 file changed, 67 insertions(+)
+ .../jh7110-starfive-visionfive-2.dtsi         | 36 +++++++++++++++++++
+ arch/riscv/boot/dts/starfive/jh7110.dtsi      | 19 ++++++++++
+ 2 files changed, 55 insertions(+)
 
-diff --git a/drivers/spi/spi-cadence-quadspi.c b/drivers/spi/spi-cadence-quadspi.c
-index abf10f92415d..16985e1fe610 100644
---- a/drivers/spi/spi-cadence-quadspi.c
-+++ b/drivers/spi/spi-cadence-quadspi.c
-@@ -47,6 +47,12 @@
+diff --git a/arch/riscv/boot/dts/starfive/jh7110-starfive-visionfive-2.dtsi b/arch/riscv/boot/dts/starfive/jh7110-starfive-visionfive-2.dtsi
+index fa0061eb33a7..7f2d41ccc52d 100644
+--- a/arch/riscv/boot/dts/starfive/jh7110-starfive-visionfive-2.dtsi
++++ b/arch/riscv/boot/dts/starfive/jh7110-starfive-visionfive-2.dtsi
+@@ -143,6 +143,42 @@ &i2c6 {
+ 	status = "okay";
+ };
  
- #define CQSPI_OP_WIDTH(part) ((part).nbytes ? ilog2((part).buswidth) : 0)
- 
-+enum {
-+	CLK_QSPI_APB = 0,
-+	CLK_QSPI_AHB,
-+	CLK_QSPI_NUM,
++&qspi {
++	#address-cells = <1>;
++	#size-cells = <0>;
++	status = "okay";
++
++	nor_flash: flash@0 {
++		compatible = "jedec,spi-nor";
++		reg = <0>;
++		cdns,read-delay = <5>;
++		spi-max-frequency = <12000000>;
++		cdns,tshsl-ns = <1>;
++		cdns,tsd2d-ns = <1>;
++		cdns,tchsh-ns = <1>;
++		cdns,tslch-ns = <1>;
++
++		partitions {
++			compatible = "fixed-partitions";
++			#address-cells = <1>;
++			#size-cells = <1>;
++
++			spl@0 {
++				reg = <0x0 0x80000>;
++			};
++			uboot-env@f0000 {
++				reg = <0xf0000 0x10000>;
++			};
++			uboot@100000 {
++				reg = <0x100000 0x400000>;
++			};
++			reserved-data@600000 {
++				reg = <0x600000 0x1000000>;
++			};
++		};
++	};
 +};
 +
- struct cqspi_st;
+ &sysgpio {
+ 	i2c0_pins: i2c0-0 {
+ 		i2c-pins {
+diff --git a/arch/riscv/boot/dts/starfive/jh7110.dtsi b/arch/riscv/boot/dts/starfive/jh7110.dtsi
+index ec2e70011a73..9740adc9df4e 100644
+--- a/arch/riscv/boot/dts/starfive/jh7110.dtsi
++++ b/arch/riscv/boot/dts/starfive/jh7110.dtsi
+@@ -473,6 +473,25 @@ i2c6: i2c@12060000 {
+ 			status = "disabled";
+ 		};
  
- struct cqspi_flash_pdata {
-@@ -64,6 +70,7 @@ struct cqspi_st {
- 	struct platform_device	*pdev;
- 	struct spi_master	*master;
- 	struct clk		*clk;
-+	struct clk		*clks[CLK_QSPI_NUM];
- 	unsigned int		sclk;
- 
- 	void __iomem		*iobase;
-@@ -92,6 +99,8 @@ struct cqspi_st {
- 	bool			wr_completion;
- 	bool			slow_sram;
- 	bool			apb_ahb_hazard;
++		qspi: spi@13010000 {
++			compatible = "starfive,jh7110-qspi", "cdns,qspi-nor";
++			reg = <0x0 0x13010000 0x0 0x10000>,
++			      <0x0 0x21000000 0x0 0x400000>;
++			interrupts = <25>;
++			clocks = <&syscrg JH7110_SYSCLK_QSPI_REF>,
++				 <&syscrg JH7110_SYSCLK_QSPI_AHB>,
++				 <&syscrg JH7110_SYSCLK_QSPI_APB>;
++			clock-names = "ref", "ahb", "apb";
++			resets = <&syscrg JH7110_SYSRST_QSPI_APB>,
++				 <&syscrg JH7110_SYSRST_QSPI_AHB>,
++				 <&syscrg JH7110_SYSRST_QSPI_REF>;
++			reset-names = "qspi", "qspi-ocp", "rstc_ref";
++			cdns,fifo-depth = <256>;
++			cdns,fifo-width = <4>;
++			cdns,trigger-address = <0x0>;
++			status = "disabled";
++		};
 +
-+	bool			is_jh7110; /* Flag for StarFive JH7110 SoC */
- };
- 
- struct cqspi_driver_platdata {
-@@ -100,6 +109,8 @@ struct cqspi_driver_platdata {
- 	int (*indirect_read_dma)(struct cqspi_flash_pdata *f_pdata,
- 				 u_char *rxbuf, loff_t from_addr, size_t n_rx);
- 	u32 (*get_dma_status)(struct cqspi_st *cqspi);
-+	int (*jh7110_clk_init)(struct platform_device *pdev,
-+			       struct cqspi_st *cqspi);
- };
- 
- /* Operation timeout value */
-@@ -1630,6 +1641,51 @@ static int cqspi_setup_flash(struct cqspi_st *cqspi)
- 	return 0;
- }
- 
-+static int cqspi_jh7110_clk_init(struct platform_device *pdev, struct cqspi_st *cqspi)
-+{
-+	static struct clk_bulk_data qspiclk[] = {
-+		{ .id = "apb" },
-+		{ .id = "ahb" },
-+	};
-+
-+	int ret = 0;
-+
-+	ret = devm_clk_bulk_get(&pdev->dev, ARRAY_SIZE(qspiclk), qspiclk);
-+	if (ret) {
-+		dev_err(&pdev->dev, "%s: failed to get qspi clocks\n", __func__);
-+		return ret;
-+	}
-+
-+	cqspi->clks[CLK_QSPI_APB] = qspiclk[0].clk;
-+	cqspi->clks[CLK_QSPI_AHB] = qspiclk[1].clk;
-+
-+	ret = clk_prepare_enable(cqspi->clks[CLK_QSPI_APB]);
-+	if (ret) {
-+		dev_err(&pdev->dev, "%s: failed to enable CLK_QSPI_APB\n", __func__);
-+		return ret;
-+	}
-+
-+	ret = clk_prepare_enable(cqspi->clks[CLK_QSPI_AHB]);
-+	if (ret) {
-+		dev_err(&pdev->dev, "%s: failed to enable CLK_QSPI_AHB\n", __func__);
-+		goto disable_apb_clk;
-+	}
-+
-+	cqspi->is_jh7110 = true;
-+
-+	return 0;
-+
-+disable_apb_clk:
-+	clk_disable_unprepare(cqspi->clks[CLK_QSPI_APB]);
-+
-+	return ret;
-+}
-+
-+static void cqspi_jh7110_disable_clk(struct platform_device *pdev, struct cqspi_st *cqspi)
-+{
-+	clk_disable_unprepare(cqspi->clks[CLK_QSPI_AHB]);
-+	clk_disable_unprepare(cqspi->clks[CLK_QSPI_APB]);
-+}
- static int cqspi_probe(struct platform_device *pdev)
- {
- 	const struct cqspi_driver_platdata *ddata;
-@@ -1655,6 +1711,7 @@ static int cqspi_probe(struct platform_device *pdev)
- 
- 	cqspi->pdev = pdev;
- 	cqspi->master = master;
-+	cqspi->is_jh7110 = false;
- 	platform_set_drvdata(pdev, cqspi);
- 
- 	/* Obtain configuration from OF. */
-@@ -1766,6 +1823,12 @@ static int cqspi_probe(struct platform_device *pdev)
- 		if (ddata->quirks & CQSPI_NEEDS_APB_AHB_HAZARD_WAR)
- 			cqspi->apb_ahb_hazard = true;
- 
-+		if (ddata->jh7110_clk_init) {
-+			ret = cqspi_jh7110_clk_init(pdev, cqspi);
-+			if (ret)
-+				goto probe_clk_failed;
-+		}
-+
- 		if (of_device_is_compatible(pdev->dev.of_node,
- 					    "xlnx,versal-ospi-1.0")) {
- 			ret = dma_set_mask(&pdev->dev, DMA_BIT_MASK(64));
-@@ -1830,6 +1893,9 @@ static void cqspi_remove(struct platform_device *pdev)
- 
- 	clk_disable_unprepare(cqspi->clk);
- 
-+	if (cqspi->is_jh7110)
-+		cqspi_jh7110_disable_clk(pdev, cqspi);
-+
- 	pm_runtime_put_sync(&pdev->dev);
- 	pm_runtime_disable(&pdev->dev);
- }
-@@ -1897,6 +1963,7 @@ static const struct cqspi_driver_platdata versal_ospi = {
- 
- static const struct cqspi_driver_platdata jh7110_qspi = {
- 	.quirks = CQSPI_DISABLE_DAC_MODE,
-+	.jh7110_clk_init = cqspi_jh7110_clk_init,
- };
- 
- static const struct cqspi_driver_platdata pensando_cdns_qspi = {
+ 		syscrg: clock-controller@13020000 {
+ 			compatible = "starfive,jh7110-syscrg";
+ 			reg = <0x0 0x13020000 0x0 0x10000>;
 -- 
 2.34.1
 
