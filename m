@@ -2,392 +2,376 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5FF1076FB42
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 09:34:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DBB7976FB50
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 09:38:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234088AbjHDHen (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Aug 2023 03:34:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35078 "EHLO
+        id S233944AbjHDHit (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Aug 2023 03:38:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40152 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234332AbjHDHeR (ORCPT
+        with ESMTP id S230011AbjHDHiq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Aug 2023 03:34:17 -0400
-Received: from smtp-relay-internal-0.canonical.com (smtp-relay-internal-0.canonical.com [185.125.188.122])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25FD14C05
-        for <linux-kernel@vger.kernel.org>; Fri,  4 Aug 2023 00:33:31 -0700 (PDT)
-Received: from mail-yb1-f198.google.com (mail-yb1-f198.google.com [209.85.219.198])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id 1EC373F148
-        for <linux-kernel@vger.kernel.org>; Fri,  4 Aug 2023 07:33:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1691134409;
-        bh=gwuj23GJBzvBifaG/E4f8sNsXONGG/E39wjck5tc0FQ=;
-        h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-         To:Cc:Content-Type;
-        b=nA6C8Nq7bVSh52kBFG62yu2AFXQpRsNWiaAxoG3U+Ix223q3UPkT3nbPbpy9nNmEh
-         MxqkRqLBFPBAUcvmSAsSdyEgBiFGfNLlOrps8FMGVFbJ/KleVtojfp7WVUxcM5Jedr
-         30dUVcWhk5wlRo4Xyf126mjNTNb5azUro9dSHf6Rpecz3QSa64+R3vRJ3InRX5mFc5
-         Xf5anYtpcUOCuK87kB1Ru2psl/0GxpBoQdRi++3g3/o7PUaTVrhY78Jm4Bw01HVBd1
-         4VYAdY7kPQSN1YC7WVCGoWsNJGPR0yP2Hs70zxledGANgxWDkIWUXmvU77sVMyEIy+
-         pGCwV2FUfcVrQ==
-Received: by mail-yb1-f198.google.com with SMTP id 3f1490d57ef6-d1851c52f3dso1891350276.1
-        for <linux-kernel@vger.kernel.org>; Fri, 04 Aug 2023 00:33:29 -0700 (PDT)
+        Fri, 4 Aug 2023 03:38:46 -0400
+Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5FCE23AA6
+        for <linux-kernel@vger.kernel.org>; Fri,  4 Aug 2023 00:38:43 -0700 (PDT)
+Received: by mail-wm1-x32a.google.com with SMTP id 5b1f17b1804b1-3fe490c05c9so1541165e9.0
+        for <linux-kernel@vger.kernel.org>; Fri, 04 Aug 2023 00:38:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20221208.gappssmtp.com; s=20221208; t=1691134722; x=1691739522;
+        h=mime-version:message-id:in-reply-to:date:subject:cc:to:from
+         :user-agent:references:from:to:cc:subject:date:message-id:reply-to;
+        bh=fjxFinBxb4fV1ij6n7gKBVvXzD01CF3vgozZrKOB0SE=;
+        b=h+NLbZA0tsAFL0P0PKK1oTtDPfbOx8shpPl1Lou6ZSyZexm+zeAy3QF6iK4xeb0569
+         VPBIBtHIcr/qYGN5r6213rM2j3Q+1TB7y31V0g/3w0fHUl3PSYI50VUMceaAyEwFCSKy
+         req9TM2xckPClNduez1E3gwuczNHP6KN+2LdJ1UMD32c1qiQKPl4EmAlan+5E1fJoc7S
+         2hEfBKhXCG76Cb06Z2U87bkjr2tAsg7Uf7bQe1wHf+czTaZH4dAHT8ibD1GikmqLW44c
+         47kRBdUFl1UIXH3HdnILXuaiO9NQbd18H5s0iMlSongqwXwspCc5rIjomIyYG43EkuU/
+         KSRA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691134407; x=1691739207;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=gwuj23GJBzvBifaG/E4f8sNsXONGG/E39wjck5tc0FQ=;
-        b=Coftr7I4XpVghzJLLo1S6TcRypKH+wOtm17we8ChKuYXzYSiXWzAZbJLLl0CLWlTKD
-         56he20NireyeBs9/uoctCFHpT/7+REXsAaEDBr2mZLJnLRSua0qb0117apLxjwGQt0t5
-         EgJdXHnkmtAo8XABVzHNa85YSuY/xUOx0tCCiOCUhDm1vNBW4hPBNlcm5a4ASsH505rQ
-         K5H2WDM/ZSKLzD0DZU/iWy9px65O7yQ024YStqSh3oF1L22buFvvbxxP5oiujdSfFs6K
-         EvBLHXXggryzCaZAQEvp0Cgtj6gBDRj0zXe+9rT/eMs5ygcepcgssYLDy7EXZBERFYCe
-         RrVA==
-X-Gm-Message-State: AOJu0YxHeqjc7WMfFM+MrHy4J0yG7lC1vVUy3Qe3WaGB6uCEqPKvUwtW
-        wvfBaitSWR/U7/ao3LyGVItuUdrzHUEwJYXuD16ANCJkv4pgFxKnW+TOCOjA07Sw/o5C5Y87iFz
-        mHAz9W29MDNkLplog3iNsTgQ0J6twocNgCzyx8ZG0/QiW6MVTnV0COXRU/A==
-X-Received: by 2002:a25:d0b:0:b0:d0e:c8fb:986a with SMTP id 11-20020a250d0b000000b00d0ec8fb986amr771991ybn.42.1691134407346;
-        Fri, 04 Aug 2023 00:33:27 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IHglgXgIUbkDMGOCwW4KKWi4n3t+cay2r38lAx8MlDA8al/9GfgBhD/xTu5RpCzHbi3RASipcxkL2ltICYuTbE=
-X-Received: by 2002:a25:d0b:0:b0:d0e:c8fb:986a with SMTP id
- 11-20020a250d0b000000b00d0ec8fb986amr771983ybn.42.1691134407031; Fri, 04 Aug
- 2023 00:33:27 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1691134722; x=1691739522;
+        h=mime-version:message-id:in-reply-to:date:subject:cc:to:from
+         :user-agent:references:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=fjxFinBxb4fV1ij6n7gKBVvXzD01CF3vgozZrKOB0SE=;
+        b=h7xSI5vRpchzyNSNy4zG3sF7PRFjfFPtgWkx89S9TcTfBqTKTFPZCa6uyJJZlTJ3u4
+         Du07zqHt9xnvIk1NFZuGZfHregWLSP+2iY1GHRJNFIIAfLip7O9YhkcHZNdnVyln/zsL
+         BHgpUlHvr+TazYjN0MQGoLTnFIlrpLgmjseCLjjlCKfMNQ/1RbPK4dKiEtcos8QwPcYR
+         I2sxRqubkeAvKYbur6UZA2z3lxg2asjYn0PG45dp+UbYZRF0jCXCPiixIvccB9ypIrSO
+         IA6S/JtCqsz/ak6JdPfxji2hW7Y2dhVe+vX1GBm4o/fj0/D7D+AKvEpu9PMOEyTQHAg/
+         HNeQ==
+X-Gm-Message-State: AOJu0YzjJg3FnOFZVbAXjaNe+LHFoxxLZIfK8uI81Gpwx2r52N2dHTU/
+        CFAKQvJ72PioGmsOCqg057XAGg==
+X-Google-Smtp-Source: AGHT+IEE6baaOoe7hjC7lnxd2eIQ1EQ45U+zSikR5aX0hM69lyOQFKivCFZIHwCSOuDrFWz8zQGvbg==
+X-Received: by 2002:adf:ea43:0:b0:317:5efa:c46a with SMTP id j3-20020adfea43000000b003175efac46amr924802wrn.27.1691134721650;
+        Fri, 04 Aug 2023 00:38:41 -0700 (PDT)
+Received: from localhost ([2a01:e0a:3c5:5fb1:aeaf:609a:5eef:39a8])
+        by smtp.gmail.com with ESMTPSA id t6-20020a5d6a46000000b003142e438e8csm1792101wrw.26.2023.08.04.00.38.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 04 Aug 2023 00:38:41 -0700 (PDT)
+References: <20230803-amlogic-v6-4-upstream-dsi-ccf-vim3-v7-0-762219fc5b28@linaro.org>
+ <20230803-amlogic-v6-4-upstream-dsi-ccf-vim3-v7-3-762219fc5b28@linaro.org>
+User-agent: mu4e 1.8.13; emacs 28.2
+From:   Jerome Brunet <jbrunet@baylibre.com>
+To:     Neil Armstrong <neil.armstrong@linaro.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Kevin Hilman <khilman@baylibre.com>,
+        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Jagan Teki <jagan@amarulasolutions.com>,
+        Nicolas Belin <nbelin@baylibre.com>
+Cc:     linux-clk@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-amlogic@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org,
+        dri-devel@lists.freedesktop.org
+Subject: Re: [PATCH v7 3/9] clk: meson: add vclk driver
+Date:   Fri, 04 Aug 2023 09:33:36 +0200
+In-reply-to: <20230803-amlogic-v6-4-upstream-dsi-ccf-vim3-v7-3-762219fc5b28@linaro.org>
+Message-ID: <1j5y5vp88v.fsf@starbuckisacylon.baylibre.com>
 MIME-Version: 1.0
-References: <20230803135955.230449-1-aleksandr.mikhalitsyn@canonical.com>
- <20230803135955.230449-4-aleksandr.mikhalitsyn@canonical.com>
- <71018b94-45a0-3404-d3d0-d9f808a72a00@redhat.com> <41ba61bf-3a45-cb20-1e4c-38dbd65bafa6@redhat.com>
- <CAEivzxcmurnArPRuLWXDjA2+qdicz4rnxA8ESTQprHJM1kKEnA@mail.gmail.com> <CAEivzxeFeWt-VFOrNqTV5x38r1zwmfcEh_ScqriDHC8bL7s0dw@mail.gmail.com>
-In-Reply-To: <CAEivzxeFeWt-VFOrNqTV5x38r1zwmfcEh_ScqriDHC8bL7s0dw@mail.gmail.com>
-From:   Aleksandr Mikhalitsyn <aleksandr.mikhalitsyn@canonical.com>
-Date:   Fri, 4 Aug 2023 09:33:16 +0200
-Message-ID: <CAEivzxcCe9j13L-0m4pww_dXXdAQ9evRdMorpncJD9d+MW0Osw@mail.gmail.com>
-Subject: Re: [PATCH v8 03/12] ceph: handle idmapped mounts in create_request_message()
-To:     Xiubo Li <xiubli@redhat.com>
-Cc:     brauner@kernel.org, stgraber@ubuntu.com,
-        linux-fsdevel@vger.kernel.org, Jeff Layton <jlayton@kernel.org>,
-        Ilya Dryomov <idryomov@gmail.com>, ceph-devel@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 4, 2023 at 8:43=E2=80=AFAM Aleksandr Mikhalitsyn
-<aleksandr.mikhalitsyn@canonical.com> wrote:
->
-> On Fri, Aug 4, 2023 at 8:35=E2=80=AFAM Aleksandr Mikhalitsyn
-> <aleksandr.mikhalitsyn@canonical.com> wrote:
-> >
-> > On Fri, Aug 4, 2023 at 5:24=E2=80=AFAM Xiubo Li <xiubli@redhat.com> wro=
-te:
-> > >
-> > >
-> > > On 8/4/23 10:26, Xiubo Li wrote:
-> > > >
-> > > > On 8/3/23 21:59, Alexander Mikhalitsyn wrote:
-> > > >> From: Christian Brauner <brauner@kernel.org>
-> > > >>
-> > > >> Inode operations that create a new filesystem object such as ->mkn=
-od,
-> > > >> ->create, ->mkdir() and others don't take a {g,u}id argument expli=
-citly.
-> > > >> Instead the caller's fs{g,u}id is used for the {g,u}id of the new
-> > > >> filesystem object.
-> > > >>
-> > > >> In order to ensure that the correct {g,u}id is used map the caller=
-'s
-> > > >> fs{g,u}id for creation requests. This doesn't require complex chan=
-ges.
-> > > >> It suffices to pass in the relevant idmapping recorded in the requ=
-est
-> > > >> message. If this request message was triggered from an inode opera=
-tion
-> > > >> that creates filesystem objects it will have passed down the relev=
-ant
-> > > >> idmaping. If this is a request message that was triggered from an =
-inode
-> > > >> operation that doens't need to take idmappings into account the in=
-itial
-> > > >> idmapping is passed down which is an identity mapping.
-> > > >>
-> > > >> This change uses a new cephfs protocol extension
-> > > >> CEPHFS_FEATURE_HAS_OWNER_UIDGID
-> > > >> which adds two new fields (owner_{u,g}id) to the request head stru=
-cture.
-> > > >> So, we need to ensure that MDS supports it otherwise we need to fa=
-il
-> > > >> any IO that comes through an idmapped mount because we can't proce=
-ss it
-> > > >> in a proper way. MDS server without such an extension will use
-> > > >> caller_{u,g}id
-> > > >> fields to set a new inode owner UID/GID which is incorrect because
-> > > >> caller_{u,g}id
-> > > >> values are unmapped. At the same time we can't map these fields wi=
-th an
-> > > >> idmapping as it can break UID/GID-based permission checks logic on=
- the
-> > > >> MDS side. This problem was described with a lot of details at [1],=
- [2].
-> > > >>
-> > > >> [1]
-> > > >> https://lore.kernel.org/lkml/CAEivzxfw1fHO2TFA4dx3u23ZKK6Q+EThfzui=
-brhA3RKM=3DZOYLg@mail.gmail.com/
-> > > >> [2]
-> > > >> https://lore.kernel.org/all/20220104140414.155198-3-brauner@kernel=
-.org/
-> > > >>
-> > > >> https://github.com/ceph/ceph/pull/52575
-> > > >> https://tracker.ceph.com/issues/62217
-> > > >>
-> > > >> Cc: Xiubo Li <xiubli@redhat.com>
-> > > >> Cc: Jeff Layton <jlayton@kernel.org>
-> > > >> Cc: Ilya Dryomov <idryomov@gmail.com>
-> > > >> Cc: ceph-devel@vger.kernel.org
-> > > >> Co-Developed-by: Alexander Mikhalitsyn
-> > > >> <aleksandr.mikhalitsyn@canonical.com>
-> > > >> Signed-off-by: Christian Brauner <brauner@kernel.org>
-> > > >> Signed-off-by: Alexander Mikhalitsyn
-> > > >> <aleksandr.mikhalitsyn@canonical.com>
-> > > >> ---
-> > > >> v7:
-> > > >>     - reworked to use two new fields for owner UID/GID
-> > > >> (https://github.com/ceph/ceph/pull/52575)
-> > > >> v8:
-> > > >>     - properly handled case when old MDS used with new kernel clie=
-nt
-> > > >> ---
-> > > >>   fs/ceph/mds_client.c         | 46 ++++++++++++++++++++++++++++++=
-+++---
-> > > >>   fs/ceph/mds_client.h         |  5 +++-
-> > > >>   include/linux/ceph/ceph_fs.h |  4 +++-
-> > > >>   3 files changed, 50 insertions(+), 5 deletions(-)
-> > > >>
-> > > >> diff --git a/fs/ceph/mds_client.c b/fs/ceph/mds_client.c
-> > > >> index 8829f55103da..7d3106d3b726 100644
-> > > >> --- a/fs/ceph/mds_client.c
-> > > >> +++ b/fs/ceph/mds_client.c
-> > > >> @@ -2902,6 +2902,17 @@ static void encode_mclientrequest_tail(void
-> > > >> **p, const struct ceph_mds_request *
-> > > >>       }
-> > > >>   }
-> > > >>   +static inline u16 mds_supported_head_version(struct
-> > > >> ceph_mds_session *session)
-> > > >> +{
-> > > >> +    if (!test_bit(CEPHFS_FEATURE_32BITS_RETRY_FWD,
-> > > >> &session->s_features))
-> > > >> +        return 1;
-> > > >> +
-> > > >> +    if (!test_bit(CEPHFS_FEATURE_HAS_OWNER_UIDGID,
-> > > >> &session->s_features))
-> > > >> +        return 2;
-> > > >> +
-> > > >> +    return CEPH_MDS_REQUEST_HEAD_VERSION;
-> > > >> +}
-> > > >> +
-> > > >>   static struct ceph_mds_request_head_legacy *
-> > > >>   find_legacy_request_head(void *p, u64 features)
-> > > >>   {
-> > > >> @@ -2923,6 +2934,7 @@ static struct ceph_msg
-> > > >> *create_request_message(struct ceph_mds_session *session,
-> > > >>   {
-> > > >>       int mds =3D session->s_mds;
-> > > >>       struct ceph_mds_client *mdsc =3D session->s_mdsc;
-> > > >> +    struct ceph_client *cl =3D mdsc->fsc->client;
-> > > >>       struct ceph_msg *msg;
-> > > >>       struct ceph_mds_request_head_legacy *lhead;
-> > > >>       const char *path1 =3D NULL;
-> > > >> @@ -2936,7 +2948,7 @@ static struct ceph_msg
-> > > >> *create_request_message(struct ceph_mds_session *session,
-> > > >>       void *p, *end;
-> > > >>       int ret;
-> > > >>       bool legacy =3D !(session->s_con.peer_features &
-> > > >> CEPH_FEATURE_FS_BTIME);
-> > > >> -    bool old_version =3D !test_bit(CEPHFS_FEATURE_32BITS_RETRY_FW=
-D,
-> > > >> &session->s_features);
-> > > >> +    u16 request_head_version =3D mds_supported_head_version(sessi=
-on);
-> > > >>         ret =3D set_request_path_attr(mdsc, req->r_inode, req->r_d=
-entry,
-> > > >>                     req->r_parent, req->r_path1, req->r_ino1.ino,
-> > > >> @@ -2977,8 +2989,10 @@ static struct ceph_msg
-> > > >> *create_request_message(struct ceph_mds_session *session,
-> > > >>        */
-> > > >>       if (legacy)
-> > > >>           len =3D sizeof(struct ceph_mds_request_head_legacy);
-> > > >> -    else if (old_version)
-> > > >> +    else if (request_head_version =3D=3D 1)
-> > > >>           len =3D sizeof(struct ceph_mds_request_head_old);
-> > > >> +    else if (request_head_version =3D=3D 2)
-> > > >> +        len =3D offsetofend(struct ceph_mds_request_head, ext_num=
-_fwd);
-> > > >>       else
-> > > >>           len =3D sizeof(struct ceph_mds_request_head);
-> > > >
-> > > > This is not what we suppose to. If we do this again and again when
-> > > > adding new members it will make the code very complicated to mainta=
-in.
-> > > >
-> > > > Once the CEPHFS_FEATURE_32BITS_RETRY_FWD has been supported the cep=
-h
-> > > > should correctly decode it and if CEPHFS_FEATURE_HAS_OWNER_UIDGID i=
-s
-> > > > not supported the decoder should skip it directly.
-> > > >
-> > > > Is the MDS side buggy ? Why you last version didn't work ?
-> > > >
-> > >
-> > > I think the ceph side is buggy. Possibly we should add one new `lengt=
-h`
-> > > member in struct `struct ceph_mds_request_head` and just skip the ext=
-ra
-> > > bytes when decoding it.
-> >
-> > Hm, I think I found something suspicious. In cephfs code we have many
-> > places that
-> > call the DECODE_FINISH macro, but in our decoder we don't have it.
-> >
-> > From documentation it follows that DECODE_FINISH purpose is precisely
-> > about this problem.
-> >
-> > What do you think?
->
-> Upd: this thing also changes on-wire format and adds field to store lengt=
-h.
-> But this will be a massive and incompatible protocol change. I don't thin=
-k that
-> we want to do this in the scope of this task.
 
-https://github.com/ceph/ceph/pull/52575#issuecomment-1665141641
+On Thu 03 Aug 2023 at 14:03, Neil Armstrong <neil.armstrong@linaro.org> wrote:
+
+> The VCLK and VCLK_DIV clocks have supplementary bits.
+>
+> The VCLK has a "SOFT RESET" bit to toggle after the whole
+> VCLK sub-tree rate has been set, this is implemented in
+> the gate enable callback.
+>
+> The VCLK_DIV clocks as enable and reset bits used to disable
+> and reset the divider, associated with CLK_SET_RATE_GATE it ensures
+> the rate is set while the divider is disabled and in reset mode.
+>
+> The VCLK_DIV enable bit isn't implemented as a gate since it's part
+> of the divider logic and vendor does this exact sequence to ensure
+> the divider is correctly set.
+
+Unless there is reason, I'd prefer if this driver was using 'struct
+parm', like the rest of amlogic custom clock drivers, for consistency.
 
 >
-> >
-> > >
-> > > Could you fix it together with your ceph PR ?
-> > >
-> > > Thanks
-> > >
-> > > - Xiubo
-> > >
-> > >
-> > > > Thanks
-> > > >
-> > > > - Xiubo
-> > > >
-> > > >> @@ -3028,6 +3042,16 @@ static struct ceph_msg
-> > > >> *create_request_message(struct ceph_mds_session *session,
-> > > >>       lhead =3D find_legacy_request_head(msg->front.iov_base,
-> > > >>                        session->s_con.peer_features);
-> > > >>   +    if ((req->r_mnt_idmap !=3D &nop_mnt_idmap) &&
-> > > >> +        !test_bit(CEPHFS_FEATURE_HAS_OWNER_UIDGID,
-> > > >> &session->s_features)) {
-> > > >> +        pr_err_ratelimited_client(cl,
-> > > >> +            "idmapped mount is used and
-> > > >> CEPHFS_FEATURE_HAS_OWNER_UIDGID"
-> > > >> +            " is not supported by MDS. Fail request with -EIO.\n"=
-);
-> > > >> +
-> > > >> +        ret =3D -EIO;
-> > > >> +        goto out_err;
-> > > >> +    }
-> > > >> +
-> > > >>       /*
-> > > >>        * The ceph_mds_request_head_legacy didn't contain a version
-> > > >> field, and
-> > > >>        * one was added when we moved the message version from 3->4=
-.
-> > > >> @@ -3035,17 +3059,33 @@ static struct ceph_msg
-> > > >> *create_request_message(struct ceph_mds_session *session,
-> > > >>       if (legacy) {
-> > > >>           msg->hdr.version =3D cpu_to_le16(3);
-> > > >>           p =3D msg->front.iov_base + sizeof(*lhead);
-> > > >> -    } else if (old_version) {
-> > > >> +    } else if (request_head_version =3D=3D 1) {
-> > > >>           struct ceph_mds_request_head_old *ohead =3D msg->front.i=
-ov_base;
-> > > >>             msg->hdr.version =3D cpu_to_le16(4);
-> > > >>           ohead->version =3D cpu_to_le16(1);
-> > > >>           p =3D msg->front.iov_base + sizeof(*ohead);
-> > > >> +    } else if (request_head_version =3D=3D 2) {
-> > > >> +        struct ceph_mds_request_head *nhead =3D msg->front.iov_ba=
-se;
-> > > >> +
-> > > >> +        msg->hdr.version =3D cpu_to_le16(6);
-> > > >> +        nhead->version =3D cpu_to_le16(2);
-> > > >> +
-> > > >> +        p =3D msg->front.iov_base + offsetofend(struct
-> > > >> ceph_mds_request_head, ext_num_fwd);
-> > > >>       } else {
-> > > >>           struct ceph_mds_request_head *nhead =3D msg->front.iov_b=
-ase;
-> > > >> +        kuid_t owner_fsuid;
-> > > >> +        kgid_t owner_fsgid;
-> > > >>             msg->hdr.version =3D cpu_to_le16(6);
-> > > >>           nhead->version =3D cpu_to_le16(CEPH_MDS_REQUEST_HEAD_VER=
-SION);
-> > > >> +
-> > > >> +        owner_fsuid =3D from_vfsuid(req->r_mnt_idmap, &init_user_=
-ns,
-> > > >> +                      VFSUIDT_INIT(req->r_cred->fsuid));
-> > > >> +        owner_fsgid =3D from_vfsgid(req->r_mnt_idmap, &init_user_=
-ns,
-> > > >> +                      VFSGIDT_INIT(req->r_cred->fsgid));
-> > > >> +        nhead->owner_uid =3D cpu_to_le32(from_kuid(&init_user_ns,
-> > > >> owner_fsuid));
-> > > >> +        nhead->owner_gid =3D cpu_to_le32(from_kgid(&init_user_ns,
-> > > >> owner_fsgid));
-> > > >>           p =3D msg->front.iov_base + sizeof(*nhead);
-> > > >>       }
-> > > >>   diff --git a/fs/ceph/mds_client.h b/fs/ceph/mds_client.h
-> > > >> index e3bbf3ba8ee8..8f683e8203bd 100644
-> > > >> --- a/fs/ceph/mds_client.h
-> > > >> +++ b/fs/ceph/mds_client.h
-> > > >> @@ -33,8 +33,10 @@ enum ceph_feature_type {
-> > > >>       CEPHFS_FEATURE_NOTIFY_SESSION_STATE,
-> > > >>       CEPHFS_FEATURE_OP_GETVXATTR,
-> > > >>       CEPHFS_FEATURE_32BITS_RETRY_FWD,
-> > > >> +    CEPHFS_FEATURE_NEW_SNAPREALM_INFO,
-> > > >> +    CEPHFS_FEATURE_HAS_OWNER_UIDGID,
-> > > >>   -    CEPHFS_FEATURE_MAX =3D CEPHFS_FEATURE_32BITS_RETRY_FWD,
-> > > >> +    CEPHFS_FEATURE_MAX =3D CEPHFS_FEATURE_HAS_OWNER_UIDGID,
-> > > >>   };
-> > > >>     #define CEPHFS_FEATURES_CLIENT_SUPPORTED {    \
-> > > >> @@ -49,6 +51,7 @@ enum ceph_feature_type {
-> > > >>       CEPHFS_FEATURE_NOTIFY_SESSION_STATE,    \
-> > > >>       CEPHFS_FEATURE_OP_GETVXATTR,        \
-> > > >>       CEPHFS_FEATURE_32BITS_RETRY_FWD,    \
-> > > >> +    CEPHFS_FEATURE_HAS_OWNER_UIDGID,    \
-> > > >>   }
-> > > >>     /*
-> > > >> diff --git a/include/linux/ceph/ceph_fs.h b/include/linux/ceph/cep=
-h_fs.h
-> > > >> index 5f2301ee88bc..6eb83a51341c 100644
-> > > >> --- a/include/linux/ceph/ceph_fs.h
-> > > >> +++ b/include/linux/ceph/ceph_fs.h
-> > > >> @@ -499,7 +499,7 @@ struct ceph_mds_request_head_legacy {
-> > > >>       union ceph_mds_request_args args;
-> > > >>   } __attribute__ ((packed));
-> > > >>   -#define CEPH_MDS_REQUEST_HEAD_VERSION  2
-> > > >> +#define CEPH_MDS_REQUEST_HEAD_VERSION  3
-> > > >>     struct ceph_mds_request_head_old {
-> > > >>       __le16 version;                /* struct version */
-> > > >> @@ -530,6 +530,8 @@ struct ceph_mds_request_head {
-> > > >>         __le32 ext_num_retry;          /* new count retry attempts=
- */
-> > > >>       __le32 ext_num_fwd;            /* new count fwd attempts */
-> > > >> +
-> > > >> +    __le32 owner_uid, owner_gid;   /* used for OPs which create
-> > > >> inodes */
-> > > >>   } __attribute__ ((packed));
-> > > >>     /* cap/lease release record */
-> > >
+> Signed-off-by: Neil Armstrong <neil.armstrong@linaro.org>
+> ---
+>  drivers/clk/meson/Kconfig  |   5 ++
+>  drivers/clk/meson/Makefile |   1 +
+>  drivers/clk/meson/vclk.c   | 146 +++++++++++++++++++++++++++++++++++++++++++++
+>  drivers/clk/meson/vclk.h   |  68 +++++++++++++++++++++
+>  4 files changed, 220 insertions(+)
+>
+> diff --git a/drivers/clk/meson/Kconfig b/drivers/clk/meson/Kconfig
+> index 135da8f2d0b1..83f629515e96 100644
+> --- a/drivers/clk/meson/Kconfig
+> +++ b/drivers/clk/meson/Kconfig
+> @@ -30,6 +30,10 @@ config COMMON_CLK_MESON_VID_PLL_DIV
+>  	tristate
+>  	select COMMON_CLK_MESON_REGMAP
+>  
+> +config COMMON_CLK_MESON_VCLK
+> +	tristate
+> +	select COMMON_CLK_MESON_REGMAP
+> +
+>  config COMMON_CLK_MESON_CLKC_UTILS
+>  	tristate
+>  
+> @@ -140,6 +144,7 @@ config COMMON_CLK_G12A
+>  	select COMMON_CLK_MESON_EE_CLKC
+>  	select COMMON_CLK_MESON_CPU_DYNDIV
+>  	select COMMON_CLK_MESON_VID_PLL_DIV
+> +	select COMMON_CLK_MESON_VCLK
+>  	select MFD_SYSCON
+>  	help
+>  	  Support for the clock controller on Amlogic S905D2, S905X2 and S905Y2
+> diff --git a/drivers/clk/meson/Makefile b/drivers/clk/meson/Makefile
+> index cd961cc4f4db..6efeb8c7bd2a 100644
+> --- a/drivers/clk/meson/Makefile
+> +++ b/drivers/clk/meson/Makefile
+> @@ -12,6 +12,7 @@ obj-$(CONFIG_COMMON_CLK_MESON_PLL) += clk-pll.o
+>  obj-$(CONFIG_COMMON_CLK_MESON_REGMAP) += clk-regmap.o
+>  obj-$(CONFIG_COMMON_CLK_MESON_SCLK_DIV) += sclk-div.o
+>  obj-$(CONFIG_COMMON_CLK_MESON_VID_PLL_DIV) += vid-pll-div.o
+> +obj-$(CONFIG_COMMON_CLK_MESON_VCLK) += vclk.o
+>  
+>  # Amlogic Clock controllers
+>  
+> diff --git a/drivers/clk/meson/vclk.c b/drivers/clk/meson/vclk.c
+> new file mode 100644
+> index 000000000000..0df84403b17f
+> --- /dev/null
+> +++ b/drivers/clk/meson/vclk.c
+> @@ -0,0 +1,146 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/*
+> + * Copyright (c) 2023 Neil Armstrong <neil.armstrong@linaro.org>
+> + */
+> +
+> +#include <linux/module.h>
+> +#include "vclk.h"
+> +
+> +/* The VCLK gate has a supplementary reset bit to pulse after ungating */
+> +
+> +static int clk_regmap_vclk_enable(struct clk_hw *hw)
+> +{
+> +	struct clk_regmap *clk = to_clk_regmap(hw);
+> +	struct clk_regmap_vclk_data *vclk = clk_get_regmap_vclk_data(clk);
+> +
+> +	regmap_set_bits(clk->map, vclk->offset, BIT(vclk->enable_bit_idx));
+> +
+> +	/* Do a reset pulse */
+> +	regmap_set_bits(clk->map, vclk->offset, BIT(vclk->reset_bit_idx));
+> +	regmap_clear_bits(clk->map, vclk->offset, BIT(vclk->reset_bit_idx));
+> +
+> +	return 0;
+> +}
+> +
+> +static void clk_regmap_vclk_disable(struct clk_hw *hw)
+> +{
+> +	struct clk_regmap *clk = to_clk_regmap(hw);
+> +	struct clk_regmap_vclk_data *vclk = clk_get_regmap_vclk_data(clk);
+> +
+> +	regmap_clear_bits(clk->map, vclk->offset, BIT(vclk->enable_bit_idx));
+> +}
+> +
+> +static int clk_regmap_vclk_is_enabled(struct clk_hw *hw)
+> +{
+> +	struct clk_regmap *clk = to_clk_regmap(hw);
+> +	struct clk_regmap_vclk_data *vclk = clk_get_regmap_vclk_data(clk);
+> +	unsigned int val;
+> +
+> +	regmap_read(clk->map, vclk->offset, &val);
+> +
+> +	return val & BIT(vclk->enable_bit_idx) ? 1 : 0;
+> +}
+> +
+> +const struct clk_ops clk_regmap_vclk_ops = {
+> +	.enable = clk_regmap_vclk_enable,
+> +	.disable = clk_regmap_vclk_disable,
+> +	.is_enabled = clk_regmap_vclk_is_enabled,
+> +};
+> +EXPORT_SYMBOL_GPL(clk_regmap_vclk_ops);
+> +
+> +/* The VCLK Divider has supplementary reset & enable bits */
+> +
+> +static unsigned long clk_regmap_vclk_div_recalc_rate(struct clk_hw *hw,
+> +						     unsigned long prate)
+> +{
+> +	struct clk_regmap *clk = to_clk_regmap(hw);
+> +	struct clk_regmap_vclk_div_data *vclk = clk_get_regmap_vclk_div_data(clk);
+> +	unsigned int val;
+> +	int ret;
+> +
+> +	ret = regmap_read(clk->map, vclk->offset, &val);
+> +	if (ret)
+> +		/* Gives a hint that something is wrong */
+> +		return 0;
+> +
+> +	val >>= vclk->shift;
+> +	val &= clk_div_mask(vclk->width);
+> +
+> +	return divider_recalc_rate(hw, prate, val, vclk->table, vclk->flags,
+> +				   vclk->width);
+> +}
+> +
+> +static int clk_regmap_vclk_div_determine_rate(struct clk_hw *hw,
+> +					      struct clk_rate_request *req)
+> +{
+> +	struct clk_regmap *clk = to_clk_regmap(hw);
+> +	struct clk_regmap_vclk_div_data *vclk = clk_get_regmap_vclk_div_data(clk);
+> +
+> +	return divider_determine_rate(hw, req, vclk->table, vclk->width,
+> +				      vclk->flags);
+> +}
+> +
+> +static int clk_regmap_vclk_div_set_rate(struct clk_hw *hw, unsigned long rate,
+> +					unsigned long parent_rate)
+> +{
+> +	struct clk_regmap *clk = to_clk_regmap(hw);
+> +	struct clk_regmap_vclk_div_data *vclk = clk_get_regmap_vclk_div_data(clk);
+> +	unsigned int val;
+> +	int ret;
+> +
+> +	ret = divider_get_val(rate, parent_rate, vclk->table, vclk->width,
+> +			      vclk->flags);
+> +	if (ret < 0)
+> +		return ret;
+> +
+> +	val = (unsigned int)ret << vclk->shift;
+> +	return regmap_update_bits(clk->map, vclk->offset,
+> +				  clk_div_mask(vclk->width) << vclk->shift, val);
+> +};
+> +
+> +static int clk_regmap_vclk_div_enable(struct clk_hw *hw)
+> +{
+> +	struct clk_regmap *clk = to_clk_regmap(hw);
+> +	struct clk_regmap_vclk_div_data *vclk = clk_get_regmap_vclk_div_data(clk);
+> +
+> +	/* Unreset the divider when ungating */
+> +	regmap_clear_bits(clk->map, vclk->offset, BIT(vclk->reset_bit_idx));
+> +
+> +	return regmap_set_bits(clk->map, vclk->offset, BIT(vclk->enable_bit_idx));
+> +}
+> +
+> +static void clk_regmap_vclk_div_disable(struct clk_hw *hw)
+> +{
+> +	struct clk_regmap *clk = to_clk_regmap(hw);
+> +	struct clk_regmap_vclk_div_data *vclk = clk_get_regmap_vclk_div_data(clk);
+> +
+> +	/* Reset the divider when gating */
+> +	regmap_clear_bits(clk->map, vclk->offset, BIT(vclk->enable_bit_idx));
+> +
+> +	regmap_set_bits(clk->map, vclk->offset, BIT(vclk->reset_bit_idx));
+> +}
+> +
+> +static int clk_regmap_vclk_div_is_enabled(struct clk_hw *hw)
+> +{
+> +	struct clk_regmap *clk = to_clk_regmap(hw);
+> +	struct clk_regmap_vclk_div_data *vclk = clk_get_regmap_vclk_div_data(clk);
+> +	unsigned int val;
+> +
+> +	regmap_read(clk->map, vclk->offset, &val);
+> +
+> +	return val & BIT(vclk->enable_bit_idx) ? 1 : 0;
+> +}
+> +
+> +const struct clk_ops clk_regmap_vclk_div_ops = {
+> +	.recalc_rate = clk_regmap_vclk_div_recalc_rate,
+> +	.determine_rate = clk_regmap_vclk_div_determine_rate,
+> +	.set_rate = clk_regmap_vclk_div_set_rate,
+> +	.enable = clk_regmap_vclk_div_enable,
+> +	.disable = clk_regmap_vclk_div_disable,
+> +	.is_enabled = clk_regmap_vclk_div_is_enabled,
+> +};
+> +EXPORT_SYMBOL_GPL(clk_regmap_vclk_div_ops);
+> +
+> +MODULE_DESCRIPTION("Amlogic vclk clock driver");
+> +MODULE_AUTHOR("Neil Armstrong <neil.armstrong@linaro.org>");
+> +MODULE_LICENSE("GPL v2");
+> diff --git a/drivers/clk/meson/vclk.h b/drivers/clk/meson/vclk.h
+> new file mode 100644
+> index 000000000000..90786552a7f3
+> --- /dev/null
+> +++ b/drivers/clk/meson/vclk.h
+> @@ -0,0 +1,68 @@
+> +/* SPDX-License-Identifier: GPL-2.0 */
+> +/*
+> + * Copyright (c) 2023 Neil Armstrong <neil.armstrong@linaro.org>
+> + */
+> +
+> +#ifndef __VCLK_H
+> +#define __VCLK_H
+> +
+> +#include "clk-regmap.h"
+> +
+> +/**
+> + * struct clk_regmap_vclk_data - vclk regmap backed specific data
+> + *
+> + * @offset:		offset of the register controlling gate
+> + * @enable_bit_idx:	single bit controlling vclk enable
+> + * @reset_bit_idx:	single bit controlling vclk reset
+> + * @flags:		hardware-specific flags
+> + *
+> + * Flags:
+> + * Same as clk_gate except CLK_GATE_HIWORD_MASK which is ignored
+> + */
+> +struct clk_regmap_vclk_data {
+> +	unsigned int	offset;
+> +	u8		enable_bit_idx;
+> +	u8		reset_bit_idx;
+> +	u8		flags;
+> +};
+> +
+> +static inline struct clk_regmap_vclk_data *
+> +clk_get_regmap_vclk_data(struct clk_regmap *clk)
+> +{
+> +	return (struct clk_regmap_vclk_data *)clk->data;
+> +}
+> +
+> +extern const struct clk_ops clk_regmap_vclk_ops;
+> +
+> +/**
+> + * struct clk_regmap_vclk_div_data - vclk_div regmap back specific data
+> + *
+> + * @offset:	offset of the register controlling the divider
+> + * @shift:	shift to the divider bit field
+> + * @width:	width of the divider bit field
+> + * @enable_bit_idx:	single bit controlling vclk divider enable
+> + * @reset_bit_idx:	single bit controlling vclk divider reset
+> + * @table:	array of value/divider pairs, last entry should have div = 0
+> + *
+> + * Flags:
+> + * Same as clk_divider except CLK_DIVIDER_HIWORD_MASK which is ignored
+> + */
+> +struct clk_regmap_vclk_div_data {
+> +	unsigned int	offset;
+> +	u8		shift;
+> +	u8		width;
+> +	u8		enable_bit_idx;
+> +	u8		reset_bit_idx;
+> +	const struct clk_div_table      *table;
+> +	u8		flags;
+> +};
+> +
+> +static inline struct clk_regmap_vclk_div_data *
+> +clk_get_regmap_vclk_div_data(struct clk_regmap *clk)
+> +{
+> +	return (struct clk_regmap_vclk_div_data *)clk->data;
+> +}
+> +
+> +extern const struct clk_ops clk_regmap_vclk_div_ops;
+> +
+> +#endif /* __VCLK_H */
+
