@@ -2,103 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8596976FFFF
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 14:13:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C601F770002
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 14:13:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229844AbjHDMNJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Aug 2023 08:13:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58362 "EHLO
+        id S229872AbjHDMNz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Aug 2023 08:13:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58692 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229463AbjHDMNI (ORCPT
+        with ESMTP id S229463AbjHDMNx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Aug 2023 08:13:08 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B51346A6
-        for <linux-kernel@vger.kernel.org>; Fri,  4 Aug 2023 05:13:07 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 29E9661FB8
-        for <linux-kernel@vger.kernel.org>; Fri,  4 Aug 2023 12:13:07 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4D32FC433C7;
-        Fri,  4 Aug 2023 12:13:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691151186;
-        bh=LvHDtvnmmIQrh15+9EicxRPjB9Hh6NlOSYzuk+m2gFc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=uMWEBeTlYkGRl9s4RhzkSBY39NwFaJ68zBLM6W8dLwpyZIFuSjitac1083ErcyihJ
-         m3JKNTtWkfZHdBYzVVXH4XOTWnve4a6WdturCW8SdbLWUNxjmdJWlMhNTvgSHYwpTC
-         sNdcQddGnTtZbzroUTNp9xxXpeFxOxXqIrTQFYIc3DP5eftJ5+Kq62JfbfwOwIYFYg
-         mogWo0nrSi6H5MCtxMBU2gaccN8aH5qD9F5INQe1vDI0Jx3wcZdTJ0slV0T1H+3NKk
-         PWxilukjsYZPLBlvCBXEuSBVPATvciZt11LKxG9MzF8a1DOe+wAQ7ctivc91QW7GB7
-         CCDocm4g2Y81Q==
-Date:   Fri, 4 Aug 2023 13:13:00 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     James Clark <james.clark@arm.com>
-Cc:     coresight@lists.linaro.org, linux-arm-kernel@lists.infradead.org,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Mike Leach <mike.leach@linaro.org>,
-        Leo Yan <leo.yan@linaro.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        James Morse <james.morse@arm.com>,
-        Kristina Martsenko <kristina.martsenko@arm.com>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Rob Herring <robh@kernel.org>,
-        Jintack Lim <jintack.lim@linaro.org>,
-        Joey Gouly <joey.gouly@arm.com>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/2] coresight: Allow guests to be traced when FEAT_TRF
- and VHE are present
-Message-ID: <f289eae2-cafb-435a-84a2-797f738e2e6b@sirena.org.uk>
-References: <20230804085219.260790-1-james.clark@arm.com>
- <20230804085219.260790-3-james.clark@arm.com>
+        Fri, 4 Aug 2023 08:13:53 -0400
+Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6BA946A6;
+        Fri,  4 Aug 2023 05:13:52 -0700 (PDT)
+Received: from lhrpeml500005.china.huawei.com (unknown [172.18.147.207])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4RHPdW2FWQz6HJbr;
+        Fri,  4 Aug 2023 20:09:03 +0800 (CST)
+Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
+ (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Fri, 4 Aug
+ 2023 13:13:50 +0100
+Date:   Fri, 4 Aug 2023 13:13:49 +0100
+From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To:     Smita Koralahalli <Smita.KoralahalliChannabasappa@amd.com>
+CC:     <linux-pci@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-cxl@vger.kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
+        <oohall@gmail.com>, Lukas Wunner <lukas@wunner.de>,
+        "Kuppuswamy Sathyanarayanan" 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        "Mahesh J Salgaonkar" <mahesh@linux.ibm.com>,
+        Alison Schofield <alison.schofield@intel.com>,
+        Vishal Verma <vishal.l.verma@intel.com>,
+        "Ira Weiny" <ira.weiny@intel.com>,
+        Ben Widawsky <bwidawsk@kernel.org>,
+        "Dan Williams" <dan.j.williams@intel.com>,
+        Yazen Ghannam <yazen.ghannam@amd.com>,
+        Terry Bowman <terry.bowman@amd.com>,
+        Robert Richter <rrichter@amd.com>
+Subject: Re: [PATCH v3 2/3] PCI/AER: Export pcie_aer_is_native()
+Message-ID: <20230804131349.00003923@Huawei.com>
+In-Reply-To: <20230803230129.127590-3-Smita.KoralahalliChannabasappa@amd.com>
+References: <20230803230129.127590-1-Smita.KoralahalliChannabasappa@amd.com>
+        <20230803230129.127590-3-Smita.KoralahalliChannabasappa@amd.com>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="hP5UAZEwmGfDxBo6"
-Content-Disposition: inline
-In-Reply-To: <20230804085219.260790-3-james.clark@arm.com>
-X-Cookie: I'm hungry, time to eat lunch.
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.202.227.76]
+X-ClientProxiedBy: lhrpeml500005.china.huawei.com (7.191.163.240) To
+ lhrpeml500005.china.huawei.com (7.191.163.240)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, 3 Aug 2023 23:01:28 +0000
+Smita Koralahalli <Smita.KoralahalliChannabasappa@amd.com> wrote:
 
---hP5UAZEwmGfDxBo6
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+> Export and move the declaration of pcie_aer_is_native() to a common header
+> file to be reused by cxl/pci module.
+> 
+> Signed-off-by: Smita Koralahalli <Smita.KoralahalliChannabasappa@amd.com>
+> Acked-by: Bjorn Helgaas <bhelgaas@google.com>
+> Reviewed-by: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
+> Reviewed-by: Robert Richter <rrichter@amd.com>
 
-On Fri, Aug 04, 2023 at 09:52:17AM +0100, James Clark wrote:
+Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
 
-> +
-> +Sysreg TRFCR_EL12	3	5	1	2	1
-> +Fields	TRFCR_ELx
-> +EndSysreg
+> ---
+> v2:
+> 	Fixed $SUBJECT
+> v3:
+> 	Added "Reviewd-by" tag.
+> ---
+>  drivers/pci/pcie/aer.c     | 1 +
+>  drivers/pci/pcie/portdrv.h | 2 --
+>  include/linux/aer.h        | 2 ++
+>  3 files changed, 3 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/pci/pcie/aer.c b/drivers/pci/pcie/aer.c
+> index f6c24ded134c..87d90dbda023 100644
+> --- a/drivers/pci/pcie/aer.c
+> +++ b/drivers/pci/pcie/aer.c
+> @@ -229,6 +229,7 @@ int pcie_aer_is_native(struct pci_dev *dev)
+>  
+>  	return pcie_ports_native || host->native_aer;
+>  }
+> +EXPORT_SYMBOL_GPL(pcie_aer_is_native);
+>  
+>  int pci_enable_pcie_error_reporting(struct pci_dev *dev)
+>  {
+> diff --git a/drivers/pci/pcie/portdrv.h b/drivers/pci/pcie/portdrv.h
+> index 58a2b1a1cae4..1f3803bde7ee 100644
+> --- a/drivers/pci/pcie/portdrv.h
+> +++ b/drivers/pci/pcie/portdrv.h
+> @@ -29,10 +29,8 @@ extern bool pcie_ports_dpc_native;
+>  
+>  #ifdef CONFIG_PCIEAER
+>  int pcie_aer_init(void);
+> -int pcie_aer_is_native(struct pci_dev *dev);
+>  #else
+>  static inline int pcie_aer_init(void) { return 0; }
+> -static inline int pcie_aer_is_native(struct pci_dev *dev) { return 0; }
+>  #endif
+>  
+>  #ifdef CONFIG_HOTPLUG_PCI_PCIE
+> diff --git a/include/linux/aer.h b/include/linux/aer.h
+> index 3a3ab05e13fd..94ce49a5f8d5 100644
+> --- a/include/linux/aer.h
+> +++ b/include/linux/aer.h
+> @@ -45,6 +45,7 @@ struct aer_capability_regs {
+>  int pci_enable_pcie_error_reporting(struct pci_dev *dev);
+>  int pci_disable_pcie_error_reporting(struct pci_dev *dev);
+>  int pci_aer_clear_nonfatal_status(struct pci_dev *dev);
+> +int pcie_aer_is_native(struct pci_dev *dev);
+>  #else
+>  static inline int pci_enable_pcie_error_reporting(struct pci_dev *dev)
+>  {
+> @@ -58,6 +59,7 @@ static inline int pci_aer_clear_nonfatal_status(struct pci_dev *dev)
+>  {
+>  	return -EINVAL;
+>  }
+> +static inline int pcie_aer_is_native(struct pci_dev *dev) { return 0; }
+>  #endif
+>  
+>  void cper_print_aer(struct pci_dev *dev, int aer_severity,
 
-This bit checks out against DDI0601 2023-06:
-
-Reviewed-by: Mark Brown <broonie@kernel.org> (sysreg)
-
---hP5UAZEwmGfDxBo6
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmTM60sACgkQJNaLcl1U
-h9Ckigf/TORYqt0WUUaxLqxm/gR6yodt2kwPsPDg71ZJUEWBFvhsC8vaFa1SL+hW
-yAtBU55sX5UTnKViNAnlV+Tln/nV62OhSw5a727h4h+CskebjuMbIxNDVLf53ZiK
-bUBAJX8UNAhmjhRiWg5QQ9xBFOf9afX6zThsk1ifjzSuCIqzMho/AOe7tjXaS5GZ
-KgxiK2AL0myYhdDRWhwmWatgyJH/KQR8Lai1P9MLDuKQau0QWsCEfMymzkcg/3Ih
-CvJOvSxHJwH5s9JmnFO4ChQdDUrGiuxKzoIhg/dakzdl4pGzdC2dgQvcFwz31f+K
-5wtUFLikBbFP3704F+j0uVsbax2KJg==
-=xwWg
------END PGP SIGNATURE-----
-
---hP5UAZEwmGfDxBo6--
