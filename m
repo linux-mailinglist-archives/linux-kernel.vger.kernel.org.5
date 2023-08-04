@@ -2,119 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DD0E0770913
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 21:32:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6BB1A770915
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 21:33:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229913AbjHDTcS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Aug 2023 15:32:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54816 "EHLO
+        id S230088AbjHDTdW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Aug 2023 15:33:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55200 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229510AbjHDTcP (ORCPT
+        with ESMTP id S229932AbjHDTdT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Aug 2023 15:32:15 -0400
-Received: from NAM11-DM6-obe.outbound.protection.outlook.com (mail-dm6nam11on2084.outbound.protection.outlook.com [40.107.223.84])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C3E41BE
-        for <linux-kernel@vger.kernel.org>; Fri,  4 Aug 2023 12:32:11 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=O9VFn2D7yRAaXncqZcIzCsZVqT9F6S/Ry/6KisV1I75o4VoiIn4uv7zAsrZW3IA1t5DCC/2D7nyjMq1rYuH593yY55D3IHatHcoFC2/VHstz27Ld30MUSX4fU0Nv7NXI1RpJuSBVVD/WGfEQiXq8fbO4isw4m1oBlTTrCE8+F1D74VBrosBKrJeNinUO2dUce2N3D7EXND1W8uMQXCerqh9n0t/BAMAHOcy4V4Y9KeyjHX/NkzOl5uKi3PRW4DwPixoBctAN0lKHh/9S0ZAEnnYoDAFJXFQD90mBFhF1WkB3O57BxxpgiBuOHyx0QVIIysy0RidrgK4tlG1SGYVwgQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=SHehE5H+PRjS3vi0Gmh3hh7gJ5mRfjYFH4bR1ha6umg=;
- b=fqMRKi9D5u8IyvSvdkEetJSEgJLf/qorEeFIECQxplLvkDMrwQPIgzN+JXgywD306ZfbSeUzxLrmDfvaOzYiebc902cDRjGk6v9ID6dyZiu1rYAQxmLAB3btVDc8fnuzYCYzhjqgWkiH1c69YMzkAiE4FSEWYiyS/208qLPHqzD0Q39OcW8aixDBlHn2kyJaMVOyWZRPB3sgcBODTerArQzCVvbBVY+VTc/2oxJk9vcfQi4W7VASUISF1mJfvVOl09Rh7jUXhDDJ8pVT/Fm+UXV2WjzN8GuVhH9cb4Ct5C4gTB8gE0J5TGsPI1noEz0UovqezN3KMaskY76DQisVWg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.117.161) smtp.rcpttodomain=google.com smtp.mailfrom=nvidia.com;
- dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
- dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=SHehE5H+PRjS3vi0Gmh3hh7gJ5mRfjYFH4bR1ha6umg=;
- b=VfkuAA+VQ3SnNCHYHj6HyPsWN8gmsrHuObiBGfHiO9ySwQYLtQRg//OPnbdqW4y8fSwYVxCfoDOzsaFPuQz4UsrgoXYJPSvqgMzb6hckY/N9zHuzr5KiinFg525ysb0ymYEmuORmLFG2RGnH6L/LInMCqBf2h7CSJ4zFL9M+5ooszEGQEp/Hze4Fy4M2RsIXSAbK12vPL4+6KmWyooAKlSIoUwoM0ux1g5XKNFtyY5+Kdjb+A1IWNcCWcoauhYmeowr8oCGwENRFfuAiOnLuo1UJ6kt/1Idt4C1r7qXv6eK/SRkYlI64oeCfg+ol/bD5Kjkkv3fPsRE8kYltJF/bVQ==
-Received: from CY5PR04CA0005.namprd04.prod.outlook.com (2603:10b6:930:1e::32)
- by DS7PR12MB5861.namprd12.prod.outlook.com (2603:10b6:8:78::12) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6652.21; Fri, 4 Aug
- 2023 19:32:09 +0000
-Received: from CY4PEPF0000EE37.namprd05.prod.outlook.com
- (2603:10b6:930:1e:cafe::b7) by CY5PR04CA0005.outlook.office365.com
- (2603:10b6:930:1e::32) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6652.21 via Frontend
- Transport; Fri, 4 Aug 2023 19:32:09 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.117.161)
- smtp.mailfrom=nvidia.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.117.161 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.117.161; helo=mail.nvidia.com; pr=C
-Received: from mail.nvidia.com (216.228.117.161) by
- CY4PEPF0000EE37.mail.protection.outlook.com (10.167.242.43) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.6652.19 via Frontend Transport; Fri, 4 Aug 2023 19:32:09 +0000
-Received: from rnnvmail204.nvidia.com (10.129.68.6) by mail.nvidia.com
- (10.129.200.67) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.5; Fri, 4 Aug 2023
- 12:31:58 -0700
-Received: from rnnvmail202.nvidia.com (10.129.68.7) by rnnvmail204.nvidia.com
- (10.129.68.6) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.37; Fri, 4 Aug 2023
- 12:31:58 -0700
-Received: from Asurada-Nvidia (10.127.8.12) by mail.nvidia.com (10.129.68.7)
- with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.37 via Frontend
- Transport; Fri, 4 Aug 2023 12:31:57 -0700
-Date:   Fri, 4 Aug 2023 12:31:56 -0700
-From:   Nicolin Chen <nicolinc@nvidia.com>
-To:     Michael Shavit <mshavit@google.com>
-CC:     <iommu@lists.linux.dev>, <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <will@kernel.org>,
-        <robin.murphy@arm.com>, <jgg@nvidia.com>,
-        <jean-philippe@linaro.org>
-Subject: Re: [PATCH v4 8/8] iommu/arm-smmu-v3: Rename cdcfg to cd_table
-Message-ID: <ZM1SLOcBQK5TH3io@Asurada-Nvidia>
-References: <20230802163328.2623773-1-mshavit@google.com>
- <20230803003234.v4.8.I5ee79793b444ddb933e8bc1eb7b77e728d7f8350@changeid>
+        Fri, 4 Aug 2023 15:33:19 -0400
+Received: from fllv0016.ext.ti.com (fllv0016.ext.ti.com [198.47.19.142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8587B1BF;
+        Fri,  4 Aug 2023 12:33:16 -0700 (PDT)
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 374JX9x3046270;
+        Fri, 4 Aug 2023 14:33:09 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1691177589;
+        bh=mQDQFqa0n+H60Oqqvk7momwKMAfsiO5YEfswGwzqRk4=;
+        h=Date:Subject:To:CC:References:From:In-Reply-To;
+        b=kFBy5faYyBY/j02HXvvb+R4dMFQjiEapyNabpX6rHUYycvd22c6p0tVq5C0TFAsB+
+         psEwKeVU9+HVT7bvUlxSyNR6NCN0vqlmiwpMw9UjfKUOOnNOO0rTDNdJt6bPjU2c8H
+         /ZaW89p3N2lfaZqHRd83bt/Kqr5LzGb9n+lRzteg=
+Received: from DFLE103.ent.ti.com (dfle103.ent.ti.com [10.64.6.24])
+        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 374JX9NQ003385
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Fri, 4 Aug 2023 14:33:09 -0500
+Received: from DFLE108.ent.ti.com (10.64.6.29) by DFLE103.ent.ti.com
+ (10.64.6.24) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Fri, 4
+ Aug 2023 14:33:08 -0500
+Received: from lelv0327.itg.ti.com (10.180.67.183) by DFLE108.ent.ti.com
+ (10.64.6.29) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Fri, 4 Aug 2023 14:33:08 -0500
+Received: from [10.249.132.69] (ileaxei01-snat2.itg.ti.com [10.180.69.6])
+        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 374JX38u034091;
+        Fri, 4 Aug 2023 14:33:04 -0500
+Message-ID: <db05ca30-c31e-1c4a-95b5-ae15b85ce3bc@ti.com>
+Date:   Sat, 5 Aug 2023 01:03:02 +0530
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20230803003234.v4.8.I5ee79793b444ddb933e8bc1eb7b77e728d7f8350@changeid>
-X-NV-OnPremToCloud: ExternallySecured
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CY4PEPF0000EE37:EE_|DS7PR12MB5861:EE_
-X-MS-Office365-Filtering-Correlation-Id: 7f25ea91-c34f-448e-41d7-08db95217e7a
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: iHWLrnt/Mlc88pzDTYurhNKYSkWEcULxiwsCFFsL75b6OBms+v9ioZv6weiwvZsVz9LGcWm22pG9sPzupj2tkfBuTMDIlCISkxVPW0IyofwS6N29iolrj6F+1YQeAle2nqP+rsM3ONUB9NLtOePpqFxv/qLP3UC/XX24KFYdyjGD8hRDBCEQq/zhyISmRAFN0jgiT755+NkRhr/nM7BumfjzpJSI8H7IysxAOOp14vxfXhLKj9W6o1URjsJD2Ax8VuKOaqcNyPrONdiBno1Dpr5MlsIS0z1i4RY/ddBeQnitrjbMW5CL3dG5DWKMTrk4JB4qOZ5QZC8CsNiZQmjdCLQMK50h+0pbv5Cuv2pL1JVgGCX/j1owHnpTfvobqCn71JkG+jMaoKfqWtNBgUEESm/vzhJJTQ18A5R/jwAIRiKk60RdOwjfGfYPF2HEXQaVlcDaActcC+RciBXcVkO6k1GkQEwclAIaCUOkQabFS9TN8WmQdDjEI1MFBsvvBuw9s4rejkQRP80Ojaetz7WNTYmFnqh2vWro2JtbyTFr2FjmSYAgK1Cuq7IY7joFm+KwS6urKyxJl8A4QJvJUmv+7zwjb+k1LhF3a9z537J8Um4auW/CgkMWRiMRfbOGFplkFFjblDDl59OIPMwoRrGt0nX1i1w5YEYKYkYbFT36JHh4RP3g66iKquzM/pQSU7l2XyvMYk5CwObh4+GG7L0Oq7Cpb5RVLDnjGqX2RVGWlls=
-X-Forefront-Antispam-Report: CIP:216.228.117.161;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc6edge2.nvidia.com;CAT:NONE;SFS:(13230028)(4636009)(346002)(136003)(396003)(39860400002)(376002)(451199021)(82310400008)(1800799003)(186006)(36840700001)(46966006)(40470700004)(41300700001)(6916009)(4326008)(2906002)(70586007)(8936002)(8676002)(82740400003)(33716001)(356005)(5660300002)(478600001)(54906003)(4744005)(316002)(70206006)(86362001)(40460700003)(9686003)(7636003)(26005)(36860700001)(40480700001)(55016003)(47076005)(336012)(426003);DIR:OUT;SFP:1101;
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 Aug 2023 19:32:09.0051
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 7f25ea91-c34f-448e-41d7-08db95217e7a
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.117.161];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource: CY4PEPF0000EE37.namprd05.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS7PR12MB5861
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.14.0
+Subject: Re: [PATCH v9 3/5] arm64: dts: ti: k3-j784s4-main: Add DSS and
+ DP-bridge node
+Content-Language: en-US
+To:     Jayesh Choudhary <j-choudhary@ti.com>, <nm@ti.com>,
+        <vigneshr@ti.com>, <afd@ti.com>, <rogerq@kernel.org>
+CC:     <s-vadapalli@ti.com>, <kristo@kernel.org>, <robh+dt@kernel.org>,
+        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
+        <r-ravikumar@ti.com>, <sabiya.d@ti.com>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>
+References: <20230803080441.367341-1-j-choudhary@ti.com>
+ <20230803080441.367341-4-j-choudhary@ti.com>
+From:   Aradhya Bhatia <a-bhatia1@ti.com>
+In-Reply-To: <20230803080441.367341-4-j-choudhary@ti.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 03, 2023 at 12:32:36AM +0800, Michael Shavit wrote:
-> 
-> cdcfg is a confusing name, especially given other variables with the cfg
-> suffix in this driver. cd_table more clearly describes what is being
-> operated on.
-> 
-> Signed-off-by: Michael Shavit <mshavit@google.com>
-> Reviewed-by: Jason Gunthorpe <jgg@nvidia.com>
 
-Reviewed-by: Nicolin Chen <nicolinc@nvidia.com>
+
+On 03-Aug-23 13:34, Jayesh Choudhary wrote:
+> From: Rahul T R <r-ravikumar@ti.com>
+> 
+> Add DSS and DP-bridge node for J784S4 SoC. DSS IP in J784S4 is
+> same as DSS IP in J721E, so same compatible is being used.
+> The DP is Cadence MHDP8546.
+DP-bridge
+
+> 
+> Signed-off-by: Rahul T R <r-ravikumar@ti.com>
+> [j-choudhary@ti.com: move dss & mhdp node together in main, fix dss node]
+> Signed-off-by: Jayesh Choudhary <j-choudhary@ti.com>
+
+Given that you make appropriate changes with properties in this patch,
+wrt patches 4/5 and 5/5,
+
+Reviewed-by: Aradhya Bhatia <a-bhatia1@ti.com>
+
+> ---
+>  arch/arm64/boot/dts/ti/k3-j784s4-main.dtsi | 63 ++++++++++++++++++++++
+>  1 file changed, 63 insertions(+)
+> 
+> diff --git a/arch/arm64/boot/dts/ti/k3-j784s4-main.dtsi b/arch/arm64/boot/dts/ti/k3-j784s4-main.dtsi
+> index 446d7efa715f..824312b9ef9f 100644
+> --- a/arch/arm64/boot/dts/ti/k3-j784s4-main.dtsi
+> +++ b/arch/arm64/boot/dts/ti/k3-j784s4-main.dtsi
+> @@ -1741,4 +1741,67 @@ c71_3: dsp@67800000 {
+>  		resets = <&k3_reset 40 1>;
+>  		firmware-name = "j784s4-c71_3-fw";
+>  	};
+> +
+> +	mhdp: bridge@a000000 {
+> +		compatible = "ti,j721e-mhdp8546";
+> +		reg = <0x0 0xa000000 0x0 0x30a00>,
+> +		      <0x0 0x4f40000 0x0 0x20>;
+> +		reg-names = "mhdptx", "j721e-intg";
+> +		clocks = <&k3_clks 217 11>;
+> +		interrupt-parent = <&gic500>;
+> +		interrupts = <GIC_SPI 614 IRQ_TYPE_LEVEL_HIGH>;
+> +		power-domains = <&k3_pds 217 TI_SCI_PD_EXCLUSIVE>;
+> +		status = "disabled";
+> +
+> +		dp0_ports: ports {
+> +			#address-cells = <1>;
+> +			#size-cells = <0>;
+> +		};
+> +	};
+> +
+> +	dss: dss@4a00000 {
+> +		compatible = "ti,j721e-dss";
+> +		reg = <0x00 0x04a00000 0x00 0x10000>, /* common_m */
+> +		      <0x00 0x04a10000 0x00 0x10000>, /* common_s0*/
+> +		      <0x00 0x04b00000 0x00 0x10000>, /* common_s1*/
+> +		      <0x00 0x04b10000 0x00 0x10000>, /* common_s2*/
+> +		      <0x00 0x04a20000 0x00 0x10000>, /* vidl1 */
+> +		      <0x00 0x04a30000 0x00 0x10000>, /* vidl2 */
+> +		      <0x00 0x04a50000 0x00 0x10000>, /* vid1 */
+> +		      <0x00 0x04a60000 0x00 0x10000>, /* vid2 */
+> +		      <0x00 0x04a70000 0x00 0x10000>, /* ovr1 */
+> +		      <0x00 0x04a90000 0x00 0x10000>, /* ovr2 */
+> +		      <0x00 0x04ab0000 0x00 0x10000>, /* ovr3 */
+> +		      <0x00 0x04ad0000 0x00 0x10000>, /* ovr4 */
+> +		      <0x00 0x04a80000 0x00 0x10000>, /* vp1 */
+> +		      <0x00 0x04aa0000 0x00 0x10000>, /* vp1 */
+> +		      <0x00 0x04ac0000 0x00 0x10000>, /* vp1 */
+> +		      <0x00 0x04ae0000 0x00 0x10000>, /* vp4 */
+> +		      <0x00 0x04af0000 0x00 0x10000>; /* wb */
+> +		reg-names = "common_m", "common_s0",
+> +			    "common_s1", "common_s2",
+> +			    "vidl1", "vidl2","vid1","vid2",
+> +			    "ovr1", "ovr2", "ovr3", "ovr4",
+> +			    "vp1", "vp2", "vp3", "vp4",
+> +			    "wb";
+> +		clocks = <&k3_clks 218 0>,
+> +			 <&k3_clks 218 2>,
+> +			 <&k3_clks 218 5>,
+> +			 <&k3_clks 218 14>,
+> +			 <&k3_clks 218 18>;
+> +		clock-names = "fck", "vp1", "vp2", "vp3", "vp4";
+> +		power-domains = <&k3_pds 218 TI_SCI_PD_EXCLUSIVE>;
+> +		interrupts = <GIC_SPI 602 IRQ_TYPE_LEVEL_HIGH>,
+> +			     <GIC_SPI 603 IRQ_TYPE_LEVEL_HIGH>,
+> +			     <GIC_SPI 604 IRQ_TYPE_LEVEL_HIGH>,
+> +			     <GIC_SPI 605 IRQ_TYPE_LEVEL_HIGH>;
+> +		interrupt-names = "common_m",
+> +				  "common_s0",
+> +				  "common_s1",
+> +				  "common_s2";
+> +		status = "disabled";
+> +
+> +		dss_ports: ports {
+> +		};
+> +	};
+>  };
