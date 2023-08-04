@@ -2,117 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 798427703AC
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 16:55:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E5F647703B4
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 16:57:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230062AbjHDOzz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Aug 2023 10:55:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39590 "EHLO
+        id S231147AbjHDO47 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Aug 2023 10:56:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40284 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231856AbjHDOzx (ORCPT
+        with ESMTP id S229848AbjHDO45 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Aug 2023 10:55:53 -0400
-Received: from netrider.rowland.org (netrider.rowland.org [192.131.102.5])
-        by lindbergh.monkeyblade.net (Postfix) with SMTP id 76CA549D6
-        for <linux-kernel@vger.kernel.org>; Fri,  4 Aug 2023 07:55:50 -0700 (PDT)
-Received: (qmail 34198 invoked by uid 1000); 4 Aug 2023 10:55:49 -0400
-Date:   Fri, 4 Aug 2023 10:55:49 -0400
-From:   Alan Stern <stern@rowland.harvard.edu>
-To:     Dingyan Li <18500469033@163.com>
-Cc:     Hans de Goede <hdegoede@redhat.com>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Xiaofan Chen <xiaofanc@gmail.com>,
-        Oliver Neukum <oneukum@suse.com>,
-        Tormod Volden <lists.tormod@gmail.com>,
-        sebastian.reichel@collabora.com, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: Re: Re: [PATCH] USB: add usbfs ioctl to get specific
- superspeedplus rates
-Message-ID: <daa39dd3-4e8b-4d69-8ad3-5ec73fa12f8c@rowland.harvard.edu>
-References: <CAGjSPUCQ892adFdYm7zCuMpWujwzwoQtYimvp3xXrnnCCyN47w@mail.gmail.com>
- <da536c80-7398-dae0-a22c-16e521be697a@suse.com>
- <CAGjSPUDtn-YMqmNrmku+hkyXCKys4XRue4wdzQwr+yGxe2cJSQ@mail.gmail.com>
- <2a82ba01-38dd-fad9-98b9-ac8591107921@redhat.com>
- <151a5748.3e99.189ba07b110.Coremail.18500469033@163.com>
- <51926ee6-ee81-4543-a1f7-338e65a26670@rowland.harvard.edu>
- <a31ee75e-6a8e-fe7b-aadc-f118d9ab60f9@redhat.com>
- <67b68375.80b5.189bc2653e9.Coremail.18500469033@163.com>
- <c10dd3c1-efab-47d6-904f-3b211965be44@rowland.harvard.edu>
- <5ccfaa7e.3180.189bec2b80e.Coremail.18500469033@163.com>
+        Fri, 4 Aug 2023 10:56:57 -0400
+Received: from pandora.armlinux.org.uk (unknown [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE2F446B2;
+        Fri,  4 Aug 2023 07:56:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=pmti4NNUS1ApwuYq96D8Bd0UZfIiM3Ql7dHgirNSqxk=; b=L9tjcmRToHJFGAcWP5RNR9Qfbr
+        98p7RiUW2tXYzTpja3e+G3DH+x4o9RKcZpSQ29M7UwNV1bzKL5uzEr+M2TlDaZXrglHk9hmzimPpn
+        GvpjQ4LoQH1eo16iBaSgiJDqxjcxwAQKllqRI44MctmIaa1HpIY+vSkN5aSTWKACFLIWpPvsO7l76
+        AW0bkOll2I4PE4T29AYkhYIoAz3aka8PGM16Zozi2DWuyUDL+jmwdiP5oPkL2sPvl62v+cEeahpxm
+        MFPq/w15wNwp/VQbABw4ysosIpydvcPFLDIJ75Jvo7OsTVG+5RlZ4QCU3HA7UHwSjmlx93BbDFV5o
+        O4sSf8cQ==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:56838)
+        by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.96)
+        (envelope-from <linux@armlinux.org.uk>)
+        id 1qRwE5-0000LY-0e;
+        Fri, 04 Aug 2023 15:56:25 +0100
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
+        (envelope-from <linux@shell.armlinux.org.uk>)
+        id 1qRwDz-00044X-52; Fri, 04 Aug 2023 15:56:19 +0100
+Date:   Fri, 4 Aug 2023 15:56:19 +0100
+From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
+To:     Shenwei Wang <shenwei.wang@nxp.com>
+Cc:     Marc Kleine-Budde <mkl@pengutronix.de>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Neil Armstrong <neil.armstrong@linaro.org>,
+        Kevin Hilman <khilman@baylibre.com>,
+        Vinod Koul <vkoul@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Samuel Holland <samuel@sholland.org>,
+        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Jose Abreu <joabreu@synopsys.com>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Jerome Brunet <jbrunet@baylibre.com>,
+        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
+        Bhupesh Sharma <bhupesh.sharma@linaro.org>,
+        Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>,
+        Simon Horman <simon.horman@corigine.com>,
+        Andrew Halaney <ahalaney@redhat.com>,
+        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>,
+        Wong Vee Khee <veekhee@apple.com>,
+        Revanth Kumar Uppala <ruppala@nvidia.com>,
+        Jochen Henneberg <jh@henneberg-systemdesign.com>,
+        netdev@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-amlogic@lists.infradead.org, imx@lists.linux.dev,
+        Frank Li <frank.li@nxp.com>
+Subject: Re: [PATCH v4 net-next 2/2] net: stmmac: dwmac-imx: pause the TXC
+ clock in fixed-link
+Message-ID: <ZM0Rk4paok5cAvp5@shell.armlinux.org.uk>
+References: <20230804144629.358455-1-shenwei.wang@nxp.com>
+ <20230804144629.358455-3-shenwei.wang@nxp.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <5ccfaa7e.3180.189bec2b80e.Coremail.18500469033@163.com>
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,
-        SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
+In-Reply-To: <20230804144629.358455-3-shenwei.wang@nxp.com>
+Sender: Russell King (Oracle) <linux@armlinux.org.uk>
+X-Spam-Status: No, score=-1.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,RDNS_NONE,
+        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 04, 2023 at 12:16:19PM +0800, Dingyan Li wrote:
-> 
-> At 2023-08-04 01:56:03, "Alan Stern" <stern@rowland.harvard.edu> wrote:
-> >On Fri, Aug 04, 2023 at 12:06:15AM +0800, Dingyan Li wrote:
-> >> So after usb_device_speed is extended with Gen2x1, Gen1x2 and Gen2x2,
-> >> it feels that enum usb_ssp_rate becomes useless. Is it okay to just delete it?
-> >> I'm asking this since it is also used in several other source files so the fix may
-> >> not be as trivial as it looks.
-> >
-> >As long as the file is being used by other source files, don't delete 
-> >it.  If you want to fix up all those other places and then delete the 
-> >file, that's fine.  But of course, it would have to be a separate set of 
-> >patches.
-> >
-> >It will also be necessary to audit the places in the kernel that 
-> >currently use usb_device_speed.  Some of them may need to be extended to 
-> >handle the new entries properly.  (Including, obviously, the parts of 
-> >the code that store the device's speed in the first place.)
-> >
-> 
-> >Alan Stern
-> 
-> Another issue is that USB_SPEED_SUPER_PLUS has been widely used in
-> so many files to execute conditional banches. Once we extend and store device's
-> speed with new values in the first place, we might need to check all places where
-> USB_SPEED_SUPER_PLUS is used in case of any regression.
+On Fri, Aug 04, 2023 at 09:46:29AM -0500, Shenwei Wang wrote:
+> +	if (dwmac->ops->fix_soc_reset)
+> +		plat_dat->fix_mac_speed = dwmac->ops->fix_mac_speed;
 
-Certainly.  That's part of auditing all the current users of 
-usb_device_speed.
+The if() condition looks like a typo to me.
 
-> I think maybe we can try to remove the dependency on enum usb_device_speed
-> in usbfs and define a separate set of speed values similar to previous design
-> at https://www.spinics.net/lists/linux-usb/msg157709.html
-> By this way, in usbfs we get more freedom to determine how to explain
-> usb_device_speed and usb_ssp_rate, without the risk of breaking anything
-> elsewhere.
-> 
-> For example, define an USBDEVFS_SPEED_SUPER_PLUS to indicate
-> USB_SPEED_SUPER_PLUS with ssp rates GEN_UNKNOWN, GEN_2x1 and
-> GEN_1x2. They all stand for 10Gbps and we don't need to tell one from
-> another, similar to how it works in sysfs. Then define an
-> USBDEVFS_SPEED_SUPER_PLUS_BY2(maybe there is a more proper name)
-> to indicate USB_SPEED_SUPER_PLUS with ssp rate GEN_2x2, which stands
-> for 20Gbps.
-
-You can't really do that.  The values returned by the USBDEVFS_GET_SPEED 
-ioctl are the ones defined in include/uapi/linux/usb/ch9.h.  They are 
-USB_SPEED_UNKNOWN, etc., not USBDEVFS_SPEED_UNKNOWN, etc.  The only way 
-to extend them is by adding new entries to enum usb_device_speed.
-
-For example, you must not do anything that would break a user program 
-which does something like this:
-
-#include <linux/usbdevfs.h>
-#include <linux/usb/ch9.h>
-
-...
-
-	enum usb_device_speed s;
-
-	s = ioctl(fd, USBDEVFS_GET_SPEED);
-	if (s == USB_SPEED_HIGH) ...
-
-Alan Stern
+-- 
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
