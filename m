@@ -2,108 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CF87576FA69
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 08:50:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9030676FA45
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 08:40:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233658AbjHDGuX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Aug 2023 02:50:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45650 "EHLO
+        id S233169AbjHDGkZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Aug 2023 02:40:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39030 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233418AbjHDGuT (ORCPT
+        with ESMTP id S233270AbjHDGjy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Aug 2023 02:50:19 -0400
-Received: from pegase1.c-s.fr (pegase1.c-s.fr [93.17.236.30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89575E53;
-        Thu,  3 Aug 2023 23:50:18 -0700 (PDT)
-Received: from localhost (mailhub3.si.c-s.fr [192.168.12.233])
-        by localhost (Postfix) with ESMTP id 4RHGKY0KLJz9t1K;
-        Fri,  4 Aug 2023 08:39:45 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from pegase1.c-s.fr ([192.168.12.234])
-        by localhost (pegase1.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id PBkbf-SYzAEb; Fri,  4 Aug 2023 08:39:44 +0200 (CEST)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase1.c-s.fr (Postfix) with ESMTP id 4RHGKX6jwTz9t11;
-        Fri,  4 Aug 2023 08:39:44 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id DF5138B779;
-        Fri,  4 Aug 2023 08:39:44 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id 7WqvV--2KeIG; Fri,  4 Aug 2023 08:39:44 +0200 (CEST)
-Received: from PO20335.IDSI0.si.c-s.fr (unknown [192.168.232.144])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 85A428B778;
-        Fri,  4 Aug 2023 08:39:44 +0200 (CEST)
-Received: from PO20335.IDSI0.si.c-s.fr (localhost [127.0.0.1])
-        by PO20335.IDSI0.si.c-s.fr (8.17.1/8.16.1) with ESMTPS id 3746dadg629327
-        (version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=NOT);
-        Fri, 4 Aug 2023 08:39:36 +0200
-Received: (from chleroy@localhost)
-        by PO20335.IDSI0.si.c-s.fr (8.17.1/8.17.1/Submit) id 3746dZeL629290;
-        Fri, 4 Aug 2023 08:39:35 +0200
-X-Authentication-Warning: PO20335.IDSI0.si.c-s.fr: chleroy set sender to christophe.leroy@csgroup.eu using -f
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-To:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Pantelis Antoniou <pantelis.antoniou@gmail.com>,
-        Eric Dumazet <edumazet@google.com>,
-        Paolo Abeni <pabeni@redhat.com>
-Cc:     Christophe Leroy <christophe.leroy@csgroup.eu>,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org
-Subject: [PATCH net-next v1 00/10] net: fs_enet: Driver cleanup
-Date:   Fri,  4 Aug 2023 08:39:24 +0200
-Message-ID: <cover.1691130766.git.christophe.leroy@csgroup.eu>
-X-Mailer: git-send-email 2.41.0
+        Fri, 4 Aug 2023 02:39:54 -0400
+Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F6F449E6
+        for <linux-kernel@vger.kernel.org>; Thu,  3 Aug 2023 23:39:27 -0700 (PDT)
+Received: from canpemm500005.china.huawei.com (unknown [172.30.72.56])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4RHGFB4Y1YzNmg3;
+        Fri,  4 Aug 2023 14:35:58 +0800 (CST)
+Received: from [10.67.110.73] (10.67.110.73) by canpemm500005.china.huawei.com
+ (7.192.104.229) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Fri, 4 Aug
+ 2023 14:39:24 +0800
+Message-ID: <db4b23bb-c31c-b936-68c1-fbc54a2f4329@huawei.com>
+Date:   Fri, 4 Aug 2023 14:39:24 +0800
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1691131163; l=1724; i=christophe.leroy@csgroup.eu; s=20211009; h=from:subject:message-id; bh=NMUfvHd1Ivx2h5MBFE/4m/aSsKWUI9X9JLiIVGg+yys=; b=gcH9l4OhKTgKy9wZXQxvOCgGGCCmDxTMignpXDTvOVXvUntmMccsxxh1oQdKejks6fLSf+N/K 61JbL+O9erIAhEstgFmunehOrMHTnUi+coanAyfqdGBmbFlcJVwCKgY
-X-Developer-Key: i=christophe.leroy@csgroup.eu; a=ed25519; pk=HIzTzUj91asvincQGOFx6+ZF5AoUuP9GdOtQChs7Mm0=
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.3.3
+Subject: Re: [PATCH -next v3] arm64: fix build warning for
+ ARM64_MEMSTART_SHIFT
+To:     Anshuman Khandual <anshuman.khandual@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>
+CC:     <will@kernel.org>, <mark.rutland@arm.com>, <ryan.roberts@arm.com>,
+        <joey.gouly@arm.com>, <ardb@kernel.org>, <bhe@redhat.com>,
+        <thunder.leizhen@huawei.com>, <broonie@kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>
+References: <20230725202404.3470111-1-chris.zjh@huawei.com>
+ <ZMvefmB6unOE+OPB@arm.com> <ce4e5bfa-6a98-4d5d-d91f-d91835010f71@arm.com>
+From:   "zhangjianhua (E)" <chris.zjh@huawei.com>
+In-Reply-To: <ce4e5bfa-6a98-4d5d-d91f-d91835010f71@arm.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Originating-IP: [10.67.110.73]
+X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
+ canpemm500005.china.huawei.com (7.192.104.229)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Over the years, platform and driver initialisation have evolved into
-more generic ways, and driver or platform specific stuff has gone
-away, leaving stale objects behind.
 
-This series aims at cleaning all that up for fs_enet ethernet driver.
-
-
-Christophe Leroy (10):
-  net: fs_enet: Remove set but not used variable
-  net: fs_enet: Fix address space and base types mismatches
-  net: fs_enet: Remove fs_get_id()
-  net: fs_enet: Remove unused fields in fs_platform_info struct
-  net: fs_enet: Remove has_phy field in fs_platform_info struct
-  net: fs_enet: Remove stale prototypes from fsl_soc.c
-  net: fs_enet: Move struct fs_platform_info into fs_enet.h
-  net: fs_enet: Don't include fs_enet_pd.h when not needed
-  net: fs_enet: Remove linux/fs_enet_pd.h
-  net: fs_enet: Use cpm_muram_xxx() functions instead of cpm_dpxxx()
-    macros
-
- MAINTAINERS                                   |   1 -
- arch/powerpc/platforms/8xx/adder875.c         |   1 -
- arch/powerpc/platforms/8xx/mpc885ads_setup.c  |   1 -
- arch/powerpc/platforms/8xx/tqm8xx_setup.c     |   1 -
- arch/powerpc/sysdev/fsl_soc.c                 |   3 -
- .../ethernet/freescale/fs_enet/fs_enet-main.c |   2 -
- .../net/ethernet/freescale/fs_enet/fs_enet.h  |  19 +-
- .../net/ethernet/freescale/fs_enet/mac-fcc.c  |   4 +-
- .../net/ethernet/freescale/fs_enet/mac-fec.c  |  14 --
- .../net/ethernet/freescale/fs_enet/mac-scc.c  |   8 +-
- .../ethernet/freescale/fs_enet/mii-bitbang.c  |   4 +-
- .../net/ethernet/freescale/fs_enet/mii-fec.c  |   1 +
- include/linux/fs_enet_pd.h                    | 165 ------------------
- 13 files changed, 27 insertions(+), 197 deletions(-)
- delete mode 100644 include/linux/fs_enet_pd.h
-
--- 
-2.41.0
-
+在 2023/8/4 14:24, Anshuman Khandual 写道:
+>
+> On 8/3/23 22:36, Catalin Marinas wrote:
+>> On Tue, Jul 25, 2023 at 08:24:04PM +0000, Zhang Jianhua wrote:
+>>> When building with W=1, the following warning occurs.
+>>>
+>>> arch/arm64/include/asm/kernel-pgtable.h:129:41: error: "PUD_SHIFT" is not defined, evaluates to 0 [-Werror=undef]
+>>>    129 | #define ARM64_MEMSTART_SHIFT            PUD_SHIFT
+>>>        |                                         ^~~~~~~~~
+>>> arch/arm64/include/asm/kernel-pgtable.h:142:5: note: in expansion of macro ‘ARM64_MEMSTART_SHIFT’
+>>>    142 | #if ARM64_MEMSTART_SHIFT < SECTION_SIZE_BITS
+>>>        |     ^~~~~~~~~~~~~~~~~~~~
+>>>
+>>> The reason is that PUD_SHIFT isn't defined if CONFIG_PGTABLE_LEVELS == 3
+>>> and CONFIG_VA_BITS == 39.
+>> The correct description is that the generic PUD_SHIFT isn't defined for
+>> asm files, we still have it defined for C files (there's an #ifndef
+>> __ASSEMBLY__ guard).
+> Agreed, please rework the commit message explaining how generic PUD_SHIFT
+> definition is not available for assembly files, prompting this code block
+> movement. CONFIG_PGTABLE_LEVELS == 3 with CONFIG_VA_BITS == 39 just help
+> in exposing this problem.
+No problem, I will send a new patch soon.
+>>> Now move the macro ARM64_MEMSTART_SHIFT and
+>>> ARM64_MEMSTART_ALIGN to arch/arm64/mm/init.c where it is used to avoid
+>>> this issue, and also there is no other place to call these two macro.
+>>>
+>>> Signed-off-by: Zhang Jianhua <chris.zjh@huawei.com>
+>> This fix works for me. I'll leave it to Will for 6.6 as apart from the
+>> warning with W=1, there's no other issue (ARM64_MEMSTART_* are not used
+>> in any asm files).
+> Right, not real a problem to be fixed, this can wait till 6.6
+>
+>> Reviewed-by: Catalin Marinas <catalin.marinas@arm.com>
+> Reviewed-by: Anshuman Khandual <anshuman.khandual@arm.com>
+>
