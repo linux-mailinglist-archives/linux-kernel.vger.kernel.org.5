@@ -2,82 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0711477051A
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 17:47:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C96777052C
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 17:48:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232017AbjHDPrg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Aug 2023 11:47:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45066 "EHLO
+        id S232204AbjHDPsz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Aug 2023 11:48:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45696 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230393AbjHDPre (ORCPT
+        with ESMTP id S232172AbjHDPsq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Aug 2023 11:47:34 -0400
-Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D485C212D;
-        Fri,  4 Aug 2023 08:47:29 -0700 (PDT)
-Received: by mail-pl1-x62d.google.com with SMTP id d9443c01a7336-1bbf8cb61aeso16251485ad.2;
-        Fri, 04 Aug 2023 08:47:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1691164049; x=1691768849;
-        h=to:references:message-id:content-transfer-encoding:cc:date
-         :in-reply-to:from:subject:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=8ctInikzj3f4VpN981g0mMHNMH1CbLINvv2oH+wydFI=;
-        b=JYTWbas5LEdXilRfPo6X+gqolIBnQ6MBx32VolWDIsJGJFBkx187sI0DHIMtztbUBO
-         re/CgVZQXMeZDRl8/SMXYIplCydyGN+lFpv7PwUpvWIGW7tcTnMgRcUlN9UfmwIYgahG
-         tuJdRJK14XWPS8eW+nO9ZJUc1zlcDC9IGD4jInbslWUgZndhzX/GkN0sFwPcCozxu5Ft
-         39K+ODuTFqYtmIuWUD5LZ26+0GqCnay6e7Dbf27Yoo3F4XeKBHxsdmtcUBsQ04VlTEFM
-         QqZQpbybpdpXGyQB4AVQ1RN2Jj0RhxJuTiXudICOK5l4TwnuHxVNPmAFEwohf+S38350
-         N5uQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691164049; x=1691768849;
-        h=to:references:message-id:content-transfer-encoding:cc:date
-         :in-reply-to:from:subject:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=8ctInikzj3f4VpN981g0mMHNMH1CbLINvv2oH+wydFI=;
-        b=krZfRD0V0RVm+dGxCU1MXHY3buNubi2ZRxdhtu4+RxoiY97+gvArZI/f94lQhtWCsM
-         Onp17qZ1mSBfEqdT1U2GC6512q+B8UagvQ5LrXtxAjXZ3bSGr9DMBkLWyA1Vu58Rs/dp
-         bI/BZTzYG6GTvQDOj3MaiY+J9shhFFclJ0KkODpqcwUvRF/OG9UHh1yHwqHmN9xNSfXF
-         I1b9e5b87DHTERLmqnpBEUFD57lHrlCwl7vAnQk68zwXabkf5AsikDF6da/PR63/3VLa
-         xT/u5Yov6AV7TdqQMwz8WiezZk4J5DA4r2VrTIq6Kos28uVHNhMORjWg/NJtOiv4f4Dx
-         DHfg==
-X-Gm-Message-State: AOJu0YwAl44MlKF4o4MFUXmsKqBn1ALcBfX019PG7nuV9nfaDcUdUcAl
-        /PCsyMeCRdNAt43dOltsvkE=
-X-Google-Smtp-Source: AGHT+IHK1+GmGTe5McxKKfiRHWuia9yCNRvRVTipWjE0B5SPJN6DbVW0YYSfmF7ikfMX18/fWFw9ug==
-X-Received: by 2002:a17:902:ecc8:b0:1bb:32de:95c5 with SMTP id a8-20020a170902ecc800b001bb32de95c5mr2297892plh.65.1691164049245;
-        Fri, 04 Aug 2023 08:47:29 -0700 (PDT)
-Received: from smtpclient.apple ([2402:d0c0:2:a2a::1])
-        by smtp.gmail.com with ESMTPSA id p8-20020a170902a40800b001b8b73da7b1sm1914812plq.227.2023.08.04.08.47.22
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 04 Aug 2023 08:47:28 -0700 (PDT)
-Content-Type: text/plain;
-        charset=utf-8
-Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3731.400.51.1.1\))
-Subject: Re: [PATCH 1/2] docs: rcu: Add cautionary note on plain-accesses to
- requirements
-From:   Alan Huang <mmpgouride@gmail.com>
-In-Reply-To: <6B0A9441-5DB5-476B-B94C-F0BDF1505095@joelfernandes.org>
-Date:   Fri, 4 Aug 2023 23:47:07 +0800
-Cc:     linux-kernel@vger.kernel.org, rcu@vger.kernel.org,
-        Will Deacon <will@kernel.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Zqiang <qiang.zhang1211@gmail.com>,
-        Jonathan Corbet <corbet@lwn.net>
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <E6EDDDE7-5D59-4284-931E-23E3636C8CF0@gmail.com>
-References: <D3D65E05-AC98-43EA-8B66-CA63E94C1C80@gmail.com>
- <6B0A9441-5DB5-476B-B94C-F0BDF1505095@joelfernandes.org>
-To:     Joel Fernandes <joel@joelfernandes.org>
-X-Mailer: Apple Mail (2.3731.400.51.1.1)
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        Fri, 4 Aug 2023 11:48:46 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0DB1249E5;
+        Fri,  4 Aug 2023 08:48:40 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 8A3D662096;
+        Fri,  4 Aug 2023 15:48:40 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DA2E9C433C8;
+        Fri,  4 Aug 2023 15:48:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1691164120;
+        bh=g530ErRoPbHPWkxCzst6RTK4AQ20MUM55oWKx67Ir20=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Nxt2TW/H8CicYGxtKYh5tylW6wOEpw6k8QKEnaSQK8wO183JlnaCLJhvZ4k/dnNlI
+         YJQDaf/C2Y7PjM+x66439QIOjA5lGqN7c8yxd15alHPBf/yuSPKyJgaQUqWErH5HDJ
+         ZrIRDXmnZo4sqnIHrwNxSAO72uVxNL3LaMSeVbTPgYV44pT8pQyPa/OLv/qAKlMm2u
+         hbd6/I7cDkjahoeu+gJUXDrEARLnegdebY2nckHE/HU15hCgvf0ZD60sUr8M+eAbp2
+         T7YswR6+cC/FSPOcZkpxxk18C5zuAatg9+s4RW1z2/AcFib8TGi+3DJsd8+sy4zCO4
+         pobsbwKwQ/zYQ==
+Date:   Fri, 4 Aug 2023 16:48:35 +0100
+From:   Conor Dooley <conor@kernel.org>
+To:     Naresh Solanki <naresh.solanki@9elements.com>
+Cc:     Guenter Roeck <linux@roeck-us.net>,
+        krzysztof.kozlowski+dt@linaro.org,
+        Jean Delvare <jdelvare@suse.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Marcello Sylvester Bauer <sylv@sylv.io>,
+        linux-hwmon@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 1/2] dt-bindings: hwmon: Add MAX6639
+Message-ID: <20230804-tamper-numbness-0117bb53a921@spud>
+References: <20230803144401.1151065-1-Naresh.Solanki@9elements.com>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="sN8NPFS9+3FUypYE"
+Content-Disposition: inline
+In-Reply-To: <20230803144401.1151065-1-Naresh.Solanki@9elements.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -86,118 +62,90 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
->=20
->>>=20
->>>>>> But the example here is different,
->>>>>=20
->>>>> That is intentional. Wills discussion partially triggered this. =
-Though I am wondering
->>>>> if we should document that as well.
->>>>>=20
->>>>>> the compiler can not use the value loaded from line 5
->>>>>> unless the compiler can deduce that the tmp is equals to p in =
-which case the address dependency
->>>>>> doesn=E2=80=99t exist anymore.
->>>>>>=20
->>>>>> What am I missing here?
->>>>>=20
->>>>> Maybe you are trying to rationalize too much that the sequence =
-mentioned cannot result
->>>>> in a counter intuitive outcome like I did?
->>>>>=20
->>>>> The point AFAIU is not just about line 10 but that the compiler =
-can replace any of the
->>>>> lines after the plain access with the cached value.
->>>>=20
->>>> Well, IIUC, according to the C standard, the compiler can do =
-anything if there is a data race (undefined behavior).
->>>>=20
->>>> However, what if a write is not protected with WRITE_ONCE and the =
-read is marked with READ_ONCE?
->>>> That=E2=80=99s also a data race, right? But the kernel considers it =
-is Okay if the write is machine word aligned.
->>>=20
->>> Yes, but there is a compiler between the HLL code and what the
->>> processor sees which can tear the write. How can not using
->>> WRITE_ONCE() prevent store-tearing? See [1]. My understanding is =
-that
->>> it is OK only if the reader did a NULL check. In that case the torn
->>=20
->> Yes, a write-write data race where the value is the same is also =
-fine.
->>=20
->> But they are still data race, if the compiler is within its right to =
-do anything it likes (due to data race),
->> we still need WRITE_ONCE() in these cases, though it=E2=80=99s =
-semantically safe.
->>=20
->> IIUC, even with _ONCE(), the compiler is within its right do anything =
-according to the standard (at least before the upcoming C23), because =
-the standard doesn=E2=80=99t consider a volatile access to be atomic.
->>=20
->> However, the kernel consider the volatile access to be atomic, right?
->>=20
->> BTW, line 5 in the example is likely to be optimized away. And yes, =
-the compiler can cache the value loaded from line 5 from the perspective =
-of undefined behavior, even if I believe it would be a compiler bug from =
-the perspective of kernel.
->=20
-> I am actually a bit lost with what you are trying to say.  Are you =
-saying that mixing
-> plain accesses with marked accesses is an acceptable practice?=20
 
+--sN8NPFS9+3FUypYE
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-I=E2=80=99m trying to say that sometimes data race is fine, that=E2=80=99s=
- why we have the data_race().
-
-Even if the standard says data race results in UB.
-
-And IMHO, the possible data race at line 5 in this example is also fine, =
-unless the compiler=20
-deduces that the value of gp is always the same.
-
-
+On Thu, Aug 03, 2023 at 04:43:59PM +0200, Naresh Solanki wrote:
+> From: Marcello Sylvester Bauer <sylv@sylv.io>
 >=20
-> I would like others to weight in as well since I am not seeing what =
-Alan is suggesting.
-> AFAICS, in the absence of barrier(), any optimization caused by plain =
-access
-> makes it a bad practice to mix it.
+> Add binding documentation for Maxim MAX6639 fan-speed controller.
 >=20
-> Thanks,
+> Signed-off-by: Marcello Sylvester Bauer <sylv@sylv.io>
+> Signed-off-by: Naresh Solanki <Naresh.Solanki@9elements.com>
+> ---
+> Changes in V3:
+> - Update title
+> - Add pulses-per-revolution, supplies & interrupts
+> Changes in V2:
+> - Update subject
+> - Drop blank lines
+> ---
+>  .../bindings/hwmon/maxim,max6639.yaml         | 60 +++++++++++++++++++
+>  1 file changed, 60 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/hwmon/maxim,max6639=
+=2Eyaml
 >=20
-> - Joel
->=20
->=20
->=20
->>=20
->>> result will not change the semantics of the program. But otherwise,
->>> that's bad.
->>>=20
->>> [1] https://lwn.net/Articles/793253/#Store%20Tearing
->>>=20
->>> thanks,
->>>=20
->>> - Joel
->>>=20
->>>=20
->>>>=20
->>>>>=20
->>>>> Thanks.
->>>>>=20
->>>>>=20
->>>>>=20
->>>>>>=20
->>>>>>> +plain accesses of a memory location with rcu_dereference() of =
-the same memory
->>>>>>> +location, in code involved in a data race.
->>>>>>> +
->>>>>>> In short, updaters use rcu_assign_pointer() and readers use
->>>>>>> rcu_dereference(), and these two RCU API elements work together =
-to
->>>>>>> ensure that readers have a consistent view of newly added data =
-elements.
->>>>>>> --
->>>>>>> 2.41.0.585.gd2178a4bd4-goog
+> diff --git a/Documentation/devicetree/bindings/hwmon/maxim,max6639.yaml b=
+/Documentation/devicetree/bindings/hwmon/maxim,max6639.yaml
+> new file mode 100644
+> index 000000000000..b3292061ca58
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/hwmon/maxim,max6639.yaml
+> @@ -0,0 +1,60 @@
+> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/hwmon/maxim,max6639.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Maxim MAX6639 Fan Controller
+> +
+> +maintainers:
+> +  - Naresh Solanki <Naresh.Solanki@9elements.com>
+> +
+> +description: |
+> +  The MAX6639 is a 2-channel temperature monitor with dual, automatic, P=
+WM
+> +  fan-speed controller.  It monitors its own temperature and one external
+> +  diode-connected transistor or the temperatures of two external diode-c=
+onnected
+> +  transistors, typically available in CPUs, FPGAs, or GPUs.
 
+> +  fan-supply:
+> +    description: Phandle to the regulator that provides power to the fan.
 
+> +  pulses-per-revolution:
+> +    description:
+> +      Define the number of pulses per fan revolution for each tachometer
+> +      input as an integer.
+> +    $ref: /schemas/types.yaml#/definitions/uint32
+> +    enum: [1, 2, 3, 4]
+> +    default: 2
+
+Apologies if I am digging up old wounds here, since there was quite a
+bit of back and forth on the last version, but these two newly added
+properties look to be common with the "pwm-fan" and with
+"adi,axi-fan-control". At what point should these live in a common
+schema instead?
+
+Otherwise, this looks okay to me, although I'll leave things to
+Krzysztof since he had a lot to say about the previous version.
+
+Thanks,
+Conor.
+
+--sN8NPFS9+3FUypYE
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZM0d0wAKCRB4tDGHoIJi
+0mH7AQDBInAjsrZfZac0XzETGrZ+PttnYaYh09UYHDLHd39geQD9GnXkAmCktfbd
+YjgvCATLL8jElmPIYkCiFurNDe/w1w8=
+=Aesl
+-----END PGP SIGNATURE-----
+
+--sN8NPFS9+3FUypYE--
