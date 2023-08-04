@@ -2,101 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B076E76FB52
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 09:40:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 58B5E76FB56
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 09:44:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231156AbjHDHkU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Aug 2023 03:40:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40532 "EHLO
+        id S233675AbjHDHoD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Aug 2023 03:44:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41390 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229882AbjHDHkS (ORCPT
+        with ESMTP id S229882AbjHDHoA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Aug 2023 03:40:18 -0400
-Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 227B93ABE
-        for <linux-kernel@vger.kernel.org>; Fri,  4 Aug 2023 00:40:17 -0700 (PDT)
-Received: by mail-pl1-x62d.google.com with SMTP id d9443c01a7336-1bba54f7eefso19700855ad.1
-        for <linux-kernel@vger.kernel.org>; Fri, 04 Aug 2023 00:40:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1691134816; x=1691739616;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=W+S/9HOpKs+1jF9GSXyS733mVpklGbIJgO96+jDBzHA=;
-        b=fxgjU+IoMNHEYmoEJLl4XaO1ytDgzRbm9Mu+8tVQJDpnJwpOkW6RB8OONKaubdlpxn
-         RrpMvvKVPuWFxusmkY74T5X2o1qRTWu17iWmY56NydavR89C3npXYpl/lSib2eK0LgK8
-         yzo8ChMPoroZwEQlSkc+lPVGqKOeR4+DxMK8o=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691134816; x=1691739616;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=W+S/9HOpKs+1jF9GSXyS733mVpklGbIJgO96+jDBzHA=;
-        b=bvzQFdPXgTIlZ1EsYBjCnEpb7W/+vFgbg7OPq6UNnyfLvbSwWWghukDwTsUpnvq391
-         jFFr+HlhTRSr65zX6C07ThRTdz25kIByRf5TPB/WWx2KBQXg/mcLUn/YtNw915VHw8oB
-         E0Jmp3pdQ00ZmzXl3KJVqXQLx6RQUyZNO8KXKOLVtmAeWP60HfMvxG9glomxDznXkwb8
-         DfhX14jhBB3JOqetuX0xPW1VSBp8X8MEvZopthP5P5WUr7ICzP+CDiqhfh9U+Z0oG+rI
-         zfuQNLVqlLXnDqcudXcDSrMegdED4+t3b2KXFVrKGExzEbEF0lK21Qj5DTj4Vbkg1ug5
-         TTJg==
-X-Gm-Message-State: AOJu0YycToBq+WZ7xIXZDAHuwIjPriDzflGNfaeEKnUlOECGVZpdSASX
-        lPVcjOm3580gBtg1lePiR6mUfg==
-X-Google-Smtp-Source: AGHT+IFsmqQUMHGEjD/HoJ7z9cdXciny8xZesWp4+Fj8uiyFOUA9fz/ha/zaCCgefg4s9kErw4dayw==
-X-Received: by 2002:a17:90b:1e10:b0:268:94b:8d0 with SMTP id pg16-20020a17090b1e1000b00268094b08d0mr1404750pjb.11.1691134816644;
-        Fri, 04 Aug 2023 00:40:16 -0700 (PDT)
-Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id i4-20020a17090a64c400b0026307fa0442sm3577655pjm.49.2023.08.04.00.40.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 04 Aug 2023 00:40:15 -0700 (PDT)
-Date:   Fri, 4 Aug 2023 00:40:15 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Justin Stitt <justinstitt@google.com>
-Cc:     Kentaro Takeda <takedakn@nttdata.co.jp>,
-        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
-        Paul Moore <paul@paul-moore.com>,
-        James Morris <jmorris@namei.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>,
-        linux-security-module@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
-Subject: Re: [PATCH] tomoyo: refactor deprecated strncpy
-Message-ID: <202308040039.D9B575B3F@keescook>
-References: <20230803-security-tomoyo-v1-1-c53a17908d2f@google.com>
+        Fri, 4 Aug 2023 03:44:00 -0400
+Received: from bg4.exmail.qq.com (bg4.exmail.qq.com [43.155.65.254])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6582E70;
+        Fri,  4 Aug 2023 00:43:57 -0700 (PDT)
+X-QQ-mid: bizesmtp81t1691135024tn36g6cq
+Received: from linux-lab-host.localdomain ( [116.30.131.233])
+        by bizesmtp.qq.com (ESMTP) with 
+        id ; Fri, 04 Aug 2023 15:43:42 +0800 (CST)
+X-QQ-SSF: 01200000000000E0X000000A0000000
+X-QQ-FEAT: W+onFc5Tw4O/6k6LPXFF7TnECbyW8I91QNQffkKagRPrNJwHTEycicRkOeY4B
+        CQdQVd6xdU6bqbtWBxMhwALkE4MBcKfDfncxUqm02+B/lDzmcZYe1q5PWweAfy6VvOOPiRM
+        jfkSuTmwOShSLZbRTBF8Bu0vGbEoCDq+K9NdaEqdI6+GpECpWRTCI4jGByYJoZb/4coFHG+
+        gL6EmNK6UosaFxp9hpvsrSTb/t73QqCBfda+kcuzz1NbfPbrq76M1OJte7jr8fymmGIu1pP
+        FYw72b/U48cmdJeL8W0Wgi+ifPrm9Ajp7L8N8/U36jNyL5swdaSR4PVryyjQyP6ZBNCOW8u
+        AP2yf6n5sGiia55kAwRPWyBzp4mD7I5bOQRTH69
+X-QQ-GoodBg: 0
+X-BIZMAIL-ID: 9264227934890769926
+From:   Zhangjin Wu <falcon@tinylab.org>
+To:     thomas@t-8ch.de
+Cc:     arnd@arndb.de, falcon@tinylab.org, linux-kernel@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, tanyuan@tinylab.org, w@1wt.eu
+Subject: Re: [PATCH v1 2/3] selftests/nolibc: fix up O= option support
+Date:   Fri,  4 Aug 2023 15:43:42 +0800
+Message-Id: <20230804074342.28248-1-falcon@tinylab.org>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20b43e63-fcf9-4e36-a983-5ed3211efc7e@t-8ch.de>
+References: <20b43e63-fcf9-4e36-a983-5ed3211efc7e@t-8ch.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230803-security-tomoyo-v1-1-c53a17908d2f@google.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-QQ-SENDSIZE: 520
+Feedback-ID: bizesmtp:tinylab.org:qybglogicsvrgz:qybglogicsvrgz5a-1
+X-Spam-Status: No, score=-0.6 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,RCVD_IN_VALIDITY_RPBL,
+        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 03, 2023 at 09:33:44PM +0000, Justin Stitt wrote:
-> `strncpy` is deprecated for use on NUL-terminated destination strings [1].
-> 
-> A suitable replacement is `strscpy` [2] due to the fact that it
-> guarantees NUL-termination on its destination buffer argument which is
-> _not_ the case for `strncpy`!
-> 
-> It should be noted that the destination buffer is zero-initialized and
-> had a max length of `sizeof(dest) - 1`. There is likely _not_ a bug
-> present in the current implementation. However, by switching to
-> `strscpy` we get the benefit of no longer needing the `- 1`'s from the
-> string copy invocations on top of `strscpy` being a safer interface all
-> together.
-> 
-> [1]: www.kernel.org/doc/html/latest/process/deprecated.html#strncpy-on-nul-terminated-strings
-> [2]: https://manpages.debian.org/testing/linux-manual-4.8/strscpy.9.en.html
-> 
-> Link: https://github.com/KSPP/linux/issues/90
-> Cc: linux-hardening@vger.kernel.org
-> Signed-off-by: Justin Stitt <justinstitt@google.com>
+Hi, Thomas
 
-Thanks! This looks correct to me.
+> On 2023-08-03 22:45:52+0800, Zhangjin Wu wrote:
+> > To avoid pollute the source code tree and avoid mrproper for every
+> > architecture switch, the O= argument must be supported.
+> > 
+> > Both IMAGE and .config are from the building directory, let's use
+> > objtree instead of srctree for them.
+> > 
+> > If no O= option specified, means building kernel in source code tree,
+> > objtree should be srctree in such case.
+> > 
+> > Suggested-by: Willy Tarreau <w@1wt.eu>
+> > Link: https://lore.kernel.org/lkml/ZK0AB1OXH1s2xYsh@1wt.eu/
+> > Signed-off-by: Zhangjin Wu <falcon@tinylab.org>
+> > ---
+> >  tools/testing/selftests/nolibc/Makefile | 7 +++++--
+> >  1 file changed, 5 insertions(+), 2 deletions(-)
+> > 
+> > diff --git a/tools/testing/selftests/nolibc/Makefile b/tools/testing/selftests/nolibc/Makefile
+> > index 51fef5e6a152..af590aee063a 100644
+> > --- a/tools/testing/selftests/nolibc/Makefile
+> > +++ b/tools/testing/selftests/nolibc/Makefile
+> > @@ -9,6 +9,9 @@ ifeq ($(srctree),)
+> >  srctree := $(patsubst %/tools/testing/selftests/,%,$(dir $(CURDIR)))
+> >  endif
+> >  
+> > +# add objtree for O= argument, required by IMAGE and .config
+> > +objtree ?= $(srctree)
+> 
+> Isn't this already set by the included tools/scripts/Makefile.include?
+>
 
-Reviewed-by: Kees Cook <keescook@chromium.org>
+Good question, but it is empty if no O= specified, checked it several
+times before ;-)
 
--- 
-Kees Cook
+> Also I'm not entirely if O= works as intended currently.
+> When using O=foo in the $LINUX/tools/testing/selftests/nolibc directory
+
+It does work, I have used it to test all of the run targets of the
+tinyconfig patches like this:
+
+    $ make run O=kernel-$arch RUN_OUT=run.$arch.out ...
+
+Everything about the kernel will be built in $(O).
+
+Just rechecked the O variable in top-level Makefile, selftests/nolibc Makefile
+and tools/nolibc Makefile, all of them get the right O value from command line.
+
+From my Makefile experience, an option from command line will be passed
+to every sub Makefile via $(-*-command-variables-*-), it has the highest
+priority then the others, except when we use 'override' keyword
+internally.
+
+> the build instead is happening in $LINUX/foo. But the Makefile first
+> validates that $LINUX/tools/testing/selftests/nolibc/foo exists.
+>
+
+Sorry, I didn't get your meaning above?
+
+Do you mean this line:
+
+    srctree := $(patsubst %/tools/testing/selftests/,%,$(dir $(CURDIR)))
+
+by removing tools/testing/selftests/ of curdir's dir (means no nolibc itself),
+srctree above is just the top-level kernel source code tree.
+
+> It seems we need to pass $(COMMAND_O) to the recursive calls to $(MAKE),
+> too?
+>
+
+So, no need to pass O or COMMAND_O.
+
+Thanks,
+Zhangjin
+
+> > +
+> >  ifeq ($(ARCH),)
+> >  include $(srctree)/scripts/subarch.include
+> >  ARCH = $(SUBARCH)
+> > @@ -217,12 +220,12 @@ kernel: initramfs
+> >  
+> >  # run the tests after building the kernel
+> >  run: kernel
+> > -	$(Q)qemu-system-$(QEMU_ARCH) -display none -no-reboot -kernel "$(srctree)/$(IMAGE)" -serial stdio $(QEMU_ARGS) > "$(CURDIR)/run.out"
+> > +	$(Q)qemu-system-$(QEMU_ARCH) -display none -no-reboot -kernel "$(objtree)/$(IMAGE)" -serial stdio $(QEMU_ARGS) > "$(CURDIR)/run.out"
+> >  	$(Q)$(REPORT) $(CURDIR)/run.out
+> >  
+> >  # re-run the tests from an existing kernel
+> >  rerun:
+> > -	$(Q)qemu-system-$(QEMU_ARCH) -display none -no-reboot -kernel "$(srctree)/$(IMAGE)" -serial stdio $(QEMU_ARGS) > "$(CURDIR)/run.out"
+> > +	$(Q)qemu-system-$(QEMU_ARCH) -display none -no-reboot -kernel "$(objtree)/$(IMAGE)" -serial stdio $(QEMU_ARGS) > "$(CURDIR)/run.out"
+> >  	$(Q)$(REPORT) $(CURDIR)/run.out
+> >  
+> >  # report with existing test log
+> > -- 
+> > 2.25.1
+> > 
