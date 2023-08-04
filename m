@@ -2,120 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 013117704B2
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 17:29:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 911B07704B5
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 17:31:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231831AbjHDP3f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Aug 2023 11:29:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34822 "EHLO
+        id S232072AbjHDPbD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Aug 2023 11:31:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34980 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230158AbjHDP3P (ORCPT
+        with ESMTP id S231787AbjHDPal (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Aug 2023 11:29:15 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F31CC55A8;
-        Fri,  4 Aug 2023 08:28:33 -0700 (PDT)
+        Fri, 4 Aug 2023 11:30:41 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE3D95BB0;
+        Fri,  4 Aug 2023 08:29:44 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id EA7B56207B;
-        Fri,  4 Aug 2023 15:28:32 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6E616C433CC;
-        Fri,  4 Aug 2023 15:28:30 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 846AE62079;
+        Fri,  4 Aug 2023 15:29:42 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4DA49C433C8;
+        Fri,  4 Aug 2023 15:29:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691162912;
-        bh=56zoPeM/CV8ihxlnw5WYA8d04D9FlMkTeWO4Tsa8NqU=;
+        s=k20201202; t=1691162981;
+        bh=JPc6NMHEB3VXB/775tb2f0hYBmv/DaHjC65CSQgtHQk=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=hrgCRcnaZajvRqDBsuL2DRhZQ4Qb/xMJjIgluxRWXeW4Zf7Yixf2tRDJXBRNweKZ1
-         QlOAvCLPMlpuATurkOyOdTpUxsK5KrrJFdLji93N6B+H8OJugV7Kjqv52z8/oFvOkJ
-         MUJAW5HysFgFOyfHqtjGXNptDxWpQa/01+lSmQSeZlTqbYkDRQi4SlZLsC3K1ly8Ja
-         mb7wr1pI3XtZR/98pCVPrJroOG92sCnKsHLnP51N3IXriHe1LpRbVk9W+u7sEk+qFG
-         Nh4wM2qnd4WackmUgbvVVbTknyDqDBo7NTsQqkvvpXyN1qCot2SFoA7CYNp8mFlk+8
-         dcxw7IAMGx5Bw==
-Date:   Fri, 4 Aug 2023 16:28:28 +0100
-From:   Conor Dooley <conor@kernel.org>
-To:     marius.cristea@microchip.com
-Cc:     jic23@kernel.org, lars@metafoo.de, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        linux-iio@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 0/2] Adding support for Microchip MCP3564 ADC family
-Message-ID: <20230804-doze-confining-edf4f50d736d@spud>
-References: <20230804142820.89593-1-marius.cristea@microchip.com>
+        b=VaTqflnJs54tfZJx79VVCbcK7jilZVmVgCVBjXlT7Kg1CzpTDLZnlB35NYQryuccI
+         SkmGIfS0RLoKo7nFaXp1zpwUqv0KnZ8gI8lVDqZCk8dSEIZbtFWt2VWYBdk53Aue57
+         jiRfL1qdYGpGl4tB4UI5tjE40PFrXS7j+nd3I65dZC3aRgIHMhv8OAZaY52dtJEW1e
+         Mb0noRod3DB/raSds5GvY+p7/dEQH6wZKWgvrQDLbPjEzOFiZQkY8lT0GE5Vc43DN0
+         s91Hd3RqtUrukrtnfZFXwY1lPirGn/v++WZV8IkmZ9QKxEwBr9YhUoOHOJVoyMmMfm
+         sgoJSbosTcB3w==
+Date:   Fri, 4 Aug 2023 17:29:37 +0200
+From:   Christian Brauner <brauner@kernel.org>
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     syzbot <syzbot+2faac0423fdc9692822b@syzkaller.appspotmail.com>,
+        jack@suse.cz, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com,
+        viro@zeniv.linux.org.uk
+Subject: Re: [syzbot] [fs?] KASAN: slab-use-after-free Read in
+ test_bdev_super_fc
+Message-ID: <20230804-auferlegen-esstisch-fdf67276d18c@brauner>
+References: <00000000000058d58e06020c1cab@google.com>
+ <20230804101408.GA23274@lst.de>
+ <20230804-abstieg-behilflich-eda2ce9c2c0f@brauner>
+ <20230804140201.GA27600@lst.de>
+ <20230804-allheilmittel-teleobjektiv-a0351a653d31@brauner>
+ <20230804144343.GA28230@lst.de>
+ <20230804-kurvigen-uninteressant-09d451db7458@brauner>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="69mBrM4Ph1nZWzIB"
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20230804142820.89593-1-marius.cristea@microchip.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <20230804-kurvigen-uninteressant-09d451db7458@brauner>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, Aug 04, 2023 at 04:49:23PM +0200, Christian Brauner wrote:
+> On Fri, Aug 04, 2023 at 04:43:43PM +0200, Christoph Hellwig wrote:
+> > On Fri, Aug 04, 2023 at 04:36:49PM +0200, Christian Brauner wrote:
+> > > FFS
+> > 
+> > Good spot, this explains the missing dropping of s_umount.
+> > 
+> > But I don't think it's doing the right thing for MTD mount romfs,
+> > we'll need something like this:
+> 
+> I'll fold a fix into Jan's patch.
 
---69mBrM4Ph1nZWzIB
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Folding:
 
-On Fri, Aug 04, 2023 at 05:28:18PM +0300, marius.cristea@microchip.com wrot=
-e:
-> From: Marius Cristea <marius.cristea@microchip.com>
->=20
-> Adding support for Microchip family of 153.6 ksps, Low-Noise 16/24-Bit
-> Delta-Sigma ADCs with an SPI interface. This driver covers the following =
-part
-> numbers:
->  - MCP3561, MCP3562, MCP3564, MCP3561R, MCP3562R, MCP3564R,
->  - MCP3461, MCP3462, MCP3464, MCP3461R, MCP3462R and MCP3464R.
->=20
-> Differences related to previous patch:
-> v3:
-> - fix review comments:
->   - fix and update the device tree bindings
->   - enable "auto_zeroing_ref_enable" attribute only
->     when internal reference is used
->   - remove unused headers
->   - fix comments (kernel-docs)
->   - remove scan_type
->   - replace "extend_name" with read_label
->   - print label for each channel (label could be added into the dt)
->   - add comment to explain the maximum channels numbers
->   - add protection around critical region
+diff --git a/fs/romfs/super.c b/fs/romfs/super.c
+index c59b230d55b4..2b9f3e3c052a 100644
+--- a/fs/romfs/super.c
++++ b/fs/romfs/super.c
+@@ -583,16 +583,20 @@ static int romfs_init_fs_context(struct fs_context *fc)
+  */
+ static void romfs_kill_sb(struct super_block *sb)
+ {
++	generic_shutdown_super(sb);
++
+ #ifdef CONFIG_ROMFS_ON_MTD
+ 	if (sb->s_mtd) {
+-		kill_mtd_super(sb);
+-		return;
++		put_mtd_device(sb->s_mtd);
++		sb->s_mtd = NULL;
+ 	}
+ #endif
+ #ifdef CONFIG_ROMFS_ON_BLOCK
+ 	if (sb->s_bdev) {
+-		kill_block_super(sb);
+-		return;
++		sb->s_bdev->bd_super = NULL;
++		sync_blockdev(sb->s_bdev);
++		blkdev_put(sb->s_bdev, sb->s_type);
+ 	}
+ #endif
+ }
+diff --git a/fs/cramfs/inode.c b/fs/cramfs/inode.c
+index 27c6597aa1be..0b6cc8a03b54 100644
+--- a/fs/cramfs/inode.c
++++ b/fs/cramfs/inode.c
+@@ -485,12 +485,17 @@ static void cramfs_kill_sb(struct super_block *sb)
+ {
+        struct cramfs_sb_info *sbi = CRAMFS_SB(sb);
 
->   - fallback compatible in device tree to deal with some newer part number
++       generic_shutdown_super(sb);
++
+        if (IS_ENABLED(CONFIG_CRAMFS_MTD) && sb->s_mtd) {
+                if (sbi && sbi->mtd_point_size)
+                        mtd_unpoint(sb->s_mtd, 0, sbi->mtd_point_size);
+-               kill_mtd_super(sb);
++               put_mtd_device(sb->s_mtd);
++               sb->s_mtd = NULL;
+        } else if (IS_ENABLED(CONFIG_CRAMFS_BLOCKDEV) && sb->s_bdev) {
+-               kill_block_super(sb);
++               sb->s_bdev->bd_super = NULL;
++               sync_blockdev(sb->s_bdev);
++               blkdev_put(sb->s_bdev, sb->s_type);
+        }
+        kfree(sbi);
+ }
 
-The compatibles are all still in an enum in the binding with no
-fallbacks. Did you forget to commit this?
 
-Thanks,
-Conor.
-
->  =20
-> - Open questions:
->   - whether or not to add a spi-mux type of thing to deal with the part n=
-umber
->     address in case there are multiple devices connected to the same chip
->     select.
->   - discussion related to the "custom property". Last time around a conse=
-nsus
->     wasn't reached.=20
-
---69mBrM4Ph1nZWzIB
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZM0ZHAAKCRB4tDGHoIJi
-0mUTAP46a8eRFu3rukoDmNmwgNsOmobBPRGPtSnMPkJ2r8SheAD/W9l5IqLR9bCU
-8r04SbrY9ic7HyKnNjjRj6HQTQXQfwc=
-=sF9v
------END PGP SIGNATURE-----
-
---69mBrM4Ph1nZWzIB--
