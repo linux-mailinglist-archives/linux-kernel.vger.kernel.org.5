@@ -2,102 +2,190 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CC5ED77041C
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 17:11:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0481977041E
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 17:11:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231858AbjHDPLc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Aug 2023 11:11:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51168 "EHLO
+        id S231688AbjHDPLt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Aug 2023 11:11:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51448 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231508AbjHDPL2 (ORCPT
+        with ESMTP id S231508AbjHDPLl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Aug 2023 11:11:28 -0400
+        Fri, 4 Aug 2023 11:11:41 -0400
 Received: from mail-lj1-x233.google.com (mail-lj1-x233.google.com [IPv6:2a00:1450:4864:20::233])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F2074C31;
-        Fri,  4 Aug 2023 08:11:15 -0700 (PDT)
-Received: by mail-lj1-x233.google.com with SMTP id 38308e7fff4ca-2b9c907bc68so35203721fa.2;
-        Fri, 04 Aug 2023 08:11:14 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 373D349E6;
+        Fri,  4 Aug 2023 08:11:39 -0700 (PDT)
+Received: by mail-lj1-x233.google.com with SMTP id 38308e7fff4ca-2b9cdba1228so36639401fa.2;
+        Fri, 04 Aug 2023 08:11:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1691161873; x=1691766673;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=+/APqukGeAaASUv2YUg1QGqAC+pq6Ub8PvVlBR+Veo8=;
-        b=MuYfZnGHZFKdLXm1bZSLsTiE6SriVsPjt4MCHM4vSiHUn8GNiFRKgdlzoEMXZu7IeQ
-         +V4PCCfOwA4YegCRuIVfgXiSQh/rjq5VCZl9TkV2SuuyHNCix/FjDeJkK1813jx8FUMF
-         X9fcnkO7PuKWuZ4jgafku/7pYq6RpUjMmF2SKtTRBv4yESoN3pceRtkYEOo4U1/DyEcB
-         Z1YHyD+06Oauj3UQRnUpO+xg5MkIitpcB/gMGlS1/BTTuDqMZ1OiJEx7k0pzYDcRZqh2
-         K+ibZ38wDSaI0YOcslXVRymVZTtAAvruAG3dtn8gRC8G18cDqNxrmCJacQDsxDqJSLJ9
-         a1dQ==
+        d=gmail.com; s=20221208; t=1691161897; x=1691766697;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=/x2HU6+MV/IqQjm0ooiMjVQBEg/IdxB1FJC8ElSTtiQ=;
+        b=TEULtEHQBd3bVfKkrwwfcAPuYfhGwt/bgqLMENdx4P9MRoTicS2EO8P2u5uINRulH2
+         I66yg992gWDo/eOWaA+DcANuDhavotStbDoLFsz7dueS0OuOdpY9mbgYpuWAEmhd5m28
+         vctyq02R31BzEf/Tt2hUBNLHogdX01iO3cDkDDjPLQFUtuPgYCSQaOFyOWxj8c5PGrG3
+         U8VRr+5kmZ3cXMVHTsTdfYg1TNmgrbDb/S3p2U7bHbXAElJIc4THO8/I7XwKsMMn4eXz
+         XOY5kYHy6dxrTI4BtmDt5hkvskSXHkaBu0NTtQ5CeBiUxzhYlayTtio/cxBYdZrLPV11
+         y2Ng==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691161873; x=1691766673;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=+/APqukGeAaASUv2YUg1QGqAC+pq6Ub8PvVlBR+Veo8=;
-        b=PJm7mFgmVOPnNwr9l1eXC/1O92rv3lhAzjVrznlUTR1dUkqMqAp1Oa9PqhxrwzQAgN
-         bHI5c8B+OmsH4j3JgD7eazuJxfjZGd05WUqXE9NqvVCRXYwd2T9WejARXcgCwFkYP82V
-         JamMfZfeodSSsW4PYA4PPWeuPWpwOav2ubcqx4UGKI8Z8I7NOvsbEddsK/9SdgdAK4IU
-         l1mnGw3cwng678K039OXqtsH4tv4xu60lVZp7+PUDOXN1WEMaN+sN4ERmLdVvGNn0yxX
-         jSgI+5fkULeMRDC8VtSUTvphisP3IGoLdc2DYv0m6Yhy2DjzEKm9vDF41EgH8uJGLnG1
-         QKBw==
-X-Gm-Message-State: AOJu0YyyyH5ttusZZizZ8v1YK7PicdBVNydhbJtghvH/Y5q23dTGLlKA
-        KGZ7ldhTH8rRJx4ePYJoIGB3okvcZt8=
-X-Google-Smtp-Source: AGHT+IF1+DVK3U8TTYJYza7JWURur+pYHxLnYZ4P9wt4JRQsmJ5KVZ1b2gnaSwrcvdAMBxuVjzwVLA==
-X-Received: by 2002:a05:6512:65:b0:4fb:89f2:278e with SMTP id i5-20020a056512006500b004fb89f2278emr1490230lfo.68.1691161873024;
-        Fri, 04 Aug 2023 08:11:13 -0700 (PDT)
-Received: from localhost.localdomain (ip-94-112-167-15.bb.vodafone.cz. [94.112.167.15])
-        by smtp.gmail.com with ESMTPSA id e14-20020a50fb8e000000b0051df67eaf62sm1392368edq.42.2023.08.04.08.11.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 04 Aug 2023 08:11:12 -0700 (PDT)
-From:   Ilya Dryomov <idryomov@gmail.com>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     ceph-devel@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [GIT PULL] Ceph fixes for 6.5-rc5
-Date:   Fri,  4 Aug 2023 17:10:58 +0200
-Message-ID: <20230804151059.712246-1-idryomov@gmail.com>
-X-Mailer: git-send-email 2.41.0
+        d=1e100.net; s=20221208; t=1691161897; x=1691766697;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=/x2HU6+MV/IqQjm0ooiMjVQBEg/IdxB1FJC8ElSTtiQ=;
+        b=g6e6ulHAnKwW7fbcSaaWsIU27VQ44uqMVEwwQxs3oD2fRmD3oQxavQhhNx+90P1z6G
+         wLf0qs9vasZdkaIuHeCOAMpimp1urT2bmHhtFT1zkeiYT5SMBxQBp/mGg9K0753pNGR4
+         2cwK74J/n3C0ckbA96QwBu85isnb9plvqgprHd+kkNhArtndhskOSjrQ4lQZ7JEIJZKt
+         /hPU4AB+VSw035fOiBTNMTu6ABu6hLDBsE4WVettn9kYMx3nBYj3NZM9zx+CpeFq91lt
+         wT/zvVmipWNkjLSAQadKyvW7QGBHaOW+G4jMKnnY9b0mBdErSiljd5H/HxCNyya/GwAz
+         k8dQ==
+X-Gm-Message-State: AOJu0YxaTaPOc1SRajaW2+oIvdEXguXKs5or2E19hy22YOo3XCfcqQBx
+        kU4pVcqTRnpsx1dU8vzlZMnhpLAmCgGsAWraYPY=
+X-Google-Smtp-Source: AGHT+IH3SCHrWsUBZdKSKq6MVfreO1tH8EoTPZVb+Od34GLVwq7o3dz+yk67Is/qO+1iwG7vxLqDyEZyepsRRtoU51M=
+X-Received: by 2002:a2e:9d86:0:b0:2b7:339c:f791 with SMTP id
+ c6-20020a2e9d86000000b002b7339cf791mr1751152ljj.25.1691161896946; Fri, 04 Aug
+ 2023 08:11:36 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <20230626085811.3192402-1-puranjay12@gmail.com>
+ <7e05efe1-0af0-1896-6f6f-dcb02ed8ca27@iogearbox.net> <ZKMCFtlfJA1LfGNJ@FVFF77S0Q05N>
+ <CANk7y0gTXPBj5U-vFK0cEvVe83tP1FqyD=MuLXT_amWO=EssOA@mail.gmail.com>
+ <CANk7y0hRYzpsYoqcU1tHyZThAgg-cx46C4-n2JYZTa7sDwEk-w@mail.gmail.com>
+ <CAADnVQJJHiSZPZFpu1n-oQLEsUptacSzF7FdOKfO6OEoKz-jXg@mail.gmail.com> <ZMuLvKRbPfOK0IpN@FVFF77S0Q05N>
+In-Reply-To: <ZMuLvKRbPfOK0IpN@FVFF77S0Q05N>
+From:   Puranjay Mohan <puranjay12@gmail.com>
+Date:   Fri, 4 Aug 2023 17:11:25 +0200
+Message-ID: <CANk7y0hQcuabELOH-QHiqNAJhuCZYeWim7AJ125zS7_GnKwcGQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v4 0/3] bpf, arm64: use BPF prog pack allocator
+ in BPF JIT
+To:     Mark Rutland <mark.rutland@arm.com>
+Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Florent Revest <revest@chromium.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        bpf <bpf@vger.kernel.org>, KP Singh <kpsingh@kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+Hi Mark,
 
-The following changes since commit 5d0c230f1de8c7515b6567d9afba1f196fb4e2f4:
+On Thu, Aug 3, 2023 at 1:13=E2=80=AFPM Mark Rutland <mark.rutland@arm.com> =
+wrote:
+>
+> Hi Alexei,
+>
+> On Wed, Aug 02, 2023 at 02:02:39PM -0700, Alexei Starovoitov wrote:
+> > On Sun, Jul 30, 2023 at 10:22=E2=80=AFAM Puranjay Mohan <puranjay12@gma=
+il.com> wrote:
+> > >
+> > > Hi Mark,
+> > > I am really looking forward to your feedback on this series.
+> > >
+> > > On Mon, Jul 17, 2023 at 9:50=E2=80=AFAM Puranjay Mohan <puranjay12@gm=
+ail.com> wrote:
+> > > >
+> > > > Hi Mark,
+> > > >
+> > > > On Mon, Jul 3, 2023 at 7:15=E2=80=AFPM Mark Rutland <mark.rutland@a=
+rm.com> wrote:
+> > > > >
+> > > > > On Mon, Jul 03, 2023 at 06:40:21PM +0200, Daniel Borkmann wrote:
+> > > > > > Hi Mark,
+> > > > >
+> > > > > Hi Daniel,
+> > > > >
+> > > > > > On 6/26/23 10:58 AM, Puranjay Mohan wrote:
+> > > > > > > BPF programs currently consume a page each on ARM64. For syst=
+ems with many BPF
+> > > > > > > programs, this adds significant pressure to instruction TLB. =
+High iTLB pressure
+> > > > > > > usually causes slow down for the whole system.
+> > > > > > >
+> > > > > > > Song Liu introduced the BPF prog pack allocator[1] to mitigat=
+e the above issue.
+> > > > > > > It packs multiple BPF programs into a single huge page. It is=
+ currently only
+> > > > > > > enabled for the x86_64 BPF JIT.
+> > > > > > >
+> > > > > > > This patch series enables the BPF prog pack allocator for the=
+ ARM64 BPF JIT.
+> > > > >
+> > > > > > If you get a chance to take another look at the v4 changes from=
+ Puranjay and
+> > > > > > in case they look good to you reply with an Ack, that would be =
+great.
+> > > > >
+> > > > > Sure -- this is on my queue of things to look at; it might just t=
+ake me a few
+> > > > > days to get the time to give this a proper look.
+> > > > >
+> > > > > Thanks,
+> > > > > Mark.
+> > > >
+> > > > I am eagerly looking forward to your feedback on this series.
+> >
+> > Mark, Catalin, Florent, KP,
+> >
+> > This patch set was submitted on June 26 !
+>
+> I appreciate this was sent a while ago, but I have been stuck on some urg=
+ent
+> bug-fixing for the last few weeks, and my review bandwidth is therfore ve=
+ry
+> limited.
+>
+> Given Puranjay had previously told me he was doing this as a side project=
+ for
+> fun, and given no-one had told me this was urgent, I assumed that this wa=
+sn't a
+> major blocker and could wait.
 
-  Linux 6.5-rc4 (2023-07-30 13:23:47 -0700)
+Yes, I am just doing it as a side project for fun. It is not a major blocke=
+r.
 
-are available in the Git repository at:
+>
+> I should have sent a holding reply to that effect; sorry.
+>
+> The series addresses my original concern. However, in looking at it I thi=
+nk
+> there may me a wider potential isssue w.r.t. the way instruction memory g=
+ets
+> reused, because as writtten today the architecture doesn't seem to have a
+> guarantee on when instruction fetches are completed and therefore when it=
+'s
+> safe to modify instruction memory. Usually we're saved by TLB maintenance=
+,
+> which this series avoids by design.
+>
+> I unfortunately haven't had the time to dig into that, poke our architect=
+s,
+> etc.
+>
+> So how urgent is this?
 
-  https://github.com/ceph/ceph-client.git tags/ceph-for-6.5-rc5
+This is not urgent as this is not a blocker for anything.
 
-for you to fetch changes up to e6e2843230799230fc5deb8279728a7218b0d63c:
+I just wanted to know if there was something pending from my side.
 
-  libceph: fix potential hang in ceph_osdc_notify() (2023-08-02 09:07:34 +0200)
+Please review it whenever you have spare time. Thanks for helping me debug =
+the
+issue with the cache maintenance.
 
-----------------------------------------------------------------
-Two patches to improve RBD exclusive lock interaction with
-osd_request_timeout option and another fix to reduce the potential for
-erroneous blocklisting -- this time in CephFS.  All going to stable.
-
-----------------------------------------------------------------
-Ilya Dryomov (2):
-      rbd: prevent busy loop when requesting exclusive lock
-      libceph: fix potential hang in ceph_osdc_notify()
-
-Xiubo Li (1):
-      ceph: defer stopping mdsc delayed_work
-
- drivers/block/rbd.c   | 28 +++++++++++++++-------------
- fs/ceph/mds_client.c  |  4 ++--
- fs/ceph/mds_client.h  |  5 +++++
- fs/ceph/super.c       | 10 ++++++++++
- net/ceph/osd_client.c | 20 ++++++++++++++------
- 5 files changed, 46 insertions(+), 21 deletions(-)
+Thanks,
+Puranjay
