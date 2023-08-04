@@ -2,149 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A10B770B34
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 23:46:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1BE65770B37
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 23:48:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230146AbjHDVqd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Aug 2023 17:46:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54426 "EHLO
+        id S230186AbjHDVsL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Aug 2023 17:48:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54846 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230118AbjHDVq3 (ORCPT
+        with ESMTP id S230005AbjHDVsI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Aug 2023 17:46:29 -0400
-Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 682D718B;
-        Fri,  4 Aug 2023 14:46:26 -0700 (PDT)
-Received: by mail-wm1-x32d.google.com with SMTP id 5b1f17b1804b1-3fe4a89e8c4so7877025e9.3;
-        Fri, 04 Aug 2023 14:46:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1691185585; x=1691790385;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=M/pOSfgbyVT5LQxnNymgKpK05ihGgzeqo1fmPwKo4cM=;
-        b=a4GiJzdqv+qk8GtXsrJmdKutL523iO/jKkD1Gd/zbu6JYYdPAn4zLqpp4/JPAO1ysS
-         wtqxE8CsmEcwfV9Ove0bJCJnmMGGV6Kn/MjWnLXRYvp3B3QYpGfNBQKNrIkszewrCKHx
-         c/cotekgWT4fnr7Kx08vJnKsw3SLeSGW6rFs0yWNmZgwOJhFrKOxr5Cp4ZUvkQBCEA+4
-         NWcuECwaIC2nDyL6LfgMHhR6CzMuWN+vOZe3VJTKm+90ZaWdhiw4pbDdzrbAsEEKyzHz
-         mpayLVtTYyHnz4GQTcbqJuZQssyMVFYpcI4D6yl+jo881L1rIzs/P8T8EURCo9UAnNcJ
-         3QFw==
+        Fri, 4 Aug 2023 17:48:08 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7DDCBF0
+        for <linux-kernel@vger.kernel.org>; Fri,  4 Aug 2023 14:47:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1691185633;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=tiScYNNF3/5tyRgaI7Wx7hPnkZAj0r8d0q062ZADxes=;
+        b=da0RcL+LOEI9NOGSDuLzgdtNyRL9esABRUEhRQWuWuuZQ2a1Dgq88LRx5LEiEN2oDFFAqC
+        knF+AkiQkC7F3jOtboV9iqUZcH5047fNh5J1bE+3A5DRymDJHJgUyWesebJ6dsjOZgE+NP
+        WmfvvePm3pc/vz5XnRLrejM5sxO2UxQ=
+Received: from mail-lj1-f199.google.com (mail-lj1-f199.google.com
+ [209.85.208.199]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-659-_Jw055fyOjynagqq_n7STg-1; Fri, 04 Aug 2023 17:47:11 -0400
+X-MC-Unique: _Jw055fyOjynagqq_n7STg-1
+Received: by mail-lj1-f199.google.com with SMTP id 38308e7fff4ca-2b9dc1bfdd2so30141821fa.1
+        for <linux-kernel@vger.kernel.org>; Fri, 04 Aug 2023 14:47:11 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691185585; x=1691790385;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=M/pOSfgbyVT5LQxnNymgKpK05ihGgzeqo1fmPwKo4cM=;
-        b=lHoFcwYNyRKDOvjECnuAek2VoJgd7N+gl7ri7dNPtAbGEO7GwxG/R1GjFEryPf3f2m
-         km/+ZHT4Ou5DSPyG6GNaTfqM4WAb2atCgScu40jGizUeGVWEAsW7kk1WxIs703gFHMFA
-         g6NfAPNGngeAEh0NVPfjxXf8d3tfteQcST7YjzBaM57VcnBSI1KTSyfacKLNjFZ0Agb1
-         t4cyCkqa/Oml1GO0mkvwZjDBWCwdjLYxooK2yqaC0t9cFFr0txeVI5N88u5NVsQaq/Ag
-         P07kfjg8EW8qHLRSUiosOzF/fpq+r36Skf37oxgWh84NVvROfnybC9JZ5Qx1Wtwfp83a
-         FmQg==
-X-Gm-Message-State: AOJu0Yw95iZ3tGuF+pRfTQKo9O6ldN2V/6WBSC0aLxVqgh/uKpRNXRva
-        VD1Dmi1KCFZZ7yjIyDVjpHY=
-X-Google-Smtp-Source: AGHT+IGOtBUSiK39LU5+0tpNJevAeU4Xfb74Y4DRTOPaM0nN2Uvb1A/IoQQ+f7RQvAmDLiwJ9gr3Zg==
-X-Received: by 2002:a1c:f603:0:b0:3fe:21b9:806 with SMTP id w3-20020a1cf603000000b003fe21b90806mr2415552wmc.0.1691185584689;
-        Fri, 04 Aug 2023 14:46:24 -0700 (PDT)
-Received: from f (cst-prg-21-219.cust.vodafone.cz. [46.135.21.219])
-        by smtp.gmail.com with ESMTPSA id h3-20020a5d5483000000b0030ae53550f5sm3423406wrv.51.2023.08.04.14.46.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 04 Aug 2023 14:46:24 -0700 (PDT)
-Date:   Fri, 4 Aug 2023 23:46:20 +0200
-From:   Mateusz Guzik <mjguzik@gmail.com>
-To:     Suren Baghdasaryan <surenb@google.com>
-Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        regressions@leemhuis.info, bagasdotme@gmail.com,
-        jacobly.alt@gmail.com, willy@infradead.org,
-        liam.howlett@oracle.com, david@redhat.com, peterx@redhat.com,
-        ldufour@linux.ibm.com, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, linuxppc-dev@lists.ozlabs.org,
-        linux-arm-kernel@lists.infradead.org, gregkh@linuxfoundation.org,
-        regressions@lists.linux.dev, Jiri Slaby <jirislaby@kernel.org>,
-        Holger =?utf-8?Q?Hoffst=C3=A4tte?= 
-        <holger@applied-asynchrony.com>, stable@vger.kernel.org
-Subject: Re: [PATCH v2 3/3] fork: lock VMAs of the parent process when forking
-Message-ID: <20230804214620.btgwhsszsd7rh6nf@f>
-References: <20230708191212.4147700-1-surenb@google.com>
- <20230708191212.4147700-3-surenb@google.com>
+        d=1e100.net; s=20221208; t=1691185629; x=1691790429;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=tiScYNNF3/5tyRgaI7Wx7hPnkZAj0r8d0q062ZADxes=;
+        b=cGLx6JG18sORbjNlBGUVBYzkYQr4Je40HAVLxrii9do/k9AKaVhZpyq58ovA2TB7iM
+         Qmdf13NrGBchzWod+M/8/cM14eNyHPxt+xsKJ1MWMwHpf3/swIMK+K9U+bdJrbOeWRTe
+         IwMekyy9WUyH43+OMBiJ2iSzZ5sHExjCxRaZ7D3S4pim5/ENWRuxLcAJycUcXmM+SwnH
+         PRHHh7OO9egXw/Nt06k/FCPNw2+tDQO1FHHjn4J1I8O6Kk60RB4TkkZsygo2XHZy9TDD
+         IzWRHop9Bol80HhsHgLkZ+VmSr63IKZdRimObyBr9LHz3t07eDRhgmbbxiKIBwndDokz
+         9oAA==
+X-Gm-Message-State: AOJu0YzfMmGbF4ufzB6xfiqJ9pQ7qeFoob00C9r55kbtWDuSpvFxAec2
+        AwyBTPNNP/6gK3a7t5b4vXpmBrGOGJSH78wp07gc75xSVHg4n2uF7uqRxuMjq2CUM2TTwhhzHJq
+        +eoH0ivR5Um+xcQ8FM0YtQLy6
+X-Received: by 2002:a2e:8097:0:b0:2b6:df71:cff1 with SMTP id i23-20020a2e8097000000b002b6df71cff1mr2280550ljg.52.1691185629602;
+        Fri, 04 Aug 2023 14:47:09 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IExe5iiZfhIyXQdWvWaXrTzadO33FxB5aH81HqxqGBkNcUN8aPdMF9xEDQqQjhI1d+42Kq3fw==
+X-Received: by 2002:a2e:8097:0:b0:2b6:df71:cff1 with SMTP id i23-20020a2e8097000000b002b6df71cff1mr2280541ljg.52.1691185629115;
+        Fri, 04 Aug 2023 14:47:09 -0700 (PDT)
+Received: from ?IPV6:2001:b07:6468:f312:63a7:c72e:ea0e:6045? ([2001:b07:6468:f312:63a7:c72e:ea0e:6045])
+        by smtp.googlemail.com with ESMTPSA id d24-20020a170906c21800b00989828a42e8sm1834839ejz.154.2023.08.04.14.47.08
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 04 Aug 2023 14:47:08 -0700 (PDT)
+Message-ID: <6d0b0da3-5df2-46f4-d6ba-75ae6a187483@redhat.com>
+Date:   Fri, 4 Aug 2023 23:47:07 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20230708191212.4147700-3-surenb@google.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH v5 08/19] KVM:x86: Report KVM supported CET MSRs as
+ to-be-saved
+Content-Language: en-US
+To:     Yang Weijiang <weijiang.yang@intel.com>, seanjc@google.com,
+        peterz@infradead.org, john.allen@amd.com, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     rick.p.edgecombe@intel.com, chao.gao@intel.com,
+        binbin.wu@linux.intel.com
+References: <20230803042732.88515-1-weijiang.yang@intel.com>
+ <20230803042732.88515-9-weijiang.yang@intel.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+In-Reply-To: <20230803042732.88515-9-weijiang.yang@intel.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_NONE autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jul 08, 2023 at 12:12:12PM -0700, Suren Baghdasaryan wrote:
-[..]
-> Lock VMAs of the parent process when forking a child, which prevents
-> concurrent page faults during fork operation and avoids this issue.
-> This fix can potentially regress some fork-heavy workloads. Kernel build
-> time did not show noticeable regression on a 56-core machine while a
-> stress test mapping 10000 VMAs and forking 5000 times in a tight loop
-> shows ~5% regression. If such fork time regression is unacceptable,
-> disabling CONFIG_PER_VMA_LOCK should restore its performance. Further
-> optimizations are possible if this regression proves to be problematic.
-> 
-> ---
->  kernel/fork.c | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/kernel/fork.c b/kernel/fork.c
-> index b85814e614a5..d2e12b6d2b18 100644
-> --- a/kernel/fork.c
-> +++ b/kernel/fork.c
-> @@ -686,6 +686,7 @@ static __latent_entropy int dup_mmap(struct mm_struct *mm,
->  	for_each_vma(old_vmi, mpnt) {
->  		struct file *file;
->  
-> +		vma_start_write(mpnt);
->  		if (mpnt->vm_flags & VM_DONTCOPY) {
->  			vm_stat_account(mm, mpnt->vm_flags, -vma_pages(mpnt));
->  			continue;
-> 
+On 8/3/23 06:27, Yang Weijiang wrote:
+> Add all CET MSRs including the synthesized GUEST_SSP to report list.
+> PL{0,1,2}_SSP are independent to host XSAVE management with later
+> patches. MSR_IA32_U_CET and MSR_IA32_PL3_SSP are XSAVE-managed on
+> host side. MSR_IA32_S_CET/MSR_IA32_INT_SSP_TAB/MSR_KVM_GUEST_SSP
+> are not XSAVE-managed.
 
-I don't see it mentioned in the discussion, so at a risk of ruffling
-feathers or looking really bad I'm going to ask: is the locking of any
-use if the forking process is single-threaded? The singular thread in
-this case is occupied executing this very code, so it can't do any op
-in parallel. Is there anyone else who could trigger a page fault? Are
-these shared with other processes? Cursory reading suggests a private
-copy is made here, so my guess is no. But then again, I landed here
-freshly from the interwebz.
+MSR_KVM_GUEST_SSP -> MSR_KVM_SSP
 
-Or in short: if nobody can mess up the state if the forking process is
-single-threaded, why not check for mm_users or whatever other indicator
-to elide the slowdown for the (arguably) most common case?
+Also please add a comment,
 
-If the state can be messed up anyway, that's a shame, but short
-explanation how would be welcome.
+/*
+  * SSP can only be read via RDSSP; writing even requires
+  * destructive and potentially faulting operations such as
+  * SAVEPREVSSP/RSTORSSP or SETSSBSY/CLRSSBSY.  Let the host
+  * use a pseudo-MSR that is just a wrapper for the GUEST_SSP
+  * field of the VMCS.
+  */
 
-to illustrate (totally untested):
-diff --git a/kernel/fork.c b/kernel/fork.c
-index d2e12b6d2b18..aac6b08a0b21 100644
---- a/kernel/fork.c
-+++ b/kernel/fork.c
-@@ -652,6 +652,7 @@ static __latent_entropy int dup_mmap(struct mm_struct *mm,
-        LIST_HEAD(uf);
-        VMA_ITERATOR(old_vmi, oldmm, 0);
-        VMA_ITERATOR(vmi, mm, 0);
-+       bool singlethread = READ_ONCE(oldmm->mm_users) == 1;
+Paolo
 
-        uprobe_start_dup_mmap();
-        if (mmap_write_lock_killable(oldmm)) {
-@@ -686,7 +687,8 @@ static __latent_entropy int dup_mmap(struct mm_struct *mm,
-        for_each_vma(old_vmi, mpnt) {
-                struct file *file;
-
--               vma_start_write(mpnt);
-+               if (!singelthreaded)
-+                       vma_start_write(mpnt);
-                if (mpnt->vm_flags & VM_DONTCOPY) {
-                        vm_stat_account(mm, mpnt->vm_flags, -vma_pages(mpnt));
-                        continue;
