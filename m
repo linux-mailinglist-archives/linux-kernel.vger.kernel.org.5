@@ -2,192 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6CA0E770401
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 17:07:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EF23A77040C
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 17:09:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232025AbjHDPG4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Aug 2023 11:06:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46028 "EHLO
+        id S229868AbjHDPJR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Aug 2023 11:09:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48832 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231947AbjHDPGf (ORCPT
+        with ESMTP id S229738AbjHDPJO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Aug 2023 11:06:35 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48C2249FD;
-        Fri,  4 Aug 2023 08:06:16 -0700 (PDT)
+        Fri, 4 Aug 2023 11:09:14 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D91895247
+        for <linux-kernel@vger.kernel.org>; Fri,  4 Aug 2023 08:08:39 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id A80C76206C;
-        Fri,  4 Aug 2023 15:06:15 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4DB64C43397;
-        Fri,  4 Aug 2023 15:06:14 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 27BBA62063
+        for <linux-kernel@vger.kernel.org>; Fri,  4 Aug 2023 15:07:18 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8C7B2C433CB
+        for <linux-kernel@vger.kernel.org>; Fri,  4 Aug 2023 15:07:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691161575;
-        bh=mXPGxySXlPcOky6tfQhNOiPYHQydjvuSV/GV9+Qzuik=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ff/VCFJZ+CkRWah5LUhBHL37ShaFpg9fouBEv1q7/ZDWVynISmV6ux7imbw1KDKvf
-         IOrtU1ge3Gx1+UFW/t2rZ7l68omwHaeHXs6YrJCBDf8CJLNxUIaGRGg63KUGQWJ6V1
-         cQ7SvMq8j0GkW4rnw8QDjKudi3i7MwcSKS0X1KCi4UfMNaLxHvf3KP1I5y4EUv5cRN
-         abciOGPZ3jfvVQsT0TvPuZMtpUnxkI6VXBSOKxQoz1OZc1fWje5UGBmYXIsisZjw1u
-         NDe+6uOoKB/MsInufmcSsS/HbId6lFZiTTlgp1m5sl6L8hdxZkco8gcdIXWioRKg2Q
-         kSaIJJP4GbLzQ==
-Received: (nullmailer pid 1386743 invoked by uid 1000);
-        Fri, 04 Aug 2023 15:06:13 -0000
-Date:   Fri, 4 Aug 2023 09:06:13 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Raphael Gallais-Pou <rgallaispou@gmail.com>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Marc Zyngier <maz@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Patrice Chotard <patrice.chotard@foss.st.com>,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
-Subject: Re: [PATCH] dt-bindings: irqchip: convert st,stih407-irq-syscfg to
- DT schema
-Message-ID: <20230804150613.GA1365416-robh@kernel.org>
-References: <20230801214651.27418-1-rgallaispou@gmail.com>
+        s=k20201202; t=1691161637;
+        bh=w545Z+d9TiXeg8V59l+wEz1UXwdM7KzVmVGqDmBSgu8=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=jf8zI10ODNKOXDods6xTXrfk3BmH077KaEN42Yj1Q6+waPX8RAhCMNm/+dTBVqhUV
+         duqdkjFUrLvuo+NwChgtmlvQFT0dy2RcoVEXj198ZSveNO2BbaMGeXhRYZCf0koDFf
+         y/gSfHTMK9Pu6fFu4JJOzyYJiWju+YlqeK4IAo60EVf/lOwamOJQlsOLn38rwiKH9M
+         yWAkVOzr8qRA0uwtONWrk0RdXL6Z3eXNZp9bw7vmxqgA70WgWV11a8nsADt39eUW/f
+         i/h27bblAo9YWi4F245h1UTGvv6wakuA8nrvg8YUJSaJPVRoqVM0n24MRJhvZ2trJJ
+         iOqD7u1eQwbPA==
+Received: by mail-pf1-f173.google.com with SMTP id d2e1a72fcca58-686e0213c0bso1680908b3a.1
+        for <linux-kernel@vger.kernel.org>; Fri, 04 Aug 2023 08:07:17 -0700 (PDT)
+X-Gm-Message-State: AOJu0YyKg6XPwORuAxrkU09DclYc38l0e1O3RSjtf9Ds4fzCDLR3nlyI
+        x1Z7ptjNZCiiETAWUH3adnoyBoMs70RnoVwoLRqhJQ==
+X-Google-Smtp-Source: AGHT+IE/m2IH6dm0mgAq62QwDDxUm16U8hVFqqZBv8MRTU+FQdghR5KPxptx8eT7rxij+h67ZYNqU0BCQRYQrnxmjzk=
+X-Received: by 2002:a17:90a:3b0a:b0:268:4314:2dc6 with SMTP id
+ d10-20020a17090a3b0a00b0026843142dc6mr1705121pjc.37.1691161637007; Fri, 04
+ Aug 2023 08:07:17 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230801214651.27418-1-rgallaispou@gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <20230804-lt8912b-v1-0-c542692c6a2f@ideasonboard.com> <20230804-lt8912b-v1-2-c542692c6a2f@ideasonboard.com>
+In-Reply-To: <20230804-lt8912b-v1-2-c542692c6a2f@ideasonboard.com>
+From:   Robert Foss <rfoss@kernel.org>
+Date:   Fri, 4 Aug 2023 17:07:06 +0200
+X-Gmail-Original-Message-ID: <CAN6tsi72WM28b=-u+6x_nbar7YF9=eX0RH=jYcmSc5pN4y2KZw@mail.gmail.com>
+Message-ID: <CAN6tsi72WM28b=-u+6x_nbar7YF9=eX0RH=jYcmSc5pN4y2KZw@mail.gmail.com>
+Subject: Re: [PATCH 2/4] drm/bridge: lt8912b: Fix crash on bridge detach
+To:     Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
+Cc:     Adrien Grassein <adrien.grassein@gmail.com>,
+        Andrzej Hajda <andrzej.hajda@intel.com>,
+        Neil Armstrong <neil.armstrong@linaro.org>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Francesco Dolcini <francesco.dolcini@toradex.com>,
+        Stefan Eichenberger <stefan.eichenberger@toradex.com>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 01, 2023 at 11:46:51PM +0200, Raphael Gallais-Pou wrote:
-> Convert deprecated format to DT schema format.
-> 
-> Signed-off-by: Raphael Gallais-Pou <rgallaispou@gmail.com>
+On Fri, Aug 4, 2023 at 12:48=E2=80=AFPM Tomi Valkeinen
+<tomi.valkeinen@ideasonboard.com> wrote:
+>
+> The lt8912b driver, in its bridge detach function, calls
+> drm_connector_unregister() and drm_connector_cleanup().
+>
+> drm_connector_unregister() should be called only for connectors
+> explicitly registered with drm_connector_register(), which is not the
+> case in lt8912b.
+>
+> The driver's drm_connector_funcs.destroy hook is set to
+> drm_connector_cleanup().
+>
+> Thus the driver should not call either drm_connector_unregister() nor
+> drm_connector_cleanup() in its lt8912_bridge_detach(), as they cause a
+> crash on bridge detach:
+>
+> Unable to handle kernel NULL pointer dereference at virtual address 00000=
+00000000000
+> Mem abort info:
+>   ESR =3D 0x0000000096000006
+>   EC =3D 0x25: DABT (current EL), IL =3D 32 bits
+>   SET =3D 0, FnV =3D 0
+>   EA =3D 0, S1PTW =3D 0
+>   FSC =3D 0x06: level 2 translation fault
+> Data abort info:
+>   ISV =3D 0, ISS =3D 0x00000006, ISS2 =3D 0x00000000
+>   CM =3D 0, WnR =3D 0, TnD =3D 0, TagAccess =3D 0
+>   GCS =3D 0, Overlay =3D 0, DirtyBit =3D 0, Xs =3D 0
+> user pgtable: 4k pages, 48-bit VAs, pgdp=3D00000000858f3000
+> [0000000000000000] pgd=3D0800000085918003, p4d=3D0800000085918003, pud=3D=
+0800000085431003, pmd=3D0000000000000000
+> Internal error: Oops: 0000000096000006 [#1] PREEMPT SMP
+> Modules linked in: tidss(-) display_connector lontium_lt8912b tc358768 pa=
+nel_lvds panel_simple drm_dma_helper drm_kms_helper drm drm_panel_orientati=
+on_quirks
+> CPU: 3 PID: 462 Comm: rmmod Tainted: G        W          6.5.0-rc2+ #2
+> Hardware name: Toradex Verdin AM62 on Verdin Development Board (DT)
+> pstate: 80000005 (Nzcv daif -PAN -UAO -TCO -DIT -SSBS BTYPE=3D--)
+> pc : drm_connector_cleanup+0x78/0x2d4 [drm]
+> lr : lt8912_bridge_detach+0x54/0x6c [lontium_lt8912b]
+> sp : ffff800082ed3a90
+> x29: ffff800082ed3a90 x28: ffff0000040c1940 x27: 0000000000000000
+> x26: 0000000000000000 x25: dead000000000122 x24: dead000000000122
+> x23: dead000000000100 x22: ffff000003fb6388 x21: 0000000000000000
+> x20: 0000000000000000 x19: ffff000003fb6260 x18: fffffffffffe56e8
+> x17: 0000000000000000 x16: 0010000000000000 x15: 0000000000000038
+> x14: 0000000000000000 x13: ffff800081914b48 x12: 000000000000040e
+> x11: 000000000000015a x10: ffff80008196ebb8 x9 : ffff800081914b48
+> x8 : 00000000ffffefff x7 : ffff0000040c1940 x6 : ffff80007aa649d0
+> x5 : 0000000000000000 x4 : 0000000000000001 x3 : ffff80008159e008
+> x2 : 0000000000000000 x1 : 0000000000000000 x0 : 0000000000000000
+> Call trace:
+>  drm_connector_cleanup+0x78/0x2d4 [drm]
+>  lt8912_bridge_detach+0x54/0x6c [lontium_lt8912b]
+>  drm_bridge_detach+0x44/0x84 [drm]
+>  drm_encoder_cleanup+0x40/0xb8 [drm]
+>  drmm_encoder_alloc_release+0x1c/0x30 [drm]
+>  drm_managed_release+0xac/0x148 [drm]
+>  drm_dev_put.part.0+0x88/0xb8 [drm]
+>  devm_drm_dev_init_release+0x14/0x24 [drm]
+>  devm_action_release+0x14/0x20
+>  release_nodes+0x5c/0x90
+>  devres_release_all+0x8c/0xe0
+>  device_unbind_cleanup+0x18/0x68
+>  device_release_driver_internal+0x208/0x23c
+>  driver_detach+0x4c/0x94
+>  bus_remove_driver+0x70/0xf4
+>  driver_unregister+0x30/0x60
+>  platform_driver_unregister+0x14/0x20
+>  tidss_platform_driver_exit+0x18/0xb2c [tidss]
+>  __arm64_sys_delete_module+0x1a0/0x2b4
+>  invoke_syscall+0x48/0x110
+>  el0_svc_common.constprop.0+0x60/0x10c
+>  do_el0_svc_compat+0x1c/0x40
+>  el0_svc_compat+0x40/0xac
+>  el0t_32_sync_handler+0xb0/0x138
+>  el0t_32_sync+0x194/0x198
+> Code: 9104a276 f2fbd5b7 aa0203e1 91008af8 (f85c0420)
+>
+> Fixes: 30e2ae943c26 ("drm/bridge: Introduce LT8912B DSI to HDMI bridge")
+> Signed-off-by: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
 > ---
->  .../st,sti-irq-syscfg.txt                     | 30 ---------
->  .../st,stih407-irq-syscfg.yaml                | 67 +++++++++++++++++++
->  2 files changed, 67 insertions(+), 30 deletions(-)
->  delete mode 100644 Documentation/devicetree/bindings/interrupt-controller/st,sti-irq-syscfg.txt
->  create mode 100644 Documentation/devicetree/bindings/interrupt-controller/st,stih407-irq-syscfg.yaml
-> 
-> diff --git a/Documentation/devicetree/bindings/interrupt-controller/st,sti-irq-syscfg.txt b/Documentation/devicetree/bindings/interrupt-controller/st,sti-irq-syscfg.txt
-> deleted file mode 100644
-> index 977d7ed3670e..000000000000
-> --- a/Documentation/devicetree/bindings/interrupt-controller/st,sti-irq-syscfg.txt
-> +++ /dev/null
-> @@ -1,30 +0,0 @@
-> -STMicroelectronics STi System Configuration Controlled IRQs
-> ------------------------------------------------------------
+>  drivers/gpu/drm/bridge/lontium-lt8912b.c | 3 ---
+>  1 file changed, 3 deletions(-)
+>
+> diff --git a/drivers/gpu/drm/bridge/lontium-lt8912b.c b/drivers/gpu/drm/b=
+ridge/lontium-lt8912b.c
+> index 0e581f6e3c88..2d752e083433 100644
+> --- a/drivers/gpu/drm/bridge/lontium-lt8912b.c
+> +++ b/drivers/gpu/drm/bridge/lontium-lt8912b.c
+> @@ -589,9 +589,6 @@ static void lt8912_bridge_detach(struct drm_bridge *b=
+ridge)
+>
+>         if (lt->hdmi_port->ops & DRM_BRIDGE_OP_HPD)
+>                 drm_bridge_hpd_disable(lt->hdmi_port);
 > -
-> -On STi based systems; External, CTI (Core Sight), PMU (Performance Management),
-> -and PL310 L2 Cache IRQs are controlled using System Configuration registers.
-> -This driver is used to unmask them prior to use.
-> -
-> -Required properties:
-> -- compatible	: Should be "st,stih407-irq-syscfg"
-> -- st,syscfg	: Phandle to Cortex-A9 IRQ system config registers
-> -- st,irq-device	: Array of IRQs to enable - should be 2 in length
-> -- st,fiq-device	: Array of FIQs to enable - should be 2 in length
-> -
-> -Optional properties:
-> -- st,invert-ext	: External IRQs can be inverted at will.  This property inverts
-> -		  these IRQs using bitwise logic.  A number of defines have been
-> -		  provided for convenience:
-> -			ST_IRQ_SYSCFG_EXT_1_INV
-> -			ST_IRQ_SYSCFG_EXT_2_INV
-> -			ST_IRQ_SYSCFG_EXT_3_INV
-> -Example:
-> -
-> -irq-syscfg {
-> -	compatible    = "st,stih407-irq-syscfg";
-> -	st,syscfg     = <&syscfg_cpu>;
-> -	st,irq-device = <ST_IRQ_SYSCFG_PMU_0>,
-> -			<ST_IRQ_SYSCFG_PMU_1>;
-> -	st,fiq-device = <ST_IRQ_SYSCFG_DISABLED>,
-> -			<ST_IRQ_SYSCFG_DISABLED>;
-> -};
-> diff --git a/Documentation/devicetree/bindings/interrupt-controller/st,stih407-irq-syscfg.yaml b/Documentation/devicetree/bindings/interrupt-controller/st,stih407-irq-syscfg.yaml
-> new file mode 100644
-> index 000000000000..fce18d444c56
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/interrupt-controller/st,stih407-irq-syscfg.yaml
-> @@ -0,0 +1,67 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/interrupt-controller/st,stih407-irq-syscfg.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: STMicroelectronics STi System Configuration Controlled IRQs
-> +
-> +maintainers:
-> +  - Patrice Chotard <patrice.chotard@foss.st.com>
-> +
-> +description:
-> +  On STi based systems; External, CTI (Core Sight), PMU (Performance
-> +  Management), and PL310 L2 Cache IRQs are controlled using System
-> +  Configuration registers.  This driver is used to unmask them prior to use.
-> +
-> +properties:
-> +  compatible:
-> +    const: st,stih407-irq-syscfg
-> +
-> +  st,syscfg:
-> +    description: Phandle to Cortex-A9 IRQ system config registers
-> +    $ref: "/schemas/types.yaml#/definitions/phandle"
+> -       drm_connector_unregister(&lt->connector);
+> -       drm_connector_cleanup(&lt->connector);
+>  }
+>
+>  static enum drm_connector_status
+>
+> --
+> 2.34.1
+>
 
-Drop quotes. Here and other $refs.
 
-> +
-> +  st,irq-device:
-> +    description: Array of IRQs to enable.
-> +    $ref: "/schemas/types.yaml#/definitions/uint32-array"
-> +    items:
-> +      - description: Enable the IRQ of the channel one.
-> +      - description: Enable the IRQ of the channel two.
-> +
-> +  st,fiq-device:
-> +    description: Array of FIQs to enable.
-> +    $ref: "/schemas/types.yaml#/definitions/uint32-array"
-> +    items:
-> +      - description: Enable the IRQ of the channel one.
-> +      - description: Enable the IRQ of the channel two.
-> +
-> +  st,invert-ext:
-> +    description: External IRQs can be inverted at will. This property inverts
-> +      these IRQs using bitwise logic.
-> +    $ref: "/schemas/types.yaml#/definitions/uint32"
-> +    enum:
-> +      - ST_IRQ_SYSCFG_EXT_1_INV
-> +      - ST_IRQ_SYSCFG_EXT_2_INV
-> +      - ST_IRQ_SYSCFG_EXT_3_INV
-
-Defines don't work here. Add the property to the example and you'll see.
-
-> +
-> +required:
-> +  - compatible
-> +  - st,syscfg
-> +  - st,irq-device
-> +  - st,fiq-device
-> +
-> +additionalProperties: false
-> +
-> +examples:
-> +  - |
-> +    #include <dt-bindings/interrupt-controller/irq-st.h>
-> +    irq-syscfg {
-> +        compatible    = "st,stih407-irq-syscfg";
-> +        st,syscfg     = <&syscfg_cpu>;
-> +        st,irq-device = <ST_IRQ_SYSCFG_PMU_0>,
-> +                        <ST_IRQ_SYSCFG_PMU_1>;
-> +        st,fiq-device = <ST_IRQ_SYSCFG_DISABLED>,
-> +                        <ST_IRQ_SYSCFG_DISABLED>;
-> +    };
-> +...
-> -- 
-> 2.41.0
-> 
+Reviewed-by: Robert Foss <rfoss@kernel.org>
