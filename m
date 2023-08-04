@@ -2,74 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6CD8B77064C
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 18:49:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E22CF77064E
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 18:50:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230515AbjHDQt4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Aug 2023 12:49:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56040 "EHLO
+        id S231138AbjHDQuJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Aug 2023 12:50:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56290 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230347AbjHDQty (ORCPT
+        with ESMTP id S230347AbjHDQuG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Aug 2023 12:49:54 -0400
-Received: from mail-qt1-x82b.google.com (mail-qt1-x82b.google.com [IPv6:2607:f8b0:4864:20::82b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D7853C25
-        for <linux-kernel@vger.kernel.org>; Fri,  4 Aug 2023 09:49:53 -0700 (PDT)
-Received: by mail-qt1-x82b.google.com with SMTP id d75a77b69052e-403ea0a50f7so16195201cf.1
-        for <linux-kernel@vger.kernel.org>; Fri, 04 Aug 2023 09:49:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google; t=1691167792; x=1691772592;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=LkUL2PlOzfT58q9qudjtzFzvb7OK02mCRFsTl32ovnU=;
-        b=kUyybcKNzzLZ7ehNjnqiw18cmIQMfGtVGlv/zhCpGofq95hPLktzHm0FWZ0gMitYpx
-         yL+BC6jbA3nUwlUG4S4mDOVQsSdrkhbr6jgrXYwC5ezRKdka6S3+ySUnpYtgwvvuYGCG
-         aadp/6aNQzJOZ62ymVGZjgtzBoPTTHTEfz1FGnzQb42Sz4BArQ4bPFLvsqsu9auDdPt/
-         aK63jDpd5hyPPpGb0G7+L+7ruCHNtEtcBi77gJMLKEaLy2eTQyaMy3k5XJWpqnj2r5Y9
-         gP2Hder6QnLQy90m4zXSFcRdTkSHHgrr9TImCthlq18CvvVkSPyW8VOoHvGkXtQm3s6n
-         QlKA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691167792; x=1691772592;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=LkUL2PlOzfT58q9qudjtzFzvb7OK02mCRFsTl32ovnU=;
-        b=goonjDyBOsGwnXunZB8LbMiR8BgkLsEl0gUoaGd8x0AiLWrxs0OZfTji2PowkBdVVo
-         MQyq8f0M6MnjAprQ863vp20QCjSzHGdHvnO4lOScneDBDrPF1x2PTPd2hP6Zok6zTO4Z
-         A7ZX9puaWDVH+4L4K4Vk+HZHxx8YZe5AIbHbxHKah1RRbkXzO8NQJWb/12J05XRzD3Bx
-         b9yx0+VQV3JkvBqqpMInAILo9dfpwuF23GTUqDNOE8/ilvjEbBvVykfBnG3LSh4vMFpf
-         exzzHrd6Y9Es7hqOKMmExFuMuTnRRvjFaGyCr1HevCIrlJBw2Ka40bAe4Cgbjkn03j3a
-         RpwQ==
-X-Gm-Message-State: AOJu0YxetcdyXZGiqPa2Hf20DUd4d+1s043Qeb/G1xUem6QDTU4R38j9
-        AUpi/ZqJwFSX0aSbTzT6QfLnVg==
-X-Google-Smtp-Source: AGHT+IHj+Quw/k2Ut+pAvKfZ2oiDEj8XGnx9S5QXbT4XVTYEsHM+FYwYA29FEaM1sPq0Tck85Et93A==
-X-Received: by 2002:ac8:5945:0:b0:404:c430:6695 with SMTP id 5-20020ac85945000000b00404c4306695mr3396490qtz.53.1691167792218;
-        Fri, 04 Aug 2023 09:49:52 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-142-68-25-194.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.25.194])
-        by smtp.gmail.com with ESMTPSA id e7-20020ac84147000000b00403c82c609asm783399qtm.14.2023.08.04.09.49.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 04 Aug 2023 09:49:51 -0700 (PDT)
-Received: from jgg by wakko with local (Exim 4.95)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1qRxzq-003v4Y-SY;
-        Fri, 04 Aug 2023 13:49:50 -0300
-Date:   Fri, 4 Aug 2023 13:49:50 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Petr Pavlu <petr.pavlu@suse.com>
-Cc:     tariqt@nvidia.com, yishaih@nvidia.com, leon@kernel.org,
-        davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
-        pabeni@redhat.com, netdev@vger.kernel.org,
-        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net-next 00/10] Convert mlx4 to use auxiliary bus
-Message-ID: <ZM0sLsxnP3PoI0lm@ziepe.ca>
-References: <20230804150527.6117-1-petr.pavlu@suse.com>
+        Fri, 4 Aug 2023 12:50:06 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 358043C28;
+        Fri,  4 Aug 2023 09:50:05 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id B5995620A7;
+        Fri,  4 Aug 2023 16:50:04 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CE00EC433C9;
+        Fri,  4 Aug 2023 16:50:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1691167804;
+        bh=ZfGdzIAuhwL7qwEggkWYx0zmGQwPFGXxKE/YKErZ3QQ=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=jVivwCU/HejBsQUX67O3IcXu1YfP07Y28/i5qpOmmZALYEQytDTV0wE0ZiABYOTjW
+         iw6O4JYtneCAmC2GFEyKNpZR2a7lk8PtWeaH0acZ+IjFTtH//jyGYRRCh5FxHlUWGT
+         9cWuoTlFy3ZSlL3RF8MU5sE+FlWA6NocxdxqliEA7/9XdLVEvCEXjHg5zC8QVjzzt5
+         q6AD9A/EpQ5sv75rEuQCISzfcaJ9aWezwpbpVaiRd+ga/p3ZhKh+VTUr1Wt/zgUa1/
+         LF326lrp8mEIoqSaoKRXA6BA/q3/FMSqWSA+gg7vfqUEmOh3uICto9fM8cS2AU39+X
+         MwNO6ZynwIkvg==
+From:   Christian Brauner <brauner@kernel.org>
+To:     Mateusz Guzik <mjguzik@gmail.com>
+Cc:     Christian Brauner <brauner@kernel.org>,
+        linux-kernel@vger.kernel.org, viro@zeniv.linux.org.uk,
+        linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH] file: mostly eliminate spurious relocking in __range_close
+Date:   Fri,  4 Aug 2023 18:49:58 +0200
+Message-Id: <20230804-hubschrauber-hypothek-e8003cd3fbec@brauner>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20230727113809.800067-1-mjguzik@gmail.com>
+References: <20230727113809.800067-1-mjguzik@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230804150527.6117-1-petr.pavlu@suse.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
+Content-Type: text/plain; charset="utf-8"
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1377; i=brauner@kernel.org; h=from:subject:message-id; bh=ZfGdzIAuhwL7qwEggkWYx0zmGQwPFGXxKE/YKErZ3QQ=; b=owGbwMvMwCU28Zj0gdSKO4sYT6slMaSc1TF5J5Zk3bvEP/xDkumuy436T5+y/NMMunRXllX1nW6/ weLcjlIWBjEuBlkxRRaHdpNwueU8FZuNMjVg5rAygQxh4OIUgIksV2BkWCE3kb/scEWJRPIsUw52eb u91yVLO+Oi396Z1zU98obIP4a/0t6z9qnz8X04dZrt7S3TT8vK9FzVdzblK0351HxuDUMfFwA=
+X-Developer-Key: i=brauner@kernel.org; a=openpgp; fpr=4880B8C9BD0E5106FC070F4F7B3C391EFEA93624
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -77,18 +59,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 04, 2023 at 05:05:17PM +0200, Petr Pavlu wrote:
-> This series converts the mlx4 drivers to use auxiliary bus, similarly to
-> how mlx5 was converted [1]. The first 6 patches are preparatory changes,
-> the remaining 4 are the final conversion.
+On Thu, 27 Jul 2023 13:38:09 +0200, Mateusz Guzik wrote:
+> Stock code takes a lock trip for every fd in range, but this can be
+> trivially avoided and real-world consumers do have plenty of already
+> closed cases.
 > 
-> Initial motivation for this change was to address a problem related to
-> loading mlx4_en/mlx4_ib by mlx4_core using request_module_nowait(). When
-> doing such a load in initrd, the operation is asynchronous to any init
-> control and can get unexpectedly affected/interrupted by an eventual
-> root switch. Using an auxiliary bus leaves these module loads to udevd
-> which better integrates with systemd processing. [2]
+> Just booting Debian 12 with a debug printk shows:
+> (sh) min 3 max 17 closed 15 empty 0
+> (sh) min 19 max 63 closed 31 empty 14
+> (sh) min 4 max 63 closed 0 empty 60
+> (spawn) min 3 max 63 closed 13 empty 48
+> (spawn) min 3 max 63 closed 13 empty 48
+> (mount) min 3 max 17 closed 15 empty 0
+> (mount) min 19 max 63 closed 32 empty 13
+> 
+> [...]
 
-Neat, I didn't realize that was a pain point for distros.
+massaged it a bit
 
-Jason
+---
+
+Applied to the vfs.misc branch of the vfs/vfs.git tree.
+Patches in the vfs.misc branch should appear in linux-next soon.
+
+Please report any outstanding bugs that were missed during review in a
+new review to the original patch series allowing us to drop it.
+
+It's encouraged to provide Acked-bys and Reviewed-bys even though the
+patch has now been applied. If possible patch trailers will be updated.
+
+Note that commit hashes shown below are subject to change due to rebase,
+trailer updates or similar. If in doubt, please check the listed branch.
+
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/vfs/vfs.git
+branch: vfs.misc
+
+[1/1] file: mostly eliminate spurious relocking in __range_close
+      https://git.kernel.org/vfs/vfs/c/215baa741614
