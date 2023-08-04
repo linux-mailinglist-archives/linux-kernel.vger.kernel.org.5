@@ -2,198 +2,310 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DB15B770ADA
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 23:26:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F2798770AAB
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 23:15:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231240AbjHDV0V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Aug 2023 17:26:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44046 "EHLO
+        id S231133AbjHDVPE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Aug 2023 17:15:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40310 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230488AbjHDV0K (ORCPT
+        with ESMTP id S230498AbjHDVPB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Aug 2023 17:26:10 -0400
-Received: from cloudserver094114.home.pl (cloudserver094114.home.pl [79.96.170.134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23EC8B1;
-        Fri,  4 Aug 2023 14:26:08 -0700 (PDT)
-Received: from localhost (127.0.0.1) (HELO v370.home.net.pl)
- by /usr/run/smtp (/usr/run/postfix/private/idea_relay_lmtp) via UNIX with SMTP (IdeaSmtpServer 5.2.0)
- id 6d6d931799418004; Fri, 4 Aug 2023 23:26:07 +0200
-Authentication-Results: v370.home.net.pl; spf=softfail (domain owner 
-   discourages use of this host) smtp.mailfrom=rjwysocki.net 
-   (client-ip=195.136.19.94; helo=[195.136.19.94]; 
-   envelope-from=rjw@rjwysocki.net; receiver=<UNKNOWN>)
-Received: from kreacher.localnet (unknown [195.136.19.94])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by v370.home.net.pl (Postfix) with ESMTPSA id F0C4C661680;
-        Fri,  4 Aug 2023 23:26:06 +0200 (CEST)
-From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
-To:     Linux ACPI <linux-acpi@vger.kernel.org>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Michal Wilczynski <michal.wilczynski@intel.com>,
-        Zhang Rui <rui.zhang@intel.com>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
-Subject: [PATCH v4 06/10] ACPI: thermal: Carry out trip point updates under zone lock
-Date:   Fri, 04 Aug 2023 23:13:08 +0200
-Message-ID: <3205670.5fSG56mABF@kreacher>
-In-Reply-To: <4878513.31r3eYUQgx@kreacher>
-References: <13318886.uLZWGnKmhe@kreacher> <4878513.31r3eYUQgx@kreacher>
+        Fri, 4 Aug 2023 17:15:01 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F01C5524E
+        for <linux-kernel@vger.kernel.org>; Fri,  4 Aug 2023 14:13:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1691183638;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=e/k7/FOb2397vAPUhkAxLXzvl/jl3TjsQOaaW7NC/DA=;
+        b=Cg5B2t4SJjbifOlZBLGhSnUsntroYZ0y26FIHrZ3CQbIpfcpOmdEk4lGyMwzayilB6o6Yk
+        DwVagw7mGi81zya1tAthV9YX4iJv6/KQUvhKDUvzH2dhLptoqdL1TPlYYRwMS4sz4a6UxN
+        um5LTdGQeVlbBaOHbHfaHnwWaihRFX4=
+Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
+ [209.85.221.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-571-n1Z78ubuMUujDHhH7dUlVQ-1; Fri, 04 Aug 2023 17:13:56 -0400
+X-MC-Unique: n1Z78ubuMUujDHhH7dUlVQ-1
+Received: by mail-wr1-f71.google.com with SMTP id ffacd0b85a97d-2f2981b8364so1416238f8f.1
+        for <linux-kernel@vger.kernel.org>; Fri, 04 Aug 2023 14:13:55 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691183634; x=1691788434;
+        h=content-transfer-encoding:in-reply-to:subject:organization:from
+         :references:cc:to:content-language:user-agent:mime-version:date
+         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=e/k7/FOb2397vAPUhkAxLXzvl/jl3TjsQOaaW7NC/DA=;
+        b=NhS8eX1itJR5GxfKuhb5sUWXM4Lkm7MW25u6YR31nbHLhZEGLaFn9HPwLq1iwXyBW6
+         3YnYwRjgvG2tm/7CZxYheoBftcvrtJh62UT98kYIBZDybCgmVZoiTd9ZihQWMaT+3xTg
+         SxjTBdJgiVcz0QJXZXnrxayVyC1FyFm8F36GzxMyqicWXrNIpqkol/1K5KQON2CB6cMJ
+         OxKGZIMHwc5/1nnf3erfkTrAyZ9TEYQjjq9HZQMf7nPkUGgHYx0G6O1++Vlg+OK0L0ni
+         khkzxvzVTo4cSWvuRKIyz3TKtwKH01ly66D3k74l6goobcCVhvfbZj6SorxuC6+LDAuf
+         o9Lw==
+X-Gm-Message-State: AOJu0YxmfQlQwdJy2RXGSFxOrIhbc649d0bVyFH4VeXbWKFciGqo+DwH
+        /sRtVvoUQPzQRyPAGkQhc3BAei4uleK+SGOV3dcMAHUuDTOyeiHwBSlzEGYgt4liiADnqfh9HwL
+        JOyVrxBTXKt/K7aLR5Z6Gv/Jn
+X-Received: by 2002:adf:e7c3:0:b0:314:4473:5bad with SMTP id e3-20020adfe7c3000000b0031444735badmr2103664wrn.65.1691183633906;
+        Fri, 04 Aug 2023 14:13:53 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IH66p7EmywPIh5AES/wsp2bUsP+wCIz95SOhclWWIqT+Imbg1UorAi830ZHraxtYZUGdYzVig==
+X-Received: by 2002:adf:e7c3:0:b0:314:4473:5bad with SMTP id e3-20020adfe7c3000000b0031444735badmr2103647wrn.65.1691183633457;
+        Fri, 04 Aug 2023 14:13:53 -0700 (PDT)
+Received: from ?IPV6:2003:d8:2f2d:8e00:a20e:59bc:3c13:4806? (p200300d82f2d8e00a20e59bc3c134806.dip0.t-ipconnect.de. [2003:d8:2f2d:8e00:a20e:59bc:3c13:4806])
+        by smtp.gmail.com with ESMTPSA id t6-20020a5d6a46000000b003142e438e8csm3374296wrw.26.2023.08.04.14.13.52
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 04 Aug 2023 14:13:53 -0700 (PDT)
+Message-ID: <259ad8fc-c12b-69b9-ba16-adb9e3e6d672@redhat.com>
+Date:   Fri, 4 Aug 2023 23:13:51 +0200
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="UTF-8"
-X-CLIENT-IP: 195.136.19.94
-X-CLIENT-HOSTNAME: 195.136.19.94
-X-VADE-SPAMSTATE: clean
-X-VADE-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedviedrkeeggdduheekucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecujffqoffgrffnpdggtffipffknecuuegrihhlohhuthemucduhedtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjughrpefhvfevufffkfgjfhgggfgtsehtufertddttdejnecuhfhrohhmpedftfgrfhgrvghlucflrdcuhgihshhotghkihdfuceorhhjfiesrhhjfiihshhotghkihdrnhgvtheqnecuggftrfgrthhtvghrnhepvdffueeitdfgvddtudegueejtdffteetgeefkeffvdeftddttdeuhfegfedvjefhnecukfhppeduleehrddufeeirdduledrleegnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehinhgvthepudelhedrudefiedrudelrdelgedphhgvlhhopehkrhgvrggthhgvrhdrlhhotggrlhhnvghtpdhmrghilhhfrhhomhepfdftrghfrggvlhculfdrucghhihsohgtkhhifdcuoehrjhifsehrjhifhihsohgtkhhirdhnvghtqedpnhgspghrtghpthhtohepjedprhgtphhtthhopehlihhnuhigqdgrtghpihesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopegurghnihgvlhdrlhgviigtrghnoheslhhinhgrrhhordhorhhgpdhrtghpthhtoheplhhinhhugidqkhgvrhhnvghlsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtoheplhhinhhugidqphhmsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghp
- thhtohepmhhitghhrghlrdifihhltgiihihnshhkihesihhnthgvlhdrtghomhdprhgtphhtthhopehruhhirdiihhgrnhhgsehinhhtvghlrdgtohhm
-X-DCC--Metrics: v370.home.net.pl 1024; Body=7 Fuz1=7 Fuz2=7
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Content-Language: en-US
+To:     Yu Zhao <yuzhao@google.com>
+Cc:     Ryan Roberts <ryan.roberts@arm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Yin Fengwei <fengwei.yin@intel.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Yang Shi <shy828301@gmail.com>,
+        "Huang, Ying" <ying.huang@intel.com>, Zi Yan <ziy@nvidia.com>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Itaru Kitayama <itaru.kitayama@gmail.com>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+References: <20230726095146.2826796-1-ryan.roberts@arm.com>
+ <20230726095146.2826796-3-ryan.roberts@arm.com>
+ <c02a95e9-b728-ad64-6942-f23dbd66af0c@arm.com>
+ <CAOUHufaHH3Ctu3JRHSbmebHJ7XPnBEWTQ4mwOo+MGXU9yKvwbA@mail.gmail.com>
+ <5e595904-3dca-0e15-0769-7ed10975fd0d@arm.com>
+ <b936041c-08a7-e844-19e7-eafc4ddf63b9@redhat.com>
+ <CAOUHufafd4GNna2GKdSyQdW6CLVh0gxhNgeOc6t+ZOphwgw7tw@mail.gmail.com>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat
+Subject: Re: [PATCH v4 2/5] mm: LARGE_ANON_FOLIO for improved performance
+In-Reply-To: <CAOUHufafd4GNna2GKdSyQdW6CLVh0gxhNgeOc6t+ZOphwgw7tw@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+On 04.08.23 23:00, Yu Zhao wrote:
+> On Fri, Aug 4, 2023 at 2:23 PM David Hildenbrand <david@redhat.com> wrote:
+>>
+>> On 04.08.23 10:27, Ryan Roberts wrote:
+>>> On 04/08/2023 00:50, Yu Zhao wrote:
+>>>> On Thu, Aug 3, 2023 at 6:43 AM Ryan Roberts <ryan.roberts@arm.com> wrote:
+>>>>>
+>>>>> + Kirill
+>>>>>
+>>>>> On 26/07/2023 10:51, Ryan Roberts wrote:
+>>>>>> Introduce LARGE_ANON_FOLIO feature, which allows anonymous memory to be
+>>>>>> allocated in large folios of a determined order. All pages of the large
+>>>>>> folio are pte-mapped during the same page fault, significantly reducing
+>>>>>> the number of page faults. The number of per-page operations (e.g. ref
+>>>>>> counting, rmap management lru list management) are also significantly
+>>>>>> reduced since those ops now become per-folio.
+>>>>>>
+>>>>>> The new behaviour is hidden behind the new LARGE_ANON_FOLIO Kconfig,
+>>>>>> which defaults to disabled for now; The long term aim is for this to
+>>>>>> defaut to enabled, but there are some risks around internal
+>>>>>> fragmentation that need to be better understood first.
+>>>>>>
+>>>>>> When enabled, the folio order is determined as such: For a vma, process
+>>>>>> or system that has explicitly disabled THP, we continue to allocate
+>>>>>> order-0. THP is most likely disabled to avoid any possible internal
+>>>>>> fragmentation so we honour that request.
+>>>>>>
+>>>>>> Otherwise, the return value of arch_wants_pte_order() is used. For vmas
+>>>>>> that have not explicitly opted-in to use transparent hugepages (e.g.
+>>>>>> where thp=madvise and the vma does not have MADV_HUGEPAGE), then
+>>>>>> arch_wants_pte_order() is limited to 64K (or PAGE_SIZE, whichever is
+>>>>>> bigger). This allows for a performance boost without requiring any
+>>>>>> explicit opt-in from the workload while limitting internal
+>>>>>> fragmentation.
+>>>>>>
+>>>>>> If the preferred order can't be used (e.g. because the folio would
+>>>>>> breach the bounds of the vma, or because ptes in the region are already
+>>>>>> mapped) then we fall back to a suitable lower order; first
+>>>>>> PAGE_ALLOC_COSTLY_ORDER, then order-0.
+>>>>>>
+>>>>>
+>>>>> ...
+>>>>>
+>>>>>> +#define ANON_FOLIO_MAX_ORDER_UNHINTED \
+>>>>>> +             (ilog2(max_t(unsigned long, SZ_64K, PAGE_SIZE)) - PAGE_SHIFT)
+>>>>>> +
+>>>>>> +static int anon_folio_order(struct vm_area_struct *vma)
+>>>>>> +{
+>>>>>> +     int order;
+>>>>>> +
+>>>>>> +     /*
+>>>>>> +      * If THP is explicitly disabled for either the vma, the process or the
+>>>>>> +      * system, then this is very likely intended to limit internal
+>>>>>> +      * fragmentation; in this case, don't attempt to allocate a large
+>>>>>> +      * anonymous folio.
+>>>>>> +      *
+>>>>>> +      * Else, if the vma is eligible for thp, allocate a large folio of the
+>>>>>> +      * size preferred by the arch. Or if the arch requested a very small
+>>>>>> +      * size or didn't request a size, then use PAGE_ALLOC_COSTLY_ORDER,
+>>>>>> +      * which still meets the arch's requirements but means we still take
+>>>>>> +      * advantage of SW optimizations (e.g. fewer page faults).
+>>>>>> +      *
+>>>>>> +      * Finally if thp is enabled but the vma isn't eligible, take the
+>>>>>> +      * arch-preferred size and limit it to ANON_FOLIO_MAX_ORDER_UNHINTED.
+>>>>>> +      * This ensures workloads that have not explicitly opted-in take benefit
+>>>>>> +      * while capping the potential for internal fragmentation.
+>>>>>> +      */
+>>>>>> +
+>>>>>> +     if ((vma->vm_flags & VM_NOHUGEPAGE) ||
+>>>>>> +         test_bit(MMF_DISABLE_THP, &vma->vm_mm->flags) ||
+>>>>>> +         !hugepage_flags_enabled())
+>>>>>> +             order = 0;
+>>>>>> +     else {
+>>>>>> +             order = max(arch_wants_pte_order(), PAGE_ALLOC_COSTLY_ORDER);
+>>>>>> +
+>>>>>> +             if (!hugepage_vma_check(vma, vma->vm_flags, false, true, true))
+>>>>>> +                     order = min(order, ANON_FOLIO_MAX_ORDER_UNHINTED);
+>>>>>> +     }
+>>>>>> +
+>>>>>> +     return order;
+>>>>>> +}
+>>>>>
+>>>>>
+>>>>> Hi All,
+>>>>>
+>>>>> I'm writing up the conclusions that we arrived at during discussion in the THP
+>>>>> meeting yesterday, regarding linkage with exiting THP ABIs. It would be great if
+>>>>> I can get explicit "agree" or disagree + rationale from at least David, Yu and
+>>>>> Kirill.
+>>>>>
+>>>>> In summary; I think we are converging on the approach that is already coded, but
+>>>>> I'd like confirmation.
+>>>>>
+>>>>>
+>>>>>
+>>>>> The THP situation today
+>>>>> -----------------------
+>>>>>
+>>>>>    - At system level: THP can be set to "never", "madvise" or "always"
+>>>>>    - At process level: THP can be "never" or "defer to system setting"
+>>>>>    - At VMA level: no-hint, MADV_HUGEPAGE, MADV_NOHUGEPAGE
+>>>>>
+>>>>> That gives us this table to describe how a page fault is handled, according to
+>>>>> process state (columns) and vma flags (rows):
+>>>>>
+>>>>>                   | never     | madvise   | always
+>>>>> ----------------|-----------|-----------|-----------
+>>>>> no hint         | S         | S         | THP>S
+>>>>> MADV_HUGEPAGE   | S         | THP>S     | THP>S
+>>>>> MADV_NOHUGEPAGE | S         | S         | S
+>>>>>
+>>>>> Legend:
+>>>>> S       allocate single page (PTE-mapped)
+>>>>> LAF     allocate lage anon folio (PTE-mapped)
+>>>>> THP     allocate THP-sized folio (PMD-mapped)
+>>>>>>         fallback (usually because vma size/alignment insufficient for folio)
+>>>>>
+>>>>>
+>>>>>
+>>>>> Principles for Large Anon Folios (LAF)
+>>>>> --------------------------------------
+>>>>>
+>>>>> David tells us there are use cases today (e.g. qemu live migration) which use
+>>>>> MADV_NOHUGEPAGE to mean "don't fill any PTEs that are not explicitly faulted"
+>>>>> and these use cases will break (i.e. functionally incorrect) if this request is
+>>>>> not honoured.
+>>>>
+>>>> I don't remember David saying this. I think he was referring to UFFD,
+>>>> not MADV_NOHUGEPAGE, when discussing what we need to absolutely
+>>>> respect.
+>>>
+>>> My understanding was that MADV_NOHUGEPAGE was being applied to regions *before*
+>>> UFFD was being registered, and the app relied on MADV_NOHUGEPAGE to not back any
+>>> unfaulted pages. It's not completely clear to me how not honouring
+>>> MADV_NOHUGEPAGE would break things though. David?
+>>
+>> Sorry, I'm still lagging behind on some threads.
+>>
+>> Imagine the following for VM postcopy live migration:
+>>
+>> (1) Set MADV_NOHUGEPAGE on guest memory and discard all memory (e.g.,
+>>       MADV_DONTNEED), to start with a clean slate.
+>> (2) Migrates some pages during precopy from the source and stores them
+>>       into guest memory on the destination. Some of the memory locations
+>>       will have pages populated.
+>> (3) At some point, decide to enable postcopy: enable userfaultfd on
+>>       guest memory.
+>> (4) Discard *selected* pages again that have been dirtied in the
+>>       meantime on the source. These are pages that have been migrated
+>>       previously.
+>> (5) Start running the VM on the destination.
+>> (6) Anything that's not populated will trigger userfaultfd missing
+>>       faults. Then, you can request them from the source and place them.
+>>
+>> Assume you would populate more than required during 2), you can end up
+>> not getting userfaultfd faults during 4) and corrupt your guest state.
+>> It works if during (2) you migrated all guest memory, or if during 4)
+>> you zap everything that still needs migr
+> 
+> I see what you mean now. Thanks.
+> 
+> Yes, in this case we have to interpret MADV_NOHUGEPAGE as nothing >4KB.
 
-There is a race condition between acpi_thermal_trips_update() and
-acpi_thermal_check_fn(), because the trip points may get updated while
-the latter is running which in theory may lead to inconsistent results.
-For example, if two trips are updated together, using the temperature
-value of one of them from before the update and the temperature value
-of the other one from after the update may not lead to the expected
-outcome.
+Note that it's still even unclear to me why we want to *not* call these 
+things THP. It would certainly make everything less confusing if we call 
+them THP, but with additional attributes.
 
-Moreover, if thermal_get_trend() runs when a trip points update is in
-progress, it may end up using stale trip point temperatures.
+I think that is one of the first things we should figure out because it 
+also indirectly tells us what all these toggles mean and how/if we 
+should redefine them (and if they even apply).
 
-To address this, make acpi_thermal_trips_update() call
-thermal_zone_device_adjust() to carry out the trip points update and
-provide a new  acpi_thermal_adjust_thermal_zone() wrapper around
-__acpi_thermal_trips_update() as the callback function for the latter.
+Currently THP == PMD size
 
-While at it, change the acpi_thermal_trips_update() return data type
-to void as that function always returns 0 anyway.
+In 2016, Hugh already envisioned PUD/PGD THP (see 49920d28781d ("mm: 
+make transparent hugepage size public")) when he explicitly exposed 
+"hpage_pmd_size". Not "hpage_size".
 
-Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
----
-
-v3 -> v4:
-   * Rework to use thermal_zone_device_adjust() and the .update() callback
-     instead of using the (exported) zone lock directly.
-   * Call acpi_queue_thermal_check() from acpi_thermal_trips_update() which
-     allows code duplication in acpi_thermal_notify() to be reduced.
-
-v2 -> v3: No changes.
-
-v1 -> v2:
-   * Hold the thermal zone lock instead of thermal_check_lock around trip
-     point updates (this also helps to protect thermal_get_trend() from using
-     stale trip temperatures).
-   * Add a comment documenting the purpose of the locking.
-   * Make acpi_thermal_trips_update() void.
-
----
- drivers/acpi/thermal.c |   41 ++++++++++++++++++++++++++++-------------
- 1 file changed, 28 insertions(+), 13 deletions(-)
-
-Index: linux-pm/drivers/acpi/thermal.c
-===================================================================
---- linux-pm.orig/drivers/acpi/thermal.c
-+++ linux-pm/drivers/acpi/thermal.c
-@@ -190,7 +190,7 @@ static int acpi_thermal_get_polling_freq
- 	return 0;
- }
- 
--static int acpi_thermal_trips_update(struct acpi_thermal *tz, int flag)
-+static void __acpi_thermal_trips_update(struct acpi_thermal *tz, int flag)
- {
- 	acpi_status status;
- 	unsigned long long tmp;
-@@ -398,17 +398,39 @@ static int acpi_thermal_trips_update(str
- 			ACPI_THERMAL_TRIPS_EXCEPTION(flag, tz, "device");
- 		}
- 	}
-+}
- 
--	return 0;
-+static void acpi_thermal_adjust_thermal_zone(struct thermal_zone_device *thermal,
-+					     unsigned long data)
-+{
-+	__acpi_thermal_trips_update(thermal_zone_device_priv(thermal), data);
-+}
-+
-+static void acpi_queue_thermal_check(struct acpi_thermal *tz)
-+{
-+	if (!work_pending(&tz->thermal_check_work))
-+		queue_work(acpi_thermal_pm_queue, &tz->thermal_check_work);
-+}
-+
-+static void acpi_thermal_trips_update(struct acpi_thermal *tz, int flag)
-+{
-+	/*
-+	 * Use thermal_zone_device_adjust() to carry out the trip points
-+	 * update, so as to protect thermal_get_trend() from getting stale
-+	 * trip point temperatures and to prevent thermal_zone_device_update()
-+	 * invoked from acpi_thermal_check_fn() from producing inconsistent
-+	 * results.
-+	 */
-+	thermal_zone_device_adjust(tz->thermal_zone, flag);
-+	acpi_queue_thermal_check(tz);
- }
- 
- static int acpi_thermal_get_trip_points(struct acpi_thermal *tz)
- {
--	int i, ret = acpi_thermal_trips_update(tz, ACPI_TRIPS_INIT);
- 	bool valid;
-+	int i;
- 
--	if (ret)
--		return ret;
-+	__acpi_thermal_trips_update(tz, ACPI_TRIPS_INIT);
- 
- 	valid = tz->trips.critical.valid |
- 		tz->trips.hot.valid |
-@@ -715,6 +737,7 @@ static struct thermal_zone_device_ops ac
- 	.get_trend = thermal_get_trend,
- 	.hot = acpi_thermal_zone_device_hot,
- 	.critical = acpi_thermal_zone_device_critical,
-+	.update = acpi_thermal_adjust_thermal_zone,
- };
- 
- static int acpi_thermal_zone_sysfs_add(struct acpi_thermal *tz)
-@@ -815,12 +838,6 @@ static void acpi_thermal_unregister_ther
-                                  Driver Interface
-    -------------------------------------------------------------------------- */
- 
--static void acpi_queue_thermal_check(struct acpi_thermal *tz)
--{
--	if (!work_pending(&tz->thermal_check_work))
--		queue_work(acpi_thermal_pm_queue, &tz->thermal_check_work);
--}
--
- static void acpi_thermal_notify(acpi_handle handle, u32 event, void *data)
- {
- 	struct acpi_device *device = data;
-@@ -835,13 +852,11 @@ static void acpi_thermal_notify(acpi_han
- 		break;
- 	case ACPI_THERMAL_NOTIFY_THRESHOLDS:
- 		acpi_thermal_trips_update(tz, ACPI_TRIPS_THRESHOLDS);
--		acpi_queue_thermal_check(tz);
- 		acpi_bus_generate_netlink_event(device->pnp.device_class,
- 						dev_name(&device->dev), event, 0);
- 		break;
- 	case ACPI_THERMAL_NOTIFY_DEVICES:
- 		acpi_thermal_trips_update(tz, ACPI_TRIPS_DEVICES);
--		acpi_queue_thermal_check(tz);
- 		acpi_bus_generate_netlink_event(device->pnp.device_class,
- 						dev_name(&device->dev), event, 0);
- 		break;
+For hugetlb on arm64 we already support various sizes that are < PMD 
+size and *not* call them differently. It's a huge(tlb) page. Sometimes 
+we refer to them as cont-PTE hugetlb pages.
 
 
+So, nowadays we do have "PMD-sized THP", someday we might have 
+"PUD-sized THP". Can't we come up with a name to describe sub-PMD THP?
+
+Is it really of value if we invent a new term for them? Yes, I was not 
+enjoying "Flexible THP".
+
+
+Once we figured that out, we should figure out if MADV_HUGEPAGE meant 
+"only PMD-sized THP" or anything else?
+
+Also, we can then figure out if MADV_NOHUGEPAGE meant "only PMD-sized 
+THP" or anything else?
+
+
+The simplest approach to me would be "they imply any THP, and once we 
+need more tunables we might add some", similar to what Kirill also raised.
+
+
+Again, it's all unclear to me at this point and I'm happy to hear 
+opinions, because I really don't know.
+
+-- 
+Cheers,
+
+David / dhildenb
 
