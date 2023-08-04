@@ -2,100 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E0EB7703CD
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 17:02:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 950B47703D9
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 17:03:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229572AbjHDPCg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Aug 2023 11:02:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43386 "EHLO
+        id S231888AbjHDPDt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Aug 2023 11:03:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44332 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231888AbjHDPCa (ORCPT
+        with ESMTP id S230282AbjHDPDq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Aug 2023 11:02:30 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1B284C0C;
-        Fri,  4 Aug 2023 08:02:16 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id E6C0921888;
-        Fri,  4 Aug 2023 15:02:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1691161334; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=VNWjSzFu/PyMqv6O223Z6nS9JKkdr9V4bRYfAQix7nk=;
-        b=lk1XMNHdUBmmPgv2SbCy1HPgNADs5W9jPaKQk5f95D0ji/Kgs8ioTEuIp8biBXwjs1qmZ1
-        DiFaVY7HQOUrW/Ni/kuVUUuHlF9fOwxllYFqY0tab1QiufzfgVh4ZneVj/CAfbnw8UZCx8
-        C9Flw2p3O6/4ZMw5+YhH870Kk2vgfAg=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id B586B133B5;
-        Fri,  4 Aug 2023 15:02:14 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id o4i3K/YSzWSpRwAAMHmgww
-        (envelope-from <mhocko@suse.com>); Fri, 04 Aug 2023 15:02:14 +0000
-Date:   Fri, 4 Aug 2023 17:02:14 +0200
-From:   Michal Hocko <mhocko@suse.com>
-To:     Doug Anderson <dianders@chromium.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Petr Mladek <pmladek@suse.com>, Arnd Bergmann <arnd@arndb.de>,
-        Borislav Petkov <bp@alien8.de>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        "Darrick J. Wong" <djwong@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Gaosheng Cui <cuigaosheng1@huawei.com>,
-        "Gautham R. Shenoy" <gautham.shenoy@amd.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Guilherme G. Piccoli" <gpiccoli@igalia.com>,
-        Guo Ren <guoren@kernel.org>, "H. Peter Anvin" <hpa@zytor.com>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        "Jason A. Donenfeld" <Jason@zx2c4.com>,
-        Jianmin Lv <lvjianmin@loongson.cn>,
-        Jinyang He <hejinyang@loongson.cn>,
-        Josh Poimboeuf <jpoimboe@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Lecopzer Chen <lecopzer.chen@mediatek.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Pingfan Liu <kernelfans@gmail.com>,
-        Qing Zhang <zhangqing@loongson.cn>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Tom Rix <trix@redhat.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Valentin Schneider <vschneid@redhat.com>,
-        WANG Xuerui <kernel@xen0n.name>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-mips@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        loongarch@lists.linux.dev, sparclinux@vger.kernel.org,
-        x86@kernel.org
-Subject: Re: [PATCH v3 1/2] nmi_backtrace: Allow excluding an arbitrary CPU
-Message-ID: <ZM0S9gKBBiu83kFq@dhcp22.suse.cz>
-References: <20230803160649.v3.1.Ia35521b91fc781368945161d7b28538f9996c182@changeid>
- <ZMytyEoCARgP9VR8@dhcp22.suse.cz>
- <CAD=FV=UQ18JG-sMBJHrhXByCWYSgOpCq8tL=3R8pT8CnFEa=pA@mail.gmail.com>
+        Fri, 4 Aug 2023 11:03:46 -0400
+Received: from mx07-00178001.pphosted.com (mx08-00178001.pphosted.com [91.207.212.93])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 446BC49CC;
+        Fri,  4 Aug 2023 08:03:40 -0700 (PDT)
+Received: from pps.filterd (m0046660.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 374E2pI0015686;
+        Fri, 4 Aug 2023 17:03:24 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=
+        message-id:date:mime-version:subject:to:cc:references:from
+        :in-reply-to:content-type:content-transfer-encoding; s=
+        selector1; bh=/l8mjvbY2Ki+4Tb7GK63bNwXO8roQow7emINs+UmEls=; b=Zd
+        4WDuisoN6vSXRACnvp2/VGWNtTpQsGB9xZ2KYVQCVJV9nMODt04ScwlNVd++0dQ8
+        +SmB+iPBO+sJYllSey/4UOrdiVNGMBSTP81bgIOf4R1wuODLtf5SAQWFvaXoHT/m
+        3SFTdQDt2XH2ytoOUfDHKoQLrh57h6iLKneYmbKUsKQJDoDCvB+t44SxYRNfv2G5
+        CO9MDqDSxzcZWqMefoiT+3bkQC12oiYCgbNg5hfTl+vlqs5JiJePBtnlmjro7dZ5
+        JyMJpO/XkUM3tOQTcWjU5NjeAM11bxpoiaH6xkAK9UA/GGsp7Obgo49mR7djiR0l
+        Hg8pkHSv1olXQrqH1ikQ==
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3s92rf89se-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 04 Aug 2023 17:03:03 +0200 (MEST)
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 6C5D0100053;
+        Fri,  4 Aug 2023 17:03:00 +0200 (CEST)
+Received: from Webmail-eu.st.com (shfdag1node1.st.com [10.75.129.69])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 5175A2248C6;
+        Fri,  4 Aug 2023 17:03:00 +0200 (CEST)
+Received: from [10.201.20.38] (10.201.20.38) by SHFDAG1NODE1.st.com
+ (10.75.129.69) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.21; Fri, 4 Aug
+ 2023 17:02:58 +0200
+Message-ID: <baaebecd-d3d9-c3b1-dd7c-f5a39c194d4b@foss.st.com>
+Date:   Fri, 4 Aug 2023 17:02:57 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAD=FV=UQ18JG-sMBJHrhXByCWYSgOpCq8tL=3R8pT8CnFEa=pA@mail.gmail.com>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH v2 02/23] ARM: sti: Drop unused includes
+Content-Language: en-US
+To:     Rob Herring <robh@kernel.org>, <soc@kernel.org>,
+        Tsahee Zidenberg <tsahee@annapurnalabs.com>,
+        Antoine Tenart <atenart@kernel.org>,
+        Jisheng Zhang <jszhang@kernel.org>,
+        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Gregory Clement <gregory.clement@bootlin.com>,
+        Jean-Marie Verdun <verdun@hpe.com>,
+        Nick Hawkins <nick.hawkins@hpe.com>,
+        Lubomir Rintel <lkundrak@v3.sk>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Avi Fishman <avifishman70@gmail.com>,
+        Tomer Maimon <tmaimon77@gmail.com>,
+        Tali Perry <tali.perry1@gmail.com>,
+        Patrick Venture <venture@google.com>,
+        Nancy Yuen <yuenn@google.com>,
+        Benjamin Fair <benjaminfair@google.com>,
+        Daniel Mack <daniel@zonque.org>,
+        Haojian Zhuang <haojian.zhuang@gmail.com>,
+        Robert Jarzmik <robert.jarzmik@free.fr>,
+        Heiko Stuebner <heiko@sntech.de>,
+        Liviu Dudau <liviu.dudau@arm.com>,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        Lorenzo Pieralisi <lpieralisi@kernel.org>,
+        Viresh Kumar <vireshk@kernel.org>,
+        Shiraz Has him <shiraz.linux.kernel@gmail.com>,
+        Stuart Yoder <stuyoder@gmail.com>,
+        Laurentiu Tudor <laurentiu.tudor@nxp.com>,
+        Jay Fang <f.fangjian@huawei.com>, Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Samuel Holland <samuel@sholland.org>,
+        Cristian Marussi <cristian.marussi@arm.com>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        Florian Fainelli <florian.fainelli@broadcom.com>,
+        Dinh Nguyen <dinguyen@kernel.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Michal Simek <michal.simek@amd.com>,
+        Joel Stanley <joel@jms.id.au>,
+        Andrew Jeffery <andrew@aj.id.au>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Li Yang <leoyang.li@nxp.com>, Qiang Zhao <qiang.zhao@nxp.com>
+CC:     <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <openbmc@lists.ozlabs.org>,
+        <linux-rockchip@lists.infradead.org>,
+        <linux-sunxi@lists.linux.dev>,
+        <linux-mediatek@lists.infradead.org>,
+        <linux-rpi-kernel@lists.infradead.org>,
+        <linux-tegra@vger.kernel.org>, <linux-aspeed@lists.ozlabs.org>,
+        <linux-pm@vger.kernel.org>
+References: <20230803-dt-header-cleanups-for-soc-v2-0-d8de2cc88bff@kernel.org>
+ <20230803-dt-header-cleanups-for-soc-v2-2-d8de2cc88bff@kernel.org>
+From:   Patrice CHOTARD <patrice.chotard@foss.st.com>
+In-Reply-To: <20230803-dt-header-cleanups-for-soc-v2-2-d8de2cc88bff@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.201.20.38]
+X-ClientProxiedBy: SHFCAS1NODE1.st.com (10.75.129.72) To SHFDAG1NODE1.st.com
+ (10.75.129.69)
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
+ definitions=2023-08-04_14,2023-08-03_01,2023-05-22_02
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        DKIM_VALID,DKIM_VALID_AU,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -104,51 +126,31 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri 04-08-23 06:56:51, Doug Anderson wrote:
-> Hi,
+
+
+On 8/4/23 00:42, Rob Herring wrote:
+> Several includes are not needed, so drop them.
 > 
-> On Fri, Aug 4, 2023 at 12:50 AM Michal Hocko <mhocko@suse.com> wrote:
-> >
-> > On Thu 03-08-23 16:07:57, Douglas Anderson wrote:
-> > > The APIs that allow backtracing across CPUs have always had a way to
-> > > exclude the current CPU. This convenience means callers didn't need to
-> > > find a place to allocate a CPU mask just to handle the common case.
-> > >
-> > > Let's extend the API to take a CPU ID to exclude instead of just a
-> > > boolean. This isn't any more complex for the API to handle and allows
-> > > the hardlockup detector to exclude a different CPU (the one it already
-> > > did a trace for) without needing to find space for a CPU mask.
-> > >
-> > > Arguably, this new API also encourages safer behavior. Specifically if
-> > > the caller wants to avoid tracing the current CPU (maybe because they
-> > > already traced the current CPU) this makes it more obvious to the
-> > > caller that they need to make sure that the current CPU ID can't
-> > > change.
-> >
-> > Yes, this looks like the best way forward.
-> >
-> > It would have been slightly safer to modify arch_trigger_cpumask_backtrace
-> > by switching arguments so that some leftovers are captured easier.
+> Signed-off-by: Rob Herring <robh@kernel.org>
+> ---
+>  arch/arm/mach-sti/board-dt.c | 2 --
+>  1 file changed, 2 deletions(-)
 > 
-> I'm not sure I understand. Oh, you're saying make the prototype of
-> arch_trigger_cpumask_backtrace() incompatible so that if someone is
-> directly calling it then it'll be a compile-time error? 
+> diff --git a/arch/arm/mach-sti/board-dt.c b/arch/arm/mach-sti/board-dt.c
+> index ffecbf29646f..488084b61b4a 100644
+> --- a/arch/arm/mach-sti/board-dt.c
+> +++ b/arch/arm/mach-sti/board-dt.c
+> @@ -4,8 +4,6 @@
+>   * Author(s): Srinivas Kandagatla <srinivas.kandagatla@st.com>
+>   */
+>  
+> -#include <linux/irq.h>
+> -#include <linux/of_platform.h>
+>  #include <asm/hardware/cache-l2x0.h>
+>  #include <asm/mach/arch.h>
+>  
+> 
+Acked-by: Patrice Chotard <patrice.chotard@foss.st.com>
 
-exactly. bool to int promotion would be too easy to miss while the
-pointer to int would complain loudly.
-
-> I guess the
-> hope is that nobody is calling that directly and they're calling
-> through the trigger_...() functions.
-
-Hope is one thing, being preventive another.
-
-> For now I'm going to leave this alone.
-
-If you are going to send another version then please consider this. Not
-a hard requirement but better.
- 
-
--- 
-Michal Hocko
-SUSE Labs
+Thanks
+Patrice
