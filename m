@@ -2,98 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AF4B8770C1F
-	for <lists+linux-kernel@lfdr.de>; Sat,  5 Aug 2023 00:50:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1CAB0770C23
+	for <lists+linux-kernel@lfdr.de>; Sat,  5 Aug 2023 00:52:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229799AbjHDWuE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Aug 2023 18:50:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48424 "EHLO
+        id S229579AbjHDWwY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Aug 2023 18:52:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49160 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229555AbjHDWuC (ORCPT
+        with ESMTP id S229476AbjHDWwW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Aug 2023 18:50:02 -0400
-Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 720DA10CA
-        for <linux-kernel@vger.kernel.org>; Fri,  4 Aug 2023 15:50:01 -0700 (PDT)
-Received: by mail-ed1-x52b.google.com with SMTP id 4fb4d7f45d1cf-522ab301692so3344131a12.2
-        for <linux-kernel@vger.kernel.org>; Fri, 04 Aug 2023 15:50:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google; t=1691189400; x=1691794200;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=Oufc1x89nwlrXRNKkHYYKDDdEzz4I9gpw2oNWdbuYSU=;
-        b=CGVX8W/VVvSHWfL5A7GP+IZxrflfeijBHYRepr/J7GPhpEacEiNrDxfRVAhOCTOTZ5
-         lWQbzA3hD5LKIQ8J+TITYmh4mX2xKhu5hwjVYwXVjoAlJ4uFl8h4WPXJFcsymATXciZf
-         ldVuRBkgp4WSW+mX41AW3WFIBW9dubdbt2rOY=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691189400; x=1691794200;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Oufc1x89nwlrXRNKkHYYKDDdEzz4I9gpw2oNWdbuYSU=;
-        b=alPfEIqJX8DSlOduZ6Vi0nWZInsAnG042vkss6lv0OJTyaSVt2bP1L2ehAaqP/yVpg
-         kYKpFZvrvypoihaTCDVRuW0CREaO8ETqewSaM4nvsnIFJPRX63YUBf8pPwOWUEujp7tU
-         czZFIpz6LBRlO0d+4TaSHe4V9uOyxHn2mRMaWdrj0Pg51NK4DrJGY083BDHejrsXBqik
-         NhK3R076dIC0hBOwuzefkV7zm0gnkjWsfDSWb+xtQ7GB4NeDrKdnSVty8oVfBTfY+L3v
-         IEO2T2xhhGSfIYx9QkoATgKnzP0ofAE5mcZqq25NoCCyv0sG05vDObxjeesrWP1N8vRu
-         VzmQ==
-X-Gm-Message-State: AOJu0Yweh0T7BLPSMCmur0gIkmLC0ydAyOsQbU/X5X33JMQJ1+9O0a9c
-        hzTL+tcCgUqBlqByLRpH2XmvAL+cqxV5fKBOovMrTw==
-X-Google-Smtp-Source: AGHT+IE2tI55ssDVqeqh3or0wZkaOQlJweDL+lVIZ1Y9EPxBdIr9Hk6+ypPHm6OP7jHbFFm+Y0p+Iw==
-X-Received: by 2002:a05:6402:656:b0:522:27ea:58b with SMTP id u22-20020a056402065600b0052227ea058bmr2482146edx.39.1691189399914;
-        Fri, 04 Aug 2023 15:49:59 -0700 (PDT)
-Received: from mail-ed1-f51.google.com (mail-ed1-f51.google.com. [209.85.208.51])
-        by smtp.gmail.com with ESMTPSA id i22-20020a50fc16000000b0051d9de03516sm1825207edr.52.2023.08.04.15.49.57
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 04 Aug 2023 15:49:58 -0700 (PDT)
-Received: by mail-ed1-f51.google.com with SMTP id 4fb4d7f45d1cf-52307552b03so3365820a12.0
-        for <linux-kernel@vger.kernel.org>; Fri, 04 Aug 2023 15:49:57 -0700 (PDT)
-X-Received: by 2002:a05:6402:514:b0:521:d75d:ef69 with SMTP id
- m20-20020a056402051400b00521d75def69mr2790287edv.31.1691189397521; Fri, 04
- Aug 2023 15:49:57 -0700 (PDT)
-MIME-Version: 1.0
-References: <20230708191212.4147700-1-surenb@google.com> <20230708191212.4147700-3-surenb@google.com>
- <20230804214620.btgwhsszsd7rh6nf@f>
-In-Reply-To: <20230804214620.btgwhsszsd7rh6nf@f>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Fri, 4 Aug 2023 15:49:40 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wiy125k1dBmQFTGpHwiOqEyrD6xnd4xKWfe97H_HodgDA@mail.gmail.com>
-Message-ID: <CAHk-=wiy125k1dBmQFTGpHwiOqEyrD6xnd4xKWfe97H_HodgDA@mail.gmail.com>
-Subject: Re: [PATCH v2 3/3] fork: lock VMAs of the parent process when forking
-To:     Mateusz Guzik <mjguzik@gmail.com>
-Cc:     Suren Baghdasaryan <surenb@google.com>, akpm@linux-foundation.org,
-        regressions@leemhuis.info, bagasdotme@gmail.com,
-        jacobly.alt@gmail.com, willy@infradead.org,
-        liam.howlett@oracle.com, david@redhat.com, peterx@redhat.com,
-        ldufour@linux.ibm.com, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, linuxppc-dev@lists.ozlabs.org,
-        linux-arm-kernel@lists.infradead.org, gregkh@linuxfoundation.org,
-        regressions@lists.linux.dev, Jiri Slaby <jirislaby@kernel.org>,
-        =?UTF-8?Q?Holger_Hoffst=C3=A4tte?= <holger@applied-asynchrony.com>,
-        stable@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no
-        autolearn_force=no version=3.4.6
+        Fri, 4 Aug 2023 18:52:22 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B030E1BE;
+        Fri,  4 Aug 2023 15:52:21 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 4A69262153;
+        Fri,  4 Aug 2023 22:52:21 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 60FF5C433C8;
+        Fri,  4 Aug 2023 22:52:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1691189540;
+        bh=JTeFe3yU6FTfVxHVzbN6FFW+rwd+24FgVbF4IkXJvlw=;
+        h=Date:Cc:Subject:From:To:References:In-Reply-To:From;
+        b=DAi1vg4eGxZeRFG/j0+u3c83hJLIbyd5rrNPN+GakXezFYR7UzPD4UHChAxacNgfJ
+         DcHb5ebX5RuJU9SDUDhWp7T10+i/KIChH3R+I/R1AY/bBii49/ffrK4qqlt+11sLTZ
+         WMkUwGvNs5uDHae2qEcp2LQGpBVcV7kknLzhad2qf9XpbYa+ENQ90hEVHzt+y73UEj
+         pWDVwAtSpidxjyqKN8gZguNdOuJXaMTGrMVNlEyQZoYE+zl6Yk+nmQW8nOzxknDgQX
+         i++eBS8qKRsmFzwEd2SWdBTN3lCynHfhK0OLxWTqcyf1rvGdThOrxomXXiplL3HMFp
+         xZT3e6RUognhQ==
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Date:   Sat, 05 Aug 2023 01:52:17 +0300
+Message-Id: <CUK4NNTX7G6W.669WZVTTH2SD@wks-101042-mac.ad.tuni.fi>
+Cc:     <peterhuewe@gmx.de>, <linux-kernel@vger.kernel.org>,
+        <linux-integrity@vger.kernel.org>, <dragonn@op.pl>
+Subject: Re: [PATCH 1/3] tpm: Add a missing check for
+ TPM_CHIP_FLAG_HWRNG_DISABLED
+From:   "Jarkko Sakkinen" <jarkko@kernel.org>
+To:     "Jason A. Donenfeld" <Jason@zx2c4.com>,
+        "Mario Limonciello" <mario.limonciello@amd.com>
+X-Mailer: aerc 0.15.2
+References: <20230803015015.915-1-mario.limonciello@amd.com>
+ <20230803015015.915-2-mario.limonciello@amd.com>
+ <CUISBN0W36B2.1DXXNNGS6P7JC@suppilovahvero>
+ <d19d0e9a-a788-8b33-506d-8a080d566366@amd.com> <ZMuwtE2IA-Hd3Vyd@zx2c4.com>
+In-Reply-To: <ZMuwtE2IA-Hd3Vyd@zx2c4.com>
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 4 Aug 2023 at 14:46, Mateusz Guzik <mjguzik@gmail.com> wrote:
+On Thu Aug 3, 2023 at 4:50 PM EEST, Jason A. Donenfeld wrote:
+> On Thu, Aug 03, 2023 at 06:35:36AM -0500, Mario Limonciello wrote:
+> > On 8/3/23 03:59, Jarkko Sakkinen wrote:
+> > > On Thu Aug 3, 2023 at 4:50 AM EEST, Mario Limonciello wrote:
+> > >> If the TPM is opted out of hwrng the error handling for
+> > >> tpm_chip_register() needs to know this so it doesn't try to clean
+> > >> up an uninitialized chip->hwrng.
+> > >>
+> > >> Signed-off-by: Mario Limonciello <mario.limonciello@amd.com>
+> > >> ---
+> > >>   drivers/char/tpm/tpm-chip.c | 3 ++-
+> > >>   1 file changed, 2 insertions(+), 1 deletion(-)
+> > >>
+> > >> diff --git a/drivers/char/tpm/tpm-chip.c b/drivers/char/tpm/tpm-chip=
+.c
+> > >> index e904aae9771be..8f61b784810d6 100644
+> > >> --- a/drivers/char/tpm/tpm-chip.c
+> > >> +++ b/drivers/char/tpm/tpm-chip.c
+> > >> @@ -629,7 +629,8 @@ int tpm_chip_register(struct tpm_chip *chip)
+> > >>   	return 0;
+> > >>  =20
+> > >>   out_hwrng:
+> > >> -	if (IS_ENABLED(CONFIG_HW_RANDOM_TPM) && !tpm_is_firmware_upgrade(c=
+hip))
+> > >> +	if (IS_ENABLED(CONFIG_HW_RANDOM_TPM) && !tpm_is_firmware_upgrade(c=
+hip) &&
+> > >> +	    !(chip->flags & TPM_CHIP_FLAG_HWRNG_DISABLED))
+> > >>   		hwrng_unregister(&chip->hwrng);
+> > >>   out_ppi:
+> > >>   	tpm_bios_log_teardown(chip);
+> > >> --=20
+> > >> 2.34.1
+> > >=20
+> > > Please add a fixes tag.
+> > >=20
+> > > BR, Jarkko
+> >=20
+> > I didn't add a fixes tag because you hadn't sent a PR for the other one=
+=20
+> > yet so I wasn't sure the hash would be stable.  Also I thought it might=
+=20
+> > just make sense to squash into it.
+> >=20
+> > If the hash is now stable, could you just just commit and add that tag=
+=20
+> > with it yourself?  Or do you want me to re-send as a v2 with that?
 >
-> I don't see it mentioned in the discussion, so at a risk of ruffling
-> feathers or looking really bad I'm going to ask: is the locking of any
-> use if the forking process is single-threaded? T
+> What about just sending a v3 of the patch that this patch fixes? The
+> stable@/fixes tags in that are wrong/incomplete so Jarkko's tree will
+> need to be fixed before pushing to Linus anyway.
 
-Sadly, we've always been able to access the mm from other processes,
-so the locking is - I think - unavoidable.
+Sounds reasonable. I can hold the PR to rc6 and send it on Monday.
 
-And some of those "access from other processes" aren't even uncommon
-or special. It's things like "ps" etc, that do it just to see the
-process name and arguments.
-
-            Linus
+BR, Jarkko
