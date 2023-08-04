@@ -2,188 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 05C94770064
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 14:42:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7391277007C
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 14:48:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229832AbjHDMmF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Aug 2023 08:42:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40746 "EHLO
+        id S230208AbjHDMsR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Aug 2023 08:48:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43432 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229554AbjHDMmD (ORCPT
+        with ESMTP id S229461AbjHDMsP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Aug 2023 08:42:03 -0400
-Received: from smtp.uniroma2.it (smtp.uniroma2.it [160.80.6.23])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3959649C3;
-        Fri,  4 Aug 2023 05:41:56 -0700 (PDT)
-Received: from smtpauth-2019-1.uniroma2.it (smtpauth-2019-1.uniroma2.it [160.80.5.46])
-        by smtp-2015.uniroma2.it (8.14.4/8.14.4/Debian-8) with ESMTP id 374CfN4s017716;
-        Fri, 4 Aug 2023 14:41:29 +0200
-Received: from lubuntu-18.04 (unknown [160.80.103.126])
-        by smtpauth-2019-1.uniroma2.it (Postfix) with ESMTPSA id 04DE81228D4;
-        Fri,  4 Aug 2023 14:41:19 +0200 (CEST)
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=uniroma2.it;
-        s=ed201904; t=1691152879; h=from:from:sender:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Mpqujni+uUs6kbHm3bEUAhcFvBpdkTUmqXcXtvrVaoo=;
-        b=TumY6hYxXgZQTBmIy5hErBfYPZ1GZOdp4504cmJ5gqOzMMqWqFsQ8U3IBOvWeLhmJpf5X0
-        f0nKcIdKD0lEMRAQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=uniroma2.it; s=rsa201904;
-        t=1691152879; h=from:from:sender:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Mpqujni+uUs6kbHm3bEUAhcFvBpdkTUmqXcXtvrVaoo=;
-        b=ADadoJ8+mvV91PflQw6Il4je0kpvdT4e2CecqC0awvXrQiBkit3ATEddczxIMju6JuB0y8
-        ZtUOwHRoupN2fLI3bB/W8QEi7TIY+NSvTJBdc2Cn4xs2LipIGFbSuESG8s1DB8gy95E9qA
-        t7usNoPIZ54dv0GTh5qOhNfKgQvbc5XbbpTQhex28GPwN9sGKNgqvUNQPlggvwpS68uN66
-        A0d6BLzzaarLQqz6cEtlmGvFUGBfJjQB77BI9G5dQCq7l0kvVmPZDFJAtcf9M73Hxbn/GC
-        MD1vk268h/gR0KWQ4WGZhBEDFImrlF2mFivTqgCKVffnk6UhwbRufSte6NxUDQ==
-Date:   Fri, 4 Aug 2023 14:41:18 +0200
-From:   Andrea Mayer <andrea.mayer@uniroma2.it>
-To:     Hangbin Liu <liuhangbin@gmail.com>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        David Ahern <dsahern@kernel.org>,
-        Shuah Khan <shuah@kernel.org>, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        Stefano Salsano <stefano.salsano@uniroma2.it>,
-        Paolo Lungaroni <paolo.lungaroni@uniroma2.it>,
-        Ahmed Abdelsalam <ahabdels.dev@gmail.com>,
-        Andrea Mayer <andrea.mayer@uniroma2.it>
-Subject: Re: [net-next 1/2] seg6: add NEXT-C-SID support for SRv6 End.X
- behavior
-Message-Id: <20230804144118.a52808dc5fecda09751fae9d@uniroma2.it>
-In-Reply-To: <ZMtztGiOWV6bqCLg@Laptop-X1>
-References: <20230731175117.17376-1-andrea.mayer@uniroma2.it>
-        <20230731175117.17376-2-andrea.mayer@uniroma2.it>
-        <ZMtztGiOWV6bqCLg@Laptop-X1>
-X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Virus-Scanned: clamav-milter 0.100.0 at smtp-2015
-X-Virus-Status: Clean
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+        Fri, 4 Aug 2023 08:48:15 -0400
+Received: from mail-ed1-f53.google.com (mail-ed1-f53.google.com [209.85.208.53])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7DA54E7;
+        Fri,  4 Aug 2023 05:47:42 -0700 (PDT)
+Received: by mail-ed1-f53.google.com with SMTP id 4fb4d7f45d1cf-52164adea19so2589528a12.1;
+        Fri, 04 Aug 2023 05:47:42 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691153216; x=1691758016;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=PRqehSRIoi9nVHhMtBn7xUoJn1aGYwvHr/iVwpeswiM=;
+        b=ZF0s80KYufNhFMc+tfd4OXXc6USP3+WylaPsP61+Ao/qcbNDEf/+Gy4PNnii8xA/RB
+         T6rA+TpV0xr9iALeYUttLdFtQGPcaFXUqo6XYMFhx/sazjuXZiAViOjGjOKx/5tcB8Ga
+         sirYz2cLlTOdP+cuF3VIx9OGqeYpjWRklskfQ70l3EsEx55wZ6Nxg92NHLe4555/ZtGn
+         U5ihSuSsa5XR4gwaOs4wgZizEx0jFCX23eqRqA5iHyuC6wNiSZcx7F0TSqXeC/RTHhUp
+         hSn6h6OxDaXPa7JuWGMUVp0LCP/Bh7BBzSpLpcs04J9t6Eyl4Deen9Z7SyotkI/Qe8yG
+         hg3w==
+X-Gm-Message-State: AOJu0YxaudFrdbLXkX8n1qNp5mbmKIru+5BXxckL3UO6Uza91FAFmBLs
+        s2y/dKxhOWfapU5sMGMeNMg=
+X-Google-Smtp-Source: AGHT+IGSvUO6FcynF+zGxK7Ax+EVejx9GwM0nzc8z8ex+AmCy4QavFcSbHoInYsEvvqX89lnvOhWqQ==
+X-Received: by 2002:aa7:d0c3:0:b0:523:1436:578d with SMTP id u3-20020aa7d0c3000000b005231436578dmr1364108edo.8.1691153216034;
+        Fri, 04 Aug 2023 05:46:56 -0700 (PDT)
+Received: from localhost (fwdproxy-cln-020.fbsv.net. [2a03:2880:31ff:14::face:b00c])
+        by smtp.gmail.com with ESMTPSA id g8-20020a056402180800b005227ead61d0sm1215674edy.83.2023.08.04.05.46.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 04 Aug 2023 05:46:55 -0700 (PDT)
+From:   Breno Leitao <leitao@debian.org>
+To:     rdunlap@infradead.org, benjamin.poirier@gmail.com,
+        davem@davemloft.net, kuba@kernel.org, edumazet@google.com,
+        Paolo Abeni <pabeni@redhat.com>
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH net-next v4 1/2] netconsole: Create a allocation helper
+Date:   Fri,  4 Aug 2023 05:43:20 -0700
+Message-Id: <20230804124322.113506-2-leitao@debian.org>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20230804124322.113506-1-leitao@debian.org>
+References: <20230804124322.113506-1-leitao@debian.org>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Hangbin,
-thanks for your time. Please see below.
+De-duplicate the initialization and allocation code for struct
+netconsole_target.
 
-On Thu, 3 Aug 2023 17:30:28 +0800
-Hangbin Liu <liuhangbin@gmail.com> wrote:
+The same allocation and initialization code is duplicated in two
+different places in the netconsole subsystem, when the netconsole target
+is initialized by command line parameters (alloc_param_target()), and
+dynamically by sysfs (make_netconsole_target()).
 
-> On Mon, Jul 31, 2023 at 07:51:16PM +0200, Andrea Mayer wrote:
-> > +/* Processing of SRv6 End, End.X, and End.T behaviors can be extended through
-> > + * the flavors framework. These behaviors must report the subset of (flavor)
-> > + * operations they currently implement. In this way, if a user specifies a
-> > + * flavor combination that is not supported by a given End* behavior, the
-> > + * kernel refuses to instantiate the tunnel reporting the error.
-> > + */
-> > +static int seg6_flv_supp_ops_by_action(int action, __u32 *fops)
-> > +{
-> > +	switch (action) {
-> > +	case SEG6_LOCAL_ACTION_END:
-> > +		*fops = SEG6_LOCAL_END_FLV_SUPP_OPS;
-> > +		break;
-> > +	case SEG6_LOCAL_ACTION_END_X:
-> > +		*fops = SEG6_LOCAL_END_X_FLV_SUPP_OPS;
-> > +		break;
-> > +	default:
-> > +		return -EOPNOTSUPP;
-> > +	}
-> > +
-> > +	return 0;
-> >  }
-> >  
-> 
-> ...
-> 
-> > @@ -2070,7 +2131,8 @@ static int parse_nla_flavors(struct nlattr **attrs, struct seg6_local_lwt *slwt,
-> >  {
-> >  	struct seg6_flavors_info *finfo = &slwt->flv_info;
-> >  	struct nlattr *tb[SEG6_LOCAL_FLV_MAX + 1];
-> > -	unsigned long fops;
-> > +	int action = slwt->action;
-> > +	__u32 fops, supp_fops = 0;
-> >  	int rc;
-> >  
-> >  	rc = nla_parse_nested_deprecated(tb, SEG6_LOCAL_FLV_MAX,
-> > @@ -2086,7 +2148,8 @@ static int parse_nla_flavors(struct nlattr **attrs, struct seg6_local_lwt *slwt,
-> >  		return -EINVAL;
-> >  
-> >  	fops = nla_get_u32(tb[SEG6_LOCAL_FLV_OPERATION]);
-> > -	if (fops & ~SEG6_LOCAL_FLV_SUPP_OPS) {
-> > +	rc = seg6_flv_supp_ops_by_action(action, &supp_fops);
-> > +	if (rc < 0 || !supp_fops || (fops & ~supp_fops)) {
-> 
-> if rc == 0, the supp_fops won't be 0.
-> 
+Create a helper function, and call it from the two different functions.
 
-Yes, you're right.
+Suggested-by: Eric Dumazet <edumazet@google.com>
+Signed-off-by: Breno Leitao <leitao@debian.org>
+---
+ drivers/net/netconsole.c | 41 +++++++++++++++++++---------------------
+ 1 file changed, 19 insertions(+), 22 deletions(-)
 
-In this patch, supp_fops is always set properly when rc == 0.
-Since seg6_flv_supp_ops_by_action() should be extended in the event that other
-behaviors receive flavors support, I added this check in case the "supp_fops"
-field was set incorrectly or not set at all.
-Note that supp_fops == 0 must be considered an inadmissible value.
+diff --git a/drivers/net/netconsole.c b/drivers/net/netconsole.c
+index 87f18aedd3bd..a7df782530cf 100644
+--- a/drivers/net/netconsole.c
++++ b/drivers/net/netconsole.c
+@@ -167,19 +167,15 @@ static void netconsole_target_put(struct netconsole_target *nt)
+ 
+ #endif	/* CONFIG_NETCONSOLE_DYNAMIC */
+ 
+-/* Allocate new target (from boot/module param) and setup netpoll for it */
+-static struct netconsole_target *alloc_param_target(char *target_config)
++/* Allocate and initialize with defaults.
++ * Note that these targets get their config_item fields zeroed-out.
++ */
++static struct netconsole_target *alloc_and_init(void)
+ {
+-	int err = -ENOMEM;
+-	struct netconsole_target *nt;
++	struct netconsole_target *nt = kzalloc(sizeof(*nt), GFP_KERNEL);
+ 
+-	/*
+-	 * Allocate and initialize with defaults.
+-	 * Note that these targets get their config_item fields zeroed-out.
+-	 */
+-	nt = kzalloc(sizeof(*nt), GFP_KERNEL);
+ 	if (!nt)
+-		goto fail;
++		return nt;
+ 
+ 	nt->np.name = "netconsole";
+ 	strscpy(nt->np.dev_name, "eth0", IFNAMSIZ);
+@@ -187,6 +183,18 @@ static struct netconsole_target *alloc_param_target(char *target_config)
+ 	nt->np.remote_port = 6666;
+ 	eth_broadcast_addr(nt->np.remote_mac);
+ 
++	return nt;
++}
++
++/* Allocate new target (from boot/module param) and setup netpoll for it */
++static struct netconsole_target *alloc_param_target(char *target_config)
++{
++	struct netconsole_target *nt = alloc_and_init();
++	int err = -ENOMEM;
++
++	if (!nt)
++		goto fail;
++
+ 	if (*target_config == '+') {
+ 		nt->extended = true;
+ 		target_config++;
+@@ -664,23 +672,12 @@ static const struct config_item_type netconsole_target_type = {
+ static struct config_item *make_netconsole_target(struct config_group *group,
+ 						  const char *name)
+ {
++	struct netconsole_target *nt = alloc_and_init();
+ 	unsigned long flags;
+-	struct netconsole_target *nt;
+ 
+-	/*
+-	 * Allocate and initialize with defaults.
+-	 * Target is disabled at creation (!enabled).
+-	 */
+-	nt = kzalloc(sizeof(*nt), GFP_KERNEL);
+ 	if (!nt)
+ 		return ERR_PTR(-ENOMEM);
+ 
+-	nt->np.name = "netconsole";
+-	strscpy(nt->np.dev_name, "eth0", IFNAMSIZ);
+-	nt->np.local_port = 6665;
+-	nt->np.remote_port = 6666;
+-	eth_broadcast_addr(nt->np.remote_mac);
+-
+ 	/* Initialize the config_item member */
+ 	config_item_init_type_name(&nt->item, name, &netconsole_target_type);
+ 
+-- 
+2.34.1
 
-
-So, I think we have two possibilities:
-  i) remove this "defensive" check, assuming that supp_fops will always be set
-     correctly by seg6_flv_supp_ops_by_action() (when rc == 0, like in this
-     patch); 
- ii) improve the check by explicitly indicating with a pr_warn_once, for
-     example, the condition that is occurring is unexpected.
-
-for (ii), something like this:
-
-parse_nla_flavors(...)
-{
-    [...]
-    supp_fops = 0;
-    [...]
-
-    rc = seg6_flv_supp_ops_by_action(action, &supp_fops);
-    if (!rc && !supp_fops) {
-   	 /* supported flavors mask cannot be zero as it is considered to
-   	  * be invalid.
-   	  */
-   	 pr_warn_once("seg6local: invalid Flavor operation(s)");
-   	 return -EINVAL;
-    }
-
-    fops = nla_get_u32(tb[SEG6_LOCAL_FLV_OPERATION]);
-    if (rc < 0 || (fops & ~supp_fops)) {
-   	 NL_SET_ERR_MSG(extack, "Unsupported Flavor operation(s)");
-   	 return -EOPNOTSUPP;
-    }
-
-    finfo->flv_ops = fops;
-
-    [...]
-}
-
-parse_nla_flavors() is called in the control path so another check would not
-hit performance. I am more inclined to consider solution (ii).
-
-What do you think?
-
-> Thanks
-> Hangbin
-
-Ciao,
-Andrea
