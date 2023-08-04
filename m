@@ -2,96 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3783C76F98B
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 07:27:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 95B4976F9A3
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 07:40:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231455AbjHDF1i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Aug 2023 01:27:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46316 "EHLO
+        id S232170AbjHDFkY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Aug 2023 01:40:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49664 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230236AbjHDF0s (ORCPT
+        with ESMTP id S231907AbjHDFkK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Aug 2023 01:26:48 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04B9E524D
-        for <linux-kernel@vger.kernel.org>; Thu,  3 Aug 2023 22:23:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
-        Message-ID:Sender:Reply-To:Content-ID:Content-Description;
-        bh=Kd5bIJRcZl2FvBcfi7bDth6ZcrHschPde64PUN3D7jE=; b=RhP2tFXUIDm82hXXXEjAidNHuZ
-        CpWjMlOwtUah2m6Rbp9JbF9o/L2VfvmMZL3fBMOqeWv0IxvGEmA5y6bm5nZPlXSkJE756PpyLc+r7
-        ru26IcYQUG0Ou/GXmboGyZuPDAxiiTcEcFXczN7MhiwPUSznDLmasC5jA1tnhOD/BtJPw63XKtNbJ
-        Ah97w0sAqoUYR0KY1seS1qoma0IvCVLCTRzft5lt4XGk0vytWj2XKSV/U8RuHO+G0Hcem3f8dinlK
-        IbGKTuHtJQaxTWbhRgsY7mZtzadIdVz/AFpBY+wNCJ0fWxjZXlNKU6TVDHVxtvV3ByhUD52njBkl3
-        AeffetEw==;
-Received: from [2601:1c2:980:9ec0::2764]
-        by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-        id 1qRnHx-00BbHA-0V;
-        Fri, 04 Aug 2023 05:23:49 +0000
-Message-ID: <a1640e13-75b5-bc3c-74a6-5eaf6d74e7bc@infradead.org>
-Date:   Thu, 3 Aug 2023 22:23:48 -0700
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v1 1/1] math.h: Document abs_diff()
-Content-Language: en-US
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Alexey Dobriyan <adobriyan@gmail.com>,
-        linux-kernel@vger.kernel.org
-Cc:     Andrew Morton <akpm@linux-foundation.org>
-References: <20230804050934.83223-1-andriy.shevchenko@linux.intel.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-In-Reply-To: <20230804050934.83223-1-andriy.shevchenko@linux.intel.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+        Fri, 4 Aug 2023 01:40:10 -0400
+X-Greylist: delayed 404 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Thu, 03 Aug 2023 22:40:06 PDT
+Received: from smtp01.aussiebb.com.au (smtp01.aussiebb.com.au [121.200.0.92])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96D171B9;
+        Thu,  3 Aug 2023 22:40:05 -0700 (PDT)
+Received: from localhost (localhost.localdomain [127.0.0.1])
+        by smtp01.aussiebb.com.au (Postfix) with ESMTP id 35B501006E0;
+        Fri,  4 Aug 2023 15:33:15 +1000 (AEST)
+X-Virus-Scanned: Debian amavisd-new at smtp01.aussiebb.com.au
+Received: from smtp01.aussiebb.com.au ([127.0.0.1])
+        by localhost (smtp01.aussiebb.com.au [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id 58RXBqPWJhLw; Fri,  4 Aug 2023 15:33:15 +1000 (AEST)
+Received: by smtp01.aussiebb.com.au (Postfix, from userid 116)
+        id 2CFAF10159A; Fri,  4 Aug 2023 15:33:15 +1000 (AEST)
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.6
+Received: from donald.themaw.net (2403-580e-4b40-0-7968-2232-4db8-a45e.ip6.aussiebb.net [IPv6:2403:580e:4b40:0:7968:2232:4db8:a45e])
+        by smtp01.aussiebb.com.au (Postfix) with ESMTP id 535EE1006E0;
+        Fri,  4 Aug 2023 15:33:12 +1000 (AEST)
+Subject: [PATCH 1/2] autofs: fix memory leak of waitqueues in
+ autofs_catatonic_mode
+From:   Ian Kent <raven@themaw.net>
+To:     Al Viro <viro@ZenIV.linux.org.uk>,
+        Christian Brauner <brauner@kernel.org>
+Cc:     autofs mailing list <autofs@vger.kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Fedor Pchelkin <pchelkin@ispras.ru>,
+        Takeshi Misawa <jeliantsurux@gmail.com>,
+        Alexey Khoroshilov <khoroshilov@ispras.ru>,
+        Matthew Wilcox <willy@infradead.org>,
+        Andrey Vagin <avagin@openvz.org>
+Date:   Fri, 04 Aug 2023 13:33:12 +0800
+Message-ID: <169112719161.7590.6700123246297365841.stgit@donald.themaw.net>
+User-Agent: StGit/1.5
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Fedor Pchelkin <pchelkin@ispras.ru>
+
+Syzkaller reports a memory leak:
+
+BUG: memory leak
+unreferenced object 0xffff88810b279e00 (size 96):
+  comm "syz-executor399", pid 3631, jiffies 4294964921 (age 23.870s)
+  hex dump (first 32 bytes):
+    00 00 00 00 00 00 00 00 08 9e 27 0b 81 88 ff ff  ..........'.....
+    08 9e 27 0b 81 88 ff ff 00 00 00 00 00 00 00 00  ..'.............
+  backtrace:
+    [<ffffffff814cfc90>] kmalloc_trace+0x20/0x90 mm/slab_common.c:1046
+    [<ffffffff81bb75ca>] kmalloc include/linux/slab.h:576 [inline]
+    [<ffffffff81bb75ca>] autofs_wait+0x3fa/0x9a0 fs/autofs/waitq.c:378
+    [<ffffffff81bb88a7>] autofs_do_expire_multi+0xa7/0x3e0 fs/autofs/expire.c:593
+    [<ffffffff81bb8c33>] autofs_expire_multi+0x53/0x80 fs/autofs/expire.c:619
+    [<ffffffff81bb6972>] autofs_root_ioctl_unlocked+0x322/0x3b0 fs/autofs/root.c:897
+    [<ffffffff81bb6a95>] autofs_root_ioctl+0x25/0x30 fs/autofs/root.c:910
+    [<ffffffff81602a9c>] vfs_ioctl fs/ioctl.c:51 [inline]
+    [<ffffffff81602a9c>] __do_sys_ioctl fs/ioctl.c:870 [inline]
+    [<ffffffff81602a9c>] __se_sys_ioctl fs/ioctl.c:856 [inline]
+    [<ffffffff81602a9c>] __x64_sys_ioctl+0xfc/0x140 fs/ioctl.c:856
+    [<ffffffff84608225>] do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+    [<ffffffff84608225>] do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
+    [<ffffffff84800087>] entry_SYSCALL_64_after_hwframe+0x63/0xcd
+
+autofs_wait_queue structs should be freed if their wait_ctr becomes zero.
+Otherwise they will be lost.
+
+In this case an AUTOFS_IOC_EXPIRE_MULTI ioctl is done, then a new
+waitqueue struct is allocated in autofs_wait(), its initial wait_ctr
+equals 2. After that wait_event_killable() is interrupted (it returns
+-ERESTARTSYS), so that 'wq->name.name == NULL' condition may be not
+satisfied. Actually, this condition can be satisfied when
+autofs_wait_release() or autofs_catatonic_mode() is called and, what is
+also important, wait_ctr is decremented in those places. Upon the exit of
+autofs_wait(), wait_ctr is decremented to 1. Then the unmounting process
+begins: kill_sb calls autofs_catatonic_mode(), which should have freed the
+waitqueues, but it only decrements its usage counter to zero which is not
+a correct behaviour.
+
+edit:imk
+This description is of course not correct. The umount performed as a result
+of an expire is a umount of a mount that has been automounted, it's not the
+autofs mount itself. They happen independently, usually after everything
+mounted within the autofs file system has been expired away. If everything
+hasn't been expired away the automount daemon can still exit leaving mounts
+in place. But expires done in both cases will result in a notification that
+calls autofs_wait_release() with a result status. The problem case is the
+summary execution of of the automount daemon. In this case any waiting
+processes won't be woken up until either they are terminated or the mount
+is umounted.
+end edit: imk
+
+So in catatonic mode we should free waitqueues which counter becomes zero.
+
+edit: imk
+Initially I was concerned that the calling of autofs_wait_release() and
+autofs_catatonic_mode() was not mutually exclusive but that can't be the
+case (obviously) because the queue entry (or entries) is removed from the
+list when either of these two functions are called. Consequently the wait
+entry will be freed by only one of these functions or by the woken process
+in autofs_wait() depending on the order of the calls.
+end edit: imk
+
+Reported-by: syzbot+5e53f70e69ff0c0a1c0c@syzkaller.appspotmail.com
+Suggested-by: Takeshi Misawa <jeliantsurux@gmail.com>
+Signed-off-by: Fedor Pchelkin <pchelkin@ispras.ru>
+Signed-off-by: Alexey Khoroshilov <khoroshilov@ispras.ru>
+Signed-off-by: Ian Kent <raven@themaw.net>
+Cc: Matthew Wilcox <willy@infradead.org>
+Cc: Andrei Vagin <avagin@gmail.com>
+Cc: autofs@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org
+---
+ fs/autofs/waitq.c |    3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/fs/autofs/waitq.c b/fs/autofs/waitq.c
+index 54c1f8b8b075..efdc76732fae 100644
+--- a/fs/autofs/waitq.c
++++ b/fs/autofs/waitq.c
+@@ -32,8 +32,9 @@ void autofs_catatonic_mode(struct autofs_sb_info *sbi)
+ 		wq->status = -ENOENT; /* Magic is gone - report failure */
+ 		kfree(wq->name.name - wq->offset);
+ 		wq->name.name = NULL;
+-		wq->wait_ctr--;
+ 		wake_up_interruptible(&wq->queue);
++		if (!--wq->wait_ctr)
++			kfree(wq);
+ 		wq = nwq;
+ 	}
+ 	fput(sbi->pipe);	/* Close the pipe */
 
 
-On 8/3/23 22:09, Andy Shevchenko wrote:
-> Initially abs_diff() has lack of documentation. Add it.
-> 
-> Suggested-by: Andrew Morton <akpm@linux-foundation.org>
-> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> ---
->  include/linux/math.h | 12 ++++++++++++
->  1 file changed, 12 insertions(+)
-> 
-> diff --git a/include/linux/math.h b/include/linux/math.h
-> index 336e3e3678e7..dfba59b59998 100644
-> --- a/include/linux/math.h
-> +++ b/include/linux/math.h
-> @@ -155,6 +155,18 @@ __STRUCT_FRACT(u32)
->  	__builtin_types_compatible_p(typeof(x), unsigned type),		\
->  	({ signed type __x = (x); __x < 0 ? -__x : __x; }), other)
->  
-> +/**
-> + * abs_diff - return absolute value of the difference between the arguments
-> + * @a: the first argument
-> + * @b: the second argument
-> + *
-> + * @a and @b has to be of the same type. With this restriction we compare
-
-Preferably s/has/have/.
-
-> + * signed to signed and unsigned to unsigned. The result is the subtraction
-> + * the smaller of the two from the bigger, hence result is always a positive
-> + * value.
-> + *
-> + * Return: an absolute value of the difference between the @a and @b.
-> + */
->  #define abs_diff(a, b) ({			\
->  	typeof(a) __a = (a);			\
->  	typeof(b) __b = (b);			\
-
--- 
-~Randy
