@@ -2,65 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 32D09770663
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 18:54:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D6F37770665
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 18:54:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231224AbjHDQy2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Aug 2023 12:54:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59612 "EHLO
+        id S231128AbjHDQyp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Aug 2023 12:54:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59916 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231128AbjHDQy0 (ORCPT
+        with ESMTP id S229496AbjHDQym (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Aug 2023 12:54:26 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 130B049F0;
-        Fri,  4 Aug 2023 09:54:23 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 8A51062097;
-        Fri,  4 Aug 2023 16:54:22 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DE408C433C8;
-        Fri,  4 Aug 2023 16:54:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691168062;
-        bh=glKsCrTO4KRcRTPJpniA/p1bjsyxrbPDbXj3kg6LpPY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=JkHbUORVg//4gaSC2sQytx4/5RwamYfKlVN+9bO6WE8r7c/u8E8Ipv6e5Gs9i3hI2
-         PODKC05uadCdTWcgTrlP+9aSvHM+hJSso0UqsKnIqbk5hLSXfmvJYGaaRz6dVqu7ED
-         Hv4sFSMKRoRMqq+zwVqmGK9ZWsaUKuoOgiYbIFl/xORBGSqQjLL/IVOvtVP9JrWWq7
-         JvhBPzj9ns3R7dATTJCbwHdQL27IfezwR60+B9+CsKxb0N7dyjZKddJgKYRQgwqg7l
-         DgrY+FoPxITtG0O+N6SQONjga9lQA/BgoVblbOiprOiZ421XtDg0zG4UYmf3LAnver
-         HAHMZEGbavO7w==
-Received: from johan by xi.lan with local (Exim 4.96)
-        (envelope-from <johan@kernel.org>)
-        id 1qRy4B-0005di-1c;
-        Fri, 04 Aug 2023 18:54:19 +0200
-Date:   Fri, 4 Aug 2023 18:54:19 +0200
-From:   Johan Hovold <johan@kernel.org>
-To:     Maximilian Luz <luzmaximilian@gmail.com>
-Cc:     Bjorn Andersson <andersson@kernel.org>,
-        Andy Gross <agross@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
-        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        Steev Klimaszewski <steev@kali.org>,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v5 3/3] firmware: Add support for Qualcomm UEFI Secure
- Application
-Message-ID: <ZM0tO1K4yuBdK6pa@hovoldconsulting.com>
-References: <20230730161906.606163-1-luzmaximilian@gmail.com>
- <20230730161906.606163-4-luzmaximilian@gmail.com>
+        Fri, 4 Aug 2023 12:54:42 -0400
+Received: from mail-vs1-xe2d.google.com (mail-vs1-xe2d.google.com [IPv6:2607:f8b0:4864:20::e2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3B3146A6
+        for <linux-kernel@vger.kernel.org>; Fri,  4 Aug 2023 09:54:41 -0700 (PDT)
+Received: by mail-vs1-xe2d.google.com with SMTP id ada2fe7eead31-4475ae93951so1028493137.0
+        for <linux-kernel@vger.kernel.org>; Fri, 04 Aug 2023 09:54:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=draconx-ca.20221208.gappssmtp.com; s=20221208; t=1691168081; x=1691772881;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :references:in-reply-to:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=54IgYWW4ZMPvtaxEboRz9NGB20nt0nl5l0+8sVW/viE=;
+        b=RkYhRqCBnlpbJc3F1PcsJLhqGkhfrA75zJTFAgKcANVQv1aOAvoBh3BgwCIGCDbgxi
+         jXt5qs6zRhUu+PP8A7R0OvESoKJROFJb9vH5aHiNTmMJqUYbSMT/MAgrqDrkvghaT2Vs
+         WoaQA8OY/8l/hqeNs7B4G+huqW8n26EI/b3TjRqUWPHjvjPyyBxQei+f6voYCQHk9wpP
+         zRuoM+JszZ4m5WXvs38VretjXIV9lBiSJ7Ai54XvxMbO0u44hlF/Gk+U86FZ4gZZmpRe
+         3LAc6221tSH07bq+P2GleS79z1WQ4ASFQAJ6LzU+UA8e6Q22Gs73JsenMl5/qLSzJbIz
+         qtmQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691168081; x=1691772881;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :references:in-reply-to:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=54IgYWW4ZMPvtaxEboRz9NGB20nt0nl5l0+8sVW/viE=;
+        b=gevaxEOMeRnDUctjn4/0ZdM8ZxSXNxhk1/UlfZCqHS7SMBn7RGMzdVpbny3ijkCNMt
+         jnjOHVYMFweKDA/OFcfkyg1719iHZxttz5b8SFXRyR29i05g27bGUVXZVYt1jYEq1gxr
+         EUm1Qu+y/0VTtPrGuxDCumq9yPRupSeK1QPVLdTlxQrDfT4NH8zqPQ7LAqBpszz8JpgU
+         usaVYyIyUd3Q8Xfis6p/UU0olcs2CgVc9P4N2U7ux+vgFaJnZlJVPUCnMFc77zlT9Wwy
+         VlSrgbseIh6lQhjfM07+55eK1xi7pbjtUiI+Nb1brOK+QlaBoB9Ir3CVqwrjbjavCqJR
+         wTjg==
+X-Gm-Message-State: AOJu0YyMmqCll2drcU0a+Iv6ShQR+rcqxj/28pGjgQ1D23NRouahss4l
+        9HPGDdS3qn2/N6MZaMRLcUJwtoF9P5QrWc2edfZU4w==
+X-Google-Smtp-Source: AGHT+IHKs1OgapRWNM/ErWvi+4Hrbz+MQG8ZgaBq+vxKTIFeKiht3rQXF6DXqsfPORXrYYOopdR8+sG6KMVuWIJ9N6A=
+X-Received: by 2002:a67:fb99:0:b0:447:8d49:bfe9 with SMTP id
+ n25-20020a67fb99000000b004478d49bfe9mr1753068vsr.24.1691168080821; Fri, 04
+ Aug 2023 09:54:40 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230730161906.606163-4-luzmaximilian@gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+Received: by 2002:ab0:6209:0:b0:794:1113:bb24 with HTTP; Fri, 4 Aug 2023
+ 09:54:40 -0700 (PDT)
+X-Originating-IP: [24.53.241.2]
+In-Reply-To: <CADyTPEwgG0=R_b5DNBP0J0auDXu2BNTOwkSUFg-s7pLJUPC+Tg@mail.gmail.com>
+References: <CADyTPEzqf8oQAPSFRWJLxAhd-WE4fX2zdoe9Vu6V9hZMn1Yc8g@mail.gmail.com>
+ <CAL_JsqLrErF__GGHfanRFCpfbOh6fvz4-aJv32h8OfDjUeZPSg@mail.gmail.com> <CADyTPEwgG0=R_b5DNBP0J0auDXu2BNTOwkSUFg-s7pLJUPC+Tg@mail.gmail.com>
+From:   Nick Bowler <nbowler@draconx.ca>
+Date:   Fri, 4 Aug 2023 12:54:40 -0400
+Message-ID: <CADyTPExgjcaUeKiR108geQhr0KwFC0A8qa_n_ST2RxhbSczomQ@mail.gmail.com>
+Subject: Re: PROBLEM: Broken or delayed ethernet on Xilinx ZCU104 since 5.18 (regression)
+To:     Rob Herring <robh@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        netdev@vger.kernel.org, regressions@lists.linux.dev
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -68,17 +72,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Jul 30, 2023 at 06:19:04PM +0200, Maximilian Luz wrote:
- 
-> +config QCOM_QSEECOM_UEFISECAPP
-> +	bool "Qualcomm SEE UEFI Secure App client driver"
-> +	depends on QCOM_SCM
+On 2023-08-04, Nick Bowler <nbowler@draconx.ca> wrote:
+> On 04/08/2023, Rob Herring <robh@kernel.org> wrote:
+>> On Fri, Aug 4, 2023 at 9:27=E2=80=AFAM Nick Bowler <nbowler@draconx.ca> =
+wrote:
+>>>   commit e461bd6f43f4e568f7436a8b6bc21c4ce6914c36
+>>>   Author: Robert Hancock <robert.hancock@calian.com>
+>>>   Date:   Thu Jan 27 10:37:36 2022 -0600
+>>>
+>>>       arm64: dts: zynqmp: Added GEM reset definitions
+>>>
+>>> Reverting this fixes the problem on 5.18.  Reverting this fixes the
+>>> problem on 6.1.  Reverting this fixes the problem on 6.4.  In all of
+>>> these versions, with this change reverted, the network device appears
+>>> without delay.
+>>
+>> With the above change, the kernel is going to be waiting for the reset
+>> driver which either didn't exist or wasn't enabled in your config
+>> (maybe kconfig needs to be tweaked to enable it automatically).
+>
+> The dts defines a reset-controller node with
+>
+>   compatible =3D "xlnx,zynqmp-reset"
+>
+> As far as I can see, this is supposed to be handled by the code in
+> drivers/reset/zynqmp-reset.c driver, it is enabled by CONFIG_ARCH_ZYNQMP,
+> and I have that set to "y", and it appears to be getting compiled in (tha=
+t
+> is, there is a drivers/reset/zynqmp-reset.o file in the build directory).
 
-No need for this one.
+Oh, I get it, to include this driver I need to also enable:
 
-> +	depends on QCOM_QSEECOM
-> +	depends on EFI
+  CONFIG_RESET_CONTROLLER=3Dy
 
-Reviewed-by: Johan Hovold <johan+linaro@kernel.org>
+Setting this fixes 6.4.  Perhaps CONFIG_ARCH_ZYNQMP should select it?
+I guess the reset-zynqmp.o file that was in my build directory must
+have been leftover garbage from a long time ago.
 
-Johan
+However, even with this option enabled, 6.5-rc4 remains broken (no
+change in behaviour wrt. the network device).  I will bisect this
+now.
+
+Cheers,
+  Nick
