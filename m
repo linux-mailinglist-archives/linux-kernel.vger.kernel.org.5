@@ -2,44 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A691B76FFC3
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 13:52:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B8EF476FFBC
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 13:52:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230285AbjHDLwl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Aug 2023 07:52:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50226 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230199AbjHDLwi (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S229762AbjHDLwi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Fri, 4 Aug 2023 07:52:38 -0400
-Received: from lelv0143.ext.ti.com (lelv0143.ext.ti.com [198.47.23.248])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E01BB1;
-        Fri,  4 Aug 2023 04:52:37 -0700 (PDT)
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50210 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229445AbjHDLwg (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Aug 2023 07:52:36 -0400
+Received: from lelv0142.ext.ti.com (lelv0142.ext.ti.com [198.47.23.249])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFB36B1;
+        Fri,  4 Aug 2023 04:52:34 -0700 (PDT)
 Received: from lelv0265.itg.ti.com ([10.180.67.224])
-        by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 374BqQT8020755;
-        Fri, 4 Aug 2023 06:52:26 -0500
+        by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 374BqTe5071727;
+        Fri, 4 Aug 2023 06:52:29 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1691149946;
-        bh=KQIfnp3zDygaNdKnWhLSWvquUdZm/3QCOfmMa7QyDOo=;
+        s=ti-com-17Q1; t=1691149949;
+        bh=Sf06WqJO/HbtSUfaOLN3KmMobKyfRUj7yEivxrrLPu4=;
         h=From:To:CC:Subject:Date:In-Reply-To:References;
-        b=LpJga7dL/NBX+DcBeoPSELFeSpclKZZpnmYk5oRNSBlaVL0rl2DX7fElac14aVbrD
-         SNa7rETUkY2ybiRgNDkk/H+DrX35DqMPAo5yC1NPqVIMLgmL6EJ4r+Yk7RH3awdOce
-         Vx7PeWaofXuMtt3CtyVl+FANYcJoaB2UfIgvoxvE=
-Received: from DLEE108.ent.ti.com (dlee108.ent.ti.com [157.170.170.38])
-        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 374BqQiw003990
+        b=qkWWA4m8DEaIUZroKT5q/gw+KL9k1Pskts1Q/r+cicHTAZ4Y7oNZIv9batWYyMOGu
+         LLqBDPkaE6Kp6g32eMTcGe983+QLUgSaepBCUWXAGJDXDdLyaXZ4yMRSwSIrzE870M
+         gBVXwVAWliUrQ96m+VKCi83D4gqwsu4sHO9EZn64=
+Received: from DLEE105.ent.ti.com (dlee105.ent.ti.com [157.170.170.35])
+        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 374BqTJr004008
         (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Fri, 4 Aug 2023 06:52:26 -0500
-Received: from DLEE108.ent.ti.com (157.170.170.38) by DLEE108.ent.ti.com
- (157.170.170.38) with Microsoft SMTP Server (version=TLS1_2,
+        Fri, 4 Aug 2023 06:52:29 -0500
+Received: from DLEE101.ent.ti.com (157.170.170.31) by DLEE105.ent.ti.com
+ (157.170.170.35) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Fri, 4
- Aug 2023 06:52:25 -0500
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE108.ent.ti.com
- (157.170.170.38) with Microsoft SMTP Server (version=TLS1_2,
+ Aug 2023 06:52:28 -0500
+Received: from fllv0040.itg.ti.com (10.64.41.20) by DLEE101.ent.ti.com
+ (157.170.170.31) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Fri, 4 Aug 2023 06:52:25 -0500
-Received: from localhost (ileaxei01-snat.itg.ti.com [10.180.69.5])
-        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 374BqPEs023804;
-        Fri, 4 Aug 2023 06:52:25 -0500
+ Frontend Transport; Fri, 4 Aug 2023 06:52:29 -0500
+Received: from localhost (ileaxei01-snat2.itg.ti.com [10.180.69.6])
+        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 374BqRKe130190;
+        Fri, 4 Aug 2023 06:52:28 -0500
 From:   Dhruva Gole <d-gole@ti.com>
 To:     Nishanth Menon <nm@ti.com>, Tero Kristo <kristo@kernel.org>,
         "Santosh Shilimkar" <ssantosh@kernel.org>
@@ -47,10 +47,10 @@ CC:     <linux-pm@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
         <linux-arm-kernel@lists.infradead.org>,
         <linux-omap@vger.kernel.org>,
         "Kevin Hilman" <khilman@baylibre.com>, Vignesh R <vigneshr@ti.com>,
-        Dave Gerlach <d-gerlach@ti.com>, Dhruva Gole <d-gole@ti.com>
-Subject: [PATCH V7 1/4] firmware: ti_sci: Introduce Power Management Ops
-Date:   Fri, 4 Aug 2023 17:20:34 +0530
-Message-ID: <20230804115037.754994-2-d-gole@ti.com>
+        Georgi Vlaev <g-vlaev@ti.com>, Dhruva Gole <d-gole@ti.com>
+Subject: [PATCH V7 2/4] firmware: ti_sci: Add support for querying the firmware caps
+Date:   Fri, 4 Aug 2023 17:20:35 +0530
+Message-ID: <20230804115037.754994-3-d-gole@ti.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20230804115037.754994-1-d-gole@ti.com>
 References: <20230804115037.754994-1-d-gole@ti.com>
@@ -58,71 +58,86 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
 X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dave Gerlach <d-gerlach@ti.com>
+From: Georgi Vlaev <g-vlaev@ti.com>
 
-Introduce TISCI_MSG_PREPARE_SLEEP power management op supported by the
-TISCI Low Power Mode API [1]. This message is currently supported only on
-AM62x platforms.
+This patch adds support for the TISCI_MSG_QUERY_FW_CAPS
+message, used to retrieve the firmware capabilities of the
+currently running system firmware. The message belongs to
+the TISCI general core message API [1] and is available in
+SysFW version 08.04.03 and above. Currently, the message is
+supported on devices with split architecture of the system
+firmware (DM + TIFS) like AM62x. Old revisions or not yet
+supported platforms will NACK this request.
 
-It can prepare the SOC for entering into a low power mode and
-provide details to firmware about the state being entered.
+We're using this message locally in ti_sci.c to get the low
+power featutes of the FW/SoC. As there's no other kernel
+consumers yet, this is not added to struct ti_sci_core_ops.
 
-While at it, update the Copyright date as well for ti_sci
+Also have a has_lpm list of SOCs to ensure that proper LPM
+capabilities are used and if any versions of firmware that happen to
+advertise garbage value for fw_caps are ignored.
+This was needed as the API is buggy on TI SYSFW v09.00 and below
 
-[1] https://software-dl.ti.com/tisci/esd/latest/2_tisci_msgs/pm/lpm.html
+[1] https://software-dl.ti.com/tisci/esd/latest/2_tisci_msgs/general/core.html
 
-Signed-off-by: Dave Gerlach <d-gerlach@ti.com>
+Signed-off-by: Georgi Vlaev <g-vlaev@ti.com>
+[d-gole@ti.com: add workaround for sysfw fw_caps inconsistency]
 Signed-off-by: Dhruva Gole <d-gole@ti.com>
 ---
- drivers/firmware/ti_sci.c              | 64 +++++++++++++++++++++++++-
- drivers/firmware/ti_sci.h              | 30 +++++++++++-
- include/linux/soc/ti/ti_sci_protocol.h | 15 ++++++
- 3 files changed, 107 insertions(+), 2 deletions(-)
+ drivers/firmware/ti_sci.c | 81 +++++++++++++++++++++++++++++++++++++++
+ drivers/firmware/ti_sci.h | 26 +++++++++++++
+ 2 files changed, 107 insertions(+)
 
 diff --git a/drivers/firmware/ti_sci.c b/drivers/firmware/ti_sci.c
-index 26a37f47f4ca..fc35d78b7e42 100644
+index fc35d78b7e42..ac64e328c313 100644
 --- a/drivers/firmware/ti_sci.c
 +++ b/drivers/firmware/ti_sci.c
-@@ -2,7 +2,7 @@
- /*
-  * Texas Instruments System Control Interface Protocol Driver
-  *
-- * Copyright (C) 2015-2022 Texas Instruments Incorporated - https://www.ti.com/
-+ * Copyright (C) 2015-2023 Texas Instruments Incorporated - https://www.ti.com/
-  *	Nishanth Menon
-  */
+@@ -21,6 +21,7 @@
+ #include <linux/slab.h>
+ #include <linux/soc/ti/ti-msgmgr.h>
+ #include <linux/soc/ti/ti_sci_protocol.h>
++#include <linux/sys_soc.h>
+ #include <linux/reboot.h>
  
-@@ -1664,6 +1664,65 @@ static int ti_sci_cmd_clk_get_freq(const struct ti_sci_handle *handle,
+ #include "ti_sci.h"
+@@ -1723,6 +1724,86 @@ static int ti_sci_cmd_prepare_sleep(const struct ti_sci_handle *handle, u8 mode,
  	return ret;
  }
  
++/*
++ * This is the list of SoCs not affected by SYSFW Bug causing the fw_caps
++ * to return garbage values.
++ * As and when new SoC's start supporting low power modes, this struct can
++ * be updated with those new SOC family entries.
++ */
++static const struct soc_device_attribute has_lpm[] = {
++	{ .family = "AM62X" },
++	{ /* sentinel */ }
++};
++
 +/**
-+ * ti_sci_cmd_prepare_sleep() - Prepare system for system suspend
-+ * @handle:		pointer to TI SCI handle
-+ * @mode:		Device identifier
-+ * @ctx_lo:		Low part of address for context save
-+ * @ctx_hi:		High part of address for context save
-+ * @debug_flags:	Debug flags to pass to firmware
++ * ti_sci_msg_cmd_query_fw_caps() - Get the FW/SoC capabilities
++ * @handle:		Pointer to TI SCI handle
++ * @fw_caps:		Each bit in fw_caps indicating one FW/SOC capability
 + *
 + * Return: 0 if all went well, else returns appropriate error value.
 + */
-+static int ti_sci_cmd_prepare_sleep(const struct ti_sci_handle *handle, u8 mode,
-+				    u32 ctx_lo, u32 ctx_hi, u32 debug_flags)
++static int ti_sci_msg_cmd_query_fw_caps(const struct ti_sci_handle *handle,
++					u64 *fw_caps)
 +{
 +	struct ti_sci_info *info;
-+	struct ti_sci_msg_req_prepare_sleep *req;
-+	struct ti_sci_msg_hdr *resp;
 +	struct ti_sci_xfer *xfer;
++	struct ti_sci_msg_resp_query_fw_caps *resp;
 +	struct device *dev;
 +	int ret = 0;
 +
@@ -134,20 +149,15 @@ index 26a37f47f4ca..fc35d78b7e42 100644
 +	info = handle_to_ti_sci_info(handle);
 +	dev = info->dev;
 +
-+	xfer = ti_sci_get_one_xfer(info, TI_SCI_MSG_PREPARE_SLEEP,
++	xfer = ti_sci_get_one_xfer(info, TI_SCI_MSG_QUERY_FW_CAPS,
 +				   TI_SCI_FLAG_REQ_ACK_ON_PROCESSED,
-+				   sizeof(*req), sizeof(*resp));
++				   sizeof(struct ti_sci_msg_hdr),
++				   sizeof(*resp));
 +	if (IS_ERR(xfer)) {
 +		ret = PTR_ERR(xfer);
 +		dev_err(dev, "Message alloc failed(%d)\n", ret);
 +		return ret;
 +	}
-+
-+	req = (struct ti_sci_msg_req_prepare_sleep *)xfer->xfer_buf;
-+	req->mode = mode;
-+	req->ctx_lo = ctx_lo;
-+	req->ctx_hi = ctx_hi;
-+	req->debug_flags = debug_flags;
 +
 +	ret = ti_sci_do_xfer(info, xfer);
 +	if (ret) {
@@ -155,9 +165,28 @@ index 26a37f47f4ca..fc35d78b7e42 100644
 +		goto fail;
 +	}
 +
-+	resp = (struct ti_sci_msg_hdr *)xfer->xfer_buf;
++	resp = (struct ti_sci_msg_resp_query_fw_caps *)xfer->xfer_buf;
 +
-+	ret = ti_sci_is_response_ack(resp) ? 0 : -ENODEV;
++	if (!ti_sci_is_response_ack(resp)) {
++		ret = -ENODEV;
++		goto fail;
++	}
++
++	/*
++	 * fw_caps 1st bit is used to check Generic capability. Other than
++	 * that the 1:4 bits are used for various LPM capabilities.
++	 * The API is buggy on SYSFW 9.00 and below, on some devices.
++	 * Hence, to avoid any sort of bugs arising due to garbage values
++	 * Let's allow the fw_caps to be set to whatever the firmware
++	 * says only on devices listed under has_lpm. These devices should
++	 * have lpm features tested and implemented in the firmware
++	 * and only then should they be added to has_lpm struct.
++	 * Otherwise, set the value to 1 that is the default.
++	 */
++	if (fw_caps && soc_device_match(has_lpm))
++		*fw_caps = resp->fw_caps;
++	else
++		*fw_caps = resp->fw_caps & MSG_FLAG_CAPS_GENERIC;
 +
 +fail:
 +	ti_sci_put_one_xfer(&info->minfo, xfer);
@@ -168,111 +197,50 @@ index 26a37f47f4ca..fc35d78b7e42 100644
  static int ti_sci_cmd_core_reboot(const struct ti_sci_handle *handle)
  {
  	struct ti_sci_info *info;
-@@ -2806,6 +2865,7 @@ static void ti_sci_setup_ops(struct ti_sci_info *info)
- 	struct ti_sci_core_ops *core_ops = &ops->core_ops;
- 	struct ti_sci_dev_ops *dops = &ops->dev_ops;
- 	struct ti_sci_clk_ops *cops = &ops->clk_ops;
-+	struct ti_sci_pm_ops *pmops = &ops->pm_ops;
- 	struct ti_sci_rm_core_ops *rm_core_ops = &ops->rm_core_ops;
- 	struct ti_sci_rm_irq_ops *iops = &ops->rm_irq_ops;
- 	struct ti_sci_rm_ringacc_ops *rops = &ops->rm_ring_ops;
-@@ -2845,6 +2905,8 @@ static void ti_sci_setup_ops(struct ti_sci_info *info)
- 	cops->set_freq = ti_sci_cmd_clk_set_freq;
- 	cops->get_freq = ti_sci_cmd_clk_get_freq;
- 
-+	pmops->prepare_sleep = ti_sci_cmd_prepare_sleep;
-+
- 	rm_core_ops->get_range = ti_sci_cmd_get_resource_range;
- 	rm_core_ops->get_range_from_shost =
- 				ti_sci_cmd_get_resource_range_from_shost;
 diff --git a/drivers/firmware/ti_sci.h b/drivers/firmware/ti_sci.h
-index ef3a8214d002..9c9b4dae9521 100644
+index 9c9b4dae9521..56f66368746b 100644
 --- a/drivers/firmware/ti_sci.h
 +++ b/drivers/firmware/ti_sci.h
-@@ -6,7 +6,7 @@
-  * The system works in a message response protocol
-  * See: http://processors.wiki.ti.com/index.php/TISCI for details
-  *
-- * Copyright (C)  2015-2016 Texas Instruments Incorporated - https://www.ti.com/
-+ * Copyright (C)  2015-2023 Texas Instruments Incorporated - https://www.ti.com/
-  */
+@@ -19,6 +19,7 @@
+ #define TI_SCI_MSG_WAKE_REASON	0x0003
+ #define TI_SCI_MSG_GOODBYE	0x0004
+ #define TI_SCI_MSG_SYS_RESET	0x0005
++#define TI_SCI_MSG_QUERY_FW_CAPS	0x0022
  
- #ifndef __TI_SCI_H
-@@ -35,6 +35,9 @@
- #define TI_SCI_MSG_QUERY_CLOCK_FREQ	0x010d
- #define TI_SCI_MSG_GET_CLOCK_FREQ	0x010e
- 
-+/* Low Power Mode Requests */
-+#define TI_SCI_MSG_PREPARE_SLEEP       0x0300
-+
- /* Resource Management Requests */
- #define TI_SCI_MSG_GET_RESOURCE_RANGE	0x1500
- 
-@@ -545,6 +548,31 @@ struct ti_sci_msg_resp_get_clock_freq {
- 	u64 freq_hz;
+ /* Device requests */
+ #define TI_SCI_MSG_SET_DEVICE_STATE	0x0200
+@@ -135,6 +136,31 @@ struct ti_sci_msg_req_reboot {
+ 	struct ti_sci_msg_hdr hdr;
  } __packed;
  
-+#define TISCI_MSG_VALUE_SLEEP_MODE_DEEP_SLEEP		0x0
-+
 +/**
-+ * struct tisci_msg_prepare_sleep_req - Request for TISCI_MSG_PREPARE_SLEEP.
++ * struct ti_sci_msg_resp_query_fw_caps - Response for query firmware caps
++ * @hdr:	Generic header
++ * @fw_caps:	Each bit in fw_caps indicating one FW/SOC capability
++ *		MSG_FLAG_CAPS_GENERIC: Generic capability (LPM not supported)
++ *		MSG_FLAG_CAPS_LPM_DEEP_SLEEP: Deep Sleep LPM
++ *		MSG_FLAG_CAPS_LPM_MCU_ONLY: MCU only LPM
++ *		MSG_FLAG_CAPS_LPM_STANDBY: Standby LPM
++ *		MSG_FLAG_CAPS_LPM_PARTIAL_IO: Partial IO in LPM
 + *
-+ * @hdr				TISCI header to provide ACK/NAK flags to the host.
-+ * @mode			Low power mode to enter.
-+ * @ctx_lo			Low 32-bits of physical pointer to address to use for context save.
-+ * @ctx_hi			High 32-bits of physical pointer to address to use for context save.
-+ * @debug_flags			Flags that can be set to halt the sequence during suspend or
-+ *				resume to allow JTAG connection and debug.
-+ *
-+ * This message is used as the first step of entering a low power mode. It
-+ * allows configurable information, including which state to enter to be
-+ * easily shared from the application, as this is a non-secure message and
-+ * therefore can be sent by anyone.
++ * Response to a generic message with message type TI_SCI_MSG_QUERY_FW_CAPS
++ * providing currently available SOC/firmware capabilities. SoC that don't
++ * support low power modes return only MSG_FLAG_CAPS_GENERIC capability.
 + */
-+struct ti_sci_msg_req_prepare_sleep {
-+	struct ti_sci_msg_hdr	hdr;
-+	u8			mode;
-+	u32			ctx_lo;
-+	u32			ctx_hi;
-+	u32			debug_flags;
++struct ti_sci_msg_resp_query_fw_caps {
++	struct ti_sci_msg_hdr hdr;
++#define MSG_FLAG_CAPS_GENERIC		TI_SCI_MSG_FLAG(0)
++#define MSG_FLAG_CAPS_LPM_DEEP_SLEEP	TI_SCI_MSG_FLAG(1)
++#define MSG_FLAG_CAPS_LPM_MCU_ONLY	TI_SCI_MSG_FLAG(2)
++#define MSG_FLAG_CAPS_LPM_STANDBY	TI_SCI_MSG_FLAG(3)
++#define MSG_FLAG_CAPS_LPM_PARTIAL_IO	TI_SCI_MSG_FLAG(4)
++#define MSG_MASK_CAPS_LPM		GENMASK_ULL(4, 1)
++	u64 fw_caps;
 +} __packed;
 +
- #define TI_SCI_IRQ_SECONDARY_HOST_INVALID	0xff
- 
  /**
-diff --git a/include/linux/soc/ti/ti_sci_protocol.h b/include/linux/soc/ti/ti_sci_protocol.h
-index bd0d11af76c5..566e442b6a43 100644
---- a/include/linux/soc/ti/ti_sci_protocol.h
-+++ b/include/linux/soc/ti/ti_sci_protocol.h
-@@ -195,6 +195,20 @@ struct ti_sci_clk_ops {
- 			u64 *current_freq);
- };
- 
-+/**
-+ * struct ti_sci_pm_ops - Low Power Mode (LPM) control operations
-+ * @prepare_sleep: Prepare to enter low power mode
-+ *		- mode: Low power mode to enter.
-+ *		- ctx_lo: Low 32-bits of physical address for context save.
-+ *		- ctx_hi: High 32-bits of physical address for context save.
-+ *		- ctx_lo: 'true' if frequency change is desired.
-+ *		- debug_flags: JTAG control flags for debug.
-+ */
-+struct ti_sci_pm_ops {
-+	int (*prepare_sleep)(const struct ti_sci_handle *handle, u8 mode,
-+			     u32 ctx_lo, u32 ctx_hi, u32 flags);
-+};
-+
- /**
-  * struct ti_sci_resource_desc - Description of TI SCI resource instance range.
-  * @start:	Start index of the first resource range.
-@@ -539,6 +553,7 @@ struct ti_sci_ops {
- 	struct ti_sci_core_ops core_ops;
- 	struct ti_sci_dev_ops dev_ops;
- 	struct ti_sci_clk_ops clk_ops;
-+	struct ti_sci_pm_ops pm_ops;
- 	struct ti_sci_rm_core_ops rm_core_ops;
- 	struct ti_sci_rm_irq_ops rm_irq_ops;
- 	struct ti_sci_rm_ringacc_ops rm_ring_ops;
+  * struct ti_sci_msg_req_set_device_state - Set the desired state of the device
+  * @hdr:		Generic header
 -- 
 2.34.1
 
