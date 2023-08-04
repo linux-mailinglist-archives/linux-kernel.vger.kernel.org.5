@@ -2,182 +2,185 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EF23A77040C
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 17:09:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 93190770415
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 17:10:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229868AbjHDPJR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Aug 2023 11:09:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48832 "EHLO
+        id S231321AbjHDPKA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Aug 2023 11:10:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49702 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229738AbjHDPJO (ORCPT
+        with ESMTP id S229983AbjHDPJz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Aug 2023 11:09:14 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D91895247
-        for <linux-kernel@vger.kernel.org>; Fri,  4 Aug 2023 08:08:39 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 27BBA62063
-        for <linux-kernel@vger.kernel.org>; Fri,  4 Aug 2023 15:07:18 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8C7B2C433CB
-        for <linux-kernel@vger.kernel.org>; Fri,  4 Aug 2023 15:07:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691161637;
-        bh=w545Z+d9TiXeg8V59l+wEz1UXwdM7KzVmVGqDmBSgu8=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=jf8zI10ODNKOXDods6xTXrfk3BmH077KaEN42Yj1Q6+waPX8RAhCMNm/+dTBVqhUV
-         duqdkjFUrLvuo+NwChgtmlvQFT0dy2RcoVEXj198ZSveNO2BbaMGeXhRYZCf0koDFf
-         y/gSfHTMK9Pu6fFu4JJOzyYJiWju+YlqeK4IAo60EVf/lOwamOJQlsOLn38rwiKH9M
-         yWAkVOzr8qRA0uwtONWrk0RdXL6Z3eXNZp9bw7vmxqgA70WgWV11a8nsADt39eUW/f
-         i/h27bblAo9YWi4F245h1UTGvv6wakuA8nrvg8YUJSaJPVRoqVM0n24MRJhvZ2trJJ
-         iOqD7u1eQwbPA==
-Received: by mail-pf1-f173.google.com with SMTP id d2e1a72fcca58-686e0213c0bso1680908b3a.1
-        for <linux-kernel@vger.kernel.org>; Fri, 04 Aug 2023 08:07:17 -0700 (PDT)
-X-Gm-Message-State: AOJu0YyKg6XPwORuAxrkU09DclYc38l0e1O3RSjtf9Ds4fzCDLR3nlyI
-        x1Z7ptjNZCiiETAWUH3adnoyBoMs70RnoVwoLRqhJQ==
-X-Google-Smtp-Source: AGHT+IE/m2IH6dm0mgAq62QwDDxUm16U8hVFqqZBv8MRTU+FQdghR5KPxptx8eT7rxij+h67ZYNqU0BCQRYQrnxmjzk=
-X-Received: by 2002:a17:90a:3b0a:b0:268:4314:2dc6 with SMTP id
- d10-20020a17090a3b0a00b0026843142dc6mr1705121pjc.37.1691161637007; Fri, 04
- Aug 2023 08:07:17 -0700 (PDT)
-MIME-Version: 1.0
-References: <20230804-lt8912b-v1-0-c542692c6a2f@ideasonboard.com> <20230804-lt8912b-v1-2-c542692c6a2f@ideasonboard.com>
-In-Reply-To: <20230804-lt8912b-v1-2-c542692c6a2f@ideasonboard.com>
-From:   Robert Foss <rfoss@kernel.org>
-Date:   Fri, 4 Aug 2023 17:07:06 +0200
-X-Gmail-Original-Message-ID: <CAN6tsi72WM28b=-u+6x_nbar7YF9=eX0RH=jYcmSc5pN4y2KZw@mail.gmail.com>
-Message-ID: <CAN6tsi72WM28b=-u+6x_nbar7YF9=eX0RH=jYcmSc5pN4y2KZw@mail.gmail.com>
-Subject: Re: [PATCH 2/4] drm/bridge: lt8912b: Fix crash on bridge detach
-To:     Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
-Cc:     Adrien Grassein <adrien.grassein@gmail.com>,
-        Andrzej Hajda <andrzej.hajda@intel.com>,
+        Fri, 4 Aug 2023 11:09:55 -0400
+Received: from EUR02-VI1-obe.outbound.protection.outlook.com (mail-vi1eur02on2057.outbound.protection.outlook.com [40.107.241.57])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0F324C05;
+        Fri,  4 Aug 2023 08:09:28 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=n6ul/sbE9l4Zl7OpCJPpZQHpRrD066c1giEoumNYCYjk0Fr1wAa/YkQWTfUZSOWmE088QxmINlVfJOLak+JBP57S7q/VGNorXZhs+hfthwyGCvFkL4eXncUJlhXg1xEkyUeGLyY7VjBZVdwXse9vVbRNK6a78NXuvB6wsncD49kMxGeY8JbH8ZQ858iNN/xrgaDfRz60yF2529B85Per4RXiNfR8xtnbT+T+lxDjhsVS9gejOrJTO+HTshKPvCZ7RovJscgaNbsKXCgNWYyKgZR0RpV9YMhAZyyUZjj5CJRg0H8ZjvWO1a5FCPbJ2KyB6YLnrxi+EkAPOfaEjFMeRw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=J76+y6Nww2N39iFBmfZQ7ChqR5jp/K3julaLCHkHVqE=;
+ b=mnhTyL/vdxV2oWMyh+YjklalcF+eBpLE/SSXmIhPwTK7azfT6QCTZcjVeNFmur+HLMZpmkTCVRWPRRjJv9irFCBFw7q3w6kvKzeJI9ZC/O5a6taI71pBzg9MZP14M/0PgxtDXYncoT+xqxe8gh1DbOLLbFw2/PLrQzUeqfnx0ApSbIaDN3He6GLfsHEF0VKZU7Qh8540zjfoWZVsCYHJpH5/NsZro0I0f08INaX6p0Jw+sSed6D3PWlU2zpRR73TUpo/HyjvYj1o1ietL3+mW5azVZbFcIL/bq4eot5WfCCCLGM/rTzw+AVtLQKgRA91daxSiLVq2CvfslWkp/MRkQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=J76+y6Nww2N39iFBmfZQ7ChqR5jp/K3julaLCHkHVqE=;
+ b=VLk8C42mOoDjhzKI6v28+AhMFFIhs5VmvwWcCVofg6554N2NG0BAXeFc3KCA6C8Jc9vINxQZIlXJnuuQetmz8vH7szTzVQqWN5HKUs9nWpMrw8ZupiodoPyDIya57NicW+rPQexZozY9Eekx992TCx3rdT2yLpiynTrqUudz4RQ=
+Received: from PAXPR04MB9185.eurprd04.prod.outlook.com (2603:10a6:102:231::11)
+ by AM8PR04MB7763.eurprd04.prod.outlook.com (2603:10a6:20b:246::5) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6652.21; Fri, 4 Aug
+ 2023 15:08:57 +0000
+Received: from PAXPR04MB9185.eurprd04.prod.outlook.com
+ ([fe80::d4ee:8daa:92f4:9671]) by PAXPR04MB9185.eurprd04.prod.outlook.com
+ ([fe80::d4ee:8daa:92f4:9671%3]) with mapi id 15.20.6631.046; Fri, 4 Aug 2023
+ 15:08:56 +0000
+From:   Shenwei Wang <shenwei.wang@nxp.com>
+To:     Russell King <linux@armlinux.org.uk>
+CC:     Marc Kleine-Budde <mkl@pengutronix.de>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
         Neil Armstrong <neil.armstrong@linaro.org>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        Jonas Karlman <jonas@kwiboo.se>,
+        Kevin Hilman <khilman@baylibre.com>,
+        Vinod Koul <vkoul@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
         Jernej Skrabec <jernej.skrabec@gmail.com>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Francesco Dolcini <francesco.dolcini@toradex.com>,
-        Stefan Eichenberger <stefan.eichenberger@toradex.com>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+        Samuel Holland <samuel@sholland.org>,
+        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Jose Abreu <joabreu@synopsys.com>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        dl-linux-imx <linux-imx@nxp.com>,
+        Jerome Brunet <jbrunet@baylibre.com>,
+        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
+        Bhupesh Sharma <bhupesh.sharma@linaro.org>,
+        Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>,
+        Simon Horman <simon.horman@corigine.com>,
+        Andrew Halaney <ahalaney@redhat.com>,
+        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>,
+        Wong Vee Khee <veekhee@apple.com>,
+        Revanth Kumar Uppala <ruppala@nvidia.com>,
+        Jochen Henneberg <jh@henneberg-systemdesign.com>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-stm32@st-md-mailman.stormreply.com" 
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-amlogic@lists.infradead.org" 
+        <linux-amlogic@lists.infradead.org>,
+        "imx@lists.linux.dev" <imx@lists.linux.dev>,
+        Frank Li <frank.li@nxp.com>
+Subject: RE: [EXT] Re: [PATCH v4 net-next 2/2] net: stmmac: dwmac-imx: pause
+ the TXC clock in fixed-link
+Thread-Topic: [EXT] Re: [PATCH v4 net-next 2/2] net: stmmac: dwmac-imx: pause
+ the TXC clock in fixed-link
+Thread-Index: AQHZxuKiZUs/AXOMS0qXmBpSCSPAEK/aOeGAgAACu7A=
+Date:   Fri, 4 Aug 2023 15:08:56 +0000
+Message-ID: <PAXPR04MB9185B0397B5C9C37F99CBF518909A@PAXPR04MB9185.eurprd04.prod.outlook.com>
+References: <20230804144629.358455-1-shenwei.wang@nxp.com>
+ <20230804144629.358455-3-shenwei.wang@nxp.com>
+ <ZM0Rk4paok5cAvp5@shell.armlinux.org.uk>
+In-Reply-To: <ZM0Rk4paok5cAvp5@shell.armlinux.org.uk>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nxp.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: PAXPR04MB9185:EE_|AM8PR04MB7763:EE_
+x-ms-office365-filtering-correlation-id: 4a4976ec-10ef-4058-f7f1-08db94fcb994
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: TrwhU/m2Q1LWPrKGLZveoT90rRYce0C+b83jiDux+HU/3M9Q5ZlR1AnDp5nTGC7/wJUB40YqUv5576lbzwJsWjG491s3QkMQYZCjOeuTC5gavy+IJqnWDpPe0Ye8S5as8nkXpfQjHHX87MgKZSF1KcNFNLxDXwZzlGdMfqpGhPu29L/Wn2jmMYZoiJBaMj9Qotsn6F0HwnkdWTNc1ToXCOdu/l7U3qqKSjtd/3FMiJ+0N6xyqH7ZOFSxscKR3H5XsmIKNgluGBRZPy/CTruCKSFeX6V8IKZRjhBFO2EdVvDevOvR5a7HFHVxadFpI+dN74HvB0A25RKelpXYtuqaD/olr5cQsFivOWfZYQuKbFp5ew3hptrqcQhf4Nc3fjkJhWxvBJS/eaH8dK/xcUGXbsLM7VeaBSHUZREBjjDu2sZDsuvkwIvXZKfTFdZQ2s+TfCq2AOGrvDIxGj7i6hh+L25V11SRI8R2TRtQXpidaOsQsm5O8cdqw/FKcLBZwamO/i6MTl3hMQW0lGpfK+v3nuNYxUm24aA9+2b5qlfFfphSMuuX1r5YrXGNm9QW1qnZipPDYRGihpTYf/e/0HuXoD7FYLAI84BH+I043ZK2NGI=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PAXPR04MB9185.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(39860400002)(396003)(366004)(346002)(136003)(376002)(1800799003)(186006)(451199021)(8936002)(8676002)(4744005)(26005)(45080400002)(478600001)(55016003)(966005)(86362001)(9686003)(7696005)(33656002)(71200400001)(316002)(41300700001)(5660300002)(64756008)(4326008)(66476007)(66556008)(66446008)(66946007)(6916009)(44832011)(52536014)(83380400001)(7416002)(7406005)(54906003)(2906002)(76116006)(6506007)(122000001)(38100700002)(55236004)(53546011)(38070700005);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?LOtBrqsJSdLPY7vQJuzTmm2Ii/SaQPltCVsxCDYLIxVICUJZxla6n7sVt/ms?=
+ =?us-ascii?Q?z6HDos4NZRqFoKVyLGh6P8MPl8W/By9ku3N2+y2jO5fTGzl+AjqikjmawfHA?=
+ =?us-ascii?Q?OTVBdIaaNFnbWKcWgk3OypTcwkkoti5hQaxd57jNlMzbhE+++gMx+w2g82lr?=
+ =?us-ascii?Q?ObTpWfB9eryr+2Q1qAcfNQTvOV5qAFl3SRVzqiymtwAsN6fO9SRa36IBu0eS?=
+ =?us-ascii?Q?fY9M7D93x+6/49MKSvZJVAETeZFngZEib7v94XGwy+wfrMMicsq/x0PVT8MV?=
+ =?us-ascii?Q?Iwfn5d8WvmpVwtDPBC+Kl6xIWF/fDJHQ0xsbv/1EMzlyh9SG4DxY2vi7xcJg?=
+ =?us-ascii?Q?V9ysaszn7gVuZHKgqZ3RlL4MObjR90gxjF8FJVy9nYnxvRrtL9vCaI2jz/Rp?=
+ =?us-ascii?Q?UcRkXysQfLcafs0MZ2tPlWh47gqtglDSwODHgKsS42myfISsqu4qwDbLnh9T?=
+ =?us-ascii?Q?bAqu2KUx9bZkCfNS2t5hLwLRT1n3oLttbDvr0ZSSGbNRIDc6v8meLkSnOEY4?=
+ =?us-ascii?Q?A2yOxhd9aEGjDKbJ54aSuuIq3T/Pyo6W4YwwTSZf1tQv0pCRXxIbnyIwlNUC?=
+ =?us-ascii?Q?T5+oWWHBbjtCqEP2Ti4JvEmKk/9tTwfkuXk2ared9zzjVLrppFueaQ/IRPyR?=
+ =?us-ascii?Q?38dxiEqDPkWS8t0ZEfZpm5kqpC8DSYZOVaM8WG3TORWgeFUKTx/zJKcFRUPN?=
+ =?us-ascii?Q?kZ1A+O+I7JRnTVADkOE/XiMdXOgMqu9AhpEtYJ4hYeBDNi6HGMFHN3/L0zxp?=
+ =?us-ascii?Q?AYiwiHU1VEERdMH2MjfTr97NINQJ2yw6zOqVTzh+Qbh05GiBCMBsgticUHYi?=
+ =?us-ascii?Q?TCS7nQLsJw+kGFj882vk7S+Ai34sjADZ7395mPHZ2VZhIFqve5+z0v94Iw5W?=
+ =?us-ascii?Q?vbIc6OTYTSiLhgXrix9QQnFnQV6mWa/pOd6psaj5Y3aEDuCe5rkvV98gb4K6?=
+ =?us-ascii?Q?cycuBgSulAEcHpFvxPNjlLMPm/StwD7uinrLlU9Lcwlwc12SIDN4e6Tx6SQe?=
+ =?us-ascii?Q?NjmT3VHrXXy71lk/9Y8wQ4uizP3ObGfEUJsJgTUxnFfBMtbfPyKnzVaqplzp?=
+ =?us-ascii?Q?yj1eFqjZEAtu3tvXD6oZY+mw6uMSGw9fDc3E3CSkMG0znx9rBIZp3s2ZeWJ1?=
+ =?us-ascii?Q?uuilSShgSYcUYwTRRPBbi+tIKPZ9+1q3ZVqwZufih6ndhnZBJtcLev2rHuNW?=
+ =?us-ascii?Q?DQ42yZUmDQbAcBFzWgYDpBU3BLbl0xgozQoa0JFyMeJ358hzd7xpsYktnKlQ?=
+ =?us-ascii?Q?Syzkrii2tybo16Rzoen4yVaPNTgvh8B1STF3XdopwJ5ciWtO5w6u0c31ENIU?=
+ =?us-ascii?Q?2Im3n138uZ0O9vnEhoiX5XfHPQjN3de9KcTzD3mtxv5WPDtpcx7b9HecYv38?=
+ =?us-ascii?Q?1gIu2teoi4OPgPJVTu9TC8isHmM/DgRMusi1hTWA8zeo2AWgc3X/j/aO23y1?=
+ =?us-ascii?Q?C/Y29qsxuTKGrs/AcuQnI2GZ7IKi2Ifm8KHgtA+7phs8YqdFEDkHkiRuQMZm?=
+ =?us-ascii?Q?G+9p4LgzNzDHUia68SkiJPJOaJ2ioQDy23YE46SHEsXFO4Iaxn1+dpqDhTxK?=
+ =?us-ascii?Q?81lSasndv0nlfRuFjmFLT+TwAEiJIWHY3mKOrlDv?=
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+MIME-Version: 1.0
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: PAXPR04MB9185.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 4a4976ec-10ef-4058-f7f1-08db94fcb994
+X-MS-Exchange-CrossTenant-originalarrivaltime: 04 Aug 2023 15:08:56.9141
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: qciY6Um68e0zZJwucHKU11q8ox/WdHXW4t0uKdn5rYgbTJLgXneKccbSNS3yP6g8zqZgZlqQYfOuRQQRmn9WUQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM8PR04MB7763
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 4, 2023 at 12:48=E2=80=AFPM Tomi Valkeinen
-<tomi.valkeinen@ideasonboard.com> wrote:
+
+
+> -----Original Message-----
+> From: Russell King <linux@armlinux.org.uk>
+> Sent: Friday, August 4, 2023 9:56 AM
+> To: Shenwei Wang <shenwei.wang@nxp.com>
+> On Fri, Aug 04, 2023 at 09:46:29AM -0500, Shenwei Wang wrote:
+> > +     if (dwmac->ops->fix_soc_reset)
+> > +             plat_dat->fix_mac_speed =3D dwmac->ops->fix_mac_speed;
 >
-> The lt8912b driver, in its bridge detach function, calls
-> drm_connector_unregister() and drm_connector_cleanup().
+> The if() condition looks like a typo to me.
 >
-> drm_connector_unregister() should be called only for connectors
-> explicitly registered with drm_connector_register(), which is not the
-> case in lt8912b.
->
-> The driver's drm_connector_funcs.destroy hook is set to
-> drm_connector_cleanup().
->
-> Thus the driver should not call either drm_connector_unregister() nor
-> drm_connector_cleanup() in its lt8912_bridge_detach(), as they cause a
-> crash on bridge detach:
->
-> Unable to handle kernel NULL pointer dereference at virtual address 00000=
-00000000000
-> Mem abort info:
->   ESR =3D 0x0000000096000006
->   EC =3D 0x25: DABT (current EL), IL =3D 32 bits
->   SET =3D 0, FnV =3D 0
->   EA =3D 0, S1PTW =3D 0
->   FSC =3D 0x06: level 2 translation fault
-> Data abort info:
->   ISV =3D 0, ISS =3D 0x00000006, ISS2 =3D 0x00000000
->   CM =3D 0, WnR =3D 0, TnD =3D 0, TagAccess =3D 0
->   GCS =3D 0, Overlay =3D 0, DirtyBit =3D 0, Xs =3D 0
-> user pgtable: 4k pages, 48-bit VAs, pgdp=3D00000000858f3000
-> [0000000000000000] pgd=3D0800000085918003, p4d=3D0800000085918003, pud=3D=
-0800000085431003, pmd=3D0000000000000000
-> Internal error: Oops: 0000000096000006 [#1] PREEMPT SMP
-> Modules linked in: tidss(-) display_connector lontium_lt8912b tc358768 pa=
-nel_lvds panel_simple drm_dma_helper drm_kms_helper drm drm_panel_orientati=
-on_quirks
-> CPU: 3 PID: 462 Comm: rmmod Tainted: G        W          6.5.0-rc2+ #2
-> Hardware name: Toradex Verdin AM62 on Verdin Development Board (DT)
-> pstate: 80000005 (Nzcv daif -PAN -UAO -TCO -DIT -SSBS BTYPE=3D--)
-> pc : drm_connector_cleanup+0x78/0x2d4 [drm]
-> lr : lt8912_bridge_detach+0x54/0x6c [lontium_lt8912b]
-> sp : ffff800082ed3a90
-> x29: ffff800082ed3a90 x28: ffff0000040c1940 x27: 0000000000000000
-> x26: 0000000000000000 x25: dead000000000122 x24: dead000000000122
-> x23: dead000000000100 x22: ffff000003fb6388 x21: 0000000000000000
-> x20: 0000000000000000 x19: ffff000003fb6260 x18: fffffffffffe56e8
-> x17: 0000000000000000 x16: 0010000000000000 x15: 0000000000000038
-> x14: 0000000000000000 x13: ffff800081914b48 x12: 000000000000040e
-> x11: 000000000000015a x10: ffff80008196ebb8 x9 : ffff800081914b48
-> x8 : 00000000ffffefff x7 : ffff0000040c1940 x6 : ffff80007aa649d0
-> x5 : 0000000000000000 x4 : 0000000000000001 x3 : ffff80008159e008
-> x2 : 0000000000000000 x1 : 0000000000000000 x0 : 0000000000000000
-> Call trace:
->  drm_connector_cleanup+0x78/0x2d4 [drm]
->  lt8912_bridge_detach+0x54/0x6c [lontium_lt8912b]
->  drm_bridge_detach+0x44/0x84 [drm]
->  drm_encoder_cleanup+0x40/0xb8 [drm]
->  drmm_encoder_alloc_release+0x1c/0x30 [drm]
->  drm_managed_release+0xac/0x148 [drm]
->  drm_dev_put.part.0+0x88/0xb8 [drm]
->  devm_drm_dev_init_release+0x14/0x24 [drm]
->  devm_action_release+0x14/0x20
->  release_nodes+0x5c/0x90
->  devres_release_all+0x8c/0xe0
->  device_unbind_cleanup+0x18/0x68
->  device_release_driver_internal+0x208/0x23c
->  driver_detach+0x4c/0x94
->  bus_remove_driver+0x70/0xf4
->  driver_unregister+0x30/0x60
->  platform_driver_unregister+0x14/0x20
->  tidss_platform_driver_exit+0x18/0xb2c [tidss]
->  __arm64_sys_delete_module+0x1a0/0x2b4
->  invoke_syscall+0x48/0x110
->  el0_svc_common.constprop.0+0x60/0x10c
->  do_el0_svc_compat+0x1c/0x40
->  el0_svc_compat+0x40/0xac
->  el0t_32_sync_handler+0xb0/0x138
->  el0t_32_sync+0x194/0x198
-> Code: 9104a276 f2fbd5b7 aa0203e1 91008af8 (f85c0420)
->
-> Fixes: 30e2ae943c26 ("drm/bridge: Introduce LT8912B DSI to HDMI bridge")
-> Signed-off-by: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
-> ---
->  drivers/gpu/drm/bridge/lontium-lt8912b.c | 3 ---
->  1 file changed, 3 deletions(-)
->
-> diff --git a/drivers/gpu/drm/bridge/lontium-lt8912b.c b/drivers/gpu/drm/b=
-ridge/lontium-lt8912b.c
-> index 0e581f6e3c88..2d752e083433 100644
-> --- a/drivers/gpu/drm/bridge/lontium-lt8912b.c
-> +++ b/drivers/gpu/drm/bridge/lontium-lt8912b.c
-> @@ -589,9 +589,6 @@ static void lt8912_bridge_detach(struct drm_bridge *b=
-ridge)
->
->         if (lt->hdmi_port->ops & DRM_BRIDGE_OP_HPD)
->                 drm_bridge_hpd_disable(lt->hdmi_port);
-> -
-> -       drm_connector_unregister(&lt->connector);
-> -       drm_connector_cleanup(&lt->connector);
->  }
->
->  static enum drm_connector_status
->
+
+My bad. Thank you very much for pointing that out!
+
+Thanks,
+Shenwei
+
 > --
-> 2.34.1
->
-
-
-Reviewed-by: Robert Foss <rfoss@kernel.org>
+> RMK's Patch system:
+> https://www.ar/
+> mlinux.org.uk%2Fdeveloper%2Fpatches%2F&data=3D05%7C01%7Cshenwei.wang
+> %40nxp.com%7C893e89bfb80c46549b3c08db94fafd80%7C686ea1d3bc2b4c6fa
+> 92cd99c5c301635%7C0%7C0%7C638267577931730269%7CUnknown%7CTWFp
+> bGZsb3d8eyJWIjoiMC4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6
+> Mn0%3D%7C3000%7C%7C%7C&sdata=3DxR58pNE5yNXCj6Fl8aWS1an5wgdDI%2F
+> k1mv%2Fw%2BnLBhl0%3D&reserved=3D0
+> FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
