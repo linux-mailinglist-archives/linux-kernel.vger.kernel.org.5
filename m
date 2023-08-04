@@ -2,136 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 394A677033B
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 16:37:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D7EA4770340
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 16:38:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231432AbjHDOg7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Aug 2023 10:36:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57364 "EHLO
+        id S231784AbjHDOiT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Aug 2023 10:38:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57848 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231772AbjHDOg4 (ORCPT
+        with ESMTP id S229448AbjHDOiR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Aug 2023 10:36:56 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A209849CB;
-        Fri,  4 Aug 2023 07:36:54 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 364EB62056;
-        Fri,  4 Aug 2023 14:36:54 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id F1B61C433C7;
-        Fri,  4 Aug 2023 14:36:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691159813;
-        bh=UGhPfacMbRAO/lKAFHEUnYispo56TB5sRURJt2YhJQ0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Mpmg0Lgj6UTu9mzmGMaXEoKghX61CQcLZjiIJJi0ITZ8GVSumLzKJAlF2MWB4sN/w
-         RHjrOXupIq56qjIPM2JLYS/gvOtuDco1ZQY6djFdKYtsg+1dFfGSBSKLWAeuI0HsHb
-         oGkHGBjQ/uJ+OJwp7FQ0lclQtMsq4+cHLVkE7xkHd7jWypsmhg7VUj3MA/ipK/eO4F
-         7ctCpwMMZDXSUFlt3EwHCFO3BljrmpmFACzaZ8Wld6tiOwaEgu44HGtbvwi74pBPxQ
-         YTPX8Y483ZV/uQueja6g/4cpzbTVpqPTRy05hI+m0CTmlBjrpcg70Om6Nk/nhbJFde
-         +2VD5Ox4lVjzw==
-Date:   Fri, 4 Aug 2023 16:36:49 +0200
-From:   Christian Brauner <brauner@kernel.org>
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     syzbot <syzbot+2faac0423fdc9692822b@syzkaller.appspotmail.com>,
-        jack@suse.cz, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com,
-        viro@zeniv.linux.org.uk
-Subject: Re: [syzbot] [fs?] KASAN: slab-use-after-free Read in
- test_bdev_super_fc
-Message-ID: <20230804-allheilmittel-teleobjektiv-a0351a653d31@brauner>
-References: <00000000000058d58e06020c1cab@google.com>
- <20230804101408.GA23274@lst.de>
- <20230804-abstieg-behilflich-eda2ce9c2c0f@brauner>
- <20230804140201.GA27600@lst.de>
+        Fri, 4 Aug 2023 10:38:17 -0400
+Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com [IPv6:2a00:1450:4864:20::330])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8903D46B2;
+        Fri,  4 Aug 2023 07:38:16 -0700 (PDT)
+Received: by mail-wm1-x330.google.com with SMTP id 5b1f17b1804b1-3fbea147034so20705885e9.0;
+        Fri, 04 Aug 2023 07:38:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1691159895; x=1691764695;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=BM5R+rkSeL9WIp21l2emysOOucIRf/CjafaqigjE3ns=;
+        b=P52o47d9dHG1aUMZwk0pd23gUMU1gSEcAaorjtm0PUBSc4CTskirX886xdzRJezLg6
+         M4MtQIA6juxB9+sFPFH3EPWi9hMPTVDd1wwyWh3PmXuu1po0m+repmiBQFo72mEPoUaF
+         CKzmuVyB06487jxO3URnO0OYZ2cjQP/ZYPY+Ly4YmQO1h8Ul1MwxJiS6CzfTEpBkUg4D
+         GvHC2AtRasiPCNfOkLFtYCr2iYrhUrXdaNuwr9xpfY5akGkjLPDtWAHv3doGspA8ZqzA
+         BVho52Djxf/ClpbDDROl0ciKQJHwoe5ELFkv+xQsoTFDKnytt8GlFd+Ntd6Geakv25p/
+         LA8g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691159895; x=1691764695;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=BM5R+rkSeL9WIp21l2emysOOucIRf/CjafaqigjE3ns=;
+        b=RzuENfrf4WDdQiNx2JfdKQd4j0iAj6GskMAll5mFiqF2hbDgW+8Jgh+tvXEZPF4dq3
+         agFe/M4H1nG+elZoO2ZEI/2vXTaKY9YmuG5STIU2XxscYTKOveUkDbpn3kl6xuutg/s/
+         30zmgm7LWV5AiZ1zvfKZCXC5rApMaiSokthK2179175DZMG9gInvvPPQ1jyTBRzYJ/We
+         1CVyRyXUq1i8C2yyc+0zUq4Vk7RFY53zuQv0XP7OGiAWCDKefzTwK8YZoKQpLby1tMOf
+         pvRQWabiuVDvdX1I9cj9vHlL1wqWgfrp+4GIeH1qaOCeyB6cweBuo8dBnZgVxPKPo36N
+         WeIg==
+X-Gm-Message-State: AOJu0YyKk+vedSQRcxOEDUOWb0772KeJ6HvdG9HbfG6ifgdoj0XGfkOs
+        g8iueHMP0px2V1qj3WrVQwk=
+X-Google-Smtp-Source: AGHT+IFR8gDqjRYqyXRMOxF0JJDJ3mrxElW64dDSszEM8SNr/lPevhKIntH0L12mO9e2OcoWVt3KOw==
+X-Received: by 2002:a1c:7c05:0:b0:3fb:e4ce:cc65 with SMTP id x5-20020a1c7c05000000b003fbe4cecc65mr1591896wmc.25.1691159894687;
+        Fri, 04 Aug 2023 07:38:14 -0700 (PDT)
+Received: from jernej-laptop.localnet (82-149-1-233.dynamic.telemach.net. [82.149.1.233])
+        by smtp.gmail.com with ESMTPSA id f9-20020a7bc8c9000000b003fba92fad35sm6833727wml.26.2023.08.04.07.38.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 04 Aug 2023 07:38:14 -0700 (PDT)
+From:   Jernej =?utf-8?B?xaBrcmFiZWM=?= <jernej.skrabec@gmail.com>
+To:     soc@kernel.org, Patrice Chotard <patrice.chotard@foss.st.com>,
+        Tsahee Zidenberg <tsahee@annapurnalabs.com>,
+        Antoine Tenart <atenart@kernel.org>,
+        Jisheng Zhang <jszhang@kernel.org>,
+        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Gregory Clement <gregory.clement@bootlin.com>,
+        Jean-Marie Verdun <verdun@hpe.com>,
+        Nick Hawkins <nick.hawkins@hpe.com>,
+        Lubomir Rintel <lkundrak@v3.sk>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Avi Fishman <avifishman70@gmail.com>,
+        Tomer Maimon <tmaimon77@gmail.com>,
+        Tali Perry <tali.perry1@gmail.com>,
+        Patrick Venture <venture@google.com>,
+        Nancy Yuen <yuenn@google.com>,
+        Benjamin Fair <benjaminfair@google.com>,
+        Daniel Mack <daniel@zonque.org>,
+        Haojian Zhuang <haojian.zhuang@gmail.com>,
+        Robert Jarzmik <robert.jarzmik@free.fr>,
+        Heiko Stuebner <heiko@sntech.de>,
+        Liviu Dudau <liviu.dudau@arm.com>,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        Lorenzo Pieralisi <lpieralisi@kernel.org>,
+        Viresh Kumar <vireshk@kernel.org>,
+        Shiraz Has him <shiraz.linux.kernel@gmail.com>,
+        Stuart Yoder <stuyoder@gmail.com>,
+        Laurentiu Tudor <laurentiu.tudor@nxp.com>,
+        Jay Fang <f.fangjian@huawei.com>, Chen-Yu Tsai <wens@csie.org>,
+        Samuel Holland <samuel@sholland.org>,
+        Cristian Marussi <cristian.marussi@arm.com>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        Florian Fainelli <florian.fainelli@broadcom.com>,
+        Dinh Nguyen <dinguyen@kernel.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Michal Simek <michal.simek@amd.com>,
+        Joel Stanley <joel@jms.id.au>,
+        Andrew Jeffery <andrew@aj.id.au>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Li Yang <leoyang.li@nxp.com>, Qiang Zhao <qiang.zhao@nxp.com>,
+        Rob Herring <robh@kernel.org>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        openbmc@lists.ozlabs.org, linux-rockchip@lists.infradead.org,
+        linux-sunxi@lists.linux.dev, linux-mediatek@lists.infradead.org,
+        linux-rpi-kernel@lists.infradead.org, linux-tegra@vger.kernel.org,
+        linux-aspeed@lists.ozlabs.org, linux-pm@vger.kernel.org
+Subject: Re: [PATCH v2 21/23] soc: sunxi: Explicitly include correct DT includes
+Date:   Fri, 04 Aug 2023 16:38:11 +0200
+Message-ID: <2690872.mvXUDI8C0e@jernej-laptop>
+In-Reply-To: <20230803-dt-header-cleanups-for-soc-v2-21-d8de2cc88bff@kernel.org>
+References: <20230803-dt-header-cleanups-for-soc-v2-0-d8de2cc88bff@kernel.org>
+ <20230803-dt-header-cleanups-for-soc-v2-21-d8de2cc88bff@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20230804140201.GA27600@lst.de>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 04, 2023 at 04:02:01PM +0200, Christoph Hellwig wrote:
-> On Fri, Aug 04, 2023 at 03:20:45PM +0200, Christian Brauner wrote:
-> > On Fri, Aug 04, 2023 at 12:14:08PM +0200, Christoph Hellwig wrote:
-> > > FYI, I can reproduce this trivially locally, but even after spending a
-> > > significant time with the trace I'm still puzzled at what is going
-> > > on.  I've started trying to make sense of the lockdep report about
-> > > returning to userspace with s_umount held, originall locked in
-> > > get_tree_bdev and am still missing how it could happen.
-> > 
-> > So in the old scheme:
-> > 
-> > s = alloc_super()
-> > -> down_write_nested(&s->s_umount, SINGLE_DEPTH_NESTING);
-> > 
-> > and assume you're not finding an old one immediately afterwards you'd
-> > 
-> > -> spin_lock(&sb_lock)
-> > 
-> > static int set_bdev_super(struct super_block *s, void *data)
-> > {
-> >         s->s_bdev = data;
-> >         s->s_dev = s->s_bdev->bd_dev;
-> >         s->s_bdi = bdi_get(s->s_bdev->bd_disk->bdi);
-> > 
-> >         if (bdev_stable_writes(s->s_bdev))
-> >                 s->s_iflags |= SB_I_STABLE_WRITES;
-> >         return 0;
-> > }
-> > 
-> > -> spin_unlock(&sb_lock)
-> > 
-> > in the new scheme you're doing:
-> > 
-> > s = alloc_super()
-> > -> down_write_nested(&s->s_umount, SINGLE_DEPTH_NESTING);
-> > 
-> > and assume you're not finding an old one immediately afterwards you'd
-> > 
-> > up_write(&s->s_umount);
-> > 
-> > error = setup_bdev_super(s, fc->sb_flags, fc);
-> > -> spin_lock(&sb_lock);
-> >    sb->s_bdev = bdev;
-> >    sb->s_bdi = bdi_get(bdev->bd_disk->bdi);
-> >    if (bdev_stable_writes(bdev))
-> >            sb->s_iflags |= SB_I_STABLE_WRITES;
-> > -> spin_unlock(&sb_lock);
-> > 
-> > down_write(&s->s_umount);
-> > 
-> > Which looks like the lock ordering here is changed?
+Dne petek, 04. avgust 2023 ob 00:43:01 CEST je Rob Herring napisal(a):
+> The DT of_device.h and of_platform.h date back to the separate
+> of_platform_bus_type before it as merged into the regular platform bus.
+> As part of that merge prepping Arm DT support 13 years ago, they
+> "temporarily" include each other. They also include platform_device.h
+> and of.h. As a result, there's a pretty much random mix of those include
+> files used throughout the tree. In order to detangle these headers and
+> replace the implicit includes with struct declarations, users need to
+> explicitly include the correct includes.
 > 
-> Yes, that none only should be safe, but more importantly should not
-> lead to a return to userspace with s_umount held.
+> Signed-off-by: Rob Herring <robh@kernel.org>
+
+Acked-by: Jernej Skrabec <jernej.skrabec@gmail.com>
+
+Should I take this through sunxi tree?
+
+Best regards,
+Jernej
+
+> ---
+> v2:
+>  - Drop sun20i-ppu.c which moved
+> ---
+>  drivers/soc/sunxi/sunxi_sram.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> Anyway, debugging a regression in mainline right now so I'm taking a
-> break from this one.
+> diff --git a/drivers/soc/sunxi/sunxi_sram.c b/drivers/soc/sunxi/sunxi_sram.c
+> index 4c4864cd2342..4458b2e0562b 100644
+> --- a/drivers/soc/sunxi/sunxi_sram.c
+> +++ b/drivers/soc/sunxi/sunxi_sram.c
+> @@ -15,7 +15,7 @@
+>  #include <linux/module.h>
+>  #include <linux/of.h>
+>  #include <linux/of_address.h>
+> -#include <linux/of_device.h>
+> +#include <linux/of_platform.h>
+>  #include <linux/platform_device.h>
+>  #include <linux/regmap.h>
 
-FFS
 
-diff --git a/fs/romfs/super.c b/fs/romfs/super.c
-index c59b230d55b4..96023fac1ed8 100644
---- a/fs/romfs/super.c
-+++ b/fs/romfs/super.c
-@@ -590,10 +590,7 @@ static void romfs_kill_sb(struct super_block *sb)
-        }
- #endif
- #ifdef CONFIG_ROMFS_ON_BLOCK
--       if (sb->s_bdev) {
--               kill_block_super(sb);
--               return;
--       }
-+       kill_block_super(sb);
- #endif
- }
+
+
