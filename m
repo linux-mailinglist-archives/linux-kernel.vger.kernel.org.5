@@ -2,99 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 00C5077006A
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 14:45:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D60A770078
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 14:47:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229609AbjHDMpm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Aug 2023 08:45:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41358 "EHLO
+        id S230202AbjHDMqw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Aug 2023 08:46:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41782 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229464AbjHDMpk (ORCPT
+        with ESMTP id S229961AbjHDMqb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Aug 2023 08:45:40 -0400
-Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com [IPv6:2607:f8b0:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C46DEA;
-        Fri,  4 Aug 2023 05:45:39 -0700 (PDT)
-Received: by mail-pf1-x436.google.com with SMTP id d2e1a72fcca58-686b879f605so1487852b3a.1;
-        Fri, 04 Aug 2023 05:45:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1691153139; x=1691757939;
-        h=content-transfer-encoding:subject:from:cc:to:content-language
-         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=mSm0LHggTF3l2aeyLG/2fKikbnrwzc2eP2dgLLzrPv4=;
-        b=H8+Mt1RJKgOVSJpv5ue/Vmj/iDAjFwcuqBenikvT/u9NokDxWaHtce+LSzYcnVmT0j
-         vTPImvio1m7gI3jXv9dvw0LohUtjRxWER2RGbTSxWzglllA6/dptE22VkOzc4o9sxERT
-         pIjEmQmCiUWLblpxC/fOoc4l0u2CTCD29XBOHfDiNoUcT12pXwyUNL6UeT5ALLQxI1Hu
-         c55BUX2FQ1rJ6PEYRv8eB+cuc9x+819YauGAoe0zAUM8+Ite10DiQoUhR1pih2/Kn8fC
-         6ZhIOa0I0gOU0UBx8dTBzH0jmp0zcj8Ho7kcsT0h0bw3xhFVIcJl8r9RcLThv+lFpHMJ
-         2ozw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691153139; x=1691757939;
-        h=content-transfer-encoding:subject:from:cc:to:content-language
-         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=mSm0LHggTF3l2aeyLG/2fKikbnrwzc2eP2dgLLzrPv4=;
-        b=VVS2DPfuj5zEYHCvEgq65PesrAGpJte/ADh4HjkrWyJxV6CwR7Mt4XTC3CQRkkxEZL
-         fAbLba9l5O/yRUSVCivdnkWEPyPHoieT0LiwrZmaqfmZ1Ou5hSKtkVdIBDAO5Td6R9+B
-         cheIg+WtYTniY2yLGiLi6u6Uh4wIqmfPUIzLGEcrPf5FIIWHSriGKbD0sQGgPxBpaRIi
-         YANRJQzuMtPNVIIwlO5Ps1M76TmGok8Hsw3u8Vdx0n/EqasNLBoLhL0BvL73a2j+SSlV
-         Vl4TSrQOS/LW0EQ6dirQUbxl1j5gXOpUVR5QdUAgBYhAOUcqda8qr739AimxGJmjldwk
-         GBSw==
-X-Gm-Message-State: AOJu0YwHJ47H4+/rhR8ao5tQAtzbPssBJUdEo3xg0I6KRYzKd6pjsOx9
-        TvCkmEoooDElonpE+LCRG1uhYElEj8M=
-X-Google-Smtp-Source: AGHT+IHGLB8g1U8UsN2DTHPgNdRGdwPal/H/mLrBwBvjqcOrzv3I8ACc19Md38AOGdGvO2z0b6dFGw==
-X-Received: by 2002:a05:6a00:1828:b0:687:8417:ab51 with SMTP id y40-20020a056a00182800b006878417ab51mr1688267pfa.8.1691153138915;
-        Fri, 04 Aug 2023 05:45:38 -0700 (PDT)
-Received: from [192.168.0.105] ([103.131.18.64])
-        by smtp.gmail.com with ESMTPSA id n5-20020aa79045000000b00686ec858fb0sm1536456pfo.190.2023.08.04.05.45.36
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 04 Aug 2023 05:45:38 -0700 (PDT)
-Message-ID: <0ea231a1-e510-903d-22a0-998234426462@gmail.com>
-Date:   Fri, 4 Aug 2023 19:45:34 +0700
+        Fri, 4 Aug 2023 08:46:31 -0400
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EDE5746BD;
+        Fri,  4 Aug 2023 05:46:29 -0700 (PDT)
+Received: from dggpeml500012.china.huawei.com (unknown [172.30.72.57])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4RHQRN68QnzrS0y;
+        Fri,  4 Aug 2023 20:45:20 +0800 (CST)
+Received: from localhost.localdomain (10.67.175.61) by
+ dggpeml500012.china.huawei.com (7.185.36.15) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.27; Fri, 4 Aug 2023 20:46:26 +0800
+From:   Zheng Yejian <zhengyejian1@huawei.com>
+To:     <rostedt@goodmis.org>, <mhiramat@kernel.org>,
+        <vnagarnaik@google.com>, <shuah@kernel.org>
+CC:     <linux-kernel@vger.kernel.org>,
+        <linux-trace-kernel@vger.kernel.org>,
+        <linux-kselftest@vger.kernel.org>
+Subject: [PATCH 0/2] tracing: Fix cpu buffers unavailable problem and add its testcase
+Date:   Fri, 4 Aug 2023 20:45:47 +0800
+Message-ID: <20230804124549.2562977-1-zhengyejian1@huawei.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.14.0
-Content-Language: en-US
-To:     Basavaraj Natikar <Basavaraj.Natikar@amd.com>,
-        Jiri Kosina <jkosina@suse.cz>,
-        Kai-Heng Feng <kai.heng.feng@canonical.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Regressions <regressions@lists.linux.dev>,
-        Linux Input Devices <linux-input@vger.kernel.org>
-From:   Bagas Sanjaya <bagasdotme@gmail.com>
-Subject: Fwd: Regression: ALS/ACS stops working on amd-sfh
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.67.175.61]
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+ dggpeml500012.china.huawei.com (7.185.36.15)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Hi, steve,
 
-I notice a very concise regression report on Bugzilla [1]. That is,
-quoting from it:
+after some operations on file 'tracing_cpumask' and 'snapshot', trace
+ring buffer can no longer record anything. This series contain a patch
+to fix it and a constrived testcase to reproduce it.
 
-> Since commit a33e5e393171ae8384d3381db5cd159ba877cfcb ("HID: amd_sfh: Fix illuminance value"), the in_illuminance_raw is 0 all the time.
-> 
-> Before that commit, the ACS/ALS has normal value.
+I think the reproduction testcase is useful to help others to check if
+their version has this problem and verify the bugfix. However, currently
+in "tools/testing/selftests/ftrace/test.d", there seems no appropriate
+subdirectory to put this kind reproductions.
 
-See Bugzilla for the full thread.
+So I now put the testcase in "00basic" because it is basicly simple. Or
+would there be a new directory to collect simple reproduction testcases?
 
-Anyway, I'm adding this regression to be tracked by regzbot:
+Zheng Yejian (2):
+  tracing: Fix cpu buffers unavailable due to 'record_disabled' messed
+  selftests/ftrace: Add a basic testcase for snapshot
 
-#regzbot introduced: a33e5e393171ae https://bugzilla.kernel.org/show_bug.cgi?id=217762
-#regzbot title: Fixing in_illuminance_raw value hard-codes ACS/ALS to 0
-
-Thanks.
-
-[1]: https://bugzilla.kernel.org/show_bug.cgi?id=217762
+ kernel/trace/trace.c                            |  2 ++
+ .../ftrace/test.d/00basic/snapshot1.tc          | 17 +++++++++++++++++
+ 2 files changed, 19 insertions(+)
+ create mode 100644 tools/testing/selftests/ftrace/test.d/00basic/snapshot1.tc
 
 -- 
-An old man doll... just what I always wanted! - Clara
+2.25.1
+
