@@ -2,87 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E2F976F9E0
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 08:11:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D9DD276F9E1
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 08:11:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229634AbjHDGLB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Aug 2023 02:11:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56540 "EHLO
+        id S231907AbjHDGL0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Aug 2023 02:11:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56784 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232486AbjHDGK6 (ORCPT
+        with ESMTP id S232618AbjHDGLR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Aug 2023 02:10:58 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06CFB2708;
-        Thu,  3 Aug 2023 23:10:57 -0700 (PDT)
+        Fri, 4 Aug 2023 02:11:17 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.93])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B791D3C34
+        for <linux-kernel@vger.kernel.org>; Thu,  3 Aug 2023 23:11:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1691129457; x=1722665457;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=+G9GSNfDAvX+Kh/QKq5xmMGn8Ir1PIpjRkZ3yB2HDaQ=;
-  b=DDTsdovFGfE13fCAxXybncmShsYRZerR0OhkDOCDFdN9L7EY1pEQpp7F
-   KEoPyQSjJY7D+bljCOBQmOo/93TzTdQC1qU0vDvGvriefssRDwv5Haw7g
-   GeqDI/M0NTRiUxVh8qu8EDlT6eqi5dtGvJhwKs8mnCBGaySsDc9KHmVv0
-   cR+VRj4sCKoxQEgp7qWPM3ES9SKgXvJh1e+xIFEdLkjA9GIAY3IKDFPg1
-   puwi2lNOEAQLnOOp2wSv4F/GMzrH9fWlfnlIMXF5zc4IkhrTaTzbDPahf
-   h8vEI0noMdnCtPOsGKHh88+yACwj0Y6vG+HX9yKLx3nqFAmPoMQ8576A4
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10791"; a="433927389"
+  t=1691129467; x=1722665467;
+  h=date:from:to:cc:subject:message-id;
+  bh=1kFLdi019TGYRZ/8BiDk5k/OXCbfG/NQbh94aRby/Iw=;
+  b=gCFi3uY5jqmZPLogNmvtbIspximrmolG/TtDP5FLRPsqthYXhicT2b0c
+   6fHkiWqcct5By5ZMW0I+zRpwOarUM/kMvMtD/xORbcW79ZmBPIhysTAQ+
+   Ve9uKVFx+J8frpy/S0XfoaENSIQKlfZY4Z+o0Gu4z4J6f7J+UN7ul2Sjb
+   AcYJHXxKJWOSC03RGaCCvJLXt+YhaWLnxc/f7ntyNMcGxzHnAMpfd/k4N
+   3yxdtKjhU2Y/oftTSzSbCAvnE3ibRb9H2z0Jd+chXf0sFzwq7O9wE2f1w
+   thLsJ+4El/y2VSpCAzT9REPDgZXSEI2SaxygPOt+i5r+hOK5560XAsrEm
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10791"; a="367538857"
 X-IronPort-AV: E=Sophos;i="6.01,254,1684825200"; 
-   d="scan'208";a="433927389"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Aug 2023 23:09:26 -0700
+   d="scan'208";a="367538857"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Aug 2023 23:11:07 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.01,202,1684825200"; 
-   d="scan'208";a="873237868"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by fmsmga001.fm.intel.com with ESMTP; 03 Aug 2023 23:09:22 -0700
-Received: from andy by smile.fi.intel.com with local (Exim 4.96)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1qRnzw-00Cx13-2f;
-        Fri, 04 Aug 2023 09:09:16 +0300
-Date:   Fri, 4 Aug 2023 09:09:16 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Sunil V L <sunilvl@ventanamicro.com>
-Cc:     linux-doc@vger.kernel.org, linux-riscv@lists.infradead.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-acpi@vger.kernel.org, linux-pci@vger.kernel.org,
-        Jonathan Corbet <corbet@lwn.net>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        "Rafael J . Wysocki" <rafael@kernel.org>,
-        Len Brown <lenb@kernel.org>,
-        Daniel Scally <djrscally@gmail.com>,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Anup Patel <anup@brainfault.org>,
-        Marc Zyngier <maz@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Robert Moore <robert.moore@intel.com>,
-        Haibo Xu <haibo1.xu@intel.com>,
-        Andrew Jones <ajones@ventanamicro.com>,
-        Conor Dooley <conor.dooley@microchip.com>,
-        Atish Kumar Patra <atishp@rivosinc.com>,
-        Anup Patel <apatel@ventanamicro.com>
-Subject: Re: [RFC PATCH v1 11/21] swnode: Add support to create early during
- boot
-Message-ID: <ZMyWDDD6Lw8REd1r@smile.fi.intel.com>
-References: <20230803175916.3174453-1-sunilvl@ventanamicro.com>
- <20230803175916.3174453-12-sunilvl@ventanamicro.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230803175916.3174453-12-sunilvl@ventanamicro.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+X-IronPort-AV: E=McAfee;i="6600,9927,10791"; a="729919628"
+X-IronPort-AV: E=Sophos;i="6.01,254,1684825200"; 
+   d="scan'208";a="729919628"
+Received: from lkp-server01.sh.intel.com (HELO d1ccc7e87e8f) ([10.239.97.150])
+  by orsmga002.jf.intel.com with ESMTP; 03 Aug 2023 23:11:06 -0700
+Received: from kbuild by d1ccc7e87e8f with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qRo1h-0002fB-1k;
+        Fri, 04 Aug 2023 06:11:05 +0000
+Date:   Fri, 04 Aug 2023 14:10:47 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "x86-ml" <x86@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [tip:x86/mm] BUILD SUCCESS
+ 54e3d9434ef61b97fd3263c141b928dc5635e50d
+Message-ID: <202308041445.s48dGnki-lkp@intel.com>
+User-Agent: s-nail v14.9.24
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -91,85 +60,121 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 03, 2023 at 11:29:06PM +0530, Sunil V L wrote:
-> From: Anup Patel <apatel@ventanamicro.com>
-> 
-> swnode framework can be used to create fwnode for interrupt
-> controllers.
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git x86/mm
+branch HEAD: 54e3d9434ef61b97fd3263c141b928dc5635e50d  x86/mm: Remove "INVPCID single" feature tracking
 
-Why? What is this for?
-Can you elaborate? This commit message is poorly written...
+elapsed time: 724m
 
-And why firmware node is not enough for ACPI case?
-I assume the fwnode in DT case is already provided by OF.
+configs tested: 102
+configs skipped: 92
 
-> This helps in keeping the drivers same for both
-> DT and ACPI. To enable this, enhance the swnode framework so
-> that it can be created early during boot without dependency
-> on sysfs.
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-...
-
-> -	swnode->kobj.kset = swnode_kset;
-> +	swnode->kobj.kset = (!early) ? swnode_kset : NULL;
-
-Too many unneeded characters. Why parentheses? Why negative check?
-
-...
-
-> +	if (early) {
-> +		ret = 0;
-> +		kobject_init(&swnode->kobj, &software_node_type_early);
-> +		swnode->kobj.parent = parent ? &parent->kobj : NULL;
-> +		if (node->name)
-> +			ret = kobject_set_name(&swnode->kobj,
-> +					       "%s", node->name);
-> +		else
-> +			ret = kobject_set_name(&swnode->kobj,
-> +					       "node%d", swnode->id);
-> +		if (!ret) {
-> +			spin_lock(&swnode_early_lock);
-> +			list_add_tail(&swnode->early, &swnode_early_list);
-> +			spin_unlock(&swnode_early_lock);
-> +		}
-> +	} else {
-> +		if (node->name)
-> +			ret = kobject_init_and_add(&swnode->kobj, &software_node_type,
-> +						   parent ? &parent->kobj : NULL,
-
-This looks like have a duplication.
-
-> +						   "%s", node->name);
-> +		else
-> +			ret = kobject_init_and_add(&swnode->kobj, &software_node_type,
-> +						   parent ? &parent->kobj : NULL,
-> +						   "node%d", swnode->id);
-> +	}
-
-Maybe it's possible to refactor this piece to be more compact?
-
-...
-
-> -	return PTR_ERR_OR_ZERO(swnode_register(node, parent, 0));
-> +	return PTR_ERR_OR_ZERO(swnode_register(node, parent, 0, 0));
-
-In one case you use boolean, here is unsigned int for early flag, why is the
-inconsistency added?
-
-...
-
-> -struct fwnode_handle *
-> -fwnode_create_software_node(const struct property_entry *properties,
-> -			    const struct fwnode_handle *parent)
-> +static struct fwnode_handle *
-> +fwnode_create_software_node_common(const struct property_entry *properties,
-> +				   const struct fwnode_handle *parent,
-> +				   bool early)
-
-Why would you need this API in early stages?
+tested configs:
+alpha                            allyesconfig   gcc  
+alpha                               defconfig   gcc  
+alpha                randconfig-r011-20230731   gcc  
+arc                              allyesconfig   gcc  
+arc                                 defconfig   gcc  
+arc                  randconfig-r004-20230801   gcc  
+arm                              allmodconfig   gcc  
+arm                              allyesconfig   gcc  
+arm                                 defconfig   gcc  
+arm                       imx_v6_v7_defconfig   gcc  
+arm                        shmobile_defconfig   gcc  
+arm64                            allyesconfig   gcc  
+arm64                               defconfig   gcc  
+csky                                defconfig   gcc  
+hexagon              randconfig-r026-20230731   clang
+hexagon              randconfig-r041-20230731   clang
+hexagon              randconfig-r045-20230731   clang
+i386                             allyesconfig   gcc  
+i386         buildonly-randconfig-r004-20230731   gcc  
+i386         buildonly-randconfig-r005-20230731   gcc  
+i386         buildonly-randconfig-r006-20230731   gcc  
+i386                              debian-10.3   gcc  
+i386                                defconfig   gcc  
+i386                 randconfig-i001-20230731   gcc  
+i386                 randconfig-i002-20230731   gcc  
+i386                 randconfig-i003-20230731   gcc  
+i386                 randconfig-i004-20230731   gcc  
+i386                 randconfig-i005-20230731   gcc  
+i386                 randconfig-i006-20230731   gcc  
+i386                 randconfig-i011-20230801   clang
+i386                 randconfig-i012-20230801   clang
+i386                 randconfig-i013-20230801   clang
+i386                 randconfig-i014-20230801   clang
+i386                 randconfig-i015-20230801   clang
+i386                 randconfig-i016-20230801   clang
+loongarch                        allmodconfig   gcc  
+loongarch                         allnoconfig   gcc  
+loongarch                           defconfig   gcc  
+loongarch            randconfig-r016-20230731   gcc  
+m68k                             allmodconfig   gcc  
+m68k                             allyesconfig   gcc  
+m68k                                defconfig   gcc  
+microblaze           randconfig-r001-20230801   gcc  
+microblaze           randconfig-r003-20230801   gcc  
+mips                             allmodconfig   gcc  
+mips                             allyesconfig   gcc  
+nios2                               defconfig   gcc  
+openrisc             randconfig-r014-20230731   gcc  
+parisc                           allyesconfig   gcc  
+parisc                              defconfig   gcc  
+parisc               randconfig-r006-20230801   gcc  
+parisc64                            defconfig   gcc  
+powerpc                          allmodconfig   gcc  
+powerpc                           allnoconfig   gcc  
+powerpc                     kilauea_defconfig   clang
+powerpc                      pmac32_defconfig   clang
+riscv                            allmodconfig   gcc  
+riscv                             allnoconfig   gcc  
+riscv                            allyesconfig   gcc  
+riscv                               defconfig   gcc  
+riscv                randconfig-r021-20230731   clang
+riscv                randconfig-r042-20230731   clang
+riscv                          rv32_defconfig   gcc  
+s390                             allmodconfig   gcc  
+s390                             allyesconfig   gcc  
+s390                                defconfig   gcc  
+s390                 randconfig-r044-20230731   clang
+sh                               allmodconfig   gcc  
+sh                 kfr2r09-romimage_defconfig   gcc  
+sparc                            allyesconfig   gcc  
+sparc                               defconfig   gcc  
+sparc64              randconfig-r015-20230731   gcc  
+um                                  defconfig   gcc  
+um                             i386_defconfig   gcc  
+um                           x86_64_defconfig   gcc  
+x86_64                           allyesconfig   gcc  
+x86_64       buildonly-randconfig-r001-20230731   gcc  
+x86_64       buildonly-randconfig-r002-20230731   gcc  
+x86_64       buildonly-randconfig-r003-20230731   gcc  
+x86_64                              defconfig   gcc  
+x86_64                                  kexec   gcc  
+x86_64               randconfig-x001-20230731   clang
+x86_64               randconfig-x001-20230802   gcc  
+x86_64               randconfig-x002-20230731   clang
+x86_64               randconfig-x002-20230802   gcc  
+x86_64               randconfig-x003-20230731   clang
+x86_64               randconfig-x003-20230802   gcc  
+x86_64               randconfig-x004-20230731   clang
+x86_64               randconfig-x004-20230802   gcc  
+x86_64               randconfig-x005-20230731   clang
+x86_64               randconfig-x005-20230802   gcc  
+x86_64               randconfig-x006-20230731   clang
+x86_64               randconfig-x006-20230802   gcc  
+x86_64               randconfig-x011-20230731   gcc  
+x86_64               randconfig-x012-20230731   gcc  
+x86_64               randconfig-x013-20230731   gcc  
+x86_64               randconfig-x014-20230731   gcc  
+x86_64               randconfig-x015-20230731   gcc  
+x86_64               randconfig-x016-20230731   gcc  
+x86_64                          rhel-8.3-rust   clang
+x86_64                               rhel-8.3   gcc  
+xtensa                              defconfig   gcc  
 
 -- 
-With Best Regards,
-Andy Shevchenko
-
-
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
