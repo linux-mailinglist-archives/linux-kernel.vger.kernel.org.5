@@ -2,120 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D2F4770876
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 21:03:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5004077087D
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 21:04:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230234AbjHDTDu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Aug 2023 15:03:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39576 "EHLO
+        id S229580AbjHDTEy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Aug 2023 15:04:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40034 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229500AbjHDTDS (ORCPT
+        with ESMTP id S229653AbjHDTE1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Aug 2023 15:03:18 -0400
-Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2BE04EC4;
-        Fri,  4 Aug 2023 12:03:15 -0700 (PDT)
-Received: by mail-wr1-x430.google.com with SMTP id ffacd0b85a97d-3110ab7110aso2182082f8f.3;
-        Fri, 04 Aug 2023 12:03:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1691175794; x=1691780594;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=aBQznZc6KngA0qSX8JhcbfCzyQcmohoYG9cU4rXPPQk=;
-        b=LDEC7ag2o3gTORvOstYA3ZrCBzX0wu0RuaKKvZAF47hjYUMgw4IqJUc7PzopJeWR0R
-         Fw5VHUHA9kqKRFSA9R4+weld8Bj8zp6APiKfBF163vBnEWZDZxENPtxDDqSy2DRA6aV+
-         dYRuKm5BQ1Yw34VU8K45IbOgSxgxbQatxm7M57nSXjUCg7u+aVZD06rUHj91zb9b7t9I
-         7Eup6AlYYAYuh56/fPiOMsfwORkkGf9cfBXK2D8PKERDbmVxY7vurxbqDyhLHF2oK6Xc
-         MMq3lOfAOGciv2IGZIdsb2CGn0r2MhbvoP3rTxHAnhdZDROCpWyI2/P8PNvMzgbHR/72
-         2eMA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691175794; x=1691780594;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=aBQznZc6KngA0qSX8JhcbfCzyQcmohoYG9cU4rXPPQk=;
-        b=Pf0jbSpX+iukyNNpIexc5nvFJLhXaAi5EOcoCOn6Bb1AnqHDJX8VPZ0GD7fmJ/gFRk
-         vQCKrakuzKxbAbNIMNRqW4GhU9XThC1s6GNk4Aye6YqeZZ4fje8+JL3s0r18HeIYE3nJ
-         gQK83SzKw6Adzz2UpB53WY8eJx4gPJQsZB5AM6fB05EVBDyv+njKUls6mBrOKWpETJFk
-         xvjVs4wIDGxMSRPo6u7uqhzEKWQsxCRxEvGkH8UOU4vHz4DDPcZdJCIchw2u0i7jyAh0
-         g0rDYXDX2D1Ok2G+GjOlmcQohSaBXVNtGsqOPGyWCpT/w0d8HuwCIeyCv4953usEcVRu
-         IPLQ==
-X-Gm-Message-State: AOJu0YyAKZkI5d04Aud/wzwqggZcZuXrBt3j3umkelZd/7JfBXBVSfog
-        l7f40fSnRIxNgr4fZY5Emoo=
-X-Google-Smtp-Source: AGHT+IEYJGHc532Wwdt2wL64d5EBMgXcif26NnW434MUKhvoFJEJh0b+cNfvs8etfBAolMfVUJK18A==
-X-Received: by 2002:adf:ed0f:0:b0:314:1aed:8f5f with SMTP id a15-20020adfed0f000000b003141aed8f5fmr1593821wro.34.1691175794130;
-        Fri, 04 Aug 2023 12:03:14 -0700 (PDT)
-Received: from jernej-laptop.localnet (82-149-1-233.dynamic.telemach.net. [82.149.1.233])
-        by smtp.gmail.com with ESMTPSA id g6-20020a056000118600b00314398e4dd4sm3137260wrx.54.2023.08.04.12.03.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 04 Aug 2023 12:03:13 -0700 (PDT)
-From:   Jernej =?utf-8?B?xaBrcmFiZWM=?= <jernej.skrabec@gmail.com>
-To:     Rob Herring <robh+dt@kernel.org>,
+        Fri, 4 Aug 2023 15:04:27 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B6E54C3F;
+        Fri,  4 Aug 2023 12:04:25 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 1895462043;
+        Fri,  4 Aug 2023 19:04:25 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 70199C433C8;
+        Fri,  4 Aug 2023 19:04:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1691175864;
+        bh=XMTezqvymRRGa6uQfNjBW5bjIP0HMTwJ3LtgBovjjSE=;
+        h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+        b=COGoj0OdFoIEJi2QYRfvoSQHUthA8PyQ85mHlOyZdkezATN6cQfhNGnJyXdtd6uPI
+         Ok5F8FfBkZ9/AK7Rrd10sauFJvBk6uzLHV2baijkaxbxX1jpA/kikTf1hFktoaZDoe
+         wREtlq7s6mukcEKxGolgJtI98wlO4UTujFIARPPw1yOgM1SBXkIz09S6kvMwtvwtoi
+         YLH8eQihOTMBcfhDbzWG4+wJvLv38kH8D2K3AgpBGUXA2jFaImJuRfLANfkvrPslqj
+         yGWu3clTUCH9mXSppgI1uvgqLyjHxRikUTGilyBadBo1/5MQN7O0CJjqBIiXVsAIV6
+         TKR74fldlCVeQ==
+From:   Mark Brown <broonie@kernel.org>
+To:     devicetree@vger.kernel.org, linux-spi@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org,
+        William Qiu <william.qiu@starfivetech.com>
+Cc:     Rob Herring <robh+dt@kernel.org>,
         Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
         Conor Dooley <conor+dt@kernel.org>,
-        Chen-Yu Tsai <wens@csie.org>,
-        Samuel Holland <samuel@sholland.org>,
-        Andre Przywara <andre.przywara@arm.com>
-Cc:     Icenowy Zheng <uwu@icenowy.me>,
-        Piotr Oniszczuk <piotr.oniszczuk@gmail.com>,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-sunxi@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 2/3] dt-bindings: arm: sunxi: document Orange Pi Zero 3 board
- name
-Date:   Fri, 04 Aug 2023 21:03:12 +0200
-Message-ID: <5696551.DvuYhMxLoT@jernej-laptop>
-In-Reply-To: <20230804170856.1237202-3-andre.przywara@arm.com>
-References: <20230804170856.1237202-1-andre.przywara@arm.com>
- <20230804170856.1237202-3-andre.przywara@arm.com>
+        Emil Renner Berthing <kernel@esmil.dk>,
+        Ziv Xu <ziv.xu@starfivetech.com>
+In-Reply-To: <20230602084925.215411-1-william.qiu@starfivetech.com>
+References: <20230602084925.215411-1-william.qiu@starfivetech.com>
+Subject: Re: (subset) [PATCH v2 0/3] Add initialization of clock for
+ StarFive JH7110 SoC
+Message-Id: <169117586216.140468.7908360235133521316.b4-ty@kernel.org>
+Date:   Fri, 04 Aug 2023 20:04:22 +0100
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Mailer: b4 0.13-dev-034f2
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dne petek, 04. avgust 2023 ob 19:08:55 CEST je Andre Przywara napisal(a):
-> The Orange Pi Zero 3 board is an updated version of the Zero 2 board.
-> It uses a SoC called H618, which just seems to be an H616 with more L2
-> cache.
+On Fri, 02 Jun 2023 16:49:22 +0800, William Qiu wrote:
+> This patchset adds initial rudimentary support for the StarFive
+> Quad SPI controller driver. And this driver will be used in
+> StarFive's VisionFive 2 board. In 6.4, the QSPI_AHB and QSPI_APB
+> clocks changed from the default ON state to the default OFF state,
+> so these clocks need to be enabled in the driver.At the same time,
+> dts patch is added to this series.
 > 
-> Add the board/SoC compatible string pair to the list of known boards.
-> 
-> Signed-off-by: Andre Przywara <andre.przywara@arm.com>
-> Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+> [...]
 
-Acked-by: Jernej Skrabec <jernej.skrabec@gmail.com>
+Applied to
 
-Best regards,
-Jernej
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git for-next
 
-> ---
->  Documentation/devicetree/bindings/arm/sunxi.yaml | 5 +++++
->  1 file changed, 5 insertions(+)
-> 
-> diff --git a/Documentation/devicetree/bindings/arm/sunxi.yaml
-> b/Documentation/devicetree/bindings/arm/sunxi.yaml index
-> ee8fdd2da869a..58f322b9585f2 100644
-> --- a/Documentation/devicetree/bindings/arm/sunxi.yaml
-> +++ b/Documentation/devicetree/bindings/arm/sunxi.yaml
-> @@ -997,4 +997,9 @@ properties:
->            - const: xunlong,orangepi-zero2
->            - const: allwinner,sun50i-h616
-> 
-> +      - description: Xunlong OrangePi Zero 3
-> +        items:
-> +          - const: xunlong,orangepi-zero3
-> +          - const: allwinner,sun50i-h618
-> +
->  additionalProperties: true
+Thanks!
 
+[1/3] dt-bindings: qspi: cdns,qspi-nor: Add clocks for StarFive JH7110 SoC
+      commit: 0d2b6a1b8515204924b9174ae0135e1f4ff29b21
+[2/3] spi: cadence-quadspi: Add clock configuration for StarFive JH7110 QSPI
+      commit: 33f1ef6d4eb6bca726608ed939c9fd94d96ceefd
 
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
 
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
 
