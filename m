@@ -2,220 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D851F76F710
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 03:43:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3CC0476F714
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 03:44:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232292AbjHDBnC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Aug 2023 21:43:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55168 "EHLO
+        id S232421AbjHDBof (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Aug 2023 21:44:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55780 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232180AbjHDBnA (ORCPT
+        with ESMTP id S232056AbjHDBod (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Aug 2023 21:43:00 -0400
-Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9087B10C7;
-        Thu,  3 Aug 2023 18:42:58 -0700 (PDT)
-Received: from kwepemm600003.china.huawei.com (unknown [172.30.72.53])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4RH7j12jkZzVjvb;
-        Fri,  4 Aug 2023 09:41:09 +0800 (CST)
-Received: from [10.67.111.205] (10.67.111.205) by
- kwepemm600003.china.huawei.com (7.193.23.202) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.27; Fri, 4 Aug 2023 09:42:55 +0800
-Subject: Re: [PATCH v4 4/7] perf record: Track sideband events for all CPUs
- when tracing selected CPUs
-To:     Adrian Hunter <adrian.hunter@intel.com>, <peterz@infradead.org>,
-        <mingo@redhat.com>, <acme@kernel.org>, <mark.rutland@arm.com>,
-        <alexander.shishkin@linux.intel.com>, <jolsa@kernel.org>,
-        <namhyung@kernel.org>, <irogers@google.com>,
-        <kan.liang@linux.intel.com>, <james.clark@arm.com>,
-        <tmricht@linux.ibm.com>, <ak@linux.intel.com>,
-        <anshuman.khandual@arm.com>, <linux-kernel@vger.kernel.org>,
-        <linux-perf-users@vger.kernel.org>
-References: <20230802074948.136468-1-yangjihong1@huawei.com>
- <20230802074948.136468-5-yangjihong1@huawei.com>
- <bbfd8e23-db63-61fc-4f9e-25e993345b57@intel.com>
-From:   Yang Jihong <yangjihong1@huawei.com>
-Message-ID: <a1eedb1d-ea92-0e66-1013-874c06861682@huawei.com>
-Date:   Fri, 4 Aug 2023 09:42:55 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.1
+        Thu, 3 Aug 2023 21:44:33 -0400
+Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97F4B1BD;
+        Thu,  3 Aug 2023 18:44:31 -0700 (PDT)
+Received: from mail02.huawei.com (unknown [172.30.67.143])
+        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4RH7mr06kfz4f3jqs;
+        Fri,  4 Aug 2023 09:44:28 +0800 (CST)
+Received: from [10.174.178.55] (unknown [10.174.178.55])
+        by APP4 (Coremail) with SMTP id gCh0CgD3X7P6V8xk6Z0MPg--.4994S3;
+        Fri, 04 Aug 2023 09:44:28 +0800 (CST)
+Subject: Re: [PATCH v5 3/3] mm: Dump the memory of slab object in
+ kmem_dump_obj()
+To:     Vlastimil Babka <vbabka@suse.cz>, Christoph Lameter <cl@linux.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        David Rientjes <rientjes@google.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Hyeonggon Yoo <42.hyeyoo@gmail.com>, linux-mm@kvack.org,
+        "Paul E . McKenney" <paulmck@kernel.org>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Zqiang <qiang.zhang1211@gmail.com>, rcu@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     Zhen Lei <thunder.leizhen@huawei.com>
+References: <20230803101754.1149-1-thunder.leizhen@huaweicloud.com>
+ <20230803101754.1149-4-thunder.leizhen@huaweicloud.com>
+ <8a08b7aa-ce1f-4b3d-abb5-cf3191474725@suse.cz>
+From:   "Leizhen (ThunderTown)" <thunder.leizhen@huaweicloud.com>
+Message-ID: <5d625946-28f1-f532-dd58-af18263a8bea@huaweicloud.com>
+Date:   Fri, 4 Aug 2023 09:44:25 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.0
 MIME-Version: 1.0
-In-Reply-To: <bbfd8e23-db63-61fc-4f9e-25e993345b57@intel.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
+In-Reply-To: <8a08b7aa-ce1f-4b3d-abb5-cf3191474725@suse.cz>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.67.111.205]
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
- kwepemm600003.china.huawei.com (7.193.23.202)
+X-CM-TRANSID: gCh0CgD3X7P6V8xk6Z0MPg--.4994S3
+X-Coremail-Antispam: 1UD129KBjvJXoWxZw13Kw4fJrWUZF1UGr45ZFb_yoW5WF4kpr
+        98Gr1UKrZ7ArnrCrn7X3WDJFnxJ3ykCF1kA3yav3W2vryDXr48uFyktF97uFyrAF1Sq39F
+        yr4qqF9I934UJaDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUvIb4IE77IF4wAFF20E14v26ryj6rWUM7CY07I20VC2zVCF04k2
+        6cxKx2IYs7xG6r1S6rWUM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+        vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7Cj
+        xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
+        0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
+        6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
+        Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7Mxk0xIA0c2IE
+        e2xFo4CEbIxvr21l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxV
+        Aqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r4a
+        6rW5MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6x
+        kF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE
+        14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf
+        9x07UZ18PUUUUU=
+X-CM-SenderInfo: hwkx0vthuozvpl2kv046kxt4xhlfz01xgou0bp/
 X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,MAY_BE_FORGED,
+        NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
 
-On 2023/8/3 14:28, Adrian Hunter wrote:
-> On 2/08/23 10:49, Yang Jihong wrote:
->> User space tasks can migrate between CPUs, we need to track side-band
->> events for all CPUs.
+
+On 2023/8/3 18:34, Vlastimil Babka wrote:
+> On 8/3/23 12:17, thunder.leizhen@huaweicloud.com wrote:
+>> From: Zhen Lei <thunder.leizhen@huawei.com>
 >>
->> The specific scenarios are as follows:
+>> The contents of the slab object may contain some magic words and other
+>> useful information that may be helpful in locating problems such as
+>> memory corruption and use-after-free.
 >>
->>           CPU0                                 CPU1
->>    perf record -C 0 start
->>                                taskA starts to be created and executed
->>                                  -> PERF_RECORD_COMM and PERF_RECORD_MMAP
->>                                     events only deliver to CPU1
->>                                ......
->>                                  |
->>                            migrate to CPU0
->>                                  |
->>    Running on CPU0    <----------/
->>    ...
+>> To avoid print flooding, dump up to "16 * sizeof(int) = 64" bytes
+>> centered on argument 'ojbect'.
 >>
->>    perf record -C 0 stop
+>> For example:
+>> slab kmalloc-64 start ffff4043802d8b40 pointer offset 24 size 64
+>> [8b40]: 12345678 00000000 8092d000 ffff8000
+>> [8b50]: 00101000 00000000 8199ee00 ffff4043
+>> [8b60]: 00000000 00000000 00000000 00000100
+>> [8b70]: 00000000 9abcdef0 a8744de4 ffffc7fe
 >>
->> Now perf samples the PC of taskA. However, perf does not record the
->> PERF_RECORD_COMM and PERF_RECORD_MMAP events of taskA.
->> Therefore, the comm and symbols of taskA cannot be parsed.
->>
->> The solution is to record sideband events for all CPUs when tracing
->> selected CPUs. Because this modifies the default behavior, add related
->> comments to the perf record man page.
->>
->> The sys_perf_event_open invoked is as follows:
->>
->>    # perf --debug verbose=3 record -e cpu-clock -C 1 true
->>    <SNIP>
->>    Opening: cpu-clock
->>    ------------------------------------------------------------
->>    perf_event_attr:
->>      type                             1 (PERF_TYPE_SOFTWARE)
->>      size                             136
->>      config                           0 (PERF_COUNT_SW_CPU_CLOCK)
->>      { sample_period, sample_freq }   4000
->>      sample_type                      IP|TID|TIME|CPU|PERIOD|IDENTIFIER
->>      read_format                      ID|LOST
->>      disabled                         1
->>      inherit                          1
->>      freq                             1
->>      sample_id_all                    1
->>      exclude_guest                    1
->>    ------------------------------------------------------------
->>    sys_perf_event_open: pid -1  cpu 1  group_fd -1  flags 0x8 = 5
->>    Opening: dummy:u
->>    ------------------------------------------------------------
->>    perf_event_attr:
->>      type                             1 (PERF_TYPE_SOFTWARE)
->>      size                             136
->>      config                           0x9 (PERF_COUNT_SW_DUMMY)
->>      { sample_period, sample_freq }   1
->>      sample_type                      IP|TID|TIME|CPU|IDENTIFIER
->>      read_format                      ID|LOST
->>      inherit                          1
->>      exclude_kernel                   1
->>      exclude_hv                       1
->>      mmap                             1
->>      comm                             1
->>      task                             1
->>      sample_id_all                    1
->>      exclude_guest                    1
->>      mmap2                            1
->>      comm_exec                        1
->>      ksymbol                          1
->>      bpf_event                        1
->>    ------------------------------------------------------------
->>    sys_perf_event_open: pid -1  cpu 0  group_fd -1  flags 0x8 = 6
->>    sys_perf_event_open: pid -1  cpu 1  group_fd -1  flags 0x8 = 7
->>    sys_perf_event_open: pid -1  cpu 2  group_fd -1  flags 0x8 = 9
->>    sys_perf_event_open: pid -1  cpu 3  group_fd -1  flags 0x8 = 10
->>    sys_perf_event_open: pid -1  cpu 4  group_fd -1  flags 0x8 = 11
->>    sys_perf_event_open: pid -1  cpu 5  group_fd -1  flags 0x8 = 12
->>    sys_perf_event_open: pid -1  cpu 6  group_fd -1  flags 0x8 = 13
->>    sys_perf_event_open: pid -1  cpu 7  group_fd -1  flags 0x8 = 14
->>    <SNIP>
->>
->> Signed-off-by: Yang Jihong <yangjihong1@huawei.com>
+>> Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
 >> ---
->>   tools/perf/Documentation/perf-record.txt |  3 ++
->>   tools/perf/builtin-record.c              | 45 +++++++++++++++++++++++-
->>   2 files changed, 47 insertions(+), 1 deletion(-)
+>>  mm/slab_common.c | 30 +++++++++++++++++++++++++++---
+>>  1 file changed, 27 insertions(+), 3 deletions(-)
 >>
->> diff --git a/tools/perf/Documentation/perf-record.txt b/tools/perf/Documentation/perf-record.txt
->> index 680396c56bd1..dac53ece51ab 100644
->> --- a/tools/perf/Documentation/perf-record.txt
->> +++ b/tools/perf/Documentation/perf-record.txt
->> @@ -388,6 +388,9 @@ comma-separated list with no space: 0,1. Ranges of CPUs are specified with -: 0-
->>   In per-thread mode with inheritance mode on (default), samples are captured only when
->>   the thread executes on the designated CPUs. Default is to monitor all CPUs.
->>   
->> +User space tasks can migrate between CPUs, so when tracing selected CPUs,
->> +a dummy event is created to track sideband for all CPUs.
+>> diff --git a/mm/slab_common.c b/mm/slab_common.c
+>> index ee6ed6dd7ba9fa5..0232de9a3b29cf5 100644
+>> --- a/mm/slab_common.c
+>> +++ b/mm/slab_common.c
+>> @@ -553,7 +553,7 @@ static void kmem_obj_info(struct kmem_obj_info *kpp, void *object, struct slab *
+>>  bool kmem_dump_obj(void *object)
+>>  {
+>>  	char *cp = IS_ENABLED(CONFIG_MMU) ? "" : "/vmalloc";
+>> -	int i;
+>> +	int i, object_size = 0;
+>>  	struct slab *slab;
+>>  	unsigned long ptroffset;
+>>  	struct kmem_obj_info kp = { };
+>> @@ -580,12 +580,36 @@ bool kmem_dump_obj(void *object)
+>>  		ptroffset = ((char *)object - (char *)kp.kp_objp) - kp.kp_data_offset;
+>>  		pr_cont(" pointer offset %lu", ptroffset);
+>>  	}
+>> -	if (kp.kp_slab_cache && kp.kp_slab_cache->object_size)
+>> -		pr_cont(" size %u", kp.kp_slab_cache->object_size);
+>> +	if (kp.kp_slab_cache && kp.kp_slab_cache->object_size) {
+>> +		object_size = kp.kp_slab_cache->object_size;
+>> +		pr_cont(" size %u", object_size);
+>> +	}
+>>  	if (kp.kp_ret)
+>>  		pr_cont(" allocated at %pS\n", kp.kp_ret);
+>>  	else
+>>  		pr_cont("\n");
 >> +
->>   -B::
->>   --no-buildid::
->>   Do not save the build ids of binaries in the perf.data files. This skips
->> diff --git a/tools/perf/builtin-record.c b/tools/perf/builtin-record.c
->> index 3ff9d972225e..468afeaac52d 100644
->> --- a/tools/perf/builtin-record.c
->> +++ b/tools/perf/builtin-record.c
->> @@ -908,10 +908,45 @@ static int record__config_off_cpu(struct record *rec)
->>   	return off_cpu_prepare(rec->evlist, &rec->opts.target, &rec->opts);
->>   }
->>   
->> +static bool record__tracking_system_wide(struct record *rec)
->> +{
->> +	struct record_opts *opts = &rec->opts;
->> +	struct evlist *evlist = rec->evlist;
->> +	struct evsel *evsel;
+>> +	/* Dump a small piece of memory centered on 'object' */
+>> +	if (kp.kp_objp && object_size) {
+>> +		int *p = object, n = 16;
 >> +
->> +	/*
->> +	 * If all (non-dummy) evsel have exclude_user,
->> +	 * system_wide is not needed.
->> +	 *
->> +	 * all_kernel and all_user will overwrite exclude_kernel and
->> +	 * exclude_user of attr in evsel__config(), here need to check
->> +	 * all the three items.
->> +	 *
->> +	 * Sideband system wide if one of the following conditions is met:
->> +	 *
->> +	 *   - all_user is set, and there is a non-dummy event
->> +	 *   - all_user and all_kernel are not set, and there is
->> +	 *     a non-dummy event without exclude_user
->> +	 */
-> 
-> Could start with:
-> 
-> 	if (opts->all_kernel)
-> 		return false;
-> 
->> +	evlist__for_each_entry(evlist, evsel) {
->> +		if (!evsel__is_dummy_event(evsel)) {
->> +			if (opts->all_user)
->> +				return true;
+>> +		p += n / 2;
+>> +		if ((void *)p > kp.kp_objp + object_size)
+>> +			p = kp.kp_objp + object_size;
 >> +
->> +			if (!opts->all_user && !opts->all_kernel &&
+>> +		p -= n;
+>> +		if ((void *)p < kp.kp_objp)
+>> +			p = kp.kp_objp;
+>> +
+>> +		n = min_t(int, object_size / sizeof(int), n);
+>> +		for (i = 0; i < n; i++, p++) {
+>> +			if (i % 4 == 0)
+>> +				pr_info("[%04lx]:", 0xffff & (unsigned long)p);
+>> +			pr_cont(" %08x", *p);
+>> +		}
+>> +		pr_cont("\n");
 > 
-> !opts->all_user is always true here
-> 
->> +			    !evsel->core.attr.exclude_user)
->> +				return true;
-> 
-> So then this could simply be:
-> 
-> 			if (opts->all_user || !evsel->core.attr.exclude_user)
-> 				return true;
-> 
-> 
-Thanks for correction. It will be modified in the next version according 
-to the above.
+> There's a print_hex_dump() for this, see how it's used from e.g. __dump_page().
 
-Thanks,
-Yang
+Thank you very much. The code has suddenly been a lot simpler.
+
+However, print_hex_dump() can be further enhanced, I will add a patch, let's
+discuss it together.
+
+> 
+> 
+>> +	}
+>> +
+>>  	for (i = 0; i < ARRAY_SIZE(kp.kp_stack); i++) {
+>>  		if (!kp.kp_stack[i])
+>>  			break;
+> 
+> .
+> 
+
+-- 
+Regards,
+  Zhen Lei
+
