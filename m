@@ -2,198 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1403B76FCDF
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 11:07:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0969676FCCE
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 11:05:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230095AbjHDJGz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Aug 2023 05:06:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54100 "EHLO
+        id S229649AbjHDJFT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Aug 2023 05:05:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53976 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230086AbjHDJGP (ORCPT
+        with ESMTP id S229634AbjHDJEt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Aug 2023 05:06:15 -0400
-Received: from bg4.exmail.qq.com (bg4.exmail.qq.com [43.154.54.12])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C957055AF
-        for <linux-kernel@vger.kernel.org>; Fri,  4 Aug 2023 02:03:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=biqu3d.com;
-        s=tfld2305; t=1691139809;
-        bh=BXFUbvZvZy3aiIGANo/QIT5geUFli3L/HkMpNAYXsLY=;
-        h=From:To:Subject:Date:Message-ID:MIME-Version;
-        b=JRrP5jXpHk/Ue3yWX9UkoNIuAyfibjVCs23sHDBODNHB1qU/xuhsG00a6Y/IfFipY
-         xVcJaT+ScwhowAoFkRuxzH8tyeWDHUPc/Rkj2vDw/axdM67Bxy1TNa/Pp2bEyrEohX
-         UJTcY8nQqrFga0gYdooov9lVByR5uVzSguWx3MYM=
-X-QQ-mid: bizesmtp65t1691139767tq4i37au
-Received: from localhost.localdomain ( [178.41.211.221])
-        by bizesmtp.qq.com (ESMTP) with 
-        id ; Fri, 04 Aug 2023 17:02:32 +0800 (CST)
-X-QQ-SSF: 01400000000000404000000A0000000
-X-QQ-FEAT: ed3fCvOSdPtJDkZ/c3tNaOzkym+MgZuZlMJAJbbrgUA1gld8FFB1m+uXrhgAm
-        rb1MFqSWKqyx8Wmna6eUnIakQcpPquRSLI3ulqB6qr2z12nGJW6Dv3TgirjQBGNxsbnVK+v
-        XeQsOHac68ESqqvgZaf1wOV0nLeQAAVeRam38KKLFIXIAfzDE4UjGcwUjMgcqk9aOx8nZGY
-        V/5e38+vz2yDKSzMsQTy0y2Ck8zXy7G3c07hEwVhu5S2EqZ3B1tDvNb0rTTbRk0DBza4StB
-        Z9sHwe3Px02mjNs6/9ORDkUoI1ddO0Toi0D2FGvp0sRHufuQK89da8mlmogDc71lo87w18H
-        J9+d+mkg2Mtiz/aoWZjnT4KDtvjQ1L5FfJHj+6Vr++VMjmTIyEP8c3Y9FVKlOpmEPPouBwk
-X-QQ-GoodBg: 2
-X-BIZMAIL-ID: 226659804070956941
-From:   Martin Botka <martin@biqu3d.com>
-To:     martin.botka1@gmail.com
-Cc:     Konrad Dybcio <konrad.dybcio@somainline.org>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@somainline.org>,
-        Marijn Suijten <marijn.suijten@somainline.org>,
-        Jami Kettunen <jamipkettunen@somainline.org>,
-        Paul Bouchara <paul.bouchara@somainline.org>,
-        Martin Botka <martin.botka@somainline.org>,
-        Andre Przywara <andre.przywara@arm.com>,
-        Martin Botka <martin@biqu3d.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Chen-Yu Tsai <wens@csie.org>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Samuel Holland <samuel@sholland.org>,
-        Andrew Lunn <andrew@lunn.ch>, Icenowy Zheng <uwu@icenowy.me>,
-        Ludwig Kormann <ludwig.kormann@ict42.de>,
-        Heiko Stuebner <heiko@sntech.de>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Chris Morgan <macromorgan@hotmail.com>,
-        Jagan Teki <jagan@edgeble.ai>,
-        Maxime Ripard <mripard@kernel.org>, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v2 4/4] arm64: dts: allwinner: h616: Add BigTreeTech Pi support
-Date:   Fri,  4 Aug 2023 11:00:32 +0200
-Message-ID: <92B0AD8F9717BDE3+20230804090102.273029-5-martin@biqu3d.com>
-X-Mailer: git-send-email 2.41.0
-In-Reply-To: <20230804090102.273029-1-martin@biqu3d.com>
-References: <20230804090102.273029-1-martin@biqu3d.com>
+        Fri, 4 Aug 2023 05:04:49 -0400
+Received: from mail-oi1-x230.google.com (mail-oi1-x230.google.com [IPv6:2607:f8b0:4864:20::230])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D80749F2;
+        Fri,  4 Aug 2023 02:01:48 -0700 (PDT)
+Received: by mail-oi1-x230.google.com with SMTP id 5614622812f47-3a5ad6087a1so1146587b6e.2;
+        Fri, 04 Aug 2023 02:01:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1691139707; x=1691744507;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=hdiYU3oLs+tgo2aXTFMAz2724lcG+amcmhYKagtlmaI=;
+        b=SV2hvlrZQwHK2+xQNQYc2ut84T8pMZl7IeoPdua9ZB0FEXVj5YSFNX8wPmzvAsZOrd
+         rXGMznNF+EYb3LwDCz7NnRqo5fNMTLjsWirqwCa5Zxb1sTgX9SPPh5IIQigG0Rw2HclA
+         EF8oanS4OJNEqckK9F356aV3nAge3pfPglVZLl+6bNHvlaYH0WG6kCYug0jA6F0R5JE2
+         RgrVSS8qordThEg7SNPNUCAZ/++TQjVMYUJLegMzmx4WSn9pfrII2Z1wenAy7NYXQKgf
+         R/ofDHt8lkW/Wv53F26j0/Qa1425UBlH+hvfYGYZd4eiJj1fINSQrut/aeHqZWoyZjKR
+         M6eQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691139707; x=1691744507;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=hdiYU3oLs+tgo2aXTFMAz2724lcG+amcmhYKagtlmaI=;
+        b=IZL1ZooPYCKlUazrkHK8djhs7kSu8Dy9ryluUf1Ke+RBekCBVcMARZlyu42BIWagqB
+         RPEMNK+2rcoIosTsR0xEbj2za1Cp6hy/Rrs5s3NEHaexYR/FpaZWxiXPWBEH5ilztpkj
+         TFlp/hp5arVV3MAUykkUNxtL+CHgqicTuMNmEbaEyLHrhdNiIMnGJ5aeESB9IBZI8Vrk
+         BfXMSHerG4jxQCmKUJFP9TrFVpZLSse41ZeFUW0qLne3bDT6eComepIBlEv+jpkF4hty
+         Dv6fxd4hGNVsxdTkGkfe/wMx0rNuzJ0a+WTR0MRjvyCyiBMg2Sm0Oj7laH7Wx1U+w6lG
+         EvRA==
+X-Gm-Message-State: AOJu0YytqyCc1MeohAISlPQdc0bs31fPcod7TOqcQJvhP5oDpEfjIjYZ
+        H2Utc1TzNXWQnPc5St8xFGE=
+X-Google-Smtp-Source: AGHT+IEQDKRqBz57duyD/KV5eCWHbi6NUmXol/Y1XOols+Hm9yBd9ALRdjrErd1O4KzJX36hoZjVVw==
+X-Received: by 2002:aca:1012:0:b0:3a4:8a41:c69c with SMTP id 18-20020aca1012000000b003a48a41c69cmr1146059oiq.13.1691139707559;
+        Fri, 04 Aug 2023 02:01:47 -0700 (PDT)
+Received: from ovpn-8-25.pek2.redhat.com ([2409:8950:2e11:36e6:d082:6f8a:2f51:c30e])
+        by smtp.gmail.com with ESMTPSA id j4-20020a635504000000b00563bee47a79sm897541pgb.80.2023.08.04.02.01.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 04 Aug 2023 02:01:47 -0700 (PDT)
+Date:   Fri, 4 Aug 2023 17:01:41 +0800
+From:   Ming Lei <tom.leiming@gmail.com>
+To:     "Andreas Hindborg (Samsung)" <nmi@metaspace.dk>
+Cc:     Ming Lei <ming.lei@redhat.com>,
+        Christoph Hellwig <hch@infradead.org>, gost.dev@samsung.com,
+        "open list:BLOCK LAYER" <linux-block@vger.kernel.org>,
+        Hans Holmberg <Hans.Holmberg@wdc.com>,
+        Matias Bjorling <Matias.Bjorling@wdc.com>,
+        Andreas Hindborg <a.hindborg@samsung.com>,
+        Minwoo Im <minwoo.im.dev@gmail.com>,
+        Jens Axboe <axboe@kernel.dk>,
+        Johannes Thumshirn <jth@kernel.org>,
+        Aravind Ramesh <Aravind.Ramesh@wdc.com>,
+        Damien Le Moal <dlemoal@kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v10 2/3] ublk: move check for empty address field on
+ command submission
+Message-ID: <ZMy+dTpJzln7DlgZ@ovpn-8-25.pek2.redhat.com>
+References: <20230803140701.18515-1-nmi@metaspace.dk>
+ <20230803140701.18515-3-nmi@metaspace.dk>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-QQ-SENDSIZE: 520
-Feedback-ID: bizesmtp:biqu3d.com:qybglogicsvrgz:qybglogicsvrgz5a-1
-X-Spam-Status: No, score=-0.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H2,RCVD_IN_VALIDITY_RPBL,SPF_HELO_NONE,SPF_PASS,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230803140701.18515-3-nmi@metaspace.dk>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The BigTreeTech Pi is an H616 based board based on CB1.
-Just in Rpi format board.
+Hi Andreas,
 
-It features the same internals as BTT CB1 but adds:
-    - Fan port
-    - IR receiver
-    - ADXL345 Accelerometer connector via SPI
-    - 24V DC power supply via terminal plugs
-    - USB to CAN module connector (The actual USB to CAN happens on the external module)
+On Thu, Aug 03, 2023 at 04:07:00PM +0200, Andreas Hindborg (Samsung) wrote:
+> From: Andreas Hindborg <a.hindborg@samsung.com>
+> 
+> In preparation for zoned storage support, move the check for empty `addr`
+> field into the command handler case statement. Note that the check makes no
+> sense for `UBLK_IO_NEED_GET_DATA` because the `addr` field must always be
+> set for this command.
+> 
+> Signed-off-by: Andreas Hindborg <a.hindborg@samsung.com>
+> ---
+>  drivers/block/ublk_drv.c | 18 +++++++++++++-----
+>  1 file changed, 13 insertions(+), 5 deletions(-)
+> 
+> diff --git a/drivers/block/ublk_drv.c b/drivers/block/ublk_drv.c
+> index db3523e281a6..5a1ee17636ac 100644
+> --- a/drivers/block/ublk_drv.c
+> +++ b/drivers/block/ublk_drv.c
+> @@ -1419,11 +1419,6 @@ static int __ublk_ch_uring_cmd(struct io_uring_cmd *cmd,
+>  			^ (_IOC_NR(cmd_op) == UBLK_IO_NEED_GET_DATA))
+>  		goto out;
+>  
+> -	if (ublk_support_user_copy(ubq) && ub_cmd->addr) {
+> -		ret = -EINVAL;
+> -		goto out;
+> -	}
+> -
+>  	ret = ublk_check_cmd_op(cmd_op);
+>  	if (ret)
+>  		goto out;
+> @@ -1452,6 +1447,12 @@ static int __ublk_ch_uring_cmd(struct io_uring_cmd *cmd,
+>  				goto out;
+>  		}
+>  
+> +		/* User copy requires addr to be unset */
+> +		if (ublk_support_user_copy(ubq) && ub_cmd->addr) {
+> +			ret = -EINVAL;
+> +			goto out;
+> +		}
+> +
 
-List of currently working things is same as BTT CB1 but also:
-    - IR receiver
-    - ADXL345 connector
+Given you have to post v11 for fixing build issue, please convert the
+above two 'if' into one 'if else':
 
-Signed-off-by: Martin Botka <martin@biqu3d.com>
----
-Changes in V2:
-    - Add UART alongside aliases and chosen for it
-    - Add model string
-    - Enable IR receiver
-    - Enable SPI0 for ADXL345 connector
+		if (!ublk_support_user_copy(ubq)) {
+			/*
+			 * FETCH_RQ has to provide IO buffer if NEED GET
+			 * DATA is not enabled
+			 */
+			if (!ub_cmd->addr && !ublk_need_get_data(ubq))
+				goto out;
+		} else {
+			if (ub_cmd->addr) {
+				ret = -EINVAL;
+				goto out;
+			}
+		}
 
- arch/arm64/boot/dts/allwinner/Makefile        |  1 +
- .../allwinner/sun50i-h616-bigtreetech-pi.dts  | 68 +++++++++++++++++++
- 2 files changed, 69 insertions(+)
- create mode 100644 arch/arm64/boot/dts/allwinner/sun50i-h616-bigtreetech-pi.dts
+>  		ublk_fill_io_cmd(io, cmd, ub_cmd->addr);
+>  		ublk_mark_io_ready(ub, ubq);
+>  		break;
+> @@ -1470,6 +1471,13 @@ static int __ublk_ch_uring_cmd(struct io_uring_cmd *cmd,
+>  						req_op(req) == REQ_OP_READ))
+>  				goto out;
+>  		}
+> +
+> +		/* User copy requires addr to be unset */
+> +		if (ublk_support_user_copy(ubq) && ub_cmd->addr) {
+> +			ret = -EINVAL;
+> +			goto out;
+> +		}
+> +
 
-diff --git a/arch/arm64/boot/dts/allwinner/Makefile b/arch/arm64/boot/dts/allwinner/Makefile
-index 7b386428510b..0b6232a7f328 100644
---- a/arch/arm64/boot/dts/allwinner/Makefile
-+++ b/arch/arm64/boot/dts/allwinner/Makefile
-@@ -39,5 +39,6 @@ dtb-$(CONFIG_ARCH_SUNXI) += sun50i-h6-pine-h64-model-b.dtb
- dtb-$(CONFIG_ARCH_SUNXI) += sun50i-h6-tanix-tx6.dtb
- dtb-$(CONFIG_ARCH_SUNXI) += sun50i-h6-tanix-tx6-mini.dtb
- dtb-$(CONFIG_ARCH_SUNXI) += sun50i-h616-bigtreetech-cb1-manta.dtb
-+dtb-$(CONFIG_ARCH_SUNXI) += sun50i-h616-bigtreetech-pi.dtb
- dtb-$(CONFIG_ARCH_SUNXI) += sun50i-h616-orangepi-zero2.dtb
- dtb-$(CONFIG_ARCH_SUNXI) += sun50i-h616-x96-mate.dtb
-diff --git a/arch/arm64/boot/dts/allwinner/sun50i-h616-bigtreetech-pi.dts b/arch/arm64/boot/dts/allwinner/sun50i-h616-bigtreetech-pi.dts
-new file mode 100644
-index 000000000000..cbeedf147ab6
---- /dev/null
-+++ b/arch/arm64/boot/dts/allwinner/sun50i-h616-bigtreetech-pi.dts
-@@ -0,0 +1,68 @@
-+// SPDX-License-Identifier: (GPL-2.0+ or MIT)
-+/*
-+ * Copyright (C) 2023 Martin Botka <martin@biqu3d.com>.
-+ */
-+
-+/dts-v1/;
-+
-+#include "sun50i-h616-bigtreetech-cb1.dtsi"
-+
-+/ {
-+	model = "BigTreeTech Pi"
-+	compatible = "bigtreetech,pi", "allwinner,sun50i-h616";
-+
-+	aliases {
-+		serial0 = &uart0;
-+	};
-+
-+	chosen {
-+		stdout-path = "serial0:115200n8";
-+	};
-+};
-+
-+&ehci0 {
-+	status = "okay";
-+};
-+
-+&ehci1 {
-+	status = "okay";
-+};
-+
-+&ehci2 {
-+	status = "okay";
-+};
-+
-+&ehci3 {
-+	status = "okay";
-+};
-+
-+&ir {
-+	status = "okay";
-+};
-+
-+&ohci0 {
-+	status = "okay";
-+};
-+
-+&ohci1 {
-+	status = "okay";
-+};
-+
-+&ohci2 {
-+	status = "okay";
-+};
-+
-+&ohci3 {
-+	status = "okay";
-+};
-+
-+&spi0 {
-+	/* SPI connection for onboard connector for ADXL345 accelerometer */
-+	status = "okay";
-+}
-+
-+&uart0 {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&uart0_ph_pins>;
-+	status = "okay";
-+};
--- 
-2.41.0
+Same with above.
 
+BTW, I have verified this patchset with ublk-zoned example in
+libublk-rs:
+
+https://github.com/ming1/libublk-rs/tree/zoned.v2
+
+cargo run --example zoned -- add -1 10240
+mkfs.btrfs -O zoned /dev/ublkb0
+mount & git clone linux-kernel &umount
+
+Hope V11 can be merged.
+
+
+Thanks,
+Ming
