@@ -2,136 +2,216 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 147C576FBB3
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 10:10:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 12C5276FBB8
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 10:11:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234420AbjHDIK2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Aug 2023 04:10:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50780 "EHLO
+        id S232654AbjHDILV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Aug 2023 04:11:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51726 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234044AbjHDIKY (ORCPT
+        with ESMTP id S231282AbjHDILT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Aug 2023 04:10:24 -0400
-Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com [IPv6:2607:f8b0:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 719C0468A
-        for <linux-kernel@vger.kernel.org>; Fri,  4 Aug 2023 01:10:23 -0700 (PDT)
-Received: by mail-pf1-x432.google.com with SMTP id d2e1a72fcca58-686d8c8fc65so1377116b3a.0
-        for <linux-kernel@vger.kernel.org>; Fri, 04 Aug 2023 01:10:23 -0700 (PDT)
+        Fri, 4 Aug 2023 04:11:19 -0400
+Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84EF54684
+        for <linux-kernel@vger.kernel.org>; Fri,  4 Aug 2023 01:11:18 -0700 (PDT)
+Received: by mail-pf1-x431.google.com with SMTP id d2e1a72fcca58-686bc261111so1348302b3a.3
+        for <linux-kernel@vger.kernel.org>; Fri, 04 Aug 2023 01:11:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1691136623; x=1691741423;
+        d=ventanamicro.com; s=google; t=1691136678; x=1691741478;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=FPclhZ1vg5BDdpiOr1u3K1Ic3Xgw+vDCd6qqGZUuLuY=;
-        b=Xg1YSkUWTEELpuPN48acofrZk3+QrBO6d0XcLgYJA/tkuU/LF+8yZ1sqBBB3tLKMxL
-         OMDCpGK/CzI/Xrz/h7eFc5BxRXxREm8GZvJ/CimkLqKEMExr/0uoK+TOV94iUHezdWr+
-         elU3NLstZDNTu3TO9p3r34hqo8Px+VBt0SJCU=
+        bh=1E1XKpqY2cyPNIrSdD2Uj7Nc4s99E7VJhmNzctJ9yC0=;
+        b=c0O39fOZTU05YfaE+/NuL/0+WcEvgeF+SRbGWw691gy7cFmVocxF2etSH7t09iQ51u
+         3UEbdkuaKyJUzhPPqN45Zqo0unNWsOT42D144N/2zpSlHvlalss+jzFtFLVtt9xhwsV0
+         2jUbfUF2kfYTbw9RIEVXY4rz7V6sB+WFFCVxDzOw2KsBpsUwDTH79BMkjXsvsUVb3P5X
+         LzpSCirLqW7Wk0TiB1u1kZIxH9nUi1kBoWjxGKHCdEfn5NeYClqikNfwpL6oioZmAswK
+         XT2zIoJpYPoswZJ6ZZCRE7L/qGA2OZ0LAW0uXnY2oGgsZ5rGl9ZxxHpvIpkMo6GeQdj+
+         gRaA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691136623; x=1691741423;
+        d=1e100.net; s=20221208; t=1691136678; x=1691741478;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=FPclhZ1vg5BDdpiOr1u3K1Ic3Xgw+vDCd6qqGZUuLuY=;
-        b=HWICoN523buvOA42iavyNFHG6a260a6R7krwUiGE4C2WVq+iyNQWf1RELLgO8cTmxi
-         284rNu+1qN2tME7uu6x0QSprJxcut38cabWgwLK41gB8K8oxPdhkpRt8VmWePiiSyH9Z
-         dodF3S/EFJAFs0rP8UYx/djMPupbPSbds/Je5i25NMIDQW3JBbbmZwbtEzC/hGDrCGOj
-         E9T9kuFz0C4dD4YF6K1XQByCg+RUWDLWSE7b8gQwy2ozeRJjfXBZyaWWaYjaRpWYPDOc
-         vX/72gXmOSAJBUNRD7NL+sJOaGBe9GsP1cgnIraQ9ZY76LHVYyQQRD0Vv6xG24jkNF3M
-         hN0g==
-X-Gm-Message-State: AOJu0YzYFNLaguFAou2z9dtMgnPnM3x91D8Y/GLRzlqMdebNAKseVwtQ
-        u8Pd7aX9AS6R0znRflIyI43mew==
-X-Google-Smtp-Source: AGHT+IFTdKyk64Z+Qw1u/ZR/fMoekXZZGwOXD7Xzt9eNMul5kG2LNkUw/0hRs7IBbPRxJEUNSPTXxA==
-X-Received: by 2002:a05:6a20:158e:b0:127:796d:b70d with SMTP id h14-20020a056a20158e00b00127796db70dmr1002485pzj.61.1691136622890;
-        Fri, 04 Aug 2023 01:10:22 -0700 (PDT)
-Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id t17-20020aa79391000000b006827d86ca0csm1046038pfe.55.2023.08.04.01.10.22
+        bh=1E1XKpqY2cyPNIrSdD2Uj7Nc4s99E7VJhmNzctJ9yC0=;
+        b=IYeV26WBE79hKcA5uupdiP5fwV3f2jgL6rQU7PV868Dw7/8905P2tZujeRbwVDs0yV
+         mjVRAHq5qDag/WkEAbYJbL4hyVpIhHtpWcUbLut18cPQhkhCHtwD/64FMIa6wHPk0YCX
+         wmiGWoWY09oPHxmKLjOUEARuNDXQ1VSBQJalG6gsbtEHXdRTKg7y6syb3LTpi+cJedLW
+         zcJ8G/7+Qk8502Oh8JzHvW0Or30r/5YEtcibOmrVuAxj4VpRe6B0/Eo+LfuwGwr8mEFa
+         lynKLOB8QLsZBWAXeL/KZXNnkiA+e5J4xzt+UbF9hSW8XjIu44d4g+nymr890eHVxBF7
+         tPPQ==
+X-Gm-Message-State: AOJu0YxRGpUrd2lyvuB1bc5GJ7L7EvMPbTQDm5s7gW3Vbi7NZ84OxWZo
+        1vu32p/7tto0oTyX/B3m7cSuPA==
+X-Google-Smtp-Source: AGHT+IHnx2zb6m6wrA5NnPdzIk8blklkqhpKJsWmU8/Y9MzhjmQ6IK1Rw1+MeaiexbKDwa3wkDs7Mw==
+X-Received: by 2002:a05:6a00:3984:b0:682:f529:6d69 with SMTP id fi4-20020a056a00398400b00682f5296d69mr1255507pfb.7.1691136677933;
+        Fri, 04 Aug 2023 01:11:17 -0700 (PDT)
+Received: from sunil-laptop ([106.51.190.143])
+        by smtp.gmail.com with ESMTPSA id c21-20020a62e815000000b005d22639b577sm1032647pfi.165.2023.08.04.01.11.08
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 04 Aug 2023 01:10:22 -0700 (PDT)
-Date:   Fri, 4 Aug 2023 01:10:21 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Yunlong Xing <yunlong.xing@unisoc.com>
-Cc:     tony.luck@intel.com, gpiccoli@igalia.com, joel@joelfernandes.org,
-        enlin.mu@unisoc.com, linux-hardening@vger.kernel.org,
-        linux-kernel@vger.kernel.org, enlinmu@gmail.com,
-        yunlong.xing23@gmail.com
-Subject: Re: [PATCH 1/1] pstore/ram: Check member of buffers during the
- initialization phase of the pstore
-Message-ID: <202308040103.1514A8C3CB@keescook>
-References: <20230801060432.1307717-1-yunlong.xing@unisoc.com>
+        Fri, 04 Aug 2023 01:11:17 -0700 (PDT)
+Date:   Fri, 4 Aug 2023 13:41:05 +0530
+From:   Sunil V L <sunilvl@ventanamicro.com>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     linux-doc@vger.kernel.org, linux-riscv@lists.infradead.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-acpi@vger.kernel.org, linux-pci@vger.kernel.org,
+        Jonathan Corbet <corbet@lwn.net>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        "Rafael J . Wysocki" <rafael@kernel.org>,
+        Len Brown <lenb@kernel.org>,
+        Daniel Scally <djrscally@gmail.com>,
+        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Anup Patel <anup@brainfault.org>,
+        Marc Zyngier <maz@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Robert Moore <robert.moore@intel.com>,
+        Haibo Xu <haibo1.xu@intel.com>,
+        Andrew Jones <ajones@ventanamicro.com>,
+        Conor Dooley <conor.dooley@microchip.com>,
+        Atish Kumar Patra <atishp@rivosinc.com>,
+        Anup Patel <apatel@ventanamicro.com>
+Subject: Re: [RFC PATCH v1 11/21] swnode: Add support to create early during
+ boot
+Message-ID: <ZMyymUdV63g4eGaT@sunil-laptop>
+References: <20230803175916.3174453-1-sunilvl@ventanamicro.com>
+ <20230803175916.3174453-12-sunilvl@ventanamicro.com>
+ <ZMyWDDD6Lw8REd1r@smile.fi.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230801060432.1307717-1-yunlong.xing@unisoc.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <ZMyWDDD6Lw8REd1r@smile.fi.intel.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 01, 2023 at 02:04:32PM +0800, Yunlong Xing wrote:
-> From: Enlin Mu <enlin.mu@unisoc.com>
+Hi Andy,
+
+On Fri, Aug 04, 2023 at 09:09:16AM +0300, Andy Shevchenko wrote:
+> On Thu, Aug 03, 2023 at 11:29:06PM +0530, Sunil V L wrote:
+> > From: Anup Patel <apatel@ventanamicro.com>
+> > 
+> > swnode framework can be used to create fwnode for interrupt
+> > controllers.
 > 
-> The commit 30696378f68a("pstore/ram: Do not treat empty buffers as valid")
-> would introduce the following issue:
+> Why? What is this for?
+> Can you elaborate? This commit message is poorly written...
 > 
-> When finding the buffer_size is zero, it would return directly.However, at
-> the same time, if the buffer's start is a illegal value, the others would
-> panic if access the buffer.
-
-Which "others" do you mean?
-
-> To avoid these happenning, check if the members are legal during the
-> initialization phase of the pstore.
+> And why firmware node is not enough for ACPI case?
+> I assume the fwnode in DT case is already provided by OF.
 > 
-> Fixes: 30696378f68a ("pstore/ram: Do not treat empty buffers as valid")
-> Cc: stable@vger.kernel.org
-> Signed-off-by: Enlin Mu <enlin.mu@unisoc.com>
-> ---
->  fs/pstore/ram_core.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+Thanks a lot for the review!.
+
+You are right, OF provides the fwnode for irqchip drivers. However, for
+ACPI case, it is typically created using irq_domain_alloc_named_fwnode
+or irq_domain_alloc_fwnode since these are not ACPI devices in the
+namespace but from MADT. The fwnode created using
+irq_domain_alloc_fwnode() is a simple one which doesn't support properties
+similar to the one created by OF framework or software node framework.
+Hence, lot of data from the MADT structures need to be cached as
+separate structures in the drivers and also would need several ifdefs to
+check for ACPI and some amount of code duplication is also required due
+to the way DT driver gets the information vs ACPI.
+
+The beauty of software node framework is, it supports adding properties
+and also is a supported fwnode type in __irq_domain_create(). So, if we
+can create the fwnode for these irqchip using software node, we can
+attach the same properties and the actual irqchip driver which uses the
+fwnode doesn't need to have any ACPI vs DT checks. Same driver will work
+seamlessly on both DT and ACPI platforms.  But the challenge is,
+currently swnode expects to be created with sysfs which won't be
+available during early boot when irqchip drivers need to be probed. So,
+adding support to create without dependency on sysfs help us to reuse
+the same framework for irqchip use case also.
+
+Apologies for not descriptive in the commit message. Please let us know
+your feedback on this approach.
+
+> > This helps in keeping the drivers same for both
+> > DT and ACPI. To enable this, enhance the swnode framework so
+> > that it can be created early during boot without dependency
+> > on sysfs.
 > 
-> diff --git a/fs/pstore/ram_core.c b/fs/pstore/ram_core.c
-> index 85aaf0fc6d7d..eb6df190d752 100644
-> --- a/fs/pstore/ram_core.c
-> +++ b/fs/pstore/ram_core.c
-> @@ -519,7 +519,7 @@ static int persistent_ram_post_init(struct persistent_ram_zone *prz, u32 sig,
->  	sig ^= PERSISTENT_RAM_SIG;
->  
->  	if (prz->buffer->sig == sig) {
-> -		if (buffer_size(prz) == 0) {
-> +		if (buffer_size(prz) == 0 && buffer_start(prz) == 0) {
->  			pr_debug("found existing empty buffer\n");
->  			return 0;
->  		}
+> ...
+> 
+> > -	swnode->kobj.kset = swnode_kset;
+> > +	swnode->kobj.kset = (!early) ? swnode_kset : NULL;
+> 
+> Too many unneeded characters. Why parentheses? Why negative check?
+> 
+Sure, will update in next version.
 
-And in the case of "buffer_size(prz) == 0" but "buffer_start(prz) != 0",
-this will be caught by:
+> ...
+> 
+> > +	if (early) {
+> > +		ret = 0;
+> > +		kobject_init(&swnode->kobj, &software_node_type_early);
+> > +		swnode->kobj.parent = parent ? &parent->kobj : NULL;
+> > +		if (node->name)
+> > +			ret = kobject_set_name(&swnode->kobj,
+> > +					       "%s", node->name);
+> > +		else
+> > +			ret = kobject_set_name(&swnode->kobj,
+> > +					       "node%d", swnode->id);
+> > +		if (!ret) {
+> > +			spin_lock(&swnode_early_lock);
+> > +			list_add_tail(&swnode->early, &swnode_early_list);
+> > +			spin_unlock(&swnode_early_lock);
+> > +		}
+> > +	} else {
+> > +		if (node->name)
+> > +			ret = kobject_init_and_add(&swnode->kobj, &software_node_type,
+> > +						   parent ? &parent->kobj : NULL,
+> 
+> This looks like have a duplication.
+> 
+> > +						   "%s", node->name);
+> > +		else
+> > +			ret = kobject_init_and_add(&swnode->kobj, &software_node_type,
+> > +						   parent ? &parent->kobj : NULL,
+> > +						   "node%d", swnode->id);
+> > +	}
+> 
+> Maybe it's possible to refactor this piece to be more compact?
+> 
+The issue is, kobject_init_and_add() expects sysfs. Let me try to
+compact this in next version. Thanks!
+> ...
+> 
+> > -	return PTR_ERR_OR_ZERO(swnode_register(node, parent, 0));
+> > +	return PTR_ERR_OR_ZERO(swnode_register(node, parent, 0, 0));
+> 
+> In one case you use boolean, here is unsigned int for early flag, why is the
+> inconsistency added?
+> 
+Yeah, it should be bool. Let me fix it in next version.
 
-                if (buffer_size(prz) > prz->buffer_size ||
-                    buffer_start(prz) > buffer_size(prz)) {
-                        pr_info("found existing invalid buffer, size %zu, start %zu\n",
-                                buffer_size(prz), buffer_start(prz));
-                        zap = true;
-                }
+> ...
+> 
+> > -struct fwnode_handle *
+> > -fwnode_create_software_node(const struct property_entry *properties,
+> > -			    const struct fwnode_handle *parent)
+> > +static struct fwnode_handle *
+> > +fwnode_create_software_node_common(const struct property_entry *properties,
+> > +				   const struct fwnode_handle *parent,
+> > +				   bool early)
+> 
+> Why would you need this API in early stages?
+> 
+Hope I answered the question above. 
 
-i.e. it will be detected and zapped back to a sane state.
-
-That sounds correct to me, though I wonder if reporting it as an
-"invalid buffer" is inaccurate? Perhaps we should have a separate case:
-
-		if (buffer_size(prz) == 0) {
-			if (buffer_start(prz) == 0)
-				pr_debug("found existing empty buffer\n");
-			else {
-				pr_debug("found existing empty buffer with non-zero start\n");
-				zap = true;
-			}
-		} else if ...
-
-What do you think?
-
--- 
-Kees Cook
+Thanks!
+Sunil
