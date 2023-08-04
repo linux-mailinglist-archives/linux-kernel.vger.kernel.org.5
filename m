@@ -2,119 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E93587708E3
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 21:20:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B3E157708EF
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 21:21:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230013AbjHDTUQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Aug 2023 15:20:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49100 "EHLO
+        id S229510AbjHDTVo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Aug 2023 15:21:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49546 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229510AbjHDTUM (ORCPT
+        with ESMTP id S229797AbjHDTVm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Aug 2023 15:20:12 -0400
-Received: from NAM11-CO1-obe.outbound.protection.outlook.com (mail-co1nam11on2074.outbound.protection.outlook.com [40.107.220.74])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BAE26B9
-        for <linux-kernel@vger.kernel.org>; Fri,  4 Aug 2023 12:20:10 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Y/5rp4q/n0YD5AvKqo9ZjyLGcHJOuOxcdndU7MHsYXAyq6ZvdUsoQNME0ccBb5D04+3vkttZJyl+4WwbT0RGYKO4EBoJx9WlLmjFbXb+rLiQH6iislsc1S1ehkL8HDRBZC9eITzHkjuyxGW9TEi49dWdHb/0DUZdfMTTp+K+SqIs9Af43oHTBNQlVjhPY0bleOF4ZZwHG7k8ljhIU24ijYaVVpDufiOncec3BWLSntB7HJ4unkyFrTeeZ6D+fAxs7SgzRcBmDYvGDXliFkhhwx7WoYeteaGnu3CLPxXLoHS/CaYgjLi/KGF9QbNaJMzWMI/o411Y3mCX681Q4jfjAQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=LxatYg5MMDPkpA26LmckHapvvA9ZBT9RDlhJcDKKNG0=;
- b=Ek2pFVyL+243lCtkrTPoPWAVbSx1rsMyOSrHdzKsWENqJT0H2fmaX/a4FYc5uCDet5IKh3/TgsYZVYYy1ogi5q3FaAV40FIoZjlPzbY+06i2l1IQWHh8/7M7GAi5K7+zXSnMpR9Fp7R6UWLheugtu+mOTk+QycbLm+HR8PWo6Rh8YvY1ocikzQn66mm3eW8hcJicFnJBWizKMy0vpj8JfQLlA/x7ZaO8BMxyz53GSZW6c3SVrh7B7nTcmKIT3Jy6LkfPI1bFuHxaLflLWw1bNR8HFjhV93cWDADLdEmNSBIkvTVK0GDJhPe+SMZvT81O9JBbPjp4CFhkt6tlVD7Y0w==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.117.161) smtp.rcpttodomain=google.com smtp.mailfrom=nvidia.com;
- dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
- dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=LxatYg5MMDPkpA26LmckHapvvA9ZBT9RDlhJcDKKNG0=;
- b=QdcCSZPT1Ld1zc60J+jhPqPwGsEDdbADKezxIkReFUhWTKVO1kGbUYWXp0yihe0v+QxXB9TKo1OzZIZBmdz29fq7KmSw7SiLHHI/B/fNGfEDvPkK8Nr3C2NOiM1eLrt/dKpZfwC7amZdHLAe0dHLMZjzr/6DJtxgXcFr6s8K03TFQQcEkAOwdxjPl2PknBNmamKgxRe6cKOJRjgJ6R/2qAB3PNh1r2w+gc/CkrgyXB/mA9SiP7wCwGoF+pus8KC5Go2xV2y8CIlJyEmhC+h+oX2lZIxb2dVU9ghFyQrqt3LfUaqmCZp0Oxy7CYz1OWvpv9KG+16eAG1891+HqOwtPw==
-Received: from CYZPR05CA0042.namprd05.prod.outlook.com (2603:10b6:930:a3::8)
- by BN9PR12MB5339.namprd12.prod.outlook.com (2603:10b6:408:104::21) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6652.20; Fri, 4 Aug
- 2023 19:20:08 +0000
-Received: from CY4PEPF0000EDD2.namprd03.prod.outlook.com
- (2603:10b6:930:a3:cafe::ab) by CYZPR05CA0042.outlook.office365.com
- (2603:10b6:930:a3::8) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6678.10 via Frontend
- Transport; Fri, 4 Aug 2023 19:20:08 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.117.161)
- smtp.mailfrom=nvidia.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.117.161 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.117.161; helo=mail.nvidia.com; pr=C
-Received: from mail.nvidia.com (216.228.117.161) by
- CY4PEPF0000EDD2.mail.protection.outlook.com (10.167.241.206) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.6652.19 via Frontend Transport; Fri, 4 Aug 2023 19:20:08 +0000
-Received: from rnnvmail202.nvidia.com (10.129.68.7) by mail.nvidia.com
- (10.129.200.67) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.5; Fri, 4 Aug 2023
- 12:20:01 -0700
-Received: from rnnvmail204.nvidia.com (10.129.68.6) by rnnvmail202.nvidia.com
- (10.129.68.7) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.37; Fri, 4 Aug 2023
- 12:20:00 -0700
-Received: from Asurada-Nvidia (10.127.8.12) by mail.nvidia.com (10.129.68.6)
- with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.37 via Frontend
- Transport; Fri, 4 Aug 2023 12:20:00 -0700
-Date:   Fri, 4 Aug 2023 12:19:58 -0700
-From:   Nicolin Chen <nicolinc@nvidia.com>
-To:     Michael Shavit <mshavit@google.com>
-CC:     <iommu@lists.linux.dev>, <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <will@kernel.org>,
-        <robin.murphy@arm.com>, <jgg@nvidia.com>,
-        <jean-philippe@linaro.org>
-Subject: Re: [PATCH v4 1/8] iommu/arm-smmu-v3: Move ctx_desc out of s1_cfg
-Message-ID: <ZM1PXgcbEZTdM2jW@Asurada-Nvidia>
-References: <20230802163328.2623773-1-mshavit@google.com>
- <20230803003234.v4.1.I67ab103c18d882aedc8a08985af1fba70bca084e@changeid>
+        Fri, 4 Aug 2023 15:21:42 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7436E7
+        for <linux-kernel@vger.kernel.org>; Fri,  4 Aug 2023 12:21:41 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 549DC620F9
+        for <linux-kernel@vger.kernel.org>; Fri,  4 Aug 2023 19:21:41 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 88680C433C7;
+        Fri,  4 Aug 2023 19:21:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1691176900;
+        bh=MWsb2DdQYJWtGNKDyuUQFngOkZf1+l6/DVDp5rm0/EU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=AmgohbXmO42MLHw37bUmYKkYI3JQmG8/8uqnf66nwVAxRF925dnb1Xs99X1nJ7DwA
+         E7y+uLv8ynN/3yiWE0I2dbvgRVegQ5Hqle7MbmQSsvY2jACPTL0mjxClN01yEwR5XL
+         LzQ+Qr67yVjKLJ1TwIXQ3OLrvt2za321FNaUjG67g1Debm2ty4WoomGa+6tdK6vGsi
+         9ceVc6h/4OJDGo6EaoQ75YVR84CdKDUXIvtfKOFzjHfkTwFlHDdMdD/kmPjotHm9bQ
+         DG50rXghJns43omeR9LCPyBxr/sNbHIm+RC6xPvYdEIAwsjg+O2ifJrRbbwQmFt1Wi
+         Sj10LwdZDHTjg==
+Date:   Fri, 4 Aug 2023 12:21:39 -0700
+From:   Jaegeuk Kim <jaegeuk@kernel.org>
+To:     Shinichiro Kawasaki <shinichiro.kawasaki@wdc.com>
+Cc:     Chao Yu <chao@kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-f2fs-devel@lists.sourceforge.net" 
+        <linux-f2fs-devel@lists.sourceforge.net>,
+        Damien Le Moal <Damien.LeMoal@wdc.com>
+Subject: Re: [f2fs-dev] [PATCH] f2fs: clean up w/ sbi->log_sectors_per_block
+Message-ID: <ZM1PwzoqSt05KqTp@google.com>
+References: <20230523123521.67656-1-chao@kernel.org>
+ <fafcfeosil5yqwn2wcdx33im2mq4xkejw6bx7h2in3ay5h6znj@facx4rrg4p65>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230803003234.v4.1.I67ab103c18d882aedc8a08985af1fba70bca084e@changeid>
-X-NV-OnPremToCloud: ExternallySecured
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CY4PEPF0000EDD2:EE_|BN9PR12MB5339:EE_
-X-MS-Office365-Filtering-Correlation-Id: 7fe14c8c-2671-48e5-583c-08db951fd0d6
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: +lOsfa2bBb9kK4aMI1yCbWJ8oFc3HMTCr9mI6H654r4O6lnQ+YOlX32yUySomLUB16M0wb4a1mx0nJ/4pDRvqzue/3FAKPI9c3NXxXDNz6IbVG8QQ3NwOslaif7t6604ocYVYebxdXS0IcYHaY1iksC3gj0RNSw08wi0HRxknfqa/SUrDirZ7ZG92/KVCAZ7G3C8GOf5BA0+9GuUxG6npEyEI1io0OpSWg7By4S5bkGZ/JBBYmID+uPkmPhHvbWsfDB9dqnAaYDiWLLKZd1BeDMoh3JN4ZcRrslyXwjujp2JEWf8PViNtecgFKygiAlnZvDnOx7rGeSF2NUXdYu9nGLaYBrOOkOikCfjYepSX544yQY6m0/mbmObqmy3OJq5G3vKPVh8XC6YamVk23Nz0/X8uinsziwYKCCyyHwCHP+ZVqZ+b9rS99CFc+FTYvP4iUFqSrtmkeABRLAo7EMv7w63kUHysYCcoG4UDjVkMXH/zvG8m3Tv6eGmVS2dd+ht61TbDE6tbTL/GRAz4pyr0HFAjFqLBb7tWS5PAe31LtNZOve7/QUuwWbu0/E+v7AfmulWhm+Xaz3SwexpGwiOIcPupvLuGeS2xpPm9bRar5W0gVvxMpyG8odIUIA7LRNry4gt6b2+guMi5EKgXMpzm4CWSlv0hXlRQ17opGl8640ML4pUQKmknry5h1ibaem8GYBVTTSvhpVHg1tVuBDV/AzqhlBmNzAmUkODspFjEOc+pp2ItQHbRxyEEbDL4mRA
-X-Forefront-Antispam-Report: CIP:216.228.117.161;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc6edge2.nvidia.com;CAT:NONE;SFS:(13230028)(4636009)(346002)(39860400002)(136003)(376002)(396003)(451199021)(82310400008)(1800799003)(186006)(40470700004)(46966006)(36840700001)(40460700003)(26005)(426003)(336012)(47076005)(8936002)(41300700001)(2906002)(6916009)(4744005)(70206006)(5660300002)(4326008)(70586007)(316002)(7636003)(8676002)(9686003)(36860700001)(478600001)(54906003)(40480700001)(356005)(55016003)(33716001)(86362001)(82740400003);DIR:OUT;SFP:1101;
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 Aug 2023 19:20:08.1883
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 7fe14c8c-2671-48e5-583c-08db951fd0d6
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.117.161];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource: CY4PEPF0000EDD2.namprd03.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN9PR12MB5339
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
+In-Reply-To: <fafcfeosil5yqwn2wcdx33im2mq4xkejw6bx7h2in3ay5h6znj@facx4rrg4p65>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 03, 2023 at 12:32:29AM +0800, Michael Shavit wrote:
-> s1_cfg describes the CD table that is inserted into an SMMU's STEs. It's
-> weird for s1_cfg to also own ctx_desc which describes a CD that is
-> inserted into that table. It is more appropriate for arm_smmu_domain to
-> own ctx_desc.
+On 08/04, Shinichiro Kawasaki wrote:
+> On May 23, 2023 / 20:35, Chao Yu wrote:
+> > Use sbi->log_sectors_per_block to clean up below calculated one:
+> > 
+> > unsigned int log_sectors_per_block = sbi->log_blocksize - SECTOR_SHIFT;
 > 
-> Signed-off-by: Michael Shavit <mshavit@google.com>
-> Reviewed-by: Jason Gunthorpe <jgg@nvidia.com>
+> Hello Chao,
+> 
+> When I ran workloads on f2fs using v6.5-rcX with fixes [1][2] and a zoned block
+> devices with 4kb logical block size, I observe mount failure as follows. When
+> I revert this commit, the failure goes away.
+> 
+> [  167.781975][ T1555] F2FS-fs (dm-0): IO Block Size:        4 KB
+> [  167.890728][ T1555] F2FS-fs (dm-0): Found nat_bits in checkpoint
+> [  171.482588][ T1555] F2FS-fs (dm-0): Zone without valid block has non-zero write pointer. Reset the write pointer: wp[0x1300,0x8]
+> [  171.496000][ T1555] F2FS-fs (dm-0): (0) : Unaligned zone reset attempted (block 280000 + 80000)
+> [  171.505037][ T1555] F2FS-fs (dm-0): Discard zone failed:  (errno=-5)
+> 
+> The patch replaced "sbi->log_blocksize - SECTOR_SHIFT" with
+> "sbi->log_sectors_per_block". However, I think these two are not equal when the
+> device has 4k logical block size. The former uses Linux kernel sector size 512
+> byte. The latter use 512b sector size or 4kb sector size depending on the
+> device. mkfs.f2fs obtains logical block size via BLKSSZGET ioctl from the device
+> and reflects it to the value sbi->log_sector_size_per_block. This causes
+> unexpected write pointer calculations in check_zone_write_pointer(). This
+> resulted in unexpected zone reset and the mount failure.
+> 
+> I think this patch needs revert. What do you think?
 
-Reviewed-by: Nicolin Chen <nicolinc@nvidia.com>
+Yeah, applied the revert.
+
+> 
+> [1] https://lkml.kernel.org/linux-f2fs-devel/20230711050101.GA19128@lst.de/
+> [2] https://lore.kernel.org/linux-f2fs-devel/20230804091556.2372567-1-shinichiro.kawasaki@wdc.com/
