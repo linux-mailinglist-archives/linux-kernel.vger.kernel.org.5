@@ -2,1270 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6749877024D
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 15:51:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 16A5B77023B
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 15:50:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231448AbjHDNvH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Aug 2023 09:51:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58768 "EHLO
+        id S231442AbjHDNuX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Aug 2023 09:50:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58452 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229496AbjHDNuz (ORCPT
+        with ESMTP id S231387AbjHDNuV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Aug 2023 09:50:55 -0400
-Received: from mx.skole.hr (mx1.hosting.skole.hr [161.53.165.185])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62F8949FA;
-        Fri,  4 Aug 2023 06:50:39 -0700 (PDT)
-Received: from mx1.hosting.skole.hr (localhost.localdomain [127.0.0.1])
-        by mx.skole.hr (mx.skole.hr) with ESMTP id 6843483C8A;
-        Fri,  4 Aug 2023 15:50:37 +0200 (CEST)
-From:   =?utf-8?q?Duje_Mihanovi=C4=87?= <duje.mihanovic@skole.hr>
-Date:   Fri, 04 Aug 2023 15:49:32 +0200
-Subject: [PATCH] clk: mmp: Remove old non-OF clock drivers
+        Fri, 4 Aug 2023 09:50:21 -0400
+Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE87911B
+        for <linux-kernel@vger.kernel.org>; Fri,  4 Aug 2023 06:50:19 -0700 (PDT)
+Received: by mail-wr1-x42a.google.com with SMTP id ffacd0b85a97d-3090d3e9c92so1891579f8f.2
+        for <linux-kernel@vger.kernel.org>; Fri, 04 Aug 2023 06:50:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1691157018; x=1691761818;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=zcL/kSvHfHjHPWvRz7Xqp63rLeJznJ3srntvAjxHUlM=;
+        b=ghNC6IH8SV+HCWCsb7VmU5W1wZSaMaMqKjthnnSnzGAWZOFQ9GtftdgHCZ835ZoNGW
+         HWBlKckPtshVFe5WzT9mjg1oREwY5zdgpAr0Yb4p55zL1IgwfgeGAQpoD31FiFNutS3S
+         EigcHI361jlBUZ21bQmCxKe+jv8FTHFHIUd6atL4IqIjYBoq5QCoL2Ccff0GAxxli+Hk
+         lNp9vhlieo1VyRghBfGeTJO6D5HRCq93qgHTXWHiyUtBeFE9ypoUXmHRY6U7kjV7GEYo
+         7ETi0wEipBIEqz0YjcJ+lXbtSFcPpkxVprrDX7FQMme8p+iZ5xp8IiMgjqsF/kMFqeaR
+         B8Ww==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691157018; x=1691761818;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=zcL/kSvHfHjHPWvRz7Xqp63rLeJznJ3srntvAjxHUlM=;
+        b=FcZpUUcmwiD2fPYkD78jVZCBeDpDAMC8LeDoSPXNHIGsTdATWJqYP2n2DkSGhUtasc
+         YbXZfGsO3+7Zk6QuoZFo1k3O0VCTh9KntYmEkwRF8jjc+v88pZqUZCtkZnTsDDwRGPbw
+         ZGnWmQtp6XYyc3Cux5I53KCaeZ/fGXmE2bJOCWVXlcqQaxJKP3ZkMsGhfxnJ37caAaal
+         dUDeuU8gBaeFmlVnuoyskeQ4AR24iXfM9ZdI65A45Vt2zg8qNYU3dGp/5rrh1PktVnL9
+         CtG8UZI+07lxCux6INwNTX2xNvcBDzlzxlyoXaZ1/q0SYuc6jLVoNUX8U+MM5pDzF57Q
+         0MNQ==
+X-Gm-Message-State: AOJu0YzWejh0Q774TDvgI/Bkzl0WIJpdEtYfQBmCU/h9dUwxD5JAWlie
+        jmzwySqfQJKm8s7xM5m81vXlGA==
+X-Google-Smtp-Source: AGHT+IEIOKn6UThmMtB9Tbany5L9GGNY+rYb5Vyy9mNXEpAUiYq17CHMf+MSiXUg4qh2FCQvr1yVNA==
+X-Received: by 2002:adf:f091:0:b0:313:f957:bf29 with SMTP id n17-20020adff091000000b00313f957bf29mr1404835wro.65.1691157018233;
+        Fri, 04 Aug 2023 06:50:18 -0700 (PDT)
+Received: from arrakeen.starnux.net ([2a01:e0a:982:cbb0:8261:5fff:fe11:bdda])
+        by smtp.gmail.com with ESMTPSA id u25-20020a7bcb19000000b003fe1cac37d8sm6894793wmj.11.2023.08.04.06.50.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 04 Aug 2023 06:50:17 -0700 (PDT)
+From:   Neil Armstrong <neil.armstrong@linaro.org>
+Subject: [PATCH 0/4] arm64: qcom: sm8550: retrieve USB-C port orientation
+ from gpio
+Date:   Fri, 04 Aug 2023 15:50:06 +0200
+Message-Id: <20230804-topic-sm8550-upstream-type-c-orientation-v1-0-36dd3edec7bf@linaro.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-Message-Id: <20230804-drop-old-mmp-clk-v1-1-0c07db6cee90@skole.hr>
-X-B4-Tracking: v=1; b=H4sIAOsBzWQC/x3MSwqAMAxF0a1IxgaqVRC3Ig6keWrw09KCCOLeL
- Q7P4N6HEqIiUV88FHFpUn9mVGVBbp3OBaySTbWpremMZYk+sN+FjyOw2ze2QNsATqpWKGchYtb
- 7Xw7j+35eC9HTYgAAAA==
-To:     Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org,
-        =?utf-8?q?Duje_Mihanovi=C4=87?= <duje.mihanovic@skole.hr>
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIAA4CzWQC/x3NMQ7CMAyF4atUnrFkGgoVV0EMIXXBQ5ModhGo6
+ t2xeNu/fG8D5SascO02aPwWlZI9jocO0ivmJ6NM3tBTH2ikE1qpklCXcRgI16rWOC5o38qYsLi
+ VLZojSA9fONMU5gs4VxvP8vlf3e77/gOGS5sFegAAAA==
+To:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
+        Neil Armstrong <neil.armstrong@linaro.org>
 X-Mailer: b4 0.12.3
-X-Developer-Signature: v=1; a=openpgp-sha256; l=42638;
- i=duje.mihanovic@skole.hr; h=from:subject:message-id;
- bh=ZaDkRcoGa/xD5NnaTqz2CUO/rFvzWRs4p8tsdFZ0oWw=;
- b=owEBbQKS/ZANAwAIAZoRnrBCLZbhAcsmYgBkzQH50dU4NnB9F6V+lkrNpMUwjuHryTp+wSEjO
- hQOv7SCLwuJAjMEAAEIAB0WIQRT351NnD/hEPs2LXiaEZ6wQi2W4QUCZM0B+QAKCRCaEZ6wQi2W
- 4aoTD/9isJN0NPLyxu6nYXT1/TGrrOWLrdyL3KQTlcNvAqX4c5YgQ8LUcoqkgU9v7FQ4BVbrxs1
- S3TJ1VTob+9o0k2h/sUhgbP9QpbsOGHIFmgYtjEcLvXm88vsCBWIL7O211lNrfL59wObjaJz6nN
- IbJI5vPUn77Vhf/ML88rZtWP0K/LI/3FsxrH2mDTptl1JOmIRa06YYqleB0YEXC1wN8Rao0YFym
- oYDTDDdxjm1xmmFKfFL+xyIY9/dPs8afr9U3ho90ZRoK3g6yAXuC7NQ0VUrK6OBl8NUajF4Hdbb
- fbRPo3Q1UvyW1Mjp9OewnF4inBYslDDXWA6tKNMFFfuXktT1eH+mzgEmC9RnVAzq3c3Vnrdquek
- pOHNIIYDZT6seFQjKNNAQ+wppajDRXMPkHDuesQH9sAWkFJJ/IN72ksE8sLjJ21ExJ7tfZ3RD8S
- oz6M7GeZ6udQoNMAZtli8gfgZFpV6wd87tFyO9sEE6ccDP2NAP1BSDBYwDJGUYoLKbD/5mAQ3ct
- 2WXuzEJ3oRB0ItsMf4l0E9YY1VRZCU5uprUwLvUbl6atm3ioNVKhT6bytvkrQQjgkeN9tR+6+XS
- KtGG/9t4jMVDAFkE1zVIkH3dZcaSjw1PM4jTNpo+no/D5Ane87/GnCZqNViMvH0DNDQm548R4Ij
- 3yu7pQe9AF5Rm2A==
-X-Developer-Key: i=duje.mihanovic@skole.hr; a=openpgp;
- fpr=53DF9D4D9C3FE110FB362D789A119EB0422D96E1
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1892;
+ i=neil.armstrong@linaro.org; h=from:subject:message-id;
+ bh=cFLzTvuteabA2FCuM5q5Rad6hbL4oHHiHVTp6hkfiVc=;
+ b=owEBbQKS/ZANAwAKAXfc29rIyEnRAcsmYgBkzQIXNkaluJaatUw5eFmSqGG4VQMX1T89BWw/+E6z
+ Lkb9cDmJAjMEAAEKAB0WIQQ9U8YmyFYF/h30LIt33NvayMhJ0QUCZM0CFwAKCRB33NvayMhJ0UzLD/
+ 4q/RWAWHr+nCRrstKyBqEA6weLQfNJ6S1CTjYjt0WL3brjTthaq5CjgH9l6WyafeWXaGVm0iyjVPC/
+ mByYXJ3uYmGszRIVg5FamZbWZTVE7/DIUmM4NFPGiHWYtAdLyh9i896UtMMaSahlM8JfevNV1nNZAy
+ PkIXUXuhJfe62UZNq49T+43g7oEF/qa+aTn9zjpC19pfUiYUlOK1/WVCU2Q8JotT0FWNmOd5Y0ysn1
+ 5dtvACYmdkM74c/RKhaBJOP1bNYYeQTDjPUjzIogA0v6a7UW/a//C4R0UeECNDBfUbCGeFiVqJT2hx
+ L3hTI8tj0LnVtj0PlR4EAm1uMwBmxCSbHToQQX09PQxzYWfAUu/EoXyVKEOsZN9CG3ij781fIJjwc3
+ VPc6ytxSET0MUvyjwhSvCQI6g/EKbmovLkiV32sZtYJS7zR7CGTbwaqudqlVQ90kcVVpvtQQ6bdXYj
+ K3K39yzWoXRtc2faft2ATNNjVOd1jmohK6NlGIjq5KJtIbbUB4Id4rU4pRcJCVjOssPso83NKHqC7G
+ q1UrFG/UXH+5av9g/jgO50zJUjJMTfS3Jy4Sj8gQFy38IXrDJn6qG0l3NkkdQts/35qn8TOjNMrIkk
+ gXnJWFWo5W3xQlAjPpg9vehOfXK3M0tS84nRyplB40xPN7woGAP3X4UcCMCw==
+X-Developer-Key: i=neil.armstrong@linaro.org; a=openpgp;
+ fpr=89EC3D058446217450F22848169AB7B1A4CFF8AE
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There are no MMP2, PXA168 or PXA910 boards still using board files which
-would use these drivers, so remove them.
+This patchset is derived from [1], with only the GPIO orientation.
 
-Signed-off-by: Duje Mihanović <duje.mihanovic@skole.hr>
+On the SM8550 platform, the PMIC Glink firmware doesn't emit
+ALTMODE events for all USB-C port changes like it was done
+for older platforms (like SM8450).
+This means we only have a valid orientation when an Altmode
+compliant device is inserted, but not for all the other devices,
+including USB cables, dongles and non-altmode Hubs.
+
+But the actual orientation is shared by the PM8550B by
+a signal called CC_OUT which can be read on a gpio of the SM8550
+SoC.
+
+Let's add support for this feature by using the UCSI PMIC
+Glink driver events to read and dispatch the orientation
+to the USB-C connector devices on the DT graph.
+
+While everybody would prefer having a proper PMIC Glink event
+for an orientation change, this is not implemented and not
+planned for future platforms either.
+
+[1] https://lore.kernel.org/all/20230601-topic-sm8550-upstream-type-c-v3-0-22c9973012b6@linaro.org/
+
+Signed-off-by: Neil Armstrong <neil.armstrong@linaro.org>
 ---
- drivers/clk/mmp/Makefile     |   4 -
- drivers/clk/mmp/clk-mmp2.c   | 454 -------------------------------------------
- drivers/clk/mmp/clk-pxa168.c | 354 ---------------------------------
- drivers/clk/mmp/clk-pxa910.c | 325 -------------------------------
- include/linux/clk/mmp.h      |  18 --
- 5 files changed, 1155 deletions(-)
+Neil Armstrong (4):
+      dt-bindings: soc: qcom: qcom,pmic-glink: add a gpio used to determine the Type-C port plug orientation
+      usb: ucsi: glink: use the connector orientation GPIO to provide switch events
+      arm64: dts: qcom: sm8550-mtp: add orientation gpio
+      arm64: dts: qcom: sm8550-qrd: add orientation gpio
 
-diff --git a/drivers/clk/mmp/Makefile b/drivers/clk/mmp/Makefile
-index cbcc2f8430a2..441bf83080a1 100644
---- a/drivers/clk/mmp/Makefile
-+++ b/drivers/clk/mmp/Makefile
-@@ -11,8 +11,4 @@ obj-$(CONFIG_MACH_MMP_DT) += clk-of-pxa168.o clk-of-pxa910.o
- obj-$(CONFIG_COMMON_CLK_MMP2) += clk-of-mmp2.o clk-pll.o pwr-island.o
- obj-$(CONFIG_COMMON_CLK_MMP2_AUDIO) += clk-audio.o
- 
--obj-$(CONFIG_CPU_PXA168) += clk-pxa168.o
--obj-$(CONFIG_CPU_PXA910) += clk-pxa910.o
--obj-$(CONFIG_CPU_MMP2) += clk-mmp2.o
--
- obj-y += clk-of-pxa1928.o
-diff --git a/drivers/clk/mmp/clk-mmp2.c b/drivers/clk/mmp/clk-mmp2.c
-deleted file mode 100644
-index aabacfa10158..000000000000
---- a/drivers/clk/mmp/clk-mmp2.c
-+++ /dev/null
-@@ -1,454 +0,0 @@
--// SPDX-License-Identifier: GPL-2.0-only
--/*
-- * mmp2 clock framework source file
-- *
-- * Copyright (C) 2012 Marvell
-- * Chao Xie <xiechao.mail@gmail.com>
-- */
--
--#include <linux/clk.h>
--#include <linux/module.h>
--#include <linux/kernel.h>
--#include <linux/spinlock.h>
--#include <linux/io.h>
--#include <linux/delay.h>
--#include <linux/err.h>
--#include <linux/clk/mmp.h>
--
--#include "clk.h"
--
--#define APBC_RTC	0x0
--#define APBC_TWSI0	0x4
--#define APBC_TWSI1	0x8
--#define APBC_TWSI2	0xc
--#define APBC_TWSI3	0x10
--#define APBC_TWSI4	0x7c
--#define APBC_TWSI5	0x80
--#define APBC_KPC	0x18
--#define APBC_UART0	0x2c
--#define APBC_UART1	0x30
--#define APBC_UART2	0x34
--#define APBC_UART3	0x88
--#define APBC_GPIO	0x38
--#define APBC_PWM0	0x3c
--#define APBC_PWM1	0x40
--#define APBC_PWM2	0x44
--#define APBC_PWM3	0x48
--#define APBC_SSP0	0x50
--#define APBC_SSP1	0x54
--#define APBC_SSP2	0x58
--#define APBC_SSP3	0x5c
--#define APMU_SDH0	0x54
--#define APMU_SDH1	0x58
--#define APMU_SDH2	0xe8
--#define APMU_SDH3	0xec
--#define APMU_USB	0x5c
--#define APMU_DISP0	0x4c
--#define APMU_DISP1	0x110
--#define APMU_CCIC0	0x50
--#define APMU_CCIC1	0xf4
--#define MPMU_UART_PLL	0x14
--
--static DEFINE_SPINLOCK(clk_lock);
--
--static struct mmp_clk_factor_masks uart_factor_masks = {
--	.factor = 2,
--	.num_mask = 0x1fff,
--	.den_mask = 0x1fff,
--	.num_shift = 16,
--	.den_shift = 0,
--};
--
--static struct mmp_clk_factor_tbl uart_factor_tbl[] = {
--	{.num = 8125, .den = 1536},	/*14.745MHZ */
--	{.num = 3521, .den = 689},	/*19.23MHZ */
--};
--
--static const char *uart_parent[] = {"uart_pll", "vctcxo"};
--static const char *ssp_parent[] = {"vctcxo_4", "vctcxo_2", "vctcxo", "pll1_16"};
--static const char *sdh_parent[] = {"pll1_4", "pll2", "usb_pll", "pll1"};
--static const char *disp_parent[] = {"pll1", "pll1_16", "pll2", "vctcxo"};
--static const char *ccic_parent[] = {"pll1_2", "pll1_16", "vctcxo"};
--
--void __init mmp2_clk_init(phys_addr_t mpmu_phys, phys_addr_t apmu_phys,
--			  phys_addr_t apbc_phys)
--{
--	struct clk *clk;
--	struct clk *vctcxo;
--	void __iomem *mpmu_base;
--	void __iomem *apmu_base;
--	void __iomem *apbc_base;
--
--	mpmu_base = ioremap(mpmu_phys, SZ_4K);
--	if (!mpmu_base) {
--		pr_err("error to ioremap MPMU base\n");
--		return;
--	}
--
--	apmu_base = ioremap(apmu_phys, SZ_4K);
--	if (!apmu_base) {
--		pr_err("error to ioremap APMU base\n");
--		return;
--	}
--
--	apbc_base = ioremap(apbc_phys, SZ_4K);
--	if (!apbc_base) {
--		pr_err("error to ioremap APBC base\n");
--		return;
--	}
--
--	clk = clk_register_fixed_rate(NULL, "clk32", NULL, 0, 3200);
--	clk_register_clkdev(clk, "clk32", NULL);
--
--	vctcxo = clk_register_fixed_rate(NULL, "vctcxo", NULL, 0, 26000000);
--	clk_register_clkdev(vctcxo, "vctcxo", NULL);
--
--	clk = clk_register_fixed_rate(NULL, "pll1", NULL, 0, 800000000);
--	clk_register_clkdev(clk, "pll1", NULL);
--
--	clk = clk_register_fixed_rate(NULL, "usb_pll", NULL, 0, 480000000);
--	clk_register_clkdev(clk, "usb_pll", NULL);
--
--	clk = clk_register_fixed_rate(NULL, "pll2", NULL, 0, 960000000);
--	clk_register_clkdev(clk, "pll2", NULL);
--
--	clk = clk_register_fixed_factor(NULL, "pll1_2", "pll1",
--				CLK_SET_RATE_PARENT, 1, 2);
--	clk_register_clkdev(clk, "pll1_2", NULL);
--
--	clk = clk_register_fixed_factor(NULL, "pll1_4", "pll1_2",
--				CLK_SET_RATE_PARENT, 1, 2);
--	clk_register_clkdev(clk, "pll1_4", NULL);
--
--	clk = clk_register_fixed_factor(NULL, "pll1_8", "pll1_4",
--				CLK_SET_RATE_PARENT, 1, 2);
--	clk_register_clkdev(clk, "pll1_8", NULL);
--
--	clk = clk_register_fixed_factor(NULL, "pll1_16", "pll1_8",
--				CLK_SET_RATE_PARENT, 1, 2);
--	clk_register_clkdev(clk, "pll1_16", NULL);
--
--	clk = clk_register_fixed_factor(NULL, "pll1_20", "pll1_4",
--				CLK_SET_RATE_PARENT, 1, 5);
--	clk_register_clkdev(clk, "pll1_20", NULL);
--
--	clk = clk_register_fixed_factor(NULL, "pll1_3", "pll1",
--				CLK_SET_RATE_PARENT, 1, 3);
--	clk_register_clkdev(clk, "pll1_3", NULL);
--
--	clk = clk_register_fixed_factor(NULL, "pll1_6", "pll1_3",
--				CLK_SET_RATE_PARENT, 1, 2);
--	clk_register_clkdev(clk, "pll1_6", NULL);
--
--	clk = clk_register_fixed_factor(NULL, "pll1_12", "pll1_6",
--				CLK_SET_RATE_PARENT, 1, 2);
--	clk_register_clkdev(clk, "pll1_12", NULL);
--
--	clk = clk_register_fixed_factor(NULL, "pll2_2", "pll2",
--				CLK_SET_RATE_PARENT, 1, 2);
--	clk_register_clkdev(clk, "pll2_2", NULL);
--
--	clk = clk_register_fixed_factor(NULL, "pll2_4", "pll2_2",
--				CLK_SET_RATE_PARENT, 1, 2);
--	clk_register_clkdev(clk, "pll2_4", NULL);
--
--	clk = clk_register_fixed_factor(NULL, "pll2_8", "pll2_4",
--				CLK_SET_RATE_PARENT, 1, 2);
--	clk_register_clkdev(clk, "pll2_8", NULL);
--
--	clk = clk_register_fixed_factor(NULL, "pll2_16", "pll2_8",
--				CLK_SET_RATE_PARENT, 1, 2);
--	clk_register_clkdev(clk, "pll2_16", NULL);
--
--	clk = clk_register_fixed_factor(NULL, "pll2_3", "pll2",
--				CLK_SET_RATE_PARENT, 1, 3);
--	clk_register_clkdev(clk, "pll2_3", NULL);
--
--	clk = clk_register_fixed_factor(NULL, "pll2_6", "pll2_3",
--				CLK_SET_RATE_PARENT, 1, 2);
--	clk_register_clkdev(clk, "pll2_6", NULL);
--
--	clk = clk_register_fixed_factor(NULL, "pll2_12", "pll2_6",
--				CLK_SET_RATE_PARENT, 1, 2);
--	clk_register_clkdev(clk, "pll2_12", NULL);
--
--	clk = clk_register_fixed_factor(NULL, "vctcxo_2", "vctcxo",
--				CLK_SET_RATE_PARENT, 1, 2);
--	clk_register_clkdev(clk, "vctcxo_2", NULL);
--
--	clk = clk_register_fixed_factor(NULL, "vctcxo_4", "vctcxo_2",
--				CLK_SET_RATE_PARENT, 1, 2);
--	clk_register_clkdev(clk, "vctcxo_4", NULL);
--
--	clk = mmp_clk_register_factor("uart_pll", "pll1_4", 0,
--				mpmu_base + MPMU_UART_PLL,
--				&uart_factor_masks, uart_factor_tbl,
--				ARRAY_SIZE(uart_factor_tbl), &clk_lock);
--	clk_set_rate(clk, 14745600);
--	clk_register_clkdev(clk, "uart_pll", NULL);
--
--	clk = mmp_clk_register_apbc("twsi0", "vctcxo",
--				apbc_base + APBC_TWSI0, 10, 0, &clk_lock);
--	clk_register_clkdev(clk, NULL, "pxa2xx-i2c.0");
--
--	clk = mmp_clk_register_apbc("twsi1", "vctcxo",
--				apbc_base + APBC_TWSI1, 10, 0, &clk_lock);
--	clk_register_clkdev(clk, NULL, "pxa2xx-i2c.1");
--
--	clk = mmp_clk_register_apbc("twsi2", "vctcxo",
--				apbc_base + APBC_TWSI2, 10, 0, &clk_lock);
--	clk_register_clkdev(clk, NULL, "pxa2xx-i2c.2");
--
--	clk = mmp_clk_register_apbc("twsi3", "vctcxo",
--				apbc_base + APBC_TWSI3, 10, 0, &clk_lock);
--	clk_register_clkdev(clk, NULL, "pxa2xx-i2c.3");
--
--	clk = mmp_clk_register_apbc("twsi4", "vctcxo",
--				apbc_base + APBC_TWSI4, 10, 0, &clk_lock);
--	clk_register_clkdev(clk, NULL, "pxa2xx-i2c.4");
--
--	clk = mmp_clk_register_apbc("twsi5", "vctcxo",
--				apbc_base + APBC_TWSI5, 10, 0, &clk_lock);
--	clk_register_clkdev(clk, NULL, "pxa2xx-i2c.5");
--
--	clk = mmp_clk_register_apbc("gpio", "vctcxo",
--				apbc_base + APBC_GPIO, 10, 0, &clk_lock);
--	clk_register_clkdev(clk, NULL, "mmp2-gpio");
--
--	clk = mmp_clk_register_apbc("kpc", "clk32",
--				apbc_base + APBC_KPC, 10, 0, &clk_lock);
--	clk_register_clkdev(clk, NULL, "pxa27x-keypad");
--
--	clk = mmp_clk_register_apbc("rtc", "clk32",
--				apbc_base + APBC_RTC, 10, 0, &clk_lock);
--	clk_register_clkdev(clk, NULL, "mmp-rtc");
--
--	clk = mmp_clk_register_apbc("pwm0", "vctcxo",
--				apbc_base + APBC_PWM0, 10, 0, &clk_lock);
--	clk_register_clkdev(clk, NULL, "mmp2-pwm.0");
--
--	clk = mmp_clk_register_apbc("pwm1", "vctcxo",
--				apbc_base + APBC_PWM1, 10, 0, &clk_lock);
--	clk_register_clkdev(clk, NULL, "mmp2-pwm.1");
--
--	clk = mmp_clk_register_apbc("pwm2", "vctcxo",
--				apbc_base + APBC_PWM2, 10, 0, &clk_lock);
--	clk_register_clkdev(clk, NULL, "mmp2-pwm.2");
--
--	clk = mmp_clk_register_apbc("pwm3", "vctcxo",
--				apbc_base + APBC_PWM3, 10, 0, &clk_lock);
--	clk_register_clkdev(clk, NULL, "mmp2-pwm.3");
--
--	clk = clk_register_mux(NULL, "uart0_mux", uart_parent,
--				ARRAY_SIZE(uart_parent),
--				CLK_SET_RATE_PARENT | CLK_SET_RATE_NO_REPARENT,
--				apbc_base + APBC_UART0, 4, 3, 0, &clk_lock);
--	clk_set_parent(clk, vctcxo);
--	clk_register_clkdev(clk, "uart_mux.0", NULL);
--
--	clk = mmp_clk_register_apbc("uart0", "uart0_mux",
--				apbc_base + APBC_UART0, 10, 0, &clk_lock);
--	clk_register_clkdev(clk, NULL, "pxa2xx-uart.0");
--
--	clk = clk_register_mux(NULL, "uart1_mux", uart_parent,
--				ARRAY_SIZE(uart_parent),
--				CLK_SET_RATE_PARENT | CLK_SET_RATE_NO_REPARENT,
--				apbc_base + APBC_UART1, 4, 3, 0, &clk_lock);
--	clk_set_parent(clk, vctcxo);
--	clk_register_clkdev(clk, "uart_mux.1", NULL);
--
--	clk = mmp_clk_register_apbc("uart1", "uart1_mux",
--				apbc_base + APBC_UART1, 10, 0, &clk_lock);
--	clk_register_clkdev(clk, NULL, "pxa2xx-uart.1");
--
--	clk = clk_register_mux(NULL, "uart2_mux", uart_parent,
--				ARRAY_SIZE(uart_parent),
--				CLK_SET_RATE_PARENT | CLK_SET_RATE_NO_REPARENT,
--				apbc_base + APBC_UART2, 4, 3, 0, &clk_lock);
--	clk_set_parent(clk, vctcxo);
--	clk_register_clkdev(clk, "uart_mux.2", NULL);
--
--	clk = mmp_clk_register_apbc("uart2", "uart2_mux",
--				apbc_base + APBC_UART2, 10, 0, &clk_lock);
--	clk_register_clkdev(clk, NULL, "pxa2xx-uart.2");
--
--	clk = clk_register_mux(NULL, "uart3_mux", uart_parent,
--				ARRAY_SIZE(uart_parent),
--				CLK_SET_RATE_PARENT | CLK_SET_RATE_NO_REPARENT,
--				apbc_base + APBC_UART3, 4, 3, 0, &clk_lock);
--	clk_set_parent(clk, vctcxo);
--	clk_register_clkdev(clk, "uart_mux.3", NULL);
--
--	clk = mmp_clk_register_apbc("uart3", "uart3_mux",
--				apbc_base + APBC_UART3, 10, 0, &clk_lock);
--	clk_register_clkdev(clk, NULL, "pxa2xx-uart.3");
--
--	clk = clk_register_mux(NULL, "ssp0_mux", ssp_parent,
--				ARRAY_SIZE(ssp_parent),
--				CLK_SET_RATE_PARENT | CLK_SET_RATE_NO_REPARENT,
--				apbc_base + APBC_SSP0, 4, 3, 0, &clk_lock);
--	clk_register_clkdev(clk, "uart_mux.0", NULL);
--
--	clk = mmp_clk_register_apbc("ssp0", "ssp0_mux",
--				apbc_base + APBC_SSP0, 10, 0, &clk_lock);
--	clk_register_clkdev(clk, NULL, "mmp-ssp.0");
--
--	clk = clk_register_mux(NULL, "ssp1_mux", ssp_parent,
--				ARRAY_SIZE(ssp_parent),
--				CLK_SET_RATE_PARENT | CLK_SET_RATE_NO_REPARENT,
--				apbc_base + APBC_SSP1, 4, 3, 0, &clk_lock);
--	clk_register_clkdev(clk, "ssp_mux.1", NULL);
--
--	clk = mmp_clk_register_apbc("ssp1", "ssp1_mux",
--				apbc_base + APBC_SSP1, 10, 0, &clk_lock);
--	clk_register_clkdev(clk, NULL, "mmp-ssp.1");
--
--	clk = clk_register_mux(NULL, "ssp2_mux", ssp_parent,
--				ARRAY_SIZE(ssp_parent),
--				CLK_SET_RATE_PARENT | CLK_SET_RATE_NO_REPARENT,
--				apbc_base + APBC_SSP2, 4, 3, 0, &clk_lock);
--	clk_register_clkdev(clk, "ssp_mux.2", NULL);
--
--	clk = mmp_clk_register_apbc("ssp2", "ssp2_mux",
--				apbc_base + APBC_SSP2, 10, 0, &clk_lock);
--	clk_register_clkdev(clk, NULL, "mmp-ssp.2");
--
--	clk = clk_register_mux(NULL, "ssp3_mux", ssp_parent,
--				ARRAY_SIZE(ssp_parent),
--				CLK_SET_RATE_PARENT | CLK_SET_RATE_NO_REPARENT,
--				apbc_base + APBC_SSP3, 4, 3, 0, &clk_lock);
--	clk_register_clkdev(clk, "ssp_mux.3", NULL);
--
--	clk = mmp_clk_register_apbc("ssp3", "ssp3_mux",
--				apbc_base + APBC_SSP3, 10, 0, &clk_lock);
--	clk_register_clkdev(clk, NULL, "mmp-ssp.3");
--
--	clk = clk_register_mux(NULL, "sdh_mux", sdh_parent,
--				ARRAY_SIZE(sdh_parent),
--				CLK_SET_RATE_PARENT | CLK_SET_RATE_NO_REPARENT,
--				apmu_base + APMU_SDH0, 8, 2, 0, &clk_lock);
--	clk_register_clkdev(clk, "sdh_mux", NULL);
--
--	clk = clk_register_divider(NULL, "sdh_div", "sdh_mux",
--				CLK_SET_RATE_PARENT, apmu_base + APMU_SDH0,
--				10, 4, CLK_DIVIDER_ONE_BASED, &clk_lock);
--	clk_register_clkdev(clk, "sdh_div", NULL);
--
--	clk = mmp_clk_register_apmu("sdh0", "sdh_div", apmu_base + APMU_SDH0,
--				0x1b, &clk_lock);
--	clk_register_clkdev(clk, NULL, "sdhci-pxav3.0");
--
--	clk = mmp_clk_register_apmu("sdh1", "sdh_div", apmu_base + APMU_SDH1,
--				0x1b, &clk_lock);
--	clk_register_clkdev(clk, NULL, "sdhci-pxav3.1");
--
--	clk = mmp_clk_register_apmu("sdh2", "sdh_div", apmu_base + APMU_SDH2,
--				0x1b, &clk_lock);
--	clk_register_clkdev(clk, NULL, "sdhci-pxav3.2");
--
--	clk = mmp_clk_register_apmu("sdh3", "sdh_div", apmu_base + APMU_SDH3,
--				0x1b, &clk_lock);
--	clk_register_clkdev(clk, NULL, "sdhci-pxav3.3");
--
--	clk = mmp_clk_register_apmu("usb", "usb_pll", apmu_base + APMU_USB,
--				0x9, &clk_lock);
--	clk_register_clkdev(clk, "usb_clk", NULL);
--
--	clk = clk_register_mux(NULL, "disp0_mux", disp_parent,
--				ARRAY_SIZE(disp_parent),
--				CLK_SET_RATE_PARENT | CLK_SET_RATE_NO_REPARENT,
--				apmu_base + APMU_DISP0, 6, 2, 0, &clk_lock);
--	clk_register_clkdev(clk, "disp_mux.0", NULL);
--
--	clk = clk_register_divider(NULL, "disp0_div", "disp0_mux",
--				CLK_SET_RATE_PARENT, apmu_base + APMU_DISP0,
--				8, 4, CLK_DIVIDER_ONE_BASED, &clk_lock);
--	clk_register_clkdev(clk, "disp_div.0", NULL);
--
--	clk = mmp_clk_register_apmu("disp0", "disp0_div",
--				apmu_base + APMU_DISP0, 0x1b, &clk_lock);
--	clk_register_clkdev(clk, NULL, "mmp-disp.0");
--
--	clk = clk_register_divider(NULL, "disp0_sphy_div", "disp0_mux", 0,
--				apmu_base + APMU_DISP0, 15, 5, 0, &clk_lock);
--	clk_register_clkdev(clk, "disp_sphy_div.0", NULL);
--
--	clk = mmp_clk_register_apmu("disp0_sphy", "disp0_sphy_div",
--				apmu_base + APMU_DISP0, 0x1024, &clk_lock);
--	clk_register_clkdev(clk, "disp_sphy.0", NULL);
--
--	clk = clk_register_mux(NULL, "disp1_mux", disp_parent,
--				ARRAY_SIZE(disp_parent),
--				CLK_SET_RATE_PARENT | CLK_SET_RATE_NO_REPARENT,
--				apmu_base + APMU_DISP1, 6, 2, 0, &clk_lock);
--	clk_register_clkdev(clk, "disp_mux.1", NULL);
--
--	clk = clk_register_divider(NULL, "disp1_div", "disp1_mux",
--				CLK_SET_RATE_PARENT, apmu_base + APMU_DISP1,
--				8, 4, CLK_DIVIDER_ONE_BASED, &clk_lock);
--	clk_register_clkdev(clk, "disp_div.1", NULL);
--
--	clk = mmp_clk_register_apmu("disp1", "disp1_div",
--				apmu_base + APMU_DISP1, 0x1b, &clk_lock);
--	clk_register_clkdev(clk, NULL, "mmp-disp.1");
--
--	clk = mmp_clk_register_apmu("ccic_arbiter", "vctcxo",
--				apmu_base + APMU_CCIC0, 0x1800, &clk_lock);
--	clk_register_clkdev(clk, "ccic_arbiter", NULL);
--
--	clk = clk_register_mux(NULL, "ccic0_mux", ccic_parent,
--				ARRAY_SIZE(ccic_parent),
--				CLK_SET_RATE_PARENT | CLK_SET_RATE_NO_REPARENT,
--				apmu_base + APMU_CCIC0, 6, 2, 0, &clk_lock);
--	clk_register_clkdev(clk, "ccic_mux.0", NULL);
--
--	clk = clk_register_divider(NULL, "ccic0_div", "ccic0_mux",
--				CLK_SET_RATE_PARENT, apmu_base + APMU_CCIC0,
--				17, 4, CLK_DIVIDER_ONE_BASED, &clk_lock);
--	clk_register_clkdev(clk, "ccic_div.0", NULL);
--
--	clk = mmp_clk_register_apmu("ccic0", "ccic0_div",
--				apmu_base + APMU_CCIC0, 0x1b, &clk_lock);
--	clk_register_clkdev(clk, "fnclk", "mmp-ccic.0");
--
--	clk = mmp_clk_register_apmu("ccic0_phy", "ccic0_div",
--				apmu_base + APMU_CCIC0, 0x24, &clk_lock);
--	clk_register_clkdev(clk, "phyclk", "mmp-ccic.0");
--
--	clk = clk_register_divider(NULL, "ccic0_sphy_div", "ccic0_div",
--				CLK_SET_RATE_PARENT, apmu_base + APMU_CCIC0,
--				10, 5, 0, &clk_lock);
--	clk_register_clkdev(clk, "sphyclk_div", "mmp-ccic.0");
--
--	clk = mmp_clk_register_apmu("ccic0_sphy", "ccic0_sphy_div",
--				apmu_base + APMU_CCIC0, 0x300, &clk_lock);
--	clk_register_clkdev(clk, "sphyclk", "mmp-ccic.0");
--
--	clk = clk_register_mux(NULL, "ccic1_mux", ccic_parent,
--				ARRAY_SIZE(ccic_parent),
--				CLK_SET_RATE_PARENT | CLK_SET_RATE_NO_REPARENT,
--				apmu_base + APMU_CCIC1, 6, 2, 0, &clk_lock);
--	clk_register_clkdev(clk, "ccic_mux.1", NULL);
--
--	clk = clk_register_divider(NULL, "ccic1_div", "ccic1_mux",
--				CLK_SET_RATE_PARENT, apmu_base + APMU_CCIC1,
--				16, 4, CLK_DIVIDER_ONE_BASED, &clk_lock);
--	clk_register_clkdev(clk, "ccic_div.1", NULL);
--
--	clk = mmp_clk_register_apmu("ccic1", "ccic1_div",
--				apmu_base + APMU_CCIC1, 0x1b, &clk_lock);
--	clk_register_clkdev(clk, "fnclk", "mmp-ccic.1");
--
--	clk = mmp_clk_register_apmu("ccic1_phy", "ccic1_div",
--				apmu_base + APMU_CCIC1, 0x24, &clk_lock);
--	clk_register_clkdev(clk, "phyclk", "mmp-ccic.1");
--
--	clk = clk_register_divider(NULL, "ccic1_sphy_div", "ccic1_div",
--				CLK_SET_RATE_PARENT, apmu_base + APMU_CCIC1,
--				10, 5, 0, &clk_lock);
--	clk_register_clkdev(clk, "sphyclk_div", "mmp-ccic.1");
--
--	clk = mmp_clk_register_apmu("ccic1_sphy", "ccic1_sphy_div",
--				apmu_base + APMU_CCIC1, 0x300, &clk_lock);
--	clk_register_clkdev(clk, "sphyclk", "mmp-ccic.1");
--}
-diff --git a/drivers/clk/mmp/clk-pxa168.c b/drivers/clk/mmp/clk-pxa168.c
-deleted file mode 100644
-index 8a9b8fb3a465..000000000000
---- a/drivers/clk/mmp/clk-pxa168.c
-+++ /dev/null
-@@ -1,354 +0,0 @@
--// SPDX-License-Identifier: GPL-2.0-only
--/*
-- * pxa168 clock framework source file
-- *
-- * Copyright (C) 2012 Marvell
-- * Chao Xie <xiechao.mail@gmail.com>
-- */
--
--#include <linux/clk.h>
--#include <linux/clk/mmp.h>
--#include <linux/module.h>
--#include <linux/kernel.h>
--#include <linux/spinlock.h>
--#include <linux/io.h>
--#include <linux/delay.h>
--#include <linux/err.h>
--
--#include "clk.h"
--
--#define APBC_RTC	0x28
--#define APBC_TWSI0	0x2c
--#define APBC_KPC	0x30
--#define APBC_UART0	0x0
--#define APBC_UART1	0x4
--#define APBC_GPIO	0x8
--#define APBC_PWM0	0xc
--#define APBC_PWM1	0x10
--#define APBC_PWM2	0x14
--#define APBC_PWM3	0x18
--#define APBC_SSP0	0x81c
--#define APBC_SSP1	0x820
--#define APBC_SSP2	0x84c
--#define APBC_SSP3	0x858
--#define APBC_SSP4	0x85c
--#define APBC_TWSI1	0x6c
--#define APBC_UART2	0x70
--#define APMU_SDH0	0x54
--#define APMU_SDH1	0x58
--#define APMU_USB	0x5c
--#define APMU_DISP0	0x4c
--#define APMU_CCIC0	0x50
--#define APMU_DFC	0x60
--#define MPMU_UART_PLL	0x14
--
--static DEFINE_SPINLOCK(clk_lock);
--
--static struct mmp_clk_factor_masks uart_factor_masks = {
--	.factor = 2,
--	.num_mask = 0x1fff,
--	.den_mask = 0x1fff,
--	.num_shift = 16,
--	.den_shift = 0,
--};
--
--static struct mmp_clk_factor_tbl uart_factor_tbl[] = {
--	{.num = 8125, .den = 1536},	/*14.745MHZ */
--};
--
--static const char *uart_parent[] = {"pll1_3_16", "uart_pll"};
--static const char *ssp_parent[] = {"pll1_96", "pll1_48", "pll1_24", "pll1_12"};
--static const char *sdh_parent[] = {"pll1_12", "pll1_13"};
--static const char *disp_parent[] = {"pll1_2", "pll1_12"};
--static const char *ccic_parent[] = {"pll1_2", "pll1_12"};
--static const char *ccic_phy_parent[] = {"pll1_6", "pll1_12"};
--
--void __init pxa168_clk_init(phys_addr_t mpmu_phys, phys_addr_t apmu_phys,
--			    phys_addr_t apbc_phys)
--{
--	struct clk *clk;
--	struct clk *uart_pll;
--	void __iomem *mpmu_base;
--	void __iomem *apmu_base;
--	void __iomem *apbc_base;
--
--	mpmu_base = ioremap(mpmu_phys, SZ_4K);
--	if (!mpmu_base) {
--		pr_err("error to ioremap MPMU base\n");
--		return;
--	}
--
--	apmu_base = ioremap(apmu_phys, SZ_4K);
--	if (!apmu_base) {
--		pr_err("error to ioremap APMU base\n");
--		return;
--	}
--
--	apbc_base = ioremap(apbc_phys, SZ_4K);
--	if (!apbc_base) {
--		pr_err("error to ioremap APBC base\n");
--		return;
--	}
--
--	clk = clk_register_fixed_rate(NULL, "clk32", NULL, 0, 3200);
--	clk_register_clkdev(clk, "clk32", NULL);
--
--	clk = clk_register_fixed_rate(NULL, "vctcxo", NULL, 0, 26000000);
--	clk_register_clkdev(clk, "vctcxo", NULL);
--
--	clk = clk_register_fixed_rate(NULL, "pll1", NULL, 0, 624000000);
--	clk_register_clkdev(clk, "pll1", NULL);
--
--	clk = clk_register_fixed_factor(NULL, "pll1_2", "pll1",
--				CLK_SET_RATE_PARENT, 1, 2);
--	clk_register_clkdev(clk, "pll1_2", NULL);
--
--	clk = clk_register_fixed_factor(NULL, "pll1_4", "pll1_2",
--				CLK_SET_RATE_PARENT, 1, 2);
--	clk_register_clkdev(clk, "pll1_4", NULL);
--
--	clk = clk_register_fixed_factor(NULL, "pll1_8", "pll1_4",
--				CLK_SET_RATE_PARENT, 1, 2);
--	clk_register_clkdev(clk, "pll1_8", NULL);
--
--	clk = clk_register_fixed_factor(NULL, "pll1_16", "pll1_8",
--				CLK_SET_RATE_PARENT, 1, 2);
--	clk_register_clkdev(clk, "pll1_16", NULL);
--
--	clk = clk_register_fixed_factor(NULL, "pll1_6", "pll1_2",
--				CLK_SET_RATE_PARENT, 1, 3);
--	clk_register_clkdev(clk, "pll1_6", NULL);
--
--	clk = clk_register_fixed_factor(NULL, "pll1_12", "pll1_6",
--				CLK_SET_RATE_PARENT, 1, 2);
--	clk_register_clkdev(clk, "pll1_12", NULL);
--
--	clk = clk_register_fixed_factor(NULL, "pll1_24", "pll1_12",
--				CLK_SET_RATE_PARENT, 1, 2);
--	clk_register_clkdev(clk, "pll1_24", NULL);
--
--	clk = clk_register_fixed_factor(NULL, "pll1_48", "pll1_24",
--				CLK_SET_RATE_PARENT, 1, 2);
--	clk_register_clkdev(clk, "pll1_48", NULL);
--
--	clk = clk_register_fixed_factor(NULL, "pll1_96", "pll1_48",
--				CLK_SET_RATE_PARENT, 1, 2);
--	clk_register_clkdev(clk, "pll1_96", NULL);
--
--	clk = clk_register_fixed_factor(NULL, "pll1_13", "pll1",
--				CLK_SET_RATE_PARENT, 1, 13);
--	clk_register_clkdev(clk, "pll1_13", NULL);
--
--	clk = clk_register_fixed_factor(NULL, "pll1_13_1_5", "pll1",
--				CLK_SET_RATE_PARENT, 2, 3);
--	clk_register_clkdev(clk, "pll1_13_1_5", NULL);
--
--	clk = clk_register_fixed_factor(NULL, "pll1_2_1_5", "pll1",
--				CLK_SET_RATE_PARENT, 2, 3);
--	clk_register_clkdev(clk, "pll1_2_1_5", NULL);
--
--	clk = clk_register_fixed_factor(NULL, "pll1_3_16", "pll1",
--				CLK_SET_RATE_PARENT, 3, 16);
--	clk_register_clkdev(clk, "pll1_3_16", NULL);
--
--	uart_pll = mmp_clk_register_factor("uart_pll", "pll1_4", 0,
--				mpmu_base + MPMU_UART_PLL,
--				&uart_factor_masks, uart_factor_tbl,
--				ARRAY_SIZE(uart_factor_tbl), &clk_lock);
--	clk_set_rate(uart_pll, 14745600);
--	clk_register_clkdev(uart_pll, "uart_pll", NULL);
--
--	clk = mmp_clk_register_apbc("twsi0", "pll1_13_1_5",
--				apbc_base + APBC_TWSI0, 10, 0, &clk_lock);
--	clk_register_clkdev(clk, NULL, "pxa2xx-i2c.0");
--
--	clk = mmp_clk_register_apbc("twsi1", "pll1_13_1_5",
--				apbc_base + APBC_TWSI1, 10, 0, &clk_lock);
--	clk_register_clkdev(clk, NULL, "pxa2xx-i2c.1");
--
--	clk = mmp_clk_register_apbc("gpio", "vctcxo",
--				apbc_base + APBC_GPIO, 10, 0, &clk_lock);
--	clk_register_clkdev(clk, NULL, "mmp-gpio");
--
--	clk = mmp_clk_register_apbc("kpc", "clk32",
--				apbc_base + APBC_KPC, 10, 0, &clk_lock);
--	clk_register_clkdev(clk, NULL, "pxa27x-keypad");
--
--	clk = mmp_clk_register_apbc("rtc", "clk32",
--				apbc_base + APBC_RTC, 10, 0, &clk_lock);
--	clk_register_clkdev(clk, NULL, "sa1100-rtc");
--
--	clk = mmp_clk_register_apbc("pwm0", "pll1_48",
--				apbc_base + APBC_PWM0, 10, 0, &clk_lock);
--	clk_register_clkdev(clk, NULL, "pxa168-pwm.0");
--
--	clk = mmp_clk_register_apbc("pwm1", "pll1_48",
--				apbc_base + APBC_PWM1, 10, 0, &clk_lock);
--	clk_register_clkdev(clk, NULL, "pxa168-pwm.1");
--
--	clk = mmp_clk_register_apbc("pwm2", "pll1_48",
--				apbc_base + APBC_PWM2, 10, 0, &clk_lock);
--	clk_register_clkdev(clk, NULL, "pxa168-pwm.2");
--
--	clk = mmp_clk_register_apbc("pwm3", "pll1_48",
--				apbc_base + APBC_PWM3, 10, 0, &clk_lock);
--	clk_register_clkdev(clk, NULL, "pxa168-pwm.3");
--
--	clk = clk_register_mux(NULL, "uart0_mux", uart_parent,
--				ARRAY_SIZE(uart_parent),
--				CLK_SET_RATE_PARENT | CLK_SET_RATE_NO_REPARENT,
--				apbc_base + APBC_UART0, 4, 3, 0, &clk_lock);
--	clk_set_parent(clk, uart_pll);
--	clk_register_clkdev(clk, "uart_mux.0", NULL);
--
--	clk = mmp_clk_register_apbc("uart0", "uart0_mux",
--				apbc_base + APBC_UART0, 10, 0, &clk_lock);
--	clk_register_clkdev(clk, NULL, "pxa2xx-uart.0");
--
--	clk = clk_register_mux(NULL, "uart1_mux", uart_parent,
--				ARRAY_SIZE(uart_parent),
--				CLK_SET_RATE_PARENT | CLK_SET_RATE_NO_REPARENT,
--				apbc_base + APBC_UART1, 4, 3, 0, &clk_lock);
--	clk_set_parent(clk, uart_pll);
--	clk_register_clkdev(clk, "uart_mux.1", NULL);
--
--	clk = mmp_clk_register_apbc("uart1", "uart1_mux",
--				apbc_base + APBC_UART1,	10, 0, &clk_lock);
--	clk_register_clkdev(clk, NULL, "pxa2xx-uart.1");
--
--	clk = clk_register_mux(NULL, "uart2_mux", uart_parent,
--				ARRAY_SIZE(uart_parent),
--				CLK_SET_RATE_PARENT | CLK_SET_RATE_NO_REPARENT,
--				apbc_base + APBC_UART2, 4, 3, 0, &clk_lock);
--	clk_set_parent(clk, uart_pll);
--	clk_register_clkdev(clk, "uart_mux.2", NULL);
--
--	clk = mmp_clk_register_apbc("uart2", "uart2_mux",
--				apbc_base + APBC_UART2,	10, 0, &clk_lock);
--	clk_register_clkdev(clk, NULL, "pxa2xx-uart.2");
--
--	clk = clk_register_mux(NULL, "ssp0_mux", ssp_parent,
--				ARRAY_SIZE(ssp_parent),
--				CLK_SET_RATE_PARENT | CLK_SET_RATE_NO_REPARENT,
--				apbc_base + APBC_SSP0, 4, 3, 0, &clk_lock);
--	clk_register_clkdev(clk, "uart_mux.0", NULL);
--
--	clk = mmp_clk_register_apbc("ssp0", "ssp0_mux", apbc_base + APBC_SSP0,
--				10, 0, &clk_lock);
--	clk_register_clkdev(clk, NULL, "mmp-ssp.0");
--
--	clk = clk_register_mux(NULL, "ssp1_mux", ssp_parent,
--				ARRAY_SIZE(ssp_parent),
--				CLK_SET_RATE_PARENT | CLK_SET_RATE_NO_REPARENT,
--				apbc_base + APBC_SSP1, 4, 3, 0, &clk_lock);
--	clk_register_clkdev(clk, "ssp_mux.1", NULL);
--
--	clk = mmp_clk_register_apbc("ssp1", "ssp1_mux", apbc_base + APBC_SSP1,
--				10, 0, &clk_lock);
--	clk_register_clkdev(clk, NULL, "mmp-ssp.1");
--
--	clk = clk_register_mux(NULL, "ssp2_mux", ssp_parent,
--				ARRAY_SIZE(ssp_parent),
--				CLK_SET_RATE_PARENT | CLK_SET_RATE_NO_REPARENT,
--				apbc_base + APBC_SSP2, 4, 3, 0, &clk_lock);
--	clk_register_clkdev(clk, "ssp_mux.2", NULL);
--
--	clk = mmp_clk_register_apbc("ssp2", "ssp1_mux", apbc_base + APBC_SSP2,
--				10, 0, &clk_lock);
--	clk_register_clkdev(clk, NULL, "mmp-ssp.2");
--
--	clk = clk_register_mux(NULL, "ssp3_mux", ssp_parent,
--				ARRAY_SIZE(ssp_parent),
--				CLK_SET_RATE_PARENT | CLK_SET_RATE_NO_REPARENT,
--				apbc_base + APBC_SSP3, 4, 3, 0, &clk_lock);
--	clk_register_clkdev(clk, "ssp_mux.3", NULL);
--
--	clk = mmp_clk_register_apbc("ssp3", "ssp1_mux", apbc_base + APBC_SSP3,
--				10, 0, &clk_lock);
--	clk_register_clkdev(clk, NULL, "mmp-ssp.3");
--
--	clk = clk_register_mux(NULL, "ssp4_mux", ssp_parent,
--				ARRAY_SIZE(ssp_parent),
--				CLK_SET_RATE_PARENT | CLK_SET_RATE_NO_REPARENT,
--				apbc_base + APBC_SSP4, 4, 3, 0, &clk_lock);
--	clk_register_clkdev(clk, "ssp_mux.4", NULL);
--
--	clk = mmp_clk_register_apbc("ssp4", "ssp1_mux", apbc_base + APBC_SSP4,
--				10, 0, &clk_lock);
--	clk_register_clkdev(clk, NULL, "mmp-ssp.4");
--
--	clk = mmp_clk_register_apmu("dfc", "pll1_4", apmu_base + APMU_DFC,
--				0x19b, &clk_lock);
--	clk_register_clkdev(clk, NULL, "pxa3xx-nand.0");
--
--	clk = clk_register_mux(NULL, "sdh0_mux", sdh_parent,
--				ARRAY_SIZE(sdh_parent),
--				CLK_SET_RATE_PARENT | CLK_SET_RATE_NO_REPARENT,
--				apmu_base + APMU_SDH0, 6, 1, 0, &clk_lock);
--	clk_register_clkdev(clk, "sdh0_mux", NULL);
--
--	clk = mmp_clk_register_apmu("sdh0", "sdh_mux", apmu_base + APMU_SDH0,
--				0x1b, &clk_lock);
--	clk_register_clkdev(clk, NULL, "sdhci-pxa.0");
--
--	clk = clk_register_mux(NULL, "sdh1_mux", sdh_parent,
--				ARRAY_SIZE(sdh_parent),
--				CLK_SET_RATE_PARENT | CLK_SET_RATE_NO_REPARENT,
--				apmu_base + APMU_SDH1, 6, 1, 0, &clk_lock);
--	clk_register_clkdev(clk, "sdh1_mux", NULL);
--
--	clk = mmp_clk_register_apmu("sdh1", "sdh1_mux", apmu_base + APMU_SDH1,
--				0x1b, &clk_lock);
--	clk_register_clkdev(clk, NULL, "sdhci-pxa.1");
--
--	clk = mmp_clk_register_apmu("usb", "usb_pll", apmu_base + APMU_USB,
--				0x9, &clk_lock);
--	clk_register_clkdev(clk, "usb_clk", NULL);
--
--	clk = mmp_clk_register_apmu("sph", "usb_pll", apmu_base + APMU_USB,
--				0x12, &clk_lock);
--	clk_register_clkdev(clk, "sph_clk", NULL);
--
--	clk = clk_register_mux(NULL, "disp0_mux", disp_parent,
--				ARRAY_SIZE(disp_parent),
--				CLK_SET_RATE_PARENT | CLK_SET_RATE_NO_REPARENT,
--				apmu_base + APMU_DISP0, 6, 1, 0, &clk_lock);
--	clk_register_clkdev(clk, "disp_mux.0", NULL);
--
--	clk = mmp_clk_register_apmu("disp0", "disp0_mux",
--				apmu_base + APMU_DISP0, 0x1b, &clk_lock);
--	clk_register_clkdev(clk, "fnclk", "mmp-disp.0");
--
--	clk = mmp_clk_register_apmu("disp0_hclk", "disp0_mux",
--				apmu_base + APMU_DISP0, 0x24, &clk_lock);
--	clk_register_clkdev(clk, "hclk", "mmp-disp.0");
--
--	clk = clk_register_mux(NULL, "ccic0_mux", ccic_parent,
--				ARRAY_SIZE(ccic_parent),
--				CLK_SET_RATE_PARENT | CLK_SET_RATE_NO_REPARENT,
--				apmu_base + APMU_CCIC0, 6, 1, 0, &clk_lock);
--	clk_register_clkdev(clk, "ccic_mux.0", NULL);
--
--	clk = mmp_clk_register_apmu("ccic0", "ccic0_mux",
--				apmu_base + APMU_CCIC0, 0x1b, &clk_lock);
--	clk_register_clkdev(clk, "fnclk", "mmp-ccic.0");
--
--	clk = clk_register_mux(NULL, "ccic0_phy_mux", ccic_phy_parent,
--				ARRAY_SIZE(ccic_phy_parent),
--				CLK_SET_RATE_PARENT | CLK_SET_RATE_NO_REPARENT,
--				apmu_base + APMU_CCIC0, 7, 1, 0, &clk_lock);
--	clk_register_clkdev(clk, "ccic_phy_mux.0", NULL);
--
--	clk = mmp_clk_register_apmu("ccic0_phy", "ccic0_phy_mux",
--				apmu_base + APMU_CCIC0, 0x24, &clk_lock);
--	clk_register_clkdev(clk, "phyclk", "mmp-ccic.0");
--
--	clk = clk_register_divider(NULL, "ccic0_sphy_div", "ccic0_mux",
--				CLK_SET_RATE_PARENT, apmu_base + APMU_CCIC0,
--				10, 5, 0, &clk_lock);
--	clk_register_clkdev(clk, "sphyclk_div", NULL);
--
--	clk = mmp_clk_register_apmu("ccic0_sphy", "ccic0_sphy_div",
--				apmu_base + APMU_CCIC0, 0x300, &clk_lock);
--	clk_register_clkdev(clk, "sphyclk", "mmp-ccic.0");
--}
-diff --git a/drivers/clk/mmp/clk-pxa910.c b/drivers/clk/mmp/clk-pxa910.c
-deleted file mode 100644
-index 9fcd76316d7e..000000000000
---- a/drivers/clk/mmp/clk-pxa910.c
-+++ /dev/null
-@@ -1,325 +0,0 @@
--// SPDX-License-Identifier: GPL-2.0-only
--/*
-- * pxa910 clock framework source file
-- *
-- * Copyright (C) 2012 Marvell
-- * Chao Xie <xiechao.mail@gmail.com>
-- */
--
--#include <linux/clk.h>
--#include <linux/clk/mmp.h>
--#include <linux/module.h>
--#include <linux/kernel.h>
--#include <linux/spinlock.h>
--#include <linux/io.h>
--#include <linux/delay.h>
--#include <linux/err.h>
--
--#include "clk.h"
--
--#define APBC_RTC	0x28
--#define APBC_TWSI0	0x2c
--#define APBC_KPC	0x18
--#define APBC_UART0	0x0
--#define APBC_UART1	0x4
--#define APBC_GPIO	0x8
--#define APBC_PWM0	0xc
--#define APBC_PWM1	0x10
--#define APBC_PWM2	0x14
--#define APBC_PWM3	0x18
--#define APBC_SSP0	0x1c
--#define APBC_SSP1	0x20
--#define APBC_SSP2	0x4c
--#define APBCP_TWSI1	0x28
--#define APBCP_UART2	0x1c
--#define APMU_SDH0	0x54
--#define APMU_SDH1	0x58
--#define APMU_USB	0x5c
--#define APMU_DISP0	0x4c
--#define APMU_CCIC0	0x50
--#define APMU_DFC	0x60
--#define MPMU_UART_PLL	0x14
--
--static DEFINE_SPINLOCK(clk_lock);
--
--static struct mmp_clk_factor_masks uart_factor_masks = {
--	.factor = 2,
--	.num_mask = 0x1fff,
--	.den_mask = 0x1fff,
--	.num_shift = 16,
--	.den_shift = 0,
--};
--
--static struct mmp_clk_factor_tbl uart_factor_tbl[] = {
--	{.num = 8125, .den = 1536},	/*14.745MHZ */
--};
--
--static const char *uart_parent[] = {"pll1_3_16", "uart_pll"};
--static const char *ssp_parent[] = {"pll1_96", "pll1_48", "pll1_24", "pll1_12"};
--static const char *sdh_parent[] = {"pll1_12", "pll1_13"};
--static const char *disp_parent[] = {"pll1_2", "pll1_12"};
--static const char *ccic_parent[] = {"pll1_2", "pll1_12"};
--static const char *ccic_phy_parent[] = {"pll1_6", "pll1_12"};
--
--void __init pxa910_clk_init(phys_addr_t mpmu_phys, phys_addr_t apmu_phys,
--			    phys_addr_t apbc_phys, phys_addr_t apbcp_phys)
--{
--	struct clk *clk;
--	struct clk *uart_pll;
--	void __iomem *mpmu_base;
--	void __iomem *apmu_base;
--	void __iomem *apbcp_base;
--	void __iomem *apbc_base;
--
--	mpmu_base = ioremap(mpmu_phys, SZ_4K);
--	if (!mpmu_base) {
--		pr_err("error to ioremap MPMU base\n");
--		return;
--	}
--
--	apmu_base = ioremap(apmu_phys, SZ_4K);
--	if (!apmu_base) {
--		pr_err("error to ioremap APMU base\n");
--		return;
--	}
--
--	apbcp_base = ioremap(apbcp_phys, SZ_4K);
--	if (!apbcp_base) {
--		pr_err("error to ioremap APBC extension base\n");
--		return;
--	}
--
--	apbc_base = ioremap(apbc_phys, SZ_4K);
--	if (!apbc_base) {
--		pr_err("error to ioremap APBC base\n");
--		return;
--	}
--
--	clk = clk_register_fixed_rate(NULL, "clk32", NULL, 0, 3200);
--	clk_register_clkdev(clk, "clk32", NULL);
--
--	clk = clk_register_fixed_rate(NULL, "vctcxo", NULL, 0, 26000000);
--	clk_register_clkdev(clk, "vctcxo", NULL);
--
--	clk = clk_register_fixed_rate(NULL, "pll1", NULL, 0, 624000000);
--	clk_register_clkdev(clk, "pll1", NULL);
--
--	clk = clk_register_fixed_factor(NULL, "pll1_2", "pll1",
--				CLK_SET_RATE_PARENT, 1, 2);
--	clk_register_clkdev(clk, "pll1_2", NULL);
--
--	clk = clk_register_fixed_factor(NULL, "pll1_4", "pll1_2",
--				CLK_SET_RATE_PARENT, 1, 2);
--	clk_register_clkdev(clk, "pll1_4", NULL);
--
--	clk = clk_register_fixed_factor(NULL, "pll1_8", "pll1_4",
--				CLK_SET_RATE_PARENT, 1, 2);
--	clk_register_clkdev(clk, "pll1_8", NULL);
--
--	clk = clk_register_fixed_factor(NULL, "pll1_16", "pll1_8",
--				CLK_SET_RATE_PARENT, 1, 2);
--	clk_register_clkdev(clk, "pll1_16", NULL);
--
--	clk = clk_register_fixed_factor(NULL, "pll1_6", "pll1_2",
--				CLK_SET_RATE_PARENT, 1, 3);
--	clk_register_clkdev(clk, "pll1_6", NULL);
--
--	clk = clk_register_fixed_factor(NULL, "pll1_12", "pll1_6",
--				CLK_SET_RATE_PARENT, 1, 2);
--	clk_register_clkdev(clk, "pll1_12", NULL);
--
--	clk = clk_register_fixed_factor(NULL, "pll1_24", "pll1_12",
--				CLK_SET_RATE_PARENT, 1, 2);
--	clk_register_clkdev(clk, "pll1_24", NULL);
--
--	clk = clk_register_fixed_factor(NULL, "pll1_48", "pll1_24",
--				CLK_SET_RATE_PARENT, 1, 2);
--	clk_register_clkdev(clk, "pll1_48", NULL);
--
--	clk = clk_register_fixed_factor(NULL, "pll1_96", "pll1_48",
--				CLK_SET_RATE_PARENT, 1, 2);
--	clk_register_clkdev(clk, "pll1_96", NULL);
--
--	clk = clk_register_fixed_factor(NULL, "pll1_13", "pll1",
--				CLK_SET_RATE_PARENT, 1, 13);
--	clk_register_clkdev(clk, "pll1_13", NULL);
--
--	clk = clk_register_fixed_factor(NULL, "pll1_13_1_5", "pll1",
--				CLK_SET_RATE_PARENT, 2, 3);
--	clk_register_clkdev(clk, "pll1_13_1_5", NULL);
--
--	clk = clk_register_fixed_factor(NULL, "pll1_2_1_5", "pll1",
--				CLK_SET_RATE_PARENT, 2, 3);
--	clk_register_clkdev(clk, "pll1_2_1_5", NULL);
--
--	clk = clk_register_fixed_factor(NULL, "pll1_3_16", "pll1",
--				CLK_SET_RATE_PARENT, 3, 16);
--	clk_register_clkdev(clk, "pll1_3_16", NULL);
--
--	uart_pll =  mmp_clk_register_factor("uart_pll", "pll1_4", 0,
--				mpmu_base + MPMU_UART_PLL,
--				&uart_factor_masks, uart_factor_tbl,
--				ARRAY_SIZE(uart_factor_tbl), &clk_lock);
--	clk_set_rate(uart_pll, 14745600);
--	clk_register_clkdev(uart_pll, "uart_pll", NULL);
--
--	clk = mmp_clk_register_apbc("twsi0", "pll1_13_1_5",
--				apbc_base + APBC_TWSI0, 10, 0, &clk_lock);
--	clk_register_clkdev(clk, NULL, "pxa2xx-i2c.0");
--
--	clk = mmp_clk_register_apbc("twsi1", "pll1_13_1_5",
--				apbcp_base + APBCP_TWSI1, 10, 0, &clk_lock);
--	clk_register_clkdev(clk, NULL, "pxa2xx-i2c.1");
--
--	clk = mmp_clk_register_apbc("gpio", "vctcxo",
--				apbc_base + APBC_GPIO, 10, 0, &clk_lock);
--	clk_register_clkdev(clk, NULL, "mmp-gpio");
--
--	clk = mmp_clk_register_apbc("kpc", "clk32",
--				apbc_base + APBC_KPC, 10, 0, &clk_lock);
--	clk_register_clkdev(clk, NULL, "pxa27x-keypad");
--
--	clk = mmp_clk_register_apbc("rtc", "clk32",
--				apbc_base + APBC_RTC, 10, 0, &clk_lock);
--	clk_register_clkdev(clk, NULL, "sa1100-rtc");
--
--	clk = mmp_clk_register_apbc("pwm0", "pll1_48",
--				apbc_base + APBC_PWM0, 10, 0, &clk_lock);
--	clk_register_clkdev(clk, NULL, "pxa910-pwm.0");
--
--	clk = mmp_clk_register_apbc("pwm1", "pll1_48",
--				apbc_base + APBC_PWM1, 10, 0, &clk_lock);
--	clk_register_clkdev(clk, NULL, "pxa910-pwm.1");
--
--	clk = mmp_clk_register_apbc("pwm2", "pll1_48",
--				apbc_base + APBC_PWM2, 10, 0, &clk_lock);
--	clk_register_clkdev(clk, NULL, "pxa910-pwm.2");
--
--	clk = mmp_clk_register_apbc("pwm3", "pll1_48",
--				apbc_base + APBC_PWM3, 10, 0, &clk_lock);
--	clk_register_clkdev(clk, NULL, "pxa910-pwm.3");
--
--	clk = clk_register_mux(NULL, "uart0_mux", uart_parent,
--				ARRAY_SIZE(uart_parent),
--				CLK_SET_RATE_PARENT | CLK_SET_RATE_NO_REPARENT,
--				apbc_base + APBC_UART0, 4, 3, 0, &clk_lock);
--	clk_set_parent(clk, uart_pll);
--	clk_register_clkdev(clk, "uart_mux.0", NULL);
--
--	clk = mmp_clk_register_apbc("uart0", "uart0_mux",
--				apbc_base + APBC_UART0, 10, 0, &clk_lock);
--	clk_register_clkdev(clk, NULL, "pxa2xx-uart.0");
--
--	clk = clk_register_mux(NULL, "uart1_mux", uart_parent,
--				ARRAY_SIZE(uart_parent),
--				CLK_SET_RATE_PARENT | CLK_SET_RATE_NO_REPARENT,
--				apbc_base + APBC_UART1, 4, 3, 0, &clk_lock);
--	clk_set_parent(clk, uart_pll);
--	clk_register_clkdev(clk, "uart_mux.1", NULL);
--
--	clk = mmp_clk_register_apbc("uart1", "uart1_mux",
--				apbc_base + APBC_UART1, 10, 0, &clk_lock);
--	clk_register_clkdev(clk, NULL, "pxa2xx-uart.1");
--
--	clk = clk_register_mux(NULL, "uart2_mux", uart_parent,
--				ARRAY_SIZE(uart_parent),
--				CLK_SET_RATE_PARENT | CLK_SET_RATE_NO_REPARENT,
--				apbcp_base + APBCP_UART2, 4, 3, 0, &clk_lock);
--	clk_set_parent(clk, uart_pll);
--	clk_register_clkdev(clk, "uart_mux.2", NULL);
--
--	clk = mmp_clk_register_apbc("uart2", "uart2_mux",
--				apbcp_base + APBCP_UART2, 10, 0, &clk_lock);
--	clk_register_clkdev(clk, NULL, "pxa2xx-uart.2");
--
--	clk = clk_register_mux(NULL, "ssp0_mux", ssp_parent,
--				ARRAY_SIZE(ssp_parent),
--				CLK_SET_RATE_PARENT | CLK_SET_RATE_NO_REPARENT,
--				apbc_base + APBC_SSP0, 4, 3, 0, &clk_lock);
--	clk_register_clkdev(clk, "uart_mux.0", NULL);
--
--	clk = mmp_clk_register_apbc("ssp0", "ssp0_mux",
--				apbc_base + APBC_SSP0, 10, 0, &clk_lock);
--	clk_register_clkdev(clk, NULL, "mmp-ssp.0");
--
--	clk = clk_register_mux(NULL, "ssp1_mux", ssp_parent,
--				ARRAY_SIZE(ssp_parent),
--				CLK_SET_RATE_PARENT | CLK_SET_RATE_NO_REPARENT,
--				apbc_base + APBC_SSP1, 4, 3, 0, &clk_lock);
--	clk_register_clkdev(clk, "ssp_mux.1", NULL);
--
--	clk = mmp_clk_register_apbc("ssp1", "ssp1_mux",
--				apbc_base + APBC_SSP1, 10, 0, &clk_lock);
--	clk_register_clkdev(clk, NULL, "mmp-ssp.1");
--
--	clk = mmp_clk_register_apmu("dfc", "pll1_4",
--				apmu_base + APMU_DFC, 0x19b, &clk_lock);
--	clk_register_clkdev(clk, NULL, "pxa3xx-nand.0");
--
--	clk = clk_register_mux(NULL, "sdh0_mux", sdh_parent,
--				ARRAY_SIZE(sdh_parent),
--				CLK_SET_RATE_PARENT | CLK_SET_RATE_NO_REPARENT,
--				apmu_base + APMU_SDH0, 6, 1, 0, &clk_lock);
--	clk_register_clkdev(clk, "sdh0_mux", NULL);
--
--	clk = mmp_clk_register_apmu("sdh0", "sdh_mux",
--				apmu_base + APMU_SDH0, 0x1b, &clk_lock);
--	clk_register_clkdev(clk, NULL, "sdhci-pxa.0");
--
--	clk = clk_register_mux(NULL, "sdh1_mux", sdh_parent,
--				ARRAY_SIZE(sdh_parent),
--				CLK_SET_RATE_PARENT | CLK_SET_RATE_NO_REPARENT,
--				apmu_base + APMU_SDH1, 6, 1, 0, &clk_lock);
--	clk_register_clkdev(clk, "sdh1_mux", NULL);
--
--	clk = mmp_clk_register_apmu("sdh1", "sdh1_mux",
--				apmu_base + APMU_SDH1, 0x1b, &clk_lock);
--	clk_register_clkdev(clk, NULL, "sdhci-pxa.1");
--
--	clk = mmp_clk_register_apmu("usb", "usb_pll",
--				apmu_base + APMU_USB, 0x9, &clk_lock);
--	clk_register_clkdev(clk, "usb_clk", NULL);
--
--	clk = mmp_clk_register_apmu("sph", "usb_pll",
--				apmu_base + APMU_USB, 0x12, &clk_lock);
--	clk_register_clkdev(clk, "sph_clk", NULL);
--
--	clk = clk_register_mux(NULL, "disp0_mux", disp_parent,
--				ARRAY_SIZE(disp_parent),
--				CLK_SET_RATE_PARENT | CLK_SET_RATE_NO_REPARENT,
--				apmu_base + APMU_DISP0, 6, 1, 0, &clk_lock);
--	clk_register_clkdev(clk, "disp_mux.0", NULL);
--
--	clk = mmp_clk_register_apmu("disp0", "disp0_mux",
--				apmu_base + APMU_DISP0, 0x1b, &clk_lock);
--	clk_register_clkdev(clk, NULL, "mmp-disp.0");
--
--	clk = clk_register_mux(NULL, "ccic0_mux", ccic_parent,
--				ARRAY_SIZE(ccic_parent),
--				CLK_SET_RATE_PARENT | CLK_SET_RATE_NO_REPARENT,
--				apmu_base + APMU_CCIC0, 6, 1, 0, &clk_lock);
--	clk_register_clkdev(clk, "ccic_mux.0", NULL);
--
--	clk = mmp_clk_register_apmu("ccic0", "ccic0_mux",
--				apmu_base + APMU_CCIC0, 0x1b, &clk_lock);
--	clk_register_clkdev(clk, "fnclk", "mmp-ccic.0");
--
--	clk = clk_register_mux(NULL, "ccic0_phy_mux", ccic_phy_parent,
--				ARRAY_SIZE(ccic_phy_parent),
--				CLK_SET_RATE_PARENT | CLK_SET_RATE_NO_REPARENT,
--				apmu_base + APMU_CCIC0, 7, 1, 0, &clk_lock);
--	clk_register_clkdev(clk, "ccic_phy_mux.0", NULL);
--
--	clk = mmp_clk_register_apmu("ccic0_phy", "ccic0_phy_mux",
--				apmu_base + APMU_CCIC0, 0x24, &clk_lock);
--	clk_register_clkdev(clk, "phyclk", "mmp-ccic.0");
--
--	clk = clk_register_divider(NULL, "ccic0_sphy_div", "ccic0_mux",
--				CLK_SET_RATE_PARENT, apmu_base + APMU_CCIC0,
--				10, 5, 0, &clk_lock);
--	clk_register_clkdev(clk, "sphyclk_div", NULL);
--
--	clk = mmp_clk_register_apmu("ccic0_sphy", "ccic0_sphy_div",
--				apmu_base + APMU_CCIC0, 0x300, &clk_lock);
--	clk_register_clkdev(clk, "sphyclk", "mmp-ccic.0");
--}
-diff --git a/include/linux/clk/mmp.h b/include/linux/clk/mmp.h
-deleted file mode 100644
-index 445130460380..000000000000
---- a/include/linux/clk/mmp.h
-+++ /dev/null
-@@ -1,18 +0,0 @@
--/* SPDX-License-Identifier: GPL-2.0 */
--#ifndef __CLK_MMP_H
--#define __CLK_MMP_H
--
--#include <linux/types.h>
--
--extern void pxa168_clk_init(phys_addr_t mpmu_phys,
--			    phys_addr_t apmu_phys,
--			    phys_addr_t apbc_phys);
--extern void pxa910_clk_init(phys_addr_t mpmu_phys,
--			    phys_addr_t apmu_phys,
--			    phys_addr_t apbc_phys,
--			    phys_addr_t apbcp_phys);
--extern void mmp2_clk_init(phys_addr_t mpmu_phys,
--			  phys_addr_t apmu_phys,
--			  phys_addr_t apbc_phys);
--
--#endif
-
+ .../bindings/soc/qcom/qcom,pmic-glink.yaml         | 18 ++++++++
+ arch/arm64/boot/dts/qcom/sm8550-mtp.dts            |  1 +
+ arch/arm64/boot/dts/qcom/sm8550-qrd.dts            |  1 +
+ drivers/usb/typec/ucsi/ucsi_glink.c                | 54 +++++++++++++++++++++-
+ 4 files changed, 73 insertions(+), 1 deletion(-)
 ---
-base-commit: 5d0c230f1de8c7515b6567d9afba1f196fb4e2f4
-change-id: 20230803-drop-old-mmp-clk-3ee54eecd15d
+base-commit: fb4327106e5250ee360d0d8b056c1eef7eeb9a98
+change-id: 20230804-topic-sm8550-upstream-type-c-orientation-0bbbb360d3f7
 
 Best regards,
 -- 
-Duje Mihanović <duje.mihanovic@skole.hr>
-
-
+Neil Armstrong <neil.armstrong@linaro.org>
 
