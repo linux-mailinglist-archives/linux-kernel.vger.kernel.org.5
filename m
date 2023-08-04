@@ -2,83 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 049E47708BD
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 21:14:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B7D47708C3
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 21:14:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229816AbjHDTOV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Aug 2023 15:14:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46836 "EHLO
+        id S229872AbjHDTOu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Aug 2023 15:14:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47198 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229488AbjHDTOT (ORCPT
+        with ESMTP id S229488AbjHDTOr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Aug 2023 15:14:19 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D566CB9;
-        Fri,  4 Aug 2023 12:14:18 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 735E562101;
-        Fri,  4 Aug 2023 19:14:18 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 18C65C433C8;
-        Fri,  4 Aug 2023 19:14:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
-        s=korg; t=1691176457;
-        bh=KjLfStABFwUIAtuSAKNcnmOi2LteNNPlPp20ShgMzp4=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=Z0eePU9NC4Pz6n6vXCNvjXjwlqXDzzzr5i3qU2pMQKHmkgb5AhlUyg9FUUtR84vnj
-         Zhk+jFYTAa/8XPVFoOiFEMxePF2hfUOKoJRQWf4aPeUTeLUzOv9oQhLUykgZa02sUW
-         i8K5cksG4rlxLiAtQeTF7k4fI/GPmi0vCP1n8tWY=
-Date:   Fri, 4 Aug 2023 12:14:16 -0700
-From:   Andrew Morton <akpm@linux-foundation.org>
-To:     Suren Baghdasaryan <surenb@google.com>
-Cc:     torvalds@linux-foundation.org, jannh@google.com,
-        willy@infradead.org, liam.howlett@oracle.com, david@redhat.com,
-        peterx@redhat.com, ldufour@linux.ibm.com, vbabka@suse.cz,
-        michel@lespinasse.org, jglisse@google.com, mhocko@suse.com,
-        hannes@cmpxchg.org, dave@stgolabs.net, hughd@google.com,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        stable@vger.kernel.org, kernel-team@android.com,
-        Linus Torvalds <torvalds@linuxfoundation.org>
-Subject: Re: [PATCH v4 1/6] mm: enable page walking API to lock vmas during
- the walk
-Message-Id: <20230804121416.533bb81336ded8f170da097e@linux-foundation.org>
-In-Reply-To: <20230804152724.3090321-2-surenb@google.com>
-References: <20230804152724.3090321-1-surenb@google.com>
-        <20230804152724.3090321-2-surenb@google.com>
-X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+        Fri, 4 Aug 2023 15:14:47 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ABD93B9
+        for <linux-kernel@vger.kernel.org>; Fri,  4 Aug 2023 12:14:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
+        Message-ID:Sender:Reply-To:Content-ID:Content-Description;
+        bh=aREuGkA6w6ZICk1lacHviCDE3QhBS3vYAP3oRmfIz2g=; b=UN53eR/oleMlzX8th93EgvH1hM
+        h6VWPT4wWPTy7mBKrB9su6MXRV2bAgQBHnQMUihJ7UVVSfPDTKZ0C4UQ9fens3ReZLB6hzTsm6uDP
+        Jwd7saRxo3qI6xqyc/vrFkg+lrY3cZvqXwMx0Et4EmwrCurvVM3As9CMIHt2b4YZZMueGLcJOfpS0
+        ZXjkQEf2cL81PovwJVdvKHSpJ55FhflIq80v3Fbv1u5ATYFo3di+ETGZS95UwuQ8HntRq/z5/yphT
+        sj8qdXeBvgSqaT5gT45X/+us0kOW0ufyQINfBmPXOO0OmamY0gTajROqUyI52CVZmPRPwjuCXZKWC
+        GlYC7e8g==;
+Received: from [2601:1c2:980:9ec0::2764]
+        by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
+        id 1qS0G5-00D5rN-31;
+        Fri, 04 Aug 2023 19:14:45 +0000
+Message-ID: <77cdbbed-e64d-0c55-bf0a-6dfcfbdb8b20@infradead.org>
+Date:   Fri, 4 Aug 2023 12:14:44 -0700
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH] drm: Drop select FRAMEBUFFER_CONSOLE for
+ DRM_FBDEV_EMULATION
+Content-Language: en-US
+To:     Javier Martinez Canillas <javierm@redhat.com>,
+        linux-kernel@vger.kernel.org
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        Arthur Grillo <arthurgrillo@riseup.net>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@gmail.com>, Helge Deller <deller@gmx.de>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        dri-devel@lists.freedesktop.org
+References: <20230804125156.1387542-1-javierm@redhat.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+In-Reply-To: <20230804125156.1387542-1-javierm@redhat.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-4.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri,  4 Aug 2023 08:27:19 -0700 Suren Baghdasaryan <surenb@google.com> wrote:
 
-> walk_page_range() and friends often operate under write-locked mmap_lock.
-> With introduction of vma locks, the vmas have to be locked as well
-> during such walks to prevent concurrent page faults in these areas.
-> Add an additional member to mm_walk_ops to indicate locking requirements
-> for the walk.
+
+On 8/4/23 05:51, Javier Martinez Canillas wrote:
+> The commit c242f48433e7 ("drm: Make FB_CORE to be selected if DRM fbdev
+> emulation is enabled") changed DRM_FBDEV_EMULATION from 'depends on FB'
+> to an effective 'select FB_CORE', so any config that previously had DRM=y
+> and FB=n now has FB_CORE=y and FRAMEBUFFER_CONSOLE=y.
 > 
-> ...
->
->  18 files changed, 100 insertions(+), 20 deletions(-)
+> This leads to unmet direct dependencies detected for FRAMEBUFFER_CONSOLE
+> as reported by Arthur Grillo, e.g:
 > 
+> WARNING: unmet direct dependencies detected for FRAMEBUFFER_CONSOLE
+>   Depends on [n]: VT [=n] && FB_CORE [=y] && !UML [=y]
+>   Selected by [y]:
+>   - DRM_FBDEV_EMULATION [=y] && HAS_IOMEM [=y] && DRM [=y] && !EXPERT [=n]
+> 
+> Arnd Bergmann suggests to drop the select FRAMEBUFFER_CONSOLE for the
+> DRM_FBDEV_EMULATION Kconfig symbol, since a possible use case could
+> be to enable DRM fbdev emulation but without a framebuffer console.
+> 
+> Fixes: c242f48433e7 ("drm: Make FB_CORE to be selected if DRM fbdev emulation is enabled")
+> Reported-by: Arthur Grillo <arthurgrillo@riseup.net>
+> Closes: https://lore.kernel.org/dri-devel/20230726220325.278976-1-arthurgrillo@riseup.net
+> Suggested-by: Arnd Bergmann <arnd@arndb.de>
+> Signed-off-by: Javier Martinez Canillas <javierm@redhat.com>
 
-That's a big patch for a -stable backport.
+Acked-by: Randy Dunlap <rdunlap@infradead.org>
+Tested-by: Randy Dunlap <rdunlap@infradead.org> # build-tested
 
-Presumably the various -stable maintainers will be wondering why we're
-doing this.  But, as is so often the case, the changelog fails to
-describe any user-visible effects of the change.  Please send this info
-and I'll add it to the changelog.
+Thanks.
 
+> ---
+> 
+>  drivers/gpu/drm/Kconfig | 1 -
+>  1 file changed, 1 deletion(-)
+> 
+> diff --git a/drivers/gpu/drm/Kconfig b/drivers/gpu/drm/Kconfig
+> index b51c6a141dfa..2a44b9419d4d 100644
+> --- a/drivers/gpu/drm/Kconfig
+> +++ b/drivers/gpu/drm/Kconfig
+> @@ -135,7 +135,6 @@ config DRM_DEBUG_MODESET_LOCK
+>  config DRM_FBDEV_EMULATION
+>  	bool "Enable legacy fbdev support for your modesetting driver"
+>  	depends on DRM
+> -	select FRAMEBUFFER_CONSOLE if !EXPERT
+>  	select FRAMEBUFFER_CONSOLE_DETECT_PRIMARY if FRAMEBUFFER_CONSOLE
+>  	default y
+>  	help
 
+-- 
+~Randy
