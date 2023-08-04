@@ -2,115 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 612E776FD52
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 11:31:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F7B176FD57
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 11:33:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230470AbjHDJbn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Aug 2023 05:31:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41808 "EHLO
+        id S230444AbjHDJcv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Aug 2023 05:32:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42166 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230465AbjHDJb1 (ORCPT
+        with ESMTP id S230360AbjHDJcR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Aug 2023 05:31:27 -0400
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5074149EC
-        for <linux-kernel@vger.kernel.org>; Fri,  4 Aug 2023 02:31:24 -0700 (PDT)
-Received: from canpemm500006.china.huawei.com (unknown [172.30.72.53])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4RHL3d3LknztRs2;
-        Fri,  4 Aug 2023 17:27:57 +0800 (CST)
-Received: from [10.67.145.224] (10.67.145.224) by
- canpemm500006.china.huawei.com (7.192.105.130) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.27; Fri, 4 Aug 2023 17:31:21 +0800
-Subject: [PATCH v2 1/1] iommu/arm-smmu-v3: Fix error case of range command
-From:   zhurui <zhurui3@huawei.com>
-To:     Will Deacon <will@kernel.org>
-CC:     <linux-arm-kernel@lists.infradead.org>, <iommu@lists.linux.dev>,
-        <linux-kernel@vger.kernel.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Yicong Yang <yangyicong@hisilicon.com>,
-        Tomas Krcka <krckatom@amazon.de>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        Nicolin Chen <nicolinc@nvidia.com>
-References: <1690784482-30028-1-git-send-email-wangwudi@hisilicon.com>
- <20230801085504.GA26130@willie-the-truck>
- <27c895b8-1fb0-be88-8bc3-878d754684c8@huawei.com>
-Message-ID: <d5fc1f72-7428-4fef-d868-d06b85add635@huawei.com>
-Date:   Fri, 4 Aug 2023 17:31:20 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        Fri, 4 Aug 2023 05:32:17 -0400
+Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 615D74C22
+        for <linux-kernel@vger.kernel.org>; Fri,  4 Aug 2023 02:32:02 -0700 (PDT)
+Received: by mail-lf1-x12f.google.com with SMTP id 2adb3069b0e04-4fe4f5290daso3189451e87.1
+        for <linux-kernel@vger.kernel.org>; Fri, 04 Aug 2023 02:32:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=rasmusvillemoes.dk; s=google; t=1691141520; x=1691746320;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=YJcUmqfH4he3+bj4rk9cnVccev5fkfdS9FI/A70DRUM=;
+        b=cCylAwlhK/Nj+MiccN4dGpLcZdR67okmXEdejoGLTfpXZ/mc+QXp0t48Ofw5xHg4yc
+         ne1BbGyQsqIxZl8ZOMGfCOVqrCxZWkKKKevKXfREcDpH5yBngWvQxEl3hyoK/PoNaN+G
+         O3nteNbaR50yDvqNHclMoYEXmkYN6yETvCmds=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691141520; x=1691746320;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=YJcUmqfH4he3+bj4rk9cnVccev5fkfdS9FI/A70DRUM=;
+        b=JT/5DIhsxYHJ4QkF3ohvQCIZl6HKF7ajfzShCGopFSqOZ8u698I+B5E7CjY/1GF7Yo
+         yrz1xQUrM2yJtjH8Wj1EzT+Ib/cnJQRHcRdU4xzabbb3sVGIsMF6+mICeGQ8ixp5cCm2
+         1KpgJAHbMqDlPwijpK0ESWiK+seoH76zpGQwZFSr/VgowFyFSI4pHgRdDZ2aYPunvan0
+         StY98yEPk3kEgUAdg04P+OjjfmdLHTluWhAFwAIJ77kYh/WIKMC7Vi6CWctT45P0IA6q
+         XOIzvkGG4ltskq0qbAoRofKcjrLPmGsjKsrQBPSTUAf0S1oX3RMP6C9C9kKDezxPFSOr
+         kYWA==
+X-Gm-Message-State: AOJu0Yx8YvNrbzQTIjb2ehzsXLcg2qVzKsY6BmJz8iKua9+acAPm5Uxp
+        uoxwmU3EMhTFTUTC//8nLOVuVA==
+X-Google-Smtp-Source: AGHT+IGsqil9ckKmE45ZEi9RLr7R3/pogXB0t2FoWx2GpBX6OwB+NH3pxc17YH3E8MnXBP4sNaqz/g==
+X-Received: by 2002:a05:6512:158f:b0:4f8:67f0:7253 with SMTP id bp15-20020a056512158f00b004f867f07253mr1071071lfb.49.1691141520453;
+        Fri, 04 Aug 2023 02:32:00 -0700 (PDT)
+Received: from [172.16.11.116] ([81.216.59.226])
+        by smtp.gmail.com with ESMTPSA id t4-20020ac24c04000000b004fe09920fe5sm304024lfq.47.2023.08.04.02.31.59
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 04 Aug 2023 02:31:59 -0700 (PDT)
+Message-ID: <71ce8516-21cb-32c6-84d3-b3f9bb3d625b@rasmusvillemoes.dk>
+Date:   Fri, 4 Aug 2023 11:31:58 +0200
 MIME-Version: 1.0
-In-Reply-To: <27c895b8-1fb0-be88-8bc3-878d754684c8@huawei.com>
-Content-Type: text/plain; charset="utf-8"
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.11.0
+Subject: Re: [PATCH v1 4/4] lib/vsprintf: Split out sprintf() and friends
+Content-Language: en-US, da
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Marco Elver <elver@google.com>, linux-kernel@vger.kernel.org,
+        kasan-dev@googlegroups.com, linux-mm@kvack.org
+Cc:     Petr Mladek <pmladek@suse.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Alexander Potapenko <glider@google.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>
+References: <20230804082619.61833-1-andriy.shevchenko@linux.intel.com>
+ <20230804082619.61833-5-andriy.shevchenko@linux.intel.com>
+From:   Rasmus Villemoes <linux@rasmusvillemoes.dk>
+In-Reply-To: <20230804082619.61833-5-andriy.shevchenko@linux.intel.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.67.145.224]
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
- canpemm500006.china.huawei.com (7.192.105.130)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When tg != 0 but ttl, scale, num all 0 in a range tlbi command, it
-is reserved and will cause the CERROR_ILL error. This case means
-that the size to be invalidated is only one page size, and the
-range invalidation is meaningless here. So we set tg to 0 in this
-case to do an non-range invalidation instead.
+On 04/08/2023 10.26, Andy Shevchenko wrote:
+> kernel.h is being used as a dump for all kinds of stuff for a long time.
+> sprintf() and friends are used in many drivers without need of the full
+> kernel.h dependency train with it.
+> 
+> Here is the attempt on cleaning it up by splitting out sprintf() and
+> friends.
+> 
+> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> ---
+>  include/linux/kernel.h  | 30 +-----------------------------
+>  include/linux/sprintf.h | 24 ++++++++++++++++++++++++
+>  lib/vsprintf.c          |  1 +
+>  3 files changed, 26 insertions(+), 29 deletions(-)
+>  create mode 100644 include/linux/sprintf.h
+> 
+> diff --git a/include/linux/kernel.h b/include/linux/kernel.h
+> index b9e76f717a7e..cee8fe87e9f4 100644
+> --- a/include/linux/kernel.h
+> +++ b/include/linux/kernel.h
+> @@ -29,6 +29,7 @@
+>  #include <linux/panic.h>
+>  #include <linux/printk.h>
+>  #include <linux/build_bug.h>
+> +#include <linux/sprintf.h>
+>  #include <linux/static_call_types.h>
+>  #include <linux/instruction_pointer.h>
+>  #include <asm/byteorder.h>
+> @@ -203,35 +204,6 @@ static inline void might_fault(void) { }
+>  
+>  void do_exit(long error_code) __noreturn;
+>  
+> -extern int num_to_str(char *buf, int size,
+> -		      unsigned long long num, unsigned int width);
+> -
+> -/* lib/printf utilities */
+> -
+> -extern __printf(2, 3) int sprintf(char *buf, const char * fmt, ...);
+> -extern __printf(2, 0) int vsprintf(char *buf, const char *, va_list);
+> -extern __printf(3, 4)
+> -int snprintf(char *buf, size_t size, const char *fmt, ...);
+> -extern __printf(3, 0)
+> -int vsnprintf(char *buf, size_t size, const char *fmt, va_list args);
+> -extern __printf(3, 4)
+> -int scnprintf(char *buf, size_t size, const char *fmt, ...);
+> -extern __printf(3, 0)
+> -int vscnprintf(char *buf, size_t size, const char *fmt, va_list args);
+> -extern __printf(2, 3) __malloc
+> -char *kasprintf(gfp_t gfp, const char *fmt, ...);
+> -extern __printf(2, 0) __malloc
+> -char *kvasprintf(gfp_t gfp, const char *fmt, va_list args);
+> -extern __printf(2, 0)
+> -const char *kvasprintf_const(gfp_t gfp, const char *fmt, va_list args);
+> -
+> -extern __scanf(2, 3)
+> -int sscanf(const char *, const char *, ...);
+> -extern __scanf(2, 0)
+> -int vsscanf(const char *, const char *, va_list);
+> -
+> -extern int no_hash_pointers_enable(char *str);
+> -
+>  extern int get_option(char **str, int *pint);
+>  extern char *get_options(const char *str, int nints, int *ints);
+>  extern unsigned long long memparse(const char *ptr, char **retptr);
+> diff --git a/include/linux/sprintf.h b/include/linux/sprintf.h
+> new file mode 100644
+> index 000000000000..00d1fdc70a3e
+> --- /dev/null
+> +++ b/include/linux/sprintf.h
+> @@ -0,0 +1,24 @@
+> +/* SPDX-License-Identifier: GPL-2.0 */
+> +#ifndef _LINUX_KERNEL_SPRINTF_H_
+> +#define _LINUX_KERNEL_SPRINTF_H_
+> +
+> +#include <linux/types.h>
+> +
 
-Cc: Will Deacon <will@kernel.org>
-Cc: Robin Murphy <robin.murphy@arm.com>
-Cc: Joerg Roedel <joro@8bytes.org>
-Cc: Lu Baolu <baolu.lu@linux.intel.com>
-Cc: Jason Gunthorpe <jgg@ziepe.ca>
-Cc: Yicong Yang <yangyicong@hisilicon.com>
-Cc: Tomas Krcka <krckatom@amazon.de>
-Cc: Jean-Philippe Brucker <jean-philippe@linaro.org>
-Cc: Nicolin Chen <nicolinc@nvidia.com>
-Cc: Rui Zhu <zhurui3@huawei.com>
+Shouldn't this at least also include compiler_attributes.h, to make it
+self-contained?
 
-Signed-off-by: Rui Zhu <zhurui3@huawei.com>
----
-ChangeLog:
-v1-->v2:
-	1. Change from "Revert" to modify the problematic case
+As Marco said, please just declare no_hash_pointers in this file as
+well. Perhaps with a comment about not accessing it unless one has good
+reason, but I suppose that's true in general for all kernel global
+variables, so maybe not worth it for this one.
 
- drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c | 9 ++++++---
- 1 file changed, 6 insertions(+), 3 deletions(-)
+Rasmus
 
-diff --git a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
-index 9b0dc3505601..5e56c7e85819 100644
---- a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
-+++ b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
-@@ -1895,9 +1895,6 @@ static void __arm_smmu_tlb_inv_range(struct arm_smmu_cmdq_ent *cmd,
-                /* Get the leaf page size */
-                tg = __ffs(smmu_domain->domain.pgsize_bitmap);
-
--               /* Convert page size of 12,14,16 (log2) to 1,2,3 */
--               cmd->tlbi.tg = (tg - 10) / 2;
--
-                /*
-                 * Determine what level the granule is at. For non-leaf, io-pgtable
-                 * assumes .tlb_flush_walk can invalidate multiple levels at once,
-@@ -1930,6 +1927,12 @@ static void __arm_smmu_tlb_inv_range(struct arm_smmu_cmdq_ent *cmd,
-                        num = (num_pages >> scale) & CMDQ_TLBI_RANGE_NUM_MAX;
-                        cmd->tlbi.num = num - 1;
-
-+                       /* Prevent error caused by one page tlbi with leaf 0 */
-+                       if (scale == 0 && num == 1 && cmd->tlbi.leaf == 0)
-+                               cmd->tlbi.tg = 0;
-+                       else /* Convert page size of 12,14,16 (log2) to 1,2,3 */
-+                               cmd->tlbi.tg = (tg - 10) / 2;
-+
-                        /* range is num * 2^scale * pgsize */
-                        inv_range = num << (scale + tg);
-
---
-1.8.3.1
