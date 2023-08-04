@@ -2,124 +2,295 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 58FBD77057D
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 18:03:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D608C77057B
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 18:02:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232253AbjHDQCn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Aug 2023 12:02:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54800 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231658AbjHDQCl (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S229935AbjHDQCl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Fri, 4 Aug 2023 12:02:41 -0400
-Received: from todd.t-8ch.de (todd.t-8ch.de [IPv6:2a01:4f8:c010:41de::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B171449E0;
-        Fri,  4 Aug 2023 09:02:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=t-8ch.de; s=mail;
-        t=1691164956; bh=SqKltnePnG5igiH9/TdmZdpA8qWi1qiP8QCMK6xqfE4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=MZZIBjWNTJxjh4631yY9m8aJZu1q6/H0WRp7ZjKXlwictQe7TtJmdw4xBEZo79qL7
-         4iN50vJ2vbgM9A7k0r1AUpAHa9eDdQHWN3kccfqRguCHjr4nnwFl5KvFQs8gViZZxW
-         bs+hhbAUUUU1pM4yUJQX+Ax6q2AtNvEVruALSNQM=
-Date:   Fri, 4 Aug 2023 18:02:35 +0200
-From:   Thomas =?utf-8?Q?Wei=C3=9Fschuh?= <thomas@t-8ch.de>
-To:     Zhangjin Wu <falcon@tinylab.org>
-Cc:     arnd@arndb.de, linux-kernel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, tanyuan@tinylab.org, w@1wt.eu
-Subject: Re: [PATCH v1 2/3] selftests/nolibc: fix up O= option support
-Message-ID: <500504f6-fed1-45a4-a518-4631a6f3e463@t-8ch.de>
-References: <058a264d-45bd-4f1f-8af3-56ed337b3251@t-8ch.de>
- <20230804155218.293995-1-falcon@tinylab.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230804155218.293995-1-falcon@tinylab.org>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54772 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229452AbjHDQCk (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Aug 2023 12:02:40 -0400
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0230246B3
+        for <linux-kernel@vger.kernel.org>; Fri,  4 Aug 2023 09:02:38 -0700 (PDT)
+Received: by mail-yb1-xb4a.google.com with SMTP id 3f1490d57ef6-d437624b9c1so998581276.0
+        for <linux-kernel@vger.kernel.org>; Fri, 04 Aug 2023 09:02:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1691164957; x=1691769757;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=cuCBtoQdI93dHT+cZwGP8pXvIQr2Syt9WOhIw05rJFI=;
+        b=j5VnIqwSoLckq3DYeEJA9MUnThstOKIAeTrJ2DJibvxhFLyDAdlWfMFXfokliUo+AF
+         tyBnFkvVavmJwINoQFtyLs+lt+2vl3DFqO0ZIk5puTPFAS27D5iL8Juyq6tXU+CQ9d8T
+         Fgin9GD7L43wzl5OKADswzZ+xWQz72Es868+eVrM5+7YeuTyVjcU6XORU9DLoM8uvlEw
+         OLvJV9FLLl9qskaB3LykUJL15fQvv5zAwasBEjQ/cHi5y6AtYPDylW9jYhjKD0Wv9RRr
+         u1nhCTxbE5SKB3/Ri7uuRReR+ii3OF3Q0Q0GGhKGXPTVsPk9sxgveRHUd5Z/GeTmltWf
+         PbqA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691164957; x=1691769757;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=cuCBtoQdI93dHT+cZwGP8pXvIQr2Syt9WOhIw05rJFI=;
+        b=Aw66s6bMMHVIojEQFJNlPezUhtFibq02MjaJmv0GaOj4NArVUXuJNHVRUTkb9vudV2
+         B6ljwMBVoNRzLfizScWdqhHLNUiCQKKQlnKab6YgDzmHFGs7rURrBmA8K6/b2wX2it7T
+         V53z59VXZYjWYnLo3vYQtaXh0vhDVKKeehEZ3xW+Nq1LjFG63DaueaX3ulb+PghjwrJ9
+         AHQ5O/12hpuU3zvEJWT/myJ5MP/krLnugSIrnpg8/g3Ex3bAFtlDi3Wb3G7MvvSCmXuU
+         3dZ2TOni208QuoW3QFjTctoIDFU7N2hoYxlSfocJZNFg5/KdyOZ8cQacE/FGb2eWgJQz
+         5bqw==
+X-Gm-Message-State: AOJu0Yx536FpFWiqIHHK0FyNQlF2F59F84SmohMj/bmPsI6g/O5tZYAj
+        hBXOx9ndbvixOb6wQQFRodAjl94fiNo=
+X-Google-Smtp-Source: AGHT+IHYUxUlo5rz82mD8KV7ITNLs34kQJKSqyy2f82gkbp9HL8WYSMDX0mX28/OucVaQDC3e8vyXuDwGWM=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a25:f80b:0:b0:d3f:cfa:2350 with SMTP id
+ u11-20020a25f80b000000b00d3f0cfa2350mr12714ybd.10.1691164957224; Fri, 04 Aug
+ 2023 09:02:37 -0700 (PDT)
+Date:   Fri, 4 Aug 2023 09:02:35 -0700
+In-Reply-To: <20230803042732.88515-5-weijiang.yang@intel.com>
+Mime-Version: 1.0
+References: <20230803042732.88515-1-weijiang.yang@intel.com> <20230803042732.88515-5-weijiang.yang@intel.com>
+Message-ID: <ZM0hG7Pn/fkGruWu@google.com>
+Subject: Re: [PATCH v5 04/19] KVM:x86: Refresh CPUID on write to guest MSR_IA32_XSS
+From:   Sean Christopherson <seanjc@google.com>
+To:     Yang Weijiang <weijiang.yang@intel.com>
+Cc:     pbonzini@redhat.com, peterz@infradead.org, john.allen@amd.com,
+        kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        rick.p.edgecombe@intel.com, chao.gao@intel.com,
+        binbin.wu@linux.intel.com, Zhang Yi Z <yi.z.zhang@linux.intel.com>
+Content-Type: text/plain; charset="us-ascii"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023-08-04 23:52:18+0800, Zhangjin Wu wrote:
-> > On 2023-08-04 15:43:42+0800, Zhangjin Wu wrote:
-> > > Hi, Thomas
-> > > 
-> > > > On 2023-08-03 22:45:52+0800, Zhangjin Wu wrote:
-> > > > > To avoid pollute the source code tree and avoid mrproper for every
-> > > > > architecture switch, the O= argument must be supported.
-> > > > > 
-> > > > > Both IMAGE and .config are from the building directory, let's use
-> > > > > objtree instead of srctree for them.
-> > > > > 
-> > > > > If no O= option specified, means building kernel in source code tree,
-> > > > > objtree should be srctree in such case.
-> > > > > 
-> > > > > Suggested-by: Willy Tarreau <w@1wt.eu>
-> > > > > Link: https://lore.kernel.org/lkml/ZK0AB1OXH1s2xYsh@1wt.eu/
-> > > > > Signed-off-by: Zhangjin Wu <falcon@tinylab.org>
-> > > > > ---
-> > > > >  tools/testing/selftests/nolibc/Makefile | 7 +++++--
-> > > > >  1 file changed, 5 insertions(+), 2 deletions(-)
-> > > > > 
-> > > > > diff --git a/tools/testing/selftests/nolibc/Makefile b/tools/testing/selftests/nolibc/Makefile
-> > > > > index 51fef5e6a152..af590aee063a 100644
-> > > > > --- a/tools/testing/selftests/nolibc/Makefile
-> > > > > +++ b/tools/testing/selftests/nolibc/Makefile
-> > > > > @@ -9,6 +9,9 @@ ifeq ($(srctree),)
-> > > > >  srctree := $(patsubst %/tools/testing/selftests/,%,$(dir $(CURDIR)))
-> > > > >  endif
-> > > > >  
-> > > > > +# add objtree for O= argument, required by IMAGE and .config
-> > > > > +objtree ?= $(srctree)
-> > > > 
-> > > > Isn't this already set by the included tools/scripts/Makefile.include?
-> > > >
-> > > 
-> > > Good question, but it is empty if no O= specified, checked it several
-> > > times before ;-)
-> > 
-> > For me it is not empty when I am in tools/testing/selftests/nolibc/.
-> >
-> 
-> Interesting, here is the code I added to check the value:
-> 
->     diff --git a/tools/testing/selftests/nolibc/Makefile b/tools/testing/selftests/nolibc/Makefile
->     index 22f1e1d73fa8..1ae19e896e24 100644
->     --- a/tools/testing/selftests/nolibc/Makefile
->     +++ b/tools/testing/selftests/nolibc/Makefile
->     @@ -12,6 +12,8 @@ include $(srctree)/scripts/subarch.include
->      ARCH = $(SUBARCH)
->      endif
->     
->     +$(error objtree=$(objtree), srctree=$(srctree))
->     +
-> 
-> Whenever I do defconfig or run,
-> 
->     $ make help
->     Makefile:15: *** objtree=, srctree=/labs/linux-lab/src/linux-stable.  Stop.
-> 
-> It is only not empty when we pass O explicitly:
-> 
->     $ mkdir out
->     $ make help O=out
->     Makefile:15: *** objtree=out, srctree=/labs/linux-lab/src/linux-stable.  Stop.
->     $ make help O=$PWD/out
->     Makefile:15: *** objtree=/labs/linux-lab/src/linux-stable/tools/testing/selftests/nolibc/out, srctree=/labs/linux-lab/src/linux-stable.  Stop.
+On Thu, Aug 03, 2023, Yang Weijiang wrote:
+> Update CPUID(EAX=0DH,ECX=1) when the guest's XSS is modified.
+> CPUID(EAX=0DH,ECX=1).EBX reports required storage size of
+> all enabled xstate features in XCR0 | XSS. Guest can allocate
+> sufficient xsave buffer based on the info.
 
-Welp, now it's the same for me.
-I guess I messed it up before, maybe I forgot to remove your changes
-while testing?
+Please wrap changelogs closer to ~75 chars.  I'm pretty sure this isn't the first
+time I've made this request...
 
-Anyways instead of having to manually do stuff with $(objtree) we could
-also use $(OUTPUT)$(IMAGE) to always get the correct image.
-
-> [..]
+> Note, KVM does not yet support any XSS based features, i.e.
+> supported_xss is guaranteed to be zero at this time.
 > 
-> After align the empty objtree value with you, will renew this patch.
+> Co-developed-by: Zhang Yi Z <yi.z.zhang@linux.intel.com>
+> Signed-off-by: Zhang Yi Z <yi.z.zhang@linux.intel.com>
+> Signed-off-by: Yang Weijiang <weijiang.yang@intel.com>
+> ---
+>  arch/x86/include/asm/kvm_host.h |  1 +
+>  arch/x86/kvm/cpuid.c            | 20 ++++++++++++++++++--
+>  arch/x86/kvm/x86.c              |  8 +++++---
+>  3 files changed, 24 insertions(+), 5 deletions(-)
+> 
+> diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
+> index 28bd38303d70..20bbcd95511f 100644
+> --- a/arch/x86/include/asm/kvm_host.h
+> +++ b/arch/x86/include/asm/kvm_host.h
+> @@ -804,6 +804,7 @@ struct kvm_vcpu_arch {
+>  
+>  	u64 xcr0;
+>  	u64 guest_supported_xcr0;
+> +	u64 guest_supported_xss;
+>  
+>  	struct kvm_pio_request pio;
+>  	void *pio_data;
+> diff --git a/arch/x86/kvm/cpuid.c b/arch/x86/kvm/cpuid.c
+> index 7f4d13383cf2..0338316b827c 100644
+> --- a/arch/x86/kvm/cpuid.c
+> +++ b/arch/x86/kvm/cpuid.c
+> @@ -249,6 +249,17 @@ static u64 cpuid_get_supported_xcr0(struct kvm_cpuid_entry2 *entries, int nent)
+>  	return (best->eax | ((u64)best->edx << 32)) & kvm_caps.supported_xcr0;
+>  }
+>  
+> +static u64 cpuid_get_supported_xss(struct kvm_cpuid_entry2 *entries, int nent)
+> +{
+> +	struct kvm_cpuid_entry2 *best;
+> +
+> +	best = cpuid_entry2_find(entries, nent, 0xd, 1);
+> +	if (!best)
+> +		return 0;
+> +
+> +	return (best->ecx | ((u64)best->edx << 32)) & kvm_caps.supported_xss;
+> +}
+> +
+>  static void __kvm_update_cpuid_runtime(struct kvm_vcpu *vcpu, struct kvm_cpuid_entry2 *entries,
+>  				       int nent)
+>  {
+> @@ -276,8 +287,11 @@ static void __kvm_update_cpuid_runtime(struct kvm_vcpu *vcpu, struct kvm_cpuid_e
+>  
+>  	best = cpuid_entry2_find(entries, nent, 0xD, 1);
+>  	if (best && (cpuid_entry_has(best, X86_FEATURE_XSAVES) ||
+> -		     cpuid_entry_has(best, X86_FEATURE_XSAVEC)))
+> -		best->ebx = xstate_required_size(vcpu->arch.xcr0, true);
+> +		     cpuid_entry_has(best, X86_FEATURE_XSAVEC))) {
+> +		u64 xstate = vcpu->arch.xcr0 | vcpu->arch.ia32_xss;
 
-Thanks!
-Thomas
+Nit, the variable should be xfeatures, not xstate.  Though I vote to avoid the
+variable entirely,
+
+	best = cpuid_entry2_find(entries, nent, 0xD, 1);
+	if (best && (cpuid_entry_has(best, X86_FEATURE_XSAVES) ||
+		     cpuid_entry_has(best, X86_FEATURE_XSAVEC)))
+		best->ebx = xstate_required_size(vcpu->arch.xcr0 |
+						 vcpu->arch.ia32_xss, true);
+
+though it's only a slight preference, i.e. feel free to keep your approach if
+you or others feel strongly about the style.
+
+> +	}
+>  
+>  	best = __kvm_find_kvm_cpuid_features(vcpu, entries, nent);
+>  	if (kvm_hlt_in_guest(vcpu->kvm) && best &&
+> @@ -325,6 +339,8 @@ static void kvm_vcpu_after_set_cpuid(struct kvm_vcpu *vcpu)
+>  
+>  	vcpu->arch.guest_supported_xcr0 =
+>  		cpuid_get_supported_xcr0(vcpu->arch.cpuid_entries, vcpu->arch.cpuid_nent);
+> +	vcpu->arch.guest_supported_xss =
+> +		cpuid_get_supported_xss(vcpu->arch.cpuid_entries, vcpu->arch.cpuid_nent);
+
+Blech.  I tried to clean up this ugly, but Paolo disagreed[*].  Can you fold in
+the below (compile tested only) patch at the very beginning of this series?  It
+implements my suggested alternative.  And then this would become:
+
+static u64 vcpu_get_supported_xss(struct kvm_vcpu *vcpu)
+{
+	struct kvm_cpuid_entry2 *best;
+
+	best = kvm_find_cpuid_entry_index(vcpu, 0xd, 1);
+	if (!best)
+		return 0;
+
+	return (best->ecx | ((u64)best->edx << 32)) & kvm_caps.supported_xss;
+}
+
+[*] https://lore.kernel.org/all/ZGfius5UkckpUyXl@google.com
+
+>  	/*
+>  	 * FP+SSE can always be saved/restored via KVM_{G,S}ET_XSAVE, even if
+> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+> index 0b9033551d8c..5d6d6fa33e5b 100644
+> --- a/arch/x86/kvm/x86.c
+> +++ b/arch/x86/kvm/x86.c
+> @@ -3780,10 +3780,12 @@ int kvm_set_msr_common(struct kvm_vcpu *vcpu, struct msr_data *msr_info)
+>  		 * IA32_XSS[bit 8]. Guests have to use RDMSR/WRMSR rather than
+>  		 * XSAVES/XRSTORS to save/restore PT MSRs.
+>  		 */
+> -		if (data & ~kvm_caps.supported_xss)
+> +		if (data & ~vcpu->arch.guest_supported_xss)
+>  			return 1;
+> -		vcpu->arch.ia32_xss = data;
+> -		kvm_update_cpuid_runtime(vcpu);
+> +		if (vcpu->arch.ia32_xss != data) {
+> +			vcpu->arch.ia32_xss = data;
+> +			kvm_update_cpuid_runtime(vcpu);
+> +		}
+
+Nit, I prefer this style:
+
+		if (vcpu->arch.ia32_xss == data)
+			break;
+
+		vcpu->arch.ia32_xss = data;
+		kvm_update_cpuid_runtime(vcpu);
+
+so that the common path isn't buried in an if-statement.
+
+>  		break;
+>  	case MSR_SMI_COUNT:
+>  		if (!msr_info->host_initiated)
+> -- 
+
+
+From: Sean Christopherson <seanjc@google.com>
+Date: Fri, 4 Aug 2023 08:48:03 -0700
+Subject: [PATCH] KVM: x86: Rework cpuid_get_supported_xcr0() to operate on
+ vCPU data
+
+Rework and rename cpuid_get_supported_xcr0() to explicitly operate on vCPU
+state, i.e. on a vCPU's CPUID state.  Prior to commit 275a87244ec8 ("KVM:
+x86: Don't adjust guest's CPUID.0x12.1 (allowed SGX enclave XFRM)"), KVM
+incorrectly fudged guest CPUID at runtime, which in turn necessitated
+massaging the incoming CPUID state for KVM_SET_CPUID{2} so as not to run
+afoul of kvm_cpuid_check_equal().
+
+Opportunistically move the helper below kvm_update_cpuid_runtime() to make
+it harder to repeat the mistake of querying supported XCR0 for runtime
+updates.
+
+No functional change intended.
+
+Signed-off-by: Sean Christopherson <seanjc@google.com>
+---
+ arch/x86/kvm/cpuid.c | 33 ++++++++++++++++-----------------
+ 1 file changed, 16 insertions(+), 17 deletions(-)
+
+diff --git a/arch/x86/kvm/cpuid.c b/arch/x86/kvm/cpuid.c
+index 7f4d13383cf2..5e42846c948a 100644
+--- a/arch/x86/kvm/cpuid.c
++++ b/arch/x86/kvm/cpuid.c
+@@ -234,21 +234,6 @@ void kvm_update_pv_runtime(struct kvm_vcpu *vcpu)
+ 		vcpu->arch.pv_cpuid.features = best->eax;
+ }
+ 
+-/*
+- * Calculate guest's supported XCR0 taking into account guest CPUID data and
+- * KVM's supported XCR0 (comprised of host's XCR0 and KVM_SUPPORTED_XCR0).
+- */
+-static u64 cpuid_get_supported_xcr0(struct kvm_cpuid_entry2 *entries, int nent)
+-{
+-	struct kvm_cpuid_entry2 *best;
+-
+-	best = cpuid_entry2_find(entries, nent, 0xd, 0);
+-	if (!best)
+-		return 0;
+-
+-	return (best->eax | ((u64)best->edx << 32)) & kvm_caps.supported_xcr0;
+-}
+-
+ static void __kvm_update_cpuid_runtime(struct kvm_vcpu *vcpu, struct kvm_cpuid_entry2 *entries,
+ 				       int nent)
+ {
+@@ -299,6 +284,21 @@ void kvm_update_cpuid_runtime(struct kvm_vcpu *vcpu)
+ }
+ EXPORT_SYMBOL_GPL(kvm_update_cpuid_runtime);
+ 
++/*
++ * Calculate guest's supported XCR0 taking into account guest CPUID data and
++ * KVM's supported XCR0 (comprised of host's XCR0 and KVM_SUPPORTED_XCR0).
++ */
++static u64 vcpu_get_supported_xcr0(struct kvm_vcpu *vcpu)
++{
++	struct kvm_cpuid_entry2 *best;
++
++	best = kvm_find_cpuid_entry_index(vcpu, 0xd, 0);
++	if (!best)
++		return 0;
++
++	return (best->eax | ((u64)best->edx << 32)) & kvm_caps.supported_xcr0;
++}
++
+ static bool kvm_cpuid_has_hyperv(struct kvm_cpuid_entry2 *entries, int nent)
+ {
+ 	struct kvm_cpuid_entry2 *entry;
+@@ -323,8 +323,7 @@ static void kvm_vcpu_after_set_cpuid(struct kvm_vcpu *vcpu)
+ 		kvm_apic_set_version(vcpu);
+ 	}
+ 
+-	vcpu->arch.guest_supported_xcr0 =
+-		cpuid_get_supported_xcr0(vcpu->arch.cpuid_entries, vcpu->arch.cpuid_nent);
++	vcpu->arch.guest_supported_xcr0 = vcpu_get_supported_xcr0(vcpu);
+ 
+ 	/*
+ 	 * FP+SSE can always be saved/restored via KVM_{G,S}ET_XSAVE, even if
+
+base-commit: f0147fcfab840fe9a3f03e9645d25c1326373fe6
+-- 
+
