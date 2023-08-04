@@ -2,205 +2,460 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 04C8976FB59
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 09:48:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5CD8476FB61
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 09:50:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234047AbjHDHsY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Aug 2023 03:48:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42294 "EHLO
+        id S232482AbjHDHul (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Aug 2023 03:50:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42738 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229882AbjHDHsV (ORCPT
+        with ESMTP id S229882AbjHDHuh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Aug 2023 03:48:21 -0400
-Received: from Atcsqr.andestech.com (60-248-80-70.hinet-ip.hinet.net [60.248.80.70])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9DB4E421E
-        for <linux-kernel@vger.kernel.org>; Fri,  4 Aug 2023 00:48:18 -0700 (PDT)
-Received: from mail.andestech.com (ATCPCS16.andestech.com [10.0.1.222])
-        by Atcsqr.andestech.com with ESMTP id 3747m8i9028840;
-        Fri, 4 Aug 2023 15:48:08 +0800 (+08)
-        (envelope-from dylan@andestech.com)
-Received: from atctrx.andestech.com (10.0.15.173) by ATCPCS16.andestech.com
- (10.0.1.222) with Microsoft SMTP Server id 14.3.498.0; Fri, 4 Aug 2023
- 15:48:05 +0800
-Date:   Fri, 4 Aug 2023 15:48:05 +0800
-From:   Dylan Jhong <dylan@andestech.com>
-To:     Alexandre Ghiti <alexghiti@rivosinc.com>
-CC:     Conor Dooley <conor.dooley@microchip.com>,
-        Guo Ren <guoren@kernel.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        =?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@rivosinc.com>,
-        <linux-riscv@lists.infradead.org>, <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH -fixes] riscv: Implement flush_cache_vmap()
-Message-ID: <ZMytNY2J8iyjbPPy@atctrx.andestech.com>
-References: <20230725132246.817726-1-alexghiti@rivosinc.com>
- <CAJF2gTRm59RAJvSf=L2uqbb3rHnANVheO+yLqrJGuVBh1w8Oug@mail.gmail.com>
- <ZMtv5+ut5z3pjlFJ@atctrx.andestech.com>
- <20230803-stadium-unusable-6cf00e35ec22@wendy>
- <CAHVXubiz-7LaxCJLW=-ekr7TBFswXojr1ODU4mo59Z1OBmjieg@mail.gmail.com>
+        Fri, 4 Aug 2023 03:50:37 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4DAFD421E;
+        Fri,  4 Aug 2023 00:50:35 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 186B221866;
+        Fri,  4 Aug 2023 07:50:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1691135433; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=TWMlbWBIl4ADD8tbSvSsJ/OHirnRKZ3VuNE+1LXNH6g=;
+        b=eTMPwB7TVSeyowJOlx6AWLStHvNNNeX2IbpExdSA9nuPuJkwgAutxAWnQxtBnjM61In5Lk
+        MaIc1IVCxhaNTo17Gnt4Sw9kixBuYpsfxhkT1wQYdfGsLtqOkn8i3K+zwh8QSjrfE43b7G
+        xk5t03O1wqVhCM/AGzhjxUdgNnIWUcM=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id E06CE13904;
+        Fri,  4 Aug 2023 07:50:32 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id 2NQ0NsitzGQ5ZQAAMHmgww
+        (envelope-from <mhocko@suse.com>); Fri, 04 Aug 2023 07:50:32 +0000
+Date:   Fri, 4 Aug 2023 09:50:32 +0200
+From:   Michal Hocko <mhocko@suse.com>
+To:     Douglas Anderson <dianders@chromium.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Petr Mladek <pmladek@suse.com>, Arnd Bergmann <arnd@arndb.de>,
+        Borislav Petkov <bp@alien8.de>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        "Darrick J. Wong" <djwong@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Gaosheng Cui <cuigaosheng1@huawei.com>,
+        "Gautham R. Shenoy" <gautham.shenoy@amd.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Guilherme G. Piccoli" <gpiccoli@igalia.com>,
+        Guo Ren <guoren@kernel.org>, "H. Peter Anvin" <hpa@zytor.com>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        "Jason A. Donenfeld" <Jason@zx2c4.com>,
+        Jianmin Lv <lvjianmin@loongson.cn>,
+        Jinyang He <hejinyang@loongson.cn>,
+        Josh Poimboeuf <jpoimboe@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Lecopzer Chen <lecopzer.chen@mediatek.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Pingfan Liu <kernelfans@gmail.com>,
+        Qing Zhang <zhangqing@loongson.cn>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Tom Rix <trix@redhat.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Valentin Schneider <vschneid@redhat.com>,
+        WANG Xuerui <kernel@xen0n.name>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-mips@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        loongarch@lists.linux.dev, sparclinux@vger.kernel.org,
+        x86@kernel.org
+Subject: Re: [PATCH v3 1/2] nmi_backtrace: Allow excluding an arbitrary CPU
+Message-ID: <ZMytyEoCARgP9VR8@dhcp22.suse.cz>
+References: <20230803160649.v3.1.Ia35521b91fc781368945161d7b28538f9996c182@changeid>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAHVXubiz-7LaxCJLW=-ekr7TBFswXojr1ODU4mo59Z1OBmjieg@mail.gmail.com>
-User-Agent: Mutt/2.1.4 (2021-12-11)
-X-Originating-IP: [10.0.15.173]
-X-DNSRBL: 
-X-SPAM-SOURCE-CHECK: pass
-X-MAIL: Atcsqr.andestech.com 3747m8i9028840
-X-Spam-Status: No, score=-0.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RDNS_DYNAMIC,SPF_HELO_NONE,SPF_PASS,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
+In-Reply-To: <20230803160649.v3.1.Ia35521b91fc781368945161d7b28538f9996c182@changeid>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 03, 2023 at 11:48:36AM +0200, Alexandre Ghiti wrote:
-> On Thu, Aug 3, 2023 at 11:25 AM Conor Dooley <conor.dooley@microchip.com> wrote:
-> >
-> > On Thu, Aug 03, 2023 at 05:14:15PM +0800, dylan wrote:
-> > > On Sun, Jul 30, 2023 at 01:08:17AM -0400, Guo Ren wrote:
-> > > > On Tue, Jul 25, 2023 at 9:22 AM Alexandre Ghiti <alexghiti@rivosinc.com> wrote:
-> > > > >
-> > > > > The RISC-V kernel needs a sfence.vma after a page table modification: we
-> > > > > used to rely on the vmalloc fault handling to emit an sfence.vma, but
-> > > > > commit 7d3332be011e ("riscv: mm: Pre-allocate PGD entries for
-> > > > > vmalloc/modules area") got rid of this path for 64-bit kernels, so now we
-> > > > > need to explicitly emit a sfence.vma in flush_cache_vmap().
-> > > > >
-> > > > > Note that we don't need to implement flush_cache_vunmap() as the generic
-> > > > > code should emit a flush tlb after unmapping a vmalloc region.
-> > > > >
-> > > > > Fixes: 7d3332be011e ("riscv: mm: Pre-allocate PGD entries for vmalloc/modules area")
-> > > > > Signed-off-by: Alexandre Ghiti <alexghiti@rivosinc.com>
-> > > > > ---
-> > > > >  arch/riscv/include/asm/cacheflush.h | 4 ++++
-> > > > >  1 file changed, 4 insertions(+)
-> > > > >
-> > > > > diff --git a/arch/riscv/include/asm/cacheflush.h b/arch/riscv/include/asm/cacheflush.h
-> > > > > index 8091b8bf4883..b93ffddf8a61 100644
-> > > > > --- a/arch/riscv/include/asm/cacheflush.h
-> > > > > +++ b/arch/riscv/include/asm/cacheflush.h
-> > > > > @@ -37,6 +37,10 @@ static inline void flush_dcache_page(struct page *page)
-> > > > >  #define flush_icache_user_page(vma, pg, addr, len) \
-> > > > >         flush_icache_mm(vma->vm_mm, 0)
-> > > > >
-> > > > > +#ifdef CONFIG_64BIT
-> > > > > +#define flush_cache_vmap(start, end)   flush_tlb_kernel_range(start, end)
-> > > > Sorry, I couldn't agree with the above in a PIPT cache machine. It's
-> > > > not worth for.
-> > > >
-> > > > It would reduce the performance of vmap_pages_range,
-> > > > ioremap_page_range ... API, which may cause some drivers' performance
-> > > > issues when they install/uninstall memory frequently.
-> > > >
-> > >
-> > > Hi All,
-> > >
-> > > I think functional correctness should be more important than system performance
-> > > in this case. The "preventive" SFENCE.VMA became necessary due to the RISC-V
-> > > specification allowing invalidation entries to be cached in the TLB.
-> >
-> > We are at -rc4 and this stuff is broken. Taking the bigger hammer, which
-> > can be reverted later when a more targeted fix shows up, to make sure
-> > that v6.5 doesn't end up broken, sounds rather prudent. Otherwise, the
-> > original commit should probably be reverted.
+On Thu 03-08-23 16:07:57, Douglas Anderson wrote:
+> The APIs that allow backtracing across CPUs have always had a way to
+> exclude the current CPU. This convenience means callers didn't need to
+> find a place to allocate a CPU mask just to handle the common case.
 > 
-> The original commit that removed vmalloc_fault() is required, handling
-> vmalloc faults in the page fault path is not possible (see the links
-> in the description of 7d3332be011e and the example that I gave in the
-> thread https://lore.kernel.org/linux-riscv/dc26625b-6658-c078-76d2-7e975a04b1d4@ghiti.fr/).
+> Let's extend the API to take a CPU ID to exclude instead of just a
+> boolean. This isn't any more complex for the API to handle and allows
+> the hardlockup detector to exclude a different CPU (the one it already
+> did a trace for) without needing to find space for a CPU mask.
 > 
-> I totally agree with Dylan that we'll work (I'm currently working on
-> that) on the performance side of the problem in the next release, we
-> need correctness and for that we need a preventive global sfence.vma
-> as we have no means (for now) to distinguish between uarch that cache
-> or not invalid entries.
-> 
-> >
-> > > The problem[1] we are currently encountering is caused by not updating the TLB
-> > > after the page table is created, and the solution to this problem can only be
-> > > solved by updating the TLB immediately after the page table is created.
-> > >
-> > > There are currently two possible approaches to flush TLB:
-> > > 1. Flush TLB in flush_cache_vmap()
-> > > 2. Flush TLB in arch_sync_kernel_mappings()
-> > >
-> > > But I'm not quite sure if it's a good idea to operate on the TLB inside flush_cache_vmap().
-> > > The name of this function indicates that it should be related to cache operations, maybe
-> > > it would be more appropriate to do TLB flush in arch_sync_kernel_mappings()?
-> 
-> TLDR: The downsides to implementing arch_sync_kernel_mappings()
-> instead of flush_cache_vmap():
-> 
-> - 2 global flushes for vunmap instead of 1 for flush_cache_vmap()
-> - flushes the tlb in the noflush suffixed functions so it prevents any
-> flush optimization (ie: a loop of vmap_range_noflush() without flush
-> and then a final flush afterwards)
-> 
-> So I'd favour the flush_cache_vmap() implementation which seems
-> lighter. powerpc does that
-> https://elixir.bootlin.com/linux/latest/source/arch/powerpc/include/asm/cacheflush.h#L27
-> (but admits that it may not be the right place)
-> 
-> Here is the long story (my raw notes):
-> 
-> * arch_sync_kernel_mappings() is called from:
-> - _apply_to_page_range(): would only emit global sfence.vma if vmalloc
-> addresses, I guess that's ok.
-> - __vunmap_range_noflush(): it is noted here
-> https://elixir.bootlin.com/linux/latest/source/mm/vmalloc.c#L406 that
-> any caller must call flush_tlb_kernel_range(). Then the implementation
-> of arch_sync_kernel_mappings() would result in 2 global tlb flushes.
-> - vmap_range_noflush(): does not fit well with the noflush() suffix.
-> 
-> * flush_cache_vmap() is called from:
-> - kasan_populate_vmalloc(): legit since it bypasses vmap api (but
-> called right a apply_to_page_range() so your patch would work here)
-> - kmsan_vunmap_range_noflush(): called twice for the mappings kmsan
-> establishes and flush_tlb_kernel_range() must be called afterwards =>
-> 3 global tlb flushes but the 3 are needed as they target different
-> addresses. Implementing only arch_sync_kernel_mappings() would result
-> in way more global flushes (see the loop here
-> https://elixir.bootlin.com/linux/latest/source/mm/kmsan/hooks.c#L151
-> where  __vmap_pages_range_noflush() would result in more
-> flush_tlb_all())
-> - kmsan_vmap_pages_range_noflush(): here we would flush twice, but
-> same thing for the arch_sync_kernel_mappings() implementation.
-> - ioremap_page_range(): legit, same as arch_sync_kernel_mappings()
-> implementation.
-> - vmap_pages_range(): legit, same as arch_sync_kernel_mappings() implementation.
-> 
-> Let me know what you think!
-> 
-> Alex
-> 
-Hi Alex,
+> Arguably, this new API also encourages safer behavior. Specifically if
+> the caller wants to avoid tracing the current CPU (maybe because they
+> already traced the current CPU) this makes it more obvious to the
+> caller that they need to make sure that the current CPU ID can't
+> change.
 
-Thank you for the detailed explanation. It is indeed undeniable that in certain
-situations, there might be a possibility of repeated flushing TLB. But I think
-there are some potential problem in flush_cache_vmap().
+Yes, this looks like the best way forward.
 
-In most case, vmap_range_noflush() and flush_cache_vmap() will appear at the same
-time, so it should be no problem to choose one of them to do the TLB flush. But
-flush_cache_vmap() does not cover all the places where apply_to_page_range()
-appears (please correct me if I'm wrong), such as vmap_pfn()[1].
+It would have been slightly safer to modify arch_trigger_cpumask_backtrace
+by switching arguments so that some leftovers are captured easier.
 
-The function you mentioned here, each will eventually call:
-    vmap_range_noflush() -> arch_sync_kernel_mappings() -> TLB Flush
+You also have this leftover
+diff --git a/include/linux/nmi.h b/include/linux/nmi.h
+index 00982b133dc1..9f1743ee2b28 100644
+--- a/include/linux/nmi.h
++++ b/include/linux/nmi.h
+@@ -190,10 +190,6 @@ static inline bool trigger_all_cpu_backtrace(void)
+ {
+ 	return false;
+ }
+-static inline bool trigger_allbutself_cpu_backtrace(void)
+-{
+-	return false;
+-}
+ static inline bool trigger_cpumask_backtrace(struct cpumask *mask)
+ {
+ 	return false;
 
-As for the performance, because the current parameter of flush_tlb_page() needs to
-pass *vma, we cannot pass in this parameter so we can only choose flush_tlb_all().
-If it can be changed to flush_tlb_page() in the future, the performance should be improved.
+> Signed-off-by: Douglas Anderson <dianders@chromium.org>
 
-[1]: https://elixir.bootlin.com/linux/v6.5-rc4/source/mm/vmalloc.c#L2977
+Anyway
+Acked-by: Michal Hocko <mhocko@suse.com>
 
-Best regards,
-Dylan Jhong
+> ---
+> 
+> Changes in v3:
+> - ("nmi_backtrace: Allow excluding an arbitrary CPU") new for v3.
+> 
+>  arch/arm/include/asm/irq.h       |  2 +-
+>  arch/arm/kernel/smp.c            |  4 ++--
+>  arch/loongarch/include/asm/irq.h |  2 +-
+>  arch/loongarch/kernel/process.c  |  4 ++--
+>  arch/mips/include/asm/irq.h      |  2 +-
+>  arch/mips/kernel/process.c       |  4 ++--
+>  arch/powerpc/include/asm/irq.h   |  2 +-
+>  arch/powerpc/kernel/stacktrace.c |  4 ++--
+>  arch/powerpc/kernel/watchdog.c   |  4 ++--
+>  arch/sparc/include/asm/irq_64.h  |  2 +-
+>  arch/sparc/kernel/process_64.c   |  6 +++---
+>  arch/x86/include/asm/irq.h       |  2 +-
+>  arch/x86/kernel/apic/hw_nmi.c    |  4 ++--
+>  include/linux/nmi.h              | 12 ++++++------
+>  kernel/watchdog.c                |  2 +-
+>  lib/nmi_backtrace.c              |  6 +++---
+>  16 files changed, 31 insertions(+), 31 deletions(-)
+> 
+> diff --git a/arch/arm/include/asm/irq.h b/arch/arm/include/asm/irq.h
+> index 18605f1b3580..26c1d2ced4ce 100644
+> --- a/arch/arm/include/asm/irq.h
+> +++ b/arch/arm/include/asm/irq.h
+> @@ -32,7 +32,7 @@ void handle_IRQ(unsigned int, struct pt_regs *);
+>  #include <linux/cpumask.h>
+>  
+>  extern void arch_trigger_cpumask_backtrace(const cpumask_t *mask,
+> -					   bool exclude_self);
+> +					   int exclude_cpu);
+>  #define arch_trigger_cpumask_backtrace arch_trigger_cpumask_backtrace
+>  #endif
+>  
+> diff --git a/arch/arm/kernel/smp.c b/arch/arm/kernel/smp.c
+> index 6756203e45f3..3431c0553f45 100644
+> --- a/arch/arm/kernel/smp.c
+> +++ b/arch/arm/kernel/smp.c
+> @@ -846,7 +846,7 @@ static void raise_nmi(cpumask_t *mask)
+>  	__ipi_send_mask(ipi_desc[IPI_CPU_BACKTRACE], mask);
+>  }
+>  
+> -void arch_trigger_cpumask_backtrace(const cpumask_t *mask, bool exclude_self)
+> +void arch_trigger_cpumask_backtrace(const cpumask_t *mask, int exclude_cpu)
+>  {
+> -	nmi_trigger_cpumask_backtrace(mask, exclude_self, raise_nmi);
+> +	nmi_trigger_cpumask_backtrace(mask, exclude_cpu, raise_nmi);
+>  }
+> diff --git a/arch/loongarch/include/asm/irq.h b/arch/loongarch/include/asm/irq.h
+> index a115e8999c69..218b4da0ea90 100644
+> --- a/arch/loongarch/include/asm/irq.h
+> +++ b/arch/loongarch/include/asm/irq.h
+> @@ -40,7 +40,7 @@ void spurious_interrupt(void);
+>  #define NR_IRQS_LEGACY 16
+>  
+>  #define arch_trigger_cpumask_backtrace arch_trigger_cpumask_backtrace
+> -void arch_trigger_cpumask_backtrace(const struct cpumask *mask, bool exclude_self);
+> +void arch_trigger_cpumask_backtrace(const struct cpumask *mask, int exclude_cpu);
+>  
+>  #define MAX_IO_PICS 2
+>  #define NR_IRQS	(64 + (256 * MAX_IO_PICS))
+> diff --git a/arch/loongarch/kernel/process.c b/arch/loongarch/kernel/process.c
+> index 2e04eb07abb6..778e8d09953e 100644
+> --- a/arch/loongarch/kernel/process.c
+> +++ b/arch/loongarch/kernel/process.c
+> @@ -345,9 +345,9 @@ static void raise_backtrace(cpumask_t *mask)
+>  	}
+>  }
+>  
+> -void arch_trigger_cpumask_backtrace(const cpumask_t *mask, bool exclude_self)
+> +void arch_trigger_cpumask_backtrace(const cpumask_t *mask, int exclude_cpu)
+>  {
+> -	nmi_trigger_cpumask_backtrace(mask, exclude_self, raise_backtrace);
+> +	nmi_trigger_cpumask_backtrace(mask, exclude_cpu, raise_backtrace);
+>  }
+>  
+>  #ifdef CONFIG_64BIT
+> diff --git a/arch/mips/include/asm/irq.h b/arch/mips/include/asm/irq.h
+> index 75abfa834ab7..3a848e7e69f7 100644
+> --- a/arch/mips/include/asm/irq.h
+> +++ b/arch/mips/include/asm/irq.h
+> @@ -77,7 +77,7 @@ extern int cp0_fdc_irq;
+>  extern int get_c0_fdc_int(void);
+>  
+>  void arch_trigger_cpumask_backtrace(const struct cpumask *mask,
+> -				    bool exclude_self);
+> +				    int exclude_cpu);
+>  #define arch_trigger_cpumask_backtrace arch_trigger_cpumask_backtrace
+>  
+>  #endif /* _ASM_IRQ_H */
+> diff --git a/arch/mips/kernel/process.c b/arch/mips/kernel/process.c
+> index a3225912c862..5387ed0a5186 100644
+> --- a/arch/mips/kernel/process.c
+> +++ b/arch/mips/kernel/process.c
+> @@ -750,9 +750,9 @@ static void raise_backtrace(cpumask_t *mask)
+>  	}
+>  }
+>  
+> -void arch_trigger_cpumask_backtrace(const cpumask_t *mask, bool exclude_self)
+> +void arch_trigger_cpumask_backtrace(const cpumask_t *mask, int exclude_cpu)
+>  {
+> -	nmi_trigger_cpumask_backtrace(mask, exclude_self, raise_backtrace);
+> +	nmi_trigger_cpumask_backtrace(mask, exclude_cpu, raise_backtrace);
+>  }
+>  
+>  int mips_get_process_fp_mode(struct task_struct *task)
+> diff --git a/arch/powerpc/include/asm/irq.h b/arch/powerpc/include/asm/irq.h
+> index f257cacb49a9..ba1a5974e714 100644
+> --- a/arch/powerpc/include/asm/irq.h
+> +++ b/arch/powerpc/include/asm/irq.h
+> @@ -55,7 +55,7 @@ int irq_choose_cpu(const struct cpumask *mask);
+>  
+>  #if defined(CONFIG_PPC_BOOK3S_64) && defined(CONFIG_NMI_IPI)
+>  extern void arch_trigger_cpumask_backtrace(const cpumask_t *mask,
+> -					   bool exclude_self);
+> +					   int exclude_cpu);
+>  #define arch_trigger_cpumask_backtrace arch_trigger_cpumask_backtrace
+>  #endif
+>  
+> diff --git a/arch/powerpc/kernel/stacktrace.c b/arch/powerpc/kernel/stacktrace.c
+> index 5de8597eaab8..b15f15dcacb5 100644
+> --- a/arch/powerpc/kernel/stacktrace.c
+> +++ b/arch/powerpc/kernel/stacktrace.c
+> @@ -221,8 +221,8 @@ static void raise_backtrace_ipi(cpumask_t *mask)
+>  	}
+>  }
+>  
+> -void arch_trigger_cpumask_backtrace(const cpumask_t *mask, bool exclude_self)
+> +void arch_trigger_cpumask_backtrace(const cpumask_t *mask, int exclude_cpu)
+>  {
+> -	nmi_trigger_cpumask_backtrace(mask, exclude_self, raise_backtrace_ipi);
+> +	nmi_trigger_cpumask_backtrace(mask, exclude_cpu, raise_backtrace_ipi);
+>  }
+>  #endif /* defined(CONFIG_PPC_BOOK3S_64) && defined(CONFIG_NMI_IPI) */
+> diff --git a/arch/powerpc/kernel/watchdog.c b/arch/powerpc/kernel/watchdog.c
+> index edb2dd1f53eb..8c464a5d8246 100644
+> --- a/arch/powerpc/kernel/watchdog.c
+> +++ b/arch/powerpc/kernel/watchdog.c
+> @@ -245,7 +245,7 @@ static void watchdog_smp_panic(int cpu)
+>  			__cpumask_clear_cpu(c, &wd_smp_cpus_ipi);
+>  		}
+>  	} else {
+> -		trigger_allbutself_cpu_backtrace();
+> +		trigger_allbutcpu_cpu_backtrace(cpu);
+>  		cpumask_clear(&wd_smp_cpus_ipi);
+>  	}
+>  
+> @@ -416,7 +416,7 @@ DEFINE_INTERRUPT_HANDLER_NMI(soft_nmi_interrupt)
+>  		xchg(&__wd_nmi_output, 1); // see wd_lockup_ipi
+>  
+>  		if (sysctl_hardlockup_all_cpu_backtrace)
+> -			trigger_allbutself_cpu_backtrace();
+> +			trigger_allbutcpu_cpu_backtrace(cpu);
+>  
+>  		if (hardlockup_panic)
+>  			nmi_panic(regs, "Hard LOCKUP");
+> diff --git a/arch/sparc/include/asm/irq_64.h b/arch/sparc/include/asm/irq_64.h
+> index b436029f1ced..8c4c0c87f998 100644
+> --- a/arch/sparc/include/asm/irq_64.h
+> +++ b/arch/sparc/include/asm/irq_64.h
+> @@ -87,7 +87,7 @@ static inline unsigned long get_softint(void)
+>  }
+>  
+>  void arch_trigger_cpumask_backtrace(const struct cpumask *mask,
+> -				    bool exclude_self);
+> +				    int exclude_cpu);
+>  #define arch_trigger_cpumask_backtrace arch_trigger_cpumask_backtrace
+>  
+>  extern void *hardirq_stack[NR_CPUS];
+> diff --git a/arch/sparc/kernel/process_64.c b/arch/sparc/kernel/process_64.c
+> index b51d8fb0ecdc..1ea3f37fa985 100644
+> --- a/arch/sparc/kernel/process_64.c
+> +++ b/arch/sparc/kernel/process_64.c
+> @@ -236,7 +236,7 @@ static void __global_reg_poll(struct global_reg_snapshot *gp)
+>  	}
+>  }
+>  
+> -void arch_trigger_cpumask_backtrace(const cpumask_t *mask, bool exclude_self)
+> +void arch_trigger_cpumask_backtrace(const cpumask_t *mask, int exclude_cpu)
+>  {
+>  	struct thread_info *tp = current_thread_info();
+>  	struct pt_regs *regs = get_irq_regs();
+> @@ -252,7 +252,7 @@ void arch_trigger_cpumask_backtrace(const cpumask_t *mask, bool exclude_self)
+>  
+>  	memset(global_cpu_snapshot, 0, sizeof(global_cpu_snapshot));
+>  
+> -	if (cpumask_test_cpu(this_cpu, mask) && !exclude_self)
+> +	if (cpumask_test_cpu(this_cpu, mask) && this_cpu != exclude_cpu)
+>  		__global_reg_self(tp, regs, this_cpu);
+>  
+>  	smp_fetch_global_regs();
+> @@ -260,7 +260,7 @@ void arch_trigger_cpumask_backtrace(const cpumask_t *mask, bool exclude_self)
+>  	for_each_cpu(cpu, mask) {
+>  		struct global_reg_snapshot *gp;
+>  
+> -		if (exclude_self && cpu == this_cpu)
+> +		if (cpu == exclude_cpu)
+>  			continue;
+>  
+>  		gp = &global_cpu_snapshot[cpu].reg;
+> diff --git a/arch/x86/include/asm/irq.h b/arch/x86/include/asm/irq.h
+> index 29e083b92813..836c170d3087 100644
+> --- a/arch/x86/include/asm/irq.h
+> +++ b/arch/x86/include/asm/irq.h
+> @@ -42,7 +42,7 @@ extern void init_ISA_irqs(void);
+>  
+>  #ifdef CONFIG_X86_LOCAL_APIC
+>  void arch_trigger_cpumask_backtrace(const struct cpumask *mask,
+> -				    bool exclude_self);
+> +				    int exclude_cpu);
+>  
+>  #define arch_trigger_cpumask_backtrace arch_trigger_cpumask_backtrace
+>  #endif
+> diff --git a/arch/x86/kernel/apic/hw_nmi.c b/arch/x86/kernel/apic/hw_nmi.c
+> index 34a992e275ef..d6e01f924299 100644
+> --- a/arch/x86/kernel/apic/hw_nmi.c
+> +++ b/arch/x86/kernel/apic/hw_nmi.c
+> @@ -34,9 +34,9 @@ static void nmi_raise_cpu_backtrace(cpumask_t *mask)
+>  	apic->send_IPI_mask(mask, NMI_VECTOR);
+>  }
+>  
+> -void arch_trigger_cpumask_backtrace(const cpumask_t *mask, bool exclude_self)
+> +void arch_trigger_cpumask_backtrace(const cpumask_t *mask, int exclude_cpu)
+>  {
+> -	nmi_trigger_cpumask_backtrace(mask, exclude_self,
+> +	nmi_trigger_cpumask_backtrace(mask, exclude_cpu,
+>  				      nmi_raise_cpu_backtrace);
+>  }
+>  
+> diff --git a/include/linux/nmi.h b/include/linux/nmi.h
+> index e3e6a64b98e0..00982b133dc1 100644
+> --- a/include/linux/nmi.h
+> +++ b/include/linux/nmi.h
+> @@ -157,31 +157,31 @@ static inline void touch_nmi_watchdog(void)
+>  #ifdef arch_trigger_cpumask_backtrace
+>  static inline bool trigger_all_cpu_backtrace(void)
+>  {
+> -	arch_trigger_cpumask_backtrace(cpu_online_mask, false);
+> +	arch_trigger_cpumask_backtrace(cpu_online_mask, -1);
+>  	return true;
+>  }
+>  
+> -static inline bool trigger_allbutself_cpu_backtrace(void)
+> +static inline bool trigger_allbutcpu_cpu_backtrace(int exclude_cpu)
+>  {
+> -	arch_trigger_cpumask_backtrace(cpu_online_mask, true);
+> +	arch_trigger_cpumask_backtrace(cpu_online_mask, exclude_cpu);
+>  	return true;
+>  }
+>  
+>  static inline bool trigger_cpumask_backtrace(struct cpumask *mask)
+>  {
+> -	arch_trigger_cpumask_backtrace(mask, false);
+> +	arch_trigger_cpumask_backtrace(mask, -1);
+>  	return true;
+>  }
+>  
+>  static inline bool trigger_single_cpu_backtrace(int cpu)
+>  {
+> -	arch_trigger_cpumask_backtrace(cpumask_of(cpu), false);
+> +	arch_trigger_cpumask_backtrace(cpumask_of(cpu), -1);
+>  	return true;
+>  }
+>  
+>  /* generic implementation */
+>  void nmi_trigger_cpumask_backtrace(const cpumask_t *mask,
+> -				   bool exclude_self,
+> +				   int exclude_cpu,
+>  				   void (*raise)(cpumask_t *mask));
+>  bool nmi_cpu_backtrace(struct pt_regs *regs);
+>  
+> diff --git a/kernel/watchdog.c b/kernel/watchdog.c
+> index be38276a365f..085d7a78f62f 100644
+> --- a/kernel/watchdog.c
+> +++ b/kernel/watchdog.c
+> @@ -523,7 +523,7 @@ static enum hrtimer_restart watchdog_timer_fn(struct hrtimer *hrtimer)
+>  			dump_stack();
+>  
+>  		if (softlockup_all_cpu_backtrace) {
+> -			trigger_allbutself_cpu_backtrace();
+> +			trigger_allbutcpu_cpu_backtrace(smp_processor_id());
+>  			clear_bit_unlock(0, &soft_lockup_nmi_warn);
+>  		}
+>  
+> diff --git a/lib/nmi_backtrace.c b/lib/nmi_backtrace.c
+> index 5274bbb026d7..33c154264bfe 100644
+> --- a/lib/nmi_backtrace.c
+> +++ b/lib/nmi_backtrace.c
+> @@ -34,7 +34,7 @@ static unsigned long backtrace_flag;
+>   * they are passed being updated as a side effect of this call.
+>   */
+>  void nmi_trigger_cpumask_backtrace(const cpumask_t *mask,
+> -				   bool exclude_self,
+> +				   int exclude_cpu,
+>  				   void (*raise)(cpumask_t *mask))
+>  {
+>  	int i, this_cpu = get_cpu();
+> @@ -49,8 +49,8 @@ void nmi_trigger_cpumask_backtrace(const cpumask_t *mask,
+>  	}
+>  
+>  	cpumask_copy(to_cpumask(backtrace_mask), mask);
+> -	if (exclude_self)
+> -		cpumask_clear_cpu(this_cpu, to_cpumask(backtrace_mask));
+> +	if (exclude_cpu != -1)
+> +		cpumask_clear_cpu(exclude_cpu, to_cpumask(backtrace_mask));
+>  
+>  	/*
+>  	 * Don't try to send an NMI to this cpu; it may work on some
+> -- 
+> 2.41.0.585.gd2178a4bd4-goog
 
-> > >
-> > > [1]: http://lists.infradead.org/pipermail/linux-riscv/2023-August/037503.html
-> >
+-- 
+Michal Hocko
+SUSE Labs
