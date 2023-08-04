@@ -2,101 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0072676FD4F
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 11:31:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 612E776FD52
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 11:31:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230440AbjHDJbT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Aug 2023 05:31:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41316 "EHLO
+        id S230470AbjHDJbn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Aug 2023 05:31:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41808 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230407AbjHDJbH (ORCPT
+        with ESMTP id S230465AbjHDJb1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Aug 2023 05:31:07 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9BAB249FA;
-        Fri,  4 Aug 2023 02:31:01 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id D976861F11;
-        Fri,  4 Aug 2023 09:31:00 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C7CEBC433C8;
-        Fri,  4 Aug 2023 09:30:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1691141460;
-        bh=ytIilxh+58GrQ8OHf133q4mTeWcJ92IHYhytXiXB5rU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=KfAgx545kZ70EWgy/+Qb+hWmMEmrKZQ4cXGMJdY2hV7euni4BE1fHneZEIwQoT2tD
-         kpG95qee0OZIpoJNWQtYz1004mw5SxWuamuq9N27z25x+G+x6dXM5smrmEkqP9liQ4
-         R+uXXT2TpN7giDd+y24XYCNJWdLQvZl/EkhLcNWE=
-Date:   Fri, 4 Aug 2023 11:30:57 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Kalle Valo <kvalo@kernel.org>
-Cc:     Atul Raut <rauji.raut@gmail.com>,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] ath6kl: replace one-element array with flexible-array
- member
-Message-ID: <2023080410-unadorned-vertigo-c0b8@gregkh>
-References: <20230804045554.6934-1-rauji.raut@gmail.com>
- <2023080433-patio-staining-2cfe@gregkh>
- <87sf8zs2oi.fsf@kernel.org>
+        Fri, 4 Aug 2023 05:31:27 -0400
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5074149EC
+        for <linux-kernel@vger.kernel.org>; Fri,  4 Aug 2023 02:31:24 -0700 (PDT)
+Received: from canpemm500006.china.huawei.com (unknown [172.30.72.53])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4RHL3d3LknztRs2;
+        Fri,  4 Aug 2023 17:27:57 +0800 (CST)
+Received: from [10.67.145.224] (10.67.145.224) by
+ canpemm500006.china.huawei.com (7.192.105.130) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.27; Fri, 4 Aug 2023 17:31:21 +0800
+Subject: [PATCH v2 1/1] iommu/arm-smmu-v3: Fix error case of range command
+From:   zhurui <zhurui3@huawei.com>
+To:     Will Deacon <will@kernel.org>
+CC:     <linux-arm-kernel@lists.infradead.org>, <iommu@lists.linux.dev>,
+        <linux-kernel@vger.kernel.org>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Lu Baolu <baolu.lu@linux.intel.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Yicong Yang <yangyicong@hisilicon.com>,
+        Tomas Krcka <krckatom@amazon.de>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        Nicolin Chen <nicolinc@nvidia.com>
+References: <1690784482-30028-1-git-send-email-wangwudi@hisilicon.com>
+ <20230801085504.GA26130@willie-the-truck>
+ <27c895b8-1fb0-be88-8bc3-878d754684c8@huawei.com>
+Message-ID: <d5fc1f72-7428-4fef-d868-d06b85add635@huawei.com>
+Date:   Fri, 4 Aug 2023 17:31:20 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87sf8zs2oi.fsf@kernel.org>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <27c895b8-1fb0-be88-8bc3-878d754684c8@huawei.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.67.145.224]
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+ canpemm500006.china.huawei.com (7.192.105.130)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 04, 2023 at 10:10:37AM +0300, Kalle Valo wrote:
-> Greg KH <gregkh@linuxfoundation.org> writes:
-> 
-> > On Thu, Aug 03, 2023 at 09:55:54PM -0700, Atul Raut wrote:
-> >
-> >> One-element arrays are no longer relevant, and their
-> >> place has been taken by flexible array members thus,
-> >> use a flexible-array member to replace the one-element
-> >> array in struct ath6kl_usb_ctrl_diag_cmd_write
-> >> 
-> >> This fixes warnings such as:
-> >> ./drivers/net/wireless/ath/ath6kl/usb.c:109:8-12: WARNING use flexible-array member instead (https://www.kernel.org/doc/html/latest/process/deprecated.html#zero-length-and-one-element-arrays)
-> >> 
-> >> Signed-off-by: Atul Raut <rauji.raut@gmail.com>
-> >> ---
-> >>  drivers/net/wireless/ath/ath6kl/usb.c | 2 +-
-> >>  1 file changed, 1 insertion(+), 1 deletion(-)
-> >> 
-> >> diff --git a/drivers/net/wireless/ath/ath6kl/usb.c b/drivers/net/wireless/ath/ath6kl/usb.c
-> >> index 5220809841a6..c8ecc9e85897 100644
-> >> --- a/drivers/net/wireless/ath/ath6kl/usb.c
-> >> +++ b/drivers/net/wireless/ath/ath6kl/usb.c
-> >> @@ -106,7 +106,7 @@ struct ath6kl_usb_ctrl_diag_cmd_write {
-> >>  	__le32 cmd;
-> >>  	__le32 address;
-> >>  	__le32 value;
-> >> -	__le32 _pad[1];
-> >> +	__le32 _pad[];
-> >
-> > Are you sure this is actually a variable length array?
-> 
-> It's not, it's just padding. We both told this in v1:
-> 
-> https://patchwork.kernel.org/project/linux-wireless/patch/20230731012941.21875-1-rauji.raut@gmail.com/
+When tg != 0 but ttl, scale, num all 0 in a range tlbi command, it
+is reserved and will cause the CERROR_ILL error. This case means
+that the size to be invalidated is only one page size, and the
+range invalidation is meaningless here. So we set tg to 0 in this
+case to do an non-range invalidation instead.
 
-Hey, I'm consistent, nice!  :)
+Cc: Will Deacon <will@kernel.org>
+Cc: Robin Murphy <robin.murphy@arm.com>
+Cc: Joerg Roedel <joro@8bytes.org>
+Cc: Lu Baolu <baolu.lu@linux.intel.com>
+Cc: Jason Gunthorpe <jgg@ziepe.ca>
+Cc: Yicong Yang <yangyicong@hisilicon.com>
+Cc: Tomas Krcka <krckatom@amazon.de>
+Cc: Jean-Philippe Brucker <jean-philippe@linaro.org>
+Cc: Nicolin Chen <nicolinc@nvidia.com>
+Cc: Rui Zhu <zhurui3@huawei.com>
 
-But Atul, that's not good to ignore our review comments.  Usually that
-ends up meaning that everyone will then just ignore your submissions,
-generally a not-good resolution.
+Signed-off-by: Rui Zhu <zhurui3@huawei.com>
+---
+ChangeLog:
+v1-->v2:
+	1. Change from "Revert" to modify the problematic case
 
-thanks,
+ drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c | 9 ++++++---
+ 1 file changed, 6 insertions(+), 3 deletions(-)
 
-greg k-h
+diff --git a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
+index 9b0dc3505601..5e56c7e85819 100644
+--- a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
++++ b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
+@@ -1895,9 +1895,6 @@ static void __arm_smmu_tlb_inv_range(struct arm_smmu_cmdq_ent *cmd,
+                /* Get the leaf page size */
+                tg = __ffs(smmu_domain->domain.pgsize_bitmap);
+
+-               /* Convert page size of 12,14,16 (log2) to 1,2,3 */
+-               cmd->tlbi.tg = (tg - 10) / 2;
+-
+                /*
+                 * Determine what level the granule is at. For non-leaf, io-pgtable
+                 * assumes .tlb_flush_walk can invalidate multiple levels at once,
+@@ -1930,6 +1927,12 @@ static void __arm_smmu_tlb_inv_range(struct arm_smmu_cmdq_ent *cmd,
+                        num = (num_pages >> scale) & CMDQ_TLBI_RANGE_NUM_MAX;
+                        cmd->tlbi.num = num - 1;
+
++                       /* Prevent error caused by one page tlbi with leaf 0 */
++                       if (scale == 0 && num == 1 && cmd->tlbi.leaf == 0)
++                               cmd->tlbi.tg = 0;
++                       else /* Convert page size of 12,14,16 (log2) to 1,2,3 */
++                               cmd->tlbi.tg = (tg - 10) / 2;
++
+                        /* range is num * 2^scale * pgsize */
+                        inv_range = num << (scale + tg);
+
+--
+1.8.3.1
