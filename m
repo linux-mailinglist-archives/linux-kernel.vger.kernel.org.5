@@ -2,305 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E94276F67C
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 02:19:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1FF6B76F683
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 02:25:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231664AbjHDATq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Aug 2023 20:19:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35468 "EHLO
+        id S232435AbjHDAZP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Aug 2023 20:25:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36546 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229632AbjHDATo (ORCPT
+        with ESMTP id S229632AbjHDAZM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Aug 2023 20:19:44 -0400
-Received: from mail-qt1-x82f.google.com (mail-qt1-x82f.google.com [IPv6:2607:f8b0:4864:20::82f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17AF73AB1
-        for <linux-kernel@vger.kernel.org>; Thu,  3 Aug 2023 17:19:43 -0700 (PDT)
-Received: by mail-qt1-x82f.google.com with SMTP id d75a77b69052e-407db3e9669so72601cf.1
-        for <linux-kernel@vger.kernel.org>; Thu, 03 Aug 2023 17:19:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1691108382; x=1691713182;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=mA32fM9ZbOqMt7s1gfEqOlzSy+fN/PuS60CGam21os0=;
-        b=PbTefRq9UzzDT25XxODA4kLZgtaubzDeg4foCwvMb2f8nS81Fq6JsW+YfaeyIooskj
-         uvLYsfRkzXBTKPVf8djXijxIxNs5Rcdp9iGQZWSpIpQt+Dz9MbUjuI54cYFjv1G27Hto
-         Iwl1It6sezNLVkHog+E+G5pB9EIIjZiwQt6gBw9dHbvw50bO8O38KjOLDgvDG4JaRevO
-         0Yi2L/SYMLEoJp87kkQrg8T/Ac0ukjeu7tMcYI5Hp++5WqeQuANjkR36khbSmbrn3NI8
-         EogsNIQXLWaufdp9TiBIE7KDcx6ah8Q65+ywMWIKeaQnbMyX+2q5rL9Gb7NNeBJch6Hl
-         lbZQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691108382; x=1691713182;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=mA32fM9ZbOqMt7s1gfEqOlzSy+fN/PuS60CGam21os0=;
-        b=FSBk6tLg7d8u1e2/DApG5EAEvDy5bsVq1NGulPOHLC39zJmyoC8E8oY1ZSo7/xQjhc
-         aE6gcz/JcEAvxPMqBPSNaSC56aTdas4Zc1jdXIBtYCqrFJWA8m0XfCnGFIXsp9YElOiV
-         iOu9k8UbqA031y9FmUYPEuyQJ4edbQMOTnJaGBQZF4s/TPoYCyvg5mCPQxUeE8CQ5X35
-         4uVQ4zBK0/Kwa/ibQhWTVdMv0oviDbWe3ceY+F0DsflQGkbdEPHrIf44QaALzArzpwNU
-         BWab5NdkcLCv8jal3onZ4KAxlpFxWNyBZ0y206KgQyW2f483xjVmIzGUYyr9mrF9juDu
-         kq+A==
-X-Gm-Message-State: AOJu0Yzh9NNvL8KUf/G28+/T2G7idUb27OREgKRsRvWBgoQre6B9j/8K
-        3zmUIBgtZnygbO0z0HggFJKQSYsvxMyljPFbhr9iKQ==
-X-Google-Smtp-Source: AGHT+IFy6SfL78iO/AoS+JkTZxkf9rSPiwDIAvWe4E9K9Ho7qgFmfL+RvoLDrQE4H/giQawLq7h21Dn16OgTMQqU3iw=
-X-Received: by 2002:a05:622a:15d4:b0:3f9:a770:7279 with SMTP id
- d20-20020a05622a15d400b003f9a7707279mr41199qty.9.1691108382007; Thu, 03 Aug
- 2023 17:19:42 -0700 (PDT)
+        Thu, 3 Aug 2023 20:25:12 -0400
+Received: from NAM11-DM6-obe.outbound.protection.outlook.com (mail-dm6nam11on2060.outbound.protection.outlook.com [40.107.223.60])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3CF564207;
+        Thu,  3 Aug 2023 17:25:11 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=cRYQYVnS8/V10mi/ufmz1dM9kHitQJWX4ow1D0dGARi2ou6lUdIAnRrzTbQ5q6zfURvcyq0uQRj+6CPwIzPoKzEajRyGjMXm/yeZTQMzW6HrH5c8i5t1ZcBtR4/qkdw4mYMu+MCZMYnIhZ34Bi4zrg4hDgl7uhvuVO51SMimeyv2ZdnGcsfD+Nnaht3FznP3DK9y3BZk4ttzELrjAxRvfEoVDvju2Wm/LE3TK4H1ZWBiEMLwj4OAHtqOykcPwRDC3sOMfhRWYgPAXUG685wpdAdzGJrEEssZfMGGlFQqr2Igv4ZaC86nvru4LmThz3vK80MfEPiLDDVW40cXgLP4TQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=9EcbvnMS9GvVjB7eTdpnHruQD6ZO/43ZgHqOppo4jUQ=;
+ b=MCExHpEH+nQV7+538VpsXGqtbdMCNyd2/b5Cv/z8Y7FphUcvtG0qnMsLzVF16lCG4keSy2Gg4/ERJQiDDri1zLRgdxxw/9Szbi2VrIykV6LTFevsOwwZNJtDQHci0pPg5c1l4jyzVby/iqwRzX1kF7r8T6HdQtN8pmZPkBbo5mQnh/GCgE6+ZREGLWG7nFCJ1rDdmzIK9UypqeTLz/j7rSx2JRwEhocL3qp8eY7VzJWSr8E2NrFIMhuIWBBd/tFxFh/tk14o+PZ2I5V14JLj6F5BxChEc6x9RSoHpLVx+zVsAxHWVh+RzLcZPhLuWvyZHFt5yZIGggllXgpsd4KmkQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=9EcbvnMS9GvVjB7eTdpnHruQD6ZO/43ZgHqOppo4jUQ=;
+ b=jL0CB8hxUt8Crjb6esNbK8oYXSByFZfB+aQcMW7CvdKkRnPm9xJDtyGY4SzB9coPausjG6rhvDm0zf6sQvm0xuZGxaMGc1KcJJLnGTAkX1e0wnGTgWwWTIgb+gemvEt4MJ8N42oJ/KHT5vHejrapk8ni2T8e9RxnJHmYERR3n+E=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amd.com;
+Received: from BN8PR12MB3108.namprd12.prod.outlook.com (2603:10b6:408:40::20)
+ by DM4PR12MB5134.namprd12.prod.outlook.com (2603:10b6:5:391::17) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6631.47; Fri, 4 Aug
+ 2023 00:25:06 +0000
+Received: from BN8PR12MB3108.namprd12.prod.outlook.com
+ ([fe80::377c:b288:3718:408b]) by BN8PR12MB3108.namprd12.prod.outlook.com
+ ([fe80::377c:b288:3718:408b%7]) with mapi id 15.20.6631.046; Fri, 4 Aug 2023
+ 00:25:06 +0000
+Message-ID: <e5b0063a-ae41-41ab-b3a7-2084dfa7f816@amd.com>
+Date:   Thu, 3 Aug 2023 20:25:02 -0400
+User-Agent: Mozilla Thunderbird
+Cc:     yazen.ghannam@amd.com, linux-kernel@vger.kernel.org,
+        mario.limonciello@amd.com, avadnaik@amd.com
+Subject: Re: [PATCH v1 3/3] EDAC/amd64: Add support for AMD Family 1Ah Models
+ 00h-1Fh and 40h-4Fh
+To:     Avadhut Naik <avadhut.naik@amd.com>, bp@alien8.de,
+        linux@roeck-us.net, x86@kernel.org, linux-hwmon@vger.kernel.org,
+        linux-edac@vger.kernel.org
+References: <20230706171323.3722900-1-avadhut.naik@amd.com>
+ <20230706171323.3722900-4-avadhut.naik@amd.com>
+Content-Language: en-US
+From:   Yazen Ghannam <yazen.ghannam@amd.com>
+In-Reply-To: <20230706171323.3722900-4-avadhut.naik@amd.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: BN9P222CA0018.NAMP222.PROD.OUTLOOK.COM
+ (2603:10b6:408:10c::23) To BN8PR12MB3108.namprd12.prod.outlook.com
+ (2603:10b6:408:40::20)
 MIME-Version: 1.0
-References: <20230726095146.2826796-1-ryan.roberts@arm.com>
- <20230726095146.2826796-3-ryan.roberts@arm.com> <c02a95e9-b728-ad64-6942-f23dbd66af0c@arm.com>
- <20230803142154.nvgkavg33uyn6f72@box.shutemov.name>
-In-Reply-To: <20230803142154.nvgkavg33uyn6f72@box.shutemov.name>
-From:   Yu Zhao <yuzhao@google.com>
-Date:   Thu, 3 Aug 2023 18:19:05 -0600
-Message-ID: <CAOUHufZWTdpF0vdPkyOafVNFOOY7Wui+Q-O83=SZcfv4KZcHbg@mail.gmail.com>
-Subject: Re: [PATCH v4 2/5] mm: LARGE_ANON_FOLIO for improved performance
-To:     "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
-Cc:     Ryan Roberts <ryan.roberts@arm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Yin Fengwei <fengwei.yin@intel.com>,
-        David Hildenbrand <david@redhat.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Yang Shi <shy828301@gmail.com>,
-        "Huang, Ying" <ying.huang@intel.com>, Zi Yan <ziy@nvidia.com>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Itaru Kitayama <itaru.kitayama@gmail.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: BN8PR12MB3108:EE_|DM4PR12MB5134:EE_
+X-MS-Office365-Filtering-Correlation-Id: 9eaa964a-5f32-4bcf-d853-08db948140af
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: EWf1QT2KxH9zjK2c0jSN1UesnyxgmdeQHAf/rKCc9L3YkMO0GqrSJuw+GDCYjNz8uHA2CGryDuZSzGRlTZGRmFfAyTUSmlVFruz7XVzDY1wJCNFilzbc/Fl6ctyt55rUQinVL3/RYkQTW2H1L36p8joQJZe4Ka1w0DzVgJxg8MOBp9FDuW3Sntw1LSqxOCF+07MZdjB/iowLB2Z1IOTZrxMewI3/lBTYBw9Ljve4yeNHBFaYpiV0xqXBANn7mMSGoGMcIAxZPtJKpL7G8KaGtohVmkU5gYaqDLWFuaW3N/OH5sD6qZrVGy6ZPTrHnRM2NZqszfLFXIdn2XW9WsMGqW8zMosA+4UMssYio7N42pltjSjIqu6yjK7H8zXYhzdaKg04g5HLCF+BAIAC1Uqd8zDXisWX1EpoPsVb6n1UCsntzHQzNVkpI2zuwS+CQHBC1jEkF9X9f/v9LMrTA4arpwKk0JgvquByPld/RtyRIFwwpxLL4aFKOp2ywLBY2HJZNIbpgBHyob6pI/tKEsFnULK8PT+ACc1gsjDI9ANtSKsTQwFShq/N3fHOIq+7soRQmQ5RTrIbl5GjN2ykgLMlfW5OlVCpAyUcicgXyC7YjSzdeP1Kah0uOKPf1b4o5eHJvo7191mAFM5ql/I/bVO9aQ==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN8PR12MB3108.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(346002)(376002)(39860400002)(366004)(396003)(136003)(451199021)(186006)(1800799003)(31696002)(86362001)(36756003)(31686004)(478600001)(38100700002)(2616005)(8676002)(26005)(6506007)(53546011)(41300700001)(44832011)(8936002)(6666004)(6512007)(6486002)(66556008)(316002)(66476007)(2906002)(4326008)(5660300002)(4744005)(66946007)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?eU4xWlliLzY1NHZmS1NlK3lZVWdTQkJmbkVOK0trM3lrakJCQ1krSnErejhU?=
+ =?utf-8?B?dmRIcHpHQXo4V29VRGdoSmRYYVUzaDhSQ291ZFRKVEh6S0xDWng4QWY1UHp1?=
+ =?utf-8?B?bXVFZzQwbGlDWjd6V0tVdld2Rkg5VWxQVmxLb3FvaHI0TmxObzVBaDV4b3Av?=
+ =?utf-8?B?VytIT2ZSR3FXK2VEOW83VHJMb3VNeTZ2ckxUMWVnNVVxUUxnaXZCY3IzeGJw?=
+ =?utf-8?B?dExEQVdmdXFoNGV4b2k3TEh6a3plNTJ5OVRqbkhGM0kveXlEeVlXVy8vNW1T?=
+ =?utf-8?B?UmdOQStDbmNHUW93OFlITm9NVmg2SHA4ZW9pdWJFY3RtNEFMdkJ3RlJjTzlU?=
+ =?utf-8?B?QjArQTdiSjdjendsVFMrdzZjb1JOUGlWeVFQSU9tWFFpTjgzUFhYMHdSdmFs?=
+ =?utf-8?B?Vjd2Q0tLQ25xSmo3UVliWVhhNi9DZkorYkRFa2ZGd0Iza0JOZzc5WjNnSWVL?=
+ =?utf-8?B?ZUJzVStaenhLa05Gbi8vdE13NWx6ZTdzQkUvQVc1WGVKZDZFcE1PaW5VTG1K?=
+ =?utf-8?B?OFpkVlZlQVAvZ2RGeGw4SzF0Z3RzWVgyY1BEeUpFa2lONDVRRjU3UU16aXF3?=
+ =?utf-8?B?SHhwanZpaWVvd1FZWmRCMW9nQnJ2OG9zVmMxUCtyMnZIcW1MalNDd2pMdHJM?=
+ =?utf-8?B?VjRuYnRqTU5HTHlta2NGTXA0bi9sSStpU3dKWHZlVzQ3S3VmNk1oZVhXanFN?=
+ =?utf-8?B?R3NoN0J5UEJwMzFqbTcycWRiczR1Y1Bzd3hhR01SUUNyVmw3K1ZSVDVHU1hR?=
+ =?utf-8?B?amdwUUhmMjZVMm1TczNVZ0hBZVFJQmZzWWllbFduV2svOG9FVVdvbUkxTklG?=
+ =?utf-8?B?ckthSWEyekVvUEU1SkZIcXFyVkE1K0xoNkdYMDNiRlc4MElOaVlIK1NqWldS?=
+ =?utf-8?B?dm5tMXkxQmpJclIrM3E3THp6TG1ma04wQ3BwQkcyb2tJZjFYcW1oNXZaVnBu?=
+ =?utf-8?B?VUp2cGtrMnlVcjN3MjBYL0F4VE92V0c1TjlQWS8wRWszbFNjV0ExTVkxRHJW?=
+ =?utf-8?B?ZklzUmFUbFVRNm1sWHJYVHUvWlVmNmx3bnVScUxhdDVYRkdsSkgzRkpZcHhG?=
+ =?utf-8?B?OHEwNEZFZkhQSzc4VVljK1VSNE1MOVFwb2dsblBoK2d6dkROWkpCWk82REdR?=
+ =?utf-8?B?TE9iZE1uSTdmMjF0MmQ0RmNPOGJ3QmlVUGJ1TjVZVXZKS05WMzJxMVlrdHFu?=
+ =?utf-8?B?RXczQTNaZmdiMGVTTW5ic1RwZzRvMnhXU2FVOERlcWswbExBc09PYzlRLzRz?=
+ =?utf-8?B?RUNCNk8rSGZrbWZEUENMRFcrU2RudU9naVV2cEw4YkVBU1ZvOUtQVTZyZC9V?=
+ =?utf-8?B?ckpkNHdHSVFhTnlyQlE5YVM4NzV2NzJYdGxGaVgycXo4SUF0Uk1lc01iU2Q1?=
+ =?utf-8?B?WnFGbUEvL0x3ZkdCTDVzRHFOQk9wODE3cWtBai94ZDg4Z3ZNcWJNMk1wSVB0?=
+ =?utf-8?B?M2RDd2ZDZ2dsd0NlUytUUFVEZ29nSFNOZmpjUnBkWU5COThvN2hiUDQ2Wmlw?=
+ =?utf-8?B?dC9sdXdEZXFKd2pHRkpHRnBRV1pmRXFzV0UxT1VPZUFwUnN3QUpZSUhtVmhv?=
+ =?utf-8?B?alZ5VVM4L2JmNzNlcStoUFhibWlWeFpaai9SU0JKbzNBV3czRElWWjhwbXRr?=
+ =?utf-8?B?UFFFTjhIV09yb2R3MCthVXVnUmNqdENhLzdDV3BkcStuWWRpalFnZGhEMmRM?=
+ =?utf-8?B?bHI2NkNBNkExUFdiVklVL0FJNlY3QkhCdFZ1L3FoQmpwV2hIbjhCYTFBb1py?=
+ =?utf-8?B?K3pSc3ArWDVtRS90WmV6VFNyT3E1SEtUMWg4Mmg0ZFlOWmJiVnJZU2xuZlFt?=
+ =?utf-8?B?aXhnZE1ZVlR1T05nMHdscUFrK3JZTlRBTjFEZmpLRGFZVmVPY3FmT0E2UXBs?=
+ =?utf-8?B?STJHRUxkV2luVjZiVy9CanVaTXV1eXJ0UWVVdm9DZ1Q0SXdOTDZxSGZBL0c2?=
+ =?utf-8?B?Q2FWRzJwbnQ5N2xFdUwreVdhM3o0RzZQanI1SkpGOGRZeTdWV3FxRFFSUlFT?=
+ =?utf-8?B?L1FzRUMvUkZIZnh6SlNKTzAzVmw1cFNIMDB2cE5GVWFsbXZweGRXbmNaL3lz?=
+ =?utf-8?B?bmdjdGxuaHVzL0ZlUW01enh2RTNiOGJkY0J0K09YcnpmN3NBSzBGUkgzZVZ6?=
+ =?utf-8?Q?FZxD+C7HLhH8E/dP2Slz82zk6?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 9eaa964a-5f32-4bcf-d853-08db948140af
+X-MS-Exchange-CrossTenant-AuthSource: BN8PR12MB3108.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 Aug 2023 00:25:06.2159
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: nHpgvhNJYyczVPr5EXq8ik4F/4coO4GCXRb4p4wWUbFeLk2d5Ajc6BgFeQOgM6fG4mSQOriPqo2wY11Jb0enWg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR12MB5134
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 3, 2023 at 8:27=E2=80=AFAM Kirill A. Shutemov
-<kirill.shutemov@linux.intel.com> wrote:
->
-> On Thu, Aug 03, 2023 at 01:43:31PM +0100, Ryan Roberts wrote:
-> > + Kirill
-> >
-> > On 26/07/2023 10:51, Ryan Roberts wrote:
-> > > Introduce LARGE_ANON_FOLIO feature, which allows anonymous memory to =
-be
-> > > allocated in large folios of a determined order. All pages of the lar=
-ge
-> > > folio are pte-mapped during the same page fault, significantly reduci=
-ng
-> > > the number of page faults. The number of per-page operations (e.g. re=
-f
-> > > counting, rmap management lru list management) are also significantly
-> > > reduced since those ops now become per-folio.
-> > >
-> > > The new behaviour is hidden behind the new LARGE_ANON_FOLIO Kconfig,
-> > > which defaults to disabled for now; The long term aim is for this to
-> > > defaut to enabled, but there are some risks around internal
-> > > fragmentation that need to be better understood first.
-> > >
-> > > When enabled, the folio order is determined as such: For a vma, proce=
-ss
-> > > or system that has explicitly disabled THP, we continue to allocate
-> > > order-0. THP is most likely disabled to avoid any possible internal
-> > > fragmentation so we honour that request.
-> > >
-> > > Otherwise, the return value of arch_wants_pte_order() is used. For vm=
-as
-> > > that have not explicitly opted-in to use transparent hugepages (e.g.
-> > > where thp=3Dmadvise and the vma does not have MADV_HUGEPAGE), then
-> > > arch_wants_pte_order() is limited to 64K (or PAGE_SIZE, whichever is
-> > > bigger). This allows for a performance boost without requiring any
-> > > explicit opt-in from the workload while limitting internal
-> > > fragmentation.
-> > >
-> > > If the preferred order can't be used (e.g. because the folio would
-> > > breach the bounds of the vma, or because ptes in the region are alrea=
-dy
-> > > mapped) then we fall back to a suitable lower order; first
-> > > PAGE_ALLOC_COSTLY_ORDER, then order-0.
-> > >
-> >
-> > ...
-> >
-> > > +#define ANON_FOLIO_MAX_ORDER_UNHINTED \
-> > > +           (ilog2(max_t(unsigned long, SZ_64K, PAGE_SIZE)) - PAGE_SH=
-IFT)
-> > > +
-> > > +static int anon_folio_order(struct vm_area_struct *vma)
-> > > +{
-> > > +   int order;
-> > > +
-> > > +   /*
-> > > +    * If THP is explicitly disabled for either the vma, the process =
-or the
-> > > +    * system, then this is very likely intended to limit internal
-> > > +    * fragmentation; in this case, don't attempt to allocate a large
-> > > +    * anonymous folio.
-> > > +    *
-> > > +    * Else, if the vma is eligible for thp, allocate a large folio o=
-f the
-> > > +    * size preferred by the arch. Or if the arch requested a very sm=
-all
-> > > +    * size or didn't request a size, then use PAGE_ALLOC_COSTLY_ORDE=
-R,
-> > > +    * which still meets the arch's requirements but means we still t=
-ake
-> > > +    * advantage of SW optimizations (e.g. fewer page faults).
-> > > +    *
-> > > +    * Finally if thp is enabled but the vma isn't eligible, take the
-> > > +    * arch-preferred size and limit it to ANON_FOLIO_MAX_ORDER_UNHIN=
-TED.
-> > > +    * This ensures workloads that have not explicitly opted-in take =
-benefit
-> > > +    * while capping the potential for internal fragmentation.
-> > > +    */
-> > > +
-> > > +   if ((vma->vm_flags & VM_NOHUGEPAGE) ||
-> > > +       test_bit(MMF_DISABLE_THP, &vma->vm_mm->flags) ||
-> > > +       !hugepage_flags_enabled())
-> > > +           order =3D 0;
-> > > +   else {
-> > > +           order =3D max(arch_wants_pte_order(), PAGE_ALLOC_COSTLY_O=
-RDER);
-> > > +
-> > > +           if (!hugepage_vma_check(vma, vma->vm_flags, false, true, =
-true))
-> > > +                   order =3D min(order, ANON_FOLIO_MAX_ORDER_UNHINTE=
-D);
-> > > +   }
-> > > +
-> > > +   return order;
-> > > +}
-> >
-> >
-> > Hi All,
-> >
-> > I'm writing up the conclusions that we arrived at during discussion in =
-the THP
-> > meeting yesterday, regarding linkage with exiting THP ABIs. It would be=
- great if
-> > I can get explicit "agree" or disagree + rationale from at least David,=
- Yu and
-> > Kirill.
-> >
-> > In summary; I think we are converging on the approach that is already c=
-oded, but
-> > I'd like confirmation.
-> >
-> >
-> >
-> > The THP situation today
-> > -----------------------
-> >
-> >  - At system level: THP can be set to "never", "madvise" or "always"
-> >  - At process level: THP can be "never" or "defer to system setting"
-> >  - At VMA level: no-hint, MADV_HUGEPAGE, MADV_NOHUGEPAGE
-> >
-> > That gives us this table to describe how a page fault is handled, accor=
-ding to
-> > process state (columns) and vma flags (rows):
-> >
-> >                 | never     | madvise   | always
-> > ----------------|-----------|-----------|-----------
-> > no hint         | S         | S         | THP>S
-> > MADV_HUGEPAGE   | S         | THP>S     | THP>S
-> > MADV_NOHUGEPAGE | S         | S         | S
-> >
-> > Legend:
-> > S     allocate single page (PTE-mapped)
-> > LAF   allocate lage anon folio (PTE-mapped)
-> > THP   allocate THP-sized folio (PMD-mapped)
-> > >     fallback (usually because vma size/alignment insufficient for fol=
-io)
-> >
-> >
-> >
-> > Principles for Large Anon Folios (LAF)
-> > --------------------------------------
-> >
-> > David tells us there are use cases today (e.g. qemu live migration) whi=
-ch use
-> > MADV_NOHUGEPAGE to mean "don't fill any PTEs that are not explicitly fa=
-ulted"
-> > and these use cases will break (i.e. functionally incorrect) if this re=
-quest is
-> > not honoured.
-> >
-> > So LAF must at least honour MADV_NOHUGEPAGE to prevent breaking existin=
-g use
-> > cases. And once we do this, then I think the least confusing thing is f=
-or it to
-> > also honor the "never" system/process state; so if either the system, p=
-rocess or
-> > vma has explicitly opted-out of THP, then LAF should also be bypassed.
-> >
-> > Similarly, any case that would previously cause the allocation of PMD-s=
-ized THP
-> > must continue to be honoured, else we risk performance regression.
-> >
-> > That leaves the "madvise/no-hint" case, and all THP fallback paths due =
-to the
-> > VMA not being correctly aligned or sized to hold a PMD-sized mapping. I=
-n these
-> > cases, we will attempt to use LAF first, and fallback to single page if=
- the vma
-> > size/alignment doesn't permit it.
-> >
-> >                 | never     | madvise   | always
-> > ----------------|-----------|-----------|-----------
-> > no hint         | S         | LAF>S     | THP>LAF>S
-> > MADV_HUGEPAGE   | S         | THP>LAF>S | THP>LAF>S
-> > MADV_NOHUGEPAGE | S         | S         | S
-> >
-> > I think this (perhaps conservative) approach will be the least surprisi=
-ng to
-> > users. And is the policy that is already implemented in this patch.
->
-> This looks very reasonable.
->
-> The only questionable field is no-hint/madvise. I can argue for both LAF>=
-S
-> and S here. I think LAF>S is fine as long as we are not too aggressive
-> with allocation order.
->
-> I think we need to work on eliminating reasons for users to set 'never'.
-> If something behaves better with 'never' kernel has failed user.
->
-> > Downsides of this policy
-> > ------------------------
-> >
-> > As Yu and Yin have pointed out, there are some workloads which do not p=
-erform
-> > well with THP, due to large fault latency or memory wastage, etc. But w=
-hich
-> > _may_ still benefit from LAF. By taking the conservative approach, we e=
-xclude
-> > these workloads from benefiting automatically.
->
-> Hm. I don't buy it. Why THP with order-9 is too much, but order-8 LAF is
-> fine?
+On 7/6/2023 1:13 PM, Avadhut Naik wrote:
+> From: Avadhut Naik <Avadhut.Naik@amd.com>
+> 
+> Add the necessary support in the module for AMD's new Family 1Ah-based
+> models 00h-1Fh and 40h-4Fh.
+> 
 
-No, it's not. And no one said order-8 LAF is fine :) The starting
-order for LAF that we have been discussing is at most 64KB (vs 2MB
-THP). For my taste, it's still too large. I'd go with 32KB/16KB.
+The first patch in this set adds PCI IDs for models starting at 20h. And 
+this patch adds support for models 40h-4Fh.
 
-However, the same argument can be used to argue against the policy
-Ryan listed above: why order-10 LAF is ok for madvise but not order-11
-(which becomes "always")?
+Can you please elaborate on the discrepancy?
 
-I'm strongly against this policy for two practical reasons I learned
-from tuning THPs in our data centers:
-1. By doing the above, we are blurring the lines between those values
-and making real-world performance tuning extremely hard if not
-impractice.
-2. As I previously pointed out: if we mix LAFs with THPs, we actually
-risk causing performance regressions because giving smaller VMAs LAFs
-can deprive large VMAs of THPs.
+Thanks,
+Yazen
+
