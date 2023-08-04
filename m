@@ -2,56 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ACD2076F834
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 05:06:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1BAEB76F833
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 05:05:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233969AbjHDDF4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Aug 2023 23:05:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36942 "EHLO
+        id S231998AbjHDDFc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Aug 2023 23:05:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36948 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233081AbjHDDEy (ORCPT
+        with ESMTP id S233055AbjHDDEy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 3 Aug 2023 23:04:54 -0400
 Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 690654234
-        for <linux-kernel@vger.kernel.org>; Thu,  3 Aug 2023 20:04:43 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69A2244A4
+        for <linux-kernel@vger.kernel.org>; Thu,  3 Aug 2023 20:04:44 -0700 (PDT)
 Received: from mail02.huawei.com (unknown [172.30.67.153])
-        by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4RH9YL4YRKz4f3q2l
-        for <linux-kernel@vger.kernel.org>; Fri,  4 Aug 2023 11:04:38 +0800 (CST)
+        by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4RH9YM0CJWz4f3q3C
+        for <linux-kernel@vger.kernel.org>; Fri,  4 Aug 2023 11:04:39 +0800 (CST)
 Received: from huaweicloud.com (unknown [10.175.124.27])
-        by APP1 (Coremail) with SMTP id cCh0CgAXODLGasxkWSvZOg--.12542S7;
+        by APP1 (Coremail) with SMTP id cCh0CgAXODLGasxkWSvZOg--.12542S8;
         Fri, 04 Aug 2023 11:04:41 +0800 (CST)
 From:   Kemeng Shi <shikemeng@huaweicloud.com>
 To:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
         akpm@linux-foundation.org, baolin.wang@linux.alibaba.com,
         mgorman@techsingularity.net, david@redhat.com
 Cc:     shikemeng@huaweicloud.com
-Subject: [PATCH v3 5/8] mm/compaction: correct comment of cached migrate pfn update
-Date:   Fri,  4 Aug 2023 19:04:51 +0800
-Message-Id: <20230804110454.2935878-6-shikemeng@huaweicloud.com>
+Subject: [PATCH v3 6/8] mm/compaction: correct comment to complete migration failure
+Date:   Fri,  4 Aug 2023 19:04:52 +0800
+Message-Id: <20230804110454.2935878-7-shikemeng@huaweicloud.com>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20230804110454.2935878-1-shikemeng@huaweicloud.com>
 References: <20230804110454.2935878-1-shikemeng@huaweicloud.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: cCh0CgAXODLGasxkWSvZOg--.12542S7
-X-Coremail-Antispam: 1UD129KBjvJXoW7tr1Duw4UKF45Ww1UJw4rAFb_yoW8Jw13pr
-        97Cw1jqwsYqa13Kas2yF18Za18Jr4ftFy7trsrK348AF13K3ZrtF9rtFyUZrWUX3sayrWa
-        vF47KF47ta1fZaUanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUPY14x267AKxVWrJVCq3wAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2jI8I6cxK62vIxIIY0VWUZVW8XwA2048vs2IY02
-        0E87I2jVAFwI0_JF0E3s1l82xGYIkIc2x26xkF7I0E14v26ryj6s0DM28lY4IEw2IIxxk0
-        rwA2F7IY1VAKz4vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6x
-        IIjxv20xvEc7CjxVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xv
-        wVC2z280aVCY1x0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFc
-        xC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_
-        Gr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2
-        IErcIFxwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E
-        14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_JF0_Jw1lIx
-        kGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUCVW8JwCI42IY6xIIjxv20xvEc7CjxVAF
-        wI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14v26r1j6r
-        4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x0pRvJPtU
-        UUUU=
+X-CM-TRANSID: cCh0CgAXODLGasxkWSvZOg--.12542S8
+X-Coremail-Antispam: 1UD129KBjvdXoWrZF1UKrW8Kr48JrWrWrW3Wrg_yoWfWFX_Zr
+        4Iyws5Ww1F9r9ayanxuayayryagr48Ar17Ww1UG3y8t34vyF43Xa1DZr47Xr9YqFWDW3sx
+        Cw1vvr1Yk3ZakjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUIcSsGvfJTRUUUbDkFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k26cxKx2IYs7xG
+        6rWj6s0DM7CIcVAFz4kK6r1j6r18M280x2IEY4vEnII2IxkI6r1a6r45M28IrcIa0xkI8V
+        A2jI8067AKxVWUAVCq3wA2048vs2IY020Ec7CjxVAFwI0_Xr0E3s1l8cAvFVAK0II2c7xJ
+        M28CjxkF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVWDJVCq3wA2z4x0Y4vE2I
+        x0cI8IcVCY1x0267AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK
+        6I8E87Iv6xkF7I0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4
+        xI64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8
+        JwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41lF7I21c0EjII2zVCS5cI20V
+        AGYxC7MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAF
+        wI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUAVWUtwCIc4
+        0Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1I6r4UMIIF0xvE2Ix0cI8IcVCY1x0267AK
+        xVW8JVWxJwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Jr0_Gr
+        1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7sRiVbyDUU
+        UUU==
 X-CM-SenderInfo: 5vklyvpphqwq5kxd4v5lfo033gof0z/
 X-CFilter-Loop: Reflected
 X-Spam-Status: No, score=0.0 required=5.0 tests=BAYES_00,DATE_IN_FUTURE_06_12,
@@ -63,39 +63,28 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit e380bebe47715 ("mm, compaction: keep migration source private to
-a single compaction instance") moved update of async and sync
-compact_cached_migrate_pfn from update_pageblock_skip to
-update_cached_migrate but left the comment behind.
-Move the relevant comment to correct this.
+Commit cfccd2e63e7e0 ("mm, compaction: finish pageblocks on complete
+migration failure") convert cc->order aligned check to page block
+order aligned check. Correct comment relevant with it.
 
 Signed-off-by: Kemeng Shi <shikemeng@huaweicloud.com>
-Reviewed-by: David Hildenbrand <david@redhat.com>
-Reviewed-by: Baolin Wang <baolin.wang@linux.alibaba.com>
 ---
  mm/compaction.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/mm/compaction.c b/mm/compaction.c
-index 4bf2dc936add..fda61dc40f93 100644
+index fda61dc40f93..9022209b64c3 100644
 --- a/mm/compaction.c
 +++ b/mm/compaction.c
-@@ -469,6 +469,7 @@ static void update_cached_migrate(struct compact_control *cc, unsigned long pfn)
- 
- 	pfn = pageblock_end_pfn(pfn);
- 
-+	/* Update where async and sync compaction should restart */
- 	if (pfn > zone->compact_cached_migrate_pfn[0])
- 		zone->compact_cached_migrate_pfn[0] = pfn;
- 	if (cc->mode != MIGRATE_ASYNC &&
-@@ -490,7 +491,6 @@ static void update_pageblock_skip(struct compact_control *cc,
- 
- 	set_pageblock_skip(page);
- 
--	/* Update where async and sync compaction should restart */
- 	if (pfn < zone->compact_cached_free_pfn)
- 		zone->compact_cached_free_pfn = pfn;
- }
+@@ -2534,7 +2534,7 @@ compact_zone(struct compact_control *cc, struct capture_control *capc)
+ 			}
+ 			/*
+ 			 * If an ASYNC or SYNC_LIGHT fails to migrate a page
+-			 * within the current order-aligned block and
++			 * within the pageblock_order-aligned block and
+ 			 * fast_find_migrateblock may be used then scan the
+ 			 * remainder of the pageblock. This will mark the
+ 			 * pageblock "skip" to avoid rescanning in the near
 -- 
 2.30.0
 
