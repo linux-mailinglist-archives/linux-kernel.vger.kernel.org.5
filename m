@@ -2,179 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D9DD276F9E1
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 08:11:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CC2FC76F9E6
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 08:12:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231907AbjHDGL0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Aug 2023 02:11:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56784 "EHLO
+        id S232720AbjHDGMl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Aug 2023 02:12:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57454 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232618AbjHDGLR (ORCPT
+        with ESMTP id S232615AbjHDGMe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Aug 2023 02:11:17 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.93])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B791D3C34
-        for <linux-kernel@vger.kernel.org>; Thu,  3 Aug 2023 23:11:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1691129467; x=1722665467;
-  h=date:from:to:cc:subject:message-id;
-  bh=1kFLdi019TGYRZ/8BiDk5k/OXCbfG/NQbh94aRby/Iw=;
-  b=gCFi3uY5jqmZPLogNmvtbIspximrmolG/TtDP5FLRPsqthYXhicT2b0c
-   6fHkiWqcct5By5ZMW0I+zRpwOarUM/kMvMtD/xORbcW79ZmBPIhysTAQ+
-   Ve9uKVFx+J8frpy/S0XfoaENSIQKlfZY4Z+o0Gu4z4J6f7J+UN7ul2Sjb
-   AcYJHXxKJWOSC03RGaCCvJLXt+YhaWLnxc/f7ntyNMcGxzHnAMpfd/k4N
-   3yxdtKjhU2Y/oftTSzSbCAvnE3ibRb9H2z0Jd+chXf0sFzwq7O9wE2f1w
-   thLsJ+4El/y2VSpCAzT9REPDgZXSEI2SaxygPOt+i5r+hOK5560XAsrEm
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10791"; a="367538857"
-X-IronPort-AV: E=Sophos;i="6.01,254,1684825200"; 
-   d="scan'208";a="367538857"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Aug 2023 23:11:07 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10791"; a="729919628"
-X-IronPort-AV: E=Sophos;i="6.01,254,1684825200"; 
-   d="scan'208";a="729919628"
-Received: from lkp-server01.sh.intel.com (HELO d1ccc7e87e8f) ([10.239.97.150])
-  by orsmga002.jf.intel.com with ESMTP; 03 Aug 2023 23:11:06 -0700
-Received: from kbuild by d1ccc7e87e8f with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qRo1h-0002fB-1k;
-        Fri, 04 Aug 2023 06:11:05 +0000
-Date:   Fri, 04 Aug 2023 14:10:47 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "x86-ml" <x86@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [tip:x86/mm] BUILD SUCCESS
- 54e3d9434ef61b97fd3263c141b928dc5635e50d
-Message-ID: <202308041445.s48dGnki-lkp@intel.com>
-User-Agent: s-nail v14.9.24
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+        Fri, 4 Aug 2023 02:12:34 -0400
+Received: from EUR05-VI1-obe.outbound.protection.outlook.com (mail-vi1eur05on2042.outbound.protection.outlook.com [40.107.21.42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 433C73C01
+        for <linux-kernel@vger.kernel.org>; Thu,  3 Aug 2023 23:12:31 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=d9SUWZgb1fk1Pojr+DTWhZO8pDc0gS0yM49wbmXNaSoOu5CYRk0U5jirizwTmYYEi28PeZ5pH2S4jW0MT9Tck5fC8kCmDmC5IqUsA8jZYDc1vPF/Qj7Gz78zuOALR2OEFBCDwjwKQF9mpLJNybGJAGb9nMjW0Lj+HOndHYpDXQIjBQyP7Ky+sRRsOqj+60Xg8b0XIUSufAeRrg1G3hWfXtPKv6ND4zyOcSoQqXP35a6iGy/pNyVYIYB/2w9N3mM6AQsXsuZqhBUTrYn9SlnLc2aeAiSE4c0GajMKORr1Fu2VozVRJ6hrk1qCrZHIvtGSejf4EKl/LO+Gb7KZftXoUg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=9pqDlp8NbSJUqyvctfy+3VuNilza2OTPgQRYXfOcw34=;
+ b=jiveFtumVtDobD1eJrRaizVB21dzi+8kETJYIiSj1Q5Rn1KwRJy5TuY7sH5iCXgb3p7GynKqSJ6Yy7bO7QfSOoCqLEPHdtMbwZ5eNJlOeTf2wrKHZy51638Z+CSoSttQv+FP8QV34uSbznWB9S1tdMP9VZLWKNhX6v9xyQTHf1sD3NA+wZsXznoTVArWY2rOALP02Al4x6A79XbnvrQ9BvyriY+rMcTUivnPWj+lV+NBWq30Ym/IyDfk3miHT/zva/swdSDV2hPPLfMgD+fTcHPC0lhLrdp2qQ+EECBNrBaH8NpRopxudCTOs6V+NzXcLvJtmCkdBAupIAzqBPb2zA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=9pqDlp8NbSJUqyvctfy+3VuNilza2OTPgQRYXfOcw34=;
+ b=QokvSIOyro8eSwzHht/Qy1G7cOeVUxU06CzCC5W8ObevweHAfrsVxYIkIJ38vjhg6R9QpUCW3kDauntJmS60JUQf0J2N405HQRxOTE/fnPXSgfQVjU6qKRrEO+t1BG2mU922fkHHcGXGfRov8pDze+9fCdvNpqcP8/kjWaFak+Q=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nxp.com;
+Received: from PAXPR04MB9448.eurprd04.prod.outlook.com (2603:10a6:102:2b1::21)
+ by DB9PR04MB8493.eurprd04.prod.outlook.com (2603:10a6:10:2c5::18) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6652.21; Fri, 4 Aug
+ 2023 06:12:29 +0000
+Received: from PAXPR04MB9448.eurprd04.prod.outlook.com
+ ([fe80::3505:c499:96d4:1429]) by PAXPR04MB9448.eurprd04.prod.outlook.com
+ ([fe80::3505:c499:96d4:1429%4]) with mapi id 15.20.6631.046; Fri, 4 Aug 2023
+ 06:12:29 +0000
+From:   Sandor Yu <Sandor.yu@nxp.com>
+To:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Cc:     andrzej.hajda@intel.com, neil.armstrong@linaro.org,
+        rfoss@kernel.org, Laurent.pinchart@ideasonboard.com,
+        jonas@kwiboo.se, jernej.skrabec@gmail.com,
+        adrian.larumbe@collabora.com, treding@nvidia.com,
+        the.cheaterman@gmail.com, l.stach@pengutronix.de,
+        ville.syrjala@linux.intel.com, cychiang@chromium.org,
+        Sandor.yu@nxp.com, shengjiu.wang@nxp.com
+Subject: [PATCH v2] drm: bridge: dw_hdmi: Fix ELD is not updated issue
+Date:   Fri,  4 Aug 2023 14:11:45 +0800
+Message-Id: <20230804061145.2824843-1-Sandor.yu@nxp.com>
+X-Mailer: git-send-email 2.34.1
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: SI2PR02CA0040.apcprd02.prod.outlook.com
+ (2603:1096:4:196::6) To PAXPR04MB9448.eurprd04.prod.outlook.com
+ (2603:10a6:102:2b1::21)
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PAXPR04MB9448:EE_|DB9PR04MB8493:EE_
+X-MS-Office365-Filtering-Correlation-Id: f389d3cd-6b43-4e9a-703a-08db94b1c811
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: zVJ48XHmZW5f0LUgL8KvZGLWbW/Xj2SrKpcW9y/Aa3cIjUNKWGoiBB6uA72vDu4unC8hIryC7Yi9+YBcw4NhpYh4HOiIFoaPwqWUGVrBJwueJ3pDmHvXAzBmo+e8dy1dnUO5smLMuKg45vgsp0eJNC1b9UecyLpRe6BpTpXBPAf4RMhGvq1KXgN7/jSOR5q4O8KeJWZByqGVwUSxIB4KYO+na8vShAeeWFX0SvJObyPIujw6GjE+IT1c9HthvJNZ7Rb04oG3gFRgbSza/kiuipQ7XQL6w3YogLU1fIh6xV6PtH01apWfIgh3KX73qKZPMsZOFP/lLf8g3LZyYrbvMwtGW04fJaDB71MUlF16kKe2FYhJ+31NvYk/bN+7pJFsSCL8A9wNv5F7HyeMlNzws4NxrZoGh0N9PBG69YkxkyrIpX7dSPd4UFE1Luhd5rewiNdM0Gzs7pgP2ZLzeXnM45q1ZejV4UnTAIziiVbmTv5lKWrYi0MhSP0q0rg+qR6z+C/B8iwHHpT3n1nCnubdjsKz9sT/XDEdoQgN0NZREO6KD8Fx4CdEP90EpX0hAjF5Z1ymYpFqYtljUKb5UB6ukoSkgYpcRMJa1VKo/a0hiBr/sexRfN+dDtcMqhTZ0IFg
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PAXPR04MB9448.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(136003)(346002)(376002)(39860400002)(396003)(366004)(186006)(451199021)(1800799003)(66476007)(66946007)(66556008)(4326008)(2906002)(38100700002)(38350700002)(2616005)(1076003)(6506007)(7416002)(83380400001)(86362001)(6512007)(26005)(478600001)(36756003)(6486002)(52116002)(6666004)(8936002)(8676002)(5660300002)(15650500001)(41300700001)(316002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?BWzZiDwwDQnwUT2HmXA3/pYbuM0zleAZ/FpmWhm11vxcqpjLiwAhnu94LZJC?=
+ =?us-ascii?Q?dkOcoQmBwzID1ggA/whWQnj/d+PoYq3YAC7O1cZFNbaBYzLWCc9gj0qX7c8z?=
+ =?us-ascii?Q?Nw/wOqszstMAtPT8Xu5AaqCJKTskf0dxjshYrzsc0PSSivd9oZnH0lYdnTrv?=
+ =?us-ascii?Q?fmBUYaSXHIYhjorYXL9IpNdd8g2TxfnEjX1EFBihEEPtjEW2JyUZo22mqxGH?=
+ =?us-ascii?Q?eeSvgOVLUEd/PKbockkNeKIwvQ25Tho8HZPBnCwrxL29IIGCkb1rOjHdqDVi?=
+ =?us-ascii?Q?cjXS+jM38KqGrIp8iDQC63HfVPCQUUcaiJC8f3krI+YfyOIpk3eHYJjwzQOf?=
+ =?us-ascii?Q?Onc9/hlNgGhGIlo5fRmQMfFNCF3U3tH0svdJ65At1b0yBRiHYqkCCuGEOovt?=
+ =?us-ascii?Q?ojljmf+CFHcCPEuKzutCOnNhXSgmxrKBd1soGu8OcZOPls0iIbHIqHc2S4RZ?=
+ =?us-ascii?Q?9mnQovno5qmOIdhnJc9c3dCQuEMHw6BXwtnW97e48lDJwT8OmnO6WEcucKAP?=
+ =?us-ascii?Q?O1dNmyVYaJoyfGLElc9w0vZjEzt7lkTLbtygmfzQv4nyiFvd9iv9iVK6JaFj?=
+ =?us-ascii?Q?h3ytwybRxugqCQ/u3JnUd5bfGaV6Vtp4HGingi3KjfJjDAqxhbVg26SDbWwK?=
+ =?us-ascii?Q?x+PSpepjXiUqYXtYkjEvKJKpdeIPbgbuz8H2KvzOVpzMBw765SQrk3taRXX6?=
+ =?us-ascii?Q?V8K1ncfiyQ2i+UyXKBiU1hFqcMrgc9gLkx013MlFt4DyUvg1xSTotc+W6j0Y?=
+ =?us-ascii?Q?0W+mS6E5brRiE96tPYaLWgXDngHl0W5AFyLefZybjNW7dzpo6fBxU6IRd/4d?=
+ =?us-ascii?Q?7evhcAbFl3osXcCVYbQohtHuM9SnnI4HAhOahG7Z7OKpMRu22qZpGIHVMT9Y?=
+ =?us-ascii?Q?xfNyzaP3evacsBRVXD2Ot0BUXiPlX/DB7ion23FI8aVyIWfAq1lCEHhKNTST?=
+ =?us-ascii?Q?kOn/FQAWVKDwKT3bzVJDu9SpKoi+//DwdiS3LhmqIvi0VRHlGr5q8PASSUY6?=
+ =?us-ascii?Q?97HouDO4ivGr7HywCodunZ4CIE6m1WjrQqDxmp+LbL++oFWrJr5UUX3lB66f?=
+ =?us-ascii?Q?1sSjI6NY/zHo/Jd0RJsGNcH6NFT12x6mlkv8JG37CPEPIXdQcvgwNqGIvMd0?=
+ =?us-ascii?Q?MNBydameESHvavlS+SUShXheOXkmLSaFFPjsVQIHcZS1FvPQol0/uEAwp57x?=
+ =?us-ascii?Q?+so4BRzcyRMrYB6lfQKVjbEDc7AyW11/o7r9J6OpQw98KKkTDS4qYPkOTjkZ?=
+ =?us-ascii?Q?FHO4sLmmK6OAVjxK5mut6PkZrRsoIeyjhe0dFEfyi5H+5335MSP4PjGKKfSm?=
+ =?us-ascii?Q?uzI7QAYpXLPVuRrjgdPVoA6OWR/FN80sDd2G7Yi21Ab0Q+PqkjezolgSXj9J?=
+ =?us-ascii?Q?IpSzaspk4yIEZCEwmWuvqL2+lsDVbxVfwRmKcAzQzpAq/PxiQHBM5C9V4kSq?=
+ =?us-ascii?Q?/6jwPjTpqXUyy+5ZptDnpCIs+ajScUVQabDObeDt2Zt2pZ/tjO9d5gJMzm7V?=
+ =?us-ascii?Q?faqayPEZyoxKTJX5ys8eA1OvDPI4AkSd4K/AQOoorY6/OA9e8Ff+j2VG86Yx?=
+ =?us-ascii?Q?TU0nS2adVhCfRyn9Izzs3yZr7zH+osOalK10vxdq?=
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: f389d3cd-6b43-4e9a-703a-08db94b1c811
+X-MS-Exchange-CrossTenant-AuthSource: PAXPR04MB9448.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 Aug 2023 06:12:29.2609
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 75cFUlSvfV4qUxuV8btBHScVbXa3HyHTAqcXUWv3W1yQQhzl2zPrpSbITn2A9qoi2eYYbQHJ4ZzlDyPJOZCjqQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB9PR04MB8493
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git x86/mm
-branch HEAD: 54e3d9434ef61b97fd3263c141b928dc5635e50d  x86/mm: Remove "INVPCID single" feature tracking
+The ELD (EDID-Like Data) is not updated when the HDMI cable
+is plugged into different HDMI monitors.
+This is because the EDID is not updated in the HDMI HPD function.
+As a result, the ELD data remains unchanged and may not reflect
+the capabilities of the newly connected HDMI sink device.
 
-elapsed time: 724m
+To address this issue, the handle_plugged_change function should move to
+the bridge_atomic_enable and bridge_atomic_disable functions.
+Make sure the EDID is properly updated before updating ELD.
 
-configs tested: 102
-configs skipped: 92
+Signed-off-by: Sandor Yu <Sandor.yu@nxp.com>
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+---
+v2:
+  - Add the variable of last_connector_result back to driver.
+    It will only be used to initialize audio codec jack status when audio codec driver probe.
 
-tested configs:
-alpha                            allyesconfig   gcc  
-alpha                               defconfig   gcc  
-alpha                randconfig-r011-20230731   gcc  
-arc                              allyesconfig   gcc  
-arc                                 defconfig   gcc  
-arc                  randconfig-r004-20230801   gcc  
-arm                              allmodconfig   gcc  
-arm                              allyesconfig   gcc  
-arm                                 defconfig   gcc  
-arm                       imx_v6_v7_defconfig   gcc  
-arm                        shmobile_defconfig   gcc  
-arm64                            allyesconfig   gcc  
-arm64                               defconfig   gcc  
-csky                                defconfig   gcc  
-hexagon              randconfig-r026-20230731   clang
-hexagon              randconfig-r041-20230731   clang
-hexagon              randconfig-r045-20230731   clang
-i386                             allyesconfig   gcc  
-i386         buildonly-randconfig-r004-20230731   gcc  
-i386         buildonly-randconfig-r005-20230731   gcc  
-i386         buildonly-randconfig-r006-20230731   gcc  
-i386                              debian-10.3   gcc  
-i386                                defconfig   gcc  
-i386                 randconfig-i001-20230731   gcc  
-i386                 randconfig-i002-20230731   gcc  
-i386                 randconfig-i003-20230731   gcc  
-i386                 randconfig-i004-20230731   gcc  
-i386                 randconfig-i005-20230731   gcc  
-i386                 randconfig-i006-20230731   gcc  
-i386                 randconfig-i011-20230801   clang
-i386                 randconfig-i012-20230801   clang
-i386                 randconfig-i013-20230801   clang
-i386                 randconfig-i014-20230801   clang
-i386                 randconfig-i015-20230801   clang
-i386                 randconfig-i016-20230801   clang
-loongarch                        allmodconfig   gcc  
-loongarch                         allnoconfig   gcc  
-loongarch                           defconfig   gcc  
-loongarch            randconfig-r016-20230731   gcc  
-m68k                             allmodconfig   gcc  
-m68k                             allyesconfig   gcc  
-m68k                                defconfig   gcc  
-microblaze           randconfig-r001-20230801   gcc  
-microblaze           randconfig-r003-20230801   gcc  
-mips                             allmodconfig   gcc  
-mips                             allyesconfig   gcc  
-nios2                               defconfig   gcc  
-openrisc             randconfig-r014-20230731   gcc  
-parisc                           allyesconfig   gcc  
-parisc                              defconfig   gcc  
-parisc               randconfig-r006-20230801   gcc  
-parisc64                            defconfig   gcc  
-powerpc                          allmodconfig   gcc  
-powerpc                           allnoconfig   gcc  
-powerpc                     kilauea_defconfig   clang
-powerpc                      pmac32_defconfig   clang
-riscv                            allmodconfig   gcc  
-riscv                             allnoconfig   gcc  
-riscv                            allyesconfig   gcc  
-riscv                               defconfig   gcc  
-riscv                randconfig-r021-20230731   clang
-riscv                randconfig-r042-20230731   clang
-riscv                          rv32_defconfig   gcc  
-s390                             allmodconfig   gcc  
-s390                             allyesconfig   gcc  
-s390                                defconfig   gcc  
-s390                 randconfig-r044-20230731   clang
-sh                               allmodconfig   gcc  
-sh                 kfr2r09-romimage_defconfig   gcc  
-sparc                            allyesconfig   gcc  
-sparc                               defconfig   gcc  
-sparc64              randconfig-r015-20230731   gcc  
-um                                  defconfig   gcc  
-um                             i386_defconfig   gcc  
-um                           x86_64_defconfig   gcc  
-x86_64                           allyesconfig   gcc  
-x86_64       buildonly-randconfig-r001-20230731   gcc  
-x86_64       buildonly-randconfig-r002-20230731   gcc  
-x86_64       buildonly-randconfig-r003-20230731   gcc  
-x86_64                              defconfig   gcc  
-x86_64                                  kexec   gcc  
-x86_64               randconfig-x001-20230731   clang
-x86_64               randconfig-x001-20230802   gcc  
-x86_64               randconfig-x002-20230731   clang
-x86_64               randconfig-x002-20230802   gcc  
-x86_64               randconfig-x003-20230731   clang
-x86_64               randconfig-x003-20230802   gcc  
-x86_64               randconfig-x004-20230731   clang
-x86_64               randconfig-x004-20230802   gcc  
-x86_64               randconfig-x005-20230731   clang
-x86_64               randconfig-x005-20230802   gcc  
-x86_64               randconfig-x006-20230731   clang
-x86_64               randconfig-x006-20230802   gcc  
-x86_64               randconfig-x011-20230731   gcc  
-x86_64               randconfig-x012-20230731   gcc  
-x86_64               randconfig-x013-20230731   gcc  
-x86_64               randconfig-x014-20230731   gcc  
-x86_64               randconfig-x015-20230731   gcc  
-x86_64               randconfig-x016-20230731   gcc  
-x86_64                          rhel-8.3-rust   clang
-x86_64                               rhel-8.3   gcc  
-xtensa                              defconfig   gcc  
+---
+ drivers/gpu/drm/bridge/synopsys/dw-hdmi.c | 12 +++---------
+ 1 file changed, 3 insertions(+), 9 deletions(-)
 
+diff --git a/drivers/gpu/drm/bridge/synopsys/dw-hdmi.c b/drivers/gpu/drm/bridge/synopsys/dw-hdmi.c
+index aa51c61a78c7..963050de42c3 100644
+--- a/drivers/gpu/drm/bridge/synopsys/dw-hdmi.c
++++ b/drivers/gpu/drm/bridge/synopsys/dw-hdmi.c
+@@ -2463,15 +2463,7 @@ static enum drm_connector_status dw_hdmi_detect(struct dw_hdmi *hdmi)
+ 	enum drm_connector_status result;
+ 
+ 	result = hdmi->phy.ops->read_hpd(hdmi, hdmi->phy.data);
+-
+-	mutex_lock(&hdmi->mutex);
+-	if (result != hdmi->last_connector_result) {
+-		dev_dbg(hdmi->dev, "read_hpd result: %d", result);
+-		handle_plugged_change(hdmi,
+-				      result == connector_status_connected);
+-		hdmi->last_connector_result = result;
+-	}
+-	mutex_unlock(&hdmi->mutex);
++	hdmi->last_connector_result = result;
+ 
+ 	return result;
+ }
+@@ -2971,6 +2963,7 @@ static void dw_hdmi_bridge_atomic_disable(struct drm_bridge *bridge,
+ 	hdmi->curr_conn = NULL;
+ 	dw_hdmi_update_power(hdmi);
+ 	dw_hdmi_update_phy_mask(hdmi);
++	handle_plugged_change(hdmi, false);
+ 	mutex_unlock(&hdmi->mutex);
+ }
+ 
+@@ -2989,6 +2982,7 @@ static void dw_hdmi_bridge_atomic_enable(struct drm_bridge *bridge,
+ 	hdmi->curr_conn = connector;
+ 	dw_hdmi_update_power(hdmi);
+ 	dw_hdmi_update_phy_mask(hdmi);
++	handle_plugged_change(hdmi, true);
+ 	mutex_unlock(&hdmi->mutex);
+ }
+ 
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+2.34.1
+
