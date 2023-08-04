@@ -2,79 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6EC8176F6E2
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 03:23:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 335B676F6ED
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 03:28:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231664AbjHDBXO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Aug 2023 21:23:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48926 "EHLO
+        id S231833AbjHDB2Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Aug 2023 21:28:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49810 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231593AbjHDBXM (ORCPT
+        with ESMTP id S229634AbjHDB2W (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Aug 2023 21:23:12 -0400
-Received: from out30-98.freemail.mail.aliyun.com (out30-98.freemail.mail.aliyun.com [115.124.30.98])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52B75423E
-        for <linux-kernel@vger.kernel.org>; Thu,  3 Aug 2023 18:23:10 -0700 (PDT)
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R151e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046049;MF=joseph.qi@linux.alibaba.com;NM=1;PH=DS;RN=8;SR=0;TI=SMTPD_---0Vp-Iz30_1691112186;
-Received: from 30.221.128.131(mailfrom:joseph.qi@linux.alibaba.com fp:SMTPD_---0Vp-Iz30_1691112186)
-          by smtp.aliyun-inc.com;
-          Fri, 04 Aug 2023 09:23:07 +0800
-Message-ID: <2c123597-e8bd-a0a0-cfb1-2236aa035870@linux.alibaba.com>
-Date:   Fri, 4 Aug 2023 09:23:06 +0800
+        Thu, 3 Aug 2023 21:28:22 -0400
+Received: from mail.nfschina.com (unknown [42.101.60.195])
+        by lindbergh.monkeyblade.net (Postfix) with SMTP id 1C70B423E;
+        Thu,  3 Aug 2023 18:28:20 -0700 (PDT)
+Received: from localhost.localdomain (unknown [180.167.10.98])
+        by mail.nfschina.com (Maildata Gateway V2.8.8) with ESMTPA id E2C10602F96C4;
+        Fri,  4 Aug 2023 09:28:06 +0800 (CST)
+X-MD-Sfrom: suhui@nfschina.com
+X-MD-SrcIP: 180.167.10.98
+From:   Su Hui <suhui@nfschina.com>
+To:     trond.myklebust@hammerspace.com, anna@kernel.org,
+        chuck.lever@oracle.com, jlayton@kernel.org, neilb@suse.de,
+        kolga@netapp.com, Dai.Ngo@oracle.com, tom@talpey.com,
+        nathan@kernel.org, ndesaulniers@google.com, trix@redhat.com
+Cc:     bfields@fieldses.org, linux-nfs@vger.kernel.org,
+        linux-kernel@vger.kernel.org, llvm@lists.linux.dev,
+        kernel-janitors@vger.kernel.org, Su Hui <suhui@nfschina.com>
+Subject: [PATCH v2] fs: lockd: avoid possible wrong NULL parameter
+Date:   Fri,  4 Aug 2023 09:26:57 +0800
+Message-Id: <20230804012656.4091877-1-suhui@nfschina.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.13.0
-Subject: Re: [PATCH] fs: ocfs2: namei: Check return value of ocfs2_add_entry()
-Content-Language: en-US
-To:     Artem Chernyshev <artem.chernyshev@red-soft.ru>,
-        Joel Becker <jlbec@evilplan.org>,
-        Mark Fasheh <mark@fasheh.com>, akpm <akpm@linux-foundation.org>
-Cc:     Kurt Hackel <kurt.hackel@oracle.com>, ocfs2-devel@lists.linux.dev,
-        linux-kernel@vger.kernel.org, lvc-project@linuxtesting.org
-References: <20230803145417.177649-1-artem.chernyshev@red-soft.ru>
-From:   Joseph Qi <joseph.qi@linux.alibaba.com>
-In-Reply-To: <20230803145417.177649-1-artem.chernyshev@red-soft.ru>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-10.0 required=5.0 tests=BAYES_00,
-        ENV_AND_HDR_SPF_MATCH,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,RDNS_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+clang's static analysis warning: fs/lockd/mon.c: line 293, column 2:
+Null pointer passed as 2nd argument to memory copy function.
 
+Assuming 'hostname' is NULL and calling 'nsm_create_handle()', this will
+pass NULL as 2nd argument to memory copy function 'memcpy()'. So return
+NULL if 'hostname' is invalid.
 
-On 8/3/23 10:54 PM, Artem Chernyshev wrote:
-> Process result of ocfs2_add_entry() in case we have an error
-> value.
-> 
-> Found by Linux Verification Center (linuxtesting.org) with SVACE.
-> 
-> Fixes: ccd979bdbce9 ("[PATCH] OCFS2: The Second Oracle Cluster Filesystem")
-> Signed-off-by: Artem Chernyshev <artem.chernyshev@red-soft.ru>
+Fixes: 77a3ef33e2de ("NSM: More clean up of nsm_get_handle()")
+Signed-off-by: Su Hui <suhui@nfschina.com>
+---
+v2:
+ - move NULL check to the callee "nsm_create_handle()"
+ fs/lockd/mon.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-Reviewed-by: Joseph Qi <joseph.qi@linux.alibaba.com>
+diff --git a/fs/lockd/mon.c b/fs/lockd/mon.c
+index 1d9488cf0534..87a0f207df0b 100644
+--- a/fs/lockd/mon.c
++++ b/fs/lockd/mon.c
+@@ -276,6 +276,9 @@ static struct nsm_handle *nsm_create_handle(const struct sockaddr *sap,
+ {
+ 	struct nsm_handle *new;
+ 
++	if (!hostname)
++		return NULL;
++
+ 	new = kzalloc(sizeof(*new) + hostname_len + 1, GFP_KERNEL);
+ 	if (unlikely(new == NULL))
+ 		return NULL;
+-- 
+2.30.2
 
-> ---
->  fs/ocfs2/namei.c | 4 ++++
->  1 file changed, 4 insertions(+)
-> 
-> diff --git a/fs/ocfs2/namei.c b/fs/ocfs2/namei.c
-> index 17c52225b87d..03bccfd183f3 100644
-> --- a/fs/ocfs2/namei.c
-> +++ b/fs/ocfs2/namei.c
-> @@ -1535,6 +1535,10 @@ static int ocfs2_rename(struct mnt_idmap *idmap,
->  		status = ocfs2_add_entry(handle, new_dentry, old_inode,
->  					 OCFS2_I(old_inode)->ip_blkno,
->  					 new_dir_bh, &target_insert);
-> +		if (status < 0) {
-> +			mlog_errno(status);
-> +			goto bail;
-> +		}
->  	}
->  
->  	old_inode->i_ctime = current_time(old_inode);
