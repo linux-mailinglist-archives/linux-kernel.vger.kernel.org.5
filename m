@@ -2,186 +2,209 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D24DA7705DC
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 18:24:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 24C537705DF
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 18:24:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229681AbjHDQYH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Aug 2023 12:24:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39000 "EHLO
+        id S229822AbjHDQYT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Aug 2023 12:24:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39152 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229464AbjHDQYF (ORCPT
+        with ESMTP id S229919AbjHDQYP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Aug 2023 12:24:05 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.115])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4B431BDD
-        for <linux-kernel@vger.kernel.org>; Fri,  4 Aug 2023 09:24:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1691166243; x=1722702243;
-  h=message-id:date:from:subject:to:cc:references:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=UMOg9uFnWWUQxMZ3Rj1bkJJYQ3M354D0eDULcjeLyYs=;
-  b=d2n+TfHloC/mBNDFEQCDlBeg7QOvNOeY5XU/J1JhYVX9Kdv2X3MtwPg4
-   mXvq8WA0jcx0hVaWXkD0N/28/Idv/juXh/hYL/YOK6SESHYucv4goiVAU
-   TXUSRYGDWVhO2f8D/XGNdydcYJHDlLAdbIvpgaqGy7AN7d1p0PdxTozzP
-   m+KB5sqq8VN+BXpzJj+C2n1i5OWNSxkgzYRRq5MJAG4wdItwdBwbp7Kz5
-   Y2MPjl2v4yaceGvMJLIpi43/N8u9Qg/C6UWqrA5cfbMIhDk3BxwzMz5oc
-   zukSq+55JJEoYxWhHHq0M9L0KQLNGpyT4uvKAfRFpb6LM/S9sYjDKiInk
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10792"; a="370176621"
-X-IronPort-AV: E=Sophos;i="6.01,255,1684825200"; 
-   d="scan'208";a="370176621"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Aug 2023 09:24:03 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10792"; a="820186234"
-X-IronPort-AV: E=Sophos;i="6.01,255,1684825200"; 
-   d="scan'208";a="820186234"
-Received: from orsmsx603.amr.corp.intel.com ([10.22.229.16])
-  by FMSMGA003.fm.intel.com with ESMTP; 04 Aug 2023 09:24:03 -0700
-Received: from orsmsx611.amr.corp.intel.com (10.22.229.24) by
- ORSMSX603.amr.corp.intel.com (10.22.229.16) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.27; Fri, 4 Aug 2023 09:24:02 -0700
-Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
- ORSMSX611.amr.corp.intel.com (10.22.229.24) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.27; Fri, 4 Aug 2023 09:24:02 -0700
-Received: from ORSEDG601.ED.cps.intel.com (10.7.248.6) by
- orsmsx610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.27 via Frontend Transport; Fri, 4 Aug 2023 09:24:02 -0700
-Received: from NAM11-DM6-obe.outbound.protection.outlook.com (104.47.57.172)
- by edgegateway.intel.com (134.134.137.102) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.27; Fri, 4 Aug 2023 09:24:02 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=kqQjmTnAUK2wPQGTrOY0JFl80BpV/eoY+oLJsoDHaDP/pxgj8gR9rAA9NAUeAiANMNdhsYXC3hRcy6js9NGDCULp2oiZwyZQZLn83Vd8kq9tgio48O3tNzD3/u2TcmJZBR+zlBHUrgt0IigWRHSkdYvCMv6fNEkzxjeg+0n+2qszGZkaxDYyDBRyNj4PwNPRM0l6XOs59Sy71IwXi3G+3RVUeXqjRSm9JZ1605DTjrHHSoktxCnTXQleMyRbk4E12576iW/2FKqwcSwLHdqMhZMGwi0aiLfevktFvqdhL03ikSfvyPgR+AYNamsi1sIaB6a7iRoybM7RFFXpC0KiIg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=wT3M81h+6Q4C+ocaD3sp1CfTIXauNb+7D2GX61duwXg=;
- b=EXgeoEb6ZmhCszTOlw7EDzbA4ISKexgJS5xopu/EzNZM+rXJSeX+FGfQMDpo1Ya9mzLduNh5VafMkyuFZUzkxQd3ulNfndnUn+S9nn8iYCsb+Vx3LTuPVUDwceHwUZ2JKirmURloyPtWklYeLmedUc/v00/lwcKaMeVZf3Fnd4XTqG5cwJqygqKKmVoyJQkTMTyDVR+yjdk9AqIBmL+iBKQm9z4Tgp599+I0zV47uW3CMCki2Ei88f99rKD2OC7FkHo6pJLSuT52o9976GMYsrsc8oF0KdGxnFZk2GjFDxtRCLzQZH1K+/P6q/TOHOOLjrBPBaVKi+IrLTEFGU1joQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from BYAPR11MB3320.namprd11.prod.outlook.com (2603:10b6:a03:18::25)
- by MW3PR11MB4666.namprd11.prod.outlook.com (2603:10b6:303:56::24) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6652.21; Fri, 4 Aug
- 2023 16:24:00 +0000
-Received: from BYAPR11MB3320.namprd11.prod.outlook.com
- ([fe80::70ac:fe46:e033:41be]) by BYAPR11MB3320.namprd11.prod.outlook.com
- ([fe80::70ac:fe46:e033:41be%4]) with mapi id 15.20.6652.021; Fri, 4 Aug 2023
- 16:24:00 +0000
-Message-ID: <0e99e131-fe4a-a672-9bfb-ad00f7dbe66a@intel.com>
-Date:   Fri, 4 Aug 2023 09:23:57 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.14.0
-From:   Sohil Mehta <sohil.mehta@intel.com>
-Subject: Re: [PATCH v2] x86/microcode: Remove microcode_mutex.
-To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-CC:     <linux-kernel@vger.kernel.org>, <x86@kernel.org>,
-        "H. Peter Anvin" <hpa@zytor.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        "Thomas Gleixner" <tglx@linutronix.de>
-References: <20230803083253.VGMnC9Gd@linutronix.de>
- <7f31f938-cd4f-bb1b-d44d-57adabf62c51@intel.com>
- <20230804075504.MxYvbNle@linutronix.de>
- <20230804075853.JF_n6GXC@linutronix.de>
-Content-Language: en-US
-In-Reply-To: <20230804075853.JF_n6GXC@linutronix.de>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: BYAPR04CA0002.namprd04.prod.outlook.com
- (2603:10b6:a03:40::15) To BYAPR11MB3320.namprd11.prod.outlook.com
- (2603:10b6:a03:18::25)
+        Fri, 4 Aug 2023 12:24:15 -0400
+Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86EE249E8;
+        Fri,  4 Aug 2023 09:24:13 -0700 (PDT)
+Received: by mail-wm1-x335.google.com with SMTP id 5b1f17b1804b1-3fb4146e8deso22275395e9.0;
+        Fri, 04 Aug 2023 09:24:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1691166252; x=1691771052;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=FxMm48ji9JaXht0N1EMlGEYOgbLi8EFkhDxDgGDkG90=;
+        b=OqOngvzkp89AvEQTuNEUTPPWut/Q2x4cPfcqFK0zK1t/KmCMIi8QZdsZfKpJM39efr
+         ROy3euPpsM8STbsN3Jpb8hXjzF2XH7xeYut7XooeMsM4Zx26sqD4tz7ycj28NaameeYi
+         lrVaBVsS4BzDMQA0byIyioQpI1cpfb1e9B4mz5N6cKDFlJMx06Ii0z5DBuIEvEAP3mf3
+         O8eUwc1FLLIKMAO3LQNyOIRUR52TA26+TKn4IQJ+Gp2T2aIOmaX/8qoaL/GF0qVE44Qd
+         bytSekj+Tq1xLTCXO2qDpTLusF1z3JB23/l59GfDur5iynpyt0ZRu8r6VLhPr0ozrQrv
+         Zkhw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691166252; x=1691771052;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=FxMm48ji9JaXht0N1EMlGEYOgbLi8EFkhDxDgGDkG90=;
+        b=k9h2Xqp86rjZmaX/TRkXKgIwqy+IPB0cTuKTKrmi2VkX4RMnQ6A7cdfq9SVbrlwQ94
+         B/FzRklTZEI5sGSlcObK2zrlnXu4pI5CR0hrVy3mDT3RK9+BpmENEPH90CToC8z7yajl
+         ho3GxCbei6qztSIVl43ifMc1sRytTdiMqdi9z/XORtTG368C3GwTiEm39HhQqiKKcEAg
+         d1CgYzmne+Qc9JcahHqir1lEcxG7CSVFwQt2HLNiFIFW5PTTSYQ6MET80KZIs3sheifS
+         rRITxpgc386f9+PG+GlQrF33Lo9EHsiD+KWoMkNZ/ZA65jBDNFVN0v0/S/QoUw3RvNP2
+         0xWg==
+X-Gm-Message-State: AOJu0YzjhszjgGkqspJKbYp4W51tlvvctBLaU9VssYVBXMXmDbHDJliW
+        lG+dhKNhCIjEQ1kd68RcjrQ=
+X-Google-Smtp-Source: AGHT+IECDxewontQLHmMI2qTcWM8S95By9HkjaTJVwRMBKauDrG4/fFkniE0oSaRp4tF+Ixz/OgWrQ==
+X-Received: by 2002:a05:600c:3791:b0:3fe:10d8:e7ef with SMTP id o17-20020a05600c379100b003fe10d8e7efmr1764124wmr.19.1691166251632;
+        Fri, 04 Aug 2023 09:24:11 -0700 (PDT)
+Received: from [10.9.105.115] ([41.86.56.122])
+        by smtp.gmail.com with ESMTPSA id d18-20020adfe892000000b003143cdc5949sm2922562wrm.9.2023.08.04.09.24.06
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 04 Aug 2023 09:24:11 -0700 (PDT)
+Message-ID: <15ba8dc5-0bab-1829-16f5-54de14cef5a7@gmail.com>
+Date:   Fri, 4 Aug 2023 19:24:02 +0300
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BYAPR11MB3320:EE_|MW3PR11MB4666:EE_
-X-MS-Office365-Filtering-Correlation-Id: f023d805-5233-43c7-4644-08db95073577
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 9BFj8HGpE/qE2fjPwxBwD23Xpf5ju5X/4f3oQcpmsyN38Az8/jnrgM+QRlQg8f6mz6e656r4fCsEimefH1NFS6rkeUtJqXvM7DWNm9jDGTIRzBTl+ZY+my3vHuuOC+5X1ejPP51umbDBiDH7FxnfxL2XUwqsmmFtVXmUNyZiEwMZbDv2Gk/npvdPII9sF7oR62SJLLMOe1rfcIoJuIUXdWQI9Uoy84e93uQAhPGBKZksXHV9ouhxYK3HFljtVzjxuWfZK4DtfRERVRFt5zsk73A6+NMJYYBAMRnQ0hF+S/dgNjBW0bO2XqUJQIKbqUWTDTFdwEm1didLqXnTRLplhHnBZahZyGPC16h0oY5zMw95Thrmx6FFB2TO5wrGHoRBCpLRxBJQpRtaqzLVThRjJ0Svc3EgZfla7F3NBalckm8sQZp/vg+cgCuCeHXnhypqOPA4jfQ/TA+/9IUTjpPfxCD+vqjKyXuyQnvLAu4JkkcpoTxEc78ho+2rwyL0Urhmmrrmt4rWYA9J+NSWi536vie9guiK45IZOJ7Cth1m+NYUrwtFPK1dDHwRcOrtlh3P7guMi4vnxc+hm7+hC7Uh0B0kk4oRZVbE1KWQpK2OO3MJUY1igcHDEy7qUhg+HaPlkL1BOF/Xvv0EN+WR0GR+ng==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR11MB3320.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(39860400002)(396003)(366004)(136003)(376002)(346002)(1800799003)(186006)(451199021)(8676002)(8936002)(4744005)(26005)(36756003)(478600001)(6512007)(31696002)(86362001)(6486002)(6666004)(31686004)(316002)(41300700001)(5660300002)(4326008)(66476007)(66946007)(66556008)(6916009)(44832011)(83380400001)(54906003)(2906002)(6506007)(2616005)(38100700002)(82960400001)(45980500001)(43740500002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?N1BjZzNyVTRqV3dmNDBPUFFxUmp1R2NiOWdUL3lkZkRSVFFQbXZURitHU3l1?=
- =?utf-8?B?cGFNSUJ1Y1M1MDRxRVNXQlp1NzhYOGMxdE5SbSt2dDV4N29FWENRVW5lWWZs?=
- =?utf-8?B?Y21xU28yc3MxNktKcFQzZjBnOExYMnVIOUloelU2WHJMNlV1NU1QWHNiamtL?=
- =?utf-8?B?S1h3ZFJ0VWNTbVFHeXEzeXFXbFdyeE1vOUdhSGxidTZNcEQ0bGJMUVgxR0tw?=
- =?utf-8?B?YWRZbjFPMWR5RWt5NGRzZnFjeXZXMGxaQnFuOTlrTlJHUGUrdXRwdXFDVENi?=
- =?utf-8?B?dkdCNk9HTVJiaW91c3RCckRlOTkzbjJ0T005TDJ4RFBLVDFjR3Z4emdrUHZr?=
- =?utf-8?B?Q2dlN2dBQVFFdlExdlFLbHIxUHZYWDc0Z1dCZk51dC9BN29QOWQwdEd6TUdD?=
- =?utf-8?B?Q1Jrd0xLYjdpaFJzcEZKaG84WElocGRtRWhXbFY2QTV5N25sZ1NMOFBGWXdq?=
- =?utf-8?B?YVd6NjJMU1JwZEtsQTR0TmRSWERrdGJXSkVOa1NHM3U3TnVxc0NKVWwyNzFZ?=
- =?utf-8?B?THVPU0tEaEVCbTQ3ZGFQNTByT1ZNbTh0Qzl6cFJMQklUUlpBTkwvS05HdEJa?=
- =?utf-8?B?K0tYZ0lGYm1Ta3o1dVAxdkVabjd2OXVpaTFKVWZSdmhJcStnSVVBVFhJREdB?=
- =?utf-8?B?UDV1Y2lUZVo0S0orUnQ0MTFuVUZIL0l4YURLVHM3OTVRd1RuUHFLZTJHSXlP?=
- =?utf-8?B?LzBtOHhmWHB4bGFXMkVmTzM2TFJtWEEyeGVWT1NNdjJoZFJUYTFnZGRzUVlH?=
- =?utf-8?B?MlFmOUt5Q1B0ZW5JMC81Mk0weFVNTy9BeFh5MmFpYW54ek1KUWdEU1JPd0xC?=
- =?utf-8?B?NmplUmdhY1pzVnNSK21WemozMmpQZ0pqS3h0c1dEaG9aYng0Y2w5eDVnUElO?=
- =?utf-8?B?VzkwTzRCdG9JM2ZycVhadWNJK01TMzBRQUNLdE54eVZMZEJwUXNQTFAyUE5K?=
- =?utf-8?B?Z2dXZ1EzRWpkc0VHczVxc2xVVjNuQ2UrYnEya3RUMzNOZTR0L0FsMlNqcW1T?=
- =?utf-8?B?R1FQelcxMGZtN1V1eWhsbUxHUlhab0IzRlU3aWFqbXhEVHNVaG41eklVb25W?=
- =?utf-8?B?R3B6TzBDRUd6bzRpdU1ycUh6UFhsSFN5NGtYMVIrcWg1dkVZVSt0eG1wbGEv?=
- =?utf-8?B?YlY3Q0s5aHJ6WHdyd2Y0OHB5RWRvZndVdXFEUWYzWm5mLzJOQzVPTjdNSTVh?=
- =?utf-8?B?M09EaHNmOFVpNnJXcCtON2tRVUVpMDQrZGNwUm9nQmQ1ZHBSSVV3UnhSS1p1?=
- =?utf-8?B?dG8rRjZ0dE5obkZtaFppQWdmQXVWbWNWYWd5U2ZQYTgrbmlYcXBHMld4Smo4?=
- =?utf-8?B?b1NtRWd2SDBuNnc5bzF4UTFQSGkzdzdyUGxFZnowTlBsaTVOMkJHdGZqWGk2?=
- =?utf-8?B?K0k3ckwzTWdjSXRRblZSM3N3cWxEZHk4OVl3Zm1NNGVyeGhiams3eDg1NUdK?=
- =?utf-8?B?SmhZVERJdEhwQVJzZ1JldGNlQ0ZmamdpRHVycGIzNWNqNURsU01RVVkzb08y?=
- =?utf-8?B?ajZuNlY4VnZyRHlPVU1WS2xhcTNEY2xNME5zajBoWWExSGkxYWxsMzAwOHlY?=
- =?utf-8?B?SzVGdjl0U1lqUURIT3pBc1RsQy9LMkFwTWptUDhLOFhiMlZhZ2dEQW0vUXF2?=
- =?utf-8?B?OExiL3JSckY3cXl5VlZBMG1SUFg2U3dsUXpZSFNPdzVWSkREamJuQkNUZDly?=
- =?utf-8?B?NWw5WGhaUTR2c1lrSURaN3RScXE3d3p2Q2JrRU41STNYVFlrcDBVWldwR0o4?=
- =?utf-8?B?eTZnbVYyZm4yUUtoa0tEMUN2QVNyUFZSZVFzZDF5aVFhYkZzRTl1RmQ4SEp3?=
- =?utf-8?B?RVorZUJIWnRjUVZJSmtpVVc4YzI3eXNoRlovVjhOQThicTJjd2xqUlRkV1NS?=
- =?utf-8?B?MmFSNEJ4cHIyQnBJd3g0WTNlbnNKNUhNQXJWcXhCRk5neVZ1VGtpR3duQi9M?=
- =?utf-8?B?bURSWVpDazlZUldSdTVkaERZN1lSVDdSNS80OG1QUVJ5ZEY0MnkrR0taWXZ6?=
- =?utf-8?B?S0VwbTN6ZUQwMFV6cVl1blYxeUs1UC9PQkdYZ0NsM0x6UCtKQTVlalhtdTUr?=
- =?utf-8?B?d0VSdFBCVDZDS1BSMUtrU0NkR3FCNHB2WVhQZmtuSW1aY0Vwa1BHcmM4T2NW?=
- =?utf-8?Q?mowJeHa1yaYZ0eE3k0CYuNyYc?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: f023d805-5233-43c7-4644-08db95073577
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR11MB3320.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 Aug 2023 16:24:00.5484
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: ELkfVCoAOIUj0lSperFuIf7iYDhkpmSFF8VfKfGRkBeJ4AhsbNnNMnWLYw0j9EYjEv2HM60NxZ+0rFGfD/v5KQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW3PR11MB4666
-X-OriginatorOrg: intel.com
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.4.2
+Subject: Re: [RFC PATCH v1 1/2] vsock: send SIGPIPE on write to shutdowned
+ socket
+Content-Language: en-US
+To:     Stefano Garzarella <sgarzare@redhat.com>
+Cc:     Arseniy Krasnov <AVKrasnov@sberdevices.ru>,
+        Stefan Hajnoczi <stefanha@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Bobby Eshleman <bobby.eshleman@bytedance.com>,
+        kvm@vger.kernel.org, virtualization@lists.linux-foundation.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel@sberdevices.ru
+References: <20230801141727.481156-1-AVKrasnov@sberdevices.ru>
+ <20230801141727.481156-2-AVKrasnov@sberdevices.ru>
+ <qgn26mgfotc7qxzp6ad7ezkdex6aqniv32c5tvehxh4hljsnvs@x7wvyvptizxx>
+ <44fef482-579a-fed6-6e8c-d400546285fc@gmail.com>
+ <bzkwqp26joyzgvqyoypyv43wv7t3b6rzs3v5hkch45yggmrzp6@25byvzqwiztb>
+ <140bb8ec-f443-79f9-662b-0c4e972c8dd6@gmail.com>
+ <e2ytj5asmxnyb7oebxpzfuithtidwzcwxki7aao2q344sg3yru@ezqk5iezf3i4>
+From:   Arseniy Krasnov <oxffffaa@gmail.com>
+In-Reply-To: <e2ytj5asmxnyb7oebxpzfuithtidwzcwxki7aao2q344sg3yru@ezqk5iezf3i4>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,HK_RANDOM_ENVFROM,
+        HK_RANDOM_FROM,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
->  struct cpu_info_ctx {
-> @@ -488,10 +485,7 @@ static ssize_t reload_store(struct device *dev,
->  	if (tmp_ret != UCODE_NEW)
->  		goto put;
->  
-> -	mutex_lock(&microcode_mutex);
->  	ret = microcode_reload_late();
-> -	mutex_unlock(&microcode_mutex);
-> -
 
-Maybe leave the new line in there before the put:? Makes it slightly
-easier to read the code.
 
->  put:
->  	cpus_read_unlock();
->  
+On 04.08.2023 18:02, Stefano Garzarella wrote:
+> On Fri, Aug 04, 2023 at 05:34:20PM +0300, Arseniy Krasnov wrote:
+>>
+>>
+>> On 04.08.2023 17:28, Stefano Garzarella wrote:
+>>> On Fri, Aug 04, 2023 at 03:46:47PM +0300, Arseniy Krasnov wrote:
+>>>> Hi Stefano,
+>>>>
+>>>> On 02.08.2023 10:46, Stefano Garzarella wrote:
+>>>>> On Tue, Aug 01, 2023 at 05:17:26PM +0300, Arseniy Krasnov wrote:
+>>>>>> POSIX requires to send SIGPIPE on write to SOCK_STREAM socket which was
+>>>>>> shutdowned with SHUT_WR flag or its peer was shutdowned with SHUT_RD
+>>>>>> flag. Also we must not send SIGPIPE if MSG_NOSIGNAL flag is set.
+>>>>>>
+>>>>>> Signed-off-by: Arseniy Krasnov <AVKrasnov@sberdevices.ru>
+>>>>>> ---
+>>>>>> net/vmw_vsock/af_vsock.c | 3 +++
+>>>>>> 1 file changed, 3 insertions(+)
+>>>>>>
+>>>>>> diff --git a/net/vmw_vsock/af_vsock.c b/net/vmw_vsock/af_vsock.c
+>>>>>> index 020cf17ab7e4..013b65241b65 100644
+>>>>>> --- a/net/vmw_vsock/af_vsock.c
+>>>>>> +++ b/net/vmw_vsock/af_vsock.c
+>>>>>> @@ -1921,6 +1921,9 @@ static int vsock_connectible_sendmsg(struct socket *sock, struct msghdr *msg,
+>>>>>>             err = total_written;
+>>>>>>     }
+>>>>>> out:
+>>>>>> +    if (sk->sk_type == SOCK_STREAM)
+>>>>>> +        err = sk_stream_error(sk, msg->msg_flags, err);
+>>>>>
+>>>>> Do you know why we don't need this for SOCK_SEQPACKET and SOCK_DGRAM?
+>>>>
+>>>> Yes, here is my explanation:
+>>>>
+>>>> This function checks that input error is SIGPIPE, and if so it sends SIGPIPE to the 'current' thread
+>>>> (except case when MSG_NOSIGNAL flag is set). This behaviour is described in POSIX:
+>>>>
+>>>> Page 367 (description of defines from sys/socket.h):
+>>>> MSG_NOSIGNAL: No SIGPIPE generated when an attempt to send is made on a stream-
+>>>> oriented socket that is no longer connected.
+>>>>
+>>>> Page 497 (description of SOCK_STREAM):
+>>>> A SIGPIPE signal is raised if a thread sends on a broken stream (one that is
+>>>> no longer connected).
+>>>
+>>> Okay, but I think we should do also for SEQPACKET:
+>>>
+>>> https://pubs.opengroup.org/onlinepubs/009696699/functions/xsh_chap02_10.html
+>>>
+>>> In 2.10.6 Socket Types:
+>>>
+>>> "The SOCK_SEQPACKET socket type is similar to the SOCK_STREAM type, and
+>>> is also connection-oriented. The only difference between these types is
+>>> that record boundaries ..."
+>>>
+>>> Then in  2.10.14 Signals:
+>>>
+>>> "The SIGPIPE signal shall be sent to a thread that attempts to send data
+>>> on a socket that is no longer able to send. In addition, the send
+>>> operation fails with the error [EPIPE]."
+>>>
+>>> It's honestly not super clear, but I assume the problem is similar with
+>>> seqpacket since it's connection-oriented, or did I miss something?
+>>>
+>>> For example in sctp_sendmsg() IIUC we raise a SIGPIPE regardless of
+>>> whether the socket is STREAM or SEQPACKET.
+>>
+>> Hm, yes, you're right. Seems check for socket type is not needed in this case,
+>> as this function is only for connection oriented sockets.
+> 
+> Ack!
+> 
+>>
+>>>
+>>>>
+>>>> Page 1802 (description of 'send()' call):
+>>>> MSG_NOSIGNAL
+>>>>
+>>>> Requests not to send the SIGPIPE signal if an attempt to
+>>>> send is made on a stream-oriented socket that is no
+>>>> longer connected. The [EPIPE] error shall still be
+>>>> returned
+>>>>
+>>>> And the same for 'sendto()' and 'sendmsg()'
+>>>>
+>>>> Link to the POSIX document:
+>>>> https://www.open-std.org/jtc1/sc22/open/n4217.pdf
+>>>>
+>>>> TCP (I think we must rely on it), KCM, SMC sockets (all of them are stream) work in the same
+>>>> way by calling this function. AF_UNIX also works in the same way, but it implements SIGPIPE handling
+>>>> without this function.
+>>>
+>>> I'm okay calling this function.
+>>>
+>>>>
+>>>> The only thing that confused me a little bit, that sockets above returns EPIPE when
+>>>> we have only SEND_SHUTDOWN set, but for AF_VSOCK EPIPE is returned for RCV_SHUTDOWN
+>>>> also, but I think it is related to this patchset.
+>>>
+>>> Do you mean that it is NOT related to this patchset?
+>>
+>> Yes, **NOT**
+> 
+> Got it, so if you have time when you're back, let's check also that
+> (not for this series as you mentioned).
 
-Anyway,
-Reviewed-by: Sohil Mehta <sohil.mehta@intel.com>
+Sure!
+
+Thanks, Arseniy
+
+> 
+> Thanks,
+> Stefano
+> 
