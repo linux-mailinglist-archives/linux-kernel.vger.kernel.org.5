@@ -2,101 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D3E43770676
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 18:57:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7601C770678
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 18:57:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230248AbjHDQ50 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Aug 2023 12:57:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33990 "EHLO
+        id S231371AbjHDQ5f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Aug 2023 12:57:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34058 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231361AbjHDQ5Y (ORCPT
+        with ESMTP id S231383AbjHDQ5b (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Aug 2023 12:57:24 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 503DB1994
-        for <linux-kernel@vger.kernel.org>; Fri,  4 Aug 2023 09:57:24 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id E1B1B620B9
-        for <linux-kernel@vger.kernel.org>; Fri,  4 Aug 2023 16:57:23 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 75FE6C433C7;
-        Fri,  4 Aug 2023 16:57:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691168243;
-        bh=H2I4zXc2nLBpbMumRh3ZQqMyQSqwTBBH0hegTbmAV9Q=;
-        h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-        b=ON1ljACxay13fH0eKtcQ0sm0HX+oy8oRyda6c84If7cwkab2VpSxBcYtJEnF6Zly4
-         jnkWppiPqZC/aQPdeuVtXbaUT2gf7JFSaXXaouS9n1YsRQziu6A1cwv27QcDIDi9y8
-         kofabDzbls8cWDGOERnWZ5dnGOYT/HJpdkIf2lI/dCTiC4xdFmvak8Dxfbv5g44+2m
-         A2FQxuSRLUjQdwO+Rzqfj3UYeVlOYAObgAFnBDLACy1DTaDaEh0vzgpvf08KObYXwP
-         24LPhGPKMJ9gi1oAgH9rYZSoyaolkdPXSXyx6cf7vTgNGcfMRxMdDibJfdWu6sV6QB
-         EodIsV8ebMTRQ==
-From:   Mark Brown <broonie@kernel.org>
-To:     Fabio Estevam <festevam@gmail.com>
-Cc:     robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
-        conor+dt@kernel.org, patches@opensource.cirrus.com,
-        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
-        shengjiu.wang@gmail.com, Fabio Estevam <festevam@denx.de>
-In-Reply-To: <20230803215506.142922-1-festevam@gmail.com>
-References: <20230803215506.142922-1-festevam@gmail.com>
-Subject: Re: [PATCH 1/2] ASoC: dt-bindings: wlf,wm8960: Describe the power
- supplies
-Message-Id: <169116824118.110745.15372323880400701432.b4-ty@kernel.org>
-Date:   Fri, 04 Aug 2023 17:57:21 +0100
+        Fri, 4 Aug 2023 12:57:31 -0400
+Received: from mail-io1-xd34.google.com (mail-io1-xd34.google.com [IPv6:2607:f8b0:4864:20::d34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C1E3469C
+        for <linux-kernel@vger.kernel.org>; Fri,  4 Aug 2023 09:57:25 -0700 (PDT)
+Received: by mail-io1-xd34.google.com with SMTP id ca18e2360f4ac-79095499a17so85069839f.3
+        for <linux-kernel@vger.kernel.org>; Fri, 04 Aug 2023 09:57:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cloudflare.com; s=google; t=1691168245; x=1691773045;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=fLs6vLbC3bot13xgwrJ/fB2v8UZa1GQgyp/C81/2sXw=;
+        b=BQY5zzs/9I6VY6xyhPL8yq1cl+TLPbV3XxYmr4qSB+Za88/G2jhf/8k76NYDcE7Oi3
+         rU3ucAGOJA9FCr8AjxaFYYi4vg2b4GCVddq4kI81RtSDaH2vcAdEMTpQ45zqBLi1eaxf
+         mHUOR2hY26v/em/o5OD44PUMC10nDsd9mzQY8=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691168245; x=1691773045;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=fLs6vLbC3bot13xgwrJ/fB2v8UZa1GQgyp/C81/2sXw=;
+        b=K0D90bwjPJUc7ByaR8lpRwHLHWqWib+4jNrtqmF6LDuimYjJmmkwCGNAfHk2IQ5qzh
+         Rc32TKjU0lbYPAtF00d4sjdjJ011UCdzcG7zXGtWTdHTiREPEQ65WvYvmWpTXFoP3LLh
+         dwQrFaUbZILcgfJdYMxSftY63bhgMaNAojM3Xr4vIr2GvRueda9PBqcC0FT+4EUkQm/b
+         HXHqQwwfbt2BX/O0ct4p5vn2mMG5iFtYEoHAX0Qsllp9YxWJTcFg43nU05kLiTOU530o
+         SL9MoQ0p9MDowf0XPgA+87NM+Gt2kc/E3HvA2IMp67MPSwQNlpHTLVSu+uUd1omBl267
+         g6gg==
+X-Gm-Message-State: AOJu0YwmI8+IrklaCwSpU+qCpz6Q8M6cN1N8VRsnO5bSqDzh3mub4tC/
+        9sRLsm/IJaQOQD8ptmg9hQwPBg==
+X-Google-Smtp-Source: AGHT+IHU3+wLh7lUmQRFHahUjU0LpvS8KkYhfTtHOyxinRVgWiVu/pjJ9WcEu15SHijdHdKkUr0kEw==
+X-Received: by 2002:a5d:8d95:0:b0:790:f866:d716 with SMTP id b21-20020a5d8d95000000b00790f866d716mr1101255ioj.15.1691168244913;
+        Fri, 04 Aug 2023 09:57:24 -0700 (PDT)
+Received: from CMGLRV3 ([2a09:bac5:9478:4be::79:1a])
+        by smtp.gmail.com with ESMTPSA id z11-20020a6b0a0b000000b007791e286fdbsm753260ioi.21.2023.08.04.09.57.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 04 Aug 2023 09:57:24 -0700 (PDT)
+Date:   Fri, 4 Aug 2023 11:57:22 -0500
+From:   Frederick Lawler <fred@cloudflare.com>
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     Daniel Dao <dqminh@cloudflare.com>, linux-fsdevel@vger.kernel.org,
+        Dave Chinner <david@fromorbit.com>,
+        kernel-team <kernel-team@cloudflare.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>, djwong@kernel.org
+Subject: Re: Kernel NULL pointer deref and data corruptions with xfs on 6.1
+Message-ID: <ZM0t8rYZewA3dO0W@CMGLRV3>
+References: <CA+wXwBRGab3UqbLqsr8xG=ZL2u9bgyDNNea4RGfTDjqB=J3geQ@mail.gmail.com>
+ <ZMHkLA+r2K6hKsr5@casper.infradead.org>
+ <CA+wXwBQur9DU7mVa961KWpL+cn1BNeZbU+oja+SKMHhEo1D0-g@mail.gmail.com>
+ <ZMJizCdbm+JPZ8gp@casper.infradead.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.13-dev-034f2
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <ZMJizCdbm+JPZ8gp@casper.infradead.org>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 03 Aug 2023 18:55:05 -0300, Fabio Estevam wrote:
-> WM8960 has the following power supplies:
+Hi Matthew,
+
+On Thu, Jul 27, 2023 at 01:27:56PM +0100, Matthew Wilcox wrote:
+> On Thu, Jul 27, 2023 at 11:25:33AM +0100, Daniel Dao wrote:
+> > On Thu, Jul 27, 2023 at 4:27 AM Matthew Wilcox <willy@infradead.org> wrote:
+> > >
+> > > On Fri, Jul 21, 2023 at 11:49:04AM +0100, Daniel Dao wrote:
+> > > > We do not have a reproducer yet, but we now have more debugging data
+> > > > which hopefully
+> > > > should help narrow this down. Details as followed:
+> > > >
+> > > > 1. Kernel NULL pointer deferencences in __filemap_get_folio
+> > > >
+> > > > This happened on a few different hosts, with a few different repeated addresses.
+> > > > The addresses are 0000000000000036, 0000000000000076,
+> > > > 00000000000000f6. This looks
+> > > > like the xarray is corrupted and we were trying to do some work on a
+> > > > sibling entry.
+> > >
+> > > I think I have a fix for this one.  Please try the attached.
+> > 
+> > For some reason I do not see the attached patch. Can you resend it, or
+> > is it the same
+> > one as in https://bugzilla.kernel.org/show_bug.cgi?id=216646#c31 ?
 > 
-> - AVDD
-> - DBVDD
-> - DCVDD
-> - SPKVDD1
-> - SPKVDD1
-> 
-> [...]
+> Yes, that's the one, sorry.
 
-Applied to
+I setup a kernel with this patch to deploy out. It'll take some time to
+see any results from that. I did run your multiorder.c changes with/without
+the change to lib/xarray.c and that seemed to work as intended. I didn't see
+any regressions across multiple seeds with our kernel config.
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
-
-Thanks!
-
-[1/2] ASoC: dt-bindings: wlf,wm8960: Describe the power supplies
-      commit: 6a41c3a1606089bdf7f8da2b267d1d82fb32b378
-[2/2] ASoC: wm8960: Add support for the power supplies
-      commit: 422f10adc3eb5a7ff8567bf6e6590a4e4fa756c3
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
+Fred
