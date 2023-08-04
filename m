@@ -2,496 +2,266 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CD05A7708B0
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 21:11:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D793E7708BA
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 21:13:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229597AbjHDTLs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Aug 2023 15:11:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45866 "EHLO
+        id S229797AbjHDTNh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Aug 2023 15:13:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46408 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229526AbjHDTLq (ORCPT
+        with ESMTP id S229509AbjHDTNe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Aug 2023 15:11:46 -0400
-Received: from mail-oo1-f44.google.com (mail-oo1-f44.google.com [209.85.161.44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 743CBB9;
-        Fri,  4 Aug 2023 12:11:44 -0700 (PDT)
-Received: by mail-oo1-f44.google.com with SMTP id 006d021491bc7-56d26137095so407801eaf.1;
-        Fri, 04 Aug 2023 12:11:44 -0700 (PDT)
+        Fri, 4 Aug 2023 15:13:34 -0400
+Received: from mail-oi1-f198.google.com (mail-oi1-f198.google.com [209.85.167.198])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AFA89AC
+        for <linux-kernel@vger.kernel.org>; Fri,  4 Aug 2023 12:13:32 -0700 (PDT)
+Received: by mail-oi1-f198.google.com with SMTP id 5614622812f47-3a3df1d46e5so3696888b6e.3
+        for <linux-kernel@vger.kernel.org>; Fri, 04 Aug 2023 12:13:32 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691176303; x=1691781103;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Likl/wmNltRCx4Z5AmSbso+EzPXp1NYDaU89+duyULE=;
-        b=NqKtfSA/OFDCBbkUogLn8FQmSZLnxqvbnzhGPj9Q7pLMAqitk8QbkMhXvS/vKXuO6v
-         lznLPIefMy6FR8eJbFcmmCxwJaY0GdQkgw+3Yp3JUJQ1a9jCgTj95aeqUFDS4QDxrbqH
-         /5n+KmFi81JYMfjswaSLgoDPLWIMbWLdDhSYgicdUM2lMwSulnI8pb/lIi4DmLIG/Is5
-         EPHss/2S5j01xKWbJGy+mNJ+4JOVbUi/GgG0zyr/c0/iCPcuIVpcuCsIOUm8Fp/uOjaE
-         1Olp5o5vCRs8hvLtGvoJlB6mHGqz/CRPHNwGzA0gNxtikVZxas4sljeilLLQao5jAJj5
-         dKcw==
-X-Gm-Message-State: ABy/qLZ4OCRPguaY0MTsO0mZg3JA6VwP7yO2Wl0LhGEpiJUBFQE89MWW
-        N0HV4HramxyuwUxp9wQnaaPBN3rr/slsf2mAuLU=
-X-Google-Smtp-Source: APBJJlGk+AISnYEy1dGjMCO+0pFAv8CkSrhaf8I63rcdSlId+mnKaGTnj57Q8F/PvVW53kqOlto83jWG9OHVcmVBhuo=
-X-Received: by 2002:a05:6820:2108:b0:56c:5e21:c72d with SMTP id
- cd8-20020a056820210800b0056c5e21c72dmr17705314oob.1.1691176303513; Fri, 04
- Aug 2023 12:11:43 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1691176412; x=1691781212;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=sfA6D4sqJtr1YGwqPMe0SpPMxDGMsLKvSj1fjjFvTHU=;
+        b=gBiaY2wxM4lqlLqXi4d2zGvrMr+Mb75d5T+6N/KlRkOjEuBIR227qpS3S40peJR9d5
+         SF+XWZke0zGR2O4VRHKvnwFY7q9Nt/OEeQvzYFc55xpBUWJm/V642QacM/9VYg7c8CEm
+         If+4UpM8JSmRT47sV4QejLC8EUbEZ+v1Zv1bzF5TxPynlV31rhAyxmtClYHaU4ktZp9r
+         9Gw0M/yIuZpCh+OVQEShnccrfDDMJAWGcxUqKO+Yu1p71S6pSZBVEi4P3K7FR4lfFzgd
+         ia3tX8r929uqzr52LMk16guZ7xZC8STWX5sAUZnkXoGHT51weWPCe+KoZuhPLRnJDuYy
+         FzxQ==
+X-Gm-Message-State: AOJu0YzE39YcSXxUQapdn+UrY5dQfL4HcmGLpfhYwq3boFkPXOB0GR0p
+        ewvCN7uvNpC+9nhBI9BLnQ6FsNisejJ3383pfDmqpnjg2zF+
+X-Google-Smtp-Source: AGHT+IFQrNbIhu0N6SBngiuMcQofZDMewV2TcrDgTb7gPsMZEl7VQzwWxhuzNF3q2lcuyjo0064OJPU0hK6zBq+946PB0KfOUdWU
 MIME-Version: 1.0
-References: <20230803220202.78036-1-robdclark@gmail.com> <20230803220202.78036-4-robdclark@gmail.com>
- <CAJZ5v0jV+Da+kw5JuGAhuGA6QJKmteCfnjGCk8DrNOe8Gvdg5w@mail.gmail.com> <CAF6AEGvPjvTmK5NE1zkXSrSThpPNWCimUoQS-oBTDdUtEGKp4A@mail.gmail.com>
-In-Reply-To: <CAF6AEGvPjvTmK5NE1zkXSrSThpPNWCimUoQS-oBTDdUtEGKp4A@mail.gmail.com>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Fri, 4 Aug 2023 21:11:32 +0200
-Message-ID: <CAJZ5v0hGX_b1yPTrs=3Jyhm8hcFBprvVLgngK+oAFr_66jvytg@mail.gmail.com>
-Subject: Re: [PATCH v3 3/9] PM / QoS: Fix constraints alloc vs reclaim locking
-To:     Rob Clark <robdclark@gmail.com>
-Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        dri-devel@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
-        freedreno@lists.freedesktop.org,
-        Rob Clark <robdclark@chromium.org>,
-        Pavel Machek <pavel@ucw.cz>, Len Brown <len.brown@intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "open list:HIBERNATION (aka Software Suspend, aka swsusp)" 
-        <linux-pm@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-Content-Type: multipart/mixed; boundary="000000000000d3141a06021daaed"
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+X-Received: by 2002:a05:6808:198b:b0:3a7:75cd:df61 with SMTP id
+ bj11-20020a056808198b00b003a775cddf61mr3827284oib.5.1691176412068; Fri, 04
+ Aug 2023 12:13:32 -0700 (PDT)
+Date:   Fri, 04 Aug 2023 12:13:32 -0700
+In-Reply-To: <20230804125406.1583-1-hdanton@sina.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000004b404f06021db1c4@google.com>
+Subject: Re: [syzbot] [fs?] KASAN: slab-use-after-free Read in test_bdev_super_fc
+From:   syzbot <syzbot+2faac0423fdc9692822b@syzkaller.appspotmail.com>
+To:     hdanton@sina.com, linux-kernel@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---000000000000d3141a06021daaed
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Hello,
 
-On Fri, Aug 4, 2023 at 8:38=E2=80=AFPM Rob Clark <robdclark@gmail.com> wrot=
-e:
->
-> On Fri, Aug 4, 2023 at 10:07=E2=80=AFAM Rafael J. Wysocki <rafael@kernel.=
-org> wrote:
-> >
-> > On Fri, Aug 4, 2023 at 12:02=E2=80=AFAM Rob Clark <robdclark@gmail.com>=
- wrote:
-> > >
-> > > From: Rob Clark <robdclark@chromium.org>
-> > >
-> > > In the process of adding lockdep annotation for drm GPU scheduler's
-> > > job_run() to detect potential deadlock against shrinker/reclaim, I hi=
-t
-> > > this lockdep splat:
-> > >
-> > >    =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D
-> > >    WARNING: possible circular locking dependency detected
-> > >    6.2.0-rc8-debug+ #558 Tainted: G        W
-> > >    ------------------------------------------------------
-> > >    ring0/125 is trying to acquire lock:
-> > >    ffffffd6d6ce0f28 (dev_pm_qos_mtx){+.+.}-{3:3}, at: dev_pm_qos_upda=
-te_request+0x38/0x68
-> > >
-> > >    but task is already holding lock:
-> > >    ffffff8087239208 (&gpu->active_lock){+.+.}-{3:3}, at: msm_gpu_subm=
-it+0xec/0x178
-> > >
-> > >    which lock already depends on the new lock.
-> > >
-> > >    the existing dependency chain (in reverse order) is:
-> > >
-> > >    -> #4 (&gpu->active_lock){+.+.}-{3:3}:
-> > >           __mutex_lock+0xcc/0x3c8
-> > >           mutex_lock_nested+0x30/0x44
-> > >           msm_gpu_submit+0xec/0x178
-> > >           msm_job_run+0x78/0x150
-> > >           drm_sched_main+0x290/0x370
-> > >           kthread+0xf0/0x100
-> > >           ret_from_fork+0x10/0x20
-> > >
-> > >    -> #3 (dma_fence_map){++++}-{0:0}:
-> > >           __dma_fence_might_wait+0x74/0xc0
-> > >           dma_resv_lockdep+0x1f4/0x2f4
-> > >           do_one_initcall+0x104/0x2bc
-> > >           kernel_init_freeable+0x344/0x34c
-> > >           kernel_init+0x30/0x134
-> > >           ret_from_fork+0x10/0x20
-> > >
-> > >    -> #2 (mmu_notifier_invalidate_range_start){+.+.}-{0:0}:
-> > >           fs_reclaim_acquire+0x80/0xa8
-> > >           slab_pre_alloc_hook.constprop.0+0x40/0x25c
-> > >           __kmem_cache_alloc_node+0x60/0x1cc
-> > >           __kmalloc+0xd8/0x100
-> > >           topology_parse_cpu_capacity+0x8c/0x178
-> > >           get_cpu_for_node+0x88/0xc4
-> > >           parse_cluster+0x1b0/0x28c
-> > >           parse_cluster+0x8c/0x28c
-> > >           init_cpu_topology+0x168/0x188
-> > >           smp_prepare_cpus+0x24/0xf8
-> > >           kernel_init_freeable+0x18c/0x34c
-> > >           kernel_init+0x30/0x134
-> > >           ret_from_fork+0x10/0x20
-> > >
-> > >    -> #1 (fs_reclaim){+.+.}-{0:0}:
-> > >           __fs_reclaim_acquire+0x3c/0x48
-> > >           fs_reclaim_acquire+0x54/0xa8
-> > >           slab_pre_alloc_hook.constprop.0+0x40/0x25c
-> > >           __kmem_cache_alloc_node+0x60/0x1cc
-> > >           kmalloc_trace+0x50/0xa8
-> > >           dev_pm_qos_constraints_allocate+0x38/0x100
-> > >           __dev_pm_qos_add_request+0xb0/0x1e8
-> > >           dev_pm_qos_add_request+0x58/0x80
-> > >           dev_pm_qos_expose_latency_limit+0x60/0x13c
-> > >           register_cpu+0x12c/0x130
-> > >           topology_init+0xac/0xbc
-> > >           do_one_initcall+0x104/0x2bc
-> > >           kernel_init_freeable+0x344/0x34c
-> > >           kernel_init+0x30/0x134
-> > >           ret_from_fork+0x10/0x20
-> > >
-> > >    -> #0 (dev_pm_qos_mtx){+.+.}-{3:3}:
-> > >           __lock_acquire+0xe00/0x1060
-> > >           lock_acquire+0x1e0/0x2f8
-> > >           __mutex_lock+0xcc/0x3c8
-> > >           mutex_lock_nested+0x30/0x44
-> > >           dev_pm_qos_update_request+0x38/0x68
-> > >           msm_devfreq_boost+0x40/0x70
-> > >           msm_devfreq_active+0xc0/0xf0
-> > >           msm_gpu_submit+0x10c/0x178
-> > >           msm_job_run+0x78/0x150
-> > >           drm_sched_main+0x290/0x370
-> > >           kthread+0xf0/0x100
-> > >           ret_from_fork+0x10/0x20
-> > >
-> > >    other info that might help us debug this:
-> > >
-> > >    Chain exists of:
-> > >      dev_pm_qos_mtx --> dma_fence_map --> &gpu->active_lock
-> > >
-> > >     Possible unsafe locking scenario:
-> > >
-> > >           CPU0                    CPU1
-> > >           ----                    ----
-> > >      lock(&gpu->active_lock);
-> > >                                   lock(dma_fence_map);
-> > >                                   lock(&gpu->active_lock);
-> > >      lock(dev_pm_qos_mtx);
-> > >
-> > >     *** DEADLOCK ***
-> > >
-> > >    3 locks held by ring0/123:
-> > >     #0: ffffff8087251170 (&gpu->lock){+.+.}-{3:3}, at: msm_job_run+0x=
-64/0x150
-> > >     #1: ffffffd00b0e57e8 (dma_fence_map){++++}-{0:0}, at: msm_job_run=
-+0x68/0x150
-> > >     #2: ffffff8087251208 (&gpu->active_lock){+.+.}-{3:3}, at: msm_gpu=
-_submit+0xec/0x178
-> > >
-> > >    stack backtrace:
-> > >    CPU: 6 PID: 123 Comm: ring0 Not tainted 6.2.0-rc8-debug+ #559
-> > >    Hardware name: Google Lazor (rev1 - 2) with LTE (DT)
-> > >    Call trace:
-> > >     dump_backtrace.part.0+0xb4/0xf8
-> > >     show_stack+0x20/0x38
-> > >     dump_stack_lvl+0x9c/0xd0
-> > >     dump_stack+0x18/0x34
-> > >     print_circular_bug+0x1b4/0x1f0
-> > >     check_noncircular+0x78/0xac
-> > >     __lock_acquire+0xe00/0x1060
-> > >     lock_acquire+0x1e0/0x2f8
-> > >     __mutex_lock+0xcc/0x3c8
-> > >     mutex_lock_nested+0x30/0x44
-> > >     dev_pm_qos_update_request+0x38/0x68
-> > >     msm_devfreq_boost+0x40/0x70
-> > >     msm_devfreq_active+0xc0/0xf0
-> > >     msm_gpu_submit+0x10c/0x178
-> > >     msm_job_run+0x78/0x150
-> > >     drm_sched_main+0x290/0x370
-> > >     kthread+0xf0/0x100
-> > >     ret_from_fork+0x10/0x20
-> > >
-> > > The issue is that dev_pm_qos_mtx is held in the runpm suspend/resume =
-(or
-> > > freq change) path, but it is also held across allocations that could
-> > > recurse into shrinker.
-> > >
-> > > Solve this by changing dev_pm_qos_constraints_allocate() into a funct=
-ion
-> > > that can be called unconditionally before the device qos object is
-> > > needed and before aquiring dev_pm_qos_mtx.  This way the allocations =
-can
-> > > be done without holding the mutex.  In the case that we raced with
-> > > another thread to allocate the qos object, detect this *after* acquir=
-ing
-> > > the dev_pm_qos_mtx and simply free the redundant allocations.
-> > >
-> > > Signed-off-by: Rob Clark <robdclark@chromium.org>
-> > > ---
-> > >  drivers/base/power/qos.c | 60 +++++++++++++++++++++++++++-----------=
---
-> > >  1 file changed, 41 insertions(+), 19 deletions(-)
-> > >
-> > > diff --git a/drivers/base/power/qos.c b/drivers/base/power/qos.c
-> > > index 8e93167f1783..f3e0c6b65635 100644
-> > > --- a/drivers/base/power/qos.c
-> > > +++ b/drivers/base/power/qos.c
-> > > @@ -185,18 +185,24 @@ static int apply_constraint(struct dev_pm_qos_r=
-equest *req,
-> > >  }
-> > >
-> > >  /*
-> > > - * dev_pm_qos_constraints_allocate
-> > > + * dev_pm_qos_constraints_ensure_allocated
-> > >   * @dev: device to allocate data for
-> > >   *
-> > > - * Called at the first call to add_request, for constraint data allo=
-cation
-> > > - * Must be called with the dev_pm_qos_mtx mutex held
-> > > + * Called to ensure that devices qos is allocated, before acquiring
-> > > + * dev_pm_qos_mtx.
-> > >   */
-> > > -static int dev_pm_qos_constraints_allocate(struct device *dev)
-> > > +static int dev_pm_qos_constraints_ensure_allocated(struct device *de=
-v)
-> > >  {
-> > >         struct dev_pm_qos *qos;
-> > >         struct pm_qos_constraints *c;
-> > >         struct blocking_notifier_head *n;
-> > >
-> > > +       if (!dev)
-> > > +               return -ENODEV;
-> > > +
-> > > +       if (!IS_ERR_OR_NULL(dev->power.qos))
-> > > +               return 0;
-> > > +
-> > >         qos =3D kzalloc(sizeof(*qos), GFP_KERNEL);
-> > >         if (!qos)
-> > >                 return -ENOMEM;
-> > > @@ -227,10 +233,26 @@ static int dev_pm_qos_constraints_allocate(stru=
-ct device *dev)
-> > >
-> > >         INIT_LIST_HEAD(&qos->flags.list);
-> > >
-> > > +       mutex_lock(&dev_pm_qos_mtx);
-> > > +
-> > > +       if (!IS_ERR_OR_NULL(dev->power.qos)) {
-> > > +               /*
-> > > +                * We have raced with another task to create the qos.
-> > > +                * No biggie, just free the resources we've allocated
-> > > +                * outside of dev_pm_qos_mtx and move on with life.
-> > > +                */
-> > > +               kfree(n);
-> > > +               kfree(qos);
-> > > +               goto unlock;
-> > > +       }
-> > > +
-> > >         spin_lock_irq(&dev->power.lock);
-> > >         dev->power.qos =3D qos;
-> > >         spin_unlock_irq(&dev->power.lock);
-> > >
-> > > +unlock:
-> > > +       mutex_unlock(&dev_pm_qos_mtx);
-> > > +
-> > >         return 0;
-> > >  }
-> > >
-> > > @@ -331,17 +353,15 @@ static int __dev_pm_qos_add_request(struct devi=
-ce *dev,
-> > >  {
-> > >         int ret =3D 0;
-> > >
-> > > -       if (!dev || !req || dev_pm_qos_invalid_req_type(dev, type))
-> > > +       if (!req || dev_pm_qos_invalid_req_type(dev, type))
-> > >                 return -EINVAL;
-> > >
-> > >         if (WARN(dev_pm_qos_request_active(req),
-> > >                  "%s() called for already added request\n", __func__)=
-)
-> > >                 return -EINVAL;
-> > >
-> > > -       if (IS_ERR(dev->power.qos))
-> > > +       if (IS_ERR_OR_NULL(dev->power.qos))
-> > >                 ret =3D -ENODEV;
-> > > -       else if (!dev->power.qos)
-> > > -               ret =3D dev_pm_qos_constraints_allocate(dev);
-> > >
-> > >         trace_dev_pm_qos_add_request(dev_name(dev), type, value);
-> > >         if (ret)
-> > > @@ -390,6 +410,10 @@ int dev_pm_qos_add_request(struct device *dev, s=
-truct dev_pm_qos_request *req,
-> > >  {
-> > >         int ret;
-> > >
-> > > +       ret =3D dev_pm_qos_constraints_ensure_allocated(dev);
-> > > +       if (ret)
-> > > +               return ret;
-> > > +
-> >
-> > It is a bit unfortunate that the mutex is dropped and then immediately
-> > re-acquired again.  I don't think that this is strictly necessary.
->
-> We could have dev_pm_qos_constraints_ensure_allocated() return with
-> the lock held in the success case if we had to.. but that seems a bit
-> funny looking.  And the dev_pm_qos_update_user_latency_tolerance()
-> path would need to shuffle slightly to move the kzalloc out of the
-> lock.
+syzbot has tested the proposed patch but the reproducer is still triggering an issue:
+KASAN: slab-use-after-free Read in grab_super
 
-Well, what about something like this (modulo whitespace damage by
-GMail), attached for completeness:
+MTD: Attempt to mount non-MTD device "/dev/nullb0"
+==================================================================
+BUG: KASAN: slab-use-after-free in owner_on_cpu include/linux/sched.h:2306 [inline]
+BUG: KASAN: slab-use-after-free in rwsem_can_spin_on_owner kernel/locking/rwsem.c:725 [inline]
+BUG: KASAN: slab-use-after-free in rwsem_down_write_slowpath+0xec2/0x1290 kernel/locking/rwsem.c:1113
+Read of size 4 at addr ffff888021833bb4 by task syz-executor.1/5704
 
----
- drivers/base/power/qos.c |   37 +++++++++++++++++++++++++------------
- 1 file changed, 25 insertions(+), 12 deletions(-)
+CPU: 0 PID: 5704 Comm: syz-executor.1 Not tainted 6.5.0-rc3-next-20230728-syzkaller-dirty #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 07/12/2023
+Call Trace:
+ <TASK>
+ __dump_stack lib/dump_stack.c:88 [inline]
+ dump_stack_lvl+0xd9/0x1b0 lib/dump_stack.c:106
+ print_address_description mm/kasan/report.c:364 [inline]
+ print_report+0xc4/0x620 mm/kasan/report.c:475
+ kasan_report+0xda/0x110 mm/kasan/report.c:588
+ owner_on_cpu include/linux/sched.h:2306 [inline]
+ rwsem_can_spin_on_owner kernel/locking/rwsem.c:725 [inline]
+ rwsem_down_write_slowpath+0xec2/0x1290 kernel/locking/rwsem.c:1113
+ __down_write_common kernel/locking/rwsem.c:1306 [inline]
+ __down_write kernel/locking/rwsem.c:1315 [inline]
+ down_write+0x1d3/0x200 kernel/locking/rwsem.c:1574
+ grab_super+0x5d/0x2a0 fs/super.c:385
+ sget_fc+0x5d1/0x860 fs/super.c:612
+ get_tree_bdev+0x13e/0x6a0 fs/super.c:1324
+ romfs_get_tree fs/romfs/super.c:561 [inline]
+ romfs_get_tree+0x4e/0x60 fs/romfs/super.c:552
+ vfs_get_tree+0x88/0x350 fs/super.c:1522
+ do_new_mount fs/namespace.c:3335 [inline]
+ path_mount+0x1492/0x1ed0 fs/namespace.c:3662
+ do_mount fs/namespace.c:3675 [inline]
+ __do_sys_mount fs/namespace.c:3884 [inline]
+ __se_sys_mount fs/namespace.c:3861 [inline]
+ __x64_sys_mount+0x293/0x310 fs/namespace.c:3861
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x38/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x63/0xcd
+RIP: 0033:0x7fcba847cae9
+Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 e1 20 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b0 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007fcba77dd0c8 EFLAGS: 00000246 ORIG_RAX: 00000000000000a5
+RAX: ffffffffffffffda RBX: 00007fcba859c050 RCX: 00007fcba847cae9
+RDX: 0000000020000040 RSI: 0000000020000080 RDI: 00000000200000c0
+RBP: 00007fcba84c847a R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000005 R11: 0000000000000246 R12: 0000000000000000
+R13: 000000000000006e R14: 00007fcba859c050 R15: 00007fff1814fcf8
+ </TASK>
 
-Index: linux-pm/drivers/base/power/qos.c
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
---- linux-pm.orig/drivers/base/power/qos.c
-+++ linux-pm/drivers/base/power/qos.c
-@@ -186,26 +186,21 @@ static int apply_constraint(struct dev_p
+Allocated by task 5683:
+ kasan_save_stack+0x33/0x50 mm/kasan/common.c:45
+ kasan_set_track+0x25/0x30 mm/kasan/common.c:52
+ __kasan_slab_alloc+0x81/0x90 mm/kasan/common.c:328
+ kasan_slab_alloc include/linux/kasan.h:186 [inline]
+ slab_post_alloc_hook mm/slab.h:762 [inline]
+ slab_alloc_node mm/slub.c:3478 [inline]
+ kmem_cache_alloc_node+0x185/0x3f0 mm/slub.c:3523
+ alloc_task_struct_node kernel/fork.c:173 [inline]
+ dup_task_struct kernel/fork.c:1113 [inline]
+ copy_process+0x41c/0x7400 kernel/fork.c:2338
+ kernel_clone+0xfd/0x930 kernel/fork.c:2920
+ __do_sys_clone3+0x1f1/0x260 kernel/fork.c:3221
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x38/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x63/0xcd
 
- /*
-  * dev_pm_qos_constraints_allocate
-- * @dev: device to allocate data for
-  *
-  * Called at the first call to add_request, for constraint data allocation
-  * Must be called with the dev_pm_qos_mtx mutex held
-  */
--static int dev_pm_qos_constraints_allocate(struct device *dev)
-+static struct dev_pm_qos *dev_pm_qos_constraints_allocate(void)
- {
-     struct dev_pm_qos *qos;
-     struct pm_qos_constraints *c;
-     struct blocking_notifier_head *n;
+Freed by task 15:
+ kasan_save_stack+0x33/0x50 mm/kasan/common.c:45
+ kasan_set_track+0x25/0x30 mm/kasan/common.c:52
+ kasan_save_free_info+0x2b/0x40 mm/kasan/generic.c:522
+ ____kasan_slab_free mm/kasan/common.c:236 [inline]
+ ____kasan_slab_free+0x15e/0x1b0 mm/kasan/common.c:200
+ kasan_slab_free include/linux/kasan.h:162 [inline]
+ slab_free_hook mm/slub.c:1800 [inline]
+ slab_free_freelist_hook+0x114/0x1e0 mm/slub.c:1826
+ slab_free mm/slub.c:3809 [inline]
+ kmem_cache_free+0xf0/0x490 mm/slub.c:3831
+ put_task_struct include/linux/sched/task.h:136 [inline]
+ put_task_struct include/linux/sched/task.h:123 [inline]
+ delayed_put_task_struct+0x246/0x2c0 kernel/exit.c:228
+ rcu_do_batch kernel/rcu/tree.c:2139 [inline]
+ rcu_core+0x7fb/0x1bb0 kernel/rcu/tree.c:2403
+ __do_softirq+0x218/0x965 kernel/softirq.c:553
 
--    qos =3D kzalloc(sizeof(*qos), GFP_KERNEL);
-+    qos =3D kzalloc(sizeof(*qos) + kzalloc(3 * sizeof(*n), GFP_KERNEL);
-     if (!qos)
--        return -ENOMEM;
-+        return NULL;
+Last potentially related work creation:
+ kasan_save_stack+0x33/0x50 mm/kasan/common.c:45
+ __kasan_record_aux_stack+0xbc/0xd0 mm/kasan/generic.c:492
+ __call_rcu_common.constprop.0+0x9a/0x790 kernel/rcu/tree.c:2653
+ put_task_struct_rcu_user kernel/exit.c:234 [inline]
+ put_task_struct_rcu_user+0x87/0xc0 kernel/exit.c:231
+ context_switch kernel/sched/core.c:5385 [inline]
+ __schedule+0xee9/0x59f0 kernel/sched/core.c:6711
+ schedule+0xe7/0x1b0 kernel/sched/core.c:6787
+ futex_wait_queue+0xf9/0x1f0 kernel/futex/waitwake.c:366
+ futex_wait+0x314/0x6d0 kernel/futex/waitwake.c:667
+ do_futex+0x224/0x350 kernel/futex/syscalls.c:102
+ __do_sys_futex kernel/futex/syscalls.c:179 [inline]
+ __se_sys_futex kernel/futex/syscalls.c:160 [inline]
+ __x64_sys_futex+0x1e1/0x4c0 kernel/futex/syscalls.c:160
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x38/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x63/0xcd
 
--    n =3D kzalloc(3 * sizeof(*n), GFP_KERNEL);
--    if (!n) {
--        kfree(qos);
--        return -ENOMEM;
--    }
-+    n =3D (struct blocking_notifier_head *)(qos + 1);
+Second to last potentially related work creation:
+ kasan_save_stack+0x33/0x50 mm/kasan/common.c:45
+ __kasan_record_aux_stack+0xbc/0xd0 mm/kasan/generic.c:492
+ __call_rcu_common.constprop.0+0x9a/0x790 kernel/rcu/tree.c:2653
+ put_task_struct_rcu_user kernel/exit.c:234 [inline]
+ put_task_struct_rcu_user+0x87/0xc0 kernel/exit.c:231
+ release_task+0xf0a/0x1b90 kernel/exit.c:284
+ wait_task_zombie kernel/exit.c:1192 [inline]
+ wait_consider_task+0x17ca/0x4030 kernel/exit.c:1419
+ do_wait_thread kernel/exit.c:1482 [inline]
+ __do_wait+0x23c/0x870 kernel/exit.c:1601
+ do_wait+0x1cb/0x4c0 kernel/exit.c:1634
+ kernel_wait4+0x16d/0x280 kernel/exit.c:1794
+ __do_sys_wait4+0x15b/0x170 kernel/exit.c:1822
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x38/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x63/0xcd
 
-     c =3D &qos->resume_latency;
-     plist_head_init(&c->list);
-@@ -227,6 +222,20 @@ static int dev_pm_qos_constraints_alloca
+The buggy address belongs to the object at ffff888021833b80
+ which belongs to the cache task_struct of size 7360
+The buggy address is located 52 bytes inside of
+ freed 7360-byte region [ffff888021833b80, ffff888021835840)
 
-     INIT_LIST_HEAD(&qos->flags.list);
+The buggy address belongs to the physical page:
+page:ffffea0000860c00 refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x21830
+head:ffffea0000860c00 order:3 entire_mapcount:0 nr_pages_mapped:0 pincount:0
+memcg:ffff88802b2d5e01
+flags: 0xfff00000010200(slab|head|node=0|zone=1|lastcpupid=0x7ff)
+page_type: 0xffffffff()
+raw: 00fff00000010200 ffff888014674500 ffffea0000904a00 dead000000000002
+raw: 0000000000000000 0000000000040004 00000001ffffffff ffff88802b2d5e01
+page dumped because: kasan: bad access detected
+page_owner tracks the page as allocated
+page last allocated via order 3, migratetype Unmovable, gfp_mask 0xd20c0(__GFP_IO|__GFP_FS|__GFP_NOWARN|__GFP_NORETRY|__GFP_COMP|__GFP_NOMEMALLOC), pid 4952, tgid 4952 (dhcpcd-run-hook), ts 37131998344, free_ts 37098705574
+ set_page_owner include/linux/page_owner.h:31 [inline]
+ post_alloc_hook+0x2d2/0x350 mm/page_alloc.c:1569
+ prep_new_page mm/page_alloc.c:1576 [inline]
+ get_page_from_freelist+0x10d7/0x31b0 mm/page_alloc.c:3256
+ __alloc_pages+0x1d0/0x4a0 mm/page_alloc.c:4512
+ alloc_pages+0x1a9/0x270 mm/mempolicy.c:2279
+ alloc_slab_page mm/slub.c:1870 [inline]
+ allocate_slab+0x24e/0x380 mm/slub.c:2017
+ new_slab mm/slub.c:2070 [inline]
+ ___slab_alloc+0x8bc/0x1570 mm/slub.c:3223
+ __slab_alloc.constprop.0+0x56/0xa0 mm/slub.c:3322
+ __slab_alloc_node mm/slub.c:3375 [inline]
+ slab_alloc_node mm/slub.c:3468 [inline]
+ kmem_cache_alloc_node+0x137/0x3f0 mm/slub.c:3523
+ alloc_task_struct_node kernel/fork.c:173 [inline]
+ dup_task_struct kernel/fork.c:1113 [inline]
+ copy_process+0x41c/0x7400 kernel/fork.c:2338
+ kernel_clone+0xfd/0x930 kernel/fork.c:2920
+ __do_sys_clone+0xba/0x100 kernel/fork.c:3063
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x38/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x63/0xcd
+page last free stack trace:
+ reset_page_owner include/linux/page_owner.h:24 [inline]
+ free_pages_prepare mm/page_alloc.c:1160 [inline]
+ free_unref_page_prepare+0x508/0xb90 mm/page_alloc.c:2383
+ free_unref_page+0x33/0x3b0 mm/page_alloc.c:2478
+ __unfreeze_partials+0x21d/0x240 mm/slub.c:2655
+ qlink_free mm/kasan/quarantine.c:166 [inline]
+ qlist_free_all+0x6a/0x170 mm/kasan/quarantine.c:185
+ kasan_quarantine_reduce+0x18b/0x1d0 mm/kasan/quarantine.c:292
+ __kasan_slab_alloc+0x65/0x90 mm/kasan/common.c:305
+ kasan_slab_alloc include/linux/kasan.h:186 [inline]
+ slab_post_alloc_hook mm/slab.h:762 [inline]
+ slab_alloc_node mm/slub.c:3478 [inline]
+ slab_alloc mm/slub.c:3486 [inline]
+ __kmem_cache_alloc_lru mm/slub.c:3493 [inline]
+ kmem_cache_alloc+0x172/0x3b0 mm/slub.c:3502
+ getname_flags.part.0+0x50/0x4d0 fs/namei.c:140
+ getname_flags include/linux/audit.h:319 [inline]
+ getname+0x90/0xe0 fs/namei.c:219
+ do_sys_openat2+0x100/0x1e0 fs/open.c:1412
+ do_sys_open fs/open.c:1433 [inline]
+ __do_sys_openat fs/open.c:1449 [inline]
+ __se_sys_openat fs/open.c:1444 [inline]
+ __x64_sys_openat+0x175/0x210 fs/open.c:1444
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x38/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x63/0xcd
 
-+    return qos;
-+}
-+
-+static int dev_pm_qos_constraints_add(struct device *dev,
-+                       struct dev_pm_qos *qos)
-+{
-+    if (!qos)
-+        return -ENOMEM;
-+
-+    if (!IS_ERR_OR_NULL(dev->power.qos)) {
-+        kfree(qos);
-+        return -ENODEV;
-+    }
-+
-     spin_lock_irq(&dev->power.lock);
-     dev->power.qos =3D qos;
-     spin_unlock_irq(&dev->power.lock);
-@@ -326,6 +335,7 @@ static bool dev_pm_qos_invalid_req_type(
- }
+Memory state around the buggy address:
+ ffff888021833a80: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
+ ffff888021833b00: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
+>ffff888021833b80: fa fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+                                     ^
+ ffff888021833c00: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+ ffff888021833c80: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+==================================================================
 
- static int __dev_pm_qos_add_request(struct device *dev,
-+                    struct dev_pm_qos *qos,
-                     struct dev_pm_qos_request *req,
-                     enum dev_pm_qos_req_type type, s32 value)
- {
-@@ -340,8 +350,10 @@ static int __dev_pm_qos_add_request(stru
 
-     if (IS_ERR(dev->power.qos))
-         ret =3D -ENODEV;
--    else if (!dev->power.qos)
--        ret =3D dev_pm_qos_constraints_allocate(dev);
-+    else if (dev->power.qos)
-+        kfree(qos);
-+    else
-+        ret =3D dev_pm_qos_constraints_add(dev);
+Tested on:
 
-     trace_dev_pm_qos_add_request(dev_name(dev), type, value);
-     if (ret)
-@@ -388,10 +400,11 @@ static int __dev_pm_qos_add_request(stru
- int dev_pm_qos_add_request(struct device *dev, struct dev_pm_qos_request *=
-req,
-                enum dev_pm_qos_req_type type, s32 value)
- {
-+    struct dev_pm_qos *qos =3D dev_pm_qos_constraints_allocate();
-     int ret;
+commit:         d7b3af5a Add linux-next specific files for 20230728
+git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git
+console output: https://syzkaller.appspot.com/x/log.txt?x=16c3ddd5a80000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=62dd327c382e3fe
+dashboard link: https://syzkaller.appspot.com/bug?extid=2faac0423fdc9692822b
+compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
+patch:          https://syzkaller.appspot.com/x/patch.diff?x=10e0160da80000
 
-     mutex_lock(&dev_pm_qos_mtx);
--    ret =3D __dev_pm_qos_add_request(dev, req, type, value);
-+    ret =3D __dev_pm_qos_add_request(dev, qos, req, type, value);
-     mutex_unlock(&dev_pm_qos_mtx);
-     return ret;
- }
-
---000000000000d3141a06021daaed
-Content-Type: text/x-patch; charset="US-ASCII"; name="pm-qos-rfc-change.patch"
-Content-Disposition: attachment; filename="pm-qos-rfc-change.patch"
-Content-Transfer-Encoding: base64
-Content-ID: <f_lkwynmwh0>
-X-Attachment-Id: f_lkwynmwh0
-
-LS0tCiBkcml2ZXJzL2Jhc2UvcG93ZXIvcW9zLmMgfCAgIDM3ICsrKysrKysrKysrKysrKysrKysr
-KysrKystLS0tLS0tLS0tLS0KIDEgZmlsZSBjaGFuZ2VkLCAyNSBpbnNlcnRpb25zKCspLCAxMiBk
-ZWxldGlvbnMoLSkKCkluZGV4OiBsaW51eC1wbS9kcml2ZXJzL2Jhc2UvcG93ZXIvcW9zLmMKPT09
-PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
-PT09PT09PQotLS0gbGludXgtcG0ub3JpZy9kcml2ZXJzL2Jhc2UvcG93ZXIvcW9zLmMKKysrIGxp
-bnV4LXBtL2RyaXZlcnMvYmFzZS9wb3dlci9xb3MuYwpAQCAtMTg2LDI2ICsxODYsMjEgQEAgc3Rh
-dGljIGludCBhcHBseV9jb25zdHJhaW50KHN0cnVjdCBkZXZfcAogCiAvKgogICogZGV2X3BtX3Fv
-c19jb25zdHJhaW50c19hbGxvY2F0ZQotICogQGRldjogZGV2aWNlIHRvIGFsbG9jYXRlIGRhdGEg
-Zm9yCiAgKgogICogQ2FsbGVkIGF0IHRoZSBmaXJzdCBjYWxsIHRvIGFkZF9yZXF1ZXN0LCBmb3Ig
-Y29uc3RyYWludCBkYXRhIGFsbG9jYXRpb24KICAqIE11c3QgYmUgY2FsbGVkIHdpdGggdGhlIGRl
-dl9wbV9xb3NfbXR4IG11dGV4IGhlbGQKICAqLwotc3RhdGljIGludCBkZXZfcG1fcW9zX2NvbnN0
-cmFpbnRzX2FsbG9jYXRlKHN0cnVjdCBkZXZpY2UgKmRldikKK3N0YXRpYyBzdHJ1Y3QgZGV2X3Bt
-X3FvcyAqZGV2X3BtX3Fvc19jb25zdHJhaW50c19hbGxvY2F0ZSh2b2lkKQogewogCXN0cnVjdCBk
-ZXZfcG1fcW9zICpxb3M7CiAJc3RydWN0IHBtX3Fvc19jb25zdHJhaW50cyAqYzsKIAlzdHJ1Y3Qg
-YmxvY2tpbmdfbm90aWZpZXJfaGVhZCAqbjsKIAotCXFvcyA9IGt6YWxsb2Moc2l6ZW9mKCpxb3Mp
-LCBHRlBfS0VSTkVMKTsKKwlxb3MgPSBremFsbG9jKHNpemVvZigqcW9zKSArIGt6YWxsb2MoMyAq
-IHNpemVvZigqbiksIEdGUF9LRVJORUwpOwogCWlmICghcW9zKQotCQlyZXR1cm4gLUVOT01FTTsK
-KwkJcmV0dXJuIE5VTEw7CiAKLQluID0ga3phbGxvYygzICogc2l6ZW9mKCpuKSwgR0ZQX0tFUk5F
-TCk7Ci0JaWYgKCFuKSB7Ci0JCWtmcmVlKHFvcyk7Ci0JCXJldHVybiAtRU5PTUVNOwotCX0KKwlu
-ID0gKHN0cnVjdCBibG9ja2luZ19ub3RpZmllcl9oZWFkICopKHFvcyArIDEpOwogCiAJYyA9ICZx
-b3MtPnJlc3VtZV9sYXRlbmN5OwogCXBsaXN0X2hlYWRfaW5pdCgmYy0+bGlzdCk7CkBAIC0yMjcs
-NiArMjIyLDIwIEBAIHN0YXRpYyBpbnQgZGV2X3BtX3Fvc19jb25zdHJhaW50c19hbGxvY2EKIAog
-CUlOSVRfTElTVF9IRUFEKCZxb3MtPmZsYWdzLmxpc3QpOwogCisJcmV0dXJuIHFvczsKK30KKwor
-c3RhdGljIGludCBkZXZfcG1fcW9zX2NvbnN0cmFpbnRzX2FkZChzdHJ1Y3QgZGV2aWNlICpkZXYs
-CisJCQkJICAgICAgIHN0cnVjdCBkZXZfcG1fcW9zICpxb3MpCit7CisJaWYgKCFxb3MpCisJCXJl
-dHVybiAtRU5PTUVNOworCisJaWYgKCFJU19FUlJfT1JfTlVMTChkZXYtPnBvd2VyLnFvcykpIHsK
-KwkJa2ZyZWUocW9zKTsKKwkJcmV0dXJuIC1FTk9ERVY7CisJfQorCiAJc3Bpbl9sb2NrX2lycSgm
-ZGV2LT5wb3dlci5sb2NrKTsKIAlkZXYtPnBvd2VyLnFvcyA9IHFvczsKIAlzcGluX3VubG9ja19p
-cnEoJmRldi0+cG93ZXIubG9jayk7CkBAIC0zMjYsNiArMzM1LDcgQEAgc3RhdGljIGJvb2wgZGV2
-X3BtX3Fvc19pbnZhbGlkX3JlcV90eXBlKAogfQogCiBzdGF0aWMgaW50IF9fZGV2X3BtX3Fvc19h
-ZGRfcmVxdWVzdChzdHJ1Y3QgZGV2aWNlICpkZXYsCisJCQkJICAgIHN0cnVjdCBkZXZfcG1fcW9z
-ICpxb3MsCiAJCQkJICAgIHN0cnVjdCBkZXZfcG1fcW9zX3JlcXVlc3QgKnJlcSwKIAkJCQkgICAg
-ZW51bSBkZXZfcG1fcW9zX3JlcV90eXBlIHR5cGUsIHMzMiB2YWx1ZSkKIHsKQEAgLTM0MCw4ICsz
-NTAsMTAgQEAgc3RhdGljIGludCBfX2Rldl9wbV9xb3NfYWRkX3JlcXVlc3Qoc3RydQogCiAJaWYg
-KElTX0VSUihkZXYtPnBvd2VyLnFvcykpCiAJCXJldCA9IC1FTk9ERVY7Ci0JZWxzZSBpZiAoIWRl
-di0+cG93ZXIucW9zKQotCQlyZXQgPSBkZXZfcG1fcW9zX2NvbnN0cmFpbnRzX2FsbG9jYXRlKGRl
-dik7CisJZWxzZSBpZiAoZGV2LT5wb3dlci5xb3MpCisJCWtmcmVlKHFvcyk7CisJZWxzZQorCQly
-ZXQgPSBkZXZfcG1fcW9zX2NvbnN0cmFpbnRzX2FkZChkZXYpOwogCiAJdHJhY2VfZGV2X3BtX3Fv
-c19hZGRfcmVxdWVzdChkZXZfbmFtZShkZXYpLCB0eXBlLCB2YWx1ZSk7CiAJaWYgKHJldCkKQEAg
-LTM4OCwxMCArNDAwLDExIEBAIHN0YXRpYyBpbnQgX19kZXZfcG1fcW9zX2FkZF9yZXF1ZXN0KHN0
-cnUKIGludCBkZXZfcG1fcW9zX2FkZF9yZXF1ZXN0KHN0cnVjdCBkZXZpY2UgKmRldiwgc3RydWN0
-IGRldl9wbV9xb3NfcmVxdWVzdCAqcmVxLAogCQkJICAgZW51bSBkZXZfcG1fcW9zX3JlcV90eXBl
-IHR5cGUsIHMzMiB2YWx1ZSkKIHsKKwlzdHJ1Y3QgZGV2X3BtX3FvcyAqcW9zID0gZGV2X3BtX3Fv
-c19jb25zdHJhaW50c19hbGxvY2F0ZSgpOwogCWludCByZXQ7CiAKIAltdXRleF9sb2NrKCZkZXZf
-cG1fcW9zX210eCk7Ci0JcmV0ID0gX19kZXZfcG1fcW9zX2FkZF9yZXF1ZXN0KGRldiwgcmVxLCB0
-eXBlLCB2YWx1ZSk7CisJcmV0ID0gX19kZXZfcG1fcW9zX2FkZF9yZXF1ZXN0KGRldiwgcW9zLCBy
-ZXEsIHR5cGUsIHZhbHVlKTsKIAltdXRleF91bmxvY2soJmRldl9wbV9xb3NfbXR4KTsKIAlyZXR1
-cm4gcmV0OwogfQo=
---000000000000d3141a06021daaed--
