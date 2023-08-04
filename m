@@ -2,66 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1ACEF76F68F
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 02:41:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5091976F695
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 02:41:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232491AbjHDAlI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Aug 2023 20:41:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38504 "EHLO
+        id S232525AbjHDAld (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Aug 2023 20:41:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38980 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232462AbjHDAlB (ORCPT
+        with ESMTP id S232601AbjHDAlZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Aug 2023 20:41:01 -0400
+        Thu, 3 Aug 2023 20:41:25 -0400
 Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8602244BA
-        for <linux-kernel@vger.kernel.org>; Thu,  3 Aug 2023 17:40:55 -0700 (PDT)
-Received: by mail-yb1-xb49.google.com with SMTP id 3f1490d57ef6-d41bfd5e507so946194276.3
-        for <linux-kernel@vger.kernel.org>; Thu, 03 Aug 2023 17:40:55 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1556344BA
+        for <linux-kernel@vger.kernel.org>; Thu,  3 Aug 2023 17:41:11 -0700 (PDT)
+Received: by mail-yb1-xb49.google.com with SMTP id 3f1490d57ef6-c5a479bc2d4so1638636276.1
+        for <linux-kernel@vger.kernel.org>; Thu, 03 Aug 2023 17:41:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1691109654; x=1691714454;
+        d=google.com; s=20221208; t=1691109670; x=1691714470;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=OMeEbdNzRBMhLJX7Jj1oYrb1Y8jq11YVXHG0dUaROQw=;
-        b=QtCPDD7BDigbfVlhCztgjtEtpnDhuzjp5LSRitLIFjr34xmXnNNjyeeBDF8foMn2pG
-         hhTw6XAuK1GgODmFVQRdtAG0sX4RDeye2JXeKi++Y0PaeGfhJqO5c5FQEooPvhIJ5WqY
-         wFTSe6DGDQF67+7f+2cV8WpTxCesRd/hn8+G/MrCLm/rcf7Fcp0ZghW6ZZTwTcLqiWH1
-         vBSRPNSW0GhAzvEDLzSyq/vaxpn337pMeJmsfMPQqHIWnrDAn6zdAuca6wwF6NX/jWOW
-         0gkvpGiT0oKgDRiWQfZiNgXUiA60N1570jkoa8TIhuz+se+DwZ6s0v7BO0EBx4XmWLWv
-         AVqg==
+        bh=dTRvsnA+sbELxPyIEK/hSeGyuRvQauNjtE64dh76l8c=;
+        b=VSuDJJHNeUoVx6l0JPqzaBceM+hyywBdUbXpILDREbokx0PXni4MowRVRKHm6t5PWT
+         hSpTtj3GsZxZjqabXsReth4gMm1EZtOPvhuvD8Wr2I06KocfOgLOhWsRrhoB3KBDYAcr
+         H+5fz7AL+xvseCnn5pHXWHBD0t22vtrH+5SA04ln5bpAVfEWmWvpVgWEO/iHz5hX3kFd
+         D6GZbvE8opQskeMDdqt59Tme2YJNfsr5AZf7+Jetp5qzNSo+jnzKlbm26LWD/ezzSb57
+         kgmbUyGrxiEL2jbfRPuUu3b/6o0AwRsXGr+TWP/STqXd95n2hpFgy4P4QnY5hMVY1Aji
+         k7Vg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691109654; x=1691714454;
+        d=1e100.net; s=20221208; t=1691109670; x=1691714470;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=OMeEbdNzRBMhLJX7Jj1oYrb1Y8jq11YVXHG0dUaROQw=;
-        b=hNccsZGLxqdl3QuRC0ZR+4+u9y6gLnIQ/h3D7hEoKGNgmmqlYeREWCG2lSgX3s4nrv
-         fA+DWvm/5Cd7ZjuUvHvo7cB5qbp/+189JQyJznIFb+z8XlbJ833vBAkIPs1QnsYc4NDC
-         oQ+BtaemlDNY5NNCBkVZq49AsykjqSpWLSZmJOY73YwL6U5M90gumo3/lSmjrIe6DVUd
-         W3f9GyhULWo7IleK8C6Nm/UQzRe8GhfpcUzkOJ69vsU0vJK+c8NuzHjJXMEHl3BmJ6wW
-         Fo0vATCRJAAyb/QLQMsoYX4wnMoE8YZ9dXt4F7LdrdH9wQm/SoPV1onsBgyX2Pl3+X8h
-         HNtA==
-X-Gm-Message-State: AOJu0Yxs7yYkzgPwqGoTYdrtC8DBpqP8k9/UFHHMpN+39puie4ogIPGv
-        iAaL1ggKT3qimbsAaCcwJyzv6OIMePI=
-X-Google-Smtp-Source: AGHT+IHW9WCL8mnGZuXC1EYuIAH1ZEQoIKy7JnF6jta9YkxED2VsAMO1v9zeszNokSE+bWRDMql19Nhiksk=
+        bh=dTRvsnA+sbELxPyIEK/hSeGyuRvQauNjtE64dh76l8c=;
+        b=JrnDPfdOY5V7CGBpnMd8ZzWpgDKEqX6IkUrXowDxDHw0RSNTKWuJAkiVfPM6XQSkrE
+         wZGLN0h8JzvhakrPd08+YVlIWl2AlEdGoxGApeaasw/xQOvNrSor3KjK1kcLMAlBmu0A
+         Hd6+6tlWlOaLR5arEo2NC7z3Rd44lKxlW/K7Y2tWCW4+HweZrqiJgCYqYcxvp7j+UvM6
+         CR5AByDtPWBrEZaZ3jTgWUsSazTeTg8KrbMh/EP40fGb+8zK7ziQM7JOVNPzbgYF8f0T
+         BU+8/v1JUAYtaYiMn0ov3Yqc4AbWAFqLvuaLtaiq5Ri2Kn/r9gW/tlpewvokCOJEPljp
+         xyUQ==
+X-Gm-Message-State: AOJu0Yz22FOg2QXATLg9bN37BdW4d2I7rVYjSEsYFafIaautEZs+igDl
+        tTGI7nqWjAk7OZfDG9GK0zZrBYuIcQg=
+X-Google-Smtp-Source: AGHT+IEqjrZWPwzIg1XIGKUTbpToRYXrPYXW6KBqyej+Tw1G5y4hQN63MGdAwKIEQVCE5Ssqr58kfePnomw=
 X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a25:2f52:0:b0:d1c:5506:9761 with SMTP id
- v79-20020a252f52000000b00d1c55069761mr692ybv.1.1691109654397; Thu, 03 Aug
- 2023 17:40:54 -0700 (PDT)
-Date:   Thu,  3 Aug 2023 17:40:26 -0700
-In-Reply-To: <20230721201859.2307736-1-seanjc@google.com>
+ (user=seanjc job=sendgmr) by 2002:a05:6902:1364:b0:d14:6868:16a3 with SMTP id
+ bt4-20020a056902136400b00d14686816a3mr722ybb.5.1691109670401; Thu, 03 Aug
+ 2023 17:41:10 -0700 (PDT)
+Date:   Thu,  3 Aug 2023 17:41:04 -0700
+In-Reply-To: <20230729004722.1056172-1-seanjc@google.com>
 Mime-Version: 1.0
-References: <20230721201859.2307736-1-seanjc@google.com>
+References: <20230729004722.1056172-1-seanjc@google.com>
 X-Mailer: git-send-email 2.41.0.585.gd2178a4bd4-goog
-Message-ID: <169110224628.1966361.853135096516007767.b4-ty@google.com>
-Subject: Re: [PATCH v4 00/19] x86/reboot: KVM: Clean up "emergency" virt code
+Message-ID: <169110163548.1962937.16775471389381796228.b4-ty@google.com>
+Subject: Re: [PATCH v3 00/12] KVM: x86/mmu: Clean up MMU_DEBUG and BUG/WARN usage
 From:   Sean Christopherson <seanjc@google.com>
 To:     Sean Christopherson <seanjc@google.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
         Paolo Bonzini <pbonzini@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        Andrew Cooper <Andrew.Cooper3@citrix.com>,
-        Kai Huang <kai.huang@intel.com>, Chao Gao <chao.gao@intel.com>
+Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Mingwei Zhang <mizhang@google.com>,
+        David Matlack <dmatlack@google.com>,
+        Jim Mattson <jmattson@google.com>
 Content-Type: text/plain; charset="utf-8"
 X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
@@ -73,62 +71,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 21 Jul 2023 13:18:40 -0700, Sean Christopherson wrote:
-> If there are no objections, my plan is to take this through the KVM tree
-> for 6.6.
+On Fri, 28 Jul 2023 17:47:10 -0700, Sean Christopherson wrote:
+> This series consist of three loosely related miniseries:
 > 
-> Instead of having the reboot code blindly try to disable virtualization
-> during an emergency, use the existing callback into KVM to disable virt
-> as "needed".  In quotes because KVM still somewhat blindly attempts to
-> disable virt, e.g. if KVM is loaded but doesn't have active VMs and thus
-> hasn't enabled hardware.  That could theoretically be "fixed", but due to
-> the callback being invoked from NMI context, I'm not convinced it would
-> be worth the complexity.  E.g. false positives would still be possible,
-> and KVM would have to play games with the per-CPU hardware_enabled flag
-> to ensure there are no false negatives.
+>  1. Remove the noisy prints buried behind MMU_DEBUG, and replace MMU_DEBUG
+>     with a KVM_PROVE_MMU Kconfig.
+> 
+>  2. Use WARN_ON_ONCE() for all runtime WARNs, i.e. avoid spamming the
+>     kernel log if something goes awry in the MMU.
 > 
 > [...]
 
-Applied to kvm-x86 misc, thanks!
+Applied to kvm-x86 mmu, thanks!
 
-[01/19] x86/reboot: VMCLEAR active VMCSes before emergency reboot
-        https://github.com/kvm-x86/linux/commit/b23c83ad2c63
-[02/19] x86/reboot: Harden virtualization hooks for emergency reboot
-        https://github.com/kvm-x86/linux/commit/5e408396c60c
-[03/19] x86/reboot: KVM: Handle VMXOFF in KVM's reboot callback
-        https://github.com/kvm-x86/linux/commit/119b5cb4ffd0
-[04/19] x86/reboot: KVM: Disable SVM during reboot via virt/KVM reboot callback
-        https://github.com/kvm-x86/linux/commit/baeb4de7ad12
-[05/19] x86/reboot: Assert that IRQs are disabled when turning off virtualization
-        https://github.com/kvm-x86/linux/commit/ad93c1a7c010
-[06/19] x86/reboot: Hoist "disable virt" helpers above "emergency reboot" path
-        https://github.com/kvm-x86/linux/commit/edc8deb087d8
-[07/19] x86/reboot: Disable virtualization during reboot iff callback is registered
-        https://github.com/kvm-x86/linux/commit/59765db5fc82
-[08/19] x86/reboot: Expose VMCS crash hooks if and only if KVM_{INTEL,AMD} is enabled
-        https://github.com/kvm-x86/linux/commit/261cd5ed934e
-[09/19] x86/virt: KVM: Open code cpu_has_vmx() in KVM VMX
-        https://github.com/kvm-x86/linux/commit/b6a6af0d19ce
-[10/19] x86/virt: KVM: Move VMXOFF helpers into KVM VMX
-        https://github.com/kvm-x86/linux/commit/22e420e12739
-[11/19] KVM: SVM: Make KVM_AMD depend on CPU_SUP_AMD or CPU_SUP_HYGON
-        https://github.com/kvm-x86/linux/commit/554856b69e3d
-[12/19] x86/virt: Drop unnecessary check on extended CPUID level in cpu_has_svm()
-        https://github.com/kvm-x86/linux/commit/5df8ecfe3632
-[13/19] x86/virt: KVM: Open code cpu_has_svm() into kvm_is_svm_supported()
-        https://github.com/kvm-x86/linux/commit/85fd29dd5fe4
-[14/19] KVM: SVM: Check that the current CPU supports SVM in kvm_is_svm_supported()
-        https://github.com/kvm-x86/linux/commit/c4db4f20f3bf
-[15/19] KVM: VMX: Ensure CPU is stable when probing basic VMX support
-        https://github.com/kvm-x86/linux/commit/f9a8866040fc
-[16/19] x86/virt: KVM: Move "disable SVM" helper into KVM SVM
-        https://github.com/kvm-x86/linux/commit/76ab8161083b
-[17/19] KVM: x86: Force kvm_rebooting=true during emergency reboot/crash
-        https://github.com/kvm-x86/linux/commit/6ae44e012f4c
-[18/19] KVM: SVM: Use "standard" stgi() helper when disabling SVM
-        https://github.com/kvm-x86/linux/commit/2e6b9bd49b70
-[19/19] KVM: VMX: Skip VMCLEAR logic during emergency reboots if CR4.VMXE=0
-        https://github.com/kvm-x86/linux/commit/a788fbb763b5
+[01/12] KVM: x86/mmu: Delete pgprintk() and all its usage
+        https://github.com/kvm-x86/linux/commit/5a9481e69942
+[02/12] KVM: x86/mmu: Delete rmap_printk() and all its usage
+        https://github.com/kvm-x86/linux/commit/ed501863ae54
+[03/12] KVM: x86/mmu: Delete the "dbg" module param
+        https://github.com/kvm-x86/linux/commit/f01ebf874adb
+[04/12] KVM: x86/mmu: Avoid pointer arithmetic when iterating over SPTEs
+        https://github.com/kvm-x86/linux/commit/c7784ee6cc06
+[05/12] KVM: x86/mmu: Cleanup sanity check of SPTEs at SP free
+        https://github.com/kvm-x86/linux/commit/064a5ab685bd
+[06/12] KVM: x86/mmu: Rename MMU_WARN_ON() to KVM_MMU_WARN_ON()
+        https://github.com/kvm-x86/linux/commit/e1cb291d66ac
+[07/12] KVM: x86/mmu: Convert "runtime" WARN_ON() assertions to WARN_ON_ONCE()
+        https://github.com/kvm-x86/linux/commit/50719bc3dda9
+[08/12] KVM: x86/mmu: Bug the VM if a vCPU ends up in long mode without PAE enabled
+        https://github.com/kvm-x86/linux/commit/4f121b5d2228
+[09/12] KVM: x86/mmu: Replace MMU_DEBUG with proper KVM_PROVE_MMU Kconfig
+        https://github.com/kvm-x86/linux/commit/982758f88bb9
+[10/12] KVM: x86/mmu: Use BUILD_BUG_ON_INVALID() for KVM_MMU_WARN_ON() stub
+        https://github.com/kvm-x86/linux/commit/bc90c971dcb7
+[11/12] KVM: x86/mmu: Plumb "struct kvm" all the way to pte_list_remove()
+        https://github.com/kvm-x86/linux/commit/472ba3231883
+[12/12] KVM: x86/mmu: BUG() in rmap helpers iff CONFIG_BUG_ON_DATA_CORRUPTION=y
+        https://github.com/kvm-x86/linux/commit/21baf78ef845
 
 --
 https://github.com/kvm-x86/linux/tree/next
