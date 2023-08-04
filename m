@@ -2,128 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 904F1770A67
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 23:05:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B9FD6770ADE
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 23:26:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230005AbjHDVFx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Aug 2023 17:05:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33142 "EHLO
+        id S229828AbjHDV0a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Aug 2023 17:26:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44072 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230326AbjHDVFi (ORCPT
+        with ESMTP id S231140AbjHDV0M (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Aug 2023 17:05:38 -0400
-Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B74F526E
-        for <linux-kernel@vger.kernel.org>; Fri,  4 Aug 2023 14:05:12 -0700 (PDT)
-Received: by mail-wm1-x32a.google.com with SMTP id 5b1f17b1804b1-3fbea14706eso23627435e9.2
-        for <linux-kernel@vger.kernel.org>; Fri, 04 Aug 2023 14:05:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1691183111; x=1691787911;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=3tY2x5jOA5MdZIZQOU+BSDgMhCiPCQJMMt53eXPrT6A=;
-        b=ToYJOdJ5fj7DrMiQyzjHrRm8CPjZtUeDWLgCVQMEWcK2D7SHvzCTpvT+G3YXVFJzL0
-         PQqRKhfW+CTxP2e9x7tnro/ca9kFlHutp3C0KJ81cvc9Io2DQva9Nmtv0bjQwPvVWUeG
-         mRpa8udRCVui1Ng0juDV7Wp5ePMmaK5r0KYHEEteDixsLvf/IAclFd1C98D+SDgY+NtU
-         +b1bW3iwo1osF8yTZrK8t0CkVyJj5QcMCT85lTGhoB0f6unJ0MeqzTH65Q1uh2RU2NWt
-         4NIWyrx+cctBsmuiw2vutTcdq0faJu5MKLHYTHqgv6kIbjzUo9uLZDDvfPfUSipnJt2R
-         3Sxw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691183111; x=1691787911;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=3tY2x5jOA5MdZIZQOU+BSDgMhCiPCQJMMt53eXPrT6A=;
-        b=TiaNkXBCvjm+C9HSHws99+JyeSG/pQzQqgddOY6+o78xWFI/6yQs9KVs7qgKwThi9M
-         hkfhg4eFu2LOtXh6op7kuyr3wo9Iz2sCEXdtZtV8EF31/C3sJCycMX69Af3Oz6Omy1Wn
-         /5tYPCe8OwZCpeACng3g4gkjMUHelGiO83ceuviMikRT0bIrYdd07LPhZCCa5yOqZJA1
-         3DWeAHVNkIRXSNvuMRBIvsdQD7PmU3x6Li/SdYYYzZ4dmTRB09k1AUEuC3ZC2Rqn9VxR
-         4NOVqqpEVKonE9IEvstRtKBnUmItMoy1P7zi2AN9UT77uXf6mOZ/2Z8vj3SMxPgw/maO
-         l4yg==
-X-Gm-Message-State: AOJu0YwPUmvzXPnp92ybB5bshyHSJEys5Ef6GCoeYydwqefnW3s1FS+p
-        FpKk/evmVLUrAqIkuv7sDf6gCg==
-X-Google-Smtp-Source: AGHT+IGhQzTlOvnyUH7z13hhyfjdj82sVmoev7p0mQju8BbwDFXwFx+c7okVHM5ncHB2MgwoXMueow==
-X-Received: by 2002:a5d:4e03:0:b0:314:3ad6:2327 with SMTP id p3-20020a5d4e03000000b003143ad62327mr2025995wrt.12.1691183110969;
-        Fri, 04 Aug 2023 14:05:10 -0700 (PDT)
-Received: from [192.168.0.162] (188-141-3-169.dynamic.upc.ie. [188.141.3.169])
-        by smtp.gmail.com with ESMTPSA id l12-20020adff48c000000b0030ada01ca78sm3372266wro.10.2023.08.04.14.05.09
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 04 Aug 2023 14:05:10 -0700 (PDT)
-Message-ID: <9dc7d386-2922-0fb5-171f-1dd19505c092@linaro.org>
-Date:   Fri, 4 Aug 2023 22:05:09 +0100
+        Fri, 4 Aug 2023 17:26:12 -0400
+Received: from cloudserver094114.home.pl (cloudserver094114.home.pl [79.96.170.134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AED66E46;
+        Fri,  4 Aug 2023 14:26:10 -0700 (PDT)
+Received: from localhost (127.0.0.1) (HELO v370.home.net.pl)
+ by /usr/run/smtp (/usr/run/postfix/private/idea_relay_lmtp) via UNIX with SMTP (IdeaSmtpServer 5.2.0)
+ id cae361074099a2a1; Fri, 4 Aug 2023 23:26:09 +0200
+Authentication-Results: v370.home.net.pl; spf=softfail (domain owner 
+   discourages use of this host) smtp.mailfrom=rjwysocki.net 
+   (client-ip=195.136.19.94; helo=[195.136.19.94]; 
+   envelope-from=rjw@rjwysocki.net; receiver=<UNKNOWN>)
+Received: from kreacher.localnet (unknown [195.136.19.94])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by v370.home.net.pl (Postfix) with ESMTPSA id 7A7AB661680;
+        Fri,  4 Aug 2023 23:26:08 +0200 (CEST)
+From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
+To:     Linux ACPI <linux-acpi@vger.kernel.org>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Michal Wilczynski <michal.wilczynski@intel.com>,
+        Zhang Rui <rui.zhang@intel.com>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
+Subject: [PATCH v4 04/10] thermal: core: Add thermal_zone_update_trip_temp() helper routine
+Date:   Fri, 04 Aug 2023 23:05:40 +0200
+Message-ID: <1967710.PYKUYFuaPT@kreacher>
+In-Reply-To: <4878513.31r3eYUQgx@kreacher>
+References: <13318886.uLZWGnKmhe@kreacher> <4878513.31r3eYUQgx@kreacher>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.8.0
-Subject: Re: [PATCH 2/6] media: venus: core: Remove trailing commas from of
- match entries
-Content-Language: en-US
-To:     Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Stanimir Varbanov <stanimir.k.varbanov@gmail.com>,
-        Vikash Garodia <quic_vgarodia@quicinc.com>,
-        Bryan O'Donoghue <bryan.odonoghue@linaro.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>
-Cc:     Marijn Suijten <marijn.suijten@somainline.org>,
-        Konrad Dybcio <konradybcio@kernel.org>,
-        linux-media@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20230731-topic-8280_venus-v1-0-8c8bbe1983a5@linaro.org>
- <20230731-topic-8280_venus-v1-2-8c8bbe1983a5@linaro.org>
-From:   Bryan O'Donoghue <bryan.odonoghue@linaro.org>
-In-Reply-To: <20230731-topic-8280_venus-v1-2-8c8bbe1983a5@linaro.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="UTF-8"
+X-CLIENT-IP: 195.136.19.94
+X-CLIENT-HOSTNAME: 195.136.19.94
+X-VADE-SPAMSTATE: clean
+X-VADE-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedviedrkeeggdduheelucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecujffqoffgrffnpdggtffipffknecuuegrihhlohhuthemucduhedtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjughrpefhvfevufffkfgjfhgggfgtsehtufertddttdejnecuhfhrohhmpedftfgrfhgrvghlucflrdcuhgihshhotghkihdfuceorhhjfiesrhhjfiihshhotghkihdrnhgvtheqnecuggftrfgrthhtvghrnhepvdffueeitdfgvddtudegueejtdffteetgeefkeffvdeftddttdeuhfegfedvjefhnecukfhppeduleehrddufeeirdduledrleegnecuvehluhhsthgvrhfuihiivgepvdenucfrrghrrghmpehinhgvthepudelhedrudefiedrudelrdelgedphhgvlhhopehkrhgvrggthhgvrhdrlhhotggrlhhnvghtpdhmrghilhhfrhhomhepfdftrghfrggvlhculfdrucghhihsohgtkhhifdcuoehrjhifsehrjhifhihsohgtkhhirdhnvghtqedpnhgspghrtghpthhtohepjedprhgtphhtthhopehlihhnuhigqdgrtghpihesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopegurghnihgvlhdrlhgviigtrghnoheslhhinhgrrhhordhorhhgpdhrtghpthhtoheplhhinhhugidqkhgvrhhnvghlsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtoheplhhinhhugidqphhmsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghp
+ thhtohepmhhitghhrghlrdifihhltgiihihnshhkihesihhnthgvlhdrtghomhdprhgtphhtthhopehruhhirdiihhgrnhhgsehinhhtvghlrdgtohhm
+X-DCC--Metrics: v370.home.net.pl 1024; Body=7 Fuz1=7 Fuz2=7
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 04/08/2023 21:09, Konrad Dybcio wrote:
-> Even though it has zero effect on functionality, remove them for coherency
-> with other drivers.
-> 
-> Signed-off-by: Konrad Dybcio <konrad.dybcio@linaro.org>
-> ---
->   drivers/media/platform/qcom/venus/core.c | 16 ++++++++--------
->   1 file changed, 8 insertions(+), 8 deletions(-)
-> 
-> diff --git a/drivers/media/platform/qcom/venus/core.c b/drivers/media/platform/qcom/venus/core.c
-> index 3cc38881d4f6..0af45faec247 100644
-> --- a/drivers/media/platform/qcom/venus/core.c
-> +++ b/drivers/media/platform/qcom/venus/core.c
-> @@ -884,14 +884,14 @@ static const struct venus_resources sc7280_res = {
->   };
->   
->   static const struct of_device_id venus_dt_match[] = {
-> -	{ .compatible = "qcom,msm8916-venus", .data = &msm8916_res, },
-> -	{ .compatible = "qcom,msm8996-venus", .data = &msm8996_res, },
-> -	{ .compatible = "qcom,sdm660-venus", .data = &sdm660_res, },
-> -	{ .compatible = "qcom,sdm845-venus", .data = &sdm845_res, },
-> -	{ .compatible = "qcom,sdm845-venus-v2", .data = &sdm845_res_v2, },
-> -	{ .compatible = "qcom,sc7180-venus", .data = &sc7180_res, },
-> -	{ .compatible = "qcom,sc7280-venus", .data = &sc7280_res, },
-> -	{ .compatible = "qcom,sm8250-venus", .data = &sm8250_res, },
-> +	{ .compatible = "qcom,msm8916-venus", .data = &msm8916_res },
-> +	{ .compatible = "qcom,msm8996-venus", .data = &msm8996_res },
-> +	{ .compatible = "qcom,sdm660-venus", .data = &sdm660_res },
-> +	{ .compatible = "qcom,sdm845-venus", .data = &sdm845_res },
-> +	{ .compatible = "qcom,sdm845-venus-v2", .data = &sdm845_res_v2 },
-> +	{ .compatible = "qcom,sc7180-venus", .data = &sc7180_res },
-> +	{ .compatible = "qcom,sc7280-venus", .data = &sc7280_res },
-> +	{ .compatible = "qcom,sm8250-venus", .data = &sm8250_res },
->   	{ }
->   };
->   MODULE_DEVICE_TABLE(of, venus_dt_match);
+From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+
+Introduce a helper routine called thermal_zone_update_trip_temp() that
+can be used to update a trip point's temperature with the help of a
+pointer to local data associated with that trip point provided by
+the thermal driver that created it.
+
+Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+---
+
+New patch in v4.
+
+---
+ drivers/thermal/thermal_trip.c |   37 +++++++++++++++++++++++++++++++++++++
+ include/linux/thermal.h        |    4 ++++
+ 2 files changed, 41 insertions(+)
+
+Index: linux-pm/drivers/thermal/thermal_trip.c
+===================================================================
+--- linux-pm.orig/drivers/thermal/thermal_trip.c
++++ linux-pm/drivers/thermal/thermal_trip.c
+@@ -180,3 +180,40 @@ int thermal_zone_set_trip(struct thermal
+ 
+ 	return 0;
+ }
++
++/**
++ * thermal_zone_update_trip_temp - Update the trip point temperature.
++ * @tz: Thermal zone.
++ * @trip_priv: Trip tag.
++ * @temp: New trip temperature.
++ *
++ * This only works for thermal zones using trip tables and its caller must
++ * ensure that the zone lock is held before using it.
++ *
++ * @trip_priv is expected to be the value that has been stored by the driver
++ * in the struct thermal_trip representing the trip point in question, so it
++ * can be matched against the value of the priv field in that structure.
++ *
++ * If @trip_priv does not match any trip point in the trip table of @tz,
++ * nothing happens.
++ */
++void thermal_zone_update_trip_temp(struct thermal_zone_device *tz,
++				   void *trip_priv, int temperature)
++{
++	int i;
++
++	lockdep_assert_held(&tz->lock);
++
++	if (!tz->trips || !trip_priv)
++		return;
++
++	for (i = 0; i < tz->num_trips; i++) {
++		struct thermal_trip *trip = &tz->trips[i];
++
++		if (trip->priv == trip_priv) {
++			trip->temperature = temperature;
++			return;
++		}
++	}
++}
++EXPORT_SYMBOL_GPL(thermal_zone_update_trip_temp);
+Index: linux-pm/include/linux/thermal.h
+===================================================================
+--- linux-pm.orig/include/linux/thermal.h
++++ linux-pm/include/linux/thermal.h
+@@ -286,9 +286,13 @@ int __thermal_zone_get_trip(struct therm
+ 			    struct thermal_trip *trip);
+ int thermal_zone_get_trip(struct thermal_zone_device *tz, int trip_id,
+ 			  struct thermal_trip *trip);
++void thermal_zone_update_trip_temp(struct thermal_zone_device *tz,
++				   void *trip_priv, int temperature);
+ 
+ int thermal_zone_set_trip(struct thermal_zone_device *tz, int trip_id,
+ 			  const struct thermal_trip *trip);
++void thermal_zone_update_trip_temp(struct thermal_zone_device *tz,
++				   void *trip_priv, int temperature);
+ 
+ int thermal_zone_get_num_trips(struct thermal_zone_device *tz);
+ 
 
 
-Reviewed-by: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
+
