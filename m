@@ -2,91 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DB01F770A35
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 23:01:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F835770A40
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 23:01:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230127AbjHDVBB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Aug 2023 17:01:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58148 "EHLO
+        id S230265AbjHDVBv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Aug 2023 17:01:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58704 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229644AbjHDVA7 (ORCPT
+        with ESMTP id S230183AbjHDVBq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Aug 2023 17:00:59 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4185E42;
-        Fri,  4 Aug 2023 14:00:58 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 464E262089;
-        Fri,  4 Aug 2023 21:00:58 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 50895C433C7;
-        Fri,  4 Aug 2023 21:00:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691182857;
-        bh=wRZ3rQW3njry72R33WoUyNQvRAO3k+4UfyNKdLLPmRg=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=o73Gcf2v71Pj0DgU8IChVQD6LzDROczuPJk4+7ngDZ9wu6HyyYqufCT8jTiNO1DB1
-         /XajXZ5zw5vxCezmpUzBvmdy51tNkMSj3vpbkuX31eckFjxjJG9rlrS9Es/34jdYai
-         V7Pda8D77L+BRrwGIFLyYY+acOPOuUU1amUs/Laa/9TeYMCZ1OvchbI/X3PlFniESg
-         UHyNMK0aYQu+P1uBKqHmLncr55rQU3sXQqggN2HgEqD2YMS421JD11mNu2PRxF4Tyq
-         xbhVlg5i8tecUh9lh625hl6NWvT+mYlXZog+i9YeQXREJ/UgfD50KbuVYX5uvwMDKs
-         mwm7Hy1y5REfA==
-Date:   Fri, 4 Aug 2023 23:00:55 +0200
-From:   Andi Shyti <andi.shyti@kernel.org>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     Jarkko Nikula <jarkko.nikula@linux.intel.com>,
-        Mario Limonciello <mario.limonciello@amd.com>,
-        Wolfram Sang <wsa@kernel.org>, linux-i2c@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
+        Fri, 4 Aug 2023 17:01:46 -0400
+Received: from NAM11-BN8-obe.outbound.protection.outlook.com (mail-bn8nam11on2040.outbound.protection.outlook.com [40.107.236.40])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA58A4C3F;
+        Fri,  4 Aug 2023 14:01:45 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=YZyTzRLB2nbAw7V2q9LJiQZyUoMS7S1+tfGMGUMKLwFd39dZ7+44QPLH3x2CwB6sRQtL97Xnmqhp/+2bJrcJcVJry6nC76G1NpO9LP5TkeMir6/sjpG9NYmn3ZxYi1lXYOMyxqFp/10ZbVPDY70F0mVcuapKf7A4vR231LeOU4RfRTGTweFCULSixa2wwy27y5AEjaYVFfjE0Y2RE4OnjLj36I9vmK7HgpqAZwuNu0hqXOhso9r0WSyPfjsnC31hJdIL9RPuFoFSaOgjPDOTjNJAZY3uk8nSE2FUZD1o4XemBTa98tYCJ/TMakQLjUPZlnaOmDwg7Jeljj+jzsliKQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=hmLZMKWV3LtK4gzUahrIxsA/9+nptHk9ztIwUc8m0GY=;
+ b=WHDaarhWPzEZ4IyeBd0twV2v8eZBepZyJkl+aYfDfKz27cntMlZsh/zPbDaKtmVYR2WCnfpV7xdWmy6SAdnO+w/GFfvU3keKwhfE7U0dctkcYCqFfZnKgZJo3zlW232KRTxgGgd3RLZcOdbhONgtCNXv4u/SWBFaTBmaaqSTDTqVaRuVNaGGNbRbpD1lwsEmy3P+WR6KKYrEk6nIVzShb0NL0omjNao8gLie/Hy8V9PdeXjWFnNhPd2BiL1YK1+bQMbS+csds7ZmjZGdjFt1xjvzsdw6PhCPyHmCXj3YmiqqJWbNy5Tfux/cbpGVPAbYlCXX6p37Buhgfq/pXYVJAg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 165.204.84.17) smtp.rcpttodomain=kernel.org smtp.mailfrom=amd.com; dmarc=pass
+ (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
+ dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=hmLZMKWV3LtK4gzUahrIxsA/9+nptHk9ztIwUc8m0GY=;
+ b=3vEVADOAZfyx+N+23Fhe93nvNMNTlG3P0u1qyNwY7G/IoaU6vv0nkEbnhrnA3ZGxGT+8ztiqgyvhOfC2rDl14/9XHUquiYWUbSAgvla+TdyUFWsz6FQj6+ee44GyVh9laCjim1r6XX0Mo4x4a/95m77HMg5DD5ZTHkwF8eTapbg=
+Received: from CYXPR02CA0079.namprd02.prod.outlook.com (2603:10b6:930:ce::27)
+ by CH3PR12MB9099.namprd12.prod.outlook.com (2603:10b6:610:1a5::16) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6631.45; Fri, 4 Aug
+ 2023 21:01:43 +0000
+Received: from CY4PEPF0000EE34.namprd05.prod.outlook.com
+ (2603:10b6:930:ce:cafe::13) by CYXPR02CA0079.outlook.office365.com
+ (2603:10b6:930:ce::27) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6652.21 via Frontend
+ Transport; Fri, 4 Aug 2023 21:01:42 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
+ smtp.mailfrom=amd.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=amd.com;
+Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
+ 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
+ client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
+Received: from SATLEXMB04.amd.com (165.204.84.17) by
+ CY4PEPF0000EE34.mail.protection.outlook.com (10.167.242.40) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.6652.19 via Frontend Transport; Fri, 4 Aug 2023 21:01:42 +0000
+Received: from SITE-L-T34-2.amd.com (10.180.168.240) by SATLEXMB04.amd.com
+ (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Fri, 4 Aug
+ 2023 16:01:41 -0500
+From:   Mario Limonciello <mario.limonciello@amd.com>
+To:     "Rafael J . Wysocki" <rafael@kernel.org>,
         Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Jan Dabros <jsd@semihalf.com>
-Subject: Re: [PATCH v1 5/9] i2c: designware: Always provide ID tables
-Message-ID: <20230804210055.i4hnjsr4ltfak53e@intel.intel>
-References: <20230725143023.86325-1-andriy.shevchenko@linux.intel.com>
- <20230725143023.86325-6-andriy.shevchenko@linux.intel.com>
- <7be19d99-b197-662c-5157-dfdd9c793e3c@linux.intel.com>
- <ZMgT8bYGnGwTSAPf@smile.fi.intel.com>
+        Bjorn Helgaas <helgaas@kernel.org>
+CC:     <linux-pci@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        "Andy Shevchenko" <andriy.shevchenko@linux.intel.com>,
+        <linux-acpi@vger.kernel.org>,
+        Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        "Iain Lane" <iain@orangesquash.org.uk>,
+        Shyam-sundar S-k <Shyam-sundar.S-k@amd.com>,
+        Mario Limonciello <mario.limonciello@amd.com>
+Subject: [PATCH v10 0/7] Fix wakeup problems on some AMD platforms
+Date:   Fri, 4 Aug 2023 16:01:22 -0500
+Message-ID: <20230804210129.5356-1-mario.limonciello@amd.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZMgT8bYGnGwTSAPf@smile.fi.intel.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.180.168.240]
+X-ClientProxiedBy: SATLEXMB04.amd.com (10.181.40.145) To SATLEXMB04.amd.com
+ (10.181.40.145)
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: CY4PEPF0000EE34:EE_|CH3PR12MB9099:EE_
+X-MS-Office365-Filtering-Correlation-Id: 79d06e9b-b59f-48d1-88b8-08db952e0184
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: f8JR2AF2kAX44w3hd8ABpSNa+I5q5RYPSJk/p/3NGSPP6JDSDxu37dPVoZPhayGdMqPzgBNCRDaWsPK1ztOLf3VSNQu8nFtUwioQoQedWnTGXr8d41w3l1qkO6Kbvfb6j13huUod78Z4gipNYsKFRdcYWjJvMLlC2vHNBw1FosXRzQFeXqrSZ0NPa0zg/9cvq/r2w54Dww9bnFOHCc00zs3up6d6Eh3YgxASCB70CCb1j8FcSoc6KgMxqgHA+wNR6+tcg5H4lnYEVGcynPH9OpE1Sy8SVRf91TIN9mlLqjAgt3LjPiVVRU5sYiCV4Z975YohDO61Za0CiFOcAHRWdqTIzoMVNgoxrk1Pin0hX56MDS5mljYP8NBVK3EzTlwEMBzbxzGTQ7Hl0KaDq8MrTm/yejook72CuvkQGePJtFfpO0TkdYAuzITH4GvzIeydFot1LdOCm1rXV6xwxkkwOdJ0rcOMUsZC3YeFG8x/AAIuIdWmDJQ+hVY4vQngy8a/fkrBP7z9isxvPM4jnFcKCsFOwUiPb2EbPmP73BztGIksHN0t85/NlUjPI5F/5M7wf/NcPhh7KoXodGhQ3iJkqKnYRRuU51Nkp+/5zXMqPc3kgC4hXgTgGtu+vn77lNu76wod5GZsBAlG7JJgMSawrnYXUXnObhClg7IyN9KpRmwsELAMdMOr+UO4rUyua/DND3plUDlBNG7ZQxraWkRxzThqpuhk4FioismHHCiDGZ1ru9F4bwa0ZO8pp6K4lGMlIvXJZkey/qd1DN0H2BFfIQ==
+X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230028)(4636009)(346002)(136003)(396003)(376002)(39860400002)(82310400008)(1800799003)(451199021)(186006)(36840700001)(46966006)(40470700004)(40460700003)(478600001)(54906003)(4326008)(2906002)(70586007)(70206006)(86362001)(6666004)(7696005)(1076003)(36756003)(16526019)(336012)(426003)(356005)(83380400001)(82740400003)(26005)(2616005)(81166007)(36860700001)(110136005)(40480700001)(47076005)(8936002)(8676002)(44832011)(316002)(41300700001)(5660300002)(36900700001);DIR:OUT;SFP:1101;
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 Aug 2023 21:01:42.8460
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 79d06e9b-b59f-48d1-88b8-08db952e0184
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
+X-MS-Exchange-CrossTenant-AuthSource: CY4PEPF0000EE34.namprd05.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH3PR12MB9099
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Andy,
+Problems have been reported on AMD laptops with suspend/resume
+where particular root ports are put into D3 and then the system is unable
+to resume properly.
 
-On Mon, Jul 31, 2023 at 11:05:05PM +0300, Andy Shevchenko wrote:
-> On Fri, Jul 28, 2023 at 03:33:59PM +0300, Jarkko Nikula wrote:
-> > On 7/25/23 17:30, Andy Shevchenko wrote:
-> 
-> ...
-> 
-> > > +/* Work with hotplug and coldplug */
-> > > +MODULE_ALIAS("platform:i2c_designware");
-> > 
-> > Perhaps this comment can be retired, i.e. dropped.
-> 
-> Then it needs to be done in a separate patch, because in the other file the
-> comment will be left untouched.
+The issue boils down to the currently selected kernel policy for root port
+behavior at suspend time:
+0) If the machine is from 2015 or later
+1) If a PCIe root port is power manageable by the platform then platform
+   will be used to determine the power state of the root port at suspend.
+2) If the PCIe root is not power manageable by the platform then the kernel
+   will check if it was configured to wakeup.
+3) If it was, then it will be put into the deepest state that supports
+   wakeup from PME.
+4) If it wasn't, then it will be put into D3hot.
 
-You are being a bit too religios here... if you want to stick to
-this, then you need to send a patch for sorting by ID, a patch
-for grouping together MODULE_*, a patch to remove this comment
-and a patch to always provide the id table.
+This patch adjusts it so that device constraints for low power idle are
+considered if the device is not power manageable by the platform.
 
-I think, "while at it", you can safely remove the redundant
-comment :)
+Mario Limonciello (7):
+  ACPI: Add comments to clarify some #ifdef statements
+  ACPI: Adjust #ifdef for *_lps0_dev use
+  ACPI: x86: s2idle: Fix a logic error parsing AMD constraints table
+  ACPI: x86: s2idle: Add more debugging for AMD constraints parsing
+  ACPI: x86: s2idle: Store if constraint is enabled
+  ACPI: x86: s2idle: Add a function to get constraints for a device
+  PCI: Use device constraints to decide PCI target state fallback policy
 
-It doesn't make too much difference to me anyway:
+ drivers/acpi/x86/s2idle.c | 75 ++++++++++++++++++++++++++++-----------
+ drivers/pci/pci.c         | 15 ++++++++
+ include/linux/acpi.h      | 14 +++++---
+ 3 files changed, 79 insertions(+), 25 deletions(-)
 
-Reviewed-by: Andi Shyti <andi.shyti@kernel.org> 
+-- 
+2.34.1
 
-Andi
