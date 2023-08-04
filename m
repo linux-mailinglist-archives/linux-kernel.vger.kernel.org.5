@@ -2,109 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B80976FFD2
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 13:58:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2897476FFD7
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 13:59:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229619AbjHDL6f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Aug 2023 07:58:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52962 "EHLO
+        id S229686AbjHDL7R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Aug 2023 07:59:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53364 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229608AbjHDL6d (ORCPT
+        with ESMTP id S229638AbjHDL7P (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Aug 2023 07:58:33 -0400
-Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD04013E
-        for <linux-kernel@vger.kernel.org>; Fri,  4 Aug 2023 04:58:31 -0700 (PDT)
-Received: by mail-wr1-x42e.google.com with SMTP id ffacd0b85a97d-317744867a6so1686672f8f.1
-        for <linux-kernel@vger.kernel.org>; Fri, 04 Aug 2023 04:58:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1691150310; x=1691755110;
-        h=content-transfer-encoding:mime-version:date:message-id:subject
-         :references:in-reply-to:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=roPCqYVq5FoKhSTLB3DxuQDru8Tg95QBFx3xWNHBOBc=;
-        b=vdFbzy+iPivOypCOS2MY/xP86T/mvKswug/NCUWqWWrxiMgBRbE7h3uPn5iTHbYAFK
-         ciaS8/uhuK/UUCFMvQblvz2c6hwFA0GJSYLeQjmJK0kDMcADFsLArjJeLaiUH+H4jlHY
-         DIrtpf1+USs77uLSO9QpWe6psg/bWLa1RMOlI7MRbPyQqKej/FxV7Ctnv4EmQlWFPwBA
-         1zwiHA+GzVG+OKOxseTLKQPkYuUpJr//SDAdN7g3hb4uF0CNFZUhQr3L9YpFErWmUqkD
-         oj35587kSsXhXKSkBuW5kfuECxr/zZvjlKW0N28ETKGB8cUc7mHt2iNQ6Lg1gdZ7byRt
-         JKHw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691150310; x=1691755110;
-        h=content-transfer-encoding:mime-version:date:message-id:subject
-         :references:in-reply-to:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=roPCqYVq5FoKhSTLB3DxuQDru8Tg95QBFx3xWNHBOBc=;
-        b=gaV5iggrJxjMFyGqH/gDBMfH9QbybLJu5DbqCgW7LHsgvZqH6/5NITJApECi+FehXG
-         k1pvZXwkNNK2XYOFn8QzbMVgk3WrzbxEf6jDPC3ioCj31Dq04IeOPUGz61r2R4jwvnOP
-         9/OZIzkaiEmJltmi9RZfg3nrp0cVueXMHawp76Uy/LRXBKrLzWeMrzZ+fWtwrhZB7ipQ
-         jLz3XrcDwd0xeExYHI42/qXIk7aZaBr0TqpUzlG07bJCtsxaiSiyp9sa+EApwbIetYvV
-         j5HGUDBT/g2a/15egskBJVFw8uJf+x+8PpRZSFygjT5SdRHQWH5UVXo5An1J4YRxwYxJ
-         n3jg==
-X-Gm-Message-State: AOJu0Yxxee6lCNMtUFonxDIe/6jILPIR1DNxsQAnzz11uecpP59OfjIO
-        L5b9K0O4oPUXGQclhNsmXq6C0g==
-X-Google-Smtp-Source: AGHT+IHdmAs57eM0Rz7KVhiySNQUuzLMCFVU6AXXyP/fH2yGgk5lSYGIfz3aoQtQCBNs8nXrYFi6OQ==
-X-Received: by 2002:adf:f8cb:0:b0:30e:5bd0:21a2 with SMTP id f11-20020adff8cb000000b0030e5bd021a2mr1278153wrq.52.1691150310046;
-        Fri, 04 Aug 2023 04:58:30 -0700 (PDT)
-Received: from arrakeen.starnux.net ([2a01:e0a:982:cbb0:8261:5fff:fe11:bdda])
-        by smtp.gmail.com with ESMTPSA id n1-20020a5d67c1000000b0031134bcdacdsm2358350wrw.42.2023.08.04.04.58.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 04 Aug 2023 04:58:29 -0700 (PDT)
-From:   Neil Armstrong <neil.armstrong@linaro.org>
-To:     Sam Ravnborg <sam@ravnborg.org>, David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Maxime Ripard <mripard@kernel.org>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Sebastian Reichel <sre@kernel.org>,
-        Gerald Loacker <gerald.loacker@wolfvision.net>,
-        Michael Riesch <michael.riesch@wolfvision.net>
-Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org,
-        Conor Dooley <conor.dooley@microchip.com>
-In-Reply-To: <20230718-feature-st7789v-v3-0-157d68fb63e2@wolfvision.net>
-References: <20230718-feature-st7789v-v3-0-157d68fb63e2@wolfvision.net>
-Subject: Re: [PATCH v3 0/3] drm/panel: sitronix-st7789v: add panel
- orientation support
-Message-Id: <169115030877.3531293.12258712491460228869.b4-ty@linaro.org>
-Date:   Fri, 04 Aug 2023 13:58:28 +0200
+        Fri, 4 Aug 2023 07:59:15 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B6F4B1;
+        Fri,  4 Aug 2023 04:59:14 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 00D4A61F69;
+        Fri,  4 Aug 2023 11:59:14 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id F2E47C433C9;
+        Fri,  4 Aug 2023 11:59:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1691150353;
+        bh=TlxRuxshp1+YEtrdMg8rVE0v+c8+0ZCqcnwFTAXxjpw=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=HcD49VFzi/A6qiHCW/un5jA9r576MNjHpV0OwWK0UaQcwSCkmN5BEV3W29E4+xuHs
+         +l/Eyr9uUBYwKinhoYq4H6p1kyCSIErdj/WWKRf9z+U5OKpm1FRpedp6ASfOJG7VYx
+         5CvyFiRFLLSgIh+lPwDwmCcRtu1Q9/WhqeKSGFCIQhB6h5ICdTpyAop9gZKjGeSoq6
+         DPNNRGHJkhAX+XTiUoS2s3qNPoSPOPa58XejfwlavvTDLLXlyLIpIkP2netue/HOof
+         bFL71jXAPnkHWHpKVXXgXYfZX7zhxEB2FkEbeiZoQFSw2mJIV67JCJZCC9YxzNuZgD
+         qmihkgzqDqyqw==
+From:   Christian Brauner <brauner@kernel.org>
+To:     Ian Kent <raven@themaw.net>
+Cc:     Christian Brauner <brauner@kernel.org>,
+        autofs mailing list <autofs@vger.kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Fedor Pchelkin <pchelkin@ispras.ru>,
+        Takeshi Misawa <jeliantsurux@gmail.com>,
+        Alexey Khoroshilov <khoroshilov@ispras.ru>,
+        Matthew Wilcox <willy@infradead.org>,
+        Andrey Vagin <avagin@openvz.org>,
+        Al Viro <viro@ZenIV.linux.org.uk>
+Subject: Re: [PATCH 1/2] autofs: fix memory leak of waitqueues in autofs_catatonic_mode
+Date:   Fri,  4 Aug 2023 13:59:05 +0200
+Message-Id: <20230804-testverfahren-bison-351d431d4491@brauner>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <169112719161.7590.6700123246297365841.stgit@donald.themaw.net>
+References: <169112719161.7590.6700123246297365841.stgit@donald.themaw.net>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.12.3
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+X-Developer-Signature: v=1; a=openpgp-sha256; l=2384; i=brauner@kernel.org; h=from:subject:message-id; bh=TlxRuxshp1+YEtrdMg8rVE0v+c8+0ZCqcnwFTAXxjpw=; b=owGbwMvMwCU28Zj0gdSKO4sYT6slMaScecGa53mD0SqYv1/Ubvvbb5c0DZWPR4Uo8y0zWqH+RPOV 4SzJjlIWBjEuBlkxRRaHdpNwueU8FZuNMjVg5rAygQxh4OIUgInUhjH8z1pqUfxFxHlTgt6ljy9LLn +flcTgaXx60/vpZet2TLhtr8/I8KrOPGdyQbdXb+XK7vMX2W50zbvf9eTiSy+eb6cuFs98xw8A
+X-Developer-Key: i=brauner@kernel.org; a=openpgp; fpr=4880B8C9BD0E5106FC070F4F7B3C391EFEA93624
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-
-On Fri, 04 Aug 2023 13:23:07 +0200, Michael Riesch wrote:
-> This series adds support for orientation specification in the device
-> tree to the Sitronix ST7789V panel driver.
+On Fri, 04 Aug 2023 13:33:12 +0800, Ian Kent wrote:
+> Syzkaller reports a memory leak:
 > 
-> This is can be seen as reduced version of [0] (some things of [0] have
-> been implemented in more general fashion in the scope of [1], other
-> things have been rejected).
+> BUG: memory leak
+> unreferenced object 0xffff88810b279e00 (size 96):
+>   comm "syz-executor399", pid 3631, jiffies 4294964921 (age 23.870s)
+>   hex dump (first 32 bytes):
+>     00 00 00 00 00 00 00 00 08 9e 27 0b 81 88 ff ff  ..........'.....
+>     08 9e 27 0b 81 88 ff ff 00 00 00 00 00 00 00 00  ..'.............
+>   backtrace:
+>     [<ffffffff814cfc90>] kmalloc_trace+0x20/0x90 mm/slab_common.c:1046
+>     [<ffffffff81bb75ca>] kmalloc include/linux/slab.h:576 [inline]
+>     [<ffffffff81bb75ca>] autofs_wait+0x3fa/0x9a0 fs/autofs/waitq.c:378
+>     [<ffffffff81bb88a7>] autofs_do_expire_multi+0xa7/0x3e0 fs/autofs/expire.c:593
+>     [<ffffffff81bb8c33>] autofs_expire_multi+0x53/0x80 fs/autofs/expire.c:619
+>     [<ffffffff81bb6972>] autofs_root_ioctl_unlocked+0x322/0x3b0 fs/autofs/root.c:897
+>     [<ffffffff81bb6a95>] autofs_root_ioctl+0x25/0x30 fs/autofs/root.c:910
+>     [<ffffffff81602a9c>] vfs_ioctl fs/ioctl.c:51 [inline]
+>     [<ffffffff81602a9c>] __do_sys_ioctl fs/ioctl.c:870 [inline]
+>     [<ffffffff81602a9c>] __se_sys_ioctl fs/ioctl.c:856 [inline]
+>     [<ffffffff81602a9c>] __x64_sys_ioctl+0xfc/0x140 fs/ioctl.c:856
+>     [<ffffffff84608225>] do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+>     [<ffffffff84608225>] do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
+>     [<ffffffff84800087>] entry_SYSCALL_64_after_hwframe+0x63/0xcd
 > 
 > [...]
 
-Thanks, Applied to https://anongit.freedesktop.org/git/drm/drm-misc.git (drm-misc-next)
+Applied to the vfs.autofs branch of the vfs/vfs.git tree.
+Patches in the vfs.autofs branch should appear in linux-next soon.
 
-[1/3] drm/panel: sitronix-st7789v: fix indentation in drm_panel_funcs
-      https://cgit.freedesktop.org/drm/drm-misc/commit/?id=a238b5ee39e3d3581ec826cdb7b604adca37b5ea
-[2/3] drm/panel: sitronix-st7789v: add panel orientation support
-      https://cgit.freedesktop.org/drm/drm-misc/commit/?id=b27c0f6d208d6ba269f184ed6f92c6a9908866e6
-[3/3] dt-bindings: display: add rotation property to sitronix,st7789v
-      https://cgit.freedesktop.org/drm/drm-misc/commit/?id=e83172ec548d420f2e0b01e80a9a8cbae39bbe29
+Please report any outstanding bugs that were missed during review in a
+new review to the original patch series allowing us to drop it.
 
--- 
-Neil
+It's encouraged to provide Acked-bys and Reviewed-bys even though the
+patch has now been applied. If possible patch trailers will be updated.
 
+Note that commit hashes shown below are subject to change due to rebase,
+trailer updates or similar. If in doubt, please check the listed branch.
+
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/vfs/vfs.git
+branch: vfs.autofs
+
+[1/2] autofs: fix memory leak of waitqueues in autofs_catatonic_mode
+      https://git.kernel.org/vfs/vfs/c/ccbe77f7e45d
+[2/2] autofs: use wake_up() instead of wake_up_interruptible(()
+      https://git.kernel.org/vfs/vfs/c/17fce12e7c0a
