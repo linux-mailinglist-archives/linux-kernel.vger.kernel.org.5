@@ -2,124 +2,267 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E27EB77091D
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 21:36:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 820B0770920
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 21:37:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229534AbjHDTgn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Aug 2023 15:36:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55708 "EHLO
+        id S230118AbjHDThj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Aug 2023 15:37:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56100 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229514AbjHDTgk (ORCPT
+        with ESMTP id S229548AbjHDThf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Aug 2023 15:36:40 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08CDB1BF
-        for <linux-kernel@vger.kernel.org>; Fri,  4 Aug 2023 12:35:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1691177753;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
-        bh=/fEGLQTPa3ePRn0SUruCR/akdAF06PibGk+SoDw6oqs=;
-        b=EKepgm59iEW0B4OmUB2n2dIYEg80eS9pWxANbLzawBzMWgFpg6+l4s5Ruko2L5Ly5/KabE
-        KasgEN0ynKNy8fxLQDBeP7t3iisxryDBy6YvUmnFIr1vCi6Kz3ob9aVvxsa7cmmIMULOFc
-        NmCw4HnM4J3dxnEklTAxl+oVQ9xWBlM=
-Received: from mail-qk1-f197.google.com (mail-qk1-f197.google.com
- [209.85.222.197]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-695-n8H82iVCPP2op9dPsI0c9Q-1; Fri, 04 Aug 2023 15:35:51 -0400
-X-MC-Unique: n8H82iVCPP2op9dPsI0c9Q-1
-Received: by mail-qk1-f197.google.com with SMTP id af79cd13be357-7659c6caeaeso319685885a.3
-        for <linux-kernel@vger.kernel.org>; Fri, 04 Aug 2023 12:35:51 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691177751; x=1691782551;
-        h=user-agent:content-disposition:mime-version:message-id:subject:cc
-         :to:from:date:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=/fEGLQTPa3ePRn0SUruCR/akdAF06PibGk+SoDw6oqs=;
-        b=TrLRAqqvnjlL8aNcUnQe4NExsG3/+qbpREvUPEEhsGYdaCN018HPc9k6DWRiEbBL8J
-         ScY8y6GMuIP80Wqs9w9fCX5Tm1m7fKB8J8GPjhNUIvHwPpsHdT5ubkUi9IsGhgso+k7p
-         Q9y3N9oW+FtWCGoFrTznRqWk/KcsxVRsAbCi/vOdNkFBW8Xtw3hVZapkdkhq6tCL7/TE
-         6IlRpeeh2Hp+s+jYnFQqVAlU93yFGf15xvm1dkWAuQnpLX+ToH3gFz8NdaC/2bR2TRXU
-         4si7mGOKb0BEn6eoq/WCMa//ApaLXljSAgMtoa43pl9FMBTLG0N3tFXYp9LxDJFL6D9l
-         AdLg==
-X-Gm-Message-State: AOJu0Yzq38NMZb6VAL7HCdEsk0OC4a2reEs5aJinX3lkCGcCd91EsNex
-        cQ54wDImyijUMDU+5ZX6rcL4IXRLFvVDYG3EQs0fRl6VtOREkK01vYw4n8bfvTg9twECPCMHFNc
-        r/CTNRTEkQAEnl4cGCzDdNqY7
-X-Received: by 2002:a05:620a:4456:b0:76c:b476:f712 with SMTP id w22-20020a05620a445600b0076cb476f712mr3876342qkp.51.1691177751274;
-        Fri, 04 Aug 2023 12:35:51 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IF+9eMVqPJLY6YIUSKa4NNv1paAfI3JX7M2BAluopih9iKnho0rRGuzu78ZOQHGnUECV5Khzw==
-X-Received: by 2002:a05:620a:4456:b0:76c:b476:f712 with SMTP id w22-20020a05620a445600b0076cb476f712mr3876330qkp.51.1691177751036;
-        Fri, 04 Aug 2023 12:35:51 -0700 (PDT)
-Received: from fedora ([174.89.37.244])
-        by smtp.gmail.com with ESMTPSA id 4-20020a05620a070400b0076745f352adsm847974qkc.59.2023.08.04.12.35.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 04 Aug 2023 12:35:45 -0700 (PDT)
-Date:   Fri, 4 Aug 2023 15:35:29 -0400
-From:   Lucas Karpinski <lkarpins@redhat.com>
-To:     Andrew Morton <akpm@linux-foundation.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Shakeel Butt <shakeelb@google.com>,
-        Muchun Song <muchun.song@linux.dev>, Tejun Heo <tj@kernel.org>,
-        Zefan Li <lizefan.x@bytedance.com>,
-        Shuah Khan <shuah@kernel.org>
-Cc:     Muchun Song <muchun.song@linux.dev>, cgroups@vger.kernel.org,
-        linux-mm@kvack.org, linux-kselftest@vger.kernel.org,
+        Fri, 4 Aug 2023 15:37:35 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.65])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 529F0E7;
+        Fri,  4 Aug 2023 12:37:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1691177854; x=1722713854;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=aPArex8+yqQJfr0Dx1twcKyz+HqyUonP/iP9Dd9pRd4=;
+  b=DRyk7v4uZZ9b0Jn5B+pJ0Z3gwRrEb+ectCW4bVUN2/Q/Ke3mucI4q4Xj
+   WcceKOqL0rp/GiKcPExUflK9pWUy2ckE/eTts4hLR+wJ4DoCwqZgfCOAG
+   aVpmFjK2dbZABTJlnM/f704WyCJ8yGJpNFVlShoXH/LrDMbj37VoN6YZt
+   doOqWRX3+30M8CTJUguD5E3cJfMVsAWDMpW2Vx+4PrlmuS/nhWTobXAxl
+   vRdKG96nJhmVV0LYwYsjngPzEkwhgJF8b8II6vCRsXQCOyMZ08Y1qSRru
+   dE/HWrUJME+SzHcko8XY3lNYaBzHc/fixnDAgdAj7rHngTaKrgfn/NgY6
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10792"; a="373886342"
+X-IronPort-AV: E=Sophos;i="6.01,255,1684825200"; 
+   d="scan'208";a="373886342"
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Aug 2023 12:37:33 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10792"; a="733383459"
+X-IronPort-AV: E=Sophos;i="6.01,255,1684825200"; 
+   d="scan'208";a="733383459"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by fmsmga007.fm.intel.com with ESMTP; 04 Aug 2023 12:37:29 -0700
+Received: from andy by smile.fi.intel.com with local (Exim 4.96)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1qS0c3-0055Lo-1J;
+        Fri, 04 Aug 2023 22:37:27 +0300
+Date:   Fri, 4 Aug 2023 22:37:27 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Marcus Folkesson <marcus.folkesson@gmail.com>
+Cc:     Kent Gustavsson <kent@minoris.se>,
+        Jonathan Cameron <jic23@kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Cosmin Tanislav <demonsingur@gmail.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        ChiYuan Huang <cy_huang@richtek.com>,
+        Haibo Chen <haibo.chen@nxp.com>,
+        Ramona Bolboaca <ramona.bolboaca@analog.com>,
+        Ibrahim Tilki <Ibrahim.Tilki@analog.com>,
+        ChiaEn Wu <chiaen_wu@richtek.com>,
+        William Breathitt Gray <william.gray@linaro.org>,
+        linux-iio@vger.kernel.org, devicetree@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH v3] selftests: cgroup: fix test_kmem_basic less than error
-Message-ID: <7d6gcuyzdjcice6qbphrmpmv5skr5jtglg375unnjxqhstvhxc@qkn6dw6bao6v>
+Subject: Re: [PATCH v2 2/2] iio: adc: mcp3911: add support for the whole
+ MCP39xx family
+Message-ID: <ZM1Td+v3tcoaID9v@smile.fi.intel.com>
+References: <20230804100248.3773861-1-marcus.folkesson@gmail.com>
+ <20230804100248.3773861-2-marcus.folkesson@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-User-Agent: NeoMutt/20230517
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20230804100248.3773861-2-marcus.folkesson@gmail.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-test_kmem_basic creates 100,000 negative dentries, with each one mapping
-to a slab object. After memory.high is set, these are reclaimed through
-the shrink_slab function call which reclaims all 100,000 entries. The
-test passes the majority of the time because when slab1 or current is
-calculated, it is often above 0, however, 0 is also an acceptable value.
+On Fri, Aug 04, 2023 at 12:02:48PM +0200, Marcus Folkesson wrote:
+> Microchip does have many similar chips, add support for those.
+> 
+> The new supported chips are:
+>   - microchip,mcp3910
+>   - microchip,mcp3912
+>   - microchip,mcp3913
+>   - microchip,mcp3914
+>   - microchip,mcp3918
+>   - microchip,mcp3919
 
-Signed-off-by: Lucas Karpinski <lkarpins@redhat.com>
----
-In the previous patch, I missed a change to the variable 'current' even
-after some testing as the issue was so sporadic. Current takes the slab
-size into account and can also face the same issue where it fails since
-the reported value is 0, which is an acceptable value.
+...
 
-Drop: b4abfc19 in mm-unstable
-V2: https://lore.kernel.org/all/ix6vzgjqay2x7bskle7pypoint4nj66fwq7odvd5hektatvp2l@kukoifnfj3dr/
+>  	help
+> -	  Say yes here to build support for Microchip Technology's MCP3911
+> -	  analog to digital converter.
+> +	  Say yes here to build support for Microchip Technology's MCP3910,
 
- tools/testing/selftests/cgroup/test_kmem.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+> +          MCP3911, MCP3912, MCP3913, MCP3914, MCP3918 and MCP3919
 
-diff --git a/tools/testing/selftests/cgroup/test_kmem.c b/tools/testing/selftests/cgroup/test_kmem.c
-index 1b2cec9d18a4..ed2e50bb1e76 100644
---- a/tools/testing/selftests/cgroup/test_kmem.c
-+++ b/tools/testing/selftests/cgroup/test_kmem.c
-@@ -75,11 +75,11 @@ static int test_kmem_basic(const char *root)
- 	sleep(1);
- 
- 	slab1 = cg_read_key_long(cg, "memory.stat", "slab ");
--	if (slab1 <= 0)
-+	if (slab1 < 0)
- 		goto cleanup;
- 
- 	current = cg_read_long(cg, "memory.current");
--	if (current <= 0)
-+	if (current < 0)
- 		goto cleanup;
- 
- 	if (slab1 < slab0 / 2 && current < slab0 / 2)
+This line is misindented. Should be <TAB><space><space>.
+
+> +	  analog to digital converters.
+
+...
+
+> +#define MCP3910_REG_OFFCAL_CH0		0x0f
+> +#define MCP3910_OFFCAL(x)		(MCP3910_REG_OFFCAL_CH0 + x * 6)
+> +
+> +
+
+Single blank line is enough.
+
+...
+
+> +static int mcp3910_get_offset(struct mcp3911 *adc, int channel, int *val)
+> +{
+> +	return mcp3911_read(adc, MCP3910_OFFCAL(channel), val, 3);
+
+Just to be sure, the proper endianess conversion is done in mcp3911_read()
+and mcp3911_write() calls?
+
+This question applies to all calls to that APIs.
+
+> +}
+
+...
+
+> +	int ret = mcp3911_write(adc, MCP3910_OFFCAL(channel), val,
+> +			3);
+
+This looks weird not being on a single line. Moreover it fits even
+80 characters. Same applies to other similar cases.
+
+Also, please use better approach, i.e.
+
+	int ret;
+
+	ret = ...(...);
+	if (ret)
+		...
+
+Also applies to several places.
+
+> +	if (ret)
+> +		return ret;
+
+...
+
+> +	/* Enable offset*/
+
+Missing space.
+
+...
+
+> +static int mcp3910_get_osr(struct mcp3911 *adc, int *val)
+> +{
+> +	int ret = mcp3911_read(adc, MCP3910_REG_CONFIG0, val, 3);
+
+Have you run checkpatch? Here should be a blank line. Same in other several
+places.
+
+> +	*val = FIELD_GET(MCP3910_CONFIG0_OSR, *val);
+> +	*val = 32 << *val;
+
+Please, use a temporary variable and assign the result only once.
+It will be a better code.
+
+> +	return ret;
+> +}
+
+...
+
+> +static int mcp3911_set_osr(struct mcp3911 *adc, int val)
+> +{
+> +	val = FIELD_PREP(MCP3911_CONFIG_OSR, val);
+
+As per above.
+
+> +	return mcp3911_update(adc, MCP3911_REG_CONFIG,
+> +			MCP3911_CONFIG_OSR, val, 2);
+
+> +
+
+Redundant blank line.
+
+> +}
+
+...
+
+> +static int mcp3911_get_osr(struct mcp3911 *adc, int *val)
+> +{
+
+As per above.
+
+> +}
+
+...
+
+> +       /* Set gain to 1 for all channels */
+
+Again, wrong indentation. Can you check all your lines for the proper
+indentation. (Here should be just <TAB>.)
+
+...
+
+> +	for (int i = 0; i < adc->chip->num_channels - 1; i++) {
+> +		adc->gain[i] = 1;
+> +		regval &= ~MCP3911_GAIN_MASK(i);
+> +	}
+
+Missing blank line.
+
+> +	return mcp3911_write(adc, MCP3911_REG_GAIN, regval, 1);
+> +
+> +
+
+Too many redundant blank lines.
+
+> +}
+
+...
+
+> +       /* Set gain to 1 for all channels */
+
+Mind indentation.
+
+...
+
+> +	/* Disable offset to ignore any old values in offset register*/
+
+Missing space.
+
+...
+
+> +	adc->chip = (struct mcp3911_chip_info *)spi_get_device_id(spi)->driver_data;
+
+Can't you use spi_get_device_match_data()?
+
+...
+
+> +	/*
+> +	 * Fallback to "device-addr" due to historical mismatch between
+> +	 * dt-bindings and implementation
+
+Missing grammatical period at the end.
+
+> +	 */
+
+...
+
+> +		device_property_read_u32(&adc->spi->dev, "device-addr", &adc->dev_addr);
+
+With
+
+	struct device *dev = &adc->spi->dev;
+
+lines like this will be neater.
+
 -- 
-2.41.0
+With Best Regards,
+Andy Shevchenko
+
 
