@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2FCFF76FA73
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 08:51:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7ED7A76FA75
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 08:51:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233960AbjHDGvs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Aug 2023 02:51:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46142 "EHLO
+        id S234032AbjHDGvw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Aug 2023 02:51:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46144 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233890AbjHDGvV (ORCPT
+        with ESMTP id S233957AbjHDGvX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Aug 2023 02:51:21 -0400
-Received: from out-123.mta1.migadu.com (out-123.mta1.migadu.com [95.215.58.123])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BAA6F49E5
-        for <linux-kernel@vger.kernel.org>; Thu,  3 Aug 2023 23:50:58 -0700 (PDT)
+        Fri, 4 Aug 2023 02:51:23 -0400
+Received: from out-106.mta1.migadu.com (out-106.mta1.migadu.com [IPv6:2001:41d0:203:375::6a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 438DAE69
+        for <linux-kernel@vger.kernel.org>; Thu,  3 Aug 2023 23:51:01 -0700 (PDT)
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1691131856;
+        t=1691131858;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=OzB+tj5WG2nRg5qjnj2AfK3ycFx9pV+276EIl9UNjzI=;
-        b=YLZj7PyQ1W40IvVqKAz4telK3UOEU755Km77YnQbv6fHLPvZQLj4HLBy8qQgXP4ZtwjJOn
-        o0KkbrYXbekt3SbDYkjwl7DygkR0L1YXDxsqPO5tw2ancYRZnm9ZoDzWy/FdaabEwqnrSZ
-        6LQs+S8cUSey6argktmIpAW7y+RW5Gg=
+        bh=6+OCmkB89lJ9QhqUH4GLLqFHcU5/CM75quLqXRzfOwY=;
+        b=oH0V0+nUwhj+72gwRc5ePHbuqdLY/xtqB7P0DP84CcRPglVSIUiSlTqBKcH5X9gWCF69Y3
+        ALYeZ+iP0YR4jahdwaAvrK7vez+SbpXMeCDnYRQQ+x76r27KkBQPrwryjXUHDHBZqGsFl7
+        W0whfcJRbxal3QLq7RCQygin4tnNfq4=
 From:   chengming.zhou@linux.dev
 To:     axboe@kernel.dk, tj@kernel.org
 Cc:     linux-kernel@vger.kernel.org, zhouchengming@bytedance.com
-Subject: [PATCH 2/3] iocost_monitor: print vrate inuse along with base_vrate
-Date:   Fri,  4 Aug 2023 14:50:38 +0800
-Message-ID: <20230804065039.8885-2-chengming.zhou@linux.dev>
+Subject: [PATCH 3/3] iocost_monitor: improve it by adding iocg wait_ms
+Date:   Fri,  4 Aug 2023 14:50:39 +0800
+Message-ID: <20230804065039.8885-3-chengming.zhou@linux.dev>
 In-Reply-To: <20230804065039.8885-1-chengming.zhou@linux.dev>
 References: <20230804065039.8885-1-chengming.zhou@linux.dev>
 MIME-Version: 1.0
@@ -49,55 +49,71 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Chengming Zhou <zhouchengming@bytedance.com>
 
-The real vrate iocost inuse is not base_vrate, but the atomic vtime_rate.
-We need iocost_monitor tool to display this real vrate that iocost use,
-to check if the boosted compensated vrate is normal.
+The iocg can have three throttled metrics: wait, debt, delay. This patch
+add missing wait_ms to IocgStat to show the latest wait_ms of iocg.
 
-Effect after change:
+As we are here, group iocg usage percents "inflt%" and "usage%" together,
+and group iocg throttled metrics "wait", "debt" and "delay" together.
 
-nvme0n1 RUN  per=50.0ms cur_per=172116.580:v1040587.433 busy= +0 \
-vrate=135.00%:270.00% params=ssd_dfl(CQ)
-                ^
-                |
-         this is real vrate inuse
+Effect after changes:
+
+nvme0n1 RUN  per=50.0ms cur_per=177105.713:v1053528.587 busy= +0 vrate=135.00%:270.00% params=ssd_dfl(CQ)
+                          active    weight      hweight% inflt% usage%    wait    debt   delay
+InterfererGroup0             *   100/  100  54.28/  9.09   0.34  24.07    0.00    0.00    0.00
+interfered                   *    84/ 1000  45.72/ 90.91   0.48  41.09    0.00    0.00    0.00
 
 Signed-off-by: Chengming Zhou <zhouchengming@bytedance.com>
 ---
- tools/cgroup/iocost_monitor.py | 7 +++++--
- 1 file changed, 5 insertions(+), 2 deletions(-)
+ tools/cgroup/iocost_monitor.py | 12 ++++++++----
+ 1 file changed, 8 insertions(+), 4 deletions(-)
 
 diff --git a/tools/cgroup/iocost_monitor.py b/tools/cgroup/iocost_monitor.py
-index 7aa076cb559e..52ae9d1595b2 100644
+index 52ae9d1595b2..933c750b319b 100644
 --- a/tools/cgroup/iocost_monitor.py
 +++ b/tools/cgroup/iocost_monitor.py
-@@ -100,6 +100,7 @@ class IocStat:
-         self.period_at = ioc.period_at.value_() / 1_000_000
-         self.vperiod_at = ioc.period_at_vtime.value_() / VTIME_PER_SEC
-         self.vrate_pct = ioc.vtime_base_rate.value_() * 100 / VTIME_PER_USEC
-+        self.ivrate_pct = ioc.vtime_rate.counter.value_() * 100 / VTIME_PER_USEC
-         self.busy_level = ioc.busy_level.value_()
-         self.autop_idx = ioc.autop_idx.value_()
-         self.user_cost_model = ioc.user_cost_model.value_()
-@@ -119,7 +120,9 @@ class IocStat:
-                  'period_at'            : self.period_at,
-                  'period_vtime_at'      : self.vperiod_at,
-                  'busy_level'           : self.busy_level,
--                 'vrate_pct'            : self.vrate_pct, }
-+                 'vrate_pct'            : self.vrate_pct,
-+                 'ivrate_pct'           : self.ivrate_pct,
-+                }
+@@ -138,7 +138,7 @@ class IocStat:
  
-     def table_preamble_str(self):
-         state = ('RUN' if self.running else 'IDLE') if self.enabled else 'OFF'
-@@ -127,7 +130,7 @@ class IocStat:
-                  f'per={self.period_ms}ms ' \
-                  f'cur_per={self.period_at:.3f}:v{self.vperiod_at:.3f} ' \
-                  f'busy={self.busy_level:+3} ' \
--                 f'vrate={self.vrate_pct:6.2f}% ' \
-+                 f'vrate={self.vrate_pct:6.2f}%:{self.ivrate_pct:6.2f}% ' \
-                  f'params={self.autop_name}'
-         if self.user_cost_model or self.user_qos_params:
-             output += f'({"C" if self.user_cost_model else ""}{"Q" if self.user_qos_params else ""})'
+     def table_header_str(self):
+         return f'{"":25} active {"weight":>9} {"hweight%":>13} {"inflt%":>6} ' \
+-               f'{"debt":>7} {"delay":>7} {"usage%"}'
++               f'{"usage%":>6} {"wait":>7} {"debt":>7} {"delay":>7}'
+ 
+ class IocgStat:
+     def __init__(self, iocg):
+@@ -164,6 +164,8 @@ class IocgStat:
+ 
+         self.usage = (100 * iocg.usage_delta_us.value_() /
+                       ioc.period_us.value_()) if self.active else 0
++        self.wait_ms = (iocg.stat.wait_us.value_() -
++                        iocg.last_stat.wait_us.value_()) / 1000
+         self.debt_ms = iocg.abs_vdebt.value_() / VTIME_PER_USEC / 1000
+         if blkg.use_delay.counter.value_() != 0:
+             self.delay_ms = blkg.delay_nsec.counter.value_() / 1_000_000
+@@ -180,9 +182,10 @@ class IocgStat:
+                 'hweight_active_pct'    : self.hwa_pct,
+                 'hweight_inuse_pct'     : self.hwi_pct,
+                 'inflight_pct'          : self.inflight_pct,
++                'usage_pct'             : self.usage,
++                'wait_ms'               : self.wait_ms,
+                 'debt_ms'               : self.debt_ms,
+                 'delay_ms'              : self.delay_ms,
+-                'usage_pct'             : self.usage,
+                 'address'               : self.address }
+         return out
+ 
+@@ -192,9 +195,10 @@ class IocgStat:
+               f'{round(self.inuse):5}/{round(self.active):5} ' \
+               f'{self.hwi_pct:6.2f}/{self.hwa_pct:6.2f} ' \
+               f'{self.inflight_pct:6.2f} ' \
++              f'{min(self.usage, 999):6.2f} ' \
++              f'{self.wait_ms:7.2f} ' \
+               f'{self.debt_ms:7.2f} ' \
+-              f'{self.delay_ms:7.2f} '\
+-              f'{min(self.usage, 999):6.2f}'
++              f'{self.delay_ms:7.2f}'
+         out = out.rstrip(':')
+         return out
+ 
 -- 
 2.41.0
 
