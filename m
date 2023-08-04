@@ -2,56 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 29DFB76F8C0
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 06:06:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0CDCC76F8C4
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 06:07:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232559AbjHDEGJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Aug 2023 00:06:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56324 "EHLO
+        id S233173AbjHDEHY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Aug 2023 00:07:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57322 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232088AbjHDEGG (ORCPT
+        with ESMTP id S231916AbjHDEHU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Aug 2023 00:06:06 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.115])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 119FF359A
-        for <linux-kernel@vger.kernel.org>; Thu,  3 Aug 2023 21:06:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1691121965; x=1722657965;
-  h=date:from:to:cc:subject:message-id;
-  bh=nAh9akU+hraO35yMzt1CkZOH7ct5rmsF6DvDTDilhfo=;
-  b=EPktbKOUWLuMq9/lFhiTLDLB9z4lR3FUvOyERim2mZa4oxGDroWceGDu
-   sONARC2n+PBIY4hkIETz1ndZV5uZujVulnvLTyR0jp6RtDv/C+UN3DBe4
-   K0BZcyi9+oMPcKQduGS5loJHrXgosQsYy8dqZRkJQ40O9Gt6edAWDNGsl
-   Rmn9vXoKQ8gJ+siPW3qgDtfZD+p1iSHf/AUwZXuWbrP0r47kN0yoPjAM0
-   iPVPf1AMlQA5nCpFYKNeh1e7DWSru1pVZIwpF+iulDsezesGCaE0GIYaR
-   3Sz76Ts3KcSiQ0Ma/cphHHQ4KfjiGwgDqR0FgrApwxTlyc+k3kcWthbDs
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10791"; a="370049599"
-X-IronPort-AV: E=Sophos;i="6.01,254,1684825200"; 
-   d="scan'208";a="370049599"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Aug 2023 21:06:04 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.01,202,1684825200"; 
-   d="scan'208";a="873201815"
-Received: from lkp-server01.sh.intel.com (HELO d1ccc7e87e8f) ([10.239.97.150])
-  by fmsmga001.fm.intel.com with ESMTP; 03 Aug 2023 21:06:05 -0700
-Received: from kbuild by d1ccc7e87e8f with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qRm4g-0002bT-1s;
-        Fri, 04 Aug 2023 04:06:02 +0000
-Date:   Fri, 04 Aug 2023 12:05:53 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "x86-ml" <x86@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [tip:master] BUILD SUCCESS
- a9a23d6361628327f923601c0d2683acf3fec610
-Message-ID: <202308041251.WuIGiZE8-lkp@intel.com>
-User-Agent: s-nail v14.9.24
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        Fri, 4 Aug 2023 00:07:20 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4245F468A;
+        Thu,  3 Aug 2023 21:06:55 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id D489361C0D;
+        Fri,  4 Aug 2023 04:06:54 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1C0EDC433C7;
+        Fri,  4 Aug 2023 04:06:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1691122014;
+        bh=k4zmubWOjyeMATikvgmZBrABBD9c6icxm4g9SfRcT3U=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=nC7CqITdsS7pj6ITLpT07Xme+C8cSNojDbE00dd0P6XYxxlg18VeI2kR18SsxtczR
+         C45lCqMCf2fAuKY65VOre5MqFMPZck0HCic48N0MpqhnaE1G5dj0WoVgTQj9C9EV8n
+         CJPsXcOuD15BAXKKnvp331faF/STczD6TtOKFWJ4hAu9ykORJDCnCMGNQisHrgI5q0
+         eMmgX5MGdHPAiDFZ14dZKW1yTN1V97h4ConISfHZ6PO9tZRA6aJlEfz2xlquIhfhK9
+         mP8vlRdkszsICdJ7yPp/uRGuGIEDgfxA8KI1AvnNbgJVsg+dJwZtMWj5+XJdHaTYLD
+         sl/lsqP+QLIRQ==
+Date:   Thu, 3 Aug 2023 21:06:52 -0700
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     =?iso-8859-1?Q?Lu=EDs?= Henriques <lhenriques@suse.de>
+Cc:     Theodore Ts'o <tytso@mit.edu>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Daniel Rosenberg <drosen@google.com>,
+        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3] ext4: fix memory leaks in
+ ext4_fname_{setup_filename,prepare_lookup}
+Message-ID: <20230804040652.GA1954@sol.localdomain>
+References: <20230803091713.13239-1-lhenriques@suse.de>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20230803091713.13239-1-lhenriques@suse.de>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -59,125 +59,52 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git master
-branch HEAD: a9a23d6361628327f923601c0d2683acf3fec610  Merge x86/cleanups into tip/master
+On Thu, Aug 03, 2023 at 10:17:13AM +0100, Luís Henriques wrote:
+> If the filename casefolding fails, we'll be leaking memory from the
+> fscrypt_name struct, namely from the 'crypto_buf.name' member.
+> 
+> Make sure we free it in the error path on both ext4_fname_setup_filename()
+> and ext4_fname_prepare_lookup() functions.
+> 
+> Fixes: 1ae98e295fa2 ("ext4: optimize match for casefolded encrypted dirs")
+> Signed-off-by: Luís Henriques <lhenriques@suse.de>
+> ---
+> Changes since v2:
+> - Rephrased commit log to (hopefully!) make it more clear.
+> - Use ext4_fname_free_filename() instead of fscrypt_free_filename().
+>   Although not strictly needed, it cleans up the fname struct, removing a
+>   dangling pointer to freed memory.
+> 
+> Changes since v1:
+> - Include fix to ext4_fname_prepare_lookup() as well
+> - Add 'Fixes:' tag
+> 
+>  fs/ext4/crypto.c | 4 ++++
+>  1 file changed, 4 insertions(+)
+> 
+> diff --git a/fs/ext4/crypto.c b/fs/ext4/crypto.c
+> index e20ac0654b3f..453d4da5de52 100644
+> --- a/fs/ext4/crypto.c
+> +++ b/fs/ext4/crypto.c
+> @@ -33,6 +33,8 @@ int ext4_fname_setup_filename(struct inode *dir, const struct qstr *iname,
+>  
+>  #if IS_ENABLED(CONFIG_UNICODE)
+>  	err = ext4_fname_setup_ci_filename(dir, iname, fname);
+> +	if (err)
+> +		ext4_fname_free_filename(fname);
+>  #endif
+>  	return err;
+>  }
+> @@ -51,6 +53,8 @@ int ext4_fname_prepare_lookup(struct inode *dir, struct dentry *dentry,
+>  
+>  #if IS_ENABLED(CONFIG_UNICODE)
+>  	err = ext4_fname_setup_ci_filename(dir, &dentry->d_name, fname);
+> +	if (err)
+> +		ext4_fname_free_filename(fname);
+>  #endif
+>  	return err;
+>  }
 
-elapsed time: 723m
+Reviewed-by: Eric Biggers <ebiggers@google.com>
 
-configs tested: 106
-configs skipped: 5
-
-The following configs have been built successfully.
-More configs may be tested in the coming days.
-
-tested configs:
-alpha                            allyesconfig   gcc  
-alpha                               defconfig   gcc  
-alpha                randconfig-r002-20230801   gcc  
-alpha                randconfig-r011-20230731   gcc  
-alpha                randconfig-r023-20230731   gcc  
-alpha                randconfig-r036-20230801   gcc  
-arc                              allyesconfig   gcc  
-arc                                 defconfig   gcc  
-arc                  randconfig-r026-20230731   gcc  
-arc                  randconfig-r043-20230801   gcc  
-arm                              allmodconfig   gcc  
-arm                              allyesconfig   gcc  
-arm                                 defconfig   gcc  
-arm                  randconfig-r024-20230731   gcc  
-arm                  randconfig-r046-20230801   gcc  
-arm64                            allyesconfig   gcc  
-arm64                               defconfig   gcc  
-arm64                randconfig-r013-20230731   clang
-csky                                defconfig   gcc  
-hexagon              randconfig-r041-20230801   clang
-hexagon              randconfig-r045-20230801   clang
-i386                             allyesconfig   gcc  
-i386         buildonly-randconfig-r004-20230731   gcc  
-i386         buildonly-randconfig-r005-20230731   gcc  
-i386         buildonly-randconfig-r006-20230731   gcc  
-i386                              debian-10.3   gcc  
-i386                                defconfig   gcc  
-i386                 randconfig-i001-20230802   clang
-i386                 randconfig-i002-20230802   clang
-i386                 randconfig-i003-20230802   clang
-i386                 randconfig-i004-20230802   clang
-i386                 randconfig-i005-20230802   clang
-i386                 randconfig-i006-20230802   clang
-i386                 randconfig-i011-20230731   clang
-i386                 randconfig-i012-20230731   clang
-i386                 randconfig-i013-20230731   clang
-i386                 randconfig-i014-20230731   clang
-i386                 randconfig-i015-20230731   clang
-i386                 randconfig-i016-20230731   clang
-loongarch                        allmodconfig   gcc  
-loongarch                         allnoconfig   gcc  
-loongarch                           defconfig   gcc  
-loongarch            randconfig-r016-20230731   gcc  
-m68k                             allmodconfig   gcc  
-m68k                             allyesconfig   gcc  
-m68k                                defconfig   gcc  
-microblaze           randconfig-r025-20230731   gcc  
-mips                             allmodconfig   gcc  
-mips                             allyesconfig   gcc  
-mips                 randconfig-r022-20230731   gcc  
-nios2                               defconfig   gcc  
-openrisc             randconfig-r014-20230731   gcc  
-openrisc             randconfig-r034-20230801   gcc  
-parisc                           allyesconfig   gcc  
-parisc                              defconfig   gcc  
-parisc               randconfig-r006-20230801   gcc  
-parisc64                            defconfig   gcc  
-powerpc                          allmodconfig   gcc  
-powerpc                           allnoconfig   gcc  
-riscv                            allmodconfig   gcc  
-riscv                             allnoconfig   gcc  
-riscv                            allyesconfig   gcc  
-riscv                               defconfig   gcc  
-riscv                randconfig-r021-20230731   clang
-riscv                randconfig-r042-20230801   clang
-riscv                          rv32_defconfig   gcc  
-s390                             allmodconfig   gcc  
-s390                             allyesconfig   gcc  
-s390                                defconfig   gcc  
-s390                 randconfig-r044-20230801   clang
-sh                               allmodconfig   gcc  
-sh                   randconfig-r001-20230801   gcc  
-sparc                            allyesconfig   gcc  
-sparc                               defconfig   gcc  
-sparc                randconfig-r033-20230801   gcc  
-sparc64              randconfig-r015-20230731   gcc  
-sparc64              randconfig-r031-20230801   gcc  
-um                               allmodconfig   clang
-um                                allnoconfig   clang
-um                               allyesconfig   clang
-um                                  defconfig   gcc  
-um                             i386_defconfig   gcc  
-um                   randconfig-r003-20230801   clang
-um                           x86_64_defconfig   gcc  
-x86_64                           allyesconfig   gcc  
-x86_64       buildonly-randconfig-r001-20230731   gcc  
-x86_64       buildonly-randconfig-r002-20230731   gcc  
-x86_64       buildonly-randconfig-r003-20230731   gcc  
-x86_64                              defconfig   gcc  
-x86_64                                  kexec   gcc  
-x86_64               randconfig-r004-20230801   gcc  
-x86_64               randconfig-r005-20230801   gcc  
-x86_64               randconfig-x001-20230731   clang
-x86_64               randconfig-x002-20230731   clang
-x86_64               randconfig-x003-20230731   clang
-x86_64               randconfig-x004-20230731   clang
-x86_64               randconfig-x005-20230731   clang
-x86_64               randconfig-x006-20230731   clang
-x86_64               randconfig-x011-20230731   gcc  
-x86_64               randconfig-x012-20230731   gcc  
-x86_64               randconfig-x013-20230731   gcc  
-x86_64               randconfig-x014-20230731   gcc  
-x86_64               randconfig-x015-20230731   gcc  
-x86_64               randconfig-x016-20230731   gcc  
-x86_64                          rhel-8.3-rust   clang
-x86_64                               rhel-8.3   gcc  
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+- Eric
