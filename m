@@ -2,82 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 096B877016C
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 15:26:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5CC13770156
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 15:20:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229959AbjHDN0u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Aug 2023 09:26:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38074 "EHLO
+        id S230452AbjHDNUq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Aug 2023 09:20:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33462 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229693AbjHDN0n (ORCPT
+        with ESMTP id S230475AbjHDNU1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Aug 2023 09:26:43 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 80A3E4C1E
-        for <linux-kernel@vger.kernel.org>; Fri,  4 Aug 2023 06:26:19 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 223851007;
-        Fri,  4 Aug 2023 06:17:15 -0700 (PDT)
-Received: from [10.1.197.1] (ewhatever.cambridge.arm.com [10.1.197.1])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 668A33F5A1;
-        Fri,  4 Aug 2023 06:16:31 -0700 (PDT)
-Message-ID: <a9349988-6153-05f7-10de-4af47b49761c@arm.com>
-Date:   Fri, 4 Aug 2023 14:16:30 +0100
+        Fri, 4 Aug 2023 09:20:27 -0400
+Received: from mail-yb1-xb35.google.com (mail-yb1-xb35.google.com [IPv6:2607:f8b0:4864:20::b35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5BBD34C0E
+        for <linux-kernel@vger.kernel.org>; Fri,  4 Aug 2023 06:18:12 -0700 (PDT)
+Received: by mail-yb1-xb35.google.com with SMTP id 3f1490d57ef6-d1fb9107036so2354045276.0
+        for <linux-kernel@vger.kernel.org>; Fri, 04 Aug 2023 06:18:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1691155015; x=1691759815;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=CN0KqmR92Gl21HQtvAMPIpHXJ6Dwonwz8bIB3UAxFh8=;
+        b=lTe8kRlkQhbCr9QuKFpIQmuAtZdUH5mPurZ2vCnZAsxaQqcSqvtzge8st2Doky9U6y
+         xY/2YDlAzjvJxM+3yPH5G6wjvpFlPDN/qPR4KmvahczFf0xUY2gffcvTJ4I7WDDINNU6
+         xnffE8OAedgkbwdJoiZZV72j7B0U14gzEJZm1FA3uYB6YGRQF9I8dUmb4HvDv1oOtH7F
+         nppWSTaOezES3Qq1iAqOSdow0tmHbRDOcLFhTenoUNEgPu7dDfXfhF11nBemTfQK9YRG
+         cqmtB4syCb+9g1BDBbU43sFuyPtNlcQ71KB7zK0zzi77eQkJt74uCl/eTzvWt8TBr0ec
+         tkEA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691155015; x=1691759815;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=CN0KqmR92Gl21HQtvAMPIpHXJ6Dwonwz8bIB3UAxFh8=;
+        b=Yd3YsGjMDnMgWxollTXu3aM6ejQ80UrFf++V9G33GpX70ngVEouCRcybTRXo7kzUuq
+         aH9ADaGZ/iRCeUNh0PDuNf+R5zUa5dqqHa1e8HRxGSqaRAT7cbI/odNvvoX781+emuj5
+         PdKMf0wJUmwRFcbXChMcG58/WcERLpo8Lm1BpsRIgh76XKLbhs+bnZa1Zxqp2vnRHmmr
+         ZpdGVVsE2XS7sC5HCIdpWxGCvH5WMQa241Q71M5ZuY6lCqCBiAamaFnR3jAnqz/JgRMn
+         2brpQftBhcxgIwkmc/R8vjMhxCPk/KEPcUq8Wu6gct3FCtd4UTM8HOPc0QnpleIaS+WO
+         Hqkg==
+X-Gm-Message-State: AOJu0YwP4Nrpy7hfISMoCZuUSpQY7/w74iDkVODfQ+WqPFxgUaZaILT5
+        D+2Jiczbp1vw6BajmxU7tMTTM1uuSxEGTKmorAlgyA==
+X-Google-Smtp-Source: AGHT+IEAY+cs9ul8AsuJqNlA1Ij2SA6DE6uBQAWyhGZ4hywFx5Y9P9mpVKMALAsrD8z/aHpSNClZlHD8GZm8+r89DqM=
+X-Received: by 2002:a5b:701:0:b0:d0d:f5f3:d2bf with SMTP id
+ g1-20020a5b0701000000b00d0df5f3d2bfmr1444562ybq.48.1691155015082; Fri, 04 Aug
+ 2023 06:16:55 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v3 1/1] coresight: tmc: Explicit type conversions to
- prevent integer overflow
-Content-Language: en-US
-To:     Ruidong Tian <tianruidong@linux.alibaba.com>,
-        linux-kernel@vger.kernel.org
-Cc:     alexander.shishkin@linux.intel.com, coresight@lists.linaro.org,
-        linux-arm-kernel@lists.infradead.org, mike.leach@linaro.org,
-        james.clark@arm.com
-References: <20230714084349.31567-1-tianruidong@linux.alibaba.com>
- <20230804081514.120171-1-tianruidong@linux.alibaba.com>
- <20230804081514.120171-2-tianruidong@linux.alibaba.com>
-From:   Suzuki K Poulose <suzuki.poulose@arm.com>
-In-Reply-To: <20230804081514.120171-2-tianruidong@linux.alibaba.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <20230804075746.77435-1-jiapeng.chong@linux.alibaba.com>
+In-Reply-To: <20230804075746.77435-1-jiapeng.chong@linux.alibaba.com>
+From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Date:   Fri, 4 Aug 2023 16:16:44 +0300
+Message-ID: <CAA8EJpp9SJG1MQEwbGHLVWvJZomagttQ1y2B3EmXqB+owO0Xwg@mail.gmail.com>
+Subject: Re: [PATCH] drm/msm/dpu: clean up some inconsistent indenting
+To:     Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+Cc:     robdclark@gmail.com, quic_abhinavk@quicinc.com, sean@poorly.run,
+        marijn.suijten@somainline.org, airlied@gmail.com, daniel@ffwll.ch,
+        linux-arm-msm@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        freedreno@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        Abaci Robot <abaci@linux.alibaba.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 04/08/2023 09:15, Ruidong Tian wrote:
-> Perf cs_etm session executed unexpectedly when AUX buffer > 1G.
-> 
->    perf record -C 0 -m ,2G -e cs_etm// -- <workload>
->    [ perf record: Captured and wrote 2.615 MB perf.data ]
-> 
-> Perf only collect about 2M perf data rather than 2G. This is becasuse
-> the operation, "nr_pages << PAGE_SHIFT", in coresight tmc driver, will
-> overflow when nr_pages >= 0x80000(correspond to 1G AUX buffer). The
-> overflow cause buffer allocation to fail, and TMC driver will alloc
-> minimal buffer size(1M). You can just get about 2M perf data(1M AUX
-> buffer + perf data header) at least.
-> 
-> Explicit convert nr_pages to 64 bit to avoid overflow.
-> 
-> Fixes: 22f429f19c41 ("coresight: etm-perf: Add support for ETR backend")
-> Signed-off-by: Ruidong Tian <tianruidong@linux.alibaba.com>
-> Reviewed-by: James Clark <james.clark@arm.com>
+On Fri, 4 Aug 2023 at 10:57, Jiapeng Chong
+<jiapeng.chong@linux.alibaba.com> wrote:
+>
+> No functional modification involved.
+>
+> drivers/gpu/drm/msm/disp/dpu1/dpu_core_perf.c:183 dpu_core_perf_crtc_check() warn: inconsistent indenting.
+>
+> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+> Closes: https://bugzilla.openanolis.cn/show_bug.cgi?id=6096
+> Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
 > ---
->   drivers/hwtracing/coresight/coresight-tmc-etf.c | 2 +-
->   drivers/hwtracing/coresight/coresight-tmc-etr.c | 5 +++--
->   drivers/hwtracing/coresight/coresight-tmc.h     | 2 +-
->   3 files changed, 5 insertions(+), 4 deletions(-)
+>  drivers/gpu/drm/msm/disp/dpu1/dpu_core_perf.c | 6 +++---
+>  1 file changed, 3 insertions(+), 3 deletions(-)
+
+Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
 
 
-Added additional Fixes tags as required and pushed it here :
 
-https://git.kernel.org/coresight/c/fd380097cdb3
 
-Thanks!
-Suzuki
+-- 
+With best wishes
+Dmitry
