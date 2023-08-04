@@ -2,171 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AC51276FBCF
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 10:18:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 14DDE76FBD5
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 10:19:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233076AbjHDISV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Aug 2023 04:18:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55182 "EHLO
+        id S232559AbjHDITl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Aug 2023 04:19:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55918 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234493AbjHDISR (ORCPT
+        with ESMTP id S232403AbjHDITj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Aug 2023 04:18:17 -0400
-Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2CBA4697
-        for <linux-kernel@vger.kernel.org>; Fri,  4 Aug 2023 01:18:06 -0700 (PDT)
-Received: by mail-pf1-x42e.google.com with SMTP id d2e1a72fcca58-686f19b6dd2so1361693b3a.2
-        for <linux-kernel@vger.kernel.org>; Fri, 04 Aug 2023 01:18:06 -0700 (PDT)
+        Fri, 4 Aug 2023 04:19:39 -0400
+Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com [IPv6:2607:f8b0:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F5E3E6E
+        for <linux-kernel@vger.kernel.org>; Fri,  4 Aug 2023 01:19:38 -0700 (PDT)
+Received: by mail-pf1-x429.google.com with SMTP id d2e1a72fcca58-686be28e1a8so1311115b3a.0
+        for <linux-kernel@vger.kernel.org>; Fri, 04 Aug 2023 01:19:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1691137086; x=1691741886;
+        d=ventanamicro.com; s=google; t=1691137178; x=1691741978;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=Gg5cVCUNV3XHGOdEED3Q5WLBVqpxV2U0ovPUur9voag=;
-        b=F4u5Br/6x69AAvjAgMCxCTVIJ5ywKIpqh2D36RfYxFp2q7yHZ27dzUJAmOqKW9pJqH
-         h77oI985AoKugoObOdc3Mc/zCJp8iWso0lLemKvy9Xmn/8pVTaoSBFtTAJ59BV5ZBr+5
-         c8P+FQ2fMtbyDkgiyzeqgrZDCOyvhFNWzy4zo=
+        bh=+6p8ZmyjWt9EkIhx2x7mQdHkPI32JR/rPIgt/KaUyrM=;
+        b=Xy7UXj5rKhL+uu8tkHk9ALkF9uUbocA2LUGuUDTCT+UGGvvTrismPG1zBkJkoUphar
+         GFIBh9B6MWwxSsxdU7gxlE57mN66vXeN52obzKwYx5CxoHQybxqezGy7NIg+855c764S
+         XNF/oYMsJJ5Rt/2MYOeT2lTd6jXCIw8p1xhmuAbrL+ZL+sCs0RmmNBE1mk+AOBq6Eq9W
+         F4pwgeCm+zv78ejFX6n1IKU186BdKmiIkBCc3ojk6wDZAKKAN2w8IQf6CZtDJd5Pa6Dq
+         /f/CXnPRCEHLAkvvcZXchDfjlnHhtZnzkRvEjbeedsy/ciaI5ykfwG3vd5RKwNUEGKzl
+         UCZg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691137086; x=1691741886;
+        d=1e100.net; s=20221208; t=1691137178; x=1691741978;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=Gg5cVCUNV3XHGOdEED3Q5WLBVqpxV2U0ovPUur9voag=;
-        b=TN0cBBd1ihF5RKtQv/fEvq+GeR59bFr9qrPcfnqtV45NgA8co13qwvpPQEnkjm+qW7
-         clkPqlNpkGzhEHzVFYPdypZGhNSi3cxq3cyGvBtlEs0EZeEO0MFev4HA8r7u+BWvBT7P
-         fRovmBeAEUnWPFpJaux0XeU5ecAFrGpacXtkiSf3YKfOIbfqyro6NSe3LUUtIW0GSiW9
-         9nU0NHSAJ2oZg0kBySPCnMFqU0sN4iFN+0ugM0gM6vxeyA1RsRZ8gXUg/MFF84bSxtpl
-         CWOKpQjFcFlEzUBKOrSxqn4le2V7/EzCAAWglgPBTxmHGrI81cp8v5otiG3HxBDOx7Mz
-         z4LQ==
-X-Gm-Message-State: AOJu0YzdqxXRXz/fgH8BPCLajMgs3F2firh7Qdv6H6PBhPOqVk2zV3YX
-        LvJ4Dvsrx9ozCh7Q4Mgs8GUNwQ==
-X-Google-Smtp-Source: AGHT+IF0p+Ad31RQ2e8xZC4taMCW7aZqthbtutqmacSexOFcs3y+7j334dkNht2sO4v7wQdkEBZOuQ==
-X-Received: by 2002:a05:6a20:2452:b0:13e:82ad:ff0a with SMTP id t18-20020a056a20245200b0013e82adff0amr1046163pzc.23.1691137086366;
-        Fri, 04 Aug 2023 01:18:06 -0700 (PDT)
-Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id ff12-20020a056a002f4c00b0067f2f7eccdcsm1043514pfb.193.2023.08.04.01.18.05
+        bh=+6p8ZmyjWt9EkIhx2x7mQdHkPI32JR/rPIgt/KaUyrM=;
+        b=hl/kq1N1R6Uw1pLaU8iu78qKze4WRR/G+b4py+E1p2AxWBoqtro81OihKrzYh6Ka28
+         pEcInaTQa7QZzVVI7w1j7W5f9x2b1lZdMYyTuRHolm0YK1CrVEG2wtehaPHKQIh14yDV
+         9F1ozrLjKOLnTPANTb3nymnCLGI758CC11mK4H/Lgj1ZiicdCvHIfC933hwhdB4qpxmO
+         UjGYvUaLEKHLdk0U+yuKdVSj5XY222POgmfIpWJuqj3kM7iic1GYgEqCfxOwJRTqKy+L
+         g5g4K2tQZZ3r9f73DCh2ZKEy/mh4gJPxGyFyFf06MWZGAwLKASz+JI5tA3T+sJif3+1W
+         0HDA==
+X-Gm-Message-State: AOJu0YzG+xmHyv9+EBYTwrqR+ckui0TMlduEyK/yMybFPMJ76mA8zgxa
+        +BWD9b2e4CqUq2OGN/E+RR5V9g==
+X-Google-Smtp-Source: AGHT+IFmU2okWiufqxbBgTJlqhXztctK8e0s9XMhsjLRvyxOqapi7NDJcuaofoqHVSzZkHv7M/zO9Q==
+X-Received: by 2002:a05:6a20:938a:b0:13e:8ce5:cacd with SMTP id x10-20020a056a20938a00b0013e8ce5cacdmr944703pzh.26.1691137177799;
+        Fri, 04 Aug 2023 01:19:37 -0700 (PDT)
+Received: from sunil-laptop ([106.51.190.143])
+        by smtp.gmail.com with ESMTPSA id e18-20020aa78c52000000b0068620bee456sm1046915pfd.209.2023.08.04.01.19.28
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 04 Aug 2023 01:18:05 -0700 (PDT)
-Date:   Fri, 4 Aug 2023 01:18:05 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Maximilian Luz <luzmaximilian@gmail.com>
-Cc:     Bjorn Andersson <andersson@kernel.org>,
-        Andy Gross <agross@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Fri, 04 Aug 2023 01:19:37 -0700 (PDT)
+Date:   Fri, 4 Aug 2023 13:49:24 +0530
+From:   Sunil V L <sunilvl@ventanamicro.com>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     linux-doc@vger.kernel.org, linux-riscv@lists.infradead.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-acpi@vger.kernel.org, linux-pci@vger.kernel.org,
+        Jonathan Corbet <corbet@lwn.net>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        "Rafael J . Wysocki" <rafael@kernel.org>,
+        Len Brown <lenb@kernel.org>,
+        Daniel Scally <djrscally@gmail.com>,
+        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Anup Patel <anup@brainfault.org>,
+        Marc Zyngier <maz@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Robert Moore <robert.moore@intel.com>,
+        Haibo Xu <haibo1.xu@intel.com>,
+        Andrew Jones <ajones@ventanamicro.com>,
+        Conor Dooley <conor.dooley@microchip.com>,
+        Atish Kumar Patra <atishp@rivosinc.com>,
         Ard Biesheuvel <ardb@kernel.org>,
-        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
-        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        Johan Hovold <johan@kernel.org>,
-        Steev Klimaszewski <steev@kali.org>,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v5 1/3] lib/ucs2_string: Add UCS-2 strscpy function
-Message-ID: <202308040115.A4643B8@keescook>
-References: <20230730161906.606163-1-luzmaximilian@gmail.com>
- <20230730161906.606163-2-luzmaximilian@gmail.com>
+        Alexandre Ghiti <alexghiti@rivosinc.com>
+Subject: Re: [RFC PATCH v1 04/21] RISC-V: ACPI: Enhance acpi_os_ioremap with
+ MMIO remapping
+Message-ID: <ZMy0jC55N0+nKEye@sunil-laptop>
+References: <20230803175916.3174453-1-sunilvl@ventanamicro.com>
+ <20230803175916.3174453-5-sunilvl@ventanamicro.com>
+ <ZMyRCRRkTnR/sK0u@smile.fi.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230730161906.606163-2-luzmaximilian@gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=unavailable autolearn_force=no version=3.4.6
+In-Reply-To: <ZMyRCRRkTnR/sK0u@smile.fi.intel.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Jul 30, 2023 at 06:19:02PM +0200, Maximilian Luz wrote:
-> Add a ucs2_strscpy() function for UCS-2 strings. The behavior is
-> equivalent to the standard strscpy() function, just for 16-bit character
-> UCS-2 strings.
+On Fri, Aug 04, 2023 at 08:47:53AM +0300, Andy Shevchenko wrote:
+> On Thu, Aug 03, 2023 at 11:28:59PM +0530, Sunil V L wrote:
+> > Enhance the acpi_os_ioremap() to support opregions in MMIO
+> > space. Also, have strict checks using EFI memory map
+> > to allow remapping the RAM similar to arm64.
+> > 
+> > Cc: Ard Biesheuvel <ardb@kernel.org>
+> > Cc: Alexandre Ghiti <alexghiti@rivosinc.com>
 > 
-> Signed-off-by: Maximilian Luz <luzmaximilian@gmail.com>
-> ---
+> You may use --cc to the command line when forming patches.
 > 
-> Changes in v5:
->  - Add ucs2_strscpy() instead of ucs2_strlcpy()
+> Also we usually consider Cc: as a part of the tag block, meaning no blank line
+> should be here.
 > 
-> Patch introduced in v4.
+Thanks!, Andy. I specifically wanted Ard and Alex to look at this patch
+and hence added Cc. I was not aware that no blank line should be there.
+Thanks for letting me know.
+
+> > Signed-off-by: Sunil V L <sunilvl@ventanamicro.com>
 > 
-> ---
->  include/linux/ucs2_string.h |  1 +
->  lib/ucs2_string.c           | 35 +++++++++++++++++++++++++++++++++++
->  2 files changed, 36 insertions(+)
+> ...
 > 
-> diff --git a/include/linux/ucs2_string.h b/include/linux/ucs2_string.h
-> index cf3ada3e820e..c499ae809c7d 100644
-> --- a/include/linux/ucs2_string.h
-> +++ b/include/linux/ucs2_string.h
-> @@ -10,6 +10,7 @@ typedef u16 ucs2_char_t;
->  unsigned long ucs2_strnlen(const ucs2_char_t *s, size_t maxlength);
->  unsigned long ucs2_strlen(const ucs2_char_t *s);
->  unsigned long ucs2_strsize(const ucs2_char_t *data, unsigned long maxlength);
-> +ssize_t ucs2_strscpy(ucs2_char_t *dst, const ucs2_char_t *src, size_t count);
->  int ucs2_strncmp(const ucs2_char_t *a, const ucs2_char_t *b, size_t len);
->  
->  unsigned long ucs2_utf8size(const ucs2_char_t *src);
-> diff --git a/lib/ucs2_string.c b/lib/ucs2_string.c
-> index 0a559a42359b..b608129fcbdc 100644
-> --- a/lib/ucs2_string.c
-> +++ b/lib/ucs2_string.c
-> @@ -32,6 +32,41 @@ ucs2_strsize(const ucs2_char_t *data, unsigned long maxlength)
->  }
->  EXPORT_SYMBOL(ucs2_strsize);
->  
-> +ssize_t ucs2_strscpy(ucs2_char_t *dst, const ucs2_char_t *src, size_t count)
-> +{
-> +	long res;
-> +
-> +	/*
-> +	 * Ensure that we have a valid amount of space. We need to store at
-> +	 * least one NUL-character.
-> +	 */
-> +	if (count == 0 || WARN_ON_ONCE(count > INT_MAX))
-
-Is "count" a measure of bytes or characters? It seems to be characters.
-can you please add some kern-doc for this function to clarify this.
-Also, I wonder if the above check should be "count > INT_MAX / 2" since
-the INT_MAX is, generally, done in byte counts.
-
-> +		return -E2BIG;
-> +
-> +	/*
-> +	 * Copy at most 'count' bytes, return early if we find a
-
-If "count" is characters, this comment should not say "bytes". :)
-
-> +	 * NUL-terminator.
-> +	 */
-> +	for (res = 0; res < count; res++) {
-> +		ucs2_char_t c;
-> +
-> +		c = src[res];
-> +		dst[res] = c;
-> +
-> +		if (!c)
-> +			return res;
-> +	}
-> +
-> +	/*
-> +	 * The loop above terminated without finding a NUL-terminator,
-> +	 * exceeding the 'count': Enforce proper NUL-termination and return
-> +	 * error.
-> +	 */
-> +	dst[count - 1] = 0;
-> +	return -E2BIG;
-> +}
-> +EXPORT_SYMBOL(ucs2_strscpy);
-> +
->  int
->  ucs2_strncmp(const ucs2_char_t *a, const ucs2_char_t *b, size_t len)
->  {
-> -- 
-> 2.41.0
+> >  #include <linux/io.h>
+> >  #include <linux/pci.h>
+> >  #include <linux/efi.h>
+> > +#include <linux/memblock.h>
 > 
+> Can you squeeze it to have some order, like to be after io.h (taking into
+> account given context)?
+> 
+Yeah, sure. Let me update in next version.
 
-Otherwise looks good to me!
+> ...
+> 
+> > +			if (memblock_is_map_memory(phys) ||
+> > +			    !memblock_is_region_memory(phys, size)) {
+> > +				pr_warn(FW_BUG "requested region covers kernel memory @ %p\n",
+> > +					&phys);
+> 
+> How %p can be useful here (it's mangled), but also wouldn't this give a hint to
+> an attacker about the kernel memory location and diminish the KASLR protection?
+> (IIRC after boot we always have the same salt for the mangling the pointers when
+>  printing, so at least theoretically it might be possible to bruteforce the
+>  printing algo to give a clue about the kernel address.)
+> 
+Okay. This is copied from arm64 version. But I think this is a good
+point. Let me just print the warning message without address in the next
+version.
 
--- 
-Kees Cook
+Thanks!
+Sunil
