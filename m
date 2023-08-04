@@ -2,160 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AC65976F7E8
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 04:35:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EBFCC76F7E9
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 04:37:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231481AbjHDCfS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Aug 2023 22:35:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53858 "EHLO
+        id S232059AbjHDChS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Aug 2023 22:37:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54588 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230048AbjHDCfQ (ORCPT
+        with ESMTP id S230048AbjHDChQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Aug 2023 22:35:16 -0400
-Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57D3B3C28;
-        Thu,  3 Aug 2023 19:35:14 -0700 (PDT)
-Received: by mail-lf1-x12f.google.com with SMTP id 2adb3069b0e04-4fbf09a9139so2811016e87.2;
-        Thu, 03 Aug 2023 19:35:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1691116512; x=1691721312;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=GFmzyYyD5pmtGspOrpv62IT17bVhF0Aej/4vUIxQMNI=;
-        b=nqEluQtalim6pU3AHduMnW/HB0ZR/ioBRx3swj8NMu6LS41B6Drb7sROf3pA84ZjrJ
-         2YMFDap8/mItiFhzsoNfFPslCDNO8HKj4ECCOn8vOhuOM98vmbaTiXomMTIfpUGTtVv6
-         1lWfNmjvXDnjkotH/IFdA6jc2l8150cA5bdZEs1wYuisrzS+7vID0vu56izXC55eKfbg
-         EnzMh6xBFkCcwHQhRNVxLGg8wLS5Fdacw1iav+nkf0Ok98EBuaMEC+4TtgBIzcoAWlbJ
-         36LzdrCyTF9rCTu/E+Hfgry6ahPEAv4DUKAHp+XTtBFlHrur8WmmLwtZwox65s31hwb7
-         QPFw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691116512; x=1691721312;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=GFmzyYyD5pmtGspOrpv62IT17bVhF0Aej/4vUIxQMNI=;
-        b=KHU4LTM7BaN040eeB2qk/4AUGveFWbt8ms70VlahgUdmedbXUrEmfRE5VbjPKfDGUR
-         XRRKWdDC7BWlG6YuRYMTGdQnVBkdZ5M1TSwh8zcJVvDJFLcmJ92j+YbPCMSQ6NEHLDrO
-         xccHTMvlTMn6m+fde3JUVSXxqiDIBZ9dQipGht+fScpkbcaiMeI6rHXmCxswbZq0dV8s
-         YUJ/PUWF52c5ZwAdLVLa8ruNgxvfjgFfWA20LXyINKPJQZeQFM9NY3CvbhZ4TaI5ZRDe
-         HgCqaUbSwvtUgymBqkwSJEUETIxrYVkKCLOP+MZgX5sco2qSRqzKyJZt6rgdgiXdSi7+
-         GQbg==
-X-Gm-Message-State: AOJu0YwJJssbUwlHLapqIwLAcqOPEcskhDXNr1/ULhJyyl8N7YKCpgkk
-        +4OsFdTSVVXPqJlUPEP7VW2LlsP/Vt+oRy3NkXAm4B5h/SbKsg==
-X-Google-Smtp-Source: AGHT+IF02uQbZbGOlGsAoanB3UW8i/TOB31Dj6iLcDAp7yA1AS6ha3g1IUHrp1YqkLMlWf/bxo+DlA/GZP7ieEFxsgo=
-X-Received: by 2002:a19:9145:0:b0:4fb:7c40:9f97 with SMTP id
- y5-20020a199145000000b004fb7c409f97mr219976lfj.27.1691116512018; Thu, 03 Aug
- 2023 19:35:12 -0700 (PDT)
+        Thu, 3 Aug 2023 22:37:16 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1349E4224
+        for <linux-kernel@vger.kernel.org>; Thu,  3 Aug 2023 19:37:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
+        Message-ID:Sender:Reply-To:Content-ID:Content-Description;
+        bh=2wlSNh8LSVUW5RuMrMq4MofQk6R7wWyYFXwgLK4BrOw=; b=2NMrsEeJoEQfKZb4RDais900Rj
+        i7G8j0oMCUrhXilynw0uAsvBRABZ36YYz6362HQe28ac8D54Lwm/1D1AK5lEkPUEmaA+Wfny2YEy5
+        Io/kZGzyffqiVKts0w2DHHtHOAgCB6HsVbDKuwvtI53nsBJIG8ZwDS318bELRerQg4mkcxLOcz7cV
+        f9WiLDL2xSBsTPim2sXaL0SuXsR0PJLYsrOW5bvYfeNi4fBRO2moBoT41fVdoJEzGGNudzMA9LhRV
+        pnMG+b+XysOUv7IKrMYaqjoWy3SGEvIXGr8QbXj3irbqw/7KR+w4511T+6RrnWGTYnFAiOjj+tYp9
+        rcjAjq6g==;
+Received: from [2601:1c2:980:9ec0::2764]
+        by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
+        id 1qRkgf-00BOJv-0x;
+        Fri, 04 Aug 2023 02:37:09 +0000
+Message-ID: <d8a57aee-bb8a-dc5a-7c4f-b8a293d37bec@infradead.org>
+Date:   Thu, 3 Aug 2023 19:37:07 -0700
 MIME-Version: 1.0
-References: <CALcu4rbFrU4go8sBHk3FreP+qjgtZCGcYNpSiEXOLm==qFv7iQ@mail.gmail.com>
- <ZMwSKy09gsa/dL08@google.com>
-In-Reply-To: <ZMwSKy09gsa/dL08@google.com>
-From:   Yikebaer Aizezi <yikebaer61@gmail.com>
-Date:   Fri, 4 Aug 2023 10:35:00 +0800
-Message-ID: <CALcu4rZt5i5UD9vGBb-PdUwNN-OOSEa=ykd+bf2=44Okz1aO0g@mail.gmail.com>
-Subject: Re: WARNING in kvm_arch_vcpu_ioctl_run
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     pbonzini@redhat.com, tglx@linutronix.de, mingo@redhat.com,
-        bp@alien8.de, dave.hansen@linux.intel.com, x86@kernel.org,
-        hpa@zytor.com, jarkko@kernel.org, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-sgx@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: drivers/gpu/drm/bridge/samsung-dsim.c link error
+Content-Language: en-US
+To:     Adam Ford <aford173@gmail.com>
+Cc:     Aleksandr Nogikh <nogikh@google.com>, l.stach@pengutronix.de,
+        inki.dae@samsung.com, jagan@amarulasolutions.com,
+        m.szyprowski@samsung.com, airlied@gmail.com, daniel@ffwll.ch,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        syzkaller@googlegroups.com, dvyukov@google.com
+References: <20230803144227.2187749-1-nogikh@google.com>
+ <CAHCN7x+8Qq6w0eRC0NwBfhgS7XH7fmmPr9xwhR54rWFNY37Ugg@mail.gmail.com>
+ <9e77ccc3-07db-f1fe-ef99-981852d4772b@infradead.org>
+ <CAHCN7xKG=8ygSi8st31fe+t3Mn+k-7VUHKixFCZUuuDLOX8-kQ@mail.gmail.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+In-Reply-To: <CAHCN7xKG=8ygSi8st31fe+t3Mn+k-7VUHKixFCZUuuDLOX8-kQ@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Just patched it, after dropping the sanity check, I rerun the
-reproduce program, and the crash was not triggered.
-seems like the problem is fixed for now, Thanks
 
-Sean Christopherson <seanjc@google.com> =E4=BA=8E2023=E5=B9=B48=E6=9C=884=
-=E6=97=A5=E5=91=A8=E4=BA=94 04:46=E5=86=99=E9=81=93=EF=BC=9A
->
-> On Thu, Jul 27, 2023, Yikebaer Aizezi wrote:
-> > Hello, I'm sorry for the mistake in my previous email. I forgot to add
-> > a subject. This is my second attempt to send the message.
-> >
-> > When using Healer to fuzz the latest Linux kernel, the following crash
-> > was triggered.
-> >
-> > HEAD commit: fdf0eaf11452d72945af31804e2a1048ee1b574c (tag: v6.5-rc2)
-> >
-> > git tree: upstream
-> >
-> > console output:
-> > https://drive.google.com/file/d/1FiemC_AWRT-6EGscpQJZNzYhXZty6BVr/view?=
-usp=3Ddrive_link
-> > kernel config: https://drive.google.com/file/d/1fgPLKOw7QbKzhK6ya5KUyKy=
-FhumQgunw/view?usp=3Ddrive_link
-> > C reproducer: https://drive.google.com/file/d/1SiLpYTZ7Du39ubgf1k1BIPlu=
-9ZvMjiWZ/view?usp=3Ddrive_link
-> > Syzlang reproducer:
-> > https://drive.google.com/file/d/1eWSmwvNGOlZNU-0-xsKhUgZ4WG2VLZL5/view?=
-usp=3Ddrive_link
-> > Similar report:
-> > https://groups.google.com/g/syzkaller-bugs/c/C2ud-S1Thh0/m/z4iI7l_dAgAJ
-> >
-> > If you fix this issue, please add the following tag to the commit:
-> > Reported-by: Yikebaer Aizezi <yikebaer61@gmail.com>
-> >
-> > kvm: vcpu 129: requested lapic timer restore with starting count
-> > register 0x390=3D4241646265 (4241646265 ns) > initial count (296265111
-> > ns). Using initial count to start timer.
-> > ------------[ cut here ]------------
-> > WARNING: CPU: 0 PID: 1977 at arch/x86/kvm/x86.c:11098
-> > kvm_arch_vcpu_ioctl_run+0x152f/0x1830 arch/x86/kvm/x86.c:11098
->
-> Well that's annoying.  The WARN is a sanity check that KVM doesn't someho=
-w put
-> the guest into an uninitialized state while emulating the guest's APIC ti=
-mer, but
-> I completely overlooked the fact that userspace can simply stuff the shou=
-ld-be-
-> impossible guest state. *sigh*
->
-> Sadly, I think the most reasonable thing to do is to simply drop the sani=
-ty check :-(
->
-> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-> index 0145d844283b..e9e262b244b8 100644
-> --- a/arch/x86/kvm/x86.c
-> +++ b/arch/x86/kvm/x86.c
-> @@ -11091,12 +11091,17 @@ int kvm_arch_vcpu_ioctl_run(struct kvm_vcpu *vc=
-pu)
->                         r =3D -EINTR;
->                         goto out;
->                 }
-> +
->                 /*
-> -                * It should be impossible for the hypervisor timer to be=
- in
-> -                * use before KVM has ever run the vCPU.
-> +                * Don't bother switching APIC timer emulation from the
-> +                * hypervisor timer to the software timer, the only way f=
-or the
-> +                * APIC timer to be active is if userspace stuffed vCPU s=
-tate,
-> +                * i.e. put the vCPU and into a nonsensical state.  The o=
-nly
-> +                * transition out of UNINITIALIZED (without more state st=
-uffing
-> +                * from userspace) is an INIT, which will reset the local=
- APIC
-> +                * and thus smother the timer anyways, i.e. APIC timer IR=
-Qs
-> +                * will be dropped no matter what.
->                  */
-> -               WARN_ON_ONCE(kvm_lapic_hv_timer_in_use(vcpu));
-> -
->                 kvm_vcpu_srcu_read_unlock(vcpu);
->                 kvm_vcpu_block(vcpu);
->                 kvm_vcpu_srcu_read_lock(vcpu);
->
+
+On 8/3/23 19:26, Adam Ford wrote:
+> On Thu, Aug 3, 2023 at 9:01 PM Randy Dunlap <rdunlap@infradead.org> wrote:
+>>
+>> Hi--
+>>
+>> On 8/3/23 08:24, Adam Ford wrote:
+>>> On Thu, Aug 3, 2023 at 9:42 AM Aleksandr Nogikh <nogikh@google.com> wrote:
+>>>>
+>>>> Hello,
+>>>>
+>>>> We've been seing the following linker error on arm64 syzbot instances:
+>>>>
+>>>> ld.lld: error: undefined symbol: phy_mipi_dphy_get_default_config_for_hsclk
+>>>>>>> referenced by samsung-dsim.c:731 (drivers/gpu/drm/bridge/samsung-dsim.c:731)
+>>>>>>>               drivers/gpu/drm/bridge/samsung-dsim.o:(samsung_dsim_init) in archive vmlinux.a
+>>>>
+>>>> Steps to reproduce on the latest linux-next:
+>>>>
+>>>> $ git checkout next-20230803
+>>>> $ wget -O '.config' 'https://raw.githubusercontent.com/google/syzkaller/master/dashboard/config/linux/upstream-arm64-kasan.config'
+>>>> $ make CC=clang ARCH=arm64 LD=ld.lld CROSS_COMPILE=aarch64-linux-gnu- olddefconfig
+>>>>
+>>>> This also prints:
+>>>>
+>>>> WARNING: unmet direct dependencies detected for GENERIC_PHY_MIPI_DPHY
+>>>>   Depends on [n]: GENERIC_PHY [=n]
+>>>>   Selected by [y]:
+>>>>   - DRM_NWL_MIPI_DSI [=y] && DRM_BRIDGE [=y] && DRM [=y] && COMMON_CLK [=y] && OF [=y] && HAS_IOMEM [=y]
+>>>>   - DRM_SAMSUNG_DSIM [=y] && DRM [=y] && DRM_BRIDGE [=y] && COMMON_CLK [=y] && OF [=y] && HAS_IOMEM [=y]
+>>>>
+>>>> $ make CC=clang ARCH=arm64 LD=ld.lld CROSS_COMPILE=aarch64-linux-gnu- -j$(nproc)
+>>>>
+>>>> The kernel should have still compiled fine even despite the message above, right?
+>>
+>> No. See drivers/Makefile:
+>> obj-$(CONFIG_GENERIC_PHY)       += phy/
+>>
+>> so the drivers/phy/ subdir is only built when CONFIG_GENERIC_PHY is set,
+>> but it's not set.
+>>
+>>>> Could you please take a look?
+>>>
+>>> GENERIC_PHY_MIPI_DPHY was enabled to use
+>>> phy_mipi_dphy_get_default_config() which takes in the pixel clock,
+>>> bits-per-pixel, number of lanes and phy structure.  It applies a bunch
+>>> of math based on the info passed and fills in the structure, but that
+>>> function itself doesn't appear to be referencing phy code, so it's
+>>> likely safe.
+>>>
+>>> I think this can be resolved by enabling GENERIC_PHY.  I just checked
+>>> linux-next and when I built the arm64 defconfig, it enables
+>>> GENERIC_PHY=y, so I don't think this is an issue.  I also checked the
+>>
+>> defconfig doesn't matter in this case. The .config that was provided has:
+>> # CONFIG_GENERIC_PHY is not set
+>> CONFIG_GENERIC_PHY_MIPI_DPHY=y
+>>
+> 
+> Where/how was the .config generated?
+> 
+
+Aleksandr posted a link to the config file above.
+
+> Are you building linux-next or something else?  The .config file
+> generated when I build the arm64 defconfig  show both enabled:
+
+linux-next.
+
+
+> $ grep GENERIC_PHY .config
+> CONFIG_GENERIC_PHY=y
+> CONFIG_GENERIC_PHY_MIPI_DPHY=y
+> 
+
+Yes, this is not a defconfig file.
+
+> 
+>> but yes, selecting GENERIC_PHY (needed in 3 places) does fix the warnings
+>> and build error.  2 instance in drm/bridge/Kconfig and one in
+>> drm/bridge/cadence/Kconfig (found by inspection).
+>>
+>>
+>>
+>>> multi_v7_defconfig for ARM and it also sets GENERIC_PHY=y for 32-bit
+>>> ARM people using some of the Exynos boards.
+>>>
+>>> I don't know what version of Linux you're trying to build, but I can't
+>>> replicate your issue.
+>>
+>> I had no problem replicating the kconfig warnings and build error.
+> 
+> If you can replicate the problem, I'd suggest submitting a patch.
+
+Sure, I'll do that.
+
+-- 
+~Randy
