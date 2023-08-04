@@ -2,165 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A5B676FEF9
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 12:50:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1984876FEFA
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 12:50:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230271AbjHDKuY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Aug 2023 06:50:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47520 "EHLO
+        id S230315AbjHDKuw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Aug 2023 06:50:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47738 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229991AbjHDKta (ORCPT
+        with ESMTP id S231634AbjHDKuU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Aug 2023 06:49:30 -0400
-Received: from mblankhorst.nl (lankhorst.se [141.105.120.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8BA1359F9
-        for <linux-kernel@vger.kernel.org>; Fri,  4 Aug 2023 03:48:03 -0700 (PDT)
-Message-ID: <2719a8fc-d2e5-f499-ac4d-cf322941526c@linux.intel.com>
-Date:   Fri, 4 Aug 2023 12:47:54 +0200
+        Fri, 4 Aug 2023 06:50:20 -0400
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [213.167.242.64])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49CFB5586
+        for <linux-kernel@vger.kernel.org>; Fri,  4 Aug 2023 03:48:31 -0700 (PDT)
+Received: from [127.0.1.1] (91-154-35-171.elisa-laajakaista.fi [91.154.35.171])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 34D182E4;
+        Fri,  4 Aug 2023 12:47:23 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1691146044;
+        bh=NyaBzWSTtq2qSJj6mTZ7oYg0vWlG6MVQyE0tsCk6WrM=;
+        h=From:Subject:Date:To:Cc:From;
+        b=QdG2zpKxN4o6vioaOLpLpgJ6vGe/csQC3NnqhNiZlv3ZOI0yvFiEnF7q1ioNAx0Ax
+         GskneNYh2dn/qeol2FbHTvM8oviEa9kJLta0tyj59A4Y7hFkedaD9CnaWGR9RW2i8B
+         x1C4Y+Q90edxdMT89HQpRbtQDet3Gxlcf6gkCPZw=
+From:   Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
+Subject: [PATCH 0/4] drm/bridge: lt8912b: Init & remove related fixes
+Date:   Fri, 04 Aug 2023 13:48:09 +0300
+Message-Id: <20230804-lt8912b-v1-0-c542692c6a2f@ideasonboard.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.11.0
-Subject: [PATCH] ASoC: SOF: Intel: Move binding to display driver outside of
- deferred probe
-Content-Language: en-US
-To:     Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Takashi Iwai <tiwai@suse.de>
-Cc:     alsa-devel@alsa-project.org, sound-open-firmware@alsa-project.org,
-        linux-kernel@vger.kernel.org, Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Cezary Rojewski <cezary.rojewski@intel.com>,
-        Liam Girdwood <liam.r.girdwood@linux.intel.com>,
-        Peter Ujfalusi <peter.ujfalusi@linux.intel.com>,
-        Bard Liao <yung-chuan.liao@linux.intel.com>,
-        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
-        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
-        Mark Brown <broonie@kernel.org>,
-        Daniel Baluta <daniel.baluta@nxp.com>
-References: <20230719164141.228073-1-maarten.lankhorst@linux.intel.com>
- <87r0oohyea.wl-tiwai@suse.de>
- <ec653abc-f2f8-8a9d-4b8a-ea9d985d32fe@linux.intel.com>
- <f6efb6f9-11ae-e901-f2a5-a4ef94590290@linux.intel.com>
-From:   Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
-In-Reply-To: <f6efb6f9-11ae-e901-f2a5-a4ef94590290@linux.intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-B4-Tracking: v=1; b=H4sIAGnXzGQC/6tWKk4tykwtVrJSqFYqSi3LLM7MzwNyDHUUlJIzE
+ vPSU3UzU4B8JSMDI2MDCwMT3ZwSC0tDoyRdy+SkJHNLA0MLM2MjJaDqgqLUtMwKsEnRsbW1ANA
+ 6CwZZAAAA
+To:     Adrien Grassein <adrien.grassein@gmail.com>,
+        Andrzej Hajda <andrzej.hajda@intel.com>,
+        Neil Armstrong <neil.armstrong@linaro.org>,
+        Robert Foss <rfoss@kernel.org>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Francesco Dolcini <francesco.dolcini@toradex.com>,
+        Stefan Eichenberger <stefan.eichenberger@toradex.com>
+Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
+X-Mailer: b4 0.12.3
+X-Developer-Signature: v=1; a=openpgp-sha256; l=676;
+ i=tomi.valkeinen@ideasonboard.com; h=from:subject:message-id;
+ bh=NyaBzWSTtq2qSJj6mTZ7oYg0vWlG6MVQyE0tsCk6WrM=;
+ b=owEBbQKS/ZANAwAIAfo9qoy8lh71AcsmYgBkzNd5dFA68l08OCZc/LASCE1Lf8FuiAA956OOE
+ uwIB043CyWJAjMEAAEIAB0WIQTEOAw+ll79gQef86f6PaqMvJYe9QUCZMzXeQAKCRD6PaqMvJYe
+ 9fNgD/9o5Pcr0M/Xnuy6Xl3chYqVFkorlZOV9HoIykYfMWDJMBQ+PdBljrATvkERTif0O4j72ut
+ LS5ztW7/Rlidd5b+W5WcMe65LwLobadi0aGx9/o2ydP00bhQHHo0Vqr+46iRnYNQe/IoqnrpXUJ
+ EYYVk9tQY8H0vj3nObHe33dANj1+OfINnYMw+9cnA3VaXfYc0WKtzJmFUC7R4IBjcgyJ4riifp+
+ 6CC1Uml9TfVe5qLFKDcRdrB9VEosS/WI4PRq7sXXhTJ4+d0NEe9Ld9UarU9/Yof4MzChdeFgkh5
+ P/2Wa0hfvlILthdZ5rCW+/U8NNCsGVYoWc+iQ5g9P9Hie2lVRk2sjt/OpdwwV3FpWEUotb4GdVY
+ Im9xZP4Q2lN3HhLXmwJ1WwNzY/8VxY4UImoFyJNxkCOnn0s9Vhi8YdXOeT/kOCC0gZlBdVBIUg4
+ TP9KmCLvxYeX/nJT2kosp3EPyMaSKZshM8ZrguCfb/Gi/8aBoO+/5OCKyq8iPnDGjnzm/50vNi8
+ Yp9uTzqdG3sy3zEjc6KsryDVr09zBlhli9h3S0W5ZujvkClUFGpSLt4PF2RPjzpCZK5QE0H8Vh3
+ uTPXp7ogasxXJtXS6I1se6FiqB9ZpLyaghP3dnT8yusL+IJHWwFvujIAr2zshv1tRzpmiN4eRtn
+ +x7WCVVUAvG+4Tg==
+X-Developer-Key: i=tomi.valkeinen@ideasonboard.com; a=openpgp;
+ fpr=C4380C3E965EFD81079FF3A7FA3DAA8CBC961EF5
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hey,
+Fix various issues in lt8912b driver.
 
-On 2023-08-01 18:32, Pierre-Louis Bossart wrote:
-> 
->> I've been working on a small change to keep the workqueue in SOF and
->> only move the binding to the probe function to match what snd-hda-intel
->> is doing, but I don't know if that is needed?
->>
->> It was a bit unclear to me based on feedback if I should try to kill the
->> workqueue on all drivers (but with no way to test), or keep it around.
-> 
-> My understanding is that we only want to move the binding to the probe
-> function and leave the workqueue removal for another day - possibly never.
+ Tomi
 
-Patch 8/9 removed the workqueue, but can be replaced by the patch below, 
-that simply moves out snd_sof_probe().
-
-I've attempted this before, but didn't have snd_sof_remove in 
-snd_sof_device_remove, which is why I would get a OOPS when attempting 
-to do a shutdown/reboot.
-
-With that I hopefully addressed the last concern.
-
-Cheers,
-Maarten
-
-This mail can be applied with git am -c.
-------8<---------
-Now that we can use -EPROBE_DEFER, it's no longer required to spin off
-the snd_hdac_i915_init into a workqueue.
-
-Use the -EPROBE_DEFER mechanism instead, which must be returned in the
-probe function.
-
-Signed-off-by: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
+Signed-off-by: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
 ---
-  sound/soc/sof/core.c            | 19 +++++++------------
-  sound/soc/sof/intel/hda-codec.c |  2 +-
-  2 files changed, 8 insertions(+), 13 deletions(-)
+Tomi Valkeinen (4):
+      drm/bridge: lt8912b: Fix bridge_detach
+      drm/bridge: lt8912b: Fix crash on bridge detach
+      drm/bridge: lt8912b: Manually disable HPD only if it was enabled
+      drm/bridge: lt8912b: Add missing drm_bridge_attach call
 
-diff --git a/sound/soc/sof/core.c b/sound/soc/sof/core.c
-index 30db685cc5f4b..cd4d06d1800b1 100644
---- a/sound/soc/sof/core.c
-+++ b/sound/soc/sof/core.c
-@@ -188,13 +188,6 @@ static int sof_probe_continue(struct snd_sof_dev *sdev)
-  	struct snd_sof_pdata *plat_data = sdev->pdata;
-  	int ret;
+ drivers/gpu/drm/bridge/lontium-lt8912b.c | 22 ++++++++++------------
+ 1 file changed, 10 insertions(+), 12 deletions(-)
+---
+base-commit: b0e9267d4ccce9be9217337f4bc364ca24cf7f73
+change-id: 20230804-lt8912b-9cbb79018632
 
--	/* probe the DSP hardware */
--	ret = snd_sof_probe(sdev);
--	if (ret < 0) {
--		dev_err(sdev->dev, "error: failed to probe DSP %d\n", ret);
--		goto probe_err;
--	}
--
-  	sof_set_fw_state(sdev, SOF_FW_BOOT_PREPARE);
-
-  	/* check machine info */
-@@ -325,10 +318,6 @@ static int sof_probe_continue(struct snd_sof_dev *sdev)
-  dbg_err:
-  	snd_sof_free_debug(sdev);
-  dsp_err:
--	snd_sof_remove(sdev);
--probe_err:
--	sof_ops_free(sdev);
--
-  	/* all resources freed, update state to match */
-  	sof_set_fw_state(sdev, SOF_FW_BOOT_NOT_STARTED);
-  	sdev->first_boot = true;
-@@ -436,6 +425,12 @@ int snd_sof_device_probe(struct device *dev, struct 
-snd_sof_pdata *plat_data)
-
-  	sof_set_fw_state(sdev, SOF_FW_BOOT_NOT_STARTED);
-
-+	ret = snd_sof_probe(sdev);
-+	if (ret) {
-+		dev_err_probe(sdev->dev, ret, "failed to probe DSP\n");
-+		return ret;
-+	}
-+
-  	if (IS_ENABLED(CONFIG_SND_SOC_SOF_PROBE_WORK_QUEUE)) {
-  		INIT_WORK(&sdev->probe_work, sof_probe_work);
-  		schedule_work(&sdev->probe_work);
-@@ -485,9 +480,9 @@ int snd_sof_device_remove(struct device *dev)
-
-  		snd_sof_ipc_free(sdev);
-  		snd_sof_free_debug(sdev);
--		snd_sof_remove(sdev);
-  	}
-
-+	snd_sof_remove(sdev);
-  	sof_ops_free(sdev);
-
-  	/* release firmware */
-diff --git a/sound/soc/sof/intel/hda-codec.c 
-b/sound/soc/sof/intel/hda-codec.c
-index f1fd5b44aaac9..344b61576c0e3 100644
---- a/sound/soc/sof/intel/hda-codec.c
-+++ b/sound/soc/sof/intel/hda-codec.c
-@@ -415,7 +415,7 @@ int hda_codec_i915_init(struct snd_sof_dev *sdev)
-  		return 0;
-
-  	/* i915 exposes a HDA codec for HDMI audio */
--	ret = snd_hdac_i915_init(bus, true);
-+	ret = snd_hdac_i915_init(bus, false);
-  	if (ret < 0)
-  		return ret;
-
+Best regards,
 -- 
-2.39.2
+Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
 
