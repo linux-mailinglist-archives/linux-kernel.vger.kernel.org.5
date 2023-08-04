@@ -2,70 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 13623770925
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 21:38:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B87B770926
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 21:40:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230149AbjHDTin (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Aug 2023 15:38:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56556 "EHLO
+        id S229610AbjHDTkT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Aug 2023 15:40:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56980 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229539AbjHDTik (ORCPT
+        with ESMTP id S229379AbjHDTkR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Aug 2023 15:38:40 -0400
-Received: from lelv0143.ext.ti.com (lelv0143.ext.ti.com [198.47.23.248])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9BC551BF;
-        Fri,  4 Aug 2023 12:38:38 -0700 (PDT)
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-        by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 374JcUtn120686;
-        Fri, 4 Aug 2023 14:38:30 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1691177910;
-        bh=4CV2upOvrpZKIRBBsxtFctVYEJfMMRQA1Lp0j0HCm8U=;
-        h=Date:Subject:To:CC:References:From:In-Reply-To;
-        b=ifN+qFhKCP84GQ0NEU862Z3Ml9T3d3f1HJg4aAy8gAcISYVzSmjxL5A/fsM8yEZkB
-         ryuK3oEdvnzYWNUOPPLad8RHYUh3xjLXhCQncD8ZcJQNcl+zf8hoamScCQ0mbkGJws
-         XOug8kd9TMkD9KGG8ravPCen5JEwxaaf+deab7ak=
-Received: from DFLE112.ent.ti.com (dfle112.ent.ti.com [10.64.6.33])
-        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 374JcUqb006060
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Fri, 4 Aug 2023 14:38:30 -0500
-Received: from DFLE114.ent.ti.com (10.64.6.35) by DFLE112.ent.ti.com
- (10.64.6.33) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Fri, 4
- Aug 2023 14:38:29 -0500
-Received: from lelv0327.itg.ti.com (10.180.67.183) by DFLE114.ent.ti.com
- (10.64.6.35) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Fri, 4 Aug 2023 14:38:29 -0500
-Received: from [10.249.132.69] (ileaxei01-snat.itg.ti.com [10.180.69.5])
-        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 374JcNxo039676;
-        Fri, 4 Aug 2023 14:38:24 -0500
-Message-ID: <bfee03c8-2b93-8035-d2aa-d6ac71a92119@ti.com>
-Date:   Sat, 5 Aug 2023 01:08:23 +0530
+        Fri, 4 Aug 2023 15:40:17 -0400
+Received: from NAM12-BN8-obe.outbound.protection.outlook.com (mail-bn8nam12on20713.outbound.protection.outlook.com [IPv6:2a01:111:f400:fe5b::713])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2197E7;
+        Fri,  4 Aug 2023 12:40:14 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=gFftNMENjX4aZX/iY8Sq4bOy6Jfe7LSeQx0fK1k9ma5dQ6h+SK+A7G+vO76FmvRFBCVjKig1FeSkecqTUGxxEs1bD3KGE5kARgPa12U69xeLXccB++mwEcLJPc2nTpeg2PPhUCW5bmQW+5ZBK9/UHkQrku1VA5cI8BaggTBMihJE7x6mRG3XGTiB8vtKuJZFE3HivMApRV1lKHK9MI61+gaLdKUWcseQCh3+mFLrr7AGPi/T56h77cFuv5oMQYE7lxIbM2+ROU4RnaFc5Df73Dy/btKa/nYk4aBDom0Nsq7ggHxM0ouo0E/JRko8S2ZZ+xiCuRK9PPNbHqOJHPtZYA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=CKPAYwcRj8oWsc4yBSmVz2y3WCUJqIx6WmYInC2+76E=;
+ b=bCNpkEAudJMUqmIwhJhZOn3h6Euk01hVCAXsDzAZx5Z772Nvvup/hD0c7ZibUpdMVxba/XMbWJ5AFwZfcfCNTdlpXmwATC2o8vo6XPWXssmQY+7ynZRK+VanNpaQgbeJ4Bn5M48gvCxXZ0/iCNeTZbgOmtvGZnj9F1bNw1cKreduCHXic+0nfAhK2c1jF1EBauCYn0gGzySO0XWImDJ6OTb8Lxvs6W5qP2VvU6Fn11JD1c2pUGjbLNftkeT0Sa6WtHkDJQWBO9LGV3wnJ3JoHGqSxJZFFQ+IWkhcy2epu7PaEr+u8jjUb7bdNcHuIuBoRelfP/wgprXzHFIbaFCnig==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=os.amperecomputing.com; dmarc=pass action=none
+ header.from=os.amperecomputing.com; dkim=pass
+ header.d=os.amperecomputing.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=os.amperecomputing.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=CKPAYwcRj8oWsc4yBSmVz2y3WCUJqIx6WmYInC2+76E=;
+ b=qOeo3wifx24lMSd7OGgjleObA5Qh4NliwOdsID8eepEaLoyRlkNSm+fv1Zej6F/nSqr1n0eo5W/lzX+PBxhM24Ip+GO9kU8mtMoy7TkN69Vw17nmI/9L21Uzkwiz4DG51x3sVoE/GDdvCtpM1wlGTwBEjAJT8XiZbHX13NJlcV8=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=os.amperecomputing.com;
+Received: from DM5PR0102MB3590.prod.exchangelabs.com (2603:10b6:4:a4::25) by
+ SA1PR01MB6701.prod.exchangelabs.com (2603:10b6:806:1aa::20) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.6652.21; Fri, 4 Aug 2023 19:40:10 +0000
+Received: from DM5PR0102MB3590.prod.exchangelabs.com
+ ([fe80::4e0f:49b:ee39:f08e]) by DM5PR0102MB3590.prod.exchangelabs.com
+ ([fe80::4e0f:49b:ee39:f08e%6]) with mapi id 15.20.6652.021; Fri, 4 Aug 2023
+ 19:40:10 +0000
+Date:   Fri, 4 Aug 2023 12:40:02 -0700 (PDT)
+From:   Ilkka Koskinen <ilkka@os.amperecomputing.com>
+To:     John Garry <john.g.garry@oracle.com>
+cc:     Ilkka Koskinen <ilkka@os.amperecomputing.com>,
+        Ian Rogers <irogers@google.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Will Deacon <will@kernel.org>,
+        James Clark <james.clark@arm.com>,
+        Mike Leach <mike.leach@linaro.org>,
+        Leo Yan <leo.yan@linaro.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-perf-users@vger.kernel.org,
+        Dave Kleikamp <dave.kleikamp@oracle.com>
+Subject: Re: [PATCH 2/4] perf vendor events arm64: AmpereOne: Mark affected
+ STALL_* events impacted by errata
+In-Reply-To: <b690cae6-ee9c-2c6b-a19e-60088cb8cb19@oracle.com>
+Message-ID: <d3da2a30-9e9-73c3-b1aa-aca508bd259@os.amperecomputing.com>
+References: <20230803211331.140553-1-ilkka@os.amperecomputing.com> <20230803211331.140553-3-ilkka@os.amperecomputing.com> <b690cae6-ee9c-2c6b-a19e-60088cb8cb19@oracle.com>
+Content-Type: text/plain; charset=US-ASCII; format=flowed
+X-ClientProxiedBy: CH0PR04CA0030.namprd04.prod.outlook.com
+ (2603:10b6:610:76::35) To DM5PR0102MB3590.prod.exchangelabs.com
+ (2603:10b6:4:a4::25)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.14.0
-Subject: Re: [PATCH v9 5/5] arm64: dts: ti: k3-am69-sk: Add DP and HDMI
- support
-Content-Language: en-US
-To:     Jayesh Choudhary <j-choudhary@ti.com>, <nm@ti.com>,
-        <vigneshr@ti.com>, <afd@ti.com>, <rogerq@kernel.org>
-CC:     <s-vadapalli@ti.com>, <kristo@kernel.org>, <robh+dt@kernel.org>,
-        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
-        <r-ravikumar@ti.com>, <sabiya.d@ti.com>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>
-References: <20230803080441.367341-1-j-choudhary@ti.com>
- <20230803080441.367341-6-j-choudhary@ti.com>
-From:   Aradhya Bhatia <a-bhatia1@ti.com>
-In-Reply-To: <20230803080441.367341-6-j-choudhary@ti.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DM5PR0102MB3590:EE_|SA1PR01MB6701:EE_
+X-MS-Office365-Filtering-Correlation-Id: 9d087235-3d9d-4ead-0f42-08db95229d37
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: sRXaTJMdU7NHQ+T8+dCsjV4BdCvhJtIZQF0JSlhg98+CEF1Yv4QPjjRB+3Y79IAKTPsyK7FOyTuFapsEEPW5HmPerrZQqrjJrY1ELwWhUm5lUu2OtQygkrtQHFGs6YTRGgAOKaMRBoioTochy0AlO+7JD1fnHraWUY8aaoXTPq5BayniwcCBU7iYyINOAI3jpwqeeZGFKHBmO+kbgx8tI6YRk9WpNR+i73O5iN7Qyuxx1UItmbtHVij5QihPNR8edL19U7wMLJ3E6vwvLnYoXzC3PpSncbZnbmam4GZz1Ip2180enYc5aKKftnN/Uwhl0T9blJPpvSc/RPmL0yMuqLVReBmELScBwLQAJyCb6IIi0oP/nfxUHSqs1kmuJ4XvupXKcO7ExsIM37E19gLmvqUw7DGSDuz5+fu3REHOjZq11CXwZFItCEnXvXQPCVheYNZAIrvBgvtXT+Zg4fUitX+zSFh5qkCBhb+YK+DGdb1NpMJALmwr+Emis70DjfAv7MEcEOfbapm6oEmqMMWoBVRJRpQ7a87BjLNvxLNnFZNKH5qBzkn+YUBZADrflcwT8xxVxmtYcOuqCqX8lu/+nfxURGy1y75DkyAdAo47vcq69jMErGU2njKdrwml32BD
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM5PR0102MB3590.prod.exchangelabs.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(376002)(136003)(366004)(346002)(39850400004)(396003)(186006)(451199021)(1800799003)(66476007)(66946007)(66556008)(4326008)(6916009)(2906002)(2616005)(38100700002)(38350700002)(53546011)(6506007)(7416002)(83380400001)(54906003)(86362001)(6512007)(26005)(478600001)(6486002)(52116002)(6666004)(8936002)(8676002)(5660300002)(41300700001)(316002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?ns88MOQU19HfK0YpdhYyNDiQa3DMfXh/WAAADllcRn9/ycfYZRKbA58QhTv4?=
+ =?us-ascii?Q?eLhGqjl0Hw08EhoapYCNJh3/nL02DzHe6rauZ7FbKEK+DXJN675vm6+PS2Dx?=
+ =?us-ascii?Q?7uOBnrwN1mzWIoKybb7MvgnR+HwV0jwoHJGQDYsQD1ay7ZqQVagQeRLeX5e4?=
+ =?us-ascii?Q?AZd+X53R7zehWnxt0GWdnnYHKIvKw09A64aCrdwMRz3RQdWPFmxm6wGNviAk?=
+ =?us-ascii?Q?hy0IAIaBShrdDAvxg7WReGD8ze/7D9Ch2np7CAQ6pAOZHKCgBKHyQleYuV19?=
+ =?us-ascii?Q?9/w8efqvnF9XyqTj9fmeeFofAMYf6GqkDUmzdRyzqyU0b8LnIWRb4G1n2q8y?=
+ =?us-ascii?Q?MO+0DqWw/yrEO15DUue9DOBEdRp6/3O13EgrvE5j6uNo9MftHoPsApV8RaM5?=
+ =?us-ascii?Q?y4PXbyZz/I5wsJETC+XgtKz0vb5k9Gk8TfZ7SGhs4YufofP79Q2gbJK23bZH?=
+ =?us-ascii?Q?BxdvQoJiD2DJ/TdwoiLoYZ14z7bUIFy5cnfImjAD7qOL1ePIb99H9tYUdSDk?=
+ =?us-ascii?Q?KWr5FMzVcxRWHzIQjMvPQJY46FC4lPWDB00pAA2KGLT/vLjUl81BT/jV295z?=
+ =?us-ascii?Q?eUNeGCoknMrHuXJoEshnVN5djIOxNG8k7Hu6V6Dei+a1IGEiqxT6FxZKLPe9?=
+ =?us-ascii?Q?6QTr+4BfQl6VDUHByeJY+kghcM/iGeuw6DUP2L1qUwu85Zn7oiNzaHPU0/H9?=
+ =?us-ascii?Q?xSicJQntxFP0j6mapb1aFqxkfAs1593mNn1xJQbbFC5HNjHyxGPoK/A6hHSI?=
+ =?us-ascii?Q?wBLhkpSEk7A4b0aGpi8VJBKL2aGMyMjs/YY00hWjjRHdJkmEuf8konY5Fbf4?=
+ =?us-ascii?Q?K7xr0F2Puz+Mw/fkcsh44hj6iMv1i4jUuGOb0R+vo8OJR4xPmnJziPCumdT1?=
+ =?us-ascii?Q?te5H3N/Yw2k4ysAtkckQY1WW88tXbR9w+yQO99vN2WcTi6SfQ3tV9atEmU8G?=
+ =?us-ascii?Q?1z1G0vmiwB/bdlG3JUNCRY1VemtxPcNW5P7LiSWyl11h5GYKZgxnMQi0s2tX?=
+ =?us-ascii?Q?7GHSF1tk1xeLc9vU9k4C/W409aA+KwFlSJviS5qq2WhBwtSSyD2IIE48Ht+Q?=
+ =?us-ascii?Q?6t3rPMh9qpeP6qs4SK4dSxuywiqWto9l6tvY398h8/b1/dZ0toIGpPEjHBl1?=
+ =?us-ascii?Q?zMSA9ZSBTdJIqQ9PAlxnZ68Yk//048ptN12PUv2LcnTI8SpWfJJKcxdODTBF?=
+ =?us-ascii?Q?Vts9iLnqVTPVqqFr+rh1YLt0damukjgV/b3p8xvbC1eXPqBLUuQHL73N/AlG?=
+ =?us-ascii?Q?ODSjLFN711HbS7hH21vV/LoL98HfplHPDbte6a7XQj6G2U79gFZD+65Z6w15?=
+ =?us-ascii?Q?V+m6ITdMpdWqNt5qY3M94+rGN5SP6o2DDD34g5qUAeeBAejkaKKvpuLBv5nV?=
+ =?us-ascii?Q?70qz0E8MAVGpdOfFAHx57UkfIhuthU5rSHDUL7gewyfuNf29n4ptji799v9l?=
+ =?us-ascii?Q?UJ4ohORgLSfy/vJEUarLzyXrA+Ge9j1OTU783MBJHraaFEjifjbecyKdy/ex?=
+ =?us-ascii?Q?ke3/f8U6deXx3Om0pNSINuQlNKA3683k0eSu5YvDfGuyPqYg7pmaffi5Kj4I?=
+ =?us-ascii?Q?ecVvJxIpEZnZed60FiBHlzYKA65iMwA4ZoLFBvHUjfsou9mCcEnRp7s3N2yi?=
+ =?us-ascii?Q?PrRUUUE0RipS8koSg9CYh/I=3D?=
+X-OriginatorOrg: os.amperecomputing.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 9d087235-3d9d-4ead-0f42-08db95229d37
+X-MS-Exchange-CrossTenant-AuthSource: DM5PR0102MB3590.prod.exchangelabs.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 Aug 2023 19:40:10.4330
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3bc2b170-fd94-476d-b0ce-4229bdc904a7
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: zUSP9Z7z/+ix2CH01RqfMvBwPjKodVsKKzuzZHOB3d5iNTQhcqNfoUj9SN130JJg7QFLHxG11ZC6BAJX1vYnHiBIsSBS5vOsPhBhGHuY30Z6kByTr5UFmmgpqO0NW+mG
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA1PR01MB6701
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -74,289 +130,64 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 
 
-On 03-Aug-23 13:34, Jayesh Choudhary wrote:
-> From: Dasnavis Sabiya <sabiya.d@ti.com>
-> 
-> AM69 starter kit features an HDMI port and an eDP port.
-> 
-> Add assigned clocks for DSS, DT node for DisplayPort PHY,
-> pinmux for HDMI hotplug and power down, mcu_i2c1 and dss_vout
-> for HDMI.
-> Also enable Serdes4 settings for DP display.
-> 
-> Add the endpoint nodes to describe connection from:
-> DSS => MHDP => DisplayPort connector
-> DSS => TI TFP410 DPI-to-DVI Bridge => HDMI connector
-> 
-> Signed-off-by: Dasnavis Sabiya <sabiya.d@ti.com>
-> [j-choudhary@ti.com: Fix dvi-bridge, dss, mhdp and serdes-refclk]
-> Signed-off-by: Jayesh Choudhary <j-choudhary@ti.com>
+On Fri, 4 Aug 2023, John Garry wrote:
 
-Reviewed-by: Aradhya Bhatia <a-bhatia1@ti.com>
+> On 03/08/2023 22:13, Ilkka Koskinen wrote:
+>> Per errata AC03_CPU_29, STALL_SLOT_FRONTEND, STALL_FRONTEND, and STALL
+>> events are not counting as expected. The follow up metrics patch will
+>> include correct way to calculate the impacted events.
+>> 
+>> Signed-off-by: Ilkka Koskinen <ilkka@os.amperecomputing.com>
+>
+> Reviewed-by: John Garry <john.g.garry@oracle.com>
+>
+>> ---
+>>   .../arch/arm64/ampere/ampereone/pipeline.json        | 12 +++++++++---
+>>   1 file changed, 9 insertions(+), 3 deletions(-)
+>> 
+>> diff --git 
+>> a/tools/perf/pmu-events/arch/arm64/ampere/ampereone/pipeline.json 
+>> b/tools/perf/pmu-events/arch/arm64/ampere/ampereone/pipeline.json
+>> index f9fae15f7555..711028377f3e 100644
+>> --- a/tools/perf/pmu-events/arch/arm64/ampere/ampereone/pipeline.json
+>> +++ b/tools/perf/pmu-events/arch/arm64/ampere/ampereone/pipeline.json
+>> @@ -1,18 +1,24 @@
+>>   [
+>>       {
+>> -        "ArchStdEvent": "STALL_FRONTEND"
+>> +        "ArchStdEvent": "STALL_FRONTEND",
+>> +        "Errata": "Errata AC03_CPU_29",
+>> +        "BriefDescription": "Impacted by errata, use metrics instead -"
+>
+> why end with a '-'?
 
-> ---
->  arch/arm64/boot/dts/ti/k3-am69-sk.dts | 234 ++++++++++++++++++++++++++
->  1 file changed, 234 insertions(+)
-> 
-> diff --git a/arch/arm64/boot/dts/ti/k3-am69-sk.dts b/arch/arm64/boot/dts/ti/k3-am69-sk.dts
-> index d282c2c633c1..d6d6b7aa9daf 100644
-> --- a/arch/arm64/boot/dts/ti/k3-am69-sk.dts
-> +++ b/arch/arm64/boot/dts/ti/k3-am69-sk.dts
-> @@ -107,6 +107,76 @@ vdd_sd_dv: regulator-tlv71033 {
->  		states = <1800000 0x0>,
->  			 <3300000 0x1>;
->  	};
-> +
-> +	dp0_pwr_3v3: regulator-dp0-pwr {
-> +		compatible = "regulator-fixed";
-> +		regulator-name = "dp0-pwr";
-> +		regulator-min-microvolt = <3300000>;
-> +		regulator-max-microvolt = <3300000>;
-> +		pinctrl-names = "default";
-> +		pinctrl-0 = <&dp_pwr_en_pins_default>;
-> +		gpio = <&main_gpio0 4 0>;	/* DP0_3V3 _EN */
-> +		enable-active-high;
-> +	};
-> +
-> +	dp0: connector-dp0 {
-> +		compatible = "dp-connector";
-> +		label = "DP0";
-> +		type = "full-size";
-> +		dp-pwr-supply = <&dp0_pwr_3v3>;
-> +
-> +		port {
-> +			dp0_connector_in: endpoint {
-> +				remote-endpoint = <&dp0_out>;
-> +			};
-> +		};
-> +	};
-> +
-> +	connector-hdmi {
-> +		compatible = "hdmi-connector";
-> +		label = "hdmi";
-> +		type = "a";
-> +		pinctrl-names = "default";
-> +		pinctrl-0 = <&hdmi_hpd_pins_default>;
-> +		ddc-i2c-bus = <&mcu_i2c1>;
-> +		hpd-gpios = <&main_gpio0 0 GPIO_ACTIVE_HIGH>;	/* HDMI_HPD */
-> +
-> +		port {
-> +			hdmi_connector_in: endpoint {
-> +				remote-endpoint = <&tfp410_out>;
-> +			};
-> +		};
-> +	};
-> +
-> +	bridge-dvi {
-> +		compatible = "ti,tfp410";
-> +		pinctrl-names = "default";
-> +		pinctrl-0 = <&hdmi_pdn_pins_default>;
-> +		powerdown-gpios = <&wkup_gpio0 14 GPIO_ACTIVE_LOW>;	/* HDMI_PDn */
-> +		ti,deskew = <0>;
-> +
-> +		ports {
-> +			#address-cells = <1>;
-> +			#size-cells = <0>;
-> +
-> +			port@0 {
-> +				reg = <0>;
-> +
-> +				tfp410_in: endpoint {
-> +					remote-endpoint = <&dpi1_out0>;
-> +					pclk-sample = <1>;
-> +				};
-> +			};
-> +
-> +			port@1 {
-> +				reg = <1>;
-> +
-> +				tfp410_out: endpoint {
-> +					remote-endpoint = <&hdmi_connector_in>;
-> +				};
-> +			};
-> +		};
-> +	};
->  };
->  
->  &main_pmx0 {
-> @@ -161,6 +231,57 @@ J784S4_IOPAD(0x008, PIN_INPUT, 7) /* (AJ33) MCAN12_RX.GPIO0_2 */
->  			J784S4_IOPAD(0x004, PIN_INPUT, 7) /* (AG36) MCAN12_TX.GPIO0_1 */
->  		>;
->  	};
-> +
-> +	dp0_pins_default: dp0-default-pins {
-> +		pinctrl-single,pins = <
-> +			J784S4_IOPAD(0x014, PIN_INPUT, 13) /* (AG33) MCAN14_TX.DP0_HPD */
-> +		>;
-> +	};
-> +
-> +	dp_pwr_en_pins_default: dp-pwr-en-default-pins {
-> +		pinctrl-single,pins = <
-> +			J784S4_IOPAD(0x010, PIN_INPUT, 7) /* (AH33) MCAN13_RX.GPIO0_4 */
-> +		>;
-> +	};
-> +
-> +	dss_vout0_pins_default: dss-vout0-default-pins {
-> +		pinctrl-single,pins = <
-> +			J784S4_IOPAD(0x074, PIN_OUTPUT, 2) /* (AC33) MCAN2_TX.VOUT0_DATA0 */
-> +			J784S4_IOPAD(0x070, PIN_OUTPUT, 2) /* (AH38) MCAN1_RX.VOUT0_DATA1 */
-> +			J784S4_IOPAD(0x07c, PIN_OUTPUT, 2) /* (AJ38) MCASP0_AXR3.VOUT0_DATA2 */
-> +			J784S4_IOPAD(0x068, PIN_OUTPUT, 2) /* (AE38) MCAN0_RX.VOUT0_DATA3 */
-> +			J784S4_IOPAD(0x064, PIN_OUTPUT, 2) /* (AF38) MCAN0_TX.VOUT0_DATA4 */
-> +			J784S4_IOPAD(0x060, PIN_OUTPUT, 2) /* (AE36) MCASP2_AXR1.VOUT0_DATA5 */
-> +			J784S4_IOPAD(0x05c, PIN_OUTPUT, 2) /* (AC36) MCASP2_AXR0.VOUT0_DATA6 */
-> +			J784S4_IOPAD(0x058, PIN_OUTPUT, 2) /* (AE37) MCASP2_AFSX.VOUT0_DATA7 */
-> +			J784S4_IOPAD(0x054, PIN_OUTPUT, 2) /* (AD37) MCASP2_ACLKX.VOUT0_DATA8 */
-> +			J784S4_IOPAD(0x050, PIN_OUTPUT, 2) /* (AC37) MCASP1_AXR2.VOUT0_DATA9 */
-> +			J784S4_IOPAD(0x04c, PIN_OUTPUT, 2) /* (AC32) MCASP1_AXR1.VOUT0_DATA10 */
-> +			J784S4_IOPAD(0x048, PIN_OUTPUT, 2) /* (AK33) MCASP0_AXR2.VOUT0_DATA11 */
-> +			J784S4_IOPAD(0x044, PIN_OUTPUT, 2) /* (AG37) MCASP0_AXR1.VOUT0_DATA12 */
-> +			J784S4_IOPAD(0x040, PIN_OUTPUT, 2) /* (AF37) MCASP0_AXR0.VOUT0_DATA13 */
-> +			J784S4_IOPAD(0x03c, PIN_OUTPUT, 2) /* (AK38) MCASP0_AFSX.VOUT0_DATA14 */
-> +			J784S4_IOPAD(0x038, PIN_OUTPUT, 2) /* (AK35) MCASP0_ACLKX.VOUT0_DATA15 */
-> +			J784S4_IOPAD(0x0c8, PIN_OUTPUT, 2) /* (AJ32) EXT_REFCLK1.VOUT0_DATA16 */
-> +			J784S4_IOPAD(0x030, PIN_OUTPUT, 2) /* (AK37) GPIO0_12.VOUT0_DATA17 */
-> +			J784S4_IOPAD(0x02c, PIN_OUTPUT, 2) /* (AL32) GPIO0_11.VOUT0_DATA18 */
-> +			J784S4_IOPAD(0x028, PIN_OUTPUT, 2) /* (AE33) MCAN16_RX.VOUT0_DATA19 */
-> +			J784S4_IOPAD(0x024, PIN_OUTPUT, 2) /* (AH34) MCAN16_TX.VOUT0_DATA20 */
-> +			J784S4_IOPAD(0x020, PIN_OUTPUT, 2) /* (AJ35) MCAN15_RX.VOUT0_DATA21 */
-> +			J784S4_IOPAD(0x01c, PIN_OUTPUT, 2) /* (AG34) MCAN15_TX.VOUT0_DATA22 */
-> +			J784S4_IOPAD(0x018, PIN_OUTPUT, 2) /* (AK36) MCAN14_RX.VOUT0_DATA23 */
-> +			J784S4_IOPAD(0x084, PIN_OUTPUT, 2) /* (AG38) MCASP0_AXR5.VOUT0_DE */
-> +			J784S4_IOPAD(0x080, PIN_OUTPUT, 2) /* (AK34) MCASP0_AXR4.VOUT0_HSYNC */
-> +			J784S4_IOPAD(0x078, PIN_OUTPUT, 2) /* (AH37) MCAN2_RX.VOUT0_PCLK */
-> +			J784S4_IOPAD(0x088, PIN_OUTPUT, 2) /* (AF36) MCASP0_AXR6.VOUT0_VSYNC */
-> +		>;
-> +	};
-> +
-> +	hdmi_hpd_pins_default: hdmi-hpd-default-pins {
-> +		pinctrl-single,pins = <
-> +			J784S4_IOPAD(0x000, PIN_INPUT, 7) /* (AN35) EXTINTN.GPIO0_0 */
-> +		>;
-> +	};
->  };
->  
->  &wkup_pmx2 {
-> @@ -231,6 +352,21 @@ J784S4_WKUP_IOPAD(0x064, PIN_INPUT, 7) /* (J36) WKUP_GPIO0_3 */
->  			J784S4_WKUP_IOPAD(0x11c, PIN_INPUT, 7) /* (M34) WKUP_GPIO0_67 */
->  		>;
->  	};
-> +
-> +	mcu_i2c1_pins_default: mcu-i2c1-default-pins {
-> +		pinctrl-single,pins = <
-> +			/* (L35) WKUP_GPIO0_8.MCU_I2C1_SCL */
-> +			J784S4_WKUP_IOPAD(0x078, PIN_INPUT_PULLUP, 0)
-> +			/* (L34) WKUP_GPIO0_9.MCU_I2C1_SDA */
-> +			J784S4_WKUP_IOPAD(0x07c, PIN_INPUT_PULLUP, 0)
-> +		>;
-> +	};
-> +
-> +	hdmi_pdn_pins_default: hdmi-pdn-default-pins {
-> +		pinctrl-single,pins = <
-> +			J784S4_WKUP_IOPAD(0x090, PIN_INPUT, 7) /* (H37) WKUP_GPIO0_14 */
-> +		>;
-> +	};
->  };
->  
->  &wkup_pmx3 {
-> @@ -350,3 +486,101 @@ &mcu_cpsw_port1 {
->  	phy-mode = "rgmii-rxid";
->  	phy-handle = <&mcu_phy0>;
->  };
-> +
-> +&wkup_gpio_intr {
-> +	status = "okay";
-> +};
-> +
-> +&mcu_i2c1 {
-> +	status = "okay";
-> +	pinctrl-names = "default";
-> +	pinctrl-0 = <&mcu_i2c1_pins_default>;
-> +	clock-frequency = <100000>;
-> +};
-> +
-> +&serdes_refclk {
-> +	status = "okay";
-> +	clock-frequency = <100000000>;
-> +};
-> +
-> +&dss {
-> +	status = "okay";
-> +	pinctrl-names = "default";
-> +	pinctrl-0 = <&dss_vout0_pins_default>;
-> +	assigned-clocks = <&k3_clks 218 2>,
-> +			  <&k3_clks 218 5>,
-> +			  <&k3_clks 218 14>,
-> +			  <&k3_clks 218 18>;
-> +	assigned-clock-parents = <&k3_clks 218 3>,
-> +				 <&k3_clks 218 7>,
-> +				 <&k3_clks 218 16>,
-> +				 <&k3_clks 218 22>;
-> +};
-> +
-> +&serdes_wiz4 {
-> +	status = "okay";
-> +};
-> +
-> +&serdes4 {
-> +	status = "okay";
-> +	serdes4_dp_link: phy@0 {
-> +		reg = <0>;
-> +		cdns,num-lanes = <4>;
-> +		#phy-cells = <0>;
-> +		cdns,phy-type = <PHY_TYPE_DP>;
-> +		resets = <&serdes_wiz4 1>, <&serdes_wiz4 2>,
-> +			 <&serdes_wiz4 3>, <&serdes_wiz4 4>;
-> +	};
-> +};
-> +
-> +&mhdp {
-> +	status = "okay";
-> +	pinctrl-names = "default";
-> +	pinctrl-0 = <&dp0_pins_default>;
-> +	phys = <&serdes4_dp_link>;
-> +	phy-names = "dpphy";
-> +};
-> +
-> +&dss_ports {
-> +	#address-cells = <1>;
-> +	#size-cells = <0>;
-> +
-> +	/* DP */
-> +	port@0 {
-> +		reg = <0>;
-> +
-> +		dpi0_out: endpoint {
-> +			remote-endpoint = <&dp0_in>;
-> +		};
-> +	};
-> +
-> +	/* HDMI */
-> +	port@1 {
-> +		reg = <1>;
-> +
-> +		dpi1_out0: endpoint {
-> +			remote-endpoint = <&tfp410_in>;
-> +		};
-> +	};
-> +};
-> +
-> +&dp0_ports {
-> +	#address-cells = <1>;
-> +	#size-cells = <0>;> +
-> +	port@0 {
-> +		reg = <0>;
-> +
-> +		dp0_in: endpoint {
-> +			remote-endpoint = <&dpi0_out>;
-> +		};
-> +	};
-> +
-> +	port@4 {
-> +		reg = <4>;
-> +
-> +		dp0_out: endpoint {
-> +			remote-endpoint = <&dp0_connector_in>;
-> +		};
-> +	};
-> +};
+That's a great question! I wish, I remembered why I did that. Looking at 
+other events with Errata field, they use '.'. I can fix those and submit 
+the patchset again.
+
+Cheers, Ilkka
+
+>
+>>       },
+>>       {
+>>           "ArchStdEvent": "STALL_BACKEND"
+>>       },
+>>       {
+>> -        "ArchStdEvent": "STALL"
+>> +        "ArchStdEvent": "STALL",
+>> +        "Errata": "Errata AC03_CPU_29",
+>> +        "BriefDescription": "Impacted by errata, use metrics instead -"
+>>       },
+>>       {
+>>           "ArchStdEvent": "STALL_SLOT_BACKEND"
+>>       },
+>>       {
+>> -        "ArchStdEvent": "STALL_SLOT_FRONTEND"
+>> +        "ArchStdEvent": "STALL_SLOT_FRONTEND",
+>> +        "Errata": "Errata AC03_CPU_29",
+>> +        "BriefDescription": "Impacted by errata, use metrics instead -"
+>>       },
+>>       {
+>>           "ArchStdEvent": "STALL_SLOT"
+>
+>
