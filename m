@@ -2,141 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B92E9770706
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 19:26:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B42CC77070A
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 19:27:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231354AbjHDR0j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Aug 2023 13:26:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52530 "EHLO
+        id S232122AbjHDR1N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Aug 2023 13:27:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53032 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230028AbjHDR0h (ORCPT
+        with ESMTP id S231779AbjHDR1L (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Aug 2023 13:26:37 -0400
-Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A54646B1
-        for <linux-kernel@vger.kernel.org>; Fri,  4 Aug 2023 10:26:35 -0700 (PDT)
-Received: by mail-pf1-x433.google.com with SMTP id d2e1a72fcca58-686f38692b3so2217042b3a.2
-        for <linux-kernel@vger.kernel.org>; Fri, 04 Aug 2023 10:26:35 -0700 (PDT)
+        Fri, 4 Aug 2023 13:27:11 -0400
+Received: from mail-yw1-x114a.google.com (mail-yw1-x114a.google.com [IPv6:2607:f8b0:4864:20::114a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6254349C1
+        for <linux-kernel@vger.kernel.org>; Fri,  4 Aug 2023 10:27:10 -0700 (PDT)
+Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-5868992ddd4so25995467b3.0
+        for <linux-kernel@vger.kernel.org>; Fri, 04 Aug 2023 10:27:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rivosinc-com.20221208.gappssmtp.com; s=20221208; t=1691169995; x=1691774795;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=JphLCmILQLQtm6C+8rHqJoDL6onaPDHw9v6WesurCsg=;
-        b=r6q7qAGWzvZUiLJlqMhJLhohj7njHjtcTcRVZt2D2xU9JP3MQJ0/83tKG8aLTI0ohy
-         DbA7Xk80sbDy4V0owZEd4OmS516M139UsF6WaWF8yPHFJWZjYKEO5tU/L/Ls+v5cP+8r
-         zvOoYIwyRhoTMRj8kiRgd72Jh9aGordDV6F0FGpAnOpn+fbtROvFB9Z2LeFqr0WLExyS
-         FKiQCat2x6Kb+JIwFHOM2FneSrIoS4YUyV+Zm5ggxPkme3KBaktv1s1hYG+pbaWG1cTp
-         IuilMWnUL0u3gqEKHw452Mhh2G4Gktwl+EbrJs2NBI1w+ftaSkEbCSjYWJJHNt/IwFjl
-         J+wQ==
+        d=google.com; s=20221208; t=1691170029; x=1691774829;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=0XNCE0THmMSplRGDYFiIYwKZfHJYXKQUWjyM6yzp218=;
+        b=ioU7Xhc/g9qgs9gG71lCacbcGZecZKnk09it5Wjzn2tVrX3fgSS2tCjX0UJGYNzPJl
+         eXFA165dQDgVzSZPWS4dcgb+pPYBrcGh026AEPvE4uNbDgNrYZqkNSkaPZKHcTUKmwBm
+         dxsmh7ephRFh1G8wQbMJXhfximF2cj4DhGKNHDjqaT8r9l6r0sL1PI0zouj9bI3atq/d
+         IJ/yKmmEQrpgHKveDl5xLOedKR4ibfnJ5dvcOMP6fyU5qYsTyKBHRxxsn9JabxZo6zog
+         RWwC/HqKx9pD1TcDTr3AH+U/YQ8ltr1Mrt0ZsbH+vNJ84ZndKhmF1NaKGmBGEAxeCDzw
+         LOUw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691169995; x=1691774795;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=JphLCmILQLQtm6C+8rHqJoDL6onaPDHw9v6WesurCsg=;
-        b=Has8kpmt4lGqCaYUpFVK0NVHP0Rv+japQ/G/s1Xw6ZTA7fS40txBw5P837vhusTPoH
-         FBofubsyVxJm0+j6gUdt1OnJe9r+jxUdSOLpMl/kLVLOUJVlMXgVObUu2Ihe1YiCWGNJ
-         iHIBdymg5w1C4TDophBI9vFqZYVSQH6Uf4eU4h3Lh64RhZWKPo6M8c30/BI11s9jHcN+
-         8iUuylL90txANU88EdtrGHvaDNhZ/RqRB92DYTnzbyUx6LXLhidlXLiFT3pCF6W06eqE
-         MK41Jq9uyiMcGO0ilLvhvkDO+0PD/C8uzuVbXamL4ubnfgPBEfGALenL69j/1CHO7T+1
-         BPHA==
-X-Gm-Message-State: AOJu0YxJyxvnvPIrm2WsWE3GXpzJ2KQKjRpT/7Goy+YjhWV0UP+viADb
-        axZJXdqYSNBweQIU0zWcbtf55Q==
-X-Google-Smtp-Source: AGHT+IFY3DK0mTMlQh9d2j8+8rCxpiY2bx9LhdMBgQrVPQ7hwkeFF3l5xqJrFOHDkYksAUT9xQx9aw==
-X-Received: by 2002:a05:6a00:180c:b0:680:98c:c593 with SMTP id y12-20020a056a00180c00b00680098cc593mr3293062pfa.7.1691169995381;
-        Fri, 04 Aug 2023 10:26:35 -0700 (PDT)
-Received: from ghost ([50.221.140.188])
-        by smtp.gmail.com with ESMTPSA id v19-20020a62a513000000b006870721fcc5sm1878051pfm.175.2023.08.04.10.26.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 04 Aug 2023 10:26:34 -0700 (PDT)
-Date:   Fri, 4 Aug 2023 10:26:32 -0700
-From:   Charlie Jenkins <charlie@rivosinc.com>
-To:     Conor Dooley <conor.dooley@microchip.com>
-Cc:     linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org, kvm-riscv@lists.infradead.org,
-        bpf@vger.kernel.org, Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Josh Poimboeuf <jpoimboe@kernel.org>,
-        Jason Baron <jbaron@akamai.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Anup Patel <anup@brainfault.org>,
-        Atish Patra <atishp@atishpatra.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        =?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn@kernel.org>,
-        Luke Nelson <luke.r.nels@gmail.com>,
-        Xi Wang <xi.wang@gmail.com>, Nam Cao <namcaov@gmail.com>
-Subject: Re: [PATCH 01/10] RISC-V: Expand instruction definitions
-Message-ID: <ZM00yFKcDczO50lJ@ghost>
-References: <20230803-master-refactor-instructions-v4-v1-0-2128e61fa4ff@rivosinc.com>
- <20230803-master-refactor-instructions-v4-v1-1-2128e61fa4ff@rivosinc.com>
- <20230804-barterer-heritage-ed191081bc47@wendy>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230804-barterer-heritage-ed191081bc47@wendy>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        d=1e100.net; s=20221208; t=1691170029; x=1691774829;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=0XNCE0THmMSplRGDYFiIYwKZfHJYXKQUWjyM6yzp218=;
+        b=B8677CH64lI+XPXQ6Bm+huaCCpQLJyMo/88Ddt92Pb8eY535rp2QHiLHdLG5KZCiXS
+         CsBFJMo9ohmfNkAorPs2/iDWBw1P5mo5GH2Fh7C1wN9AxJ152Y0Ax36GWNLRugPHcRMy
+         MZWSV6CEYzEzbOS13Hhlin3jMJJow7ZYQqNpJ6lKgEHc6TmmTUP+JBT0M1UWCoDvFkQq
+         tr//DIpsrLMPTO/EvpLbVE69sFL3YTR1szrk5YtLcahm+GFAORhV/ytvm/0CD/X9b01H
+         Qe939n7favHaDdmbhYabojiiqsARO/hGrHiE0nzhxK6TDZuyeGvz5AhS14APTvBn80Hn
+         3j0g==
+X-Gm-Message-State: AOJu0Yw6BFUMN0rmxwDDcEd+/Epno0WfC9VG4ZidAbxniaiNk8Dn91pE
+        27FNCS5EgHVeDZQgeiYs22oYWr8Qxbo=
+X-Google-Smtp-Source: AGHT+IHY1jyESYvdqjtEUOWN5kpmBlG2/bzs9/bKSXZUMXovofE5m64qKwapLGFKQLq4x4vgTmvsT5rlOJ0=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a81:ef12:0:b0:583:491b:53d3 with SMTP id
+ o18-20020a81ef12000000b00583491b53d3mr15983ywm.9.1691170029578; Fri, 04 Aug
+ 2023 10:27:09 -0700 (PDT)
+Date:   Fri, 4 Aug 2023 10:27:07 -0700
+In-Reply-To: <ZM0rXgKvb912k5BE@linux.dev>
+Mime-Version: 1.0
+References: <20230804004226.1984505-1-seanjc@google.com> <20230804004226.1984505-3-seanjc@google.com>
+ <ZM0rXgKvb912k5BE@linux.dev>
+Message-ID: <ZM006zd4bpsGBtWF@google.com>
+Subject: Re: [PATCH 2/4] KVM: selftests: Add helper macros for ioctl()s that
+ return file descriptors
+From:   Sean Christopherson <seanjc@google.com>
+To:     Oliver Upton <oliver.upton@linux.dev>
+Cc:     Marc Zyngier <maz@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
+        linux-kernel@vger.kernel.org, Michal Luczaj <mhal@rbox.co>
+Content-Type: text/plain; charset="us-ascii"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 04, 2023 at 08:59:24AM +0100, Conor Dooley wrote:
-> On Thu, Aug 03, 2023 at 07:10:26PM -0700, Charlie Jenkins wrote:
-> > There are many systems across the kernel that rely on directly creating
-> > and modifying instructions. In order to unify them, create shared
-> > definitions for instructions and registers.
+On Fri, Aug 04, 2023, Oliver Upton wrote:
+> Hi Sean,
+> 
+> On Thu, Aug 03, 2023 at 05:42:24PM -0700, Sean Christopherson wrote:
+> > Add KVM, VM, and vCPU scoped helpers for ioctl()s that return file
+> > descriptors, i.e. deduplicate code for asserting success on ioctls() for
+> > which a positive return value, not just zero, is considered success.
 > > 
-> > Signed-off-by: Charlie Jenkins <charlie@rivosinc.com>
-> > ---
-> >  arch/riscv/include/asm/insn.h            | 2742 +++++++++++++++++++++++++++---
+> > Signed-off-by: Sean Christopherson <seanjc@google.com>
 > 
-> "I did a lot of copy-pasting from the RISC-V spec"
-> 
-> How is anyone supposed to cross check this when there's 1000s of lines
-> of a diff here? We've had some subtle bugs in some of the definitions in
-> the past, so I would like to be able to check at this opportune moment
-> that things are correct.
-> 
-> >  arch/riscv/include/asm/reg.h             |   88 +
-> >  arch/riscv/kernel/kgdb.c                 |    4 +-
-> >  arch/riscv/kernel/probes/simulate-insn.c |   39 +-
-> >  arch/riscv/kernel/vector.c               |    2 +-
-> 
-> You need to at least split this up. I doubt a 2742 change diff for
-> insn.h was required to make the changes in these 4 files.
-Yeah it is kind of a nightmare to look at, I will split it up.
-> 
-> Then after that, it would be so much easier to reason about these
-> changes if the additions to insn.h happened at the same time as the
-> removals from the affected locations.
-> 
-> I would probably split this so that things are done in more stages,
-> with the larger patches split between changes that require no new
-> definitions and changes that require moving things to insn.h
-> 
-> >  5 files changed, 2629 insertions(+), 246 deletions(-)
-> 
-> What you would want to see if this arrived in your inbox as a reviewer?
-> 
-> Don't get me wrong, I do like what you are doing here, the BPF JIT
-> especially is filled with "uhh okay, I guess those offsets are right",
-> so I don't mean to be discouraging.
-> 
-> Thanks,
-> Conor.
+> I appreciate the desire to eliminate duplicate code, but I think the
+> naming just muddies the waters. TBH, when I first read the diff w/o the
+> changelog, I thought you were describing the input fd (i.e. 'kvm_fd',
+> 'vm_fd', 'vcpu_fd'). I don't think explicitly spelling out the condition
+> each time (i.e. ret >= 0) is all that difficult.
 
+Yeah, but it's not just a desire to dedup code, I also am trying to funnel as
+many "ioctl() succeeded" asserts as possible into common code so that they naturally
+benefit from things like patch 4 (detecting dead/bugged VMs).
 
+I agree the naming sucks.
