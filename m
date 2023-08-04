@@ -2,178 +2,240 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 54B1F76FCC7
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 11:04:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 785C576FCCA
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 11:04:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229956AbjHDJD7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Aug 2023 05:03:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52512 "EHLO
+        id S230078AbjHDJEO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Aug 2023 05:04:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52614 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229767AbjHDJDd (ORCPT
+        with ESMTP id S229958AbjHDJDl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Aug 2023 05:03:33 -0400
-Received: from mail-oo1-xc30.google.com (mail-oo1-xc30.google.com [IPv6:2607:f8b0:4864:20::c30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D0CE4C28;
-        Fri,  4 Aug 2023 01:59:19 -0700 (PDT)
-Received: by mail-oo1-xc30.google.com with SMTP id 006d021491bc7-56cc3453e31so1199888eaf.1;
-        Fri, 04 Aug 2023 01:59:19 -0700 (PDT)
+        Fri, 4 Aug 2023 05:03:41 -0400
+Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C89D85BA9
+        for <linux-kernel@vger.kernel.org>; Fri,  4 Aug 2023 01:59:56 -0700 (PDT)
+Received: by mail-pl1-x62e.google.com with SMTP id d9443c01a7336-1bba2318546so16124675ad.1
+        for <linux-kernel@vger.kernel.org>; Fri, 04 Aug 2023 01:59:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1691139558; x=1691744358;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=7sTwnH4sXUXtcKXQVId2GYx+QeFJgqq/fjklOp/tKBE=;
-        b=mRMW2zm1R3UoTZXU+VKQTRQxtD3PPBxQkRCYagjaV1YoRq4Z+1p758Xoo4FcuHCSwU
-         i1p5ibt2wSBPE/texY/ooxsUU29II2nNLlmO4SmmFjz/8LNtPcxOa5Z9/vFDJb+wLmNq
-         YMnyfG2UWstxefSKe1oBoIAia/jTYzFVgdVz71VSvQwlbpLz6HATn1/44lpsl1hf4PVY
-         Tub53w3GDGj+mfJyJHkxkOVasIt45n2cI937s4PzYu/RVVY14AcX5bFK7AI7U3oXRLal
-         Mz7OkeDyjABmPZBusom4rdulnpVuGFhmGrs+usxq+jE4/3P0OriBEg3kwrV3SvgY89xh
-         UEPg==
+        d=9elements.com; s=google; t=1691139596; x=1691744396;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=p8xbFALbUi/aPvbyXUxUZArjYaoNFU5bFlaFH8YbE9c=;
+        b=JiB3U7Xb1ZZGZZOnKeEScbCBtKkUUJOrcenL3F/g2056TP6mQ8WddV6zeK9ouCZpRf
+         Zidox+WnOIhid82UT9cpLXqTJyK/hY9fcOO+M27Ks916EQTKyiVcSXGbBfZPoUehUtB2
+         musYXzi/3bULgrQcke1KHXpYN2AhoXSzmHV1HacAwrO1rCsrFGmOCWdQl7OuLffxIqo9
+         ZwRjhdk+AZJJ1EEr5Q2TJJw1RRh981LJB7F6Z6vBZS0J1EL7i4oojL401YbKdKX/I1Og
+         Ty/vOZWwK47Ct+r456L5ldQ8DxYD9p/iEwuqnYFWSk/rlg9ugosMgpgl5bzot106abi1
+         tgLA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691139558; x=1691744358;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=7sTwnH4sXUXtcKXQVId2GYx+QeFJgqq/fjklOp/tKBE=;
-        b=GeBRJ90Bo2ClwJEuLNIEEJbjSuugNRXcMPrymrPiDab6EXfFDrWrcoh2qLf3OV2Ucz
-         yQXwZX/Pk1c8QwFs5OCWpnoMUA7V2BNFnaIXFeqmSZ0QhNtFPqi5JVVOgXa+cCeHc9Rv
-         Ukcp3gQkif8FWz6jDBf3heQRJEbKuUL6LPVhvRxeRJGaKke1i+gAOvHgTXqR1vPtSOgQ
-         g55C+DRyC3KotSfslyGI4JwjXfcWYxs+g4dkA7aMHCqCo/E+vMVCUjhBAziukvcylR5V
-         YW4X9jmYaZ4NNDie+5dj6dsOzyxVt1g8NX6/Z3iWwkwCPAw0E/lXl3cKkuO6Y02e8WPO
-         BSsA==
-X-Gm-Message-State: AOJu0Yyb9hkXR0bI4KrCf4O6jeb78cSPlC7H0qKGfdt+8ATCLvV5Svfm
-        A2d6M2qknOwtvacQtlQw5aM/GMPDsiHn9xY5R70=
-X-Google-Smtp-Source: AGHT+IFwZ3/hKq+/i6/QnY7q8SBrb5Npfu9TgiJnbkbiT0J+lslznP/X8zWN+IF5UO0mWdhVkceNpMjEhx8mbYRgXmA=
-X-Received: by 2002:a4a:9243:0:b0:56c:8c66:cea6 with SMTP id
- g3-20020a4a9243000000b0056c8c66cea6mr1185978ooh.1.1691139558429; Fri, 04 Aug
- 2023 01:59:18 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1691139596; x=1691744396;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=p8xbFALbUi/aPvbyXUxUZArjYaoNFU5bFlaFH8YbE9c=;
+        b=lRremcdkhSO5EAFdP+W27SGXCfV1xlM2DBoiwN4aKh5/hVbEIGicS8wugrV7oz+OwI
+         4T70snl7SCIgKHoV8TWunVePNNlDNxMmKGBz57XfqpLOgA+mY27K3hVVKtCQdazTFm6y
+         Pp0//aVrbO4KfLuM3eH9Gs4OcmrBemMq+UD5bv26PpzNMeoC7SpsAOG4znPVC9qTYPQT
+         0+MJS7EVMCli7y0GzjIzEjYuSVwcYRV7tKSU5/6cfoYS+0hQ0h/EmSIMRKct4x3j9ObX
+         U1HbQNM1XzwXTJalP6x2Qd+nO2N6FMZSZ/NnkcYuKqRRKXeUl7Iw1rN/RNjL0M8cmgmj
+         iTFA==
+X-Gm-Message-State: AOJu0YwbWu8/39z24Gh1/smjsvQKdlxo5mp3eAm0XerTEYibESwyDQeJ
+        tWin8y/zDv9cQ7A9A1J73BAPDLpWHKQeAMcyoL49aNnRpRl2huO2K0Ot5KeS
+X-Google-Smtp-Source: AGHT+IGAcQkPHtXWKYXmkbu5jAoPlmsvSNQl66fW3RQ7F1AyzA6h9TYprPeGEZbCGe0sfh75trGN6g35xofhPN3eUZw=
+X-Received: by 2002:a17:90b:fca:b0:268:46fb:df32 with SMTP id
+ gd10-20020a17090b0fca00b0026846fbdf32mr1189008pjb.34.1691139595859; Fri, 04
+ Aug 2023 01:59:55 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230801060432.1307717-1-yunlong.xing@unisoc.com> <202308040103.1514A8C3CB@keescook>
-In-Reply-To: <202308040103.1514A8C3CB@keescook>
-From:   yunlong xing <yunlongxing23@gmail.com>
-Date:   Fri, 4 Aug 2023 16:59:07 +0800
-Message-ID: <CA+3AYtRYNQKuM9-99LvZYZqraLokKV4bjuvYKyEPB3MG7+VevA@mail.gmail.com>
-Subject: Re: [PATCH 1/1] pstore/ram: Check member of buffers during the
- initialization phase of the pstore
-To:     Kees Cook <keescook@chromium.org>
-Cc:     Yunlong Xing <yunlong.xing@unisoc.com>, tony.luck@intel.com,
-        gpiccoli@igalia.com, joel@joelfernandes.org, enlin.mu@unisoc.com,
-        linux-hardening@vger.kernel.org, linux-kernel@vger.kernel.org,
-        enlinmu@gmail.com
+References: <20230803111225.107572-1-Naresh.Solanki@9elements.com> <d3ea0fe2-00bb-493b-aca7-ba7a31bd3c78@hatter.bewilderbeest.net>
+In-Reply-To: <d3ea0fe2-00bb-493b-aca7-ba7a31bd3c78@hatter.bewilderbeest.net>
+From:   Naresh Solanki <naresh.solanki@9elements.com>
+Date:   Fri, 4 Aug 2023 14:29:44 +0530
+Message-ID: <CABqG17j1KGoW3UVM1kttg08V0R0xC0gP3YOyE7DeboE4SWa+vw@mail.gmail.com>
+Subject: Re: [PATCH] regulator: userspace-consumer: Add regulator event support
+To:     Zev Weiss <zev@bewilderbeest.net>
+Cc:     Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>, linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 4, 2023 at 4:10=E2=80=AFPM Kees Cook <keescook@chromium.org> wr=
-ote:
->
-> On Tue, Aug 01, 2023 at 02:04:32PM +0800, Yunlong Xing wrote:
-> > From: Enlin Mu <enlin.mu@unisoc.com>
-> >
-> > The commit 30696378f68a("pstore/ram: Do not treat empty buffers as vali=
-d")
-> > would introduce the following issue:
-> >
-> > When finding the buffer_size is zero, it would return directly.However,=
- at
-> > the same time, if the buffer's start is a illegal value, the others wou=
-ld
-> > panic if access the buffer.
->
-> Which "others" do you mean?
+Hi Zev,
 
-About =E2=80=9Cothers", You can refer to the following panic call stack:
- sysdump_panic_event+0x720/0xd38
- atomic_notifier_call_chain+0x58/0xc0
- panic+0x1c4/0x6e4
- die+0x3c0/0x428
- bug_handler+0x4c/0x9c
- brk_handler+0x98/0x14c
- do_debug_exception+0x114/0x2ec
- el1_dbg+0x18/0xbc
- usercopy_abort+0x90/0x94
- __check_object_size+0x17c/0x2c4
- persistent_ram_update_user+0x50/0x220
- persistent_ram_write_user+0x354/0x428
- ramoops_pstore_write_user+0x34/0x50
- write_pmsg+0x14c/0x26c
- do_iter_write+0x1cc/0x2cc
- vfs_writev+0xf4/0x168
- do_writev+0xa4/0x200
- __arm64_sys_writev+0x20/0x2c
- el0_svc_common+0xc8/0x22c
- el0_svc_handler+0x1c/0x28
- el0_svc+0x8/0x100
+
+On Fri, 4 Aug 2023 at 02:15, Zev Weiss <zev@bewilderbeest.net> wrote:
 >
-> > To avoid these happenning, check if the members are legal during the
-> > initialization phase of the pstore.
+> On Thu, Aug 03, 2023 at 04:12:25AM PDT, Naresh Solanki wrote:
+> >Add sysfs attribute to track regulator events received from regulator
+> >notifier block handler.
 > >
-> > Fixes: 30696378f68a ("pstore/ram: Do not treat empty buffers as valid")
-> > Cc: stable@vger.kernel.org
-> > Signed-off-by: Enlin Mu <enlin.mu@unisoc.com>
-> > ---
-> >  fs/pstore/ram_core.c | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> Hi Naresh,
+>
+> Could you provide a bit more detail on how this is intended to be used?
+> Some of the details (more below) seem a bit odd to me...
+My application registers a event callback on the 'events' to track regulator
+events
+Reference:
+https://github.com/9elements/pwrseqd/blob/main/src/VoltageRegulatorSysfs.cpp#L258
+>
+> >Signed-off-by: Naresh Solanki <Naresh.Solanki@9elements.com>
+> >---
+> > drivers/regulator/userspace-consumer.c | 52 +++++++++++++++++++++++++-
+> > 1 file changed, 51 insertions(+), 1 deletion(-)
 > >
-> > diff --git a/fs/pstore/ram_core.c b/fs/pstore/ram_core.c
-> > index 85aaf0fc6d7d..eb6df190d752 100644
-> > --- a/fs/pstore/ram_core.c
-> > +++ b/fs/pstore/ram_core.c
-> > @@ -519,7 +519,7 @@ static int persistent_ram_post_init(struct persiste=
-nt_ram_zone *prz, u32 sig,
-> >       sig ^=3D PERSISTENT_RAM_SIG;
+> >diff --git a/drivers/regulator/userspace-consumer.c b/drivers/regulator/userspace-consumer.c
+> >index 97f075ed68c9..a0b980022993 100644
+> >--- a/drivers/regulator/userspace-consumer.c
+> >+++ b/drivers/regulator/userspace-consumer.c
+> >@@ -29,6 +29,10 @@ struct userspace_consumer_data {
 > >
-> >       if (prz->buffer->sig =3D=3D sig) {
-> > -             if (buffer_size(prz) =3D=3D 0) {
-> > +             if (buffer_size(prz) =3D=3D 0 && buffer_start(prz) =3D=3D=
- 0) {
-> >                       pr_debug("found existing empty buffer\n");
-> >                       return 0;
-> >               }
+> >       int num_supplies;
+> >       struct regulator_bulk_data *supplies;
+> >+
+> >+      struct kobject *kobj;
+> >+      struct notifier_block nb;
+> >+      unsigned long events;
+> > };
+> >
+> > static ssize_t name_show(struct device *dev,
+> >@@ -89,12 +93,30 @@ static ssize_t state_store(struct device *dev, struct device_attribute *attr,
+> >       return count;
+> > }
+> >
+> >+static DEFINE_MUTEX(events_lock);
+> >+
+> >+static ssize_t events_show(struct device *dev,
+> >+                         struct device_attribute *attr, char *buf)
+> >+{
+> >+      struct userspace_consumer_data *data = dev_get_drvdata(dev);
+> >+      unsigned long e;
+> >+
+> >+      mutex_lock(&events_lock);
+> >+      e = data->events;
+> >+      data->events = 0;
 >
-> And in the case of "buffer_size(prz) =3D=3D 0" but "buffer_start(prz) !=
-=3D 0",
-> this will be caught by:
+> ...particularly this bit -- a read operation on a read-only file (and
+> especially one with 0644 permissions) having side-effects (clearing the
+> value it accesses) seems on the face of it like fairly surprising
+> behavior.  Is this a pattern that's used elsewhere in any other sysfs
+> files?
+These are regulator events & are valid when it occurs.
+Userspace application is intended to consume them as soon as the
+event is notified by kernel sysfs_notify.
+
 >
->                 if (buffer_size(prz) > prz->buffer_size ||
->                     buffer_start(prz) > buffer_size(prz)) {
->                         pr_info("found existing invalid buffer, size %zu,=
- start %zu\n",
->                                 buffer_size(prz), buffer_start(prz));
->                         zap =3D true;
->                 }
+> >+      mutex_unlock(&events_lock);
+> >+
+> >+      return sprintf(buf, "0x%lx\n", e);
+> >+}
+> >+
+> > static DEVICE_ATTR_RO(name);
+> > static DEVICE_ATTR_RW(state);
+> >+static DEVICE_ATTR_RO(events);
 >
-> i.e. it will be detected and zapped back to a sane state.
-No,This code has no chance of execution because there was a return 0 before=
- it
+> New sysfs attributes should be documented in Documentation/ABI, which
+> this appears to be missing.
+Sure I can check.
 >
-> That sounds correct to me, though I wonder if reporting it as an
-> "invalid buffer" is inaccurate? Perhaps we should have a separate case:
+> However, it looks like this would expose the values of all the
+> REGULATOR_EVENT_* constants as a userspace-visible ABI -- is that
+> something we really want to do?
+Yes.
 >
->                 if (buffer_size(prz) =3D=3D 0) {
->                         if (buffer_start(prz) =3D=3D 0)
->                                 pr_debug("found existing empty buffer\n")=
-;
->                         else {
->                                 pr_debug("found existing empty buffer wit=
-h non-zero start\n");
->                                 zap =3D true;
->                         }
->                 } else if ...
+> >
+> > static struct attribute *attributes[] = {
+> >       &dev_attr_name.attr,
+> >       &dev_attr_state.attr,
+> >+      &dev_attr_events.attr,
+> >       NULL,
+> > };
+> >
+> >@@ -115,12 +137,28 @@ static const struct attribute_group attr_group = {
+> >       .is_visible =  attr_visible,
+> > };
+> >
+> >+static int regulator_userspace_notify(struct notifier_block *nb,
+> >+                                    unsigned long event,
+> >+                                    void *ignored)
+> >+{
+> >+      struct userspace_consumer_data *data =
+> >+              container_of(nb, struct userspace_consumer_data, nb);
+> >+
+> >+      mutex_lock(&events_lock);
+> >+      data->events |= event;
+> >+      mutex_unlock(&events_lock);
+> >+
 >
-> What do you think?
-Good, I gree it. For me, it should not return directly while finding
-the buffer_size is zero, We need Check others case.
-So does the modification method you mentioned require me to resubmit a
-patch or do you need to modify and merge it
+> Using a single global mutex (events_lock) to protect a single member of
+> a per-device struct looks weird.  Unless there's something subtle going
+> on that I'm not seeing, it seems like the lock should be a member of the
+> data struct instead of global, and since no blocking operations happen
+> under it could it just be a spinlock?  Or since it's just some simple
+> updates to a single variable, why not just use an atomic_t and skip the
+> lock entirely?
+Intent is that only one thread at a time is to be allowed to access/modify
+the data->events variable to prevent potential data corruption and
+race conditions. Sure can change it to spinlock or atomic_t.
+
 >
-> --
-> Kees Cook
+> >+      sysfs_notify(data->kobj, NULL, dev_attr_events.attr.name);
+> >+
+> >+      return NOTIFY_OK;
+> >+}
+> >+
+> > static int regulator_userspace_consumer_probe(struct platform_device *pdev)
+> > {
+> >       struct regulator_userspace_consumer_data tmpdata;
+> >       struct regulator_userspace_consumer_data *pdata;
+> >       struct userspace_consumer_data *drvdata;
+> >-      int ret;
+> >+      int i, ret;
+> >
+> >       pdata = dev_get_platdata(&pdev->dev);
+> >       if (!pdata) {
+> >@@ -153,6 +191,7 @@ static int regulator_userspace_consumer_probe(struct platform_device *pdev)
+> >       drvdata->num_supplies = pdata->num_supplies;
+> >       drvdata->supplies = pdata->supplies;
+> >       drvdata->no_autoswitch = pdata->no_autoswitch;
+> >+      drvdata->kobj = &pdev->dev.kobj;
+> >
+> >       mutex_init(&drvdata->lock);
+> >
+> >@@ -186,6 +225,13 @@ static int regulator_userspace_consumer_probe(struct platform_device *pdev)
+> >       }
+> >       drvdata->enabled = !!ret;
+> >
+> >+      drvdata->nb.notifier_call = regulator_userspace_notify;
+> >+      for (i = 0; i < drvdata->num_supplies; i++) {
+> >+              ret = devm_regulator_register_notifier(drvdata->supplies[i].consumer, &drvdata->nb);
+> >+              if (ret)
+> >+                      goto err_enable;
+> >+      }
+> >+
+> >       return 0;
+> >
+> > err_enable:
+> >@@ -197,6 +243,10 @@ static int regulator_userspace_consumer_probe(struct platform_device *pdev)
+> > static int regulator_userspace_consumer_remove(struct platform_device *pdev)
+> > {
+> >       struct userspace_consumer_data *data = platform_get_drvdata(pdev);
+> >+      int i;
+> >+
+> >+      for (i = 0; i < data->num_supplies; i++)
+> >+              devm_regulator_unregister_notifier(data->supplies[i].consumer, &data->nb);
+> >
+> >       sysfs_remove_group(&pdev->dev.kobj, &attr_group);
+> >
+> >
+> >base-commit: 4fb53b2377c364e3753d6e293913b57dad68e98b
+> >--
+> >2.41.0
+> >
