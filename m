@@ -2,166 +2,307 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 468FE77097E
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 22:09:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 59358770982
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 22:11:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230180AbjHDUJr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Aug 2023 16:09:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37400 "EHLO
+        id S229459AbjHDULu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Aug 2023 16:11:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38990 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230226AbjHDUJa (ORCPT
+        with ESMTP id S230152AbjHDULj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Aug 2023 16:09:30 -0400
-Received: from mail-lj1-x234.google.com (mail-lj1-x234.google.com [IPv6:2a00:1450:4864:20::234])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 073783A8C
-        for <linux-kernel@vger.kernel.org>; Fri,  4 Aug 2023 13:09:24 -0700 (PDT)
-Received: by mail-lj1-x234.google.com with SMTP id 38308e7fff4ca-2b9c66e2e36so30900481fa.1
-        for <linux-kernel@vger.kernel.org>; Fri, 04 Aug 2023 13:09:24 -0700 (PDT)
+        Fri, 4 Aug 2023 16:11:39 -0400
+Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB31A1704;
+        Fri,  4 Aug 2023 13:11:22 -0700 (PDT)
+Received: by mail-ej1-x631.google.com with SMTP id a640c23a62f3a-99bdcade7fbso339127866b.1;
+        Fri, 04 Aug 2023 13:11:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1691179763; x=1691784563;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=BBO4Vdvml2SYBdu5NUZqbYfg4CTImrGpccpVKF2w13k=;
-        b=V4iAp70pVK1GSSuJGqjPoX5t5a8sfEZUzvv4C5LhZAE3lnSAEvm0R9B7CW+/wjn79P
-         VHtTsJqwUtdGcRZsmf2uMt3D+FmAwjMRQFxrxQGZQIooNyq0DCDKwUszEr+w1Mlily8B
-         9LmYDkegkCDEfQtLLX6qqvX+BBFvPN7hQ128FvZ9jg1PkCWSWnLTDl9/yJFXaW02221b
-         nlK1GyUoS/TSSQa82DBXCfx7uLVdtLvbvj8W4Waj6e6AWwCaUh18/30luXux1hofiMkz
-         jjG0NKu0/B7BzDWyjxsHoLt9lNmic3FlvD1RLG1mKnvW3npKH6U1RFCBmVcFD+A5/p9l
-         uEDQ==
+        d=gmail.com; s=20221208; t=1691179881; x=1691784681;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=FKN8y/AC/acz/Szpon8X/f+yEM6VT8OIjSeBHa40AyQ=;
+        b=e4V/NgB0ai/dAHdj/nJ3fGjRyEetuud6Vmvqu9AkA2uL194LpO1PK9UQ7NlFyWL71o
+         343AiWXtajBvbetr7V/h3JcZbRs5gUp77PRny54PJdImpQt93m9p0k8WoX0iWqK+KWMM
+         nAkqZsrOxbCrzLl/sMF6h1dMOfGkIRDY6gNyONBKtsHGxqH6vonMFdbAz31s87ycaR48
+         j/IeUwzusSFi+uKGpxe/XKDeJOd6/PFBEROxD124Z0V0qxBUP95NCjPdZLVY8Yv0KNJK
+         6lcYKKJn+v4Qr788DuAu1pDOxKdSLK4dC6WH6Cpg0tRiSxB4vbrqTYnUYPuG9c8IuNEs
+         tO/Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691179763; x=1691784563;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=BBO4Vdvml2SYBdu5NUZqbYfg4CTImrGpccpVKF2w13k=;
-        b=S5Qw7xoodQ5dBC8Tr9ho8Oa2BR9xOT47RnObVy89pVOZr/+KLnjpskQtXSi3fkbaGK
-         mxJj3FjNz5ENLOr9s2+4sIp7vpSOMzs7vL7HWZx0BkPSQH6fnkPZx6dsrz1BR4FMW7Db
-         570+56eThPogVyGAA6vU2N0xgCXLXfNDyVFOK0S9Xk9qf3+cIw2TRJ4wXesgbGcAUlCn
-         ShoMWl0YFIxxNrGh6qKuNQ6/cdAJ73iC+osSCjZE+g/n+k1LxXUJ2CEmi/Q+3Ce6xxSF
-         0r90PE5eBkSbys593ep4oXeKK+Y5g1/348GVltLK/hc68KUueTi4mDTAvOSMqN17NkOr
-         xDog==
-X-Gm-Message-State: AOJu0Yy27DpMak8SCYgICJ0HQKchh6+Gf/JilDdu60aNO/d+DMj0s27T
-        3QiO81Fl+3e53CS5agAmyCnLtQ==
-X-Google-Smtp-Source: AGHT+IF1LO/hbzvuESlETKCXdfFSJUHe89V8P1OfbYwQw47k8P77yEV7r273idGHjzzYnXtKFj32Hw==
-X-Received: by 2002:a05:651c:200a:b0:2ba:1286:d99e with SMTP id s10-20020a05651c200a00b002ba1286d99emr207090ljo.1.1691179763173;
-        Fri, 04 Aug 2023 13:09:23 -0700 (PDT)
-Received: from [192.168.1.101] (abym15.neoplus.adsl.tpnet.pl. [83.9.32.15])
-        by smtp.gmail.com with ESMTPSA id m8-20020a2e97c8000000b002b6fed37b18sm580048ljj.101.2023.08.04.13.09.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 04 Aug 2023 13:09:22 -0700 (PDT)
-From:   Konrad Dybcio <konrad.dybcio@linaro.org>
-Date:   Fri, 04 Aug 2023 22:09:13 +0200
-Subject: [PATCH 6/6] media: venus: core: Add SC8280XP resource struct
+        d=1e100.net; s=20221208; t=1691179881; x=1691784681;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=FKN8y/AC/acz/Szpon8X/f+yEM6VT8OIjSeBHa40AyQ=;
+        b=J6LX52iQUq+QWtMk/l9K4XWoNIy92XNIimwx5Qt+sMOhha7LjwKnXSx4LHWMu+vMtT
+         +u0jXV5VOx8W3s+vkjmyDnYm6n6CDGZfFbXpfGXlRlGxRKkvATu5jRVF22ouYAFqT32F
+         qu/44BOfejzYxjes+XYPVKcMPJDxllZ4EcN/JrHKurCOCzqPa+BISQvofFOz1F8CVDRf
+         Y7zxPdc+McS1CVjN00n9/Xuej7Y1JWBHrV8E976i9Tb4ygISWYyxxklehO4jAnHt5IaS
+         +b8LhsJaUR7JEB2Uh4v+3REBnnQZRC5abuL+BHbHg7TKgYklM/1ZaJohFCvkxuv7YcB4
+         jW1g==
+X-Gm-Message-State: AOJu0Yy5M6s8raNl45asQXGOEg1P5UqynLWiDuJQNh4BlqBFTxJHsHoi
+        UMQu2fnnU44PtMVEGxDZmtg=
+X-Google-Smtp-Source: AGHT+IFsw8jrp/3QMWBqlm5qWJlkBpl5RR8R9zejcUJhe8yU4PtN0Y5X6BYX79WuC/VTf//8Z1QNxg==
+X-Received: by 2002:a17:906:cc4d:b0:977:95f4:5cca with SMTP id mm13-20020a170906cc4d00b0097795f45ccamr2220834ejb.54.1691179880780;
+        Fri, 04 Aug 2023 13:11:20 -0700 (PDT)
+Received: from ?IPV6:2a02:8071:b783:140:927c:82ba:d32d:99c1? ([2a02:8071:b783:140:927c:82ba:d32d:99c1])
+        by smtp.gmail.com with ESMTPSA id j20-20020a170906095400b00992e14af9b9sm1720651ejd.134.2023.08.04.13.11.19
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 04 Aug 2023 13:11:20 -0700 (PDT)
+Message-ID: <b4d7dbca-f77f-dd8b-2b4c-c82bee086627@gmail.com>
+Date:   Fri, 4 Aug 2023 22:11:18 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20230731-topic-8280_venus-v1-6-8c8bbe1983a5@linaro.org>
-References: <20230731-topic-8280_venus-v1-0-8c8bbe1983a5@linaro.org>
-In-Reply-To: <20230731-topic-8280_venus-v1-0-8c8bbe1983a5@linaro.org>
-To:     Stanimir Varbanov <stanimir.k.varbanov@gmail.com>,
-        Vikash Garodia <quic_vgarodia@quicinc.com>,
-        Bryan O'Donoghue <bryan.odonoghue@linaro.org>,
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v5 2/3] firmware: qcom_scm: Add support for Qualcomm
+ Secure Execution Environment SCM interface
+Content-Language: en-US
+To:     Johan Hovold <johan@kernel.org>
+Cc:     Bjorn Andersson <andersson@kernel.org>,
         Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>
-Cc:     Marijn Suijten <marijn.suijten@somainline.org>,
-        Konrad Dybcio <konradybcio@kernel.org>,
-        linux-media@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Konrad Dybcio <konrad.dybcio@linaro.org>
-X-Mailer: b4 0.12.2
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1691179750; l=2590;
- i=konrad.dybcio@linaro.org; s=20230215; h=from:subject:message-id;
- bh=ha53B+QQKlS6cZf/sln/5h8cUTUGAcICl3MpcEH5dmg=;
- b=K0lLgvFpQKiaTwNfLvVCPicVclZYdtr9Z1AYSsOZjtnhAZ8bWA0srGRdn3PHL4aiex9Wgf8NH
- yBYG0oPN5KuBUbFehP3gGMXykbemozZD3aTwqLkLRQYJT1lLyPV2E8w
-X-Developer-Key: i=konrad.dybcio@linaro.org; a=ed25519;
- pk=iclgkYvtl2w05SSXO5EjjSYlhFKsJ+5OSZBjOkQuEms=
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        Steev Klimaszewski <steev@kali.org>,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20230730161906.606163-1-luzmaximilian@gmail.com>
+ <20230730161906.606163-3-luzmaximilian@gmail.com>
+ <ZM0r-ZrkWXBtNZJZ@hovoldconsulting.com>
+From:   Maximilian Luz <luzmaximilian@gmail.com>
+In-Reply-To: <ZM0r-ZrkWXBtNZJZ@hovoldconsulting.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add SC8280XP configuration data and related compatible.
+On 8/4/23 18:48, Johan Hovold wrote:
+> On Sun, Jul 30, 2023 at 06:19:03PM +0200, Maximilian Luz wrote:
+> 
+>> @@ -0,0 +1,128 @@
+>> +// SPDX-License-Identifier: GPL-2.0-or-later
+>> +/*
+>> + * Driver for Qualcomm Secure Execution Environment (SEE) interface (QSEECOM).
+>> + * Responsible for setting up and managing QSEECOM client devices.
+>> + *
+>> + * Copyright (C) 2023 Maximilian Luz <luzmaximilian@gmail.com>
+>> + */
+>> +#include <linux/auxiliary_bus.h>
+>> +#include <linux/platform_device.h>
+>> +#include <linux/types.h>
+> 
+> Looks like you're missing some includes like module.h and slab.h.
 
-Signed-off-by: Konrad Dybcio <konrad.dybcio@linaro.org>
----
- drivers/media/platform/qcom/venus/core.c | 45 ++++++++++++++++++++++++++++++++
- 1 file changed, 45 insertions(+)
+Right. I'll add both for the next version.
 
-diff --git a/drivers/media/platform/qcom/venus/core.c b/drivers/media/platform/qcom/venus/core.c
-index 5f285ae75e9d..32591b624a36 100644
---- a/drivers/media/platform/qcom/venus/core.c
-+++ b/drivers/media/platform/qcom/venus/core.c
-@@ -940,6 +940,50 @@ static const struct venus_resources sc7280_res = {
- 	.fwname = "qcom/vpu-2.0/venus.mbn",
- };
- 
-+static const struct freq_tbl sc8280xp_freq_table[] = {
-+	{ 0, 239999999 },
-+	{ 0, 338000000 },
-+	{ 0, 366000000 },
-+	{ 0, 444000000 },
-+	{ 0, 533000000 },
-+	{ 0, 560000000 },
-+};
-+
-+static const struct venus_resources sc8280xp_res = {
-+	.freq_tbl = sc8280xp_freq_table,
-+	.freq_tbl_size = ARRAY_SIZE(sc8280xp_freq_table),
-+	.reg_tbl = sm8350_reg_preset,
-+	.reg_tbl_size = ARRAY_SIZE(sm8350_reg_preset),
-+	.bw_tbl_enc = sm8250_bw_table_enc,
-+	.bw_tbl_enc_size = ARRAY_SIZE(sm8250_bw_table_enc),
-+	.bw_tbl_dec = sm8250_bw_table_dec,
-+	.bw_tbl_dec_size = ARRAY_SIZE(sm8250_bw_table_dec),
-+	.clks = { "core", "iface" },
-+	.clks_num = 2,
-+	.resets = { "core" },
-+	.resets_num = 1,
-+	.vcodec0_clks = { "vcodec0_core" },
-+	.vcodec_clks_num = 1,
-+	.vcodec_pmdomains = { "venus", "vcodec0" },
-+	.vcodec_pmdomains_num = 2,
-+	.opp_pmdomain = (const char *[]) { "mx", NULL },
-+	.vcodec_num = 1,
-+	.max_load = 7833600, /* 7680x4320@60fps */
-+	.hfi_version = HFI_VERSION_6XX,
-+	.vpu_version = VPU_VERSION_IRIS2,
-+	.num_vpp_pipes = 4,
-+	.vmem_id = VIDC_RESOURCE_NONE,
-+	.vmem_size = 0,
-+	.vmem_addr = 0,
-+	.dma_mask = GENMASK(31, 29) - 1,
-+	.cp_start = 0,
-+	.cp_size = 0x25800000,
-+	.cp_nonpixel_start = 0x1000000,
-+	.cp_nonpixel_size = 0x24800000,
-+	.fwname = "qcom/vpu-2.0/venus.mbn",
-+};
-+
-+
- static const struct of_device_id venus_dt_match[] = {
- 	{ .compatible = "qcom,msm8916-venus", .data = &msm8916_res },
- 	{ .compatible = "qcom,msm8996-venus", .data = &msm8996_res },
-@@ -948,6 +992,7 @@ static const struct of_device_id venus_dt_match[] = {
- 	{ .compatible = "qcom,sdm845-venus-v2", .data = &sdm845_res_v2 },
- 	{ .compatible = "qcom,sc7180-venus", .data = &sc7180_res },
- 	{ .compatible = "qcom,sc7280-venus", .data = &sc7280_res },
-+	{ .compatible = "qcom,sc8280xp-venus", .data = &sc8280xp_res },
- 	{ .compatible = "qcom,sm8250-venus", .data = &sm8250_res },
- 	{ .compatible = "qcom,sm8350-venus", .data = &sm8350_res },
- 	{ }
+>> +
+>> +#include <linux/firmware/qcom/qcom_qseecom.h>
+>> +#include <linux/firmware/qcom/qcom_scm.h>
+> 
+>> +static void qseecom_client_release(struct device *dev)
+>> +{
+>> +	struct qseecom_client *client = container_of(dev, struct qseecom_client, aux_dev.dev);
+> 
+> Nit: Perhaps you can separate declaration and initialisation here to
+> stay within 80 columns.
 
--- 
-2.41.0
+Sure, I'll do that.
 
+>> +
+>> +	kfree(client);
+>> +}
+> 
+>> +static int qcom_qseecom_remove(struct platform_device *qseecom_dev)
+>> +{
+>> +	return 0;	/* Nothing to do here, all is managed via devm. */
+>> +}
+> 
+> You should just drop this one (even if it serves as documentation).
+
+Okay.
+  
+>> +static struct platform_driver qcom_qseecom_driver = {
+>> +	.driver = {
+>> +		.name	= "qcom_qseecom",
+>> +	},
+>> +	.probe = qcom_qseecom_probe,
+>> +	.remove = qcom_qseecom_remove,
+>> +};
+>> +
+>> +static int __init qcom_qseecom_init(void)
+>> +{
+>> +	return platform_driver_register(&qcom_qseecom_driver);
+>> +}
+>> +subsys_initcall(qcom_qseecom_init);
+>> +
+>> +static void __exit qcom_qseecom_exit(void)
+>> +{
+>> +	platform_driver_unregister(&qcom_qseecom_driver);
+>> +}
+>> +module_exit(qcom_qseecom_exit);
+> 
+> No need for this one either since this driver can only be built-in now.
+
+Right.
+
+>> +MODULE_AUTHOR("Maximilian Luz <luzmaximilian@gmail.com>");
+>> +MODULE_DESCRIPTION("Driver for the Qualcomm SEE (QSEECOM) interface");
+>> +MODULE_LICENSE("GPL");
+>> +MODULE_ALIAS("platform:qcom_qseecom");
+> 
+> No need for MODULE_ALIAS() either.
+
+Oh right. As long as the module and device name match this should work
+automatically, correct? I forgot about that.
+
+>> +static void qcom_scm_qseecom_free(void *data)
+>> +{
+>> +	struct platform_device *qseecom_dev = data;
+>> +
+>> +	platform_device_unregister(qseecom_dev);
+> 
+> Perhaps use platform_device_del() and platform_device_put() for symmetry
+> as you're not using platform_device_register() below.
+
+Sure, I can do that.
+  
+>> +}
+>> +
+>> +static int qcom_scm_qseecom_init(struct qcom_scm *scm)
+>> +{
+>> +	struct platform_device *qseecom_dev;
+>> +	u32 version;
+>> +	int ret;
+>> +
+>> +	/*
+>> +	 * Note: We do two steps of validation here: First, we try to query the
+>> +	 * QSEECOM version as a check to see if the interface exists on this
+>> +	 * device. Second, we check against known good devices due to current
+>> +	 * driver limitations (see comment in qcom_scm_qseecom_allowlist).
+>> +	 *
+>> +	 * Note that we deliberately do the machine check after the version
+>> +	 * check so that we can log potentially supported devices. This should
+>> +	 * be safe as downstream sources indicate that the version query is
+>> +	 * neither blocking nor reentrant.
+>> +	 */
+>> +	ret = qcom_scm_qseecom_get_version(&version);
+>> +	if (ret)
+>> +		return 0;
+>> +
+>> +	dev_info(scm->dev, "qseecom: found qseecom with version 0x%x\n", version);
+>> +
+>> +	if (!qcom_scm_qseecom_machine_is_allowed()) {
+>> +		dev_info(scm->dev, "qseecom: untested device, skipping\n");
+> 
+> untested "machine"?
+
+That would be more consistent, yes.
+  
+>> +		return 0;
+>> +	}
+>> +
+>> +	/*
+>> +	 * Set up QSEECOM interface device. All application clients will be
+>> +	 * set up and managed by the corresponding driver for it.
+>> +	 */
+>> +	qseecom_dev = platform_device_alloc("qcom_qseecom", -1);
+>> +	if (!qseecom_dev)
+>> +		return -ENOMEM;
+>> +
+>> +	qseecom_dev->dev.parent = scm->dev;
+>> +
+>> +	ret = platform_device_add(qseecom_dev);
+>> +	if (ret) {
+>> +		platform_device_put(qseecom_dev);
+>> +		return ret;
+>> +	}
+>> +
+>> +	return devm_add_action_or_reset(scm->dev, qcom_scm_qseecom_free, qseecom_dev);
+>> +}
+>> +
+>> +#else /* CONFIG_QCOM_QSEECOM */
+>> +
+>> +static int qcom_scm_qseecom_init(struct qcom_scm *scm)
+>> +{
+>> +	return 0;
+>> +}
+>> +
+>> +#endif /* CONFIG_QCOM_QSEECOM */
+>> +
+>>   /**
+>>    * qcom_scm_is_available() - Checks if SCM is available
+>>    */
+>> @@ -1468,6 +1848,18 @@ static int qcom_scm_probe(struct platform_device *pdev)
+>>   	if (download_mode)
+>>   		qcom_scm_set_download_mode(true);
+>>   
+>> +	/*
+>> +	 * Initialize the QSEECOM interface. Note: QSEECOM is fairly
+> 
+> Nit: I'd add a line break and an empty line before the "Note:".
+
+Sure, I'll do that.
+  
+>> +	 * self-contained and this only adds the interface device (the driver
+>> +	 * of which does most of the heavy lifting). So any errors returned
+>> +	 * here should be either -ENOMEM or -EINVAL (with the latter only in
+>> +	 * case there's a bug in our code). This means that there is no need to
+>> +	 * bring down the whole SCM driver. Just log the error instead and let
+>> +	 * SCM live.
+>> +	 */
+>> +	ret = qcom_scm_qseecom_init(scm);
+>> +	WARN(ret < 0, "failed to initialize qseecom: %d", ret);
+> 
+> Missing '\n'.
+
+Right.
+  
+>> +
+>>   	return 0;
+>>   }
+>>   
+>    
+>> +#ifdef CONFIG_QCOM_QSEECOM
+>> +
+>> +int qcom_scm_qseecom_app_get_id(const char *app_name, u32 *app_id);
+>> +int qcom_scm_qseecom_app_send(u32 app_id, void *req, size_t req_size, void *rsp,
+>> +			      size_t rsp_size);
+>> +
+>> +#else /* CONFIG_QCOM_QSEECOM */
+>> +
+>> +int qcom_scm_qseecom_app_get_id(const char *app_name, u32 *app_id)
+>> +{
+>> +	return -EINVAL;
+>> +}
+>> +
+>> +int qcom_scm_qseecom_app_send(u32 app_id, void *req, size_t req_size, void *rsp,
+>> +			      size_t rsp_size)
+>> +{
+>> +	return -EINVAL;
+>> +}
+> 
+> These should be static inline as you already noticed.
+
+Already done :)
+
+>> +
+>> +#endif /* CONFIG_QCOM_QSEECOM */
+>> +
+>>   #endif
+> 
+> With the above fixed you can add my
+> 
+> Reviewed-by: Johan Hovold <johan+linaro@kernel.org>
+
+Thanks!
+
+Regards
+Max
