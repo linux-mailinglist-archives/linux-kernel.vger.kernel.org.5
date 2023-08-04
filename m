@@ -2,46 +2,46 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 058D7770544
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 17:52:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E63E2770546
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 17:52:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232208AbjHDPwa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Aug 2023 11:52:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47928 "EHLO
+        id S232233AbjHDPwe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Aug 2023 11:52:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47944 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232176AbjHDPw2 (ORCPT
+        with ESMTP id S232212AbjHDPwb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Aug 2023 11:52:28 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B86E9170F;
-        Fri,  4 Aug 2023 08:52:27 -0700 (PDT)
+        Fri, 4 Aug 2023 11:52:31 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA2351734;
+        Fri,  4 Aug 2023 08:52:29 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 55E836207A;
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 705ED62083;
+        Fri,  4 Aug 2023 15:52:29 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3D2A1C433CB;
         Fri,  4 Aug 2023 15:52:27 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2F84FC433CA;
-        Fri,  4 Aug 2023 15:52:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691164346;
-        bh=tPmxXhf66VncNKJK+vndDb+F6Ii3wvgP4mAYTkpL4kw=;
+        s=k20201202; t=1691164348;
+        bh=KWFM/wiu6viTEVt5MroQSNcNFMjFUslvuCwH+sOEIdY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=I1i2HxIZaHgL1mgzvBOn23KDcqn+sK9vCqus1XqEdcnDg9GTncI29cMTFaospxsQA
-         rPSC18psAjYUQQ9VXSGT9IuNF3GD7dG6DTezEFLKv7TxYd/rcwBeSemuZCkaBU/Nlu
-         PJim7T0MNxbpa7YJE4qrJAPVQLAdGQx4aydG11DdqSOO3hCn3waCgDXGmI/QYdCX3N
-         8d/b0ygvA2p+f/nhJwB+aass2JRtbkj8/lmoRbA+wgngkZ7vRJjdVx4TxpfM3tNcpe
-         vZfnSsTrqzhh4jaEQjIma5xSV98a49NmD5jVfmn1+zOVJHtuL4uG0g88EZOCy1cTpV
-         X0IUqGLhQhSxQ==
+        b=guS2WrnT5Gzk/90BbYDxqcVbWMgYW8V90YnB6WynP11+/qFch/c9QWZ1cuhnuT9um
+         aZNEXD9uliUtEE7BofkP1RRNXHkncNZgeAGKCoHGmdZbK71nGEKHnkaOO4kaxG8csm
+         83vMPQUb2xK2hfF1rtUjoHrADY6JeGkm0sAkSnGLdPOgBb86AHCRtPyZCCFqgzePbf
+         hfUHPS1gP1iCjQVT4b/F1dFy5KM1YQaRpAbMXIIttrXnWmQXo2FZ3ply7eeDzAmvyG
+         RUTMMnR4mk/X68gPXYl5Tw6DUgbojAxLyZvEv72jjymmJs4ZNYSVxiX6xfqpTSaXAQ
+         8reUbJiOl5Sqg==
 From:   Daniel Bristot de Oliveira <bristot@kernel.org>
 To:     linux-kernel@vger.kernel.org, linux-trace-devel@vger.kernel.org,
         Steven Rostedt <rostedt@goodmis.org>
 Cc:     William White <chwhite@redhat.com>,
         Daniel Bristot de Oliveira <bristot@kernel.org>,
         Masami Hiramatsu <mhiramat@kernel.org>
-Subject: [PATCH 1/3] rtla/timerlat_aa: Zero thread sum after every sample analysis
-Date:   Fri,  4 Aug 2023 17:52:11 +0200
-Message-Id: <97bff55b0141f2d01b47d9450a5672fde147b89a.1691162043.git.bristot@kernel.org>
+Subject: [PATCH 2/3] rtla/timerlat_aa: Fix negative IRQ delay
+Date:   Fri,  4 Aug 2023 17:52:12 +0200
+Message-Id: <a066fb667c7136d86dcddb3c7ccd72587db3e7c7.1691162043.git.bristot@kernel.org>
 X-Mailer: git-send-email 2.38.1
 In-Reply-To: <cover.1691162043.git.bristot@kernel.org>
 References: <cover.1691162043.git.bristot@kernel.org>
@@ -57,30 +57,54 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The thread thread_thread_sum accounts for thread interference
-during a single activation. It was not being zeroed, so it was
-accumulating thread interference over all activations.
+When estimating the IRQ timer delay, we are dealing with two different
+clock sources: the external clock source that timerlat uses as a reference
+and the clock used by the tracer. There are also two moments: the time
+reading the clock and the timer in which the event is placed in the
+buffer (the trace event timestamp).
 
-It was not that visible when timerlat was the highest priority.
+If the processor is slow or there is some hardware noise, the difference
+between the timestamp and the external clock, read can be longer than the
+IRQ handler delay, resulting in a negative time.
+
+If so, set IRQ to start delay as 0. In the end, it is less near-zero and relevant
+then the noise.
 
 Fixes: 27e348b221f6 ("rtla/timerlat: Add auto-analysis core")
 Signed-off-by: Daniel Bristot de Oliveira <bristot@kernel.org>
 ---
- tools/tracing/rtla/src/timerlat_aa.c | 1 +
- 1 file changed, 1 insertion(+)
+ tools/tracing/rtla/src/timerlat_aa.c | 18 +++++++++++++++++-
+ 1 file changed, 17 insertions(+), 1 deletion(-)
 
 diff --git a/tools/tracing/rtla/src/timerlat_aa.c b/tools/tracing/rtla/src/timerlat_aa.c
-index e0ffe69c271c..dec5b4c4511e 100644
+index dec5b4c4511e..baf1efda0581 100644
 --- a/tools/tracing/rtla/src/timerlat_aa.c
 +++ b/tools/tracing/rtla/src/timerlat_aa.c
-@@ -159,6 +159,7 @@ static int timerlat_aa_irq_latency(struct timerlat_aa_data *taa_data,
- 	taa_data->thread_nmi_sum = 0;
- 	taa_data->thread_irq_sum = 0;
- 	taa_data->thread_softirq_sum = 0;
-+	taa_data->thread_thread_sum = 0;
- 	taa_data->thread_blocking_duration = 0;
- 	taa_data->timer_irq_start_time = 0;
- 	taa_data->timer_irq_duration = 0;
+@@ -338,7 +338,23 @@ static int timerlat_aa_irq_handler(struct trace_seq *s, struct tep_record *recor
+ 		taa_data->timer_irq_start_time = start;
+ 		taa_data->timer_irq_duration = duration;
+ 
+-		taa_data->timer_irq_start_delay = taa_data->timer_irq_start_time - expected_start;
++		/*
++		 * We are dealing with two different clock sources: the
++		 * external clock source that timerlat uses as a reference
++		 * and the clock used by the tracer. There are also two
++		 * moments: the time reading the clock and the timer in
++		 * which the event is placed in the buffer (the trace
++		 * event timestamp). If the processor is slow or there
++		 * is some hardware noise, the difference between the
++		 * timestamp and the external clock read can be longer
++		 * than the IRQ handler delay, resulting in a negative
++		 * time. If so, set IRQ start delay as 0. In the end,
++		 * it is less relevant than the noise.
++		 */
++		if (expected_start < taa_data->timer_irq_start_time)
++			taa_data->timer_irq_start_delay = taa_data->timer_irq_start_time - expected_start;
++		else
++			taa_data->timer_irq_start_delay = 0;
+ 
+ 		/*
+ 		 * not exit from idle.
 -- 
 2.38.1
 
