@@ -2,221 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 69A8E76FCB6
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 10:59:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 262AE76FCB9
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 11:00:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229977AbjHDI7H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Aug 2023 04:59:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48906 "EHLO
+        id S229825AbjHDJAY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Aug 2023 05:00:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51488 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230323AbjHDI63 (ORCPT
+        with ESMTP id S229798AbjHDI74 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Aug 2023 04:58:29 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 175925B92
-        for <linux-kernel@vger.kernel.org>; Fri,  4 Aug 2023 01:53:52 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id C935E1515;
-        Fri,  4 Aug 2023 01:53:29 -0700 (PDT)
-Received: from e127643.arm.com (unknown [10.57.3.154])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 1AD063F6C4;
-        Fri,  4 Aug 2023 01:52:43 -0700 (PDT)
-From:   James Clark <james.clark@arm.com>
-To:     coresight@lists.linaro.org, linux-arm-kernel@lists.infradead.org
-Cc:     James Clark <james.clark@arm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Mike Leach <mike.leach@linaro.org>,
-        Leo Yan <leo.yan@linaro.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Mark Brown <broonie@kernel.org>,
-        James Morse <james.morse@arm.com>,
-        Kristina Martsenko <kristina.martsenko@arm.com>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Rob Herring <robh@kernel.org>,
-        Jintack Lim <jintack.lim@linaro.org>,
-        Joey Gouly <joey.gouly@arm.com>, linux-kernel@vger.kernel.org
-Subject: [PATCH 2/2] coresight: Allow guests to be traced when FEAT_TRF and VHE are present
-Date:   Fri,  4 Aug 2023 09:52:17 +0100
-Message-Id: <20230804085219.260790-3-james.clark@arm.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20230804085219.260790-1-james.clark@arm.com>
-References: <20230804085219.260790-1-james.clark@arm.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        Fri, 4 Aug 2023 04:59:56 -0400
+X-Greylist: delayed 259 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Fri, 04 Aug 2023 01:54:39 PDT
+Received: from mxhk.zte.com.cn (mxhk.zte.com.cn [63.216.63.35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8800618E;
+        Fri,  4 Aug 2023 01:54:39 -0700 (PDT)
+Received: from mse-fl2.zte.com.cn (unknown [10.5.228.133])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mxhk.zte.com.cn (FangMail) with ESMTPS id 4RHKJV4Lvwz5R9jt;
+        Fri,  4 Aug 2023 16:54:02 +0800 (CST)
+Received: from szxlzmapp06.zte.com.cn ([10.5.230.252])
+        by mse-fl2.zte.com.cn with SMTP id 3748rdjo016893;
+        Fri, 4 Aug 2023 16:53:39 +0800 (+08)
+        (envelope-from yang.yang29@zte.com.cn)
+Received: from mapi (szxlzmapp07[null])
+        by mapi (Zmail) with MAPI id mid14;
+        Fri, 4 Aug 2023 16:53:41 +0800 (CST)
+Date:   Fri, 4 Aug 2023 16:53:41 +0800 (CST)
+X-Zmail-TransId: 2b0964ccbc95ffffffffefa-19509
+X-Mailer: Zmail v1.0
+Message-ID: <202308041653414100323@zte.com.cn>
+Mime-Version: 1.0
+From:   <yang.yang29@zte.com.cn>
+To:     <jmaloy@redhat.com>, <davem@davemloft.net>
+Cc:     <ying.xue@windriver.com>, <edumazet@google.com>, <kuba@kernel.org>,
+        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: =?UTF-8?B?W1BBVENIXSBuZXQ6IHRpcGM6IGFkZCBuZXQgZGV2aWNlIHJlZmNvdW50IHRyYWNrZXIgZm9yIGJlYXJlcg==?=
+Content-Type: text/plain;
+        charset="UTF-8"
+X-MAIL: mse-fl2.zte.com.cn 3748rdjo016893
+X-Fangmail-Gw-Spam-Type: 0
+X-Fangmail-Anti-Spam-Filtered: true
+X-Fangmail-MID-QID: 64CCBCAA.003/4RHKJV4Lvwz5R9jt
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,UNPARSEABLE_RELAY
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently the userspace and kernel filters for guests are never set, so
-no trace will be generated for them. Add it by writing to the guest
-filters when exclude_guest isn't set. By writing either E1TRE or E0TRE,
-filtering on either guest kernel or guest userspace is also supported.
+From: xu xin <xu.xin16@zte.com.cn>
 
-Since TRFCR_EL1 access is trapped, this can't be  modified by the guest.
+Add net device refcount tracker to the struct tipc_bearer.
 
-This change also brings exclude_host support which is difficult to add
-as a separate commit without excess churn and resulting in no trace at
-all.
-
-Testing
-=======
-
-The addresses were counted with the following:
-
-  $ perf report -D | grep -Eo 'EL2|EL1|EL0' | sort | uniq -c
-
-Guest kernel only:
-
-  $ perf record -e cs_etm//Gk -a -- true
-    535 EL1
-      1 EL2
-
-Guest user only (0 addresses expected because the guest OS hasn't reached
-userspace yet):
-
-  $ perf record -e cs_etm//Gu -a -- true
-
-Host kernel only:
-
-  $  perf record -e cs_etm//Hk -a -- true
-   3501 EL2
-
-Host userspace only:
-
-  $  perf record -e cs_etm//Hu -a -- true
-    408 EL0
-      1 EL2
-
-Signed-off-by: James Clark <james.clark@arm.com>
+Signed-off-by: xu xin <xu.xin16@zte.com.cn>
+Reviewed-by: Yang Yang <yang.yang.29@zte.com.cn>
+Cc: Kuang Mingfu <kuang.mingfu@zte.com.cn>
 ---
- arch/arm64/tools/sysreg                       |  4 ++
- .../coresight/coresight-etm4x-core.c          | 45 ++++++++++++++++---
- drivers/hwtracing/coresight/coresight-etm4x.h |  2 +-
- drivers/hwtracing/coresight/coresight-priv.h  |  3 ++
- 4 files changed, 47 insertions(+), 7 deletions(-)
+ net/tipc/bearer.c | 10 +++++-----
+ net/tipc/bearer.h |  1 +
+ 2 files changed, 6 insertions(+), 5 deletions(-)
 
-diff --git a/arch/arm64/tools/sysreg b/arch/arm64/tools/sysreg
-index fe1f824977d9..81028ef08415 100644
---- a/arch/arm64/tools/sysreg
-+++ b/arch/arm64/tools/sysreg
-@@ -2517,3 +2517,7 @@ EndSysreg
- Sysreg	TRFCR_EL2	3	4	1	2	1
- Fields	TRFCR_ELx
- EndSysreg
-+
-+Sysreg TRFCR_EL12	3	5	1	2	1
-+Fields	TRFCR_ELx
-+EndSysreg
-diff --git a/drivers/hwtracing/coresight/coresight-etm4x-core.c b/drivers/hwtracing/coresight/coresight-etm4x-core.c
-index 257e5c1a4b52..8c0356ec905e 100644
---- a/drivers/hwtracing/coresight/coresight-etm4x-core.c
-+++ b/drivers/hwtracing/coresight/coresight-etm4x-core.c
-@@ -274,6 +274,18 @@ static void etm4x_prohibit_trace(struct etmv4_drvdata *drvdata)
- 	cpu_prohibit_trace();
+diff --git a/net/tipc/bearer.c b/net/tipc/bearer.c
+index 2cde375477e3..01ffd1f2337a 100644
+--- a/net/tipc/bearer.c
++++ b/net/tipc/bearer.c
+@@ -426,15 +426,15 @@ int tipc_enable_l2_media(struct net *net, struct tipc_bearer *b,
+ 	struct net_device *dev;
+
+ 	/* Find device with specified name */
+-	dev = dev_get_by_name(net, dev_name);
++	dev = netdev_get_by_name(net, dev_name, &b->devtracker, GFP_KERNEL);
+ 	if (!dev)
+ 		return -ENODEV;
+ 	if (tipc_mtu_bad(dev)) {
+-		dev_put(dev);
++		netdev_put(dev, &b->devtracker);
+ 		return -EINVAL;
+ 	}
+ 	if (dev == net->loopback_dev) {
+-		dev_put(dev);
++		netdev_put(dev, &b->devtracker);
+ 		pr_info("Enabling <%s> not permitted\n", b->name);
+ 		return -EINVAL;
+ 	}
+@@ -445,7 +445,7 @@ int tipc_enable_l2_media(struct net *net, struct tipc_bearer *b,
+ 		tipc_net_init(net, node_id, 0);
+ 	}
+ 	if (!tipc_own_id(net)) {
+-		dev_put(dev);
++		netdev_put(dev, &b->devtracker);
+ 		pr_warn("Failed to obtain node identity\n");
+ 		return -EINVAL;
+ 	}
+@@ -479,7 +479,7 @@ void tipc_disable_l2_media(struct tipc_bearer *b)
+ 	dev_remove_pack(&b->pt);
+ 	RCU_INIT_POINTER(dev->tipc_ptr, NULL);
+ 	synchronize_net();
+-	dev_put(dev);
++	netdev_put(dev, &b->devtracker);
  }
- 
-+static u64 etm4x_get_kern_user_filter(struct etmv4_drvdata *drvdata)
-+{
-+	u64 trfcr = drvdata->trfcr;
-+
-+	if (drvdata->config.mode & ETM_MODE_EXCL_KERN)
-+		trfcr &= ~TRFCR_ELx_ExTRE;
-+	if (drvdata->config.mode & ETM_MODE_EXCL_USER)
-+		trfcr &= ~TRFCR_ELx_E0TRE;
-+
-+	return trfcr;
-+}
-+
- /*
-  * etm4x_allow_trace - Allow CPU tracing in the respective ELs,
-  * as configured by the drvdata->config.mode for the current
-@@ -286,18 +298,33 @@ static void etm4x_prohibit_trace(struct etmv4_drvdata *drvdata)
-  */
- static void etm4x_allow_trace(struct etmv4_drvdata *drvdata)
- {
--	u64 trfcr = drvdata->trfcr;
-+	u64 trfcr;
- 
- 	/* If the CPU doesn't support FEAT_TRF, nothing to do */
--	if (!trfcr)
-+	if (!drvdata->trfcr)
- 		return;
- 
--	if (drvdata->config.mode & ETM_MODE_EXCL_KERN)
--		trfcr &= ~TRFCR_ELx_ExTRE;
--	if (drvdata->config.mode & ETM_MODE_EXCL_USER)
--		trfcr &= ~TRFCR_ELx_E0TRE;
-+	if (drvdata->config.mode & ETM_MODE_EXCL_HOST)
-+		trfcr = drvdata->trfcr & ~(TRFCR_ELx_ExTRE | TRFCR_ELx_E0TRE);
-+	else
-+		trfcr = etm4x_get_kern_user_filter(drvdata);
- 
- 	write_trfcr(trfcr);
-+
-+	/*
-+	 * Filters for EL1 and EL0 (when running a guest) are stored in
-+	 * TRFCR_EL1 so write it there for VHE. For nVHE, the filters in
-+	 * have to be re-applied when switching to the guest instead.
-+	 */
-+	if (!is_kernel_in_hyp_mode())
-+		return;
-+
-+	if (drvdata->config.mode & ETM_MODE_EXCL_GUEST)
-+		trfcr = drvdata->trfcr & ~(TRFCR_ELx_ExTRE | TRFCR_ELx_E0TRE);
-+	else
-+		trfcr = etm4x_get_kern_user_filter(drvdata);
-+
-+	write_sysreg_s(trfcr, SYS_TRFCR_EL12);
- }
- 
- #ifdef CONFIG_ETM4X_IMPDEF_FEATURE
-@@ -655,6 +682,12 @@ static int etm4_parse_event_config(struct coresight_device *csdev,
- 	if (attr->exclude_user)
- 		config->mode = ETM_MODE_EXCL_USER;
- 
-+	if (attr->exclude_host)
-+		config->mode |= ETM_MODE_EXCL_HOST;
-+
-+	if (attr->exclude_guest)
-+		config->mode |= ETM_MODE_EXCL_GUEST;
-+
- 	/* Always start from the default config */
- 	etm4_set_default_config(config);
- 
-diff --git a/drivers/hwtracing/coresight/coresight-etm4x.h b/drivers/hwtracing/coresight/coresight-etm4x.h
-index 20e2e4cb7614..3f170599822f 100644
---- a/drivers/hwtracing/coresight/coresight-etm4x.h
-+++ b/drivers/hwtracing/coresight/coresight-etm4x.h
-@@ -841,7 +841,7 @@ enum etm_impdef_type {
-  * @s_ex_level: Secure ELs where tracing is supported.
-  */
- struct etmv4_config {
--	u32				mode;
-+	u64				mode;
- 	u32				pe_sel;
- 	u32				cfg;
- 	u32				eventctrl0;
-diff --git a/drivers/hwtracing/coresight/coresight-priv.h b/drivers/hwtracing/coresight/coresight-priv.h
-index 767076e07970..727dd27ba800 100644
---- a/drivers/hwtracing/coresight/coresight-priv.h
-+++ b/drivers/hwtracing/coresight/coresight-priv.h
-@@ -39,6 +39,9 @@
- 
- #define ETM_MODE_EXCL_KERN	BIT(30)
- #define ETM_MODE_EXCL_USER	BIT(31)
-+#define ETM_MODE_EXCL_HOST	BIT(32)
-+#define ETM_MODE_EXCL_GUEST	BIT(33)
-+
- struct cs_pair_attribute {
- 	struct device_attribute attr;
- 	u32 lo_off;
+
+ /**
+diff --git a/net/tipc/bearer.h b/net/tipc/bearer.h
+index 41eac1ee0c09..1adeaf94aa62 100644
+--- a/net/tipc/bearer.h
++++ b/net/tipc/bearer.h
+@@ -174,6 +174,7 @@ struct tipc_bearer {
+ 	u16 encap_hlen;
+ 	unsigned long up;
+ 	refcount_t refcnt;
++	netdevice_tracker	devtracker;
+ };
+
+ struct tipc_bearer_names {
 -- 
-2.34.1
-
+2.15.2
