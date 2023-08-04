@@ -2,153 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 906B8770418
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 17:10:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D2BC477041A
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 17:11:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231768AbjHDPKv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Aug 2023 11:10:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50580 "EHLO
+        id S231802AbjHDPKz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Aug 2023 11:10:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49972 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231286AbjHDPKo (ORCPT
+        with ESMTP id S230005AbjHDPKu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Aug 2023 11:10:44 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4D4D4EE5
-        for <linux-kernel@vger.kernel.org>; Fri,  4 Aug 2023 08:10:25 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id CA05362064
-        for <linux-kernel@vger.kernel.org>; Fri,  4 Aug 2023 15:10:12 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 35E6BC43395
-        for <linux-kernel@vger.kernel.org>; Fri,  4 Aug 2023 15:10:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691161812;
-        bh=k/WEV4wChuXrYdiVjfZQg92NekohcL6BMfLucYkhImI=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=DeqIpYcYPsJrb5GoacN0Bs+9uHCfU0qlOXefyRIw345uQW+COgwQECJGhZLwO6oX9
-         NaMp+PQGGsKq3Nk1G17T4KJspQgLBpKj2OPesmFXhaWlTY6qeCA7nF+2jN+EsezlHZ
-         IWGQOi9d23l2uwqOdptBKqKjUZ20qQfVfSBsvb7AQQHTfTrII6k0e4CuhsXW9150KP
-         EG83O95mTUJw5XHZzDdQHMSZ4n1+1Du4uQB1b82S6zuDFC/v4rxzAY3zKn13edqom/
-         Oy+RyimmjBoNBQDzZmEXP62o+KVcUmm1+VJKS99rM40pkEilOG2LNaZEWAhJXzp/3v
-         yenJZ/ZH6dBcw==
-Received: by mail-pl1-f172.google.com with SMTP id d9443c01a7336-1bbc7b2133fso15629695ad.1
-        for <linux-kernel@vger.kernel.org>; Fri, 04 Aug 2023 08:10:12 -0700 (PDT)
-X-Gm-Message-State: AOJu0YwlR7mDkEOeqsB2kr8Gr6lGvpEd6sx/3EG5YRHeWqFhTI0iWJ8f
-        4LCRbJX8TWvk0GnVuQUXi7mLq8cQcqIrRn9NO1Q0PQ==
-X-Google-Smtp-Source: AGHT+IElvAxN2zei6BanZFW0NwWKaaCidPWt1sbwnVPv5pTqIYIdvy4XQVOTTtbdkHsd177fmMf8SmGydpiw77jCVmM=
-X-Received: by 2002:a17:90a:1bc6:b0:267:e011:3e9a with SMTP id
- r6-20020a17090a1bc600b00267e0113e9amr1495780pjr.3.1691161811724; Fri, 04 Aug
- 2023 08:10:11 -0700 (PDT)
-MIME-Version: 1.0
-References: <20230804-lt8912b-v1-0-c542692c6a2f@ideasonboard.com> <20230804-lt8912b-v1-1-c542692c6a2f@ideasonboard.com>
-In-Reply-To: <20230804-lt8912b-v1-1-c542692c6a2f@ideasonboard.com>
-From:   Robert Foss <rfoss@kernel.org>
-Date:   Fri, 4 Aug 2023 17:10:01 +0200
-X-Gmail-Original-Message-ID: <CAN6tsi7yxLNvXTVz-xzksr-E9SRmB5Hscc=Hue1G5T+5QZb5HA@mail.gmail.com>
-Message-ID: <CAN6tsi7yxLNvXTVz-xzksr-E9SRmB5Hscc=Hue1G5T+5QZb5HA@mail.gmail.com>
-Subject: Re: [PATCH 1/4] drm/bridge: lt8912b: Fix bridge_detach
-To:     Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
-Cc:     Adrien Grassein <adrien.grassein@gmail.com>,
-        Andrzej Hajda <andrzej.hajda@intel.com>,
+        Fri, 4 Aug 2023 11:10:50 -0400
+Received: from relay5-d.mail.gandi.net (relay5-d.mail.gandi.net [217.70.183.197])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 916844EED
+        for <linux-kernel@vger.kernel.org>; Fri,  4 Aug 2023 08:10:28 -0700 (PDT)
+Received: by mail.gandi.net (Postfix) with ESMTPA id E82DE1C0003;
+        Fri,  4 Aug 2023 15:10:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+        t=1691161818;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=nwlqseqskDNjzuWWUqN4ODDJjpTVWn6NU0l72pzeoK8=;
+        b=VJ3+2Iipwpe+7bbRgZ3Mo67/svscBp1VM/IOxmXTYkyXxPjyEmtxd/Hky19XhZ5oL9fCLu
+        t7Gq3LmgnoAGGBYDZE9M3hH23wH+aOCjMPBUgv3+Ceq5jjReDtthR2I/f5P6wu+1k8YcrD
+        eZ9tLWMUSvkUu/drZksipTTqowzEM0Wxi9T2Aooi0ZQR7mizfrLpEDL4AJgSsZcxWo6z2c
+        00cmITNpOfY5J9uq636y8vBF4H0oAJfzR5835PRXjsyD00P+HmktpLX2TnRq2FSPMrH7X+
+        fTu9WGVlYoa55oHc/feQRnvujlYU8yA+RnLwOOi/61mcDBMEVvT7Ecrxf2Fx3g==
+From:   Luca Ceresoli <luca.ceresoli@bootlin.com>
+To:     dri-devel@lists.freedesktop.org
+Cc:     Luca Ceresoli <luca.ceresoli@bootlin.com>,
         Neil Armstrong <neil.armstrong@linaro.org>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Sam Ravnborg <sam@ravnborg.org>,
         David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Francesco Dolcini <francesco.dolcini@toradex.com>,
-        Stefan Eichenberger <stefan.eichenberger@toradex.com>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        Daniel Vetter <daniel@ffwll.ch>, Marek Vasut <marex@denx.de>,
+        linux-kernel@vger.kernel.org,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        Paul Kocialkowski <paul.kocialkowski@bootlin.com>
+Subject: [PATCH] drm/panel: simple: Fix Innolux G156HCE-L01 LVDS clock
+Date:   Fri,  4 Aug 2023 17:10:10 +0200
+Message-Id: <20230804151010.834990-1-luca.ceresoli@bootlin.com>
+X-Mailer: git-send-email 2.34.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-GND-Sasl: luca.ceresoli@bootlin.com
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 4, 2023 at 12:48=E2=80=AFPM Tomi Valkeinen
-<tomi.valkeinen@ideasonboard.com> wrote:
->
-> The driver calls lt8912_bridge_detach() from its lt8912_remove()
-> function. As the DRM core detaches bridges automatically, this leads to
-> calling lt8912_bridge_detach() twice. The code probably has tried to
-> manage the double-call with the 'is_attached' variable, but the driver
-> never sets the variable to false, so its of no help.
->
-> Fix the issue by dropping the call to lt8912_bridge_detach() from
-> lt8912_remove(), as the DRM core will handle the detach call for us,
-> and also drop the useless is_attached field.
->
-> Fixes: 88abfc2b9e61 ("drm/bridge: Introduce LT8912B DSI to HDMI bridge")
-> Signed-off-by: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
-> ---
->  drivers/gpu/drm/bridge/lontium-lt8912b.c | 16 +++++-----------
->  1 file changed, 5 insertions(+), 11 deletions(-)
->
-> diff --git a/drivers/gpu/drm/bridge/lontium-lt8912b.c b/drivers/gpu/drm/b=
-ridge/lontium-lt8912b.c
-> index 4eaea67fb71c..0e581f6e3c88 100644
-> --- a/drivers/gpu/drm/bridge/lontium-lt8912b.c
-> +++ b/drivers/gpu/drm/bridge/lontium-lt8912b.c
-> @@ -45,7 +45,6 @@ struct lt8912 {
->
->         u8 data_lanes;
->         bool is_power_on;
-> -       bool is_attached;
->  };
->
->  static int lt8912_write_init_config(struct lt8912 *lt)
-> @@ -575,8 +574,6 @@ static int lt8912_bridge_attach(struct drm_bridge *br=
-idge,
->         if (ret)
->                 goto error;
->
-> -       lt->is_attached =3D true;
-> -
->         return 0;
->
->  error:
-> @@ -588,15 +585,13 @@ static void lt8912_bridge_detach(struct drm_bridge =
-*bridge)
->  {
->         struct lt8912 *lt =3D bridge_to_lt8912(bridge);
->
-> -       if (lt->is_attached) {
-> -               lt8912_hard_power_off(lt);
-> +       lt8912_hard_power_off(lt);
->
-> -               if (lt->hdmi_port->ops & DRM_BRIDGE_OP_HPD)
-> -                       drm_bridge_hpd_disable(lt->hdmi_port);
-> +       if (lt->hdmi_port->ops & DRM_BRIDGE_OP_HPD)
-> +               drm_bridge_hpd_disable(lt->hdmi_port);
->
-> -               drm_connector_unregister(&lt->connector);
-> -               drm_connector_cleanup(&lt->connector);
-> -       }
-> +       drm_connector_unregister(&lt->connector);
-> +       drm_connector_cleanup(&lt->connector);
->  }
->
->  static enum drm_connector_status
-> @@ -750,7 +745,6 @@ static void lt8912_remove(struct i2c_client *client)
->  {
->         struct lt8912 *lt =3D i2c_get_clientdata(client);
->
-> -       lt8912_bridge_detach(&lt->bridge);
->         drm_bridge_remove(&lt->bridge);
->         lt8912_free_i2c(lt);
->         lt8912_put_dt(lt);
->
-> --
-> 2.34.1
->
+This panel has been implemented in commit 225213f24c79 ("drm/panel-simple:
+Add Innolux G156HCE-L01 panel entry") with a higher clock than the typical
+one mentioned on the documentation to avoid flickering on the unit
+tested. Testing on a different unit shows that the panel actually works
+with the intended 70.93 MHz clock and even lower frequencies so the
+flickering is likely caused either by a defective unit or by other
+different components such as the bridge.
 
+Fixes: 225213f24c79 ("drm/panel-simple: Add Innolux G156HCE-L01 panel entry")
+Signed-off-by: Luca Ceresoli <luca.ceresoli@bootlin.com>
+---
+ drivers/gpu/drm/panel/panel-simple.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Reviewed-by: Robert Foss <rfoss@kernel.org>
+diff --git a/drivers/gpu/drm/panel/panel-simple.c b/drivers/gpu/drm/panel/panel-simple.c
+index 56854f78441e..ec3a73bbfe30 100644
+--- a/drivers/gpu/drm/panel/panel-simple.c
++++ b/drivers/gpu/drm/panel/panel-simple.c
+@@ -2379,7 +2379,7 @@ static const struct panel_desc innolux_g121x1_l03 = {
+ };
+ 
+ static const struct display_timing innolux_g156hce_l01_timings = {
+-	.pixelclock = { 120000000, 144000000, 150000000 },
++	.pixelclock = { 120000000, 141860000, 150000000 },
+ 	.hactive = { 1920, 1920, 1920 },
+ 	.hfront_porch = { 80, 90, 100 },
+ 	.hback_porch = { 80, 90, 100 },
+-- 
+2.34.1
+
