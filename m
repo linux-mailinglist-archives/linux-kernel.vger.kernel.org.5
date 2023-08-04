@@ -2,119 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E91617705CF
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 18:20:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D35F87705CD
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 18:20:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229746AbjHDQUd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Aug 2023 12:20:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36518 "EHLO
+        id S229663AbjHDQU2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Aug 2023 12:20:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36646 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229459AbjHDQU3 (ORCPT
+        with ESMTP id S229459AbjHDQU0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Aug 2023 12:20:29 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BAE34170F
-        for <linux-kernel@vger.kernel.org>; Fri,  4 Aug 2023 09:19:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1691165979;
-        h=from:from:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:in-reply-to:in-reply-to:  references:references;
-        bh=Onl29uqYKQczYTkd1xGh14ew9gorV8noJaPJyrbKPr0=;
-        b=iWvYqIwxVq4UcF1a3G2oZPoGKpqsJmDKkMbKrJejZUUK7k7eBACGltnd5S4M8P0Zqb3x7P
-        Kw7nqfvrjPA2SUKQFQtUiPlzVuHf87gfIT+RZx1TnE2sXP/HH4lnYM0uXJ/5c4JDGndRgo
-        KdImHhSc/Qf0xG3vC2CqRYBHEIC8VbI=
-Received: from mimecast-mx02.redhat.com (66.187.233.73 [66.187.233.73]) by
- relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-625-K9vtuh7SNyya7lbxdn1nIw-1; Fri, 04 Aug 2023 12:19:36 -0400
-X-MC-Unique: K9vtuh7SNyya7lbxdn1nIw-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.rdu2.redhat.com [10.11.54.4])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        Fri, 4 Aug 2023 12:20:26 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A87032D71
+        for <linux-kernel@vger.kernel.org>; Fri,  4 Aug 2023 09:20:25 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id F0888280D59E;
-        Fri,  4 Aug 2023 16:19:34 +0000 (UTC)
-Received: from redhat.com (unknown [10.42.28.105])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id A59A9200A7CA;
-        Fri,  4 Aug 2023 16:19:32 +0000 (UTC)
-Date:   Fri, 4 Aug 2023 17:19:30 +0100
-From:   Daniel =?utf-8?B?UC4gQmVycmFuZ8Op?= <berrange@redhat.com>
-To:     "Huang, Kai" <kai.huang@intel.com>
-Cc:     "Williams, Dan J" <dan.j.williams@intel.com>,
-        "James.Bottomley@HansenPartnership.com" 
-        <James.Bottomley@hansenpartnership.com>,
-        "dhowells@redhat.com" <dhowells@redhat.com>,
-        "sameo@rivosinc.com" <sameo@rivosinc.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "jarkko@kernel.org" <jarkko@kernel.org>,
-        "bp@alien8.de" <bp@alien8.de>,
-        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-        "peterz@infradead.org" <peterz@infradead.org>,
-        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-        "sathyanarayanan.kuppuswamy@linux.intel.com" 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        "thomas.lendacky@amd.com" <thomas.lendacky@amd.com>,
-        "dionnaglaze@google.com" <dionnaglaze@google.com>,
-        "keyrings@vger.kernel.org" <keyrings@vger.kernel.org>,
-        "brijesh.singh@amd.com" <brijesh.singh@amd.com>,
-        "linux-coco@lists.linux.dev" <linux-coco@lists.linux.dev>,
-        "x86@kernel.org" <x86@kernel.org>
-Subject: Re: [PATCH 0/4] keys: Introduce a keys frontend for attestation
- reports
-Message-ID: <ZM0lEvYJ+5IgybLT@redhat.com>
-Reply-To: Daniel =?utf-8?B?UC4gQmVycmFuZ8Op?= <berrange@redhat.com>
-References: <169057265210.180586.7950140104251236598.stgit@dwillia2-xfh.jf.intel.com>
- <a507ef3302d3afff58d82528ee17e82df1f21de0.camel@HansenPartnership.com>
- <64c5ed6eb4ca1_a88b2942a@dwillia2-xfh.jf.intel.com.notmuch>
- <c6576d1682b576ba47556478a98f397ed518a177.camel@HansenPartnership.com>
- <6dec442c64faf2fecd21bcc77e4a6350e88948b9.camel@intel.com>
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 3E95A620A1
+        for <linux-kernel@vger.kernel.org>; Fri,  4 Aug 2023 16:20:25 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9ABF9C433C7;
+        Fri,  4 Aug 2023 16:20:23 +0000 (UTC)
+Date:   Fri, 4 Aug 2023 17:20:21 +0100
+From:   Catalin Marinas <catalin.marinas@arm.com>
+To:     Mark Brown <broonie@kernel.org>
+Cc:     Will Deacon <will@kernel.org>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] arm64/fpsimd: Only provide the length to cpufeature
+ for xCR registers
+Message-ID: <ZM0lRWTAE/b88V6U@arm.com>
+References: <20230731-arm64-sme-fa64-hotplug-v2-1-7714c00dd902@kernel.org>
+ <ZMvYSmpCfFQ2+m7q@arm.com>
+ <3ccab5cb-9d19-40a2-ae9c-99d37996da9c@sirena.org.uk>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <6dec442c64faf2fecd21bcc77e4a6350e88948b9.camel@intel.com>
-User-Agent: Mutt/2.2.9 (2022-11-12)
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.4
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <3ccab5cb-9d19-40a2-ae9c-99d37996da9c@sirena.org.uk>
+X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 01, 2023 at 11:45:12AM +0000, Huang, Kai wrote:
-> The IOCTL vs /sysfs isn't discussed.
+On Thu, Aug 03, 2023 at 06:44:24PM +0100, Mark Brown wrote:
+> On Thu, Aug 03, 2023 at 05:39:38PM +0100, Catalin Marinas wrote:
+> > On Mon, Jul 31, 2023 at 02:58:48PM +0100, Mark Brown wrote:
+> > > Since the only field we are interested in having the cpufeature code
+> > > handle is the length field and we use a custom read function to obtain
+> > > the value we can avoid these warnings by filtering out all other bits
+> > > when we return the register value, if we're doing that we don't need to
+> > > bother reading the register at all and can simply use the RDVL/RDSVL
+> > > value we were filling in instead.
 > 
-> For instance, after rough thinking, why is the IOCTL better than below approach
-> using /sysfs?
+> > Maybe that's the simplest fix, especially if you want it in stable, but
 > 
-> echo <REPORTDATA> > /sys/kernel/coco/tdx/attest/reportdata
-> cat /sys/kernel/coco/tdx/attest/tdreport
+> Yeah, it's definitely the sort of change we want as a fix - anything
+> more invasive would be inappropriate.
+
+I'd say it's still ok if we can just rip come code out safely (the fake
+ID reg).
+
+> > I wonder why we even bother with with treating ZCR_EL1 and SMCR_EL1 as
+> > feature registers. We already have verify_sme_features() to check for
+> > the mismatch. BTW, is vec_verify_vq_map() sufficient so that we can skip
+> > the maximum vector length check?
 > 
-> Each "echo <REPORTDATA>" to '/sys/.../reportdata' triggers the driver to call
-> TDCALL to get the TDREPORT, which is available at '/sys/.../tdreport'.
+> Both enumeration mechanisms were added in the initial series supporting
+> SVE for reasons that are not entirely obvious to me.  The changelogs
+> explain what we're doing with the pseudo ID register stuff but do not
+> comment on why.  There is a cross check between the answers the two give
+> which appears to be geared towards detecting systems with asymmetric
+> maximum VLs for some reason but I'm not sure why that's done given that
+> we can't cope if *any* VL in the committed set is missing, not just the
+> maximum.
 
-What would you suggest as behaviour with multiple processes writing
-into 'reportdata' and trying to read from 'tdreport' in parallel ?
-Splitting input and output across separate files removes any
-transactional relationship between input and output. This approach
-feels like it could easily result in buggy behaviour from concurrent
-application usage, which would not be an issue with ioctl()
+We can cope with different VLs if the committed map is built during boot
+(early secondary CPU bring-up). For any late/hotplugged CPUs, if they
+don't fit the map, they'll be rejected. Not sure where the actual
+maximum length matters in this process though (or later for user space).
+I assume the user will only be allowed to set the common VLs across all
+the early CPUs.
 
-Also note, there needs to be scope for more than 1 input and 1 output
-data items. For SNP guests, the VMPL is a input, and if fetching a
-VMPL 0 report from under SVSM [1], an optional service GUID is needed.
-With SVSM, there are three distinct output data blobs - attestation
-report, services manifest and certificate data.
+> The whole thing is very suspect but given that we don't currently have
+> any ability to emulate systems with asymmetric vector lengths I'm a bit
+> reluctant to poke at it.
 
-With regards,
-Daniel
+The Arm fast models should allow such configuration, though I haven't
+tried.
 
-[1] https://www.amd.com/system/files/TechDocs/58019_1.00.pdf
 -- 
-|: https://berrange.com      -o-    https://www.flickr.com/photos/dberrange :|
-|: https://libvirt.org         -o-            https://fstop138.berrange.com :|
-|: https://entangle-photo.org    -o-    https://www.instagram.com/dberrange :|
-
+Catalin
