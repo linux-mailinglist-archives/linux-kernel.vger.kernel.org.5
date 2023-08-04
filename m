@@ -2,71 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E0347706FA
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 19:23:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 303677706FE
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 19:23:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231322AbjHDRX1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Aug 2023 13:23:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50998 "EHLO
+        id S231206AbjHDRXv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Aug 2023 13:23:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51394 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231156AbjHDRXZ (ORCPT
+        with ESMTP id S231156AbjHDRXt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Aug 2023 13:23:25 -0400
-Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD3974698;
-        Fri,  4 Aug 2023 10:23:24 -0700 (PDT)
-Received: by mail-wm1-x32d.google.com with SMTP id 5b1f17b1804b1-3fb4146e8fcso14639335e9.0;
-        Fri, 04 Aug 2023 10:23:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1691169803; x=1691774603;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=o8gADuiK/ShCeRt5VVNqfT87ZmatM5Y8Hl/O5iaVWq8=;
-        b=oLa3IjoUEykKezHiIEXrPqXTtPLUyQL6UuZs/E5dFSNp0Yl6o7v7XXoaXbHd9bPb1Q
-         xaKbBLOrDMKOZWIhaErgf1zqP9BNibJjQTOC6uLW6yQRQbRw/8CH/lqkUEm1dAYgyXNW
-         OXlX6cJX25ahUV1nLcHbbD6liiWnG3OVV+2/OnqmYp146YN/RnGrrm/V+7M8chrUbvjl
-         WxUtFHORxjZHwclVje5SM1oH/c3AwlRMFN5t6MzhRDJcCnFsa1H0SrK3FXeuawfJt94T
-         mJtu4ggjtiuDJmDQrKy3sS/sMQ3pRn6Y4hpeyZ29kUXYP+2x0gzABSj6F/IpdYQkIGhw
-         Kqew==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691169803; x=1691774603;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=o8gADuiK/ShCeRt5VVNqfT87ZmatM5Y8Hl/O5iaVWq8=;
-        b=ZQBJaWCmSgJPUo6ccy2V3IYGkPPsM/Fpr5Yos4qQcqbBQ2QuHT2oJwPWS416GRQS9H
-         j6PAfsdphH1PKWd8em8kpEjN3bM8u8cpwN+Aa9349EBqb1CUhekSRKmD7gmasDLOGGXM
-         6qCts3fLhugZd/Uk/Up1fN4DlrSQkOo/ZAKB01QyqB8vWjnl5dwfZda8tOR7ibyuZ+tK
-         CGN93yXIGgQicCs1MDZ5aYjEXIbzKo1+d+1AhIW/URNeWHYKpM5w33w2g1RBv8eLQCuw
-         TNjxwBOx8TR0/kwkPcL6FEqPR12BBshp8/stM73K8th23ecd+23B7LF74lcSOt5brhJb
-         ZuJg==
-X-Gm-Message-State: AOJu0Yxq1cldD+3oSMy1100Swzb5unWxET+IpnrOsEh+PuV9sxWbaLGM
-        bbkpIYbjk+3DBuuZ5Xvurw==
-X-Google-Smtp-Source: AGHT+IEBtyiCIzgK0yIXCgAkMuGSyJif1rx6WNwBW+8P1ihmjffU0s0vkIsFLvsCzdHvsifdShe2lQ==
-X-Received: by 2002:a05:600c:210e:b0:3fe:215e:44a0 with SMTP id u14-20020a05600c210e00b003fe215e44a0mr277446wml.18.1691169802990;
-        Fri, 04 Aug 2023 10:23:22 -0700 (PDT)
-Received: from p183 ([46.53.252.19])
-        by smtp.gmail.com with ESMTPSA id f10-20020a7bc8ca000000b003fe1afb99b5sm5751275wml.0.2023.08.04.10.23.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 04 Aug 2023 10:23:22 -0700 (PDT)
-Date:   Fri, 4 Aug 2023 20:23:20 +0300
-From:   Alexey Dobriyan <adobriyan@gmail.com>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     akpm@linux-foundation.org, mhiramat@kernel.org, arnd@kernel.org,
-        ndesaulniers@google.com, sfr@canb.auug.org.au,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-team@meta.com
-Subject: Re: [PATCH RFC bootconfig] 1/2] fs/proc: Add /proc/cmdline_load for
- boot loader arguments
-Message-ID: <db2617d2-589d-47c1-a0cc-e8aeca58710a@p183>
-References: <197cba95-3989-4d2f-a9f1-8b192ad08c49@paulmck-laptop>
- <20230728033701.817094-1-paulmck@kernel.org>
+        Fri, 4 Aug 2023 13:23:49 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89FAF469A;
+        Fri,  4 Aug 2023 10:23:44 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 1FB4B620D1;
+        Fri,  4 Aug 2023 17:23:44 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 83A48C433CB;
+        Fri,  4 Aug 2023 17:23:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1691169823;
+        bh=pX4JO8cUMPFX/7eqCt97XOCu1Qwjs6jTjWKwADOJ3hM=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=eXx/hocet7GcuQXmEnd8oc8WA31nITE5YL0fB8/IVAofYd3M8Qorx70SE7ytCAghe
+         nTtiDW3K+i7SFDqsiRkjLbI4etNMh61X11ya/Qzussiod+4K2wfBWeteoZM/Kwn9xf
+         EwA07/pBieD75nXplqq9YIgBUuZGfboSDT+E7oVd0Of5qNmPNuYG+AgX3DEb+XZVn6
+         38GBb0TTQMm81sYAiz3Xh8kqu7GUCNomOdqFemGINap9QwHSSBqjLnR6uwmkdg+zsX
+         DEOP8l5DB/5bA4O5L2dPx/9ixFSY8jbFPnq0OwtfsI7fSg+Ot2rSOJV7DCsMh2lSGj
+         cfCDKaf6Lgw/g==
+Received: by mail-lj1-f173.google.com with SMTP id 38308e7fff4ca-2b9dc1bff38so36709371fa.1;
+        Fri, 04 Aug 2023 10:23:43 -0700 (PDT)
+X-Gm-Message-State: AOJu0YwiYgHT6YTcfo5ae0wX1qRkgSlxk+Ytec3WnC1GT8Hd64Q+mm3l
+        aRKFUiit6Qh++1GRcOBkG465vu1L74z7YsgydA==
+X-Google-Smtp-Source: AGHT+IF0j6TlCYvGUVtXd1S/Q0iv1iISN2MYMAf+QAGxO0EdffC7eK6t++9XFQxUNAzy2RqY402LhHUiQr0RNIifL8o=
+X-Received: by 2002:a2e:88d6:0:b0:2b9:cb50:7043 with SMTP id
+ a22-20020a2e88d6000000b002b9cb507043mr1896653ljk.2.1691169821442; Fri, 04 Aug
+ 2023 10:23:41 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20230728033701.817094-1-paulmck@kernel.org>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+References: <20230728195022.1198555-1-robh@kernel.org> <20230729-twerp-avert-70577ff7d952@spud>
+In-Reply-To: <20230729-twerp-avert-70577ff7d952@spud>
+From:   Rob Herring <robh@kernel.org>
+Date:   Fri, 4 Aug 2023 11:23:29 -0600
+X-Gmail-Original-Message-ID: <CAL_JsqJip=r-xObhCOnL0sue67Pems8wO1FP3x=rCGXARCA1sw@mail.gmail.com>
+Message-ID: <CAL_JsqJip=r-xObhCOnL0sue67Pems8wO1FP3x=rCGXARCA1sw@mail.gmail.com>
+Subject: Re: [PATCH] watchdog: Enable COMPILE_TEST for more drivers
+To:     Conor Dooley <conor@kernel.org>
+Cc:     Wim Van Sebroeck <wim@linux-watchdog.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Keguang Zhang <keguang.zhang@gmail.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        linux-watchdog@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mips@vger.kernel.org, linux-riscv@lists.infradead.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -75,40 +70,23 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 27, 2023 at 08:37:00PM -0700, Paul E. McKenney wrote:
-> In kernels built with CONFIG_BOOT_CONFIG_FORCE=y, /proc/cmdline will
-> show all kernel boot parameters, both those supplied by the boot loader
-> and those embedded in the kernel image.  This works well for those who
-> just want to see all of the kernel boot parameters, but is not helpful to
-> those who need to see only those parameters supplied by the boot loader.
-> This is especially important when these parameters are presented to the
-> boot loader by automation that might gather them from diverse sources.
-> 
-> Therefore, provide a /proc/cmdline_load file that shows only those kernel
-> boot parameters supplied by the boot loader.
+On Sat, Jul 29, 2023 at 4:22=E2=80=AFAM Conor Dooley <conor@kernel.org> wro=
+te:
+>
+> On Fri, Jul 28, 2023 at 01:50:21PM -0600, Rob Herring wrote:
+> > There's quite a few watchdog drivers which are easily enabled for
+> > COMPILE_TEST, so let's enable them.
+> >
+> > Signed-off-by: Rob Herring <robh@kernel.org>
+> > ---
+> > Passed allyesconfig builds on arm, arm64, x86, riscv, powerpc, sparc
+>
+> Doing its job I suppose, the riscv patchwork automation stuff has
+> spotted one new complaint for allmodconfig:
+> stm32_iwdg.c:77:19: warning: unused function 'reg_read' [-Wunused-functio=
+n]
 
-> +static int cmdline_load_proc_show(struct seq_file *m, void *v)
-> +{
-> +	seq_puts(m, boot_command_line);
-> +	seq_putc(m, '\n');
-> +	return 0;
-> +}
-> +
->  static int __init proc_cmdline_init(void)
->  {
->  	struct proc_dir_entry *pde;
-> @@ -19,6 +27,11 @@ static int __init proc_cmdline_init(void)
->  	pde = proc_create_single("cmdline", 0, NULL, cmdline_proc_show);
->  	pde_make_permanent(pde);
->  	pde->size = saved_command_line_len + 1;
-> +	if (IS_ENABLED(CONFIG_BOOT_CONFIG_FORCE)) {
-> +		pde = proc_create_single("cmdline_load", 0, NULL, cmdline_load_proc_show);
-> +		pde_make_permanent(pde);
-> +		pde->size = strnlen(boot_command_line, COMMAND_LINE_SIZE) + 1;
-> +	}
+Looks like that's a clang W=3D1 warning only. Presumably it was already
+there before this patch with the right config.
 
-Please add it as separate fs/proc/cmdline_load.c file so that name of
-the file matches name of the /proc file.
-
-The name "cmdline_load" is kind of non-descriptive. Mentioning "bootloader"
-somewhere should improve things.
+Rob
