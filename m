@@ -2,202 +2,202 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 978B4770518
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 17:46:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0711477051A
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 17:47:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231962AbjHDPqf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Aug 2023 11:46:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44486 "EHLO
+        id S232017AbjHDPrg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Aug 2023 11:47:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45066 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231903AbjHDPqd (ORCPT
+        with ESMTP id S230393AbjHDPre (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Aug 2023 11:46:33 -0400
-Received: from relay3-d.mail.gandi.net (relay3-d.mail.gandi.net [217.70.183.195])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 135201734
-        for <linux-kernel@vger.kernel.org>; Fri,  4 Aug 2023 08:46:31 -0700 (PDT)
-Received: by mail.gandi.net (Postfix) with ESMTPSA id C4CC160003;
-        Fri,  4 Aug 2023 15:46:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-        t=1691163990;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=DXdt9jg170O0khRMY6w6+QCKt9NkNze+0Sh36YFkoIM=;
-        b=PtC9sfpHGnn/OsV9bW60xEuVWu6YkUumxDeDcyoYPmnVfhlaVDUgVKMJUF6WlwMwQ9526g
-        rKrcISgjy7MDAsocxx1ihKZGCya7AG7fGKd5POs8/JqgY7sqa2Hm6FCcH/We99VzlzYp1J
-        rcYlxYn5L0MhXXH3zPdRh02p5D15HJjyyjeRCHMrL1+d7eab7pbQG6h2PW7t0oskNgEizI
-        GvwOqnmEiMJEBVShD/B+RABok6yxilI5F+w9S/Xo3SbzHiIBjA7n34f4sPT+jW8JjAAP0N
-        75QcwczKwR5HUAGYsgDBD4F+s9AQEFCXdG34LkOOoQRsHJNxUWJx3zZD+cPmAw==
-Date:   Fri, 4 Aug 2023 17:46:25 +0200
-From:   Miquel Raynal <miquel.raynal@bootlin.com>
-To:     Dan Carpenter <dan.carpenter@linaro.org>
-Cc:     oe-kbuild@lists.linux.dev,
-        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-        lkp@intel.com, oe-kbuild-all@lists.linux.dev,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        Robert Marko <robert.marko@sartura.hr>,
-        Luka Perkov <luka.perkov@sartura.hr>,
-        Michael Walle <michael@walle.cc>, linux-kernel@vger.kernel.org,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Chen-Yu Tsai <wenst@chromium.org>,
-        Daniel Golle <daniel@makrotopia.org>,
-        =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>
-Subject: Re: [PATCH v7 5/7] nvmem: core: Rework layouts to become platform
- devices
-Message-ID: <20230804174625.4c27fe9a@xps-13>
-In-Reply-To: <20230804173903.2b298cd3@xps-13>
-References: <20230801182132.1058707-6-miquel.raynal@bootlin.com>
-        <b9040273-aca8-432a-83aa-b0d6b1b88529@kadam.mountain>
-        <20230804173903.2b298cd3@xps-13>
-Organization: Bootlin
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.33; x86_64-pc-linux-gnu)
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+        Fri, 4 Aug 2023 11:47:34 -0400
+Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D485C212D;
+        Fri,  4 Aug 2023 08:47:29 -0700 (PDT)
+Received: by mail-pl1-x62d.google.com with SMTP id d9443c01a7336-1bbf8cb61aeso16251485ad.2;
+        Fri, 04 Aug 2023 08:47:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1691164049; x=1691768849;
+        h=to:references:message-id:content-transfer-encoding:cc:date
+         :in-reply-to:from:subject:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=8ctInikzj3f4VpN981g0mMHNMH1CbLINvv2oH+wydFI=;
+        b=JYTWbas5LEdXilRfPo6X+gqolIBnQ6MBx32VolWDIsJGJFBkx187sI0DHIMtztbUBO
+         re/CgVZQXMeZDRl8/SMXYIplCydyGN+lFpv7PwUpvWIGW7tcTnMgRcUlN9UfmwIYgahG
+         tuJdRJK14XWPS8eW+nO9ZJUc1zlcDC9IGD4jInbslWUgZndhzX/GkN0sFwPcCozxu5Ft
+         39K+ODuTFqYtmIuWUD5LZ26+0GqCnay6e7Dbf27Yoo3F4XeKBHxsdmtcUBsQ04VlTEFM
+         QqZQpbybpdpXGyQB4AVQ1RN2Jj0RhxJuTiXudICOK5l4TwnuHxVNPmAFEwohf+S38350
+         N5uQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691164049; x=1691768849;
+        h=to:references:message-id:content-transfer-encoding:cc:date
+         :in-reply-to:from:subject:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=8ctInikzj3f4VpN981g0mMHNMH1CbLINvv2oH+wydFI=;
+        b=krZfRD0V0RVm+dGxCU1MXHY3buNubi2ZRxdhtu4+RxoiY97+gvArZI/f94lQhtWCsM
+         Onp17qZ1mSBfEqdT1U2GC6512q+B8UagvQ5LrXtxAjXZ3bSGr9DMBkLWyA1Vu58Rs/dp
+         bI/BZTzYG6GTvQDOj3MaiY+J9shhFFclJ0KkODpqcwUvRF/OG9UHh1yHwqHmN9xNSfXF
+         I1b9e5b87DHTERLmqnpBEUFD57lHrlCwl7vAnQk68zwXabkf5AsikDF6da/PR63/3VLa
+         xT/u5Yov6AV7TdqQMwz8WiezZk4J5DA4r2VrTIq6Kos28uVHNhMORjWg/NJtOiv4f4Dx
+         DHfg==
+X-Gm-Message-State: AOJu0YwAl44MlKF4o4MFUXmsKqBn1ALcBfX019PG7nuV9nfaDcUdUcAl
+        /PCsyMeCRdNAt43dOltsvkE=
+X-Google-Smtp-Source: AGHT+IHK1+GmGTe5McxKKfiRHWuia9yCNRvRVTipWjE0B5SPJN6DbVW0YYSfmF7ikfMX18/fWFw9ug==
+X-Received: by 2002:a17:902:ecc8:b0:1bb:32de:95c5 with SMTP id a8-20020a170902ecc800b001bb32de95c5mr2297892plh.65.1691164049245;
+        Fri, 04 Aug 2023 08:47:29 -0700 (PDT)
+Received: from smtpclient.apple ([2402:d0c0:2:a2a::1])
+        by smtp.gmail.com with ESMTPSA id p8-20020a170902a40800b001b8b73da7b1sm1914812plq.227.2023.08.04.08.47.22
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Fri, 04 Aug 2023 08:47:28 -0700 (PDT)
+Content-Type: text/plain;
+        charset=utf-8
+Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3731.400.51.1.1\))
+Subject: Re: [PATCH 1/2] docs: rcu: Add cautionary note on plain-accesses to
+ requirements
+From:   Alan Huang <mmpgouride@gmail.com>
+In-Reply-To: <6B0A9441-5DB5-476B-B94C-F0BDF1505095@joelfernandes.org>
+Date:   Fri, 4 Aug 2023 23:47:07 +0800
+Cc:     linux-kernel@vger.kernel.org, rcu@vger.kernel.org,
+        Will Deacon <will@kernel.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Zqiang <qiang.zhang1211@gmail.com>,
+        Jonathan Corbet <corbet@lwn.net>
 Content-Transfer-Encoding: quoted-printable
-X-GND-Sasl: miquel.raynal@bootlin.com
+Message-Id: <E6EDDDE7-5D59-4284-931E-23E3636C8CF0@gmail.com>
+References: <D3D65E05-AC98-43EA-8B66-CA63E94C1C80@gmail.com>
+ <6B0A9441-5DB5-476B-B94C-F0BDF1505095@joelfernandes.org>
+To:     Joel Fernandes <joel@joelfernandes.org>
+X-Mailer: Apple Mail (2.3731.400.51.1.1)
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi again Dan,
+>=20
+>>>=20
+>>>>>> But the example here is different,
+>>>>>=20
+>>>>> That is intentional. Wills discussion partially triggered this. =
+Though I am wondering
+>>>>> if we should document that as well.
+>>>>>=20
+>>>>>> the compiler can not use the value loaded from line 5
+>>>>>> unless the compiler can deduce that the tmp is equals to p in =
+which case the address dependency
+>>>>>> doesn=E2=80=99t exist anymore.
+>>>>>>=20
+>>>>>> What am I missing here?
+>>>>>=20
+>>>>> Maybe you are trying to rationalize too much that the sequence =
+mentioned cannot result
+>>>>> in a counter intuitive outcome like I did?
+>>>>>=20
+>>>>> The point AFAIU is not just about line 10 but that the compiler =
+can replace any of the
+>>>>> lines after the plain access with the cached value.
+>>>>=20
+>>>> Well, IIUC, according to the C standard, the compiler can do =
+anything if there is a data race (undefined behavior).
+>>>>=20
+>>>> However, what if a write is not protected with WRITE_ONCE and the =
+read is marked with READ_ONCE?
+>>>> That=E2=80=99s also a data race, right? But the kernel considers it =
+is Okay if the write is machine word aligned.
+>>>=20
+>>> Yes, but there is a compiler between the HLL code and what the
+>>> processor sees which can tear the write. How can not using
+>>> WRITE_ONCE() prevent store-tearing? See [1]. My understanding is =
+that
+>>> it is OK only if the reader did a NULL check. In that case the torn
+>>=20
+>> Yes, a write-write data race where the value is the same is also =
+fine.
+>>=20
+>> But they are still data race, if the compiler is within its right to =
+do anything it likes (due to data race),
+>> we still need WRITE_ONCE() in these cases, though it=E2=80=99s =
+semantically safe.
+>>=20
+>> IIUC, even with _ONCE(), the compiler is within its right do anything =
+according to the standard (at least before the upcoming C23), because =
+the standard doesn=E2=80=99t consider a volatile access to be atomic.
+>>=20
+>> However, the kernel consider the volatile access to be atomic, right?
+>>=20
+>> BTW, line 5 in the example is likely to be optimized away. And yes, =
+the compiler can cache the value loaded from line 5 from the perspective =
+of undefined behavior, even if I believe it would be a compiler bug from =
+the perspective of kernel.
+>=20
+> I am actually a bit lost with what you are trying to say.  Are you =
+saying that mixing
+> plain accesses with marked accesses is an acceptable practice?=20
 
-miquel.raynal@bootlin.com wrote on Fri, 4 Aug 2023 17:39:03 +0200:
 
-> Hi Dan,
->=20
-> dan.carpenter@linaro.org wrote on Thu, 3 Aug 2023 13:13:04 +0300:
->=20
-> > Hi Miquel,
-> >=20
-> > kernel test robot noticed the following build warnings:
-> >=20
-> > https://git-scm.com/docs/git-format-patch#_base_tree_information]
-> >=20
-> > url:    https://github.com/intel-lab-lkp/linux/commits/Miquel-Raynal/nv=
-mem-core-Create-all-cells-before-adding-the-nvmem-device/20230802-022331
-> > base:   char-misc/char-misc-testing
-> > patch link:    https://lore.kernel.org/r/20230801182132.1058707-6-mique=
-l.raynal%40bootlin.com
-> > patch subject: [PATCH v7 5/7] nvmem: core: Rework layouts to become pla=
-tform devices
-> > config: x86_64-randconfig-m001-20230730 (https://download.01.org/0day-c=
-i/archive/20230803/202308030002.DnSFOrMB-lkp@intel.com/config)
-> > compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
-> > reproduce: (https://download.01.org/0day-ci/archive/20230803/2023080300=
-02.DnSFOrMB-lkp@intel.com/reproduce)
-> >=20
-> > If you fix the issue in a separate patch/commit
-> > (i.e. not just a new version of the same patch/commit),
->=20
-> (Nice addition, a lot of newcomers would always add these tags
-> otherwise.)
->=20
-> > kindly add following tags
-> > | Reported-by: kernel test robot <lkp@intel.com>
-> > | Reported-by: Dan Carpenter <dan.carpenter@linaro.org>
-> > | Closes: https://lore.kernel.org/r/202308030002.DnSFOrMB-lkp@intel.com/
-> >=20
-> > New smatch warnings:
-> > drivers/nvmem/core.c:1003 nvmem_register() warn: 'layout_np' is an erro=
-r pointer or valid
-> > drivers/nvmem/core.c:2130 nvmem_try_loading_layout_driver() warn: 'layo=
-ut_np' is an error pointer or valid
-> >=20
-> > Old smatch warnings:
-> > drivers/nvmem/core.c:761 nvmem_add_cells_from_fixed_layout() warn: 'lay=
-out_np' is an error pointer or valid
-> > drivers/nvmem/core.c:802 nvmem_layout_get() warn: 'layout_np' is an err=
-or pointer or valid
-> >=20
-> > vim +/layout_np +1003 drivers/nvmem/core.c
-> >=20
-> > 266570f496b90d Michael Walle         2023-04-04  1000 =20
-> > 00d059fd6702f0 Miquel Raynal         2023-08-01  1001  	/* Populate lay=
-outs as devices */
-> > 00d059fd6702f0 Miquel Raynal         2023-08-01  1002  	layout_np =3D o=
-f_nvmem_layout_get_container(nvmem);
-> > 00d059fd6702f0 Miquel Raynal         2023-08-01 @1003  	if (layout_np) {
-> >=20
-> > So, ugh, of_nvmem_layout_get_container() return NULL on error or error
-> > pointer if either CONFIG_NVMEM or CONFIG_OF is turned off.  I feel like
-> > that's a mistake.  Normally when a function returns both error pointers
-> > and NULL then the NULL means the feature is disabled and the error
-> > pointers mean there was an error.  Here it is the opposite.
-> >=20
-> > I have written a blog about this:
-> > https://staticthinking.wordpress.com/2022/08/01/mixing-error-pointers-a=
-nd-null/
->=20
-> Nice (besides the huge spider which stared at me unexpectedly :-) )
->=20
-> > At first I thought that this was to do with CONFIG_COMPILE_TEST but
-> > actually that is disabled.  The issue here is that CONFIG_OF is turned
-> > off.  So this is a genuine bug, we're compiling a module which will
-> > always crash.
-> >=20
-> > So I guess the fix is easy that this should return NULL if either
-> > CONFIG_NVMEM or CONFIG_OF is turned off.  That was a long explanation
-> > which is no longer required now that it's not a COMPILE_TEST issue.  :P
->=20
-> I wanted to disable CONFIG_OF to make the test, I totally forget, I'll
-> handle this case and return NULL when this happens.
+I=E2=80=99m trying to say that sometimes data race is fine, that=E2=80=99s=
+ why we have the data_race().
 
-Actually of_nvmem_layout_get_container() already returns NULL if
-CONFIG_OF is not defined. This helper returns either a valid pointer of
-NULL. Where can it return an error pointer?
+Even if the standard says data race results in UB.
 
-> However I don't understand why you mention CONFIG_NVMEM, because if it
-> is not defined, this file will not compile at all?
+And IMHO, the possible data race at line 5 in this example is also fine, =
+unless the compiler=20
+deduces that the value of gp is always the same.
+
+
 >=20
-> > 00d059fd6702f0 Miquel Raynal         2023-08-01  1004  		rval =3D of_pl=
-atform_populate(nvmem->dev.of_node, NULL, NULL, NULL);
-> > 00d059fd6702f0 Miquel Raynal         2023-08-01  1005  		if (rval)
-> > 00d059fd6702f0 Miquel Raynal         2023-08-01  1006  			goto err_remo=
-ve_cells;
-> > 00d059fd6702f0 Miquel Raynal         2023-08-01  1007  		of_node_put(la=
-yout_np);
-> > 00d059fd6702f0 Miquel Raynal         2023-08-01  1008  	}
-> > 00d059fd6702f0 Miquel Raynal         2023-08-01  1009 =20
-> > 25c9b5d3aa24a0 Miquel Raynal         2023-08-01  1010  	mutex_lock(&nvm=
-em_devices_mutex);
-> > 25c9b5d3aa24a0 Miquel Raynal         2023-08-01  1011  	list_add_tail(&=
-nvmem->node, &nvmem_devices_list);
-> > 25c9b5d3aa24a0 Miquel Raynal         2023-08-01  1012  	mutex_unlock(&n=
-vmem_devices_mutex);
-> > 25c9b5d3aa24a0 Miquel Raynal         2023-08-01  1013 =20
-> > f4853e1c321edb Bartosz Golaszewski   2019-02-15  1014  	blocking_notifi=
-er_call_chain(&nvmem_notifier, NVMEM_ADD, nvmem);
-> > bee1138bea15a6 Bartosz Golaszewski   2018-09-21  1015 =20
-> > eace75cfdcf7d9 Srinivas Kandagatla   2015-07-27  1016  	return nvmem;
-> > 3360acdf839170 Johan Hovold          2017-06-09  1017 =20
-> > b985f4cba6dbb3 Bartosz Golaszewski   2018-09-21  1018  err_remove_cells:
-> > b985f4cba6dbb3 Bartosz Golaszewski   2018-09-21  1019  	nvmem_device_re=
-move_all_cells(nvmem);
-> > fa72d847d68d78 Bartosz Golaszewski   2018-09-21  1020  	if (config->com=
-pat)
-> > ae0c2d725512f3 Srinivas Kandagatla   2019-04-16  1021  		nvmem_sysfs_re=
-move_compat(nvmem, config);
-> > 3360acdf839170 Johan Hovold          2017-06-09  1022  err_put_device:
-> > 3360acdf839170 Johan Hovold          2017-06-09  1023  	put_device(&nvm=
-em->dev);
-> > 3360acdf839170 Johan Hovold          2017-06-09  1024 =20
-> > b6c217ab9be689 Andrew Lunn           2016-02-26  1025  	return ERR_PTR(=
-rval);
-> > eace75cfdcf7d9 Srinivas Kandagatla   2015-07-27  1026  }
-> >=20
->=20
+> I would like others to weight in as well since I am not seeing what =
+Alan is suggesting.
+> AFAICS, in the absence of barrier(), any optimization caused by plain =
+access
+> makes it a bad practice to mix it.
 >=20
 > Thanks,
-> Miqu=C3=A8l
+>=20
+> - Joel
+>=20
+>=20
+>=20
+>>=20
+>>> result will not change the semantics of the program. But otherwise,
+>>> that's bad.
+>>>=20
+>>> [1] https://lwn.net/Articles/793253/#Store%20Tearing
+>>>=20
+>>> thanks,
+>>>=20
+>>> - Joel
+>>>=20
+>>>=20
+>>>>=20
+>>>>>=20
+>>>>> Thanks.
+>>>>>=20
+>>>>>=20
+>>>>>=20
+>>>>>>=20
+>>>>>>> +plain accesses of a memory location with rcu_dereference() of =
+the same memory
+>>>>>>> +location, in code involved in a data race.
+>>>>>>> +
+>>>>>>> In short, updaters use rcu_assign_pointer() and readers use
+>>>>>>> rcu_dereference(), and these two RCU API elements work together =
+to
+>>>>>>> ensure that readers have a consistent view of newly added data =
+elements.
+>>>>>>> --
+>>>>>>> 2.41.0.585.gd2178a4bd4-goog
 
 
-Thanks,
-Miqu=C3=A8l
