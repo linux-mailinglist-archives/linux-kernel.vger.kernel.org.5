@@ -2,65 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BAA9F76F7C7
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 04:21:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4582E76F7C9
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 04:22:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231708AbjHDCVL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Aug 2023 22:21:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44730 "EHLO
+        id S230330AbjHDCWA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Aug 2023 22:22:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45622 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231848AbjHDCUz (ORCPT
+        with ESMTP id S233801AbjHDCVk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Aug 2023 22:20:55 -0400
+        Thu, 3 Aug 2023 22:21:40 -0400
 Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63C614482
-        for <linux-kernel@vger.kernel.org>; Thu,  3 Aug 2023 19:20:03 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3C6746B5
+        for <linux-kernel@vger.kernel.org>; Thu,  3 Aug 2023 19:20:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1691115602;
+        s=mimecast20190719; t=1691115627;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=k9MPUsS9LKeZA9xUhJn9WI4fyyN2Ecl5BqHSfm/ZQkM=;
-        b=cqT40ExWQCQcP40NtJQ3If0caSXVz2HvxquuYMfnoCfyab9W90cxm6eRlrXLyktp0PeHBR
-        N0R9UH3YbCTUOYtU6CEbMS3wcIEYojQfjo6qB+4q4+ckCh7gZwl7rHZx4HkD4FTYwgTTRP
-        JnaS8X7Arw69g2jbQuah0mWLKlcpno0=
-Received: from mail-qt1-f197.google.com (mail-qt1-f197.google.com
- [209.85.160.197]) by relay.mimecast.com with ESMTP with STARTTLS
+        bh=6zdWnPk6F5WHva5/zuaCLJfKple79vvN3Kgzu831Wvw=;
+        b=iP26HaIl1RyrCw4wtCxNWe/EcE7howoaBXZ7jPyk9F3MtZZaaZZfHAMsZYmdpE6ptAB88T
+        eyCmGed+u/QDAuAF2oTXjHd1yFQ7zOVx5jGdgX4H/0yfhdQCEdjcr8H2suZp09JVFuKVFd
+        GRBWXrF6BFYs9iNqM/5I3R5JMpEzZf4=
+Received: from mail-qt1-f199.google.com (mail-qt1-f199.google.com
+ [209.85.160.199]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-161-sVanMi8GP6KzqJ1g7BUK6Q-1; Thu, 03 Aug 2023 22:20:01 -0400
-X-MC-Unique: sVanMi8GP6KzqJ1g7BUK6Q-1
-Received: by mail-qt1-f197.google.com with SMTP id d75a77b69052e-40831789e55so18299721cf.1
-        for <linux-kernel@vger.kernel.org>; Thu, 03 Aug 2023 19:20:01 -0700 (PDT)
+ us-mta-385-QoxqVCR7P8i3R3K0F88BmQ-1; Thu, 03 Aug 2023 22:20:24 -0400
+X-MC-Unique: QoxqVCR7P8i3R3K0F88BmQ-1
+Received: by mail-qt1-f199.google.com with SMTP id d75a77b69052e-40831789e55so18305061cf.1
+        for <linux-kernel@vger.kernel.org>; Thu, 03 Aug 2023 19:20:24 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691115600; x=1691720400;
+        d=1e100.net; s=20221208; t=1691115623; x=1691720423;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=k9MPUsS9LKeZA9xUhJn9WI4fyyN2Ecl5BqHSfm/ZQkM=;
-        b=PLGMY8p3gFNrqg1KObCPlL28elsKTURFPkBG5UX6PDHBPOgRcsVaasKJi2mQbgrtEh
-         +z0B8n/Gq8kNrP1EdT+laQZ6I1h2rHvwxz54Dwr2sAUeCgw5SIiurvtKXmqLXSPiqXSK
-         r/sfoM/YtBW7kRT9LPjGvJkVi9QNKMb1bOCUsSoCNyWesjPh9BpmACYE0uDGMrb0RYbq
-         ZlR1Q2Fzwrr1w8rBlXL2HhyXUQDxAFA4XKEE5fYVrqoCB4HYH/dN78PX95rVZILI5ecH
-         cXjkISRzYbqLFPWwl+a/SYajOThzOV0eDIDIha/tWfYhRdIVdgjJtOICwMf7K2JF4tCU
-         9xLg==
-X-Gm-Message-State: AOJu0YzUId5wmsOWNxZSfHeennRVEH+GB7QZjK18dRlX402bvzWLes1U
-        v6+MPETXMybgS7FkDgR1AoTaw6TJwP5Hczl/x0F0M+theV4ttJXM6rS6vnWebn6+vbZwtB6Ci0O
-        J94/7QZdTcZFIpbFM+mTDaUqib3nHO9ocIGg/ItnZOBpZUyIjj2w=
-X-Received: by 2002:a05:622a:11c1:b0:403:9e72:5e93 with SMTP id n1-20020a05622a11c100b004039e725e93mr691507qtk.9.1691115600724;
-        Thu, 03 Aug 2023 19:20:00 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IHcGPylXNUCjdMCZunzjgYe6gHUKU7d0KRBYVhys4h+KsxLECchdEAao4TbRZpogi/6HAAcdy2vTjm9XSW2YFY=
-X-Received: by 2002:a05:622a:11c1:b0:403:9e72:5e93 with SMTP id
- n1-20020a05622a11c100b004039e725e93mr691479qtk.9.1691115600415; Thu, 03 Aug
- 2023 19:20:00 -0700 (PDT)
+        bh=6zdWnPk6F5WHva5/zuaCLJfKple79vvN3Kgzu831Wvw=;
+        b=G17iOjjurW9H0VGUQHY67fOyksXsPpVG63ptrgeQQ9FXQx/qA2PEyIstbeVePbvunJ
+         JAvfs1i2dy5J3DkiEl+z/uXD03QLOM2G6W9CnloSNf4IqQOP+XQCTav6O01DGeHx/rax
+         3RIe2HunQbMy4yccoF7amQlRJyv/cJmc7ozbVuia5/mLRw9+4nInSClNyb+T7nv+V4wo
+         NKjJgNE/WhQTA6optJ2Mmy/WYuBWEHJ9HOGEL8qnqfMjRt9Bb8jNqEyA78ljWNxX/0mP
+         8Q5PPy8SkGD19e5N4N4Tn5CzLDVA2cc2EX2sSvUR+qhhuFoVID7jsW1XaXERGymDbG8r
+         377Q==
+X-Gm-Message-State: AOJu0Yz/sUH7Z6QTJmDmOYqjEmkjP28lxDGfV3jkQlhjMbor5EtYe2Lb
+        /d7y337/ZNmf4FRxilIxbPM9nLXIO9ePLX/usUq0cC8mzpfMOWtYDMJKqGnDZTB4QW0xjqTfsn6
+        tk6gRdftNnCkW+Gk+dtHVkGu9HxcNQqe8Gu8uMBl0
+X-Received: by 2002:a05:622a:1746:b0:403:a9aa:571f with SMTP id l6-20020a05622a174600b00403a9aa571fmr755014qtk.16.1691115623683;
+        Thu, 03 Aug 2023 19:20:23 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IGIDNlU9dDUknqAPNntSU8bwFxDV44Os16/hv3nXknImBVDvVlxKU8/v7gGSkdHVl8v+fMIo3sWZofirmJj1/c=
+X-Received: by 2002:a05:622a:1746:b0:403:a9aa:571f with SMTP id
+ l6-20020a05622a174600b00403a9aa571fmr754997qtk.16.1691115623460; Thu, 03 Aug
+ 2023 19:20:23 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230803051401.710236-2-leobras@redhat.com> <CAJF2gTShfMzVZw5TVqBvLNAzEBMzhWxNGC9JS70euPcKKN85zQ@mail.gmail.com>
-In-Reply-To: <CAJF2gTShfMzVZw5TVqBvLNAzEBMzhWxNGC9JS70euPcKKN85zQ@mail.gmail.com>
+References: <20230803051401.710236-2-leobras@redhat.com> <ZMuxYXQgR446JwUp@andrea>
+In-Reply-To: <ZMuxYXQgR446JwUp@andrea>
 From:   Leonardo Bras Soares Passos <leobras@redhat.com>
-Date:   Thu, 3 Aug 2023 23:19:49 -0300
-Message-ID: <CAJ6HWG5mzxN=txnbdi-=c+=wLsDfSe7Me+1DQE79ZX0NN6U1_g@mail.gmail.com>
+Date:   Thu, 3 Aug 2023 23:20:12 -0300
+Message-ID: <CAJ6HWG6rwi04eWuTDbx=WJABch59m5H2=N0BS3UQRTH2=c=-6Q@mail.gmail.com>
 Subject: Re: [RFC PATCH v2 0/3] Deduplicate RISCV cmpxchg.h and atomic.c macros
-To:     Guo Ren <guoren@kernel.org>
+To:     Andrea Parri <parri.andrea@gmail.com>
 Cc:     Will Deacon <will@kernel.org>,
         Peter Zijlstra <peterz@infradead.org>,
         Boqun Feng <boqun.feng@gmail.com>,
@@ -71,7 +71,8 @@ Cc:     Will Deacon <will@kernel.org>,
         Andrzej Hajda <andrzej.hajda@intel.com>,
         Arnd Bergmann <arnd@arndb.de>, Ingo Molnar <mingo@kernel.org>,
         Palmer Dabbelt <palmer@rivosinc.com>,
-        linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org
+        Guo Ren <guoren@kernel.org>, linux-kernel@vger.kernel.org,
+        linux-riscv@lists.infradead.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
@@ -85,11 +86,10 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 3, 2023 at 9:53=E2=80=AFPM Guo Ren <guoren@kernel.org> wrote:
+On Thu, Aug 3, 2023 at 10:53=E2=80=AFAM Andrea Parri <parri.andrea@gmail.co=
+m> wrote:
 >
-> On Thu, Aug 3, 2023 at 1:14=E2=80=AFPM Leonardo Bras <leobras@redhat.com>=
- wrote:
-> >
+> On Thu, Aug 03, 2023 at 02:13:57AM -0300, Leonardo Bras wrote:
 > > I unified previous patchsets into a single one, since the work is relat=
 ed.
 > >
@@ -110,48 +110,6 @@ ctly
 > > ok for you. Please check it out again, I just removed some helper macro=
 s
 > > that were not being used elsewhere in the kernel.
-> I found this optimization has conflicts with the below patches:
-> https://lore.kernel.org/linux-riscv/20230802164701.192791-15-guoren@kerne=
-l.org/
-> https://lore.kernel.org/linux-riscv/20230802164701.192791-5-guoren@kernel=
-.org/
->
-> If yours merged, how do we support the inline cmpxchg/xchg_small
-> function?
-
-Oh, I actually introduced my series so I could introduce new xchg and
-cmpxchg for size 1 and 2. Is that what your patches are about, right?
-
-I was working on that yesterday, and decided to send the patchset
-without them because I was still not sure enough.
-
-About implementation strategy, I was introducing a new macros for xchg
-& cmpxchg with asm which would work for both for size 1 & size 2, and
-use the switch-case to create the mask and and_value.
-
-You think that works enough?
-
-> It's very struggling to use macros to implement complex
-> functions.
-
-I agree, but with this we can achieve more generic code, which makes
-more clear what is the pattern for given function.
-
-> Could you consider a more relaxed optimization in which we could
-> insert inline cmpxchg/xchg_small?
-
-What about this: I finish the patches I have been working with
-(cmpxchg & xchg for sizes 1 and 2), and if they are fine we expand
-this patchset with them.  If not, I try relaxing them a little so we
-can merge with your set.
-
-Does that work for you?
-
-Best regards,
-Leo
-
-
->
 > >
 > > Thanks!
 > > Leo
@@ -191,14 +149,14 @@ or
 > >  arch/riscv/include/asm/atomic.h  | 164 ++++++++--------
 > >  arch/riscv/include/asm/cmpxchg.h | 318 +++++--------------------------
 > >  2 files changed, 123 insertions(+), 359 deletions(-)
-> >
-> > --
-> > 2.41.0
-> >
 >
+> LGTM.  For the series,
 >
-> --
-> Best Regards
->  Guo Ren
+> Reviewed-by: Andrea Parri <parri.andrea@gmail.com>
+>
+>   Andrea
+
+Thanks Andrea!
+
 >
 
