@@ -2,118 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7CF02770619
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 18:34:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D804C77061C
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 18:37:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230111AbjHDQeS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Aug 2023 12:34:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47964 "EHLO
+        id S230177AbjHDQhX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Aug 2023 12:37:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48712 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229655AbjHDQeQ (ORCPT
+        with ESMTP id S229815AbjHDQhV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Aug 2023 12:34:16 -0400
-Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13746E7
-        for <linux-kernel@vger.kernel.org>; Fri,  4 Aug 2023 09:34:15 -0700 (PDT)
-Received: by mail-wm1-x335.google.com with SMTP id 5b1f17b1804b1-3fe2a116565so91615e9.1
-        for <linux-kernel@vger.kernel.org>; Fri, 04 Aug 2023 09:34:15 -0700 (PDT)
+        Fri, 4 Aug 2023 12:37:21 -0400
+Received: from mail-qv1-xf29.google.com (mail-qv1-xf29.google.com [IPv6:2607:f8b0:4864:20::f29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18FFC195
+        for <linux-kernel@vger.kernel.org>; Fri,  4 Aug 2023 09:37:19 -0700 (PDT)
+Received: by mail-qv1-xf29.google.com with SMTP id 6a1803df08f44-63cfa3e564eso13786736d6.0
+        for <linux-kernel@vger.kernel.org>; Fri, 04 Aug 2023 09:37:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1691166853; x=1691771653;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=iGi4XR/XiNGHXh0Do308MZzOF1T6uCKkf5XCj+VVIgM=;
-        b=w4JbRCmCeXyYZbgatosbC1xc36AV6HL9HjJ9LrLcB3GUtjTl7t3im+4tPeU3Vx9uhc
-         Ntdq49YvfpItVbRNaFCzV2Cx0YbVodMnw9ugoixhLuWeu+Kbh1DtE54tuG0vnzpe1vco
-         nNtcsJtFVU4hMwoYtmsS2I+Czqw7AVRdl9va6b4Zc+tPaoHsXzbia4Plqa4qGdqrRfsV
-         fXNGh7XcxB/RVPEkp9AOswAF4fEaVBIepuKT14H4TcI0vcgPwKpwIq2mlsw4FE0+YJv1
-         G/AgkijT7KSOyChAD6kdCjf0MFb9Sc4P5Fzy+507qzqXBgTo3HE07Ib6kYqJyzNcuYj1
-         q43g==
+        d=cmpxchg-org.20221208.gappssmtp.com; s=20221208; t=1691167038; x=1691771838;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=iUJy9CxyJyDezGa57jwVulgOP6Mhmh9lxMHoUFNxQOg=;
+        b=N8zywGIpRTGhPC/hd5Uaa9XnP65QfObz3MOaQDHYBSgg96x0lu4ubKHgZyvQjRg+92
+         VimNYt6Qi+T2OSX2whxjKdAwU5/KjPFJAJ8FQDdIS6jXwklryXprXrKQGXj9+OlCaDkz
+         3BPikSVV1zG++16OImjNF+EnR6jfDlpZjFzRRbEI2TKM1ALXkZgWSYisS9iRkCf9uPpL
+         wBCvyMsghryoppGBxdYYnIv8JITuv327O30KANkFj9SkQRGLPKdUnIYxkMPnuCb+6MV2
+         utPvzU/Zd0n7b7YmTIV2gNEhgfjpPjenS3EcryRbLfQHd44dgYs/kyhVn6CXzmHTcpuN
+         jP0w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691166853; x=1691771653;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=iGi4XR/XiNGHXh0Do308MZzOF1T6uCKkf5XCj+VVIgM=;
-        b=c4tUbe2oQKuFgKzuvYDuGXxLvWZG1G5JKOT4Ls0qhLsUb71ErZwUxwDkLXsd7As9UI
-         QGlhjVQVGQGlKTWbRo6ZYxzixAODfv2K+rB8K4a/vwhnOujw2g8HcoHmqD5D6HtztGT/
-         dCI1RJJ1d11S/dCK4E80hDquEUSlWDlbaRhEdwuOA7vh9yVglGw4Smq2cNL5FN4rSs1/
-         Pb+ioLmqrrz4mAKOcesRUfJlb8Gs/hWSSRugAKl80AY2uq3E8v7JHMEXVKKAQnXRlWbo
-         z6vSi64Qo/V/JVieXt8nx2t1ekggYG4XBegLQ1BsZOmlAIdyUKrIuGLZQMWyY3TA+OwQ
-         oyGw==
-X-Gm-Message-State: AOJu0Yz5gqbwbZSeQYcmZXU8z9T4zrJCw1RdpGmAt7a2QbYhyE1mF2P9
-        P0pViqId3zojKwSUve/sIQLEdyG7eRRTFEMB5MTGLQ==
-X-Google-Smtp-Source: AGHT+IGAdKeZqRvkKRomTSzriDgFXuHClhG6kUDwMC0cJbQcMZKnRfXz4LZDu/jT8ZwYE3RaXiaPloSO6rSe4VpedCY=
-X-Received: by 2002:a05:600c:3ba9:b0:3f4:fb7:48d4 with SMTP id
- n41-20020a05600c3ba900b003f40fb748d4mr81305wms.3.1691166853428; Fri, 04 Aug
- 2023 09:34:13 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1691167038; x=1691771838;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=iUJy9CxyJyDezGa57jwVulgOP6Mhmh9lxMHoUFNxQOg=;
+        b=Q38IVRCl6brupI/d2wXFri/VvyhrrWp6nPqafCmgrqQVkxzbosVSLRsbtyLNvIXWe5
+         BaE7TVuyChGdjlC5xQn1NwUXx3Njbi+q+hO0G4FaKzxwSIWUjwPawICJ3mpMuzeKlVxC
+         WHEgDZukEz2uq+hisIdzWQqR+er5zYBjZ8q6MMZjjpxKzntPQvpA1QchatJg4ZhEnrC4
+         OYnPyDTF+pQCGAYDWtDgAbDTMdEYn2oV8DOJnHx4AmJ9rhapIgNeiGNMDnzrGy5Tq9On
+         V0FHUuFgrINbBcfAxqmHlVIHHiYvJLzC2QzZcvknWObDyLFX7gSFR8tbotazbhO8/zB1
+         aGjg==
+X-Gm-Message-State: AOJu0YwAInqmTZ+M2pZuXebXsQsQKUg6Vdzu1q6S19qA06XCOEL+bpo9
+        UiycLbsJIefHxPCWH/imdslKcA==
+X-Google-Smtp-Source: AGHT+IGvEQu5HgCOytuEIOWYX6CR56Y/2e5JSlxsagFnROkz1i4u6xSjaOns8WHVi48AGsOpTahDqQ==
+X-Received: by 2002:a0c:e10a:0:b0:62d:f806:7f80 with SMTP id w10-20020a0ce10a000000b0062df8067f80mr2235164qvk.13.1691167038197;
+        Fri, 04 Aug 2023 09:37:18 -0700 (PDT)
+Received: from localhost ([2620:10d:c091:400::5:9910])
+        by smtp.gmail.com with ESMTPSA id e29-20020a0cb45d000000b00632266b569esm782221qvf.87.2023.08.04.09.37.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 04 Aug 2023 09:37:17 -0700 (PDT)
+Date:   Fri, 4 Aug 2023 12:37:16 -0400
+From:   Johannes Weiner <hannes@cmpxchg.org>
+To:     Lucas Karpinski <lkarpins@redhat.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Shakeel Butt <shakeelb@google.com>,
+        Muchun Song <muchun.song@linux.dev>, Tejun Heo <tj@kernel.org>,
+        Zefan Li <lizefan.x@bytedance.com>,
+        Shuah Khan <shuah@kernel.org>, cgroups@vger.kernel.org,
+        linux-mm@kvack.org, linux-kselftest@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] selftests: cgroup: fix test_kmem_memcg_deletion false
+ positives
+Message-ID: <20230804163716.GA337691@cmpxchg.org>
+References: <edpx3ejic2cxolhoynxvwal2i4a35akopg6hshcfxker6oxcn7@l32pzfyucgec>
 MIME-Version: 1.0
-References: <169057265210.180586.7950140104251236598.stgit@dwillia2-xfh.jf.intel.com>
- <169057265801.180586.10867293237672839356.stgit@dwillia2-xfh.jf.intel.com>
- <CAMkAt6ot9zyUL9Ub-qYq+d9v-6rTft4ea2mUxp3o1s3GVFq7nw@mail.gmail.com>
- <64c7f3df475d5_51ad02943f@dwillia2-xfh.jf.intel.com.notmuch>
- <CAMkAt6p9yEM7A5B9TyZsVTH=X=UQ3Z9wfYDg9etuc806mNdOiQ@mail.gmail.com> <64c80077d7144_51ad02941@dwillia2-xfh.jf.intel.com.notmuch>
-In-Reply-To: <64c80077d7144_51ad02941@dwillia2-xfh.jf.intel.com.notmuch>
-From:   Peter Gonda <pgonda@google.com>
-Date:   Fri, 4 Aug 2023 10:34:01 -0600
-Message-ID: <CAMkAt6pPCJ0YsWaL692heDCUYjF9KCBq3PNiPK2LyBd=wD0+ig@mail.gmail.com>
-Subject: Re: [PATCH 1/4] keys: Introduce tsm keys
-To:     Dan Williams <dan.j.williams@intel.com>
-Cc:     dhowells@redhat.com,
-        Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        Dionna Amalie Glaze <dionnaglaze@google.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Samuel Ortiz <sameo@rivosinc.com>, peterz@infradead.org,
-        linux-coco@lists.linux.dev, keyrings@vger.kernel.org,
-        x86@kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <edpx3ejic2cxolhoynxvwal2i4a35akopg6hshcfxker6oxcn7@l32pzfyucgec>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> > >
-> > > > > + * shared secret and then use that communication channel to instantiate
-> > > > > + * other keys. The expectation is that the requester of the tsm key
-> > > > > + * knows a priori the key-exchange protocol associated with the
-> > > > > + * 'pubkey'.
-> > > >
-> > > > Can we instead be very specific about what protocols and cryptography
-> > > > are being used?
-> > >
-> > > Again this is a contract to which the kernel is not a party. The
-> > > requester knows the significance of the user-data, and it knows where to
-> > > send the combined user-data plus quote to provision further secrets.
-> > >
-> > > Not that I like that arrangement, but the kernel is not enabled by these
-> > > TSM implementations to know much more than "user-data in", "report out".
-> >
-> > Can you explain why using this key API is better than the ioctl
-> > version? Is there an overhead to adding keys?
->
-> Setting aside that folks that have been involved in the Keyring
-> subsystem a lot longer than I are not keen on this usage [1], I expect
-> the overhead is negligible. Keys are already used in RPC scenarios and
-> can be destroyed immediately after being instantiated and read.
+On Fri, Aug 04, 2023 at 11:37:33AM -0400, Lucas Karpinski wrote:
+> The test allocates dcache inside a cgroup, then destroys the cgroups and
+> then checks the sanity of numbers on the parent level. The reason it
+> fails is because dentries are freed with an RCU delay - a debugging
+> sleep shows that usage drops as expected shortly after.
+> 
+> Insert a 1s sleep after completing the cgroup creation/deletions. This
+> should be good enough, assuming that machines running those tests are
+> otherwise not very busy. This commit is directly inspired by Johannes
+> over at the link below.
+> 
+> Link: https://lore.kernel.org/all/20230801135632.1768830-1-hannes@cmpxchg.org/
+> 
+> Signed-off-by: Lucas Karpinski <lkarpins@redhat.com>
 
-OK the overhead is negligible. But why is this any better?
+Maybe I'm missing something, but there isn't a limit set anywhere that
+would cause the dentries to be reclaimed and freed, no? When the
+subgroups are deleted, the objects are just moved to the parent. The
+counters inside the parent (which are hierarchical) shouldn't change.
 
-To me this seems strictly worse to me as a user since I have much less
-input into the hardware attestation which is one of the primary
-benefits of confidential compute. I don't want the kernel limiting
-what cryptographic algorithm I use, or limiting attestation reports to
-signing pubkeys.
-
-I understand having a proliferation of similar drivers may not be
-ideal but given the hardware lift required to make confidential
-compute happen will we really see too many?
-
->
-> [1]: http://lore.kernel.org/r/c6576d1682b576ba47556478a98f397ed518a177.camel@HansenPartnership.com
+So this seems to be a different scenario than test_kmem_basic. If the
+test is failing for you, I can't quite see why.
