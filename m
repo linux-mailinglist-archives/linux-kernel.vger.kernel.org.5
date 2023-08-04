@@ -2,164 +2,181 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2944176FDA3
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 11:43:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7513176FDA4
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 11:43:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231132AbjHDJnb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Aug 2023 05:43:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48600 "EHLO
+        id S231163AbjHDJnj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Aug 2023 05:43:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48624 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230519AbjHDJn2 (ORCPT
+        with ESMTP id S231134AbjHDJnd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Aug 2023 05:43:28 -0400
-Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23AF130EB
-        for <linux-kernel@vger.kernel.org>; Fri,  4 Aug 2023 02:43:27 -0700 (PDT)
-Received: by mail-ed1-x536.google.com with SMTP id 4fb4d7f45d1cf-523100882f2so1776411a12.2
-        for <linux-kernel@vger.kernel.org>; Fri, 04 Aug 2023 02:43:27 -0700 (PDT)
+        Fri, 4 Aug 2023 05:43:33 -0400
+Received: from esa3.hgst.iphmx.com (esa3.hgst.iphmx.com [216.71.153.141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4E6930EB
+        for <linux-kernel@vger.kernel.org>; Fri,  4 Aug 2023 02:43:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1691142212; x=1722678212;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-id:content-transfer-encoding:
+   mime-version;
+  bh=7uLW3S0dzF9wDTZ987N2PWPfn5def70S6WnBOGWo2UY=;
+  b=TegTVRNOnT6F9j6ZbftmrtyP31rzTWLThzlU0051tCFJ93xjtpCEdBEc
+   OxiDVpXlgL9zuGCW4n3tnlJs3Ldj6ta7tQD54EFd7uuN99nx+KdBgKdLx
+   aZ+OQyheyToYhYZYhznj/unAXCprxySB8/z7lagCUyVyxv9Sfzqvqki8l
+   8pd0jvL+24S5RVOhMyRkPnkjrwVbyNaCv2RmNo+cmr/Fvc35gUZqIpFZY
+   0mGkBsR9K9+157DnUDfuttsTg5K82Z5qxi/amDy3nWx59dnSRGqsAECw2
+   vzCTo+iZgkxu2dbwd9zUiPG5VKtFPq551qFrF/XI10zfqGmKADtiopyjh
+   w==;
+X-IronPort-AV: E=Sophos;i="6.01,254,1684771200"; 
+   d="scan'208";a="244706199"
+Received: from mail-dm6nam10lp2104.outbound.protection.outlook.com (HELO NAM10-DM6-obe.outbound.protection.outlook.com) ([104.47.58.104])
+  by ob1.hgst.iphmx.com with ESMTP; 04 Aug 2023 17:43:31 +0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=FaY+PFZ/igCtR1XSXI3yY/rCwY2OXRGJcKYGd+HKkoGMz0P3hzcK8crBOSMFkQGQ1i9k6K+N1Hj0ntsyZqLtTm5faHEzJh0G5aFGTG2rhvnC74t0l+Z/+L4KAPCwvjgT70vSZQZwURbsujv47umb27l/RV5V8WUSbr6/rjHtsIXj62Prp/EHbUTBNsSUpJYCI0nw3revke7ZoeZuIQfvTa+LsMhElhC9NQsBwyrVVgtJN0+SVufxYXD6ef7fYpmqeihXICRAAXIF2/m3TCQ61wbRMgBMU55YP+wLvORpx91y6aoKc6LuNAUl7uVORcq2Hc+lAcC5q7D987s19HPb9g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=+9+L+i7pupyf2SHjS5nPajVKSLNkhBi3BRgNI+FPXIc=;
+ b=Y4H/vFvaMlMVU5kPHZ3uUmhfZZRT25b5FmMK8OIUvaV3vwLtGbioLoNzwAkQBCMj2r5fwnnYEhQlHCR+fRhaNfHreLQArmnXvkfxdVY4rk8dt1qrn4GCXU1wb+78JNULjPQpQBWZ1Oeu/GfEX91I5iwanm+U1FZVcSyzDVIz+iFODouFn+1AoSXhjBrEArm3PxKbYgO5yP1rKu7RPDP95XDUPWMtuv9/SprI2TXSGawpXVyhRsM03Zr0Tnf6xdHc8mGOjvWpd3FLbhYBPPGw4f3wVhgIC5Tc56JI0wlBACXexkrU8+uxvzUASXJDZ27pdj1+/RPWcXOGRVLTkqi2FA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
+ header.d=wdc.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1691142205; x=1691747005;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=1eXbT/KalONwMKPKZfZFiDNuA7l+qr3D7lfU+28kCBQ=;
-        b=tMxDCZWY4gGhkYmTyR60h5DpxZNyiNEUht4LfLAAdA11c0Kqdw3ikJKKMIyM896WAt
-         gDMhvRVATOEUC5X/iVQRbktG4S9VmMu3Bi9mN08wC9qnclDiiwdJWl+Wi+qPPlCH8xgl
-         HEm4PDd9L4OfgCxWsotTw2FhEcWsz/i4dO4C3Rh/z6mZuNW0G4pCALsb19iNHwvuZCnk
-         KfDIUzh5b7jXddXqr7bTXpzCg3MMTe27rZvrEBqZrIEyK5c9VHWxa8yguOIbQg4bFtIG
-         lFY2dZXiwIoP45xY5V2dnJb7/0MofSxb838NMEldTDg9Aa0fNmak4J/mbo+VRtocfJoW
-         PBdA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691142205; x=1691747005;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=1eXbT/KalONwMKPKZfZFiDNuA7l+qr3D7lfU+28kCBQ=;
-        b=KukxRf6XIViJ/tMclV66prBkhN/7Of3U6iqBX72yQaHk2xF8urKA75+8cIjX0rTu6k
-         BRUoIvw9JLFbMCzQAASU7AjbrP4vKFBLLhQ7+G4h/ykeo0jgaHaV+PCseKxvacsVDd+K
-         Bs82yUF8Q+JOoX0tnvfSc8MORlOV5QbBaPSZ9HTdRJ1SOAOwie3784SFzUHFuwbaVI6N
-         IWtN3nM4vZ9n1sipUdwaBjEKPIMte7k4lWxm5t2X37s/vvDM8Yly0IEaec5L59+CF0jc
-         q2QXM6syfp+lreziGGGzfkhmNcQQAdeWWPnQjNhkLnPrQqEnrgY0++pQ1lOluHASpL5m
-         KF3w==
-X-Gm-Message-State: AOJu0Yz4O1Kr2G6OgGh5OCLptR8rQj2KLiosSRRxrXVWoWVnQYcj2ZwP
-        E9J2WFhoowxQaKFJ62SDBvAF8Q==
-X-Google-Smtp-Source: AGHT+IGC9mA7LPO2N64IIl+Xk6+A/e9ohIrzJGE8pgrJFcZhD7dVNL2lN7+hweJBbOWw01HxcF6Slg==
-X-Received: by 2002:a17:906:28a:b0:99b:d178:f051 with SMTP id 10-20020a170906028a00b0099bd178f051mr893587ejf.64.1691142205545;
-        Fri, 04 Aug 2023 02:43:25 -0700 (PDT)
-Received: from [192.168.1.20] ([178.197.222.245])
-        by smtp.gmail.com with ESMTPSA id gs10-20020a170906f18a00b0097404f4a124sm1059389ejb.2.2023.08.04.02.43.24
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 04 Aug 2023 02:43:25 -0700 (PDT)
-Message-ID: <b16b0fa5-d2ce-dca0-9074-f2e04fe533dc@linaro.org>
-Date:   Fri, 4 Aug 2023 11:43:23 +0200
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.14.0
-Subject: Re: [PATCH V1] arm64: dts: qcom: sa8775p-ride: Remove min and max
- voltages for L8A
+ d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=+9+L+i7pupyf2SHjS5nPajVKSLNkhBi3BRgNI+FPXIc=;
+ b=GRdVH40kTuRcG5O/B+BRcDysv2KeX9R/zApo8EFhZoUuy2IeomCNl5TvyDLJUyyUG2bo40rTBl9kFaxks90kSTkpfZV7d2KZPiddQS0ArwXDOUY6u6Fnguc/Ly//sENFtRuclW9tZloTaL+zZmLscQVzTCauClGFTgl82Y5MfeI=
+Received: from DM8PR04MB8037.namprd04.prod.outlook.com (2603:10b6:8:f::6) by
+ SJ0PR04MB7407.namprd04.prod.outlook.com (2603:10b6:a03:29e::22) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6631.47; Fri, 4 Aug
+ 2023 09:43:30 +0000
+Received: from DM8PR04MB8037.namprd04.prod.outlook.com
+ ([fe80::f92a:6d40:fe94:34e9]) by DM8PR04MB8037.namprd04.prod.outlook.com
+ ([fe80::f92a:6d40:fe94:34e9%7]) with mapi id 15.20.6652.020; Fri, 4 Aug 2023
+ 09:43:29 +0000
+From:   Shinichiro Kawasaki <shinichiro.kawasaki@wdc.com>
+To:     Chao Yu <chao@kernel.org>
+CC:     "jaegeuk@kernel.org" <jaegeuk@kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-f2fs-devel@lists.sourceforge.net" 
+        <linux-f2fs-devel@lists.sourceforge.net>,
+        Damien Le Moal <Damien.LeMoal@wdc.com>
+Subject: Re: [f2fs-dev] [PATCH] f2fs: clean up w/ sbi->log_sectors_per_block
+Thread-Topic: [f2fs-dev] [PATCH] f2fs: clean up w/ sbi->log_sectors_per_block
+Thread-Index: AQHZxrgf6qH53kn8JkyhsDXhIB6WQw==
+Date:   Fri, 4 Aug 2023 09:43:29 +0000
+Message-ID: <fafcfeosil5yqwn2wcdx33im2mq4xkejw6bx7h2in3ay5h6znj@facx4rrg4p65>
+References: <20230523123521.67656-1-chao@kernel.org>
+In-Reply-To: <20230523123521.67656-1-chao@kernel.org>
+Accept-Language: en-US
 Content-Language: en-US
-To:     "Naveen Kumar Goud Arepalli (QUIC)" <quic_narepall@quicinc.com>,
-        Andrew Halaney <ahalaney@redhat.com>
-Cc:     "Nitin Rawat (QUIC)" <quic_nitirawa@quicinc.com>,
-        "agross@kernel.org" <agross@kernel.org>,
-        "andersson@kernel.org" <andersson@kernel.org>,
-        "konrad.dybcio@linaro.org" <konrad.dybcio@linaro.org>,
-        "robh+dt@kernel.org" <robh+dt@kernel.org>,
-        "krzysztof.kozlowski+dt@linaro.org" 
-        <krzysztof.kozlowski+dt@linaro.org>,
-        "conor+dt@kernel.org" <conor+dt@kernel.org>,
-        "linux-arm-msm@vger.kernel.org" <linux-arm-msm@vger.kernel.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-References: <20230725100007.14775-1-quic_narepall@quicinc.com>
- <a3l7356miuuapf5dakgfchdjmxjp62ynvle4ta3hejd3tjvzd4@e2t2zm6jh7hb>
- <516a54da44724001895f7e50634ad884@quicinc.com>
- <33232e22-1014-2670-47f6-712b0acc929d@linaro.org>
- <78e6233799f54428b6601896b8bd7b5c@quicinc.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <78e6233799f54428b6601896b8bd7b5c@quicinc.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=wdc.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: DM8PR04MB8037:EE_|SJ0PR04MB7407:EE_
+x-ms-office365-filtering-correlation-id: 42a68433-86f4-4c63-e86a-08db94cf4287
+wdcipoutbound: EOP-TRUE
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: BanmOEEJ+n0+4aZeZsOGol7RgXMwmQihw1xKNkhtvXn+UMXTMFbenhzij1KrtzIHHoMSVOe2JiOn+CUQUWISSiSaRiCRF+Q/JpkhiuPCkzSmaTVAPoQ8WOcVwl0O9uB/XgoeuoPn9C9wxXt5nydp59Q7cvjYpx+lP718kOyzoC1BleZEezH/daNeVs+yRoIXrtU7MWkIYBYuk6j7P0frNJMRfOOtVuFM6vc+UmUUtJVb6X69hthkbG7DorgzGmGKU5pNjAvHmCwlXgK9gsHMMNDqrnZhH0Dncg0tt/4vcZOqp8l0TNCy+Ph3CgvewvoDPp/9DBNaIxc4RvtQ3Q+kCDMbgOyB6qUSD9Q0H8eQoQCIsaxhDG9dCKCznitgQnufXdaTT75J+4fOEAcXdh7DnWPMuvOagzZmKA8kzBesEZJguJ51YN0rOT8QT4+rpK+/2ESXJP7zIwxTqkypllZ420o1dc+FaLP7m5IxujWoG5Wp1H2HvXOZDKKxtdYvV+mvr1wub0MUoiw17IIL2ZVmeM0a/zqJhxcNrWxYVrqWxbR362I3nQATuaRHWY4VkFF4LLFLfvbEKPTAuGPCxQk/yhuAhy84ZVpd7/3aBPIjXM8=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM8PR04MB8037.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(7916004)(4636009)(366004)(136003)(396003)(376002)(39860400002)(346002)(1800799003)(186006)(451199021)(8676002)(26005)(6506007)(83380400001)(4326008)(2906002)(66476007)(316002)(91956017)(76116006)(66946007)(5660300002)(6916009)(66446008)(64756008)(66556008)(44832011)(8936002)(41300700001)(966005)(71200400001)(6486002)(9686003)(6512007)(478600001)(54906003)(82960400001)(38100700002)(122000001)(33716001)(86362001)(38070700005);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?djvawz61gVFzjEnnXl6JQ+8FTftpY3KIBtYOiJkDq4A9cBcI/fi4t/qgq7Dd?=
+ =?us-ascii?Q?XlBkBdns7rexfAFLmY/Nv4KNsrU38cp8IjZXqiU59x8VgezJJ92BTL8hyYJu?=
+ =?us-ascii?Q?P8w2w4mccLHXJK/cWTJ4dP+xlu71mZSeMzi94A8Lxg+v8f66diirtunbeIMg?=
+ =?us-ascii?Q?wIZDzzjZUqdZEg7WM4SD2XMV1/rEuTSPHev5VLeo1iO+Gcqwkyk9vauW4/wh?=
+ =?us-ascii?Q?bzfh9C1UZrOChp6ykP1Qv6GKCnqeHn2Kv/QFMGTB6cNb3EovtIYKrZKs8+i5?=
+ =?us-ascii?Q?Qccz5zUu931vRh3aFYJ/XjZ+UlTHFmrS8Mpa3h+lbNnbDZUebYCA/ZK0wnKS?=
+ =?us-ascii?Q?JLoTU/QsYZ6GuFCG8Is6YgbVejvO3reCyS20VKt78pQkmhc/pFKuPF9Bo6QF?=
+ =?us-ascii?Q?2i0Kj2B2pfAdo19TvlUywMsixjCELNqCjUlatz+9gURBBYGhkFbgz8JWdvmx?=
+ =?us-ascii?Q?olKv1YYdgDZG04Z2YRg980d28ftbbna7wONOuXAdSzGwLWKwacamEV8ws8+P?=
+ =?us-ascii?Q?UDvaH5khOpmWvJjkowNX1Ok2e5IEr3BRdp84JIiP0nLXsObv9xCJ7nIp0hW9?=
+ =?us-ascii?Q?0fTvYiu7W6By0+ZjteWJcnXx+znxMWEEhrBfW6VdH+sxJDNXCFf0uzWPcTE8?=
+ =?us-ascii?Q?AyX/MxD5xGEEVPmXxZ5I5mKk/2z7b/BNhaFgQZ8lR5SMz4nL7lrCytIitmiB?=
+ =?us-ascii?Q?012Zl6sxh7SVBD7vwQwXAI0LdDLFCfuME861kdTZEmPiPZYPXQpU1HuVqLcO?=
+ =?us-ascii?Q?mjjAlaWko5Ok22wmgdKnG8w1wA6IBkBsOSHvjqeQPcP58G2tIELJibj4AWXk?=
+ =?us-ascii?Q?e+JYGvkiJAwSsBpP1+krBp9bWVv7fhWk1UBQkrZ1zlzuCLzIZKk5aPWnbo6O?=
+ =?us-ascii?Q?XbAdsM8FrLsQHVb/ywCQwgW0Q08pX6+B1HxUcq5UVuSXDbfW2t32TY1h0OD5?=
+ =?us-ascii?Q?B4eOvf6S+f1tKEzBW8y0uiKPJfHnGN4dsS7cMu1Y0GB4dwD8Ymp1RgT+JxyB?=
+ =?us-ascii?Q?lNXaruObXHzLNASUfMsfvpxvIfQOJSU9RTuFv5/0hEq5ltCu9flVzP1EPCsn?=
+ =?us-ascii?Q?Tk0wl/kDtmOfV464h+g97q+yaINaDPoFiguTZGji3oNiZxhJGvoTpp+Fw+X8?=
+ =?us-ascii?Q?Xa5UFcZfANwW1AcV1GBQLl5oZx06O/WWyEbhkRHs/93IqAy0+ehcBzGXShVb?=
+ =?us-ascii?Q?YKfJOlgkMHCE25SzUhP0mBDx8Q8+45SHjqh/80De66bqEFzRnew0nqSyqPA9?=
+ =?us-ascii?Q?lejF6enKJp2Y7IjH7SPRXQZNViRGo7Zhsg1aNwFgYEQNA4oED0cy/7ZvWvn6?=
+ =?us-ascii?Q?jeHni3zh4c9JSOiBNylDnQkr63DvE+8Dml6oAyxspLZB5ogNLBDYk9lr99EC?=
+ =?us-ascii?Q?wbBRZVk10dMbBVSagiEeWtOgEBQR2zuBISNsMDp/XtxaTlOM7sjcCTT0puZQ?=
+ =?us-ascii?Q?v/yy7TeahXbaytyfyrSoghtlcODC457M+Mhs7VBnp8uG/s1ooeaq2+t/xR9+?=
+ =?us-ascii?Q?mOkEnqlOZiYbHMvwLPLnj+/eNeOtIYUWnQSlivri8cL/fbMQX9TG0m/lUfwS?=
+ =?us-ascii?Q?nctM+nzcZqsXvVXKNCC2mdv77Vbn7Xb8li33NMn+dzg/C67OtCg7RFUhhp9A?=
+ =?us-ascii?Q?6blUv3O5Bs4ey2XSA0l4N1A=3D?=
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <10056D781578164BBEDC84B92D0631DA@namprd04.prod.outlook.com>
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: 9EiGAfTzZaHV59PVS8ThxCCF4C8WHn/TPXZQGgalTX1wszYmLZebZV0Jll9mN6p53SsxmY47P1eBKJ2KoYw4YWyA3HzfrnSPOlL4FSzae1pMsH14F1BcZfDjeeSZgV8wABVYJftAQE8E8we//5JXT+h+YfZFyltQiGsemPyzlhVkxa/wYIfTNqqtg7zf+iyYKRTnlqVMlkX8O/uGdEtYeGACA/3WLHgFUZrNXs2zxNuhFeyqlX8J4TiUmKy4ItJ2ipq/JeWqVAOr211GF87auu5yL34wLX8W2RZZi5clYhB4dFin0vXrqA4jsh7TV4Uz+lMNl8a14olathJiQvkraWxxVODW700sLzLWyuKxFkc0HEpmYcLrLFtbwUtp2yUpJE2+tE+mksF8OD5G2sXLoxlUbw0M/iEXTH+el9AKjbsKa9E4D5q3izeeihqDCSSE5ZecIuFJZGPrdGSs5CIaqWb4Yz8WsGuP7lNeZWHO/vQ70elWhQk+YMOBWoURn0Hg/H/kY0pnHSfUM+fBt3GHFtOQxzatV4fdA0KSMmSeNQZOD5F2hc34gjDq1yt0WHjCtLfjtt/AqTv8+7UvHd2f7zYHLmKDCRbnHXaXVc+/jAoGInuQO1/feqQWyGUACcPqkq6jd6EOcY36VDpSBOPPi6vXpsLk5S7TgKtWmvcMl3Jort0VazI8yOJIYenaqnKHRE8eNf3emy0+C8JkxW7Zsn2KzaQl6th482Q6WHZ23OcmP2TdcxCMEjOfDHdT3avTc9WjCf+BgzrqCy4zNGAWEN71qeYoNY9pwU+u8aBad+6n1/QcF4KcXurVsjF5geUIbJooGQLHCulNjdIZN2t4WeblIUcmyxKzAYzFIN+Nk78=
+X-OriginatorOrg: wdc.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: DM8PR04MB8037.namprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 42a68433-86f4-4c63-e86a-08db94cf4287
+X-MS-Exchange-CrossTenant-originalarrivaltime: 04 Aug 2023 09:43:29.8320
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: J14OrSV7rG0u5+7JM46BQCTqLAAZFsvMtCqCiehg8v6xGYI6m97TBhKMytDy4B4NPuor0hs3iGT4b518TiZsAwSy9BYiVYCmvxRkRacI4DU=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR04MB7407
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 04/08/2023 10:04, Naveen Kumar Goud Arepalli (QUIC) wrote:
->>> diff --git a/arch/arm64/boot/dts/qcom/sa8775p-ride.dts
->>> b/arch/arm64/boot/dts/qcom/sa8775p-ride.dts
->>> index ed76680410b4..6f3891a09e59 100644
->>> --- a/arch/arm64/boot/dts/qcom/sa8775p-ride.dts
->>> +++ b/arch/arm64/boot/dts/qcom/sa8775p-ride.dts
->>> @@ -98,8 +98,6 @@
->>>  
->>>  		vreg_l8a: ldo8 {
->>>  			regulator-name = "vreg_l8a";
->>> -			regulator-min-microvolt = <2504000>;
->>> -			regulator-max-microvolt = <3300000>;
->>>  			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
->>>  			regulator-allow-set-load;
->>>  			regulator-allowed-modes = <RPMH_REGULATOR_MODE_LPM
->>> --
->>> 2.17.1
->>>
->>
->> Reviewing with very little expertise in the area....
->> A few questions below that would help me understand this a bit better.
->>
->> Does it make sense to *not* set the range of the regulator at all?:
->>>>> Yes, we are removing the range of the regulator.
->>
->>     1. A board dts knows its UFS device
->>     2. Is UFS backwards compatible with respect to UFS2/UFS3?
->>        I don't know how the version is determined, but if it's a
->>        "start at UFS2, go to UFS3" should it be scaled as that goes?
->>        >>>> For a UFS device 3.x, we cannot start as UFS 2.0. vcc has to be as per UFS 3.x recommendations.
->>
->> Relying on the bootloader to set up the device before the kernel 
->> starts seems like a direction that should be actively avoided instead 
->> of depended on in my opinion.
-> 
-> I have trouble finding which part is your reply and which is quote of Andrew. Please reconfigure your mail client.
+On May 23, 2023 / 20:35, Chao Yu wrote:
+> Use sbi->log_sectors_per_block to clean up below calculated one:
+>=20
+> unsigned int log_sectors_per_block =3D sbi->log_blocksize - SECTOR_SHIFT;
 
-Who said this? Me or you? I am pretty sure I *said this*.
+Hello Chao,
 
-Not only you pasted it as your reply, but you also re-wrapped lines.
+When I ran workloads on f2fs using v6.5-rcX with fixes [1][2] and a zoned b=
+lock
+devices with 4kb logical block size, I observe mount failure as follows. Wh=
+en
+I revert this commit, the failure goes away.
 
-That's not how email communication works outside of corporate structure.
-Please, don't bring Outlook style to our lives...
+[  167.781975][ T1555] F2FS-fs (dm-0): IO Block Size:        4 KB
+[  167.890728][ T1555] F2FS-fs (dm-0): Found nat_bits in checkpoint
+[  171.482588][ T1555] F2FS-fs (dm-0): Zone without valid block has non-zer=
+o write pointer. Reset the write pointer: wp[0x1300,0x8]
+[  171.496000][ T1555] F2FS-fs (dm-0): (0) : Unaligned zone reset attempted=
+ (block 280000 + 80000)
+[  171.505037][ T1555] F2FS-fs (dm-0): Discard zone failed:  (errno=3D-5)
 
-> 
->>>>>> As per upstream UFS driver,  voltage voting is not there and we vote only for enable/disable . 
->> Since UFS is the only client in Linux for this rail (L8A ), we don't 
->> need min and max range to support UFS 2.x and 3.x cards.
-> 
-> I would assume some reasonable range is always desired. Why it cannot be the wider range from both? 2.4 - 3.6?
+The patch replaced "sbi->log_blocksize - SECTOR_SHIFT" with
+"sbi->log_sectors_per_block". However, I think these two are not equal when=
+ the
+device has 4k logical block size. The former uses Linux kernel sector size =
+512
+byte. The latter use 512b sector size or 4kb sector size depending on the
+device. mkfs.f2fs obtains logical block size via BLKSSZGET ioctl from the d=
+evice
+and reflects it to the value sbi->log_sector_size_per_block. This causes
+unexpected write pointer calculations in check_zone_write_pointer(). This
+resulted in unexpected zone reset and the mount failure.
 
-Again - who said that? I am 100% sure that me, not you.
+I think this patch needs revert. What do you think?
 
-> 
-> Wider range cannot be mentioned in DT, For UFS 2.x range is 2.7 V to 3.6 V and for UFS 3.x range is 2.4V to 2.7V.
-> Giving the wider range will not set the correct voltage.
-
-So is this your reply?
-
-I don't see a problem in wider range...
-
-> 
-> For example: 
-> If the range is mentioned as 2.4V to 3.6V in DT and we have connected UFS 2.x device,  Since UFS driver is voting only for
-> regulator_enable(voltage is not being set) the voltage will be 2.4V(min voltage) from pmic driver which is wrong voltage for
-> UFS 2.x devices, which is violation of spec.
-
-So what is your solution? Remove constraints? Then who configures them?
-You rely on bootloader which is not what we want.
-
-Best regards,
-Krzysztof
-
+[1] https://lkml.kernel.org/linux-f2fs-devel/20230711050101.GA19128@lst.de/
+[2] https://lore.kernel.org/linux-f2fs-devel/20230804091556.2372567-1-shini=
+chiro.kawasaki@wdc.com/=
