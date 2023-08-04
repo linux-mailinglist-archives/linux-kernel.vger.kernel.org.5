@@ -2,55 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D20AF770AD7
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 23:26:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E760F770AB9
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 23:21:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231162AbjHDV0S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Aug 2023 17:26:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44040 "EHLO
+        id S230004AbjHDVVB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Aug 2023 17:21:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42672 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230422AbjHDV0K (ORCPT
+        with ESMTP id S229499AbjHDVU7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Aug 2023 17:26:10 -0400
-Received: from cloudserver094114.home.pl (cloudserver094114.home.pl [79.96.170.134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 751A2E60;
-        Fri,  4 Aug 2023 14:26:08 -0700 (PDT)
-Received: from localhost (127.0.0.1) (HELO v370.home.net.pl)
- by /usr/run/smtp (/usr/run/postfix/private/idea_relay_lmtp) via UNIX with SMTP (IdeaSmtpServer 5.2.0)
- id 3627b7821fbcc242; Fri, 4 Aug 2023 23:26:06 +0200
-Authentication-Results: v370.home.net.pl; spf=softfail (domain owner 
-   discourages use of this host) smtp.mailfrom=rjwysocki.net 
-   (client-ip=195.136.19.94; helo=[195.136.19.94]; 
-   envelope-from=rjw@rjwysocki.net; receiver=<UNKNOWN>)
-Received: from kreacher.localnet (unknown [195.136.19.94])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by v370.home.net.pl (Postfix) with ESMTPSA id 4E705661680;
-        Fri,  4 Aug 2023 23:26:06 +0200 (CEST)
-From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
-To:     Linux ACPI <linux-acpi@vger.kernel.org>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Michal Wilczynski <michal.wilczynski@intel.com>,
-        Zhang Rui <rui.zhang@intel.com>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
-Subject: [PATCH v4 07/10] ACPI: thermal: Use trip point table to register thermal zones
-Date:   Fri, 04 Aug 2023 23:18:10 +0200
-Message-ID: <1987843.usQuhbGJ8B@kreacher>
-In-Reply-To: <4878513.31r3eYUQgx@kreacher>
-References: <13318886.uLZWGnKmhe@kreacher> <4878513.31r3eYUQgx@kreacher>
+        Fri, 4 Aug 2023 17:20:59 -0400
+Received: from mail-qk1-x72f.google.com (mail-qk1-x72f.google.com [IPv6:2607:f8b0:4864:20::72f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13835B1
+        for <linux-kernel@vger.kernel.org>; Fri,  4 Aug 2023 14:20:56 -0700 (PDT)
+Received: by mail-qk1-x72f.google.com with SMTP id af79cd13be357-76ad8892d49so210203185a.1
+        for <linux-kernel@vger.kernel.org>; Fri, 04 Aug 2023 14:20:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1691184055; x=1691788855;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=R+n0XwgRUCBYf2v/4RICLfZrVX06sOWFrOWSc1o23EY=;
+        b=LMuRxuzPH6t80/VZd9NGC4a+uw8L0mEuI1TdIF8O6lJgpM01c9O8WtXCsxclOw3795
+         w8Dc2yworB6vfvSqAva+kWk8zgQ+Dmflk6SbZZRAW8QfBW91THGXvpEcHuVGOy53qIvs
+         BSAWCY1EySMrAg8jbdtP6JhYudlh+NHqE6vQtaCf49jPv2/eTQltk8jHKBuc3QqAtLQU
+         Sj6mA1jDOog3TWR28TPcEOP1gsj9lMOitNNTW+8zAsZm3a4Y+xOJ2nvQ5vsOk2WWceIk
+         IBFNV6G0g97drLGBtyiQZ/clCs0/XU/8MVifGGKoyQHuSP+RDMLKfeY7C6aQ5l+bYg6n
+         AVYw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691184055; x=1691788855;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=R+n0XwgRUCBYf2v/4RICLfZrVX06sOWFrOWSc1o23EY=;
+        b=MrwK/BARcKkPdQ9kG27SX5JQG95MH7VHQ7zFkOOHKkYWRrYmp7KykxO9EE0Ck3B2f5
+         /kaVZ13JV1sF240PwR0M8AIc/VPs6srfX7g9VLj/HsZIFuDjwLGQGJv5XPPPvuF0zDlu
+         V9CAWx+ZQ9GzWG//gwi8k4LNF3EEVcgorGi4H6gk/TBmjB2kACb/1s736ECh6zSJ0NFz
+         rq6wX+7RTEavGPIvLPzhCDMDK3xWBTnsg3Dux1eo6Y0+5yrhtrnpILsaLrUTBe8eeFS4
+         SwPIVmVp0tJA9SoGcblBSQh+LvLI9MtyeXiPs07Zdgf8Xpl1KdbcguHs9rxTDZx9qXrW
+         OPJA==
+X-Gm-Message-State: AOJu0YyAn1roeP8pHzD5ygffJJSLKziLtAYAK81bHyN3YQI6JxLWBgN1
+        6s373FuBRkRO1LwswBm5bPoE3uOcM+Q=
+X-Google-Smtp-Source: AGHT+IFzdt4urw+AVt2ALCVaR7x99vA6RibBcMvQ1ydqWcFDBWwXKKz1rpuqpW0MQNQysN9TLB+f1g==
+X-Received: by 2002:a05:620a:2807:b0:767:6fd:4c1 with SMTP id f7-20020a05620a280700b0076706fd04c1mr3442749qkp.77.1691184054885;
+        Fri, 04 Aug 2023 14:20:54 -0700 (PDT)
+Received: from alolivei-thinkpadt480s.gru.csb ([2804:14c:bf20:86d6:7871:f7e9:8a15:865a])
+        by smtp.gmail.com with ESMTPSA id l8-20020a37f508000000b00767cf270628sm905884qkk.131.2023.08.04.14.20.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 04 Aug 2023 14:20:54 -0700 (PDT)
+Date:   Fri, 4 Aug 2023 18:20:50 -0300
+From:   Alexon Oliveira <alexondunkan@gmail.com>
+To:     gregkh@linuxfoundation.org
+Cc:     martyn@welchs.me.uk, manohar.vanga@gmail.com,
+        linux-kernel@vger.kernel.org, linux-staging@lists.linux.dev
+Subject: [PATCH] staging: vme_user: fix check alignment should match open
+ parenthesis
+Message-ID: <ZM1rsu0M22HHtjfl@alolivei-thinkpadt480s.gru.csb>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="UTF-8"
-X-CLIENT-IP: 195.136.19.94
-X-CLIENT-HOSTNAME: 195.136.19.94
-X-VADE-SPAMSTATE: clean
-X-VADE-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedviedrkeeggdduheelucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecujffqoffgrffnpdggtffipffknecuuegrihhlohhuthemucduhedtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjughrpefhvfevufffkfgjfhgggfgtsehtufertddttdejnecuhfhrohhmpedftfgrfhgrvghlucflrdcuhgihshhotghkihdfuceorhhjfiesrhhjfiihshhotghkihdrnhgvtheqnecuggftrfgrthhtvghrnhepvdffueeitdfgvddtudegueejtdffteetgeefkeffvdeftddttdeuhfegfedvjefhnecukfhppeduleehrddufeeirdduledrleegnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehinhgvthepudelhedrudefiedrudelrdelgedphhgvlhhopehkrhgvrggthhgvrhdrlhhotggrlhhnvghtpdhmrghilhhfrhhomhepfdftrghfrggvlhculfdrucghhihsohgtkhhifdcuoehrjhifsehrjhifhihsohgtkhhirdhnvghtqedpnhgspghrtghpthhtohepjedprhgtphhtthhopehlihhnuhigqdgrtghpihesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopegurghnihgvlhdrlhgviigtrghnoheslhhinhgrrhhordhorhhgpdhrtghpthhtoheplhhinhhugidqkhgvrhhnvghlsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtoheplhhinhhugidqphhmsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghp
- thhtohepmhhitghhrghlrdifihhltgiihihnshhkihesihhnthgvlhdrtghomhdprhgtphhtthhopehruhhirdiihhgrnhhgsehinhhtvghlrdgtohhm
-X-DCC--Metrics: v370.home.net.pl 1024; Body=7 Fuz1=7 Fuz2=7
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -59,190 +69,55 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+Fixed all CHECK: Alignment should match open parenthesis
+as reported by checkpatch to adhere to the Linux kernel
+coding-style guidelines.
 
-Make the ACPI thermal driver use thermal_zone_device_register_with_trips()
-to register its thermal zones.
-
-For this purpose, make it create a trip point table that will be passed to
-thermal_zone_device_register_with_trips() as an argument.
-
-Also use the thermal_zone_update_trip_temp() helper introduced
-previously to update temperatures of the passive and active trip
-points after a trip points change notification from the platform
-firmware.
-
-Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+Signed-off-by: Alexon Oliveira <alexondunkan@gmail.com>
 ---
+ drivers/staging/vme_user/vme.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-v3 -> v4:
-   * Rework to use thermal_zone_update_trip_temp() for updating trip point
-     temperatures.
-   * Rebase on top of the new version of the previous patch.
-
-v2 -> v3:
-   * Fix error code path memory leak in acpi_thermal_register_thermal_zone().
-   * Notice that the critical and hot trips never change after initialization,
-     so don't add struct thermal_trip_ref to any of them.
-
-v1 -> v2:
-   * Use thermal_zone_device_lock()/thermal_zone_device_unlock() in
-     acpi_thermal_check_fn() explicitly and call __thermal_zone_device_update()
-     from there without unlocking the thermal zone.
-   * Export __thermal_zone_device_update() to modules (so it can be called by
-     the ACPI thermal code).
-
----
- drivers/acpi/thermal.c |   95 ++++++++++++++++++++++++++++++++++++++++++++-----
- 1 file changed, 87 insertions(+), 8 deletions(-)
-
-Index: linux-pm/drivers/acpi/thermal.c
-===================================================================
---- linux-pm.orig/drivers/acpi/thermal.c
-+++ linux-pm/drivers/acpi/thermal.c
-@@ -137,6 +137,7 @@ struct acpi_thermal {
- 	unsigned long polling_frequency;
- 	volatile u8 zombie;
- 	struct acpi_thermal_trips trips;
-+	struct thermal_trip *trip_table;
- 	struct acpi_handle_list devices;
- 	struct thermal_zone_device *thermal_zone;
- 	int kelvin_offset;	/* in millidegrees */
-@@ -190,6 +191,22 @@ static int acpi_thermal_get_polling_freq
- 	return 0;
- }
- 
-+static int acpi_thermal_temp(struct acpi_thermal *tz, int temp_deci_k)
-+{
-+	if (temp_deci_k == THERMAL_TEMP_INVALID)
-+		return THERMAL_TEMP_INVALID;
-+
-+	return deci_kelvin_to_millicelsius_with_offset(temp_deci_k,
-+						       tz->kelvin_offset);
-+}
-+
-+static void acpi_thermal_update_trip_temp(struct acpi_thermal *tz,
-+					  void *trip_priv, int temp_deci_k)
-+{
-+	thermal_zone_update_trip_temp(tz->thermal_zone, trip_priv,
-+				      acpi_thermal_temp(tz, temp_deci_k));
-+}
-+
- static void __acpi_thermal_trips_update(struct acpi_thermal *tz, int flag)
+diff --git a/drivers/staging/vme_user/vme.c b/drivers/staging/vme_user/vme.c
+index 977c81e2f3c7..741593d75a63 100644
+--- a/drivers/staging/vme_user/vme.c
++++ b/drivers/staging/vme_user/vme.c
+@@ -563,7 +563,7 @@ EXPORT_SYMBOL(vme_master_request);
+  *         returned.
+  */
+ int vme_master_set(struct vme_resource *resource, int enabled,
+-		   unsigned long long vme_base, unsigned long long size, 
++		   unsigned long long vme_base, unsigned long long size,
+ 		   u32 aspace, u32 cycle, u32 dwidth)
  {
- 	acpi_status status;
-@@ -403,7 +420,28 @@ static void __acpi_thermal_trips_update(
- static void acpi_thermal_adjust_thermal_zone(struct thermal_zone_device *thermal,
- 					     unsigned long data)
+ 	struct vme_bridge *bridge = find_bridge(resource);
+@@ -614,7 +614,7 @@ EXPORT_SYMBOL(vme_master_set);
+  *         device or if an invalid resource has been provided.
+  */
+ int vme_master_get(struct vme_resource *resource, int *enabled,
+-		   unsigned long long *vme_base, unsigned long long *size, 
++		   unsigned long long *vme_base, unsigned long long *size,
+ 		   u32 *aspace, u32 *cycle, u32 *dwidth)
  {
--	__acpi_thermal_trips_update(thermal_zone_device_priv(thermal), data);
-+	struct acpi_thermal *tz = thermal_zone_device_priv(thermal);
-+	int i;
-+
-+	__acpi_thermal_trips_update(tz, data);
-+
-+	if (tz->trips.passive.valid)
-+		acpi_thermal_update_trip_temp(tz, &tz->trips.passive,
-+					      tz->trips.passive.temperature);
-+	else
-+		thermal_zone_update_trip_temp(tz->thermal_zone,
-+					      &tz->trips.passive,
-+					      THERMAL_TEMP_INVALID);
-+
-+	for (i = 0; i < ACPI_THERMAL_MAX_ACTIVE; i++) {
-+		if (tz->trips.active[i].valid)
-+			acpi_thermal_update_trip_temp(tz, &tz->trips.active[i],
-+						      tz->trips.active[i].temperature);
-+		else
-+			thermal_zone_update_trip_temp(tz->thermal_zone,
-+						      &tz->trips.active[i],
-+						      THERMAL_TEMP_INVALID);
-+	}
- }
- 
- static void acpi_queue_thermal_check(struct acpi_thermal *tz)
-@@ -768,6 +806,7 @@ static void acpi_thermal_zone_sysfs_remo
- 
- static int acpi_thermal_register_thermal_zone(struct acpi_thermal *tz)
+ 	struct vme_bridge *bridge = find_bridge(resource);
+@@ -1045,7 +1045,7 @@ EXPORT_SYMBOL(vme_dma_pci_attribute);
+  * Return: Pointer to VME DMA attribute, NULL on failure.
+  */
+ struct vme_dma_attr *vme_dma_vme_attribute(unsigned long long address,
+-					   u32 aspace, u32 cycle, 
++					   u32 aspace, u32 cycle,
+ 					   u32 dwidth)
  {
-+	struct thermal_trip *trip;
- 	int passive_delay = 0;
- 	int trip_count = 0;
- 	int result;
-@@ -788,12 +827,50 @@ static int acpi_thermal_register_thermal
- 	for (i = 0; i < ACPI_THERMAL_MAX_ACTIVE && tz->trips.active[i].valid; i++)
- 		trip_count++;
+ 	struct vme_dma_attr *attributes;
+@@ -1841,7 +1841,7 @@ EXPORT_SYMBOL(vme_unregister_bridge);
+ /* - Driver Registration --------------------------------------------------- */
  
--	tz->thermal_zone = thermal_zone_device_register("acpitz", trip_count, 0,
--							tz, &acpi_thermal_zone_ops,
--							NULL, passive_delay,
--							tz->polling_frequency * 100);
--	if (IS_ERR(tz->thermal_zone))
--		return -ENODEV;
-+	trip = kcalloc(trip_count, sizeof(*trip), GFP_KERNEL);
-+	if (!trip)
-+		return -ENOMEM;
-+
-+	tz->trip_table = trip;
-+
-+	if (tz->trips.critical.valid) {
-+		trip->type = THERMAL_TRIP_CRITICAL;
-+		trip->temperature = acpi_thermal_temp(tz, tz->trips.critical.temperature);
-+		trip++;
-+	}
-+
-+	if (tz->trips.hot.valid) {
-+		trip->type = THERMAL_TRIP_HOT;
-+		trip->temperature = acpi_thermal_temp(tz, tz->trips.hot.temperature);
-+		trip++;
-+	}
-+
-+	if (tz->trips.passive.valid) {
-+		trip->type = THERMAL_TRIP_PASSIVE;
-+		trip->temperature = acpi_thermal_temp(tz, tz->trips.passive.temperature);
-+		trip->priv = &tz->trips.passive;
-+		trip++;
-+	}
-+
-+	for (i = 0; i < ACPI_THERMAL_MAX_ACTIVE && tz->trips.active[i].valid; i++) {
-+		trip->type = THERMAL_TRIP_ACTIVE;
-+		trip->temperature = acpi_thermal_temp(tz, tz->trips.active[i].temperature);
-+		trip->priv = &tz->trips.active[i];
-+		trip++;
-+	}
-+
-+	tz->thermal_zone = thermal_zone_device_register_with_trips("acpitz",
-+								   tz->trip_table,
-+								   trip_count,
-+								   0, tz,
-+								   &acpi_thermal_zone_ops,
-+								   NULL,
-+								   passive_delay,
-+								   tz->polling_frequency * 100);
-+	if (IS_ERR(tz->thermal_zone)) {
-+		result = PTR_ERR(tz->thermal_zone);
-+		goto free_trip_table;
-+	}
- 
- 	result = acpi_thermal_zone_sysfs_add(tz);
- 	if (result)
-@@ -821,6 +898,8 @@ remove_links:
- 	acpi_thermal_zone_sysfs_remove(tz);
- unregister_tzd:
- 	thermal_zone_device_unregister(tz->thermal_zone);
-+free_trip_table:
-+	kfree(tz->trip_table);
- 
- 	return result;
- }
-@@ -829,6 +908,7 @@ static void acpi_thermal_unregister_ther
+ static int __vme_register_driver_bus(struct vme_driver *drv,
+-				     struct vme_bridge *bridge, 
++				     struct vme_bridge *bridge,
+ 				     unsigned int ndevs)
  {
- 	acpi_thermal_zone_sysfs_remove(tz);
- 	thermal_zone_device_unregister(tz->thermal_zone);
-+	kfree(tz->trip_table);
- 	tz->thermal_zone = NULL;
- 	acpi_bus_detach_private_data(tz->device->handle);
- }
-
-
+ 	int err;
+-- 
+2.41.0
 
