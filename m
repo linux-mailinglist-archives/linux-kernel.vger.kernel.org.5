@@ -2,134 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 87DDD76FB57
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 09:45:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B076E76FB52
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 09:40:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234021AbjHDHpx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Aug 2023 03:45:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41850 "EHLO
+        id S231156AbjHDHkU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Aug 2023 03:40:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40532 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229882AbjHDHpv (ORCPT
+        with ESMTP id S229882AbjHDHkS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Aug 2023 03:45:51 -0400
-X-Greylist: delayed 432 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Fri, 04 Aug 2023 00:45:48 PDT
-Received: from honk.sigxcpu.org (honk.sigxcpu.org [24.134.29.49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A0374210
-        for <linux-kernel@vger.kernel.org>; Fri,  4 Aug 2023 00:45:48 -0700 (PDT)
-Received: from localhost (localhost [127.0.0.1])
-        by honk.sigxcpu.org (Postfix) with ESMTP id 5F95CFB03;
-        Fri,  4 Aug 2023 09:38:33 +0200 (CEST)
-Received: from honk.sigxcpu.org ([127.0.0.1])
-        by localhost (honk.sigxcpu.org [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id b8W9eJmQqxIH; Fri,  4 Aug 2023 09:38:32 +0200 (CEST)
-Date:   Fri, 4 Aug 2023 09:38:29 +0200
-From:   Guido =?iso-8859-1?Q?G=FCnther?= <agx@sigxcpu.org>
-To:     Randy Dunlap <rdunlap@infradead.org>
-Cc:     linux-kernel@vger.kernel.org, Aleksandr Nogikh <nogikh@google.com>,
-        Adam Ford <aford173@gmail.com>,
-        Maxime Ripard <maxime.ripard@bootlin.com>,
-        Robert Chiras <robert.chiras@nxp.com>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Neil Armstrong <neil.armstrong@linaro.org>,
-        Andrzej Hajda <andrzej.hajda@intel.com>,
-        Robert Foss <rfoss@kernel.org>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        dri-devel@lists.freedesktop.org
-Subject: Re: [PATCH] drm: bridge: for GENERIC_PHY_MIPI_DPHY also select
- GENERIC_PHY
-Message-ID: <ZMyq9e/On2wzSJWj@qwark.sigxcpu.org>
-References: <20230804030140.21395-1-rdunlap@infradead.org>
+        Fri, 4 Aug 2023 03:40:18 -0400
+Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 227B93ABE
+        for <linux-kernel@vger.kernel.org>; Fri,  4 Aug 2023 00:40:17 -0700 (PDT)
+Received: by mail-pl1-x62d.google.com with SMTP id d9443c01a7336-1bba54f7eefso19700855ad.1
+        for <linux-kernel@vger.kernel.org>; Fri, 04 Aug 2023 00:40:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1691134816; x=1691739616;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=W+S/9HOpKs+1jF9GSXyS733mVpklGbIJgO96+jDBzHA=;
+        b=fxgjU+IoMNHEYmoEJLl4XaO1ytDgzRbm9Mu+8tVQJDpnJwpOkW6RB8OONKaubdlpxn
+         RrpMvvKVPuWFxusmkY74T5X2o1qRTWu17iWmY56NydavR89C3npXYpl/lSib2eK0LgK8
+         yzo8ChMPoroZwEQlSkc+lPVGqKOeR4+DxMK8o=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691134816; x=1691739616;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=W+S/9HOpKs+1jF9GSXyS733mVpklGbIJgO96+jDBzHA=;
+        b=bvzQFdPXgTIlZ1EsYBjCnEpb7W/+vFgbg7OPq6UNnyfLvbSwWWghukDwTsUpnvq391
+         jFFr+HlhTRSr65zX6C07ThRTdz25kIByRf5TPB/WWx2KBQXg/mcLUn/YtNw915VHw8oB
+         E0Jmp3pdQ00ZmzXl3KJVqXQLx6RQUyZNO8KXKOLVtmAeWP60HfMvxG9glomxDznXkwb8
+         DfhX14jhBB3JOqetuX0xPW1VSBp8X8MEvZopthP5P5WUr7ICzP+CDiqhfh9U+Z0oG+rI
+         zfuQNLVqlLXnDqcudXcDSrMegdED4+t3b2KXFVrKGExzEbEF0lK21Qj5DTj4Vbkg1ug5
+         TTJg==
+X-Gm-Message-State: AOJu0YycToBq+WZ7xIXZDAHuwIjPriDzflGNfaeEKnUlOECGVZpdSASX
+        lPVcjOm3580gBtg1lePiR6mUfg==
+X-Google-Smtp-Source: AGHT+IFsmqQUMHGEjD/HoJ7z9cdXciny8xZesWp4+Fj8uiyFOUA9fz/ha/zaCCgefg4s9kErw4dayw==
+X-Received: by 2002:a17:90b:1e10:b0:268:94b:8d0 with SMTP id pg16-20020a17090b1e1000b00268094b08d0mr1404750pjb.11.1691134816644;
+        Fri, 04 Aug 2023 00:40:16 -0700 (PDT)
+Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id i4-20020a17090a64c400b0026307fa0442sm3577655pjm.49.2023.08.04.00.40.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 04 Aug 2023 00:40:15 -0700 (PDT)
+Date:   Fri, 4 Aug 2023 00:40:15 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Justin Stitt <justinstitt@google.com>
+Cc:     Kentaro Takeda <takedakn@nttdata.co.jp>,
+        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
+        Paul Moore <paul@paul-moore.com>,
+        James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        linux-security-module@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
+Subject: Re: [PATCH] tomoyo: refactor deprecated strncpy
+Message-ID: <202308040039.D9B575B3F@keescook>
+References: <20230803-security-tomoyo-v1-1-c53a17908d2f@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20230804030140.21395-1-rdunlap@infradead.org>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <20230803-security-tomoyo-v1-1-c53a17908d2f@google.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-On Thu, Aug 03, 2023 at 08:01:37PM -0700, Randy Dunlap wrote:
-> Three DRM bridge drivers select GENERIC_PHY_MIPI_DPHY when GENERIC_PHY
-> might not be set.  This causes Kconfig warnings and a build error.
+On Thu, Aug 03, 2023 at 09:33:44PM +0000, Justin Stitt wrote:
+> `strncpy` is deprecated for use on NUL-terminated destination strings [1].
 > 
-> WARNING: unmet direct dependencies detected for GENERIC_PHY_MIPI_DPHY
->   Depends on [n]: GENERIC_PHY [=n]
->   Selected by [y]:
->   - DRM_NWL_MIPI_DSI [=y] && DRM_BRIDGE [=y] && DRM [=y] && COMMON_CLK [=y] && OF [=y] && HAS_IOMEM [=y]
->   - DRM_SAMSUNG_DSIM [=y] && DRM [=y] && DRM_BRIDGE [=y] && COMMON_CLK [=y] && OF [=y] && HAS_IOMEM [=y]
+> A suitable replacement is `strscpy` [2] due to the fact that it
+> guarantees NUL-termination on its destination buffer argument which is
+> _not_ the case for `strncpy`!
 > 
-> (drm/bridge/cadence/Kconfig was found by inspection.)
+> It should be noted that the destination buffer is zero-initialized and
+> had a max length of `sizeof(dest) - 1`. There is likely _not_ a bug
+> present in the current implementation. However, by switching to
+> `strscpy` we get the benefit of no longer needing the `- 1`'s from the
+> string copy invocations on top of `strscpy` being a safer interface all
+> together.
 > 
-> aarch64-linux-ld: drivers/gpu/drm/bridge/samsung-dsim.o: in function `samsung_dsim_set_phy_ctrl':
-> drivers/gpu/drm/bridge/samsung-dsim.c:731: undefined reference to `phy_mipi_dphy_get_default_config_for_hsclk'
+> [1]: www.kernel.org/doc/html/latest/process/deprecated.html#strncpy-on-nul-terminated-strings
+> [2]: https://manpages.debian.org/testing/linux-manual-4.8/strscpy.9.en.html
 > 
-> Prevent these warnings and build error by also selecting GENERIC_PHY
-n> whenever selecting GENERIC_PHY_MIPI_DPHY.
-> 
-> Fixes: fced5a364dee ("drm/bridge: cdns: Convert to phy framework")
-> Fixes: 44cfc6233447 ("drm/bridge: Add NWL MIPI DSI host controller support")
-> Fixes: 171b3b1e0f8b ("drm: bridge: samsung-dsim: Select GENERIC_PHY_MIPI_DPHY")
-> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-> Reported-by: Aleksandr Nogikh <nogikh@google.com>
-> Link: lore.kernel.org/r/20230803144227.2187749-1-nogikh@google.com
-> Cc: Adam Ford <aford173@gmail.com>
-> Cc: Maxime Ripard <maxime.ripard@bootlin.com>
-> Cc: Guido Günther <agx@sigxcpu.org>
-> Cc: Robert Chiras <robert.chiras@nxp.com>
-> Cc: Sam Ravnborg <sam@ravnborg.org>
-> Cc: Neil Armstrong <neil.armstrong@linaro.org>
-> Cc: Andrzej Hajda <andrzej.hajda@intel.com>
-> Cc: Robert Foss <rfoss@kernel.org>
-> Cc: David Airlie <airlied@gmail.com>
-> Cc: Daniel Vetter <daniel@ffwll.ch>
-> Cc: dri-devel@lists.freedesktop.org
-> ---
->  drivers/gpu/drm/bridge/Kconfig         |    2 ++
->  drivers/gpu/drm/bridge/cadence/Kconfig |    1 +
->  2 files changed, 3 insertions(+)
-> 
-> diff -- a/drivers/gpu/drm/bridge/cadence/Kconfig b/drivers/gpu/drm/bridge/cadence/Kconfig
-> --- a/drivers/gpu/drm/bridge/cadence/Kconfig
-> +++ b/drivers/gpu/drm/bridge/cadence/Kconfig
-> @@ -4,6 +4,7 @@ config DRM_CDNS_DSI
->  	select DRM_KMS_HELPER
->  	select DRM_MIPI_DSI
->  	select DRM_PANEL_BRIDGE
-> +	select GENERIC_PHY
->  	select GENERIC_PHY_MIPI_DPHY
->  	depends on OF
->  	help
-> diff -- a/drivers/gpu/drm/bridge/Kconfig b/drivers/gpu/drm/bridge/Kconfig
-> --- a/drivers/gpu/drm/bridge/Kconfig
-> +++ b/drivers/gpu/drm/bridge/Kconfig
-> @@ -181,6 +181,7 @@ config DRM_NWL_MIPI_DSI
->  	select DRM_KMS_HELPER
->  	select DRM_MIPI_DSI
->  	select DRM_PANEL_BRIDGE
-> +	select GENERIC_PHY
->  	select GENERIC_PHY_MIPI_DPHY
->  	select MFD_SYSCON
->  	select MULTIPLEXER
-> @@ -227,6 +228,7 @@ config DRM_SAMSUNG_DSIM
->  	select DRM_KMS_HELPER
->  	select DRM_MIPI_DSI
->  	select DRM_PANEL_BRIDGE
-> +	select GENERIC_PHY
->  	select GENERIC_PHY_MIPI_DPHY
->  	help
->  	  The Samsung MIPI DSIM bridge controller driver.
-> 
+> Link: https://github.com/KSPP/linux/issues/90
+> Cc: linux-hardening@vger.kernel.org
+> Signed-off-by: Justin Stitt <justinstitt@google.com>
 
-For NWL:
+Thanks! This looks correct to me.
 
-Reviewed-by: Guido Günther <agx@sigxcpu.org>
+Reviewed-by: Kees Cook <keescook@chromium.org>
 
-Cheers,
-  -- Guido
+-- 
+Kees Cook
