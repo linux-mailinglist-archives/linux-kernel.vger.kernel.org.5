@@ -2,51 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1EEA176F70B
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 03:39:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5280676F70F
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 03:42:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231641AbjHDBj1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Aug 2023 21:39:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53696 "EHLO
+        id S232067AbjHDBmW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Aug 2023 21:42:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54764 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231542AbjHDBjT (ORCPT
+        with ESMTP id S230264AbjHDBmU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Aug 2023 21:39:19 -0400
-Received: from out30-131.freemail.mail.aliyun.com (out30-131.freemail.mail.aliyun.com [115.124.30.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8AEE544A6;
-        Thu,  3 Aug 2023 18:39:10 -0700 (PDT)
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R791e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045170;MF=xueshuai@linux.alibaba.com;NM=1;PH=DS;RN=15;SR=0;TI=SMTPD_---0Vp-Qx-N_1691113145;
-Received: from 30.240.114.112(mailfrom:xueshuai@linux.alibaba.com fp:SMTPD_---0Vp-Qx-N_1691113145)
-          by smtp.aliyun-inc.com;
-          Fri, 04 Aug 2023 09:39:07 +0800
-Message-ID: <10176239-78c1-e276-e74f-a6e79b9c0751@linux.alibaba.com>
-Date:   Fri, 4 Aug 2023 09:39:03 +0800
+        Thu, 3 Aug 2023 21:42:20 -0400
+Received: from mail-yw1-x1136.google.com (mail-yw1-x1136.google.com [IPv6:2607:f8b0:4864:20::1136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0853423F
+        for <linux-kernel@vger.kernel.org>; Thu,  3 Aug 2023 18:42:18 -0700 (PDT)
+Received: by mail-yw1-x1136.google.com with SMTP id 00721157ae682-5861116fd74so17889587b3.0
+        for <linux-kernel@vger.kernel.org>; Thu, 03 Aug 2023 18:42:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=sifive.com; s=google; t=1691113338; x=1691718138;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=giD5crJvVgFXxEOjUQ9Yq0Y5c2PK/y9XDLcfiurNQEY=;
+        b=bbPLdps+zGZvnWfC0ij+NMQEfOt2gNinAPJJZiO8Yzi1j5Ys7cz6KVf+cUn2GQlk0B
+         Eu7JkLy7WinuqqUb1Y3C4Ixg1DqX0pjHxLsthYxkM6N9hS/+u2Hav/Ox+44DG7ZkUGMR
+         x+C0nTaQtLMMnAMMQHlPvDdDdd6DDiuaNljvwRktma/vRkilHtbuMHq/qiNstSGMEWD3
+         1DxfBKwQSWt47850VXbktJMzOFBicXid6NjUyeplXK0+JMPJwGIRu5s1PFzzwPGwNuoo
+         oD2DUYJabV+jVXI7kZnoxVQxfJdIOfUN2VvkXtiFYuXvmbgwqV+aO/1qhRJqLu3hs0ih
+         TEEg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691113338; x=1691718138;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=giD5crJvVgFXxEOjUQ9Yq0Y5c2PK/y9XDLcfiurNQEY=;
+        b=TbZeqloE+gI03QPS3f0CsIyR8dpWWXVYVKojf9IWO+SIx2Ikhfz3B3ha2c9ClGWnub
+         yQx6wzyabQuErLHf92Hj5odO2yXU1Um445u8tyKO++b1a69dhmlFukybDLBOdJ4uAoKK
+         YCXtNNQ3IziOFpZxZHXVzob+st2fWQmy5n0KLjOXgSh+TzDQSi8Osxfoa8wnp3iGKy0z
+         P9EsYZ6kQKWmnQgW73WxJTmdv+aXJXYGAQut71GDW6khO3XVJWABSI5Qde0gPmuZ5ajx
+         oxC9PSA6l5dHw/EJ1BeUxKWPkhloJ4Aq2WUFz11tr7+wN4wm9P5D8emWJMMsOCl3KvPE
+         290w==
+X-Gm-Message-State: AOJu0YweEVrPfyxh7iyPR89llvOmKzygeVDjYKTOzzgPxi/beimuMYPc
+        PCiZ+JMIusf7XFJToByVRs+b3yfBnafkq+bMmbERkw==
+X-Google-Smtp-Source: AGHT+IE2GOuOWOrI3eLUWlcZE1w35uJr5Ss1GfYBoSJYqAQUdRHIocBAQZMyVMKMIgPWxo+ZI3IaojEWNQmnAmBj/Sw=
+X-Received: by 2002:a81:a545:0:b0:577:3eaa:8d97 with SMTP id
+ v5-20020a81a545000000b005773eaa8d97mr281414ywg.17.1691113338123; Thu, 03 Aug
+ 2023 18:42:18 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.13.1
-Subject: Re: [PATCH v6 3/4] drivers/perf: add DesignWare PCIe PMU driver
-Content-Language: en-US
-To:     Yicong Yang <yangyicong@huawei.com>,
-        Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-Cc:     yangyicong@hisilicon.com, chengyou@linux.alibaba.com,
-        kaishen@linux.alibaba.com, helgaas@kernel.org, will@kernel.org,
-        baolin.wang@linux.alibaba.com, robin.murphy@arm.com,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-pci@vger.kernel.org, rdunlap@infradead.org,
-        mark.rutland@arm.com, zhuo.song@linux.alibaba.com
-References: <20230606074938.97724-1-xueshuai@linux.alibaba.com>
- <20230606074938.97724-4-xueshuai@linux.alibaba.com>
- <31e2b012-3a29-d063-842d-e3f7736816e7@huawei.com>
- <20230727103929.00000544@Huawei.com>
- <12958abe-4bdb-8532-bf67-8e772ed2a9dd@linux.alibaba.com>
- <edc056aa-1c53-a31e-087f-6076b795d5cc@huawei.com>
-From:   Shuai Xue <xueshuai@linux.alibaba.com>
-In-Reply-To: <edc056aa-1c53-a31e-087f-6076b795d5cc@huawei.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-10.0 required=5.0 tests=BAYES_00,
-        ENV_AND_HDR_SPF_MATCH,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL
+References: <20230803085734.340-1-nylon.chen@sifive.com> <20230803-vehicular-leggings-2830239f818a@wendy>
+ <20230803-caretaker-voicing-e982f2334067@wendy>
+In-Reply-To: <20230803-caretaker-voicing-e982f2334067@wendy>
+From:   Nylon Chen <nylon.chen@sifive.com>
+Date:   Fri, 4 Aug 2023 09:42:06 +0800
+Message-ID: <CAHh=Yk9A3MP4Zgz53+s_ugvMtnv57igY=+Yccbp9Om9jBuxXqg@mail.gmail.com>
+Subject: Re: [PATCH v4 0/1] Change PWM-controlled LED pin active mode and algorithm
+To:     Conor Dooley <conor.dooley@microchip.com>
+Cc:     linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-riscv@lists.infradead.org, geert+renesas@glider.be,
+        pavel@ucw.cz, vincent.chen@sifive.com,
+        emil.renner.berthing@canonical.com, aou@eecs.berkeley.edu,
+        palmer@dabbelt.com, paul.walmsley@sifive.com,
+        krzysztof.kozlowski+dt@linaro.org, robh+dt@kernel.org,
+        conor@kernel.org, zong.li@sifive.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -54,131 +75,75 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Conor,
 
+Conor Dooley <conor.dooley@microchip.com> =E6=96=BC 2023=E5=B9=B48=E6=9C=88=
+3=E6=97=A5 =E9=80=B1=E5=9B=9B =E4=B8=8B=E5=8D=885:44=E5=AF=AB=E9=81=93=EF=
+=BC=9A
+>
+> Hey Nylon,
+>
+> (I yoinked the reply to 1/1 to here, as it makes more sense in this
+> context)
+>
+> > On Thu, Aug 03, 2023 at 10:15:10AM +0100, Conor Dooley wrote:
+> > > On Thu, Aug 03, 2023 at 04:57:33PM +0800, Nylon Chen wrote:
+> > > > According to the circuit diagram of User LEDs - RGB described in th=
+emanual hifive-unleashed-a00.pdf[0] and hifive-unmatched-schematics-v3.pdf[=
+1].
+> > > >
+> > > > The behavior of PWM is acitve-high.
+> > > >
+> > > > Removed patches: 1
+> > > > New patches: (none)
+> > > >
+> > > > Links:
+> > > > - [0]:  https://sifive.cdn.prismic.io/sifive/c52a8e32-05ce-4aaf-95c=
+8-7bf8453f8698_hifive-unleashed-a00-schematics-1.pdf
+> > > > - [1]:  https://sifive.cdn.prismic.io/sifive/6a06d6c0-6e66-49b5-8e9=
+e-e68ce76f4192_hifive-unmatched-schematics-v3.pdf
+> > > > - [2]:  https://sifive.cdn.prismic.io/sifive/1a82e600-1f93-4f41-b2d=
+8-86ed8b16acba_fu740-c000-manual-v1p6.pdf
+> > > >
+> > > > Changed in v4:
+> > > >  - Remove previous updates to the PWM algorithm.
+> > >
+> > > Why? I don't recall the conclusion on the previous version being that
+> > > that patch was not needed.
+> >
+> > I apologize for forgetting about this update earlier. Just now,
+> > I tried to pull rebase master and noticed that other developers seem
+> > to have made some fixes to the algorithm. Upon closer inspection, I
+> > found that they addressed the part we previously discussed with Emil
+> > and Uwe, such as "first pwm_apply_state."
+> >
+> > Therefore, my instinct tells me that they have already taken care of
+> > the issues we discussed before.
+>
+> I didn't see anything in linux-next that would solve this problem of
+> inversion. The last meaningful change is:
+>         commit 334c7b13d38321e47d1a51dba0bef9f4c403ec75
+>         Author:     Emil Renner Berthing <emil.renner.berthing@canonical.=
+com>
+>         AuthorDate: Wed Nov 9 12:37:24 2022 +0100
+>         Commit:     Thierry Reding <thierry.reding@gmail.com>
+>         CommitDate: Mon Jan 30 16:42:45 2023 +0100
+>
+>             pwm: sifive: Always let the first pwm_apply_state succeed
+>
+> which predates your v3 by quite a bit.
+>
+> > I will review the conflicting parts in the pwm-sifive.c code in my v4
+> > version once again to ensure there are no omissions. If I find any, I
+> > will submit v5 accordingly.
+>
+> And if this patch is okay in isolation, please reply here explaining
+> which commit fixed the algorithm, so that I can pick it up.
+This patch needs to be accompanied by modifications to the
+pwm_sifive_apply() function to make sense.
 
-On 2023/8/1 19:46, Yicong Yang wrote:
-> On 2023/7/28 20:41, Shuai Xue wrote:
->>
->>
->> On 2023/7/27 17:39, Jonathan Cameron wrote:
->>> On Tue, 6 Jun 2023 23:14:07 +0800
->>> Yicong Yang <yangyicong@huawei.com> wrote:
->>>
->>>> On 2023/6/6 15:49, Shuai Xue wrote:
->>>>> This commit adds the PCIe Performance Monitoring Unit (PMU) driver support
->>>>> for T-Head Yitian SoC chip. Yitian is based on the Synopsys PCI Express
->>>>> Core controller IP which provides statistics feature. The PMU is not a PCIe
->>>>> Root Complex integrated End Point(RCiEP) device but only register counters
->>>>> provided by each PCIe Root Port.
->>>>>
->>>>> To facilitate collection of statistics the controller provides the
->>>>> following two features for each Root Port:
->>>>>
->>>>> - Time Based Analysis (RX/TX data throughput and time spent in each
->>>>>   low-power LTSSM state)
->>>>> - Event counters (Error and Non-Error for lanes)
->>>>>
->>>>> Note, only one counter for each type and does not overflow interrupt.
->>>>>
->>>>> This driver adds PMU devices for each PCIe Root Port. And the PMU device is
->>>>> named based the BDF of Root Port. For example,
->>>>>
->>>>>     30:03.0 PCI bridge: Device 1ded:8000 (rev 01)
->>>>>
->>>>> the PMU device name for this Root Port is dwc_rootport_3018.
->>>>>
->>>>> Example usage of counting PCIe RX TLP data payload (Units of 16 bytes)::
->>>>>
->>>>>     $# perf stat -a -e dwc_rootport_3018/Rx_PCIe_TLP_Data_Payload/
->>>>>
->>>>> average RX bandwidth can be calculated like this:
->>>>>
->>>>>     PCIe TX Bandwidth = PCIE_TX_DATA * 16B / Measure_Time_Window
->>>>>
->>>>> Signed-off-by: Shuai Xue <xueshuai@linux.alibaba.com>
->>>>> Reported-by: kernel test robot <lkp@intel.com>
->>>>> Link: https://lore.kernel.org/oe-kbuild-all/202305170639.XU3djFZX-lkp@intel.com/
->>>>> Reviewed-by: Baolin Wang <baolin.wang@linux.alibaba.com>
->>>
->>> I'll review on top to avoid any duplication with Yicong.
->>
->> Thank you! It also served as a reminder that I missed Yicong's email. It appears
->> that Thunderbird mistakenly moved his email to the junk folder, resulting in me
->> overlooking it.
->>
->>>
->>> Note I've cropped the stuff neither of us commented on so it's
->>> easier to spot the feedback.
->>
->> Thank you for noting that. My feedback is replied inline.
->>
->>>
->>> Jonathan
->>>
->>>>> ---
->>>>>  drivers/perf/Kconfig        |   7 +
->>>>>  drivers/perf/Makefile       |   1 +
->>>>>  drivers/perf/dwc_pcie_pmu.c | 706 ++++++++++++++++++++++++++++++++++++
->>>>>  3 files changed, 714 insertions(+)
->>>>>  create mode 100644 drivers/perf/dwc_pcie_pmu.c
->>>>>
->>>>> diff --git a/drivers/perf/Kconfig b/drivers/perf/Kconfig
->>>>> index 711f82400086..6ff3921d7a62 100644
->>>>> --- a/drivers/perf/Kconfig
->>>>> +++ b/drivers/perf/Kconfig
->>>>> @@ -209,6 +209,13 @@ config MARVELL_CN10K_DDR_PMU
->>>>>  	  Enable perf support for Marvell DDR Performance monitoring
->>>>>  	  event on CN10K platform.
->>>>>  
->>>>> +config DWC_PCIE_PMU
->>>>> +	tristate "Enable Synopsys DesignWare PCIe PMU Support"
->>>>> +	depends on (ARM64 && PCI)
->>>>> +	help
->>>>> +	  Enable perf support for Synopsys DesignWare PCIe PMU Performance
->>>>> +	  monitoring event on Yitian 710 platform.
->>>
->>> The documentation kind of implies this isn't platform specific.
->>> If some parts are (such as which events exist) then you may want to push
->>> that to userspace / perftool with appropriate matching against specific SoC.
->>>
->>> If it is generic, then change this text to "event on platform including the Yitian 710."
->>
->> It is generic without any platform specific, so I will change it as you expected.
->>
->>>
->>>>> +
->>>>>  source "drivers/perf/arm_cspmu/Kconfig"
->>>>>  
->>>>>  source "drivers/perf/amlogic/Kconfig"
->>>
->>>>> new file mode 100644
->>>>> index 000000000000..8bfcf6e0662d
->>>>> --- /dev/null
->>>>> +++ b/drivers/perf/dwc_pcie_pmu.c
->>>>> @@ -0,0 +1,706 @@
->>>
->>> ...
->>>
->>>>> +
->>>>> +struct dwc_pcie_pmu {
->>>>> +	struct pci_dev		*pdev;		/* Root Port device */  
->>>>
->>>> If the root port removed after the probe of this PCIe PMU driver, we'll access the NULL
->>>> pointer. I didn't see you hold the root port to avoid the removal.
->>
->> Do you mean that I should have a reference count of rootport by pci_dev_get() when allocating
->> pcie_pmu?
->>
->>      pcie_pmu->pdev = pci_dev_get();
-> 
-> It could be one option, but will block the removal of device from userspace. Another option
-> is to register a PCI bus notifier then on removal/added the driver can get notified and handle
-> it, for example, remove the related PMU on the removal of the root ports.
-
-I see, but can root port be removed from userspace? I check the hotplug slot interface, no root
-port is available to power off.
-
-Thank you.
-
-Best Regards,
-Shuai
+I will double-check and review the previous discussions to ensure
+that. Thank you for your response.
+>
+> Thanks,
+> Conor.
