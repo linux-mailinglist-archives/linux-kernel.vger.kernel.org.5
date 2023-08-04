@@ -2,146 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D15BF76F6F7
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 03:30:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 14C7776F701
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 03:34:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232536AbjHDBaK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Aug 2023 21:30:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50312 "EHLO
+        id S231160AbjHDBeH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Aug 2023 21:34:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52268 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232056AbjHDB3z (ORCPT
+        with ESMTP id S229618AbjHDBeF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Aug 2023 21:29:55 -0400
-Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 879DD4486;
-        Thu,  3 Aug 2023 18:29:53 -0700 (PDT)
-Received: from kwepemi500006.china.huawei.com (unknown [172.30.72.55])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4RH7Px02ryzVjyq;
-        Fri,  4 Aug 2023 09:28:04 +0800 (CST)
-Received: from localhost.localdomain (10.67.165.2) by
- kwepemi500006.china.huawei.com (7.221.188.68) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.27; Fri, 4 Aug 2023 09:29:51 +0800
-From:   Junxian Huang <huangjunxian6@hisilicon.com>
-To:     <jgg@nvidia.com>, <leon@kernel.org>
-CC:     <linux-rdma@vger.kernel.org>, <linuxarm@huawei.com>,
-        <linux-kernel@vger.kernel.org>, <huangjunxian6@hisilicon.com>
-Subject: [PATCH for-rc 4/4] RDMA/hns: Fix CQ and QP cache affinity
-Date:   Fri, 4 Aug 2023 09:27:11 +0800
-Message-ID: <20230804012711.808069-5-huangjunxian6@hisilicon.com>
-X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20230804012711.808069-1-huangjunxian6@hisilicon.com>
-References: <20230804012711.808069-1-huangjunxian6@hisilicon.com>
+        Thu, 3 Aug 2023 21:34:05 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5DA6423E;
+        Thu,  3 Aug 2023 18:34:03 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 6341A61E6F;
+        Fri,  4 Aug 2023 01:34:03 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C5543C433CD;
+        Fri,  4 Aug 2023 01:34:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1691112842;
+        bh=1SwYgmcz/V5Q6y+G1h8awfAW/klFKCRtK/XqoMFZvug=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=GxEH1cw6+ctR0156enB7JXCNRkchk9kZC1gkuD4bA4vEnKqQS4ccLZ1YMd7D1p5EG
+         2ImZwHTc6kSyAAjB6w/NPfzTQc79NOMGDuyxEqxlclQnRYo+4e2Cvjy8aGCCj7L1HH
+         qry1skhyfR1ALyXmaknb2WE10o8Db2IWfQNpW3WcyjuCxmDcOfiC5NsUhTCDTXBMQm
+         BwVhJF7jo80bRBQlVes1v+7zoisfEoQvgX7ZhlvVn8zLorP9dZG5f009IynqactQcA
+         1zsdwshaml/IWUtL0EeQQ9Pak6iOAiD1DD6iNQqsV69o8HPHQC+TaO8H0bxIC1rNLR
+         0bbHG/HZuKFhw==
+Received: by mail-ed1-f51.google.com with SMTP id 4fb4d7f45d1cf-52256241c66so3416488a12.1;
+        Thu, 03 Aug 2023 18:34:02 -0700 (PDT)
+X-Gm-Message-State: AOJu0YxQ12ftR389yZv8CMTxWNQkUHzkn9CAWZT+VhyzLd2FUYA6Ny0G
+        fnQKvLEmjEh4hzLvtYG3L2HteD/iRzukV1Sbkq4=
+X-Google-Smtp-Source: AGHT+IHljYyOh8BVbVHLwghUBVKH/dGvZjYtQlDLeqXmhB4C42aKxfeiLiwn9XffenLKPupGWw5K+WsLtpVRT/UuebA=
+X-Received: by 2002:a05:6402:3507:b0:522:ddeb:cdcb with SMTP id
+ b7-20020a056402350700b00522ddebcdcbmr419084edd.18.1691112840973; Thu, 03 Aug
+ 2023 18:34:00 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.67.165.2]
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
- kwepemi500006.china.huawei.com (7.221.188.68)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <20210514200743.3026725-1-alex.kogan@oracle.com>
+ <20210514200743.3026725-4-alex.kogan@oracle.com> <ZMrjPWdWhEhwpZDo@gmail.com>
+ <20230803085004.GF212435@hirez.programming.kicks-ass.net> <CAJF2gTQFZEpHK45hd9HXxHxJc4gaCuDQ4wZ2adDzHwGQjA6VFw@mail.gmail.com>
+ <20230803115610.GC214207@hirez.programming.kicks-ass.net>
+In-Reply-To: <20230803115610.GC214207@hirez.programming.kicks-ass.net>
+From:   Guo Ren <guoren@kernel.org>
+Date:   Fri, 4 Aug 2023 09:33:48 +0800
+X-Gmail-Original-Message-ID: <CAJF2gTQkZ_dVgrdyxRjb=HHgMkBxCkJy0cX_C-FF_ZSQ1ODj-g@mail.gmail.com>
+Message-ID: <CAJF2gTQkZ_dVgrdyxRjb=HHgMkBxCkJy0cX_C-FF_ZSQ1ODj-g@mail.gmail.com>
+Subject: Re: [PATCH v15 3/6] locking/qspinlock: Introduce CNA into the slow
+ path of qspinlock
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Alex Kogan <alex.kogan@oracle.com>, linux@armlinux.org.uk,
+        mingo@redhat.com, will.deacon@arm.com, arnd@arndb.de,
+        longman@redhat.com, linux-arch@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        tglx@linutronix.de, bp@alien8.de, hpa@zytor.com, x86@kernel.org,
+        guohanjun@huawei.com, jglauber@marvell.com,
+        steven.sistare@oracle.com, daniel.m.jordan@oracle.com,
+        dave.dice@oracle.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Chengchang Tang <tangchengchang@huawei.com>
+On Thu, Aug 3, 2023 at 7:57=E2=80=AFPM Peter Zijlstra <peterz@infradead.org=
+> wrote:
+>
+> On Thu, Aug 03, 2023 at 06:28:51PM +0800, Guo Ren wrote:
+> > On Thu, Aug 3, 2023 at 4:50=E2=80=AFPM Peter Zijlstra <peterz@infradead=
+.org> wrote:
+> > >
+> > > On Wed, Aug 02, 2023 at 07:14:05PM -0400, Guo Ren wrote:
+> > >
+> > > > The pv_ops is belongs to x86 custom frame work, and it prevent othe=
+r
+> > > > architectures connect to the CNA spinlock.
+> > >
+> > > static_call() exists as a arch neutral variant of this.
+> > Emm... we have used static_call() in the riscv queued_spin_lock_:
+> > https://lore.kernel.org/all/20230802164701.192791-20-guoren@kernel.org/
+>
+> Yeah, I think I saw that land in the INBOX, just haven't had time to
+> look at it.
+>
+> > But we met a compile problem:
+> >
+> >   GEN     .vmlinux.objs
+> >   MODPOST Module.symvers
+> > ERROR: modpost: "__SCK__pv_queued_spin_unlock" [arch/riscv/kvm/kvm.ko]
+> > undefined!
+> > ERROR: modpost: "__SCK__pv_queued_spin_unlock"
+> > [kernel/locking/locktorture.ko] undefined!
+> > ERROR: modpost: "__SCK__pv_queued_spin_unlock" [mm/z3fold.ko] undefined=
+!
+> > ERROR: modpost: "__SCK__pv_queued_spin_unlock"
+> > [fs/nfs_common/grace.ko] undefined!
+> > ERROR: modpost: "__SCK__pv_queued_spin_unlock" [fs/quota/quota_v1.ko] u=
+ndefined!
+> > ERROR: modpost: "__SCK__pv_queued_spin_unlock" [fs/quota/quota_v2.ko] u=
+ndefined!
+> > ERROR: modpost: "__SCK__pv_queued_spin_unlock"
+> > [fs/quota/quota_tree.ko] undefined!
+> > ERROR: modpost: "__SCK__pv_queued_spin_unlock" [fs/fuse/virtiofs.ko] un=
+defined!
+> > ERROR: modpost: "__SCK__pv_queued_spin_unlock" [fs/dlm/dlm.ko] undefine=
+d!
+> > ERROR: modpost: "__SCK__pv_queued_spin_unlock" [fs/fscache/fscache.ko]
+> > undefined!
+> > WARNING: modpost: suppressed 839 unresolved symbol warnings because
+> > there were too many)
+> > /home/guoren/source/kernel/linux/scripts/Makefile.modpost:144: recipe
+> > for target 'Module.symvers' failed
+> >
+> > Our solution is:
+> > EXPORT_SYMBOL(__SCK__pv_queued_spin_unlock);
+> >
+> > What do you think about it?
+>
+> Could be you're not using static_call_mod() to go with
+> EXPORT_STATIC_CALL_TRAMP()
+Thx, that's what I want.
 
-Currently, the affinity between QP cache and CQ cache is not
-considered when assigning QPN, it will affect the message rate of HW.
+>
+> > > > I'm working on riscv qspinlock on sg2042 64 cores 2/4 NUMA nodes
+> > > > platforms. Here are the patches about riscv CNA qspinlock:
+> > > > https://lore.kernel.org/linux-riscv/20230802164701.192791-19-guoren=
+@kernel.org/
+> > > >
+> > > > What's the next plan for this patch series? I think the two-queue d=
+esign
+> > > > has satisfied most platforms with two NUMA nodes.
+> > >
+> > > What has been your reason for working on CNA? What lock has been so
+> > > contended you need this?
+> > I wrote the reason here:
+> > https://lore.kernel.org/all/20230802164701.192791-1-guoren@kernel.org/
+> >
+> > The target platform is: https://www.sophon.ai/
+> >
+> > The two NUMA nodes platform has come out, so we want to measure the
+> > benefit of CNA qspinlock.
+>
+> CNA should only show a benefit when there is strong inter-node
+> contention, and in that case it is typically best to fix the kernel side
+> locking.
+>
+> Hence the question as to what lock prompted you to look at this.
+I met the long lock queue situation when the hardware gave an overly
+aggressive store queue merge buffer delay mechanism. See:
+https://lore.kernel.org/linux-riscv/20230802164701.192791-8-guoren@kernel.o=
+rg/
 
-Allocate QPN from QP cache with better CQ affinity to get better
-performance.
+This also let me consider improving the efficiency of the long lock
+queue release. For example, if the queue is like this:
 
-Fixes: 71586dd20010 ("RDMA/hns: Create QP with selected QPN for bank load balance")
-Signed-off-by: Chengchang Tang <tangchengchang@huawei.com>
-Signed-off-by: Junxian Huang <huangjunxian6@hisilicon.com>
----
- drivers/infiniband/hw/hns/hns_roce_device.h |  1 +
- drivers/infiniband/hw/hns/hns_roce_qp.c     | 28 ++++++++++++++++-----
- 2 files changed, 23 insertions(+), 6 deletions(-)
+(Node0 cpu0) -> (Node1 cpu64) -> (Node0 cpu1) -> (Node1 cpu65) ->
+(Node0 cpu2) -> (Node1 cpu66) -> ...
 
-diff --git a/drivers/infiniband/hw/hns/hns_roce_device.h b/drivers/infiniband/hw/hns/hns_roce_device.h
-index 84239b907de2..bb94eb076858 100644
---- a/drivers/infiniband/hw/hns/hns_roce_device.h
-+++ b/drivers/infiniband/hw/hns/hns_roce_device.h
-@@ -97,6 +97,7 @@
- #define HNS_ROCE_CQ_BANK_NUM 4
- 
- #define CQ_BANKID_SHIFT 2
-+#define CQ_BANKID_MASK GENMASK(1, 0)
- 
- enum {
- 	SERV_TYPE_RC,
-diff --git a/drivers/infiniband/hw/hns/hns_roce_qp.c b/drivers/infiniband/hw/hns/hns_roce_qp.c
-index d855a917f4cf..cdc1c6de43a1 100644
---- a/drivers/infiniband/hw/hns/hns_roce_qp.c
-+++ b/drivers/infiniband/hw/hns/hns_roce_qp.c
-@@ -170,14 +170,29 @@ static void hns_roce_ib_qp_event(struct hns_roce_qp *hr_qp,
- 	}
- }
- 
--static u8 get_least_load_bankid_for_qp(struct hns_roce_bank *bank)
-+static u8 get_affinity_cq_bank(u8 qp_bank)
- {
--	u32 least_load = bank[0].inuse;
-+	return (qp_bank >> 1) & CQ_BANKID_MASK;
-+}
-+
-+static u8 get_least_load_bankid_for_qp(struct ib_qp_init_attr *init_attr,
-+					struct hns_roce_bank *bank)
-+{
-+#define INVALID_LOAD_QPNUM 0xFFFFFFFF
-+	struct ib_cq *scq = init_attr->send_cq;
-+	u32 least_load = INVALID_LOAD_QPNUM;
-+	unsigned long cqn = 0;
- 	u8 bankid = 0;
- 	u32 bankcnt;
- 	u8 i;
- 
--	for (i = 1; i < HNS_ROCE_QP_BANK_NUM; i++) {
-+	if (scq)
-+		cqn = to_hr_cq(scq)->cqn;
-+
-+	for (i = 0; i < HNS_ROCE_QP_BANK_NUM; i++) {
-+		if (scq && (get_affinity_cq_bank(i) != (cqn & CQ_BANKID_MASK)))
-+			continue;
-+
- 		bankcnt = bank[i].inuse;
- 		if (bankcnt < least_load) {
- 			least_load = bankcnt;
-@@ -209,7 +224,8 @@ static int alloc_qpn_with_bankid(struct hns_roce_bank *bank, u8 bankid,
- 
- 	return 0;
- }
--static int alloc_qpn(struct hns_roce_dev *hr_dev, struct hns_roce_qp *hr_qp)
-+static int alloc_qpn(struct hns_roce_dev *hr_dev, struct hns_roce_qp *hr_qp,
-+		     struct ib_qp_init_attr *init_attr)
- {
- 	struct hns_roce_qp_table *qp_table = &hr_dev->qp_table;
- 	unsigned long num = 0;
-@@ -220,7 +236,7 @@ static int alloc_qpn(struct hns_roce_dev *hr_dev, struct hns_roce_qp *hr_qp)
- 		num = 1;
- 	} else {
- 		mutex_lock(&qp_table->bank_mutex);
--		bankid = get_least_load_bankid_for_qp(qp_table->bank);
-+		bankid = get_least_load_bankid_for_qp(init_attr, qp_table->bank);
- 
- 		ret = alloc_qpn_with_bankid(&qp_table->bank[bankid], bankid,
- 					    &num);
-@@ -1082,7 +1098,7 @@ static int hns_roce_create_qp_common(struct hns_roce_dev *hr_dev,
- 		goto err_buf;
- 	}
- 
--	ret = alloc_qpn(hr_dev, hr_qp);
-+	ret = alloc_qpn(hr_dev, hr_qp, init_attr);
- 	if (ret) {
- 		ibdev_err(ibdev, "failed to alloc QPN, ret = %d.\n", ret);
- 		goto err_qpn;
--- 
-2.30.0
+Then every mcs_unlock would cause a cross-NUMA transaction. But if we
+could make the queue like this:
 
+(Node0 cpu0) -> (Node0 cpu1) -> (Node0 cpu2) -> (Node1 cpu65) ->
+(Node1 cpu66) -> (Node1 cpu64) -> ...
+
+Only one cross-NUMA transaction is needed. Although it would cause
+starvation problems, qspinlock.numa_spinlock_threshold_ns could give a
+basic guarantee.
+
+--=20
+Best Regards
+ Guo Ren
