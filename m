@@ -2,72 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3DFED76FC14
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 10:33:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D3A9476FC17
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 10:35:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232068AbjHDIdi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Aug 2023 04:33:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36226 "EHLO
+        id S232607AbjHDIfW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Aug 2023 04:35:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36736 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229841AbjHDIdg (ORCPT
+        with ESMTP id S229547AbjHDIfT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Aug 2023 04:33:36 -0400
-Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B38C30D7
-        for <linux-kernel@vger.kernel.org>; Fri,  4 Aug 2023 01:33:34 -0700 (PDT)
-Received: by mail-lf1-x136.google.com with SMTP id 2adb3069b0e04-4fe1344b707so2962069e87.1
-        for <linux-kernel@vger.kernel.org>; Fri, 04 Aug 2023 01:33:34 -0700 (PDT)
+        Fri, 4 Aug 2023 04:35:19 -0400
+Received: from mail-ej1-x661.google.com (mail-ej1-x661.google.com [IPv6:2a00:1450:4864:20::661])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8433D3A85
+        for <linux-kernel@vger.kernel.org>; Fri,  4 Aug 2023 01:35:16 -0700 (PDT)
+Received: by mail-ej1-x661.google.com with SMTP id a640c23a62f3a-99bcc0adab4so259638166b.2
+        for <linux-kernel@vger.kernel.org>; Fri, 04 Aug 2023 01:35:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1691138013; x=1691742813;
-        h=content-transfer-encoding:mime-version:date:message-id:subject
-         :references:in-reply-to:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=N6nwwHLkVG+OtVOcxb9BDvvn6MafDWFcOyabImoFU+A=;
-        b=KBmq3vL5fNLVwTa2+FypT8jrqb/g0EPTJ0TXq7MBZHYuDaO8AOPDLQvuYxTnZpqs9a
-         lM2eY0uKw3jxL4Hivc5wAEY+5ITe4Or1zycqN35knpYLItevTVQhJTj7QMw7lG/9iG/q
-         iP9G2m8Ml297DZntW2QiGm9kLraT/4BmBSVz4vXou6HpmjuUhrkWZ+rqc8RrBSDHuOgX
-         qymE+pHPfvk5x+EzKSpPTntei2KIqWWmpFHAW8f07ZovbOpBPTPSTnkJBwfgMxIvvJB5
-         hF6To5tCf8s05szuXYDeUsc08HXMVi4GIp76nSPKoZ5CS+3HNTzALHTMT8B/5mH4eMEV
-         t0Tg==
+        d=flowbird.group; s=google; t=1691138115; x=1691742915;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=GSVTdC1th3Ukx8AgC8lNqpynQmQtELOulnR7M8l/f7M=;
+        b=KOwPaz7gZkyWZPuu2uMYiRqp4NRH9rSvMOyZmicVUYzhf96luS1dtfsdjKlQ/9wdNK
+         Kg3ZNGMcr8xDjqht23BvMyOFPdrBlVEGnaCBs07jHmJ1btj3A3ZRMn9KJ0M1aA8vrbB3
+         MnRAHEQW3urPDuCU3wGK/c/nJRezsALhpmZsadtxzMF/dC5LnsdhyvEFukkv1TeFmm0d
+         mJyUeIhfxp5Y5whOrJyyulpKo8G+XmYtNNMVjj4wKJBrssHP7dyXJwzKHPOTSVfSupBy
+         b8F0Gt1qvAMTx8EWz9TTOel4kHY0Y/PxpwQTx62uDtAEyh9VebmWUmg1HlRnvEcnFQeU
+         RL/w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691138013; x=1691742813;
-        h=content-transfer-encoding:mime-version:date:message-id:subject
-         :references:in-reply-to:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=N6nwwHLkVG+OtVOcxb9BDvvn6MafDWFcOyabImoFU+A=;
-        b=TKPcUqkuaq9nll11WTa0UIOFkH9Hdqw3/SkCxuiSAC12toEIy45RsYrnsiNAZMhEXT
-         Ki5bKobZu6msw6WM7hoVBpdKkri/l6zssoZNG8MoBFHMQycS1vosGWDyLSlV8fy6esDB
-         fHlWeoFshZ0jYTpHr4aQ+o2nYyS1sLYXIRc7Wn1+hKwNxgYz3fEkQ3wunVwp0JTbdB9Z
-         j0JC3MCGZtiRMkF+K0Isbp61F+ETUdmtnf51U75rN4giQmhkBxGPLhNgAuEXZor3aI2r
-         y0CQ6TaUO6+j5+iVM+EprvH+4dd3GdnccroNZRZYQhZppcwrYC8iCCYQC8FFlsUsdzuE
-         RwUw==
-X-Gm-Message-State: AOJu0Yzra58lcnELakgELD/03U8WHPqRcLv13qJDMpE0DaPd4bO2x1ew
-        JI+a8PR9+I/Ua7C7RNNuWSMeHw==
-X-Google-Smtp-Source: AGHT+IEMeJXfONqMoY3iVQdO66rqCDGbo3R40rjhpbKanJglhxYE5V5UlpOohZC6WXxoVCJPbivftA==
-X-Received: by 2002:a19:9116:0:b0:4fb:78b1:1cd4 with SMTP id t22-20020a199116000000b004fb78b11cd4mr692530lfd.49.1691138012596;
-        Fri, 04 Aug 2023 01:33:32 -0700 (PDT)
-Received: from arrakeen.starnux.net ([2a01:e0a:982:cbb0:52eb:f6ff:feb3:451a])
-        by smtp.gmail.com with ESMTPSA id y16-20020adff150000000b0031762e89f94sm1880871wro.117.2023.08.04.01.33.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 04 Aug 2023 01:33:32 -0700 (PDT)
-From:   Neil Armstrong <neil.armstrong@linaro.org>
-To:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        Sandor Yu <Sandor.yu@nxp.com>
-Cc:     andrzej.hajda@intel.com, rfoss@kernel.org,
-        Laurent.pinchart@ideasonboard.com, jonas@kwiboo.se,
-        jernej.skrabec@gmail.com, adrian.larumbe@collabora.com,
-        treding@nvidia.com, the.cheaterman@gmail.com,
-        l.stach@pengutronix.de, ville.syrjala@linux.intel.com,
-        cychiang@chromium.org, shengjiu.wang@nxp.com
-In-Reply-To: <20230804061145.2824843-1-Sandor.yu@nxp.com>
-References: <20230804061145.2824843-1-Sandor.yu@nxp.com>
-Subject: Re: [PATCH v2] drm: bridge: dw_hdmi: Fix ELD is not updated issue
-Message-Id: <169113801157.3169525.1095046691218420995.b4-ty@linaro.org>
-Date:   Fri, 04 Aug 2023 10:33:31 +0200
+        d=1e100.net; s=20221208; t=1691138115; x=1691742915;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=GSVTdC1th3Ukx8AgC8lNqpynQmQtELOulnR7M8l/f7M=;
+        b=jJ/Y/6+HQ/4oMSMNftFihUHTpmWThIWkHJYM9xdzg8tB4SgGk89PlZoh4QkZ4O0675
+         Y06A4YJGMjJGuO0lkDLt+xNPvP4UkQdCpRBUj1RWQUEHk2HVChiUuS1cGibuVpuFJ8bK
+         x9HCyQ3dCBarP3D15bQayyPIcl/YPMxsflQHkRpK0TyE/JJYdV9HntyUiCg+iDrc69Mz
+         Fm2VaqEQ59aCN2Q8a/RdN2Sv9I8vwb6Qa8PowFlKrcePRLPliteKFNDZ8RwDiBOYWsxj
+         PcWw3ZZ/cyJB1zkDKJHBPMdNGs7ttwVosireVj94cGnBve0hErPHYGerBJOpJfOCQHl5
+         OcgA==
+X-Gm-Message-State: AOJu0YwmqZqwH5UhHhElgBQLwJMFnqXWBKwUfSEXfclXgxY0d3lEAE6e
+        4HaIuJsomuVLRdWXfgji5xwEwwEDVzdvz5k/zfYuBPjytafw
+X-Google-Smtp-Source: AGHT+IFScUhdHbtrS37ckTH4rX3ST8P3AMBSAm/pAMtaNEohm2GA5/IprLxWn1V1GuxPyryYYT/WlAxGYCGh
+X-Received: by 2002:a17:906:51c6:b0:99b:d007:67b1 with SMTP id v6-20020a17090651c600b0099bd00767b1mr994884ejk.72.1691138114959;
+        Fri, 04 Aug 2023 01:35:14 -0700 (PDT)
+Received: from mta1.parkeon.com ([185.149.63.251])
+        by smtp-relay.gmail.com with ESMTPS id t24-20020a170906065800b00982360305f5sm172071ejb.9.2023.08.04.01.35.14
+        (version=TLS1 cipher=AES128-SHA bits=128/128);
+        Fri, 04 Aug 2023 01:35:14 -0700 (PDT)
+X-Relaying-Domain: flowbird.group
+Received: from [172.16.12.154] (port=40918 helo=FR-BES-DKT15120.home)
+        by mta1.parkeon.com with esmtp (Exim 4.71)
+        (envelope-from <martin.fuzzey@flowbird.group>)
+        id 1qRqJX-0003QU-T1; Fri, 04 Aug 2023 10:37:39 +0200
+From:   Martin Fuzzey <martin.fuzzey@flowbird.group>
+To:     Mark Brown <broonie@kernel.org>
+Cc:     Support Opensource <support.opensource@diasemi.com>,
+        Adam Ward <DLG-Adam.Ward.opensource@dm.renesas.com>,
+        Benjamin Bara <benjamin.bara@skidata.com>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] regulator: da9063: better fix null deref with partial DT
+Date:   Fri,  4 Aug 2023 10:34:30 +0200
+Message-Id: <20230804083514.1887124-1-martin.fuzzey@flowbird.group>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.12.3
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
@@ -78,26 +76,53 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Two versions of the original patch were sent but V1 was merged instead
+of V2 due to a mistake.
 
-On Fri, 04 Aug 2023 14:11:45 +0800, Sandor Yu wrote:
-> The ELD (EDID-Like Data) is not updated when the HDMI cable
-> is plugged into different HDMI monitors.
-> This is because the EDID is not updated in the HDMI HPD function.
-> As a result, the ELD data remains unchanged and may not reflect
-> the capabilities of the newly connected HDMI sink device.
-> 
-> To address this issue, the handle_plugged_change function should move to
-> the bridge_atomic_enable and bridge_atomic_disable functions.
-> Make sure the EDID is properly updated before updating ELD.
-> 
-> [...]
+So update to V2.
 
-Thanks, Applied to https://anongit.freedesktop.org/git/drm/drm-misc.git (drm-misc-next)
+The advantage of V2 is that it completely avoids dereferencing the pointer,
+even just to take the address, which may fix problems with some compilers.
+Both versions work on my gcc 9.4 but use the safer one.
 
-[1/1] drm: bridge: dw_hdmi: Fix ELD is not updated issue
-      https://cgit.freedesktop.org/drm/drm-misc/commit/?id=6db96c7703edd6e37da8ca571dfe5e1ecb6010c1
+Fixes: 98e2dd5f7a8b ("regulator: da9063: fix null pointer deref with partial DT config")
+Signed-off-by: Martin Fuzzey <martin.fuzzey@flowbird.group>
+Tested-by: Benjamin Bara <benjamin.bara@skidata.com>
+Cc: stable@vger.kernel.org
+---
+ drivers/regulator/da9063-regulator.c | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
 
+diff --git a/drivers/regulator/da9063-regulator.c b/drivers/regulator/da9063-regulator.c
+index dfd5ec9f75c9..a0621665a6d2 100644
+--- a/drivers/regulator/da9063-regulator.c
++++ b/drivers/regulator/da9063-regulator.c
+@@ -778,9 +778,6 @@ static int da9063_check_xvp_constraints(struct regulator_config *config)
+ 	const struct notification_limit *uv_l = &constr->under_voltage_limits;
+ 	const struct notification_limit *ov_l = &constr->over_voltage_limits;
+ 
+-	if (!config->init_data) /* No config in DT, pointers will be invalid */
+-		return 0;
+-
+ 	/* make sure that only one severity is used to clarify if unchanged, enabled or disabled */
+ 	if ((!!uv_l->prot + !!uv_l->err + !!uv_l->warn) > 1) {
+ 		dev_err(config->dev, "%s: at most one voltage monitoring severity allowed!\n",
+@@ -1031,9 +1028,12 @@ static int da9063_regulator_probe(struct platform_device *pdev)
+ 			config.of_node = da9063_reg_matches[id].of_node;
+ 		config.regmap = da9063->regmap;
+ 
+-		ret = da9063_check_xvp_constraints(&config);
+-		if (ret)
+-			return ret;
++		/* Checking constraints requires init_data from DT. */
++		if (config.init_data) {
++			ret = da9063_check_xvp_constraints(&config);
++			if (ret)
++				return ret;
++		}
+ 
+ 		regl->rdev = devm_regulator_register(&pdev->dev, &regl->desc,
+ 						     &config);
 -- 
-Neil
+2.25.1
 
