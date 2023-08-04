@@ -2,131 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C2CD770548
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 17:52:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2713277054F
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 17:54:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232271AbjHDPwq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Aug 2023 11:52:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48042 "EHLO
+        id S232126AbjHDPyP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Aug 2023 11:54:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49506 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232240AbjHDPwh (ORCPT
+        with ESMTP id S229723AbjHDPyN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Aug 2023 11:52:37 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F121849D7
-        for <linux-kernel@vger.kernel.org>; Fri,  4 Aug 2023 08:52:35 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 8178C6209F
-        for <linux-kernel@vger.kernel.org>; Fri,  4 Aug 2023 15:52:35 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E50B5C433CA;
-        Fri,  4 Aug 2023 15:52:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691164354;
-        bh=LOq7RS20TqfH4Hdkn/iEhzGYnzzqU4MxbtyZDje5DTM=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=db/QpyGWZiGv+hOkDcQmId64EfLtCECXdj6SVN9iqNnUz87wDzhSDSDKkPqhesxXc
-         XkYO8574UAfmZclBZdnsGi8VAqj7rHu/+xeRD5KvG+ijc7xo9ROK2jfD8yKTKqRCsq
-         zX7BT0Uug6JnRWvDTte1vdDZs+zBhkIs/jjQPHMmwIvSG5BIkp48BbFKST0uVCujlZ
-         cjAylaRSCFsl6gdna/65Ckv7KfS6T+R/op7i0mliGSpS53yTpBcmy7X+2F4JyUZyFj
-         GtkGEVfoBBfJpXmPTUq+8Kd9wNfncXOGt2deJxPXuSrP9bccesOId7cwFMM5+Q17UG
-         R0JgvLmb+aF9g==
-Received: by mail-lj1-f169.google.com with SMTP id 38308e7fff4ca-2b9b9f0387dso35377221fa.0;
-        Fri, 04 Aug 2023 08:52:34 -0700 (PDT)
-X-Gm-Message-State: AOJu0YwqQwElZ+9EW5E8jDLO+uma3SHv/xdX+z8dcOj3ad9CUYgwuOPY
-        Qezacz6yOc2vvZJLp6AO/yw0rB+E2HANBn2XmQ==
-X-Google-Smtp-Source: AGHT+IGTRbQZ164zyFuRSDnd5vaQ7H79WmuECLzjpyyzN1RdAra6RmdexIM3oHlL3swhcI2UIbnez1POXc8rZk7AbpE=
-X-Received: by 2002:a2e:9d5a:0:b0:2b9:53bd:47a7 with SMTP id
- y26-20020a2e9d5a000000b002b953bd47a7mr1705190ljj.30.1691164352899; Fri, 04
- Aug 2023 08:52:32 -0700 (PDT)
+        Fri, 4 Aug 2023 11:54:13 -0400
+Received: from mail.ispras.ru (mail.ispras.ru [83.149.199.84])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC5BAB2;
+        Fri,  4 Aug 2023 08:54:11 -0700 (PDT)
+Received: from localhost.localdomain (unknown [46.242.14.200])
+        by mail.ispras.ru (Postfix) with ESMTPSA id 599B740737A6;
+        Fri,  4 Aug 2023 15:54:09 +0000 (UTC)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mail.ispras.ru 599B740737A6
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ispras.ru;
+        s=default; t=1691164449;
+        bh=YvUW9Cp+Mgnt3NWK0TLcArIpRQkO34R2ZFK4uY/nVAY=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=i3fmj5v0XOM8fy738lUg5Z/9hLHpFdfPe6MKTPXqwVa9at2oGAbq7NWeNnCddU+qn
+         6tyEnnuur68eUKg99cSn5nsEiIIk4/59BJI4LXT6wZWxSRKzbNZV7PREX4D0y8ECS5
+         7Fx6ICbUXuKFNA1bB4mShBLs4XXLy7BZwLHPQkq8=
+From:   Fedor Pchelkin <pchelkin@ispras.ru>
+To:     Ido Schimmel <idosch@idosch.org>
+Cc:     Fedor Pchelkin <pchelkin@ispras.ru>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Nikolay Aleksandrov <razor@blackwall.org>,
+        Roopa Prabhu <roopa@nvidia.com>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Alexey Khoroshilov <khoroshilov@ispras.ru>,
+        lvc-project@linuxtesting.org
+Subject: [PATCH net v2] drivers: vxlan: vnifilter: free percpu vni stats on error path
+Date:   Fri,  4 Aug 2023 18:53:36 +0300
+Message-ID: <20230804155337.18135-1-pchelkin@ispras.ru>
+X-Mailer: git-send-email 2.41.0
+In-Reply-To: <ZMz7+Mk+OYj4q8xe@shredder>
+References: 
 MIME-Version: 1.0
-References: <CADyTPEzqf8oQAPSFRWJLxAhd-WE4fX2zdoe9Vu6V9hZMn1Yc8g@mail.gmail.com>
-In-Reply-To: <CADyTPEzqf8oQAPSFRWJLxAhd-WE4fX2zdoe9Vu6V9hZMn1Yc8g@mail.gmail.com>
-From:   Rob Herring <robh@kernel.org>
-Date:   Fri, 4 Aug 2023 09:52:20 -0600
-X-Gmail-Original-Message-ID: <CAL_JsqLrErF__GGHfanRFCpfbOh6fvz4-aJv32h8OfDjUeZPSg@mail.gmail.com>
-Message-ID: <CAL_JsqLrErF__GGHfanRFCpfbOh6fvz4-aJv32h8OfDjUeZPSg@mail.gmail.com>
-Subject: Re: PROBLEM: Broken or delayed ethernet on Xilinx ZCU104 since 5.18 (regression)
-To:     Nick Bowler <nbowler@draconx.ca>
-Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        netdev@vger.kernel.org, regressions@lists.linux.dev
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 4, 2023 at 9:27=E2=80=AFAM Nick Bowler <nbowler@draconx.ca> wro=
-te:
->
-> Hi,
->
-> With recent kernels (5.18 and newer) the ethernet is all wonky on my
-> ZCU104 board.
->
-> There is some behaviour inconsistency between kernel versions identified
-> during bisection, so maybe there is more than one issue with the ethernet=
-?
->
->   6.5-rc4: after 10 seconds, the following message is printed:
->
->     [   10.761808] platform ff0e0000.ethernet: deferred probe pending
->
->   but the network device seemingly never appears (I waited about a minute=
-).
->
->   6.1 and 6.4: after 10 seconds, the device suddenly appears and starts
->   working (but this is way too late).
+In case rhashtable_lookup_insert_fast() fails inside vxlan_vni_add(), the
+allocated percpu vni stats are not freed on the error path.
 
-10 sec is probably the deferred probe timeout. You can set this to
-less time on the kernel command line.
+Introduce vxlan_vni_free() which would work as a nice wrapper to free
+vxlan_vni_node resources properly.
 
->   5.18: the device never appears and no unusual messages are printed
->   (I waited ten minutes).
->
-> With 5.17 and earlier versions, the eth0 device appears without any delay=
-.
->
-> Unfortunately, as bisection closed on the problematic section, all the
-> built kernels became untestable as they appear to crash during early
-> boot.  Nevertheless, I manually selected a commit that sounded relevant:
->
->   commit e461bd6f43f4e568f7436a8b6bc21c4ce6914c36
->   Author: Robert Hancock <robert.hancock@calian.com>
->   Date:   Thu Jan 27 10:37:36 2022 -0600
->
->       arm64: dts: zynqmp: Added GEM reset definitions
->
-> Reverting this fixes the problem on 5.18.  Reverting this fixes the
-> problem on 6.1.  Reverting this fixes the problem on 6.4.  In all of
-> these versions, with this change reverted, the network device appears
-> without delay.
+Found by Linux Verification Center (linuxtesting.org).
 
-With the above change, the kernel is going to be waiting for the reset
-driver which either didn't exist or wasn't enabled in your config
-(maybe kconfig needs to be tweaked to enable it automatically).
+Fixes: 4095e0e1328a ("drivers: vxlan: vnifilter: per vni stats")
+Suggested-by: Ido Schimmel <idosch@idosch.org>
+Signed-off-by: Fedor Pchelkin <pchelkin@ispras.ru>
+---
+v1->v2: per Ido Schimmel's suggestion, extract freeing vninode resources
+into a separate function vxlan_vni_free() and tag the patch as for 'net'
 
-There's not really a better solution than the probe timeout when the
-DT was incomplete and new dependencies get added.
+ drivers/net/vxlan/vxlan_vnifilter.c | 11 ++++++++---
+ 1 file changed, 8 insertions(+), 3 deletions(-)
 
-> Unfortunately, it seems this is not sufficient to correct the problem on
-> 6.5-rc4 -- there is no apparent change in behaviour, so maybe there is
-> a new, different problem?
+diff --git a/drivers/net/vxlan/vxlan_vnifilter.c b/drivers/net/vxlan/vxlan_vnifilter.c
+index a3de081cda5e..c3ff30ab782e 100644
+--- a/drivers/net/vxlan/vxlan_vnifilter.c
++++ b/drivers/net/vxlan/vxlan_vnifilter.c
+@@ -713,6 +713,12 @@ static struct vxlan_vni_node *vxlan_vni_alloc(struct vxlan_dev *vxlan,
+ 	return vninode;
+ }
+ 
++static void vxlan_vni_free(struct vxlan_vni_node *vninode)
++{
++	free_percpu(vninode->stats);
++	kfree(vninode);
++}
++
+ static int vxlan_vni_add(struct vxlan_dev *vxlan,
+ 			 struct vxlan_vni_group *vg,
+ 			 u32 vni, union vxlan_addr *group,
+@@ -740,7 +746,7 @@ static int vxlan_vni_add(struct vxlan_dev *vxlan,
+ 					    &vninode->vnode,
+ 					    vxlan_vni_rht_params);
+ 	if (err) {
+-		kfree(vninode);
++		vxlan_vni_free(vninode);
+ 		return err;
+ 	}
+ 
+@@ -763,8 +769,7 @@ static void vxlan_vni_node_rcu_free(struct rcu_head *rcu)
+ 	struct vxlan_vni_node *v;
+ 
+ 	v = container_of(rcu, struct vxlan_vni_node, rcu);
+-	free_percpu(v->stats);
+-	kfree(v);
++	vxlan_vni_free(v);
+ }
+ 
+ static int vxlan_vni_del(struct vxlan_dev *vxlan,
+-- 
+2.41.0
 
-Probably. You might check what changed with fw_devlink in that period.
-(Offhand, I don't recall many changes)
-
-> I guess I can kick off another bisection to find out when this revert
-> stops fixing things...
-
-That always helps.
-
-Rob
