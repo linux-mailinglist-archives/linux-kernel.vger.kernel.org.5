@@ -2,43 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F71D77077A
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 20:06:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A08E577077B
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 20:06:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230182AbjHDSG2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Aug 2023 14:06:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42244 "EHLO
+        id S230125AbjHDSGi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Aug 2023 14:06:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42408 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230086AbjHDSGT (ORCPT
+        with ESMTP id S230158AbjHDSG0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Aug 2023 14:06:19 -0400
+        Fri, 4 Aug 2023 14:06:26 -0400
 Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2FCC049F0;
-        Fri,  4 Aug 2023 11:06:17 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36FE54C0B;
+        Fri,  4 Aug 2023 11:06:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1691172377; x=1722708377;
+  t=1691172379; x=1722708379;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=/RvGeZgasgv1mj7dNoL3ueQcvj+u+ttPutxwUs7TTE0=;
-  b=JmVFWa6oXC9zl89Dvzna6VxhujROHwdUfPxnyQgOyGiU5QHHX/lCHtVb
-   QXdZV3Hix8YqM4PYl+AkvvMQx5/64qBpThB4bh2m5YOK8sCUViFTaaCsq
-   aB/ZP9Pjr29vW6/dpZWhtKMas8fMXeSO1jJgpmC7VN8w1R/raz3CeotYP
-   t0WeTOfnA79HN4m5iR8C0VijiUWG2UA+mpvtulYkuEB5994UGIqJX6FAB
-   XiGulyMlQhBy/FyV3dnHqnoKNSJkMPz7zHFlIcdknA+fd6CfSVa4Zpge7
-   syVKY8A1xdYqxSZsYvAVWAyhlkhO1nEfDrMJ7Dh5YqwGtBI41/+TkoD8k
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10792"; a="434061677"
+  bh=je7OKaPaRYpavTGKndiuzQRlw06aOtdts65xOwM2AUg=;
+  b=jJ32yiz4kdiB/P7cvekhV1cG42F6k/8y9guQ5V0/w19OsCe+oesAA8GR
+   FuxiWSCgBwv7gmO21J0kCYsHnOheVb8ThOQc6pLtcNz23JK4SiDoTqt/a
+   Xb1GR33uJEm6dmbNnHraTXz3wIWxCnloe36e2PTFCkvO/Q+cNj3IzSlzU
+   +bWaHxeuQ2htoff6VvFOTBW6VCjFJi8S0pfi3yS+jEMFI1sEcF/mamUsr
+   KLR1MS6SEUigM5Tkf9gAb7VcWsRrY/OdxcTzcn3BkGFeDXfEV0gG80ktr
+   2y8E/fDMEoaORIqhmY9biEK+Oj8QhUBxPzP7+TCUGE4JP1/qwHioXDG8f
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10792"; a="434061698"
 X-IronPort-AV: E=Sophos;i="6.01,255,1684825200"; 
-   d="scan'208";a="434061677"
+   d="scan'208";a="434061698"
 Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Aug 2023 11:06:15 -0700
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Aug 2023 11:06:18 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10792"; a="759673591"
+X-IronPort-AV: E=McAfee;i="6600,9927,10792"; a="759673597"
 X-IronPort-AV: E=Sophos;i="6.01,255,1684825200"; 
-   d="scan'208";a="759673591"
+   d="scan'208";a="759673597"
 Received: from newjersey.igk.intel.com ([10.102.20.203])
-  by orsmga008.jf.intel.com with ESMTP; 04 Aug 2023 11:06:12 -0700
+  by orsmga008.jf.intel.com with ESMTP; 04 Aug 2023 11:06:15 -0700
 From:   Alexander Lobakin <aleksander.lobakin@intel.com>
 To:     "David S. Miller" <davem@davemloft.net>,
         Eric Dumazet <edumazet@google.com>,
@@ -53,9 +53,9 @@ Cc:     Alexander Lobakin <aleksander.lobakin@intel.com>,
         Ilias Apalodimas <ilias.apalodimas@linaro.org>,
         Simon Horman <simon.horman@corigine.com>,
         netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH net-next v4 3/6] page_pool: place frag_* fields in one cacheline
-Date:   Fri,  4 Aug 2023 20:05:26 +0200
-Message-ID: <20230804180529.2483231-4-aleksander.lobakin@intel.com>
+Subject: [PATCH net-next v4 4/6] net: skbuff: avoid accessing page_pool if !napi_safe when returning page
+Date:   Fri,  4 Aug 2023 20:05:27 +0200
+Message-ID: <20230804180529.2483231-5-aleksander.lobakin@intel.com>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <20230804180529.2483231-1-aleksander.lobakin@intel.com>
 References: <20230804180529.2483231-1-aleksander.lobakin@intel.com>
@@ -71,56 +71,52 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On x86_64, frag_* fields of struct page_pool are scattered across two
-cachelines despite the summary size of 24 bytes. All three fields are
-used in pretty much the same places, but the last field, ::frag_users,
-is pushed out to the next CL, provoking unwanted false-sharing on
-hotpath (frags allocation code).
-There are some holes and cold members to move around. Move frag_* one
-block up, placing them right after &page_pool_params perfectly at the
-beginning of CL2. This doesn't do any meaningful to the second block, as
-those are some destroy-path cold structures, and doesn't do anything to
-::alloc_stats, which still starts at 200-byte offset, 8 bytes after CL3
-(still fitting into 1 cacheline).
-On my setup, this yields 1-2% of Mpps when using PP frags actively.
-When it comes to 32-bit architectures with 32-byte CL: &page_pool_params
-plus ::pad is 44 bytes, the block taken care of is 16 bytes within one
-CL, so there should be at least no regressions from the actual change.
-::pages_state_hold_cnt is not related directly to that triple, but is
-paired currently with ::frags_offset and decoupling them would mean
-either two 4-byte holes or more invasive layout changes.
+Currently, pp->p.napi is always read, but the actual variable it gets
+assigned to is read-only when @napi_safe is true. For the !napi_safe
+cases, which yet is still a pack, it's an unneeded operation.
+Moreover, it can lead to premature or even redundant page_pool
+cacheline access. For example, when page_pool_is_last_frag() returns
+false (with the recent frag improvements).
+Thus, read it only when @napi_safe is true. This also allows moving
+@napi inside the condition block itself. Constify it while we are
+here, because why not.
 
 Signed-off-by: Alexander Lobakin <aleksander.lobakin@intel.com>
 ---
- include/net/page_pool/types.h | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+ net/core/skbuff.c | 12 +++++++-----
+ 1 file changed, 7 insertions(+), 5 deletions(-)
 
-diff --git a/include/net/page_pool/types.h b/include/net/page_pool/types.h
-index fcb846523398..887e7946a597 100644
---- a/include/net/page_pool/types.h
-+++ b/include/net/page_pool/types.h
-@@ -123,16 +123,16 @@ struct page_pool_stats {
- struct page_pool {
- 	struct page_pool_params p;
+diff --git a/net/core/skbuff.c b/net/core/skbuff.c
+index acc5844a0de1..85f82a6a08dc 100644
+--- a/net/core/skbuff.c
++++ b/net/core/skbuff.c
+@@ -882,9 +882,8 @@ static void skb_clone_fraglist(struct sk_buff *skb)
+ #if IS_ENABLED(CONFIG_PAGE_POOL)
+ bool napi_pp_put_page(struct page *page, bool napi_safe)
+ {
+-	struct napi_struct *napi;
++	bool allow_direct = false;
+ 	struct page_pool *pp;
+-	bool allow_direct;
  
-+	long frag_users;
-+	struct page *frag_page;
-+	unsigned int frag_offset;
-+	u32 pages_state_hold_cnt;
+ 	page = compound_head(page);
+ 
+@@ -904,9 +903,12 @@ bool napi_pp_put_page(struct page *page, bool napi_safe)
+ 	 * in the same context as the consumer would run, so there's
+ 	 * no possible race.
+ 	 */
+-	napi = READ_ONCE(pp->p.napi);
+-	allow_direct = napi_safe && napi &&
+-		READ_ONCE(napi->list_owner) == smp_processor_id();
++	if (napi_safe) {
++		const struct napi_struct *napi = READ_ONCE(pp->p.napi);
 +
- 	struct delayed_work release_dw;
- 	void (*disconnect)(void *pool);
- 	unsigned long defer_start;
- 	unsigned long defer_warn;
++		allow_direct = napi &&
++			READ_ONCE(napi->list_owner) == smp_processor_id();
++	}
  
--	u32 pages_state_hold_cnt;
--	unsigned int frag_offset;
--	struct page *frag_page;
--	long frag_users;
--
- #ifdef CONFIG_PAGE_POOL_STATS
- 	/* these stats are incremented while in softirq context */
- 	struct page_pool_alloc_stats alloc_stats;
+ 	/* Driver set this to memory recycling info. Reset it on recycle.
+ 	 * This will *not* work for NIC using a split-page memory model.
 -- 
 2.41.0
 
