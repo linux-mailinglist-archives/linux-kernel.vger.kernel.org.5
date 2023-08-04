@@ -2,184 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 839DE7708CA
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 21:17:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E93587708E3
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 21:20:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230009AbjHDTRp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Aug 2023 15:17:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48418 "EHLO
+        id S230013AbjHDTUQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Aug 2023 15:20:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49100 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229510AbjHDTRm (ORCPT
+        with ESMTP id S229510AbjHDTUM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Aug 2023 15:17:42 -0400
-Received: from bg4.exmail.qq.com (bg4.exmail.qq.com [43.155.65.254])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 891A8B9;
-        Fri,  4 Aug 2023 12:17:33 -0700 (PDT)
-X-QQ-mid: bizesmtp85t1691176641tm8sx53q
-Received: from linux-lab-host.localdomain ( [116.30.131.233])
-        by bizesmtp.qq.com (ESMTP) with 
-        id ; Sat, 05 Aug 2023 03:17:20 +0800 (CST)
-X-QQ-SSF: 01200000000000E0X000000A0000000
-X-QQ-FEAT: CR3LFp2JE4lYbqaaZM+OIeBxhpPfHwNf6FKIYa/5hIfNhQALqcHrQX6AQHnj9
-        XD7O5WO7YseMp4dKhzKzkWvz0X2v4zXDwYFcdKN/LYO36c+81Ae6CFjM7e2qwrZqxlST7Hf
-        hTGSfwM5MkGVnPQENxXNPtaoczWvPt4+/azy1enEF2NAEeGckk5C5x3sC9amyVHtkfUZqFu
-        7bEnqYoOUfoK9gUWBym28UUtqaFuw4VbqAaN4swt3ienM6MZAlVKAYMoIH+zhwROK4Nc25f
-        BOxVJwJj49L8HuYNowFtueyaPHe9tyDWpeAZbTeeH8q39COL/NhC2xtNSRg0lyIcrm3BFbM
-        nEH8KoYoWa/2qskOZqleIzkApgC3JLYz0+i09/jxWkUzF8BMKG18Vi+tpKfCg==
-X-QQ-GoodBg: 0
-X-BIZMAIL-ID: 426980743630132163
-From:   Zhangjin Wu <falcon@tinylab.org>
-To:     w@1wt.eu
-Cc:     arnd@arndb.de, falcon@tinylab.org, linux-kernel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, tanyuan@tinylab.org,
-        thomas@t-8ch.de
-Subject: Re: [PATCH v1 2/3] selftests/nolibc: fix up O= option support
-Date:   Sat,  5 Aug 2023 03:17:15 +0800
-Message-Id: <20230804191715.379716-1-falcon@tinylab.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20230804184348.GA31470@1wt.eu>
-References: <20230804184348.GA31470@1wt.eu>
+        Fri, 4 Aug 2023 15:20:12 -0400
+Received: from NAM11-CO1-obe.outbound.protection.outlook.com (mail-co1nam11on2074.outbound.protection.outlook.com [40.107.220.74])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BAE26B9
+        for <linux-kernel@vger.kernel.org>; Fri,  4 Aug 2023 12:20:10 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Y/5rp4q/n0YD5AvKqo9ZjyLGcHJOuOxcdndU7MHsYXAyq6ZvdUsoQNME0ccBb5D04+3vkttZJyl+4WwbT0RGYKO4EBoJx9WlLmjFbXb+rLiQH6iislsc1S1ehkL8HDRBZC9eITzHkjuyxGW9TEi49dWdHb/0DUZdfMTTp+K+SqIs9Af43oHTBNQlVjhPY0bleOF4ZZwHG7k8ljhIU24ijYaVVpDufiOncec3BWLSntB7HJ4unkyFrTeeZ6D+fAxs7SgzRcBmDYvGDXliFkhhwx7WoYeteaGnu3CLPxXLoHS/CaYgjLi/KGF9QbNaJMzWMI/o411Y3mCX681Q4jfjAQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=LxatYg5MMDPkpA26LmckHapvvA9ZBT9RDlhJcDKKNG0=;
+ b=Ek2pFVyL+243lCtkrTPoPWAVbSx1rsMyOSrHdzKsWENqJT0H2fmaX/a4FYc5uCDet5IKh3/TgsYZVYYy1ogi5q3FaAV40FIoZjlPzbY+06i2l1IQWHh8/7M7GAi5K7+zXSnMpR9Fp7R6UWLheugtu+mOTk+QycbLm+HR8PWo6Rh8YvY1ocikzQn66mm3eW8hcJicFnJBWizKMy0vpj8JfQLlA/x7ZaO8BMxyz53GSZW6c3SVrh7B7nTcmKIT3Jy6LkfPI1bFuHxaLflLWw1bNR8HFjhV93cWDADLdEmNSBIkvTVK0GDJhPe+SMZvT81O9JBbPjp4CFhkt6tlVD7Y0w==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 216.228.117.161) smtp.rcpttodomain=google.com smtp.mailfrom=nvidia.com;
+ dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
+ dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=LxatYg5MMDPkpA26LmckHapvvA9ZBT9RDlhJcDKKNG0=;
+ b=QdcCSZPT1Ld1zc60J+jhPqPwGsEDdbADKezxIkReFUhWTKVO1kGbUYWXp0yihe0v+QxXB9TKo1OzZIZBmdz29fq7KmSw7SiLHHI/B/fNGfEDvPkK8Nr3C2NOiM1eLrt/dKpZfwC7amZdHLAe0dHLMZjzr/6DJtxgXcFr6s8K03TFQQcEkAOwdxjPl2PknBNmamKgxRe6cKOJRjgJ6R/2qAB3PNh1r2w+gc/CkrgyXB/mA9SiP7wCwGoF+pus8KC5Go2xV2y8CIlJyEmhC+h+oX2lZIxb2dVU9ghFyQrqt3LfUaqmCZp0Oxy7CYz1OWvpv9KG+16eAG1891+HqOwtPw==
+Received: from CYZPR05CA0042.namprd05.prod.outlook.com (2603:10b6:930:a3::8)
+ by BN9PR12MB5339.namprd12.prod.outlook.com (2603:10b6:408:104::21) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6652.20; Fri, 4 Aug
+ 2023 19:20:08 +0000
+Received: from CY4PEPF0000EDD2.namprd03.prod.outlook.com
+ (2603:10b6:930:a3:cafe::ab) by CYZPR05CA0042.outlook.office365.com
+ (2603:10b6:930:a3::8) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6678.10 via Frontend
+ Transport; Fri, 4 Aug 2023 19:20:08 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.117.161)
+ smtp.mailfrom=nvidia.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 216.228.117.161 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.117.161; helo=mail.nvidia.com; pr=C
+Received: from mail.nvidia.com (216.228.117.161) by
+ CY4PEPF0000EDD2.mail.protection.outlook.com (10.167.241.206) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.6652.19 via Frontend Transport; Fri, 4 Aug 2023 19:20:08 +0000
+Received: from rnnvmail202.nvidia.com (10.129.68.7) by mail.nvidia.com
+ (10.129.200.67) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.5; Fri, 4 Aug 2023
+ 12:20:01 -0700
+Received: from rnnvmail204.nvidia.com (10.129.68.6) by rnnvmail202.nvidia.com
+ (10.129.68.7) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.37; Fri, 4 Aug 2023
+ 12:20:00 -0700
+Received: from Asurada-Nvidia (10.127.8.12) by mail.nvidia.com (10.129.68.6)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.37 via Frontend
+ Transport; Fri, 4 Aug 2023 12:20:00 -0700
+Date:   Fri, 4 Aug 2023 12:19:58 -0700
+From:   Nicolin Chen <nicolinc@nvidia.com>
+To:     Michael Shavit <mshavit@google.com>
+CC:     <iommu@lists.linux.dev>, <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <will@kernel.org>,
+        <robin.murphy@arm.com>, <jgg@nvidia.com>,
+        <jean-philippe@linaro.org>
+Subject: Re: [PATCH v4 1/8] iommu/arm-smmu-v3: Move ctx_desc out of s1_cfg
+Message-ID: <ZM1PXgcbEZTdM2jW@Asurada-Nvidia>
+References: <20230802163328.2623773-1-mshavit@google.com>
+ <20230803003234.v4.1.I67ab103c18d882aedc8a08985af1fba70bca084e@changeid>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-QQ-SENDSIZE: 520
-Feedback-ID: bizesmtp:tinylab.org:qybglogicsvrgz:qybglogicsvrgz5a-1
-X-Spam-Status: No, score=-0.6 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,RCVD_IN_VALIDITY_RPBL,
-        T_SPF_HELO_TEMPERROR,T_SPF_TEMPERROR autolearn=no autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20230803003234.v4.1.I67ab103c18d882aedc8a08985af1fba70bca084e@changeid>
+X-NV-OnPremToCloud: ExternallySecured
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: CY4PEPF0000EDD2:EE_|BN9PR12MB5339:EE_
+X-MS-Office365-Filtering-Correlation-Id: 7fe14c8c-2671-48e5-583c-08db951fd0d6
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: +lOsfa2bBb9kK4aMI1yCbWJ8oFc3HMTCr9mI6H654r4O6lnQ+YOlX32yUySomLUB16M0wb4a1mx0nJ/4pDRvqzue/3FAKPI9c3NXxXDNz6IbVG8QQ3NwOslaif7t6604ocYVYebxdXS0IcYHaY1iksC3gj0RNSw08wi0HRxknfqa/SUrDirZ7ZG92/KVCAZ7G3C8GOf5BA0+9GuUxG6npEyEI1io0OpSWg7By4S5bkGZ/JBBYmID+uPkmPhHvbWsfDB9dqnAaYDiWLLKZd1BeDMoh3JN4ZcRrslyXwjujp2JEWf8PViNtecgFKygiAlnZvDnOx7rGeSF2NUXdYu9nGLaYBrOOkOikCfjYepSX544yQY6m0/mbmObqmy3OJq5G3vKPVh8XC6YamVk23Nz0/X8uinsziwYKCCyyHwCHP+ZVqZ+b9rS99CFc+FTYvP4iUFqSrtmkeABRLAo7EMv7w63kUHysYCcoG4UDjVkMXH/zvG8m3Tv6eGmVS2dd+ht61TbDE6tbTL/GRAz4pyr0HFAjFqLBb7tWS5PAe31LtNZOve7/QUuwWbu0/E+v7AfmulWhm+Xaz3SwexpGwiOIcPupvLuGeS2xpPm9bRar5W0gVvxMpyG8odIUIA7LRNry4gt6b2+guMi5EKgXMpzm4CWSlv0hXlRQ17opGl8640ML4pUQKmknry5h1ibaem8GYBVTTSvhpVHg1tVuBDV/AzqhlBmNzAmUkODspFjEOc+pp2ItQHbRxyEEbDL4mRA
+X-Forefront-Antispam-Report: CIP:216.228.117.161;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc6edge2.nvidia.com;CAT:NONE;SFS:(13230028)(4636009)(346002)(39860400002)(136003)(376002)(396003)(451199021)(82310400008)(1800799003)(186006)(40470700004)(46966006)(36840700001)(40460700003)(26005)(426003)(336012)(47076005)(8936002)(41300700001)(2906002)(6916009)(4744005)(70206006)(5660300002)(4326008)(70586007)(316002)(7636003)(8676002)(9686003)(36860700001)(478600001)(54906003)(40480700001)(356005)(55016003)(33716001)(86362001)(82740400003);DIR:OUT;SFP:1101;
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 Aug 2023 19:20:08.1883
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 7fe14c8c-2671-48e5-583c-08db951fd0d6
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.117.161];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource: CY4PEPF0000EDD2.namprd03.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN9PR12MB5339
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> On Sat, Aug 05, 2023 at 02:40:23AM +0800, Zhangjin Wu wrote:
-> > > On Fri, Aug 04, 2023 at 07:51:50PM +0200, Thomas Wei?schuh wrote:
-> > > > On 2023-08-05 00:29:10+0800, Zhangjin Wu wrote:
-> > [...]
-> > > > > Do you mean here?
-> > > > > 
-> > > > >     # kernel image names by architecture
-> > > > >     IMAGE_i386    = arch/x86/boot/bzImage
-> > > > >     IMAGE_x86     = arch/x86/boot/bzImage
-> > > > >     IMAGE_arm64   = arch/arm64/boot/Image
-> > > > >     IMAGE_arm     = arch/arm/boot/zImage
-> > > > >     IMAGE_mips    = vmlinuz
-> > > > >     IMAGE_riscv   = arch/riscv/boot/Image
-> > > > >     IMAGE         = $(IMAGE_$(ARCH))
-> > > > >     IMAGE_NAME    = $(notdir $(IMAGE))
-> > > > > 
-> > > > > It does save another KERNEL_IMAGE macro in my future patch ;-)
-> > > > > 
-> > > > > But without O=, OUTPUT is also empty like objtree and when empty, it is
-> > > > > assigned as $(CURDIR), not $(srctree) as we expected for IMAGE and .config. To
-> > > > > be cleaner, objtree should also be used:
-> > > > > 
-> > > > >     - IMAGE         = $(IMAGE_$(ARCH))
-> > > > >     + IMAGE         = $(objtree)/$(IMAGE_$(ARCH))
-> > > > > 
-> > > > > Is this what you want?
-> > > > 
-> > > > More like:
-> > > > 
-> > > > -	$(Q)qemu-system-$(QEMU_ARCH) -display none -no-reboot -kernel "$(srctree)/$(IMAGE)" -serial stdio $(QEMU_ARGS) > "$(CURDIR)/run.out"
-> > > > +	$(Q)qemu-system-$(QEMU_ARCH) -display none -no-reboot -kernel "$(OUTPUT)$(IMAGE)" -serial stdio $(QEMU_ARGS) > "$(CURDIR)/run.out"
-> > > > 
-> > > > My assumption was that it's weird that we need to define such variables
-> > > > ourselves.
-> > > > 
-> > > > Using an empty $(OUTPUT) would have been fine if make is run from the
-> > > > root of the kernel tree. But that is not the case.
-> > > > 
-> > > > It still feels weird but I can't think of a nicer way, and it's not
-> > > > a big issue. So let's keep that part the same.
-> > > > 
-> > > > Or maybe Willy has a better idea.
-> > > 
-> > > I've just glanced over the discussion, but I'm wondering, why not
-> > > "$(objtree)/$(IMAGE)" instead ?
-> > >
-> > 
-> > We used "$(objtree)/$(IMAGE)" originally, I thought of Thomas asked me to
-> > further add "$(objtree)" in the first place of IMAGE,
-> > 
-> >      - IMAGE         = $(IMAGE_$(ARCH))
-> >      + IMAGE         = $(objtree)/$(IMAGE_$(ARCH))
-> > 
-> > And then, we can use "IMAGE" directly in the qemu run & rerun targets:
-> > 
-> >     # run the tests after building the kernel
-> >     run: kernel
-> >     -	$(Q)qemu-system-$(QEMU_ARCH) -display none -no-reboot -kernel "$(objtree)/$(IMAGE)" -serial stdio $(QEMU_ARGS) > "$(RUN_OUT)"
-> >     +	$(Q)qemu-system-$(QEMU_ARCH) -display none -no-reboot -kernel "$(IMAGE)" -serial stdio $(QEMU_ARGS) > "$(RUN_OUT)"
-> >     	$(Q)$(REPORT) "$(RUN_OUT)"
-> >     
-> >     # re-run the tests from an existing kernel
-> >     rerun:
-> >     -	$(Q)qemu-system-$(QEMU_ARCH) -display none -no-reboot -kernel "$(objtree)/$(IMAGE)" -serial stdio $(QEMU_ARGS) > "$(RUN_OUT)"
-> >     +	$(Q)qemu-system-$(QEMU_ARCH) -display none -no-reboot -kernel "$(IMAGE)" -serial stdio $(QEMU_ARGS) > "$(RUN_OUT)"
-> >     	$(Q)$(REPORT) "$(RUN_OUT)"
-> > 
-> > Which one do you prefer? will renew this series soon.
+On Thu, Aug 03, 2023 at 12:32:29AM +0800, Michael Shavit wrote:
+> s1_cfg describes the CD table that is inserted into an SMMU's STEs. It's
+> weird for s1_cfg to also own ctx_desc which describes a CD that is
+> inserted into that table. It is more appropriate for arm_smmu_domain to
+> own ctx_desc.
 > 
-> It's not a matter of preference but which solution really works. In short
-> it should work fine and consistently when launched from topdir and from
-> the nolibc-test dir. I personally don't know the effect of O= when run
-> from a subdir (is it relative to the current dir or topdir?).
->
+> Signed-off-by: Michael Shavit <mshavit@google.com>
+> Reviewed-by: Jason Gunthorpe <jgg@nvidia.com>
 
-As suggested by Thomas, $(COMMAND_O) will be used to pass the absolute
-$(O) for every sub $(MAKE), O= will work like this:
-
-    // subdir
-    $ pwd
-    /labs/linux-lab/src/linux-stable/tools/testing/selftests/nolibc
-    $ mkdir -p out
-    $ make run-user O=out -C /labs/linux-lab/src/linux-stable/tools/testing/selftests/nolibc/ -j4 | grep status
-    Makefile:122: srctree=/labs/linux-lab/src/linux-stable
-    Makefile:123: objtree: out
-    Makefile:124: COMMAND_O: O=/labs/linux-lab/src/linux-stable/tools/testing/selftests/nolibc/out
-    Makefile:125: OUTPUT=/labs/linux-lab/src/linux-stable/tools/testing/selftests/nolibc/out/
-    166 test(s): 158 passed,   8 skipped,   0 failed => status: warning
-
-    // topdir
-    $ pwd
-    /labs/linux-lab/src/linux-stable
-    $ mkdir -p out
-    $ make run-user O=out -C /labs/linux-lab/src/linux-stable/tools/testing/selftests/nolibc/ -j4 | grep status
-    Makefile:122: srctree=/labs/linux-lab/src/linux-stable
-    Makefile:123: objtree: out
-    Makefile:124: COMMAND_O: O=/labs/linux-lab/src/linux-stable/out
-    Makefile:125: OUTPUT=/labs/linux-lab/src/linux-stable/out/
-    166 test(s): 158 passed,   8 skipped,   0 failed => status: warning
-
-    // outside
-    $ pwd
-    /labs/linux-lab/build
-    $ mkdir -p out
-    $ make run-user O=out -C /labs/linux-lab/src/linux-stable/tools/testing/selftests/nolibc/ -j4 | grep status
-    Makefile:122: srctree=/labs/linux-lab/src/linux-stable
-    Makefile:123: objtree: out
-    Makefile:124: COMMAND_O: O=/labs/linux-lab/build/out
-    Makefile:125: OUTPUT=/labs/linux-lab/build/out/
-    166 test(s): 158 passed,   8 skipped,   0 failed => status: warning
-
-The change:
-
-    $ grep COMMAND_O -ur tools/testing/selftests/nolibc/Makefile 
-    	$(Q)$(MAKE) -C ../../../include/nolibc $(COMMAND_O) ARCH=$(ARCH) OUTPUT=$(OUTPUT)sysroot/ headers_standalone
-    	$(Q)$(MAKE) -C $(srctree) $(COMMAND_O) ARCH=$(ARCH) CC=$(CC) CROSS_COMPILE=$(CROSS_COMPILE) mrproper $(DEFCONFIG) prepare
-    	$(Q)$(MAKE) -C $(srctree) $(COMMAND_O) ARCH=$(ARCH) CC=$(CC) CROSS_COMPILE=$(CROSS_COMPILE) $(IMAGE_NAME) CONFIG_INITRAMFS_SOURCE=$(CURDIR)/initramfs
-
-> > And even further, I thought of puting everything to $(OUTPUT), but the
-> > change is very ugly and not good for v6.6, If you like, I will send that
-> > patch only as a discuss stuff.
-> 
-> Yeah I'd rather avoid ugly things for 6.6 now.
->
-
-Ok, since you also suggested let's develop in outside directory, it is better
-to reserve the left parts as-is ;-)
-
-> Thanks,
-> Willy
+Reviewed-by: Nicolin Chen <nicolinc@nvidia.com>
