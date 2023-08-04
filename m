@@ -2,59 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9BFAE76F810
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 04:47:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B00F876F813
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 04:49:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231178AbjHDCrS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Aug 2023 22:47:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60128 "EHLO
+        id S231593AbjHDCtF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Aug 2023 22:49:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60586 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229634AbjHDCrR (ORCPT
+        with ESMTP id S229513AbjHDCtD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Aug 2023 22:47:17 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9BF62115
-        for <linux-kernel@vger.kernel.org>; Thu,  3 Aug 2023 19:47:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
-        Message-ID:Sender:Reply-To:Content-ID:Content-Description;
-        bh=JaupRiRZL7sWovtTbIIjp9tJEbdN6Kag0rAPEx659Uo=; b=Y5af28A44d7DrVy3cxzlsfPpY2
-        briOHPZxylViHK9Y9cwlhKT5aU6HvyG8wSekaYw3BkV3daCw4ZYceZ3K025wtLleF27ABPn2/TndU
-        VXmJQrOsEvz30iePPC8ljKvo5QPoJ1OrzbS+oWjknS8Lw4/5e9EQSgAS/XbikM/BU5gnNLgBpAt76
-        39xUGxOloiZwOjSS8vj+zH8un33jSiwF/K6zp0reW/LCrorq3+2ZqqwTVCTpCq39xoblBUc0NmYI0
-        4LWQJmK2so8FnUI3JL3ba4TSZPPCxuwKbwOKAFN++JrPgvH6uMFhuPQDbJHL01n80MggCOFPxQIIF
-        Uky4mNgg==;
-Received: from [2601:1c2:980:9ec0::2764]
-        by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-        id 1qRkqN-00BPZj-39;
-        Fri, 04 Aug 2023 02:47:12 +0000
-Message-ID: <b43e642d-8aa1-fb8a-6bff-86039a06d57b@infradead.org>
-Date:   Thu, 3 Aug 2023 19:47:11 -0700
+        Thu, 3 Aug 2023 22:49:03 -0400
+Received: from mail-yw1-x112c.google.com (mail-yw1-x112c.google.com [IPv6:2607:f8b0:4864:20::112c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D303730E5
+        for <linux-kernel@vger.kernel.org>; Thu,  3 Aug 2023 19:49:02 -0700 (PDT)
+Received: by mail-yw1-x112c.google.com with SMTP id 00721157ae682-57a6df91b1eso19229277b3.1
+        for <linux-kernel@vger.kernel.org>; Thu, 03 Aug 2023 19:49:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=paul-moore.com; s=google; t=1691117342; x=1691722142;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Vd95Z3+osQHMY4UnbAFYs8153P0Rw3koffJjaaUVqu8=;
+        b=PS7MVmREtdk+t0YqbU+r1cv06QIkKaMZgrhKw9zvVfR87cpxMdSKlrUm0ED8EwbS+G
+         8vG57n9I5BgiXaUlca0jp6ISgoOtJurxusghMJizM47WzjUxGfezWrAughIOtqjuW83q
+         dlLn+h66NqO41NcMjSRF0rCNOiX9dMqGfS2nr00ndQBlwXVgHLA35XzkX9kDCwlvZxrS
+         Y0J+qtfivoQp+KRAa5VI6TjlK6xSTF/AzdMDxeJRcbCzUDhRDDEic/3Ya1LM5vYaElVx
+         ruML3a/NIPnZxzd9oRLznWO1BXP8QIVIDq5spPdmCEhrqd6TG1ixFLHjuyHI3ds6UHlJ
+         6J6g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691117342; x=1691722142;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Vd95Z3+osQHMY4UnbAFYs8153P0Rw3koffJjaaUVqu8=;
+        b=KUAwhH8AIRqgip7EWj+4z8Gw5+JUERwBEKwSRSikJFOEuEgpUFJ71vXUktv9bxObKO
+         oW45I5hL67OHsW/q7BI4zzetvb00OzgkOlzf4/BlI4uAF0Scw7mcM+HZ6fccM0CXFvYG
+         vlc1BBFcBgivpuuuHN4edVGcMm0YODaG0VWFPPWu9cYl9dul6FiGYMOTows7vb+jHOwS
+         eeydvjKMn6Ca13Elm6CuwgIuLbH9hXNwuZjyiU9g53/pB6lAv6G3QeoM+fMNR58ba/47
+         2oIznxl3l1nlp2GVgYam+iP1h78n3QRzcU5O+WmjIhv74FmZUWSPh4ZGaE2ZKyzQOYau
+         9m6w==
+X-Gm-Message-State: AOJu0Yw4chpatZosybFrNW1/+DPmlhGU5TNAGA0hLxRi9E1bZY2rUQq1
+        yZ8qjS1cE1wwlyTPNdpQQ75mzj8C1wz4ODPtDKKp
+X-Google-Smtp-Source: AGHT+IHzOMv/ju9Tw8bPVPB4bGc67BfMOW+0Um7p830iso0PGeWxqbRtl37oozAHp4DGTMSMiA7RzLqc14ciUx57+XE=
+X-Received: by 2002:a0d:e253:0:b0:584:189c:13ec with SMTP id
+ l80-20020a0de253000000b00584189c13ecmr519784ywe.21.1691117342044; Thu, 03 Aug
+ 2023 19:49:02 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: drivers/gpu/drm/bridge/samsung-dsim.c link error
-Content-Language: en-US
-To:     Adam Ford <aford173@gmail.com>
-Cc:     Aleksandr Nogikh <nogikh@google.com>, l.stach@pengutronix.de,
-        inki.dae@samsung.com, jagan@amarulasolutions.com,
-        m.szyprowski@samsung.com, airlied@gmail.com, daniel@ffwll.ch,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        syzkaller@googlegroups.com, dvyukov@google.com
-References: <20230803144227.2187749-1-nogikh@google.com>
- <CAHCN7x+8Qq6w0eRC0NwBfhgS7XH7fmmPr9xwhR54rWFNY37Ugg@mail.gmail.com>
- <9e77ccc3-07db-f1fe-ef99-981852d4772b@infradead.org>
- <CAHCN7xKG=8ygSi8st31fe+t3Mn+k-7VUHKixFCZUuuDLOX8-kQ@mail.gmail.com>
- <d8a57aee-bb8a-dc5a-7c4f-b8a293d37bec@infradead.org>
- <CAHCN7xKnRAmKh60dAtVaxz-dQtjzhBNtS0aN2swmddfo5FAD-Q@mail.gmail.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-In-Reply-To: <CAHCN7xKnRAmKh60dAtVaxz-dQtjzhBNtS0aN2swmddfo5FAD-Q@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+References: <20230802-master-v6-1-45d48299168b@kernel.org> <bac543537058619345b363bbfc745927.paul@paul-moore.com>
+ <ca156cecbc070c3b7c68626572274806079a6e04.camel@kernel.org>
+ <CAHC9VhTQDVyZewU0Oiy4AfJt_UtB7O2_-PcUmXkZtuwKDQBfXg@mail.gmail.com> <ec1fd18f271593d5c6b6813cfaeb688994f20bf4.camel@kernel.org>
+In-Reply-To: <ec1fd18f271593d5c6b6813cfaeb688994f20bf4.camel@kernel.org>
+From:   Paul Moore <paul@paul-moore.com>
+Date:   Thu, 3 Aug 2023 22:48:50 -0400
+Message-ID: <CAHC9VhSNXbJzfKLF+DjfK+_2eJYYc_AC3u3aUc_NUs_o5M5AaA@mail.gmail.com>
+Subject: Re: [PATCH v6] vfs, security: Fix automount superblock LSM init
+ problem, preventing NFS sb sharing
+To:     Jeff Layton <jlayton@kernel.org>
+Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
+        Christian Brauner <brauner@kernel.org>,
+        Trond Myklebust <trond.myklebust@hammerspace.com>,
+        Anna Schumaker <anna@kernel.org>,
+        James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        Stephen Smalley <stephen.smalley.work@gmail.com>,
+        Eric Paris <eparis@parisplace.org>,
+        Casey Schaufler <casey@schaufler-ca.com>,
+        David Howells <dhowells@redhat.com>,
+        Scott Mayhew <smayhew@redhat.com>,
+        Stephen Smalley <sds@tycho.nsa.gov>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-nfs@vger.kernel.org, linux-security-module@vger.kernel.org,
+        selinux@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -62,126 +85,54 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Aug 3, 2023 at 12:27=E2=80=AFPM Jeff Layton <jlayton@kernel.org> wr=
+ote:
+> On Wed, 2023-08-02 at 22:46 -0400, Paul Moore wrote:
+> > On Wed, Aug 2, 2023 at 3:34=E2=80=AFPM Jeff Layton <jlayton@kernel.org>=
+ wrote:
+> > > On Wed, 2023-08-02 at 14:16 -0400, Paul Moore wrote:
+> > > > On Aug  2, 2023 Jeff Layton <jlayton@kernel.org> wrote:
 
+...
 
-On 8/3/23 19:42, Adam Ford wrote:
-> On Thu, Aug 3, 2023 at 9:37 PM Randy Dunlap <rdunlap@infradead.org> wrote:
->>
->>
->>
->> On 8/3/23 19:26, Adam Ford wrote:
->>> On Thu, Aug 3, 2023 at 9:01 PM Randy Dunlap <rdunlap@infradead.org> wrote:
->>>>
->>>> Hi--
->>>>
->>>> On 8/3/23 08:24, Adam Ford wrote:
->>>>> On Thu, Aug 3, 2023 at 9:42 AM Aleksandr Nogikh <nogikh@google.com> wrote:
->>>>>>
->>>>>> Hello,
->>>>>>
->>>>>> We've been seing the following linker error on arm64 syzbot instances:
->>>>>>
->>>>>> ld.lld: error: undefined symbol: phy_mipi_dphy_get_default_config_for_hsclk
->>>>>>>>> referenced by samsung-dsim.c:731 (drivers/gpu/drm/bridge/samsung-dsim.c:731)
->>>>>>>>>               drivers/gpu/drm/bridge/samsung-dsim.o:(samsung_dsim_init) in archive vmlinux.a
->>>>>>
->>>>>> Steps to reproduce on the latest linux-next:
->>>>>>
->>>>>> $ git checkout next-20230803
->>>>>> $ wget -O '.config' 'https://raw.githubusercontent.com/google/syzkaller/master/dashboard/config/linux/upstream-arm64-kasan.config'
->>>>>> $ make CC=clang ARCH=arm64 LD=ld.lld CROSS_COMPILE=aarch64-linux-gnu- olddefconfig
->>>>>>
->>>>>> This also prints:
->>>>>>
->>>>>> WARNING: unmet direct dependencies detected for GENERIC_PHY_MIPI_DPHY
->>>>>>   Depends on [n]: GENERIC_PHY [=n]
->>>>>>   Selected by [y]:
->>>>>>   - DRM_NWL_MIPI_DSI [=y] && DRM_BRIDGE [=y] && DRM [=y] && COMMON_CLK [=y] && OF [=y] && HAS_IOMEM [=y]
->>>>>>   - DRM_SAMSUNG_DSIM [=y] && DRM [=y] && DRM_BRIDGE [=y] && COMMON_CLK [=y] && OF [=y] && HAS_IOMEM [=y]
->>>>>>
->>>>>> $ make CC=clang ARCH=arm64 LD=ld.lld CROSS_COMPILE=aarch64-linux-gnu- -j$(nproc)
->>>>>>
->>>>>> The kernel should have still compiled fine even despite the message above, right?
->>>>
->>>> No. See drivers/Makefile:
->>>> obj-$(CONFIG_GENERIC_PHY)       += phy/
->>>>
->>>> so the drivers/phy/ subdir is only built when CONFIG_GENERIC_PHY is set,
->>>> but it's not set.
->>>>
->>>>>> Could you please take a look?
->>>>>
->>>>> GENERIC_PHY_MIPI_DPHY was enabled to use
->>>>> phy_mipi_dphy_get_default_config() which takes in the pixel clock,
->>>>> bits-per-pixel, number of lanes and phy structure.  It applies a bunch
->>>>> of math based on the info passed and fills in the structure, but that
->>>>> function itself doesn't appear to be referencing phy code, so it's
->>>>> likely safe.
->>>>>
->>>>> I think this can be resolved by enabling GENERIC_PHY.  I just checked
->>>>> linux-next and when I built the arm64 defconfig, it enables
->>>>> GENERIC_PHY=y, so I don't think this is an issue.  I also checked the
->>>>
->>>> defconfig doesn't matter in this case. The .config that was provided has:
->>>> # CONFIG_GENERIC_PHY is not set
->>>> CONFIG_GENERIC_PHY_MIPI_DPHY=y
->>>>
->>>
->>> Where/how was the .config generated?
->>>
->>
->> Aleksandr posted a link to the config file above.
-> 
-> I get that, but I am not sure how this was generated.
-> 
+> > My only concern now is the fs_context::lsm_set flag.
+>
+> Yeah, that bit is ugly. David studied this problem a lot more than I
+> have, but basically, we only want to set the context info once, and
+> we're not always going to have a nice string to parse to set up the
+> options. This obviously works, but I'm fine with a more elegant method
+> if you can spot one.
 
-Nor am I. Alexsandr can hopefully tell us.
+Like I said before, sometimes making a LSM hook conditional on some
+flag is the only practical solution, but I always worry that there is
+a chance that a future patch might end up toggling that flag by
+accident and we lose an important call into the LSM.  Even if all we
+end up doing is moving the flag down into the LSMs I would be happier;
+there is still a risk, but at least if something breaks it is our (the
+LSM folks) own damn fault ;)
 
->>
->>> Are you building linux-next or something else?  The .config file
->>> generated when I build the arm64 defconfig  show both enabled:
->>
->> linux-next.
->>
->>
->>> $ grep GENERIC_PHY .config
->>> CONFIG_GENERIC_PHY=y
->>> CONFIG_GENERIC_PHY_MIPI_DPHY=y
->>>
->>
->> Yes, this is not a defconfig file.
-> 
-> I know, but it is a .config file that is generated from make defconfig
-> ARCH=arm64
->>
+> > You didn't mention exactly why the security_sb_set_mnt_opts() was
+> > failing, and requires the fs_context::lsm_set check, but my guess is
+> > that something is tripping over the fact that the superblock is
+> > already properly setup.  I'm working under the assumption that this
+> > problem - attempting to reconfigure a properly configured superblock -
+> > should only be happening in the submount/non-NULL-reference case.  If
+> > it is happening elsewhere I think I'm going to need some help
+> > understanding that ...
+>
+> Correct. When you pass in the mount options, fc->security seems to be
+> properly set. NFS mounting is complex though, so the final superblock
+> you care about may end up being a descendant of the one that was
+> originally configured.
 
-Not necessarily. It could be generated by 'make randconfig'.
+Ooof, okay, there goes that idea.
 
->>>
->>>> but yes, selecting GENERIC_PHY (needed in 3 places) does fix the warnings
->>>> and build error.  2 instance in drm/bridge/Kconfig and one in
->>>> drm/bridge/cadence/Kconfig (found by inspection).
->>>>
->>>>
->>>>
->>>>> multi_v7_defconfig for ARM and it also sets GENERIC_PHY=y for 32-bit
->>>>> ARM people using some of the Exynos boards.
->>>>>
->>>>> I don't know what version of Linux you're trying to build, but I can't
->>>>> replicate your issue.
->>>>
->>>> I had no problem replicating the kconfig warnings and build error.
->>>
->>> If you can replicate the problem, I'd suggest submitting a patch.
->>
->> Sure, I'll do that.
-> 
-> Great!  thanks.
-> 
-> adam
->>
->> --
->> ~Randy
+At this point I guess it comes back to that question of why is calling
+into security_sb_set_mnt_opts() a second (or third, etc.) time failing
+for you?  Is there some conflict with the superblock
+config/labeling/etc.?  Is there a permissions problem?  Better
+understanding why that is failing might help us come up with a better
+solution.
 
--- 
-~Randy
+--=20
+paul-moore.com
