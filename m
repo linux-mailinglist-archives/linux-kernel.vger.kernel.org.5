@@ -2,95 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 377C6770A7C
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 23:07:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 161A0770ADD
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 23:26:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229893AbjHDVHv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Aug 2023 17:07:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34366 "EHLO
+        id S231205AbjHDV0X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Aug 2023 17:26:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44050 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230417AbjHDVHg (ORCPT
+        with ESMTP id S230498AbjHDV0L (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Aug 2023 17:07:36 -0400
-Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com [IPv6:2a00:1450:4864:20::336])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49BC4525D
-        for <linux-kernel@vger.kernel.org>; Fri,  4 Aug 2023 14:06:55 -0700 (PDT)
-Received: by mail-wm1-x336.google.com with SMTP id 5b1f17b1804b1-3fe4ad22eb0so7810435e9.3
-        for <linux-kernel@vger.kernel.org>; Fri, 04 Aug 2023 14:06:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=nexus-software-ie.20221208.gappssmtp.com; s=20221208; t=1691183212; x=1691788012;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=6mW+IUGJZLGAyo+vrP4rtHzBvssxHTXINctEBco4YkA=;
-        b=wdhID+tT+S3ToorhCUUuSYwuY40lnKF8wME5h7Xf8JwPlJRSjMkvoW8TTWPq5tim97
-         jQcJyg6dK5F97DOZsrnc5IWVdTqi0WLDjNyhtsPl2u4F5327vsltf/2R41zSkk+qyfsa
-         zFIR+h29GNk38aLeLJM5Ak7KZsVFeYNqWhlpG4KawpXkG8fcZwGWxjdq0BnChvMOZBCO
-         PcrUEkLUXH+zw25rjmL/Fyy2iFmpFo4nf3YlXMqza/C7ISUog348BLXG7xNarNGybSYO
-         s2ul8N+JkJpJgyo9J5+ZVfQ6PwUwS/Lv5a0+oX26TIai2pPZ/fpycaJN3OPFSyEuhwy6
-         xWyQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691183212; x=1691788012;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=6mW+IUGJZLGAyo+vrP4rtHzBvssxHTXINctEBco4YkA=;
-        b=Ir6QuRJ7qMVGyleSH1xwDn/Qc1uoptXnsS3Z7jwz7q2PkJaZ6L66N74/K34TTacwVL
-         omgsmTetcE4xLEjLhhXkszfeQiujGVu5jXpjpQ4he9waYd41iNXETXTaILQghXlrOsP8
-         /Y59lekLRInRXRPMyMRT5/lMwC0q6XCELeK3X+blgnmx8QxGX45S1hgn6hoVPwj5/i5B
-         3dbR7TbqkuscNje59Cehka3eKtQAYNH6Y+IQ0c2CXLZVGOEKKF9ibX69V8oGuWw73YvA
-         VwtdhP0TpPjuI0N9hux+qSTrgbGRcVBDfH5IXuVlRD6YYiTvCiBJRJeSvffQcPMGuaGA
-         7t3g==
-X-Gm-Message-State: AOJu0YxEAOelA6MmoUBoDUAvyrXrqvCYBPZ95ovv3dcaeUKtmVZApGjM
-        FA2AaNGSrm8EQwCv/AuQIZ5egA==
-X-Google-Smtp-Source: AGHT+IE66er6x0W5J2S88GVvx6ltqiUKNwqw/V6MpF6v9N58vORvOgudZCfaTcZCD/6AzkP+Kkp4ew==
-X-Received: by 2002:a5d:4d49:0:b0:317:6681:e42a with SMTP id a9-20020a5d4d49000000b003176681e42amr2079576wru.9.1691183210900;
-        Fri, 04 Aug 2023 14:06:50 -0700 (PDT)
-Received: from [192.168.0.162] (188-141-3-169.dynamic.upc.ie. [188.141.3.169])
-        by smtp.gmail.com with ESMTPSA id q10-20020a7bce8a000000b003fe2120ad0bsm7591936wmj.41.2023.08.04.14.06.49
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 04 Aug 2023 14:06:50 -0700 (PDT)
-Message-ID: <9abd328b-e702-b6f7-7740-8cbaf3a0b866@nexus-software.ie>
-Date:   Fri, 4 Aug 2023 22:06:49 +0100
+        Fri, 4 Aug 2023 17:26:11 -0400
+Received: from cloudserver094114.home.pl (cloudserver094114.home.pl [79.96.170.134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DADA8E43;
+        Fri,  4 Aug 2023 14:26:09 -0700 (PDT)
+Received: from localhost (127.0.0.1) (HELO v370.home.net.pl)
+ by /usr/run/smtp (/usr/run/postfix/private/idea_relay_lmtp) via UNIX with SMTP (IdeaSmtpServer 5.2.0)
+ id 22f7f0f302ddf991; Fri, 4 Aug 2023 23:26:08 +0200
+Authentication-Results: v370.home.net.pl; spf=softfail (domain owner 
+   discourages use of this host) smtp.mailfrom=rjwysocki.net 
+   (client-ip=195.136.19.94; helo=[195.136.19.94]; 
+   envelope-from=rjw@rjwysocki.net; receiver=<UNKNOWN>)
+Received: from kreacher.localnet (unknown [195.136.19.94])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by v370.home.net.pl (Postfix) with ESMTPSA id B344C661680;
+        Fri,  4 Aug 2023 23:26:07 +0200 (CEST)
+From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
+To:     Linux ACPI <linux-acpi@vger.kernel.org>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Michal Wilczynski <michal.wilczynski@intel.com>,
+        Zhang Rui <rui.zhang@intel.com>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
+Subject: [PATCH v4 05/10] ACPI: thermal: Clean up acpi_thermal_register_thermal_zone()
+Date:   Fri, 04 Aug 2023 23:07:18 +0200
+Message-ID: <7582643.EvYhyI6sBW@kreacher>
+In-Reply-To: <4878513.31r3eYUQgx@kreacher>
+References: <13318886.uLZWGnKmhe@kreacher> <4878513.31r3eYUQgx@kreacher>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.8.0
-Subject: Re: [PATCH 4/6] media: platform: venus: Add optional LLCC path
-Content-Language: en-US
-To:     Bryan O'Donoghue <bryan.odonoghue@linaro.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Stanimir Varbanov <stanimir.k.varbanov@gmail.com>,
-        Vikash Garodia <quic_vgarodia@quicinc.com>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>
-Cc:     Marijn Suijten <marijn.suijten@somainline.org>,
-        Konrad Dybcio <konradybcio@kernel.org>,
-        linux-media@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20230731-topic-8280_venus-v1-0-8c8bbe1983a5@linaro.org>
- <20230731-topic-8280_venus-v1-4-8c8bbe1983a5@linaro.org>
- <78d2fd56-804d-827b-d074-b139cf62a498@linaro.org>
-From:   Bryan O'Donoghue <pure.logic@nexus-software.ie>
-In-Reply-To: <78d2fd56-804d-827b-d074-b139cf62a498@linaro.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="UTF-8"
+X-CLIENT-IP: 195.136.19.94
+X-CLIENT-HOSTNAME: 195.136.19.94
+X-VADE-SPAMSTATE: clean
+X-VADE-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedviedrkeeggdduheekucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecujffqoffgrffnpdggtffipffknecuuegrihhlohhuthemucduhedtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjughrpefhvfevufffkfgjfhgggfgtsehtufertddttdejnecuhfhrohhmpedftfgrfhgrvghlucflrdcuhgihshhotghkihdfuceorhhjfiesrhhjfiihshhotghkihdrnhgvtheqnecuggftrfgrthhtvghrnhepvdffueeitdfgvddtudegueejtdffteetgeefkeffvdeftddttdeuhfegfedvjefhnecukfhppeduleehrddufeeirdduledrleegnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehinhgvthepudelhedrudefiedrudelrdelgedphhgvlhhopehkrhgvrggthhgvrhdrlhhotggrlhhnvghtpdhmrghilhhfrhhomhepfdftrghfrggvlhculfdrucghhihsohgtkhhifdcuoehrjhifsehrjhifhihsohgtkhhirdhnvghtqedpnhgspghrtghpthhtohepjedprhgtphhtthhopehlihhnuhigqdgrtghpihesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopegurghnihgvlhdrlhgviigtrghnoheslhhinhgrrhhordhorhhgpdhrtghpthhtoheplhhinhhugidqkhgvrhhnvghlsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtoheplhhinhhugidqphhmsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghp
+ thhtohepmhhitghhrghlrdifihhltgiihihnshhkihesihhnthgvlhdrtghomhdprhgtphhtthhopehruhhirdiihhgrnhhgsehinhhtvghlrdgtohhm
+X-DCC--Metrics: v370.home.net.pl 1024; Body=7 Fuz1=7 Fuz2=7
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 04/08/2023 22:04, Bryan O'Donoghue wrote:
-> you can get for llc_path == NULL
+From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 
-[sic] You can test.
+Rename the trips variable in acpi_thermal_register_thermal_zone() to
+trip_count so its name better reflects the purpose, rearrange white
+space in the loop over active trips for clarity and reduce code
+duplication related to calling thermal_zone_device_register() by
+using an extra local variable to store the passive delay value.
+
+No intentional functional impact.
+
+Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+---
+
+v3 -> v4: No changes.
+
+v2 -> v3: No changes.
+
+v1 -> v2: No changes.
 
 ---
-bod
+ drivers/acpi/thermal.c |   36 ++++++++++++++++--------------------
+ 1 file changed, 16 insertions(+), 20 deletions(-)
+
+Index: linux-pm/drivers/acpi/thermal.c
+===================================================================
+--- linux-pm.orig/drivers/acpi/thermal.c
++++ linux-pm/drivers/acpi/thermal.c
+@@ -745,34 +745,30 @@ static void acpi_thermal_zone_sysfs_remo
+ 
+ static int acpi_thermal_register_thermal_zone(struct acpi_thermal *tz)
+ {
+-	int trips = 0;
++	int passive_delay = 0;
++	int trip_count = 0;
+ 	int result;
+ 	acpi_status status;
+ 	int i;
+ 
+ 	if (tz->trips.critical.valid)
+-		trips++;
++		trip_count++;
+ 
+ 	if (tz->trips.hot.valid)
+-		trips++;
+-
+-	if (tz->trips.passive.valid)
+-		trips++;
+-
+-	for (i = 0; i < ACPI_THERMAL_MAX_ACTIVE && tz->trips.active[i].valid;
+-	     i++, trips++);
+-
+-	if (tz->trips.passive.valid)
+-		tz->thermal_zone = thermal_zone_device_register("acpitz", trips, 0, tz,
+-								&acpi_thermal_zone_ops, NULL,
+-								tz->trips.passive.tsp * 100,
+-								tz->polling_frequency * 100);
+-	else
+-		tz->thermal_zone =
+-			thermal_zone_device_register("acpitz", trips, 0, tz,
+-						     &acpi_thermal_zone_ops, NULL,
+-						     0, tz->polling_frequency * 100);
++		trip_count++;
+ 
++	if (tz->trips.passive.valid) {
++		trip_count++;
++		passive_delay = tz->trips.passive.tsp * 100;
++	}
++
++	for (i = 0; i < ACPI_THERMAL_MAX_ACTIVE && tz->trips.active[i].valid; i++)
++		trip_count++;
++
++	tz->thermal_zone = thermal_zone_device_register("acpitz", trip_count, 0,
++							tz, &acpi_thermal_zone_ops,
++							NULL, passive_delay,
++							tz->polling_frequency * 100);
+ 	if (IS_ERR(tz->thermal_zone))
+ 		return -ENODEV;
+ 
+
+
+
