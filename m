@@ -2,73 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 13FF076F931
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 06:58:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0336F76F936
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 07:00:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232292AbjHDE6O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Aug 2023 00:58:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39344 "EHLO
+        id S233044AbjHDFAs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Aug 2023 01:00:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39764 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233076AbjHDE51 (ORCPT
+        with ESMTP id S233081AbjHDFAO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Aug 2023 00:57:27 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.65])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9D344226;
-        Thu,  3 Aug 2023 21:57:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1691125045; x=1722661045;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=zv6jrObCLXXL7z7o+6S0fuwMVmrDPxirojj7p4zaW2Y=;
-  b=dSIk7QwGkqMl2NCms050TzcWpbs2dvuiRJAdEc/n2mezlvv+6Q0SI1cz
-   TzDO0EWp3FTcS2Vwe1b87HU6xIp2HKuwqH3Ov0qHDkmM41SAxZJ21gEwb
-   iio1hlS+5edAqN1/5oScmH0dP7y2Ylp+R4FVJexVTI/Y294lk4xlGwEd7
-   PhsOSvd33waqqwXEGzHxn6gg3SYh+IUb8Hd27VySwNCTPYi5F65lma1J6
-   8PedsYfG0dNvF3uObi2jkt3kJ4xvSZb34OXoVaWxJn5eges5o2Tw/x2RO
-   TxkRrc8NpqgnfIUkY5eTyV0/T2zwl+XJKl/a0Zuq1ipy4mQK7GSdunbl8
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10791"; a="373712039"
-X-IronPort-AV: E=Sophos;i="6.01,254,1684825200"; 
-   d="scan'208";a="373712039"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Aug 2023 21:57:25 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10791"; a="723491701"
-X-IronPort-AV: E=Sophos;i="6.01,254,1684825200"; 
-   d="scan'208";a="723491701"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by orsmga007.jf.intel.com with ESMTP; 03 Aug 2023 21:57:22 -0700
-Received: from andy by smile.fi.intel.com with local (Exim 4.96)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1qRmsL-00AWC0-0S;
-        Fri, 04 Aug 2023 07:57:21 +0300
-Date:   Fri, 4 Aug 2023 07:57:20 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Mario Limonciello <mario.limonciello@amd.com>
-Cc:     "Rafael J . Wysocki" <rafael@kernel.org>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Bjorn Helgaas <helgaas@kernel.org>, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-acpi@vger.kernel.org,
-        Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        Iain Lane <iain@orangesquash.org.uk>,
-        Shyam-sundar S-k <Shyam-sundar.S-k@amd.com>
-Subject: Re: [PATCH v9 3/3] PCI/ACPI: Use device constraints to decide PCI
- target state fallback policy
-Message-ID: <ZMyFMJ/lQKgYZgqa@smile.fi.intel.com>
-References: <20230804010229.3664-1-mario.limonciello@amd.com>
- <20230804010229.3664-4-mario.limonciello@amd.com>
- <ZMx+4CxT/b8ShiWR@smile.fi.intel.com>
- <f864f6ef-29ae-8cb6-b46c-ee0f32c32fe7@amd.com>
+        Fri, 4 Aug 2023 01:00:14 -0400
+Received: from mx0b-0016f401.pphosted.com (mx0b-0016f401.pphosted.com [67.231.156.173])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81E014494;
+        Thu,  3 Aug 2023 22:00:13 -0700 (PDT)
+Received: from pps.filterd (m0045851.ppops.net [127.0.0.1])
+        by mx0b-0016f401.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 373NXOTi027576;
+        Thu, 3 Aug 2023 21:59:52 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=pfpt0220; bh=urYvZsBrtI2zlxlxLrU0ozTBnuFL9WclLIdNZ60d340=;
+ b=a3Gsg0YbRgpHQWlIWHzKbfoJKQM9le8tDJp0LU7+t61SOH2ce4ltGxWRmhuWRYOODAt3
+ 36ArAvQJi/8pVCKK6wU3JkXzNqjP7ZFWDTZCMYCPjXlQd/DsGRVzf8QVUjeXdUP375Pf
+ HXRZ7KUitBFJ1l2TN6fO3L0G4xUt9UA5PLS26oPOdxvuEaDMcPUGa64irvJ+vfmnp6d9
+ jUo0/6KgvagjCQBooSS395C+DbOxrL6oEwTcXynP446xcqf0g3lCCk+MEbb/o4ysViRI
+ a+S/1FElcDvBkppILIDGAkS1J4c2SIIqwuOTYX3g/ir8Cq2hATT6sM1ZiUBkzfPkbx66 Yw== 
+Received: from dc5-exch02.marvell.com ([199.233.59.182])
+        by mx0b-0016f401.pphosted.com (PPS) with ESMTPS id 3s8p0xgnbn-2
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
+        Thu, 03 Aug 2023 21:59:52 -0700
+Received: from DC5-EXCH01.marvell.com (10.69.176.38) by DC5-EXCH02.marvell.com
+ (10.69.176.39) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Thu, 3 Aug
+ 2023 21:59:43 -0700
+Received: from maili.marvell.com (10.69.176.80) by DC5-EXCH01.marvell.com
+ (10.69.176.38) with Microsoft SMTP Server id 15.0.1497.48 via Frontend
+ Transport; Thu, 3 Aug 2023 21:59:43 -0700
+Received: from localhost.localdomain (unknown [10.28.36.166])
+        by maili.marvell.com (Postfix) with ESMTP id 387073F7050;
+        Thu,  3 Aug 2023 21:59:38 -0700 (PDT)
+From:   Suman Ghosh <sumang@marvell.com>
+To:     <sgoutham@marvell.com>, <gakula@marvell.com>,
+        <sbhatta@marvell.com>, <hkelam@marvell.com>, <davem@davemloft.net>,
+        <edumazet@google.com>, <kuba@kernel.org>, <pabeni@redhat.com>,
+        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <lcherian@marvell.com>, <jerinj@marvell.com>,
+        <simon.horman@corigine.com>, <jesse.brandeburg@intel.com>
+CC:     Suman Ghosh <sumang@marvell.com>
+Subject: [net-next PATCH V5 0/2] octeontx2-af: TC flower offload changes
+Date:   Fri, 4 Aug 2023 10:29:33 +0530
+Message-ID: <20230804045935.3010554-1-sumang@marvell.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <f864f6ef-29ae-8cb6-b46c-ee0f32c32fe7@amd.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Proofpoint-GUID: GAyxz8tZv7N1de1z9ACyTqWH02TKdVZk
+X-Proofpoint-ORIG-GUID: GAyxz8tZv7N1de1z9ACyTqWH02TKdVZk
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
+ definitions=2023-08-04_02,2023-08-03_01,2023-05-22_02
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -76,35 +69,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 03, 2023 at 11:37:10PM -0500, Mario Limonciello wrote:
-> On 8/3/23 23:30, Andy Shevchenko wrote:
-> > On Thu, Aug 03, 2023 at 08:02:29PM -0500, Mario Limonciello wrote:
+This patchset includes minor code restructuring related to TC
+flower offload for outer vlan and adding support for TC inner
+vlan offload.
 
-...
+Patch #1 Code restructure to handle TC flower outer vlan offload
 
-> > > +	pci_dbg(dev, "ACPI device constraint: %d\n", constraint);
-> > 
-> > Does it make sense before the below check? Why can we be interested in the
-> > _exact_ negative values? (Note that non-printing is already a sign that either
-> > we don't call this or have negative constraint.)
-> 
-> There are two different negative values that can come up:
-> -ENODEV or -EINVAL.  Both were interesting while coming up with this series
-> because they mean something different about why a constraint wasn't
-> selected.
-> 
-> -ENODEV means the constraint wasn't found.
-> -EINVAL means the constraint was found but something is wrong with the table
-> parser or the table itself.  I found the table parser wasn't working
-> correctly originaly thanks to this.
-> 
-> Maybe now that I've got it all working you're right and this should go
-> after the error checking.
+Patch #2 Add TC flower offload support for inner vlan
 
-Or maybe moved to the acpi_get_lps0_constraint().
+Suman Ghosh (2):
+  octeontx2-af: Code restructure to handle TC outer VLAN offload
+  octeontx2-af: TC flower offload support for inner VLAN
+
+v5 changes:
+	Resolved conflicts with 'main' branch
+
+v4 changes:
+	Resolved conflicts with 'main' branch
+
+v3 changes:
+	1. Fixed warning in file
+	drivers/net/ethernet/marvell/octeontx2/nic/otx2_tc.c
+	2. Updated commit description for patch #2
+
+v2 changes:
+	1. Fixed checkpatch errors in file
+	drivers/net/ethernet/marvell/octeontx2/nic/otx2_tc.c
+	2. Updated cover letter subject
+
+ .../net/ethernet/marvell/octeontx2/af/mbox.h  |   1 +
+ .../net/ethernet/marvell/octeontx2/af/npc.h   |   3 +
+ .../marvell/octeontx2/af/rvu_debugfs.c        |   5 +
+ .../marvell/octeontx2/af/rvu_npc_fs.c         |  13 +++
+ .../ethernet/marvell/octeontx2/nic/otx2_tc.c  | 105 +++++++++++-------
+ 5 files changed, 89 insertions(+), 38 deletions(-)
 
 -- 
-With Best Regards,
-Andy Shevchenko
-
+2.25.1
 
