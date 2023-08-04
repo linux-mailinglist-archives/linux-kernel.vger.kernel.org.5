@@ -2,76 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4EC8D770433
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 17:17:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 45529770435
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 17:18:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230235AbjHDPRN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Aug 2023 11:17:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54010 "EHLO
+        id S231893AbjHDPSa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Aug 2023 11:18:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54580 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229572AbjHDPRL (ORCPT
+        with ESMTP id S229572AbjHDPS3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Aug 2023 11:17:11 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61B7449C1
-        for <linux-kernel@vger.kernel.org>; Fri,  4 Aug 2023 08:16:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1691162184;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=obUjDUYXYeTUDK2opFgvx08zifi9IeBL/RTGGVT6YBY=;
-        b=ZIbsa4aNtshYxMAsSlTlNSEdBZUtoJGZQvCWy5Ild8o/yqGeX2YZ0FhsPiGfz4ApeNPORj
-        rXSeLz5LvU0dIKMIcCiIXD7QBVuyObCCetr9FY7UvGZ/wdlxkdh0/hWys6CrZ/ZFd9SStm
-        9cGgLX9tXZ9ori+gNhrUWUHlfIKeW3E=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-93-1FSrIDZ_MvOnd_-k6mrKOQ-1; Fri, 04 Aug 2023 11:16:22 -0400
-X-MC-Unique: 1FSrIDZ_MvOnd_-k6mrKOQ-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.rdu2.redhat.com [10.11.54.6])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 6DEDE856F67;
-        Fri,  4 Aug 2023 15:16:21 +0000 (UTC)
-Received: from warthog.procyon.org.uk (unknown [10.42.28.131])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id CBD192166B25;
-        Fri,  4 Aug 2023 15:16:18 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-From:   David Howells <dhowells@redhat.com>
-In-Reply-To: <bac543537058619345b363bbfc745927.paul@paul-moore.com>
-References: <bac543537058619345b363bbfc745927.paul@paul-moore.com> <20230802-master-v6-1-45d48299168b@kernel.org>
-To:     Paul Moore <paul@paul-moore.com>
-Cc:     dhowells@redhat.com, Jeff Layton <jlayton@kernel.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Christian Brauner <brauner@kernel.org>,
-        Trond Myklebust <trond.myklebust@hammerspace.com>,
-        Anna Schumaker <anna@kernel.org>,
-        James Morris <jmorris@namei.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>,
-        Stephen Smalley <stephen.smalley.work@gmail.com>,
-        Eric Paris <eparis@parisplace.org>,
-        Casey Schaufler <casey@schaufler-ca.com>,
-        Scott Mayhew <smayhew@redhat.com>,
-        Stephen Smalley <sds@tycho.nsa.gov>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-nfs@vger.kernel.org, linux-security-module@vger.kernel.org,
-        selinux@vger.kernel.org
-Subject: Re: [PATCH v6] vfs, security: Fix automount superblock LSM init problem, preventing NFS sb sharing
+        Fri, 4 Aug 2023 11:18:29 -0400
+Received: from mail-vs1-xe2c.google.com (mail-vs1-xe2c.google.com [IPv6:2607:f8b0:4864:20::e2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3BFB2B9;
+        Fri,  4 Aug 2023 08:18:26 -0700 (PDT)
+Received: by mail-vs1-xe2c.google.com with SMTP id ada2fe7eead31-447576e24e1so793540137.1;
+        Fri, 04 Aug 2023 08:18:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1691162305; x=1691767105;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=yKKeeEZK0k/KmTOB+EfyS2WGuPhrb1ObzYdlQDrh8Qw=;
+        b=VseqMOMOF52xs36Vr7h8rASKuNrSTm3AMGO809OGAv988E8KlV/FbDTunvNxNsw8bO
+         KEH8RM1whH6Hu3o+9U7BNK7VVshh0r8+DI/ACYaIvGTW5HyMjfJ1cB+dy4KnHV266zts
+         nZYJlEVPowwU1GPl+hM9ck4qzBtIlZl2B42TMwnnNHxc/6N9iy5fuVGOVM5kxv+hfQn3
+         irjO7nkBPDKq+PHFU+U214NzSSmEjJ9irvHO+tyvjAwrNxFN1lyOIzuxQpEIm1dZCSpX
+         k5pZnP1syBvVJdw/oQjs7T5cgi57UoXLMw9yaCoimxHzr8Yz5BVHxJKHcFKgyaLr0EEp
+         jrCA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691162305; x=1691767105;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=yKKeeEZK0k/KmTOB+EfyS2WGuPhrb1ObzYdlQDrh8Qw=;
+        b=XlaekXqGw10NSsnYhiW5G7AmamI5HPeIfAxCqMzHLwTTcA/O4r1/HJsTbRmyimLFVN
+         rnd63+/uHtkGcj2RgZwjKMaQ0zKO9BSMLLmdErNvllIsCfuy+SqyynWPMQ7jPaRJHsG6
+         HASFcNSf3Hb4WdCls9Mxad7+z8QwMdweQy9x0CxIde1PY1hngo4R2bikrD7q2cogblxH
+         J77UjR4T15n9dVkvIJlaqoYLYTXBxd4Au11vZ1mzkohHlCBM8kGT2S+9UVPDkHvJUaI3
+         MQkVw+GhWMi/AfUA0kGx34vxqfoDgOPsAl5K4rLtI1bR1b3y4EUr4FOa0KSQ8ey3U9NS
+         iN0A==
+X-Gm-Message-State: AOJu0YzitltptPE03zNkosgxt9edXGx+ZDVf9NHh8PbDL3uCRszIHPEI
+        nexJT5yJV+CdM1jprn4P5xwtHlmc4G5UIeDLgfw=
+X-Google-Smtp-Source: AGHT+IEZdAaMFmJa5KvVOv+x9Hf/VUHR//0YMg0OFNkmFtv9JCuBr/0BawIRf3LcGBrK+LBQ/2JWwgXfDiXFA5zR/DU=
+X-Received: by 2002:a05:6102:c7:b0:445:208:3516 with SMTP id
+ u7-20020a05610200c700b0044502083516mr1107122vsp.0.1691162305151; Fri, 04 Aug
+ 2023 08:18:25 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <2678221.1691162178.1@warthog.procyon.org.uk>
+References: <20230801121824.174556-1-alistair.francis@wdc.com>
+ <2023080152-disobey-widen-65a4@gregkh> <CAKmqyKMEqrfP8BrXd9pVd4a5Aodipty-8bAkxK5xcGSewsC9JA@mail.gmail.com>
+ <20230801170739.000048cb@Huawei.com> <CAKmqyKND01=xaiB-VFVsi3+KRbxu4dBKfh_RhCN-jric5VzNpA@mail.gmail.com>
+ <20230802225248.GA19409@wunner.de>
+In-Reply-To: <20230802225248.GA19409@wunner.de>
+From:   Alistair Francis <alistair23@gmail.com>
+Date:   Fri, 4 Aug 2023 11:17:59 -0400
+Message-ID: <CAKmqyKNypBUPNK37wby-0_7G2-10BmZ4f8WQbevVn9uX1mZreQ@mail.gmail.com>
+Subject: Re: [PATCH v2] PCI/DOE: Expose the DOE protocols via sysfs
+To:     Lukas Wunner <lukas@wunner.de>
+Cc:     Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Greg KH <gregkh@linuxfoundation.org>, bhelgaas@google.com,
+        linux-pci@vger.kernel.org, alex.williamson@redhat.com,
+        christian.koenig@amd.com, kch@nvidia.com, logang@deltatee.com,
+        linux-kernel@vger.kernel.org,
+        Alistair Francis <alistair.francis@wdc.com>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-Date:   Fri, 04 Aug 2023 16:16:18 +0100
-Message-ID: <2678222.1691162178@warthog.procyon.org.uk>
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.6
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -79,73 +76,154 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Paul Moore <paul@paul-moore.com> wrote:
+On Wed, Aug 2, 2023 at 6:52=E2=80=AFPM Lukas Wunner <lukas@wunner.de> wrote=
+:
+>
+> On Tue, Aug 01, 2023 at 02:24:24PM -0400, Alistair Francis wrote:
+> > On Tue, Aug 1, 2023 at 12:07???PM Jonathan Cameron <Jonathan.Cameron@hu=
+awei.com> wrote:
+> > > On Tue, 1 Aug 2023 09:48:13 -0400 Alistair Francis <alistair23@gmail.=
+com> wrote:
+> > > > On Tue, Aug 1, 2023 at 9:28???AM Greg KH <gregkh@linuxfoundation.or=
+g> wrote:
+> > > > > On Tue, Aug 01, 2023 at 08:18:24AM -0400, Alistair Francis wrote:
+> > > > > > +What:                /sys/bus/pci/devices/.../doe_proto
+>
+> The PCISIG published the DOE r1.1 ECN in September 2022.
+>
+> It replaced all occurrences of the term "protocol" with either "feature"
+> or "data object type".  Please adhere to the terms used by the spec so
+> that it is easy for an uninitiated reader to make the connection between
+> the spec and the implementation.
+>
+> DOE r1.1 was merged into the PCIe Base Spec r6.1.  It wasn't merged into
+> r6.0.1 yet.
+>
+>
+> > > > > > +             This file contains a list of the supported Data O=
+bject Exchange (DOE)
+> > > > > > +             protocols. The protocols are seperated by newline=
+s.
+>                                                      ^^^^^^^^^
+> s/seperated/separated/
+>
+>
+> > > > > > +             The value comes from the device and specifies the=
+ vendor and
+> > > > > > +             protocol supported. The lower byte is the protoco=
+l and the next
+> > > > > > +             two bytes are the vendor ID.
+> > > > > > +             The file is read only.
+>
+> I kind of like the approach of exposing a list which can be grep'ed,
+> even though it may go against the rule of having just one datum per
+> attribute.  I'd prefer a representation that's human-readable though,
+> e.g. "0001:01" for CMA-SPDM.
 
-> =
+Yeah, it's my preferred method as well, but it's not going to be
+accepted upstream
 
-> I generally dislike core kernel code which makes LSM calls conditional
-> on some kernel state maintained outside the LSM.  Sometimes it has to
-> be done as there is no other good options, but I would like us to try
-> and avoid it if possible.  The commit description mentioned that this
-> was put here to avoid a SELinux complaint, can you provide an example
-> of the complain?  Does it complain about a double/invalid mount, e.g.
-> "SELinux: mount invalid.  Same superblock, different security ..."?
-> =
+>
+>
+> > > > > So this is going to be a lot of data, what is ensuring that you d=
+idn't
+> > > > > truncate it?  Which again, is the reason why this is not a good i=
+dea for
+> > > > > sysfs, sorry.
+>
+> For all practical purposes, the maximum size which can be returned
+> by a sysfs attribute (PAGE_SIZE, i.e. 4 kByte on x86) ought to be
+> sufficient.  I'd say a mailbox typically doesn't support more than,
+> say, 10 protocols.
+>
+>
+> > > > I was hoping to avoid the kernel needing to know the protocols. Thi=
+s
+> > > > list can include vendor specific protocols, as well as future
+> > > > protocols that the running kernel doesn't yet support, so I wanted =
+to
+> > > > directly pass it to userspace without having to parse it in the
+> > > > kernel.
+>
+> Right, just expose raw numbers and let lspci print them in beautified
+> (parsed) form.
+>
+>
+> > A directory per vid and files for each protocol sounds good to me.
+> > I'll update the patch to do that. If anyone doesn't like that idea let
+> > me know
+>
+> Since you intend to expose an interface for interacting with mailboxes,
+> on top of just exposing a list of supported data types (protocols),
+> I think you should first come up with a plan how to do that instead
+> of kicking the can down the road.  The sysfs ABI is sort of set in
+> stone, you can't easily change it if you realize after the fact
+> that it has deficiencies for your use case.
 
-> I'd like to understand why the sb_set_mnt_opts() call fails when it
-> comes after the fs_context_init() call.  I'm particulary curious to
-> know if the failure is due to conflicting SELinux state in the
-> fs_context, or if it is simply an issue of sb_set_mnt_opts() not
-> properly handling existing values.  Perhaps I'm being overly naive,
-> but I'm hopeful that we can address both of these within the SELinux
-> code itself.
-> =
+So I think no matter what we want the DOE protocols exposed via sysfs.
+That will allow tools like lspci to report the DOE protocols
+supported.
 
-> In a worst case situation, we could always implement a flag *inside*
-> the SELinux code, similar to what has been done with 'lsm_set' here.
+Any other features aren't going to use sysfs. The future question of a
+DOE mailbox or exposing SPDM bits does seem to be already determined
+anyway.
 
-IIRC, the issue is when you make a mount with an explicit context=3D setti=
-ng and
-make another mount from some way down the export tree that doesn't have an
-explicit setting, e.g.:
+>
+> sysfs is not suitable for interaction with DOE mailboxes because the
+> filesystem imposes a size restriction of PAGE_SIZE per read.  DOE
+> allows up to 1 MByte per request or response, so way bigger than the
+> puny 4 kByte PAGE_SIZE on x86.  Splitting response reception into
+> multiple reads of the same attribute would be an awful kludge.
+> So I think you need to resort to devfs or procfs for mailbox interaction,
+> instead of sysfs.
 
-	mount carina:/ /mnt -o context=3Dsystem_u:object_r:root_t:s0
-	mount carina:/nfs/scratch /mnt2
+Agreed
 
-and then cause an automount to walk from one to the other:
+>
+> Question is, if you use devfs/procfs for mailbox interaction, maybe it
+> makes sense to expose the list of supported data types there as well,
+> instead of in sysfs?
 
-	stat /mnt/nfs/scratch/foo
+I do think that listing the protocols in sysfs makes sense, even with
+a mailbox somewhere else makes sense. In saying that I don't think we
+will end up adding mailbox support anyway.
 
-For reference, my server has:
+>
+> If you do expose a list of supported protocols, you should definitely
+> have one sysfs attribute per mailbox, e.g. "doe_123" or "doe@123" if
+> the mailbox is located at offset 123 in config space.
+>
+>
+> > I think we will need to at least expose a few parts of SPDM to
+> > userspace. It could either be the kernel passing data back (like the
+> > measurements for example) or userspace orchestrating the
+> > communication. That's a future problem at the moment though
+>
+> I envision that we'll provide a higher-level ABI for things like
+> measurement retrieval, either through IMA or maybe sysfs, but not
+> low-level access to the SPDM session.
 
-	/nfs/scratch 192.168.6.0/255.255.255.0,90.155.74.16/255.255.255.248
-	/nfs         192.168.6.0/255.255.255.0,90.155.74.16/255.255.255.248
-	/            192.168.6.0/255.255.255.0,90.155.74.16/255.255.255.248
+That seems like the best approach to me as well.
 
-and if I look in /proc/fs/nfsfs/volumes, I can see the individual superblo=
-cks:
+>
+> In fact, I think if you do implement mailbox interaction, you may
+> want to blacklist certain data types that are handled in-kernel,
+> such as CMA-SPDM.
+>
+> And you should constrain the whole thing to
+> !security_locked_down(LOCKDOWN_PCI_ACCESS).
+>
+> FWIW, an experimental in-kernel implementation of SPDM measurement
+> retrieval already exists (it goes on top of my doe branch that I
+> linked to previously):
+>
+> https://github.com/debox1/spdm/commits/measurement
 
-	NV SERVER   PORT DEV          FSID                              FSC
-	v4 c0a80601  801 0:51         0:0                               no =
+Awesome! Thank for that
 
-	v4 c0a80601  801 0:56         3:0                               no =
+Alistair
 
-	v4 c0a80601  801 0:52         1:0                               no =
-
-	v4 c0a80601  801 0:55         3:0                               no =
-
-
-As you can see, there are two referring to the same 'volume'.
-
-Without the "fc->lsm_set=3Dtrue" bit, you get an error something like:
-
-	SELinux: mount invalid.  Same superblock, different security settings for=
- (dev 0:56, type nfs4)
-
-One important question is how should sharing of a mount with unspecified
-context be handled when we try to unify it with a mount that has an explic=
-it
-context?
-
-David
-
+>
+> Thanks,
+>
+> Lukas
