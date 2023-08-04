@@ -2,96 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EA29F770827
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 20:48:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0948777082E
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 20:51:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229990AbjHDSsI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Aug 2023 14:48:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34692 "EHLO
+        id S229974AbjHDSvG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Aug 2023 14:51:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35580 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229676AbjHDSsF (ORCPT
+        with ESMTP id S229676AbjHDSvE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Aug 2023 14:48:05 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2217CA9;
-        Fri,  4 Aug 2023 11:48:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
-        Message-ID:Sender:Reply-To:Content-ID:Content-Description;
-        bh=R179y12/UCyAcpXD/QnHM0IfTko1D4RCCKOHnrP3mvk=; b=qPWH9tuaIc/zBnslhOYGZ2GyeF
-        bMzK5ZDklvQ/FF8a9L1PF8aCc/nc1/tiPtYrInXMvpEaQ3vd7wvIqyk2zZ+SdnXuYcpJ4ESm3OaxY
-        ICTnnXeZ+RMxZdofshmPMsAAK1s5yGxD2bc2uCV26r3llRL9cZwc+W17HRDXo/YY2vATVk/pgemIg
-        fpzyAGY3rUBpHly3epjgMPXNRWqINk+oIzADILsO5OIGxnu+3AeEqmvzFFXYAkCRoR7/2GwIT/UFk
-        B25Ie4KA24ucHyD1ZaZvN6XYXC1KYwlHXzHkdGrIQl9fXYyD5UiAhJPsMg4Dxrt80hgrD2MoBozW2
-        Gk9zoKYA==;
-Received: from [2601:1c2:980:9ec0::2764]
-        by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-        id 1qRzq1-00D1YA-2m;
-        Fri, 04 Aug 2023 18:47:50 +0000
-Message-ID: <bfab7c5b-e4d3-d8d9-afab-f43c0cdf26cf@infradead.org>
-Date:   Fri, 4 Aug 2023 11:47:48 -0700
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH] docs: sparse: fix invalid link addresses
-Content-Language: en-US
-To:     Min-Hua Chen <minhuadotchen@gmail.com>,
-        Hu Haowen <src.res@email.cn>, Jonathan Corbet <corbet@lwn.net>
-Cc:     linux-doc-tw-discuss@lists.sourceforge.net,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20230804112320.35592-1-minhuadotchen@gmail.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-In-Reply-To: <20230804112320.35592-1-minhuadotchen@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+        Fri, 4 Aug 2023 14:51:04 -0400
+Received: from mail-yw1-x114a.google.com (mail-yw1-x114a.google.com [IPv6:2607:f8b0:4864:20::114a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 102BC46B2
+        for <linux-kernel@vger.kernel.org>; Fri,  4 Aug 2023 11:51:03 -0700 (PDT)
+Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-585f04ffa3eso27340917b3.0
+        for <linux-kernel@vger.kernel.org>; Fri, 04 Aug 2023 11:51:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1691175062; x=1691779862;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=3eYV/qmJG0sbl9kIxGw8mmbJssqpCy9LZDQ3FKzw738=;
+        b=4kMAPIpux47Jcny+xxQrRGxkMWsor4im2oxpFpZ5h9Q0f27sBmQtM1qjf38AFRC1Sf
+         EdPHWn+NzrAuOj7Ter5/rIoFXRaPf0F7VEwAV0nH/wCfrIt/mZ4LwAvBABxinBeEVM3r
+         MVPNzIdUxdOu8KypAFX88utne4PE1XeBvApfxLsut9cFST/a/oUQKDP23JlAj/CHuSId
+         2FPfYj5MIB/gbA3udHzvID3Z4vGs04Qn2FwB7zBlix4kNtHTDQ6MQc4Akw8RphZtj6E0
+         0zvkV3BgvjvpeJbW2SKST9RYJLMxB272WegYWamoqfn2fmEQrCrAEMJoM+A288JVklHr
+         Pb0w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691175062; x=1691779862;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=3eYV/qmJG0sbl9kIxGw8mmbJssqpCy9LZDQ3FKzw738=;
+        b=Uden94+ZLfuBeuH74IRhgIAmZU1zeMEAQNx+fmdsC9GOCboBqFiIvOucKNfyTwZz9L
+         pItf36gKLynSJauKyaVUcJDnSwEuSF4pLadswLLi8s3j89NWEFhwPzpHulZn2dN1E1eM
+         et/XDvzD/0FjThVWqtxQtrEqx7rJX7wj21hsLjB2WRgh0FdC8EW8eggYqEJkR2eYMf2h
+         2wWJ1wEiaHmhHyLthA333xYXKoTqCtPx72fbP2aA/YClUOk0hQvSoY9+bnSupdN0+I5+
+         4coOsM8LUc/Y+gXGM0DrNkIJnXB0i6PfxKqBxRrk5od6jq/r7P3qIT+65T3XxTXHoD4m
+         Hylg==
+X-Gm-Message-State: AOJu0Yz3I0j8xyczKQDTX9xJQB87/gKUUBFZvnErWFsJ4RV4Ee+/sIlw
+        yTU9e9XmaY4z2h5c4ZqFPKlEx6bpEZw=
+X-Google-Smtp-Source: AGHT+IG2ogQ4UZ2l1pR1BDYTAuM4fhmO/gs+XQevZwvMssrlEVB3GWqq/Tn+v9B0sfGxv8QxcwFGu+NonWY=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a25:a4a9:0:b0:d31:b7c5:5170 with SMTP id
+ g38-20020a25a4a9000000b00d31b7c55170mr10928ybi.12.1691175062337; Fri, 04 Aug
+ 2023 11:51:02 -0700 (PDT)
+Date:   Fri, 4 Aug 2023 11:51:00 -0700
+In-Reply-To: <ZMyR5Ztfjd9EMgIR@chao-email>
+Mime-Version: 1.0
+References: <20230803042732.88515-1-weijiang.yang@intel.com>
+ <20230803042732.88515-9-weijiang.yang@intel.com> <ZMuDyzxqtIpeoy34@chao-email>
+ <83d767df-c9ef-1bee-40c0-2360598aafa8@intel.com> <ZMyR5Ztfjd9EMgIR@chao-email>
+Message-ID: <ZM1IlPrWz/R6D0O5@google.com>
+Subject: Re: [PATCH v5 08/19] KVM:x86: Report KVM supported CET MSRs as to-be-saved
+From:   Sean Christopherson <seanjc@google.com>
+To:     Chao Gao <chao.gao@intel.com>
+Cc:     Weijiang Yang <weijiang.yang@intel.com>, pbonzini@redhat.com,
+        peterz@infradead.org, john.allen@amd.com, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, rick.p.edgecombe@intel.com,
+        binbin.wu@linux.intel.com
+Content-Type: text/plain; charset="us-ascii"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 8/4/23 04:23, Min-Hua Chen wrote:
-> The http and git links are invalid, replace them with valid links.
+On Fri, Aug 04, 2023, Chao Gao wrote:
+> On Fri, Aug 04, 2023 at 11:13:36AM +0800, Yang, Weijiang wrote:
+> >> > @@ -7214,6 +7217,13 @@ static void kvm_probe_msr_to_save(u32 msr_index)
+> >> > 		if (!kvm_caps.supported_xss)
+> >> > 			return;
+> >> > 		break;
+> >> > +	case MSR_IA32_U_CET:
+> >> > +	case MSR_IA32_S_CET:
+> >> > +	case MSR_KVM_GUEST_SSP:
+> >> > +	case MSR_IA32_PL0_SSP ... MSR_IA32_INT_SSP_TAB:
+> >> > +		if (!kvm_is_cet_supported())
+> >> shall we consider the case where IBT is supported while SS isn't
+> >> (e.g., in L1 guest)?
+> >Yes, but userspace should be able to access SHSTK MSRs even only IBT is exposed to guest so
+> >far as KVM can support SHSTK MSRs.
 > 
-> Signed-off-by: Min-Hua Chen <minhuadotchen@gmail.com>
+> Why should userspace be allowed to access SHSTK MSRs in this case? L1 may not
+> even enumerate SHSTK (qemu removes -shstk explicitly but keeps IBT), how KVM in
+> L1 can allow its userspace to do that?
 
-Reviewed-by: Randy Dunlap <rdunlap@infradead.org>
++1.  And specifically, this isn't about SHSTK being exposed to the guest, it's about
+SHSTK being _supported by KVM_.  This is all about KVM telling userspace what MSRs
+are valid and/or need to be saved+restored.  If KVM doesn't support a feature,
+then the MSRs are invalid and there is no reason for userspace to save+restore
+the MSRs on live migration.
 
-It would be good if someone would update/modify this
-sparse.txt file to be in Documentation/translation/zh_TW/dev-tools/
-and convert it to sparse.rst (IMO).
-
-Thanks.
-
-> ---
->  Documentation/translations/zh_TW/sparse.txt | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
+> >> > +static inline bool kvm_is_cet_supported(void)
+> >> > +{
+> >> > +	return (kvm_caps.supported_xss & CET_XSTATE_MASK) == CET_XSTATE_MASK;
+> >> why not just check if SHSTK or IBT is supported explicitly, i.e.,
+> >> 
+> >> 	return kvm_cpu_cap_has(X86_FEATURE_SHSTK) ||
+> >> 	       kvm_cpu_cap_has(X86_FEATURE_IBT);
+> >> 
+> >> this is straightforward. And strictly speaking, the support of a feature and
+> >> the support of managing a feature's state via XSAVE(S) are two different things.x
+> >I think using exiting check implies two things:
+> >1. Platform/KVM can support CET features.
+> >2. CET user mode MSRs are backed by host thus are guaranteed to be valid.
+> >i.e., the purpose is to check guest CET dependencies instead of features' availability.
 > 
-> diff --git a/Documentation/translations/zh_TW/sparse.txt b/Documentation/translations/zh_TW/sparse.txt
-> index c9acb2c926cb..6d2d088b1060 100644
-> --- a/Documentation/translations/zh_TW/sparse.txt
-> +++ b/Documentation/translations/zh_TW/sparse.txt
-> @@ -66,11 +66,11 @@ __bitwise"類型。
->  
->  你可以從 Sparse 的主頁獲取最新的發布版本：
->  
-> -	http://www.kernel.org/pub/linux/kernel/people/josh/sparse/
-> +	https://www.kernel.org/pub/software/devel/sparse/dist/
->  
->  或者，你也可以使用 git 克隆最新的 sparse 開發版本：
->  
-> -	git://git.kernel.org/pub/scm/linux/kernel/git/josh/sparse.git
-> +        git://git.kernel.org/pub/scm/devel/sparse/sparse.git
->  
->  一旦你下載了源碼，只要以普通用戶身份運行：
->  
+> When KVM claims a feature is supported, it should ensure all its dependencies are
+> met. that's, KVM's support of a feature also imples all dependencies are met.
+> Function-wise, the two approaches have no difference. I just think checking
+> KVM's support of SHSTK/IBT is more clear because the function name is
+> kvm_is_cet_supported() rather than e.g., kvm_is_cet_state_managed_by_xsave().
 
--- 
-~Randy
++1, one of the big reasons kvm_cpu_cap_has() came about was being KVM had a giant
+mess of one-off helpers.
