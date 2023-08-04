@@ -2,76 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A65E976F6D2
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 03:15:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C027576F6DF
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 03:21:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232060AbjHDBPf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Aug 2023 21:15:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47526 "EHLO
+        id S231540AbjHDBVa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Aug 2023 21:21:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48434 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230157AbjHDBPe (ORCPT
+        with ESMTP id S229496AbjHDBVZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Aug 2023 21:15:34 -0400
-Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9FAB54204;
-        Thu,  3 Aug 2023 18:15:33 -0700 (PDT)
-Received: from kwepemi500008.china.huawei.com (unknown [172.30.72.56])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4RH73T4FQFzNmkn;
-        Fri,  4 Aug 2023 09:12:05 +0800 (CST)
-Received: from [10.67.109.254] (10.67.109.254) by
- kwepemi500008.china.huawei.com (7.221.188.139) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.27; Fri, 4 Aug 2023 09:15:31 +0800
-Message-ID: <7c8be7f7-5757-5888-567d-d72f749aaa3a@huawei.com>
-Date:   Fri, 4 Aug 2023 09:15:31 +0800
+        Thu, 3 Aug 2023 21:21:25 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 526A9420A
+        for <linux-kernel@vger.kernel.org>; Thu,  3 Aug 2023 18:21:24 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id E267261EE2
+        for <linux-kernel@vger.kernel.org>; Fri,  4 Aug 2023 01:21:23 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C4599C433C8;
+        Fri,  4 Aug 2023 01:21:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1691112083;
+        bh=5orjVrOpDSU7lC6XWYb50yRi3CyLxe0uhFWTNPZ+CRY=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=m5xBf9GI8DX3y/fuXlCBtDK7cRcob9oC8Nz1sKXUNYSwMPCiymCrXi011oT3l6X7E
+         evYGDzSyATBaYUJ2X5VeLV++MpTgO6qE35b7x/mBrxrnUGI+O7R/Q686iwiDlpOMgO
+         auxX8vIb+KjPjtjY2giFU2+uxsPCpkA0kOiCF/fAh7xaG8JLra2ufaFS4AibNzYQch
+         XjtUrmJlPIA7lSDaGgxujKvP+C29ywGsY48NePl/yKiCrbI0CtFvZ98AAoFZL/Xpdi
+         mDgswrsF5MHBJNFNg3Nnics9Hj4yptqC/tjydyXI0738RIAj9zvBtpEjFmjEzZ95jn
+         Z6d4XEpuDHiww==
+Date:   Thu, 3 Aug 2023 18:21:21 -0700
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Alexander Lobakin <aleksander.lobakin@intel.com>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+        Larysa Zaremba <larysa.zaremba@intel.com>,
+        Yunsheng Lin <linyunsheng@huawei.com>,
+        Alexander Duyck <alexanderduyck@fb.com>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+        Simon Horman <simon.horman@corigine.com>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net-next v3 0/6] page_pool: a couple of assorted
+ optimizations
+Message-ID: <20230803182121.1baf4c13@kernel.org>
+In-Reply-To: <20230803182038.2646541-1-aleksander.lobakin@intel.com>
+References: <20230803182038.2646541-1-aleksander.lobakin@intel.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.2.0
-Subject: Re: [PATCH -next] wifi: ath5k: Remove redundant dev_err()
-Content-Language: en-US
-To:     <jirislaby@kernel.org>, <mickflemm@gmail.com>, <mcgrof@kernel.org>,
-        <kvalo@kernel.org>, <linux-wireless@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-References: <20230726171235.2475625-1-ruanjinjie@huawei.com>
-From:   Ruan Jinjie <ruanjinjie@huawei.com>
-In-Reply-To: <20230726171235.2475625-1-ruanjinjie@huawei.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.67.109.254]
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
- kwepemi500008.china.huawei.com (7.221.188.139)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Ping.
+On Thu,  3 Aug 2023 20:20:32 +0200 Alexander Lobakin wrote:
+> That initially was a spin-off of the IAVF PP series[0], but has grown
+> (and shrunk) since then a bunch. In fact, it consists of three
+> semi-independent blocks:
+> 
+> * #1-2: Compile-time optimization. Split page_pool.h into 2 headers to
+>   not overbloat the consumers not needing complex inline helpers and
+>   then stop including it in skbuff.h at all. The first patch is also
+>   prereq for the whole series.
+> * #3: Improve cacheline locality for users of the Page Pool frag API.
+> * #4-6: Use direct cache recycling more aggressively, when it is safe
+>   obviously. In addition, make sure nobody wants to use Page Pool API
+>   with disabled interrupts.
+> 
+> Patches #1 and #5 are authored by Yunsheng and Jakub respectively, with
+> small modifications from my side as per ML discussions.
+> For the perf numbers for #3-6, please see individual commit messages.
 
-On 2023/7/27 1:12, Ruan Jinjie wrote:
-> There is no need to call the dev_err() function directly to print a custom
-> message when handling an error from platform_get_irq() function as it is
-> going to display an appropriate error message in case of a failure.
-> 
-> Signed-off-by: Ruan Jinjie <ruanjinjie@huawei.com>
-> ---
->  drivers/net/wireless/ath/ath5k/ahb.c | 1 -
->  1 file changed, 1 deletion(-)
-> 
-> diff --git a/drivers/net/wireless/ath/ath5k/ahb.c b/drivers/net/wireless/ath/ath5k/ahb.c
-> index 28a1e5eff204..08bd5d3b00f1 100644
-> --- a/drivers/net/wireless/ath/ath5k/ahb.c
-> +++ b/drivers/net/wireless/ath/ath5k/ahb.c
-> @@ -115,7 +115,6 @@ static int ath_ahb_probe(struct platform_device *pdev)
->  
->  	irq = platform_get_irq(pdev, 0);
->  	if (irq < 0) {
-> -		dev_err(&pdev->dev, "no IRQ resource found: %d\n", irq);
->  		ret = irq;
->  		goto err_iounmap;
->  	}
+Our scheming didn't help much, the series also conflicts
+with the net/xdp.h includes which came in via bpf-next :(
+-- 
+pw-bot: cr
