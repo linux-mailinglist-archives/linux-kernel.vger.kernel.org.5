@@ -2,163 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1DEBB76FF7A
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 13:29:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A14576FF7E
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 13:30:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229819AbjHDL3Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Aug 2023 07:29:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41484 "EHLO
+        id S230158AbjHDLaz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Aug 2023 07:30:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41978 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229554AbjHDL3W (ORCPT
+        with ESMTP id S229554AbjHDLau (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Aug 2023 07:29:22 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C69711B;
-        Fri,  4 Aug 2023 04:29:18 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 2BAFD1F8AF;
-        Fri,  4 Aug 2023 11:29:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1691148557; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=gWX8UAE3vE+ECHESJ7u2irG1vRHlk+PFNMojuMOOzsU=;
-        b=Yi1KQ6Y6gjCUg17Re2YSDtjdjGq8O6Uw+IWTvdXzRT9SToLnRJl81QhBp9t8Hfuvy/V0EP
-        pWuDnUkcCIr0qRKh7wqscRObmm7NfR5fM/PeDHmDD8Jj2V+a2HDs+GFQGaAN2EvbiZ/BwE
-        xsClVxAsEAt5HYkQjUDARP66k3B87Kk=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 024B2133B5;
-        Fri,  4 Aug 2023 11:29:16 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id Jh09OQzhzGQ3VAAAMHmgww
-        (envelope-from <mhocko@suse.com>); Fri, 04 Aug 2023 11:29:16 +0000
-Date:   Fri, 4 Aug 2023 13:29:16 +0200
-From:   Michal Hocko <mhocko@suse.com>
-To:     Chuyi Zhou <zhouchuyi@bytedance.com>
-Cc:     hannes@cmpxchg.org, roman.gushchin@linux.dev, ast@kernel.org,
-        daniel@iogearbox.net, andrii@kernel.org, muchun.song@linux.dev,
-        bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
-        wuyun.abel@bytedance.com, robin.lu@bytedance.com
-Subject: Re: [RFC PATCH 1/2] mm, oom: Introduce bpf_select_task
-Message-ID: <ZMzhDFhvol2VQBE4@dhcp22.suse.cz>
-References: <20230804093804.47039-1-zhouchuyi@bytedance.com>
- <20230804093804.47039-2-zhouchuyi@bytedance.com>
+        Fri, 4 Aug 2023 07:30:50 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BFB4B11B
+        for <linux-kernel@vger.kernel.org>; Fri,  4 Aug 2023 04:30:48 -0700 (PDT)
+From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1691148646;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=JQwdy939tDLgVEjU3blR0W4WS7PLhzs+UNZZN7ZNvYc=;
+        b=u7DpROMPSeu4vLTyIm1eQKV6AbU1077urtQngtOmaPkRgbmRLfpFktW96jij24kXRifHaQ
+        25ZddmiOukvhvRuadw1bg+HjorgrZCwomriEoOycWP9tfcEW4X6Us0GZWGxp6nYEmH/Q2M
+        MWESta7ZCQi0Dtq7Yg9IB8SjrHNQ0MZc3AC6N9Bv4C6r3NfD1ohydrd0e6StqG5Yd2JNqc
+        ZmfNdOvq4ktq9WetLKye7PXN3NVm7Ud30lETVgpyONS9bBq2zS2Y1rLXQN2+g/523vG7B5
+        QOVbCrh/2OpdyHAtZmrGnUQqIOG6JjrzAK5Wr9Pg68AivHCgTh8gaEla3Xy9tA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1691148646;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=JQwdy939tDLgVEjU3blR0W4WS7PLhzs+UNZZN7ZNvYc=;
+        b=j73gmz9aXFfEpLj5gg5Z7vx/JyB15i+p+/gjPMtAXG7FtP7cj+VQSTQ33k1SvFynyH2MtV
+        R7vygNyOfBNVCvCw==
+To:     linux-kernel@vger.kernel.org
+Cc:     Ben Segall <bsegall@google.com>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        John Stultz <jstultz@google.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Mel Gorman <mgorman@suse.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Valentin Schneider <vschneid@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>
+Subject: [RFC PATCH 0/3] Allow to preempt a timer softirq on PREEMPT_RT.
+Date:   Fri,  4 Aug 2023 13:30:36 +0200
+Message-Id: <20230804113039.419794-1-bigeasy@linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230804093804.47039-2-zhouchuyi@bytedance.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,SPF_PASS,
-        T_SPF_HELO_TEMPERROR,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri 04-08-23 17:38:03, Chuyi Zhou wrote:
-> This patch adds a new hook bpf_select_task in oom_evaluate_task. It
-> takes oc and current iterating task as parameters and returns a result
-> indicating which one is selected by bpf program.
-> 
-> Although bpf_select_task is used to bypass the default method, there are
-> some existing rules should be obeyed. Specifically, we skip these
-> "unkillable" tasks(e.g., kthread, MMF_OOM_SKIP, in_vfork()).So we do not
-> consider tasks with lowest score returned by oom_badness except it was
-> caused by OOM_SCORE_ADJ_MIN.
+Hi,
 
-Is this really necessary? I do get why we need to preserve
-OOM_SCORE_ADJ_* semantic for in-kernel oom selection logic but why
-should an arbitrary oom policy care. Look at it from an arbitrary user
-space based policy. It just picks a task or memcg and kills taks by
-sending SIG_KILL (or maybe SIG_TERM first) signal. oom_score constrains
-will not prevent anybody from doing that.
+while the softirqs are served, bottom halves are disabled. By disabling
+bottom halves (as per local_bh_disable()) PREEMPT_RT acquires a
+local_lock_t. This lock ensures that the softirq is synchronized against
+other softirq user on that CPU while keeping the context preemptible.
 
-tsk_is_oom_victim (and MMF_OOM_SKIP) is a slightly different case but
-not too much. The primary motivation is to prevent new oom victims
-while there is one already being killed. This is a reasonable heuristic
-especially with the async oom reclaim (oom_reaper). It also reduces
-amount of oom emergency memory reserves to some degree but since those
-are not absolute this is no longer the primary motivation. _But_ I can
-imagine that some policies might be much more aggresive and allow to
-select new victims if preexisting are not being killed in time.
+This leads to a scenario where context itself is preemptible but needs
+to "complete" before the system can make progress. For instance, the
+timer callback (in TIMER_SOFTIRQ) gets preempted because a
+force-threaded interrupt thread, with higher priority, gets woken up.
+Before the handler of the forced-threaded interrupt can be invoked,
+bottom halves get disabled and this blocks on the same per-CPU lock.
+This in turn leads to a PI-boost and the preempted timer softirq is back
+on the CPU with higher priority completing its job (not just the timer,
+all pending softirqs).
 
-oom_unkillable_task is a general sanity check so it should remain in
-place.
+In the end the force threaded interrupt is blocked until all pending
+softirqs have been served.
 
-I am not really sure about oom_task_origin. That is just a very weird
-case and I guess it wouldn't hurt to keep it in generic path.
+The PI-boost is usually intended to allow the thread with lower priority
+to "quickly" finish what it was doing and leave the critical section
+ASAP. This is not the case with softirqs and how this is handled by the
+individual callbacks. Additionally the need_resched() check in
+__do_softirq() is never true due to the boost. This means in worst case
+this can run for MAX_SOFTIRQ_TIME or MAX_SOFTIRQ_RESTART.
 
-All that being said I think we want something like the following (very
-pseudo-code). I have no idea what is the proper way how to define BPF
-hooks though so a help from BPF maintainers would be more then handy
----
-diff --git a/include/linux/nmi.h b/include/linux/nmi.h
-index 00982b133dc1..9f1743ee2b28 100644
---- a/include/linux/nmi.h
-+++ b/include/linux/nmi.h
-@@ -190,10 +190,6 @@ static inline bool trigger_all_cpu_backtrace(void)
- {
- 	return false;
- }
--static inline bool trigger_allbutself_cpu_backtrace(void)
--{
--	return false;
--}
- static inline bool trigger_cpumask_backtrace(struct cpumask *mask)
- {
- 	return false;
-diff --git a/mm/oom_kill.c b/mm/oom_kill.c
-index 612b5597d3af..c9e04be52700 100644
---- a/mm/oom_kill.c
-+++ b/mm/oom_kill.c
-@@ -317,6 +317,22 @@ static int oom_evaluate_task(struct task_struct *task, void *arg)
- 	if (!is_memcg_oom(oc) && !oom_cpuset_eligible(task, oc))
- 		goto next;
- 
-+	/*
-+	 * If task is allocating a lot of memory and has been marked to be
-+	 * killed first if it triggers an oom, then select it.
-+	 */
-+	if (oom_task_origin(task)) {
-+		points = LONG_MAX;
-+		goto select;
-+	}
-+
-+	switch (bpf_oom_evaluate_task(task, oc, &points)) {
-+		case -EOPNOTSUPP: break; /* No BPF policy */
-+		case -EBUSY: goto abort; /* abort search process */
-+		case 0: goto next; /* ignore process */
-+		default: goto select; /* note the task */
-+	}
-+
- 	/*
- 	 * This task already has access to memory reserves and is being killed.
- 	 * Don't allow any other task to have access to the reserves unless
-@@ -329,15 +345,6 @@ static int oom_evaluate_task(struct task_struct *task, void *arg)
- 		goto abort;
- 	}
- 
--	/*
--	 * If task is allocating a lot of memory and has been marked to be
--	 * killed first if it triggers an oom, then select it.
--	 */
--	if (oom_task_origin(task)) {
--		points = LONG_MAX;
--		goto select;
--	}
--
- 	points = oom_badness(task, oc->totalpages);
- 	if (points == LONG_MIN || points < oc->chosen_points)
- 		goto next;
--- 
-Michal Hocko
-SUSE Labs
+One way of out would be to add preemption within the softirq handling at
+which point the softirq-BKL can be dropped. This can be after all
+softirqs have been served (__do_softirq() where the need_resched() check
+is located), after each softirq handler or within the softirq handler
+where it is considered safe to do so.
+
+This series adds as an example such a preemption point to the timer
+softirq handler. Should this fly then it would be needed the remaining
+handlers as well.
+
+Sebastian
+
+
