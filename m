@@ -2,130 +2,293 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 06BC277047A
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 17:25:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 938FA77047D
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 17:26:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231782AbjHDPZx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Aug 2023 11:25:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57760 "EHLO
+        id S232137AbjHDP0V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Aug 2023 11:26:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58016 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232091AbjHDPZc (ORCPT
+        with ESMTP id S231651AbjHDP0B (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Aug 2023 11:25:32 -0400
-Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A5314C38
-        for <linux-kernel@vger.kernel.org>; Fri,  4 Aug 2023 08:24:56 -0700 (PDT)
-Received: by mail-lf1-x136.google.com with SMTP id 2adb3069b0e04-4fe28e4671dso3894393e87.0
-        for <linux-kernel@vger.kernel.org>; Fri, 04 Aug 2023 08:24:56 -0700 (PDT)
+        Fri, 4 Aug 2023 11:26:01 -0400
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AFA2F4C34
+        for <linux-kernel@vger.kernel.org>; Fri,  4 Aug 2023 08:25:28 -0700 (PDT)
+Received: by mail-yb1-xb4a.google.com with SMTP id 3f1490d57ef6-d13e11bb9ecso2457615276.0
+        for <linux-kernel@vger.kernel.org>; Fri, 04 Aug 2023 08:25:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1691162693; x=1691767493;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=O1Or5NpNw41SHQj2iyH+eJyA3dinn8/BZZ3KWUyyGdY=;
-        b=HGy68hWNUTpYoQmPbBUKb6KmzzOSlxuaLUpFV5oYNPo95vLciBnk45JtiI9QKRPdhx
-         cL1UedO1TlShJcR/zgpn+Rg4UANbDv20yOYr1G1JU1zjfPLDjD1eVFpCwNRHicyjSOni
-         MPMfWdHl6Mv1gh/fa459OnYp0y2XMWfBVSQ4K/x9FndJCx8Kj5/zKGl2MmB/eRZ0hwNL
-         WgB6kNcyfErUQIvkDDP0pdYfstqPZSPXpO4KExFKnIAMeBks60QAKLaRj3QsVzfvXQGe
-         F0pnqJGO8SL39wV2uk7eMQvLbo7ayo0JlSUwlUVyaDdbKpf5lEZls2GBtiu4JEcqeh4h
-         c5IA==
+        d=google.com; s=20221208; t=1691162727; x=1691767527;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=aR8D0fIoPoIFpwFxu77XAzwqicqZyfbYQ6tlR8sCTLM=;
+        b=VB2vjCRjKu/M8EILnB2LknxCC3MRsvscHBiYxjGCZfU4CXGZs/aun9ZkDGLItrffno
+         u/4xyaKIFT4iOE7WkNhsj+pHWZxCL0eTiWVNzV5IY2reU54oSXMtoDoI0Vpw8kv81s2H
+         +vVmcdMXl2uMTLm/JPrNiX0NFBebcCVcssywEYeaOzEbpNa8u6T865k2ya4BnuOKTZ4g
+         DcsovjcVAHPveM5Y7YitDoe97lPI8Yns/imCGOwmke5hxTTJBhtxyqfh42faTsci7IUS
+         2YSVmxC22m3O9UBfoDDFllJBv6ik9KUtqryWjNFIKgXVMAL0RGdjuuvDoUD3BcT8cd8S
+         N6Pw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691162693; x=1691767493;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=O1Or5NpNw41SHQj2iyH+eJyA3dinn8/BZZ3KWUyyGdY=;
-        b=ag5KQj2wqAPo/68SzsvzR4IOP1Fn2NmFNpdxF4Qp7Huke7jLe0HaB4dN+auUgO9Pis
-         6F1qJj1SPLjmZtu0hYxVbQPzk+0HMKJFFJbNh0zrZp1sZaz+43ImLATRWHcw2ophdf28
-         tpunDNHirRGvDylOPEJZ/oBjFtsoT9ObjOGxbNnUEiw5ZlgdlLEfFicXObPRaTEkQHAA
-         LhM1ouo+5cGgYKW3TumdSe/I5ZTP78tf03w+pdObzIez907P153eR87Nthl63euxJLiR
-         PKkk48whEbi1ya1hVeJPFaXMIQC91Cqd1fCZqJvCYMTGlYapfCNYi2Gavq55W7kwhsc/
-         Hh4Q==
-X-Gm-Message-State: AOJu0Yzzq4T4NRmeN/LGiZu/qiXAXWGlz50u9yaF6FWHFGWIeLGona5z
-        MWwDb8DKd8I6qmq/v3nU4NY/lQ==
-X-Google-Smtp-Source: AGHT+IGjXT+2eDwqicNrccsDlhQSZH8EsWtYCj4nBKE927hnDWkDF04fzthDynVquMC40LvH2Oyqtg==
-X-Received: by 2002:a05:6512:2149:b0:4fd:faa2:884c with SMTP id s9-20020a056512214900b004fdfaa2884cmr1570202lfr.29.1691162693232;
-        Fri, 04 Aug 2023 08:24:53 -0700 (PDT)
-Received: from [192.168.1.101] (abyk53.neoplus.adsl.tpnet.pl. [83.9.30.53])
-        by smtp.gmail.com with ESMTPSA id u28-20020ac2519c000000b004fe38e566cfsm408201lfi.280.2023.08.04.08.24.51
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 04 Aug 2023 08:24:52 -0700 (PDT)
-Message-ID: <1532622f-0ba8-4af1-b44a-eecf7fbdfc70@linaro.org>
-Date:   Fri, 4 Aug 2023 17:24:51 +0200
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] clk: qcom: gcc-sm6350: Fix gcc_sdcc2_apps_clk_src
-To:     Luca Weiss <luca.weiss@fairphone.com>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Andy Gross <agross@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@somainline.org>
-Cc:     ~postmarketos/upstreaming@lists.sr.ht, phone-devel@vger.kernel.org,
-        Konrad Dybcio <konrad.dybcio@somainline.org>,
-        linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20230804-sm6350-sdcc2-v1-1-3d946927d37d@fairphone.com>
-Content-Language: en-US
-From:   Konrad Dybcio <konrad.dybcio@linaro.org>
-Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
- 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
- izWDgYvmBE8=
-In-Reply-To: <20230804-sm6350-sdcc2-v1-1-3d946927d37d@fairphone.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
-        autolearn_force=no version=3.4.6
+        d=1e100.net; s=20221208; t=1691162727; x=1691767527;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=aR8D0fIoPoIFpwFxu77XAzwqicqZyfbYQ6tlR8sCTLM=;
+        b=Hs7G3FygusZkNqYIe5f+KAnj5ZRssbqwGkXWs4UKMJ44ALjjjlSexnHqyh33/+hgJP
+         sycY2dSTi3nLfp1Ml1p1FIH9Kk0FqCiw0E0vtjrlkkJ1Zo3LcWWW/YLdsd8yC3Oc6/iX
+         valzCxCRM3PF77m/RH6WNiYqroP8fCILHkknRc36l9Rgi2k+vZB2luT7te93blHD1FJL
+         EqloFtP6wgxFxAjL3lj9zciDjMI0xPsIk96cu6EDvAIbP+/HR6fLXXfHjKETd6m8F9Uu
+         edKjvGMoy6S5LGKAWJ47FsRIumj5oSJJZdFv3LhM/ooaxZCSYMUFEBaTn6Au3pxmKnki
+         u7Rg==
+X-Gm-Message-State: AOJu0YxjN3TvG1mufZIzJtr2NO3t8gv1hrYRjQXgoWy65CejkmEBwbmY
+        LmUhF58PiRQ2uNFBTtnlm6w7c8TFKbw=
+X-Google-Smtp-Source: AGHT+IHMWx3eXWNT0qtNfcgrK32d5hjxX5BhTOsw+KHqG5MOlcfDPMAyJUDgBk8XW3w0YDuBgzS0clYh098=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a25:a2c6:0:b0:d0b:d8cd:e661 with SMTP id
+ c6-20020a25a2c6000000b00d0bd8cde661mr8642ybn.12.1691162727571; Fri, 04 Aug
+ 2023 08:25:27 -0700 (PDT)
+Date:   Fri, 4 Aug 2023 08:25:26 -0700
+In-Reply-To: <ZMyueOBXMwPkVk6J@chao-email>
+Mime-Version: 1.0
+References: <20230803042732.88515-1-weijiang.yang@intel.com>
+ <20230803042732.88515-13-weijiang.yang@intel.com> <ZMyueOBXMwPkVk6J@chao-email>
+Message-ID: <ZM0YZgFsYWuBFOze@google.com>
+Subject: Re: [PATCH v5 12/19] KVM:x86: Save and reload SSP to/from SMRAM
+From:   Sean Christopherson <seanjc@google.com>
+To:     Chao Gao <chao.gao@intel.com>
+Cc:     Yang Weijiang <weijiang.yang@intel.com>, pbonzini@redhat.com,
+        peterz@infradead.org, john.allen@amd.com, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, rick.p.edgecombe@intel.com,
+        binbin.wu@linux.intel.com
+Content-Type: text/plain; charset="us-ascii"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4.08.2023 16:09, Luca Weiss wrote:
-> GPLL7 is not on by default, which causes a "gcc_sdcc2_apps_clk_src: rcg
-> didn't update its configuration" error when booting. Set .flags =
-> CLK_OPS_PARENT_ENABLE to fix the error.
+On Fri, Aug 04, 2023, Chao Gao wrote:
+> On Thu, Aug 03, 2023 at 12:27:25AM -0400, Yang Weijiang wrote:
+> >Save CET SSP to SMRAM on SMI and reload it on RSM.
+> >KVM emulates architectural behavior when guest enters/leaves SMM
+> >mode, i.e., save registers to SMRAM at the entry of SMM and reload
+> >them at the exit of SMM. Per SDM, SSP is defined as one of
+> >the fields in SMRAM for 64-bit mode, so handle the state accordingly.
+> >
+> >Check is_smm() to determine whether kvm_cet_is_msr_accessible()
+> >is called in SMM mode so that kvm_{set,get}_msr() works in SMM mode.
+> >
+> >Signed-off-by: Yang Weijiang <weijiang.yang@intel.com>
+> >---
+> > arch/x86/kvm/smm.c | 11 +++++++++++
+> > arch/x86/kvm/smm.h |  2 +-
+> > arch/x86/kvm/x86.c | 11 ++++++++++-
+> > 3 files changed, 22 insertions(+), 2 deletions(-)
+> >
+> >diff --git a/arch/x86/kvm/smm.c b/arch/x86/kvm/smm.c
+> >index b42111a24cc2..e0b62d211306 100644
+> >--- a/arch/x86/kvm/smm.c
+> >+++ b/arch/x86/kvm/smm.c
+> >@@ -309,6 +309,12 @@ void enter_smm(struct kvm_vcpu *vcpu)
+> > 
+> > 	kvm_smm_changed(vcpu, true);
+> > 
+> >+#ifdef CONFIG_X86_64
+> >+	if (guest_can_use(vcpu, X86_FEATURE_SHSTK) &&
+> >+	    kvm_get_msr(vcpu, MSR_KVM_GUEST_SSP, &smram.smram64.ssp))
+> >+		goto error;
+> >+#endif
 > 
-> Fixes: 131abae905df ("clk: qcom: Add SM6350 GCC driver")
-> Signed-off-by: Luca Weiss <luca.weiss@fairphone.com>
-> ---
-Reviewed-by: Konrad Dybcio <konrad.dybcio@linaro.org>
+> SSP save/load should go to enter_smm_save_state_64() and rsm_load_state_64(),
+> where other fields of SMRAM are handled.
 
-Konrad
++1.  The right way to get/set MSRs like this is to use __kvm_get_msr() and pass
+%true for @host_initiated.  Though I would add a prep patch to provide wrappers
+for __kvm_get_msr() and __kvm_set_msr().  Naming will be hard, but I think we
+can use kvm_{read,write}_msr() to go along with the KVM-initiated register
+accessors/mutators, e.g. kvm_register_read(), kvm_pdptr_write(), etc.
+
+Then you don't need to wait until after kvm_smm_changed(), and kvm_cet_is_msr_accessible()
+doesn't need the confusing (and broken) SMM waiver, e.g. as Chao points out below,
+that would allow the guest to access the synthetic MSR.
+
+Delta patch at the bottom (would need to be split up, rebased, etc.).
+
+> > 	if (kvm_vcpu_write_guest(vcpu, vcpu->arch.smbase + 0xfe00, &smram, sizeof(smram)))
+> > 		goto error;
+> > 
+> >@@ -586,6 +592,11 @@ int emulator_leave_smm(struct x86_emulate_ctxt *ctxt)
+> > 	if ((vcpu->arch.hflags & HF_SMM_INSIDE_NMI_MASK) == 0)
+> > 		static_call(kvm_x86_set_nmi_mask)(vcpu, false);
+> > 
+> >+#ifdef CONFIG_X86_64
+> >+	if (guest_can_use(vcpu, X86_FEATURE_SHSTK) &&
+> >+	    kvm_set_msr(vcpu, MSR_KVM_GUEST_SSP, smram.smram64.ssp))
+> >+		return X86EMUL_UNHANDLEABLE;
+> >+#endif
+> > 	kvm_smm_changed(vcpu, false);
+> > 
+> > 	/*
+> >diff --git a/arch/x86/kvm/smm.h b/arch/x86/kvm/smm.h
+> >index a1cf2ac5bd78..1e2a3e18207f 100644
+> >--- a/arch/x86/kvm/smm.h
+> >+++ b/arch/x86/kvm/smm.h
+> >@@ -116,8 +116,8 @@ struct kvm_smram_state_64 {
+> > 	u32 smbase;
+> > 	u32 reserved4[5];
+> > 
+> >-	/* ssp and svm_* fields below are not implemented by KVM */
+> > 	u64 ssp;
+> >+	/* svm_* fields below are not implemented by KVM */
+> > 	u64 svm_guest_pat;
+> > 	u64 svm_host_efer;
+> > 	u64 svm_host_cr4;
+> >diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+> >index 98f3ff6078e6..56aa5a3d3913 100644
+> >--- a/arch/x86/kvm/x86.c
+> >+++ b/arch/x86/kvm/x86.c
+> >@@ -3644,8 +3644,17 @@ static bool kvm_cet_is_msr_accessible(struct kvm_vcpu *vcpu,
+> > 		if (!kvm_cpu_cap_has(X86_FEATURE_SHSTK))
+> > 			return false;
+> > 
+> >-		if (msr->index == MSR_KVM_GUEST_SSP)
+> >+		/*
+> >+		 * This MSR is synthesized mainly for userspace access during
+> >+		 * Live Migration, it also can be accessed in SMM mode by VMM.
+> >+		 * Guest is not allowed to access this MSR.
+> >+		 */
+> >+		if (msr->index == MSR_KVM_GUEST_SSP) {
+> >+			if (IS_ENABLED(CONFIG_X86_64) && is_smm(vcpu))
+> >+				return true;
+> 
+> On second thoughts, this is incorrect. We don't want guest in SMM
+> mode to read/write SSP via the synthesized MSR. Right?
+
+It's not a guest read though, KVM is doing the read while emulating SMI/RSM.
+
+> You can
+> 1. move set/get guest SSP into two helper functions, e.g., kvm_set/get_ssp()
+> 2. call kvm_set/get_ssp() for host-initiated MSR accesses and SMM transitions.
+
+We could, but that would largely defeat the purpose of kvm_x86_ops.{g,s}et_msr(),
+i.e. we already have hooks to get at MSR values that are buried in the VMCS/VMCB,
+the interface is just a bit kludgy.
+ 
+> 3. refuse guest accesses to the synthesized MSR.
+
+---
+ arch/x86/include/asm/kvm_host.h |  8 +++++++-
+ arch/x86/kvm/cpuid.c            |  2 +-
+ arch/x86/kvm/smm.c              | 10 ++++------
+ arch/x86/kvm/x86.c              | 17 +++++++++++++----
+ 4 files changed, 25 insertions(+), 12 deletions(-)
+
+diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
+index f883696723f4..fe8484bc8082 100644
+--- a/arch/x86/include/asm/kvm_host.h
++++ b/arch/x86/include/asm/kvm_host.h
+@@ -1939,7 +1939,13 @@ void kvm_prepare_emulation_failure_exit(struct kvm_vcpu *vcpu);
+ 
+ void kvm_enable_efer_bits(u64);
+ bool kvm_valid_efer(struct kvm_vcpu *vcpu, u64 efer);
+-int __kvm_get_msr(struct kvm_vcpu *vcpu, u32 index, u64 *data, bool host_initiated);
++
++/*
++ * kvm_msr_{read,write}() are KVM-internal helpers, i.e. for when KVM needs to
++ * get/set an MSR value when emulating CPU behavior.
++ */
++int kvm_msr_read(struct kvm_vcpu *vcpu, u32 index, u64 *data);
++int kvm_msr_write(struct kvm_vcpu *vcpu, u32 index, u64 *data);
+ int kvm_get_msr(struct kvm_vcpu *vcpu, u32 index, u64 *data);
+ int kvm_set_msr(struct kvm_vcpu *vcpu, u32 index, u64 data);
+ int kvm_emulate_rdmsr(struct kvm_vcpu *vcpu);
+diff --git a/arch/x86/kvm/cpuid.c b/arch/x86/kvm/cpuid.c
+index 1a601be7b4fa..b595645b2af7 100644
+--- a/arch/x86/kvm/cpuid.c
++++ b/arch/x86/kvm/cpuid.c
+@@ -1515,7 +1515,7 @@ bool kvm_cpuid(struct kvm_vcpu *vcpu, u32 *eax, u32 *ebx,
+ 		*edx = entry->edx;
+ 		if (function == 7 && index == 0) {
+ 			u64 data;
+-		        if (!__kvm_get_msr(vcpu, MSR_IA32_TSX_CTRL, &data, true) &&
++		        if (!kvm_msr_read(vcpu, MSR_IA32_TSX_CTRL, &data) &&
+ 			    (data & TSX_CTRL_CPUID_CLEAR))
+ 				*ebx &= ~(F(RTM) | F(HLE));
+ 		} else if (function == 0x80000007) {
+diff --git a/arch/x86/kvm/smm.c b/arch/x86/kvm/smm.c
+index e0b62d211306..8db12831877e 100644
+--- a/arch/x86/kvm/smm.c
++++ b/arch/x86/kvm/smm.c
+@@ -275,6 +275,10 @@ static void enter_smm_save_state_64(struct kvm_vcpu *vcpu,
+ 	enter_smm_save_seg_64(vcpu, &smram->gs, VCPU_SREG_GS);
+ 
+ 	smram->int_shadow = static_call(kvm_x86_get_interrupt_shadow)(vcpu);
++
++	if (guest_can_use(vcpu, X86_FEATURE_SHSTK)
++		KVM_BUG_ON(kvm_msr_read(vcpu, MSR_KVM_GUEST_SSP,
++					&smram.smram64.ssp), vcpu->kvm));
+ }
+ #endif
+ 
+@@ -309,12 +313,6 @@ void enter_smm(struct kvm_vcpu *vcpu)
+ 
+ 	kvm_smm_changed(vcpu, true);
+ 
+-#ifdef CONFIG_X86_64
+-	if (guest_can_use(vcpu, X86_FEATURE_SHSTK) &&
+-	    kvm_get_msr(vcpu, MSR_KVM_GUEST_SSP, &smram.smram64.ssp))
+-		goto error;
+-#endif
+-
+ 	if (kvm_vcpu_write_guest(vcpu, vcpu->arch.smbase + 0xfe00, &smram, sizeof(smram)))
+ 		goto error;
+ 
+diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+index 2e200a5d00e9..872767b7bf51 100644
+--- a/arch/x86/kvm/x86.c
++++ b/arch/x86/kvm/x86.c
+@@ -1924,8 +1924,8 @@ static int kvm_set_msr_ignored_check(struct kvm_vcpu *vcpu,
+  * Returns 0 on success, non-0 otherwise.
+  * Assumes vcpu_load() was already called.
+  */
+-int __kvm_get_msr(struct kvm_vcpu *vcpu, u32 index, u64 *data,
+-		  bool host_initiated)
++static int __kvm_get_msr(struct kvm_vcpu *vcpu, u32 index, u64 *data,
++			 bool host_initiated)
+ {
+ 	struct msr_data msr;
+ 	int ret;
+@@ -1951,6 +1951,16 @@ int __kvm_get_msr(struct kvm_vcpu *vcpu, u32 index, u64 *data,
+ 	return ret;
+ }
+ 
++int kvm_msr_write(struct kvm_vcpu *vcpu, u32 index, u64 *data)
++{
++	return __kvm_get_msr(vcpu, index, data, true);
++}
++
++int kvm_msr_read(struct kvm_vcpu *vcpu, u32 index, u64 *data)
++{
++	return __kvm_get_msr(vcpu, index, data, true);
++}
++
+ static int kvm_get_msr_ignored_check(struct kvm_vcpu *vcpu,
+ 				     u32 index, u64 *data, bool host_initiated)
+ {
+@@ -4433,8 +4443,7 @@ int kvm_get_msr_common(struct kvm_vcpu *vcpu, struct msr_data *msr_info)
+ 			return 1;
+ 		if (msr == MSR_IA32_PL0_SSP || msr == MSR_IA32_PL1_SSP ||
+ 		    msr == MSR_IA32_PL2_SSP) {
+-			msr_info->data =
+-				vcpu->arch.cet_s_ssp[msr - MSR_IA32_PL0_SSP];
++			msr_info->data = vcpu->arch.cet_s_ssp[msr - MSR_IA32_PL0_SSP];
+ 		} else if (msr == MSR_IA32_U_CET || msr == MSR_IA32_PL3_SSP) {
+ 			kvm_get_xsave_msr(msr_info);
+ 		}
+
+base-commit: 82e95ab0094bf1b823a6f9c9a07238852b375a22
+-- 
+
