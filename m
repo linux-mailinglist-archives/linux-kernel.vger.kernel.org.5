@@ -2,215 +2,184 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 49AE576FA7D
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 08:52:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E10076FA87
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 08:54:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233700AbjHDGwd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Aug 2023 02:52:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46746 "EHLO
+        id S233157AbjHDGyx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Aug 2023 02:54:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47050 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233978AbjHDGwC (ORCPT
+        with ESMTP id S231236AbjHDGyr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Aug 2023 02:52:02 -0400
-Received: from NAM12-BN8-obe.outbound.protection.outlook.com (mail-bn8nam12on2076.outbound.protection.outlook.com [40.107.237.76])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA7BE4697;
-        Thu,  3 Aug 2023 23:51:41 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=TbTbiokhRgZeoPLHLsopCaok3zGud+WsjgsPtB+FI4DIfqlWkfILiBpRBFYIvk0VwsW0wZfgqtFaCW2/5PWO2w6oiXZj82eK8+Jy2zkvVnb8j1LUhM6WV13j2uHB+021UmYR5ziAdxRElhW30YQXeMQrmWsN/JxuG2d62rHRit0dozEfO/Pc07cO+JgCwj+E3EqW6i4KV/E2g0F1sUFpDVOSS737VtdxIpNCDGxConmGSNNPjHVDCeHVPTXej6uJhmt1hQZP19VE7KUVhneK49hYg+UDpyu9EHRPBzEAXUwhquCXXzsCILBmlBXXWWn1rOhPZwu4aSdWcCaWN8BRJw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=AqbXpil4fNASqtH8rPpuL6Hr7+sS+zS1wJgsDe/6MvQ=;
- b=Le51XZ0ygCfJYaP0DZJ6RgCEc9x3vL9HFwlmYHS6Zx5lO0qZirn94O7V2dp2739SqnaByYVGKWN0hBXuWBMvfA9IVkQx5L1IZJTvBOui6o2bPA5PsYAJmGXu6lXgUu2zaSv2Cbq7e2ehOoa/tcUSUX48zN1UVVWMLPIUv9b9oZVJdZQjrW6pCGNqNXJ3IUT3gUd3+LRn65FUcoYfomqQwM/0rtDTwup8GBWb8YUYuRKDhDNrAt8wzTTh6h0T4NBU+2S9oexYngGJmkrEZtHfOJvyeYtU2G4UKkcFA3nCTLK/1LuWqfDuMyMtCmPqTRNIZ4O3R3h2P8AAkKqgTHP9Vg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=AqbXpil4fNASqtH8rPpuL6Hr7+sS+zS1wJgsDe/6MvQ=;
- b=PykSd8Kp1Z8H/yaYPpGciazZgbjKCzUe/bjymm0GGSZM6BPOBuV9bQe04SGpsO5i3PXooORVf5D/KsZrLeb4EMGbjVV7dIvCo8w6+uKBg84998yBL7Qd3X7BiIHnjurLZjID8qSOG9sb2QO2+NaMIT778zll0glKcKwGv9vCp14=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=amd.com;
-Received: from BYAPR12MB4758.namprd12.prod.outlook.com (2603:10b6:a03:a5::28)
- by MN6PR12MB8470.namprd12.prod.outlook.com (2603:10b6:208:46d::17) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6652.20; Fri, 4 Aug
- 2023 06:51:39 +0000
-Received: from BYAPR12MB4758.namprd12.prod.outlook.com
- ([fe80::dc36:145a:99ff:f834]) by BYAPR12MB4758.namprd12.prod.outlook.com
- ([fe80::dc36:145a:99ff:f834%6]) with mapi id 15.20.6652.020; Fri, 4 Aug 2023
- 06:51:39 +0000
-Message-ID: <2cd4f9e5-87b6-64f9-2d50-f146cae6c83a@amd.com>
-Date:   Fri, 4 Aug 2023 08:51:24 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.14.0
-Subject: Re: [PATCH v2 22/23] soc: xilinx: Explicitly include correct DT
- includes
-Content-Language: en-US
-To:     Rob Herring <robh@kernel.org>, soc@kernel.org,
-        Patrice Chotard <patrice.chotard@foss.st.com>,
-        Tsahee Zidenberg <tsahee@annapurnalabs.com>,
-        Antoine Tenart <atenart@kernel.org>,
-        Jisheng Zhang <jszhang@kernel.org>,
-        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Gregory Clement <gregory.clement@bootlin.com>,
-        Jean-Marie Verdun <verdun@hpe.com>,
-        Nick Hawkins <nick.hawkins@hpe.com>,
-        Lubomir Rintel <lkundrak@v3.sk>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Avi Fishman <avifishman70@gmail.com>,
-        Tomer Maimon <tmaimon77@gmail.com>,
-        Tali Perry <tali.perry1@gmail.com>,
-        Patrick Venture <venture@google.com>,
-        Nancy Yuen <yuenn@google.com>,
-        Benjamin Fair <benjaminfair@google.com>,
-        Daniel Mack <daniel@zonque.org>,
-        Haojian Zhuang <haojian.zhuang@gmail.com>,
-        Robert Jarzmik <robert.jarzmik@free.fr>,
-        Heiko Stuebner <heiko@sntech.de>,
-        Liviu Dudau <liviu.dudau@arm.com>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        Lorenzo Pieralisi <lpieralisi@kernel.org>,
-        Viresh Kumar <vireshk@kernel.org>,
-        Shiraz Has him <shiraz.linux.kernel@gmail.com>,
-        Stuart Yoder <stuyoder@gmail.com>,
-        Laurentiu Tudor <laurentiu.tudor@nxp.com>,
-        Jay Fang <f.fangjian@huawei.com>, Chen-Yu Tsai <wens@csie.org>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Samuel Holland <samuel@sholland.org>,
-        Cristian Marussi <cristian.marussi@arm.com>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        Florian Fainelli <florian.fainelli@broadcom.com>,
-        Dinh Nguyen <dinguyen@kernel.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Joel Stanley <joel@jms.id.au>,
-        Andrew Jeffery <andrew@aj.id.au>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Li Yang <leoyang.li@nxp.com>, Qiang Zhao <qiang.zhao@nxp.com>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        openbmc@lists.ozlabs.org, linux-rockchip@lists.infradead.org,
-        linux-sunxi@lists.linux.dev, linux-mediatek@lists.infradead.org,
-        linux-rpi-kernel@lists.infradead.org, linux-tegra@vger.kernel.org,
-        linux-aspeed@lists.ozlabs.org, linux-pm@vger.kernel.org
-References: <20230803-dt-header-cleanups-for-soc-v2-0-d8de2cc88bff@kernel.org>
- <20230803-dt-header-cleanups-for-soc-v2-22-d8de2cc88bff@kernel.org>
-From:   Michal Simek <michal.simek@amd.com>
-In-Reply-To: <20230803-dt-header-cleanups-for-soc-v2-22-d8de2cc88bff@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: FR0P281CA0220.DEUP281.PROD.OUTLOOK.COM
- (2603:10a6:d10:ac::15) To BYAPR12MB4758.namprd12.prod.outlook.com
- (2603:10b6:a03:a5::28)
+        Fri, 4 Aug 2023 02:54:47 -0400
+Received: from mail-yb1-xb2b.google.com (mail-yb1-xb2b.google.com [IPv6:2607:f8b0:4864:20::b2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A61AE7
+        for <linux-kernel@vger.kernel.org>; Thu,  3 Aug 2023 23:54:46 -0700 (PDT)
+Received: by mail-yb1-xb2b.google.com with SMTP id 3f1490d57ef6-d18566dc0c1so2056639276.0
+        for <linux-kernel@vger.kernel.org>; Thu, 03 Aug 2023 23:54:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=sifive.com; s=google; t=1691132085; x=1691736885;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=tl864Gq8vHCZkWE8SgIk2gfcLPUIoY0UDu4IrEIG2Dk=;
+        b=kjlK7a/wOrqXSEtLt4ROFH8j/d7kFXj68rwUI1UyMGBSuaVEKDbBeIMNDng/2NVOO4
+         rC2y2cjxmF/Y2XyFx0l4V3Gc1HEUaFmcWGId+CJaqQYHLjRbOnWzms28cQaLyT/MuA85
+         R+9YdJS2LE0TbvasQ5ryYuxfhxOwDE/y3sAz0sPuVmekTqArfmCLcTHQuTbsIr9fhVjZ
+         3x5iBmpuSWSs5eQfqS2covmwyOpb4stwxGu1wOKkfcozr8BY5nn46FUPCvqcZrFc05vd
+         sXdjMVjxHo/LAutV3T+EZlSrcA+qQrRw46UqzhXE17e3cYny74H1ohx2xTwRdmiOjx0C
+         DRWg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691132085; x=1691736885;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=tl864Gq8vHCZkWE8SgIk2gfcLPUIoY0UDu4IrEIG2Dk=;
+        b=YjPGT/ToZzDoqr3CLwuZPUoL5eH9cnadyw8JOHSs/JPk5anvuzP6o3HqIMVcHGCiCg
+         cBAngN6I1dsaWKR2Diqcq3zrbz+M7oFXy6oxWiDbc2Iz0A1O3aZvrbGopJJAFKNd2acw
+         ybY0Y0gucb2NNROn/RH2962jEfJv40UH3yYUdq8liHbk/dLHPQcQRIGqPyCq+b9JkBbh
+         Dj1rDmxShTzw+0dxq/ObBkg7nwxV3Ee8AF29JeiQS4lx+u9h1lfXIkwfhfDznVgMEWGq
+         2Ow1dvVYDo0ivJnC35kxGS5FCoPnFEt0ulWViPxkW+E/5hOAC0wP4u9w7dPwG5vZJe2Y
+         YqMA==
+X-Gm-Message-State: AOJu0YyG/tJwgelUsmOnMa/3n8VXkCfzNqCaOfnYt7Lep2gGb93dxEqa
+        bGK2XLPl1RY730w3wGo0kGZGemOXHDrXyRiRd7hk+g==
+X-Google-Smtp-Source: AGHT+IEhQ+6ThvcSE8KTMZvx52SiuW4/p5gljqKGvysnVYcucKxlQcJrOxdrnH5kpTMGlkvNeQAaFzJ4yWelK3R15Kk=
+X-Received: by 2002:a81:69c2:0:b0:586:24d1:338e with SMTP id
+ e185-20020a8169c2000000b0058624d1338emr938772ywc.30.1691132085474; Thu, 03
+ Aug 2023 23:54:45 -0700 (PDT)
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BYAPR12MB4758:EE_|MN6PR12MB8470:EE_
-X-MS-Office365-Filtering-Correlation-Id: b0d83a05-8869-4433-607b-08db94b74076
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: TFBcV3KQx9Y5TA2iC6dRnwcsBAacMaWNl9XYhHc1uFTIbwMr6iLpGUOm89H1yJsx1REzBN7hwp4pQOhdFm1B/6MhgyKu94gX2+yvI5rocbCtLcD6LobWa0wuMEuuRSPgEptE9+pd+ZlAgHL/nnh+p2ffYfB+QxP5ccKkWkdpsUGtvPpac05ySQa0OxkvU2jTwMX2QeYgaG0p+GutAr4oHjGJF8vfWmDHCA7TguISi9G8+5InpQEg6k5K5wQtTzCuxy7BE4xF44ThRWiAEONv5dps8YRfLX/opsZRpr8pOLya4OvdiVlApVD9p7RalZ/BzOirFoyVYwGZlhxC5rw2n2briyaDc1r1oGZrIFX4y89/B7MNPwU7iT7NpbE5xL8zx5fIAvk+AiUuyNpDROHAaNNqHr4GzEpmb3vobiZl85KIjj78d2A5tbftkbmu7r8dPA3uY/Q+8Wtu9tL+V9mjWBZLV2sAOaJFRnlTbCj6+sDOKR40nNbrcaJHs+I94zPgdfHvSFXhrJ8NNfjohOMJqaxLEllNf5t4chhOTlgDUVGdrax1nGIvVpBfH8riiZr6fqmfP1kVnOb/UsApFhAYnfpxA4qOg6JXn6GwENv5wrtk6i9BBnR4nrNikI9q+UZ2O/bYN2pEc6dYXl6rCAWu1bODcPmv/DGAsb67tRNzHtPkLtkbyUCLT6eRLjbTMmBLPlJaNZGiIYAcZwqrMUKNQA==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR12MB4758.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(366004)(136003)(396003)(39860400002)(376002)(346002)(1800799003)(451199021)(186006)(2616005)(53546011)(8676002)(26005)(6506007)(83380400001)(66476007)(2906002)(316002)(4326008)(66946007)(5660300002)(66556008)(44832011)(8936002)(7416002)(41300700001)(6666004)(7406005)(6486002)(6512007)(110136005)(478600001)(921005)(38100700002)(31696002)(36756003)(86362001)(7366002)(31686004)(45980500001)(43740500002)(41080700001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?RSt6OFZ4c0twL2FyV2xseHZDQWphdWVkb0JDV3hXdlVTVnFMVFNUWW1EaWtL?=
- =?utf-8?B?M3FWYmpYQ3dlU2c5eFEzSnAxRW5pRGxybUJtaHR6ekdLK1FwVldERWpvY0FG?=
- =?utf-8?B?RWlsc2t4OENSOGdoeDc0blBDUnJPZXRhb0QxcksvK2ZkSkpSUXVCNkYyUkpP?=
- =?utf-8?B?QkZUaERFZUhpaXdWbkl6YmtSTXRYUG1FK1A5LytjTGpQLzJaSGZuYnA0MEZt?=
- =?utf-8?B?T2s1R0pwZFN1M0pwR3orVFFrZ3NPbGd3OER4VnBOa0pPdHpZQUpGMm94STB3?=
- =?utf-8?B?Y0lNbHZtL3FHd1JhVStjZEMxVURLRGttaHZ1TEVLclVHaUZScVNsOXF3TUVL?=
- =?utf-8?B?Q1NwcFI5ZDdHbFRQTXZhNkVrUkdSOVViZzdvSXlYUXN1VHpMSytNRFBUUStj?=
- =?utf-8?B?alM5RE5IN1MrTmRWcWgzUkVLSnF4QnIwbUNUVDNQTkRKYjd1cmtDZkdERGJJ?=
- =?utf-8?B?b0lrUlhKdFhDUXMxWDlLZmkwM1IxQXhzWXRFK0sveGVkbXI2V09za1NPb3l3?=
- =?utf-8?B?Q3VnRWp5UjFQeTVxRjFobm1IQm9JV2ZYUHN5RzExQzJZS0J5SHU4VHZYOEtO?=
- =?utf-8?B?bEljZ0VadUV4VHBxamJnWWc4TllHMlFxbzRrdkVLRnIraTEvZW1SdWErbmF5?=
- =?utf-8?B?bDdIOC82TG9NTURiOGs3K0QvcVFRd3dvc0xGamFWSmh6MEhFR1lpdDFINmZX?=
- =?utf-8?B?SCtsakdhclFyUWRsOVltaC92N3kraWtNYVVHK2VjVjYyUTlLTXJSRDhwMUdE?=
- =?utf-8?B?VUlxYkZLajV1S3NpMkJsUWRxZ0ZGWWxMS0pyRjFud3dCSHhBL0pNTE9HRnZm?=
- =?utf-8?B?VEZRamVzejdtbDhjWE9WSkJSYUdKdys4ZnV4cFNFQjFCczl2aFlSV25NbGFJ?=
- =?utf-8?B?Yk43aUZTMkJrTSs0VzNHemVmeG1qRWFjQS9VN0VnYjFNbTZEMFhzK1hYWXZI?=
- =?utf-8?B?ems2R3M5TTNKSVBVM0grMzdvQ1I5NFRxMWNnV01oMllmSzdZdUNHNFlnaG9F?=
- =?utf-8?B?TU5WNTFQZnBZV3FCbld6SWJXazFjQWtpZFVNdTh6YkFDeEZlYmx0dkt3M0Vs?=
- =?utf-8?B?L21OSTl1b1MrYjBVRElqT0ZVS3lIcjBKNEUwaUl6YjJtMk5jL2pUZ3hiUFBK?=
- =?utf-8?B?ZUhoZG82ZWJnbTYydk9kN0NyK01wcmllUWIvRjVFYXJLOFg2RzdpaVVzaVow?=
- =?utf-8?B?a2JZRkpNN2MzWEpGaGdVU0F1V29YR2h0NDF4OWpxMkhTcnRiekFWSWpEcUUz?=
- =?utf-8?B?MXRYV2pnQzl5Tjc3MFA1NmxOVk56R3crRmFuT3R2OVRwZWdmc1FpdTVpcTBz?=
- =?utf-8?B?VWI3b0FlUjZzL2p3cDhkdkhYNGh4NzY4aTNQNFZWSGx5N21BV1BSY3BsSVQ5?=
- =?utf-8?B?NkZLa3FyMllmUmc1SzZ5MnA2QW1qWnZNelJjdzlsM1RGRFBoRlN1d01SN0Vz?=
- =?utf-8?B?RitTQ0NBVURsYmx2b3FFSTNxNEplczAydlNUdlhQTVg0WUUyemxQZ3ZSV1Uz?=
- =?utf-8?B?b2hESThUNm1vRnVPUXJSdXVOWGdJZmxUSTZVUFVqSElXY3BBeGJxbXpyUDBR?=
- =?utf-8?B?QnA1ekpTSThNMUZESXg0bmFodUVOUUttb3VWNVdaNXBoc0EzT1Vyc1g2ZWdi?=
- =?utf-8?B?M25vQ1ZBM2h1clhHM0RVNk56RXhIM01VSkRDQmcvcHFIZ1N3TUNNTzJVVzlS?=
- =?utf-8?B?ajI1aWh2YXNBS2N5cktxd2RYTFF6WSswSEVHc2NOZ1k1K0tRMEVmcyt6alJM?=
- =?utf-8?B?ZUxLeDQyQmYwNFl2QmxETjJsaWEyU0tVaVd0cDlVN25tSFQzWWhuTGZPSklh?=
- =?utf-8?B?VWpKOHhxZHAydkRGNHkxYWtlZmppWWNDTU01UzN4bk5yMWdyTFpadTB5b0ds?=
- =?utf-8?B?M3k5MHl4WktqZEEyekNZMnAraENDUXE4aWJvb1lEN3ZPZTdIYTFlQUFLQVRN?=
- =?utf-8?B?c2JGdi9FMHhKVzR0L0dVY1RJTWFxck5hWk9YbzhNa0FQa096ekdLeGVEc2ZV?=
- =?utf-8?B?NnkrVXR0RnBEbDJHYWtDNkM2bW92dkt3MmtTNWc1ZVM2WWJ2RUtpc0loWDNY?=
- =?utf-8?B?anJpRmI0V3pPSUtKTVQraVVtaWRLM2ZXcGRjNE8vd3JScEdScjdnTWRSNjZz?=
- =?utf-8?Q?GZxaHMJiyASqbAEJ6e8P4mlVS?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: b0d83a05-8869-4433-607b-08db94b74076
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR12MB4758.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 Aug 2023 06:51:38.8664
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 6hlnFLevFMxgluYWUBm0/QRsRTrD9MYRvQUCjOpyWf0vTFSgC5PjKgZaQfCsyGr5
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN6PR12MB8470
-X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no autolearn_force=no
-        version=3.4.6
+References: <20230803085734.340-1-nylon.chen@sifive.com> <20230803-vehicular-leggings-2830239f818a@wendy>
+ <20230803-caretaker-voicing-e982f2334067@wendy> <CAHh=Yk9A3MP4Zgz53+s_ugvMtnv57igY=+Yccbp9Om9jBuxXqg@mail.gmail.com>
+In-Reply-To: <CAHh=Yk9A3MP4Zgz53+s_ugvMtnv57igY=+Yccbp9Om9jBuxXqg@mail.gmail.com>
+From:   Nylon Chen <nylon.chen@sifive.com>
+Date:   Fri, 4 Aug 2023 14:54:33 +0800
+Message-ID: <CAHh=Yk842gFpR1a3=KiB-Yb7T1Dqbg627MBK+hntjgMtd5z6-w@mail.gmail.com>
+Subject: Re: [PATCH v4 0/1] Change PWM-controlled LED pin active mode and algorithm
+To:     Conor Dooley <conor.dooley@microchip.com>
+Cc:     linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-riscv@lists.infradead.org, geert+renesas@glider.be,
+        pavel@ucw.cz, vincent.chen@sifive.com,
+        emil.renner.berthing@canonical.com, aou@eecs.berkeley.edu,
+        palmer@dabbelt.com, paul.walmsley@sifive.com,
+        krzysztof.kozlowski+dt@linaro.org, robh+dt@kernel.org,
+        conor@kernel.org, zong.li@sifive.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Rob,
+Hi Conor,
 
-On 8/4/23 00:43, Rob Herring wrote:
-> The DT of_device.h and of_platform.h date back to the separate
-> of_platform_bus_type before it as merged into the regular platform bus.
-> As part of that merge prepping Arm DT support 13 years ago, they
-> "temporarily" include each other. They also include platform_device.h
-> and of.h. As a result, there's a pretty much random mix of those include
-> files used throughout the tree. In order to detangle these headers and
-> replace the implicit includes with struct declarations, users need to
-> explicitly include the correct includes.
-> 
-> Signed-off-by: Rob Herring <robh@kernel.org>
-> ---
->   drivers/soc/xilinx/zynqmp_power.c | 1 +
->   1 file changed, 1 insertion(+)
-> 
-> diff --git a/drivers/soc/xilinx/zynqmp_power.c b/drivers/soc/xilinx/zynqmp_power.c
-> index 641dcc958911..913417506468 100644
-> --- a/drivers/soc/xilinx/zynqmp_power.c
-> +++ b/drivers/soc/xilinx/zynqmp_power.c
-> @@ -11,6 +11,7 @@
->   
->   #include <linux/mailbox_client.h>
->   #include <linux/module.h>
-> +#include <linux/of.h>
->   #include <linux/platform_device.h>
->   #include <linux/reboot.h>
->   #include <linux/suspend.h>
-> 
+Thank you for patiently giving me advice. I appreciate your help.
 
-I was checking and I was on CC on the v1 but I didn't get this to my inbox.
-Anyway let me apply this to my queue.
+Not long ago, I said, "This patch needs to be accompanied by
+modifications to the pwm_sifive_apply() function to make sense."
 
-Arnd: If you want to take it directly I am fine with it too.
+I recently reviewed the v3 version, and after discussing it with Emil,
+there are several areas that require modification. I will provide the
+necessary changes for each of them:
 
-Thanks,
-Michal
+1. polarity check. (Suggestion from Uwe)
+- if (state->polarity !=3D PWM_POLARITY_INVERSED)
++ if (state->polarity !=3D PWM_POLARITY_NORMAL)
+2. avoid using old periodperiod, not state->period
+- period =3D max(state->period, ddata->approx_period);
+- frac =3D DIV64_U64_ROUND_CLOSEST(num, state->period);
++ frac =3D DIV64_U64_ROUND_CLOSEST(num, period);
+3. add a conditional check can be added in the code to set
+ddata->approx_period to state->period when state->period is smaller
+than ddata->approx_period
+  if (state->period !=3D ddata->approx_period) {
+  ...
++       if (state->period < ddata->approx_period) {
++               ddata->approx_period =3D state->period;
++       }
+-       ddata->approx_period =3D state->period;
++       period =3D ddata->approx_period;
+
+I will use 'unmatched' on my end to verify again. If there are any
+other errors, feel free to point them out. Thank you.
+
+Nylon Chen <nylon.chen@sifive.com> =E6=96=BC 2023=E5=B9=B48=E6=9C=884=E6=97=
+=A5 =E9=80=B1=E4=BA=94 =E4=B8=8A=E5=8D=889:42=E5=AF=AB=E9=81=93=EF=BC=9A
+>
+> Hi Conor,
+>
+> Conor Dooley <conor.dooley@microchip.com> =E6=96=BC 2023=E5=B9=B48=E6=9C=
+=883=E6=97=A5 =E9=80=B1=E5=9B=9B =E4=B8=8B=E5=8D=885:44=E5=AF=AB=E9=81=93=
+=EF=BC=9A
+> >
+> > Hey Nylon,
+> >
+> > (I yoinked the reply to 1/1 to here, as it makes more sense in this
+> > context)
+> >
+> > > On Thu, Aug 03, 2023 at 10:15:10AM +0100, Conor Dooley wrote:
+> > > > On Thu, Aug 03, 2023 at 04:57:33PM +0800, Nylon Chen wrote:
+> > > > > According to the circuit diagram of User LEDs - RGB described in =
+themanual hifive-unleashed-a00.pdf[0] and hifive-unmatched-schematics-v3.pd=
+f[1].
+> > > > >
+> > > > > The behavior of PWM is acitve-high.
+> > > > >
+> > > > > Removed patches: 1
+> > > > > New patches: (none)
+> > > > >
+> > > > > Links:
+> > > > > - [0]:  https://sifive.cdn.prismic.io/sifive/c52a8e32-05ce-4aaf-9=
+5c8-7bf8453f8698_hifive-unleashed-a00-schematics-1.pdf
+> > > > > - [1]:  https://sifive.cdn.prismic.io/sifive/6a06d6c0-6e66-49b5-8=
+e9e-e68ce76f4192_hifive-unmatched-schematics-v3.pdf
+> > > > > - [2]:  https://sifive.cdn.prismic.io/sifive/1a82e600-1f93-4f41-b=
+2d8-86ed8b16acba_fu740-c000-manual-v1p6.pdf
+> > > > >
+> > > > > Changed in v4:
+> > > > >  - Remove previous updates to the PWM algorithm.
+> > > >
+> > > > Why? I don't recall the conclusion on the previous version being th=
+at
+> > > > that patch was not needed.
+> > >
+> > > I apologize for forgetting about this update earlier. Just now,
+> > > I tried to pull rebase master and noticed that other developers seem
+> > > to have made some fixes to the algorithm. Upon closer inspection, I
+> > > found that they addressed the part we previously discussed with Emil
+> > > and Uwe, such as "first pwm_apply_state."
+> > >
+> > > Therefore, my instinct tells me that they have already taken care of
+> > > the issues we discussed before.
+> >
+> > I didn't see anything in linux-next that would solve this problem of
+> > inversion. The last meaningful change is:
+> >         commit 334c7b13d38321e47d1a51dba0bef9f4c403ec75
+> >         Author:     Emil Renner Berthing <emil.renner.berthing@canonica=
+l.com>
+> >         AuthorDate: Wed Nov 9 12:37:24 2022 +0100
+> >         Commit:     Thierry Reding <thierry.reding@gmail.com>
+> >         CommitDate: Mon Jan 30 16:42:45 2023 +0100
+> >
+> >             pwm: sifive: Always let the first pwm_apply_state succeed
+> >
+> > which predates your v3 by quite a bit.
+> >
+> > > I will review the conflicting parts in the pwm-sifive.c code in my v4
+> > > version once again to ensure there are no omissions. If I find any, I
+> > > will submit v5 accordingly.
+> >
+> > And if this patch is okay in isolation, please reply here explaining
+> > which commit fixed the algorithm, so that I can pick it up.
+> This patch needs to be accompanied by modifications to the
+> pwm_sifive_apply() function to make sense.
+>
+> I will double-check and review the previous discussions to ensure
+> that. Thank you for your response.
+> >
+> > Thanks,
+> > Conor.
