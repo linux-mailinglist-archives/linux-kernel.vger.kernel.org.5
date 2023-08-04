@@ -2,115 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7BCF076FD7C
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 11:37:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3FE8676FD82
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 11:38:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230260AbjHDJhq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Aug 2023 05:37:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45162 "EHLO
+        id S230504AbjHDJih (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Aug 2023 05:38:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45814 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230513AbjHDJhb (ORCPT
+        with ESMTP id S230502AbjHDJif (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Aug 2023 05:37:31 -0400
-Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6363F49F9
-        for <linux-kernel@vger.kernel.org>; Fri,  4 Aug 2023 02:37:30 -0700 (PDT)
-Received: by mail-ej1-x635.google.com with SMTP id a640c23a62f3a-99bcf2de59cso271305666b.0
-        for <linux-kernel@vger.kernel.org>; Fri, 04 Aug 2023 02:37:30 -0700 (PDT)
+        Fri, 4 Aug 2023 05:38:35 -0400
+Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AEACF3A9C
+        for <linux-kernel@vger.kernel.org>; Fri,  4 Aug 2023 02:38:12 -0700 (PDT)
+Received: by mail-pf1-x42f.google.com with SMTP id d2e1a72fcca58-686f25d045cso1429306b3a.0
+        for <linux-kernel@vger.kernel.org>; Fri, 04 Aug 2023 02:38:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1691141849; x=1691746649;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=ldSCG+6LPCN3GhOyLEkZnY6hjS6A7mk0dYNnbDmjePo=;
-        b=pxcxlQSG4c0ekuugNe7J/VBx3DparTKH6aU2NfbMhCqFcu1uBMIOTmV36b5n9B2wXx
-         2ic7wb6gh8C0XgnUv+8UTz7IsIYSPBpGKs2UNoZ4BFLq30a3KTegJDFRUjYOWDrIPL1v
-         QSQPYzAaIhwXbszkJYxfEko+57sxV0k9boirQeBgjfOiGsiV4BOeLrF/nouftxnxr3Oy
-         IUv9orhhnY3GAGY5M2HKWlO6RMIe6heyyId2ualfkchG1ophTPYDICGmdLKVNP4mzKYQ
-         0JzL+U0a0z3sGT47CfoS6GtUuxy8YheAUk9ExEq/PjYor/eryYQ9RKX2bAfIWcCaK42Y
-         9E2Q==
+        d=bytedance.com; s=google; t=1691141892; x=1691746692;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=P9dIV7h+sCekbd6Jiug35Z9Vc/Gl4qYcQsrv76W+vcs=;
+        b=X0Kt72ObFXb2AmUvjpljLCJ0/CiK5QQRUOGw5Ygqqx0LHad5xwm7Jo8zkm59JKaXIe
+         bl7Py79HnZdLXC4ScPAT2txmPaBBBiTFeLzDnYaZHRmHZumhNNRBYHcv2vosYeDZm/Ot
+         kp+AQCVq2QJmxNsDBNMX/iQMj000l05XBv8D32c/j1ftAuMFZUln5xkYzHxXdQAEPXUJ
+         DAm3cNsucDXrf1ONWzstwq7va2gdfwlYVFZZGQ/5sDooDwa4M2r7w8fEcZ+n5+gH0dWJ
+         LijYxOlIdGXswT3n6+nFjzffC+2cmt9MdTryBYAeUbUsjVq8glbYRs5cB2J4Q3CVgpkN
+         J1Rw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691141849; x=1691746649;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=ldSCG+6LPCN3GhOyLEkZnY6hjS6A7mk0dYNnbDmjePo=;
-        b=EtFfiMugzBO+QxWNKJelmUnmhPSsUvQgCsrIgvvB7P1uzVE3JyqlO3D1A0hJVNSN2l
-         abhP3Y/x1jgCAPFALzSK0gFl2ViC8aR7KGlV1HebAixDZg89XSa12vzTE9vHZcqs/aXZ
-         QZxFssoWoE4lyjbdNx6bFlkvtOjtrO4HgKDS64X+Yh/d2zwzYSxnoxUmXc1RtDdwepz8
-         +dwIQa4GxfZvfiOhKuFOel86boulCnOggtsWB7jPSUC1iEBb834fNfZdHF4Iag40llnd
-         s+5OAvKjh8qDNjZKBLnPRPMu7+pzifQHGGZqoPPwjJHHr0qUCL25vFeEkrLHj2BaNg2r
-         4VPA==
-X-Gm-Message-State: AOJu0YysaoxAgzDyKb9NrH2RNF323gnbVfowy8LjydGZ52waCxRiUZYW
-        9OmgsCxcIvLTkS7o87jXFxQt+A==
-X-Google-Smtp-Source: AGHT+IGvg/xMMV17wiJBz5ohTtX2f3abYbGt2Syqm1MyR5UOQm2AuKUvMAoVGZ1hdzgZzOZGhf00Pg==
-X-Received: by 2002:a17:907:7888:b0:99b:7297:fbf5 with SMTP id ku8-20020a170907788800b0099b7297fbf5mr1124105ejc.61.1691141848923;
-        Fri, 04 Aug 2023 02:37:28 -0700 (PDT)
-Received: from [192.168.1.20] ([178.197.222.245])
-        by smtp.gmail.com with ESMTPSA id z5-20020a170906434500b00977cad140a8sm1040821ejm.218.2023.08.04.02.37.26
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 04 Aug 2023 02:37:28 -0700 (PDT)
-Message-ID: <d0d7f1ef-4549-e563-e83e-6a6aab40eb38@linaro.org>
-Date:   Fri, 4 Aug 2023 11:37:26 +0200
+        d=1e100.net; s=20221208; t=1691141892; x=1691746692;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=P9dIV7h+sCekbd6Jiug35Z9Vc/Gl4qYcQsrv76W+vcs=;
+        b=fD0JO0wN9ARewZC9TSuTyrb6eiRmnNXfOB23dy3Yv7wacJHmQRwio/HkFN++LeqNVI
+         aA8fy8GPSeMcCQE6fDIHI4HOB6gCSeqmKtV+NTKvOmvG9gItSUXPf7TL05qPrxCWoNUD
+         hdNP72V3K20ag+SMMKkFmr7u9wqxw3e8JaJC6OYddxxxCb8ITQd+o0tYCt6edwzK4Kst
+         VhWMMUqMSKy06tRN7lesccswQfWggYLfat/h1VzeKEIuCw3ckGPKapfCr560MwVMCdbD
+         g+vb8TWdfRwMkX4Dpy2V370R1OCn9HJtacFdQrqmAhojbnLsawOmlBYQjbHcGr+eDF3N
+         T2gg==
+X-Gm-Message-State: AOJu0YzB210ffDxfmAt3sSUEL7KbLyDPG4NVS2ZIOzD+LhXVIoOb9WwC
+        fLmNTLhgsHtWXa0P2bILYUG5vg==
+X-Google-Smtp-Source: AGHT+IGpsyV8nAzy3j0aXIanUvxKRza+ZIRtnapG1O2T0h0WF6HVfagRJD4ltE52piSSd9PZUa3plw==
+X-Received: by 2002:a05:6a21:8199:b0:134:ad98:fb0c with SMTP id pd25-20020a056a21819900b00134ad98fb0cmr936829pzb.4.1691141892231;
+        Fri, 04 Aug 2023 02:38:12 -0700 (PDT)
+Received: from n37-019-243.byted.org ([180.184.51.142])
+        by smtp.gmail.com with ESMTPSA id c23-20020aa78817000000b00687933946ddsm1214837pfo.23.2023.08.04.02.38.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 04 Aug 2023 02:38:11 -0700 (PDT)
+From:   Chuyi Zhou <zhouchuyi@bytedance.com>
+To:     hannes@cmpxchg.org, mhocko@kernel.org, roman.gushchin@linux.dev,
+        ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        muchun.song@linux.dev
+Cc:     bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
+        wuyun.abel@bytedance.com, robin.lu@bytedance.com,
+        Chuyi Zhou <zhouchuyi@bytedance.com>
+Subject: [RFC PATCH 0/2] mm: Select victim using bpf_select_task
+Date:   Fri,  4 Aug 2023 17:38:02 +0800
+Message-Id: <20230804093804.47039-1-zhouchuyi@bytedance.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.14.0
-Subject: Re: [PATCH v2 1/4] dt-bindings: vendor-prefixes: Add BigTreeTech
-Content-Language: en-US
-To:     Martin Botka <martin@biqu3d.com>, martin.botka1@gmail.com
-Cc:     Konrad Dybcio <konrad.dybcio@somainline.org>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@somainline.org>,
-        Marijn Suijten <marijn.suijten@somainline.org>,
-        Jami Kettunen <jamipkettunen@somainline.org>,
-        Paul Bouchara <paul.bouchara@somainline.org>,
-        Martin Botka <martin.botka@somainline.org>,
-        Andre Przywara <andre.przywara@arm.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Chen-Yu Tsai <wens@csie.org>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Samuel Holland <samuel@sholland.org>,
-        Icenowy Zheng <uwu@icenowy.me>, Andrew Lunn <andrew@lunn.ch>,
-        Ludwig Kormann <ludwig.kormann@ict42.de>,
-        Heiko Stuebner <heiko@sntech.de>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Chris Morgan <macromorgan@hotmail.com>,
-        Jagan Teki <jagan@edgeble.ai>,
-        Maxime Ripard <mripard@kernel.org>, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev,
-        linux-kernel@vger.kernel.org
-References: <20230804090102.273029-1-martin@biqu3d.com>
- <C2CB4DF32C2C55DC+20230804090102.273029-2-martin@biqu3d.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <C2CB4DF32C2C55DC+20230804090102.273029-2-martin@biqu3d.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 04/08/2023 11:00, Martin Botka wrote:
-> From: Martin Botka <martin.botka@somainline.org>
-> 
-> BigTreeTech is a company based in Shenzhen that makes
-> 3D printers and accessories.
-> 
-> Add prefix for it.
-> 
-> Signed-off-by: Martin Botka <martin.botka@somainline.org>
-> Reviewed-by: Andre Przywara <andre.przywara@arm.com>
+This patchset adds a new interface and use it to select victim when OOM
+is invoked. The mainly motivation is the need to customizable OOM victim
+selection functionality.
 
-Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+The new interface is a bpf hook plugged in oom_evaluate_task. It takes oc
+and current task as parameters and return a result indicating which one is
+selected by the attached bpf program.
 
-Best regards,
-Krzysztof
+There are several conserns when designing this interface suggested by
+Michal:
+
+1. Hooking into oom_evaluate_task can keep the consistency of global and
+memcg OOM interface. Besides, it seems the least disruptive to the existing
+oom killer implementation.
+
+2. Userspace can handle a lot on its own and provide the input to the BPF
+program to make a decision. Since the oom scope iteration will be
+implemented already in the kernel so all the BPF program has to do is to
+rank processes or memcgs.
+
+Previous discussion link:
+[1]https://lore.kernel.org/lkml/20230727073632.44983-1-zhouchuyi@bytedance.com/
+
+Chuyi Zhou (2):
+  mm, oom: Introduce bpf_select_task
+  bpf: Add OOM policy test
+
+ mm/oom_kill.c                                 |  57 ++++++-
+ .../bpf/prog_tests/test_oom_policy.c          | 140 ++++++++++++++++++
+ .../testing/selftests/bpf/progs/oom_policy.c  |  77 ++++++++++
+ 3 files changed, 267 insertions(+), 7 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/test_oom_policy.c
+ create mode 100644 tools/testing/selftests/bpf/progs/oom_policy.c
+
+-- 
+2.20.1
 
