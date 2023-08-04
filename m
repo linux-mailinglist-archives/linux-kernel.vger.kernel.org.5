@@ -2,98 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8CE0B76FDB3
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 11:45:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BA10E76FDBB
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 11:46:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231181AbjHDJpr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Aug 2023 05:45:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49676 "EHLO
+        id S231200AbjHDJqh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Aug 2023 05:46:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50356 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231185AbjHDJpj (ORCPT
+        with ESMTP id S231179AbjHDJqf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Aug 2023 05:45:39 -0400
-Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 740A849EE
-        for <linux-kernel@vger.kernel.org>; Fri,  4 Aug 2023 02:45:36 -0700 (PDT)
-Received: by mail-ed1-x534.google.com with SMTP id 4fb4d7f45d1cf-51e2a6a3768so2398160a12.0
-        for <linux-kernel@vger.kernel.org>; Fri, 04 Aug 2023 02:45:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1691142335; x=1691747135;
-        h=content-transfer-encoding:in-reply-to:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=1xPeMw/tdJ7IioEcDvwAyboMLZ4pz6UEfuXX/4uGyxA=;
-        b=FLyAljQ1t8b3Xk/pCIKYZrMFdYexo+hFibSNEUp2p3wd64yBa2ddbVuCdDrlswKKlx
-         +tSS4CUQ1j8xWfs/JLtTG0hZmgDZOoJcRz/AvsNvA8uA4o7Ubo9dEDD5yrYtIOn20Qj0
-         gbelwu6DcDfbQRUyKbYb6Iio0eb2WVn4o0WSswkPqcnGMmYZumCBnFZj+cAP+Trxdjpf
-         We1i0/GrNkkIfZmIt1B6hrEr0Z+Fl/QiC2l9ZxPJQVc/oYLW6VQF+ZKYZEV2nKnq4T2k
-         QvdENM2dG5mzNO61iE2XdVwJY950YBmDWnP5uB8XQS/mdCP38qao1kbUIk6TXDAXvY8e
-         T1PA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691142335; x=1691747135;
-        h=content-transfer-encoding:in-reply-to:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=1xPeMw/tdJ7IioEcDvwAyboMLZ4pz6UEfuXX/4uGyxA=;
-        b=M96ZZbQq/66KE15eFbXQZlKPvXHCnMMxPi0kzDVDWsaV7iWxeuZgwNOHM2N1O6bi4N
-         CHkbn8OzAxIRLKgjlXTYUaYpwYTv4Oo0SU6WtXU+9/bALj0otQVv5Sg04sY0/dPRRAXI
-         csyR6V3d3rzQsGwtoWNzTVJrwRLLlBUe4zyjZDVLw9IC3XIwibABbNe2yhm+I1pcPIR+
-         VCcBcxKjQL0twZBKTSLUZFZRIg9V+UJu9B6XBVlxSwZR0R3PUldFK9/MtfdN8axmhRHb
-         lWo2thcQ0LnZKPyyBXQNeSm56r7LS6PCI0xcqEOAXOJV6z5FxpbTXO//mblIyPrIQxMH
-         nxjg==
-X-Gm-Message-State: AOJu0YxHgrMwSDENRzMi42io+QLtmrqqzIpIz3g+2FGPUdL7zYEX2Gyz
-        677R3s9GhNL1P1NmiR+J152xHQ==
-X-Google-Smtp-Source: AGHT+IEKy6dK//8+SePubKh4DJRoYWXex01cl/WJEu49hdwZPoBKQhqGx2/J5yCGkCRtvETRm0rtUw==
-X-Received: by 2002:aa7:c783:0:b0:522:bae5:282a with SMTP id n3-20020aa7c783000000b00522bae5282amr1270942eds.1.1691142334837;
-        Fri, 04 Aug 2023 02:45:34 -0700 (PDT)
-Received: from [192.168.1.20] ([178.197.222.245])
-        by smtp.gmail.com with ESMTPSA id bc5-20020a056402204500b005230f06de15sm1016539edb.78.2023.08.04.02.45.33
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 04 Aug 2023 02:45:34 -0700 (PDT)
-Message-ID: <c2cb5781-f2da-eef8-50db-6bfbaaed685e@linaro.org>
-Date:   Fri, 4 Aug 2023 11:45:32 +0200
+        Fri, 4 Aug 2023 05:46:35 -0400
+Received: from lelv0142.ext.ti.com (lelv0142.ext.ti.com [198.47.23.249])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9BF230EB;
+        Fri,  4 Aug 2023 02:46:32 -0700 (PDT)
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+        by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 3749jpWa045691;
+        Fri, 4 Aug 2023 04:45:51 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1691142351;
+        bh=j3outbqF3n0j34Bjwkt+GPyn1jRs072Kiuc9MbhIqbA=;
+        h=Date:Subject:To:CC:References:From:In-Reply-To;
+        b=dRq5j9nSsByHHBcNWZcrMdHgHp+id/9SIeD7UZfjrfILlGN51eAX8IhEa2ycTVcTD
+         Dj2hy+MQnw9plXBC5/qYdbJiSk4hh0NzqrgZ2lBxGRKNA+H0wzEbW/jndA4X2BjhVf
+         vBh7AKzb3bqyClEsPGnhiCwIuaZ5saLm2dpgOQpo=
+Received: from DLEE109.ent.ti.com (dlee109.ent.ti.com [157.170.170.41])
+        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 3749jpvu070545
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Fri, 4 Aug 2023 04:45:51 -0500
+Received: from DLEE110.ent.ti.com (157.170.170.21) by DLEE109.ent.ti.com
+ (157.170.170.41) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Fri, 4
+ Aug 2023 04:45:50 -0500
+Received: from lelv0327.itg.ti.com (10.180.67.183) by DLEE110.ent.ti.com
+ (157.170.170.21) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Fri, 4 Aug 2023 04:45:50 -0500
+Received: from [172.24.21.32] (ileaxei01-snat.itg.ti.com [10.180.69.5])
+        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 3749jilx025112;
+        Fri, 4 Aug 2023 04:45:45 -0500
+Message-ID: <a5578fc7-04f9-9d9c-ebf1-3d788075bbcd@ti.com>
+Date:   Fri, 4 Aug 2023 15:15:43 +0530
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
  Thunderbird/102.14.0
-Subject: Re: [PATCH v3 6/6] ASoC: dt-bindings: mediatek,mt7986-afe: add audio
- afe document
+Subject: Re: [PATCH v2] arm64: defconfig: Enable PRUSS as module
 Content-Language: en-US
-To:     =?UTF-8?B?TWFzbyBIdWFuZyAo6buD5Yqg56u5KQ==?= 
-        <Maso.Huang@mediatek.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "robh+dt@kernel.org" <robh+dt@kernel.org>,
-        "chenxiangrui@huaqin.corp-partner.google.com" 
-        <chenxiangrui@huaqin.corp-partner.google.com>,
-        =?UTF-8?B?VHJldm9yIFd1ICjlkLPmlofoia8p?= <Trevor.Wu@mediatek.com>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-mediatek@lists.infradead.org" 
-        <linux-mediatek@lists.infradead.org>,
-        "broonie@kernel.org" <broonie@kernel.org>,
-        =?UTF-8?B?QWxsZW4tS0ggQ2hlbmcgKOeoi+WGoOWLsik=?= 
-        <Allen-KH.Cheng@mediatek.com>,
-        "conor+dt@kernel.org" <conor+dt@kernel.org>,
-        "tiwai@suse.com" <tiwai@suse.com>,
-        "lgirdwood@gmail.com" <lgirdwood@gmail.com>,
-        "linux-arm-kernel@lists.infradead.org" 
+To:     Arnd Bergmann <arnd@arndb.de>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        MD Danish Anwar <danishanwar@ti.com>,
+        Peng Fan <peng.fan@nxp.com>,
+        =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>,
+        =?UTF-8?B?TsOtY29sYXMgRi4gUi4gQS4gUHJhZG8=?= 
+        <nfraprado@collabora.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Bjorn Andersson <quic_bjorande@quicinc.com>,
+        Will Deacon <will@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>, <srk@ti.com>,
+        Nishanth Menon <nm@ti.com>,
+        Vignesh Raghavendra <vigneshr@ti.com>
+CC:     <linux-kernel@vger.kernel.org>,
         <linux-arm-kernel@lists.infradead.org>,
-        "krzysztof.kozlowski+dt@linaro.org" 
-        <krzysztof.kozlowski+dt@linaro.org>,
-        "matthias.bgg@gmail.com" <matthias.bgg@gmail.com>,
-        "perex@perex.cz" <perex@perex.cz>, "arnd@arndb.de" <arnd@arndb.de>,
-        "angelogioacchino.delregno@collabora.com" 
-        <angelogioacchino.delregno@collabora.com>,
-        "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
-References: <20230728090819.18038-1-maso.huang@mediatek.com>
- <20230728090819.18038-7-maso.huang@mediatek.com>
- <a4f071a0-9e41-4de1-6721-f8d47475f41e@linaro.org>
- <5d005f518d974b7912c832101b5cfbde77f57270.camel@mediatek.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <5d005f518d974b7912c832101b5cfbde77f57270.camel@mediatek.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+        Linux-OMAP <linux-omap@vger.kernel.org>
+References: <20230804061811.3999129-1-danishanwar@ti.com>
+ <5ade5d29-5d9d-0d68-c3d8-de61ca90bb81@linaro.org>
+ <ae2ad056-96de-41b7-8df4-1d9c0f5c469b@app.fastmail.com>
+From:   "Anwar, Md Danish" <a0501179@ti.com>
+In-Reply-To: <ae2ad056-96de-41b7-8df4-1d9c0f5c469b@app.fastmail.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -101,48 +82,50 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 01/08/2023 10:25, Maso Huang (黃加竹) wrote:
-> On Fri, 2023-07-28 at 14:51 +0200, Krzysztof Kozlowski wrote:
->>  	 
->> External email : Please do not click links or open attachments until
->> you have verified the sender or the content.
->>  On 28/07/2023 11:08, Maso Huang wrote:
->>> Add mt7986 audio afe document.
+On 8/4/2023 2:50 PM, Arnd Bergmann wrote:
+> On Fri, Aug 4, 2023, at 11:11, Konrad Dybcio wrote:
+>> On 4.08.2023 08:18, MD Danish Anwar wrote:
+>>> Enables PRUSS as kernel module for TI SoCs.
 >>>
->>> Signed-off-by: Maso Huang <maso.huang@mediatek.com>
+>>> Reviewed-by: Christian Gmeiner <christian.gmeiner@gmail.com>
+>>> Signed-off-by: MD Danish Anwar <danishanwar@ti.com>
+>>> ---
+>> As an outsider, I have no idea what this does, and the Kconfig help
+>> message doesn't say much more either.
 >>
->> Thank you for your patch. There is something to discuss/improve.
->>
->>> +
->>> +required:
->>> +  - compatible
->>> +  - reg
->>> +  - interrupts
->>> +  - clocks
->>> +  - clock-names
->>> +  - assigned-clocks
->>> +  - assigned-clock-parents
->>
->> You should constrain your clocks per variants. I doubt that they are
->> really so flexible/optional on each SoC... or maybe missing clocks
->> are
->> result of unimplemented parts in the driver? But then this should not
->> really affect bindings. Bindings still should require such clocks.
->> Your
->> DTS can always provide a <0>, if needed.
->>
->>
+>> Could you please add a short summary about what sort of hardware
+>> is driven by this driver?
 > 
-> Hi Krzysztof,
+> Any additional information would also help, but more importantly,
+> Danish please use a recipient list that has only the people on 'To:'
+> that would actually apply the patch (Nishanth and Vignesh) and
+> ask them to merge it, while having everyone else on Cc.
 > 
-> After internal check, assigned-clocks and assigned-clock-parents are
-> not required on this SoC. 
-> Maybe we can just drop these two options?
 
-It's separate issue, but yes - why requiring them?
+Sure Arnd, I will only keep Nishant and Vignesh in to and move everyone 
+else to Cc.
 
-I wrote about missing constraints for your clocks in the bindings.
+> The problem with addressing a trivial patch to a dozen people
+> is that often everyone will think that someone else will take
+> care of it. If you address a patch to just one or two maintainers,
+> they are more likely to either apply it or tell you if you got
+> the wrong person instead of ignoring.
+> 
+> For defconfig patches adding platform specific lines, there are
+> two ways this can be handled:
+> 
+> a) the K3 maintainers pick it up into a branch and send a
+>     pull request to soc@kernel.org with all the defconfig
+>     changes, from where I pick that up. This usually works
+>     best.
+> 
+> b) you send it to soc@kernel.org yourself and I wait for
+>     an Ack from the K3 maintainers so I know they agree with
+>     the contents as well as being bypassed as maintainers on
+>     this occasion.
+> 
+>       Arnd
 
-Best regards,
-Krzysztof
-
+-- 
+Thanks and Regards,
+Md Danish Anwar
