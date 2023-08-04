@@ -2,125 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E608770821
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 20:44:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D4D1770822
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 20:45:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229849AbjHDSoJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Aug 2023 14:44:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33052 "EHLO
+        id S229848AbjHDSpT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Aug 2023 14:45:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33602 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229798AbjHDSoB (ORCPT
+        with ESMTP id S229527AbjHDSpP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Aug 2023 14:44:01 -0400
-Received: from 1wt.eu (ded1.1wt.eu [163.172.96.212])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id C17A54C05;
-        Fri,  4 Aug 2023 11:43:58 -0700 (PDT)
-Received: (from willy@localhost)
-        by pcw.home.local (8.15.2/8.15.2/Submit) id 374Ihmtm031478;
-        Fri, 4 Aug 2023 20:43:48 +0200
-Date:   Fri, 4 Aug 2023 20:43:48 +0200
-From:   Willy Tarreau <w@1wt.eu>
-To:     Zhangjin Wu <falcon@tinylab.org>
-Cc:     arnd@arndb.de, linux-kernel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, tanyuan@tinylab.org,
-        thomas@t-8ch.de
-Subject: Re: [PATCH v1 2/3] selftests/nolibc: fix up O= option support
-Message-ID: <20230804184348.GA31470@1wt.eu>
-References: <20230804175429.GC31163@1wt.eu>
- <20230804184023.354950-1-falcon@tinylab.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230804184023.354950-1-falcon@tinylab.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        Fri, 4 Aug 2023 14:45:15 -0400
+Received: from mail-pl1-x649.google.com (mail-pl1-x649.google.com [IPv6:2607:f8b0:4864:20::649])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C46A546BD
+        for <linux-kernel@vger.kernel.org>; Fri,  4 Aug 2023 11:45:14 -0700 (PDT)
+Received: by mail-pl1-x649.google.com with SMTP id d9443c01a7336-1bbf8cb6143so20848335ad.1
+        for <linux-kernel@vger.kernel.org>; Fri, 04 Aug 2023 11:45:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1691174714; x=1691779514;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=Xq38oqTQyOZq0/Vk1xBRd6bkqdP7LlptcLF48lzFMMM=;
+        b=uaz76R29r4VpBmVg3aJzawsLUkGHqc4C3TCqJ6k/o68dST2qHMUHpb99N+IjLxvcv+
+         GDZ3BiBb1+mijaHet9TwuBqQyERGbHQnPmhcR+wHVTtzUOg+1AAogult+w6sNz350gjq
+         t6+rhhML1vw9PqlS/ZOod/sNXp+c6SWqLN7/k/L9pNKEqI5HI+iaUPA3tM1+WmD/VuKX
+         Ppckh2klOzy44KaLRr9iNPK3RxaEyot4/LlYTjr8ZPdZgtBu0j/mjfKQ9vFQAHjoGthT
+         wzwBG1fplQ6u1bgZk3xDLiguAmpY5MPMaz2NrlGQTnwPbFs8VrBHdqPsAmmsj9FSISih
+         0Cog==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691174714; x=1691779514;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Xq38oqTQyOZq0/Vk1xBRd6bkqdP7LlptcLF48lzFMMM=;
+        b=BnWWxIweMixwJH6iv6uaOSVlpFMYsmi0O9IRY58sDhOTfWKhZ+Jb4mavTW04pLp64h
+         nE2Zq6aiAzgcNJXNtpZtm+jGyZcILrMuv553IV7CbeNDLyNjlBQbUaQCur5Nf7sr/KPv
+         6J8I7D+ul/mzXZmzRH45MH/8GtRTIFgq6wDgun4tZKFdjO/3v8KdEs/brvnkOOsHPDzU
+         xgI5A9HecJNj/9/iQ68PrwAsSoKx78qDKx8vnTUFRTcY+GQfKEDZI9CMjbaAe2QCamb4
+         h8gtlt7d1vwfCcwjL79UNjZkMg5N4zOT0BaT4odrIAGZg9YasSEaFYeq9p7jzQQW5A7S
+         FBow==
+X-Gm-Message-State: AOJu0YwupwQXpQQaloGsqzY/mn0TUkz/osvsqe2wZYYGp+HuD6qcjdxD
+        hQ38CdkGTA44AcB6XBDT4kbA+15Nhhg=
+X-Google-Smtp-Source: AGHT+IHmZTBOOZV7kplcrMywzPgMbaGdPXBMBNZG4BGmhb6YnfrDeTsQzo/oMjwuZcCONi/pAVK9Dmg5wrU=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a17:902:f54a:b0:1bc:210d:636e with SMTP id
+ h10-20020a170902f54a00b001bc210d636emr8882plf.12.1691174714015; Fri, 04 Aug
+ 2023 11:45:14 -0700 (PDT)
+Date:   Fri, 4 Aug 2023 11:45:12 -0700
+In-Reply-To: <20230803042732.88515-6-weijiang.yang@intel.com>
+Mime-Version: 1.0
+References: <20230803042732.88515-1-weijiang.yang@intel.com> <20230803042732.88515-6-weijiang.yang@intel.com>
+Message-ID: <ZM1HODB6No0XArEq@google.com>
+Subject: Re: [PATCH v5 05/19] KVM:x86: Initialize kvm_caps.supported_xss
+From:   Sean Christopherson <seanjc@google.com>
+To:     Yang Weijiang <weijiang.yang@intel.com>
+Cc:     pbonzini@redhat.com, peterz@infradead.org, john.allen@amd.com,
+        kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        rick.p.edgecombe@intel.com, chao.gao@intel.com,
+        binbin.wu@linux.intel.com
+Content-Type: text/plain; charset="us-ascii"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Aug 05, 2023 at 02:40:23AM +0800, Zhangjin Wu wrote:
-> > On Fri, Aug 04, 2023 at 07:51:50PM +0200, Thomas Wei?schuh wrote:
-> > > On 2023-08-05 00:29:10+0800, Zhangjin Wu wrote:
-> [...]
-> > > > Do you mean here?
-> > > > 
-> > > >     # kernel image names by architecture
-> > > >     IMAGE_i386    = arch/x86/boot/bzImage
-> > > >     IMAGE_x86     = arch/x86/boot/bzImage
-> > > >     IMAGE_arm64   = arch/arm64/boot/Image
-> > > >     IMAGE_arm     = arch/arm/boot/zImage
-> > > >     IMAGE_mips    = vmlinuz
-> > > >     IMAGE_riscv   = arch/riscv/boot/Image
-> > > >     IMAGE         = $(IMAGE_$(ARCH))
-> > > >     IMAGE_NAME    = $(notdir $(IMAGE))
-> > > > 
-> > > > It does save another KERNEL_IMAGE macro in my future patch ;-)
-> > > > 
-> > > > But without O=, OUTPUT is also empty like objtree and when empty, it is
-> > > > assigned as $(CURDIR), not $(srctree) as we expected for IMAGE and .config. To
-> > > > be cleaner, objtree should also be used:
-> > > > 
-> > > >     - IMAGE         = $(IMAGE_$(ARCH))
-> > > >     + IMAGE         = $(objtree)/$(IMAGE_$(ARCH))
-> > > > 
-> > > > Is this what you want?
-> > > 
-> > > More like:
-> > > 
-> > > -	$(Q)qemu-system-$(QEMU_ARCH) -display none -no-reboot -kernel "$(srctree)/$(IMAGE)" -serial stdio $(QEMU_ARGS) > "$(CURDIR)/run.out"
-> > > +	$(Q)qemu-system-$(QEMU_ARCH) -display none -no-reboot -kernel "$(OUTPUT)$(IMAGE)" -serial stdio $(QEMU_ARGS) > "$(CURDIR)/run.out"
-> > > 
-> > > My assumption was that it's weird that we need to define such variables
-> > > ourselves.
-> > > 
-> > > Using an empty $(OUTPUT) would have been fine if make is run from the
-> > > root of the kernel tree. But that is not the case.
-> > > 
-> > > It still feels weird but I can't think of a nicer way, and it's not
-> > > a big issue. So let's keep that part the same.
-> > > 
-> > > Or maybe Willy has a better idea.
-> > 
-> > I've just glanced over the discussion, but I'm wondering, why not
-> > "$(objtree)/$(IMAGE)" instead ?
-> >
+On Thu, Aug 03, 2023, Yang Weijiang wrote:
+> Set kvm_caps.supported_xss to host_xss && KVM XSS mask.
+> host_xss contains the host supported xstate feature bits for thread
+> context switch, KVM_SUPPORTED_XSS includes all KVM enabled XSS feature
+> bits, the operation result represents all KVM supported feature bits.
+> Since the result is subset of host_xss, the related XSAVE-managed MSRs
+> are automatically swapped for guest and host when vCPU exits to
+> userspace.
 > 
-> We used "$(objtree)/$(IMAGE)" originally, I thought of Thomas asked me to
-> further add "$(objtree)" in the first place of IMAGE,
+> Signed-off-by: Yang Weijiang <weijiang.yang@intel.com>
+> ---
+>  arch/x86/kvm/vmx/vmx.c | 1 -
+>  arch/x86/kvm/x86.c     | 6 +++++-
+>  2 files changed, 5 insertions(+), 2 deletions(-)
 > 
->      - IMAGE         = $(IMAGE_$(ARCH))
->      + IMAGE         = $(objtree)/$(IMAGE_$(ARCH))
-> 
-> And then, we can use "IMAGE" directly in the qemu run & rerun targets:
-> 
->     # run the tests after building the kernel
->     run: kernel
->     -	$(Q)qemu-system-$(QEMU_ARCH) -display none -no-reboot -kernel "$(objtree)/$(IMAGE)" -serial stdio $(QEMU_ARGS) > "$(RUN_OUT)"
->     +	$(Q)qemu-system-$(QEMU_ARCH) -display none -no-reboot -kernel "$(IMAGE)" -serial stdio $(QEMU_ARGS) > "$(RUN_OUT)"
->     	$(Q)$(REPORT) "$(RUN_OUT)"
->     
->     # re-run the tests from an existing kernel
->     rerun:
->     -	$(Q)qemu-system-$(QEMU_ARCH) -display none -no-reboot -kernel "$(objtree)/$(IMAGE)" -serial stdio $(QEMU_ARGS) > "$(RUN_OUT)"
->     +	$(Q)qemu-system-$(QEMU_ARCH) -display none -no-reboot -kernel "$(IMAGE)" -serial stdio $(QEMU_ARGS) > "$(RUN_OUT)"
->     	$(Q)$(REPORT) "$(RUN_OUT)"
-> 
-> Which one do you prefer? will renew this series soon.
+> diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
+> index 0ecf4be2c6af..c8d9870cfecb 100644
+> --- a/arch/x86/kvm/vmx/vmx.c
+> +++ b/arch/x86/kvm/vmx/vmx.c
+> @@ -7849,7 +7849,6 @@ static __init void vmx_set_cpu_caps(void)
+>  		kvm_cpu_cap_set(X86_FEATURE_UMIP);
+>  
+>  	/* CPUID 0xD.1 */
+> -	kvm_caps.supported_xss = 0;
 
-It's not a matter of preference but which solution really works. In short
-it should work fine and consistently when launched from topdir and from
-the nolibc-test dir. I personally don't know the effect of O= when run
-from a subdir (is it relative to the current dir or topdir?).
+Dropping this code in *this* patch is wrong, this belong in whatever patch(es) adds
+IBT and SHSTK support in VMX.
 
-> And even further, I thought of puting everything to $(OUTPUT), but the
-> change is very ugly and not good for v6.6, If you like, I will send that
-> patch only as a discuss stuff.
+And that does matter because it means this common patch can be carried wih SVM
+support without breaking VMX.
 
-Yeah I'd rather avoid ugly things for 6.6 now.
+>  	if (!cpu_has_vmx_xsaves())
+>  		kvm_cpu_cap_clear(X86_FEATURE_XSAVES);
+>  
+> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+> index 5d6d6fa33e5b..e9f3627d5fdd 100644
+> --- a/arch/x86/kvm/x86.c
+> +++ b/arch/x86/kvm/x86.c
+> @@ -225,6 +225,8 @@ static struct kvm_user_return_msrs __percpu *user_return_msrs;
+>  				| XFEATURE_MASK_BNDCSR | XFEATURE_MASK_AVX512 \
+>  				| XFEATURE_MASK_PKRU | XFEATURE_MASK_XTILE)
+>  
+> +#define KVM_SUPPORTED_XSS     0
+> +
+>  u64 __read_mostly host_efer;
+>  EXPORT_SYMBOL_GPL(host_efer);
+>  
+> @@ -9498,8 +9500,10 @@ static int __kvm_x86_vendor_init(struct kvm_x86_init_ops *ops)
+>  
+>  	rdmsrl_safe(MSR_EFER, &host_efer);
+>  
+> -	if (boot_cpu_has(X86_FEATURE_XSAVES))
+> +	if (boot_cpu_has(X86_FEATURE_XSAVES)) {
+>  		rdmsrl(MSR_IA32_XSS, host_xss);
+> +		kvm_caps.supported_xss = host_xss & KVM_SUPPORTED_XSS;
+> +	}
 
-Thanks,
-Willy
+Can you opportunistically (in this patch) hoist this above EFER so that XCR0 and
+XSS are colocated?  I.e. end up with this:
+
+	if (boot_cpu_has(X86_FEATURE_XSAVE)) {
+		host_xcr0 = xgetbv(XCR_XFEATURE_ENABLED_MASK);
+		kvm_caps.supported_xcr0 = host_xcr0 & KVM_SUPPORTED_XCR0;
+	}
+	if (boot_cpu_has(X86_FEATURE_XSAVES)) {
+		rdmsrl(MSR_IA32_XSS, host_xss);
+		kvm_caps.supported_xss = host_xss & KVM_SUPPORTED_XSS;
+	}
+
+	rdmsrl_safe(MSR_EFER, &host_efer);
+
