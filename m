@@ -2,141 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 161A0770ADD
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 23:26:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 37156770A92
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 23:09:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231205AbjHDV0X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Aug 2023 17:26:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44050 "EHLO
+        id S231174AbjHDVJy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Aug 2023 17:09:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35984 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230498AbjHDV0L (ORCPT
+        with ESMTP id S231169AbjHDVJe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Aug 2023 17:26:11 -0400
-Received: from cloudserver094114.home.pl (cloudserver094114.home.pl [79.96.170.134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DADA8E43;
-        Fri,  4 Aug 2023 14:26:09 -0700 (PDT)
-Received: from localhost (127.0.0.1) (HELO v370.home.net.pl)
- by /usr/run/smtp (/usr/run/postfix/private/idea_relay_lmtp) via UNIX with SMTP (IdeaSmtpServer 5.2.0)
- id 22f7f0f302ddf991; Fri, 4 Aug 2023 23:26:08 +0200
-Authentication-Results: v370.home.net.pl; spf=softfail (domain owner 
-   discourages use of this host) smtp.mailfrom=rjwysocki.net 
-   (client-ip=195.136.19.94; helo=[195.136.19.94]; 
-   envelope-from=rjw@rjwysocki.net; receiver=<UNKNOWN>)
-Received: from kreacher.localnet (unknown [195.136.19.94])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by v370.home.net.pl (Postfix) with ESMTPSA id B344C661680;
-        Fri,  4 Aug 2023 23:26:07 +0200 (CEST)
-From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
-To:     Linux ACPI <linux-acpi@vger.kernel.org>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Michal Wilczynski <michal.wilczynski@intel.com>,
-        Zhang Rui <rui.zhang@intel.com>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
-Subject: [PATCH v4 05/10] ACPI: thermal: Clean up acpi_thermal_register_thermal_zone()
-Date:   Fri, 04 Aug 2023 23:07:18 +0200
-Message-ID: <7582643.EvYhyI6sBW@kreacher>
-In-Reply-To: <4878513.31r3eYUQgx@kreacher>
-References: <13318886.uLZWGnKmhe@kreacher> <4878513.31r3eYUQgx@kreacher>
+        Fri, 4 Aug 2023 17:09:34 -0400
+Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08DEC59CD
+        for <linux-kernel@vger.kernel.org>; Fri,  4 Aug 2023 14:08:36 -0700 (PDT)
+Received: by mail-wm1-x32a.google.com with SMTP id 5b1f17b1804b1-3fbea14706eso23648005e9.2
+        for <linux-kernel@vger.kernel.org>; Fri, 04 Aug 2023 14:08:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1691183306; x=1691788106;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=kj2SGXNF0EqeeVeoYwK5y3aZysneTeIb9th8Kuq+mhY=;
+        b=E1Cy/WEHaEha8d+Ohtah69I6RVmp8L5ptLA0IiipoIluxOTCmomYfgkBPhrEpaGh+O
+         +eARTThKIZbypwnslQY4PULzaW7RUd1W7GksgeY8jDrWDnVYqHNu+LVAtOeEV6TjZXYA
+         dql5q3gXuCQ/woNRviPMqK5fmQ+zLiiI+abmTHawOeZj07XgoIfPypW2/ukZn6XvtZGq
+         BUM2Uh8CJcAOB3lSI+j4oY8LW8wUBWlAY7qoYbUj8X2dXYyv6n2HZte9PjdnI8x2+opR
+         Wzn8IXLg128chYyzShGv6DJ7KOWd+eqWQrpffFYfRDkcz2sNTPBR/SZsMntODgL1eCMI
+         6F/g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691183306; x=1691788106;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=kj2SGXNF0EqeeVeoYwK5y3aZysneTeIb9th8Kuq+mhY=;
+        b=VsK3RklLWMeL/9oaCaWRjSpNC6Flz3rwXgpJELjK5hzjj352iVB41KbGlqTwj0WWP5
+         GTBuQdkreWG/ZDKVCAQZ/txltvIX5Nkpq0L9OsLwXIP/H16JhnOlJbXL+ixlpPM0EcLO
+         TZyB7rOplxBj+RJETPoDE6ZsZsBvTm1AsUQIbBxkSbMxgvZeAdSaKbIP3DCQJhItnCIK
+         LHK+TlwzxvfMmLKg84w5XXn91asW8VD2wK7JlqpKkAMQgAaMbDaAn96WwGw86VfWXCti
+         ZrjSDDckquLTHKqIjCv0rABEdlwwMbLFjzTZC7/vMJWu77dzMy+Ns7QseLzKF5QkPYxm
+         2xjw==
+X-Gm-Message-State: AOJu0YzuZCXyewCajc+9uoCW+AIOO1DU7CkxVhxumY8IcuFE4hRUyxg5
+        qGucIlSfivgjooR7zF6UH5Ehcw==
+X-Google-Smtp-Source: AGHT+IFQCcB2ipMAuu0rfEtAXc1muyB4wSJjh0E43Tb1boJ2ic6TEYz8V5IdggCsR0SC8BPaN8bllA==
+X-Received: by 2002:a1c:cc08:0:b0:3fe:1c05:3c8f with SMTP id h8-20020a1ccc08000000b003fe1c053c8fmr2195292wmb.35.1691183306137;
+        Fri, 04 Aug 2023 14:08:26 -0700 (PDT)
+Received: from [192.168.0.162] (188-141-3-169.dynamic.upc.ie. [188.141.3.169])
+        by smtp.gmail.com with ESMTPSA id v20-20020a05600c215400b003fe263dab33sm3268918wml.9.2023.08.04.14.08.24
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 04 Aug 2023 14:08:25 -0700 (PDT)
+Message-ID: <8997bb22-e132-0870-7fe7-cca0258ae660@linaro.org>
+Date:   Fri, 4 Aug 2023 22:08:24 +0100
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="UTF-8"
-X-CLIENT-IP: 195.136.19.94
-X-CLIENT-HOSTNAME: 195.136.19.94
-X-VADE-SPAMSTATE: clean
-X-VADE-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedviedrkeeggdduheekucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecujffqoffgrffnpdggtffipffknecuuegrihhlohhuthemucduhedtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjughrpefhvfevufffkfgjfhgggfgtsehtufertddttdejnecuhfhrohhmpedftfgrfhgrvghlucflrdcuhgihshhotghkihdfuceorhhjfiesrhhjfiihshhotghkihdrnhgvtheqnecuggftrfgrthhtvghrnhepvdffueeitdfgvddtudegueejtdffteetgeefkeffvdeftddttdeuhfegfedvjefhnecukfhppeduleehrddufeeirdduledrleegnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehinhgvthepudelhedrudefiedrudelrdelgedphhgvlhhopehkrhgvrggthhgvrhdrlhhotggrlhhnvghtpdhmrghilhhfrhhomhepfdftrghfrggvlhculfdrucghhihsohgtkhhifdcuoehrjhifsehrjhifhihsohgtkhhirdhnvghtqedpnhgspghrtghpthhtohepjedprhgtphhtthhopehlihhnuhigqdgrtghpihesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopegurghnihgvlhdrlhgviigtrghnoheslhhinhgrrhhordhorhhgpdhrtghpthhtoheplhhinhhugidqkhgvrhhnvghlsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtoheplhhinhhugidqphhmsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghp
- thhtohepmhhitghhrghlrdifihhltgiihihnshhkihesihhnthgvlhdrtghomhdprhgtphhtthhopehruhhirdiihhgrnhhgsehinhhtvghlrdgtohhm
-X-DCC--Metrics: v370.home.net.pl 1024; Body=7 Fuz1=7 Fuz2=7
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.8.0
+Subject: Re: [PATCH 5/6] media: venus: core: Add SM8350 resource struct
+Content-Language: en-US
+To:     Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Stanimir Varbanov <stanimir.k.varbanov@gmail.com>,
+        Vikash Garodia <quic_vgarodia@quicinc.com>,
+        Bryan O'Donoghue <bryan.odonoghue@linaro.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>
+Cc:     Marijn Suijten <marijn.suijten@somainline.org>,
+        Konrad Dybcio <konradybcio@kernel.org>,
+        linux-media@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20230731-topic-8280_venus-v1-0-8c8bbe1983a5@linaro.org>
+ <20230731-topic-8280_venus-v1-5-8c8bbe1983a5@linaro.org>
+From:   Bryan O'Donoghue <bryan.odonoghue@linaro.org>
+In-Reply-To: <20230731-topic-8280_venus-v1-5-8c8bbe1983a5@linaro.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+On 04/08/2023 21:09, Konrad Dybcio wrote:
+> +	.freq_tbl = sm8250_freq_table,
+> +	.freq_tbl_size = ARRAY_SIZE(sm8250_freq_table),
+> +	.reg_tbl = sm8350_reg_preset,
+> +	.reg_tbl_size = ARRAY_SIZE(sm8350_reg_preset),
+> +	.bw_tbl_enc = sm8250_bw_table_enc,
+> +	.bw_tbl_enc_size = ARRAY_SIZE(sm8250_bw_table_enc),
+> +	.bw_tbl_dec = sm8250_bw_table_dec,
+> +	.bw_tbl_dec_size = ARRAY_SIZE(sm8250_bw_table_dec),
 
-Rename the trips variable in acpi_thermal_register_thermal_zone() to
-trip_count so its name better reflects the purpose, rearrange white
-space in the loop over active trips for clarity and reduce code
-duplication related to calling thermal_zone_device_register() by
-using an extra local variable to store the passive delay value.
-
-No intentional functional impact.
-
-Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
----
-
-v3 -> v4: No changes.
-
-v2 -> v3: No changes.
-
-v1 -> v2: No changes.
+The very same freq and bandwidth tables ?
 
 ---
- drivers/acpi/thermal.c |   36 ++++++++++++++++--------------------
- 1 file changed, 16 insertions(+), 20 deletions(-)
-
-Index: linux-pm/drivers/acpi/thermal.c
-===================================================================
---- linux-pm.orig/drivers/acpi/thermal.c
-+++ linux-pm/drivers/acpi/thermal.c
-@@ -745,34 +745,30 @@ static void acpi_thermal_zone_sysfs_remo
- 
- static int acpi_thermal_register_thermal_zone(struct acpi_thermal *tz)
- {
--	int trips = 0;
-+	int passive_delay = 0;
-+	int trip_count = 0;
- 	int result;
- 	acpi_status status;
- 	int i;
- 
- 	if (tz->trips.critical.valid)
--		trips++;
-+		trip_count++;
- 
- 	if (tz->trips.hot.valid)
--		trips++;
--
--	if (tz->trips.passive.valid)
--		trips++;
--
--	for (i = 0; i < ACPI_THERMAL_MAX_ACTIVE && tz->trips.active[i].valid;
--	     i++, trips++);
--
--	if (tz->trips.passive.valid)
--		tz->thermal_zone = thermal_zone_device_register("acpitz", trips, 0, tz,
--								&acpi_thermal_zone_ops, NULL,
--								tz->trips.passive.tsp * 100,
--								tz->polling_frequency * 100);
--	else
--		tz->thermal_zone =
--			thermal_zone_device_register("acpitz", trips, 0, tz,
--						     &acpi_thermal_zone_ops, NULL,
--						     0, tz->polling_frequency * 100);
-+		trip_count++;
- 
-+	if (tz->trips.passive.valid) {
-+		trip_count++;
-+		passive_delay = tz->trips.passive.tsp * 100;
-+	}
-+
-+	for (i = 0; i < ACPI_THERMAL_MAX_ACTIVE && tz->trips.active[i].valid; i++)
-+		trip_count++;
-+
-+	tz->thermal_zone = thermal_zone_device_register("acpitz", trip_count, 0,
-+							tz, &acpi_thermal_zone_ops,
-+							NULL, passive_delay,
-+							tz->polling_frequency * 100);
- 	if (IS_ERR(tz->thermal_zone))
- 		return -ENODEV;
- 
-
-
-
+bod
