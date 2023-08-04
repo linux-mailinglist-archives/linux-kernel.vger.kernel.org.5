@@ -2,181 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 81AC576FCDA
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 11:06:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3CEAD76FCEA
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 11:10:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229660AbjHDJGs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Aug 2023 05:06:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55658 "EHLO
+        id S229741AbjHDJKJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Aug 2023 05:10:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57890 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229659AbjHDJGN (ORCPT
+        with ESMTP id S229692AbjHDJJh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Aug 2023 05:06:13 -0400
-Received: from pandora.armlinux.org.uk (unknown [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04F9349FF;
-        Fri,  4 Aug 2023 02:03:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=Qf2nlPt4v7aUf9lUAfeJGAwTZszOxnIID/uXD0x3Dg8=; b=FEX8LW7ZWgWlDBfNCVJqykaVs4
-        ui3uSCSPrdKQjxRgAA1AVTCL4cr7N8EmaYUasFXu8Lub2Mlteg8GIQIFHN80Tj0Ir32LacOQ6kP68
-        xUSS43q5IQngTYC67by/kpTAx4aU2oTLrfnSRgrJPlXOAlE8/uMjP4V9vUr3rUvcBUXvA+k2MMvrQ
-        WHT1sLFIBqnuEoflX2BwPqgOri3m13R3K6Zrz7FUzsrmSQEwWuR2Y9OdkBBd0OqqmJ21k2QSA/rrZ
-        RIBwOqjYl5vGpzoEEwA1vZCrfosAm19eFvOz7x8Ao0soXUBeFpYHU+8wqUx+Qjfiz6C/bnfY/OTG+
-        RCpNqsmw==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:41564)
-        by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.96)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1qRqhl-0008NN-24;
-        Fri, 04 Aug 2023 10:02:41 +0100
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1qRqhf-0003pC-52; Fri, 04 Aug 2023 10:02:35 +0100
-Date:   Fri, 4 Aug 2023 10:02:35 +0100
-From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
-To:     Choong Yong Liang <yong.liang.choong@linux.intel.com>
-Cc:     Rajneesh Bhardwaj <irenic.rajneesh@gmail.com>,
-        David E Box <david.e.box@linux.intel.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Mark Gross <markgross@kernel.org>,
-        Jose Abreu <Jose.Abreu@synopsys.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Marek =?iso-8859-1?Q?Beh=FAn?= <kabel@kernel.org>,
-        Jean Delvare <jdelvare@suse.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Jose Abreu <joabreu@synopsys.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Richard Cochran <richardcochran@gmail.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Wong Vee Khee <veekhee@apple.com>,
-        Jon Hunter <jonathanh@nvidia.com>,
-        Jesse Brandeburg <jesse.brandeburg@intel.com>,
-        Revanth Kumar Uppala <ruppala@nvidia.com>,
-        Shenwei Wang <shenwei.wang@nxp.com>,
-        Andrey Konovalov <andrey.konovalov@linaro.org>,
-        Jochen Henneberg <jh@henneberg-systemdesign.com>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org,
-        platform-driver-x86@vger.kernel.org, linux-hwmon@vger.kernel.org,
-        bpf@vger.kernel.org, Voon Wei Feng <weifeng.voon@intel.com>,
-        Tan Tee Min <tee.min.tan@linux.intel.com>,
-        Michael Sit Wei Hong <michael.wei.hong.sit@intel.com>,
-        Lai Peter Jun Ann <jun.ann.lai@intel.com>
-Subject: Re: [PATCH net-next v2 3/5] net: phy: update in-band AN mode when
- changing interface by PHY driver
-Message-ID: <ZMy+q84hVAbTQIk5@shell.armlinux.org.uk>
-References: <20230804084527.2082302-1-yong.liang.choong@linux.intel.com>
- <20230804084527.2082302-4-yong.liang.choong@linux.intel.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230804084527.2082302-4-yong.liang.choong@linux.intel.com>
-Sender: Russell King (Oracle) <linux@armlinux.org.uk>
-X-Spam-Status: No, score=-1.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,RDNS_NONE,
-        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=no autolearn_force=no
-        version=3.4.6
+        Fri, 4 Aug 2023 05:09:37 -0400
+Received: from mail-wr1-x449.google.com (mail-wr1-x449.google.com [IPv6:2a00:1450:4864:20::449])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E4746587
+        for <linux-kernel@vger.kernel.org>; Fri,  4 Aug 2023 02:06:51 -0700 (PDT)
+Received: by mail-wr1-x449.google.com with SMTP id ffacd0b85a97d-31797adfe97so1022703f8f.3
+        for <linux-kernel@vger.kernel.org>; Fri, 04 Aug 2023 02:06:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1691140010; x=1691744810;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=mbDuRBO1V21kY8Ln+XMGj8tah/dM0ZngOK9DCSez6Ds=;
+        b=5+NdHYLigl8F6LR7td6fJwq4mY9o+g31biS6M/x67uOl9aEZNMw4T8nENGruiRPiRB
+         +Gw5NEcsPnW4zysL4GKnQBPK9MO8u0Fsh1G5fWlgkmiENC1pguO3W0zZ0X/9KVUs9XYc
+         Tobr1N4uOqLruYOpHjKAtJJ2mDS90eZzDY6tlw9DthEFZ7ugqCsD5LBgD4MRn1hh6V3W
+         c6lem7rrbgF4amzGiob51SzurdoFT2U3i2F0AvVFAwCHWg57HOfRNXyQL4/kaXiOsTGY
+         Q4BSyO6jSC8eDLVGZOooU1CA1YZfiIB3t/WuaZY5AlYApLPEZnbtXoouz1qw8nB4BnEV
+         78og==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691140010; x=1691744810;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=mbDuRBO1V21kY8Ln+XMGj8tah/dM0ZngOK9DCSez6Ds=;
+        b=WHFc5rwDiGqUO04zOvfdqfhSPUDeKbIoVEyu9gP8p3Yfw8EOjXW8Bj8LTnFL3gmTEX
+         KmJmyYn0GsGb5TrkXPCDB69fCOf899LwjjxkvjY5wTlkgSVLieFLfA+ENO2wfha+v7Se
+         tBLYZQ32D4r8BfqsfV9VlXxPUCa3mYN6HfBJ3bRAzV0HAusKXEty66XooMGVjfQgXnR5
+         /CMoaKoY3yJDS/vqUZPIqW9nk7kqEcNO4/EenEB+nsj9k06l7HyW/+3Hz5iCnKnDwkC/
+         EQxrnQAKw8ZPjyrosdRH7r/4b0uNXnGHeQh4a2JtgXNBJa8h6+bmw1CzuJ+2juiZ6+7K
+         L4Xw==
+X-Gm-Message-State: AOJu0Yy4HAHGRuYHIeLDftN+CfhZ/RGr4Zz4S6W5rjG1ffyv0q3SLWo8
+        SRE05Ag2oW7x2pxI6e0zXA+qMLnRZA==
+X-Google-Smtp-Source: AGHT+IEPvozwf23yi22U6OKa9kIgIghSUiAWRzblYbPC2JjxGfCAqNsiEHfVbqNraFFYkBMktGuoEKz+Fw==
+X-Received: from elver.muc.corp.google.com ([2a00:79e0:9c:201:2ebf:f3ea:4841:53b6])
+ (user=elver job=sendgmr) by 2002:adf:f587:0:b0:313:e68e:885d with SMTP id
+ f7-20020adff587000000b00313e68e885dmr6006wro.13.1691140009920; Fri, 04 Aug
+ 2023 02:06:49 -0700 (PDT)
+Date:   Fri,  4 Aug 2023 11:02:56 +0200
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.41.0.640.ga95def55d0-goog
+Message-ID: <20230804090621.400-1-elver@google.com>
+Subject: [PATCH v2 1/3] compiler_types: Introduce the Clang __preserve_most
+ function attribute
+From:   Marco Elver <elver@google.com>
+To:     elver@google.com, Andrew Morton <akpm@linux-foundation.org>,
+        Kees Cook <keescook@chromium.org>
+Cc:     Guenter Roeck <linux@roeck-us.net>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Marc Zyngier <maz@kernel.org>,
+        Oliver Upton <oliver.upton@linux.dev>,
+        James Morse <james.morse@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Zenghui Yu <yuzenghui@huawei.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Tom Rix <trix@redhat.com>, Miguel Ojeda <ojeda@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
+        linux-kernel@vger.kernel.org, llvm@lists.linux.dev,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Alexander Potapenko <glider@google.com>,
+        kasan-dev@googlegroups.com, linux-toolchains@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
+        USER_IN_DEF_DKIM_WL autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 04, 2023 at 04:45:25PM +0800, Choong Yong Liang wrote:
-> From: "Tan, Tee Min" <tee.min.tan@linux.intel.com>
-> 
-> Add cur_link_an_mode into phy_device struct for PHY drivers to
-> communicate the in-band AN mode setting with phylink framework.
-> 
-> As there is a mechanism in PHY drivers to switch the PHY interface
-> between SGMII and 2500BaseX according to link speed. In this case,
-> the in-band AN mode should be switching based on the PHY interface
-> as well, if the PHY interface has been changed/updated by PHY driver.
-> 
-> For e.g., disable in-band AN in 2500BaseX mode, or enable in-band AN
-> back for SGMII mode (10/100/1000Mbps).
-> 
-> Signed-off-by: Tan, Tee Min <tee.min.tan@linux.intel.com>
-> Signed-off-by: Choong Yong Liang <yong.liang.choong@linux.intel.com>
-> ---
->  drivers/net/phy/marvell10g.c | 6 ++++++
->  drivers/net/phy/phylink.c    | 4 ++++
->  include/linux/phy.h          | 3 +++
->  3 files changed, 13 insertions(+)
-> 
-> diff --git a/drivers/net/phy/marvell10g.c b/drivers/net/phy/marvell10g.c
-> index d4bb90d76881..a9df19278618 100644
-> --- a/drivers/net/phy/marvell10g.c
-> +++ b/drivers/net/phy/marvell10g.c
-> @@ -30,6 +30,7 @@
->  #include <linux/phy.h>
->  #include <linux/sfp.h>
->  #include <linux/netdevice.h>
-> +#include <linux/phylink.h>
->  
->  #define MV_PHY_ALASKA_NBT_QUIRK_MASK	0xfffffffe
->  #define MV_PHY_ALASKA_NBT_QUIRK_REV	(MARVELL_PHY_ID_88X3310 | 0xa)
-> @@ -946,6 +947,9 @@ static void mv3310_update_interface(struct phy_device *phydev)
->  	 * xaui / rxaui modes according to the speed.
->  	 * Florian suggests setting phydev->interface to communicate this to the
->  	 * MAC. Only do this if we are already in one of the above modes.
-> +	 * In-band Auto-negotiation is not supported in 2500BASE-X.
-> +	 * Setting phydev->cur_link_an_mode to communicate this to the
-> +	 * phylink framework.
->  	 */
->  	switch (phydev->speed) {
->  	case SPEED_10000:
-> @@ -956,11 +960,13 @@ static void mv3310_update_interface(struct phy_device *phydev)
->  		break;
->  	case SPEED_2500:
->  		phydev->interface = PHY_INTERFACE_MODE_2500BASEX;
-> +		phydev->cur_link_an_mode = MLO_AN_PHY;
->  		break;
->  	case SPEED_1000:
->  	case SPEED_100:
->  	case SPEED_10:
->  		phydev->interface = PHY_INTERFACE_MODE_SGMII;
-> +		phydev->cur_link_an_mode = MLO_AN_INBAND;
->  		break;
->  	default:
->  		break;
-> diff --git a/drivers/net/phy/phylink.c b/drivers/net/phy/phylink.c
-> index 4f1c8bb199e9..f9cbb6d7e134 100644
-> --- a/drivers/net/phy/phylink.c
-> +++ b/drivers/net/phy/phylink.c
-> @@ -1720,6 +1720,8 @@ static void phylink_phy_change(struct phy_device *phydev, bool up)
->  		pl->phy_state.pause |= MLO_PAUSE_RX;
->  	pl->phy_state.interface = phydev->interface;
->  	pl->phy_state.link = up;
-> +	pl->cur_link_an_mode = phydev->cur_link_an_mode;
-> +	pl->cfg_link_an_mode = phydev->cur_link_an_mode;
->  	mutex_unlock(&pl->state_mutex);
->  
->  	phylink_run_resolve(pl);
-> @@ -1824,6 +1826,8 @@ static int phylink_bringup_phy(struct phylink *pl, struct phy_device *phy,
->  	if (pl->config->mac_managed_pm)
->  		phy->mac_managed_pm = true;
->  
-> +	pl->phydev->cur_link_an_mode = pl->cur_link_an_mode;
+[1]: "On X86-64 and AArch64 targets, this attribute changes the calling
+convention of a function. The preserve_most calling convention attempts
+to make the code in the caller as unintrusive as possible. This
+convention behaves identically to the C calling convention on how
+arguments and return values are passed, but it uses a different set of
+caller/callee-saved registers. This alleviates the burden of saving and
+recovering a large register set before and after the call in the
+caller."
 
-I am really not happy with exposing phylink's AN mode into phylib.
+[1] https://clang.llvm.org/docs/AttributeReference.html#preserve-most
 
+Introduce the attribute to compiler_types.h as __preserve_most.
+
+Use of this attribute results in better code generation for calls to
+very rarely called functions, such as error-reporting functions, or
+rarely executed slow paths.
+
+Beware that the attribute conflicts with instrumentation calls inserted
+on function entry which do not use __preserve_most themselves. Notably,
+function tracing which assumes the normal C calling convention for the
+given architecture.  Where the attribute is supported, __preserve_most
+will imply notrace. It is recommended to restrict use of the attribute
+to functions that should or already disable tracing.
+
+Signed-off-by: Marco Elver <elver@google.com>
+---
+v2:
+* Imply notrace, to avoid any conflicts with tracing which is inserted
+  on function entry. See added comments.
+---
+ include/linux/compiler_types.h | 27 +++++++++++++++++++++++++++
+ 1 file changed, 27 insertions(+)
+
+diff --git a/include/linux/compiler_types.h b/include/linux/compiler_types.h
+index 547ea1ff806e..12c4540335b7 100644
+--- a/include/linux/compiler_types.h
++++ b/include/linux/compiler_types.h
+@@ -106,6 +106,33 @@ static inline void __chk_io_ptr(const volatile void __iomem *ptr) { }
+ #define __cold
+ #endif
+ 
++/*
++ * On x86-64 and arm64 targets, __preserve_most changes the calling convention
++ * of a function to make the code in the caller as unintrusive as possible. This
++ * convention behaves identically to the C calling convention on how arguments
++ * and return values are passed, but uses a different set of caller- and callee-
++ * saved registers.
++ *
++ * The purpose is to alleviates the burden of saving and recovering a large
++ * register set before and after the call in the caller.  This is beneficial for
++ * rarely taken slow paths, such as error-reporting functions that may be called
++ * from hot paths.
++ *
++ * Note: This may conflict with instrumentation inserted on function entry which
++ * does not use __preserve_most or equivalent convention (if in assembly). Since
++ * function tracing assumes the normal C calling convention, where the attribute
++ * is supported, __preserve_most implies notrace.
++ *
++ * Optional: not supported by gcc.
++ *
++ * clang: https://clang.llvm.org/docs/AttributeReference.html#preserve-most
++ */
++#if __has_attribute(__preserve_most__)
++# define __preserve_most notrace __attribute__((__preserve_most__))
++#else
++# define __preserve_most
++#endif
++
+ /* Builtins */
+ 
+ /*
 -- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
+2.41.0.640.ga95def55d0-goog
+
