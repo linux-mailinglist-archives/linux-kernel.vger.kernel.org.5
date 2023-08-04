@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0466876FEBB
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 12:44:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 782C076FEBE
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 12:45:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231551AbjHDKox (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Aug 2023 06:44:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46696 "EHLO
+        id S231560AbjHDKo7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Aug 2023 06:44:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46702 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231511AbjHDKoo (ORCPT
+        with ESMTP id S231508AbjHDKor (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Aug 2023 06:44:44 -0400
+        Fri, 4 Aug 2023 06:44:47 -0400
 Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7E4246BD
-        for <linux-kernel@vger.kernel.org>; Fri,  4 Aug 2023 03:44:43 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C601649C1
+        for <linux-kernel@vger.kernel.org>; Fri,  4 Aug 2023 03:44:45 -0700 (PDT)
 Received: from [127.0.1.1] (91-154-35-171.elisa-laajakaista.fi [91.154.35.171])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id B52AB1AB3;
-        Fri,  4 Aug 2023 12:43:35 +0200 (CEST)
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id BB74A1BAD;
+        Fri,  4 Aug 2023 12:43:36 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1691145816;
-        bh=TUkJXEdGx2L3x9eOO5C14gMRZFfjPUo5XB/iG7hSXNo=;
+        s=mail; t=1691145817;
+        bh=WCGNIXcGcdl4nJn+dx6lcBvQUFqQ55HfWTEz54MJwVw=;
         h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
-        b=ZBKaogA8fDtPzUHgLJ47o74td6AxNRtTuZ0YDFbVcXz2cO8MWPFItGTgP+VyoU7Is
-         X4J7VUL5w15BSA33yIKC0wCZ8j1l4YbXOLg5p/Z40rHSvW27t2RfRwjzkDSIz66qaw
-         WPuVYrpiJMXWFd4/nib02sVqMUF+nwr07AYpCFBc=
+        b=MK2AtVNhVEBgVjSDGNhmtoZ8KjiMA7AiCJPz9eFTXEgyi/l/jOP1Xr0NxtJt+0tG2
+         pAvOj33+r1KziwPiPQQCFQMuuJlEIgDrtRmf4kGlif2+edjN7lMNI8F2byBb5YOBpz
+         ARyojtie+6BJmGYmYGX1nnJFb31zDaJJN00kqXNE=
 From:   Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
-Date:   Fri, 04 Aug 2023 13:44:08 +0300
-Subject: [PATCH 03/11] drm/bridge: tc358768: Cleanup PLL calculations
+Date:   Fri, 04 Aug 2023 13:44:09 +0300
+Subject: [PATCH 04/11] drm/bridge: tc358768: Use struct videomode
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20230804-tc358768-v1-3-1afd44b7826b@ideasonboard.com>
+Message-Id: <20230804-tc358768-v1-4-1afd44b7826b@ideasonboard.com>
 References: <20230804-tc358768-v1-0-1afd44b7826b@ideasonboard.com>
 In-Reply-To: <20230804-tc358768-v1-0-1afd44b7826b@ideasonboard.com>
 To:     Andrzej Hajda <andrzej.hajda@intel.com>,
@@ -48,21 +48,21 @@ Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
         Aradhya Bhatia <a-bhatia1@ti.com>,
         Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
 X-Mailer: b4 0.12.3
-X-Developer-Signature: v=1; a=openpgp-sha256; l=2487;
+X-Developer-Signature: v=1; a=openpgp-sha256; l=4738;
  i=tomi.valkeinen@ideasonboard.com; h=from:subject:message-id;
- bh=TUkJXEdGx2L3x9eOO5C14gMRZFfjPUo5XB/iG7hSXNo=;
- b=owEBbQKS/ZANAwAIAfo9qoy8lh71AcsmYgBkzNaRbMCh94UFjagognh3oJEUiI6qNt+gM+fzG
- Yv/rFC3ImWJAjMEAAEIAB0WIQTEOAw+ll79gQef86f6PaqMvJYe9QUCZMzWkQAKCRD6PaqMvJYe
- 9dNsD/0UNDVcvUORRAtGZiv2RIJjqZLr5U/45ualp74tfJ9OTV89JWa2IrNOMeHrsrJFISQ4LJs
- iAgOMgOAFINCQiCMeBPRJwCjaWBNr6Y3yWmUkIuHcGIpYpf2uq9QcgPHtI2fbGqrYRsNVK80Vn8
- Qlb5BSltsktT4Y4TVlFFMnyNOSKQMd63cGKTY2oQgZKSkeD+MKC8AOJqUAqwEdD8SnmV7tdhifk
- oGrT3y4K+LlS88kACQyjmfqyn+plqzZ5O/Yd1a4/nD7kK3OKTgYDt0mE+fItq+c3uvbCvL6IiYm
- vxXmrSOqlPb4bFVYNlIjmchhY7TMq8rQabtnNv7ELvUNT+O2UGrMMY8eqlrF2CNqYZXc1Es2OJz
- AZ/YsJog7994aGwkE5kBGz2V02CXcnYTtISRgFClbKICbSENUaGMSNMO4XjvPWVlWVmMm5oS5N6
- XCUzqIlciigPUo/msfredtN1E65XFdxwX0q6l99r48T+okcdI2Yf4CA2YgCpYevMxEoEN3rWXEt
- +J+PX/1D2OUhhuwutu8oQ9LGt2teasgouJtoMSkDmXtVrvY0Vim4VC4YPM1VScaQlwFEJBchczr
- pM2i2gJ045jjjyA8h1p/z4VPvSN29soY4lp96V64xoSDNYZKw/ogBTUidUpmInaJi81br24qAF5
- +70lWAqiaoul+bw==
+ bh=WCGNIXcGcdl4nJn+dx6lcBvQUFqQ55HfWTEz54MJwVw=;
+ b=owEBbQKS/ZANAwAIAfo9qoy8lh71AcsmYgBkzNaSZtaCZTUTMK2vRUk8BC+9py3CA7QFWEyvh
+ Y2y2pe7w6SJAjMEAAEIAB0WIQTEOAw+ll79gQef86f6PaqMvJYe9QUCZMzWkgAKCRD6PaqMvJYe
+ 9XRpEACGSSmoQ7fJZ7Gv5yX/hogaE80D+3dt7+5wRL8c09/59O0sLcAYQTFnlL2l7ttC0MxNbqy
+ 8WJISu1ptKdyhP3Q+fEVqRQL9O51QsUvAkcXqjaQvH2suLpAqvtU2k1HXlYtn8yCOjSb5phtJUZ
+ mtqzns7g5Zl2ac0J2AMx5N9M4TmiH3V9uAE82vhsq2Xul1KH/7xG5/lGaBuqQ114s3mO+WhTrxT
+ Ump8ZuZ80MymE21vsEyaOW5J4D7C9okUWx+5+lU+w2k5epzv0nvnCCeSAyN6Jg8/qfkqllJjmlP
+ cdcQKqD866RWsjBSIW1zS6jr7zO72SaX1zuG1GlWL3fZguYP8yod/VyhJi4ZvsNv3/pnWBCwApw
+ ADf3zxu8h4E4xGZOcEhI6Hbq3P7DtPaqbGIjFBnJsyITVKEI/Ei5CTjh4zCzNGsd+cAD554qWiH
+ SdHoHnbu6wSC1Vji9nQEj7wT/ZOzUPLaw7Vi2FB5prx49Me/pzGKjgdLIFsQM+kkC/ftW4JqDRj
+ wiAcdNOgMqlplu5Wgyg3qM9C/WfqBo4WAEeqaGwDyzY094X0i0idqNVmTb5ol9lXCZJyw9z4OPd
+ 4J70tJdjBFzhce+Xnv7U6AyLorhfekJdG6KbQcYFTSEJfx9JS7R8/DZImww12wITt6UZl/lzHDV
+ CFp04MYkSYpJuRA==
 X-Developer-Key: i=tomi.valkeinen@ideasonboard.com; a=openpgp;
  fpr=C4380C3E965EFD81079FF3A7FA3DAA8CBC961EF5
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -75,77 +75,135 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-As is quite common, some of TC358768's PLL register fields are to be
-programmed with (value - 1). Specifically, the FBD and PRD, multiplier
-and divider, are such fields.
+The TC358768 documentation uses HFP, HBP, etc. values to deal with the
+video mode, while the driver currently uses the DRM display mode
+(htotal, hsync_start, etc).
 
-However, what the driver currently does is that it considers that the
-formula used for PLL rate calculation is:
-
-RefClk * [(FBD + 1)/ (PRD + 1)] * [1 / (2^FRS)]
-
-where FBD and PRD are values directly from the registers, while a more
-sensible way to look at it is:
-
-RefClk * FBD / PRD * (1 / (2^FRS))
-
-and when the FBD and PRD values are written to the registers, they will
-be subtracted by one.
-
-Change the driver accordingly, as it simplifies the PLL code.
+Change the driver to convert the DRM display mode to struct videomode,
+which then allows us to use the same units the documentation uses. This
+makes it much easier to work on the code when using the TC358768
+documentation as a reference.
 
 Signed-off-by: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
 ---
- drivers/gpu/drm/bridge/tc358768.c | 14 +++++++-------
- 1 file changed, 7 insertions(+), 7 deletions(-)
+ drivers/gpu/drm/bridge/tc358768.c | 45 +++++++++++++++++++++------------------
+ 1 file changed, 24 insertions(+), 21 deletions(-)
 
 diff --git a/drivers/gpu/drm/bridge/tc358768.c b/drivers/gpu/drm/bridge/tc358768.c
-index b668f77673c3..d5831a1236e9 100644
+index d5831a1236e9..9b633038af33 100644
 --- a/drivers/gpu/drm/bridge/tc358768.c
 +++ b/drivers/gpu/drm/bridge/tc358768.c
-@@ -316,7 +316,7 @@ static int tc358768_calc_pll(struct tc358768_priv *priv,
+@@ -650,6 +650,7 @@ static void tc358768_bridge_pre_enable(struct drm_bridge *bridge)
+ 	u32 dsiclk, dsibclk, video_start;
+ 	const u32 internal_delay = 40;
+ 	int ret, i;
++	struct videomode vm;
  
- 	target_pll = tc358768_pclk_to_pll(priv, mode->clock * 1000);
+ 	if (mode_flags & MIPI_DSI_CLOCK_NON_CONTINUOUS) {
+ 		dev_warn_once(priv->dev, "Non-continuous mode unimplemented, falling back to continuous\n");
+@@ -673,6 +674,8 @@ static void tc358768_bridge_pre_enable(struct drm_bridge *bridge)
+ 		return;
+ 	}
  
--	/* pll_clk = RefClk * [(FBD + 1)/ (PRD + 1)] * [1 / (2^FRS)] */
-+	/* pll_clk = RefClk * FBD / PRD * (1 / (2^FRS)) */
++	drm_display_mode_to_videomode(mode, &vm);
++
+ 	dsiclk = priv->dsiclk;
+ 	dsibclk = dsiclk / 4;
  
- 	for (i = 0; i < ARRAY_SIZE(frs_limits); i++)
- 		if (target_pll >= frs_limits[i])
-@@ -336,19 +336,19 @@ static int tc358768_calc_pll(struct tc358768_priv *priv,
- 	best_prd = 0;
- 	best_fbd = 0;
+@@ -681,28 +684,28 @@ static void tc358768_bridge_pre_enable(struct drm_bridge *bridge)
+ 	switch (dsi_dev->format) {
+ 	case MIPI_DSI_FMT_RGB888:
+ 		val |= (0x3 << 4);
+-		hact = mode->hdisplay * 3;
+-		video_start = (mode->htotal - mode->hsync_start) * 3;
++		hact = vm.hactive * 3;
++		video_start = (vm.hsync_len + vm.hback_porch) * 3;
+ 		data_type = MIPI_DSI_PACKED_PIXEL_STREAM_24;
+ 		break;
+ 	case MIPI_DSI_FMT_RGB666:
+ 		val |= (0x4 << 4);
+-		hact = mode->hdisplay * 3;
+-		video_start = (mode->htotal - mode->hsync_start) * 3;
++		hact = vm.hactive * 3;
++		video_start = (vm.hsync_len + vm.hback_porch) * 3;
+ 		data_type = MIPI_DSI_PACKED_PIXEL_STREAM_18;
+ 		break;
  
--	for (prd = 0; prd < 16; ++prd) {
--		u32 divisor = (prd + 1) * (1 << frs);
-+	for (prd = 1; prd <= 16; ++prd) {
-+		u32 divisor = prd * (1 << frs);
- 		u32 fbd;
+ 	case MIPI_DSI_FMT_RGB666_PACKED:
+ 		val |= (0x4 << 4) | BIT(3);
+-		hact = mode->hdisplay * 18 / 8;
+-		video_start = (mode->htotal - mode->hsync_start) * 18 / 8;
++		hact = vm.hactive * 18 / 8;
++		video_start = (vm.hsync_len + vm.hback_porch) * 18 / 8;
+ 		data_type = MIPI_DSI_PIXEL_STREAM_3BYTE_18;
+ 		break;
  
--		for (fbd = 0; fbd < 512; ++fbd) {
-+		for (fbd = 1; fbd <= 512; ++fbd) {
- 			u32 pll, diff, pll_in;
+ 	case MIPI_DSI_FMT_RGB565:
+ 		val |= (0x5 << 4);
+-		hact = mode->hdisplay * 2;
+-		video_start = (mode->htotal - mode->hsync_start) * 2;
++		hact = vm.hactive * 2;
++		video_start = (vm.hsync_len + vm.hback_porch) * 2;
+ 		data_type = MIPI_DSI_PACKED_PIXEL_STREAM_16;
+ 		break;
+ 	default:
+@@ -814,43 +817,43 @@ static void tc358768_bridge_pre_enable(struct drm_bridge *bridge)
+ 		tc358768_write(priv, TC358768_DSI_EVENT, 0);
  
--			pll = (u32)div_u64((u64)refclk * (fbd + 1), divisor);
-+			pll = (u32)div_u64((u64)refclk * fbd, divisor);
+ 		/* vact */
+-		tc358768_write(priv, TC358768_DSI_VACT, mode->vdisplay);
++		tc358768_write(priv, TC358768_DSI_VACT, vm.vactive);
  
- 			if (pll >= max_pll || pll < min_pll)
- 				continue;
+ 		/* vsw */
+-		tc358768_write(priv, TC358768_DSI_VSW,
+-			       mode->vsync_end - mode->vsync_start);
++		tc358768_write(priv, TC358768_DSI_VSW, vm.vsync_len);
++
+ 		/* vbp */
+-		tc358768_write(priv, TC358768_DSI_VBPR,
+-			       mode->vtotal - mode->vsync_end);
++		tc358768_write(priv, TC358768_DSI_VBPR, vm.vback_porch);
  
--			pll_in = (u32)div_u64((u64)refclk, prd + 1);
-+			pll_in = (u32)div_u64((u64)refclk, prd);
- 			if (pll_in < 4000000)
- 				continue;
+ 		/* hsw * byteclk * ndl / pclk */
+-		val = (u32)div_u64((mode->hsync_end - mode->hsync_start) *
++		val = (u32)div_u64(vm.hsync_len *
+ 				   ((u64)priv->dsiclk / 4) * priv->dsi_lanes,
+-				   mode->clock * 1000);
++				   vm.pixelclock);
+ 		tc358768_write(priv, TC358768_DSI_HSW, val);
  
-@@ -611,7 +611,7 @@ static int tc358768_setup_pll(struct tc358768_priv *priv,
- 		mode->clock * 1000);
+ 		/* hbp * byteclk * ndl / pclk */
+-		val = (u32)div_u64((mode->htotal - mode->hsync_end) *
++		val = (u32)div_u64(vm.hback_porch *
+ 				   ((u64)priv->dsiclk / 4) * priv->dsi_lanes,
+-				   mode->clock * 1000);
++				   vm.pixelclock);
+ 		tc358768_write(priv, TC358768_DSI_HBPR, val);
+ 	} else {
+ 		/* Set event mode */
+ 		tc358768_write(priv, TC358768_DSI_EVENT, 1);
  
- 	/* PRD[15:12] FBD[8:0] */
--	tc358768_write(priv, TC358768_PLLCTL0, (prd << 12) | fbd);
-+	tc358768_write(priv, TC358768_PLLCTL0, ((prd - 1) << 12) | (fbd - 1));
+ 		/* vact */
+-		tc358768_write(priv, TC358768_DSI_VACT, mode->vdisplay);
++		tc358768_write(priv, TC358768_DSI_VACT, vm.vactive);
  
- 	/* FRS[11:10] LBWS[9:8] CKEN[4] RESETB[1] EN[0] */
- 	tc358768_write(priv, TC358768_PLLCTL1,
+ 		/* vsw (+ vbp) */
+ 		tc358768_write(priv, TC358768_DSI_VSW,
+-			       mode->vtotal - mode->vsync_start);
++			       vm.vsync_len + vm.vback_porch);
++
+ 		/* vbp (not used in event mode) */
+ 		tc358768_write(priv, TC358768_DSI_VBPR, 0);
+ 
+ 		/* (hsw + hbp) * byteclk * ndl / pclk */
+-		val = (u32)div_u64((mode->htotal - mode->hsync_start) *
++		val = (u32)div_u64((vm.hsync_len + vm.hback_porch) *
+ 				   ((u64)priv->dsiclk / 4) * priv->dsi_lanes,
+-				   mode->clock * 1000);
++				   vm.pixelclock);
+ 		tc358768_write(priv, TC358768_DSI_HSW, val);
+ 
+ 		/* hbp (not used in event mode) */
 
 -- 
 2.34.1
