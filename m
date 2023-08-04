@@ -2,232 +2,277 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 26BF176FFB4
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 13:51:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A691B76FFC3
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 13:52:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229943AbjHDLvA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Aug 2023 07:51:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49130 "EHLO
+        id S230285AbjHDLwl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Aug 2023 07:52:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50226 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229538AbjHDLu6 (ORCPT
+        with ESMTP id S230199AbjHDLwi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Aug 2023 07:50:58 -0400
-Received: from lelv0142.ext.ti.com (lelv0142.ext.ti.com [198.47.23.249])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 091B0126;
-        Fri,  4 Aug 2023 04:50:56 -0700 (PDT)
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
-        by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 374BoiNI071530;
-        Fri, 4 Aug 2023 06:50:44 -0500
+        Fri, 4 Aug 2023 07:52:38 -0400
+Received: from lelv0143.ext.ti.com (lelv0143.ext.ti.com [198.47.23.248])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E01BB1;
+        Fri,  4 Aug 2023 04:52:37 -0700 (PDT)
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+        by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 374BqQT8020755;
+        Fri, 4 Aug 2023 06:52:26 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1691149844;
-        bh=odtYzHDq0zirS7zeE2CRp3Jz/F3OYtBxsdZ8qAzg440=;
-        h=From:To:CC:Subject:Date;
-        b=Ue7e/GoTb3kAbOvLmNuyYZhqtzkrfrF2EtDJG5qtezqiNvEH9vVHgFW+oAk4FHa18
-         tupQdYRdSbfMWa5w0XLzuF+f3awCdhjsEhajI5+V3s00/p9GtVpN0UcSkPp2pQ8P5g
-         mu5NloHEkpiqZEBVfClk/Wb9sbElmcUHAduMIUCA=
-Received: from DLEE113.ent.ti.com (dlee113.ent.ti.com [157.170.170.24])
-        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 374BoiWP122800
+        s=ti-com-17Q1; t=1691149946;
+        bh=KQIfnp3zDygaNdKnWhLSWvquUdZm/3QCOfmMa7QyDOo=;
+        h=From:To:CC:Subject:Date:In-Reply-To:References;
+        b=LpJga7dL/NBX+DcBeoPSELFeSpclKZZpnmYk5oRNSBlaVL0rl2DX7fElac14aVbrD
+         SNa7rETUkY2ybiRgNDkk/H+DrX35DqMPAo5yC1NPqVIMLgmL6EJ4r+Yk7RH3awdOce
+         Vx7PeWaofXuMtt3CtyVl+FANYcJoaB2UfIgvoxvE=
+Received: from DLEE108.ent.ti.com (dlee108.ent.ti.com [157.170.170.38])
+        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 374BqQiw003990
         (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Fri, 4 Aug 2023 06:50:44 -0500
-Received: from DLEE112.ent.ti.com (157.170.170.23) by DLEE113.ent.ti.com
- (157.170.170.24) with Microsoft SMTP Server (version=TLS1_2,
+        Fri, 4 Aug 2023 06:52:26 -0500
+Received: from DLEE108.ent.ti.com (157.170.170.38) by DLEE108.ent.ti.com
+ (157.170.170.38) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Fri, 4
- Aug 2023 06:50:44 -0500
-Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE112.ent.ti.com
- (157.170.170.23) with Microsoft SMTP Server (version=TLS1_2,
+ Aug 2023 06:52:25 -0500
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE108.ent.ti.com
+ (157.170.170.38) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Fri, 4 Aug 2023 06:50:44 -0500
-Received: from localhost (ileaxei01-snat2.itg.ti.com [10.180.69.6])
-        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 374BohSW004640;
-        Fri, 4 Aug 2023 06:50:44 -0500
+ Frontend Transport; Fri, 4 Aug 2023 06:52:25 -0500
+Received: from localhost (ileaxei01-snat.itg.ti.com [10.180.69.5])
+        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 374BqPEs023804;
+        Fri, 4 Aug 2023 06:52:25 -0500
 From:   Dhruva Gole <d-gole@ti.com>
 To:     Nishanth Menon <nm@ti.com>, Tero Kristo <kristo@kernel.org>,
-        Santosh Shilimkar <ssantosh@kernel.org>
+        "Santosh Shilimkar" <ssantosh@kernel.org>
 CC:     <linux-pm@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
         <linux-arm-kernel@lists.infradead.org>,
-        <linux-omap@vger.kernel.org>, Kevin Hilman <khilman@baylibre.com>,
-        Vignesh R <vigneshr@ti.com>, Dhruva Gole <d-gole@ti.com>,
-        Andrew Davis <afd@ti.com>, Vibhore Vardhan <vibhore@ti.com>,
-        Tony Lindgren <tony@atomide.com>
-Subject: [PATCH V7 0/4] firmware: ti_sci: Introduce system suspend support
-Date:   Fri, 4 Aug 2023 17:20:33 +0530
-Message-ID: <20230804115037.754994-1-d-gole@ti.com>
+        <linux-omap@vger.kernel.org>,
+        "Kevin Hilman" <khilman@baylibre.com>, Vignesh R <vigneshr@ti.com>,
+        Dave Gerlach <d-gerlach@ti.com>, Dhruva Gole <d-gole@ti.com>
+Subject: [PATCH V7 1/4] firmware: ti_sci: Introduce Power Management Ops
+Date:   Fri, 4 Aug 2023 17:20:34 +0530
+Message-ID: <20230804115037.754994-2-d-gole@ti.com>
 X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20230804115037.754994-1-d-gole@ti.com>
+References: <20230804115037.754994-1-d-gole@ti.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
 X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Abstract
-********
+From: Dave Gerlach <d-gerlach@ti.com>
 
-This series introduces necessary ti_sci driver functionality to support
-DeepSleep mode (suspend to mem) on TI K3 AM62x. DeepSleep mode is
-described in section "6.2.4.4 DeepSleep" of the AM62x Technical Reference
-Manual [0].
+Introduce TISCI_MSG_PREPARE_SLEEP power management op supported by the
+TISCI Low Power Mode API [1]. This message is currently supported only on
+AM62x platforms.
 
-Summary
-*******
+It can prepare the SOC for entering into a low power mode and
+provide details to firmware about the state being entered.
 
-This series is a fixup and rebase of the patch series by
-Dave Gerlach [1]. It applies on top of next-20230731.
+While at it, update the Copyright date as well for ti_sci
 
-The kernel triggers entry to DeepSleep mode through the mem suspend
-transition with the following:
+[1] https://software-dl.ti.com/tisci/esd/latest/2_tisci_msgs/pm/lpm.html
 
-* At the bootloader stage, one is expected to package the TIFS stub
-  which then gets pulled into the Tightly coupled memory of the Device Mgr
-  R5 when it starts up. If using U-Boot, then it requires tispl.bin to
-  contain the TIFS stub. Refer to ti-u-boot patch [3] for further
-  details. The supported firmware version is from TI Processor SDK
-  >= 09.00 ie. tag 09.00.00.006 from ti-linux-firmware [4].
+Signed-off-by: Dave Gerlach <d-gerlach@ti.com>
+Signed-off-by: Dhruva Gole <d-gole@ti.com>
+---
+ drivers/firmware/ti_sci.c              | 64 +++++++++++++++++++++++++-
+ drivers/firmware/ti_sci.h              | 30 +++++++++++-
+ include/linux/soc/ti/ti_sci_protocol.h | 15 ++++++
+ 3 files changed, 107 insertions(+), 2 deletions(-)
 
-* Use a TF-A binary that supports PSCI_SYSTEM_SUSPEND call. This causes
-  system to use PSCI system suspend as last step of mem sleep.
-
-* The firmware requires that the OS sends a TISCI_MSG_PREPARE_SLEEP
-  message in order to provide details about suspend, so we must add the
-  ability to send this message. We also add TISCI_MSG_LPM_WAKE_REASON
-  and TISCI_MSG_SET_IO_ISOLATION messages as part of a new PM ops. These
-  messages are part of the TISCI PM Low Power Mode API [2]. (Patch 2)
-
-* A memory address must be provided to the firmware using the above
-  message, which is allocated and managed by dma_alloc_attrs()
-  and friends. This memory address can be used by the firmware to
-  save necessary context at that physical location in the DDR RAM. (Patch 3)
-
-* Finally, the ti_sci driver must actually send TISCI_MSG_PREPARE_SLEEP
-  message to firmware with the above information included, which it
-  does during the driver suspend handler when PM_MEM_SUSPEND is the
-  determined state being entered. (Patch 4)
-
-It currently enables only DeepSleep mode, but even if any additional
-modes are needed to be supported in future, they would not require any
-changes to the TISCI LPM APIs [2]. The enabling of additional modes
-would be done via GenPD changes that is currently in the works.
-
-Testing:
-*******
-
-In can be tested with the following branch:
-https://github.com/DhruvaG2000/v-linux/commits/lpm-upstream-6.5
-
-Tested on SK-AM62B [6] here:
-https://gist.github.com/DhruvaG2000/8410fac048c677c40cd94f5169b5b0b4
-
-Limitations:
-************
-
-* It is critical for deepsleep to work that the bootloader has
-loaded the TIFS stub at the desired location and that the DM has copied
-it correctly into it's TCM. Linux has no way of knowing whether a valid
-FS Stub exists and has been loaded or not. The Device Manager also
-doesn't send any NACK if a proper TIFS Stub is not present to prevent
-the deepsleep somehow. This problem is somewhat addressed in this patch
-series where we check which SOCs support LPM and based on that set the
-fw_caps.
-
-* Currently, DeepSleep is only supported on SK-AM62B with DDR4.
-Boards with LPDDR part like Beagle Play and AM62x LP have a known FW issue.
-
-Base commit:
-************
-
-commit ec8939156379 (tag: next-20230731) ("Add linux-next specific files for 20230731")
-
-origin:
-linux-next      https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git
-
-Changelog:
-**********
-
-v7:
-- Address Andrew's concerns on SYSFW fw_caps API
-- Remove all the unused functions and variables including
-  set_io_isolation and wake_reason calls
-- use dma_free_attrs
-- remove IO isolation related code from linux side,
-TODO: Add it in ATF enter_sleep perhaps?
-
-v6:
-- link to v6 [5]
-- Loading of FS Stub from linux no longer needed, hence drop that patch,
-- Drop 1/6 and 5/6 from the previous series [4].
-- Add system suspend resume callbacks which were removed in
-commit 9225bcdedf16297a346082e7d23b0e8434aa98ed ("firmware: ti_sci: Use
-system_state to determine polling")
-- Use IO isolation while putting the system in suspend to RAM
-
-v5:
-- Add support (patch 3) for detecting the low power modes (LPM) of the
-  FW/SoC with a recently introduced core TISCI_MSG_QUERY_FW_CAPS message.
-- Use TISCI_MSG_QUERY_FW_CAPS instead of misusing the TISCI_MSG_PREPARE_SLEEP
-  to detect the FW/SoC low power caps (patch 4).
-- Take into account the supported LPMs in ti_sci_prepare_system_suspend()
-  and handle the case when CONFIG_SUSPEND is not enabled (patch 6) that
-  was reported by Roger Quadros and LKP.
-- Pick up Rob Herring's "Reviewed-by" tag for the binding patch.
-
-v4:
-- Fix checkpacth warnings in patches 2 and 3.
-- Drop the links with anchors in patch 2.
-
-v3:
-- Fix the compile warnings on 32-bit platforms reported by the kernel
-  test robot in patches (3,5).
-- Pick up Roger's "Tested-by" tags.
-
-v2:
-- Addressed comments received for v1 series [1].
-- Updated v1 patch 5 to use pm notifier to avoid firmware loading
-  issues.
-- Dropped the reserved region requirement and allocate DMA memory
-  instead. The reserved region binding patch is also removed.
-- Introduce two more TISCI LPM messages that are supported in SysFW.
-- Fixes in error handling.
-
-References:
-***********
-
-[0] https://www.ti.com/lit/pdf/spruiv7
-[1] https://lore.kernel.org/lkml/20220421203659.27853-1-d-gerlach@ti.com
-[2] https://software-dl.ti.com/tisci/esd/latest/2_tisci_msgs/pm/lpm.html
-[3] https://git.ti.com/cgit/ti-u-boot/ti-u-boot/commit/?h=ti-u-boot-2023.04&id=91886b68025c7ad121e62d1fc1fa4601eeb736cd
-[4] https://git.ti.com/cgit/processor-firmware/ti-linux-firmware/commit/?h=ti-linux-firmware-next&id=905eb58564581d951d148f45828e8c8a142a5938
-[5] https://lore.kernel.org/all/20230803064247.503036-1-d-gole@ti.com/
-[6] https://www.ti.com/tool/SK-AM62B
-
-
-Cc: Andrew Davis <afd@ti.com>
-Cc: Vibhore Vardhan <vibhore@ti.com>
-Cc: Kevin Hilman <khilman@baylibre.com>
-Cc: Vignesh Raghavendra <vigneshr@ti.com>
-Cc: Tony Lindgren <tony@atomide.com>
-
-Dave Gerlach (2):
-  firmware: ti_sci: Introduce Power Management Ops
-  firmware: ti_sci: Allocate memory for Low Power Modes
-
-Dhruva Gole (1):
-  firmware: ti_sci: Add system suspend call
-
-Georgi Vlaev (1):
-  firmware: ti_sci: Add support for querying the firmware caps
-
- drivers/firmware/ti_sci.c              | 234 ++++++++++++++++++++++++-
- drivers/firmware/ti_sci.h              |  56 +++++-
- include/linux/soc/ti/ti_sci_protocol.h |  15 ++
- 3 files changed, 303 insertions(+), 2 deletions(-)
-
+diff --git a/drivers/firmware/ti_sci.c b/drivers/firmware/ti_sci.c
+index 26a37f47f4ca..fc35d78b7e42 100644
+--- a/drivers/firmware/ti_sci.c
++++ b/drivers/firmware/ti_sci.c
+@@ -2,7 +2,7 @@
+ /*
+  * Texas Instruments System Control Interface Protocol Driver
+  *
+- * Copyright (C) 2015-2022 Texas Instruments Incorporated - https://www.ti.com/
++ * Copyright (C) 2015-2023 Texas Instruments Incorporated - https://www.ti.com/
+  *	Nishanth Menon
+  */
+ 
+@@ -1664,6 +1664,65 @@ static int ti_sci_cmd_clk_get_freq(const struct ti_sci_handle *handle,
+ 	return ret;
+ }
+ 
++/**
++ * ti_sci_cmd_prepare_sleep() - Prepare system for system suspend
++ * @handle:		pointer to TI SCI handle
++ * @mode:		Device identifier
++ * @ctx_lo:		Low part of address for context save
++ * @ctx_hi:		High part of address for context save
++ * @debug_flags:	Debug flags to pass to firmware
++ *
++ * Return: 0 if all went well, else returns appropriate error value.
++ */
++static int ti_sci_cmd_prepare_sleep(const struct ti_sci_handle *handle, u8 mode,
++				    u32 ctx_lo, u32 ctx_hi, u32 debug_flags)
++{
++	struct ti_sci_info *info;
++	struct ti_sci_msg_req_prepare_sleep *req;
++	struct ti_sci_msg_hdr *resp;
++	struct ti_sci_xfer *xfer;
++	struct device *dev;
++	int ret = 0;
++
++	if (IS_ERR(handle))
++		return PTR_ERR(handle);
++	if (!handle)
++		return -EINVAL;
++
++	info = handle_to_ti_sci_info(handle);
++	dev = info->dev;
++
++	xfer = ti_sci_get_one_xfer(info, TI_SCI_MSG_PREPARE_SLEEP,
++				   TI_SCI_FLAG_REQ_ACK_ON_PROCESSED,
++				   sizeof(*req), sizeof(*resp));
++	if (IS_ERR(xfer)) {
++		ret = PTR_ERR(xfer);
++		dev_err(dev, "Message alloc failed(%d)\n", ret);
++		return ret;
++	}
++
++	req = (struct ti_sci_msg_req_prepare_sleep *)xfer->xfer_buf;
++	req->mode = mode;
++	req->ctx_lo = ctx_lo;
++	req->ctx_hi = ctx_hi;
++	req->debug_flags = debug_flags;
++
++	ret = ti_sci_do_xfer(info, xfer);
++	if (ret) {
++		dev_err(dev, "Mbox send fail %d\n", ret);
++		goto fail;
++	}
++
++	resp = (struct ti_sci_msg_hdr *)xfer->xfer_buf;
++
++	ret = ti_sci_is_response_ack(resp) ? 0 : -ENODEV;
++
++fail:
++	ti_sci_put_one_xfer(&info->minfo, xfer);
++
++	return ret;
++}
++
+ static int ti_sci_cmd_core_reboot(const struct ti_sci_handle *handle)
+ {
+ 	struct ti_sci_info *info;
+@@ -2806,6 +2865,7 @@ static void ti_sci_setup_ops(struct ti_sci_info *info)
+ 	struct ti_sci_core_ops *core_ops = &ops->core_ops;
+ 	struct ti_sci_dev_ops *dops = &ops->dev_ops;
+ 	struct ti_sci_clk_ops *cops = &ops->clk_ops;
++	struct ti_sci_pm_ops *pmops = &ops->pm_ops;
+ 	struct ti_sci_rm_core_ops *rm_core_ops = &ops->rm_core_ops;
+ 	struct ti_sci_rm_irq_ops *iops = &ops->rm_irq_ops;
+ 	struct ti_sci_rm_ringacc_ops *rops = &ops->rm_ring_ops;
+@@ -2845,6 +2905,8 @@ static void ti_sci_setup_ops(struct ti_sci_info *info)
+ 	cops->set_freq = ti_sci_cmd_clk_set_freq;
+ 	cops->get_freq = ti_sci_cmd_clk_get_freq;
+ 
++	pmops->prepare_sleep = ti_sci_cmd_prepare_sleep;
++
+ 	rm_core_ops->get_range = ti_sci_cmd_get_resource_range;
+ 	rm_core_ops->get_range_from_shost =
+ 				ti_sci_cmd_get_resource_range_from_shost;
+diff --git a/drivers/firmware/ti_sci.h b/drivers/firmware/ti_sci.h
+index ef3a8214d002..9c9b4dae9521 100644
+--- a/drivers/firmware/ti_sci.h
++++ b/drivers/firmware/ti_sci.h
+@@ -6,7 +6,7 @@
+  * The system works in a message response protocol
+  * See: http://processors.wiki.ti.com/index.php/TISCI for details
+  *
+- * Copyright (C)  2015-2016 Texas Instruments Incorporated - https://www.ti.com/
++ * Copyright (C)  2015-2023 Texas Instruments Incorporated - https://www.ti.com/
+  */
+ 
+ #ifndef __TI_SCI_H
+@@ -35,6 +35,9 @@
+ #define TI_SCI_MSG_QUERY_CLOCK_FREQ	0x010d
+ #define TI_SCI_MSG_GET_CLOCK_FREQ	0x010e
+ 
++/* Low Power Mode Requests */
++#define TI_SCI_MSG_PREPARE_SLEEP       0x0300
++
+ /* Resource Management Requests */
+ #define TI_SCI_MSG_GET_RESOURCE_RANGE	0x1500
+ 
+@@ -545,6 +548,31 @@ struct ti_sci_msg_resp_get_clock_freq {
+ 	u64 freq_hz;
+ } __packed;
+ 
++#define TISCI_MSG_VALUE_SLEEP_MODE_DEEP_SLEEP		0x0
++
++/**
++ * struct tisci_msg_prepare_sleep_req - Request for TISCI_MSG_PREPARE_SLEEP.
++ *
++ * @hdr				TISCI header to provide ACK/NAK flags to the host.
++ * @mode			Low power mode to enter.
++ * @ctx_lo			Low 32-bits of physical pointer to address to use for context save.
++ * @ctx_hi			High 32-bits of physical pointer to address to use for context save.
++ * @debug_flags			Flags that can be set to halt the sequence during suspend or
++ *				resume to allow JTAG connection and debug.
++ *
++ * This message is used as the first step of entering a low power mode. It
++ * allows configurable information, including which state to enter to be
++ * easily shared from the application, as this is a non-secure message and
++ * therefore can be sent by anyone.
++ */
++struct ti_sci_msg_req_prepare_sleep {
++	struct ti_sci_msg_hdr	hdr;
++	u8			mode;
++	u32			ctx_lo;
++	u32			ctx_hi;
++	u32			debug_flags;
++} __packed;
++
+ #define TI_SCI_IRQ_SECONDARY_HOST_INVALID	0xff
+ 
+ /**
+diff --git a/include/linux/soc/ti/ti_sci_protocol.h b/include/linux/soc/ti/ti_sci_protocol.h
+index bd0d11af76c5..566e442b6a43 100644
+--- a/include/linux/soc/ti/ti_sci_protocol.h
++++ b/include/linux/soc/ti/ti_sci_protocol.h
+@@ -195,6 +195,20 @@ struct ti_sci_clk_ops {
+ 			u64 *current_freq);
+ };
+ 
++/**
++ * struct ti_sci_pm_ops - Low Power Mode (LPM) control operations
++ * @prepare_sleep: Prepare to enter low power mode
++ *		- mode: Low power mode to enter.
++ *		- ctx_lo: Low 32-bits of physical address for context save.
++ *		- ctx_hi: High 32-bits of physical address for context save.
++ *		- ctx_lo: 'true' if frequency change is desired.
++ *		- debug_flags: JTAG control flags for debug.
++ */
++struct ti_sci_pm_ops {
++	int (*prepare_sleep)(const struct ti_sci_handle *handle, u8 mode,
++			     u32 ctx_lo, u32 ctx_hi, u32 flags);
++};
++
+ /**
+  * struct ti_sci_resource_desc - Description of TI SCI resource instance range.
+  * @start:	Start index of the first resource range.
+@@ -539,6 +553,7 @@ struct ti_sci_ops {
+ 	struct ti_sci_core_ops core_ops;
+ 	struct ti_sci_dev_ops dev_ops;
+ 	struct ti_sci_clk_ops clk_ops;
++	struct ti_sci_pm_ops pm_ops;
+ 	struct ti_sci_rm_core_ops rm_core_ops;
+ 	struct ti_sci_rm_irq_ops rm_irq_ops;
+ 	struct ti_sci_rm_ringacc_ops rm_ring_ops;
 -- 
 2.34.1
 
