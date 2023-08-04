@@ -2,63 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 91A8176F719
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 03:46:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E50D76F72E
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 03:50:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232536AbjHDBqh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Aug 2023 21:46:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56628 "EHLO
+        id S230327AbjHDBtk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Aug 2023 21:49:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57320 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232486AbjHDBqg (ORCPT
+        with ESMTP id S230037AbjHDBti (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Aug 2023 21:46:36 -0400
-Received: from fd01.gateway.ufhost.com (fd01.gateway.ufhost.com [61.152.239.71])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A6A24482;
-        Thu,  3 Aug 2023 18:46:33 -0700 (PDT)
-Received: from EXMBX165.cuchost.com (unknown [175.102.18.54])
-        (using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
-        (Client CN "EXMBX165", Issuer "EXMBX165" (not verified))
-        by fd01.gateway.ufhost.com (Postfix) with ESMTP id EDA667F8E;
-        Fri,  4 Aug 2023 09:46:31 +0800 (CST)
-Received: from EXMBX171.cuchost.com (172.16.6.91) by EXMBX165.cuchost.com
- (172.16.6.75) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Fri, 4 Aug
- 2023 09:46:32 +0800
-Received: from [192.168.125.127] (183.27.98.54) by EXMBX171.cuchost.com
- (172.16.6.91) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Fri, 4 Aug
- 2023 09:46:30 +0800
-Message-ID: <0b93ffcb-a236-99c0-1cf5-ad584b80c0ab@starfivetech.com>
-Date:   Fri, 4 Aug 2023 09:46:30 +0800
+        Thu, 3 Aug 2023 21:49:38 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3FC6D35B5;
+        Thu,  3 Aug 2023 18:49:37 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id C907B61EFE;
+        Fri,  4 Aug 2023 01:49:36 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3399CC433AB;
+        Fri,  4 Aug 2023 01:49:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1691113776;
+        bh=c6a+4eVuqCEy+L3hkW2HNXMEXxRrGJGb5fl7lqzbOAc=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=szYXw+V3wysuNpyUa9azAA9ozy6luw4l1RRxiCjhjv4tdHE2b8Y8mRenCXobk/upE
+         9Iy0+dfj8B8wKAHoHpf79pMqLu2Seu+t9gTSgBRzDaVRuvS7YvBxrdj1f/f0lDQh7e
+         giEU6P4IN6MwhFix3UwCOqI5jp88LHqY3Zn+2u0ibd1A/xvNPpzjMKYcPvZkVMXOps
+         Z6K2s0VV9Iljeoo4Zy+jrZ7pqCqMcmFpILSGVwBq/zcgUH4hEkvtQ4F/kvQ0yFKMUT
+         hxQDFfSaB88NYBeKOa3xgyoMYZ54ijUKBgTx3LExwtgAj2ep253eEVEEyLmjdII9U9
+         6Lc3uBgIziBxw==
+Received: by mail-ed1-f45.google.com with SMTP id 4fb4d7f45d1cf-52307552b03so2066982a12.0;
+        Thu, 03 Aug 2023 18:49:36 -0700 (PDT)
+X-Gm-Message-State: AOJu0YwCerqW1XFG+nMfUHlcfbiiuh5hNA8JPxDcw8xQRougFgMXLPtu
+        83t9gOdyEk7AAGui6YiZrnBfzi49snbI6P30b9Q=
+X-Google-Smtp-Source: AGHT+IGWQ7zRgd6LjGXcymJf1tgsSVQncpoygHY2DOxmH1yIur2ktn4Ug6YHgzVLRJT90bh/GAq1GQxdCGUiO3/lfB0=
+X-Received: by 2002:aa7:d948:0:b0:523:102f:3cde with SMTP id
+ l8-20020aa7d948000000b00523102f3cdemr378786eds.23.1691113774244; Thu, 03 Aug
+ 2023 18:49:34 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v2 0/4] Refactoring Microchip PCIe driver and add StarFive
- PCIe
-Content-Language: en-US
-To:     =?UTF-8?Q?Krzysztof_Wilczy=c5=84ski?= <kw@linux.com>,
-        Daire McNamara <daire.mcnamara@microchip.com>,
-        Conor Dooley <conor@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Lorenzo Pieralisi <lpieralisi@kernel.org>,
-        Emil Renner Berthing <emil.renner.berthing@canonical.com>
-CC:     <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-pci@vger.kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        "Mason Huo" <mason.huo@starfivetech.com>,
-        Leyfoon Tan <leyfoon.tan@starfivetech.com>,
-        Kevin Xie <kevin.xie@starfivetech.com>
-References: <20230727103949.26149-1-minda.chen@starfivetech.com>
-From:   Minda Chen <minda.chen@starfivetech.com>
-In-Reply-To: <20230727103949.26149-1-minda.chen@starfivetech.com>
+References: <20210514200743.3026725-1-alex.kogan@oracle.com>
+ <20210514200743.3026725-4-alex.kogan@oracle.com> <20210922192528.ob22pu54oeqsoeno@offworld>
+In-Reply-To: <20210922192528.ob22pu54oeqsoeno@offworld>
+From:   Guo Ren <guoren@kernel.org>
+Date:   Fri, 4 Aug 2023 09:49:22 +0800
+X-Gmail-Original-Message-ID: <CAJF2gTTLJ3h8drkoTcV_V9AaNsNBkvg9G9Fi3+w_srJzcZG3=g@mail.gmail.com>
+Message-ID: <CAJF2gTTLJ3h8drkoTcV_V9AaNsNBkvg9G9Fi3+w_srJzcZG3=g@mail.gmail.com>
+Subject: Re: [PATCH v15 3/6] locking/qspinlock: Introduce CNA into the slow
+ path of qspinlock
+To:     Davidlohr Bueso <dave@stgolabs.net>
+Cc:     Alex Kogan <alex.kogan@oracle.com>, linux@armlinux.org.uk,
+        peterz@infradead.org, mingo@redhat.com, will.deacon@arm.com,
+        arnd@arndb.de, longman@redhat.com, linux-arch@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        tglx@linutronix.de, bp@alien8.de, hpa@zytor.com, x86@kernel.org,
+        guohanjun@huawei.com, jglauber@marvell.com,
+        steven.sistare@oracle.com, daniel.m.jordan@oracle.com,
+        dave.dice@oracle.com
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [183.27.98.54]
-X-ClientProxiedBy: EXCAS062.cuchost.com (172.16.6.22) To EXMBX171.cuchost.com
- (172.16.6.91)
-X-YovoleRuleAgent: yovoleflag
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -66,30 +72,90 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Sep 23, 2021 at 3:26=E2=80=AFAM Davidlohr Bueso <dave@stgolabs.net>=
+ wrote:
+>
+> On Fri, 14 May 2021, Alex Kogan wrote:
+>
+> >diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documenta=
+tion/admin-guide/kernel-parameters.txt
+> >index a816935d23d4..94d35507560c 100644
+> >--- a/Documentation/admin-guide/kernel-parameters.txt
+> >+++ b/Documentation/admin-guide/kernel-parameters.txt
+> >@@ -3515,6 +3515,16 @@
+> >                       NUMA balancing.
+> >                       Allowed values are enable and disable
+> >
+> >+      numa_spinlock=3D  [NUMA, PV_OPS] Select the NUMA-aware variant
+> >+                      of spinlock. The options are:
+> >+                      auto - Enable this variant if running on a multi-=
+node
+> >+                      machine in native environment.
+> >+                      on  - Unconditionally enable this variant.
+>
+> Is there any reason why the user would explicitly pass the on option
+> when the auto thing already does the multi-node check? Perhaps strange
+> numa topologies? Otherwise I would say it's not needed and the fewer
+> options we give the user for low level locking the better.
+>
+> >+                      off - Unconditionally disable this variant.
+> >+
+> >+                      Not specifying this option is equivalent to
+> >+                      numa_spinlock=3Dauto.
+> >+
+> >       numa_zonelist_order=3D [KNL, BOOT] Select zonelist order for NUMA=
+.
+> >                       'node', 'default' can be specified
+> >                       This can be set from sysctl after boot.
+> >diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
+> >index 0045e1b44190..819c3dad8afc 100644
+> >--- a/arch/x86/Kconfig
+> >+++ b/arch/x86/Kconfig
+> >@@ -1564,6 +1564,26 @@ config NUMA
+> >
+> >         Otherwise, you should say N.
+> >
+> >+config NUMA_AWARE_SPINLOCKS
+> >+      bool "Numa-aware spinlocks"
+> >+      depends on NUMA
+> >+      depends on QUEUED_SPINLOCKS
+> >+      depends on 64BIT
+> >+      # For now, we depend on PARAVIRT_SPINLOCKS to make the patching w=
+ork.
+> >+      # This is awkward, but hopefully would be resolved once static_ca=
+ll()
+> >+      # is available.
+> >+      depends on PARAVIRT_SPINLOCKS
+>
+> We now have static_call() - see 9183c3f9ed7.
+>
+>
+> >+      default y
+> >+      help
+> >+        Introduce NUMA (Non Uniform Memory Access) awareness into
+> >+        the slow path of spinlocks.
+> >+
+> >+        In this variant of qspinlock, the kernel will try to keep the l=
+ock
+> >+        on the same node, thus reducing the number of remote cache miss=
+es,
+> >+        while trading some of the short term fairness for better perfor=
+mance.
+> >+
+> >+        Say N if you want absolute first come first serve fairness.
+>
+> This would also need a depends on !PREEMPT_RT, no? Raw spinlocks really w=
+ant
+> the determinism.
+I hope we shouldn't force disable it in the Kconfig. Could we put this
+idea in numa_spinlock=3Dauto?
+
+>
+> Thanks,
+> Davidlohr
 
 
-On 2023/7/27 18:39, Minda Chen wrote:
-> This patchset final purpose is add PCIe driver for StarFive JH7110 SoC.
-> JH7110 using PLDA XpressRICH PCIe IP. Microchip PolarFire Using the
-> same IP and have commit their codes, which are mixed with PLDA
-> controller codes and Microchip platform codes.
-> 
-> For re-use the PLDA controller codes, I request refactoring microchip
-> codes, move PLDA common codes to PLDA files.
-> Desigware and Cadence is good example for refactoring codes.
-> 
-> So first step is extract the PLDA common codes from microchip, and
-> refactoring the microchip codes.(patch1 - 2)
-> Then, add Starfive codes. (patch3 - 4)
-> 
-> This patchset is base on v6.5-rc1
-> 
-> patch1 is move PLDA XpressRICH PCIe host common properties dt-binding
->        docs from microchip,pcie-host.yaml
-> patch2 is extracting the PLDA common codes from microchip Polarfire PCIe
->        codes. The change list in the commit message.
-> patch3 is add StarFive JH7110 PCIe dt-binding doc.
-> patch4 is add StarFive JH7110 Soc PCIe codes.
-> 
-Hi Rob, Krzysztof(K.K) and Conor
-  Do you have any comments for dts-binding doc patch? (patch 1 and patch3) Thanks.  
+
+--=20
+Best Regards
+ Guo Ren
