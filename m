@@ -2,61 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D36E76F791
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 04:11:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E4C076F795
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 04:12:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233582AbjHDCLy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Aug 2023 22:11:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37358 "EHLO
+        id S233321AbjHDCMB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Aug 2023 22:12:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37162 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233461AbjHDCL3 (ORCPT
+        with ESMTP id S233312AbjHDCLc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Aug 2023 22:11:29 -0400
-Received: from mail-oo1-xc33.google.com (mail-oo1-xc33.google.com [IPv6:2607:f8b0:4864:20::c33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44F2C448F
-        for <linux-kernel@vger.kernel.org>; Thu,  3 Aug 2023 19:10:58 -0700 (PDT)
-Received: by mail-oo1-xc33.google.com with SMTP id 006d021491bc7-56ca1eebcd7so1061374eaf.0
-        for <linux-kernel@vger.kernel.org>; Thu, 03 Aug 2023 19:10:58 -0700 (PDT)
+        Thu, 3 Aug 2023 22:11:32 -0400
+Received: from mail-qk1-x731.google.com (mail-qk1-x731.google.com [IPv6:2607:f8b0:4864:20::731])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73153468C
+        for <linux-kernel@vger.kernel.org>; Thu,  3 Aug 2023 19:11:04 -0700 (PDT)
+Received: by mail-qk1-x731.google.com with SMTP id af79cd13be357-765a7768f1dso133499885a.0
+        for <linux-kernel@vger.kernel.org>; Thu, 03 Aug 2023 19:11:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rivosinc-com.20221208.gappssmtp.com; s=20221208; t=1691115054; x=1691719854;
+        d=rivosinc-com.20221208.gappssmtp.com; s=20221208; t=1691115056; x=1691719856;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=efS36dkbCzja1DEoOkKk5twnSGIQYzSPz7GFgwV0rps=;
-        b=sL5L+XGZXxz3uilHLZ9996rABpzv96OCLn70c9kreiKgPg+WH3KJroL9cVLj2fBjI4
-         NQe8+w7CLAox+ot9c6Sx0ktR3iYP5P+c8pN85u54Rsy06KDa4GcfJccDlv6X4vB+zHUn
-         fOSxh1hOUBlo6UgFcJDC47IQVz1f4EDcD0TlBOGU/8cvax961M2jcrcuGJPlBRjyBApH
-         Yr9yABf/BnVF1c20z4GgGSV/40DAWyj5SVhDT+9mC7k6UVziYmYdgL3moyY6QrCvZd73
-         4FZ3hUQCNUuO/ok3JHJqIRfA/yxktc+meR9K37rZmH55b5iR6aKlCC4Gg1xr0MwsaNDG
-         Pekw==
+        bh=+3U++cEq45L7iITV+zLwLaldo0Na07T+o+hHDfRRKC4=;
+        b=ayC0Day7CXdP53wwIDs0tv4bKX6RYBEbt+WDQyLb8tpMqzB8hUHeS+pZ/fmXrx4qpA
+         3JkEy7VvFQFPwmFiZrOcgMEo3fzpW+ldBC+JO6eugwsbDr7vJSjP1/35CxXsN0MB0Irt
+         mkx9hB89+CUahHSi5pi8nO9KgVUWFgp8tr4jlCEdJmhvewPu4OWQqZ3baJYZwvTPdBfy
+         +HdxqmvQtuuS7UKmZq8wZJhY55hKFLVGi3/KRn4eaZy7GtYIOEbVuJ5qIJOIr+oSnw4f
+         I7cK7giGeGjDDUCgXif5SspsldvYp/giTIrzSG6SdHe7tpD9OaruV+cA9piG0QSIk91/
+         G56g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691115054; x=1691719854;
+        d=1e100.net; s=20221208; t=1691115056; x=1691719856;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=efS36dkbCzja1DEoOkKk5twnSGIQYzSPz7GFgwV0rps=;
-        b=JcAli0b57o5S71i7If/LsYIUsdc+XauQ1M9WeRHP49agjextQfpcNMXrB6PZVN9KKA
-         o5FTwcM6oLsasNUp/zRxY2m4f5x3cu+rDjI8gIYNldJg3oe6Ey8+tZX4XV+li8vvZW+D
-         ZJWYCq0Qn/Ux0J38qwH2mGcTp9GHdBDIqpmHGuq/yH3lqVMOm5cHdqIwn/0UPdiRDDjc
-         ovPtbKXrB+vNspLS2515CEURCRjQQ+eM1HFUtQ/wF1MxU4cq9atUNgBcLwhChJ7ki+Cu
-         0sCapJaN0XDOl8ojsDqoDY0QQpGRCoNv9cSHMA6PFGeArHGQ+embwW43Y/kjleg7vQUg
-         Nozg==
-X-Gm-Message-State: AOJu0Yw4jmLlnLQN8JIr2tHlO40Jj3z4eGO/5y5oaKQTEOVdZTjnxZhv
-        4CzN3h9EjFq6Jd04b8F7Kj/GXg==
-X-Google-Smtp-Source: AGHT+IHkkquc+vtnTAEnaVFOIeS3KymV7yesjBryf/XUZfueFQfWUT4yuX+ZoQdYenvjMp3+aT7A/A==
-X-Received: by 2002:a05:6358:c603:b0:134:ded4:294 with SMTP id fd3-20020a056358c60300b00134ded40294mr441125rwb.17.1691115054417;
-        Thu, 03 Aug 2023 19:10:54 -0700 (PDT)
+        bh=+3U++cEq45L7iITV+zLwLaldo0Na07T+o+hHDfRRKC4=;
+        b=HGbY/A+ZZ30Wyo2wyeSgra+++tpDgMwzUcehh1m+bKDoU1gknndsShK9iRgFMicST3
+         EZej5gvbtrhCFuMC45/O9UTGmFZw4MSulq89bSf0LIRj4LCB6kM4tK4jiy/+VCPRKa+7
+         x0l9mCUOgrzQmZPuPG4gpXXT9D+b+tY8pyg5Jry3tOY328JE9N+aPV9cRm25WbVWfcSg
+         W7ugTjesJ607+mKIlF851WIod9qlR5q8p+CO94vML1xd7638VPbsxSiw+uYiv+vPGqkh
+         RD8plmx+PK/hSt5Z8uTiafHZHFSK+qQlBrxKOoX5R3NeUfbBxAmpxkywBZfd4RBzUMbP
+         wxBA==
+X-Gm-Message-State: AOJu0Ywjmh+u24fLBj5KKu8ExWbII5ew1G0nBdT0j84ZxNWNgERDB+0f
+        G/X7biapXZe5ruhkMPd7wUGMKQ==
+X-Google-Smtp-Source: AGHT+IG+6EaYMDmn7R52Jc4ascni7z5WQFwfR/PJzZqWfgRRzwdONmN63Q30hGcwUi7GhkBgKxKI9A==
+X-Received: by 2002:a05:620a:1918:b0:76c:a187:13be with SMTP id bj24-20020a05620a191800b0076ca18713bemr687807qkb.33.1691115056542;
+        Thu, 03 Aug 2023 19:10:56 -0700 (PDT)
 Received: from charlie.ba.rivosinc.com ([66.220.2.162])
-        by smtp.gmail.com with ESMTPSA id g6-20020a655806000000b0055c558ac4edsm369499pgr.46.2023.08.03.19.10.52
+        by smtp.gmail.com with ESMTPSA id g6-20020a655806000000b0055c558ac4edsm369499pgr.46.2023.08.03.19.10.54
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 03 Aug 2023 19:10:53 -0700 (PDT)
+        Thu, 03 Aug 2023 19:10:56 -0700 (PDT)
 From:   Charlie Jenkins <charlie@rivosinc.com>
-Date:   Thu, 03 Aug 2023 19:10:27 -0700
-Subject: [PATCH 02/10] RISC-V: vector: Refactor instructions
+Date:   Thu, 03 Aug 2023 19:10:28 -0700
+Subject: [PATCH 03/10] RISC-V: Refactor jump label instructions
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20230803-master-refactor-instructions-v4-v1-2-2128e61fa4ff@rivosinc.com>
+Message-Id: <20230803-master-refactor-instructions-v4-v1-3-2128e61fa4ff@rivosinc.com>
 References: <20230803-master-refactor-instructions-v4-v1-0-2128e61fa4ff@rivosinc.com>
 In-Reply-To: <20230803-master-refactor-instructions-v4-v1-0-2128e61fa4ff@rivosinc.com>
 To:     linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
@@ -87,43 +87,70 @@ Cc:     Paul Walmsley <paul.walmsley@sifive.com>,
         Charlie Jenkins <charlie@rivosinc.com>
 X-Mailer: b4 0.12.3
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use instructions in insn.h
+Use shared instruction definitions in insn.h instead of manually
+constructing them.
 
 Signed-off-by: Charlie Jenkins <charlie@rivosinc.com>
 ---
- arch/riscv/kernel/vector.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ arch/riscv/include/asm/insn.h  |  2 +-
+ arch/riscv/kernel/jump_label.c | 13 ++++---------
+ 2 files changed, 5 insertions(+), 10 deletions(-)
 
-diff --git a/arch/riscv/kernel/vector.c b/arch/riscv/kernel/vector.c
-index d67a60369e02..1433d70abdd7 100644
---- a/arch/riscv/kernel/vector.c
-+++ b/arch/riscv/kernel/vector.c
-@@ -18,7 +18,6 @@
- #include <asm/csr.h>
- #include <asm/elf.h>
- #include <asm/ptrace.h>
--#include <asm/bug.h>
+diff --git a/arch/riscv/include/asm/insn.h b/arch/riscv/include/asm/insn.h
+index 04f7649e1add..124ab02973a7 100644
+--- a/arch/riscv/include/asm/insn.h
++++ b/arch/riscv/include/asm/insn.h
+@@ -1984,7 +1984,7 @@ static __always_inline bool riscv_insn_is_branch(u32 code)
+ 		<< RVC_J_IMM_10_OFF) | \
+ 	(RVC_IMM_SIGN(x_) << RVC_J_IMM_SIGN_OFF); })
  
- static bool riscv_v_implicit_uacc = IS_ENABLED(CONFIG_RISCV_ISA_V_DEFAULT_ENABLE);
+-#define RVC_EXTRACT_BTYPE_IMM(x) \
++#define RVC_EXTRACT_BZ_IMM(x) \
+ 	({typeof(x) x_ = (x); \
+ 	(RVC_X(x_, RVC_BZ_IMM_2_1_OPOFF, RVC_BZ_IMM_2_1_MASK) \
+ 		<< RVC_BZ_IMM_2_1_OFF) | \
+diff --git a/arch/riscv/kernel/jump_label.c b/arch/riscv/kernel/jump_label.c
+index e6694759dbd0..fdaac2a13eac 100644
+--- a/arch/riscv/kernel/jump_label.c
++++ b/arch/riscv/kernel/jump_label.c
+@@ -9,11 +9,9 @@
+ #include <linux/memory.h>
+ #include <linux/mutex.h>
+ #include <asm/bug.h>
++#include <asm/insn.h>
+ #include <asm/patch.h>
  
-@@ -56,7 +55,7 @@ static bool insn_is_vector(u32 insn_buf)
- 	 * All V-related instructions, including CSR operations are 4-Byte. So,
- 	 * do not handle if the instruction length is not 4-Byte.
- 	 */
--	if (unlikely(GET_INSN_LENGTH(insn_buf) != 4))
-+	if (unlikely(INSN_LEN(insn_buf) != 4))
- 		return false;
+-#define RISCV_INSN_NOP 0x00000013U
+-#define RISCV_INSN_JAL 0x0000006fU
+-
+ void arch_jump_label_transform(struct jump_entry *entry,
+ 			       enum jump_label_type type)
+ {
+@@ -26,13 +24,10 @@ void arch_jump_label_transform(struct jump_entry *entry,
+ 		if (WARN_ON(offset & 1 || offset < -524288 || offset >= 524288))
+ 			return;
  
- 	switch (opcode) {
+-		insn = RISCV_INSN_JAL |
+-			(((u32)offset & GENMASK(19, 12)) << (12 - 12)) |
+-			(((u32)offset & GENMASK(11, 11)) << (20 - 11)) |
+-			(((u32)offset & GENMASK(10,  1)) << (21 -  1)) |
+-			(((u32)offset & GENMASK(20, 20)) << (31 - 20));
++		insn = RVG_OPCODE_JAL;
++		riscv_insn_insert_jtype_imm(&insn, (s32)offset);
+ 	} else {
+-		insn = RISCV_INSN_NOP;
++		insn = RVG_OPCODE_NOP;
+ 	}
+ 
+ 	mutex_lock(&text_mutex);
 
 -- 
 2.34.1
