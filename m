@@ -2,190 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EA28576FA3F
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 08:38:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E35776FA41
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 08:39:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233352AbjHDGix (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Aug 2023 02:38:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38100 "EHLO
+        id S232056AbjHDGjN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Aug 2023 02:39:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38534 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233273AbjHDGiM (ORCPT
+        with ESMTP id S233766AbjHDGi0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Aug 2023 02:38:12 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4CB846AA
-        for <linux-kernel@vger.kernel.org>; Thu,  3 Aug 2023 23:37:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1691131041;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=JRbNEV/g+3SWffCtpqnTW+44zOe74EJ4R0UlzfLRMdg=;
-        b=estP8MlUPohsgM+Tcvp+oWi2TjlWOITz9LYdoD0I/2H0yP2U+NQqMH+kxmsjbzzNzfTHRT
-        fYX4gdfpdZLxVwfamK4Fl7btgSky07NoeEodf8Rr+Yd3D7+C5tzONus996aOjD3yIVnLK2
-        Ua1Ay1CUFAHkT8QLxay1AdSxrDZd66M=
-Received: from mail-qt1-f199.google.com (mail-qt1-f199.google.com
- [209.85.160.199]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-689-PaO65VdjO7GAef9_uo4sIA-1; Fri, 04 Aug 2023 02:37:19 -0400
-X-MC-Unique: PaO65VdjO7GAef9_uo4sIA-1
-Received: by mail-qt1-f199.google.com with SMTP id d75a77b69052e-40ea01f3e3bso22992211cf.1
-        for <linux-kernel@vger.kernel.org>; Thu, 03 Aug 2023 23:37:19 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691131039; x=1691735839;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=JRbNEV/g+3SWffCtpqnTW+44zOe74EJ4R0UlzfLRMdg=;
-        b=GugD3NbXgd0kCiPywzDpdi4r72dbT5hc/+CRj4k7BdD/lIahKuWWCY4O198fpSM968
-         uWnXapLSrWKj3kX+Zps0kZzNg6dq33vGtVUFzfYnvQbxZXqX88t8+yJvEc8u4SdZnz5D
-         Lh5b/9bjMZCWMZzWzyOErmNNH4hL95td6wMG2L7V7ornhoYA5DSaglQm7u5Wl32pmf6S
-         SIvQA2ZLkNze6QClxPDGx3tJwysUCod8gJFvRO4DIYrCZYNDcdK5RDOLpl+0gndEt4kJ
-         NyYfA8kkkVxdqLAqvA9GyqQgpbHTnVe9Jt7A3AaqnlPPLOoDhDBnkYeplYtOZb640qhf
-         lYQA==
-X-Gm-Message-State: AOJu0YymQfNa+19w8BW0zDUkx8myMUkN6CvR4hchZxwGBAZDZKAzg63C
-        LJbEaROk7Dac8X/1RZPR3VgqMUC5bRdfLB4tHjD6/TEZ3qf9GlMQmtoDxCZyBPScJfkhMJjgBpI
-        GEDJkG0YE6ER6lm3tHYFLR3r/
-X-Received: by 2002:a05:622a:44f:b0:404:a649:879c with SMTP id o15-20020a05622a044f00b00404a649879cmr1022813qtx.49.1691131038968;
-        Thu, 03 Aug 2023 23:37:18 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IEQAEaqfcC9XZlm+xYVaRBqSvtLqOU49iCHOkXeJwSJ4Vq7u3O4eD+BrXMQHkYycIHuMGVRvA==
-X-Received: by 2002:a05:622a:44f:b0:404:a649:879c with SMTP id o15-20020a05622a044f00b00404a649879cmr1022804qtx.49.1691131038689;
-        Thu, 03 Aug 2023 23:37:18 -0700 (PDT)
-Received: from fedora19.localdomain ([2401:d002:2d05:b10a:c9ac:2dd7:6463:bb84])
-        by smtp.gmail.com with ESMTPSA id 7-20020a17090a034700b002681bda127esm920379pjf.35.2023.08.03.23.37.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 03 Aug 2023 23:37:18 -0700 (PDT)
-Date:   Fri, 4 Aug 2023 16:37:11 +1000
-From:   Ian Wienand <iwienand@redhat.com>
-To:     Minchan Kim <minchan@kernel.org>
-Cc:     Petr Vorel <pvorel@suse.cz>, ltp@lists.linux.it,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, Nitin Gupta <ngupta@vflare.org>,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Jens Axboe <axboe@kernel.dk>,
-        OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>,
-        Martin Doucha <mdoucha@suse.cz>,
-        Yang Xu <xuyang2018.jy@fujitsu.com>
-Subject: Re: [PATCH 0/1] Possible bug in zram on ppc64le on vfat
-Message-ID: <ZMycl7xKyJoQNpcu@fedora19.localdomain>
-References: <20221107191136.18048-1-pvorel@suse.cz>
- <Y2l3vJb1y2Jynf50@google.com>
+        Fri, 4 Aug 2023 02:38:26 -0400
+Received: from out28-49.mail.aliyun.com (out28-49.mail.aliyun.com [115.124.28.49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 277244C21;
+        Thu,  3 Aug 2023 23:38:15 -0700 (PDT)
+X-Alimail-AntiSpam: AC=CONTINUE;BC=0.1060332|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_alarm|0.0657725-0.000712165-0.933515;FP=13354101027781010926|2|1|3|0|-1|-1|-1;HT=ay29a033018047187;MF=wuyonggang001@208suo.com;NM=1;PH=DS;RN=5;RT=5;SR=0;TI=SMTPD_---.U8Fdjat_1691131088;
+Received: from localhost.localdomain(mailfrom:wuyonggang001@208suo.com fp:SMTPD_---.U8Fdjat_1691131088)
+          by smtp.aliyun-inc.com;
+          Fri, 04 Aug 2023 14:38:10 +0800
+From:   Yonggang Wu <wuyonggang001@208suo.com>
+To:     herbert@gondor.apana.org.au, davem@davemloft.net
+Cc:     linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Yonggang Wu <wuyonggang001@208suo.com>
+Subject: [PATCH] lib: crypto: Modify format error
+Date:   Fri,  4 Aug 2023 14:37:46 +0800
+Message-Id: <20230804063746.28605-1-wuyonggang001@208suo.com>
+X-Mailer: git-send-email 2.40.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <Y2l3vJb1y2Jynf50@google.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 07, 2022 at 01:25:16PM -0800, Minchan Kim wrote:
-> > following bug is trying to workaround an error on ppc64le, where
-> > zram01.sh LTP test (there is also kernel selftest
-> > tools/testing/selftests/zram/zram01.sh, but LTP test got further
-> > updates) has often mem_used_total 0 although zram is already filled.
+Fix the error(s):
+space prohibited after that open square bracket '['
 
-> Is it happening on only ppc64le?
+Signed-off-by: Yonggang Wu <wuyonggang001@208suo.com>
+---
+ lib/crypto/gf128mul.c | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
-I have managed to replicate this on an arm64 system.  I frankly don't
-know what is so special about it -- it's a qemu guest and I'm not sure
-what exactly it's running ontop of.
-
-> Is it a new regression? What kernel version did you use?
-
-I've replicated this on 4.18.0; obviously something more recent would
-be useful but I'm hesitant to destroy too much state in case it is
-something ...
-
-> Actually, mem_used_total indicates how many *physical memory* were
-> currently used to keep original data size.
-> 
-> However, if the test data is repeated pattern of unsigned long
-> (https://github.com/torvalds/linux/blob/master/drivers/block/zram/zram_drv.c#L210)
-> zram doesn't allocate the physical memory but just mark the unsigned long's value
-> in meta area for decompression later.
-
-To recap; this test [1] creates a zram device, makes a filesystem on
-it, and fills it with sequential 1k writes from /dev/zero via dd.  The
-problem is that it sees the mem_used_total for the zram device as zero
-in the sysfs stats after the writes; this causes a divide by zero
-error in the script calculation.
-
-An annoted extract:
-
- zram01 3 TINFO: /sys/block/zram1/disksize = '26214400'
- zram01 3 TPASS: test succeeded
- zram01 4 TINFO: set memory limit to zram device(s)
- zram01 4 TINFO: /sys/block/zram1/mem_limit = '25M'
- zram01 4 TPASS: test succeeded
- zram01 5 TINFO: make vfat filesystem on /dev/zram1
-
- >> at this point a cat of /sys/block/zram1/mm_stat shows
- >>   65536      527    65536 26214400    65536        0        0        0
-
- zram01 5 TPASS: zram_makefs succeeded
- zram01 6 TINFO: mount /dev/zram1
- zram01 6 TPASS: mount of zram device(s) succeeded
- zram01 7 TINFO: filling zram1 (it can take long time)
- zram01 7 TPASS: zram1 was filled with '25568' KB
-
- >> at this point "ls -lh" shows the file
- >> total 25M
- >> -rwxr-xr-x. 1 root root 25M Aug  4 01:06 file
-
- >> however, /sys/block/zram1/mm_stat shows
- >>   9502720        0        0 26214400   196608      145        0        0
- >> the script reads this zero value and tries to calculate the
- >> compression ratio
-
- ./zram01.sh: line 145: 100 * 1024 * 25568 / 0: division by 0 (error token is "0")
-
- >> If we do a "sync" then redisply the mm_stat after, we get
- >>   26214400     2842    65536 26214400   196608      399        0        0
-
-I have managed to instrument this, and in the following
-
- static ssize_t mm_stat_show(struct device *dev,
-                struct device_attribute *attr, char *buf)
- {
-  ...
-        if (init_done(zram)) {
-		mem_used = zs_get_total_pages(zram->mem_pool);
-                pr_info("mm_stat_show: init done %p %lld\n", zram->mem_pool, mem_used);
-                zs_pool_stats(zram->mem_pool, &pool_stats);
-
-zs_get_total_pages(zram->mem_pool) is definitely zero, which is why
-the mm_stat is returning zero.  i.e. zsmalloc really doesn't seem to
-have any pages recorded for that mem_pool ...
-
-This doesn't seem to make sense; how can a device that has a file
-system on it not even have one page assigned to it in zram->mem_pool?
-
-I *think* this has something to do with the de-deuplication as noted.
-If I stub out page_same_filled() to return false always, we see instead
-
- zram01 7 TPASS: zram1 was filled with '25568' KB
- >>  < immediately after >
- >> 10223616    48516   131072 26214400   196608        0        0        0
- >>  < after sync >
- >> 26214400   126933   327680 26214400   327680        0        0        0
-
-So I think this test still needs a sync to be sure that it's seeing
-the right values?  It's probably expected that this takes some time to
-write everything out?
-
-But is it possible that mem_used_total being zero is a bug -- possibly
-triggered by the de-dup path and the test writing the same thing in
-every block?  Something like the first de-duped page also being thrown
-out?
-
--i
-
-[1] https://github.com/linux-test-project/ltp/blob/8c201e55f684965df2ae5a13ff439b28278dec0d/testcases/kernel/device-drivers/zram/zram01.sh
+diff --git a/lib/crypto/gf128mul.c b/lib/crypto/gf128mul.c
+index 8f8c45e0cdcf..96ef5f312911 100644
+--- a/lib/crypto/gf128mul.c
++++ b/lib/crypto/gf128mul.c
+@@ -208,11 +208,11 @@ void gf128mul_lle(be128 *r, const be128 *b)
+ 	for (i = 0;;) {
+ 		u8 ch = ((u8 *)b)[15 - i];
+ 
+-		be128_xor(r, r, &p[ 0 + !(ch & 0x80)]);
+-		be128_xor(r, r, &p[ 2 + !(ch & 0x40)]);
+-		be128_xor(r, r, &p[ 4 + !(ch & 0x20)]);
+-		be128_xor(r, r, &p[ 6 + !(ch & 0x10)]);
+-		be128_xor(r, r, &p[ 8 + !(ch & 0x08)]);
++		be128_xor(r, r, &p[0 + !(ch & 0x80)]);
++		be128_xor(r, r, &p[2 + !(ch & 0x40)]);
++		be128_xor(r, r, &p[4 + !(ch & 0x20)]);
++		be128_xor(r, r, &p[6 + !(ch & 0x10)]);
++		be128_xor(r, r, &p[8 + !(ch & 0x08)]);
+ 		be128_xor(r, r, &p[10 + !(ch & 0x04)]);
+ 		be128_xor(r, r, &p[12 + !(ch & 0x02)]);
+ 		be128_xor(r, r, &p[14 + !(ch & 0x01)]);
+-- 
+2.40.1
 
