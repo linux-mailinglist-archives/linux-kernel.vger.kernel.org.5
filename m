@@ -2,123 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A65A7706DC
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 19:12:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DA4A27706E3
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 19:15:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231321AbjHDRMR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Aug 2023 13:12:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46620 "EHLO
+        id S231975AbjHDRPC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Aug 2023 13:15:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47690 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229754AbjHDRMO (ORCPT
+        with ESMTP id S229784AbjHDRPA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Aug 2023 13:12:14 -0400
-Received: from bedivere.hansenpartnership.com (bedivere.hansenpartnership.com [IPv6:2607:fcd0:100:8a00::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 328BE3C25;
-        Fri,  4 Aug 2023 10:12:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-        d=hansenpartnership.com; s=20151216; t=1691169130;
-        bh=k/zttB4T2CScg/JHkOSPHBwHh+YE9cWs+BwYyqLser4=;
-        h=Message-ID:Subject:From:To:Date:In-Reply-To:References:From;
-        b=f9JvpJ3sVW4hPdpdMkW4G4H1qY0MpkDXtZ0kkXJLBYf0bDQlpQXP2PrpRVwO/wyeR
-         V3KDEaKYOk+4l4rD7s26qs/AH6aCmJxFWUQduLByK+kWstN0O052ISCkVqiIaCIbnG
-         3ue1706uRljJyiQxRS7volAr5dsgXsw7w75kz5ak=
-Received: from localhost (localhost [127.0.0.1])
-        by bedivere.hansenpartnership.com (Postfix) with ESMTP id 7BF151280EA0;
-        Fri,  4 Aug 2023 13:12:10 -0400 (EDT)
-Received: from bedivere.hansenpartnership.com ([127.0.0.1])
- by localhost (bedivere.hansenpartnership.com [127.0.0.1]) (amavis, port 10024)
- with ESMTP id fzGcu-YakGz3; Fri,  4 Aug 2023 13:12:10 -0400 (EDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-        d=hansenpartnership.com; s=20151216; t=1691169130;
-        bh=k/zttB4T2CScg/JHkOSPHBwHh+YE9cWs+BwYyqLser4=;
-        h=Message-ID:Subject:From:To:Date:In-Reply-To:References:From;
-        b=f9JvpJ3sVW4hPdpdMkW4G4H1qY0MpkDXtZ0kkXJLBYf0bDQlpQXP2PrpRVwO/wyeR
-         V3KDEaKYOk+4l4rD7s26qs/AH6aCmJxFWUQduLByK+kWstN0O052ISCkVqiIaCIbnG
-         3ue1706uRljJyiQxRS7volAr5dsgXsw7w75kz5ak=
-Received: from lingrow.int.hansenpartnership.com (unknown [IPv6:2601:5c4:4302:c21::c14])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (prime256v1) server-signature RSA-PSS (2048 bits))
-        (Client did not present a certificate)
-        by bedivere.hansenpartnership.com (Postfix) with ESMTPSA id 387A512804B6;
-        Fri,  4 Aug 2023 13:12:09 -0400 (EDT)
-Message-ID: <35071cffb4acb117f1b4be2807c40792734bff89.camel@HansenPartnership.com>
-Subject: Re: [PATCH 1/4] keys: Introduce tsm keys
-From:   James Bottomley <James.Bottomley@HansenPartnership.com>
-To:     Dionna Amalie Glaze <dionnaglaze@google.com>
-Cc:     Dan Williams <dan.j.williams@intel.com>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        Peter Gonda <pgonda@google.com>, dhowells@redhat.com,
-        Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Samuel Ortiz <sameo@rivosinc.com>, peterz@infradead.org,
-        linux-coco@lists.linux.dev, keyrings@vger.kernel.org,
-        x86@kernel.org, linux-kernel@vger.kernel.org
-Date:   Fri, 04 Aug 2023 13:12:07 -0400
-In-Reply-To: <CAAH4kHaq0q0jGmpxskapo2J+oeWWBXuDd7RfgppO31+gnPSL6w@mail.gmail.com>
-References: <169057265210.180586.7950140104251236598.stgit@dwillia2-xfh.jf.intel.com>
-         <169057265801.180586.10867293237672839356.stgit@dwillia2-xfh.jf.intel.com>
-         <CAMkAt6ot9zyUL9Ub-qYq+d9v-6rTft4ea2mUxp3o1s3GVFq7nw@mail.gmail.com>
-         <CUHEL5OD3UR8.FRBWNF6MTP1Y@suppilovahvero>
-         <64cc650233ef9_782a329489@dwillia2-xfh.jf.intel.com.notmuch>
-         <CAAH4kHY_SjTdh55NBWn1KURCdjJUDM7nhi_gLpUhKKbRsVjX4Q@mail.gmail.com>
-         <66161ce56ec783d1ec452a50b80b120bec8b56e8.camel@HansenPartnership.com>
-         <CAAH4kHaq0q0jGmpxskapo2J+oeWWBXuDd7RfgppO31+gnPSL6w@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.42.4 
+        Fri, 4 Aug 2023 13:15:00 -0400
+Received: from mail-ot1-x336.google.com (mail-ot1-x336.google.com [IPv6:2607:f8b0:4864:20::336])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0C0A198B;
+        Fri,  4 Aug 2023 10:14:55 -0700 (PDT)
+Received: by mail-ot1-x336.google.com with SMTP id 46e09a7af769-6bcd51b8253so735079a34.3;
+        Fri, 04 Aug 2023 10:14:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1691169295; x=1691774095;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=x14eTXjE9ESJ3W86KNB02DEBmvHBG2F1228ijKBbEgI=;
+        b=QcSAPpLpCr3RWCP7y8P4OwSPQjpwzqXibIMa0bFEpOpflHTDOihv5mjd3banm3Xkbg
+         8VsonjJA+6s80799dz6n/occoZFnHOsk85JUr3uA5ukspFqG0p3Q/G+FKSRjInRny6j8
+         +yHtHmVQ/JBA2EZquNoiuIRCvBs+Dk5n3Tmu0fshPu7RTFXxoqE2nIugDYgivj/905cg
+         0+GiapAr5PkKWZ/iZ1JZv1PEKt2jSnFlJDIuAbzdVTdiHga4F/Kjqr0ySz7pXTZybVbW
+         7zv89Gog5Jmu2HinH4IARSYS9sWcHCyvAtrSKF8klOQQ1/hp4niIwpc0EviLrJHf8h9R
+         JAnQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691169295; x=1691774095;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=x14eTXjE9ESJ3W86KNB02DEBmvHBG2F1228ijKBbEgI=;
+        b=cFsEWYCd4Ru7AvnyDps6BSdYoHGYKlPRYyN/zpVK9+GYhf2oP8U5Q2NkYh8ZpmRsbv
+         sun7cJPfKnamyaVe4pJ706YkoRcN/PkojJi2TnsBfz3JaFQIBRPOpT5BgMfVLvEotXQv
+         UG1AxqxF6xfRBfWUSZTB3CZ7t1632NQ1iy0Fe9mj4RmWCH7DFzo1I1nKZKkVUbFs981U
+         hDBmTH9F8fCcUTqObNkmixKVI/QUJXn3+bW8Gb1qOenYmy+8ECUhpMt89Ir6aaiYa/px
+         bcIxS51LwVXUt6xbPgjqrIZkV93VuDYn3Qc0UhBNRhPD6dHhouv2JPMbjT4NXly0Q56m
+         KEjA==
+X-Gm-Message-State: AOJu0YycvzrifzDwoc7/GDsZmPSwAfM5EUzmQ6WJK2uoVjLSmQ88Deb1
+        1XrtmJG50DfcK4hP1RJJ+K0=
+X-Google-Smtp-Source: AGHT+IGBL51DeYpgL+magEgmgYlhAJgIVl/dxnxpMVavBn0gVCBQUOsJsxhHan5HC4O+ZgtrVM3t2g==
+X-Received: by 2002:a9d:7a5a:0:b0:6b7:5112:bc1a with SMTP id z26-20020a9d7a5a000000b006b75112bc1amr2375361otm.24.1691169294850;
+        Fri, 04 Aug 2023 10:14:54 -0700 (PDT)
+Received: from tx3000mach.io (static.220.238.itcsa.net. [190.15.220.238])
+        by smtp.gmail.com with ESMTPSA id z26-20020a05683020da00b006b92c078d05sm1354942otq.31.2023.08.04.10.14.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 04 Aug 2023 10:14:54 -0700 (PDT)
+From:   Martin Rodriguez Reboredo <yakoyoku@gmail.com>
+Cc:     Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
+        Miguel Ojeda <ojeda@kernel.org>,
+        Alex Gaynor <alex.gaynor@gmail.com>,
+        Wedson Almeida Filho <wedsonaf@gmail.com>,
+        Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>,
+        =?UTF-8?q?Bj=C3=B6rn=20Roy=20Baron?= <bjorn3_gh@protonmail.com>,
+        Benno Lossin <benno.lossin@proton.me>,
+        rust-for-linux@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v3] scripts: generate_rust_analyzer: provide `cfg`s for `core` and `alloc`
+Date:   Fri,  4 Aug 2023 14:14:39 -0300
+Message-ID: <20230804171448.54976-1-yakoyoku@gmail.com>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_PASS,SPF_PASS,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 2023-08-04 at 10:07 -0700, Dionna Amalie Glaze wrote:
-> > 
-> > Just on this one, it's already specified in the latest SVSM doc:
-> > 
-> > https://lore.kernel.org/linux-coco/a2f31400-9e1c-c12a-ad7f-ea0265a12068@amd.com/
-> > 
-> > The Service Attestation Data on page 36-37.  It says TPMT_PUBLIC of
-> > the
-> > EK.  However, what it doesn't say is *which* EK.  I already sent in
-> > a
-> > comment saying it should be the TCG template for the P-256 curve
-> > EK.
-> > 
-> > So asking the SVSM to give you the attestation report for the VTPM
-> > service binds the EK of the vTPM.
-> > 
-> 
-> Yes, thanks. It sounds like you have to ask the SVSM to certify the
-> EK separately from asking the TPM for a quote.
+Both `core` and `alloc` have their `cfgs` (such as `no_rc`) missing
+in `rust-project.json`.
 
-That's right.
+To remedy this, pass the flags to `generate_rust_analyzer.py` for
+them to be added to a dictionary where each key corresponds to
+a crate and each value to a list of `cfg`s. The dictionary is then
+used to pass the `cfg`s to each crate in the generated file (for
+`core` and `alloc` only).
 
->  We can't rely entirely on the TPM API and avoid a sev-guest device
-> for talking to the SVSM.
+Suggested-by: Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+Signed-off-by: Martin Rodriguez Reboredo <yakoyoku@gmail.com>
+---
+ rust/Makefile                     |  1 +
+ scripts/generate_rust_analyzer.py | 16 ++++++++++++++--
+ 2 files changed, 15 insertions(+), 2 deletions(-)
 
-Yes, you have to make a SVSM service attestation call initially to
-validate the vTPM.
-
->  Or are you saying the SVSM attestation report will get encoded in
-> the x.509 EK certificate that the TPM API returns, such as the report
-> is in a cert extension? I'm less clear on how TPM software would
-> interpret the Issuer of that cert.
-
-There is no certificate.  It's more like the Google Cloud: the SVSM
-vTPM has no EK cert, so you have to ask something else for validation
-of the EK, in this case a service attestation quote from the SVSM which
-confirms the binding of the current SVSM to the EK and then you use
-that EK pub to verify the vTPM.
-
-There's already experimental work to get this supported in Keylime, but
-doing it properly involves making the registrar EK validation mechanism
-pluggable.
-
-James
+diff --git a/rust/Makefile b/rust/Makefile
+index f7c9a6e54c85..e5173da3b682 100644
+--- a/rust/Makefile
++++ b/rust/Makefile
+@@ -374,6 +374,7 @@ quiet_cmd_rustc_library = $(if $(skip_clippy),RUSTC,$(RUSTC_OR_CLIPPY_QUIET)) L
+ 
+ rust-analyzer:
+ 	$(Q)$(srctree)/scripts/generate_rust_analyzer.py \
++		--cfgs='core=$(core-cfgs)' --cfgs='alloc=$(alloc-cfgs)' \
+ 		$(abs_srctree) $(abs_objtree) \
+ 		$(RUST_LIB_SRC) $(KBUILD_EXTMOD) > \
+ 		$(if $(KBUILD_EXTMOD),$(extmod_prefix),$(objtree))/rust-project.json
+diff --git a/scripts/generate_rust_analyzer.py b/scripts/generate_rust_analyzer.py
+index 848fa1ad92ba..fc52bc41d3e7 100755
+--- a/scripts/generate_rust_analyzer.py
++++ b/scripts/generate_rust_analyzer.py
+@@ -10,7 +10,15 @@ import os
+ import pathlib
+ import sys
+ 
+-def generate_crates(srctree, objtree, sysroot_src, external_src):
++def args_crates_cfgs(cfgs):
++    crates_cfgs = {}
++    for cfg in cfgs:
++        crate, vals = cfg.split("=", 1)
++        crates_cfgs[crate] = vals.replace("--cfg", "").split()
++
++    return crates_cfgs
++
++def generate_crates(srctree, objtree, sysroot_src, external_src, cfgs):
+     # Generate the configuration list.
+     cfg = []
+     with open(objtree / "include" / "generated" / "rustc_cfg") as fd:
+@@ -24,6 +32,7 @@ def generate_crates(srctree, objtree, sysroot_src, external_src):
+     # Avoid O(n^2) iterations by keeping a map of indexes.
+     crates = []
+     crates_indexes = {}
++    crates_cfgs = args_crates_cfgs(cfgs)
+ 
+     def append_crate(display_name, root_module, deps, cfg=[], is_workspace_member=True, is_proc_macro=False):
+         crates_indexes[display_name] = len(crates)
+@@ -45,6 +54,7 @@ def generate_crates(srctree, objtree, sysroot_src, external_src):
+         "core",
+         sysroot_src / "core" / "src" / "lib.rs",
+         [],
++        cfg=crates_cfgs.get("core", []),
+         is_workspace_member=False,
+     )
+ 
+@@ -58,6 +68,7 @@ def generate_crates(srctree, objtree, sysroot_src, external_src):
+         "alloc",
+         srctree / "rust" / "alloc" / "lib.rs",
+         ["core", "compiler_builtins"],
++        cfg=crates_cfgs.get("alloc", []),
+     )
+ 
+     append_crate(
+@@ -131,6 +142,7 @@ def generate_crates(srctree, objtree, sysroot_src, external_src):
+ def main():
+     parser = argparse.ArgumentParser()
+     parser.add_argument('--verbose', '-v', action='store_true')
++    parser.add_argument('--cfgs', action='append', default=[])
+     parser.add_argument("srctree", type=pathlib.Path)
+     parser.add_argument("objtree", type=pathlib.Path)
+     parser.add_argument("sysroot_src", type=pathlib.Path)
+@@ -143,7 +155,7 @@ def main():
+     )
+ 
+     rust_project = {
+-        "crates": generate_crates(args.srctree, args.objtree, args.sysroot_src, args.exttree),
++        "crates": generate_crates(args.srctree, args.objtree, args.sysroot_src, args.exttree, args.cfgs),
+         "sysroot_src": str(args.sysroot_src),
+     }
+ 
+-- 
+2.41.0
 
