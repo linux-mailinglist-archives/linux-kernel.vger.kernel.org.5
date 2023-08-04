@@ -2,59 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E08776F69B
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 02:43:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8847E76F69D
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 02:43:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232651AbjHDAnb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Aug 2023 20:43:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39252 "EHLO
+        id S232904AbjHDAnk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Aug 2023 20:43:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39266 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232749AbjHDAnE (ORCPT
+        with ESMTP id S232442AbjHDAnG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Aug 2023 20:43:04 -0400
-Received: from mail-pl1-x649.google.com (mail-pl1-x649.google.com [IPv6:2607:f8b0:4864:20::649])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D567F49F5
-        for <linux-kernel@vger.kernel.org>; Thu,  3 Aug 2023 17:42:30 -0700 (PDT)
-Received: by mail-pl1-x649.google.com with SMTP id d9443c01a7336-1bbbc4ae328so12083665ad.1
-        for <linux-kernel@vger.kernel.org>; Thu, 03 Aug 2023 17:42:30 -0700 (PDT)
+        Thu, 3 Aug 2023 20:43:06 -0400
+Received: from mail-yw1-x1149.google.com (mail-yw1-x1149.google.com [IPv6:2607:f8b0:4864:20::1149])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 271414687
+        for <linux-kernel@vger.kernel.org>; Thu,  3 Aug 2023 17:42:33 -0700 (PDT)
+Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-5734d919156so16734707b3.3
+        for <linux-kernel@vger.kernel.org>; Thu, 03 Aug 2023 17:42:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1691109750; x=1691714550;
+        d=google.com; s=20221208; t=1691109752; x=1691714552;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:reply-to:from:to:cc:subject:date:message-id:reply-to;
-        bh=TPdXiND7N94yuFEwSbECpKkQfmAanLh9RZ+A6BrvR7M=;
-        b=2tZIajDGiYM8LOP6oRS7sIm2pcBnaXfZ7Wymplbdn69KUU8q53NcZ7y0HFK8pN3rJv
-         XsgnlEdOHLu6ZqLedVwaja+dve26SOtilLHroxOKcn1gMKyUuqCKj30/Z97mg+qQ0A5R
-         3Ikj3Cg1e6W0kaLu9miTZWiHb9zsHokxrA3qv+mc/lCMvO6k2YOsSQj0EFs1erqLxsGU
-         3tJpi1uPKeG7pLmg5VlnYlIpw8x0qWFmi2sg4OydjUAuuqTERt756yyvc0gyoig//M6H
-         5fTKOOVxD2iGkXDjRyyWPE5G1u+8j6kSj/3rqzdeuj9Xdr5V2hQG6q1B7q16VMnrsqdk
-         zf2A==
+        bh=zoisc0YB1XdzgL3Mform49pg3ZfKIVNUNR7ICgYhzqE=;
+        b=a4GYzzIGruxXUnQRulR7Q7xPVPhglwcMI8dSt+2D0nS1HKiyVkOdEdTA22kHKgAdy0
+         HTMrJvInhxVscUAT2jGAxD6GjetlDBEEjRbs5tgpCurFNtDO9srlbkGATO8A+j84QHPn
+         LpTXCF+c1pA439z77TTyZdsi633JbNMsRox+apr+ntnTHhKnkysLOKyzwZ5Q5pXp59tr
+         gtO1qSFLzwPBSFZOp5ceRlT+y/Fr2xvWXpQcJIcBI/Eu/Nnf77Qul2yHoNvPK84le3qc
+         yZvzpyWSa2x/ElmpM+L8ZLi/IuMFNTuqvQUk6U2py9hi+gOnewe10HzpDZCYVmiCJipg
+         Lt6g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691109750; x=1691714550;
+        d=1e100.net; s=20221208; t=1691109752; x=1691714552;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:reply-to:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=TPdXiND7N94yuFEwSbECpKkQfmAanLh9RZ+A6BrvR7M=;
-        b=Xu9uRQfdLYOcd4RmRjDP9S8PwYhWjThZSnHP+QHxGoU/k8hTJpxitbVkk2jNTvrPeS
-         1CW4fhakKkjDy0otXCQbmLDvjPxJAkdAWpxVopEZIjS3n9CysrM96kSqOR/wWrkbv26p
-         IyARcrnRsM2On7QAAjQv+Z3z7PHkdRs0nMECl+h6B4ISOExscbzhW15bxwfig2dP4hmO
-         6LZJCmZflwfOMwQ9GCsG1+clEdy7Cp3Bsr1dq5+gnJ1ax4ky2HtwXs3mHgKpU5lT7vdU
-         JkWxpLSv4GUSdoGVtBLpYXiDk+tyi2rTBGGDb8RZu86uMiWmn1Wov+DC97Crr19r4NfO
-         9XgA==
-X-Gm-Message-State: AOJu0YxzIPiveMNUVgsKmAA9oW1dKSQ6uE2aQaFb5U8rLiUPj1XiH/py
-        hBuZKgoZXFQTOTK+3taBGXj+vPCFT6Y=
-X-Google-Smtp-Source: AGHT+IGxPWjxkWB9Y/JG84vlZ7jPt3zPsnr0k+1ejtlvOppoogL05sX+e7/sQkS50kBaur8MYBj5ozDKMXE=
+        bh=zoisc0YB1XdzgL3Mform49pg3ZfKIVNUNR7ICgYhzqE=;
+        b=H8e6ocNOYH4/PaLcCWCLZqbNzciFuKGf0Z6+YBzSlLmKlgGo6JgZ0RsZNz1v1qlpW0
+         31uT7Ac5aipPIKXQs19sIevszNZPzVbss/eQ2y8ImZMsMlRFQb7cntEjiSH3gwS3T7d0
+         V4tM3qj0vXXiu8nNlNlMNLoIyjmYwwISuu5DuGgWwmbo9l2AaY5zG/RMPbA810PsAt9P
+         aDOCjAZ0H52/xfgRFPGAH0zWGAL5cw9xKhVBG2CLAXRB5B+dAyrEf2WusWZqBIQYCkb7
+         7636vmM/miH+Et1eJdmy++tyqKbp2NkNE0m3HC1S3g6LvtS1NcXg6aOt9hoQ7zh0Dmlq
+         2dyw==
+X-Gm-Message-State: AOJu0YziPKrAbGY1FGIegGlAMj2/3saUMV0br9RTU0Q88uUW5wsqMjGW
+        f3GhEImfqkwFz7M/ouoVfS2CqO7BKN8=
+X-Google-Smtp-Source: AGHT+IEfIKaAO5uExbgPzBO0tfQZFXdYU8siIO4abEpJQBk+sr472KYhvYCdgm115nWDgEKOGaiceaxOXk0=
 X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a17:903:32d2:b0:1b8:5541:9d4d with SMTP id
- i18-20020a17090332d200b001b855419d4dmr1307plr.6.1691109750368; Thu, 03 Aug
- 2023 17:42:30 -0700 (PDT)
+ (user=seanjc job=sendgmr) by 2002:a81:ad04:0:b0:583:6f04:4267 with SMTP id
+ l4-20020a81ad04000000b005836f044267mr1388ywh.8.1691109752403; Thu, 03 Aug
+ 2023 17:42:32 -0700 (PDT)
 Reply-To: Sean Christopherson <seanjc@google.com>
-Date:   Thu,  3 Aug 2023 17:42:23 -0700
+Date:   Thu,  3 Aug 2023 17:42:24 -0700
 In-Reply-To: <20230804004226.1984505-1-seanjc@google.com>
 Mime-Version: 1.0
 References: <20230804004226.1984505-1-seanjc@google.com>
 X-Mailer: git-send-email 2.41.0.585.gd2178a4bd4-goog
-Message-ID: <20230804004226.1984505-2-seanjc@google.com>
-Subject: [PATCH 1/4] KVM: selftests: Drop the single-underscore ioctl() helpers
+Message-ID: <20230804004226.1984505-3-seanjc@google.com>
+Subject: [PATCH 2/4] KVM: selftests: Add helper macros for ioctl()s that
+ return file descriptors
 From:   Sean Christopherson <seanjc@google.com>
 To:     Marc Zyngier <maz@kernel.org>,
         Oliver Upton <oliver.upton@linux.dev>
@@ -73,104 +74,144 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Drop _kvm_ioctl(), _vm_ioctl(), and _vcpu_ioctl(), as they are no longer
-used by anything other than the no-underscores variants (and may have
-never been used directly).  The single-underscore variants were never
-intended to be a "feature", they were a stopgap of sorts to ease the
-conversion to pretty printing ioctl() names when reporting errors.
-
-Opportunistically add a comment explaining when to use __KVM_IOCTL_ERROR()
-versus KVM_IOCTL_ERROR().  The single-underscore macros were subtly
-ensuring that the name of the ioctl() was printed on error, i.e. it's all
-too easy to overlook the fact that using __KVM_IOCTL_ERROR() is
-intentional.
+Add KVM, VM, and vCPU scoped helpers for ioctl()s that return file
+descriptors, i.e. deduplicate code for asserting success on ioctls() for
+which a positive return value, not just zero, is considered success.
 
 Signed-off-by: Sean Christopherson <seanjc@google.com>
 ---
- .../selftests/kvm/include/kvm_util_base.h     | 42 +++++++++----------
- 1 file changed, 19 insertions(+), 23 deletions(-)
+ .../selftests/kvm/include/kvm_util_base.h     | 39 +++++++++++++------
+ tools/testing/selftests/kvm/lib/kvm_util.c    | 17 ++++----
+ 2 files changed, 36 insertions(+), 20 deletions(-)
 
 diff --git a/tools/testing/selftests/kvm/include/kvm_util_base.h b/tools/testing/selftests/kvm/include/kvm_util_base.h
-index 07732a157ccd..90b7739ca204 100644
+index 90b7739ca204..b35b0bd23683 100644
 --- a/tools/testing/selftests/kvm/include/kvm_util_base.h
 +++ b/tools/testing/selftests/kvm/include/kvm_util_base.h
-@@ -227,6 +227,13 @@ static inline bool kvm_has_cap(long cap)
- #define __KVM_SYSCALL_ERROR(_name, _ret) \
- 	"%s failed, rc: %i errno: %i (%s)", (_name), (_ret), errno, strerror(errno)
- 
-+/*
-+ * Use the "inner", double-underscore macro when reporting errors from within
-+ * other macros so that the name of ioctl() and not its literal numeric value
-+ * is printed on error.  The "outer" macro is strongly preferred when reporting
-+ * errors "directly", i.e. without an additional layer of macros, as it reduces
-+ * the probability of passing in the wrong string.
-+ */
- #define __KVM_IOCTL_ERROR(_name, _ret)	__KVM_SYSCALL_ERROR(_name, _ret)
- #define KVM_IOCTL_ERROR(_ioctl, _ret) __KVM_IOCTL_ERROR(#_ioctl, _ret)
- 
-@@ -239,17 +246,13 @@ static inline bool kvm_has_cap(long cap)
- #define __kvm_ioctl(kvm_fd, cmd, arg)				\
- 	kvm_do_ioctl(kvm_fd, cmd, arg)
- 
--
--#define _kvm_ioctl(kvm_fd, cmd, name, arg)			\
-+#define kvm_ioctl(kvm_fd, cmd, arg)				\
- ({								\
- 	int ret = __kvm_ioctl(kvm_fd, cmd, arg);		\
- 								\
--	TEST_ASSERT(!ret, __KVM_IOCTL_ERROR(name, ret));	\
-+	TEST_ASSERT(!ret, __KVM_IOCTL_ERROR(#cmd, ret));	\
+@@ -253,6 +253,14 @@ static inline bool kvm_has_cap(long cap)
+ 	TEST_ASSERT(!ret, __KVM_IOCTL_ERROR(#cmd, ret));	\
  })
  
--#define kvm_ioctl(kvm_fd, cmd, arg) \
--	_kvm_ioctl(kvm_fd, cmd, #cmd, arg)
--
++#define kvm_fd_ioctl(kvm_fd, cmd, arg)				\
++({								\
++	int fd = __kvm_ioctl(kvm_fd, cmd, arg);			\
++								\
++	TEST_ASSERT(fd >= 0, __KVM_IOCTL_ERROR(#cmd, fd));	\
++	fd;							\
++})
++
  static __always_inline void static_assert_is_vm(struct kvm_vm *vm) { }
  
  #define __vm_ioctl(vm, cmd, arg)				\
-@@ -258,16 +261,12 @@ static __always_inline void static_assert_is_vm(struct kvm_vm *vm) { }
- 	kvm_do_ioctl((vm)->fd, cmd, arg);			\
+@@ -268,6 +276,14 @@ static __always_inline void static_assert_is_vm(struct kvm_vm *vm) { }
+ 	TEST_ASSERT(!ret, __KVM_IOCTL_ERROR(#cmd, ret));	\
  })
  
--#define _vm_ioctl(vm, cmd, name, arg)				\
--({								\
--	int ret = __vm_ioctl(vm, cmd, arg);			\
--								\
--	TEST_ASSERT(!ret, __KVM_IOCTL_ERROR(name, ret));	\
--})
--
- #define vm_ioctl(vm, cmd, arg)					\
--	_vm_ioctl(vm, cmd, #cmd, arg)
--
++#define vm_fd_ioctl(vm, cmd, arg)				\
 +({								\
-+	int ret = __vm_ioctl(vm, cmd, arg);			\
++	int fd = __vm_ioctl(vm, cmd, arg);			\
 +								\
-+	TEST_ASSERT(!ret, __KVM_IOCTL_ERROR(#cmd, ret));	\
++	TEST_ASSERT(fd >= 0, __KVM_IOCTL_ERROR(#cmd, fd));	\
++	fd;							\
 +})
- 
++
  static __always_inline void static_assert_is_vcpu(struct kvm_vcpu *vcpu) { }
  
-@@ -277,15 +276,12 @@ static __always_inline void static_assert_is_vcpu(struct kvm_vcpu *vcpu) { }
- 	kvm_do_ioctl((vcpu)->fd, cmd, arg);			\
+ #define __vcpu_ioctl(vcpu, cmd, arg)				\
+@@ -283,16 +299,21 @@ static __always_inline void static_assert_is_vcpu(struct kvm_vcpu *vcpu) { }
+ 	TEST_ASSERT(!ret, __KVM_IOCTL_ERROR(#cmd, ret));	\
  })
  
--#define _vcpu_ioctl(vcpu, cmd, name, arg)			\
--({								\
--	int ret = __vcpu_ioctl(vcpu, cmd, arg);			\
--								\
--	TEST_ASSERT(!ret, __KVM_IOCTL_ERROR(name, ret));	\
--})
--
- #define vcpu_ioctl(vcpu, cmd, arg)				\
--	_vcpu_ioctl(vcpu, cmd, #cmd, arg)
++#define vcpu_fd_ioctl(vcpu, cmd, arg)				\
 +({								\
-+	int ret = __vcpu_ioctl(vcpu, cmd, arg);			\
++	int fd = __vcpu_ioctl(vcpu, cmd, arg);			\
 +								\
-+	TEST_ASSERT(!ret, __KVM_IOCTL_ERROR(#cmd, ret));	\
++	TEST_ASSERT(fd >= 0, __KVM_IOCTL_ERROR(#cmd, fd));	\
++	fd;							\
 +})
- 
++
  /*
   * Looks up and returns the value corresponding to the capability
+  * (KVM_CAP_*) given by cap.
+  */
+ static inline int vm_check_cap(struct kvm_vm *vm, long cap)
+ {
+-	int ret =  __vm_ioctl(vm, KVM_CHECK_EXTENSION, (void *)cap);
+-
+-	TEST_ASSERT(ret >= 0, KVM_IOCTL_ERROR(KVM_CHECK_EXTENSION, ret));
+-	return ret;
++	return vm_fd_ioctl(vm, KVM_CHECK_EXTENSION, (void *)cap);
+ }
+ 
+ static inline int __vm_enable_cap(struct kvm_vm *vm, uint32_t cap, uint64_t arg0)
+@@ -348,10 +369,7 @@ static inline uint32_t kvm_vm_reset_dirty_ring(struct kvm_vm *vm)
+ 
+ static inline int vm_get_stats_fd(struct kvm_vm *vm)
+ {
+-	int fd = __vm_ioctl(vm, KVM_GET_STATS_FD, NULL);
+-
+-	TEST_ASSERT(fd >= 0, KVM_IOCTL_ERROR(KVM_GET_STATS_FD, fd));
+-	return fd;
++	return vm_fd_ioctl(vm, KVM_GET_STATS_FD, NULL);
+ }
+ 
+ static inline void read_stats_header(int stats_fd, struct kvm_stats_header *header)
+@@ -558,10 +576,7 @@ static inline void vcpu_nested_state_set(struct kvm_vcpu *vcpu,
+ #endif
+ static inline int vcpu_get_stats_fd(struct kvm_vcpu *vcpu)
+ {
+-	int fd = __vcpu_ioctl(vcpu, KVM_GET_STATS_FD, NULL);
+-
+-	TEST_ASSERT(fd >= 0, KVM_IOCTL_ERROR(KVM_GET_STATS_FD, fd));
+-	return fd;
++	return vcpu_fd_ioctl(vcpu, KVM_GET_STATS_FD, NULL);
+ }
+ 
+ int __kvm_has_device_attr(int dev_fd, uint32_t group, uint64_t attr);
+diff --git a/tools/testing/selftests/kvm/lib/kvm_util.c b/tools/testing/selftests/kvm/lib/kvm_util.c
+index 7a8af1821f5d..557de1d26f10 100644
+--- a/tools/testing/selftests/kvm/lib/kvm_util.c
++++ b/tools/testing/selftests/kvm/lib/kvm_util.c
+@@ -117,8 +117,12 @@ unsigned int kvm_check_cap(long cap)
+ 	int kvm_fd;
+ 
+ 	kvm_fd = open_kvm_dev_path_or_exit();
+-	ret = __kvm_ioctl(kvm_fd, KVM_CHECK_EXTENSION, (void *)cap);
+-	TEST_ASSERT(ret >= 0, KVM_IOCTL_ERROR(KVM_CHECK_EXTENSION, ret));
++
++	/*
++	 * KVM_CHECK_EXTENSION doesn't return a file descriptor, but the
++	 * semantics are the same: a negative value is considered a failure.
++	 */
++	ret = kvm_fd_ioctl(kvm_fd, KVM_CHECK_EXTENSION, (void *)cap);
+ 
+ 	close(kvm_fd);
+ 
+@@ -136,12 +140,10 @@ void vm_enable_dirty_ring(struct kvm_vm *vm, uint32_t ring_size)
+ 
+ static void vm_open(struct kvm_vm *vm)
+ {
+-	vm->kvm_fd = _open_kvm_dev_path_or_exit(O_RDWR);
+-
+ 	TEST_REQUIRE(kvm_has_cap(KVM_CAP_IMMEDIATE_EXIT));
+ 
+-	vm->fd = __kvm_ioctl(vm->kvm_fd, KVM_CREATE_VM, (void *)vm->type);
+-	TEST_ASSERT(vm->fd >= 0, KVM_IOCTL_ERROR(KVM_CREATE_VM, vm->fd));
++	vm->kvm_fd = _open_kvm_dev_path_or_exit(O_RDWR);
++	vm->fd = kvm_fd_ioctl(vm->kvm_fd, KVM_CREATE_VM, (void *)vm->type);
+ }
+ 
+ const char *vm_guest_mode_string(uint32_t i)
+@@ -1226,8 +1228,7 @@ struct kvm_vcpu *__vm_vcpu_add(struct kvm_vm *vm, uint32_t vcpu_id)
+ 
+ 	vcpu->vm = vm;
+ 	vcpu->id = vcpu_id;
+-	vcpu->fd = __vm_ioctl(vm, KVM_CREATE_VCPU, (void *)(unsigned long)vcpu_id);
+-	TEST_ASSERT(vcpu->fd >= 0, KVM_IOCTL_ERROR(KVM_CREATE_VCPU, vcpu->fd));
++	vcpu->fd = vm_fd_ioctl(vm, KVM_CREATE_VCPU, (void *)(unsigned long)vcpu_id);
+ 
+ 	TEST_ASSERT(vcpu_mmap_sz() >= sizeof(*vcpu->run), "vcpu mmap size "
+ 		"smaller than expected, vcpu_mmap_sz: %i expected_min: %zi",
 -- 
 2.41.0.585.gd2178a4bd4-goog
 
