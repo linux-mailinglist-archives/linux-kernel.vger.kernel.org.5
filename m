@@ -2,71 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5280676F70F
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 03:42:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D851F76F710
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 03:43:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232067AbjHDBmW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Aug 2023 21:42:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54764 "EHLO
+        id S232292AbjHDBnC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Aug 2023 21:43:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55168 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230264AbjHDBmU (ORCPT
+        with ESMTP id S232180AbjHDBnA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Aug 2023 21:42:20 -0400
-Received: from mail-yw1-x1136.google.com (mail-yw1-x1136.google.com [IPv6:2607:f8b0:4864:20::1136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0853423F
-        for <linux-kernel@vger.kernel.org>; Thu,  3 Aug 2023 18:42:18 -0700 (PDT)
-Received: by mail-yw1-x1136.google.com with SMTP id 00721157ae682-5861116fd74so17889587b3.0
-        for <linux-kernel@vger.kernel.org>; Thu, 03 Aug 2023 18:42:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=sifive.com; s=google; t=1691113338; x=1691718138;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=giD5crJvVgFXxEOjUQ9Yq0Y5c2PK/y9XDLcfiurNQEY=;
-        b=bbPLdps+zGZvnWfC0ij+NMQEfOt2gNinAPJJZiO8Yzi1j5Ys7cz6KVf+cUn2GQlk0B
-         Eu7JkLy7WinuqqUb1Y3C4Ixg1DqX0pjHxLsthYxkM6N9hS/+u2Hav/Ox+44DG7ZkUGMR
-         x+C0nTaQtLMMnAMMQHlPvDdDdd6DDiuaNljvwRktma/vRkilHtbuMHq/qiNstSGMEWD3
-         1DxfBKwQSWt47850VXbktJMzOFBicXid6NjUyeplXK0+JMPJwGIRu5s1PFzzwPGwNuoo
-         oD2DUYJabV+jVXI7kZnoxVQxfJdIOfUN2VvkXtiFYuXvmbgwqV+aO/1qhRJqLu3hs0ih
-         TEEg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691113338; x=1691718138;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=giD5crJvVgFXxEOjUQ9Yq0Y5c2PK/y9XDLcfiurNQEY=;
-        b=TbZeqloE+gI03QPS3f0CsIyR8dpWWXVYVKojf9IWO+SIx2Ikhfz3B3ha2c9ClGWnub
-         yQx6wzyabQuErLHf92Hj5odO2yXU1Um445u8tyKO++b1a69dhmlFukybDLBOdJ4uAoKK
-         YCXtNNQ3IziOFpZxZHXVzob+st2fWQmy5n0KLjOXgSh+TzDQSi8Osxfoa8wnp3iGKy0z
-         P9EsYZ6kQKWmnQgW73WxJTmdv+aXJXYGAQut71GDW6khO3XVJWABSI5Qde0gPmuZ5ajx
-         oxC9PSA6l5dHw/EJ1BeUxKWPkhloJ4Aq2WUFz11tr7+wN4wm9P5D8emWJMMsOCl3KvPE
-         290w==
-X-Gm-Message-State: AOJu0YweEVrPfyxh7iyPR89llvOmKzygeVDjYKTOzzgPxi/beimuMYPc
-        PCiZ+JMIusf7XFJToByVRs+b3yfBnafkq+bMmbERkw==
-X-Google-Smtp-Source: AGHT+IE2GOuOWOrI3eLUWlcZE1w35uJr5Ss1GfYBoSJYqAQUdRHIocBAQZMyVMKMIgPWxo+ZI3IaojEWNQmnAmBj/Sw=
-X-Received: by 2002:a81:a545:0:b0:577:3eaa:8d97 with SMTP id
- v5-20020a81a545000000b005773eaa8d97mr281414ywg.17.1691113338123; Thu, 03 Aug
- 2023 18:42:18 -0700 (PDT)
+        Thu, 3 Aug 2023 21:43:00 -0400
+Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9087B10C7;
+        Thu,  3 Aug 2023 18:42:58 -0700 (PDT)
+Received: from kwepemm600003.china.huawei.com (unknown [172.30.72.53])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4RH7j12jkZzVjvb;
+        Fri,  4 Aug 2023 09:41:09 +0800 (CST)
+Received: from [10.67.111.205] (10.67.111.205) by
+ kwepemm600003.china.huawei.com (7.193.23.202) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.27; Fri, 4 Aug 2023 09:42:55 +0800
+Subject: Re: [PATCH v4 4/7] perf record: Track sideband events for all CPUs
+ when tracing selected CPUs
+To:     Adrian Hunter <adrian.hunter@intel.com>, <peterz@infradead.org>,
+        <mingo@redhat.com>, <acme@kernel.org>, <mark.rutland@arm.com>,
+        <alexander.shishkin@linux.intel.com>, <jolsa@kernel.org>,
+        <namhyung@kernel.org>, <irogers@google.com>,
+        <kan.liang@linux.intel.com>, <james.clark@arm.com>,
+        <tmricht@linux.ibm.com>, <ak@linux.intel.com>,
+        <anshuman.khandual@arm.com>, <linux-kernel@vger.kernel.org>,
+        <linux-perf-users@vger.kernel.org>
+References: <20230802074948.136468-1-yangjihong1@huawei.com>
+ <20230802074948.136468-5-yangjihong1@huawei.com>
+ <bbfd8e23-db63-61fc-4f9e-25e993345b57@intel.com>
+From:   Yang Jihong <yangjihong1@huawei.com>
+Message-ID: <a1eedb1d-ea92-0e66-1013-874c06861682@huawei.com>
+Date:   Fri, 4 Aug 2023 09:42:55 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.1
 MIME-Version: 1.0
-References: <20230803085734.340-1-nylon.chen@sifive.com> <20230803-vehicular-leggings-2830239f818a@wendy>
- <20230803-caretaker-voicing-e982f2334067@wendy>
-In-Reply-To: <20230803-caretaker-voicing-e982f2334067@wendy>
-From:   Nylon Chen <nylon.chen@sifive.com>
-Date:   Fri, 4 Aug 2023 09:42:06 +0800
-Message-ID: <CAHh=Yk9A3MP4Zgz53+s_ugvMtnv57igY=+Yccbp9Om9jBuxXqg@mail.gmail.com>
-Subject: Re: [PATCH v4 0/1] Change PWM-controlled LED pin active mode and algorithm
-To:     Conor Dooley <conor.dooley@microchip.com>
-Cc:     linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-riscv@lists.infradead.org, geert+renesas@glider.be,
-        pavel@ucw.cz, vincent.chen@sifive.com,
-        emil.renner.berthing@canonical.com, aou@eecs.berkeley.edu,
-        palmer@dabbelt.com, paul.walmsley@sifive.com,
-        krzysztof.kozlowski+dt@linaro.org, robh+dt@kernel.org,
-        conor@kernel.org, zong.li@sifive.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+In-Reply-To: <bbfd8e23-db63-61fc-4f9e-25e993345b57@intel.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.67.111.205]
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+ kwepemm600003.china.huawei.com (7.193.23.202)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -75,75 +59,163 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Conor,
+Hello,
 
-Conor Dooley <conor.dooley@microchip.com> =E6=96=BC 2023=E5=B9=B48=E6=9C=88=
-3=E6=97=A5 =E9=80=B1=E5=9B=9B =E4=B8=8B=E5=8D=885:44=E5=AF=AB=E9=81=93=EF=
-=BC=9A
->
-> Hey Nylon,
->
-> (I yoinked the reply to 1/1 to here, as it makes more sense in this
-> context)
->
-> > On Thu, Aug 03, 2023 at 10:15:10AM +0100, Conor Dooley wrote:
-> > > On Thu, Aug 03, 2023 at 04:57:33PM +0800, Nylon Chen wrote:
-> > > > According to the circuit diagram of User LEDs - RGB described in th=
-emanual hifive-unleashed-a00.pdf[0] and hifive-unmatched-schematics-v3.pdf[=
-1].
-> > > >
-> > > > The behavior of PWM is acitve-high.
-> > > >
-> > > > Removed patches: 1
-> > > > New patches: (none)
-> > > >
-> > > > Links:
-> > > > - [0]:  https://sifive.cdn.prismic.io/sifive/c52a8e32-05ce-4aaf-95c=
-8-7bf8453f8698_hifive-unleashed-a00-schematics-1.pdf
-> > > > - [1]:  https://sifive.cdn.prismic.io/sifive/6a06d6c0-6e66-49b5-8e9=
-e-e68ce76f4192_hifive-unmatched-schematics-v3.pdf
-> > > > - [2]:  https://sifive.cdn.prismic.io/sifive/1a82e600-1f93-4f41-b2d=
-8-86ed8b16acba_fu740-c000-manual-v1p6.pdf
-> > > >
-> > > > Changed in v4:
-> > > >  - Remove previous updates to the PWM algorithm.
-> > >
-> > > Why? I don't recall the conclusion on the previous version being that
-> > > that patch was not needed.
-> >
-> > I apologize for forgetting about this update earlier. Just now,
-> > I tried to pull rebase master and noticed that other developers seem
-> > to have made some fixes to the algorithm. Upon closer inspection, I
-> > found that they addressed the part we previously discussed with Emil
-> > and Uwe, such as "first pwm_apply_state."
-> >
-> > Therefore, my instinct tells me that they have already taken care of
-> > the issues we discussed before.
->
-> I didn't see anything in linux-next that would solve this problem of
-> inversion. The last meaningful change is:
->         commit 334c7b13d38321e47d1a51dba0bef9f4c403ec75
->         Author:     Emil Renner Berthing <emil.renner.berthing@canonical.=
-com>
->         AuthorDate: Wed Nov 9 12:37:24 2022 +0100
->         Commit:     Thierry Reding <thierry.reding@gmail.com>
->         CommitDate: Mon Jan 30 16:42:45 2023 +0100
->
->             pwm: sifive: Always let the first pwm_apply_state succeed
->
-> which predates your v3 by quite a bit.
->
-> > I will review the conflicting parts in the pwm-sifive.c code in my v4
-> > version once again to ensure there are no omissions. If I find any, I
-> > will submit v5 accordingly.
->
-> And if this patch is okay in isolation, please reply here explaining
-> which commit fixed the algorithm, so that I can pick it up.
-This patch needs to be accompanied by modifications to the
-pwm_sifive_apply() function to make sense.
+On 2023/8/3 14:28, Adrian Hunter wrote:
+> On 2/08/23 10:49, Yang Jihong wrote:
+>> User space tasks can migrate between CPUs, we need to track side-band
+>> events for all CPUs.
+>>
+>> The specific scenarios are as follows:
+>>
+>>           CPU0                                 CPU1
+>>    perf record -C 0 start
+>>                                taskA starts to be created and executed
+>>                                  -> PERF_RECORD_COMM and PERF_RECORD_MMAP
+>>                                     events only deliver to CPU1
+>>                                ......
+>>                                  |
+>>                            migrate to CPU0
+>>                                  |
+>>    Running on CPU0    <----------/
+>>    ...
+>>
+>>    perf record -C 0 stop
+>>
+>> Now perf samples the PC of taskA. However, perf does not record the
+>> PERF_RECORD_COMM and PERF_RECORD_MMAP events of taskA.
+>> Therefore, the comm and symbols of taskA cannot be parsed.
+>>
+>> The solution is to record sideband events for all CPUs when tracing
+>> selected CPUs. Because this modifies the default behavior, add related
+>> comments to the perf record man page.
+>>
+>> The sys_perf_event_open invoked is as follows:
+>>
+>>    # perf --debug verbose=3 record -e cpu-clock -C 1 true
+>>    <SNIP>
+>>    Opening: cpu-clock
+>>    ------------------------------------------------------------
+>>    perf_event_attr:
+>>      type                             1 (PERF_TYPE_SOFTWARE)
+>>      size                             136
+>>      config                           0 (PERF_COUNT_SW_CPU_CLOCK)
+>>      { sample_period, sample_freq }   4000
+>>      sample_type                      IP|TID|TIME|CPU|PERIOD|IDENTIFIER
+>>      read_format                      ID|LOST
+>>      disabled                         1
+>>      inherit                          1
+>>      freq                             1
+>>      sample_id_all                    1
+>>      exclude_guest                    1
+>>    ------------------------------------------------------------
+>>    sys_perf_event_open: pid -1  cpu 1  group_fd -1  flags 0x8 = 5
+>>    Opening: dummy:u
+>>    ------------------------------------------------------------
+>>    perf_event_attr:
+>>      type                             1 (PERF_TYPE_SOFTWARE)
+>>      size                             136
+>>      config                           0x9 (PERF_COUNT_SW_DUMMY)
+>>      { sample_period, sample_freq }   1
+>>      sample_type                      IP|TID|TIME|CPU|IDENTIFIER
+>>      read_format                      ID|LOST
+>>      inherit                          1
+>>      exclude_kernel                   1
+>>      exclude_hv                       1
+>>      mmap                             1
+>>      comm                             1
+>>      task                             1
+>>      sample_id_all                    1
+>>      exclude_guest                    1
+>>      mmap2                            1
+>>      comm_exec                        1
+>>      ksymbol                          1
+>>      bpf_event                        1
+>>    ------------------------------------------------------------
+>>    sys_perf_event_open: pid -1  cpu 0  group_fd -1  flags 0x8 = 6
+>>    sys_perf_event_open: pid -1  cpu 1  group_fd -1  flags 0x8 = 7
+>>    sys_perf_event_open: pid -1  cpu 2  group_fd -1  flags 0x8 = 9
+>>    sys_perf_event_open: pid -1  cpu 3  group_fd -1  flags 0x8 = 10
+>>    sys_perf_event_open: pid -1  cpu 4  group_fd -1  flags 0x8 = 11
+>>    sys_perf_event_open: pid -1  cpu 5  group_fd -1  flags 0x8 = 12
+>>    sys_perf_event_open: pid -1  cpu 6  group_fd -1  flags 0x8 = 13
+>>    sys_perf_event_open: pid -1  cpu 7  group_fd -1  flags 0x8 = 14
+>>    <SNIP>
+>>
+>> Signed-off-by: Yang Jihong <yangjihong1@huawei.com>
+>> ---
+>>   tools/perf/Documentation/perf-record.txt |  3 ++
+>>   tools/perf/builtin-record.c              | 45 +++++++++++++++++++++++-
+>>   2 files changed, 47 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/tools/perf/Documentation/perf-record.txt b/tools/perf/Documentation/perf-record.txt
+>> index 680396c56bd1..dac53ece51ab 100644
+>> --- a/tools/perf/Documentation/perf-record.txt
+>> +++ b/tools/perf/Documentation/perf-record.txt
+>> @@ -388,6 +388,9 @@ comma-separated list with no space: 0,1. Ranges of CPUs are specified with -: 0-
+>>   In per-thread mode with inheritance mode on (default), samples are captured only when
+>>   the thread executes on the designated CPUs. Default is to monitor all CPUs.
+>>   
+>> +User space tasks can migrate between CPUs, so when tracing selected CPUs,
+>> +a dummy event is created to track sideband for all CPUs.
+>> +
+>>   -B::
+>>   --no-buildid::
+>>   Do not save the build ids of binaries in the perf.data files. This skips
+>> diff --git a/tools/perf/builtin-record.c b/tools/perf/builtin-record.c
+>> index 3ff9d972225e..468afeaac52d 100644
+>> --- a/tools/perf/builtin-record.c
+>> +++ b/tools/perf/builtin-record.c
+>> @@ -908,10 +908,45 @@ static int record__config_off_cpu(struct record *rec)
+>>   	return off_cpu_prepare(rec->evlist, &rec->opts.target, &rec->opts);
+>>   }
+>>   
+>> +static bool record__tracking_system_wide(struct record *rec)
+>> +{
+>> +	struct record_opts *opts = &rec->opts;
+>> +	struct evlist *evlist = rec->evlist;
+>> +	struct evsel *evsel;
+>> +
+>> +	/*
+>> +	 * If all (non-dummy) evsel have exclude_user,
+>> +	 * system_wide is not needed.
+>> +	 *
+>> +	 * all_kernel and all_user will overwrite exclude_kernel and
+>> +	 * exclude_user of attr in evsel__config(), here need to check
+>> +	 * all the three items.
+>> +	 *
+>> +	 * Sideband system wide if one of the following conditions is met:
+>> +	 *
+>> +	 *   - all_user is set, and there is a non-dummy event
+>> +	 *   - all_user and all_kernel are not set, and there is
+>> +	 *     a non-dummy event without exclude_user
+>> +	 */
+> 
+> Could start with:
+> 
+> 	if (opts->all_kernel)
+> 		return false;
+> 
+>> +	evlist__for_each_entry(evlist, evsel) {
+>> +		if (!evsel__is_dummy_event(evsel)) {
+>> +			if (opts->all_user)
+>> +				return true;
+>> +
+>> +			if (!opts->all_user && !opts->all_kernel &&
+> 
+> !opts->all_user is always true here
+> 
+>> +			    !evsel->core.attr.exclude_user)
+>> +				return true;
+> 
+> So then this could simply be:
+> 
+> 			if (opts->all_user || !evsel->core.attr.exclude_user)
+> 				return true;
+> 
+> 
+Thanks for correction. It will be modified in the next version according 
+to the above.
 
-I will double-check and review the previous discussions to ensure
-that. Thank you for your response.
->
-> Thanks,
-> Conor.
+Thanks,
+Yang
