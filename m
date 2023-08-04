@@ -2,295 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D608C77057B
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 18:02:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D49777057E
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 18:03:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229935AbjHDQCl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Aug 2023 12:02:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54772 "EHLO
+        id S232262AbjHDQDI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Aug 2023 12:03:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55120 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229452AbjHDQCk (ORCPT
+        with ESMTP id S232331AbjHDQCz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Aug 2023 12:02:40 -0400
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0230246B3
-        for <linux-kernel@vger.kernel.org>; Fri,  4 Aug 2023 09:02:38 -0700 (PDT)
-Received: by mail-yb1-xb4a.google.com with SMTP id 3f1490d57ef6-d437624b9c1so998581276.0
-        for <linux-kernel@vger.kernel.org>; Fri, 04 Aug 2023 09:02:37 -0700 (PDT)
+        Fri, 4 Aug 2023 12:02:55 -0400
+Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C68D2D71
+        for <linux-kernel@vger.kernel.org>; Fri,  4 Aug 2023 09:02:51 -0700 (PDT)
+Received: by mail-wr1-x42a.google.com with SMTP id ffacd0b85a97d-31751d7d96eso1904904f8f.1
+        for <linux-kernel@vger.kernel.org>; Fri, 04 Aug 2023 09:02:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1691164957; x=1691769757;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=cuCBtoQdI93dHT+cZwGP8pXvIQr2Syt9WOhIw05rJFI=;
-        b=j5VnIqwSoLckq3DYeEJA9MUnThstOKIAeTrJ2DJibvxhFLyDAdlWfMFXfokliUo+AF
-         tyBnFkvVavmJwINoQFtyLs+lt+2vl3DFqO0ZIk5puTPFAS27D5iL8Juyq6tXU+CQ9d8T
-         Fgin9GD7L43wzl5OKADswzZ+xWQz72Es868+eVrM5+7YeuTyVjcU6XORU9DLoM8uvlEw
-         OLvJV9FLLl9qskaB3LykUJL15fQvv5zAwasBEjQ/cHi5y6AtYPDylW9jYhjKD0Wv9RRr
-         u1nhCTxbE5SKB3/Ri7uuRReR+ii3OF3Q0Q0GGhKGXPTVsPk9sxgveRHUd5Z/GeTmltWf
-         PbqA==
+        d=linaro.org; s=google; t=1691164969; x=1691769769;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=ZOHAPZJIyf1nvT44zbs9xcZKeI5Rx3Lp6m910v0C5nE=;
+        b=FCci7qzbL2drmMD/LBqpcM5b7bHBbLOlwDL5VcTKhKfswJwkz+/BO8ZugjiTrcR5Nn
+         CSHkzSosjbuUa1FtkIoUAV/73Kr63FhfeRxf14uJjSp7pqqlkPR5JwC8reA4rh1IKMyd
+         0+NKF4Ohi+LZ0YiZSex6e7rTwCr6AWmyCBJhMhM+7J+E+La2UWIYYKc3mL44VrMQnBoK
+         6rwluKIrAh9lEYJGkU6w61SFzJqnjgTUU3OeZpEWDZYo6HPDrr51eBKS++e/zOu/02jD
+         9tKFOIj3Oxm99ku/iJ0yNVhVDaO8GI9kUldzftq1qt+hYM/0IJ6zsJeUFDvAnRfbWgP+
+         E5KA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691164957; x=1691769757;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=cuCBtoQdI93dHT+cZwGP8pXvIQr2Syt9WOhIw05rJFI=;
-        b=Aw66s6bMMHVIojEQFJNlPezUhtFibq02MjaJmv0GaOj4NArVUXuJNHVRUTkb9vudV2
-         B6ljwMBVoNRzLfizScWdqhHLNUiCQKKQlnKab6YgDzmHFGs7rURrBmA8K6/b2wX2it7T
-         V53z59VXZYjWYnLo3vYQtaXh0vhDVKKeehEZ3xW+Nq1LjFG63DaueaX3ulb+PghjwrJ9
-         AHQ5O/12hpuU3zvEJWT/myJ5MP/krLnugSIrnpg8/g3Ex3bAFtlDi3Wb3G7MvvSCmXuU
-         3dZ2TOni208QuoW3QFjTctoIDFU7N2hoYxlSfocJZNFg5/KdyOZ8cQacE/FGb2eWgJQz
-         5bqw==
-X-Gm-Message-State: AOJu0Yx536FpFWiqIHHK0FyNQlF2F59F84SmohMj/bmPsI6g/O5tZYAj
-        hBXOx9ndbvixOb6wQQFRodAjl94fiNo=
-X-Google-Smtp-Source: AGHT+IHYUxUlo5rz82mD8KV7ITNLs34kQJKSqyy2f82gkbp9HL8WYSMDX0mX28/OucVaQDC3e8vyXuDwGWM=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a25:f80b:0:b0:d3f:cfa:2350 with SMTP id
- u11-20020a25f80b000000b00d3f0cfa2350mr12714ybd.10.1691164957224; Fri, 04 Aug
- 2023 09:02:37 -0700 (PDT)
-Date:   Fri, 4 Aug 2023 09:02:35 -0700
-In-Reply-To: <20230803042732.88515-5-weijiang.yang@intel.com>
-Mime-Version: 1.0
-References: <20230803042732.88515-1-weijiang.yang@intel.com> <20230803042732.88515-5-weijiang.yang@intel.com>
-Message-ID: <ZM0hG7Pn/fkGruWu@google.com>
-Subject: Re: [PATCH v5 04/19] KVM:x86: Refresh CPUID on write to guest MSR_IA32_XSS
-From:   Sean Christopherson <seanjc@google.com>
-To:     Yang Weijiang <weijiang.yang@intel.com>
-Cc:     pbonzini@redhat.com, peterz@infradead.org, john.allen@amd.com,
-        kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        rick.p.edgecombe@intel.com, chao.gao@intel.com,
-        binbin.wu@linux.intel.com, Zhang Yi Z <yi.z.zhang@linux.intel.com>
-Content-Type: text/plain; charset="us-ascii"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=unavailable
-        autolearn_force=no version=3.4.6
+        d=1e100.net; s=20221208; t=1691164969; x=1691769769;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ZOHAPZJIyf1nvT44zbs9xcZKeI5Rx3Lp6m910v0C5nE=;
+        b=U85530GjHqScZ9ryXlp/Q4JWD3Mg3NsgpkLZo1btyHVe7sJwhnP59NjvSWhU0NXRTT
+         U02pHD9hm9bmpDU3dldnk0u7FFyZA++rwBS6/C/My2sifbtZm5v9BnOEaPS51cKMtqMA
+         xJMDwz7qXtcmoCG/UBTOvJ9NfskuVZfydeW38os5lvjlAFtRt7yCEnj6qy3atX3niIAg
+         zJ4Npz4V8ammZEg54EM5t0hWZzb9xGOk5kr/Fxp5PoDhy9jDW4chCg2pHcDkkDIHE6L3
+         RywqMkge7VpwsFQkTF22UCdi06/X6zldYPz5+DUexlbbCSmRSmswxBUXlmLm7JfjoKxk
+         GdKQ==
+X-Gm-Message-State: AOJu0YzsrTL5WSAIWTKm+CENILzqRUQeVNRHroVCAwEqRQQPz4dwGK3t
+        hYSoNywkqg0ajBt88HeHc9hcKw==
+X-Google-Smtp-Source: AGHT+IGxDY1CYcywGuX0HnIuOGY0yx+9NZTfW7Br7zSQ5hgiDNN/UCDEsDmnF80RF/oItrhVioyJKw==
+X-Received: by 2002:a5d:4b03:0:b0:317:5af3:caa4 with SMTP id v3-20020a5d4b03000000b003175af3caa4mr1623600wrq.38.1691164969434;
+        Fri, 04 Aug 2023 09:02:49 -0700 (PDT)
+Received: from localhost ([102.36.222.112])
+        by smtp.gmail.com with ESMTPSA id b7-20020a5d40c7000000b0031423a8f4f7sm2874664wrq.56.2023.08.04.09.02.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 04 Aug 2023 09:02:49 -0700 (PDT)
+Date:   Fri, 4 Aug 2023 19:02:46 +0300
+From:   Dan Carpenter <dan.carpenter@linaro.org>
+To:     Miquel Raynal <miquel.raynal@bootlin.com>
+Cc:     oe-kbuild@lists.linux.dev,
+        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+        lkp@intel.com, oe-kbuild-all@lists.linux.dev,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        Robert Marko <robert.marko@sartura.hr>,
+        Luka Perkov <luka.perkov@sartura.hr>,
+        Michael Walle <michael@walle.cc>, linux-kernel@vger.kernel.org,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Chen-Yu Tsai <wenst@chromium.org>,
+        Daniel Golle <daniel@makrotopia.org>,
+        =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>
+Subject: Re: [PATCH v7 5/7] nvmem: core: Rework layouts to become platform
+ devices
+Message-ID: <15cfd153-314a-4eeb-8de9-97a888905bff@kadam.mountain>
+References: <20230801182132.1058707-6-miquel.raynal@bootlin.com>
+ <b9040273-aca8-432a-83aa-b0d6b1b88529@kadam.mountain>
+ <20230804173903.2b298cd3@xps-13>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230804173903.2b298cd3@xps-13>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 03, 2023, Yang Weijiang wrote:
-> Update CPUID(EAX=0DH,ECX=1) when the guest's XSS is modified.
-> CPUID(EAX=0DH,ECX=1).EBX reports required storage size of
-> all enabled xstate features in XCR0 | XSS. Guest can allocate
-> sufficient xsave buffer based on the info.
-
-Please wrap changelogs closer to ~75 chars.  I'm pretty sure this isn't the first
-time I've made this request...
-
-> Note, KVM does not yet support any XSS based features, i.e.
-> supported_xss is guaranteed to be zero at this time.
+On Fri, Aug 04, 2023 at 05:39:03PM +0200, Miquel Raynal wrote:
+> Hi Dan,
 > 
-> Co-developed-by: Zhang Yi Z <yi.z.zhang@linux.intel.com>
-> Signed-off-by: Zhang Yi Z <yi.z.zhang@linux.intel.com>
-> Signed-off-by: Yang Weijiang <weijiang.yang@intel.com>
-> ---
->  arch/x86/include/asm/kvm_host.h |  1 +
->  arch/x86/kvm/cpuid.c            | 20 ++++++++++++++++++--
->  arch/x86/kvm/x86.c              |  8 +++++---
->  3 files changed, 24 insertions(+), 5 deletions(-)
+> dan.carpenter@linaro.org wrote on Thu, 3 Aug 2023 13:13:04 +0300:
 > 
-> diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
-> index 28bd38303d70..20bbcd95511f 100644
-> --- a/arch/x86/include/asm/kvm_host.h
-> +++ b/arch/x86/include/asm/kvm_host.h
-> @@ -804,6 +804,7 @@ struct kvm_vcpu_arch {
->  
->  	u64 xcr0;
->  	u64 guest_supported_xcr0;
-> +	u64 guest_supported_xss;
->  
->  	struct kvm_pio_request pio;
->  	void *pio_data;
-> diff --git a/arch/x86/kvm/cpuid.c b/arch/x86/kvm/cpuid.c
-> index 7f4d13383cf2..0338316b827c 100644
-> --- a/arch/x86/kvm/cpuid.c
-> +++ b/arch/x86/kvm/cpuid.c
-> @@ -249,6 +249,17 @@ static u64 cpuid_get_supported_xcr0(struct kvm_cpuid_entry2 *entries, int nent)
->  	return (best->eax | ((u64)best->edx << 32)) & kvm_caps.supported_xcr0;
->  }
->  
-> +static u64 cpuid_get_supported_xss(struct kvm_cpuid_entry2 *entries, int nent)
-> +{
-> +	struct kvm_cpuid_entry2 *best;
-> +
-> +	best = cpuid_entry2_find(entries, nent, 0xd, 1);
-> +	if (!best)
-> +		return 0;
-> +
-> +	return (best->ecx | ((u64)best->edx << 32)) & kvm_caps.supported_xss;
-> +}
-> +
->  static void __kvm_update_cpuid_runtime(struct kvm_vcpu *vcpu, struct kvm_cpuid_entry2 *entries,
->  				       int nent)
->  {
-> @@ -276,8 +287,11 @@ static void __kvm_update_cpuid_runtime(struct kvm_vcpu *vcpu, struct kvm_cpuid_e
->  
->  	best = cpuid_entry2_find(entries, nent, 0xD, 1);
->  	if (best && (cpuid_entry_has(best, X86_FEATURE_XSAVES) ||
-> -		     cpuid_entry_has(best, X86_FEATURE_XSAVEC)))
-> -		best->ebx = xstate_required_size(vcpu->arch.xcr0, true);
-> +		     cpuid_entry_has(best, X86_FEATURE_XSAVEC))) {
-> +		u64 xstate = vcpu->arch.xcr0 | vcpu->arch.ia32_xss;
+> > Hi Miquel,
+> > 
+> > kernel test robot noticed the following build warnings:
+> > 
+> > https://git-scm.com/docs/git-format-patch#_base_tree_information]
+> > 
+> > url:    https://github.com/intel-lab-lkp/linux/commits/Miquel-Raynal/nvmem-core-Create-all-cells-before-adding-the-nvmem-device/20230802-022331
+> > base:   char-misc/char-misc-testing
+> > patch link:    https://lore.kernel.org/r/20230801182132.1058707-6-miquel.raynal%40bootlin.com
+> > patch subject: [PATCH v7 5/7] nvmem: core: Rework layouts to become platform devices
+> > config: x86_64-randconfig-m001-20230730 (https://download.01.org/0day-ci/archive/20230803/202308030002.DnSFOrMB-lkp@intel.com/config)
+> > compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
+> > reproduce: (https://download.01.org/0day-ci/archive/20230803/202308030002.DnSFOrMB-lkp@intel.com/reproduce)
+> > 
+> > If you fix the issue in a separate patch/commit
+> > (i.e. not just a new version of the same patch/commit),
+> 
+> (Nice addition, a lot of newcomers would always add these tags
+> otherwise.)
 
-Nit, the variable should be xfeatures, not xstate.  Though I vote to avoid the
-variable entirely,
+The Intel kbuild devs add this stuff, I just look it over and hit
+forward.
 
-	best = cpuid_entry2_find(entries, nent, 0xD, 1);
-	if (best && (cpuid_entry_has(best, X86_FEATURE_XSAVES) ||
-		     cpuid_entry_has(best, X86_FEATURE_XSAVEC)))
-		best->ebx = xstate_required_size(vcpu->arch.xcr0 |
-						 vcpu->arch.ia32_xss, true);
+> 
+> > kindly add following tags
+> > | Reported-by: kernel test robot <lkp@intel.com>
+> > | Reported-by: Dan Carpenter <dan.carpenter@linaro.org>
+> > | Closes: https://lore.kernel.org/r/202308030002.DnSFOrMB-lkp@intel.com/
+> > 
+> > New smatch warnings:
+> > drivers/nvmem/core.c:1003 nvmem_register() warn: 'layout_np' is an error pointer or valid
+> > drivers/nvmem/core.c:2130 nvmem_try_loading_layout_driver() warn: 'layout_np' is an error pointer or valid
+> > 
+> > Old smatch warnings:
+> > drivers/nvmem/core.c:761 nvmem_add_cells_from_fixed_layout() warn: 'layout_np' is an error pointer or valid
+> > drivers/nvmem/core.c:802 nvmem_layout_get() warn: 'layout_np' is an error pointer or valid
+> > 
+> > vim +/layout_np +1003 drivers/nvmem/core.c
+> > 
+> > 266570f496b90d Michael Walle         2023-04-04  1000  
+> > 00d059fd6702f0 Miquel Raynal         2023-08-01  1001  	/* Populate layouts as devices */
+> > 00d059fd6702f0 Miquel Raynal         2023-08-01  1002  	layout_np = of_nvmem_layout_get_container(nvmem);
+> > 00d059fd6702f0 Miquel Raynal         2023-08-01 @1003  	if (layout_np) {
+> > 
+> > So, ugh, of_nvmem_layout_get_container() return NULL on error or error
+> > pointer if either CONFIG_NVMEM or CONFIG_OF is turned off.  I feel like
+> > that's a mistake.  Normally when a function returns both error pointers
+> > and NULL then the NULL means the feature is disabled and the error
+> > pointers mean there was an error.  Here it is the opposite.
+> > 
+> > I have written a blog about this:
+> > https://staticthinking.wordpress.com/2022/08/01/mixing-error-pointers-and-null/
+> 
+> Nice (besides the huge spider which stared at me unexpectedly :-) )
 
-though it's only a slight preference, i.e. feel free to keep your approach if
-you or others feel strongly about the style.
+Those are a species of jumping spiders.  They are shiny and golden in
+real life, but it never shows up properly in photos.  :)
 
-> +	}
->  
->  	best = __kvm_find_kvm_cpuid_features(vcpu, entries, nent);
->  	if (kvm_hlt_in_guest(vcpu->kvm) && best &&
-> @@ -325,6 +339,8 @@ static void kvm_vcpu_after_set_cpuid(struct kvm_vcpu *vcpu)
->  
->  	vcpu->arch.guest_supported_xcr0 =
->  		cpuid_get_supported_xcr0(vcpu->arch.cpuid_entries, vcpu->arch.cpuid_nent);
-> +	vcpu->arch.guest_supported_xss =
-> +		cpuid_get_supported_xss(vcpu->arch.cpuid_entries, vcpu->arch.cpuid_nent);
+> 
+> > At first I thought that this was to do with CONFIG_COMPILE_TEST but
+> > actually that is disabled.  The issue here is that CONFIG_OF is turned
+> > off.  So this is a genuine bug, we're compiling a module which will
+> > always crash.
+> > 
+> > So I guess the fix is easy that this should return NULL if either
+> > CONFIG_NVMEM or CONFIG_OF is turned off.  That was a long explanation
+> > which is no longer required now that it's not a COMPILE_TEST issue.  :P
+> 
+> I wanted to disable CONFIG_OF to make the test, I totally forget, I'll
+> handle this case and return NULL when this happens.
+> 
+> However I don't understand why you mention CONFIG_NVMEM, because if it
+> is not defined, this file will not compile at all?
 
-Blech.  I tried to clean up this ugly, but Paolo disagreed[*].  Can you fold in
-the below (compile tested only) patch at the very beginning of this series?  It
-implements my suggested alternative.  And then this would become:
+Yeah.  You're right.  I wrote this email thinking it was a
+CONFIG_COMPILE_TEST issue and didn't edit it properly in the end.
 
-static u64 vcpu_get_supported_xss(struct kvm_vcpu *vcpu)
-{
-	struct kvm_cpuid_entry2 *best;
-
-	best = kvm_find_cpuid_entry_index(vcpu, 0xd, 1);
-	if (!best)
-		return 0;
-
-	return (best->ecx | ((u64)best->edx << 32)) & kvm_caps.supported_xss;
-}
-
-[*] https://lore.kernel.org/all/ZGfius5UkckpUyXl@google.com
-
->  	/*
->  	 * FP+SSE can always be saved/restored via KVM_{G,S}ET_XSAVE, even if
-> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-> index 0b9033551d8c..5d6d6fa33e5b 100644
-> --- a/arch/x86/kvm/x86.c
-> +++ b/arch/x86/kvm/x86.c
-> @@ -3780,10 +3780,12 @@ int kvm_set_msr_common(struct kvm_vcpu *vcpu, struct msr_data *msr_info)
->  		 * IA32_XSS[bit 8]. Guests have to use RDMSR/WRMSR rather than
->  		 * XSAVES/XRSTORS to save/restore PT MSRs.
->  		 */
-> -		if (data & ~kvm_caps.supported_xss)
-> +		if (data & ~vcpu->arch.guest_supported_xss)
->  			return 1;
-> -		vcpu->arch.ia32_xss = data;
-> -		kvm_update_cpuid_runtime(vcpu);
-> +		if (vcpu->arch.ia32_xss != data) {
-> +			vcpu->arch.ia32_xss = data;
-> +			kvm_update_cpuid_runtime(vcpu);
-> +		}
-
-Nit, I prefer this style:
-
-		if (vcpu->arch.ia32_xss == data)
-			break;
-
-		vcpu->arch.ia32_xss = data;
-		kvm_update_cpuid_runtime(vcpu);
-
-so that the common path isn't buried in an if-statement.
-
->  		break;
->  	case MSR_SMI_COUNT:
->  		if (!msr_info->host_initiated)
-> -- 
-
-
-From: Sean Christopherson <seanjc@google.com>
-Date: Fri, 4 Aug 2023 08:48:03 -0700
-Subject: [PATCH] KVM: x86: Rework cpuid_get_supported_xcr0() to operate on
- vCPU data
-
-Rework and rename cpuid_get_supported_xcr0() to explicitly operate on vCPU
-state, i.e. on a vCPU's CPUID state.  Prior to commit 275a87244ec8 ("KVM:
-x86: Don't adjust guest's CPUID.0x12.1 (allowed SGX enclave XFRM)"), KVM
-incorrectly fudged guest CPUID at runtime, which in turn necessitated
-massaging the incoming CPUID state for KVM_SET_CPUID{2} so as not to run
-afoul of kvm_cpuid_check_equal().
-
-Opportunistically move the helper below kvm_update_cpuid_runtime() to make
-it harder to repeat the mistake of querying supported XCR0 for runtime
-updates.
-
-No functional change intended.
-
-Signed-off-by: Sean Christopherson <seanjc@google.com>
----
- arch/x86/kvm/cpuid.c | 33 ++++++++++++++++-----------------
- 1 file changed, 16 insertions(+), 17 deletions(-)
-
-diff --git a/arch/x86/kvm/cpuid.c b/arch/x86/kvm/cpuid.c
-index 7f4d13383cf2..5e42846c948a 100644
---- a/arch/x86/kvm/cpuid.c
-+++ b/arch/x86/kvm/cpuid.c
-@@ -234,21 +234,6 @@ void kvm_update_pv_runtime(struct kvm_vcpu *vcpu)
- 		vcpu->arch.pv_cpuid.features = best->eax;
- }
- 
--/*
-- * Calculate guest's supported XCR0 taking into account guest CPUID data and
-- * KVM's supported XCR0 (comprised of host's XCR0 and KVM_SUPPORTED_XCR0).
-- */
--static u64 cpuid_get_supported_xcr0(struct kvm_cpuid_entry2 *entries, int nent)
--{
--	struct kvm_cpuid_entry2 *best;
--
--	best = cpuid_entry2_find(entries, nent, 0xd, 0);
--	if (!best)
--		return 0;
--
--	return (best->eax | ((u64)best->edx << 32)) & kvm_caps.supported_xcr0;
--}
--
- static void __kvm_update_cpuid_runtime(struct kvm_vcpu *vcpu, struct kvm_cpuid_entry2 *entries,
- 				       int nent)
- {
-@@ -299,6 +284,21 @@ void kvm_update_cpuid_runtime(struct kvm_vcpu *vcpu)
- }
- EXPORT_SYMBOL_GPL(kvm_update_cpuid_runtime);
- 
-+/*
-+ * Calculate guest's supported XCR0 taking into account guest CPUID data and
-+ * KVM's supported XCR0 (comprised of host's XCR0 and KVM_SUPPORTED_XCR0).
-+ */
-+static u64 vcpu_get_supported_xcr0(struct kvm_vcpu *vcpu)
-+{
-+	struct kvm_cpuid_entry2 *best;
-+
-+	best = kvm_find_cpuid_entry_index(vcpu, 0xd, 0);
-+	if (!best)
-+		return 0;
-+
-+	return (best->eax | ((u64)best->edx << 32)) & kvm_caps.supported_xcr0;
-+}
-+
- static bool kvm_cpuid_has_hyperv(struct kvm_cpuid_entry2 *entries, int nent)
- {
- 	struct kvm_cpuid_entry2 *entry;
-@@ -323,8 +323,7 @@ static void kvm_vcpu_after_set_cpuid(struct kvm_vcpu *vcpu)
- 		kvm_apic_set_version(vcpu);
- 	}
- 
--	vcpu->arch.guest_supported_xcr0 =
--		cpuid_get_supported_xcr0(vcpu->arch.cpuid_entries, vcpu->arch.cpuid_nent);
-+	vcpu->arch.guest_supported_xcr0 = vcpu_get_supported_xcr0(vcpu);
- 
- 	/*
- 	 * FP+SSE can always be saved/restored via KVM_{G,S}ET_XSAVE, even if
-
-base-commit: f0147fcfab840fe9a3f03e9645d25c1326373fe6
--- 
+regards,
+dan carpenter
 
