@@ -2,242 +2,392 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E173576FB3D
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 09:34:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5FF1076FB42
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 09:34:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234372AbjHDHe2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Aug 2023 03:34:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33932 "EHLO
+        id S234088AbjHDHen (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Aug 2023 03:34:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35078 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234279AbjHDHeH (ORCPT
+        with ESMTP id S234332AbjHDHeR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Aug 2023 03:34:07 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 462EE4EEA
-        for <linux-kernel@vger.kernel.org>; Fri,  4 Aug 2023 00:32:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1691134313;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=7tYJnT3cxc/kGIS3sYAfOL4993DmXFImA53mCH0lAYI=;
-        b=iBZtkKj1hQGjzDBO6/RiYA3/WluBRldixXDERI5BhDpecfyTLVSa7nAtP0gSnPi9Coha+D
-        A/PRyuD7a7yUKmJM37mwG91j0loaNvWR9twA4LWq4mOaMKtKPZGyq/V2vB57rkgdvTzaFe
-        P90yuWJShx3TYNeuVCbhCM3IvhpGAog=
-Received: from mail-lj1-f197.google.com (mail-lj1-f197.google.com
- [209.85.208.197]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-376-jPxz93qDONytfWkDcteWmg-1; Fri, 04 Aug 2023 03:31:52 -0400
-X-MC-Unique: jPxz93qDONytfWkDcteWmg-1
-Received: by mail-lj1-f197.google.com with SMTP id 38308e7fff4ca-2b9b1a21b93so20873601fa.2
-        for <linux-kernel@vger.kernel.org>; Fri, 04 Aug 2023 00:31:52 -0700 (PDT)
+        Fri, 4 Aug 2023 03:34:17 -0400
+Received: from smtp-relay-internal-0.canonical.com (smtp-relay-internal-0.canonical.com [185.125.188.122])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25FD14C05
+        for <linux-kernel@vger.kernel.org>; Fri,  4 Aug 2023 00:33:31 -0700 (PDT)
+Received: from mail-yb1-f198.google.com (mail-yb1-f198.google.com [209.85.219.198])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id 1EC373F148
+        for <linux-kernel@vger.kernel.org>; Fri,  4 Aug 2023 07:33:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1691134409;
+        bh=gwuj23GJBzvBifaG/E4f8sNsXONGG/E39wjck5tc0FQ=;
+        h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+         To:Cc:Content-Type;
+        b=nA6C8Nq7bVSh52kBFG62yu2AFXQpRsNWiaAxoG3U+Ix223q3UPkT3nbPbpy9nNmEh
+         MxqkRqLBFPBAUcvmSAsSdyEgBiFGfNLlOrps8FMGVFbJ/KleVtojfp7WVUxcM5Jedr
+         30dUVcWhk5wlRo4Xyf126mjNTNb5azUro9dSHf6Rpecz3QSa64+R3vRJ3InRX5mFc5
+         Xf5anYtpcUOCuK87kB1Ru2psl/0GxpBoQdRi++3g3/o7PUaTVrhY78Jm4Bw01HVBd1
+         4VYAdY7kPQSN1YC7WVCGoWsNJGPR0yP2Hs70zxledGANgxWDkIWUXmvU77sVMyEIy+
+         pGCwV2FUfcVrQ==
+Received: by mail-yb1-f198.google.com with SMTP id 3f1490d57ef6-d1851c52f3dso1891350276.1
+        for <linux-kernel@vger.kernel.org>; Fri, 04 Aug 2023 00:33:29 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691134311; x=1691739111;
-        h=content-transfer-encoding:in-reply-to:organization:from:references
-         :cc:to:content-language:subject:user-agent:mime-version:date
-         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=7tYJnT3cxc/kGIS3sYAfOL4993DmXFImA53mCH0lAYI=;
-        b=AfOFbAC9VHG10WNHyvXxOwAli9Y2YYDJhg3ohyiD4HnaX3wVjOYHGWcYqlRbV3OadQ
-         MZtiHwV8zR43+IL6zBtZYEpptGzA+DTeH1miSw7UebTeyqfJHd3L8UC55uUh5zxP+Uh0
-         D/zXIByYotBPCOweXJZLL51TjtUiqzpcWd7Q2Ezio1ASN0cZF5vCALaXhqs/RyknURTu
-         gMIHSGuZQD6eA6VBBHLiPGZlmF3Gx5P+L8Uvgb8tmiX2jiz+H4T2nEDGAstcOpYdackM
-         FcEHQvwojeQC1veUd4bXWd6XK2m25+hzgflsiaiRELVzAHBS78+l3RuClsD6aERuM1a1
-         K7qg==
-X-Gm-Message-State: AOJu0YxHk4m3N825n97sCdFaWHoBi4iXAwo2zkzJMXOO8GI+bysFqwDW
-        q2p6r3IdGrCl3gmgG7Hf20MlSPjXWeEcn5YacYJknNRCD9KR5NvpUQwskcWbIw3dNSAj3rQbZ8I
-        6NiQy4BUmv2XvHdgDjmsSTzOw
-X-Received: by 2002:a2e:889a:0:b0:2b9:da28:c508 with SMTP id k26-20020a2e889a000000b002b9da28c508mr814603lji.31.1691134310795;
-        Fri, 04 Aug 2023 00:31:50 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IEcAu4SAakWypTmqUgc+Mi9ppkRcA8Zxzf9LXO0fzlK64shZVoEjCinM64oEX/iNnRxYtwlrg==
-X-Received: by 2002:a2e:889a:0:b0:2b9:da28:c508 with SMTP id k26-20020a2e889a000000b002b9da28c508mr814576lji.31.1691134310302;
-        Fri, 04 Aug 2023 00:31:50 -0700 (PDT)
-Received: from ?IPV6:2003:cb:c724:5900:10b9:2373:11c6:216c? (p200300cbc724590010b9237311c6216c.dip0.t-ipconnect.de. [2003:cb:c724:5900:10b9:2373:11c6:216c])
-        by smtp.gmail.com with ESMTPSA id v20-20020a7bcb54000000b003fbfef555d2sm5996401wmj.23.2023.08.04.00.31.49
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 04 Aug 2023 00:31:49 -0700 (PDT)
-Message-ID: <75996f6b-63fe-4878-c19d-bf35ee2ad20b@redhat.com>
-Date:   Fri, 4 Aug 2023 09:31:48 +0200
+        d=1e100.net; s=20221208; t=1691134407; x=1691739207;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=gwuj23GJBzvBifaG/E4f8sNsXONGG/E39wjck5tc0FQ=;
+        b=Coftr7I4XpVghzJLLo1S6TcRypKH+wOtm17we8ChKuYXzYSiXWzAZbJLLl0CLWlTKD
+         56he20NireyeBs9/uoctCFHpT/7+REXsAaEDBr2mZLJnLRSua0qb0117apLxjwGQt0t5
+         EgJdXHnkmtAo8XABVzHNa85YSuY/xUOx0tCCiOCUhDm1vNBW4hPBNlcm5a4ASsH505rQ
+         K5H2WDM/ZSKLzD0DZU/iWy9px65O7yQ024YStqSh3oF1L22buFvvbxxP5oiujdSfFs6K
+         EvBLHXXggryzCaZAQEvp0Cgtj6gBDRj0zXe+9rT/eMs5ygcepcgssYLDy7EXZBERFYCe
+         RrVA==
+X-Gm-Message-State: AOJu0YxHeqjc7WMfFM+MrHy4J0yG7lC1vVUy3Qe3WaGB6uCEqPKvUwtW
+        wvfBaitSWR/U7/ao3LyGVItuUdrzHUEwJYXuD16ANCJkv4pgFxKnW+TOCOjA07Sw/o5C5Y87iFz
+        mHAz9W29MDNkLplog3iNsTgQ0J6twocNgCzyx8ZG0/QiW6MVTnV0COXRU/A==
+X-Received: by 2002:a25:d0b:0:b0:d0e:c8fb:986a with SMTP id 11-20020a250d0b000000b00d0ec8fb986amr771991ybn.42.1691134407346;
+        Fri, 04 Aug 2023 00:33:27 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IHglgXgIUbkDMGOCwW4KKWi4n3t+cay2r38lAx8MlDA8al/9GfgBhD/xTu5RpCzHbi3RASipcxkL2ltICYuTbE=
+X-Received: by 2002:a25:d0b:0:b0:d0e:c8fb:986a with SMTP id
+ 11-20020a250d0b000000b00d0ec8fb986amr771983ybn.42.1691134407031; Fri, 04 Aug
+ 2023 00:33:27 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH 0/2] don't use mapcount() to check large folio sharing
-Content-Language: en-US
-To:     "Yin, Fengwei" <fengwei.yin@intel.com>, Yu Zhao <yuzhao@google.com>
-Cc:     Ryan Roberts <ryan.roberts@arm.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        akpm@linux-foundation.org, willy@infradead.org,
-        vishal.moola@gmail.com, wangkefeng.wang@huawei.com,
-        minchan@kernel.org, shy828301@gmail.com,
-        "Vishal Moola (Oracle)" <vishal.moola@gmail.com>
-References: <20230728161356.1784568-1-fengwei.yin@intel.com>
- <3bbfde16-ced1-dca8-6a3f-da893e045bc5@arm.com>
- <56c8f4f9-b54b-b0bb-250c-ec8643accfc7@intel.com>
- <3541d2de-5cf8-2f84-8153-277e2bfc0101@arm.com>
- <5f98748a-97ca-6426-1e24-a5675da75381@intel.com>
- <a590da86-0c42-7d46-d320-c661a59a46c1@arm.com>
- <837ba176-c97f-f81b-c044-eb6aa3d88bb7@intel.com>
- <CAOUHufY9EQ70Pn-n2zVa9=Gm3-WHxxphp7VHia4qv9x2domdbg@mail.gmail.com>
- <40d49276-fae9-e538-61cf-64bb79233bc3@intel.com>
- <CAOUHufbcAJWUoVuCYtaDZKdcw+JPWVV0EiB=JcDvz1Jt_Au2Tw@mail.gmail.com>
- <45457815-66c4-029f-42f9-6c377e4eb1e3@intel.com>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat
-In-Reply-To: <45457815-66c4-029f-42f9-6c377e4eb1e3@intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+References: <20230803135955.230449-1-aleksandr.mikhalitsyn@canonical.com>
+ <20230803135955.230449-4-aleksandr.mikhalitsyn@canonical.com>
+ <71018b94-45a0-3404-d3d0-d9f808a72a00@redhat.com> <41ba61bf-3a45-cb20-1e4c-38dbd65bafa6@redhat.com>
+ <CAEivzxcmurnArPRuLWXDjA2+qdicz4rnxA8ESTQprHJM1kKEnA@mail.gmail.com> <CAEivzxeFeWt-VFOrNqTV5x38r1zwmfcEh_ScqriDHC8bL7s0dw@mail.gmail.com>
+In-Reply-To: <CAEivzxeFeWt-VFOrNqTV5x38r1zwmfcEh_ScqriDHC8bL7s0dw@mail.gmail.com>
+From:   Aleksandr Mikhalitsyn <aleksandr.mikhalitsyn@canonical.com>
+Date:   Fri, 4 Aug 2023 09:33:16 +0200
+Message-ID: <CAEivzxcCe9j13L-0m4pww_dXXdAQ9evRdMorpncJD9d+MW0Osw@mail.gmail.com>
+Subject: Re: [PATCH v8 03/12] ceph: handle idmapped mounts in create_request_message()
+To:     Xiubo Li <xiubli@redhat.com>
+Cc:     brauner@kernel.org, stgraber@ubuntu.com,
+        linux-fsdevel@vger.kernel.org, Jeff Layton <jlayton@kernel.org>,
+        Ilya Dryomov <idryomov@gmail.com>, ceph-devel@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 04.08.23 02:17, Yin, Fengwei wrote:
-> 
-> 
-> On 8/4/2023 7:38 AM, Yu Zhao wrote:
->> On Thu, Aug 3, 2023 at 5:27 PM Yin, Fengwei <fengwei.yin@intel.com> wrote:
->>>
->>>
->>>
->>> On 8/4/2023 4:46 AM, Yu Zhao wrote:
->>>> On Wed, Aug 2, 2023 at 6:56 AM Yin, Fengwei <fengwei.yin@intel.com> wrote:
->>>>>
->>>>> "
->>>>>
->>>>> On 8/2/2023 8:49 PM, Ryan Roberts wrote:
->>>>>> On 02/08/2023 13:42, Yin, Fengwei wrote:
->>>>>>>
->>>>>>>
->>>>>>> On 8/2/2023 8:40 PM, Ryan Roberts wrote:
->>>>>>>> On 02/08/2023 13:35, Yin, Fengwei wrote:
->>>>>>>>>
->>>>>>>>>
->>>>>>>>> On 8/2/2023 6:27 PM, Ryan Roberts wrote:
->>>>>>>>>> On 28/07/2023 17:13, Yin Fengwei wrote:
->>>>>>>>>>> In madvise_cold_or_pageout_pte_range() and madvise_free_pte_range(),
->>>>>>>>>>> folio_mapcount() is used to check whether the folio is shared. But it's
->>>>>>>>>>> not correct as folio_mapcount() returns total mapcount of large folio.
->>>>>>>>>>>
->>>>>>>>>>> Use folio_estimated_sharers() here as the estimated number is enough.
->>>>>>>>>>>
->>>>>>>>>>> Yin Fengwei (2):
->>>>>>>>>>>    madvise: don't use mapcount() against large folio for sharing check
->>>>>>>>>>>    madvise: don't use mapcount() against large folio for sharing check
->>>>>>>>>>>
->>>>>>>>>>>   mm/huge_memory.c | 2 +-
->>>>>>>>>>>   mm/madvise.c     | 6 +++---
->>>>>>>>>>>   2 files changed, 4 insertions(+), 4 deletions(-)
->>>>>>>>>>>
->>>>>>>>>>
->>>>>>>>>> As a set of fixes, I agree this is definitely an improvement, so:
->>>>>>>>>>
->>>>>>>>>> Reviewed-By: Ryan Roberts
->>>>>>>>> Thanks.
->>>>>>>>>
->>>>>>>>>>
->>>>>>>>>>
->>>>>>>>>> But I have a couple of comments around further improvements;
->>>>>>>>>>
->>>>>>>>>> Once we have the scheme that David is working on to be able to provide precise
->>>>>>>>>> exclusive vs shared info, we will probably want to move to that. Although that
->>>>>>>>>> scheme will need access to the mm_struct of a process known to be mapping the
->>>>>>>>>> folio. We have that info, but its not passed to folio_estimated_sharers() so we
->>>>>>>>>> can't just reimplement folio_estimated_sharers() - we will need to rework these
->>>>>>>>>> call sites again.
->>>>>>>>> Yes. This could be extra work. Maybe should delay till David's work is done.
->>>>>>>>
->>>>>>>> What you have is definitely an improvement over what was there before. And is
->>>>>>>> probably the best we can do without David's scheme. So I wouldn't delay this.
->>>>>>>> Just pointing out that we will be able to make it even better later on (if
->>>>>>>> David's stuff goes in).
->>>>>>> Yes. I agree that we should wait for David's work ready and do fix based on that.
->>>>>>
->>>>>> I was suggesting the opposite - not waiting. Then we can do separate improvement
->>>>>> later.
->>>>> Let's wait for David's work ready.
->>>>
->>>> Waiting is fine as long as we don't miss the next merge window -- we
->>>> don't want these two bugs to get into another release. Also I think we
->>>> should cc stable, since as David mentioned, they have been causing
->>>> selftest failures.
->>>
->>> Stable was CCed.
->>
->> Need to add the "Cc: stable@vger.kernel.org" tag:
->> Documentation/process/stable-kernel-rules.rst
-> OK. Thanks for clarification. I totally mis-understanded this. :).
-> 
-> I'd like to wait for answer from Andrew whether these patches are suitable
-> for stable (I suppose you think so) branch.
+On Fri, Aug 4, 2023 at 8:43=E2=80=AFAM Aleksandr Mikhalitsyn
+<aleksandr.mikhalitsyn@canonical.com> wrote:
+>
+> On Fri, Aug 4, 2023 at 8:35=E2=80=AFAM Aleksandr Mikhalitsyn
+> <aleksandr.mikhalitsyn@canonical.com> wrote:
+> >
+> > On Fri, Aug 4, 2023 at 5:24=E2=80=AFAM Xiubo Li <xiubli@redhat.com> wro=
+te:
+> > >
+> > >
+> > > On 8/4/23 10:26, Xiubo Li wrote:
+> > > >
+> > > > On 8/3/23 21:59, Alexander Mikhalitsyn wrote:
+> > > >> From: Christian Brauner <brauner@kernel.org>
+> > > >>
+> > > >> Inode operations that create a new filesystem object such as ->mkn=
+od,
+> > > >> ->create, ->mkdir() and others don't take a {g,u}id argument expli=
+citly.
+> > > >> Instead the caller's fs{g,u}id is used for the {g,u}id of the new
+> > > >> filesystem object.
+> > > >>
+> > > >> In order to ensure that the correct {g,u}id is used map the caller=
+'s
+> > > >> fs{g,u}id for creation requests. This doesn't require complex chan=
+ges.
+> > > >> It suffices to pass in the relevant idmapping recorded in the requ=
+est
+> > > >> message. If this request message was triggered from an inode opera=
+tion
+> > > >> that creates filesystem objects it will have passed down the relev=
+ant
+> > > >> idmaping. If this is a request message that was triggered from an =
+inode
+> > > >> operation that doens't need to take idmappings into account the in=
+itial
+> > > >> idmapping is passed down which is an identity mapping.
+> > > >>
+> > > >> This change uses a new cephfs protocol extension
+> > > >> CEPHFS_FEATURE_HAS_OWNER_UIDGID
+> > > >> which adds two new fields (owner_{u,g}id) to the request head stru=
+cture.
+> > > >> So, we need to ensure that MDS supports it otherwise we need to fa=
+il
+> > > >> any IO that comes through an idmapped mount because we can't proce=
+ss it
+> > > >> in a proper way. MDS server without such an extension will use
+> > > >> caller_{u,g}id
+> > > >> fields to set a new inode owner UID/GID which is incorrect because
+> > > >> caller_{u,g}id
+> > > >> values are unmapped. At the same time we can't map these fields wi=
+th an
+> > > >> idmapping as it can break UID/GID-based permission checks logic on=
+ the
+> > > >> MDS side. This problem was described with a lot of details at [1],=
+ [2].
+> > > >>
+> > > >> [1]
+> > > >> https://lore.kernel.org/lkml/CAEivzxfw1fHO2TFA4dx3u23ZKK6Q+EThfzui=
+brhA3RKM=3DZOYLg@mail.gmail.com/
+> > > >> [2]
+> > > >> https://lore.kernel.org/all/20220104140414.155198-3-brauner@kernel=
+.org/
+> > > >>
+> > > >> https://github.com/ceph/ceph/pull/52575
+> > > >> https://tracker.ceph.com/issues/62217
+> > > >>
+> > > >> Cc: Xiubo Li <xiubli@redhat.com>
+> > > >> Cc: Jeff Layton <jlayton@kernel.org>
+> > > >> Cc: Ilya Dryomov <idryomov@gmail.com>
+> > > >> Cc: ceph-devel@vger.kernel.org
+> > > >> Co-Developed-by: Alexander Mikhalitsyn
+> > > >> <aleksandr.mikhalitsyn@canonical.com>
+> > > >> Signed-off-by: Christian Brauner <brauner@kernel.org>
+> > > >> Signed-off-by: Alexander Mikhalitsyn
+> > > >> <aleksandr.mikhalitsyn@canonical.com>
+> > > >> ---
+> > > >> v7:
+> > > >>     - reworked to use two new fields for owner UID/GID
+> > > >> (https://github.com/ceph/ceph/pull/52575)
+> > > >> v8:
+> > > >>     - properly handled case when old MDS used with new kernel clie=
+nt
+> > > >> ---
+> > > >>   fs/ceph/mds_client.c         | 46 ++++++++++++++++++++++++++++++=
++++---
+> > > >>   fs/ceph/mds_client.h         |  5 +++-
+> > > >>   include/linux/ceph/ceph_fs.h |  4 +++-
+> > > >>   3 files changed, 50 insertions(+), 5 deletions(-)
+> > > >>
+> > > >> diff --git a/fs/ceph/mds_client.c b/fs/ceph/mds_client.c
+> > > >> index 8829f55103da..7d3106d3b726 100644
+> > > >> --- a/fs/ceph/mds_client.c
+> > > >> +++ b/fs/ceph/mds_client.c
+> > > >> @@ -2902,6 +2902,17 @@ static void encode_mclientrequest_tail(void
+> > > >> **p, const struct ceph_mds_request *
+> > > >>       }
+> > > >>   }
+> > > >>   +static inline u16 mds_supported_head_version(struct
+> > > >> ceph_mds_session *session)
+> > > >> +{
+> > > >> +    if (!test_bit(CEPHFS_FEATURE_32BITS_RETRY_FWD,
+> > > >> &session->s_features))
+> > > >> +        return 1;
+> > > >> +
+> > > >> +    if (!test_bit(CEPHFS_FEATURE_HAS_OWNER_UIDGID,
+> > > >> &session->s_features))
+> > > >> +        return 2;
+> > > >> +
+> > > >> +    return CEPH_MDS_REQUEST_HEAD_VERSION;
+> > > >> +}
+> > > >> +
+> > > >>   static struct ceph_mds_request_head_legacy *
+> > > >>   find_legacy_request_head(void *p, u64 features)
+> > > >>   {
+> > > >> @@ -2923,6 +2934,7 @@ static struct ceph_msg
+> > > >> *create_request_message(struct ceph_mds_session *session,
+> > > >>   {
+> > > >>       int mds =3D session->s_mds;
+> > > >>       struct ceph_mds_client *mdsc =3D session->s_mdsc;
+> > > >> +    struct ceph_client *cl =3D mdsc->fsc->client;
+> > > >>       struct ceph_msg *msg;
+> > > >>       struct ceph_mds_request_head_legacy *lhead;
+> > > >>       const char *path1 =3D NULL;
+> > > >> @@ -2936,7 +2948,7 @@ static struct ceph_msg
+> > > >> *create_request_message(struct ceph_mds_session *session,
+> > > >>       void *p, *end;
+> > > >>       int ret;
+> > > >>       bool legacy =3D !(session->s_con.peer_features &
+> > > >> CEPH_FEATURE_FS_BTIME);
+> > > >> -    bool old_version =3D !test_bit(CEPHFS_FEATURE_32BITS_RETRY_FW=
+D,
+> > > >> &session->s_features);
+> > > >> +    u16 request_head_version =3D mds_supported_head_version(sessi=
+on);
+> > > >>         ret =3D set_request_path_attr(mdsc, req->r_inode, req->r_d=
+entry,
+> > > >>                     req->r_parent, req->r_path1, req->r_ino1.ino,
+> > > >> @@ -2977,8 +2989,10 @@ static struct ceph_msg
+> > > >> *create_request_message(struct ceph_mds_session *session,
+> > > >>        */
+> > > >>       if (legacy)
+> > > >>           len =3D sizeof(struct ceph_mds_request_head_legacy);
+> > > >> -    else if (old_version)
+> > > >> +    else if (request_head_version =3D=3D 1)
+> > > >>           len =3D sizeof(struct ceph_mds_request_head_old);
+> > > >> +    else if (request_head_version =3D=3D 2)
+> > > >> +        len =3D offsetofend(struct ceph_mds_request_head, ext_num=
+_fwd);
+> > > >>       else
+> > > >>           len =3D sizeof(struct ceph_mds_request_head);
+> > > >
+> > > > This is not what we suppose to. If we do this again and again when
+> > > > adding new members it will make the code very complicated to mainta=
+in.
+> > > >
+> > > > Once the CEPHFS_FEATURE_32BITS_RETRY_FWD has been supported the cep=
+h
+> > > > should correctly decode it and if CEPHFS_FEATURE_HAS_OWNER_UIDGID i=
+s
+> > > > not supported the decoder should skip it directly.
+> > > >
+> > > > Is the MDS side buggy ? Why you last version didn't work ?
+> > > >
+> > >
+> > > I think the ceph side is buggy. Possibly we should add one new `lengt=
+h`
+> > > member in struct `struct ceph_mds_request_head` and just skip the ext=
+ra
+> > > bytes when decoding it.
+> >
+> > Hm, I think I found something suspicious. In cephfs code we have many
+> > places that
+> > call the DECODE_FINISH macro, but in our decoder we don't have it.
+> >
+> > From documentation it follows that DECODE_FINISH purpose is precisely
+> > about this problem.
+> >
+> > What do you think?
+>
+> Upd: this thing also changes on-wire format and adds field to store lengt=
+h.
+> But this will be a massive and incompatible protocol change. I don't thin=
+k that
+> we want to do this in the scope of this task.
 
-Note that the COW test does not fail -- it skips -- but the behavir changed:
+https://github.com/ceph/ceph/pull/52575#issuecomment-1665141641
 
-$ ./cow
-# [INFO] detected THP size: 2048 KiB
-# [INFO] detected hugetlb page size: 2048 KiB
-# [INFO] detected hugetlb page size: 1048576 KiB
-# [INFO] huge zeropage is enabled
-TAP version 13
-1..190
-# [INFO] Anonymous memory tests in private mappings
-# [RUN] Basic COW after fork() ... with base page
-ok 1 No leak from parent into child
-# [RUN] Basic COW after fork() ... with swapped out base page
-ok 2 No leak from parent into child
-# [RUN] Basic COW after fork() ... with THP
-ok 3 No leak from parent into child
-# [RUN] Basic COW after fork() ... with swapped-out THP
-ok 4 No leak from parent into child
-# [RUN] Basic COW after fork() ... with PTE-mapped THP
-ok 5 No leak from parent into child
-# [RUN] Basic COW after fork() ... with swapped-out, PTE-mapped THP
-ok 6 # SKIP MADV_PAGEOUT did not work, is swap enabled?
-# [RUN] Basic COW after fork() ... with single PTE of THP
-ok 7 No leak from parent into child
-# [RUN] Basic COW after fork() ... with single PTE of swapped-out THP
-ok 8 No leak from parent into child
-# [RUN] Basic COW after fork() ... with partially mremap()'ed THP
-ok 9 No leak from parent into child
-# [RUN] Basic COW after fork() ... with partially shared THP
-ok 10 No leak from parent into child
-...
-
-Observe how patch #6 skips because the MADV_PAGEOUT was not effective (which might have happened due to other reasons as well, thus no failure).
-
-The code that broke it is
-
-commit 07e8c82b5eff8ef34b74210eacb8d9c4a2886b82
-Author: Vishal Moola (Oracle) <vishal.moola@gmail.com>
-Date:   Wed Dec 21 10:08:46 2022 -0800
-
-     madvise: convert madvise_cold_or_pageout_pte_range() to use folios
-     
-     This change removes a number of calls to compound_head(), and saves
-     1729 bytes of kernel text.
-     
-     Link: https://lkml.kernel.org/r/20221221180848.20774-3-vishal.moola@gmail.com
-     Signed-off-by: Vishal Moola (Oracle) <vishal.moola@gmail.com>
-     Reviewed-by: Matthew Wilcox (Oracle) <willy@infradead.org>
-     Cc: SeongJae Park <sj@kernel.org>
-     Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-
-
-Ever since v6.3.
-
-The simplest way to fix it would be to revert the page_mapcount() -> folio_mapcount(),
-conversion.
-
-
-Probably all that is information worth having in the patch description.
-
--- 
-Cheers,
-
-David / dhildenb
-
+>
+> >
+> > >
+> > > Could you fix it together with your ceph PR ?
+> > >
+> > > Thanks
+> > >
+> > > - Xiubo
+> > >
+> > >
+> > > > Thanks
+> > > >
+> > > > - Xiubo
+> > > >
+> > > >> @@ -3028,6 +3042,16 @@ static struct ceph_msg
+> > > >> *create_request_message(struct ceph_mds_session *session,
+> > > >>       lhead =3D find_legacy_request_head(msg->front.iov_base,
+> > > >>                        session->s_con.peer_features);
+> > > >>   +    if ((req->r_mnt_idmap !=3D &nop_mnt_idmap) &&
+> > > >> +        !test_bit(CEPHFS_FEATURE_HAS_OWNER_UIDGID,
+> > > >> &session->s_features)) {
+> > > >> +        pr_err_ratelimited_client(cl,
+> > > >> +            "idmapped mount is used and
+> > > >> CEPHFS_FEATURE_HAS_OWNER_UIDGID"
+> > > >> +            " is not supported by MDS. Fail request with -EIO.\n"=
+);
+> > > >> +
+> > > >> +        ret =3D -EIO;
+> > > >> +        goto out_err;
+> > > >> +    }
+> > > >> +
+> > > >>       /*
+> > > >>        * The ceph_mds_request_head_legacy didn't contain a version
+> > > >> field, and
+> > > >>        * one was added when we moved the message version from 3->4=
+.
+> > > >> @@ -3035,17 +3059,33 @@ static struct ceph_msg
+> > > >> *create_request_message(struct ceph_mds_session *session,
+> > > >>       if (legacy) {
+> > > >>           msg->hdr.version =3D cpu_to_le16(3);
+> > > >>           p =3D msg->front.iov_base + sizeof(*lhead);
+> > > >> -    } else if (old_version) {
+> > > >> +    } else if (request_head_version =3D=3D 1) {
+> > > >>           struct ceph_mds_request_head_old *ohead =3D msg->front.i=
+ov_base;
+> > > >>             msg->hdr.version =3D cpu_to_le16(4);
+> > > >>           ohead->version =3D cpu_to_le16(1);
+> > > >>           p =3D msg->front.iov_base + sizeof(*ohead);
+> > > >> +    } else if (request_head_version =3D=3D 2) {
+> > > >> +        struct ceph_mds_request_head *nhead =3D msg->front.iov_ba=
+se;
+> > > >> +
+> > > >> +        msg->hdr.version =3D cpu_to_le16(6);
+> > > >> +        nhead->version =3D cpu_to_le16(2);
+> > > >> +
+> > > >> +        p =3D msg->front.iov_base + offsetofend(struct
+> > > >> ceph_mds_request_head, ext_num_fwd);
+> > > >>       } else {
+> > > >>           struct ceph_mds_request_head *nhead =3D msg->front.iov_b=
+ase;
+> > > >> +        kuid_t owner_fsuid;
+> > > >> +        kgid_t owner_fsgid;
+> > > >>             msg->hdr.version =3D cpu_to_le16(6);
+> > > >>           nhead->version =3D cpu_to_le16(CEPH_MDS_REQUEST_HEAD_VER=
+SION);
+> > > >> +
+> > > >> +        owner_fsuid =3D from_vfsuid(req->r_mnt_idmap, &init_user_=
+ns,
+> > > >> +                      VFSUIDT_INIT(req->r_cred->fsuid));
+> > > >> +        owner_fsgid =3D from_vfsgid(req->r_mnt_idmap, &init_user_=
+ns,
+> > > >> +                      VFSGIDT_INIT(req->r_cred->fsgid));
+> > > >> +        nhead->owner_uid =3D cpu_to_le32(from_kuid(&init_user_ns,
+> > > >> owner_fsuid));
+> > > >> +        nhead->owner_gid =3D cpu_to_le32(from_kgid(&init_user_ns,
+> > > >> owner_fsgid));
+> > > >>           p =3D msg->front.iov_base + sizeof(*nhead);
+> > > >>       }
+> > > >>   diff --git a/fs/ceph/mds_client.h b/fs/ceph/mds_client.h
+> > > >> index e3bbf3ba8ee8..8f683e8203bd 100644
+> > > >> --- a/fs/ceph/mds_client.h
+> > > >> +++ b/fs/ceph/mds_client.h
+> > > >> @@ -33,8 +33,10 @@ enum ceph_feature_type {
+> > > >>       CEPHFS_FEATURE_NOTIFY_SESSION_STATE,
+> > > >>       CEPHFS_FEATURE_OP_GETVXATTR,
+> > > >>       CEPHFS_FEATURE_32BITS_RETRY_FWD,
+> > > >> +    CEPHFS_FEATURE_NEW_SNAPREALM_INFO,
+> > > >> +    CEPHFS_FEATURE_HAS_OWNER_UIDGID,
+> > > >>   -    CEPHFS_FEATURE_MAX =3D CEPHFS_FEATURE_32BITS_RETRY_FWD,
+> > > >> +    CEPHFS_FEATURE_MAX =3D CEPHFS_FEATURE_HAS_OWNER_UIDGID,
+> > > >>   };
+> > > >>     #define CEPHFS_FEATURES_CLIENT_SUPPORTED {    \
+> > > >> @@ -49,6 +51,7 @@ enum ceph_feature_type {
+> > > >>       CEPHFS_FEATURE_NOTIFY_SESSION_STATE,    \
+> > > >>       CEPHFS_FEATURE_OP_GETVXATTR,        \
+> > > >>       CEPHFS_FEATURE_32BITS_RETRY_FWD,    \
+> > > >> +    CEPHFS_FEATURE_HAS_OWNER_UIDGID,    \
+> > > >>   }
+> > > >>     /*
+> > > >> diff --git a/include/linux/ceph/ceph_fs.h b/include/linux/ceph/cep=
+h_fs.h
+> > > >> index 5f2301ee88bc..6eb83a51341c 100644
+> > > >> --- a/include/linux/ceph/ceph_fs.h
+> > > >> +++ b/include/linux/ceph/ceph_fs.h
+> > > >> @@ -499,7 +499,7 @@ struct ceph_mds_request_head_legacy {
+> > > >>       union ceph_mds_request_args args;
+> > > >>   } __attribute__ ((packed));
+> > > >>   -#define CEPH_MDS_REQUEST_HEAD_VERSION  2
+> > > >> +#define CEPH_MDS_REQUEST_HEAD_VERSION  3
+> > > >>     struct ceph_mds_request_head_old {
+> > > >>       __le16 version;                /* struct version */
+> > > >> @@ -530,6 +530,8 @@ struct ceph_mds_request_head {
+> > > >>         __le32 ext_num_retry;          /* new count retry attempts=
+ */
+> > > >>       __le32 ext_num_fwd;            /* new count fwd attempts */
+> > > >> +
+> > > >> +    __le32 owner_uid, owner_gid;   /* used for OPs which create
+> > > >> inodes */
+> > > >>   } __attribute__ ((packed));
+> > > >>     /* cap/lease release record */
+> > >
