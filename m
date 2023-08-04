@@ -2,160 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 047467705AE
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 18:16:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 25A167705AF
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 18:16:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230040AbjHDQP7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Aug 2023 12:15:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34538 "EHLO
+        id S229883AbjHDQQK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Aug 2023 12:16:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34676 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229491AbjHDQP5 (ORCPT
+        with ESMTP id S229711AbjHDQQI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Aug 2023 12:15:57 -0400
-Received: from mail-lj1-x229.google.com (mail-lj1-x229.google.com [IPv6:2a00:1450:4864:20::229])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4597170F
-        for <linux-kernel@vger.kernel.org>; Fri,  4 Aug 2023 09:15:55 -0700 (PDT)
-Received: by mail-lj1-x229.google.com with SMTP id 38308e7fff4ca-2b9dc1bff38so35587781fa.1
-        for <linux-kernel@vger.kernel.org>; Fri, 04 Aug 2023 09:15:55 -0700 (PDT)
+        Fri, 4 Aug 2023 12:16:08 -0400
+Received: from mail-qv1-xf32.google.com (mail-qv1-xf32.google.com [IPv6:2607:f8b0:4864:20::f32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4B0B46B1
+        for <linux-kernel@vger.kernel.org>; Fri,  4 Aug 2023 09:16:06 -0700 (PDT)
+Received: by mail-qv1-xf32.google.com with SMTP id 6a1803df08f44-63cf69f3c22so14419146d6.3
+        for <linux-kernel@vger.kernel.org>; Fri, 04 Aug 2023 09:16:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google; t=1691165754; x=1691770554;
+        d=google.com; s=20221208; t=1691165766; x=1691770566;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=BTBUb3xh/xSekY6RSb7j+KpzPBpu+PCrs+mM2PREP98=;
-        b=N4DmQlDgCgVlj+OgQMCL68oTHRJXSLJ6h5w8IJMvPcG7q+kTyomUERidAwgdwsfs2N
-         GYRFJHiVfBHl3vYIIVmZVPtwH8aDTjIGOpAiuhKCoC8NyfW+FNXy4ggW7WY/HMsa0tnA
-         F6nLx8VxtedW54h1lDvDn84Mug2PT5fT8GHhE=
+        bh=25RqaLOVYFfPy9s/EZCIR1SBifhYM46rMdPj4bA+or8=;
+        b=xEw45MZnEqdJ293zZ92EP/3OWo4q7OequDcJDIIN9FkZuaVqfsPtMn9pRV2MNBpvwT
+         CG5mNkBxAZt+iyzUazrWY3HB6oGDnZ14U9JpZci/06YGqtgwCrBHiGyz8zAH/G7u0Wwx
+         mAVrEMW0IAQGNHC/+7poXSAflvfPM3IFOgGtpB765hXaqwmle+lxRiWrX8ginIYTW17b
+         wS6k1fJ46sGDTRGzClYccdhTIp/teyPZZAa9BZ5yEysfDvErBjiVpvgvKl50m4swvCIM
+         mNh+SDoyUsVvJn4WpQHTe96I3xrJLSunv0eLjbx8HSkrFCo2c9Oa8kkkGenhWFaQjRb/
+         W1hg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691165754; x=1691770554;
+        d=1e100.net; s=20221208; t=1691165766; x=1691770566;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=BTBUb3xh/xSekY6RSb7j+KpzPBpu+PCrs+mM2PREP98=;
-        b=SpLTWKOHT3Fi9uT70hyjXqxRETb5CuCLhWoGqdScsDAqWk9h9jXW8bi5PfUMgwYJ0a
-         /+qI7QMr/SDArr5X2Lk0aF+up1xb+1wzN0MniyABwAYfYDEX9DIS4xwB9MFj/NZvOXf3
-         Njsq2wmq/yV651Y7iWQo7cROQi75E2qwcIYl2KOzVhwx35EGSIsW31kBk81OL8OrStMM
-         aMlWcLMSN+nOK1Ol+at30MKwnAfSdPJFx1FIIddZAmL8AZ/It9IZazHalwvbANmu5php
-         Ayi1u9FV2d3J2d/uNt5o7+JIKszUMNCKgBy2yw1wKQOmkkZma6Kc55DleOXdbGer4sFI
-         RDAA==
-X-Gm-Message-State: AOJu0YycF+EugAt8C3jQBOBlS6gzzz0ouNf2m5rvwtb9bTqpltRRdZ2n
-        RKZ+ah1LxhubTJvH3dUCZrc/HEZ8OmuiEGRooWTPVA==
-X-Google-Smtp-Source: AGHT+IHQCcgsXJrB40IvL18uKSefZUicbvmvqkVOw7aqPOFqbOthOu0+QpZEGWJSGc3XA5Av3QydXUr6or3RxSqiY+A=
-X-Received: by 2002:a2e:95cf:0:b0:2b6:a763:5d13 with SMTP id
- y15-20020a2e95cf000000b002b6a7635d13mr1812635ljh.27.1691165753842; Fri, 04
- Aug 2023 09:15:53 -0700 (PDT)
+        bh=25RqaLOVYFfPy9s/EZCIR1SBifhYM46rMdPj4bA+or8=;
+        b=VBU7ukB9hJIVesQPcU2iCKtgLfLM6ZP02CdMyHMUr9WJ/jAVRol1vZCZ40UfaNTOBs
+         KtwkzSenVEaIn6RIUPvqpkg4ss52l/x3Qn4L8wst5h3ufBq8gw3afrZ4zONzdbXEC39A
+         pZDDEMZIiDEcyaO/c3lYf4207qlxcQ4BVs6V9jjMt2Hf47nhBciB4iFU223GFdQXd6/p
+         DgKcqaMF1I6SMzwmH0KeTGYQzW70s/Aqedff7tbmMfIHofj9vraNNhLVVRmzkt9DrMyy
+         3hDeyln/Nv/tCEZCPxBFyfFpZdTtT8umbfqEGvSDN9/ifuIHPEqgXuH8n28+ioZNN2fF
+         pLPA==
+X-Gm-Message-State: AOJu0YxiocLq3dup0E98Pef8zHLUxAOh1v0O0Bol+QPMqKI/1vLAG0u3
+        A4giLavsa2mjk/vC6aKeqqBGISorfZUETPfOgukgNA==
+X-Google-Smtp-Source: AGHT+IHxsFGUtaXN8q7zeA5C+xhBK+BWU+T3q6tUpLZSxFyzPk4Ytg+bEKJmDZn+VB7W8WZB8mo1hnhZ4iwhiZOvZSU=
+X-Received: by 2002:a05:6214:448d:b0:637:849d:b2bc with SMTP id
+ on13-20020a056214448d00b00637849db2bcmr1901680qvb.64.1691165765772; Fri, 04
+ Aug 2023 09:16:05 -0700 (PDT)
 MIME-Version: 1.0
-References: <D3D65E05-AC98-43EA-8B66-CA63E94C1C80@gmail.com>
- <6B0A9441-5DB5-476B-B94C-F0BDF1505095@joelfernandes.org> <E6EDDDE7-5D59-4284-931E-23E3636C8CF0@gmail.com>
-In-Reply-To: <E6EDDDE7-5D59-4284-931E-23E3636C8CF0@gmail.com>
-From:   Joel Fernandes <joel@joelfernandes.org>
-Date:   Fri, 4 Aug 2023 12:15:42 -0400
-Message-ID: <CAEXW_YQez6yNzwLXg_mbKN9pZV1=EzO7-X5s5GLj_F34P6c+kw@mail.gmail.com>
-Subject: Re: [PATCH 1/2] docs: rcu: Add cautionary note on plain-accesses to requirements
-To:     Alan Huang <mmpgouride@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, rcu@vger.kernel.org,
-        Will Deacon <will@kernel.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Zqiang <qiang.zhang1211@gmail.com>,
-        Jonathan Corbet <corbet@lwn.net>
+References: <20230804125609.2054719-1-kernel@xen0n.name> <CAAhV-H5g-jmeQMhicrqhpStV9n0Z-EZ1dZAsuT2hmOaHki4ucg@mail.gmail.com>
+ <CAKwvOdmt+p3KM23hz2BfheoWgEa0G9QKnAFYUP+EL2Ta5LXUUg@mail.gmail.com> <b1617fe221f137b49b9a2ba9c864e6b85f89de81.camel@xry111.site>
+In-Reply-To: <b1617fe221f137b49b9a2ba9c864e6b85f89de81.camel@xry111.site>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Fri, 4 Aug 2023 09:15:54 -0700
+Message-ID: <CAKwvOdnk8ofgW+4D8HnFBqgoi49vkLHqsAMCtM=SpuKyJHVkaQ@mail.gmail.com>
+Subject: Re: [PATCH] LoongArch: Drop -ffreestanding from CFLAGS
+To:     Xi Ruoyao <xry111@xry111.site>
+Cc:     Huacai Chen <chenhuacai@kernel.org>,
+        WANG Xuerui <kernel@xen0n.name>,
+        Nathan Chancellor <nathan@kernel.org>,
+        loongarch@lists.linux.dev, llvm@lists.linux.dev,
+        linux-kernel@vger.kernel.org, WANG Xuerui <git@xen0n.name>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        URIBL_BLOCKED,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 4, 2023 at 11:47=E2=80=AFAM Alan Huang <mmpgouride@gmail.com> w=
-rote:
+On Fri, Aug 4, 2023 at 8:56=E2=80=AFAM Xi Ruoyao <xry111@xry111.site> wrote=
+:
 >
+> On Fri, 2023-08-04 at 08:46 -0700, Nick Desaulniers wrote:
+> > > Not all processors support unaligned access, so we need the
+> > > alternative mechanism to select memset/memcpy/memmove implementations=
+.
+> > > If remove -ffreestanding, the builtin implementation cannot be used o=
+n
+> > > all hardware.
 > >
-> >>>
-> >>>>>> But the example here is different,
-> >>>>>
-> >>>>> That is intentional. Wills discussion partially triggered this. Tho=
-ugh I am wondering
-> >>>>> if we should document that as well.
-> >>>>>
-> >>>>>> the compiler can not use the value loaded from line 5
-> >>>>>> unless the compiler can deduce that the tmp is equals to p in whic=
-h case the address dependency
-> >>>>>> doesn=E2=80=99t exist anymore.
-> >>>>>>
-> >>>>>> What am I missing here?
-> >>>>>
-> >>>>> Maybe you are trying to rationalize too much that the sequence ment=
-ioned cannot result
-> >>>>> in a counter intuitive outcome like I did?
-> >>>>>
-> >>>>> The point AFAIU is not just about line 10 but that the compiler can=
- replace any of the
-> >>>>> lines after the plain access with the cached value.
-> >>>>
-> >>>> Well, IIUC, according to the C standard, the compiler can do anythin=
-g if there is a data race (undefined behavior).
-> >>>>
-> >>>> However, what if a write is not protected with WRITE_ONCE and the re=
-ad is marked with READ_ONCE?
-> >>>> That=E2=80=99s also a data race, right? But the kernel considers it =
-is Okay if the write is machine word aligned.
-> >>>
-> >>> Yes, but there is a compiler between the HLL code and what the
-> >>> processor sees which can tear the write. How can not using
-> >>> WRITE_ONCE() prevent store-tearing? See [1]. My understanding is that
-> >>> it is OK only if the reader did a NULL check. In that case the torn
-> >>
-> >> Yes, a write-write data race where the value is the same is also fine.
-> >>
-> >> But they are still data race, if the compiler is within its right to d=
-o anything it likes (due to data race),
-> >> we still need WRITE_ONCE() in these cases, though it=E2=80=99s semanti=
-cally safe.
-> >>
-> >> IIUC, even with _ONCE(), the compiler is within its right do anything =
-according to the standard (at least before the upcoming C23), because the s=
-tandard doesn=E2=80=99t consider a volatile access to be atomic.
-> >>
-> >> However, the kernel consider the volatile access to be atomic, right?
-> >>
-> >> BTW, line 5 in the example is likely to be optimized away. And yes, th=
-e compiler can cache the value loaded from line 5 from the perspective of u=
-ndefined behavior, even if I believe it would be a compiler bug from the pe=
-rspective of kernel.
+> > That sounds like a compiler bug in that compiler's implementation of
+> > string.h builtins then; it should default to the safest implementation
+> > (aligned accesses) until instructed otherwise.  Have you filed a bug
+> > against your compiler vendor for which compiler you observe that
+> > behavior from?
+>
+> AFAIK there is no such bug in GCC.
+>
+> But GCC indeed has a bug about builtin expansion: it generates really
+> stupid code for __builtin_memcpy and friends.  See
+> https://gcc.gnu.org/PR109465.  The bug is fixed for GCC 14, but GCC 14
+> won't be released soon.
+
+Perhaps -fno-builtin-* flags may be of help here, and more precise an
+incision than the blunt -ffreestanding.
+
+>
+> > At the very least, there should be a comment above the addition of
+> > -ffreestanding justifying why it's being used, probably with a link to
+> > the above bug report.
 > >
-> > I am actually a bit lost with what you are trying to say.  Are you sayi=
-ng that mixing
-> > plain accesses with marked accesses is an acceptable practice?
+> > I would expect either -mcpu or perhaps some other -m flag to guide the
+> > compiler when it is safe to emit memcpy (and friends) in terms of
+> > unaligned access or not.
 >
+> It's controlled by -m{no-,}strict-align.  LoongArch kernel defaults to -
+> mstrict-align, with this the compiler should not generate unaligned
+> access.  -mno-strict-align is hidden behind CONFIG_EXPERT (FWIW I
+> personally dislike the decision to hide it).
+
+If GCC generates unaligned accesses in its implementation of
+__builtin_memcpy when -mstrict-align is set, then that is a bug in GCC
+and should be reported.
+
+Clang users should not have to pay for such mistakes.
+
 >
-> I=E2=80=99m trying to say that sometimes data race is fine, that=E2=80=99=
-s why we have the data_race().
->
-> Even if the standard says data race results in UB.
->
-> And IMHO, the possible data race at line 5 in this example is also fine, =
-unless the compiler
-> deduces that the value of gp is always the same.
+> --
+> Xi Ruoyao <xry111@xry111.site>
+> School of Aerospace Science and Technology, Xidian University
 
-IMHO, no one is saying it is not "fine". As in, such behavior is
-neither a compiler nor strictly a kernel bug.  More a wtf that the
-programmer should know off (does not hurt to know).
 
-I will rest my case with AlanH pending any input from people who know
-more than me. If there is a better way to represent such matters in
-the docs, I am happy to make changes to this patch.
 
-Cheers,
-
- - Joel
+--=20
+Thanks,
+~Nick Desaulniers
