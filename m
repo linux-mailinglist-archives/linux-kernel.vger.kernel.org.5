@@ -2,146 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 309C8770845
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 20:55:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AF9C977084C
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 20:56:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230051AbjHDSzh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Aug 2023 14:55:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37032 "EHLO
+        id S229999AbjHDS4i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Aug 2023 14:56:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37818 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230004AbjHDSz1 (ORCPT
+        with ESMTP id S229515AbjHDS4g (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Aug 2023 14:55:27 -0400
-Received: from mail-yw1-x1149.google.com (mail-yw1-x1149.google.com [IPv6:2607:f8b0:4864:20::1149])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9446BA9
-        for <linux-kernel@vger.kernel.org>; Fri,  4 Aug 2023 11:55:25 -0700 (PDT)
-Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-5734d919156so25217647b3.3
-        for <linux-kernel@vger.kernel.org>; Fri, 04 Aug 2023 11:55:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1691175325; x=1691780125;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=NAPgIg7L4ziLXGFvzhNY7osXv5BuPJ5kgHsCha/MeAE=;
-        b=09X1PUv7wpVwOes147v9SG1Z9gh2smyMNp1zr/AKW5J7WbIvI9peuAGdjUMF0DVZaN
-         aveQQbAeGVvLVaOmRpdotnUfmY6/+glZY/8QXZk81Nw4eLGjgnNx+LsR/27PvBuNlAqa
-         UAE4QP+cBygiZYxD1KyzcDLJZgL43r+Q0cw1lCxopxYALDbeVIKL22C/1jMrUc4whjg9
-         gFzmcQEDLp3cyQe6ixy1lCwPk986b+m355poJdXzKb9cpeANB9fZ8uCB6ov7MUBxl6d6
-         pwaRY2SwjsUwbYiY8FLiTJHvxkorxgvvTJKokzpT59chWGwK6zoyzCTI9XsE+Fr1LkaE
-         oKmQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691175325; x=1691780125;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=NAPgIg7L4ziLXGFvzhNY7osXv5BuPJ5kgHsCha/MeAE=;
-        b=GIndoAD9thiPL7X27s+a3CuEcNsolt7ABWf5HRRNxmXcNun8A2rnFCJqULKwjQLBDk
-         9b4U2wLg5HXiEO9tpkF+WniAejip/pViS7kb3+8ZVgX+BC/LO6RMM8pvq0t00QpkN57q
-         eufwSBDfDqfHu2sCXr9pbzlbey2yxr2gG/RdZ9rO4g0G3s4jXAaXZ37LDNzrMk6BYAYA
-         ZFP/MAHk8y8LF13NSIjr4lDXfddYD2Q5oeZ8HaASJhILGsGggiXOBU+KznpdQFKHaGGz
-         tETZsB/6Zsgv8iABVYoPd7DQHOuc/35ylUIt8aSZmU5/iuP/7FGIyaQL8Xy6nCZkWttb
-         X5Ng==
-X-Gm-Message-State: AOJu0YxuwHbsbT7RkvXey1TUmw+ZaaqjricLew8I2W9QrfvlWZYH9QEc
-        7mG/UzIVeJXeEmfvaL2s3CFcXzaVRJ0=
-X-Google-Smtp-Source: AGHT+IFExXfiQLDG+1YqUi84WVhwKGQeKxbGbbX5j1WutV1i3yIABmdTQnuznjCByAyoYcETU0Qsaf4SKqA=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a81:441a:0:b0:584:4158:7f86 with SMTP id
- r26-20020a81441a000000b0058441587f86mr18476ywa.1.1691175324835; Fri, 04 Aug
- 2023 11:55:24 -0700 (PDT)
-Date:   Fri, 4 Aug 2023 11:55:23 -0700
-In-Reply-To: <20230803042732.88515-9-weijiang.yang@intel.com>
-Mime-Version: 1.0
-References: <20230803042732.88515-1-weijiang.yang@intel.com> <20230803042732.88515-9-weijiang.yang@intel.com>
-Message-ID: <ZM1JmxzyMgTLeEIy@google.com>
-Subject: Re: [PATCH v5 08/19] KVM:x86: Report KVM supported CET MSRs as to-be-saved
-From:   Sean Christopherson <seanjc@google.com>
-To:     Yang Weijiang <weijiang.yang@intel.com>
-Cc:     pbonzini@redhat.com, peterz@infradead.org, john.allen@amd.com,
-        kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        rick.p.edgecombe@intel.com, chao.gao@intel.com,
-        binbin.wu@linux.intel.com
-Content-Type: text/plain; charset="us-ascii"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+        Fri, 4 Aug 2023 14:56:36 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8FE0BA9
+        for <linux-kernel@vger.kernel.org>; Fri,  4 Aug 2023 11:56:35 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 24FED620FA
+        for <linux-kernel@vger.kernel.org>; Fri,  4 Aug 2023 18:56:35 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id ABFB5C433C8;
+        Fri,  4 Aug 2023 18:56:33 +0000 (UTC)
+Date:   Fri, 4 Aug 2023 19:56:31 +0100
+From:   Catalin Marinas <catalin.marinas@arm.com>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Will Deacon <will@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [GIT PULL] arm64 fixes for 6.5-rc5
+Message-ID: <ZM1J35gT1jjr96Vh@arm.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 03, 2023, Yang Weijiang wrote:
-> Add all CET MSRs including the synthesized GUEST_SSP to report list.
-> PL{0,1,2}_SSP are independent to host XSAVE management with later
-> patches. MSR_IA32_U_CET and MSR_IA32_PL3_SSP are XSAVE-managed on
-> host side. MSR_IA32_S_CET/MSR_IA32_INT_SSP_TAB/MSR_KVM_GUEST_SSP
-> are not XSAVE-managed.
-> 
-> When CET IBT/SHSTK are enumerated to guest, both user and supervisor
-> modes should be supported for architechtural integrity, i.e., two
-> modes are supported as both or neither.
-> 
-> Signed-off-by: Yang Weijiang <weijiang.yang@intel.com>
-> ---
->  arch/x86/include/uapi/asm/kvm_para.h |  1 +
->  arch/x86/kvm/x86.c                   | 10 ++++++++++
->  arch/x86/kvm/x86.h                   | 10 ++++++++++
->  3 files changed, 21 insertions(+)
-> 
-> diff --git a/arch/x86/include/uapi/asm/kvm_para.h b/arch/x86/include/uapi/asm/kvm_para.h
-> index 6e64b27b2c1e..7af465e4e0bd 100644
-> --- a/arch/x86/include/uapi/asm/kvm_para.h
-> +++ b/arch/x86/include/uapi/asm/kvm_para.h
-> @@ -58,6 +58,7 @@
->  #define MSR_KVM_ASYNC_PF_INT	0x4b564d06
->  #define MSR_KVM_ASYNC_PF_ACK	0x4b564d07
->  #define MSR_KVM_MIGRATION_CONTROL	0x4b564d08
-> +#define MSR_KVM_GUEST_SSP	0x4b564d09
->  
->  struct kvm_steal_time {
->  	__u64 steal;
-> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-> index 82b9f14990da..d68ef87fe007 100644
-> --- a/arch/x86/kvm/x86.c
-> +++ b/arch/x86/kvm/x86.c
-> @@ -1463,6 +1463,9 @@ static const u32 msrs_to_save_base[] = {
->  
->  	MSR_IA32_XFD, MSR_IA32_XFD_ERR,
->  	MSR_IA32_XSS,
-> +	MSR_IA32_U_CET, MSR_IA32_S_CET,
-> +	MSR_IA32_PL0_SSP, MSR_IA32_PL1_SSP, MSR_IA32_PL2_SSP,
-> +	MSR_IA32_PL3_SSP, MSR_IA32_INT_SSP_TAB, MSR_KVM_GUEST_SSP,
->  };
->  
->  static const u32 msrs_to_save_pmu[] = {
-> @@ -7214,6 +7217,13 @@ static void kvm_probe_msr_to_save(u32 msr_index)
->  		if (!kvm_caps.supported_xss)
->  			return;
->  		break;
-> +	case MSR_IA32_U_CET:
-> +	case MSR_IA32_S_CET:
-> +	case MSR_KVM_GUEST_SSP:
-> +	case MSR_IA32_PL0_SSP ... MSR_IA32_INT_SSP_TAB:
-> +		if (!kvm_is_cet_supported())
-> +			return;
-> +		break;
->  	default:
->  		break;
->  	}
-> diff --git a/arch/x86/kvm/x86.h b/arch/x86/kvm/x86.h
-> index 82e3dafc5453..6e6292915f8c 100644
-> --- a/arch/x86/kvm/x86.h
-> +++ b/arch/x86/kvm/x86.h
-> @@ -362,6 +362,16 @@ static inline bool kvm_mpx_supported(void)
->  		== (XFEATURE_MASK_BNDREGS | XFEATURE_MASK_BNDCSR);
->  }
->  
-> +#define CET_XSTATE_MASK (XFEATURE_MASK_CET_USER)
+Hi Linus,
 
-This is funky.  As of this patch, KVM reports MSR_IA32_S_CET, a supervisor MSR,
-but does not require XFEATURE_MASK_CET_KERNEL.  That eventually comes along with
-"KVM:x86: Enable guest CET supervisor xstate bit support", but as of this patch
-KVM is busted.
+Please pull the arm64 fixes below. Thanks.
 
-The whole cpuid_count() code in that patch shouldn't exist, so the easiest thing
-is to just fold the KVM_SUPPORTED_XSS and CET_XSTATE_MASK changes from that patch
-into this one.
+The following changes since commit 003e6b56d780095a9adc23efc9cb4b4b4717169b:
+
+  ACPI/IORT: Remove erroneous id_count check in iort_node_get_rmr_info() (2023-07-28 14:50:50 +0100)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux tags/arm64-fixes
+
+for you to fetch changes up to 69af56ae56a48a2522aad906c4461c6c7c092737:
+
+  arm64/fpsimd: Sync and zero pad FPSIMD state for streaming SVE (2023-08-04 16:18:32 +0100)
+
+----------------------------------------------------------------
+More SVE/SME fixes for ptrace() and for the (potentially future) case
+where SME is implemented in hardware without SVE support.
+
+----------------------------------------------------------------
+Mark Brown (5):
+      arm64/fpsimd: Clear SME state in the target task when setting the VL
+      arm64/ptrace: Flush FP state when setting ZT0
+      arm64/ptrace: Don't enable SVE when setting streaming SVE
+      arm64/fpsimd: Sync FPSIMD state with SVE for SME only systems
+      arm64/fpsimd: Sync and zero pad FPSIMD state for streaming SVE
+
+ arch/arm64/kernel/fpsimd.c |  9 +++++----
+ arch/arm64/kernel/ptrace.c | 10 +++++++---
+ 2 files changed, 12 insertions(+), 7 deletions(-)
+
+-- 
+Catalin
