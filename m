@@ -2,175 +2,281 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8867576FC94
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 10:51:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6494676FC9C
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 10:51:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229932AbjHDIvU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Aug 2023 04:51:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44038 "EHLO
+        id S229967AbjHDIvq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Aug 2023 04:51:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44056 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229659AbjHDIts (ORCPT
+        with ESMTP id S229822AbjHDIuQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Aug 2023 04:49:48 -0400
-Received: from smtp-relay-internal-1.canonical.com (smtp-relay-internal-1.canonical.com [185.125.188.123])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A39AE4EC4
-        for <linux-kernel@vger.kernel.org>; Fri,  4 Aug 2023 01:49:44 -0700 (PDT)
-Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com [209.85.218.71])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id 5C40D417C1
-        for <linux-kernel@vger.kernel.org>; Fri,  4 Aug 2023 08:49:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1691138983;
-        bh=nLZMqtT0BTuD0r3ld9T+VcVOIz8LP+RVDN6gyhT7tPs=;
-        h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-         MIME-Version;
-        b=kPXWFDv4IaWNdstC8tRD6ftykQZ0hcsdvqVN3fA48GNJBDTmBaxh4X5ucm/Crxo7w
-         3xWVR9TV9WLcHPqVmXHFe858m1qWaIAuifPvsWeUFi0Rt0yrx32vkzItQnu/m/1th3
-         8+XO/a8mdmT1XO2gPYgHjMUP+8aR9VHL1kRLfvcr6lEXprQgQU3dDJ93Ts9s4Ueel5
-         xIyW6+xmKOaWIBLNeWAhQSywywqMM+VnxLbB4AvbwOu5NiNwh45BhMjLUk9NcxCnJ6
-         MRr980wphPQX2bl7iE67KCRSLYcokPTy/fw5OwOBS11QppxaFFln/o+P2Tqbms3eCu
-         Sg9HBS+RvHg6g==
-Received: by mail-ej1-f71.google.com with SMTP id a640c23a62f3a-94f7a2b21fdso132783966b.2
-        for <linux-kernel@vger.kernel.org>; Fri, 04 Aug 2023 01:49:43 -0700 (PDT)
+        Fri, 4 Aug 2023 04:50:16 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75BD949C7
+        for <linux-kernel@vger.kernel.org>; Fri,  4 Aug 2023 01:49:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1691138966;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=cG8axZDwBuWJQ+k2FsV81xz+WKLWi2QNSuhJ6eUeaqw=;
+        b=aTHJZVPDvXQU2ACiubqkDYqnlmbj5zYDAG/bmn+G8tS70DyVMre0LOF/ZDT3KUToLFJwBi
+        3WzGhEABpzH0AgttQNx9eAZ2rYuHjl4+JruBywDNzMKmmG7vZe8ystAwHVasUd7IeSQ6HD
+        i6QhTenlWLyNFwXkSjRdJSIqmIwtk3E=
+Received: from mail-oa1-f72.google.com (mail-oa1-f72.google.com
+ [209.85.160.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-626-UQBDIiOyNkmOJjCclkQuLQ-1; Fri, 04 Aug 2023 04:49:25 -0400
+X-MC-Unique: UQBDIiOyNkmOJjCclkQuLQ-1
+Received: by mail-oa1-f72.google.com with SMTP id 586e51a60fabf-1b44332e279so2762838fac.0
+        for <linux-kernel@vger.kernel.org>; Fri, 04 Aug 2023 01:49:25 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691138983; x=1691743783;
+        d=1e100.net; s=20221208; t=1691138965; x=1691743765;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=nLZMqtT0BTuD0r3ld9T+VcVOIz8LP+RVDN6gyhT7tPs=;
-        b=brFugBxzGLR4WRsn+/9jbHuFOihPQlI7ZRBO+4WtTrBueg9G7wGM0WdhoEd+i8TfNV
-         lBPK7SyAHVtB8rgEVyKqHNUPEHi2xiqz2x7CBLY1jbq8dMDZaCldgz+MUo02oyG2QZA9
-         rCKAwC7dSmmf2qbf7PSHoUSnhMg9ABXIpKgOHDxa70XbDvk/6j5HmFYoN9oZCnan2zjp
-         wyRP/dKma8hXOvdwnBxuTTKkLnRIpGcJmGkYuPnamwZDb+ydhZTKuWnC6Xzv0DaehbQ+
-         dPjMX5M7k50SNEoPK53FUXkcOJZAplVujpwxa41bpWQ8wva+til4fKgr+yaJaSWx7VZh
-         5lMQ==
-X-Gm-Message-State: AOJu0Yz3hWe4m779DD4or68Li+8IAN+5JgdcYJd3eAWyinvVyvLIPSwx
-        x7F/2AZlpnQz3tmBzBC+HpwoB06ipBosVSlIE7jorlRqRE6Vh0aefivCY5ydBJv3W2KIQvaMJNX
-        fEUe1JaOCoLgihZyLlBTv1AO6p6/Yzfsq5dvkKEDM8w==
-X-Received: by 2002:a17:906:3002:b0:99b:f66a:3189 with SMTP id 2-20020a170906300200b0099bf66a3189mr1057461ejz.8.1691138983095;
-        Fri, 04 Aug 2023 01:49:43 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IHYz1ENmxKq5uJlqK2BTiCUQ/3Q6puy0cdofBV5YjhsVwU4EydDgdIUCcgv/xVB11YsU0I69w==
-X-Received: by 2002:a17:906:3002:b0:99b:f66a:3189 with SMTP id 2-20020a170906300200b0099bf66a3189mr1057451ejz.8.1691138982931;
-        Fri, 04 Aug 2023 01:49:42 -0700 (PDT)
-Received: from amikhalitsyn.local (dslb-088-066-182-192.088.066.pools.vodafone-ip.de. [88.66.182.192])
-        by smtp.gmail.com with ESMTPSA id k25-20020a17090646d900b00992e94bcfabsm979279ejs.167.2023.08.04.01.49.41
+        bh=cG8axZDwBuWJQ+k2FsV81xz+WKLWi2QNSuhJ6eUeaqw=;
+        b=H7xeGF6X6WpNgVzDtInrI5wnb/sahGG9gos4qoXJTjLYCTsjWj8IgNFaeA4TVck8+i
+         csvIJsMmCGb0+w4hkIkO7BQCzaoXLSltCPtTnrcrqTjpmceHYYDcsZT5FsFip+T1q7Xt
+         rR5VGqcys8viFd/ie0Hkjnfbx4nxCJ1TeSh7w/85mVrXSZsCB+u/Z6TmxD8RcZ7aYs7a
+         G2ECwBTVutwHjv4cokXaIvM7MIQgiyH9LW3npIuSQp0OUW84MZQZeiB+QKdbmVUlwS2K
+         T0mE2PYZRyBfzI8UtwxxMgK0dHAVGgG2rC+xzyACu/XYqH6wCZ8FfFWtUXg+OLe6N+Ar
+         TnKA==
+X-Gm-Message-State: AOJu0Yz7r6NktoZhPY4XB6TLZkLw7+4ss1sXDozs+/G9ntdnHLc5PJx9
+        wyuBQPFIzRDsqnjdf2TYIiwiQbD4AeLPhhf2rNl2wtZOCkbTbTK0oxP46ozT3P/7+qGoNcFZ7yh
+        GNfXXsZEh8AZxrqUaY7fBfIin
+X-Received: by 2002:a05:6870:5b98:b0:1be:c8e2:3ec3 with SMTP id em24-20020a0568705b9800b001bec8e23ec3mr1046104oab.14.1691138964800;
+        Fri, 04 Aug 2023 01:49:24 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IGfXG4yRYPIwmiiQVWTf4MQ+ktY1Xgv8O9HBUKLqIvtNOkPHWsNOPcnRegEr6JIF1zXzs2y/A==
+X-Received: by 2002:a05:6870:5b98:b0:1be:c8e2:3ec3 with SMTP id em24-20020a0568705b9800b001bec8e23ec3mr1046089oab.14.1691138964579;
+        Fri, 04 Aug 2023 01:49:24 -0700 (PDT)
+Received: from localhost.localdomain ([2804:1b3:a801:d380:694f:4f52:764c:4b7f])
+        by smtp.gmail.com with ESMTPSA id f8-20020a4ab008000000b0055516447257sm685679oon.29.2023.08.04.01.49.20
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 04 Aug 2023 01:49:42 -0700 (PDT)
-From:   Alexander Mikhalitsyn <aleksandr.mikhalitsyn@canonical.com>
-To:     xiubli@redhat.com
-Cc:     brauner@kernel.org, stgraber@ubuntu.com,
-        linux-fsdevel@vger.kernel.org, Jeff Layton <jlayton@kernel.org>,
-        Ilya Dryomov <idryomov@gmail.com>, ceph-devel@vger.kernel.org,
-        Alexander Mikhalitsyn <aleksandr.mikhalitsyn@canonical.com>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v9 08/12] ceph: pass idmap to __ceph_setattr
-Date:   Fri,  4 Aug 2023 10:48:54 +0200
-Message-Id: <20230804084858.126104-9-aleksandr.mikhalitsyn@canonical.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20230804084858.126104-1-aleksandr.mikhalitsyn@canonical.com>
-References: <20230804084858.126104-1-aleksandr.mikhalitsyn@canonical.com>
+        Fri, 04 Aug 2023 01:49:24 -0700 (PDT)
+From:   Leonardo Bras <leobras@redhat.com>
+To:     Will Deacon <will@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Leonardo Bras <leobras@redhat.com>,
+        Andrea Parri <parri.andrea@gmail.com>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Andrzej Hajda <andrzej.hajda@intel.com>,
+        Palmer Dabbelt <palmer@rivosinc.com>,
+        Guo Ren <guoren@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org
+Subject: [RFC PATCH v3 1/5] riscv/cmpxchg: Deduplicate xchg() asm functions
+Date:   Fri,  4 Aug 2023 05:48:54 -0300
+Message-ID: <20230804084900.1135660-3-leobras@redhat.com>
+X-Mailer: git-send-email 2.41.0
+In-Reply-To: <20230804084900.1135660-2-leobras@redhat.com>
+References: <20230804084900.1135660-2-leobras@redhat.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Just pass down the mount's idmapping to __ceph_setattr,
-because we will need it later.
+In this header every xchg define (_relaxed, _acquire, _release, vanilla)
+contain it's own asm file, both for 4-byte variables an 8-byte variables,
+on a total of 8 versions of mostly the same asm.
 
-Cc: Xiubo Li <xiubli@redhat.com>
-Cc: Jeff Layton <jlayton@kernel.org>
-Cc: Ilya Dryomov <idryomov@gmail.com>
-Cc: brauner@kernel.org
-Cc: ceph-devel@vger.kernel.org
-Signed-off-by: Alexander Mikhalitsyn <aleksandr.mikhalitsyn@canonical.com>
+This is usually bad, as it means any change may be done in up to 8
+different places.
+
+Unify those versions by creating a new define with enough parameters to
+generate any version of the previous 8.
+
+Then unify the result under a more general define, and simplify
+arch_xchg* generation.
+
+(This did not cause any change in generated asm)
+
+Signed-off-by: Leonardo Bras <leobras@redhat.com>
+Reviewed-by: Andrea Parri <parri.andrea@gmail.com>
 ---
- fs/ceph/acl.c    | 4 ++--
- fs/ceph/crypto.c | 2 +-
- fs/ceph/inode.c  | 5 +++--
- fs/ceph/super.h  | 3 ++-
- 4 files changed, 8 insertions(+), 6 deletions(-)
+ arch/riscv/include/asm/cmpxchg.h | 136 +++++--------------------------
+ 1 file changed, 22 insertions(+), 114 deletions(-)
 
-diff --git a/fs/ceph/acl.c b/fs/ceph/acl.c
-index 32b26deb1741..89280c168acb 100644
---- a/fs/ceph/acl.c
-+++ b/fs/ceph/acl.c
-@@ -142,7 +142,7 @@ int ceph_set_acl(struct mnt_idmap *idmap, struct dentry *dentry,
- 		newattrs.ia_ctime = current_time(inode);
- 		newattrs.ia_mode = new_mode;
- 		newattrs.ia_valid = ATTR_MODE | ATTR_CTIME;
--		ret = __ceph_setattr(inode, &newattrs, NULL);
-+		ret = __ceph_setattr(idmap, inode, &newattrs, NULL);
- 		if (ret)
- 			goto out_free;
- 	}
-@@ -153,7 +153,7 @@ int ceph_set_acl(struct mnt_idmap *idmap, struct dentry *dentry,
- 			newattrs.ia_ctime = old_ctime;
- 			newattrs.ia_mode = old_mode;
- 			newattrs.ia_valid = ATTR_MODE | ATTR_CTIME;
--			__ceph_setattr(inode, &newattrs, NULL);
-+			__ceph_setattr(idmap, inode, &newattrs, NULL);
- 		}
- 		goto out_free;
- 	}
-diff --git a/fs/ceph/crypto.c b/fs/ceph/crypto.c
-index b9071bba3b08..8cf32e7f59bf 100644
---- a/fs/ceph/crypto.c
-+++ b/fs/ceph/crypto.c
-@@ -112,7 +112,7 @@ static int ceph_crypt_set_context(struct inode *inode, const void *ctx, size_t l
+diff --git a/arch/riscv/include/asm/cmpxchg.h b/arch/riscv/include/asm/cmpxchg.h
+index 2f4726d3cfcc..ec4ea4f3f908 100644
+--- a/arch/riscv/include/asm/cmpxchg.h
++++ b/arch/riscv/include/asm/cmpxchg.h
+@@ -11,60 +11,30 @@
+ #include <asm/barrier.h>
+ #include <asm/fence.h>
  
- 	cia.fscrypt_auth = cfa;
+-#define __xchg_relaxed(ptr, new, size)					\
++#define __arch_xchg(sfx, prepend, append, r, p, n)			\
+ ({									\
+-	__typeof__(ptr) __ptr = (ptr);					\
+-	__typeof__(new) __new = (new);					\
+-	__typeof__(*(ptr)) __ret;					\
+-	switch (size) {							\
+-	case 4:								\
+-		__asm__ __volatile__ (					\
+-			"	amoswap.w %0, %2, %1\n"			\
+-			: "=r" (__ret), "+A" (*__ptr)			\
+-			: "r" (__new)					\
+-			: "memory");					\
+-		break;							\
+-	case 8:								\
+-		__asm__ __volatile__ (					\
+-			"	amoswap.d %0, %2, %1\n"			\
+-			: "=r" (__ret), "+A" (*__ptr)			\
+-			: "r" (__new)					\
+-			: "memory");					\
+-		break;							\
+-	default:							\
+-		BUILD_BUG();						\
+-	}								\
+-	__ret;								\
+-})
+-
+-#define arch_xchg_relaxed(ptr, x)					\
+-({									\
+-	__typeof__(*(ptr)) _x_ = (x);					\
+-	(__typeof__(*(ptr))) __xchg_relaxed((ptr),			\
+-					    _x_, sizeof(*(ptr)));	\
++	__asm__ __volatile__ (						\
++		prepend							\
++		"	amoswap" sfx " %0, %2, %1\n"			\
++		append							\
++		: "=r" (r), "+A" (*(p))					\
++		: "r" (n)						\
++		: "memory");						\
+ })
  
--	ret = __ceph_setattr(inode, &attr, &cia);
-+	ret = __ceph_setattr(&nop_mnt_idmap, inode, &attr, &cia);
- 	if (ret == 0)
- 		inode_set_flags(inode, S_ENCRYPTED, S_ENCRYPTED);
- 	kfree(cia.fscrypt_auth);
-diff --git a/fs/ceph/inode.c b/fs/ceph/inode.c
-index 9b50861bd2b5..6c4cc009d819 100644
---- a/fs/ceph/inode.c
-+++ b/fs/ceph/inode.c
-@@ -2466,7 +2466,8 @@ static int fill_fscrypt_truncate(struct inode *inode,
- 	return ret;
- }
+-#define __xchg_acquire(ptr, new, size)					\
++#define _arch_xchg(ptr, new, sfx, prepend, append)			\
+ ({									\
+-	__typeof__(ptr) __ptr = (ptr);					\
+-	__typeof__(new) __new = (new);					\
++	__typeof__(*(ptr)) __new = (new);				\
+ 	__typeof__(*(ptr)) __ret;					\
+-	switch (size) {							\
++	__typeof__(ptr) __ptr = (ptr);					\
++	switch (sizeof(*__ptr)) {					\
+ 	case 4:								\
+-		__asm__ __volatile__ (					\
+-			"	amoswap.w %0, %2, %1\n"			\
+-			RISCV_ACQUIRE_BARRIER				\
+-			: "=r" (__ret), "+A" (*__ptr)			\
+-			: "r" (__new)					\
+-			: "memory");					\
++		__arch_xchg(".w" sfx, prepend, append,			\
++			      __ret, __ptr, __new);			\
+ 		break;							\
+ 	case 8:								\
+-		__asm__ __volatile__ (					\
+-			"	amoswap.d %0, %2, %1\n"			\
+-			RISCV_ACQUIRE_BARRIER				\
+-			: "=r" (__ret), "+A" (*__ptr)			\
+-			: "r" (__new)					\
+-			: "memory");					\
++		__arch_xchg(".d" sfx, prepend, append,			\
++			      __ret, __ptr, __new);			\
+ 		break;							\
+ 	default:							\
+ 		BUILD_BUG();						\
+@@ -72,79 +42,17 @@
+ 	__ret;								\
+ })
  
--int __ceph_setattr(struct inode *inode, struct iattr *attr, struct ceph_iattr *cia)
-+int __ceph_setattr(struct mnt_idmap *idmap, struct inode *inode,
-+		   struct iattr *attr, struct ceph_iattr *cia)
- {
- 	struct ceph_inode_info *ci = ceph_inode(inode);
- 	unsigned int ia_valid = attr->ia_valid;
-@@ -2818,7 +2819,7 @@ int ceph_setattr(struct mnt_idmap *idmap, struct dentry *dentry,
- 	    ceph_quota_is_max_bytes_exceeded(inode, attr->ia_size))
- 		return -EDQUOT;
+-#define arch_xchg_acquire(ptr, x)					\
+-({									\
+-	__typeof__(*(ptr)) _x_ = (x);					\
+-	(__typeof__(*(ptr))) __xchg_acquire((ptr),			\
+-					    _x_, sizeof(*(ptr)));	\
+-})
++#define arch_xchg_relaxed(ptr, x)					\
++	_arch_xchg(ptr, x, "", "", "")
  
--	err = __ceph_setattr(inode, attr, NULL);
-+	err = __ceph_setattr(idmap, inode, attr, NULL);
+-#define __xchg_release(ptr, new, size)					\
+-({									\
+-	__typeof__(ptr) __ptr = (ptr);					\
+-	__typeof__(new) __new = (new);					\
+-	__typeof__(*(ptr)) __ret;					\
+-	switch (size) {							\
+-	case 4:								\
+-		__asm__ __volatile__ (					\
+-			RISCV_RELEASE_BARRIER				\
+-			"	amoswap.w %0, %2, %1\n"			\
+-			: "=r" (__ret), "+A" (*__ptr)			\
+-			: "r" (__new)					\
+-			: "memory");					\
+-		break;							\
+-	case 8:								\
+-		__asm__ __volatile__ (					\
+-			RISCV_RELEASE_BARRIER				\
+-			"	amoswap.d %0, %2, %1\n"			\
+-			: "=r" (__ret), "+A" (*__ptr)			\
+-			: "r" (__new)					\
+-			: "memory");					\
+-		break;							\
+-	default:							\
+-		BUILD_BUG();						\
+-	}								\
+-	__ret;								\
+-})
++#define arch_xchg_acquire(ptr, x)					\
++	_arch_xchg(ptr, x, "", "", RISCV_ACQUIRE_BARRIER)
  
- 	if (err >= 0 && (attr->ia_valid & ATTR_MODE))
- 		err = posix_acl_chmod(&nop_mnt_idmap, dentry, attr->ia_mode);
-diff --git a/fs/ceph/super.h b/fs/ceph/super.h
-index 4e78de1be23e..e729cde7b4a0 100644
---- a/fs/ceph/super.h
-+++ b/fs/ceph/super.h
-@@ -1101,7 +1101,8 @@ struct ceph_iattr {
- 	struct ceph_fscrypt_auth	*fscrypt_auth;
- };
+ #define arch_xchg_release(ptr, x)					\
+-({									\
+-	__typeof__(*(ptr)) _x_ = (x);					\
+-	(__typeof__(*(ptr))) __xchg_release((ptr),			\
+-					    _x_, sizeof(*(ptr)));	\
+-})
+-
+-#define __arch_xchg(ptr, new, size)					\
+-({									\
+-	__typeof__(ptr) __ptr = (ptr);					\
+-	__typeof__(new) __new = (new);					\
+-	__typeof__(*(ptr)) __ret;					\
+-	switch (size) {							\
+-	case 4:								\
+-		__asm__ __volatile__ (					\
+-			"	amoswap.w.aqrl %0, %2, %1\n"		\
+-			: "=r" (__ret), "+A" (*__ptr)			\
+-			: "r" (__new)					\
+-			: "memory");					\
+-		break;							\
+-	case 8:								\
+-		__asm__ __volatile__ (					\
+-			"	amoswap.d.aqrl %0, %2, %1\n"		\
+-			: "=r" (__ret), "+A" (*__ptr)			\
+-			: "r" (__new)					\
+-			: "memory");					\
+-		break;							\
+-	default:							\
+-		BUILD_BUG();						\
+-	}								\
+-	__ret;								\
+-})
++	_arch_xchg(ptr, x, "", RISCV_RELEASE_BARRIER, "")
  
--extern int __ceph_setattr(struct inode *inode, struct iattr *attr, struct ceph_iattr *cia);
-+extern int __ceph_setattr(struct mnt_idmap *idmap, struct inode *inode,
-+			  struct iattr *attr, struct ceph_iattr *cia);
- extern int ceph_setattr(struct mnt_idmap *idmap,
- 			struct dentry *dentry, struct iattr *attr);
- extern int ceph_getattr(struct mnt_idmap *idmap,
+ #define arch_xchg(ptr, x)						\
+-({									\
+-	__typeof__(*(ptr)) _x_ = (x);					\
+-	(__typeof__(*(ptr))) __arch_xchg((ptr), _x_, sizeof(*(ptr)));	\
+-})
++	_arch_xchg(ptr, x, ".aqrl", "", "")
+ 
+ #define xchg32(ptr, x)							\
+ ({									\
 -- 
-2.34.1
+2.41.0
 
