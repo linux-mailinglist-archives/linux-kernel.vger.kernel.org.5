@@ -2,25 +2,25 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4FC0F76FCFF
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 11:14:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F051876FD00
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 11:14:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230295AbjHDJOy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Aug 2023 05:14:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60940 "EHLO
+        id S230302AbjHDJO5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Aug 2023 05:14:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60944 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229666AbjHDJOR (ORCPT
+        with ESMTP id S230248AbjHDJOR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 4 Aug 2023 05:14:17 -0400
 Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8DF014EC4;
-        Fri,  4 Aug 2023 02:11:47 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4F284ECD;
+        Fri,  4 Aug 2023 02:11:48 -0700 (PDT)
 Received: from mail02.huawei.com (unknown [172.30.67.143])
-        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4RHKhw3YXXz4f403R;
-        Fri,  4 Aug 2023 17:11:44 +0800 (CST)
+        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4RHKhx4cp4z4f403j;
+        Fri,  4 Aug 2023 17:11:45 +0800 (CST)
 Received: from huaweicloud.com (unknown [10.174.178.55])
-        by APP4 (Coremail) with SMTP id gCh0CgBH_rHLwMxk2KskPg--.58335S5;
-        Fri, 04 Aug 2023 17:11:44 +0800 (CST)
+        by APP4 (Coremail) with SMTP id gCh0CgBH_rHLwMxk2KskPg--.58335S6;
+        Fri, 04 Aug 2023 17:11:45 +0800 (CST)
 From:   thunder.leizhen@huaweicloud.com
 To:     Petr Mladek <pmladek@suse.com>,
         Sergey Senozhatsky <senozhatsky@chromium.org>,
@@ -45,20 +45,20 @@ To:     Petr Mladek <pmladek@suse.com>,
         Zqiang <qiang.zhang1211@gmail.com>, rcu@vger.kernel.org,
         linux-kernel@vger.kernel.org
 Cc:     Zhen Lei <thunder.leizhen@huawei.com>
-Subject: [PATCH v6 1/5] hexdump: add a new dump prefix DUMP_PREFIX_ADDRESS_LOW16
-Date:   Fri,  4 Aug 2023 17:11:31 +0800
-Message-Id: <20230804091136.1177-2-thunder.leizhen@huaweicloud.com>
+Subject: [PATCH v6 2/5] hexdump: minimize the output width of the offset
+Date:   Fri,  4 Aug 2023 17:11:32 +0800
+Message-Id: <20230804091136.1177-3-thunder.leizhen@huaweicloud.com>
 X-Mailer: git-send-email 2.37.3.windows.1
 In-Reply-To: <20230804091136.1177-1-thunder.leizhen@huaweicloud.com>
 References: <20230804091136.1177-1-thunder.leizhen@huaweicloud.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: gCh0CgBH_rHLwMxk2KskPg--.58335S5
-X-Coremail-Antispam: 1UD129KBjvJXoWxWF1UGw45KFWUuF17Jw1kZrb_yoW5WF13pa
-        s0gry5GF40gF4xGr1UJrWUCr1YyrZ8Ca40kFWqyw10kryxWFW7Xw4kXFW3Gry5Gr4FqFnx
-        Jry7t345Kr1UCw7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUBKb4IE77IF4wAFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k2
-        6cxKx2IYs7xG6r1S6rWUM7CIcVAFz4kK6r1j6r18M28IrcIa0xkI8VA2jI8067AKxVWUGw
+X-CM-TRANSID: gCh0CgBH_rHLwMxk2KskPg--.58335S6
+X-Coremail-Antispam: 1UD129KBjvJXoW7Kr1fZw1kGw45uw18Zr1rtFb_yoW8uFyxpF
+        nxK34YgFZ7Jr1Ikr17Ar10gF1YkFyUA3W0yFWqk34qqF4UWF15JrWkKFW3tFy5Jr4qqrsx
+        Jr9rtw1Fyr17GaUanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUBEb4IE77IF4wAFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k2
+        6cxKx2IYs7xG6r1S6rWUM7CIcVAFz4kK6r1j6r18M28IrcIa0xkI8VA2jI8067AKxVWUXw
         A2048vs2IY020Ec7CjxVAFwI0_Xr0E3s1l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxS
         w2x7M28EF7xvwVC0I7IYx2IY67AKxVW7JVWDJwA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxV
         W8Jr0_Cr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I0E14v2
@@ -67,9 +67,9 @@ X-Coremail-Antispam: 1UD129KBjvJXoWxWF1UGw45KFWUuF17Jw1kZrb_yoW5WF13pa
         Jr0_Gr1lF7xvr2IYc2Ij64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1lw4CEc2x0rVAKj4
         xxMxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_
         Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVW8ZVWrXwCIc40Y0x
-        0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVW8
-        JVWxJwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIx
-        AIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IU1D73DUUUUU=
+        0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVWx
+        JVW8Jr1lIxAIcVCF04k26cxKx2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14v26r1j6r4UMI
+        IF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x07UtR67UUUUU
         =
 X-CM-SenderInfo: hwkx0vthuozvpl2kv046kxt4xhlfz01xgou0bp/
 X-CFilter-Loop: Reflected
@@ -83,74 +83,76 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Zhen Lei <thunder.leizhen@huawei.com>
 
-Currently, function print_hex_dump() supports three dump prefixes:
-DUMP_PREFIX_NONE, DUMP_PREFIX_ADDRESS and DUMP_PREFIX_OFFSET. But for some
-usage scenarios, they don't work perfectly. For example, dump the content
-of one task's stack. In order to quickly identify a stack frame,
-DUMP_PREFIX_ADDRESS is preferred. But printing multiple 64-bit addresses
-is a bit unwise when the 'sp' value is already printed. It is redundant
-and unintuitive.
+The offset of case DUMP_PREFIX_OFFSET always starts from 0. Currently,
+the output width is fixed to 8. Therefore, the high-order bits filled
+with zeros are meaningless except for increasing the number of characters
+to be printed. Let's minimize the output width of the offset to improve
+readability.
 
-For example:
-dump memory at sp=ffff800080883a90:
-ffff800080883a90: 80883ac0 ffff8000 3d8e936c ffffbd5b
-ffff800080883aa0: 5833f000 ffff3580 00000001 00000000
-ffff800080883ab0: 40299840 ffff3580 590dfa00 ffff3580
-ffff800080883ac0: 80883b30 ffff8000 3d938b28 ffffbd5b
-ffff800080883ad0: 40877180 ffff3580 590dfa00 ffff3580
-ffff800080883ae0: 4090f600 ffff3580 80883cb0 ffff8000
-ffff800080883af0: 00000010 00000000 00000000 00000000
-ffff800080883b00: 4090f700 ffff3580 00000001 00000000
+Before:
+dump_size=36:
+00000000: c0 ba 8c 80 00 80 ff ff 6c 93 ee 2f ee bf ff ff
+00000010: 00 50 1e 98 ff 27 ff ff 01 00 00 00 00 00 00 00
+00000020: 80 ca 2f 98
 
-Generally, we do not dump more than 64 KB memory. It is sufficient to
-print only the lower 16 bits of the address.
+After:
+dump_size=8:
+0: c0 ba 89 80 00 80 ff ff
 
-dump memory at sp=ffff800080883a90:
-3a90: 80883ac0 ffff8000 3d8e936c ffffbd5b
-3aa0: 5833f000 ffff3580 00000001 00000000
-3ab0: 40299840 ffff3580 590dfa00 ffff3580
-3ac0: 80883b30 ffff8000 3d938b28 ffffbd5b
-3ad0: 40877180 ffff3580 590dfa00 ffff3580
-3ae0: 4090f600 ffff3580 80883cb0 ffff8000
-3af0: 00000010 00000000 00000000 00000000
-3b00: 4090f700 ffff3580 00000001 00000000
+dump_size=36:
+00: c0 3a 91 80 00 80 ff ff 6c 93 ae 76 30 ce ff ff
+10: 00 60 cd 60 7d 4e ff ff 01 00 00 00 00 00 00 00
+20: 40 9e 29 40
 
-Another benefit of adding DUMP_PREFIX_ADDRESS_LOW16 is that we don't have
-to worry about %p outputting address as hashed value.
+dump_size=300:
+000: c0 ba 8d 80 00 80 ff ff 6c 93 ce d4 78 a7 ff ff
+010: 00 00 16 18 0c 40 ff ff 01 00 00 00 00 00 00 00
+020: 01 00 00 00 00 00 00 00 e8 bc 8d 80 00 80 ff ff
+... ...
+110: 02 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+120: 00 08 12 01 0c 40 ff ff 00 00 01 00
 
 Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
 ---
- include/linux/printk.h | 1 +
- lib/hexdump.c          | 4 ++++
- 2 files changed, 5 insertions(+)
+ lib/hexdump.c | 13 +++++++++++--
+ 1 file changed, 11 insertions(+), 2 deletions(-)
 
-diff --git a/include/linux/printk.h b/include/linux/printk.h
-index 8ef499ab3c1ed2e..ccad9e8eaaf0c31 100644
---- a/include/linux/printk.h
-+++ b/include/linux/printk.h
-@@ -704,6 +704,7 @@ extern const struct file_operations kmsg_fops;
- enum {
- 	DUMP_PREFIX_NONE,
- 	DUMP_PREFIX_ADDRESS,
-+	DUMP_PREFIX_ADDRESS_LOW16,
- 	DUMP_PREFIX_OFFSET
- };
- extern int hex_dump_to_buffer(const void *buf, size_t len, int rowsize,
 diff --git a/lib/hexdump.c b/lib/hexdump.c
-index 06833d404398d74..247c8765cc7ca3f 100644
+index 247c8765cc7ca3f..d3c5b7bb1b8813b 100644
 --- a/lib/hexdump.c
 +++ b/lib/hexdump.c
-@@ -281,6 +281,10 @@ void print_hex_dump(const char *level, const char *prefix_str, int prefix_type,
- 			printk("%s%s%p: %s\n",
- 			       level, prefix_str, ptr + i, linebuf);
+@@ -263,12 +263,21 @@ void print_hex_dump(const char *level, const char *prefix_str, int prefix_type,
+ 		    const void *buf, size_t len, bool ascii)
+ {
+ 	const u8 *ptr = buf;
+-	int i, linelen, remaining = len;
++	int i, linelen, width = 0, remaining = len;
+ 	unsigned char linebuf[32 * 3 + 2 + 32 + 1];
+ 
+ 	if (rowsize != 16 && rowsize != 32)
+ 		rowsize = 16;
+ 
++	if (prefix_type == DUMP_PREFIX_OFFSET) {
++		unsigned long tmp = len;
++
++		do {
++			width++;
++			tmp >>= 4;
++		} while (tmp);
++	}
++
+ 	for (i = 0; i < len; i += rowsize) {
+ 		linelen = min(remaining, rowsize);
+ 		remaining -= rowsize;
+@@ -286,7 +295,7 @@ void print_hex_dump(const char *level, const char *prefix_str, int prefix_type,
+ 			       prefix_str, 0xffff & (unsigned long)(ptr + i), linebuf);
  			break;
-+		case DUMP_PREFIX_ADDRESS_LOW16:
-+			printk("%s%s%04lx: %s\n", level,
-+			       prefix_str, 0xffff & (unsigned long)(ptr + i), linebuf);
-+			break;
  		case DUMP_PREFIX_OFFSET:
- 			printk("%s%s%.8x: %s\n", level, prefix_str, i, linebuf);
+-			printk("%s%s%.8x: %s\n", level, prefix_str, i, linebuf);
++			printk("%s%s%0*x: %s\n", level, prefix_str, width, i, linebuf);
  			break;
+ 		default:
+ 			printk("%s%s%s\n", level, prefix_str, linebuf);
 -- 
 2.34.1
 
