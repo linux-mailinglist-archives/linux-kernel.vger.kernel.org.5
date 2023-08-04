@@ -2,53 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B673B76F843
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 05:12:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 795AA76F846
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 05:13:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232180AbjHDDMf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Aug 2023 23:12:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40094 "EHLO
+        id S230307AbjHDDNw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Aug 2023 23:13:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40276 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232583AbjHDDLd (ORCPT
+        with ESMTP id S232456AbjHDDMc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Aug 2023 23:11:33 -0400
-Received: from out30-133.freemail.mail.aliyun.com (out30-133.freemail.mail.aliyun.com [115.124.30.133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 030024EC9;
-        Thu,  3 Aug 2023 20:09:23 -0700 (PDT)
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R501e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046050;MF=xueshuai@linux.alibaba.com;NM=1;PH=DS;RN=15;SR=0;TI=SMTPD_---0Vp-n0Wm_1691118556;
-Received: from 30.240.114.112(mailfrom:xueshuai@linux.alibaba.com fp:SMTPD_---0Vp-n0Wm_1691118556)
-          by smtp.aliyun-inc.com;
-          Fri, 04 Aug 2023 11:09:20 +0800
-Message-ID: <1ebf5862-441f-729a-32c1-8e59ac452168@linux.alibaba.com>
-Date:   Fri, 4 Aug 2023 11:09:14 +0800
+        Thu, 3 Aug 2023 23:12:32 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD27A5278;
+        Thu,  3 Aug 2023 20:10:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1691118622; x=1722654622;
+  h=message-id:date:mime-version:cc:subject:to:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=ifI9ykdQ7oocrSyNeOcXUTl2KxrALUZ7bAa7qp62vJg=;
+  b=oAEoqUqMZrOcbAjXeayI06iwNUqyImxkhwR2dne25NZfQUo1LUlpeCoh
+   XeLxXmFYmH//va172zhuenAe8W4JRpokl5TWGFgQ7MeAoX9GAOlUlohOP
+   8sBuPMa09jufVMZk6LJh6oNQo3MSzd9fU73OADPoh7Y23pyi91boJx+I+
+   3xXuWt6v3iGEr8JABHL+A7YZj4j9si7IlrsB43xY3BentDZdH0/8xgGKw
+   PYJ3QVPi1/ME3vRW2D76IEZu7pIt8LM94lsr9Kp0I8cg9vkhBgFxnChuf
+   C9HVi9qU6p8rgMfYEMX90arousP6r3RMaQ6/wFns/WIcFBBMJEUStLR6v
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10791"; a="401007533"
+X-IronPort-AV: E=Sophos;i="6.01,253,1684825200"; 
+   d="scan'208";a="401007533"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Aug 2023 20:10:21 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10791"; a="729882400"
+X-IronPort-AV: E=Sophos;i="6.01,253,1684825200"; 
+   d="scan'208";a="729882400"
+Received: from blu2-mobl.ccr.corp.intel.com (HELO [10.254.210.88]) ([10.254.210.88])
+  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Aug 2023 20:10:16 -0700
+Message-ID: <0866104f-b070-405c-da27-71a138a10e7c@linux.intel.com>
+Date:   Fri, 4 Aug 2023 11:10:14 +0800
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.13.1
-Subject: Re: [PATCH v6 3/4] drivers/perf: add DesignWare PCIe PMU driver
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Cc:     baolu.lu@linux.intel.com, "Liu, Yi L" <yi.l.liu@intel.com>,
+        Jacob Pan <jacob.jun.pan@linux.intel.com>,
+        "iommu@lists.linux.dev" <iommu@lists.linux.dev>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2 05/12] iommu: Change the return value of
+ dev_iommu_get()
 Content-Language: en-US
-To:     Yicong Yang <yangyicong@huawei.com>,
-        Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-Cc:     yangyicong@hisilicon.com, chengyou@linux.alibaba.com,
-        kaishen@linux.alibaba.com, helgaas@kernel.org, will@kernel.org,
-        baolin.wang@linux.alibaba.com, robin.murphy@arm.com,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-pci@vger.kernel.org, rdunlap@infradead.org,
-        mark.rutland@arm.com, zhuo.song@linux.alibaba.com
-References: <20230606074938.97724-1-xueshuai@linux.alibaba.com>
- <20230606074938.97724-4-xueshuai@linux.alibaba.com>
- <31e2b012-3a29-d063-842d-e3f7736816e7@huawei.com>
- <20230727103929.00000544@Huawei.com>
- <12958abe-4bdb-8532-bf67-8e772ed2a9dd@linux.alibaba.com>
- <edc056aa-1c53-a31e-087f-6076b795d5cc@huawei.com>
- <10176239-78c1-e276-e74f-a6e79b9c0751@linux.alibaba.com>
- <f14c9acd-1549-1a65-4e57-a5e434cbe18d@huawei.com>
-From:   Shuai Xue <xueshuai@linux.alibaba.com>
-In-Reply-To: <f14c9acd-1549-1a65-4e57-a5e434cbe18d@huawei.com>
-Content-Type: text/plain; charset=UTF-8
+To:     "Tian, Kevin" <kevin.tian@intel.com>,
+        Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        Nicolin Chen <nicolinc@nvidia.com>
+References: <20230727054837.147050-1-baolu.lu@linux.intel.com>
+ <20230727054837.147050-6-baolu.lu@linux.intel.com>
+ <BN9PR11MB52769A468F912B7D395878ED8C08A@BN9PR11MB5276.namprd11.prod.outlook.com>
+From:   Baolu Lu <baolu.lu@linux.intel.com>
+In-Reply-To: <BN9PR11MB52769A468F912B7D395878ED8C08A@BN9PR11MB5276.namprd11.prod.outlook.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-10.0 required=5.0 tests=BAYES_00,
-        ENV_AND_HDR_SPF_MATCH,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -56,141 +76,57 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 2023/8/4 10:28, Yicong Yang wrote:
-> On 2023/8/4 9:39, Shuai Xue wrote:
+On 2023/8/3 15:59, Tian, Kevin wrote:
+>> From: Lu Baolu <baolu.lu@linux.intel.com>
+>> Sent: Thursday, July 27, 2023 1:49 PM
 >>
+>> Make dev_iommu_get() return 0 for success and error numbers for failure.
+>> This will make the code neat and readable. No functionality changes.
 >>
->> On 2023/8/1 19:46, Yicong Yang wrote:
->>> On 2023/7/28 20:41, Shuai Xue wrote:
->>>>
->>>>
->>>> On 2023/7/27 17:39, Jonathan Cameron wrote:
->>>>> On Tue, 6 Jun 2023 23:14:07 +0800
->>>>> Yicong Yang <yangyicong@huawei.com> wrote:
->>>>>
->>>>>> On 2023/6/6 15:49, Shuai Xue wrote:
->>>>>>> This commit adds the PCIe Performance Monitoring Unit (PMU) driver support
->>>>>>> for T-Head Yitian SoC chip. Yitian is based on the Synopsys PCI Express
->>>>>>> Core controller IP which provides statistics feature. The PMU is not a PCIe
->>>>>>> Root Complex integrated End Point(RCiEP) device but only register counters
->>>>>>> provided by each PCIe Root Port.
->>>>>>>
->>>>>>> To facilitate collection of statistics the controller provides the
->>>>>>> following two features for each Root Port:
->>>>>>>
->>>>>>> - Time Based Analysis (RX/TX data throughput and time spent in each
->>>>>>>   low-power LTSSM state)
->>>>>>> - Event counters (Error and Non-Error for lanes)
->>>>>>>
->>>>>>> Note, only one counter for each type and does not overflow interrupt.
->>>>>>>
->>>>>>> This driver adds PMU devices for each PCIe Root Port. And the PMU device is
->>>>>>> named based the BDF of Root Port. For example,
->>>>>>>
->>>>>>>     30:03.0 PCI bridge: Device 1ded:8000 (rev 01)
->>>>>>>
->>>>>>> the PMU device name for this Root Port is dwc_rootport_3018.
->>>>>>>
->>>>>>> Example usage of counting PCIe RX TLP data payload (Units of 16 bytes)::
->>>>>>>
->>>>>>>     $# perf stat -a -e dwc_rootport_3018/Rx_PCIe_TLP_Data_Payload/
->>>>>>>
->>>>>>> average RX bandwidth can be calculated like this:
->>>>>>>
->>>>>>>     PCIe TX Bandwidth = PCIE_TX_DATA * 16B / Measure_Time_Window
->>>>>>>
->>>>>>> Signed-off-by: Shuai Xue <xueshuai@linux.alibaba.com>
->>>>>>> Reported-by: kernel test robot <lkp@intel.com>
->>>>>>> Link: https://lore.kernel.org/oe-kbuild-all/202305170639.XU3djFZX-lkp@intel.com/
->>>>>>> Reviewed-by: Baolin Wang <baolin.wang@linux.alibaba.com>
->>>>>
->>>>> I'll review on top to avoid any duplication with Yicong.
->>>>
->>>> Thank you! It also served as a reminder that I missed Yicong's email. It appears
->>>> that Thunderbird mistakenly moved his email to the junk folder, resulting in me
->>>> overlooking it.
->>>>
->>>>>
->>>>> Note I've cropped the stuff neither of us commented on so it's
->>>>> easier to spot the feedback.
->>>>
->>>> Thank you for noting that. My feedback is replied inline.
->>>>
->>>>>
->>>>> Jonathan
->>>>>
->>>>>>> ---
->>>>>>>  drivers/perf/Kconfig        |   7 +
->>>>>>>  drivers/perf/Makefile       |   1 +
->>>>>>>  drivers/perf/dwc_pcie_pmu.c | 706 ++++++++++++++++++++++++++++++++++++
->>>>>>>  3 files changed, 714 insertions(+)
->>>>>>>  create mode 100644 drivers/perf/dwc_pcie_pmu.c
->>>>>>>
->>>>>>> diff --git a/drivers/perf/Kconfig b/drivers/perf/Kconfig
->>>>>>> index 711f82400086..6ff3921d7a62 100644
->>>>>>> --- a/drivers/perf/Kconfig
->>>>>>> +++ b/drivers/perf/Kconfig
->>>>>>> @@ -209,6 +209,13 @@ config MARVELL_CN10K_DDR_PMU
->>>>>>>  	  Enable perf support for Marvell DDR Performance monitoring
->>>>>>>  	  event on CN10K platform.
->>>>>>>  
->>>>>>> +config DWC_PCIE_PMU
->>>>>>> +	tristate "Enable Synopsys DesignWare PCIe PMU Support"
->>>>>>> +	depends on (ARM64 && PCI)
->>>>>>> +	help
->>>>>>> +	  Enable perf support for Synopsys DesignWare PCIe PMU Performance
->>>>>>> +	  monitoring event on Yitian 710 platform.
->>>>>
->>>>> The documentation kind of implies this isn't platform specific.
->>>>> If some parts are (such as which events exist) then you may want to push
->>>>> that to userspace / perftool with appropriate matching against specific SoC.
->>>>>
->>>>> If it is generic, then change this text to "event on platform including the Yitian 710."
->>>>
->>>> It is generic without any platform specific, so I will change it as you expected.
->>>>
->>>>>
->>>>>>> +
->>>>>>>  source "drivers/perf/arm_cspmu/Kconfig"
->>>>>>>  
->>>>>>>  source "drivers/perf/amlogic/Kconfig"
->>>>>
->>>>>>> new file mode 100644
->>>>>>> index 000000000000..8bfcf6e0662d
->>>>>>> --- /dev/null
->>>>>>> +++ b/drivers/perf/dwc_pcie_pmu.c
->>>>>>> @@ -0,0 +1,706 @@
->>>>>
->>>>> ...
->>>>>
->>>>>>> +
->>>>>>> +struct dwc_pcie_pmu {
->>>>>>> +	struct pci_dev		*pdev;		/* Root Port device */  
->>>>>>
->>>>>> If the root port removed after the probe of this PCIe PMU driver, we'll access the NULL
->>>>>> pointer. I didn't see you hold the root port to avoid the removal.
->>>>
->>>> Do you mean that I should have a reference count of rootport by pci_dev_get() when allocating
->>>> pcie_pmu?
->>>>
->>>>      pcie_pmu->pdev = pci_dev_get();
->>>
->>> It could be one option, but will block the removal of device from userspace. Another option
->>> is to register a PCI bus notifier then on removal/added the driver can get notified and handle
->>> it, for example, remove the related PMU on the removal of the root ports.
+>> Reviewed-by: Jacob Pan <jacob.jun.pan@linux.intel.com>
+>> Signed-off-by: Lu Baolu <baolu.lu@linux.intel.com>
+>> ---
+>>   drivers/iommu/iommu.c | 19 +++++++++++--------
+>>   1 file changed, 11 insertions(+), 8 deletions(-)
 >>
->> I see, but can root port be removed from userspace? I check the hotplug slot interface, no root
->> port is available to power off.
+>> diff --git a/drivers/iommu/iommu.c b/drivers/iommu/iommu.c
+>> index 00309f66153b..4ba3bb692993 100644
+>> --- a/drivers/iommu/iommu.c
+>> +++ b/drivers/iommu/iommu.c
+>> @@ -290,20 +290,20 @@ void iommu_device_unregister(struct
+>> iommu_device *iommu)
+>>   }
+>>   EXPORT_SYMBOL_GPL(iommu_device_unregister);
+>>
+>> -static struct dev_iommu *dev_iommu_get(struct device *dev)
+>> +static int dev_iommu_get(struct device *dev)
+>>   {
+>>   	struct dev_iommu *param = dev->iommu;
+>>
+>>   	if (param)
+>> -		return param;
+>> +		return 0;
+>>
+>>   	param = kzalloc(sizeof(*param), GFP_KERNEL);
+>>   	if (!param)
+>> -		return NULL;
+>> +		return -ENOMEM;
+>>
+>>   	mutex_init(&param->lock);
+>>   	dev->iommu = param;
+>> -	return param;
+>> +	return 0;
+>>   }
 >>
 > 
-> For hotplug maybe not, but user can remove certian device through sysfs:
+> Jason's series [1] has been queued. Time to refine according to
+> the discussion in [2].
 > 
-> echo 1 > /sys/bus/pci/devices/<root port>/remove
-> 
+> [1] https://lore.kernel.org/linux-iommu/ZLFYXlSBZrlxFpHM@8bytes.org/
+> [2] https://lore.kernel.org/linux-iommu/c815fa2b-00df-91e1-8353-8258773957e4@linux.intel.com/
 
-Thank you, I will add a notifier for removal/added action.
+I'm not sure I understand your point here. This only changes the return
+value of dev_iommu_get() to make the code more concise.
 
-Best Regards,
-Shuai
+Best regards,
+baolu
