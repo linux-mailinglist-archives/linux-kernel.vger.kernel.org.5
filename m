@@ -2,351 +2,287 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 407B276FA2D
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 08:36:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C3BD76FA30
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 08:36:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231537AbjHDGgX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Aug 2023 02:36:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37268 "EHLO
+        id S232676AbjHDGgz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Aug 2023 02:36:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37622 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232607AbjHDGgS (ORCPT
+        with ESMTP id S233096AbjHDGgo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Aug 2023 02:36:18 -0400
-Received: from smtp-relay-internal-1.canonical.com (smtp-relay-internal-1.canonical.com [185.125.188.123])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 774A24687
-        for <linux-kernel@vger.kernel.org>; Thu,  3 Aug 2023 23:36:04 -0700 (PDT)
-Received: from mail-yb1-f197.google.com (mail-yb1-f197.google.com [209.85.219.197])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id DFDE6417B7
-        for <linux-kernel@vger.kernel.org>; Fri,  4 Aug 2023 06:36:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1691130961;
-        bh=4ehLogqpf8AbHxOn+oiX5uttkJ8cN5sGSHt2uLmpG5o=;
-        h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-         To:Cc:Content-Type;
-        b=DrzISXyx0qaN2hESNY9ggL0wVbebMSatoXIL0MA2L5uwQEn9utsk2fik1Y+8ogXQx
-         KJZyqBq0zx2g04dc72c/mqiZAPVNdKZsv2RU197Ry0g7ot3fjloWk4y4ekX0e72nNi
-         phoNxTbR78ZVawBT7rjXNWPPZ+rEudIffQHxURJE/nw+11ACxAdfNORO+tomorr742
-         m5D3Rv8Xj+Ki2VB8neB6D3ayeLufN4ilwoA05vh+nBdAZ1zrvdu2rTWGt34Iby6koV
-         HxuU5lWbfCijG16VWGjbaHKKmMoIbjjqr28jzjTrf/ZvdQQPHXhcrU7xWHwFtu0hey
-         jJtSdztfnV49w==
-Received: by mail-yb1-f197.google.com with SMTP id 3f1490d57ef6-d10792c7582so1861210276.3
-        for <linux-kernel@vger.kernel.org>; Thu, 03 Aug 2023 23:36:01 -0700 (PDT)
+        Fri, 4 Aug 2023 02:36:44 -0400
+Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C07349D6
+        for <linux-kernel@vger.kernel.org>; Thu,  3 Aug 2023 23:36:34 -0700 (PDT)
+Received: by mail-pf1-x42f.google.com with SMTP id d2e1a72fcca58-68783b2e40bso1233496b3a.3
+        for <linux-kernel@vger.kernel.org>; Thu, 03 Aug 2023 23:36:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1691130993; x=1691735793;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=g0fil/ay504EfjcdWFREMD3U7F+7l/jraDTXT6w75DQ=;
+        b=BJpJvAmOYCxWBDBW91TmeILmfv16LSN4o3X/tVVWCbADvEticbmzbdHwmhvFFI0tzP
+         w4PPopOclvok3MUQTd3B+ZRw5HSYU4ipl0mJMqLWWLk73MIw2Kvd0c9EKKYxNhjG7QVJ
+         A/FxKGgllTL+15SV3wqcvlxWr2ZZ5Juk8l9Ub0qmfFs4sQRBfL8zqB/Acqp0sR2eXCga
+         0JFRWMgEXoTBhwa+WRsZnTpqdJ6AVlH1vs146d4Ogjm6BCgvVob6kPvC0WjWYqkYmsNE
+         vmM3xJ8NNnKQsIIBxwq6oPfIEykxDjQlP/c04qzwpdX7uLmCUpS08Ip88cgpNlD/8vbi
+         hPTw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691130961; x=1691735761;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=4ehLogqpf8AbHxOn+oiX5uttkJ8cN5sGSHt2uLmpG5o=;
-        b=fQyG72wcB6MQbDDXz8pD3725GruONBPwDG3ItQqQyGQ21dDP0RCsZGbI7NNEoaJa61
-         jQcGpKtNapu9LJiFaSYSrHZn3t0QWvTVvPEjLogom1/16w38dCi38xNOmIRuGNK9ix5f
-         +uBmGwxjQTOLdrswuE5Xrox0fPYQNaqXCCwYra5Ge2v6UsXaoBsdDm8zWzWMG8XfVilb
-         XzUF8miRKkvk7hSFV9/Wa3n6/sSdvuDofv0xa5/q7qM7CrwY9+iKgtBMW5cAH6WnG3cJ
-         +wRMhjIqloMX9r+ZYk0j8+u7pdao6kF0s49Kj3fgG/8UVx83RTHzupnPLkdOEYVnaPdA
-         NSCQ==
-X-Gm-Message-State: AOJu0YztWymdvbWGoWuyL3kegLjVJvy0ceXCfeHS0CD/bVnJuAVsKFeX
-        LKhzNgdtZWYEPiIbHEl0dLSdN7J8Ed9yKNX8v9IpIxFKi1N1cWX2dR64ntDbyY27Eh9X5DwAzEe
-        IogiLrDkYdBolqULnDNxMuKEhBbWEDflzjG+THZFNg89srB529mXkKBYdkg==
-X-Received: by 2002:a25:2d0a:0:b0:d17:240c:2b40 with SMTP id t10-20020a252d0a000000b00d17240c2b40mr609948ybt.63.1691130960872;
-        Thu, 03 Aug 2023 23:36:00 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IEwhH3P/1kKOkmLaAXnTRFQhA5lzFYd6oVGIuMkiLFa2ulMG/8mUSnfxhR2ztoO2Iiv75KaLlwKrPI+IacPheQ=
-X-Received: by 2002:a25:2d0a:0:b0:d17:240c:2b40 with SMTP id
- t10-20020a252d0a000000b00d17240c2b40mr609941ybt.63.1691130960637; Thu, 03 Aug
- 2023 23:36:00 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1691130993; x=1691735793;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=g0fil/ay504EfjcdWFREMD3U7F+7l/jraDTXT6w75DQ=;
+        b=kIHed2n51x6qQBpVaSUDI8IHReG6Dgj3Vo1HP0E7asBAbVDFzHPIjOFPDEi1ep0H+F
+         wW0naXlcXECoO5G+ja1se1qC5Sv80cLJUTT5mSD0QNWvuRY2Rg5MFpjdDrWO8XxcB+MC
+         9a+OdHtqHNyiuiPP+kcoTN9e7dyAkJ1dRdq97TUPCz+zlpkrSavqDmzs22i7jLu86HE+
+         dJpYtdP3lyNmmXq99iI+88JExIVF6MgZ0IjA9szigVb0tTnxx5D6qiSS2gmNupf0Y4Ls
+         Yph3AiI6rHVZ/tC9xRAKmRlGbci2ofU0+qJ44lqmDw/omPStmxA7YZcZkmOl3OP/eDtb
+         rxVA==
+X-Gm-Message-State: AOJu0YyRwaVao48Y/xyjga///o5rGdHw2nmm0/kSfsK1B8G3QHtrUPBa
+        FzdGizRjewutpKxgI/3AauP/jGTzh3dAPQ==
+X-Google-Smtp-Source: AGHT+IEZGXjGXsR9qbt90/LIDV8TJFV6MLNaW615Y3f98NtgsknjXYzep8cr297zaDqpya8rCwL2vg==
+X-Received: by 2002:aa7:8884:0:b0:682:a6bd:e952 with SMTP id z4-20020aa78884000000b00682a6bde952mr883561pfe.6.1691130993277;
+        Thu, 03 Aug 2023 23:36:33 -0700 (PDT)
+Received: from haorong.ba.rivosinc.com ([66.220.2.162])
+        by smtp.gmail.com with ESMTPSA id a18-20020aa780d2000000b00682bec0b680sm848424pfn.89.2023.08.03.23.36.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 03 Aug 2023 23:36:32 -0700 (PDT)
+Date:   Thu, 3 Aug 2023 23:36:30 -0700
+From:   Haorong Lu <ancientmodern4@gmail.com>
+To:     Guo Ren <guoren@kernel.org>
+Cc:     Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Conor Dooley <conor.dooley@microchip.com>,
+        Andy Chiu <andy.chiu@sifive.com>,
+        Heiko Stuebner <heiko@sntech.de>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Mathis Salmen <mathis.salmen@matsal.de>,
+        Andrew Bresticker <abrestic@rivosinc.com>,
+        Greentime Hu <greentime.hu@sifive.com>,
+        Vincent Chen <vincent.chen@sifive.com>,
+        "open list:RISC-V ARCHITECTURE" <linux-riscv@lists.infradead.org>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] riscv: signal: handle syscall restart before get_signal
+Message-ID: <ZMycbvkIgNA9b7n2@haorong.ba.rivosinc.com>
+References: <20230803224458.4156006-1-ancientmodern4@gmail.com>
+ <CAJF2gTR+-pBXLsEQM7srOyLyXXpTHRQmDjAaZfkXScFMjhpJhQ@mail.gmail.com>
 MIME-Version: 1.0
-References: <20230803135955.230449-1-aleksandr.mikhalitsyn@canonical.com>
- <20230803135955.230449-4-aleksandr.mikhalitsyn@canonical.com>
- <71018b94-45a0-3404-d3d0-d9f808a72a00@redhat.com> <41ba61bf-3a45-cb20-1e4c-38dbd65bafa6@redhat.com>
-In-Reply-To: <41ba61bf-3a45-cb20-1e4c-38dbd65bafa6@redhat.com>
-From:   Aleksandr Mikhalitsyn <aleksandr.mikhalitsyn@canonical.com>
-Date:   Fri, 4 Aug 2023 08:35:49 +0200
-Message-ID: <CAEivzxcmurnArPRuLWXDjA2+qdicz4rnxA8ESTQprHJM1kKEnA@mail.gmail.com>
-Subject: Re: [PATCH v8 03/12] ceph: handle idmapped mounts in create_request_message()
-To:     Xiubo Li <xiubli@redhat.com>
-Cc:     brauner@kernel.org, stgraber@ubuntu.com,
-        linux-fsdevel@vger.kernel.org, Jeff Layton <jlayton@kernel.org>,
-        Ilya Dryomov <idryomov@gmail.com>, ceph-devel@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAJF2gTR+-pBXLsEQM7srOyLyXXpTHRQmDjAaZfkXScFMjhpJhQ@mail.gmail.com>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 4, 2023 at 5:24=E2=80=AFAM Xiubo Li <xiubli@redhat.com> wrote:
->
->
-> On 8/4/23 10:26, Xiubo Li wrote:
+On Fri, Aug 04, 2023 at 09:08:53AM +0800, Guo Ren wrote:
+> On Fri, Aug 4, 2023 at 6:45 AM Haorong Lu <ancientmodern4@gmail.com> wrote:
 > >
-> > On 8/3/23 21:59, Alexander Mikhalitsyn wrote:
-> >> From: Christian Brauner <brauner@kernel.org>
-> >>
-> >> Inode operations that create a new filesystem object such as ->mknod,
-> >> ->create, ->mkdir() and others don't take a {g,u}id argument explicitl=
-y.
-> >> Instead the caller's fs{g,u}id is used for the {g,u}id of the new
-> >> filesystem object.
-> >>
-> >> In order to ensure that the correct {g,u}id is used map the caller's
-> >> fs{g,u}id for creation requests. This doesn't require complex changes.
-> >> It suffices to pass in the relevant idmapping recorded in the request
-> >> message. If this request message was triggered from an inode operation
-> >> that creates filesystem objects it will have passed down the relevant
-> >> idmaping. If this is a request message that was triggered from an inod=
-e
-> >> operation that doens't need to take idmappings into account the initia=
-l
-> >> idmapping is passed down which is an identity mapping.
-> >>
-> >> This change uses a new cephfs protocol extension
-> >> CEPHFS_FEATURE_HAS_OWNER_UIDGID
-> >> which adds two new fields (owner_{u,g}id) to the request head structur=
-e.
-> >> So, we need to ensure that MDS supports it otherwise we need to fail
-> >> any IO that comes through an idmapped mount because we can't process i=
-t
-> >> in a proper way. MDS server without such an extension will use
-> >> caller_{u,g}id
-> >> fields to set a new inode owner UID/GID which is incorrect because
-> >> caller_{u,g}id
-> >> values are unmapped. At the same time we can't map these fields with a=
-n
-> >> idmapping as it can break UID/GID-based permission checks logic on the
-> >> MDS side. This problem was described with a lot of details at [1], [2]=
-.
-> >>
-> >> [1]
-> >> https://lore.kernel.org/lkml/CAEivzxfw1fHO2TFA4dx3u23ZKK6Q+EThfzuibrhA=
-3RKM=3DZOYLg@mail.gmail.com/
-> >> [2]
-> >> https://lore.kernel.org/all/20220104140414.155198-3-brauner@kernel.org=
-/
-> >>
-> >> https://github.com/ceph/ceph/pull/52575
-> >> https://tracker.ceph.com/issues/62217
-> >>
-> >> Cc: Xiubo Li <xiubli@redhat.com>
-> >> Cc: Jeff Layton <jlayton@kernel.org>
-> >> Cc: Ilya Dryomov <idryomov@gmail.com>
-> >> Cc: ceph-devel@vger.kernel.org
-> >> Co-Developed-by: Alexander Mikhalitsyn
-> >> <aleksandr.mikhalitsyn@canonical.com>
-> >> Signed-off-by: Christian Brauner <brauner@kernel.org>
-> >> Signed-off-by: Alexander Mikhalitsyn
-> >> <aleksandr.mikhalitsyn@canonical.com>
-> >> ---
-> >> v7:
-> >>     - reworked to use two new fields for owner UID/GID
-> >> (https://github.com/ceph/ceph/pull/52575)
-> >> v8:
-> >>     - properly handled case when old MDS used with new kernel client
-> >> ---
-> >>   fs/ceph/mds_client.c         | 46 +++++++++++++++++++++++++++++++++-=
---
-> >>   fs/ceph/mds_client.h         |  5 +++-
-> >>   include/linux/ceph/ceph_fs.h |  4 +++-
-> >>   3 files changed, 50 insertions(+), 5 deletions(-)
-> >>
-> >> diff --git a/fs/ceph/mds_client.c b/fs/ceph/mds_client.c
-> >> index 8829f55103da..7d3106d3b726 100644
-> >> --- a/fs/ceph/mds_client.c
-> >> +++ b/fs/ceph/mds_client.c
-> >> @@ -2902,6 +2902,17 @@ static void encode_mclientrequest_tail(void
-> >> **p, const struct ceph_mds_request *
-> >>       }
-> >>   }
-> >>   +static inline u16 mds_supported_head_version(struct
-> >> ceph_mds_session *session)
-> >> +{
-> >> +    if (!test_bit(CEPHFS_FEATURE_32BITS_RETRY_FWD,
-> >> &session->s_features))
-> >> +        return 1;
-> >> +
-> >> +    if (!test_bit(CEPHFS_FEATURE_HAS_OWNER_UIDGID,
-> >> &session->s_features))
-> >> +        return 2;
-> >> +
-> >> +    return CEPH_MDS_REQUEST_HEAD_VERSION;
-> >> +}
-> >> +
-> >>   static struct ceph_mds_request_head_legacy *
-> >>   find_legacy_request_head(void *p, u64 features)
-> >>   {
-> >> @@ -2923,6 +2934,7 @@ static struct ceph_msg
-> >> *create_request_message(struct ceph_mds_session *session,
-> >>   {
-> >>       int mds =3D session->s_mds;
-> >>       struct ceph_mds_client *mdsc =3D session->s_mdsc;
-> >> +    struct ceph_client *cl =3D mdsc->fsc->client;
-> >>       struct ceph_msg *msg;
-> >>       struct ceph_mds_request_head_legacy *lhead;
-> >>       const char *path1 =3D NULL;
-> >> @@ -2936,7 +2948,7 @@ static struct ceph_msg
-> >> *create_request_message(struct ceph_mds_session *session,
-> >>       void *p, *end;
-> >>       int ret;
-> >>       bool legacy =3D !(session->s_con.peer_features &
-> >> CEPH_FEATURE_FS_BTIME);
-> >> -    bool old_version =3D !test_bit(CEPHFS_FEATURE_32BITS_RETRY_FWD,
-> >> &session->s_features);
-> >> +    u16 request_head_version =3D mds_supported_head_version(session);
-> >>         ret =3D set_request_path_attr(mdsc, req->r_inode, req->r_dentr=
-y,
-> >>                     req->r_parent, req->r_path1, req->r_ino1.ino,
-> >> @@ -2977,8 +2989,10 @@ static struct ceph_msg
-> >> *create_request_message(struct ceph_mds_session *session,
-> >>        */
-> >>       if (legacy)
-> >>           len =3D sizeof(struct ceph_mds_request_head_legacy);
-> >> -    else if (old_version)
-> >> +    else if (request_head_version =3D=3D 1)
-> >>           len =3D sizeof(struct ceph_mds_request_head_old);
-> >> +    else if (request_head_version =3D=3D 2)
-> >> +        len =3D offsetofend(struct ceph_mds_request_head, ext_num_fwd=
-);
-> >>       else
-> >>           len =3D sizeof(struct ceph_mds_request_head);
+> > In the current riscv implementation, blocking syscalls like read() may
+> > not correctly restart after being interrupted by ptrace. This problem
+> > arises when the syscall restart process in arch_do_signal_or_restart()
+> > is bypassed due to changes to the regs->cause register, such as an
+> > ebreak instruction.
 > >
-> > This is not what we suppose to. If we do this again and again when
-> > adding new members it will make the code very complicated to maintain.
+> > Steps to reproduce:
+> > 1. Interrupt the tracee process with PTRACE_SEIZE & PTRACE_INTERRUPT.
+> > 2. Backup original registers and instruction at new_pc.
+> > 3. Change pc to new_pc, and inject an instruction (like ebreak) to this
+> >    address.
+> > 4. Resume with PTRACE_CONT and wait for the process to stop again after
+> >    executing ebreak.
+> > 5. Restore original registers and instructions, and detach from the
+> >    tracee process.
+> > 6. Now the read() syscall in tracee will return -1 with errno set to
+> >    ERESTARTSYS.
 > >
-> > Once the CEPHFS_FEATURE_32BITS_RETRY_FWD has been supported the ceph
-> > should correctly decode it and if CEPHFS_FEATURE_HAS_OWNER_UIDGID is
-> > not supported the decoder should skip it directly.
+> > Specifically, during an interrupt, the regs->cause changes from
+> > EXC_SYSCALL to EXC_BREAKPOINT due to the injected ebreak, which is
+> > inaccessible via ptrace so we cannot restore it. This alteration breaks
+> > the syscall restart condition and ends the read() syscall with an
+> > ERESTARTSYS error. According to include/linux/errno.h, it should never
+> > be seen by user programs. X86 can avoid this issue as it checks the
+> > syscall condition using a register (orig_ax) exposed to user space.
+> > Arm64 handles syscall restart before calling get_signal, where it could
+> > be paused and inspected by ptrace/debugger.
 > >
-> > Is the MDS side buggy ? Why you last version didn't work ?
+> > This patch adjusts the riscv implementation to arm64 style, which also
+> > checks syscall using a kernel register (syscallno). It ensures the
+> > syscall restart process is not bypassed when changes to the cause
+> > register occur, providing more consistent behavior across various
+> > architectures.
 > >
->
-> I think the ceph side is buggy. Possibly we should add one new `length`
-> member in struct `struct ceph_mds_request_head` and just skip the extra
-> bytes when decoding it.
+> > For a simplified reproduction program, feel free to visit:
+> > https://github.com/ancientmodern/riscv-ptrace-bug-demo.
+> >
+> > Signed-off-by: Haorong Lu <ancientmodern4@gmail.com>
+> > ---
+> >  arch/riscv/kernel/signal.c | 85 +++++++++++++++++++++-----------------
+> >  1 file changed, 46 insertions(+), 39 deletions(-)
+> >
+> > diff --git a/arch/riscv/kernel/signal.c b/arch/riscv/kernel/signal.c
+> > index 180d951d3624..d2d7169048ea 100644
+> > --- a/arch/riscv/kernel/signal.c
+> > +++ b/arch/riscv/kernel/signal.c
+> > @@ -391,30 +391,6 @@ static void handle_signal(struct ksignal *ksig, struct pt_regs *regs)
+> >         sigset_t *oldset = sigmask_to_save();
+> >         int ret;
+> >
+> > -       /* Are we from a system call? */
+> > -       if (regs->cause == EXC_SYSCALL) {
+> > -               /* Avoid additional syscall restarting via ret_from_exception */
+> > -               regs->cause = -1UL;
+> > -               /* If so, check system call restarting.. */
+> > -               switch (regs->a0) {
+> > -               case -ERESTART_RESTARTBLOCK:
+> > -               case -ERESTARTNOHAND:
+> > -                       regs->a0 = -EINTR;
+> > -                       break;
+> > -
+> > -               case -ERESTARTSYS:
+> > -                       if (!(ksig->ka.sa.sa_flags & SA_RESTART)) {
+> > -                               regs->a0 = -EINTR;
+> > -                               break;
+> > -                       }
+> > -                       fallthrough;
+> > -               case -ERESTARTNOINTR:
+> > -                        regs->a0 = regs->orig_a0;
+> > -                       regs->epc -= 0x4;
+> > -                       break;
+> > -               }
+> > -       }
+> > -
+> >         rseq_signal_deliver(ksig, regs);
+> >
+> >         /* Set up the stack frame */
+> > @@ -428,35 +404,66 @@ static void handle_signal(struct ksignal *ksig, struct pt_regs *regs)
+> >
+> >  void arch_do_signal_or_restart(struct pt_regs *regs)
+> >  {
+> > +       unsigned long continue_addr = 0, restart_addr = 0;
+> > +       int retval = 0;
+> >         struct ksignal ksig;
+> > +       bool syscall = (regs->cause == EXC_SYSCALL);
+> >
+> > -       if (get_signal(&ksig)) {
+> > -               /* Actually deliver the signal */
+> > -               handle_signal(&ksig, regs);
+> > -               return;
+> > -       }
+> > +       /* If we were from a system call, check for system call restarting */
+> > +       if (syscall) {
+> > +               continue_addr = regs->epc;
+> > +               restart_addr = continue_addr - 4;
+> > +               retval = regs->a0;
+> >
+> > -       /* Did we come from a system call? */
+> > -       if (regs->cause == EXC_SYSCALL) {
+> >                 /* Avoid additional syscall restarting via ret_from_exception */
+> >                 regs->cause = -1UL;
+> >
+> > -               /* Restart the system call - no handlers present */
+> > -               switch (regs->a0) {
+> > +               /*
+> > +                * Prepare for system call restart. We do this here so that a
+> > +                * debugger will see the already changed PC.
+> > +                */
+> > +               switch (retval) {
+> >                 case -ERESTARTNOHAND:
+> >                 case -ERESTARTSYS:
+> >                 case -ERESTARTNOINTR:
+> > -                        regs->a0 = regs->orig_a0;
+> > -                       regs->epc -= 0x4;
+> > -                       break;
+> >                 case -ERESTART_RESTARTBLOCK:
+> > -                        regs->a0 = regs->orig_a0;
+> > -                       regs->a7 = __NR_restart_syscall;
+> > -                       regs->epc -= 0x4;
+> > +                       regs->a0 = regs->orig_a0;
+> > +                       regs->epc = restart_addr;
+> >                         break;
+> >                 }
+> >         }
+> >
+> > +       /*
+> > +        * Get the signal to deliver. When running under ptrace, at this point
+> > +        * the debugger may change all of our registers.
+> > +        */
+> > +       if (get_signal(&ksig)) {
+> > +               /*
+> > +                * Depending on the signal settings, we may need to revert the
+> > +                * decision to restart the system call, but skip this if a
+> > +                * debugger has chosen to restart at a different PC.
+> > +                */
+> > +               if (regs->epc == restart_addr &&
+> > +                   (retval == -ERESTARTNOHAND ||
+> > +                    retval == -ERESTART_RESTARTBLOCK ||
+> > +                    (retval == -ERESTARTSYS &&
+> > +                     !(ksig.ka.sa.sa_flags & SA_RESTART)))) {
+> > +                       regs->a0 = -EINTR;
+> > +                       regs->epc = continue_addr;
+> > +               }
+> > +
+> > +               /* Actually deliver the signal */
+> > +               handle_signal(&ksig, regs);
+> > +               return;
+> > +       }
+> > +
+> > +       /*
+> > +        * Handle restarting a different system call. As above, if a debugger
+> > +        * has chosen to restart at a different PC, ignore the restart.
+> > +        */
+> > +       if (syscall && regs->epc == restart_addr && retval == -ERESTART_RESTARTBLOCK)
+> > +               regs->a7 = __NR_restart_syscall;
+> > +
+> I thought your patch contains two parts:
+> 1. bugfix
+> 2. Some coding conventions or adjusting some logic of the original signal.
+> 
+> Could we separate them into two pieces and make the bugfix one
+> minimalistic? Then, people could easier to review your patches.
 
-Hm, I think I found something suspicious. In cephfs code we have many
-places that
-call the DECODE_FINISH macro, but in our decoder we don't have it.
+Hi Guo, thanks for your feedback!
 
-From documentation it follows that DECODE_FINISH purpose is precisely
-about this problem.
+AFAIU modifying logic of these two functions are the means to fix this
+bug. These changes should not affect specific signals as they merely
+invert the order of handling (syscall restart && pending signals).
 
-What do you think?
+Since syscall restart involves many different conditions, providing a
+minimal bugfix could be hard and might introduce other issues. And 
+actually there is not too many changes:
 
->
-> Could you fix it together with your ceph PR ?
->
-> Thanks
->
-> - Xiubo
->
->
-> > Thanks
+- move syscall restatrt before get_signal to prevent it being bypassed
+  when regs->cause has been changed
+
+- simplify duplicated ERESTARTSYS hanlder in handle_signal to a small
+  "if branch" between get_signal and handle_signal
+
+I met this bug accidentally when developing riscv version of a user-
+space checkpoint/restore tool. Frankly, I'm fairly new to this area.
+Interested to see if there're better solutions to this :)
+
+Best,
+Haorong
+
+> 
+> >         /*
+> >          * If there is no signal to deliver, we just put the saved
+> >          * sigmask back.
+> > --
+> > 2.41.0
 > >
-> > - Xiubo
-> >
-> >> @@ -3028,6 +3042,16 @@ static struct ceph_msg
-> >> *create_request_message(struct ceph_mds_session *session,
-> >>       lhead =3D find_legacy_request_head(msg->front.iov_base,
-> >>                        session->s_con.peer_features);
-> >>   +    if ((req->r_mnt_idmap !=3D &nop_mnt_idmap) &&
-> >> +        !test_bit(CEPHFS_FEATURE_HAS_OWNER_UIDGID,
-> >> &session->s_features)) {
-> >> +        pr_err_ratelimited_client(cl,
-> >> +            "idmapped mount is used and
-> >> CEPHFS_FEATURE_HAS_OWNER_UIDGID"
-> >> +            " is not supported by MDS. Fail request with -EIO.\n");
-> >> +
-> >> +        ret =3D -EIO;
-> >> +        goto out_err;
-> >> +    }
-> >> +
-> >>       /*
-> >>        * The ceph_mds_request_head_legacy didn't contain a version
-> >> field, and
-> >>        * one was added when we moved the message version from 3->4.
-> >> @@ -3035,17 +3059,33 @@ static struct ceph_msg
-> >> *create_request_message(struct ceph_mds_session *session,
-> >>       if (legacy) {
-> >>           msg->hdr.version =3D cpu_to_le16(3);
-> >>           p =3D msg->front.iov_base + sizeof(*lhead);
-> >> -    } else if (old_version) {
-> >> +    } else if (request_head_version =3D=3D 1) {
-> >>           struct ceph_mds_request_head_old *ohead =3D msg->front.iov_b=
-ase;
-> >>             msg->hdr.version =3D cpu_to_le16(4);
-> >>           ohead->version =3D cpu_to_le16(1);
-> >>           p =3D msg->front.iov_base + sizeof(*ohead);
-> >> +    } else if (request_head_version =3D=3D 2) {
-> >> +        struct ceph_mds_request_head *nhead =3D msg->front.iov_base;
-> >> +
-> >> +        msg->hdr.version =3D cpu_to_le16(6);
-> >> +        nhead->version =3D cpu_to_le16(2);
-> >> +
-> >> +        p =3D msg->front.iov_base + offsetofend(struct
-> >> ceph_mds_request_head, ext_num_fwd);
-> >>       } else {
-> >>           struct ceph_mds_request_head *nhead =3D msg->front.iov_base;
-> >> +        kuid_t owner_fsuid;
-> >> +        kgid_t owner_fsgid;
-> >>             msg->hdr.version =3D cpu_to_le16(6);
-> >>           nhead->version =3D cpu_to_le16(CEPH_MDS_REQUEST_HEAD_VERSION=
-);
-> >> +
-> >> +        owner_fsuid =3D from_vfsuid(req->r_mnt_idmap, &init_user_ns,
-> >> +                      VFSUIDT_INIT(req->r_cred->fsuid));
-> >> +        owner_fsgid =3D from_vfsgid(req->r_mnt_idmap, &init_user_ns,
-> >> +                      VFSGIDT_INIT(req->r_cred->fsgid));
-> >> +        nhead->owner_uid =3D cpu_to_le32(from_kuid(&init_user_ns,
-> >> owner_fsuid));
-> >> +        nhead->owner_gid =3D cpu_to_le32(from_kgid(&init_user_ns,
-> >> owner_fsgid));
-> >>           p =3D msg->front.iov_base + sizeof(*nhead);
-> >>       }
-> >>   diff --git a/fs/ceph/mds_client.h b/fs/ceph/mds_client.h
-> >> index e3bbf3ba8ee8..8f683e8203bd 100644
-> >> --- a/fs/ceph/mds_client.h
-> >> +++ b/fs/ceph/mds_client.h
-> >> @@ -33,8 +33,10 @@ enum ceph_feature_type {
-> >>       CEPHFS_FEATURE_NOTIFY_SESSION_STATE,
-> >>       CEPHFS_FEATURE_OP_GETVXATTR,
-> >>       CEPHFS_FEATURE_32BITS_RETRY_FWD,
-> >> +    CEPHFS_FEATURE_NEW_SNAPREALM_INFO,
-> >> +    CEPHFS_FEATURE_HAS_OWNER_UIDGID,
-> >>   -    CEPHFS_FEATURE_MAX =3D CEPHFS_FEATURE_32BITS_RETRY_FWD,
-> >> +    CEPHFS_FEATURE_MAX =3D CEPHFS_FEATURE_HAS_OWNER_UIDGID,
-> >>   };
-> >>     #define CEPHFS_FEATURES_CLIENT_SUPPORTED {    \
-> >> @@ -49,6 +51,7 @@ enum ceph_feature_type {
-> >>       CEPHFS_FEATURE_NOTIFY_SESSION_STATE,    \
-> >>       CEPHFS_FEATURE_OP_GETVXATTR,        \
-> >>       CEPHFS_FEATURE_32BITS_RETRY_FWD,    \
-> >> +    CEPHFS_FEATURE_HAS_OWNER_UIDGID,    \
-> >>   }
-> >>     /*
-> >> diff --git a/include/linux/ceph/ceph_fs.h b/include/linux/ceph/ceph_fs=
-.h
-> >> index 5f2301ee88bc..6eb83a51341c 100644
-> >> --- a/include/linux/ceph/ceph_fs.h
-> >> +++ b/include/linux/ceph/ceph_fs.h
-> >> @@ -499,7 +499,7 @@ struct ceph_mds_request_head_legacy {
-> >>       union ceph_mds_request_args args;
-> >>   } __attribute__ ((packed));
-> >>   -#define CEPH_MDS_REQUEST_HEAD_VERSION  2
-> >> +#define CEPH_MDS_REQUEST_HEAD_VERSION  3
-> >>     struct ceph_mds_request_head_old {
-> >>       __le16 version;                /* struct version */
-> >> @@ -530,6 +530,8 @@ struct ceph_mds_request_head {
-> >>         __le32 ext_num_retry;          /* new count retry attempts */
-> >>       __le32 ext_num_fwd;            /* new count fwd attempts */
-> >> +
-> >> +    __le32 owner_uid, owner_gid;   /* used for OPs which create
-> >> inodes */
-> >>   } __attribute__ ((packed));
-> >>     /* cap/lease release record */
->
+> 
+> 
+> -- 
+> Best Regards
+>  Guo Ren
