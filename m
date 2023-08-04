@@ -2,145 +2,268 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 34D387708F9
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 21:23:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D4E27708F5
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 21:22:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229710AbjHDTXJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Aug 2023 15:23:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50266 "EHLO
+        id S229511AbjHDTWt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Aug 2023 15:22:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50028 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230466AbjHDTXE (ORCPT
+        with ESMTP id S229796AbjHDTWq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Aug 2023 15:23:04 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3E861BE;
-        Fri,  4 Aug 2023 12:23:02 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 40E086211E;
-        Fri,  4 Aug 2023 19:23:02 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 17DE8C433C7;
-        Fri,  4 Aug 2023 19:22:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691176981;
-        bh=XOri76sJpkz03uX4PCxdz17la0oq/zwN78Dx+ZuWn6E=;
-        h=From:Date:Subject:To:Cc:From;
-        b=cknJ4MVW9GsFmnvCz3QefAmehTF3taU0s4Xel4PtbztuLCO5PdCcUmK7JKxJxgsOa
-         upoLQVjMQzBMc1rhOK74sD/XW62yXiZ9hmxlTsBwr1byTn1f6S97GTXBLdx71fb+5f
-         +21Qi/KS5pjHu/j3hbyuthyGMv2a/OXaCBUMt2cA8uDLZigXY6GZSLAauGA4bYwFts
-         VHD1XriK9QT0qZsBV8HUflipU5/Mxymp3wCvWiOZPUitwGlpo8ds5xxATieNfl/Xdj
-         BUUGHGmb0AZuiASPLSj/Fia9EpH66s+vgVPtrDLl408o+QlzNOP44zeEaB9hE436cw
-         6q0aXxoRJMaKA==
-From:   Mark Brown <broonie@kernel.org>
-Date:   Fri, 04 Aug 2023 20:22:11 +0100
-Subject: [PATCH] selftests/rseq: Fix build with undefined __weak
+        Fri, 4 Aug 2023 15:22:46 -0400
+Received: from lelv0143.ext.ti.com (lelv0143.ext.ti.com [198.47.23.248])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 165811BE;
+        Fri,  4 Aug 2023 12:22:43 -0700 (PDT)
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+        by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 374JMWhr117737;
+        Fri, 4 Aug 2023 14:22:32 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1691176952;
+        bh=ZPr5/mVFtaKQIXxLL1Lwkt1hpyKhH9CHkOiSQjC0/gM=;
+        h=Date:Subject:To:CC:References:From:In-Reply-To;
+        b=xhtwjb0KaJmSW/3Gpm+MAHmDF1VFHf/J6Du0mAMy+RBZWAY21/SS3szyyof0OwE7p
+         XL/KtEKGIZORXneP8UDqKt1rwqqor+aGKaR8tXCtPhtN8ELrwA4rBshWdnIv41VfT2
+         M9wvLTTRJpVmxU02inm8DCAH+Hlu4dmBALP8LGKI=
+Received: from DLEE100.ent.ti.com (dlee100.ent.ti.com [157.170.170.30])
+        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 374JMWLm031490
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Fri, 4 Aug 2023 14:22:32 -0500
+Received: from DLEE100.ent.ti.com (157.170.170.30) by DLEE100.ent.ti.com
+ (157.170.170.30) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Fri, 4
+ Aug 2023 14:22:31 -0500
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE100.ent.ti.com
+ (157.170.170.30) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Fri, 4 Aug 2023 14:22:31 -0500
+Received: from [10.249.132.69] (ileaxei01-snat.itg.ti.com [10.180.69.5])
+        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 374JMQX1021939;
+        Fri, 4 Aug 2023 14:22:27 -0500
+Message-ID: <9f19e01e-6211-16eb-c911-998ee2d46161@ti.com>
+Date:   Sat, 5 Aug 2023 00:52:25 +0530
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.14.0
+Subject: Re: [PATCH v9 4/5] arm64: dts: ti: k3-j784s4-evm: Enable
+ DisplayPort-0
+Content-Language: en-US
+To:     Jayesh Choudhary <j-choudhary@ti.com>, <nm@ti.com>,
+        <vigneshr@ti.com>, <afd@ti.com>, <rogerq@kernel.org>
+CC:     <s-vadapalli@ti.com>, <kristo@kernel.org>, <robh+dt@kernel.org>,
+        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
+        <r-ravikumar@ti.com>, <sabiya.d@ti.com>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>
+References: <20230803080441.367341-1-j-choudhary@ti.com>
+ <20230803080441.367341-5-j-choudhary@ti.com>
+From:   Aradhya Bhatia <a-bhatia1@ti.com>
+In-Reply-To: <20230803080441.367341-5-j-choudhary@ti.com>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20230804-kselftest-rseq-build-v1-1-015830b66aa9@kernel.org>
-X-B4-Tracking: v=1; b=H4sIAOJPzWQC/6tWKk4tykwtVrJSqFYqSi3LLM7MzwNyDHUUlJIzE
- vPSU3UzU4B8JSMDI2MDCwMT3ezi1Jy0ktTiEt2i4tRC3aTSzJwUXcsUU2NzSxOjJMOUVCWg1oK
- i1LTMCrCx0bG1tQB6lBNIZgAAAA==
-To:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>
-Cc:     Aaron Lewis <aaronlewis@google.com>, stable@vger.kernel.org,
-        kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, Mark Brown <broonie@kernel.org>
-X-Mailer: b4 0.13-dev-034f2
-X-Developer-Signature: v=1; a=openpgp-sha256; l=2410; i=broonie@kernel.org;
- h=from:subject:message-id; bh=XOri76sJpkz03uX4PCxdz17la0oq/zwN78Dx+ZuWn6E=;
- b=owEBbQGS/pANAwAKASTWi3JdVIfQAcsmYgBkzVASILAQQzthU6vaozHnSSJrqoeklAkR7/lneg1V
- 6U6HkuWJATMEAAEKAB0WIQSt5miqZ1cYtZ/in+ok1otyXVSH0AUCZM1QEgAKCRAk1otyXVSH0K8uB/
- 9fP4U1ure2KD6wbesdwvU7rvh7aeJT6lOCKZlUp4ZxY/AkPXdFeUZIpMLptqk7UQn7aFHJT2+flbJ2
- pYnATX/W1banTs6c7waPruBz9cVg5cJJW7nYa3MCY3ErHm4uluhA9il3c/yQ1iZEJrg9twyiYEyoNi
- m1bGgzcNzXrJqgj5hYEwdOMbkCSDDSpw1H+drp6UZtJoS1+3jRbjhIDNdf9hqgKaymqslePKekFqld
- 5gnqhQ5dwDx7xE59L3b1BRC8B/L7U8zPPOcPl8D/WjbRQyRsa8QN8pTuuooCjplNsx6AzyEg9PAF6q
- KjqCB5hxFqh8Rf4U05Ioerdz5N1Z7t
-X-Developer-Key: i=broonie@kernel.org; a=openpgp;
- fpr=3F2568AAC26998F9E813A1C5C3F436CA30F5D8EB
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit 3bcbc20942db ("selftests/rseq: Play nice with binaries statically
-linked against glibc 2.35+") which is now in Linus' tree introduced uses
-of __weak but did nothing to ensure that a definition is provided for it
-resulting in build failures for the rseq tests:
+Hi Jayesh,
 
-rseq.c:41:1: error: unknown type name '__weak'
-__weak ptrdiff_t __rseq_offset;
-^
-rseq.c:41:17: error: expected ';' after top level declarator
-__weak ptrdiff_t __rseq_offset;
-                ^
-                ;
-rseq.c:42:1: error: unknown type name '__weak'
-__weak unsigned int __rseq_size;
-^
-rseq.c:43:1: error: unknown type name '__weak'
-__weak unsigned int __rseq_flags;
 
-Fix this by using the definition from tools/include compiler.h.
+On 03-Aug-23 13:34, Jayesh Choudhary wrote:
+> From: Rahul T R <r-ravikumar@ti.com>
+> 
+> Enable display for J784S4 EVM.
+> 
+> Add assigned clocks for DSS, DT node for DisplayPort PHY and pinmux for
+> DP HPD. Add the clock frequency for serdes_refclk.
+> 
+> Add the endpoint nodes to describe connection from:
+> DSS => MHDP => DisplayPort connector.
+> 
+> Also add the GPIO expander-4 node and pinmux for main_i2c4 which is
+> required for controlling DP power. Set status for all required nodes
+> for DP-0 as "okay".
+> 
+> Signed-off-by: Rahul T R <r-ravikumar@ti.com>
+> [j-choudhary@ti.com: move all the changes together to enable DP-0 in EVM]
+> Signed-off-by: Jayesh Choudhary <j-choudhary@ti.com>
+> ---
+>  arch/arm64/boot/dts/ti/k3-j784s4-evm.dts | 119 +++++++++++++++++++++++
+>  1 file changed, 119 insertions(+)
+> 
+> diff --git a/arch/arm64/boot/dts/ti/k3-j784s4-evm.dts b/arch/arm64/boot/dts/ti/k3-j784s4-evm.dts
+> index 7ad152a1b90f..005357d70122 100644
+> --- a/arch/arm64/boot/dts/ti/k3-j784s4-evm.dts
+> +++ b/arch/arm64/boot/dts/ti/k3-j784s4-evm.dts
+> @@ -249,6 +249,28 @@ vdd_sd_dv: regulator-TLV71033 {
+>  		states = <1800000 0x0>,
+>  			 <3300000 0x1>;
+>  	};
+> +
+> +	dp0_pwr_3v3: regulator-dp0-prw {
+> +		compatible = "regulator-fixed";
+> +		regulator-name = "dp0-pwr";
+> +		regulator-min-microvolt = <3300000>;
+> +		regulator-max-microvolt = <3300000>;
+> +		gpio = <&exp4 0 GPIO_ACTIVE_HIGH>;
+> +		enable-active-high;
+> +	};
+> +
+> +	dp0: connector-dp0 {
+> +		compatible = "dp-connector";
+> +		label = "DP0";
+> +		type = "full-size";
+> +		dp-pwr-supply = <&dp0_pwr_3v3>;
+> +
+> +		port {
+> +			dp0_connector_in: endpoint {
+> +				remote-endpoint = <&dp0_out>;
+> +			};
+> +		};
+> +	};
+>  };
+>  
+>  &main_pmx0 {
+> @@ -286,6 +308,19 @@ vdd_sd_dv_pins_default: vdd-sd-dv-default-pins {
+>  			J784S4_IOPAD(0x020, PIN_INPUT, 7) /* (AJ35) MCAN15_RX.GPIO0_8 */
+>  		>;
+>  	};
+> +
+> +	dp0_pins_default: dp0-default-pins {
+> +		pinctrl-single,pins = <
+> +			J784S4_IOPAD(0x0cc, PIN_INPUT, 12) /* (AM37) SPI0_CS0.DP0_HPD */
+> +		>;
+> +	};
+> +
+> +	main_i2c4_pins_default: main-i2c4-default-pins {
+> +		pinctrl-single,pins = <
+> +			J784S4_IOPAD(0x014, PIN_INPUT_PULLUP, 8) /* (AG33) MCAN14_TX.I2C4_SCL */
+> +			J784S4_IOPAD(0x010, PIN_INPUT_PULLUP, 8) /* (AH33) MCAN13_RX.I2C4_SDA */
+> +		>;
+> +	};
+>  };
+>  
+>  &wkup_pmx2 {
+> @@ -827,3 +862,87 @@ adc {
+>  		ti,adc-channels = <0 1 2 3 4 5 6 7>;
+>  	};
+>  };
+> +
+> +&serdes_refclk {
+> +	status = "okay";
+> +	clock-frequency = <100000000>;
+> +};
+> +
+> +&dss {
+> +	status = "okay";
+> +	assigned-clocks = <&k3_clks 218 2>,
+> +			  <&k3_clks 218 5>,
+> +			  <&k3_clks 218 14>,
+> +			  <&k3_clks 218 18>;
+> +	assigned-clock-parents = <&k3_clks 218 3>,
+> +				 <&k3_clks 218 7>,
+> +				 <&k3_clks 218 16>,
+> +				 <&k3_clks 218 22>;
+> +};
+> +
+> +&serdes_wiz4 {
+> +	status = "okay";
+> +};
+> +
+> +&serdes4 {
+> +	status = "okay";
+> +	serdes4_dp_link: phy@0 {
+> +		reg = <0>;
+> +		cdns,num-lanes = <4>;
+> +		#phy-cells = <0>;
+> +		cdns,phy-type = <PHY_TYPE_DP>;
+> +		resets = <&serdes_wiz4 1>, <&serdes_wiz4 2>,
+> +			 <&serdes_wiz4 3>, <&serdes_wiz4 4>;
+> +	};
+> +};
+> +
+> +&mhdp {
+> +	status = "okay";
+> +	pinctrl-names = "default";
+> +	pinctrl-0 = <&dp0_pins_default>;
+> +	phys = <&serdes4_dp_link>;
+> +	phy-names = "dpphy";
+> +};
+> +
+> +&dss_ports {
+> +	port {
 
-Fixes: 3bcbc20942db ("selftests/rseq: Play nice with binaries statically linked against glibc 2.35+")
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
-It'd be good if the KVM testing could include builds of the rseq
-selftests, the KVM tests pull in code from rseq but not the build system
-which has resulted in multiple failures like this.
----
- tools/testing/selftests/rseq/Makefile | 4 +++-
- tools/testing/selftests/rseq/rseq.c   | 2 ++
- 2 files changed, 5 insertions(+), 1 deletion(-)
+Port index has not been added here. Since this port outputs to MHDP
+bridge, this should be "port@0", and a "reg = <0>;" property should be
+added below (along with the address and size cells properties).
 
-diff --git a/tools/testing/selftests/rseq/Makefile b/tools/testing/selftests/rseq/Makefile
-index b357ba24af06..7a957c7d459a 100644
---- a/tools/testing/selftests/rseq/Makefile
-+++ b/tools/testing/selftests/rseq/Makefile
-@@ -4,8 +4,10 @@ ifneq ($(shell $(CC) --version 2>&1 | head -n 1 | grep clang),)
- CLANG_FLAGS += -no-integrated-as
- endif
- 
-+top_srcdir = ../../../..
-+
- CFLAGS += -O2 -Wall -g -I./ $(KHDR_INCLUDES) -L$(OUTPUT) -Wl,-rpath=./ \
--	  $(CLANG_FLAGS)
-+	  $(CLANG_FLAGS) -I$(top_srcdir)/tools/include
- LDLIBS += -lpthread -ldl
- 
- # Own dependencies because we only want to build against 1st prerequisite, but
-diff --git a/tools/testing/selftests/rseq/rseq.c b/tools/testing/selftests/rseq/rseq.c
-index a723da253244..96e812bdf8a4 100644
---- a/tools/testing/selftests/rseq/rseq.c
-+++ b/tools/testing/selftests/rseq/rseq.c
-@@ -31,6 +31,8 @@
- #include <sys/auxv.h>
- #include <linux/auxvec.h>
- 
-+#include <linux/compiler.h>
-+
- #include "../kselftest.h"
- #include "rseq.h"
- 
+I suppose this works functionally in this case, because the port gets
+defaulted to "0" by the driver. But in future, when we add support for
+other dss output(s) on j784s4-evm, the driver will need indices to
+distinguish among them.
 
----
-base-commit: 5d0c230f1de8c7515b6567d9afba1f196fb4e2f4
-change-id: 20230804-kselftest-rseq-build-9d537942b1de
+> +		dpi0_out: endpoint {
+> +			remote-endpoint = <&dp0_in>;
+> +		};
+> +	};
+> +};
+> +
+> +&main_i2c4 {
+> +	status = "okay";
+> +	pinctrl-names = "default";
+> +	pinctrl-0 = <&main_i2c4_pins_default>;
+> +	clock-frequency = <400000>;
+> +
+> +	exp4: gpio@20 {
+> +		compatible = "ti,tca6408";
+> +		reg = <0x20>;
+> +		gpio-controller;
+> +		#gpio-cells = <2>;
+> +	};
+> +};
+> +
+> +&dp0_ports {
+> +	#address-cells = <1>;
+> +	#size-cells = <0>;
 
-Best regards,
--- 
-Mark Brown <broonie@kernel.org>
+These properties are being repeated from the MHDP node in the main.dtsi
+file, in the previous patch. You can drop them from one of the places.
+
+I would suggest keeping them in the main.dtsi file and removing them
+here, so that repetition is avoided across different platform.dts files,
+but I will leave the call up to you. In any case, they need to be
+removed from one of the two places.
+
+Btw, same will be applicable for dss_ports as well (once you add port
+index). Separate address and size cells properties won't be required in
+the j784s4-evm.dts and am69-sk.dts platform files, once they are already
+there in j784s4-main.dtsi.
+
+With the changes suggested above,
+
+Reviewed-by: Aradhya Bhatia <a-bhatia1@ti.com>
+
+> +
+> +	port@0 {
+> +		reg = <0>;
+> +
+> +		dp0_in: endpoint {
+> +			remote-endpoint = <&dpi0_out>;
+> +		};
+> +	};
+> +
+> +	port@4 {
+> +		reg = <4>;
+> +
+> +		dp0_out: endpoint {
+> +			remote-endpoint = <&dp0_connector_in>;
+> +		};
+> +	};
+> +};
 
