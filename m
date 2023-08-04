@@ -2,153 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 426DB76F9C7
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 08:02:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6243276F9E7
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 08:13:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230521AbjHDGCD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Aug 2023 02:02:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54844 "EHLO
+        id S232456AbjHDGN0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Aug 2023 02:13:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57956 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229634AbjHDGA6 (ORCPT
+        with ESMTP id S230023AbjHDGNT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Aug 2023 02:00:58 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.93])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D1A02708;
-        Thu,  3 Aug 2023 23:00:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1691128857; x=1722664857;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=SAvcwaw2V/Hs8D65jgLxC2s97VzPceMveowD167hosQ=;
-  b=KANJQQQ4k0fSDtxjUANjqRnr57v5DXAhKwav/zIDgkCGNJ304xoGNi90
-   /Mc9zkJWuTlWnLlE+JXJ9h24jRTYhDh+jFq14hfd8t/MJ40RL3omMEA5e
-   hM71oOgtVSMwswZTYQvelYJ7g7VPaM5UUHsYPb3o0I6/ktsrZovUUJW//
-   f2f2lGx/H7V78q2z1PPHA9AEaoQTVL0Z7Hk1MWqizntbRPcREzjwFX12d
-   qKJSYevfxxYkq7tNM14qVo8nMNf4a9m4LGl0aHnLqS1DRaY5g3ywo1mKa
-   Oj9O5ex4xPkUFTBR/9RLYbHUzuhNJH1+O6iqtPag5+hSFgMWai4Ql55Nc
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10791"; a="367536838"
-X-IronPort-AV: E=Sophos;i="6.01,254,1684825200"; 
-   d="scan'208";a="367536838"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Aug 2023 23:00:55 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10791"; a="853584925"
-X-IronPort-AV: E=Sophos;i="6.01,254,1684825200"; 
-   d="scan'208";a="853584925"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by orsmga004.jf.intel.com with ESMTP; 03 Aug 2023 23:00:49 -0700
-Received: from andy by smile.fi.intel.com with local (Exim 4.96)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1qRnrh-00CegX-2B;
-        Fri, 04 Aug 2023 09:00:45 +0300
-Date:   Fri, 4 Aug 2023 09:00:45 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Sunil V L <sunilvl@ventanamicro.com>
-Cc:     linux-doc@vger.kernel.org, linux-riscv@lists.infradead.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-acpi@vger.kernel.org, linux-pci@vger.kernel.org,
-        Jonathan Corbet <corbet@lwn.net>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        "Rafael J . Wysocki" <rafael@kernel.org>,
-        Len Brown <lenb@kernel.org>,
-        Daniel Scally <djrscally@gmail.com>,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Anup Patel <anup@brainfault.org>,
-        Marc Zyngier <maz@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Robert Moore <robert.moore@intel.com>,
-        Haibo Xu <haibo1.xu@intel.com>,
-        Andrew Jones <ajones@ventanamicro.com>,
-        Conor Dooley <conor.dooley@microchip.com>,
-        Atish Kumar Patra <atishp@rivosinc.com>
-Subject: Re: [RFC PATCH v1 08/21] RISC-V: ACPI: RHCT: Add function to get CBO
- block sizes
-Message-ID: <ZMyUDZE0SxoOC696@smile.fi.intel.com>
-References: <20230803175916.3174453-1-sunilvl@ventanamicro.com>
- <20230803175916.3174453-9-sunilvl@ventanamicro.com>
+        Fri, 4 Aug 2023 02:13:19 -0400
+X-Greylist: delayed 451 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Thu, 03 Aug 2023 23:13:06 PDT
+Received: from sv246.xbiz.ne.jp (sv246.xbiz.ne.jp [183.90.231.47])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 489084498
+        for <linux-kernel@vger.kernel.org>; Thu,  3 Aug 2023 23:13:05 -0700 (PDT)
+X-Virus-Status: clean(F-Secure/fsigk_smtp/521/virusgw201.xbiz.ne.jp)
+Received: from [127.0.0.1] (unknown [20.63.136.175])
+        by sv246.xbiz.ne.jp (Postfix) with ESMTPSA id 32411308227A5A
+        for <linux-kernel@vger.kernel.org>; Fri,  4 Aug 2023 15:05:33 +0900 (JST)
+Content-Type: text/plain; charset=utf-8
+From:   "webmaster@vger.kernel.org" <hidetaka@ishitsubo.co.jp>
+To:     linux-kernel@vger.kernel.org
+Subject: =?UTF-8?B?44CQ6YeN6KaB44CRLSDnt4rmgKXjg6Hjg7Pjg4Y=?=
+ =?UTF-8?B?44OK44Oz44K544Gu44GK55+l44KJ44Gb?=
+Message-ID: <5bd6e111-9755-5a1a-735c-00c9ee57f574@ishitsubo.co.jp>
+X-Priority: 1 (Highest)
+X-Msmail-Priority: High
+Importance: High
+Content-Transfer-Encoding: base64
+Date:   Fri, 04 Aug 2023 06:05:32 +0000
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230803175916.3174453-9-sunilvl@ventanamicro.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=3.7 required=5.0 tests=BAYES_60,NAME_EMAIL_DIFF,
+        PDS_FROM_2_EMAILS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no autolearn_force=no
+        version=3.4.6
+X-Spam-Level: ***
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 03, 2023 at 11:29:03PM +0530, Sunil V L wrote:
-> CBO related block size in ACPI is provided by RHCT. Add
-> support to read the CMO node in RHCT to get this information.
-
-...
-
-> +	if (!table) {
-
-Why not positive conditional?
-
-> +		rhct = (struct acpi_table_rhct *)acpi_get_rhct();
-> +		if (!rhct)
-> +			return -ENOENT;
-> +	} else {
-> +		rhct = (struct acpi_table_rhct *)table;
-> +	}
-
-...
-
-> +	end = ACPI_ADD_PTR(struct acpi_rhct_node_header, rhct, rhct->header.length);
-
-> +
-
-Blank line here is not needed.
-
-> +	for (node = ACPI_ADD_PTR(struct acpi_rhct_node_header, rhct, rhct->node_offset);
-> +	     node < end;
-> +	     node = ACPI_ADD_PTR(struct acpi_rhct_node_header, node, node->length)) {
-
-> +			for (int i = 0; i < hart_info->num_offsets; i++) {
-> +				ref_node = ACPI_ADD_PTR(struct acpi_rhct_node_header,
-> +							rhct, hart_info_node_offset[i]);
-> +				if (ref_node->type == ACPI_RHCT_NODE_TYPE_CMO) {
-> +					cmo_node = ACPI_ADD_PTR(struct acpi_rhct_cmo_node,
-> +								ref_node, size_hdr);
-> +					if (cbom_size)
-> +						*cbom_size = 1 << cmo_node->cbom_size;
-> +
-> +					if (cboz_size)
-> +						*cboz_size = 1 << cmo_node->cboz_size;
-> +
-> +					if (cbop_size)
-> +						*cbop_size = 1 << cmo_node->cbop_size;
-
-BIT() in all three cases?
-
-But how you guarantee it will not overflow? I mean who prevents cboX_size to be
-bigger than 30 (note also that 31 in your case is Undefined Behaviour in
-accordance with the C standard).
-
-> +					return 0;
-> +				}
-> +			}
-
-> +	}
-
--- 
-With Best Regards,
-Andy Shevchenko
-
-
+6Kqg44Gr5Yud5omL44Gq44GM44KJ44CB5LiL6KiY44Gu6YCa44KK44ON44OD44OI44Ov44O844Kv
+44Oh44Oz44OG44OK44Oz44K544KS5a6f5pa944GV44Gb44Gm44GE44Gf44Gg44GN44G+44GZ44CC
+DQrjgZPjga7jgZPjgajjgpLjgZTloLHlkYrjgZXjgZvjgabjgYTjgZ/jgaDjgY3jgZ/jgYTjgajm
+gJ3jgYTjgb7jgZnjgIIg44GU55CG6Kej44Gu44G744Gp44KI44KN44GX44GP44GK6aGY44GE44GE
+44Gf44GX44G+44GZ44CCDQoNCuiomOmMsg0KDQrjgJDjg6Hjg7Pjg4bjg4rjg7Pjgrnml6XjgJEN
+CjIwMjPlubQ45pyINOaXpe+8iOawtO+8iTA1OjAw772eMjQ6MDDjga7plpPjga7mlbDliIbplpMN
+Cg0KDQpb44K/44O844Ky44OD44OI6aGn5a6iXQ0K44CMQHZnZXIua2VybmVsLm9yZ+OAjeOBruOD
+oeODvOODq+OCouODieODrOOCueOCkuOBlOWIqeeUqOOBruOBiuWuouOBleOBvg0KDQoNCuOAkOOD
+oeODs+ODhuODiuODs+OCueOBq+OCiOOCi+W9semfv+OAkQ0K5LiK6KiY5pyf6ZaT5Lit44Gv44Oh
+44O844Or44Gu6YCB5Y+X5L+h44GM5LiN5a6J5a6a44Gr44Gq44Gj44Gf44KK44CB6YGF5bu244GZ
+44KL5aC05ZCI44GM44GU44GW44GE44G+44GZ44CCDQoNCg0K44CQ44Oh44Oz44OG44OK44Oz44K5
+5b6M44Gu44Kr44K544K/44Oe44O844K144Od44O844OI44Gr44Gk44GE44Gm44CRDQrjg6Hjg7Pj
+g4bjg4rjg7PjgrnntYLkuoblvozjga/pgJrluLjjganjgYrjgorjgZTliKnnlKjjgYTjgZ/jgaDj
+gZHjgb7jgZnjgIINCg0KDQrjg6Hjg7zjg6vjgpLnrqHnkIbjgZnjgovjgavjga/jgIHmrKHjga7j
+g6rjg7Pjgq/jgpLjgq/jg6rjg4Pjgq/jgZfjgabjgY/jgaDjgZXjgYTjgIINCg0KaHR0cHM6Ly93
+d3cubWVldGRhbml2aXAuY29tL21zL3VzZXIvYzAwYWM1NDYwN2FmYTQwYjhjMTUyYTQ3OGZiZjYw
+NDczYTdhMjI4Y2I1MmI3ZWVkM2JlZTI4YjM4P3VpZD1saW51eC1rZXJuZWxAdmdlci5rZXJuZWwu
+b3JnDQoNCg0K44GU5LiN5L6/44KS44GK44GL44GR44GE44Gf44GX44G+44GZ44GM44CB44GU55CG
+6Kej44Gu44G744Gp44KI44KN44GX44GP44GK6aGY44GE44GE44Gf44GX44G+44GZ44CCDQrilIHi
+lIHilIHilIHilIHilIHilIHilIHilIHilIHilIHilIHilIHilIHilIHilIHilIHilIHilIHilIHi
+lIHilIHilIHilIHilIHilIHilIHilIHilIHilIHilIHilIHilIENCg0KDQril4/jgojjgY/jgYLj
+govos6rllY/vvZxodHRwczovL2ZhcS52Z2VyLmtlcm5lbC5vcmcvcy8NCg0K4peP44K144Od44O8
+44OI44K144Kk44OI772caHR0cHM6Ly93d3cudmdlci5rZXJuZWwub3JnL3N1cHBvcnQvDQoNCuKX
+j+OBiuWVj+OBhOWQiOOCj+OBm++9nGh0dHBzOi8vZm9ybS52Z2VyLmtlcm5lbC5vcmcvVmdlci9j
+b250YWN0Lw0KDQrilIHilIHilIHilIHilIHilIHilIHilIHilIHilIHilIHilIHilIHilIHilIHi
+lIHilIHilIHilIHilIHilIHilIHilIHilIHilIHilIHilIHilIHilIHilIHilIHilIHilIENCg0K
+5byK56S+44Gu44K144O844OT44K544Gr6Zai44GZ44KL44GU5oSP6KaL44O744GU6KaB5pyb44KS
+44GK6IGe44GL44Gb44GP44Gg44GV44GE44CCDQoNCuKJquaKleeov+ODleOCqeODvOODoOKJqyBo
+dHRwczovL2Zvcm0udmdlci5rZXJuZWwub3JnL2JyYW5kL3ZvaWNlLw0KDQrilIHilIHilIHilIHi
+lIHilIHilIHilIHilIHilIHilIHilIHilIHilIHilIHilIHilIHilIHilIHilIHilIHilIHilIHi
+lIHilIHilIHilIHilIHilIHilIHilIHilIHilIHilIHilIENCg0K44OJ44Oh44Kk44OzDQoNCuWF
+rOW8jyBGYWNlYm9vazogaHR0cHM6Ly93d3cuZmFjZWJvb2suY29tL3ZnZXIua2VybmVsLm9yZy/j
+gIINCg0K4pSB4pSB4pSB4pSB4pSB4pSB4pSB4pSB4pSB4pSB4pSB4pSB4pSB4pSB4pSB4pSB4pSB
+4pSB4pSB4pSB4pSB4pSB4pSB4pSB4pSB4pSB4pSB4pSB4pSB4pSB4pSB4pSB4pSB4pSB4pSB
