@@ -2,148 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D832C76FC39
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 10:44:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 42D2676FC3A
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 10:44:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229545AbjHDIoG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Aug 2023 04:44:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39762 "EHLO
+        id S229596AbjHDIoK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Aug 2023 04:44:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39800 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229473AbjHDIna (ORCPT
+        with ESMTP id S229482AbjHDIni (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Aug 2023 04:43:30 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.65])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E995130EB;
-        Fri,  4 Aug 2023 01:43:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1691138609; x=1722674609;
-  h=date:from:to:cc:subject:message-id:references:
-   in-reply-to:mime-version;
-  bh=4H9snsEMMnELay5FiutyCrGfRhk3Dds2VksmCYHAGJc=;
-  b=SxcfTMlXWN/riow/YFQwBHa8WlNv3Vg4Df7fSqt6TeUGdbBvzsNKyxOo
-   UgGXkfiFD3NIdxMDdO0mACirfRUYgEYHgzKL8AAU/O6GoiBACIOBibgtH
-   WpWVRigQTG2PMkzHGWpW31UP+FO//Q3xPzn1MnaOD+QmbXN9oAMhgBUjw
-   C+QxZFNWePFOv4uAAN+KbDpD9fnsEyU5GmZNhKOQBZiWgx3mWj9Hq1w8p
-   Rb2U7Y2Xp5/FZbV2YFdR76IfVA7V/Mz3qC3dTkHdKeJBkT1NbqfKmikGz
-   hpgy2Q/z9qWoQIOcrI2tDxzdjEvRs6QfX7+U6kOmw+0K3XRmJhL+hf7XW
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10791"; a="373754025"
-X-IronPort-AV: E=Sophos;i="6.01,254,1684825200"; 
-   d="scan'208";a="373754025"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Aug 2023 01:43:29 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10791"; a="706917141"
-X-IronPort-AV: E=Sophos;i="6.01,254,1684825200"; 
-   d="scan'208";a="706917141"
-Received: from fmsmsx602.amr.corp.intel.com ([10.18.126.82])
-  by orsmga006.jf.intel.com with ESMTP; 04 Aug 2023 01:43:27 -0700
-Received: from fmsmsx611.amr.corp.intel.com (10.18.126.91) by
- fmsmsx602.amr.corp.intel.com (10.18.126.82) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.27; Fri, 4 Aug 2023 01:43:25 -0700
-Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
- fmsmsx611.amr.corp.intel.com (10.18.126.91) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.27; Fri, 4 Aug 2023 01:43:25 -0700
-Received: from FMSEDG603.ED.cps.intel.com (10.1.192.133) by
- fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.27 via Frontend Transport; Fri, 4 Aug 2023 01:43:25 -0700
-Received: from NAM12-BN8-obe.outbound.protection.outlook.com (104.47.55.174)
- by edgegateway.intel.com (192.55.55.68) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.27; Fri, 4 Aug 2023 01:43:24 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=ltsxAU0xDtopIv368tL8kdm/qCZqARom/PzfY5aUpTIB81uAaG3l9GhI8b/NduRFzbZ3YH0P6LSHu2wuv55kP9Il0ja5gIwjnY2bImjPbGWuCNINUFaAC9Wt/++nwoDttuxteNTDTtXhD4U569sMNrA6a3Qe4hHK3F+/x6CrPbs+fLfL0AgSmoRchCdmoAuhYH5CcCi28L8FGPbgQg51aTlnWulsyibQk1hI01GRnOVNYQCPd9OLL7Loyxkl8DRuO55OdhLiBAD9Zx5X4erALJExFe1kPKD7dAxEnc3xr0R7HBJkm9MbiMF+NPbaM5npyODQgAObiN0sYcZC2DTO6g==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=VdFuUPLUFVr20ZRfRP0uFQFVY6V689dsiQNCvGba0PM=;
- b=B/UxsO7TthQAWe82WsC7LUF/qeLzRyd1kxM456vmRryktiibcbN1S8sHUhY/NmZZjbYwq3fYCfJOcmamMMa+hohKY6RzMT1suAFA/RYBRhEGFmpUfaJ0WrI9mHuRmr+N5xw8f/oqWgpLEoTBDKayF9wmCL2RrIUl3la79Z5sYdw6SrJYJ7yun7UHvz7w5I3rDVCb3s9QjycfkaULlBZDWNF2oc3fQLogPnyYeB50W+P+G44GY5xha2nstyz3Hbtl8Fw9W4JWKtaUtBpCYE1kkUJSryhlYibzkgv6/C+e3DqmgFT6GOJojnCTi68DP0nqJovmKbFsaIT6GaobYKB22A==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from PH8PR11MB6780.namprd11.prod.outlook.com (2603:10b6:510:1cb::11)
- by CO1PR11MB4993.namprd11.prod.outlook.com (2603:10b6:303:6c::23) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6631.29; Fri, 4 Aug
- 2023 08:43:22 +0000
-Received: from PH8PR11MB6780.namprd11.prod.outlook.com
- ([fe80::146e:30d4:7f1e:7f4b]) by PH8PR11MB6780.namprd11.prod.outlook.com
- ([fe80::146e:30d4:7f1e:7f4b%3]) with mapi id 15.20.6631.046; Fri, 4 Aug 2023
- 08:43:22 +0000
-Date:   Fri, 4 Aug 2023 16:43:12 +0800
-From:   Chao Gao <chao.gao@intel.com>
-To:     Yang Weijiang <weijiang.yang@intel.com>
-CC:     <seanjc@google.com>, <pbonzini@redhat.com>, <peterz@infradead.org>,
-        <john.allen@amd.com>, <kvm@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <rick.p.edgecombe@intel.com>,
-        <binbin.wu@linux.intel.com>
-Subject: Re: [PATCH v5 15/19] KVM:x86: Optimize CET supervisor SSP save/reload
-Message-ID: <ZMy6INjzYiVqOKEy@chao-email>
-References: <20230803042732.88515-1-weijiang.yang@intel.com>
- <20230803042732.88515-16-weijiang.yang@intel.com>
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20230803042732.88515-16-weijiang.yang@intel.com>
-X-ClientProxiedBy: SI1PR02CA0046.apcprd02.prod.outlook.com
- (2603:1096:4:1f5::14) To PH8PR11MB6780.namprd11.prod.outlook.com
- (2603:10b6:510:1cb::11)
+        Fri, 4 Aug 2023 04:43:38 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 150B930EB
+        for <linux-kernel@vger.kernel.org>; Fri,  4 Aug 2023 01:43:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=0LFXPFcS4UF38aCYeIOwXi07gRitSmQZGen5y0ki7Vc=; b=qbQcxnEsZr2IOc6d/NkOa/F0Yr
+        jhuadu+csIl1xc9AR0JbPvBsLZ1K8dw8lrEP2te4kKDQ26o2NlcYIfHVzC7POJAN8MOrvyuzR1VkH
+        HHssqvfTyXYrfu6EuSUhRU7XOeUM64+qnLyTRFqVxD9LRqiMO2BydFWeF1cQXGBHIbJydORoaEWzc
+        RTyykaBx0Xr51kIXf2mcRF6rpPXF1qS7qG41pumNSnxKjV1jBtWqjrNP2ka9LJ4A2/JjYfXSpQ4aj
+        CVdd4+x1Bi286X1k/glaua/l6pSnIc6slbjWXJhtQbey57Jc+ahxNc4MMkaXoxChsCLOFlF/Lmlm2
+        piJLCJeQ==;
+Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
+        id 1qRqPB-000EW5-0A;
+        Fri, 04 Aug 2023 08:43:29 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id A5ED930020C;
+        Fri,  4 Aug 2023 10:43:28 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 8B0BD20D38538; Fri,  4 Aug 2023 10:43:28 +0200 (CEST)
+Date:   Fri, 4 Aug 2023 10:43:28 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Andrew Cooper <andrew.cooper3@citrix.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Petr Pavlu <petr.pavlu@suse.com>,
+        Josh Poimboeuf <jpoimboe@kernel.org>
+Subject: Re: [PATCH] x86/retpoline,kprobes: Fix "Fix position of thunk
+ sections with CONFIG_LTO_CLANG"
+Message-ID: <20230804084328.GA220434@hirez.programming.kicks-ass.net>
+References: <20230803215555.zl5oabntc44ry3uc@treble>
+ <20230803230323.1478869-1-andrew.cooper3@citrix.com>
+ <20230804082853.GM212435@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PH8PR11MB6780:EE_|CO1PR11MB4993:EE_
-X-MS-Office365-Filtering-Correlation-Id: ba4fd198-b800-46d2-0379-08db94c6dbe5
-X-LD-Processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: XVTIToNSVHR15HpQb33M98tFBMP+2eTWADTVlHKTgVpIjF69oJ2qPiyvJmSOoeIRAixpxOw583l12QPix6vFmjg49q32yOb8VAi4ngBGbhAAubv88EhALMz/Op7C6opSQU+poe437W+rFm1/9dqFzFtpRFSybi3w048vAf3swBPusEtVT1tVFUPCc/OsxhRQVF2xHdYPCAZsGtKbI/OXgEJfb9WdgjxMaV+9Ff/BGHyRky4C/JwR5p5YpecVoRm+jEwdd/Il00IOPHI9WBanosmN+XogiqeFry/Dssd+aa13IYLg8vmjODuA8UaGeAMHJvW06Vf1WjWSbp2BPa/9TmFaAjVkMQh/pH4JvSOrrYh28DFgNmz28KrBV6UQHxxVQ9dbIDSTT3vtOvrMpeoAqBqxts4X4zg/q+wvlIne5vG9Ij1KR18tlTjwA4I8Jgi6Q9MF7gvufWRmKrFxcHQjg9sZY9BZWj9PcqDjkPP8ZaQqhrxdBpgiL1dzh2hRy2CvZ0/OfS4ylpE15j/V6IPJV+z6V8PQZxs11jxgGjodAj+L7InrtO/LXs5QrK3ll0OI
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH8PR11MB6780.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(7916004)(396003)(346002)(366004)(376002)(39860400002)(136003)(1800799003)(186006)(451199021)(4744005)(86362001)(41300700001)(2906002)(8936002)(8676002)(6862004)(316002)(33716001)(5660300002)(44832011)(9686003)(6512007)(6506007)(26005)(478600001)(6666004)(82960400001)(6486002)(6636002)(83380400001)(38100700002)(4326008)(66476007)(66946007)(66556008);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?259gZQhB1Mw0fJe6eVCw6GVFQ6ZuPX0bsHIYkMUGzs1CebFMFE5F84CYbloy?=
- =?us-ascii?Q?wz0z0sSU3PNtB0I6cO2DekhHGcUzX9GcuJhwHD+/X7YYfVhgzKwEviyrQBGn?=
- =?us-ascii?Q?b9aivmwKzRDH/CtBgbq0AVzJzIhT9ZRtbPSl9lpmOODKnYO/m+x+deoaDrwN?=
- =?us-ascii?Q?YxvmQ6eK8UQS9AZHUiOddj/9LitCCcXCDJLN26/pkP57uSSjm+PXttIktZE3?=
- =?us-ascii?Q?4jgBeQSYm3KBXmX4MT0PBo4kNVprxnlsTEcYsO0f4YEkVtCRhdM9Y/7E+1/s?=
- =?us-ascii?Q?roLKnCdxAwEdX/kT4w5TpP7e0iK8C/vq27a/J0qH746VlR8Gww8zx82zONz3?=
- =?us-ascii?Q?Bt3OvjSpnDAcB/PJzKVGP0eRFEzCA4PA+NlA7/jYtLczcWD4Ri3vLmvTnCxe?=
- =?us-ascii?Q?Nar/gtIbSgLc7H5nDjyVa4WJbmV2XWQuDWJ0XxLASHfRDTAIKQt1xER2v+8A?=
- =?us-ascii?Q?Rjkz9PwL2+lrIVxithJ+bwpRWMjaBX0SaORrO8UbWAOUS7+fck4Yy/4g8CAD?=
- =?us-ascii?Q?H9l6jZ07WUHk2gRDeee3UKoq2dm3A8Ak+gyBPoollxysx5Ih/SwiGzcq5oPu?=
- =?us-ascii?Q?CeIkOMy/ijlYw0d7fc/vMjUjhuPeY8egk47mbXWfOQuFYuJhyy/R9W6VPnBP?=
- =?us-ascii?Q?9FZIHz0W7pFE/xAf20we++dhZMcRX/63xf+KCHLQLOekq9imxtw7aoVSmu/A?=
- =?us-ascii?Q?RR696zud87Ci0zoQsh7f3OCOT/j/bpndc666GqOcyZ6o6xM0JXk8Bw+GDaLS?=
- =?us-ascii?Q?82qjaDHE2s6FNxR4bCADkyRRHiLvMxqwhxduNbTEQygR8TnnwBsh2Gngxhn/?=
- =?us-ascii?Q?RJFtLJ/j7XVmMcYby6mGfkQXCkGRRHGnB0YQQxATRYFVHOcDlrtxPYAC9S4m?=
- =?us-ascii?Q?iawNij06nr2f7apzdkXx0Gs1fjj8xiLPyaxwE5LjJowYaLBODNAQTKtrWvvh?=
- =?us-ascii?Q?HaICpC2ne6wp80S40IS3xzz8P+STH1IyxmScPjJ6xjXp2nPRLDW35jl3Y13A?=
- =?us-ascii?Q?viEsTYcCMfRSdFBoFDtMzCpf7tap8fnnXUILNz26CbGqwno4Ir02dlVk4XHr?=
- =?us-ascii?Q?/F2XCHPMYECqWCYV9fucilkTB3+efXSjNjF3aDUhbiILBh0SwdPCdI85os9r?=
- =?us-ascii?Q?UA4xMlU0gBShlw5Wiz666xLN226WXniCC+B1Z0NVVhxR5dAp8TFfCV54lTQ9?=
- =?us-ascii?Q?ys1CnXLt5AcfCbnUv6WFlqWn/V09uX05EpdM/RKP/syjjg5j0GztN8Y8ghkG?=
- =?us-ascii?Q?QtSYamp+NstWSIB+cGyGQnhZaQur/09UQhugWdcIOfCfk3yK5Dtf78XE2FLi?=
- =?us-ascii?Q?/oNGnI+ATk9GXtE+DKEKYIH/5TBbdfOLnSFGSPQe2U4Fr1HTkARR+JT/8PRA?=
- =?us-ascii?Q?6kmsIjSlELueiw5EqhilD3XCG0HYFFKMs8W42N0Agz7PB+US7LK3KqlfcsXE?=
- =?us-ascii?Q?nwT87WKqT6EO9ysBcTihJwdWcC4Pehi64JSD07hjht9BwEGNKrPUlfN/RFcM?=
- =?us-ascii?Q?PD85PHifOyJv4/lMPuY6DZRrDc2yljl63i41PNKHYXjDv94H5AMuqxpll2u5?=
- =?us-ascii?Q?Srxuk+902N9Q30qzpDs1wN1tfCs0R6eHntJfc5yk?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: ba4fd198-b800-46d2-0379-08db94c6dbe5
-X-MS-Exchange-CrossTenant-AuthSource: PH8PR11MB6780.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 Aug 2023 08:43:22.0989
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: m8aXUXGGfUXkzpArmp0PvokpvVQchTItziiNoyeWnCQB/ACslJ4jVYAECCkG6xYMGM0f4+Y26b+JHvR4Q6qgyQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CO1PR11MB4993
-X-OriginatorOrg: intel.com
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230804082853.GM212435@hirez.programming.kicks-ass.net>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -152,27 +63,158 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 03, 2023 at 12:27:28AM -0400, Yang Weijiang wrote:
->Make PL{0,1,2}_SSP as write-intercepted to detect whether
->guest is using these MSRs. Disable intercept to the MSRs
->if they're written with non-zero values. KVM does save/
->reload for the MSRs only if they're used by guest.
+On Fri, Aug 04, 2023 at 10:28:53AM +0200, Peter Zijlstra wrote:
+> On Fri, Aug 04, 2023 at 12:03:23AM +0100, Andrew Cooper wrote:
+> > Lets hope there are no .text..__x86womble sections around.
+> > 
+> > Fixes: 973ab2d61f33 ("x86/retpoline,kprobes: Fix position of thunk sections with CONFIG_LTO_CLANG")
+> > Signed-off-by: Andrew Cooper <andrew.cooper3@citrix.com>
+> > ---
+> > CC: Petr Pavlu <petr.pavlu@suse.com>
+> > CC: Peter Zijlstra (Intel) <peterz@infradead.org>
+> > CC: Josh Poimboeuf <jpoimboe@kernel.org>
+> > CC: linux-kernel@vger.kernel.org
+> > 
+> > Alternatively,
+> > 
+> > int strstarts(const char *s1, const char *s2)
+> > {
+> >         return strncmp(s1, s2, strlen(s2));
+> > }
+> 
+> Durr, I hate C ;-/ And yes, we have a ton of it, lemme try that
+> strstarts thing.
 
-What would happen if guest tries to use XRSTORS to load S_CET state from a
-xsave area without any writes to the PL0-2_SSP (i.e., at that point, writes to
-the MSRs are still intercepted)?
+So there, that builds and compiles a kernel, must be good :-)
 
->@@ -2420,6 +2432,14 @@ static int vmx_set_msr(struct kvm_vcpu *vcpu, struct msr_data *msr_info)
-> 		else
-> 			vmx->pt_desc.guest.addr_a[index / 2] = data;
-> 		break;
->+	case MSR_IA32_PL0_SSP ... MSR_IA32_PL2_SSP:
->+		if (kvm_set_msr_common(vcpu, msr_info))
->+			return 1;
->+		if (data) {
->+			vmx_disable_write_intercept_sss_msr(vcpu);
->+			wrmsrl(msr_index, data);
+Now, let me go make some wake-up juice ...
 
-Is it necessary to do the wrmsl()?
-looks the next kvm_x86_prepare_switch_to_guest() will load PL0-2_SSP from the
-caching values.
+---
+ tools/objtool/check.c | 31 +++++++++++++++----------------
+ 1 file changed, 15 insertions(+), 16 deletions(-)
+
+diff --git a/tools/objtool/check.c b/tools/objtool/check.c
+index e096eb325acd..a2b624b580ff 100644
+--- a/tools/objtool/check.c
++++ b/tools/objtool/check.c
+@@ -20,6 +20,7 @@
+ #include <linux/hashtable.h>
+ #include <linux/kernel.h>
+ #include <linux/static_call_types.h>
++#include <linux/string.h>
+ 
+ struct alternative {
+ 	struct alternative *next;
+@@ -383,13 +384,13 @@ static int decode_instructions(struct objtool_file *file)
+ 
+ 		if (strcmp(sec->name, ".altinstr_replacement") &&
+ 		    strcmp(sec->name, ".altinstr_aux") &&
+-		    strncmp(sec->name, ".discard.", 9))
++		    !strstarts(sec->name, ".discard."))
+ 			sec->text = true;
+ 
+ 		if (!strcmp(sec->name, ".noinstr.text") ||
+ 		    !strcmp(sec->name, ".entry.text") ||
+ 		    !strcmp(sec->name, ".cpuidle.text") ||
+-		    !strncmp(sec->name, ".text..__x86.", 12))
++		    strstarts(sec->name, ".text..__x86."))
+ 			sec->noinstr = true;
+ 
+ 		/*
+@@ -709,8 +710,7 @@ static int create_static_call_sections(struct objtool_file *file)
+ 			perror("strdup");
+ 			return -1;
+ 		}
+-		if (strncmp(key_name, STATIC_CALL_TRAMP_PREFIX_STR,
+-			    STATIC_CALL_TRAMP_PREFIX_LEN)) {
++		if (!strstarts(key_name, STATIC_CALL_TRAMP_PREFIX_STR)) {
+ 			WARN("static_call: trampoline name malformed: %s", key_name);
+ 			free(key_name);
+ 			return -1;
+@@ -900,7 +900,7 @@ static int create_cfi_sections(struct objtool_file *file)
+ 		if (sym->type != STT_FUNC)
+ 			continue;
+ 
+-		if (strncmp(sym->name, "__cfi_", 6))
++		if (!strstarts(sym->name, "__cfi_"))
+ 			continue;
+ 
+ 		idx++;
+@@ -916,7 +916,7 @@ static int create_cfi_sections(struct objtool_file *file)
+ 		if (sym->type != STT_FUNC)
+ 			continue;
+ 
+-		if (strncmp(sym->name, "__cfi_", 6))
++		if (!strstarts(sym->name, "__cfi_"))
+ 			continue;
+ 
+ 		if (!elf_init_reloc_text_sym(file->elf, sec,
+@@ -2468,7 +2468,7 @@ static bool is_profiling_func(const char *name)
+ 	/*
+ 	 * Many compilers cannot disable KCOV with a function attribute.
+ 	 */
+-	if (!strncmp(name, "__sanitizer_cov_", 16))
++	if (strstarts(name, "__sanitizer_cov_"))
+ 		return true;
+ 
+ 	/*
+@@ -2477,7 +2477,7 @@ static bool is_profiling_func(const char *name)
+ 	 * the __no_sanitize_thread attribute, remove them. Once the kernel's
+ 	 * minimum Clang version is 14.0, this can be removed.
+ 	 */
+-	if (!strncmp(name, "__tsan_func_", 12) ||
++	if (strstarts(name, "__tsan_func_") ||
+ 	    !strcmp(name, "__tsan_atomic_signal_fence"))
+ 		return true;
+ 
+@@ -2492,8 +2492,7 @@ static int classify_symbols(struct objtool_file *file)
+ 		if (func->bind != STB_GLOBAL)
+ 			continue;
+ 
+-		if (!strncmp(func->name, STATIC_CALL_TRAMP_PREFIX_STR,
+-			     strlen(STATIC_CALL_TRAMP_PREFIX_STR)))
++		if (strstarts(func->name, STATIC_CALL_TRAMP_PREFIX_STR))
+ 			func->static_call_tramp = true;
+ 
+ 		if (arch_is_retpoline(func))
+@@ -2528,7 +2527,7 @@ static void mark_rodata(struct objtool_file *file)
+ 	 * .rodata.str1.* sections are ignored; they don't contain jump tables.
+ 	 */
+ 	for_each_sec(file, sec) {
+-		if (!strncmp(sec->name, ".rodata", 7) &&
++		if (strstarts(sec->name, ".rodata") &&
+ 		    !strstr(sec->name, ".str1.")) {
+ 			sec->rodata = true;
+ 			found = true;
+@@ -3400,7 +3399,7 @@ static inline bool noinstr_call_dest(struct objtool_file *file,
+ 	 * something 'BAD' happened. At the risk of taking the machine down,
+ 	 * let them proceed to get the message out.
+ 	 */
+-	if (!strncmp(func->name, "__ubsan_handle_", 15))
++	if (strstarts(func->name, "__ubsan_handle_"))
+ 		return true;
+ 
+ 	return false;
+@@ -3531,8 +3530,8 @@ static int validate_branch(struct objtool_file *file, struct symbol *func,
+ 
+ 		if (func && insn_func(insn) && func != insn_func(insn)->pfunc) {
+ 			/* Ignore KCFI type preambles, which always fall through */
+-			if (!strncmp(func->name, "__cfi_", 6) ||
+-			    !strncmp(func->name, "__pfx_", 6))
++			if (strstarts(func->name, "__cfi_") ||
++			    strstarts(func->name, "__pfx_"))
+ 				return 0;
+ 
+ 			WARN("%s() falls through to next function %s()",
+@@ -4401,9 +4400,9 @@ static int validate_ibt(struct objtool_file *file)
+ 		 * These sections can reference text addresses, but not with
+ 		 * the intent to indirect branch to them.
+ 		 */
+-		if ((!strncmp(sec->name, ".discard", 8) &&
++		if ((strstarts(sec->name, ".discard") &&
+ 		     strcmp(sec->name, ".discard.ibt_endbr_noseal"))	||
+-		    !strncmp(sec->name, ".debug", 6)			||
++		    strstarts(sec->name, ".debug")			||
+ 		    !strcmp(sec->name, ".altinstructions")		||
+ 		    !strcmp(sec->name, ".ibt_endbr_seal")		||
+ 		    !strcmp(sec->name, ".orc_unwind_ip")		||
