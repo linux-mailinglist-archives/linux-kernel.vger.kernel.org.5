@@ -2,362 +2,204 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C1087703CB
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 17:02:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 81A9E7703D3
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 17:03:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231878AbjHDPCc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Aug 2023 11:02:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43270 "EHLO
+        id S231831AbjHDPDP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Aug 2023 11:03:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43364 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231834AbjHDPCX (ORCPT
+        with ESMTP id S231416AbjHDPDN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Aug 2023 11:02:23 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id DF65649FE;
-        Fri,  4 Aug 2023 08:02:11 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 106671007;
-        Fri,  4 Aug 2023 08:02:54 -0700 (PDT)
-Received: from [10.1.197.1] (ewhatever.cambridge.arm.com [10.1.197.1])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 9CA103F6C4;
-        Fri,  4 Aug 2023 08:02:06 -0700 (PDT)
-Message-ID: <94b9ae0f-b6ed-1d72-f86a-d33842527681@arm.com>
-Date:   Fri, 4 Aug 2023 16:02:05 +0100
+        Fri, 4 Aug 2023 11:03:13 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D98EF49CB
+        for <linux-kernel@vger.kernel.org>; Fri,  4 Aug 2023 08:02:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1691161339;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=oAWIlYpJLnUymxT3pJEp6AXLP821uJJ5c8Qht/hXEKc=;
+        b=IhAi8CR2++lvrfTF0BA57ZDNrg0NfpGXCZJ7X/byYdJTHoCK2+QMlDGx16E073YjvmeT0R
+        qhjI8ROrld8gZY7Lm07+mXJqMNYK0TvAF0xwq1hvKpA+OTVEsuenNq7l+xjRctuN/P7Yzw
+        qrwnhCucHhjMC/tumFA5hhUyK+PlGvk=
+Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
+ [209.85.218.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-527-uaoaeaAKNfa0-X-aI4Yaaw-1; Fri, 04 Aug 2023 11:02:17 -0400
+X-MC-Unique: uaoaeaAKNfa0-X-aI4Yaaw-1
+Received: by mail-ej1-f72.google.com with SMTP id a640c23a62f3a-99bebfada8cso142930866b.1
+        for <linux-kernel@vger.kernel.org>; Fri, 04 Aug 2023 08:02:17 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691161336; x=1691766136;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=oAWIlYpJLnUymxT3pJEp6AXLP821uJJ5c8Qht/hXEKc=;
+        b=Cuj6vlwJRzdT2VmTjzsZggFlcGHQ+/7bhmB/iCnrikc8AbKkkQRW2r3QTIaYF4yEjT
+         LVr/NjbviP+OE6nqZAgzc6ISazaq8JzLYTV5KBuYkCp3ERmDJXW9Y3fk16SVtvgYjmlh
+         Kbwn4STYrZgXOZ607y0u4j8HM7biN+W37JnEOZpylFWPAiwkWMU3Y50MG+aJDTJBKnT+
+         pA3Jp0nQrbfxoSSyo6XjY+KCixnWaQBBYsLwSfRJEsNCjfWWwUnf2dkD/5mAP+juUjKh
+         xIYx8t76Y+dUd11uyHWXkuM7Oz7kR0SgRKyt9QOcwSUBUaH9Qg8Nq7ump1N4vvrq0TyQ
+         Covg==
+X-Gm-Message-State: AOJu0YzIZJ/cnRxzTPk2yUQIqFA3X9Xodiv5GAFpRUUj5825dJi07Inw
+        A+MDsgH6GYlOwNUEg2iqHTCw9ys3Hzxo7C4kfSy7x38cuQyUhd3H2LepktANo42ak8UI8zGAg3F
+        akMHBtpluOGUzG0f3K7guA+q/
+X-Received: by 2002:a17:906:308d:b0:99c:5708:496f with SMTP id 13-20020a170906308d00b0099c5708496fmr1476062ejv.47.1691161336694;
+        Fri, 04 Aug 2023 08:02:16 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IE4buQlfj5+z9A6xIc2zcmROIFoujfZijSLwc66A0Da2XFPINrE4kSVfdcb8SyEajwJi0yrCg==
+X-Received: by 2002:a17:906:308d:b0:99c:5708:496f with SMTP id 13-20020a170906308d00b0099c5708496fmr1476035ejv.47.1691161336276;
+        Fri, 04 Aug 2023 08:02:16 -0700 (PDT)
+Received: from sgarzare-redhat (host-82-57-51-214.retail.telecomitalia.it. [82.57.51.214])
+        by smtp.gmail.com with ESMTPSA id lc21-20020a170906f91500b00992b510089asm1414920ejb.84.2023.08.04.08.02.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 04 Aug 2023 08:02:15 -0700 (PDT)
+Date:   Fri, 4 Aug 2023 17:02:12 +0200
+From:   Stefano Garzarella <sgarzare@redhat.com>
+To:     Arseniy Krasnov <oxffffaa@gmail.com>
+Cc:     Arseniy Krasnov <AVKrasnov@sberdevices.ru>,
+        Stefan Hajnoczi <stefanha@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Bobby Eshleman <bobby.eshleman@bytedance.com>,
+        kvm@vger.kernel.org, virtualization@lists.linux-foundation.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel@sberdevices.ru
+Subject: Re: [RFC PATCH v1 1/2] vsock: send SIGPIPE on write to shutdowned
+ socket
+Message-ID: <e2ytj5asmxnyb7oebxpzfuithtidwzcwxki7aao2q344sg3yru@ezqk5iezf3i4>
+References: <20230801141727.481156-1-AVKrasnov@sberdevices.ru>
+ <20230801141727.481156-2-AVKrasnov@sberdevices.ru>
+ <qgn26mgfotc7qxzp6ad7ezkdex6aqniv32c5tvehxh4hljsnvs@x7wvyvptizxx>
+ <44fef482-579a-fed6-6e8c-d400546285fc@gmail.com>
+ <bzkwqp26joyzgvqyoypyv43wv7t3b6rzs3v5hkch45yggmrzp6@25byvzqwiztb>
+ <140bb8ec-f443-79f9-662b-0c4e972c8dd6@gmail.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v7 04/13] coresight-tpda: Add DSB dataset support
-Content-Language: en-US
-To:     Tao Zhang <quic_taozha@quicinc.com>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Konrad Dybcio <konradybcio@gmail.com>,
-        Mike Leach <mike.leach@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>
-Cc:     Jinlong Mao <quic_jinlmao@quicinc.com>,
-        Leo Yan <leo.yan@linaro.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        coresight@lists.linaro.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        Tingwei Zhang <quic_tingweiz@quicinc.com>,
-        Yuanfang Zhang <quic_yuanfang@quicinc.com>,
-        Trilok Soni <quic_tsoni@quicinc.com>,
-        Hao Zhang <quic_hazha@quicinc.com>,
-        linux-arm-msm@vger.kernel.org, andersson@kernel.org
-References: <1690269353-10829-1-git-send-email-quic_taozha@quicinc.com>
- <1690269353-10829-5-git-send-email-quic_taozha@quicinc.com>
-From:   Suzuki K Poulose <suzuki.poulose@arm.com>
-In-Reply-To: <1690269353-10829-5-git-send-email-quic_taozha@quicinc.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=iso-8859-1; format=flowed
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <140bb8ec-f443-79f9-662b-0c4e972c8dd6@gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 25/07/2023 08:15, Tao Zhang wrote:
-> Read the DSB element size from the device tree. Set the register
-> bit that controls the DSB element size of the corresponding port.
-> 
-> Signed-off-by: Tao Zhang <quic_taozha@quicinc.com>
-> ---
->   drivers/hwtracing/coresight/coresight-tpda.c | 96 +++++++++++++++++++++++++---
->   drivers/hwtracing/coresight/coresight-tpda.h |  4 ++
->   2 files changed, 90 insertions(+), 10 deletions(-)
-> 
-> diff --git a/drivers/hwtracing/coresight/coresight-tpda.c b/drivers/hwtracing/coresight/coresight-tpda.c
-> index 8d2b9d2..7c71342 100644
-> --- a/drivers/hwtracing/coresight/coresight-tpda.c
-> +++ b/drivers/hwtracing/coresight/coresight-tpda.c
-> @@ -21,6 +21,58 @@
->   
->   DEFINE_CORESIGHT_DEVLIST(tpda_devs, "tpda");
->   
-> +/* Search and read element data size from the TPDM node in
+On Fri, Aug 04, 2023 at 05:34:20PM +0300, Arseniy Krasnov wrote:
+>
+>
+>On 04.08.2023 17:28, Stefano Garzarella wrote:
+>> On Fri, Aug 04, 2023 at 03:46:47PM +0300, Arseniy Krasnov wrote:
+>>> Hi Stefano,
+>>>
+>>> On 02.08.2023 10:46, Stefano Garzarella wrote:
+>>>> On Tue, Aug 01, 2023 at 05:17:26PM +0300, Arseniy Krasnov wrote:
+>>>>> POSIX requires to send SIGPIPE on write to SOCK_STREAM socket which was
+>>>>> shutdowned with SHUT_WR flag or its peer was shutdowned with SHUT_RD
+>>>>> flag. Also we must not send SIGPIPE if MSG_NOSIGNAL flag is set.
+>>>>>
+>>>>> Signed-off-by: Arseniy Krasnov <AVKrasnov@sberdevices.ru>
+>>>>> ---
+>>>>> net/vmw_vsock/af_vsock.c | 3 +++
+>>>>> 1 file changed, 3 insertions(+)
+>>>>>
+>>>>> diff --git a/net/vmw_vsock/af_vsock.c b/net/vmw_vsock/af_vsock.c
+>>>>> index 020cf17ab7e4..013b65241b65 100644
+>>>>> --- a/net/vmw_vsock/af_vsock.c
+>>>>> +++ b/net/vmw_vsock/af_vsock.c
+>>>>> @@ -1921,6 +1921,9 @@ static int vsock_connectible_sendmsg(struct socket *sock, struct msghdr *msg,
+>>>>>             err = total_written;
+>>>>>     }
+>>>>> out:
+>>>>> +    if (sk->sk_type == SOCK_STREAM)
+>>>>> +        err = sk_stream_error(sk, msg->msg_flags, err);
+>>>>
+>>>> Do you know why we don't need this for SOCK_SEQPACKET and SOCK_DGRAM?
+>>>
+>>> Yes, here is my explanation:
+>>>
+>>> This function checks that input error is SIGPIPE, and if so it sends SIGPIPE to the 'current' thread
+>>> (except case when MSG_NOSIGNAL flag is set). This behaviour is described in POSIX:
+>>>
+>>> Page 367 (description of defines from sys/socket.h):
+>>> MSG_NOSIGNAL: No SIGPIPE generated when an attempt to send is made on a stream-
+>>> oriented socket that is no longer connected.
+>>>
+>>> Page 497 (description of SOCK_STREAM):
+>>> A SIGPIPE signal is raised if a thread sends on a broken stream (one that is
+>>> no longer connected).
+>>
+>> Okay, but I think we should do also for SEQPACKET:
+>>
+>> https://pubs.opengroup.org/onlinepubs/009696699/functions/xsh_chap02_10.html
+>>
+>> In 2.10.6 Socket Types:
+>>
+>> "The SOCK_SEQPACKET socket type is similar to the SOCK_STREAM type, and
+>> is also connection-oriented. The only difference between these types is
+>> that record boundaries ..."
+>>
+>> Then in  2.10.14 Signals:
+>>
+>> "The SIGPIPE signal shall be sent to a thread that attempts to send data
+>> on a socket that is no longer able to send. In addition, the send
+>> operation fails with the error [EPIPE]."
+>>
+>> It's honestly not super clear, but I assume the problem is similar with
+>> seqpacket since it's connection-oriented, or did I miss something?
+>>
+>> For example in sctp_sendmsg() IIUC we raise a SIGPIPE regardless of
+>> whether the socket is STREAM or SEQPACKET.
+>
+>Hm, yes, you're right. Seems check for socket type is not needed in this case,
+>as this function is only for connection oriented sockets.
 
-minor nit:
+Ack!
 
-/*
-  * Search ...
+>
+>>
+>>>
+>>> Page 1802 (description of 'send()' call):
+>>> MSG_NOSIGNAL
+>>>
+>>> Requests not to send the SIGPIPE signal if an attempt to
+>>> send is made on a stream-oriented socket that is no
+>>> longer connected. The [EPIPE] error shall still be
+>>> returned
+>>>
+>>> And the same for 'sendto()' and 'sendmsg()'
+>>>
+>>> Link to the POSIX document:
+>>> https://www.open-std.org/jtc1/sc22/open/n4217.pdf
+>>>
+>>> TCP (I think we must rely on it), KCM, SMC sockets (all of them are stream) work in the same
+>>> way by calling this function. AF_UNIX also works in the same way, but it implements SIGPIPE handling
+>>> without this function.
+>>
+>> I'm okay calling this function.
+>>
+>>>
+>>> The only thing that confused me a little bit, that sockets above returns EPIPE when
+>>> we have only SEND_SHUTDOWN set, but for AF_VSOCK EPIPE is returned for RCV_SHUTDOWN
+>>> also, but I think it is related to this patchset.
+>>
+>> Do you mean that it is NOT related to this patchset?
+>
+>Yes, **NOT**
 
-> + * the devicetree. Each input port of TPDA is connected to
-> + * a TPDM. Different TPDM supports different types of dataset,
-> + * and some may support more than one type of dataset.
-> + * Parameter "inport" is used to pass in the input port number
-> + * of TPDA, and it is set to 0 in the recursize call.
+Got it, so if you have time when you're back, let's check also that
+(not for this series as you mentioned).
 
-> + * Parameter "parent" is used to pass in the original call.
-
-Please remove references to the past and describe "match_inport"
-
-> + */
-> +static int tpda_set_element_size(struct tpda_drvdata *drvdata,
-> +			   struct coresight_device *csdev, int inport, bool match_inport)
-
-May be we could switch the order of the parameters:
-
-match_inport, int port
-
-Or even inport < 0, implies, port wont be matched.
-
-i.e.,
-
-tpda_set_element_size(drvdata, child, inport)
-
-> +{
-> +	static int nr_inport;
-> +	int i;
-> +	static bool tpdm_found;
-> +	struct coresight_device *in_csdev;
-> +
-> +	if (inport > (TPDA_MAX_INPORTS - 1))
-> +		return -EINVAL;
-> +
-> +	if (match_inport) {
-> +		nr_inport = inport;
-> +		tpdm_found = false;
-> +	}
-
-Could we not avoid the static variables and this dance by making the 
-function return the dsb_size ? See further down.
-
-
-> +
-> +	for (i = 0; i < csdev->pdata->nr_inconns; i++) {
-> +		in_csdev = csdev->pdata->in_conns[i]->src_dev;
-> +		if (!in_csdev)
-> +			break;
-		continue ?
-> +
-> +		if (match_inport)
-> +			if (csdev->pdata->in_conns[i]->dest_port != inport)
-> +				continue;
-> +
-> +		if ((in_csdev->type == CORESIGHT_DEV_TYPE_SOURCE) &&
-> +				(in_csdev->subtype.source_subtype
-> +				== CORESIGHT_DEV_SUBTYPE_SOURCE_TPDM)) {
-
-Please provide a helper :
-
-static bool coresight_device_is_tpdm(csdev) {
-	return
-	 (csdev->type == CORESIGHT_DEV_TYPE_SOURCE) &&
-	 (in_csdev->subtype.source_subtype ==
-		CORESIGHT_DEV_SUBTYPE_SOURCE_TPDM);
-}
-
-
-
-> +			of_property_read_u8(in_csdev->dev.parent->of_node,
-> +					"qcom,dsb-element-size", &drvdata->dsb_esize[nr_inport]);
-
-
-
-> +			if (!tpdm_found)
-> +				tpdm_found = true;
-> +			else
-> +				dev_warn(drvdata->dev,
-> +					"More than one TPDM is mapped to the TPDA input port %d.\n",
-> +					nr_inport);
-> +			continue;
-> +		}
-> +		tpda_set_element_size(drvdata, in_csdev, 0, false);
-> +	}
-> +
-
-/*
-  * Read the DSB element size from the TPDM device
-  * Returns
-  *	the size read from the firmware if available.
-  *	0 - Otherwise, with a Warning once.
-  */
-static int tpdm_read_dsb_element_size(struct coresight_device *csdev)
-{
-	int rc, size = 0;
-
-	rc = fwnode_property_read_u8(dev_fwnode(csdev->dev.parent),
-				     "qcom,dsb-element-size", &size);
-	if (rc)
-		dev_warn_once(&in->dev, "Failed to read TPDM DSB Element size: %d\n",
-		rc);
-	return size;
-}
-
-static int tpda_get_element_size(struct coresight_device *csdev,
-				 int inport)
-{
-	int dsb_size = -ENOENT;
-
-	for (i = 0; i < csdev->pdata->nr_inconns; i++) {
-		in = csdev->pdata->in_conns[i]->src_dev;
-		if (!in)
-			continue;
-		if (coresight_device_is_tpdm(in)) {
-			/* Ignore the TPDMs that do not match port */
-			if (inport > 0 &&
-			    (csdev->pdata->in_conns[i]->dest_port !=
-			    inport))
-				continue;
-			size = tpdm_read_dsb_element_size(csdev);
-		} else {
-			/* Recurse down the path */
-			size = tpda_set_element_size(in, -1);
-		}
-
-		if (size < 0)
-			return size;
-		/* We have found a size, save it. */
-		if (dsb_size < 0) {
-			dsb_size = size;
-		} else {
-			/* We have duplicate TPDMs */
-			return -EEXIST;
-		}
-	}
-	return dsb_size;
-}
-
-
-
-
-> +	return 0;
-> +}
-> +
->   /* Settings pre enabling port control register */
->   static void tpda_enable_pre_port(struct tpda_drvdata *drvdata)
->   {
-> @@ -32,26 +84,43 @@ static void tpda_enable_pre_port(struct tpda_drvdata *drvdata)
->   	writel_relaxed(val, drvdata->base + TPDA_CR);
->   }
->   
-> -static void tpda_enable_port(struct tpda_drvdata *drvdata, int port)
-> +static int tpda_enable_port(struct tpda_drvdata *drvdata, int port)
->   {
->   	u32 val;
->   
->   	val = readl_relaxed(drvdata->base + TPDA_Pn_CR(port));
-> +	/*
-> +	 * Configure aggregator port n DSB data set element size
-> +	 * Set the bit to 0 if the size is 32
-> +	 * Set the bit to 1 if the size is 64
-> +	 */
-> +	if (drvdata->dsb_esize[port] == 32)
-> +		val &= ~TPDA_Pn_CR_DSBSIZE;
-> +	else if (drvdata->dsb_esize[port] == 64)
-> +		val |= TPDA_Pn_CR_DSBSIZE;
-
-Couldn't this be detected via tpda_get_element_size()? see below.
-
-> +	else
-> +		return -EINVAL;
-> +
->   	/* Enable the port */
->   	val |= TPDA_Pn_CR_ENA;
->   	writel_relaxed(val, drvdata->base + TPDA_Pn_CR(port));
-> +
-> +	return 0;
->   }
->   
-> -static void __tpda_enable(struct tpda_drvdata *drvdata, int port)
-> +static int __tpda_enable(struct tpda_drvdata *drvdata, int port)
->   {
-> +	int ret;
-> +
->   	CS_UNLOCK(drvdata->base);
->   
->   	if (!drvdata->csdev->enable)
->   		tpda_enable_pre_port(drvdata);
->   
-> -	tpda_enable_port(drvdata, port);
-> -
-> +	ret = tpda_enable_port(drvdata, port);
->   	CS_LOCK(drvdata->base);
-> +
-> +	return ret;
->   }
->   
->   static int tpda_enable(struct coresight_device *csdev,
-> @@ -59,16 +128,23 @@ static int tpda_enable(struct coresight_device *csdev,
->   		       struct coresight_connection *out)
->   {
->   	struct tpda_drvdata *drvdata = dev_get_drvdata(csdev->dev.parent);
-> +	int ret;
-> +
-> +	ret = tpda_set_element_size(drvdata, csdev, in->dest_port, true);
-
-	size  = tpda_get_element_size(csdev, in->dest_port);
-	switch (size) {
-	case 32:
-	case 64:
-		break;
-	case -EEXIST:
-		dev_warn_once("Detected multiple TPDMs on port %d", ..)
-		fallthrough;
-	default:
-		return size;
-	}
-
-	drvdata->dsb_esize[in->dest_port] = size;
-
-Suzuki
-
-
-
-> +	if (ret)
-> +		return ret;
->   
->   	spin_lock(&drvdata->spinlock);
-> -	if (atomic_read(&in->dest_refcnt) == 0)
-> -		__tpda_enable(drvdata, in->dest_port);
-> +	if (atomic_read(&in->dest_refcnt) == 0) {
-> +		ret = __tpda_enable(drvdata, in->dest_port);
-> +		if (!ret) {
-> +			atomic_inc(&in->dest_refcnt);
-> +			dev_dbg(drvdata->dev, "TPDA inport %d enabled.\n", in->dest_port);
-> +		}
-> +	}
->   
-> -	atomic_inc(&in->dest_refcnt);
->   	spin_unlock(&drvdata->spinlock);
-> -
-> -	dev_dbg(drvdata->dev, "TPDA inport %d enabled.\n", in->dest_port);
-> -	return 0;
-> +	return ret;
->   }
->   
->   static void __tpda_disable(struct tpda_drvdata *drvdata, int port)
-> diff --git a/drivers/hwtracing/coresight/coresight-tpda.h b/drivers/hwtracing/coresight/coresight-tpda.h
-> index 0399678..12a1472 100644
-> --- a/drivers/hwtracing/coresight/coresight-tpda.h
-> +++ b/drivers/hwtracing/coresight/coresight-tpda.h
-> @@ -10,6 +10,8 @@
->   #define TPDA_Pn_CR(n)		(0x004 + (n * 4))
->   /* Aggregator port enable bit */
->   #define TPDA_Pn_CR_ENA		BIT(0)
-> +/* Aggregator port DSB data set element size bit */
-> +#define TPDA_Pn_CR_DSBSIZE		BIT(8)
->   
->   #define TPDA_MAX_INPORTS	32
->   
-> @@ -23,6 +25,7 @@
->    * @csdev:      component vitals needed by the framework.
->    * @spinlock:   lock for the drvdata value.
->    * @enable:     enable status of the component.
-> + * @dsb_esize:  DSB element size for each inport, it must be 32 or 64.
->    */
->   struct tpda_drvdata {
->   	void __iomem		*base;
-> @@ -30,6 +33,7 @@ struct tpda_drvdata {
->   	struct coresight_device	*csdev;
->   	spinlock_t		spinlock;
->   	u8			atid;
-> +	u8			dsb_esize[TPDA_MAX_INPORTS];
->   };
->   
->   #endif  /* _CORESIGHT_CORESIGHT_TPDA_H */
+Thanks,
+Stefano
 
