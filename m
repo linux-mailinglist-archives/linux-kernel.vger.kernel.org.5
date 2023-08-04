@@ -2,149 +2,285 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D3388770385
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 16:50:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A030D770387
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 16:50:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231840AbjHDOuM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Aug 2023 10:50:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36242 "EHLO
+        id S231402AbjHDOu0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Aug 2023 10:50:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36332 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229567AbjHDOuK (ORCPT
+        with ESMTP id S230047AbjHDOuX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Aug 2023 10:50:10 -0400
-Received: from mail-lj1-x231.google.com (mail-lj1-x231.google.com [IPv6:2a00:1450:4864:20::231])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2A5846B2
-        for <linux-kernel@vger.kernel.org>; Fri,  4 Aug 2023 07:50:08 -0700 (PDT)
-Received: by mail-lj1-x231.google.com with SMTP id 38308e7fff4ca-2b9338e4695so35396981fa.2
-        for <linux-kernel@vger.kernel.org>; Fri, 04 Aug 2023 07:50:08 -0700 (PDT)
+        Fri, 4 Aug 2023 10:50:23 -0400
+Received: from smtp-fw-2101.amazon.com (smtp-fw-2101.amazon.com [72.21.196.25])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 071B549C7
+        for <linux-kernel@vger.kernel.org>; Fri,  4 Aug 2023 07:50:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20221208.gappssmtp.com; s=20221208; t=1691160607; x=1691765407;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=SMo6gMfYlM/VNtFOwn/e5G1+vIj8kyfLio8gxupX/74=;
-        b=Mfog46uUvnC1c3rJIRnxVP4Rn1RbM25sv6wJsTw/NSVKIwWmjjCO90AC35/gzaa/Y5
-         F3rZRVvXDuuGz6MMqir/9Eh0mflOU0TgDqPn9elrJExaK5oBz588NIunZgMZIHUVzB/G
-         54NpDe2kPhOJN3NU+NolDhb/A3wovEabDWmtdgXv8KGTCPee+zgTuRPt533tcJFlA1i6
-         XRq8+VcfmJaRwMDSYHJ4QfTZl/APXx0z8YuY8Vqr5gY407AiuxzAQB490bCFp3dlR39b
-         aW8l1/6W0FrEM1CVF9+wIoB1ktl2ZJhCjkqt/OpAIYpjy0mln0oczHM5luyUJBt6gvXD
-         12hQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691160607; x=1691765407;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=SMo6gMfYlM/VNtFOwn/e5G1+vIj8kyfLio8gxupX/74=;
-        b=RlDzPOtrqnAG2EErIWc14F/NByD/GKg4TOHs8Q9g8QI7vDy27aUeGIiisO/B+9aUJn
-         E5GQa9sMe9Qj35RwtBU1XwhfhX7zFfA6Jt5OLyWIpDUuh/Bi2hUn+9NeVgdF7XiSfQlc
-         DbPbfJHBOpnyRCDqn+6XYwQ0GYAGpoZDZXmi5pNk0m/OzBB1tL/q3S5W2M4cMbYzZ6zo
-         UEGQ+ZicIkptPh1kQgQZcR22JuKE3FMVJB7q0k1N8RzHXRSKk9YmDHd5+7Y3msEd+z4t
-         ZY/0wg7FSI3hEW77liYhVvL2Xe/ZhSTYLWeiTL+FTqh1mhnnOXwHo3wxLkAhO7Q4VFcu
-         aPWQ==
-X-Gm-Message-State: AOJu0Yx36TnfpEM78qqFYHjXg913N73spW3lC6ENi/gpAqTPC5R8HjZa
-        vAXF6zrReAV1DLab6119jSnSyA==
-X-Google-Smtp-Source: AGHT+IH9U6AIT6bF+8F9r2Z0sZcprmA3N5tubjVSO8iveevPtXWr9d3p3tebi9qlowrLhtjtfMqA8Q==
-X-Received: by 2002:a2e:a176:0:b0:2b9:ee3e:2407 with SMTP id u22-20020a2ea176000000b002b9ee3e2407mr1664532ljl.38.1691160606509;
-        Fri, 04 Aug 2023 07:50:06 -0700 (PDT)
-Received: from localhost ([2a01:e0a:55f:21e0:9e19:4376:dea6:dbfa])
-        by smtp.gmail.com with ESMTPSA id l26-20020a1c791a000000b003fbb06af219sm2540259wme.32.2023.08.04.07.50.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 04 Aug 2023 07:50:06 -0700 (PDT)
-Date:   Fri, 4 Aug 2023 16:50:05 +0200
-From:   Julien Stephan <jstephan@baylibre.com>
-To:     AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>
-Cc:     Louis Kuo <louis.kuo@mediatek.com>,
-        Phi-bang Nguyen <pnguyen@baylibre.com>,
-        Florian Sylvestre <fsylvestre@baylibre.com>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Alexander Gordeev <agordeev@linux.ibm.com>,
-        Andy Hsieh <andy.hsieh@mediatek.com>,
-        Conor Dooley <conor+dt@kernel.org>,
-        daoyuan huang <daoyuan.huang@mediatek.com>,
-        devicetree@vger.kernel.org,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-mediatek@lists.infradead.org, linux-media@vger.kernel.org,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Moudy Ho <moudy.ho@mediatek.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Vasily Gorbik <gor@linux.ibm.com>
-Subject: Re: [PATCH v2 2/4] media: platform: mediatek: isp_30: add mediatek
- ISP3.0 sensor interface
-Message-ID: <72ixohoacq4vgj7nqg4l5gt5bs5e5ewain6a5ovqs3winx3qzz@sbg5lfohq5mq>
-References: <20230630100321.1951138-1-jstephan@baylibre.com>
- <20230630100321.1951138-3-jstephan@baylibre.com>
- <da891ec5-473c-5bef-d88b-661fac70ed25@collabora.com>
+  d=amazon.de; i=@amazon.de; q=dns/txt; s=amazon201209;
+  t=1691160622; x=1722696622;
+  h=from:to:cc:subject:references:date:message-id:
+   mime-version;
+  bh=AYMpbnj0XgY3+I8gCis285x1Nv3cNPuWZ467V0VPTmU=;
+  b=lsdAD0vzkzXXfeur4HVxwDyJP9kUmE/zcEIfLxW1ADCLM9E/AKiNHEFi
+   +wtGg00DnxOLzheOSZ8UtMmP5k8rde0VKqMK+d5NO0cVBNrrBHYXn/Taj
+   rOTxQV+/u91ryAUAeBqL+epEiuvg4PAKRK++Hm4D2+ZWsicdzOnqK/7Kt
+   g=;
+X-IronPort-AV: E=Sophos;i="6.01,255,1684800000"; 
+   d="scan'208";a="343643443"
+Received: from iad12-co-svc-p1-lb1-vlan3.amazon.com (HELO email-inbound-relay-pdx-2b-m6i4x-0ec33b60.us-west-2.amazon.com) ([10.43.8.6])
+  by smtp-border-fw-2101.iad2.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Aug 2023 14:50:19 +0000
+Received: from EX19MTAUEA002.ant.amazon.com (pdx1-ws-svc-p6-lb9-vlan3.pdx.amazon.com [10.236.137.198])
+        by email-inbound-relay-pdx-2b-m6i4x-0ec33b60.us-west-2.amazon.com (Postfix) with ESMTPS id 86D34A0B74;
+        Fri,  4 Aug 2023 14:50:17 +0000 (UTC)
+Received: from EX19MTAUEA001.ant.amazon.com (10.252.134.203) by
+ EX19MTAUEA002.ant.amazon.com (10.252.134.9) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.30; Fri, 4 Aug 2023 14:50:17 +0000
+Received: from dev-dsk-ptyadav-1c-37607b33.eu-west-1.amazon.com (10.15.11.255)
+ by mail-relay.amazon.com (10.252.134.102) with Microsoft SMTP Server id
+ 15.2.1118.30 via Frontend Transport; Fri, 4 Aug 2023 14:50:17 +0000
+Received: by dev-dsk-ptyadav-1c-37607b33.eu-west-1.amazon.com (Postfix, from userid 23027615)
+        id E9B6420CD4; Fri,  4 Aug 2023 16:50:16 +0200 (CEST)
+From:   Pratyush Yadav <ptyadav@amazon.de>
+To:     Keith Busch <kbusch@kernel.org>
+CC:     Christoph Hellwig <hch@lst.de>, Sagi Grimberg <sagi@grimberg.me>,
+        "Jens Axboe" <axboe@kernel.dk>, <linux-nvme@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] nvme-pci: do not set the NUMA node of device if it has
+ none
+References: <20230725110622.129361-1-ptyadav@amazon.de>
+        <ZL/dphk/MJMRskX8@kbusch-mbp.dhcp.thefacebook.com>
+        <50a125da-95c8-3b9b-543a-016c165c745d@grimberg.me>
+        <20230726131408.GA15909@lst.de> <mafs0cz0e8zc6.fsf_-_@amazon.de>
+        <ZMFHEK95WGwtYbid@kbusch-mbp.dhcp.thefacebook.com>
+        <mafs08rb28o4u.fsf_-_@amazon.de>
+        <ZMGddjINDt10BSvf@kbusch-mbp.dhcp.thefacebook.com>
+        <mafs0tttn7vs3.fsf_-_@amazon.de>
+        <ZMQYURrKPqIyTkG7@kbusch-mbp.dhcp.thefacebook.com>
+Date:   Fri, 4 Aug 2023 16:50:16 +0200
+Message-ID: <mafs0350y7tg7.fsf@amazon.de>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.2 (gnu/linux)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <da891ec5-473c-5bef-d88b-661fac70ed25@collabora.com>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,T_SPF_PERMERROR autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 03, 2023 at 01:02:02PM +0200, AngeloGioacchino Del Regno wrote:
-> Il 30/06/23 12:01, Julien Stephan ha scritto:
-..snip..
-> > +
-> > +static const struct mtk_seninf_format_info mtk_seninf_formats[] = {
-> > +	{
-> > +		.code = MEDIA_BUS_FMT_SBGGR8_1X8,
-> > +		.flags = MTK_SENINF_FORMAT_BAYER,
+On Fri, Jul 28 2023, Keith Busch wrote:
+
+> On Fri, Jul 28, 2023 at 08:09:32PM +0200, Pratyush Yadav wrote:
+>>
+>> I am guessing you are looking at irq_create_affinity_masks(). Yeah, It
+>> does not take into account the NUMA information. In fact, even if it
+>> did, the NUMA node associated with the IRQ is NUMA_NO_NODE
+>> (/proc/$irq/node == -1).
+>>
+>> I did some more digging over the week to figure out what is going on. It
+>> seems like the kernel _does_ in fact allow all CPUs in the affinity. I
+>> added some prints in set_affinity_irq() in
+>> drivers/xen/events/events_base.c (since that is the irqchip for the
+>> interrupt). I see it being called with mask: ffffffff,ffffffff.
+>>
+>> But I later see the function being called again with a different mask:
+>> 00000000,00008000. The stack trace shows the call is coming from
+>> ksys_write(). The process doing the write is irqbalance.
+>>
+>> So I think your earlier statement was incorrect. irqbalance does in fact
+>> balance these interrupts and it probably looks at the NUMA information
+>> of the device to make that decision. My original reasoning holds and
+>> irqbalance is the one picking the affinity.
+>>
+>> With this explanation, do you think the patch is good to go?
 >
-> Each entry fits in one line.
->
-> 	{ .code = MEDIA_BUS_FMT_SBGGR8_1X8, .flags = MTK_SENINF_FORMAT_BAYER },
->
+> irqbalance still writes to the /proc/<irq>/smp_affinity to change it,
+> right? That's just getting I/O errors on my machines because it fails
+> irq_can_set_affinity_usr() for nvme's kernel managed interrupts (except
+> the first vector, but that one is not used for I/O). Is there another
+> path irqbalance is using that's somehow getting past the appropriate
+> checks? Or perhaps is your xen irq_chip somehow bypassing the managed
+> irq property?
 
-Hi Angelo,
+I picked the interrupt "nvme4q26" as example. The call stack is (printed
+via WARN_ON(1)):
 
-Actually not all entries fit in one line. The last 4 ones don't:
+    ? __warn+0x7d/0x140
+    ? set_affinity_irq+0xf0/0x220
+    ? report_bug+0xf8/0x1e0
+    ? handle_bug+0x44/0x80
+    ? exc_invalid_op+0x13/0x60
+    ? asm_exc_invalid_op+0x16/0x20
+    ? set_affinity_irq+0xf0/0x220
+    ? set_affinity_irq+0xf0/0x220
+    irq_do_set_affinity+0x135/0x1e0
+    irq_set_affinity_locked+0x186/0x1f0
+    __irq_set_affinity+0x41/0x70
+    write_irq_affinity.isra.8+0xf6/0x120
+    proc_reg_write+0x59/0x80
+    vfs_write+0xc7/0x3c0
+    ? __do_sys_newfstat+0x35/0x60
+    ? __fget_light+0xcb/0x120
+    ksys_write+0xa5/0xe0
+    do_syscall_64+0x42/0x90
+    entry_SYSCALL_64_after_hwframe+0x63/0xcd
 
-       { .code = MEDIA_BUS_FMT_SGRBG10_DPCM8_1X8, .flags = MTK_SENINF_FORMAT_DPCM | MTK_SENINF_FORMAT_INPUT_ONLY },
-which is 115 chars..
+The check you mention is in write_irq_affinity(). I added some prints
+there and it turns out that __irqd_can_set_affinity() returns true and
+irqd_affinity_is_managed() is false.
 
-so what is the best? put all in one line except the last 4 one? or keep
-them all as is?
+I did some more digging and it turns out that the masks are called by
+irq_create_affinity_masks() which sets is_managed to the IRQ affinity
+descriptors.
+
+This is then passed down to __msi_domain_alloc_locked(). On a non-Xen
+system you would end up calling __msi_domain_alloc_irqs() next since
+ops->domain_alloc_irqs() is only implemented by Xen. This function finds
+the masks created earlier and passes them down to
+__irq_domain_alloc_irqs(). This then eventually lands in alloc_descs()
+which checks is_managed and sets IRQD_AFFINITY_MANAGED.
+
+On Xen though, xen_msi_domain_alloc_irqs() is called. This eventually
+lands in xen_allocate_irqs_dynamic() which calls irq_alloc_descs(). This
+macro calls __irq_alloc_descs() with affinity set to NULL. This leads to
+us losing the is_managed flag and the affinities created by
+irq_create_affinity_masks() via group_cpus_evenly().
+
+As a result of this, MSI IRQs on Xen can never be managed by the kernel.
+They are marked as userspace manageable and irqbalance can set their
+affinity. Applying the (hacky) patch below fixes this problem and lets
+the kernel manage the affinities.
+
+------ 8< ------
+diff --git a/drivers/xen/events/events_base.c b/drivers/xen/events/events_base.c
+index c7715f8bd4522..15f36e34e28b4 100644
+--- a/drivers/xen/events/events_base.c
++++ b/drivers/xen/events/events_base.c
+@@ -743,9 +743,10 @@ static void xen_irq_init(unsigned irq)
+ 	list_add_tail(&info->list, &xen_irq_list_head);
+ }
+ 
+-static int __must_check xen_allocate_irqs_dynamic(int nvec)
++static int __must_check xen_allocate_irqs_dynamic(int nvec,
++						  struct irq_affinity_desc *affd)
+ {
+-	int i, irq = irq_alloc_descs(-1, 0, nvec, -1);
++	int i, irq = __irq_alloc_descs(-1, 0, nvec, -1, THIS_MODULE, affd);
+ 
+ 	if (irq >= 0) {
+ 		for (i = 0; i < nvec; i++)
+@@ -758,7 +759,7 @@ static int __must_check xen_allocate_irqs_dynamic(int nvec)
+ static inline int __must_check xen_allocate_irq_dynamic(void)
+ {
+ 
+-	return xen_allocate_irqs_dynamic(1);
++	return xen_allocate_irqs_dynamic(1, NULL);
+ }
+ 
+ static int __must_check xen_allocate_irq_gsi(unsigned gsi)
+@@ -1108,7 +1109,7 @@ int xen_bind_pirq_msi_to_irq(struct pci_dev *dev, struct msi_desc *msidesc,
+ 
+ 	mutex_lock(&irq_mapping_update_lock);
+ 
+-	irq = xen_allocate_irqs_dynamic(nvec);
++	irq = xen_allocate_irqs_dynamic(nvec, msidesc->affinity);
+ 	if (irq < 0)
+ 		goto out;
+------ >8 ------ 
+
+With this patch, I get the below affinities:
+
+    $   for i in $(cat /proc/interrupts | grep nvme0 | sed "s/^ *//g" | cut -d":" -f 1); do \
+    >     cat /proc/irq/$i/{smp,effective}_affinity_list; \
+    >   done
+    8
+    8
+    16-17,48,65,67,69
+
+    18-19,50,71,73,75
+
+    20,52,77,79
+
+    21,53,81,83
+
+    22,54,85,87
+
+    23,55,89,91
+
+    24,56,93,95
+
+    25,57,97,99
+
+    26,58,101,103
+
+    27,59,105,107
+
+    28,60,109,111
+
+    29,61,113,115
+
+    30,62,117,119
+
+    31,63,121,123
+
+    49,51,125,127
+
+    0,32,64,66
+
+    1,33,68,70
+
+    2,34,72,74
+
+    3,35,76,78
+
+    4,36,80,82
+
+    5,37,84,86
+
+    6,38,88,90
+
+    7,39,92,94
+
+    8,40,96,98
+
+    9,41,100,102
+
+    10,42,104,106
+
+    11,43,108,110
+
+    12,44,112,114
+
+    13,45,116,118
+
+    14,46,120,122
+
+    15,47,124,126
+
+The blank lines are because effective_smp_affinity is blank for all but the first interrupt.
+
+The problem is, even with this I still get the same performance
+difference when running on Node 1 vs Node 0. I am not sure why. Any
+pointers?
+
+-- 
+Regards,
+Pratyush Yadav
 
 
-> > +	}, {
-..snip..
-> > +	udelay(1);
-> > +	mtk_seninf_input_update(input, SENINF_CTRL, CSI2_SW_RST, 0);
->
-> Is there any way to check if the CSI port did reset, or is it *guaranteed* to get
-> out of reset in a microsecond after deasserting SW_RST?
->
 
-I will double check this
+Amazon Development Center Germany GmbH
+Krausenstr. 38
+10117 Berlin
+Geschaeftsfuehrung: Christian Schlaeger, Jonathan Weiss
+Eingetragen am Amtsgericht Charlottenburg unter HRB 149173 B
+Sitz: Berlin
+Ust-ID: DE 289 237 879
 
-> > +}
-> > +
-..snip..
-> > +
-> > +	val = mtk_seninf_mux_read(mux, SENINF_MUX_CTRL);
->
-> rst_mask = SENINF_MUX_CTRL_SENINF_IRQ_SW_RST | SENINF_MUX_CTRL_SENINF_MUX_SW_RST;
->
-> writel(mux->base + SENINF_MUX_CTRL, val | rst_mask);
-> writel(mux->base + SENINFMUX_CTRL, val & ~rst_mask);
->
-> that's better, right? :-)
->
 
-right :)
 
-Cheers
-Julien
-
-> > +	mtk_seninf_mux_write(mux, SENINF_MUX_CTRL, val |
-> > +			     SENINF_MUX_CTRL_SENINF_IRQ_SW_RST |
-> > +			     SENINF_MUX_CTRL_SENINF_MUX_SW_RST);
