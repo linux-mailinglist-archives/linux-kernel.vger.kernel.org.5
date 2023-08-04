@@ -2,159 +2,226 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CE79976FF70
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 13:25:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 96A3776FF74
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 13:25:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230330AbjHDLZA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Aug 2023 07:25:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40026 "EHLO
+        id S230319AbjHDLZU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Aug 2023 07:25:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40032 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229456AbjHDLY5 (ORCPT
+        with ESMTP id S230345AbjHDLZM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Aug 2023 07:24:57 -0400
-Received: from out30-119.freemail.mail.aliyun.com (out30-119.freemail.mail.aliyun.com [115.124.30.119])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70311E6B;
-        Fri,  4 Aug 2023 04:24:40 -0700 (PDT)
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R181e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045170;MF=xueshuai@linux.alibaba.com;NM=1;PH=DS;RN=16;SR=0;TI=SMTPD_---0Vp0Cqag_1691148274;
-Received: from 30.240.114.112(mailfrom:xueshuai@linux.alibaba.com fp:SMTPD_---0Vp0Cqag_1691148274)
-          by smtp.aliyun-inc.com;
-          Fri, 04 Aug 2023 19:24:36 +0800
-Message-ID: <534c5e53-07bb-07bd-0435-76a10b55228d@linux.alibaba.com>
-Date:   Fri, 4 Aug 2023 19:24:33 +0800
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.13.1
-Subject: Re: [PATCH v4 1/2] perf/core: Bail out early if the request AUX area
- is out of bound
+        Fri, 4 Aug 2023 07:25:12 -0400
+Received: from EUR02-VI1-obe.outbound.protection.outlook.com (mail-vi1eur02on2047.outbound.protection.outlook.com [40.107.241.47])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28630170D;
+        Fri,  4 Aug 2023 04:25:09 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=NxbZJbcLQ9PjdTbzan9MUwcvVjq5vFVG44BzmxYfJATF4WkBeAmK9vJnIKTiG8Sz7T58VxuKTH6Z/SzlZV5uqdCStd84Htgxo+Yfp3XsIdCfWCfJjWCsDdDQLBv4KF5irNrln41VihtMyzL/K+gmxgDRaMfMRocntxJxjNeGlVrPIKym/iqfSY9gSktrciduRYUcQSIctXejWIJBXBMnw+TEBWTifPjvEj3BtJB2uqG5RdasXRhx4PzgHpd11BANZsKP1q9lZ7JG0NmMIZ6R0y2TXhu1Hz3uGkjqKdn3JQmhSv3cDL7NonjMAddVTa/v4pJgKu6vkoV7ciu9FtLwUw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=HtsTVL3ZwL5d3E70TDusVMzVmB+3lU5y6/H1Pwz98UA=;
+ b=SBK307d6vgnLTG11pvf1SswcPT4fInJcrmGxJzYgdEkwkJ/290goDBvG5bs/gvGKsju53dfAyRJGpyTjeu4AKwShhUlYJ+M9EN+4UAHEmE6b6Zp66d9nHbG51uhGt3lu0+z7rsLtYO18zwk8bEFSVWJ6FgKqkGb6YhdM1ZMCK0HlWhhBeOsrZV3ew+xzHkPVvdPfesmtp+jPZ09jpF7Zd5+Ae+d6VWNWxf8BjnDLoF0x6N4HGnWHPb7IElKNcZFB082/TdKE2jaQ1wOnnzCXA/mkoCpSblUZV4nIsZLnVGPabwZgfV4Wdww2PRqgiwGBNFtsdpyzC+PoN3JJcksW7A==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=wolfvision.net; dmarc=pass action=none
+ header.from=wolfvision.net; dkim=pass header.d=wolfvision.net; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wolfvision.net;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=HtsTVL3ZwL5d3E70TDusVMzVmB+3lU5y6/H1Pwz98UA=;
+ b=wznBTfVCXKQyhbmLKgso1IoRoTXoE5c4t8W5AWvyeJUyDAj9TCrzcSepBYVkbbQ/LNpAPHv7qHO4IBw0Lzka7v7X4iSm9rdG8scDlbWhWFKnuk0+t/zWNPGK9FPi3l7a8dt41fCY26lrL4Zg0WbkwBOYZ6aHEsrz2pA8eQKbt3k=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=wolfvision.net;
+Received: from DU0PR08MB9155.eurprd08.prod.outlook.com (2603:10a6:10:416::5)
+ by DB5PR08MB10214.eurprd08.prod.outlook.com (2603:10a6:10:4a9::21) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6652.21; Fri, 4 Aug
+ 2023 11:25:06 +0000
+Received: from DU0PR08MB9155.eurprd08.prod.outlook.com
+ ([fe80::9d1a:4539:a8f8:dd60]) by DU0PR08MB9155.eurprd08.prod.outlook.com
+ ([fe80::9d1a:4539:a8f8:dd60%7]) with mapi id 15.20.6631.046; Fri, 4 Aug 2023
+ 11:25:06 +0000
+Message-ID: <f71a8729-57a8-f45f-7db2-41ab543405de@wolfvision.net>
+Date:   Fri, 4 Aug 2023 13:24:46 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH v2 2/3] drm/panel: sitronix-st7789v: add panel orientation
+ support
 Content-Language: en-US
-To:     Leo Yan <leo.yan@linaro.org>, James Clark <james.clark@arm.com>,
-        Peter Zijlstra <peterz@infradead.org>
-Cc:     alexander.shishkin@linux.intel.com, mingo@redhat.com,
-        baolin.wang@linux.alibaba.com, acme@kernel.org,
-        mark.rutland@arm.com, jolsa@kernel.org, namhyung@kernel.org,
-        irogers@google.com, adrian.hunter@intel.com,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
-        nathan@kernel.org, bpf@vger.kernel.org
-References: <20230804072945.85731-1-xueshuai@linux.alibaba.com>
- <20230804072945.85731-2-xueshuai@linux.alibaba.com>
- <20230804085947.GB589820@leoy-yangtze.lan>
-From:   Shuai Xue <xueshuai@linux.alibaba.com>
-In-Reply-To: <20230804085947.GB589820@leoy-yangtze.lan>
+To:     neil.armstrong@linaro.org, Sam Ravnborg <sam@ravnborg.org>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Maxime Ripard <mripard@kernel.org>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Sebastian Reichel <sre@kernel.org>,
+        Gerald Loacker <gerald.loacker@wolfvision.net>
+Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org
+References: <20230718-feature-st7789v-v2-0-207cb1baea0f@wolfvision.net>
+ <20230718-feature-st7789v-v2-2-207cb1baea0f@wolfvision.net>
+ <b2407b1d-23fb-3284-c4bb-b3a952d361dd@linaro.org>
+From:   Michael Riesch <michael.riesch@wolfvision.net>
+In-Reply-To: <b2407b1d-23fb-3284-c4bb-b3a952d361dd@linaro.org>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-10.0 required=5.0 tests=BAYES_00,
-        ENV_AND_HDR_SPF_MATCH,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        SPF_PASS,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: VI1PR07CA0271.eurprd07.prod.outlook.com
+ (2603:10a6:803:b4::38) To DU0PR08MB9155.eurprd08.prod.outlook.com
+ (2603:10a6:10:416::5)
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DU0PR08MB9155:EE_|DB5PR08MB10214:EE_
+X-MS-Office365-Filtering-Correlation-Id: 1748d296-a217-4039-af4b-08db94dd748e
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: N0Gu7zaRZstlxo2r2VEsZgtyjPJ1N1787Q03KGUmXwTuhVcIKHXCnZinCv4XyTx2SbErK1oOYahj/lX9W9+shrFXw3KnXL8P1zRHt9uLrL0O0foMwzwClOhEjXPDMi9iYGvv3Av36yahjWV3ytwE59LxiApmZkxekC/zHhl2/EPmF8WQ8fiu7W6/MIH3KZUYAPVdlg8+wfHpRGqBmDD1kZKEvAmcXBQulw4gbOmmIp9a2b/Y+ECX6R2ZdJqbCAwEpL3SZB/sLA5aIxki797N8O31HrloYlll5vD+jcpHGhh7LVVfbb04ttDSjTR4fPuYETUWcYmQABq3BxDXC6k+pDnvx7/cIZ8v082CNSIx0vcsyvMuFf+M6F/jZs1RdBPLSHEexHJPNJNqvnSbtlxuLfw/2ABlZZbV49HmJHZ4biMP6MLAKSGduHK4RSzZ/gLg/zXPxcb80ey28DZLRZ6XN/Zf6X9cnZtfkIZj60lLa0n8yhS6/0ilxGt01szJx4LjXJrfXoUGISbXaTA+6B+OJUsAGPL0aFo0Jr76xvC2z+2s90BpuxyPRVn8bV6gNbNzxJDB3oSStpBD/OEcyM/mfLIDnN+2AEy97XW9ewSQZgoLWdttfRZgZLG97JG64WhGDgXZCY9c9YtNA39FGnT3r98nAKbosu/y9u7HiONVtG8=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DU0PR08MB9155.eurprd08.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(136003)(376002)(39840400004)(366004)(346002)(396003)(451199021)(186006)(1800799003)(6666004)(6486002)(6512007)(86362001)(31696002)(6506007)(36756003)(2616005)(53546011)(38100700002)(921005)(5660300002)(41300700001)(8936002)(8676002)(31686004)(6636002)(4326008)(2906002)(66556008)(66476007)(66946007)(316002)(7416002)(478600001)(44832011)(110136005)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?aVlSMDlNem9CazRnZWppUkVSY1lLeFUrTXZ4U1RBNGYxOWdDaEZpRHlKTXhF?=
+ =?utf-8?B?bmdYWGpJR1hPY2FnSWluNnJjSTRGYmdNRks2bGR5TUwxSlpWUnN3YjNVTS9Y?=
+ =?utf-8?B?QXhEYkVBMSt1UWRzS1JWYWxRVlZteXlQWlBzb3NVakZmK29Hd1c1T2p6NTRv?=
+ =?utf-8?B?bjBGSGNZTGZFS2VWS1hYbVFVUU9JcXZDeU0zNklEcVB0b0ZQOGFOc1pOUktK?=
+ =?utf-8?B?MUYvMTJGa25YTkxQVHRVbjlHOU1qNDJDYXhJaTdvbEhmSFZHaG0wcENOMStr?=
+ =?utf-8?B?a1VMOUtjQU4rTHdFWG1vQWZVRVZjenZ3N2pWQWJPQWg3M2hiei9CRmFvTGpj?=
+ =?utf-8?B?N0VhemxZU2NQeE9vcnZoekhWV0xvNS9wM3BSTjRTK1lxOVU4bnNMUXBTSUdS?=
+ =?utf-8?B?K0hFTHQwUmU0UHA1VEF2Yk5FTXVtTFBDSGdCZXM5SnBLQlk0V2x6dlM3OVpl?=
+ =?utf-8?B?RGFDNXllQklOdnlQaU5GRmd1N2FvcVFaTEJRa2Y0RCsvajFGd3ZMOFVtU1R0?=
+ =?utf-8?B?L1lnSFFaeHNjU2hkQktsMDY0K2hGZmJ4Q2dWaXNLZjhYS05MQWtIcE5wcU01?=
+ =?utf-8?B?clZpcHVkQ2VkbjdtSXVTNy83SkU0OThnR0V5K0YveHFWdWFsWHl6MFI3SkFu?=
+ =?utf-8?B?K3VxWjdTYXp3UmZoVmNaYWkwQ24xOTVWMkRCOTRjbVR5TWhCL2dpUEEzdFdr?=
+ =?utf-8?B?SWIvMEYzSFFQbEtZN01Xc1U1RU5mZW9mM3ZmMmpCcnRyUkxPN1ZRWnV6OVM2?=
+ =?utf-8?B?RDFRczh5VWl0TVAzZ1pmdURKd3NaS08xMXhjUmxlUURTbVBNK2owTnRXQmhj?=
+ =?utf-8?B?QytjYXhvNURrM3JtdFJ6dFlOSStEdUEybTFSdXNNenlDcC9qTjJXbUdIaGds?=
+ =?utf-8?B?WG9VZFhLcHpybE5CY2dCYWk4Z0F6UDJuelkwaHRTczZkWWt2SHFDU28wQWgr?=
+ =?utf-8?B?Vk9rNHIxQWZrNHlvbHNNNG5idnM0T3Q0U0RIUFpRTVVQblFSQXNGK25qeVJt?=
+ =?utf-8?B?ZzBQbmMzd1A1Q0ZTdkJGcktZZDJmVzlCaU4zakxsY25HWm1kbzUrR3VKT041?=
+ =?utf-8?B?emZCVTFmbUxlOWNsVnZQYzNvRjVMMUpVeHI5KzVBQWZZVjRBc1JsRlNXNlJL?=
+ =?utf-8?B?OXZYeVBMYitTYkxoU3pKSGRLQkFUNURzZC91bHZMZ3ZES2V4cGRZVWVON1Nr?=
+ =?utf-8?B?Z1oxcVh3Z1ViNlRhenFVeUFvemFJcldtZEROTVIvRGRORXhlYkhCOGE0S0xz?=
+ =?utf-8?B?Q2NKYmdkYzZqSVgzSEdMZkdOZlJ0Z3ZHS0RjMk8rM080UGZDem9YcDNnRVhr?=
+ =?utf-8?B?dnlHczdkZHpEblloK0NiL2tvUEM4aU1nWTRYVzFiaEhTNERONlY0VWwydzUw?=
+ =?utf-8?B?ZFp2YlVZWmIrY3lyZUliTXZCeW95TWU4bldhdDVpclpYRnJ6S09Hdkpva2h4?=
+ =?utf-8?B?MVZOT0VVOCtPbkpDK2lrbWJza1VCQkhyYWJ6TWV4MGtJanEvQ1ZwYWFqMzhy?=
+ =?utf-8?B?eGlqZ055WDNHMVo2eENyTEJXUkdXZ1NMWmlsTWVhMWI0QklIY0h4TXpjVVJF?=
+ =?utf-8?B?NW5WL2NHNnJLOTN3K0RJN0prTFQwTVdxU1o2YXNiVE9oZ2NzNUZ4Nk5PT1hq?=
+ =?utf-8?B?bkE0RVdXSVNQNC9PamJmUU1vNUgxa1hwa0tTRXBiZFQ0ZXZmR0tkREppa2k0?=
+ =?utf-8?B?YkFmeUQxdy9BbXQ5cW53U0x6US9CVVBndWtLNjFiVHlhaVpsZHE0OTVMV3ZW?=
+ =?utf-8?B?MCtTMUhQMG1HSXBQSCtYQytCRXdDS3pQZFNKK3pQc3RlUXNxcmpuem9mRG9P?=
+ =?utf-8?B?a3pnRDdXM0YveTdsMWRPNllOWld6Y3ppeVhLSGFwd0pOemN6OHpYOGVZTWIx?=
+ =?utf-8?B?S0hpWW1oL3p5TWdJWEZ2THhsTmhnTHZIZzNLN1Nsc29mRGVTNWNJbHpURkxP?=
+ =?utf-8?B?bUh3Mkh0Q2pBU0xzY2JXb0I2Slk5dU5ER2RCbTBRZFM2OFFnVlJpRjhDc0t6?=
+ =?utf-8?B?K25tMEdleFlSNktOMEUrOUE5ekFDbG1TSE04TkQzWEhoYlN5TUZ6NnV0MDBn?=
+ =?utf-8?B?V3JwdEp3NEhaWGU2V3VxYmdGRllwQlR3VmpUNEpmT0hieUxPVHJXRE9EUU9D?=
+ =?utf-8?B?a2x4enNBNzZXYzE2cUdUbHcwakhzZmMzaVkva2crNW52VjNiWjdGMFBPSVg1?=
+ =?utf-8?B?UTlyMG82WUVCY2JjNTBQdmxobWVBdm11REgyUk1LdXRkdkNpWkR4dDdEMnpJ?=
+ =?utf-8?B?ODY5YVFhUEE2YXZkTTVQOGYxMVVBPT0=?=
+X-OriginatorOrg: wolfvision.net
+X-MS-Exchange-CrossTenant-Network-Message-Id: 1748d296-a217-4039-af4b-08db94dd748e
+X-MS-Exchange-CrossTenant-AuthSource: DU0PR08MB9155.eurprd08.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 Aug 2023 11:25:06.8829
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: e94ec9da-9183-471e-83b3-51baa8eb804f
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 9srQwKQVGkopVEaRSu1duR7GJWicnCvhM4nG71tpxzbZSs6X52JTwXbVLIZ0DL1U1LVMzEfDSW9NC7hKoq71mFISwri4sxuzHz+L2KyjcbU=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB5PR08MB10214
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Neil,
 
-
-On 2023/8/4 16:59, Leo Yan wrote:
-> On Fri, Aug 04, 2023 at 03:29:44PM +0800, Shuai Xue wrote:
->> When perf-record with a large AUX area, e.g 4GB, it fails with:
+On 8/4/23 10:40, Neil Armstrong wrote:
+> Hi,
+> 
+> On 03/08/2023 22:13, Michael Riesch wrote:
+>> Determine the orientation of the display based on the device tree and
+>> propagate it.
 >>
->>     #perf record -C 0 -m ,4G -e arm_spe_0// -- sleep 1
->>     failed to mmap with 12 (Cannot allocate memory)
->>
->> and it reveals a WARNING with __alloc_pages():
->>
->> [   66.595604] ------------[ cut here ]------------
->> [   66.600206] WARNING: CPU: 44 PID: 17573 at mm/page_alloc.c:5568 __alloc_pages+0x1ec/0x248
->> [   66.608375] Modules linked in: ip6table_filter(E) ip6_tables(E) iptable_filter(E) ebtable_nat(E) ebtables(E) aes_ce_blk(E) vfat(E) fat(E) aes_ce_cipher(E) crct10dif_ce(E) ghash_ce(E) sm4_ce_cipher(E) sm4(E) sha2_ce(E) sha256_arm64(E) sha1_ce(E) acpi_ipmi(E) sbsa_gwdt(E) sg(E) ipmi_si(E) ipmi_devintf(E) ipmi_msghandler(E) ip_tables(E) sd_mod(E) ast(E) drm_kms_helper(E) syscopyarea(E) sysfillrect(E) nvme(E) sysimgblt(E) i2c_algo_bit(E) nvme_core(E) drm_shmem_helper(E) ahci(E) t10_pi(E) libahci(E) drm(E) crc64_rocksoft(E) i40e(E) crc64(E) libata(E) i2c_core(E)
->> [   66.657719] CPU: 44 PID: 17573 Comm: perf Kdump: loaded Tainted: G            E      6.3.0-rc4+ #58
->> [   66.666749] Hardware name: Default Default/Default, BIOS 1.2.M1.AL.P.139.00 03/22/2023
->> [   66.674650] pstate: 23400009 (nzCv daif +PAN -UAO +TCO +DIT -SSBS BTYPE=--)
->> [   66.681597] pc : __alloc_pages+0x1ec/0x248
->> [   66.685680] lr : __kmalloc_large_node+0xc0/0x1f8
->> [   66.690285] sp : ffff800020523980
->> [   66.693585] pmr_save: 000000e0
->> [   66.696624] x29: ffff800020523980 x28: ffff000832975800 x27: 0000000000000000
->> [   66.703746] x26: 0000000000100000 x25: 0000000000100000 x24: ffff8000083615d0
->> [   66.710866] x23: 0000000000040dc0 x22: ffff000823d6d140 x21: 000000000000000b
->> [   66.717987] x20: 000000000000000b x19: 0000000000000000 x18: 0000000000000030
->> [   66.725108] x17: 0000000000000000 x16: ffff800008f05be8 x15: ffff000823d6d6d0
->> [   66.732229] x14: 0000000000000000 x13: 343373656761705f x12: 726e202c30206574
->> [   66.739350] x11: 00000000ffff7fff x10: 00000000ffff7fff x9 : ffff8000083af570
->> [   66.746471] x8 : 00000000000bffe8 x7 : c0000000ffff7fff x6 : 000000000005fff4
->> [   66.753592] x5 : 0000000000000000 x4 : ffff000823d6d8d8 x3 : 0000000000000000
->> [   66.760713] x2 : 0000000000000000 x1 : 0000000000000001 x0 : 0000000000040dc0
->> [   66.767834] Call trace:
->> [   66.770267]  __alloc_pages+0x1ec/0x248
->> [   66.774003]  __kmalloc_large_node+0xc0/0x1f8
->> [   66.778259]  __kmalloc_node+0x134/0x1e8
->> [   66.782081]  rb_alloc_aux+0xe0/0x298
->> [   66.785643]  perf_mmap+0x440/0x660
->> [   66.789031]  mmap_region+0x308/0x8a8
->> [   66.792593]  do_mmap+0x3c0/0x528
->> [   66.795807]  vm_mmap_pgoff+0xf4/0x1b8
->> [   66.799456]  ksys_mmap_pgoff+0x18c/0x218
->> [   66.803365]  __arm64_sys_mmap+0x38/0x58
->> [   66.807187]  invoke_syscall+0x50/0x128
->> [   66.810922]  el0_svc_common.constprop.0+0x58/0x188
->> [   66.815698]  do_el0_svc+0x34/0x50
->> [   66.818999]  el0_svc+0x34/0x108
->> [   66.822127]  el0t_64_sync_handler+0xb8/0xc0
->> [   66.826296]  el0t_64_sync+0x1a4/0x1a8
->> [   66.829946] ---[ end trace 0000000000000000 ]---
->>
->> 'rb->aux_pages' allocated by kcalloc() is a pointer array which is used to
->> maintains AUX trace pages. The allocated page for this array is physically
->> contiguous (and virtually contiguous) with an order of 0..MAX_ORDER. If the
->> size of pointer array crosses the limitation set by MAX_ORDER, it reveals a
->> WARNING.
->>
->> So bail out early with -ENOMEM if the request AUX area is out of bound,
->> e.g.:
->>
->>     #perf record -C 0 -m ,4G -e arm_spe_0// -- sleep 1
->>     failed to mmap with 12 (Cannot allocate memory)
->>
->> Signed-off-by: Shuai Xue <xueshuai@linux.alibaba.com>
+>> Reviewed-by: Neil Armstrong <neil.armstrong@linaro.org>
+>> Signed-off-by: Michael Riesch <michael.riesch@wolfvision.net>
 >> ---
->>  kernel/events/ring_buffer.c | 3 +++
->>  1 file changed, 3 insertions(+)
+>>   drivers/gpu/drm/panel/panel-sitronix-st7789v.c | 18 ++++++++++++++++++
+>>   1 file changed, 18 insertions(+)
 >>
->> diff --git a/kernel/events/ring_buffer.c b/kernel/events/ring_buffer.c
->> index a0433f37b024..c445e927368d 100644
->> --- a/kernel/events/ring_buffer.c
->> +++ b/kernel/events/ring_buffer.c
->> @@ -699,6 +699,9 @@ int rb_alloc_aux(struct perf_buffer *rb, struct perf_event *event,
->>  		watermark = 0;
->>  	}
->>  
->> +	/* Can't allocate more than MAX_ORDER */
+>> diff --git a/drivers/gpu/drm/panel/panel-sitronix-st7789v.c
+>> b/drivers/gpu/drm/panel/panel-sitronix-st7789v.c
+>> index c7cbfe6ca82c..6575f07d49e3 100644
+>> --- a/drivers/gpu/drm/panel/panel-sitronix-st7789v.c
+>> +++ b/drivers/gpu/drm/panel/panel-sitronix-st7789v.c
+>> @@ -116,6 +116,7 @@ struct st7789v {
+>>       struct spi_device *spi;
+>>       struct gpio_desc *reset;
+>>       struct regulator *power;
+>> +    enum drm_panel_orientation orientation;
+>>   };
+>>     enum st7789v_prefix {
+>> @@ -170,6 +171,7 @@ static const struct drm_display_mode default_mode = {
+>>   static int st7789v_get_modes(struct drm_panel *panel,
+>>                    struct drm_connector *connector)
+>>   {
+>> +    struct st7789v *ctx = panel_to_st7789v(panel);
+>>       struct drm_display_mode *mode;
+>>         mode = drm_mode_duplicate(connector->dev, &default_mode);
+>> @@ -188,9 +190,22 @@ static int st7789v_get_modes(struct drm_panel
+>> *panel,
+>>       connector->display_info.width_mm = 61;
+>>       connector->display_info.height_mm = 103;
+>>   +    /*
+>> +     * TODO: Remove once all drm drivers call
+>> +     * drm_connector_set_orientation_from_panel()
+>> +     */
+>> +    drm_connector_set_panel_orientation(connector, ctx->orientation);
+>> +
+>>       return 1;
+>>   }
+>>   +static enum drm_panel_orientation st7789v_get_orientation(struct
+>> drm_panel *p)
+>> +{
+>> +    struct st7789v *ctx = panel_to_st7789v(p);
+>> +
+>> +    return ctx->orientation;
+>> +}
+>> +
+>>   static int st7789v_prepare(struct drm_panel *panel)
+>>   {
+>>       struct st7789v *ctx = panel_to_st7789v(panel);
+>> @@ -349,6 +364,7 @@ static const struct drm_panel_funcs
+>> st7789v_drm_funcs = {
+>>       .disable = st7789v_disable,
+>>       .enable    = st7789v_enable,
+>>       .get_modes = st7789v_get_modes,
+>> +    .get_orientation = st7789v_get_orientation,
+>>       .prepare = st7789v_prepare,
+>>       .unprepare = st7789v_unprepare,
+>>   };
+>> @@ -382,6 +398,8 @@ static int st7789v_probe(struct spi_device *spi)
+>>       if (ret)
+>>           return ret;
+>>   +    of_drm_get_panel_orientation(spi->dev.of_node, &ctx->orientation);
+>> +
+>>       drm_panel_add(&ctx->panel);
+>>         return 0;
+>>
 > 
-> The comment is confused.  I'd like to refine it as:
+> This patch doesn't apply clean on drm-misc-next, could you rebase and
+> resend ?
+
+Sure! v3 is out.
+
+Best regards,
+Michael
+
 > 
->   /*
->    * kcalloc_node() is unable to allocate buffer if the size is larger
->    * than: PAGE_SIZE << MAX_ORDER; directly bail out in this case.
->    */
-
-Hi, Leo,
-
-Thank you for your quick feedback. The comment is simplified from Peter's reply in v2
-version. Your refined comment is more detailed and it makes sense to me, I would like
-to adopt it if @Peter has no other opinions.
-
-> To be honest, I am not sure if perf core maintainers like this kind
-> thing or not.  Please seek their opinion before you move forward.
-> 
-
-and hi, all perf core maintainers,
-
-I have not received explicit objection from perf core maintainers @Peter or @James so
-I moved forward to address their comments. It's fine to me to wait for more opinions from
-perf core maintainers.
-
-Best Regards,
-Shuai
-
-
-
-
+> Thanks,
+> Neil
