@@ -2,58 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7BE71770423
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 17:12:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C6249770426
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 17:13:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231972AbjHDPMD convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 4 Aug 2023 11:12:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51242 "EHLO
+        id S230209AbjHDPNL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Aug 2023 11:13:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52702 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231811AbjHDPL4 (ORCPT
+        with ESMTP id S229726AbjHDPMs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Aug 2023 11:11:56 -0400
-Received: from eu-smtp-delivery-151.mimecast.com (eu-smtp-delivery-151.mimecast.com [185.58.86.151])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4602949F2
-        for <linux-kernel@vger.kernel.org>; Fri,  4 Aug 2023 08:11:53 -0700 (PDT)
-Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) by
- relay.mimecast.com with ESMTP with both STARTTLS and AUTH (version=TLSv1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- uk-mta-69--ezDvafoOoC2ioaAAB2V4A-1; Fri, 04 Aug 2023 16:11:51 +0100
-X-MC-Unique: -ezDvafoOoC2ioaAAB2V4A-1
-Received: from AcuMS.Aculab.com (10.202.163.6) by AcuMS.aculab.com
- (10.202.163.6) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Fri, 4 Aug
- 2023 16:11:49 +0100
-Received: from AcuMS.Aculab.com ([::1]) by AcuMS.aculab.com ([::1]) with mapi
- id 15.00.1497.048; Fri, 4 Aug 2023 16:11:49 +0100
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Paul Moore' <paul@paul-moore.com>,
-        =?iso-8859-1?Q?Christian_G=F6ttsche?= <cgzones@googlemail.com>,
-        "selinux@vger.kernel.org" <selinux@vger.kernel.org>
-CC:     Stephen Smalley <stephen.smalley.work@gmail.com>,
-        Eric Paris <eparis@parisplace.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH v2 2/9] selinux: use u32 as bit type in ebitmap code
-Thread-Topic: [PATCH v2 2/9] selinux: use u32 as bit type in ebitmap code
-Thread-Index: AQHZxno7WAML9teEJUiVyNIDpo4Zsa/aOz6A
-Date:   Fri, 4 Aug 2023 15:11:49 +0000
-Message-ID: <52329f0195a549d1b7abb3417cb2c225@AcuMS.aculab.com>
-References: <20230728155501.39632-1-cgzones@googlemail.com>
- <c8f7b16afb26b2357fdc2b590a8cdcba.paul@paul-moore.com>
-In-Reply-To: <c8f7b16afb26b2357fdc2b590a8cdcba.paul@paul-moore.com>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        Fri, 4 Aug 2023 11:12:48 -0400
+Received: from relay9-d.mail.gandi.net (relay9-d.mail.gandi.net [IPv6:2001:4b98:dc4:8::229])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7622649C1
+        for <linux-kernel@vger.kernel.org>; Fri,  4 Aug 2023 08:12:47 -0700 (PDT)
+Received: by mail.gandi.net (Postfix) with ESMTPA id 7E16BFF802;
+        Fri,  4 Aug 2023 15:12:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+        t=1691161964;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=sVsvPzcZLc04k8Mm6Fe387YJusgHKs7kp3zgszuHqAA=;
+        b=NbD5KjwDufaLxvHe0Ciehi2+EPqgpLicnDnl+PEqYwkZ6XBVbaVp9ZLRTdigY558uPrrvx
+        acS4fzr5z/gxjW0qIJz0fvPvkzGwnAfelgL8MMGkchwUut+Xm9N0VDoIB/u20fRg42Jtq8
+        KgwzwP839x6UWNrDxn0hmRqEXvylgVUPkqmTHYtLsQn8iekoF5DSMqpXHKRGCXD3+hYJGx
+        GxUMPrIkZdFR3fFsk8QDxqS7vvNRzuOBxskNpaIF50kZQ+4tTZNTKcaJfupAlMvjoJR+M/
+        ZkDTcSA8+F3fZtk2rvUfHY27sKG5Iu5frwKfgZFxbItqMAR9PY22ruck3+BfXg==
+From:   Luca Ceresoli <luca.ceresoli@bootlin.com>
+To:     dri-devel@lists.freedesktop.org
+Cc:     Luca Ceresoli <luca.ceresoli@bootlin.com>,
+        Neil Armstrong <neil.armstrong@linaro.org>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Sebastian Reichel <sebastian.reichel@collabora.com>,
+        linux-kernel@vger.kernel.org,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        Paul Kocialkowski <paul.kocialkowski@bootlin.com>
+Subject: [PATCH] drm/panel: simple: Fix AUO G121EAN01 panel timings according to the docs
+Date:   Fri,  4 Aug 2023 17:12:39 +0200
+Message-Id: <20230804151239.835216-1-luca.ceresoli@bootlin.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,PDS_BAD_THREAD_QP_64,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+Content-Transfer-Encoding: 8bit
+X-GND-Sasl: luca.ceresoli@bootlin.com
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -61,47 +56,67 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Paul Moore
-> Sent: 04 August 2023 03:20
-> 
-> On Jul 28, 2023 =?UTF-8?q?Christian=20G=C3=B6ttsche?= <cgzones@googlemail.com> wrote:
-....
-> > +	last_startbit = (u32)-1;
-> 
-> I can't say I'm as current on all of the C standards and compilier
-> oddities as some other in the Linux kernel space, but my
-> understanding is that on assignment the right value is always
-> implicitly type cast to the type of the left variable, is that not
-> true?  Assuming it is true, I think this explicit cast isn't
-> necessary and could actually be harmful if we need to change the
-> ebitmap types in the future.
+Commit 03e909acd95a ("drm/panel: simple: Add support for AUO G121EAN01.4
+panel") added support for this panel model, but the timings it implements
+are very different from what the datasheet describes. I checked both the
+G121EAN01.0 datasheet from [0] and the G121EAN01.4 one from [1] and they
+all have the same timings: for example the LVDS clock typical value is 74.4
+MHz, not 66.7 MHz as implemented.
 
-The only question is where any required sign extend happens.
-If you do:
-	u64 val = -1;
-then the signed int is first sign extended to 64 bit and then
-converted to unsigned (which just copies the bit pattern on any
-sane system that Linux might run on).
-Whereas:
-	u64 val = (u32)-1;
-Converts an (assumed) 32bit -1 to unsigned and then zero extends it.
+Replace the timings with the ones from the documentation. These timings
+have been tested and the clock frequencies verified with an oscilloscope to
+ensure they are correct.
 
-What you should really be using is a named constant that is
-(for the current implementation) (~0u) and doesn't ever need
-any casts and is always unsigned.
+Also use struct display_timing instead of struct drm_display_mode in order
+to also specify the minimum and maximum values.
 
-If you are actually worried about 'int' being other than 32bits
-then there will be a lot more places that need fixing.
+[0] https://embedded.avnet.com/product/g121ean01-0/
+[1] https://embedded.avnet.com/product/g121ean01-4/
 
-But you could use ((u32)~(u32)0) if you really want to allow
-for 'u32' being both smaller and larger than 'int' and for
-non 2's compliment (eg 1's compliment and sign overpunch)
-systems.
-(Good luck on finding a working C compiler for either of those.)
+Fixes: 03e909acd95a ("drm/panel: simple: Add support for AUO G121EAN01.4 panel")
+Signed-off-by: Luca Ceresoli <luca.ceresoli@bootlin.com>
+---
+ drivers/gpu/drm/panel/panel-simple.c | 24 ++++++++++++------------
+ 1 file changed, 12 insertions(+), 12 deletions(-)
 
-	David
-
--
-Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
-Registration No: 1397386 (Wales)
+diff --git a/drivers/gpu/drm/panel/panel-simple.c b/drivers/gpu/drm/panel/panel-simple.c
+index 701013b3ad13..56854f78441e 100644
+--- a/drivers/gpu/drm/panel/panel-simple.c
++++ b/drivers/gpu/drm/panel/panel-simple.c
+@@ -999,21 +999,21 @@ static const struct panel_desc auo_g104sn02 = {
+ 	.connector_type = DRM_MODE_CONNECTOR_LVDS,
+ };
+ 
+-static const struct drm_display_mode auo_g121ean01_mode = {
+-	.clock = 66700,
+-	.hdisplay = 1280,
+-	.hsync_start = 1280 + 58,
+-	.hsync_end = 1280 + 58 + 8,
+-	.htotal = 1280 + 58 + 8 + 70,
+-	.vdisplay = 800,
+-	.vsync_start = 800 + 6,
+-	.vsync_end = 800 + 6 + 4,
+-	.vtotal = 800 + 6 + 4 + 10,
++static const struct display_timing auo_g121ean01_timing = {
++	.pixelclock = { 60000000, 74400000, 90000000 },
++	.hactive = { 1280, 1280, 1280 },
++	.hfront_porch = { 20, 50, 100 },
++	.hback_porch = { 20, 50, 100 },
++	.hsync_len = { 30, 100, 200 },
++	.vactive = { 800, 800, 800 },
++	.vfront_porch = { 2, 10, 25 },
++	.vback_porch = { 2, 10, 25 },
++	.vsync_len = { 4, 18, 50 },
+ };
+ 
+ static const struct panel_desc auo_g121ean01 = {
+-	.modes = &auo_g121ean01_mode,
+-	.num_modes = 1,
++	.timings = &auo_g121ean01_timing,
++	.num_timings = 1,
+ 	.bpc = 8,
+ 	.size = {
+ 		.width = 261,
+-- 
+2.34.1
 
