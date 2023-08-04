@@ -2,189 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A43B87704FA
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 17:39:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D799E770502
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 17:40:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231587AbjHDPjN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Aug 2023 11:39:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41020 "EHLO
+        id S231263AbjHDPkD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Aug 2023 11:40:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41914 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229654AbjHDPjL (ORCPT
+        with ESMTP id S229942AbjHDPkB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Aug 2023 11:39:11 -0400
-Received: from relay7-d.mail.gandi.net (relay7-d.mail.gandi.net [IPv6:2001:4b98:dc4:8::227])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3F74171D
-        for <linux-kernel@vger.kernel.org>; Fri,  4 Aug 2023 08:39:08 -0700 (PDT)
-Received: by mail.gandi.net (Postfix) with ESMTPSA id C8FEA2000A;
-        Fri,  4 Aug 2023 15:39:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-        t=1691163547;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=9eqVdQmb69nE6gA2ZPZcqVY0YmH//5Gzc/TTIiSEFwA=;
-        b=DjNRsXa/WlgfoqNCGgY6+APxCq0EOnlVc08V72+fG9DtrH+cyl5N3VVyjH67xKXQiiXKp1
-        YXzesO5t8jit/8LAo6/UUirgqRChhhmnJEMA2k+z9hSJ8TZ975BLFwrF/b5c9BDKP46J0Y
-        Tza755a7UyMi0VPj5frZweZAwfpGUD4uOAZlCz46eA+SlSpxSmbT6FHFuvOGU/y5skVCre
-        3DPcFjkqfTM7qAn3lGj4s+Baf22Y+nJmyeDot+LuF/fExQslDyX1SsG/NstdH5GBbsykHS
-        zwuzSJMQD4FPaOl4wk9p5nxqrvxXsUPU/r0xSKAGaJrmJLb27s1Sy7oXiAigPw==
-Date:   Fri, 4 Aug 2023 17:39:03 +0200
-From:   Miquel Raynal <miquel.raynal@bootlin.com>
-To:     Dan Carpenter <dan.carpenter@linaro.org>
-Cc:     oe-kbuild@lists.linux.dev,
-        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-        lkp@intel.com, oe-kbuild-all@lists.linux.dev,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        Robert Marko <robert.marko@sartura.hr>,
-        Luka Perkov <luka.perkov@sartura.hr>,
-        Michael Walle <michael@walle.cc>, linux-kernel@vger.kernel.org,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Chen-Yu Tsai <wenst@chromium.org>,
-        Daniel Golle <daniel@makrotopia.org>,
-        =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>
-Subject: Re: [PATCH v7 5/7] nvmem: core: Rework layouts to become platform
- devices
-Message-ID: <20230804173903.2b298cd3@xps-13>
-In-Reply-To: <b9040273-aca8-432a-83aa-b0d6b1b88529@kadam.mountain>
-References: <20230801182132.1058707-6-miquel.raynal@bootlin.com>
- <b9040273-aca8-432a-83aa-b0d6b1b88529@kadam.mountain>
-Organization: Bootlin
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.33; x86_64-pc-linux-gnu)
+        Fri, 4 Aug 2023 11:40:01 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E28549CB
+        for <linux-kernel@vger.kernel.org>; Fri,  4 Aug 2023 08:40:00 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id C844D62077
+        for <linux-kernel@vger.kernel.org>; Fri,  4 Aug 2023 15:39:59 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3022BC433C8;
+        Fri,  4 Aug 2023 15:39:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1691163599;
+        bh=bkzit33VmdoUD6BWlsNFe9JgzY2f8SKPYIRIBtcatOM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=A/wmZHiopppHK/MJlnx0llX9Mksf28G/kXdY8g7/v4ybME3mj4mfRGE4txu7To0U4
+         D0DMqYnGWtVRN3lndOCOG5m+5uMh8laySuwipdk/uJQ4HJGUC8itVTsLuNcMKdfl2s
+         MR+VcmtgeKVECnsWusAU/h1GR3PJcsLkqmWNRYn4ppQFJmifI5/XhiHymw+docKAD9
+         C4mzEuj/Hr8CW8OFokEcGN9Kufe1/P5/TAjPy2B2KIogrK8jGerBeHyhw6FjXIWbr3
+         uAwE1W/fmb3mSdcVu/RH3zHN5C+d5WYA9y5NCMpfok1DJRWQhhhpRhZ9Ax5wRE4bgr
+         suzrzYJWsK6Ow==
+Date:   Fri, 4 Aug 2023 16:39:54 +0100
+From:   Conor Dooley <conor@kernel.org>
+To:     Fabio Estevam <festevam@gmail.com>
+Cc:     broonie@kernel.org, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        patches@opensource.cirrus.com, alsa-devel@alsa-project.org,
+        linux-kernel@vger.kernel.org, shengjiu.wang@gmail.com,
+        Fabio Estevam <festevam@denx.de>
+Subject: Re: [PATCH 1/2] ASoC: dt-bindings: wlf,wm8960: Describe the power
+ supplies
+Message-ID: <20230804-track-polymer-dff0f803645d@spud>
+References: <20230803215506.142922-1-festevam@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-GND-Sasl: miquel.raynal@bootlin.com
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="L0gVLHdTSEnPRpVf"
+Content-Disposition: inline
+In-Reply-To: <20230803215506.142922-1-festevam@gmail.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Dan,
 
-dan.carpenter@linaro.org wrote on Thu, 3 Aug 2023 13:13:04 +0300:
+--L0gVLHdTSEnPRpVf
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> Hi Miquel,
+On Thu, Aug 03, 2023 at 06:55:05PM -0300, Fabio Estevam wrote:
+> From: Fabio Estevam <festevam@denx.de>
 >=20
-> kernel test robot noticed the following build warnings:
+> WM8960 has the following power supplies:
 >=20
-> https://git-scm.com/docs/git-format-patch#_base_tree_information]
+> - AVDD
+> - DBVDD
+> - DCVDD
+> - SPKVDD1
+> - SPKVDD1
 >=20
-> url:    https://github.com/intel-lab-lkp/linux/commits/Miquel-Raynal/nvme=
-m-core-Create-all-cells-before-adding-the-nvmem-device/20230802-022331
-> base:   char-misc/char-misc-testing
-> patch link:    https://lore.kernel.org/r/20230801182132.1058707-6-miquel.=
-raynal%40bootlin.com
-> patch subject: [PATCH v7 5/7] nvmem: core: Rework layouts to become platf=
-orm devices
-> config: x86_64-randconfig-m001-20230730 (https://download.01.org/0day-ci/=
-archive/20230803/202308030002.DnSFOrMB-lkp@intel.com/config)
-> compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
-> reproduce: (https://download.01.org/0day-ci/archive/20230803/202308030002=
-.DnSFOrMB-lkp@intel.com/reproduce)
+> Add them to bindings to improve the hardware description.
 >=20
-> If you fix the issue in a separate patch/commit
-> (i.e. not just a new version of the same patch/commit),
+> Signed-off-by: Fabio Estevam <festevam@denx.de>
 
-(Nice addition, a lot of newcomers would always add these tags
-otherwise.)
-
-> kindly add following tags
-> | Reported-by: kernel test robot <lkp@intel.com>
-> | Reported-by: Dan Carpenter <dan.carpenter@linaro.org>
-> | Closes: https://lore.kernel.org/r/202308030002.DnSFOrMB-lkp@intel.com/
->=20
-> New smatch warnings:
-> drivers/nvmem/core.c:1003 nvmem_register() warn: 'layout_np' is an error =
-pointer or valid
-> drivers/nvmem/core.c:2130 nvmem_try_loading_layout_driver() warn: 'layout=
-_np' is an error pointer or valid
->=20
-> Old smatch warnings:
-> drivers/nvmem/core.c:761 nvmem_add_cells_from_fixed_layout() warn: 'layou=
-t_np' is an error pointer or valid
-> drivers/nvmem/core.c:802 nvmem_layout_get() warn: 'layout_np' is an error=
- pointer or valid
->=20
-> vim +/layout_np +1003 drivers/nvmem/core.c
->=20
-> 266570f496b90d Michael Walle         2023-04-04  1000 =20
-> 00d059fd6702f0 Miquel Raynal         2023-08-01  1001  	/* Populate layou=
-ts as devices */
-> 00d059fd6702f0 Miquel Raynal         2023-08-01  1002  	layout_np =3D of_=
-nvmem_layout_get_container(nvmem);
-> 00d059fd6702f0 Miquel Raynal         2023-08-01 @1003  	if (layout_np) {
->=20
-> So, ugh, of_nvmem_layout_get_container() return NULL on error or error
-> pointer if either CONFIG_NVMEM or CONFIG_OF is turned off.  I feel like
-> that's a mistake.  Normally when a function returns both error pointers
-> and NULL then the NULL means the feature is disabled and the error
-> pointers mean there was an error.  Here it is the opposite.
->=20
-> I have written a blog about this:
-> https://staticthinking.wordpress.com/2022/08/01/mixing-error-pointers-and=
--null/
-
-Nice (besides the huge spider which stared at me unexpectedly :-) )
-
-> At first I thought that this was to do with CONFIG_COMPILE_TEST but
-> actually that is disabled.  The issue here is that CONFIG_OF is turned
-> off.  So this is a genuine bug, we're compiling a module which will
-> always crash.
->=20
-> So I guess the fix is easy that this should return NULL if either
-> CONFIG_NVMEM or CONFIG_OF is turned off.  That was a long explanation
-> which is no longer required now that it's not a COMPILE_TEST issue.  :P
-
-I wanted to disable CONFIG_OF to make the test, I totally forget, I'll
-handle this case and return NULL when this happens.
-
-However I don't understand why you mention CONFIG_NVMEM, because if it
-is not defined, this file will not compile at all?
-
-> 00d059fd6702f0 Miquel Raynal         2023-08-01  1004  		rval =3D of_plat=
-form_populate(nvmem->dev.of_node, NULL, NULL, NULL);
-> 00d059fd6702f0 Miquel Raynal         2023-08-01  1005  		if (rval)
-> 00d059fd6702f0 Miquel Raynal         2023-08-01  1006  			goto err_remove=
-_cells;
-> 00d059fd6702f0 Miquel Raynal         2023-08-01  1007  		of_node_put(layo=
-ut_np);
-> 00d059fd6702f0 Miquel Raynal         2023-08-01  1008  	}
-> 00d059fd6702f0 Miquel Raynal         2023-08-01  1009 =20
-> 25c9b5d3aa24a0 Miquel Raynal         2023-08-01  1010  	mutex_lock(&nvmem=
-_devices_mutex);
-> 25c9b5d3aa24a0 Miquel Raynal         2023-08-01  1011  	list_add_tail(&nv=
-mem->node, &nvmem_devices_list);
-> 25c9b5d3aa24a0 Miquel Raynal         2023-08-01  1012  	mutex_unlock(&nvm=
-em_devices_mutex);
-> 25c9b5d3aa24a0 Miquel Raynal         2023-08-01  1013 =20
-> f4853e1c321edb Bartosz Golaszewski   2019-02-15  1014  	blocking_notifier=
-_call_chain(&nvmem_notifier, NVMEM_ADD, nvmem);
-> bee1138bea15a6 Bartosz Golaszewski   2018-09-21  1015 =20
-> eace75cfdcf7d9 Srinivas Kandagatla   2015-07-27  1016  	return nvmem;
-> 3360acdf839170 Johan Hovold          2017-06-09  1017 =20
-> b985f4cba6dbb3 Bartosz Golaszewski   2018-09-21  1018  err_remove_cells:
-> b985f4cba6dbb3 Bartosz Golaszewski   2018-09-21  1019  	nvmem_device_remo=
-ve_all_cells(nvmem);
-> fa72d847d68d78 Bartosz Golaszewski   2018-09-21  1020  	if (config->compa=
-t)
-> ae0c2d725512f3 Srinivas Kandagatla   2019-04-16  1021  		nvmem_sysfs_remo=
-ve_compat(nvmem, config);
-> 3360acdf839170 Johan Hovold          2017-06-09  1022  err_put_device:
-> 3360acdf839170 Johan Hovold          2017-06-09  1023  	put_device(&nvmem=
-->dev);
-> 3360acdf839170 Johan Hovold          2017-06-09  1024 =20
-> b6c217ab9be689 Andrew Lunn           2016-02-26  1025  	return ERR_PTR(rv=
-al);
-> eace75cfdcf7d9 Srinivas Kandagatla   2015-07-27  1026  }
->=20
-
+Acked-by: Conor Dooley <conor.dooley@microchip.com>
 
 Thanks,
-Miqu=C3=A8l
+Conor.
+
+--L0gVLHdTSEnPRpVf
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZM0bygAKCRB4tDGHoIJi
+0os0APwJQfgW205aF/eC8Y0ogViquNkLqRfa0+Pg/XQRRW156QD/Z10cvSfoQX1b
+wvrDDHnT/uKDDleuREkMlMuf2E8PVAA=
+=36x1
+-----END PGP SIGNATURE-----
+
+--L0gVLHdTSEnPRpVf--
