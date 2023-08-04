@@ -2,337 +2,209 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E3A4476F877
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 05:44:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CC96776F77A
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 04:04:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232676AbjHDDoI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Aug 2023 23:44:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49308 "EHLO
+        id S229978AbjHDCEH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Aug 2023 22:04:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33798 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232347AbjHDDnl (ORCPT
+        with ESMTP id S229674AbjHDCED (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Aug 2023 23:43:41 -0400
-Received: from NAM02-BN1-obe.outbound.protection.outlook.com (mail-bn1nam02on2056.outbound.protection.outlook.com [40.107.212.56])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 962794219;
-        Thu,  3 Aug 2023 20:43:37 -0700 (PDT)
+        Thu, 3 Aug 2023 22:04:03 -0400
+Received: from EUR04-VI1-obe.outbound.protection.outlook.com (mail-vi1eur04on2045.outbound.protection.outlook.com [40.107.8.45])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8D5F49CD
+        for <linux-kernel@vger.kernel.org>; Thu,  3 Aug 2023 19:03:35 -0700 (PDT)
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=hC+X5jB1iOk9Hp5Rlq4EUZSVxGn3yaZNCYfD/G3vaWQ1cBgRQVCT2ni71w75kFdd7mSc1pVXZzKVjESVYgTorP4EK4OY4Var17mIzLR1Uo8k2DoUt/9tEPLOnfFAtsqzWP8j7S22sN9gRULvxqQFkJRgSxc5/8lVmk6g6gkjL5sjysg8QhiftizY/JD/rNlJmuciMlDRzPEIuXoy1j/W4lxvMx1GhzdaeyYO5zSVNJsStixXRMezL75wC8SAPblgxgH9nkTX9lUYQs1X76ldBmUR4sCOZ/NFMQkSFRsMNgL+vjuEt3B6ier4GpuPSxAcruX1fyz7lRfzL9XtsGldxg==
+ b=nMSmNDLNYdmHllNlFi3CZrfi3cRlzp/8tVzKytjw25FKIfXtoE3wl4rm1yZaVbjIxMja5trpfcTGeT8Uo+pQB8L34jQjMoQT+/3UeAmL75wOWNVs61s+LnY5RWnAJ8V+weG5moNzREk/fHQ2cWoyodmXVbnRQACG9XFYxB5SasXB6iUPBVMuXVYl4rIC6vyN/LYMbMq+D34ItjHei9t7iVjOpn7rzyn1Xh5yS8q6ke+eKWVEm6jiUw2BNnOukZAwLsqdSrLdUqbrtMFG3AkRM+NWbbFKhXErphRAaIk5+/tpZaKbsQH5fzPabbsNaVbMVvZwFjJ2sS4THo+e3FdEIw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=jWAuQpJfuKQnyXal3hynJoRUMAvfqfp7TTBdzgQZnqU=;
- b=jdfH2XyJ9C5y/w2k+5pZf3JGvhPazBjCBo3dLN4n+FcJaGRGu4d6+rxYBIt40ILG2XDqg6w+Fc9nxBnv13QZynADlweWeD61/iKXtycx0HY8SrwJkX/XbGiLVcMSaxZ3QKEWz2mgh7kwVW2jru6ORXqJ4i/vjJzQiC8rXSJyIJUBORrG/ek4N2i21gAREcCxwvyHSBcDl9fnxzq4H0xFo0u7zyeRwyPq0UYi+9LNlSv/ytEGVrboNRI9bUsoBtb6HdDU1WffTP4L2zDmXmw8pH/nrJ7aJk+sj131kN3xQudHnqio+mbSMUUMuRDjzQQdu1s5PqNJPu4kfgO3u3ZDxg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 165.204.84.17) smtp.rcpttodomain=kernel.org smtp.mailfrom=amd.com; dmarc=pass
- (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
- dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ bh=n9wgQfEoc4sLwvsVpe8yyMvOt5E4FXJzbK4bWoNsCwo=;
+ b=V1iFkY/yQNJ4nCSFv71bDhd493VE2BwycPrBwwCUq30a1Fu4I6hnoDspLhPncB/H0zn0aGUvWUowsdMjq8UrlX8QLJS9fYrb5lmL+1DPCi8C71pfK1WNoBegSNhEMINVZoYiv2O9243O3uWiALFJtua6bTs7Pj65Kq4TfLcGnQyvaESKFnmlNri/jlL8OBpCHsF/q6X7GgmADvpaAVcBQ9OteA2EMqJKFgzxjSYHzjJsaMrs9yf7SBKjEPy5MyG08Dxarq8ktz+2NDNIIb/vLtG0wFd1Wtjl9CL8K7+y/Ts0WSDnn35259KTTiZJ2OxqKCxhAZS8NXaRQK1N5ZngBg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=jWAuQpJfuKQnyXal3hynJoRUMAvfqfp7TTBdzgQZnqU=;
- b=XSvjBF+RG8H1Djv5ibdC5dA+Ad+UIXRW32IF5zkBoMvKSy7EfzjNDoJZ9rpwrHYlNztf7MO99veKub7mjoh5LD/kzE3CGhpIao5JpAtFXrSP4Yax1iFwyCOCxzfFb+Gk52CS/3QYK8VQR4BLPLSfmPFTStmxQmzKFqrUyMMo5AI=
-Received: from CY5PR19CA0046.namprd19.prod.outlook.com (2603:10b6:930:1a::20)
- by DS7PR12MB8202.namprd12.prod.outlook.com (2603:10b6:8:e1::13) with
+ bh=n9wgQfEoc4sLwvsVpe8yyMvOt5E4FXJzbK4bWoNsCwo=;
+ b=bfU8SKciM8CnBWSJ69Hxs33V52qyuhAY5P90xJd23bKYV4Ha9hIxMsky5Fl71drlu00SCm44e+bvrQhmkbe9p6GTn9tuGC8JWNqlnGEuxi8KS9WnFOdMaxlQoBxN5JSmxnr2Rw/zBqTA3ec7QcmFVW4VkVXPQlhnOPll3hd6ZGI=
+Received: from PAXPR04MB9448.eurprd04.prod.outlook.com (2603:10a6:102:2b1::21)
+ by AS1PR04MB9261.eurprd04.prod.outlook.com (2603:10a6:20b:4c7::13) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6609.33; Fri, 4 Aug
- 2023 03:43:35 +0000
-Received: from CY4PEPF0000E9D8.namprd05.prod.outlook.com
- (2603:10b6:930:1a:cafe::f4) by CY5PR19CA0046.outlook.office365.com
- (2603:10b6:930:1a::20) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6652.20 via Frontend
- Transport; Fri, 4 Aug 2023 03:43:34 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
- smtp.mailfrom=amd.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=amd.com;
-Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
- 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
- client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
-Received: from SATLEXMB04.amd.com (165.204.84.17) by
- CY4PEPF0000E9D8.mail.protection.outlook.com (10.167.241.83) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.6652.19 via Frontend Transport; Fri, 4 Aug 2023 03:43:34 +0000
-Received: from SITE-L-T34-2.amd.com (10.180.168.240) by SATLEXMB04.amd.com
- (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Thu, 3 Aug
- 2023 22:43:32 -0500
-From:   Mario Limonciello <mario.limonciello@amd.com>
-To:     "Rafael J . Wysocki" <rafael@kernel.org>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Bjorn Helgaas <helgaas@kernel.org>
-CC:     <linux-pci@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        "Andy Shevchenko" <andriy.shevchenko@linux.intel.com>,
-        <linux-acpi@vger.kernel.org>,
-        Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        "Iain Lane" <iain@orangesquash.org.uk>,
-        Shyam-sundar S-k <Shyam-sundar.S-k@amd.com>,
-        Mario Limonciello <mario.limonciello@amd.com>
-Subject: [PATCH v9 3/3] PCI/ACPI: Use device constraints to decide PCI target state fallback policy
-Date:   Thu, 3 Aug 2023 20:02:29 -0500
-Message-ID: <20230804010229.3664-4-mario.limonciello@amd.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20230804010229.3664-1-mario.limonciello@amd.com>
-References: <20230804010229.3664-1-mario.limonciello@amd.com>
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6652.20; Fri, 4 Aug
+ 2023 02:03:25 +0000
+Received: from PAXPR04MB9448.eurprd04.prod.outlook.com
+ ([fe80::3505:c499:96d4:1429]) by PAXPR04MB9448.eurprd04.prod.outlook.com
+ ([fe80::3505:c499:96d4:1429%4]) with mapi id 15.20.6631.046; Fri, 4 Aug 2023
+ 02:03:24 +0000
+From:   Sandor Yu <sandor.yu@nxp.com>
+To:     "neil.armstrong@linaro.org" <neil.armstrong@linaro.org>,
+        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+CC:     "andrzej.hajda@intel.com" <andrzej.hajda@intel.com>,
+        "rfoss@kernel.org" <rfoss@kernel.org>,
+        "Laurent.pinchart@ideasonboard.com" 
+        <Laurent.pinchart@ideasonboard.com>,
+        "jonas@kwiboo.se" <jonas@kwiboo.se>,
+        "jernej.skrabec@gmail.com" <jernej.skrabec@gmail.com>,
+        "adrian.larumbe@collabora.com" <adrian.larumbe@collabora.com>,
+        "treding@nvidia.com" <treding@nvidia.com>,
+        "the.cheaterman@gmail.com" <the.cheaterman@gmail.com>,
+        "l.stach@pengutronix.de" <l.stach@pengutronix.de>,
+        "ville.syrjala@linux.intel.com" <ville.syrjala@linux.intel.com>,
+        "cychiang@chromium.org" <cychiang@chromium.org>,
+        "S.J. Wang" <shengjiu.wang@nxp.com>
+Subject: Re: [PATCH] drm: bridge: dw_hdmi: Fix ELD is not updated issue
+Thread-Topic: [PATCH] drm: bridge: dw_hdmi: Fix ELD is not updated issue
+Thread-Index: AQHZxnfaqzc4aHMGLUWbE9dBBfqFSw==
+Date:   Fri, 4 Aug 2023 02:03:24 +0000
+Message-ID: <PAXPR04MB9448CDABEE9A1B55F8ADCC3AF409A@PAXPR04MB9448.eurprd04.prod.outlook.com>
+References: <20230726014833.1647244-1-Sandor.yu@nxp.com>
+ <743b7abb-127d-49c1-f863-1a7d388b8166@linaro.org>
+In-Reply-To: <743b7abb-127d-49c1-f863-1a7d388b8166@linaro.org>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nxp.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: PAXPR04MB9448:EE_|AS1PR04MB9261:EE_
+x-ms-office365-filtering-correlation-id: 6ed95c4a-59e0-4348-bc11-08db948efca1
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: aYXyvm/6hGk+q2jKmTpQCSzHVXCbMq3a8Wh34mQKVzkVLwBSbSV9OM7JIp8i1aJPJhNRjtKHcSs2LOe3QhV6zjQQsjEr8bdz3X2A+35yvodQr8nI7FjbjdiEJkGCBRjAQQ4D6lz9FnTMtN8CznqotPtw/Bp+7J+G6cZpCFxKxm+Nz+rwPi7HTDg4CVNLPwGN+CM7bhVAAW9zWglh1++3gQq0HK7kyRD6T36f6DuyuztGqoqUr4aRUCkhH+O9dSW9WOdQQM7v4Cvv3H9fu8K4Nqp9Zv5Es2QYbb8dbb9wKXlDAe5i1CzMAD9YEuJo70lED/Bp+Ett07TimYFwbde2HQKi/Jz2CBroFiCH1N+pd6Ou+UvPp97wKjF9/OVU8+/AJ+f7CZm9mA1Jvb94Y5wVPqKPpqBIOVTBDocWcWEL5tQNCpqXzhJju4MBPDOCrKjabfDkDOsXpsbFrvyxeAEIQ5/xF57/ywe+/In8CYeTCLWaqEFndADGwfWG7REwL94pUNEWs7vNzG3sLcwdOKUfytvE6FQqXyVZjVnAIZgKBdeAFkZ9RJC4zvwGNlzOyDwlDoD6Hdx9Bjz+6FuA5yOcBHSQjhHxKD4TfTUs1eKJWEPv0f8eBtpsQf9FWQQW8I4h
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PAXPR04MB9448.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(39860400002)(346002)(376002)(136003)(366004)(396003)(451199021)(1800799003)(186006)(53546011)(8676002)(26005)(6506007)(83380400001)(66476007)(2906002)(316002)(76116006)(4326008)(66946007)(5660300002)(66446008)(64756008)(66556008)(44832011)(8936002)(7416002)(41300700001)(7696005)(71200400001)(15650500001)(52536014)(9686003)(110136005)(478600001)(55016003)(54906003)(38100700002)(122000001)(33656002)(86362001)(38070700005);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?utf-8?B?VU0zWk8xVjRaVW85QlFoekd2aFpUQ0dTb2V3SDY3QVMvZ3JCVVcrSkNmN0Jy?=
+ =?utf-8?B?UzFvY0RlbXY1cy9yYTFscDBCdFREVHdoMlZQc0phWkFDTDdULzc5ZjltYmFh?=
+ =?utf-8?B?NnZKM2VVT2tlWlBBSGluSytFTGNBTlN1ZlIwNWZyVm44MVE2NWNIT21DSzVx?=
+ =?utf-8?B?VG9jOG1pKzhWUm5TQzRBSzlWaVR5VzJGRlpRbXNNVlBXazkxcG9GWm5FcXQr?=
+ =?utf-8?B?dGNLaEF5ZG1OYXV4NEhPTGJma3FHSXJZNzhtU0ZBTHQxMWRSNzdUL1ZtZnAx?=
+ =?utf-8?B?L0lFR28vMTFmMnVzUkVaL2gra1R1eEpLdHhxSjR5T1dybDFLc0M1WnQzMHZy?=
+ =?utf-8?B?d05MMHRxUDFkQlltd1hLN3NpZkZpcnhsRzlwL1lwOHRGY1cwU2RHZ3lJN0o4?=
+ =?utf-8?B?K0dEK1NDMjhJUDgxa2J2OHBtNEtGZEFkRlh0b0lxQitucUNTUXEwVXhlSEVN?=
+ =?utf-8?B?Ky83b1lQajRwUlhhbm42THVobTg4Y3BWb0xuNW5ycDZRcklYM04wTUFjbUhq?=
+ =?utf-8?B?TkNOQXlDeFBWNGhpSVY1b3BiT2djOUdxWnhhL2czUjhnRDZsMWxPQnVZSTBN?=
+ =?utf-8?B?eUFTWkROY1ZBaEZUUHJxRG1pY3hjcjJRQVUxOUR3K2FZYmNlbzFMVHRkWmw1?=
+ =?utf-8?B?Rm4ycVhDK3F0TkV6TDVYaVVXQ0ZsYk5qcUx4Z2FMYURodG5obWtQMTJXT2E1?=
+ =?utf-8?B?Sm1YNXJSYTg2Y1I5bEh4YUhtS3NZUzJsK2czcVFla09uYm1teHB6d2JUeWxG?=
+ =?utf-8?B?ZHVpT0hRQ0lJVTN4M2dZUUF2cFFGSU5BUGpRVjNzNTFoTmpTZjNqcVdxYmtq?=
+ =?utf-8?B?YzcrTzJnbFV4Ym9IKzZCQ1hGcVBhenhtN3dlc3pKL2MvUytVUDdjZHlnTG8x?=
+ =?utf-8?B?SFgxVlNoVUZYUTBlWEgxZFhZaDU4NHpSU1pmcjFSTmtSODkzbDh3aHlkYk81?=
+ =?utf-8?B?V3dxY2FBcUVqOHA4eFJOUmsyZENLQ2dKaXk4VGo4amxZNmJ2aEgwSTdOYnA0?=
+ =?utf-8?B?RU4ycTNnRk4vU1MraDRsbVBvUFpRNERpRFpqUVhhaEFjYmtRdjF3Z2hSQ3ps?=
+ =?utf-8?B?cGJWREt2N1FaMVQxeWNvWkxpWVBhU1RUMDhKcVFZcyt1bVA4Q21mOENoQVNH?=
+ =?utf-8?B?T3VWWkk3am4yREMvbEVuTHVpaW5EQlZHS3JSdVhCaUU4OGdnMmNzc2doOVQy?=
+ =?utf-8?B?KzRFQnJERGdmV0NGdmorUmVtNzVodjdoNlNvU085YTNlaEN3NUxaMis2QVVh?=
+ =?utf-8?B?dWNWVG00L2EwYVVxSFc2RXhkaVY1MHRnKy9DMWpMZVRtK1FWT0dnMHRtVzJY?=
+ =?utf-8?B?alhOWjZqanVyWjdUNkpIeDVTWFR6OTVZZHZLdHAyQ29UM2NCUStJaWV6SEQv?=
+ =?utf-8?B?K2s2UzA0dmFHTVpzYVBYSmRVNmdKVVdSTlpqYlJEYWcyRmhIMkxzdDYvUi9H?=
+ =?utf-8?B?d3dKcEVPMEZKQjhMNkRSL213QlpHUUI5dDQrakFMSnRtanVOUVBxd1R4N2VY?=
+ =?utf-8?B?cS9wMXh1N0xwQitrQVZiYWVFbS90MlF1N3Z1b08xZWtnV0VmZ01IU3l1cWFw?=
+ =?utf-8?B?eENrNFFUU2hRUzI4MUtsRU5sNURYbTM0VnhBZXEyLzhxRi9FbC9BcUtPaEVO?=
+ =?utf-8?B?d0xqRUdIQVpmSGVka2Z2TXdLSU1PQVJFWW11aHZyajhMNFBvVDVtRDMzVVF1?=
+ =?utf-8?B?QmhENGFBSFFPSUE3dnRWZHZidWI2RFhFbW1LZTVQVmZFZXo0ZmtId2FiL0Zi?=
+ =?utf-8?B?cjZnT08xak82WmdxdHlPYkdTWnRiZGdGeHl3RkxtUlpIZVBDWEM1ei9EU3g1?=
+ =?utf-8?B?cjJ6VE1yRkJiSTIvZEREd1hEUi8rSFJLV1FGOUp5dnBialQrUjh1Wjd3VVhL?=
+ =?utf-8?B?VGpxSlBTRS90UlZabS82SjViNWJKWWM5TUh0a0xTbjk5SVdTRzJ4SzNPSGt5?=
+ =?utf-8?B?N2FQSHMvaWtrR0N5c1djR242Q0d0WGswYjFTZEtpbXNwSHo1WmIvZmIzeU10?=
+ =?utf-8?B?YzRWL2FlREFybUlIc253MUNxeUJLc1RzM04wRWlsemhEelJRUXZ6M3pCQy80?=
+ =?utf-8?B?NzVEcEp1cmFZUWhuTkdlM1duUWw3SkEvU1doVlRwdldoL3RNUG9rV2tPT25S?=
+ =?utf-8?Q?JQdg=3D?=
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [10.180.168.240]
-X-ClientProxiedBy: SATLEXMB04.amd.com (10.181.40.145) To SATLEXMB04.amd.com
- (10.181.40.145)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CY4PEPF0000E9D8:EE_|DS7PR12MB8202:EE_
-X-MS-Office365-Filtering-Correlation-Id: 121b03fc-b9a6-47de-b002-08db949cfaf0
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: KRM09h+GocxDDwkEkGlb4zILNYidUQlpd2hsVJVugnuMm7lEWei7hOfe85PKfrN0S5Wjeq+LF8/+BOxciScbIdye5lIt/2QUw8fL80IKHWGVHyyydEkfzOn3Uo8D+jIVMoZ4E9sFpHjdW8Pg2LC/uGje0qKWcroYCezeO24iPy3xTnqcFAiWmf1fPtFzL7yDyeZmzc27rtOCMwvODy+Jwy5KOTSpG8esNWCeKbSWmG8IjKe3aYqp/TZSy73vZU5UThahUb1RunMzd+CIkOLgXfUdsm/Ra2glQZzYMzVKUtE3o2ssMUbZGKgXJ7wYMqhErNDfXL2pzKq8uybiJI+P+4LmAB5/sQMdK1tsCN5wnDCBFA1Rz3JnqHZwgznwpta9P0H/go+CzcRDQrjyjcbHiPOFarYekc1wbqMJuzmTgUBJlSEb72Nv2xUWtOgM74rry11icpVbQaMgcH4HOyk8WW1sUKsnEo1Y0Y9t5pWIs3wEtz6F+QdaOiYSXYwxiQFF3Bt+4SKl1Uwk/uJaC16Eli6bLWcNhpkFh0RIHZo5a3JVPYdj8sNnnd5fS9nPdO7ejuKaTjHBCP+7WNcbq8uTyQ9zxz3QVBSbIvZXnV5bJ8LxqMg/0EHVg/WUuK+ZLER8Vgp5x5X5UC6g3MNZKRu+cYa8BZMOY7+ggbYYmG3b3jm80nAQSFxGeQ8rlt3pi10/GE/DyEbo+ObRHXUUul31oRmTp0J4UFGUeGr3TvTpqdi++/L9t1/mJOgt6Cak3pdTo2jFGbiZWkLj7nwwepvneG4KGtVXFslh8Hne8KCp2Fs=
-X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230028)(4636009)(39860400002)(136003)(396003)(346002)(376002)(82310400008)(1800799003)(451199021)(186006)(46966006)(36840700001)(40470700004)(47076005)(1076003)(7696005)(966005)(6666004)(54906003)(478600001)(110136005)(41300700001)(2616005)(81166007)(336012)(44832011)(16526019)(70586007)(5660300002)(356005)(2906002)(4326008)(8676002)(316002)(82740400003)(8936002)(70206006)(86362001)(36756003)(36860700001)(83380400001)(40460700003)(40480700001)(426003)(26005)(36900700001);DIR:OUT;SFP:1101;
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 Aug 2023 03:43:34.7850
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: PAXPR04MB9448.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 6ed95c4a-59e0-4348-bc11-08db948efca1
+X-MS-Exchange-CrossTenant-originalarrivaltime: 04 Aug 2023 02:03:24.7450
  (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 121b03fc-b9a6-47de-b002-08db949cfaf0
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
-X-MS-Exchange-CrossTenant-AuthSource: CY4PEPF0000E9D8.namprd05.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS7PR12MB8202
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no autolearn_force=no
-        version=3.4.6
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: Y4WL2c9/shgcqowXryiHy6sfCRxvShlLr+QeTCMkQJtT3EAyfhIl3/MvXYZ89oGjzjdyWgdNApyKd2i9a6IgUA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AS1PR04MB9261
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Since commit 9d26d3a8f1b0 ("PCI: Put PCIe ports into D3 during suspend")
-PCIe ports from modern machines (>=2015) are allowed to be put into D3 by
-storing a value to the `bridge_d3` variable in the `struct pci_dev`
-structure.
-
-pci_power_manageable() uses this variable to indicate a PCIe port can
-enter D3.
-pci_pm_suspend_noirq() uses the return from pci_power_manageable() to
-decide whether to try to put a device into its target state for a sleep
-cycle via pci_prepare_to_sleep().
-
-For devices that support D3, the target state is selected by this policy:
-1. If platform_pci_power_manageable():
-   Use platform_pci_choose_state()
-2. If the device is armed for wakeup:
-   Select the deepest D-state that supports a PME.
-3. Else:
-   Use D3hot.
-
-Devices are considered power manageable by the platform when they have
-one or more objects described in the table in section 7.3 of the ACPI 6.5
-specification.
-
-When devices are not considered power manageable; specs are ambiguous as
-to what should happen.  In this situation Windows 11 leaves PCIe
-ports in D0 while Linux puts them into D3 due to the above mentioned
-commit.
-
-In Windows systems that support Modern Standby specify hardware
-pre-conditions for the SoC to achieve the lowest power state by device
-constraints in a SOC specific "Power Engine Plugin" (PEP) [2] [3].
-They can be marked as disabled or enabled and when enabled can specify
-the minimum power state required for an ACPI device.
-
-When it is ambiguous what should happen, adjust the logic for
-pci_target_state() to check whether a device constraint is present
-and enabled.
-* If power manageable by ACPI use this to get to select target state
-* If a device constraint is present but disabled then choose D0
-* If a device constraint is present and enabled then use it
-* If a device constraint is not present, then continue to existing
-  logic (if marked for wakeup use deepest state that PME works)
-* If not marked for wakeup choose D3hot
-
-Link: https://uefi.org/specs/ACPI/6.5/07_Power_and_Performance_Mgmt.html#device-power-management-objects [1]
-Link: https://learn.microsoft.com/en-us/windows-hardware/design/device-experiences/platform-design-for-modern-standby#low-power-core-silicon-cpu-soc-dram [2]
-Link: https://uefi.org/sites/default/files/resources/Intel_ACPI_Low_Power_S0_Idle.pdf [3]
-Fixes: 9d26d3a8f1b0 ("PCI: Put PCIe ports into D3 during suspend")
-Reported-by: Iain Lane <iain@orangesquash.org.uk>
-Closes: https://forums.lenovo.com/t5/Ubuntu/Z13-can-t-resume-from-suspend-with-external-USB-keyboard/m-p/5217121
-Signed-off-by: Mario Limonciello <mario.limonciello@amd.com>
----
-v8->v9:
- * Use device_match_acpi_handle instead
- * Move the logic to run at the state selection time
- * Small fixups suggested by Andy
- * Call from pci_target_state() instead
-v7->v8:
- * Use device constraints instead
- * Update commit message and links
----
- drivers/acpi/x86/s2idle.c | 23 +++++++++++++++++++++++
- drivers/pci/pci-acpi.c    | 22 ++++++++++++++++++++++
- drivers/pci/pci.c         | 14 ++++++++++++++
- drivers/pci/pci.h         |  5 +++++
- include/linux/acpi.h      | 10 ++++++++--
- 5 files changed, 72 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/acpi/x86/s2idle.c b/drivers/acpi/x86/s2idle.c
-index cb2ea92af3eb7..c0e2c82e9ef63 100644
---- a/drivers/acpi/x86/s2idle.c
-+++ b/drivers/acpi/x86/s2idle.c
-@@ -293,6 +293,29 @@ static void lpi_device_get_constraints(void)
- 	ACPI_FREE(out_obj);
- }
- 
-+/**
-+ * acpi_get_lps0_constraint - get any LPS0 constraint for a device
-+ * @dev: device to get constraint for
-+ *
-+ * If a constraint has been specified in the _DSM method for the device,
-+ * and the constraint is enabled return it.  If the constraint is disabled,
-+ * return 0. Otherwise, return -ENODEV.
-+ */
-+int acpi_get_lps0_constraint(struct device *dev)
-+{
-+	int i;
-+
-+	for (i = 0; i < lpi_constraints_table_size; ++i) {
-+		if (!device_match_acpi_handle(dev, lpi_constraints_table[i].handle))
-+			continue;
-+		if (!lpi_constraints_table[i].enabled)
-+			return 0;
-+		return lpi_constraints_table[i].min_dstate;
-+	}
-+
-+	return -ENODEV;
-+}
-+
- static void lpi_check_constraints(void)
- {
- 	int i;
-diff --git a/drivers/pci/pci-acpi.c b/drivers/pci/pci-acpi.c
-index a05350a4e49cb..499dcb7fa3651 100644
---- a/drivers/pci/pci-acpi.c
-+++ b/drivers/pci/pci-acpi.c
-@@ -1043,6 +1043,28 @@ bool acpi_pci_bridge_d3(struct pci_dev *dev)
- 	return false;
- }
- 
-+/**
-+ * acpi_pci_device_constraint - determine if the platform has a contraint for the device
-+ * @dev: PCI device to check
-+ * @result (out): the constraint specified by the platform
-+ *
-+ * If the platform has specified a constraint for a device, this function will
-+ * return 0 and set @result to the constraint.
-+ * Otherwise, it will return an error code.
-+ */
-+int acpi_pci_device_constraint(struct pci_dev *dev, int *result)
-+{
-+	int constraint;
-+
-+	constraint = acpi_get_lps0_constraint(&dev->dev);
-+	pci_dbg(dev, "ACPI device constraint: %d\n", constraint);
-+	if (constraint < 0)
-+		return constraint;
-+	*result = constraint;
-+
-+	return 0;
-+}
-+
- static void acpi_pci_config_space_access(struct pci_dev *dev, bool enable)
- {
- 	int val = enable ? ACPI_REG_CONNECT : ACPI_REG_DISCONNECT;
-diff --git a/drivers/pci/pci.c b/drivers/pci/pci.c
-index 60230da957e0c..6c70f921467c6 100644
---- a/drivers/pci/pci.c
-+++ b/drivers/pci/pci.c
-@@ -1082,6 +1082,14 @@ static inline bool platform_pci_bridge_d3(struct pci_dev *dev)
- 	return acpi_pci_bridge_d3(dev);
- }
- 
-+static inline int platform_get_constraint(struct pci_dev *dev, int *result)
-+{
-+	if (pci_use_mid_pm())
-+		return -ENODEV;
-+
-+	return acpi_pci_device_constraint(dev, result);
-+}
-+
- /**
-  * pci_update_current_state - Read power state of given device and cache it
-  * @dev: PCI device to handle.
-@@ -2671,6 +2679,8 @@ EXPORT_SYMBOL(pci_wake_from_d3);
-  */
- static pci_power_t pci_target_state(struct pci_dev *dev, bool wakeup)
- {
-+	int val;
-+
- 	if (platform_pci_power_manageable(dev)) {
- 		/*
- 		 * Call the platform to find the target state for the device.
-@@ -2691,6 +2701,10 @@ static pci_power_t pci_target_state(struct pci_dev *dev, bool wakeup)
- 		return state;
- 	}
- 
-+	/* if platform indicates in a device constraint, use it */
-+	if (!platform_get_constraint(dev, &val))
-+		return val;
-+
- 	/*
- 	 * If the device is in D3cold even though it's not power-manageable by
- 	 * the platform, it may have been powered down by non-standard means.
-diff --git a/drivers/pci/pci.h b/drivers/pci/pci.h
-index a4c3974340576..8001f34ec535b 100644
---- a/drivers/pci/pci.h
-+++ b/drivers/pci/pci.h
-@@ -707,6 +707,7 @@ void pci_set_acpi_fwnode(struct pci_dev *dev);
- int pci_dev_acpi_reset(struct pci_dev *dev, bool probe);
- bool acpi_pci_power_manageable(struct pci_dev *dev);
- bool acpi_pci_bridge_d3(struct pci_dev *dev);
-+int acpi_pci_device_constraint(struct pci_dev *dev, int *result);
- int acpi_pci_set_power_state(struct pci_dev *dev, pci_power_t state);
- pci_power_t acpi_pci_get_power_state(struct pci_dev *dev);
- void acpi_pci_refresh_power_state(struct pci_dev *dev);
-@@ -731,6 +732,10 @@ static inline bool acpi_pci_bridge_d3(struct pci_dev *dev)
- {
- 	return false;
- }
-+static inline int acpi_pci_device_constraint(struct pci_dev *dev, int *result)
-+{
-+	return -ENODEV;
-+}
- static inline int acpi_pci_set_power_state(struct pci_dev *dev, pci_power_t state)
- {
- 	return -ENODEV;
-diff --git a/include/linux/acpi.h b/include/linux/acpi.h
-index 0d5277b7c6323..024075cce09e5 100644
---- a/include/linux/acpi.h
-+++ b/include/linux/acpi.h
-@@ -1100,7 +1100,7 @@ void acpi_os_set_prepare_extended_sleep(int (*func)(u8 sleep_state,
- 
- acpi_status acpi_os_prepare_extended_sleep(u8 sleep_state,
- 					   u32 val_a, u32 val_b);
--#ifdef CONFIG_X86
-+#if defined(CONFIG_ACPI_SLEEP) && defined(CONFIG_X86)
- struct acpi_s2idle_dev_ops {
- 	struct list_head list_node;
- 	void (*prepare)(void);
-@@ -1109,7 +1109,13 @@ struct acpi_s2idle_dev_ops {
- };
- int acpi_register_lps0_dev(struct acpi_s2idle_dev_ops *arg);
- void acpi_unregister_lps0_dev(struct acpi_s2idle_dev_ops *arg);
--#endif /* CONFIG_X86 */
-+int acpi_get_lps0_constraint(struct device *dev);
-+#else
-+static inline int acpi_get_lps0_constraint(struct device *dev)
-+{
-+	return false;
-+}
-+#endif /* CONFIG_ACPI_SLEEP && CONFIG_X86 */
- #ifndef CONFIG_IA64
- void arch_reserve_mem_area(acpi_physical_address addr, size_t size);
- #else
--- 
-2.34.1
-
+SGkgTmVpbCwNCg0KVGhhbmtzIGZvciB5b3VyIGNvbW1lbnRzLA0KIA0KPiANCj4gSGksDQo+IA0K
+PiBPbiAyNi8wNy8yMDIzIDAzOjQ4LCBTYW5kb3IgWXUgd3JvdGU6DQo+ID4gVGhlIEVMRCAoRURJ
+RC1MaWtlIERhdGEpIGlzIG5vdCB1cGRhdGVkIHdoZW4gdGhlIEhETUkgY2FibGUgaXMgcGx1Z2dl
+ZA0KPiA+IGludG8gZGlmZmVyZW50IEhETUkgbW9uaXRvcnMuDQo+ID4gVGhpcyBpcyBiZWNhdXNl
+IHRoZSBFRElEIGlzIG5vdCB1cGRhdGVkIGluIHRoZSBIRE1JIEhQRCBmdW5jdGlvbi4NCj4gPiBB
+cyBhIHJlc3VsdCwgdGhlIEVMRCBkYXRhIHJlbWFpbnMgdW5jaGFuZ2VkIGFuZCBtYXkgbm90IHJl
+ZmxlY3QgdGhlDQo+ID4gY2FwYWJpbGl0aWVzIG9mIHRoZSBuZXdseSBjb25uZWN0ZWQgSERNSSBz
+aW5rIGRldmljZS4NCj4gPg0KPiA+IFRvIGFkZHJlc3MgdGhpcyBpc3N1ZSwgdGhlIGhhbmRsZV9w
+bHVnZ2VkX2NoYW5nZSBmdW5jdGlvbiBzaG91bGQgbW92ZQ0KPiA+IHRvIHRoZSBicmlkZ2VfYXRv
+bWljX2VuYWJsZSBhbmQgYnJpZGdlX2F0b21pY19kaXNhYmxlIGZ1bmN0aW9ucy4NCj4gPiBNYWtl
+IHN1cmUgdGhlIEVESUQgaXMgcHJvcGVybHkgdXBkYXRlZCBiZWZvcmUgdXBkYXRpbmcgRUxELg0K
+PiA+DQo+ID4gU2lnbmVkLW9mZi1ieTogU2FuZG9yIFl1IDxTYW5kb3IueXVAbnhwLmNvbT4NCj4g
+PiAtLS0NCj4gPiAgIGRyaXZlcnMvZ3B1L2RybS9icmlkZ2Uvc3lub3BzeXMvZHctaGRtaS5jIHwg
+MjEgKysrKy0tLS0tLS0tLS0tLS0tLS0tDQo+ID4gICAxIGZpbGUgY2hhbmdlZCwgNCBpbnNlcnRp
+b25zKCspLCAxNyBkZWxldGlvbnMoLSkNCj4gPg0KPiA+IGRpZmYgLS1naXQgYS9kcml2ZXJzL2dw
+dS9kcm0vYnJpZGdlL3N5bm9wc3lzL2R3LWhkbWkuYw0KPiA+IGIvZHJpdmVycy9ncHUvZHJtL2Jy
+aWRnZS9zeW5vcHN5cy9kdy1oZG1pLmMNCj4gPiBpbmRleCA5YTNkYjUyMzRhMGUwLi42ZmE0ODQ4
+NTkxMjI2IDEwMDY0NA0KPiA+IC0tLSBhL2RyaXZlcnMvZ3B1L2RybS9icmlkZ2Uvc3lub3BzeXMv
+ZHctaGRtaS5jDQo+ID4gKysrIGIvZHJpdmVycy9ncHUvZHJtL2JyaWRnZS9zeW5vcHN5cy9kdy1o
+ZG1pLmMNCj4gPiBAQCAtMTk2LDcgKzE5Niw2IEBAIHN0cnVjdCBkd19oZG1pIHsNCj4gPg0KPiA+
+ICAgICAgIGhkbWlfY29kZWNfcGx1Z2dlZF9jYiBwbHVnZ2VkX2NiOw0KPiA+ICAgICAgIHN0cnVj
+dCBkZXZpY2UgKmNvZGVjX2RldjsNCj4gPiAtICAgICBlbnVtIGRybV9jb25uZWN0b3Jfc3RhdHVz
+IGxhc3RfY29ubmVjdG9yX3Jlc3VsdDsNCj4gPiAgIH07DQo+ID4NCj4gPiAgICNkZWZpbmUgSERN
+SV9JSF9QSFlfU1RBVDBfUlhfU0VOU0UgXCBAQCAtMjM1LDcgKzIzNCw3IEBAIGludA0KPiA+IGR3
+X2hkbWlfc2V0X3BsdWdnZWRfY2Ioc3RydWN0IGR3X2hkbWkgKmhkbWksIGhkbWlfY29kZWNfcGx1
+Z2dlZF9jYg0KPiBmbiwNCj4gPiAgICAgICBtdXRleF9sb2NrKCZoZG1pLT5tdXRleCk7DQo+ID4g
+ICAgICAgaGRtaS0+cGx1Z2dlZF9jYiA9IGZuOw0KPiA+ICAgICAgIGhkbWktPmNvZGVjX2RldiA9
+IGNvZGVjX2RldjsNCj4gPiAtICAgICBwbHVnZ2VkID0gaGRtaS0+bGFzdF9jb25uZWN0b3JfcmVz
+dWx0ID09DQo+IGNvbm5lY3Rvcl9zdGF0dXNfY29ubmVjdGVkOw0KPiA+ICsgICAgIHBsdWdnZWQg
+PSBoZG1pLT5jb25uZWN0b3Iuc3RhdHVzID09IGNvbm5lY3Rvcl9zdGF0dXNfY29ubmVjdGVkOw0K
+PiANCj4gUGxlYXNlIHVzZSBjdXJyX2Nvbm4gaW5zdGVhZCwgY29ubmVjdG9yIGlzIG5vdCBhbHdh
+eXMgdmFsaWQuDQpjdXJyX2Nvbm4gaXMgTlVMTCB3aGVuIGR3X2hkbWlfc2V0X3BsdWdnZWRfY2Ig
+aXMgY2FsbGVkIGJ5IGR3X2hkbWlfYnJpZGdlX2F0b21pY19kaXNhYmxlLg0KSSB3aWxsIGFkZCB0
+aGUgdmFyaWFibGUgb2YgbGFzdF9jb25uZWN0b3JfcmVzdWwgYmFjayB0byBkcml2ZXIgbGF0ZXIu
+DQoNCkIuUg0KU2FuZG9yIA0KPiANCj4gPiAgICAgICBoYW5kbGVfcGx1Z2dlZF9jaGFuZ2UoaGRt
+aSwgcGx1Z2dlZCk7DQo+ID4gICAgICAgbXV0ZXhfdW5sb2NrKCZoZG1pLT5tdXRleCk7DQo+ID4N
+Cj4gPiBAQCAtMjQ0NiwyMCArMjQ0NSw3IEBAIHN0YXRpYyB2b2lkIGR3X2hkbWlfdXBkYXRlX3Bo
+eV9tYXNrKHN0cnVjdA0KPiA+IGR3X2hkbWkgKmhkbWkpDQo+ID4NCj4gPiAgIHN0YXRpYyBlbnVt
+IGRybV9jb25uZWN0b3Jfc3RhdHVzIGR3X2hkbWlfZGV0ZWN0KHN0cnVjdCBkd19oZG1pDQo+ICpo
+ZG1pKQ0KPiA+ICAgew0KPiA+IC0gICAgIGVudW0gZHJtX2Nvbm5lY3Rvcl9zdGF0dXMgcmVzdWx0
+Ow0KPiA+IC0NCj4gPiAtICAgICByZXN1bHQgPSBoZG1pLT5waHkub3BzLT5yZWFkX2hwZChoZG1p
+LCBoZG1pLT5waHkuZGF0YSk7DQo+ID4gLQ0KPiA+IC0gICAgIG11dGV4X2xvY2soJmhkbWktPm11
+dGV4KTsNCj4gPiAtICAgICBpZiAocmVzdWx0ICE9IGhkbWktPmxhc3RfY29ubmVjdG9yX3Jlc3Vs
+dCkgew0KPiA+IC0gICAgICAgICAgICAgZGV2X2RiZyhoZG1pLT5kZXYsICJyZWFkX2hwZCByZXN1
+bHQ6ICVkIiwgcmVzdWx0KTsNCj4gPiAtICAgICAgICAgICAgIGhhbmRsZV9wbHVnZ2VkX2NoYW5n
+ZShoZG1pLA0KPiA+IC0gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHJlc3VsdCA9
+PQ0KPiBjb25uZWN0b3Jfc3RhdHVzX2Nvbm5lY3RlZCk7DQo+ID4gLSAgICAgICAgICAgICBoZG1p
+LT5sYXN0X2Nvbm5lY3Rvcl9yZXN1bHQgPSByZXN1bHQ7DQo+ID4gLSAgICAgfQ0KPiA+IC0gICAg
+IG11dGV4X3VubG9jaygmaGRtaS0+bXV0ZXgpOw0KPiA+IC0NCj4gPiAtICAgICByZXR1cm4gcmVz
+dWx0Ow0KPiA+ICsgICAgIHJldHVybiBoZG1pLT5waHkub3BzLT5yZWFkX2hwZChoZG1pLCBoZG1p
+LT5waHkuZGF0YSk7DQo+ID4gICB9DQo+ID4NCj4gPiAgIHN0YXRpYyBzdHJ1Y3QgZWRpZCAqZHdf
+aGRtaV9nZXRfZWRpZChzdHJ1Y3QgZHdfaGRtaSAqaGRtaSwgQEANCj4gPiAtMjk1OCw2ICsyOTQ0
+LDcgQEAgc3RhdGljIHZvaWQgZHdfaGRtaV9icmlkZ2VfYXRvbWljX2Rpc2FibGUoc3RydWN0DQo+
+IGRybV9icmlkZ2UgKmJyaWRnZSwNCj4gPiAgICAgICBoZG1pLT5jdXJyX2Nvbm4gPSBOVUxMOw0K
+PiA+ICAgICAgIGR3X2hkbWlfdXBkYXRlX3Bvd2VyKGhkbWkpOw0KPiA+ICAgICAgIGR3X2hkbWlf
+dXBkYXRlX3BoeV9tYXNrKGhkbWkpOw0KPiA+ICsgICAgIGhhbmRsZV9wbHVnZ2VkX2NoYW5nZSho
+ZG1pLCBmYWxzZSk7DQo+ID4gICAgICAgbXV0ZXhfdW5sb2NrKCZoZG1pLT5tdXRleCk7DQo+ID4g
+ICB9DQo+ID4NCj4gPiBAQCAtMjk3Niw2ICsyOTYzLDcgQEAgc3RhdGljIHZvaWQNCj4gZHdfaGRt
+aV9icmlkZ2VfYXRvbWljX2VuYWJsZShzdHJ1Y3QgZHJtX2JyaWRnZSAqYnJpZGdlLA0KPiA+ICAg
+ICAgIGhkbWktPmN1cnJfY29ubiA9IGNvbm5lY3RvcjsNCj4gPiAgICAgICBkd19oZG1pX3VwZGF0
+ZV9wb3dlcihoZG1pKTsNCj4gPiAgICAgICBkd19oZG1pX3VwZGF0ZV9waHlfbWFzayhoZG1pKTsN
+Cj4gPiArICAgICBoYW5kbGVfcGx1Z2dlZF9jaGFuZ2UoaGRtaSwgdHJ1ZSk7DQo+ID4gICAgICAg
+bXV0ZXhfdW5sb2NrKCZoZG1pLT5tdXRleCk7DQo+ID4gICB9DQo+ID4NCj4gPiBAQCAtMzM2OSw3
+ICszMzU3LDYgQEAgc3RydWN0IGR3X2hkbWkgKmR3X2hkbWlfcHJvYmUoc3RydWN0DQo+IHBsYXRm
+b3JtX2RldmljZSAqcGRldiwNCj4gPiAgICAgICBoZG1pLT5yeHNlbnNlID0gdHJ1ZTsNCj4gPiAg
+ICAgICBoZG1pLT5waHlfbWFzayA9ICh1OCl+KEhETUlfUEhZX0hQRCB8DQo+IEhETUlfUEhZX1JY
+X1NFTlNFKTsNCj4gPiAgICAgICBoZG1pLT5tY19jbGtkaXMgPSAweDdmOw0KPiA+IC0gICAgIGhk
+bWktPmxhc3RfY29ubmVjdG9yX3Jlc3VsdCA9IGNvbm5lY3Rvcl9zdGF0dXNfZGlzY29ubmVjdGVk
+Ow0KPiA+DQo+ID4gICAgICAgbXV0ZXhfaW5pdCgmaGRtaS0+bXV0ZXgpOw0KPiA+ICAgICAgIG11
+dGV4X2luaXQoJmhkbWktPmF1ZGlvX211dGV4KTsNCj4gDQo+IFRoYW5rcywNCj4gTmVpbA0KDQo=
