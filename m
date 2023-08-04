@@ -2,141 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9653076FF69
+	by mail.lfdr.de (Postfix) with ESMTP id 4C13076FF68
 	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 13:23:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229815AbjHDLXf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Aug 2023 07:23:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38528 "EHLO
+        id S229834AbjHDLXh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Aug 2023 07:23:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38538 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230145AbjHDLXZ (ORCPT
+        with ESMTP id S230158AbjHDLX0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Aug 2023 07:23:25 -0400
-Received: from EUR05-DB8-obe.outbound.protection.outlook.com (mail-db8eur05on2041.outbound.protection.outlook.com [40.107.20.41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3BD4C11B;
-        Fri,  4 Aug 2023 04:23:24 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=VgpmMjQJ7GgoB5VA3rYleH/07TApfSsJpSs1vV0/66QTKTAq7EU02DRQVeL3iyGzGC1mqL2a2Z1ohaH03SXkaLPQdhNvUPxJUi3h4n9xLhtw6Ydc+IumvePURXvA0Kw1n0kgQvce1pZdT+jpgUufWWPLXHxZXfyPm+jNpZYs6nfmX27yeaC3e9Nj+x1/CMpSqTVWY4IjjbZh3SneY3YtDQ174n4Iyr6weEH+dewE0Tn9KmHkPPNPj5IwTrrMr8VJDpCeGmjM86PUYaz1Z7C7wkcwInILBBMCfI8UMuvA8vsFiN6STKM5H8GT5WzuyOyai65IaGdr01C1zj8DZwVmdQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=Vpva6H/WX4nNEtyd9z8f+zfvIpnlZwf99+l2CohkpTc=;
- b=MpKU9FbvuKhbjb0YH0nMGk6mzvJz/hL9nbRrxRWeaLuGAXi1T28d8fX/JhCbG6W2RYGFZJ0yX34Q1BxQnTG9wvc8OIiw48hHfcNUem994QKxNDwBnKHLzUQaMrwXSUBAgN7U2aJGKmC441IaTHD7PQOxmZ6CfMLsrtnsD0T7BtFwvSUhqZUh0IS5E8HtEKJT6WuJrIzbMP9Hgt6NnDBG0fDV2So5CmtSpAFiU2HJYod7L4fOZUMVupwFXc48nnyUU+jktRhuaMguproVHL67gGeTnTSGrrbqYx2MoASHDCTpsatqNkmZpOo768H+tATqhw/maKBm9Vi6Hw4ZYHcejQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=wolfvision.net; dmarc=pass action=none
- header.from=wolfvision.net; dkim=pass header.d=wolfvision.net; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wolfvision.net;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Vpva6H/WX4nNEtyd9z8f+zfvIpnlZwf99+l2CohkpTc=;
- b=jZrTJlqMw6C1A/gTZt8qe+IsC+b3gbVzHqDUYJIxgF8vyMH8+D+IbBIJqVrarRlzG6G6Vb7ZvIKs6srzDd1KA91E4CMREmVlDja2jSNuxSGr5WrqH/oTWVZrRip9DzgbMF6+/Mm1HkuSWRgR/gwR0y79IFvCMk7dEkFDYpNsKzY=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=wolfvision.net;
-Received: from DU0PR08MB9155.eurprd08.prod.outlook.com (2603:10a6:10:416::5)
- by DB5PR08MB10214.eurprd08.prod.outlook.com (2603:10a6:10:4a9::21) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6652.21; Fri, 4 Aug
- 2023 11:23:21 +0000
-Received: from DU0PR08MB9155.eurprd08.prod.outlook.com
- ([fe80::9d1a:4539:a8f8:dd60]) by DU0PR08MB9155.eurprd08.prod.outlook.com
- ([fe80::9d1a:4539:a8f8:dd60%7]) with mapi id 15.20.6631.046; Fri, 4 Aug 2023
- 11:23:21 +0000
-From:   Michael Riesch <michael.riesch@wolfvision.net>
-Date:   Fri, 04 Aug 2023 13:23:10 +0200
-Subject: [PATCH v3 3/3] dt-bindings: display: add rotation property to
- sitronix,st7789v
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20230718-feature-st7789v-v3-3-157d68fb63e2@wolfvision.net>
-References: <20230718-feature-st7789v-v3-0-157d68fb63e2@wolfvision.net>
-In-Reply-To: <20230718-feature-st7789v-v3-0-157d68fb63e2@wolfvision.net>
-To:     Neil Armstrong <neil.armstrong@linaro.org>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Maxime Ripard <mripard@kernel.org>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Sebastian Reichel <sre@kernel.org>,
-        Gerald Loacker <gerald.loacker@wolfvision.net>
-Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org,
-        Conor Dooley <conor.dooley@microchip.com>,
-        Michael Riesch <michael.riesch@wolfvision.net>
-X-Mailer: b4 0.12.2
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1691148197; l=1194;
- i=michael.riesch@wolfvision.net; s=20230425; h=from:subject:message-id;
- bh=51+dgMyblZdHf78k+gy2tvc9DDFORxX5ESbyVNy9IKw=;
- b=wogxheDo6OXh1+f0go41wAED7Pb5aMECwTDeOUGB0BsnMhuzAiXib59aezaLVwRSUdLXl5iun
- h7wGKWVztBABSqjrQEQ7ldGeF/vjGFc62WuUYHWkCeeD2GQ/RM/3EyK
-X-Developer-Key: i=michael.riesch@wolfvision.net; a=ed25519;
- pk=1QQdXA2QbwdxaQn/VQK0hz04C8IBYhDowbK0hlNU4Ng=
-X-ClientProxiedBy: VI1PR07CA0281.eurprd07.prod.outlook.com
- (2603:10a6:803:b4::48) To DU0PR08MB9155.eurprd08.prod.outlook.com
- (2603:10a6:10:416::5)
+        Fri, 4 Aug 2023 07:23:26 -0400
+Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3864611B;
+        Fri,  4 Aug 2023 04:23:26 -0700 (PDT)
+Received: by mail-pf1-x42c.google.com with SMTP id d2e1a72fcca58-686f38692b3so1863006b3a.2;
+        Fri, 04 Aug 2023 04:23:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1691148205; x=1691753005;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=U8v1fzLuIHSkSWidT/pjD4MCOb3hYEoCKe89MymR54k=;
+        b=EKLgrG5ORf5aghlNw/yZjA+YXB/01lu40hRGKKwmY3xByuVcOgIAHBjeowE+M9iDQj
+         c0paVsgZA+tZ+cR8oEzoeT/6xXFA/yFIJrTsbJyCZZVYys0aOgRk/7TnynSQRRSYv3HA
+         f3CwO8S70ebKKbOe/EGn9TIwvw64I2W3nlAQW1tEfyrMqrtpsuhqA/O+TWpTSBK3McYc
+         HuGQYH1AHGSuRt5GvJCkOfYGm+UUi1tNok7ZujDvjHwmB31xJ0U/FOxvMBjfZztM8Pvx
+         QsVNp0DzUl0JygnFrKIhzqpkO59kh1lpY32OT8l65LMn4UMxlwT8o8uX59dJuGosyWVW
+         u0BA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691148205; x=1691753005;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=U8v1fzLuIHSkSWidT/pjD4MCOb3hYEoCKe89MymR54k=;
+        b=NAK6FkUnQcHcsYvF+xiHUqmLfoRbKKUwYTbtQhJTXvPBq/jK+sIu/vJ3FrFPS+i412
+         Uagcbg5pi93t0w+xmdzEDzN7FxXK78F/RFWg8MBpUgJTPKNhkRY3RMvzI4IlYLnn7ji1
+         rBg++dZsbF8CemUV3O0CitEbT1A6TfTorP/d5Kjk2WsjX6sg1UBLVk/cEJKPRoKQJJO0
+         L/e9y0/M9d6RB6PifbP/zLKwKl9i7cKnmUn8nxD27ykKUPRlApYI4iMNFH4fQCx/v55K
+         VDXMVx4Q1DubjlIbPDTxc4S1BKlxu5oJFkO6sVsbTGSUSuahJq11nra2XcsNLgUrvkZx
+         F6AQ==
+X-Gm-Message-State: AOJu0YwXhIkzg0KbOKZm2HdRNs5pUTM9ta2G7Pz6fuvn704TUOCbozJ5
+        4synE0V4PLCc3dNHTENIHe7cROibuwE=
+X-Google-Smtp-Source: AGHT+IGv/8f7lL56IGOF+b2qMIMq4UqHSYAXxVDH+amKA6L/tzNx2OpzCmn5wKbRokq53BV+pI7K1g==
+X-Received: by 2002:a05:6a00:1409:b0:67a:a906:9edb with SMTP id l9-20020a056a00140900b0067aa9069edbmr1575297pfu.30.1691148205499;
+        Fri, 04 Aug 2023 04:23:25 -0700 (PDT)
+Received: from ubuntu777.domain.name (36-228-73-13.dynamic-ip.hinet.net. [36.228.73.13])
+        by smtp.gmail.com with ESMTPSA id j16-20020a62e910000000b006687b4f2044sm1394890pfh.164.2023.08.04.04.23.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 04 Aug 2023 04:23:25 -0700 (PDT)
+From:   Min-Hua Chen <minhuadotchen@gmail.com>
+To:     Hu Haowen <src.res@email.cn>, Jonathan Corbet <corbet@lwn.net>
+Cc:     Min-Hua Chen <minhuadotchen@gmail.com>,
+        linux-doc-tw-discuss@lists.sourceforge.net,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] docs: sparse: fix invalid link addresses
+Date:   Fri,  4 Aug 2023 19:23:18 +0800
+Message-Id: <20230804112320.35592-1-minhuadotchen@gmail.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DU0PR08MB9155:EE_|DB5PR08MB10214:EE_
-X-MS-Office365-Filtering-Correlation-Id: 4a23ffec-bafa-47e4-f732-08db94dd35dc
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 2kRz4OlHSeVncYP5KMFWMKexhS27+knV+zcWHGjZCvP7CwoXJRo3oJQgA/5oZFryTzs3pSdqpbBt4f+03Ozoq0LIVthyeEGSpAcrC1eUebYnjsgcpVKXkt4r3ml8GQicHow74Yc4pAW99OVxZ6VwP8izUGiPRzVxJIXsjCV1LdUXWuwDSVLWFonFMn7PrcWVqMEagr8YksA8AL1lpfErSy9snAh9jpPerIhMALSY6nlVMjiFbsDCHR+VvVANfGbV20PG4RSnhA2cgWSOaMdLIdKfpfVKnGo0f6FPzn8pHG9WAkZxACOabL9XYckugQc4SnlV+dw0RtZXXioQnJo1hEsoIfSzHTrbSxMKBSf9P5vhWvhFfnKbjgcHfztvqy8DLODEkAagL0qKsJYDOwiWc3DDkHAy7NRj48WWGB6ydYG2qhcEyZO8NECf5395xYsZlHD1sx63BzdHwhCHvNNMMzQgMM0fuR41e9NZ0+EF3VSXfc5MWF07VzkRUueeOqmXmSURnpiZSNXOtT+enF6000c+lE531OyLvXX42l1omW06imuZ9CVDcnQRpAFnc99KjzptvfLid5RrzEGd5DpBKHAk4s6jdaQayiUPJOXbyieEItPF/0OJAs0/K10JenHJD3tdq1tOGUWqXEfdfnwpLQ==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DU0PR08MB9155.eurprd08.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(136003)(376002)(39840400004)(366004)(346002)(396003)(451199021)(186006)(1800799003)(52116002)(6666004)(6486002)(6512007)(86362001)(6506007)(26005)(107886003)(36756003)(2616005)(38100700002)(38350700002)(921005)(5660300002)(41300700001)(8936002)(8676002)(6636002)(4326008)(2906002)(66556008)(66476007)(66946007)(316002)(7416002)(478600001)(44832011)(110136005)(54906003);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?NVVxWHlIS2JlRDZ0Zy9acmZ0NXZua1ZjcFp6cHZyKzR2WnI4OEJQKzM3VmNH?=
- =?utf-8?B?MVpOeEt0THM0MEFQWGk3NTdpaTVuUU1GQVdKc0dsMjV2V0RYYmNkRFMwSGZ6?=
- =?utf-8?B?S3JQVjNNTTc5UUpJQTJoQUJ0dGNMME5LZkhSOFpWZklUendHcFdmK1BWaUJr?=
- =?utf-8?B?alRET2tlUitOalByNjBFUWNnT3UvM0NteU5xMk1PWDJTUUp5Sm4vaVdMSklh?=
- =?utf-8?B?eEV6OGo3ajJBb2RIR25qeWFPSCs4eHg2TG1WVTBPanRhZjlmSzk0UG5hU2pU?=
- =?utf-8?B?ZExaajlVdzZnRVQxMlN5Snc0STUxVnRhcThsV0pJbTgwenQxZTYyRkJhaWhU?=
- =?utf-8?B?cUtYaml6T2hRdGUycnNsL0lKZFd0L0dFazA3WSt1UWMzRHphQ3R0cmJhZTVD?=
- =?utf-8?B?aDFHM3NCYVBHZ2dkME1UT0R6TXlYZzVMMEhCUHRJYlAyV0wzQVA1aERPRC9i?=
- =?utf-8?B?RitITU5xNndUd0poL0FGbDRPdXRmRjU2bys5SnNVMHFWRFh4TlB3cUJ5eUxK?=
- =?utf-8?B?V3pVeGtxdHBoTXFlbTUxMkI5eFZQVHhMeDdPeTAxd2xrQWxEcnpCQmIzbzdi?=
- =?utf-8?B?MFJLQWxPWGQrcU9ZMWpoODhveDlzVzhYTi9vUGdhVHorNXRwQlpqWi9PaFcz?=
- =?utf-8?B?OUFyMjJXZ0Z2UzB6N001aDRzZTZzeFB5RUVTakhMYURHb3A4ZWpFR25HV0hv?=
- =?utf-8?B?Q2diQytwWjNIZVluSzdpTzJVNkpqWkhueWZCZmpqTUN4VktjNERjT0svN3lm?=
- =?utf-8?B?QURoRWtLVG5oK0RSZkwvM3RsbThOOEVYcnNBZmlyKzNoTi9yWGZYWFBycm9U?=
- =?utf-8?B?ZEdhd1FvTFhqUHZXRFNlc0c0OHl6QXJSaVRZbDFxNFhKOVUvckIvd0tldGFm?=
- =?utf-8?B?M1VLd0xaLzgxTm1ISW9GK21YK2dGTWtrYkpqS2ppNndjdzZDenZQWEVoOXN5?=
- =?utf-8?B?V2ZONlVQVU1mcndVM3NCMXIrcUpBaTlNOWp4MDJxdG5aTVpoVDMzd0o5NUhx?=
- =?utf-8?B?Uk5BUWxxOEFJbG02S0lhRVZvaGk5SFA4dkNSUlNlY3hVd0JBUCtKVXVHWjdH?=
- =?utf-8?B?NlJBL3Rsa01ZWFFuU3BaYlRCRjM4ZXhjUjFBendIaTRtQ3NBMkt1aHJEUEsx?=
- =?utf-8?B?YTk0WEMvcThiR2I2TFhDR2xUck9vRzE2U2Y0N01US1NqeGxPV1d5QXRHc1c2?=
- =?utf-8?B?amNENWg1VVZRSkQrWUlWQmRqcTZyNnJnTzZOMmJVTjludG4rby9yRVBpZnVB?=
- =?utf-8?B?R1FHcEZ5WXVqT0RzUi82akF5QnpTczFKWFNLUHVINHlQMTM4K2tlODlEMWxa?=
- =?utf-8?B?UWYydTVDa2MwSEpoOTcrZE83dUcrTVplQ2RTMHZGd1VFb2RWeUpKS2lBYnI5?=
- =?utf-8?B?N1dXNllNTnErbmVBT1lXVVdkVW5BNC9SK2NlVGNuSFNiNDlaZkxuRW01SEcw?=
- =?utf-8?B?Q1dQTk5aWFR2Z3FyeFBYejBBaG5OOWFoZHA0MU5nMWpHWml5MkZSdHc0bGNo?=
- =?utf-8?B?V0M4amRXR0hjcFVOQkxSNE1qMTdZdXVQTjlYZ3pULzhVNi9mU2cyZHFHSmNq?=
- =?utf-8?B?VjdKeWUydmlhSDZjUEJmbkFSQlNKRW5JSXVPa29IajZDY1kvT0E3V0g2TGtt?=
- =?utf-8?B?RlFJZS9yWG8rQjBmd3VzRTN2MUtFOE5NMWFFMkZxNWozMHJKZVdnczNJZFAy?=
- =?utf-8?B?aFpsSnc4aGxOcGcwd0pFMm5DZWFYUzlpOStiNE1Xb0tJV0NkU0IyR1o4eG12?=
- =?utf-8?B?a3NxMEJRNHNXQzBJOWRmcjkzMmxnRDA1QUc4anNLWmF6SllDYjJJdC9jTnJO?=
- =?utf-8?B?U3pta3Mrai9wQTBiZThlc0pub083L2ZrMFFudjEwNElEN2k2ZDUwV2lOa0x3?=
- =?utf-8?B?RjhWeEp4ek81Z3NkeGt4Ukw1WENlL25GcXdUaGp4QWZGSFFwcktGcFlpc2Nq?=
- =?utf-8?B?WE9GSS9pNE1EZjNyaXd1VllpMjl5dDJTdHI3eDNJOEhNMFZGSUhkVjhMY253?=
- =?utf-8?B?OTNaOVRlVHB2ajYwNnI4ZXdwL2VTVU0wSkFKZml4bmdPZytqTW1KYmw1c3pN?=
- =?utf-8?B?Y2c2RzdlV0pINFhXK3RBMFVBRmVkRHdCandkYzdmMzJQWVB2OGhYc1VoT1gx?=
- =?utf-8?B?WnNhbjhhNGV4NHpkRm9LM3RNMkJkbEd6VlFuQUx2Ung3Q2NJMWlidysxd3U2?=
- =?utf-8?B?dGc9PQ==?=
-X-OriginatorOrg: wolfvision.net
-X-MS-Exchange-CrossTenant-Network-Message-Id: 4a23ffec-bafa-47e4-f732-08db94dd35dc
-X-MS-Exchange-CrossTenant-AuthSource: DU0PR08MB9155.eurprd08.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 Aug 2023 11:23:21.6372
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: e94ec9da-9183-471e-83b3-51baa8eb804f
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 0lGE5Xj5zTkwZwP/wsylZYaC4zG3v4kLc5OgL+2w3jlwJ6fFWkdpgQdYFTnJqVup6ZvN9NPtKT35cgY3DWwLoBsvhoZtidvmu5Nler13QXY=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB5PR08MB10214
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED autolearn=ham
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -144,37 +71,31 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The sitronix-st7789v driver now considers the rotation property.
-Add the property to the documentation.
+The http and git links are invalid, replace them with valid links.
 
-Acked-by: Conor Dooley <conor.dooley@microchip.com>
-Reviewed-by: Sebastian Reichel <sre@kernel.org>
-Signed-off-by: Michael Riesch <michael.riesch@wolfvision.net>
+Signed-off-by: Min-Hua Chen <minhuadotchen@gmail.com>
 ---
- Documentation/devicetree/bindings/display/panel/sitronix,st7789v.yaml | 2 ++
- 1 file changed, 2 insertions(+)
+ Documentation/translations/zh_TW/sparse.txt | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/display/panel/sitronix,st7789v.yaml b/Documentation/devicetree/bindings/display/panel/sitronix,st7789v.yaml
-index 905c064cd106..0da4c7e05097 100644
---- a/Documentation/devicetree/bindings/display/panel/sitronix,st7789v.yaml
-+++ b/Documentation/devicetree/bindings/display/panel/sitronix,st7789v.yaml
-@@ -25,6 +25,7 @@ properties:
-   power-supply: true
-   backlight: true
-   port: true
-+  rotation: true
+diff --git a/Documentation/translations/zh_TW/sparse.txt b/Documentation/translations/zh_TW/sparse.txt
+index c9acb2c926cb..6d2d088b1060 100644
+--- a/Documentation/translations/zh_TW/sparse.txt
++++ b/Documentation/translations/zh_TW/sparse.txt
+@@ -66,11 +66,11 @@ __bitwise"類型。
  
-   spi-cpha: true
-   spi-cpol: true
-@@ -58,6 +59,7 @@ examples:
-             reset-gpios = <&pio 6 11 GPIO_ACTIVE_LOW>;
-             backlight = <&pwm_bl>;
-             power-supply = <&power>;
-+            rotation = <180>;
-             spi-max-frequency = <100000>;
-             spi-cpol;
-             spi-cpha;
-
+ 你可以從 Sparse 的主頁獲取最新的發布版本：
+ 
+-	http://www.kernel.org/pub/linux/kernel/people/josh/sparse/
++	https://www.kernel.org/pub/software/devel/sparse/dist/
+ 
+ 或者，你也可以使用 git 克隆最新的 sparse 開發版本：
+ 
+-	git://git.kernel.org/pub/scm/linux/kernel/git/josh/sparse.git
++        git://git.kernel.org/pub/scm/devel/sparse/sparse.git
+ 
+ 一旦你下載了源碼，只要以普通用戶身份運行：
+ 
 -- 
-2.37.2
+2.34.1
 
