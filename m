@@ -2,125 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 810EC7701E9
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 15:36:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E14137701EA
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 15:36:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231235AbjHDNgD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Aug 2023 09:36:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48736 "EHLO
+        id S231264AbjHDNgF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Aug 2023 09:36:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48202 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231231AbjHDNfq (ORCPT
+        with ESMTP id S231348AbjHDNfs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Aug 2023 09:35:46 -0400
-Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B8C54EE6
-        for <linux-kernel@vger.kernel.org>; Fri,  4 Aug 2023 06:35:15 -0700 (PDT)
-Received: by mail-wr1-x42d.google.com with SMTP id ffacd0b85a97d-3177163aa97so1827019f8f.0
-        for <linux-kernel@vger.kernel.org>; Fri, 04 Aug 2023 06:35:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1691156113; x=1691760913;
-        h=content-transfer-encoding:in-reply-to:organization:references:cc:to
-         :content-language:subject:reply-to:from:user-agent:mime-version:date
-         :message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=IL2AJxGdbMBYZwQaiXV29t4KoXB7Jg7IkcgZUQkDNUI=;
-        b=epRCAO2yPXPwYvAi1GgZHCKhfv84DCIM9+99WK1/2c9TlslGxxkNgeDjIrUAeN/Fe6
-         1k06bF5r89HcVt/6oaA44RPf6X/u7qpIgb/kQenNO+5p+wssn84D6xNPjnCC1QI6U30O
-         IpocouGfOvOJh/0FAA95TDyT3iEgB34Oj97lzXX/OoaUKZCWHb1zhUy0dJzm72hKKhHX
-         wynRKMo9C5H6+b4tY9tvLYnkdHFvNi9F0trQdtVfIEfPwYL9PBD7J3EecIpPME3Dhwof
-         sFfIoKxCFXLT5AIYD10vSb5BPpNbBlgT83Mr6Hxu8tou3htUcQMLIeu7ALw+4VVYKC4j
-         Deww==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691156113; x=1691760913;
-        h=content-transfer-encoding:in-reply-to:organization:references:cc:to
-         :content-language:subject:reply-to:from:user-agent:mime-version:date
-         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=IL2AJxGdbMBYZwQaiXV29t4KoXB7Jg7IkcgZUQkDNUI=;
-        b=WURBPG1fWT3mQLrIkOX/fhQq+G8waAlhR4I3UAOlPYD00ZpWRvVnrx6V1AJGpwsyYb
-         Z55q8K9ukZM+x1ckOVlTHYUQgGnA1JFbR9j/YAgPv2utAHSDLrVEQJ2+vnWuoY8xtSde
-         rZ7uoHJAyCIFDeb8ollSXqNSxArynVONaJbvOqrJyVUUGNWeqHummWd9EtKsykOtFWTB
-         oRGq9VsgO0fuQewFn0Be1i/sVDY+gjmr5H/wYHHBV1rdzWyIGplNQh2l72cL6SAfbQPg
-         bmIPaVdKbJyUCuqWOwKpz9kd+3xpj3NPmaJp7oge9Xq/W+XqyuH2Zo3nb/xa0T3um4Hb
-         ZmiQ==
-X-Gm-Message-State: AOJu0YzRTGc2ykUwhcaEenpWmiYMp4Pt6yEQwa33sR49sKpzJdjPuFgq
-        bqmX2itVIMNlFZ5yKRlc1eYIFw==
-X-Google-Smtp-Source: AGHT+IGFj2WJkLOCSreoMV4op68jFbpcQyR5ma8/Hp/gr6iIaCluzNOhufEIeNmZI5BQspwIpnn97Q==
-X-Received: by 2002:adf:fd03:0:b0:314:36c5:e4c0 with SMTP id e3-20020adffd03000000b0031436c5e4c0mr1472761wrr.11.1691156113348;
-        Fri, 04 Aug 2023 06:35:13 -0700 (PDT)
-Received: from ?IPV6:2a01:e0a:982:cbb0:62a2:ed99:fec9:25cc? ([2a01:e0a:982:cbb0:62a2:ed99:fec9:25cc])
-        by smtp.gmail.com with ESMTPSA id y15-20020adff14f000000b0031766e99429sm2534654wro.115.2023.08.04.06.35.12
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 04 Aug 2023 06:35:12 -0700 (PDT)
-Message-ID: <9adbbde6-a12c-2857-3103-1c012eed6f27@linaro.org>
-Date:   Fri, 4 Aug 2023 15:35:11 +0200
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-From:   Neil Armstrong <neil.armstrong@linaro.org>
-Reply-To: neil.armstrong@linaro.org
-Subject: Re: [PATCH v3 0/3] dt-bindings: second batch of dt-schema conversions
- for Amlogic Meson bindings
-Content-Language: en-US
-To:     Jerome Brunet <jbrunet@baylibre.com>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
+        Fri, 4 Aug 2023 09:35:48 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 689D635AA;
+        Fri,  4 Aug 2023 06:35:17 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 5E8BE62012;
+        Fri,  4 Aug 2023 13:35:16 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 12B48C433C9;
+        Fri,  4 Aug 2023 13:35:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1691156115;
+        bh=55GKLfQUDd7jd/htYCG3E6Mbp9SgTzcWlvaJcSZqRy4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=fYv5dwwduUmp20l4s/RiGDtReNDfaU0i2nKybfHSOEShyjHIZO5UiwcWGoo5NBaiw
+         PnBKGVfC8lZYoXBZP8twEI+49N0QPMrEQp7lRfu9yvFuVqmbmACU2HpLuz3+wXL3ZZ
+         BbB4G0Ewf0xTPeHTJIilW9g9L9iFhEZXtBa7MYKp+i7oMGtyJSnh5qhDcfch2lvhCy
+         z7dUXnMFIJYzxUGeYMm12pA3Pn/qxu+N3xJ2+AOWTK4I4kJD72JoVKASRi/pCmJLgd
+         7yZ20Ep3ZXZv7GQy7KxwlUAC/GpMFX6wCQ+7CJXsTtfjgv/2NDSXLq1s60R4iNugbI
+         2nrtSSP2AQmHQ==
+Date:   Fri, 4 Aug 2023 15:35:12 +0200
+From:   Maxime Ripard <mripard@kernel.org>
+To:     Michael Riesch <michael.riesch@wolfvision.net>
+Cc:     Rob Herring <robh+dt@kernel.org>,
         Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
         Conor Dooley <conor+dt@kernel.org>,
-        Kevin Hilman <khilman@baylibre.com>,
-        Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-Cc:     linux-amlogic@lists.infradead.org, linux-clk@vger.kernel.org,
+        Neil Armstrong <neil.armstrong@linaro.org>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Sebastian Reichel <sre@kernel.org>,
+        Gerald Loacker <gerald.loacker@wolfvision.net>,
         devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, Rob Herring <robh@kernel.org>
-References: <20230706-b4-amlogic-bindings-convert-take2-v3-0-f63de6f12dcc@linaro.org>
-Organization: Linaro Developer Services
-In-Reply-To: <20230706-b4-amlogic-bindings-convert-take2-v3-0-f63de6f12dcc@linaro.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        dri-devel@lists.freedesktop.org
+Subject: Re: [PATCH v2 3/4] drm/panel: sitronix-st7789v: add support for
+ partial mode
+Message-ID: <s3fybvufmrmu4mkksbmbxec25nfkwxp5ts5hfk7pgult2aaoyc@724uq3ei3ch7>
+References: <20230718-feature-lcd-panel-v2-0-2485ca07b49d@wolfvision.net>
+ <20230718-feature-lcd-panel-v2-3-2485ca07b49d@wolfvision.net>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="narolssei6psadaw"
+Content-Disposition: inline
+In-Reply-To: <20230718-feature-lcd-panel-v2-3-2485ca07b49d@wolfvision.net>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jerome,
 
-On 06/07/2023 16:52, Neil Armstrong wrote:
-> Batch conversion of the following bindings:
-> - amlogic,gxbb-clkc.txt
-> - amlogic,gxbb-aoclkc.txt
-> 
+--narolssei6psadaw
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-<snip>
-
-> 
+On Fri, Aug 04, 2023 at 03:02:34PM +0200, Michael Riesch wrote:
+> The ST7789V controller features support for the partial mode. Here,
+> the area to be displayed can be restricted in one direction (by default,
+> in vertical direction). This is useful for panels that are partially
+> occluded by design. Add support for the partial mode.
+>=20
+> Signed-off-by: Michael Riesch <michael.riesch@wolfvision.net>
 > ---
-> Neil Armstrong (3):
->        dt-bindings: clock: amlogic: convert amlogic,gxbb-clkc.txt to dt-schema
->        dt-bindings: clock: amlogic: convert amlogic,gxbb-aoclkc.txt to dt-schema
+>  drivers/gpu/drm/panel/panel-sitronix-st7789v.c | 43 ++++++++++++++++++++=
+++++--
+>  1 file changed, 41 insertions(+), 2 deletions(-)
+>=20
+> diff --git a/drivers/gpu/drm/panel/panel-sitronix-st7789v.c b/drivers/gpu=
+/drm/panel/panel-sitronix-st7789v.c
+> index 0ded72ed2fcd..ebc9a3bd6db3 100644
+> --- a/drivers/gpu/drm/panel/panel-sitronix-st7789v.c
+> +++ b/drivers/gpu/drm/panel/panel-sitronix-st7789v.c
+> @@ -118,6 +118,9 @@ struct st7789_panel_info {
+>  	u32 bus_format;
+>  	u32 bus_flags;
+>  	bool invert_mode;
+> +	bool partial_mode;
+> +	u16 partial_start;
+> +	u16 partial_end;
+>  };
+> =20
+>  struct st7789v {
+> @@ -345,9 +348,14 @@ static enum drm_panel_orientation st7789v_get_orient=
+ation(struct drm_panel *p)
+>  static int st7789v_prepare(struct drm_panel *panel)
+>  {
+>  	struct st7789v *ctx =3D panel_to_st7789v(panel);
+> -	u8 pixel_fmt, polarity;
+> +	u8 mode, pixel_fmt, polarity;
+>  	int ret;
+> =20
+> +	if (!ctx->info->partial_mode)
+> +		mode =3D ST7789V_RGBCTRL_WO;
+> +	else
+> +		mode =3D 0;
+> +
+>  	switch (ctx->info->bus_format) {
+>  	case MEDIA_BUS_FMT_RGB666_1X18:
+>  		pixel_fmt =3D MIPI_DCS_PIXEL_FMT_18BIT;
+> @@ -487,6 +495,37 @@ static int st7789v_prepare(struct drm_panel *panel)
+>  						MIPI_DCS_EXIT_INVERT_MODE));
+>  	}
+> =20
+> +	if (ctx->info->partial_mode) {
+> +		u8 area_data[4] =3D {
+> +			(ctx->info->partial_start >> 8) & 0xff,
+> +			(ctx->info->partial_start >> 0) & 0xff,
+> +			((ctx->info->partial_end - 1) >> 8) & 0xff,
+> +			((ctx->info->partial_end - 1) >> 0) & 0xff,
+> +		};
+> +
+> +		/* Caution: if userspace ever pushes a mode different from the
+> +		 * expected one (i.e., the one advertised by get_modes), we'll
+> +		 * add margins.
+> +		 */
 
-Do you plan to take patches 1 & 2 ?
+The comment format is incorrect. Since Neil applied the patches already,
+please send a patch to fix it.
 
-If you can, it would be simpler if you could take patch 3 in the same batch.
+Looks good to me otherwise, thanks for sticking up with this :)
 
-Thanks,
-Neil
+Maxime
 
->        dt-bindings: soc: amlogic: document System Control registers
-> 
->   .../bindings/clock/amlogic,gxbb-aoclkc.txt         |  64 ---------
->   .../bindings/clock/amlogic,gxbb-aoclkc.yaml        |  85 +++++++++++
->   .../bindings/clock/amlogic,gxbb-clkc.txt           |  53 -------
->   .../bindings/clock/amlogic,gxbb-clkc.yaml          |  37 +++++
->   .../soc/amlogic/amlogic,meson-gx-hhi-sysctrl.yaml  | 160 +++++++++++++++++++++
->   5 files changed, 282 insertions(+), 117 deletions(-)
-> ---
-> base-commit: e1f6a8eaf1c271a0158114a03e3605f4fba059ad
-> change-id: 20230209-b4-amlogic-bindings-convert-take2-e2caf8e1c13f
-> 
-> Best regards,
+--narolssei6psadaw
+Content-Type: application/pgp-signature; name="signature.asc"
 
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCZMz+iwAKCRDj7w1vZxhR
+xXakAPkBwCoM6Xdg4Yxk/nzhw+E46uELeruCkDx9+pXmw0lYbQEAmyRaw6DpdZQR
+ymcJ0NxItol7pxU8jgaXkHxCk3J6HAU=
+=Lie8
+-----END PGP SIGNATURE-----
+
+--narolssei6psadaw--
