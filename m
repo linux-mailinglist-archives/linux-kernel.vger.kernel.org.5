@@ -2,80 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E2EA1770BAE
-	for <lists+linux-kernel@lfdr.de>; Sat,  5 Aug 2023 00:03:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AB2B4770BB2
+	for <lists+linux-kernel@lfdr.de>; Sat,  5 Aug 2023 00:04:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230377AbjHDWD2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Aug 2023 18:03:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58944 "EHLO
+        id S230430AbjHDWED (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Aug 2023 18:04:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59614 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230256AbjHDWDY (ORCPT
+        with ESMTP id S230256AbjHDWEA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Aug 2023 18:03:24 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B11D0180
-        for <linux-kernel@vger.kernel.org>; Fri,  4 Aug 2023 15:02:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1691186559;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=vXzpEUWdN4SLt2rhGexfL6X3wS8/Bi9/wvDHMwbVeD0=;
-        b=SgdG6kyOKaATyKZoFSLyP+WzutGRQ4PmtGiGg9rWN3/zEp2fPHZd83vMgq907AQVH1AEqZ
-        VR5fmc7V3kLHDXfUrIB10FOBGumMzL/tsgDhrqpwVdvG5g3gwhTp89FLrIh0WcZXhz+KAV
-        LtrNGPUsxuWZEz3pLVW8mfBg96SITHM=
-Received: from mail-ot1-f71.google.com (mail-ot1-f71.google.com
- [209.85.210.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-655-dc88GoV_OYq8LYd7ae2oKA-1; Fri, 04 Aug 2023 18:02:38 -0400
-X-MC-Unique: dc88GoV_OYq8LYd7ae2oKA-1
-Received: by mail-ot1-f71.google.com with SMTP id 46e09a7af769-6b9d34de264so4357605a34.0
-        for <linux-kernel@vger.kernel.org>; Fri, 04 Aug 2023 15:02:38 -0700 (PDT)
+        Fri, 4 Aug 2023 18:04:00 -0400
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F06D198B
+        for <linux-kernel@vger.kernel.org>; Fri,  4 Aug 2023 15:03:44 -0700 (PDT)
+Received: by mail-yb1-xb49.google.com with SMTP id 3f1490d57ef6-c5a479bc2d4so2595036276.1
+        for <linux-kernel@vger.kernel.org>; Fri, 04 Aug 2023 15:03:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1691186623; x=1691791423;
+        h=content-transfer-encoding:cc:to:from:subject:message-id:references
+         :mime-version:in-reply-to:date:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Z5QE4e6WPNCCTrcuQvD50h/cVU5OOyClG9aBSPF6enk=;
+        b=vM4uC4RuClRcmFO2qH/TANlQsWDEW+w4U9sW+sG8F4CCDdcV2tNthcz4YJ6PXz+56B
+         oqFUNpVY1eBEVrxwliIA57bmsHnqMhmzXjy8U521V1m+rWHXTXQ/nE9iB9PLwoS2cdGY
+         7UF3A0KKoCLferkfuF10jA2qDrwRUIQERhyJN66ymiLypJRXtzrYN9HmsXdOXjm4P3TN
+         8r6STBjd9bG6Nix6A+scDPT6fGkyHJA56x9OaL5i8xMACEqeMxgiVcUju8xRuBySakA/
+         RLQ9me9mrk7MBFj6YOhouZwKr3MwcQlfeVPnrAJGTBAcNtiUcjLAzNf1ojAR1NejBXa+
+         Dt4w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691186557; x=1691791357;
-        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
-         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=vXzpEUWdN4SLt2rhGexfL6X3wS8/Bi9/wvDHMwbVeD0=;
-        b=AgYHBNed1/wmbdiFdmKzcTLz+RwM7Qc0M32b3ZVxYyrCk+QkQjq4HFJx8tu3YfgFPW
-         TErWbcp8vD+uyENCGmCbfPJBoOgmRtr6onKyZFWaGIkr1R5PucQc0E9YXbktDsbHqKIh
-         BvzcpVQVxmWHIGY8lqGKf242I+nbv7/3dDnLIWlJqT45qPyUs0GppX7zpFjwTCi7f7b1
-         rP16WV5E9HQO4osovUfKO0YLU6Ka9m9Jn0rrWfIAmZ2RJUk6EJgiHDsFNIk/PDDzOjq1
-         nU39bEP0Xcxz4HqdEqRGE/gYpxf0fiKVpE/1GULorhZPBEMW4Y3aAuY4O9s1GRtiZSDw
-         ez/w==
-X-Gm-Message-State: AOJu0Yz59VZqAKWPfgRKkkqyzEZ0ESnMOWrVnnScrITO6gYueGoVrMhE
-        jW89SelmrProLtDAcHajV5Dr4S52gDtlM1H7J6kdB3A05gpU8YfLNKUKtVv/QRPp2spTz2sXdf8
-        0BcgjJaR1f0orQiSeaCar0Q26
-X-Received: by 2002:a05:6870:9a1d:b0:1bf:4f5e:55e2 with SMTP id fo29-20020a0568709a1d00b001bf4f5e55e2mr3810518oab.53.1691186557633;
-        Fri, 04 Aug 2023 15:02:37 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IFibSEktTsTzniXcgNYUQlqWW7plBeiVw+TGTzHJSGuSRMOkvkMo+5wIPlRNMRenI850kABsQ==
-X-Received: by 2002:a05:6870:9a1d:b0:1bf:4f5e:55e2 with SMTP id fo29-20020a0568709a1d00b001bf4f5e55e2mr3810498oab.53.1691186557318;
-        Fri, 04 Aug 2023 15:02:37 -0700 (PDT)
-Received: from localhost ([181.120.144.238])
-        by smtp.gmail.com with ESMTPSA id c12-20020a9d67cc000000b006b9cbad68a8sm1677676otn.30.2023.08.04.15.02.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 04 Aug 2023 15:02:36 -0700 (PDT)
-From:   Javier Martinez Canillas <javierm@redhat.com>
-To:     Randy Dunlap <rdunlap@infradead.org>, linux-kernel@vger.kernel.org
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        Arthur Grillo <arthurgrillo@riseup.net>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        David Airlie <airlied@gmail.com>, Helge Deller <deller@gmx.de>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        dri-devel@lists.freedesktop.org
-Subject: Re: [PATCH] drm: Drop select FRAMEBUFFER_CONSOLE for
- DRM_FBDEV_EMULATION
-In-Reply-To: <77cdbbed-e64d-0c55-bf0a-6dfcfbdb8b20@infradead.org>
-References: <20230804125156.1387542-1-javierm@redhat.com>
- <77cdbbed-e64d-0c55-bf0a-6dfcfbdb8b20@infradead.org>
-Date:   Sat, 05 Aug 2023 00:02:33 +0200
-Message-ID: <87msz6foue.fsf@minerva.mail-host-address-is-not-set>
-MIME-Version: 1.0
-Content-Type: text/plain
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        d=1e100.net; s=20221208; t=1691186623; x=1691791423;
+        h=content-transfer-encoding:cc:to:from:subject:message-id:references
+         :mime-version:in-reply-to:date:x-gm-message-state:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=Z5QE4e6WPNCCTrcuQvD50h/cVU5OOyClG9aBSPF6enk=;
+        b=I5ywEiNjO+GhsKjfaXEBfcWh5A3z/vt7vE86UfdWWU4IRXbw/eK3EiVku3qEqzEcGT
+         MsBOMc57PRUUyRgYo1j2vFWQ3C5ueYO5dbZHU7A+p0pzcTHM430LoKLVIzhVmrEpTQIy
+         YwUk/6ra5GguBsQHsb2Hksr939wYKk8RlyfZIH+2RMKcZR3Jimhb7upWMPVpMLVNzi2Q
+         JYwZGgTAVjaaYtJTYz/AiI05VQuVPJ/7kve5KDYVS8LBd09qcshIUpkKU/6HnedMinj1
+         AHfUt/SHVPrytMh03GUWIDEoMEdtiY4Xw4y3RbHwQ2ddMPxAWG5Uf4kKgMZPzgNo6usu
+         oNTg==
+X-Gm-Message-State: AOJu0YxkBouXwvMHFqtcCNz3JkM53tX9/nbbMTFzPqvGeHDZiwt9mU1h
+        khNfNlY1HZKSHWB7rPNJNlMkJE1tzzc=
+X-Google-Smtp-Source: AGHT+IFjaw3aSm7rjvvmijnXEXzRTq5HabQb/vYjmBeBj+YyrmCXw7NTiGSmKknyLfkweNzeT9xhYtbm3aE=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a25:f807:0:b0:d09:b450:22eb with SMTP id
+ u7-20020a25f807000000b00d09b45022ebmr14827ybd.1.1691186623542; Fri, 04 Aug
+ 2023 15:03:43 -0700 (PDT)
+Date:   Fri, 4 Aug 2023 15:03:41 -0700
+In-Reply-To: <20230706145247.ddjqsvmfdeimzva6@linux.intel.com>
+Mime-Version: 1.0
+References: <20230704075054.3344915-1-stevensd@google.com> <20230704075054.3344915-3-stevensd@google.com>
+ <20230705031002.xrxk42hli6oavtlt@linux.intel.com> <CAD=HUj6-VbznOOtn5WJee7Of_nh33ygg7_ph2G=hgnvNk_Cbsw@mail.gmail.com>
+ <20230705105343.iounmlflfued7lco@linux.intel.com> <CAD=HUj5ezWt7rLAv2qOpFsMHyFU87Hqtw_p8pWNF5+oxbLhxDg@mail.gmail.com>
+ <20230706145247.ddjqsvmfdeimzva6@linux.intel.com>
+Message-ID: <ZM11vUK3vIjjykaz@google.com>
+Subject: Re: [PATCH v7 2/8] KVM: Introduce __kvm_follow_pfn function
+From:   Sean Christopherson <seanjc@google.com>
+To:     Yu Zhang <yu.c.zhang@linux.intel.com>
+Cc:     David Stevens <stevensd@chromium.org>,
+        Marc Zyngier <maz@kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Peter Xu <peterx@redhat.com>,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
+        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        kvm@vger.kernel.org
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -83,49 +78,173 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Randy Dunlap <rdunlap@infradead.org> writes:
+On Thu, Jul 06, 2023, Yu Zhang wrote:
+> On Thu, Jul 06, 2023 at 02:29:24PM +0900, David Stevens wrote:
+> > On Wed, Jul 5, 2023 at 7:53=E2=80=AFPM Yu Zhang <yu.c.zhang@linux.intel=
+.com> wrote:
+> > >
+> > > On Wed, Jul 05, 2023 at 06:22:59PM +0900, David Stevens wrote:
+> > > > On Wed, Jul 5, 2023 at 12:10=E2=80=AFPM Yu Zhang <yu.c.zhang@linux.=
+intel.com> wrote:
+> > > > >
+> > > > > > @@ -2514,35 +2512,26 @@ static bool hva_to_pfn_fast(unsigned lo=
+ng addr, bool write_fault,
+> > > > > >   * The slow path to get the pfn of the specified host virtual =
+address,
+> > > > > >   * 1 indicates success, -errno is returned if error is detecte=
+d.
+> > > > > >   */
+> > > > > > -static int hva_to_pfn_slow(unsigned long addr, bool *async, bo=
+ol write_fault,
+> > > > > > -                        bool interruptible, bool *writable, kv=
+m_pfn_t *pfn)
+> > > > > > +static int hva_to_pfn_slow(struct kvm_follow_pfn *foll, kvm_pf=
+n_t *pfn)
+> > > > > >  {
+> > > > > > -     unsigned int flags =3D FOLL_HWPOISON;
+> > > > > > +     unsigned int flags =3D FOLL_HWPOISON | FOLL_GET | foll->f=
+lags;
+> > > > > >       struct page *page;
+> > > > > >       int npages;
+> > > > > >
+> > > > > >       might_sleep();
+> > > > > >
+> > > > > > -     if (writable)
+> > > > > > -             *writable =3D write_fault;
+> > > > > > -
+> > > > > > -     if (write_fault)
+> > > > > > -             flags |=3D FOLL_WRITE;
+> > > > > > -     if (async)
+> > > > > > -             flags |=3D FOLL_NOWAIT;
+> > > > > > -     if (interruptible)
+> > > > > > -             flags |=3D FOLL_INTERRUPTIBLE;
+> > > > > > -
+> > > > > > -     npages =3D get_user_pages_unlocked(addr, 1, &page, flags)=
+;
+> > > > > > +     npages =3D get_user_pages_unlocked(foll->hva, 1, &page, f=
+lags);
+> > > > > >       if (npages !=3D 1)
+> > > > > >               return npages;
+> > > > > >
+> > > > > > +     foll->writable =3D (foll->flags & FOLL_WRITE) && foll->al=
+low_write_mapping;
+> > > > > > +
+> > > > > >       /* map read fault as writable if possible */
+> > > > > > -     if (unlikely(!write_fault) && writable) {
+> > > > > > +     if (unlikely(!foll->writable) && foll->allow_write_mappin=
+g) {
+> > > > >
+> > > > > I guess !foll->writable should be !(foll->flags & FOLL_WRITE) her=
+e.
+> > > >
+> > > > The two statements are logically equivalent, although I guess using
+> > > > !(foll->flags & FOLL_WRITE) may be a little clearer, if a little mo=
+re
+> > > > verbose.
+> > >
+> > > Well, as the comment says, we wanna try to map the read fault as writ=
+able
+> > > whenever possible. And __gfn_to_pfn_memslot() will only set the FOLL_=
+WRITE
+> > > for write faults. So I guess using !foll->writable will not allow thi=
+s.
+> > > Did I miss anything?
+> >=20
+> > We just set the foll->writable out parameter to be equal to
+> > ((foll->flags & FOLL_WRITE) && foll->allow_write_mapping). Taking a =3D
+> > foll->flags & FOLL_WRITE and b =3D foll->allow_write_mapping, we have
+> > !(a && b) && b -> (!a || !b) && b -> (!a && b) || (!b && b) -> !a &&
+> > b.
+>=20
+> Ouch, my bad again... I typed "!foll->writable", but missed the "!" in
+> my head while calculating... Thanks! :)
 
-Hello Randy,
+The code is funky and confusing though.  Specifically, FOLL_WRITE without
+allow_write_mapping is nonsensical, and yields the even more nonsensical ou=
+tput
+of a successful FOLL_WRITE with foll->writable=3D=3D%false.
 
-> On 8/4/23 05:51, Javier Martinez Canillas wrote:
->> The commit c242f48433e7 ("drm: Make FB_CORE to be selected if DRM fbdev
->> emulation is enabled") changed DRM_FBDEV_EMULATION from 'depends on FB'
->> to an effective 'select FB_CORE', so any config that previously had DRM=y
->> and FB=n now has FB_CORE=y and FRAMEBUFFER_CONSOLE=y.
->> 
->> This leads to unmet direct dependencies detected for FRAMEBUFFER_CONSOLE
->> as reported by Arthur Grillo, e.g:
->> 
->> WARNING: unmet direct dependencies detected for FRAMEBUFFER_CONSOLE
->>   Depends on [n]: VT [=n] && FB_CORE [=y] && !UML [=y]
->>   Selected by [y]:
->>   - DRM_FBDEV_EMULATION [=y] && HAS_IOMEM [=y] && DRM [=y] && !EXPERT [=n]
->> 
->> Arnd Bergmann suggests to drop the select FRAMEBUFFER_CONSOLE for the
->> DRM_FBDEV_EMULATION Kconfig symbol, since a possible use case could
->> be to enable DRM fbdev emulation but without a framebuffer console.
->> 
->> Fixes: c242f48433e7 ("drm: Make FB_CORE to be selected if DRM fbdev emulation is enabled")
->> Reported-by: Arthur Grillo <arthurgrillo@riseup.net>
->> Closes: https://lore.kernel.org/dri-devel/20230726220325.278976-1-arthurgrillo@riseup.net
->> Suggested-by: Arnd Bergmann <arnd@arndb.de>
->> Signed-off-by: Javier Martinez Canillas <javierm@redhat.com>
->
-> Acked-by: Randy Dunlap <rdunlap@infradead.org>
-> Tested-by: Randy Dunlap <rdunlap@infradead.org> # build-tested
->
+It "works" because callers only consume foll->writable when foll->allow_wri=
+te_mapping
+is true, but relying on that is ugly and completely unnecessary.   Similarl=
+y, the
+"allow" terminology is misleading.  FOLL_WRITE *always* allows writable map=
+pings.
 
-I have already pushed this patch so I won't be able to add these tags but
-thanks a lot for testing and confirming that the patch fixes your issue!
+This wasn't as much of problem in the previous code because the lower level=
+s took
+the pointer, i.e. avoided the "allow" terminology entirely.
 
-> Thanks.
->
->
+So we should either keep that behavior, i.e. replace "bool allow_write_mapp=
+ing"
+with "bool *writable", or rename allow_write_mapping to something like
+opportunistically_map_writable, and then unconditionally set foll->writable
+whenever KVM obtains a writable mapping, i.e. regardless of whether the ori=
+ginal
+fault was a read or a write.
 
--- 
-Best regards,
+My vote is for the latter.  If opportunistically_map_writable is too verbos=
+e,
+try_map_writable would be another option.  Hmm, I'll make "try_map_writable=
+" my
+official vote.
 
-Javier Martinez Canillas
-Core Platforms
-Red Hat
+Ah, and I also vote to use an if-elif instead of unconditionally setting fo=
+ll->writable.
+That makes the relationship between FOLL_WRITE and try_map_writable a bit m=
+ore
+obvious IMO.  E.g.
+
+static bool hva_to_pfn_fast(struct kvm_follow_pfn *foll, kvm_pfn_t *pfn)
+{
+	struct page *page[1];
+
+	/*
+	 * Fast pin a writable pfn only if it is a write fault request
+	 * or the caller allows to map a writable pfn for a read fault
+	 * request.
+	 */
+	if (!((foll->flags & FOLL_WRITE) || foll->try_map_writable))
+		return false;
+
+	if (get_user_page_fast_only(foll->hva, FOLL_WRITE, page)) {
+		*pfn =3D page_to_pfn(page[0]);
+		foll->writable =3D true;
+		return true;
+	}
+
+	return false;
+}
+
+/*
+ * The slow path to get the pfn of the specified host virtual address,
+ * 1 indicates success, -errno is returned if error is detected.
+ */
+static int hva_to_pfn_slow(struct kvm_follow_pfn *foll, kvm_pfn_t *pfn)
+{
+	unsigned int flags =3D FOLL_HWPOISON | FOLL_GET | foll->flags;
+	struct page *page;
+	int npages;
+
+	might_sleep();
+
+	npages =3D get_user_pages_unlocked(foll->hva, 1, &page, flags);
+	if (npages !=3D 1)
+		return npages;
+
+	if (foll->flags & FOLL_WRITE) {
+		foll->writable =3D true;
+	} else if (foll->try_map_writable) {
+		struct page *wpage;
+
+		/* map read fault as writable if possible */
+		if (get_user_page_fast_only(foll->hva, FOLL_WRITE, &wpage)) {
+			foll->writable =3D true;
+			put_page(page);
+			page =3D wpage;
+		}
+	}
+	*pfn =3D page_to_pfn(page);
+	return npages;
+}
 
