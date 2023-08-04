@@ -2,122 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F174A77069C
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 19:03:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 636E37706A3
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 19:04:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231653AbjHDRDi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Aug 2023 13:03:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38922 "EHLO
+        id S231726AbjHDREz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Aug 2023 13:04:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39706 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231681AbjHDRDc (ORCPT
+        with ESMTP id S231744AbjHDREt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Aug 2023 13:03:32 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2FE5349D8
-        for <linux-kernel@vger.kernel.org>; Fri,  4 Aug 2023 10:03:16 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        Fri, 4 Aug 2023 13:04:49 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D34C84EFB
+        for <linux-kernel@vger.kernel.org>; Fri,  4 Aug 2023 10:03:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1691168619;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=0ew8+859/KxLYM1PCEstkPSyPtAKzzdZ/Lbawn2bmLw=;
+        b=hNSjb0uJck+kifk+VV+s9fSbjLay4S6iheJ4PW/jJ8V0TSlIfOoU+iBBvjrKoblRS0RfyB
+        JIdBrU0WVAeOaxFaNQAOIsYG/rfm8Yb7zyBcRRT81sdJAiErZliJdE70jzLht2/JYlZPRD
+        JP9UoSo9RqPAHcJf6a77iBDLmn6f4NI=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-60-C06GJQ95O-i084vS0IMVbw-1; Fri, 04 Aug 2023 13:03:38 -0400
+X-MC-Unique: C06GJQ95O-i084vS0IMVbw-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.rdu2.redhat.com [10.11.54.2])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id B6490620B7
-        for <linux-kernel@vger.kernel.org>; Fri,  4 Aug 2023 17:02:58 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 27219C433C8;
-        Fri,  4 Aug 2023 17:02:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691168578;
-        bh=9zCz6fL5uLMjhsXTrlMBXoPcdM5rWmBh0zdD9+OFthM=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=JuPQC6NMfJmKhwXjC9hw0IyI6awcWX10lGP77HyRKArnWc24fxcRhe3ZVmZw2jWsM
-         QBCtJBYR3FKUBMQTxSHwkVijfh/P21aje/h9Y1eCfDZTbDeqHmmj7HXf7vMu9sCd/f
-         2+T2IZiFRSQ3rc79xqI9FBd9vC5PNwX612+VcLIDIO97qJZoM3f3DbcFoYhxGlaDRF
-         L+5hs73HlgbzuQEV4cB75YYB7HrGydRVdmhlyiWdfAaHIxRQ1PIkqG5UPrSXjSAhjH
-         ZAIyS7XNktAPtCsXHDPC0LEVx7TPTFeISwVNILDXmxXhirP7cwzy9Fb1+eUNcx7zfB
-         k1+RicqNSWtGg==
-Received: by mail-lj1-f177.google.com with SMTP id 38308e7fff4ca-2b9ba3d6157so37688851fa.3;
-        Fri, 04 Aug 2023 10:02:58 -0700 (PDT)
-X-Gm-Message-State: AOJu0YyUB1uLN7Cs3tYqgvHK5iWg6fITzCXQftAoz4LrObUGkCDMRhF7
-        HAldhZ9lkk4fvEGLTKXgR6D8LDcxJ3zvMDWdsg==
-X-Google-Smtp-Source: AGHT+IFpT3Jz9eUUjz8gBnEl/G9Wl5TYudwVd5Pkn2WF4/7vexUzQc9k4OYkWaDaebvVLGxtZGKoszr3GFCQ9fUyBfw=
-X-Received: by 2002:a2e:781a:0:b0:2b9:ac48:d7fb with SMTP id
- t26-20020a2e781a000000b002b9ac48d7fbmr2055634ljc.41.1691168576159; Fri, 04
- Aug 2023 10:02:56 -0700 (PDT)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 4C09D185A7AE;
+        Fri,  4 Aug 2023 17:03:37 +0000 (UTC)
+Received: from [10.22.33.115] (unknown [10.22.33.115])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id DBFE040C1258;
+        Fri,  4 Aug 2023 17:03:36 +0000 (UTC)
+Message-ID: <352465f6-394a-6f91-712d-85ed15588822@redhat.com>
+Date:   Fri, 4 Aug 2023 13:03:36 -0400
 MIME-Version: 1.0
-References: <CADyTPEzqf8oQAPSFRWJLxAhd-WE4fX2zdoe9Vu6V9hZMn1Yc8g@mail.gmail.com>
- <CAL_JsqLrErF__GGHfanRFCpfbOh6fvz4-aJv32h8OfDjUeZPSg@mail.gmail.com>
- <CADyTPEwgG0=R_b5DNBP0J0auDXu2BNTOwkSUFg-s7pLJUPC+Tg@mail.gmail.com> <CADyTPExgjcaUeKiR108geQhr0KwFC0A8qa_n_ST2RxhbSczomQ@mail.gmail.com>
-In-Reply-To: <CADyTPExgjcaUeKiR108geQhr0KwFC0A8qa_n_ST2RxhbSczomQ@mail.gmail.com>
-From:   Rob Herring <robh@kernel.org>
-Date:   Fri, 4 Aug 2023 11:02:43 -0600
-X-Gmail-Original-Message-ID: <CAL_Jsq+N2W0hVN7fUC1rxGL-Hw9B8eQvLgSwyQ3n41kqwDbxyg@mail.gmail.com>
-Message-ID: <CAL_Jsq+N2W0hVN7fUC1rxGL-Hw9B8eQvLgSwyQ3n41kqwDbxyg@mail.gmail.com>
-Subject: Re: PROBLEM: Broken or delayed ethernet on Xilinx ZCU104 since 5.18 (regression)
-To:     Nick Bowler <nbowler@draconx.ca>
-Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        netdev@vger.kernel.org, regressions@lists.linux.dev
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.7.1
+Subject: Re: [PATCH v3] perf/arm-dmc620: Fix
+ dmc620_pmu_irqs_lock/cpu_hotplug_lock circular lock dependency
+Content-Language: en-US
+To:     Will Deacon <will@kernel.org>
+Cc:     Mark Rutland <mark.rutland@arm.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Robin Murphy <robin.murphy@arm.com>
+References: <20230722031729.3913953-1-longman@redhat.com>
+ <20230728150614.GF21718@willie-the-truck>
+ <62d4b353-0237-9ec6-a63e-8a7a6764aba5@redhat.com>
+ <20230804162812.GC30679@willie-the-truck>
+ <458ac4d2-bb8a-0359-f198-dd53f4c84bd3@redhat.com>
+ <20230804165943.GG30679@willie-the-truck>
+From:   Waiman Long <longman@redhat.com>
+In-Reply-To: <20230804165943.GG30679@willie-the-truck>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 3.1 on 10.11.54.2
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 4, 2023 at 10:54=E2=80=AFAM Nick Bowler <nbowler@draconx.ca> wr=
-ote:
->
-> On 2023-08-04, Nick Bowler <nbowler@draconx.ca> wrote:
-> > On 04/08/2023, Rob Herring <robh@kernel.org> wrote:
-> >> On Fri, Aug 4, 2023 at 9:27=E2=80=AFAM Nick Bowler <nbowler@draconx.ca=
-> wrote:
-> >>>   commit e461bd6f43f4e568f7436a8b6bc21c4ce6914c36
-> >>>   Author: Robert Hancock <robert.hancock@calian.com>
-> >>>   Date:   Thu Jan 27 10:37:36 2022 -0600
-> >>>
-> >>>       arm64: dts: zynqmp: Added GEM reset definitions
-> >>>
-> >>> Reverting this fixes the problem on 5.18.  Reverting this fixes the
-> >>> problem on 6.1.  Reverting this fixes the problem on 6.4.  In all of
-> >>> these versions, with this change reverted, the network device appears
-> >>> without delay.
-> >>
-> >> With the above change, the kernel is going to be waiting for the reset
-> >> driver which either didn't exist or wasn't enabled in your config
-> >> (maybe kconfig needs to be tweaked to enable it automatically).
-> >
-> > The dts defines a reset-controller node with
-> >
-> >   compatible =3D "xlnx,zynqmp-reset"
-> >
-> > As far as I can see, this is supposed to be handled by the code in
-> > drivers/reset/zynqmp-reset.c driver, it is enabled by CONFIG_ARCH_ZYNQM=
-P,
-> > and I have that set to "y", and it appears to be getting compiled in (t=
-hat
-> > is, there is a drivers/reset/zynqmp-reset.o file in the build directory=
-).
->
-> Oh, I get it, to include this driver I need to also enable:
->
->   CONFIG_RESET_CONTROLLER=3Dy
->
-> Setting this fixes 6.4.  Perhaps CONFIG_ARCH_ZYNQMP should select it?
+On 8/4/23 12:59, Will Deacon wrote:
+> On Fri, Aug 04, 2023 at 12:51:47PM -0400, Waiman Long wrote:
+>> On 8/4/23 12:28, Will Deacon wrote:
+>>>>>>     struct dmc620_pmu {
+>>>>>> @@ -423,9 +424,14 @@ static struct dmc620_pmu_irq *__dmc620_pmu_get_irq(int irq_num)
+>>>>>>     	struct dmc620_pmu_irq *irq;
+>>>>>>     	int ret;
+>>>>>> -	list_for_each_entry(irq, &dmc620_pmu_irqs, irqs_node)
+>>>>>> -		if (irq->irq_num == irq_num && refcount_inc_not_zero(&irq->refcount))
+>>>>>> +	list_for_each_entry(irq, &dmc620_pmu_irqs, irqs_node) {
+>>>>>> +		if (irq->irq_num != irq_num)
+>>>>>> +			continue;
+>>>>>> +		if (!irq->valid)
+>>>>>> +			return ERR_PTR(-EAGAIN);	/* Try again later */
+>>>>> It looks like this can bubble up to the probe() routine. Does the driver
+>>>>> core handle -EAGAIN coming back from a probe routine?
+>>>> Right, I should add code to handle this error condition. I think it can be
+>>>> handled in dmc620_pmu_get_irq(). The important thing is to release the
+>>>> mutex, wait a few ms and try again. What do you think?
+>>> I don't really follow, but waiting a few ms and trying again sounds like
+>>> a really nasty hack for something which doesn't appear to be constrained
+>>> by broken hardware. In other words, we got ourselves into this mess, so
+>>> we should be able to resolve it properly.
+>>  From my point of view, the proper way to solve the problem is to reverse the
+>> locking order. Since you don't to add a EXPORT statement to the core kernel
+>> code, we will have to find a way around it by not holding the
+>> dmc620_pmu_irqs_lock when cpuhp_state_add_instance_nocalls() is called.
+>> Another alternative that I can think of is to add one more mutex that we
+>> will hold just for the entirety of  __dmc620_pmu_get_irq() and take
+>> dmc620_pmu_irqs_lock only when the linked list is being modified. That will
+>> eliminate the need to introduce arbitrary wait as other caller of
+>> __dmc620_pmu_get_irq() will wait in the new mutex. Will this work for you?
+> Yes. To be honest, I think we've both spent far too much time trying to
+> fix this (and I admire your persistence!), so adding a mutex to make it
+> "obviously" correct sounds like the right thing to me. We can look at
+> optimisations later if anybody cares.
 
-Maybe. Do other platforms do that?
+Sorry to be too persistent sometimes:-) Will send out a new version soon.
 
-> I guess the reset-zynqmp.o file that was in my build directory must
-> have been leftover garbage from a long time ago.
->
-> However, even with this option enabled, 6.5-rc4 remains broken (no
-> change in behaviour wrt. the network device).  I will bisect this
-> now.
+Cheers,
+Longman
 
-It would be good to know why the deferred probe timeout doesn't work.
-If you disable modules, the kernel shouldn't wait past late_initcall.
-Though this functionality keeps getting tweaked, so I may be off on
-the current behavior.
-
-Rob
