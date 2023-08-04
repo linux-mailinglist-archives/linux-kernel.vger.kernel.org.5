@@ -2,151 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 074CC7700E1
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 15:12:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C25C57700E5
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 15:14:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229450AbjHDNMu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Aug 2023 09:12:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55428 "EHLO
+        id S230311AbjHDNO0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Aug 2023 09:14:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56004 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229552AbjHDNMs (ORCPT
+        with ESMTP id S229660AbjHDNOX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Aug 2023 09:12:48 -0400
-Received: from mail-qv1-xf2e.google.com (mail-qv1-xf2e.google.com [IPv6:2607:f8b0:4864:20::f2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2868A11B
-        for <linux-kernel@vger.kernel.org>; Fri,  4 Aug 2023 06:12:47 -0700 (PDT)
-Received: by mail-qv1-xf2e.google.com with SMTP id 6a1803df08f44-63d48c3d242so12851736d6.2
-        for <linux-kernel@vger.kernel.org>; Fri, 04 Aug 2023 06:12:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google; t=1691154766; x=1691759566;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=K5KeRI+SV1FCdpo3Xm/MnSKW39DtNUa4J2xurlzsahs=;
-        b=IV7GHcIKmZuxG3dyOGK5NSIu9+sKjxUkR65EvD7EZVUlCnDTUb4zpV0EyPOxAPz4rr
-         ZiiX6SmaxndN66cnOxfAgguAT8sXtMb1vIjyN6+sA3+ujAI/i5B9NZHZ21cQK0nTRfby
-         JLFJi/j0nePnANK5s73Cp8Sqa6HwTgakv+G5n5K6KxL2pfnrURAhLGBhki6HhKSDPm/1
-         bhR5qb9ayVrxTMweB+O7LY/MJ4taGgPFsXA5RLI1a3YmegkVF9/j4R0MG2b5opW4VAAG
-         y79Io8bJkai1bWFpk43xD1qdnJfihqFaAekNEfL2CD1y2wktCHlIPFk3GimDB2C+VWaV
-         8k5Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691154766; x=1691759566;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=K5KeRI+SV1FCdpo3Xm/MnSKW39DtNUa4J2xurlzsahs=;
-        b=amEcCCMB3Uhx2gZEkbg7KvB6ymGRw7AfMDugABfPnokgt5xRJpbc8/igpev51wk7pG
-         pbeBTawPuicZb58UnW3G2mGjeIpg1OgbHomBrjvmqsxuxhzuCvOGTtagcUqeHf1wvoBT
-         cKJJCIhx4k/f4F1zXpWbSuwr5kIPB93o+QNorIlJi+AGhtQbTM5/+Nf3tM8uYdjsPwaX
-         V6EdKxccTP3FjY4oK4ocSDpmVN2ya/BDSh2pN9tdrM3B/iYsL4vihhHVfNUN62KhPGTF
-         NOAPZttbiwLIRgUSvCjj4XIGaxWdNuXpEBb/y3WdivurAuNcYIqG5m6owsL25UlE0DO6
-         tYog==
-X-Gm-Message-State: AOJu0Yxr0uyH9ounXIHDoIAa5mADY4rTP5zrs+Y60Pbp1u2ZsQMeg5Wf
-        /Ii5XtE2bgEz0j4rYhopb2RD9A==
-X-Google-Smtp-Source: AGHT+IGI3w7HNaf+cHB70oPi/jS31g9ivt3CUdAgCt2wy35N+pxVe6WQ2Vi5iLY+Mv94CNY4L4Uelg==
-X-Received: by 2002:ad4:5945:0:b0:635:e368:1c70 with SMTP id eo5-20020ad45945000000b00635e3681c70mr1975728qvb.43.1691154766271;
-        Fri, 04 Aug 2023 06:12:46 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-142-68-25-194.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.25.194])
-        by smtp.gmail.com with ESMTPSA id w19-20020a0cdf93000000b0062de6537febsm656462qvl.58.2023.08.04.06.12.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 04 Aug 2023 06:12:45 -0700 (PDT)
-Received: from jgg by wakko with local (Exim 4.95)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1qRubl-003ial-5v;
-        Fri, 04 Aug 2023 10:12:45 -0300
-Date:   Fri, 4 Aug 2023 10:12:45 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Baolu Lu <baolu.lu@linux.intel.com>
-Cc:     "Tian, Kevin" <kevin.tian@intel.com>,
-        Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        Nicolin Chen <nicolinc@nvidia.com>,
-        "Liu, Yi L" <yi.l.liu@intel.com>,
-        Jacob Pan <jacob.jun.pan@linux.intel.com>,
-        "iommu@lists.linux.dev" <iommu@lists.linux.dev>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 0/2] iommu: Make pasid array per device
-Message-ID: <ZMz5TVrFvGf4jPCa@ziepe.ca>
-References: <20230801063125.34995-1-baolu.lu@linux.intel.com>
- <ZMplBfgSb8Hh9jLt@ziepe.ca>
- <BN9PR11MB527649D7E79E29291DA1A5538C08A@BN9PR11MB5276.namprd11.prod.outlook.com>
- <ZMvFR52o86upAVrp@ziepe.ca>
- <15c6f634-f00a-dfa7-9759-161ec201460a@linux.intel.com>
- <ff357c87-f554-d89c-ce0e-e38886374da5@linux.intel.com>
+        Fri, 4 Aug 2023 09:14:23 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD42646B3
+        for <linux-kernel@vger.kernel.org>; Fri,  4 Aug 2023 06:13:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1691154815;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=YdazvjmGmZmgj91lOlAbSLPEx72pSHsRbgB1k8qsYaw=;
+        b=BI/pbSMThgJej+S97pcam1JNB/NaFoeyxq7BeaLw6cwn72DPoteVHZG8RSrxUSatRHzR/j
+        mkLKEjcKh/xnPGs+pVY0iK4zSBWyhRdCSpVWcPXg4mcsJRjuOTP+QjhPKYFbBaIRDQEV4U
+        Cu1KCTaot+QPiQSBCWjt41kCyeYH8Q4=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-370-MjUsA69JPfGO44TxO2PFBQ-1; Fri, 04 Aug 2023 09:13:32 -0400
+X-MC-Unique: MjUsA69JPfGO44TxO2PFBQ-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.rdu2.redhat.com [10.11.54.3])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 274C180006E;
+        Fri,  4 Aug 2023 13:13:32 +0000 (UTC)
+Received: from warthog.procyon.org.uk (unknown [10.42.28.131])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 3DE8F112132D;
+        Fri,  4 Aug 2023 13:13:30 +0000 (UTC)
+From:   David Howells <dhowells@redhat.com>
+To:     Ilya Dryomov <idryomov@gmail.com>, Xiubo Li <xiubli@redhat.com>
+Cc:     David Howells <dhowells@redhat.com>,
+        Jeff Layton <jlayton@kernel.org>,
+        Dongsheng Yang <dongsheng.yang@easystack.cn>,
+        ceph-devel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [RFC PATCH 00/18] ceph, rbd: Collapse all the I/O types down to something iov_iter-based
+Date:   Fri,  4 Aug 2023 14:13:09 +0100
+Message-ID: <20230804131327.2574082-1-dhowells@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <ff357c87-f554-d89c-ce0e-e38886374da5@linux.intel.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+X-Scanned-By: MIMEDefang 3.1 on 10.11.54.3
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 04, 2023 at 10:30:12AM +0800, Baolu Lu wrote:
-> On 2023/8/4 10:20, Baolu Lu wrote:
-> > On 2023/8/3 23:18, Jason Gunthorpe wrote:
-> > > On Thu, Aug 03, 2023 at 12:44:03AM +0000, Tian, Kevin wrote:
-> > > > > From: Jason Gunthorpe<jgg@ziepe.ca>
-> > > > > Sent: Wednesday, August 2, 2023 10:16 PM
-> > > > > 
-> > > > > On Tue, Aug 01, 2023 at 02:31:23PM +0800, Lu Baolu wrote:
-> > > > > > The PCI PASID enabling interface guarantees that the
-> > > > > > address space used
-> > > > > > by each PASID is unique. This is achieved by checking that the PCI ACS
-> > > > > > path is enabled for the device. If the path is not enabled, then the
-> > > > > > PASID feature cannot be used.
-> > > > > > 
-> > > > > >      if (!pci_acs_path_enabled(pdev, NULL, PCI_ACS_RR | PCI_ACS_UF))
-> > > > > >              return -EINVAL;
-> > > > > > 
-> > > > > > The PASID array is not an attribute of the IOMMU group. It is more
-> > > > > > natural to store the PASID array in the per-device IOMMU data. This
-> > > > > > makes the code clearer and easier to understand. No functional changes
-> > > > > > are intended.
-> > > > > Is there a reason to do this?
-> > > > > 
-> > > > > *PCI*  requires the ACS/etc because PCI kind of messed up how switches
-> > > > > handled PASID so PASID doesn't work otherwise.
-> > > > > 
-> > > > > But there is nothing that says other bus type can't have working
-> > > > > (non-PCI) PASID and still have device isolation issues.
-> > > > > 
-> > > > > So unless there is a really strong reason to do this we should keep
-> > > > > the PASID list in the group just like the domain.
-> > > > > 
-> > > > this comes from the consensus in [1].
-> > > > 
-> > > > [1]https://lore.kernel.org/linux-iommu/ZAcyEzN4102gPsWC@nvidia.com/
-> > > That consensus was that we don't have PASID support if there is
-> > > multi-device groups, at least in iommufd.. That makes sense. If we
-> > > want to change the core code to enforce this that also makes sense
-> > 
-> > In my initial plan, I had a third patch that would have enforced single-
-> > device groups for PASID interfaces in the core. But I ultimately dropped
-> > it because it is the fact for PCI devices, but I am not sure about other
-> > buses although perhaps there is none.
-> > 
-> > > But this series is just moving the array?
-> > 
-> > So I took the first step by moving the pasid_array from iommu group to
-> > the device. 😄
-> 
-> In my mind, iommu_group was introduced to solve the PCI alias and P2P
-> transactions which bypass IOMMU translation. When we enter the PASID
-> world, the architecture should disallow these anymore. Hence, it's safe
-> to move pasid_array to device.
-> 
-> This was the motivation of this series.
+Hi Ilya, Xiubo,
 
-I think you should add a protection as well, directly prevent
-multi-device groups being used with pasid.
+[!] NOTE: This is a preview of a work in progress and doesn't yet fully
+    compile, let alone actually work!
 
-Jason
+Here are some patches that (mostly) collapse the different I/O types
+(PAGES, PAGELIST, BVECS, BIO) down to a single one.  I added a new type,
+ceph_databuf, to make this easier.  The page list is attached to that as a
+bio_vec[] with an iov_iter, but could also be some other type supported by
+the iov_iter.  The iov_iter defines the data or buffer to be used.  I have
+an additional iov_iter type implemented that allows use of a straight
+folio[] or page[] instead of a bio_vec[] that I can deploy if that proves
+more useful.
+
+The conversion isn't quite complete:
+
+ (1) rbd is done; BVECS and BIO types are replaced with ceph_databuf.
+
+ (2) ceph_osd_linger_request::preply_pages needs switching over to a
+     ceph_databuf, but I haven't yet managed to work out how the pages that
+     handle_watch_notify() sticks in there come about.
+
+ (3) I haven't altered data transmission in net/ceph/messenger*.c yet.  The
+     aim is to reduce it to a single sendmsg() call for each ceph_msg_data
+     struct, using the iov_iter therein.
+
+ (4) The data reception routines in net/ceph/messenger*.c also need
+     modifying to pass each ceph_msg_data::iter to recvmsg() in turn.
+
+ (5) It might be possible to merge struct ceph_databuf into struct
+     ceph_msg_data and eliminate the former.
+
+ (6) fs/ceph/ still needs some work to clean up the use of page arrays.
+
+ (7) I would like to change front and middle buffers with a ceph_databuf,
+     vmapping them when we need to access them.
+
+I added a kmap_ceph_databuf_page() macro and used that to get a page and
+use kmap_local_page() on it to hide the bvec[] inside to make it easier to
+replace.
+
+Anyway, if anyone has any thoughts...
+
+
+I've pushed the patches here also:
+
+	https://git.kernel.org/pub/scm/linux/kernel/git/dhowells/linux-fs.git/log/?h=iov-extract
+
+David
+
+David Howells (18):
+  iov_iter: Add function to see if buffer is all zeros
+  ceph: Rename alignment to offset
+  ceph: Add a new data container type, ceph_databuf
+  ceph: Convert ceph_mds_request::r_pagelist to a databuf
+  rbd: Use ceph_databuf for rbd_obj_read_sync()
+  ceph: Change ceph_osdc_call()'s reply to a ceph_databuf
+  ceph: Unexport osd_req_op_cls_request_data_pages()
+  ceph: Remove osd_req_op_cls_response_data_pages()
+  ceph: Convert notify_id_pages to a ceph_databuf
+  rbd: Switch from using bvec_iter to iov_iter
+  ceph: Remove bvec and bio data container types
+  ceph: Convert some page arrays to ceph_databuf
+  ceph: Convert users of ceph_pagelist to ceph_databuf
+  ceph: Remove ceph_pagelist
+  ceph: Convert ceph_osdc_notify() reply to ceph_databuf
+  ceph: Remove CEPH_OS_DATA_TYPE_PAGES and its attendant helpers
+  ceph: Remove CEPH_MSG_DATA_PAGES and its helpers
+  ceph: Don't use data_pages
+
+ drivers/block/rbd.c             | 645 ++++++++++----------------------
+ fs/ceph/acl.c                   |  39 +-
+ fs/ceph/addr.c                  |  18 +-
+ fs/ceph/file.c                  | 157 ++++----
+ fs/ceph/inode.c                 |  85 ++---
+ fs/ceph/locks.c                 |  23 +-
+ fs/ceph/mds_client.c            | 134 ++++---
+ fs/ceph/mds_client.h            |   2 +-
+ fs/ceph/super.h                 |   8 +-
+ fs/ceph/xattr.c                 |  68 ++--
+ include/linux/ceph/databuf.h    |  65 ++++
+ include/linux/ceph/messenger.h  | 141 +------
+ include/linux/ceph/osd_client.h |  97 ++---
+ include/linux/ceph/pagelist.h   |  72 ----
+ include/linux/uio.h             |   1 +
+ lib/iov_iter.c                  |  22 ++
+ net/ceph/Makefile               |   5 +-
+ net/ceph/cls_lock_client.c      |  40 +-
+ net/ceph/databuf.c              | 149 ++++++++
+ net/ceph/messenger.c            | 376 +------------------
+ net/ceph/osd_client.c           | 430 +++++++--------------
+ net/ceph/pagelist.c             | 171 ---------
+ 22 files changed, 876 insertions(+), 1872 deletions(-)
+ create mode 100644 include/linux/ceph/databuf.h
+ delete mode 100644 include/linux/ceph/pagelist.h
+ create mode 100644 net/ceph/databuf.c
+ delete mode 100644 net/ceph/pagelist.c
+
