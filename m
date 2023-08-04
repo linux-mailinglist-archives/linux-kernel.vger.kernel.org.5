@@ -2,137 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B00F876F813
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 04:49:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D5EFB76F826
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 05:01:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231593AbjHDCtF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Aug 2023 22:49:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60586 "EHLO
+        id S232785AbjHDDBH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Aug 2023 23:01:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35450 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229513AbjHDCtD (ORCPT
+        with ESMTP id S232787AbjHDDAz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Aug 2023 22:49:03 -0400
-Received: from mail-yw1-x112c.google.com (mail-yw1-x112c.google.com [IPv6:2607:f8b0:4864:20::112c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D303730E5
-        for <linux-kernel@vger.kernel.org>; Thu,  3 Aug 2023 19:49:02 -0700 (PDT)
-Received: by mail-yw1-x112c.google.com with SMTP id 00721157ae682-57a6df91b1eso19229277b3.1
-        for <linux-kernel@vger.kernel.org>; Thu, 03 Aug 2023 19:49:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paul-moore.com; s=google; t=1691117342; x=1691722142;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Vd95Z3+osQHMY4UnbAFYs8153P0Rw3koffJjaaUVqu8=;
-        b=PS7MVmREtdk+t0YqbU+r1cv06QIkKaMZgrhKw9zvVfR87cpxMdSKlrUm0ED8EwbS+G
-         8vG57n9I5BgiXaUlca0jp6ISgoOtJurxusghMJizM47WzjUxGfezWrAughIOtqjuW83q
-         dlLn+h66NqO41NcMjSRF0rCNOiX9dMqGfS2nr00ndQBlwXVgHLA35XzkX9kDCwlvZxrS
-         Y0J+qtfivoQp+KRAa5VI6TjlK6xSTF/AzdMDxeJRcbCzUDhRDDEic/3Ya1LM5vYaElVx
-         ruML3a/NIPnZxzd9oRLznWO1BXP8QIVIDq5spPdmCEhrqd6TG1ixFLHjuyHI3ds6UHlJ
-         6J6g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691117342; x=1691722142;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Vd95Z3+osQHMY4UnbAFYs8153P0Rw3koffJjaaUVqu8=;
-        b=KUAwhH8AIRqgip7EWj+4z8Gw5+JUERwBEKwSRSikJFOEuEgpUFJ71vXUktv9bxObKO
-         oW45I5hL67OHsW/q7BI4zzetvb00OzgkOlzf4/BlI4uAF0Scw7mcM+HZ6fccM0CXFvYG
-         vlc1BBFcBgivpuuuHN4edVGcMm0YODaG0VWFPPWu9cYl9dul6FiGYMOTows7vb+jHOwS
-         eeydvjKMn6Ca13Elm6CuwgIuLbH9hXNwuZjyiU9g53/pB6lAv6G3QeoM+fMNR58ba/47
-         2oIznxl3l1nlp2GVgYam+iP1h78n3QRzcU5O+WmjIhv74FmZUWSPh4ZGaE2ZKyzQOYau
-         9m6w==
-X-Gm-Message-State: AOJu0Yw4chpatZosybFrNW1/+DPmlhGU5TNAGA0hLxRi9E1bZY2rUQq1
-        yZ8qjS1cE1wwlyTPNdpQQ75mzj8C1wz4ODPtDKKp
-X-Google-Smtp-Source: AGHT+IHzOMv/ju9Tw8bPVPB4bGc67BfMOW+0Um7p830iso0PGeWxqbRtl37oozAHp4DGTMSMiA7RzLqc14ciUx57+XE=
-X-Received: by 2002:a0d:e253:0:b0:584:189c:13ec with SMTP id
- l80-20020a0de253000000b00584189c13ecmr519784ywe.21.1691117342044; Thu, 03 Aug
- 2023 19:49:02 -0700 (PDT)
-MIME-Version: 1.0
-References: <20230802-master-v6-1-45d48299168b@kernel.org> <bac543537058619345b363bbfc745927.paul@paul-moore.com>
- <ca156cecbc070c3b7c68626572274806079a6e04.camel@kernel.org>
- <CAHC9VhTQDVyZewU0Oiy4AfJt_UtB7O2_-PcUmXkZtuwKDQBfXg@mail.gmail.com> <ec1fd18f271593d5c6b6813cfaeb688994f20bf4.camel@kernel.org>
-In-Reply-To: <ec1fd18f271593d5c6b6813cfaeb688994f20bf4.camel@kernel.org>
-From:   Paul Moore <paul@paul-moore.com>
-Date:   Thu, 3 Aug 2023 22:48:50 -0400
-Message-ID: <CAHC9VhSNXbJzfKLF+DjfK+_2eJYYc_AC3u3aUc_NUs_o5M5AaA@mail.gmail.com>
-Subject: Re: [PATCH v6] vfs, security: Fix automount superblock LSM init
- problem, preventing NFS sb sharing
-To:     Jeff Layton <jlayton@kernel.org>
-Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
-        Christian Brauner <brauner@kernel.org>,
-        Trond Myklebust <trond.myklebust@hammerspace.com>,
-        Anna Schumaker <anna@kernel.org>,
-        James Morris <jmorris@namei.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>,
-        Stephen Smalley <stephen.smalley.work@gmail.com>,
-        Eric Paris <eparis@parisplace.org>,
-        Casey Schaufler <casey@schaufler-ca.com>,
-        David Howells <dhowells@redhat.com>,
-        Scott Mayhew <smayhew@redhat.com>,
-        Stephen Smalley <sds@tycho.nsa.gov>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-nfs@vger.kernel.org, linux-security-module@vger.kernel.org,
-        selinux@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+        Thu, 3 Aug 2023 23:00:55 -0400
+X-Greylist: delayed 574 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Thu, 03 Aug 2023 20:00:45 PDT
+Received: from mail-m12739.qiye.163.com (mail-m12739.qiye.163.com [115.236.127.39])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B7E44234;
+        Thu,  3 Aug 2023 20:00:39 -0700 (PDT)
+Received: from localhost.localdomain (unknown [58.22.7.114])
+        by mail-m12739.qiye.163.com (Hmail) with ESMTPA id 073064A018F;
+        Fri,  4 Aug 2023 10:51:03 +0800 (CST)
+From:   Elaine Zhang <zhangqing@rock-chips.com>
+To:     mturquette@baylibre.com, sboyd@kernel.org,
+        kever.yang@rock-chips.com, zhangqing@rock-chips.com,
+        heiko@sntech.de, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org
+Cc:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-clk@vger.kernel.org, linux-rockchip@lists.infradead.org,
+        linux-kernel@vger.kernel.org, huangtao@rock-chips.com
+Subject: [RESEND PATCH v3 3/4] dt-bindings: clock: rk3588: export PCLK_VO1GRF clk id
+Date:   Fri,  4 Aug 2023 10:51:01 +0800
+Message-Id: <20230804025101.28438-1-zhangqing@rock-chips.com>
+X-Mailer: git-send-email 2.17.1
+X-HM-Spam-Status: e1kfGhgUHx5ZQUpXWQgPGg8OCBgUHx5ZQUlOS1dZFg8aDwILHllBWSg2Ly
+        tZV1koWUFDSUNOT01LS0k3V1ktWUFJV1kPCRoVCBIfWUFZGRgeS1YaGUhNTU8eQ08ZSUJVEwETFh
+        oSFyQUDg9ZV1kYEgtZQVlOQ1VJSVVMVUpKT1lXWRYaDxIVHRRZQVlPS0hVSk1PSU5JVUpLS1VKQl
+        kG
+X-HM-Tid: 0a89be74a732b212kuuu073064a018f
+X-HM-MType: 1
+X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6NiI6Eww*HD1ICi4eEjoeNR1J
+        H04aCipVSlVKTUJKSkpMT01IQ0JJVTMWGhIXVQETGhUcChIVHDsJFBgQVhgTEgsIVRgUFkVZV1kS
+        C1lBWU5DVUlJVUxVSkpPWVdZCAFZQUpCQk83Bg++
+X-Spam-Status: No, score=-0.4 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_SORBS_WEB,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 3, 2023 at 12:27=E2=80=AFPM Jeff Layton <jlayton@kernel.org> wr=
-ote:
-> On Wed, 2023-08-02 at 22:46 -0400, Paul Moore wrote:
-> > On Wed, Aug 2, 2023 at 3:34=E2=80=AFPM Jeff Layton <jlayton@kernel.org>=
- wrote:
-> > > On Wed, 2023-08-02 at 14:16 -0400, Paul Moore wrote:
-> > > > On Aug  2, 2023 Jeff Layton <jlayton@kernel.org> wrote:
+add PCLK_VO1GRF clk id.
 
-...
+Signed-off-by: Elaine Zhang <zhangqing@rock-chips.com>
+---
+ include/dt-bindings/clock/rockchip,rk3588-cru.h | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-> > My only concern now is the fs_context::lsm_set flag.
->
-> Yeah, that bit is ugly. David studied this problem a lot more than I
-> have, but basically, we only want to set the context info once, and
-> we're not always going to have a nice string to parse to set up the
-> options. This obviously works, but I'm fine with a more elegant method
-> if you can spot one.
+diff --git a/include/dt-bindings/clock/rockchip,rk3588-cru.h b/include/dt-bindings/clock/rockchip,rk3588-cru.h
+index b5616bca7b44..864a321ab362 100644
+--- a/include/dt-bindings/clock/rockchip,rk3588-cru.h
++++ b/include/dt-bindings/clock/rockchip,rk3588-cru.h
+@@ -733,8 +733,9 @@
+ #define ACLK_AV1_PRE			718
+ #define PCLK_AV1_PRE			719
+ #define HCLK_SDIO_PRE			720
++#define PCLK_VO1GRF			721
+ 
+-#define CLK_NR_CLKS			(HCLK_SDIO_PRE + 1)
++#define CLK_NR_CLKS			(PCLK_VO1GRF + 1)
+ 
+ /* scmi-clocks indices */
+ 
+-- 
+2.17.1
 
-Like I said before, sometimes making a LSM hook conditional on some
-flag is the only practical solution, but I always worry that there is
-a chance that a future patch might end up toggling that flag by
-accident and we lose an important call into the LSM.  Even if all we
-end up doing is moving the flag down into the LSMs I would be happier;
-there is still a risk, but at least if something breaks it is our (the
-LSM folks) own damn fault ;)
-
-> > You didn't mention exactly why the security_sb_set_mnt_opts() was
-> > failing, and requires the fs_context::lsm_set check, but my guess is
-> > that something is tripping over the fact that the superblock is
-> > already properly setup.  I'm working under the assumption that this
-> > problem - attempting to reconfigure a properly configured superblock -
-> > should only be happening in the submount/non-NULL-reference case.  If
-> > it is happening elsewhere I think I'm going to need some help
-> > understanding that ...
->
-> Correct. When you pass in the mount options, fc->security seems to be
-> properly set. NFS mounting is complex though, so the final superblock
-> you care about may end up being a descendant of the one that was
-> originally configured.
-
-Ooof, okay, there goes that idea.
-
-At this point I guess it comes back to that question of why is calling
-into security_sb_set_mnt_opts() a second (or third, etc.) time failing
-for you?  Is there some conflict with the superblock
-config/labeling/etc.?  Is there a permissions problem?  Better
-understanding why that is failing might help us come up with a better
-solution.
-
---=20
-paul-moore.com
