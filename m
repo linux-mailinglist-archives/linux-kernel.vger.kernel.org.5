@@ -2,142 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B201D770BF4
-	for <lists+linux-kernel@lfdr.de>; Sat,  5 Aug 2023 00:30:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 04C86770BF9
+	for <lists+linux-kernel@lfdr.de>; Sat,  5 Aug 2023 00:39:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229475AbjHDWa3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Aug 2023 18:30:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41568 "EHLO
+        id S229916AbjHDWjJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Aug 2023 18:39:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43250 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229449AbjHDWa2 (ORCPT
+        with ESMTP id S229634AbjHDWjG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Aug 2023 18:30:28 -0400
-Received: from mail-oi1-x249.google.com (mail-oi1-x249.google.com [IPv6:2607:f8b0:4864:20::249])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF1391706
-        for <linux-kernel@vger.kernel.org>; Fri,  4 Aug 2023 15:30:26 -0700 (PDT)
-Received: by mail-oi1-x249.google.com with SMTP id 5614622812f47-3a426e70577so3926209b6e.2
-        for <linux-kernel@vger.kernel.org>; Fri, 04 Aug 2023 15:30:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1691188226; x=1691793026;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=bFzzUD1s8YBHblwI04VOeCdWAbdee3I5YnQWnVOxvpo=;
-        b=TFcn4WhuF59CuOFW+nA/rZmm0UJ9lmliU/kzI0ZppRYE7sDBYkerAuHzzRxdX3d7+X
-         4kzLTKYNiq3+tnYZLXIkLwujJLcAX9xlXFF7P6HucTbVVv4htw7jc7Fx1odjOorNhcMK
-         dodd2vDxN7Iv863IP8Ul0VCeKTSNeqWflaPt3PPJv7+5ayDRQWhkgJ+D3K75dcAoYxtZ
-         WPhu6CqDtddYxxH4dTGFYTkyLBsWJw8IjQxufeXxzFdyCgNiKmvISMu1mHITGEKHgkkb
-         HhwXF5timTSNjIo6jS4S4vsYjZPe1ZaATLPhRP8kRuAhbSLipOJg1Qe8hXm34hNZJUIk
-         0cUg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691188226; x=1691793026;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=bFzzUD1s8YBHblwI04VOeCdWAbdee3I5YnQWnVOxvpo=;
-        b=duxAQXDMf0N7FKCiL/aqPHOiIYqbXUB16/o1uGzvMyvxam3YAxHXGgb0iQBUCHnI8C
-         0b9IznjuQut/+T+oDB+FMh0DoAEsGGKHeUbJoGDm2XWOfN9EE8pMZJlkdRT1ufFAPSj/
-         qvqv3yOwUi3/DGubPRCseIq3lCHZUs/4uzZVQ3mLSEZMcizux55OqHCHXK875z396j9K
-         dmZZ/6MQy+rc78OZBqqGmMpWZqw7EZ3mCqLtYG7QdzjlT+HKjrATUjuoW/oqCQGTJ384
-         Lth77DpJFYhB6oAukuFO76Erk1bktRUj5MhgnUQPE1oTlBkt0HwmRhzvz7T+nmtb+P+f
-         SvWA==
-X-Gm-Message-State: AOJu0YyijJ0ki0uJ+QtaE10Og6Zzco/uTqNmrAAASIUpTwFRrbhQnUTI
-        Oa7Syvd9RHkBSPkqLmV7h4ZwBhhND1o=
-X-Google-Smtp-Source: AGHT+IG/f7h4NBFD7Fzz9VqAMwBIHPfIp5Oxxm2+KkdFX36TNY82jUIYr8jbB4mGvNrT4WJJhTCK/9o3DZg=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a05:6808:198b:b0:3a7:75cd:df61 with SMTP id
- bj11-20020a056808198b00b003a775cddf61mr4531539oib.5.1691188226241; Fri, 04
- Aug 2023 15:30:26 -0700 (PDT)
-Date:   Fri, 4 Aug 2023 15:30:24 -0700
-In-Reply-To: <20230705080756.xv7fm3jxewipunvn@linux.intel.com>
-Mime-Version: 1.0
-References: <20230704075054.3344915-1-stevensd@google.com> <20230704075054.3344915-5-stevensd@google.com>
- <20230705080756.xv7fm3jxewipunvn@linux.intel.com>
-Message-ID: <ZM18AAFj21Fo36hg@google.com>
-Subject: Re: [PATCH v7 4/8] KVM: x86/mmu: Migrate to __kvm_follow_pfn
-From:   Sean Christopherson <seanjc@google.com>
-To:     Yu Zhang <yu.c.zhang@linux.intel.com>
-Cc:     David Stevens <stevensd@chromium.org>,
-        Marc Zyngier <maz@kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Peter Xu <peterx@redhat.com>,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
-        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        kvm@vger.kernel.org
-Content-Type: text/plain; charset="us-ascii"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        Fri, 4 Aug 2023 18:39:06 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92D694EDD;
+        Fri,  4 Aug 2023 15:38:56 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 2CB4862159;
+        Fri,  4 Aug 2023 22:38:56 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7B86CC433C8;
+        Fri,  4 Aug 2023 22:38:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1691188735;
+        bh=4ZHUpAEsPHLIZuavcCFPyzt3vciVGgDCLfCh4b1DlrI=;
+        h=Date:From:To:Cc:Subject:From;
+        b=B75Owh8yBQ9FC2zY2RMF4UB1IPUzVgHbg/9nWepfU/JwRF7fpu+xjatD0vigtoO5K
+         7rcOk0wpr3Cbc4Z2zcvqr+RA9jYmyBYcJROzHrQQk8bZsUVmGgqCDRprgLpqIVmVp0
+         fPoICOSerN5a8/b62AbvJrtbAW2OfRcECIdl9OtxBIilNgxKqha3ZVuqQui/AgFs68
+         3ZcpenDZaEHM+9TbgXHI7q5D9z5P7QS58Lp5rrAF2JBpreyC4z1nUu/nRAx0T55/On
+         VPQnUyVNSK+xIjM6NVLAQ7UjK7mDEDCL0EmJty64nq+N7zZLroxB7mu/jWr7O8zoVp
+         PdmaRmbTHHAtA==
+Date:   Fri, 4 Aug 2023 15:38:54 -0700
+From:   "Darrick J. Wong" <djwong@kernel.org>
+To:     Dave Chinner <david@fromorbit.com>
+Cc:     tglx@linutronix.de, peterz@infradead.org,
+        xfs <linux-xfs@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Subject: [RFC PATCH] xfs: fix per-cpu CIL structure aggregation racing with
+ dying cpus
+Message-ID: <20230804223854.GL11352@frogsfrogsfrogs>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 05, 2023, Yu Zhang wrote:
-> On Tue, Jul 04, 2023 at 04:50:49PM +0900, David Stevens wrote:
-> > From: David Stevens <stevensd@chromium.org>
-> > 
-> > Migrate from __gfn_to_pfn_memslot to __kvm_follow_pfn.
+From: Darrick J. Wong <djwong@kernel.org>
 
-Please turn up your changelog verbosity from ~2 to ~8.  E.g. explain the transition
-from async => FOLL_NOWAIT+KVM_PFN_ERR_NEEDS_IO, there's no reason to force readers
-to suss that out on their own.
+In commit 7c8ade2121200 ("xfs: implement percpu cil space used
+calculation"), the XFS committed (log) item list code was converted to
+use per-cpu lists and space tracking to reduce cpu contention when
+multiple threads are modifying different parts of the filesystem and
+hence end up contending on the log structures during transaction commit.
+Each CPU tracks its own commit items and space usage, and these do not
+have to be merged into the main CIL until either someone wants to push
+the CIL items, or we run over a soft threshold and switch to slower (but
+more accurate) accounting with atomics.
 
-> > Signed-off-by: David Stevens <stevensd@chromium.org>
-> > ---
-> >  arch/x86/kvm/mmu/mmu.c | 35 +++++++++++++++++++++++++----------
-> >  1 file changed, 25 insertions(+), 10 deletions(-)
-> > 
-> > diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
-> > index ec169f5c7dce..e44ab512c3a1 100644
-> > --- a/arch/x86/kvm/mmu/mmu.c
-> > +++ b/arch/x86/kvm/mmu/mmu.c
-> > @@ -4296,7 +4296,12 @@ void kvm_arch_async_page_ready(struct kvm_vcpu *vcpu, struct kvm_async_pf *work)
-> >  static int __kvm_faultin_pfn(struct kvm_vcpu *vcpu, struct kvm_page_fault *fault)
-> >  {
-> >  	struct kvm_memory_slot *slot = fault->slot;
-> > -	bool async;
-> > +	struct kvm_follow_pfn foll = {
-> > +		.slot = slot,
-> > +		.gfn = fault->gfn,
-> > +		.flags = FOLL_GET | (fault->write ? FOLL_WRITE : 0),
-> > +		.allow_write_mapping = true,
-> > +	};
-> >  
-> >  	/*
-> >  	 * Retry the page fault if the gfn hit a memslot that is being deleted
-> > @@ -4325,12 +4330,14 @@ static int __kvm_faultin_pfn(struct kvm_vcpu *vcpu, struct kvm_page_fault *fault
-> >  			return RET_PF_EMULATE;
-> >  	}
-> >  
-> > -	async = false;
-> > -	fault->pfn = __gfn_to_pfn_memslot(slot, fault->gfn, false, false, &async,
-> > -					  fault->write, &fault->map_writable,
-> > -					  &fault->hva);
-> > -	if (!async)
-> > -		return RET_PF_CONTINUE; /* *pfn has correct page already */
-> > +	foll.flags |= FOLL_NOWAIT;
-> > +	fault->pfn = __kvm_follow_pfn(&foll);
-> > +
-> > +	if (!is_error_noslot_pfn(fault->pfn))
-> > +		goto success;
-> > +
-> > +	if (fault->pfn != KVM_PFN_ERR_NEEDS_IO)
-> > +		return RET_PF_CONTINUE;
-> 
-> IIUC, FOLL_NOWAIT is set only when we wanna an async fault. So
-> KVM_PFN_ERR_NEEDS_IO may not be necessary? 
+Unfortunately, the for_each_cpu iteration suffers from the same race
+with cpu dying problem that was identified in commit 8b57b11cca88f
+("pcpcntrs: fix dying cpu summation race") -- CPUs are removed from
+cpu_online_mask before the CPUHP_XFS_DEAD callback gets called.  As a
+result, both CIL percpu structure aggregation functions fail to collect
+the items and accounted space usage at the correct point in time.
 
-But FOLL_NOWAIT is set above.  This logic is essentially saying "bail immediately
-if __gfn_to_pfn_memslot() returned a fatal error".
+If we're lucky, the items that are collected from the online cpus exceed
+the space given to those cpus, and the log immediately shuts down in
+xlog_cil_insert_items due to the (apparent) log reservation overrun.
+This happens periodically with generic/650, which exercises cpu hotplug
+vs. the filesystem code.
 
-A commented would definitely be helpful though.  How about?
+Applying the same sort of fix from 8b57b11cca88f to the CIL code seems
+to make the generic/650 problem go away, but I've been told that tglx
+was not happy when he saw:
 
-	/*
-	 * If __kvm_follow_pfn() failed because I/O is needed to fault in the
-	 * page, then either set up an asynchronous #PF to do the I/O, or if
-	 * doing an async #PF isn't possible, retry __kvm_follow_pfn() with
-	  I/O allowed. All other failures are fatal, i.e. retrying won't help.
-	 */
-	if (fault->pfn != KVM_PFN_ERR_NEEDS_IO)
-		return RET_PF_CONTINUE;
+"...the only thing we actually need to care about is that
+percpu_counter_sum() iterates dying CPUs. That's trivial to do, and when
+there are no CPUs dying, it has no addition overhead except for a
+cpumask_or() operation."
+
+I have no idea what the /correct/ solution is, but I've been holding on
+to this patch for 3 months.  In that time, 8b57b11cca88 hasn't been
+reverted and cpu_dying_mask hasn't been removed, so I'm sending this and
+we'll see what happens.
+
+So, how /do/ we perform periodic aggregation of per-cpu data safely?
+Move the xlog_cil_pcp_dead call to the dying section, where at least the
+other cpus will all be stopped?  And have it dump its items into any
+online cpu's data structure?
+
+Link: https://lore.kernel.org/lkml/877cuj1mt1.ffs@tglx/
+Link: https://lore.kernel.org/lkml/20230414162755.281993820@linutronix.de/
+Cc: tglx@linutronix.de
+Cc: peterz@infradead.org
+Signed-off-by: Darrick J. Wong <djwong@kernel.org>
+---
+ fs/xfs/xfs_log_cil.c |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/fs/xfs/xfs_log_cil.c b/fs/xfs/xfs_log_cil.c
+index eccbfb99e8948..5c909ffcb25b7 100644
+--- a/fs/xfs/xfs_log_cil.c
++++ b/fs/xfs/xfs_log_cil.c
+@@ -124,7 +124,7 @@ xlog_cil_push_pcp_aggregate(
+ 	struct xlog_cil_pcp	*cilpcp;
+ 	int			cpu;
+ 
+-	for_each_online_cpu(cpu) {
++	for_each_cpu_or(cpu, cpu_online_mask, cpu_dying_mask) {
+ 		cilpcp = per_cpu_ptr(cil->xc_pcp, cpu);
+ 
+ 		ctx->ticket->t_curr_res += cilpcp->space_reserved;
+@@ -165,7 +165,7 @@ xlog_cil_insert_pcp_aggregate(
+ 	if (!test_and_clear_bit(XLOG_CIL_PCP_SPACE, &cil->xc_flags))
+ 		return;
+ 
+-	for_each_online_cpu(cpu) {
++	for_each_cpu_or(cpu, cpu_online_mask, cpu_dying_mask) {
+ 		int	old, prev;
+ 
+ 		cilpcp = per_cpu_ptr(cil->xc_pcp, cpu);
