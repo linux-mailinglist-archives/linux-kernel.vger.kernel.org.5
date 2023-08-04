@@ -2,117 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E368C770467
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 17:23:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C7E95770452
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 17:23:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232125AbjHDPXm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Aug 2023 11:23:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56684 "EHLO
+        id S232007AbjHDPXC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Aug 2023 11:23:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56928 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231194AbjHDPXV (ORCPT
+        with ESMTP id S231998AbjHDPXA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Aug 2023 11:23:21 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6987049D4
-        for <linux-kernel@vger.kernel.org>; Fri,  4 Aug 2023 08:22:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1691162558;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=cRTKIps5e2RvIdzVyJjgI0cG9YCwq1ahnGCNR3vJoyY=;
-        b=XK2utbw86Av27bRJty0o8g+Me1wuelaZC6+A/lYqcLSNZpqY7yC9XRUI8YoUZFA7mt/VTw
-        eSeyX4CL5Hqj+ryUXVSJl4qy3yclniZonkwjdosx2qvPP2eEZO3u4FJWV7okB3mxsN73qW
-        tLEDWfCUbjscYcUvlySsuPwGxLCb7xI=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-294-KRoTGT2sO_Ka4gD5uqoLZg-1; Fri, 04 Aug 2023 11:22:31 -0400
-X-MC-Unique: KRoTGT2sO_Ka4gD5uqoLZg-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.rdu2.redhat.com [10.11.54.3])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 7DDB483FC20;
-        Fri,  4 Aug 2023 15:22:30 +0000 (UTC)
-Received: from warthog.procyon.org.uk (unknown [10.42.28.131])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 701101121325;
-        Fri,  4 Aug 2023 15:22:28 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-From:   David Howells <dhowells@redhat.com>
-In-Reply-To: <2678222.1691162178@warthog.procyon.org.uk>
-References: <2678222.1691162178@warthog.procyon.org.uk> <bac543537058619345b363bbfc745927.paul@paul-moore.com> <20230802-master-v6-1-45d48299168b@kernel.org>
-To:     Paul Moore <paul@paul-moore.com>
-Cc:     dhowells@redhat.com, Jeff Layton <jlayton@kernel.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Christian Brauner <brauner@kernel.org>,
-        Trond Myklebust <trond.myklebust@hammerspace.com>,
-        Anna Schumaker <anna@kernel.org>,
-        James Morris <jmorris@namei.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>,
-        Stephen Smalley <stephen.smalley.work@gmail.com>,
-        Eric Paris <eparis@parisplace.org>,
-        Casey Schaufler <casey@schaufler-ca.com>,
-        Scott Mayhew <smayhew@redhat.com>,
-        Stephen Smalley <sds@tycho.nsa.gov>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-nfs@vger.kernel.org, linux-security-module@vger.kernel.org,
-        selinux@vger.kernel.org
-Subject: Re: [PATCH v6] vfs, security: Fix automount superblock LSM init problem, preventing NFS sb sharing
+        Fri, 4 Aug 2023 11:23:00 -0400
+Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1965149EB;
+        Fri,  4 Aug 2023 08:22:57 -0700 (PDT)
+Received: by mail-pl1-x631.google.com with SMTP id d9443c01a7336-1bb8a89b975so15263815ad.1;
+        Fri, 04 Aug 2023 08:22:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1691162576; x=1691767376;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=ZKT51FiIG/jADTR6ZwhJgUzQz0lXZlfjB4qfN7TtFMA=;
+        b=LgVupe8BUCkSq2TYgdUfTD8KvZ+1km7i2BgmfH3fot3UqjKMQlElJ/rORqbZLm8AlJ
+         ZQAW5g1LwA8SehbjIqMt07GJEPEuUc02i0Oel54nDzgzp7lnzp9jahMsUsQtDIIpMLvJ
+         La2yIQO68g8I4T3oYK/zjj8SwCfAZCwxMOZkyvJv9zBkhUMMoZKF6Kv30eoHgwzsJlic
+         fa39LJYKJNLKxcmc+0ljEUv8kOqPqSHZ1inB8PcLg0iKnCx7PuQ+0QG4w+WXmrMRJjIm
+         mKvgBdon8MsEyUV8VI/y4SCvdT9QCBVSZYcxNoJWUjzdbQTiWbHA6McivnQkCfkOA4Ai
+         gzDw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691162576; x=1691767376;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=ZKT51FiIG/jADTR6ZwhJgUzQz0lXZlfjB4qfN7TtFMA=;
+        b=Cf0boX5gyUJUlDh6too2NVrPh0BuN/mxD6Z5RZBPfmF+jer0Kyg4kBNFZHJDkK7t3j
+         SVzXBEClLuPgK6Car9Z+eu8BS2hW4jaZ5JbozV9UPoDkOjlYmzKe+ApUluRgjnalqjuA
+         MTFvl8jHJd/p9hNAH5UlsGNcVWrYapZCEEluVC5bcVu9SwxplmYGRg+MmrmSrlexS15K
+         sp6tTniuGcWgaVAUd5sCqqR8F/HRTyDLnkS2ZJ58H1CQIoZ0r8/aUEgbZd4Gqb0vy1cK
+         FuxbeqAL1uwhF0HAGYLwcOLebbYiq6QmPF7uF21DOSaj/cu5lpvt7JCQ2pRDhU7Fphod
+         kjRQ==
+X-Gm-Message-State: AOJu0YymnpFFGJMGhYL2QDoweKXYgq6A5pRxtx4o/7XP4fZOW9Ig962h
+        7kQaJ6hc6+nTItSfyruFlCY=
+X-Google-Smtp-Source: AGHT+IGDwpxERBz0T+Ye0CQ8gbyUjzUKBh2CRok0ropOPneel0Eg4K+EYe9Sf9moeYm5lu1u80ZA3Q==
+X-Received: by 2002:a17:902:c1c9:b0:1bc:32f2:812a with SMTP id c9-20020a170902c1c900b001bc32f2812amr1833697plc.27.1691162576353;
+        Fri, 04 Aug 2023 08:22:56 -0700 (PDT)
+Received: from ubuntu-Virtual-Machine.corp.microsoft.com ([2001:4898:80e8:f:a0bf:7946:90be:721b])
+        by smtp.gmail.com with ESMTPSA id s21-20020a170902989500b001aaf2e8b1eesm1891325plp.248.2023.08.04.08.22.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 04 Aug 2023 08:22:55 -0700 (PDT)
+From:   Tianyu Lan <ltykernel@gmail.com>
+To:     kys@microsoft.com, haiyangz@microsoft.com, wei.liu@kernel.org,
+        decui@microsoft.com, tglx@linutronix.de, mingo@redhat.com,
+        bp@alien8.de, dave.hansen@linux.intel.com, x86@kernel.org,
+        hpa@zytor.com, daniel.lezcano@linaro.org, arnd@arndb.de,
+        michael.h.kelley@microsoft.com
+Cc:     Tianyu Lan <tiala@microsoft.com>, linux-arch@vger.kernel.org,
+        linux-hyperv@vger.kernel.org, linux-kernel@vger.kernel.org,
+        vkuznets@redhat.com
+Subject: [PATCH V4 0/9] x86/hyperv: Add AMD sev-snp enlightened guest support on hyperv
+Date:   Fri,  4 Aug 2023 11:22:44 -0400
+Message-Id: <20230804152254.686317-1-ltykernel@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <2680107.1691162547.1@warthog.procyon.org.uk>
-Content-Transfer-Encoding: quoted-printable
-Date:   Fri, 04 Aug 2023 16:22:27 +0100
-Message-ID: <2680108.1691162547@warthog.procyon.org.uk>
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.3
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-David Howells <dhowells@redhat.com> wrote:
+From: Tianyu Lan <tiala@microsoft.com>
 
-> IIRC, the issue is when you make a mount with an explicit context=3D set=
-ting and
-> make another mount from some way down the export tree that doesn't have =
-an
-> explicit setting, e.g.:
-> =
+Hyper-V provides two modes for running SEV-SNP VMs:
 
-> 	mount carina:/ /mnt -o context=3Dsystem_u:object_r:root_t:s0
-> 	mount carina:/nfs/scratch /mnt2
-> =
+1) In vTOM mode with a paravisor (see Section 15.36.8 of [1])
+2) In "fully enlightened" mode with normal "C" bit control
+   over page encryption, and no paravisor
+ 
+For #1, the paravisor runs in VMPL 0, while Linux runs in VMPL 2
+(see Section 15.36.7 of [1]). The paravisor is typically provided
+by Hyper-V and handles most of the SNP-related functionality. As
+such, most of the SNP functionality in the Linux guest is bypassed.
+The guest operates in vTOM mode, where encryption is enabled by default.
+The guest must still request page transitions between private and shared,
+but there is relatively less SNP machinery required in the guest. Support
+for this mode of operation first went upstream in the 5.15 kernel.
 
-> and then cause an automount to walk from one to the other:
-> =
+For #2, this patch set provides the initial support. The existing
+SEV-SNP machinery in the kernel is fully used, but Hyper-V specific
+updates are required to properly share Hyper-V communication pages
+between the guest and host and to start APs at boot time.
 
-> 	stat /mnt/nfs/scratch/foo
+In either mode, Hyper-V requires that the guest implement the SEV-SNP
+Restricted Interrupt Injection feature (see Section 15.36.16 of [1],
+and Section 5 of [2]). Without this feature, the guest is subject to
+attack by a compromised hypervisor that can inject any exception at
+any time, such as injecting an interrupt while the guest has interrupts
+disabled. In vTOM mode, Restricted Interrupt Injection is implemented
+by the paravisor, so no Linux guest changes are required. But in fully
+enlightened mode, the Linux guest must provide the implementation.
 
-Actually, the order there isn't quite right.  The problem is with this ord=
-er:
+This patch set is derived from an earlier patch set that includes both
+the Hyper-V specific changes and Restricted Interrupt Injection support.[3]
+But it is now limited to only the Hyper-V specific changes. The Restricted
+Interrupt Injection support will come later in a separate patch set.
 
-	# mount carina:/ /mnt -o context=3Dsystem_u:object_r:root_t:s0
-	# stat /mnt/nfs/scratch/bus
-	  File: /mnt/nfs/scratch/bus
-	  Size: 124160          Blocks: 248        IO Block: 1048576 regular file
-	Device: 0,55    Inode: 131         Links: 1
-	...
-	# mount carina:/nfs/scratch /mnt2
-	mount.nfs: /mnt2 is busy or already mounted or sharecache fail
 
-with the error:
+[1] https://www.amd.com/system/files/TechDocs/24593.pdf
+[2] https://www.amd.com/system/files/TechDocs/56421-guest-hypervisor-communication-block-standardization.pdf
+[3] https://lore.kernel.org/lkml/20230515165917.1306922-1-ltykernel@gmail.com/
 
-	SELinux: mount invalid.  Same superblock, different security settings for=
- (dev 0:52, type nfs4)
+Change since v3:
+       * Fix fossil comment
 
-David
+Change since v2:
+       * Update Change log.
+       * Rework Hyper-V hypercall implementation.
+
+Change since v1:
+       * vTOM case uses paravisor_present flag and
+       	 HV_ISOLATION_TYPE_SNP type.
+       * Rework some patches' change log
+       * Fix some comments in the patches
+
+Tianyu Lan (9):
+  x86/hyperv: Add sev-snp enlightened guest static key
+  x86/hyperv: Set Virtual Trust Level in VMBus init message
+  x86/hyperv: Mark Hyper-V vp assist page unencrypted in SEV-SNP
+    enlightened guest
+  drivers: hv: Mark percpu hvcall input arg page unencrypted in SEV-SNP
+    enlightened guest
+  x86/hyperv: Use vmmcall to implement Hyper-V hypercall in sev-snp
+    enlightened guest
+  clocksource: hyper-v: Mark hyperv tsc page unencrypted in sev-snp
+    enlightened guest
+  x86/hyperv: Add smp support for SEV-SNP guest
+  x86/hyperv: Add hyperv-specific handling for VMMCALL under SEV-ES
+  x86/hyperv: Initialize cpu and memory for SEV-SNP enlightened guest
+
+ arch/x86/hyperv/hv_init.c          |  52 +++++++-
+ arch/x86/hyperv/ivm.c              | 199 +++++++++++++++++++++++++++++
+ arch/x86/include/asm/hyperv-tlfs.h |   7 +
+ arch/x86/include/asm/mshyperv.h    |  56 ++++++--
+ arch/x86/kernel/cpu/mshyperv.c     |  42 +++++-
+ drivers/clocksource/hyperv_timer.c |   2 +-
+ drivers/hv/connection.c            |   1 +
+ drivers/hv/hv.c                    |  57 ++++++++-
+ drivers/hv/hv_common.c             |  19 +++
+ include/asm-generic/hyperv-tlfs.h  |   1 +
+ include/asm-generic/mshyperv.h     |  13 +-
+ include/linux/hyperv.h             |   4 +-
+ 12 files changed, 426 insertions(+), 27 deletions(-)
+
+-- 
+2.25.1
 
