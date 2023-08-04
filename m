@@ -2,70 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5179E770256
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 15:53:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 58E22770258
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 15:55:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231382AbjHDNxB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Aug 2023 09:53:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32772 "EHLO
+        id S230105AbjHDNzk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Aug 2023 09:55:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34250 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231490AbjHDNwt (ORCPT
+        with ESMTP id S229582AbjHDNzi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Aug 2023 09:52:49 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E33C49D7;
-        Fri,  4 Aug 2023 06:52:34 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 02A5262040;
-        Fri,  4 Aug 2023 13:52:34 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 57914C433CA;
-        Fri,  4 Aug 2023 13:52:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691157153;
-        bh=TC4YXwOj6B2nFvsedG4JRUtxSNjcMaFXqnhITWQUs0M=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=QeZ5mfKBwwpqMRBRimueEJRhJ2BKfPui6VgqV0q6IHZCic36huGGTVRpCfEJ+fiGS
-         jrtRfFJFzlvVZ/DEeAcvHyDERmVNFIUtPt3WNzc0iM2rxqxuUCcYO+U5g3goOtEQMi
-         Em68m067AUNPs0yYd+BrV7zJ/ayyknohshL7rotyecFIZqQmEkdUTvdupIjDjXqnSi
-         z7lNwiYViBUMQFruvcYa8tL1s89koqMNjNpukqeFtFvxJvrQOmaPWdSCoAG5eR4WjC
-         +txxeF5y2FUqmCNbKPX2BlDN9imVV7KkdUqhfseg7036PPBKTcoEI/IysFuCrclMbP
-         YQW3p0pxf9iDA==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 00626CE0299; Fri,  4 Aug 2023 06:52:32 -0700 (PDT)
-Date:   Fri, 4 Aug 2023 06:52:32 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Joel Fernandes <joel@joelfernandes.org>
-Cc:     linux-kernel@vger.kernel.org, rcu@vger.kernel.org,
-        Alan Stern <stern@rowland.harvard.edu>,
-        Andrea Parri <parri.andrea@gmail.com>,
-        Will Deacon <will@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        David Howells <dhowells@redhat.com>,
-        Jade Alglave <j.alglave@ucl.ac.uk>,
-        Luc Maranget <luc.maranget@inria.fr>,
-        Akira Yokosawa <akiyks@gmail.com>,
-        Daniel Lustig <dlustig@nvidia.com>,
-        Jonathan Corbet <corbet@lwn.net>
-Subject: Re: [PATCH 2/2] docs: memory-barriers: Add note on plain-accesses to
- address-dependency barriers
-Message-ID: <3f53035f-3251-4531-b9b9-e12f371c1051@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <20230803032408.2514989-1-joel@joelfernandes.org>
- <20230803032408.2514989-2-joel@joelfernandes.org>
- <626d1b48-de6a-4a0b-95d3-3ac438878757@paulmck-laptop>
- <20230804051127.GA3860381@google.com>
+        Fri, 4 Aug 2023 09:55:38 -0400
+Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5BD0FCC;
+        Fri,  4 Aug 2023 06:55:37 -0700 (PDT)
+Received: from canpemm500007.china.huawei.com (unknown [172.30.72.57])
+        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4RHRxG1MSSz1Z1S8;
+        Fri,  4 Aug 2023 21:52:50 +0800 (CST)
+Received: from localhost (10.174.179.215) by canpemm500007.china.huawei.com
+ (7.192.104.62) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Fri, 4 Aug
+ 2023 21:55:34 +0800
+From:   Yue Haibing <yuehaibing@huawei.com>
+To:     <mathias.nyman@intel.com>, <gregkh@linuxfoundation.org>
+CC:     <linux-usb@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <yuehaibing@huawei.com>
+Subject: [PATCH -next] xhci: Remove unused function declarations
+Date:   Fri, 4 Aug 2023 21:55:20 +0800
+Message-ID: <20230804135520.20964-1-yuehaibing@huawei.com>
+X-Mailer: git-send-email 2.10.2.windows.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230804051127.GA3860381@google.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+Content-Type: text/plain
+X-Originating-IP: [10.174.179.215]
+X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
+ canpemm500007.china.huawei.com (7.192.104.62)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -73,71 +45,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 04, 2023 at 05:11:27AM +0000, Joel Fernandes wrote:
-> On Thu, Aug 03, 2023 at 11:52:06AM -0700, Paul E. McKenney wrote:
-> > On Thu, Aug 03, 2023 at 03:24:07AM +0000, Joel Fernandes (Google) wrote:
-> > > The compiler has the ability to cause misordering by destroying
-> > > address-dependency barriers if comparison operations are used. Add a
-> > > note about this to memory-barriers.txt and point to rcu-dereference.rst
-> > > for more information.
-> > > 
-> > > Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
-> > > ---
-> > >  Documentation/memory-barriers.txt | 5 +++++
-> > >  1 file changed, 5 insertions(+)
-> > > 
-> > > diff --git a/Documentation/memory-barriers.txt b/Documentation/memory-barriers.txt
-> > > index 06e14efd8662..acc8ec5ce563 100644
-> > > --- a/Documentation/memory-barriers.txt
-> > > +++ b/Documentation/memory-barriers.txt
-> > > @@ -435,6 +435,11 @@ Memory barriers come in four basic varieties:
-> > >       variables such as READ_ONCE() and rcu_dereference() provide implicit
-> > >       address-dependency barriers.
-> > >  
-> > > +     [!] Note that address dependency barriers can be destroyed by comparison
-> > > +     of a pointer obtained by a marked accessor such as READ_ONCE() or
-> > > +     rcu_dereference() with some value.  For an example of this, see
-> > > +     rcu_dereference.rst (part where the comparison of pointers is discussed).
-> > 
-> > Hmmm...
-> > 
-> > Given that this is in a section marked "historical" (for the old
-> > smp_read_barrier_depends() API), why not instead add a pointer to
-> > Documentation/RCU/rcu_dereference.rst to the beginning of the section,
-> > noted as the updated material?
-> 
-> Sounds good. There's also another section in the same file on Address
-> dependency barriers (also marked historical). So something like the
-> following?
+Commit 674f8438c121 ("xhci: split handling halted endpoints into two steps")
+remove xhci_cleanup_stalled_ring() but leave declaration.
+And commit 25355e046d29 ("xhci: use generic command timer for stop endpoint commands.")
+left behind xhci_stop_endpoint_command_watchdog().
+Commit b17a57f89f69 ("xhci: Refactor interrupter code for initial multi interrupter support.")
+leave xhci_free_erst() declaration.
 
-Given a Signed-off-by and so forth, I would be happy to take this one.
+Signed-off-by: Yue Haibing <yuehaibing@huawei.com>
+---
+ drivers/usb/host/xhci.h | 5 -----
+ 1 file changed, 5 deletions(-)
 
-							Thanx, Paul
+diff --git a/drivers/usb/host/xhci.h b/drivers/usb/host/xhci.h
+index 7e282b4522c0..4cae1d4b7a86 100644
+--- a/drivers/usb/host/xhci.h
++++ b/drivers/usb/host/xhci.h
+@@ -2084,7 +2084,6 @@ int xhci_alloc_erst(struct xhci_hcd *xhci,
+ 		gfp_t flags);
+ void xhci_initialize_ring_info(struct xhci_ring *ring,
+ 			unsigned int cycle_state);
+-void xhci_free_erst(struct xhci_hcd *xhci, struct xhci_erst *erst);
+ void xhci_free_endpoint_ring(struct xhci_hcd *xhci,
+ 		struct xhci_virt_device *virt_dev,
+ 		unsigned int ep_index);
+@@ -2184,10 +2183,6 @@ int xhci_queue_reset_ep(struct xhci_hcd *xhci, struct xhci_command *cmd,
+ 		enum xhci_ep_reset_type reset_type);
+ int xhci_queue_reset_device(struct xhci_hcd *xhci, struct xhci_command *cmd,
+ 		u32 slot_id);
+-void xhci_cleanup_stalled_ring(struct xhci_hcd *xhci, unsigned int slot_id,
+-			       unsigned int ep_index, unsigned int stream_id,
+-			       struct xhci_td *td);
+-void xhci_stop_endpoint_command_watchdog(struct timer_list *t);
+ void xhci_handle_command_timeout(struct work_struct *work);
+ 
+ void xhci_ring_ep_doorbell(struct xhci_hcd *xhci, unsigned int slot_id,
+-- 
+2.34.1
 
-> ---8<-----------------------
-> 
-> diff --git a/Documentation/memory-barriers.txt b/Documentation/memory-barriers.txt
-> index acc8ec5ce563..ba50220716ca 100644
-> --- a/Documentation/memory-barriers.txt
-> +++ b/Documentation/memory-barriers.txt
-> @@ -396,6 +396,10 @@ Memory barriers come in four basic varieties:
->  
->  
->   (2) Address-dependency barriers (historical).
-> +     [!] This section is marked as HISTORICAL: For more up-to-date
-> +     information, including how compiler transformations related to pointer
-> +     comparisons can sometimes cause problems, see
-> +     Documentation/RCU/rcu_dereference.rst.
->  
->       An address-dependency barrier is a weaker form of read barrier.  In the
->       case where two loads are performed such that the second depends on the
-> @@ -561,6 +565,9 @@ There are certain things that the Linux kernel memory barriers do not guarantee:
->  
->  ADDRESS-DEPENDENCY BARRIERS (HISTORICAL)
->  ----------------------------------------
-> +[!] This section is marked as HISTORICAL: For more up-to-date information,
-> +including how compiler transformations related to pointer comparisons can
-> +sometimes cause problems, see Documentation/RCU/rcu_dereference.rst.
->  
->  As of v4.15 of the Linux kernel, an smp_mb() was added to READ_ONCE() for
->  DEC Alpha, which means that about the only people who need to pay attention
