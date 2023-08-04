@@ -2,155 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D95A876FF06
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 12:52:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 650A076FF07
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 12:55:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231666AbjHDKwv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Aug 2023 06:52:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51842 "EHLO
+        id S231724AbjHDKzR convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 4 Aug 2023 06:55:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51812 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231565AbjHDKw1 (ORCPT
+        with ESMTP id S231289AbjHDKyz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Aug 2023 06:52:27 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 907184ECA;
-        Fri,  4 Aug 2023 03:49:59 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 149C661FAE;
-        Fri,  4 Aug 2023 10:49:45 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5677BC433C8;
-        Fri,  4 Aug 2023 10:49:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691146184;
-        bh=6wEAhsdKD605Kpg3pmFf+yAduxBEJdnh1zQ9VC2lH+Y=;
-        h=Date:Cc:Subject:To:References:From:In-Reply-To:From;
-        b=HWD3/zqYL2D+G4Je/OVGF4ZX0qepzRs8cAalGTgD/1M3gd1oON28OHJ+cEk2gjdmR
-         d5pl63TF1E4YPNAhLXq58AJL4ZUsKdmoJhLMDnXA+p2G+I9Gf6+R5B6EQszD9XA9/1
-         b+cwGTNyrcoSkrLmKllZoF+ThD0t2sO4gtkecfF63NTCeVKKpOdjixNjbAsZnlWo5p
-         b9f00O44jqmbczxwg6818cY+ZG9a4ixjGXwazv2gZ8ArbYcHUgSEyAD9kuwLHtO66A
-         r7yzjcp9sE6yoaXGzfehBQl712NJVBCgRKkM7LFDLDekMkU1/ur6AUmMItCQdsUuuT
-         Gw+sHFTOuKQ+w==
-Message-ID: <7d159ee4-7361-c04a-681e-1afc74765c5b@kernel.org>
-Date:   Fri, 4 Aug 2023 12:49:37 +0200
+        Fri, 4 Aug 2023 06:54:55 -0400
+Received: from eu-smtp-delivery-151.mimecast.com (eu-smtp-delivery-151.mimecast.com [185.58.86.151])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83D2E4ECD
+        for <linux-kernel@vger.kernel.org>; Fri,  4 Aug 2023 03:52:32 -0700 (PDT)
+Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) by
+ relay.mimecast.com with ESMTP with both STARTTLS and AUTH (version=TLSv1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ uk-mta-221-PzOE0VZdOf6Jz9cwnrWqEA-1; Fri, 04 Aug 2023 11:51:01 +0100
+X-MC-Unique: PzOE0VZdOf6Jz9cwnrWqEA-1
+Received: from AcuMS.Aculab.com (10.202.163.6) by AcuMS.aculab.com
+ (10.202.163.6) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Fri, 4 Aug
+ 2023 11:50:59 +0100
+Received: from AcuMS.Aculab.com ([::1]) by AcuMS.aculab.com ([::1]) with mapi
+ id 15.00.1497.048; Fri, 4 Aug 2023 11:50:59 +0100
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     "'linux-kernel@vger.kernel.org'" <linux-kernel@vger.kernel.org>,
+        "'Andy Shevchenko'" <andriy.shevchenko@linux.intel.com>,
+        'Andrew Morton' <akpm@linux-foundation.org>,
+        "'Matthew Wilcox (Oracle)'" <willy@infradead.org>,
+        'Christoph Hellwig' <hch@infradead.org>,
+        "'Jason A. Donenfeld'" <Jason@zx2c4.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: [PATCH next v3 0/5] minmax: Relax type checks in min() and max().
+Thread-Topic: [PATCH next v3 0/5] minmax: Relax type checks in min() and
+ max().
+Thread-Index: AdnGwQ6IGYkn0IjZSjuTaOSyeQI0Uw==
+Date:   Fri, 4 Aug 2023 10:50:59 +0000
+Message-ID: <01e3e09005e9434b8f558a893a47c053@AcuMS.aculab.com>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Cc:     decui@microsoft.com, kys@microsoft.com, paulros@microsoft.com,
-        olaf@aepfle.de, vkuznets@redhat.com, davem@davemloft.net,
-        wei.liu@kernel.org, edumazet@google.com, kuba@kernel.org,
-        pabeni@redhat.com, leon@kernel.org, longli@microsoft.com,
-        ssengar@linux.microsoft.com, linux-rdma@vger.kernel.org,
-        daniel@iogearbox.net, john.fastabend@gmail.com,
-        bpf@vger.kernel.org, ast@kernel.org, sharmaajay@microsoft.com,
-        hawk@kernel.org, tglx@linutronix.de,
-        shradhagupta@linux.microsoft.com, linux-kernel@vger.kernel.org,
-        Ilias Apalodimas <ilias.apalodimas@linaro.org>
-Subject: Re: [PATCH V5,net-next] net: mana: Add page pool for RX buffers
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
 Content-Language: en-US
-To:     Jesse Brandeburg <jesse.brandeburg@intel.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        linux-hyperv@vger.kernel.org, netdev@vger.kernel.org
-References: <1690999650-9557-1-git-send-email-haiyangz@microsoft.com>
- <e1093991-6f54-2c8d-c713-babac0d216d4@intel.com>
-From:   Jesper Dangaard Brouer <hawk@kernel.org>
-In-Reply-To: <e1093991-6f54-2c8d-c713-babac0d216d4@intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+The min() (etc) functions in minmax.h require that the arguments have
+exactly the same types. This was probably added after an 'accident'
+where a negative value got converted to a large unsigned value.
 
+However when the type check fails, rather than look at the types and
+fix the type of a variable/constant, everyone seems to jump on min_t().
+In reality min_t() ought to be rare - when something unusual is being
+done, not normality.
 
-On 03/08/2023 03.44, Jesse Brandeburg wrote:
-> On 8/2/2023 11:07 AM, Haiyang Zhang wrote:
->> Add page pool for RX buffers for faster buffer cycle and reduce CPU
->> usage.
->>
+A quick grep shows 5734 min() and 4597 min_t().
+Having the casts on almost half of the calls shows that something
+is clearly wrong.
 
-Can you add some info on the performance improvement this patch gives?
+If the wrong type is picked (and it is far too easy to pick the type
+of the result instead of the larger input) then significant bits can
+get discarded.
+Pretty much the worst example is in the derfved clamp_val(), consider:
+        unsigned char x = 200u;
+        y = clamp_val(x, 10u, 300u);
 
-Your previous post mentioned:
- > With iperf and 128 threads test, this patch improved the throughput 
-by 12-15%, and decreased the IRQ associated CPU's usage from 99-100% to 
-10-50%.
+I also suspect that many of the min_t(u16, ...) are actually wrong.
+For example copy_data() in printk_ringbuffer.c contains:
+        data_size = min_t(u16, buf_size, len);
+Here buf_size is 'unsigned int' and len 'u16', pass a 64k buffer
+(can you prove that doesn't happen?) and no data is returned.
 
+The only reason that most of the min_t() are 'fine' is that pretty
+much all the values in the kernel are between 0 and INT_MAX.
 
->> The standard page pool API is used.
->>
->> Signed-off-by: Haiyang Zhang <haiyangz@microsoft.com>
->> ---
->> V5:
->> In err path, set page_pool_put_full_page(..., false) as suggested by
->> Jakub Kicinski
->> V4:
->> Add nid setting, remove page_pool_nid_changed(), as suggested by
->> Jesper Dangaard Brouer
->> V3:
->> Update xdp mem model, pool param, alloc as suggested by Jakub Kicinski
->> V2:
->> Use the standard page pool API as suggested by Jesper Dangaard Brouer
->> ---
-> 
->> diff --git a/include/net/mana/mana.h b/include/net/mana/mana.h
->> index 024ad8ddb27e..b12859511839 100644
->> --- a/include/net/mana/mana.h
->> +++ b/include/net/mana/mana.h
->> @@ -280,6 +280,7 @@ struct mana_recv_buf_oob {
->>   	struct gdma_wqe_request wqe_req;
->>   
->>   	void *buf_va;
->> +	bool from_pool; /* allocated from a page pool */
-> 
-> suggest you use flags and not bools, as bools waste 7 bits each, plus
-> your packing of this struct will be full of holes, made worse by this
-> patch. (see pahole tool)
-> 
+Patch 1 adds min_unsigned(), this uses integer promotions to convert
+both arguments to 'unsigned long long'. It can be used to compare a
+signed type that is known to contain a non-negative value with an
+unsigned type. The compiler typically optimises it all away.
+Added first so that it can be referred to in patch 2.
 
-Agreed.
+Patch 2 replaces the 'same type' check with a 'same signedness' one.
+This makes min(unsigned_int_var, sizeof()) be ok.
+The error message is also improved and will contain the expanded
+form of both arguments (useful for seeing how constants are defined).
 
-> 
->>   
->>   	/* SGL of the buffer going to be sent has part of the work request. */
->>   	u32 num_sge;
->> @@ -330,6 +331,8 @@ struct mana_rxq {
->>   	bool xdp_flush;
->>   	int xdp_rc; /* XDP redirect return code */
->>   
->> +	struct page_pool *page_pool;
->> +
->>   	/* MUST BE THE LAST MEMBER:
->>   	 * Each receive buffer has an associated mana_recv_buf_oob.
->>   	 */
-> 
-> 
-> The rest of the patch looks ok and is remarkably compact for a
-> conversion to page pool. I'd prefer someone with more page pool exposure
-> review this for correctness, but FWIW
- >
+Patch 3 just fixes some whitespace.
 
-Both Jakub and I have reviewed the page_pool parts, and I think we are
-in a good place.
+Patch 4 allows comparisons of 'unsigned char' and 'unsigned short'
+to signed types. The integer promotion rules convert them both
+to 'signed int' prior to the comparison so they can never cause
+a negative value be converted to a large positive one.
 
-Looking at the driver, I wonder why you are keeping the driver local
-memory cache (when PP is also contains a memory cache) ?
-(I assume there is a good reason, so this is not blocking patch)
+Patch 5 is slightly more contentious (Linus may not like it!)
+effectively adds an (int) cast to all constants between 0 and MAX_INT.
+This makes min(signed_int_var, sizeof()) be ok.
 
-> 
-> Reviewed-by: Jesse Brandeburg <jesse.brandeburg@intel.com>
+With all the patches applied pretty much all the min_t() could be
+replaced by min(), and most of the rest by min_unsigned().
+However they all need careful inspection due to code like:
+        sz = min_t(unsigned char, sz - 1, LIM - 1) + 1;
+which converts 0 to LIM.
 
-Thanks for taking your time to review.
+v3 Fix more issues found by the build robot
+v2 Fixes some issues found by the kernel build robot.
+No functional changes.
 
-I'm ready to ACK once the description is improved a bit :-)
+David Laight (5):
+  minmax: Add min_unsigned(a, b) and max_unsigned(a, b)
+  minmax: Allow min()/max()/clamp() if the arguments have the same
+    signedness.
+  Fix indentation of __cmp_once() and __clamp_once()
+  Allow comparisons of 'int' against 'unsigned char/short'.
+  Relax check to allow comparison between int and small unsigned
+    constants.
 
---Jesper
-pw-bot: cr
+ include/linux/minmax.h | 103 +++++++++++++++++++++++++++--------------
+ 1 file changed, 68 insertions(+), 35 deletions(-)
+
+-- 
+2.17.1
+
+-
+Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
+Registration No: 1397386 (Wales)
+
