@@ -2,345 +2,190 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F1F8F7701A0
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 15:32:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AF8957701C8
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 15:35:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230014AbjHDNcQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Aug 2023 09:32:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44796 "EHLO
+        id S230274AbjHDNe6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Aug 2023 09:34:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48032 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230208AbjHDNcM (ORCPT
+        with ESMTP id S231181AbjHDNew (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Aug 2023 09:32:12 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id C69CC198C;
-        Fri,  4 Aug 2023 06:31:52 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 92FED1007;
-        Fri,  4 Aug 2023 06:32:34 -0700 (PDT)
-Received: from donnerap.manchester.arm.com (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 9852C3F5A1;
-        Fri,  4 Aug 2023 06:31:48 -0700 (PDT)
-Date:   Fri, 4 Aug 2023 14:31:45 +0100
-From:   Andre Przywara <andre.przywara@arm.com>
-To:     Martin Botka <martin@biqu3d.com>
-Cc:     martin.botka1@gmail.com,
-        Konrad Dybcio <konrad.dybcio@somainline.org>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@somainline.org>,
-        Marijn Suijten <marijn.suijten@somainline.org>,
-        Jami Kettunen <jamipkettunen@somainline.org>,
-        Paul Bouchara <paul.bouchara@somainline.org>,
-        Martin Botka <martin.botka@somainline.org>,
+        Fri, 4 Aug 2023 09:34:52 -0400
+Received: from mx.skole.hr (mx2.hosting.skole.hr [161.53.165.186])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 301E7CC;
+        Fri,  4 Aug 2023 06:34:42 -0700 (PDT)
+Received: from mx2.hosting.skole.hr (localhost.localdomain [127.0.0.1])
+        by mx.skole.hr (mx.skole.hr) with ESMTP id BC46E85337;
+        Fri,  4 Aug 2023 15:34:39 +0200 (CEST)
+From:   =?utf-8?q?Duje_Mihanovi=C4=87?= <duje.mihanovic@skole.hr>
+Subject: [PATCH v3 0/8] Initial Marvell PXA1908 support
+Date:   Fri, 04 Aug 2023 15:32:30 +0200
+Message-Id: <20230804-pxa1908-lkml-v3-0-8e48fca37099@skole.hr>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+X-B4-Tracking: v=1; b=H4sIAO/9zGQC/6tWKk4tykwtVrJSqFYqSi3LLM7MzwNyjHUUlJIzE
+ vPSU3UzU4B8JSMDI2MDCwNj3YKKRENLAwvdnOzcHF0zC2ODVIuURBPTZHMloJaCotS0zAqwcdG
+ xtbUAKFsjEl4AAAA=
+To:     Robert Jarzmik <robert.jarzmik@free.fr>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <brgl@bgdev.pl>,
+        Andy Shevchenko <andy@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
         Rob Herring <robh+dt@kernel.org>,
         Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
         Conor Dooley <conor+dt@kernel.org>,
-        Chen-Yu Tsai <wens@csie.org>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Samuel Holland <samuel@sholland.org>,
-        Icenowy Zheng <uwu@icenowy.me>,
-        Ludwig Kormann <ludwig.kormann@ict42.de>,
-        Andrew Lunn <andrew@lunn.ch>, Heiko Stuebner <heiko@sntech.de>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Chris Morgan <macromorgan@hotmail.com>,
-        Jagan Teki <jagan@edgeble.ai>,
-        Maxime Ripard <mripard@kernel.org>, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 3/4] arm64: dts: allwinner: h616: Add BigTreeTech CB1
- SoM & boards support
-Message-ID: <20230804143145.061c8b95@donnerap.manchester.arm.com>
-In-Reply-To: <3DE536B6217490F4+20230804090102.273029-4-martin@biqu3d.com>
-References: <20230804090102.273029-1-martin@biqu3d.com>
-        <3DE536B6217490F4+20230804090102.273029-4-martin@biqu3d.com>
-Organization: ARM
-X-Mailer: Claws Mail 3.18.0 (GTK+ 2.24.32; aarch64-unknown-linux-gnu)
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+        Lubomir Rintel <lkundrak@v3.sk>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Tony Luck <tony.luck@intel.com>,
+        "Guilherme G. Piccoli" <gpiccoli@igalia.com>,
+        =?utf-8?q?Duje_Mihanovi=C4=87?= <duje.mihanovic@skole.hr>
+Cc:     linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-clk@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-hardening@vger.kernel.org,
+        ~postmarketos/upstreaming@lists.sr.ht, phone-devel@vger.kernel.org,
+        afaerber@suse.de,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+X-Mailer: b4 0.12.3
+X-Developer-Signature: v=1; a=openpgp-sha256; l=5092;
+ i=duje.mihanovic@skole.hr; h=from:subject:message-id;
+ bh=/cT/erBNTT9Ft+eVs2wFsdcJtdNU/409mW+ZwiBoDeQ=;
+ b=owEBbQKS/ZANAwAIAZoRnrBCLZbhAcsmYgBkzP48upgOt1WvbbVNQBPLNHe8Z9Q+2L45Qgurj
+ su4PPTWiMuJAjMEAAEIAB0WIQRT351NnD/hEPs2LXiaEZ6wQi2W4QUCZMz+PAAKCRCaEZ6wQi2W
+ 4TEeD/9/t6IHBt/FARKWp80ZkQ5qLSTldB8OJ6AZai87JGXgbGVRegNcKc2igBdpQ1yK0txC6fF
+ tLQLHMuCAnLfDFrT90obb0cDnQ4rDpOGl9d1jNjpshKXnmJUHAcBuUFDYPKPDirlcHVjy//d/ng
+ zaLEdH8Om4yC2qMrB9Z0LoOJhJgsp3YXgPqzk6qqmHTP1r0LHc8gAvh6yKV6Yrxo08xLDbne1u3
+ IlKCXGql8nJQnLtTZjzoPIk3PuYxl/Ut6mkEAD0RBvTtS/ExLJR5naiCTR0DrCuLhlcCOZD5LYK
+ AOmtVaOm8ZZ6pt49MQZeg/f1XEfg1feqAYU3CZYw4KmE/3UvVNbs/oNFr68WR/wxIKDmrwilOs4
+ 2DaBUAU1IqF1zRQfZSgPRKGZFPuRPBRed+eWRxwc+73+0l/lGgjFVo3P2u4k091tZtvDtOvaGBC
+ LfDcvXDCEJnd5xlwUDzcAsDhH9nEB0sTsoQ7bZ/EZtyOKjMzib50yYbZZH4obMv9ckkwz/S3lAM
+ kQL2chdWBK0JaPaMxabWbodGf68QmWt00MTdH1rY1ZPSKBkHDTUlR2WindjP+6lGOAdR70Hen2C
+ F6Ma6ye3tERWFqcVyQZFUrWqnbvFa2BlEmAMOnlYw8uVswXGv44yT0nBiYPcsDmQzfSMIAzi5ns
+ 9ByN+DoT7PZ2pxw==
+X-Developer-Key: i=duje.mihanovic@skole.hr; a=openpgp;
+ fpr=53DF9D4D9C3FE110FB362D789A119EB0422D96E1
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri,  4 Aug 2023 11:00:31 +0200
-Martin Botka <martin@biqu3d.com> wrote:
+v2 -> v3:
+- Address maintainer comments:
+  - Drop GPIO dynamic allocation patch
+  - Move clock register offsets into driver (instead of bindings file)
+  - Add missing Tested-by trailer to u32_fract patch
+  - Move SoC binding to arm/mrvl/mrvl.yaml
+- Add serial0 alias and stdout-path to board dts to enable UART
+  debugging
+- Rebase on v6.5-rc4
 
-Hi,
+v1 -> v2:
+- Remove earlycon patch as it's been merged into tty-next
+- Address maintainer comments:
+  - Clarify GPIO regressions on older PXA platforms
+  - Add Fixes tag to commit disabling GPIO pinctrl calls for this SoC
+  - Add missing includes to clock driver
+  - Clock driver uses HZ_PER_MHZ, u32_fract and GENMASK
+  - Dual license clock bindings
+  - Change clock IDs to decimal
+  - Fix underscores in dt node names
+  - Move chosen node to top of board dts
+  - Clean up documentation
+  - Reorder commits
+  - Drop pxa,rev-id
+- Rename muic-i2c to i2c-muic
+- Reword some commits
+- Move framebuffer node to chosen
+- Add aliases for mmc nodes
+- Rebase on v6.5-rc3
 
-thanks for the changes. Some minor things left ...
+Hello,
 
-> From: Martin Botka <martin.botka@somainline.org>
-> 
-> CB1 is Compute Module style board that plugs into Rpi board style adapter or
-> Manta 3D printer boards (M4P/M8P).
-> 
-> The SoM features:
->   - H616 SoC
->   - 1GiB of RAM
->   - AXP313A PMIC
->   - RTL8189FTV WiFi
-> 
-> Boards feature:
->   - 4x USB via USB2 hub (usb1 on SoM).
->   - SDcard slot for loading images.
->   - Ethernet port wired to the internal PHY. (100M)
->   - 2x HDMI 2.0. (Only 1 usable on CB1)
->   - Power and Status LEDs. (Only Status LED usable on CB1)
->   - 40 pin GPIO header
-> 
-> Currently working:
->   - Booting
->   - USB (USB-OTG doesnt work)
->   - UART
->   - MMC
->   - Status LED
->   - WiFi (RTL8189FS via out of tree driver)
-> 
-> I didnt want to duplicate things so the manta DTS can also be used on BTT pi4b adapter.
-> CB1 SoM has its own DTSI file in case other boards shows up that accept this SoM.
-> 
-> Signed-off-by: Martin Botka <martin.botka@somainline.org>
-> ---
-> Changes in V2:
->     - Fixed whitespace errors
->     - Move UART into carrier boards and BTT Pi
->     - Remove usb1-vbus regulator
->     - Fix ranges and naming of AXP313A rails
->     - Add comment specifying why broken-cd in mmc0 is needed
->     - Rename sdio_wifi to wifi
->     - Specify in commit description that USB-OTG doesnt work
-> 
->  arch/arm64/boot/dts/allwinner/Makefile        |   1 +
->  .../sun50i-h616-bigtreetech-cb1-manta.dts     |  35 +++++
->  .../sun50i-h616-bigtreetech-cb1.dtsi          | 142 ++++++++++++++++++
->  3 files changed, 178 insertions(+)
->  create mode 100644 arch/arm64/boot/dts/allwinner/sun50i-h616-bigtreetech-cb1-manta.dts
->  create mode 100644 arch/arm64/boot/dts/allwinner/sun50i-h616-bigtreetech-cb1.dtsi
-> 
-> diff --git a/arch/arm64/boot/dts/allwinner/Makefile b/arch/arm64/boot/dts/allwinner/Makefile
-> index 6a96494a2e0a..7b386428510b 100644
-> --- a/arch/arm64/boot/dts/allwinner/Makefile
-> +++ b/arch/arm64/boot/dts/allwinner/Makefile
-> @@ -38,5 +38,6 @@ dtb-$(CONFIG_ARCH_SUNXI) += sun50i-h6-pine-h64.dtb
->  dtb-$(CONFIG_ARCH_SUNXI) += sun50i-h6-pine-h64-model-b.dtb
->  dtb-$(CONFIG_ARCH_SUNXI) += sun50i-h6-tanix-tx6.dtb
->  dtb-$(CONFIG_ARCH_SUNXI) += sun50i-h6-tanix-tx6-mini.dtb
-> +dtb-$(CONFIG_ARCH_SUNXI) += sun50i-h616-bigtreetech-cb1-manta.dtb
->  dtb-$(CONFIG_ARCH_SUNXI) += sun50i-h616-orangepi-zero2.dtb
->  dtb-$(CONFIG_ARCH_SUNXI) += sun50i-h616-x96-mate.dtb
-> diff --git a/arch/arm64/boot/dts/allwinner/sun50i-h616-bigtreetech-cb1-manta.dts b/arch/arm64/boot/dts/allwinner/sun50i-h616-bigtreetech-cb1-manta.dts
-> new file mode 100644
-> index 000000000000..9a30d7d627d9
-> --- /dev/null
-> +++ b/arch/arm64/boot/dts/allwinner/sun50i-h616-bigtreetech-cb1-manta.dts
-> @@ -0,0 +1,35 @@
-> +// SPDX-License-Identifier: (GPL-2.0+ or MIT)
-> +/*
-> + * Copyright (C) 2023 Martin Botka <martin.botka@somainline.org>.
-> + */
-> +
-> +/dts-v1/;
-> +
-> +#include "sun50i-h616-bigtreetech-cb1.dtsi"
-> +
-> +/ {
-> +	compatible = "bigtreetech,cb1-manta", "allwinner,sun50i-h616";
+This series adds initial support for the Marvell PXA1908 SoC and
+"samsung,coreprimevelte", a smartphone using the SoC.
 
-This must follow what you just added to sunxi.yaml, so:
-"bigtreetech,cb1-manta", "bigtreetech,cb1", "allwinner,sun50i-h616";
+USB works and the phone can boot a rootfs from an SD card, but there are
+some warnings in the dmesg:
 
-And you need the human readable "model" string *here*.
+During SMP initialization:
+[    0.006519] CPU features: SANITY CHECK: Unexpected variation in SYS_CNTFRQ_EL0. Boot CPU: 0x000000018cba80, CPU1: 0x00000000000000
+[    0.006542] CPU features: Unsupported CPU feature variation detected.
+[    0.006589] CPU1: Booted secondary processor 0x0000000001 [0x410fd032]
+[    0.010710] Detected VIPT I-cache on CPU2
+[    0.010716] CPU features: SANITY CHECK: Unexpected variation in SYS_CNTFRQ_EL0. Boot CPU: 0x000000018cba80, CPU2: 0x00000000000000
+[    0.010758] CPU2: Booted secondary processor 0x0000000002 [0x410fd032]
+[    0.014849] Detected VIPT I-cache on CPU3
+[    0.014855] CPU features: SANITY CHECK: Unexpected variation in SYS_CNTFRQ_EL0. Boot CPU: 0x000000018cba80, CPU3: 0x00000000000000
+[    0.014895] CPU3: Booted secondary processor 0x0000000003 [0x410fd032]
 
-> +
-> +	aliases {
-> +		serial0 = &uart0;
-> +	};
-> +
-> +	chosen {
-> +		stdout-path = "serial0:115200n8";
-> +	};
-> +};
-> +
-> +&ehci1 {
-> +	status = "okay";
-> +};
-> +
-> +&ohci1 {
-> +	status = "okay";
-> +};
-> +
-> +&uart0 {
-> +	pinctrl-names = "default";
-> +	pinctrl-0 = <&uart0_ph_pins>;
-> +	status = "okay";
-> +};
-> +
+SMMU probing fails:
+[    0.101798] arm-smmu c0010000.iommu: probing hardware configuration...
+[    0.101809] arm-smmu c0010000.iommu: SMMUv1 with:
+[    0.101816] arm-smmu c0010000.iommu:         no translation support!
 
-Extra empty line here.
+On Samsung's PXA1908 phones, the bootloader does not start the ARM
+system timer, and my temporary solution (which isn't present in this
+series) was to put the code for starting the timer in the clock driver.
+Would this hack be accepted upstream in the form of a platform or
+clocksource driver such as drivers/clocksource/timer-mediatek-cpux.c?
 
-> diff --git a/arch/arm64/boot/dts/allwinner/sun50i-h616-bigtreetech-cb1.dtsi b/arch/arm64/boot/dts/allwinner/sun50i-h616-bigtreetech-cb1.dtsi
-> new file mode 100644
-> index 000000000000..669c05f642dd
-> --- /dev/null
-> +++ b/arch/arm64/boot/dts/allwinner/sun50i-h616-bigtreetech-cb1.dtsi
-> @@ -0,0 +1,142 @@
-> +// SPDX-License-Identifier: (GPL-2.0+ or MIT)
-> +/*
-> + * Copyright (C) 2023 Martin Botka <martin.botka@somainline.org>.
-> + */
-> +
-> +/dts-v1/;
-> +
-> +#include "sun50i-h616.dtsi"
-> +
-> +#include <dt-bindings/gpio/gpio.h>
-> +#include <dt-bindings/interrupt-controller/arm-gic.h>
-> +#include <dt-bindings/leds/common.h>
-> +
-> +/ {
-> +	model = "BigTreeTech CB1"
+A 3.14 based Marvell tree is available on GitHub
+acorn-marvell/brillo_pxa_kernel, and a Samsung one on GitHub
+CoderCharmander/g361f-kernel.
 
-Apart from the missing semicolon, which actually breaks the build (as you
-have discovered yourself): there shouldn't be a model string in a .dtsi
-file, that should be confined to the final board .dts, just as a human
-readable form of the board compatible string. So drop this here, and add
-the respective name to the two .dts files.
+Andreas Färber attempted to upstream support for this SoC in 2017:
+https://lore.kernel.org/lkml/20170222022929.10540-1-afaerber@suse.de/
 
-Rest looks fine now, thanks.
+Signed-off-by: Duje Mihanović <duje.mihanovic@skole.hr>
+---
+Andy Shevchenko (1):
+      clk: mmp: Switch to use struct u32_fract instead of custom one
 
-Cheers,
-Andre
+Duje Mihanović (7):
+      gpio: pxa: disable pinctrl calls for MMP_GPIO
+      dt-bindings: clock: Add Marvell PXA1908 clock bindings
+      clk: mmp: Add Marvell PXA1908 clock driver
+      dt-bindings: marvell: Document PXA1908 SoC
+      arm64: Kconfig.platforms: Add config for Marvell PXA1908 platform
+      arm64: dts: Add DTS for Marvell PXA1908 and samsung,coreprimevelte
+      MAINTAINERS: add myself as Marvell PXA1908 maintainer
 
+ .../devicetree/bindings/arm/mrvl/mrvl.yaml         |   5 +
+ .../devicetree/bindings/clock/marvell,pxa1908.yaml |  48 +++
+ MAINTAINERS                                        |   9 +
+ arch/arm64/Kconfig.platforms                       |  11 +
+ arch/arm64/boot/dts/marvell/Makefile               |   3 +
+ .../dts/marvell/pxa1908-samsung-coreprimevelte.dts | 332 +++++++++++++++++++++
+ arch/arm64/boot/dts/marvell/pxa1908.dtsi           | 292 ++++++++++++++++++
+ drivers/clk/mmp/Makefile                           |   2 +-
+ drivers/clk/mmp/clk-frac.c                         |  57 ++--
+ drivers/clk/mmp/clk-mmp2.c                         |   6 +-
+ drivers/clk/mmp/clk-of-mmp2.c                      |  26 +-
+ drivers/clk/mmp/clk-of-pxa168.c                    |   4 +-
+ drivers/clk/mmp/clk-of-pxa1908.c                   | 323 ++++++++++++++++++++
+ drivers/clk/mmp/clk-of-pxa1928.c                   |   6 +-
+ drivers/clk/mmp/clk-of-pxa910.c                    |   4 +-
+ drivers/clk/mmp/clk-pxa168.c                       |   4 +-
+ drivers/clk/mmp/clk-pxa910.c                       |   4 +-
+ drivers/clk/mmp/clk.h                              |  10 +-
+ drivers/gpio/gpio-pxa.c                            |   1 +
+ include/dt-bindings/clock/marvell,pxa1908.h        |  92 ++++++
+ 20 files changed, 1175 insertions(+), 64 deletions(-)
+---
+base-commit: 5d0c230f1de8c7515b6567d9afba1f196fb4e2f4
+change-id: 20230803-pxa1908-lkml-6830e8da45c7
 
-> +	aliases {
-> +		ethernet0 = &rtl8189ftv;
-> +	};
-> +
-> +	leds {
-> +		compatible = "gpio-leds";
-> +
-> +		led-0 {
-> +			function = LED_FUNCTION_STATUS;
-> +			color = <LED_COLOR_ID_GREEN>;
-> +			gpios = <&pio 7 5 GPIO_ACTIVE_HIGH>; /* PH5 */
-> +		};
-> +	};
-> +
-> +	reg_vcc5v: regulator-vcc5v {
-> +		/* board wide 5V supply from carrier boards */
-> +		compatible = "regulator-fixed";
-> +		regulator-name = "vcc-5v";
-> +		regulator-min-microvolt = <5000000>;
-> +		regulator-max-microvolt = <5000000>;
-> +		regulator-always-on;
-> +	};
-> +
-> +	reg_vcc33_wifi: vcc33-wifi {
-> +		/* Always on 3.3V regulator for WiFi */
-> +		compatible = "regulator-fixed";
-> +		regulator-name = "vcc33-wifi";
-> +		regulator-min-microvolt = <3300000>;
-> +		regulator-max-microvolt = <3300000>;
-> +		regulator-always-on;
-> +		vin-supply = <&reg_vcc5v>;
-> +	};
-> +
-> +	reg_vcc_wifi_io: vcc-wifi-io {
-> +		/* Always on 1.8V/300mA regulator for WiFi */
-> +		compatible = "regulator-fixed";
-> +		regulator-name = "vcc-wifi-io";
-> +		regulator-min-microvolt = <1800000>;
-> +		regulator-max-microvolt = <1800000>;
-> +		regulator-always-on;
-> +		vin-supply = <&reg_vcc33_wifi>;
-> +	};
-> +
-> +	wifi_pwrseq: wifi-pwrseq {
-> +		compatible = "mmc-pwrseq-simple";
-> +		clocks = <&rtc 1>;
-> +		clock-names = "ext_clock";
-> +		reset-gpios = <&pio 6 18 GPIO_ACTIVE_LOW>; /* PG18 */
-> +		post-power-on-delay-ms = <200>;
-> +	};
-> +};
-> +
-> +&mmc0 {
-> +	vmmc-supply = <&reg_dldo1>;
-> +	/* Card detection pin is not connected */
-> +	broken-cd;
-> +	bus-width = <4>;
-> +	status = "okay";
-> +};
-> +
-> +&mmc1 {
-> +	vmmc-supply = <&reg_vcc33_wifi>;
-> +	vqmmc-supply = <&reg_vcc_wifi_io>;
-> +	mmc-pwrseq = <&wifi_pwrseq>;
-> +	bus-width = <4>;
-> +	non-removable;
-> +	mmc-ddr-1_8v;
-> +	status = "okay";
-> +
-> +	rtl8189ftv: wifi@1 {
-> +		reg = <1>;
-> +	};
-> +};
-> +
-> +&r_i2c {
-> +	status = "okay";
-> +
-> +	axp313a: pmic@36 {
-> +		compatible = "x-powers,axp313a";
-> +		reg = <0x36>;
-> +		interrupt-controller;
-> +		#interrupt-cells = <1>;
-> +
-> +		regulators{
-> +			reg_dcdc1: dcdc1 {
-> +				regulator-name = "vdd-gpu-sys";
-> +				regulator-min-microvolt = <810000>;
-> +				regulator-max-microvolt = <990000>;
-> +				regulator-always-on;
-> +			};
-> +
-> +			reg_dcdc2: dcdc2 {
-> +				regulator-name = "vdd-cpu";
-> +				regulator-min-microvolt = <810000>;
-> +				regulator-max-microvolt = <1100000>;
-> +				regulator-ramp-delay = <200>;
-> +				regulator-always-on;
-> +			};
-> +
-> +			reg_dcdc3: dcdc3 {
-> +				regulator-name = "vcc-dram";
-> +				regulator-min-microvolt = <1350000>;
-> +				regulator-max-microvolt = <1350000>;
-> +				regulator-always-on;
-> +			};
-> +
-> +			reg_aldo1: aldo1 {
-> +				regulator-name = "vcc-1v8-pll";
-> +				regulator-min-microvolt = <1800000>;
-> +				regulator-max-microvolt = <1800000>;
-> +				regulator-always-on;
-> +			};
-> +
-> +			reg_dldo1: dldo1 {
-> +				regulator-name = "vcc-3v3-io";
-> +				regulator-min-microvolt = <3300000>;
-> +				regulator-max-microvolt = <3300000>;
-> +				regulator-always-on;
-> +			};
-> +		};
-> +	};
-> +};
-> +
-> +&usbphy {
-> +	status = "okay";
-> +};
+Best regards,
+-- 
+Duje Mihanović <duje.mihanovic@skole.hr>
+
 
