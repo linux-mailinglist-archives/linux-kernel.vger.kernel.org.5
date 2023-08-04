@@ -2,121 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C142F7703C1
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 17:00:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 844557703C3
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 17:01:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231871AbjHDPAV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Aug 2023 11:00:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42202 "EHLO
+        id S230458AbjHDPBu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Aug 2023 11:01:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42738 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229714AbjHDPAS (ORCPT
+        with ESMTP id S229560AbjHDPBs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Aug 2023 11:00:18 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57548AC;
-        Fri,  4 Aug 2023 08:00:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1691161217; x=1722697217;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=MpvATlDjjJZIna8broQzbePYRa5IYY2XnpYjRR2L2Mg=;
-  b=P4DNPlDpOjaHrVRWn3Wy7sS/FpauNxNnHt/rvW/GEJOenPHBgPTkd+33
-   q1oyJmJWz7jrfrU2JtmT7j4t4C971MxanetmfKXcZHTLlKenjXKL6B46N
-   HwV8FpHQREKqOGYM+6LSCpFaWbge2BW4vu1IIIq2QXCBJu/TBSg4ldB6O
-   /W5FSyogjIehq9Q9/6NnF0TvqlB8cpVEp+B6qsuRFHREVGi1eHDRX2zDy
-   jqgO6Qg2+2fkK2+wLqQff9SbZEO9GfuNRrsKsv+geX3mvHEtVwmwDpRxJ
-   NT79MCO7GxGVZAArn1uQ8KZC6HEo2CRS4Uk6AP2EjZnufAViAEUvGicXI
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10792"; a="369070010"
-X-IronPort-AV: E=Sophos;i="6.01,255,1684825200"; 
-   d="scan'208";a="369070010"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Aug 2023 08:00:02 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10792"; a="730091090"
-X-IronPort-AV: E=Sophos;i="6.01,255,1684825200"; 
-   d="scan'208";a="730091090"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by orsmga002.jf.intel.com with ESMTP; 04 Aug 2023 07:59:55 -0700
-Received: from andy by smile.fi.intel.com with local (Exim 4.96)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1qRwHP-00DIKr-1l;
-        Fri, 04 Aug 2023 17:59:51 +0300
-Date:   Fri, 4 Aug 2023 17:59:51 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Sunil V L <sunilvl@ventanamicro.com>
-Cc:     linux-doc@vger.kernel.org, linux-riscv@lists.infradead.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-acpi@vger.kernel.org, linux-pci@vger.kernel.org,
-        Jonathan Corbet <corbet@lwn.net>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        "Rafael J . Wysocki" <rafael@kernel.org>,
-        Len Brown <lenb@kernel.org>,
-        Daniel Scally <djrscally@gmail.com>,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Anup Patel <anup@brainfault.org>,
-        Marc Zyngier <maz@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Robert Moore <robert.moore@intel.com>,
-        Haibo Xu <haibo1.xu@intel.com>,
-        Andrew Jones <ajones@ventanamicro.com>,
-        Conor Dooley <conor.dooley@microchip.com>,
-        Atish Kumar Patra <atishp@rivosinc.com>
-Subject: Re: [RFC PATCH v1 09/21] RISC-V: cacheflush: Initialize CBO
- variables on ACPI systems
-Message-ID: <ZM0SZwL9SXrEuFMT@smile.fi.intel.com>
-References: <20230803175916.3174453-1-sunilvl@ventanamicro.com>
- <20230803175916.3174453-10-sunilvl@ventanamicro.com>
- <ZMyTDcffqXYT29JX@smile.fi.intel.com>
- <ZMzC4nHOJOfp0vaa@sunil-laptop>
+        Fri, 4 Aug 2023 11:01:48 -0400
+Received: from mx.skole.hr (mx1.hosting.skole.hr [161.53.165.185])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04636AC;
+        Fri,  4 Aug 2023 08:01:45 -0700 (PDT)
+Received: from mx1.hosting.skole.hr (localhost.localdomain [127.0.0.1])
+        by mx.skole.hr (mx.skole.hr) with ESMTP id BDAB483DA2;
+        Fri,  4 Aug 2023 17:01:43 +0200 (CEST)
+From:   =?utf-8?q?Duje_Mihanovi=C4=87?= <duje.mihanovic@skole.hr>
+Date:   Fri, 04 Aug 2023 17:00:40 +0200
+Subject: [PATCH] arm: marvell: Fix maxium->maxim typo for brownstone dts
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZMzC4nHOJOfp0vaa@sunil-laptop>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+Message-Id: <20230804-brownstone-typo-fix-v1-1-4832d84c0509@skole.hr>
+X-B4-Tracking: v=1; b=H4sIAJcSzWQC/x2MywqAIBAAfyX23IKWmfQr0aFyq72oaPQg+vek4
+ wzMPJAoMiXoigciHZzYuwyyLGDeRrcSss0MlahqYYTCKfrTpd07wv0OHhe+cGkmqWfVWqMbyGW
+ IlPV/7Yf3/QBAwLDpZQAAAA==
+To:     Lubomir Rintel <lkundrak@v3.sk>, Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>
+Cc:     linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        =?utf-8?q?Duje_Mihanovi=C4=87?= <duje.mihanovic@skole.hr>
+X-Mailer: b4 0.12.3
+X-Developer-Signature: v=1; a=openpgp-sha256; l=920;
+ i=duje.mihanovic@skole.hr; h=from:subject:message-id;
+ bh=BzBGNFzIsGV0WTqakdf4OEopghd/zw0ZcjsFp1vPeY0=;
+ b=owEBbQKS/ZANAwAIAZoRnrBCLZbhAcsmYgBkzRKmPoPQxgn2Ah22tj4dcKdsa+y4W5vfKtiw2
+ 4gPAglBKTKJAjMEAAEIAB0WIQRT351NnD/hEPs2LXiaEZ6wQi2W4QUCZM0SpgAKCRCaEZ6wQi2W
+ 4R19D/9cQJx6W4yZ76Yv4pAWMZdjZhnIkCSvHLLqQywWLOFoljmbM67XxmWCbdsPGjab9PkRxGC
+ JELau3UO6UFw+FTClYJ8HsoIQME5q/h6hPHqhrrbpPXa9x5DRcjuaoAqXFYnaaX6mI71nKnUcOL
+ PcBUCNXmNLexBzF6N4QvHBFmFqzxbSvNVgJOThf+WETD/1outLmlgY85GNLYE7v7Be/k4sOUjHi
+ /Y42LHjXhV4h+VDcf4LCBh4LvXpvcnXDKS3ybTP9GW8gAaCoXDDx8IzMNA1LIJEQTadKcIsmVKY
+ QIxiXR54Jxy3mOhwhk41CcZlfnvZAJ3PxttkO27d41EXk4sHNLdDLxZhGeBdRN1ooRffMmzXrZh
+ ++pKnHWzCpx0WF1Ihjd1DPJsSanOUc0ZJd9IbPvO+4maokxDkBwJbIkMqBRm82/VEn9pUzg2aR+
+ VqtGC2KEsgwRHIzG3LXy3DSCZKhJvQC7Oc8zl8G5+Tvzh8EIc/9BySFWxyBu6yaaldaaHZqWLda
+ aTxo/ohqp5rRkrQg40fMt5GmGCD0gL3+UWlljggf06QDs94Dt7YJjCVeCISb6+zP2Dl77O77p5G
+ bArng0AIKoicfMgvAIye5seGHSYuXL4m6HY8+SFV7sxpS1aPf8dOPMx82kEproeddxButqY3sYe
+ Yp1mzt4fGc5RyXQ==
+X-Developer-Key: i=duje.mihanovic@skole.hr; a=openpgp;
+ fpr=53DF9D4D9C3FE110FB362D789A119EB0422D96E1
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 04, 2023 at 02:50:34PM +0530, Sunil V L wrote:
-> On Fri, Aug 04, 2023 at 08:56:29AM +0300, Andy Shevchenko wrote:
-> > On Thu, Aug 03, 2023 at 11:29:04PM +0530, Sunil V L wrote:
-> > > Using new interface to get the CBO block size information in
-> > > RHCT, initialize the variables on ACPI platforms.
+Fix an obvious spelling error in the PMIC compatible in the MMP2
+Brownstone DTS file.
 
-...
+Signed-off-by: Duje Mihanović <duje.mihanovic@skole.hr>
+---
+ arch/arm/boot/dts/marvell/mmp2-brownstone.dts | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-> > > +#include <asm/acpi.h>
-> > 
-> > What do you need this for?
-> > 
-> > >  #include <asm/cacheflush.h>
-> > 
-> When CONFIG_ACPI is disabled, this include is required to get
-> acpi_get_cbo_block_size().
+diff --git a/arch/arm/boot/dts/marvell/mmp2-brownstone.dts b/arch/arm/boot/dts/marvell/mmp2-brownstone.dts
+index 04f1ae1382e7..bc64348b8218 100644
+--- a/arch/arm/boot/dts/marvell/mmp2-brownstone.dts
++++ b/arch/arm/boot/dts/marvell/mmp2-brownstone.dts
+@@ -28,7 +28,7 @@ &uart3 {
+ &twsi1 {
+ 	status = "okay";
+ 	pmic: max8925@3c {
+-		compatible = "maxium,max8925";
++		compatible = "maxim,max8925";
+ 		reg = <0x3c>;
+ 		interrupts = <1>;
+ 		interrupt-parent = <&intcmux4>;
 
-How is it useful without ACPI being enabled?  If it's indeed
-(in which I do not believe), better to make sure you have it
-avaiable independently on CONFIG_ACPI. Otherwise, just put
-#ifdef CONFIG_ACPI around the call.
+---
+base-commit: 5d0c230f1de8c7515b6567d9afba1f196fb4e2f4
+change-id: 20230804-brownstone-typo-fix-f5b16c47d865
 
+Best regards,
 -- 
-With Best Regards,
-Andy Shevchenko
+Duje Mihanović <duje.mihanovic@skole.hr>
 
 
