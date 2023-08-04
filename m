@@ -2,125 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F9BF76FFF7
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 14:09:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7968D76FFF9
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 14:10:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229776AbjHDMJg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Aug 2023 08:09:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57024 "EHLO
+        id S229812AbjHDMJ6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Aug 2023 08:09:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57322 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229478AbjHDMJf (ORCPT
+        with ESMTP id S229463AbjHDMJ4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Aug 2023 08:09:35 -0400
-Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C0E546A6;
-        Fri,  4 Aug 2023 05:09:34 -0700 (PDT)
-Received: from lhrpeml500005.china.huawei.com (unknown [172.18.147.200])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4RHPYn5P3Rz67RYs;
-        Fri,  4 Aug 2023 20:05:49 +0800 (CST)
-Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
- (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Fri, 4 Aug
- 2023 13:09:30 +0100
-Date:   Fri, 4 Aug 2023 13:09:29 +0100
-From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-To:     Smita Koralahalli <Smita.KoralahalliChannabasappa@amd.com>
-CC:     <linux-pci@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-cxl@vger.kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
-        <oohall@gmail.com>, Lukas Wunner <lukas@wunner.de>,
-        "Kuppuswamy Sathyanarayanan" 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        "Mahesh J Salgaonkar" <mahesh@linux.ibm.com>,
-        Alison Schofield <alison.schofield@intel.com>,
-        Vishal Verma <vishal.l.verma@intel.com>,
-        "Ira Weiny" <ira.weiny@intel.com>,
-        Ben Widawsky <bwidawsk@kernel.org>,
-        "Dan Williams" <dan.j.williams@intel.com>,
-        Yazen Ghannam <yazen.ghannam@amd.com>,
-        Terry Bowman <terry.bowman@amd.com>,
-        Robert Richter <rrichter@amd.com>
-Subject: Re: [PATCH v3 1/3] cxl/pci: Fix appropriate checking for _OSC while
- handling CXL RAS registers
-Message-ID: <20230804130929.00007dfb@Huawei.com>
-In-Reply-To: <20230803230129.127590-2-Smita.KoralahalliChannabasappa@amd.com>
-References: <20230803230129.127590-1-Smita.KoralahalliChannabasappa@amd.com>
-        <20230803230129.127590-2-Smita.KoralahalliChannabasappa@amd.com>
-Organization: Huawei Technologies Research and Development (UK) Ltd.
-X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
+        Fri, 4 Aug 2023 08:09:56 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4AB7C46BB
+        for <linux-kernel@vger.kernel.org>; Fri,  4 Aug 2023 05:09:55 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id C776961FBA
+        for <linux-kernel@vger.kernel.org>; Fri,  4 Aug 2023 12:09:54 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 172B6C433C7;
+        Fri,  4 Aug 2023 12:09:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1691150994;
+        bh=axWaUXP/2OhWrOi66tqNCt4hqCOmMutZJ5QBsrM8Zp0=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=GFx83acKyAhwxLNwQ2QD1TqpWgk816I2NQ5ZNVBe1IX5m/P6LIjSTys8bU9fS0xq9
+         xIR7kbCTFnfNZ76KhKuJ1SmZ1fy12ta3i7CqbrhT5rBEYiBeSB1YunwKmzfRuOHXsx
+         cTXRbR3N1SEgQAzDI8CFNKi0OSiqKeASEmZBOApsuhg90g6fQ0Q8MzYjf/v8/6pVPY
+         oQ7Ep6Svy3onB0co9lm2YpfOAlbfOqU6B+JkeZeJqocYFdS2PSd1xmFzhC7keXIyP6
+         DCWLKRfzWPKSuuD5NYKD9oJD6ZYAH2FmDflVpQEe1vcFuNlXI3HRVhg34Q0zfp2p7M
+         q2k1Bqtr+kfhw==
+Message-ID: <3a11f1e2-ee5d-676f-2666-0cee8bcbed6b@kernel.org>
+Date:   Fri, 4 Aug 2023 14:09:49 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH V3 net-next] net: fec: add XDP_TX feature support
+Content-Language: en-US
+To:     Wei Fang <wei.fang@nxp.com>,
+        Jesper Dangaard Brouer <jbrouer@redhat.com>
+Cc:     "brouer@redhat.com" <brouer@redhat.com>,
+        dl-linux-imx <linux-imx@nxp.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        Andrew Lunn <andrew@lunn.ch>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "edumazet@google.com" <edumazet@google.com>,
+        "kuba@kernel.org" <kuba@kernel.org>,
+        "pabeni@redhat.com" <pabeni@redhat.com>,
+        Shenwei Wang <shenwei.wang@nxp.com>,
+        Clark Wang <xiaoning.wang@nxp.com>,
+        "ast@kernel.org" <ast@kernel.org>,
+        "daniel@iogearbox.net" <daniel@iogearbox.net>,
+        "john.fastabend@gmail.com" <john.fastabend@gmail.com>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>
+References: <20230731060025.3117343-1-wei.fang@nxp.com>
+ <3d0a8536-6a22-22e5-41c0-98c13dd7b802@redhat.com>
+ <AM5PR04MB3139E5A9A0B407922A33BF99880BA@AM5PR04MB3139.eurprd04.prod.outlook.com>
+From:   Jesper Dangaard Brouer <hawk@kernel.org>
+In-Reply-To: <AM5PR04MB3139E5A9A0B407922A33BF99880BA@AM5PR04MB3139.eurprd04.prod.outlook.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.202.227.76]
-X-ClientProxiedBy: lhrpeml500005.china.huawei.com (7.191.163.240) To
- lhrpeml500005.china.huawei.com (7.191.163.240)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 3 Aug 2023 23:01:27 +0000
-Smita Koralahalli <Smita.KoralahalliChannabasappa@amd.com> wrote:
 
-> According to Section 9.17.2, Table 9-26 of CXL Specification [1], owner
-> of AER should also own CXL Protocol Error Management as there is no
-> explicit control of CXL Protocol error. And the CXL RAS Cap registers
-> reported on Protocol errors should check for AER _OSC rather than CXL
-> Memory Error Reporting Control _OSC.
+
+On 02/08/2023 14.33, Wei Fang wrote:
+>>> +	struct xdp_frame *xdpf = xdp_convert_buff_to_frame(xdp);
+>> XDP_TX can avoid this conversion to xdp_frame.
+>> It would requires some refactor of fec_enet_txq_xmit_frame().
+>>
+> Yes, but I'm not intend to change it, using the existing interface is enough.
 > 
-> The CXL Memory Error Reporting Control _OSC specifically highlights
-> handling Memory Error Logging and Signaling Enhancements. These kinds of
-> errors are reported through a device's mailbox and can be managed
-> independently from CXL Protocol Errors.
+>>> +	struct fec_enet_private *fep = netdev_priv(ndev);
+>>> +	struct fec_enet_priv_tx_q *txq;
+>>> +	int cpu = smp_processor_id();
+>>> +	struct netdev_queue *nq;
+>>> +	int queue, ret;
+>>> +
+>>> +	queue = fec_enet_xdp_get_tx_queue(fep, cpu);
+>>> +	txq = fep->tx_queue[queue];
+
+Notice how TXQ gets selected based on CPU.
+Thus it will be the same for all the frames.
+
+>>> +	nq = netdev_get_tx_queue(fep->netdev, queue);
+>>> +
+>>> +	__netif_tx_lock(nq, cpu);
+>> 
+>> It is sad that XDP_TX takes a lock for each frame.
+>>
+> Yes, but the XDP path share the queue with the kernel network stack, so
+> we need a lock here, unless there is a dedicated queue for XDP path. Do
+> you have a better solution?
 > 
-> This change fixes handling and reporting CXL Protocol Errors and RAS
-> registers natively with native AER and FW-First CXL Memory Error Reporting
-> Control.
-> 
-> [1] Compute Express Link (CXL) Specification, Revision 3.1, Aug 1 2022.
-> 
-> Fixes: 248529edc86f ("cxl: add RAS status unmasking for CXL")
-> Signed-off-by: Smita Koralahalli <Smita.KoralahalliChannabasappa@amd.com>
-> Reviewed-by: Robert Richter <rrichter@amd.com>
 
-I'd be tempted to add a comment on why this returns 0 rather than an
-error.  I think that makes sense but it isn't immediately obvious from
-the local context.
+Yes, the solution would be to keep a stack local (or per-CPU) queue for
+all the XDP_TX frames, and send them at the xdp_do_flush_map() call
+site. This is basically what happens with xdp_do_redirect() in cpumap.c
+and devmap.c code, that have a per-CPU bulk queue and sends a bulk of
+packets into fec_enet_xdp_xmit / ndo_xdp_xmit.
 
-Otherwise LGTM
+I understand if you don't want to add the complexity to the driver.
+And I guess, it should be a followup patch to make sure this actually
+improves performance.
 
-Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-
-
-> ---
-> v2:
-> 	Added fixes tag.
-> 	Included what the patch fixes in commit message.
-> v3:
-> 	Added "Reviewed-by" tag.
-> ---
->  drivers/cxl/pci.c | 6 +++---
->  1 file changed, 3 insertions(+), 3 deletions(-)
-> 
-> diff --git a/drivers/cxl/pci.c b/drivers/cxl/pci.c
-> index 1cb1494c28fe..2323169b6e5f 100644
-> --- a/drivers/cxl/pci.c
-> +++ b/drivers/cxl/pci.c
-> @@ -541,9 +541,9 @@ static int cxl_pci_ras_unmask(struct pci_dev *pdev)
->  		return 0;
->  	}
->  
-> -	/* BIOS has CXL error control */
-> -	if (!host_bridge->native_cxl_error)
-> -		return -ENXIO;
-> +	/* BIOS has PCIe AER error control */
-> +	if (!host_bridge->native_aer)
-> +		return 0;
->  
->  	rc = pcie_capability_read_word(pdev, PCI_EXP_DEVCTL, &cap);
->  	if (rc)
-
+--Jesper
