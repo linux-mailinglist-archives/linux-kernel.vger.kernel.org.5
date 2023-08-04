@@ -2,145 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CD8DD770B05
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 23:33:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 715C5770B08
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 23:33:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229570AbjHDVdM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Aug 2023 17:33:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49030 "EHLO
+        id S229901AbjHDVdt convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 4 Aug 2023 17:33:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49834 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229534AbjHDVdK (ORCPT
+        with ESMTP id S229534AbjHDVds (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Aug 2023 17:33:10 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B323A115
-        for <linux-kernel@vger.kernel.org>; Fri,  4 Aug 2023 14:32:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1691184726;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=jsp+Oyf0Baezc7axDt6/bPm0q6CNC13RmuEqpircFIc=;
-        b=eQ1CN1+hlyxE0Z392I/FBq/NtQxfjnoVaDAv9Gp0stNsM3xEAKTsbbdgN4DHrPbFd2L6gZ
-        hJs3xxovktIyB1wC6PzkFr7oi1zG39tJhkyxpvztUvP6B56sjV/b2LiNYYX32jI2/0a14F
-        5EVQK2iZRBlRudzSh+F0UygXpW/uipw=
-Received: from mail-ej1-f70.google.com (mail-ej1-f70.google.com
- [209.85.218.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-61-k7PA7q6SNkWP26KUMvypcg-1; Fri, 04 Aug 2023 17:32:05 -0400
-X-MC-Unique: k7PA7q6SNkWP26KUMvypcg-1
-Received: by mail-ej1-f70.google.com with SMTP id a640c23a62f3a-99c20561244so164278566b.0
-        for <linux-kernel@vger.kernel.org>; Fri, 04 Aug 2023 14:32:05 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691184724; x=1691789524;
-        h=content-transfer-encoding:in-reply-to:subject:from:references:cc:to
-         :content-language:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=jsp+Oyf0Baezc7axDt6/bPm0q6CNC13RmuEqpircFIc=;
-        b=CAYBXcpHJCH7RdR1+zViRemsPcsjh7DFbKfetqhj61RuZnO+PjPbA+d/nZqG7OAO5F
-         heUjdSir3rYWTrbO2yo4XZiuUlahJGqkBDNg1EaI+rBFpr9wf/009eg8i/m97TNHG6Zq
-         bstFoU80q4Wa7aQoGrzY4NqRjBV99odAjxd3lJFPfEqQZYJXwAvOgMPJA/X9/6ZW9hxg
-         wYY3aUM5/vfDrzAfI3LwgTlGKIljcc2tlxGQ8ufwhIGIxTz3YyCTQ4qVWwZf/XtwPB5g
-         AlthueurXA0kqgH3Tqut8ThoY4OWn3hJXvNR7R70y56Hbeuui/eOvngjgMNgF3Ial5pV
-         i9CA==
-X-Gm-Message-State: AOJu0YySxmzNpx2+BMbDTEJKP/lrxUqxz+gx9CufjS8HcBcAN26JVksV
-        Gi7Q8VyZXsnuVNZniktl+1naVCIiVFtxt3E6FZKJYdYuX32IAddwJeAe/8yraWqRP5XfZhDVAsW
-        CNntraOzGTHKoPctMccTig76A
-X-Received: by 2002:a17:907:7889:b0:99b:e9f7:b073 with SMTP id ku9-20020a170907788900b0099be9f7b073mr2575448ejc.14.1691184724516;
-        Fri, 04 Aug 2023 14:32:04 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IEWt2syOHlzHD6ARM4KUNFAe32BTGiIlpiMe8fKvmzqTN1a2R95tNA2BXWBnrckbYiLw5ywLA==
-X-Received: by 2002:a17:907:7889:b0:99b:e9f7:b073 with SMTP id ku9-20020a170907788900b0099be9f7b073mr2575433ejc.14.1691184724194;
-        Fri, 04 Aug 2023 14:32:04 -0700 (PDT)
-Received: from ?IPV6:2001:b07:6468:f312:63a7:c72e:ea0e:6045? ([2001:b07:6468:f312:63a7:c72e:ea0e:6045])
-        by smtp.googlemail.com with ESMTPSA id lr4-20020a170906fb8400b0098748422178sm1811787ejb.56.2023.08.04.14.32.02
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 04 Aug 2023 14:32:03 -0700 (PDT)
-Message-ID: <cf97cfba-941a-5a77-6591-fa84ef6fe8d1@redhat.com>
-Date:   Fri, 4 Aug 2023 23:32:00 +0200
+        Fri, 4 Aug 2023 17:33:48 -0400
+Received: from irl.hu (irl.hu [95.85.9.111])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2CAFCC5;
+        Fri,  4 Aug 2023 14:33:46 -0700 (PDT)
+Received: from [192.168.2.4] (51b69adf.dsl.pool.telekom.hu [::ffff:81.182.154.223])
+  (AUTH: CRAM-MD5 soyer@irl.hu, )
+  by irl.hu with ESMTPSA
+  id 0000000000072F66.0000000064CD6EB7.0001EB4C; Fri, 04 Aug 2023 23:33:43 +0200
+Message-ID: <39e3ed9f0c3fee61bd99788cdc7cf6cdcd1ee65c.camel@irl.hu>
+Subject: Re: [RFC PATCH 0/2] media: v4l2: map UVC_CT_ROLL_ABSOLUTE_CONTROL
+From:   =?UTF-8?Q?Gerg=C5=91_K=C3=B6teles?= <soyer@irl.hu>
+To:     Michael Riesch <michael.riesch@wolfvision.net>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
+Date:   Fri, 04 Aug 2023 23:33:42 +0200
+In-Reply-To: <caeddb66-6bac-3621-6a92-dbeca16261c3@wolfvision.net>
+References: <cover.1691096157.git.soyer@irl.hu>
+         <caeddb66-6bac-3621-6a92-dbeca16261c3@wolfvision.net>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Content-Language: en-US
-To:     Sean Christopherson <seanjc@google.com>,
-        Weijiang Yang <weijiang.yang@intel.com>
-Cc:     Chao Gao <chao.gao@intel.com>, peterz@infradead.org,
-        john.allen@amd.com, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, rick.p.edgecombe@intel.com,
-        binbin.wu@linux.intel.com
-References: <20230803042732.88515-1-weijiang.yang@intel.com>
- <20230803042732.88515-10-weijiang.yang@intel.com>
- <ZMuMN/8Qa1sjJR/n@chao-email>
- <bfc0b3cb-c17a-0ad6-6378-0c4e38f23024@intel.com>
- <ZM1jV3UPL0AMpVDI@google.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Subject: Re: [PATCH v5 09/19] KVM:x86: Make guest supervisor states as
- non-XSAVE managed
-In-Reply-To: <ZM1jV3UPL0AMpVDI@google.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/4/23 22:45, Sean Christopherson wrote:
->>>> +void save_cet_supervisor_ssp(struct kvm_vcpu *vcpu)
->>>> +{
->>>> +	if (unlikely(guest_can_use(vcpu, X86_FEATURE_SHSTK))) {
-> Drop the unlikely, KVM should not speculate on the guest configuration or underlying
-> hardware.
+Hi Michael,
 
-In general unlikely() can still be a good idea if you have a fast path 
-vs. a slow path; the extra cost of a branch will be much more visible on 
-the fast path.  That said the compiler should already be doing that.
+On Fri, 2023-08-04 at 20:45 +0200, Michael Riesch wrote:
+> Hi Gergő,
+> 
+> Interesting work! I would guess that there are a lot of cameras with an
+> accelerometer or gyroscope that could report the rotation.
+> 
 
->  the Pros:
->   - Super easy to implement for KVM.
->   - Automatically avoids saving and restoring this data when the vmexit
->     is handled within KVM.
->
->  the Cons:
->   - Unnecessarily restores XFEATURE_CET_KERNEL when switching to
->     non-KVM task's userspace.
->   - Forces allocating space for this state on all tasks, whether or not
->     they use KVM, and with likely zero users today and the near future.
->   - Complicates the FPU optimization thinking by including things that
->     can have no affect on userspace in the FPU
+I think only the Streamcam in the UVC world, but who knows. :)
 
-I'm not sure if Linux will ever use XFEATURE_CET_KERNEL.  Linux does not 
-use MSR_IA32_PL{1,2}_SSP; MSR_IA32_PL0_SSP probably would be per-CPU but 
-it is not used while in ring 0 (except for SETSSBSY) and the restore can 
-be delayed until return to userspace.  It is not unlike the SYSCALL MSRs.
+> On 8/3/23 23:28, Gergő Köteles wrote:
+> > Hi,
+> > 
+> > Logitech Streamcam can be mounted in 'portrait mode' as well.
+> > It reports the current roll (-90, 0, 90, 180) with
+> > UVC_CT_ROLL_ABSOLUTE_CONTROL.
+> > 
+> > This RFC defines V4L2_CID_ROLL_ABSOLUTE, and maps
+> > UVC_CT_ROLL_ABSOLUTE_CONTROL to make it available to
+> > userspace.
+> > Then, the userspace can rotate the stream based on the roll.
+> 
+> Should we also discuss pitch and yaw while we are at it?
+> 
 
-So I would treat the bit similar to the dynamic features even if it's 
-not guarded by XFD, for example
+They are there with V4L2_CID_PAN_ABSOLUTE and V4L2_CID_TILT_ABSOLUTE.
 
-#define XFEATURE_MASK_USER_DYNAMIC XFEATURE_MASK_XTILE_DATA
-#define XFEATURE_MASK_USER_OPTIONAL \
-	(XFEATURE_MASK_DYNAMIC | XFEATURE_MASK_CET_KERNEL)
+> As far as I know there are controls to set pan and tilt of a PTZ camera,
+> but there are no controls that report those angles.
+> 
 
-where XFEATURE_MASK_USER_DYNAMIC is used for xfd-related tasks but 
-everything else uses XFEATURE_MASK_USER_OPTIONAL.
+Aren't real PTZ cameras using the CT_PANTILT_ABSOLUTE_CONTROL for
+panning and tilting? Or just to move the crop window?
 
-Then you'd enable the feature by hand when allocating the guest fpstate.
-
-> Especially because another big negative is that not utilizing XSTATE bleeds into
-> KVM's ABI.  Userspace has to be told to manually save+restore MSRs instead of just
-> letting KVM_{G,S}ET_XSAVE handle the state.  And that will create a bit of a
-> snafu if Linux does gain support for SSS.
-
-I don't think this matters, we don't have any MSRs in KVM_GET/SET_XSAVE 
-and in fact we can't even add them since the uABI uses the non-compacted 
-format.  MSRs should be retrieved and set via KVM_GET/SET_MSR and 
-userspace will learn about the index automatically via 
-KVM_GET_MSR_INDEX_LIST.
-
-Paolo
+> > Is it better to use V4L2_CID_CAMERA_SENSOR_ROTATION for this?
+> 
+> IMHO that would make sense.
+> 
+> Best regards,
+> Michael
+> 
+> > The value set matches that control.
+> > If yes, is it worth mapping UVC_CT_ROLL_ABSOLUTE_CONTROL to
+> > V4L2_CID_CAMERA_SENSOR_ROTATION for this camera only?
+> > 
+> > Any feedback is greately appreciated.
+> > 
+> > 
+> > Gergő Köteles (2):
+> >   media: v4l2: ctrls: Add ROLL_ABSOLUTE control
+> >   media: v4l2: map UVC_CT_ROLL_ABSOLUTE_CONTROL
+> > 
+> >  .../userspace-api/media/v4l/ext-ctrls-camera.rst         | 5 +++++
+> >  drivers/media/usb/uvc/uvc_ctrl.c                         | 9 +++++++++
+> >  drivers/media/v4l2-core/v4l2-ctrls-defs.c                | 1 +
+> >  include/uapi/linux/v4l2-controls.h                       | 2 ++
+> >  4 files changed, 17 insertions(+)
+> > 
+> > 
+> > base-commit: 06c2afb862f9da8dc5efa4b6076a0e48c3fbaaa5
 
