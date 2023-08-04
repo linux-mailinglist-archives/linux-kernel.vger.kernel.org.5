@@ -2,62 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 68A48770242
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 15:50:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 50B0B770248
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 15:50:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231449AbjHDNub (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Aug 2023 09:50:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58504 "EHLO
+        id S231495AbjHDNui (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Aug 2023 09:50:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58528 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231448AbjHDNuY (ORCPT
+        with ESMTP id S231453AbjHDNuY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 4 Aug 2023 09:50:24 -0400
-Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8FD7198C
-        for <linux-kernel@vger.kernel.org>; Fri,  4 Aug 2023 06:50:21 -0700 (PDT)
-Received: by mail-wm1-x332.google.com with SMTP id 5b1f17b1804b1-3fe1d462762so20131135e9.0
-        for <linux-kernel@vger.kernel.org>; Fri, 04 Aug 2023 06:50:21 -0700 (PDT)
+Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C78D1990
+        for <linux-kernel@vger.kernel.org>; Fri,  4 Aug 2023 06:50:22 -0700 (PDT)
+Received: by mail-wm1-x329.google.com with SMTP id 5b1f17b1804b1-3fe4cdb72b9so1647265e9.0
+        for <linux-kernel@vger.kernel.org>; Fri, 04 Aug 2023 06:50:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1691157020; x=1691761820;
+        d=linaro.org; s=google; t=1691157021; x=1691761821;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=fvPQtc3n+AQ43mIboHGUgEC6liC/yfr/8rGlBJbQd4M=;
-        b=Hg+tVobDGieGUcB28lGqS7u/Kg3Nec6NTkRIl1Ry/jMOdf8E6uw5PkUJxKIrkSfB4Y
-         ruf6OQk0fSxWy58aGsGLy4bKe9ZgL27XuaqTs1Lw0HM7nnqvP28+o5ORbry/NFq7Bp1x
-         en7SEiP0k5pWEgst/l4IEPtL1ByPI8gZOCQZP64rJmv/lBRBZ3UQRZybg8tFivpvWhZA
-         IvzQZ3VxNECumqpkVlxSLIRntXB5CWqtG1VBKy4RHT2flgzmDqKRY7TOnRWaGScFgRfv
-         O0LG/t6PUuwKIU7WtkaNnYr1JnB/OMZljOV9hc9fg0AjnO4VxiwmculhzmYXWHSD08B4
-         9gfg==
+        bh=/Tu3tdlF/aAxTGoYq/qN0EAxQ8wdVfdldt4icc67yX0=;
+        b=UyACFL8IjwAoSaTzEG9qPM43FDhJIY8bul/FU86VLecfYVtC2cXhJRHKRGLTL2NSo7
+         7DVVdbtbZjbQGRT08srQxQpTrC1ZeYg9hmyeby/VlEJpynqTu+195SJGnKpNZDLL4B5m
+         zHbmIH2Geb5MafmhVfMLzmctdP60msPvsjbMlx4yVyLXJcSsgHHGCiUJ0IGpa3IGHZve
+         C9q1U1kf/MNmoAtazd3MQ0BWFB8AJQlvq2Nxsaioxd4HHEEkMLgjCsE/+IWIg66DH1s8
+         momCp45X1AUfZuAFQEENJgUm/iahLgR19ixidA+Pdh0UJ9F8XephViAuhCkrbvEiclIV
+         tp7g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691157020; x=1691761820;
+        d=1e100.net; s=20221208; t=1691157021; x=1691761821;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=fvPQtc3n+AQ43mIboHGUgEC6liC/yfr/8rGlBJbQd4M=;
-        b=LOfApIk1XRLLUzPff3HoIkLnxwIWb3rutYlpUUa9L//WPD84pFh5jzIxa3Z4AtV9Bu
-         ggNiU14YgPi7+hHRezU6In21Cl+AwhenUsSlUx+jumn+s2zbYQpSPbQge5JVzUoISX8y
-         FcJiRy0lCplML/11VcD/mbsyr17yLoLxOsChr9R+h4O7NJ5OpH+1QRn/LR40SyOQkALf
-         LyOROs+3bArC3hjB+sX/e4l035rgiT0dw6OogMZGwB1ybUKkBNMSrwIemmiEHQ/NRGtt
-         bsh1MjqGCTq7AZ7kb7pTcJpw2Z/bthCxQZ6WYmrrykTQvDAU0l6dNmv+I8TBx4ydSoqO
-         8p0g==
-X-Gm-Message-State: AOJu0YyA0Gvh3kOrQKXwzmqvgoW7UDNDw0mXWVbFiusnvDKfCbQJMqT/
-        I7uUvjbW1c55o5jaKoTexfuVdw==
-X-Google-Smtp-Source: AGHT+IFeH01Ul71Lfz7yHy0osMqSe97w2MvNWjvgtaNtKBWxfM55R1zGaAeI12b49Qk9Scr0K3+iNQ==
-X-Received: by 2002:a1c:7709:0:b0:3fe:1b9e:e790 with SMTP id t9-20020a1c7709000000b003fe1b9ee790mr1609742wmi.2.1691157020150;
-        Fri, 04 Aug 2023 06:50:20 -0700 (PDT)
+        bh=/Tu3tdlF/aAxTGoYq/qN0EAxQ8wdVfdldt4icc67yX0=;
+        b=LgfIIkw2ZU5ARsQMLMpA0/VoJE11c+flgH3VKDvj2Etadmc1QMbrZeHTaOxSR+Zct3
+         Nxu4NbO4E9gmLE1w5bGC2ArFzgc+kWSYaxORzOdZXTveLCGECEwtHNFjEkT44EyH/7p0
+         AJWzC32I7Qexb1WUO+aKc/SCxNdZ0xiWVRTv5JZfgEQIqNFqo4McT2PQhO+h7EPKWOwv
+         6PMZWRNiSCrUS8BFjcqF7/LmbZDrZ5PXPRurWUfhKIZmO4wuylIcR0lG5RA+Sn2uRd76
+         SbJlVnsuyQ6NHv+uzuStzla27Y6mgih3DA6DH9Piz2HWbpH2OzvjGxZ2CMudUzELpYym
+         ++NA==
+X-Gm-Message-State: AOJu0Yx+jMETmbx/wb2JRhAel8co6ri+BZa0IFr/Cmj9bVWHX6ELFKbj
+        ok1ob2x8uDsDaPM8HZ5uGtye/A==
+X-Google-Smtp-Source: AGHT+IHF5R484MMjp3EGi3ZFAji+XidBlqg5GylB8vJOGFX00rXYq+BnoQupjIaHsRakpYPKN8SBtQ==
+X-Received: by 2002:a5d:4144:0:b0:315:a1f9:8667 with SMTP id c4-20020a5d4144000000b00315a1f98667mr1497099wrq.23.1691157021056;
+        Fri, 04 Aug 2023 06:50:21 -0700 (PDT)
 Received: from arrakeen.starnux.net ([2a01:e0a:982:cbb0:8261:5fff:fe11:bdda])
-        by smtp.gmail.com with ESMTPSA id u25-20020a7bcb19000000b003fe1cac37d8sm6894793wmj.11.2023.08.04.06.50.19
+        by smtp.gmail.com with ESMTPSA id u25-20020a7bcb19000000b003fe1cac37d8sm6894793wmj.11.2023.08.04.06.50.20
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 04 Aug 2023 06:50:19 -0700 (PDT)
+        Fri, 04 Aug 2023 06:50:20 -0700 (PDT)
 From:   Neil Armstrong <neil.armstrong@linaro.org>
-Date:   Fri, 04 Aug 2023 15:50:08 +0200
-Subject: [PATCH 2/4] usb: ucsi: glink: use the connector orientation GPIO
- to provide switch events
+Date:   Fri, 04 Aug 2023 15:50:09 +0200
+Subject: [PATCH 3/4] arm64: dts: qcom: sm8550-mtp: add orientation gpio
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20230804-topic-sm8550-upstream-type-c-orientation-v1-2-36dd3edec7bf@linaro.org>
+Message-Id: <20230804-topic-sm8550-upstream-type-c-orientation-v1-3-36dd3edec7bf@linaro.org>
 References: <20230804-topic-sm8550-upstream-type-c-orientation-v1-0-36dd3edec7bf@linaro.org>
 In-Reply-To: <20230804-topic-sm8550-upstream-type-c-orientation-v1-0-36dd3edec7bf@linaro.org>
 To:     Andy Gross <agross@kernel.org>,
@@ -72,20 +71,20 @@ Cc:     linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
         linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
         Neil Armstrong <neil.armstrong@linaro.org>
 X-Mailer: b4 0.12.3
-X-Developer-Signature: v=1; a=openpgp-sha256; l=3618;
+X-Developer-Signature: v=1; a=openpgp-sha256; l=699;
  i=neil.armstrong@linaro.org; h=from:subject:message-id;
- bh=2Yx8kmPz9CwCyctqse+y5FCFBBh71PuYcaSNl/C5414=;
- b=owEBbQKS/ZANAwAKAXfc29rIyEnRAcsmYgBkzQIYPn2uv3f3KnvwEme1PsIabLipHvXWSFjfWe5D
- 0zTCEMyJAjMEAAEKAB0WIQQ9U8YmyFYF/h30LIt33NvayMhJ0QUCZM0CGAAKCRB33NvayMhJ0Rs0D/
- 9Nf3DUub/be65RQP+RUcneISyhvLm49D5YBD2LAAYHwx7aJkO8B3QKE2D8zeWzWw6V6MQPFVwJeyr1
- JwJMiQpX/1CaJtLDR1y5RQ4kPLNjn1E4f+33VD+BSciFR/qbJWD2LllMU9k7ZLE6DZ9IF7fPLb08sB
- Okb869TcY0LZBQdoCgG9YAdycRmQVwez1aZAaPRAOciaMjfunRfGi71aN6UeAi8SonfpvrruLnBz5r
- U/ZLZRVdrh60lRULOoEvY7ZhVLK8UYDWNRHlyj0Wrjm3s49bPF62GRdaDZjtf21C+YlVdoS7+1NHhS
- KtQVlfZpEJ3XSbLz10WL7bNLOdYUaSa4g9XZEGX8A4IGDYGh4mOEskjHKvm5IFM5vPstFXIDtDUz/o
- zK03gXcBrPayuugsjvoAimjZnCnY238GrM80rO8X8qYqVKz6QgIerBv2VgabGRGLjktNgAyINrJY+6
- kJH5y4Lg5LYHHDz6BZvEog5RyE3OwuTvbHbU3j2Pb5t/v+c/mWaBlMgkisFWo+NNtq7iffhzM5So+p
- xvIMI2OIOs11+tl7YKprs0NxzFwzOFpfYUDr6sETCaNrZaHmnoe7AX7Ob5ZC43ZetaCs3bFVJDaOv6
- plvBMBGhVBWTJomHEnF6qGJfNbFb22l9g8LgqnerA5xeXOypceV4AcunklcA==
+ bh=8sOCuRERwUcxQw8tCkw2c2ZONty+Zkv1ZtdLhzF/Vbs=;
+ b=owEBbQKS/ZANAwAKAXfc29rIyEnRAcsmYgBkzQIYzDAKZU1oHG/gRLDaqzKk4eITl/Gy6z7Re7PZ
+ MUmBQlKJAjMEAAEKAB0WIQQ9U8YmyFYF/h30LIt33NvayMhJ0QUCZM0CGAAKCRB33NvayMhJ0Y0xD/
+ wLpus4Fixy+gfvlLXIiWrZL70mpal3ErmjZ4h6vbinmuA5P01TT1SxvqengxyVtpC4ELcI1i/6UU9X
+ Wgy2wGMDwWYrsKVyJqCzu79nktfdgPVdyhA2SAKkk8g/mCbZEjvoJBep7dICA8WOEUu1oSGpS7YtQT
+ /6BABwCIUqneFnBRCPe+3vqKiuyifCPNQK5JDPEWiygFDrvRbgGPRg7HUG5jcrLpz/iP6BeXInl1Ij
+ hK9PQQsXx46e0hXQSmPZwisIn5AFo+zK0BzjAK27HsF7BmOem5qtSsA0pKzwleOqcbVOphgktZAjST
+ KAur1Qz+kPBClxpAcEoSXtIjeAvvaaZOQd8ZTnPq6mlKjng9Ng+Ln2HwxCB3DvQV1z4navicYQUXc+
+ ox2oipGv1bm+Z8syGwSQ9olHjCB7rgFxRxY/Yr+w2jrt1RsXDc17M85R885v3ZTiaiirSUtMM63JXH
+ zUw057z/fcA7ck8hGAOpXPMot/2SJUQOBTJdS6cQ7ORGwTlROMDwRr0OkNV2BTaNPVZW3ePnoAbY+4
+ r99nZEbua1ogJosh618d2VfbuFV/lvdwZMZB3LSqBxXM7lUoGe/P+crPcFgviAO+vln75kJKwYsBEI
+ wv+BFaaYps51NfusLLuY3VUpijVTqg3ajkZUhPYNjFrKtGnoXFGVEBygKVyw==
 X-Developer-Key: i=neil.armstrong@linaro.org; a=openpgp;
  fpr=89EC3D058446217450F22848169AB7B1A4CFF8AE
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -98,118 +97,25 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On SM8550, the non-altmode orientation is not given anymore within
-altmode events, even with USB SVIDs events.
+Specify orientation GPIO in the PMIC GLINK node.
 
-On the other side, the Type-C connector orientation is correctly
-reported by a signal from the PMIC.
-
-Take this gpio signal when we detect some Type-C port activity
-to notify any Type-C switches tied to the Type-C port connectors.
-
-Acked-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
 Signed-off-by: Neil Armstrong <neil.armstrong@linaro.org>
 ---
- drivers/usb/typec/ucsi/ucsi_glink.c | 54 ++++++++++++++++++++++++++++++++++++-
- 1 file changed, 53 insertions(+), 1 deletion(-)
+ arch/arm64/boot/dts/qcom/sm8550-mtp.dts | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/usb/typec/ucsi/ucsi_glink.c b/drivers/usb/typec/ucsi/ucsi_glink.c
-index bb1854b3311d..db6e248f8208 100644
---- a/drivers/usb/typec/ucsi/ucsi_glink.c
-+++ b/drivers/usb/typec/ucsi/ucsi_glink.c
-@@ -8,9 +8,13 @@
- #include <linux/mutex.h>
- #include <linux/property.h>
- #include <linux/soc/qcom/pdr.h>
-+#include <linux/usb/typec_mux.h>
-+#include <linux/gpio/consumer.h>
- #include <linux/soc/qcom/pmic_glink.h>
- #include "ucsi.h"
+diff --git a/arch/arm64/boot/dts/qcom/sm8550-mtp.dts b/arch/arm64/boot/dts/qcom/sm8550-mtp.dts
+index 39a43db26ea1..4fef4eef6575 100644
+--- a/arch/arm64/boot/dts/qcom/sm8550-mtp.dts
++++ b/arch/arm64/boot/dts/qcom/sm8550-mtp.dts
+@@ -58,6 +58,7 @@ pmic-glink {
+ 		compatible = "qcom,sm8550-pmic-glink", "qcom,pmic-glink";
+ 		#address-cells = <1>;
+ 		#size-cells = <0>;
++		orientation-gpios = <&tlmm 11 GPIO_ACTIVE_HIGH>;
  
-+#define PMIC_GLINK_MAX_PORTS	2
-+
- #define UCSI_BUF_SIZE                   48
- 
- #define MSG_TYPE_REQ_RESP               1
-@@ -52,6 +56,9 @@ struct ucsi_notify_ind_msg {
- struct pmic_glink_ucsi {
- 	struct device *dev;
- 
-+	struct gpio_desc *port_orientation[PMIC_GLINK_MAX_PORTS];
-+	struct typec_switch *port_switch[PMIC_GLINK_MAX_PORTS];
-+
- 	struct pmic_glink_client *client;
- 
- 	struct ucsi *ucsi;
-@@ -220,8 +227,20 @@ static void pmic_glink_ucsi_notify(struct work_struct *work)
- 	}
- 
- 	con_num = UCSI_CCI_CONNECTOR(cci);
--	if (con_num)
-+	if (con_num) {
-+		if (con_num < PMIC_GLINK_MAX_PORTS &&
-+		    ucsi->port_orientation[con_num - 1]) {
-+			int orientation = gpiod_get_value(ucsi->port_orientation[con_num - 1]);
-+
-+			if (orientation >= 0) {
-+				typec_switch_set(ucsi->port_switch[con_num - 1],
-+						 orientation ? TYPEC_ORIENTATION_REVERSE
-+							     : TYPEC_ORIENTATION_NORMAL);
-+			}
-+		}
-+
- 		ucsi_connector_change(ucsi->ucsi, con_num);
-+	}
- 
- 	if (ucsi->sync_pending && cci & UCSI_CCI_BUSY) {
- 		ucsi->sync_val = -EBUSY;
-@@ -282,6 +301,7 @@ static int pmic_glink_ucsi_probe(struct auxiliary_device *adev,
- {
- 	struct pmic_glink_ucsi *ucsi;
- 	struct device *dev = &adev->dev;
-+	struct fwnode_handle *fwnode;
- 	int ret;
- 
- 	ucsi = devm_kzalloc(dev, sizeof(*ucsi), GFP_KERNEL);
-@@ -309,6 +329,38 @@ static int pmic_glink_ucsi_probe(struct auxiliary_device *adev,
- 
- 	ucsi_set_drvdata(ucsi->ucsi, ucsi);
- 
-+	device_for_each_child_node(dev, fwnode) {
-+		struct gpio_desc *desc;
-+		u32 port;
-+
-+		ret = fwnode_property_read_u32(fwnode, "reg", &port);
-+		if (ret < 0) {
-+			dev_err(dev, "missing reg property of %pOFn\n", fwnode);
-+			return ret;
-+		}
-+
-+		if (port >= PMIC_GLINK_MAX_PORTS) {
-+			dev_warn(dev, "invalid connector number, ignoring\n");
-+			continue;
-+		}
-+
-+		desc = devm_gpiod_get_index_optional(&adev->dev, "orientation", port, GPIOD_IN);
-+
-+		/* If GPIO isn't found, continue */
-+		if (!desc)
-+			continue;
-+
-+		if (IS_ERR(desc))
-+			return dev_err_probe(dev, PTR_ERR(desc),
-+					     "unable to acquire orientation gpio\n");
-+		ucsi->port_orientation[port] = desc;
-+
-+		ucsi->port_switch[port] = fwnode_typec_switch_get(fwnode);
-+		if (IS_ERR(ucsi->port_switch[port]))
-+			return dev_err_probe(dev, PTR_ERR(ucsi->port_switch[port]),
-+					"failed to acquire orientation-switch\n");
-+	}
-+
- 	ucsi->client = devm_pmic_glink_register_client(dev,
- 						       PMIC_GLINK_OWNER_USBC,
- 						       pmic_glink_ucsi_callback,
+ 		connector@0 {
+ 			compatible = "usb-c-connector";
 
 -- 
 2.34.1
