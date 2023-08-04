@@ -2,66 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7443376F7C5
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 04:20:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E1BFA76F7C8
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 04:21:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233697AbjHDCUw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Aug 2023 22:20:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45400 "EHLO
+        id S233828AbjHDCVR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Aug 2023 22:21:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45012 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233640AbjHDCUm (ORCPT
+        with ESMTP id S233726AbjHDCU6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Aug 2023 22:20:42 -0400
-Received: from mail-qk1-x734.google.com (mail-qk1-x734.google.com [IPv6:2607:f8b0:4864:20::734])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76EC144B5
-        for <linux-kernel@vger.kernel.org>; Thu,  3 Aug 2023 19:20:25 -0700 (PDT)
-Received: by mail-qk1-x734.google.com with SMTP id af79cd13be357-76c97a137c8so126446285a.1
-        for <linux-kernel@vger.kernel.org>; Thu, 03 Aug 2023 19:20:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paul-moore.com; s=google; t=1691115624; x=1691720424;
-        h=in-reply-to:references:subject:cc:to:from:message-id:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=2A36zt8dtnUsg87k3ceorvznxtuCwHOmRsl0P1K6nwY=;
-        b=N0BWOx5xPWYxS9PxUFdtLS4cw5T3sFIsMtKd2GEATm8atWxZBq3P1+f4HUTX6mAyFG
-         3eDMxZrMtqAb4ujfCn/BP1UMLiLl5FYYvOoQ5458QnOVckzDwZuCOiqPTltvt3KLjvfR
-         i4MIhDWPmpCVmUe/jSJjljQ7n2ANHn/P2kK7IsVcSc43nnToFx4VM3mWcZYXjLOKfApS
-         l99Fz/6pYmn3iJYoe3pirq2LMfcXSzVwN7tlfnPl+PMLSXbBfIdcNkAMjqY6NlXo07rF
-         LFjPBH9/meWOHnQiIrpq+R7ImukUjyFFAwQYWzn8abGuhYU0Cmcv3vFd7HkVYABqps6m
-         YYDA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691115624; x=1691720424;
-        h=in-reply-to:references:subject:cc:to:from:message-id:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=2A36zt8dtnUsg87k3ceorvznxtuCwHOmRsl0P1K6nwY=;
-        b=KrAiUkC57WNXykOzKmI+QjjgRcTGB6Aqa4wK8O5Itpbact8HuZ1DxAqyRgd3XM3Z7x
-         +wVXrP7UPRtsb64ovJ4B9sf/n3eelTsJ8P1HjV4Q5IriZHLrDNcHxlYnwJV9FeXKkFlr
-         bjOg8ylx4z0n5gr/RfqlIb9k8N2Z9B9J2sBjoCcnZMEkHztNH6cAjsgRv3NV0lsOQTW0
-         qxnxMgN6v8udEGYog3y3ll5wLhtmkJ1KQgZqfzUuq2eGT2cYfaYuVGmxNKwNCsby9t3l
-         MuQ4tKr1e2RlOE0aBkENjQOx6dW0z8bIP1dDlXrxVxgfhjPpClyTGLX/TwMInZMwDwB+
-         pqDg==
-X-Gm-Message-State: AOJu0YwRUHrrPYsy2lre/UPxBMQdwmllm3vvdrBiVGrWnhNWelDtsRwV
-        YkXpR5+354TbnK9V2pJPk6tW
-X-Google-Smtp-Source: AGHT+IEoS88Nucw/4DRDM1C9crvDnwJ/fmssK0XqeIvUgd7B/L/Y8iNMK64eDiDoVp+iR9EB4n8dqQ==
-X-Received: by 2002:a05:620a:290b:b0:76c:cd15:a8b5 with SMTP id m11-20020a05620a290b00b0076ccd15a8b5mr771476qkp.21.1691115624509;
-        Thu, 03 Aug 2023 19:20:24 -0700 (PDT)
-Received: from localhost ([70.22.175.108])
-        by smtp.gmail.com with ESMTPSA id x12-20020ae9e90c000000b0076c60b95b87sm332562qkf.96.2023.08.03.19.20.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 03 Aug 2023 19:20:24 -0700 (PDT)
-Date:   Thu, 03 Aug 2023 22:20:23 -0400
-Message-ID: <e109fc2da07fe92eecda62781201be05.paul@paul-moore.com>
-From:   Paul Moore <paul@paul-moore.com>
-To:     =?UTF-8?q?Christian=20G=C3=B6ttsche?= <cgzones@googlemail.com>,
-        selinux@vger.kernel.org
-Cc:     Stephen Smalley <stephen.smalley.work@gmail.com>,
-        Eric Paris <eparis@parisplace.org>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 9/9] selinux: avoid implicit conversion in nlmsgtab code
-References: <20230728155501.39632-8-cgzones@googlemail.com>
-In-Reply-To: <20230728155501.39632-8-cgzones@googlemail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,PP_MIME_FAKE_ASCII_TEXT,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        Thu, 3 Aug 2023 22:20:58 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6FF84C00;
+        Thu,  3 Aug 2023 19:20:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1691115634; x=1722651634;
+  h=message-id:date:mime-version:cc:subject:to:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=8RVBndkshGnvHV5Z1uI2lfdqXRdUsjPzvSMKu45GOx8=;
+  b=BE58ooKKb3UA43QiNRrMs/0ypd7WyDmrm6i8Uo1tDk1K1WFxAlYNiQFK
+   We3ErcdBcTTgR19hPULAxHwXTtx9wbDQ83h8gWAgweE5ozKZttdHGuFBY
+   Ewt8ZAbb6udOVvDQU5IclRmv+QvHjy2lxKUB3DCv+agdMpWWvm3SdBUnh
+   kRhcqB/OpEdwoPdLMe/vKxTAkl9yxQd2SWqsOq484b1eP5Nwgb9hOagdT
+   2JHYFDB3e2efPHl+yyAS0gGx3Ai0awOpjrdUQIsjPz9Loi4C6bbFp8HwO
+   M9kHAuwgU1rUFoiWw/KFB7y5etMCuDrOyCYJIuUGH2uqAZa/kms6buPtS
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10791"; a="456416916"
+X-IronPort-AV: E=Sophos;i="6.01,253,1684825200"; 
+   d="scan'208";a="456416916"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Aug 2023 19:20:33 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.01,202,1684825200"; 
+   d="scan'208";a="873178606"
+Received: from blu2-mobl.ccr.corp.intel.com (HELO [10.254.210.88]) ([10.254.210.88])
+  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Aug 2023 19:20:32 -0700
+Message-ID: <15c6f634-f00a-dfa7-9759-161ec201460a@linux.intel.com>
+Date:   Fri, 4 Aug 2023 10:20:28 +0800
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Cc:     baolu.lu@linux.intel.com, Joerg Roedel <joro@8bytes.org>,
+        Will Deacon <will@kernel.org>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        Nicolin Chen <nicolinc@nvidia.com>,
+        "Liu, Yi L" <yi.l.liu@intel.com>,
+        Jacob Pan <jacob.jun.pan@linux.intel.com>,
+        "iommu@lists.linux.dev" <iommu@lists.linux.dev>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 0/2] iommu: Make pasid array per device
+Content-Language: en-US
+To:     Jason Gunthorpe <jgg@ziepe.ca>,
+        "Tian, Kevin" <kevin.tian@intel.com>
+References: <20230801063125.34995-1-baolu.lu@linux.intel.com>
+ <ZMplBfgSb8Hh9jLt@ziepe.ca>
+ <BN9PR11MB527649D7E79E29291DA1A5538C08A@BN9PR11MB5276.namprd11.prod.outlook.com>
+ <ZMvFR52o86upAVrp@ziepe.ca>
+From:   Baolu Lu <baolu.lu@linux.intel.com>
+In-Reply-To: <ZMvFR52o86upAVrp@ziepe.ca>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,
         URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -69,36 +75,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Jul 28, 2023 =?UTF-8?q?Christian=20G=C3=B6ttsche?= <cgzones@googlemail.com> wrote:
-> 
-> Use an unsigned type as loop iterator.
-> 
-> Signed-off-by: Christian Göttsche <cgzones@googlemail.com>
-> ---
-> v2: avoid declarations in init-clauses of for loops
-> ---
->  security/selinux/nlmsgtab.c | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
-> 
-> diff --git a/security/selinux/nlmsgtab.c b/security/selinux/nlmsgtab.c
-> index 2ee7b4ed43ef..2f8fab949633 100644
-> --- a/security/selinux/nlmsgtab.c
-> +++ b/security/selinux/nlmsgtab.c
-> @@ -153,7 +153,8 @@ static const struct nlmsg_perm nlmsg_audit_perms[] = {
->  
->  static int nlmsg_perm(u16 nlmsg_type, u32 *perm, const struct nlmsg_perm *tab, size_t tabsize)
->  {
-> -	int i, err = -EINVAL;
-> +	u32 i;
-> +	int err = -EINVAL;
+On 2023/8/3 23:18, Jason Gunthorpe wrote:
+> On Thu, Aug 03, 2023 at 12:44:03AM +0000, Tian, Kevin wrote:
+>>> From: Jason Gunthorpe<jgg@ziepe.ca>
+>>> Sent: Wednesday, August 2, 2023 10:16 PM
+>>>
+>>> On Tue, Aug 01, 2023 at 02:31:23PM +0800, Lu Baolu wrote:
+>>>> The PCI PASID enabling interface guarantees that the address space used
+>>>> by each PASID is unique. This is achieved by checking that the PCI ACS
+>>>> path is enabled for the device. If the path is not enabled, then the
+>>>> PASID feature cannot be used.
+>>>>
+>>>>      if (!pci_acs_path_enabled(pdev, NULL, PCI_ACS_RR | PCI_ACS_UF))
+>>>>              return -EINVAL;
+>>>>
+>>>> The PASID array is not an attribute of the IOMMU group. It is more
+>>>> natural to store the PASID array in the per-device IOMMU data. This
+>>>> makes the code clearer and easier to understand. No functional changes
+>>>> are intended.
+>>> Is there a reason to do this?
+>>>
+>>> *PCI*  requires the ACS/etc because PCI kind of messed up how switches
+>>> handled PASID so PASID doesn't work otherwise.
+>>>
+>>> But there is nothing that says other bus type can't have working
+>>> (non-PCI) PASID and still have device isolation issues.
+>>>
+>>> So unless there is a really strong reason to do this we should keep
+>>> the PASID list in the group just like the domain.
+>>>
+>> this comes from the consensus in [1].
+>>
+>> [1]https://lore.kernel.org/linux-iommu/ZAcyEzN4102gPsWC@nvidia.com/
+> That consensus was that we don't have PASID support if there is
+> multi-device groups, at least in iommufd.. That makes sense. If we
+> want to change the core code to enforce this that also makes sense
 
-I understand wanting to make 'i' unsigned, but I think unsigned int
-is a better fit for an iterator and array index.
+In my initial plan, I had a third patch that would have enforced single-
+device groups for PASID interfaces in the core. But I ultimately dropped
+it because it is the fact for PCI devices, but I am not sure about other
+buses although perhaps there is none.
 
->  	for (i = 0; i < tabsize/sizeof(struct nlmsg_perm); i++)
->  		if (nlmsg_type == tab[i].nlmsg_type) {
-> -- 
-> 2.40.1
+> But this series is just moving the array?
 
---
-paul-moore.com
+So I took the first step by moving the pasid_array from iommu group to
+the device. :-)
+
+Best regards,
+baolu
