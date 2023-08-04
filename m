@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 89C0777087E
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 21:05:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7890877087F
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 21:05:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230027AbjHDTE5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Aug 2023 15:04:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40078 "EHLO
+        id S230172AbjHDTFB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Aug 2023 15:05:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39182 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230091AbjHDTE2 (ORCPT
+        with ESMTP id S230082AbjHDTEb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Aug 2023 15:04:28 -0400
+        Fri, 4 Aug 2023 15:04:31 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D69CF46B2;
-        Fri,  4 Aug 2023 12:04:27 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44B364C05;
+        Fri,  4 Aug 2023 12:04:30 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 7389E62111;
+        by dfw.source.kernel.org (Postfix) with ESMTPS id D559C62103;
+        Fri,  4 Aug 2023 19:04:29 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 508E0C433CB;
         Fri,  4 Aug 2023 19:04:27 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DD734C433CC;
-        Fri,  4 Aug 2023 19:04:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691175866;
-        bh=jIA4+MT0ym/Dj4WF81uHNkh6fE41oHjGkDEH3Lu5FYg=;
+        s=k20201202; t=1691175869;
+        bh=520B+rY2lic+DubRUABO4/l2XzI3W+yK1LeWrhQ29eQ=;
         h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-        b=PSaxIFrJkYWYnkoq5JOGPnQ0R2tGgXBQYDT1LvBmRopS+3DY+izf9L+sWGAyAhZwR
-         Qav52fbx/x7WRwKogwF5l3bZqyDpBxmPXiO6C9EQ0SnhQmCXnXPLF9V83QrYa09azv
-         v8ufcEOT1yYZI9xjs6tijf0GOOMZ2Jihmlw6PsspZuT8kT5TsOYxLysgPl3YAfkpXj
-         9FpPjgAMh3cuOwep14XmD07iONDoGjfosFpL9lqgKsX5acvrPYMXfTwgpduBkosxEZ
-         IAizRWHihVOcPxdoySTB1EPKyb71HnoWz5hOdrFqfAZMdTuBFijc+eANO1xUayPQH2
-         36QtwVQgnsziA==
+        b=UAcT9Ac3f8LkU11WSIvLmbMd4Ufi9ds698gVhlwy5RpKng8fUTcV1gqP/wxN5ipWN
+         icn5qzNMqe3SeKN2HKV9eF9C9TBZOpO8MIVOS8++eu3sv2lFACFEGnKDmR8UvUm6PZ
+         11ynCvJQPV0g6FHw4TG+zJhUV+xmthHsu0sIgz3iD0/E4HHxR/wbcfJAdmXw/BSCCp
+         qf3HxbN678i1eRa/LSqN9RC46iIXsKSm+f41MncnNp7SZno78ZWsa+L1AO6O4Eoscm
+         ZobGhqn08B/bh76FbWCqtQvW83eereBKB1k1wIRPY2lNTzLVlJdR/BJ4BEjXUEDEJK
+         jCPv/oC0NpLXA==
 From:   Mark Brown <broonie@kernel.org>
 To:     devicetree@vger.kernel.org, linux-spi@vger.kernel.org,
         linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org,
@@ -42,12 +42,12 @@ Cc:     Rob Herring <robh+dt@kernel.org>,
         Conor Dooley <conor+dt@kernel.org>,
         Emil Renner Berthing <kernel@esmil.dk>,
         Ziv Xu <ziv.xu@starfivetech.com>
-In-Reply-To: <20230704090453.83980-1-william.qiu@starfivetech.com>
-References: <20230704090453.83980-1-william.qiu@starfivetech.com>
-Subject: Re: (subset) [PATCH v4 0/3] Add initialization of clock for
+In-Reply-To: <20230804020254.291239-1-william.qiu@starfivetech.com>
+References: <20230804020254.291239-1-william.qiu@starfivetech.com>
+Subject: Re: (subset) [PATCH v6 0/3] Add initialization of clock for
  StarFive JH7110 SoC
-Message-Id: <169117586462.140468.4738849409779425028.b4-ty@kernel.org>
-Date:   Fri, 04 Aug 2023 20:04:24 +0100
+Message-Id: <169117586705.140468.16858943354312367424.b4-ty@kernel.org>
+Date:   Fri, 04 Aug 2023 20:04:27 +0100
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
@@ -62,7 +62,7 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 04 Jul 2023 17:04:50 +0800, William Qiu wrote:
+On Fri, 04 Aug 2023 10:02:51 +0800, William Qiu wrote:
 > This patchset adds initial rudimentary support for the StarFive
 > Quad SPI controller driver. And this driver will be used in
 > StarFive's VisionFive 2 board. In 6.4, the QSPI_AHB and QSPI_APB
