@@ -2,128 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C348876FCF8
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 11:14:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DC13776FCFE
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 11:14:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229761AbjHDJOR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Aug 2023 05:14:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60120 "EHLO
+        id S230051AbjHDJOv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Aug 2023 05:14:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60934 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229634AbjHDJNt (ORCPT
+        with ESMTP id S230246AbjHDJOQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Aug 2023 05:13:49 -0400
-Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 906F36A7E
-        for <linux-kernel@vger.kernel.org>; Fri,  4 Aug 2023 02:10:34 -0700 (PDT)
-Received: by mail-pf1-x42a.google.com with SMTP id d2e1a72fcca58-686b879f605so1330356b3a.1
-        for <linux-kernel@vger.kernel.org>; Fri, 04 Aug 2023 02:10:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1691140233; x=1691745033;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=fIgVcI/DAV+syZCzOifgnr1978K5ZgzsoAA4MZTsdr8=;
-        b=gfsJb+lP9iAhBqFb5nmJR6SFpsVvn9z6Qoa51edQoEd6CqKZdUnmyFX+sXP7iaW0Wn
-         aTqtp/hlkscVLQGHgh7Rou5pcYN3z9T1dJ8USTpCMhj1hSAKSiM2x1bFdiu9T90IiwHi
-         a/8ABoUc/gyiOntvYldRd82s9cLH4+JwXGlce7bknV93L0ruhwipZLpRuA3W5AP02aj4
-         0FuH1qObKYzEc0IBBqas8YjEBr1BtU6+dc170qqINX5kJhlP5wggAjyDbggxK3b8gG/7
-         aUebgtHN7zEKzom7WkL45iuRRh//yiq6zJzjR+zg64QQB211uhgWG6Z1oC17YUkIwUBS
-         6AEA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691140233; x=1691745033;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=fIgVcI/DAV+syZCzOifgnr1978K5ZgzsoAA4MZTsdr8=;
-        b=UeDYZ5OEVG4ougAzUaLvor2QShTCZOAE2tn6FYWSr9firrYOU3d9s2bQgcZabFrDk2
-         MqSBiIdD6iZ1JHa/n2cXGnWQ/iAAuS94Q0MsbBj66aQrPWr+5ryLynDPJohOaTafgDN3
-         m9IEuiGd4N+EUxRVCQQOmD3v4YDx246ULMdhBCQKQI68dMIyHuZ5SmZs/zlZLlSjJAIE
-         xiV/04qT/DXJnjUsuTi6d+uxS8k5pd59mMdSFk877EBjXjSHbrU4cUTKqM0IU+ml2wVr
-         IEKMgZI9HpVrGwLL1UEramhvda2k7OCneP6deSHaeBuG9MdQe10B0ePK7wX499lqSPsO
-         JF6w==
-X-Gm-Message-State: AOJu0YwWuRyJbWqIfJBNKRuRP+5vbTPwKJLRMNwq9XqYK63+esP4IEMV
-        efTp8a3sC+VFnAkvpg62h0FowQ==
-X-Google-Smtp-Source: AGHT+IGQTzI2vosQeS/05F0bAnTIYQcz2dkP7E+eYl2x2kSGbAeqf2u97F51YVcj5qeB9WSEEZid6Q==
-X-Received: by 2002:a05:6a20:3d82:b0:12b:1686:3012 with SMTP id s2-20020a056a203d8200b0012b16863012mr986031pzi.3.1691140233508;
-        Fri, 04 Aug 2023 02:10:33 -0700 (PDT)
-Received: from leoy-yangtze.lan ([156.59.39.102])
-        by smtp.gmail.com with ESMTPSA id x19-20020a170902ea9300b001b1c4d875f5sm1254478plb.44.2023.08.04.02.10.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 04 Aug 2023 02:10:33 -0700 (PDT)
-Date:   Fri, 4 Aug 2023 17:10:27 +0800
-From:   Leo Yan <leo.yan@linaro.org>
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc:     Jonathan Corbet <corbet@lwn.net>, Ian Rogers <irogers@google.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org
-Subject: Re: [PATCH v2] perf doc: Document ring buffer mechanism
-Message-ID: <20230804091027.GC589820@leoy-yangtze.lan>
-References: <20230803035037.1750340-1-leo.yan@linaro.org>
- <87v8dw6vp1.fsf@meer.lwn.net>
- <20230803165636.GB1783639@leoy-huanghe.lan>
- <ZMwTyVKPn0cRewEc@kernel.org>
+        Fri, 4 Aug 2023 05:14:16 -0400
+Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2491B4C3F;
+        Fri,  4 Aug 2023 02:11:47 -0700 (PDT)
+Received: from mail02.huawei.com (unknown [172.30.67.143])
+        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4RHKhv1xgXz4f400Q;
+        Fri,  4 Aug 2023 17:11:43 +0800 (CST)
+Received: from huaweicloud.com (unknown [10.174.178.55])
+        by APP4 (Coremail) with SMTP id gCh0CgBH_rHLwMxk2KskPg--.58335S4;
+        Fri, 04 Aug 2023 17:11:42 +0800 (CST)
+From:   thunder.leizhen@huaweicloud.com
+To:     Petr Mladek <pmladek@suse.com>,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        John Ogness <john.ogness@linutronix.de>,
+        Christoph Lameter <cl@linux.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        David Rientjes <rientjes@google.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Hyeonggon Yoo <42.hyeyoo@gmail.com>, linux-mm@kvack.org,
+        "Paul E . McKenney" <paulmck@kernel.org>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Zqiang <qiang.zhang1211@gmail.com>, rcu@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     Zhen Lei <thunder.leizhen@huawei.com>
+Subject: [PATCH v6 0/5] rcu: Dump memory object info if callback function is invalid
+Date:   Fri,  4 Aug 2023 17:11:30 +0800
+Message-Id: <20230804091136.1177-1-thunder.leizhen@huaweicloud.com>
+X-Mailer: git-send-email 2.37.3.windows.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZMwTyVKPn0cRewEc@kernel.org>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: gCh0CgBH_rHLwMxk2KskPg--.58335S4
+X-Coremail-Antispam: 1UD129KBjvJXoW7ZFW3ur4ruryktryxAF47Jwb_yoW8Zr4Upw
+        nxW3sxWryUJry3CF13ZF1I9ry5Jw4xGFsIk3ZxZw18uw1Fvr97uFykJr1IqF98GF97K3WU
+        t3WYkF1jkF1UZrDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUv0b4IE77IF4wAFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k2
+        6cxKx2IYs7xG6r1S6rWUM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+        vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7Cj
+        xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
+        0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
+        6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
+        Cjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7M4kE6xkI
+        j40Ew7xC0wCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F4
+        0E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_GFv_Wryl
+        IxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxV
+        AFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6rW3Jr0E3s1lIxAIcVC2z280aVAFwI0_
+        Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IU1
+        6uWJUUUUU==
+X-CM-SenderInfo: hwkx0vthuozvpl2kv046kxt4xhlfz01xgou0bp/
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,KHOP_HELO_FCRDNS,
+        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 03, 2023 at 05:53:29PM -0300, Arnaldo Carvalho de Melo wrote:
-> Em Fri, Aug 04, 2023 at 12:56:36AM +0800, Leo Yan escreveu:
-> > Hi Jon,
-> > 
-> > On Thu, Aug 03, 2023 at 08:34:50AM -0600, Jonathan Corbet wrote:
-> > > Leo Yan <leo.yan@linaro.org> writes:
-> > > 
-> > > > In the Linux perf tool, the ring buffer serves not only as a medium for
-> > > > transferring PMU event data but also as a vital mechanism for hardware
-> > > > tracing using technologies like Intel PT and Arm CoreSight, etc.
-> > > >
-> > > > Consequently, the ring buffer mechanism plays a crucial role by ensuring
-> > > > high throughput for data transfer between the kernel and user space
-> > > > while avoiding excessive overhead caused by the ring buffer itself.
-> > > >
-> > > > This commit documents the ring buffer mechanism in detail.  It provides
-> > > > an in-depth explanation of the implementation of both the generic ring
-> > > > buffer and the AUX ring buffer.  Additionally, it covers how these ring
-> > > > buffers support various tracing modes and explains the synchronization
-> > > > with memory barriers.
-> > > >
-> > > > Signed-off-by: Leo Yan <leo.yan@linaro.org>
-> > > > ---
-> > > 
-> > > So this seems like good material from a very brief scan.  I do have to
-> > > ask, though: why is it not in RST, and why not put it into the
-> > > user-space API book?
-> > 
-> > This documentation is Perf related topic, so my instinct is to place
-> > it into the folder tools/perf/Documentation/.
-> > 
-> > Strictly to say, the doc doesn't give formal introduction for the
-> > user-space APIs.  Given perf ring buffer is a mechanism for exchanging
-> > data between the kernel and user space, I am open for placing it in the
-> > folder Documentation/userspace-api/.
-> > 
-> > I would like get opinions from the perf maintainers if possible, if we
-> > have agreenment I am glad to convert it to RST format.
-> 
-> Yeah, I agree with Jon.
+From: Zhen Lei <thunder.leizhen@huawei.com>
 
-Okay, I will spin a new patch based on this discussion.
+v5 --> v6:
+1. Use print_hex_dump() to dump the memory of slab object.
+2. Add a new dump prefix DUMP_PREFIX_ADDRESS_LOW16
+3. Minimize the output width of the offset
 
-Thanks for confirmation.
+v4 --> v5:
+1. Add Reviewed-by Acked-by for patch 1/3
+2. Add patch 3/3:
+   mm: Dump the memory of slab object in kmem_dump_obj()
 
-Leo
+v3 --> v4:
+1. Remove kmem_valid_obj() and convert kmem_dump_obj() to work the same way
+   as vmalloc_dump_obj().
+2. In kernel/rcu/rcu.h
+-#include <linux/mm.h>
++#include <linux/slab.h>
+
+v2 --> v3:
+1. I made statistics about the source of 'rhp'. kmem_valid_obj() accounts for
+   more than 97.5%, and vmalloc accounts for less than 1%. So change call
+   mem_dump_obj() to call kmem_dump_obj() can meet debugging requirements and
+   avoid the potential deadlock risk of vmalloc_dump_obj().
+-		mem_dump_obj(rhp);
++		if (kmem_valid_obj(rhp))
++			kmem_dump_obj(rhp);
+
+   The discussion about vmap_area_lock deadlock in v2:
+   https://lkml.org/lkml/2022/11/11/493
+
+2. Provide static inline empty functions for kmem_valid_obj() and kmem_dump_obj()
+   when CONFIG_PRINTK=n.
+
+v1 --> v2:
+1. Remove condition "(unsigned long)rhp->func & 0x3", it have problems on x86.
+2. Paul E. McKenney helped me update the commit message, thanks.
+
+
+Zhen Lei (5):
+  hexdump: add a new dump prefix DUMP_PREFIX_ADDRESS_LOW16
+  hexdump: minimize the output width of the offset
+  mm: Remove kmem_valid_obj()
+  mm: Dump the memory of slab object in kmem_dump_obj()
+  rcu: Dump memory object info if callback function is invalid
+
+ include/linux/printk.h |  1 +
+ include/linux/slab.h   |  5 ++--
+ kernel/rcu/rcu.h       |  7 +++++
+ kernel/rcu/srcutiny.c  |  1 +
+ kernel/rcu/srcutree.c  |  1 +
+ kernel/rcu/tasks.h     |  1 +
+ kernel/rcu/tiny.c      |  1 +
+ kernel/rcu/tree.c      |  1 +
+ lib/hexdump.c          | 17 +++++++++--
+ mm/slab_common.c       | 68 ++++++++++++++++++++++--------------------
+ mm/util.c              |  4 +--
+ 11 files changed, 67 insertions(+), 40 deletions(-)
+
+-- 
+2.34.1
+
