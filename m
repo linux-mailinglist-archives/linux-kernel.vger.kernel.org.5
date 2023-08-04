@@ -2,93 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5CC13770156
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 15:20:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 74C98770159
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 15:20:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230452AbjHDNUq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Aug 2023 09:20:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33462 "EHLO
+        id S230480AbjHDNUt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Aug 2023 09:20:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33492 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230475AbjHDNU1 (ORCPT
+        with ESMTP id S230357AbjHDNU3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Aug 2023 09:20:27 -0400
-Received: from mail-yb1-xb35.google.com (mail-yb1-xb35.google.com [IPv6:2607:f8b0:4864:20::b35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5BBD34C0E
-        for <linux-kernel@vger.kernel.org>; Fri,  4 Aug 2023 06:18:12 -0700 (PDT)
-Received: by mail-yb1-xb35.google.com with SMTP id 3f1490d57ef6-d1fb9107036so2354045276.0
-        for <linux-kernel@vger.kernel.org>; Fri, 04 Aug 2023 06:18:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1691155015; x=1691759815;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=CN0KqmR92Gl21HQtvAMPIpHXJ6Dwonwz8bIB3UAxFh8=;
-        b=lTe8kRlkQhbCr9QuKFpIQmuAtZdUH5mPurZ2vCnZAsxaQqcSqvtzge8st2Doky9U6y
-         xY/2YDlAzjvJxM+3yPH5G6wjvpFlPDN/qPR4KmvahczFf0xUY2gffcvTJ4I7WDDINNU6
-         xnffE8OAedgkbwdJoiZZV72j7B0U14gzEJZm1FA3uYB6YGRQF9I8dUmb4HvDv1oOtH7F
-         nppWSTaOezES3Qq1iAqOSdow0tmHbRDOcLFhTenoUNEgPu7dDfXfhF11nBemTfQK9YRG
-         cqmtB4syCb+9g1BDBbU43sFuyPtNlcQ71KB7zK0zzi77eQkJt74uCl/eTzvWt8TBr0ec
-         tkEA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691155015; x=1691759815;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=CN0KqmR92Gl21HQtvAMPIpHXJ6Dwonwz8bIB3UAxFh8=;
-        b=Yd3YsGjMDnMgWxollTXu3aM6ejQ80UrFf++V9G33GpX70ngVEouCRcybTRXo7kzUuq
-         aH9ADaGZ/iRCeUNh0PDuNf+R5zUa5dqqHa1e8HRxGSqaRAT7cbI/odNvvoX781+emuj5
-         PdKMf0wJUmwRFcbXChMcG58/WcERLpo8Lm1BpsRIgh76XKLbhs+bnZa1Zxqp2vnRHmmr
-         ZpdGVVsE2XS7sC5HCIdpWxGCvH5WMQa241Q71M5ZuY6lCqCBiAamaFnR3jAnqz/JgRMn
-         2brpQftBhcxgIwkmc/R8vjMhxCPk/KEPcUq8Wu6gct3FCtd4UTM8HOPc0QnpleIaS+WO
-         Hqkg==
-X-Gm-Message-State: AOJu0YwP4Nrpy7hfISMoCZuUSpQY7/w74iDkVODfQ+WqPFxgUaZaILT5
-        D+2Jiczbp1vw6BajmxU7tMTTM1uuSxEGTKmorAlgyA==
-X-Google-Smtp-Source: AGHT+IEAY+cs9ul8AsuJqNlA1Ij2SA6DE6uBQAWyhGZ4hywFx5Y9P9mpVKMALAsrD8z/aHpSNClZlHD8GZm8+r89DqM=
-X-Received: by 2002:a5b:701:0:b0:d0d:f5f3:d2bf with SMTP id
- g1-20020a5b0701000000b00d0df5f3d2bfmr1444562ybq.48.1691155015082; Fri, 04 Aug
- 2023 06:16:55 -0700 (PDT)
+        Fri, 4 Aug 2023 09:20:29 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.115])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30BAD59C7;
+        Fri,  4 Aug 2023 06:18:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1691155095; x=1722691095;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=ot9Ooygu6Xo8v9fyWTf7US/LLF4qBCnv8SIgzf+9s2Y=;
+  b=GJE5NFvvHVNUWtmpdurbbnt/w3mbIX5aaraK6i1forXfkOBHPkqEe0sb
+   NfrcZFrAqw1pW38Y7UpUL9VpV5hMObHDYQKp0CfYfB5n9jvzOVM+U4rPy
+   M08mLtiVaN4upTROWiqzjwnCLvvxomKkQPkgXMHCJ3C6hEU2U4Hno1Kky
+   f8E128G4fpv/NGUgvnmFCWqQb3oqsRGZPNlD+Z0P15gJ3q2qT2OdwFd//
+   YeFNqHgsrUM2+CJ5iLFWxL9rD48zHIJera1T9jCUNV+v686iMS2sMf2G7
+   xS3ICFqsUxA4vB5g+RH9KbnlV3SVGjdBluOYU+ToR5i4fnxe1+MNBCq0R
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10792"; a="370137010"
+X-IronPort-AV: E=Sophos;i="6.01,255,1684825200"; 
+   d="scan'208";a="370137010"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Aug 2023 06:16:55 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.01,202,1684825200"; 
+   d="scan'208";a="873384919"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by fmsmga001.fm.intel.com with ESMTP; 04 Aug 2023 06:16:55 -0700
+Received: by black.fi.intel.com (Postfix, from userid 1001)
+        id D6376BAB; Fri,  4 Aug 2023 16:17:03 +0300 (EEST)
+Date:   Fri, 4 Aug 2023 16:17:03 +0300
+From:   Mika Westerberg <mika.westerberg@linux.intel.com>
+To:     Mario Limonciello <mario.limonciello@amd.com>
+Cc:     "Rafael J . Wysocki" <rafael@kernel.org>,
+        Bjorn Helgaas <helgaas@kernel.org>, linux-pci@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        linux-acpi@vger.kernel.org,
+        Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        Iain Lane <iain@orangesquash.org.uk>,
+        Shyam-sundar S-k <Shyam-sundar.S-k@amd.com>
+Subject: Re: [PATCH v9 3/3] PCI/ACPI: Use device constraints to decide PCI
+ target state fallback policy
+Message-ID: <20230804131703.GB14638@black.fi.intel.com>
+References: <20230804010229.3664-1-mario.limonciello@amd.com>
+ <20230804010229.3664-4-mario.limonciello@amd.com>
 MIME-Version: 1.0
-References: <20230804075746.77435-1-jiapeng.chong@linux.alibaba.com>
-In-Reply-To: <20230804075746.77435-1-jiapeng.chong@linux.alibaba.com>
-From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Date:   Fri, 4 Aug 2023 16:16:44 +0300
-Message-ID: <CAA8EJpp9SJG1MQEwbGHLVWvJZomagttQ1y2B3EmXqB+owO0Xwg@mail.gmail.com>
-Subject: Re: [PATCH] drm/msm/dpu: clean up some inconsistent indenting
-To:     Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-Cc:     robdclark@gmail.com, quic_abhinavk@quicinc.com, sean@poorly.run,
-        marijn.suijten@somainline.org, airlied@gmail.com, daniel@ffwll.ch,
-        linux-arm-msm@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        freedreno@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        Abaci Robot <abaci@linux.alibaba.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20230804010229.3664-4-mario.limonciello@amd.com>
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 4 Aug 2023 at 10:57, Jiapeng Chong
-<jiapeng.chong@linux.alibaba.com> wrote:
->
-> No functional modification involved.
->
-> drivers/gpu/drm/msm/disp/dpu1/dpu_core_perf.c:183 dpu_core_perf_crtc_check() warn: inconsistent indenting.
->
-> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-> Closes: https://bugzilla.openanolis.cn/show_bug.cgi?id=6096
-> Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-> ---
->  drivers/gpu/drm/msm/disp/dpu1/dpu_core_perf.c | 6 +++---
->  1 file changed, 3 insertions(+), 3 deletions(-)
+On Thu, Aug 03, 2023 at 08:02:29PM -0500, Mario Limonciello wrote:
+> +/**
+> + * acpi_pci_device_constraint - determine if the platform has a contraint for the device
+> + * @dev: PCI device to check
+> + * @result (out): the constraint specified by the platform
+> + *
+> + * If the platform has specified a constraint for a device, this function will
+> + * return 0 and set @result to the constraint.
+> + * Otherwise, it will return an error code.
+> + */
+> +int acpi_pci_device_constraint(struct pci_dev *dev, int *result)
+> +{
+> +	int constraint;
+> +
+> +	constraint = acpi_get_lps0_constraint(&dev->dev);
+> +	pci_dbg(dev, "ACPI device constraint: %d\n", constraint);
+> +	if (constraint < 0)
+> +		return constraint;
+> +	*result = constraint;
 
-Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Is there something preventing to return the constraint directly instead
+of storing it into "result"?
 
+> +
+> +	return 0;
+> +}
+> +
+>  static void acpi_pci_config_space_access(struct pci_dev *dev, bool enable)
+>  {
+>  	int val = enable ? ACPI_REG_CONNECT : ACPI_REG_DISCONNECT;
+> diff --git a/drivers/pci/pci.c b/drivers/pci/pci.c
+> index 60230da957e0c..6c70f921467c6 100644
+> --- a/drivers/pci/pci.c
+> +++ b/drivers/pci/pci.c
+> @@ -1082,6 +1082,14 @@ static inline bool platform_pci_bridge_d3(struct pci_dev *dev)
+>  	return acpi_pci_bridge_d3(dev);
+>  }
+>  
+> +static inline int platform_get_constraint(struct pci_dev *dev, int *result)
 
+Ditto here.
 
-
--- 
-With best wishes
-Dmitry
+> +{
+> +	if (pci_use_mid_pm())
+> +		return -ENODEV;
+> +
+> +	return acpi_pci_device_constraint(dev, result);
+> +}
+> +
