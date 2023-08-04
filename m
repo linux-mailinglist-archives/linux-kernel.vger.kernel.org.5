@@ -2,156 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 952D3770506
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 17:41:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4314A770509
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 17:41:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230378AbjHDPlI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Aug 2023 11:41:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42452 "EHLO
+        id S231229AbjHDPld (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Aug 2023 11:41:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42736 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229759AbjHDPlG (ORCPT
+        with ESMTP id S229698AbjHDPlb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Aug 2023 11:41:06 -0400
-Received: from mail-oa1-f79.google.com (mail-oa1-f79.google.com [209.85.160.79])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68E71171D
-        for <linux-kernel@vger.kernel.org>; Fri,  4 Aug 2023 08:41:05 -0700 (PDT)
-Received: by mail-oa1-f79.google.com with SMTP id 586e51a60fabf-1befca4fdfaso3291989fac.2
-        for <linux-kernel@vger.kernel.org>; Fri, 04 Aug 2023 08:41:05 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691163664; x=1691768464;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=yXfmTWLCk2PZ6zLYPtx1+xYpmGXAer9fGUnxxtzOS0o=;
-        b=dcuzMTMI2VKsyRJMvSnEGdhs0oOURRb6ef43srBuAiNL4GCBwqec33Q+d5lk7CtZKU
-         MzrhZ5MDOxMgedoWhvV15L1WNmtHJ0GcGiqSLFj8ZnctfNIdN48rIKmHTcPpyCE4HS2q
-         CPL+sAbUupGbCsoJoWN3pgut/29VPurp5cQaCZGs/+YtbT9ZrFWYRkopto1i4NBHFhoJ
-         PBY7F2NiuOQdBRylDySHHGwupAnZ9TfhTYzbf3uhL1R40VBUe+S6PJoL7u6EAD7fbv8z
-         DWHdx/xG7d7ncqNK3NRZAmOgoyTf0VC6E5QbN/yrxxDQovfET44Nzr6SZbUP0J9VXvHM
-         uE0g==
-X-Gm-Message-State: AOJu0YwD4/sS3czpsNBpNIS85pFoOIF6K/B7h4oSAKJZ+gy2srVVMavZ
-        l/2y+PjBN3tHy3/ZSNQ/zhsKb1EIy6xj/NIa0nADOYbJFuHf
-X-Google-Smtp-Source: AGHT+IEUwsgSul9CpdIBS7IL94M839EAF9eEJdcZ/poRlgToKAtFFG22qKCSWE//DiIUalyoMjz0qfwhvIOQGqo9iDWwomPTuLO1
-MIME-Version: 1.0
-X-Received: by 2002:a05:6870:e282:b0:1bb:7d2b:9eb with SMTP id
- v2-20020a056870e28200b001bb7d2b09ebmr2148690oad.7.1691163664777; Fri, 04 Aug
- 2023 08:41:04 -0700 (PDT)
-Date:   Fri, 04 Aug 2023 08:41:04 -0700
-In-Reply-To: <0000000000002930a705fc32b231@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000007f094106021ab951@google.com>
-Subject: Re: [syzbot] [nilfs?] general protection fault in folio_create_empty_buffers
-From:   syzbot <syzbot+0ad741797f4565e7e2d2@syzkaller.appspotmail.com>
-To:     konishi.ryusuke@gmail.com, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-nilfs@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com
+        Fri, 4 Aug 2023 11:41:31 -0400
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9628149D4;
+        Fri,  4 Aug 2023 08:41:30 -0700 (PDT)
+Received: from pps.filterd (m0353726.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 374Fb7Rj012525;
+        Fri, 4 Aug 2023 15:41:21 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
+ from : to : cc : date : in-reply-to : references : content-type :
+ content-transfer-encoding : mime-version; s=pp1;
+ bh=hg5vWj/L9yQlhLXAx6slUTmOqegnMigK9ZEoBQ88Ev4=;
+ b=N2eaiLU1LGR426Yp7fq9ey0g96ufpmAS9Vp3DVzZOpolLie1DXaEQBioeGQN/rKZ6hF8
+ oyKYqCxAJnnRMwcJB62rivuA2Bqgzds0mGbZ5P1zBPpVr2MMQBUnS4Rjjx6TsOj9MLzn
+ EbN8DgLbXhJc09jI7UF8W2ap7JfSflSmldiV5FING/xV8ywANi4vUHZRsfLFzUcZ3YPY
+ NZ4o3oLTM0s+e2LcT/yt7GNUVFEusCylkJu7wGLjtj4aAHhpxtjplvu8crCwvOhiKj6q
+ VmJcZSAS5jFfn2laQEjSP1BQvAgbCdGjjCBXeEWilrW6COMQl34/9NcDNt00jUngY4a1 Ww== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3s93rs1780-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 04 Aug 2023 15:41:20 +0000
+Received: from m0353726.ppops.net (m0353726.ppops.net [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 374Fb8eW012709;
+        Fri, 4 Aug 2023 15:41:20 GMT
+Received: from ppma21.wdc07v.mail.ibm.com (5b.69.3da9.ip4.static.sl-reverse.com [169.61.105.91])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3s93rs1772-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 04 Aug 2023 15:41:20 +0000
+Received: from pps.filterd (ppma21.wdc07v.mail.ibm.com [127.0.0.1])
+        by ppma21.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 374E6iOl023488;
+        Fri, 4 Aug 2023 15:41:18 GMT
+Received: from smtprelay03.fra02v.mail.ibm.com ([9.218.2.224])
+        by ppma21.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3s8km9pxec-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 04 Aug 2023 15:41:18 +0000
+Received: from smtpav01.fra02v.mail.ibm.com (smtpav01.fra02v.mail.ibm.com [10.20.54.100])
+        by smtprelay03.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 374FfFTt57934112
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 4 Aug 2023 15:41:15 GMT
+Received: from smtpav01.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 332FB20043;
+        Fri,  4 Aug 2023 15:41:15 +0000 (GMT)
+Received: from smtpav01.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 9F6D020040;
+        Fri,  4 Aug 2023 15:41:14 +0000 (GMT)
+Received: from [9.155.208.153] (unknown [9.155.208.153])
+        by smtpav01.fra02v.mail.ibm.com (Postfix) with ESMTP;
+        Fri,  4 Aug 2023 15:41:14 +0000 (GMT)
+Message-ID: <129c1c96eaafd7d3e57b05ca96354ffc129fd4e3.camel@linux.ibm.com>
+Subject: Re: [PATCH net v2 0/2] net/smc: Fix effective buffer size
+From:   Gerd Bayer <gbayer@linux.ibm.com>
+To:     Simon Horman <horms@kernel.org>
+Cc:     Wenjia Zhang <wenjia@linux.ibm.com>,
+        Jan Karcher <jaka@linux.ibm.com>,
+        Tony Lu <tonylu@linux.alibaba.com>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Karsten Graul <kgraul@linux.ibm.com>,
+        "D . Wythe" <alibuda@linux.alibaba.com>,
+        Wen Gu <guwen@linux.alibaba.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>, linux-s390@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Date:   Fri, 04 Aug 2023 17:41:13 +0200
+In-Reply-To: <ZM0IX/YnaawWT9sm@kernel.org>
+References: <20230803144605.477903-1-gbayer@linux.ibm.com>
+         <ZM0IX/YnaawWT9sm@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no
-        version=3.4.6
+User-Agent: Evolution 3.48.4 (3.48.4-1.module_f38+17164+63eeee4a) 
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: 93xwT36h812AQdB-danA66Y7QZep2xAe
+X-Proofpoint-ORIG-GUID: vpLe3iivhdMOlReEyY1GrrG-76cL_6jA
+Content-Transfer-Encoding: quoted-printable
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+MIME-Version: 1.0
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
+ definitions=2023-08-04_15,2023-08-03_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0
+ lowpriorityscore=0 adultscore=0 clxscore=1011 mlxscore=0
+ priorityscore=1501 impostorscore=0 bulkscore=0 spamscore=0 phishscore=0
+ suspectscore=0 mlxlogscore=478 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2306200000 definitions=main-2308040139
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-syzbot has found a reproducer for the following issue on:
+On Fri, 2023-08-04 at 16:17 +0200, Simon Horman wrote:
+> On Thu, Aug 03, 2023 at 04:46:03PM +0200, Gerd Bayer wrote:
+> > Hi all,
+> >=20
+[...]
+> > v1 - v2:
+> > =C2=A0- In second patch, use sock_net() helper as suggested by Tony and
+> > demanded
+> > =C2=A0=C2=A0 by kernel test robot.
+> >=20
+> > [1]
+> > https://lore.kernel.org/netdev/20221123104907.14624-1-jaka@linux.ibm.com
+>=20
+> Hi Gerd,
+>=20
+> unfortunately this patchset does not appear to apply to current
+> 'net'.
+>=20
+> Could you rebase and send a v3?
+>=20
+Hi Simon,
 
-HEAD commit:    bdffb18b5dd8 Add linux-next specific files for 20230804
-git tree:       linux-next
-console output: https://syzkaller.appspot.com/x/log.txt?x=1625c47da80000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=4edf5fc5e1e5446f
-dashboard link: https://syzkaller.appspot.com/bug?extid=0ad741797f4565e7e2d2
-compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=14b893bea80000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=16764a71a80000
+sure, working on it.
 
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/9d65b99a07c2/disk-bdffb18b.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/8b9623d8bd2e/vmlinux-bdffb18b.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/3e6c96c97edb/bzImage-bdffb18b.xz
-mounted in repro: https://storage.googleapis.com/syzbot-assets/17c4ca724160/mount_0.gz
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+0ad741797f4565e7e2d2@syzkaller.appspotmail.com
-
-general protection fault, probably for non-canonical address 0xdffffc000000003a: 0000 [#1] PREEMPT SMP KASAN
-KASAN: null-ptr-deref in range [0x00000000000001d0-0x00000000000001d7]
-CPU: 0 PID: 5323 Comm: segctord Not tainted 6.5.0-rc4-next-20230804-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 07/12/2023
-RIP: 0010:debug_spin_lock_before kernel/locking/spinlock_debug.c:85 [inline]
-RIP: 0010:do_raw_spin_lock+0x6e/0x2b0 kernel/locking/spinlock_debug.c:114
-Code: 81 48 8d 54 05 00 c7 02 f1 f1 f1 f1 c7 42 04 04 f3 f3 f3 65 48 8b 14 25 28 00 00 00 48 89 54 24 60 31 d2 48 89 fa 48 c1 ea 03 <0f> b6 14 02 48 89 f8 83 e0 07 83 c0 03 38 d0 7c 08 84 d2 0f 85 e3
-RSP: 0018:ffffc9000507f6e8 EFLAGS: 00010207
-RAX: dffffc0000000000 RBX: 00000000000001d0 RCX: 0000000000000000
-RDX: 000000000000003a RSI: ffffffff8ac889a0 RDI: 00000000000001d4
-RBP: 1ffff92000a0fede R08: 0000000000000000 R09: fffffbfff1d598ca
-R10: ffffffff8eacc657 R11: 000000000000004e R12: 0000000000000000
-R13: ffffea0001ca6bc0 R14: ffff888072088d98 R15: ffffea0001ca6bd8
-FS:  0000000000000000(0000) GS:ffff8880b9800000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 0000000020000480 CR3: 0000000027f80000 CR4: 00000000003506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- <TASK>
- spin_lock include/linux/spinlock.h:351 [inline]
- folio_create_empty_buffers+0xb0/0x470 fs/buffer.c:1657
- nilfs_lookup_dirty_data_buffers+0x5a1/0x720 fs/nilfs2/segment.c:730
- nilfs_segctor_scan_file+0x1b1/0x6f0 fs/nilfs2/segment.c:1080
- nilfs_segctor_collect_blocks fs/nilfs2/segment.c:1202 [inline]
- nilfs_segctor_collect fs/nilfs2/segment.c:1529 [inline]
- nilfs_segctor_do_construct+0x2f11/0x8bf0 fs/nilfs2/segment.c:2077
- nilfs_segctor_construct+0x924/0xb50 fs/nilfs2/segment.c:2411
- nilfs_segctor_thread_construct fs/nilfs2/segment.c:2519 [inline]
- nilfs_segctor_thread+0x38f/0xe90 fs/nilfs2/segment.c:2602
- kthread+0x33a/0x430 kernel/kthread.c:389
- ret_from_fork+0x2c/0x70 arch/x86/kernel/process.c:145
- ret_from_fork_asm+0x11/0x20 arch/x86/entry/entry_64.S:304
- </TASK>
-Modules linked in:
----[ end trace 0000000000000000 ]---
-RIP: 0010:debug_spin_lock_before kernel/locking/spinlock_debug.c:85 [inline]
-RIP: 0010:do_raw_spin_lock+0x6e/0x2b0 kernel/locking/spinlock_debug.c:114
-Code: 81 48 8d 54 05 00 c7 02 f1 f1 f1 f1 c7 42 04 04 f3 f3 f3 65 48 8b 14 25 28 00 00 00 48 89 54 24 60 31 d2 48 89 fa 48 c1 ea 03 <0f> b6 14 02 48 89 f8 83 e0 07 83 c0 03 38 d0 7c 08 84 d2 0f 85 e3
-RSP: 0018:ffffc9000507f6e8 EFLAGS: 00010207
-RAX: dffffc0000000000 RBX: 00000000000001d0 RCX: 0000000000000000
-RDX: 000000000000003a RSI: ffffffff8ac889a0 RDI: 00000000000001d4
-RBP: 1ffff92000a0fede R08: 0000000000000000 R09: fffffbfff1d598ca
-R10: ffffffff8eacc657 R11: 000000000000004e R12: 0000000000000000
-R13: ffffea0001ca6bc0 R14: ffff888072088d98 R15: ffffea0001ca6bd8
-FS:  0000000000000000(0000) GS:ffff8880b9800000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 0000000020000480 CR3: 0000000027f80000 CR4: 00000000003506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-----------------
-Code disassembly (best guess):
-   0:	81 48 8d 54 05 00 c7 	orl    $0xc7000554,-0x73(%rax)
-   7:	02 f1                	add    %cl,%dh
-   9:	f1                   	int1
-   a:	f1                   	int1
-   b:	f1                   	int1
-   c:	c7 42 04 04 f3 f3 f3 	movl   $0xf3f3f304,0x4(%rdx)
-  13:	65 48 8b 14 25 28 00 	mov    %gs:0x28,%rdx
-  1a:	00 00
-  1c:	48 89 54 24 60       	mov    %rdx,0x60(%rsp)
-  21:	31 d2                	xor    %edx,%edx
-  23:	48 89 fa             	mov    %rdi,%rdx
-  26:	48 c1 ea 03          	shr    $0x3,%rdx
-* 2a:	0f b6 14 02          	movzbl (%rdx,%rax,1),%edx <-- trapping instruction
-  2e:	48 89 f8             	mov    %rdi,%rax
-  31:	83 e0 07             	and    $0x7,%eax
-  34:	83 c0 03             	add    $0x3,%eax
-  37:	38 d0                	cmp    %dl,%al
-  39:	7c 08                	jl     0x43
-  3b:	84 d2                	test   %dl,%dl
-  3d:	0f                   	.byte 0xf
-  3e:	85 e3                	test   %esp,%ebx
-
-
----
-If you want syzbot to run the reproducer, reply with:
-#syz test: git://repo/address.git branch-or-commit-hash
-If you attach or paste a git patch, syzbot will apply it before testing.
+Thanks,
+Gerd
