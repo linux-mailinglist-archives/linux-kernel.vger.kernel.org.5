@@ -2,281 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 08B50770A37
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 23:01:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DB01F770A35
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 23:01:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229703AbjHDVBO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Aug 2023 17:01:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58300 "EHLO
+        id S230127AbjHDVBB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Aug 2023 17:01:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58148 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229644AbjHDVBL (ORCPT
+        with ESMTP id S229644AbjHDVA7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Aug 2023 17:01:11 -0400
-Received: from mail-qt1-x832.google.com (mail-qt1-x832.google.com [IPv6:2607:f8b0:4864:20::832])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25E7C4EC1
-        for <linux-kernel@vger.kernel.org>; Fri,  4 Aug 2023 14:01:09 -0700 (PDT)
-Received: by mail-qt1-x832.google.com with SMTP id d75a77b69052e-4036bd4fff1so24281cf.0
-        for <linux-kernel@vger.kernel.org>; Fri, 04 Aug 2023 14:01:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1691182868; x=1691787668;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=qIj55jcecVh0xUF4Aoj9xGp57UjUQUFnc7ZLpH5DAmI=;
-        b=AOpo0iGE7WLVlwYqhqGpS4L6N4pxpkjCoQUl40dlWd3T8mkz0pSj/n4zFOlCEuUkXZ
-         QeLBtEPqVzFXfJ8Qbh1c/b3dOnPIZpBu0uQkCgh6EJUjydmlPiESJ689AKEi/a6kmYoh
-         k4GAvab3396RUY6vG88bVZgs26JmCAtS9A80csN1Z4Ivxdj9TghBfUWZDAvtSKx9oq3w
-         p2vIW/cJ61PEHirr7+LWYzdjw6BXVOykSdx8RRFhjn2HEgeWkpaDi7GmQ8b0zDkbuOMr
-         CwOdzBVbC+Gp1H6EGY/iKApLPCqBK6iiqmZ+Oc278QuI9BjrS6JEevKzlmNnRBWDTqCo
-         rrEg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691182868; x=1691787668;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=qIj55jcecVh0xUF4Aoj9xGp57UjUQUFnc7ZLpH5DAmI=;
-        b=lYE84jUDDADQQsvdYEjaomMZpoTkDrHTHQPMZDG19g4Ojn5Kqguv28gskHho+AaSag
-         Dz7kDcJM5wfbQfGtFlkFkS6zYb2r1qazFyXM215/y+n9sF8hk8Y5WWWAEGUXrtab3o97
-         vcr3RidroMBl7zBgJTGljexNzI5xoK2ZrefMJ9Wxm4SCevgGoYUmbRsZnFvaxA/+dhYB
-         1ypr7hC6X6H3IL7/fxLlnjeDsxhA3yc5J1VN4IGUjWDJgeoOxaqFL7wIyjq7b3gEh5QF
-         WuHoPwy9mj/nQtuO9qfQVq91B7RjoCfsltC8iYi8IuP/5h3nqTEkqcNwBdeKoJLZQoVk
-         LAkg==
-X-Gm-Message-State: AOJu0Yy8JbZYhu5+Ox2+NszUpV/x6QmJXsKtre7IhGYpwQTKE3SFWotU
-        oa1SgIc0BWS5KR/4vHuEzQo5WZnjvDQiJ4Gu8IHt7g==
-X-Google-Smtp-Source: AGHT+IGwOVqu/W7zHGnURPcrR7UU8BMLb7+UZ+exi6Efb4ae0sxYA6WOfslqP0jMXje5o1ZUl4kzAOto6atHEGT66e8=
-X-Received: by 2002:a05:622a:1805:b0:3f9:a770:7279 with SMTP id
- t5-20020a05622a180500b003f9a7707279mr22330qtc.9.1691182867906; Fri, 04 Aug
- 2023 14:01:07 -0700 (PDT)
+        Fri, 4 Aug 2023 17:00:59 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4185E42;
+        Fri,  4 Aug 2023 14:00:58 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 464E262089;
+        Fri,  4 Aug 2023 21:00:58 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 50895C433C7;
+        Fri,  4 Aug 2023 21:00:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1691182857;
+        bh=wRZ3rQW3njry72R33WoUyNQvRAO3k+4UfyNKdLLPmRg=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=o73Gcf2v71Pj0DgU8IChVQD6LzDROczuPJk4+7ngDZ9wu6HyyYqufCT8jTiNO1DB1
+         /XajXZ5zw5vxCezmpUzBvmdy51tNkMSj3vpbkuX31eckFjxjJG9rlrS9Es/34jdYai
+         V7Pda8D77L+BRrwGIFLyYY+acOPOuUU1amUs/Laa/9TeYMCZ1OvchbI/X3PlFniESg
+         UHyNMK0aYQu+P1uBKqHmLncr55rQU3sXQqggN2HgEqD2YMS421JD11mNu2PRxF4Tyq
+         xbhVlg5i8tecUh9lh625hl6NWvT+mYlXZog+i9YeQXREJ/UgfD50KbuVYX5uvwMDKs
+         mwm7Hy1y5REfA==
+Date:   Fri, 4 Aug 2023 23:00:55 +0200
+From:   Andi Shyti <andi.shyti@kernel.org>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     Jarkko Nikula <jarkko.nikula@linux.intel.com>,
+        Mario Limonciello <mario.limonciello@amd.com>,
+        Wolfram Sang <wsa@kernel.org>, linux-i2c@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Jan Dabros <jsd@semihalf.com>
+Subject: Re: [PATCH v1 5/9] i2c: designware: Always provide ID tables
+Message-ID: <20230804210055.i4hnjsr4ltfak53e@intel.intel>
+References: <20230725143023.86325-1-andriy.shevchenko@linux.intel.com>
+ <20230725143023.86325-6-andriy.shevchenko@linux.intel.com>
+ <7be19d99-b197-662c-5157-dfdd9c793e3c@linux.intel.com>
+ <ZMgT8bYGnGwTSAPf@smile.fi.intel.com>
 MIME-Version: 1.0
-References: <20230726095146.2826796-1-ryan.roberts@arm.com>
- <20230726095146.2826796-3-ryan.roberts@arm.com> <c02a95e9-b728-ad64-6942-f23dbd66af0c@arm.com>
- <CAOUHufaHH3Ctu3JRHSbmebHJ7XPnBEWTQ4mwOo+MGXU9yKvwbA@mail.gmail.com>
- <5e595904-3dca-0e15-0769-7ed10975fd0d@arm.com> <b936041c-08a7-e844-19e7-eafc4ddf63b9@redhat.com>
-In-Reply-To: <b936041c-08a7-e844-19e7-eafc4ddf63b9@redhat.com>
-From:   Yu Zhao <yuzhao@google.com>
-Date:   Fri, 4 Aug 2023 15:00:31 -0600
-Message-ID: <CAOUHufafd4GNna2GKdSyQdW6CLVh0gxhNgeOc6t+ZOphwgw7tw@mail.gmail.com>
-Subject: Re: [PATCH v4 2/5] mm: LARGE_ANON_FOLIO for improved performance
-To:     David Hildenbrand <david@redhat.com>
-Cc:     Ryan Roberts <ryan.roberts@arm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Yin Fengwei <fengwei.yin@intel.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Yang Shi <shy828301@gmail.com>,
-        "Huang, Ying" <ying.huang@intel.com>, Zi Yan <ziy@nvidia.com>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Itaru Kitayama <itaru.kitayama@gmail.com>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZMgT8bYGnGwTSAPf@smile.fi.intel.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 4, 2023 at 2:23=E2=80=AFPM David Hildenbrand <david@redhat.com>=
- wrote:
->
-> On 04.08.23 10:27, Ryan Roberts wrote:
-> > On 04/08/2023 00:50, Yu Zhao wrote:
-> >> On Thu, Aug 3, 2023 at 6:43=E2=80=AFAM Ryan Roberts <ryan.roberts@arm.=
-com> wrote:
-> >>>
-> >>> + Kirill
-> >>>
-> >>> On 26/07/2023 10:51, Ryan Roberts wrote:
-> >>>> Introduce LARGE_ANON_FOLIO feature, which allows anonymous memory to=
- be
-> >>>> allocated in large folios of a determined order. All pages of the la=
-rge
-> >>>> folio are pte-mapped during the same page fault, significantly reduc=
-ing
-> >>>> the number of page faults. The number of per-page operations (e.g. r=
-ef
-> >>>> counting, rmap management lru list management) are also significantl=
-y
-> >>>> reduced since those ops now become per-folio.
-> >>>>
-> >>>> The new behaviour is hidden behind the new LARGE_ANON_FOLIO Kconfig,
-> >>>> which defaults to disabled for now; The long term aim is for this to
-> >>>> defaut to enabled, but there are some risks around internal
-> >>>> fragmentation that need to be better understood first.
-> >>>>
-> >>>> When enabled, the folio order is determined as such: For a vma, proc=
-ess
-> >>>> or system that has explicitly disabled THP, we continue to allocate
-> >>>> order-0. THP is most likely disabled to avoid any possible internal
-> >>>> fragmentation so we honour that request.
-> >>>>
-> >>>> Otherwise, the return value of arch_wants_pte_order() is used. For v=
-mas
-> >>>> that have not explicitly opted-in to use transparent hugepages (e.g.
-> >>>> where thp=3Dmadvise and the vma does not have MADV_HUGEPAGE), then
-> >>>> arch_wants_pte_order() is limited to 64K (or PAGE_SIZE, whichever is
-> >>>> bigger). This allows for a performance boost without requiring any
-> >>>> explicit opt-in from the workload while limitting internal
-> >>>> fragmentation.
-> >>>>
-> >>>> If the preferred order can't be used (e.g. because the folio would
-> >>>> breach the bounds of the vma, or because ptes in the region are alre=
-ady
-> >>>> mapped) then we fall back to a suitable lower order; first
-> >>>> PAGE_ALLOC_COSTLY_ORDER, then order-0.
-> >>>>
-> >>>
-> >>> ...
-> >>>
-> >>>> +#define ANON_FOLIO_MAX_ORDER_UNHINTED \
-> >>>> +             (ilog2(max_t(unsigned long, SZ_64K, PAGE_SIZE)) - PAGE=
-_SHIFT)
-> >>>> +
-> >>>> +static int anon_folio_order(struct vm_area_struct *vma)
-> >>>> +{
-> >>>> +     int order;
-> >>>> +
-> >>>> +     /*
-> >>>> +      * If THP is explicitly disabled for either the vma, the proce=
-ss or the
-> >>>> +      * system, then this is very likely intended to limit internal
-> >>>> +      * fragmentation; in this case, don't attempt to allocate a la=
-rge
-> >>>> +      * anonymous folio.
-> >>>> +      *
-> >>>> +      * Else, if the vma is eligible for thp, allocate a large foli=
-o of the
-> >>>> +      * size preferred by the arch. Or if the arch requested a very=
- small
-> >>>> +      * size or didn't request a size, then use PAGE_ALLOC_COSTLY_O=
-RDER,
-> >>>> +      * which still meets the arch's requirements but means we stil=
-l take
-> >>>> +      * advantage of SW optimizations (e.g. fewer page faults).
-> >>>> +      *
-> >>>> +      * Finally if thp is enabled but the vma isn't eligible, take =
-the
-> >>>> +      * arch-preferred size and limit it to ANON_FOLIO_MAX_ORDER_UN=
-HINTED.
-> >>>> +      * This ensures workloads that have not explicitly opted-in ta=
-ke benefit
-> >>>> +      * while capping the potential for internal fragmentation.
-> >>>> +      */
-> >>>> +
-> >>>> +     if ((vma->vm_flags & VM_NOHUGEPAGE) ||
-> >>>> +         test_bit(MMF_DISABLE_THP, &vma->vm_mm->flags) ||
-> >>>> +         !hugepage_flags_enabled())
-> >>>> +             order =3D 0;
-> >>>> +     else {
-> >>>> +             order =3D max(arch_wants_pte_order(), PAGE_ALLOC_COSTL=
-Y_ORDER);
-> >>>> +
-> >>>> +             if (!hugepage_vma_check(vma, vma->vm_flags, false, tru=
-e, true))
-> >>>> +                     order =3D min(order, ANON_FOLIO_MAX_ORDER_UNHI=
-NTED);
-> >>>> +     }
-> >>>> +
-> >>>> +     return order;
-> >>>> +}
-> >>>
-> >>>
-> >>> Hi All,
-> >>>
-> >>> I'm writing up the conclusions that we arrived at during discussion i=
-n the THP
-> >>> meeting yesterday, regarding linkage with exiting THP ABIs. It would =
-be great if
-> >>> I can get explicit "agree" or disagree + rationale from at least Davi=
-d, Yu and
-> >>> Kirill.
-> >>>
-> >>> In summary; I think we are converging on the approach that is already=
- coded, but
-> >>> I'd like confirmation.
-> >>>
-> >>>
-> >>>
-> >>> The THP situation today
-> >>> -----------------------
-> >>>
-> >>>   - At system level: THP can be set to "never", "madvise" or "always"
-> >>>   - At process level: THP can be "never" or "defer to system setting"
-> >>>   - At VMA level: no-hint, MADV_HUGEPAGE, MADV_NOHUGEPAGE
-> >>>
-> >>> That gives us this table to describe how a page fault is handled, acc=
-ording to
-> >>> process state (columns) and vma flags (rows):
-> >>>
-> >>>                  | never     | madvise   | always
-> >>> ----------------|-----------|-----------|-----------
-> >>> no hint         | S         | S         | THP>S
-> >>> MADV_HUGEPAGE   | S         | THP>S     | THP>S
-> >>> MADV_NOHUGEPAGE | S         | S         | S
-> >>>
-> >>> Legend:
-> >>> S       allocate single page (PTE-mapped)
-> >>> LAF     allocate lage anon folio (PTE-mapped)
-> >>> THP     allocate THP-sized folio (PMD-mapped)
-> >>>>        fallback (usually because vma size/alignment insufficient for=
- folio)
-> >>>
-> >>>
-> >>>
-> >>> Principles for Large Anon Folios (LAF)
-> >>> --------------------------------------
-> >>>
-> >>> David tells us there are use cases today (e.g. qemu live migration) w=
-hich use
-> >>> MADV_NOHUGEPAGE to mean "don't fill any PTEs that are not explicitly =
-faulted"
-> >>> and these use cases will break (i.e. functionally incorrect) if this =
-request is
-> >>> not honoured.
-> >>
-> >> I don't remember David saying this. I think he was referring to UFFD,
-> >> not MADV_NOHUGEPAGE, when discussing what we need to absolutely
-> >> respect.
-> >
-> > My understanding was that MADV_NOHUGEPAGE was being applied to regions =
-*before*
-> > UFFD was being registered, and the app relied on MADV_NOHUGEPAGE to not=
- back any
-> > unfaulted pages. It's not completely clear to me how not honouring
-> > MADV_NOHUGEPAGE would break things though. David?
->
-> Sorry, I'm still lagging behind on some threads.
->
-> Imagine the following for VM postcopy live migration:
->
-> (1) Set MADV_NOHUGEPAGE on guest memory and discard all memory (e.g.,
->      MADV_DONTNEED), to start with a clean slate.
-> (2) Migrates some pages during precopy from the source and stores them
->      into guest memory on the destination. Some of the memory locations
->      will have pages populated.
-> (3) At some point, decide to enable postcopy: enable userfaultfd on
->      guest memory.
-> (4) Discard *selected* pages again that have been dirtied in the
->      meantime on the source. These are pages that have been migrated
->      previously.
-> (5) Start running the VM on the destination.
-> (6) Anything that's not populated will trigger userfaultfd missing
->      faults. Then, you can request them from the source and place them.
->
-> Assume you would populate more than required during 2), you can end up
-> not getting userfaultfd faults during 4) and corrupt your guest state.
-> It works if during (2) you migrated all guest memory, or if during 4)
-> you zap everything that still needs migr
+Hi Andy,
 
-I see what you mean now. Thanks.
+On Mon, Jul 31, 2023 at 11:05:05PM +0300, Andy Shevchenko wrote:
+> On Fri, Jul 28, 2023 at 03:33:59PM +0300, Jarkko Nikula wrote:
+> > On 7/25/23 17:30, Andy Shevchenko wrote:
+> 
+> ...
+> 
+> > > +/* Work with hotplug and coldplug */
+> > > +MODULE_ALIAS("platform:i2c_designware");
+> > 
+> > Perhaps this comment can be retired, i.e. dropped.
+> 
+> Then it needs to be done in a separate patch, because in the other file the
+> comment will be left untouched.
 
-Yes, in this case we have to interpret MADV_NOHUGEPAGE as nothing >4KB.
+You are being a bit too religios here... if you want to stick to
+this, then you need to send a patch for sorting by ID, a patch
+for grouping together MODULE_*, a patch to remove this comment
+and a patch to always provide the id table.
+
+I think, "while at it", you can safely remove the redundant
+comment :)
+
+It doesn't make too much difference to me anyway:
+
+Reviewed-by: Andi Shyti <andi.shyti@kernel.org> 
+
+Andi
