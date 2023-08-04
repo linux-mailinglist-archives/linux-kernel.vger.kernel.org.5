@@ -2,91 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 25C4B76F823
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 04:59:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CCA9276F828
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 05:02:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232709AbjHDC7d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Aug 2023 22:59:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34834 "EHLO
+        id S232169AbjHDDCl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Aug 2023 23:02:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35834 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232716AbjHDC73 (ORCPT
+        with ESMTP id S232913AbjHDDCP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Aug 2023 22:59:29 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.65])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 631584220;
-        Thu,  3 Aug 2023 19:59:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1691117963; x=1722653963;
-  h=message-id:date:mime-version:cc:subject:to:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=YyNSAAHZUlGA/Nj8JDQMCImBLWmGgqOE3kwnXdtnCok=;
-  b=BHibTff8qto2+0u8mV++5eT4kRgyhJJrUVfCWU+/6dE8mA0orlVmIPCq
-   86DH0lGnkhDgi1EAgCIwxXNH85r3FZ/EYPjwuIjArBRvGCmLt+kHI4no6
-   TTuXu8ONY2w+JlJ39jYSQ9VaWqw80baKYJg4+5UY65BuNTw43o9Vvluk5
-   tsT+YHH3mGeNc5oWAOFvn4ifQ5CdV6WIc3y/c2qn+/WexpOaGp4N2SRq3
-   1r1/7aM67sMOqKgc/uzfmcgDcLwQTIbF83ufhZBBzEYPlwfeoP4tactOr
-   HnCuohL3Zy+a7TXPR0efPrDVrU8k/UJXLlEKp6CHLhRCgT0fvnd5lheVa
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10791"; a="373694109"
-X-IronPort-AV: E=Sophos;i="6.01,253,1684825200"; 
-   d="scan'208";a="373694109"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Aug 2023 19:59:05 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10791"; a="1060543668"
-X-IronPort-AV: E=Sophos;i="6.01,253,1684825200"; 
-   d="scan'208";a="1060543668"
-Received: from blu2-mobl.ccr.corp.intel.com (HELO [10.254.210.88]) ([10.254.210.88])
-  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Aug 2023 19:59:02 -0700
-Message-ID: <faad1948-5096-c9d3-616a-cd0f0a4b5876@linux.intel.com>
-Date:   Fri, 4 Aug 2023 10:58:59 +0800
+        Thu, 3 Aug 2023 23:02:15 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A3B04494
+        for <linux-kernel@vger.kernel.org>; Thu,  3 Aug 2023 20:01:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        Content-Type:MIME-Version:Message-ID:Date:Subject:Cc:To:From:Sender:Reply-To:
+        Content-ID:Content-Description:In-Reply-To:References;
+        bh=gDKP5i31iXcB7XY3CqXxxapdhR7Wmw4nqvFeijbaPqw=; b=sYB4qL2oR+AXtSDWIhmnLdhQjI
+        4TYGWK4XIRcf98vrdd5qZv8odaIHu3wmVZ2jFLZMkpIOyoDy99B/amCBWB/Cg+T+v4pHhdMNeq18/
+        8QOU3oge6sBZPSIWZFvLzUopywaD2sMYm2w1Kaq4gU92fQ21ynEV670ZDnWHkyM4y4DHTQlqAbBUR
+        WTfKFONe8Se45AYl0fjrkytU+87PXmuGv8HK7p7SmcSWIlPlhBqJ8iyQo/CSixYZDw1U6vnjrRFg1
+        b5Bmr6v+Ba2F/a2lGTDdcLaLuJIJ/Gj+VNZxBZoqw98SEV6LdgHAsjHdPJINrn15GlGK/KysTKpZD
+        uVsUbXqQ==;
+Received: from [2601:1c2:980:9ec0::2764] (helo=bombadil.infradead.org)
+        by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
+        id 1qRl4P-00BQPu-1e;
+        Fri, 04 Aug 2023 03:01:41 +0000
+From:   Randy Dunlap <rdunlap@infradead.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Randy Dunlap <rdunlap@infradead.org>,
+        Aleksandr Nogikh <nogikh@google.com>,
+        Adam Ford <aford173@gmail.com>,
+        Maxime Ripard <maxime.ripard@bootlin.com>,
+        =?UTF-8?q?Guido=20G=C3=BCnther?= <agx@sigxcpu.org>,
+        Robert Chiras <robert.chiras@nxp.com>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Neil Armstrong <neil.armstrong@linaro.org>,
+        Andrzej Hajda <andrzej.hajda@intel.com>,
+        Robert Foss <rfoss@kernel.org>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        dri-devel@lists.freedesktop.org
+Subject: [PATCH] drm: bridge: for GENERIC_PHY_MIPI_DPHY also select GENERIC_PHY
+Date:   Thu,  3 Aug 2023 20:01:37 -0700
+Message-ID: <20230804030140.21395-1-rdunlap@infradead.org>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Cc:     baolu.lu@linux.intel.com, "Liu, Yi L" <yi.l.liu@intel.com>,
-        Jacob Pan <jacob.jun.pan@linux.intel.com>,
-        "iommu@lists.linux.dev" <iommu@lists.linux.dev>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2 03/12] iommu: Remove unrecoverable fault data
-Content-Language: en-US
-To:     "Tian, Kevin" <kevin.tian@intel.com>,
-        Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        Nicolin Chen <nicolinc@nvidia.com>
-References: <20230727054837.147050-1-baolu.lu@linux.intel.com>
- <20230727054837.147050-4-baolu.lu@linux.intel.com>
- <BN9PR11MB52767976314CC61A0F8BEFD08C08A@BN9PR11MB5276.namprd11.prod.outlook.com>
-From:   Baolu Lu <baolu.lu@linux.intel.com>
-In-Reply-To: <BN9PR11MB52767976314CC61A0F8BEFD08C08A@BN9PR11MB5276.namprd11.prod.outlook.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023/8/3 15:54, Tian, Kevin wrote:
->> From: Lu Baolu<baolu.lu@linux.intel.com>
->> Sent: Thursday, July 27, 2023 1:48 PM
->>
->>   struct iommu_fault {
->>   	__u32	type;
->> -	__u32	padding;
-> this padding should be kept.
-> 
+Three DRM bridge drivers select GENERIC_PHY_MIPI_DPHY when GENERIC_PHY
+might not be set.  This causes Kconfig warnings and a build error.
 
-To keep above 64-bit aligned, right?
+WARNING: unmet direct dependencies detected for GENERIC_PHY_MIPI_DPHY
+  Depends on [n]: GENERIC_PHY [=n]
+  Selected by [y]:
+  - DRM_NWL_MIPI_DSI [=y] && DRM_BRIDGE [=y] && DRM [=y] && COMMON_CLK [=y] && OF [=y] && HAS_IOMEM [=y]
+  - DRM_SAMSUNG_DSIM [=y] && DRM [=y] && DRM_BRIDGE [=y] && COMMON_CLK [=y] && OF [=y] && HAS_IOMEM [=y]
 
-I can't think of any other reason to keep it.
+(drm/bridge/cadence/Kconfig was found by inspection.)
 
-Best regards,
-baolu
+aarch64-linux-ld: drivers/gpu/drm/bridge/samsung-dsim.o: in function `samsung_dsim_set_phy_ctrl':
+drivers/gpu/drm/bridge/samsung-dsim.c:731: undefined reference to `phy_mipi_dphy_get_default_config_for_hsclk'
+
+Prevent these warnings and build error by also selecting GENERIC_PHY
+whenever selecting GENERIC_PHY_MIPI_DPHY.
+
+Fixes: fced5a364dee ("drm/bridge: cdns: Convert to phy framework")
+Fixes: 44cfc6233447 ("drm/bridge: Add NWL MIPI DSI host controller support")
+Fixes: 171b3b1e0f8b ("drm: bridge: samsung-dsim: Select GENERIC_PHY_MIPI_DPHY")
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Reported-by: Aleksandr Nogikh <nogikh@google.com>
+Link: lore.kernel.org/r/20230803144227.2187749-1-nogikh@google.com
+Cc: Adam Ford <aford173@gmail.com>
+Cc: Maxime Ripard <maxime.ripard@bootlin.com>
+Cc: Guido Günther <agx@sigxcpu.org>
+Cc: Robert Chiras <robert.chiras@nxp.com>
+Cc: Sam Ravnborg <sam@ravnborg.org>
+Cc: Neil Armstrong <neil.armstrong@linaro.org>
+Cc: Andrzej Hajda <andrzej.hajda@intel.com>
+Cc: Robert Foss <rfoss@kernel.org>
+Cc: David Airlie <airlied@gmail.com>
+Cc: Daniel Vetter <daniel@ffwll.ch>
+Cc: dri-devel@lists.freedesktop.org
+---
+ drivers/gpu/drm/bridge/Kconfig         |    2 ++
+ drivers/gpu/drm/bridge/cadence/Kconfig |    1 +
+ 2 files changed, 3 insertions(+)
+
+diff -- a/drivers/gpu/drm/bridge/cadence/Kconfig b/drivers/gpu/drm/bridge/cadence/Kconfig
+--- a/drivers/gpu/drm/bridge/cadence/Kconfig
++++ b/drivers/gpu/drm/bridge/cadence/Kconfig
+@@ -4,6 +4,7 @@ config DRM_CDNS_DSI
+ 	select DRM_KMS_HELPER
+ 	select DRM_MIPI_DSI
+ 	select DRM_PANEL_BRIDGE
++	select GENERIC_PHY
+ 	select GENERIC_PHY_MIPI_DPHY
+ 	depends on OF
+ 	help
+diff -- a/drivers/gpu/drm/bridge/Kconfig b/drivers/gpu/drm/bridge/Kconfig
+--- a/drivers/gpu/drm/bridge/Kconfig
++++ b/drivers/gpu/drm/bridge/Kconfig
+@@ -181,6 +181,7 @@ config DRM_NWL_MIPI_DSI
+ 	select DRM_KMS_HELPER
+ 	select DRM_MIPI_DSI
+ 	select DRM_PANEL_BRIDGE
++	select GENERIC_PHY
+ 	select GENERIC_PHY_MIPI_DPHY
+ 	select MFD_SYSCON
+ 	select MULTIPLEXER
+@@ -227,6 +228,7 @@ config DRM_SAMSUNG_DSIM
+ 	select DRM_KMS_HELPER
+ 	select DRM_MIPI_DSI
+ 	select DRM_PANEL_BRIDGE
++	select GENERIC_PHY
+ 	select GENERIC_PHY_MIPI_DPHY
+ 	help
+ 	  The Samsung MIPI DSIM bridge controller driver.
