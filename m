@@ -2,158 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DB0A8770605
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 18:30:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B6D777060B
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 18:31:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230254AbjHDQav (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Aug 2023 12:30:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45088 "EHLO
+        id S230284AbjHDQbM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Aug 2023 12:31:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45518 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229892AbjHDQat (ORCPT
+        with ESMTP id S230111AbjHDQbJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Aug 2023 12:30:49 -0400
-Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3425E46B1
-        for <linux-kernel@vger.kernel.org>; Fri,  4 Aug 2023 09:30:47 -0700 (PDT)
-Received: by mail-ej1-x629.google.com with SMTP id a640c23a62f3a-99c3d3c3db9so305324066b.3
-        for <linux-kernel@vger.kernel.org>; Fri, 04 Aug 2023 09:30:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1691166644; x=1691771444;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=WI+FjztjAhlDqQ6jCUap2ilPY23v0NvrgrfzfYO4RIA=;
-        b=BkIRNxnkRZfRkGvsp41p2m8kMmu1XVyZifIvifsUblLjkCuvnM5jK+eN8dNqbIBC/H
-         e7lzPjOP/bhmxXnTxMSgv5FfsyEu9Zu5pXXEY56P9njo3sFJOPrpMPsJ629d21F0vhZI
-         cQiKB1eZ9qUFxzwap1VRBaOQUVTnqKmgrTL1o=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691166644; x=1691771444;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=WI+FjztjAhlDqQ6jCUap2ilPY23v0NvrgrfzfYO4RIA=;
-        b=Y2IdcjPt67gY6gbcuBttVE0INuGxk+IJl/fNOK0tKFNYYSng+0ynewrUxpcVhxOK8j
-         yJZz5GsxoXcV4IAx6TCuRCemwNaNkJ6t5Zoqw8hOJ9DFZWgCDzZ6b5pKFVUM20qJyEo1
-         eMcv8I8/T6a6DKRWsey2RZkucxMRUEahEF5fr6KIuzXVRfXu66TbIo1/UyiX6J21wWRn
-         NbqLBAwSN8wqxRtmRbembjJ5Q3xmRhrf6ayaGmczksEcdvOLRJP9UlwXPKownnUmP8C7
-         f45DMkPuHAPW5nq9F21qxhvHNP0b31dUc8l72bN6kxQBjka4pebYaeBUSjmULrRfmS09
-         97Og==
-X-Gm-Message-State: AOJu0YxqeZ0z9dTxLuGSY2+UldI+pOxQalizmP7qsISTmcTSC8XDl0Fe
-        MMQB1XJDKzUK2N2YcwiCMz7DoIWfZmHP1hYj1uYwaoLT
-X-Google-Smtp-Source: AGHT+IFWdSDqr6B9nMZoEWCN34Kb1vcrvVGUDkGaEl838tU2gRMbBDg4cz637rJeRIwFkPMVUnDBOA==
-X-Received: by 2002:a17:906:292:b0:99c:b0c9:4ec7 with SMTP id 18-20020a170906029200b0099cb0c94ec7mr466922ejf.26.1691166644679;
-        Fri, 04 Aug 2023 09:30:44 -0700 (PDT)
-Received: from mail-ed1-f46.google.com (mail-ed1-f46.google.com. [209.85.208.46])
-        by smtp.gmail.com with ESMTPSA id v8-20020a170906180800b009934855d8f1sm1530083eje.34.2023.08.04.09.30.44
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 04 Aug 2023 09:30:44 -0700 (PDT)
-Received: by mail-ed1-f46.google.com with SMTP id 4fb4d7f45d1cf-521e046f6c7so11491a12.1
-        for <linux-kernel@vger.kernel.org>; Fri, 04 Aug 2023 09:30:44 -0700 (PDT)
-X-Received: by 2002:a50:c212:0:b0:523:ee1:8d27 with SMTP id
- n18-20020a50c212000000b005230ee18d27mr54911edf.1.1691166643789; Fri, 04 Aug
- 2023 09:30:43 -0700 (PDT)
+        Fri, 4 Aug 2023 12:31:09 -0400
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 128B449D8;
+        Fri,  4 Aug 2023 09:31:00 -0700 (PDT)
+Received: from pps.filterd (m0353726.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 374GMFvb005061;
+        Fri, 4 Aug 2023 16:30:57 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-type :
+ content-transfer-encoding; s=pp1;
+ bh=xqfMw6XKPKcjh4M4gVckVU1kKfLsqZcU56TDYjL3Pj8=;
+ b=PTxWJJlUjcC9hR6LGdi42h+XZWkxRmhuttWoxHDUiyg4sPDnN2nSHzE/AU7KXsHERCsl
+ lm2HmoJIwrF/SWzhEV6Xjkn9wSuYbDJ9GbviXoaUGZy0gqocuGEbuHU1EExF5YT6PKL0
+ Br9NY+0Ob/x4Wj5OCTKmD4DTKICOPaboNcV396U/+JVe/IhL1dkXXSK4qqFPd20dUhjg
+ uuiq90qZoFlxirM0ZUUxj6Hhabwujg6ibsV4TNe/aYGHS0KtCdYJ+FK6x5QsGgz5KP9N
+ aWS7T5wdW0e8MVC4hk0J564ef/unbI0pYz0YQfKc8ArBePT6yJOzoB0v8fqLeMLrBS78 ow== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3s94sv867u-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 04 Aug 2023 16:30:57 +0000
+Received: from m0353726.ppops.net (m0353726.ppops.net [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 374GP9gT014089;
+        Fri, 4 Aug 2023 16:30:55 GMT
+Received: from ppma13.dal12v.mail.ibm.com (dd.9e.1632.ip4.static.sl-reverse.com [50.22.158.221])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3s94sv8663-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 04 Aug 2023 16:30:54 +0000
+Received: from pps.filterd (ppma13.dal12v.mail.ibm.com [127.0.0.1])
+        by ppma13.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 374Frf5N021566;
+        Fri, 4 Aug 2023 16:30:53 GMT
+Received: from smtprelay04.fra02v.mail.ibm.com ([9.218.2.228])
+        by ppma13.dal12v.mail.ibm.com (PPS) with ESMTPS id 3s8kmcf9m6-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 04 Aug 2023 16:30:53 +0000
+Received: from smtpav04.fra02v.mail.ibm.com (smtpav04.fra02v.mail.ibm.com [10.20.54.103])
+        by smtprelay04.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 374GUoiC45351432
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 4 Aug 2023 16:30:50 GMT
+Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id A39662004D;
+        Fri,  4 Aug 2023 16:30:50 +0000 (GMT)
+Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 2309220040;
+        Fri,  4 Aug 2023 16:30:50 +0000 (GMT)
+Received: from dilbert5.boeblingen.de.ibm.com (unknown [9.155.208.153])
+        by smtpav04.fra02v.mail.ibm.com (Postfix) with ESMTP;
+        Fri,  4 Aug 2023 16:30:50 +0000 (GMT)
+From:   Gerd Bayer <gbayer@linux.ibm.com>
+To:     Wenjia Zhang <wenjia@linux.ibm.com>,
+        Jan Karcher <jaka@linux.ibm.com>,
+        Tony Lu <tonylu@linux.alibaba.com>,
+        Paolo Abeni <pabeni@redhat.com>
+Cc:     Karsten Graul <kgraul@linux.ibm.com>,
+        "D . Wythe" <alibuda@linux.alibaba.com>,
+        Wen Gu <guwen@linux.alibaba.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>, linux-s390@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH net-next v3 0/2] net/smc: Fix effective buffer size
+Date:   Fri,  4 Aug 2023 18:30:47 +0200
+Message-ID: <20230804163049.937185-1-gbayer@linux.ibm.com>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-References: <20230804095836.39551-1-sheng-liang.pan@quanta.corp-partner.google.com>
- <20230804175734.v2.1.I7a950de49ec24b957e90d7fe7abd5f2f5f2e24c3@changeid>
-In-Reply-To: <20230804175734.v2.1.I7a950de49ec24b957e90d7fe7abd5f2f5f2e24c3@changeid>
-From:   Doug Anderson <dianders@chromium.org>
-Date:   Fri, 4 Aug 2023 09:30:31 -0700
-X-Gmail-Original-Message-ID: <CAD=FV=WKPu2R_j3yh5OJcc95SmxgJsc3+HxSi9_Ks6TvUOYJ1w@mail.gmail.com>
-Message-ID: <CAD=FV=WKPu2R_j3yh5OJcc95SmxgJsc3+HxSi9_Ks6TvUOYJ1w@mail.gmail.com>
-Subject: Re: [PATCH v2 1/3] dt-bindings: arm: qcom: add sc7180-lazor board bindings
-To:     Sheng-Liang Pan <sheng-liang.pan@quanta.corp-partner.google.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: TeCdVX07HARYS5U6MJLWqrv1iwHkmWZ4
+X-Proofpoint-ORIG-GUID: rJ-ecXgR349-ET3neUH6Ehrya8yGAFdB
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
+ definitions=2023-08-04_15,2023-08-03_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 impostorscore=0
+ mlxscore=0 suspectscore=0 spamscore=0 bulkscore=0 malwarescore=0
+ adultscore=0 priorityscore=1501 mlxlogscore=693 phishscore=0
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2306200000 definitions=main-2308040144
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Hi all,
 
-On Fri, Aug 4, 2023 at 2:58=E2=80=AFAM Sheng-Liang Pan
-<sheng-liang.pan@quanta.corp-partner.google.com> wrote:
->
-> Introduce more sc7180-lazor sku and board version configuration,
-> add no-eSIM SKU 10 for Lazor, no-eSIM SKU 15 and 18 for Limozeen,
-> add new board version 10 for audio codec ALC5682i-VS.
->
-> Signed-off-by: Sheng-Liang Pan <sheng-liang.pan@quanta.corp-partner.googl=
-e.com>
-> ---
->
-> Changes in v2:
-> - add new entry rev9 with Parade bridge chip
->
->  .../devicetree/bindings/arm/qcom.yaml         | 55 +++++++++++++++++++
->  1 file changed, 55 insertions(+)
->
-> diff --git a/Documentation/devicetree/bindings/arm/qcom.yaml b/Documentat=
-ion/devicetree/bindings/arm/qcom.yaml
-> index 450f616774e0..dce7b771a280 100644
-> --- a/Documentation/devicetree/bindings/arm/qcom.yaml
-> +++ b/Documentation/devicetree/bindings/arm/qcom.yaml
-> @@ -470,6 +470,11 @@ properties:
->            - const: google,lazor-rev8
->            - const: qcom,sc7180
->
-> +      - description: Acer Chromebook Spin 513 Parade bridge chip (rev9)
+commit 0227f058aa29 ("net/smc: Unbind r/w buffer size from clcsock
+and make them tunable") started to derive the effective buffer size for
+SMC connections inconsistently in case a TCP fallback was used and
+memory consumption of SMC with the default settings was doubled when
+a connection negotiated SMC. That was not what we want.
 
-You probably didn't need to include "Parade bridge chip" in the
-description since that's implied by "rev9"
+This series consolidates the resulting effective buffer size that is
+used with SMC sockets, which is based on Jan Karcher's effort (see 
+[1]). For all TCP exchanges (in particular in case of a fall back when
+no SMC connection was possible) the values from net.ipv4.tcp_[rw]mem
+are used. If SMC succeeds in establishing a SMC connection, the newly
+introduced values from net.smc.[rw]mem are used.
 
+net.smc.[rw]mem is initialized to 64kB, respectively. Internal test 
+have show this to be a good compromise between throughput/latency 
+and memory consumption. Also net.smc.[rw]mem is now decoupled completely
+from any tuning through net.ipv4.tcp_[rw]mem.
 
-> @@ -512,11 +522,26 @@ properties:
->            - const: google,lazor-rev8-sku0
->            - const: qcom,sc7180
->
-> +      - description: Acer Chromebook Spin 513 Parade bridge chip with LT=
-E (rev9)
-> +        items:
-> +          - const: google,lazor-rev9-sku0
-> +          - const: qcom,sc7180
-> +
->        - description: Acer Chromebook Spin 513 with LTE (newest rev)
->          items:
->            - const: google,lazor-sku0
->            - const: qcom,sc7180
->
-> +      - description: Acer Chromebook Spin 513 Parade bridge chip with LT=
-E no-esim (rev9)
-> +        items:
-> +          - const: google,lazor-rev9-sku10
-> +          - const: qcom,sc7180
+If a user chose to tune a socket's receive or send buffer size with
+setsockopt, this tuning is now consistently applied to either fall-back
+TCP or proper SMC connections over the socket.
 
-The no-eSIM and normal LTE should be combined into one, just like they
-are in your device tree. If you look at patch #3, you can see
-"sc7180-trogdor-lazor-r9-lte.dts" contains:
+Thanks,
+Gerd 
 
-compatible =3D "google,lazor-rev9-sku0", "google,lazor-rev9-sku10", "qcom,s=
-c7180";
-
-You need to have a single entry here that matches that. That means one
-entry that has both rev9-sku0 and rev9-sku10.
-
-You should be running "make dtbs_check" at the end of your series. As
-Krzysztof would say, (see
-Documentation/devicetree/bindings/writing-schema.rst or
-https://www.linaro.org/blog/tips-and-tricks-for-validating-devicetree-sourc=
-es-with-the-devicetree-schema/
-for instructions)
+v2 - v3:
+ - Rebase to and resolve conflict of second patch with latest net/master.
+v1 - v2:
+ - In second patch, use sock_net() helper as suggested by Tony and demanded
+   by kernel test robot.
 
 
--Doug
+Gerd Bayer (2):
+  net/smc: Fix setsockopt and sysctl to specify same buffer size again
+  net/smc: Use correct buffer sizes when switching between TCP and SMC
+
+ net/smc/af_smc.c     | 77 ++++++++++++++++++++++++++++++--------------
+ net/smc/smc.h        |  2 +-
+ net/smc/smc_clc.c    |  4 +--
+ net/smc/smc_core.c   | 25 +++++++-------
+ net/smc/smc_sysctl.c | 10 ++++--
+ 5 files changed, 76 insertions(+), 42 deletions(-)
+
+
+base-commit: 1733d0be68ab1b89358a3b0471ef425fd61de7c5
+-- 
+2.41.0
+
