@@ -2,464 +2,242 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A8737709D8
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 22:38:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D90697709DE
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 22:40:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229938AbjHDUiP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Aug 2023 16:38:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48338 "EHLO
+        id S230071AbjHDUkD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Aug 2023 16:40:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48700 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229571AbjHDUiN (ORCPT
+        with ESMTP id S229441AbjHDUkB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Aug 2023 16:38:13 -0400
-Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6CA6E48;
-        Fri,  4 Aug 2023 13:38:10 -0700 (PDT)
-Received: by mail-ed1-x529.google.com with SMTP id 4fb4d7f45d1cf-52222562f1eso3239397a12.3;
-        Fri, 04 Aug 2023 13:38:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1691181489; x=1691786289;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=3aJr1DfKMMBQUOKhu33Mo0LDkE3eXabrg+lOA+fKqKs=;
-        b=rUvaFvHfKFHzPdg1EVuqpwYVWrUd5PlnE0vAYKnhGYawKR8R4KajYz0JslcpY6FJa8
-         Ip+XG1FAng1AuppY6QAmF7RIqd6lLKAF51WOFsgsCAmOPtpjZhx9gPVzC+WYOtkgmcwx
-         OTROITILoThCImMi63sAqVYJVawO0wIYkqYpV2YK9SR4WVWYowgmKpOYPp8a7nqS8g9e
-         /+Sac0FpJSoLrvsc5qm8gPJEJvTFFf3N25YwvtyoNnTaSDXUmxKYg4X61hXIWDvzxku4
-         tqfKpj6oJ55IJdT5QDzRHk4lGC19LrQ7M9Q4yUenIgbcgUCqq9D21wK0yx2YSGq6mQPh
-         ha0w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691181489; x=1691786289;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=3aJr1DfKMMBQUOKhu33Mo0LDkE3eXabrg+lOA+fKqKs=;
-        b=U88j71J5ax9djOVifmTHS6U02oNZNP14UhLNWdwvT3ECPCZ0vDDnOQGE3ARKXhn5D4
-         m2jK3teLDE+zaSx7Ft0ihPsQta2HM5hQsXkS6ZQwqFHOAU4xL3a1f51jnDtQs2pBm89Q
-         vbImCsf3C3dcPvL3QhcF96aLqZPj4Cea3A8otbk4/Qcu7tShM8HufFEc4AueYdqfXHpm
-         gfPioGgNS9TV/TWGbcU7qf7ljSaK7h/okMD4WXPRd63OroCDoG0eSwPoiTlJreU0Phpa
-         x8HMwGcBWp7KVdV2+jOSKwpwnx92wiYyvppMfiTRKQObV5ZK/GIZx7sQWIv86GNjddu4
-         3lSA==
-X-Gm-Message-State: AOJu0YznB85Wj18+8bDFK4c7TCCVyno2Ps/gThWmdCS4Z+NEL3WdNdkm
-        W51MNiEqWnxNPh+H7iBegSUQfaGqZZBurKJJjK8=
-X-Google-Smtp-Source: AGHT+IHYNbh7inDkYnyGM+q1lMYqvf/7tZK21k5Kkt1lXiBD1iA4kLYHtIND+wqo9ZFkKxzgLP8KPUP9SGUsYFoZlec=
-X-Received: by 2002:aa7:c943:0:b0:522:b929:9f01 with SMTP id
- h3-20020aa7c943000000b00522b9299f01mr2302364edt.9.1691181489092; Fri, 04 Aug
- 2023 13:38:09 -0700 (PDT)
-MIME-Version: 1.0
-References: <20230803220202.78036-1-robdclark@gmail.com> <20230803220202.78036-4-robdclark@gmail.com>
- <CAJZ5v0jV+Da+kw5JuGAhuGA6QJKmteCfnjGCk8DrNOe8Gvdg5w@mail.gmail.com>
- <CAF6AEGvPjvTmK5NE1zkXSrSThpPNWCimUoQS-oBTDdUtEGKp4A@mail.gmail.com> <CAJZ5v0hGX_b1yPTrs=3Jyhm8hcFBprvVLgngK+oAFr_66jvytg@mail.gmail.com>
-In-Reply-To: <CAJZ5v0hGX_b1yPTrs=3Jyhm8hcFBprvVLgngK+oAFr_66jvytg@mail.gmail.com>
-From:   Rob Clark <robdclark@gmail.com>
-Date:   Fri, 4 Aug 2023 13:37:56 -0700
-Message-ID: <CAF6AEGtKmueSYXjrgapit-0Dot1q-P1dkT8Zs+cXtbHeAnpjAA@mail.gmail.com>
-Subject: Re: [PATCH v3 3/9] PM / QoS: Fix constraints alloc vs reclaim locking
-To:     "Rafael J. Wysocki" <rafael@kernel.org>
-Cc:     dri-devel@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
-        freedreno@lists.freedesktop.org,
-        Rob Clark <robdclark@chromium.org>,
-        Pavel Machek <pavel@ucw.cz>, Len Brown <len.brown@intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "open list:HIBERNATION (aka Software Suspend, aka swsusp)" 
-        <linux-pm@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
+        Fri, 4 Aug 2023 16:40:01 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.126])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 974F1E48;
+        Fri,  4 Aug 2023 13:39:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1691181599; x=1722717599;
+  h=message-id:date:subject:to:cc:references:from:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=qSLBOa1OHd9QCbGIGv7NyZvn/MZSKoyA07kmG+c6M6Q=;
+  b=jtYK7TEOFwshFIkoiV1tiH+D6T0mx8nNK9B7Wj2o1S7ra0NLHPSuNpBe
+   TLeCnFh2oAE0Fgb5eJ6hct6AxXEKi4nQMHl+iBGnsB6KGQz22Hvs8G8Ju
+   VW4B/VT5k4GTkDSeYY0DrjuVZ4uxYvT1qtHiDVE29rlsExqj0Epxg8xEw
+   Ypt3GH4Nq+26r1my8ge8JNju8C01hf2RVJK0rUct1EnoJZH8nZW2ji8tW
+   +On0/EHo4Da33oJPapbWsteeYosZ5wxXbKVpT7uwtvmzZfnaYZwI2dREe
+   2xtnIBJhGe/VofkvC/fFpbL2YUedtNSABI/tOWekzvO3z18Xmp72mV+n7
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10792"; a="355171500"
+X-IronPort-AV: E=Sophos;i="6.01,256,1684825200"; 
+   d="scan'208";a="355171500"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Aug 2023 13:39:58 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10792"; a="800196842"
+X-IronPort-AV: E=Sophos;i="6.01,256,1684825200"; 
+   d="scan'208";a="800196842"
+Received: from fmsmsx601.amr.corp.intel.com ([10.18.126.81])
+  by fmsmga004.fm.intel.com with ESMTP; 04 Aug 2023 13:39:58 -0700
+Received: from fmsmsx611.amr.corp.intel.com (10.18.126.91) by
+ fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.27; Fri, 4 Aug 2023 13:39:58 -0700
+Received: from fmsmsx601.amr.corp.intel.com (10.18.126.81) by
+ fmsmsx611.amr.corp.intel.com (10.18.126.91) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.27; Fri, 4 Aug 2023 13:39:57 -0700
+Received: from FMSEDG603.ED.cps.intel.com (10.1.192.133) by
+ fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.27 via Frontend Transport; Fri, 4 Aug 2023 13:39:57 -0700
+Received: from NAM10-DM6-obe.outbound.protection.outlook.com (104.47.58.100)
+ by edgegateway.intel.com (192.55.55.68) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.27; Fri, 4 Aug 2023 13:39:57 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=ZoWQpTVzhZ6vn6Kb3QObEUEJy9FiEsfULHRam+0yGLeh4mUYHOwzVGVzWZx2B9zWv75cAbOZKI4KU5VtH8pKhP0RQ5ZqDUeYbxbvYiIUYwcaYOTVZ2Tr1JIrd8kAYRYWdeoqVOKCxEnmXvOJmF3YXV52WuZld2uthDpyk1/QGKT9KOXQACFWMnl01wmkx/ACUwIWanxR6FykODXbdYFxP778YyCizMpXSghNCppfER2yg+3eTzGhOcSFx6qs95nE0orIrjDUHmKWJse3p0ybCEVnp1Q+2epE1bPae4wzdHrfPpvklAZ9IvNZ5qsBQt4aOsDnWvZ6ZSpZP92kuQV0Ag==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=i+1ZzfeCdgPpjwMtjiNvOxDbIuVgquOCEaq2CNKH7E8=;
+ b=hQmiss89t1SNrCkYufF0TQxP4jUkN6pfjjBHe7RyKuDrj/lyWbkPN5c9l0ftIrUmES7+H/Ixzk0TDSNW8B7SEa5XuC6F3YiggNQ7D7pQBuSNye7YXi4hy/7nETanzyEwxhIfVnBA74HvEtQcU3/iYnxI3CTc1NnwLO7QJlC/4ofEBUB6iXkdn2/Snzn6AMQD6Jxrmw63FFjDZZJAv0WOGxwY+SCJiEmZIkgXkAjNQWhOt6L/4jhV1SEf+LfZISdmjWvbOMWdw+8gC9PUxQIlxR6Q2ipEMoCyfcq/JwcDsg7bJoI0Idpdnwp0aXlIFL5BHKCh6K9WKFPaDB4QS3f9hg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from SJ2PR11MB7573.namprd11.prod.outlook.com (2603:10b6:a03:4d2::10)
+ by PH0PR11MB5077.namprd11.prod.outlook.com (2603:10b6:510:3b::17) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6652.20; Fri, 4 Aug
+ 2023 20:39:52 +0000
+Received: from SJ2PR11MB7573.namprd11.prod.outlook.com
+ ([fe80::47e:3e1f:bef4:20e0]) by SJ2PR11MB7573.namprd11.prod.outlook.com
+ ([fe80::47e:3e1f:bef4:20e0%3]) with mapi id 15.20.6652.020; Fri, 4 Aug 2023
+ 20:39:52 +0000
+Message-ID: <41c166e8-d6a2-7be8-1d4e-6b2b1cc62f2a@intel.com>
+Date:   Fri, 4 Aug 2023 13:39:48 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Firefox/102.0 Thunderbird/102.13.0
+Subject: Re: [PATCH v6 4/8] x86/resctrl: Add comments on RFTYPE flags
+ hierarchy
+Content-Language: en-US
+To:     Babu Moger <babu.moger@amd.com>, <corbet@lwn.net>,
+        <tglx@linutronix.de>, <mingo@redhat.com>, <bp@alien8.de>
+CC:     <fenghua.yu@intel.com>, <dave.hansen@linux.intel.com>,
+        <x86@kernel.org>, <hpa@zytor.com>, <paulmck@kernel.org>,
+        <akpm@linux-foundation.org>, <quic_neeraju@quicinc.com>,
+        <rdunlap@infradead.org>, <damien.lemoal@opensource.wdc.com>,
+        <songmuchun@bytedance.com>, <peterz@infradead.org>,
+        <jpoimboe@kernel.org>, <pbonzini@redhat.com>,
+        <chang.seok.bae@intel.com>, <pawan.kumar.gupta@linux.intel.com>,
+        <jmattson@google.com>, <daniel.sneddon@linux.intel.com>,
+        <sandipan.das@amd.com>, <tony.luck@intel.com>,
+        <james.morse@arm.com>, <linux-doc@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <bagasdotme@gmail.com>,
+        <eranian@google.com>, <christophe.leroy@csgroup.eu>,
+        <jarkko@kernel.org>, <adrian.hunter@intel.com>,
+        <quic_jiles@quicinc.com>, <peternewman@google.com>
+References: <168980872063.1619861.420806535295905172.stgit@bmoger-ubuntu>
+ <168980891501.1619861.11056885467637617879.stgit@bmoger-ubuntu>
+From:   Reinette Chatre <reinette.chatre@intel.com>
+In-Reply-To: <168980891501.1619861.11056885467637617879.stgit@bmoger-ubuntu>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: MW3PR05CA0006.namprd05.prod.outlook.com
+ (2603:10b6:303:2b::11) To SJ2PR11MB7573.namprd11.prod.outlook.com
+ (2603:10b6:a03:4d2::10)
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SJ2PR11MB7573:EE_|PH0PR11MB5077:EE_
+X-MS-Office365-Filtering-Correlation-Id: f3bb1da7-efdb-4286-87c9-08db952af473
+X-LD-Processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: PMyFjPD4Tm1KhNpYwt+62DNGDUf05kS1Zrn+iEtCf7zSODG8Z09pw4sUi02XGesGTYIn2Xsy3Os9EA0O2c9gFhU+yCNGn7nWJkHj4RZU9qiKgj17vATCniWKQuYt4nOnANbdrNHLI1jCrGp66uq36J3Oq0im3TRSzmpw+U3H7gLhw/9nsKcTdHlLF09bF1DiMXkwGICPuHdHJTaq8/USRZe0s43ZQcQ6tSOOkGl+i+/q6YbslEEZsnucM3AKNAETjUkn1ixCgQRMsBX4NI+n3tdfYqOF0mrgoy3bk8U/cUVgzRwLCiqlga5ECAoEikDWqR4GJa+3ndPMcFwRM2LDoUY2Z/7lsHv2raeYt1/5DUIWTW61bXad3/RqCzBOSGkHVY0xqnboF520ODbnnJLmS27cm3GOffimP4oSKWsp/L0gwV+rV3mqQJNCU6NDUPE9WvGxrInRhMGWX9TbTVbV0TzG6A4evIUXMWzDnIR7eRV/W2QyzztMDEIe/H8f+b/Mp1i+RQcWzeUH+nrDGSLzdY6L4yNOjGok7/8k4fv0kzLIP63w2IECo8wQ/nKDy8aHGFlp/DDNcSvvGW/TyoPZhHGbfw0nMAHFtscca0tAfdubcubPWeelOFx0DpHOYKrB8VWpqfbr6N/Tlu3ovgOirg==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ2PR11MB7573.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(366004)(396003)(376002)(136003)(39860400002)(346002)(186006)(1800799003)(451199021)(36756003)(86362001)(31696002)(31686004)(478600001)(82960400001)(38100700002)(8676002)(2616005)(6506007)(26005)(53546011)(6666004)(6512007)(8936002)(44832011)(6486002)(7406005)(7416002)(41300700001)(66556008)(316002)(2906002)(66476007)(4326008)(5660300002)(66946007)(43740500002)(45980500001);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?U2MreDAray9MMzBtazR3clNjOWFSUGNRSmo5VkxXUk9qb1hEdzhSQWZDZy9l?=
+ =?utf-8?B?dVZjMWcrNU5zNjFDQmJBdURPamRmK0FVTldlWXVEOW8wMTlZWXdSNThETXhx?=
+ =?utf-8?B?SSt2WHJrT2xlR3pZQ1JzdjZsOHQxdC9LUkdFZm9CcElaZ29rcmh3VURFNCs5?=
+ =?utf-8?B?KzRVYThxVUxZODN6aVdXY2RiM1U3aHBLaURKallJR29QVHlQUEdvcUdER1pG?=
+ =?utf-8?B?aWJoOEhLcnloSkh3OE8wM0NMb0JRMVlwMUVtSHlrNXAvWC9kN2hHdWg0dzNX?=
+ =?utf-8?B?R0lRYW81N3J4bk01TEdIN3NtSTBKSCtIZHZ5ekdrVlcxdndSZFEyYUtGTTBN?=
+ =?utf-8?B?NHp6ZWYwemNWNVA2OEI1VkROQ3RXUE5YTzVTcnZpVXpIWTI0bEJMbE1NR3o2?=
+ =?utf-8?B?SWdmSVJwbGViK3FIcVZOVDNVcHEzTE1RS0t0NmNrU0xYUHlmSTBLYk5XeVE0?=
+ =?utf-8?B?SG1XYmt5VFVxQVQxL0ZvZmZkUk9kOEVwaVA2MUtLU3FlSTBySDNuaFIvekYr?=
+ =?utf-8?B?NW83a2ZHWWo1NFQ4SlNSQk1DbnhERk5GRFBoWitNOWRNd2FDQ05PcXhENE14?=
+ =?utf-8?B?dVNDVjB2dXdlYjMxdmZRd0ZxVm9kZ3dHMUZjUWl3SDB5MmVCdUltWlFSQnZV?=
+ =?utf-8?B?NmNzYjZYNGdIa2h1cjJpY2dvOFpLaXlSdzJGdkdKVjZhNUc2cndKUFZlMHlI?=
+ =?utf-8?B?UTR0Y0k5bmZ6WmJJNmNLMEo0Q0xpVEM4RHpLaDRUNlVtOGZNbGxrMmF6R3FG?=
+ =?utf-8?B?VHJzdlRuTzZqVVBFNUp4bTR6d3dmSTIvYlVua21IeWR3U2gzM3VpRDI1NlVw?=
+ =?utf-8?B?d2xSR2FNbzJRK0NVckhwQmZLaVo5RXJPcUVUWmJOYmZ0T0dYcjNDRWVBY0I3?=
+ =?utf-8?B?MTdKeGNiSm8zUENxMVRXWmh1MTFpTjNGZDFVR01pOUhHdTlxTkRpTytnM29Z?=
+ =?utf-8?B?ejVjU3o1Y2lRUnpKTVVybHA2ckpCbXZnYjNCTERqSTRMSnJxYks2dVRkVkNX?=
+ =?utf-8?B?T1VuUFdaV1VzMnhGSUNmZFVjN01MQWs0MmVDTE95b0VaSU9uTjdxcHAvb1U0?=
+ =?utf-8?B?USsreUZ6KzNGVEE5VzdvblFyekZmOUdYM0VBSmJDN3oyTXNEdy9pR3plT0tY?=
+ =?utf-8?B?VUUwZFFoWDF3ZFAzL3JNNjI5MjZ4ak51MjZMMXNDbytpUGliMXBNdkZVV1JX?=
+ =?utf-8?B?dGdwTCtYYWF3TVppbVhFbGc1SjFTa2QwV2t4cmZJaGQrTDRrSkxkbmJLS0Z0?=
+ =?utf-8?B?RHFxWitVZXozQk82bkR1bzNpZFRMdTFZWUcraVJ2U0trUXVoNGxIK21uRXlY?=
+ =?utf-8?B?VjB1VnNXT0VUN2tLa0pIeDFYYUFkZzBhTWV5UStrQmdmQjhJdXFGeU50bzVr?=
+ =?utf-8?B?Mm1uMnV2MGNEWms2M0E0QVR1TXhnRENSZzVOZ2h0czRYSG9IUDhRTDczMXJn?=
+ =?utf-8?B?eWtCWHRmcXF3TzBobHBTdU1QeU5XMFJtNFlNcCtwOEU0VTlhVnhCd2dOYTUz?=
+ =?utf-8?B?VDRTOXEwekVCRXQ0UVJoMS9aZnBJbWVwZlNzWHZVMWU2Uko3NnFWR0VIa0lG?=
+ =?utf-8?B?bjFOZDRzaTZobFFyRzE4aUFyeHduZ2xkalkyYWhveVd2WEZpVExYbHlsWlpn?=
+ =?utf-8?B?bThxbkpadDRhQWMwbXBNM3lZekQ4dVhWSG5aV0piVW9Sd2g3aGYvVlhNMmVS?=
+ =?utf-8?B?K3E3NlU5N3lBN01EeUxjNFkvTVJTaHBvQk9Rc2JyTlVIUkhYZG5QUEdFR1c3?=
+ =?utf-8?B?dStSTzRwSWNuR0dFVmF6ZmNoR0wxT1lrVGJSeHVOaVYxWXJVTlJXZ29PYjEx?=
+ =?utf-8?B?NTZiaUhrZkVNbzBvZzZCbURUTzdud2Ria2F4Si9vMk1UbVBjUUs3VDc1V2xL?=
+ =?utf-8?B?OXhpSXdvYi8yc05ZcW1GUWtFeXZSUSs5eDc3ZmlUaUpSR3RPMWM0UGQ0TUlx?=
+ =?utf-8?B?ZEhub1g5NUUvZWw1MjZsNFpJVER4U05ralBvMWgwTmROSDd1SG9MdGFVL09o?=
+ =?utf-8?B?TlRZT3VqVmNGOXczRHI3Wkd4M1pQeElGbURaRUtyRllwcGtJWUMralpZMDBp?=
+ =?utf-8?B?SU4xeWdpTGxhc3A3K3ErRCtmQmpiT21qNi94blo2U3c2N1ZuNVIwNk04WnZi?=
+ =?utf-8?B?R3Y5bHh4QXBDa2ZEUWFDRXRzK09jaU1mRGhHNGFzdFR5QWdFN0o1T1lMS3pR?=
+ =?utf-8?B?Q0E9PQ==?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: f3bb1da7-efdb-4286-87c9-08db952af473
+X-MS-Exchange-CrossTenant-AuthSource: SJ2PR11MB7573.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 Aug 2023 20:39:52.7129
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: hUX3kFBELnYfTf/PYMIYC4F3i+hPHLknUpECfXsE17SVq2+Qz3SprbySkoCumjcNJR9jdI3HDZxvLqoY7q9ojzHP/BlZTDpDQH8UWWlYoCE=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR11MB5077
+X-OriginatorOrg: intel.com
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 4, 2023 at 12:11=E2=80=AFPM Rafael J. Wysocki <rafael@kernel.or=
-g> wrote:
->
-> On Fri, Aug 4, 2023 at 8:38=E2=80=AFPM Rob Clark <robdclark@gmail.com> wr=
-ote:
-> >
-> > On Fri, Aug 4, 2023 at 10:07=E2=80=AFAM Rafael J. Wysocki <rafael@kerne=
-l.org> wrote:
-> > >
-> > > On Fri, Aug 4, 2023 at 12:02=E2=80=AFAM Rob Clark <robdclark@gmail.co=
-m> wrote:
-> > > >
-> > > > From: Rob Clark <robdclark@chromium.org>
-> > > >
-> > > > In the process of adding lockdep annotation for drm GPU scheduler's
-> > > > job_run() to detect potential deadlock against shrinker/reclaim, I =
-hit
-> > > > this lockdep splat:
-> > > >
-> > > >    =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D
-> > > >    WARNING: possible circular locking dependency detected
-> > > >    6.2.0-rc8-debug+ #558 Tainted: G        W
-> > > >    ------------------------------------------------------
-> > > >    ring0/125 is trying to acquire lock:
-> > > >    ffffffd6d6ce0f28 (dev_pm_qos_mtx){+.+.}-{3:3}, at: dev_pm_qos_up=
-date_request+0x38/0x68
-> > > >
-> > > >    but task is already holding lock:
-> > > >    ffffff8087239208 (&gpu->active_lock){+.+.}-{3:3}, at: msm_gpu_su=
-bmit+0xec/0x178
-> > > >
-> > > >    which lock already depends on the new lock.
-> > > >
-> > > >    the existing dependency chain (in reverse order) is:
-> > > >
-> > > >    -> #4 (&gpu->active_lock){+.+.}-{3:3}:
-> > > >           __mutex_lock+0xcc/0x3c8
-> > > >           mutex_lock_nested+0x30/0x44
-> > > >           msm_gpu_submit+0xec/0x178
-> > > >           msm_job_run+0x78/0x150
-> > > >           drm_sched_main+0x290/0x370
-> > > >           kthread+0xf0/0x100
-> > > >           ret_from_fork+0x10/0x20
-> > > >
-> > > >    -> #3 (dma_fence_map){++++}-{0:0}:
-> > > >           __dma_fence_might_wait+0x74/0xc0
-> > > >           dma_resv_lockdep+0x1f4/0x2f4
-> > > >           do_one_initcall+0x104/0x2bc
-> > > >           kernel_init_freeable+0x344/0x34c
-> > > >           kernel_init+0x30/0x134
-> > > >           ret_from_fork+0x10/0x20
-> > > >
-> > > >    -> #2 (mmu_notifier_invalidate_range_start){+.+.}-{0:0}:
-> > > >           fs_reclaim_acquire+0x80/0xa8
-> > > >           slab_pre_alloc_hook.constprop.0+0x40/0x25c
-> > > >           __kmem_cache_alloc_node+0x60/0x1cc
-> > > >           __kmalloc+0xd8/0x100
-> > > >           topology_parse_cpu_capacity+0x8c/0x178
-> > > >           get_cpu_for_node+0x88/0xc4
-> > > >           parse_cluster+0x1b0/0x28c
-> > > >           parse_cluster+0x8c/0x28c
-> > > >           init_cpu_topology+0x168/0x188
-> > > >           smp_prepare_cpus+0x24/0xf8
-> > > >           kernel_init_freeable+0x18c/0x34c
-> > > >           kernel_init+0x30/0x134
-> > > >           ret_from_fork+0x10/0x20
-> > > >
-> > > >    -> #1 (fs_reclaim){+.+.}-{0:0}:
-> > > >           __fs_reclaim_acquire+0x3c/0x48
-> > > >           fs_reclaim_acquire+0x54/0xa8
-> > > >           slab_pre_alloc_hook.constprop.0+0x40/0x25c
-> > > >           __kmem_cache_alloc_node+0x60/0x1cc
-> > > >           kmalloc_trace+0x50/0xa8
-> > > >           dev_pm_qos_constraints_allocate+0x38/0x100
-> > > >           __dev_pm_qos_add_request+0xb0/0x1e8
-> > > >           dev_pm_qos_add_request+0x58/0x80
-> > > >           dev_pm_qos_expose_latency_limit+0x60/0x13c
-> > > >           register_cpu+0x12c/0x130
-> > > >           topology_init+0xac/0xbc
-> > > >           do_one_initcall+0x104/0x2bc
-> > > >           kernel_init_freeable+0x344/0x34c
-> > > >           kernel_init+0x30/0x134
-> > > >           ret_from_fork+0x10/0x20
-> > > >
-> > > >    -> #0 (dev_pm_qos_mtx){+.+.}-{3:3}:
-> > > >           __lock_acquire+0xe00/0x1060
-> > > >           lock_acquire+0x1e0/0x2f8
-> > > >           __mutex_lock+0xcc/0x3c8
-> > > >           mutex_lock_nested+0x30/0x44
-> > > >           dev_pm_qos_update_request+0x38/0x68
-> > > >           msm_devfreq_boost+0x40/0x70
-> > > >           msm_devfreq_active+0xc0/0xf0
-> > > >           msm_gpu_submit+0x10c/0x178
-> > > >           msm_job_run+0x78/0x150
-> > > >           drm_sched_main+0x290/0x370
-> > > >           kthread+0xf0/0x100
-> > > >           ret_from_fork+0x10/0x20
-> > > >
-> > > >    other info that might help us debug this:
-> > > >
-> > > >    Chain exists of:
-> > > >      dev_pm_qos_mtx --> dma_fence_map --> &gpu->active_lock
-> > > >
-> > > >     Possible unsafe locking scenario:
-> > > >
-> > > >           CPU0                    CPU1
-> > > >           ----                    ----
-> > > >      lock(&gpu->active_lock);
-> > > >                                   lock(dma_fence_map);
-> > > >                                   lock(&gpu->active_lock);
-> > > >      lock(dev_pm_qos_mtx);
-> > > >
-> > > >     *** DEADLOCK ***
-> > > >
-> > > >    3 locks held by ring0/123:
-> > > >     #0: ffffff8087251170 (&gpu->lock){+.+.}-{3:3}, at: msm_job_run+=
-0x64/0x150
-> > > >     #1: ffffffd00b0e57e8 (dma_fence_map){++++}-{0:0}, at: msm_job_r=
-un+0x68/0x150
-> > > >     #2: ffffff8087251208 (&gpu->active_lock){+.+.}-{3:3}, at: msm_g=
-pu_submit+0xec/0x178
-> > > >
-> > > >    stack backtrace:
-> > > >    CPU: 6 PID: 123 Comm: ring0 Not tainted 6.2.0-rc8-debug+ #559
-> > > >    Hardware name: Google Lazor (rev1 - 2) with LTE (DT)
-> > > >    Call trace:
-> > > >     dump_backtrace.part.0+0xb4/0xf8
-> > > >     show_stack+0x20/0x38
-> > > >     dump_stack_lvl+0x9c/0xd0
-> > > >     dump_stack+0x18/0x34
-> > > >     print_circular_bug+0x1b4/0x1f0
-> > > >     check_noncircular+0x78/0xac
-> > > >     __lock_acquire+0xe00/0x1060
-> > > >     lock_acquire+0x1e0/0x2f8
-> > > >     __mutex_lock+0xcc/0x3c8
-> > > >     mutex_lock_nested+0x30/0x44
-> > > >     dev_pm_qos_update_request+0x38/0x68
-> > > >     msm_devfreq_boost+0x40/0x70
-> > > >     msm_devfreq_active+0xc0/0xf0
-> > > >     msm_gpu_submit+0x10c/0x178
-> > > >     msm_job_run+0x78/0x150
-> > > >     drm_sched_main+0x290/0x370
-> > > >     kthread+0xf0/0x100
-> > > >     ret_from_fork+0x10/0x20
-> > > >
-> > > > The issue is that dev_pm_qos_mtx is held in the runpm suspend/resum=
-e (or
-> > > > freq change) path, but it is also held across allocations that coul=
-d
-> > > > recurse into shrinker.
-> > > >
-> > > > Solve this by changing dev_pm_qos_constraints_allocate() into a fun=
-ction
-> > > > that can be called unconditionally before the device qos object is
-> > > > needed and before aquiring dev_pm_qos_mtx.  This way the allocation=
-s can
-> > > > be done without holding the mutex.  In the case that we raced with
-> > > > another thread to allocate the qos object, detect this *after* acqu=
-iring
-> > > > the dev_pm_qos_mtx and simply free the redundant allocations.
-> > > >
-> > > > Signed-off-by: Rob Clark <robdclark@chromium.org>
-> > > > ---
-> > > >  drivers/base/power/qos.c | 60 +++++++++++++++++++++++++++---------=
-----
-> > > >  1 file changed, 41 insertions(+), 19 deletions(-)
-> > > >
-> > > > diff --git a/drivers/base/power/qos.c b/drivers/base/power/qos.c
-> > > > index 8e93167f1783..f3e0c6b65635 100644
-> > > > --- a/drivers/base/power/qos.c
-> > > > +++ b/drivers/base/power/qos.c
-> > > > @@ -185,18 +185,24 @@ static int apply_constraint(struct dev_pm_qos=
-_request *req,
-> > > >  }
-> > > >
-> > > >  /*
-> > > > - * dev_pm_qos_constraints_allocate
-> > > > + * dev_pm_qos_constraints_ensure_allocated
-> > > >   * @dev: device to allocate data for
-> > > >   *
-> > > > - * Called at the first call to add_request, for constraint data al=
-location
-> > > > - * Must be called with the dev_pm_qos_mtx mutex held
-> > > > + * Called to ensure that devices qos is allocated, before acquirin=
-g
-> > > > + * dev_pm_qos_mtx.
-> > > >   */
-> > > > -static int dev_pm_qos_constraints_allocate(struct device *dev)
-> > > > +static int dev_pm_qos_constraints_ensure_allocated(struct device *=
-dev)
-> > > >  {
-> > > >         struct dev_pm_qos *qos;
-> > > >         struct pm_qos_constraints *c;
-> > > >         struct blocking_notifier_head *n;
-> > > >
-> > > > +       if (!dev)
-> > > > +               return -ENODEV;
-> > > > +
-> > > > +       if (!IS_ERR_OR_NULL(dev->power.qos))
-> > > > +               return 0;
-> > > > +
-> > > >         qos =3D kzalloc(sizeof(*qos), GFP_KERNEL);
-> > > >         if (!qos)
-> > > >                 return -ENOMEM;
-> > > > @@ -227,10 +233,26 @@ static int dev_pm_qos_constraints_allocate(st=
-ruct device *dev)
-> > > >
-> > > >         INIT_LIST_HEAD(&qos->flags.list);
-> > > >
-> > > > +       mutex_lock(&dev_pm_qos_mtx);
-> > > > +
-> > > > +       if (!IS_ERR_OR_NULL(dev->power.qos)) {
-> > > > +               /*
-> > > > +                * We have raced with another task to create the qo=
-s.
-> > > > +                * No biggie, just free the resources we've allocat=
-ed
-> > > > +                * outside of dev_pm_qos_mtx and move on with life.
-> > > > +                */
-> > > > +               kfree(n);
-> > > > +               kfree(qos);
-> > > > +               goto unlock;
-> > > > +       }
-> > > > +
-> > > >         spin_lock_irq(&dev->power.lock);
-> > > >         dev->power.qos =3D qos;
-> > > >         spin_unlock_irq(&dev->power.lock);
-> > > >
-> > > > +unlock:
-> > > > +       mutex_unlock(&dev_pm_qos_mtx);
-> > > > +
-> > > >         return 0;
-> > > >  }
-> > > >
-> > > > @@ -331,17 +353,15 @@ static int __dev_pm_qos_add_request(struct de=
-vice *dev,
-> > > >  {
-> > > >         int ret =3D 0;
-> > > >
-> > > > -       if (!dev || !req || dev_pm_qos_invalid_req_type(dev, type))
-> > > > +       if (!req || dev_pm_qos_invalid_req_type(dev, type))
-> > > >                 return -EINVAL;
-> > > >
-> > > >         if (WARN(dev_pm_qos_request_active(req),
-> > > >                  "%s() called for already added request\n", __func_=
-_))
-> > > >                 return -EINVAL;
-> > > >
-> > > > -       if (IS_ERR(dev->power.qos))
-> > > > +       if (IS_ERR_OR_NULL(dev->power.qos))
-> > > >                 ret =3D -ENODEV;
-> > > > -       else if (!dev->power.qos)
-> > > > -               ret =3D dev_pm_qos_constraints_allocate(dev);
-> > > >
-> > > >         trace_dev_pm_qos_add_request(dev_name(dev), type, value);
-> > > >         if (ret)
-> > > > @@ -390,6 +410,10 @@ int dev_pm_qos_add_request(struct device *dev,=
- struct dev_pm_qos_request *req,
-> > > >  {
-> > > >         int ret;
-> > > >
-> > > > +       ret =3D dev_pm_qos_constraints_ensure_allocated(dev);
-> > > > +       if (ret)
-> > > > +               return ret;
-> > > > +
-> > >
-> > > It is a bit unfortunate that the mutex is dropped and then immediatel=
-y
-> > > re-acquired again.  I don't think that this is strictly necessary.
-> >
-> > We could have dev_pm_qos_constraints_ensure_allocated() return with
-> > the lock held in the success case if we had to.. but that seems a bit
-> > funny looking.  And the dev_pm_qos_update_user_latency_tolerance()
-> > path would need to shuffle slightly to move the kzalloc out of the
-> > lock.
->
-> Well, what about something like this (modulo whitespace damage by
-> GMail), attached for completeness:
->
+Hi Babu,
 
-There is one other path to handle, and some small details, but I think
-the approach could work.. let's see..
+On 7/19/2023 4:21 PM, Babu Moger wrote:
+> + *	------------------------------------------------------------------
+> + *	--> RFTYPE_INFO
+> + *	--> <info> directory
+> + *		--> RFTYPE_TOP_INFO
+> + *		    Files: last_cmd_status
+> + *
+> + *		--> RFTYPE_MON_INFO
+> + *		--> <L3_MON> directory
+> + *		    Files: max_threshold_occupancy, mon_features,
+> + *		           num_rmids, mbm_total_bytes_config,
+> + *		           mbm_locat_bytes_config
 
-BR,
--R
+mbm_locat_bytes_config -> mbm_local_bytes_config
 
-> ---
->  drivers/base/power/qos.c |   37 +++++++++++++++++++++++++------------
->  1 file changed, 25 insertions(+), 12 deletions(-)
->
-> Index: linux-pm/drivers/base/power/qos.c
-> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> --- linux-pm.orig/drivers/base/power/qos.c
-> +++ linux-pm/drivers/base/power/qos.c
-> @@ -186,26 +186,21 @@ static int apply_constraint(struct dev_p
->
->  /*
->   * dev_pm_qos_constraints_allocate
-> - * @dev: device to allocate data for
->   *
->   * Called at the first call to add_request, for constraint data allocati=
-on
->   * Must be called with the dev_pm_qos_mtx mutex held
+> + *
+> + *		--> RFTYPE_CTRL_INFO
+> + *			--> RFTYPE_RES_CACHE
+> + *			--> <L2,L3> directory
+
+Should this be "directories"?
+
+> + *			    Files: bit_usage, cbm_mask, min_cbm_bits,
+> + *			           num_closids, shareable_bits
+
+Based on the hierarchy presented the files mentioned here may be expected
+to be associated with RFTYPE_CTRL_INFO | RFTYPE_RES_CACHE.
+For accuracy it may be better to move num_closids one level higher so
+that it is only associated with RFTYPE_CTRL_INFO?
+
+> + *
+> + *			--> RFTYPE_RES_MB
+> + *			--> <MB,SMBA> directory
+
+directories?
+
+> + *			    Files: bandwidth_gran, delay_linear,
+> + * 			           min_bandwidth, num_closids,
+
+Please remove space before tab for a clean checkpatch.pl run.
+
+> + *			           thread_throttle_mode
+> + *
+> + *	base (root) directory structure
+
+Since "base" refers to more than the root directory I think this can
+just be "base directory structure".
+
+> + *	------------------------------------------------------------------
+> + *	--> RFTYPE_BASE (Files common for both MON and CTRL groups)
+> + *	    Files: cpus, cpus_list, tasks
+> + *
+> + *	--> RFTYPE_CTRL_BASE (Files only for CTRL group)
+> + *	    Files: mode, schemata, size
+> + *
 >   */
-> -static int dev_pm_qos_constraints_allocate(struct device *dev)
-> +static struct dev_pm_qos *dev_pm_qos_constraints_allocate(void)
->  {
->      struct dev_pm_qos *qos;
->      struct pm_qos_constraints *c;
->      struct blocking_notifier_head *n;
->
-> -    qos =3D kzalloc(sizeof(*qos), GFP_KERNEL);
-> +    qos =3D kzalloc(sizeof(*qos) + kzalloc(3 * sizeof(*n), GFP_KERNEL);
->      if (!qos)
-> -        return -ENOMEM;
-> +        return NULL;
->
-> -    n =3D kzalloc(3 * sizeof(*n), GFP_KERNEL);
-> -    if (!n) {
-> -        kfree(qos);
-> -        return -ENOMEM;
-> -    }
-> +    n =3D (struct blocking_notifier_head *)(qos + 1);
->
->      c =3D &qos->resume_latency;
->      plist_head_init(&c->list);
-> @@ -227,6 +222,20 @@ static int dev_pm_qos_constraints_alloca
->
->      INIT_LIST_HEAD(&qos->flags.list);
->
-> +    return qos;
-> +}
-> +
-> +static int dev_pm_qos_constraints_add(struct device *dev,
-> +                       struct dev_pm_qos *qos)
-> +{
-> +    if (!qos)
-> +        return -ENOMEM;
-> +
-> +    if (!IS_ERR_OR_NULL(dev->power.qos)) {
-> +        kfree(qos);
-> +        return -ENODEV;
-> +    }
-> +
->      spin_lock_irq(&dev->power.lock);
->      dev->power.qos =3D qos;
->      spin_unlock_irq(&dev->power.lock);
-> @@ -326,6 +335,7 @@ static bool dev_pm_qos_invalid_req_type(
->  }
->
->  static int __dev_pm_qos_add_request(struct device *dev,
-> +                    struct dev_pm_qos *qos,
->                      struct dev_pm_qos_request *req,
->                      enum dev_pm_qos_req_type type, s32 value)
->  {
-> @@ -340,8 +350,10 @@ static int __dev_pm_qos_add_request(stru
->
->      if (IS_ERR(dev->power.qos))
->          ret =3D -ENODEV;
-> -    else if (!dev->power.qos)
-> -        ret =3D dev_pm_qos_constraints_allocate(dev);
-> +    else if (dev->power.qos)
-> +        kfree(qos);
-> +    else
-> +        ret =3D dev_pm_qos_constraints_add(dev);
->
->      trace_dev_pm_qos_add_request(dev_name(dev), type, value);
->      if (ret)
-> @@ -388,10 +400,11 @@ static int __dev_pm_qos_add_request(stru
->  int dev_pm_qos_add_request(struct device *dev, struct dev_pm_qos_request=
- *req,
->                 enum dev_pm_qos_req_type type, s32 value)
->  {
-> +    struct dev_pm_qos *qos =3D dev_pm_qos_constraints_allocate();
->      int ret;
->
->      mutex_lock(&dev_pm_qos_mtx);
-> -    ret =3D __dev_pm_qos_add_request(dev, req, type, value);
-> +    ret =3D __dev_pm_qos_add_request(dev, qos, req, type, value);
->      mutex_unlock(&dev_pm_qos_mtx);
->      return ret;
->  }
+>  #define RFTYPE_INFO			BIT(0)
+>  #define RFTYPE_BASE			BIT(1)
+> 
+> 
+
+Reinette
