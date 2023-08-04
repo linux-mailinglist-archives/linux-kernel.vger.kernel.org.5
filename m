@@ -2,153 +2,354 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CB45076F9B6
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 07:54:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F57976F9B8
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 07:55:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232302AbjHDFyV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Aug 2023 01:54:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53046 "EHLO
+        id S232554AbjHDFzV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Aug 2023 01:55:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53354 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231553AbjHDFyS (ORCPT
+        with ESMTP id S232416AbjHDFzN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Aug 2023 01:54:18 -0400
-Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1B853A90
-        for <linux-kernel@vger.kernel.org>; Thu,  3 Aug 2023 22:54:15 -0700 (PDT)
-Received: from dggpemm100001.china.huawei.com (unknown [172.30.72.55])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4RHFHm5Ztbz1KCDj;
-        Fri,  4 Aug 2023 13:53:08 +0800 (CST)
-Received: from [10.174.177.243] (10.174.177.243) by
- dggpemm100001.china.huawei.com (7.185.36.93) with Microsoft SMTP Server
+        Fri, 4 Aug 2023 01:55:13 -0400
+Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id A05933A85;
+        Thu,  3 Aug 2023 22:55:11 -0700 (PDT)
+Authenticated-By: 
+X-SpamFilter-By: ArmorX SpamTrap 5.77 with qID 3745sYpmD016212, This message is accepted by code: ctloc85258
+Received: from mail.realtek.com (rtexh36505.realtek.com.tw[172.21.6.25])
+        by rtits2.realtek.com.tw (8.15.2/2.81/5.90) with ESMTPS id 3745sYpmD016212
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=FAIL);
+        Fri, 4 Aug 2023 13:54:34 +0800
+Received: from RTEXMBS03.realtek.com.tw (172.21.6.96) by
+ RTEXH36505.realtek.com.tw (172.21.6.25) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.27; Fri, 4 Aug 2023 13:54:12 +0800
-Message-ID: <d184ba78-97d1-a264-fc31-87dfdbe6fdff@huawei.com>
-Date:   Fri, 4 Aug 2023 13:54:12 +0800
+ 15.1.2375.32; Fri, 4 Aug 2023 13:54:33 +0800
+Received: from localhost.localhost (172.21.132.123) by
+ RTEXMBS03.realtek.com.tw (172.21.6.96) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.7; Fri, 4 Aug 2023 13:54:32 +0800
+From:   <max.chou@realtek.com>
+To:     <marcel@holtmann.org>
+CC:     <johan.hedberg@gmail.com>, <luiz.dentz@gmail.com>,
+        <linux-bluetooth@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <alex_lu@realsil.com.cn>, <hildawu@realtek.com>,
+        <karenhsu@realtek.com>, <kidman@realtek.com>,
+        <max.chou@realtek.com>, <juerg.haefliger@canonical.com>,
+        <vicamo.yang@canonical.com>, <Riley.Kao@dell.com>
+Subject: [PATCH] Bluetooth: btrtl: Load FW v2 otherwise FW v1 for RTL8852C
+Date:   Fri, 4 Aug 2023 13:54:26 +0800
+Message-ID: <20230804055426.6806-1-max.chou@realtek.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.10.1
-Subject: Re: [PATCH 1/4] mm: migrate: use a folio in add_page_for_migration()
-Content-Language: en-US
-To:     Zi Yan <ziy@nvidia.com>
-CC:     Matthew Wilcox <willy@infradead.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>,
-        Huang Ying <ying.huang@intel.com>,
-        David Hildenbrand <david@redhat.com>
-References: <20230802095346.87449-1-wangkefeng.wang@huawei.com>
- <20230802095346.87449-2-wangkefeng.wang@huawei.com>
- <ZMpKYfNWA/jNgEuL@casper.infradead.org>
- <001ee9b0-ea25-a896-e3ae-9a9b05a46546@huawei.com>
- <ZMud3RreEpsvFKuA@casper.infradead.org>
- <fb2a22cf-14ae-3594-f5f3-8680c2100d70@huawei.com>
- <F2621E68-F36E-493C-8619-ADFE05050823@nvidia.com>
-From:   Kefeng Wang <wangkefeng.wang@huawei.com>
-In-Reply-To: <F2621E68-F36E-493C-8619-ADFE05050823@nvidia.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.177.243]
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
- dggpemm100001.china.huawei.com (7.185.36.93)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [172.21.132.123]
+X-ClientProxiedBy: RTEXH36505.realtek.com.tw (172.21.6.25) To
+ RTEXMBS03.realtek.com.tw (172.21.6.96)
+X-KSE-ServerInfo: RTEXMBS03.realtek.com.tw, 9
+X-KSE-AntiSpam-Interceptor-Info: fallback
+X-KSE-Antivirus-Interceptor-Info: fallback
+X-KSE-AntiSpam-Interceptor-Info: fallback
+X-KSE-ServerInfo: RTEXH36505.realtek.com.tw, 9
+X-KSE-AntiSpam-Interceptor-Info: fallback
+X-KSE-Antivirus-Interceptor-Info: fallback
+X-KSE-AntiSpam-Interceptor-Info: fallback
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Max Chou <max.chou@realtek.com>
 
+In the commit of linux-firmware project, rtl8852cu_fw.bin is updated as
+FW v2 format[1]. Consider the case that if driver did not be updated for
+FW v2 supported[2], it can not use FW v2.
+By Canonical's suggestion, older driver should be able to load FW v1,
+so rtl8852cu_fw.bin will be revert to the previous commit as FW v1 and
+add rtl8852cu_fw_v2.bin as FW v2. This item will be started on
+linux-firmware project.
 
-On 2023/8/4 10:42, Zi Yan wrote:
-> On 3 Aug 2023, at 21:45, Kefeng Wang wrote:
-> 
->> On 2023/8/3 20:30, Matthew Wilcox wrote:
->>> On Thu, Aug 03, 2023 at 03:13:21PM +0800, Kefeng Wang wrote:
->>>>
->>>>
->>>> On 2023/8/2 20:21, Matthew Wilcox wrote:
->>>>> On Wed, Aug 02, 2023 at 05:53:43PM +0800, Kefeng Wang wrote:
->>>>>>     	err = -EACCES;
->>>>>> -	if (page_mapcount(page) > 1 && !migrate_all)
->>>>>> -		goto out_putpage;
->>>>>> +	if (folio_estimated_sharers(folio) > 1 && !migrate_all)
->>>>>> +		goto out_putfolio;
->>>>>
->>>>> I do not think this is the correct change.  Maybe leave this line
->>>>> alone.
->>>>
->>>> Ok, I am aware of the discussion about this in other mail, will not
->>>> change it(also the next two patch about this function), or wait the
->>>> new work of David.
->>>>>
->>>>>> -	if (PageHuge(page)) {
->>>>>> -		if (PageHead(page)) {
->>>>>> -			isolated = isolate_hugetlb(page_folio(page), pagelist);
->>>>>> +	if (folio_test_hugetlb(folio)) {
->>>>>> +		if (folio_test_large(folio)) {
->>>>>
->>>>> This makes no sense when you read it.  All hugetlb folios are large,
->>>>> by definition.  Think about what this code used to do, and what it
->>>>> should be changed to.
->>>>
->>>> hugetlb folio is self large folio, will drop redundant check
->>>
->>> No, that's not the difference.  Keep thinking about it.  This is not
->>> a mechanical translation!
->>
->>
->>    if (PageHuge(page))  // page must be a hugetlb page
->> 	if (PageHead(page)) // page must be a head page, not tail
->>               isolate_hugetlb() // isolate the hugetlb page if head
->>
->> After using folio,
->>
->>    if (folio_test_hugetlb(folio)) // only check folio is hugetlb or not
->>
->> I don't check the page is head or not, since the follow_page could
->> return a sub-page, so the check PageHead need be retained, right?
-> 
-> Right. It will prevent the kernel from trying to isolate the same hugetlb page
-> twice when two pages are in the same hugetlb folio. But looking at the
-> code, if you try to isolate an already-isolated hugetlb folio, isolate_hugetlb()
-> would return false, no error would show up. But it changes err value
-> from -EACCES to -EBUSY and user will see a different page status than before.
+In this commit, the driver prefers to load FW v2 if available. Fallback to
+FW v1 otherwise.
 
+To do on linux-firmware project.
+rtl_bt/rtl8852cu_fw.bin: FW v1 (stay at ver. 0xD7B8_FABF)
+rtl_bt/rtl8852cu_fw_v2.bin: FW v2 (to be maintained)
 
-When check man[1], the current -EACCES is not right, -EBUSY is not
-precise but more suitable for this scenario,
+[1]'9a24ce5e29b1 ("Bluetooth: btrtl: Firmware format v2 support")'
+[2]'55e7448533e7 ("rtl_bt: Update RTL8852C BT USB firmware
+    to 0x040D_7225")'
 
-  	-EACCES
-               The page is mapped by multiple processes and can be moved
-               only if MPOL_MF_MOVE_ALL is specified.
+Suggested-by: Juerg Haefliger <juerg.haefliger@canonical.com>
+Tested-by: Hilda Wu <hildawu@realtek.com>
+Signed-off-by: Max Chou <max.chou@realtek.com>
+---
+ drivers/bluetooth/btrtl.c | 68 +++++++++++++++++++++++++--------------
+ 1 file changed, 44 insertions(+), 24 deletions(-)
 
-        -EBUSY The page is currently busy and cannot be moved.  Try again
-               later.  This occurs if a page is undergoing I/O or another
-               kernel subsystem is holding a reference to the page.
-	-ENOENT
-               The page is not present.
+diff --git a/drivers/bluetooth/btrtl.c b/drivers/bluetooth/btrtl.c
+index ddae6524106d..8bfa86dd12f7 100644
+--- a/drivers/bluetooth/btrtl.c
++++ b/drivers/bluetooth/btrtl.c
+@@ -104,7 +104,7 @@ static const struct id_table ic_id_table[] = {
+ 	{ IC_INFO(RTL_ROM_LMP_8723A, 0xb, 0x6, HCI_USB),
+ 	  .config_needed = false,
+ 	  .has_rom_version = false,
+-	  .fw_name = "rtl_bt/rtl8723a_fw.bin",
++	  .fw_name = "rtl_bt/rtl8723a_fw",
+ 	  .cfg_name = NULL,
+ 	  .hw_info = "rtl8723au" },
+ 
+@@ -112,7 +112,7 @@ static const struct id_table ic_id_table[] = {
+ 	{ IC_INFO(RTL_ROM_LMP_8723B, 0xb, 0x6, HCI_UART),
+ 	  .config_needed = true,
+ 	  .has_rom_version = true,
+-	  .fw_name  = "rtl_bt/rtl8723bs_fw.bin",
++	  .fw_name  = "rtl_bt/rtl8723bs_fw",
+ 	  .cfg_name = "rtl_bt/rtl8723bs_config",
+ 	  .hw_info  = "rtl8723bs" },
+ 
+@@ -120,7 +120,7 @@ static const struct id_table ic_id_table[] = {
+ 	{ IC_INFO(RTL_ROM_LMP_8723B, 0xb, 0x6, HCI_USB),
+ 	  .config_needed = false,
+ 	  .has_rom_version = true,
+-	  .fw_name  = "rtl_bt/rtl8723b_fw.bin",
++	  .fw_name  = "rtl_bt/rtl8723b_fw",
+ 	  .cfg_name = "rtl_bt/rtl8723b_config",
+ 	  .hw_info  = "rtl8723bu" },
+ 
+@@ -132,7 +132,7 @@ static const struct id_table ic_id_table[] = {
+ 	  .hci_bus = HCI_UART,
+ 	  .config_needed = true,
+ 	  .has_rom_version = true,
+-	  .fw_name  = "rtl_bt/rtl8723cs_cg_fw.bin",
++	  .fw_name  = "rtl_bt/rtl8723cs_cg_fw",
+ 	  .cfg_name = "rtl_bt/rtl8723cs_cg_config",
+ 	  .hw_info  = "rtl8723cs-cg" },
+ 
+@@ -144,7 +144,7 @@ static const struct id_table ic_id_table[] = {
+ 	  .hci_bus = HCI_UART,
+ 	  .config_needed = true,
+ 	  .has_rom_version = true,
+-	  .fw_name  = "rtl_bt/rtl8723cs_vf_fw.bin",
++	  .fw_name  = "rtl_bt/rtl8723cs_vf_fw",
+ 	  .cfg_name = "rtl_bt/rtl8723cs_vf_config",
+ 	  .hw_info  = "rtl8723cs-vf" },
+ 
+@@ -156,7 +156,7 @@ static const struct id_table ic_id_table[] = {
+ 	  .hci_bus = HCI_UART,
+ 	  .config_needed = true,
+ 	  .has_rom_version = true,
+-	  .fw_name  = "rtl_bt/rtl8723cs_xx_fw.bin",
++	  .fw_name  = "rtl_bt/rtl8723cs_xx_fw",
+ 	  .cfg_name = "rtl_bt/rtl8723cs_xx_config",
+ 	  .hw_info  = "rtl8723cs" },
+ 
+@@ -164,7 +164,7 @@ static const struct id_table ic_id_table[] = {
+ 	{ IC_INFO(RTL_ROM_LMP_8723B, 0xd, 0x8, HCI_USB),
+ 	  .config_needed = true,
+ 	  .has_rom_version = true,
+-	  .fw_name  = "rtl_bt/rtl8723d_fw.bin",
++	  .fw_name  = "rtl_bt/rtl8723d_fw",
+ 	  .cfg_name = "rtl_bt/rtl8723d_config",
+ 	  .hw_info  = "rtl8723du" },
+ 
+@@ -172,7 +172,7 @@ static const struct id_table ic_id_table[] = {
+ 	{ IC_INFO(RTL_ROM_LMP_8723B, 0xd, 0x8, HCI_UART),
+ 	  .config_needed = true,
+ 	  .has_rom_version = true,
+-	  .fw_name  = "rtl_bt/rtl8723ds_fw.bin",
++	  .fw_name  = "rtl_bt/rtl8723ds_fw",
+ 	  .cfg_name = "rtl_bt/rtl8723ds_config",
+ 	  .hw_info  = "rtl8723ds" },
+ 
+@@ -180,7 +180,7 @@ static const struct id_table ic_id_table[] = {
+ 	{ IC_INFO(RTL_ROM_LMP_8821A, 0xa, 0x6, HCI_USB),
+ 	  .config_needed = false,
+ 	  .has_rom_version = true,
+-	  .fw_name  = "rtl_bt/rtl8821a_fw.bin",
++	  .fw_name  = "rtl_bt/rtl8821a_fw",
+ 	  .cfg_name = "rtl_bt/rtl8821a_config",
+ 	  .hw_info  = "rtl8821au" },
+ 
+@@ -189,7 +189,7 @@ static const struct id_table ic_id_table[] = {
+ 	  .config_needed = false,
+ 	  .has_rom_version = true,
+ 	  .has_msft_ext = true,
+-	  .fw_name  = "rtl_bt/rtl8821c_fw.bin",
++	  .fw_name  = "rtl_bt/rtl8821c_fw",
+ 	  .cfg_name = "rtl_bt/rtl8821c_config",
+ 	  .hw_info  = "rtl8821cu" },
+ 
+@@ -198,7 +198,7 @@ static const struct id_table ic_id_table[] = {
+ 	  .config_needed = true,
+ 	  .has_rom_version = true,
+ 	  .has_msft_ext = true,
+-	  .fw_name  = "rtl_bt/rtl8821cs_fw.bin",
++	  .fw_name  = "rtl_bt/rtl8821cs_fw",
+ 	  .cfg_name = "rtl_bt/rtl8821cs_config",
+ 	  .hw_info  = "rtl8821cs" },
+ 
+@@ -206,7 +206,7 @@ static const struct id_table ic_id_table[] = {
+ 	{ IC_INFO(RTL_ROM_LMP_8761A, 0xa, 0x6, HCI_USB),
+ 	  .config_needed = false,
+ 	  .has_rom_version = true,
+-	  .fw_name  = "rtl_bt/rtl8761a_fw.bin",
++	  .fw_name  = "rtl_bt/rtl8761a_fw",
+ 	  .cfg_name = "rtl_bt/rtl8761a_config",
+ 	  .hw_info  = "rtl8761au" },
+ 
+@@ -215,7 +215,7 @@ static const struct id_table ic_id_table[] = {
+ 	  .config_needed = false,
+ 	  .has_rom_version = true,
+ 	  .has_msft_ext = true,
+-	  .fw_name  = "rtl_bt/rtl8761b_fw.bin",
++	  .fw_name  = "rtl_bt/rtl8761b_fw",
+ 	  .cfg_name = "rtl_bt/rtl8761b_config",
+ 	  .hw_info  = "rtl8761btv" },
+ 
+@@ -223,7 +223,7 @@ static const struct id_table ic_id_table[] = {
+ 	{ IC_INFO(RTL_ROM_LMP_8761A, 0xb, 0xa, HCI_USB),
+ 	  .config_needed = false,
+ 	  .has_rom_version = true,
+-	  .fw_name  = "rtl_bt/rtl8761bu_fw.bin",
++	  .fw_name  = "rtl_bt/rtl8761bu_fw",
+ 	  .cfg_name = "rtl_bt/rtl8761bu_config",
+ 	  .hw_info  = "rtl8761bu" },
+ 
+@@ -232,7 +232,7 @@ static const struct id_table ic_id_table[] = {
+ 	  .config_needed = true,
+ 	  .has_rom_version = true,
+ 	  .has_msft_ext = true,
+-	  .fw_name  = "rtl_bt/rtl8822cs_fw.bin",
++	  .fw_name  = "rtl_bt/rtl8822cs_fw",
+ 	  .cfg_name = "rtl_bt/rtl8822cs_config",
+ 	  .hw_info  = "rtl8822cs" },
+ 
+@@ -241,7 +241,7 @@ static const struct id_table ic_id_table[] = {
+ 	  .config_needed = true,
+ 	  .has_rom_version = true,
+ 	  .has_msft_ext = true,
+-	  .fw_name  = "rtl_bt/rtl8822cs_fw.bin",
++	  .fw_name  = "rtl_bt/rtl8822cs_fw",
+ 	  .cfg_name = "rtl_bt/rtl8822cs_config",
+ 	  .hw_info  = "rtl8822cs" },
+ 
+@@ -250,7 +250,7 @@ static const struct id_table ic_id_table[] = {
+ 	  .config_needed = false,
+ 	  .has_rom_version = true,
+ 	  .has_msft_ext = true,
+-	  .fw_name  = "rtl_bt/rtl8822cu_fw.bin",
++	  .fw_name  = "rtl_bt/rtl8822cu_fw",
+ 	  .cfg_name = "rtl_bt/rtl8822cu_config",
+ 	  .hw_info  = "rtl8822cu" },
+ 
+@@ -259,7 +259,7 @@ static const struct id_table ic_id_table[] = {
+ 	  .config_needed = true,
+ 	  .has_rom_version = true,
+ 	  .has_msft_ext = true,
+-	  .fw_name  = "rtl_bt/rtl8822b_fw.bin",
++	  .fw_name  = "rtl_bt/rtl8822b_fw",
+ 	  .cfg_name = "rtl_bt/rtl8822b_config",
+ 	  .hw_info  = "rtl8822bu" },
+ 
+@@ -268,7 +268,7 @@ static const struct id_table ic_id_table[] = {
+ 	  .config_needed = false,
+ 	  .has_rom_version = true,
+ 	  .has_msft_ext = true,
+-	  .fw_name  = "rtl_bt/rtl8852au_fw.bin",
++	  .fw_name  = "rtl_bt/rtl8852au_fw",
+ 	  .cfg_name = "rtl_bt/rtl8852au_config",
+ 	  .hw_info  = "rtl8852au" },
+ 
+@@ -277,7 +277,7 @@ static const struct id_table ic_id_table[] = {
+ 	  .config_needed = true,
+ 	  .has_rom_version = true,
+ 	  .has_msft_ext = true,
+-	  .fw_name  = "rtl_bt/rtl8852bs_fw.bin",
++	  .fw_name  = "rtl_bt/rtl8852bs_fw",
+ 	  .cfg_name = "rtl_bt/rtl8852bs_config",
+ 	  .hw_info  = "rtl8852bs" },
+ 
+@@ -286,7 +286,7 @@ static const struct id_table ic_id_table[] = {
+ 	  .config_needed = false,
+ 	  .has_rom_version = true,
+ 	  .has_msft_ext = true,
+-	  .fw_name  = "rtl_bt/rtl8852bu_fw.bin",
++	  .fw_name  = "rtl_bt/rtl8852bu_fw",
+ 	  .cfg_name = "rtl_bt/rtl8852bu_config",
+ 	  .hw_info  = "rtl8852bu" },
+ 
+@@ -295,7 +295,7 @@ static const struct id_table ic_id_table[] = {
+ 	  .config_needed = false,
+ 	  .has_rom_version = true,
+ 	  .has_msft_ext = true,
+-	  .fw_name  = "rtl_bt/rtl8852cu_fw.bin",
++	  .fw_name  = "rtl_bt/rtl8852cu_fw",
+ 	  .cfg_name = "rtl_bt/rtl8852cu_config",
+ 	  .hw_info  = "rtl8852cu" },
+ 
+@@ -304,7 +304,7 @@ static const struct id_table ic_id_table[] = {
+ 	  .config_needed = false,
+ 	  .has_rom_version = true,
+ 	  .has_msft_ext = false,
+-	  .fw_name  = "rtl_bt/rtl8851bu_fw.bin",
++	  .fw_name  = "rtl_bt/rtl8851bu_fw",
+ 	  .cfg_name = "rtl_bt/rtl8851bu_config",
+ 	  .hw_info  = "rtl8851bu" },
+ 	};
+@@ -1045,10 +1045,12 @@ struct btrtl_device_info *btrtl_initialize(struct hci_dev *hdev,
+ 	struct sk_buff *skb;
+ 	struct hci_rp_read_local_version *resp;
+ 	struct hci_command_hdr *cmd;
++	char fw_name[40];
+ 	char cfg_name[40];
+ 	u16 hci_rev, lmp_subver;
+ 	u8 hci_ver, lmp_ver, chip_type = 0;
+ 	int ret;
++	int fw_load_retry = 0;
+ 	u8 reg_val[2];
+ 
+ 	btrtl_dev = kzalloc(sizeof(*btrtl_dev), GFP_KERNEL);
+@@ -1154,9 +1156,26 @@ struct btrtl_device_info *btrtl_initialize(struct hci_dev *hdev,
+ 			goto err_free;
+ 	}
+ 
+-	btrtl_dev->fw_len = rtl_load_file(hdev, btrtl_dev->ic_info->fw_name,
++fw_name_load:
++	if (btrtl_dev->ic_info->fw_name) {
++		if (lmp_subver == RTL_ROM_LMP_8852A && hci_rev == 0x000c &&
++				  fw_load_retry == 0) {
++			fw_load_retry = 1;
++			snprintf(fw_name, sizeof(fw_name), "%s_v2.bin",
++				 btrtl_dev->ic_info->fw_name);
++		} else {
++			fw_load_retry = 0;
++			snprintf(fw_name, sizeof(fw_name), "%s.bin",
++				 btrtl_dev->ic_info->fw_name);
++		}
++		btrtl_dev->fw_len = rtl_load_file(hdev, fw_name,
+ 					  &btrtl_dev->fw_data);
++	}
++
+ 	if (btrtl_dev->fw_len < 0) {
++		if (fw_load_retry == 1)
++			goto fw_name_load;
++
+ 		rtl_dev_err(hdev, "firmware file %s not found",
+ 			    btrtl_dev->ic_info->fw_name);
+ 		ret = btrtl_dev->fw_len;
+@@ -1491,4 +1510,5 @@ MODULE_FIRMWARE("rtl_bt/rtl8852bs_config.bin");
+ MODULE_FIRMWARE("rtl_bt/rtl8852bu_fw.bin");
+ MODULE_FIRMWARE("rtl_bt/rtl8852bu_config.bin");
+ MODULE_FIRMWARE("rtl_bt/rtl8852cu_fw.bin");
++MODULE_FIRMWARE("rtl_bt/rtl8852cu_fw_v2.bin");
+ MODULE_FIRMWARE("rtl_bt/rtl8852cu_config.bin");
+-- 
+2.34.1
 
-> 
-> I wonder why we do not have follow_folio() and returns -ENOENT error pointer
-> when addr points to a non head page. It would make this patch more folio if
-> follow_folio() can be used in place of follow_page(). One caveat is that
-> user will see -ENOENT instead of -EACCES after this change.
-> 
-
--ENOENT is ok, but maybe the man need to be updated too.
-
-
-	
-[1] https://man7.org/linux/man-pages/man2/move_pages.2.html
-
-
-
-
-
-
-> 
-> --
-> Best Regards,
-> Yan, Zi
