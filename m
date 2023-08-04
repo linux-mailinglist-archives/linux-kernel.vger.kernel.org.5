@@ -2,148 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E3104770C34
-	for <lists+linux-kernel@lfdr.de>; Sat,  5 Aug 2023 01:02:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5346B770C37
+	for <lists+linux-kernel@lfdr.de>; Sat,  5 Aug 2023 01:08:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229920AbjHDXCD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Aug 2023 19:02:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51684 "EHLO
+        id S229966AbjHDXIW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Aug 2023 19:08:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52420 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229452AbjHDXCA (ORCPT
+        with ESMTP id S229679AbjHDXIU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Aug 2023 19:02:00 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11EDCE72;
-        Fri,  4 Aug 2023 16:01:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1691190119; x=1722726119;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=2MzQ2ck5DpFrJfh90LVzgdpOp29rmsWZF1F9PlHAoZ0=;
-  b=VyXv1PqluG+RaVlWUafMWQ+7OFRRlr//RVU2vWXoQvqpvahlKfvH3TWb
-   SX28QRM6H3huUvRUcS/V1suHW/DvjHtEK7jslhNoR0DuiMvYwt59SsJkp
-   k1y01JwoddUFiz8X6Sf3IUWq0+xIq/Htu9JCfaaL5wlFPi/ELpO2QZaf5
-   dNQzKDAAOLyhZp9xYkxi6Yt3Y2glqtskAuZO+QxdDHTlj44QrFUFO9Lme
-   1tCM+97EzYfvzaDcP0yKX+/mY3jgC2IV+4j6+5SjIFNW8FdDdWo+Sitfk
-   gs2tjKUlaWY8a+Ktvc7qsei0aWhVUGKtrxjy/CFy8HvUj1fTIhrBnawLy
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10792"; a="401223810"
-X-IronPort-AV: E=Sophos;i="6.01,256,1684825200"; 
-   d="scan'208";a="401223810"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Aug 2023 16:01:58 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10792"; a="853977801"
-X-IronPort-AV: E=Sophos;i="6.01,256,1684825200"; 
-   d="scan'208";a="853977801"
-Received: from lkp-server01.sh.intel.com (HELO d1ccc7e87e8f) ([10.239.97.150])
-  by orsmga004.jf.intel.com with ESMTP; 04 Aug 2023 16:01:55 -0700
-Received: from kbuild by d1ccc7e87e8f with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qS3nu-0003Af-0P;
-        Fri, 04 Aug 2023 23:01:54 +0000
-Date:   Sat, 5 Aug 2023 07:01:35 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Zheng Yejian <zhengyejian1@huawei.com>, rostedt@goodmis.org,
-        mhiramat@kernel.org, vnagarnaik@google.com, shuah@kernel.org
-Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
-        linux-trace-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
-Subject: Re: [PATCH 1/2] tracing: Fix cpu buffers unavailable due to
- 'record_disabled' messed
-Message-ID: <202308050601.nsx7Z4CY-lkp@intel.com>
-References: <20230804124549.2562977-2-zhengyejian1@huawei.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230804124549.2562977-2-zhengyejian1@huawei.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+        Fri, 4 Aug 2023 19:08:20 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9FD99E60;
+        Fri,  4 Aug 2023 16:08:19 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 3DE1062134;
+        Fri,  4 Aug 2023 23:08:19 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4E735C433C8;
+        Fri,  4 Aug 2023 23:08:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1691190498;
+        bh=ItNgWvZsaaSJcefInBNG4xFTVdgpVOCz5yLOXVz4LRs=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Vin1i7JwwS34CZFfgaAaeB/1NPLC19qBDLhEDXfIimEQepkSzwf3LrV7NjqpQ9Ja+
+         IEiWicBpXiXceuUXCoVCqQxcYnCJwIoxFalYyTwFRXT2ppcrIrfRS0IIHD0QUSFfl/
+         WfeDmZmTH9hvZ5Mf4v0HFfUCAgWpjb7ZqIy+P88sESYXdYZRbRWzWo2hg2V2NspeB4
+         ikcD5Hwlm3dWWSLlkfIjijHWjgB4K/B+Z+/cYlaxvAM+gKAHaZ6yLAzvmB9AP6kIss
+         heIPCPSLho1wSWNPhYbtWzO0HdmSrhW8BsS+bSGdQ2lFDt+WecDCnJNZQj89hava8g
+         JJNAd2adt2zOg==
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Date:   Sat, 05 Aug 2023 02:08:15 +0300
+Message-Id: <CUK4ZW0CCW2O.1KY4H1MBT3M85@wks-101042-mac.ad.tuni.fi>
+From:   "Jarkko Sakkinen" <jarkko@kernel.org>
+To:     "Jonathan McDowell" <noodles@meta.com>,
+        "Peter Huewe" <peterhuewe@gmx.de>
+Cc:     "Jason Gunthorpe" <jgg@ziepe.ca>,
+        "Lino Sanfilippo" <l.sanfilippo@kunbus.com>,
+        "linux-integrity@vger.kernel.org" <linux-integrity@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] tpm/tpm_tis: Disable interrupts for Lenovo P620 devices
+X-Mailer: aerc 0.15.2
+References: <20230804170638.GA3705864@noodles-fedora.dhcp.thefacebook.com>
+In-Reply-To: <20230804170638.GA3705864@noodles-fedora.dhcp.thefacebook.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Zheng,
+On Fri Aug 4, 2023 at 8:08 PM EEST, Jonathan McDowell wrote:
+> The Lenovo ThinkStation P620 suffers from an irq storm issue like
+> various other Lenovo machines, so add an entry for it to
+> tpm_tis_dmi_table and force polling.
+>
+> It is worth noting that 481c2d14627de8ecbb54dd125466e4b4a5069b47
+> (tpm,tpm_tis: Disable interrupts after 1000 unhandled IRQs) does not
+> seem to fix the problem on this machine, but setting
+> tpm_tis.interrupts=3D0 on the kernel command line does.
+>
+> Cc: stable@vger.kernel.org # v6.4+
+> Fixes: e644b2f498d2 ("tpm, tpm_tis: Enable interrupt test")
+> Signed-off-by: Jonathan McDowell <noodles@meta.com>
+> ---
+>  drivers/char/tpm/tpm_tis.c | 8 ++++++++
+>  1 file changed, 8 insertions(+)
+>
+> diff --git a/drivers/char/tpm/tpm_tis.c b/drivers/char/tpm/tpm_tis.c
+> index cc42cf3de960..0cbd745374dc 100644
+> --- a/drivers/char/tpm/tpm_tis.c
+> +++ b/drivers/char/tpm/tpm_tis.c
+> @@ -162,6 +162,14 @@ static const struct dmi_system_id tpm_tis_dmi_table[=
+] =3D {
+>  			DMI_MATCH(DMI_PRODUCT_VERSION, "ThinkPad L590"),
+>  		},
+>  	},
+> +	{
+> +		.callback =3D tpm_tis_disable_irq,
+> +		.ident =3D "ThinkStation P620",
+> +		.matches =3D {
+> +			DMI_MATCH(DMI_SYS_VENDOR, "LENOVO"),
+> +			DMI_MATCH(DMI_PRODUCT_VERSION, "ThinkStation P620"),
+> +		},
+> +	},
+>  	{
+>  		.callback =3D tpm_tis_disable_irq,
+>  		.ident =3D "UPX-TGL",
 
-kernel test robot noticed the following build errors:
+Reviewed-by: Jarkko Sakkinen <jarkko@kernel.org>
 
-[auto build test ERROR on linus/master]
-[also build test ERROR on rostedt-trace/for-next v6.5-rc4 next-20230804]
-[cannot apply to rostedt-trace/for-next-urgent]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
-
-url:    https://github.com/intel-lab-lkp/linux/commits/Zheng-Yejian/tracing-Fix-cpu-buffers-unavailable-due-to-record_disabled-messed/20230804-204751
-base:   linus/master
-patch link:    https://lore.kernel.org/r/20230804124549.2562977-2-zhengyejian1%40huawei.com
-patch subject: [PATCH 1/2] tracing: Fix cpu buffers unavailable due to 'record_disabled' messed
-config: i386-defconfig (https://download.01.org/0day-ci/archive/20230805/202308050601.nsx7Z4CY-lkp@intel.com/config)
-compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
-reproduce: (https://download.01.org/0day-ci/archive/20230805/202308050601.nsx7Z4CY-lkp@intel.com/reproduce)
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202308050601.nsx7Z4CY-lkp@intel.com/
-
-All errors (new ones prefixed by >>):
-
-   kernel/trace/trace.c: In function 'tracing_set_cpumask':
->> kernel/trace/trace.c:5280:60: error: 'struct trace_array' has no member named 'max_buffer'; did you mean 'array_buffer'?
-    5280 |                         ring_buffer_record_disable_cpu(tr->max_buffer.buffer, cpu);
-         |                                                            ^~~~~~~~~~
-         |                                                            array_buffer
-   kernel/trace/trace.c:5286:59: error: 'struct trace_array' has no member named 'max_buffer'; did you mean 'array_buffer'?
-    5286 |                         ring_buffer_record_enable_cpu(tr->max_buffer.buffer, cpu);
-         |                                                           ^~~~~~~~~~
-         |                                                           array_buffer
-
-
-vim +5280 kernel/trace/trace.c
-
-  5260	
-  5261	int tracing_set_cpumask(struct trace_array *tr,
-  5262				cpumask_var_t tracing_cpumask_new)
-  5263	{
-  5264		int cpu;
-  5265	
-  5266		if (!tr)
-  5267			return -EINVAL;
-  5268	
-  5269		local_irq_disable();
-  5270		arch_spin_lock(&tr->max_lock);
-  5271		for_each_tracing_cpu(cpu) {
-  5272			/*
-  5273			 * Increase/decrease the disabled counter if we are
-  5274			 * about to flip a bit in the cpumask:
-  5275			 */
-  5276			if (cpumask_test_cpu(cpu, tr->tracing_cpumask) &&
-  5277					!cpumask_test_cpu(cpu, tracing_cpumask_new)) {
-  5278				atomic_inc(&per_cpu_ptr(tr->array_buffer.data, cpu)->disabled);
-  5279				ring_buffer_record_disable_cpu(tr->array_buffer.buffer, cpu);
-> 5280				ring_buffer_record_disable_cpu(tr->max_buffer.buffer, cpu);
-  5281			}
-  5282			if (!cpumask_test_cpu(cpu, tr->tracing_cpumask) &&
-  5283					cpumask_test_cpu(cpu, tracing_cpumask_new)) {
-  5284				atomic_dec(&per_cpu_ptr(tr->array_buffer.data, cpu)->disabled);
-  5285				ring_buffer_record_enable_cpu(tr->array_buffer.buffer, cpu);
-  5286				ring_buffer_record_enable_cpu(tr->max_buffer.buffer, cpu);
-  5287			}
-  5288		}
-  5289		arch_spin_unlock(&tr->max_lock);
-  5290		local_irq_enable();
-  5291	
-  5292		cpumask_copy(tr->tracing_cpumask, tracing_cpumask_new);
-  5293	
-  5294		return 0;
-  5295	}
-  5296	
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+BR, Jarkko
