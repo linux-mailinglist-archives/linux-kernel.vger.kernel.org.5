@@ -2,105 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9DFC677063B
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 18:46:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 00AD477063D
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 18:46:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230254AbjHDQqK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Aug 2023 12:46:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53336 "EHLO
+        id S230410AbjHDQqQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Aug 2023 12:46:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53388 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229708AbjHDQqI (ORCPT
+        with ESMTP id S229708AbjHDQqP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Aug 2023 12:46:08 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 179B41BDD;
-        Fri,  4 Aug 2023 09:46:08 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        Fri, 4 Aug 2023 12:46:15 -0400
+Received: from bedivere.hansenpartnership.com (bedivere.hansenpartnership.com [96.44.175.130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A45A46B2;
+        Fri,  4 Aug 2023 09:46:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+        d=hansenpartnership.com; s=20151216; t=1691167571;
+        bh=0yfjbmOQ+REYZtNteufkayqRW7eIiIL04EP9auZ+Q2g=;
+        h=Message-ID:Subject:From:To:Date:In-Reply-To:References:From;
+        b=cuFMIwvw/3I+GVupCiRBVy7adfCSFtuaO7dpnolQvfQICOZcHyvRIN7yKcDkt4nAr
+         DfdV9stamQazk0G4HCsUvOXX9oOcHWQYttB3CQhmOd3uudfLIView5+sn/aaDZLFm8
+         g3M4wzy7kIqJkQqlthE/Qd6+AxANzS/XoZMVAcx4=
+Received: from localhost (localhost [127.0.0.1])
+        by bedivere.hansenpartnership.com (Postfix) with ESMTP id 6B95F1281D1D;
+        Fri,  4 Aug 2023 12:46:11 -0400 (EDT)
+Received: from bedivere.hansenpartnership.com ([127.0.0.1])
+ by localhost (bedivere.hansenpartnership.com [127.0.0.1]) (amavis, port 10024)
+ with ESMTP id ctA5lkaDfDdb; Fri,  4 Aug 2023 12:46:11 -0400 (EDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+        d=hansenpartnership.com; s=20151216; t=1691167571;
+        bh=0yfjbmOQ+REYZtNteufkayqRW7eIiIL04EP9auZ+Q2g=;
+        h=Message-ID:Subject:From:To:Date:In-Reply-To:References:From;
+        b=cuFMIwvw/3I+GVupCiRBVy7adfCSFtuaO7dpnolQvfQICOZcHyvRIN7yKcDkt4nAr
+         DfdV9stamQazk0G4HCsUvOXX9oOcHWQYttB3CQhmOd3uudfLIView5+sn/aaDZLFm8
+         g3M4wzy7kIqJkQqlthE/Qd6+AxANzS/XoZMVAcx4=
+Received: from lingrow.int.hansenpartnership.com (unknown [IPv6:2601:5c4:4302:c21::c14])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id A0E05620A3;
-        Fri,  4 Aug 2023 16:46:07 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id F3713C433C8;
-        Fri,  4 Aug 2023 16:46:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691167567;
-        bh=GlqgsnDvIgwYUmpWjzH//C5p/Ly3FcdHijBMlK4iV4M=;
-        h=From:To:Cc:Subject:Date:From;
-        b=oA2Xp3HMd/rmWFiFl3VM0Gi6VtXcr0dFxbeakyhbO0BC6STCjLrfXHceWe6xzd1oq
-         BGgrwgPSSND9CUbSP+JBqbb5EKLgtB/GRMDibGMXfSt8TSVYLyqr0DsnRvcrhO9z6T
-         IZFSjhk+2UM1WQmwuKXgFMucSXONirIF4SprIxUDlIwl3SpCBazPKxYjql7oRg9YD3
-         xByXVE/FVKlyKqaSIEBYxH35R98DisujuqMqrEntJGNL7Ct864LKDPa81GzH96cMuc
-         lnvzrULEu8wGV0HWQcOJMVUfvB1/4pG9JZhWioouXIeOO0Lb9s5obf39JI27fg5CxV
-         kRe2UAok84z7A==
-From:   Georgi Djakov <djakov@kernel.org>
-To:     gregkh@linuxfoundation.org
-Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        djakov@kernel.org
-Subject: [GIT PULL] interconnect fixes for 6.5-rc
-Date:   Fri,  4 Aug 2023 19:45:49 +0300
-Message-Id: <20230804164549.3407394-1-djakov@kernel.org>
-X-Mailer: git-send-email 2.34.1
+         key-exchange ECDHE (prime256v1) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        by bedivere.hansenpartnership.com (Postfix) with ESMTPSA id 0F1BE1281747;
+        Fri,  4 Aug 2023 12:46:09 -0400 (EDT)
+Message-ID: <66161ce56ec783d1ec452a50b80b120bec8b56e8.camel@HansenPartnership.com>
+Subject: Re: [PATCH 1/4] keys: Introduce tsm keys
+From:   James Bottomley <James.Bottomley@HansenPartnership.com>
+To:     Dionna Amalie Glaze <dionnaglaze@google.com>,
+        Dan Williams <dan.j.williams@intel.com>
+Cc:     Jarkko Sakkinen <jarkko@kernel.org>,
+        Peter Gonda <pgonda@google.com>, dhowells@redhat.com,
+        Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Samuel Ortiz <sameo@rivosinc.com>, peterz@infradead.org,
+        linux-coco@lists.linux.dev, keyrings@vger.kernel.org,
+        x86@kernel.org, linux-kernel@vger.kernel.org
+Date:   Fri, 04 Aug 2023 12:46:08 -0400
+In-Reply-To: <CAAH4kHY_SjTdh55NBWn1KURCdjJUDM7nhi_gLpUhKKbRsVjX4Q@mail.gmail.com>
+References: <169057265210.180586.7950140104251236598.stgit@dwillia2-xfh.jf.intel.com>
+         <169057265801.180586.10867293237672839356.stgit@dwillia2-xfh.jf.intel.com>
+         <CAMkAt6ot9zyUL9Ub-qYq+d9v-6rTft4ea2mUxp3o1s3GVFq7nw@mail.gmail.com>
+         <CUHEL5OD3UR8.FRBWNF6MTP1Y@suppilovahvero>
+         <64cc650233ef9_782a329489@dwillia2-xfh.jf.intel.com.notmuch>
+         <CAAH4kHY_SjTdh55NBWn1KURCdjJUDM7nhi_gLpUhKKbRsVjX4Q@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.42.4 
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Greg,
+On Fri, 2023-08-04 at 09:37 -0700, Dionna Amalie Glaze wrote:
+[...]
+> 
+> The coming addition of the SVSM to further isolate the guest and
+> provide extra "security devices" is also something to be aware of.
+> There will be a vTPM protocol and a new type of attestation that's
+> rooted to VMPL0 while Linux is still in VMPL3. I don't think this
+> will make sev-guest an unnecessary device though, since it's still
+> undecided how the TPM hierarchy can bind itself to the hardware in a
+> non-adhoc manner: there's no "attested TPM" spec to have something
+> between the null hierarchy and the more persistent attestation key
+> hierarchy. And TCG isn't in the business of specifying how to
+> virtualize the TPM technology, so we might have to manually link the
+> two together by getting the tpm quote and then doing a further
+> binding operation with the sev-guest device.
 
-This pull request contains fixes for the current cycle. The details are
-in the signed tag. All patches have been in linux-next during the last
-few weeks! Please pull into char-misc-linus when you get a chance.
+Just on this one, it's already specified in the latest SVSM doc:
 
-Thanks,
-Georgi
+https://lore.kernel.org/linux-coco/a2f31400-9e1c-c12a-ad7f-ea0265a12068@amd.com/
 
+The Service Attestation Data on page 36-37.  It says TPMT_PUBLIC of the
+EK.  However, what it doesn't say is *which* EK.  I already sent in a
+comment saying it should be the TCG template for the P-256 curve EK.
 
-The following changes since commit 06c2afb862f9da8dc5efa4b6076a0e48c3fbaaa5:
+So asking the SVSM to give you the attestation report for the VTPM
+service binds the EK of the vTPM.
 
-  Linux 6.5-rc1 (2023-07-09 13:53:13 -0700)
+James
 
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/djakov/icc.git tags/icc-6.5-rc5
-
-for you to fetch changes up to 3cb11fe244d516f757c1022cfa971528d525fe65:
-
-  interconnect: qcom: sa8775p: add enable_mask for bcm nodes (2023-07-11 15:44:43 +0300)
-
-----------------------------------------------------------------
-interconnect fixes for v6.5-rc
-
-This contains a fix for a potential issue on some Qualcomm SoCs where
-bit-masks should have been used to configure the Bus Clock Manager
-hardware, instead of bandwidth units.
-
-- interconnect: qcom: Add support for mask-based BCMs
-- interconnect: qcom: sm8450: add enable_mask for bcm nodes
-- interconnect: qcom: sm8550: add enable_mask for bcm nodes
-- interconnect: qcom: sa8775p: add enable_mask for bcm nodes
-
-Signed-off-by: Georgi Djakov <djakov@kernel.org>
-
-----------------------------------------------------------------
-Mike Tipton (1):
-      interconnect: qcom: Add support for mask-based BCMs
-
-Neil Armstrong (3):
-      interconnect: qcom: sm8450: add enable_mask for bcm nodes
-      interconnect: qcom: sm8550: add enable_mask for bcm nodes
-      interconnect: qcom: sa8775p: add enable_mask for bcm nodes
-
- drivers/interconnect/qcom/bcm-voter.c |  5 +++
- drivers/interconnect/qcom/icc-rpmh.h  |  2 +
- drivers/interconnect/qcom/sa8775p.c   |  1 +
- drivers/interconnect/qcom/sm8450.c    |  9 ++++
- drivers/interconnect/qcom/sm8550.c    | 17 ++++++++
- 5 files changed, 34 insertions(+)
