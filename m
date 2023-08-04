@@ -2,75 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BEE18770C60
-	for <lists+linux-kernel@lfdr.de>; Sat,  5 Aug 2023 01:25:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CB29B770C64
+	for <lists+linux-kernel@lfdr.de>; Sat,  5 Aug 2023 01:27:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229982AbjHDXZx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Aug 2023 19:25:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55872 "EHLO
+        id S230002AbjHDX1P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Aug 2023 19:27:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56296 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229514AbjHDXZu (ORCPT
+        with ESMTP id S229514AbjHDX1N (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Aug 2023 19:25:50 -0400
-Received: from mail-oi1-x22f.google.com (mail-oi1-x22f.google.com [IPv6:2607:f8b0:4864:20::22f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC9614C2D;
-        Fri,  4 Aug 2023 16:25:49 -0700 (PDT)
-Received: by mail-oi1-x22f.google.com with SMTP id 5614622812f47-3a5a7e7cd61so1779197b6e.0;
-        Fri, 04 Aug 2023 16:25:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1691191549; x=1691796349;
-        h=cc:to:subject:message-id:date:from:references:in-reply-to
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=2ECpGsVgScrXWZOLp4MGlhJInQlqSJK5uh2ufnsxsdQ=;
-        b=KN5ZYHb0WcW1urRTacMTcHcK1iJfsyKLuTL34dGK3epmEymYUfmkINYqz6aEbdMp+W
-         zP3dEKtnz6JUtoqVZ1SnahfZCc5VVKFxGx/8h93CY/AxPITLLZOB6+xETO/sMYVRHySA
-         TaMiFlxxDsv7HIJe00SxpQVu9Hn7GKNHwBxbOGtO1AXBFT+BEswiulBLKt6bP6OMt4wd
-         12MBsdSJMyXvBwCe6D2ym2yxWn3SVy+r1EJz04/d6QPozmfj9tn6XaE+A3eVha3VW8Bw
-         HsxwAfYJFsWa+JNVAHCA2y3A6DqjGG47Z5jkfZegfqiTqVqo78ji96xRiH5TdjogMFji
-         HGqg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691191549; x=1691796349;
-        h=cc:to:subject:message-id:date:from:references:in-reply-to
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=2ECpGsVgScrXWZOLp4MGlhJInQlqSJK5uh2ufnsxsdQ=;
-        b=j4hvMb+8XTDdn0Yk2A6LWb8uv3KTnRMQxOQ3dhdf+MxzCvZLTx9TB8CdKAyY42VGum
-         t8/JdsMgTMs3fd6cKo1vMzKBYPpUi5jPgHoRZ6i9sZRvKk/dRoOuuC0ZMVjmnq8QyDGZ
-         SOhfC4+Vqa9/ZBpwEOCaOkv+svcn4arWcmC1Cv3rf8hiK4PVNUf9O5XyPYPi50t9AqsC
-         84dEpld5jQS4X5BzmrZa0S2P3lDJn9b+GuMsCwbVvJiS447m4Ph3cMAW2Lq9KiJlaqbu
-         KkGByiUZGDdL7raxMc0weLWJYSvft76ASABFzDn4/XjpcrDRzo3atr/FU+/OjXGOJVBr
-         fnnA==
-X-Gm-Message-State: AOJu0YwVt51/Wx4urQ5w7Z+e9R2lqzYrAHN03/W4G3R/hsoQnzaCH8FU
-        EQ+1tN3nbwoEABpQOHA7YTavG1Bg+bilcEYsOGE=
-X-Google-Smtp-Source: AGHT+IGtBQglFMOFnETZZ/fmovN1PMvk23bCpNKojUYy5iXfJ0+vg0zUB8AJgZ4V2vFlc91Ap5FBtffJGXGc3wkjEE8=
-X-Received: by 2002:a05:6808:3a7:b0:39c:7d50:ab86 with SMTP id
- n7-20020a05680803a700b0039c7d50ab86mr778649oie.29.1691191548939; Fri, 04 Aug
- 2023 16:25:48 -0700 (PDT)
+        Fri, 4 Aug 2023 19:27:13 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 350294C2D;
+        Fri,  4 Aug 2023 16:27:12 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id C663462167;
+        Fri,  4 Aug 2023 23:27:11 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E327BC433C8;
+        Fri,  4 Aug 2023 23:27:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1691191631;
+        bh=n1r9Y8+Yls3v8nPSMXq1wOXW0oILhgXDtk7CLiJAPZs=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=MVIIIfyoucpTMzoS0sassQDxYp6tCi+bP8twJ5f0+dX55aUSF7i5By597i51n8pka
+         ARF6B8XtQfqcAa7bmb048o8xks3v9JRZ9tmDejNodzvx6Ln4/4wiH5qiXuxsItrV36
+         tDCrM8wxtuH9/2BgnLQDJdIjOKUMyxBpH9tfHTB1dyOEJKDVGBX1sg5jHc1xMb49KW
+         C2AUA6Q2fa2iQlSCgcMBQB12PIFrw/AsUxAkkVNuN3QQVmjZxr9eb5o+8ZwUf5Q+v2
+         7mYxeCrmrYRAbwdrTrDveNxWRnx/L3jWosxij6pbgoPfqaPDQWVrY5EBQcBsLi/1zo
+         OZpFH2TAy3XPA==
+Date:   Fri, 4 Aug 2023 18:27:09 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Igor Mammedov <imammedo@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, terraluna977@gmail.com,
+        bhelgaas@google.com, linux-pci@vger.kernel.org, mst@redhat.com,
+        rafael@kernel.org, linux-acpi@vger.kernel.org
+Subject: Re: [PATCH 1/1] PCI: acpiphp:: use
+ pci_assign_unassigned_bridge_resources() only if bus->self not NULL
+Message-ID: <20230804232709.GA174043@bhelgaas>
 MIME-Version: 1.0
-Received: by 2002:ac9:7b87:0:b0:4f0:1250:dd51 with HTTP; Fri, 4 Aug 2023
- 16:25:48 -0700 (PDT)
-In-Reply-To: <CAHk-=wiy125k1dBmQFTGpHwiOqEyrD6xnd4xKWfe97H_HodgDA@mail.gmail.com>
-References: <20230708191212.4147700-1-surenb@google.com> <20230708191212.4147700-3-surenb@google.com>
- <20230804214620.btgwhsszsd7rh6nf@f> <CAHk-=wiy125k1dBmQFTGpHwiOqEyrD6xnd4xKWfe97H_HodgDA@mail.gmail.com>
-From:   Mateusz Guzik <mjguzik@gmail.com>
-Date:   Sat, 5 Aug 2023 01:25:48 +0200
-Message-ID: <CAGudoHFsAU_BDCOuz8UgDBLGEM8xg=aUGjaVoqkM_Zvxo2Re_g@mail.gmail.com>
-Subject: Re: [PATCH v2 3/3] fork: lock VMAs of the parent process when forking
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Suren Baghdasaryan <surenb@google.com>, akpm@linux-foundation.org,
-        regressions@leemhuis.info, bagasdotme@gmail.com,
-        jacobly.alt@gmail.com, willy@infradead.org,
-        liam.howlett@oracle.com, david@redhat.com, peterx@redhat.com,
-        ldufour@linux.ibm.com, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, linuxppc-dev@lists.ozlabs.org,
-        linux-arm-kernel@lists.infradead.org, gregkh@linuxfoundation.org,
-        regressions@lists.linux.dev, Jiri Slaby <jirislaby@kernel.org>,
-        =?UTF-8?Q?Holger_Hoffst=C3=A4tte?= <holger@applied-asynchrony.com>,
-        stable@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230726123518.2361181-2-imammedo@redhat.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -78,31 +56,60 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/5/23, Linus Torvalds <torvalds@linux-foundation.org> wrote:
-> On Fri, 4 Aug 2023 at 14:46, Mateusz Guzik <mjguzik@gmail.com> wrote:
->>
->> I don't see it mentioned in the discussion, so at a risk of ruffling
->> feathers or looking really bad I'm going to ask: is the locking of any
->> use if the forking process is single-threaded? T
->
-> Sadly, we've always been able to access the mm from other processes,
-> so the locking is - I think - unavoidable.
->
-> And some of those "access from other processes" aren't even uncommon
-> or special. It's things like "ps" etc, that do it just to see the
-> process name and arguments.
->
+On Wed, Jul 26, 2023 at 02:35:18PM +0200, Igor Mammedov wrote:
+> Commit [1] switched acpiphp hotplug to use
+>    pci_assign_unassigned_bridge_resources()
+> which depends on bridge being available, however in some cases
+> when acpiphp is in use, enable_slot() can get a slot without
+> bridge associated.
 
-I know of these guys, I think they are excluded as is -- they go
-through access_remote_vm, starting with:
-        if (mmap_read_lock_killable(mm))
-                return 0;
+acpiphp is *always* in use if we get to enable_slot(), so that doesn't
+really add information here.
 
-while dup_mmap already write locks the parent's mm.
+>   1. legitimate case of hotplug on root bus
+>       (likely not exiting on real hw, but widely used in virt world)
+>   2. broken firmware, that sends 'Bus check' events to non
+>      existing root ports (Dell Inspiron 7352/0W6WV0), which somehow
+>      endup at acpiphp:enable_slot(..., bridge = 0) and with bus
+>      without bridge assigned to it.
 
-I don't see any surprise relocks of the semaphore.
+IIUC, the Inspiron problem happens when:
 
-Granted, should someone *bypass* this mechanism the above would be moot.
+  - acpiphp_context->bridge is NULL, so hotplug_event() calls
+    enable_slot() instead of acpiphp_check_bridge(), AND
 
--- 
-Mateusz Guzik <mjguzik gmail.com>
+  - acpiphp_slot->bus->self is also NULL, because enable_slot() calls
+    pci_assign_unassigned_bridge_resources() with that NULL pointer,
+    which dereferences "bridge->subordinate"
+
+But I can't figure out why acpiphp_context->bridge is NULL for RP07
+and RP08 (which don't exist), but not for RP03 (which does).
+
+I guess all the acpiphp_contexts (RP03, RP07, RP08) must be allocated in
+acpiphp_add_context() by acpiphp_init_context().
+
+Woody's lspci from [1] shows only one Root Port:
+
+  00:1c.0 Wildcat Point-LP PCI Express Root Port #3
+
+The DSDT.DSL includes:
+
+  Device (RP01) _ADR 0x001C0000		# 1c.0
+  Device (RP02) _ADR 0x001C0001		# 1c.1
+  Device (RP03) _ADR 0x001C0002		# 1c.2
+  Device (RP04) _ADR 0x001C0003		# 1c.3
+  Device (RP05) _ADR 0x001C0004		# 1c.4
+  Device (RP06) _ADR 0x001C0005		# 1c.5
+  Device (RP07) _ADR 0x001C0006		# 1c.6
+  Device (RP08) _ADR 0x001C0007		# 1c.7
+
+I can see why we might need a Bus Check after resume to see if
+something got added while we were suspended.  But I don't see why we
+handle RP03 differently from RP07 and RP08.
+
+Can you help me out?  I'm lost in a maze of twisty passages, all
+alike.
+
+Bjorn
+
+[1] https://lore.kernel.org/r/92150d8d-8a3a-d600-a996-f60a8e4c876c@gmail.com
