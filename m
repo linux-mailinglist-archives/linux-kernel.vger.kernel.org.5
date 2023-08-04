@@ -2,79 +2,202 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2929276FD3A
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 11:26:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EC32176FD3E
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 11:28:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230461AbjHDJ0Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Aug 2023 05:26:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38258 "EHLO
+        id S230133AbjHDJ2i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Aug 2023 05:28:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40018 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230299AbjHDJZx (ORCPT
+        with ESMTP id S229681AbjHDJ2e (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Aug 2023 05:25:53 -0400
-Received: from 167-179-156-38.a7b39c.syd.nbn.aussiebb.net (167-179-156-38.a7b39c.syd.nbn.aussiebb.net [167.179.156.38])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D0B430EB;
-        Fri,  4 Aug 2023 02:25:52 -0700 (PDT)
-Received: from loth.rohan.me.apana.org.au ([192.168.167.2])
-        by formenos.hmeau.com with smtp (Exim 4.94.2 #2 (Debian))
-        id 1qRr41-003bJ8-Cq; Fri, 04 Aug 2023 17:25:42 +0800
-Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation); Fri, 04 Aug 2023 17:25:41 +0800
-Date:   Fri, 4 Aug 2023 17:25:41 +0800
-From:   Herbert Xu <herbert@gondor.apana.org.au>
-To:     meenakshi.aggarwal@nxp.com
-Cc:     horia.geanta@nxp.com, V.sethi@nxp.com, pankaj.gupta@nxp.com,
-        gaurav.jain@nxp.com, davem@davemloft.net,
-        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 0/2] Add power management support in CAAM driver
-Message-ID: <ZMzEFTwzSt3SZzDS@gondor.apana.org.au>
-References: <20230712060728.3562376-1-meenakshi.aggarwal@nxp.com>
- <20230724065230.83017-1-meenakshi.aggarwal@nxp.com>
+        Fri, 4 Aug 2023 05:28:34 -0400
+Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D98730EB
+        for <linux-kernel@vger.kernel.org>; Fri,  4 Aug 2023 02:28:32 -0700 (PDT)
+Received: by mail-ej1-x62d.google.com with SMTP id a640c23a62f3a-99bed101b70so256632266b.3
+        for <linux-kernel@vger.kernel.org>; Fri, 04 Aug 2023 02:28:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ventanamicro.com; s=google; t=1691141310; x=1691746110;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=ZfqEgyUyGWV+uCR/G+Jp30EpbAjcXJAFKXc4wfVRnvc=;
+        b=E5XARrnWgyw7Cl6ZED5yZTcAjZ31Ocmt/9ACuiwG3t25Jv8VSFbwPR0xS8/w6YDBWS
+         jFraad9vh58ejKHgML+JfZPZLP6hZx6immp48/Ns5zgR1eVbrtVmIxwjpDjurBTZQLkZ
+         0la33KkRHDu0Sny+rPQjycd9YlzI3KNeLSdwoRjSh2x7GSGeRvrN+8/jv+SxRdnX4Mf2
+         5wLmtp9/XsJpk/EWdDbpwoNxWZsvCmxe0FRPzCVH7oKMxWd9yyKlyhyTQ6KTnoB2fiEt
+         192MzRXO2VNkgNOtCPU4sZx8wov6wXGgBZfbXDKB++JuQrVnIiKO3CXnkPFx07E5vDhY
+         NsZw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691141310; x=1691746110;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ZfqEgyUyGWV+uCR/G+Jp30EpbAjcXJAFKXc4wfVRnvc=;
+        b=Z7/KXgCnGMVGob5+MR4iVCRGJjNG4hRAJlTW7eSuBCP2/qNDMQPeOUiTSe84TC+wIx
+         95v+8l5W1zcOqsPnfJPKILrHunb4sKJHvCKDEy95PM1doTfnp+a+YnfHFQD+gZwQJIgc
+         8ypIeozYqZzrGZrpgQAuNCqCqvrKB4ieHkxi4WEfqym2cIto8jEluBYfPJvdx9DN5wqW
+         hlV4k5NrdbewG7SCa20b+TQAhSFH874YitWEtJkQ4vx+9w02BgQHYQGDVsFwC5aAiC1P
+         x9Q/f4AsWl5dgGH03xpvXrOKvdv4Pl2WbMX4n2dTOepDPqwX7QBfuTCmhFmEQ89MaiyN
+         IKgg==
+X-Gm-Message-State: AOJu0YwSu/lcXT23s5lCr3r8khWyyRPSnQTwvxL0gOcmSeRmHHOF97eY
+        u87D5JslpVV47NOeEVECj7Y65g==
+X-Google-Smtp-Source: AGHT+IE6rLcJxJxn18Xxg19aKhaZkkPhYOGD3RLIstSvThFuRa9fmKxoji2QZX4Ve7Hm/5p2G7FBoA==
+X-Received: by 2002:a17:906:2012:b0:99b:f53c:3648 with SMTP id 18-20020a170906201200b0099bf53c3648mr991573ejo.72.1691141310471;
+        Fri, 04 Aug 2023 02:28:30 -0700 (PDT)
+Received: from localhost (212-5-140-29.ip.btc-net.bg. [212.5.140.29])
+        by smtp.gmail.com with ESMTPSA id p7-20020a1709066a8700b009930042510csm1024394ejr.222.2023.08.04.02.28.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 04 Aug 2023 02:28:30 -0700 (PDT)
+Date:   Fri, 4 Aug 2023 12:28:28 +0300
+From:   Andrew Jones <ajones@ventanamicro.com>
+To:     Charlie Jenkins <charlie@rivosinc.com>
+Cc:     linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org, kvm-riscv@lists.infradead.org,
+        bpf@vger.kernel.org, Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Josh Poimboeuf <jpoimboe@kernel.org>,
+        Jason Baron <jbaron@akamai.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Anup Patel <anup@brainfault.org>,
+        Atish Patra <atishp@atishpatra.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        =?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
+        Luke Nelson <luke.r.nels@gmail.com>,
+        Xi Wang <xi.wang@gmail.com>, Nam Cao <namcaov@gmail.com>
+Subject: Re: [PATCH 00/10] RISC-V: Refactor instructions
+Message-ID: <20230804-2c57bddd6e87fdebc20ff9d5@orel>
+References: <20230803-master-refactor-instructions-v4-v1-0-2128e61fa4ff@rivosinc.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230724065230.83017-1-meenakshi.aggarwal@nxp.com>
-X-Spam-Status: No, score=2.7 required=5.0 tests=BAYES_00,HELO_DYNAMIC_IPADDR2,
-        RCVD_IN_DNSWL_BLOCKED,RDNS_DYNAMIC,SPF_HELO_NONE,SPF_PASS,TVD_RCVD_IP,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
-X-Spam-Level: **
+In-Reply-To: <20230803-master-refactor-instructions-v4-v1-0-2128e61fa4ff@rivosinc.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 24, 2023 at 08:52:28AM +0200, meenakshi.aggarwal@nxp.com wrote:
-> From: Meenakshi Aggarwal <meenakshi.aggarwal@nxp.com>
+On Thu, Aug 03, 2023 at 07:10:25PM -0700, Charlie Jenkins wrote:
+> There are numerous systems in the kernel that rely on directly
+> modifying, creating, and reading instructions. Many of these systems
+> have rewritten code to do this. This patch will delegate all instruction
+> handling into insn.h and reg.h. All of the compressed instructions, RVI,
+> Zicsr, M, A instructions are included, as well as a subset of the F,D,Q
+> extensions.
 > 
-> This patch set add support of Power Management in CAAM driver
+> ---
+> This is modifying code that https://lore.kernel.org/lkml/20230731183925.152145-1-namcaov@gmail.com/
+> is also touching.
 > 
-> We are saving the state of the CAAM:
->  - JRs MID
->  - Address of input and output rings
-> in suspend function and getting same state in resume function
-> on platforms where power of CAAM is turned off.
+> ---
+> Testing:
 > 
-> Changes in v2:
-> 	- not protecting PM code under macro CONFIG_PM_SLEEP
-> 	as CONFIG_PM_SLEEP is on by default
+> There are a lot of subsystems touched and I have not tested every
+> individual instruction. I did a lot of copy-pasting from the RISC-V spec
+> so opcodes and such should be correct
+
+How about we create macros which generate each of the functions an
+instruction needs, e.g. riscv_insn_is_*(), etc. based on the output of
+[1]. I know basically nothing about that project, but it looks like it
+creates most the defines this series is creating from what we [hope] to
+be an authoritative source. I also assume that if we don't like the
+current output format, then we could probably post patches to the project
+to get the format we want. For example, we could maybe propose an "lc"
+format for "Linux C".
+
+I'd also recommend only importing the generated defines and generating
+the functions that will actually have immediate consumers or are part of
+a set of defines that have immediate consumers. Each consumer of new
+instructions will be responsible for generating and importing the defines
+and adding the respective macro invocations to generate the functions.
+This series can also take that approach, i.e. convert one set of
+instructions at a time, each in a separate patch.
+
+[1] https://github.com/riscv/riscv-opcodes
+
+Thanks,
+drew
+
+
+> , but the construction of every
+> instruction is not fully tested.
 > 
-> Franck LENORMAND (1):
->   crypto: caam - Change structure type representing DECO MID
+> vector: Compiled and booted
 > 
-> Horia Geanta (1):
->   crypto: caam - add power management support
+> jump_label: Ensured static keys function as expected.
 > 
->  drivers/crypto/caam/ctrl.c   | 106 +++++++++++++++++++
->  drivers/crypto/caam/intern.h |  25 ++++-
->  drivers/crypto/caam/jr.c     | 193 +++++++++++++++++++++++++++++++----
->  drivers/crypto/caam/regs.h   |   9 +-
->  4 files changed, 306 insertions(+), 27 deletions(-)
+> kgdb: Attempted to run the provided tests but they failed even without
+> my changes
+> 
+> module: Loaded and unloaded modules
+> 
+> patch.c: Ensured kernel booted
+> 
+> kprobes: Used a kprobing module to probe jalr, auipc, and branch
+> instructions
+> 
+> nommu misaligned addresses: Kernel boots
+> 
+> kvm: Ran KVM selftests
+> 
+> bpf: Kernel boots. Most of the instructions are exclusively used by BPF
+> but I am unsure of the best way of testing BPF.
+> 
+> Signed-off-by: Charlie Jenkins <charlie@rivosinc.com>
+> 
+> ---
+> Charlie Jenkins (10):
+>       RISC-V: Expand instruction definitions
+>       RISC-V: vector: Refactor instructions
+>       RISC-V: Refactor jump label instructions
+>       RISC-V: KGDB: Refactor instructions
+>       RISC-V: module: Refactor instructions
+>       RISC-V: Refactor patch instructions
+>       RISC-V: nommu: Refactor instructions
+>       RISC-V: kvm: Refactor instructions
+>       RISC-V: bpf: Refactor instructions
+>       RISC-V: Refactor bug and traps instructions
+> 
+>  arch/riscv/include/asm/bug.h             |   18 +-
+>  arch/riscv/include/asm/insn.h            | 2744 +++++++++++++++++++++++++++---
+>  arch/riscv/include/asm/reg.h             |   88 +
+>  arch/riscv/kernel/jump_label.c           |   13 +-
+>  arch/riscv/kernel/kgdb.c                 |   13 +-
+>  arch/riscv/kernel/module.c               |   80 +-
+>  arch/riscv/kernel/patch.c                |    3 +-
+>  arch/riscv/kernel/probes/kprobes.c       |   13 +-
+>  arch/riscv/kernel/probes/simulate-insn.c |  100 +-
+>  arch/riscv/kernel/probes/uprobes.c       |    5 +-
+>  arch/riscv/kernel/traps.c                |    9 +-
+>  arch/riscv/kernel/traps_misaligned.c     |  218 +--
+>  arch/riscv/kernel/vector.c               |    5 +-
+>  arch/riscv/kvm/vcpu_insn.c               |  281 +--
+>  arch/riscv/net/bpf_jit.h                 |  707 +-------
+>  15 files changed, 2825 insertions(+), 1472 deletions(-)
+> ---
+> base-commit: 5d0c230f1de8c7515b6567d9afba1f196fb4e2f4
+> change-id: 20230801-master-refactor-instructions-v4-433aa040da03
+> -- 
+> - Charlie
+> 
 > 
 > -- 
-> 2.25.1
-
-All applied.  Thanks.
--- 
-Email: Herbert Xu <herbert@gondor.apana.org.au>
-Home Page: http://gondor.apana.org.au/~herbert/
-PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
+> kvm-riscv mailing list
+> kvm-riscv@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/kvm-riscv
