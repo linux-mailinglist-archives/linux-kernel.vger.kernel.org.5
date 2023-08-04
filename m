@@ -2,120 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 98F3E770537
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 17:50:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E180277053C
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 17:50:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232132AbjHDPuI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Aug 2023 11:50:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46660 "EHLO
+        id S231946AbjHDPu0 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 4 Aug 2023 11:50:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46940 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232055AbjHDPuE (ORCPT
+        with ESMTP id S230486AbjHDPuY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Aug 2023 11:50:04 -0400
-Received: from mail-vk1-xa29.google.com (mail-vk1-xa29.google.com [IPv6:2607:f8b0:4864:20::a29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6770A49CC
-        for <linux-kernel@vger.kernel.org>; Fri,  4 Aug 2023 08:50:00 -0700 (PDT)
-Received: by mail-vk1-xa29.google.com with SMTP id 71dfb90a1353d-487203bfbc6so227279e0c.1
-        for <linux-kernel@vger.kernel.org>; Fri, 04 Aug 2023 08:50:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1691164199; x=1691768999;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=M6GtJle38GYNlw+gZNdG3pGleXzijHW2VDwwGhqBWf0=;
-        b=AW5cXx0H8S0x5I+u2xfxfy1V7vR/jMhVl1HUEGEbVyMQepbBG7qwJSWaktQ6RUC0ry
-         YWp/wcvzZRS0TmRJPYM7ge8Wunb/krBend8Sku8kZ9/XenVwDkKiznYril6qzO64JRls
-         Q7dCK8fwLyw9HBdWcmAEtxT63VH6KCAnDDnSzC6QWOMes9rU+Bk9lh/QSwVUu/+Q9M3F
-         yXe4ljZivaQrSG9TrCIM4df/WqKdrg0WjCIf3SXhO+Omc+9BDZvl7iaQ3gi46u/Wl8kv
-         8M+yzJ6QwWSZYvFrole4BzasoQzljZn068wOxkBGwSzKUGLR070XifJVqziX33IlqbS0
-         aaJQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691164199; x=1691768999;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=M6GtJle38GYNlw+gZNdG3pGleXzijHW2VDwwGhqBWf0=;
-        b=A/zcCxFHQdpN8bHjc0HBj7HGxImCfyZ5UD5zLOPOBswgfoTb0mBAPv359J0E/uAc3+
-         ZY2P9nmb6Zevt4iB9CG1mSntgkObGR97ZZdsPKXiyg7FBxw6LDGW0ypMlCZNS4QVGDZO
-         lXrm9pWtfPw6DLo2pzFm3zgkdF9W/Wo1wsg7zhJnhuUKX+KcYKeJFCUkGwGi67kCZxY5
-         e9XqqkwJcKBxKropBMCCWkn4Far+vBjuJy8P773N+aDBqUsfHaYkegzk+cx/r9DfSy5W
-         UYi+BKJrStGX3NqpVeRbFCrFHcO9amk79PcRmWA56HCrwyrNl88qN0rFS+JeaO3uRSSG
-         4ZmA==
-X-Gm-Message-State: AOJu0YxSFZA2k4lbHz2YkScAfcZx5NSrmQYNfXnu6+seCTOHA95EL1uW
-        PaVB38eI83yB+Z9w6JSfJEm+m/ZJSe/QQDpeFeYSqg==
-X-Google-Smtp-Source: AGHT+IGtDHTDweDFtGPqweVEy6/Ojul8h7Go4cQI7kTAsF7TZW0t3PAPJCedcn9OpWUtmtIlxQmADQwpMGsPvotnBTs=
-X-Received: by 2002:a1f:45d7:0:b0:487:1ae2:2ad7 with SMTP id
- s206-20020a1f45d7000000b004871ae22ad7mr1601447vka.3.1691164199316; Fri, 04
- Aug 2023 08:49:59 -0700 (PDT)
+        Fri, 4 Aug 2023 11:50:24 -0400
+Received: from eu-smtp-delivery-151.mimecast.com (eu-smtp-delivery-151.mimecast.com [185.58.85.151])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 534E0212D
+        for <linux-kernel@vger.kernel.org>; Fri,  4 Aug 2023 08:50:23 -0700 (PDT)
+Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) by
+ relay.mimecast.com with ESMTP with both STARTTLS and AUTH (version=TLSv1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ uk-mta-76-qm7ktrQ9OHKl6gBtn9SNaQ-1; Fri, 04 Aug 2023 16:50:20 +0100
+X-MC-Unique: qm7ktrQ9OHKl6gBtn9SNaQ-1
+Received: from AcuMS.Aculab.com (10.202.163.4) by AcuMS.aculab.com
+ (10.202.163.4) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Fri, 4 Aug
+ 2023 16:50:18 +0100
+Received: from AcuMS.Aculab.com ([::1]) by AcuMS.aculab.com ([::1]) with mapi
+ id 15.00.1497.048; Fri, 4 Aug 2023 16:50:18 +0100
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Andrew Morton' <akpm@linux-foundation.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+CC:     Jani Nikula <jani.nikula@intel.com>,
+        Imre Deak <imre.deak@intel.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Andi Shyti <andi.shyti@linux.intel.com>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        "Greg Kroah-Hartman" <gregkh@linuxfoundation.org>,
+        Alexey Dobriyan <adobriyan@gmail.com>,
+        "intel-gfx@lists.freedesktop.org" <intel-gfx@lists.freedesktop.org>,
+        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-serial@vger.kernel.org" <linux-serial@vger.kernel.org>,
+        "linux-fbdev@vger.kernel.org" <linux-fbdev@vger.kernel.org>,
+        Jani Nikula <jani.nikula@linux.intel.com>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        "Helge Deller" <deller@gmx.de>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>
+Subject: RE: [PATCH v4 1/1] drm/i915: Move abs_diff() to math.h
+Thread-Topic: [PATCH v4 1/1] drm/i915: Move abs_diff() to math.h
+Thread-Index: AQHZxi9qpYx0cq9pFEOYLGUrdsezOq/aSRTQ
+Date:   Fri, 4 Aug 2023 15:50:18 +0000
+Message-ID: <7c1885528d474c719bb4d4e0cf985753@AcuMS.aculab.com>
+References: <20230803131918.53727-1-andriy.shevchenko@linux.intel.com>
+ <20230803102446.8edf94acc77e81ab2e09cee3@linux-foundation.org>
+In-Reply-To: <20230803102446.8edf94acc77e81ab2e09cee3@linux-foundation.org>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-References: <20230804012656.4091877-1-suhui@nfschina.com>
-In-Reply-To: <20230804012656.4091877-1-suhui@nfschina.com>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Fri, 4 Aug 2023 08:49:48 -0700
-Message-ID: <CAKwvOd=1pEE=pspfg7fcofYF5=eziFvcLJgC0_ohG7jq+rbVyg@mail.gmail.com>
-Subject: Re: [PATCH v2] fs: lockd: avoid possible wrong NULL parameter
-To:     Su Hui <suhui@nfschina.com>
-Cc:     trond.myklebust@hammerspace.com, anna@kernel.org,
-        chuck.lever@oracle.com, jlayton@kernel.org, neilb@suse.de,
-        kolga@netapp.com, Dai.Ngo@oracle.com, tom@talpey.com,
-        nathan@kernel.org, trix@redhat.com, bfields@fieldses.org,
-        linux-nfs@vger.kernel.org, linux-kernel@vger.kernel.org,
-        llvm@lists.linux.dev, kernel-janitors@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
-        autolearn_force=no version=3.4.6
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,PDS_BAD_THREAD_QP_64,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 3, 2023 at 6:28=E2=80=AFPM Su Hui <suhui@nfschina.com> wrote:
->
-> clang's static analysis warning: fs/lockd/mon.c: line 293, column 2:
-> Null pointer passed as 2nd argument to memory copy function.
->
-> Assuming 'hostname' is NULL and calling 'nsm_create_handle()', this will
-> pass NULL as 2nd argument to memory copy function 'memcpy()'. So return
-> NULL if 'hostname' is invalid.
->
-> Fixes: 77a3ef33e2de ("NSM: More clean up of nsm_get_handle()")
-> Signed-off-by: Su Hui <suhui@nfschina.com>
+From: Andrew Morton
+> Sent: 03 August 2023 18:25
+> 
+> On Thu,  3 Aug 2023 16:19:18 +0300 Andy Shevchenko <andriy.shevchenko@linux.intel.com> wrote:
+> 
+> > abs_diff() belongs to math.h. Move it there.
+> > This will allow others to use it.
+> >
+> > ...
+> >
+> > --- a/include/linux/math.h
+> > +++ b/include/linux/math.h
+> > @@ -155,6 +155,13 @@ __STRUCT_FRACT(u32)
+> >  	__builtin_types_compatible_p(typeof(x), unsigned type),		\
+> >  	({ signed type __x = (x); __x < 0 ? -__x : __x; }), other)
+> >
+> > +#define abs_diff(a, b) ({			\
+> > +	typeof(a) __a = (a);			\
+> > +	typeof(b) __b = (b);			\
+> > +	(void)(&__a == &__b);			\
+> > +	__a > __b ? (__a - __b) : (__b - __a);	\
+> > +})
+> 
+> Can we document it please?
+> 
+> Also, the open-coded type comparison could be replaced with __typecheck()?
+> 
+> And why the heck isn't __typecheck() in typecheck.h, to be included by
+> minmax.h.
 
-Thanks for the patch! And thanks for checking clang static analysis reports=
-!
-Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
+And why would you want to use __typecheck() anyway?
+It pretty much isn't the test you are looking for.
+If you are trying to explicitly avoid converting negative value
+to large positive unsigned ones then you want something like:
+	is_signed_type(typeof(a)) == is_signed_type(typeof(b))
+but it isn't even that simple :-)
 
-> ---
-> v2:
->  - move NULL check to the callee "nsm_create_handle()"
->  fs/lockd/mon.c | 3 +++
->  1 file changed, 3 insertions(+)
->
-> diff --git a/fs/lockd/mon.c b/fs/lockd/mon.c
-> index 1d9488cf0534..87a0f207df0b 100644
-> --- a/fs/lockd/mon.c
-> +++ b/fs/lockd/mon.c
-> @@ -276,6 +276,9 @@ static struct nsm_handle *nsm_create_handle(const str=
-uct sockaddr *sap,
->  {
->         struct nsm_handle *new;
->
-> +       if (!hostname)
-> +               return NULL;
-> +
->         new =3D kzalloc(sizeof(*new) + hostname_len + 1, GFP_KERNEL);
->         if (unlikely(new =3D=3D NULL))
->                 return NULL;
-> --
-> 2.30.2
->
+	David
 
+-
+Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
+Registration No: 1397386 (Wales)
 
---=20
-Thanks,
-~Nick Desaulniers
