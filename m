@@ -2,168 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A74A07709B3
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 22:31:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 57CBB7709B7
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 22:32:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230139AbjHDUbm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Aug 2023 16:31:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45564 "EHLO
+        id S230189AbjHDUcX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Aug 2023 16:32:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45778 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229534AbjHDUbj (ORCPT
+        with ESMTP id S230193AbjHDUcQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Aug 2023 16:31:39 -0400
-Received: from mail-oi1-x233.google.com (mail-oi1-x233.google.com [IPv6:2607:f8b0:4864:20::233])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 737044C2D
-        for <linux-kernel@vger.kernel.org>; Fri,  4 Aug 2023 13:31:37 -0700 (PDT)
-Received: by mail-oi1-x233.google.com with SMTP id 5614622812f47-3a5ad4477a7so1880619b6e.1
-        for <linux-kernel@vger.kernel.org>; Fri, 04 Aug 2023 13:31:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1691181097; x=1691785897;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=P2sRXegefcAEl333biQwB8H/OIszvfSG+NNQtF6Df6w=;
-        b=sJxIClGpPyW2HMO2BQEMygYCD21+kw9MK5mfE9Jl0bGSq/VBa+BVWlZgjp4vfpCM73
-         /itVh0mFRBTgD4yixQPHc5rzFzYUi9vH5ip3cSDi5ob+JbpJpA7B2wqzw23fFCr43Jfh
-         K4sJnIIKjz9VqutdxqdXF3ZQRwpbRkVwe8mmNaKz3bZjS7Hg4DWd2sP5Le3PtrcKOATt
-         cSBmau63g/oFdMg+agGgsDep9RcCgwjrZ4Z1PSAuBCsQS6FLKVO/KMAfQZ8mXo+7PaNM
-         qSW3+wKvxkzd/FL0DxSr7mrtqvYRyX8W96NPAfdnJBn8cF++oNNSSv+qjGJ6QbRFHtXX
-         DSfg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691181097; x=1691785897;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=P2sRXegefcAEl333biQwB8H/OIszvfSG+NNQtF6Df6w=;
-        b=IElFrVZ8eCvELGsoj+tyH1dHiFTQrE4kYvexeNfgyNb1rKaoBHiMejFFEx7G3l0Z++
-         6T+u6LZFNa32pwlZebpXDht3Qr/PeVcK0pd7L68P2zAbdCVhUzku9/HdXaaZQs/R8g70
-         VWEwPIYLt5mwetJ5rSXbXy21HfjSmbY4iODxLo4/RPYQpPWK6dqLuylEiloHCD/eubWx
-         KpKfA88SUs6gxmpnl/udBBgg8eoRqce6NRqtXkV/L7PUWqWdijEldQ3ILqHdQbBpwmzA
-         d4bqvFmitU3LOryaLPwgsSbIWHYFsXAKu7xFephhevkOnvsn7DTkyAWRRk2sMKhtDUBV
-         DJPA==
-X-Gm-Message-State: AOJu0Yx65eyplX3NYPYf3/WhjWG3V49IrIw5EQur95XxF3SY7Jk5SiG2
-        lidk/5wNG9BxknSSZuM7MZ4=
-X-Google-Smtp-Source: AGHT+IFSGKqv/EpwBMvrQ1Kag1VNKCAJJWEtIYcN330189QrIWtiqx2lwCILiFCLfVr3YgfuDwm90w==
-X-Received: by 2002:a54:4e02:0:b0:3a4:57a7:b30e with SMTP id a2-20020a544e02000000b003a457a7b30emr2404804oiy.26.1691181096638;
-        Fri, 04 Aug 2023 13:31:36 -0700 (PDT)
-Received: from madhu-kernel (99-145-207-128.lightspeed.austtx.sbcglobal.net. [99.145.207.128])
-        by smtp.gmail.com with ESMTPSA id e22-20020a05680809b600b003a75b6cbd38sm1467104oig.45.2023.08.04.13.31.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 04 Aug 2023 13:31:36 -0700 (PDT)
-Date:   Fri, 4 Aug 2023 15:31:34 -0500
-From:   Madhumitha Prabakaran <madhumithabiw@gmail.com>
-To:     vaibhav.sr@gmail.com, mgreer@animalcreek.com, johan@kernel.org,
-        elder@kernel.org, gregkh@linuxfoundation.org,
-        greybus-dev@lists.linaro.org, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org
-Cc:     skhan@linuxfoundation.org, ivan.orlov0322@gmail.com
-Subject: [PATCH] staging: greybus: Refactor gb_audio_gb_get_topology() into
- separate calls
-Message-ID: <20230804203134.GA618419@madhu-kernel>
+        Fri, 4 Aug 2023 16:32:16 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.65])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4EF264ED3
+        for <linux-kernel@vger.kernel.org>; Fri,  4 Aug 2023 13:32:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1691181124; x=1722717124;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=t5iZxzWJ77jyknlbwewqXxpRaUFyHhslImuVj5UImbY=;
+  b=SjFKITtRRtclcuj3qBCRy/wXx1ZoCdZULEPrlpXddujTzRzyhx0xq2Ya
+   1ylBzrdNes4uhr7xcAIaKSl+H6IXiTkNjzeRk4VR5Jgtdt4sWklmrcX5H
+   BCfkJtzB0XufM6luhAcsXSZZIfQyv+a+Z2ZJjFV2V6/nA9xq5N8IgEVaN
+   smAJjrD858kXfwDQYdgP4CzSD7pcc/OLxMwrk245KqORnI5lDWDi4jhax
+   8JiNH/cbfknKAA/iIyAbvidz3J50wKL9BxFFZYgaEYyZcj3I7wC4hWhBu
+   rdseyQUbSp7JW3SFbdmULQsDgF6z9ARRkUMSOE34nZ6jhMkiMyJ3ObSBw
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10792"; a="373895261"
+X-IronPort-AV: E=Sophos;i="6.01,255,1684825200"; 
+   d="scan'208";a="373895261"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Aug 2023 13:32:03 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10792"; a="759701472"
+X-IronPort-AV: E=Sophos;i="6.01,255,1684825200"; 
+   d="scan'208";a="759701472"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by orsmga008.jf.intel.com with ESMTP; 04 Aug 2023 13:32:00 -0700
+Received: from andy by smile.fi.intel.com with local (Exim 4.96)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1qS1So-006vh4-20;
+        Fri, 04 Aug 2023 23:31:58 +0300
+Date:   Fri, 4 Aug 2023 23:31:58 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Rasmus Villemoes <linux@rasmusvillemoes.dk>
+Cc:     Marco Elver <elver@google.com>, linux-kernel@vger.kernel.org,
+        kasan-dev@googlegroups.com, linux-mm@kvack.org,
+        Petr Mladek <pmladek@suse.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Alexander Potapenko <glider@google.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>
+Subject: Re: [PATCH v1 3/4] lib/vsprintf: Remove implied inclusions
+Message-ID: <ZM1gPnmGPcheMWj7@smile.fi.intel.com>
+References: <20230804082619.61833-1-andriy.shevchenko@linux.intel.com>
+ <20230804082619.61833-4-andriy.shevchenko@linux.intel.com>
+ <33e128e8-9330-c73e-4c55-e56cbc87450a@rasmusvillemoes.dk>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <33e128e8-9330-c73e-4c55-e56cbc87450a@rasmusvillemoes.dk>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Refactor gb_audio_gb_get_topology() into separate calls for better modularity.
+On Fri, Aug 04, 2023 at 11:36:15AM +0200, Rasmus Villemoes wrote:
+> On 04/08/2023 10.26, Andy Shevchenko wrote:
+> > Remove inclusions that are implied and guaranteed to be provided by others:
+> > 
+> >   compiler.h	by types.h
+> >   string.hi	by string_helpers.h
+> 
+> What? No. That's not what we want. Each .c and each .h file should
+> include the headers that declare the stuff they're using.
 
-Signed-off-by: Madhumitha Prabakaran <madhumithabiw@gmail.com>
----
- drivers/staging/greybus/audio_gb.c | 67 +++++++++++++++++++-----------
- 1 file changed, 42 insertions(+), 25 deletions(-)
+99.99% of kernel if not more doesn't follow this rule pedantically.
+We have to have a compromise between what is guaranteed and what is not.
 
-diff --git a/drivers/staging/greybus/audio_gb.c b/drivers/staging/greybus/audio_gb.c
-index 9d8994fdb41a..a48ddadd6f1e 100644
---- a/drivers/staging/greybus/audio_gb.c
-+++ b/drivers/staging/greybus/audio_gb.c
-@@ -8,39 +8,56 @@
- #include <linux/greybus.h>
- #include "audio_codec.h"
- 
--/* TODO: Split into separate calls */
--int gb_audio_gb_get_topology(struct gb_connection *connection,
--			     struct gb_audio_topology **topology)
-+int gb_audio_gb_get_topology_size(struct gb_connection *connection, u16 *size)
- {
--	struct gb_audio_get_topology_size_response size_resp;
--	struct gb_audio_topology *topo;
--	u16 size;
--	int ret;
-+    struct gb_audio_get_topology_size_response size_resp;
-+    int ret;
- 
--	ret = gb_operation_sync(connection, GB_AUDIO_TYPE_GET_TOPOLOGY_SIZE,
--				NULL, 0, &size_resp, sizeof(size_resp));
--	if (ret)
--		return ret;
-+    ret = gb_operation_sync(connection, GB_AUDIO_TYPE_GET_TOPOLOGY_SIZE,
-+                            NULL, 0, &size_resp, sizeof(size_resp));
-+    if (ret)
-+        return ret;
- 
--	size = le16_to_cpu(size_resp.size);
--	if (size < sizeof(*topo))
--		return -ENODATA;
-+    *size = le16_to_cpu(size_resp.size);
-+    return 0;
-+}
- 
--	topo = kzalloc(size, GFP_KERNEL);
--	if (!topo)
--		return -ENOMEM;
-+struct gb_audio_topology *gb_audio_gb_alloc_topology(u16 size)
-+{
-+    struct gb_audio_topology *topo;
- 
--	ret = gb_operation_sync(connection, GB_AUDIO_TYPE_GET_TOPOLOGY, NULL, 0,
--				topo, size);
--	if (ret) {
--		kfree(topo);
--		return ret;
--	}
-+    if (size < sizeof(struct gb_audio_topology))
-+        return NULL;
- 
--	*topology = topo;
-+    topo = kzalloc(size, GFP_KERNEL);
-+    return topo;
-+}
- 
--	return 0;
-+int gb_audio_gb_get_topology(struct gb_connection *connection,
-+                             struct gb_audio_topology **topology)
-+{
-+    u16 size;
-+    int ret;
-+
-+    ret = gb_audio_gb_get_topology_size(connection, &size);
-+    if (ret)
-+        return ret;
-+
-+    *topology = gb_audio_gb_alloc_topology(size);
-+    if (!*topology)
-+        return -ENOMEM;
-+
-+    ret = gb_operation_sync(connection, GB_AUDIO_TYPE_GET_TOPOLOGY,
-+                            NULL, 0, *topology, size);
-+    if (ret) {
-+        kfree(*topology);
-+        *topology = NULL;
-+        return ret;
-+    }
-+
-+    return 0;
- }
-+
- EXPORT_SYMBOL_GPL(gb_audio_gb_get_topology);
- 
- int gb_audio_gb_get_control(struct gb_connection *connection,
+For example, I'm pretty sure the types.h will always include compiler*.h.
+
+> So if string_helpers.h magically stops referring to anything from string.h,
+> one should be allowed to stop including string.h from string_helpers.h.
+
+That's how agreements work. We may agree to guarantee such inclusion or
+not. The kernel headers as of today is a complete mess (refer to the
+Ingo's 2k+ patch series). But still, some order / agreement is good to have.
+
+> Sure, those two may forever be so intertwined that it never happens, but
+> one really can't maintain some matrix of "X always includes Y so if you
+> include X you don't have to include Y" in one's head.
+
+Somebody should do that at some point, otherwise it becomes even more mess.
+
+If you want your way, iwyu should be part of the kernel build. And be prepared
+for dozens of headers to be added to the every single C file in the kernel.
+
 -- 
-2.25.1
+With Best Regards,
+Andy Shevchenko
+
 
