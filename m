@@ -2,22 +2,22 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B10CA76F787
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 04:10:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D5AE76F788
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 04:10:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233117AbjHDCKo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Aug 2023 22:10:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36454 "EHLO
+        id S233160AbjHDCKs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Aug 2023 22:10:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36456 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231953AbjHDCKW (ORCPT
+        with ESMTP id S232164AbjHDCKW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 3 Aug 2023 22:10:22 -0400
-Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB8244494;
-        Thu,  3 Aug 2023 19:10:21 -0700 (PDT)
-Received: from kwepemm600003.china.huawei.com (unknown [172.30.72.56])
-        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4RH8HW2BhWzJrSH;
-        Fri,  4 Aug 2023 10:07:35 +0800 (CST)
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B1B34488;
+        Thu,  3 Aug 2023 19:10:22 -0700 (PDT)
+Received: from kwepemm600003.china.huawei.com (unknown [172.30.72.55])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4RH8KR271wzrS4w;
+        Fri,  4 Aug 2023 10:09:15 +0800 (CST)
 Received: from localhost.localdomain (10.67.174.95) by
  kwepemm600003.china.huawei.com (7.193.23.202) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
@@ -31,9 +31,9 @@ To:     <peterz@infradead.org>, <mingo@redhat.com>, <acme@kernel.org>,
         <ak@linux.intel.com>, <anshuman.khandual@arm.com>,
         <linux-kernel@vger.kernel.org>, <linux-perf-users@vger.kernel.org>
 CC:     <yangjihong1@huawei.com>
-Subject: [PATCH v5 6/7] perf test: Add test case for record sideband events
-Date:   Fri, 4 Aug 2023 02:07:40 +0000
-Message-ID: <20230804020741.99806-7-yangjihong1@huawei.com>
+Subject: [PATCH v5 7/7] perf test: Add perf_event_attr test for record selected CPUs exclude_user
+Date:   Fri, 4 Aug 2023 02:07:41 +0000
+Message-ID: <20230804020741.99806-8-yangjihong1@huawei.com>
 X-Mailer: git-send-email 2.30.GIT
 In-Reply-To: <20230804020741.99806-1-yangjihong1@huawei.com>
 References: <20230804020741.99806-1-yangjihong1@huawei.com>
@@ -45,80 +45,77 @@ X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
  kwepemm600003.china.huawei.com (7.193.23.202)
 X-CFilter-Loop: Reflected
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add a new test case to record sideband events for all CPUs when tracing
-selected CPUs
+If all (non-dummy) evsel have exclude_user, system_wide sideband is not
+needed. Add this test scenario.
 
 Test result:
 
-  # ./perf test list 2>&1 | grep 'perf record sideband tests'
-   95: perf record sideband tests
-  # ./perf test 95
-   95: perf record sideband tests                                      : Ok
+  # ./perf test list 2>&1 | grep 'Setup struct perf_event_attr'
+   17: Setup struct perf_event_attr
+  # ./perf test 17 -v
+   17: Setup struct perf_event_attr                                    :
+  --- start ---
+  test child forked, pid 720198
+  <SNIP>
+  running './tests/attr/test-record-C0-all-kernel'
+  <SNIP>
+  test child finished with 0
+  ---- end ----
+  Setup struct perf_event_attr: Ok
 
 Signed-off-by: Yang Jihong <yangjihong1@huawei.com>
 ---
- tools/perf/tests/shell/record_sideband.sh | 44 +++++++++++++++++++++++
- 1 file changed, 44 insertions(+)
- create mode 100755 tools/perf/tests/shell/record_sideband.sh
+ .../perf/tests/attr/test-record-C0-all-kernel | 32 +++++++++++++++++++
+ 1 file changed, 32 insertions(+)
+ create mode 100644 tools/perf/tests/attr/test-record-C0-all-kernel
 
-diff --git a/tools/perf/tests/shell/record_sideband.sh b/tools/perf/tests/shell/record_sideband.sh
-new file mode 100755
-index 000000000000..2ecf00011cb1
+diff --git a/tools/perf/tests/attr/test-record-C0-all-kernel b/tools/perf/tests/attr/test-record-C0-all-kernel
+new file mode 100644
+index 000000000000..2d7549277c1e
 --- /dev/null
-+++ b/tools/perf/tests/shell/record_sideband.sh
-@@ -0,0 +1,44 @@
-+#!/bin/sh
-+# perf record sideband tests
-+# SPDX-License-Identifier: GPL-2.0
++++ b/tools/perf/tests/attr/test-record-C0-all-kernel
+@@ -0,0 +1,32 @@
++[config]
++command = record
++args    = --no-bpf-event --all-kernel -C 0 kill >/dev/null 2>&1
++ret     = 1
 +
-+set -e
++[event:base-record]
++cpu=0
 +
-+err=0
-+perfdata=$(mktemp /tmp/__perf_test.perf.data.XXXXX)
++# no enable on exec for CPU attached
++enable_on_exec=0
 +
-+can_cpu_wide()
-+{
-+    if ! perf record -o ${perfdata} -BN --no-bpf-event -C $1 true 2>&1 >/dev/null
-+    then
-+        echo "record sideband test [Skipped cannot record cpu$1]"
-+        err=2
-+    fi
++# PERF_SAMPLE_IP | PERF_SAMPLE_TID | PERF_SAMPLE_TIME |
++# PERF_SAMPLE_PERIOD | PERF_SAMPLE_IDENTIFIER
++# + PERF_SAMPLE_CPU added by -C 0
++sample_type=65927
 +
-+    rm -f ${perfdata}
-+    return $err
-+}
++# Dummy event handles mmaps, comm and task.
++mmap=0
++comm=0
++task=0
 +
-+test_system_wide_tracking()
-+{
-+    # Need CPU 0 and CPU 1
-+    can_cpu_wide 0 || return 0
-+    can_cpu_wide 1 || return 0
++# exclude_user for all-kernel option
++exclude_user=1
 +
-+    # Record on CPU 0 a task running on CPU 1
-+    perf record -BN --no-bpf-event -o ${perfdata} -C 0 -- taskset --cpu-list 1 true
++[event:system-wide-dummy]
 +
-+    # Should get MMAP events from CPU 1
-+    mmap_cnt=`perf script -i ${perfdata} --show-mmap-events -C 1 2>/dev/null | grep MMAP | wc -l`
++# system_wide is not need for all (non-dummy) events have exclude_user
++cpu=0
 +
-+    rm -f ${perfdata}
-+
-+    if [ ${mmap_cnt} -gt 0 ] ; then
-+        return 0
-+    fi
-+
-+    echo "Failed to record MMAP events on CPU 1 when tracing CPU 0"
-+    return 1
-+}
-+
-+test_system_wide_tracking
++# exclude_user for all-kernel option
++exclude_user=1
++exclude_kernel=0
 -- 
 2.30.GIT
 
