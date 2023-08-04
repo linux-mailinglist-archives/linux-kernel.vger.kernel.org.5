@@ -2,29 +2,29 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 650A076FF07
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 12:55:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9962676FF0A
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 12:56:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231724AbjHDKzR convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 4 Aug 2023 06:55:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51812 "EHLO
+        id S231719AbjHDK4l convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 4 Aug 2023 06:56:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55168 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231289AbjHDKyz (ORCPT
+        with ESMTP id S231185AbjHDK4T (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Aug 2023 06:54:55 -0400
+        Fri, 4 Aug 2023 06:56:19 -0400
 Received: from eu-smtp-delivery-151.mimecast.com (eu-smtp-delivery-151.mimecast.com [185.58.86.151])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83D2E4ECD
-        for <linux-kernel@vger.kernel.org>; Fri,  4 Aug 2023 03:52:32 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 690896A7D
+        for <linux-kernel@vger.kernel.org>; Fri,  4 Aug 2023 03:53:52 -0700 (PDT)
 Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) by
  relay.mimecast.com with ESMTP with both STARTTLS and AUTH (version=TLSv1.2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- uk-mta-221-PzOE0VZdOf6Jz9cwnrWqEA-1; Fri, 04 Aug 2023 11:51:01 +0100
-X-MC-Unique: PzOE0VZdOf6Jz9cwnrWqEA-1
+ uk-mta-317-u60WpdTSM-qAirDp1yuD6g-1; Fri, 04 Aug 2023 11:53:35 +0100
+X-MC-Unique: u60WpdTSM-qAirDp1yuD6g-1
 Received: from AcuMS.Aculab.com (10.202.163.6) by AcuMS.aculab.com
  (10.202.163.6) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Fri, 4 Aug
- 2023 11:50:59 +0100
+ 2023 11:53:33 +0100
 Received: from AcuMS.Aculab.com ([::1]) by AcuMS.aculab.com ([::1]) with mapi
- id 15.00.1497.048; Fri, 4 Aug 2023 11:50:59 +0100
+ id 15.00.1497.048; Fri, 4 Aug 2023 11:53:33 +0100
 From:   David Laight <David.Laight@ACULAB.COM>
 To:     "'linux-kernel@vger.kernel.org'" <linux-kernel@vger.kernel.org>,
         "'Andy Shevchenko'" <andriy.shevchenko@linux.intel.com>,
@@ -32,13 +32,15 @@ To:     "'linux-kernel@vger.kernel.org'" <linux-kernel@vger.kernel.org>,
         "'Matthew Wilcox (Oracle)'" <willy@infradead.org>,
         'Christoph Hellwig' <hch@infradead.org>,
         "'Jason A. Donenfeld'" <Jason@zx2c4.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: [PATCH next v3 0/5] minmax: Relax type checks in min() and max().
-Thread-Topic: [PATCH next v3 0/5] minmax: Relax type checks in min() and
- max().
-Thread-Index: AdnGwQ6IGYkn0IjZSjuTaOSyeQI0Uw==
-Date:   Fri, 4 Aug 2023 10:50:59 +0000
-Message-ID: <01e3e09005e9434b8f558a893a47c053@AcuMS.aculab.com>
+        'Linus Torvalds' <torvalds@linux-foundation.org>
+Subject: [PATCH v3 1/5] minmax: Add min_unsigned(a, b) and max_unsigned(a, b)
+Thread-Topic: [PATCH v3 1/5] minmax: Add min_unsigned(a, b) and
+ max_unsigned(a, b)
+Thread-Index: AdnGwea6QKJE/BTwROarSQggyisG+w==
+Date:   Fri, 4 Aug 2023 10:53:33 +0000
+Message-ID: <e91e9dab8c094e7c8f7c8bc39eea5d80@AcuMS.aculab.com>
+References: <01e3e09005e9434b8f558a893a47c053@AcuMS.aculab.com>
+In-Reply-To: <01e3e09005e9434b8f558a893a47c053@AcuMS.aculab.com>
 Accept-Language: en-GB, en-US
 X-MS-Has-Attach: 
 X-MS-TNEF-Correlator: 
@@ -59,79 +61,52 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The min() (etc) functions in minmax.h require that the arguments have
-exactly the same types. This was probably added after an 'accident'
-where a negative value got converted to a large unsigned value.
+These can be used when min()/max() errors a signed v unsigned
+compare when the signed value is known to be non-negative.
 
-However when the type check fails, rather than look at the types and
-fix the type of a variable/constant, everyone seems to jump on min_t().
-In reality min_t() ought to be rare - when something unusual is being
-done, not normality.
+Unlike min_t(some_unsigned_type, a, b) min_unsigned() will never
+mask off high bits if an inappropriate type is selected.
 
-A quick grep shows 5734 min() and 4597 min_t().
-Having the casts on almost half of the calls shows that something
-is clearly wrong.
+The '+ 0u + 0ul + 0ull' may look strange.
+The '+ 0u' is needed for 'signed int' on 64bit systems.
+The '+ 0ul' is needed for 'signed long' on 32bit systems.
+The '+ 0ull' is needed for 'signed long long'.
 
-If the wrong type is picked (and it is far too easy to pick the type
-of the result instead of the larger input) then significant bits can
-get discarded.
-Pretty much the worst example is in the derfved clamp_val(), consider:
-        unsigned char x = 200u;
-        y = clamp_val(x, 10u, 300u);
+Signed-off-by: David Laight <david.laight@aculab.com>
+---
+v3: No change.
+v2: Updated commit message.
+ include/linux/minmax.h | 17 +++++++++++++++++
+ 1 file changed, 17 insertions(+)
 
-I also suspect that many of the min_t(u16, ...) are actually wrong.
-For example copy_data() in printk_ringbuffer.c contains:
-        data_size = min_t(u16, buf_size, len);
-Here buf_size is 'unsigned int' and len 'u16', pass a 64k buffer
-(can you prove that doesn't happen?) and no data is returned.
-
-The only reason that most of the min_t() are 'fine' is that pretty
-much all the values in the kernel are between 0 and INT_MAX.
-
-Patch 1 adds min_unsigned(), this uses integer promotions to convert
-both arguments to 'unsigned long long'. It can be used to compare a
-signed type that is known to contain a non-negative value with an
-unsigned type. The compiler typically optimises it all away.
-Added first so that it can be referred to in patch 2.
-
-Patch 2 replaces the 'same type' check with a 'same signedness' one.
-This makes min(unsigned_int_var, sizeof()) be ok.
-The error message is also improved and will contain the expanded
-form of both arguments (useful for seeing how constants are defined).
-
-Patch 3 just fixes some whitespace.
-
-Patch 4 allows comparisons of 'unsigned char' and 'unsigned short'
-to signed types. The integer promotion rules convert them both
-to 'signed int' prior to the comparison so they can never cause
-a negative value be converted to a large positive one.
-
-Patch 5 is slightly more contentious (Linus may not like it!)
-effectively adds an (int) cast to all constants between 0 and MAX_INT.
-This makes min(signed_int_var, sizeof()) be ok.
-
-With all the patches applied pretty much all the min_t() could be
-replaced by min(), and most of the rest by min_unsigned().
-However they all need careful inspection due to code like:
-        sz = min_t(unsigned char, sz - 1, LIM - 1) + 1;
-which converts 0 to LIM.
-
-v3 Fix more issues found by the build robot
-v2 Fixes some issues found by the kernel build robot.
-No functional changes.
-
-David Laight (5):
-  minmax: Add min_unsigned(a, b) and max_unsigned(a, b)
-  minmax: Allow min()/max()/clamp() if the arguments have the same
-    signedness.
-  Fix indentation of __cmp_once() and __clamp_once()
-  Allow comparisons of 'int' against 'unsigned char/short'.
-  Relax check to allow comparison between int and small unsigned
-    constants.
-
- include/linux/minmax.h | 103 +++++++++++++++++++++++++++--------------
- 1 file changed, 68 insertions(+), 35 deletions(-)
-
+diff --git a/include/linux/minmax.h b/include/linux/minmax.h
+index 396df1121bff..531860e9cc55 100644
+--- a/include/linux/minmax.h
++++ b/include/linux/minmax.h
+@@ -73,6 +73,23 @@
+  */
+ #define max(x, y)	__careful_cmp(x, y, >)
+ 
++/**
++ * min_unsigned - return minimum of two non-negative values
++ *   Signed types are zero extended to match a larger unsigned type.
++ * @x: first value
++ * @y: second value
++ */
++#define min_unsigned(x, y)	\
++	__careful_cmp((x) + 0u + 0ul + 0ull, (y) + 0u + 0ul + 0ull, <)
++
++/**
++ * max_unsigned - return maximum of two non-negative values
++ * @x: first value
++ * @y: second value
++ */
++#define max_unsigned(x, y)	\
++	__careful_cmp((x) + 0u + 0ul + 0ull, (y) + 0u + 0ul + 0ull, >)
++
+ /**
+  * min3 - return minimum of three values
+  * @x: first value
 -- 
 2.17.1
 
