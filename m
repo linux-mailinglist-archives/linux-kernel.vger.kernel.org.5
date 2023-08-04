@@ -2,83 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 926D076FBDC
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 10:23:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EA0C876FBE2
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 10:23:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233931AbjHDIXN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Aug 2023 04:23:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57108 "EHLO
+        id S234019AbjHDIXr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Aug 2023 04:23:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57584 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234500AbjHDIXB (ORCPT
+        with ESMTP id S234500AbjHDIXl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Aug 2023 04:23:01 -0400
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 769DFAC
-        for <linux-kernel@vger.kernel.org>; Fri,  4 Aug 2023 01:23:00 -0700 (PDT)
-Received: from canpemm500002.china.huawei.com (unknown [172.30.72.54])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4RHJXk3LFLztRsM;
-        Fri,  4 Aug 2023 16:19:34 +0800 (CST)
-Received: from [10.174.151.185] (10.174.151.185) by
- canpemm500002.china.huawei.com (7.192.104.244) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.27; Fri, 4 Aug 2023 16:22:57 +0800
-Subject: Re: [PATCH] mm: no need to export mm_kobj
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        <linux-mm@kvack.org>
-CC:     <linux-kernel@vger.kernel.org>, Mike Rapoport <rppt@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>
-References: <2023080436-algebra-cabana-417d@gregkh>
-From:   Miaohe Lin <linmiaohe@huawei.com>
-Message-ID: <dbcc4b24-050d-d08b-772d-a24ffbf38dc1@huawei.com>
-Date:   Fri, 4 Aug 2023 16:22:57 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        Fri, 4 Aug 2023 04:23:41 -0400
+Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06F7A4693
+        for <linux-kernel@vger.kernel.org>; Fri,  4 Aug 2023 01:23:40 -0700 (PDT)
+Received: by mail-pl1-x633.google.com with SMTP id d9443c01a7336-1bbc7b2133fso12776675ad.1
+        for <linux-kernel@vger.kernel.org>; Fri, 04 Aug 2023 01:23:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ventanamicro.com; s=google; t=1691137419; x=1691742219;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=U1iCEOYYU/TuYkpsVb8VVtB172iQ0uWVvB+JeREIxpo=;
+        b=mNBCtcy+pGxfsWGwe4DsVuDy0NZiV99ZQ4y9rP1aAfOeel/kt5pokMEdhS81rp7emX
+         4q6NJxqkNJzQZR5RnuPibbIx0v6AbybMa3VEwgggL6fAkUhefeZhI2/Gz4Q4xac1Hu6h
+         8MjfYa3JyEeMVEGBK5ZP+wO1LM8UPpCmHNXVAQxffB8VxXFoW2uSKKYQk2m9NR7CScok
+         jix7R8iUOQ9P18rXExjcm9a74uPR2ME3+6gSWvBwejujKQMYqjSyJTaUsKXd3tTT7Ktp
+         Ua49YNuBvi/++1M98fkf1zd8ApIbK50kwdYoWSkV7oJpm/agaVJjM+EgS7/TxqGrsKvq
+         deDw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691137419; x=1691742219;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=U1iCEOYYU/TuYkpsVb8VVtB172iQ0uWVvB+JeREIxpo=;
+        b=HgMXrEd68e9hbdAER7zKXuMnG6uiZkJD+Edgs0uVzgyPoqs8ogdR2xC9DL+XcFZm1g
+         rZqMhbYdN9TNhDPPRXrvHb1wHidOk4FGpRdnTz9hHc+dHvcWwbmUzRuQRtjzFKhfvOJh
+         igc9VBgzp8r8uHKVjG0PRTLAQacop/kfPZhJXDOhRykDLCzMB7UGQVw8Og4zuSQ8U0fa
+         QkhTgaRZiFoo9gxtbUe/QX5b0HAv48/YO3OOIPOsJoZCZEGGrPKpBiOXsTdsmxKlUOb8
+         /k3Fh7cEylG89rrid0F5Ld2Qia2q+4t7HSSPx+NaE1g2GuwGFV6IkcGljaTx5yRqZsSn
+         pI3A==
+X-Gm-Message-State: AOJu0Yxii/B0bFunIuUbpP2+ra38Ex+S2S8OdoIW15MfG1iqJF5UdvVd
+        oydARXbEWGIV4D5qY5G8FGfGBA==
+X-Google-Smtp-Source: AGHT+IErTrIrbgFzVl3JfKafZGO1uGvh7W7gOxEf+8QZhTVoODvh18JAAUR9r8v3VTYouOFQkb7gqw==
+X-Received: by 2002:a17:902:e5cb:b0:1bb:5b88:73da with SMTP id u11-20020a170902e5cb00b001bb5b8873damr906032plf.61.1691137419493;
+        Fri, 04 Aug 2023 01:23:39 -0700 (PDT)
+Received: from sunil-laptop ([106.51.190.143])
+        by smtp.gmail.com with ESMTPSA id s13-20020a170902b18d00b001ac6b926621sm1138810plr.292.2023.08.04.01.23.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 04 Aug 2023 01:23:39 -0700 (PDT)
+Date:   Fri, 4 Aug 2023 13:53:26 +0530
+From:   Sunil V L <sunilvl@ventanamicro.com>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     linux-doc@vger.kernel.org, linux-riscv@lists.infradead.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-acpi@vger.kernel.org, linux-pci@vger.kernel.org,
+        Jonathan Corbet <corbet@lwn.net>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        "Rafael J . Wysocki" <rafael@kernel.org>,
+        Len Brown <lenb@kernel.org>,
+        Daniel Scally <djrscally@gmail.com>,
+        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Anup Patel <anup@brainfault.org>,
+        Marc Zyngier <maz@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Robert Moore <robert.moore@intel.com>,
+        Haibo Xu <haibo1.xu@intel.com>,
+        Andrew Jones <ajones@ventanamicro.com>,
+        Conor Dooley <conor.dooley@microchip.com>,
+        Atish Kumar Patra <atishp@rivosinc.com>
+Subject: Re: [RFC PATCH v1 05/21] arm64: PCI: Migrate ACPI related functions
+ to pci-acpi.c
+Message-ID: <ZMy1fgzCSICftyWz@sunil-laptop>
+References: <20230803175916.3174453-1-sunilvl@ventanamicro.com>
+ <20230803175916.3174453-6-sunilvl@ventanamicro.com>
+ <ZMySSmy0sNl7Q+rh@smile.fi.intel.com>
 MIME-Version: 1.0
-In-Reply-To: <2023080436-algebra-cabana-417d@gregkh>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.151.185]
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
- canpemm500002.china.huawei.com (7.192.104.244)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZMySSmy0sNl7Q+rh@smile.fi.intel.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023/8/4 14:43, Greg Kroah-Hartman wrote:
-> There are no modules using mm_kobj, so do not export it.
-
-Yes, there's only in-kernel user left.
-
-Reviewed-by: Miaohe Lin <linmiaohe@huawei.com>
-
-Thanks.
-
+On Fri, Aug 04, 2023 at 08:53:14AM +0300, Andy Shevchenko wrote:
+> On Thu, Aug 03, 2023 at 11:29:00PM +0530, Sunil V L wrote:
+> > The functions defined in arm64 for ACPI support are required
+> > for RISC-V also. To avoid duplication, copy these functions
+> > to common location.
 > 
-> Cc: Mike Rapoport <rppt@kernel.org>
-> Cc: Andrew Morton <akpm@linux-foundation.org>
-> Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> ---
->  mm/mm_init.c | 1 -
->  1 file changed, 1 deletion(-)
+> ...
 > 
-> diff --git a/mm/mm_init.c b/mm/mm_init.c
-> index a1963c3322af..1c9d6f428906 100644
-> --- a/mm/mm_init.c
-> +++ b/mm/mm_init.c
-> @@ -154,7 +154,6 @@ early_param("mminit_loglevel", set_mminit_loglevel);
->  #endif /* CONFIG_DEBUG_MEMORY_INIT */
->  
->  struct kobject *mm_kobj;
-> -EXPORT_SYMBOL_GPL(mm_kobj);
->  
->  #ifdef CONFIG_SMP
->  s32 vm_committed_as_batch = 32;
+> >  }
+> > +
 > 
+> Stray change.
+> 
+Let me remove this in next version.
 
+> >  arch_initcall(acpi_pci_init);
+> > +
+> > +#if defined(CONFIG_ARM64)
+> 
+> ...
+> 
+> > +	cfg = pci_ecam_create(dev, &cfgres, bus_res, ecam_ops);
+> > +	if (IS_ERR(cfg)) {
+> > +		dev_err(dev, "%04x:%pR error %ld mapping ECAM\n", seg, bus_res,
+> > +			PTR_ERR(cfg));
+> > +		return NULL;
+> > +	}
+> > +
+> > +	return cfg;
+> 
+> Can be
+> 
+> 	cfg = pci_ecam_create(dev, &cfgres, bus_res, ecam_ops);
+> 	ret = PTR_ERR_OR_ZERO(cfg);
+> 	if (ret) {
+> 		dev_err(dev, "%04x:%pR error %d mapping ECAM\n", seg, bus_res, ret);
+> 
+> but as far as I understand this is in the original code like this, so consider
+> as a suggestion for further cleanups.
+>
+
+Good suggestion!. Sure, we can cleanup as a follow on patch.
+
+Thanks,
+Sunil 
