@@ -2,67 +2,47 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 451D576FA6C
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 08:50:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 51A8576FA49
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 08:41:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233875AbjHDGum (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Aug 2023 02:50:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46054 "EHLO
+        id S233646AbjHDGlH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Aug 2023 02:41:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40184 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233743AbjHDGuh (ORCPT
+        with ESMTP id S233740AbjHDGko (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Aug 2023 02:50:37 -0400
-Received: from pegase1.c-s.fr (pegase1.c-s.fr [93.17.236.30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2DC614687;
-        Thu,  3 Aug 2023 23:50:25 -0700 (PDT)
-Received: from localhost (mailhub3.si.c-s.fr [192.168.12.233])
-        by localhost (Postfix) with ESMTP id 4RHGKl1pwrz9t1l;
-        Fri,  4 Aug 2023 08:39:55 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from pegase1.c-s.fr ([192.168.12.234])
-        by localhost (pegase1.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id HBTfEkRAy0hd; Fri,  4 Aug 2023 08:39:55 +0200 (CEST)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase1.c-s.fr (Postfix) with ESMTP id 4RHGKc5dcgz9t1m;
-        Fri,  4 Aug 2023 08:39:48 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id BC9ED8B763;
-        Fri,  4 Aug 2023 08:39:48 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id AZhLvBRveey1; Fri,  4 Aug 2023 08:39:48 +0200 (CEST)
-Received: from PO20335.IDSI0.si.c-s.fr (unknown [192.168.232.144])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 46DCA8B779;
-        Fri,  4 Aug 2023 08:39:48 +0200 (CEST)
-Received: from PO20335.IDSI0.si.c-s.fr (localhost [127.0.0.1])
-        by PO20335.IDSI0.si.c-s.fr (8.17.1/8.16.1) with ESMTPS id 3746dhxu629372
-        (version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=NOT);
-        Fri, 4 Aug 2023 08:39:43 +0200
-Received: (from chleroy@localhost)
-        by PO20335.IDSI0.si.c-s.fr (8.17.1/8.17.1/Submit) id 3746dhSo629371;
-        Fri, 4 Aug 2023 08:39:43 +0200
-X-Authentication-Warning: PO20335.IDSI0.si.c-s.fr: chleroy set sender to christophe.leroy@csgroup.eu using -f
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-To:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Pantelis Antoniou <pantelis.antoniou@gmail.com>,
-        Eric Dumazet <edumazet@google.com>,
-        Paolo Abeni <pabeni@redhat.com>
-Cc:     Christophe Leroy <christophe.leroy@csgroup.eu>,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org
-Subject: [PATCH net-next v1 10/10] net: fs_enet: Use cpm_muram_xxx() functions instead of cpm_dpxxx() macros
-Date:   Fri,  4 Aug 2023 08:39:34 +0200
-Message-ID: <c8b8fb0a60ce65df7840dc78de09fa395696f172.1691130766.git.christophe.leroy@csgroup.eu>
-X-Mailer: git-send-email 2.41.0
-In-Reply-To: <cover.1691130766.git.christophe.leroy@csgroup.eu>
-References: <cover.1691130766.git.christophe.leroy@csgroup.eu>
+        Fri, 4 Aug 2023 02:40:44 -0400
+Received: from out30-112.freemail.mail.aliyun.com (out30-112.freemail.mail.aliyun.com [115.124.30.112])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E83A46B1;
+        Thu,  3 Aug 2023 23:40:34 -0700 (PDT)
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R311e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045168;MF=guangguan.wang@linux.alibaba.com;NM=1;PH=DS;RN=14;SR=0;TI=SMTPD_---0Vp.HeWq_1691131229;
+Received: from 30.221.100.251(mailfrom:guangguan.wang@linux.alibaba.com fp:SMTPD_---0Vp.HeWq_1691131229)
+          by smtp.aliyun-inc.com;
+          Fri, 04 Aug 2023 14:40:30 +0800
+Message-ID: <3e761be7-c441-4629-3539-f067c6d8c1e8@linux.alibaba.com>
+Date:   Fri, 4 Aug 2023 14:40:27 +0800
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1691131164; l=2234; i=christophe.leroy@csgroup.eu; s=20211009; h=from:subject:message-id; bh=h5ydkcduy6lioiqJjfCSwkFEzxsJekIZbyhS9VYCwaM=; b=d/uqUMLaKbwiPSJ+r4dVfYXqS3P2GdU/kvQAV4K8Bpeol5uZP8+X9gbgRac+mewA/PN4HczRe 3qE9pv/blThChkze1IgS009owd0Tb49pk1VwnakzQ/u3jzipj6z4bCY
-X-Developer-Key: i=christophe.leroy@csgroup.eu; a=ed25519; pk=HIzTzUj91asvincQGOFx6+ZF5AoUuP9GdOtQChs7Mm0=
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.14.0
+Subject: Re: [RFC PATCH net-next 4/6] net/smc: support max connections per lgr
+ negotiation
+Content-Language: en-US
+To:     Simon Horman <horms@kernel.org>
+Cc:     wenjia@linux.ibm.com, jaka@linux.ibm.com, kgraul@linux.ibm.com,
+        tonylu@linux.alibaba.com, davem@davemloft.net, edumazet@google.com,
+        kuba@kernel.org, pabeni@redhat.com, alibuda@linux.alibaba.com,
+        guwen@linux.alibaba.com, linux-s390@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20230803132422.6280-1-guangguan.wang@linux.alibaba.com>
+ <20230803132422.6280-5-guangguan.wang@linux.alibaba.com>
+ <ZMvqJ6FYR6gWS+ZK@kernel.org>
+From:   Guangguan Wang <guangguan.wang@linux.alibaba.com>
+In-Reply-To: <ZMvqJ6FYR6gWS+ZK@kernel.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-10.0 required=5.0 tests=BAYES_00,
+        ENV_AND_HDR_SPF_MATCH,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -70,62 +50,78 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-cpm_dpxxx() macros are now always referring to cpm_muram_xxx() fonctions
-directly since commit 3dd82a1ea724 ("[POWERPC] CPM: Always use new
-binding.")
+Got it.
+I will remove the check in the next version.
 
-Use cpm_muram_xxx() functions directly so that the cpm_dpxxx() macros
-can be removed in the near future.
+Thanks,
+Guangguan Wang
 
-Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
----
- drivers/net/ethernet/freescale/fs_enet/mac-fcc.c | 2 +-
- drivers/net/ethernet/freescale/fs_enet/mac-scc.c | 8 ++++----
- 2 files changed, 5 insertions(+), 5 deletions(-)
-
-diff --git a/drivers/net/ethernet/freescale/fs_enet/mac-fcc.c b/drivers/net/ethernet/freescale/fs_enet/mac-fcc.c
-index ce63fd56df89..d903a9012db0 100644
---- a/drivers/net/ethernet/freescale/fs_enet/mac-fcc.c
-+++ b/drivers/net/ethernet/freescale/fs_enet/mac-fcc.c
-@@ -105,7 +105,7 @@ static int do_pd_setup(struct fs_enet_private *fep)
- 		goto out_ep;
- 
- 	fep->fcc.mem = (void __iomem *)cpm2_immr;
--	fpi->dpram_offset = cpm_dpalloc(128, 32);
-+	fpi->dpram_offset = cpm_muram_alloc(128, 32);
- 	if (IS_ERR_VALUE(fpi->dpram_offset)) {
- 		ret = fpi->dpram_offset;
- 		goto out_fcccp;
-diff --git a/drivers/net/ethernet/freescale/fs_enet/mac-scc.c b/drivers/net/ethernet/freescale/fs_enet/mac-scc.c
-index 66d40da5cde0..a64cb6270515 100644
---- a/drivers/net/ethernet/freescale/fs_enet/mac-scc.c
-+++ b/drivers/net/ethernet/freescale/fs_enet/mac-scc.c
-@@ -133,13 +133,13 @@ static int allocate_bd(struct net_device *dev)
- 	struct fs_enet_private *fep = netdev_priv(dev);
- 	const struct fs_platform_info *fpi = fep->fpi;
- 
--	fep->ring_mem_addr = cpm_dpalloc((fpi->tx_ring + fpi->rx_ring) *
--					 sizeof(cbd_t), 8);
-+	fep->ring_mem_addr = cpm_muram_alloc((fpi->tx_ring + fpi->rx_ring) *
-+					     sizeof(cbd_t), 8);
- 	if (IS_ERR_VALUE(fep->ring_mem_addr))
- 		return -ENOMEM;
- 
- 	fep->ring_base = (void __iomem __force*)
--		cpm_dpram_addr(fep->ring_mem_addr);
-+		cpm_muram_addr(fep->ring_mem_addr);
- 
- 	return 0;
- }
-@@ -149,7 +149,7 @@ static void free_bd(struct net_device *dev)
- 	struct fs_enet_private *fep = netdev_priv(dev);
- 
- 	if (fep->ring_base)
--		cpm_dpfree(fep->ring_mem_addr);
-+		cpm_muram_free(fep->ring_mem_addr);
- }
- 
- static void cleanup_data(struct net_device *dev)
--- 
-2.41.0
-
+On 2023/8/4 01:55, Simon Horman wrote:
+> On Thu, Aug 03, 2023 at 09:24:20PM +0800, Guangguan Wang wrote:
+>> Support max connections per lgr negotiation for SMCR v2.1,
+>> which is one of smc v2.1 features.
+>>
+>> Signed-off-by: Guangguan Wang <guangguan.wang@linux.alibaba.com>
+>> Reviewed-by: Tony Lu <tonylu@linux.alibaba.com>
+> 
+> ...
+> 
+> Hi Guangguan Wang,
+> 
+>>  int smc_clc_cli_v2x_features_validate(struct smc_clc_first_contact_ext *fce,
+>>  				      struct smc_init_info *ini)
+>>  {
+>> +	struct smc_clc_first_contact_ext_v2x *fce_v2x =
+>> +		(struct smc_clc_first_contact_ext_v2x *)fce;
+>> +
+>>  	if (ini->release_ver < SMC_RELEASE_1)
+>>  		return 0;
+>>  
+>> +	if (!ini->is_smcd) {
+>> +		if (fce_v2x->max_conns > SMC_CONN_PER_LGR_MAX)
+> 
+> The type of the max_cons field is u8.
+> The value of SMC_CONN_PER_LGR_MAX is 255 (in another patch of this series),
+> the maximum value that the max_cons field can be assigned.
+> So it seems that this condition cannot ever be true.
+> 
+> As flagged by Smatch.
+> 
+>> +			return SMC_CLC_DECL_MAXCONNERR;
+>> +		ini->max_conns = fce_v2x->max_conns;
+>> +	}
+>> +
+>>  	return 0;
+>>  }
+> 
+> ...
+> 
+>> diff --git a/net/smc/smc_clc.h b/net/smc/smc_clc.h
+> 
+> ...
+> 
+>> @@ -236,7 +238,8 @@ struct smc_clc_first_contact_ext {
+>>  
+>>  struct smc_clc_first_contact_ext_v2x {
+>>  	struct smc_clc_first_contact_ext fce_v20;
+>> -	u8 reserved3[4];
+>> +	u8 max_conns; /* for SMC-R only */
+>> +	u8 reserved3[3];
+>>  	__be32 vendor_exp_options;
+>>  	u8 reserved4[8];
+>>  } __packed;		/* format defined in
+> 
+> ...
+> 
+>> diff --git a/net/smc/smc_core.h b/net/smc/smc_core.h
+>> index 1a97fef39127..065369dc6584 100644
+>> --- a/net/smc/smc_core.h
+>> +++ b/net/smc/smc_core.h
+>> @@ -22,6 +22,7 @@
+>>  #include "smc_ib.h"
+>>  
+>>  #define SMC_RMBS_PER_LGR_MAX	255	/* max. # of RMBs per link group */
+>> +#define SMC_CONN_PER_LGR_MAX	255	/* max. # of connections per link group */
+>>  
+>>  struct smc_lgr_list {			/* list of link group definition */
+>>  	struct list_head	list;
