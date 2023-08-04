@@ -2,169 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E1B9F7706E7
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 19:15:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3485E7706E6
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 19:15:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232087AbjHDRP1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Aug 2023 13:15:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48026 "EHLO
+        id S229784AbjHDRPY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Aug 2023 13:15:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48000 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231738AbjHDRPX (ORCPT
+        with ESMTP id S230245AbjHDRPV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Aug 2023 13:15:23 -0400
-Received: from mail-oi1-x236.google.com (mail-oi1-x236.google.com [IPv6:2607:f8b0:4864:20::236])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0FD87469C;
-        Fri,  4 Aug 2023 10:15:21 -0700 (PDT)
-Received: by mail-oi1-x236.google.com with SMTP id 5614622812f47-3a1ebb85f99so1862285b6e.2;
-        Fri, 04 Aug 2023 10:15:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1691169320; x=1691774120;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=x14eTXjE9ESJ3W86KNB02DEBmvHBG2F1228ijKBbEgI=;
-        b=AmAAVvzJY2ryyLXEcu8EfJbuSoJj312gZuM0yrAAjJYgH4BGEvTkqPw9/2ZL+7xOWU
-         zYn4EQegMx1mopLXNah/jU/uKsK5oc3u43c/s2bXL1rSo4tCbjLfJ1rSgkeQaAFvZgOX
-         0SXmWL13MoKmH65W9GVkzZVbkiZk8L0q8iCZM3icmGk2k9Qfk2OU/BaYWJ+Rug20IQ+h
-         fgGCwJnbtvr8P8Q49impoq1KOCkOPTmvW+dE2SWnArBCj/Xxq8Zu3SPeREsjETwqzCUW
-         Kf5+omXqQLpoIszdhbm85vXZGhZYrEVShirRC8b7oKDD86t6MubUZFhes9W3KPXc8olM
-         Ay/A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691169320; x=1691774120;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=x14eTXjE9ESJ3W86KNB02DEBmvHBG2F1228ijKBbEgI=;
-        b=ZjhfSNltzFCyR63AJJsJKLTOd/PbXxjXgeomIpHY2D5YkxsGmr+EUgB6+sK+J7EgTo
-         LoUe/OX7hcfUgXbCkMSIjdBLzu98AJXN3rCoy5q0PT3bLT+uxBT+vQ9GOwf8XXCGmNsp
-         N1aibKEGhULd/qnMd+CyrZce5V1VZOIu54o3F3WNhHi3SXxkJ1LprTZYgTCsbsS2Q9GT
-         61wA3dMOcv3BH4RJWJ/gUUnZgZOF/OG/ok3zuzvJEQ+v58xzefvES1jnrq5NCdj//pG8
-         l1yClYWa9xlswoNMLAfnC3XxUYAP5HmllMYbqDMsMIJUIR3GNz1p6BWtPUVqlAtn5w+N
-         tXng==
-X-Gm-Message-State: AOJu0Yw6R1i4ztuELxR23NWt1kxX3GmCdDAKiVFd9Kc/vCw4WlBkBuRA
-        wO7n0ox/jS0+bnVTrMppr9w=
-X-Google-Smtp-Source: AGHT+IE28wNxh0Jvg039yaSdSejSrsyKYG9t0gMkmUlxzt12y4vrFOjLOiQeD3sDvJdPsjtp6Hc4yw==
-X-Received: by 2002:a05:6808:248:b0:3a3:6244:2b0a with SMTP id m8-20020a056808024800b003a362442b0amr2944200oie.23.1691169320236;
-        Fri, 04 Aug 2023 10:15:20 -0700 (PDT)
-Received: from tx3000mach.io (static.220.238.itcsa.net. [190.15.220.238])
-        by smtp.gmail.com with ESMTPSA id u37-20020a056808152500b003a77b3979b2sm856539oiw.26.2023.08.04.10.15.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 04 Aug 2023 10:15:19 -0700 (PDT)
-From:   Martin Rodriguez Reboredo <yakoyoku@gmail.com>
-Cc:     Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
-        Miguel Ojeda <ojeda@kernel.org>,
-        Alex Gaynor <alex.gaynor@gmail.com>,
-        Wedson Almeida Filho <wedsonaf@gmail.com>,
-        Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>,
-        =?UTF-8?q?Bj=C3=B6rn=20Roy=20Baron?= <bjorn3_gh@protonmail.com>,
-        Benno Lossin <benno.lossin@proton.me>,
-        rust-for-linux@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v3] scripts: generate_rust_analyzer: provide `cfg`s for `core` and `alloc`
-Date:   Fri,  4 Aug 2023 14:15:08 -0300
-Message-ID: <20230804171515.55052-1-yakoyoku@gmail.com>
-X-Mailer: git-send-email 2.41.0
+        Fri, 4 Aug 2023 13:15:21 -0400
+Received: from domac.alu.hr (domac.alu.unizg.hr [161.53.235.3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9AC2469A;
+        Fri,  4 Aug 2023 10:15:18 -0700 (PDT)
+Received: from localhost (localhost [127.0.0.1])
+        by domac.alu.hr (Postfix) with ESMTP id 669F460177;
+        Fri,  4 Aug 2023 19:15:17 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=alu.unizg.hr; s=mail;
+        t=1691169317; bh=sb+VS7L5uN94PDJDVY+D3C5Qp9r6bdxatdxyOwcIY78=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=o55LdpicpCEISOuOMZpN2vqwB7CeMEghdBFWb5zaDnAkP9aJegW2OhxJepMZZWpIS
+         62g/X+BcRjdhwZiDa2KWNMF93ilGBm/6P2JYGhKDyS6ErpUCJ55iaupK+Sz976E55+
+         c63Zv8ueZcRq9ryljItaSjbrbsdzMZEqfwHUgw4gqc2lubt/dshTRafhDycA/mprER
+         YFAoZl9SDy0paZXYqCvtBTZtVuCFskG9JKcupeOTo2a+0Y5AxVR1V++cSra7YujoR9
+         mLkCxwOg/GN6KlSZr+FGmOWrkg1f5+xXIUDzr2tdllv2AMm+AsgpY32FrPudthv2hO
+         +tJe1QLzx0tag==
+X-Virus-Scanned: Debian amavisd-new at domac.alu.hr
+Received: from domac.alu.hr ([127.0.0.1])
+        by localhost (domac.alu.hr [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id Bnq7fFXCgYMd; Fri,  4 Aug 2023 19:15:14 +0200 (CEST)
+Received: from [192.168.1.6] (unknown [94.250.191.183])
+        by domac.alu.hr (Postfix) with ESMTPSA id BFF3E60174;
+        Fri,  4 Aug 2023 19:15:14 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=alu.unizg.hr; s=mail;
+        t=1691169314; bh=sb+VS7L5uN94PDJDVY+D3C5Qp9r6bdxatdxyOwcIY78=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=L4w1aMKgw7IGC9Vqt1cQGfMyxddvk56MZHTaN0VFrB/rgGFl1ZiQoxyo0ShzNtwRj
+         geVdJ6Q/J9D+5TuUXNZizl6t6QX3Om17RhC6esXkeAif+8BgV60T2rx2SW2ZjjwEGB
+         F/nyxc42Oeo3poLTy5YLNI2LaZCsxKl4K29mcTsUIK0O+uQOY8MtDBha1AqL0n9se0
+         4j2FwSLsS5hbFEjxIbuOsP4WMtKPdvcHdEetYInUZt0HSuj99TbIHfxMzNqQs2Umlm
+         8829CHjOgm8rJ746VVBALblQcMqtoMV1LXFmJfQJ72Xe3i5DxYROn/yJR0Q3pIMdvk
+         Jvt/PcNuBpcQw==
+Message-ID: <a2a844d0-0d2c-c74b-e2d3-d924a9dc1e00@alu.unizg.hr>
+Date:   Fri, 4 Aug 2023 19:15:10 +0200
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.14.0
+Subject: Re: [PATCH v3 1/2] [DONE REQ CHG] test_firmware: prevent race
+ conditions by a correct implementation of locking
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org,
+        "Luis R . Rodriguez" <mcgrof@kernel.org>,
+        Russ Weight <russell.h.weight@intel.com>,
+        Takashi Iwai <tiwai@suse.de>,
+        Tianfei Zhang <tianfei.zhang@intel.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Colin Ian King <colin.i.king@gmail.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        linux-kselftest@vger.kernel.org, stable@vger.kernel.org,
+        Dan Carpenter <error27@gmail.com>
+References: <20230803165304.9200-1-mirsad.todorovac@alu.unizg.hr>
+ <2023080435-unweave-suspect-3299@gregkh>
+Content-Language: en-US
+From:   Mirsad Todorovac <mirsad.todorovac@alu.unizg.hr>
+In-Reply-To: <2023080435-unweave-suspect-3299@gregkh>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
-To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Both `core` and `alloc` have their `cfgs` (such as `no_rc`) missing
-in `rust-project.json`.
+Hi, Mr. Greg,
 
-To remedy this, pass the flags to `generate_rust_analyzer.py` for
-them to be added to a dictionary where each key corresponds to
-a crate and each value to a list of `cfg`s. The dictionary is then
-used to pass the `cfg`s to each crate in the generated file (for
-`core` and `alloc` only).
+On 8/4/23 13:22, Greg Kroah-Hartman wrote:
+> On Thu, Aug 03, 2023 at 06:53:04PM +0200, Mirsad Todorovac wrote:
+>> [ Upstream commit 4acfe3dfde685a5a9eaec5555351918e2d7266a1 ]
+> 
+> <snip>
+> 
+> Ok, I am totally confused as to what patch is the newest one, and which
+> is for what branches, sorry.
+> 
+> So, I've deleted all of the patches from my review queue and I would ask
+> that you start over.
+> 
+> Note, if you put the kernel version in the subject line, it makes it
+> simpler for me to understand what goes where.
+> 
+> Here is an example to follow:
+> 	https://lore.kernel.org/r/20230802170227.1590187-1-eahariha@linux.microsoft.com
+> 
+> There are loads of other examples on the stable mailing list, please
+> don't make it hard for me to understand what to do here, make it obvious
+> as I'm dealing with hundreds of patches a day.
 
-Suggested-by: Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
-Signed-off-by: Martin Rodriguez Reboredo <yakoyoku@gmail.com>
----
- rust/Makefile                     |  1 +
- scripts/generate_rust_analyzer.py | 16 ++++++++++++++--
- 2 files changed, 15 insertions(+), 2 deletions(-)
+Done requested changes and resubmitted. I hope it is done right this time. Of course,
+it could be better still, but this should work out.
 
-diff --git a/rust/Makefile b/rust/Makefile
-index f7c9a6e54c85..e5173da3b682 100644
---- a/rust/Makefile
-+++ b/rust/Makefile
-@@ -374,6 +374,7 @@ quiet_cmd_rustc_library = $(if $(skip_clippy),RUSTC,$(RUSTC_OR_CLIPPY_QUIET)) L
- 
- rust-analyzer:
- 	$(Q)$(srctree)/scripts/generate_rust_analyzer.py \
-+		--cfgs='core=$(core-cfgs)' --cfgs='alloc=$(alloc-cfgs)' \
- 		$(abs_srctree) $(abs_objtree) \
- 		$(RUST_LIB_SRC) $(KBUILD_EXTMOD) > \
- 		$(if $(KBUILD_EXTMOD),$(extmod_prefix),$(objtree))/rust-project.json
-diff --git a/scripts/generate_rust_analyzer.py b/scripts/generate_rust_analyzer.py
-index 848fa1ad92ba..fc52bc41d3e7 100755
---- a/scripts/generate_rust_analyzer.py
-+++ b/scripts/generate_rust_analyzer.py
-@@ -10,7 +10,15 @@ import os
- import pathlib
- import sys
- 
--def generate_crates(srctree, objtree, sysroot_src, external_src):
-+def args_crates_cfgs(cfgs):
-+    crates_cfgs = {}
-+    for cfg in cfgs:
-+        crate, vals = cfg.split("=", 1)
-+        crates_cfgs[crate] = vals.replace("--cfg", "").split()
-+
-+    return crates_cfgs
-+
-+def generate_crates(srctree, objtree, sysroot_src, external_src, cfgs):
-     # Generate the configuration list.
-     cfg = []
-     with open(objtree / "include" / "generated" / "rustc_cfg") as fd:
-@@ -24,6 +32,7 @@ def generate_crates(srctree, objtree, sysroot_src, external_src):
-     # Avoid O(n^2) iterations by keeping a map of indexes.
-     crates = []
-     crates_indexes = {}
-+    crates_cfgs = args_crates_cfgs(cfgs)
- 
-     def append_crate(display_name, root_module, deps, cfg=[], is_workspace_member=True, is_proc_macro=False):
-         crates_indexes[display_name] = len(crates)
-@@ -45,6 +54,7 @@ def generate_crates(srctree, objtree, sysroot_src, external_src):
-         "core",
-         sysroot_src / "core" / "src" / "lib.rs",
-         [],
-+        cfg=crates_cfgs.get("core", []),
-         is_workspace_member=False,
-     )
- 
-@@ -58,6 +68,7 @@ def generate_crates(srctree, objtree, sysroot_src, external_src):
-         "alloc",
-         srctree / "rust" / "alloc" / "lib.rs",
-         ["core", "compiler_builtins"],
-+        cfg=crates_cfgs.get("alloc", []),
-     )
- 
-     append_crate(
-@@ -131,6 +142,7 @@ def generate_crates(srctree, objtree, sysroot_src, external_src):
- def main():
-     parser = argparse.ArgumentParser()
-     parser.add_argument('--verbose', '-v', action='store_true')
-+    parser.add_argument('--cfgs', action='append', default=[])
-     parser.add_argument("srctree", type=pathlib.Path)
-     parser.add_argument("objtree", type=pathlib.Path)
-     parser.add_argument("sysroot_src", type=pathlib.Path)
-@@ -143,7 +155,7 @@ def main():
-     )
- 
-     rust_project = {
--        "crates": generate_crates(args.srctree, args.objtree, args.sysroot_src, args.exttree),
-+        "crates": generate_crates(args.srctree, args.objtree, args.sysroot_src, args.exttree, args.cfgs),
-         "sysroot_src": str(args.sysroot_src),
-     }
- 
--- 
-2.41.0
+It is a paramount that we make your life with applying patches easier and this is
+a new situation that I haven't got covered yet.
 
+I will also try to imitate the skilled patch submitters the next time before wasting
+your time or reinventing the wheel.
+
+> thanks,
+
+You're welcome.
+
+Kind regards,
+Mirsad
