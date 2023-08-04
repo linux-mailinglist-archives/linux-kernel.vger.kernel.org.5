@@ -2,146 +2,205 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B690F76F831
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 05:04:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 08FC976F83D
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 05:09:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233113AbjHDDEw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Aug 2023 23:04:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36810 "EHLO
+        id S231995AbjHDDJN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Aug 2023 23:09:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37768 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231269AbjHDDEn (ORCPT
+        with ESMTP id S233991AbjHDDHo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Aug 2023 23:04:43 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0A3C4236;
-        Thu,  3 Aug 2023 20:04:20 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id E160261F1C;
-        Fri,  4 Aug 2023 03:04:19 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EABD1C433C9;
-        Fri,  4 Aug 2023 03:04:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691118259;
-        bh=E5AW+8FOiatGFHegkfNTd5xukRWfVLb/sZxc4H0rl7o=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=AVIIzXBdhWzsRhwMhioiliS0MBfh9cwBNNhxxYv/BsDbMQGrbORvwnGZoQkJkuUC6
-         jQE5d2Tn8sweTkUmjFWAlty/QZZo7Pc/bUOZNFXszINiZ347GyHomYCqX8FnF0oYaU
-         2YdwABPGTSovU8P5l1uKTi3dWWGbeCTWRXnJPUxxenu/6H6hV49uGd7qhoSvAKymvu
-         7zDSTm1LMiTfxagQ1vZEpY1xLoliDZ3G7777HXYEEUMH/DeB6qDRqa/Y4jz+o6Tf3u
-         VZs8huE0A/pcX+CpaFGG9QMQZcn4OvFXYmsiVQ8o936T3ZFGA3saPjEnrvtAlo9Vqs
-         cJZLDiVGHThkA==
-Received: by mercury (Postfix, from userid 1000)
-        id 085591061B64; Fri,  4 Aug 2023 05:04:15 +0200 (CEST)
-Date:   Fri, 4 Aug 2023 05:04:15 +0200
-From:   Sebastian Reichel <sre@kernel.org>
-To:     Michael Riesch <michael.riesch@wolfvision.net>
-Cc:     Neil Armstrong <neil.armstrong@linaro.org>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Maxime Ripard <mripard@kernel.org>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Gerald Loacker <gerald.loacker@wolfvision.net>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org,
-        Conor Dooley <conor.dooley@microchip.com>
-Subject: Re: [PATCH v2 3/3] dt-bindings: display: add rotation property to
- sitronix,st7789v
-Message-ID: <20230804030415.yrvbq3kc6r2lj3jc@mercury.elektranox.org>
-References: <20230718-feature-st7789v-v2-0-207cb1baea0f@wolfvision.net>
- <20230718-feature-st7789v-v2-3-207cb1baea0f@wolfvision.net>
+        Thu, 3 Aug 2023 23:07:44 -0400
+Received: from EUR04-VI1-obe.outbound.protection.outlook.com (mail-vi1eur04on2085.outbound.protection.outlook.com [40.107.8.85])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F0B04EC8;
+        Thu,  3 Aug 2023 20:06:14 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=PWj7JAHmCDIRx+btn7i3unt0hqBy0Vm+3E4BHcy2w9u/WHw66bVQy7x9XQ3Z/fLvH9Qru9UsAyEbnxdi2XV4B2X2u02OEjvGvHrr+0lRC9iwWGdpu4Wi6e8lMY/2/2yiAoiiaSJbKxYbQs86jPZK1Ds7MagnGCHURWE2/IclVTEtox1R1K9ektaaMpOQyBjQ1E0PUDqAWRMmRBbRn0jkHfjwjjP5xOsnY/jRlqezHP907LoT70kcyZ3Zmdx5xC9809m72cyo49bxyk6qcKIynqiXjDy4nOGQrygJVct6iRBJaPH4NSmS57zq5J9BuNFJ6c1Fdhq7YE41rZVx1D/YNA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=y8eb7aAOseA524RoN8HQIOq2cMKFUxgFmgoY1uV0sUA=;
+ b=RITiKAfh9lNFvMemicAGh1IRT6a8XuMAXHR7hSXqwtGkwv398Sj59rsYkv8OqDbeMpnagkQFzL6ben6e9tGdPEpUUee5REajd8WRTJR/1HulUBRsTiDIdTSiAJfsoPBx4byvbpvEDrJ5jvUzssDsWJaxs42DEv2anPmZ8QFEIv00yXhQBsOSsWUVLomqDTD/nEiw9QPrAeqtNOgXcTTXzL1rwz81cU+LiYgfFWFENM+ATfqvYa8zSlkrquTE7olizUEkfJoivkg3L+wVdxIrYIn+wjFcqveLLXM3XGqDtGb8ILktzrpiFKB1CJ0s6KkC1IBveQbtD9t6b2KhurkUdQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=y8eb7aAOseA524RoN8HQIOq2cMKFUxgFmgoY1uV0sUA=;
+ b=pGizIrZ3SIy07TrIQp9Hs2pTrvMDzw1HdFO0RFafYYb6XC1EX56H8Op2GiK4pMOsdAzE6S7C/FJK/pmhq/Tv6Er2ZneaXFsNG0ZEKb9N9pQLk5qTCRC2jGvy2NBG3nGYD9nn6wLjgnc0qlXqGGTGgijsIAOnVdUkhqS8RRLyCO4=
+Received: from AM5PR04MB3139.eurprd04.prod.outlook.com (2603:10a6:206:8::20)
+ by DB8PR04MB6779.eurprd04.prod.outlook.com (2603:10a6:10:11b::22) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6631.47; Fri, 4 Aug
+ 2023 03:06:11 +0000
+Received: from AM5PR04MB3139.eurprd04.prod.outlook.com
+ ([fe80::2468:a15e:aa9b:7f8e]) by AM5PR04MB3139.eurprd04.prod.outlook.com
+ ([fe80::2468:a15e:aa9b:7f8e%4]) with mapi id 15.20.6631.046; Fri, 4 Aug 2023
+ 03:06:11 +0000
+From:   Wei Fang <wei.fang@nxp.com>
+To:     Jesper Dangaard Brouer <hawk@kernel.org>,
+        Jesper Dangaard Brouer <jbrouer@redhat.com>,
+        Jakub Kicinski <kuba@kernel.org>
+CC:     "brouer@redhat.com" <brouer@redhat.com>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "edumazet@google.com" <edumazet@google.com>,
+        "pabeni@redhat.com" <pabeni@redhat.com>,
+        Shenwei Wang <shenwei.wang@nxp.com>,
+        Clark Wang <xiaoning.wang@nxp.com>,
+        "ast@kernel.org" <ast@kernel.org>,
+        "daniel@iogearbox.net" <daniel@iogearbox.net>,
+        "john.fastabend@gmail.com" <john.fastabend@gmail.com>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        dl-linux-imx <linux-imx@nxp.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        Andrew Lunn <andrew@lunn.ch>
+Subject: RE: [PATCH V3 net-next] net: fec: add XDP_TX feature support
+Thread-Topic: [PATCH V3 net-next] net: fec: add XDP_TX feature support
+Thread-Index: AQHZw3VFF5NSBizeREOxLxVc18wksa/XS8kAgACl6SCAAEHAAIAAOPLAgAAgSoCAAOhtQA==
+Date:   Fri, 4 Aug 2023 03:06:11 +0000
+Message-ID: <AM5PR04MB3139D8AAAB6B96B58425BBA08809A@AM5PR04MB3139.eurprd04.prod.outlook.com>
+References: <20230731060025.3117343-1-wei.fang@nxp.com>
+ <20230802104706.5ce541e9@kernel.org>
+ <AM5PR04MB313985C61D92E183238809138808A@AM5PR04MB3139.eurprd04.prod.outlook.com>
+ <1bf41ea8-5131-7d54-c373-00c1fbcac095@redhat.com>
+ <AM5PR04MB31398ABF941EBDD0907E845B8808A@AM5PR04MB3139.eurprd04.prod.outlook.com>
+ <cc24e860-7d6f-7ec8-49cb-a49cb066f618@kernel.org>
+In-Reply-To: <cc24e860-7d6f-7ec8-49cb-a49cb066f618@kernel.org>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nxp.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: AM5PR04MB3139:EE_|DB8PR04MB6779:EE_
+x-ms-office365-filtering-correlation-id: 921fb525-46e6-4071-c6d6-08db9497c1ee
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: HT1QhSULGu6J7Khdy+47ayv6oHX4nKUKRmIgU+7n/2TiG5t5qIkI8J5KwkIllnP5SbhfMxahiSAj1Do2ncaBtImqT/pvwMErh1TfKBlFbqi6AiEHoJTRmW3Q6ZgQ6yYD2OP+GZHMlSWFP2td3mT0h+kKZcKKVS1tPccL+g2WGbJE3uvKeGWN6H61QuxoiwykkdSV2sxJO7dOaMQDIq+NcYMSBi9ujnki6zX9ZhH+83jy8Yty0XBw3pocICDJwc0tlNxJqAW6xh65jwoF+2tiVuCtPgJz9Xv02QNYdY15RnlwhbjOkAHMktFUAymTqRDOfSASnZfDlo/Z0NzCGpTelal+AzvO8x3wAsHIDEWo0vW12LdAK/b4vJw+dmjfeplUlvu2G7iWxkWibufcOCzXpvpPr0mMTy0AjZbT5TERuBJ6KWI1avanuLGlqYRww4VsrXZQiw1T5bcHn63gJ+ja+c47wHoNFeI6UUTncu5jGJb6xO0phd79NzKlA0uTzCIJERnRrFhXOE3DP46MyUQUQYWbzcUXCXC65Jp/W36uTe9bq8COQ0Pd1M2BDAodA2YTWlmwoXA/cfqxNcpQAyWWk0aWpjAR+2qCziRbTC7rM14o2/cIOAl+TOfgY03Cjkeq
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM5PR04MB3139.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(346002)(376002)(39860400002)(366004)(136003)(396003)(451199021)(1800799003)(186006)(8676002)(26005)(6506007)(83380400001)(66476007)(2906002)(316002)(76116006)(4326008)(66946007)(5660300002)(66446008)(64756008)(66556008)(44832011)(8936002)(7416002)(41300700001)(7696005)(71200400001)(52536014)(9686003)(110136005)(478600001)(54906003)(55016003)(38100700002)(122000001)(33656002)(86362001)(38070700005);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?YdLhissh+3QIYrLkQ7jUMV1eMLq1Q1yDGsI39Ds0nr2zxRS/ruTFHlCHY7b+?=
+ =?us-ascii?Q?XjdQ3/j8L5EVdKgySMxSAo08p7yeQbjTJ/8h24Ss0ELpq2iriDfObHLDRRdw?=
+ =?us-ascii?Q?TC7Vyjm3j6I/j+BiyXIGAj1qFRGXnHBG+rMyGpabIHMa8WWmlczy3Mre1KWq?=
+ =?us-ascii?Q?r4YtzMDwx72d0tg/WAfiwUil0GgVUbdWHkIQjTa+2hoG/S1xv1WAoGtu5Jsf?=
+ =?us-ascii?Q?/9o7MpwbC9mK0dktQVjnwlZtPl6G5jne2ZCgDMqLtuSEBwIkulKzLQJkpVsb?=
+ =?us-ascii?Q?KL51nMibyRjI0s6d/asGMOfg0t7Y+FT1G+KS5PPPy1SdA6vb9iGd0QLg+msZ?=
+ =?us-ascii?Q?k4jzYwb9wFCjNeUCQl74CfCOd9tdvkOgu5mQ0dec0fh0jHCVXtF3aCr8CXsY?=
+ =?us-ascii?Q?d1vzz4KzJrMLKz7frCyZiNMO2LlIJeLHsIzcQVTI4VpZxT6u2Ro0VQWuCx3L?=
+ =?us-ascii?Q?DxbANDo93ZFV5SBzKVFf8UJ0GS5g+qj30hxvFK1C11Rn9pISO1Wwi+kCtWjK?=
+ =?us-ascii?Q?dhnTLfpKho19sS1X4DJ4Zgj8g5ZUD+JPsweWJ6drrJnzF3/R+bkhG7cj+S6J?=
+ =?us-ascii?Q?Pk5FJz/MjE4xdS2GbIwR9Fz4pX/cyrgnFzVw46Q6J38NcRJ9mdySXxwHZAhh?=
+ =?us-ascii?Q?KZugJIgx3xxPgcScjcImUEu0Wd0Yil90YclblXmpcvz6/QJLWVhpt7rTrvIT?=
+ =?us-ascii?Q?4iHw1F688UF/OaHD/zjWR8cdc5wTeUBLIGWWN3SMknP79qP9lmi7P1kJaa9Y?=
+ =?us-ascii?Q?f6TbvJAZTrWFmR+ZUSgZBawSHdpRPukQsXilXKbAJRX3jDSQG2VDUVML/btB?=
+ =?us-ascii?Q?CZocEhJgISCeM6odffMaJjv5WJ6WMetbr4s2njer5xmN5TppEBwPLAY66APh?=
+ =?us-ascii?Q?rRi8hscbYdzWJDKd2Fc5umQHFoqA72Gkn3EcdeDYXT4vWgqocCgo1LD4ZIME?=
+ =?us-ascii?Q?9HV58Gy1J5h/+KSTcQEcomZvJFFFPJjPLbnB+5/UgzBwGkddIyY0EKI3ssUg?=
+ =?us-ascii?Q?GIjHExGE8sgbL56Q9xFBjEcOw+fPkEX19sF1PQ1RURv/GKb9V73Z2LZAFTd/?=
+ =?us-ascii?Q?rWmIperSTMVFYXRDqHddJTv2YOhfXelVhDspVxVPqw5kfcglMWPPuiIWf+7n?=
+ =?us-ascii?Q?wa9WQvbrjDN3Y9DMM3B127e2BO8rII4zW0g4VFdCHucoMItpHkU4KEhOflcI?=
+ =?us-ascii?Q?IW3ScBOTfpEeZDUtqTQN+rd2z2cNAURiLNchpr0Nyh7xp2iI1Dw9BnDV/RW+?=
+ =?us-ascii?Q?qXE1HEpMZzr4KJr3qdydlbLDlkf+038YQfrKGJGAHngSGOT2Z5V2kt0SfizQ?=
+ =?us-ascii?Q?x3rw48llH3UfEgPmtDcYutUQkTLqBKsS+JYrQQmO0QBcLWfeZr65sTCsPNT7?=
+ =?us-ascii?Q?NS+iNr9G9wReglYLgLJmg6kYqtnD3n4154SaHnW6rv8AmnY9a1qZKv4GZrFW?=
+ =?us-ascii?Q?kKBbh0eIsEYNJzT2QEVo8L9CFgROMvusD5Oa+pR6vIziyQmet0FjauWN0wKV?=
+ =?us-ascii?Q?x9zMSc6b3lxg/eZPLTiNFTyIAMydHPu872zZ94J1Pa5HzPBqrdcVk4pxalhr?=
+ =?us-ascii?Q?FBsxAFR0WU1mQHZhN4U=3D?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="jrx2f36fuc4chij4"
-Content-Disposition: inline
-In-Reply-To: <20230718-feature-st7789v-v2-3-207cb1baea0f@wolfvision.net>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: AM5PR04MB3139.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 921fb525-46e6-4071-c6d6-08db9497c1ee
+X-MS-Exchange-CrossTenant-originalarrivaltime: 04 Aug 2023 03:06:11.7387
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: ICpL3GuoD7Do5XrJi4kOhMzJvYlzfT+yJoHgmXrSc/VxFctnzFEMlVpo5teQjWoRVFzknyIz7KB0TGostyvOIw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB8PR04MB6779
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
---jrx2f36fuc4chij4
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-Hi,
-
-On Thu, Aug 03, 2023 at 10:13:50PM +0200, Michael Riesch wrote:
-> The sitronix-st7789v driver now considers the rotation property.
-> Add the property to the documentation.
+> > The FEC of i.MX8MP-EVK has dma_coherent=3Dfalse, and as I mentioned
+> > above, I did not see an obvious difference in the performance. :(
 >=20
-> Acked-by: Conor Dooley <conor.dooley@microchip.com>
-> Signed-off-by: Michael Riesch <michael.riesch@wolfvision.net>
-> ---
-
-Reviewed-by: Sebastian Reichel <sre@kernel.org>
-
--- Sebastian
-
->  Documentation/devicetree/bindings/display/panel/sitronix,st7789v.yaml | =
-2 ++
->  1 file changed, 2 insertions(+)
+> That is surprising - given the results.
 >=20
-> diff --git a/Documentation/devicetree/bindings/display/panel/sitronix,st7=
-789v.yaml b/Documentation/devicetree/bindings/display/panel/sitronix,st7789=
-v.yaml
-> index fa6556363cca..694d7f771d0c 100644
-> --- a/Documentation/devicetree/bindings/display/panel/sitronix,st7789v.ya=
-ml
-> +++ b/Documentation/devicetree/bindings/display/panel/sitronix,st7789v.ya=
-ml
-> @@ -22,6 +22,7 @@ properties:
->    power-supply: true
->    backlight: true
->    port: true
-> +  rotation: true
-> =20
->    spi-cpha: true
->    spi-cpol: true
-> @@ -52,6 +53,7 @@ examples:
->              reset-gpios =3D <&pio 6 11 GPIO_ACTIVE_LOW>;
->              backlight =3D <&pwm_bl>;
->              power-supply =3D <&power>;
-> +            rotation =3D <180>;
->              spi-max-frequency =3D <100000>;
->              spi-cpol;
->              spi-cpha;
+> (see below, lack of perf/diff might be caused by Ethernet flow-control).
 >=20
-> --=20
-> 2.37.2
+> >
+> >>> The result of the current modification.
+> >>> root@imx8mpevk:~# ./xdp2 eth0
+> >>> proto 17:     260180 pkt/s
+> >>
+> >> These results are*significantly*  better than reported in patch-1.
+> >> What happened?!?
+> >>
+> > The test environment is slightly different, in patch-1, the FEC port
+> > was directly connected to the port of another board. But in the latest
+> > test, the ports of the two boards were connected to a switch, so the
+> > ports of the two boards are not directly connected.
+> >
 >=20
+> Hmm, I've seen this kind of perf behavior of direct-connected or via swit=
+ch
+> before. The mistake I made was, that I had not disabled Ethernet flow-con=
+trol.
+> The xdp2 XDP_TX program will swap the mac addresses, and send the packet
+> back to the packet generator (running pktgen), which will get overloaded
+> itself and starts sending Ethernet flow-control pause frames.
+>=20
+> Command line to disable:
+>   # ethtool -A eth0 rx off tx off
+>=20
+> Can I ask/get you to make sure that Ethernet flow-control is disabled (on
+> both generator and DUT (to be on safe-side)) and run the test again?
+>=20
+The flow-control was not disabled before, so according to your suggestion,
+I disable the flow-control on the both boards and run the test again, the
+performance is slightly improved, but still can not see a clear difference
+between the two methods. Below are the results.
 
---jrx2f36fuc4chij4
-Content-Type: application/pgp-signature; name="signature.asc"
+Result: use "sync_dma_len" method
+root@imx8mpevk:~# ./xdp2 eth0
+proto 17:     258886 pkt/s
+proto 17:     258879 pkt/s
+proto 17:     258872 pkt/s
+proto 17:     258312 pkt/s
+proto 17:     258926 pkt/s
+proto 17:     259057 pkt/s
+proto 17:     258437 pkt/s
+proto 17:     259242 pkt/s
+proto 17:     258665 pkt/s
+proto 17:     258779 pkt/s
+proto 17:     259209 pkt/s
 
------BEGIN PGP SIGNATURE-----
+Result: use the current method
+root@imx8mpevk:~# ./xdp2 eth0
+proto 17:     258752 pkt/s
+proto 17:     258672 pkt/s
+proto 17:     258317 pkt/s
+proto 17:     258787 pkt/s
+proto 17:     258757 pkt/s
+proto 17:     258542 pkt/s
+proto 17:     258829 pkt/s
+proto 17:     258480 pkt/s
+proto 17:     258859 pkt/s
+proto 17:     258918 pkt/s
+proto 17:     258782 pkt/s
+proto 17:     259086 pkt/s
+proto 17:     258337 pkt/s
 
-iQIzBAABCgAdFiEE72YNB0Y/i3JqeVQT2O7X88g7+poFAmTMaq4ACgkQ2O7X88g7
-+prVHBAAnranxr8+661icCSUonDadVce0QrTh8fLIimhGKFW3nLjk29h77sHwGHO
-JuZwJzIOj6uvfLDRFgavN6NT/R+IW1W+cJ4UfgwaXBTvByIK7RtXDq8FtcHJvdxn
-0ub3F2PIEu1FXsme6r7kCcDD6vpef7VRCtHcmscv+FghdN8xT+Qj5lDIdNTQ4a/v
-z+HKkmxBTf425t7yZDr6drLqf9q6jdSJDib94svyvzANnHX1CzobRFSRChMpODrR
-RT52i4WV6hoPTTdHL/l710QG0okd+kiA7PgiKXCEXeDi90nHlriHNFci4XowT+8h
-gDoHXYmc5Mj/+bJdL+2SqO/bNeXLOuVlN0IW1I8M3b0tks4HgduPLalYHhyXxL4p
-ATKJbCsdO7cLrll4llAaF/1UVDhzdKZnSeTpbMAgm4ix6LZYO3Habgv1AsZZ9/EM
-C07imC5o9bxyIfo7KhiP/aOEywZhLYFBiCvCRIWm1x+IeJsiat4Xp9ONjlZVoQQc
-X5zf1vYmB5UPFq0F09gjMoFZxk0vC8LTBBrSxJq+FuhPwWtg4HQ4sfydvnC2XTgG
-9/ava273kLsmnOwE+vTmapZOmrRhDIYxfRA8w8/akBqVWlRtBsanleKlBxS6hDbb
-PBT3R9iuh9BeX1tpXJUIyz/J5d+aEipYg7nsRx0349vOn+/oD5Y=
-=qDfw
------END PGP SIGNATURE-----
-
---jrx2f36fuc4chij4--
