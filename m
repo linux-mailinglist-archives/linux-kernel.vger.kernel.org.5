@@ -2,48 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9236E76FF9E
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 13:47:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 18F5A76FFA6
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 13:48:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230136AbjHDLrl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Aug 2023 07:47:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46326 "EHLO
+        id S230426AbjHDLsJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Aug 2023 07:48:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46850 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229679AbjHDLrj (ORCPT
+        with ESMTP id S229679AbjHDLsH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Aug 2023 07:47:39 -0400
-Received: from out30-112.freemail.mail.aliyun.com (out30-112.freemail.mail.aliyun.com [115.124.30.112])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7784180;
-        Fri,  4 Aug 2023 04:47:16 -0700 (PDT)
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R111e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046059;MF=xueshuai@linux.alibaba.com;NM=1;PH=DS;RN=16;SR=0;TI=SMTPD_---0Vp0KRY2_1691149631;
-Received: from 30.240.114.112(mailfrom:xueshuai@linux.alibaba.com fp:SMTPD_---0Vp0KRY2_1691149631)
+        Fri, 4 Aug 2023 07:48:07 -0400
+Received: from out28-125.mail.aliyun.com (out28-125.mail.aliyun.com [115.124.28.125])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71D571B9;
+        Fri,  4 Aug 2023 04:48:02 -0700 (PDT)
+X-Alimail-AntiSpam: AC=CONTINUE;BC=0.1588763|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_system_inform|0.00334653-3.04391e-05-0.996623;FP=0|0|0|0|0|-1|-1|-1;HT=ay29a033018047192;MF=wangweidong.a@awinic.com;NM=1;PH=DS;RN=25;RT=25;SR=0;TI=SMTPD_---.U8VaX1a_1691149673;
+Received: from ubuntu-VirtualBox..(mailfrom:wangweidong.a@awinic.com fp:SMTPD_---.U8VaX1a_1691149673)
           by smtp.aliyun-inc.com;
-          Fri, 04 Aug 2023 19:47:13 +0800
-Message-ID: <e67bf29d-ba43-f13c-cd93-8ec73b767c3a@linux.alibaba.com>
-Date:   Fri, 4 Aug 2023 19:47:09 +0800
+          Fri, 04 Aug 2023 19:47:55 +0800
+From:   wangweidong.a@awinic.com
+To:     lgirdwood@gmail.com, broonie@kernel.org, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        perex@perex.cz, tiwai@suse.com, rf@opensource.cirrus.com,
+        wangweidong.a@awinic.com, shumingf@realtek.com,
+        herve.codina@bootlin.com, 13916275206@139.com,
+        ryans.lee@analog.com, ckeepax@opensource.cirrus.com,
+        sebastian.reichel@collabora.com,
+        ajye_huang@compal.corp-partner.google.com, povik+lin@cutebit.org,
+        yijiangtao@awinic.com, trix@redhat.com, colin.i.king@gmail.com,
+        liweilei@awinic.com, alsa-devel@alsa-project.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     zhangjianming@awinic.com
+Subject: [PATCH V4 0/3] ASoC: codecs: Add awinic AW88261 audio amplifier driver
+Date:   Fri,  4 Aug 2023 19:47:46 +0800
+Message-ID: <20230804114749.215460-1-wangweidong.a@awinic.com>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.13.1
-Subject: Re: [PATCH v4 2/2] perf record: Update docs regarding the maximum
- limitation of AUX area
-Content-Language: en-US
-To:     Leo Yan <leo.yan@linaro.org>, James Clark <james.clark@arm.com>
-Cc:     alexander.shishkin@linux.intel.com, peterz@infradead.org,
-        mingo@redhat.com, baolin.wang@linux.alibaba.com, acme@kernel.org,
-        mark.rutland@arm.com, jolsa@kernel.org, namhyung@kernel.org,
-        irogers@google.com, adrian.hunter@intel.com,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
-        nathan@kernel.org, bpf@vger.kernel.org
-References: <20230804072945.85731-1-xueshuai@linux.alibaba.com>
- <20230804072945.85731-3-xueshuai@linux.alibaba.com>
- <20230804084643.GA589820@leoy-yangtze.lan>
-From:   Shuai Xue <xueshuai@linux.alibaba.com>
-In-Reply-To: <20230804084643.GA589820@leoy-yangtze.lan>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-10.0 required=5.0 tests=BAYES_00,
-        ENV_AND_HDR_SPF_MATCH,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        SPF_PASS,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL autolearn=ham
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS,UNPARSEABLE_RELAY autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -51,71 +48,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Weidong Wang <wangweidong.a@awinic.com>
+
+The awinic AW88261 is an I2S/TDM input, high efficiency
+digital Smart K audio amplifier
+
+v3 -> v4: Modify the dev_err_probe usage
+          Changed the use of sizeof in kzalloc
+          Changed the function name
+          Merge aw88261_device.c into aw88261.c
+
+Weidong Wang (3):
+  ASoC: dt-bindings: Add schema for "awinic,aw88261"
+  ASoC: codecs: Add code for bin parsing compatible with aw88261
+  ASoC: codecs: Add aw88261 amplifier driver
+
+ .../bindings/sound/awinic,aw88395.yaml        |    4 +-
+ sound/soc/codecs/Kconfig                      |   15 +
+ sound/soc/codecs/Makefile                     |    2 +
+ sound/soc/codecs/aw88261.c                    | 1298 +++++++++++++++++
+ sound/soc/codecs/aw88261.h                    |  459 ++++++
+ sound/soc/codecs/aw88395/aw88395_lib.c        |  193 ++-
+ sound/soc/codecs/aw88395/aw88395_reg.h        |    1 +
+ 7 files changed, 1954 insertions(+), 18 deletions(-)
+ create mode 100644 sound/soc/codecs/aw88261.c
+ create mode 100644 sound/soc/codecs/aw88261.h
 
 
-On 2023/8/4 16:46, Leo Yan wrote:
-> On Fri, Aug 04, 2023 at 03:29:45PM +0800, Shuai Xue wrote:
->> The maximum AUX area is limited by the page size of the system. Update
->> the documentation to reflect this.
->>
->> Signed-off-by: Shuai Xue <xueshuai@linux.alibaba.com>
->> ---
->>  tools/perf/Documentation/perf-record.txt | 3 +++
->>  1 file changed, 3 insertions(+)
->>
->> diff --git a/tools/perf/Documentation/perf-record.txt b/tools/perf/Documentation/perf-record.txt
->> index 680396c56bd1..b0ee7b63da0e 100644
->> --- a/tools/perf/Documentation/perf-record.txt
->> +++ b/tools/perf/Documentation/perf-record.txt
->> @@ -292,6 +292,9 @@ OPTIONS
->>  	Also, by adding a comma, the number of mmap pages for AUX
->>  	area tracing can be specified.
->>  
->> +	The maximum AUX area is limited by the page size of the system. For
->> +	example with 4K pages configured, the maximum is 2GiB.
->> +
-> 
-> This statement is incorrect as it fails to give out prerequisites.
-> 
-> E.g., on Arm64, for 4KiB, 16KiB or 64KiB base page size, different page
-> size has different default values for MAX_ORDER.  Furthermore, MAX_ORDER
-> can be set by config ARCH_FORCE_MAX_ORDER, thus we cannot arbitrarily
-> say the maximum allocation size is 2GiB for 4KiB page size.
-> 
-
-Hi, Leo,
-
-You are right, thank you for point this out.
-
-Maybe we could consider to use a formula to present the avaliable
-> maximum buffer size:
-> 
->      PAGE_SIZE << MAX_ORDER
->    ( ---------------------- ) * PAGE_SIZE
->       sizeof(page_pointer)
-> 
->    PAGE_SIZE << MAX_ORDER : the size of maximal physically
->    contiguous allocations, which is the maximum size can be
->    allocated by slab/slub.
-
-I agree that a formula to present that limitation is more accurate. But as
-@James commented in last v3, "Minor nit: I wouldn't expect a Perf tool user
-to know what "MAX_ORDER" is", how about to keep both:
-
-  The maximum AUX area is limited by the maximum physically contiguous memory
-  allocated from slab/slub. It can be calculated with following formula:
-
-
-     PAGE_SIZE << MAX_ORDER
-    ( ---------------------- ) * PAGE_SIZE
-       sizeof(page_pointer)
-
-  For example with 4K pages and MAX_ORDER=10 configured, the maximum AUX area
-  is 2GiB.
-
-Thank you.
-
-Best Regards,
-Shuai
-
+base-commit: c1a515d3c0270628df8ae5f5118ba859b85464a2
+-- 
+2.41.0
 
