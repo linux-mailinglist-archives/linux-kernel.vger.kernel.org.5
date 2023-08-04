@@ -2,61 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E4C076F795
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 04:12:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C768A76F797
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 04:12:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233321AbjHDCMB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Aug 2023 22:12:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37162 "EHLO
+        id S233650AbjHDCMO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Aug 2023 22:12:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37486 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233312AbjHDCLc (ORCPT
+        with ESMTP id S233285AbjHDCLh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Aug 2023 22:11:32 -0400
-Received: from mail-qk1-x731.google.com (mail-qk1-x731.google.com [IPv6:2607:f8b0:4864:20::731])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73153468C
-        for <linux-kernel@vger.kernel.org>; Thu,  3 Aug 2023 19:11:04 -0700 (PDT)
-Received: by mail-qk1-x731.google.com with SMTP id af79cd13be357-765a7768f1dso133499885a.0
-        for <linux-kernel@vger.kernel.org>; Thu, 03 Aug 2023 19:11:04 -0700 (PDT)
+        Thu, 3 Aug 2023 22:11:37 -0400
+Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9BF3349E1
+        for <linux-kernel@vger.kernel.org>; Thu,  3 Aug 2023 19:11:09 -0700 (PDT)
+Received: by mail-pl1-x62c.google.com with SMTP id d9443c01a7336-1bbc06f830aso11574185ad.0
+        for <linux-kernel@vger.kernel.org>; Thu, 03 Aug 2023 19:11:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rivosinc-com.20221208.gappssmtp.com; s=20221208; t=1691115056; x=1691719856;
+        d=rivosinc-com.20221208.gappssmtp.com; s=20221208; t=1691115058; x=1691719858;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=+3U++cEq45L7iITV+zLwLaldo0Na07T+o+hHDfRRKC4=;
-        b=ayC0Day7CXdP53wwIDs0tv4bKX6RYBEbt+WDQyLb8tpMqzB8hUHeS+pZ/fmXrx4qpA
-         3JkEy7VvFQFPwmFiZrOcgMEo3fzpW+ldBC+JO6eugwsbDr7vJSjP1/35CxXsN0MB0Irt
-         mkx9hB89+CUahHSi5pi8nO9KgVUWFgp8tr4jlCEdJmhvewPu4OWQqZ3baJYZwvTPdBfy
-         +HdxqmvQtuuS7UKmZq8wZJhY55hKFLVGi3/KRn4eaZy7GtYIOEbVuJ5qIJOIr+oSnw4f
-         I7cK7giGeGjDDUCgXif5SspsldvYp/giTIrzSG6SdHe7tpD9OaruV+cA9piG0QSIk91/
-         G56g==
+        bh=k6HgGLGtG7M3LESpN5nTWoHfsSRrv8ioEMKugiOnOTw=;
+        b=tu7avlotyozMV/l8NRFA0DJ9nnNC6Iq43LymSGWeqaIFo+4SOLemWteCRxuxVqX1vN
+         v5bb3l0plvTmmo2yGXB6uIC1F/QI4lTwiO69NqjpKxuMRfL+xYAnS4u+tegfJm0NuEKP
+         0kChJuxf5ozsMipWf8xNnVMnHYeK7CIXvxUiE3DuPC17GkDDWyzdDHCq7v8KNNMZN3aR
+         E+nUQYwRE0MLaL/LwTWHQGSQHIoxQ1RLPR4iRDtmnbokti7RepO5Ri/GxUt3bdFA6/dP
+         pyxnjsEJpHF1MQS3xf8YsV6SjjvC5Eyd4tgBsMQxdwZBNR6xOFws8g38Zn3skjbBCBfO
+         Im3A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691115056; x=1691719856;
+        d=1e100.net; s=20221208; t=1691115059; x=1691719859;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=+3U++cEq45L7iITV+zLwLaldo0Na07T+o+hHDfRRKC4=;
-        b=HGbY/A+ZZ30Wyo2wyeSgra+++tpDgMwzUcehh1m+bKDoU1gknndsShK9iRgFMicST3
-         EZej5gvbtrhCFuMC45/O9UTGmFZw4MSulq89bSf0LIRj4LCB6kM4tK4jiy/+VCPRKa+7
-         x0l9mCUOgrzQmZPuPG4gpXXT9D+b+tY8pyg5Jry3tOY328JE9N+aPV9cRm25WbVWfcSg
-         W7ugTjesJ607+mKIlF851WIod9qlR5q8p+CO94vML1xd7638VPbsxSiw+uYiv+vPGqkh
-         RD8plmx+PK/hSt5Z8uTiafHZHFSK+qQlBrxKOoX5R3NeUfbBxAmpxkywBZfd4RBzUMbP
-         wxBA==
-X-Gm-Message-State: AOJu0Ywjmh+u24fLBj5KKu8ExWbII5ew1G0nBdT0j84ZxNWNgERDB+0f
-        G/X7biapXZe5ruhkMPd7wUGMKQ==
-X-Google-Smtp-Source: AGHT+IG+6EaYMDmn7R52Jc4ascni7z5WQFwfR/PJzZqWfgRRzwdONmN63Q30hGcwUi7GhkBgKxKI9A==
-X-Received: by 2002:a05:620a:1918:b0:76c:a187:13be with SMTP id bj24-20020a05620a191800b0076ca18713bemr687807qkb.33.1691115056542;
-        Thu, 03 Aug 2023 19:10:56 -0700 (PDT)
+        bh=k6HgGLGtG7M3LESpN5nTWoHfsSRrv8ioEMKugiOnOTw=;
+        b=QHyjJvHq0O57NTNhr68mTjNJ6rv1Shl/al0o1ECaLqbDGm5c8N/pJAI5M7BaslNCvU
+         bpA0ybp6Aht9F4c5gDeDxrC5jJXfUiuHtG75Afa4xZV6+R8eb69H8RZHyr61y1uqwuMo
+         5oLJ7QXKVKQSIqFWmgGkbDs5gFsFW19mGvrEpm2gVL5TJI86UjIkroCIIr2L3jGK42hk
+         7cKSQRcgGPVH9hfOylQlad28sM7ylg7dHMiGY/RjTSPDQEniSqaH5Wllf3cH2yCTTqpu
+         a9rOAmpnh28j7JkQBmT2OUihPOWafrStLfNXU6iaGQVZs4OFx4zSkuZ/ulg8BuI1PhAW
+         UxSQ==
+X-Gm-Message-State: AOJu0Yy05OjGyW1veg6WTgdVmqwOUGMGRvyIg/cMJbi6xau7HqpToeL1
+        U3ajEn78UChxXwESGAOv8dlLkg==
+X-Google-Smtp-Source: AGHT+IEN0Jt5wwNuskL0qGGhhGkOeUg3t8WkQm4o7XfOAfqqqzUJqOVX9dt6wxX88cfzTtEYQSuJcg==
+X-Received: by 2002:a17:902:ab48:b0:1bc:e37:aa76 with SMTP id ij8-20020a170902ab4800b001bc0e37aa76mr516147plb.6.1691115058660;
+        Thu, 03 Aug 2023 19:10:58 -0700 (PDT)
 Received: from charlie.ba.rivosinc.com ([66.220.2.162])
-        by smtp.gmail.com with ESMTPSA id g6-20020a655806000000b0055c558ac4edsm369499pgr.46.2023.08.03.19.10.54
+        by smtp.gmail.com with ESMTPSA id g6-20020a655806000000b0055c558ac4edsm369499pgr.46.2023.08.03.19.10.56
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 03 Aug 2023 19:10:56 -0700 (PDT)
+        Thu, 03 Aug 2023 19:10:58 -0700 (PDT)
 From:   Charlie Jenkins <charlie@rivosinc.com>
-Date:   Thu, 03 Aug 2023 19:10:28 -0700
-Subject: [PATCH 03/10] RISC-V: Refactor jump label instructions
+Date:   Thu, 03 Aug 2023 19:10:29 -0700
+Subject: [PATCH 04/10] RISC-V: KGDB: Refactor instructions
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20230803-master-refactor-instructions-v4-v1-3-2128e61fa4ff@rivosinc.com>
+Message-Id: <20230803-master-refactor-instructions-v4-v1-4-2128e61fa4ff@rivosinc.com>
 References: <20230803-master-refactor-instructions-v4-v1-0-2128e61fa4ff@rivosinc.com>
 In-Reply-To: <20230803-master-refactor-instructions-v4-v1-0-2128e61fa4ff@rivosinc.com>
 To:     linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
@@ -87,70 +87,75 @@ Cc:     Paul Walmsley <paul.walmsley@sifive.com>,
         Charlie Jenkins <charlie@rivosinc.com>
 X-Mailer: b4 0.12.3
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use shared instruction definitions in insn.h instead of manually
-constructing them.
+Use shared instruction definitions in insn.h.
 
 Signed-off-by: Charlie Jenkins <charlie@rivosinc.com>
 ---
- arch/riscv/include/asm/insn.h  |  2 +-
- arch/riscv/kernel/jump_label.c | 13 ++++---------
- 2 files changed, 5 insertions(+), 10 deletions(-)
+ arch/riscv/kernel/kgdb.c | 11 +++++------
+ 1 file changed, 5 insertions(+), 6 deletions(-)
 
-diff --git a/arch/riscv/include/asm/insn.h b/arch/riscv/include/asm/insn.h
-index 04f7649e1add..124ab02973a7 100644
---- a/arch/riscv/include/asm/insn.h
-+++ b/arch/riscv/include/asm/insn.h
-@@ -1984,7 +1984,7 @@ static __always_inline bool riscv_insn_is_branch(u32 code)
- 		<< RVC_J_IMM_10_OFF) | \
- 	(RVC_IMM_SIGN(x_) << RVC_J_IMM_SIGN_OFF); })
+diff --git a/arch/riscv/kernel/kgdb.c b/arch/riscv/kernel/kgdb.c
+index 2393342ab362..e1305706120e 100644
+--- a/arch/riscv/kernel/kgdb.c
++++ b/arch/riscv/kernel/kgdb.c
+@@ -5,7 +5,6 @@
  
--#define RVC_EXTRACT_BTYPE_IMM(x) \
-+#define RVC_EXTRACT_BZ_IMM(x) \
- 	({typeof(x) x_ = (x); \
- 	(RVC_X(x_, RVC_BZ_IMM_2_1_OPOFF, RVC_BZ_IMM_2_1_MASK) \
- 		<< RVC_BZ_IMM_2_1_OFF) | \
-diff --git a/arch/riscv/kernel/jump_label.c b/arch/riscv/kernel/jump_label.c
-index e6694759dbd0..fdaac2a13eac 100644
---- a/arch/riscv/kernel/jump_label.c
-+++ b/arch/riscv/kernel/jump_label.c
-@@ -9,11 +9,9 @@
- #include <linux/memory.h>
- #include <linux/mutex.h>
- #include <asm/bug.h>
-+#include <asm/insn.h>
- #include <asm/patch.h>
+ #include <linux/ptrace.h>
+ #include <linux/kdebug.h>
+-#include <linux/bug.h>
+ #include <linux/kgdb.h>
+ #include <linux/irqflags.h>
+ #include <linux/string.h>
+@@ -25,12 +24,12 @@ static unsigned int stepped_opcode;
  
--#define RISCV_INSN_NOP 0x00000013U
--#define RISCV_INSN_JAL 0x0000006fU
--
- void arch_jump_label_transform(struct jump_entry *entry,
- 			       enum jump_label_type type)
+ static int decode_register_index(unsigned long opcode, int offset)
  {
-@@ -26,13 +24,10 @@ void arch_jump_label_transform(struct jump_entry *entry,
- 		if (WARN_ON(offset & 1 || offset < -524288 || offset >= 524288))
- 			return;
+-	return (opcode >> offset) & 0x1F;
++	return (opcode >> offset) & RV_STANDARD_REG_MASK;
+ }
  
--		insn = RISCV_INSN_JAL |
--			(((u32)offset & GENMASK(19, 12)) << (12 - 12)) |
--			(((u32)offset & GENMASK(11, 11)) << (20 - 11)) |
--			(((u32)offset & GENMASK(10,  1)) << (21 -  1)) |
--			(((u32)offset & GENMASK(20, 20)) << (31 - 20));
-+		insn = RVG_OPCODE_JAL;
-+		riscv_insn_insert_jtype_imm(&insn, (s32)offset);
- 	} else {
--		insn = RISCV_INSN_NOP;
-+		insn = RVG_OPCODE_NOP;
- 	}
+ static int decode_register_index_short(unsigned long opcode, int offset)
+ {
+-	return ((opcode >> offset) & 0x7) + 8;
++	return ((opcode >> offset) & RV_COMPRESSED_REG_MASK) + 8;
+ }
  
- 	mutex_lock(&text_mutex);
+ /* Calculate the new address for after a step */
+@@ -43,7 +42,7 @@ static int get_step_address(struct pt_regs *regs, unsigned long *next_addr)
+ 
+ 	if (get_kernel_nofault(op_code, (void *)pc))
+ 		return -EINVAL;
+-	if ((op_code & __INSN_LENGTH_MASK) != INSN_C_MASK) {
++	if (INSN_IS_C(op_code)) {
+ 		if (riscv_insn_is_c_jalr(op_code) ||
+ 		    riscv_insn_is_c_jr(op_code)) {
+ 			rs1_num = decode_register_index(op_code, RVC_C2_RS1_OPOFF);
+@@ -55,14 +54,14 @@ static int get_step_address(struct pt_regs *regs, unsigned long *next_addr)
+ 			rs1_num = decode_register_index_short(op_code,
+ 							      RVC_C1_RS1_OPOFF);
+ 			if (!rs1_num || regs_ptr[rs1_num] == 0)
+-				*next_addr = RVC_EXTRACT_BTYPE_IMM(op_code) + pc;
++				*next_addr = RVC_EXTRACT_BZ_IMM(op_code) + pc;
+ 			else
+ 				*next_addr = pc + 2;
+ 		} else if (riscv_insn_is_c_bnez(op_code)) {
+ 			rs1_num =
+ 			    decode_register_index_short(op_code, RVC_C1_RS1_OPOFF);
+ 			if (rs1_num && regs_ptr[rs1_num] != 0)
+-				*next_addr = RVC_EXTRACT_BTYPE_IMM(op_code) + pc;
++				*next_addr = RVC_EXTRACT_BZ_IMM(op_code) + pc;
+ 			else
+ 				*next_addr = pc + 2;
+ 		} else {
 
 -- 
 2.34.1
