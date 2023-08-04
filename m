@@ -2,69 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EE6FD770AF8
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 23:30:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 82821770AF9
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 23:31:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229685AbjHDVaz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Aug 2023 17:30:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45376 "EHLO
+        id S229772AbjHDVa7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Aug 2023 17:30:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45394 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230081AbjHDVac (ORCPT
+        with ESMTP id S230211AbjHDVae (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Aug 2023 17:30:32 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66F9C4C05;
-        Fri,  4 Aug 2023 14:29:49 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 0310C61F3A;
-        Fri,  4 Aug 2023 21:29:49 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 23438C433C9;
-        Fri,  4 Aug 2023 21:29:48 +0000 (UTC)
-Authentication-Results: smtp.kernel.org;
-        dkim=pass (1024-bit key) header.d=zx2c4.com header.i=@zx2c4.com header.b="iw0DQgkA"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zx2c4.com; s=20210105;
-        t=1691184584;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=5ZRppS8YYYNW1DE8vo/WJiSC8U8LsPa2fq+ydUpDAgY=;
-        b=iw0DQgkAB8eMYmtIRwDGpp5CP+mTi6cWTMY6fBYsU2+amRVPZkbMfjZGBvbpWzMRfedPh0
-        Rg/DsPpcOFzEFoJRgRIc+94doj0uTx5ZbxI1TdVLZCYrIwRO7io6KYhQ06o57rbCIe9QIF
-        YKfp2o7aRyr+6DPyqFOijmyhKmnMAxc=
-Received: by mail.zx2c4.com (ZX2C4 Mail Server) with ESMTPSA id d74180ea (TLSv1.3:TLS_AES_256_GCM_SHA384:256:NO);
-        Fri, 4 Aug 2023 21:29:43 +0000 (UTC)
-Received: by mail-ua1-f44.google.com with SMTP id a1e0cc1a2514c-7870821d9a1so1673760241.1;
-        Fri, 04 Aug 2023 14:29:43 -0700 (PDT)
-X-Gm-Message-State: AOJu0Yy1rUXbsj9yUNIbZvMIgH1udDWK1xWyFxnjA6Q9o0h1cvm1TqhT
-        WSVDYWGcpFaelGi2/usczafTJRvsTkV/em0oqdI=
-X-Google-Smtp-Source: AGHT+IF1lG6rudDFve1O2mJa7z8XRunBD2b3Mqo6itQxmnVkmiR9raxvXerIG+cbT/V6Met3UwtnpA6Xx463rV+8+9c=
-X-Received: by 2002:a05:6102:374a:b0:447:5662:b9c3 with SMTP id
- u10-20020a056102374a00b004475662b9c3mr487830vst.13.1691184582248; Fri, 04 Aug
- 2023 14:29:42 -0700 (PDT)
+        Fri, 4 Aug 2023 17:30:34 -0400
+Received: from mail-ot1-x336.google.com (mail-ot1-x336.google.com [IPv6:2607:f8b0:4864:20::336])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65BF04C04;
+        Fri,  4 Aug 2023 14:30:02 -0700 (PDT)
+Received: by mail-ot1-x336.google.com with SMTP id 46e09a7af769-6bcb15aa074so1742342a34.0;
+        Fri, 04 Aug 2023 14:30:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1691184601; x=1691789401;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:to
+         :from:from:to:cc:subject:date:message-id:reply-to;
+        bh=GHueQwLIWCEz3XlJcUxmIZmOh2PU2xR1L0WHNOS+ItE=;
+        b=NubayiF9StvSreesK/se9xgtK3Pj1akbCsTAN1F1SqvLsIuHg8gPSTuRlv9zfTbwln
+         Ei4zEyKppfLO3i1hCk9UD/vA0X9pjgK+sRuD4UPJJMjRr/mf4MfvtSiYyovbRSgP4wj+
+         l7icgc8fH3KrL5PJ2kq5VleKHu9M+3agQdrXmPAz05wQjfOMJSvT7e4LoBX1FXj68w1s
+         97CeRGH7CWLuESRUNAGYgf/h/GPSseyUK+3WrvblYKXbT/AMBp5DR/Ahk1YazZ1kiMXx
+         o43uB2S7e+zSpFjfkr4/02Avb6eCyVlJujjNxvAxwZvErB4XknSqv4M63PH56c6vQSaT
+         I+MQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691184601; x=1691789401;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:to
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=GHueQwLIWCEz3XlJcUxmIZmOh2PU2xR1L0WHNOS+ItE=;
+        b=OXfqErhVQzPiNAwxNZkdo1qkll6JdUF28Mdt9Dcw+rNXjZofD1ThzdIsMlnvdJDIl0
+         LGzoKqYg5+ocCJD0RRmk5bLSEQtuzGYA8apoxeI8e0x9BGmrWbONImaqQrlLnoH5qPmZ
+         k/PbhVwzRa0vI3nBXqXKrlMhEUp08WjUS+cGeRN4gIhjgcixTtIQhFllYGqGSkOQWcS4
+         J+v0l7a4HWOmZTx/fR5f4L8zomSd8I5lUBYPsDiBec5xNWGKfe0Ut60X/ZMib0Ilv0JB
+         PYfs90KdET2ly6iwhx9VPG8xMZoby/GyFCpBrvxuwFQfbn1ivyXkoQZJ8ydWuqklaCXW
+         /wUg==
+X-Gm-Message-State: AOJu0Yw2FxXm+lrQ0dgPePoGE/kTH3UI9gPvNHG8luakEsNAjjM5kBIj
+        JmAolShJmnuBHt6y9LVdBmo=
+X-Google-Smtp-Source: AGHT+IG3aZIhyXFX9KbGK82uqdRKKBFUjUpR6ElmdBZkW6b4N2NcbiOW/DkYL0HXX4uI+rT2YHfi1g==
+X-Received: by 2002:a05:6830:4101:b0:6bb:132f:a785 with SMTP id w1-20020a056830410100b006bb132fa785mr769625ott.10.1691184601561;
+        Fri, 04 Aug 2023 14:30:01 -0700 (PDT)
+Received: from localhost.localdomain (ip98-167-164-238.ph.ph.cox.net. [98.167.164.238])
+        by smtp.gmail.com with ESMTPSA id e20-20020a05683013d400b006b9d21100d0sm1645420otq.64.2023.08.04.14.29.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 04 Aug 2023 14:30:01 -0700 (PDT)
+From:   Matthew Cover <werekraken@gmail.com>
+X-Google-Original-From: Matthew Cover <matthew.cover@stackpath.com>
+To:     Michael Chan <michael.chan@broadcom.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Richard Cochran <richardcochran@gmail.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Matthew Cover <matthew.cover@stackpath.com>,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        bpf@vger.kernel.org
+Subject: [PATCH net-next] Add bnxt_netlink to facilitate representor pair configurations.
+Date:   Fri,  4 Aug 2023 14:29:54 -0700
+Message-Id: <20230804212954.98868-1-matthew.cover@stackpath.com>
+X-Mailer: git-send-email 2.24.3 (Apple Git-128)
 MIME-Version: 1.0
-References: <20230614013018.2168426-1-guoren@kernel.org> <20230614013018.2168426-2-guoren@kernel.org>
- <ZM1tGgcJg0silFaJ@zx2c4.com>
-In-Reply-To: <ZM1tGgcJg0silFaJ@zx2c4.com>
-From:   "Jason A. Donenfeld" <Jason@zx2c4.com>
-Date:   Fri, 4 Aug 2023 23:28:17 +0200
-X-Gmail-Original-Message-ID: <CAHmME9p3VoZco0+io6pZDnzKVdnP4vr4XWNaAPXGew+1RmfVig@mail.gmail.com>
-Message-ID: <CAHmME9p3VoZco0+io6pZDnzKVdnP4vr4XWNaAPXGew+1RmfVig@mail.gmail.com>
-Subject: Re: [PATCH -next V13 1/3] riscv: stack: Support HAVE_IRQ_EXIT_ON_IRQ_STACK
-To:     guoren@kernel.org
-Cc:     arnd@arndb.de, palmer@rivosinc.com, conor.dooley@microchip.com,
-        heiko@sntech.de, jszhang@kernel.org, bjorn@kernel.org,
-        cleger@rivosinc.com, linux-arch@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org,
-        Guo Ren <guoren@linux.alibaba.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-6.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_HI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -72,99 +79,366 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 4, 2023 at 11:28=E2=80=AFPM Jason A. Donenfeld <Jason@zx2c4.com=
-> wrote:
->
-> Hi Guo,
->
-> On Tue, Jun 13, 2023 at 09:30:16PM -0400, guoren@kernel.org wrote:
-> > From: Guo Ren <guoren@linux.alibaba.com>
-> >
-> > Add independent irq stacks for percpu to prevent kernel stack overflows=
-.
-> > It is also compatible with VMAP_STACK by arch_alloc_vmap_stack.
-> >
-> > Tested-by: Jisheng Zhang <jszhang@kernel.org>
-> > Signed-off-by: Guo Ren <guoren@linux.alibaba.com>
-> > Signed-off-by: Guo Ren <guoren@kernel.org>
-> > Cc: Cl=C3=A9ment L=C3=A9ger <cleger@rivosinc.com>
->
-> This patch broke the WireGuard test suite. I've attached the .config
-> file that it uses. I'm able to fix it by setting CONFIG_EXPERT=3Dy and
-> CONFIG_IRQ_STACKS=3Dn to essentially reverse the effect of this patch. Bu=
-t
-> I'd rather not do that.
->
-> Any idea what's up?
->
-> Thanks,
-> Jason
+To leverage the SmartNIC capabilities available in Broadcom
+NetXtreme-C/E ethernet devices, representor pairs must be configured
+via bnxt-ctl.
 
-And, err, I guess I failed to describe what's broken exactly. Here's
-what happens:
+Without bnxt_netlink as a registered family, bnxt-ctl errors as seen
+below, even for the most basic of subcommands.
 
-timeout --foreground 20m qemu-system-riscv64 \
-       -nodefaults \
-       -nographic \
-       -smp 4 \
-       -cpu rv64 -machine virt \
-       -m 256M \
-       -serial stdio \
-       -chardev
-file,path=3D/home/zx2c4/Projects/wireguard-linux/tools/testing/selftests/wi=
-reguard/qemu/build/riscv64/result,id=3Dresult
-\
-       -device virtio-serial-device -device virtserialport,chardev=3Dresult=
- \
-       -no-reboot \
-       -monitor none \
-       -kernel /home/zx2c4/Projects/wireguard-linux/tools/testing/selftests=
-/wireguard/qemu/build/riscv64/kernel/arch/riscv/boot/Image
+  $ sudo bnxt-ctl show-pair
+  Error: Failed to resolve family for name: bnxt_netlink, Cannot allocate memory
 
-OpenSBI v1.2
-  ____                    _____ ____ _____
- / __ \                  / ____|  _ \_   _|
-| |  | |_ __   ___ _ __ | (___ | |_) || |
-| |  | | '_ \ / _ \ '_ \ \___ \|  _ < | |
-| |__| | |_) |  __/ | | |____) | |_) || |_
- \____/| .__/ \___|_| |_|_____/|____/_____|
-       | |
-       |_|
+With this patch, bnxt-ctl functions as expected providing display of
+and changes to representor pair configurations.
 
-Platform Name             : riscv-virtio,qemu
-Platform Features         : medeleg
-Platform HART Count       : 4
-Platform IPI Device       : aclint-mswi
-Platform Timer Device     : aclint-mtimer @ 10000000Hz
-Platform Console Device   : uart8250
-Platform HSM Device       : ---
-Platform PMU Device       : ---
-Platform Reboot Device    : sifive_test
-Platform Shutdown Device  : sifive_test
-Firmware Base             : 0x80000000
-Firmware Size             : 236 KB
-Runtime SBI Version       : 1.0
+  $ sudo bnxt-ctl show-pair
+  Representor Pair[4]: interface: enp65s0f0  name: 0000:06:00.0  state: down
+    member(a): Linux PF index 2 Firmware function id: 0x3
+  ...
 
-Domain0 Name              : root
-Domain0 Boot HART         : 0
-Domain0 HARTs             : 0*,1*,2*,3*
-Domain0 Region00          : 0x0000000002000000-0x000000000200ffff (I)
-Domain0 Region01          : 0x0000000080000000-0x000000008003ffff ()
-Domain0 Region02          : 0x0000000000000000-0xffffffffffffffff (R,W,X)
-Domain0 Next Address      : 0x0000000080200000
-Domain0 Next Arg1         : 0x000000008fe00000
-Domain0 Next Mode         : S-mode
-Domain0 SysReset          : yes
+This patch is a minimally modified port of the bnxt_netlink code
+found in out-of-tree bnxt_en-1.10.2-218.1.182.15.tar.gz. The
+out-of-tree driver contains both the GPL-2.0 in the file COPYING
+and a GPL comment in each source file.
 
-Boot HART ID              : 0
-Boot HART Domain          : root
-Boot HART Priv Version    : v1.12
-Boot HART Base ISA        : rv64imafdch
-Boot HART ISA Extensions  : time,sstc
-Boot HART PMP Count       : 16
-Boot HART PMP Granularity : 4
-Boot HART PMP Address Bits: 54
-Boot HART MHPM Count      : 16
-Boot HART MIDELEG         : 0x0000000000001666
-Boot HART MEDELEG         : 0x0000000000f0b509
-[terminates/hangs here]
+Signed-off-by: Matthew Cover <matthew.cover@stackpath.com>
+---
+ drivers/net/ethernet/broadcom/bnxt/Makefile       |   2 +-
+ drivers/net/ethernet/broadcom/bnxt/bnxt.c         |   6 +
+ drivers/net/ethernet/broadcom/bnxt/bnxt_netlink.c | 231 ++++++++++++++++++++++
+ drivers/net/ethernet/broadcom/bnxt/bnxt_netlink.h |  41 ++++
+ 4 files changed, 279 insertions(+), 1 deletion(-)
+ create mode 100644 drivers/net/ethernet/broadcom/bnxt/bnxt_netlink.c
+ create mode 100644 drivers/net/ethernet/broadcom/bnxt/bnxt_netlink.h
+
+diff --git a/drivers/net/ethernet/broadcom/bnxt/Makefile b/drivers/net/ethernet/broadcom/bnxt/Makefile
+index 2bc2b70..31e154f 100644
+--- a/drivers/net/ethernet/broadcom/bnxt/Makefile
++++ b/drivers/net/ethernet/broadcom/bnxt/Makefile
+@@ -1,6 +1,6 @@
+ # SPDX-License-Identifier: GPL-2.0-only
+ obj-$(CONFIG_BNXT) += bnxt_en.o
+ 
+-bnxt_en-y := bnxt.o bnxt_hwrm.o bnxt_sriov.o bnxt_ethtool.o bnxt_dcb.o bnxt_ulp.o bnxt_xdp.o bnxt_ptp.o bnxt_vfr.o bnxt_devlink.o bnxt_dim.o bnxt_coredump.o
++bnxt_en-y := bnxt.o bnxt_hwrm.o bnxt_sriov.o bnxt_ethtool.o bnxt_dcb.o bnxt_ulp.o bnxt_xdp.o bnxt_ptp.o bnxt_vfr.o bnxt_devlink.o bnxt_netlink.o bnxt_dim.o bnxt_coredump.o
+ bnxt_en-$(CONFIG_BNXT_FLOWER_OFFLOAD) += bnxt_tc.o
+ bnxt_en-$(CONFIG_DEBUG_FS) += bnxt_debugfs.o
+diff --git a/drivers/net/ethernet/broadcom/bnxt/bnxt.c b/drivers/net/ethernet/broadcom/bnxt/bnxt.c
+index 6a643aa..a33c7b6 100644
+--- a/drivers/net/ethernet/broadcom/bnxt/bnxt.c
++++ b/drivers/net/ethernet/broadcom/bnxt/bnxt.c
+@@ -67,6 +67,7 @@
+ #include "bnxt_dcb.h"
+ #include "bnxt_xdp.h"
+ #include "bnxt_ptp.h"
++#include "bnxt_netlink.h"
+ #include "bnxt_vfr.h"
+ #include "bnxt_tc.h"
+ #include "bnxt_devlink.h"
+@@ -14118,6 +14119,10 @@ static int __init bnxt_init(void)
+ {
+ 	int err;
+ 
++	err = bnxt_nl_register();
++	if (err)
++		pr_info("%s : failed to load\n", BNXT_NL_NAME);
++
+ 	bnxt_debug_init();
+ 	err = pci_register_driver(&bnxt_pci_driver);
+ 	if (err) {
+@@ -14130,6 +14135,7 @@ static int __init bnxt_init(void)
+ 
+ static void __exit bnxt_exit(void)
+ {
++	bnxt_nl_unregister();
+ 	pci_unregister_driver(&bnxt_pci_driver);
+ 	if (bnxt_pf_wq)
+ 		destroy_workqueue(bnxt_pf_wq);
+diff --git a/drivers/net/ethernet/broadcom/bnxt/bnxt_netlink.c b/drivers/net/ethernet/broadcom/bnxt/bnxt_netlink.c
+new file mode 100644
+index 0000000..48c1357
+--- /dev/null
++++ b/drivers/net/ethernet/broadcom/bnxt/bnxt_netlink.c
+@@ -0,0 +1,231 @@
++/* Broadcom NetXtreme-C/E network driver.
++ *
++ * Copyright (c) 2014-2016 Broadcom Corporation
++ * Copyright (c) 2016-2017 Broadcom Limited
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License as published by
++ * the Free Software Foundation.
++ */
++#include <linux/netdevice.h>
++#include <linux/pci.h>
++#include "bnxt_hsi.h"
++#include "bnxt_netlink.h"
++#include "bnxt.h"
++#include "bnxt_hwrm.h"
++
++/* attribute policy */
++static struct nla_policy bnxt_netlink_policy[BNXT_NUM_ATTRS] = {
++	[BNXT_ATTR_PID] = { .type = NLA_U32 },
++	[BNXT_ATTR_IF_INDEX] = { .type = NLA_U32 },
++	[BNXT_ATTR_REQUEST] = { .type = NLA_BINARY },
++	[BNXT_ATTR_RESPONSE] = { .type = NLA_BINARY },
++};
++
++static struct genl_family bnxt_netlink_family;
++
++static int bnxt_parse_attrs(struct nlattr **a, struct bnxt **bp,
++			    struct net_device **dev)
++{
++	pid_t pid;
++	struct net *ns = NULL;
++	const char *drivername;
++
++	if (!a[BNXT_ATTR_PID]) {
++		netdev_err(*dev, "No process ID specified\n");
++		goto err_inval;
++	}
++	pid = nla_get_u32(a[BNXT_ATTR_PID]);
++	ns = get_net_ns_by_pid(pid);
++	if (IS_ERR(ns)) {
++		netdev_err(*dev, "Invalid net namespace for pid %d (err: %ld)\n",
++			pid, PTR_ERR(ns));
++		goto err_inval;
++	}
++
++	if (!a[BNXT_ATTR_IF_INDEX]) {
++		netdev_err(*dev, "No interface index specified\n");
++		goto err_inval;
++	}
++	*dev = dev_get_by_index(ns, nla_get_u32(a[BNXT_ATTR_IF_INDEX]));
++
++	put_net(ns);
++	ns = NULL;
++	if (!*dev) {
++		netdev_err(*dev, "Invalid network interface index %d (err: %ld)\n",
++		       nla_get_u32(a[BNXT_ATTR_IF_INDEX]), PTR_ERR(ns));
++		goto err_inval;
++	}
++	if (!(*dev)->dev.parent || !(*dev)->dev.parent->driver ||
++	    !(*dev)->dev.parent->driver->name) {
++		netdev_err(*dev, "Unable to get driver name for device %s\n",
++		       (*dev)->name);
++		goto err_inval;
++	}
++	drivername = (*dev)->dev.parent->driver->name;
++	if (strcmp(drivername, DRV_MODULE_NAME)) {
++		netdev_err(*dev, "Device %s (%s) is not a %s device!\n",
++		       (*dev)->name, drivername, DRV_MODULE_NAME);
++		goto err_inval;
++	}
++	*bp = netdev_priv(*dev);
++	if (!*bp) {
++		netdev_warn((*bp)->dev, "No private data\n");
++		goto err_inval;
++	}
++
++	return 0;
++
++err_inval:
++	if (ns && !IS_ERR(ns))
++		put_net(ns);
++	return -EINVAL;
++}
++
++/* handler */
++static int bnxt_netlink_hwrm(struct sk_buff *skb, struct genl_info *info)
++{
++	struct nlattr **a = info->attrs;
++	struct net_device *dev = NULL;
++	struct sk_buff *reply = NULL;
++	struct input *req, *nl_req;
++	struct bnxt *bp = NULL;
++	struct output *resp;
++	int len, rc;
++	void *hdr;
++
++	rc = bnxt_parse_attrs(a, &bp, &dev);
++	if (rc)
++		goto err_rc;
++
++	if (!bp) {
++		rc = -EINVAL;
++		goto err_rc;
++	}
++
++	if (!bp->hwrm_dma_pool) {
++		netdev_warn(bp->dev, "HWRM interface not currently available on %s\n",
++		       dev->name);
++		rc = -EINVAL;
++		goto err_rc;
++	}
++
++	if (!a[BNXT_ATTR_REQUEST]) {
++		netdev_warn(bp->dev, "No request specified\n");
++		rc = -EINVAL;
++		goto err_rc;
++	}
++	len = nla_len(a[BNXT_ATTR_REQUEST]);
++	nl_req = nla_data(a[BNXT_ATTR_REQUEST]);
++
++	reply = genlmsg_new(PAGE_SIZE, GFP_KERNEL);
++	if (!reply) {
++		netdev_warn(bp->dev, "Error: genlmsg_new failed\n");
++		rc = -ENOMEM;
++		goto err_rc;
++	}
++
++	rc = hwrm_req_init(bp, req, nl_req->req_type);
++	if (rc)
++		goto err_rc;
++
++	rc = hwrm_req_replace(bp, req, nl_req, len);
++	if (rc)
++		goto err_rc;
++
++	resp = hwrm_req_hold(bp, req);
++	rc = hwrm_req_send_silent(bp, req);
++	if (rc) {
++		/*
++		 * Indicate success for the hwrm transport, while letting
++		 * the hwrm error be passed back to the netlink caller in
++		 * the response message.  Caller is responsible for handling
++		 * any errors.
++		 *
++		 * no kernel warnings are logged in this case.
++		 */
++		rc = 0;
++	}
++	hdr = genlmsg_put_reply(reply, info, &bnxt_netlink_family, 0,
++				BNXT_CMD_HWRM);
++	if (nla_put(reply, BNXT_ATTR_RESPONSE, resp->resp_len, resp)) {
++		netdev_warn(bp->dev, "No space for response attribte\n");
++		hwrm_req_drop(bp, req);
++		rc = -ENOMEM;
++		goto err_rc;
++	}
++	genlmsg_end(reply, hdr);
++	hwrm_req_drop(bp, req);
++
++	dev_put(dev);
++	dev = NULL;
++
++	return genlmsg_reply(reply, info);
++
++err_rc:
++	if (reply && !IS_ERR(reply))
++		kfree_skb(reply);
++	if (dev && !IS_ERR(dev))
++		dev_put(dev);
++
++	if (bp)
++		netdev_warn(bp->dev, "returning with error code %d\n", rc);
++
++	return rc;
++}
++
++/* handlers */
++#if defined(HAVE_GENL_REG_OPS_GRPS) || !defined(HAVE_GENL_REG_FAMILY_WITH_OPS)
++static const struct genl_ops bnxt_netlink_ops[] = {
++#else
++static struct genl_ops bnxt_netlink_ops[] = {
++#endif
++	{
++		.cmd = BNXT_CMD_HWRM,
++		.flags = GENL_ADMIN_PERM, /* Req's CAP_NET_ADMIN privilege */
++#ifndef HAVE_GENL_POLICY
++		.policy = bnxt_netlink_policy,
++#endif
++		.doit = bnxt_netlink_hwrm,
++		.dumpit = NULL,
++	},
++};
++
++/* family definition */
++static struct genl_family bnxt_netlink_family = {
++#ifdef HAVE_GENL_ID_GENERATE
++	.id = GENL_ID_GENERATE,
++#endif
++	.hdrsize = 0,
++	.name = BNXT_NL_NAME,
++	.version = BNXT_NL_VER,
++	.maxattr = BNXT_NUM_ATTRS,
++#ifdef HAVE_GENL_POLICY
++	.policy = bnxt_netlink_policy,
++#endif
++#ifndef HAVE_GENL_REG_FAMILY_WITH_OPS
++	.ops = bnxt_netlink_ops,
++	.n_ops = ARRAY_SIZE(bnxt_netlink_ops)
++#endif
++};
++
++int bnxt_nl_register(void)
++{
++#ifndef HAVE_GENL_REG_FAMILY_WITH_OPS
++	return genl_register_family(&bnxt_netlink_family);
++#elif defined(HAVE_GENL_REG_OPS_GRPS)
++	return genl_register_family_with_ops(&bnxt_netlink_family,
++					     bnxt_netlink_ops);
++#else
++	return genl_register_family_with_ops(&bnxt_netlink_family,
++					     bnxt_netlink_ops,
++					     ARRAY_SIZE(bnxt_netlink_ops));
++#endif
++
++	return 0;
++}
++
++int bnxt_nl_unregister(void)
++{
++	return genl_unregister_family(&bnxt_netlink_family);
++}
+diff --git a/drivers/net/ethernet/broadcom/bnxt/bnxt_netlink.h b/drivers/net/ethernet/broadcom/bnxt/bnxt_netlink.h
+new file mode 100644
+index 0000000..6939cd4
+--- /dev/null
++++ b/drivers/net/ethernet/broadcom/bnxt/bnxt_netlink.h
+@@ -0,0 +1,41 @@
++/* Broadcom NetXtreme-C/E network driver.
++ *
++ * Copyright (c) 2014-2016 Broadcom Corporation
++ * Copyright (c) 2016-2017 Broadcom Limited
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License as published by
++ * the Free Software Foundation.
++ */
++#ifndef __BNXT_NETLINK_H__
++#define __BNXT_NETLINK_H__
++
++#include <net/genetlink.h>
++#include <net/netlink.h>
++
++/* commands */
++enum {
++	BNXT_CMD_UNSPEC,
++	BNXT_CMD_HWRM,
++	BNXT_NUM_CMDS
++};
++#define BNXT_CMD_MAX (BNXT_NUM_CMDS - 1)
++
++/* attributes */
++enum {
++	BNXT_ATTR_UNSPEC,
++	BNXT_ATTR_PID,
++	BNXT_ATTR_IF_INDEX,
++	BNXT_ATTR_REQUEST,
++	BNXT_ATTR_RESPONSE,
++	BNXT_NUM_ATTRS
++};
++#define BNXT_ATTR_MAX (BNXT_NUM_ATTRS - 1)
++
++#define BNXT_NL_NAME "bnxt_netlink"
++#define BNXT_NL_VER  1
++
++int bnxt_nl_register(void);
++int bnxt_nl_unregister(void);
++
++#endif
+-- 
+1.8.3.1
+
