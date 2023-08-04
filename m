@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 75AAD76FF98
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 13:46:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B10F476FF9C
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 13:46:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230370AbjHDLqZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Aug 2023 07:46:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45118 "EHLO
+        id S230147AbjHDLq1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Aug 2023 07:46:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45128 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229481AbjHDLqV (ORCPT
+        with ESMTP id S230040AbjHDLqV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 4 Aug 2023 07:46:21 -0400
-Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3CCE127
-        for <linux-kernel@vger.kernel.org>; Fri,  4 Aug 2023 04:46:13 -0700 (PDT)
-Received: by mail-ej1-x632.google.com with SMTP id a640c23a62f3a-99c1f6f3884so278068966b.0
-        for <linux-kernel@vger.kernel.org>; Fri, 04 Aug 2023 04:46:13 -0700 (PDT)
+Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54D1F139
+        for <linux-kernel@vger.kernel.org>; Fri,  4 Aug 2023 04:46:15 -0700 (PDT)
+Received: by mail-ed1-x52d.google.com with SMTP id 4fb4d7f45d1cf-5222c5d71b8so2582030a12.2
+        for <linux-kernel@vger.kernel.org>; Fri, 04 Aug 2023 04:46:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=metaspace-dk.20221208.gappssmtp.com; s=20221208; t=1691149572; x=1691754372;
+        d=metaspace-dk.20221208.gappssmtp.com; s=20221208; t=1691149573; x=1691754373;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=ngj/h6FVXWzaXcOU3qKFEOyCMSzua1y3RfSgTGuGcj4=;
-        b=Gci5XiM2gbNQ3sH2Aw1TjX010iTrsiC/9UcDBGlVhKReHYHeXVQ3O6luHDQJe79H5T
-         ipRqhTHQhdcmmWh7ySeumvysj3Dbmf/O04dTS6GIIN+7BfpLceEQKMSVuXE9zkrWfmlT
-         znTpxK+OzdbsY0bt2WBs0Y2TTm+mw6rHGTnpHPaH66qjA2zmHAr1cJYNp/pOM5+SaGAY
-         8HAWPUFC/NsL9SI81AKtAd5c2LE2VkUGLHVGEvQCRxJU/TJ/UK2MfVkBlsYI5qIaDW8i
-         mOWKzUywKPx3MY9fQ7lsc9Z3XAHwRDgCiBTtPgH+yGSoRqZc/+X+TXMtvYWEJYogvyn/
-         9aCw==
+        bh=4oUmzoS5U5R4lTgYbAptq50tRMqAAmIZWZ/4iyIzFtA=;
+        b=jP2+6gufCLdXIUzWnwuWpyLuoq2Yb5cKN7ZHjhp9S1j1tyNhOwoVQawTz385tcS1gM
+         T3U5dArVWN/+ooEUGcnlJdVZG9GYvHx7XToELL7c2KkvSOw68fRGu4u0zbrk/j1YV0Rm
+         bMyL5ASTkRpmhuMb1cB+vVrXWrd3rHoYr9lg+bH3hmJLD0xUfhz7nL3y7d+MA/qqg8G9
+         1zrsN0KccT4TYkKLHYXGX/u0yrEThQstOCkILQrDP2mCvDNCO7V7kuZPKQHiEI2YDzkF
+         oviOoEhdv4RJc6aiMtz0Hf3rmqcZAoOW6u9Q/xq2TRKh+VOe2kb8QkkcZ4Zpi97Ay2vd
+         lBGA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691149572; x=1691754372;
+        d=1e100.net; s=20221208; t=1691149573; x=1691754373;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=ngj/h6FVXWzaXcOU3qKFEOyCMSzua1y3RfSgTGuGcj4=;
-        b=OI0GfyxCoH60HwwmbI3W7Y+dCstwFdONZCPWkGhuxhk9dtNC4AWM6z2AiLWBB8Gh4A
-         2ga4+1vEP3oJvS30joh001P5LnTv0y0rplA05Xv3skkktesErwCnFfLBNYI6BTuwh4Qo
-         NVPNaU9h9aGODZs9a/8lpgxfwtMFrnMX4gTmF1Y5CqK0fJzyL1s+55tr5fRp7rxVHqe4
-         UGTF/UqjiHCW7zQtvrwxz5/Q/QTHMpurdS7ZoJ1o9TMatstLvu/IKH37W88C6xSYyyej
-         2CBIKT2iGGnlCP7dW4Xd/TG5EVBQ37/XAphvRV9PpQWqErCiPmM4I7UxlAwpKMn0P7KC
-         O+iA==
-X-Gm-Message-State: AOJu0YxreMCjmV6UkQdQY4/MOdlMNWQWFCBZutH/akzhUh2rcXXucp+l
-        E2+f2uxhAk//o60PqGGnQeY0YQ==
-X-Google-Smtp-Source: AGHT+IHf3HUqYYDZViZxN8vB0sfZlkzyKgL8xLPzD659WQUbP5cV61iKjQUcyGDitHeIcwaDzOrffw==
-X-Received: by 2002:a17:906:2ca:b0:99c:9e69:6a19 with SMTP id 10-20020a17090602ca00b0099c9e696a19mr1528787ejk.18.1691149572527;
-        Fri, 04 Aug 2023 04:46:12 -0700 (PDT)
+        bh=4oUmzoS5U5R4lTgYbAptq50tRMqAAmIZWZ/4iyIzFtA=;
+        b=O7Ra5UNKOKGaan8CxxK2cbjrXPNnDqmuCTmVbdRlTildVVpgsr1oVCsxIIS7d4tjMv
+         DCMW5FPsxCRDD7M9tbv1ZAngDbpxrL7AfW93AHBPnaInenw8mNgeUR7k9XmTibUt9peR
+         QoVoktx+taBt+Mdmjn22cMmn9Efu8pb1gRR7FCg/9kJ8xrQH/1V8texEI59XkpdJZm1z
+         ci5lNAIJos6IeRmigr1+AP4tNEVHRTYwRlOnQeUTRelO2Bjn/hYdvYreHukZARKisZDJ
+         SVxrBcr5PgMjkzrpaJq0nwqnznpUFiqK3YYCDM9ol09s27oo7REWnjg7oT0BUjT53bqq
+         y3kA==
+X-Gm-Message-State: AOJu0YxuNRwnUQh/EaIa8y/qaEdVUu24kjNHUYXu8EK9DaourdMHtl66
+        zksxXOcejCvT6p4/yKqhvaZarA==
+X-Google-Smtp-Source: AGHT+IHD+OuHtzNtnzNr499wcfgIySPTSjsABomYo5uYAYmj1/1aICmH0CIpWrR1Ar0RQ0ktGbEB5w==
+X-Received: by 2002:a17:906:18b1:b0:99c:6671:66d7 with SMTP id c17-20020a17090618b100b0099c667166d7mr1129068ejf.39.1691149573597;
+        Fri, 04 Aug 2023 04:46:13 -0700 (PDT)
 Received: from localhost ([194.62.217.4])
-        by smtp.gmail.com with ESMTPSA id gt7-20020a170906f20700b00988b86d6c7csm1189295ejb.132.2023.08.04.04.46.12
+        by smtp.gmail.com with ESMTPSA id p27-20020a170906229b00b0099bd8c1f67esm1196013eja.109.2023.08.04.04.46.13
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 04 Aug 2023 04:46:12 -0700 (PDT)
+        Fri, 04 Aug 2023 04:46:13 -0700 (PDT)
 From:   "Andreas Hindborg (Samsung)" <nmi@metaspace.dk>
 To:     Ming Lei <ming.lei@redhat.com>
 Cc:     Aravind Ramesh <Aravind.Ramesh@wdc.com>,
@@ -62,11 +62,10 @@ Cc:     Aravind Ramesh <Aravind.Ramesh@wdc.com>,
         Johannes Thumshirn <jth@kernel.org>,
         linux-kernel@vger.kernel.org (open list),
         Jens Axboe <axboe@kernel.dk>,
-        linux-block@vger.kernel.org (open list:BLOCK LAYER),
-        Johannes Thumshirn <johannes.thumshirn@wdc.com>
-Subject: [PATCH v11 1/3] ublk: add helper to check if device supports user copy
-Date:   Fri,  4 Aug 2023 13:46:08 +0200
-Message-ID: <20230804114610.179530-2-nmi@metaspace.dk>
+        linux-block@vger.kernel.org (open list:BLOCK LAYER)
+Subject: [PATCH v11 2/3] ublk: move check for empty address field on command submission
+Date:   Fri,  4 Aug 2023 13:46:09 +0200
+Message-ID: <20230804114610.179530-3-nmi@metaspace.dk>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <20230804114610.179530-1-nmi@metaspace.dk>
 References: <20230804114610.179530-1-nmi@metaspace.dk>
@@ -83,41 +82,56 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Andreas Hindborg <a.hindborg@samsung.com>
 
-This will be used by ublk zoned storage support.
+In preparation for zoned storage support, move the check for empty `addr`
+field into the command handler case statement. Note that the check makes no
+sense for `UBLK_IO_NEED_GET_DATA` because the `addr` field must always be
+set for this command.
 
 Signed-off-by: Andreas Hindborg <a.hindborg@samsung.com>
-Reviewed-by: Ming Lei <ming.lei@redhat.com>
-Reviewed-by: Damien Le Moal <dlemoal@kernel.org>
-Reviewed-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
 ---
- drivers/block/ublk_drv.c | 7 ++++++-
- 1 file changed, 6 insertions(+), 1 deletion(-)
+ drivers/block/ublk_drv.c | 14 +++++++++-----
+ 1 file changed, 9 insertions(+), 5 deletions(-)
 
 diff --git a/drivers/block/ublk_drv.c b/drivers/block/ublk_drv.c
-index 21d2e71c5514..db3523e281a6 100644
+index db3523e281a6..5dba4b27d820 100644
 --- a/drivers/block/ublk_drv.c
 +++ b/drivers/block/ublk_drv.c
-@@ -185,6 +185,11 @@ struct ublk_params_header {
- 	__u32	types;
- };
+@@ -1419,11 +1419,6 @@ static int __ublk_ch_uring_cmd(struct io_uring_cmd *cmd,
+ 			^ (_IOC_NR(cmd_op) == UBLK_IO_NEED_GET_DATA))
+ 		goto out;
  
-+static inline bool ublk_dev_is_user_copy(const struct ublk_device *ub)
-+{
-+	return ub->dev_info.flags & UBLK_F_USER_COPY;
-+}
+-	if (ublk_support_user_copy(ubq) && ub_cmd->addr) {
+-		ret = -EINVAL;
+-		goto out;
+-	}
+-
+ 	ret = ublk_check_cmd_op(cmd_op);
+ 	if (ret)
+ 		goto out;
+@@ -1450,6 +1445,10 @@ static int __ublk_ch_uring_cmd(struct io_uring_cmd *cmd,
+ 			 */
+ 			if (!ub_cmd->addr && !ublk_need_get_data(ubq))
+ 				goto out;
++		} else if (ub_cmd->addr) {
++			/* User copy requires addr to be unset */
++			ret = -EINVAL;
++			goto out;
+ 		}
+ 
+ 		ublk_fill_io_cmd(io, cmd, ub_cmd->addr);
+@@ -1469,7 +1468,12 @@ static int __ublk_ch_uring_cmd(struct io_uring_cmd *cmd,
+ 			if (!ub_cmd->addr && (!ublk_need_get_data(ubq) ||
+ 						req_op(req) == REQ_OP_READ))
+ 				goto out;
++		} else if (ub_cmd->addr) {
++			/* User copy requires addr to be unset */
++			ret = -EINVAL;
++			goto out;
+ 		}
 +
- static inline void __ublk_complete_rq(struct request *req);
- static void ublk_complete_rq(struct kref *ref);
- 
-@@ -2038,7 +2043,7 @@ static int ublk_ctrl_add_dev(struct io_uring_cmd *cmd)
- 		UBLK_F_URING_CMD_COMP_IN_TASK;
- 
- 	/* GET_DATA isn't needed any more with USER_COPY */
--	if (ub->dev_info.flags & UBLK_F_USER_COPY)
-+	if (ublk_dev_is_user_copy(ub))
- 		ub->dev_info.flags &= ~UBLK_F_NEED_GET_DATA;
- 
- 	/* We are not ready to support zero copy */
+ 		ublk_fill_io_cmd(io, cmd, ub_cmd->addr);
+ 		ublk_commit_completion(ub, ub_cmd);
+ 		break;
 -- 
 2.41.0
 
