@@ -2,232 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6164F770841
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 20:55:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 309C8770845
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 20:55:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229863AbjHDSzZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Aug 2023 14:55:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37006 "EHLO
+        id S230051AbjHDSzh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Aug 2023 14:55:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37032 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229502AbjHDSzV (ORCPT
+        with ESMTP id S230004AbjHDSz1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Aug 2023 14:55:21 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 513CBA9;
-        Fri,  4 Aug 2023 11:55:19 -0700 (PDT)
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id D2CD521867;
-        Fri,  4 Aug 2023 18:55:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1691175317; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=FgAE7IQjxwVpfA4jlJ9XZGVZDnKgpMUh8daSva5w7kE=;
-        b=YxdJS32Eg0ImYWEMH1ZHvwEnnUz5x8G7wXa7cq59/GZSToTCAXo6r6mUYSayInK+jPgWil
-        snwEYCsecwTFsNvA1Tu95TUyCb+YHPLNqzco2pwzLxpptXKvGoaS1gR3kquonCYLf32O9C
-        VKGmirsODf1QEKTN0M1mOSqMWkYmgO4=
-Received: from suse.cz (pmladek.tcp.ovpn2.prg.suse.de [10.100.208.146])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id 658202C142;
-        Fri,  4 Aug 2023 18:55:17 +0000 (UTC)
-Date:   Fri, 4 Aug 2023 20:55:15 +0200
-From:   Petr Mladek <pmladek@suse.com>
-To:     Rob Herring <robh@kernel.org>
-Cc:     Frank Rowand <frowand.list@gmail.com>,
-        "Enrico Weigelt, metux IT consult" <info@metux.net>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/5] of: dynamic: Refactor action prints to not use
- "%pOF" inside devtree_lock
-Message-ID: <ZM1Jk9s3gRYLyagW@alley>
-References: <20230801-dt-changeset-fixes-v1-0-b5203e3fc22f@kernel.org>
- <20230801-dt-changeset-fixes-v1-2-b5203e3fc22f@kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230801-dt-changeset-fixes-v1-2-b5203e3fc22f@kernel.org>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+        Fri, 4 Aug 2023 14:55:27 -0400
+Received: from mail-yw1-x1149.google.com (mail-yw1-x1149.google.com [IPv6:2607:f8b0:4864:20::1149])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9446BA9
+        for <linux-kernel@vger.kernel.org>; Fri,  4 Aug 2023 11:55:25 -0700 (PDT)
+Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-5734d919156so25217647b3.3
+        for <linux-kernel@vger.kernel.org>; Fri, 04 Aug 2023 11:55:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1691175325; x=1691780125;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=NAPgIg7L4ziLXGFvzhNY7osXv5BuPJ5kgHsCha/MeAE=;
+        b=09X1PUv7wpVwOes147v9SG1Z9gh2smyMNp1zr/AKW5J7WbIvI9peuAGdjUMF0DVZaN
+         aveQQbAeGVvLVaOmRpdotnUfmY6/+glZY/8QXZk81Nw4eLGjgnNx+LsR/27PvBuNlAqa
+         UAE4QP+cBygiZYxD1KyzcDLJZgL43r+Q0cw1lCxopxYALDbeVIKL22C/1jMrUc4whjg9
+         gFzmcQEDLp3cyQe6ixy1lCwPk986b+m355poJdXzKb9cpeANB9fZ8uCB6ov7MUBxl6d6
+         pwaRY2SwjsUwbYiY8FLiTJHvxkorxgvvTJKokzpT59chWGwK6zoyzCTI9XsE+Fr1LkaE
+         oKmQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691175325; x=1691780125;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=NAPgIg7L4ziLXGFvzhNY7osXv5BuPJ5kgHsCha/MeAE=;
+        b=GIndoAD9thiPL7X27s+a3CuEcNsolt7ABWf5HRRNxmXcNun8A2rnFCJqULKwjQLBDk
+         9b4U2wLg5HXiEO9tpkF+WniAejip/pViS7kb3+8ZVgX+BC/LO6RMM8pvq0t00QpkN57q
+         eufwSBDfDqfHu2sCXr9pbzlbey2yxr2gG/RdZ9rO4g0G3s4jXAaXZ37LDNzrMk6BYAYA
+         ZFP/MAHk8y8LF13NSIjr4lDXfddYD2Q5oeZ8HaASJhILGsGggiXOBU+KznpdQFKHaGGz
+         tETZsB/6Zsgv8iABVYoPd7DQHOuc/35ylUIt8aSZmU5/iuP/7FGIyaQL8Xy6nCZkWttb
+         X5Ng==
+X-Gm-Message-State: AOJu0YxuwHbsbT7RkvXey1TUmw+ZaaqjricLew8I2W9QrfvlWZYH9QEc
+        7mG/UzIVeJXeEmfvaL2s3CFcXzaVRJ0=
+X-Google-Smtp-Source: AGHT+IFExXfiQLDG+1YqUi84WVhwKGQeKxbGbbX5j1WutV1i3yIABmdTQnuznjCByAyoYcETU0Qsaf4SKqA=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a81:441a:0:b0:584:4158:7f86 with SMTP id
+ r26-20020a81441a000000b0058441587f86mr18476ywa.1.1691175324835; Fri, 04 Aug
+ 2023 11:55:24 -0700 (PDT)
+Date:   Fri, 4 Aug 2023 11:55:23 -0700
+In-Reply-To: <20230803042732.88515-9-weijiang.yang@intel.com>
+Mime-Version: 1.0
+References: <20230803042732.88515-1-weijiang.yang@intel.com> <20230803042732.88515-9-weijiang.yang@intel.com>
+Message-ID: <ZM1JmxzyMgTLeEIy@google.com>
+Subject: Re: [PATCH v5 08/19] KVM:x86: Report KVM supported CET MSRs as to-be-saved
+From:   Sean Christopherson <seanjc@google.com>
+To:     Yang Weijiang <weijiang.yang@intel.com>
+Cc:     pbonzini@redhat.com, peterz@infradead.org, john.allen@amd.com,
+        kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        rick.p.edgecombe@intel.com, chao.gao@intel.com,
+        binbin.wu@linux.intel.com
+Content-Type: text/plain; charset="us-ascii"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue 2023-08-01 15:54:45, Rob Herring wrote:
-> While originally it was fine to format strings using "%pOF" while
-> holding devtree_lock, this now causes a deadlock.  Lockdep reports:
+On Thu, Aug 03, 2023, Yang Weijiang wrote:
+> Add all CET MSRs including the synthesized GUEST_SSP to report list.
+> PL{0,1,2}_SSP are independent to host XSAVE management with later
+> patches. MSR_IA32_U_CET and MSR_IA32_PL3_SSP are XSAVE-managed on
+> host side. MSR_IA32_S_CET/MSR_IA32_INT_SSP_TAB/MSR_KVM_GUEST_SSP
+> are not XSAVE-managed.
 > 
->     of_get_parent from of_fwnode_get_parent+0x18/0x24
->     ^^^^^^^^^^^^^
->     of_fwnode_get_parent from fwnode_count_parents+0xc/0x28
->     fwnode_count_parents from fwnode_full_name_string+0x18/0xac
->     fwnode_full_name_string from device_node_string+0x1a0/0x404
->     device_node_string from pointer+0x3c0/0x534
->     pointer from vsnprintf+0x248/0x36c
->     vsnprintf from vprintk_store+0x130/0x3b4
+> When CET IBT/SHSTK are enumerated to guest, both user and supervisor
+> modes should be supported for architechtural integrity, i.e., two
+> modes are supported as both or neither.
 > 
-> To fix this, move the printing in __of_changeset_entry_apply() outside the
-> lock. As there's already similar printing of the same changeset actions,
-> refactor all of them to use a common action print function. This has the
-> side benefit of getting rid of some ifdefs.
+> Signed-off-by: Yang Weijiang <weijiang.yang@intel.com>
+> ---
+>  arch/x86/include/uapi/asm/kvm_para.h |  1 +
+>  arch/x86/kvm/x86.c                   | 10 ++++++++++
+>  arch/x86/kvm/x86.h                   | 10 ++++++++++
+>  3 files changed, 21 insertions(+)
 > 
-> Fixes: a92eb7621b9fb2c2 ("lib/vsprintf: Make use of fwnode API to obtain node names and separators")
-> Reported-by: Geert Uytterhoeven <geert+renesas@glider.be>
-> Signed-off-by: Rob Herring <robh@kernel.org>
-
-> --- a/drivers/of/dynamic.c
-> +++ b/drivers/of/dynamic.c
-> @@ -63,37 +63,31 @@ int of_reconfig_notifier_unregister(struct notifier_block *nb)
->  }
->  EXPORT_SYMBOL_GPL(of_reconfig_notifier_unregister);
+> diff --git a/arch/x86/include/uapi/asm/kvm_para.h b/arch/x86/include/uapi/asm/kvm_para.h
+> index 6e64b27b2c1e..7af465e4e0bd 100644
+> --- a/arch/x86/include/uapi/asm/kvm_para.h
+> +++ b/arch/x86/include/uapi/asm/kvm_para.h
+> @@ -58,6 +58,7 @@
+>  #define MSR_KVM_ASYNC_PF_INT	0x4b564d06
+>  #define MSR_KVM_ASYNC_PF_ACK	0x4b564d07
+>  #define MSR_KVM_MIGRATION_CONTROL	0x4b564d08
+> +#define MSR_KVM_GUEST_SSP	0x4b564d09
 >  
-> -#ifdef DEBUG
-> -const char *action_names[] = {
-> +static const char *action_names[] = {
->  	[OF_RECONFIG_ATTACH_NODE] = "ATTACH_NODE",
->  	[OF_RECONFIG_DETACH_NODE] = "DETACH_NODE",
->  	[OF_RECONFIG_ADD_PROPERTY] = "ADD_PROPERTY",
->  	[OF_RECONFIG_REMOVE_PROPERTY] = "REMOVE_PROPERTY",
->  	[OF_RECONFIG_UPDATE_PROPERTY] = "UPDATE_PROPERTY",
+>  struct kvm_steal_time {
+>  	__u64 steal;
+> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+> index 82b9f14990da..d68ef87fe007 100644
+> --- a/arch/x86/kvm/x86.c
+> +++ b/arch/x86/kvm/x86.c
+> @@ -1463,6 +1463,9 @@ static const u32 msrs_to_save_base[] = {
+>  
+>  	MSR_IA32_XFD, MSR_IA32_XFD_ERR,
+>  	MSR_IA32_XSS,
+> +	MSR_IA32_U_CET, MSR_IA32_S_CET,
+> +	MSR_IA32_PL0_SSP, MSR_IA32_PL1_SSP, MSR_IA32_PL2_SSP,
+> +	MSR_IA32_PL3_SSP, MSR_IA32_INT_SSP_TAB, MSR_KVM_GUEST_SSP,
 >  };
-> -#endif
-> +
-> +static void of_changeset_action_print(unsigned long action, struct device_node *np,
-> +				      const char *prop_name)
-> +{
-> +	if (prop_name)
-> +		pr_cont("%-15s %pOF:%s\n", action_names[action], np, prop_name);
-
-Note that pr_cont() does not guarantee that the message will be appended to the
-previous part. Any message printed from another CPU or interrupt
-context might break the two pieces.
-
-It is better to avoid pr_cont() when possible.
-
-> +	else
-> +		pr_cont("%-15s %pOF\n", action_names[action], np);
-> +}
 >  
->  int of_reconfig_notify(unsigned long action, struct of_reconfig_data *p)
->  {
->  	int rc;
-> -#ifdef DEBUG
->  	struct of_reconfig_data *pr = p;
->  
-> -	switch (action) {
-> -	case OF_RECONFIG_ATTACH_NODE:
-> -	case OF_RECONFIG_DETACH_NODE:
-> -		pr_debug("notify %-15s %pOF\n", action_names[action],
-> -			pr->dn);
-> -		break;
-> -	case OF_RECONFIG_ADD_PROPERTY:
-> -	case OF_RECONFIG_REMOVE_PROPERTY:
-> -	case OF_RECONFIG_UPDATE_PROPERTY:
-> -		pr_debug("notify %-15s %pOF:%s\n", action_names[action],
-> -			pr->dn, pr->prop->name);
-> -		break;
-> +	if (pr_debug("notify "))
-> +		of_changeset_action_print(action, pr->dn, pr->prop ? pr->prop->name : NULL);
-
-If you really want to simplify this, then I would do:
-
-	pr_debug("notify %-15s %pOF%s%s\n",
-		  action_names[action], pr->dn,
-		  pr->prop ? ":" : ",
-		  pr->prop ? pr->prop->name : "");
-
-
-
-> -	}
-> -#endif
->  	rc = blocking_notifier_call_chain(&of_reconfig_chain, action, p);
->  	return notifier_to_errno(rc);
->  }
-> @@ -599,7 +569,8 @@ static int __of_changeset_entry_apply(struct of_changeset_entry *ce)
->  	unsigned long flags;
->  	int ret = 0;
->  
-> -	__of_changeset_entry_dump(ce);
-> +	if (pr_debug("changeset: applying: cset<%p> ", ce))
-> +		of_changeset_action_print(ce->action, ce->np, ce->prop ? ce->prop->name : NULL);
-
-One possibility would be to create a macro for this, something like:
-
-#define of_ce_action_print(printk_level, prefix, ce)		\
-	printk(printk_level "%s cset<%p> %-15s %pOF%s%s\n"	\
-		prefix, ce, action_names[action], pr->dn,	\
-		  pr->prop ? ":" : ",				\
-		  pr->prop ? pr->prop->name : "");
-
-And use it like:
-
-	of_ce_action_print(KERN_DEBUG, "changeset: applying:", ce);
-
-But I am not sure if it is worth it. Sometimes it is better to
-opencode things so that it is clear what is going on.
-
-
->  
->  	raw_spin_lock_irqsave(&devtree_lock, flags);
->  	switch (ce->action) {
-> @@ -620,21 +591,9 @@ static int __of_changeset_entry_apply(struct of_changeset_entry *ce)
->  		}
->  
->  		ret = __of_add_property(ce->np, ce->prop);
-> -		if (ret) {
-> -			pr_err("changeset: add_property failed @%pOF/%s\n",
-> -				ce->np,
-> -				ce->prop->name);
-> -			break;
-> -		}
+>  static const u32 msrs_to_save_pmu[] = {
+> @@ -7214,6 +7217,13 @@ static void kvm_probe_msr_to_save(u32 msr_index)
+>  		if (!kvm_caps.supported_xss)
+>  			return;
 >  		break;
->  	case OF_RECONFIG_REMOVE_PROPERTY:
->  		ret = __of_remove_property(ce->np, ce->prop);
-> -		if (ret) {
-> -			pr_err("changeset: remove_property failed @%pOF/%s\n",
-> -				ce->np,
-> -				ce->prop->name);
-> -			break;
-> -		}
->  		break;
->  
->  	case OF_RECONFIG_UPDATE_PROPERTY:
-> @@ -648,20 +607,17 @@ static int __of_changeset_entry_apply(struct of_changeset_entry *ce)
->  		}
->  
->  		ret = __of_update_property(ce->np, ce->prop, &old_prop);
-> -		if (ret) {
-> -			pr_err("changeset: update_property failed @%pOF/%s\n",
-> -				ce->np,
-> -				ce->prop->name);
-> -			break;
-> -		}
->  		break;
+> +	case MSR_IA32_U_CET:
+> +	case MSR_IA32_S_CET:
+> +	case MSR_KVM_GUEST_SSP:
+> +	case MSR_IA32_PL0_SSP ... MSR_IA32_INT_SSP_TAB:
+> +		if (!kvm_is_cet_supported())
+> +			return;
+> +		break;
 >  	default:
->  		ret = -EINVAL;
+>  		break;
 >  	}
->  	raw_spin_unlock_irqrestore(&devtree_lock, flags);
+> diff --git a/arch/x86/kvm/x86.h b/arch/x86/kvm/x86.h
+> index 82e3dafc5453..6e6292915f8c 100644
+> --- a/arch/x86/kvm/x86.h
+> +++ b/arch/x86/kvm/x86.h
+> @@ -362,6 +362,16 @@ static inline bool kvm_mpx_supported(void)
+>  		== (XFEATURE_MASK_BNDREGS | XFEATURE_MASK_BNDCSR);
+>  }
 >  
-> -	if (ret)
-> +	if (ret) {
-> +		pr_err("changeset: apply failed: cset<%p> ", ce);
-> +		of_changeset_action_print(ce->action, ce->np, ce->prop ? ce->prop->name : NULL);
->  		return ret;
-> +	}
->  
->  	switch (ce->action) {
->  	case OF_RECONFIG_ATTACH_NODE:
+> +#define CET_XSTATE_MASK (XFEATURE_MASK_CET_USER)
 
-I would suggest to split the changes into two so that the fix is in a
-separate patch. And the fix should be first so that it might be
-easier for backporting.
+This is funky.  As of this patch, KVM reports MSR_IA32_S_CET, a supervisor MSR,
+but does not require XFEATURE_MASK_CET_KERNEL.  That eventually comes along with
+"KVM:x86: Enable guest CET supervisor xstate bit support", but as of this patch
+KVM is busted.
 
-Best Regards,
-Petr
+The whole cpuid_count() code in that patch shouldn't exist, so the easiest thing
+is to just fold the KVM_SUPPORTED_XSS and CET_XSTATE_MASK changes from that patch
+into this one.
