@@ -2,175 +2,341 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BCB7B76FC96
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 10:51:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D66D276FCA0
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 10:52:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229719AbjHDIvd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Aug 2023 04:51:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44116 "EHLO
+        id S229988AbjHDIwD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Aug 2023 04:52:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44540 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229714AbjHDItw (ORCPT
+        with ESMTP id S229832AbjHDIuX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Aug 2023 04:49:52 -0400
-Received: from smtp-relay-internal-0.canonical.com (smtp-relay-internal-0.canonical.com [185.125.188.122])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F098230EA
-        for <linux-kernel@vger.kernel.org>; Fri,  4 Aug 2023 01:49:48 -0700 (PDT)
-Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com [209.85.218.72])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id 776414421A
-        for <linux-kernel@vger.kernel.org>; Fri,  4 Aug 2023 08:49:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1691138987;
-        bh=CQAHRH/ms/cFOl3S4jtiakCJJYzaMB08Yq0KPV8/UVY=;
-        h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-         MIME-Version;
-        b=dHCinPhIwLfckZkFU7tt4yPZR4kmCSgq/DySlrKITX/xaRPrdWkOudxg4LcEbYLVa
-         AKxThHX1/+lsoaoaEARPNEy39iIUUVuDPr2P6wKyl5VJhcsHw8jBX3h68kqLcfPnzJ
-         s/++6LuUDGkU7JlMDruW6fy727ZYasa9yZBgK/rQ4kWfSjsWmM9D6cVsNECsUYZr7I
-         6ZJRd5O3GUJIL/9qwP6+ieqRPFK8h0v5Qh1msWe/eNKGYa94jKk+e8yIHudosB29jO
-         OEKaQXbxgrWFZhyycaU1O2NHE/oaUY1BNRxRHI4JQDv0nCYU4nhHdRtRZg1HIkOK6k
-         tNN6dV0qSDz2w==
-Received: by mail-ej1-f72.google.com with SMTP id a640c23a62f3a-99bebfada8cso122169666b.1
-        for <linux-kernel@vger.kernel.org>; Fri, 04 Aug 2023 01:49:47 -0700 (PDT)
+        Fri, 4 Aug 2023 04:50:23 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA7FA4C1E
+        for <linux-kernel@vger.kernel.org>; Fri,  4 Aug 2023 01:49:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1691138975;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=UzQb2VuQCXwMdF/Rvu48wxhx8ntZSb1KliAOBLDDWgc=;
+        b=PU3b9IVOOTDEUT6h4viBuCZGKTj8vAYUbBjmfDBGkgkreEZc5Ua6j5OF9c4NsX9Omts650
+        YEH2q5ghwPnlY39cTsYXjoZVelqNTs3WxuvU85OuqONhTnCPBLUxo4DULYquQHHnakJ6f9
+        reNaU5xZ7ifNGPEHp7t5xyjn3ztfdAs=
+Received: from mail-oa1-f72.google.com (mail-oa1-f72.google.com
+ [209.85.160.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-249-ZAavzb9jPQOmxH0jMtxq5w-1; Fri, 04 Aug 2023 04:49:34 -0400
+X-MC-Unique: ZAavzb9jPQOmxH0jMtxq5w-1
+Received: by mail-oa1-f72.google.com with SMTP id 586e51a60fabf-1bb91fb58f2so2640147fac.2
+        for <linux-kernel@vger.kernel.org>; Fri, 04 Aug 2023 01:49:34 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691138986; x=1691743786;
+        d=1e100.net; s=20221208; t=1691138973; x=1691743773;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=CQAHRH/ms/cFOl3S4jtiakCJJYzaMB08Yq0KPV8/UVY=;
-        b=GQQ0VdNs8WVw2MHCg5yInebdxIAZF36ZXVj6yhbCF7XwlOU+vW5YAjaafF3Xf09vqb
-         2Dlok8S6yEp1SVbDcDGdL01GXLRLbIh4dcIKAbEDVxJCZq/ra2wwWxHMlvwDCi2k1+cV
-         KhITZCRGZVSqHRU/b/U6a1jBssjSRibwzQDbVV7Ips52AgJT6m0ULCazh6gC6bSk5K38
-         lQn900j/6u16JE7Mohd5qPvR405IQloU0HxzpwvHJ81xRSyMB4TZLZ6OoCM9NMEVwtsg
-         yr4HtrEhBvduf1h/I6NIumiVyoKaClch4gksZ9qzScJoVhSntS2X/fGJzAS223nt9tfF
-         okWg==
-X-Gm-Message-State: AOJu0Yz6jJZbs71jTAxUkIs/r3sbeb0A+xtK/ZUI361iptxwWyC2HtAe
-        8V1JzDwKTZeCWMzUMdQvsqPtBEQBrcJjl35W7BIlAzQQtb/fT4V6/UQYe6Z+5kucgFf11OJl6Ba
-        MyHcKJUFgdxPJRDfGN0HhFeemho4etWBrWQVGaKL2Ig==
-X-Received: by 2002:a17:906:7494:b0:99c:4b70:4d6a with SMTP id e20-20020a170906749400b0099c4b704d6amr934861ejl.63.1691138985975;
-        Fri, 04 Aug 2023 01:49:45 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IGVvZo5HsarBNOVycY50aKC5Clr4BW+jwzyxSFJ0XsHAbQYXZZdVEQArwzBO3xTW2T0oLqbNg==
-X-Received: by 2002:a17:906:7494:b0:99c:4b70:4d6a with SMTP id e20-20020a170906749400b0099c4b704d6amr934851ejl.63.1691138985538;
-        Fri, 04 Aug 2023 01:49:45 -0700 (PDT)
-Received: from amikhalitsyn.local (dslb-088-066-182-192.088.066.pools.vodafone-ip.de. [88.66.182.192])
-        by smtp.gmail.com with ESMTPSA id k25-20020a17090646d900b00992e94bcfabsm979279ejs.167.2023.08.04.01.49.44
+        bh=UzQb2VuQCXwMdF/Rvu48wxhx8ntZSb1KliAOBLDDWgc=;
+        b=eywclt7Kw3GjcO4Mx0yDJ8AlalQ3G0v5kWwuAorLi1tGlpJW1WKSzvQgTdSMKb0XZh
+         7ESJ03iLbiHd8pEzNkmAMEiIFGe3J81HSGkS8gC3hD3QvZp+gRe7i0a7dcuKeb6W4nlQ
+         VMngkAncw5HOhrtJGuDrX0rCXI9uiNwxozy0nO13nAKtZ4/TUHHbw/nSg88ngryFzMzx
+         4kzZrjWsVclPkbxq+DZk/GWpBFy0nxxQq4DOns4XOFUiMgY/4A4sLyfGMKvW610dVWgd
+         bf5TE0L7XCVaOcgs9UCkhD/4Ldv9xXYNFnJscS+h1D7wk+xQIyX7WweHZViCPEXNFvMD
+         kfeQ==
+X-Gm-Message-State: AOJu0Yzn0GkEtxBHGdqfzysS151Ei6plC8gYvS2ZJjmWvYXJP/deRIaR
+        6Ue/NnQgt5PO6qjUqwDEGypPZ3iWweYsrrtgG32JE0DEGynPs7olAAy+IZOSEKm1JaAa37QLE7X
+        kLbLNndmaekrNBRHkzJ47fGBp
+X-Received: by 2002:a05:6870:9693:b0:1bf:42b9:907f with SMTP id o19-20020a056870969300b001bf42b9907fmr1292588oaq.20.1691138973311;
+        Fri, 04 Aug 2023 01:49:33 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IHo7vyNoP4vF9peGfFA/17nq0Yzj8bINsHDzCtyGDvVS4NPtZ3F+JVXZP0nVXXJYhxCYez1Dw==
+X-Received: by 2002:a05:6870:9693:b0:1bf:42b9:907f with SMTP id o19-20020a056870969300b001bf42b9907fmr1292569oaq.20.1691138973053;
+        Fri, 04 Aug 2023 01:49:33 -0700 (PDT)
+Received: from localhost.localdomain ([2804:1b3:a801:d380:694f:4f52:764c:4b7f])
+        by smtp.gmail.com with ESMTPSA id f8-20020a4ab008000000b0055516447257sm685679oon.29.2023.08.04.01.49.29
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 04 Aug 2023 01:49:45 -0700 (PDT)
-From:   Alexander Mikhalitsyn <aleksandr.mikhalitsyn@canonical.com>
-To:     xiubli@redhat.com
-Cc:     brauner@kernel.org, stgraber@ubuntu.com,
-        linux-fsdevel@vger.kernel.org, Jeff Layton <jlayton@kernel.org>,
-        Ilya Dryomov <idryomov@gmail.com>, ceph-devel@vger.kernel.org,
-        Alexander Mikhalitsyn <aleksandr.mikhalitsyn@canonical.com>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v9 09/12] ceph: allow idmapped setattr inode op
-Date:   Fri,  4 Aug 2023 10:48:55 +0200
-Message-Id: <20230804084858.126104-10-aleksandr.mikhalitsyn@canonical.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20230804084858.126104-1-aleksandr.mikhalitsyn@canonical.com>
-References: <20230804084858.126104-1-aleksandr.mikhalitsyn@canonical.com>
+        Fri, 04 Aug 2023 01:49:32 -0700 (PDT)
+From:   Leonardo Bras <leobras@redhat.com>
+To:     Will Deacon <will@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Leonardo Bras <leobras@redhat.com>,
+        Andrea Parri <parri.andrea@gmail.com>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Andrzej Hajda <andrzej.hajda@intel.com>,
+        Palmer Dabbelt <palmer@rivosinc.com>,
+        Guo Ren <guoren@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org
+Subject: [RFC PATCH v3 3/5] riscv/atomic.h : Deduplicate arch_atomic.*
+Date:   Fri,  4 Aug 2023 05:48:56 -0300
+Message-ID: <20230804084900.1135660-5-leobras@redhat.com>
+X-Mailer: git-send-email 2.41.0
+In-Reply-To: <20230804084900.1135660-2-leobras@redhat.com>
+References: <20230804084900.1135660-2-leobras@redhat.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Christian Brauner <brauner@kernel.org>
+Some functions use mostly the same asm for 32-bit and 64-bit versions.
 
-Enable __ceph_setattr() to handle idmapped mounts. This is just a matter
-of passing down the mount's idmapping.
+Make a macro that is generic enough and avoid code duplication.
 
-Cc: Xiubo Li <xiubli@redhat.com>
-Cc: Jeff Layton <jlayton@kernel.org>
-Cc: Ilya Dryomov <idryomov@gmail.com>
-Cc: ceph-devel@vger.kernel.org
-Signed-off-by: Christian Brauner <brauner@kernel.org>
-[ adapted to b27c82e12965 ("attr: port attribute changes to new types") ]
-Signed-off-by: Alexander Mikhalitsyn <aleksandr.mikhalitsyn@canonical.com>
+(This did not cause any change in generated asm)
+
+Signed-off-by: Leonardo Bras <leobras@redhat.com>
+Reviewed-by: Guo Ren <guoren@kernel.org>
+Reviewed-by: Andrea Parri <parri.andrea@gmail.com>
 ---
-v4:
-	- introduced fsuid/fsgid local variables
-v3:
-	- reworked as Christian suggested here:
-	https://lore.kernel.org/lkml/20230602-vorzeichen-praktikum-f17931692301@brauner/
----
- fs/ceph/inode.c | 20 ++++++++++++--------
- 1 file changed, 12 insertions(+), 8 deletions(-)
+ arch/riscv/include/asm/atomic.h | 164 +++++++++++++++-----------------
+ 1 file changed, 76 insertions(+), 88 deletions(-)
 
-diff --git a/fs/ceph/inode.c b/fs/ceph/inode.c
-index 6c4cc009d819..0a8cc0327f85 100644
---- a/fs/ceph/inode.c
-+++ b/fs/ceph/inode.c
-@@ -2553,33 +2553,37 @@ int __ceph_setattr(struct mnt_idmap *idmap, struct inode *inode,
- #endif /* CONFIG_FS_ENCRYPTION */
+diff --git a/arch/riscv/include/asm/atomic.h b/arch/riscv/include/asm/atomic.h
+index f5dfef6c2153..80cca7ac16fd 100644
+--- a/arch/riscv/include/asm/atomic.h
++++ b/arch/riscv/include/asm/atomic.h
+@@ -196,22 +196,28 @@ ATOMIC_OPS(xor, xor, i)
+ #undef ATOMIC_FETCH_OP
+ #undef ATOMIC_OP_RETURN
  
- 	if (ia_valid & ATTR_UID) {
-+		kuid_t fsuid = from_vfsuid(idmap, i_user_ns(inode), attr->ia_vfsuid);
++#define _arch_atomic_fetch_add_unless(_prev, _rc, counter, _a, _u, sfx)	\
++({									\
++	__asm__ __volatile__ (						\
++		"0:	lr." sfx "     %[p],  %[c]\n"			\
++		"	beq	       %[p],  %[u], 1f\n"		\
++		"	add            %[rc], %[p], %[a]\n"		\
++		"	sc." sfx ".rl  %[rc], %[rc], %[c]\n"		\
++		"	bnez           %[rc], 0b\n"			\
++		"	fence          rw, rw\n"			\
++		"1:\n"							\
++		: [p]"=&r" (_prev), [rc]"=&r" (_rc), [c]"+A" (counter)	\
++		: [a]"r" (_a), [u]"r" (_u)				\
++		: "memory");						\
++})
 +
- 		doutc(cl, "%p %llx.%llx uid %d -> %d\n", inode,
- 		      ceph_vinop(inode),
- 		      from_kuid(&init_user_ns, inode->i_uid),
- 		      from_kuid(&init_user_ns, attr->ia_uid));
- 		if (issued & CEPH_CAP_AUTH_EXCL) {
--			inode->i_uid = attr->ia_uid;
-+			inode->i_uid = fsuid;
- 			dirtied |= CEPH_CAP_AUTH_EXCL;
- 		} else if ((issued & CEPH_CAP_AUTH_SHARED) == 0 ||
--			   !uid_eq(attr->ia_uid, inode->i_uid)) {
-+			   !uid_eq(fsuid, inode->i_uid)) {
- 			req->r_args.setattr.uid = cpu_to_le32(
--				from_kuid(&init_user_ns, attr->ia_uid));
-+				from_kuid(&init_user_ns, fsuid));
- 			mask |= CEPH_SETATTR_UID;
- 			release |= CEPH_CAP_AUTH_SHARED;
- 		}
- 	}
- 	if (ia_valid & ATTR_GID) {
-+		kgid_t fsgid = from_vfsgid(idmap, i_user_ns(inode), attr->ia_vfsgid);
+ /* This is required to provide a full barrier on success. */
+ static __always_inline int arch_atomic_fetch_add_unless(atomic_t *v, int a, int u)
+ {
+        int prev, rc;
+ 
+-	__asm__ __volatile__ (
+-		"0:	lr.w     %[p],  %[c]\n"
+-		"	beq      %[p],  %[u], 1f\n"
+-		"	add      %[rc], %[p], %[a]\n"
+-		"	sc.w.rl  %[rc], %[rc], %[c]\n"
+-		"	bnez     %[rc], 0b\n"
+-		"	fence    rw, rw\n"
+-		"1:\n"
+-		: [p]"=&r" (prev), [rc]"=&r" (rc), [c]"+A" (v->counter)
+-		: [a]"r" (a), [u]"r" (u)
+-		: "memory");
++	_arch_atomic_fetch_add_unless(prev, rc, v->counter, a, u, "w");
 +
- 		doutc(cl, "%p %llx.%llx gid %d -> %d\n", inode,
- 		      ceph_vinop(inode),
- 		      from_kgid(&init_user_ns, inode->i_gid),
- 		      from_kgid(&init_user_ns, attr->ia_gid));
- 		if (issued & CEPH_CAP_AUTH_EXCL) {
--			inode->i_gid = attr->ia_gid;
-+			inode->i_gid = fsgid;
- 			dirtied |= CEPH_CAP_AUTH_EXCL;
- 		} else if ((issued & CEPH_CAP_AUTH_SHARED) == 0 ||
--			   !gid_eq(attr->ia_gid, inode->i_gid)) {
-+			   !gid_eq(fsgid, inode->i_gid)) {
- 			req->r_args.setattr.gid = cpu_to_le32(
--				from_kgid(&init_user_ns, attr->ia_gid));
-+				from_kgid(&init_user_ns, fsgid));
- 			mask |= CEPH_SETATTR_GID;
- 			release |= CEPH_CAP_AUTH_SHARED;
- 		}
-@@ -2807,7 +2811,7 @@ int ceph_setattr(struct mnt_idmap *idmap, struct dentry *dentry,
- 	if (err)
- 		return err;
- 
--	err = setattr_prepare(&nop_mnt_idmap, dentry, attr);
-+	err = setattr_prepare(idmap, dentry, attr);
- 	if (err != 0)
- 		return err;
- 
-@@ -2822,7 +2826,7 @@ int ceph_setattr(struct mnt_idmap *idmap, struct dentry *dentry,
- 	err = __ceph_setattr(idmap, inode, attr, NULL);
- 
- 	if (err >= 0 && (attr->ia_valid & ATTR_MODE))
--		err = posix_acl_chmod(&nop_mnt_idmap, dentry, attr->ia_mode);
-+		err = posix_acl_chmod(idmap, dentry, attr->ia_mode);
- 
- 	return err;
+ 	return prev;
  }
+ #define arch_atomic_fetch_add_unless arch_atomic_fetch_add_unless
+@@ -222,77 +228,86 @@ static __always_inline s64 arch_atomic64_fetch_add_unless(atomic64_t *v, s64 a,
+        s64 prev;
+        long rc;
+ 
+-	__asm__ __volatile__ (
+-		"0:	lr.d     %[p],  %[c]\n"
+-		"	beq      %[p],  %[u], 1f\n"
+-		"	add      %[rc], %[p], %[a]\n"
+-		"	sc.d.rl  %[rc], %[rc], %[c]\n"
+-		"	bnez     %[rc], 0b\n"
+-		"	fence    rw, rw\n"
+-		"1:\n"
+-		: [p]"=&r" (prev), [rc]"=&r" (rc), [c]"+A" (v->counter)
+-		: [a]"r" (a), [u]"r" (u)
+-		: "memory");
++	_arch_atomic_fetch_add_unless(prev, rc, v->counter, a, u, "d");
++
+ 	return prev;
+ }
+ #define arch_atomic64_fetch_add_unless arch_atomic64_fetch_add_unless
+ #endif
+ 
++#define _arch_atomic_inc_unless_negative(_prev, _rc, counter, sfx)	\
++({									\
++	__asm__ __volatile__ (						\
++		"0:	lr." sfx "      %[p],  %[c]\n"			\
++		"	bltz            %[p],  1f\n"			\
++		"	addi            %[rc], %[p], 1\n"		\
++		"	sc." sfx ".rl   %[rc], %[rc], %[c]\n"		\
++		"	bnez            %[rc], 0b\n"			\
++		"	fence           rw, rw\n"			\
++		"1:\n"							\
++		: [p]"=&r" (_prev), [rc]"=&r" (_rc), [c]"+A" (counter)	\
++		:							\
++		: "memory");						\
++})
++
+ static __always_inline bool arch_atomic_inc_unless_negative(atomic_t *v)
+ {
+ 	int prev, rc;
+ 
+-	__asm__ __volatile__ (
+-		"0:	lr.w      %[p],  %[c]\n"
+-		"	bltz      %[p],  1f\n"
+-		"	addi      %[rc], %[p], 1\n"
+-		"	sc.w.rl   %[rc], %[rc], %[c]\n"
+-		"	bnez      %[rc], 0b\n"
+-		"	fence     rw, rw\n"
+-		"1:\n"
+-		: [p]"=&r" (prev), [rc]"=&r" (rc), [c]"+A" (v->counter)
+-		:
+-		: "memory");
++	_arch_atomic_inc_unless_negative(prev, rc, v->counter, "w");
++
+ 	return !(prev < 0);
+ }
+ 
+ #define arch_atomic_inc_unless_negative arch_atomic_inc_unless_negative
+ 
++#define _arch_atomic_dec_unless_positive(_prev, _rc, counter, sfx)	\
++({									\
++	__asm__ __volatile__ (						\
++		"0:	lr." sfx "      %[p],  %[c]\n"			\
++		"	bgtz            %[p],  1f\n"			\
++		"	addi            %[rc], %[p], -1\n"		\
++		"	sc." sfx ".rl   %[rc], %[rc], %[c]\n"		\
++		"	bnez            %[rc], 0b\n"			\
++		"	fence           rw, rw\n"			\
++		"1:\n"							\
++		: [p]"=&r" (_prev), [rc]"=&r" (_rc), [c]"+A" (counter)	\
++		:							\
++		: "memory");						\
++})
++
+ static __always_inline bool arch_atomic_dec_unless_positive(atomic_t *v)
+ {
+ 	int prev, rc;
+ 
+-	__asm__ __volatile__ (
+-		"0:	lr.w      %[p],  %[c]\n"
+-		"	bgtz      %[p],  1f\n"
+-		"	addi      %[rc], %[p], -1\n"
+-		"	sc.w.rl   %[rc], %[rc], %[c]\n"
+-		"	bnez      %[rc], 0b\n"
+-		"	fence     rw, rw\n"
+-		"1:\n"
+-		: [p]"=&r" (prev), [rc]"=&r" (rc), [c]"+A" (v->counter)
+-		:
+-		: "memory");
++	_arch_atomic_dec_unless_positive(prev, rc, v->counter, "w");
++
+ 	return !(prev > 0);
+ }
+ 
+ #define arch_atomic_dec_unless_positive arch_atomic_dec_unless_positive
+ 
++#define _arch_atomic_dec_if_positive(_prev, _rc, counter, sfx)		\
++({									\
++	__asm__ __volatile__ (						\
++		"0:	lr." sfx "     %[p],  %[c]\n"			\
++		"	addi           %[rc], %[p], -1\n"		\
++		"	bltz           %[rc], 1f\n"			\
++		"	sc." sfx ".rl  %[rc], %[rc], %[c]\n"		\
++		"	bnez           %[rc], 0b\n"			\
++		"	fence          rw, rw\n"			\
++		"1:\n"							\
++		: [p]"=&r" (_prev), [rc]"=&r" (_rc), [c]"+A" (counter)	\
++		:							\
++		: "memory");						\
++})
++
+ static __always_inline int arch_atomic_dec_if_positive(atomic_t *v)
+ {
+        int prev, rc;
+ 
+-	__asm__ __volatile__ (
+-		"0:	lr.w     %[p],  %[c]\n"
+-		"	addi     %[rc], %[p], -1\n"
+-		"	bltz     %[rc], 1f\n"
+-		"	sc.w.rl  %[rc], %[rc], %[c]\n"
+-		"	bnez     %[rc], 0b\n"
+-		"	fence    rw, rw\n"
+-		"1:\n"
+-		: [p]"=&r" (prev), [rc]"=&r" (rc), [c]"+A" (v->counter)
+-		:
+-		: "memory");
++	_arch_atomic_dec_if_positive(prev, rc, v->counter, "w");
++
+ 	return prev - 1;
+ }
+ 
+@@ -304,17 +319,8 @@ static __always_inline bool arch_atomic64_inc_unless_negative(atomic64_t *v)
+ 	s64 prev;
+ 	long rc;
+ 
+-	__asm__ __volatile__ (
+-		"0:	lr.d      %[p],  %[c]\n"
+-		"	bltz      %[p],  1f\n"
+-		"	addi      %[rc], %[p], 1\n"
+-		"	sc.d.rl   %[rc], %[rc], %[c]\n"
+-		"	bnez      %[rc], 0b\n"
+-		"	fence     rw, rw\n"
+-		"1:\n"
+-		: [p]"=&r" (prev), [rc]"=&r" (rc), [c]"+A" (v->counter)
+-		:
+-		: "memory");
++	_arch_atomic_inc_unless_negative(prev, rc, v->counter, "d");
++
+ 	return !(prev < 0);
+ }
+ 
+@@ -325,17 +331,8 @@ static __always_inline bool arch_atomic64_dec_unless_positive(atomic64_t *v)
+ 	s64 prev;
+ 	long rc;
+ 
+-	__asm__ __volatile__ (
+-		"0:	lr.d      %[p],  %[c]\n"
+-		"	bgtz      %[p],  1f\n"
+-		"	addi      %[rc], %[p], -1\n"
+-		"	sc.d.rl   %[rc], %[rc], %[c]\n"
+-		"	bnez      %[rc], 0b\n"
+-		"	fence     rw, rw\n"
+-		"1:\n"
+-		: [p]"=&r" (prev), [rc]"=&r" (rc), [c]"+A" (v->counter)
+-		:
+-		: "memory");
++	_arch_atomic_dec_unless_positive(prev, rc, v->counter, "d");
++
+ 	return !(prev > 0);
+ }
+ 
+@@ -346,17 +343,8 @@ static __always_inline s64 arch_atomic64_dec_if_positive(atomic64_t *v)
+        s64 prev;
+        long rc;
+ 
+-	__asm__ __volatile__ (
+-		"0:	lr.d     %[p],  %[c]\n"
+-		"	addi      %[rc], %[p], -1\n"
+-		"	bltz     %[rc], 1f\n"
+-		"	sc.d.rl  %[rc], %[rc], %[c]\n"
+-		"	bnez     %[rc], 0b\n"
+-		"	fence    rw, rw\n"
+-		"1:\n"
+-		: [p]"=&r" (prev), [rc]"=&r" (rc), [c]"+A" (v->counter)
+-		:
+-		: "memory");
++	_arch_atomic_dec_if_positive(prev, rc, v->counter, "d");
++
+ 	return prev - 1;
+ }
+ 
 -- 
-2.34.1
+2.41.0
 
