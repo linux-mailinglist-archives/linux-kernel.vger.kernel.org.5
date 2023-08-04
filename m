@@ -2,123 +2,194 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 98AAC7705DD
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 18:24:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0818B7705E4
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 18:24:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229957AbjHDQYJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Aug 2023 12:24:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39016 "EHLO
+        id S230054AbjHDQYk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Aug 2023 12:24:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39652 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229538AbjHDQYF (ORCPT
+        with ESMTP id S229538AbjHDQYh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Aug 2023 12:24:05 -0400
-Received: from mail-vs1-xe29.google.com (mail-vs1-xe29.google.com [IPv6:2607:f8b0:4864:20::e29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F4B049CB
-        for <linux-kernel@vger.kernel.org>; Fri,  4 Aug 2023 09:24:04 -0700 (PDT)
-Received: by mail-vs1-xe29.google.com with SMTP id ada2fe7eead31-4475ae93951so1013714137.0
-        for <linux-kernel@vger.kernel.org>; Fri, 04 Aug 2023 09:24:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=draconx-ca.20221208.gappssmtp.com; s=20221208; t=1691166243; x=1691771043;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :references:in-reply-to:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=RmkPH1Bvr/jHuXA813MIlzTOyB5g7yoVu7rMhg38M04=;
-        b=XnI4Z6pkgjcmwtZpv8x6FMkee1/nibtf7Ma/Bxz1Z3xMUHTxRp7FGYhpBQudDChZXX
-         qP+kzEQ9lw5o8Yj/sUnF7h5Wb82rIzuxXhfPad0xDXifitsP4yRPzL270zEf5zVZgfwt
-         1eDuI5+7HvHW1qWSAfkz8yQWcQsDdT1mIIsPfclZx654XRFuZg0xSCLKm1ql0koFaDYw
-         L2Ju/zD2mZEl2v6c+79OyU/DnpOvN7hlw5K3aPENfkdXLdQ0/pAGpggRTiq/CaaxFRwM
-         1s7QOW8h3djqEk9l6jc4o9QJbDcDP2wJwwkmJGxa2+vbtpxfNzoXRrJQNdIuP/AfpcSM
-         mx5Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691166243; x=1691771043;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :references:in-reply-to:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=RmkPH1Bvr/jHuXA813MIlzTOyB5g7yoVu7rMhg38M04=;
-        b=KACKNgDWlYtlchYcAyOBJ16i8RBBAlTuFyQuPPiPAAp11dcBUy97RCvyg6Tm1ErPFL
-         w6bvoKWwM+FbFWZVioPrOYXdlLogCkUmQoYi7FjSov42qfZbyIezJ145IRJBFaMrh5vZ
-         y7p2kzb7s6LvgHScA5PgVB+9ykblTAKcJLY2nx6pJIjdLZO2R4xZ9+mMpJBVpQgXW+Tm
-         oFjN43R1NmToC+y/0wz+Vf4TG+GKB0d+KnDaMnVljcPn2kPtV0Y/DsfqJiEAmCVTumKH
-         zMkyo1WXO0xXG5xG/Dj7tpqYeLFZY2NvstmbrPzk1yj3qqUe6BB06qwuz1PwKYkVfNis
-         9C3w==
-X-Gm-Message-State: AOJu0YxCpl6Tav/TK9TTqjGVa+kPIaudG4X8u7Z1LqBZLxZ200XXd55K
-        xSJGtEWFp7960hmZb2v7kKu7JBZn+1nyHtfPU3uGBg==
-X-Google-Smtp-Source: AGHT+IGI+M2wXRRcEDRe0zlkG6F9e0Pa2pCE+U3TAl/AgeY1J+EybttwtFgXosRog6vBFBA4Gmufj5GHXTGOx1DCYnc=
-X-Received: by 2002:a67:cd0a:0:b0:447:c1fd:4846 with SMTP id
- u10-20020a67cd0a000000b00447c1fd4846mr1835625vsl.22.1691166243247; Fri, 04
- Aug 2023 09:24:03 -0700 (PDT)
+        Fri, 4 Aug 2023 12:24:37 -0400
+Received: from NAM12-DM6-obe.outbound.protection.outlook.com (mail-dm6nam12on2084.outbound.protection.outlook.com [40.107.243.84])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EDF96170F
+        for <linux-kernel@vger.kernel.org>; Fri,  4 Aug 2023 09:24:24 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=FBDOLi7BtrevfpXB/V5t2aDJGwvicfV+FJIBz5oJpdxHUhNEqtRpLVZ+0So/fm3QITgsqu4VKavErtGeNlL2OHZ4JG5hw606HHxngd/a6B4hdwaYdLbdj4Ox7ktJD/cgd+gesITTlWv0IdAW7NFFXHRfiN/Iop0zHm6ldF3UhRVVSm64DMVVE7YOFw4CwgjTZH8Q+Av0C+LE+cQhhEP+FxzA6LHaNpNvR0lFItffWdlmYEBDSTzrCJIMhY0ALtCQc/ExoD2J9h/OuoPPjeVQWi1MJny2v6rsr41VuV7mbVpPLE0ReHmQuJNzS5mDruc8/JBn15mGaPai8SVAao5o2w==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=lt7xP9HjM9KYJVlQy6mKqcCGI34cgcHsd2VoVsIGnyE=;
+ b=i+BlGVFuqj5TsN7cGs40WxZOxjOUOMTfjKle5+z8vdXczpzQRT6f9BOPKSqiyLD7pDjQcSThQfwCQbGTowqP6WKx4svk8IFy2u5t2nhioWvllyZyPKt+jGvW1X6iSRo+xtNtq2TAZwznLBjSAWrNeKeqPQHwz8TYHeh4518L25kAA4akiLV7SxlMqFVdutdE4awhwoeIJjKwfex1/Tu+zfUQ1meZNdAvuDiFxtLcCGrSva/oOXLyGUiXgNiFE7IYEm5nlvfp2SkA6KwRCOCjcv2n8IkMvOCckRhnphoKiOMFMn8D6d7R1nuKbanl9e+BkLu5HsQIm1e5LQexjQDRqw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=lt7xP9HjM9KYJVlQy6mKqcCGI34cgcHsd2VoVsIGnyE=;
+ b=i4ryzqVA3ViLZJkfAxISN7ouxlrvVGY5vSWObzj1QOK10oG7QdsVrOxTYwA6VqW9tH2AMdrO46DgKskExEFQXjK0xCC0zhGaEmCxu3xo/uN0zw+hNroJ6KMZc2dDTWTeHmmNkhjKCO0M9Ku7kzHul0j4t/FPOV/CW5cFawf3OKI=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amd.com;
+Received: from BN9PR12MB5115.namprd12.prod.outlook.com (2603:10b6:408:118::14)
+ by DS7PR12MB8081.namprd12.prod.outlook.com (2603:10b6:8:e6::17) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6652.21; Fri, 4 Aug
+ 2023 16:24:22 +0000
+Received: from BN9PR12MB5115.namprd12.prod.outlook.com
+ ([fe80::ca28:efb4:a838:58fb]) by BN9PR12MB5115.namprd12.prod.outlook.com
+ ([fe80::ca28:efb4:a838:58fb%4]) with mapi id 15.20.6652.021; Fri, 4 Aug 2023
+ 16:24:21 +0000
+Message-ID: <c3ae568d-f941-2b66-1e36-9d67b6a231ea@amd.com>
+Date:   Fri, 4 Aug 2023 12:24:12 -0400
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.12.0
+Subject: Re: [PATCH] drm/amdkfd: fix build failure without
+ CONFIG_DYNAMIC_DEBUG
+To:     Arnd Bergmann <arnd@kernel.org>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
+        "Pan, Xinhui" <Xinhui.Pan@amd.com>,
+        Philip Yang <Philip.Yang@amd.com>,
+        Alex Sierra <alex.sierra@amd.com>
+Cc:     Arnd Bergmann <arnd@arndb.de>, David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Mukul Joshi <mukul.joshi@amd.com>,
+        Graham Sider <Graham.Sider@amd.com>,
+        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org
+References: <20230804132924.2314478-1-arnd@kernel.org>
+Content-Language: en-US
+From:   Felix Kuehling <felix.kuehling@amd.com>
+In-Reply-To: <20230804132924.2314478-1-arnd@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: YT4P288CA0075.CANP288.PROD.OUTLOOK.COM
+ (2603:10b6:b01:d0::8) To BN9PR12MB5115.namprd12.prod.outlook.com
+ (2603:10b6:408:118::14)
 MIME-Version: 1.0
-Received: by 2002:ab0:6209:0:b0:794:1113:bb24 with HTTP; Fri, 4 Aug 2023
- 09:24:02 -0700 (PDT)
-X-Originating-IP: [24.53.241.2]
-In-Reply-To: <CAL_JsqLrErF__GGHfanRFCpfbOh6fvz4-aJv32h8OfDjUeZPSg@mail.gmail.com>
-References: <CADyTPEzqf8oQAPSFRWJLxAhd-WE4fX2zdoe9Vu6V9hZMn1Yc8g@mail.gmail.com>
- <CAL_JsqLrErF__GGHfanRFCpfbOh6fvz4-aJv32h8OfDjUeZPSg@mail.gmail.com>
-From:   Nick Bowler <nbowler@draconx.ca>
-Date:   Fri, 4 Aug 2023 12:24:02 -0400
-Message-ID: <CADyTPEwgG0=R_b5DNBP0J0auDXu2BNTOwkSUFg-s7pLJUPC+Tg@mail.gmail.com>
-Subject: Re: PROBLEM: Broken or delayed ethernet on Xilinx ZCU104 since 5.18 (regression)
-To:     Rob Herring <robh@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        netdev@vger.kernel.org, regressions@lists.linux.dev
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: BN9PR12MB5115:EE_|DS7PR12MB8081:EE_
+X-MS-Office365-Filtering-Correlation-Id: 74827918-ee64-4105-39ea-08db9507424a
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: I53HyPyfPvwXBDIuUmVGr2aE35IgGYos1xdcsQsLXa7p2l5xTbGm1RKrpZPi/dHHdSFyz/IHkngQD8b2G5ZDP98XC8WMje1PGyzUVMHsJB004xJG9mC/5x8Ik7x3Ti8TAod0L3O2AiuJdpNL9W1Z+o5WDOb0Oy9/Hg0MqiT0lt2inlCeOrMQ43Ua6uxtFBg5kCTmWXCyNjB9HRWmfJbGz4XPZ8rovXKub7ENrVGwYE/mt/LcTmlPL/rQmzN3tfRIC6X8fD9x27h2cV74f0lghty9YV/M1qKCrBxkfTldWtvQwTF26omFvxiEhfZQgzkU6l4T2O6nehaa9G8Q9nHrhnFlyT+MDi2bY9CnITJ5kMi9wz6VlrTqyW3HGik8Ne3quxrHAHrhW5/uzbv7p2EdGaLXeXhRsGKjhtWnlWNYgtmZKctxbLzzrtn/Axx1S1L7dIA7BzGep2X0A0RhWjjcJoko4gTY95QV3SsEjwito9dz7jDiKoo2CCB0WIrymxq3c0C/qUfnOtlowCltxCq9tuRamPO/IYvhoGIOcon37xHYfUzg/KvVKA2YQoAf7hGdchrM+8aN4Jz5AtZsnWhKDMYZT6+eAnaIj95ILEp14yLubQ+rPcL9PyLlet5LXfACXVV4jS42bRM0hgCm+pxZYg==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN9PR12MB5115.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(366004)(396003)(346002)(136003)(39860400002)(376002)(451199021)(186006)(1800799003)(41300700001)(6636002)(4326008)(2906002)(66556008)(8676002)(8936002)(31686004)(5660300002)(66476007)(478600001)(44832011)(54906003)(110136005)(316002)(66946007)(86362001)(31696002)(6666004)(6486002)(6512007)(38100700002)(26005)(6506007)(36756003)(2616005)(53546011)(83380400001)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?cFJUemRtZzl4Nnd0Ky9kSXhMRzFOeENWMWZmTnNFOUY2MUxXRWRiTkVvZU80?=
+ =?utf-8?B?WmhnekFCWGJlc2xhTXRhWDdIeHVwYldqajk4VE1SWWhvNzcra2o1aDJKaEZQ?=
+ =?utf-8?B?VFVGS3BhTDdCeit2MENwR0VHVW1hcElDSkhZbGd5aTRXVUdrVUVjTC85c0hG?=
+ =?utf-8?B?WGYva1pYZDE2L3dMeUhSa2NxMUVDRjFBTlJnWmNUem5EV1pzd1RBUVB3N0s5?=
+ =?utf-8?B?Z01qRmx1MGN1Y3hhNVF5UGdBdlJLNjNUcG9kYkZ6S1gweEo2YXluMy9MSDBa?=
+ =?utf-8?B?UzdLK1MwNEVtRUJxNGdSbTd3WW8vaDB5TTJQNHF2OTRncHRMU0poY010VmxK?=
+ =?utf-8?B?aWF2M0c1c2k4OGIveTNOdU8yU1hZSTFtWHlZNVQ2ODFSY05ia0g1NlFObEdO?=
+ =?utf-8?B?OWZURnYveFluWlg5cUZNN0h6cytzNlRvVWxROVMvbWpPS3JBbCtjcWR2VWgw?=
+ =?utf-8?B?RVErcngvUXhYdEUrU2pyOFRpOENKVUNhS3R6ODJ3ZzdLN1hVTTdCNnRxNm16?=
+ =?utf-8?B?Y0s2bExBTjdqQ2gxMkgwS3drNisrYnBTaVZ3OHRzSGVtaE5SaXBpbzZHbDht?=
+ =?utf-8?B?bjlmdDNZU0l5UDl2dnlYS29nVkxLNkVGUFp6djV4eEFXdVBrV3N2OXoxbWE3?=
+ =?utf-8?B?bVlCeDM3YnU5clh2ZE0xb3ZnMW1qTzk0RGNuZ0xkUnRHdS9Ecll6NEM4WFBU?=
+ =?utf-8?B?MnFKdEo3N3FMK09jc1JNRzNIOXltNWpLMjRNdmdzd0ljZkw2RW96OXVFZGVw?=
+ =?utf-8?B?ZEVZVlBwWkcxTnJXYXZaeXl3MjJLNDByWTlsZFBwc3NqV2EyMXJTZ3NCUXNE?=
+ =?utf-8?B?QVVUOVZodS8xSE50Rzk4WWg0NitkbEYvUUpiN2hncVJ3eEhubEtOVjhmdC8y?=
+ =?utf-8?B?Z1VXQ3RmSDZNdE9HN1FwSEs3ZmJoWjdadWI3ZGl0WHRiWmFmL3FySjFXME1h?=
+ =?utf-8?B?enpzRTlQWVNib01BTWowSU5QTi9iMjVtL2I0MUZmanNCUGtMY3NHckFtZlRZ?=
+ =?utf-8?B?VUVJTWM1TTFyQUtlYUJqN3FnS3VmTjFNK25hSzN6WktiQndvbnYvWk95cHV3?=
+ =?utf-8?B?Rkh1WUFkdnE2Snh3cWo3eDA2WEk4T0JtNlFybFZJUC92emJwVk1RcktKQzNw?=
+ =?utf-8?B?c2VTSHdRSGRDTTZQYm50Tk4xTTVjc2pHZ01oR0lBVWRaVTM5TjNDNkVWZUpC?=
+ =?utf-8?B?QVNkUlBmV2k1R2ozOW1CdXdDamRiaGFyckxQOFljQkxha3g0bFNJeXRPYlJQ?=
+ =?utf-8?B?NXVTSzhEOXpVK2MrdWJVMWsybWZ4M1N3OGxMeTlqM0hGdy9Edk10ZjVQMEcr?=
+ =?utf-8?B?MHFZcEZtWnF3V3FoRk9ENjE1U3cyTTZJd0htRENna2IvYkFEeGlYMmlFd1Rm?=
+ =?utf-8?B?NkxrdnJsRWlvNk1udHRuZklmUUNMRERqdEpMbGVkOFI5MlJ6WW5HTFg4Z3Rw?=
+ =?utf-8?B?SVRqU3lYZXcyRGFkdG5ZUlNvVW9rODY2cUJXRG1WeDJXemR0S3BVU3Fybkt1?=
+ =?utf-8?B?aitBY3JUZGhzRkRsbit4MFVoWVBndUtER3JCRlc1VHVLQWI5UUV0MUhjVVda?=
+ =?utf-8?B?QXUrV2F1T2lENmRGcDJNVEk3YmVOcTFEM08zZWIrWWV4anpZU1lRbWFtcEla?=
+ =?utf-8?B?NC9ydEcwU0J6MGJZc3BRUW9KRGNRcFZtTFBPMVFNUnBicXdBd0dTTEhpYVJ6?=
+ =?utf-8?B?Q2pXZ3dzMzhadld4TjlyTC9oMDgyUVlHTzlNV01hT1hNOXdTZGZ4Y0pPRk9C?=
+ =?utf-8?B?bmQxWHhIeFpqK3RpQVI3bXBTS3pFZUNiSFlZOFdiRVp4bko4WHl0NUVMSDZ1?=
+ =?utf-8?B?YmFSNnZLTG9YbmYyS2drdWRYSE5rMHBhR2piTGRPNXB4WThnaDNoU0tRRkJI?=
+ =?utf-8?B?SzNUYzNyeFFWRjlEdVQ1Yk9yQkJoelpTN2dvWm5SZDNqQ2pBT1pwRVlvVWdy?=
+ =?utf-8?B?d0ptbUdLVStEdk1zS0hwL2N2ekNBTkpmUjJoR2U4ZGF3d0pFVDhhRWI0UFVT?=
+ =?utf-8?B?SERzZ0FqZ0dMNC9ONXRJVk14ZCszVGhOT1JoSVg1VmVLL1RrMkdLQVV0VFVm?=
+ =?utf-8?B?Rk9JaGlXbTBFSTIya3V4R015MFBUcXF5eWJtaDNiSHZiRVpZQWpPeGlLTHIv?=
+ =?utf-8?Q?D3tOVhCRQnV2xtY4RgpiooFTw?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 74827918-ee64-4105-39ea-08db9507424a
+X-MS-Exchange-CrossTenant-AuthSource: BN9PR12MB5115.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 Aug 2023 16:24:21.5561
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: a+DS3lnhPDfZ4Q2bjKWB90dqcuZPlNqYvatVXOkNPJTKXJZL1DrFQ9LYBvBm6va3ril9OzlcxYUhjMO/PXqW8A==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS7PR12MB8081
+X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 04/08/2023, Rob Herring <robh@kernel.org> wrote:
-> On Fri, Aug 4, 2023 at 9:27=E2=80=AFAM Nick Bowler <nbowler@draconx.ca> w=
-rote:
->>   commit e461bd6f43f4e568f7436a8b6bc21c4ce6914c36
->>   Author: Robert Hancock <robert.hancock@calian.com>
->>   Date:   Thu Jan 27 10:37:36 2022 -0600
->>
->>       arm64: dts: zynqmp: Added GEM reset definitions
->>
->> Reverting this fixes the problem on 5.18.  Reverting this fixes the
->> problem on 6.1.  Reverting this fixes the problem on 6.4.  In all of
->> these versions, with this change reverted, the network device appears
->> without delay.
+On 2023-08-04 9:29, Arnd Bergmann wrote:
+> From: Arnd Bergmann <arnd@arndb.de>
 >
-> With the above change, the kernel is going to be waiting for the reset
-> driver which either didn't exist or wasn't enabled in your config
-> (maybe kconfig needs to be tweaked to enable it automatically).
-
-The dts defines a reset-controller node with
-
-  compatible =3D "xlnx,zynqmp-reset"
-
-As far as I can see, this is supposed to be handled by the code in
-drivers/reset/zynqmp-reset.c driver, it is enabled by CONFIG_ARCH_ZYNQMP,
-and I have that set to "y", and it appears to be getting compiled in (that
-is, there is a drivers/reset/zynqmp-reset.o file in the build directory).
-
-However, unlike with the other firmware devices, I do not see this driver
-under /sys/bus/platform/drivers, and there is no "driver" symlink under
-/sys/bus/platform/devices/firmware:zynqmp-firmware:reset-controller
-
-Is there some other config option that I need?  Is the reset driver just
-completely not working?
-
->> Unfortunately, it seems this is not sufficient to correct the problem on
->> 6.5-rc4 -- there is no apparent change in behaviour, so maybe there is
->> a new, different problem?
+> When CONFIG_DYNAMIC_DEBUG is disabled altogether, calling
+> _dynamic_func_call_no_desc() does not work:
 >
-> Probably. You might check what changed with fw_devlink in that period.
-> (Offhand, I don't recall many changes)
+> drivers/gpu/drm/amd/amdgpu/../amdkfd/kfd_svm.c: In function 'svm_range_set_attr':
+> drivers/gpu/drm/amd/amdgpu/../amdkfd/kfd_svm.c:52:9: error: implicit declaration of function '_dynamic_func_call_no_desc' [-Werror=implicit-function-declaration]
+>     52 |         _dynamic_func_call_no_desc("svm_range_dump", svm_range_debug_dump, svms)
+>        |         ^~~~~~~~~~~~~~~~~~~~~~~~~~
+> drivers/gpu/drm/amd/amdgpu/../amdkfd/kfd_svm.c:3564:9: note: in expansion of macro 'dynamic_svm_range_dump'
+>   3564 |         dynamic_svm_range_dump(svms);
+>        |         ^~~~~~~~~~~~~~~~~~~~~~
 >
->> I guess I can kick off another bisection to find out when this revert
->> stops fixing things...
+> Add a compile-time conditional in addition to the runtime check.
 >
-> That always helps.
+> Fixes: 8923137dbe4b2 ("drm/amdkfd: avoid svm dump when dynamic debug disabled")
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 
-I'll do that.
+The patch is
+
+Reviewed-by: Felix Kuehling <Felix.Kuehling@amd.com>
+
+I'm applying it to amd-staging-drm-next.
 
 Thanks,
-  Nick
+   Felix
+
+
+> ---
+>   drivers/gpu/drm/amd/amdkfd/kfd_svm.c | 6 ++++++
+>   1 file changed, 6 insertions(+)
+>
+> diff --git a/drivers/gpu/drm/amd/amdkfd/kfd_svm.c b/drivers/gpu/drm/amd/amdkfd/kfd_svm.c
+> index 308384dbc502d..44e710821b6d9 100644
+> --- a/drivers/gpu/drm/amd/amdkfd/kfd_svm.c
+> +++ b/drivers/gpu/drm/amd/amdkfd/kfd_svm.c
+> @@ -23,6 +23,7 @@
+>   
+>   #include <linux/types.h>
+>   #include <linux/sched/task.h>
+> +#include <linux/dynamic_debug.h>
+>   #include <drm/ttm/ttm_tt.h>
+>   #include <drm/drm_exec.h>
+>   
+> @@ -48,8 +49,13 @@
+>    * page table is updated.
+>    */
+>   #define AMDGPU_SVM_RANGE_RETRY_FAULT_PENDING	(2UL * NSEC_PER_MSEC)
+> +#if IS_ENABLED(CONFIG_DYNAMIC_DEBUG)
+>   #define dynamic_svm_range_dump(svms) \
+>   	_dynamic_func_call_no_desc("svm_range_dump", svm_range_debug_dump, svms)
+> +#else
+> +#define dynamic_svm_range_dump(svms) \
+> +	do { if (0) svm_range_debug_dump(svms); } while (0)
+> +#endif
+>   
+>   /* Giant svm range split into smaller ranges based on this, it is decided using
+>    * minimum of all dGPU/APU 1/32 VRAM size, between 2MB to 1GB and alignment to
