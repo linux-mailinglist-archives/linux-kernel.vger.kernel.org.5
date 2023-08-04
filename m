@@ -2,126 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B9E51770657
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 18:52:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3802B770658
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 18:52:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230475AbjHDQwZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Aug 2023 12:52:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57286 "EHLO
+        id S229835AbjHDQwb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Aug 2023 12:52:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57344 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229527AbjHDQwV (ORCPT
+        with ESMTP id S229527AbjHDQw2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Aug 2023 12:52:21 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D4EF1994
-        for <linux-kernel@vger.kernel.org>; Fri,  4 Aug 2023 09:51:44 -0700 (PDT)
+        Fri, 4 Aug 2023 12:52:28 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D1A3422B
+        for <linux-kernel@vger.kernel.org>; Fri,  4 Aug 2023 09:51:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1691167903;
+        s=mimecast20190719; t=1691167909;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=+vP0dlW9cj+ApxHox6i9vs6i/QXMBGte1ysC4SvGPpc=;
-        b=WEouO3sSiuzCm6dEOJTgEFDHVeq9PnmJez7gijg0heAuPxxHt1JSiUZpenjTQvEyrhx9w8
-        OQICACbpXuhFOIbCFxOCpocXp9FFIIyGgl7VOqLImv7m5XfUpyQbCWwN6i9XA8z/y8Gu/n
-        iMl+kDil4+Q2MkfPeKVDdrdP732INkU=
-Received: from mail-oi1-f199.google.com (mail-oi1-f199.google.com
- [209.85.167.199]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-74-B4_FPGVYPpuXxDp3_W4_4g-1; Fri, 04 Aug 2023 12:51:42 -0400
-X-MC-Unique: B4_FPGVYPpuXxDp3_W4_4g-1
-Received: by mail-oi1-f199.google.com with SMTP id 5614622812f47-3a72b2a52e5so3729176b6e.3
-        for <linux-kernel@vger.kernel.org>; Fri, 04 Aug 2023 09:51:41 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691167901; x=1691772701;
-        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
-         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=+vP0dlW9cj+ApxHox6i9vs6i/QXMBGte1ysC4SvGPpc=;
-        b=cAs2O3HmpnP+7GiilgRywNNMHwMS1/v8XWmrK8ALicCnea+rqyYHlHqo6Mki9UEmxX
-         w5kJ4tU3ffBCIOYd3TARE/4r+dNsU3f5Oa6zwq/4Buv6z5NWsBWZo7vysA/qVu6HLR//
-         z16lKy+rwtYD32lh2j6ECjuZHiwt99c5tWQsygI61w+DWCnQz6/mJxTnDvMa1Blrl2w+
-         PPX1S7unSujnV6khqq+txDdnDyuLLN6hclJhfj+QPHlerQPrPNHiSjy5GOH+/RlGLV5r
-         pF2Q/ERKCOMvAhTZ6ri/QkxY0nxiUqnA5x+O8Kjl8NoraT4vtFcF78hX9186c9vUY61O
-         G5jw==
-X-Gm-Message-State: AOJu0Yy9AWjypoL15Ytz1tPWsP0dFyRfTkGo0wPOHDI8Y89siTQmr1Gx
-        b13Hp/7IlSxIXUVFl8y41bzqEi6vF7duhI4tsmfYWYnAwiIFUFH4BVkz+s/hrhZlZoZuGbBQ/Ny
-        5MLbvC4tguy4QiCqnJu/J1vGE
-X-Received: by 2002:a05:6808:e88:b0:3a1:d1d9:d59c with SMTP id k8-20020a0568080e8800b003a1d1d9d59cmr3264674oil.33.1691167901377;
-        Fri, 04 Aug 2023 09:51:41 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IGTPxIsm1c2cbX9Vb17Ch6ysG77QB/wTtj/fSLqgqSPY1KXpy+17/4mg3wGKDD4xNAKQ91FXg==
-X-Received: by 2002:a05:6808:e88:b0:3a1:d1d9:d59c with SMTP id k8-20020a0568080e8800b003a1d1d9d59cmr3264664oil.33.1691167901150;
-        Fri, 04 Aug 2023 09:51:41 -0700 (PDT)
-Received: from localhost ([181.120.144.238])
-        by smtp.gmail.com with ESMTPSA id i10-20020a056808030a00b003a3611eb6ddsm1203016oie.19.2023.08.04.09.51.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 04 Aug 2023 09:51:40 -0700 (PDT)
-From:   Javier Martinez Canillas <javierm@redhat.com>
-To:     Arthur Grillo <arthurgrillo@riseup.net>,
-        linux-kernel@vger.kernel.org
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        David Airlie <airlied@gmail.com>, Helge Deller <deller@gmx.de>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        dri-devel@lists.freedesktop.org
-Subject: Re: [PATCH] drm: Drop select FRAMEBUFFER_CONSOLE for
- DRM_FBDEV_EMULATION
-In-Reply-To: <7950bcea-0f15-da2e-e4f7-4bfa474a420f@riseup.net>
-References: <20230804125156.1387542-1-javierm@redhat.com>
- <7950bcea-0f15-da2e-e4f7-4bfa474a420f@riseup.net>
-Date:   Fri, 04 Aug 2023 18:51:38 +0200
-Message-ID: <87pm42g38l.fsf@minerva.mail-host-address-is-not-set>
+        bh=EFe9NXRVWZZcjHmuHznmjHqL0ggt547E/jdYJJf8j2A=;
+        b=IYuuCRjAqvjQgSpSmfZclpOFw1yyTnWCMHYgI/yG+ynBaQdqN0W5J1nTfSeq4+aznsyfx3
+        psoW44s7QOMzqy6fe3h7ZRNxOCbXxVagSasxcN+le8cJE0c6waXOjgMFbx7yYyHj4PGQ33
+        4QwaPg3LOb7GIgFsQFGxbzZ85NslhlY=
+Received: from mimecast-mx02.redhat.com (66.187.233.73 [66.187.233.73]) by
+ relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-201-UIvp98hPNJyvQR9q9dIcrQ-1; Fri, 04 Aug 2023 12:51:48 -0400
+X-MC-Unique: UIvp98hPNJyvQR9q9dIcrQ-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.rdu2.redhat.com [10.11.54.3])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 8C8783C100CB;
+        Fri,  4 Aug 2023 16:51:47 +0000 (UTC)
+Received: from [10.22.33.115] (unknown [10.22.33.115])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 4694E112132D;
+        Fri,  4 Aug 2023 16:51:47 +0000 (UTC)
+Message-ID: <458ac4d2-bb8a-0359-f198-dd53f4c84bd3@redhat.com>
+Date:   Fri, 4 Aug 2023 12:51:47 -0400
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.7.1
+Subject: Re: [PATCH v3] perf/arm-dmc620: Fix
+ dmc620_pmu_irqs_lock/cpu_hotplug_lock circular lock dependency
+Content-Language: en-US
+To:     Will Deacon <will@kernel.org>
+Cc:     Mark Rutland <mark.rutland@arm.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Robin Murphy <robin.murphy@arm.com>
+References: <20230722031729.3913953-1-longman@redhat.com>
+ <20230728150614.GF21718@willie-the-truck>
+ <62d4b353-0237-9ec6-a63e-8a7a6764aba5@redhat.com>
+ <20230804162812.GC30679@willie-the-truck>
+From:   Waiman Long <longman@redhat.com>
+In-Reply-To: <20230804162812.GC30679@willie-the-truck>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 3.1 on 10.11.54.3
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Arthur Grillo <arthurgrillo@riseup.net> writes:
+On 8/4/23 12:28, Will Deacon wrote:
+>>>>    struct dmc620_pmu {
+>>>> @@ -423,9 +424,14 @@ static struct dmc620_pmu_irq *__dmc620_pmu_get_irq(int irq_num)
+>>>>    	struct dmc620_pmu_irq *irq;
+>>>>    	int ret;
+>>>> -	list_for_each_entry(irq, &dmc620_pmu_irqs, irqs_node)
+>>>> -		if (irq->irq_num == irq_num && refcount_inc_not_zero(&irq->refcount))
+>>>> +	list_for_each_entry(irq, &dmc620_pmu_irqs, irqs_node) {
+>>>> +		if (irq->irq_num != irq_num)
+>>>> +			continue;
+>>>> +		if (!irq->valid)
+>>>> +			return ERR_PTR(-EAGAIN);	/* Try again later */
+>>> It looks like this can bubble up to the probe() routine. Does the driver
+>>> core handle -EAGAIN coming back from a probe routine?
+>> Right, I should add code to handle this error condition. I think it can be
+>> handled in dmc620_pmu_get_irq(). The important thing is to release the
+>> mutex, wait a few ms and try again. What do you think?
+> I don't really follow, but waiting a few ms and trying again sounds like
+> a really nasty hack for something which doesn't appear to be constrained
+> by broken hardware. In other words, we got ourselves into this mess, so
+> we should be able to resolve it properly.
 
-> On 04/08/23 09:51, Javier Martinez Canillas wrote:
->> The commit c242f48433e7 ("drm: Make FB_CORE to be selected if DRM fbdev
->> emulation is enabled") changed DRM_FBDEV_EMULATION from 'depends on FB'
->> to an effective 'select FB_CORE', so any config that previously had DRM=y
->> and FB=n now has FB_CORE=y and FRAMEBUFFER_CONSOLE=y.
->> 
->> This leads to unmet direct dependencies detected for FRAMEBUFFER_CONSOLE
->> as reported by Arthur Grillo, e.g:
->> 
->> WARNING: unmet direct dependencies detected for FRAMEBUFFER_CONSOLE
->>   Depends on [n]: VT [=n] && FB_CORE [=y] && !UML [=y]
->>   Selected by [y]:
->>   - DRM_FBDEV_EMULATION [=y] && HAS_IOMEM [=y] && DRM [=y] && !EXPERT [=n]
->> 
->> Arnd Bergmann suggests to drop the select FRAMEBUFFER_CONSOLE for the
->> DRM_FBDEV_EMULATION Kconfig symbol, since a possible use case could
->> be to enable DRM fbdev emulation but without a framebuffer console.
->> 
->> Fixes: c242f48433e7 ("drm: Make FB_CORE to be selected if DRM fbdev emulation is enabled")
->> Reported-by: Arthur Grillo <arthurgrillo@riseup.net>
->> Closes: https://lore.kernel.org/dri-devel/20230726220325.278976-1-arthurgrillo@riseup.net
->> Suggested-by: Arnd Bergmann <arnd@arndb.de>
->> Signed-off-by: Javier Martinez Canillas <javierm@redhat.com>
->> ---
->
-> Greate patch! I was about to send the same one XD.
->
-> Reviewed-by: Arthur Grillo <arthurgrillo@riseup.net>
->
+ From my point of view, the proper way to solve the problem is to 
+reverse the locking order. Since you don't to add a EXPORT statement to 
+the core kernel code, we will have to find a way around it by not 
+holding the dmc620_pmu_irqs_lock when cpuhp_state_add_instance_nocalls() 
+is called. Another alternative that I can think of is to add one more 
+mutex that we will hold just for the entirety of  __dmc620_pmu_get_irq() 
+and take dmc620_pmu_irqs_lock only when the linked list is being 
+modified. That will eliminate the need to introduce arbitrary wait as 
+other caller of __dmc620_pmu_get_irq() will wait in the new mutex. Will 
+this work for you?
 
-Pushed to drm-misc (drm-misc-next). Thanks!
-
--- 
-Best regards,
-
-Javier Martinez Canillas
-Core Platforms
-Red Hat
+Cheers,
+Longman
 
