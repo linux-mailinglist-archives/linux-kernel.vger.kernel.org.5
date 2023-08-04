@@ -2,119 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E822F76F92B
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 06:53:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 80FB276F92D
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 06:56:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232981AbjHDEx3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Aug 2023 00:53:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38654 "EHLO
+        id S232987AbjHDE4X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Aug 2023 00:56:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39156 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232818AbjHDExG (ORCPT
+        with ESMTP id S232443AbjHDE4S (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Aug 2023 00:53:06 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 485C52D49;
-        Thu,  3 Aug 2023 21:53:04 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id CBF2561F23;
-        Fri,  4 Aug 2023 04:53:03 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9D0AAC433C7;
-        Fri,  4 Aug 2023 04:53:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1691124783;
-        bh=H0r420Rv0jy6sbduYNWFrMk8bU+2FH4efv4MEVBrzMk=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=D4cGJjtV8HI447xvYWdb3TtixgaYUV4PkbGZAkQwzpTeDXuW6Jj/iHFtyrvaMEgDg
-         PYe7vOi2o78mzoGYJpOAdiiv0m5N94xeuL4QAZJQJEN1X23SDJBT7L3ncQ6bmQaGRf
-         ZZ/qzezvQvEnP9vVTShhbv9jCz/WuArL/djMoQcQ=
-Date:   Fri, 4 Aug 2023 06:53:00 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Hugo Villeneuve <hugo@hugovil.com>, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        jirislaby@kernel.org, jringle@gridpoint.com,
-        isaac.true@canonical.com, jesse.sung@canonical.com,
-        l.perczak@camlintechnologies.com, tomasz.mon@camlingroup.com,
-        linux-serial@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org,
-        Hugo Villeneuve <hvilleneuve@dimonoff.com>,
-        stable@vger.kernel.org, Lech Perczak <lech.perczak@camlingroup.com>
-Subject: Re: [PATCH v9 06/10] serial: sc16is7xx: fix regression with GPIO
- configuration
-Message-ID: <2023080434-outcast-preheated-29b1@gregkh>
-References: <20230725142343.1724130-1-hugo@hugovil.com>
- <20230725142343.1724130-7-hugo@hugovil.com>
- <2023073105-elevation-canister-2777@gregkh>
- <20230803101814.39a61229d81dcd3e96cbe8ee@hugovil.com>
- <CAHp75VdCqqZfQXRRWUkbDTf_gd3T60Stp+m59Q34iWxddLiG5g@mail.gmail.com>
+        Fri, 4 Aug 2023 00:56:18 -0400
+Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42C244226;
+        Thu,  3 Aug 2023 21:56:17 -0700 (PDT)
+Received: by mail-pf1-x42e.google.com with SMTP id d2e1a72fcca58-686c06b806cso1209054b3a.2;
+        Thu, 03 Aug 2023 21:56:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1691124977; x=1691729777;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=/eHfAQPBbBkch39+4DVNDl4OjmPDthClYpWhqWwd4JE=;
+        b=TjBfgpSkhP8bGjYxDPmWGrhGPMznIowaeh4SWMkAGqMzsdhQUe2aigQ0Eg2SCUGh8l
+         kPjGjo4kAAc2RCm9Us/KbQF1SkMMJT8TVIc4f/h8zs+IGawEUeCLOJFSxpEIyrptbIfB
+         ETAiEfBqtE/H/w4H2U6ewoUAa+e+HVhWuaHToNdRA+hWi3lWo5JA+9RtAWPJpOb6mSk8
+         FUy7J3Er7AMgyQBK2UIfPwlbGn8f/OiWj1l044yc78tVUysSJteh7VTn0TEu8x2zT3LK
+         tEunxS0wlCTH4C1tq8o6wWIfEHsyEk0X8pB3UaCIFFhxyFwuemyXYqsRN8Yp2nl5rNO7
+         mMRg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691124977; x=1691729777;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=/eHfAQPBbBkch39+4DVNDl4OjmPDthClYpWhqWwd4JE=;
+        b=HAVib4hEYEr1+TzmKxeakscbacKO3J5pecG5NcjSSuwgiiQgkoa3NjxELB/BrfPyVC
+         vHcz+DGe7ol+cS/XfppAU4qbE5DTYuXNJPctvXv8TWDO5nluMilUqlHHd44VEc/RuphD
+         +dA6V1zlbUJlqzj/V5j9Qlg6IhL6NQ7O5M0RyG0FRGMteMPawfL8er/59CdOP1iuAP19
+         etKddEZqNIp7Ei8ZH+vUdL4U11HqE5oHCnWwwPsvY5ggLBKEAtF4Tub57AcSUzylPdze
+         uLmP9yrRjChb8OJecLPuFiEf/5XzXHOl0Ww6NcOSFSWOPYiodSHQoh/W6mQMn5ISjDyu
+         ITUg==
+X-Gm-Message-State: AOJu0Yzq+7sVdIOgLyc1Dt8p6P7TTu9aH+q31zqjoTcq/u/ugqP9kw1T
+        Ul8iw9mwIwksJanM+dHj67M=
+X-Google-Smtp-Source: AGHT+IENLKZYCcOhv/BWrcaX4ZEruyz71Ke6GAWDWoyw47ImxqKKmIpDnPRLxx5DXy/ng8trLzyDbg==
+X-Received: by 2002:a05:6a00:1488:b0:687:2d68:f30d with SMTP id v8-20020a056a00148800b006872d68f30dmr683853pfu.23.1691124976588;
+        Thu, 03 Aug 2023 21:56:16 -0700 (PDT)
+Received: from rajgad.hsd1.ca.comcast.net ([2601:204:df00:9cd0:9428:7df2:aef6:7a3e])
+        by smtp.gmail.com with ESMTPSA id fe23-20020a056a002f1700b006875be41637sm669371pfb.145.2023.08.03.21.56.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 03 Aug 2023 21:56:16 -0700 (PDT)
+From:   Atul Raut <rauji.raut@gmail.com>
+To:     kvalo@kernel.org
+Cc:     linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-kernel-mentees@lists.linuxfoundation.org
+Subject: [PATCH v2] ath6kl: replace one-element array with flexible-array member
+Date:   Thu,  3 Aug 2023 21:55:54 -0700
+Message-Id: <20230804045554.6934-1-rauji.raut@gmail.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAHp75VdCqqZfQXRRWUkbDTf_gd3T60Stp+m59Q34iWxddLiG5g@mail.gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 04, 2023 at 12:04:29AM +0300, Andy Shevchenko wrote:
-> On Thu, Aug 3, 2023 at 5:18 PM Hugo Villeneuve <hugo@hugovil.com> wrote:
-> > On Mon, 31 Jul 2023 17:58:41 +0200
-> > Greg KH <gregkh@linuxfoundation.org> wrote:
-> > > On Tue, Jul 25, 2023 at 10:23:38AM -0400, Hugo Villeneuve wrote:
-> 
-> ...
-> 
-> > > > Fixes: 679875d1d880 ("sc16is7xx: Separate GPIOs from modem control lines")
-> > > > Fixes: 21144bab4f11 ("sc16is7xx: Handle modem status lines")
-> > > > Cc: <stable@vger.kernel.org> # 6.1.x: 95982fad dt-bindings: sc16is7xx: Add property to change GPIO function
-> > > > Cc: <stable@vger.kernel.org> # 6.1.x: 1584d572 serial: sc16is7xx: refactor GPIO controller registration
-> > > > Cc: <stable@vger.kernel.org> # 6.1.x: ac2caa5a serial: sc16is7xx: remove obsolete out_thread label
-> > > > Cc: <stable@vger.kernel.org> # 6.1.x: d90961ad serial: sc16is7xx: mark IOCONTROL register as volatile
-> > > > Cc: <stable@vger.kernel.org> # 6.1.x: 6dae3bad serial: sc16is7xx: fix broken port 0 uart init
-> > >
-> > > Where are these git commit ids from?  I don't see them in Linus's tree,
-> > > how are they supposed to be picked up by the stable developers if they
-> > > are not valid ones?
-> > >
-> > > confused,
-> 
-> ...
-> 
-> > I wrongly assumed that, for example, this patch had, as a prerequisite,
-> > all the patches before it in this series, and that is why I listed
-> > them.
+One-element arrays are no longer relevant, and their
+place has been taken by flexible array members thus,
+use a flexible-array member to replace the one-element
+array in struct ath6kl_usb_ctrl_diag_cmd_write
 
-That's fine, but if you have already marked those patches for stable
-inclusion, no need to list them here too.
+This fixes warnings such as:
+./drivers/net/wireless/ath/ath6kl/usb.c:109:8-12: WARNING use flexible-array member instead (https://www.kernel.org/doc/html/latest/process/deprecated.html#zero-length-and-one-element-arrays)
 
-> The problem, as I understand it, is not that you listed them (how else
-> will the backporter know that this patch requires something else?) but
-> the format (you used wrong SHA-1 sums).
+Signed-off-by: Atul Raut <rauji.raut@gmail.com>
+---
+ drivers/net/wireless/ath/ath6kl/usb.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Exactly, those are invalid sha1 values.
+diff --git a/drivers/net/wireless/ath/ath6kl/usb.c b/drivers/net/wireless/ath/ath6kl/usb.c
+index 5220809841a6..c8ecc9e85897 100644
+--- a/drivers/net/wireless/ath/ath6kl/usb.c
++++ b/drivers/net/wireless/ath/ath6kl/usb.c
+@@ -106,7 +106,7 @@ struct ath6kl_usb_ctrl_diag_cmd_write {
+ 	__le32 cmd;
+ 	__le32 address;
+ 	__le32 value;
+-	__le32 _pad[1];
++	__le32 _pad[];
+ } __packed;
+ 
+ struct ath6kl_usb_ctrl_diag_cmd_read {
+-- 
+2.34.1
 
-> > So I will remove them all, since this patch doesn't have any other
-> > requisites other than the previous patches in this series.
-> >
-> > Maybe it would be good to add some notes about that in
-> > stable-kernel-rules.rst?
-> 
-> This probably is a good idea. Briefly looking at it I see no examples
-> like yours there.
-
-Because it's not a thing?  Just mark all of these patches in the series
-as cc: stable@ and all will happen automatically for you.  Nothing
-fancy or complex here, happens daily in other subsystems just fine :)
-
-thanks,
-
-greg k-h
