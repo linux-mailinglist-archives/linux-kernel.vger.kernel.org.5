@@ -2,145 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DDCD7770566
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 17:58:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3AFC077056A
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 17:59:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230071AbjHDP6w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Aug 2023 11:58:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52796 "EHLO
+        id S231297AbjHDP7p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Aug 2023 11:59:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53154 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229555AbjHDP6u (ORCPT
+        with ESMTP id S229555AbjHDP7n (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Aug 2023 11:58:50 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3C952D71;
-        Fri,  4 Aug 2023 08:58:48 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 5771D62077;
-        Fri,  4 Aug 2023 15:58:48 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 275F2C433C7;
-        Fri,  4 Aug 2023 15:58:45 +0000 (UTC)
-Date:   Fri, 4 Aug 2023 11:58:43 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Marco Elver <elver@google.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Kees Cook <keescook@chromium.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Oliver Upton <oliver.upton@linux.dev>,
-        James Morse <james.morse@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Zenghui Yu <yuzenghui@huawei.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Tom Rix <trix@redhat.com>, Miguel Ojeda <ojeda@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
-        linux-kernel@vger.kernel.org, llvm@lists.linux.dev,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Alexander Potapenko <glider@google.com>,
-        kasan-dev@googlegroups.com, linux-toolchains@vger.kernel.org
-Subject: Re: [PATCH v2 1/3] compiler_types: Introduce the Clang
- __preserve_most function attribute
-Message-ID: <20230804115843.5be5f2b2@gandalf.local.home>
-In-Reply-To: <20230804090621.400-1-elver@google.com>
-References: <20230804090621.400-1-elver@google.com>
-X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        Fri, 4 Aug 2023 11:59:43 -0400
+Received: from mail-vk1-xa34.google.com (mail-vk1-xa34.google.com [IPv6:2607:f8b0:4864:20::a34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91CF8170F;
+        Fri,  4 Aug 2023 08:59:42 -0700 (PDT)
+Received: by mail-vk1-xa34.google.com with SMTP id 71dfb90a1353d-48719fc6b18so402213e0c.1;
+        Fri, 04 Aug 2023 08:59:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1691164781; x=1691769581;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Sw3xh+PMtP2yuJR1nFYspmq9wxfYxKQfnC9fvCILIlQ=;
+        b=afQhVBJw3yxE80g2NnA1he1WE3lgXw4xUGeu427SsD/JdIrD6Ztqt1XuaqU1vb8r5F
+         OOHFPU0caPI55jFspqHSKKfXF+x2zKeMHwhuZoPbFoSlJ4obYxgGEcbaHE6uARNqz/NL
+         gd3HB1UO663b8Ve3zANadUhqL9NYm+Ejo9MajFDH1adXo/+jixja1ozwqBtcJUG4TxH1
+         p+a8jxakaT2anrAUrDVXkSyIPa9oYe733iLJFKxXCsG1Z4vfomt7bolARAZNK05k4yqH
+         ijh19kh4fLeWW0IVt2IJanjVay6uxEjmpOO3BE8LQ/VOKfI3nVuV98DakZuwWPcfU+UQ
+         vgzw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691164781; x=1691769581;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Sw3xh+PMtP2yuJR1nFYspmq9wxfYxKQfnC9fvCILIlQ=;
+        b=c4QroOZEGViD88WTe3+ng4NZGok4pDbtjB+3mG5MGXwhIJwGF7NcfdC3+G/GLY8d7A
+         JFg4+pvjjGhJgV7mAMK7X7IJ0UIZvnSEbga6I4xS3kC7byxAoMybA4A1vuHjLkDz4sD3
+         j3m+kkSq2ZEiVmFnKpcVhwxioawwoeA7KBjjNNiUm6C0oYwWqR9t5jtFD8dViS9a1JT6
+         nnaaYzxqGTP8LBzxW6kssAWrTMZU56RlGIBQlhMz8BDW8R69QaivOm3+b+yE3DvsErlM
+         SimuA2xThidptavxOPNo1dm63j6lQ1Gec5egenOTBW99DYH705Mvis6zdzEIBjEF1E4T
+         W86A==
+X-Gm-Message-State: AOJu0Ywl+GdJPJ39gMLOWkGmKGIJg/8dOdbpZrBMI4zk6/zl7rRTDBlK
+        STyEryeeFl2JheK7d9dE75TFpgbF1h6NNKkRoxk=
+X-Google-Smtp-Source: AGHT+IHVJyr2VPvbwXl96CS2++6bMajvUEaWTD3SfCdliP+x9YtE5vm6tsqwDHhgIrl14+DbEiE7B8he2KP0NFLq1KA=
+X-Received: by 2002:a1f:bd4b:0:b0:487:1bc8:4638 with SMTP id
+ n72-20020a1fbd4b000000b004871bc84638mr1442446vkf.0.1691164781532; Fri, 04 Aug
+ 2023 08:59:41 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
+References: <20230727093637.1262110-1-usama.anjum@collabora.com>
+ <20230727093637.1262110-3-usama.anjum@collabora.com> <ZMvDCeUN8qrUmnJV@gmail.com>
+ <CABb0KFF7K2SHvSwXMheVAgd3VcJf_twuRsc=P-uTJW9HGQcqfA@mail.gmail.com>
+In-Reply-To: <CABb0KFF7K2SHvSwXMheVAgd3VcJf_twuRsc=P-uTJW9HGQcqfA@mail.gmail.com>
+From:   Andrei Vagin <avagin@gmail.com>
+Date:   Fri, 4 Aug 2023 08:59:30 -0700
+Message-ID: <CANaxB-ytK5QNP4K4L3T=-F6sLc5kD6HjHc_C3U2sdTtBDgbmCg@mail.gmail.com>
+Subject: Re: [PATCH v26 2/5] fs/proc/task_mmu: Implement IOCTL to get and
+ optionally clear info about PTEs
+To:     =?UTF-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <emmir@google.com>
+Cc:     Muhammad Usama Anjum <usama.anjum@collabora.com>,
+        Peter Xu <peterx@redhat.com>,
+        David Hildenbrand <david@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Danylo Mocherniuk <mdanylo@google.com>,
+        Paul Gofman <pgofman@codeweavers.com>,
+        Cyrill Gorcunov <gorcunov@gmail.com>,
+        Mike Rapoport <rppt@kernel.org>, Nadav Amit <namit@vmware.com>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Shuah Khan <shuah@kernel.org>,
+        Christian Brauner <brauner@kernel.org>,
+        Yang Shi <shy828301@gmail.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        "Liam R . Howlett" <Liam.Howlett@oracle.com>,
+        Yun Zhou <yun.zhou@windriver.com>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Alex Sierra <alex.sierra@amd.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Pasha Tatashin <pasha.tatashin@soleen.com>,
+        Axel Rasmussen <axelrasmussen@google.com>,
+        "Gustavo A . R . Silva" <gustavoars@kernel.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-mm@kvack.org, linux-kselftest@vger.kernel.org,
+        Greg KH <gregkh@linuxfoundation.org>, kernel@collabora.com,
+        =?UTF-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri,  4 Aug 2023 11:02:56 +0200
-Marco Elver <elver@google.com> wrote:
+On Thu, Aug 3, 2023 at 8:25=E2=80=AFAM Micha=C5=82 Miros=C5=82aw <emmir@goo=
+gle.com> wrote:
+>
+> On Thu, 3 Aug 2023 at 17:09, Andrei Vagin <avagin@gmail.com> wrote:
+> > On Thu, Jul 27, 2023 at 02:36:34PM +0500, Muhammad Usama Anjum wrote:
+> [...]
+> > > +     n_pages =3D (*end - addr) / PAGE_SIZE;
+> > > +     if (check_add_overflow(p->found_pages, n_pages, &total_pages) |=
+|
+> > > +         total_pages > p->arg.max_pages) {
+> >
+> > why do we need to use check_add_overflow here?
+> >
+> > > +             size_t n_too_much =3D total_pages - p->arg.max_pages;
+> >
+> > it is unsafe to use total_pages if check_add_overflow returns non-zero.
+>
+> Since we're adding unsigned integers, this is well defined even after ove=
+rflow.
 
-> [1]: "On X86-64 and AArch64 targets, this attribute changes the calling
-> convention of a function. The preserve_most calling convention attempts
-> to make the code in the caller as unintrusive as possible. This
-> convention behaves identically to the C calling convention on how
-> arguments and return values are passed, but it uses a different set of
-> caller/callee-saved registers. This alleviates the burden of saving and
-> recovering a large register set before and after the call in the
-> caller."
-> 
-> [1] https://clang.llvm.org/docs/AttributeReference.html#preserve-most
-> 
-> Introduce the attribute to compiler_types.h as __preserve_most.
-> 
-> Use of this attribute results in better code generation for calls to
-> very rarely called functions, such as error-reporting functions, or
-> rarely executed slow paths.
-> 
-> Beware that the attribute conflicts with instrumentation calls inserted
-> on function entry which do not use __preserve_most themselves. Notably,
-> function tracing which assumes the normal C calling convention for the
-> given architecture.  Where the attribute is supported, __preserve_most
-> will imply notrace. It is recommended to restrict use of the attribute
-> to functions that should or already disable tracing.
-> 
-> Signed-off-by: Marco Elver <elver@google.com>
-> ---
-> v2:
-> * Imply notrace, to avoid any conflicts with tracing which is inserted
->   on function entry. See added comments.
+The description of check_add_overflow declares that is unsafe:
+https://elixir.bootlin.com/linux/latest/source/include/linux/overflow.h#L62
 
-Acked-by: Steven Rostedt (Google) <rostedt@goodmis.org>
+It actually doesn't matter, because it should be impossible to
+overflow total_pages
+and we can consider not to use check_add_overflow here.
 
--- Steve
-
-> ---
->  include/linux/compiler_types.h | 27 +++++++++++++++++++++++++++
->  1 file changed, 27 insertions(+)
-> 
-> diff --git a/include/linux/compiler_types.h b/include/linux/compiler_types.h
-> index 547ea1ff806e..12c4540335b7 100644
-> --- a/include/linux/compiler_types.h
-> +++ b/include/linux/compiler_types.h
-> @@ -106,6 +106,33 @@ static inline void __chk_io_ptr(const volatile void __iomem *ptr) { }
->  #define __cold
->  #endif
->  
-> +/*
-> + * On x86-64 and arm64 targets, __preserve_most changes the calling convention
-> + * of a function to make the code in the caller as unintrusive as possible. This
-> + * convention behaves identically to the C calling convention on how arguments
-> + * and return values are passed, but uses a different set of caller- and callee-
-> + * saved registers.
-> + *
-> + * The purpose is to alleviates the burden of saving and recovering a large
-> + * register set before and after the call in the caller.  This is beneficial for
-> + * rarely taken slow paths, such as error-reporting functions that may be called
-> + * from hot paths.
-> + *
-> + * Note: This may conflict with instrumentation inserted on function entry which
-> + * does not use __preserve_most or equivalent convention (if in assembly). Since
-> + * function tracing assumes the normal C calling convention, where the attribute
-> + * is supported, __preserve_most implies notrace.
-> + *
-> + * Optional: not supported by gcc.
-> + *
-> + * clang: https://clang.llvm.org/docs/AttributeReference.html#preserve-most
-> + */
-> +#if __has_attribute(__preserve_most__)
-> +# define __preserve_most notrace __attribute__((__preserve_most__))
-> +#else
-> +# define __preserve_most
-> +#endif
-> +
->  /* Builtins */
->  
->  /*
-
+>
+> Best Regards
+> Micha=C5=82 Miros=C5=82aw
