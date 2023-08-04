@@ -2,25 +2,25 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F051876FD00
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 11:14:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2873476FD01
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 11:15:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230302AbjHDJO5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Aug 2023 05:14:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60944 "EHLO
+        id S230310AbjHDJPB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Aug 2023 05:15:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60942 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230248AbjHDJOR (ORCPT
+        with ESMTP id S230235AbjHDJOR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 4 Aug 2023 05:14:17 -0400
 Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4F284ECD;
-        Fri,  4 Aug 2023 02:11:48 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 075E84ECE;
+        Fri,  4 Aug 2023 02:11:50 -0700 (PDT)
 Received: from mail02.huawei.com (unknown [172.30.67.143])
-        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4RHKhx4cp4z4f403j;
-        Fri,  4 Aug 2023 17:11:45 +0800 (CST)
+        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4RHKhy1Pqtz4f3lCw;
+        Fri,  4 Aug 2023 17:11:46 +0800 (CST)
 Received: from huaweicloud.com (unknown [10.174.178.55])
-        by APP4 (Coremail) with SMTP id gCh0CgBH_rHLwMxk2KskPg--.58335S6;
-        Fri, 04 Aug 2023 17:11:45 +0800 (CST)
+        by APP4 (Coremail) with SMTP id gCh0CgBH_rHLwMxk2KskPg--.58335S7;
+        Fri, 04 Aug 2023 17:11:47 +0800 (CST)
 From:   thunder.leizhen@huaweicloud.com
 To:     Petr Mladek <pmladek@suse.com>,
         Sergey Senozhatsky <senozhatsky@chromium.org>,
@@ -45,20 +45,20 @@ To:     Petr Mladek <pmladek@suse.com>,
         Zqiang <qiang.zhang1211@gmail.com>, rcu@vger.kernel.org,
         linux-kernel@vger.kernel.org
 Cc:     Zhen Lei <thunder.leizhen@huawei.com>
-Subject: [PATCH v6 2/5] hexdump: minimize the output width of the offset
-Date:   Fri,  4 Aug 2023 17:11:32 +0800
-Message-Id: <20230804091136.1177-3-thunder.leizhen@huaweicloud.com>
+Subject: [PATCH v6 3/5] mm: Remove kmem_valid_obj()
+Date:   Fri,  4 Aug 2023 17:11:33 +0800
+Message-Id: <20230804091136.1177-4-thunder.leizhen@huaweicloud.com>
 X-Mailer: git-send-email 2.37.3.windows.1
 In-Reply-To: <20230804091136.1177-1-thunder.leizhen@huaweicloud.com>
 References: <20230804091136.1177-1-thunder.leizhen@huaweicloud.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: gCh0CgBH_rHLwMxk2KskPg--.58335S6
-X-Coremail-Antispam: 1UD129KBjvJXoW7Kr1fZw1kGw45uw18Zr1rtFb_yoW8uFyxpF
-        nxK34YgFZ7Jr1Ikr17Ar10gF1YkFyUA3W0yFWqk34qqF4UWF15JrWkKFW3tFy5Jr4qqrsx
-        Jr9rtw1Fyr17GaUanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUBEb4IE77IF4wAFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k2
-        6cxKx2IYs7xG6r1S6rWUM7CIcVAFz4kK6r1j6r18M28IrcIa0xkI8VA2jI8067AKxVWUXw
+X-CM-TRANSID: gCh0CgBH_rHLwMxk2KskPg--.58335S7
+X-Coremail-Antispam: 1UD129KBjvJXoWxZr1ftry5Jr4fXr1fKF1rZwb_yoWrCrWkpw
+        nxGr9xJFW8Jr1xGrsrJF1kurW5Zr4kuF17Ca9aqw18Ar1UXrs7ur1kG3s2qF98GFW8XF10
+        ya1vkF43uryUArDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUPjb4IE77IF4wAFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k2
+        6cxKx2IYs7xG6r1S6rWUM7CIcVAFz4kK6r1j6r18M28IrcIa0xkI8VA2jI8067AKxVWUWw
         A2048vs2IY020Ec7CjxVAFwI0_Xr0E3s1l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxS
         w2x7M28EF7xvwVC0I7IYx2IY67AKxVW7JVWDJwA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxV
         W8Jr0_Cr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I0E14v2
@@ -69,8 +69,8 @@ X-Coremail-Antispam: 1UD129KBjvJXoW7Kr1fZw1kGw45uw18Zr1rtFb_yoW8uFyxpF
         Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVW8ZVWrXwCIc40Y0x
         0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVWx
         JVW8Jr1lIxAIcVCF04k26cxKx2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14v26r1j6r4UMI
-        IF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x07UtR67UUUUU
-        =
+        IF0xvEx4A2jsIEc7CjxVAFwI0_Gr1j6F4UJbIYCTnIWIevJa73UjIFyTuYvjxUFR6zUUUU
+        U
 X-CM-SenderInfo: hwkx0vthuozvpl2kv046kxt4xhlfz01xgou0bp/
 X-CFilter-Loop: Reflected
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,KHOP_HELO_FCRDNS,
@@ -83,76 +83,131 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Zhen Lei <thunder.leizhen@huawei.com>
 
-The offset of case DUMP_PREFIX_OFFSET always starts from 0. Currently,
-the output width is fixed to 8. Therefore, the high-order bits filled
-with zeros are meaningless except for increasing the number of characters
-to be printed. Let's minimize the output width of the offset to improve
-readability.
+Function kmem_dump_obj() will splat if passed a pointer to a non-slab
+object. So no one will call it directly. It is always necessary to call
+kmem_valid_obj() first to determine whether the passed pointer to a
+valid slab object. Then merging kmem_valid_obj() into kmem_dump_obj()
+will make the code more concise. So convert kmem_dump_obj() to work the
+same way as vmalloc_dump_obj(). After this, no one calls kmem_valid_obj()
+anymore, and it can be safely removed.
 
-Before:
-dump_size=36:
-00000000: c0 ba 8c 80 00 80 ff ff 6c 93 ee 2f ee bf ff ff
-00000010: 00 50 1e 98 ff 27 ff ff 01 00 00 00 00 00 00 00
-00000020: 80 ca 2f 98
-
-After:
-dump_size=8:
-0: c0 ba 89 80 00 80 ff ff
-
-dump_size=36:
-00: c0 3a 91 80 00 80 ff ff 6c 93 ae 76 30 ce ff ff
-10: 00 60 cd 60 7d 4e ff ff 01 00 00 00 00 00 00 00
-20: 40 9e 29 40
-
-dump_size=300:
-000: c0 ba 8d 80 00 80 ff ff 6c 93 ce d4 78 a7 ff ff
-010: 00 00 16 18 0c 40 ff ff 01 00 00 00 00 00 00 00
-020: 01 00 00 00 00 00 00 00 e8 bc 8d 80 00 80 ff ff
-... ...
-110: 02 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-120: 00 08 12 01 0c 40 ff ff 00 00 01 00
-
+Suggested-by: Matthew Wilcox <willy@infradead.org>
 Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
+Reviewed-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+Acked-by: Vlastimil Babka <vbabka@suse.cz>
 ---
- lib/hexdump.c | 13 +++++++++++--
- 1 file changed, 11 insertions(+), 2 deletions(-)
+ include/linux/slab.h |  5 +++--
+ mm/slab_common.c     | 41 +++++++++++------------------------------
+ mm/util.c            |  4 +---
+ 3 files changed, 15 insertions(+), 35 deletions(-)
 
-diff --git a/lib/hexdump.c b/lib/hexdump.c
-index 247c8765cc7ca3f..d3c5b7bb1b8813b 100644
---- a/lib/hexdump.c
-+++ b/lib/hexdump.c
-@@ -263,12 +263,21 @@ void print_hex_dump(const char *level, const char *prefix_str, int prefix_type,
- 		    const void *buf, size_t len, bool ascii)
+diff --git a/include/linux/slab.h b/include/linux/slab.h
+index 848c7c82ad5ad0b..d8ed2e810ec4448 100644
+--- a/include/linux/slab.h
++++ b/include/linux/slab.h
+@@ -244,8 +244,9 @@ DEFINE_FREE(kfree, void *, if (_T) kfree(_T))
+ size_t ksize(const void *objp);
+ 
+ #ifdef CONFIG_PRINTK
+-bool kmem_valid_obj(void *object);
+-void kmem_dump_obj(void *object);
++bool kmem_dump_obj(void *object);
++#else
++static inline bool kmem_dump_obj(void *object) { return false; }
+ #endif
+ 
+ /*
+diff --git a/mm/slab_common.c b/mm/slab_common.c
+index d1555ea2981ac51..ee6ed6dd7ba9fa5 100644
+--- a/mm/slab_common.c
++++ b/mm/slab_common.c
+@@ -528,26 +528,6 @@ bool slab_is_available(void)
+ }
+ 
+ #ifdef CONFIG_PRINTK
+-/**
+- * kmem_valid_obj - does the pointer reference a valid slab object?
+- * @object: pointer to query.
+- *
+- * Return: %true if the pointer is to a not-yet-freed object from
+- * kmalloc() or kmem_cache_alloc(), either %true or %false if the pointer
+- * is to an already-freed object, and %false otherwise.
+- */
+-bool kmem_valid_obj(void *object)
+-{
+-	struct folio *folio;
+-
+-	/* Some arches consider ZERO_SIZE_PTR to be a valid address. */
+-	if (object < (void *)PAGE_SIZE || !virt_addr_valid(object))
+-		return false;
+-	folio = virt_to_folio(object);
+-	return folio_test_slab(folio);
+-}
+-EXPORT_SYMBOL_GPL(kmem_valid_obj);
+-
+ static void kmem_obj_info(struct kmem_obj_info *kpp, void *object, struct slab *slab)
  {
- 	const u8 *ptr = buf;
--	int i, linelen, remaining = len;
-+	int i, linelen, width = 0, remaining = len;
- 	unsigned char linebuf[32 * 3 + 2 + 32 + 1];
+ 	if (__kfence_obj_info(kpp, object, slab))
+@@ -566,11 +546,11 @@ static void kmem_obj_info(struct kmem_obj_info *kpp, void *object, struct slab *
+  * and, if available, the slab name, return address, and stack trace from
+  * the allocation and last free path of that object.
+  *
+- * This function will splat if passed a pointer to a non-slab object.
+- * If you are not sure what type of object you have, you should instead
+- * use mem_dump_obj().
++ * Return: %true if the pointer is to a not-yet-freed object from
++ * kmalloc() or kmem_cache_alloc(), either %true or %false if the pointer
++ * is to an already-freed object, and %false otherwise.
+  */
+-void kmem_dump_obj(void *object)
++bool kmem_dump_obj(void *object)
+ {
+ 	char *cp = IS_ENABLED(CONFIG_MMU) ? "" : "/vmalloc";
+ 	int i;
+@@ -578,13 +558,13 @@ void kmem_dump_obj(void *object)
+ 	unsigned long ptroffset;
+ 	struct kmem_obj_info kp = { };
  
- 	if (rowsize != 16 && rowsize != 32)
- 		rowsize = 16;
+-	if (WARN_ON_ONCE(!virt_addr_valid(object)))
+-		return;
++	/* Some arches consider ZERO_SIZE_PTR to be a valid address. */
++	if (object < (void *)PAGE_SIZE || !virt_addr_valid(object))
++		return false;
+ 	slab = virt_to_slab(object);
+-	if (WARN_ON_ONCE(!slab)) {
+-		pr_cont(" non-slab memory.\n");
+-		return;
+-	}
++	if (!slab)
++		return false;
++
+ 	kmem_obj_info(&kp, object, slab);
+ 	if (kp.kp_slab_cache)
+ 		pr_cont(" slab%s %s", cp, kp.kp_slab_cache->name);
+@@ -621,6 +601,7 @@ void kmem_dump_obj(void *object)
+ 		pr_info("    %pS\n", kp.kp_free_stack[i]);
+ 	}
  
-+	if (prefix_type == DUMP_PREFIX_OFFSET) {
-+		unsigned long tmp = len;
-+
-+		do {
-+			width++;
-+			tmp >>= 4;
-+		} while (tmp);
-+	}
-+
- 	for (i = 0; i < len; i += rowsize) {
- 		linelen = min(remaining, rowsize);
- 		remaining -= rowsize;
-@@ -286,7 +295,7 @@ void print_hex_dump(const char *level, const char *prefix_str, int prefix_type,
- 			       prefix_str, 0xffff & (unsigned long)(ptr + i), linebuf);
- 			break;
- 		case DUMP_PREFIX_OFFSET:
--			printk("%s%s%.8x: %s\n", level, prefix_str, i, linebuf);
-+			printk("%s%s%0*x: %s\n", level, prefix_str, width, i, linebuf);
- 			break;
- 		default:
- 			printk("%s%s%s\n", level, prefix_str, linebuf);
++	return true;
+ }
+ EXPORT_SYMBOL_GPL(kmem_dump_obj);
+ #endif
+diff --git a/mm/util.c b/mm/util.c
+index dd12b9531ac4cad..ddfbb22dc1876d3 100644
+--- a/mm/util.c
++++ b/mm/util.c
+@@ -1063,10 +1063,8 @@ void mem_dump_obj(void *object)
+ {
+ 	const char *type;
+ 
+-	if (kmem_valid_obj(object)) {
+-		kmem_dump_obj(object);
++	if (kmem_dump_obj(object))
+ 		return;
+-	}
+ 
+ 	if (vmalloc_dump_obj(object))
+ 		return;
 -- 
 2.34.1
 
