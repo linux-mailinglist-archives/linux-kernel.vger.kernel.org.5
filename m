@@ -2,45 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 712897701A5
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 15:32:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0155A7701B5
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 15:34:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230383AbjHDNci (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Aug 2023 09:32:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44784 "EHLO
+        id S229448AbjHDNd4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Aug 2023 09:33:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46778 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230271AbjHDNcd (ORCPT
+        with ESMTP id S230171AbjHDNdx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Aug 2023 09:32:33 -0400
+        Fri, 4 Aug 2023 09:33:53 -0400
 Received: from pegase1.c-s.fr (pegase1.c-s.fr [93.17.236.30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 248DB3595;
-        Fri,  4 Aug 2023 06:32:16 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1892F30F6;
+        Fri,  4 Aug 2023 06:33:31 -0700 (PDT)
 Received: from localhost (mailhub3.si.c-s.fr [192.168.12.233])
-        by localhost (Postfix) with ESMTP id 4RHRRw0pXwz9tG6;
-        Fri,  4 Aug 2023 15:30:52 +0200 (CEST)
+        by localhost (Postfix) with ESMTP id 4RHRRz2mBjz9tG7;
+        Fri,  4 Aug 2023 15:30:55 +0200 (CEST)
 X-Virus-Scanned: amavisd-new at c-s.fr
 Received: from pegase1.c-s.fr ([192.168.12.234])
         by localhost (pegase1.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id HfZcoc1Bb-al; Fri,  4 Aug 2023 15:30:52 +0200 (CEST)
+        with ESMTP id ygnqWhLlc0eA; Fri,  4 Aug 2023 15:30:55 +0200 (CEST)
 Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase1.c-s.fr (Postfix) with ESMTP id 4RHRRr2mVwz9tG7;
+        by pegase1.c-s.fr (Postfix) with ESMTP id 4RHRRr33BKz9tG9;
         Fri,  4 Aug 2023 15:30:48 +0200 (CEST)
 Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 593EA8B778;
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 62D9F8B775;
         Fri,  4 Aug 2023 15:30:48 +0200 (CEST)
 X-Virus-Scanned: amavisd-new at c-s.fr
 Received: from messagerie.si.c-s.fr ([127.0.0.1])
         by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id TZ1mdcPbhWDF; Fri,  4 Aug 2023 15:30:48 +0200 (CEST)
+        with ESMTP id BfnYCR1sjsWd; Fri,  4 Aug 2023 15:30:48 +0200 (CEST)
 Received: from PO20335.IDSI0.si.c-s.fr (unknown [192.168.232.144])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id A16EF8B776;
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id A94538B77A;
         Fri,  4 Aug 2023 15:30:47 +0200 (CEST)
 Received: from PO20335.IDSI0.si.c-s.fr (localhost [127.0.0.1])
-        by PO20335.IDSI0.si.c-s.fr (8.17.1/8.16.1) with ESMTPS id 374DUeKN693353
+        by PO20335.IDSI0.si.c-s.fr (8.17.1/8.16.1) with ESMTPS id 374DUeDK693357
         (version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=NOT);
-        Fri, 4 Aug 2023 15:30:40 +0200
+        Fri, 4 Aug 2023 15:30:41 +0200
 Received: (from chleroy@localhost)
-        by PO20335.IDSI0.si.c-s.fr (8.17.1/8.17.1/Submit) id 374DUesE693352;
+        by PO20335.IDSI0.si.c-s.fr (8.17.1/8.17.1/Submit) id 374DUeYB693356;
         Fri, 4 Aug 2023 15:30:40 +0200
 X-Authentication-Warning: PO20335.IDSI0.si.c-s.fr: chleroy set sender to christophe.leroy@csgroup.eu using -f
 From:   Christophe Leroy <christophe.leroy@csgroup.eu>
@@ -54,14 +54,14 @@ To:     "David S. Miller" <davem@davemloft.net>,
 Cc:     Christophe Leroy <christophe.leroy@csgroup.eu>,
         linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
         linuxppc-dev@lists.ozlabs.org
-Subject: [PATCH net-next v2 08/10] net: fs_enet: Don't include fs_enet_pd.h when not needed
-Date:   Fri,  4 Aug 2023 15:30:18 +0200
-Message-ID: <de62ad1261a801c4a8ae4238bd4842ff278d2ddf.1691155347.git.christophe.leroy@csgroup.eu>
+Subject: [PATCH net-next v2 09/10] net: fs_enet: Remove linux/fs_enet_pd.h
+Date:   Fri,  4 Aug 2023 15:30:19 +0200
+Message-ID: <5be102791c987792ad127b15543ee6715394cf67.1691155347.git.christophe.leroy@csgroup.eu>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <cover.1691155346.git.christophe.leroy@csgroup.eu>
 References: <cover.1691155346.git.christophe.leroy@csgroup.eu>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1691155810; l=1659; i=christophe.leroy@csgroup.eu; s=20211009; h=from:subject:message-id; bh=wiYZJaVAd6C6hv7T6eDAPFilwlr4eeTyZnzPcByG1cc=; b=eTgm0DsrTNZLL3mMVSmqDyjjASK9lxEc4Y6ee2Pk6exwR+4PtVejVpYZtHpx19pE6Qdf2/5w/ 5GQKfqoT11LDfx2tTTvtL+jGLX0wCrmbYmE5Q9afbrmG6yT70Smtbea
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1691155810; l=3315; i=christophe.leroy@csgroup.eu; s=20211009; h=from:subject:message-id; bh=ahI/5xn7Gm1hdcNAly2aG36Caa0YBSZ+1UeBWlU8m/k=; b=KPDE4U4W3ysFmp85V7vFALwjrzpOziYCsd2YJ0sy7nGSmsgAMp4BpAmVul3FWqQ28+ox3YfZh edu0CV8ObuACXLSdWQ2jMi2h+HnGMLZpQOlI3b7lbBvFJefP52JcAgI
 X-Developer-Key: i=christophe.leroy@csgroup.eu; a=ed25519; pk=HIzTzUj91asvincQGOFx6+ZF5AoUuP9GdOtQChs7Mm0=
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
@@ -73,54 +73,153 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Three platforms in arch/powerpc/platforms/8xx/ include fs_enet_pd.h
-but don't use anything from it.
+linux/fs_enet_pd.h is not used anymore.
 
-Remove the includes.
+Remove it.
 
 Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
 ---
- arch/powerpc/platforms/8xx/adder875.c        | 1 -
- arch/powerpc/platforms/8xx/mpc885ads_setup.c | 1 -
- arch/powerpc/platforms/8xx/tqm8xx_setup.c    | 1 -
- 3 files changed, 3 deletions(-)
+ MAINTAINERS                |   1 -
+ include/linux/fs_enet_pd.h | 118 -------------------------------------
+ 2 files changed, 119 deletions(-)
+ delete mode 100644 include/linux/fs_enet_pd.h
 
-diff --git a/arch/powerpc/platforms/8xx/adder875.c b/arch/powerpc/platforms/8xx/adder875.c
-index 7e83eb6746f4..f6bd232f8323 100644
---- a/arch/powerpc/platforms/8xx/adder875.c
-+++ b/arch/powerpc/platforms/8xx/adder875.c
-@@ -7,7 +7,6 @@
-  */
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 5e2bb1059ab6..5bf1be70e4a9 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -8371,7 +8371,6 @@ L:	linuxppc-dev@lists.ozlabs.org
+ L:	netdev@vger.kernel.org
+ S:	Maintained
+ F:	drivers/net/ethernet/freescale/fs_enet/
+-F:	include/linux/fs_enet_pd.h
  
- #include <linux/init.h>
--#include <linux/fs_enet_pd.h>
- #include <linux/of_platform.h>
- 
- #include <asm/time.h>
-diff --git a/arch/powerpc/platforms/8xx/mpc885ads_setup.c b/arch/powerpc/platforms/8xx/mpc885ads_setup.c
-index 2fc7cacbcd96..c7c4f082b838 100644
---- a/arch/powerpc/platforms/8xx/mpc885ads_setup.c
-+++ b/arch/powerpc/platforms/8xx/mpc885ads_setup.c
-@@ -21,7 +21,6 @@
- #include <linux/device.h>
- #include <linux/delay.h>
- 
--#include <linux/fs_enet_pd.h>
- #include <linux/fs_uart_pd.h>
- #include <linux/fsl_devices.h>
- #include <linux/mii.h>
-diff --git a/arch/powerpc/platforms/8xx/tqm8xx_setup.c b/arch/powerpc/platforms/8xx/tqm8xx_setup.c
-index 7d8eb50bb9cd..6e56be852b2c 100644
---- a/arch/powerpc/platforms/8xx/tqm8xx_setup.c
-+++ b/arch/powerpc/platforms/8xx/tqm8xx_setup.c
-@@ -24,7 +24,6 @@
- #include <linux/device.h>
- #include <linux/delay.h>
- 
--#include <linux/fs_enet_pd.h>
- #include <linux/fs_uart_pd.h>
- #include <linux/fsl_devices.h>
- #include <linux/mii.h>
+ FREESCALE SOC SOUND DRIVERS
+ M:	Shengjiu Wang <shengjiu.wang@gmail.com>
+diff --git a/include/linux/fs_enet_pd.h b/include/linux/fs_enet_pd.h
+deleted file mode 100644
+index 7c9897dab558..000000000000
+--- a/include/linux/fs_enet_pd.h
++++ /dev/null
+@@ -1,118 +0,0 @@
+-/*
+- * Platform information definitions for the
+- * universal Freescale Ethernet driver.
+- *
+- * Copyright (c) 2003 Intracom S.A. 
+- *  by Pantelis Antoniou <panto@intracom.gr>
+- *
+- * 2005 (c) MontaVista Software, Inc. 
+- * Vitaly Bordug <vbordug@ru.mvista.com>
+- *
+- * This file is licensed under the terms of the GNU General Public License 
+- * version 2. This program is licensed "as is" without any warranty of any 
+- * kind, whether express or implied.
+- */
+-
+-#ifndef FS_ENET_PD_H
+-#define FS_ENET_PD_H
+-
+-#include <linux/clk.h>
+-#include <linux/string.h>
+-#include <linux/of_mdio.h>
+-#include <linux/if_ether.h>
+-#include <asm/types.h>
+-
+-#define FS_ENET_NAME	"fs_enet"
+-
+-enum fs_id {
+-	fsid_fec1,
+-	fsid_fec2,
+-	fsid_fcc1,
+-	fsid_fcc2,
+-	fsid_fcc3,
+-	fsid_scc1,
+-	fsid_scc2,
+-	fsid_scc3,
+-	fsid_scc4,
+-};
+-
+-#define FS_MAX_INDEX	9
+-
+-static inline int fs_get_fec_index(enum fs_id id)
+-{
+-	if (id >= fsid_fec1 && id <= fsid_fec2)
+-		return id - fsid_fec1;
+-	return -1;
+-}
+-
+-static inline int fs_get_fcc_index(enum fs_id id)
+-{
+-	if (id >= fsid_fcc1 && id <= fsid_fcc3)
+-		return id - fsid_fcc1;
+-	return -1;
+-}
+-
+-static inline int fs_get_scc_index(enum fs_id id)
+-{
+-	if (id >= fsid_scc1 && id <= fsid_scc4)
+-		return id - fsid_scc1;
+-	return -1;
+-}
+-
+-static inline int fs_fec_index2id(int index)
+-{
+-	int id = fsid_fec1 + index - 1;
+-	if (id >= fsid_fec1 && id <= fsid_fec2)
+-		return id;
+-	return FS_MAX_INDEX;
+-		}
+-
+-static inline int fs_fcc_index2id(int index)
+-{
+-	int id = fsid_fcc1 + index - 1;
+-	if (id >= fsid_fcc1 && id <= fsid_fcc3)
+-		return id;
+-	return FS_MAX_INDEX;
+-}
+-
+-static inline int fs_scc_index2id(int index)
+-{
+-	int id = fsid_scc1 + index - 1;
+-	if (id >= fsid_scc1 && id <= fsid_scc4)
+-		return id;
+-	return FS_MAX_INDEX;
+-}
+-
+-enum fs_mii_method {
+-	fsmii_fixed,
+-	fsmii_fec,
+-	fsmii_bitbang,
+-};
+-
+-enum fs_ioport {
+-	fsiop_porta,
+-	fsiop_portb,
+-	fsiop_portc,
+-	fsiop_portd,
+-	fsiop_porte,
+-};
+-
+-struct fs_mii_bit {
+-	u32 offset;
+-	u8 bit;
+-	u8 polarity;
+-};
+-struct fs_mii_bb_platform_info {
+-	struct fs_mii_bit 	mdio_dir;
+-	struct fs_mii_bit 	mdio_dat;
+-	struct fs_mii_bit	mdc_dat;
+-	int delay;	/* delay in us         */
+-	int irq[32]; 	/* irqs per phy's */
+-};
+-
+-struct fs_mii_fec_platform_info {
+-	u32 irq[32];
+-	u32 mii_speed;
+-};
+-
+-#endif
 -- 
 2.41.0
 
