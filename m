@@ -2,52 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2713277054F
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 17:54:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 89B4F770551
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 17:55:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232126AbjHDPyP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Aug 2023 11:54:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49506 "EHLO
+        id S232182AbjHDPzH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Aug 2023 11:55:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50160 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229723AbjHDPyN (ORCPT
+        with ESMTP id S231598AbjHDPzE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Aug 2023 11:54:13 -0400
-Received: from mail.ispras.ru (mail.ispras.ru [83.149.199.84])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC5BAB2;
-        Fri,  4 Aug 2023 08:54:11 -0700 (PDT)
-Received: from localhost.localdomain (unknown [46.242.14.200])
-        by mail.ispras.ru (Postfix) with ESMTPSA id 599B740737A6;
-        Fri,  4 Aug 2023 15:54:09 +0000 (UTC)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mail.ispras.ru 599B740737A6
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ispras.ru;
-        s=default; t=1691164449;
-        bh=YvUW9Cp+Mgnt3NWK0TLcArIpRQkO34R2ZFK4uY/nVAY=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=i3fmj5v0XOM8fy738lUg5Z/9hLHpFdfPe6MKTPXqwVa9at2oGAbq7NWeNnCddU+qn
-         6tyEnnuur68eUKg99cSn5nsEiIIk4/59BJI4LXT6wZWxSRKzbNZV7PREX4D0y8ECS5
-         7Fx6ICbUXuKFNA1bB4mShBLs4XXLy7BZwLHPQkq8=
-From:   Fedor Pchelkin <pchelkin@ispras.ru>
-To:     Ido Schimmel <idosch@idosch.org>
-Cc:     Fedor Pchelkin <pchelkin@ispras.ru>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Nikolay Aleksandrov <razor@blackwall.org>,
-        Roopa Prabhu <roopa@nvidia.com>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Alexey Khoroshilov <khoroshilov@ispras.ru>,
-        lvc-project@linuxtesting.org
-Subject: [PATCH net v2] drivers: vxlan: vnifilter: free percpu vni stats on error path
-Date:   Fri,  4 Aug 2023 18:53:36 +0300
-Message-ID: <20230804155337.18135-1-pchelkin@ispras.ru>
-X-Mailer: git-send-email 2.41.0
-In-Reply-To: <ZMz7+Mk+OYj4q8xe@shredder>
-References: 
+        Fri, 4 Aug 2023 11:55:04 -0400
+Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com [IPv6:2a00:1450:4864:20::333])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2972DB2
+        for <linux-kernel@vger.kernel.org>; Fri,  4 Aug 2023 08:55:03 -0700 (PDT)
+Received: by mail-wm1-x333.google.com with SMTP id 5b1f17b1804b1-3fb4146e8ceso20596185e9.0
+        for <linux-kernel@vger.kernel.org>; Fri, 04 Aug 2023 08:55:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1691164501; x=1691769301;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=k+kAnvbmstCT1otvJqPfzEvIYiB3WoAn6HzT1+Ufosw=;
+        b=VBNk+ZzDISqhAo5iXSyXbZzNOFz7p5vQRvDirLKlPpEs3JPtzNElbtlosw3wSxfMsz
+         o+nCrPeEimJLSnVbyAPGuudoM0Z4zxR+LOic3rO+/QebbLl4d9uKmEQKilMfO/I+uEk0
+         e/yCerm7jhUoqBfub2WYV+pof10yu7vbS7n0wJGmB6lYmzHGhXiCaenu+LeoPBpOXfAu
+         DcAfDJVvEtnlvaelCRZ3+Fj6NlJFvjl5QTyItglCuqnnshuLhrKjSYkVjGmsvmahqMow
+         HvbP/F9ngJRx/VVKBizi/+qEIAQL6v2i/Xl1OVfVzQvzmvtHUiSxPQ3vriSoSFZUxxFH
+         /2DQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691164501; x=1691769301;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=k+kAnvbmstCT1otvJqPfzEvIYiB3WoAn6HzT1+Ufosw=;
+        b=ZMHrLAQCksNpQ8SaUWjnN5bU/RFCUdYt6sjlGAu00Uhj5W/Hc2pU4NSyfjWRCoH3I6
+         lZ3nXNE1A7gTKbc1J0v+tDKyx8LnyFtCX+aIwKQXNw3rvgd0LfJnUvdSUpJg3UL6fPJ+
+         +sJKx+xun7df5J8Ai7XyRAtstPSlKbmERZbFo0esvAAr15D+bm+NYghtEI8qNuhw8cpn
+         pIW9a8L/6vXimUAoMI2VI3GPNi92/LUGWrZGEPD3LbSHfWl2/GaeFW9qP4fSkeKwA+LM
+         vOo/+yV5c153MwbqE28evdP8fK06zobZTX5P064XBFfqvMNXMaKQnQD/QqUvmBTbpgQr
+         9lAg==
+X-Gm-Message-State: AOJu0YyrG0TwhCdJb2SPDfMyw8SAVQjq+kKwDZu3/OfAy4Q3S58XVQeo
+        7pyzQa1BINMrSNipcuTMbvoQ0w==
+X-Google-Smtp-Source: AGHT+IHWK7qRi49IeNlIskLcJux6pIAEoQbpRrVKOoacBoB1NeHje2vU0A8deu7hI2ISASdAVaf6/A==
+X-Received: by 2002:a7b:cd94:0:b0:3fe:3521:d9ca with SMTP id y20-20020a7bcd94000000b003fe3521d9camr1774229wmj.3.1691164501478;
+        Fri, 04 Aug 2023 08:55:01 -0700 (PDT)
+Received: from localhost ([102.36.222.112])
+        by smtp.gmail.com with ESMTPSA id n8-20020a1c7208000000b003fe11148055sm2674064wmc.27.2023.08.04.08.55.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 04 Aug 2023 08:55:01 -0700 (PDT)
+Date:   Fri, 4 Aug 2023 18:54:58 +0300
+From:   Dan Carpenter <dan.carpenter@linaro.org>
+To:     Alexon Oliveira <alexondunkan@gmail.com>
+Cc:     gregkh@linuxfoundation.org, martyn@welchs.me.uk,
+        manohar.vanga@gmail.com, linux-kernel@vger.kernel.org,
+        linux-staging@lists.linux.dev
+Subject: Re: [PATCH v4] staging: vme_user: fix check alignment should match
+ open parenthesis
+Message-ID: <a440a7c7-cfb8-478f-baca-af7e4d684ca8@kadam.mountain>
+References: <ZM0QPaWv4lp93rGF@alolivei-thinkpadt480s.gru.csb>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZM0QPaWv4lp93rGF@alolivei-thinkpadt480s.gru.csb>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
         SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -56,60 +73,29 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In case rhashtable_lookup_insert_fast() fails inside vxlan_vni_add(), the
-allocated percpu vni stats are not freed on the error path.
+On Fri, Aug 04, 2023 at 11:50:37AM -0300, Alexon Oliveira wrote:
+> Fixed warnings and checks as reported by checkpatch to adhere to the
+> Linux kernel coding-style guidelines.
+> 
+> Signed-off-by: Alexon Oliveira <alexondunkan@gmail.com>
+> ---
+> 
+> Changes in v4:
+> - Fixed changelog again
+> 
+> Changes in v3:
+> - Fixed changelog
+> 
+> Changes in v2:
+> - Fixed CHECK: line length exceeds 100 columns, noted by
+> Greg KH and Dan Carpenter
+> - Fixed CHECK: Alignment should match open parenthesis
+> - Fixed CHECK: Lines should not end with a '('
 
-Introduce vxlan_vni_free() which would work as a nice wrapper to free
-vxlan_vni_node resources properly.
+There you go.  You managed in the end.  :)
 
-Found by Linux Verification Center (linuxtesting.org).
+Reviewed-by: Dan Carpenter <dan.carpenter@linaro.org>
 
-Fixes: 4095e0e1328a ("drivers: vxlan: vnifilter: per vni stats")
-Suggested-by: Ido Schimmel <idosch@idosch.org>
-Signed-off-by: Fedor Pchelkin <pchelkin@ispras.ru>
----
-v1->v2: per Ido Schimmel's suggestion, extract freeing vninode resources
-into a separate function vxlan_vni_free() and tag the patch as for 'net'
-
- drivers/net/vxlan/vxlan_vnifilter.c | 11 ++++++++---
- 1 file changed, 8 insertions(+), 3 deletions(-)
-
-diff --git a/drivers/net/vxlan/vxlan_vnifilter.c b/drivers/net/vxlan/vxlan_vnifilter.c
-index a3de081cda5e..c3ff30ab782e 100644
---- a/drivers/net/vxlan/vxlan_vnifilter.c
-+++ b/drivers/net/vxlan/vxlan_vnifilter.c
-@@ -713,6 +713,12 @@ static struct vxlan_vni_node *vxlan_vni_alloc(struct vxlan_dev *vxlan,
- 	return vninode;
- }
- 
-+static void vxlan_vni_free(struct vxlan_vni_node *vninode)
-+{
-+	free_percpu(vninode->stats);
-+	kfree(vninode);
-+}
-+
- static int vxlan_vni_add(struct vxlan_dev *vxlan,
- 			 struct vxlan_vni_group *vg,
- 			 u32 vni, union vxlan_addr *group,
-@@ -740,7 +746,7 @@ static int vxlan_vni_add(struct vxlan_dev *vxlan,
- 					    &vninode->vnode,
- 					    vxlan_vni_rht_params);
- 	if (err) {
--		kfree(vninode);
-+		vxlan_vni_free(vninode);
- 		return err;
- 	}
- 
-@@ -763,8 +769,7 @@ static void vxlan_vni_node_rcu_free(struct rcu_head *rcu)
- 	struct vxlan_vni_node *v;
- 
- 	v = container_of(rcu, struct vxlan_vni_node, rcu);
--	free_percpu(v->stats);
--	kfree(v);
-+	vxlan_vni_free(v);
- }
- 
- static int vxlan_vni_del(struct vxlan_dev *vxlan,
--- 
-2.41.0
+regards,
+dan carpenter
 
