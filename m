@@ -2,82 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 982B476FE22
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 12:07:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 505D576FE0E
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 12:05:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229978AbjHDKHh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Aug 2023 06:07:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57236 "EHLO
+        id S229786AbjHDKFB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Aug 2023 06:05:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56138 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229756AbjHDKHJ (ORCPT
+        with ESMTP id S230396AbjHDKEu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Aug 2023 06:07:09 -0400
-Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09D7549FE
-        for <linux-kernel@vger.kernel.org>; Fri,  4 Aug 2023 03:07:07 -0700 (PDT)
-Received: by mail-wr1-x436.google.com with SMTP id ffacd0b85a97d-317715ec496so1710465f8f.3
-        for <linux-kernel@vger.kernel.org>; Fri, 04 Aug 2023 03:07:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20221208.gappssmtp.com; s=20221208; t=1691143625; x=1691748425;
-        h=mime-version:message-id:in-reply-to:date:subject:cc:to:from
-         :user-agent:references:from:to:cc:subject:date:message-id:reply-to;
-        bh=klbDsLcbssIZC1W6RhXqBdxY/IuELEv3DuGedgA5eC8=;
-        b=agyK7FVLVoIYjvTPrq2C1JXIerGnElJX2W2PuvJXMEKnB8HkWcBlCTn+m8s2PuiUjt
-         RuCAhhWhnouWxd4I98kiDSIFKPHSRzkGMWoU2I9DKvcUsFc/7Qj+hX7/kCiGqcEJmwVN
-         GjnkvyolVccIktZ69hvwXAqSK4Gcb65vKw92hW/4xwEDyAlAX4d7He2SAbhkPiIePxzl
-         y9yp8CGE4XlxsFM2Jkbzeifu1yUt0WRq3K+GStdEZ1ysBkwr7IO29cyo593poBdEU57+
-         m+SUuTKIStt3yo5A9Fy26P9C9HRjd+AlhQZN7s1ltu3NUGpwevwGGkpgg3X1TEqZKAEz
-         Vv9w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691143625; x=1691748425;
-        h=mime-version:message-id:in-reply-to:date:subject:cc:to:from
-         :user-agent:references:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=klbDsLcbssIZC1W6RhXqBdxY/IuELEv3DuGedgA5eC8=;
-        b=Gmo3mCmwho7pA7f+kDAx0XpEU373WrZO6a2aRx+d7Q94uLOPnJAT13iUqJb13P37UV
-         QQkjPvknYIeiiUp5MJn8umWjnmueZbDIKYUeZp+rKzK51VwOiOervYP8Xi5PJCf6l4lg
-         ptQg2I817zV675GDDE7JHIXpuZW6P8FVEEYPz7E1UKMN5oPfaW9PBDM34/TKy8HUdmsI
-         EnLn/D/zo1kjkKvgs3WjZB9SAPaLjwcDui6nwCZIs86jntfMbX/N8zpmO2LRGAWJzp4r
-         SCyfsR/GYLUCH64oz+BwYnXVy5BsdN2h3tFsstRW1zc1xBBXLJVj1lq1b1Dzj3kBOzkr
-         Po+g==
-X-Gm-Message-State: AOJu0YwWbchPzOnHht9urojFuq6Zo1yScIIUxWXEwLUVx8hhGxPd0aQ+
-        iLIDpgnUdCxx/Nj/hlO7Yp5BmQ==
-X-Google-Smtp-Source: AGHT+IE3TR/pQHzsEG8z5C8nmqBMTuqYmNIpXJqYn1NOZwVrxXcnd7FP7J82dM5yIVqspzDEgaqXNQ==
-X-Received: by 2002:adf:ea0a:0:b0:317:6348:8a9d with SMTP id q10-20020adfea0a000000b0031763488a9dmr1025869wrm.66.1691143625382;
-        Fri, 04 Aug 2023 03:07:05 -0700 (PDT)
-Received: from localhost ([2a01:e0a:3c5:5fb1:aeaf:609a:5eef:39a8])
-        by smtp.gmail.com with ESMTPSA id d10-20020adffd8a000000b003143ba62cf4sm2087969wrr.86.2023.08.04.03.07.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 04 Aug 2023 03:07:05 -0700 (PDT)
-References: <20230803-amlogic-v6-4-upstream-dsi-ccf-vim3-v7-0-762219fc5b28@linaro.org>
- <20230803-amlogic-v6-4-upstream-dsi-ccf-vim3-v7-4-762219fc5b28@linaro.org>
-User-agent: mu4e 1.8.13; emacs 28.2
-From:   Jerome Brunet <jbrunet@baylibre.com>
-To:     Neil Armstrong <neil.armstrong@linaro.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
+        Fri, 4 Aug 2023 06:04:50 -0400
+Received: from APC01-TYZ-obe.outbound.protection.outlook.com (mail-tyzapc01on2067.outbound.protection.outlook.com [40.107.117.67])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89FEA2118;
+        Fri,  4 Aug 2023 03:04:48 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=QM9rP/ZWcRZP9cyDJaApAfSoQy6RMBXA+7N0bLYH7lA5pIRfCXv2T+wUXwLziMG6c9Tp60gRN8DNJqZG0/+WjeAvO+YztqZb1KTf8V5Wl6ZX5on9vqGvKTVVc/gqNGfaxt0F/9Ul+3i77QnkzBZu8AfWeshYxPFHUmlMLJ4AxATLOAeUIs54OEzbInkLsUQJ2P98oiHtmDirHLlpWPvBr1rrUi3p6kWlwxKvFZcs9awuIsoF9uhmDc3LM3U0fQFBNHeAiSm2T0t3IcrhlOrVXQJoN6nua19Zi9TyUxPyvqL7klM1if3QL4rw8CajxF/Wp4Rk2laJrbjpgEiMnm2thw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=I6Kmdm14PBGea0+yG19zea4h/bzJswq6HLOz29oQBg4=;
+ b=MW3BiC/1nZQNFTxClgnGx8QXeNr6xzrDIKDZ1xdBx0A9c8Kv4KLaYOlh+Ek+YEtUl6kXccSpq1JAo4GuGzwgPCfaK6pGJm4QX7B5UBrTWK6B+fE5LAxaMiBQ/hlJNgoqwUaJb8Y9HHdSZvyNHXbeLVOK2ZfcSUqx8r3qyFMubLa1h+9D4NqdbyFHOGZIkL9A02ahoKLXS8qTq9zzuDQO+Vzx8hKWH1682Eq3oU/lXxKARuaMEnBiyKlGzPIwjkzsQbw4+mRYMZBXb90dY/djH2EHWq5EGRtzfzi7XzVsryIzke5uLLto6hsgQ/7Yi18HHOvqD9Z48spBFQBrERT7WA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=fail (sender ip is
+ 211.20.1.79) smtp.rcpttodomain=stwcx.xyz smtp.mailfrom=wiwynn.com; dmarc=fail
+ (p=quarantine sp=quarantine pct=100) action=quarantine
+ header.from=wiwynn.com; dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wiwynn.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=I6Kmdm14PBGea0+yG19zea4h/bzJswq6HLOz29oQBg4=;
+ b=MS85Urrk0a1RXHcl58ygT51xPN0ZRPejimsPxNndMMqllkN1e9AmJoAwp2lutL5vp57/bYNETDaO1f/3huP50W0V0tJA+IhT5OinWS343U6qdkwtOOD0QdKsXyz6fZ55pRzsxa9bkO2Rgyq00GlgTkMzdQWpUenpKyrFJB6fwrDXRclTiaWx3TamigpZXXq3dsoSTWMaKwT0mVdStdBdijcCaA84TM3Kev3u8jFdLmwuqG3hXOK8QloUwCSvY2Ni0VFTGlYhm8C7RT06cGEiScFge7uLPlI0MlxWPBNtwaj6Duw8ILeh4B/0F/O0Gb1PkDQ2rp3kYsKyX2Pxr1t8Ew==
+Received: from PS2PR01CA0040.apcprd01.prod.exchangelabs.com
+ (2603:1096:300:58::28) by TYZPR04MB4432.apcprd04.prod.outlook.com
+ (2603:1096:400:28::12) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6631.47; Fri, 4 Aug
+ 2023 10:04:43 +0000
+Received: from HK3PEPF0000021F.apcprd03.prod.outlook.com
+ (2603:1096:300:58:cafe::25) by PS2PR01CA0040.outlook.office365.com
+ (2603:1096:300:58::28) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6652.20 via Frontend
+ Transport; Fri, 4 Aug 2023 10:04:43 +0000
+X-MS-Exchange-Authentication-Results: spf=fail (sender IP is 211.20.1.79)
+ smtp.mailfrom=wiwynn.com; dkim=none (message not signed)
+ header.d=none;dmarc=fail action=quarantine header.from=wiwynn.com;
+Received-SPF: Fail (protection.outlook.com: domain of wiwynn.com does not
+ designate 211.20.1.79 as permitted sender) receiver=protection.outlook.com;
+ client-ip=211.20.1.79; helo=localhost.localdomain;
+Received: from localhost.localdomain (211.20.1.79) by
+ HK3PEPF0000021F.mail.protection.outlook.com (10.167.8.41) with Microsoft SMTP
+ Server id 15.20.6652.19 via Frontend Transport; Fri, 4 Aug 2023 10:04:42
+ +0000
+From:   Delphine CC Chiu <Delphine_CC_Chiu@wiwynn.com>
+To:     patrick@stwcx.xyz
+Cc:     Delphine CC Chiu <Delphine_CC_Chiu@wiwynn.com>,
         Rob Herring <robh+dt@kernel.org>,
         Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
         Conor Dooley <conor+dt@kernel.org>,
-        Kevin Hilman <khilman@baylibre.com>,
-        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Jagan Teki <jagan@amarulasolutions.com>,
-        Nicolas Belin <nbelin@baylibre.com>
-Cc:     linux-clk@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-amlogic@lists.infradead.org,
+        Joel Stanley <joel@jms.id.au>,
+        Andrew Jeffery <andrew@aj.id.au>, devicetree@vger.kernel.org,
         linux-arm-kernel@lists.infradead.org,
-        dri-devel@lists.freedesktop.org
-Subject: Re: [PATCH v7 4/9] clk: meson: g12a: make VCLK2 and ENCL clock path
- configurable by CCF
-Date:   Fri, 04 Aug 2023 12:04:34 +0200
-In-reply-to: <20230803-amlogic-v6-4-upstream-dsi-ccf-vim3-v7-4-762219fc5b28@linaro.org>
-Message-ID: <1jwmybnmt3.fsf@starbuckisacylon.baylibre.com>
+        linux-aspeed@lists.ozlabs.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v5 0/2] ARM: dts: Facebook Yosemite V4 platform
+Date:   Fri,  4 Aug 2023 18:04:34 +0800
+Message-Id: <20230804100438.1983745-1-Delphine_CC_Chiu@wiwynn.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: HK3PEPF0000021F:EE_|TYZPR04MB4432:EE_
 Content-Type: text/plain
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+X-MS-Office365-Filtering-Correlation-Id: 6f1549ff-bbe7-45c8-842e-08db94d23909
+X-MS-Exchange-AtpMessageProperties: SA
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 1ve3VDrzPe0TQEgitcnfLoIIKpnVEdvw+xyY5HO3ReMTS9a7THpCyomBIRtTdbJNhjFFpAe9Zl3p41bb0dw338vy986ng+QslgSipBZ/fytwayOM3A+uVf1WiPJkq462f0AZBEgcPh6Uw5LiUJenwV25YpgxiKnQoLOPpAEQ1eJR7QiTkFoKY/rlGZN4DdA/vJUpoyNO4KLLLScsQ9Z3Y2TW27DanD3vRDyJcQM1vEgUm8lIrRj/ROlewI05EuHJYn9+1L4snh9eBw9UtAVnskIcacJj5KnKRs4zNDHlYbIW5+UOvKLQmLufJWxZyPm7ttE5S5B6UPj2CiwTxu7M7B52f+qXW0gClmMyjveN+agcolhdl/T6GdV7iHQS9zRBdCJ22sNIdbqFATIq/m5XPct2S9zWF9VyHCFXHrJuXh5DAqAU/SUc+B+4oaXNZ0bYSwG4SuUTeEaOxuhPUkRsAGLsafAOkxkBAzqT92pFvo+8epqiJ9ug7MiRQFfIkPQ/RWgqVFIo2sUJStIZx3/oZaOndSRiKjqfIzSQJJbiuJaJuD9tqBjUPAb8HUXfQYcompHY73z30UqLw5WTLxSZEVjN1yRwv7RqSLqyVUi443OSPA87A3jO++VPBujQBDVqqSyyfjOArp8qHH/7GeNACJBMc76GHgAcNmDa3PS8NYSIdwfyA6bfnhv5REYAzSe9xoXNxqgmD5JlIQnWj5sR3w==
+X-Forefront-Antispam-Report: CIP:211.20.1.79;CTRY:TW;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:localhost.localdomain;PTR:211-20-1-79.hinet-ip.hinet.net;CAT:NONE;SFS:(13230028)(6069001)(4636009)(376002)(346002)(396003)(39850400004)(136003)(47680400002)(1800799003)(451199021)(186006)(82310400008)(46966006)(36840700001)(81166007)(2616005)(956004)(1076003)(8676002)(26005)(6506007)(336012)(47076005)(4326008)(2906002)(36860700001)(316002)(4744005)(70586007)(5660300002)(6916009)(36736006)(70206006)(7416002)(8936002)(41300700001)(6666004)(6486002)(6512007)(478600001)(40480700001)(54906003)(356005)(9316004)(36756003)(86362001)(82740400003);DIR:OUT;SFP:1101;
+X-OriginatorOrg: wiwynn.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 Aug 2023 10:04:42.1525
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 6f1549ff-bbe7-45c8-842e-08db94d23909
+X-MS-Exchange-CrossTenant-Id: da6e0628-fc83-4caf-9dd2-73061cbab167
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=da6e0628-fc83-4caf-9dd2-73061cbab167;Ip=[211.20.1.79];Helo=[localhost.localdomain]
+X-MS-Exchange-CrossTenant-AuthSource: HK3PEPF0000021F.apcprd03.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: TYZPR04MB4432
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -85,244 +98,28 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Add linux device tree entry related to
+Yosemite V4 specific devices connected to BMC SoC.
 
-On Thu 03 Aug 2023 at 14:03, Neil Armstrong <neil.armstrong@linaro.org> wrote:
+Changelog:
+v5 - Revise rtc setting
+   - Remove duplicated multi-master setting
+v4 - Resend with cover letter
+v3 - Revise the bootargs to stdout-path
+   - Revise i2c devices
+v2 - Revise the DTS node name
+v1 - Add binding document
 
-> In order to setup the DSI clock, let's make the unused VCLK2 clock path
-> configuration via CCF.
->
-> The nocache option is removed from following clocks:
-> - vclk2_sel
-> - vclk2_input
-> - vclk2_div
-> - vclk2
-> - vclk_div1
-> - vclk2_div2_en
-> - vclk2_div4_en
-> - vclk2_div6_en
-> - vclk2_div12_en
-> - vclk2_div2
-> - vclk2_div4
-> - vclk2_div6
-> - vclk2_div12
-> - cts_encl_sel
->
-> vclk2 and vclk2_div uses the newly introduced vclk regmap driver
-> to handle the enable and reset bits.
->
-> In order to set a rate on cts_encl via the vclk2 clock path,
-> the NO_REPARENT flag is set on cts_encl_sel & vclk2_sel in order
-> to keep CCF from selection a parent.
-> The parents of cts_encl_sel & vclk2_sel are expected to be defined
-> in DT.
->
-> The following clock scheme is to be used for DSI:
->
-> xtal
-> \_ gp0_pll_dco
->    \_ gp0_pll
->       |- vclk2_sel
->       |  \_ vclk2_input
->       |     \_ vclk2_div
->       |        \_ vclk2
->       |           \_ vclk2_div1
->       |              \_ cts_encl_sel
->       |                 \_ cts_encl	-> to VPU LCD Encoder
->       |- mipi_dsi_pxclk_sel
->       \_ mipi_dsi_pxclk_div
->          \_ mipi_dsi_pxclk		-> to DSI controller
->
-> The mipi_dsi_pxclk_div is set as RO in order to use the same GP0
-> for mipi_dsi_pxclk and vclk2_input.
->
-> Signed-off-by: Neil Armstrong <neil.armstrong@linaro.org>
-> ---
->  drivers/clk/meson/g12a.c | 43 ++++++++++++++++++++++++++-----------------
->  1 file changed, 26 insertions(+), 17 deletions(-)
->
-> diff --git a/drivers/clk/meson/g12a.c b/drivers/clk/meson/g12a.c
-> index 5d62134335c1..552c8efb1ad8 100644
-> --- a/drivers/clk/meson/g12a.c
-> +++ b/drivers/clk/meson/g12a.c
-> @@ -22,6 +22,7 @@
->  #include "clk-regmap.h"
->  #include "clk-cpu-dyndiv.h"
->  #include "vid-pll-div.h"
-> +#include "vclk.h"
->  #include "meson-eeclk.h"
->  #include "g12a.h"
->  
-> @@ -3165,7 +3166,7 @@ static struct clk_regmap g12a_vclk2_sel = {
->  		.ops = &clk_regmap_mux_ops,
->  		.parent_hws = g12a_vclk_parent_hws,
->  		.num_parents = ARRAY_SIZE(g12a_vclk_parent_hws),
-> -		.flags = CLK_SET_RATE_NO_REPARENT | CLK_GET_RATE_NOCACHE,
-> +		.flags = CLK_SET_RATE_PARENT | CLK_SET_RATE_NO_REPARENT,
->  	},
->  };
->  
-> @@ -3193,7 +3194,7 @@ static struct clk_regmap g12a_vclk2_input = {
->  		.ops = &clk_regmap_gate_ops,
->  		.parent_hws = (const struct clk_hw *[]) { &g12a_vclk2_sel.hw },
->  		.num_parents = 1,
-> -		.flags = CLK_SET_RATE_PARENT | CLK_IGNORE_UNUSED,
-> +		.flags = CLK_SET_RATE_PARENT,
+Delphine CC Chiu (2):
+  dt-bindings: arm: aspeed: add Facebook Yosemite V4 board
+  ARM: dts: aspeed: yosemitev4: add Facebook Yosemite V4 BMC
 
-... oh, I see. Ignore the comment patch #2
+ .../bindings/arm/aspeed/aspeed.yaml           |   1 +
+ arch/arm/boot/dts/aspeed/Makefile             |   1 +
+ .../aspeed/aspeed-bmc-facebook-yosemitev4.dts | 633 ++++++++++++++++++
+ 3 files changed, 635 insertions(+)
+ create mode 100644 arch/arm/boot/dts/aspeed/aspeed-bmc-facebook-yosemitev4.dts
 
->  	},
->  };
->  
-> @@ -3215,19 +3216,22 @@ static struct clk_regmap g12a_vclk_div = {
->  };
->  
->  static struct clk_regmap g12a_vclk2_div = {
-> -	.data = &(struct clk_regmap_div_data){
-> +	.data = &(struct clk_regmap_vclk_div_data){
->  		.offset = HHI_VIID_CLK_DIV,
->  		.shift = 0,
->  		.width = 8,
-> +		.enable_bit_idx = 16,
-> +		.reset_bit_idx = 17,
-> +		.flags = CLK_DIVIDER_ROUND_CLOSEST,
->  	},
->  	.hw.init = &(struct clk_init_data){
->  		.name = "vclk2_div",
-> -		.ops = &clk_regmap_divider_ops,
-> +		.ops = &clk_regmap_vclk_div_ops,
->  		.parent_hws = (const struct clk_hw *[]) {
->  			&g12a_vclk2_input.hw
->  		},
->  		.num_parents = 1,
-> -		.flags = CLK_GET_RATE_NOCACHE,
-> +		.flags = CLK_SET_RATE_PARENT | CLK_SET_RATE_GATE,
->  	},
->  };
->  
-> @@ -3246,16 +3250,17 @@ static struct clk_regmap g12a_vclk = {
->  };
->  
->  static struct clk_regmap g12a_vclk2 = {
-> -	.data = &(struct clk_regmap_gate_data){
-> +	.data = &(struct clk_regmap_vclk_data){
->  		.offset = HHI_VIID_CLK_CNTL,
-> -		.bit_idx = 19,
-> +		.enable_bit_idx = 19,
-> +		.reset_bit_idx = 15,
->  	},
->  	.hw.init = &(struct clk_init_data) {
->  		.name = "vclk2",
-> -		.ops = &clk_regmap_gate_ops,
-> +		.ops = &clk_regmap_vclk_ops,
->  		.parent_hws = (const struct clk_hw *[]) { &g12a_vclk2_div.hw },
->  		.num_parents = 1,
-> -		.flags = CLK_SET_RATE_PARENT | CLK_IGNORE_UNUSED,
-> +		.flags = CLK_SET_RATE_PARENT | CLK_SET_RATE_GATE,
->  	},
->  };
->  
-> @@ -3339,7 +3344,7 @@ static struct clk_regmap g12a_vclk2_div1 = {
->  		.ops = &clk_regmap_gate_ops,
->  		.parent_hws = (const struct clk_hw *[]) { &g12a_vclk2.hw },
->  		.num_parents = 1,
-> -		.flags = CLK_SET_RATE_PARENT | CLK_IGNORE_UNUSED,
-> +		.flags = CLK_SET_RATE_PARENT,
->  	},
->  };
->  
-> @@ -3353,7 +3358,7 @@ static struct clk_regmap g12a_vclk2_div2_en = {
->  		.ops = &clk_regmap_gate_ops,
->  		.parent_hws = (const struct clk_hw *[]) { &g12a_vclk2.hw },
->  		.num_parents = 1,
-> -		.flags = CLK_SET_RATE_PARENT | CLK_IGNORE_UNUSED,
-> +		.flags = CLK_SET_RATE_PARENT,
->  	},
->  };
->  
-> @@ -3367,7 +3372,7 @@ static struct clk_regmap g12a_vclk2_div4_en = {
->  		.ops = &clk_regmap_gate_ops,
->  		.parent_hws = (const struct clk_hw *[]) { &g12a_vclk2.hw },
->  		.num_parents = 1,
-> -		.flags = CLK_SET_RATE_PARENT | CLK_IGNORE_UNUSED,
-> +		.flags = CLK_SET_RATE_PARENT,
->  	},
->  };
->  
-> @@ -3381,7 +3386,7 @@ static struct clk_regmap g12a_vclk2_div6_en = {
->  		.ops = &clk_regmap_gate_ops,
->  		.parent_hws = (const struct clk_hw *[]) { &g12a_vclk2.hw },
->  		.num_parents = 1,
-> -		.flags = CLK_SET_RATE_PARENT | CLK_IGNORE_UNUSED,
-> +		.flags = CLK_SET_RATE_PARENT,
->  	},
->  };
->  
-> @@ -3395,7 +3400,7 @@ static struct clk_regmap g12a_vclk2_div12_en = {
->  		.ops = &clk_regmap_gate_ops,
->  		.parent_hws = (const struct clk_hw *[]) { &g12a_vclk2.hw },
->  		.num_parents = 1,
-> -		.flags = CLK_SET_RATE_PARENT | CLK_IGNORE_UNUSED,
-> +		.flags = CLK_SET_RATE_PARENT,
->  	},
->  };
->  
-> @@ -3461,6 +3466,7 @@ static struct clk_fixed_factor g12a_vclk2_div2 = {
->  			&g12a_vclk2_div2_en.hw
->  		},
->  		.num_parents = 1,
-> +		.flags = CLK_SET_RATE_PARENT,
->  	},
->  };
->  
-> @@ -3474,6 +3480,7 @@ static struct clk_fixed_factor g12a_vclk2_div4 = {
->  			&g12a_vclk2_div4_en.hw
->  		},
->  		.num_parents = 1,
-> +		.flags = CLK_SET_RATE_PARENT,
->  	},
->  };
->  
-> @@ -3487,6 +3494,7 @@ static struct clk_fixed_factor g12a_vclk2_div6 = {
->  			&g12a_vclk2_div6_en.hw
->  		},
->  		.num_parents = 1,
-> +		.flags = CLK_SET_RATE_PARENT,
->  	},
->  };
->  
-> @@ -3500,6 +3508,7 @@ static struct clk_fixed_factor g12a_vclk2_div12 = {
->  			&g12a_vclk2_div12_en.hw
->  		},
->  		.num_parents = 1,
-> +		.flags = CLK_SET_RATE_PARENT,
->  	},
->  };
->  
-> @@ -3561,7 +3570,7 @@ static struct clk_regmap g12a_cts_encl_sel = {
->  		.ops = &clk_regmap_mux_ops,
->  		.parent_hws = g12a_cts_parent_hws,
->  		.num_parents = ARRAY_SIZE(g12a_cts_parent_hws),
-> -		.flags = CLK_SET_RATE_NO_REPARENT | CLK_GET_RATE_NOCACHE,
-> +		.flags = CLK_SET_RATE_PARENT | CLK_SET_RATE_NO_REPARENT,
->  	},
->  };
->  
-> @@ -3717,7 +3726,7 @@ static struct clk_regmap g12a_mipi_dsi_pxclk_sel = {
->  		.ops = &clk_regmap_mux_ops,
->  		.parent_hws = g12a_mipi_dsi_pxclk_parent_hws,
->  		.num_parents = ARRAY_SIZE(g12a_mipi_dsi_pxclk_parent_hws),
-> -		.flags = CLK_SET_RATE_NO_REPARENT,
-> +		.flags = CLK_SET_RATE_PARENT | CLK_SET_RATE_NO_REPARENT,
->  	},
->  };
->  
-> @@ -3729,7 +3738,7 @@ static struct clk_regmap g12a_mipi_dsi_pxclk_div = {
->  	},
->  	.hw.init = &(struct clk_init_data){
->  		.name = "mipi_dsi_pxclk_div",
-> -		.ops = &clk_regmap_divider_ops,
-> +		.ops = &clk_regmap_divider_ro_ops,
->  		.parent_hws = (const struct clk_hw *[]) {
->  			&g12a_mipi_dsi_pxclk_sel.hw
->  		},
+-- 
+2.25.1
 
