@@ -2,131 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 795AA76F846
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 05:13:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 529CF76F847
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 05:14:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230307AbjHDDNw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Aug 2023 23:13:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40276 "EHLO
+        id S231998AbjHDDOF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Aug 2023 23:14:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40238 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232456AbjHDDMc (ORCPT
+        with ESMTP id S234048AbjHDDNK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Aug 2023 23:12:32 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD27A5278;
-        Thu,  3 Aug 2023 20:10:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1691118622; x=1722654622;
-  h=message-id:date:mime-version:cc:subject:to:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=ifI9ykdQ7oocrSyNeOcXUTl2KxrALUZ7bAa7qp62vJg=;
-  b=oAEoqUqMZrOcbAjXeayI06iwNUqyImxkhwR2dne25NZfQUo1LUlpeCoh
-   XeLxXmFYmH//va172zhuenAe8W4JRpokl5TWGFgQ7MeAoX9GAOlUlohOP
-   8sBuPMa09jufVMZk6LJh6oNQo3MSzd9fU73OADPoh7Y23pyi91boJx+I+
-   3xXuWt6v3iGEr8JABHL+A7YZj4j9si7IlrsB43xY3BentDZdH0/8xgGKw
-   PYJ3QVPi1/ME3vRW2D76IEZu7pIt8LM94lsr9Kp0I8cg9vkhBgFxnChuf
-   C9HVi9qU6p8rgMfYEMX90arousP6r3RMaQ6/wFns/WIcFBBMJEUStLR6v
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10791"; a="401007533"
-X-IronPort-AV: E=Sophos;i="6.01,253,1684825200"; 
-   d="scan'208";a="401007533"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Aug 2023 20:10:21 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10791"; a="729882400"
-X-IronPort-AV: E=Sophos;i="6.01,253,1684825200"; 
-   d="scan'208";a="729882400"
-Received: from blu2-mobl.ccr.corp.intel.com (HELO [10.254.210.88]) ([10.254.210.88])
-  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Aug 2023 20:10:16 -0700
-Message-ID: <0866104f-b070-405c-da27-71a138a10e7c@linux.intel.com>
-Date:   Fri, 4 Aug 2023 11:10:14 +0800
+        Thu, 3 Aug 2023 23:13:10 -0400
+Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id F12C049E9;
+        Thu,  3 Aug 2023 20:11:42 -0700 (PDT)
+Received: from loongson.cn (unknown [10.20.42.43])
+        by gateway (Coremail) with SMTP id _____8Cxc_BtbMxkowEQAA--.37082S3;
+        Fri, 04 Aug 2023 11:11:41 +0800 (CST)
+Received: from [10.20.42.43] (unknown [10.20.42.43])
+        by localhost.localdomain (Coremail) with SMTP id AQAAf8DxJ81QbMxkdMpHAA--.52126S3;
+        Fri, 04 Aug 2023 11:11:34 +0800 (CST)
+Message-ID: <8e51eb50-aa7b-f771-e53b-499bf899e22e@loongson.cn>
+Date:   Fri, 4 Aug 2023 11:11:12 +0800
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Thunderbird/102.13.0
-Cc:     baolu.lu@linux.intel.com, "Liu, Yi L" <yi.l.liu@intel.com>,
-        Jacob Pan <jacob.jun.pan@linux.intel.com>,
-        "iommu@lists.linux.dev" <iommu@lists.linux.dev>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2 05/12] iommu: Change the return value of
- dev_iommu_get()
+Subject: Re: [PATCH] PCI/VGA: Make the vga_is_firmware_default()
+ arch-independent
+To:     kernel test robot <lkp@intel.com>
+Cc:     llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
+        bhelgaas@google.com, linux-pci@vger.kernel.org,
+        loongson-kernel@lists.loongnix.cn, linux-kernel@vger.kernel.org,
+        dri-devel@lists.freedesktop.org
+References: <20230803081758.968742-1-suijingfeng@loongson.cn>
+ <202308032022.yiZngbbk-lkp@intel.com>
 Content-Language: en-US
-To:     "Tian, Kevin" <kevin.tian@intel.com>,
-        Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        Nicolin Chen <nicolinc@nvidia.com>
-References: <20230727054837.147050-1-baolu.lu@linux.intel.com>
- <20230727054837.147050-6-baolu.lu@linux.intel.com>
- <BN9PR11MB52769A468F912B7D395878ED8C08A@BN9PR11MB5276.namprd11.prod.outlook.com>
-From:   Baolu Lu <baolu.lu@linux.intel.com>
-In-Reply-To: <BN9PR11MB52769A468F912B7D395878ED8C08A@BN9PR11MB5276.namprd11.prod.outlook.com>
+From:   suijingfeng <suijingfeng@loongson.cn>
+In-Reply-To: <202308032022.yiZngbbk-lkp@intel.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+X-CM-TRANSID: AQAAf8DxJ81QbMxkdMpHAA--.52126S3
+X-CM-SenderInfo: xvxlyxpqjiv03j6o00pqjv00gofq/
+X-Coremail-Antispam: 1Uk129KBj93XoWxGFWDCryktr47tw15AFW3CFX_yoW5tFWkpF
+        W8JF1ayF4kGr4fK392gryUur1Yvws8XFy3WrsxC3sruFyDZry0qr4SkrZ0gr9Ikr4xCF1j
+        yrnxtry0ka4kAagCm3ZEXasCq-sJn29KB7ZKAUJUUUUx529EdanIXcx71UUUUU7KY7ZEXa
+        sCq-sGcSsGvfJ3Ic02F40EFcxC0VAKzVAqx4xG6I80ebIjqfuFe4nvWSU5nxnvy29KBjDU
+        0xBIdaVrnRJUUUP2b4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2
+        IYs7xG6rWj6s0DM7CIcVAFz4kK6r1Y6r17M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48v
+        e4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Gr0_Xr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI
+        0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVWxJVW8Jr1l84ACjcxK6I8E87Iv6xkF7I0E14v2
+        6r4UJVWxJr1ln4kS14v26r126r1DM2AIxVAIcxkEcVAq07x20xvEncxIr21l57IF6xkI12
+        xvs2x26I8E6xACxx1l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r12
+        6r1DMcIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IY64vIr4
+        1lc7I2V7IY0VAS07AlzVAYIcxG8wCY1x0262kKe7AKxVWUAVWUtwCF04k20xvY0x0EwIxG
+        rwCFx2IqxVCFs4IE7xkEbVWUJVW8JwCFI7km07C267AKxVWUAVWUtwC20s026c02F40E14
+        v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jw0_GFylIxkG
+        c2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI
+        0_Jr0_Gr1lIxAIcVCF04k26cxKx2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14v26r1j6r4U
+        MIIF0xvEx4A2jsIEc7CjxVAFwI0_Jr0_GrUvcSsGvfC2KfnxnUUI43ZEXa7IU8Dl1DUUUU
+        U==
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023/8/3 15:59, Tian, Kevin wrote:
->> From: Lu Baolu <baolu.lu@linux.intel.com>
->> Sent: Thursday, July 27, 2023 1:49 PM
->>
->> Make dev_iommu_get() return 0 for success and error numbers for failure.
->> This will make the code neat and readable. No functionality changes.
->>
->> Reviewed-by: Jacob Pan <jacob.jun.pan@linux.intel.com>
->> Signed-off-by: Lu Baolu <baolu.lu@linux.intel.com>
->> ---
->>   drivers/iommu/iommu.c | 19 +++++++++++--------
->>   1 file changed, 11 insertions(+), 8 deletions(-)
->>
->> diff --git a/drivers/iommu/iommu.c b/drivers/iommu/iommu.c
->> index 00309f66153b..4ba3bb692993 100644
->> --- a/drivers/iommu/iommu.c
->> +++ b/drivers/iommu/iommu.c
->> @@ -290,20 +290,20 @@ void iommu_device_unregister(struct
->> iommu_device *iommu)
->>   }
->>   EXPORT_SYMBOL_GPL(iommu_device_unregister);
->>
->> -static struct dev_iommu *dev_iommu_get(struct device *dev)
->> +static int dev_iommu_get(struct device *dev)
->>   {
->>   	struct dev_iommu *param = dev->iommu;
->>
->>   	if (param)
->> -		return param;
->> +		return 0;
->>
->>   	param = kzalloc(sizeof(*param), GFP_KERNEL);
->>   	if (!param)
->> -		return NULL;
->> +		return -ENOMEM;
->>
->>   	mutex_init(&param->lock);
->>   	dev->iommu = param;
->> -	return param;
->> +	return 0;
->>   }
->>
-> 
-> Jason's series [1] has been queued. Time to refine according to
-> the discussion in [2].
-> 
-> [1] https://lore.kernel.org/linux-iommu/ZLFYXlSBZrlxFpHM@8bytes.org/
-> [2] https://lore.kernel.org/linux-iommu/c815fa2b-00df-91e1-8353-8258773957e4@linux.intel.com/
+Hi,
 
-I'm not sure I understand your point here. This only changes the return
-value of dev_iommu_get() to make the code more concise.
+On 2023/8/3 20:25, kernel test robot wrote:
+> Hi Sui,
+>
+> kernel test robot noticed the following build errors:
+>
+> [auto build test ERROR on pci/next]
+> [also build test ERROR on pci/for-linus linus/master v6.5-rc4 next-20230803]
+> [If your patch is applied to the wrong git tree, kindly drop us a note.
+> And when submitting patch, we suggest to use '--base' as documented in
+> https://git-scm.com/docs/git-format-patch#_base_tree_information]
+>
+> url:    https://github.com/intel-lab-lkp/linux/commits/Sui-Jingfeng/PCI-VGA-Make-the-vga_is_firmware_default-arch-independent/20230803-161838
+> base:   https://git.kernel.org/pub/scm/linux/kernel/git/pci/pci.git next
+> patch link:    https://lore.kernel.org/r/20230803081758.968742-1-suijingfeng%40loongson.cn
+> patch subject: [PATCH] PCI/VGA: Make the vga_is_firmware_default() arch-independent
+> config: arm64-randconfig-r026-20230731 (https://download.01.org/0day-ci/archive/20230803/202308032022.yiZngbbk-lkp@intel.com/config)
+> compiler: clang version 17.0.0 (https://github.com/llvm/llvm-project.git 4a5ac14ee968ff0ad5d2cc1ffa0299048db4c88a)
+> reproduce: (https://download.01.org/0day-ci/archive/20230803/202308032022.yiZngbbk-lkp@intel.com/reproduce)
+>
+> If you fix the issue in a separate patch/commit (i.e. not just a new version of
+> the same patch/commit), kindly add following tags
+> | Reported-by: kernel test robot <lkp@intel.com>
+> | Closes: https://lore.kernel.org/oe-kbuild-all/202308032022.yiZngbbk-lkp@intel.com/
+>
+> All errors (new ones prefixed by >>):
+>
+>>> ld.lld: error: undefined symbol: screen_info
+>     >>> referenced by vgaarb.c:86 (drivers/pci/vgaarb.c:86)
+>     >>>               drivers/pci/vgaarb.o:(vga_arb_firmware_fb_addr_tracker) in archive vmlinux.a
+>     >>> referenced by vgaarb.c:86 (drivers/pci/vgaarb.c:86)
+>     >>>               drivers/pci/vgaarb.o:(vga_arb_firmware_fb_addr_tracker) in archive vmlinux.a
+>     >>> referenced by vgaarb.c:88 (drivers/pci/vgaarb.c:88)
+>     >>>               drivers/pci/vgaarb.o:(vga_arb_firmware_fb_addr_tracker) in archive vmlinux.a
+>     >>> referenced 3 more times
+>
+This is a more like arch-specific problem, It will be pain at many places on platforms
+that do not export the screen_info symbol. Not only here.
 
-Best regards,
-baolu
+I have already explained that screen_info is arch-dependent many times, but no one cares about me.
+By using (looking at) screen_info, vgaarb gets infected, and becomes arch-dependent as well.
+vgaarb deals with VGA class (pdev->class == 0x0300XX) devices only, This makes it device-dependent.
+Hence, It only works correctly for a small set of PCIe devices on x86.
+
+arch-dependent, device-dependent, subsystem-dependent (part of it rely on ACPI) and
+loading order dependent, those dependent itself are the problems.
+It results in various undefined (uncertain) behaviors on non-x86 architectures.
+
+Even on x86, some platform choose to relay on the firmware to solve the multiple GPU coexist problem.
+so it is also firmware-dependent.
+
+This patch solves part of the above problems listed, target at the *device level*, as early as possible.
+while they still a few problems could be only solved at the *driver level*.
+For an example, The display controller in Intel N2000 and d2000 series don't has a dedicated VRAM bar.
+they use the "stolen memory", which is carve out by somebody (either bios or kernel?).
+
+
