@@ -2,97 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E22CF77064E
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 18:50:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5620A770652
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 18:51:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231138AbjHDQuJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Aug 2023 12:50:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56290 "EHLO
+        id S230294AbjHDQvN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Aug 2023 12:51:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56892 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230347AbjHDQuG (ORCPT
+        with ESMTP id S229666AbjHDQvM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Aug 2023 12:50:06 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 358043C28;
-        Fri,  4 Aug 2023 09:50:05 -0700 (PDT)
+        Fri, 4 Aug 2023 12:51:12 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 669921994;
+        Fri,  4 Aug 2023 09:51:11 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id B5995620A7;
-        Fri,  4 Aug 2023 16:50:04 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CE00EC433C9;
-        Fri,  4 Aug 2023 16:50:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691167804;
-        bh=ZfGdzIAuhwL7qwEggkWYx0zmGQwPFGXxKE/YKErZ3QQ=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=jVivwCU/HejBsQUX67O3IcXu1YfP07Y28/i5qpOmmZALYEQytDTV0wE0ZiABYOTjW
-         iw6O4JYtneCAmC2GFEyKNpZR2a7lk8PtWeaH0acZ+IjFTtH//jyGYRRCh5FxHlUWGT
-         9cWuoTlFy3ZSlL3RF8MU5sE+FlWA6NocxdxqliEA7/9XdLVEvCEXjHg5zC8QVjzzt5
-         q6AD9A/EpQ5sv75rEuQCISzfcaJ9aWezwpbpVaiRd+ga/p3ZhKh+VTUr1Wt/zgUa1/
-         LF326lrp8mEIoqSaoKRXA6BA/q3/FMSqWSA+gg7vfqUEmOh3uICto9fM8cS2AU39+X
-         MwNO6ZynwIkvg==
-From:   Christian Brauner <brauner@kernel.org>
-To:     Mateusz Guzik <mjguzik@gmail.com>
-Cc:     Christian Brauner <brauner@kernel.org>,
-        linux-kernel@vger.kernel.org, viro@zeniv.linux.org.uk,
-        linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH] file: mostly eliminate spurious relocking in __range_close
-Date:   Fri,  4 Aug 2023 18:49:58 +0200
-Message-Id: <20230804-hubschrauber-hypothek-e8003cd3fbec@brauner>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20230727113809.800067-1-mjguzik@gmail.com>
-References: <20230727113809.800067-1-mjguzik@gmail.com>
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 04F496209F;
+        Fri,  4 Aug 2023 16:51:11 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 54267C433C7;
+        Fri,  4 Aug 2023 16:51:09 +0000 (UTC)
+Date:   Fri, 4 Aug 2023 12:51:07 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     kernel test robot <lkp@intel.com>
+Cc:     Zheng Yejian <zhengyejian1@huawei.com>, mhiramat@kernel.org,
+        vnagarnaik@google.com, shuah@kernel.org, llvm@lists.linux.dev,
+        oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
+        linux-trace-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
+Subject: Re: [PATCH 1/2] tracing: Fix cpu buffers unavailable due to
+ 'record_disabled' messed
+Message-ID: <20230804125107.41d6cdb1@gandalf.local.home>
+In-Reply-To: <202308050048.bUnVeBjV-lkp@intel.com>
+References: <20230804124549.2562977-2-zhengyejian1@huawei.com>
+        <202308050048.bUnVeBjV-lkp@intel.com>
+X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1377; i=brauner@kernel.org; h=from:subject:message-id; bh=ZfGdzIAuhwL7qwEggkWYx0zmGQwPFGXxKE/YKErZ3QQ=; b=owGbwMvMwCU28Zj0gdSKO4sYT6slMaSc1TF5J5Zk3bvEP/xDkumuy436T5+y/NMMunRXllX1nW6/ weLcjlIWBjEuBlkxRRaHdpNwueU8FZuNMjVg5rAygQxh4OIUgIksV2BkWCE3kb/scEWJRPIsUw52eb u91yVLO+Oi396Z1zU98obIP4a/0t6z9qnz8X04dZrt7S3TT8vK9FzVdzblK0351HxuDUMfFwA=
-X-Developer-Key: i=brauner@kernel.org; a=openpgp; fpr=4880B8C9BD0E5106FC070F4F7B3C391EFEA93624
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 27 Jul 2023 13:38:09 +0200, Mateusz Guzik wrote:
-> Stock code takes a lock trip for every fd in range, but this can be
-> trivially avoided and real-world consumers do have plenty of already
-> closed cases.
-> 
-> Just booting Debian 12 with a debug printk shows:
-> (sh) min 3 max 17 closed 15 empty 0
-> (sh) min 19 max 63 closed 31 empty 14
-> (sh) min 4 max 63 closed 0 empty 60
-> (spawn) min 3 max 63 closed 13 empty 48
-> (spawn) min 3 max 63 closed 13 empty 48
-> (mount) min 3 max 17 closed 15 empty 0
-> (mount) min 19 max 63 closed 32 empty 13
-> 
-> [...]
+On Sat, 5 Aug 2023 00:41:13 +0800
+kernel test robot <lkp@intel.com> wrote:
 
-massaged it a bit
+>   5276			if (cpumask_test_cpu(cpu, tr->tracing_cpumask) &&
+>   5277					!cpumask_test_cpu(cpu, tracing_cpumask_new)) {
+>   5278				atomic_inc(&per_cpu_ptr(tr->array_buffer.data, cpu)->disabled);
+>   5279				ring_buffer_record_disable_cpu(tr->array_buffer.buffer, cpu);
+> > 5280				ring_buffer_record_disable_cpu(tr->max_buffer.buffer, cpu);  
 
----
+The access to max_buffer requires a:
 
-Applied to the vfs.misc branch of the vfs/vfs.git tree.
-Patches in the vfs.misc branch should appear in linux-next soon.
+#ifdef CONFIG_TRACER_MAX_TRACE
 
-Please report any outstanding bugs that were missed during review in a
-new review to the original patch series allowing us to drop it.
+Around them.
 
-It's encouraged to provide Acked-bys and Reviewed-bys even though the
-patch has now been applied. If possible patch trailers will be updated.
+-- Steve
 
-Note that commit hashes shown below are subject to change due to rebase,
-trailer updates or similar. If in doubt, please check the listed branch.
-
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/vfs/vfs.git
-branch: vfs.misc
-
-[1/1] file: mostly eliminate spurious relocking in __range_close
-      https://git.kernel.org/vfs/vfs/c/215baa741614
+>   5281			}
+>   5282			if (!cpumask_test_cpu(cpu, tr->tracing_cpumask) &&
+>   5283					cpumask_test_cpu(cpu, tracing_cpumask_new)) {
+>   5284				atomic_dec(&per_cpu_ptr(tr->array_buffer.data, cpu)->disabled);
+>   5285				ring_buffer_record_enable_cpu(tr->array_buffer.buffer, cpu);
+>   5286				ring_buffer_record_enable_cpu(tr->max_buffer.buffer, cpu);
+>   5287			}
+>   5288		}
+>   5289		arch_spin_unlock(&tr->max_lock);
