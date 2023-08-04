@@ -2,124 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E1BFA76F7C8
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 04:21:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4954176F7CA
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 04:23:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233828AbjHDCVR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Aug 2023 22:21:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45012 "EHLO
+        id S231986AbjHDCXY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Aug 2023 22:23:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45652 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233726AbjHDCU6 (ORCPT
+        with ESMTP id S233983AbjHDCXB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Aug 2023 22:20:58 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6FF84C00;
-        Thu,  3 Aug 2023 19:20:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1691115634; x=1722651634;
-  h=message-id:date:mime-version:cc:subject:to:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=8RVBndkshGnvHV5Z1uI2lfdqXRdUsjPzvSMKu45GOx8=;
-  b=BE58ooKKb3UA43QiNRrMs/0ypd7WyDmrm6i8Uo1tDk1K1WFxAlYNiQFK
-   We3ErcdBcTTgR19hPULAxHwXTtx9wbDQ83h8gWAgweE5ozKZttdHGuFBY
-   Ewt8ZAbb6udOVvDQU5IclRmv+QvHjy2lxKUB3DCv+agdMpWWvm3SdBUnh
-   kRhcqB/OpEdwoPdLMe/vKxTAkl9yxQd2SWqsOq484b1eP5Nwgb9hOagdT
-   2JHYFDB3e2efPHl+yyAS0gGx3Ai0awOpjrdUQIsjPz9Loi4C6bbFp8HwO
-   M9kHAuwgU1rUFoiWw/KFB7y5etMCuDrOyCYJIuUGH2uqAZa/kms6buPtS
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10791"; a="456416916"
-X-IronPort-AV: E=Sophos;i="6.01,253,1684825200"; 
-   d="scan'208";a="456416916"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Aug 2023 19:20:33 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.01,202,1684825200"; 
-   d="scan'208";a="873178606"
-Received: from blu2-mobl.ccr.corp.intel.com (HELO [10.254.210.88]) ([10.254.210.88])
-  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Aug 2023 19:20:32 -0700
-Message-ID: <15c6f634-f00a-dfa7-9759-161ec201460a@linux.intel.com>
-Date:   Fri, 4 Aug 2023 10:20:28 +0800
+        Thu, 3 Aug 2023 22:23:01 -0400
+Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7BB3B4680;
+        Thu,  3 Aug 2023 19:22:11 -0700 (PDT)
+Received: by mail-lf1-x12e.google.com with SMTP id 2adb3069b0e04-4fe3b86cec1so2706532e87.2;
+        Thu, 03 Aug 2023 19:22:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1691115729; x=1691720529;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=H0h7iWjuLjZV6ZF1NMpCJ/oaSh2XQCJuifsadDe4GTE=;
+        b=s1pX/luML5i2+Fpub3Q04CqfkbB5vuhnkmWYBA/aE2wAwUDhbUdq/5CLybe80t3Adu
+         VGEVqdREBinjCMbVSKVWDgQZR+gUCBEVdLO3CStBaV2WUXEV1eZA0NxZBhZ0OamKQAW9
+         qOuLe02QeiMNLMcDQj/3r9m3QIkHJ/c4x/18A9IEMxdM8al2AryaphJ+tu/kmqlFpqI1
+         bNZaTgF8Th7mu5ORoCP78E4z1vMiKpiCN+r23EW0GuEDNmSs8OQxEGgDLmGrQldZ1WtK
+         8PIK2E+DOoibFQ+XRYuBoG7GWjVz8Fowuiso+2yzFWQNGPDQ1t+YUs1XyRgKBS5nFrQz
+         9eHw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691115729; x=1691720529;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=H0h7iWjuLjZV6ZF1NMpCJ/oaSh2XQCJuifsadDe4GTE=;
+        b=gMpsxkGPnzcb7BPPLjXlaQqBXC7enYLSMmXsb10HlE34cTdxYSSh9On8u5bRA+/Qgy
+         w1gFvdM3xvdnKlObPTgLCZHb+Md8DSTCGiyTL5XKMKjEChhyEmCb2i25l0pxI7xlPPzV
+         bBcx1E4w06dGrvKENahMhQzC3uVd4RK1hZ2diZwbSYmhI3oflZknPagpkl+RN8mjxJU7
+         DZBVLkahohhTfEQHakZGA/TyjiBk0ASHoBkAGUKq9pSgINBO3Xgv7AOh/MhGYKXZgbmn
+         nB/d8mRLNieHUjDxxfOudK9PbtF87USWcZv7NRSTL8xoFdBzYO/sKQtkyFiU3Qz5Yx60
+         S3jA==
+X-Gm-Message-State: AOJu0Yy3Q9FEpKU7fxn+QMbGKqTPxK/TBj9kAEtv6TeCyohArg+5TwL/
+        LfyuDtHJPD98o/1pfdLUqbxa/fBXGLKsAKLgB8E=
+X-Google-Smtp-Source: AGHT+IHggI/I3xDds3oKJgaqLy7EaSUfpkwlUW31vx6xx2d+AbOUYtn2OHzqqLqV3FSHilHI4bRJF4XL7UgdQzLznI8=
+X-Received: by 2002:a05:6512:324d:b0:4f8:6833:b13c with SMTP id
+ c13-20020a056512324d00b004f86833b13cmr235780lfr.14.1691115729043; Thu, 03 Aug
+ 2023 19:22:09 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Cc:     baolu.lu@linux.intel.com, Joerg Roedel <joro@8bytes.org>,
-        Will Deacon <will@kernel.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        Nicolin Chen <nicolinc@nvidia.com>,
-        "Liu, Yi L" <yi.l.liu@intel.com>,
-        Jacob Pan <jacob.jun.pan@linux.intel.com>,
-        "iommu@lists.linux.dev" <iommu@lists.linux.dev>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 0/2] iommu: Make pasid array per device
-Content-Language: en-US
-To:     Jason Gunthorpe <jgg@ziepe.ca>,
-        "Tian, Kevin" <kevin.tian@intel.com>
-References: <20230801063125.34995-1-baolu.lu@linux.intel.com>
- <ZMplBfgSb8Hh9jLt@ziepe.ca>
- <BN9PR11MB527649D7E79E29291DA1A5538C08A@BN9PR11MB5276.namprd11.prod.outlook.com>
- <ZMvFR52o86upAVrp@ziepe.ca>
-From:   Baolu Lu <baolu.lu@linux.intel.com>
-In-Reply-To: <ZMvFR52o86upAVrp@ziepe.ca>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+References: <20230803083352.1585-1-zegao@tencent.com> <20230803083352.1585-2-zegao@tencent.com>
+ <20230803111031.056b3446@gandalf.local.home>
+In-Reply-To: <20230803111031.056b3446@gandalf.local.home>
+From:   Ze Gao <zegao2021@gmail.com>
+Date:   Fri, 4 Aug 2023 10:21:57 +0800
+Message-ID: <CAD8CoPBy4Q1khVyhROMMnS=cfbSZuL0GCuSxMcKLRuTb2qtMjQ@mail.gmail.com>
+Subject: Re: [RFC PATCH v6 1/5] perf sched: sync state char array with the kernel
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     Adrian Hunter <adrian.hunter@intel.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Ian Rogers <irogers@google.com>,
+        Ingo Molnar <mingo@redhat.com>, Jiri Olsa <jolsa@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
+        linux-trace-kernel@vger.kernel.org, Ze Gao <zegao@tencent.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023/8/3 23:18, Jason Gunthorpe wrote:
-> On Thu, Aug 03, 2023 at 12:44:03AM +0000, Tian, Kevin wrote:
->>> From: Jason Gunthorpe<jgg@ziepe.ca>
->>> Sent: Wednesday, August 2, 2023 10:16 PM
->>>
->>> On Tue, Aug 01, 2023 at 02:31:23PM +0800, Lu Baolu wrote:
->>>> The PCI PASID enabling interface guarantees that the address space used
->>>> by each PASID is unique. This is achieved by checking that the PCI ACS
->>>> path is enabled for the device. If the path is not enabled, then the
->>>> PASID feature cannot be used.
->>>>
->>>>      if (!pci_acs_path_enabled(pdev, NULL, PCI_ACS_RR | PCI_ACS_UF))
->>>>              return -EINVAL;
->>>>
->>>> The PASID array is not an attribute of the IOMMU group. It is more
->>>> natural to store the PASID array in the per-device IOMMU data. This
->>>> makes the code clearer and easier to understand. No functional changes
->>>> are intended.
->>> Is there a reason to do this?
->>>
->>> *PCI*  requires the ACS/etc because PCI kind of messed up how switches
->>> handled PASID so PASID doesn't work otherwise.
->>>
->>> But there is nothing that says other bus type can't have working
->>> (non-PCI) PASID and still have device isolation issues.
->>>
->>> So unless there is a really strong reason to do this we should keep
->>> the PASID list in the group just like the domain.
->>>
->> this comes from the consensus in [1].
->>
->> [1]https://lore.kernel.org/linux-iommu/ZAcyEzN4102gPsWC@nvidia.com/
-> That consensus was that we don't have PASID support if there is
-> multi-device groups, at least in iommufd.. That makes sense. If we
-> want to change the core code to enforce this that also makes sense
+On Thu, Aug 3, 2023 at 11:10=E2=80=AFPM Steven Rostedt <rostedt@goodmis.org=
+> wrote:
+>
+> On Thu,  3 Aug 2023 04:33:48 -0400
+> Ze Gao <zegao2021@gmail.com> wrote:
+>
+> > Update state char array and then remove unused and stale
+> > macros, which are kernel internal representations and not
+> > encouraged to use anymore.
+> >
+> > Signed-off-by: Ze Gao <zegao@tencent.com>
+> > ---
+> >  tools/perf/builtin-sched.c | 13 +------------
+> >  1 file changed, 1 insertion(+), 12 deletions(-)
+> >
+> > diff --git a/tools/perf/builtin-sched.c b/tools/perf/builtin-sched.c
+> > index 9ab300b6f131..8dc8f071721c 100644
+> > --- a/tools/perf/builtin-sched.c
+> > +++ b/tools/perf/builtin-sched.c
+> > @@ -92,23 +92,12 @@ struct sched_atom {
+> >       struct task_desc        *wakee;
+> >  };
+> >
+> > -#define TASK_STATE_TO_CHAR_STR "RSDTtZXxKWP"
+> > +#define TASK_STATE_TO_CHAR_STR "RSDTtXZPI"
+>
+> Thinking about this more, this will always be wrong. Changing it just wor=
+ks
+> for the kernel you made the change for, but if it is run on another kerne=
+l,
+> it's broken again.
 
-In my initial plan, I had a third patch that would have enforced single-
-device groups for PASID interfaces in the core. But I ultimately dropped
-it because it is the fact for PCI devices, but I am not sure about other
-buses although perhaps there is none.
+Indeed. There is no easy way to maintain backward compatibility unless
+we stop using this bizarre 'prev_state' field. Basically all its users suff=
+er
+from this. That's why I believe this needs a fix to alert people does not
+use 'prev_state' anymore.
 
-> But this series is just moving the array?
+> I actually wrote code once that basically just did a:
+>
+>         struct trace_seq s;
+>
+>         trace_seq_init(&s);
+>         tep_print_event(tep, &s, record, "%s", TEP_PRINT_INFO);
+>
+> then searched s.buffer for "prev_state=3D%s ", to find the state characte=
+r.
+>
+> That's because the kernel should always be up to date (and why I said I
+> needed that string in the print_fmt).
 
-So I took the first step by moving the pasid_array from iommu group to
-the device. :-)
+Turing to building the state char array from print fmt string dynamically
+is a great idea. :)
 
-Best regards,
-baolu
+> As perf has a tep handle, this could be a helper function to extract the
+> state if needed, and get rind of relying on the above character array.
+
+I'll figure out how to make it happen.
+
+BTW,  my last concern is that is there any better way to notice userspace t=
+o
+avoid interpreting task state out of 'prev_state'. Because the awkward thin=
+g
+happens again.
+
+Thanks,
+Ze
+
+> -- Steve
+>
+>
+> >
+> >  /* task state bitmask, copied from include/linux/sched.h */
+> >  #define TASK_RUNNING         0
+> >  #define TASK_INTERRUPTIBLE   1
+> >  #define TASK_UNINTERRUPTIBLE 2
+> > -#define __TASK_STOPPED               4
+> > -#define __TASK_TRACED                8
+> > -/* in tsk->exit_state */
+> > -#define EXIT_DEAD            16
+> > -#define EXIT_ZOMBIE          32
+> > -#define EXIT_TRACE           (EXIT_ZOMBIE | EXIT_DEAD)
+> > -/* in tsk->state again */
+> > -#define TASK_DEAD            64
+> > -#define TASK_WAKEKILL                128
+> > -#define TASK_WAKING          256
+> > -#define TASK_PARKED          512
+> >
+> >  enum thread_state {
+> >       THREAD_SLEEPING =3D 0,
+>
