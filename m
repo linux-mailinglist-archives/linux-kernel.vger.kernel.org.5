@@ -2,105 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EEAF977095A
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 22:05:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 40F7D770959
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 22:05:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229905AbjHDUFe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Aug 2023 16:05:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35400 "EHLO
+        id S229827AbjHDUF2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Aug 2023 16:05:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35308 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229770AbjHDUF0 (ORCPT
+        with ESMTP id S229732AbjHDUFS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Aug 2023 16:05:26 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.115])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68C98E6F
-        for <linux-kernel@vger.kernel.org>; Fri,  4 Aug 2023 13:05:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1691179525; x=1722715525;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=61/5zzRVpmjuaeQ+th73cerqMU4YQpzyb5WsNL6XhHg=;
-  b=NCMI/c8f3W12Gcon3bKKOkmt6xpWU6Vclf+PFfku5CN+xrEpjbjVWOXV
-   28sJvYQtAnb4fmhRIXlOhmrbV2agbB1xSCzXWeWW+MPbWX81zNaUj1RVc
-   oeu6f/Nv0i9pXu248nPHLl7/Jtvje2VYGYtV6y2KZQ/1loLw9Y3X3fZOE
-   BBhJ3o/TQbThZwuxy4IjnBXOPfojChCZrG/UXih2GQBpb4p1XDkldmUQ6
-   2dF9qgXBOwYrzk/au4Xf3zV+ckkHRzLMlDV+zmzWMQhcYngHjNQXfB3Ef
-   KQ3mzIBVKO/RZEmmGolVeS9RrUmQ3ZmWvuV8d25mQyr+/Cam/K/mCvsUv
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10792"; a="370225972"
-X-IronPort-AV: E=Sophos;i="6.01,255,1684825200"; 
-   d="scan'208";a="370225972"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Aug 2023 13:05:25 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.01,202,1684825200"; 
-   d="scan'208";a="873510290"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by fmsmga001.fm.intel.com with ESMTP; 04 Aug 2023 13:05:24 -0700
-Received: from andy by smile.fi.intel.com with local (Exim 4.96)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1qS131-0061z2-3D;
-        Fri, 04 Aug 2023 23:05:19 +0300
-Date:   Fri, 4 Aug 2023 23:05:19 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Yury Norov <yury.norov@gmail.com>
-Cc:     Alexander Potapenko <glider@google.com>, catalin.marinas@arm.com,
-        will@kernel.org, pcc@google.com, andreyknvl@gmail.com,
-        linux@rasmusvillemoes.dk, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, eugenis@google.com,
-        syednwaris@gmail.com, william.gray@linaro.org,
-        Arnd Bergmann <arnd@arndb.de>
-Subject: Re: [PATCH v4 1/5] lib/bitmap: add bitmap_{set,get}_value()
-Message-ID: <ZM1Z/6l6yCaOEjjF@smile.fi.intel.com>
-References: <20230720173956.3674987-1-glider@google.com>
- <20230720173956.3674987-2-glider@google.com>
- <ZLyI+0EL1VztnHLe@yury-ThinkPad>
- <CAG_fn=V4wyHjXT41byPbAkrZzisZRfKszwM4EUFV-FNWuXXfbw@mail.gmail.com>
- <ZMG29WmwQFVgTSCv@yury-ThinkPad>
- <CAG_fn=VrPJj6YowHNki5RGAAs8qvwZpUVN4K9qw=cf4aW7Qw9A@mail.gmail.com>
- <ZM1XlUbAJ7Qpd6OO@yury-ThinkPad>
+        Fri, 4 Aug 2023 16:05:18 -0400
+Received: from smtpout.efficios.com (unknown [IPv6:2607:5300:203:b2ee::31e5])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 926D73C23
+        for <linux-kernel@vger.kernel.org>; Fri,  4 Aug 2023 13:05:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=efficios.com;
+        s=smtpout1; t=1691179512;
+        bh=p8ApPgTyUo2or9aOrW2DrLZDU1RW+YyeyjKyOfQLzik=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=WMf3LUZ7Pl5T/mi9vfZRQ6InwkKNMa1TzAuwxh0eCo/8ruAnYsboLh5rlSxLfRHub
+         SRmm9NElBvbNhzcWDaHEOUyWZL+HLy5iTFvGQHibJ0gVuF6yXjqrh/tKJMFjykCqYr
+         sWT3XY55NUo1SORtwxc8btD3shAIYdgIq4KqKe6iTNp3h1hjAh0rvxIF/6+BetpygN
+         oeGoaBjjf/Y29O6r7s5bsfvFnkfITGC3IsrV73zt7MFtlOgLm2ytFZlFjZ1ovpu1Hz
+         aLPr393+PBkUHqfmxEtb41ufquZoClOheuP9cPtl3hDNGhamwoddQP4EuLp/FqP7nV
+         zdjMyRZ2VD5EQ==
+Received: from [IPV6:2605:59c8:2711:c800::c66] (unknown [IPv6:2605:59c8:2711:c800::c66])
+        by smtpout.efficios.com (Postfix) with ESMTPSA id 4RHcBv5PB5z1KQ1;
+        Fri,  4 Aug 2023 16:05:11 -0400 (EDT)
+Message-ID: <e17900b8-ad20-e5c1-2443-0f9559f1fdb8@efficios.com>
+Date:   Fri, 4 Aug 2023 16:06:05 -0400
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZM1XlUbAJ7Qpd6OO@yury-ThinkPad>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [RFC PATCH] membarrier: riscv: Provide core serializing command
+Content-Language: en-US
+To:     Andrea Parri <parri.andrea@gmail.com>
+Cc:     paulmck@kernel.org, paul.walmsley@sifive.com, palmer@dabbelt.com,
+        aou@eecs.berkeley.edu, linux-riscv@lists.infradead.org,
+        linux-kernel@vger.kernel.org, mmaas@google.com, hboehm@google.com,
+        striker@us.ibm.com
+References: <20230803040111.5101-1-parri.andrea@gmail.com>
+ <ZMvLoI6PxLR8RJvR@andrea> <4bf79f06-4593-134a-04dd-b8f89e96a1b8@efficios.com>
+ <ZMxDe0gXKYbY5jgt@andrea> <65350c17-3fcf-a057-a280-f6a5d36dcb21@efficios.com>
+ <ZM0STfpkRSfNQBt8@andrea> <ab562167-e4a5-4a7d-7722-a4f99848d63e@efficios.com>
+ <ZM1OhJY8/PZ/osTH@andrea>
+From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+In-Reply-To: <ZM1OhJY8/PZ/osTH@andrea>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RDNS_NONE,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 04, 2023 at 12:55:01PM -0700, Yury Norov wrote:
-> On Fri, Aug 04, 2023 at 06:07:00PM +0200, Alexander Potapenko wrote:
+On 8/4/23 15:16, Andrea Parri wrote:
+> On Fri, Aug 04, 2023 at 02:05:55PM -0400, Mathieu Desnoyers wrote:
+>> On 8/4/23 10:59, Andrea Parri wrote:
+>>>> What is the relationship between FENCE.I and instruction cache flush on
+>>>> RISC-V ?
+>>>
+>>> The exact nature of this relationship is implementation-dependent.  From
+>>> commentary included in the ISA portion referred to in the changelog:
+>>>
+>>>     A simple implementation can flush the local instruction cache and
+>>>     the instruction pipeline when the FENCE.I is executed.  A more
+>>>     complex implementation might snoop the instruction (data) cache on
+>>>     every data (instruction) cache miss, or use an inclusive unified
+>>>     private L2 cache to invalidate lines from the primary instruction
+>>>     cache when they are being written by a local store instruction.  If
+>>>     instruction and data caches are kept coherent in this way, or if
+>>>     the memory system consists of only uncached RAMs, then just the
+>>>     fetch pipeline needs to be flushed at a FENCE.I.  [..]
+>>>
+>>> Mmh, does this help?
+>>
+>> Quoting
+>>
+>> https://github.com/riscv/riscv-isa-manual/releases/download/Ratified-IMAFDQC/riscv-spec-20191213.pdf
+>>
+>> Chapter 3 "“Zifencei” Instruction-Fetch Fence, Version 2.0"
+>>
+>> "First, it has been recognized that on some systems, FENCE.I will be expensive to implement
+>> and alternate mechanisms are being discussed in the memory model task group. In particular,
+>> for designs that have an incoherent instruction cache and an incoherent data cache, or where
+>> the instruction cache refill does not snoop a coherent data cache, both caches must be completely
+>> flushed when a FENCE.I instruction is encountered. This problem is exacerbated when there are
+>> multiple levels of I and D cache in front of a unified cache or outer memory system.
+>>
+>> Second, the instruction is not powerful enough to make available at user level in a Unix-like
+>> operating system environment. The FENCE.I only synchronizes the local hart, and the OS can
+>> reschedule the user hart to a different physical hart after the FENCE.I. This would require the
+>> OS to execute an additional FENCE.I as part of every context migration. For this reason, the
+>> standard Linux ABI has removed FENCE.I from user-level and now requires a system call to
+>> maintain instruction-fetch coherence, which allows the OS to minimize the number of FENCE.I
+>> executions required on current systems and provides forward-compatibility with future improved
+>> instruction-fetch coherence mechanisms.
+>>
+>> Future approaches to instruction-fetch coherence under discussion include providing more
+>> restricted versions of FENCE.I that only target a given address specified in rs1, and/or allowing
+>> software to use an ABI that relies on machine-mode cache-maintenance operations."
+>>
+>> I start to suspect that even the people working on the riscv memory model have noticed
+>> that letting a single instruction such as FENCE.I take care of both cache coherency
+>> *and* flush the instruction pipeline will be a performance bottleneck, because it
+>> can only clear the whole instruction cache.
+>>
+>> Other architectures are either cache-coherent, or have cache flushing which can be
+>> performed on a range of addresses. This is kept apart from whatever instruction
+>> flushes the instruction pipeline of the processor.
+>>
+>> By keeping instruction cache flushing separate from instruction pipeline flush, we can
+>> let membarrier (and context switches, including thread migration) only care about the
+>> instruction pipeline part, and leave instruction cache flush to either a dedicated
+>> system call, or to specialized instructions which are available from user-mode.
+>>
+>> Considering that FENCE.I is forced to invalidate the whole i-cache, I don't think you
+>> will get away with executing it from switch_mm without making performance go down the
+>> drain on cache incoherent implementations.
+>>
+>> In my opinion, what we would need from RISC-V for membarrier (and context switch) is a
+>> lightweight version of FENCE.I which only flushes the instruction pipeline of the local
+>> processor. This should ideally come with a way for architectures with incoherent caches
+>> to flush the relevant address ranges of the i-cache which are modified by a JIT. This
+>> i-cache flush would not be required to flush the instruction pipeline, as it is typical
+>> to batch invalidation of various address ranges together and issue a single instruction
+>> pipeline flush on each CPU at the end. The i-cache flush could either be done by new
+>> instructions available from user-space (similar to aarch64), or through privileged
+>> instructions available through system calls (similar to arm cacheflush).
+> 
+> Thanks for the remarks, Mathieu.  I think it will be very helpful to
+> RISC-V architects (and memory model people) to have this context and
+> reasoning written down.
 
-> > > > ~BITMAP_FIRST_WORD_MASK(start));
-> > >
-> > > As I said, ~BITMAP_FIRST_WORD_MASK() is the same as BITMAP_LAST_WORD_MASK()
-> > > and vise-versa.
-> > 
-> > Surprisingly, ~BITMAP_FIRST_WORD_MASK() generates better code than
-> > BITMAP_LAST_WORD_MASK().
->  
-> Wow... If that's consistent across different compilers/arches, we'd
-> just drop the latter. Thanks for pointing that. I'll check.
+One more noteworthy detail: if a system call similar to ARM cacheflush(2) is implemented for
+RISC-V, perhaps an iovec ABI (similar to readv(2)/writev(2)) would be relevant to handle
+batching of cache flushing when address ranges are not contiguous. Maybe with a new name
+like "cacheflushv(2)", so eventually other architectures could implement it as well ?
 
-It might be...
+Thanks,
 
-...
+Mathieu
 
-> >         map[index] &= (fit ? (~(GENMASK(nbits - 1, 0) << offset)) :
-> > ~BITMAP_FIRST_WORD_MASK(start));
-
-...that both parts of ternary are using negation. So compiler may use negation
-only once. (Haven't looked at the assembly.)
 
 -- 
-With Best Regards,
-Andy Shevchenko
-
+Mathieu Desnoyers
+EfficiOS Inc.
+https://www.efficios.com
 
