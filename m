@@ -2,94 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 539E276FE40
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 12:15:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 23FE176FE3D
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 12:14:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229504AbjHDKO5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Aug 2023 06:14:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60398 "EHLO
+        id S231440AbjHDKOr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Aug 2023 06:14:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60378 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230288AbjHDKOC (ORCPT
+        with ESMTP id S231407AbjHDKOB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Aug 2023 06:14:02 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id AD52149D4
-        for <linux-kernel@vger.kernel.org>; Fri,  4 Aug 2023 03:13:58 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 3146C1007;
-        Fri,  4 Aug 2023 03:14:41 -0700 (PDT)
-Received: from e127643.arm.com (unknown [10.57.3.154])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id A9FDE3F6C4;
-        Fri,  4 Aug 2023 03:13:55 -0700 (PDT)
-From:   James Clark <james.clark@arm.com>
-To:     coresight@lists.linaro.org, linux-arm-kernel@lists.infradead.org,
-        kvmarm@lists.linux.dev
-Cc:     James Clark <james.clark@arm.com>, Marc Zyngier <maz@kernel.org>,
-        Oliver Upton <oliver.upton@linux.dev>,
-        James Morse <james.morse@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Zenghui Yu <yuzenghui@huawei.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Mike Leach <mike.leach@linaro.org>,
-        Leo Yan <leo.yan@linaro.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Rob Herring <robh@kernel.org>, linux-kernel@vger.kernel.org
-Subject: [RFC PATCH 3/3] coresight: Support exclude_guest with Feat_TRF and nVHE
-Date:   Fri,  4 Aug 2023 11:13:13 +0100
-Message-Id: <20230804101317.460697-4-james.clark@arm.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20230804101317.460697-1-james.clark@arm.com>
-References: <20230804101317.460697-1-james.clark@arm.com>
+        Fri, 4 Aug 2023 06:14:01 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0727249D7
+        for <linux-kernel@vger.kernel.org>; Fri,  4 Aug 2023 03:13:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=GYK9+OGfxviHr18NI+B7bkONaqcCERrPUSZDWZMRPEQ=; b=Si4qEE3c+HJrS2LkWUpXkEpwIY
+        z2QG84d95tw+UddPI6rUzadRriq2PDZYJ6XXgw1x4zVAysI26DpGR+v731iLeXUZpRG2lgIbPY72I
+        85Z6xFBogTIWFnZfNZ3S5QtL+ki4RcsOQiafmnH+Ad4fikMc2BFW263jmaF+Yq1RI6wmtI2QFGM9e
+        ynZc/AAqQWPF0jP6VORFQ68/nqLS5sz5Lw9voBgJBLLNR9+ghPabvhaxhVI/lrVi2pG/Art4rrfjP
+        Ipm/2XkF12gk117ch8cTn0cq83XETEzdbxKMmrQET7kTOkjlN6SKIYhgKMGA8v/MhBhxLtLPW2cf8
+        KqI33mSw==;
+Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1qRroA-009Hn5-6s; Fri, 04 Aug 2023 10:13:22 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 400A730020C;
+        Fri,  4 Aug 2023 12:13:21 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 1F03F2107C447; Fri,  4 Aug 2023 12:13:21 +0200 (CEST)
+Date:   Fri, 4 Aug 2023 12:13:21 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Xin Li <xin3.li@intel.com>
+Cc:     linux-kernel@vger.kernel.org, xen-devel@lists.xenproject.org,
+        Andy Lutomirski <luto@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+        "H . Peter Anvin" <hpa@zytor.com>, Juergen Gross <jgross@suse.com>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>
+Subject: Re: [RFC PATCH 1/1] x86/traps: Get rid of exception handlers' second
+ argument error code
+Message-ID: <20230804101321.GH214207@hirez.programming.kicks-ass.net>
+References: <20230804075734.8372-1-xin3.li@intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230804075734.8372-1-xin3.li@intel.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-With nVHE the filters need to be applied before switching to the guest,
-so supply the per-cpu filter status to KVM.
+On Fri, Aug 04, 2023 at 12:57:34AM -0700, Xin Li wrote:
+> The IDT event delivery of X86_TRAP_DF, X86_TRAP_TS, X86_TRAP_NP,
+> X86_TRAP_SS, X86_TRAP_GP, X86_TRAP_AC and X86_TRAP_CP pushes an error
+> code into the orig_ax member of the pt_regs structure, and the error
+> code is passed as the second argument of their C-handlers, although
+> the pt_regs structure is already passed as the first argument.
+> 
+> The asm entry code of such faults does the following
+> 
+>   movq ORIG_RAX(%rsp), %rsi	/* get error code into 2nd argument*/
+>   movq $-1, ORIG_RAX(%rsp)	/* no syscall to restart */
+> 
+> to set the orig_ax member to -1 just before calling the C-handler.
+> 
+> In addition, the IRQ entry code uses the second error code argument
+> as its IRQ vector, as the IRQ asm entry code pushes its IRQ vector
+> into the orig_ax member.
+> 
+> The commit d99015b1abbad ("x86: move entry_64.S register saving out of
+> the macros") introduced the changes to set orig_ax to -1, but I can't
+> see why it's required. Our tests on x86_64 and x86_32 seem fine if
+> orig_ax is left unchanged instead of set to -1.
 
-Signed-off-by: James Clark <james.clark@arm.com>
----
- drivers/hwtracing/coresight/coresight-etm-perf.c | 4 ++++
- 1 file changed, 4 insertions(+)
-
-diff --git a/drivers/hwtracing/coresight/coresight-etm-perf.c b/drivers/hwtracing/coresight/coresight-etm-perf.c
-index 5ca6278baff4..f78f05e656f5 100644
---- a/drivers/hwtracing/coresight/coresight-etm-perf.c
-+++ b/drivers/hwtracing/coresight/coresight-etm-perf.c
-@@ -9,6 +9,7 @@
- #include <linux/coresight-pmu.h>
- #include <linux/cpumask.h>
- #include <linux/device.h>
-+#include <linux/kvm_host.h>
- #include <linux/list.h>
- #include <linux/mm.h>
- #include <linux/init.h>
-@@ -510,6 +511,7 @@ static void etm_event_start(struct perf_event *event, int flags)
- 	}
- 
- out:
-+	kvm_etm_set_events(&event->attr);
- 	/* Tell the perf core the event is alive */
- 	event->hw.state = 0;
- 	/* Save the event_data for this ETM */
-@@ -627,6 +629,8 @@ static void etm_event_stop(struct perf_event *event, int mode)
- 
- 	/* Disabling the path make its elements available to other sessions */
- 	coresight_disable_path(path);
-+
-+	kvm_etm_clr_events();
- }
- 
- static int etm_event_add(struct perf_event *event, int mode)
--- 
-2.34.1
-
+That means that SYSCALL_NUM(regs) get to be garbage; or something like
+that.
