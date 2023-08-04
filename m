@@ -2,245 +2,244 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0848277088E
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 21:06:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 41955770890
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 21:06:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229971AbjHDTGI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Aug 2023 15:06:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42264 "EHLO
+        id S230284AbjHDTGM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Aug 2023 15:06:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42384 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230322AbjHDTF6 (ORCPT
+        with ESMTP id S230343AbjHDTGB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Aug 2023 15:05:58 -0400
-Received: from NAM11-DM6-obe.outbound.protection.outlook.com (mail-dm6nam11on2066.outbound.protection.outlook.com [40.107.223.66])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63ACA4EE4;
-        Fri,  4 Aug 2023 12:05:35 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Gk8pDlgA0PpMetumtgxUXZ2jPPONLDtjMfdxF3XcsJDtYymw4y/E7sRJD3ceft7TDdJ1W6dFeoVjx27WjGMZ4vA/TI2Og2iAM106itV43yw+ABHyNccSBKUH+21YD0O34PiUUJifmMiR98LDSDjBgogh3NLTtqBfsc4sKhsdRXQsrMDqXSVk9pwTXU0RiLGhfpn7+EYdGl3VN82sMYdtk1D59yxwwlGh/kF6dcdQdq8yt+2E0YAPAjeIwWLZO7kqlLl/hIsIfdfyXBXXwQ7goqii3/NHvvXtBZ8+2ZsjwUJlosLLpJXuDZ/HuE0gKy2yGkh2tNO3lJIKj1G1otCmsQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=rz06TYZ+DxUDkKEaSEnC5VSJPPQcA8ZH+7RWZuWEuQM=;
- b=S2/vUS1ye5HSzbIBdC/cr1p/jBG9wVkbpr5ESaE3yrkfJLn+MYP23cVcOnEAC/hqZNscHe+44vCdxJ8oz+YEj0THLuJgujnRzNExjsFoksOg5WdURrgHow3llEZmk8sbBbiUfJ9IS9THLXizLG/eddjGsnAFzb0O5THDB/n1QDYilxDNQXxU8/idRR/0CkuFOsSlMpcY7m5VS0GM3TITq3MA2Mi4wCB93k9QNEEJnCNbuOcv6GZGyKYpKyN09waeZCxojLCK1qbWnHsMA9VQZPAndcTlIvPlcQSB7mnMZ+XV4B23PRvhZr2vTqnvWWEDAaPETkded58T33BpK87org==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=rz06TYZ+DxUDkKEaSEnC5VSJPPQcA8ZH+7RWZuWEuQM=;
- b=cUxyR+wUgF0TtVDz9zkL2TJaeaemI0jjQxo9qtxU6sU1gLSi3GJJ3Ho6Ark+udiogo1X1zmcbHUZxFyy5rsRRJh79rV3L69HxH0g2MX3oVlxNc/OZCLgx9BKFDdQsIyizEiwh0EwzyK752T9m+5tXjGpg84g1QSl/8eKZd1Hdz0=
-Received: from SN7PR12MB7201.namprd12.prod.outlook.com (2603:10b6:806:2a8::22)
- by MW4PR12MB5668.namprd12.prod.outlook.com (2603:10b6:303:16b::13) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6631.47; Fri, 4 Aug
- 2023 19:05:32 +0000
-Received: from SN7PR12MB7201.namprd12.prod.outlook.com
- ([fe80::2525:9c2a:5446:7605]) by SN7PR12MB7201.namprd12.prod.outlook.com
- ([fe80::2525:9c2a:5446:7605%6]) with mapi id 15.20.6631.046; Fri, 4 Aug 2023
- 19:05:31 +0000
-From:   "Havalige, Thippeswamy" <thippeswamy.havalige@amd.com>
-To:     Bjorn Helgaas <helgaas@kernel.org>
-CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "robh+dt@kernel.org" <robh+dt@kernel.org>,
-        "bhelgaas@google.com" <bhelgaas@google.com>,
-        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
-        "krzysztof.kozlowski@linaro.org" <krzysztof.kozlowski@linaro.org>,
-        "lpieralisi@kernel.org" <lpieralisi@kernel.org>,
-        "Gogada, Bharat Kumar" <bharat.kumar.gogada@amd.com>,
-        "Simek, Michal" <michal.simek@amd.com>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>
-Subject: RE: [PATCH] PCI: xilinx-nwl: Remove unnecessary code and updating
- ecam default value.
-Thread-Topic: [PATCH] PCI: xilinx-nwl: Remove unnecessary code and updating
- ecam default value.
-Thread-Index: AQHZxgC0Rv/C4y9Z90yNvq9wBSG5NK/YyrOAgAD1rFA=
-Date:   Fri, 4 Aug 2023 19:05:30 +0000
-Message-ID: <SN7PR12MB72014E79448FE6C7A47718E28B09A@SN7PR12MB7201.namprd12.prod.outlook.com>
-References: <20230803115016.4266-1-thippeswamy.havalige@amd.com>
- <20230803165549.GA102529@bhelgaas>
-In-Reply-To: <20230803165549.GA102529@bhelgaas>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=amd.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: SN7PR12MB7201:EE_|MW4PR12MB5668:EE_
-x-ms-office365-filtering-correlation-id: f2a51f2e-4b02-441b-f029-08db951dc5f2
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: 6gfvGmLsk+9kL8XUfC6lMAyfskMc8Nc8xRuvAAozl4K6gZ1tAaQ+Q8Dmrkq4atidlUltxMY2OMIFXWvYSo1s58u3q+eC7EvciTjjJi5rww/ZDHf8+GF92RNXkl/j3RgSB5QlHLxAKJ4hU7iWc509fqGeSwxFxsehmxbA9ynTOUes48OfynXiPJhOkowfBhwFqJJfee1OQsnsG17/1Feoqc8AQMlyqIXRekTUo2mHTduRA/t9e4PkI2KHzh1UaAQ1ZwHgmBpWGF6DgPQu2DxFF+i2swrVLiJx41se8tP2lPDWWNntuoDZBjbZWMhGPMvT7+nqhjamjtBL1da1SQluWP0jcR6iTmtH/nTmPKHqlhb0KufZOkNQ4uT+Yqy7eM8Zz5Wrrz0yXto0Xk6eUp6WgFPhcaTP0GcjVD8LlsL1K+zAyi2A2+D+bOo0cTora+/OoBBuaGEzTA+inUroWPBdbA7sQodVqw8GoKJ6I6QFTtOnDUZNnXyE6UOwzxZAbrtLTBTvBVSrOOY4zpVGUnmG1+RbFS72zqBOKPm2EQTq3WHTcX8bSTGNO//kPPmatbCD81/I2ZBsuvH4LWGcdZR9TFB5kLzCvUZ48mN/yogLO2KNr0KIxIWnl3yRK6A1j3+/
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN7PR12MB7201.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(376002)(346002)(396003)(39860400002)(136003)(366004)(451199021)(1800799003)(186006)(8936002)(8676002)(83380400001)(6506007)(26005)(53546011)(66556008)(4326008)(2906002)(6916009)(52536014)(66946007)(64756008)(5660300002)(66476007)(66446008)(316002)(76116006)(7696005)(71200400001)(9686003)(478600001)(54906003)(122000001)(55016003)(38100700002)(33656002)(86362001)(38070700005)(41300700001);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?CGY6+iNtpSXkOLKOxm6+ExzgU7H9TFjpqM9MCPSP/gs9cq622sYN6sRj248q?=
- =?us-ascii?Q?WmgVGe7e7KftDbGIJ7l2oC6Pkkun9mXDFh+3sC9EA9proxOC552yGfQpG+Te?=
- =?us-ascii?Q?BbCb3XV9XLsgOdT16iAgUwxrTj0b8Ro3mc5TUTrplKw2q68+2a9EDkj/CQId?=
- =?us-ascii?Q?6RYNNCfACvT7gDu5/zOBrEEV/hh2Z54DwctP2GN0sWqbl6FGQ9AnOasscQBA?=
- =?us-ascii?Q?bZK2F1DxJCrHwFVTeIJMXXueft0vTgLX7Z5WTPi6k1n12Ez+qy+kMwOX58CY?=
- =?us-ascii?Q?IejHxOyN+kX7y/lcb7L1hDojFETnrIlaQfeCG0zOkfy7XP3Mnlp3mCuv3SM4?=
- =?us-ascii?Q?gefTph+darBQV/cZa6+LXj1H3kC44fMNG+6XMOjRQMr/I/TKU7SZx3ptPZCG?=
- =?us-ascii?Q?51jkBozV1XjOJxWvp2S5N0b7NLh/gScMmPWuuYIyofUImU6h1y1ye1t5BCoB?=
- =?us-ascii?Q?+X/3pj/TH998TKBrgCtxrgqYEtac06qCOnToOoV5GXHud9z7O7N6dJnOSsND?=
- =?us-ascii?Q?QjU7nOPmDi3KEje16QxltXAP48/CcZ/7QBStbo85eXfNe8qgxWic6e4fDbpF?=
- =?us-ascii?Q?+3VnrU1bQk+LPuHbvE+lJTnxDDRChXSTA6cjOItYijwfrsX3Omju7EdCZZVV?=
- =?us-ascii?Q?ROLFyPxq6MBEZQ2Pm5T7Z2Jv5+55sna4COx3FQeFQDrJPILYDMbU6qPfoBJ7?=
- =?us-ascii?Q?HUXMIjFVIu+Smn/vI97XjS1/wRX15sq+ve1vKqSL+mlLd2SeTY2+4vOLD6lr?=
- =?us-ascii?Q?whchmLxCh7ucT0tjEfP3xQj3Hc0LlyGPAZz3JfOc7IsUhQuUy/Ed4xx0rjWP?=
- =?us-ascii?Q?NgDzS3gsOsWdzKGHUT0daPp6iFU8q4RFA/Od9Fp9Vzoayn7LgxsbyXgKiL0k?=
- =?us-ascii?Q?hZsMg7rKLW0bus6aSKPbfjs6uOxH1hl6ylAlfyvKhzYf/2Q+ZTZ+60tNp5xl?=
- =?us-ascii?Q?xXb71J4feY5Ls9jBJ8MmpkujgrcAjxvu+j3+7OMIciqGPGGPRiyg983BXriL?=
- =?us-ascii?Q?9lj8D/MUG45caUu/1/Bb/VdLNY56u15RGIxCYdzPjQ/rteQJyKTys2bX3XQD?=
- =?us-ascii?Q?LlDnxXVygZlIsBCuFoTFQx1UqHBM/L7kRNKQECPZA5SLa5XSKVt7nCbrLUIL?=
- =?us-ascii?Q?GfDkfWAawPwoMu7ulZQsv6cWtmp8uUKVrspWeC6dnqfqX2+vCX4tkB2wbszW?=
- =?us-ascii?Q?1sPu14SM2lHXftCMEqPoXA3tuQVNqnnYem7HoLFlrLAkKsZ1pr43Fk4NTYyK?=
- =?us-ascii?Q?tVSi2oN4N+ZvI2UHkAOCVPFg4tq4DuneBvV18jXDJkLimiVDABs/CCcI6RlD?=
- =?us-ascii?Q?lSiuK6DfALMdrw8zHD3fFjNxseziB0gg8vrZ74nQYAlbHxToQZ1ik9cNJ9sc?=
- =?us-ascii?Q?tEm2lT0UkrtmSGSe3Mymdt3TwRSaJFx+CFOG5AgOaPPPTwpS0N00EcmFaDZ4?=
- =?us-ascii?Q?URAy6iJMDvB0rmJu8J1hGvWZs3KTyEnBp6DQK5kbc2Q1PLVHZfd0QOiby5y7?=
- =?us-ascii?Q?rLowm7s0xRtLOHC/rvSQEtXUWl4+0N+AQdMtBH/PRXMEECW4XCaAHUgLnq1p?=
- =?us-ascii?Q?emu8lCjLdaR2i4NEKTk=3D?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        Fri, 4 Aug 2023 15:06:01 -0400
+Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66DF94EED;
+        Fri,  4 Aug 2023 12:05:41 -0700 (PDT)
+Received: by mail-wm1-x32d.google.com with SMTP id 5b1f17b1804b1-3fe2bc2701bso22529135e9.2;
+        Fri, 04 Aug 2023 12:05:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1691175940; x=1691780740;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=RImfxtxvGtLO2n9zPJtV/vphcAvXDGCdvAZ0GbDbKrk=;
+        b=sQ/fQqqtQOaPptev4nG45CWIPf3ZJmox/dXbVk/wnAnyPSDQgvEB1sGCfzREKDHyxz
+         uMrYsS5yWsVqKOPLEszFO9lH4VE65Cz9c9p05HnHvakq7AtBEsNPBj+M3wcyozDNPTAw
+         9ubz1s2RBijzpI+vuzs1rnn0LgZGWXogRuLqMRHPRb3Cvs2Gsu8E8J4a/sj91PF4kYGG
+         3PWdbW553UZUYx3DOf/uixvEkElav2rbAZfXMs4KPDV0M/L02RuFEv5lZC7ik+N/8M/L
+         SdPl4NuUYkX2WGrRwF/Y656nfT6EiwhJjrpygWVd18YE9kgd9BpeBnW0tCpGG5q7dVNZ
+         UrXw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691175940; x=1691780740;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=RImfxtxvGtLO2n9zPJtV/vphcAvXDGCdvAZ0GbDbKrk=;
+        b=W+7Hj9qL06sYLfmLbatDukSz8P3Ci36d20IM5CajmUUQHOpQFCM7xzTAr558mML9kr
+         kP5w5/4Tl+J1/GqEjUxBrLz4LUh1uR03shBN+JqBfMb5rkyp0Sgs6ux4fI+FEwIqZnKY
+         FTGJxoXZKL+1ozAW5cO4oFpTg9jQdD+tib01svCfhTdrGhAEIEn1VqlniPQ2U8a2RIcr
+         fRdpVzyjJzjwE9AJ5zqGl3xRjNvfu8Y3q8JjK1JJnqcReGCE6vVP04vTUSJvVjEUG7AF
+         tG1Zci7HEi2Dm/mB4BLJfJIrVe3hKFt6JZDINvMIG0OtuVPOA+1yFd4NwdC/XTmqpHh1
+         h+vQ==
+X-Gm-Message-State: AOJu0YwBeKaH54mV0W347x0Mf7DSehYHWUU2MCLc6UbX8DnrVVBtEMEk
+        TasKJAVQBFtcEqIUjcIdBF4=
+X-Google-Smtp-Source: AGHT+IEn1aXb9mEpqN8jQUJqVtnlCntlV7okng3mYJc7tFxDGgv2efEXqCJ0/u4COACFPhXcJalyeA==
+X-Received: by 2002:a7b:cc87:0:b0:3fe:4e4e:bedb with SMTP id p7-20020a7bcc87000000b003fe4e4ebedbmr172426wma.4.1691175939761;
+        Fri, 04 Aug 2023 12:05:39 -0700 (PDT)
+Received: from jernej-laptop.localnet (82-149-1-233.dynamic.telemach.net. [82.149.1.233])
+        by smtp.gmail.com with ESMTPSA id 22-20020a05600c22d600b003fe2de3f94fsm3063043wmg.12.2023.08.04.12.05.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 04 Aug 2023 12:05:38 -0700 (PDT)
+From:   Jernej =?utf-8?B?xaBrcmFiZWM=?= <jernej.skrabec@gmail.com>
+To:     Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Samuel Holland <samuel@sholland.org>,
+        Andre Przywara <andre.przywara@arm.com>
+Cc:     Icenowy Zheng <uwu@icenowy.me>,
+        Piotr Oniszczuk <piotr.oniszczuk@gmail.com>,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-sunxi@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 3/3] arm64: dts: allwinner: h616: Add OrangePi Zero 3 board
+ support
+Date:   Fri, 04 Aug 2023 21:05:36 +0200
+Message-ID: <4500165.LvFx2qVVIh@jernej-laptop>
+In-Reply-To: <20230804170856.1237202-4-andre.przywara@arm.com>
+References: <20230804170856.1237202-1-andre.przywara@arm.com>
+ <20230804170856.1237202-4-andre.przywara@arm.com>
 MIME-Version: 1.0
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: SN7PR12MB7201.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: f2a51f2e-4b02-441b-f029-08db951dc5f2
-X-MS-Exchange-CrossTenant-originalarrivaltime: 04 Aug 2023 19:05:31.0151
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: b4WSJpCZQ4SDWzZ/Q5ah634aSIUqXmHfsUMTsAV2dRon5CtbckqTL/YWv9g1iy3n0Upl+bYcptusOzU0eRD7+A==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW4PR12MB5668
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Bjorn,
+Dne petek, 04. avgust 2023 ob 19:08:56 CEST je Andre Przywara napisal(a):
+> The OrangePi Zero 3 is a development board based on the Allwinner H618 SoC,
+> which seems to be just an H616 with more L2 cache. The board itself is a
+> slightly updated version of the Orange Pi Zero 2. It features:
+> - Four ARM Cortex-A53 cores, Mali-G31 MP2 GPU
+> - 1/1.5/2/4 GiB LPDDR4 DRAM SKUs (only up to 1GB on the Zero2)
+> - AXP313a PMIC (more capable AXP305 on the Zero2)
+> - Raspberry-Pi-1 compatible GPIO header
+> - extra 13 pin expansion header, exposing pins for 2x USB 2.0 ports
+> - 1 USB 2.0 host port
+> - 1 USB 2.0 type C port (power supply + OTG)
+> - MicroSD slot
+> - on-board 16MiB bootable SPI NOR flash (only 2MB on the Zero2)
+> - 1Gbps Ethernet port (via Motorcomm YT8531 PHY) (RTL8211 on the Zero2)
+> - micro-HDMI port
+> - (yet) unsupported Allwinner WiFi/BT chip
+> 
+> Add the devicetree file describing the currently supported features,
+> namely LEDs, SD card, PMIC, SPI flash, USB. Ethernet seems unstable at
+> the moment, though the basic functionality works.
+> 
+> Signed-off-by: Andre Przywara <andre.przywara@arm.com>
+> ---
+>  arch/arm64/boot/dts/allwinner/Makefile        |  1 +
+>  .../allwinner/sun50i-h618-orangepi-zero3.dts  | 94 +++++++++++++++++++
+>  2 files changed, 95 insertions(+)
+>  create mode 100644
+> arch/arm64/boot/dts/allwinner/sun50i-h618-orangepi-zero3.dts
+> 
+> diff --git a/arch/arm64/boot/dts/allwinner/Makefile
+> b/arch/arm64/boot/dts/allwinner/Makefile index 6a96494a2e0a3..3b0ad54062381
+> 100644
+> --- a/arch/arm64/boot/dts/allwinner/Makefile
+> +++ b/arch/arm64/boot/dts/allwinner/Makefile
+> @@ -40,3 +40,4 @@ dtb-$(CONFIG_ARCH_SUNXI) += sun50i-h6-tanix-tx6.dtb
+>  dtb-$(CONFIG_ARCH_SUNXI) += sun50i-h6-tanix-tx6-mini.dtb
+>  dtb-$(CONFIG_ARCH_SUNXI) += sun50i-h616-orangepi-zero2.dtb
+>  dtb-$(CONFIG_ARCH_SUNXI) += sun50i-h616-x96-mate.dtb
+> +dtb-$(CONFIG_ARCH_SUNXI) += sun50i-h618-orangepi-zero3.dtb
+> diff --git a/arch/arm64/boot/dts/allwinner/sun50i-h618-orangepi-zero3.dts
+> b/arch/arm64/boot/dts/allwinner/sun50i-h618-orangepi-zero3.dts new file
+> mode 100644
+> index 0000000000000..96a6851728111
+> --- /dev/null
+> +++ b/arch/arm64/boot/dts/allwinner/sun50i-h618-orangepi-zero3.dts
+> @@ -0,0 +1,94 @@
+> +// SPDX-License-Identifier: (GPL-2.0+ or MIT)
+> +/*
+> + * Copyright (C) 2023 Arm Ltd.
+> + */
+> +
+> +/dts-v1/;
+> +
+> +#include "sun50i-h616-orangepi-zero.dtsi"
+> +
+> +/ {
+> +	model = "OrangePi Zero3";
+> +	compatible = "xunlong,orangepi-zero3", "allwinner,sun50i-h618";
+> +};
+> +
+> +&emac0 {
+> +	phy-supply = <&reg_dldo1>;
+> +};
+> +
+> +&ext_rgmii_phy {
+> +	motorcomm,clk-out-frequency-hz = <125000000>;
+> +};
+> +
+> +&mmc0 {
+> +	/*
+> +	 * The schematic shows the card detect pin wired up to PF6, via an
+> +	 * inverter, but it just doesn't work.
+> +	 */
+> +	broken-cd;
+> +	vmmc-supply = <&reg_dldo1>;
+> +};
+> +
+> +&r_i2c {
+> +	status = "okay";
+> +
+> +	axp313: pmic@36 {
+> +		compatible = "x-powers,axp313a";
+> +		reg = <0x36>;
+> +		#interrupt-cells = <1>;
+> +		interrupt-controller;
+> +		interrupt-parent = <&pio>;
+> +		interrupts = <2 9 IRQ_TYPE_LEVEL_LOW>;	/* PC9 */
+> +
+> +		vin1-supply = <&reg_vcc5v>;
+> +		vin2-supply = <&reg_vcc5v>;
+> +		vin3-supply = <&reg_vcc5v>;
+> +
+> +		regulators {
+> +			/* Supplies VCC-PLL, so needs to be always 
+on. */
+> +			reg_aldo1: aldo1 {
+> +				regulator-always-on;
+> +				regulator-min-microvolt = 
+<1800000>;
+> +				regulator-max-microvolt = 
+<1800000>;
+> +				regulator-name = "vcc1v8";
+> +			};
+> +
+> +			/* Supplies VCC-IO, so needs to be always on. 
+*/
+> +			reg_dldo1: dldo1 {
+> +				regulator-always-on;
+> +				regulator-min-microvolt = 
+<3300000>;
+> +				regulator-max-microvolt = 
+<3300000>;
+> +				regulator-name = "vcc3v3";
+> +			};
+> +
+> +			reg_dcdc1: dcdc1 {
+> +				regulator-always-on;
+> +				regulator-min-microvolt = 
+<810000>;
+> +				regulator-max-microvolt = 
+<990000>;
+> +				regulator-name = "vdd-gpu-sys";
+> +			};
 
-> -----Original Message-----
-> From: Bjorn Helgaas <helgaas@kernel.org>
-> Sent: Thursday, August 3, 2023 10:26 PM
-> To: Havalige, Thippeswamy <thippeswamy.havalige@amd.com>
-> Cc: linux-kernel@vger.kernel.org; robh+dt@kernel.org;
-> bhelgaas@google.com; linux-pci@vger.kernel.org;
-> krzysztof.kozlowski@linaro.org; lpieralisi@kernel.org; Gogada, Bharat Kum=
-ar
-> <bharat.kumar.gogada@amd.com>; Simek, Michal
-> <michal.simek@amd.com>; linux-arm-kernel@lists.infradead.org
-> Subject: Re: [PATCH] PCI: xilinx-nwl: Remove unnecessary code and updatin=
-g
-> ecam default value.
->=20
-> On Thu, Aug 03, 2023 at 05:20:16PM +0530, Thippeswamy Havalige wrote:
-> > Remove reduntant code.
-> > Change NWL_ECAM_VALUE_DEFAULT to 16 to support maximum 256
-> buses.
->=20
-> Remove period from subject line.
->=20
-> Please mention the most important part first in the subject -- the
-> ECAM change sounds more important than removing redundant code.
->=20
-> s/ecam/ECAM/
-> s/reduntant/redundant/
->=20
-> Please elaborate on why this code is redundant.  What makes it
-> redundant?  Apparently the bus number registers default to the correct
-> values or some other software programs them?
+Is it safe to change sys voltage when system is running?
+
+Best regards,
+Jernej
+
+> +
+> +			reg_dcdc2: dcdc2 {
+> +				regulator-always-on;
+> +				regulator-min-microvolt = 
+<810000>;
+> +				regulator-max-microvolt = 
+<1100000>;
+> +				regulator-name = "vdd-cpu";
+> +			};
+> +
+> +			reg_dcdc3: dcdc3 {
+> +				regulator-always-on;
+> +				regulator-min-microvolt = 
+<1100000>;
+> +				regulator-max-microvolt = 
+<1100000>;
+> +				regulator-name = "vdd-dram";
+> +			};
+> +		};
+> +	};
+> +};
+> +
+> +&pio {
+> +	vcc-pc-supply = <&reg_dldo1>;
+> +	vcc-pf-supply = <&reg_dldo1>;
+> +	vcc-pg-supply = <&reg_aldo1>;
+> +	vcc-ph-supply = <&reg_dldo1>;
+> +	vcc-pi-supply = <&reg_dldo1>;
+> +};
 
 
- - Yes, The  Primary,Secondary and sub-ordinate bus number registers  are p=
-rogrammed/updated as part of linux enumeration so updating these registers =
-are redundant.
-
-> I don't see the point of the struct nwl_pcie.ecam_value member.  It is
-> set once and never updated, so we could just use
-> NWL_ECAM_VALUE_DEFAULT instead.
--Agreed, I ll update it in next patch.=20
 
 
-> "ECAM_VALUE" is not a very informative name.  I don't know what an
-> "ECAM value" would be.  How is the value 16 related to a maximum of
-> 256 buses?  We only need 8 bits to address 256 buses, so it must be
-> something else.  The bus number appears at bits 20-27
-> (PCIE_ECAM_BUS_SHIFT) in a standard ECAM address, so probably not the
-> bit location?
-Yes, Agreed I'll modify ECAM_VALUE as ECAM_SIZE here and it is not related =
-to a maximum 256 buses.
-> Does this fix a problem?
-
-- Yes, It is fixing a problem. Our controller is expecting ECAM size to be =
-programmed by software.  By programming "NWL_ECAM_VALUE_DEFAULT  12" contro=
-ller can access upto 16MB ECAM region which is used to detect 16 buses so b=
-y updating "NWL_ECAM_VALUE_DEFAULT " to 16 controller can access upto 256 M=
-b ECAM region to detect 256 buses.
-
-2^(ecam_size_offset+ecam_size)=20
-
-Here (ecam_size_offset=3D12 and ecam_size=3D16) --> 256Mb
-
-> > Signed-off-by: Thippeswamy Havalige <thippeswamy.havalige@amd.com>
-> > ---
-> >  drivers/pci/controller/pcie-xilinx-nwl.c | 11 +----------
-> >  1 file changed, 1 insertion(+), 10 deletions(-)
-> >
-> > diff --git a/drivers/pci/controller/pcie-xilinx-nwl.c
-> b/drivers/pci/controller/pcie-xilinx-nwl.c
-> > index 176686b..6d40543 100644
-> > --- a/drivers/pci/controller/pcie-xilinx-nwl.c
-> > +++ b/drivers/pci/controller/pcie-xilinx-nwl.c
-> > @@ -126,7 +126,7 @@
-> >  #define E_ECAM_CR_ENABLE		BIT(0)
-> >  #define E_ECAM_SIZE_LOC			GENMASK(20, 16)
-> >  #define E_ECAM_SIZE_SHIFT		16
-> > -#define NWL_ECAM_VALUE_DEFAULT		12
-> > +#define NWL_ECAM_VALUE_DEFAULT		16
-> >
-> >  #define CFG_DMA_REG_BAR			GENMASK(2, 0)
-> >  #define CFG_PCIE_CACHE			GENMASK(7, 0)
-> > @@ -683,15 +683,6 @@ static int nwl_pcie_bridge_init(struct nwl_pcie
-> *pcie)
-> >  	nwl_bridge_writel(pcie, upper_32_bits(pcie->phys_ecam_base),
-> >  			  E_ECAM_BASE_HI);
-> >
-> > -	/* Get bus range */
-> > -	ecam_val =3D nwl_bridge_readl(pcie, E_ECAM_CONTROL);
-> > -	pcie->last_busno =3D (ecam_val & E_ECAM_SIZE_LOC) >>
-> E_ECAM_SIZE_SHIFT;
-> > -	/* Write primary, secondary and subordinate bus numbers */
-> > -	ecam_val =3D first_busno;
-> > -	ecam_val |=3D (first_busno + 1) << 8;
-> > -	ecam_val |=3D (pcie->last_busno << E_ECAM_SIZE_SHIFT);
-> > -	writel(ecam_val, (pcie->ecam_base + PCI_PRIMARY_BUS));
->=20
-> "ecam_val" looks like it's supposed to be the 32-bit value containing
-> PCI_PRIMARY_BUS (low 8 bits, from the pointless "first_busno" that is
-> always 0), PCI_SECONDARY_BUS (bits 8-15, always bus 1),
-> PCI_SUBORDINATE_BUS (bits 16-23, totally unrelated to
-> E_ECAM_SIZE_SHIFT although E_ECAM_SIZE_SHIFT happens to be the correct
-> value (16)), and PCI_SEC_LATENCY_TIMER (not applicable for PCIe).
->=20
-> So I guess the assumption is that these registers already contain the
-> correct values?
->=20
-> It looks like previously PCI_SUBORDINATE_BUS (i.e., pcie->last_busno)
-> was 12, since we wrote NWL_ECAM_VALUE_DEFAULT to E_ECAM_CONTROL
-> and
-> then read it back?
->=20
-> And now pcie->last_busno is competely unused?
->=20
-> This all seems not quite baked.  Am I missing something?
->=20
-> Bjorn
