@@ -2,159 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C011776FCA5
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 10:52:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AD92176FCA3
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 10:52:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229844AbjHDIwN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Aug 2023 04:52:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43252 "EHLO
+        id S229835AbjHDIwK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Aug 2023 04:52:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42942 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229744AbjHDIua (ORCPT
+        with ESMTP id S229741AbjHDIuY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Aug 2023 04:50:30 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A57A94C3D
-        for <linux-kernel@vger.kernel.org>; Fri,  4 Aug 2023 01:49:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1691138979;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=7qr15U85Ji6JaTSGdRUgCJIrXJMY4cTkIs1Ye7aZqqk=;
-        b=Sb9o5KTux0eFuu7yZ+1zcbboNAeVrAgotBnJYlfnab2sb+EF31NGHdhtI6F4ZElBB4Jljs
-        y6iwhg08EBNw/j8mfU6WPEYw9lh2XNuFpV2cGSE9g9ppi7dwqIakIgUFxSW57F2ZwqgCqX
-        PaYGNPAXIOnwSzSSNxVaQghAeOBDHxo=
-Received: from mail-oo1-f69.google.com (mail-oo1-f69.google.com
- [209.85.161.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-369-FanNZGoTM3OJwwoHoaOIPA-1; Fri, 04 Aug 2023 04:49:38 -0400
-X-MC-Unique: FanNZGoTM3OJwwoHoaOIPA-1
-Received: by mail-oo1-f69.google.com with SMTP id 006d021491bc7-56d46f0ac4bso1099820eaf.1
-        for <linux-kernel@vger.kernel.org>; Fri, 04 Aug 2023 01:49:38 -0700 (PDT)
+        Fri, 4 Aug 2023 04:50:24 -0400
+Received: from smtp-relay-internal-0.canonical.com (smtp-relay-internal-0.canonical.com [185.125.188.122])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4933C4ED9
+        for <linux-kernel@vger.kernel.org>; Fri,  4 Aug 2023 01:49:53 -0700 (PDT)
+Received: from mail-ej1-f70.google.com (mail-ej1-f70.google.com [209.85.218.70])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id D6F073F148
+        for <linux-kernel@vger.kernel.org>; Fri,  4 Aug 2023 08:49:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1691138991;
+        bh=3z9qgb9ifPvjMsignbqopXQPiRZw936kb1zQwGNpHt4=;
+        h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+         MIME-Version;
+        b=OV7Xk6DYmrC9Bf1PfSJ4bhX+xzNohrVjBEnPx6DGl++fVi2DA4kX01J21rPhi8tnT
+         dmmF9krrAGvvYsxjH4WxtthhYci7J7fbg4bW6VtmPeFL/DGZe7Ir4s1+pIt7e39vNv
+         BGNzDqTGOCMpRCg/R0uIlC4jaijuJ/wSIMDYeeb0Klli9w0ufYAABWRzs9xX9lMVQo
+         IQni/E9ysiynKJT6a1nuozBVITP+kO2MGgCTP9RltVG2/ruvZ0UwAxd9BYoqyx1AfE
+         W7hEU+au3ac6T5VI0pTdwhP9bcVW8DsTJ+pBALN+8yru3Sfm+h+DORYIla3EIq3FlJ
+         zV6qxwS1sy+mg==
+Received: by mail-ej1-f70.google.com with SMTP id a640c23a62f3a-993c2d9e496so119701166b.0
+        for <linux-kernel@vger.kernel.org>; Fri, 04 Aug 2023 01:49:51 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691138977; x=1691743777;
+        d=1e100.net; s=20221208; t=1691138989; x=1691743789;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=7qr15U85Ji6JaTSGdRUgCJIrXJMY4cTkIs1Ye7aZqqk=;
-        b=HHWIW2dNKY+y/lcvOS5p3EFI3O2MwBKiAY6ufKyA3uaOFw9K0hMypVnkYqFkFhWd70
-         uAjQJ5ZAETt5LZD2rau03TCncEl8YyZAUoBB2muvoZ22ZQLf1WabZIsOY2FEpdX8NbGS
-         EM9g3fiy+4IaFRY9WSRXzXedtDvapNdcJZA2Eg+7E7X9vDqLVI/s4J/IoTYqWYuKrGML
-         jGgh5R87nhoONQjG0hEg6qLC/0tthkJFcJX4YQAuoDsPWehPotTL3C7TT584t764RE5C
-         Y7N2DodajPr6namD5tSyU+csAwNMLwLKN2ERc8kOWSnz+RdS5r/S/FEWuSLOWG58aIDr
-         T/ug==
-X-Gm-Message-State: AOJu0YwdagciWe07dtQYOGW/wKzOXftt/XCxS6GigeQ1mvXNb0A2Q3RH
-        eu8D7neZhqXKvYn0frVUM9uCo9FDq0kETMu23eSFR2FHGiUdkgzDCqbBP1OYgZwugyrPdXewuGF
-        NNHbg8kaqhaOBlJV4C/2GE0T8
-X-Received: by 2002:a4a:d2dc:0:b0:56c:43cd:7267 with SMTP id j28-20020a4ad2dc000000b0056c43cd7267mr1155030oos.8.1691138977547;
-        Fri, 04 Aug 2023 01:49:37 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IFGpSmCpCsEW2JBmJiIqK4JHv1sEJQk4u7ARhdPhe1GUzhItUEcAzOrA7h+bfUyOp/7X0uLgw==
-X-Received: by 2002:a4a:d2dc:0:b0:56c:43cd:7267 with SMTP id j28-20020a4ad2dc000000b0056c43cd7267mr1155011oos.8.1691138977273;
-        Fri, 04 Aug 2023 01:49:37 -0700 (PDT)
-Received: from localhost.localdomain ([2804:1b3:a801:d380:694f:4f52:764c:4b7f])
-        by smtp.gmail.com with ESMTPSA id f8-20020a4ab008000000b0055516447257sm685679oon.29.2023.08.04.01.49.33
+        bh=3z9qgb9ifPvjMsignbqopXQPiRZw936kb1zQwGNpHt4=;
+        b=HEF5Z1/1XIlr6ogSx+gxCzkw0eWZI5AE04NM+77KDeymQKJR1a2jynfcmxkzRmzqGA
+         NLLLT/zRPSV4WLSRdfI0/xNzlaWHEs/BGSdBgVZ0/JdsdMmGKH6mYQn9JhrlCGabQpR/
+         Cvi4GZgS0PBZ10yuGqcTkvVuiMIlw/APBB0kJKUAf/HtktxjK2dti9irJfbWbsdwoP1p
+         uSzX7FLAqHHGcuAaYV2vhJkRA5asSTidmas93twkQbXKaB3XKPZD+7FXxejtioegpRi5
+         PRm0bHRNprGCBY9b0XabNPI/lTOh5cNEOxnANKnwY7T647w/qSTMlQZ5o7+QWb/bib9I
+         lcGw==
+X-Gm-Message-State: AOJu0YzXh1UOn6kVOEqZQkB8/NlYwYXf7UeJyrsumt+kG7aecJKidO4v
+        dgllCMfFTdpxkvGWMDTM26ybzOpR/ju4QQbRMZ8Y/FwGr2cIdVrhtUKUmsFeViVfiPyix6hMA1y
+        UJM2qN1Z9OmPRGvfUnq08hafspyze4zCvUYvLfsULLg==
+X-Received: by 2002:a17:906:76c8:b0:99c:524d:5052 with SMTP id q8-20020a17090676c800b0099c524d5052mr947635ejn.0.1691138989329;
+        Fri, 04 Aug 2023 01:49:49 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IGTym5TfzlHG1lZSavhyqmoZ0wMSQV6UssfY2G4oAk1V8i7SJ+uZP+Mld/WvvtmdYlgx9LngQ==
+X-Received: by 2002:a17:906:76c8:b0:99c:524d:5052 with SMTP id q8-20020a17090676c800b0099c524d5052mr947623ejn.0.1691138989153;
+        Fri, 04 Aug 2023 01:49:49 -0700 (PDT)
+Received: from amikhalitsyn.local (dslb-088-066-182-192.088.066.pools.vodafone-ip.de. [88.66.182.192])
+        by smtp.gmail.com with ESMTPSA id k25-20020a17090646d900b00992e94bcfabsm979279ejs.167.2023.08.04.01.49.48
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 04 Aug 2023 01:49:36 -0700 (PDT)
-From:   Leonardo Bras <leobras@redhat.com>
-To:     Will Deacon <will@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Leonardo Bras <leobras@redhat.com>,
-        Andrea Parri <parri.andrea@gmail.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Andrzej Hajda <andrzej.hajda@intel.com>,
-        Palmer Dabbelt <palmer@rivosinc.com>,
-        Guo Ren <guoren@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org
-Subject: [RFC PATCH v3 4/5] riscv/cmpxchg: Implement cmpxchg for variables of size 1 and 2
-Date:   Fri,  4 Aug 2023 05:48:57 -0300
-Message-ID: <20230804084900.1135660-6-leobras@redhat.com>
-X-Mailer: git-send-email 2.41.0
-In-Reply-To: <20230804084900.1135660-2-leobras@redhat.com>
-References: <20230804084900.1135660-2-leobras@redhat.com>
+        Fri, 04 Aug 2023 01:49:48 -0700 (PDT)
+From:   Alexander Mikhalitsyn <aleksandr.mikhalitsyn@canonical.com>
+To:     xiubli@redhat.com
+Cc:     brauner@kernel.org, stgraber@ubuntu.com,
+        linux-fsdevel@vger.kernel.org, Jeff Layton <jlayton@kernel.org>,
+        Ilya Dryomov <idryomov@gmail.com>, ceph-devel@vger.kernel.org,
+        Alexander Mikhalitsyn <aleksandr.mikhalitsyn@canonical.com>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v9 11/12] ceph/file: allow idmapped atomic_open inode op
+Date:   Fri,  4 Aug 2023 10:48:57 +0200
+Message-Id: <20230804084858.126104-12-aleksandr.mikhalitsyn@canonical.com>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20230804084858.126104-1-aleksandr.mikhalitsyn@canonical.com>
+References: <20230804084858.126104-1-aleksandr.mikhalitsyn@canonical.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-cmpxchg for variables of size 1-byte and 2-bytes is not yet available for
-riscv, even though its present in other architectures such as arm64 and
-x86. This could lead to not being able to implement some locking mechanisms
-or requiring some rework to make it work properly.
+From: Christian Brauner <brauner@kernel.org>
 
-Implement 1-byte and 2-bytes cmpxchg in order to achieve parity with other
-architectures.
+Enable ceph_atomic_open() to handle idmapped mounts. This is just a
+matter of passing down the mount's idmapping.
 
-Signed-off-by: Leonardo Bras <leobras@redhat.com>
+Cc: Xiubo Li <xiubli@redhat.com>
+Cc: Jeff Layton <jlayton@kernel.org>
+Cc: Ilya Dryomov <idryomov@gmail.com>
+Cc: ceph-devel@vger.kernel.org
+Signed-off-by: Christian Brauner <brauner@kernel.org>
+[ adapted to 5fadbd9929 ("ceph: rely on vfs for setgid stripping") ]
+Signed-off-by: Alexander Mikhalitsyn <aleksandr.mikhalitsyn@canonical.com>
 ---
- arch/riscv/include/asm/cmpxchg.h | 35 ++++++++++++++++++++++++++++++++
- 1 file changed, 35 insertions(+)
+v4:
+	- call mnt_idmap_get
+---
+ fs/ceph/file.c | 10 ++++++++--
+ 1 file changed, 8 insertions(+), 2 deletions(-)
 
-diff --git a/arch/riscv/include/asm/cmpxchg.h b/arch/riscv/include/asm/cmpxchg.h
-index 5a07646fae65..dfb433ac544f 100644
---- a/arch/riscv/include/asm/cmpxchg.h
-+++ b/arch/riscv/include/asm/cmpxchg.h
-@@ -72,6 +72,36 @@
-  * indicated by comparing RETURN with OLD.
-  */
+diff --git a/fs/ceph/file.c b/fs/ceph/file.c
+index 7470daafe595..f73d8b760682 100644
+--- a/fs/ceph/file.c
++++ b/fs/ceph/file.c
+@@ -668,7 +668,9 @@ static int ceph_finish_async_create(struct inode *dir, struct inode *inode,
+ 	in.truncate_seq = cpu_to_le32(1);
+ 	in.truncate_size = cpu_to_le64(-1ULL);
+ 	in.xattr_version = cpu_to_le64(1);
+-	in.uid = cpu_to_le32(from_kuid(&init_user_ns, current_fsuid()));
++	in.uid = cpu_to_le32(from_kuid(&init_user_ns,
++				       mapped_fsuid(req->r_mnt_idmap,
++						    &init_user_ns)));
+ 	if (dir->i_mode & S_ISGID) {
+ 		in.gid = cpu_to_le32(from_kgid(&init_user_ns, dir->i_gid));
  
-+#define __arch_cmpxchg_mask(sc_sfx, prepend, append, r, p, o, n)	\
-+({									\
-+	/* Depends on 2-byte variables being 2-byte aligned */		\
-+	ulong __s = ((ulong)(p) & 0x3) * BITS_PER_BYTE;			\
-+	ulong __mask = GENMASK(((sizeof(*p)) * BITS_PER_BYTE) - 1, 0)	\
-+			<< __s;						\
-+	ulong __newx = (ulong)(n) << __s;				\
-+	ulong __oldx = (ulong)(o) << __s;				\
-+	ulong __retx;							\
-+	register unsigned int __rc;					\
-+									\
-+	__asm__ __volatile__ (						\
-+		prepend							\
-+		"0:	lr.w %0, %2\n"					\
-+		"	and  %0, %0, %z5\n"				\
-+		"	bne  %0, %z3, 1f\n"				\
-+		"	and  %1, %0, %z6\n"				\
-+		"	or   %1, %1, %z4\n"				\
-+		"	sc.w" sc_sfx " %1, %1, %2\n"			\
-+		"	bnez %1, 0b\n"					\
-+		append							\
-+		"1:\n"							\
-+		: "=&r" (__retx), "=&r" (__rc), "+A" (*(p))		\
-+		: "rJ" ((long)__oldx), "rJ" (__newx),			\
-+		  "rJ" (__mask), "rJ" (~__mask)				\
-+		: "memory");						\
-+									\
-+	r = (__typeof__(*(p)))(__retx >> __s);				\
-+})
-+
+@@ -676,7 +678,9 @@ static int ceph_finish_async_create(struct inode *dir, struct inode *inode,
+ 		if (S_ISDIR(mode))
+ 			mode |= S_ISGID;
+ 	} else {
+-		in.gid = cpu_to_le32(from_kgid(&init_user_ns, current_fsgid()));
++		in.gid = cpu_to_le32(from_kgid(&init_user_ns,
++				     mapped_fsgid(req->r_mnt_idmap,
++						  &init_user_ns)));
+ 	}
+ 	in.mode = cpu_to_le32((u32)mode);
  
- #define __arch_cmpxchg(lr_sfx, sc_sfx, prepend, append, r, p, co, o, n)	\
- ({									\
-@@ -98,6 +128,11 @@
- 	__typeof__(*(ptr)) __ret;					\
- 									\
- 	switch (sizeof(*__ptr)) {					\
-+	case 1:								\
-+	case 2:								\
-+		__arch_cmpxchg_mask(sc_sfx, prepend, append,		\
-+					__ret, __ptr, __old, __new);	\
-+		break;							\
- 	case 4:								\
- 		__arch_cmpxchg(".w", ".w" sc_sfx, prepend, append,	\
- 				__ret, __ptr, (long), __old, __new);	\
+@@ -743,6 +747,7 @@ static int ceph_finish_async_create(struct inode *dir, struct inode *inode,
+ int ceph_atomic_open(struct inode *dir, struct dentry *dentry,
+ 		     struct file *file, unsigned flags, umode_t mode)
+ {
++	struct mnt_idmap *idmap = file_mnt_idmap(file);
+ 	struct ceph_fs_client *fsc = ceph_sb_to_fs_client(dir->i_sb);
+ 	struct ceph_client *cl = fsc->client;
+ 	struct ceph_mds_client *mdsc = fsc->mdsc;
+@@ -802,6 +807,7 @@ int ceph_atomic_open(struct inode *dir, struct dentry *dentry,
+ 		mask |= CEPH_CAP_XATTR_SHARED;
+ 	req->r_args.open.mask = cpu_to_le32(mask);
+ 	req->r_parent = dir;
++	req->r_mnt_idmap = mnt_idmap_get(idmap);
+ 	ihold(dir);
+ 	if (IS_ENCRYPTED(dir)) {
+ 		set_bit(CEPH_MDS_R_FSCRYPT_FILE, &req->r_req_flags);
 -- 
-2.41.0
+2.34.1
 
