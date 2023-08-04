@@ -2,67 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E2B97705F9
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 18:28:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B3D27705FB
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 18:29:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230118AbjHDQ2p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Aug 2023 12:28:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42874 "EHLO
+        id S230168AbjHDQ25 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Aug 2023 12:28:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43080 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230203AbjHDQ2l (ORCPT
+        with ESMTP id S230189AbjHDQ2x (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Aug 2023 12:28:41 -0400
-Received: from mail-vs1-xe35.google.com (mail-vs1-xe35.google.com [IPv6:2607:f8b0:4864:20::e35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8746346B3
-        for <linux-kernel@vger.kernel.org>; Fri,  4 Aug 2023 09:28:38 -0700 (PDT)
-Received: by mail-vs1-xe35.google.com with SMTP id ada2fe7eead31-44756c21105so1519449137.1
-        for <linux-kernel@vger.kernel.org>; Fri, 04 Aug 2023 09:28:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=draconx-ca.20221208.gappssmtp.com; s=20221208; t=1691166517; x=1691771317;
-        h=cc:to:subject:message-id:date:from:references:in-reply-to
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=CmP6zS1uXQ/K4lwCiJguuc04GVnNi9A4y0catAtEmbc=;
-        b=sW9yq5KzPS0L46lWKz5VGV38bjUrHawEujFHjlMsubd/4Hqs3gHprOmO4gNbRr5D9j
-         bF14WYricFRhWf0RpG7+XjtjygcHTfFEA5NAXecROdNgaMMVevu1CBZfZmnKV4tbVtSI
-         3biRnPq6hyMii/k8zEj6YNUBeOWrhTWHVYjBcS9Q9KoJYS0gEemky9i14HCPVj8c90Gj
-         tpDxYLUGTg3z8ImpwN4ERkgGoG/gvUa7ZuvIKpLyndXieNsNunV6JM58UxK8RJ+93xM4
-         KnJMdzrBQXcGsI4sVicBtIqKlggrB5jDoIRhBzVUeZDo+hBCXfOuqvrP4k9SsE0S89HS
-         Dp6Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691166517; x=1691771317;
-        h=cc:to:subject:message-id:date:from:references:in-reply-to
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=CmP6zS1uXQ/K4lwCiJguuc04GVnNi9A4y0catAtEmbc=;
-        b=DJ1y9FI+VjQ3MQrw8uYqGYg+aFG8ocJCRbYUEilhLS5+oEDrZgfMC2/uhWChgHjEO4
-         FS2VavWc1YCFlJnMJHXeU3ewe7r+k3sBu6OCMKuCB8n8DADMOSJmz/k7J44bVWBbHt83
-         /OQdsXH986q7kdSmgl3teZ0VuUQo6A/2HT6s2HO+eci/kPXxLP6tFghxI/p/JBVe0IHc
-         Rj4fZ+WQR2ATI5KXeFtKZQqmJ5IPKyAet8gVKpvXTYRPdsXev9rt7EscHi0gPWwuzmka
-         LcA6BGhOWVRJTtN0va2xErw6s6agk5aQ1OJOkytexpmGgPULemmfLdmcJgRGsHKgu6qI
-         FL+Q==
-X-Gm-Message-State: AOJu0YwaR1dly87+6olFMf39qKyj3bDjinOiXKKLKjks7WHNPy82tOte
-        RqKtbkU/93ZhQXpyh2RgAtTheUiezF0Q7OPmsyjUUA==
-X-Google-Smtp-Source: AGHT+IHtQ9SnoRs+JPYtT5RMH212OiXnM2yKMpz4zFAz0pvLJ97XKzr3dhy2e6GbNWkDQAh9094YSIW9rpR1kW4fGuk=
-X-Received: by 2002:a05:6102:3127:b0:447:c2f5:ee09 with SMTP id
- f7-20020a056102312700b00447c2f5ee09mr134792vsh.2.1691166517567; Fri, 04 Aug
- 2023 09:28:37 -0700 (PDT)
+        Fri, 4 Aug 2023 12:28:53 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8069846B2;
+        Fri,  4 Aug 2023 09:28:45 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id D52F2620A7;
+        Fri,  4 Aug 2023 16:28:44 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7C958C433C8;
+        Fri,  4 Aug 2023 16:28:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1691166524;
+        bh=1SQYRDcXjGoKfMlK7pC2jJ2xp6PZ1JaiWNFXAGtgcCU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=NjBPpGEQcKTIarY2Z8UoNpSNvgBpJ9lwTtNfMP5KadCJE7NSPdwwT6CVUpi7rT9Rs
+         7IS1kyvAMonVpgo2hLUajGihzpPTll831VVhjq+k7A5zILP85TNehzmv1nv9+KpowK
+         Kc+AnPAsvO3R7ZgaRS/0UiBSIhackAHmo2aBgYDv5EHq3U3fppvWrBjqXmBoj9CFgl
+         2XQ4/aPqTppju44w78cYRpqkRUNC2vduQ8M6O4eM1xlquII4RJLj7r7C8V5aGT/IAb
+         b6IHyIEJF8QTX7dl79Cazdy5YaB/1fXlpzPge0bKPvZULAXEdKMwTcGacEtCG/lxk9
+         NbR20JujEFBqg==
+Date:   Fri, 4 Aug 2023 17:28:39 +0100
+From:   Conor Dooley <conor@kernel.org>
+To:     Mihai Sain <mihai.sain@microchip.com>
+Cc:     claudiu.beznea@tuxon.dev, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        nicolas.ferre@microchip.com, cristian.birsan@microchip.com,
+        alexandre.belloni@bootlin.com, andre.przywara@arm.com,
+        jerry.ray@microchip.com, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        andrei.simion@microchip.com
+Subject: Re: [PATCH] ARM: dts: at91: sama5d29_curiosity: Add device tree for
+ sama5d29_curiosity board
+Message-ID: <20230804-starlet-facebook-051f59b7eac8@spud>
+References: <20230804101043.4063-1-mihai.sain@microchip.com>
 MIME-Version: 1.0
-Received: by 2002:ab0:6209:0:b0:794:1113:bb24 with HTTP; Fri, 4 Aug 2023
- 09:28:37 -0700 (PDT)
-X-Originating-IP: [24.53.241.2]
-In-Reply-To: <CADyTPEwgG0=R_b5DNBP0J0auDXu2BNTOwkSUFg-s7pLJUPC+Tg@mail.gmail.com>
-References: <CADyTPEzqf8oQAPSFRWJLxAhd-WE4fX2zdoe9Vu6V9hZMn1Yc8g@mail.gmail.com>
- <CAL_JsqLrErF__GGHfanRFCpfbOh6fvz4-aJv32h8OfDjUeZPSg@mail.gmail.com> <CADyTPEwgG0=R_b5DNBP0J0auDXu2BNTOwkSUFg-s7pLJUPC+Tg@mail.gmail.com>
-From:   Nick Bowler <nbowler@draconx.ca>
-Date:   Fri, 4 Aug 2023 12:28:37 -0400
-Message-ID: <CADyTPEwvxrEUnHtMq==nUC7ai8AR-N_1CHXErkQo4Pbfcx0OKQ@mail.gmail.com>
-Subject: Re: PROBLEM: Broken or delayed ethernet on Xilinx ZCU104 since 5.18 (regression)
-To:     Rob Herring <robh@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        netdev@vger.kernel.org, regressions@lists.linux.dev
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE autolearn=ham
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="3cETkHcmawoyHVtG"
+Content-Disposition: inline
+In-Reply-To: <20230804101043.4063-1-mihai.sain@microchip.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -70,13 +62,50 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023-08-04, Nick Bowler <nbowler@draconx.ca> wrote:
-> As far as I can see, this is supposed to be handled by the code in
-> drivers/reset/zynqmp-reset.c driver, it is enabled by CONFIG_ARCH_ZYNQMP,
-> and I have that set to "y", and it appears to be getting compiled in (that
-> is, there is a drivers/reset/zynqmp-reset.o file in the build directory).
 
-Correction: I typed zynqmp-reset.c but file is actually reset-zynqmp.c.
+--3cETkHcmawoyHVtG
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Cheers,
-  Nick
+Hey,
+
+Firstly, $subject is missing a "v2" inside the []s.
+
+On Fri, Aug 04, 2023 at 01:10:43PM +0300, Mihai Sain wrote:
+> Add initial device tree file for sama5d29_curiosity board.
+>=20
+
+> Changes in v2:
+> * drop dt-bindings patch
+> * remove vdd_1v8 regulator
+> * fix flx4 node to use 1 spi node and pinctrl
+> * add i2s0 node and pinctrl
+> * remove macb0 node and pinctrl
+> * remove unused pinctrl
+> * sort in alphabetical order all nodes and pinctrl
+> * replace "_" with "-" in node names
+
+This needs to go under the --- line, not in the commit message.
+Perhaps Claudiu would be willing to fix it, but certainly for future
+versions this needs fixing.
+
+Thanks,
+Conor.
+
+>=20
+> Signed-off-by: Mihai Sain <mihai.sain@microchip.com>
+> ---
+
+--3cETkHcmawoyHVtG
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZM0nNwAKCRB4tDGHoIJi
+0qpFAP0dvR3rR5cvo1cZf8PSoYD6jjtkTE83eX9MDV/YBcP/rgD9HX0MuOQvUCoE
+7pxqltI/1So3HdQ5Yol2t12Ph4t3Zgk=
+=/m9X
+-----END PGP SIGNATURE-----
+
+--3cETkHcmawoyHVtG--
