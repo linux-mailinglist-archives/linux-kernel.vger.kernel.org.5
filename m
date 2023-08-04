@@ -2,121 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CD375770B98
-	for <lists+linux-kernel@lfdr.de>; Sat,  5 Aug 2023 00:01:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E946B770BAD
+	for <lists+linux-kernel@lfdr.de>; Sat,  5 Aug 2023 00:03:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230259AbjHDWBw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Aug 2023 18:01:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58270 "EHLO
+        id S230354AbjHDWD0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Aug 2023 18:03:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58928 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229826AbjHDWBu (ORCPT
+        with ESMTP id S229887AbjHDWDX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Aug 2023 18:01:50 -0400
-Received: from fllv0015.ext.ti.com (fllv0015.ext.ti.com [198.47.19.141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE8B5E4D;
-        Fri,  4 Aug 2023 15:01:48 -0700 (PDT)
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 374M1cR7083782;
-        Fri, 4 Aug 2023 17:01:38 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1691186498;
-        bh=xh4QWflwFh1VrWsPfERiHsrWdrU5pmhbYrYKpe1LEqw=;
-        h=From:To:CC:Subject:Date;
-        b=g4KAwgDyCbkFsFvbJexA1wQFOV6+lyTvM5mUr3s0iz4sFRi08a1lNfKPbyKbX+IJA
-         mUjPB6TBmQ5fH0Tn5IA14vAeZIiYyNGjgCU5vdjuL6Ir2wTV8dkaYLze5D595dsBCZ
-         WHb9kCO3Mi5bXb+VWK7jy6ZzLo+4s00tmQ0Vy3Dk=
-Received: from DFLE108.ent.ti.com (dfle108.ent.ti.com [10.64.6.29])
-        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 374M1ciK121296
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Fri, 4 Aug 2023 17:01:38 -0500
-Received: from DFLE107.ent.ti.com (10.64.6.28) by DFLE108.ent.ti.com
- (10.64.6.29) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Fri, 4
- Aug 2023 17:01:37 -0500
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DFLE107.ent.ti.com
- (10.64.6.28) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Fri, 4 Aug 2023 17:01:37 -0500
-Received: from uda0498204.dhcp.ti.com (ileaxei01-snat.itg.ti.com [10.180.69.5])
-        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 374M1bM8014195;
-        Fri, 4 Aug 2023 17:01:37 -0500
-From:   Judith Mendez <jm@ti.com>
-To:     Nishanth Menon <nm@ti.com>, Vignesh Raghavendra <vigneshr@ti.com>,
-        Tero Kristo <kristo@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>
-CC:     <linux-arm-kernel@lists.infradead.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH v2]  arm64: dts: ti: k3-am62a7: Add MCU MCAN nodes
-Date:   Fri, 4 Aug 2023 17:01:37 -0500
-Message-ID: <20230804220137.425442-1-jm@ti.com>
-X-Mailer: git-send-email 2.34.1
+        Fri, 4 Aug 2023 18:03:23 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3FCC110E6
+        for <linux-kernel@vger.kernel.org>; Fri,  4 Aug 2023 15:02:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1691186556;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=7XeJdVl8/EwMUOdjx3edZoXx1Zn1CMa9oW0ZCIdFrDM=;
+        b=TeoY2YZpBF7YdrwFMyO1Zq6G86TeWDEUNNKiTdLibhBGb4nj0IJdm5P8Qy8wuRjNnJwtJz
+        F50bHrMTZE6mVvu6g+6T8Ej87aifH3OWXLvDUIynuX66M/3H/nlQdEeYq6ClSm/L0g8wEp
+        2UHKFVgG40wxqe0E+VxV6h2+NTCYCAo=
+Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
+ [209.85.208.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-617-UweH5cW7PIWwMjd0sOoEAA-1; Fri, 04 Aug 2023 18:02:34 -0400
+X-MC-Unique: UweH5cW7PIWwMjd0sOoEAA-1
+Received: by mail-ed1-f69.google.com with SMTP id 4fb4d7f45d1cf-5223854ef71so1660046a12.1
+        for <linux-kernel@vger.kernel.org>; Fri, 04 Aug 2023 15:02:34 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691186554; x=1691791354;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=7XeJdVl8/EwMUOdjx3edZoXx1Zn1CMa9oW0ZCIdFrDM=;
+        b=Pwfn/YE612iNdnm7KBDnrhj0SueZUkUs9O3F3vRA+cDZEHRzp6xNPMx0qtw8SRa40x
+         H33JysIr7RC8m2otscq0SI+23IRVaZa1vilcWPZRTLF1Z7roM54vyYVMBdJM24tkb6Kt
+         yIIy0b75wv1sUXp9YHjgXGW8yx1u5QJHRNLpkC2Snt3Fz34VTuNTBn73D7BITh8E4QxC
+         dfOPLlJtbk2p7qsmyLQutMnmzVYzgR3v+voCQffWCmNXNievxOWfqaE5bGn79IXLRP26
+         HnhsXXUnkK7fG8ZvXY4hSrL5HToAEXQuEFYiurnBjygVA0fO4YyEGtutBaF8HGcTG2+N
+         HbKQ==
+X-Gm-Message-State: AOJu0YwwaLcChJKCGYjKub87UFjr2bbpWFuVll+op9oFWgtXXzEsd2a+
+        UE8/2+1dwoRXAA9f02KmRNl6q+LthOQST9Tmot6435bX9a5omwi+17V/iTyyKe3Cz8ci606o6qO
+        rVmHAc5NOdzqdv9vSgDyP2qUz
+X-Received: by 2002:aa7:c6cb:0:b0:51e:309:2e11 with SMTP id b11-20020aa7c6cb000000b0051e03092e11mr2389835eds.36.1691186553785;
+        Fri, 04 Aug 2023 15:02:33 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IE0tj1V215ZmqouMVSJ2M+alZff9GBiz+Yk8qF5u4t9uMgWOORSyfJG5ZAuBVk+SWA9STrj2A==
+X-Received: by 2002:aa7:c6cb:0:b0:51e:309:2e11 with SMTP id b11-20020aa7c6cb000000b0051e03092e11mr2389825eds.36.1691186553557;
+        Fri, 04 Aug 2023 15:02:33 -0700 (PDT)
+Received: from ?IPV6:2001:b07:6468:f312:63a7:c72e:ea0e:6045? ([2001:b07:6468:f312:63a7:c72e:ea0e:6045])
+        by smtp.googlemail.com with ESMTPSA id e26-20020a50ec9a000000b0051873c201a0sm1780958edr.26.2023.08.04.15.02.32
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 04 Aug 2023 15:02:32 -0700 (PDT)
+Message-ID: <3075190f-d8a5-0d7d-56e9-671a2052d20f@redhat.com>
+Date:   Sat, 5 Aug 2023 00:02:28 +0200
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH v5 17/19] KVM:x86: Enable guest CET supervisor xstate bit
+ support
+Content-Language: en-US
+To:     Yang Weijiang <weijiang.yang@intel.com>, seanjc@google.com,
+        peterz@infradead.org, john.allen@amd.com, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     rick.p.edgecombe@intel.com, chao.gao@intel.com,
+        binbin.wu@linux.intel.com
+References: <20230803042732.88515-1-weijiang.yang@intel.com>
+ <20230803042732.88515-18-weijiang.yang@intel.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+In-Reply-To: <20230803042732.88515-18-weijiang.yang@intel.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On AM62ax there are no hardware interrupts routed to A53 GIC
-interrupt controller for MCU MCAN IPs, so MCU MCAN nodes were
-omitted from MCU dtsi.
+On 8/3/23 06:27, Yang Weijiang wrote:
+>   	if (boot_cpu_has(X86_FEATURE_XSAVES)) {
+> +		u32 eax, ebx, ecx, edx;
+> +
+> +		cpuid_count(0xd, 1, &eax, &ebx, &ecx, &edx);
+>   		rdmsrl(MSR_IA32_XSS, host_xss);
+>   		kvm_caps.supported_xss = host_xss & KVM_SUPPORTED_XSS;
+> +		if (ecx & XFEATURE_MASK_CET_KERNEL)
+> +			kvm_caps.supported_xss |= XFEATURE_MASK_CET_KERNEL;
+>   	}
 
-Timer polling was introduced in commits [1][2] enabling 3x MCAN
-on AM62ax, so now add MCU MCAN nodes to the mcu dtsi for the Cortex A53.
+This is a bit hackish and makes me lean more towards adding support for 
+XFEATURE_MASK_CET_KERNEL in host MSR_IA32_XSS (and then possibly hide it 
+in the actual calls to XSAVE/XRSTORS for non-guest FPU).
 
-[1] commit b382380c0d2d ("can: m_can: Add hrtimer to generate software interrupt")
-[2] commit bb410c03b999 ("dt-bindings: net: can: Remove interrupt properties for MCAN")
-
-Signed-off-by: Judith Mendez <jm@ti.com>
----
-Changes since v1:
-- fixed CAN node name can@4e0000 to can@4e08000
----
- arch/arm64/boot/dts/ti/k3-am62a-mcu.dtsi | 24 ++++++++++++++++++++++++
- 1 file changed, 24 insertions(+)
-
-diff --git a/arch/arm64/boot/dts/ti/k3-am62a-mcu.dtsi b/arch/arm64/boot/dts/ti/k3-am62a-mcu.dtsi
-index 04599762c2b7..a6d16a94088c 100644
---- a/arch/arm64/boot/dts/ti/k3-am62a-mcu.dtsi
-+++ b/arch/arm64/boot/dts/ti/k3-am62a-mcu.dtsi
-@@ -143,4 +143,28 @@ mcu_rti0: watchdog@4880000 {
- 		/* Tightly coupled to M4F */
- 		status = "reserved";
- 	};
-+
-+	mcu_mcan0: can@4e08000 {
-+		compatible = "bosch,m_can";
-+		reg = <0x00 0x4e08000 0x00 0x200>,
-+		      <0x00 0x4e00000 0x00 0x8000>;
-+		reg-names = "m_can", "message_ram";
-+		power-domains = <&k3_pds 188 TI_SCI_PD_EXCLUSIVE>;
-+		clocks = <&k3_clks 188 6>, <&k3_clks 188 1>;
-+		clock-names = "hclk", "cclk";
-+		bosch,mram-cfg = <0x0 128 64 64 64 64 32 32>;
-+		status = "disabled";
-+	};
-+
-+	mcu_mcan1: can@4e18000 {
-+		compatible = "bosch,m_can";
-+		reg = <0x00 0x4e18000 0x00 0x200>,
-+		      <0x00 0x4e10000 0x00 0x8000>;
-+		reg-names = "m_can", "message_ram";
-+		power-domains = <&k3_pds 189 TI_SCI_PD_EXCLUSIVE>;
-+		clocks = <&k3_clks 189 6>, <&k3_clks 189 1>;
-+		clock-names = "hclk", "cclk";
-+		bosch,mram-cfg = <0x0 128 64 64 64 64 32 32>;
-+		status = "disabled";
-+	};
- };
--- 
-2.34.1
+Paolo
 
