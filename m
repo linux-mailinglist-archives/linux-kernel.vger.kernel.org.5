@@ -2,194 +2,208 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E716A76F7DC
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 04:28:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 203B576F7DD
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 04:29:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232051AbjHDC2T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Aug 2023 22:28:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50558 "EHLO
+        id S232249AbjHDC3r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Aug 2023 22:29:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51352 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233949AbjHDC2J (ORCPT
+        with ESMTP id S230444AbjHDC3p (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Aug 2023 22:28:09 -0400
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7290ABA;
-        Thu,  3 Aug 2023 19:28:08 -0700 (PDT)
-Received: from canpemm500009.china.huawei.com (unknown [172.30.72.57])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4RH8jx2h2ZzrRft;
-        Fri,  4 Aug 2023 10:27:01 +0800 (CST)
-Received: from [10.67.102.169] (10.67.102.169) by
- canpemm500009.china.huawei.com (7.192.105.203) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.27; Fri, 4 Aug 2023 10:28:05 +0800
-CC:     <yangyicong@hisilicon.com>, <chengyou@linux.alibaba.com>,
-        <kaishen@linux.alibaba.com>, <helgaas@kernel.org>,
-        <will@kernel.org>, <baolin.wang@linux.alibaba.com>,
-        <robin.murphy@arm.com>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-pci@vger.kernel.org>, <rdunlap@infradead.org>,
-        <mark.rutland@arm.com>, <zhuo.song@linux.alibaba.com>
-Subject: Re: [PATCH v6 3/4] drivers/perf: add DesignWare PCIe PMU driver
-To:     Shuai Xue <xueshuai@linux.alibaba.com>,
-        Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-References: <20230606074938.97724-1-xueshuai@linux.alibaba.com>
- <20230606074938.97724-4-xueshuai@linux.alibaba.com>
- <31e2b012-3a29-d063-842d-e3f7736816e7@huawei.com>
- <20230727103929.00000544@Huawei.com>
- <12958abe-4bdb-8532-bf67-8e772ed2a9dd@linux.alibaba.com>
- <edc056aa-1c53-a31e-087f-6076b795d5cc@huawei.com>
- <10176239-78c1-e276-e74f-a6e79b9c0751@linux.alibaba.com>
-From:   Yicong Yang <yangyicong@huawei.com>
-Message-ID: <f14c9acd-1549-1a65-4e57-a5e434cbe18d@huawei.com>
-Date:   Fri, 4 Aug 2023 10:28:05 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.1
+        Thu, 3 Aug 2023 22:29:45 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A80CCA3
+        for <linux-kernel@vger.kernel.org>; Thu,  3 Aug 2023 19:29:44 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 3E0DA61F0B
+        for <linux-kernel@vger.kernel.org>; Fri,  4 Aug 2023 02:29:44 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A22E7C433CB
+        for <linux-kernel@vger.kernel.org>; Fri,  4 Aug 2023 02:29:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1691116183;
+        bh=zWadd+nLUkzK7Qkbi0JVFnWY+DZxXhVnu+uRMkl4cvM=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=rWbHkLeF5jvoprucAQG1R8Avh37uG37xxu2sUcV+o8GF/yDfwXphZkafQmlfmRv1l
+         H3MwogSRVk7Ke2F/Jy79Rxn6wnArkuVcymJB/Fa9RSgbiVpgtQ30b7yPCKqUfw0CU+
+         JwhX35MVy5+gtiDt+FwkLIiC+VZLZOL7+HhWUfiazF2QQkNVwy4gqCHGFrvjuiNUSk
+         ZdfgsWnovVcT793V5y7tnuv/6L/8z4FnumDs1ZS5MI0fELD7jp25SNiNbXrVIEMWEx
+         5aFLFrwdSNwhAM6k9FDrzbRiE3YM1qTRp0b1w+rikRpmnKkco47/4r29Vz6hfomA/6
+         i0atXJuJUqZNA==
+Received: by mail-wr1-f54.google.com with SMTP id ffacd0b85a97d-3179ed1dfbbso1439320f8f.1
+        for <linux-kernel@vger.kernel.org>; Thu, 03 Aug 2023 19:29:43 -0700 (PDT)
+X-Gm-Message-State: AOJu0YyqSWOljuaPoSyOpRhQW8cKXWd15dspocpZiViR72mmQH/5IDe5
+        mjRvStQJaynAk4RJldoEu/9rygwwPM4xjk6jdgw=
+X-Google-Smtp-Source: AGHT+IEkPAXOGnXrKYu3Sb56FrbeQ2U7eXDYfeJXqFRBo1QS/XiQ3WATCmqBu/Ez1NjatdFQ6vwQ4mjmPIWf98kZesc=
+X-Received: by 2002:adf:ebcc:0:b0:317:6a07:83a7 with SMTP id
+ v12-20020adfebcc000000b003176a0783a7mr217303wrn.38.1691116181741; Thu, 03 Aug
+ 2023 19:29:41 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <10176239-78c1-e276-e74f-a6e79b9c0751@linux.alibaba.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.67.102.169]
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
- canpemm500009.china.huawei.com (7.192.105.203)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <20230803051401.710236-2-leobras@redhat.com> <CAJF2gTShfMzVZw5TVqBvLNAzEBMzhWxNGC9JS70euPcKKN85zQ@mail.gmail.com>
+ <CAJ6HWG5mzxN=txnbdi-=c+=wLsDfSe7Me+1DQE79ZX0NN6U1_g@mail.gmail.com>
+In-Reply-To: <CAJ6HWG5mzxN=txnbdi-=c+=wLsDfSe7Me+1DQE79ZX0NN6U1_g@mail.gmail.com>
+From:   Guo Ren <guoren@kernel.org>
+Date:   Fri, 4 Aug 2023 10:29:30 +0800
+X-Gmail-Original-Message-ID: <CAJF2gTTag3hR7ZgM8o+yk+0Ox3A+xm4jAVTikAA0HqXQFKayRA@mail.gmail.com>
+Message-ID: <CAJF2gTTag3hR7ZgM8o+yk+0Ox3A+xm4jAVTikAA0HqXQFKayRA@mail.gmail.com>
+Subject: Re: [RFC PATCH v2 0/3] Deduplicate RISCV cmpxchg.h and atomic.c macros
+To:     Leonardo Bras Soares Passos <leobras@redhat.com>
+Cc:     Will Deacon <will@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Andrzej Hajda <andrzej.hajda@intel.com>,
+        Arnd Bergmann <arnd@arndb.de>, Ingo Molnar <mingo@kernel.org>,
+        Palmer Dabbelt <palmer@rivosinc.com>,
+        linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023/8/4 9:39, Shuai Xue wrote:
-> 
-> 
-> On 2023/8/1 19:46, Yicong Yang wrote:
->> On 2023/7/28 20:41, Shuai Xue wrote:
->>>
->>>
->>> On 2023/7/27 17:39, Jonathan Cameron wrote:
->>>> On Tue, 6 Jun 2023 23:14:07 +0800
->>>> Yicong Yang <yangyicong@huawei.com> wrote:
->>>>
->>>>> On 2023/6/6 15:49, Shuai Xue wrote:
->>>>>> This commit adds the PCIe Performance Monitoring Unit (PMU) driver support
->>>>>> for T-Head Yitian SoC chip. Yitian is based on the Synopsys PCI Express
->>>>>> Core controller IP which provides statistics feature. The PMU is not a PCIe
->>>>>> Root Complex integrated End Point(RCiEP) device but only register counters
->>>>>> provided by each PCIe Root Port.
->>>>>>
->>>>>> To facilitate collection of statistics the controller provides the
->>>>>> following two features for each Root Port:
->>>>>>
->>>>>> - Time Based Analysis (RX/TX data throughput and time spent in each
->>>>>>   low-power LTSSM state)
->>>>>> - Event counters (Error and Non-Error for lanes)
->>>>>>
->>>>>> Note, only one counter for each type and does not overflow interrupt.
->>>>>>
->>>>>> This driver adds PMU devices for each PCIe Root Port. And the PMU device is
->>>>>> named based the BDF of Root Port. For example,
->>>>>>
->>>>>>     30:03.0 PCI bridge: Device 1ded:8000 (rev 01)
->>>>>>
->>>>>> the PMU device name for this Root Port is dwc_rootport_3018.
->>>>>>
->>>>>> Example usage of counting PCIe RX TLP data payload (Units of 16 bytes)::
->>>>>>
->>>>>>     $# perf stat -a -e dwc_rootport_3018/Rx_PCIe_TLP_Data_Payload/
->>>>>>
->>>>>> average RX bandwidth can be calculated like this:
->>>>>>
->>>>>>     PCIe TX Bandwidth = PCIE_TX_DATA * 16B / Measure_Time_Window
->>>>>>
->>>>>> Signed-off-by: Shuai Xue <xueshuai@linux.alibaba.com>
->>>>>> Reported-by: kernel test robot <lkp@intel.com>
->>>>>> Link: https://lore.kernel.org/oe-kbuild-all/202305170639.XU3djFZX-lkp@intel.com/
->>>>>> Reviewed-by: Baolin Wang <baolin.wang@linux.alibaba.com>
->>>>
->>>> I'll review on top to avoid any duplication with Yicong.
->>>
->>> Thank you! It also served as a reminder that I missed Yicong's email. It appears
->>> that Thunderbird mistakenly moved his email to the junk folder, resulting in me
->>> overlooking it.
->>>
->>>>
->>>> Note I've cropped the stuff neither of us commented on so it's
->>>> easier to spot the feedback.
->>>
->>> Thank you for noting that. My feedback is replied inline.
->>>
->>>>
->>>> Jonathan
->>>>
->>>>>> ---
->>>>>>  drivers/perf/Kconfig        |   7 +
->>>>>>  drivers/perf/Makefile       |   1 +
->>>>>>  drivers/perf/dwc_pcie_pmu.c | 706 ++++++++++++++++++++++++++++++++++++
->>>>>>  3 files changed, 714 insertions(+)
->>>>>>  create mode 100644 drivers/perf/dwc_pcie_pmu.c
->>>>>>
->>>>>> diff --git a/drivers/perf/Kconfig b/drivers/perf/Kconfig
->>>>>> index 711f82400086..6ff3921d7a62 100644
->>>>>> --- a/drivers/perf/Kconfig
->>>>>> +++ b/drivers/perf/Kconfig
->>>>>> @@ -209,6 +209,13 @@ config MARVELL_CN10K_DDR_PMU
->>>>>>  	  Enable perf support for Marvell DDR Performance monitoring
->>>>>>  	  event on CN10K platform.
->>>>>>  
->>>>>> +config DWC_PCIE_PMU
->>>>>> +	tristate "Enable Synopsys DesignWare PCIe PMU Support"
->>>>>> +	depends on (ARM64 && PCI)
->>>>>> +	help
->>>>>> +	  Enable perf support for Synopsys DesignWare PCIe PMU Performance
->>>>>> +	  monitoring event on Yitian 710 platform.
->>>>
->>>> The documentation kind of implies this isn't platform specific.
->>>> If some parts are (such as which events exist) then you may want to push
->>>> that to userspace / perftool with appropriate matching against specific SoC.
->>>>
->>>> If it is generic, then change this text to "event on platform including the Yitian 710."
->>>
->>> It is generic without any platform specific, so I will change it as you expected.
->>>
->>>>
->>>>>> +
->>>>>>  source "drivers/perf/arm_cspmu/Kconfig"
->>>>>>  
->>>>>>  source "drivers/perf/amlogic/Kconfig"
->>>>
->>>>>> new file mode 100644
->>>>>> index 000000000000..8bfcf6e0662d
->>>>>> --- /dev/null
->>>>>> +++ b/drivers/perf/dwc_pcie_pmu.c
->>>>>> @@ -0,0 +1,706 @@
->>>>
->>>> ...
->>>>
->>>>>> +
->>>>>> +struct dwc_pcie_pmu {
->>>>>> +	struct pci_dev		*pdev;		/* Root Port device */  
->>>>>
->>>>> If the root port removed after the probe of this PCIe PMU driver, we'll access the NULL
->>>>> pointer. I didn't see you hold the root port to avoid the removal.
->>>
->>> Do you mean that I should have a reference count of rootport by pci_dev_get() when allocating
->>> pcie_pmu?
->>>
->>>      pcie_pmu->pdev = pci_dev_get();
->>
->> It could be one option, but will block the removal of device from userspace. Another option
->> is to register a PCI bus notifier then on removal/added the driver can get notified and handle
->> it, for example, remove the related PMU on the removal of the root ports.
-> 
-> I see, but can root port be removed from userspace? I check the hotplug slot interface, no root
-> port is available to power off.
-> 
+On Fri, Aug 4, 2023 at 10:20=E2=80=AFAM Leonardo Bras Soares Passos
+<leobras@redhat.com> wrote:
+>
+> On Thu, Aug 3, 2023 at 9:53=E2=80=AFPM Guo Ren <guoren@kernel.org> wrote:
+> >
+> > On Thu, Aug 3, 2023 at 1:14=E2=80=AFPM Leonardo Bras <leobras@redhat.co=
+m> wrote:
+> > >
+> > > I unified previous patchsets into a single one, since the work is rel=
+ated.
+> > >
+> > > While studying riscv's cmpxchg.h file, I got really interested in
+> > > understanding how RISCV asm implemented the different versions of
+> > > {cmp,}xchg.
+> > >
+> > > When I understood the pattern, it made sense for me to remove the
+> > > duplications and create macros to make it easier to understand what e=
+xactly
+> > > changes between the versions: Instruction sufixes & barriers.
+> > >
+> > > Also, did the same kind of work on atomic.c.
+> > >
+> > > Note to Guo Ren:
+> > > I did some further improvement after your previous reviews, so I ende=
+d
+> > > up afraid including your Reviewed-by before cheching if the changes a=
+re
+> > > ok for you. Please check it out again, I just removed some helper mac=
+ros
+> > > that were not being used elsewhere in the kernel.
+> > I found this optimization has conflicts with the below patches:
+> > https://lore.kernel.org/linux-riscv/20230802164701.192791-15-guoren@ker=
+nel.org/
+> > https://lore.kernel.org/linux-riscv/20230802164701.192791-5-guoren@kern=
+el.org/
+> >
+> > If yours merged, how do we support the inline cmpxchg/xchg_small
+> > function?
+>
+> Oh, I actually introduced my series so I could introduce new xchg and
+> cmpxchg for size 1 and 2. Is that what your patches are about, right?
+>
+> I was working on that yesterday, and decided to send the patchset
+> without them because I was still not sure enough.
+>
+> About implementation strategy, I was introducing a new macros for xchg
+> & cmpxchg with asm which would work for both for size 1 & size 2, and
+> use the switch-case to create the mask and and_value.
+>
+> You think that works enough?
+Good, go ahead.
 
-For hotplug maybe not, but user can remove certian device through sysfs:
+>
+> > It's very struggling to use macros to implement complex
+> > functions.
+>
+> I agree, but with this we can achieve more generic code, which makes
+> more clear what is the pattern for given function.
+>
+> > Could you consider a more relaxed optimization in which we could
+> > insert inline cmpxchg/xchg_small?
+>
+> What about this: I finish the patches I have been working with
+> (cmpxchg & xchg for sizes 1 and 2), and if they are fine we expand
+> this patchset with them.  If not, I try relaxing them a little so we
+> can merge with your set.
+>
+> Does that work for you?
+Great, you could provide cmpxchg & xchg for sizes 1 and 2, then my
+patch series would base on yours. After tested, I would give you
+Tested-by.
+>
+> Best regards,
+> Leo
+>
+>
+> >
+> > >
+> > > Thanks!
+> > > Leo
+> > >
+> > >
+> > > Changes since squashed cmpxchg:
+> > > - Unified with atomic.c patchset
+> > > - Rebased on top of torvalds/master (thanks Andrea Parri!)
+> > > - Removed helper macros that were not being used elsewhere in the ker=
+nel.
+> > >
+> > > Changes since (cmpxchg) RFCv3:
+> > > - Squashed the 6 original patches in 2: one for cmpxchg and one for x=
+chg
+> > > https://lore.kernel.org/all/20230404163741.2762165-1-leobras@redhat.c=
+om/
+> > >
+> > > Changes since (cmpxchg) RFCv2:
+> > > - Fixed  macros that depend on having a local variable with a magic n=
+ame
+> > > - Previous cast to (long) is now only applied on 4-bytes cmpxchg
+> > > https://lore.kernel.org/all/20230321074249.2221674-1-leobras@redhat.c=
+om/
+> > >
+> > > Changes since (cmpxchg) RFCv1:
+> > > - Fixed patch 4/6 suffix from 'w.aqrl' to '.w.aqrl', to avoid build e=
+rror
+> > > https://lore.kernel.org/all/20230318080059.1109286-1-leobras@redhat.c=
+om/
+> > >
+> > >
+> > > Leonardo Bras (3):
+> > >   riscv/cmpxchg: Deduplicate xchg() asm functions
+> > >   riscv/cmpxchg: Deduplicate cmpxchg() asm and macros
+> > >   riscv/atomic.h : Deduplicate arch_atomic.*
+> > >
+> > >  arch/riscv/include/asm/atomic.h  | 164 ++++++++--------
+> > >  arch/riscv/include/asm/cmpxchg.h | 318 +++++------------------------=
+--
+> > >  2 files changed, 123 insertions(+), 359 deletions(-)
+> > >
+> > > --
+> > > 2.41.0
+> > >
+> >
+> >
+> > --
+> > Best Regards
+> >  Guo Ren
+> >
+>
 
-echo 1 > /sys/bus/pci/devices/<root port>/remove
 
-Thanks.
+--=20
+Best Regards
+ Guo Ren
