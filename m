@@ -2,673 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 25FA8770071
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 14:46:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C9D3A77007B
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 14:48:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230076AbjHDMqa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Aug 2023 08:46:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41728 "EHLO
+        id S230085AbjHDMsF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Aug 2023 08:48:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43230 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229639AbjHDMqY (ORCPT
+        with ESMTP id S229736AbjHDMsC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Aug 2023 08:46:24 -0400
-Received: from mailbox.box.xen0n.name (mail.xen0n.name [115.28.160.31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2EE646B1;
-        Fri,  4 Aug 2023 05:46:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=xen0n.name; s=mail;
-        t=1691153177; bh=Qk8T1DtIZsOEwVAa06xYb1VEXzyI2nhShdiY+F9PAsA=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=OpSWKpOVCifzqfvoVJuBcHRVEUtpkPpWUJiaivGc/9Wa2y5Ox7MtWeCml9dXUdtrU
-         r9v3WFFeP+GbPJqoNetrY6EI9wfc+akrwVgJA32aCb9+yqlhkw2pLQbf/zRLIrlZMP
-         wJfyIugoYJECVO3oRttGB5FGxN6fyHXVr5qlhCm0=
-Received: from ld50.lan (unknown [101.88.28.229])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mailbox.box.xen0n.name (Postfix) with ESMTPSA id D0A12601A3;
-        Fri,  4 Aug 2023 20:46:16 +0800 (CST)
-From:   WANG Xuerui <kernel@xen0n.name>
-To:     Song Liu <song@kernel.org>
-Cc:     Huacai Chen <chenhuacai@kernel.org>, linux-raid@vger.kernel.org,
-        loongarch@lists.linux.dev, linux-kernel@vger.kernel.org,
-        WANG Xuerui <git@xen0n.name>
-Subject: [PATCH v3 3/3] raid6: Add LoongArch SIMD recovery implementation
-Date:   Fri,  4 Aug 2023 20:46:11 +0800
-Message-Id: <20230804124611.2051048-4-kernel@xen0n.name>
-X-Mailer: git-send-email 2.40.0
-In-Reply-To: <20230804124611.2051048-1-kernel@xen0n.name>
-References: <20230804124611.2051048-1-kernel@xen0n.name>
+        Fri, 4 Aug 2023 08:48:02 -0400
+Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com [IPv6:2a00:1450:4864:20::42f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4124C4C32;
+        Fri,  4 Aug 2023 05:47:22 -0700 (PDT)
+Received: by mail-wr1-x42f.google.com with SMTP id ffacd0b85a97d-317c1845a07so1631304f8f.2;
+        Fri, 04 Aug 2023 05:47:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1691153216; x=1691758016;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=wyle6zQg15EGkVkIlS4jefoWw9QxB01b4K54vZBJjOg=;
+        b=Yyc8Sp1p9IVzT32iJAol18DxBG9H0BwKA4CVh/SGDZH246+RxgT8NjkDV2YxDa7R3U
+         ynZsWaWr66UBnif3PXxum3JOR6dU7nga1x3zmsvVPzzJJnOi8P7ixuA/BegLMyZ3IINK
+         ITmudgr9goTwkcikmKi/E7Qits2wXWMPpMLWqIpheOyiM/Qnjz17OtX3IQpNSqsBbr82
+         EORuLaSTrb/vs4m1e/TtrV5Z/HHHgbeBzUyfVHasC6WtuY1hYOZtUDNRb6RzZoSbyAwp
+         0vBclBLzHpxxtZgp9WXLR2r2D9bkOfmf9+/fBvW/OTm8gpeMpKrUAapgy1wdVi2Mmj+v
+         ZDSw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691153216; x=1691758016;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=wyle6zQg15EGkVkIlS4jefoWw9QxB01b4K54vZBJjOg=;
+        b=CErgsxDC0YzUOjRUhgmkAgPb58MvH9F5qPSGdTe+RGFkbCOH72uI5/sjx9IyuYdkxT
+         gx4i4Ca5wCj5Fuo17uDhnHszuW2m5eE8Vn1mIMIF4wMfmrTKQd/52ru/VG4wRSRBWyeV
+         TbfA6cMoGJRrZXJVgSdaJ4dIHV2U9X76ED1JLwi6yfkMrRkVPx32f3xOEVD8w689IE17
+         aGjVoCjS7RKf0Wx0Axy0bHqAFosRy5wM5YEewnHq7qhmg4H2RDZJwo2T2BVnL2SDwSGg
+         iCKV0ayQl104rdLgLmDu//WLhn0yGA00OJAAqhyt5f1scVlg1awtEn8bP2smMgnMdVpj
+         YYag==
+X-Gm-Message-State: AOJu0YwJXXmwFShMGVvsvDsz3dMMKgYH7Fn03GLO9t0pJEQC8/96+22I
+        8/qY5Wa31lE7fG6fodeSUtY=
+X-Google-Smtp-Source: AGHT+IEbCtNRCj3SxUDLskfuUV8UuzZzyebK8hr8aMM1RE1gLZLRnT77kxuiEvKXJELYGneT34l/AA==
+X-Received: by 2002:adf:dd0d:0:b0:314:1443:7fbe with SMTP id a13-20020adfdd0d000000b0031414437fbemr1173135wrm.36.1691153216239;
+        Fri, 04 Aug 2023 05:46:56 -0700 (PDT)
+Received: from [10.9.105.115] ([41.86.56.122])
+        by smtp.gmail.com with ESMTPSA id z2-20020adff1c2000000b002c70ce264bfsm2435962wro.76.2023.08.04.05.46.50
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 04 Aug 2023 05:46:55 -0700 (PDT)
+Message-ID: <44fef482-579a-fed6-6e8c-d400546285fc@gmail.com>
+Date:   Fri, 4 Aug 2023 15:46:47 +0300
 MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.4.2
+Subject: Re: [RFC PATCH v1 1/2] vsock: send SIGPIPE on write to shutdowned
+ socket
+Content-Language: en-US
+To:     Stefano Garzarella <sgarzare@redhat.com>,
+        Arseniy Krasnov <AVKrasnov@sberdevices.ru>
+Cc:     Stefan Hajnoczi <stefanha@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Bobby Eshleman <bobby.eshleman@bytedance.com>,
+        kvm@vger.kernel.org, virtualization@lists.linux-foundation.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel@sberdevices.ru
+References: <20230801141727.481156-1-AVKrasnov@sberdevices.ru>
+ <20230801141727.481156-2-AVKrasnov@sberdevices.ru>
+ <qgn26mgfotc7qxzp6ad7ezkdex6aqniv32c5tvehxh4hljsnvs@x7wvyvptizxx>
+From:   Arseniy Krasnov <oxffffaa@gmail.com>
+In-Reply-To: <qgn26mgfotc7qxzp6ad7ezkdex6aqniv32c5tvehxh4hljsnvs@x7wvyvptizxx>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,HK_RANDOM_ENVFROM,
+        HK_RANDOM_FROM,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: WANG Xuerui <git@xen0n.name>
+Hi Stefano,
 
-Similar to the syndrome calculation, the recovery algorithms also work
-on 64 bytes at a time to align with the L1 cache line size of current
-and future LoongArch cores (that we care about). Which means
-unrolled-by-4 LSX and unrolled-by-2 LASX code.
+On 02.08.2023 10:46, Stefano Garzarella wrote:
+> On Tue, Aug 01, 2023 at 05:17:26PM +0300, Arseniy Krasnov wrote:
+>> POSIX requires to send SIGPIPE on write to SOCK_STREAM socket which was
+>> shutdowned with SHUT_WR flag or its peer was shutdowned with SHUT_RD
+>> flag. Also we must not send SIGPIPE if MSG_NOSIGNAL flag is set.
+>>
+>> Signed-off-by: Arseniy Krasnov <AVKrasnov@sberdevices.ru>
+>> ---
+>> net/vmw_vsock/af_vsock.c | 3 +++
+>> 1 file changed, 3 insertions(+)
+>>
+>> diff --git a/net/vmw_vsock/af_vsock.c b/net/vmw_vsock/af_vsock.c
+>> index 020cf17ab7e4..013b65241b65 100644
+>> --- a/net/vmw_vsock/af_vsock.c
+>> +++ b/net/vmw_vsock/af_vsock.c
+>> @@ -1921,6 +1921,9 @@ static int vsock_connectible_sendmsg(struct socket *sock, struct msghdr *msg,
+>>             err = total_written;
+>>     }
+>> out:
+>> +    if (sk->sk_type == SOCK_STREAM)
+>> +        err = sk_stream_error(sk, msg->msg_flags, err);
+> 
+> Do you know why we don't need this for SOCK_SEQPACKET and SOCK_DGRAM?
 
-The assembly is originally based on the x86 SSSE3/AVX2 ports, but
-register allocation has been redone to take advantage of LSX/LASX's 32
-vector registers, and instruction sequence has been optimized to suit
-(e.g. LoongArch can perform per-byte srl and andi on vectors, but x86
-cannot).
+Yes, here is my explanation:
 
-Performance numbers measured by instrumenting the raid6test code, on a
-3A5000 system clocked at 2.5GHz:
+This function checks that input error is SIGPIPE, and if so it sends SIGPIPE to the 'current' thread
+(except case when MSG_NOSIGNAL flag is set). This behaviour is described in POSIX:
 
-> lasx  2data: 354.987 MiB/s
-> lasx  datap: 350.430 MiB/s
-> lsx   2data: 340.026 MiB/s
-> lsx   datap: 337.318 MiB/s
-> intx1 2data: 164.280 MiB/s
-> intx1 datap: 187.966 MiB/s
+Page 367 (description of defines from sys/socket.h):
+MSG_NOSIGNAL: No SIGPIPE generated when an attempt to send is made on a stream-
+oriented socket that is no longer connected.
 
-Because recovery algorithms are chosen solely based on priority and
-availability, lasx is marked as priority 2 and lsx priority 1. At least
-for the current generation of LoongArch micro-architectures, LASX should
-always be faster than LSX whenever supported, and have similar power
-consumption characteristics (because the only known LASX-capable uarch,
-the LA464, always compute the full 256-bit result for vector ops).
+Page 497 (description of SOCK_STREAM):
+A SIGPIPE signal is raised if a thread sends on a broken stream (one that is
+no longer connected).
 
-Signed-off-by: WANG Xuerui <git@xen0n.name>
----
- include/linux/raid/pq.h          |   2 +
- lib/raid6/Makefile               |   2 +-
- lib/raid6/algos.c                |   8 +
- lib/raid6/recov_loongarch_simd.c | 515 +++++++++++++++++++++++++++++++
- lib/raid6/test/Makefile          |   2 +-
- 5 files changed, 527 insertions(+), 2 deletions(-)
- create mode 100644 lib/raid6/recov_loongarch_simd.c
+Page 1802 (description of 'send()' call):
+MSG_NOSIGNAL
 
-diff --git a/include/linux/raid/pq.h b/include/linux/raid/pq.h
-index 8744474858487..006e18decfad0 100644
---- a/include/linux/raid/pq.h
-+++ b/include/linux/raid/pq.h
-@@ -125,6 +125,8 @@ extern const struct raid6_recov_calls raid6_recov_avx2;
- extern const struct raid6_recov_calls raid6_recov_avx512;
- extern const struct raid6_recov_calls raid6_recov_s390xc;
- extern const struct raid6_recov_calls raid6_recov_neon;
-+extern const struct raid6_recov_calls raid6_recov_lsx;
-+extern const struct raid6_recov_calls raid6_recov_lasx;
- 
- extern const struct raid6_calls raid6_neonx1;
- extern const struct raid6_calls raid6_neonx2;
-diff --git a/lib/raid6/Makefile b/lib/raid6/Makefile
-index 2b9ebe1054806..035b0a4db476a 100644
---- a/lib/raid6/Makefile
-+++ b/lib/raid6/Makefile
-@@ -9,7 +9,7 @@ raid6_pq-$(CONFIG_ALTIVEC) += altivec1.o altivec2.o altivec4.o altivec8.o \
-                               vpermxor1.o vpermxor2.o vpermxor4.o vpermxor8.o
- raid6_pq-$(CONFIG_KERNEL_MODE_NEON) += neon.o neon1.o neon2.o neon4.o neon8.o recov_neon.o recov_neon_inner.o
- raid6_pq-$(CONFIG_S390) += s390vx8.o recov_s390xc.o
--raid6_pq-$(CONFIG_LOONGARCH) += loongarch_simd.o
-+raid6_pq-$(CONFIG_LOONGARCH) += loongarch_simd.o recov_loongarch_simd.o
- 
- hostprogs	+= mktables
- 
-diff --git a/lib/raid6/algos.c b/lib/raid6/algos.c
-index 739c7ebcae1a2..0ec534faf019b 100644
---- a/lib/raid6/algos.c
-+++ b/lib/raid6/algos.c
-@@ -111,6 +111,14 @@ const struct raid6_recov_calls *const raid6_recov_algos[] = {
- #endif
- #if defined(CONFIG_KERNEL_MODE_NEON)
- 	&raid6_recov_neon,
-+#endif
-+#ifdef CONFIG_LOONGARCH
-+#ifdef CONFIG_CPU_HAS_LASX
-+	&raid6_recov_lasx,
-+#endif
-+#ifdef CONFIG_CPU_HAS_LSX
-+	&raid6_recov_lsx,
-+#endif
- #endif
- 	&raid6_recov_intx1,
- 	NULL
-diff --git a/lib/raid6/recov_loongarch_simd.c b/lib/raid6/recov_loongarch_simd.c
-new file mode 100644
-index 0000000000000..f16adb6b40a05
---- /dev/null
-+++ b/lib/raid6/recov_loongarch_simd.c
-@@ -0,0 +1,515 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+/*
-+ * RAID6 recovery algorithms in LoongArch SIMD (LSX & LASX)
-+ *
-+ * Copyright (C) 2023 WANG Xuerui <git@xen0n.name>
-+ *
-+ * Originally based on recov_avx2.c and recov_ssse3.c:
-+ *
-+ * Copyright (C) 2012 Intel Corporation
-+ * Author: Jim Kukunas <james.t.kukunas@linux.intel.com>
-+ */
-+
-+#include <linux/raid/pq.h>
-+#include "loongarch.h"
-+
-+/*
-+ * Unlike with the syndrome calculation algorithms, there's no boot-time
-+ * selection of recovery algorithms by benchmarking, so we have to specify
-+ * the priorities and hope the future cores will all have decent vector
-+ * support (i.e. no LASX slower than LSX, or even scalar code).
-+ */
-+
-+#ifdef CONFIG_CPU_HAS_LSX
-+static int raid6_has_lsx(void)
-+{
-+	return cpu_has_lsx;
-+}
-+
-+static void raid6_2data_recov_lsx(int disks, size_t bytes, int faila,
-+				  int failb, void **ptrs)
-+{
-+	u8 *p, *q, *dp, *dq;
-+	const u8 *pbmul;	/* P multiplier table for B data */
-+	const u8 *qmul;		/* Q multiplier table (for both) */
-+
-+	p = (u8 *)ptrs[disks - 2];
-+	q = (u8 *)ptrs[disks - 1];
-+
-+	/*
-+	 * Compute syndrome with zero for the missing data pages
-+	 * Use the dead data pages as temporary storage for
-+	 * delta p and delta q
-+	 */
-+	dp = (u8 *)ptrs[faila];
-+	ptrs[faila] = (void *)raid6_empty_zero_page;
-+	ptrs[disks - 2] = dp;
-+	dq = (u8 *)ptrs[failb];
-+	ptrs[failb] = (void *)raid6_empty_zero_page;
-+	ptrs[disks - 1] = dq;
-+
-+	raid6_call.gen_syndrome(disks, bytes, ptrs);
-+
-+	/* Restore pointer table */
-+	ptrs[faila] = dp;
-+	ptrs[failb] = dq;
-+	ptrs[disks - 2] = p;
-+	ptrs[disks - 1] = q;
-+
-+	/* Now, pick the proper data tables */
-+	pbmul = raid6_vgfmul[raid6_gfexi[failb - faila]];
-+	qmul  = raid6_vgfmul[raid6_gfinv[raid6_gfexp[faila] ^
-+					 raid6_gfexp[failb]]];
-+
-+	kernel_fpu_begin();
-+
-+	/*
-+	 * vr20, vr21: qmul
-+	 * vr22, vr23: pbmul
-+	 */
-+	asm volatile("vld $vr20, %0" : : "m" (qmul[0]));
-+	asm volatile("vld $vr21, %0" : : "m" (qmul[16]));
-+	asm volatile("vld $vr22, %0" : : "m" (pbmul[0]));
-+	asm volatile("vld $vr23, %0" : : "m" (pbmul[16]));
-+
-+	while (bytes) {
-+		/* vr4 - vr7: Q */
-+		asm volatile("vld $vr4, %0" : : "m" (q[0]));
-+		asm volatile("vld $vr5, %0" : : "m" (q[16]));
-+		asm volatile("vld $vr6, %0" : : "m" (q[32]));
-+		asm volatile("vld $vr7, %0" : : "m" (q[48]));
-+		/*  vr4 - vr7: Q + Qxy */
-+		asm volatile("vld $vr8, %0" : : "m" (dq[0]));
-+		asm volatile("vld $vr9, %0" : : "m" (dq[16]));
-+		asm volatile("vld $vr10, %0" : : "m" (dq[32]));
-+		asm volatile("vld $vr11, %0" : : "m" (dq[48]));
-+		asm volatile("vxor.v $vr4, $vr4, $vr8");
-+		asm volatile("vxor.v $vr5, $vr5, $vr9");
-+		asm volatile("vxor.v $vr6, $vr6, $vr10");
-+		asm volatile("vxor.v $vr7, $vr7, $vr11");
-+		/* vr0 - vr3: P */
-+		asm volatile("vld $vr0, %0" : : "m" (p[0]));
-+		asm volatile("vld $vr1, %0" : : "m" (p[16]));
-+		asm volatile("vld $vr2, %0" : : "m" (p[32]));
-+		asm volatile("vld $vr3, %0" : : "m" (p[48]));
-+		/* vr0 - vr3: P + Pxy */
-+		asm volatile("vld $vr8, %0" : : "m" (dp[0]));
-+		asm volatile("vld $vr9, %0" : : "m" (dp[16]));
-+		asm volatile("vld $vr10, %0" : : "m" (dp[32]));
-+		asm volatile("vld $vr11, %0" : : "m" (dp[48]));
-+		asm volatile("vxor.v $vr0, $vr0, $vr8");
-+		asm volatile("vxor.v $vr1, $vr1, $vr9");
-+		asm volatile("vxor.v $vr2, $vr2, $vr10");
-+		asm volatile("vxor.v $vr3, $vr3, $vr11");
-+
-+		/* vr8 - vr11: higher 4 bits of each byte of (Q + Qxy) */
-+		asm volatile("vsrli.b $vr8, $vr4, 4");
-+		asm volatile("vsrli.b $vr9, $vr5, 4");
-+		asm volatile("vsrli.b $vr10, $vr6, 4");
-+		asm volatile("vsrli.b $vr11, $vr7, 4");
-+		/* vr4 - vr7: lower 4 bits of each byte of (Q + Qxy) */
-+		asm volatile("vandi.b $vr4, $vr4, 0x0f");
-+		asm volatile("vandi.b $vr5, $vr5, 0x0f");
-+		asm volatile("vandi.b $vr6, $vr6, 0x0f");
-+		asm volatile("vandi.b $vr7, $vr7, 0x0f");
-+		/* lookup from qmul[0] */
-+		asm volatile("vshuf.b $vr4, $vr20, $vr20, $vr4");
-+		asm volatile("vshuf.b $vr5, $vr20, $vr20, $vr5");
-+		asm volatile("vshuf.b $vr6, $vr20, $vr20, $vr6");
-+		asm volatile("vshuf.b $vr7, $vr20, $vr20, $vr7");
-+		/* lookup from qmul[16] */
-+		asm volatile("vshuf.b $vr8, $vr21, $vr21, $vr8");
-+		asm volatile("vshuf.b $vr9, $vr21, $vr21, $vr9");
-+		asm volatile("vshuf.b $vr10, $vr21, $vr21, $vr10");
-+		asm volatile("vshuf.b $vr11, $vr21, $vr21, $vr11");
-+		/* vr16 - vr19: B(Q + Qxy) */
-+		asm volatile("vxor.v $vr16, $vr8, $vr4");
-+		asm volatile("vxor.v $vr17, $vr9, $vr5");
-+		asm volatile("vxor.v $vr18, $vr10, $vr6");
-+		asm volatile("vxor.v $vr19, $vr11, $vr7");
-+
-+		/* vr4 - vr7: higher 4 bits of each byte of (P + Pxy) */
-+		asm volatile("vsrli.b $vr4, $vr0, 4");
-+		asm volatile("vsrli.b $vr5, $vr1, 4");
-+		asm volatile("vsrli.b $vr6, $vr2, 4");
-+		asm volatile("vsrli.b $vr7, $vr3, 4");
-+		/* vr12 - vr15: lower 4 bits of each byte of (P + Pxy) */
-+		asm volatile("vandi.b $vr12, $vr0, 0x0f");
-+		asm volatile("vandi.b $vr13, $vr1, 0x0f");
-+		asm volatile("vandi.b $vr14, $vr2, 0x0f");
-+		asm volatile("vandi.b $vr15, $vr3, 0x0f");
-+		/* lookup from pbmul[0] */
-+		asm volatile("vshuf.b $vr12, $vr22, $vr22, $vr12");
-+		asm volatile("vshuf.b $vr13, $vr22, $vr22, $vr13");
-+		asm volatile("vshuf.b $vr14, $vr22, $vr22, $vr14");
-+		asm volatile("vshuf.b $vr15, $vr22, $vr22, $vr15");
-+		/* lookup from pbmul[16] */
-+		asm volatile("vshuf.b $vr4, $vr23, $vr23, $vr4");
-+		asm volatile("vshuf.b $vr5, $vr23, $vr23, $vr5");
-+		asm volatile("vshuf.b $vr6, $vr23, $vr23, $vr6");
-+		asm volatile("vshuf.b $vr7, $vr23, $vr23, $vr7");
-+		/* vr4 - vr7: A(P + Pxy) */
-+		asm volatile("vxor.v $vr4, $vr4, $vr12");
-+		asm volatile("vxor.v $vr5, $vr5, $vr13");
-+		asm volatile("vxor.v $vr6, $vr6, $vr14");
-+		asm volatile("vxor.v $vr7, $vr7, $vr15");
-+
-+		/* vr4 - vr7: A(P + Pxy) + B(Q + Qxy) = Dx */
-+		asm volatile("vxor.v $vr4, $vr4, $vr16");
-+		asm volatile("vxor.v $vr5, $vr5, $vr17");
-+		asm volatile("vxor.v $vr6, $vr6, $vr18");
-+		asm volatile("vxor.v $vr7, $vr7, $vr19");
-+		asm volatile("vst $vr4, %0" : "=m" (dq[0]));
-+		asm volatile("vst $vr5, %0" : "=m" (dq[16]));
-+		asm volatile("vst $vr6, %0" : "=m" (dq[32]));
-+		asm volatile("vst $vr7, %0" : "=m" (dq[48]));
-+
-+		/* vr0 - vr3: P + Pxy + Dx = Dy */
-+		asm volatile("vxor.v $vr0, $vr0, $vr4");
-+		asm volatile("vxor.v $vr1, $vr1, $vr5");
-+		asm volatile("vxor.v $vr2, $vr2, $vr6");
-+		asm volatile("vxor.v $vr3, $vr3, $vr7");
-+		asm volatile("vst $vr0, %0" : "=m" (dp[0]));
-+		asm volatile("vst $vr1, %0" : "=m" (dp[16]));
-+		asm volatile("vst $vr2, %0" : "=m" (dp[32]));
-+		asm volatile("vst $vr3, %0" : "=m" (dp[48]));
-+
-+		bytes -= 64;
-+		p += 64;
-+		q += 64;
-+		dp += 64;
-+		dq += 64;
-+	}
-+
-+	kernel_fpu_end();
-+}
-+
-+static void raid6_datap_recov_lsx(int disks, size_t bytes, int faila,
-+				  void **ptrs)
-+{
-+	u8 *p, *q, *dq;
-+	const u8 *qmul;		/* Q multiplier table */
-+
-+	p = (u8 *)ptrs[disks - 2];
-+	q = (u8 *)ptrs[disks - 1];
-+
-+	/*
-+	 * Compute syndrome with zero for the missing data page
-+	 * Use the dead data page as temporary storage for delta q
-+	 */
-+	dq = (u8 *)ptrs[faila];
-+	ptrs[faila] = (void *)raid6_empty_zero_page;
-+	ptrs[disks - 1] = dq;
-+
-+	raid6_call.gen_syndrome(disks, bytes, ptrs);
-+
-+	/* Restore pointer table */
-+	ptrs[faila] = dq;
-+	ptrs[disks - 1] = q;
-+
-+	/* Now, pick the proper data tables */
-+	qmul  = raid6_vgfmul[raid6_gfinv[raid6_gfexp[faila]]];
-+
-+	kernel_fpu_begin();
-+
-+	/* vr22, vr23: qmul */
-+	asm volatile("vld $vr22, %0" : : "m" (qmul[0]));
-+	asm volatile("vld $vr23, %0" : : "m" (qmul[16]));
-+
-+	while (bytes) {
-+		/* vr0 - vr3: P + Dx */
-+		asm volatile("vld $vr0, %0" : : "m" (p[0]));
-+		asm volatile("vld $vr1, %0" : : "m" (p[16]));
-+		asm volatile("vld $vr2, %0" : : "m" (p[32]));
-+		asm volatile("vld $vr3, %0" : : "m" (p[48]));
-+		/* vr4 - vr7: Qx */
-+		asm volatile("vld $vr4, %0" : : "m" (dq[0]));
-+		asm volatile("vld $vr5, %0" : : "m" (dq[16]));
-+		asm volatile("vld $vr6, %0" : : "m" (dq[32]));
-+		asm volatile("vld $vr7, %0" : : "m" (dq[48]));
-+		/* vr4 - vr7: Q + Qx */
-+		asm volatile("vld $vr8, %0" : : "m" (q[0]));
-+		asm volatile("vld $vr9, %0" : : "m" (q[16]));
-+		asm volatile("vld $vr10, %0" : : "m" (q[32]));
-+		asm volatile("vld $vr11, %0" : : "m" (q[48]));
-+		asm volatile("vxor.v $vr4, $vr4, $vr8");
-+		asm volatile("vxor.v $vr5, $vr5, $vr9");
-+		asm volatile("vxor.v $vr6, $vr6, $vr10");
-+		asm volatile("vxor.v $vr7, $vr7, $vr11");
-+
-+		/* vr8 - vr11: higher 4 bits of each byte of (Q + Qx) */
-+		asm volatile("vsrli.b $vr8, $vr4, 4");
-+		asm volatile("vsrli.b $vr9, $vr5, 4");
-+		asm volatile("vsrli.b $vr10, $vr6, 4");
-+		asm volatile("vsrli.b $vr11, $vr7, 4");
-+		/* vr4 - vr7: lower 4 bits of each byte of (Q + Qx) */
-+		asm volatile("vandi.b $vr4, $vr4, 0x0f");
-+		asm volatile("vandi.b $vr5, $vr5, 0x0f");
-+		asm volatile("vandi.b $vr6, $vr6, 0x0f");
-+		asm volatile("vandi.b $vr7, $vr7, 0x0f");
-+		/* lookup from qmul[0] */
-+		asm volatile("vshuf.b $vr4, $vr22, $vr22, $vr4");
-+		asm volatile("vshuf.b $vr5, $vr22, $vr22, $vr5");
-+		asm volatile("vshuf.b $vr6, $vr22, $vr22, $vr6");
-+		asm volatile("vshuf.b $vr7, $vr22, $vr22, $vr7");
-+		/* lookup from qmul[16] */
-+		asm volatile("vshuf.b $vr8, $vr23, $vr23, $vr8");
-+		asm volatile("vshuf.b $vr9, $vr23, $vr23, $vr9");
-+		asm volatile("vshuf.b $vr10, $vr23, $vr23, $vr10");
-+		asm volatile("vshuf.b $vr11, $vr23, $vr23, $vr11");
-+		/* vr4 - vr7: qmul(Q + Qx) = Dx */
-+		asm volatile("vxor.v $vr4, $vr4, $vr8");
-+		asm volatile("vxor.v $vr5, $vr5, $vr9");
-+		asm volatile("vxor.v $vr6, $vr6, $vr10");
-+		asm volatile("vxor.v $vr7, $vr7, $vr11");
-+		asm volatile("vst $vr4, %0" : "=m" (dq[0]));
-+		asm volatile("vst $vr5, %0" : "=m" (dq[16]));
-+		asm volatile("vst $vr6, %0" : "=m" (dq[32]));
-+		asm volatile("vst $vr7, %0" : "=m" (dq[48]));
-+
-+		/* vr0 - vr3: P + Dx + Dx = P */
-+		asm volatile("vxor.v $vr0, $vr0, $vr4");
-+		asm volatile("vxor.v $vr1, $vr1, $vr5");
-+		asm volatile("vxor.v $vr2, $vr2, $vr6");
-+		asm volatile("vxor.v $vr3, $vr3, $vr7");
-+		asm volatile("vst $vr0, %0" : "=m" (p[0]));
-+		asm volatile("vst $vr1, %0" : "=m" (p[16]));
-+		asm volatile("vst $vr2, %0" : "=m" (p[32]));
-+		asm volatile("vst $vr3, %0" : "=m" (p[48]));
-+
-+		bytes -= 64;
-+		p += 64;
-+		q += 64;
-+		dq += 64;
-+	}
-+
-+	kernel_fpu_end();
-+}
-+
-+const struct raid6_recov_calls raid6_recov_lsx = {
-+	.data2 = raid6_2data_recov_lsx,
-+	.datap = raid6_datap_recov_lsx,
-+	.valid = raid6_has_lsx,
-+	.name = "lsx",
-+	.priority = 1,
-+};
-+#endif /* CONFIG_CPU_HAS_LSX */
-+
-+#ifdef CONFIG_CPU_HAS_LASX
-+static int raid6_has_lasx(void)
-+{
-+	return cpu_has_lasx;
-+}
-+
-+static void raid6_2data_recov_lasx(int disks, size_t bytes, int faila,
-+				   int failb, void **ptrs)
-+{
-+	u8 *p, *q, *dp, *dq;
-+	const u8 *pbmul;	/* P multiplier table for B data */
-+	const u8 *qmul;		/* Q multiplier table (for both) */
-+
-+	p = (u8 *)ptrs[disks - 2];
-+	q = (u8 *)ptrs[disks - 1];
-+
-+	/*
-+	 * Compute syndrome with zero for the missing data pages
-+	 * Use the dead data pages as temporary storage for
-+	 * delta p and delta q
-+	 */
-+	dp = (u8 *)ptrs[faila];
-+	ptrs[faila] = (void *)raid6_empty_zero_page;
-+	ptrs[disks - 2] = dp;
-+	dq = (u8 *)ptrs[failb];
-+	ptrs[failb] = (void *)raid6_empty_zero_page;
-+	ptrs[disks - 1] = dq;
-+
-+	raid6_call.gen_syndrome(disks, bytes, ptrs);
-+
-+	/* Restore pointer table */
-+	ptrs[faila] = dp;
-+	ptrs[failb] = dq;
-+	ptrs[disks - 2] = p;
-+	ptrs[disks - 1] = q;
-+
-+	/* Now, pick the proper data tables */
-+	pbmul = raid6_vgfmul[raid6_gfexi[failb - faila]];
-+	qmul  = raid6_vgfmul[raid6_gfinv[raid6_gfexp[faila] ^
-+					 raid6_gfexp[failb]]];
-+
-+	kernel_fpu_begin();
-+
-+	/*
-+	 * xr20, xr21: qmul
-+	 * xr22, xr23: pbmul
-+	 */
-+	asm volatile("vld $vr20, %0" : : "m" (qmul[0]));
-+	asm volatile("vld $vr21, %0" : : "m" (qmul[16]));
-+	asm volatile("vld $vr22, %0" : : "m" (pbmul[0]));
-+	asm volatile("vld $vr23, %0" : : "m" (pbmul[16]));
-+	asm volatile("xvreplve0.q $xr20, $xr20");
-+	asm volatile("xvreplve0.q $xr21, $xr21");
-+	asm volatile("xvreplve0.q $xr22, $xr22");
-+	asm volatile("xvreplve0.q $xr23, $xr23");
-+
-+	while (bytes) {
-+		/* xr0, xr1: Q */
-+		asm volatile("xvld $xr0, %0" : : "m" (q[0]));
-+		asm volatile("xvld $xr1, %0" : : "m" (q[32]));
-+		/* xr0, xr1: Q + Qxy */
-+		asm volatile("xvld $xr4, %0" : : "m" (dq[0]));
-+		asm volatile("xvld $xr5, %0" : : "m" (dq[32]));
-+		asm volatile("xvxor.v $xr0, $xr0, $xr4");
-+		asm volatile("xvxor.v $xr1, $xr1, $xr5");
-+		/* xr2, xr3: P */
-+		asm volatile("xvld $xr2, %0" : : "m" (p[0]));
-+		asm volatile("xvld $xr3, %0" : : "m" (p[32]));
-+		/* xr2, xr3: P + Pxy */
-+		asm volatile("xvld $xr4, %0" : : "m" (dp[0]));
-+		asm volatile("xvld $xr5, %0" : : "m" (dp[32]));
-+		asm volatile("xvxor.v $xr2, $xr2, $xr4");
-+		asm volatile("xvxor.v $xr3, $xr3, $xr5");
-+
-+		/* xr4, xr5: higher 4 bits of each byte of (Q + Qxy) */
-+		asm volatile("xvsrli.b $xr4, $xr0, 4");
-+		asm volatile("xvsrli.b $xr5, $xr1, 4");
-+		/* xr0, xr1: lower 4 bits of each byte of (Q + Qxy) */
-+		asm volatile("xvandi.b $xr0, $xr0, 0x0f");
-+		asm volatile("xvandi.b $xr1, $xr1, 0x0f");
-+		/* lookup from qmul[0] */
-+		asm volatile("xvshuf.b $xr0, $xr20, $xr20, $xr0");
-+		asm volatile("xvshuf.b $xr1, $xr20, $xr20, $xr1");
-+		/* lookup from qmul[16] */
-+		asm volatile("xvshuf.b $xr4, $xr21, $xr21, $xr4");
-+		asm volatile("xvshuf.b $xr5, $xr21, $xr21, $xr5");
-+		/* xr6, xr7: B(Q + Qxy) */
-+		asm volatile("xvxor.v $xr6, $xr4, $xr0");
-+		asm volatile("xvxor.v $xr7, $xr5, $xr1");
-+
-+		/* xr4, xr5: higher 4 bits of each byte of (P + Pxy) */
-+		asm volatile("xvsrli.b $xr4, $xr2, 4");
-+		asm volatile("xvsrli.b $xr5, $xr3, 4");
-+		/* xr0, xr1: lower 4 bits of each byte of (P + Pxy) */
-+		asm volatile("xvandi.b $xr0, $xr2, 0x0f");
-+		asm volatile("xvandi.b $xr1, $xr3, 0x0f");
-+		/* lookup from pbmul[0] */
-+		asm volatile("xvshuf.b $xr0, $xr22, $xr22, $xr0");
-+		asm volatile("xvshuf.b $xr1, $xr22, $xr22, $xr1");
-+		/* lookup from pbmul[16] */
-+		asm volatile("xvshuf.b $xr4, $xr23, $xr23, $xr4");
-+		asm volatile("xvshuf.b $xr5, $xr23, $xr23, $xr5");
-+		/* xr0, xr1: A(P + Pxy) */
-+		asm volatile("xvxor.v $xr0, $xr0, $xr4");
-+		asm volatile("xvxor.v $xr1, $xr1, $xr5");
-+
-+		/* xr0, xr1: A(P + Pxy) + B(Q + Qxy) = Dx */
-+		asm volatile("xvxor.v $xr0, $xr0, $xr6");
-+		asm volatile("xvxor.v $xr1, $xr1, $xr7");
-+
-+		/* xr2, xr3: P + Pxy + Dx = Dy */
-+		asm volatile("xvxor.v $xr2, $xr2, $xr0");
-+		asm volatile("xvxor.v $xr3, $xr3, $xr1");
-+
-+		asm volatile("xvst $xr0, %0" : "=m" (dq[0]));
-+		asm volatile("xvst $xr1, %0" : "=m" (dq[32]));
-+		asm volatile("xvst $xr2, %0" : "=m" (dp[0]));
-+		asm volatile("xvst $xr3, %0" : "=m" (dp[32]));
-+
-+		bytes -= 64;
-+		p += 64;
-+		q += 64;
-+		dp += 64;
-+		dq += 64;
-+	}
-+
-+	kernel_fpu_end();
-+}
-+
-+static void raid6_datap_recov_lasx(int disks, size_t bytes, int faila,
-+				   void **ptrs)
-+{
-+	u8 *p, *q, *dq;
-+	const u8 *qmul;		/* Q multiplier table */
-+
-+	p = (u8 *)ptrs[disks - 2];
-+	q = (u8 *)ptrs[disks - 1];
-+
-+	/*
-+	 * Compute syndrome with zero for the missing data page
-+	 * Use the dead data page as temporary storage for delta q
-+	 */
-+	dq = (u8 *)ptrs[faila];
-+	ptrs[faila] = (void *)raid6_empty_zero_page;
-+	ptrs[disks - 1] = dq;
-+
-+	raid6_call.gen_syndrome(disks, bytes, ptrs);
-+
-+	/* Restore pointer table */
-+	ptrs[faila] = dq;
-+	ptrs[disks - 1] = q;
-+
-+	/* Now, pick the proper data tables */
-+	qmul  = raid6_vgfmul[raid6_gfinv[raid6_gfexp[faila]]];
-+
-+	kernel_fpu_begin();
-+
-+	/* xr22, xr23: qmul */
-+	asm volatile("vld $vr22, %0" : : "m" (qmul[0]));
-+	asm volatile("xvreplve0.q $xr22, $xr22");
-+	asm volatile("vld $vr23, %0" : : "m" (qmul[16]));
-+	asm volatile("xvreplve0.q $xr23, $xr23");
-+
-+	while (bytes) {
-+		/* xr0, xr1: P + Dx */
-+		asm volatile("xvld $xr0, %0" : : "m" (p[0]));
-+		asm volatile("xvld $xr1, %0" : : "m" (p[32]));
-+		/* xr2, xr3: Qx */
-+		asm volatile("xvld $xr2, %0" : : "m" (dq[0]));
-+		asm volatile("xvld $xr3, %0" : : "m" (dq[32]));
-+		/* xr2, xr3: Q + Qx */
-+		asm volatile("xvld $xr4, %0" : : "m" (q[0]));
-+		asm volatile("xvld $xr5, %0" : : "m" (q[32]));
-+		asm volatile("xvxor.v $xr2, $xr2, $xr4");
-+		asm volatile("xvxor.v $xr3, $xr3, $xr5");
-+
-+		/* xr4, xr5: higher 4 bits of each byte of (Q + Qx) */
-+		asm volatile("xvsrli.b $xr4, $xr2, 4");
-+		asm volatile("xvsrli.b $xr5, $xr3, 4");
-+		/* xr2, xr3: lower 4 bits of each byte of (Q + Qx) */
-+		asm volatile("xvandi.b $xr2, $xr2, 0x0f");
-+		asm volatile("xvandi.b $xr3, $xr3, 0x0f");
-+		/* lookup from qmul[0] */
-+		asm volatile("xvshuf.b $xr2, $xr22, $xr22, $xr2");
-+		asm volatile("xvshuf.b $xr3, $xr22, $xr22, $xr3");
-+		/* lookup from qmul[16] */
-+		asm volatile("xvshuf.b $xr4, $xr23, $xr23, $xr4");
-+		asm volatile("xvshuf.b $xr5, $xr23, $xr23, $xr5");
-+		/* xr2, xr3: qmul(Q + Qx) = Dx */
-+		asm volatile("xvxor.v $xr2, $xr2, $xr4");
-+		asm volatile("xvxor.v $xr3, $xr3, $xr5");
-+
-+		/* xr0, xr1: P + Dx + Dx = P */
-+		asm volatile("xvxor.v $xr0, $xr0, $xr2");
-+		asm volatile("xvxor.v $xr1, $xr1, $xr3");
-+
-+		asm volatile("xvst $xr2, %0" : "=m" (dq[0]));
-+		asm volatile("xvst $xr3, %0" : "=m" (dq[32]));
-+		asm volatile("xvst $xr0, %0" : "=m" (p[0]));
-+		asm volatile("xvst $xr1, %0" : "=m" (p[32]));
-+
-+		bytes -= 64;
-+		p += 64;
-+		q += 64;
-+		dq += 64;
-+	}
-+
-+	kernel_fpu_end();
-+}
-+
-+const struct raid6_recov_calls raid6_recov_lasx = {
-+	.data2 = raid6_2data_recov_lasx,
-+	.datap = raid6_datap_recov_lasx,
-+	.valid = raid6_has_lasx,
-+	.name = "lasx",
-+	.priority = 2,
-+};
-+#endif /* CONFIG_CPU_HAS_LASX */
-diff --git a/lib/raid6/test/Makefile b/lib/raid6/test/Makefile
-index 7b244bce32b3d..2abe0076a636c 100644
---- a/lib/raid6/test/Makefile
-+++ b/lib/raid6/test/Makefile
-@@ -65,7 +65,7 @@ else ifeq ($(HAS_ALTIVEC),yes)
-         OBJS += altivec1.o altivec2.o altivec4.o altivec8.o \
-                 vpermxor1.o vpermxor2.o vpermxor4.o vpermxor8.o
- else ifeq ($(ARCH),loongarch64)
--        OBJS += loongarch_simd.o
-+        OBJS += loongarch_simd.o recov_loongarch_simd.o
- endif
- 
- .c.o:
--- 
-2.40.0
+Requests not to send the SIGPIPE signal if an attempt to
+send is made on a stream-oriented socket that is no
+longer connected. The [EPIPE] error shall still be
+returned
 
+And the same for 'sendto()' and 'sendmsg()'
+
+Link to the POSIX document:
+https://www.open-std.org/jtc1/sc22/open/n4217.pdf
+
+TCP (I think we must rely on it), KCM, SMC sockets (all of them are stream) work in the same
+way by calling this function. AF_UNIX also works in the same way, but it implements SIGPIPE handling
+without this function.
+
+The only thing that confused me a little bit, that sockets above returns EPIPE when
+we have only SEND_SHUTDOWN set, but for AF_VSOCK EPIPE is returned for RCV_SHUTDOWN
+also, but I think it is related to this patchset.
+
+
+Thanks, Arseniy
+
+> 
+> Thanks,
+> Stefano
+> 
+>> +
+>>     release_sock(sk);
+>>     return err;
+>> }
+>> -- 
+>> 2.25.1
+>>
+> 
