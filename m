@@ -2,92 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 061D5770A31
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 23:00:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D251D770AE0
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 23:26:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229985AbjHDVAI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Aug 2023 17:00:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57488 "EHLO
+        id S229589AbjHDV0g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Aug 2023 17:26:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44150 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229644AbjHDVAB (ORCPT
+        with ESMTP id S231186AbjHDV0Q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Aug 2023 17:00:01 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06D42E46;
-        Fri,  4 Aug 2023 14:00:00 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        Fri, 4 Aug 2023 17:26:16 -0400
+Received: from cloudserver094114.home.pl (cloudserver094114.home.pl [79.96.170.134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D2514C3B;
+        Fri,  4 Aug 2023 14:26:12 -0700 (PDT)
+Received: from localhost (127.0.0.1) (HELO v370.home.net.pl)
+ by /usr/run/smtp (/usr/run/postfix/private/idea_relay_lmtp) via UNIX with SMTP (IdeaSmtpServer 5.2.0)
+ id a6286e61ff4363f4; Fri, 4 Aug 2023 23:26:11 +0200
+Authentication-Results: v370.home.net.pl; spf=softfail (domain owner 
+   discourages use of this host) smtp.mailfrom=rjwysocki.net 
+   (client-ip=195.136.19.94; helo=[195.136.19.94]; 
+   envelope-from=rjw@rjwysocki.net; receiver=<UNKNOWN>)
+Received: from kreacher.localnet (unknown [195.136.19.94])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 8FC1A62038;
-        Fri,  4 Aug 2023 20:59:59 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 76322C433C7;
-        Fri,  4 Aug 2023 20:59:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691182799;
-        bh=MRN7hsUUqN2dL3ZC0r/+K5FHLU73Mu39souTu9sMlK8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=a42GYlEGJqyCrN7vqU8W7WOCjrwAgY2GoUcf5Zvi8VMfFuJ0Qn+QnZIZoTdjsPJQ6
-         cdrxo91iDBsiMvlC8JrI1JDV4H/vgTqLM8TZMAJ951WlX8oY03YL/Il+n4rTOPBv7+
-         HCcDNngAp6fmxWlJqAEzeGr2iImg3p2DCZyS/3XVj3JDZt/5pRVIoJMge7qC3JWh4V
-         R0c2aHgtd3vCFD7Y+dcz3BVpQfEeIzOFbVCgsKXJHEkM0GM6iVtlW6L3P/cBrwUovw
-         KUPoIyvoACLsoGHoCQLLnIqnhWDwG3t5XSxq5hfyqgdND3U2Jij4L1TSLMZBhMbzBr
-         zTqgrOYRzD1uw==
-Date:   Fri, 4 Aug 2023 22:59:56 +0200
-From:   Andi Shyti <andi.shyti@kernel.org>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     Jarkko Nikula <jarkko.nikula@linux.intel.com>,
-        Mario Limonciello <mario.limonciello@amd.com>,
-        Wolfram Sang <wsa@kernel.org>, linux-i2c@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Jan Dabros <jsd@semihalf.com>
-Subject: Re: [PATCH v1 4/9] i2c: designware: Propagate firmware node
-Message-ID: <20230804205956.uuna4c76ww64z3zm@intel.intel>
-References: <20230725143023.86325-1-andriy.shevchenko@linux.intel.com>
- <20230725143023.86325-5-andriy.shevchenko@linux.intel.com>
- <f0e0c31e-ad5e-c3ae-945e-c2af0d68beab@linux.intel.com>
- <ZMgU9Jm4u37D+70Y@smile.fi.intel.com>
+        by v370.home.net.pl (Postfix) with ESMTPSA id BAA3D6624B9;
+        Fri,  4 Aug 2023 23:26:10 +0200 (CEST)
+From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
+To:     Linux ACPI <linux-acpi@vger.kernel.org>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Michal Wilczynski <michal.wilczynski@intel.com>,
+        Zhang Rui <rui.zhang@intel.com>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
+Subject: [PATCH v4 01/10] thermal: core: Do not handle trip points with invalid temperature
+Date:   Fri, 04 Aug 2023 23:00:22 +0200
+Message-ID: <4850902.GXAFRqVoOG@kreacher>
+In-Reply-To: <4878513.31r3eYUQgx@kreacher>
+References: <13318886.uLZWGnKmhe@kreacher> <4878513.31r3eYUQgx@kreacher>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZMgU9Jm4u37D+70Y@smile.fi.intel.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="UTF-8"
+X-CLIENT-IP: 195.136.19.94
+X-CLIENT-HOSTNAME: 195.136.19.94
+X-VADE-SPAMSTATE: clean
+X-VADE-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedviedrkeeggdduheekucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecujffqoffgrffnpdggtffipffknecuuegrihhlohhuthemucduhedtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjughrpefhvfevufffkfgjfhgggfgtsehtufertddttdejnecuhfhrohhmpedftfgrfhgrvghlucflrdcuhgihshhotghkihdfuceorhhjfiesrhhjfiihshhotghkihdrnhgvtheqnecuggftrfgrthhtvghrnhepvdffueeitdfgvddtudegueejtdffteetgeefkeffvdeftddttdeuhfegfedvjefhnecukfhppeduleehrddufeeirdduledrleegnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehinhgvthepudelhedrudefiedrudelrdelgedphhgvlhhopehkrhgvrggthhgvrhdrlhhotggrlhhnvghtpdhmrghilhhfrhhomhepfdftrghfrggvlhculfdrucghhihsohgtkhhifdcuoehrjhifsehrjhifhihsohgtkhhirdhnvghtqedpnhgspghrtghpthhtohepjedprhgtphhtthhopehlihhnuhigqdgrtghpihesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopegurghnihgvlhdrlhgviigtrghnoheslhhinhgrrhhordhorhhgpdhrtghpthhtoheplhhinhhugidqkhgvrhhnvghlsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtoheplhhinhhugidqphhmsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghp
+ thhtohepmhhitghhrghlrdifihhltgiihihnshhkihesihhnthgvlhdrtghomhdprhgtphhtthhopehruhhirdiihhgrnhhgsehinhhtvghlrdgtohhm
+X-DCC--Metrics: v370.home.net.pl 1024; Body=7 Fuz1=7 Fuz2=7
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Andy,
+From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 
-On Mon, Jul 31, 2023 at 11:09:24PM +0300, Andy Shevchenko wrote:
-> On Fri, Jul 28, 2023 at 03:25:58PM +0300, Jarkko Nikula wrote:
-> > On 7/25/23 17:30, Andy Shevchenko wrote:
-> > > Propagate firmware node by using a specific API call, i.e. device_set_node().
-> 
-> ...
-> 
-> > > +	device_set_node(&dev->adapter.dev, dev_fwnode(dev->dev));
-> > 
-> > Would this be better to put in the same place where ACPI_COMPANION_SET() is
-> > removed like below? I'd keep this static inline function in the header file
-> > as simple as possible. All extra code might invite adding even more.
-> 
-> We come again to the duplication and prone to deviation code, I wouldn't like
-> to go this way. The idea of this call is to unify and avoid mistakes, like
-> updating only in ACPI or DT (or any new one if happens in the future) case
-> and leaving the second one unconsidered.
+Trip points with temperature set to THERMAL_TEMP_INVALID are as good as
+disabled, so make handle_thermal_trip() ignore them.
 
-it's anyway an inline function becoming a bit too fat. Can't we
-make it not inline?
+Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+---
 
-> That said, I would rather drop this patch until i2c core will take this
-> once for all (may be never in the reasonable future :-).
+v3 -> v4: No changes.
 
-Which patch are you referring to that should be taken into i2c
-core?
+v2 -> v3: No changes.
 
-Andi
+v1 -> v2: No changes.
+
+---
+ drivers/thermal/thermal_core.c |    3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+Index: linux-pm/drivers/thermal/thermal_core.c
+===================================================================
+--- linux-pm.orig/drivers/thermal/thermal_core.c
++++ linux-pm/drivers/thermal/thermal_core.c
+@@ -348,7 +348,8 @@ static void handle_thermal_trip(struct t
+ 	struct thermal_trip trip;
+ 
+ 	/* Ignore disabled trip points */
+-	if (test_bit(trip_id, &tz->trips_disabled))
++	if (test_bit(trip_id, &tz->trips_disabled) ||
++	    trip.temperature == THERMAL_TEMP_INVALID)
+ 		return;
+ 
+ 	__thermal_zone_get_trip(tz, trip_id, &trip);
+
+
+
