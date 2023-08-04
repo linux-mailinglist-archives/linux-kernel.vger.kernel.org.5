@@ -2,303 +2,194 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 37F8276F7D8
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 04:27:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E716A76F7DC
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 04:28:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231326AbjHDC1O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Aug 2023 22:27:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49328 "EHLO
+        id S232051AbjHDC2T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Aug 2023 22:28:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50558 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229618AbjHDC1L (ORCPT
+        with ESMTP id S233949AbjHDC2J (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Aug 2023 22:27:11 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7F003A9C
-        for <linux-kernel@vger.kernel.org>; Thu,  3 Aug 2023 19:26:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1691115984;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=H0wMlfA22BxZl9Q9Znlq2V03kgETsb/XxqrfcgpjE8w=;
-        b=Qwee6ohOPu5OWcycc4tq1hER94mgMDOfSGoSeXWK4O7hh0udiapIaunY/ZGZ5q6TZ6kjxC
-        SZIGoBkKMHVeoW5JzrsJH3L7MXJWNvw7egeYqu7EVercu0TTqqaleuXcaFFbeKDGT0y5tq
-        ghlpdIi2UTcVDJEWtnISrzVSwaspIq8=
-Received: from mail-pj1-f70.google.com (mail-pj1-f70.google.com
- [209.85.216.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-692-K4BYLxB4N4-KwpatgN2yjg-1; Thu, 03 Aug 2023 22:26:23 -0400
-X-MC-Unique: K4BYLxB4N4-KwpatgN2yjg-1
-Received: by mail-pj1-f70.google.com with SMTP id 98e67ed59e1d1-2684179be07so909392a91.2
-        for <linux-kernel@vger.kernel.org>; Thu, 03 Aug 2023 19:26:23 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691115982; x=1691720782;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=H0wMlfA22BxZl9Q9Znlq2V03kgETsb/XxqrfcgpjE8w=;
-        b=Lg/c8XFMKbBKZ193fAExtRQIYLttls6KgsUEk5TLRQcxbPGlRTvd/Q7VBe34bx6zA+
-         ytd4KrtDcBNv2MsNLhQMi4k3BtbbOpNBkvE5t7UmlFU93IhLWyK7rDIyU28aF9vOkKau
-         h4+KVzQVqGcOZ7uajiAZAhdGO0kmNjibVE+berS/H9DpZvQKf1bk1RTEW/CH7fsoGGLa
-         AswdC1Z6sievG1TjGa9OoVKhonn0lYPhpFmKW7y0Lf8822q8VYL55DJ6v4PSZcXRcgnf
-         herP9OIkMCUBQMf7jWsKpOVCUJyZl1IblS2x9GTSjJZGuZO5WD8YIYWJq8VoqfpJITZ7
-         RHTw==
-X-Gm-Message-State: AOJu0YxM+cc4TfA9nzT/atOXxVOygTy+54Q/poTDcE272tBKr5lPm9Ii
-        GNPa6retR96xhOjlJCNNfOtUVm01QzN1KTM3wianG9M7K08kkg3ckgDXMcOIA1wHqcIYnWhHdpK
-        SayYB9uT/kHEUfoUqZ68peG4X
-X-Received: by 2002:a17:90a:2e13:b0:263:f9c8:9d9e with SMTP id q19-20020a17090a2e1300b00263f9c89d9emr413736pjd.46.1691115982682;
-        Thu, 03 Aug 2023 19:26:22 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IG0dlagFne501RQWKVeqZVExYIA4sQCa0fB+4YVPJIVXtpybohnWZLPL+iJ14LyqQR4oE1EzA==
-X-Received: by 2002:a17:90a:2e13:b0:263:f9c8:9d9e with SMTP id q19-20020a17090a2e1300b00263f9c89d9emr413724pjd.46.1691115982357;
-        Thu, 03 Aug 2023 19:26:22 -0700 (PDT)
-Received: from [10.72.112.41] ([43.228.180.230])
-        by smtp.gmail.com with ESMTPSA id d4-20020a17090a8d8400b00263fc1ef1aasm3129493pjo.10.2023.08.03.19.26.18
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 03 Aug 2023 19:26:21 -0700 (PDT)
-Message-ID: <71018b94-45a0-3404-d3d0-d9f808a72a00@redhat.com>
-Date:   Fri, 4 Aug 2023 10:26:16 +0800
+        Thu, 3 Aug 2023 22:28:09 -0400
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7290ABA;
+        Thu,  3 Aug 2023 19:28:08 -0700 (PDT)
+Received: from canpemm500009.china.huawei.com (unknown [172.30.72.57])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4RH8jx2h2ZzrRft;
+        Fri,  4 Aug 2023 10:27:01 +0800 (CST)
+Received: from [10.67.102.169] (10.67.102.169) by
+ canpemm500009.china.huawei.com (7.192.105.203) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.27; Fri, 4 Aug 2023 10:28:05 +0800
+CC:     <yangyicong@hisilicon.com>, <chengyou@linux.alibaba.com>,
+        <kaishen@linux.alibaba.com>, <helgaas@kernel.org>,
+        <will@kernel.org>, <baolin.wang@linux.alibaba.com>,
+        <robin.murphy@arm.com>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-pci@vger.kernel.org>, <rdunlap@infradead.org>,
+        <mark.rutland@arm.com>, <zhuo.song@linux.alibaba.com>
+Subject: Re: [PATCH v6 3/4] drivers/perf: add DesignWare PCIe PMU driver
+To:     Shuai Xue <xueshuai@linux.alibaba.com>,
+        Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+References: <20230606074938.97724-1-xueshuai@linux.alibaba.com>
+ <20230606074938.97724-4-xueshuai@linux.alibaba.com>
+ <31e2b012-3a29-d063-842d-e3f7736816e7@huawei.com>
+ <20230727103929.00000544@Huawei.com>
+ <12958abe-4bdb-8532-bf67-8e772ed2a9dd@linux.alibaba.com>
+ <edc056aa-1c53-a31e-087f-6076b795d5cc@huawei.com>
+ <10176239-78c1-e276-e74f-a6e79b9c0751@linux.alibaba.com>
+From:   Yicong Yang <yangyicong@huawei.com>
+Message-ID: <f14c9acd-1549-1a65-4e57-a5e434cbe18d@huawei.com>
+Date:   Fri, 4 Aug 2023 10:28:05 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.11.0
-Subject: Re: [PATCH v8 03/12] ceph: handle idmapped mounts in
- create_request_message()
-To:     Alexander Mikhalitsyn <aleksandr.mikhalitsyn@canonical.com>
-Cc:     brauner@kernel.org, stgraber@ubuntu.com,
-        linux-fsdevel@vger.kernel.org, Jeff Layton <jlayton@kernel.org>,
-        Ilya Dryomov <idryomov@gmail.com>, ceph-devel@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20230803135955.230449-1-aleksandr.mikhalitsyn@canonical.com>
- <20230803135955.230449-4-aleksandr.mikhalitsyn@canonical.com>
-Content-Language: en-US
-From:   Xiubo Li <xiubli@redhat.com>
-In-Reply-To: <20230803135955.230449-4-aleksandr.mikhalitsyn@canonical.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+In-Reply-To: <10176239-78c1-e276-e74f-a6e79b9c0751@linux.alibaba.com>
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Originating-IP: [10.67.102.169]
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+ canpemm500009.china.huawei.com (7.192.105.203)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 2023/8/4 9:39, Shuai Xue wrote:
+> 
+> 
+> On 2023/8/1 19:46, Yicong Yang wrote:
+>> On 2023/7/28 20:41, Shuai Xue wrote:
+>>>
+>>>
+>>> On 2023/7/27 17:39, Jonathan Cameron wrote:
+>>>> On Tue, 6 Jun 2023 23:14:07 +0800
+>>>> Yicong Yang <yangyicong@huawei.com> wrote:
+>>>>
+>>>>> On 2023/6/6 15:49, Shuai Xue wrote:
+>>>>>> This commit adds the PCIe Performance Monitoring Unit (PMU) driver support
+>>>>>> for T-Head Yitian SoC chip. Yitian is based on the Synopsys PCI Express
+>>>>>> Core controller IP which provides statistics feature. The PMU is not a PCIe
+>>>>>> Root Complex integrated End Point(RCiEP) device but only register counters
+>>>>>> provided by each PCIe Root Port.
+>>>>>>
+>>>>>> To facilitate collection of statistics the controller provides the
+>>>>>> following two features for each Root Port:
+>>>>>>
+>>>>>> - Time Based Analysis (RX/TX data throughput and time spent in each
+>>>>>>   low-power LTSSM state)
+>>>>>> - Event counters (Error and Non-Error for lanes)
+>>>>>>
+>>>>>> Note, only one counter for each type and does not overflow interrupt.
+>>>>>>
+>>>>>> This driver adds PMU devices for each PCIe Root Port. And the PMU device is
+>>>>>> named based the BDF of Root Port. For example,
+>>>>>>
+>>>>>>     30:03.0 PCI bridge: Device 1ded:8000 (rev 01)
+>>>>>>
+>>>>>> the PMU device name for this Root Port is dwc_rootport_3018.
+>>>>>>
+>>>>>> Example usage of counting PCIe RX TLP data payload (Units of 16 bytes)::
+>>>>>>
+>>>>>>     $# perf stat -a -e dwc_rootport_3018/Rx_PCIe_TLP_Data_Payload/
+>>>>>>
+>>>>>> average RX bandwidth can be calculated like this:
+>>>>>>
+>>>>>>     PCIe TX Bandwidth = PCIE_TX_DATA * 16B / Measure_Time_Window
+>>>>>>
+>>>>>> Signed-off-by: Shuai Xue <xueshuai@linux.alibaba.com>
+>>>>>> Reported-by: kernel test robot <lkp@intel.com>
+>>>>>> Link: https://lore.kernel.org/oe-kbuild-all/202305170639.XU3djFZX-lkp@intel.com/
+>>>>>> Reviewed-by: Baolin Wang <baolin.wang@linux.alibaba.com>
+>>>>
+>>>> I'll review on top to avoid any duplication with Yicong.
+>>>
+>>> Thank you! It also served as a reminder that I missed Yicong's email. It appears
+>>> that Thunderbird mistakenly moved his email to the junk folder, resulting in me
+>>> overlooking it.
+>>>
+>>>>
+>>>> Note I've cropped the stuff neither of us commented on so it's
+>>>> easier to spot the feedback.
+>>>
+>>> Thank you for noting that. My feedback is replied inline.
+>>>
+>>>>
+>>>> Jonathan
+>>>>
+>>>>>> ---
+>>>>>>  drivers/perf/Kconfig        |   7 +
+>>>>>>  drivers/perf/Makefile       |   1 +
+>>>>>>  drivers/perf/dwc_pcie_pmu.c | 706 ++++++++++++++++++++++++++++++++++++
+>>>>>>  3 files changed, 714 insertions(+)
+>>>>>>  create mode 100644 drivers/perf/dwc_pcie_pmu.c
+>>>>>>
+>>>>>> diff --git a/drivers/perf/Kconfig b/drivers/perf/Kconfig
+>>>>>> index 711f82400086..6ff3921d7a62 100644
+>>>>>> --- a/drivers/perf/Kconfig
+>>>>>> +++ b/drivers/perf/Kconfig
+>>>>>> @@ -209,6 +209,13 @@ config MARVELL_CN10K_DDR_PMU
+>>>>>>  	  Enable perf support for Marvell DDR Performance monitoring
+>>>>>>  	  event on CN10K platform.
+>>>>>>  
+>>>>>> +config DWC_PCIE_PMU
+>>>>>> +	tristate "Enable Synopsys DesignWare PCIe PMU Support"
+>>>>>> +	depends on (ARM64 && PCI)
+>>>>>> +	help
+>>>>>> +	  Enable perf support for Synopsys DesignWare PCIe PMU Performance
+>>>>>> +	  monitoring event on Yitian 710 platform.
+>>>>
+>>>> The documentation kind of implies this isn't platform specific.
+>>>> If some parts are (such as which events exist) then you may want to push
+>>>> that to userspace / perftool with appropriate matching against specific SoC.
+>>>>
+>>>> If it is generic, then change this text to "event on platform including the Yitian 710."
+>>>
+>>> It is generic without any platform specific, so I will change it as you expected.
+>>>
+>>>>
+>>>>>> +
+>>>>>>  source "drivers/perf/arm_cspmu/Kconfig"
+>>>>>>  
+>>>>>>  source "drivers/perf/amlogic/Kconfig"
+>>>>
+>>>>>> new file mode 100644
+>>>>>> index 000000000000..8bfcf6e0662d
+>>>>>> --- /dev/null
+>>>>>> +++ b/drivers/perf/dwc_pcie_pmu.c
+>>>>>> @@ -0,0 +1,706 @@
+>>>>
+>>>> ...
+>>>>
+>>>>>> +
+>>>>>> +struct dwc_pcie_pmu {
+>>>>>> +	struct pci_dev		*pdev;		/* Root Port device */  
+>>>>>
+>>>>> If the root port removed after the probe of this PCIe PMU driver, we'll access the NULL
+>>>>> pointer. I didn't see you hold the root port to avoid the removal.
+>>>
+>>> Do you mean that I should have a reference count of rootport by pci_dev_get() when allocating
+>>> pcie_pmu?
+>>>
+>>>      pcie_pmu->pdev = pci_dev_get();
+>>
+>> It could be one option, but will block the removal of device from userspace. Another option
+>> is to register a PCI bus notifier then on removal/added the driver can get notified and handle
+>> it, for example, remove the related PMU on the removal of the root ports.
+> 
+> I see, but can root port be removed from userspace? I check the hotplug slot interface, no root
+> port is available to power off.
+> 
 
-On 8/3/23 21:59, Alexander Mikhalitsyn wrote:
-> From: Christian Brauner <brauner@kernel.org>
->
-> Inode operations that create a new filesystem object such as ->mknod,
-> ->create, ->mkdir() and others don't take a {g,u}id argument explicitly.
-> Instead the caller's fs{g,u}id is used for the {g,u}id of the new
-> filesystem object.
->
-> In order to ensure that the correct {g,u}id is used map the caller's
-> fs{g,u}id for creation requests. This doesn't require complex changes.
-> It suffices to pass in the relevant idmapping recorded in the request
-> message. If this request message was triggered from an inode operation
-> that creates filesystem objects it will have passed down the relevant
-> idmaping. If this is a request message that was triggered from an inode
-> operation that doens't need to take idmappings into account the initial
-> idmapping is passed down which is an identity mapping.
->
-> This change uses a new cephfs protocol extension CEPHFS_FEATURE_HAS_OWNER_UIDGID
-> which adds two new fields (owner_{u,g}id) to the request head structure.
-> So, we need to ensure that MDS supports it otherwise we need to fail
-> any IO that comes through an idmapped mount because we can't process it
-> in a proper way. MDS server without such an extension will use caller_{u,g}id
-> fields to set a new inode owner UID/GID which is incorrect because caller_{u,g}id
-> values are unmapped. At the same time we can't map these fields with an
-> idmapping as it can break UID/GID-based permission checks logic on the
-> MDS side. This problem was described with a lot of details at [1], [2].
->
-> [1] https://lore.kernel.org/lkml/CAEivzxfw1fHO2TFA4dx3u23ZKK6Q+EThfzuibrhA3RKM=ZOYLg@mail.gmail.com/
-> [2] https://lore.kernel.org/all/20220104140414.155198-3-brauner@kernel.org/
->
-> https://github.com/ceph/ceph/pull/52575
-> https://tracker.ceph.com/issues/62217
->
-> Cc: Xiubo Li <xiubli@redhat.com>
-> Cc: Jeff Layton <jlayton@kernel.org>
-> Cc: Ilya Dryomov <idryomov@gmail.com>
-> Cc: ceph-devel@vger.kernel.org
-> Co-Developed-by: Alexander Mikhalitsyn <aleksandr.mikhalitsyn@canonical.com>
-> Signed-off-by: Christian Brauner <brauner@kernel.org>
-> Signed-off-by: Alexander Mikhalitsyn <aleksandr.mikhalitsyn@canonical.com>
-> ---
-> v7:
-> 	- reworked to use two new fields for owner UID/GID (https://github.com/ceph/ceph/pull/52575)
-> v8:
-> 	- properly handled case when old MDS used with new kernel client
-> ---
->   fs/ceph/mds_client.c         | 46 +++++++++++++++++++++++++++++++++---
->   fs/ceph/mds_client.h         |  5 +++-
->   include/linux/ceph/ceph_fs.h |  4 +++-
->   3 files changed, 50 insertions(+), 5 deletions(-)
->
-> diff --git a/fs/ceph/mds_client.c b/fs/ceph/mds_client.c
-> index 8829f55103da..7d3106d3b726 100644
-> --- a/fs/ceph/mds_client.c
-> +++ b/fs/ceph/mds_client.c
-> @@ -2902,6 +2902,17 @@ static void encode_mclientrequest_tail(void **p, const struct ceph_mds_request *
->   	}
->   }
->   
-> +static inline u16 mds_supported_head_version(struct ceph_mds_session *session)
-> +{
-> +	if (!test_bit(CEPHFS_FEATURE_32BITS_RETRY_FWD, &session->s_features))
-> +		return 1;
-> +
-> +	if (!test_bit(CEPHFS_FEATURE_HAS_OWNER_UIDGID, &session->s_features))
-> +		return 2;
-> +
-> +	return CEPH_MDS_REQUEST_HEAD_VERSION;
-> +}
-> +
->   static struct ceph_mds_request_head_legacy *
->   find_legacy_request_head(void *p, u64 features)
->   {
-> @@ -2923,6 +2934,7 @@ static struct ceph_msg *create_request_message(struct ceph_mds_session *session,
->   {
->   	int mds = session->s_mds;
->   	struct ceph_mds_client *mdsc = session->s_mdsc;
-> +	struct ceph_client *cl = mdsc->fsc->client;
->   	struct ceph_msg *msg;
->   	struct ceph_mds_request_head_legacy *lhead;
->   	const char *path1 = NULL;
-> @@ -2936,7 +2948,7 @@ static struct ceph_msg *create_request_message(struct ceph_mds_session *session,
->   	void *p, *end;
->   	int ret;
->   	bool legacy = !(session->s_con.peer_features & CEPH_FEATURE_FS_BTIME);
-> -	bool old_version = !test_bit(CEPHFS_FEATURE_32BITS_RETRY_FWD, &session->s_features);
-> +	u16 request_head_version = mds_supported_head_version(session);
->   
->   	ret = set_request_path_attr(mdsc, req->r_inode, req->r_dentry,
->   			      req->r_parent, req->r_path1, req->r_ino1.ino,
-> @@ -2977,8 +2989,10 @@ static struct ceph_msg *create_request_message(struct ceph_mds_session *session,
->   	 */
->   	if (legacy)
->   		len = sizeof(struct ceph_mds_request_head_legacy);
-> -	else if (old_version)
-> +	else if (request_head_version == 1)
->   		len = sizeof(struct ceph_mds_request_head_old);
-> +	else if (request_head_version == 2)
-> +		len = offsetofend(struct ceph_mds_request_head, ext_num_fwd);
->   	else
->   		len = sizeof(struct ceph_mds_request_head);
->   
+For hotplug maybe not, but user can remove certian device through sysfs:
 
-This is not what we suppose to. If we do this again and again when 
-adding new members it will make the code very complicated to maintain.
+echo 1 > /sys/bus/pci/devices/<root port>/remove
 
-Once the CEPHFS_FEATURE_32BITS_RETRY_FWD has been supported the ceph 
-should correctly decode it and if CEPHFS_FEATURE_HAS_OWNER_UIDGID is not 
-supported the decoder should skip it directly.
-
-Is the MDS side buggy ? Why you last version didn't work ?
-
-Thanks
-
-- Xiubo
-
-> @@ -3028,6 +3042,16 @@ static struct ceph_msg *create_request_message(struct ceph_mds_session *session,
->   	lhead = find_legacy_request_head(msg->front.iov_base,
->   					 session->s_con.peer_features);
->   
-> +	if ((req->r_mnt_idmap != &nop_mnt_idmap) &&
-> +	    !test_bit(CEPHFS_FEATURE_HAS_OWNER_UIDGID, &session->s_features)) {
-> +		pr_err_ratelimited_client(cl,
-> +			"idmapped mount is used and CEPHFS_FEATURE_HAS_OWNER_UIDGID"
-> +			" is not supported by MDS. Fail request with -EIO.\n");
-> +
-> +		ret = -EIO;
-> +		goto out_err;
-> +	}
-> +
->   	/*
->   	 * The ceph_mds_request_head_legacy didn't contain a version field, and
->   	 * one was added when we moved the message version from 3->4.
-> @@ -3035,17 +3059,33 @@ static struct ceph_msg *create_request_message(struct ceph_mds_session *session,
->   	if (legacy) {
->   		msg->hdr.version = cpu_to_le16(3);
->   		p = msg->front.iov_base + sizeof(*lhead);
-> -	} else if (old_version) {
-> +	} else if (request_head_version == 1) {
->   		struct ceph_mds_request_head_old *ohead = msg->front.iov_base;
->   
->   		msg->hdr.version = cpu_to_le16(4);
->   		ohead->version = cpu_to_le16(1);
->   		p = msg->front.iov_base + sizeof(*ohead);
-> +	} else if (request_head_version == 2) {
-> +		struct ceph_mds_request_head *nhead = msg->front.iov_base;
-> +
-> +		msg->hdr.version = cpu_to_le16(6);
-> +		nhead->version = cpu_to_le16(2);
-> +
-> +		p = msg->front.iov_base + offsetofend(struct ceph_mds_request_head, ext_num_fwd);
->   	} else {
->   		struct ceph_mds_request_head *nhead = msg->front.iov_base;
-> +		kuid_t owner_fsuid;
-> +		kgid_t owner_fsgid;
->   
->   		msg->hdr.version = cpu_to_le16(6);
->   		nhead->version = cpu_to_le16(CEPH_MDS_REQUEST_HEAD_VERSION);
-> +
-> +		owner_fsuid = from_vfsuid(req->r_mnt_idmap, &init_user_ns,
-> +					  VFSUIDT_INIT(req->r_cred->fsuid));
-> +		owner_fsgid = from_vfsgid(req->r_mnt_idmap, &init_user_ns,
-> +					  VFSGIDT_INIT(req->r_cred->fsgid));
-> +		nhead->owner_uid = cpu_to_le32(from_kuid(&init_user_ns, owner_fsuid));
-> +		nhead->owner_gid = cpu_to_le32(from_kgid(&init_user_ns, owner_fsgid));
->   		p = msg->front.iov_base + sizeof(*nhead);
->   	}
->   
-> diff --git a/fs/ceph/mds_client.h b/fs/ceph/mds_client.h
-> index e3bbf3ba8ee8..8f683e8203bd 100644
-> --- a/fs/ceph/mds_client.h
-> +++ b/fs/ceph/mds_client.h
-> @@ -33,8 +33,10 @@ enum ceph_feature_type {
->   	CEPHFS_FEATURE_NOTIFY_SESSION_STATE,
->   	CEPHFS_FEATURE_OP_GETVXATTR,
->   	CEPHFS_FEATURE_32BITS_RETRY_FWD,
-> +	CEPHFS_FEATURE_NEW_SNAPREALM_INFO,
-> +	CEPHFS_FEATURE_HAS_OWNER_UIDGID,
->   
-> -	CEPHFS_FEATURE_MAX = CEPHFS_FEATURE_32BITS_RETRY_FWD,
-> +	CEPHFS_FEATURE_MAX = CEPHFS_FEATURE_HAS_OWNER_UIDGID,
->   };
->   
->   #define CEPHFS_FEATURES_CLIENT_SUPPORTED {	\
-> @@ -49,6 +51,7 @@ enum ceph_feature_type {
->   	CEPHFS_FEATURE_NOTIFY_SESSION_STATE,	\
->   	CEPHFS_FEATURE_OP_GETVXATTR,		\
->   	CEPHFS_FEATURE_32BITS_RETRY_FWD,	\
-> +	CEPHFS_FEATURE_HAS_OWNER_UIDGID,	\
->   }
->   
->   /*
-> diff --git a/include/linux/ceph/ceph_fs.h b/include/linux/ceph/ceph_fs.h
-> index 5f2301ee88bc..6eb83a51341c 100644
-> --- a/include/linux/ceph/ceph_fs.h
-> +++ b/include/linux/ceph/ceph_fs.h
-> @@ -499,7 +499,7 @@ struct ceph_mds_request_head_legacy {
->   	union ceph_mds_request_args args;
->   } __attribute__ ((packed));
->   
-> -#define CEPH_MDS_REQUEST_HEAD_VERSION  2
-> +#define CEPH_MDS_REQUEST_HEAD_VERSION  3
->   
->   struct ceph_mds_request_head_old {
->   	__le16 version;                /* struct version */
-> @@ -530,6 +530,8 @@ struct ceph_mds_request_head {
->   
->   	__le32 ext_num_retry;          /* new count retry attempts */
->   	__le32 ext_num_fwd;            /* new count fwd attempts */
-> +
-> +	__le32 owner_uid, owner_gid;   /* used for OPs which create inodes */
->   } __attribute__ ((packed));
->   
->   /* cap/lease release record */
-
+Thanks.
