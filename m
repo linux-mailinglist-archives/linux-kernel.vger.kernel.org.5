@@ -2,92 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 844557703C3
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 17:01:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C616F7703C5
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Aug 2023 17:02:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230458AbjHDPBu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Aug 2023 11:01:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42738 "EHLO
+        id S231266AbjHDPB6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Aug 2023 11:01:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42768 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229560AbjHDPBs (ORCPT
+        with ESMTP id S231233AbjHDPBz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Aug 2023 11:01:48 -0400
-Received: from mx.skole.hr (mx1.hosting.skole.hr [161.53.165.185])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04636AC;
-        Fri,  4 Aug 2023 08:01:45 -0700 (PDT)
-Received: from mx1.hosting.skole.hr (localhost.localdomain [127.0.0.1])
-        by mx.skole.hr (mx.skole.hr) with ESMTP id BDAB483DA2;
-        Fri,  4 Aug 2023 17:01:43 +0200 (CEST)
-From:   =?utf-8?q?Duje_Mihanovi=C4=87?= <duje.mihanovic@skole.hr>
-Date:   Fri, 04 Aug 2023 17:00:40 +0200
-Subject: [PATCH] arm: marvell: Fix maxium->maxim typo for brownstone dts
+        Fri, 4 Aug 2023 11:01:55 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01D1649C3;
+        Fri,  4 Aug 2023 08:01:53 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 8426062054;
+        Fri,  4 Aug 2023 15:01:53 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6D386C433C8;
+        Fri,  4 Aug 2023 15:01:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1691161312;
+        bh=XzhhEA7oTzXvKetJnMrwnsbo18Deetnq4E9+kiTDjdA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=QklkaIhP947uicRPaLPusl7/4oVfcZGcnu0Dia0iDsosHXdRgTxIEs21geeHfyacL
+         C6tsdb1r65ftfCJNSlawG8DijUivrepiUxJhLj5Lxysmvo8BT2vjDVnz12Z7tne5u4
+         Q02w4it9AwFF2KnoZESfM6RysuwbJ61btJV48pFQ=
+Date:   Fri, 4 Aug 2023 17:01:50 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Maxime Ripard <mripard@kernel.org>
+Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
+        Brendan Higgins <brendan.higgins@linux.dev>,
+        David Gow <davidgow@google.com>,
+        linux-kselftest@vger.kernel.org, kunit-dev@googlegroups.com,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 0/3] drivers: base: Add tests showing devm handling
+ inconsistencies
+Message-ID: <2023080416-suspend-cattail-f048@gregkh>
+References: <20230720-kunit-devm-inconsistencies-test-v3-0-6aa7e074f373@kernel.org>
+ <xlb7rwyg5j4hk6afqssxniprn72goxv4avjzjrs3oc3nvfhbsa@fn4amdp6dkx5>
+ <2023073131-glimmer-both-05b6@gregkh>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-Message-Id: <20230804-brownstone-typo-fix-v1-1-4832d84c0509@skole.hr>
-X-B4-Tracking: v=1; b=H4sIAJcSzWQC/x2MywqAIBAAfyX23IKWmfQr0aFyq72oaPQg+vek4
- wzMPJAoMiXoigciHZzYuwyyLGDeRrcSss0MlahqYYTCKfrTpd07wv0OHhe+cGkmqWfVWqMbyGW
- IlPV/7Yf3/QBAwLDpZQAAAA==
-To:     Lubomir Rintel <lkundrak@v3.sk>, Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>
-Cc:     linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        =?utf-8?q?Duje_Mihanovi=C4=87?= <duje.mihanovic@skole.hr>
-X-Mailer: b4 0.12.3
-X-Developer-Signature: v=1; a=openpgp-sha256; l=920;
- i=duje.mihanovic@skole.hr; h=from:subject:message-id;
- bh=BzBGNFzIsGV0WTqakdf4OEopghd/zw0ZcjsFp1vPeY0=;
- b=owEBbQKS/ZANAwAIAZoRnrBCLZbhAcsmYgBkzRKmPoPQxgn2Ah22tj4dcKdsa+y4W5vfKtiw2
- 4gPAglBKTKJAjMEAAEIAB0WIQRT351NnD/hEPs2LXiaEZ6wQi2W4QUCZM0SpgAKCRCaEZ6wQi2W
- 4R19D/9cQJx6W4yZ76Yv4pAWMZdjZhnIkCSvHLLqQywWLOFoljmbM67XxmWCbdsPGjab9PkRxGC
- JELau3UO6UFw+FTClYJ8HsoIQME5q/h6hPHqhrrbpPXa9x5DRcjuaoAqXFYnaaX6mI71nKnUcOL
- PcBUCNXmNLexBzF6N4QvHBFmFqzxbSvNVgJOThf+WETD/1outLmlgY85GNLYE7v7Be/k4sOUjHi
- /Y42LHjXhV4h+VDcf4LCBh4LvXpvcnXDKS3ybTP9GW8gAaCoXDDx8IzMNA1LIJEQTadKcIsmVKY
- QIxiXR54Jxy3mOhwhk41CcZlfnvZAJ3PxttkO27d41EXk4sHNLdDLxZhGeBdRN1ooRffMmzXrZh
- ++pKnHWzCpx0WF1Ihjd1DPJsSanOUc0ZJd9IbPvO+4maokxDkBwJbIkMqBRm82/VEn9pUzg2aR+
- VqtGC2KEsgwRHIzG3LXy3DSCZKhJvQC7Oc8zl8G5+Tvzh8EIc/9BySFWxyBu6yaaldaaHZqWLda
- aTxo/ohqp5rRkrQg40fMt5GmGCD0gL3+UWlljggf06QDs94Dt7YJjCVeCISb6+zP2Dl77O77p5G
- bArng0AIKoicfMgvAIye5seGHSYuXL4m6HY8+SFV7sxpS1aPf8dOPMx82kEproeddxButqY3sYe
- Yp1mzt4fGc5RyXQ==
-X-Developer-Key: i=duje.mihanovic@skole.hr; a=openpgp;
- fpr=53DF9D4D9C3FE110FB362D789A119EB0422D96E1
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <2023073131-glimmer-both-05b6@gregkh>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix an obvious spelling error in the PMIC compatible in the MMP2
-Brownstone DTS file.
+On Mon, Jul 31, 2023 at 09:28:47AM +0200, Greg Kroah-Hartman wrote:
+> On Mon, Jul 31, 2023 at 08:34:03AM +0200, Maxime Ripard wrote:
+> > On Thu, Jul 20, 2023 at 02:45:06PM +0200, Maxime Ripard wrote:
+> > > Hi,
+> > > 
+> > > This follows the discussion here:
+> > > https://lore.kernel.org/linux-kselftest/20230324123157.bbwvfq4gsxnlnfwb@houat/
+> > > 
+> > > This shows a couple of inconsistencies with regard to how device-managed
+> > > resources are cleaned up. Basically, devm resources will only be cleaned up
+> > > if the device is attached to a bus and bound to a driver. Failing any of
+> > > these cases, a call to device_unregister will not end up in the devm
+> > > resources being released.
+> > > 
+> > > We had to work around it in DRM to provide helpers to create a device for
+> > > kunit tests, but the current discussion around creating similar, generic,
+> > > helpers for kunit resumed interest in fixing this.
+> > > 
+> > > This can be tested using the command:
+> > > ./tools/testing/kunit/kunit.py run --kunitconfig=drivers/base/test/
+> > > 
+> > > I added the fix David suggested back in that discussion which does fix
+> > > the tests. The SoB is missing, since David didn't provide it back then.
+> > > 
+> > > Let me know what you think,
+> > > Maxime
+> > > 
+> > > Signed-off-by: Maxime Ripard <mripard@kernel.org>
+> > 
+> > Ping?
+> 
+> It's in my review queue, still trying to catch up...
 
-Signed-off-by: Duje Mihanović <duje.mihanovic@skole.hr>
----
- arch/arm/boot/dts/marvell/mmp2-brownstone.dts | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+I didn't make it here this week, sorry.  I kind of worry about encoding
+the current "odd" functionality in a test as being the correct thing,
+but will look at it closer next week.
 
-diff --git a/arch/arm/boot/dts/marvell/mmp2-brownstone.dts b/arch/arm/boot/dts/marvell/mmp2-brownstone.dts
-index 04f1ae1382e7..bc64348b8218 100644
---- a/arch/arm/boot/dts/marvell/mmp2-brownstone.dts
-+++ b/arch/arm/boot/dts/marvell/mmp2-brownstone.dts
-@@ -28,7 +28,7 @@ &uart3 {
- &twsi1 {
- 	status = "okay";
- 	pmic: max8925@3c {
--		compatible = "maxium,max8925";
-+		compatible = "maxim,max8925";
- 		reg = <0x3c>;
- 		interrupts = <1>;
- 		interrupt-parent = <&intcmux4>;
+thanks,
 
----
-base-commit: 5d0c230f1de8c7515b6567d9afba1f196fb4e2f4
-change-id: 20230804-brownstone-typo-fix-f5b16c47d865
-
-Best regards,
--- 
-Duje Mihanović <duje.mihanovic@skole.hr>
-
-
+greg k-h
