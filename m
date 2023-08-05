@@ -2,50 +2,46 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C9F4771173
-	for <lists+linux-kernel@lfdr.de>; Sat,  5 Aug 2023 20:31:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5BD7C771175
+	for <lists+linux-kernel@lfdr.de>; Sat,  5 Aug 2023 20:32:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230035AbjHESbE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 5 Aug 2023 14:31:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42788 "EHLO
+        id S230053AbjHEScc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 5 Aug 2023 14:32:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43202 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229441AbjHESbC (ORCPT
+        with ESMTP id S229441AbjHEScb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 5 Aug 2023 14:31:02 -0400
+        Sat, 5 Aug 2023 14:32:31 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BFBDDB7;
-        Sat,  5 Aug 2023 11:31:01 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 973AEB7;
+        Sat,  5 Aug 2023 11:32:30 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 549BB60DEC;
-        Sat,  5 Aug 2023 18:31:01 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5C6F2C433C7;
-        Sat,  5 Aug 2023 18:30:56 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 2CAB560DEC;
+        Sat,  5 Aug 2023 18:32:30 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id F2389C433C8;
+        Sat,  5 Aug 2023 18:32:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691260260;
-        bh=8A0dIW8Ncx95axIcP4Bjov5VDnhG33vLjWhpY8dE0f4=;
+        s=k20201202; t=1691260349;
+        bh=7oEjqHiH3ZxsY9aD7bdSp0q4wcao5/TsHCf19gInELM=;
         h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=i5PiXd4rnGVWyam+yeyRvqSbBy3qYS7ih/44/RmHm2/i2s143mEYoP33L7gw8s7wy
-         OOSTE/BRpZx5rRk3GrKogKm+fHMTc95gdpl5Z+gLtyOIAz/2lpr0zKSGu1I5Tphauh
-         1jJaStj2FWU5/6DSrabMJe/8M3H/dNCmL/h0fqAuqK3ozaDcXWsBPsTHJ2OwrTxjsn
-         Cn2IhSjU+iJNBwb4KRkV/OP8ilu5COn1KNfLDuoaWvPHpXdHYv5AXaCCt7yduvSKJ1
-         sX2ZqPsH1bl8DJDr+VLIIx72d7IPCfVJWMmIU4BNmLyXvcCEM/XCbqdZvm9hM5DKI/
-         nmA4Gw5RZdd1Q==
-Date:   Sat, 5 Aug 2023 19:30:52 +0100
+        b=UVySTPZXrhV3SIF9pdsZ6b7XC6pPLl0joI1lY9j/3DSD8WtDJKfOAb6ggsjntbJgi
+         A39jd0Z4Ru9WDuicw11woYCyzj7FHORGs80l+5OFazyTEdFoZrywT8PRNL1db+e8Vs
+         E11a9v8LSrTrlM0DcxxAPzm3MWq0D7luLLtD5k3F+58iXTEx6+0mETQsKgJS9rp2r4
+         Y5VsXZvBPIFmWbGEOQeErsvin0t2BV+u5zS7JNCcre+fYsc13QkbJe8H1B6R89btj7
+         /k8+8eP6OT70czKA1xwREsP9i4+qIS5dhXf9SyVegf4NTk+n6rRpwpgCeexCf61ZvA
+         5XMRucjbwqW3w==
+Date:   Sat, 5 Aug 2023 19:32:23 +0100
 From:   Jonathan Cameron <jic23@kernel.org>
-To:     Andrei Coardos <aboutphysycs@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-iio@vger.kernel.org, alexandre.torgue@foss.st.com,
-        mcoquelin.stm32@gmail.com, lars@metafoo.de,
-        Alexandru Ardelean <alex@shruggie.ro>
-Subject: Re: [PATCH v2] iio: trigger: stm32-lptimer-trigger: remove unneeded
- platform_set_drvdata()
-Message-ID: <20230805193052.690c87e8@jic23-huawei>
-In-Reply-To: <20230802133509.29381-1-aboutphysycs@gmail.com>
-References: <20230802133509.29381-1-aboutphysycs@gmail.com>
+To:     Ramona Bolboaca <ramona.bolboaca@analog.com>
+Cc:     <nuno.sa@analog.com>, <linux-iio@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v3 0/3] Add new channels for adis16475
+Message-ID: <20230805193223.6bbc5522@jic23-huawei>
+In-Reply-To: <20230804064559.47192-1-ramona.bolboaca@analog.com>
+References: <20230804064559.47192-1-ramona.bolboaca@analog.com>
 X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
@@ -60,47 +56,31 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed,  2 Aug 2023 16:35:09 +0300
-Andrei Coardos <aboutphysycs@gmail.com> wrote:
+On Fri, 4 Aug 2023 09:45:56 +0300
+Ramona Bolboaca <ramona.bolboaca@analog.com> wrote:
 
-> This function call was found to be unnecessary as there is no equivalent
-> platform_get_drvdata() call to access the private data of the driver. Also,
-> the private data is defined in this driver, so there is no risk of it being
-> accessed outside of this driver file.
-> 
-> Reviewed-by: Alexandru Ardelean <alex@shruggie.ro>
-> Signed-off-by: Andrei Coardos <aboutphysycs@gmail.com>
-> ---
-> 
-> Changelog V1->V2:
-> 
-> * https://lore.kernel.org/linux-iio/CAH3L5QpuoDYU6qvWH7_z5Yx0cW2qPMbCA8AFEYAPsiEkSzCiwQ@mail.gmail.com/T/#t
-> * Adjusted the returning values of the function
-> 
-> 
->  drivers/iio/trigger/stm32-lptimer-trigger.c | 6 +-----
->  1 file changed, 1 insertion(+), 5 deletions(-)
-> 
-> diff --git a/drivers/iio/trigger/stm32-lptimer-trigger.c b/drivers/iio/trigger/stm32-lptimer-trigger.c
-> index df2416e33375..ab1cc6a05f26 100644
-> --- a/drivers/iio/trigger/stm32-lptimer-trigger.c
-> +++ b/drivers/iio/trigger/stm32-lptimer-trigger.c
-> @@ -88,11 +88,7 @@ static int stm32_lptim_trigger_probe(struct platform_device *pdev)
->  	priv->dev = &pdev->dev;
->  	priv->trg = stm32_lptim_triggers[index];
->  
-> -	ret = stm32_lptim_setup_trig(priv);
-> -	if (ret)
-> -		return ret;
-> -
-> -	return 0;
-> +	return stm32_lptim_setup_trig(priv);
-Both of us failed to notice ret isn't used any more.  Anyhow, I cleaned that
-up after spotting the build warning.
+> changes in v3:
+>  new patches: 1,2 which add IIO_DELTA_ANGL and IIO_DELTA_VELOCITY channel types
+>  patch3: 
+>   - added new flag for presence of delta measuremets in burst data
+>   - removed available scan mask, a simple check is performed in
+>   adis16475_update_scan_mode to see if the scan mask is valid and to configure
+>   the burst data selection based on the scan mask.
 
-Jonathan
+Not that it hugely matters as they don't end up in the git record, but good to
+spell check cover letters (I often forget to do so as well!)
 
->  }
->  
->  static const struct of_device_id stm32_lptim_trig_of_match[] = {
+> 
+> Ramona Bolboaca (3):
+>   iio: Add IIO_DELTA_ANGL channel type
+>   iio: Add IIO_DELTA_VELOCITY channel type
+>   iio: imu: adis16475.c: Add delta angle and delta velocity channels
+> 
+>  Documentation/ABI/testing/sysfs-bus-iio |  29 +++++
+>  drivers/iio/imu/adis16475.c             | 165 +++++++++++++++++++++---
+>  drivers/iio/industrialio-core.c         |   2 +
+>  include/uapi/linux/iio/types.h          |   2 +
+>  tools/iio/iio_event_monitor.c           |   4 +
+>  5 files changed, 183 insertions(+), 19 deletions(-)
+> 
 
