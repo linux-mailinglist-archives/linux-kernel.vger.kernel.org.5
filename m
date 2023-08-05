@@ -2,78 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 212EC770D2C
-	for <lists+linux-kernel@lfdr.de>; Sat,  5 Aug 2023 03:42:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 650C7770D2A
+	for <lists+linux-kernel@lfdr.de>; Sat,  5 Aug 2023 03:42:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229662AbjHEBml (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Aug 2023 21:42:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54064 "EHLO
+        id S229655AbjHEBmj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Aug 2023 21:42:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54060 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229633AbjHEBmi (ORCPT
+        with ESMTP id S229560AbjHEBmi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 4 Aug 2023 21:42:38 -0400
-Received: from mail-yw1-x112c.google.com (mail-yw1-x112c.google.com [IPv6:2607:f8b0:4864:20::112c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A3434EE2
-        for <linux-kernel@vger.kernel.org>; Fri,  4 Aug 2023 18:42:37 -0700 (PDT)
-Received: by mail-yw1-x112c.google.com with SMTP id 00721157ae682-5860c7fc2fcso30469717b3.2
-        for <linux-kernel@vger.kernel.org>; Fri, 04 Aug 2023 18:42:37 -0700 (PDT)
+Received: from mail-oa1-x2c.google.com (mail-oa1-x2c.google.com [IPv6:2001:4860:4864:20::2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F05A8E72
+        for <linux-kernel@vger.kernel.org>; Fri,  4 Aug 2023 18:42:36 -0700 (PDT)
+Received: by mail-oa1-x2c.google.com with SMTP id 586e51a60fabf-1bb590d5cc0so1673583fac.1
+        for <linux-kernel@vger.kernel.org>; Fri, 04 Aug 2023 18:42:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1691199756; x=1691804556;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=+rSm29+3cw5ZqZkXj3qFSUuwbm7CIlxZaN5vcndHFEY=;
-        b=plN7LmsfHyvXpPp/HAgS7nXgIXteE8264IDa/o2tjDOX8unsmYk7EojQmTU5cUe+jV
-         cjliykudifFvc7dLk6/DwgOH7+9X4MDhzMIsMQm/onYSQqKdwNZX8UqVTYKuJYl6Ha+O
-         9WZhXR18J7XAaXbGAAwEXZ6ix0+UBKlzsTvo5jb05KSoRLL7qXvNBl5pNC1d6tXmVHMW
-         SXIZLO8BP/DYmu5uEYaOUv39DLoLQlpwPV7BHp0dSXWIa4usOAk1N8w9mKX5V2IkcGwp
-         8LnltCq2ELwZcpwu4a4wWAkmF+JXVmG8o9gLjlgrYUu/NaekCF94WvOvLo4XO9zaSpD4
-         kw3g==
+        d=gmail.com; s=20221208; t=1691199756; x=1691804556;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=SR4+0lK8VMa7xEJXrkPeazYWkv8MbM9OkffI+Wr4AlU=;
+        b=MT7P9SzDvq3ZHRNDZExMw50zHVv9hnPu4zmqDXEEci98q5btHQOIQb0/T/ASjxgoYK
+         u5OtHfy3UJNc36TeWj/1Z45/wC/4qV7nnb8Vdy5lbtVtkimaN803ZsGYDncvjP3GMtSF
+         OoRYkO6xzMcDYjFIcwTOFsyd+ISJt5GjXo5lHD9os9qWQaaAYWR1MIlDrqF0eQHGTiCc
+         A1r5UcE8FXCgIk0dFctLYA6VUxpqty2cpIGm3/tf7DnWeFhEF1djbAvVqxuoEM4GNacg
+         N+Ht7qhleRaT90+f7gW0OEg0zpgYHOONBaIwOOTZZXHD/tpvvR3rRSUySFEe/W+5DhtM
+         FkAA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20221208; t=1691199756; x=1691804556;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=+rSm29+3cw5ZqZkXj3qFSUuwbm7CIlxZaN5vcndHFEY=;
-        b=RmIf6McExoIHd7JnSI0lhP6oE0cNTZznRJPITRLnt5uTTKS1Kq57mQBCTGtFrZNnKS
-         tIs9WYy+ulSXYVNEh6QejxU8v2iIassW1qR4mRaNQIe6wj1QpOf73lEiQCIcsWl5UGFL
-         nkQUkiWBAURVU3QEMpUBK4MCVIpC60PYhVezhHjVx6rebi2515OSEilRghSWKmyXfrLI
-         +j4S8btBiPAdM/E1HlHsVGEVBH1OqQuRfmZVIaOv3VkTSSoOCKpHxahCZ1YlDbYMwvmr
-         zJRbpGO7+r3Pckm+Z1r2n4vRDpPJeZ9YD4sNOTmaJLLnizskj4qdGZF12Gv5fZqCeQoI
-         039Q==
-X-Gm-Message-State: AOJu0YzDOWF+ukv3JO6R0L1IoIS+Khw0kUk7hbhlG7x4olIPpLMNAQfA
-        bwuAbic4lbYb+lxyZedPhJIERK84DHl2r8QhZ0XfbA==
-X-Google-Smtp-Source: AGHT+IG/HG+1FkEX7JGdDxDWOldixEM0zkMBonCbqf9PfeycEQrUJ/6TiOpqPkR0mOG06UahG1Vw84tdIhU/dMHaqDg=
-X-Received: by 2002:a0d:db41:0:b0:570:2568:15e with SMTP id
- d62-20020a0ddb41000000b005702568015emr3945027ywe.43.1691199756040; Fri, 04
- Aug 2023 18:42:36 -0700 (PDT)
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=SR4+0lK8VMa7xEJXrkPeazYWkv8MbM9OkffI+Wr4AlU=;
+        b=llu3cMkFYWjSZgl8HOiOb9o2JfCaizp+gsICODOk5WjIXwYRwBX+svPGeMUCBXIrQ2
+         hcA7IL/u5aC4aGxl14snIXjkKV14AlKjmE6T5TLWOTDdfpvkwtiJripplHwAxs1WEPtk
+         tafmCSPnoeVzRkdQKXB5wQazjvEtgnZFVN3PO8/l7C7o7qEOkCzQtlfY+fAoEXb9IPjj
+         uwnaCj/orYxMtc8nm8SC2RfiQBGkVSBjEcjoDzJBIi31hW2V+Q78M+5PVZ2Z5FsZuOkw
+         dRXD2x1+v1ZQiVtN8NgOB751dcjRNx26sSUTIOv/ZQMAMaGFs9sJvLYpWwe3gbf0p4Gt
+         HQEw==
+X-Gm-Message-State: AOJu0YxEahPgGulyndm8fQXkZogicG0ds5oik8hriHCC1RTdYe8X0dkj
+        2uFQCFBzSR7VPquwcT6QROQ=
+X-Google-Smtp-Source: AGHT+IFBWyNqEvS4q0WvesTp6PCfMAaDtxmOs5YBue/bsaJxgXfOd7Kb003+ZuRH1oaq86Bv8XjGAQ==
+X-Received: by 2002:a05:6871:452:b0:1b7:4521:31f with SMTP id e18-20020a056871045200b001b74521031fmr3373967oag.18.1691199756170;
+        Fri, 04 Aug 2023 18:42:36 -0700 (PDT)
+Received: from madhu-kernel (99-145-207-128.lightspeed.austtx.sbcglobal.net. [99.145.207.128])
+        by smtp.gmail.com with ESMTPSA id v3-20020a056870e28300b001b36699bd5fsm1872379oad.35.2023.08.04.18.42.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 04 Aug 2023 18:42:35 -0700 (PDT)
+Date:   Fri, 4 Aug 2023 20:42:34 -0500
+From:   Madhumitha Prabakaran <madhumithabiw@gmail.com>
+To:     vaibhav.sr@gmail.com, mgreer@animalcreek.com, johan@kernel.org,
+        elder@kernel.org, gregkh@linuxfoundation.org,
+        greybus-dev@lists.linaro.org, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org
+Cc:     skhan@linuxfoundation.org, ivan.orlov0322@gmail.com,
+        madhumithabiw@gmail.com
+Subject: [PATCH v2] staging: greybus: Refactor gb_audio_gb_get_topology()
+ into separate calls
+Message-ID: <20230805014234.GA948556@madhu-kernel>
 MIME-Version: 1.0
-References: <20230708191212.4147700-1-surenb@google.com> <20230708191212.4147700-3-surenb@google.com>
- <20230804214620.btgwhsszsd7rh6nf@f> <CAHk-=wiy125k1dBmQFTGpHwiOqEyrD6xnd4xKWfe97H_HodgDA@mail.gmail.com>
- <CAGudoHFsAU_BDCOuz8UgDBLGEM8xg=aUGjaVoqkM_Zvxo2Re_g@mail.gmail.com>
- <CAHk-=wiG9xaVvBJXHqTxtop0=mW9KxPS9C54ED23p59VNEKdWg@mail.gmail.com> <CAGudoHFsxmiezZREyVkrPYBBij3u9SNaxLWipOOPy5S+5pJcZA@mail.gmail.com>
-In-Reply-To: <CAGudoHFsxmiezZREyVkrPYBBij3u9SNaxLWipOOPy5S+5pJcZA@mail.gmail.com>
-From:   Suren Baghdasaryan <surenb@google.com>
-Date:   Fri, 4 Aug 2023 18:42:23 -0700
-Message-ID: <CAJuCfpE6K6x7EKAr2rtW1Gn+1oht6w2qZSZ2bGATfoe8C8fJhA@mail.gmail.com>
-Subject: Re: [PATCH v2 3/3] fork: lock VMAs of the parent process when forking
-To:     Mateusz Guzik <mjguzik@gmail.com>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        akpm@linux-foundation.org, regressions@leemhuis.info,
-        bagasdotme@gmail.com, jacobly.alt@gmail.com, willy@infradead.org,
-        liam.howlett@oracle.com, david@redhat.com, peterx@redhat.com,
-        ldufour@linux.ibm.com, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, linuxppc-dev@lists.ozlabs.org,
-        linux-arm-kernel@lists.infradead.org, gregkh@linuxfoundation.org,
-        regressions@lists.linux.dev, Jiri Slaby <jirislaby@kernel.org>,
-        =?UTF-8?Q?Holger_Hoffst=C3=A4tte?= <holger@applied-asynchrony.com>,
-        stable@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -81,67 +72,121 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 4, 2023 at 6:06=E2=80=AFPM Mateusz Guzik <mjguzik@gmail.com> wr=
-ote:
->
-> On 8/5/23, Linus Torvalds <torvalds@linux-foundation.org> wrote:
-> > On Fri, 4 Aug 2023 at 16:25, Mateusz Guzik <mjguzik@gmail.com> wrote:
-> >>
-> >> I know of these guys, I think they are excluded as is -- they go
-> >> through access_remote_vm, starting with:
-> >>         if (mmap_read_lock_killable(mm))
-> >>                 return 0;
-> >>
-> >> while dup_mmap already write locks the parent's mm.
-> >
-> > Oh, you're only worried about vma_start_write()?
-> >
-> > That's a non-issue. It doesn't take the lock normally, since it starts =
-off
-> > with
-> >
-> >         if (__is_vma_write_locked(vma, &mm_lock_seq))
-> >                 return;
-> >
-> > which catches on the lock sequence number already being set.
-> >
-> > So no extra locking there.
-> >
-> > Well, technically there's extra locking because the code stupidly
-> > doesn't initialize new vma allocations to the right sequence number,
-> > but that was talked about here:
-> >
-> >
-> > https://lore.kernel.org/all/CAHk-=3DwiCrWAoEesBuoGoqqufvesicbGp3cX0LyKg=
-EvsFaZNpDA@mail.gmail.com/
-> >
-> > and it's a separate issue.
-> >
->
-> I'm going to bet one beer this is the issue.
->
-> The patch I'm responding to only consists of adding the call to
-> vma_start_write and claims the 5% slowdown from it, while fixing
-> crashes if the forking process is multithreaded.
->
-> For the fix to work it has to lock something against the parent.
->
->         VMA_ITERATOR(old_vmi, oldmm, 0);
-> [..]
->         for_each_vma(old_vmi, mpnt) {
-> [..]
->                 vma_start_write(mpnt);
->
-> the added line locks an obj in the parent's vm space.
->
-> The problem you linked looks like pessimization for freshly allocated
-> vmas, but that's what is being operated on here.
+Refactor gb_audio_gb_get_topology() into separate calls for better modularity
 
-Sorry, now I'm having trouble understanding the problem you are
-describing. We are locking the parent's vma before copying it and the
-newly created vma is locked before it's added into the vma tree. What
-is the problem then?
+Signed-off-by: Madhumitha Prabakaran <madhumithabiw@gmail.com>
+----
+Changes in v2:
+Include prototype in the /audio_codec.h, as
+Reported-by: kernel test robot <lkp@intel.com>
+Closes: https://lore.kernel.org/oe-kbuild-all/202308050511.y5Yb9otW-lkp@intel.com/
+---
+ drivers/staging/greybus/audio_codec.h |  4 ++
+ drivers/staging/greybus/audio_gb.c    | 67 +++++++++++++++++----------
+ 2 files changed, 46 insertions(+), 25 deletions(-)
 
->
-> --
-> Mateusz Guzik <mjguzik gmail.com>
+diff --git a/drivers/staging/greybus/audio_codec.h b/drivers/staging/greybus/audio_codec.h
+index ce15e800e607..356143f3e241 100644
+--- a/drivers/staging/greybus/audio_codec.h
++++ b/drivers/staging/greybus/audio_codec.h
+@@ -176,7 +176,11 @@ int gbaudio_module_update(struct gbaudio_codec_info *codec,
+ int gbaudio_register_module(struct gbaudio_module_info *module);
+ void gbaudio_unregister_module(struct gbaudio_module_info *module);
+ 
++struct gb_audio_topology *gb_audio_gb_alloc_topology(u16 size);
++
+ /* protocol related */
++int gb_audio_gb_get_topology_size(struct gb_connection *connection,
++                 u16 *size);
+ int gb_audio_gb_get_topology(struct gb_connection *connection,
+ 			     struct gb_audio_topology **topology);
+ int gb_audio_gb_get_control(struct gb_connection *connection,
+diff --git a/drivers/staging/greybus/audio_gb.c b/drivers/staging/greybus/audio_gb.c
+index 9d8994fdb41a..a48ddadd6f1e 100644
+--- a/drivers/staging/greybus/audio_gb.c
++++ b/drivers/staging/greybus/audio_gb.c
+@@ -8,39 +8,56 @@
+ #include <linux/greybus.h>
+ #include "audio_codec.h"
+ 
+-/* TODO: Split into separate calls */
+-int gb_audio_gb_get_topology(struct gb_connection *connection,
+-			     struct gb_audio_topology **topology)
++int gb_audio_gb_get_topology_size(struct gb_connection *connection, u16 *size)
+ {
+-	struct gb_audio_get_topology_size_response size_resp;
+-	struct gb_audio_topology *topo;
+-	u16 size;
+-	int ret;
++    struct gb_audio_get_topology_size_response size_resp;
++    int ret;
+ 
+-	ret = gb_operation_sync(connection, GB_AUDIO_TYPE_GET_TOPOLOGY_SIZE,
+-				NULL, 0, &size_resp, sizeof(size_resp));
+-	if (ret)
+-		return ret;
++    ret = gb_operation_sync(connection, GB_AUDIO_TYPE_GET_TOPOLOGY_SIZE,
++                            NULL, 0, &size_resp, sizeof(size_resp));
++    if (ret)
++        return ret;
+ 
+-	size = le16_to_cpu(size_resp.size);
+-	if (size < sizeof(*topo))
+-		return -ENODATA;
++    *size = le16_to_cpu(size_resp.size);
++    return 0;
++}
+ 
+-	topo = kzalloc(size, GFP_KERNEL);
+-	if (!topo)
+-		return -ENOMEM;
++struct gb_audio_topology *gb_audio_gb_alloc_topology(u16 size)
++{
++    struct gb_audio_topology *topo;
+ 
+-	ret = gb_operation_sync(connection, GB_AUDIO_TYPE_GET_TOPOLOGY, NULL, 0,
+-				topo, size);
+-	if (ret) {
+-		kfree(topo);
+-		return ret;
+-	}
++    if (size < sizeof(struct gb_audio_topology))
++        return NULL;
+ 
+-	*topology = topo;
++    topo = kzalloc(size, GFP_KERNEL);
++    return topo;
++}
+ 
+-	return 0;
++int gb_audio_gb_get_topology(struct gb_connection *connection,
++                             struct gb_audio_topology **topology)
++{
++    u16 size;
++    int ret;
++
++    ret = gb_audio_gb_get_topology_size(connection, &size);
++    if (ret)
++        return ret;
++
++    *topology = gb_audio_gb_alloc_topology(size);
++    if (!*topology)
++        return -ENOMEM;
++
++    ret = gb_operation_sync(connection, GB_AUDIO_TYPE_GET_TOPOLOGY,
++                            NULL, 0, *topology, size);
++    if (ret) {
++        kfree(*topology);
++        *topology = NULL;
++        return ret;
++    }
++
++    return 0;
+ }
++
+ EXPORT_SYMBOL_GPL(gb_audio_gb_get_topology);
+ 
+ int gb_audio_gb_get_control(struct gb_connection *connection,
+-- 
+2.25.1
+
