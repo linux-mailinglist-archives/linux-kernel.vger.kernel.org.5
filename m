@@ -2,80 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F3861770F9C
-	for <lists+linux-kernel@lfdr.de>; Sat,  5 Aug 2023 14:26:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 523E8770F9F
+	for <lists+linux-kernel@lfdr.de>; Sat,  5 Aug 2023 14:26:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229684AbjHEM0E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 5 Aug 2023 08:26:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60946 "EHLO
+        id S229786AbjHEM04 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 5 Aug 2023 08:26:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33100 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229592AbjHEM0D (ORCPT
+        with ESMTP id S229763AbjHEM0y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 5 Aug 2023 08:26:03 -0400
-Received: from mail-lj1-x232.google.com (mail-lj1-x232.google.com [IPv6:2a00:1450:4864:20::232])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E58344BD
-        for <linux-kernel@vger.kernel.org>; Sat,  5 Aug 2023 05:26:01 -0700 (PDT)
-Received: by mail-lj1-x232.google.com with SMTP id 38308e7fff4ca-2b9b6e943ebso49560351fa.1
-        for <linux-kernel@vger.kernel.org>; Sat, 05 Aug 2023 05:26:01 -0700 (PDT)
+        Sat, 5 Aug 2023 08:26:54 -0400
+Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5DFE344BD
+        for <linux-kernel@vger.kernel.org>; Sat,  5 Aug 2023 05:26:51 -0700 (PDT)
+Received: by mail-lf1-x12c.google.com with SMTP id 2adb3069b0e04-4fe0c566788so4877249e87.0
+        for <linux-kernel@vger.kernel.org>; Sat, 05 Aug 2023 05:26:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1691238359; x=1691843159;
+        d=linaro.org; s=google; t=1691238409; x=1691843209;
         h=cc:to:message-id:content-transfer-encoding:mime-version:subject
          :date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=A4eWoeCmYp6IVivGwjg71IacL2T20MyDYf/pZXRH9Fk=;
-        b=jz5VuA4An3S3PhKJRFu5QtybYmdjjnpP/U8S2UoOsMetF2UzbniPUhWd8q/vALpxh0
-         XLYrJd85yjeiudadqfsYx5Yp3goOXsjg5kXfRCXc8DE0FmzBXIPdPpBOYpLYF6UJe2xm
-         /TMSoDQUmyph+dSvvIFkSfUNzaZgnTGQLTwqVggNarSm2kTwvobinHRzntdAVrTTMtNw
-         F+d9mDQrZZHT2djVoy3MVKqp3jnuLBSgQfLRgit+hZEVxmwMrEKsg4Fvj6Hx/jiS9Tjz
-         obbukVpMr/ILgBi5c4pEYVN7conNiVMM5u4A5gryW33kNGPysSdwLtRpr2S+4jKKOKqb
-         CDjw==
+        bh=2M8seZm4mcc6ofT1Ofdd3q1hIoUcJq7DIb3vYvEj/Gw=;
+        b=s84it7D1VBF8Vl9a0Uln27zK4MOQeBpvNCvZhfdEq4eCNFRbLVQ+29K0pummggDGE7
+         lYr4wyjT1XnbfJu03CqTtOdaUKbYrhTrNLs0lPTLmBYGFCNeyU2ea+tocHQyk4KNAABu
+         naWynlBX7lPP05CdogNUI+A4U7QCMVwnDbNbHqzgo0FFbaFgVYyJZZu9luSockhxZj3p
+         sJI9/o8c0IxvKFEeI/vg2QXWlld6FfqNuNShAfyX18eLKwskN//hU4sgQQI6CUccm6+f
+         TsfzRo4xVP4sccuGyFMLau7maBU0c88Z8qp+kMWqO0pgqOrb1iqx1pItTsAiUzkDv5fF
+         lSqA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691238359; x=1691843159;
+        d=1e100.net; s=20221208; t=1691238409; x=1691843209;
         h=cc:to:message-id:content-transfer-encoding:mime-version:subject
          :date:from:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=A4eWoeCmYp6IVivGwjg71IacL2T20MyDYf/pZXRH9Fk=;
-        b=Y0PiD5o14GICiK0khWmgID5KwlCwT5QbZj4WSkAkXI4vBTAgy9ZyTXNA0vXk23gf1y
-         /mU1hMC9qrnTI43cd57Hi9fgKd9fchs5LVAg1jkIqj7+Uqdrade0Xg0VcBzvLvuEVFPt
-         1631T44upwl8VGcPrAFrSjbxd275qXd0C55HphBpBtfGvMzA7Ah6foOIbPe6eWTTOjp+
-         j5gvjjIWQCHPIujTY6RvnSlCsz91Jy5n2eYTybMlXXabByDrEC4hjn8KQQBaOOYp7aix
-         vqHj4TR8PZr7n/kkThMImLsA2E46qgo+zb9wb3qg6krpkA1b1D/y+31dkuhYy/CobHVZ
-         gM2w==
-X-Gm-Message-State: AOJu0YyiB1XzSHK1dq6sdvb3lBOtX27yny/04sIaC/LZtsyKxoC0PG7W
-        vY3Ui3mOHj4WUuaQNllq4I6H6w==
-X-Google-Smtp-Source: AGHT+IERd83eIBYV9eSa8Fgi0940Ck0DJSJlSaDef6WaMGL+rP1VoFAoIW2n04fWF3ss+3NjG9ZaHQ==
-X-Received: by 2002:a05:6512:3a95:b0:4fe:6ff:dfba with SMTP id q21-20020a0565123a9500b004fe06ffdfbamr693320lfu.1.1691238359288;
-        Sat, 05 Aug 2023 05:25:59 -0700 (PDT)
+        bh=2M8seZm4mcc6ofT1Ofdd3q1hIoUcJq7DIb3vYvEj/Gw=;
+        b=l13sqqRPhKzgMYBANl8FJHEDlYSuKRG3tyg0gLZLJ5BrLfZG1m5w9+vlhz9V2wV4wp
+         3ZgwD6uqrP6/UKN8t3NbAjL9QwgZFYXebR3dLBVwsN/RyFkZObBZXQDBozBoL3fIBI8O
+         wFdMbDxFbZcMOtsG6Lt7IXrcMGy9wfDG2Kv6ZE0UAqHtFnwFNi8vASealqTiex6OVTvU
+         7YdmeBBINbWGE6wNgM3cAmXXTeT1kXFRSYEefvz8q3o5rVZmgEPVmJEtbPIdgQrXOv48
+         YD933PIsCKR/H+jLbIbngX7/9ZSyaxu5bQvMFIH4JpoT0pqHloWVdVTJdPC8lQPZRODN
+         Wqlw==
+X-Gm-Message-State: AOJu0YyEKMFbrr0td9nv7C57u1+n2o6MLkrUYvaPtWFPxV2Gf1Z+dzGd
+        4kmar30BStfehVI65VYc7npdEQ==
+X-Google-Smtp-Source: AGHT+IErYh4c9rU71bIqngSuTGmK5ggEWsMFqsMRbp1hFFu+LISN9wIGxpD2qKWuu6b4MrClJDjoJA==
+X-Received: by 2002:a05:6512:32d1:b0:4fe:c53:1824 with SMTP id f17-20020a05651232d100b004fe0c531824mr3172849lfg.40.1691238409211;
+        Sat, 05 Aug 2023 05:26:49 -0700 (PDT)
 Received: from [192.168.1.101] (abym15.neoplus.adsl.tpnet.pl. [83.9.32.15])
-        by smtp.gmail.com with ESMTPSA id f2-20020ac251a2000000b004fbac2646e3sm739453lfk.195.2023.08.05.05.25.58
+        by smtp.gmail.com with ESMTPSA id b17-20020a056512025100b004fdfd4c1fcesm743376lfo.36.2023.08.05.05.26.47
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 05 Aug 2023 05:25:58 -0700 (PDT)
+        Sat, 05 Aug 2023 05:26:48 -0700 (PDT)
 From:   Konrad Dybcio <konrad.dybcio@linaro.org>
-Date:   Sat, 05 Aug 2023 14:25:58 +0200
-Subject: [PATCH] arm64: dts: qcom: msm8998: Add DPU1 nodes
+Date:   Sat, 05 Aug 2023 14:26:44 +0200
+Subject: [PATCH RESEND] arm64: dts: qcom: msm8998: Add DPU1 nodes
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20230805-topic-8998_dpu-v1-1-0da18d4a3453@linaro.org>
-X-B4-Tracking: v=1; b=H4sIANU/zmQC/x2N0QqEIBAAfyX2uQWzAr1fOSJMt1oIE604iP79l
+Message-Id: <20230805-topic-8998_dpu-v1-1-9d402dc1ecc0@linaro.org>
+X-B4-Tracking: v=1; b=H4sIAANAzmQC/x2N0QqEIBAAfyX2uQWzAr1fOSJMt1oIE604iP79l
  h5nYJgbCmWmAp/qhkwXF96jQFNX4FcXF0IOwqCVbpVRPR57Yo/GWjOGdGIzB9MG3ZGzHiSaXCG
  csot+lSye2yYyZZr5916+w/P8ASNpk9Z1AAAA
-To:     Andy Gross <agross@kernel.org>,
+To:     Marijn Suijten <marijn.suijten@somainline.org>
+Cc:     AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Andy Gross <agross@kernel.org>,
         Bjorn Andersson <andersson@kernel.org>,
         Rob Herring <robh+dt@kernel.org>,
         Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>
-Cc:     Marijn Suijten <marijn.suijten@somainline.org>,
+        Conor Dooley <conor+dt@kernel.org>,
         linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>
+        linux-kernel@vger.kernel.org
 X-Mailer: b4 0.12.2
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1691238358; l=7663;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1691238407; l=8128;
  i=konrad.dybcio@linaro.org; s=20230215; h=from:subject:message-id;
- bh=UgDVEyH7951UxBCmRrbMHbDiHfODaWA2DozHQ31ai1E=;
- b=oaMdOg84PefTay5/oS2KyTCTcl4JfSkad0sY0atPkxRP4aESu78/rMk4ABAVv+tFN591JL2FT
- mOuHwxLlAxJD3Nu1oS5/OBp0e25wCITczfjw9vhz55SpYSajehCu1di
+ bh=fsktV3MvV+Bh5PoQGpZzxl/FKdbfIollspT0iIYrZUw=;
+ b=tTErCaKIhSTZvbClSevYkDescwOCCngYLnEbB7QINQFSdMDnw52BSIPYItZAOTz/vLxJWZ9lK
+ sFhoVjQNSJvBb3HxVgqMCeXBTkgW1JO1uXKEjKL89UfpYH78+Vg8KXn
 X-Developer-Key: i=konrad.dybcio@linaro.org; a=ed25519;
  pk=iclgkYvtl2w05SSXO5EjjSYlhFKsJ+5OSZBjOkQuEms=
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -94,6 +94,19 @@ Add the required nodes to support the display hardware on msm8998.
 
 Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
 [konrad: update the commit msg and AGdR's email, rebase]
+Signed-off-by: Konrad Dybcio <konrad.dybcio@linaro.org>
+---
+resending as I hit ctrl-c..
+
+To: Andy Gross <agross@kernel.org>
+To: Bjorn Andersson <andersson@kernel.org>
+To: Rob Herring <robh+dt@kernel.org>
+To: Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>
+To: Conor Dooley <conor+dt@kernel.org>
+Cc: Marijn Suijten <marijn.suijten@somainline.org>
+Cc: linux-arm-msm@vger.kernel.org
+Cc: devicetree@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org
 Signed-off-by: Konrad Dybcio <konrad.dybcio@linaro.org>
 ---
  arch/arm64/boot/dts/qcom/msm8998.dtsi | 283 +++++++++++++++++++++++++++++++++-
