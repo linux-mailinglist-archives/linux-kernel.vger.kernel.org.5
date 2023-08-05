@@ -2,52 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D0F5B770F47
-	for <lists+linux-kernel@lfdr.de>; Sat,  5 Aug 2023 12:28:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5EB9E770F54
+	for <lists+linux-kernel@lfdr.de>; Sat,  5 Aug 2023 12:43:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229683AbjHEK2u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 5 Aug 2023 06:28:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47290 "EHLO
+        id S229655AbjHEKnC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 5 Aug 2023 06:43:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48870 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229819AbjHEK2q (ORCPT
+        with ESMTP id S229450AbjHEKnA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 5 Aug 2023 06:28:46 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 5B4C649CB
-        for <linux-kernel@vger.kernel.org>; Sat,  5 Aug 2023 03:28:43 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id B78DD1FB;
-        Sat,  5 Aug 2023 03:29:25 -0700 (PDT)
-Received: from [10.57.90.200] (unknown [10.57.90.200])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id AF54B3F5A1;
-        Sat,  5 Aug 2023 03:28:40 -0700 (PDT)
-Message-ID: <a80bdc12-96f9-bdf4-8253-bf0ea305e00d@arm.com>
-Date:   Sat, 5 Aug 2023 11:28:39 +0100
+        Sat, 5 Aug 2023 06:43:00 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5FF94689;
+        Sat,  5 Aug 2023 03:42:59 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 3E96C60C82;
+        Sat,  5 Aug 2023 10:42:59 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 06417C433C7;
+        Sat,  5 Aug 2023 10:42:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1691232178;
+        bh=HjBWjOuejvnkKby6eQoj0qIOEikrbperZEMLEkvwOgg=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=Sq4xInJx6GYuCZyOnm6Qyg/yQAu5+YGvLzeQdws0RsT2IthpF0lGYs9kP+ENLxBOq
+         CK8yKjHyy4WAqzYJJrELI7wpbZawTwXbjyjHCDUpyG7CDyYaqYeWzZSECYnvpAwVX0
+         3mq8PyS8wX33xS8+14xPLoX5Ryel0TRpC6tc2mr696lhafXCWBYh5593l1ZA730AzS
+         8m8yb8fZz50HOXlANwYhxfDfEN2J0Pj+oaChh9mEHqo06dtUqznG2ot2cpL02WSxYC
+         PJjrB1OBZUzpcopwm+C8Ym54aV+Fs/X94coFewb36VwEXplZHBaRiKEwW2hpz7dC1O
+         0EqjnyP7D59dA==
+From:   Christian Brauner <brauner@kernel.org>
+To:     Muhammad Usama Anjum <usama.anjum@collabora.com>
+Cc:     Christian Brauner <brauner@kernel.org>, kernel@collabora.com,
+        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Shuah Khan <shuah@kernel.org>,
+        Alexey Gladkov <legion@kernel.org>
+Subject: Re: (subset) [PATCH 4/6] selftests: fchmodat2: remove duplicate unneeded defines
+Date:   Sat,  5 Aug 2023 12:42:53 +0200
+Message-Id: <20230805-nullrunde-tierreich-0d7ab1332b08@brauner>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20230805073809.1753462-4-usama.anjum@collabora.com>
+References: <20230805073809.1753462-1-usama.anjum@collabora.com> <20230805073809.1753462-4-usama.anjum@collabora.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.13.0
-Subject: Re: [RFC PATCH 0/3] coresight: Support exclude_guest with Feat_TRF
- and nVHE
-To:     Marc Zyngier <maz@kernel.org>, James Clark <james.clark@arm.com>
-Cc:     coresight@lists.linaro.org, linux-arm-kernel@lists.infradead.org,
-        kvmarm@lists.linux.dev, Oliver Upton <oliver.upton@linux.dev>,
-        James Morse <james.morse@arm.com>,
-        Zenghui Yu <yuzenghui@huawei.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Mike Leach <mike.leach@linaro.org>,
-        Leo Yan <leo.yan@linaro.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Rob Herring <robh@kernel.org>, linux-kernel@vger.kernel.org
-References: <20230804101317.460697-1-james.clark@arm.com>
- <86edki62vz.wl-maz@kernel.org>
-From:   Suzuki K Poulose <suzuki.poulose@arm.com>
-In-Reply-To: <86edki62vz.wl-maz@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+Content-Type: text/plain; charset="utf-8"
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1122; i=brauner@kernel.org; h=from:subject:message-id; bh=HjBWjOuejvnkKby6eQoj0qIOEikrbperZEMLEkvwOgg=; b=owGbwMvMwCU28Zj0gdSKO4sYT6slMaScU1/l8TBqf7Tokg+7fr2dNp/TSLA0o25bvODkKz+S+i+4 vl1q1FHKwiDGxSArpsji0G4SLrecp2KzUaYGzBxWJpAhDFycAjCRDFmGP/xXvgfF+Yt5p6RPcnv5lM O595TLY5tdXtOLLheX20/eVMDIcFXQ9/ra+3nnE/mWqcxxfhF158z6WqmQh9zTmv/85TmjxgsA
+X-Developer-Key: i=brauner@kernel.org; a=openpgp; fpr=4880B8C9BD0E5106FC070F4F7B3C391EFEA93624
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -55,53 +60,31 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Marc
-
-On 04/08/2023 20:09, Marc Zyngier wrote:
-> On Fri, 04 Aug 2023 11:13:10 +0100,
-> James Clark <james.clark@arm.com> wrote:
->>
->> Hi,
->>
->> I'm looking for help in testing this and for feedback on whether it's
->> useful to anyone. Testing it requires hardware that has Feat_TRF (v8.4)
->> but no TRBE. This is because TRBE usage is disabled in nVHE guests.
->>
->> I don't currently have any access to any hardware, and the FVP model
->> can only do self hosted trace using TRBE.
->>
->> Currently with nVHE you would always get trace from guests, and
->> filtering out isn't possible without this patchset. In comparison, with
->> VHE guests, they never generate guest trace without [1]. I think the
->> existence of trace rather than lack of could suggest that this change is
->> less useful than [1]. Also the restricted set of hardware that it works
->> on supports that too.
+On Sat, 05 Aug 2023 12:38:02 +0500, Muhammad Usama Anjum wrote:
+> These duplicate defines should automatically be picked up from kernel
+> headers. Use KHDR_INCLUDES to add kernel header files.
 > 
-> It'd be nice to have some sort of feature parity, but it seems like a
-> vanishingly small target of users having access to an ETM sink.
-> 
->>
->> Apart from compilation and checking that the exclude guest settings
->> are correctly programmed on guest switch, this is untested by me.
-> 
-> I'll have a look at the series, but none of my HW fits in this
-> description (my ARMv8.4+ boxes don't have any form of tracing).
-
-While I have your attention, we have another series that manages the
-trace filtering for Guests on VHE, completely within the Coresight etm4x
-driver here [0]. I personally think, it is good to have the guest
-filtering for both nVHE and VHE under the KVM control, like we do
-in this series. I would like your opinion on this.
-
-[0] https://lkml.kernel.org/r/20230804085219.260790-1-james.clark@arm.com
-
-
-Suzuki
-
-
-> 
-> Thanks,
-> 
-> 	M.
 > 
 
+Since the test isn't upstream yet I'm carrying it separately from the
+other patches which will go through the selftest tree.
+
+---
+
+Applied to the vfs.fchmodat2 branch of the vfs/vfs.git tree.
+Patches in the vfs.fchmodat2 branch should appear in linux-next soon.
+
+Please report any outstanding bugs that were missed during review in a
+new review to the original patch series allowing us to drop it.
+
+It's encouraged to provide Acked-bys and Reviewed-bys even though the
+patch has now been applied. If possible patch trailers will be updated.
+
+Note that commit hashes shown below are subject to change due to rebase,
+trailer updates or similar. If in doubt, please check the listed branch.
+
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/vfs/vfs.git
+branch: vfs.fchmodat2
+
+[4/6] selftests: fchmodat2: remove duplicate unneeded defines
+      https://git.kernel.org/vfs/vfs/c/712143795327
