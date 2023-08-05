@@ -2,116 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8FDEC770D15
-	for <lists+linux-kernel@lfdr.de>; Sat,  5 Aug 2023 03:31:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B76AF770D1F
+	for <lists+linux-kernel@lfdr.de>; Sat,  5 Aug 2023 03:36:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229609AbjHEBbl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Aug 2023 21:31:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51904 "EHLO
+        id S229630AbjHEBgv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Aug 2023 21:36:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52690 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229450AbjHEBbi (ORCPT
+        with ESMTP id S229441AbjHEBgt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Aug 2023 21:31:38 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90F0BE72;
-        Fri,  4 Aug 2023 18:31:37 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 25C0E62193;
-        Sat,  5 Aug 2023 01:31:37 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8B4BEC433CC;
-        Sat,  5 Aug 2023 01:31:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691199096;
-        bh=ci8WuP6g2LqliK0OHhqNPGA26G25KgSCEbHqWe0PT68=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=QA3cE8I1zOdVnBlgr6ab50bKaWyj8synF3xXyhjxdE4vBfRvLRXpFLYpvdCRUmIsf
-         8PkIa7yZDIjmG0Tt9ECDlTGPwfNNaDRNi25lzVsAGKvtx+QW8V+cuIL6e0ZYNDJB8M
-         UZ/rYO7JybeG7cPBx82sZS9gx8Vueqth4ZHnQ1+73AaJvXbox93IBMkiP65LRZTsjS
-         uR/EsdNk7ejMyirWMZ2HWttPmg8yvKfk6vrhZ+BtDPjigHAFhTS+nmAHYTx5JVK9Dw
-         79fnWijGBmknBOSqRRp9uu4P4yPy/Xz3rZR9pAEWoc4F9uE7UounFGmwOkBP6+joLo
-         2W0NiY2+BHLCw==
-Received: by mail-ed1-f48.google.com with SMTP id 4fb4d7f45d1cf-5221c6a2d3dso3386720a12.3;
-        Fri, 04 Aug 2023 18:31:36 -0700 (PDT)
-X-Gm-Message-State: AOJu0Yw8EFBS5mG13tPDqW3fx567iZVd44aEnDqHe6ZsOvWIH1i2RgPL
-        xFrakQm0QiC1BaVUefg4vXjwZJ/T8VW8JMwWH5M=
-X-Google-Smtp-Source: AGHT+IFd+UVpJ54Cs2bzLsBO42WkS7CwRLTDvfC4S2+C8McYBhJ44DBsoDX8bvx2T1Y2vcQvTfkpUl3/zFXzIHMGMTc=
-X-Received: by 2002:a50:ee81:0:b0:523:1edf:c6b6 with SMTP id
- f1-20020a50ee81000000b005231edfc6b6mr2011319edr.40.1691199094841; Fri, 04 Aug
- 2023 18:31:34 -0700 (PDT)
+        Fri, 4 Aug 2023 21:36:49 -0400
+Received: from mail-yb1-xb31.google.com (mail-yb1-xb31.google.com [IPv6:2607:f8b0:4864:20::b31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71A3CE72
+        for <linux-kernel@vger.kernel.org>; Fri,  4 Aug 2023 18:36:48 -0700 (PDT)
+Received: by mail-yb1-xb31.google.com with SMTP id 3f1490d57ef6-d16639e16e6so2674010276.3
+        for <linux-kernel@vger.kernel.org>; Fri, 04 Aug 2023 18:36:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1691199407; x=1691804207;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=AujeCo6jm3AYe4qZ6y6dt+l/y9fmf46ls+zy0ks6uBk=;
+        b=bpswymm8/aHd6mYtUujhG2QErdghxkdOBUSisUuXISL43iBt5anSiCY7npzyoUiEp/
+         2r0DThfOtkG+yPEzC58xZLlele5B03sILA+y2PDwjAPMcXtkwUcFy5lrcWm18fIezCd2
+         TvTlOQPRw7trWWi7TFwzUQOVcXl3hZGoUY/y3/OIyQgS+g5h8gNRs0QcE+lMY/pkkoXy
+         Ns1q4mZuMDjIYZNsw7vuvEEABh4IA+p+ZsHCspKeMOXHkfvzh6yntnLUxWpgnw8t77Vi
+         bBEHLKcSkpQzi5wly6AOeCVeTC0b886H1B0C1idctkdvu2YXbxSIRxaC+odXZzrzeWAu
+         h22w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691199407; x=1691804207;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=AujeCo6jm3AYe4qZ6y6dt+l/y9fmf46ls+zy0ks6uBk=;
+        b=Vlgc6llBItZTf8tfWV/GcaHNKkRWURu35WeYKoA+n9oY+yQlpAZT4lZiufY+WwmjfG
+         ZMllJz/cD4RhG7ECBDCzZQND/ovl7hE3XgTIJy9qIfArAJ0553wPqHOa4tRz1jOtNH7A
+         fyfDaJo3E96B4wimGD0S9x3PAf60dwXGq8iDG5lJ4yuu9oVfFuiRYk9okUsY4/fPil32
+         vMYKLAS2Ag60NYhlI4PP4LP4ZMGNkQA3uFcMNQraBiI3xATuTgdOqIGiSEVcdCJO8sSE
+         G3onl/CtTjdnQzPgTS+W8GDpiAI24Qaf83TqlEMB14Mzmw+Xbox6gYfA1OaCNJyd9WEX
+         l8cA==
+X-Gm-Message-State: AOJu0Yz7r/g218sOmw5/SU3bS/thYwBj4IFcR0snWN6LvsOA1Q2qNxHt
+        svSp3O22gfrTw5JcNlIQ2ncrN07JErzsc+e4rVGQUg==
+X-Google-Smtp-Source: AGHT+IFJHUDmRmfkaGOcYBONV1HYLRgCo/dnuTAMETxoZRKS9/hRI1iaTAV07Qp4qriq/KEZCcwC9+dZWAiPFh/72cs=
+X-Received: by 2002:a25:d08:0:b0:d1c:7549:4e8b with SMTP id
+ 8-20020a250d08000000b00d1c75494e8bmr2986579ybn.29.1691199407388; Fri, 04 Aug
+ 2023 18:36:47 -0700 (PDT)
 MIME-Version: 1.0
-References: <cover.1690364259.git.haibo1.xu@intel.com> <35ce2b9f7ca655eb3af13730b1ca9f05b518e08f.1690364259.git.haibo1.xu@intel.com>
- <20230728-879500f157954d849fb303ec@orel> <CAJve8onDLEC1JFdERi098sTmN3-UkwaJ1aJz3CJNYU-GShkEyg@mail.gmail.com>
- <ZMsbXk4JU/Ung7qu@gmail.com> <20230803-5b7e7c0d95597b004764a296@orel>
-In-Reply-To: <20230803-5b7e7c0d95597b004764a296@orel>
-From:   Guo Ren <guoren@kernel.org>
-Date:   Sat, 5 Aug 2023 09:31:23 +0800
-X-Gmail-Original-Message-ID: <CAJF2gTRHGkHnQZNUi6J+xsst0-8CDJxp=79tPj=i_1s2SiW7Hg@mail.gmail.com>
-Message-ID: <CAJF2gTRHGkHnQZNUi6J+xsst0-8CDJxp=79tPj=i_1s2SiW7Hg@mail.gmail.com>
-Subject: Re: [PATCH 1/4] tools: riscv: Add header file csr.h
-To:     Andrew Jones <ajones@ventanamicro.com>
-Cc:     Haibo Xu <xiaobo55x@gmail.com>, Haibo Xu <haibo1.xu@intel.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Anup Patel <anup@brainfault.org>,
-        Atish Patra <atishp@atishpatra.org>,
-        Sean Christopherson <seanjc@google.com>,
-        Vipin Sharma <vipinsh@google.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Colton Lewis <coltonlewis@google.com>,
-        Andrew Jones <andrew.jones@linux.dev>,
-        Vishal Annapurve <vannapurve@google.com>,
-        linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org,
-        kvm@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        kvm-riscv@lists.infradead.org
+References: <20230708191212.4147700-1-surenb@google.com> <20230708191212.4147700-3-surenb@google.com>
+ <20230804214620.btgwhsszsd7rh6nf@f> <CAHk-=wiy125k1dBmQFTGpHwiOqEyrD6xnd4xKWfe97H_HodgDA@mail.gmail.com>
+ <CAGudoHFsAU_BDCOuz8UgDBLGEM8xg=aUGjaVoqkM_Zvxo2Re_g@mail.gmail.com>
+ <CAHk-=wiG9xaVvBJXHqTxtop0=mW9KxPS9C54ED23p59VNEKdWg@mail.gmail.com>
+ <CAJuCfpGWGsh2BRgwcJ7oVHnqZfrtiesvhzomK0ZmxE_KK=R7FA@mail.gmail.com>
+ <CAJuCfpG6BBP+fjV9oyBx3SNiKhiafPzM9vV9bx_goO2aZzAptg@mail.gmail.com>
+ <CAGudoHFrDG6-u-XXEmQoPS2CJ2Wpo4ETwhXc2R=jy78RSYw-Zg@mail.gmail.com>
+ <CAJuCfpHYBqULvwNELO3Gkc0bkKDV7VJxMjvBru4zaAz4WKQNhw@mail.gmail.com> <CAGudoHGm2hbjSG-2kJevF=xGpz=4Sd0m5CjVO8Ntsahqz5NcGA@mail.gmail.com>
+In-Reply-To: <CAGudoHGm2hbjSG-2kJevF=xGpz=4Sd0m5CjVO8Ntsahqz5NcGA@mail.gmail.com>
+From:   Suren Baghdasaryan <surenb@google.com>
+Date:   Fri, 4 Aug 2023 18:36:34 -0700
+Message-ID: <CAJuCfpH0tG8n5AUOqxOnKgXR_ge7rU4dpW3aw0hjOUN99+WXTw@mail.gmail.com>
+Subject: Re: [PATCH v2 3/3] fork: lock VMAs of the parent process when forking
+To:     Mateusz Guzik <mjguzik@gmail.com>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        akpm@linux-foundation.org, regressions@leemhuis.info,
+        bagasdotme@gmail.com, jacobly.alt@gmail.com, willy@infradead.org,
+        liam.howlett@oracle.com, david@redhat.com, peterx@redhat.com,
+        ldufour@linux.ibm.com, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, linuxppc-dev@lists.ozlabs.org,
+        linux-arm-kernel@lists.infradead.org, gregkh@linuxfoundation.org,
+        regressions@lists.linux.dev, Jiri Slaby <jirislaby@kernel.org>,
+        =?UTF-8?Q?Holger_Hoffst=C3=A4tte?= <holger@applied-asynchrony.com>,
+        stable@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 3, 2023 at 3:44=E2=80=AFPM Andrew Jones <ajones@ventanamicro.co=
-m> wrote:
+On Fri, Aug 4, 2023 at 6:17=E2=80=AFPM Mateusz Guzik <mjguzik@gmail.com> wr=
+ote:
 >
-> On Wed, Aug 02, 2023 at 11:13:34PM -0400, Guo Ren wrote:
-> > On Wed, Aug 02, 2023 at 10:05:00AM +0800, Haibo Xu wrote:
-> > > On Fri, Jul 28, 2023 at 5:43=E2=80=AFPM Andrew Jones <ajones@ventanam=
-icro.com> wrote:
-> > > >
-> > > > On Thu, Jul 27, 2023 at 03:20:05PM +0800, Haibo Xu wrote:
-> > > > > Borrow some of the csr definitions and operations from kernel's
-> > > > > arch/riscv/include/asm/csr.h to tools/ for riscv.
-> > > >
-> > > > You should copy the entire file verbatim.
-> > > >
-> > >
-> > > Ok, will copy all the definitions in the original csr.h
-> > Why not include the original one? Maintain the one csr.h is more
-> > comfortable.
+> On 8/5/23, Suren Baghdasaryan <surenb@google.com> wrote:
+> > On Fri, Aug 4, 2023 at 5:49=E2=80=AFPM Mateusz Guzik <mjguzik@gmail.com=
+> wrote:
+> >> However, the other users (that I know of ) go through the mmap
+> >> semaphore to mess with anything which means they will wait for
+> >> dup_mmap to finish (or do their work first). I would be surprised if
+> >> there were any cases which don't take the semaphore, given that it was
+> >> a requirement prior to the vma patchset (unless you patched some to no
+> >> longer need it?). I would guess worst case the semaphore can be added
+> >> if missing.
+> >
+> > No, the only mmap_lock read-lock that is affected is during the page
+> > fault, which is expected.
+> >
 >
-> selftests and other userspace tools can't always compile when including a
-> kernel header without modifying the header in some way. Rather than
-> polluting headers with #ifdeffery, the practice has been to copy necessar=
-y
-> headers to tools/include and modify if necessary.
-Okay, got it.
+> I have difficulty parsing your statement.
+
+I was just saying that vma lock patchset did not touch any other
+mmap_locking paths except for the page fault one where we try to skip
+read-locking mmap_lock.
 
 >
-> Thanks,
-> drew
+> I am saying that any 3rd parties which can trigger page faults already
+> read lock mmap_lock or can be made to do it (and I don't know any case
+> which does not already, but I'm not willing to spend time poking
+> around to make sure). One can consider 3rd parties as not a problem,
+> modulo the audit.
+>
+> Past that there does is no known source of trouble? In my original
+> e-mail I was worried about processes up the chain in ancestry, perhaps
+> some of the state is shared(?) and the locking at hand neuters any
+> problems. I'm guessing this is not necessary.
+>
+> Bottom line though it looks like this will work fine?
+>
+> That said, I'm not going to submit a patch I can't confidently defend.
+> As I did not dig into any of the VMA code and can't be arsed to audit
+> all places which mess with "foreign" mm, I'm definitely not submitting
+> this myself. You are most welcome to write your own variant at your
+> leisure. :)
 
+Ok, I see. I'll need to double check locking when a 3rd party is
+involved. Will post a patch when I'm confident enough it's safe.
+Thanks!
 
-
---=20
-Best Regards
- Guo Ren
+>
+> --
+> Mateusz Guzik <mjguzik gmail.com>
