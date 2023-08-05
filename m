@@ -2,42 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 63CA8771151
-	for <lists+linux-kernel@lfdr.de>; Sat,  5 Aug 2023 20:08:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 68526771158
+	for <lists+linux-kernel@lfdr.de>; Sat,  5 Aug 2023 20:13:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229741AbjHESIl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 5 Aug 2023 14:08:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39150 "EHLO
+        id S229819AbjHESNE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 5 Aug 2023 14:13:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40028 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229481AbjHESIj (ORCPT
+        with ESMTP id S230079AbjHESM6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 5 Aug 2023 14:08:39 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C574619B;
-        Sat,  5 Aug 2023 11:08:38 -0700 (PDT)
+        Sat, 5 Aug 2023 14:12:58 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2506D1BC;
+        Sat,  5 Aug 2023 11:12:58 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 59B9360DB5;
-        Sat,  5 Aug 2023 18:08:38 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CA552C433C7;
-        Sat,  5 Aug 2023 18:08:35 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id B13C660DF5;
+        Sat,  5 Aug 2023 18:12:57 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 43E81C433C8;
+        Sat,  5 Aug 2023 18:12:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691258917;
-        bh=o1T6WnCOl5nls/Z32FQUuI4vIWqJLvZNcazUro6lNio=;
+        s=k20201202; t=1691259177;
+        bh=7Ank85kDcL0zPfhDN0t1xq7zO6IsGA0dtJ/2WUZ+waE=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=oBXocZdCA2osDvHvD8WVyNio/gV6OKzFo9MtHyK/iBf0DY56PO9xJPizOMgKFDOPc
-         dOx6hqB60YygH69+Jtn7OBjJG7RAF0yWkzsx0SYt+cZr9nZRtiHT9yCBb2jWsXddsg
-         pFhgSg4krC+k/HQOV/w7tMEeEnStdR0V+NuQHhr5Eg3EAp10JmgAsNpfj1dN+HCZ9F
-         a6/S/ATA530tyoOV7sxtuD0e+tLBKDRPQIVfBlJO6bsENv4qSr60KE8zDamwCTm1Xr
-         aYSvNj6fQ20QcLuMEiYsnPkwqtjgwCUNgLfzuxMtb6SWcxzrTT6jK+j3GeSvmjOEp8
-         quIqeBavQjmLg==
-Date:   Sat, 5 Aug 2023 11:11:34 -0700
+        b=bb+zTIsNLqu+2SKXjCsSMusMaRcGuy4hU2XQimgUOBNolviY5AnEbYiJR3iX9Y4vH
+         ZiAYiOIYza4yTUqONU/E3IIaMaF46FlcA2hhnUVLDgz/Eq4DNLad9QsnaTQTd220Xr
+         Zm4Qc0Z0rjhtO14N3NGP/6/dDPC4NcgJBSTTOZZNKC8llGvCWaHS5rN2VMxSJclE9D
+         GtsvISqE5RD7ekbWLqldCKgLbcOeJiMcTIe8TcgzAlwdskQ7grG0fRy/JvzbJi6Xo4
+         loKhslDGMwe1yn0wS4Lz7fGkY4fHk3NUO2K3UMsF8PKDwKTZxiwLFS7fu21Rm2gump
+         zqJLaJ3srI9gg==
+Date:   Sat, 5 Aug 2023 11:15:54 -0700
 From:   Bjorn Andersson <andersson@kernel.org>
 To:     Elliot Berman <quic_eberman@quicinc.com>
 Cc:     Alex Elder <elder@linaro.org>,
         Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
         Prakruthi Deepak Heragu <quic_pheragu@quicinc.com>,
         Murali Nalajala <quic_mnalajal@quicinc.com>,
         Trilok Soni <quic_tsoni@quicinc.com>,
@@ -52,185 +54,80 @@ Cc:     Alex Elder <elder@linaro.org>,
         Conor Dooley <conor+dt@kernel.org>,
         Jonathan Corbet <corbet@lwn.net>,
         Bagas Sanjaya <bagasdotme@gmail.com>,
-        Will Deacon <will@kernel.org>, Andy Gross <agross@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
+        Andy Gross <agross@kernel.org>,
         Jassi Brar <jassisinghbrar@gmail.com>,
         linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
         linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
         linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH v14 15/25] virt: gunyah: Add Qualcomm Gunyah platform ops
-Message-ID: <7bpdzvlrdxwqpxor36i4nha5qs4opvnf7tr4sfb7ta3ebl7fdl@c5nylbvtnv5y>
+Subject: Re: [PATCH v14 17/25] virt: gunyah: Translate gh_rm_hyp_resource
+ into gunyah_resource
+Message-ID: <erpdi657m5cwh24ofscunqbs3ko2u2brtyiryg7ealif5n5m4i@35mf55xvv5df>
 References: <20230613172054.3959700-1-quic_eberman@quicinc.com>
- <20230613172054.3959700-16-quic_eberman@quicinc.com>
+ <20230613172054.3959700-18-quic_eberman@quicinc.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230613172054.3959700-16-quic_eberman@quicinc.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <20230613172054.3959700-18-quic_eberman@quicinc.com>
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 13, 2023 at 10:20:43AM -0700, Elliot Berman wrote:
-> Qualcomm platforms have a firmware entity which performs access control
-> to physical pages. Dynamically started Gunyah virtual machines use the
-> QCOM_SCM_RM_MANAGED_VMID for access. Linux thus needs to assign access
-> to the memory used by guest VMs. Gunyah doesn't do this operation for us
-> since it is the current VM (typically VMID_HLOS) delegating the access
-> and not Gunyah itself. Use the Gunyah platform ops to achieve this so
-> that only Qualcomm platforms attempt to make the needed SCM calls.
-> 
-> Reviewed-by: Alex Elder <elder@linaro.org>
-> Co-developed-by: Prakruthi Deepak Heragu <quic_pheragu@quicinc.com>
-> Signed-off-by: Prakruthi Deepak Heragu <quic_pheragu@quicinc.com>
-> Signed-off-by: Elliot Berman <quic_eberman@quicinc.com>
-> ---
->  drivers/virt/gunyah/Kconfig       |  13 +++
->  drivers/virt/gunyah/Makefile      |   1 +
->  drivers/virt/gunyah/gunyah_qcom.c | 153 ++++++++++++++++++++++++++++++
->  3 files changed, 167 insertions(+)
->  create mode 100644 drivers/virt/gunyah/gunyah_qcom.c
-> 
-> diff --git a/drivers/virt/gunyah/Kconfig b/drivers/virt/gunyah/Kconfig
-> index de815189dab6c..0421b751aad4f 100644
-> --- a/drivers/virt/gunyah/Kconfig
-> +++ b/drivers/virt/gunyah/Kconfig
-> @@ -5,6 +5,7 @@ config GUNYAH
->  	depends on ARM64
->  	depends on MAILBOX
->  	select GUNYAH_PLATFORM_HOOKS
-> +	imply GUNYAH_QCOM_PLATFORM if ARCH_QCOM
->  	help
->  	  The Gunyah drivers are the helper interfaces that run in a guest VM
->  	  such as basic inter-VM IPC and signaling mechanisms, and higher level
-> @@ -15,3 +16,15 @@ config GUNYAH
->  
->  config GUNYAH_PLATFORM_HOOKS
->  	tristate
-> +
-> +config GUNYAH_QCOM_PLATFORM
-> +	tristate "Support for Gunyah on Qualcomm platforms"
-> +	depends on GUNYAH
-> +	select GUNYAH_PLATFORM_HOOKS
-> +	select QCOM_SCM
-> +	help
-> +	  Enable support for interacting with Gunyah on Qualcomm
-> +	  platforms. Interaction with Qualcomm firmware requires
-> +	  extra platform-specific support.
-> +
-> +	  Say Y/M here to use Gunyah on Qualcomm platforms.
-> diff --git a/drivers/virt/gunyah/Makefile b/drivers/virt/gunyah/Makefile
-> index 4fbeee521d60a..2aa9ff038ed02 100644
-> --- a/drivers/virt/gunyah/Makefile
-> +++ b/drivers/virt/gunyah/Makefile
-> @@ -1,6 +1,7 @@
->  # SPDX-License-Identifier: GPL-2.0
->  
->  obj-$(CONFIG_GUNYAH_PLATFORM_HOOKS) += gunyah_platform_hooks.o
-> +obj-$(CONFIG_GUNYAH_QCOM_PLATFORM) += gunyah_qcom.o
->  
->  gunyah-y += rsc_mgr.o rsc_mgr_rpc.o vm_mgr.o vm_mgr_mm.o
->  obj-$(CONFIG_GUNYAH) += gunyah.o
-> diff --git a/drivers/virt/gunyah/gunyah_qcom.c b/drivers/virt/gunyah/gunyah_qcom.c
-> new file mode 100644
-> index 0000000000000..f06a598f2e1b3
-> --- /dev/null
-> +++ b/drivers/virt/gunyah/gunyah_qcom.c
-> @@ -0,0 +1,153 @@
-> +// SPDX-License-Identifier: GPL-2.0-only
-> +/*
-> + * Copyright (c) 2023 Qualcomm Innovation Center, Inc. All rights reserved.
-> + */
-> +
-> +#include <linux/arm-smccc.h>
-> +#include <linux/gunyah_rsc_mgr.h>
-> +#include <linux/module.h>
-> +#include <linux/firmware/qcom/qcom_scm.h>
-> +#include <linux/types.h>
-> +#include <linux/uuid.h>
-> +
-> +#define QCOM_SCM_RM_MANAGED_VMID	0x3A
-> +#define QCOM_SCM_MAX_MANAGED_VMID	0x3F
-> +
-> +static int qcom_scm_gh_rm_pre_mem_share(struct gh_rm *rm, struct gh_rm_mem_parcel *mem_parcel)
+On Tue, Jun 13, 2023 at 10:20:45AM -0700, Elliot Berman wrote:
+> diff --git a/drivers/virt/gunyah/rsc_mgr.c b/drivers/virt/gunyah/rsc_mgr.c
+[..]
+> +struct gh_resource *gh_rm_alloc_resource(struct gh_rm *rm, struct gh_rm_hyp_resource *hyp_resource)
 > +{
-> +	struct qcom_scm_vmperm *new_perms;
-> +	u64 src, src_cpy;
-> +	int ret = 0, i, n;
-> +	u16 vmid;
+> +	struct gh_resource *ghrsc;
+> +	int ret;
 > +
-> +	new_perms = kcalloc(mem_parcel->n_acl_entries, sizeof(*new_perms), GFP_KERNEL);
-> +	if (!new_perms)
-> +		return -ENOMEM;
+> +	ghrsc = kzalloc(sizeof(*ghrsc), GFP_KERNEL);
+> +	if (!ghrsc)
+> +		return NULL;
 > +
-> +	for (n = 0; n < mem_parcel->n_acl_entries; n++) {
-> +		vmid = le16_to_cpu(mem_parcel->acl_entries[n].vmid);
-> +		if (vmid <= QCOM_SCM_MAX_MANAGED_VMID)
-> +			new_perms[n].vmid = vmid;
-> +		else
-> +			new_perms[n].vmid = QCOM_SCM_RM_MANAGED_VMID;
-> +		if (mem_parcel->acl_entries[n].perms & GH_RM_ACL_X)
-> +			new_perms[n].perm |= QCOM_SCM_PERM_EXEC;
-> +		if (mem_parcel->acl_entries[n].perms & GH_RM_ACL_W)
-> +			new_perms[n].perm |= QCOM_SCM_PERM_WRITE;
-> +		if (mem_parcel->acl_entries[n].perms & GH_RM_ACL_R)
-> +			new_perms[n].perm |= QCOM_SCM_PERM_READ;
+> +	ghrsc->type = hyp_resource->type;
+> +	ghrsc->capid = le64_to_cpu(hyp_resource->cap_id);
+> +	ghrsc->irq = IRQ_NOTCONNECTED;
+> +	ghrsc->rm_label = le32_to_cpu(hyp_resource->resource_label);
+> +	if (hyp_resource->virq) {
+> +		struct gh_irq_chip_data irq_data = {
+> +			.gh_virq = le32_to_cpu(hyp_resource->virq),
+> +		};
+> +
+> +		ret = irq_domain_alloc_irqs(rm->irq_domain, 1, NUMA_NO_NODE, &irq_data);
+> +		if (ret < 0) {
+> +			dev_err(rm->dev,
+> +				"Failed to allocate interrupt for resource %d label: %d: %d\n",
+> +				ghrsc->type, ghrsc->rm_label, ret);
+> +			kfree(ghrsc);
+> +			return NULL;
+> +		} else {
+
+No need for the else here, the failure case has already returned.
+
+> +			ghrsc->irq = ret;
+> +		}
 > +	}
 > +
-> +	src = BIT_ULL(QCOM_SCM_VMID_HLOS);
-> +
-> +	for (i = 0; i < mem_parcel->n_mem_entries; i++) {
-> +		src_cpy = src;
-> +		ret = qcom_scm_assign_mem(le64_to_cpu(mem_parcel->mem_entries[i].phys_addr),
-> +						le64_to_cpu(mem_parcel->mem_entries[i].size),
-> +						&src_cpy, new_perms, mem_parcel->n_acl_entries);
-> +		if (ret)
-> +			break;
-> +	}
-> +
-> +	if (!ret)
-> +		goto out;
-
-I was going to complain that you don't unroll the assignments on
-failure, but now realized that this "error handling" is backwards and
-actually represents the success case.
-
-Please don't do that, goto error_handling || kfree(new_perms); return 0;
-here instead.
-
-
-That also means that you don't need to zero-initialize ret, because you
-would goto err_reclaim inside the loop.
-
-> +
-> +	src = 0;
-> +	for (n = 0; n < mem_parcel->n_acl_entries; n++) {
-> +		vmid = le16_to_cpu(mem_parcel->acl_entries[n].vmid);
-> +		if (vmid <= QCOM_SCM_MAX_MANAGED_VMID)
-> +			src |= BIT_ULL(vmid);
-> +		else
-> +			src |= BIT_ULL(QCOM_SCM_RM_MANAGED_VMID);
-> +	}
-> +
-> +	new_perms[0].vmid = QCOM_SCM_VMID_HLOS;
-> +
-> +	for (i--; i >= 0; i--) {
-> +		src_cpy = src;
-> +		WARN_ON_ONCE(qcom_scm_assign_mem(
-> +				le64_to_cpu(mem_parcel->mem_entries[i].phys_addr),
-> +				le64_to_cpu(mem_parcel->mem_entries[i].size),
-> +				&src_cpy, new_perms, 1));
-> +	}
-> +
-> +out:
-> +	kfree(new_perms);
-> +	return ret;
+> +	return ghrsc;
 > +}
+[..]
+> diff --git a/include/linux/gunyah.h b/include/linux/gunyah.h
+> index 982e27d10d57f..4b398b59c2c5a 100644
+> --- a/include/linux/gunyah.h
+> +++ b/include/linux/gunyah.h
+> @@ -27,6 +27,9 @@ struct gh_resource {
+>  	enum gh_resource_type type;
+>  	u64 capid;
+>  	unsigned int irq;
+> +
+> +	struct list_head list;
+
+This is unused.
 
 Regards,
 Bjorn
