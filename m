@@ -2,250 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 434E2770CDB
-	for <lists+linux-kernel@lfdr.de>; Sat,  5 Aug 2023 03:06:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 22718770CDE
+	for <lists+linux-kernel@lfdr.de>; Sat,  5 Aug 2023 03:06:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229953AbjHEBGJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Aug 2023 21:06:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45662 "EHLO
+        id S229966AbjHEBGR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Aug 2023 21:06:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45690 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229558AbjHEBGH (ORCPT
+        with ESMTP id S229502AbjHEBGP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Aug 2023 21:06:07 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08B794EDD;
-        Fri,  4 Aug 2023 18:06:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1691197565; x=1722733565;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=ibSjDREM3KSlm2Zd9jBWEnIiB5S/qWcUN0yFt86xipE=;
-  b=ex0SG4KKlWO/L6cUiNGTXDbv/GCiP0vzIJL53fv5YWDOfxmNuo+7ZIMp
-   wQK2+4JsxIT2Zw7o/skGT8bAPznJgh2w3afvk/qvUbvGTs9wVEj+Efo4e
-   bYVgyET0eDaJY68WjJITEIs2FRuV1Ugo4vP5BRFTAi3sDvVhhCUMXQbKj
-   gee0XLEmetJ6YB4Melwyycs/Tq5PcneMfdmfrv2Zacq8xo1NgAZbbQCoP
-   EyKffajuGDe3AuiNsxWRwxO+oaGqxObxB4hNVVT9xWnO+x9vR+1zn9m47
-   81zSWESxOquyWJGZmeW9TcrRd0TXEDOAeLvxBdqZ7V3zJehYUfsWBP6cw
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10792"; a="456657222"
-X-IronPort-AV: E=Sophos;i="6.01,256,1684825200"; 
-   d="scan'208";a="456657222"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Aug 2023 18:06:05 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10792"; a="854003292"
-X-IronPort-AV: E=Sophos;i="6.01,256,1684825200"; 
-   d="scan'208";a="854003292"
-Received: from lkp-server01.sh.intel.com (HELO d1ccc7e87e8f) ([10.239.97.150])
-  by orsmga004.jf.intel.com with ESMTP; 04 Aug 2023 18:06:02 -0700
-Received: from kbuild by d1ccc7e87e8f with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qS5k1-0003EB-0M;
-        Sat, 05 Aug 2023 01:06:01 +0000
-Date:   Sat, 5 Aug 2023 09:05:04 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Janusz Krzysztofik <janusz.krzysztofik@linux.intel.com>,
-        Brendan Higgins <brendan.higgins@linux.dev>,
-        David Gow <davidgow@google.com>
-Cc:     oe-kbuild-all@lists.linux.dev, linux-kselftest@vger.kernel.org,
-        kunit-dev@googlegroups.com,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-media@vger.kernel.org, igt-dev@lists.freedesktop.org,
-        intel-xe@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        Rae Moar <rmoar@google.com>,
-        Janusz Krzysztofik <janusz.krzysztofik@linux.intel.com>
-Subject: Re: [PATCH v4 1/3] kunit: Report the count of test suites in a module
-Message-ID: <202308050802.0wKtrhu1-lkp@intel.com>
-References: <20230804225220.8005-6-janusz.krzysztofik@linux.intel.com>
+        Fri, 4 Aug 2023 21:06:15 -0400
+Received: from mail-ot1-x335.google.com (mail-ot1-x335.google.com [IPv6:2607:f8b0:4864:20::335])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 707E34EDE;
+        Fri,  4 Aug 2023 18:06:14 -0700 (PDT)
+Received: by mail-ot1-x335.google.com with SMTP id 46e09a7af769-6bb29b9044dso2459946a34.1;
+        Fri, 04 Aug 2023 18:06:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1691197574; x=1691802374;
+        h=cc:to:subject:message-id:date:from:references:in-reply-to
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=5wLxtngQDf95laPzAr998ewYrpc6/LmQcNIxOteIueI=;
+        b=JWEJoBXO0UGnBg4xLdw9KEUhTH4lf77t4U6moAOmDX1C3WqbrVn5+P7FXQ8ajzo70m
+         3e/bt6Yn9H5A6cs+o19Z4C1zxcT4Et4m5abUWYZInQ1vxhkrUERvFXsImX2e/W3YpV0y
+         MJDLZNtb6Mz6g1WmggiYRNxAYKbjQPfE9Hl/4M9hLwFDdXJi166vWIcQYeRTPnhJJYOa
+         ijF8FYpFkp7oqHhWSIXvlxrG+UOuYO3wy+mJ2meE07tjEMkje7c42ME9yAweWkUXz+33
+         4uV3V8Ld4pJPhV1V1BINXfsLX3bscp/Uu7w4V/Rj3IlZV3giEvAfAcTDasK9x9+ZBd7c
+         HYhQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691197574; x=1691802374;
+        h=cc:to:subject:message-id:date:from:references:in-reply-to
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=5wLxtngQDf95laPzAr998ewYrpc6/LmQcNIxOteIueI=;
+        b=SS4sjsNgW6gOw7nuNRskOcpXg3NMsw/Br7habEC/VL28N28MIIdBqizxQ2FfMlCvXv
+         sHKDnFqYsr14F/EUiZQaaW+vYCiH5FQ45xMmmn6x4JgIPczhu8RTBCIGx22RH6aY/zPU
+         DKNOuZbUM6xpMLs23FeFVscVl3D+DLImNTcRPjxDyP3xZfj4JwFxv8l8skoaT6F13aNR
+         cIZDnDAFt6Mw2NlGyOFPdayWBwXey994XxDk9Mud/o5spOHA8IGuScy134ePFtuZ0AEU
+         PqZ8+BqWQPSP8QGoZ0A7C694C2UWyETtq0rUJQSgL3CMW/2mdwwJUq0r9kHlTlOrw2oa
+         BUew==
+X-Gm-Message-State: AOJu0YwqyL14GF3tW1IfvttcOcPckWpcm807m3ImlEB/BODMxcUc82eQ
+        aAe8agViZQdcrO5w71j6wEiPd3USjvTPrrxoI8w=
+X-Google-Smtp-Source: AGHT+IG8PbrHRgIVAkXmrYRri3sk0mgD3rxRszibk3mbzi2/k2uRhFt/+JykTBC0PKuE3GPwCgYcPa9/gb2M+tKCYKM=
+X-Received: by 2002:a05:6870:82a2:b0:1b0:449e:cff9 with SMTP id
+ q34-20020a05687082a200b001b0449ecff9mr4064524oae.57.1691197573686; Fri, 04
+ Aug 2023 18:06:13 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230804225220.8005-6-janusz.krzysztofik@linux.intel.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+Received: by 2002:ac9:7b87:0:b0:4f0:1250:dd51 with HTTP; Fri, 4 Aug 2023
+ 18:06:13 -0700 (PDT)
+In-Reply-To: <CAHk-=wiG9xaVvBJXHqTxtop0=mW9KxPS9C54ED23p59VNEKdWg@mail.gmail.com>
+References: <20230708191212.4147700-1-surenb@google.com> <20230708191212.4147700-3-surenb@google.com>
+ <20230804214620.btgwhsszsd7rh6nf@f> <CAHk-=wiy125k1dBmQFTGpHwiOqEyrD6xnd4xKWfe97H_HodgDA@mail.gmail.com>
+ <CAGudoHFsAU_BDCOuz8UgDBLGEM8xg=aUGjaVoqkM_Zvxo2Re_g@mail.gmail.com> <CAHk-=wiG9xaVvBJXHqTxtop0=mW9KxPS9C54ED23p59VNEKdWg@mail.gmail.com>
+From:   Mateusz Guzik <mjguzik@gmail.com>
+Date:   Sat, 5 Aug 2023 03:06:13 +0200
+Message-ID: <CAGudoHFsxmiezZREyVkrPYBBij3u9SNaxLWipOOPy5S+5pJcZA@mail.gmail.com>
+Subject: Re: [PATCH v2 3/3] fork: lock VMAs of the parent process when forking
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Suren Baghdasaryan <surenb@google.com>, akpm@linux-foundation.org,
+        regressions@leemhuis.info, bagasdotme@gmail.com,
+        jacobly.alt@gmail.com, willy@infradead.org,
+        liam.howlett@oracle.com, david@redhat.com, peterx@redhat.com,
+        ldufour@linux.ibm.com, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, linuxppc-dev@lists.ozlabs.org,
+        linux-arm-kernel@lists.infradead.org, gregkh@linuxfoundation.org,
+        regressions@lists.linux.dev, Jiri Slaby <jirislaby@kernel.org>,
+        =?UTF-8?Q?Holger_Hoffst=C3=A4tte?= <holger@applied-asynchrony.com>,
+        stable@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Janusz,
+On 8/5/23, Linus Torvalds <torvalds@linux-foundation.org> wrote:
+> On Fri, 4 Aug 2023 at 16:25, Mateusz Guzik <mjguzik@gmail.com> wrote:
+>>
+>> I know of these guys, I think they are excluded as is -- they go
+>> through access_remote_vm, starting with:
+>>         if (mmap_read_lock_killable(mm))
+>>                 return 0;
+>>
+>> while dup_mmap already write locks the parent's mm.
+>
+> Oh, you're only worried about vma_start_write()?
+>
+> That's a non-issue. It doesn't take the lock normally, since it starts off
+> with
+>
+>         if (__is_vma_write_locked(vma, &mm_lock_seq))
+>                 return;
+>
+> which catches on the lock sequence number already being set.
+>
+> So no extra locking there.
+>
+> Well, technically there's extra locking because the code stupidly
+> doesn't initialize new vma allocations to the right sequence number,
+> but that was talked about here:
+>
+>
+> https://lore.kernel.org/all/CAHk-=wiCrWAoEesBuoGoqqufvesicbGp3cX0LyKgEvsFaZNpDA@mail.gmail.com/
+>
+> and it's a separate issue.
+>
 
-kernel test robot noticed the following build errors:
+I'm going to bet one beer this is the issue.
 
-[auto build test ERROR on 5a175d369c702ce08c9feb630125c9fc7a9e1370]
+The patch I'm responding to only consists of adding the call to
+vma_start_write and claims the 5% slowdown from it, while fixing
+crashes if the forking process is multithreaded.
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Janusz-Krzysztofik/kunit-Report-the-count-of-test-suites-in-a-module/20230805-065602
-base:   5a175d369c702ce08c9feb630125c9fc7a9e1370
-patch link:    https://lore.kernel.org/r/20230804225220.8005-6-janusz.krzysztofik%40linux.intel.com
-patch subject: [PATCH v4 1/3] kunit: Report the count of test suites in a module
-config: loongarch-allyesconfig (https://download.01.org/0day-ci/archive/20230805/202308050802.0wKtrhu1-lkp@intel.com/config)
-compiler: loongarch64-linux-gcc (GCC) 12.3.0
-reproduce: (https://download.01.org/0day-ci/archive/20230805/202308050802.0wKtrhu1-lkp@intel.com/reproduce)
+For the fix to work it has to lock something against the parent.
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202308050802.0wKtrhu1-lkp@intel.com/
+        VMA_ITERATOR(old_vmi, oldmm, 0);
+[..]
+        for_each_vma(old_vmi, mpnt) {
+[..]
+                vma_start_write(mpnt);
 
-All errors (new ones prefixed by >>):
+the added line locks an obj in the parent's vm space.
 
-   In file included from lib/kunit/executor.c:296:
-   lib/kunit/executor_test.c: In function 'filter_suites_test':
->> lib/kunit/executor_test.c:46:16: error: variable 'suite_set' has initializer but incomplete type
-      46 |         struct suite_set suite_set = {.start = subsuite, .end = &subsuite[2]};
-         |                ^~~~~~~~~
->> lib/kunit/executor_test.c:46:40: error: 'struct suite_set' has no member named 'start'
-      46 |         struct suite_set suite_set = {.start = subsuite, .end = &subsuite[2]};
-         |                                        ^~~~~
-   lib/kunit/executor_test.c:46:48: warning: excess elements in struct initializer
-      46 |         struct suite_set suite_set = {.start = subsuite, .end = &subsuite[2]};
-         |                                                ^~~~~~~~
-   lib/kunit/executor_test.c:46:48: note: (near initialization for 'suite_set')
->> lib/kunit/executor_test.c:46:59: error: 'struct suite_set' has no member named 'end'
-      46 |         struct suite_set suite_set = {.start = subsuite, .end = &subsuite[2]};
-         |                                                           ^~~
-   lib/kunit/executor_test.c:46:65: warning: excess elements in struct initializer
-      46 |         struct suite_set suite_set = {.start = subsuite, .end = &subsuite[2]};
-         |                                                                 ^
-   lib/kunit/executor_test.c:46:65: note: (near initialization for 'suite_set')
->> lib/kunit/executor_test.c:46:26: error: storage size of 'suite_set' isn't known
-      46 |         struct suite_set suite_set = {.start = subsuite, .end = &subsuite[2]};
-         |                          ^~~~~~~~~
->> lib/kunit/executor_test.c:47:26: error: storage size of 'got' isn't known
-      47 |         struct suite_set got;
-         |                          ^~~
-   In file included from lib/kunit/executor.c:4:
-   include/kunit/test.h:797:29: warning: passing argument 1 of 'IS_ERR_OR_NULL' makes pointer from integer without a cast [-Wint-conversion]
-     797 |         if (!IS_ERR_OR_NULL(__ptr))                                            \
-         |                             ^~~~~
-         |                             |
-         |                             int
-   include/kunit/test.h:1478:9: note: in expansion of macro 'KUNIT_PTR_NOT_ERR_OR_NULL_MSG_ASSERTION'
-    1478 |         KUNIT_PTR_NOT_ERR_OR_NULL_MSG_ASSERTION(test,                          \
-         |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   include/kunit/test.h:1475:9: note: in expansion of macro 'KUNIT_ASSERT_NOT_ERR_OR_NULL_MSG'
-    1475 |         KUNIT_ASSERT_NOT_ERR_OR_NULL_MSG(test, ptr, NULL)
-         |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   lib/kunit/executor_test.c:55:9: note: in expansion of macro 'KUNIT_ASSERT_NOT_ERR_OR_NULL'
-      55 |         KUNIT_ASSERT_NOT_ERR_OR_NULL(test, got.start);
-         |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   In file included from include/linux/rwsem.h:17,
-                    from include/linux/notifier.h:15,
-                    from include/linux/reboot.h:6,
-                    from lib/kunit/executor.c:3:
-   include/linux/err.h:70:68: note: expected 'const void *' but argument is of type 'int'
-      70 | static inline bool __must_check IS_ERR_OR_NULL(__force const void *ptr)
-         |                                                        ~~~~~~~~~~~~^~~
-   include/kunit/test.h:804:64: warning: initialization of 'const void *' from 'int' makes pointer from integer without a cast [-Wint-conversion]
-     804 |                       KUNIT_INIT_ASSERT(.text = #ptr, .value = __ptr),         \
-         |                                                                ^~~~~
-   include/kunit/test.h:570:49: note: in definition of macro '_KUNIT_FAILED'
-     570 |         const struct assert_class __assertion = INITIALIZER;                   \
-         |                                                 ^~~~~~~~~~~
-   include/kunit/test.h:804:23: note: in expansion of macro 'KUNIT_INIT_ASSERT'
-     804 |                       KUNIT_INIT_ASSERT(.text = #ptr, .value = __ptr),         \
-         |                       ^~~~~~~~~~~~~~~~~
-   include/kunit/test.h:1478:9: note: in expansion of macro 'KUNIT_PTR_NOT_ERR_OR_NULL_MSG_ASSERTION'
-    1478 |         KUNIT_PTR_NOT_ERR_OR_NULL_MSG_ASSERTION(test,                          \
-         |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   include/kunit/test.h:1475:9: note: in expansion of macro 'KUNIT_ASSERT_NOT_ERR_OR_NULL_MSG'
-    1475 |         KUNIT_ASSERT_NOT_ERR_OR_NULL_MSG(test, ptr, NULL)
-         |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   lib/kunit/executor_test.c:55:9: note: in expansion of macro 'KUNIT_ASSERT_NOT_ERR_OR_NULL'
-      55 |         KUNIT_ASSERT_NOT_ERR_OR_NULL(test, got.start);
-         |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   include/kunit/test.h:804:64: note: (near initialization for '__assertion.value')
-     804 |                       KUNIT_INIT_ASSERT(.text = #ptr, .value = __ptr),         \
-         |                                                                ^~~~~
-   include/kunit/test.h:570:49: note: in definition of macro '_KUNIT_FAILED'
-     570 |         const struct assert_class __assertion = INITIALIZER;                   \
-         |                                                 ^~~~~~~~~~~
-   include/kunit/test.h:804:23: note: in expansion of macro 'KUNIT_INIT_ASSERT'
-     804 |                       KUNIT_INIT_ASSERT(.text = #ptr, .value = __ptr),         \
-         |                       ^~~~~~~~~~~~~~~~~
-   include/kunit/test.h:1478:9: note: in expansion of macro 'KUNIT_PTR_NOT_ERR_OR_NULL_MSG_ASSERTION'
-    1478 |         KUNIT_PTR_NOT_ERR_OR_NULL_MSG_ASSERTION(test,                          \
-         |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   include/kunit/test.h:1475:9: note: in expansion of macro 'KUNIT_ASSERT_NOT_ERR_OR_NULL_MSG'
-    1475 |         KUNIT_ASSERT_NOT_ERR_OR_NULL_MSG(test, ptr, NULL)
-         |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   lib/kunit/executor_test.c:55:9: note: in expansion of macro 'KUNIT_ASSERT_NOT_ERR_OR_NULL'
-      55 |         KUNIT_ASSERT_NOT_ERR_OR_NULL(test, got.start);
-         |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   include/kunit/test.h:797:29: warning: passing argument 1 of 'IS_ERR_OR_NULL' makes pointer from integer without a cast [-Wint-conversion]
-     797 |         if (!IS_ERR_OR_NULL(__ptr))                                            \
-         |                             ^~~~~
-         |                             |
-         |                             int
-   include/kunit/test.h:1478:9: note: in expansion of macro 'KUNIT_PTR_NOT_ERR_OR_NULL_MSG_ASSERTION'
-    1478 |         KUNIT_PTR_NOT_ERR_OR_NULL_MSG_ASSERTION(test,                          \
-         |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   include/kunit/test.h:1475:9: note: in expansion of macro 'KUNIT_ASSERT_NOT_ERR_OR_NULL_MSG'
-    1475 |         KUNIT_ASSERT_NOT_ERR_OR_NULL_MSG(test, ptr, NULL)
-         |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   lib/kunit/executor_test.c:60:9: note: in expansion of macro 'KUNIT_ASSERT_NOT_ERR_OR_NULL'
-      60 |         KUNIT_ASSERT_NOT_ERR_OR_NULL(test, got.start[0]);
-         |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   include/linux/err.h:70:68: note: expected 'const void *' but argument is of type 'int'
-      70 | static inline bool __must_check IS_ERR_OR_NULL(__force const void *ptr)
-         |                                                        ~~~~~~~~~~~~^~~
-   include/kunit/test.h:804:64: warning: initialization of 'const void *' from 'int' makes pointer from integer without a cast [-Wint-conversion]
-     804 |                       KUNIT_INIT_ASSERT(.text = #ptr, .value = __ptr),         \
-         |                                                                ^~~~~
-   include/kunit/test.h:570:49: note: in definition of macro '_KUNIT_FAILED'
-     570 |         const struct assert_class __assertion = INITIALIZER;                   \
-         |                                                 ^~~~~~~~~~~
-   include/kunit/test.h:804:23: note: in expansion of macro 'KUNIT_INIT_ASSERT'
-     804 |                       KUNIT_INIT_ASSERT(.text = #ptr, .value = __ptr),         \
-         |                       ^~~~~~~~~~~~~~~~~
-   include/kunit/test.h:1478:9: note: in expansion of macro 'KUNIT_PTR_NOT_ERR_OR_NULL_MSG_ASSERTION'
-    1478 |         KUNIT_PTR_NOT_ERR_OR_NULL_MSG_ASSERTION(test,                          \
-         |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   include/kunit/test.h:1475:9: note: in expansion of macro 'KUNIT_ASSERT_NOT_ERR_OR_NULL_MSG'
-    1475 |         KUNIT_ASSERT_NOT_ERR_OR_NULL_MSG(test, ptr, NULL)
-         |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   lib/kunit/executor_test.c:60:9: note: in expansion of macro 'KUNIT_ASSERT_NOT_ERR_OR_NULL'
-      60 |         KUNIT_ASSERT_NOT_ERR_OR_NULL(test, got.start[0]);
-         |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   include/kunit/test.h:804:64: note: (near initialization for '__assertion.value')
-     804 |                       KUNIT_INIT_ASSERT(.text = #ptr, .value = __ptr),         \
-         |                                                                ^~~~~
-   include/kunit/test.h:570:49: note: in definition of macro '_KUNIT_FAILED'
-     570 |         const struct assert_class __assertion = INITIALIZER;                   \
-
-
-vim +/suite_set +46 lib/kunit/executor_test.c
-
-1d71307a6f94df Daniel Latypov 2021-04-20  42  
-e5857d396f35e5 Daniel Latypov 2022-07-09  43  static void filter_suites_test(struct kunit *test)
-1d71307a6f94df Daniel Latypov 2021-04-20  44  {
-e5857d396f35e5 Daniel Latypov 2022-07-09  45  	struct kunit_suite *subsuite[3] = {NULL, NULL};
-e5857d396f35e5 Daniel Latypov 2022-07-09 @46  	struct suite_set suite_set = {.start = subsuite, .end = &subsuite[2]};
-e5857d396f35e5 Daniel Latypov 2022-07-09 @47  	struct suite_set got;
-e5857d396f35e5 Daniel Latypov 2022-07-09  48  	int err = 0;
-1d71307a6f94df Daniel Latypov 2021-04-20  49  
-a127b154a8f231 Daniel Latypov 2021-09-14  50  	subsuite[0] = alloc_fake_suite(test, "suite1", dummy_test_cases);
-a127b154a8f231 Daniel Latypov 2021-09-14  51  	subsuite[1] = alloc_fake_suite(test, "suite2", dummy_test_cases);
-1d71307a6f94df Daniel Latypov 2021-04-20  52  
-1d71307a6f94df Daniel Latypov 2021-04-20  53  	/* Want: suite1, suite2, NULL -> suite2, NULL */
-529534e8cba3e6 Rae Moar       2023-07-25  54  	got = kunit_filter_suites(&suite_set, "suite2", NULL, NULL, &err);
-e5857d396f35e5 Daniel Latypov 2022-07-09  55  	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, got.start);
-e5857d396f35e5 Daniel Latypov 2022-07-09  56  	KUNIT_ASSERT_EQ(test, err, 0);
-e5857d396f35e5 Daniel Latypov 2022-07-09  57  	kfree_at_end(test, got.start);
-1d71307a6f94df Daniel Latypov 2021-04-20  58  
-a127b154a8f231 Daniel Latypov 2021-09-14  59  	/* Validate we just have suite2 */
-e5857d396f35e5 Daniel Latypov 2022-07-09  60  	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, got.start[0]);
-e5857d396f35e5 Daniel Latypov 2022-07-09  61  	KUNIT_EXPECT_STREQ(test, (const char *)got.start[0]->name, "suite2");
-e5857d396f35e5 Daniel Latypov 2022-07-09  62  
-e5857d396f35e5 Daniel Latypov 2022-07-09  63  	/* Contains one element (end is 1 past end) */
-e5857d396f35e5 Daniel Latypov 2022-07-09  64  	KUNIT_ASSERT_EQ(test, got.end - got.start, 1);
-a127b154a8f231 Daniel Latypov 2021-09-14  65  }
-a127b154a8f231 Daniel Latypov 2021-09-14  66  
+The problem you linked looks like pessimization for freshly allocated
+vmas, but that's what is being operated on here.
 
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Mateusz Guzik <mjguzik gmail.com>
