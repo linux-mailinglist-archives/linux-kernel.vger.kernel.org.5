@@ -2,53 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E249771154
-	for <lists+linux-kernel@lfdr.de>; Sat,  5 Aug 2023 20:10:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 63CA8771151
+	for <lists+linux-kernel@lfdr.de>; Sat,  5 Aug 2023 20:08:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229798AbjHESKa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 5 Aug 2023 14:10:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39544 "EHLO
+        id S229741AbjHESIl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 5 Aug 2023 14:08:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39150 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229481AbjHESK3 (ORCPT
+        with ESMTP id S229481AbjHESIj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 5 Aug 2023 14:10:29 -0400
+        Sat, 5 Aug 2023 14:08:39 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1CB0F1A4;
-        Sat,  5 Aug 2023 11:10:28 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C574619B;
+        Sat,  5 Aug 2023 11:08:38 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id A498660DF5;
-        Sat,  5 Aug 2023 18:10:27 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DA508C433C8;
-        Sat,  5 Aug 2023 18:10:24 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 59B9360DB5;
+        Sat,  5 Aug 2023 18:08:38 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CA552C433C7;
+        Sat,  5 Aug 2023 18:08:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691259027;
-        bh=3cOSVqPZ8fzLMACkuwTA6mctnPETbzl0oDRi88n6Las=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=STFE2LdfPY8HHrQuFQFxpkN89CppnPX1ZHWzPHU1peBgMbDP+rSdi9mKrMNG8F0rq
-         jh5MqWxFHxFj5PSEh+ScPmq9jyVkBTIDyiR8BE5BfihLMHqa069kMGEqJGqrSBZEPs
-         tND65bxS4FY2smyFySGrt38ISav9sF5l0Im/kw4C+ASAsqTwpvooPcF8S3mP/lJjEp
-         hTb1l+FPaIyfIdNXjTJ+82wGQSOVz2OyiKQmxYq7rKWZTpxFYCqM/jlDlvFjjLnAs8
-         EWJ0Br6YOka5lVPKpd08urbMQ1rOdb4hGlDS7M+5PSfTO0KwzeCvF1djklDNdppy1A
-         2yZVaO20IK6mA==
-Date:   Sat, 5 Aug 2023 19:10:19 +0100
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     Conor Dooley <conor@kernel.org>
-Cc:     Antoniu Miclaus <antoniu.miclaus@analog.com>, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        linux-iio@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 1/2] dt-bindings: iio: admv1013: add vcc regulators
-Message-ID: <20230805191019.388284b2@jic23-huawei>
-In-Reply-To: <20230801-rasping-petty-5fca54f6f696@spud>
-References: <20230731094455.26742-1-antoniu.miclaus@analog.com>
-        <20230801-rasping-petty-5fca54f6f696@spud>
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-pc-linux-gnu)
+        s=k20201202; t=1691258917;
+        bh=o1T6WnCOl5nls/Z32FQUuI4vIWqJLvZNcazUro6lNio=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=oBXocZdCA2osDvHvD8WVyNio/gV6OKzFo9MtHyK/iBf0DY56PO9xJPizOMgKFDOPc
+         dOx6hqB60YygH69+Jtn7OBjJG7RAF0yWkzsx0SYt+cZr9nZRtiHT9yCBb2jWsXddsg
+         pFhgSg4krC+k/HQOV/w7tMEeEnStdR0V+NuQHhr5Eg3EAp10JmgAsNpfj1dN+HCZ9F
+         a6/S/ATA530tyoOV7sxtuD0e+tLBKDRPQIVfBlJO6bsENv4qSr60KE8zDamwCTm1Xr
+         aYSvNj6fQ20QcLuMEiYsnPkwqtjgwCUNgLfzuxMtb6SWcxzrTT6jK+j3GeSvmjOEp8
+         quIqeBavQjmLg==
+Date:   Sat, 5 Aug 2023 11:11:34 -0700
+From:   Bjorn Andersson <andersson@kernel.org>
+To:     Elliot Berman <quic_eberman@quicinc.com>
+Cc:     Alex Elder <elder@linaro.org>,
+        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+        Prakruthi Deepak Heragu <quic_pheragu@quicinc.com>,
+        Murali Nalajala <quic_mnalajal@quicinc.com>,
+        Trilok Soni <quic_tsoni@quicinc.com>,
+        Srivatsa Vaddagiri <quic_svaddagi@quicinc.com>,
+        Carl van Schaik <quic_cvanscha@quicinc.com>,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Bagas Sanjaya <bagasdotme@gmail.com>,
+        Will Deacon <will@kernel.org>, Andy Gross <agross@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Jassi Brar <jassisinghbrar@gmail.com>,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH v14 15/25] virt: gunyah: Add Qualcomm Gunyah platform ops
+Message-ID: <7bpdzvlrdxwqpxor36i4nha5qs4opvnf7tr4sfb7ta3ebl7fdl@c5nylbvtnv5y>
+References: <20230613172054.3959700-1-quic_eberman@quicinc.com>
+ <20230613172054.3959700-16-quic_eberman@quicinc.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230613172054.3959700-16-quic_eberman@quicinc.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -59,125 +76,161 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 1 Aug 2023 22:09:28 +0100
-Conor Dooley <conor@kernel.org> wrote:
-
-> On Mon, Jul 31, 2023 at 12:44:54PM +0300, Antoniu Miclaus wrote:
-> > Add bindings for the VCC regulators of the ADMV1013 microware
-> > upconverter.
-> > 
-> > Signed-off-by: Antoniu Miclaus <antoniu.miclaus@analog.com>  
+On Tue, Jun 13, 2023 at 10:20:43AM -0700, Elliot Berman wrote:
+> Qualcomm platforms have a firmware entity which performs access control
+> to physical pages. Dynamically started Gunyah virtual machines use the
+> QCOM_SCM_RM_MANAGED_VMID for access. Linux thus needs to assign access
+> to the memory used by guest VMs. Gunyah doesn't do this operation for us
+> since it is the current VM (typically VMID_HLOS) delegating the access
+> and not Gunyah itself. Use the Gunyah platform ops to achieve this so
+> that only Qualcomm platforms attempt to make the needed SCM calls.
 > 
-> Assuming the driver or regulator core handles the missing regulators on
-> older devicetrees (which I think it does with dummy regulators?)
-
-Yup - that should happen fine.
-
-> Acked-by: Conor Dooley <conor.dooley@microchip.com>
-
-Series applied to the togreg branch of iio.git and pushed out as
-testing for 0-day to poke at it.
-
-Thanks,
-
-Jonathan
-
+> Reviewed-by: Alex Elder <elder@linaro.org>
+> Co-developed-by: Prakruthi Deepak Heragu <quic_pheragu@quicinc.com>
+> Signed-off-by: Prakruthi Deepak Heragu <quic_pheragu@quicinc.com>
+> Signed-off-by: Elliot Berman <quic_eberman@quicinc.com>
+> ---
+>  drivers/virt/gunyah/Kconfig       |  13 +++
+>  drivers/virt/gunyah/Makefile      |   1 +
+>  drivers/virt/gunyah/gunyah_qcom.c | 153 ++++++++++++++++++++++++++++++
+>  3 files changed, 167 insertions(+)
+>  create mode 100644 drivers/virt/gunyah/gunyah_qcom.c
 > 
-> Thanks,
-> Conor.
-> 
-> > ---
-> > changes in v3:
-> >  - add missing spaces in the commit subject.
-> >  .../bindings/iio/frequency/adi,admv1013.yaml  | 60 +++++++++++++++++++
-> >  1 file changed, 60 insertions(+)
-> > 
-> > diff --git a/Documentation/devicetree/bindings/iio/frequency/adi,admv1013.yaml b/Documentation/devicetree/bindings/iio/frequency/adi,admv1013.yaml
-> > index fc813bcb6532..f2eb2287ed9e 100644
-> > --- a/Documentation/devicetree/bindings/iio/frequency/adi,admv1013.yaml
-> > +++ b/Documentation/devicetree/bindings/iio/frequency/adi,admv1013.yaml
-> > @@ -39,6 +39,46 @@ properties:
-> >      description:
-> >        Analog voltage regulator.
-> >  
-> > +  vcc-drv-supply:
-> > +    description:
-> > +      RF Driver voltage regulator.
-> > +
-> > +  vcc2-drv-supply:
-> > +    description:
-> > +      RF predriver voltage regulator.
-> > +
-> > +  vcc-vva-supply:
-> > +    description:
-> > +      VVA Control Circuit voltage regulator.
-> > +
-> > +  vcc-amp1-supply:
-> > +    description:in/v3_20230731_antoniu_miclaus_dt_bindings_iio_admv1013_add_vcc_regulators.mbx
-> > +      RF Amplifier 1 voltage regulator.
-> > +
-> > +  vcc-amp2-supply:
-> > +    description:
-> > +      RF Amplifier 2 voltage regulator.
-> > +
-> > +  vcc-env-supply:
-> > +    description:
-> > +      Envelope Detector voltage regulator.
-> > +
-> > +  vcc-bg-supply:
-> > +    description:
-> > +      Mixer Chip Band Gap Circuit voltage regulator.
-> > +
-> > +  vcc-bg2-supply:
-> > +    description:
-> > +      VGA Chip Band Gap Circuit voltage regulator.
-> > +
-> > +  vcc-mixer-supply:
-> > +    description:
-> > +      Mixer voltage regulator.
-> > +
-> > +  vcc-quad-supply:
-> > +    description:
-> > +      Quadruppler voltage regulator.
-> > +
-> >    adi,detector-enable:
-> >      description:
-> >        Enable the Envelope Detector available at output pins VENV_P and
-> > @@ -69,6 +109,16 @@ required:
-> >    - clocks
-> >    - clock-names
-> >    - vcm-supply
-> > +  - vcc-drv-supply
-> > +  - vcc2-drv-supply
-> > +  - vcc-vva-supply
-> > +  - vcc-amp1-supply
-> > +  - vcc-amp2-supply
-> > +  - vcc-env-supply
-> > +  - vcc-bg-supply
-> > +  - vcc-bg2-supply
-> > +  - vcc-mixer-supply
-> > +  - vcc-quad-supply
-> >  
-> >  allOf:
-> >    - $ref: /schemas/spi/spi-peripheral-props.yaml#
-> > @@ -87,6 +137,16 @@ examples:
-> >          clocks = <&admv1013_lo>;
-> >          clock-names = "lo_in";
-> >          vcm-supply = <&vcm>;
-> > +        vcc-drv-supply = <&vcc_drv>;
-> > +        vcc2-drv-supply = <&vcc2_drv>;
-> > +        vcc-vva-supply = <&vcc_vva>;
-> > +        vcc-amp1-supply = <&vcc_amp1>;
-> > +        vcc-amp2-supply = <&vcc_amp2>;
-> > +        vcc-env-supply = <&vcc_env>;
-> > +        vcc-bg-supply = <&vcc_bg>;
-> > +        vcc-bg2-supply = <&vcc_bg2>;
-> > +        vcc-mixer-supply = <&vcc_mixer>;
-> > +        vcc-quad-supply = <&vcc_quad>;
-> >          adi,quad-se-mode = "diff";
-> >          adi,detector-enable;
-> >        };
-> > -- 
-> > 2.41.0
-> >   
+> diff --git a/drivers/virt/gunyah/Kconfig b/drivers/virt/gunyah/Kconfig
+> index de815189dab6c..0421b751aad4f 100644
+> --- a/drivers/virt/gunyah/Kconfig
+> +++ b/drivers/virt/gunyah/Kconfig
+> @@ -5,6 +5,7 @@ config GUNYAH
+>  	depends on ARM64
+>  	depends on MAILBOX
+>  	select GUNYAH_PLATFORM_HOOKS
+> +	imply GUNYAH_QCOM_PLATFORM if ARCH_QCOM
+>  	help
+>  	  The Gunyah drivers are the helper interfaces that run in a guest VM
+>  	  such as basic inter-VM IPC and signaling mechanisms, and higher level
+> @@ -15,3 +16,15 @@ config GUNYAH
+>  
+>  config GUNYAH_PLATFORM_HOOKS
+>  	tristate
+> +
+> +config GUNYAH_QCOM_PLATFORM
+> +	tristate "Support for Gunyah on Qualcomm platforms"
+> +	depends on GUNYAH
+> +	select GUNYAH_PLATFORM_HOOKS
+> +	select QCOM_SCM
+> +	help
+> +	  Enable support for interacting with Gunyah on Qualcomm
+> +	  platforms. Interaction with Qualcomm firmware requires
+> +	  extra platform-specific support.
+> +
+> +	  Say Y/M here to use Gunyah on Qualcomm platforms.
+> diff --git a/drivers/virt/gunyah/Makefile b/drivers/virt/gunyah/Makefile
+> index 4fbeee521d60a..2aa9ff038ed02 100644
+> --- a/drivers/virt/gunyah/Makefile
+> +++ b/drivers/virt/gunyah/Makefile
+> @@ -1,6 +1,7 @@
+>  # SPDX-License-Identifier: GPL-2.0
+>  
+>  obj-$(CONFIG_GUNYAH_PLATFORM_HOOKS) += gunyah_platform_hooks.o
+> +obj-$(CONFIG_GUNYAH_QCOM_PLATFORM) += gunyah_qcom.o
+>  
+>  gunyah-y += rsc_mgr.o rsc_mgr_rpc.o vm_mgr.o vm_mgr_mm.o
+>  obj-$(CONFIG_GUNYAH) += gunyah.o
+> diff --git a/drivers/virt/gunyah/gunyah_qcom.c b/drivers/virt/gunyah/gunyah_qcom.c
+> new file mode 100644
+> index 0000000000000..f06a598f2e1b3
+> --- /dev/null
+> +++ b/drivers/virt/gunyah/gunyah_qcom.c
+> @@ -0,0 +1,153 @@
+> +// SPDX-License-Identifier: GPL-2.0-only
+> +/*
+> + * Copyright (c) 2023 Qualcomm Innovation Center, Inc. All rights reserved.
+> + */
+> +
+> +#include <linux/arm-smccc.h>
+> +#include <linux/gunyah_rsc_mgr.h>
+> +#include <linux/module.h>
+> +#include <linux/firmware/qcom/qcom_scm.h>
+> +#include <linux/types.h>
+> +#include <linux/uuid.h>
+> +
+> +#define QCOM_SCM_RM_MANAGED_VMID	0x3A
+> +#define QCOM_SCM_MAX_MANAGED_VMID	0x3F
+> +
+> +static int qcom_scm_gh_rm_pre_mem_share(struct gh_rm *rm, struct gh_rm_mem_parcel *mem_parcel)
+> +{
+> +	struct qcom_scm_vmperm *new_perms;
+> +	u64 src, src_cpy;
+> +	int ret = 0, i, n;
+> +	u16 vmid;
+> +
+> +	new_perms = kcalloc(mem_parcel->n_acl_entries, sizeof(*new_perms), GFP_KERNEL);
+> +	if (!new_perms)
+> +		return -ENOMEM;
+> +
+> +	for (n = 0; n < mem_parcel->n_acl_entries; n++) {
+> +		vmid = le16_to_cpu(mem_parcel->acl_entries[n].vmid);
+> +		if (vmid <= QCOM_SCM_MAX_MANAGED_VMID)
+> +			new_perms[n].vmid = vmid;
+> +		else
+> +			new_perms[n].vmid = QCOM_SCM_RM_MANAGED_VMID;
+> +		if (mem_parcel->acl_entries[n].perms & GH_RM_ACL_X)
+> +			new_perms[n].perm |= QCOM_SCM_PERM_EXEC;
+> +		if (mem_parcel->acl_entries[n].perms & GH_RM_ACL_W)
+> +			new_perms[n].perm |= QCOM_SCM_PERM_WRITE;
+> +		if (mem_parcel->acl_entries[n].perms & GH_RM_ACL_R)
+> +			new_perms[n].perm |= QCOM_SCM_PERM_READ;
+> +	}
+> +
+> +	src = BIT_ULL(QCOM_SCM_VMID_HLOS);
+> +
+> +	for (i = 0; i < mem_parcel->n_mem_entries; i++) {
+> +		src_cpy = src;
+> +		ret = qcom_scm_assign_mem(le64_to_cpu(mem_parcel->mem_entries[i].phys_addr),
+> +						le64_to_cpu(mem_parcel->mem_entries[i].size),
+> +						&src_cpy, new_perms, mem_parcel->n_acl_entries);
+> +		if (ret)
+> +			break;
+> +	}
+> +
+> +	if (!ret)
+> +		goto out;
 
+I was going to complain that you don't unroll the assignments on
+failure, but now realized that this "error handling" is backwards and
+actually represents the success case.
+
+Please don't do that, goto error_handling || kfree(new_perms); return 0;
+here instead.
+
+
+That also means that you don't need to zero-initialize ret, because you
+would goto err_reclaim inside the loop.
+
+> +
+> +	src = 0;
+> +	for (n = 0; n < mem_parcel->n_acl_entries; n++) {
+> +		vmid = le16_to_cpu(mem_parcel->acl_entries[n].vmid);
+> +		if (vmid <= QCOM_SCM_MAX_MANAGED_VMID)
+> +			src |= BIT_ULL(vmid);
+> +		else
+> +			src |= BIT_ULL(QCOM_SCM_RM_MANAGED_VMID);
+> +	}
+> +
+> +	new_perms[0].vmid = QCOM_SCM_VMID_HLOS;
+> +
+> +	for (i--; i >= 0; i--) {
+> +		src_cpy = src;
+> +		WARN_ON_ONCE(qcom_scm_assign_mem(
+> +				le64_to_cpu(mem_parcel->mem_entries[i].phys_addr),
+> +				le64_to_cpu(mem_parcel->mem_entries[i].size),
+> +				&src_cpy, new_perms, 1));
+> +	}
+> +
+> +out:
+> +	kfree(new_perms);
+> +	return ret;
+> +}
+
+Regards,
+Bjorn
