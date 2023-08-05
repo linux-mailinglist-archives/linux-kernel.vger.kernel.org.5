@@ -2,217 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 918B1770FC1
-	for <lists+linux-kernel@lfdr.de>; Sat,  5 Aug 2023 14:59:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 72C7E770FC2
+	for <lists+linux-kernel@lfdr.de>; Sat,  5 Aug 2023 15:00:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229819AbjHEM7g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 5 Aug 2023 08:59:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37388 "EHLO
+        id S229897AbjHENAG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 5 Aug 2023 09:00:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37632 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229449AbjHEM7e (ORCPT
+        with ESMTP id S229884AbjHENAD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 5 Aug 2023 08:59:34 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6BDBBE6A;
-        Sat,  5 Aug 2023 05:59:33 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id EBC3B60C41;
-        Sat,  5 Aug 2023 12:59:32 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AAC3EC433C7;
-        Sat,  5 Aug 2023 12:59:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691240372;
-        bh=/uyVXIXSkxxkbvnjnV1ipyoPYAaQmx9nXa+isaJvtkA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=JOxUgYa4UCG00HCmF2CRjqiir/dctQ7X56+DxhWmMujqHSkXTHSpFLtBCeZfXOoRz
-         ivl7/KEWM9cdHcsA8iV9WHQl7f+onl8orHCCVonLbXxwUMvumSIExBe2lrPQVeWVcp
-         TYD7ZP9XotjsvaIjWYaISGaCn5aUcsesvkaX2yk6PZmdUJ4iT7mF/1EgMoKDCLhISu
-         6pRjzs95HBQA1akzXqDCX6eBr4aRbN1UE8IIDHNGd0f6aqASyyaP8IgGPyZKLYZyvX
-         cmgJko6J0KEq25MJfPQOUnsMTKsI1nzsPMVJ+MPx3AeG3SkRNYzrF9/ZFwXgo9lb/N
-         7FMZhNmLTSPHg==
-Date:   Sat, 5 Aug 2023 14:59:25 +0200
-From:   Christian Brauner <brauner@kernel.org>
-To:     Jeff Layton <jlayton@kernel.org>
-Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
-        Trond Myklebust <trond.myklebust@hammerspace.com>,
-        Anna Schumaker <anna@kernel.org>,
-        Paul Moore <paul@paul-moore.com>,
-        James Morris <jmorris@namei.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>,
-        Stephen Smalley <stephen.smalley.work@gmail.com>,
-        Eric Paris <eparis@parisplace.org>,
-        Casey Schaufler <casey@schaufler-ca.com>,
-        David Howells <dhowells@redhat.com>,
-        Scott Mayhew <smayhew@redhat.com>,
-        Stephen Smalley <sds@tycho.nsa.gov>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-nfs@vger.kernel.org, linux-security-module@vger.kernel.org,
-        selinux@vger.kernel.org
-Subject: Re: [PATCH v7] vfs, security: Fix automount superblock LSM init
- problem, preventing NFS sb sharing
-Message-ID: <20230805-geworben-fahrzeit-d17f3883f0b1@brauner>
-References: <20230804-master-v7-1-5d4e48407298@kernel.org>
- <20230805-anrechnen-medien-c639c85ebd42@brauner>
+        Sat, 5 Aug 2023 09:00:03 -0400
+Received: from mail-oi1-x22d.google.com (mail-oi1-x22d.google.com [IPv6:2607:f8b0:4864:20::22d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3FA9421E;
+        Sat,  5 Aug 2023 06:00:01 -0700 (PDT)
+Received: by mail-oi1-x22d.google.com with SMTP id 5614622812f47-3a5ad6087a1so1786120b6e.2;
+        Sat, 05 Aug 2023 06:00:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1691240401; x=1691845201;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=h5NfH9OsC44kYN2FyhNKjch8VH/C5i+QaDG1Xkj193U=;
+        b=BEgNq80EFNCy0dfB/L4SoAJmJyM6fAhm/nvKaSzSoY3hnR+WLgt+oEcpqDRDxgCFSZ
+         /wGwgKKyAPStPWCZzRAf4oS05oDQNXGAb5gSWYmQmgv/4MlQYPixH59QwOgN9NnlfX1N
+         jY9lL6zTcY0ThGyjg+pee/cx3OKIeyMBJ6Gd8z8KsCrfUYFU3SKtV+i5bKspNhTyqVzv
+         J1hd8Y4G93hm9xbgdBKGnd/UPn+UL9h0FSzJ/oGTwBG3ZqhfEjZvjRCzivxD6u2SLA5C
+         AlrGODRenM9nYD9h3CZTnz6pukajQoSFHhBvLuq98J93nwB5vCm7B/lXBa4eCZB0cHmu
+         6sEg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691240401; x=1691845201;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=h5NfH9OsC44kYN2FyhNKjch8VH/C5i+QaDG1Xkj193U=;
+        b=cdl1SYYeS3R+07moLQU3NSRj5JkGabC0OIWnXQ0LZSeaKbXuuGuQdsMmdlGvlFYItg
+         7iOSdhlmiPTXG//SBLWtqjX59HxDHizP/v+UL68uffsBTOP9aRt2+p6mPhOwlOannRCR
+         qs3eHiLxBja+X+BnE49OzNjultIIoPuOqkfO6QSsuuMBvMlVf5loLKodLk1y5Ee769EY
+         qYKea+2Y9xEPCUDxNjwHsXvXj0hnvbj9eXzBJ6B3kNVDJVFl53lpPDbeo9FyzoX4s7te
+         Oaeg7LbLvrM6Q2Nl+2Ao05R570VjhmJd+MmJsq6stIGGq3/MtpdoH85Aw9Wm2mH6dRRc
+         pCrw==
+X-Gm-Message-State: AOJu0YyDXHDF1B1cjAtVc7C8z+nt1yMKubC9HmD5oW4WvolvV+dITNkV
+        uOPwYER96W99Bfba7FukurM=
+X-Google-Smtp-Source: AGHT+IHmjQPNyAOzwgDZrOxNpeFJAPSGNldzuoUTCBTUhlzH2RWSvaEiMGzrbkKYqwwar7ghnqlhDQ==
+X-Received: by 2002:aca:1012:0:b0:3a4:8a41:c69c with SMTP id 18-20020aca1012000000b003a48a41c69cmr4244750oiq.13.1691240400971;
+        Sat, 05 Aug 2023 06:00:00 -0700 (PDT)
+Received: from [192.168.54.90] (static.220.238.itcsa.net. [190.15.220.238])
+        by smtp.gmail.com with ESMTPSA id y14-20020a4ad64e000000b00541fbbbcd31sm2149169oos.5.2023.08.05.05.59.57
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 05 Aug 2023 06:00:00 -0700 (PDT)
+Message-ID: <32944cb3-5c0c-4ca0-97a9-841114c9adc9@gmail.com>
+Date:   Sat, 5 Aug 2023 09:59:56 -0300
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20230805-anrechnen-medien-c639c85ebd42@brauner>
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3] scripts: generate_rust_analyzer: provide `cfg`s for
+ `core` and `alloc`
+To:     Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+Cc:     Miguel Ojeda <ojeda@kernel.org>,
+        Alex Gaynor <alex.gaynor@gmail.com>,
+        Wedson Almeida Filho <wedsonaf@gmail.com>,
+        Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>,
+        =?UTF-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>,
+        Benno Lossin <benno.lossin@proton.me>,
+        rust-for-linux@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20230804171448.54976-1-yakoyoku@gmail.com>
+ <CANiq72mkmTRzuYSGveP2xxPbDJELHXoVWVbKF2eyK0DhJ+y7bw@mail.gmail.com>
+Content-Language: en-US
+From:   Martin Rodriguez Reboredo <yakoyoku@gmail.com>
+In-Reply-To: <CANiq72mkmTRzuYSGveP2xxPbDJELHXoVWVbKF2eyK0DhJ+y7bw@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Aug 05, 2023 at 02:44:04PM +0200, Christian Brauner wrote:
-> On Fri, Aug 04, 2023 at 12:09:34PM -0400, Jeff Layton wrote:
-> > From: David Howells <dhowells@redhat.com>
-> > 
-> > When NFS superblocks are created by automounting, their LSM parameters
-> > aren't set in the fs_context struct prior to sget_fc() being called,
-> > leading to failure to match existing superblocks.
-> > 
-> > This bug leads to messages like the following appearing in dmesg when
-> > fscache is enabled:
-> > 
-> >     NFS: Cache volume key already in use (nfs,4.2,2,108,106a8c0,1,,,,100000,100000,2ee,3a98,1d4c,3a98,1)
-> > 
-> > Fix this by adding a new LSM hook to load fc->security for submount
-> > creation when alloc_fs_context() is creating the fs_context for it.
-> > 
-> > Signed-off-by: David Howells <dhowells@redhat.com>
-> > Signed-off-by: Jeff Layton <jlayton@kernel.org>
-> > Fixes: 9bc61ab18b1d ("vfs: Introduce fs_context, switch vfs_kern_mount() to it.")
-> > Fixes: 779df6a5480f ("NFS: Ensure security label is set for root inode)
-> > Tested-by: Jeff Layton <jlayton@kernel.org>
-> > Reviewed-by: Jeff Layton <jlayton@kernel.org>
-> > Acked-by: Casey Schaufler <casey@schaufler-ca.com>
-> > Acked-by: "Christian Brauner (Microsoft)" <brauner@kernel.org>
-> > Link: https://lore.kernel.org/r/165962680944.3334508.6610023900349142034.stgit@warthog.procyon.org.uk/ # v1
-> > Link: https://lore.kernel.org/r/165962729225.3357250.14350728846471527137.stgit@warthog.procyon.org.uk/ # v2
-> > Link: https://lore.kernel.org/r/165970659095.2812394.6868894171102318796.stgit@warthog.procyon.org.uk/ # v3
-> > Link: https://lore.kernel.org/r/166133579016.3678898.6283195019480567275.stgit@warthog.procyon.org.uk/ # v4
-> > Link: https://lore.kernel.org/r/217595.1662033775@warthog.procyon.org.uk/ # v5
-> > ---
-> > ver #7)
-> >  - Drop lsm_set boolean
-> >  - Link to v6: https://lore.kernel.org/r/20230802-master-v6-1-45d48299168b@kernel.org
-> > 
-> > ver #6)
-> >  - Rebase onto v6.5.0-rc4
-> > 
-> > ver #5)
-> >  - Removed unused variable.
-> >  - Only allocate smack_mnt_opts if we're dealing with a submount.
-> > 
-> > ver #4)
-> >  - When doing a FOR_SUBMOUNT mount, don't set the root label in SELinux or
-> >    Smack.
-> > 
-> > ver #3)
-> >  - Made LSM parameter extraction dependent on fc->purpose ==
-> >    FS_CONTEXT_FOR_SUBMOUNT.  Shouldn't happen on FOR_RECONFIGURE.
-> > 
-> > ver #2)
-> >  - Added Smack support
-> >  - Made LSM parameter extraction dependent on reference != NULL.
-> > ---
-> >  fs/fs_context.c               |  4 ++++
-> >  include/linux/lsm_hook_defs.h |  1 +
-> >  include/linux/security.h      |  6 +++++
-> >  security/security.c           | 14 +++++++++++
-> >  security/selinux/hooks.c      | 25 ++++++++++++++++++++
-> >  security/smack/smack_lsm.c    | 54 +++++++++++++++++++++++++++++++++++++++++++
-> >  6 files changed, 104 insertions(+)
-> > 
-> > diff --git a/fs/fs_context.c b/fs/fs_context.c
-> > index 851214d1d013..a523aea956c4 100644
-> > --- a/fs/fs_context.c
-> > +++ b/fs/fs_context.c
-> > @@ -282,6 +282,10 @@ static struct fs_context *alloc_fs_context(struct file_system_type *fs_type,
-> >  		break;
-> >  	}
-> >  
-> > +	ret = security_fs_context_init(fc, reference);
-> > +	if (ret < 0)
-> > +		goto err_fc;
-> > +
-> >  	/* TODO: Make all filesystems support this unconditionally */
-> >  	init_fs_context = fc->fs_type->init_fs_context;
-> >  	if (!init_fs_context)
-> > diff --git a/include/linux/lsm_hook_defs.h b/include/linux/lsm_hook_defs.h
-> > index 7308a1a7599b..7ce3550154b1 100644
-> > --- a/include/linux/lsm_hook_defs.h
-> > +++ b/include/linux/lsm_hook_defs.h
-> > @@ -54,6 +54,7 @@ LSM_HOOK(int, 0, bprm_creds_from_file, struct linux_binprm *bprm, struct file *f
-> >  LSM_HOOK(int, 0, bprm_check_security, struct linux_binprm *bprm)
-> >  LSM_HOOK(void, LSM_RET_VOID, bprm_committing_creds, struct linux_binprm *bprm)
-> >  LSM_HOOK(void, LSM_RET_VOID, bprm_committed_creds, struct linux_binprm *bprm)
-> > +LSM_HOOK(int, 0, fs_context_init, struct fs_context *fc, struct dentry *reference)
-> >  LSM_HOOK(int, 0, fs_context_dup, struct fs_context *fc,
-> >  	 struct fs_context *src_sc)
-> >  LSM_HOOK(int, -ENOPARAM, fs_context_parse_param, struct fs_context *fc,
-> > diff --git a/include/linux/security.h b/include/linux/security.h
-> > index 32828502f09e..61fda06fac9d 100644
-> > --- a/include/linux/security.h
-> > +++ b/include/linux/security.h
-> > @@ -293,6 +293,7 @@ int security_bprm_creds_from_file(struct linux_binprm *bprm, struct file *file);
-> >  int security_bprm_check(struct linux_binprm *bprm);
-> >  void security_bprm_committing_creds(struct linux_binprm *bprm);
-> >  void security_bprm_committed_creds(struct linux_binprm *bprm);
-> > +int security_fs_context_init(struct fs_context *fc, struct dentry *reference);
-> >  int security_fs_context_dup(struct fs_context *fc, struct fs_context *src_fc);
-> >  int security_fs_context_parse_param(struct fs_context *fc, struct fs_parameter *param);
-> >  int security_sb_alloc(struct super_block *sb);
-> > @@ -629,6 +630,11 @@ static inline void security_bprm_committed_creds(struct linux_binprm *bprm)
-> >  {
-> >  }
-> >  
-> > +static inline int security_fs_context_init(struct fs_context *fc,
-> > +					   struct dentry *reference)
+On 8/5/23 07:46, Miguel Ojeda wrote:
+> On Fri, Aug 4, 2023 at 7:14 PM Martin Rodriguez Reboredo
+> <yakoyoku@gmail.com> wrote:
+>>
+>> Suggested-by: Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
 > 
-> I think that's the wrong way of doing this hook. The security hook
-> really doesn't belong into alloc_fs_context().
+> Thanks Martin!
 > 
-> I think what we want is a dedicated helper similar to vfs_dup_context():
-> 
-> // Only pass the superblock. There's no need for the dentry. I would
-> // avoid even passing fs_context but if that's preferred then sure.
-> security_fs_context_submount(struct fs_context *fc, const struct super_block *sb)
-> 
-> vfs_submount_fs_context(struct file_system_type *fs_type, struct dentry *reference)
-> {
->         fc = fs_context_for_submount(fs_type, reference);
-> 
->         security_fs_context_for_submount(fc, reference->d_sb);
-> }
-> 
-> This automatically ensures it's only called for submounts, the LSM
-> doesn't need to care about fc->purpose and this isn't called
-> in a pure allocation function for all allocation calls.
-> 
-> The we should switch all callers over to that new helper and unexport
-> that fs_context_for_submount() thing completely. Yes, that's more work
-> but that's the correct thing to do. And we need to audit fuse, cifs,
-> afs, and nfs anyway that they work fine with the new security hook.*
-> 
-> 
-> [1]: If really needed, then any additional fs specific work that needs
->      to be done during submount allocation should probably probably be
+> I am a bit confused about the Suggested-by -- did you add it due to
+> the suggestion from v1 of passing variables via command-line
+> arguments? If so, I appreciate the gesture, but the main idea/report
+> (passing the missing `cfg`s for `core` and `alloc`) is yours! :)
 
-s/allocation/creation/
+Ah, it was because you suggested the commit's text, should have been
+more clear about it, I thought that the "Suggested-by" was for any
+suggestions in reviews, and in reality it was for suggestions for
+the kernel itself. In this case I've got confused. So, because I saw
+the issue with the `rust-project.json` I'd like to rescind that
+"Suggested-by", though, FWIW you still get credit in the end when you
+do the sign-off at merge. 😇
 
->      done in a new callback.
+> The patch seems fine, I will test & apply it soon. If someone wants to
+> give it a Tested-by with rust-analyzer, that would be great too,
+> thanks! (note: it applies on top of `rust-next`).
 > 
->      struct fs_context_operations {
->             void (*free)(struct fs_context *fc);
->             int (*dup)(struct fs_context *fc, struct fs_context *src_fc);
->     +       int (*submount)(struct fs_context *fc, const struct super_block *sb);
+> Cheers,
+> Miguel
 
-in vfs_submount_fs_context() mirroring the ->dup() call in
-vfs_dup_context().
+If someone wants to test it, just try in your IDE to go into the
+definition of some member of `core` and `alloc`, e.g. `Pin` or
+`Vector`.
