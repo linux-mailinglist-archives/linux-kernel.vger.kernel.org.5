@@ -2,260 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 152FD771088
-	for <lists+linux-kernel@lfdr.de>; Sat,  5 Aug 2023 18:25:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 59C6977108A
+	for <lists+linux-kernel@lfdr.de>; Sat,  5 Aug 2023 18:26:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229656AbjHEQZx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 5 Aug 2023 12:25:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38932 "EHLO
+        id S229891AbjHEQZ7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 5 Aug 2023 12:25:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38956 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229436AbjHEQZv (ORCPT
+        with ESMTP id S229611AbjHEQZ6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 5 Aug 2023 12:25:51 -0400
-Received: from pidgin.makrotopia.org (pidgin.makrotopia.org [185.142.180.65])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85FCECD
-        for <linux-kernel@vger.kernel.org>; Sat,  5 Aug 2023 09:25:50 -0700 (PDT)
-Received: from local
-        by pidgin.makrotopia.org with esmtpsa (TLS1.3:TLS_AES_256_GCM_SHA384:256)
-         (Exim 4.96)
-        (envelope-from <daniel@makrotopia.org>)
-        id 1qSK66-0000eW-29;
-        Sat, 05 Aug 2023 16:25:46 +0000
-Date:   Sat, 5 Aug 2023 17:25:39 +0100
-From:   Daniel Golle <daniel@makrotopia.org>
-To:     Randy Dunlap <rdunlap@infradead.org>,
-        Richard Weinberger <richard@nod.at>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org
-Subject: [PATCH v2 3/7] mtd: ubi: block: use notifier to create ubiblock from
- parameter
-Message-ID: <c6944a213be459e70c1f20d2be1b40fbc44f0dd0.1691252659.git.daniel@makrotopia.org>
-References: <cover.1691252659.git.daniel@makrotopia.org>
+        Sat, 5 Aug 2023 12:25:58 -0400
+Received: from todd.t-8ch.de (todd.t-8ch.de [159.69.126.157])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E19FE10F8;
+        Sat,  5 Aug 2023 09:25:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=weissschuh.net;
+        s=mail; t=1691252753;
+        bh=n+KIGDLXUCXqwwdfMNnhnPNoQs5vP1Mvjy/BSICI1ag=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=RSf4+NaRQcnlzLmZF93FPWVNlfYzn2+aMXniJ2kae4/LSxYoDqXc09EiciDlRaEGg
+         Li0WogOIDT47XM2FfNIPFZNir25kP2nmQYZEyCeqCqpPKd97qrzNF/g96nhD/0mxmN
+         2nMIHDy6X61+m65cNi2DjRTJgz7jsP3iVkKlwkVM=
+Date:   Sat, 5 Aug 2023 18:25:52 +0200
+From:   Thomas =?utf-8?Q?Wei=C3=9Fschuh?= <linux@weissschuh.net>
+To:     Willy Tarreau <w@1wt.eu>
+Cc:     Shuah Khan <shuah@kernel.org>, linux-kselftest@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Yuan Tan <tanyuan@tinylab.org>,
+        Zhangjin Wu <falcon@tinylab.org>
+Subject: Re: [PATCH v3 05/14] tools/nolibc: stdint: use int for size_t on
+ 32bit
+Message-ID: <44f1bab4-9d0a-4e7d-a73b-2c00c6029070@t-8ch.de>
+References: <20230803-nolibc-warnings-v3-0-bcc1a096ae02@weissschuh.net>
+ <20230803-nolibc-warnings-v3-5-bcc1a096ae02@weissschuh.net>
+ <20230805161929.GA15284@1wt.eu>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <cover.1691252659.git.daniel@makrotopia.org>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20230805161929.GA15284@1wt.eu>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use UBI_VOLUME_ADDED notification to create ubiblock device specified
-on kernel cmdline or module parameter.
-This makes thing more simple and has the advantage that ubiblock devices
-on volumes which are not present at the time the ubi module is probed
-will still be created.
+On 2023-08-05 18:19:29+0200, Willy Tarreau wrote:
+> Hi Thomas,
+> 
+> On Thu, Aug 03, 2023 at 09:28:49AM +0200, Thomas Weißschuh wrote:
+> > Otherwise both gcc and clang may generate warnings about type
+> > mismatches:
+> > 
+> > sysroot/mips/include/string.h:12:14: warning: mismatch in argument 1 type of built-in function 'malloc'; expected 'unsigned int' [-Wbuiltin-declaration-mismatch]
+> >    12 | static void *malloc(size_t len);
+> >       |              ^~~~~~
+> > 
+> > Signed-off-by: Thomas Weißschuh <linux@weissschuh.net>
+> > ---
+> >  tools/include/nolibc/stdint.h | 4 ++++
+> >  1 file changed, 4 insertions(+)
+> > 
+> > diff --git a/tools/include/nolibc/stdint.h b/tools/include/nolibc/stdint.h
+> > index 4b282435a59a..0f390c3028d8 100644
+> > --- a/tools/include/nolibc/stdint.h
+> > +++ b/tools/include/nolibc/stdint.h
+> > @@ -15,7 +15,11 @@ typedef unsigned int       uint32_t;
+> >  typedef   signed int        int32_t;
+> >  typedef unsigned long long uint64_t;
+> >  typedef   signed long long  int64_t;
+> > +#if __SIZE_WIDTH__ == 64
+> >  typedef unsigned long        size_t;
+> > +#else
+> > +typedef unsigned int         size_t;
+> > +#endif
+> 
+> This one breaks gcc < 7 for me because __SIZE_WIDTH__ is not defined
+> there. However I could trace __SIZE_TYPE__ to be defined since at least
+> gcc-3.4 so instead we can do this, which will always match the type set
+> by the compiler (either "unsigned int" or "unsigned long int") :
+> 
+>   #ifdef __SIZE_TYPE__
+>   typedef __SIZE_TYPE__ size_t;
+>   #else
+>   typedef unsigned long size_t;
+>   #endif
 
-Suggested-by: Zhihao Cheng <chengzhihao1@huawei.com>
-Signed-off-by: Daniel Golle <daniel@makrotopia.org>
----
- drivers/mtd/ubi/block.c | 152 ++++++++++++++++++++++------------------
- 1 file changed, 84 insertions(+), 68 deletions(-)
+Sounds good. But do we need the fallback?
 
-diff --git a/drivers/mtd/ubi/block.c b/drivers/mtd/ubi/block.c
-index 69fa6fecb8494..e0618bbde3613 100644
---- a/drivers/mtd/ubi/block.c
-+++ b/drivers/mtd/ubi/block.c
-@@ -33,6 +33,7 @@
- #include <linux/kernel.h>
- #include <linux/list.h>
- #include <linux/mutex.h>
-+#include <linux/namei.h>
- #include <linux/slab.h>
- #include <linux/mtd/ubi.h>
- #include <linux/blkdev.h>
-@@ -65,10 +66,10 @@ struct ubiblock_pdu {
- };
- 
- /* Numbers of elements set in the @ubiblock_param array */
--static int ubiblock_devs __initdata;
-+static int ubiblock_devs;
- 
- /* MTD devices specification parameters */
--static struct ubiblock_param ubiblock_param[UBIBLOCK_MAX_DEVICES] __initdata;
-+static struct ubiblock_param ubiblock_param[UBIBLOCK_MAX_DEVICES];
- 
- struct ubiblock {
- 	struct ubi_volume_desc *desc;
-@@ -532,6 +533,85 @@ static int ubiblock_resize(struct ubi_volume_info *vi)
- 	return 0;
- }
- 
-+static bool
-+match_volume_desc(struct ubi_volume_info *vi, const char *name, int ubi_num, int vol_id)
-+{
-+	int err, len;
-+	struct path path;
-+	struct kstat stat;
-+
-+	if (ubi_num == -1) {
-+		/* No ubi num, name must be a vol device path */
-+		err = kern_path(name, LOOKUP_FOLLOW, &path);
-+		if (err)
-+			return false;
-+
-+		err = vfs_getattr(&path, &stat, STATX_TYPE, AT_STATX_SYNC_AS_STAT);
-+		path_put(&path);
-+		if (err)
-+			return false;
-+
-+		if (!S_ISCHR(stat.mode))
-+			return false;
-+
-+		if (vi->ubi_num != ubi_major2num(MAJOR(stat.rdev)))
-+			return false;
-+
-+		if (vi->vol_id != MINOR(stat.rdev) - 1)
-+			return false;
-+
-+		return true;
-+	}
-+
-+	if (vol_id == -1) {
-+		if (vi->ubi_num != ubi_num)
-+			return false;
-+
-+		len = strnlen(name, UBI_VOL_NAME_MAX + 1);
-+		if (len < 1 || vi->name_len != len)
-+			return false;
-+
-+		if (strcmp(name, vi->name))
-+			return false;
-+
-+		return true;
-+	}
-+
-+	if (vi->ubi_num != ubi_num)
-+		return false;
-+
-+	if (vi->vol_id != vol_id)
-+		return false;
-+
-+	return true;
-+}
-+
-+static void
-+ubiblock_create_from_param(struct ubi_volume_info *vi)
-+{
-+	int i, ret = 0;
-+	struct ubiblock_param *p;
-+
-+	/*
-+	 * Iterate over ubiblock cmdline parameters. If a parameter matches the
-+	 * newly added volume create the ubiblock device for it.
-+	 */
-+	for (i = 0; i < ubiblock_devs; i++) {
-+		p = &ubiblock_param[i];
-+
-+		if (!match_volume_desc(vi, p->name, p->ubi_num, p->vol_id))
-+			continue;
-+
-+		ret = ubiblock_create(vi);
-+		if (ret) {
-+			pr_err(
-+			       "UBI: block: can't add '%s' volume on ubi%d_%d, err=%d\n",
-+			       vi->name, p->ubi_num, p->vol_id, ret);
-+		}
-+		break;
-+	}
-+}
-+
- static int ubiblock_notify(struct notifier_block *nb,
- 			 unsigned long notification_type, void *ns_ptr)
- {
-@@ -539,10 +619,7 @@ static int ubiblock_notify(struct notifier_block *nb,
- 
- 	switch (notification_type) {
- 	case UBI_VOLUME_ADDED:
--		/*
--		 * We want to enforce explicit block device creation for
--		 * volumes, so when a volume is added we do nothing.
--		 */
-+		ubiblock_create_from_param(&nt->vi);
- 		break;
- 	case UBI_VOLUME_REMOVED:
- 		ubiblock_remove(&nt->vi, true);
-@@ -568,56 +645,6 @@ static struct notifier_block ubiblock_notifier = {
- 	.notifier_call = ubiblock_notify,
- };
- 
--static struct ubi_volume_desc * __init
--open_volume_desc(const char *name, int ubi_num, int vol_id)
--{
--	if (ubi_num == -1)
--		/* No ubi num, name must be a vol device path */
--		return ubi_open_volume_path(name, UBI_READONLY);
--	else if (vol_id == -1)
--		/* No vol_id, must be vol_name */
--		return ubi_open_volume_nm(ubi_num, name, UBI_READONLY);
--	else
--		return ubi_open_volume(ubi_num, vol_id, UBI_READONLY);
--}
--
--static void __init ubiblock_create_from_param(void)
--{
--	int i, ret = 0;
--	struct ubiblock_param *p;
--	struct ubi_volume_desc *desc;
--	struct ubi_volume_info vi;
--
--	/*
--	 * If there is an error creating one of the ubiblocks, continue on to
--	 * create the following ubiblocks. This helps in a circumstance where
--	 * the kernel command-line specifies multiple block devices and some
--	 * may be broken, but we still want the working ones to come up.
--	 */
--	for (i = 0; i < ubiblock_devs; i++) {
--		p = &ubiblock_param[i];
--
--		desc = open_volume_desc(p->name, p->ubi_num, p->vol_id);
--		if (IS_ERR(desc)) {
--			pr_err(
--			       "UBI: block: can't open volume on ubi%d_%d, err=%ld\n",
--			       p->ubi_num, p->vol_id, PTR_ERR(desc));
--			continue;
--		}
--
--		ubi_get_volume_info(desc, &vi);
--		ubi_close_volume(desc);
--
--		ret = ubiblock_create(&vi);
--		if (ret) {
--			pr_err(
--			       "UBI: block: can't add '%s' volume on ubi%d_%d, err=%d\n",
--			       vi.name, p->ubi_num, p->vol_id, ret);
--			continue;
--		}
--	}
--}
--
- static void ubiblock_remove_all(void)
- {
- 	struct ubiblock *next;
-@@ -643,18 +670,7 @@ int __init ubiblock_init(void)
- 	if (ubiblock_major < 0)
- 		return ubiblock_major;
- 
--	/*
--	 * Attach block devices from 'block=' module param.
--	 * Even if one block device in the param list fails to come up,
--	 * still allow the module to load and leave any others up.
--	 */
--	ubiblock_create_from_param();
--
--	/*
--	 * Block devices are only created upon user requests, so we ignore
--	 * existing volumes.
--	 */
--	ret = ubi_register_volume_notifier(&ubiblock_notifier, 1);
-+	ret = ubi_register_volume_notifier(&ubiblock_notifier, 0);
- 	if (ret)
- 		goto err_unreg;
- 	return 0;
--- 
-2.41.0
+Further below we are also unconditionally using preprocessor-defines
+like __INT_MAX__ and __LONG_MAX__.
+
+So I guess we can drop the proposed #ifdef.
+
+> Please just let me know if you want me to modify your patch accordingly.
+> I'm still continuing the tests.
+
+Feel free to modify the patch.
+
+Thanks!
+Thomas
