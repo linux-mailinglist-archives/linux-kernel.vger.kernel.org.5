@@ -2,102 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B2D0770CFC
-	for <lists+linux-kernel@lfdr.de>; Sat,  5 Aug 2023 03:21:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4FC31770CFF
+	for <lists+linux-kernel@lfdr.de>; Sat,  5 Aug 2023 03:22:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229689AbjHEBVe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Aug 2023 21:21:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49060 "EHLO
+        id S229750AbjHEBWC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Aug 2023 21:22:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49382 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229461AbjHEBVb (ORCPT
+        with ESMTP id S229675AbjHEBWA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Aug 2023 21:21:31 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2958611B;
-        Fri,  4 Aug 2023 18:21:31 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id B365360AEE;
-        Sat,  5 Aug 2023 01:21:30 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 041D4C433C7;
-        Sat,  5 Aug 2023 01:21:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691198490;
-        bh=5fV5ZuLIa4CvtbhPGd7l5Og6cHAhuYGsq6RLgVOLzlE=;
-        h=From:To:Cc:Subject:Date:From;
-        b=nwzxuZyS4OZHf8K2cqFZ8meU6DUhAjVkvPZxgBdjEZmsg4H0nJc7fbIZyu0Ckqkah
-         84aQKkFayLfZVJLCepXBIrcdbqryk2IdZicrAQMAn5SFvk+rqiGW6FEnPAo1lLzzMN
-         1HE/jfnMATQDyeTz3hzpBjWvyNRi512pZrkug/az+WB6YtO7V730cZYiJSvfmCzYwj
-         4Jj4Bg7sLAgpIL/R3a7NvBptsQHVGTUO8D/9eGJSU9RVLPebzdTU+yMG3+J5lRZ9uw
-         bUhEcG3QzMHW1A2X6wqT73/yE+bXhXYeG6CqkWf4EXR2RcUFjwgnN05fmTQEME5lL/
-         5pltWh4Dew5aA==
-From:   Stephen Boyd <sboyd@kernel.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Michael Turquette <mturquette@baylibre.com>,
-        linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [GIT PULL] clk fixes for v6.5-rc4
-Date:   Fri,  4 Aug 2023 18:21:28 -0700
-Message-ID: <20230805012129.2619470-1-sboyd@kernel.org>
-X-Mailer: git-send-email 2.41.0.640.ga95def55d0-goog
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        Fri, 4 Aug 2023 21:22:00 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.93])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A5874EE4;
+        Fri,  4 Aug 2023 18:21:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1691198518; x=1722734518;
+  h=from:to:cc:subject:date:message-id;
+  bh=8qZ03i3VQJk0gArG0C57L1TxXOVJULlo1Yez71dt/+g=;
+  b=WgqSJepR8LX5soCYvNHkgW3wRTm/UmZXcOY1Qr/Jd4B12auYFeWv5fps
+   nqNQ844Mrx+ZicoNEhyOCObEZVA6N8pw5O78t5layvK/bhUy1FtiXFdLu
+   uNNmmIp6dNTqw7JpafxFmaQeVRwwJrUghupoFwgLM7uGuxtfdzEknG4Qx
+   po12f4sdIUgwbIcpAC9q2j/ybP831APaHK8yDwzcpmISkuuoGatj5gZQM
+   oAINgVp4OfKgnGbnkwmNxGO6uTkruFsFIICu9OtbjEjsTFUVWIrcREZ9h
+   //KlFmNxyQBKfFeGg/aEosgJKAgSsCbe4S2QGKXJOD86KCMTuRNzTPs7o
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10792"; a="367735754"
+X-IronPort-AV: E=Sophos;i="6.01,256,1684825200"; 
+   d="scan'208";a="367735754"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Aug 2023 18:21:58 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10792"; a="844317613"
+X-IronPort-AV: E=Sophos;i="6.01,256,1684825200"; 
+   d="scan'208";a="844317613"
+Received: from ranerica-svr.sc.intel.com ([172.25.110.23])
+  by fmsmga002.fm.intel.com with ESMTP; 04 Aug 2023 18:21:57 -0700
+From:   Ricardo Neri <ricardo.neri-calderon@linux.intel.com>
+To:     x86@kernel.org
+Cc:     Andreas Herrmann <aherrmann@suse.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Chen Yu <yu.c.chen@intel.com>, Len Brown <len.brown@intel.com>,
+        Radu Rendec <rrendec@redhat.com>,
+        Pierre Gondois <Pierre.Gondois@arm.com>,
+        Pu Wen <puwen@hygon.cn>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        Will Deacon <will@kernel.org>, Zhang Rui <rui.zhang@intel.com>,
+        stable@vger.kernel.org, Ricardo Neri <ricardo.neri@intel.com>,
+        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
+        linux-kernel@vger.kernel.org,
+        Ricardo Neri <ricardo.neri-calderon@linux.intel.com>
+Subject: [PATCH v3 0/3] x86/cacheinfo: Set the number of leaves per CPU
+Date:   Fri,  4 Aug 2023 18:24:18 -0700
+Message-Id: <20230805012421.7002-1-ricardo.neri-calderon@linux.intel.com>
+X-Mailer: git-send-email 2.17.1
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following changes since commit 06c2afb862f9da8dc5efa4b6076a0e48c3fbaaa5:
+Hi,
 
-  Linux 6.5-rc1 (2023-07-09 13:53:13 -0700)
+This is v3 of a patchset to set the number of cache leaves independently
+for each CPU. v1 and v2 can be found here [1] and here [2].
 
-are available in the Git repository at:
+Changes since v2:
+  * This version uncovered a NULL-pointer dereference in recent changes to
+    cacheinfo[3]. This dereference is observed when the system does not
+    configure cacheinfo early during boot nor makes corrections later
+    during CPU hotplug; as is the case in x86. Patch 1 fixes this issue.
 
-  https://git.kernel.org/pub/scm/linux/kernel/git/clk/linux.git tags/clk-fixes-for-linus
+Changes since v1:
+  * Dave Hansen suggested to use the existing per-CPU ci_cpu_cacheinfo
+    variable. Now the global variable num_cache_leaves became useless.
+  * While here, I noticed that init_cache_level() also became useless:
+    x86 does not need ci_cpu_cacheinfo::num_levels.
 
-for you to fetch changes up to ae9b14582ad03abb3db66ba3f8dc5ca443ff54a1:
+[1]. https://lore.kernel.org/lkml/20230314231658.30169-1-ricardo.neri-calderon@linux.intel.com/
+[2]. https://lore.kernel.org/all/20230424001956.21434-1-ricardo.neri-calderon@linux.intel.com/
+[3]. https://lore.kernel.org/all/20230412185759.755408-1-rrendec@redhat.com/
 
-  Merge tag 'clk-meson-fixes-v6.5-1' of https://github.com/BayLibre/clk-meson into clk-fixes (2023-07-26 11:47:57 -0700)
+Ricardo Neri (3):
+  cacheinfo: Allocate memory for memory if not done from the primary CPU
+  x86/cacheinfo: Delete global num_cache_leaves
+  x86/cacheinfo: Clean out init_cache_level()
 
-----------------------------------------------------------------
-A few clk driver fixes for some SoC clk drivers:
-
- - Change a usleep() to udelay() to avoid scheduling while atomic
-   in the Amlogic PLL code
- - Revert a patch to the Mediatek MT8183 driver that caused an
-   out-of-bounds write
- - Return the right error value when devm_of_iomap() fails in
-   imx93_clocks_probe()
- - Constrain the Kconfig for the fixed mmio clk so that it depends on
-   HAS_IOMEM and can't be compiled on architectures such as s390
-
-----------------------------------------------------------------
-Baoquan He (1):
-      clk: fixed-mmio: make COMMON_CLK_FIXED_MMIO depend on HAS_IOMEM
-
-Chen-Yu Tsai (1):
-      clk: mediatek: mt8183: Add back SSPM related clocks
-
-Dmitry Rokosov (1):
-      clk: meson: change usleep_range() to udelay() for atomic context
-
-Geert Uytterhoeven (1):
-      clk: imx93: Propagate correct error in imx93_clocks_probe()
-
-Stephen Boyd (1):
-      Merge tag 'clk-meson-fixes-v6.5-1' of https://github.com/BayLibre/clk-meson into clk-fixes
-
- drivers/clk/Kconfig               |  1 +
- drivers/clk/imx/clk-imx93.c       |  2 +-
- drivers/clk/mediatek/clk-mt8183.c | 27 +++++++++++++++++++++++++++
- drivers/clk/meson/clk-pll.c       |  4 ++--
- 4 files changed, 31 insertions(+), 3 deletions(-)
+ arch/x86/kernel/cpu/cacheinfo.c | 50 ++++++++++++++++-----------------
+ drivers/base/cacheinfo.c        |  6 +++-
+ 2 files changed, 30 insertions(+), 26 deletions(-)
 
 -- 
-https://git.kernel.org/pub/scm/linux/kernel/git/clk/linux.git/
-https://git.kernel.org/pub/scm/linux/kernel/git/sboyd/spmi.git
+2.25.1
+
