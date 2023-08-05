@@ -2,134 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BEA3277121C
-	for <lists+linux-kernel@lfdr.de>; Sat,  5 Aug 2023 22:25:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5EEE577121F
+	for <lists+linux-kernel@lfdr.de>; Sat,  5 Aug 2023 22:26:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230083AbjHEUZx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 5 Aug 2023 16:25:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38082 "EHLO
+        id S229545AbjHEU00 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 5 Aug 2023 16:26:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38480 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229481AbjHEUZv (ORCPT
+        with ESMTP id S229481AbjHEU0Y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 5 Aug 2023 16:25:51 -0400
-Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D317730C0
-        for <linux-kernel@vger.kernel.org>; Sat,  5 Aug 2023 13:25:43 -0700 (PDT)
-Received: by mail-lf1-x12b.google.com with SMTP id 2adb3069b0e04-4fe48d0ab0fso5147973e87.1
-        for <linux-kernel@vger.kernel.org>; Sat, 05 Aug 2023 13:25:43 -0700 (PDT)
+        Sat, 5 Aug 2023 16:26:24 -0400
+Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D870D13E
+        for <linux-kernel@vger.kernel.org>; Sat,  5 Aug 2023 13:26:22 -0700 (PDT)
+Received: by mail-ej1-x62d.google.com with SMTP id a640c23a62f3a-99c4923195dso453774566b.2
+        for <linux-kernel@vger.kernel.org>; Sat, 05 Aug 2023 13:26:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=shruggie-ro.20221208.gappssmtp.com; s=20221208; t=1691267142; x=1691871942;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=S/suAOSQGI0i2N3TQ0S3FcTenWc2CSU80rhZyaL3wWQ=;
-        b=vzJu69AXVlydBjMeUkuoOsvDJvYRRLiVtN3vpYzV7KWnnwNzVoZypW7GzRHN+hCQYS
-         OBwgfHGkgBxeehtuNnIih7ti7zDd47ca/m63PBHw8wlLosA/Ok1kRG4El9Q43mPo8F1H
-         o1lZZUphOMIBDfDpQeB6Mc6QMb7V5rCzWRCo7hpDF/gkSJkgH5ho+ff1CsDNlmuezW1I
-         kpeA8VU6PZQuY5ktaYv50ioKuVBlWnmFp5e13CP58FPPkotFFbysNpclhKPLRaINQE79
-         dbMymKfjz7W969iN6RuZcHq13fEcQQ3GCXfQSrbNnYLkoglQQzdbNW/6m5d57KXwmR+t
-         Eysw==
+        d=linaro.org; s=google; t=1691267181; x=1691871981;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=QAz255BT1WAd5rdSTPS0g8lSyWT42ZSsNJRJpO6M4DQ=;
+        b=v5XYHEGfJJGxE2sv+IcdbZf7UDfptunfq2jK3aS6gIxAf/NdA8csOgV650Nck4uF0Z
+         36nun/djtlUzrFtKKKCYdBQBu8hresLkWuMVFeFRWxwde5lnIndWnhEKQPxlsOR9LvRj
+         n0DlPvJVyQFhBxyYf+uwceAdQQbFB7/iY8v9nJAyikMPw7LT5pCezXS8HHb/ElzakH/s
+         /oMTyntb0ELMn0/7WE7YOUrUmicHkfDghpFJQOvfSyyuLW6ABR/UsS0l3R/IeqBvJOlX
+         J0wMl5jfulcsR4oCZ3LZb13SOW96g1pEo87j2ty7a67S4OqvxwwaVaFC1x2e+T8lc9p9
+         UZwA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691267142; x=1691871942;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=S/suAOSQGI0i2N3TQ0S3FcTenWc2CSU80rhZyaL3wWQ=;
-        b=CHUPn48qNUjKfSONffOr8LDrtOPxClN53ESOct9IeIbtIhQZgXvu87ZxwG2EPrGYNJ
-         /t6Svv1kfaV8NFIA+i0OFBIsKV5r6gg4QDDBVFH/v6rOF1kRcSZFbObcB8Neydsmylh8
-         J5htMB7QqYdUSTKSCGiDwVLa2T6EIwEbdoAp7Lw2/LX/JdWcXwjK21WfOpwBFVU927nQ
-         KzPsDkfSYkeYLtpwPs8OHjLPnkxcul3vD84dUwTM0ZZ6IxDaXe/uFC0UyF2LoHRzXGVU
-         NvL7iACi+az/DbFCHsA80hMUh7ivjgFnbPwKHLE1iFqFkdLWr19kSyT8kpfF2oecD6XL
-         H9cQ==
-X-Gm-Message-State: AOJu0YyTQYafPIzSl/40Bqgk70yEeHmgjd3TQ8pm581ogfp31TRq5f5Q
-        9dWaWVxGBBG10lDZ3u3QE6rv1cqkZ2gWCRnZwZXyfw==
-X-Google-Smtp-Source: AGHT+IG1fHQr26PowhIL+bVvPOeVUOf1J8ORZz4zxqcjR8Suj7CJa+qKReyYYbylTbh064RiNIq8iVo4LWxVZcGb9/Y=
-X-Received: by 2002:a05:6512:32cb:b0:4f8:6dfd:faa0 with SMTP id
- f11-20020a05651232cb00b004f86dfdfaa0mr3894093lfg.2.1691267141788; Sat, 05 Aug
- 2023 13:25:41 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1691267181; x=1691871981;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=QAz255BT1WAd5rdSTPS0g8lSyWT42ZSsNJRJpO6M4DQ=;
+        b=U/ii9WEXH7+PcxrXUwmag6JjCQAJUUrGjKQmPI5o6md0A397APQ4lzZxiYpVkAi0bY
+         4au5eGLv/FvO2fF7w5GrpFHRe9dqBhzNMTI7vZA863DCjDU5XLDdhVjrElNdxoJ7XjPa
+         QsZ7E2EkXZzA44zOqL+thyUeo3JzAezOTG2ayoH1vufAtoG6F4wtMMYN8R5GB+uYEGxz
+         byZ0SWd4ZN3lp5SsHQ/8laUffauUQUhLb9d6lilka8QIUTiijFz7q7RNmrxkmDLGSjdW
+         IkQ6/FoILOuy12t0tscTTmzlsYHWi51P32ZpnoW1sLAjniSqeJ0jbTS//Kx18dzwbcSm
+         cmFg==
+X-Gm-Message-State: AOJu0YwXVvbbNY+N9XQZ7CO/+U57knHndik/pZpAIt6HEYJNjcM8IWa0
+        vIZ3zSLNwM50wffHV37Dfeu/Tw==
+X-Google-Smtp-Source: AGHT+IFbhS/cauLdtL9VOjxZ7i1FT0GuhqIHFL+9PJhLRc33p48fvYVc9wjgRx6Cgg0kA80miKBrFQ==
+X-Received: by 2002:a17:906:7388:b0:99b:d2a9:99f5 with SMTP id f8-20020a170906738800b0099bd2a999f5mr4863494ejl.6.1691267181362;
+        Sat, 05 Aug 2023 13:26:21 -0700 (PDT)
+Received: from [192.168.1.20] ([178.197.222.245])
+        by smtp.gmail.com with ESMTPSA id y16-20020a170906071000b00992d122af63sm3076421ejb.89.2023.08.05.13.26.19
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 05 Aug 2023 13:26:21 -0700 (PDT)
+Message-ID: <7d7b53e8-fe48-f87c-24b2-ccf64e29eeb2@linaro.org>
+Date:   Sat, 5 Aug 2023 22:26:19 +0200
 MIME-Version: 1.0
-References: <20230713202123.231445-1-alex@shruggie.ro> <20230713202123.231445-2-alex@shruggie.ro>
- <20230714172444.GA4003281-robh@kernel.org> <CAH3L5Qoj+sue=QnR2Lp12x3Hz2t2BNnarZHJiqxL3Gtf6M=bsA@mail.gmail.com>
- <7fa2d457-4ae9-42f5-be73-80549aae558c@lunn.ch>
-In-Reply-To: <7fa2d457-4ae9-42f5-be73-80549aae558c@lunn.ch>
-From:   Alexandru Ardelean <alex@shruggie.ro>
-Date:   Sat, 5 Aug 2023 23:25:31 +0300
-Message-ID: <CAH3L5Qpd+6740SeQJh+1J8MjC1BjHE=EEReK9AOuJW_Ey3V4mA@mail.gmail.com>
-Subject: Re: [PATCH v2 2/2] dt-bindings: net: phy: vsc8531: document
- 'vsc8531,clkout-freq-mhz' property
-To:     Andrew Lunn <andrew@lunn.ch>
-Cc:     Rob Herring <robh@kernel.org>, netdev@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
-        pabeni@redhat.com, krzysztof.kozlowski+dt@linaro.org,
-        conor+dt@kernel.org, hkallweit1@gmail.com, linux@armlinux.org.uk,
-        olteanv@gmail.com, marius.muresan@mxt.ro
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.14.0
+Subject: Re: [PATCH v3 1/2] dt-bindings: hwmon: Add MAX6639
+Content-Language: en-US
+To:     Guenter Roeck <linux@roeck-us.net>,
+        Conor Dooley <conor@kernel.org>,
+        Naresh Solanki <naresh.solanki@9elements.com>
+Cc:     krzysztof.kozlowski+dt@linaro.org,
+        Jean Delvare <jdelvare@suse.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Marcello Sylvester Bauer <sylv@sylv.io>,
+        linux-hwmon@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20230803144401.1151065-1-Naresh.Solanki@9elements.com>
+ <20230804-tamper-numbness-0117bb53a921@spud>
+ <3f947ad6-eed6-59ff-e4e6-8b21d90eb803@roeck-us.net>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <3f947ad6-eed6-59ff-e4e6-8b21d90eb803@roeck-us.net>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Jul 16, 2023 at 6:07=E2=80=AFPM Andrew Lunn <andrew@lunn.ch> wrote:
->
-> > So, there's the adin.c PHY driver which has a similar functionality
-> > with the adin_config_clk_out().
-> > Something in the micrel.c PHY driver (with
-> > micrel,rmii-reference-clock-select-25-mhz); hopefully I did not
-> > misread the code about that one.
-> > And the at803x.c PHY driver has a 'qca,clk-out-frequency' property too.
-> >
-> > Now with the mscc.c driver, there is a common-ality that could use a fr=
-amework.
-> >
-> > @Rob are you suggesting something like registering a clock provider
-> > (somewhere in the PHY framework) and let the PHY drivers use it?
-> > Usually, these clock signals (once enabled on startup), don't get
-> > turned off; but I've worked mostly on reference designs; somewhere
-> > down the line some people get different requirements.
-> > These clocks get connected back to the MAC (usually), and are usually
-> > like a "fixed-clock" driver.
->
-> They are not necessarily fixed clocks. The clock you are adding here
-> has three frequencies. Two frequencies is common for PHY devices. So
-> you need to use something more than clk-fixed-rate.c. Also, mostly
-> PHYs allows the clock to be gated.
->
-> > In our case, turning off the clock would be needed if the PHY
-> > negotiates a non-gigabit link; i.e 100 or 10 Mbps; in that case, the
-> > CLKOUT signal is not needed and it can be turned off.
->
-> Who does not need it? The PHY, or the MAC? If it is the MAC, it should
-> really be the MAC driver which uses the common clock API to turn it
-> off. Just watch out for deadlocks with phydev->lock.
+On 04/08/2023 18:10, Guenter Roeck wrote:
+> On 8/4/23 08:48, Conor Dooley wrote:
+>> On Thu, Aug 03, 2023 at 04:43:59PM +0200, Naresh Solanki wrote:
+>>> From: Marcello Sylvester Bauer <sylv@sylv.io>
+>>>
+>>> Add binding documentation for Maxim MAX6639 fan-speed controller.
+>>>
+>>> Signed-off-by: Marcello Sylvester Bauer <sylv@sylv.io>
+>>> Signed-off-by: Naresh Solanki <Naresh.Solanki@9elements.com>
+>>> ---
+>>> Changes in V3:
+>>> - Update title
+>>> - Add pulses-per-revolution, supplies & interrupts
+>>> Changes in V2:
+>>> - Update subject
+>>> - Drop blank lines
+>>> ---
+>>>   .../bindings/hwmon/maxim,max6639.yaml         | 60 +++++++++++++++++++
+>>>   1 file changed, 60 insertions(+)
+>>>   create mode 100644 Documentation/devicetree/bindings/hwmon/maxim,max6639.yaml
+>>>
+>>> diff --git a/Documentation/devicetree/bindings/hwmon/maxim,max6639.yaml b/Documentation/devicetree/bindings/hwmon/maxim,max6639.yaml
+>>> new file mode 100644
+>>> index 000000000000..b3292061ca58
+>>> --- /dev/null
+>>> +++ b/Documentation/devicetree/bindings/hwmon/maxim,max6639.yaml
+>>> @@ -0,0 +1,60 @@
+>>> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
+>>> +%YAML 1.2
+>>> +---
+>>> +$id: http://devicetree.org/schemas/hwmon/maxim,max6639.yaml#
+>>> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+>>> +
+>>> +title: Maxim MAX6639 Fan Controller
+>>> +
+>>> +maintainers:
+>>> +  - Naresh Solanki <Naresh.Solanki@9elements.com>
+>>> +
+>>> +description: |
+>>> +  The MAX6639 is a 2-channel temperature monitor with dual, automatic, PWM
+>>> +  fan-speed controller.  It monitors its own temperature and one external
+>>> +  diode-connected transistor or the temperatures of two external diode-connected
+>>> +  transistors, typically available in CPUs, FPGAs, or GPUs.
+>>
+>>> +  fan-supply:
+>>> +    description: Phandle to the regulator that provides power to the fan.
+>>
+>>> +  pulses-per-revolution:
+>>> +    description:
+>>> +      Define the number of pulses per fan revolution for each tachometer
+>>> +      input as an integer.
+>>> +    $ref: /schemas/types.yaml#/definitions/uint32
+>>> +    enum: [1, 2, 3, 4]
+>>> +    default: 2
+>>
+>> Apologies if I am digging up old wounds here, since there was quite a
+>> bit of back and forth on the last version, but these two newly added
+>> properties look to be common with the "pwm-fan" and with
+>> "adi,axi-fan-control". At what point should these live in a common
+>> schema instead?
+>>
+>> Otherwise, this looks okay to me, although I'll leave things to
+>> Krzysztof since he had a lot to say about the previous version.
+>>
+> 
+> Rob has said that he won't accept any fan controller bindings without a generic
+> schema. At the same time he has said that he expects properties such as the
+> number of pulses per revolution to be attached to a 'fan' description, and he
+> wants pwm related properties of fan controllers to be modeled as pwm controllers.
+> And now we have a notion of a regulator providing power to the fan (which again
+> would be the fan controller, at least in cases where the fan controller
+> provides direct voltage to the fan). On top of that, this fan-supply property
+> should presumably, again, be part of a fan description and not be part of the
+> controller description. I don't think anyone knows how to make this all work
+> (I for sure don't), so it is very unlikely we'll see a generic fan controller
+> schema anytime soon.
+> 
+> Given that neither fan-supply nor pulses-per-revolution is implemented in the
+> driver, and given that I am not aware of any fans which would have a value for
+> pulses-per-revolution other than 2, my personal suggestion would be to add the
+> chip to trivial devices and be done with it for the time being.
 
-The MAC needs the clock in GMII mode, when going in gigabit mode.
+Yeah, this also would work.
 
->
-> > Maybe start out with a hook in 'struct phy_driver'?
-> > Like "int (*config_clk_out)(struct phy_device *dev);" or something?
-> > And underneath, this delegates to the CLK framework?
->
-> Yes, have phy_device.c implement that registration/unregister of the
-> clock, deal with locking, and call into the PHY driver to actually
-> manipulate the clock. You missed the requested frequency in the
-> function prototype. I would also call it refclk. Three is sometimes
-> confusion about the different clocks.
+Best regards,
+Krzysztof
 
-Ack.
-Then something like:
-int (*config_refclk)(struct phy_device *dev, uint32_t frequency);
-
->
-> Traditionally, clk_enable() can be called in atomic context, but that
-> is not allowed with phylib, it always assume thread context. I don't
-> know if the clock framework has some helpers for that, but i also
-> don't see there being a real need for MAC to enable the clock in
-> atomic context.
->
->         Andrew
