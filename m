@@ -2,497 +2,295 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DCD1B770DAD
-	for <lists+linux-kernel@lfdr.de>; Sat,  5 Aug 2023 06:13:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A297C770DB9
+	for <lists+linux-kernel@lfdr.de>; Sat,  5 Aug 2023 06:26:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229667AbjHEENQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 5 Aug 2023 00:13:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47034 "EHLO
+        id S229615AbjHEEYi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 5 Aug 2023 00:24:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47904 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229437AbjHEENO (ORCPT
+        with ESMTP id S229437AbjHEEYg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 5 Aug 2023 00:13:14 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6AE5E72;
-        Fri,  4 Aug 2023 21:13:11 -0700 (PDT)
+        Sat, 5 Aug 2023 00:24:36 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B064B4683
+        for <linux-kernel@vger.kernel.org>; Fri,  4 Aug 2023 21:24:34 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 25AF760301;
-        Sat,  5 Aug 2023 04:13:11 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B59E6C433C7;
-        Sat,  5 Aug 2023 04:13:08 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 09A12602E0
+        for <linux-kernel@vger.kernel.org>; Sat,  5 Aug 2023 04:24:34 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6ACEDC433C9
+        for <linux-kernel@vger.kernel.org>; Sat,  5 Aug 2023 04:24:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691208790;
-        bh=B+Hti/ulp/uevcivvv8Im+RHQ75ZRaC0akSks3lId6s=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=DDlmdienoVYpj3NlELQW8GVagfLHzJ51d7+mfKFRO64A6nKCDxhFHUCZjbDNGh9Cb
-         E4kzS5t3GyTHdJwDvHIukr9dNRj8aNnwtMVnyVmz7QFb931xYPOZdTWcChn6WLIBUV
-         bcHmWDSmCmbE6P2eW+AwiYIO5YaPWWtmM48j3kFMx+Pksi4uA19xw7XM54BRLmfOb7
-         q9mfiQgfFW12ptFkTN0kbsd+pILyK62r2LZXH3elxeNrXiilBzz0tP+ZYsrlKD0Vkk
-         ZjKWFzMZyYdxxtdql0rBcQoe/a6iQ2dmxacf8pBlMmOmlZ7p8QX1slclioAHTVPr7l
-         um6YVLGLq5ZGg==
-Date:   Fri, 4 Aug 2023 21:16:08 -0700
-From:   Bjorn Andersson <andersson@kernel.org>
-To:     Elliot Berman <quic_eberman@quicinc.com>
-Cc:     Alex Elder <elder@linaro.org>,
-        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-        Prakruthi Deepak Heragu <quic_pheragu@quicinc.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Jassi Brar <jassisinghbrar@gmail.com>,
-        Murali Nalajala <quic_mnalajal@quicinc.com>,
-        Trilok Soni <quic_tsoni@quicinc.com>,
-        Srivatsa Vaddagiri <quic_svaddagi@quicinc.com>,
-        Carl van Schaik <quic_cvanscha@quicinc.com>,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Bagas Sanjaya <bagasdotme@gmail.com>,
-        Will Deacon <will@kernel.org>, Andy Gross <agross@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH v14 06/25] mailbox: Add Gunyah message queue mailbox
-Message-ID: <pkgymb7mqsyzpseyizeqxwgwbyqq3o56motbhkrcic3d5bdwvk@7opxedbsfi6j>
-References: <20230613172054.3959700-1-quic_eberman@quicinc.com>
- <20230613172054.3959700-7-quic_eberman@quicinc.com>
+        s=k20201202; t=1691209473;
+        bh=ewtEDcg34QoYbGgN5Vr123G5dU4FHcWD9MrlE/jZp5w=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=PeEN7uSMlA5XhVAHthnzVZtzO0e0Rg9wt6WEm86JL2MwUrlAhOzZOj3nezx3nsVXp
+         +2Bizf66P21zt+dZUYeo4TLwxOVWVix9HXtPHNC1sK6amjAmpORxEhP/j5+DHf7ozk
+         l8D/Y0z7KcdqNuSPDVcM2MRR/B+QQo9VlsiUkzpDju87dlJiX9yqfY5rskMNrPN5hM
+         p0+77nUnnhSJ7a81qxkuCroSrIUPzdzTRsbr34hnfhe3jndG1AO2P1QrtbiPS/fg+Y
+         sGlJ7XcljdyR8J5F9wCoiPKXB3MuHLoeo1wPJIx+es0jgRnHzrL/+jJRZlfb28hTut
+         Chgg0RlBnrk3Q==
+Received: by mail-ed1-f41.google.com with SMTP id 4fb4d7f45d1cf-52256241c66so5836868a12.1
+        for <linux-kernel@vger.kernel.org>; Fri, 04 Aug 2023 21:24:33 -0700 (PDT)
+X-Gm-Message-State: AOJu0YxSfvEROeVQNNcFnqKLuHoZ8WTMU9fxsw8C2SKTe3jCqo8kVEer
+        lBdJxV9Muhmt+Y3f5z9CXuG9GpL3NJHFX+HritE=
+X-Google-Smtp-Source: AGHT+IHM3/0cnah9HbCYv1j+tlNf6izw+zb33C1aQ3wTKFaLvihKs2cBxKaqkSshwhEJOfXCGvMY9LtuPZRfl26gSUc=
+X-Received: by 2002:a05:6402:2747:b0:51e:2c4b:6f1e with SMTP id
+ z7-20020a056402274700b0051e2c4b6f1emr1841498edd.14.1691209471650; Fri, 04 Aug
+ 2023 21:24:31 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230613172054.3959700-7-quic_eberman@quicinc.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <20230804084900.1135660-2-leobras@redhat.com> <20230804084900.1135660-6-leobras@redhat.com>
+ <CAJF2gTTOT3_3K_cWNY9n_DgRoPhYEhBLno=bh57r9D--OavREQ@mail.gmail.com> <CAJ6HWG4gy7HV11-cdoB0VAP2z1Zw-zyJhNRpJ1eDMmrkvnob3w@mail.gmail.com>
+In-Reply-To: <CAJ6HWG4gy7HV11-cdoB0VAP2z1Zw-zyJhNRpJ1eDMmrkvnob3w@mail.gmail.com>
+From:   Guo Ren <guoren@kernel.org>
+Date:   Sat, 5 Aug 2023 12:24:20 +0800
+X-Gmail-Original-Message-ID: <CAJF2gTQY5RX87Zo8HcM1Og-Oc6vd5Vyj97KL-o6UcqMaT4oxng@mail.gmail.com>
+Message-ID: <CAJF2gTQY5RX87Zo8HcM1Og-Oc6vd5Vyj97KL-o6UcqMaT4oxng@mail.gmail.com>
+Subject: Re: [RFC PATCH v3 4/5] riscv/cmpxchg: Implement cmpxchg for variables
+ of size 1 and 2
+To:     Leonardo Bras Soares Passos <leobras@redhat.com>
+Cc:     Will Deacon <will@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Andrea Parri <parri.andrea@gmail.com>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Andrzej Hajda <andrzej.hajda@intel.com>,
+        Palmer Dabbelt <palmer@rivosinc.com>,
+        linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 13, 2023 at 10:20:34AM -0700, Elliot Berman wrote:
-> Gunyah message queues are a unidirectional inter-VM pipe for messages up
-> to 1024 bytes. This driver supports pairing a receiver message queue and
-> a transmitter message queue to expose a single mailbox channel.
-> 
+On Sat, Aug 5, 2023 at 11:14=E2=80=AFAM Leonardo Bras Soares Passos
+<leobras@redhat.com> wrote:
+>
+> Hello Guo Ren, thanks for the feedback!
+>
+> On Fri, Aug 4, 2023 at 2:45=E2=80=AFPM Guo Ren <guoren@kernel.org> wrote:
+> >
+> > On Fri, Aug 4, 2023 at 4:49=E2=80=AFAM Leonardo Bras <leobras@redhat.co=
+m> wrote:
+> > >
+> > > cmpxchg for variables of size 1-byte and 2-bytes is not yet available=
+ for
+> > > riscv, even though its present in other architectures such as arm64 a=
+nd
+> > > x86. This could lead to not being able to implement some locking mech=
+anisms
+> > > or requiring some rework to make it work properly.
+> > >
+> > > Implement 1-byte and 2-bytes cmpxchg in order to achieve parity with =
+other
+> > > architectures.
+> > >
+> > > Signed-off-by: Leonardo Bras <leobras@redhat.com>
+> > > ---
+> > >  arch/riscv/include/asm/cmpxchg.h | 35 ++++++++++++++++++++++++++++++=
+++
+> > >  1 file changed, 35 insertions(+)
+> > >
+> > > diff --git a/arch/riscv/include/asm/cmpxchg.h b/arch/riscv/include/as=
+m/cmpxchg.h
+> > > index 5a07646fae65..dfb433ac544f 100644
+> > > --- a/arch/riscv/include/asm/cmpxchg.h
+> > > +++ b/arch/riscv/include/asm/cmpxchg.h
+> > > @@ -72,6 +72,36 @@
+> > >   * indicated by comparing RETURN with OLD.
+> > >   */
+> > >
+> > > +#define __arch_cmpxchg_mask(sc_sfx, prepend, append, r, p, o, n)    =
+   \
+> > > +({                                                                  =
+   \
+> > > +       /* Depends on 2-byte variables being 2-byte aligned */       =
+   \
+> > > +       ulong __s =3D ((ulong)(p) & 0x3) * BITS_PER_BYTE;            =
+     \
+> > > +       ulong __mask =3D GENMASK(((sizeof(*p)) * BITS_PER_BYTE) - 1, =
+0)   \
+> > > +                       << __s;                                      =
+   \
+> > > +       ulong __newx =3D (ulong)(n) << __s;                          =
+     \
+> > > +       ulong __oldx =3D (ulong)(o) << __s;                          =
+     \
+> > > +       ulong __retx;                                                =
+   \
+> > > +       register unsigned int __rc;                                  =
+   \
+> > > +                                                                    =
+   \
+> > > +       __asm__ __volatile__ (                                       =
+   \
+> > > +               prepend                                              =
+   \
+> > > +               "0:     lr.w %0, %2\n"                               =
+   \
+> > > +               "       and  %0, %0, %z5\n"                          =
+   \
+> > > +               "       bne  %0, %z3, 1f\n"                          =
+   \
+>
+> > bug:
+> > -               "       and  %0, %0, %z5\n"                            =
+ \
+> > -               "       bne  %0, %z3, 1f\n"                            =
+ \
+> > +               "       and  %1, %0, %z5\n"                            =
+ \
+> > +               "       bne  %1, %z3, 1f\n"                            =
+ \
+> > Your code breaks the %0.
+>
+> What do you mean by breaks here?
+>
+> In the end of this macro, I intended  to have __retx =3D (*p & __mask)
+> which means the value is clean to be rotated at the end of the macro
+> (no need to apply the mask again): r =3D __ret >> __s;
+>
+> Also, I assumed we are supposed to return the same variable type
+> as the pointer, so this is valid:
+> u8 a, *b, c;
+> a =3D xchg(b, c);
+>
+> Is this correct?
+I missed your removing "__ret & mask" at the end. So this may not the probl=
+em.
 
-I don't find value in using the mailbox framework to abstract the
-message queues. You've split the resource-manager code in two separate
-subsystems, with the complexities introduced by the abstraction, while
-still being one implementation. Every message sent requires a tasklet
-to be scheduled before continuing and you're unnecessarily waiting for
-the tx fifo when you're filling the message queue.
+Your patch can't boot. After chewing your code for several hours, I
+found a problem:
+diff --git a/arch/riscv/include/asm/cmpxchg.h b/arch/riscv/include/asm/cmpx=
+chg.h
+index 943f094375c7..67bcce63b267 100644
+--- a/arch/riscv/include/asm/cmpxchg.h
++++ b/arch/riscv/include/asm/cmpxchg.h
+@@ -14,6 +14,7 @@
+ #define __arch_xchg_mask(prepend, append, r, p, n)                     \
+ ({                                                                     \
+        /* Depends on 2-byte variables being 2-byte aligned */          \
++       volatile ulong *__p =3D (ulong *)((ulong)(p) & ~0x3);             \
+        ulong __s =3D ((ulong)(p) & 0x3) * BITS_PER_BYTE;                 \
+        ulong __mask =3D GENMASK(((sizeof(*p)) * BITS_PER_BYTE) - 1, 0)   \
+                        << __s;                                         \
+@@ -29,7 +30,7 @@
+               "        sc.w %1, %1, %2\n"                              \
+               "        bnez %1, 0b\n"                                  \
+               append                                                   \
+-              : "=3D&r" (__retx), "=3D&r" (__rc), "+A" (*(p))             =
+ \
++              : "=3D&r" (__retx), "=3D&r" (__rc), "+A" (*(__p))           =
+ \
+               : "rJ" (__newx), "rJ" (~__mask)                          \
+               : "memory");                                             \
+                                                                        \
+@@ -106,6 +107,7 @@
+ #define __arch_cmpxchg_mask(sc_sfx, prepend, append, r, p, o, n)       \
+ ({                                                                     \
+        /* Depends on 2-byte variables being 2-byte aligned */          \
++       volatile ulong *__p =3D (ulong *)((ulong)(p) & ~0x3);             \
+        ulong __s =3D ((ulong)(p) & 0x3) * BITS_PER_BYTE;                 \
+        ulong __mask =3D GENMASK(((sizeof(*p)) * BITS_PER_BYTE) - 1, 0)   \
+                        << __s;                                         \
+@@ -125,7 +127,7 @@
+                "       bnez %1, 0b\n"                                  \
+                append                                                  \
+                "1:\n"                                                  \
+-               : "=3D&r" (__retx), "=3D&r" (__rc), "+A" (*(p))            =
+ \
++               : "=3D&r" (__retx), "=3D&r" (__rc), "+A" (*(__p))          =
+ \
+                : "rJ" ((long)__oldx), "rJ" (__newx),                   \
+                  "rJ" (__mask), "rJ" (~__mask)                         \
+                : "memory");                                            \
 
-You can effectively implement the same functionality, with 10% of the
-code if not involving the mailbox framework.
+But the lkvm-static still can't boot with paravirt_spinlock .... Are
+there any atomic tests in the Linux?
 
-> Reviewed-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-> Signed-off-by: Elliot Berman <quic_eberman@quicinc.com>
-> ---
->  Documentation/virt/gunyah/message-queue.rst |   8 +
->  drivers/mailbox/Makefile                    |   2 +
->  drivers/mailbox/gunyah-msgq.c               | 219 ++++++++++++++++++++
->  include/linux/gunyah.h                      |  57 +++++
->  4 files changed, 286 insertions(+)
->  create mode 100644 drivers/mailbox/gunyah-msgq.c
-> 
-> diff --git a/Documentation/virt/gunyah/message-queue.rst b/Documentation/virt/gunyah/message-queue.rst
-> index b352918ae54b4..70d82a4ef32d7 100644
-> --- a/Documentation/virt/gunyah/message-queue.rst
-> +++ b/Documentation/virt/gunyah/message-queue.rst
-> @@ -61,3 +61,11 @@ vIRQ: two TX message queues will have two vIRQs (and two capability IDs).
->        |               |         |                 |         |               |
->        |               |         |                 |         |               |
->        +---------------+         +-----------------+         +---------------+
-> +
-> +Gunyah message queues are exposed as mailboxes. To create the mailbox, create
-> +a mbox_client and call `gh_msgq_init()`. On receipt of the RX_READY interrupt,
-> +all messages in the RX message queue are read and pushed via the `rx_callback`
-> +of the registered mbox_client.
-> +
-> +.. kernel-doc:: drivers/mailbox/gunyah-msgq.c
-> +   :identifiers: gh_msgq_init
-> diff --git a/drivers/mailbox/Makefile b/drivers/mailbox/Makefile
-> index fc93761171113..5f929bb55e9a5 100644
-> --- a/drivers/mailbox/Makefile
-> +++ b/drivers/mailbox/Makefile
-> @@ -55,6 +55,8 @@ obj-$(CONFIG_MTK_CMDQ_MBOX)	+= mtk-cmdq-mailbox.o
->  
->  obj-$(CONFIG_ZYNQMP_IPI_MBOX)	+= zynqmp-ipi-mailbox.o
->  
-> +obj-$(CONFIG_GUNYAH)		+= gunyah-msgq.o
-> +
->  obj-$(CONFIG_SUN6I_MSGBOX)	+= sun6i-msgbox.o
->  
->  obj-$(CONFIG_SPRD_MBOX)		+= sprd-mailbox.o
-> diff --git a/drivers/mailbox/gunyah-msgq.c b/drivers/mailbox/gunyah-msgq.c
-> new file mode 100644
-> index 0000000000000..7f777339278eb
-> --- /dev/null
-> +++ b/drivers/mailbox/gunyah-msgq.c
-> @@ -0,0 +1,219 @@
-> +// SPDX-License-Identifier: GPL-2.0-only
-> +/*
-> + * Copyright (c) 2022-2023 Qualcomm Innovation Center, Inc. All rights reserved.
-> + */
-> +
-> +#include <linux/mailbox_controller.h>
-> +#include <linux/module.h>
-> +#include <linux/interrupt.h>
-> +#include <linux/gunyah.h>
-> +#include <linux/printk.h>
-> +#include <linux/init.h>
-> +#include <linux/slab.h>
-> +#include <linux/wait.h>
-> +
-> +#define mbox_chan_to_msgq(chan) (container_of(chan->mbox, struct gh_msgq, mbox))
-> +
-> +static irqreturn_t gh_msgq_rx_irq_handler(int irq, void *data)
-> +{
-> +	struct gh_msgq *msgq = data;
-> +	struct gh_msgq_rx_data rx_data;
-> +	enum gh_error gh_error;
+I found you use some "register int variables". Would it cause the problem?
 
-err would be sufficient
+You can reference this file, and it has passed the lock torture test:
+https://github.com/guoren83/linux/blob/sg2042-master-qspinlock-64ilp32_v4/a=
+rch/riscv/include/asm/cmpxchg.h
 
-> +	bool ready = true;
+I also merged your patches with the qspinlock series: (Use the above
+cmpxchg.h the lkvm would run normally.)
+https://github.com/guoren83/linux/tree/qspinlock_v11
 
-s/read/more_data/ perhaps?
 
-> +
-> +	while (ready) {
 
-Doesn't really matter logically, but what you really mean is:
+>
+> > > +               append                                               =
+   \
+> > > +               "1:\n"                                               =
+   \
+> > > +               : "=3D&r" (__retx), "=3D&r" (__rc), "+A" (*(p))      =
+       \
+> > > +               : "rJ" ((long)__oldx), "rJ" (__newx),                =
+   \
+> > > +                 "rJ" (__mask), "rJ" (~__mask)                      =
+   \
+> > > +               : "memory");                                         =
+   \
+> > > +                                                                    =
+   \
+> > > +       r =3D (__typeof__(*(p)))(__retx >> __s);                     =
+     \
+> > > +})
+> > > +
+> > >
+> > >  #define __arch_cmpxchg(lr_sfx, sc_sfx, prepend, append, r, p, co, o,=
+ n)        \
+> > >  ({                                                                  =
+   \
+> > > @@ -98,6 +128,11 @@
+> > >         __typeof__(*(ptr)) __ret;                                    =
+   \
+> > >                                                                      =
+   \
+> > >         switch (sizeof(*__ptr)) {                                    =
+   \
+> > > +       case 1:                                                      =
+   \
+> > > +       case 2:                                                      =
+   \
+> > > +               __arch_cmpxchg_mask(sc_sfx, prepend, append,         =
+   \
+> > > +                                       __ret, __ptr, __old, __new); =
+   \
+> > > +               break;                                               =
+   \
+> > >         case 4:                                                      =
+   \
+> > >                 __arch_cmpxchg(".w", ".w" sc_sfx, prepend, append,   =
+   \
+> > >                                 __ret, __ptr, (long), __old, __new); =
+   \
+> > > --
+> > > 2.41.0
+> > >
+> >
+> >
+> > --
+> > Best Regards
+> >  Guo Ren
+> >
+>
 
-do {
-	...
-} while (more_data);
 
-So perhaps reasonable to type that.
-
-> +		gh_error = gh_hypercall_msgq_recv(msgq->rx_ghrsc->capid,
-> +				&rx_data.data, sizeof(rx_data.data),
-> +				&rx_data.length, &ready);
-> +		if (gh_error != GH_ERROR_OK) {
-> +			if (gh_error != GH_ERROR_MSGQUEUE_EMPTY)
-> +				dev_warn(msgq->mbox.dev, "Failed to receive data: %d\n", gh_error);
-> +			break;
-> +		}
-
-		if (err == GH_ERROR_MSGQUEUE_EMPTY) {
-			break;
-		} else if (err != GH_ERROR_OK) {
-			dev_warn(...)
-			break;
-		}
-
-		handle_message();
-
-> +		if (likely(gh_msgq_chan(msgq)->cl))
-> +			mbox_chan_received_data(gh_msgq_chan(msgq), &rx_data);
-> +	}
-> +
-> +	return IRQ_HANDLED;
-> +}
-> +
-> +/* Fired when message queue transitions from "full" to "space available" to send messages */
-> +static irqreturn_t gh_msgq_tx_irq_handler(int irq, void *data)
-> +{
-> +	struct gh_msgq *msgq = data;
-> +
-> +	mbox_chan_txdone(gh_msgq_chan(msgq), 0);
-> +
-> +	return IRQ_HANDLED;
-> +}
-> +
-> +/* Fired after sending message and hypercall told us there was more space available. */
-> +static void gh_msgq_txdone_tasklet(struct tasklet_struct *tasklet)
-> +{
-> +	struct gh_msgq *msgq = container_of(tasklet, struct gh_msgq, txdone_tasklet);
-> +
-> +	mbox_chan_txdone(gh_msgq_chan(msgq), msgq->last_ret);
-> +}
-> +
-> +static int gh_msgq_send_data(struct mbox_chan *chan, void *data)
-> +{
-> +	struct gh_msgq *msgq = mbox_chan_to_msgq(chan);
-> +	struct gh_msgq_tx_data *msgq_data = data;
-> +	u64 tx_flags = 0;
-> +	enum gh_error gh_error;
-> +	bool ready;
-
-s/ready/not_full/ or invert the values in gh_hypercall_msgq_send()
-
-> +
-> +	if (!msgq->tx_ghrsc)
-> +		return -EOPNOTSUPP;
-> +
-> +	if (msgq_data->push)
-> +		tx_flags |= GH_HYPERCALL_MSGQ_TX_FLAGS_PUSH;
-> +
-> +	gh_error = gh_hypercall_msgq_send(msgq->tx_ghrsc->capid, msgq_data->length, msgq_data->data,
-> +						tx_flags, &ready);
-> +
-> +	/**
-> +	 * unlikely because Linux tracks state of msgq and should not try to
-> +	 * send message when msgq is full.
-> +	 */
-> +	if (unlikely(gh_error == GH_ERROR_MSGQUEUE_FULL))
-> +		return -EAGAIN;
-
-You're propagating this all the way up to the application.
-
-> +
-> +	/**
-> +	 * Propagate all other errors to client. If we return error to mailbox
-> +	 * framework, then no other messages can be sent and nobody will know
-> +	 * to retry this message.
-> +	 */
-> +	msgq->last_ret = gh_error_remap(gh_error);
-> +
-> +	/**
-> +	 * This message was successfully sent, but message queue isn't ready to
-> +	 * accept more messages because it's now full. Mailbox framework
-> +	 * requires that we only report that message was transmitted when
-> +	 * we're ready to transmit another message. We'll get that in the form
-> +	 * of tx IRQ once the other side starts to drain the msgq.
-> +	 */
-> +	if (gh_error == GH_ERROR_OK) {
-> +		if (!ready)
-> +			return 0;
-
-The message was committed successfully to the queue, there's no reason
-for this VM to wait for the receiving VM to start consuming the queue
-before returning from mbox_send_message().
-
-As mentioned above, if you move away from the mailbox framework you can
-instead keep track of when gh_hypercall_msgq_send() returned "the
-message queue was filled up" and wait for the tx interrupt before making
-the next call.
-
-This will allow this instance to continue executing to some natural
-point of waiting for resources.
-
-> +	} else {
-> +		dev_err(msgq->mbox.dev, "Failed to send data: %d (%d)\n", gh_error, msgq->last_ret);
-> +	}
-> +
-> +	/**
-> +	 * We can send more messages. Mailbox framework requires that tx done
-> +	 * happens asynchronously to sending the message. Gunyah message queues
-> +	 * tell us right away on the hypercall return whether we can send more
-> +	 * messages. To work around this, defer the txdone to a tasklet.
-> +	 */
-> +	tasklet_schedule(&msgq->txdone_tasklet);
-
-Ick.
-
-> +
-> +	return 0;
-> +}
-> +
-> +static struct mbox_chan_ops gh_msgq_ops = {
-> +	.send_data = gh_msgq_send_data,
-> +};
-> +
-> +/**
-> + * gh_msgq_init() - Initialize a Gunyah message queue with an mbox_client
-> + * @parent: device parent used for the mailbox controller
-> + * @msgq: Pointer to the gh_msgq to initialize
-> + * @cl: A mailbox client to bind to the mailbox channel that the message queue creates
-> + * @tx_ghrsc: optional, the transmission side of the message queue
-> + * @rx_ghrsc: optional, the receiving side of the message queue
-> + *
-> + * At least one of tx_ghrsc and rx_ghrsc must be not NULL. Most message queue use cases come with
-> + * a pair of message queues to facilitate bidirectional communication. When tx_ghrsc is set,
-> + * the client can send messages with mbox_send_message(gh_msgq_chan(msgq), msg). When rx_ghrsc
-> + * is set, the mbox_client must register an .rx_callback() and the message queue driver will
-> + * deliver all available messages upon receiving the RX ready interrupt. The messages should be
-> + * consumed or copied by the client right away as the gh_msgq_rx_data will be replaced/destroyed
-> + * after the callback.
-> + *
-> + * Returns - 0 on success, negative otherwise
-> + */
-> +int gh_msgq_init(struct device *parent, struct gh_msgq *msgq, struct mbox_client *cl,
-> +		 struct gh_resource *tx_ghrsc, struct gh_resource *rx_ghrsc)
-> +{
-> +	int ret;
-> +
-> +	/* Must have at least a tx_ghrsc or rx_ghrsc and that they are the right device types */
-> +	if ((!tx_ghrsc && !rx_ghrsc) ||
-> +	    (tx_ghrsc && tx_ghrsc->type != GH_RESOURCE_TYPE_MSGQ_TX) ||
-> +	    (rx_ghrsc && rx_ghrsc->type != GH_RESOURCE_TYPE_MSGQ_RX))
-> +		return -EINVAL;
-> +
-> +	msgq->mbox.dev = parent;
-> +	msgq->mbox.ops = &gh_msgq_ops;
-> +	msgq->mbox.num_chans = 1;
-> +	msgq->mbox.txdone_irq = true;
-> +	msgq->mbox.chans = &msgq->mbox_chan;
-> +
-> +	ret = mbox_controller_register(&msgq->mbox);
-> +	if (ret)
-> +		return ret;
-> +
-> +	ret = mbox_bind_client(gh_msgq_chan(msgq), cl);
-> +	if (ret)
-> +		goto err_mbox;
-> +
-> +	if (tx_ghrsc) {
-> +		msgq->tx_ghrsc = tx_ghrsc;
-> +
-> +		ret = request_irq(msgq->tx_ghrsc->irq, gh_msgq_tx_irq_handler, 0, "gh_msgq_tx",
-
-Wrap your lines to 80 characters, unless there's a good reason. You
-don't have a good reason here.
-
-> +				msgq);
-> +		if (ret)
-> +			goto err_tx_ghrsc;
-> +
-> +		enable_irq_wake(msgq->tx_ghrsc->irq);
-> +
-> +		tasklet_setup(&msgq->txdone_tasklet, gh_msgq_txdone_tasklet);
-> +	}
-> +
-> +	if (rx_ghrsc) {
-> +		msgq->rx_ghrsc = rx_ghrsc;
-> +
-> +		ret = request_threaded_irq(msgq->rx_ghrsc->irq, NULL, gh_msgq_rx_irq_handler,
-> +						IRQF_ONESHOT, "gh_msgq_rx", msgq);
-> +		if (ret)
-> +			goto err_tx_irq;
-> +
-> +		enable_irq_wake(msgq->rx_ghrsc->irq);
-> +	}
-> +
-> +	return 0;
-> +err_tx_irq:
-> +	if (msgq->tx_ghrsc)
-> +		free_irq(msgq->tx_ghrsc->irq, msgq);
-> +
-> +	msgq->rx_ghrsc = NULL;
-> +err_tx_ghrsc:
-> +	msgq->tx_ghrsc = NULL;
-> +err_mbox:
-> +	mbox_controller_unregister(&msgq->mbox);
-> +	return ret;
-> +}
-> +EXPORT_SYMBOL_GPL(gh_msgq_init);
-> +
-> +void gh_msgq_remove(struct gh_msgq *msgq)
-> +{
-> +	mbox_free_channel(gh_msgq_chan(msgq));
-> +
-> +	if (msgq->rx_ghrsc)
-> +		free_irq(msgq->rx_ghrsc->irq, msgq);
-> +
-> +	if (msgq->tx_ghrsc) {
-> +		tasklet_kill(&msgq->txdone_tasklet);
-> +		free_irq(msgq->tx_ghrsc->irq, msgq);
-> +	}
-> +
-> +	mbox_controller_unregister(&msgq->mbox);
-> +
-> +	msgq->rx_ghrsc = NULL;
-> +	msgq->tx_ghrsc = NULL;
-> +}
-> +EXPORT_SYMBOL_GPL(gh_msgq_remove);
-> +
-> +MODULE_LICENSE("GPL");
-> +MODULE_DESCRIPTION("Gunyah Message Queue Driver");
-> diff --git a/include/linux/gunyah.h b/include/linux/gunyah.h
-> index 01a6f202d037e..982e27d10d57f 100644
-> --- a/include/linux/gunyah.h
-> +++ b/include/linux/gunyah.h
-> @@ -8,11 +8,68 @@
->  
->  #include <linux/bitfield.h>
->  #include <linux/errno.h>
-> +#include <linux/interrupt.h>
->  #include <linux/limits.h>
-> +#include <linux/mailbox_controller.h>
-> +#include <linux/mailbox_client.h>
->  #include <linux/types.h>
->  
-> +/* Matches resource manager's resource types for VM_GET_HYP_RESOURCES RPC */
-> +enum gh_resource_type {
-> +	GH_RESOURCE_TYPE_BELL_TX	= 0,
-> +	GH_RESOURCE_TYPE_BELL_RX	= 1,
-> +	GH_RESOURCE_TYPE_MSGQ_TX	= 2,
-> +	GH_RESOURCE_TYPE_MSGQ_RX	= 3,
-> +	GH_RESOURCE_TYPE_VCPU		= 4,
-> +};
-> +
-> +struct gh_resource {
-> +	enum gh_resource_type type;
-> +	u64 capid;
-> +	unsigned int irq;
-> +};
-> +
-> +/**
-> + * Gunyah Message Queues
-> + */
-> +
-> +#define GH_MSGQ_MAX_MSG_SIZE		240
-> +
-> +struct gh_msgq_tx_data {
-> +	size_t length;
-> +	bool push;
-> +	char data[];
-> +};
-> +
-> +struct gh_msgq_rx_data {
-> +	size_t length;
-> +	char data[GH_MSGQ_MAX_MSG_SIZE];
-> +};
-> +
-> +struct gh_msgq {
-
-This is just private data, exposed so that it can be intertwined with
-the resource manager implementation.
-
-> +	struct gh_resource *tx_ghrsc;
-> +	struct gh_resource *rx_ghrsc;
-> +
-> +	/* msgq private */
-> +	int last_ret; /* Linux error, not GH_STATUS_* */
-> +	struct mbox_chan mbox_chan;
-> +	struct mbox_controller mbox;
-> +	struct tasklet_struct txdone_tasklet;
-> +};
-> +
-
-Double newlines.
-
-> +
-> +int gh_msgq_init(struct device *parent, struct gh_msgq *msgq, struct mbox_client *cl,
-> +		     struct gh_resource *tx_ghrsc, struct gh_resource *rx_ghrsc);
-> +void gh_msgq_remove(struct gh_msgq *msgq);
-> +
-> +static inline struct mbox_chan *gh_msgq_chan(struct gh_msgq *msgq)
-> +{
-> +	return &msgq->mbox.chans[0];
-> +}
-> +
->  /******************************************************************************/
->  /* Common arch-independent definitions for Gunyah hypercalls                  */
-> +
-
-Unrelated change.
-
-Regards,
-Bjorn
-
->  #define GH_CAPID_INVAL	U64_MAX
->  #define GH_VMID_ROOT_VM	0xff
->  
-> -- 
-> 2.40.0
-> 
+--
+Best Regards
+ Guo Ren
