@@ -2,73 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 77BFE771186
-	for <lists+linux-kernel@lfdr.de>; Sat,  5 Aug 2023 20:43:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BC860771188
+	for <lists+linux-kernel@lfdr.de>; Sat,  5 Aug 2023 20:44:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230193AbjHESnM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 5 Aug 2023 14:43:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46170 "EHLO
+        id S230092AbjHESoO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 5 Aug 2023 14:44:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46852 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230083AbjHESnI (ORCPT
+        with ESMTP id S229441AbjHESoM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 5 Aug 2023 14:43:08 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3DB222737
-        for <linux-kernel@vger.kernel.org>; Sat,  5 Aug 2023 11:43:07 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id C775360E76
-        for <linux-kernel@vger.kernel.org>; Sat,  5 Aug 2023 18:43:06 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B1A49C433C8;
-        Sat,  5 Aug 2023 18:43:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
-        s=korg; t=1691260986;
-        bh=JxNWPx3YcT6FMDu/5paY892p5ex0sPcNRYPgD4XnjbY=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=BatuvWtbx/l8UXQLE1KQYGbHxOLMOAYTzVa5DuYV/BgKbhBeD999i+dBaXDURPOrN
-         wCWJ1ImQviAbA26hoxC+DXISpUUAfexqfZwyQlAZPRVu8oPS/qAmeCObeFCQclzb4h
-         U3SuZTR8+efB0Uutos+C7M/dtHslwNkQXYflgO6g=
-Date:   Sat, 5 Aug 2023 11:43:04 -0700
-From:   Andrew Morton <akpm@linux-foundation.org>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     Petr Mladek <pmladek@suse.com>, Marco Elver <elver@google.com>,
-        linux-kernel@vger.kernel.org, kasan-dev@googlegroups.com,
-        linux-mm@kvack.org, Steven Rostedt <rostedt@goodmis.org>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Alexander Potapenko <glider@google.com>,
-        Dmitry Vyukov <dvyukov@google.com>
-Subject: Re: [PATCH v2 2/3] lib/vsprintf: Split out sprintf() and friends
-Message-Id: <20230805114304.001f8afe1d325dbb6f05d67e@linux-foundation.org>
-In-Reply-To: <20230805175027.50029-3-andriy.shevchenko@linux.intel.com>
-References: <20230805175027.50029-1-andriy.shevchenko@linux.intel.com>
-        <20230805175027.50029-3-andriy.shevchenko@linux.intel.com>
-X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+        Sat, 5 Aug 2023 14:44:12 -0400
+Received: from smtpbguseast2.qq.com (smtpbguseast2.qq.com [54.204.34.130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 166F81BE4;
+        Sat,  5 Aug 2023 11:44:09 -0700 (PDT)
+X-QQ-mid: bizesmtp81t1691261034tbgrmf1h
+Received: from linux-lab-host.localdomain ( [116.30.131.233])
+        by bizesmtp.qq.com (ESMTP) with 
+        id ; Sun, 06 Aug 2023 02:43:53 +0800 (CST)
+X-QQ-SSF: 00200000000000E0X000B00A0000000
+X-QQ-FEAT: aRJAvSRewFYU4SW2XrRMbeVjTtmWizIV2aT4qPHNUwsXnhy5ooszTAXsDyuid
+        KPxZh/k6Tu3wnF7+7MSV1i5DmzWuqjNsXVelJGMecR+8kSgpDKQH9bNwbwA6S0aOTT+wOJ6
+        r7yLn7NoBe0D0B56Z2bzxKLLQaN7Rr37cw4gapbooNST8jmWoG11rkfZw719q4kn73iLugy
+        TQP2xKPdKaGem6Sz8Mi2mJjTmh//kcx3M3Xuf+fZSnq/fQv4OrHnlf/9kxCY2CnswtfAkVt
+        ishKI8baPY9FDdWBzpCV1+rPtWizDnW86rlHYF0Fpin9oXU9016SLZ6TAjwFIS2e+/h0Fxc
+        tr5b5xRceoo8EimWJ5BV2DE92VcyVb4ZK/xUXwG7aZp+CWxr3g96R8Ai80kmRCcjJGIXHF+
+        ltxAbgVXkFU=
+X-QQ-GoodBg: 0
+X-BIZMAIL-ID: 10814934079519102711
+From:   Zhangjin Wu <falcon@tinylab.org>
+To:     w@1wt.eu
+Cc:     falcon@tinylab.org, arnd@arndb.de, linux-kernel@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, tanyuan@tinylab.org,
+        thomas@t-8ch.de,
+        =?UTF-8?q?Thomas=20Wei=C3=9Fschuh?= <linux@weissschuh.net>
+Subject: [PATCH v6 5/8] selftests/nolibc: add test support for ppc64le
+Date:   Sun,  6 Aug 2023 02:43:53 +0800
+Message-Id: <b7576fb55bf85ade0ef6d79c54d9f292d99e0320.1691259983.git.falcon@tinylab.org>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <cover.1691259983.git.falcon@tinylab.org>
+References: <cover.1691259983.git.falcon@tinylab.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-QQ-SENDSIZE: 520
+Feedback-ID: bizesmtp:tinylab.org:qybglogicsvrgz:qybglogicsvrgz5a-1
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat,  5 Aug 2023 20:50:26 +0300 Andy Shevchenko <andriy.shevchenko@linux.intel.com> wrote:
+Kernel uses ARCH=powerpc for both 32-bit and 64-bit PowerPC, here adds a
+ppc64le variant for little endian 64-bit PowerPC, users can pass
+XARCH=ppc64le to test it.
 
-> kernel.h is being used as a dump for all kinds of stuff for a long time.
-> sprintf() and friends are used in many drivers without need of the full
-> kernel.h dependency train with it.
+The powernv machine of qemu-system-ppc64le is used for there is just a
+working powernv_defconfig.
 
-There seems little point in this unless someone signs up to convert
-lots of code to include sprintf.h instead of kernel.h?
+As the document [1] shows:
 
-And such conversions will presumably cause all sorts of nasties
-which require additional work?
+  PowerNV (as Non-Virtualized) is the “bare metal” platform using the
+  OPAL firmware. It runs Linux on IBM and OpenPOWER systems and it can be
+  used as an hypervisor OS, running KVM guests, or simply as a host OS.
 
-So... what's the plan here?
+Notes,
+
+- since the VSX support may be disabled in kernel side, to avoid
+  "illegal instruction" errors due to missing VSX kernel support, let's
+  simply let compiler not generate vector/scalar (VSX) instructions via
+  the '-mno-vsx' option.
+
+- little endian ppc64 prefers elfv2 to elfv1 if the toolchain (e.g. gcc
+  13.1.0) supports it, let's align with kernel, otherwise, our elfv1
+  binary will not run on kernel with elfv2 ABI.
+
+[1]: https://qemu.readthedocs.io/en/latest/system/ppc/powernv.html
+
+Suggested-by: Willy Tarreau <w@1wt.eu>
+Link: https://lore.kernel.org/lkml/20230722120747.GC17311@1wt.eu/
+Reviewed-by: Thomas Weißschuh <linux@weissschuh.net>
+Signed-off-by: Zhangjin Wu <falcon@tinylab.org>
+---
+ tools/testing/selftests/nolibc/Makefile | 6 ++++++
+ 1 file changed, 6 insertions(+)
+
+diff --git a/tools/testing/selftests/nolibc/Makefile b/tools/testing/selftests/nolibc/Makefile
+index cac501e0c7cf..586f278ddd66 100644
+--- a/tools/testing/selftests/nolibc/Makefile
++++ b/tools/testing/selftests/nolibc/Makefile
+@@ -35,6 +35,7 @@ XARCH            = $(or $(XARCH_$(ARCH)),$(ARCH))
+ 
+ # map from user input variants to their kernel supported architectures
+ ARCH_ppc         = powerpc
++ARCH_ppc64le     = powerpc
+ ARCH            := $(or $(ARCH_$(XARCH)),$(XARCH))
+ 
+ # kernel image names by architecture
+@@ -45,6 +46,7 @@ IMAGE_arm64      = arch/arm64/boot/Image
+ IMAGE_arm        = arch/arm/boot/zImage
+ IMAGE_mips       = vmlinuz
+ IMAGE_ppc        = vmlinux
++IMAGE_ppc64le    = arch/powerpc/boot/zImage
+ IMAGE_riscv      = arch/riscv/boot/Image
+ IMAGE_s390       = arch/s390/boot/bzImage
+ IMAGE_loongarch  = arch/loongarch/boot/vmlinuz.efi
+@@ -59,6 +61,7 @@ DEFCONFIG_arm64      = defconfig
+ DEFCONFIG_arm        = multi_v7_defconfig
+ DEFCONFIG_mips       = malta_defconfig
+ DEFCONFIG_ppc        = pmac32_defconfig
++DEFCONFIG_ppc64le    = powernv_defconfig
+ DEFCONFIG_riscv      = defconfig
+ DEFCONFIG_s390       = defconfig
+ DEFCONFIG_loongarch  = defconfig
+@@ -75,6 +78,7 @@ QEMU_ARCH_arm64      = aarch64
+ QEMU_ARCH_arm        = arm
+ QEMU_ARCH_mips       = mipsel  # works with malta_defconfig
+ QEMU_ARCH_ppc        = ppc
++QEMU_ARCH_ppc64le    = ppc64le
+ QEMU_ARCH_riscv      = riscv64
+ QEMU_ARCH_s390       = s390x
+ QEMU_ARCH_loongarch  = loongarch64
+@@ -88,6 +92,7 @@ QEMU_ARGS_arm64      = -M virt -cpu cortex-a53 -append "panic=-1 $(TEST:%=NOLIBC
+ QEMU_ARGS_arm        = -M virt -append "panic=-1 $(TEST:%=NOLIBC_TEST=%)"
+ QEMU_ARGS_mips       = -M malta -append "panic=-1 $(TEST:%=NOLIBC_TEST=%)"
+ QEMU_ARGS_ppc        = -M g3beige -append "console=ttyS0 panic=-1 $(TEST:%=NOLIBC_TEST=%)"
++QEMU_ARGS_ppc64le    = -M powernv -append "console=hvc0 panic=-1 $(TEST:%=NOLIBC_TEST=%)"
+ QEMU_ARGS_riscv      = -M virt -append "console=ttyS0 panic=-1 $(TEST:%=NOLIBC_TEST=%)"
+ QEMU_ARGS_s390       = -M s390-ccw-virtio -m 1G -append "console=ttyS0 panic=-1 $(TEST:%=NOLIBC_TEST=%)"
+ QEMU_ARGS_loongarch  = -M virt -append "console=ttyS0,115200 panic=-1 $(TEST:%=NOLIBC_TEST=%)"
+@@ -104,6 +109,7 @@ Q=@
+ endif
+ 
+ CFLAGS_ppc = -m32 -mbig-endian -mno-vsx $(call cc-option,-mmultiple)
++CFLAGS_ppc64le = -m64 -mlittle-endian -mno-vsx $(call cc-option,-mabi=elfv2)
+ CFLAGS_s390 = -m64
+ CFLAGS_mips = -EL
+ CFLAGS_STACKPROTECTOR ?= $(call cc-option,-mstack-protector-guard=global $(call cc-option,-fstack-protector-all))
+-- 
+2.25.1
+
