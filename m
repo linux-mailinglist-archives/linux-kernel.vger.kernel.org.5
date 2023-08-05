@@ -2,109 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 167707710E1
-	for <lists+linux-kernel@lfdr.de>; Sat,  5 Aug 2023 19:17:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B336D7710DD
+	for <lists+linux-kernel@lfdr.de>; Sat,  5 Aug 2023 19:17:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230101AbjHERRn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 5 Aug 2023 13:17:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51862 "EHLO
+        id S230100AbjHERRb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 5 Aug 2023 13:17:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51630 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229516AbjHERRi (ORCPT
+        with ESMTP id S229516AbjHERR2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 5 Aug 2023 13:17:38 -0400
-Received: from lelv0142.ext.ti.com (lelv0142.ext.ti.com [198.47.23.249])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98A864228;
-        Sat,  5 Aug 2023 10:17:22 -0700 (PDT)
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
-        by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 375HH5AP016470;
-        Sat, 5 Aug 2023 12:17:05 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1691255825;
-        bh=4jQZBB3DlVCu77H3Axbkc2fb17BRIk/4s588muh0kUM=;
-        h=Date:From:To:CC:Subject:References:In-Reply-To;
-        b=vGUjn6I8z5eeFajASFHWqfCv4+oNLsbxdDMrSrFA/yamgylh7G8NtRbC6agxWdmEl
-         eNXIbtYsxortpLbvDCw4qnIwKoZCj59xZFMkzNouI2Zs4y0fEEyEm4ATS0yMCQLXfW
-         orP7PHk+KGjeLzL/nAc0ui41sJnaz8WNNpsyLunQ=
-Received: from DFLE109.ent.ti.com (dfle109.ent.ti.com [10.64.6.30])
-        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 375HH5Ta081641
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Sat, 5 Aug 2023 12:17:05 -0500
-Received: from DFLE110.ent.ti.com (10.64.6.31) by DFLE109.ent.ti.com
- (10.64.6.30) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Sat, 5
- Aug 2023 12:17:02 -0500
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DFLE110.ent.ti.com
- (10.64.6.31) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Sat, 5 Aug 2023 12:17:02 -0500
-Received: from localhost (ileaxei01-snat2.itg.ti.com [10.180.69.6])
-        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 375HH2K7036810;
-        Sat, 5 Aug 2023 12:17:02 -0500
-Date:   Sat, 5 Aug 2023 12:17:02 -0500
-From:   Nishanth Menon <nm@ti.com>
-To:     Dhruva Gole <d-gole@ti.com>
-CC:     Linus Walleij <linus.walleij@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Tony Lindgren <tony@atomide.com>, <linux-gpio@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-omap@vger.kernel.org>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Conor Dooley <conor.dooley@microchip.com>
-Subject: Re: [PATCH V3] dt-bindings: pinctrl: pinctrl-single: add am625
- compatible
-Message-ID: <20230805171702.hmlu7hb7sia44pd7@blouse>
-References: <20230804050737.635186-1-d-gole@ti.com>
- <20230804211432.xxyf74h6a2e5x4qi@reenter>
- <20230805051455.dag3ualnj7udyf76@dhruva>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20230805051455.dag3ualnj7udyf76@dhruva>
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+        Sat, 5 Aug 2023 13:17:28 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1A7B44B0
+        for <linux-kernel@vger.kernel.org>; Sat,  5 Aug 2023 10:17:07 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 4A3C860B58
+        for <linux-kernel@vger.kernel.org>; Sat,  5 Aug 2023 17:17:07 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 826CCC433C8;
+        Sat,  5 Aug 2023 17:17:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
+        s=korg; t=1691255826;
+        bh=AOpLCYFW168ND86mxqBnQZPc5+390+3vfxj/HBFuURo=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=rpCCU5Hgwsc+2UH+IR8bzAzCGvstNbtn0pPpFEePLtrTZ1DSYYjBxu++AdFZ/2+Sf
+         mi66iY7YKFb6UUfVcGim68NwGO97aREeP8VT+vDP8hpIBoKiGXZucb6ymgZN1kfK53
+         2Bxo0Uqguq6RZG4vm4VS5GZXxV3bMo9aUP/Swidc=
+Date:   Sat, 5 Aug 2023 10:17:05 -0700
+From:   Andrew Morton <akpm@linux-foundation.org>
+To:     Liu Song <liusong@linux.alibaba.com>
+Cc:     dianders@chromium.org, pmladek@suse.com,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] watchdog/hardlockup: set watchdog_hardlockup_warned to
+ true as early as possible
+Message-Id: <20230805101705.3a38ce9aacc924f1c9f0842b@linux-foundation.org>
+In-Reply-To: <20230805160144.121875-1-liusong@linux.alibaba.com>
+References: <20230805160144.121875-1-liusong@linux.alibaba.com>
+X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10:44-20230805, Dhruva Gole wrote:
-> On Aug 04, 2023 at 16:14:32 -0500, Nishanth Menon wrote:
-> > On 10:37-20230804, Dhruva Gole wrote:
-> > > Add the am625 compatible property to add support for the new
-> > > wakeup enable and status bits positions
-> > > 
-> > > Cc: Nishanth Menon <nm@ti.com>
-> > > Cc: Vignesh Raghavendra <vigneshr@ti.com>
-> > > CC: Tony Lindgren <tony@atomide.com>
-> > > Acked-by: Conor Dooley <conor.dooley@microchip.com>
-> > > Signed-off-by: Dhruva Gole <d-gole@ti.com>
-> > > ---
-> > 
-> > How about the driver changes to actually support this compatible?
-> 
-> Wanted to post this patch before I posted the driver changes,
-> have posted them here now:
-> 
-> https://lore.kernel.org/all/20230805045554.786092-1-d-gole@ti.com
-> 
+On Sun,  6 Aug 2023 00:01:44 +0800 Liu Song <liusong@linux.alibaba.com> wrote:
 
-Please dont patches piecemeal - it makes no sense to review without
-context.
+> Since we want to ensure only printing hardlockups once, it is necessary
+> to set "watchdog_hardlockup_warned" to true as early as possible.
+> 
+> ...
+>
+> --- a/kernel/watchdog.c
+> +++ b/kernel/watchdog.c
+> @@ -180,6 +180,8 @@ void watchdog_hardlockup_check(unsigned int cpu, struct pt_regs *regs)
+>  		/* Only print hardlockups once. */
+>  		if (per_cpu(watchdog_hardlockup_warned, cpu))
+>  			return;
+> +		else
+> +			per_cpu(watchdog_hardlockup_warned, cpu) = true;
 
-Please send future series organized as follows:
-* binding
-* driver updates
-* if any dts updates are relevant - mark them as DONOTMERGE to let the
-  driver maintainer know that the dts patches go via SoC tree - most
-  maintainers know this, but it is better to be safe.
--- 
-Regards,
-Nishanth Menon
-Key (0xDDB5849D1736249D) / Fingerprint: F8A2 8693 54EB 8232 17A3  1A34 DDB5 849D 1736 249D
+The "else" is unneeded.
+  
+>  		pr_emerg("Watchdog detected hard LOCKUP on cpu %d\n", cpu);
+>  		print_modules();
+> @@ -206,8 +208,6 @@ void watchdog_hardlockup_check(unsigned int cpu, struct pt_regs *regs)
+>  
+>  		if (hardlockup_panic)
+>  			nmi_panic(regs, "Hard LOCKUP");
+> -
+> -		per_cpu(watchdog_hardlockup_warned, cpu) = true;
+>  	} else {
+>  		per_cpu(watchdog_hardlockup_warned, cpu) = false;
+>  	}
+
+When resending, please tell us some more about the effects of the
+change.  Presumably there are circumstances in which excess output is
+produced?  If so, describe these circumstances and the observed
+effects.
+
