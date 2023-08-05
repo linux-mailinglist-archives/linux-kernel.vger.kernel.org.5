@@ -2,97 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DEAB7771262
-	for <lists+linux-kernel@lfdr.de>; Sat,  5 Aug 2023 23:32:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D38A771268
+	for <lists+linux-kernel@lfdr.de>; Sat,  5 Aug 2023 23:38:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229714AbjHEVcJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 5 Aug 2023 17:32:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52304 "EHLO
+        id S229733AbjHEVia (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 5 Aug 2023 17:38:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53004 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229542AbjHEVcH (ORCPT
+        with ESMTP id S229436AbjHEVi3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 5 Aug 2023 17:32:07 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B59DC2D54
-        for <linux-kernel@vger.kernel.org>; Sat,  5 Aug 2023 14:32:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1691271123; x=1722807123;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=foxztf3bggQrYhlFlsEZq/4CQgtVKP5w/vnsGUlzlbk=;
-  b=RpZQVaFRI3NzHBYZWay4x49DKPyBhG+F5BNSjw6LI2vpygRD8EfwNCyL
-   KOsvWUZYX4d+q8uVdAXKSFyplF9tIZ2SGUzdoXBmin4+6OFNmJuAK70OI
-   RJxy/y6ylQpC/WF3cVCr+0/oc/7FdTJW+/mCMCj9kuPlGPYGSS94BJHHQ
-   mM8xaSjjZyPS/fBg+uOxWw4TC+ilnvKxtHLCb+H9TsfKPGBatmvMoOXWB
-   PSy6xo0puXpB3BtYqH/DAgcRjvvYq+seoMMi+FNsSYUxp3pgX270xcLhx
-   SgPrk6cEF9qSGPPKESQZdUiqexhHODSVwIqxRCBNH6JjTh7CKxT99jMQ7
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10793"; a="360408039"
-X-IronPort-AV: E=Sophos;i="6.01,258,1684825200"; 
-   d="scan'208";a="360408039"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Aug 2023 14:32:03 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10793"; a="730458453"
-X-IronPort-AV: E=Sophos;i="6.01,258,1684825200"; 
-   d="scan'208";a="730458453"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by orsmga002.jf.intel.com with ESMTP; 05 Aug 2023 14:32:00 -0700
-Received: from andy by smile.fi.intel.com with local (Exim 4.96)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1qSOsP-004wdI-36;
-        Sun, 06 Aug 2023 00:31:57 +0300
-Date:   Sun, 6 Aug 2023 00:31:57 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     Petr Mladek <pmladek@suse.com>, Marco Elver <elver@google.com>,
-        linux-kernel@vger.kernel.org, kasan-dev@googlegroups.com,
-        linux-mm@kvack.org, Steven Rostedt <rostedt@goodmis.org>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Alexander Potapenko <glider@google.com>,
-        Dmitry Vyukov <dvyukov@google.com>
-Subject: Re: [PATCH v2 2/3] lib/vsprintf: Split out sprintf() and friends
-Message-ID: <ZM6/za76TZyX5tdg@smile.fi.intel.com>
-References: <20230805175027.50029-1-andriy.shevchenko@linux.intel.com>
- <20230805175027.50029-3-andriy.shevchenko@linux.intel.com>
- <20230805114304.001f8afe1d325dbb6f05d67e@linux-foundation.org>
+        Sat, 5 Aug 2023 17:38:29 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9DC9E1BCA;
+        Sat,  5 Aug 2023 14:38:28 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 2E70D60F3C;
+        Sat,  5 Aug 2023 21:38:28 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2EADFC433C8;
+        Sat,  5 Aug 2023 21:38:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1691271507;
+        bh=S420Jp3noijPO33VAPxKsjX9jKoQBlgGUHnNfSpqMTo=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=RsSSWjPLh02PC/C3W5pntdrkUWEFyfpnspeDV2c5Su5REmVuEyfbbhMRMXQIFTGO2
+         i1VBoKbrXlCVjxJwPleQs4xQ+OcCN/4OZHThxrcqc0Upu1Sao8Ie6RoanBIu0tRYI6
+         wCu5KK7Ynow7VWUlvAvcdEJTaNcFuXDLsORQ3Cc4OS4sN9WiWxnx01Jxz6+KOz/tgR
+         uNqxfnpridRqtI6/U2VbZRyz+ElUm5OCyeyOalZSJZEsznSmG1bTLj32kMPi6FooFh
+         fNXHyw2QIr4I1K+Zj1ce1wrAGpbTmmb1o5d5q9aij2OnwYI3/OgkEFsmbOghl6I3kL
+         DxDnRixaumX7A==
+Date:   Sat, 5 Aug 2023 23:38:24 +0200
+From:   Andi Shyti <andi.shyti@kernel.org>
+To:     Anton Eliasson <anton.eliasson@axis.com>
+Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        Alim Akhtar <alim.akhtar@samsung.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org, linux-serial@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kernel@axis.com
+Subject: Re: [PATCH] tty: serial: samsung: Set missing PM ops for hibernation
+ support
+Message-ID: <20230805213824.ol7sr3b52rwrsfs6@intel.intel>
+References: <20230803-samsung_tty_pm_ops-v1-1-1ea7be72194d@axis.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230805114304.001f8afe1d325dbb6f05d67e@linux-foundation.org>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20230803-samsung_tty_pm_ops-v1-1-1ea7be72194d@axis.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Aug 05, 2023 at 11:43:04AM -0700, Andrew Morton wrote:
-> On Sat,  5 Aug 2023 20:50:26 +0300 Andy Shevchenko <andriy.shevchenko@linux.intel.com> wrote:
-> 
-> > kernel.h is being used as a dump for all kinds of stuff for a long time.
-> > sprintf() and friends are used in many drivers without need of the full
-> > kernel.h dependency train with it.
-> 
-> There seems little point in this unless someone signs up to convert
-> lots of code to include sprintf.h instead of kernel.h?
-> 
-> And such conversions will presumably cause all sorts of nasties
-> which require additional work?
-> 
-> So... what's the plan here?
+Hi Anton,
 
-My main plan is to clean _headers_ from kernel.h.
-The rest of the code may do that gradually.
+On Thu, Aug 03, 2023 at 01:26:42PM +0200, Anton Eliasson wrote:
+> At least freeze, restore and thaw need to be set in order for the driver
+> to support system hibernation. The existing suspend/resume functions can
+> be reused since those functions don't touch the device's power state or
+> wakeup capability. Use the helper macros SET_SYSTEM_SLEEP_PM_OPS and
+> SET_NOIRQ_SYSTEM_SLEEP_PM_OPS for symmetry with similar drivers.
 
--- 
-With Best Regards,
-Andy Shevchenko
+and why do we need hibernation in this device?
 
-
+Andi
