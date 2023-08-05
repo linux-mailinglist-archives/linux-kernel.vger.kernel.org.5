@@ -2,99 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A0757712D9
-	for <lists+linux-kernel@lfdr.de>; Sun,  6 Aug 2023 00:20:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DB8EC7712E1
+	for <lists+linux-kernel@lfdr.de>; Sun,  6 Aug 2023 00:41:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229564AbjHEWUF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 5 Aug 2023 18:20:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56636 "EHLO
+        id S229710AbjHEWlh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 5 Aug 2023 18:41:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58398 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229478AbjHEWUC (ORCPT
+        with ESMTP id S229478AbjHEWlf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 5 Aug 2023 18:20:02 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41838E78;
-        Sat,  5 Aug 2023 15:20:01 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id CA73060C1A;
-        Sat,  5 Aug 2023 22:20:00 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3A42CC433CB;
-        Sat,  5 Aug 2023 22:20:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691274000;
-        bh=8L00r6W/hg8NEpCDkD6zSDjERcppNOkTBRzJM/gOKMU=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=AtwV08PK9m+WcQVTR6LRg44HgLboaXqB8xx0nkr/Hb+tRtMmKzn6z0A6/7J9wDMC5
-         R6l4uMs5Ak4YZ2/NFoZwY4+m6kY7TRxUi3jPhEZ53OGp8cFuczbQSW/HpjRHJqb1kn
-         HnNwUirsiU0Az6Hf903EZAyseYdY5WQU7Klm9q9AfmWtL9Pfnnzw30iySTqY5amulB
-         ZMQVjudvhnP+aI9almUnfFNZ0Hw4InpjVXsydBSrMzEKcXme5uibby/pwSJIQfRuuC
-         4ks6hV1xyz+eYrNQpz+ozA7RgmQPvPvRhlvX8fZdX1v/aaUDgaYKEuc80UWp+cX9QJ
-         IOB7dm+gU2L1Q==
-Received: by mail-lf1-f54.google.com with SMTP id 2adb3069b0e04-4fe216edaf7so5356075e87.0;
-        Sat, 05 Aug 2023 15:20:00 -0700 (PDT)
-X-Gm-Message-State: AOJu0Yy4u4fnkJAZLTmVfo3yGQd4YVylAnqB6t9yMpAhWSABjDH5ckoz
-        gfre9adcHVAfzBGEyVhedr+LRCpI1qBQiIr5n5I=
-X-Google-Smtp-Source: AGHT+IGSgV8YMR6QPR7Wu5TwqGk1KrnDuE5jip62/F3+Dh0wEoveWU/uXp0eWOXIe+hmzobenmoCG7NsctYViaeat6A=
-X-Received: by 2002:a05:6512:159c:b0:4fe:8be:6065 with SMTP id
- bp28-20020a056512159c00b004fe08be6065mr1032701lfb.5.1691273998150; Sat, 05
- Aug 2023 15:19:58 -0700 (PDT)
+        Sat, 5 Aug 2023 18:41:35 -0400
+Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85C4119B5;
+        Sat,  5 Aug 2023 15:41:34 -0700 (PDT)
+Received: by mail-pl1-x62a.google.com with SMTP id d9443c01a7336-1bbf8cb61aeso21419215ad.2;
+        Sat, 05 Aug 2023 15:41:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1691275294; x=1691880094;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=RdojjPd8jvPUy+VY2bdrww/YrOG4FByQTZ03QZtrm54=;
+        b=ozZ5l4FBOZxgf7mujZOAtnlb+SkNaxFvIjeBW6mDAZ5T3bifbXM/cMhHRKVjbkZ4NO
+         24Dlele9V4ytN3EVZjnD79Jp9Hkf7lW5YpSnnr1CUICs6YtrQxh+D7evr5/k15Fh3b2/
+         X3eAGU5mIsacQaDXBruJD0gdL8Mc/u8nAnFjaJIHgT1lQworaCPN5TG/PkJCv8y4bLAO
+         14YQwGJ0WhgZjqVzYzyppwA78o6rXU/lqTXUTKMENMiIjQVTYkMk9aBFbp3CcPzdgP6O
+         1Ietr4SjTwoc1QN+bSyAboKJq5fNHXFiW4+/bWHMDUVAqDXIbDcIOqMy3la436kU4NHh
+         RArw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691275294; x=1691880094;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=RdojjPd8jvPUy+VY2bdrww/YrOG4FByQTZ03QZtrm54=;
+        b=V5wNSAlg9JiH82RIt9bK0fpLhhnb7QJpMJh7DvebYfa4T2txB3yz7r+hMqLm+DnEAQ
+         CRv+QHBGE6Sj1t/Y5DVOTi3dj3q4fFweHtivMO6JvVksiZssyxwALK/NUgKPYXBPsUnR
+         d5V/8vEjs5zTxPjmVq85nVnwfyctHQ+6NsNEB3+twmBmYPlkjUSLS0Rg6Mfu1xbNnsR8
+         gHIYXZId6TKzElggshRF9s+GWfsOGXqKg1m+sPZzT6g/lF5OiN/7IOGR7i/F3K+zbJlv
+         A0pkh+2m7F57uQQ1MCd3hly5I2dGYZcCgPoAmG24XlTVNbEmompJfocS53UVejiIddw0
+         9KxQ==
+X-Gm-Message-State: AOJu0Ywk5JAy7Yws/Bt/w1W2EnKZ0YybdkiaOQkJdVJd9MUzoVBawZrZ
+        s35D9ykPdavrpZmm8Wlh+l8=
+X-Google-Smtp-Source: AGHT+IEr3Ev54+ZX199Mfgcb1yPQS5UrLPN6X4H84L2cml1KstTYje3IxocoRhMgKtwZF3hk0VNjqg==
+X-Received: by 2002:a17:902:d48c:b0:1bc:1df2:4c07 with SMTP id c12-20020a170902d48c00b001bc1df24c07mr5554184plg.63.1691275293522;
+        Sat, 05 Aug 2023 15:41:33 -0700 (PDT)
+Received: from Osmten.. ([103.84.150.77])
+        by smtp.gmail.com with ESMTPSA id c8-20020a170903234800b001a6a6169d45sm3960358plh.168.2023.08.05.15.41.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 05 Aug 2023 15:41:33 -0700 (PDT)
+From:   Osama Muhammad <osmtendev@gmail.com>
+To:     =shuah@kernel.org
+Cc:     linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        Osama Muhammad <osmtendev@gmail.com>
+Subject: [PATCH] selftests: prctl: Add prctl test for PR_GET_NAME
+Date:   Sun,  6 Aug 2023 03:41:15 +0500
+Message-Id: <20230805224115.22540-1-osmtendev@gmail.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-References: <20230802154831.2147855-1-ardb@kernel.org> <20230805144030.GDZM5fXvaqXBLxwXfj@fat_crate.local>
- <CAMj1kXEFC6LwNiWrGGsXot4SO0wivqN_3Yi=T9OS0XJ4=MeNew@mail.gmail.com> <20230805210631.GEZM6518W3qOCYYgNK@fat_crate.local>
-In-Reply-To: <20230805210631.GEZM6518W3qOCYYgNK@fat_crate.local>
-From:   Ard Biesheuvel <ardb@kernel.org>
-Date:   Sun, 6 Aug 2023 00:19:46 +0200
-X-Gmail-Original-Message-ID: <CAMj1kXE+jgLztL1mQ6VDkJWfAjSJnxapoUAsvqaSQmfi=kr=hg@mail.gmail.com>
-Message-ID: <CAMj1kXE+jgLztL1mQ6VDkJWfAjSJnxapoUAsvqaSQmfi=kr=hg@mail.gmail.com>
-Subject: Re: [PATCH v8 00/23] efi/x86: Avoid bare metal decompressor during
- EFI boot
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     linux-efi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Evgeniy Baskov <baskov@ispras.ru>,
-        Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Alexey Khoroshilov <khoroshilov@ispras.ru>,
-        Peter Jones <pjones@redhat.com>,
-        Gerd Hoffmann <kraxel@redhat.com>,
-        Dave Young <dyoung@redhat.com>,
-        Mario Limonciello <mario.limonciello@amd.com>,
-        Kees Cook <keescook@chromium.org>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Joerg Roedel <jroedel@suse.de>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 5 Aug 2023 at 23:07, Borislav Petkov <bp@alien8.de> wrote:
->
-> On Sat, Aug 05, 2023 at 07:37:17PM +0200, Ard Biesheuvel wrote:
-> > So this is the host booting, right?
->
-> Yes.
->
-> > So is the position of the C bit perhaps getting detect incorrectly?
->
-> I don't know yet. But the evildoer is someone else:
->
-> 02d47ce2ae02 ("x86/head_64: Store boot_params pointer in callee save register")
->
-> after bisection. More staring later as to why...
->
+This patch covers the testing of PR_GET_NAME by
+reading it's value from proc/self/task/pid/comm
+and matching it by the value returned by  PR_GET_NAME.
 
-How bizarre.
+Signed-off-by: Osama Muhammad <osmtendev@gmail.com>
+---
+ .../selftests/prctl/set-process-name.c        | 25 +++++++++++++++++++
+ 1 file changed, 25 insertions(+)
 
-But that was a bonus patch anyway, so we could just drop it for now.
+diff --git a/tools/testing/selftests/prctl/set-process-name.c b/tools/testing/selftests/prctl/set-process-name.c
+index 3bc5e0e09..41f4b105d 100644
+--- a/tools/testing/selftests/prctl/set-process-name.c
++++ b/tools/testing/selftests/prctl/set-process-name.c
+@@ -47,6 +47,28 @@ int check_null_pointer(char *check_name)
+ 	return res;
+ }
+ 
++int check_name(void)
++{
++
++	int pid;
++
++	pid = getpid();
++	FILE *fptr;
++	char path[50] = {};
++	int j;
++
++	j = snprintf(path, 50, "/proc/self/task/%d/comm", pid);
++	fptr = fopen(path, "r");
++	char name[TASK_COMM_LEN] = {};
++	int res = prctl(PR_GET_NAME, name, NULL, NULL, NULL);
++	char output[TASK_COMM_LEN] = {};
++
++	fscanf(fptr, "%s", output);
++
++	return !strcmp(output, name);
++
++}
++
+ TEST(rename_process) {
+ 
+ 	EXPECT_GE(set_name(CHANGE_NAME), 0);
+@@ -57,6 +79,9 @@ TEST(rename_process) {
+ 
+ 	EXPECT_GE(set_name(CHANGE_NAME), 0);
+ 	EXPECT_LT(check_null_pointer(CHANGE_NAME), 0);
++
++	EXPECT_TRUE(check_name());
++
+ }
+ 
+ TEST_HARNESS_MAIN
+-- 
+2.34.1
+
