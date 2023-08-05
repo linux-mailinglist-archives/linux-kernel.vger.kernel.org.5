@@ -2,148 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A7D27770CEE
-	for <lists+linux-kernel@lfdr.de>; Sat,  5 Aug 2023 03:16:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1876E770CF1
+	for <lists+linux-kernel@lfdr.de>; Sat,  5 Aug 2023 03:17:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229618AbjHEBQI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Aug 2023 21:16:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47600 "EHLO
+        id S229694AbjHEBRD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Aug 2023 21:17:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48024 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229509AbjHEBQH (ORCPT
+        with ESMTP id S229566AbjHEBRB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Aug 2023 21:16:07 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6B0A4EDD;
-        Fri,  4 Aug 2023 18:16:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1691198165; x=1722734165;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=q3XhvvGdKBVZnVvP2LX4y2B9m4C8AB1TqtQq1pF44lM=;
-  b=V505W0fTQn6Wn7sU+lVuJ6Nl4mm/YTSxip+JBdYRWMZXE+4W01F8Jusu
-   dovfi6D/QQttpM2si12Z+jjbb18EtcTE4uZk7ITY4a9XTjpnYuf71enR8
-   cPamNgghDXkNVvOE+jXk+c/80nn2w4kqHXiEfqFlrw/6pL4c1lz4X9xTU
-   SRSqq5Js59/rXd43ed4hkeMwqGgJi0VpjG4RANL++NPE4YLWOYT0aMGF8
-   jQ8kPj2mapIxjgtMYj6LBDSkEBZqqPKqvIhmmPVfvyvd3dgvyNZ+gKKnU
-   ALsoCG2ev4E+OXR/oHBHrSLVNT9ZKeF8bPKBjg3CoaRjWLCETiNhm6XRr
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10792"; a="456657874"
-X-IronPort-AV: E=Sophos;i="6.01,256,1684825200"; 
-   d="scan'208";a="456657874"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Aug 2023 18:16:05 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10792"; a="680162338"
-X-IronPort-AV: E=Sophos;i="6.01,256,1684825200"; 
-   d="scan'208";a="680162338"
-Received: from lkp-server01.sh.intel.com (HELO d1ccc7e87e8f) ([10.239.97.150])
-  by orsmga003.jf.intel.com with ESMTP; 04 Aug 2023 18:16:03 -0700
-Received: from kbuild by d1ccc7e87e8f with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qS5ti-0003EZ-0x;
-        Sat, 05 Aug 2023 01:16:02 +0000
-Date:   Sat, 5 Aug 2023 09:15:16 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Zheng Yejian <zhengyejian1@huawei.com>, rostedt@goodmis.org,
-        mhiramat@kernel.org, vnagarnaik@google.com, shuah@kernel.org
-Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
-        linux-trace-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
-Subject: Re: [PATCH 1/2] tracing: Fix cpu buffers unavailable due to
- 'record_disabled' messed
-Message-ID: <202308050731.PQutr3r0-lkp@intel.com>
-References: <20230804124549.2562977-2-zhengyejian1@huawei.com>
+        Fri, 4 Aug 2023 21:17:01 -0400
+Received: from mail-ot1-x32d.google.com (mail-ot1-x32d.google.com [IPv6:2607:f8b0:4864:20::32d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B60A84EDE;
+        Fri,  4 Aug 2023 18:17:00 -0700 (PDT)
+Received: by mail-ot1-x32d.google.com with SMTP id 46e09a7af769-6bc8d1878a0so2306303a34.1;
+        Fri, 04 Aug 2023 18:17:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1691198220; x=1691803020;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :references:in-reply-to:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=cu168Y9vRpg+vzxEgSTGxY5n1ZLC+DuEViAjXzgPHZs=;
+        b=folnjqF0aKRuew+xhfxHFYWs8LU+t5rP5KIRDLS0LazdBGhH9vtd1rk3BObzT3m5/y
+         ukLp+VvYZQ4Ov8BDfr5g28AkAWB4g/hxW1Ssb8KRkKEt5RbkmTW2rc739qTXAxeDDDUE
+         iIwn+0jXiPiqotQdwWEEf4v2EV8llX8EjhKSrtIZFTH7mwFarOlyk1wE1w1aDt0GwCX9
+         2i9+2hZ2zwdOB7u07/U9V1zz19XN4xpjHrLB6dRkyuWahGPwMFFO19gkHFqsD51e7KcF
+         SGCnklBW6xXIGZNAIl9Y7eHS6bVtNiEuidNQcV2Z29dq9T8Xtl8zifCjWsz1/ZOz282N
+         Y2sg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691198220; x=1691803020;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :references:in-reply-to:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=cu168Y9vRpg+vzxEgSTGxY5n1ZLC+DuEViAjXzgPHZs=;
+        b=iz8RKmMZF8DB0jbMi7s1duK8dzESL69dnlbi1fInYj+yAfW00wX8YAJfzcvc9DtocB
+         +705fpAQ3Nk6/b/QEL6myodj97BMti1T/npXlML1J1US8tvyetBovNGvduZMLpjyLfh2
+         QPPTzoMzoOHCsuJyOa2CJ+7pxCSE/mTIrf4mrdV0k5/9ZzQxlXZhpsApyU3ZOCjE0RNr
+         S1NGXxsr/XH6pJsb8ASOAEssvKfahEY2CyVXYQBfdD15zAxTRyIg1lL1ivOVI0huA0+1
+         4m4ykVzqCWSuY8v04NXi1SOmk+pbquXmRvlR5rN6DegsYNLoCMk9anHTdCaRtdRs64/n
+         7xOA==
+X-Gm-Message-State: AOJu0YxpN8rvPwt1V2Wc4S6Q0WwCwgRk5yQPJUzZo4XsBLBlmdIsgDUh
+        Ww/P/B7EzRlG8FHfEz2gbKtjEdMDtAEOcmIgcDY=
+X-Google-Smtp-Source: AGHT+IEuQ/dvOW7eFSBM63FzAr7WHgJtR9IpCyPZws0vFNx4oFHhozb1cWWML9qeqWJlkUR7TgqFe1XMIHdejPAlQbA=
+X-Received: by 2002:a05:6870:ecac:b0:1b7:2edd:df6d with SMTP id
+ eo44-20020a056870ecac00b001b72edddf6dmr3872658oab.10.1691198219991; Fri, 04
+ Aug 2023 18:16:59 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230804124549.2562977-2-zhengyejian1@huawei.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+Received: by 2002:ac9:7b87:0:b0:4f0:1250:dd51 with HTTP; Fri, 4 Aug 2023
+ 18:16:59 -0700 (PDT)
+In-Reply-To: <CAJuCfpHYBqULvwNELO3Gkc0bkKDV7VJxMjvBru4zaAz4WKQNhw@mail.gmail.com>
+References: <20230708191212.4147700-1-surenb@google.com> <20230708191212.4147700-3-surenb@google.com>
+ <20230804214620.btgwhsszsd7rh6nf@f> <CAHk-=wiy125k1dBmQFTGpHwiOqEyrD6xnd4xKWfe97H_HodgDA@mail.gmail.com>
+ <CAGudoHFsAU_BDCOuz8UgDBLGEM8xg=aUGjaVoqkM_Zvxo2Re_g@mail.gmail.com>
+ <CAHk-=wiG9xaVvBJXHqTxtop0=mW9KxPS9C54ED23p59VNEKdWg@mail.gmail.com>
+ <CAJuCfpGWGsh2BRgwcJ7oVHnqZfrtiesvhzomK0ZmxE_KK=R7FA@mail.gmail.com>
+ <CAJuCfpG6BBP+fjV9oyBx3SNiKhiafPzM9vV9bx_goO2aZzAptg@mail.gmail.com>
+ <CAGudoHFrDG6-u-XXEmQoPS2CJ2Wpo4ETwhXc2R=jy78RSYw-Zg@mail.gmail.com> <CAJuCfpHYBqULvwNELO3Gkc0bkKDV7VJxMjvBru4zaAz4WKQNhw@mail.gmail.com>
+From:   Mateusz Guzik <mjguzik@gmail.com>
+Date:   Sat, 5 Aug 2023 03:16:59 +0200
+Message-ID: <CAGudoHGm2hbjSG-2kJevF=xGpz=4Sd0m5CjVO8Ntsahqz5NcGA@mail.gmail.com>
+Subject: Re: [PATCH v2 3/3] fork: lock VMAs of the parent process when forking
+To:     Suren Baghdasaryan <surenb@google.com>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        akpm@linux-foundation.org, regressions@leemhuis.info,
+        bagasdotme@gmail.com, jacobly.alt@gmail.com, willy@infradead.org,
+        liam.howlett@oracle.com, david@redhat.com, peterx@redhat.com,
+        ldufour@linux.ibm.com, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, linuxppc-dev@lists.ozlabs.org,
+        linux-arm-kernel@lists.infradead.org, gregkh@linuxfoundation.org,
+        regressions@lists.linux.dev, Jiri Slaby <jirislaby@kernel.org>,
+        =?UTF-8?Q?Holger_Hoffst=C3=A4tte?= <holger@applied-asynchrony.com>,
+        stable@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Zheng,
+On 8/5/23, Suren Baghdasaryan <surenb@google.com> wrote:
+> On Fri, Aug 4, 2023 at 5:49=E2=80=AFPM Mateusz Guzik <mjguzik@gmail.com> =
+wrote:
+>> However, the other users (that I know of ) go through the mmap
+>> semaphore to mess with anything which means they will wait for
+>> dup_mmap to finish (or do their work first). I would be surprised if
+>> there were any cases which don't take the semaphore, given that it was
+>> a requirement prior to the vma patchset (unless you patched some to no
+>> longer need it?). I would guess worst case the semaphore can be added
+>> if missing.
+>
+> No, the only mmap_lock read-lock that is affected is during the page
+> fault, which is expected.
+>
 
-kernel test robot noticed the following build errors:
+I have difficulty parsing your statement.
 
-[auto build test ERROR on linus/master]
-[also build test ERROR on rostedt-trace/for-next v6.5-rc4 next-20230804]
-[cannot apply to rostedt-trace/for-next-urgent]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+I am saying that any 3rd parties which can trigger page faults already
+read lock mmap_lock or can be made to do it (and I don't know any case
+which does not already, but I'm not willing to spend time poking
+around to make sure). One can consider 3rd parties as not a problem,
+modulo the audit.
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Zheng-Yejian/tracing-Fix-cpu-buffers-unavailable-due-to-record_disabled-messed/20230804-204751
-base:   linus/master
-patch link:    https://lore.kernel.org/r/20230804124549.2562977-2-zhengyejian1%40huawei.com
-patch subject: [PATCH 1/2] tracing: Fix cpu buffers unavailable due to 'record_disabled' messed
-config: x86_64-defconfig (https://download.01.org/0day-ci/archive/20230805/202308050731.PQutr3r0-lkp@intel.com/config)
-compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
-reproduce: (https://download.01.org/0day-ci/archive/20230805/202308050731.PQutr3r0-lkp@intel.com/reproduce)
+Past that there does is no known source of trouble? In my original
+e-mail I was worried about processes up the chain in ancestry, perhaps
+some of the state is shared(?) and the locking at hand neuters any
+problems. I'm guessing this is not necessary.
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202308050731.PQutr3r0-lkp@intel.com/
+Bottom line though it looks like this will work fine?
 
-All errors (new ones prefixed by >>):
+That said, I'm not going to submit a patch I can't confidently defend.
+As I did not dig into any of the VMA code and can't be arsed to audit
+all places which mess with "foreign" mm, I'm definitely not submitting
+this myself. You are most welcome to write your own variant at your
+leisure. :)
 
-   kernel/trace/trace.c: In function 'tracing_set_cpumask':
->> kernel/trace/trace.c:5280:60: error: 'struct trace_array' has no member named 'max_buffer'; did you mean 'array_buffer'?
-    5280 |                         ring_buffer_record_disable_cpu(tr->max_buffer.buffer, cpu);
-         |                                                            ^~~~~~~~~~
-         |                                                            array_buffer
-   kernel/trace/trace.c:5286:59: error: 'struct trace_array' has no member named 'max_buffer'; did you mean 'array_buffer'?
-    5286 |                         ring_buffer_record_enable_cpu(tr->max_buffer.buffer, cpu);
-         |                                                           ^~~~~~~~~~
-         |                                                           array_buffer
-
-
-vim +5280 kernel/trace/trace.c
-
-  5260	
-  5261	int tracing_set_cpumask(struct trace_array *tr,
-  5262				cpumask_var_t tracing_cpumask_new)
-  5263	{
-  5264		int cpu;
-  5265	
-  5266		if (!tr)
-  5267			return -EINVAL;
-  5268	
-  5269		local_irq_disable();
-  5270		arch_spin_lock(&tr->max_lock);
-  5271		for_each_tracing_cpu(cpu) {
-  5272			/*
-  5273			 * Increase/decrease the disabled counter if we are
-  5274			 * about to flip a bit in the cpumask:
-  5275			 */
-  5276			if (cpumask_test_cpu(cpu, tr->tracing_cpumask) &&
-  5277					!cpumask_test_cpu(cpu, tracing_cpumask_new)) {
-  5278				atomic_inc(&per_cpu_ptr(tr->array_buffer.data, cpu)->disabled);
-  5279				ring_buffer_record_disable_cpu(tr->array_buffer.buffer, cpu);
-> 5280				ring_buffer_record_disable_cpu(tr->max_buffer.buffer, cpu);
-  5281			}
-  5282			if (!cpumask_test_cpu(cpu, tr->tracing_cpumask) &&
-  5283					cpumask_test_cpu(cpu, tracing_cpumask_new)) {
-  5284				atomic_dec(&per_cpu_ptr(tr->array_buffer.data, cpu)->disabled);
-  5285				ring_buffer_record_enable_cpu(tr->array_buffer.buffer, cpu);
-  5286				ring_buffer_record_enable_cpu(tr->max_buffer.buffer, cpu);
-  5287			}
-  5288		}
-  5289		arch_spin_unlock(&tr->max_lock);
-  5290		local_irq_enable();
-  5291	
-  5292		cpumask_copy(tr->tracing_cpumask, tracing_cpumask_new);
-  5293	
-  5294		return 0;
-  5295	}
-  5296	
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+--=20
+Mateusz Guzik <mjguzik gmail.com>
