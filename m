@@ -2,84 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D7DF8770E71
-	for <lists+linux-kernel@lfdr.de>; Sat,  5 Aug 2023 09:29:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D3A38770E00
+	for <lists+linux-kernel@lfdr.de>; Sat,  5 Aug 2023 08:05:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229781AbjHEH27 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 5 Aug 2023 03:28:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47230 "EHLO
+        id S229526AbjHEGFX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 5 Aug 2023 02:05:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60078 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229379AbjHEH25 (ORCPT
+        with ESMTP id S229437AbjHEGFV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 5 Aug 2023 03:28:57 -0400
-X-Greylist: delayed 20999 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Sat, 05 Aug 2023 00:28:54 PDT
-Received: from 8.mo583.mail-out.ovh.net (8.mo583.mail-out.ovh.net [178.32.116.78])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B84644EC8
-        for <linux-kernel@vger.kernel.org>; Sat,  5 Aug 2023 00:28:54 -0700 (PDT)
-Received: from director9.ghost.mail-out.ovh.net (unknown [10.108.4.73])
-        by mo583.mail-out.ovh.net (Postfix) with ESMTP id 9DB5B25C31
-        for <linux-kernel@vger.kernel.org>; Sat,  5 Aug 2023 01:29:57 +0000 (UTC)
-Received: from ghost-submission-6684bf9d7b-ckdcs (unknown [10.109.156.99])
-        by director9.ghost.mail-out.ovh.net (Postfix) with ESMTPS id 993DF1FD47;
-        Sat,  5 Aug 2023 01:29:55 +0000 (UTC)
-Received: from etezian.org ([37.59.142.95])
-        by ghost-submission-6684bf9d7b-ckdcs with ESMTPSA
-        id ai7tIROmzWTHWAMAIGJpLQ
-        (envelope-from <andi@etezian.org>); Sat, 05 Aug 2023 01:29:55 +0000
-Authentication-Results: garm.ovh; auth=pass (GARM-95G001d9e3624c-ac52-4978-b522-021b72bbbf33,
-                    05ACED94171614EC843435E2D99940E8A2AB1814) smtp.auth=andi@etezian.org
-X-OVh-ClientIp: 178.238.172.51
-From:   Andi Shyti <andi.shyti@kernel.org>
-To:     linux-kernel@vger.kernel.org, monstr@monstr.eu, git@xilinx.com,
-        Michal Simek <michal.simek@amd.com>
-Cc:     Andi Shyti <andi.shyti@kernel.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-i2c@vger.kernel.org
-Subject: Re: [PATCH] dt-bindings: i2c: cadence: Describe power-domains property
-Date:   Sat,  5 Aug 2023 03:29:11 +0200
-Message-Id: <169119887100.1781235.4441400054342220300.b4-ty@kernel.org>
-X-Mailer: git-send-email 2.40.1
-In-Reply-To: <8774dba53cae5508f9f7aa173fbaf814d97898b1.1691047405.git.michal.simek@amd.com>
-References: <8774dba53cae5508f9f7aa173fbaf814d97898b1.1691047405.git.michal.simek@amd.com>
+        Sat, 5 Aug 2023 02:05:21 -0400
+Received: from dvalin.narfation.org (dvalin.narfation.org [213.160.73.56])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EDEA44ED0;
+        Fri,  4 Aug 2023 23:05:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=narfation.org;
+        s=20121; t=1691215516;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=yFtMnGLfEgodoGei2h8UZe336PyKSdPdvngnYXixpuk=;
+        b=mnIpEaYqalGvm/XZ2MCRMjBcckZXRSyH5eNPNCEyomrA1LMmwPHuE64jRdARiRpPRCrHoB
+        viphSUE6F/W7jKtbWFdqFJcUVEx5YiTj3O/Lh1xzOxncrA0o1KqEJEjsfaHhEK/4fHO8eZ
+        XQbmBdxQaDkwHOEkin7OctVmp3XOwhk=
+From:   Sven Eckelmann <sven@narfation.org>
+To:     Marek Lindner <mareklindner@neomailbox.ch>,
+        Simon Wunderlich <sw@simonwunderlich.de>,
+        Antonio Quartulli <a@unstable.cc>,
+        Remi Pommarel <repk@triplefau.lt>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        b.a.t.m.a.n@lists.open-mesh.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Remi Pommarel <repk@triplefau.lt>,
+        stable@vger.kernel.org
+Subject: Re: [PATCH net] batman-adv: Fix TT global entry leak when client roamed back
+Date:   Sat, 05 Aug 2023 08:05:13 +0200
+Message-ID: <2693362.mvXUDI8C0e@sven-l14>
+In-Reply-To: <20230804093936.22257-1-repk@triplefau.lt>
+References: <20230804093936.22257-1-repk@triplefau.lt>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-X-Ovh-Tracer-Id: 11967471585594182288
-X-VR-SPAMSTATE: OK
-X-VR-SPAMSCORE: -100
-X-VR-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedviedrkeehgdeggecutefuodetggdotefrodftvfcurfhrohhfihhlvgemucfqggfjpdevjffgvefmvefgnecuuegrihhlohhuthemucehtddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjughrpefhvfevufffkffojghfgggtgfesthekredtredtjeenucfhrhhomheptehnughiucfuhhihthhiuceorghnughirdhshhihthhisehkvghrnhgvlhdrohhrgheqnecuggftrfgrthhtvghrnhepveevieffieefgfefuddvteelffeuhfelffejteejuddvveekveehvdejgeefteevnecuffhomhgrihhnpehkvghrnhgvlhdrohhrghenucfkphepuddvjedrtddrtddruddpudejkedrvdefkedrudejvddrhedupdefjedrheelrddugedvrdelheenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepihhnvghtpeduvdejrddtrddtrddupdhmrghilhhfrhhomhepoegrnhguihesvghtvgiiihgrnhdrohhrgheqpdhnsggprhgtphhtthhopedupdhrtghpthhtoheplhhinhhugidqkhgvrhhnvghlsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdfovfetjfhoshhtpehmohehkeefpdhmohguvgepshhmthhpohhuth
-X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS autolearn=no
-        autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; boundary="nextPart12259810.O9o76ZdvQC";
+ micalg="pgp-sha512"; protocol="application/pgp-signature"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi
+--nextPart12259810.O9o76ZdvQC
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"; protected-headers="v1"
+From: Sven Eckelmann <sven@narfation.org>
+Date: Sat, 05 Aug 2023 08:05:13 +0200
+Message-ID: <2693362.mvXUDI8C0e@sven-l14>
+In-Reply-To: <20230804093936.22257-1-repk@triplefau.lt>
+References: <20230804093936.22257-1-repk@triplefau.lt>
+MIME-Version: 1.0
 
-On Thu, 03 Aug 2023 09:23:31 +0200, Michal Simek wrote:
-> ZynqMP Cadence I2c IP core has own power domain that's why describe it as
-> optional property.
+On Fri, 04 Aug 2023 11:39:36 +0200, Remi Pommarel wrote:
+> When a client roamed back to a node before it got time to destroy the
+> pending local entry (i.e. within the same originator interval) the old
+> global one is directly removed from hash table and left as such.
 > 
+> But because this entry had an extra reference taken at lookup (i.e using
+> batadv_tt_global_hash_find) there is no way its memory will be reclaimed
+> at any time causing the following memory leak:
 > 
+> [...]
 
-Applied to i2c/andi-for-next on
+Applied, thanks!
 
-https://git.kernel.org/pub/scm/linux/kernel/git/andi.shyti/linux.git
+[1/1] batman-adv: Fix TT global entry leak when client roamed back
+      commit: d25ddb7e788d34cf27ff1738d11a87cb4b67d446
 
-Please note that this patch may still undergo further evaluation
-and the final decision will be made in collaboration with
-Wolfram.
+Kind regards,
+	Sven
+--nextPart12259810.O9o76ZdvQC
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part.
+Content-Transfer-Encoding: 7Bit
 
-Thank you,
-Andi
+-----BEGIN PGP SIGNATURE-----
 
-Patches applied
-===============
-[1/1] dt-bindings: i2c: cadence: Describe power-domains property
-      commit: 26a106e540b100a887209a3012b6ac2ec9a577f8
+iQIzBAABCgAdFiEEF10rh2Elc9zjMuACXYcKB8Eme0YFAmTN5pkACgkQXYcKB8Em
+e0ap+A//aSI43I++QPAWQlTYcHVDZcDtCcVIk9qdSEvQtO62jJZYnBYyLZdvkcvY
+/cQTjjSZY08wCzU3c9TEHPPnrZruRD+pDNn3m64izZhQ2BmAuHwIztociQytinan
+I3oDTBL7wZYZu+66t/5NtRyD4vVE0Vr+1s0U1TR2DYkGALKsD9VGJOGKGLAJSF2i
+PgDVjjDgqkEtdjvTnpC3a4phFumVfJLgNJBuuQ7FYEb+VQf37Wect8du4dMy+GNw
+ifpZ+bqXWFKt0WP5M8r8T4M+NIpm3cS6a0ij3q4IVNI6xWzpmWjIiP2UG6lzpHna
+BXOfPm2F7ArycTyyijg30hnTv3oV43Xpyy/vqMA7jRQRmnpeh9l96Rsew/MOouPQ
+KUco8AazBnqOmX5fqpu1+uZFC+7h/ADVaUF6sbgfSQtyxPp0ggBAIAAAaHFfvGP+
+1qLhIHCGPjdQVqRNpSHR85x5V5NYdlKwa91f/LE2oKz4Yt207/LNTeUfmYxeykz5
+FsBwZPf77gdBCn0V533zqgreZ6aldqXp6+SWcbrKPChoV0h9AhfCsRQZGs+q4L6Q
+Iwrh/iP+RQzWWLS/l6Xj9P6GSks3326kcWFPQwssdtXTZXPWAAhQ+m8lzIXbcaJ1
+UGHrl6QLoNNr4/pnqCuTQmECHnSlMj//uB+KE1HaLp3JQZtV6z0=
+=dwZT
+-----END PGP SIGNATURE-----
+
+--nextPart12259810.O9o76ZdvQC--
+
+
+
