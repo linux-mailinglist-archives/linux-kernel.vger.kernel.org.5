@@ -2,112 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 42E2B7710BD
-	for <lists+linux-kernel@lfdr.de>; Sat,  5 Aug 2023 19:03:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E61087710B4
+	for <lists+linux-kernel@lfdr.de>; Sat,  5 Aug 2023 19:03:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229449AbjHERDr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 5 Aug 2023 13:03:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45824 "EHLO
+        id S230004AbjHERDS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 5 Aug 2023 13:03:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46008 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230045AbjHERDk (ORCPT
+        with ESMTP id S229441AbjHERDQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 5 Aug 2023 13:03:40 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3BB9B4206
-        for <linux-kernel@vger.kernel.org>; Sat,  5 Aug 2023 10:02:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1691254970;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=AwC2ZFlhYxmRV4GegFNry2xNQ2qKII2yxV/GxFfD/+Q=;
-        b=QRdHD3hjtLpyFARvkD3iXYX4WLzHGPgtBC0/jH+Woft7HBO2Q4yY/g6I4cQPHzeAGnGLQ0
-        mjDIayRPCEC+dGUbUXuDKKuADPZi6PdM5DPXmJ2oYiDxW9n3J4UXgTHSgYOIG4R64bjqAQ
-        Bgi/ypTy8fnqcWa1YCrBJsX+bIX5fMg=
-Received: from mail-lj1-f200.google.com (mail-lj1-f200.google.com
- [209.85.208.200]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-166-xmMjsubCMMOH4XkZ5ISgMg-1; Sat, 05 Aug 2023 13:02:49 -0400
-X-MC-Unique: xmMjsubCMMOH4XkZ5ISgMg-1
-Received: by mail-lj1-f200.google.com with SMTP id 38308e7fff4ca-2b839ca1362so6754051fa.0
-        for <linux-kernel@vger.kernel.org>; Sat, 05 Aug 2023 10:02:48 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691254967; x=1691859767;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=AwC2ZFlhYxmRV4GegFNry2xNQ2qKII2yxV/GxFfD/+Q=;
-        b=k+jf8zAOefdJAfHHCptKkhypJBiDwjAK8BSc7fcQV855EXLVvjilMsLjYmgzozxFVV
-         EvfH/tO2sdVkIRdzv3980WhDjIaqRUgnSzx6vCl7SfUajwXmrRm2NA+AMW49j+yXPj2H
-         gIaLsH2+z8MPVR9tlSX8Yz2iZcRDuDywtjGQPfgL2G1mn0wJ8iMJBpMyQUkYO3hWbkyk
-         WcxE2z6B9stYkdexa6fVkf+UY18lkbHNeHat1w1NH64GNVYxmapMBqZ32P1Y3vGCui0g
-         XBUi/hQLU5xmwQjUnO18yLNptN/wSavnFWKcUsP7IQgy6TX+pdABTz/uie3ejP7OwSI2
-         3WOQ==
-X-Gm-Message-State: ABy/qLboukLjxxYcc9LuI6eHarTFLPZJj4h/TMx67RF7TrMslDKl+L2b
-        deTzZPd462cfZOZsc/+VHew8tyesXLJecQMy6qefdnFZ++fugulaUa9B4ID24tmjEEhIvQqyWVR
-        f4PFB8a75GgP4F+vFmHj/IUfjvvLn+glgqdfmxbRX
-X-Received: by 2002:a05:651c:2c6:b0:2b6:120a:af65 with SMTP id f6-20020a05651c02c600b002b6120aaf65mr11587129ljo.3.1691254967644;
-        Sat, 05 Aug 2023 10:02:47 -0700 (PDT)
-X-Google-Smtp-Source: APBJJlGYiaAtFICZukz9GbgjadQIab1/CS12YPAHJmL8CGE4gx4kvaxS7NRq41yHA7pyNnx9RsTZk5QJDcTdUUMT23U=
-X-Received: by 2002:a05:651c:2c6:b0:2b6:120a:af65 with SMTP id
- f6-20020a05651c02c600b002b6120aaf65mr11587124ljo.3.1691254967373; Sat, 05 Aug
- 2023 10:02:47 -0700 (PDT)
+        Sat, 5 Aug 2023 13:03:16 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3061AE51;
+        Sat,  5 Aug 2023 10:03:16 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id B96C660C57;
+        Sat,  5 Aug 2023 17:03:15 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 0EB17C433C7;
+        Sat,  5 Aug 2023 17:03:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1691254995;
+        bh=h5eU9XX1o4OOf6S1Raai5CwCugmHSOAJ95Q+DWakPuw=;
+        h=From:Subject:Date:To:Cc:Reply-To:From;
+        b=Q4u2B3z0rmOLUsxCfRWXVEEU28ISgmLSi7UeFwI9EMwmURyLspZLH96RSzotRdnjU
+         c932vJVe7CKCunh1MADBKanP/2Ub6hotjYZOEx9moVY8C/fDGunBPjiGAHGy+sfXLI
+         aQbNuPCaG1+CR6c9X1h7O4f32zrageZzaZSwbvXU46rZLkOomsb/eH+yYTu1mfj+uh
+         KYr8+MZOvrBI/5kpXsgLXXcse9vhFpvDFfao3cG/Tj/86CsWJtgzILNbw6m0Sz5HXo
+         NySgAgNGcFMNDaVLyr7dihx4pvMO+FAMsk13GswEaofos885wMysgSUd5bRM3NSHtW
+         xlj//Gs0Bu0xA==
+Received: from aws-us-west-2-korg-lkml-1.web.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by smtp.lore.kernel.org (Postfix) with ESMTP id EB55DC0015E;
+        Sat,  5 Aug 2023 17:03:14 +0000 (UTC)
+From:   Xilin Wu via B4 Relay <devnull+wuxilin123.gmail.com@kernel.org>
+Subject: [PATCH 0/3] Add initial support for Xiaomi Mi 11 Ultra
+Date:   Sun, 06 Aug 2023 01:03:09 +0800
+Message-Id: <20230806-xiaomi-star-v1-0-0c384e8b5737@gmail.com>
 MIME-Version: 1.0
-References: <20230805160027.88116-1-dakr@redhat.com>
-In-Reply-To: <20230805160027.88116-1-dakr@redhat.com>
-From:   Karol Herbst <kherbst@redhat.com>
-Date:   Sat, 5 Aug 2023 19:02:36 +0200
-Message-ID: <CACO55tuS=tg_r-9W1fCr55svT8U0GhxLauMAmAmW7A052S_Mdg@mail.gmail.com>
-Subject: Re: [PATCH drm-misc-next] nouveau/dmem: fix copy-paste error in nouveau_dmem_migrate_chunk()
-To:     Danilo Krummrich <dakr@redhat.com>
-Cc:     airlied@gmail.com, daniel@ffwll.ch, bskeggs@redhat.com,
-        lyude@redhat.com, dri-devel@lists.freedesktop.org,
-        nouveau@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIAM2AzmQC/6tWKk4tykwtVrJSqFYqSi3LLM7MzwNyDHUUlJIzE
+ vPSU3UzU4B8JSMDI2MDCwMz3YrMxPzcTN3iksQi3VRT4xQLs0TjJFPLVCWgjoKi1LTMCrBp0bG
+ 1tQDLOwb7XQAAAA==
+To:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Tony Luck <tony.luck@intel.com>,
+        "Guilherme G. Piccoli" <gpiccoli@igalia.com>
+Cc:     linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-hardening@vger.kernel.org,
+        Xilin Wu <wuxilin123@gmail.com>
+X-Mailer: b4 0.12.3
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1691254992; l=698;
+ i=wuxilin123@gmail.com; s=20230805; h=from:subject:message-id;
+ bh=h5eU9XX1o4OOf6S1Raai5CwCugmHSOAJ95Q+DWakPuw=;
+ b=OQntiV/U7W7Rd3Y6oKVtP7h9tiC8jZyOIZJXVbI7q66nLcgekYC8dPLbkpz3+elHdgC+e5Emt
+ e05ygSe7qp7B1fzegauog7IlNEUxEgdJd564vM4/+wSoYzNbAfBcMbO
+X-Developer-Key: i=wuxilin123@gmail.com; a=ed25519;
+ pk=OZIrHT2qWm7yEdp5fsVR7GsFx1wxciIii20H06Ud088=
+X-Endpoint-Received: by B4 Relay for wuxilin123@gmail.com/20230805 with auth_id=73
+X-Original-From: Xilin Wu <wuxilin123@gmail.com>
+Reply-To: <wuxilin123@gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FORGED_REPLYTO,
+        FREEMAIL_REPLYTO_END_DIGIT,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Aug 5, 2023 at 6:00=E2=80=AFPM Danilo Krummrich <dakr@redhat.com> w=
-rote:
->
-> Fix call to nouveau_fence_emit() with wrong channel parameter.
->
-> Fixes: 7f2a0b50b2b2 ("drm/nouveau: fence: separate fence alloc and emit")
-> Signed-off-by: Danilo Krummrich <dakr@redhat.com>
-> ---
->  drivers/gpu/drm/nouveau/nouveau_dmem.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/drivers/gpu/drm/nouveau/nouveau_dmem.c b/drivers/gpu/drm/nou=
-veau/nouveau_dmem.c
-> index 4ad40e42cae1..61e84562094a 100644
-> --- a/drivers/gpu/drm/nouveau/nouveau_dmem.c
-> +++ b/drivers/gpu/drm/nouveau/nouveau_dmem.c
-> @@ -678,7 +678,7 @@ static void nouveau_dmem_migrate_chunk(struct nouveau=
-_drm *drm,
->         }
->
->         if (!nouveau_fence_new(&fence))
-> -               nouveau_fence_emit(fence, chunk->drm->dmem->migrate.chan)=
-;
-> +               nouveau_fence_emit(fence, drm->dmem->migrate.chan);
->         migrate_vma_pages(args);
->         nouveau_dmem_fence_done(&fence);
->         nouveau_pfns_map(svmm, args->vma->vm_mm, args->start, pfns, i);
->
-> base-commit: 82d750e9d2f5d0594c8f7057ce59127e701af781
-> --
-> 2.41.0
->
+Signed-off-by: Xilin Wu <wuxilin123@gmail.com>
+---
+Xilin Wu (3):
+      soc: qcom: pmic_glink: enable UCSI for SM8350
+      dt-bindings: arm: qcom: Add Xiaomi Mi 11 Ultra
+      arm64: dts: qcom: Add device tree for Xiaomi Mi 11 Ultra
 
-Reviewed-by: Karol Herbst <kherbst@redhat.com>
+ Documentation/devicetree/bindings/arm/qcom.yaml |    1 +
+ arch/arm64/boot/dts/qcom/Makefile               |    1 +
+ arch/arm64/boot/dts/qcom/sm8350-xiaomi-star.dts | 1251 +++++++++++++++++++++++
+ drivers/soc/qcom/pmic_glink.c                   |    1 +
+ 4 files changed, 1254 insertions(+)
+---
+base-commit: d2aae0f5a3d5af50b13b13cb452745cd0428ce5e
+change-id: 20230806-xiaomi-star-e53d86a3b59e
+
+Best regards,
+-- 
+Xilin Wu <wuxilin123@gmail.com>
 
