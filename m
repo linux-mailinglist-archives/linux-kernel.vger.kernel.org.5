@@ -2,98 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 268507712D3
-	for <lists+linux-kernel@lfdr.de>; Sun,  6 Aug 2023 00:13:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C81547712D5
+	for <lists+linux-kernel@lfdr.de>; Sun,  6 Aug 2023 00:14:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229882AbjHEWNl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 5 Aug 2023 18:13:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55594 "EHLO
+        id S229917AbjHEWNr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 5 Aug 2023 18:13:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55606 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229825AbjHEWNj (ORCPT
+        with ESMTP id S229893AbjHEWNo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 5 Aug 2023 18:13:39 -0400
-Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C17FB10C9
-        for <linux-kernel@vger.kernel.org>; Sat,  5 Aug 2023 15:13:37 -0700 (PDT)
-Received: by mail-pl1-x629.google.com with SMTP id d9443c01a7336-1b7dfb95761so5452825ad.1
-        for <linux-kernel@vger.kernel.org>; Sat, 05 Aug 2023 15:13:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20221208.gappssmtp.com; s=20221208; t=1691273616; x=1691878416;
-        h=content-transfer-encoding:mime-version:date:message-id:subject
-         :references:in-reply-to:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=wfoCc+RvjV+g+GLE3LFiITYI1ax4E6KyrUn9GtTQWKU=;
-        b=Y2h94PojIusanzrjPBql/8LV2CORjY1s6biXpvYlWwZA1L/KDwvg8dvBt37DG0mzpN
-         B7dt7VojBlYTaPOWjlaP5esyiMkVGFyQucBOPNHcvfI5nN80tbVha52gvGMx6PAuPB0v
-         I3ysUBajJcS2F0UybgEkEiBJjjMbxn/id96mFIOfl5hJoI7YRXvhcLxucQMIm0/wWZ4U
-         62tdfCNAIwzXEP8CaXC1q6uZg7CyC9VldzoAzQ5L2RoFlI9z8xHcM33mXz2xZvpT/pLI
-         bMh/CR95r3UXAc39JwJxAjYlje52Q/t6RStTV8BsBBOms0Pux+zE5OS5TEZW6fN55YhK
-         +zjQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691273616; x=1691878416;
-        h=content-transfer-encoding:mime-version:date:message-id:subject
-         :references:in-reply-to:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=wfoCc+RvjV+g+GLE3LFiITYI1ax4E6KyrUn9GtTQWKU=;
-        b=KtL91fWKsYl0n3b5zrR0W/GBNhBz1cUP2Cxx4BXS+oryAi3KRnLVdxxBHADOM6GgFv
-         +sc6tNofpQnkmBmAUV3Av+/Ru/MozMIRPQoQJ0dsPX7ZObKla44OTNK7Cvmu0bNVENeX
-         oV/wM8ldAWk7E950ArWZyg7xfA251okCQg9UqkM3Uxfh4yTFsm0OsMoUE63Fi1LA/cXT
-         in/8MupeDs9Rg1oFWf9301Z2ZBSM2b1o9hwTAdJnoEYSkW4OLbvcJR5u5kcdnQTxB2XF
-         GrDwUSwsZikF1B29km8r+5FELIdA1tgsWbV8J6s1gRsGM4H9paBLJ0T0ykfYUApna5Tk
-         i90w==
-X-Gm-Message-State: ABy/qLZ3jJ7cS8E9YB3XRhG8/Vf+2+/VZIhBxv6/PInwQyxvRh5ENgdY
-        Rz1sKlG4Gq1+McxfI2Kqbm5RaA==
-X-Google-Smtp-Source: APBJJlEv8pHOH7HWV+MOVitX5Kxcf06soD19PKjn8qyNH4ESUwUgXVaV/O/MtzWWKBI09ZRESJ80Tg==
-X-Received: by 2002:a17:902:d2d1:b0:1b8:ac61:ffcd with SMTP id n17-20020a170902d2d100b001b8ac61ffcdmr28867244plc.3.1691273616618;
-        Sat, 05 Aug 2023 15:13:36 -0700 (PDT)
-Received: from [127.0.0.1] (071-095-160-189.biz.spectrum.com. [71.95.160.189])
-        by smtp.gmail.com with ESMTPSA id j21-20020a170902c3d500b001bba1188c8esm3929244plj.271.2023.08.05.15.13.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 05 Aug 2023 15:13:35 -0700 (PDT)
-From:   Jens Axboe <axboe@kernel.dk>
-To:     minchan@kernel.org, senozhatsky@chromium.org,
-        Christoph Hellwig <hch@lst.de>
-Cc:     linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Dusty Mabe <dusty@dustymabe.com>
-In-Reply-To: <20230805055537.147835-1-hch@lst.de>
-References: <20230805055537.147835-1-hch@lst.de>
-Subject: Re: [PATCH] zram: take device and not only bvec offset into
- account
-Message-Id: <169127361527.13732.4190461845439151626.b4-ty@kernel.dk>
-Date:   Sat, 05 Aug 2023 16:13:35 -0600
+        Sat, 5 Aug 2023 18:13:44 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6DA810C9;
+        Sat,  5 Aug 2023 15:13:43 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 5088060F39;
+        Sat,  5 Aug 2023 22:13:42 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5402CC433C9;
+        Sat,  5 Aug 2023 22:13:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1691273621;
+        bh=Fv6xOJZuHno+soULBoFjqvGf1qqQIZ28lqSa/yaepNI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=cWO3s+9aPMtvvprSTvt2Q7uwb7A5V1/T1GBpjD4FemWJBT5S7hXTio62lrmiTV3UQ
+         tNbd9kM3syKurONPvGL9ft6QrpvEKjS6Ng/vtK9lcA/HLcMRBkaqg6xFl8O57ObDt5
+         rU/igyl8r4co4aTgmbbuDSDTNI07hhMcX/2bT+9Cjkd62yUD66ZUBTSYn7iLAUDDd7
+         gPGkUkTBrHezef/Ps0qsxMsFngrCOsgRX8gmkBHymJwMkVDHmllwv7kAazHKo3jG02
+         4gcImQkVDVvS1x3/j50ueDfm79HeS8Lzh6NTPKk7q0zdnf6qGoIFPgKnMgME9MMtlm
+         n8QIaElvZTxtw==
+Date:   Sun, 6 Aug 2023 00:13:39 +0200
+From:   Andi Shyti <andi.shyti@kernel.org>
+To:     Yue Haibing <yuehaibing@huawei.com>
+Cc:     krzysztof.kozlowski@linaro.org, alim.akhtar@samsung.com,
+        linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH -next] i2c: s3c2410: Remove unused extern declarations
+Message-ID: <20230805221339.7vl3jcutustlvhgc@intel.intel>
+References: <20230728132318.25072-1-yuehaibing@huawei.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.13-dev-034f2
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230728132318.25072-1-yuehaibing@huawei.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Yue,
 
-On Sat, 05 Aug 2023 07:55:37 +0200, Christoph Hellwig wrote:
-> Commit af8b04c63708 ("zram: simplify bvec iteration in
-> __zram_make_request") changed the bio iteration in zram to rely on the
-> implicit capping to page boundaries in bio_for_each_segment.  But it
-> failed to care for the fact zram not only care about the page alignment
-> of the bio payload, but also the page alignment into the device.  For
-> buffered I/O and swap those are the same, but for direct I/O or kernel
-> internal I/O like XFS log buffer writes they can differ.
-> 
-> [...]
+On Fri, Jul 28, 2023 at 09:23:18PM +0800, Yue Haibing wrote:
+> commit 0d297df03890 ("ARM: s3c: simplify platform code") left behind
+> s3c_i2c(*)_set_platdata().
+> commit d78c16ccde96 ("ARM: SAMSUNG: Remove remaining legacy code")
+> leave s5p_i2c_hdmiphy_set_platdata() declaration.
+> And commit bad1e6aadd17 ("ARM: SAMSUNG: Cleanup plat-samsung/devs.c and devs.h")
+> leave s3c_i2c(*)_cfg_gpio() alone.
 
-Applied, thanks!
+I don't understand anything from the commit message here.
 
-[1/1] zram: take device and not only bvec offset into account
-      commit: 95848dcb9d676738411a8ff70a9704039f1b3982
+How about:
 
-Best regards,
--- 
-Jens Axboe
+"
+After some cleanups[*] certain s3c_i2c(*)_cfg_gpio() prototypes
+have become unused. Remove them.
 
+[*] 0d297df03890 ("ARM: s3c: simplify platform code")
+    d78c16ccde96 ("ARM: SAMSUNG: Remove remaining legacy code")
+    bad1e6aadd17 ("ARM: SAMSUNG: Cleanup plat-samsung/devs.c and devs.h")
+"
 
+> Signed-off-by: Yue Haibing <yuehaibing@huawei.com>
 
+Reviewed-by: Andi Shyti <andi.shyti@kernel.org> 
+
+which branch should this go? Samsung or i2c?
+
+Andi
