@@ -2,121 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 834387711A3
-	for <lists+linux-kernel@lfdr.de>; Sat,  5 Aug 2023 21:00:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 09A6C7711A6
+	for <lists+linux-kernel@lfdr.de>; Sat,  5 Aug 2023 21:01:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230117AbjHETAb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 5 Aug 2023 15:00:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51434 "EHLO
+        id S230258AbjHETBO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 5 Aug 2023 15:01:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51756 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229445AbjHETA3 (ORCPT
+        with ESMTP id S229445AbjHETBM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 5 Aug 2023 15:00:29 -0400
-Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31C7A128;
-        Sat,  5 Aug 2023 12:00:28 -0700 (PDT)
-Received: by mail-pl1-x62f.google.com with SMTP id d9443c01a7336-1b8b2b60731so19927935ad.2;
-        Sat, 05 Aug 2023 12:00:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1691262027; x=1691866827;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=5i+3GUOehI1kx9icGwBFn2H2FxOQ/JAgsfd8DRO3ekM=;
-        b=FuKfTAejBPNyESnw/w1ERYDc1mKWNtVPBXxsV9WqJT4A9EqT98imtSOnOdnn+EKUZZ
-         C+6UwHI5Qb8b6rNbWQjNE+e/ErPNW95/i/d7NMk7B8hymuNp4BcdCeVeMz0J6kKwO/bO
-         80gNlrZaD2phyJ5VyelYKTQL7VEZSzrAOHs4N4B561flTLxPwVdTKoiuWmTw1zACIMuB
-         3xesniE581tA8LxOiB3TDmoN1OQ4g5ZZHJjKnUTXe1j7wPL0XXjwTrq/0UpOGe6od9wE
-         L4ahV7LP0aFR0ap9pquv1hfBkdsN+T2VgbcA/r6QaoSVGqUci7c/ObcHsBtC6iTM4LAk
-         +/Uw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691262027; x=1691866827;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=5i+3GUOehI1kx9icGwBFn2H2FxOQ/JAgsfd8DRO3ekM=;
-        b=OO4p1nlQ2UHHjGN7zTnE4JTdB7/GGSYHWJfB+WLStd+qzlMtloE9Ok9NAE+i1Zsv8T
-         W2w52bPxwgSuDM52LnqUMMCmbRQiiGCuY0hnsrhk43OpzLxAuRwnzPnWmPFfTAskFE3j
-         DQQoMZxYo87jZZZC3I00OGTlw+mVvJRzl2GgnDoqnGCKGs+Z6ACuwxkrCi4V4YD+XGoI
-         7AcDXkgoe0tbtM0Y9xzLcbNWDhxE40NfKYOquyLuwkDO6OFTBGXFmyYP9Pp166OjtPDT
-         sLRbk6xbfwHK/bROGVlJ9aHWyePwNgT1Qdftmz0DWIvFW+77sHtUZ3YytEJ9ch7WETYO
-         mSCw==
-X-Gm-Message-State: AOJu0Ywh19ooRDXzybXbeSPpYBKk/fpWU7C6KU6GjZOoPheSTejn3Y6S
-        xZusbJjcsYMKD5KsHGDKK18=
-X-Google-Smtp-Source: AGHT+IEdsQP1z4KFkNarF886E/9q/EQ15BmwF6o/5gDAFHiZchqSAJQSKz0AVuU7ELIXMFcsU7qRYg==
-X-Received: by 2002:a17:903:2352:b0:1b8:b433:7fa with SMTP id c18-20020a170903235200b001b8b43307famr4323159plh.13.1691262027243;
-        Sat, 05 Aug 2023 12:00:27 -0700 (PDT)
-Received: from [192.168.0.101] ([49.207.241.198])
-        by smtp.gmail.com with ESMTPSA id kg14-20020a170903060e00b001b9ff5aa2e7sm3816215plb.239.2023.08.05.12.00.24
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 05 Aug 2023 12:00:26 -0700 (PDT)
-Message-ID: <9ff945e6-c963-41d2-9df2-542d83ada519@gmail.com>
-Date:   Sun, 6 Aug 2023 00:30:22 +0530
+        Sat, 5 Aug 2023 15:01:12 -0400
+Received: from lelv0142.ext.ti.com (lelv0142.ext.ti.com [198.47.23.249])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13D0A103;
+        Sat,  5 Aug 2023 12:01:09 -0700 (PDT)
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+        by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 375J0kor033696;
+        Sat, 5 Aug 2023 14:00:46 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1691262046;
+        bh=TbaBvO8PIay4FSb+IgECQU3xRdQY6gka+3zrxWFTJzU=;
+        h=From:To:CC:Subject:Date:In-Reply-To:References;
+        b=SdpNL2pD4FOg+idEyry4yIp+szucMTOQlmpyPeG2+P7lJIoNO3X/AJ66+UkQPvKo5
+         WvJ3oAL2gEAzxnOq8yIUc9rRR02Gy0OKn+6EOtqMbz9BhGFdHm8sxaH6twPeFvjOld
+         GFJGh2S9YsGTpVzIsEGGEtu22Wga+l8AUtYn3eyk=
+Received: from DLEE105.ent.ti.com (dlee105.ent.ti.com [157.170.170.35])
+        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 375J0kcu021785
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Sat, 5 Aug 2023 14:00:46 -0500
+Received: from DLEE104.ent.ti.com (157.170.170.34) by DLEE105.ent.ti.com
+ (157.170.170.35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Sat, 5
+ Aug 2023 14:00:45 -0500
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE104.ent.ti.com
+ (157.170.170.34) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Sat, 5 Aug 2023 14:00:45 -0500
+Received: from localhost (ileaxei01-snat.itg.ti.com [10.180.69.5])
+        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 375J0jwC011734;
+        Sat, 5 Aug 2023 14:00:45 -0500
+From:   Nishanth Menon <nm@ti.com>
+To:     Vignesh Raghavendra <vigneshr@ti.com>,
+        Tero Kristo <kristo@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Francesco Dolcini <francesco@dolcini.it>
+CC:     Nishanth Menon <nm@ti.com>,
+        Francesco Dolcini <francesco.dolcini@toradex.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Judith Mendez <jm@ti.com>
+Subject: Re: [PATCH v2 0/2] arm64: dts: ti: k3-am62: Add MCU MCAN
+Date:   Sat, 5 Aug 2023 14:00:45 -0500
+Message-ID: <169126186772.69126.7798113611877655523.b4-ty@ti.com>
+X-Mailer: git-send-email 2.40.0
+In-Reply-To: <20230802073635.11290-1-francesco@dolcini.it>
+References: <20230802073635.11290-1-francesco@dolcini.it>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v7 8/8] kbuild: modinst: do modules_install step by step
-Content-Language: en-US
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     dhowells@redhat.com, dwmw2@infradead.org, masahiroy@kernel.org,
-        nathan@kernel.org, ndesaulniers@google.com, nicolas@fjasle.eu,
-        linux-kernel@vger.kernel.org, sshedi@vmware.com,
-        linux-kbuild@vger.kernel.org
-References: <20230623145358.568971-1-yesshedi@gmail.com>
- <20230623145358.568971-9-yesshedi@gmail.com>
- <2023080434-verbose-value-1200@gregkh>
-From:   Shreenidhi Shedi <yesshedi@gmail.com>
-In-Reply-To: <2023080434-verbose-value-1200@gregkh>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 04/08/23 19:36, Greg KH wrote:
-> On Fri, Jun 23, 2023 at 08:23:58PM +0530, Shreenidhi Shedi wrote:
->> Currently Makefile.modinst does three tasks on each module built:
->> - Install modules
->> - Sign modules
->> - Compress modules
->>
->> All the above tasks happen from a single place.
->>
->> This patch divides this task further and uses a different makefile for
->> each task.
->> Signing module logic is completely refactored and everything happens
->> from a shell script now.
->>
->> Signed-off-by: Shreenidhi Shedi <yesshedi@gmail.com>
->> ---
->>   scripts/Makefile.compress |  53 ++++++++++++++++++
->>   scripts/Makefile.install  |  66 +++++++++++++++++++++++
->>   scripts/Makefile.modinst  | 111 +++-----------------------------------
->>   scripts/Makefile.sign     |  37 +++++++++++++
->>   scripts/signfile.sh       |  24 +++++++++
->>   5 files changed, 186 insertions(+), 105 deletions(-)
->>   create mode 100644 scripts/Makefile.compress
->>   create mode 100644 scripts/Makefile.install
->>   create mode 100644 scripts/Makefile.sign
->>   create mode 100755 scripts/signfile.sh
-> 
-> As you are touching the build process, you should always cc: the proper
-> mailing list, and the KBUILD maintainer.  Please do so for this series,
-> as that is the proper tree for this to go through.
-> 
-> thanks,
-> 
-> greg k-h
+Hi Francesco Dolcini,
 
-Thanks for the inputs Greg.
+On Wed, 02 Aug 2023 09:36:33 +0200, Francesco Dolcini wrote:
+> From: Francesco Dolcini <francesco.dolcini@toradex.com>
+> 
+> On AM62x there are no hardware interrupts routed to A53 GIC
+> interrupt controller for MCU MCAN IPs, so MCU MCAN nodes were
+> omitted from MCU dtsi.
+> 
+> Timer polling was introduced in commits [1][2] so now add MCU MCAN nodes
+> to the MCU dtsi for Cortex A53.
 
-CC-ing linux-kbuild@vger.kernel.org as suggested.
+I understand the dependency, it does create a dtbs_check warnings on
+rc1, but I am picking this up since the yaml fixup is in next already
+and not a new compatible addition. if the fixups does'nt end up in
+linus-master for 6.6-rc1, we might need to look at what we need to do.
+Please let me know if there is any concerns and I can drop this series
+from my tree.
 
+> 
+> [...]
+
+I have applied the following to branch ti-k3-dts-next on [1].
+Thank you!
+
+[1/2] arm64: dts: ti: k3-am62: Add MCU MCAN nodes
+      commit: 108f61e03963a3a019486fd80cc84d5db5c204d0
+[2/2] arm64: dts: ti: k3-am625-verdin: enable CAN_2
+      commit: 7480cea33b4c36aeffe592eb6f151bc9974fee70
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent up the chain during
+the next merge window (or sooner if it is a relevant bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+[1] https://git.kernel.org/pub/scm/linux/kernel/git/ti/linux.git
 -- 
-Shedi
+Regards,
+Nishanth Menon
+Key (0xDDB5849D1736249D) / Fingerprint: F8A2 8693 54EB 8232 17A3  1A34 DDB5 849D 1736 249D
 
