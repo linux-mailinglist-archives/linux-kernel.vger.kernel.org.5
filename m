@@ -2,57 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5EB9E770F54
-	for <lists+linux-kernel@lfdr.de>; Sat,  5 Aug 2023 12:43:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 41692770F58
+	for <lists+linux-kernel@lfdr.de>; Sat,  5 Aug 2023 12:45:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229655AbjHEKnC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 5 Aug 2023 06:43:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48870 "EHLO
+        id S229838AbjHEKpr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 5 Aug 2023 06:45:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49654 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229450AbjHEKnA (ORCPT
+        with ESMTP id S229450AbjHEKpp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 5 Aug 2023 06:43:00 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5FF94689;
-        Sat,  5 Aug 2023 03:42:59 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 3E96C60C82;
-        Sat,  5 Aug 2023 10:42:59 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 06417C433C7;
-        Sat,  5 Aug 2023 10:42:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691232178;
-        bh=HjBWjOuejvnkKby6eQoj0qIOEikrbperZEMLEkvwOgg=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Sq4xInJx6GYuCZyOnm6Qyg/yQAu5+YGvLzeQdws0RsT2IthpF0lGYs9kP+ENLxBOq
-         CK8yKjHyy4WAqzYJJrELI7wpbZawTwXbjyjHCDUpyG7CDyYaqYeWzZSECYnvpAwVX0
-         3mq8PyS8wX33xS8+14xPLoX5Ryel0TRpC6tc2mr696lhafXCWBYh5593l1ZA730AzS
-         8m8yb8fZz50HOXlANwYhxfDfEN2J0Pj+oaChh9mEHqo06dtUqznG2ot2cpL02WSxYC
-         PJjrB1OBZUzpcopwm+C8Ym54aV+Fs/X94coFewb36VwEXplZHBaRiKEwW2hpz7dC1O
-         0EqjnyP7D59dA==
-From:   Christian Brauner <brauner@kernel.org>
-To:     Muhammad Usama Anjum <usama.anjum@collabora.com>
-Cc:     Christian Brauner <brauner@kernel.org>, kernel@collabora.com,
-        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Shuah Khan <shuah@kernel.org>,
-        Alexey Gladkov <legion@kernel.org>
-Subject: Re: (subset) [PATCH 4/6] selftests: fchmodat2: remove duplicate unneeded defines
-Date:   Sat,  5 Aug 2023 12:42:53 +0200
-Message-Id: <20230805-nullrunde-tierreich-0d7ab1332b08@brauner>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20230805073809.1753462-4-usama.anjum@collabora.com>
-References: <20230805073809.1753462-1-usama.anjum@collabora.com> <20230805073809.1753462-4-usama.anjum@collabora.com>
+        Sat, 5 Aug 2023 06:45:45 -0400
+Received: from out-94.mta1.migadu.com (out-94.mta1.migadu.com [IPv6:2001:41d0:203:375::5e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0BCDC468C
+        for <linux-kernel@vger.kernel.org>; Sat,  5 Aug 2023 03:45:43 -0700 (PDT)
+Date:   Sat, 5 Aug 2023 20:42:59 +1000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=jookia.org; s=key1;
+        t=1691232338;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=FpB0D3mxI9kO/4n6kQP6vW7np01C4MPqEWX1agkDUuM=;
+        b=gHfgjkGCHQ9obOeEfPj+rXReZOqs6s5Y3WfqT1BD5VbUn7wfUCTkIR1nmCvI4aTXO4b9Q3
+        x+yNXqQkoCwG0YtlsPF7gPzZWnB93RJw0EnB+NnPGg6ABVyL8ZZXLwV29Dj/y6xwiVttd7
+        ybaOzUh12C2oICB8d1EHO0Aof1e+7NaFFGwEJCWbGP3MVS01sQWOVFB/2zZI7TKQ4Bfwt6
+        xk86AXc6c/yH/a6l5Cp5yhrQOqQpOqooqL6QHJB6DjVsgyzZN5SqVOv0ePnOFZrptXlCsu
+        iB4nR3ob1y3DOFsDGM2FBZJGhI8GDfeLAD67J9k6P8RccZgR1A8N/z2bwUMAAQ==
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From:   John Watts <contact@jookia.org>
+To:     Jernej =?utf-8?Q?=C5=A0krabec?= <jernej.skrabec@gmail.com>
+Cc:     linux-sunxi@lists.linux.dev, Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Samuel Holland <samuel@sholland.org>,
+        Cristian Ciocaltea <cristian.ciocaltea@collabora.com>,
+        Maksim Kiselev <bigunclemax@gmail.com>,
+        devicetree@vger.kernel.org, linux-riscv@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        mkl@pengutronix.de
+Subject: Re: [PATCH] riscv: dts: allwinner: d1: Specify default CAN pins
+Message-ID: <ZM4nswDuc5YBfEyV@titan>
+References: <20230731023701.2581713-1-contact@jookia.org>
+ <3248110.44csPzL39Z@jernej-laptop>
+ <ZMyZ5kZSiiJHtdeS@titan>
+ <5696365.DvuYhMxLoT@jernej-laptop>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1122; i=brauner@kernel.org; h=from:subject:message-id; bh=HjBWjOuejvnkKby6eQoj0qIOEikrbperZEMLEkvwOgg=; b=owGbwMvMwCU28Zj0gdSKO4sYT6slMaScU1/l8TBqf7Tokg+7fr2dNp/TSLA0o25bvODkKz+S+i+4 vl1q1FHKwiDGxSArpsji0G4SLrecp2KzUaYGzBxWJpAhDFycAjCRDFmGP/xXvgfF+Yt5p6RPcnv5lM O595TLY5tdXtOLLheX20/eVMDIcFXQ9/ra+3nnE/mWqcxxfhF158z6WqmQh9zTmv/85TmjxgsA
-X-Developer-Key: i=brauner@kernel.org; a=openpgp; fpr=4880B8C9BD0E5106FC070F4F7B3C391EFEA93624
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+In-Reply-To: <5696365.DvuYhMxLoT@jernej-laptop>
+X-Migadu-Flow: FLOW_OUT
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -60,31 +66,22 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 05 Aug 2023 12:38:02 +0500, Muhammad Usama Anjum wrote:
-> These duplicate defines should automatically be picked up from kernel
-> headers. Use KHDR_INCLUDES to add kernel header files.
-> 
-> 
+On Fri, Aug 04, 2023 at 04:39:41PM +0200, Jernej Škrabec wrote:
+> If you don't mind, please do.
 
-Since the test isn't upstream yet I'm carrying it separately from the
-other patches which will go through the selftest tree.
+Just to clarify, something like this:
 
----
+                can0: can@2504000 {
+                        pinctrl-names = "default";
+                        pinctrl-0 = <&can0_pins>;
+                        compatible = "allwinner,sun20i-d1-can";
+                        reg = <0x02504000 0x400>;
+                        interrupts = <SOC_PERIPHERAL_IRQ(21) IRQ_TYPE_LEVEL_HIGH>;
+                        clocks = <&ccu CLK_BUS_CAN0>;
+                        resets = <&ccu RST_BUS_CAN0>;
+                        status = "disabled";
+                };
 
-Applied to the vfs.fchmodat2 branch of the vfs/vfs.git tree.
-Patches in the vfs.fchmodat2 branch should appear in linux-next soon.
+I couldn't find any dtsi files that put pinctrl stuff at the top.
 
-Please report any outstanding bugs that were missed during review in a
-new review to the original patch series allowing us to drop it.
-
-It's encouraged to provide Acked-bys and Reviewed-bys even though the
-patch has now been applied. If possible patch trailers will be updated.
-
-Note that commit hashes shown below are subject to change due to rebase,
-trailer updates or similar. If in doubt, please check the listed branch.
-
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/vfs/vfs.git
-branch: vfs.fchmodat2
-
-[4/6] selftests: fchmodat2: remove duplicate unneeded defines
-      https://git.kernel.org/vfs/vfs/c/712143795327
+John.
