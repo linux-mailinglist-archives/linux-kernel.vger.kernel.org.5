@@ -2,75 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F32A3770E1D
-	for <lists+linux-kernel@lfdr.de>; Sat,  5 Aug 2023 08:32:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E5BE0770E23
+	for <lists+linux-kernel@lfdr.de>; Sat,  5 Aug 2023 08:36:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229756AbjHEGcl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 5 Aug 2023 02:32:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36318 "EHLO
+        id S229761AbjHEGgA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 5 Aug 2023 02:36:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36826 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229450AbjHEGcj (ORCPT
+        with ESMTP id S229450AbjHEGfz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 5 Aug 2023 02:32:39 -0400
-Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9A174ED6;
-        Fri,  4 Aug 2023 23:32:37 -0700 (PDT)
-Received: by mail-ed1-x52c.google.com with SMTP id 4fb4d7f45d1cf-5221c6a2d3dso3613820a12.3;
-        Fri, 04 Aug 2023 23:32:37 -0700 (PDT)
+        Sat, 5 Aug 2023 02:35:55 -0400
+Received: from mail-yw1-x112b.google.com (mail-yw1-x112b.google.com [IPv6:2607:f8b0:4864:20::112b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A89F1BE;
+        Fri,  4 Aug 2023 23:35:55 -0700 (PDT)
+Received: by mail-yw1-x112b.google.com with SMTP id 00721157ae682-583b3939521so32733557b3.0;
+        Fri, 04 Aug 2023 23:35:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1691217156; x=1691821956;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+        d=gmail.com; s=20221208; t=1691217354; x=1691822154;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=YKCckyyqZk8/acMlfQW6ywm6XBXeAYUmbzGxRIyudVE=;
-        b=ilzMSkvo/+6lGMIs7xfu+ApcF+Cx05/zlxw1lUcWIfmCrkg88LN54LhmQqiZggQa+V
-         SJ0ltYbqwSXBXAjp2e/SWYneOySiqugIUr+Qh/hPNH3l6G8JWkrF/nNjQ9e59aiqECBM
-         CdyRBxaVir9foypmvaQ440VLImuMs+REe2pvi7/iXD3njWMzd25C3dpiDYLzUePO/OI6
-         yNsoOWWaL6wSR8hgi5oWAxO5cSQRaogDHk8rSpulBeE1FABQOJ3ynqWkw1qrEPF24xJP
-         rMmQ4mc7fuztt20GtO8Rabhe5ActrI2+m9N2VW6dYKxsrX+1DStek7QTsJ5Q+bLRD9+B
-         Wl7g==
+        bh=izJldXkK49lbGL0XLPukfeIEvUvsLq+UDkHmXV6tSds=;
+        b=A707mbbrKfoL1HkqQ9fJGcWngC04eUzbvLyMt49WGL8RFVv8VVbIZrDybCgkWbyF3Z
+         vBWBrqUXwI/5LR1HQvVi4keHlv535aZBqE4e/Dh3PSZ8liVnM3jGsUxBJya6dEnt46pm
+         kUKIDrb+hlSRduhrPrL8dHw4HqoWOQcCe2gbXLoiQhroTv7kn9YzXEgY9nHwVBseDeXT
+         PVUJUU4wde1bkvk6TsY0r3Hnjqwwhbtkd1uUhjdwnS8DvcTDcQPuTWvM2CAxHW/AJGV4
+         UwlCEAtthV3zhWmSjt8Z4wfFxaTBk9UynuGfZjMU9XrEaUsC2gwLOOSdl24JTRFx4l3y
+         ZMXQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691217156; x=1691821956;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20221208; t=1691217354; x=1691822154;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=YKCckyyqZk8/acMlfQW6ywm6XBXeAYUmbzGxRIyudVE=;
-        b=kg2EwbB/ZXPVWNUbtlIhXfVvTgxL3+ovdIZ+d5CopMoNUZXG0NqzeYklGAbyIVRELF
-         VWZ8r/HlDcxGMV30bCcJf+LPo570pBxRKsdmB7SkHnkPmS5Fk6blD5imQvf6ZSg7YxaT
-         KBil8RpvPPd4Z00VeFxjm5+mIGs6U2ujIgzF0N2KoEiqZgLmxfExJzxXtjG5qTRPZz3i
-         9K3LbYQ71jQAarYgjd9D/k7h2mci28QTtCS8GONeuF4fAPQkDZCeGlw4i4sJ7a4vjAOl
-         r17A9Lh1GqGWFRBGo7yzA95TrAnTQHbiob/HJdYRbWcpKMW5OMFx2+pMTxRBHbcEVBBq
-         xtvQ==
-X-Gm-Message-State: AOJu0YzD/+JhKcX7Dm5Uuc8XrhPoI97m+IdIHkK13UUF062izGdI0PYs
-        OW/HbMIg5PqoEN3WamLTpKM=
-X-Google-Smtp-Source: AGHT+IGQUL7hhD4BqC3rXbG1o00H6NiQPmWJWyqZ8Fsks3qK3SIW7phGKHhGZbNB4nHMvpPoebPHlA==
-X-Received: by 2002:aa7:c558:0:b0:523:2816:773b with SMTP id s24-20020aa7c558000000b005232816773bmr1059717edr.20.1691217155971;
-        Fri, 04 Aug 2023 23:32:35 -0700 (PDT)
-Received: from jernej-laptop.localnet (82-149-1-233.dynamic.telemach.net. [82.149.1.233])
-        by smtp.gmail.com with ESMTPSA id n24-20020a05640204d800b0052307566ed2sm2223953edw.14.2023.08.04.23.32.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 04 Aug 2023 23:32:35 -0700 (PDT)
-From:   Jernej =?utf-8?B?xaBrcmFiZWM=?= <jernej.skrabec@gmail.com>
-To:     Andre Przywara <andre.przywara@arm.com>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Chen-Yu Tsai <wens@csie.org>,
-        Samuel Holland <samuel@sholland.org>,
-        Icenowy Zheng <uwu@icenowy.me>,
-        Piotr Oniszczuk <piotr.oniszczuk@gmail.com>,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-sunxi@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 3/3] arm64: dts: allwinner: h616: Add OrangePi Zero 3 board
- support
-Date:   Sat, 05 Aug 2023 08:32:34 +0200
-Message-ID: <2691070.mvXUDI8C0e@jernej-laptop>
-In-Reply-To: <20230804235827.3f32fa8f@slackpad.lan>
-References: <20230804170856.1237202-1-andre.przywara@arm.com>
- <4500165.LvFx2qVVIh@jernej-laptop> <20230804235827.3f32fa8f@slackpad.lan>
+        bh=izJldXkK49lbGL0XLPukfeIEvUvsLq+UDkHmXV6tSds=;
+        b=TtntCX+eoihEOto2szE1SocVXsVnwCNo2z5ICd8QVtXv9Q5TUCpbhRnj0a/9dcnpjs
+         vgPCv122J+nrW6q9OsZuopTKt2F6oyfTeoAd22/LsX/QDo2PeFkEpOI893OlyNIUy/Dx
+         6DgZ6yw63pfxrNdYf9PQpYZvjB85T9jwbDlm+9LCdamImSHdF5RWBKopq0Bgg4rAxFJf
+         FcF/5uEUjlS0GGuKi3spXzABV5lTe8WyCszXExMRZI4HxKxSIjfTGgBaLrGkJ+/hys1d
+         Mo1GzjPZuF4ZrzL8Y4DhDBKNdEjGxRg4ESmsZw3juSyDXQ6mYDs6C7TFPK1PsSnkvytV
+         Lzig==
+X-Gm-Message-State: AOJu0Ywc2H/Tc5FECEZOJ3VFFuG7HTf4U9eEjpLgufPm16T/mfRk/ejg
+        1ogMIQ2mV0ziAn6M3/MMfqyDldqgQqOjbeRQjv5QWc9zqbg=
+X-Google-Smtp-Source: AGHT+IET4oIjgzL1wCDATiUpvfpr5nw9EkbuCymAifTyabQIhU5etbcc4G7i4IZn4+mmPn7hXwN8W06nR+L21IOYu7k=
+X-Received: by 2002:a81:73c1:0:b0:584:3140:fcae with SMTP id
+ o184-20020a8173c1000000b005843140fcaemr4139723ywc.26.1691217354314; Fri, 04
+ Aug 2023 23:35:54 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+References: <20230804090621.400-1-elver@google.com>
+In-Reply-To: <20230804090621.400-1-elver@google.com>
+From:   Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+Date:   Sat, 5 Aug 2023 08:35:43 +0200
+Message-ID: <CANiq72=-o49qkW+mPW45P_+jbS2jO=5_qks14HOtzVOukb0Mpw@mail.gmail.com>
+Subject: Re: [PATCH v2 1/3] compiler_types: Introduce the Clang
+ __preserve_most function attribute
+To:     Marco Elver <elver@google.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Kees Cook <keescook@chromium.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Marc Zyngier <maz@kernel.org>,
+        Oliver Upton <oliver.upton@linux.dev>,
+        James Morse <james.morse@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Zenghui Yu <yuzenghui@huawei.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Tom Rix <trix@redhat.com>, Miguel Ojeda <ojeda@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
+        linux-kernel@vger.kernel.org, llvm@lists.linux.dev,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Alexander Potapenko <glider@google.com>,
+        kasan-dev@googlegroups.com, linux-toolchains@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -81,232 +89,18 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dne sobota, 05. avgust 2023 ob 00:58:27 CEST je Andre Przywara napisal(a):
-> On Fri, 04 Aug 2023 21:05:36 +0200
-> Jernej =C5=A0krabec <jernej.skrabec@gmail.com> wrote:
->=20
-> Hi Jernej,
->=20
-> > Dne petek, 04. avgust 2023 ob 19:08:56 CEST je Andre Przywara napisal(a=
-):
-> > > The OrangePi Zero 3 is a development board based on the Allwinner H618
-> > > SoC,
-> > > which seems to be just an H616 with more L2 cache. The board itself i=
-s a
-> > > slightly updated version of the Orange Pi Zero 2. It features:
-> > > - Four ARM Cortex-A53 cores, Mali-G31 MP2 GPU
-> > > - 1/1.5/2/4 GiB LPDDR4 DRAM SKUs (only up to 1GB on the Zero2)
-> > > - AXP313a PMIC (more capable AXP305 on the Zero2)
-> > > - Raspberry-Pi-1 compatible GPIO header
-> > > - extra 13 pin expansion header, exposing pins for 2x USB 2.0 ports
-> > > - 1 USB 2.0 host port
-> > > - 1 USB 2.0 type C port (power supply + OTG)
-> > > - MicroSD slot
-> > > - on-board 16MiB bootable SPI NOR flash (only 2MB on the Zero2)
-> > > - 1Gbps Ethernet port (via Motorcomm YT8531 PHY) (RTL8211 on the Zero=
-2)
-> > > - micro-HDMI port
-> > > - (yet) unsupported Allwinner WiFi/BT chip
-> > >=20
-> > > Add the devicetree file describing the currently supported features,
-> > > namely LEDs, SD card, PMIC, SPI flash, USB. Ethernet seems unstable at
-> > > the moment, though the basic functionality works.
-> > >=20
-> > > Signed-off-by: Andre Przywara <andre.przywara@arm.com>
-> > > ---
-> > >=20
-> > >  arch/arm64/boot/dts/allwinner/Makefile        |  1 +
-> > >  .../allwinner/sun50i-h618-orangepi-zero3.dts  | 94 +++++++++++++++++=
-++
-> > >  2 files changed, 95 insertions(+)
-> > >  create mode 100644
-> > >=20
-> > > arch/arm64/boot/dts/allwinner/sun50i-h618-orangepi-zero3.dts
-> > >=20
-> > > diff --git a/arch/arm64/boot/dts/allwinner/Makefile
-> > > b/arch/arm64/boot/dts/allwinner/Makefile index
-> > > 6a96494a2e0a3..3b0ad54062381
-> > > 100644
-> > > --- a/arch/arm64/boot/dts/allwinner/Makefile
-> > > +++ b/arch/arm64/boot/dts/allwinner/Makefile
-> > > @@ -40,3 +40,4 @@ dtb-$(CONFIG_ARCH_SUNXI) +=3D sun50i-h6-tanix-tx6.d=
-tb
-> > >=20
-> > >  dtb-$(CONFIG_ARCH_SUNXI) +=3D sun50i-h6-tanix-tx6-mini.dtb
-> > >  dtb-$(CONFIG_ARCH_SUNXI) +=3D sun50i-h616-orangepi-zero2.dtb
-> > >  dtb-$(CONFIG_ARCH_SUNXI) +=3D sun50i-h616-x96-mate.dtb
-> > >=20
-> > > +dtb-$(CONFIG_ARCH_SUNXI) +=3D sun50i-h618-orangepi-zero3.dtb
-> > > diff --git
-> > > a/arch/arm64/boot/dts/allwinner/sun50i-h618-orangepi-zero3.dts
-> > > b/arch/arm64/boot/dts/allwinner/sun50i-h618-orangepi-zero3.dts new fi=
-le
-> > > mode 100644
-> > > index 0000000000000..96a6851728111
-> > > --- /dev/null
-> > > +++ b/arch/arm64/boot/dts/allwinner/sun50i-h618-orangepi-zero3.dts
-> > > @@ -0,0 +1,94 @@
-> > > +// SPDX-License-Identifier: (GPL-2.0+ or MIT)
-> > > +/*
-> > > + * Copyright (C) 2023 Arm Ltd.
-> > > + */
-> > > +
-> > > +/dts-v1/;
-> > > +
-> > > +#include "sun50i-h616-orangepi-zero.dtsi"
-> > > +
-> > > +/ {
-> > > +	model =3D "OrangePi Zero3";
-> > > +	compatible =3D "xunlong,orangepi-zero3", "allwinner,sun50i-h618";
-> > > +};
-> > > +
-> > > +&emac0 {
-> > > +	phy-supply =3D <&reg_dldo1>;
-> > > +};
-> > > +
-> > > +&ext_rgmii_phy {
-> > > +	motorcomm,clk-out-frequency-hz =3D <125000000>;
-> > > +};
-> > > +
-> > > +&mmc0 {
-> > > +	/*
-> > > +	 * The schematic shows the card detect pin wired up to PF6, via an
-> > > +	 * inverter, but it just doesn't work.
-> > > +	 */
-> > > +	broken-cd;
-> > > +	vmmc-supply =3D <&reg_dldo1>;
-> > > +};
-> > > +
-> > > +&r_i2c {
-> > > +	status =3D "okay";
-> > > +
-> > > +	axp313: pmic@36 {
-> > > +		compatible =3D "x-powers,axp313a";
-> > > +		reg =3D <0x36>;
-> > > +		#interrupt-cells =3D <1>;
-> > > +		interrupt-controller;
-> > > +		interrupt-parent =3D <&pio>;
-> > > +		interrupts =3D <2 9 IRQ_TYPE_LEVEL_LOW>;	/* PC9=20
-*/
-> > > +
-> > > +		vin1-supply =3D <&reg_vcc5v>;
-> > > +		vin2-supply =3D <&reg_vcc5v>;
-> > > +		vin3-supply =3D <&reg_vcc5v>;
-> > > +
-> > > +		regulators {
-> > > +			/* Supplies VCC-PLL, so needs to be always
-> >=20
-> > on. */
-> >=20
-> > > +			reg_aldo1: aldo1 {
-> > > +				regulator-always-on;
-> > > +				regulator-min-microvolt =3D
-> >=20
-> > <1800000>;
-> >=20
-> > > +				regulator-max-microvolt =3D
-> >=20
-> > <1800000>;
-> >=20
-> > > +				regulator-name =3D "vcc1v8";
-> > > +			};
-> > > +
-> > > +			/* Supplies VCC-IO, so needs to be always=20
-on.
-> >=20
-> > */
-> >=20
-> > > +			reg_dldo1: dldo1 {
-> > > +				regulator-always-on;
-> > > +				regulator-min-microvolt =3D
-> >=20
-> > <3300000>;
-> >=20
-> > > +				regulator-max-microvolt =3D
-> >=20
-> > <3300000>;
-> >=20
-> > > +				regulator-name =3D "vcc3v3";
-> > > +			};
-> > > +
-> > > +			reg_dcdc1: dcdc1 {
-> > > +				regulator-always-on;
-> > > +				regulator-min-microvolt =3D
-> >=20
-> > <810000>;
-> >=20
-> > > +				regulator-max-microvolt =3D
-> >=20
-> > <990000>;
-> >=20
-> > > +				regulator-name =3D "vdd-gpu-sys";
-> > > +			};
-> >=20
-> > Is it safe to change sys voltage when system is running?
->=20
-> I don't know. All I know is that the H616 datasheet lists VDD_SYS as
-> having the exact same range as VDD_GPU, and that is does not give a
-> "typical" voltage value. As this DT stands at the moment, this doesn't
-> really matter, since nothing will change DCDC1.
->=20
-> I see that the Orange Pi Zero 2 (with a "proper" PMIC) also ties SYS and
-> GPU together, so it's not just because of the few rails of the AXP313.
->=20
-> I'd say we will figure that out once we start experimenting with GPU
-> DVFS, but meanwhile nothing references DCDC1, so it will just stay put
-> at the AXP313's 0.9V reset value.
->=20
-> Does that make sense?
+On Fri, Aug 4, 2023 at 11:06=E2=80=AFAM Marco Elver <elver@google.com> wrot=
+e:
+>
+> will imply notrace. It is recommended to restrict use of the attribute
+> to functions that should or already disable tracing.
 
-Yeah, I'm fine with it.
+Should the last sentence here be added into the code comment?
 
-Reviewed-by: Jernej Skrabec <jernej.skrabec@gmail.com>
+Apart from that this looks fine from a `compiler_attributes.h`
+perspective (even if we are not there anymore):
 
-Best regards,
-Jernej
+Reviewed-by: Miguel Ojeda <ojeda@kernel.org>
 
->=20
-> Cheers,
-> Andre
->=20
-> > > +
-> > > +			reg_dcdc2: dcdc2 {
-> > > +				regulator-always-on;
-> > > +				regulator-min-microvolt =3D
-> >=20
-> > <810000>;
-> >=20
-> > > +				regulator-max-microvolt =3D
-> >=20
-> > <1100000>;
-> >=20
-> > > +				regulator-name =3D "vdd-cpu";
-> > > +			};
-> > > +
-> > > +			reg_dcdc3: dcdc3 {
-> > > +				regulator-always-on;
-> > > +				regulator-min-microvolt =3D
-> >=20
-> > <1100000>;
-> >=20
-> > > +				regulator-max-microvolt =3D
-> >=20
-> > <1100000>;
-> >=20
-> > > +				regulator-name =3D "vdd-dram";
-> > > +			};
-> > > +		};
-> > > +	};
-> > > +};
-> > > +
-> > > +&pio {
-> > > +	vcc-pc-supply =3D <&reg_dldo1>;
-> > > +	vcc-pf-supply =3D <&reg_dldo1>;
-> > > +	vcc-pg-supply =3D <&reg_aldo1>;
-> > > +	vcc-ph-supply =3D <&reg_dldo1>;
-> > > +	vcc-pi-supply =3D <&reg_dldo1>;
-> > > +};
-
-
-
-
+Cheers,
+Miguel
