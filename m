@@ -2,88 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A82B770F7F
-	for <lists+linux-kernel@lfdr.de>; Sat,  5 Aug 2023 13:48:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B3A9B770F86
+	for <lists+linux-kernel@lfdr.de>; Sat,  5 Aug 2023 14:06:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229982AbjHELsv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 5 Aug 2023 07:48:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56326 "EHLO
+        id S229822AbjHEMGR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 5 Aug 2023 08:06:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57568 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229456AbjHELst (ORCPT
+        with ESMTP id S229456AbjHEMGP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 5 Aug 2023 07:48:49 -0400
-Received: from muru.com (muru.com [72.249.23.125])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id BDF591720;
-        Sat,  5 Aug 2023 04:48:48 -0700 (PDT)
-Received: from localhost (localhost [127.0.0.1])
-        by muru.com (Postfix) with ESMTPS id C5D0780A0;
-        Sat,  5 Aug 2023 11:48:47 +0000 (UTC)
-Date:   Sat, 5 Aug 2023 14:48:46 +0300
-From:   Tony Lindgren <tony@atomide.com>
-To:     Guenter Roeck <linux@roeck-us.net>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Andy Shevchenko <andriy.shevchenko@intel.com>,
-        Dhruva Gole <d-gole@ti.com>,
-        Ilpo =?utf-8?B?SsOkcnZpbmVu?= <ilpo.jarvinen@linux.intel.com>,
-        John Ogness <john.ogness@linutronix.de>,
-        Johan Hovold <johan@kernel.org>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org,
-        kernel test robot <oliver.sang@intel.com>
-Subject: Re: [PATCH v2 1/1] serial: core: Fix serial_base_match() after
- fixing controller port name
-Message-ID: <20230805114846.GK14799@atomide.com>
-References: <20230803071034.25571-1-tony@atomide.com>
- <0e1bc27d-dc84-473d-bfdf-db0743c5d64a@roeck-us.net>
- <20230805044910.GJ14799@atomide.com>
- <a6973497-f45f-6456-ac2b-d3c0262d892b@roeck-us.net>
+        Sat, 5 Aug 2023 08:06:15 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5FD844BD;
+        Sat,  5 Aug 2023 05:06:14 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 6B7B860CBB;
+        Sat,  5 Aug 2023 12:06:14 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E4BD2C433C7;
+        Sat,  5 Aug 2023 12:06:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1691237173;
+        bh=TRPYCQRDP5jcMNBUvnQVXjyvFmfZ0bZwv5+82ppFp98=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=a8+v6/+HPGOyXUV1XSDmpMObQb0WhFfTvJhUlkdydkVP1x4mMA8elqyORYcklGVhH
+         X0R5095NXK6K7A4zAFUxV4TPO97xqfE+xKMzUEf81NTpdsRIkkfRujJrgUVuls48Kd
+         IR8AtjGG+nTCxDNx8IzfXTQK1CQ0SQX184Np36Ycq6iwYYxpbxsiIN1VtmBKvzydCI
+         lV1cDlFQhVDn9xk2n5qcwDvqXTxgAPwVuOIqvlcxQgy8KRgMBWxkQwNpwCEc3HBU2o
+         of9b/qOc7bA2iIZiSH4i6IiWo7jyzotl3AkuWIZGwXYDYxyc5CpAEoBvH9axdeuIxW
+         bbJLQYohTf4Jw==
+Date:   Sat, 5 Aug 2023 14:06:10 +0200
+From:   Andi Shyti <andi.shyti@kernel.org>
+To:     Piyush Malgujar <pmalgujar@marvell.com>
+Cc:     linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org,
+        rric@kernel.org, cchavva@marvell.com, sgarapati@marvell.com,
+        jannadurai@marvell.com
+Subject: Re: [PATCH v2 0/4] i2c: thunderx: Marvell thunderx i2c changes
+Message-ID: <20230805120610.lvnyhggrwcwq66x4@intel.intel>
+References: <20230728120004.19680-1-pmalgujar@marvell.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <a6973497-f45f-6456-ac2b-d3c0262d892b@roeck-us.net>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <20230728120004.19680-1-pmalgujar@marvell.com>
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-* Guenter Roeck <linux@roeck-us.net> [230805 10:50]:
-> On 8/4/23 21:49, Tony Lindgren wrote:
-> > * Guenter Roeck <linux@roeck-us.net> [230804 21:42]:
-> > > kobject: kobject_add_internal failed for serial8250.0:0.0 with -EEXIST, don't try to register things with the same name in the same directory.
-> > > serial8250 serial8250.0: unable to register port at index 1 (IO2f8 MEM0 IRQ3): -17
-> > > sysfs: cannot create duplicate filename '/devices/platform/serial8250.0/serial8250.0:0/serial8250.0:0.0'
-> > 
-> > The issue above should be fixed with commit:
-> > 
-> > bbb4abb1bcfb ("serial: 8250: Reinit port_id when adding back serial8250_isa_devs")
-> > 
+Hi Robert,
+
+On Fri, Jul 28, 2023 at 05:00:00AM -0700, Piyush Malgujar wrote:
+> The changes are for Marvell OcteonTX2 SOC family:
 > 
-> No. I tested the tip of tty-linus (v6.5-rc4-9-gdfe2aeb226fd) which includes
-> above commit, but still see the problem. sparc images also still stall after
-> the "cannot create duplicate filename" message.
-> I bisected the sparc problem - it also bisects to commit d962de6ae51f.
+> - Handling clock divisor logic using subsytem ID
+> - Support for high speed mode
+> - Handle watchdog timeout
+> - Added ioclk support
 > 
-> The problem affects all mips boot tests, all sparc boot tests, as well as
-> arm sx1, ppc bamboo and sam460ex emulations. As far as I can see, those
-> call serial8250_register_8250_port() without calling  serial8250_setup_port()
-> and thus don't set port_id. I am only testing a few of those, so I strongly
-> suspect that all similar callers of serial8250_register_8250_port() are
-> affected (i.e., almost all of them) if they register more than one serial port.
+> Changes since V1:
+> - Addressed comments, added defines as required
+> - Removed unnecessary code
+> - Added a patch to support ioclk if sclk not present in ACPI table
+> 
+> Piyush Malgujar (1):
+>   i2c: thunderx: Adding ioclk support
+> 
+> Suneel Garapati (3):
+>   i2c: thunderx: Clock divisor logic changes
+>   i2c: thunderx: Add support for High speed mode
+>   i2c: octeon: Handle watchdog timeout
 
-OK thanks for explaining. So we need to initialize port->port_id for the
-multi-port instances to avoid being stuck with the port->line index. I'll
-take a look.
+any chance you could take a look at this series?
 
-I wonder if we should just revert d962de6ae51f for now. It needs to be
-tested to see if something else also needs reverting though.
-
-Regards,
-
-Tony
+Thanks,
+Andi
