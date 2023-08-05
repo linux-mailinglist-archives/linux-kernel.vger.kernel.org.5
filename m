@@ -2,174 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 18F4B770F29
-	for <lists+linux-kernel@lfdr.de>; Sat,  5 Aug 2023 12:02:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D9D36770F27
+	for <lists+linux-kernel@lfdr.de>; Sat,  5 Aug 2023 11:59:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229996AbjHEKB6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 5 Aug 2023 06:01:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42732 "EHLO
+        id S229903AbjHEJ7y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 5 Aug 2023 05:59:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42212 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229445AbjHEKBz (ORCPT
+        with ESMTP id S229501AbjHEJ7w (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 5 Aug 2023 06:01:55 -0400
-Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D723A4495
-        for <linux-kernel@vger.kernel.org>; Sat,  5 Aug 2023 03:01:52 -0700 (PDT)
-Received: from canpemm500009.china.huawei.com (unknown [172.30.72.53])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4RHyhH2G94zGpns;
-        Sat,  5 Aug 2023 17:58:23 +0800 (CST)
-Received: from localhost.localdomain (10.50.163.32) by
- canpemm500009.china.huawei.com (7.192.105.203) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.27; Sat, 5 Aug 2023 18:01:50 +0800
-From:   Yicong Yang <yangyicong@huawei.com>
-To:     <mingo@redhat.com>, <peterz@infradead.org>,
-        <juri.lelli@redhat.com>, <vincent.guittot@linaro.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     <dietmar.eggemann@arm.com>, <rostedt@goodmis.org>,
-        <bsegall@google.com>, <mgorman@suse.de>, <bristot@redhat.com>,
-        <vschneid@redhat.com>, <tariqt@nvidia.com>, <yury.norov@gmail.com>,
-        <kuba@kernel.org>, <shiju.jose@huawei.com>,
-        <jonathan.cameron@huawei.com>, <prime.zeng@huawei.com>,
-        <linuxarm@huawei.com>, <yangyicong@hisilicon.com>
-Subject: [PATCH] sched/topology: Fix sched_numa_find_nth_cpu() when there's CPU-less node
-Date:   Sat, 5 Aug 2023 17:59:27 +0800
-Message-ID: <20230805095927.6907-1-yangyicong@huawei.com>
-X-Mailer: git-send-email 2.31.0
+        Sat, 5 Aug 2023 05:59:52 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2522E1B9;
+        Sat,  5 Aug 2023 02:59:52 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 9157A60C2D;
+        Sat,  5 Aug 2023 09:59:51 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 70219C433C7;
+        Sat,  5 Aug 2023 09:59:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1691229590;
+        bh=8pq7Mvx+TRA12e4vFW91N0Mh0e3g8VjFd8UdpQ7QWYs=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=AgcdIwDBvGLn+mxO03OE/JR0v6I0If8yACOK6+4PIJRIYFcsNzrrQV7h8UcP0LN/t
+         0fCKoOsW8l/Rib2JcR9XUSn4+sBlNYLBX992RGl0Po7lx/75irYdRnuD8MLdbDchln
+         T6xDlSfTCdOSODNTRc8zU7DeXqbVbTLw2w1oEmFk=
+Date:   Sat, 5 Aug 2023 11:59:47 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        Rajat Khandelwal <rajat.khandelwal@linux.intel.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Neil Armstrong <neil.armstrong@linaro.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] usb: typec: intel_pmc_mux: select CONFIG_USB_COMMON
+Message-ID: <2023080514-mothball-chaps-2b42@gregkh>
+References: <20230805095157.3459892-1-arnd@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.50.163.32]
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
- canpemm500009.china.huawei.com (7.192.105.203)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230805095157.3459892-1-arnd@kernel.org>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yicong Yang <yangyicong@hisilicon.com>
+On Sat, Aug 05, 2023 at 11:51:53AM +0200, Arnd Bergmann wrote:
+> From: Arnd Bergmann <arnd@arndb.de>
+> 
+> It is possible to configure the typec drivers to be built-in while the
+> actual USB host and device support is in loadable modules, but that now
+> causes a link failure because the usb debugfs support is then not
+> available to built-in code.
+> 
+> x86_64-linux-ld: drivers/usb/typec/mux/intel_pmc_mux.o: in function `pmc_usb_init':
+> intel_pmc_mux.c:(.init.text+0x3): undefined reference to `usb_debug_root'
+> 
+> Select CONFIG_USB_COMMON to get it to build again, as we do for
+> other drivers that require the core usb functionality.
+> 
+> Fixes: 0a453dc9f2602 ("usb: typec: intel_pmc_mux: Expose IOM port status to debugfs")
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> ---
+>  drivers/usb/typec/mux/Kconfig | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/drivers/usb/typec/mux/Kconfig b/drivers/usb/typec/mux/Kconfig
+> index 784b9d8107e9b..65da61150ba78 100644
+> --- a/drivers/usb/typec/mux/Kconfig
+> +++ b/drivers/usb/typec/mux/Kconfig
+> @@ -29,6 +29,7 @@ config TYPEC_MUX_INTEL_PMC
+>  	tristate "Intel PMC mux control"
+>  	depends on ACPI
+>  	depends on INTEL_SCU_IPC
+> +	select USB_COMMON
+>  	select USB_ROLE_SWITCH
+>  	help
+>  	  Driver for USB muxes controlled by Intel PMC FW. Intel PMC FW can
+> -- 
+> 2.39.2
+> 
 
-When booting with maxcpus=1 we met below panic:
+I think this is already fixed by commit ef7c4d8a90c6 ("usb: typec: mux:
+intel: Add dependency on USB_COMMON") in my tree and will be in the next
+linux-next release on Monday.
 
-Unable to handle kernel NULL pointer dereference at virtual address 0000000000000000
-Mem abort info:
-  ESR = 0x0000000096000004
-  EC = 0x25: DABT (current EL), IL = 32 bits
-  SET = 0, FnV = 0
-  EA = 0, S1PTW = 0
-  FSC = 0x04: level 0 translation fault
-Data abort info:
-  ISV = 0, ISS = 0x00000004
-  CM = 0, WnR = 0
-user pgtable: 4k pages, 48-bit VAs, pgdp=0000002098202000
-[0000000000000000] pgd=0000000000000000, p4d=0000000000000000
-Internal error: Oops: 0000000096000004 [#1] PREEMPT SMP
-Modules linked in:
-CPU: 0 PID: 1 Comm: swapper/0 Not tainted 6.3.0-rc1 #3
-Hardware name: Huawei TaiShan 2280 V2/BC82AMDA, BIOS TA BIOS 2280-A CS V2.B220.01 03/19/2020
-pstate: 00400009 (nzcv daif +PAN -UAO -TCO -DIT -SSBS BTYPE=--)
-pc : __bitmap_weight_and+0x40/0xb0
-lr : cpumask_weight_and+0x18/0x24
-sp : ffff80000841bab0
-x29: ffff80000841bab0 x28: 0000000000000000 x27: ffffb0d897ca6068
-x26: 0000000000000000 x25: ffff80000841bbb8 x24: 0000000000000080
-x23: ffffb0d8983c9a48 x22: 0000000000000000 x21: 0000000000000002
-x20: 0000000000000000 x19: 0000000000000000 x18: 0000000000000000
-x17: ffff4f5337dd9000 x16: ffff800008000000 x15: 0000000000000001
-x14: 0000000000000002 x13: 0000000000bc91ca x12: ffff202bffffe928
-x11: ffff202bffffe938 x10: ffff202bffffe908 x9 : 0000000000000001
-x8 : 0000000000000380 x7 : 0000000000000014 x6 : ffff2020040b0d00
-x5 : 0000000000332000 x4 : ffffb0d8962d9794 x3 : 0000000000000008
-x2 : 0000000000000080 x1 : 0000000000000003 x0 : ffffb0d8983c9a48
-Call trace:
- __bitmap_weight_and+0x40/0xb0
- cpumask_weight_and+0x18/0x24
- hop_cmp+0x2c/0xa4
- bsearch+0x50/0xc0
- sched_numa_find_nth_cpu+0x80/0x130
- cpumask_local_spread+0x38/0xa8
- hns3_nic_init_vector_data+0x58/0x394
- hns3_client_init+0x2c8/0x6d8
- hclge_init_client_instance+0x128/0x39c
- hnae3_init_client_instance.part.5+0x20/0x54
- hnae3_register_ae_algo+0xf0/0x19c
- hclge_init+0x58/0x84
- do_one_initcall+0x60/0x1d0
- kernel_init_freeable+0x1d8/0x2ac
- kernel_init+0x24/0x12c
- ret_from_fork+0x10/0x20
-Code: 52800014 d2800013 d503201f f8737ae1 (f8737ac0)
----[ end trace 0000000000000000 ]---
-Kernel panic - not syncing: Attempted to kill init! exitcode=0x0000000b
-SMP: stopping secondary CPUs
-Kernel Offset: 0x30d88e200000 from 0xffff800008000000
-PHYS_OFFSET: 0x0
-CPU features: 0x000000,01100506,22006203
-Memory Limit: none
----[ end Kernel panic - not syncing: Attempted to kill init! exitcode=0x0000000b ]---
+thanks,
 
-The driver use cpumask_local_spread() and inner sched_numa_find_nth_cpu()
-access the node mask which is not initialized. In sched_init_numa(),
-we don't care about node without CPUs since they won't participate in scheduling.
-
-This patch fix this by using a closet CPU node when the target node is
-CPU-less. Furthermore, sched_numa_hop_mask() also suffers so fix it as
-well by returning an error when information of target node is not
-initialized.
-
-Fixes: cd7f55359c90 ("sched: add sched_numa_find_nth_cpu()")
-Fixes: 9feae65845f7 ("sched/topology: Introduce sched_numa_hop_mask()")
-Cc: Yury Norov <yury.norov@gmail.com>
-Cc: Valentin Schneider <vschneid@redhat.com>
-Signed-off-by: Yicong Yang <yangyicong@hisilicon.com>
----
- kernel/sched/topology.c | 21 ++++++++++++++++++++-
- 1 file changed, 20 insertions(+), 1 deletion(-)
-
-diff --git a/kernel/sched/topology.c b/kernel/sched/topology.c
-index d3a3b2646ec4..78d95ebf5072 100644
---- a/kernel/sched/topology.c
-+++ b/kernel/sched/topology.c
-@@ -2119,6 +2119,25 @@ int sched_numa_find_nth_cpu(const struct cpumask *cpus, int cpu, int node)
- 
- 	rcu_read_lock();
- 
-+	/*
-+	 * When the target node is CPU-less, we cannot use it directly since
-+	 * we didn't initialise sched_domains_numa_masks[level][node]. Use the
-+	 * closet online node instead.
-+	 */
-+	if (!node_state(node, N_CPU)) {
-+		int tmp, closet_node, closet_distance = INT_MAX;
-+
-+		for_each_node_state(tmp, N_CPU) {
-+			if (node_distance(tmp, node) < closet_distance) {
-+				closet_node = tmp;
-+				closet_distance = node_distance(tmp, node);
-+			}
-+		}
-+
-+		k.node = closet_node;
-+		node = closet_node;
-+	}
-+
- 	k.masks = rcu_dereference(sched_domains_numa_masks);
- 	if (!k.masks)
- 		goto unlock;
-@@ -2160,7 +2179,7 @@ const struct cpumask *sched_numa_hop_mask(unsigned int node, unsigned int hops)
- 		return ERR_PTR(-EINVAL);
- 
- 	masks = rcu_dereference(sched_domains_numa_masks);
--	if (!masks)
-+	if (!masks || !masks[hops] || !masks[hops][node])
- 		return ERR_PTR(-EBUSY);
- 
- 	return masks[hops][node];
--- 
-2.24.0
-
+greg k-h
