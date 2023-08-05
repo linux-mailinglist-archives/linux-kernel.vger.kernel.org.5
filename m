@@ -2,266 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 72D42770DCB
-	for <lists+linux-kernel@lfdr.de>; Sat,  5 Aug 2023 06:50:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B155770DC5
+	for <lists+linux-kernel@lfdr.de>; Sat,  5 Aug 2023 06:49:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229610AbjHEEud (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 5 Aug 2023 00:50:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50656 "EHLO
+        id S229521AbjHEEtT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 5 Aug 2023 00:49:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50058 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229543AbjHEEu3 (ORCPT
+        with ESMTP id S229441AbjHEEtO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 5 Aug 2023 00:50:29 -0400
-Received: from mail.croughan.sh (mail.croughan.sh [135.181.193.41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D1CE4EDA;
-        Fri,  4 Aug 2023 21:50:28 -0700 (PDT)
-From:   Matthew Croughan <matthew.croughan@nix.how>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nix.how; s=mail;
-        t=1691211026; bh=vkoWoamkUo4vEZjjWIWZhrSxuxuDRukeB1sE6G+L/2U=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References;
-        b=MSFLhLtnLAjlybv62JycrCgtHRJSdiE1XXEqCfsEQyVZoPT0JX7RYM4+qDcTT4/cR
-         bsFDcr3VeHRnPs5oQnqGkB0CKy3kXTDkHSC+J5piHFKgipf+rvTTiB3Kv05IGNk1fj
-         GzjFZwfXQDgw6JSwm6W5DwLH5mPQYZzCeNOOikt8=
-To:     Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Chen-Yu Tsai <wens@csie.org>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Samuel Holland <samuel@sholland.org>
-Cc:     Matthew Croughan <matthew.croughan@nix.how>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-sunxi@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: [PATCH v5 2/2] arm64: dts: allwinner: h616: Add Mango Pi MQ-Quad DTS
-Date:   Sat,  5 Aug 2023 05:42:39 +0100
-Message-ID: <20230805044558.279473-4-matthew.croughan@nix.how>
-In-Reply-To: <20230805044558.279473-2-matthew.croughan@nix.how>
-References: <20230805044558.279473-2-matthew.croughan@nix.how>
+        Sat, 5 Aug 2023 00:49:14 -0400
+Received: from muru.com (muru.com [72.249.23.125])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 822174C04;
+        Fri,  4 Aug 2023 21:49:12 -0700 (PDT)
+Received: from localhost (localhost [127.0.0.1])
+        by muru.com (Postfix) with ESMTPS id A28F380F7;
+        Sat,  5 Aug 2023 04:49:11 +0000 (UTC)
+Date:   Sat, 5 Aug 2023 07:49:10 +0300
+From:   Tony Lindgren <tony@atomide.com>
+To:     Guenter Roeck <linux@roeck-us.net>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Andy Shevchenko <andriy.shevchenko@intel.com>,
+        Dhruva Gole <d-gole@ti.com>,
+        Ilpo =?utf-8?B?SsOkcnZpbmVu?= <ilpo.jarvinen@linux.intel.com>,
+        John Ogness <john.ogness@linutronix.de>,
+        Johan Hovold <johan@kernel.org>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org,
+        kernel test robot <oliver.sang@intel.com>
+Subject: Re: [PATCH v2 1/1] serial: core: Fix serial_base_match() after
+ fixing controller port name
+Message-ID: <20230805044910.GJ14799@atomide.com>
+References: <20230803071034.25571-1-tony@atomide.com>
+ <0e1bc27d-dc84-473d-bfdf-db0743c5d64a@roeck-us.net>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <0e1bc27d-dc84-473d-bfdf-db0743c5d64a@roeck-us.net>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Mango Pi MQ Quad is a H616 based SBC, add basic support for the board
-and its peripherals
+* Guenter Roeck <linux@roeck-us.net> [230804 21:42]:
+> On Thu, Aug 03, 2023 at 10:10:32AM +0300, Tony Lindgren wrote:
+> > While fixing DEVNAME to be more usable, I broke serial_base_match() as the
+> > ctrl and port prefix for device names seemed unnecessary.
+> > 
+> > The prefixes are still needed by serial_base_match() to probe the serial
+> > base controller port, and serial tx is now broken.
+> > 
+> > Let's fix the issue by checking against dev->type and drv->name instead
+> > of the prefixes that are no longer in the DEVNAME.
+> > 
+> > Fixes: 1ef2c2df1199 ("serial: core: Fix serial core controller port name to show controller id")
+> > Reported-by: kernel test robot <oliver.sang@intel.com>
+> > Closes: https://lore.kernel.org/oe-lkp/202308021529.35b3ad6c-oliver.sang@intel.com
+> > Signed-off-by: Tony Lindgren <tony@atomide.com>
+> 
+> With this patch applied, I see the following traceback in the pending-fixes
+> branch.
+> 
+> Bisect log attached as well. It actually points to commit d962de6ae51f
+> ("serial: core: Fix serial core port id to not use port->line").
+> Bisect was on mips, but I also see problems on arm, ppc, and sparc.
+> sparc boot tests show the warning message and then stall until aborted
+> (which of course may be a different problem).
 
-Signed-off-by: Matthew Croughan <matthew.croughan@nix.how>
+Sorry about all the hassles and thanks for testing again.
 
-Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
----
- arch/arm64/boot/dts/allwinner/Makefile        |   1 +
- .../allwinner/sun50i-h616-mangopi-mq-quad.dts | 185 ++++++++++++++++++
- 2 files changed, 186 insertions(+)
- create mode 100644 arch/arm64/boot/dts/allwinner/sun50i-h616-mangopi-mq-quad.dts
+I too noticed several issues remaining after testing reloading the hardware
+specific serial driver, the issues I saw should be fixed in tty-linus.
 
-diff --git a/arch/arm64/boot/dts/allwinner/Makefile b/arch/arm64/boot/dts/allwinner/Makefile
-index 6a96494a2e0a..06c5b97dbfc3 100644
---- a/arch/arm64/boot/dts/allwinner/Makefile
-+++ b/arch/arm64/boot/dts/allwinner/Makefile
-@@ -38,5 +38,6 @@ dtb-$(CONFIG_ARCH_SUNXI) += sun50i-h6-pine-h64.dtb
- dtb-$(CONFIG_ARCH_SUNXI) += sun50i-h6-pine-h64-model-b.dtb
- dtb-$(CONFIG_ARCH_SUNXI) += sun50i-h6-tanix-tx6.dtb
- dtb-$(CONFIG_ARCH_SUNXI) += sun50i-h6-tanix-tx6-mini.dtb
-+dtb-$(CONFIG_ARCH_SUNXI) += sun50i-h616-mangopi-mq-quad.dtb
- dtb-$(CONFIG_ARCH_SUNXI) += sun50i-h616-orangepi-zero2.dtb
- dtb-$(CONFIG_ARCH_SUNXI) += sun50i-h616-x96-mate.dtb
-diff --git a/arch/arm64/boot/dts/allwinner/sun50i-h616-mangopi-mq-quad.dts b/arch/arm64/boot/dts/allwinner/sun50i-h616-mangopi-mq-quad.dts
-new file mode 100644
-index 000000000000..549f85decd85
---- /dev/null
-+++ b/arch/arm64/boot/dts/allwinner/sun50i-h616-mangopi-mq-quad.dts
-@@ -0,0 +1,185 @@
-+/* SPDX-License-Identifier: (GPL-2.0+ OR MIT)
-+ * Copyright (C) 2020 Arm Ltd.
-+ *
-+ * Copyright (C) 2023 Matthew Croughan <matthew.croughan@nix.how>
-+ */
-+
-+/dts-v1/;
-+
-+#include "sun50i-h616.dtsi"
-+
-+#include <dt-bindings/gpio/gpio.h>
-+#include <dt-bindings/interrupt-controller/arm-gic.h>
-+#include <dt-bindings/leds/common.h>
-+
-+/ {
-+	model = "MangoPi MQ-Quad";
-+	compatible = "widora,mangopi-mq-quad", "allwinner,sun50i-h616";
-+
-+	aliases {
-+		serial0 = &uart0;
-+	};
-+
-+	chosen {
-+		stdout-path = "serial0:115200n8";
-+	};
-+
-+	leds {
-+		compatible = "gpio-leds";
-+
-+		led-0 {
-+			function = LED_FUNCTION_STATUS;
-+			color = <LED_COLOR_ID_GREEN>;
-+			gpios = <&pio 2 13 GPIO_ACTIVE_HIGH>; /* PC13 */
-+		};
-+	};
-+
-+	reg_vcc5v: vcc5v {
-+		/* board wide 5V supply directly from the USB-C socket */
-+		compatible = "regulator-fixed";
-+		regulator-name = "vcc-5v";
-+		regulator-min-microvolt = <5000000>;
-+		regulator-max-microvolt = <5000000>;
-+		regulator-always-on;
-+	};
-+
-+	reg_vcc3v3: vcc3v3 {
-+		/* board wide 3V3 supply directly from SY8008 regulator */
-+		compatible = "regulator-fixed";
-+		regulator-name = "vcc-3v3";
-+		regulator-min-microvolt = <3300000>;
-+		regulator-max-microvolt = <3300000>;
-+		regulator-always-on;
-+	};
-+
-+	wifi_pwrseq: wifi-pwrseq {
-+		compatible = "mmc-pwrseq-simple";
-+		reset-gpios = <&pio 6 18 GPIO_ACTIVE_LOW>; /* PG18 */
-+	};
-+};
-+
-+&ehci1 {
-+	status = "okay";
-+};
-+
-+&pio {
-+	vcc-pc-supply = <&reg_vcc3v3>;
-+	vcc-pg-supply = <&reg_vcc3v3>;
-+	vcc-pi-supply = <&reg_vcc3v3>;
-+};
-+
-+/* USB 2 & 3 are on headers only. */
-+
-+&mmc0 {
-+	vmmc-supply = <&reg_vcc3v3>;
-+	cd-gpios = <&pio 5 6 GPIO_ACTIVE_LOW>;	/* PF6 */
-+	bus-width = <4>;
-+	status = "okay";
-+};
-+
-+&mmc1 {
-+	bus-width = <4>;
-+	mmc-pwrseq = <&wifi_pwrseq>;
-+	non-removable;
-+	vmmc-supply = <&reg_vcc3v3>;
-+	vqmmc-supply = <&reg_vcc3v3>;
-+	pinctrl-0 = <&mmc1_pins>;
-+	pinctrl-names = "default";
-+	status = "okay";
-+
-+	rtl8723ds: wifi@1 {
-+		reg = <1>;
-+		interrupt-parent = <&pio>;
-+		interrupts = <6 15 IRQ_TYPE_LEVEL_LOW>; /* PG15 */
-+		interrupt-names = "host-wake";
-+	};
-+};
-+
-+
-+&uart1 {
-+	uart-has-rtscts;
-+	pinctrl-0 = <&uart1_pins>, <&uart1_rts_cts_pins>;
-+	pinctrl-names = "default";
-+	status = "okay";
-+
-+	bluetooth {
-+		compatible = "realtek,rtl8723ds-bt";
-+		device-wake-gpios = <&pio 6 17 GPIO_ACTIVE_HIGH>; /* PG17 */
-+		enable-gpios = <&pio 6 19 GPIO_ACTIVE_HIGH>; /* PG19 */
-+		host-wake-gpios = <&pio 6 16 GPIO_ACTIVE_HIGH>; /* PG16 */
-+	};
-+};
-+
-+&ohci1 {
-+	status = "okay";
-+};
-+
-+&r_i2c {
-+	status = "okay";
-+
-+	axp313a: pmic@36 {
-+		compatible = "x-powers,axp313a";
-+		reg = <0x36>;
-+		regulators {
-+			/*
-+			 * ALDO1 is feeding both VCC-PLL and VCC-DCXO, always-on is required,
-+			 * as removing power would cut the 1.8v supply for the RAM
-+			 */
-+			reg_aldo1: aldo1 {
-+				regulator-always-on;
-+				regulator-min-microvolt = <1800000>;
-+				regulator-max-microvolt = <1800000>;
-+				regulator-name = "vcc-1v8";
-+			};
-+
-+			reg_dcdc1: dcdc1 {
-+				regulator-always-on;
-+				regulator-min-microvolt = <810000>;
-+				regulator-max-microvolt = <990000>;
-+				regulator-name = "vdd-gpu-sys";
-+			};
-+
-+			reg_dcdc2: dcdc2 {
-+				regulator-always-on;
-+				regulator-min-microvolt = <810000>;
-+				regulator-max-microvolt = <1100000>;
-+				regulator-name = "vdd-cpu";
-+			};
-+
-+			reg_dcdc3: dcdc3 {
-+				regulator-always-on;
-+				regulator-min-microvolt = <1500000>;
-+				regulator-max-microvolt = <1500000>;
-+				regulator-name = "vdd-dram";
-+			};
-+
-+		};
-+	};
-+};
-+
-+&uart0 {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&uart0_ph_pins>;
-+	status = "okay";
-+};
-+
-+&usbotg {
-+	/*
-+	 * PHY0 pins are connected to a USB-C socket, but a role switch
-+	 * is not implemented: both CC pins are pulled to GND.
-+	 * The VBUS pins power the device, so a fixed peripheral mode
-+	 * is the best choice.
-+	 * The board can be powered via GPIOs, in this case port0 *can*
-+	 * act as a host (with a cable/adapter ignoring CC), as VBUS is
-+	 * then provided by the GPIOs. Any user of this setup would
-+	 * need to adjust the DT accordingly: dr_mode set to "host",
-+	 * enabling OHCI0 and EHCI0.
-+	 */
-+	dr_mode = "peripheral";
-+	status = "okay";
-+};
-+
-+&usbphy {
-+	usb1_vbus-supply = <&reg_vcc5v>;
-+	status = "okay";
-+};
--- 
-2.41.0
+> kobject: kobject_add_internal failed for serial8250.0:0.0 with -EEXIST, don't try to register things with the same name in the same directory.
+> serial8250 serial8250.0: unable to register port at index 1 (IO2f8 MEM0 IRQ3): -17
+> sysfs: cannot create duplicate filename '/devices/platform/serial8250.0/serial8250.0:0/serial8250.0:0.0'
 
+The issue above should be fixed with commit:
+
+bbb4abb1bcfb ("serial: 8250: Reinit port_id when adding back serial8250_isa_devs")
+
+Not sure about the sparc one you mentioned, but let's when you run your
+tests again.
+
+Regards,
+
+Tony
