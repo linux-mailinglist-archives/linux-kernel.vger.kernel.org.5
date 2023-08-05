@@ -2,122 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BDD5C7712F4
-	for <lists+linux-kernel@lfdr.de>; Sun,  6 Aug 2023 00:51:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A7EE77712F9
+	for <lists+linux-kernel@lfdr.de>; Sun,  6 Aug 2023 01:15:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229628AbjHEWvc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 5 Aug 2023 18:51:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33350 "EHLO
+        id S229790AbjHEXOV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 5 Aug 2023 19:14:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34824 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229441AbjHEWvb (ORCPT
+        with ESMTP id S229441AbjHEXOU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 5 Aug 2023 18:51:31 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id B600F1732;
-        Sat,  5 Aug 2023 15:51:29 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 396A11FB;
-        Sat,  5 Aug 2023 15:52:12 -0700 (PDT)
-Received: from slackpad.lan (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 8296A3F6C4;
-        Sat,  5 Aug 2023 15:51:27 -0700 (PDT)
-Date:   Sat, 5 Aug 2023 23:50:30 +0100
-From:   Andre Przywara <andre.przywara@arm.com>
-To:     Shengyu Qu <wiagn233@outlook.com>
-Cc:     Lee Jones <lee@kernel.org>, Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Chen-Yu Tsai <wens@csie.org>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Icenowy Zheng <uwu@icenowy.me>,
-        Martin Botka <martin.botka@somainline.org>,
-        Martin Botka <martin@biqu3d.com>,
-        Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] dt-bindings: mfd: x-powers,axp152: make interrupt
- optional for more chips
-Message-ID: <20230805235030.35bed33c@slackpad.lan>
-In-Reply-To: <TY3P286MB26117478116BEF63AE1548FF980EA@TY3P286MB2611.JPNP286.PROD.OUTLOOK.COM>
-References: <20230802141829.522595-1-andre.przywara@arm.com>
-        <TY3P286MB26117478116BEF63AE1548FF980EA@TY3P286MB2611.JPNP286.PROD.OUTLOOK.COM>
-Organization: Arm Ltd.
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.31; x86_64-slackware-linux-gnu)
+        Sat, 5 Aug 2023 19:14:20 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F7851BD4;
+        Sat,  5 Aug 2023 16:14:18 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 1AA2560F5D;
+        Sat,  5 Aug 2023 23:14:18 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A1D2DC433C7;
+        Sat,  5 Aug 2023 23:14:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1691277257;
+        bh=SZoeTvqPDR+vF5ZhiCtzVJefMWAWzNemtsBf6oZ55KE=;
+        h=From:Date:Subject:To:Cc:From;
+        b=emYiu/DWEy4ADUS7nok1VtJ7U9KQO/u+30fWplQDUTEqupWAfksoKEPIoWF6wDflE
+         cbF5MRrK6naDO5cLSaQboghSIIZjdkM2WMr42K/bRkzw4/3lQHdsJK5h50ClkEj/D2
+         67M9HJlfQTXOY/MPT28nL2W9LWMCjcCfac/IPrDD3R2nLycgfvZDqi53YcmrX/7d+J
+         t/2bKkU+fjIv4up7DJQ6JTUMjZy/qJTO4RG4GuZWSxIRDaod0EPXFBFxyhvPs1uVVf
+         9k/rvOLTCJnabjfo0pxiAdLeID8A7qI1DCPrW7EYQ5X43z/0tUS3BJPiUMavWNW0Li
+         QajkVStE0684Q==
+From:   Mark Brown <broonie@kernel.org>
+Date:   Sun, 06 Aug 2023 00:14:07 +0100
+Subject: [PATCH] selftests: Hook more tests into the build infrastructure
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+Message-Id: <20230806-kselftest-perf-events-build-v1-1-0120e7a9cd72@kernel.org>
+X-B4-Tracking: v=1; b=H4sIAL7XzmQC/x3MQQqDMBAF0KvIrDswSRGkVykuNP7ooETJpFIQ7
+ 97Q5du8iwxZYfRqLso41XRPFe7RUFiGNIN1qiYv/imdtLwatlhghQ/kyDiRivH40W3iIJDoXOf
+ HAVSHIyPq97+/+/v+AVI0C0ttAAAA
+To:     Shuah Khan <shuah@kernel.org>
+Cc:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Marco Elver <elver@google.com>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Mark Brown <broonie@kernel.org>
+X-Mailer: b4 0.13-dev-099c9
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1388; i=broonie@kernel.org;
+ h=from:subject:message-id; bh=SZoeTvqPDR+vF5ZhiCtzVJefMWAWzNemtsBf6oZ55KE=;
+ b=owEBbQGS/pANAwAKASTWi3JdVIfQAcsmYgBkztfGiwnJOHJxtvWUO88geBNS9exbfDWBm8AO3
+ tnIh5OaFQ6JATMEAAEKAB0WIQSt5miqZ1cYtZ/in+ok1otyXVSH0AUCZM7XxgAKCRAk1otyXVSH
+ 0G4LB/9KLFWJA9HBLL7c0D8f81z5Hevsci0B27cyEjxnlyeE81cZMb32fcUrZ4tD7c9W8HN/QqN
+ UOHENUxjrDYU67lvrx8smA3Sa8twHU7A8K6P+ZO+K/IRb9s00FF7+7ex6GLigNjFr1JWAfZnb0I
+ WYgW2M9tfzVTvwKA/uuXwVDfwYcqU7uO3LqpVDQ6HmgJ+sPO15s5xCqKbb9A6zmnjCVoixvKZ/o
+ Na81CLTIae+3zVk7yy8LDcVuLD76OkmNvVCRj6Uu7kq/9cOd9vWdJe6yjFsmOi1dJtkis8xTXbr
+ XoSGuBvwwhnxxVnbD0Ks20gdZRfMYlxoOMRMWqYYc+w/hZw5
+X-Developer-Key: i=broonie@kernel.org; a=openpgp;
+ fpr=3F2568AAC26998F9E813A1C5C3F436CA30F5D8EB
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 5 Aug 2023 23:43:35 +0800
-Shengyu Qu <wiagn233@outlook.com> wrote:
+We have some dmabuf-heaps and perf_events tests but they are not hooked
+up to the kselftest build infrastructure which is a bit of an obstacle
+to running them in systems with generic infrastructure for selftests.
+Add them to the top level kselftest Makefile so they get built as
+standard.
 
-Hi Shengyu,
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ tools/testing/selftests/Makefile | 3 +++
+ 1 file changed, 3 insertions(+)
 
-> No, you can't only add the binding stuff. The PEK driver would crash when
-> there's no IRQ config in dts.
+diff --git a/tools/testing/selftests/Makefile b/tools/testing/selftests/Makefile
+index 666b56f22a41..bdee501596ef 100644
+--- a/tools/testing/selftests/Makefile
++++ b/tools/testing/selftests/Makefile
+@@ -12,6 +12,7 @@ TARGETS += core
+ TARGETS += cpufreq
+ TARGETS += cpu-hotplug
+ TARGETS += damon
++TARGETS += dmabuf-heaps
+ TARGETS += drivers/dma-buf
+ TARGETS += drivers/s390x/uvdevice
+ TARGETS += drivers/net/bonding
+@@ -56,6 +57,7 @@ TARGETS += net/mptcp
+ TARGETS += net/openvswitch
+ TARGETS += netfilter
+ TARGETS += nsfs
++TARGETS += perf_events
+ TARGETS += pidfd
+ TARGETS += pid_namespace
+ TARGETS += powerpc
+@@ -88,6 +90,7 @@ endif
+ TARGETS += tmpfs
+ TARGETS += tpm2
+ TARGETS += tty
++TARGETS += uevents
+ TARGETS += user
+ TARGETS += vDSO
+ TARGETS += mm
 
-Well, that's strictly speaking a problem of the existing Linux driver
-then, which cannot cope with this new updated binding yet. But the
-binding needs to be updated first in any case, so this patch needs
-to come first.
+---
+base-commit: 5d0c230f1de8c7515b6567d9afba1f196fb4e2f4
+change-id: 20230805-kselftest-perf-events-build-c0e0f1182bae
 
-But yeah, indeed this is missing the extension of the "IRQ > 0"  check
-from the 15060 MFD code, I will send a patch shortly to extend this to
-the AXP305 and AXP313a.
-
-Thanks for the heads up!
-
-Cheers,
-Andre
-
-> Best regards,
-> 
-> Shengyu
-> 
-> > All X-Powers PMICs described by this binding have an IRQ pin, and so
-> > far (almost) all boards connected this to some NMI pin or GPIO on the SoC
-> > they are connected to.
-> > However we start to see boards that omit this connection, and technically
-> > the IRQ pin is not essential to the basic PMIC operation.
-> > The existing Linux driver allows skipping an IRQ pin setup for some
-> > chips already, so update the binding to also make the DT property
-> > optional for these chips, so that we can actually have DTs describing
-> > boards with the PMIC interrupt not wired up.
-> >
-> > Signed-off-by: Andre Przywara <andre.przywara@arm.com>
-> > ---
-> > Hi,
-> >
-> > arguably the IRQ functionality is optional for many more PMICs,
-> > especially if a board doesn't use GPIOs or a power key.
-> > So I wonder if the interrupts property should become optional for all?
-> > After all it's more a board designer's decision to wire up the IRQ pin
-> > or not, and nothing that's really related to a particular PMIC.
-> >
-> > Cheers,
-> > Andre
-> >
-> >   Documentation/devicetree/bindings/mfd/x-powers,axp152.yaml | 5 ++++-
-> >   1 file changed, 4 insertions(+), 1 deletion(-)
-> >
-> > diff --git a/Documentation/devicetree/bindings/mfd/x-powers,axp152.yaml b/Documentation/devicetree/bindings/mfd/x-powers,axp152.yaml
-> > index 9ad55746133b5..06f1779835a1e 100644
-> > --- a/Documentation/devicetree/bindings/mfd/x-powers,axp152.yaml
-> > +++ b/Documentation/devicetree/bindings/mfd/x-powers,axp152.yaml
-> > @@ -67,7 +67,10 @@ allOf:
-> >           properties:
-> >             compatible:
-> >               contains:
-> > -              const: x-powers,axp305
-> > +              enum:
-> > +                - x-powers,axp15060
-> > +                - x-powers,axp305
-> > +                - x-powers,axp313a
-> >   
-> >       then:
-> >         required:  
+Best regards,
+-- 
+Mark Brown <broonie@kernel.org>
 
