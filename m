@@ -2,110 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0435A77102E
-	for <lists+linux-kernel@lfdr.de>; Sat,  5 Aug 2023 16:41:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1EEC6771032
+	for <lists+linux-kernel@lfdr.de>; Sat,  5 Aug 2023 16:43:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229795AbjHEOlF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 5 Aug 2023 10:41:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50622 "EHLO
+        id S229803AbjHEOnn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 5 Aug 2023 10:43:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51194 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229441AbjHEOlD (ORCPT
+        with ESMTP id S229475AbjHEOnl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 5 Aug 2023 10:41:03 -0400
-Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9BE691720;
-        Sat,  5 Aug 2023 07:40:59 -0700 (PDT)
-Received: from localhost (localhost.localdomain [127.0.0.1])
-        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 4DB6340E019D;
-        Sat,  5 Aug 2023 14:40:57 +0000 (UTC)
-X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
-Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
-        header.d=alien8.de
-Received: from mail.alien8.de ([127.0.0.1])
-        by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id u9Mjo4P_u7yg; Sat,  5 Aug 2023 14:40:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
-        t=1691246454; bh=gzr6bNjG+kYA+0nlV35Mz03INEgc4t8Z7CMMa8S45rA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=aCXtD9hrZZ5sX/r+L/aHTeQApB6B4PNkUOHWMwCtJEtudlKxqao8SvFz3z+HGbDb0
-         Efq9Z1GlDq79YlyYhFEGEYG+w6WvXXgsqIafTo+mvTIx39LaZEIlUFbfAEgRz/pPo4
-         hhdlbwuqLl3E0qKDcem0+4kZHkD92IPgVQtFyUndt/v2Fhp2hUzaSqlpdAk+lSMWP+
-         rAZHsXL4XGkiPGVN68PLtPYSQrdp28e6GksvVfZa//F7ylEJ5nXAG5vhSGJqlgPwhJ
-         X0hpopm4Tw4Iad7ZGX8I9dHEm95neSmbdO49+beiLKFIFG0Jj+eV5iNRNXc7YmWpj4
-         /71zMaFQI1grD9xuUxxSVrkV1eXuU0IbTT2B+FIWS53ZVPalUFwCKCK9vXJJTpq/C/
-         ZVrCPnPBExSD4aVi5GnPudXHOaYMxsT/OX658rKKECpCpXa/5mb0h/upZAH+SR4C8x
-         Ps7OeKRnCZxjxPRHwZU23h8OFoVFidpEmSh5vG0xpJrPr0aBY6dnDqQQLYReK/AQcx
-         LlAQb/rGK74Y2PgJH3Rj+XqyYr4/SIoWYC2Eypj7dAhil4mgfwpgmrx9V2KgkhVcpx
-         gUnkERWwKeqcg+6MnQ2CHchMhCkC5Lkuh6T9P+4eHJe5SRpXWTt8M9QdZu/o1ZafP7
-         GRw8NjjY5F0OpOQ7xHfF3kYk=
-Received: from zn.tnic (pd9530d32.dip0.t-ipconnect.de [217.83.13.50])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
-        (No client certificate requested)
-        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id A181040E00B2;
-        Sat,  5 Aug 2023 14:40:35 +0000 (UTC)
-Date:   Sat, 5 Aug 2023 16:40:30 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Ard Biesheuvel <ardb@kernel.org>
-Cc:     linux-efi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Evgeniy Baskov <baskov@ispras.ru>,
-        Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Alexey Khoroshilov <khoroshilov@ispras.ru>,
-        Peter Jones <pjones@redhat.com>,
-        Gerd Hoffmann <kraxel@redhat.com>,
-        Dave Young <dyoung@redhat.com>,
-        Mario Limonciello <mario.limonciello@amd.com>,
-        Kees Cook <keescook@chromium.org>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Joerg Roedel <jroedel@suse.de>
-Subject: Re: [PATCH v8 00/23] efi/x86: Avoid bare metal decompressor during
- EFI boot
-Message-ID: <20230805144030.GDZM5fXvaqXBLxwXfj@fat_crate.local>
-References: <20230802154831.2147855-1-ardb@kernel.org>
+        Sat, 5 Aug 2023 10:43:41 -0400
+Received: from pidgin.makrotopia.org (pidgin.makrotopia.org [185.142.180.65])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8A4B1FE6;
+        Sat,  5 Aug 2023 07:43:38 -0700 (PDT)
+Received: from local
+        by pidgin.makrotopia.org with esmtpsa (TLS1.3:TLS_AES_256_GCM_SHA384:256)
+         (Exim 4.96)
+        (envelope-from <daniel@makrotopia.org>)
+        id 1qSIUq-0000N9-0A;
+        Sat, 05 Aug 2023 14:43:12 +0000
+Date:   Sat, 5 Aug 2023 15:42:58 +0100
+From:   Daniel Golle <daniel@makrotopia.org>
+To:     Andrew Lunn <andrew@lunn.ch>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        =?utf-8?B?QXLEsW7DpyDDnE5BTA==?= <arinc.unal@arinc9.com>,
+        Daniel Golle <daniel@makrotopia.org>,
+        Landen Chao <Landen.Chao@mediatek.com>,
+        DENG Qingfang <dqfext@gmail.com>,
+        Sean Wang <sean.wang@mediatek.com>, netdev@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org
+Subject: [PATCH RESEND net-next 1/2] net: dsa: mt7530: register OF node for
+ internal MDIO bus
+Message-ID: <6eb1b7b8dbc3a4b14becad15f0707d4f624ee18b.1691246461.git.daniel@makrotopia.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230802154831.2147855-1-ardb@kernel.org>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,SPF_PASS,
-        T_SPF_HELO_TEMPERROR,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 02, 2023 at 05:48:08PM +0200, Ard Biesheuvel wrote:
-> Update the x86 boot path to avoid the bare metal decompressor when
-> booting via the EFI stub. The bare metal decompressor inherits the
-> loader's 1:1 mapping of DRAM when entering in 64-bit mode, and assumes
-> that all of it is mapped read/write/execute, which will no longer be the
-> case on systems built to comply with recently tightened logo
-> requirements (*).
-> 
-> Changes since v7 [10]:
+From: David Bauer <mail@david-bauer.net>
 
-My Zen1 box fails booting with those. It is related to memory encryption
-because if I supply "mem_encrypt=off", it boots.
+The MT753x switches provide a switch-internal MDIO bus for the embedded
+PHYs.
 
-The failure is (typing it off from the video from the BMC):
+Register a OF sub-node on the switch OF-node for this internal MDIO bus.
+This allows to configure the embedded PHYs using device-tree.
 
-/dev/root: Can't open blockdev
-VFS: Cannot open root device "UUID=..."
-Please append a correct "root=" boot option;
-...
+Signed-off-by: David Bauer <mail@david-bauer.net>
+Signed-off-by: Daniel Golle <daniel@makrotopia.org>
+---
+ drivers/net/dsa/mt7530.c | 7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
 
-I'll bisect now but it is pretty clear which one is the culprit.
-
+diff --git a/drivers/net/dsa/mt7530.c b/drivers/net/dsa/mt7530.c
+index 8fbda739c1b35..9bb805de397a9 100644
+--- a/drivers/net/dsa/mt7530.c
++++ b/drivers/net/dsa/mt7530.c
+@@ -2152,10 +2152,13 @@ mt7530_setup_mdio(struct mt7530_priv *priv)
+ {
+ 	struct dsa_switch *ds = priv->ds;
+ 	struct device *dev = priv->dev;
++	struct device_node *np, *mnp;
+ 	struct mii_bus *bus;
+ 	static int idx;
+ 	int ret;
+ 
++	np = priv->dev->of_node;
++
+ 	bus = devm_mdiobus_alloc(dev);
+ 	if (!bus)
+ 		return -ENOMEM;
+@@ -2174,7 +2177,9 @@ mt7530_setup_mdio(struct mt7530_priv *priv)
+ 	if (priv->irq)
+ 		mt7530_setup_mdio_irq(priv);
+ 
+-	ret = devm_mdiobus_register(dev, bus);
++	mnp = of_get_child_by_name(np, "mdio");
++	ret = devm_of_mdiobus_register(dev, bus, mnp);
++	of_node_put(mnp);
+ 	if (ret) {
+ 		dev_err(dev, "failed to register MDIO bus: %d\n", ret);
+ 		if (priv->irq)
 -- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+2.41.0
