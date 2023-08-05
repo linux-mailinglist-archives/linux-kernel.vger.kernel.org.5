@@ -2,229 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0192A770D7C
-	for <lists+linux-kernel@lfdr.de>; Sat,  5 Aug 2023 05:15:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ECF8E770D74
+	for <lists+linux-kernel@lfdr.de>; Sat,  5 Aug 2023 05:15:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229792AbjHEDPw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Aug 2023 23:15:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38256 "EHLO
+        id S229617AbjHEDP0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Aug 2023 23:15:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38336 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229679AbjHEDPd (ORCPT
+        with ESMTP id S229469AbjHEDPQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Aug 2023 23:15:33 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3CC5410D2
-        for <linux-kernel@vger.kernel.org>; Fri,  4 Aug 2023 20:14:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1691205285;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=cbOnpetRdksvYmHQrc1VnOUvWL6pFOiaAZEA/zz5j+M=;
-        b=T70zeuibdO4ec1aKBTqg0d/JLC4VHLzCuVdJviPUVP7LXflrzod7RF7tCowW72+TR1Gm/6
-        fkUtllspWQozxplPwAvD6r/MMaJ5+dGepfmATrYnrGiR19dvTIHE/kH0Ncs1Y20fpZhVLr
-        crYjW4Sb2uQzfyC4DoKAjygzqIACDQE=
-Received: from mail-qk1-f198.google.com (mail-qk1-f198.google.com
- [209.85.222.198]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-111-wzz4IEXSMFKvJ1ICHU4eLA-1; Fri, 04 Aug 2023 23:14:43 -0400
-X-MC-Unique: wzz4IEXSMFKvJ1ICHU4eLA-1
-Received: by mail-qk1-f198.google.com with SMTP id af79cd13be357-76c888cc6cdso308983685a.0
-        for <linux-kernel@vger.kernel.org>; Fri, 04 Aug 2023 20:14:43 -0700 (PDT)
+        Fri, 4 Aug 2023 23:15:16 -0400
+Received: from mail-oo1-xc2f.google.com (mail-oo1-xc2f.google.com [IPv6:2607:f8b0:4864:20::c2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 707204EE7
+        for <linux-kernel@vger.kernel.org>; Fri,  4 Aug 2023 20:15:14 -0700 (PDT)
+Received: by mail-oo1-xc2f.google.com with SMTP id 006d021491bc7-56c4457c82eso1841460eaf.0
+        for <linux-kernel@vger.kernel.org>; Fri, 04 Aug 2023 20:15:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20221208.gappssmtp.com; s=20221208; t=1691205313; x=1691810113;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=wY6Qt1tAikNugWjQbI8lPvA/5LjhxOjzsVL1TcMtfGQ=;
+        b=VUDPufE0qnsNjRNmMFNmGkO/KZ1iM8USBm7tTVJUN+t2lBBLWjhTpcSIc4zRrrmhK2
+         +g+0dMsvRVZWdSIspTynGRO84gAMGxdVTb3wac+Iv+ahtByPo6CtpdYmw7zo7cxW1fLC
+         bIkRLEK0u+kyfQbcLdou3zsN9VbBP74f9Z+c9yIE3/wR2Lh4qdNyyA3u1zHWLSPeMeqE
+         WqPNBCoXhP0VsdvdGhMKQKANf52T2tQMZNeZDJPAs7Ni0CJ9oZDXQzOMslpn0bHn6mlw
+         RA/w78OksTGfh0EO5YG6HhP7xsLQWEPOjKhrJmd8v8D4FMRnN+A6/0gg8lnCZdUA9d5l
+         Yu+A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691205283; x=1691810083;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=cbOnpetRdksvYmHQrc1VnOUvWL6pFOiaAZEA/zz5j+M=;
-        b=QGVyxQAuplaM5mZ3F8HXMZXZ8bMkIStzXqxzGBWXLNEQdsv/qFOhBpKRjdBgax2H/L
-         lXVauXji93crCacAsuByinHpzxoVe8jLy9fuF+XLtogfFEbl6vfBRK/Qg88kA7zIf8O9
-         wkCFVdxM6kaykXbwuWuu10dcGdluui45wjsGgsIz9ou5EBoryXzUl65iQqbzRPG3afWU
-         J7SAcY9xMVnpPafnYbZlobh7way+8bVnzQejX6LTXmg1sqcPvYcXcCedM8hY7uEzNlsd
-         4+WwpczQafK/9INRsgfjmCl+o/Ai/3ot2fkzOtKPFhjqvDwNRlf2xsRg0L+Fteiw8ZPo
-         Jq4Q==
-X-Gm-Message-State: AOJu0YwpNHS9dAQ/pbws7CczNpiD2y9GKKWv+5s9ac+IMiv1mOz4bWzU
-        UvVwsjE76okZNTZjIc9IwP378tcBASKfj2+WmQfzFoJsRtKoWJt527FEV+1IcMjft93MOlJryYm
-        6moupyfGG8o8jgcQk+F1fqRH7NUnE2TxOCy+uUwZ/
-X-Received: by 2002:a05:622a:199f:b0:403:b869:9d37 with SMTP id u31-20020a05622a199f00b00403b8699d37mr4911919qtc.0.1691205283332;
-        Fri, 04 Aug 2023 20:14:43 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IF9hCtZkKsNcH3RInYQsyPY9FuS0uXfJQ8KVHGGSVyrOAym5sd9HYXY78yRP/LQTvr/kqaCKw2GiWRDw7MDG+o=
-X-Received: by 2002:a05:622a:199f:b0:403:b869:9d37 with SMTP id
- u31-20020a05622a199f00b00403b8699d37mr4911908qtc.0.1691205283091; Fri, 04 Aug
- 2023 20:14:43 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1691205314; x=1691810114;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=wY6Qt1tAikNugWjQbI8lPvA/5LjhxOjzsVL1TcMtfGQ=;
+        b=R13T89zWSFTf7DF4i0SB+ZdtHbOV/rkSo2rSamIGEemxqVj2MAShQGj352JqaLG/YG
+         xLhJClIAwCp/yZm64AJNRamhacAcC3B1dnltWW+MuprVBacXL0IH2UuU7xws2KVwRzxI
+         +fHJgOvXcW1I6vaX/Bm3nt10jGq2+rsXppVZh62x1c1qV5E7/rjymbYlDI7ZbU5CmtdJ
+         qDsUvz61WXnktA4w7/GAWdXRoDeQoPOPqofrQk/zb4GWZpFZElnPpAz8ghzOAyyEiBex
+         6KiqND91CGpoN6uX9Tyvpvq+OnWx/xTCXuJ884qSD1JWQP0zlMp8QGvYWez/jEzEcrAO
+         YhOw==
+X-Gm-Message-State: AOJu0YxVkyjvsz6uG3MU0Ou6UbqwUQcj3gOmDUAOgd4emN9ywX1qZmjZ
+        AaMNEKKtzHd5XpGLEJ+ZzJyg9w==
+X-Google-Smtp-Source: AGHT+IHL8VoBkjiy6ix6rUaziMQ7E0AbDt4CLGJy+4lZeUtAQqUNnPPxmUVzSmsimNjPpF87HkxP8w==
+X-Received: by 2002:a05:6358:70e:b0:135:99fa:a118 with SMTP id e14-20020a056358070e00b0013599faa118mr3869509rwj.4.1691205313617;
+        Fri, 04 Aug 2023 20:15:13 -0700 (PDT)
+Received: from [127.0.1.1] ([2601:1c2:1800:f680:e1a0:2f9c:e6f9:e66c])
+        by smtp.gmail.com with ESMTPSA id h17-20020a170902f55100b001b864add154sm2412145plf.154.2023.08.04.20.15.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 04 Aug 2023 20:15:13 -0700 (PDT)
+From:   Drew Fustini <dfustini@baylibre.com>
+Subject: [PATCH RFC v2 0/4] RISC-V: Add basic eMMC support for BeagleV
+ Ahead
+Date:   Fri, 04 Aug 2023 20:14:44 -0700
+Message-Id: <20230724-th1520-emmc-v2-0-132ed2e2171e@baylibre.com>
 MIME-Version: 1.0
-References: <20230804084900.1135660-2-leobras@redhat.com> <20230804084900.1135660-6-leobras@redhat.com>
- <CAJF2gTTOT3_3K_cWNY9n_DgRoPhYEhBLno=bh57r9D--OavREQ@mail.gmail.com>
-In-Reply-To: <CAJF2gTTOT3_3K_cWNY9n_DgRoPhYEhBLno=bh57r9D--OavREQ@mail.gmail.com>
-From:   Leonardo Bras Soares Passos <leobras@redhat.com>
-Date:   Sat, 5 Aug 2023 00:14:31 -0300
-Message-ID: <CAJ6HWG4gy7HV11-cdoB0VAP2z1Zw-zyJhNRpJ1eDMmrkvnob3w@mail.gmail.com>
-Subject: Re: [RFC PATCH v3 4/5] riscv/cmpxchg: Implement cmpxchg for variables
- of size 1 and 2
-To:     Guo Ren <guoren@kernel.org>
-Cc:     Will Deacon <will@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Mark Rutland <mark.rutland@arm.com>,
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIAKS+zWQC/22Oyw6CMBBFf4XM2iGltYCuTEz8ALeGRR+jbWLBt
+ IRICP9uYe3yvnLuAomipwTnYoFIk09+6LPghwKMU/2L0NusgTMuWMOPOLpKcoYUgsFGGEuntmX
+ S1pAXWiVCHVVv3LYJKo0UsS4lRiO2wifS03933APutyt02XQ+jUOc9wtTtUd/aVOFDI1RleZSC
+ Kv4Rav57XWk0gwBunVdfzwVCL/PAAAA
+To:     Jisheng Zhang <jszhang@kernel.org>, Guo Ren <guoren@kernel.org>,
+        Fu Wei <wefu@redhat.com>, Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
         Paul Walmsley <paul.walmsley@sifive.com>,
         Palmer Dabbelt <palmer@dabbelt.com>,
         Albert Ou <aou@eecs.berkeley.edu>,
-        Andrea Parri <parri.andrea@gmail.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Andrzej Hajda <andrzej.hajda@intel.com>,
-        Palmer Dabbelt <palmer@rivosinc.com>,
-        linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+        Conor Dooley <conor@kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>
+Cc:     linux-riscv@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-mmc@vger.kernel.org,
+        Robert Nelson <robertcnelson@beagleboard.org>,
+        Jason Kridner <jkridner@beagleboard.org>,
+        Drew Fustini <dfustini@baylibre.com>
+X-Mailer: b4 0.12.2
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1691205312; l=3402;
+ i=dfustini@baylibre.com; s=20230430; h=from:subject:message-id;
+ bh=MDLsxhc5w3dyfm/SSn/2wE/4REaaADp4oj0jvET2NTw=;
+ b=438X54c0dRVAnrP9QJgUt1TUf9yWkmyAhDMglNZx0q12/H3btZjjYx6J4ca3FyvqtD4jty8/G
+ qOq286cmPc9Ct35GAf2WWHC4bLrczRXFAAUC0G8dwY5Rljr2Qrw19yN
+X-Developer-Key: i=dfustini@baylibre.com; a=ed25519;
+ pk=p3GKE9XFmjhwAayAHG4U108yag7V8xQVd4zJLdW0g7g=
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Guo Ren, thanks for the feedback!
+This series adds initial support for the eMMC on the BeagleV Ahead
+board. This allows the kernel to boot with the root fs on eMMC.
 
-On Fri, Aug 4, 2023 at 2:45=E2=80=AFPM Guo Ren <guoren@kernel.org> wrote:
->
-> On Fri, Aug 4, 2023 at 4:49=E2=80=AFAM Leonardo Bras <leobras@redhat.com>=
- wrote:
-> >
-> > cmpxchg for variables of size 1-byte and 2-bytes is not yet available f=
-or
-> > riscv, even though its present in other architectures such as arm64 and
-> > x86. This could lead to not being able to implement some locking mechan=
-isms
-> > or requiring some rework to make it work properly.
-> >
-> > Implement 1-byte and 2-bytes cmpxchg in order to achieve parity with ot=
-her
-> > architectures.
-> >
-> > Signed-off-by: Leonardo Bras <leobras@redhat.com>
-> > ---
-> >  arch/riscv/include/asm/cmpxchg.h | 35 ++++++++++++++++++++++++++++++++
-> >  1 file changed, 35 insertions(+)
-> >
-> > diff --git a/arch/riscv/include/asm/cmpxchg.h b/arch/riscv/include/asm/=
-cmpxchg.h
-> > index 5a07646fae65..dfb433ac544f 100644
-> > --- a/arch/riscv/include/asm/cmpxchg.h
-> > +++ b/arch/riscv/include/asm/cmpxchg.h
-> > @@ -72,6 +72,36 @@
-> >   * indicated by comparing RETURN with OLD.
-> >   */
-> >
-> > +#define __arch_cmpxchg_mask(sc_sfx, prepend, append, r, p, o, n)      =
- \
-> > +({                                                                    =
- \
-> > +       /* Depends on 2-byte variables being 2-byte aligned */         =
- \
-> > +       ulong __s =3D ((ulong)(p) & 0x3) * BITS_PER_BYTE;              =
-   \
-> > +       ulong __mask =3D GENMASK(((sizeof(*p)) * BITS_PER_BYTE) - 1, 0)=
-   \
-> > +                       << __s;                                        =
- \
-> > +       ulong __newx =3D (ulong)(n) << __s;                            =
-   \
-> > +       ulong __oldx =3D (ulong)(o) << __s;                            =
-   \
-> > +       ulong __retx;                                                  =
- \
-> > +       register unsigned int __rc;                                    =
- \
-> > +                                                                      =
- \
-> > +       __asm__ __volatile__ (                                         =
- \
-> > +               prepend                                                =
- \
-> > +               "0:     lr.w %0, %2\n"                                 =
- \
-> > +               "       and  %0, %0, %z5\n"                            =
- \
-> > +               "       bne  %0, %z3, 1f\n"                            =
- \
+I tested [1] on top of v6.5-rc3 with this config [2] along with the
+prerequisite series [3] that adds the BeagleV Ahead dts file.
 
-> bug:
-> -               "       and  %0, %0, %z5\n"                             \
-> -               "       bne  %0, %z3, 1f\n"                             \
-> +               "       and  %1, %0, %z5\n"                             \
-> +               "       bne  %1, %z3, 1f\n"                             \
-> Your code breaks the %0.
+I am submitting this as an RFC for other people that want to test
+booting from the eMMC with mainline. There are several issues that need
+to be resolved before this code can progress beyond an RFC:
 
-What do you mean by breaks here?
+  - Only the MMC controller connected to the eMMC is enabled. I did
+    not yet attempt to configure or use the microSD card slot.
 
-In the end of this macro, I intended  to have __retx =3D (*p & __mask)
-which means the value is clean to be rotated at the end of the macro
-(no need to apply the mask again): r =3D __ret >> __s;
+  - The thead,th1520-dwcmshc compatible sets quirks which disable DMA
+    and forces the use of inefficient PIO mode. I need to determine the
+    correct configuration for the SDMA and ADMA modes.
 
-Also, I assumed we are supposed to return the same variable type
-as the pointer, so this is valid:
-u8 a, *b, c;
-a =3D xchg(b, c);
+  - th1520-specific code is needed in dwcmshc_set_uhs_signaling() for
+    MMC_TIMING_MMC_HS400. I have not figured out add proper way to make
+    that code conditional so that it only runs on th1520. One method
+    could be to add a th1520 flag to dwcmshc_priv but that seems like a
+    hack. Alternatively, set_uhs_signaling in sdhci_dwcmshc_th1520_ops
+    could point to a th1520-specific function, but that new function
+    would have to duplicate all the code in the current
+    dwcmshc_set_uhs_signaling().
 
-Is this correct?
+NOTE: I combined schema, dts and driver patches into this one series to
+simplify review and testing of this RFC.
 
-> > +               append                                                 =
- \
-> > +               "1:\n"                                                 =
- \
-> > +               : "=3D&r" (__retx), "=3D&r" (__rc), "+A" (*(p))        =
-     \
-> > +               : "rJ" ((long)__oldx), "rJ" (__newx),                  =
- \
-> > +                 "rJ" (__mask), "rJ" (~__mask)                        =
- \
-> > +               : "memory");                                           =
- \
-> > +                                                                      =
- \
-> > +       r =3D (__typeof__(*(p)))(__retx >> __s);                       =
-   \
-> > +})
-> > +
-> >
-> >  #define __arch_cmpxchg(lr_sfx, sc_sfx, prepend, append, r, p, co, o, n=
-)        \
-> >  ({                                                                    =
- \
-> > @@ -98,6 +128,11 @@
-> >         __typeof__(*(ptr)) __ret;                                      =
- \
-> >                                                                        =
- \
-> >         switch (sizeof(*__ptr)) {                                      =
- \
-> > +       case 1:                                                        =
- \
-> > +       case 2:                                                        =
- \
-> > +               __arch_cmpxchg_mask(sc_sfx, prepend, append,           =
- \
-> > +                                       __ret, __ptr, __old, __new);   =
- \
-> > +               break;                                                 =
- \
-> >         case 4:                                                        =
- \
-> >                 __arch_cmpxchg(".w", ".w" sc_sfx, prepend, append,     =
- \
-> >                                 __ret, __ptr, (long), __old, __new);   =
- \
-> > --
-> > 2.41.0
-> >
->
->
-> --
-> Best Regards
->  Guo Ren
->
+References:
+[1] https://gist.github.com/pdp7/09995be1e30df0a04b9b9cd31420f9d5
+[2] https://gist.github.com/pdp7/e4585311eb2cd27df7b50c87babc15fd
+[3] https://lore.kernel.org/linux-riscv/20230722-upstream-beaglev-ahead-dts-v2-0-a470ab8fe806@baylibre.com/
+
+Changes in v2:
+- Expand dwcmshc_priv based on driver in the T-Head 5.10 kernel:
+  delay_line, non_removable, pull_up_en, io_fixed_1v8
+- New boolean property "thead,pull-up" indicates phy pull-up config
+- New boolean property "thead,io-fixed-1v8" indicates that io voltage
+  should be set to 1.8V during reset
+- Add th1520_phy_1_8v_init() as voltage_switch op
+- Add th1520_execute_tuning() as the platform_execute_tuning op
+- Added th1520_sdhci_reset() as the .reset op. This function will set
+  io voltage to 1.8V after calling the standard sdhci_reset() function.
+- Modified dwcmshc_set_uhs_signaling() to enable SDHCI_CTRL_VDD_180 when
+  io_fixed_1v8 is true
+- Add many defines for register offsets and settings based on the mmc
+  support in the T-Head downstream v5.10 kernel
+
+v1 series:
+https://lore.kernel.org/r/20230724-th1520-emmc-v1-0-cca1b2533da2@baylibre.com
+
+Signed-off-by: Drew Fustini <dfustini@baylibre.com>
+---
+Drew Fustini (4):
+      dt-bindings: mmc: sdhci-of-dwcmhsc: Add T-Head TH1520 support
+      riscv: dts: thead: Add TH1520 mmc controller and sdhci clock
+      riscv: dts: thead: Enable BeagleV Ahead eMMC controller
+      mmc: sdhci-of-dwcmshc: Add support for T-Head TH1520
+
+ .../bindings/mmc/snps,dwcmshc-sdhci.yaml           |   9 +
+ arch/riscv/boot/dts/thead/th1520-beaglev-ahead.dts |  17 ++
+ arch/riscv/boot/dts/thead/th1520.dtsi              |  17 ++
+ drivers/mmc/host/sdhci-of-dwcmshc.c                | 336 +++++++++++++++++++++
+ 4 files changed, 379 insertions(+)
+---
+base-commit: cb8c874afdc063290797ae1776a5d410fecb06cb
+change-id: 20230724-th1520-emmc-73cde98805d6
+
+Best regards,
+-- 
+Drew Fustini <dfustini@baylibre.com>
 
