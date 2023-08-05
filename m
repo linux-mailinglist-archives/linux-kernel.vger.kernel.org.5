@@ -2,167 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BBD2477104C
-	for <lists+linux-kernel@lfdr.de>; Sat,  5 Aug 2023 16:59:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E833771050
+	for <lists+linux-kernel@lfdr.de>; Sat,  5 Aug 2023 17:01:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229917AbjHEO7N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 5 Aug 2023 10:59:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55424 "EHLO
+        id S229932AbjHEPBe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 5 Aug 2023 11:01:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56316 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229884AbjHEO7L (ORCPT
+        with ESMTP id S229379AbjHEPB3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 5 Aug 2023 10:59:11 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA70F44A1;
-        Sat,  5 Aug 2023 07:58:54 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 4D2EF601D0;
-        Sat,  5 Aug 2023 14:58:54 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1491FC433C8;
-        Sat,  5 Aug 2023 14:58:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691247533;
-        bh=zlG4XdXdEpC54rcZoPhBS/p5nrcyfvD1Z3WKRvALoqk=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=dtQWDnhA/NNtISReu5UUc99txh1LiTHylfhpoJVKtscA39myvE3AjoY5vdFp+9saC
-         xnoUS1YK5XUGkOlYCC3UmM/pNaW783FDsz0WtBtCcNpu5wLwQRVG1V4wpTcOVHEvOE
-         pKg3I9bPvV1xchqwNA9yzgoV9vtzu1pxTMTt7i2dIYBftfJ0RGmTKntCAMu42N6/gW
-         AOGDiWEbqU/e8yEtS5oU2VEAjpL2CKhpLNOAry8SW56hqnZzQOC5iGYzcRpNQTHxZu
-         HjaIeks7HQPRENMJKOesbKGi3o1P+7vfUFcvCDrtyz7tbkHdqWE9gEVOIL2038uDX2
-         VxsWES0gtZKug==
-From:   "Masami Hiramatsu (Google)" <mhiramat@kernel.org>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Florent Revest <revest@chromium.org>
-Cc:     linux-trace-kernel@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        bpf <bpf@vger.kernel.org>, Sven Schnelle <svens@linux.ibm.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Alan Maguire <alan.maguire@oracle.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>
-Subject: [RFC PATCH 5/5] bpf: Enable kprobe_multi feature if CONFIG_FPROBE is enabled
-Date:   Sat,  5 Aug 2023 23:58:47 +0900
-Message-Id: <169124752752.186149.5928887430024942007.stgit@devnote2>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <169124746774.186149.2326708176801468806.stgit@devnote2>
-References: <169124746774.186149.2326708176801468806.stgit@devnote2>
-User-Agent: StGit/0.19
+        Sat, 5 Aug 2023 11:01:29 -0400
+Received: from mail-4319.protonmail.ch (mail-4319.protonmail.ch [185.70.43.19])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 711D9B3;
+        Sat,  5 Aug 2023 08:01:28 -0700 (PDT)
+Date:   Sat, 05 Aug 2023 15:01:15 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=protonmail.com;
+        s=protonmail3; t=1691247685; x=1691506885;
+        bh=RK2t5NabxjAZEjqQuJfLG/QNPZc1sOenvcsSLOMRHN4=;
+        h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
+         Feedback-ID:From:To:Cc:Date:Subject:Reply-To:Feedback-ID:
+         Message-ID:BIMI-Selector;
+        b=sXgQKHPD9UFS1dL6MTT4yY7GvQYTweUc6pDyhZrfy5miRqNqcWXwRd52veEokwmUZ
+         EiaJDjwsGEOsLbcRhC5cbhhg4luXLp8mIIY4aCvL8XEL4Eux4DVXjbIkClV3Vnx3Ag
+         58IhWkxc5kP6VRc62ii64zRHH9pG6fgfwIgwos02kM6wX8U9mHl4iz4NUR9D8bYMt5
+         gUOv+0P3tL3esDMRw1yI5rzvEeTLheZ54zR9wqZo3wSS2H7kLzGdanhgM02Kg2NKuZ
+         8GWEY8jD2EnC7KWT73GfX4qsXLIFsjC6cVrMnSwY0OWJXvx0+9Ns+Z4b3NfOJk+wz0
+         2CydeGX/YjLpg==
+To:     David Wronek <davidwronek@gmail.com>
+From:   Yassine Oudjana <y.oudjana@protonmail.com>
+Cc:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, ~postmarketos/upstreaming@lists.sr.ht
+Subject: Re: [PATCH] arm64: dts: qcom: msm8996: Fix dsi1 interrupts
+Message-ID: <2OIrRjpbwowKk3QS4Z0OLCq6nDxVIOTZnIYpJNlau9TG_GejGAJVgCfboTjUIVokAOAGoobJwEBXoS7udi-cwaq4AeOdLj45uYdhlMCEcCA=@protonmail.com>
+In-Reply-To: <20230805130936.359860-2-davidwronek@gmail.com>
+References: <20230805130936.359860-2-davidwronek@gmail.com>
+Feedback-ID: 6882736:user:proton
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,FREEMAIL_REPLY,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+On Saturday, August 5th, 2023 at 2:09 PM, David Wronek <davidwronek@gmail.c=
+om> wrote:
 
-Enable kprobe_multi feature if CONFIG_FPROBE is enabled. The pt_regs is
-converted from ftrace_regs by ftrace_partial_regs(), thus some registers
-may always returns 0. But it should be enough for function entry (access
-arguments) and exit (access return value).
+> Fix IRQ flags mismatch which was keeping dsi1 from probing by changing
+> interrupts =3D <4> to interrupts =3D <5>.
+>=20
+>=20
+> Fixes: 2752bb7d9b58 ("arm64: dts: qcom: msm8996: add second DSI interface=
+")
+> Signed-off-by: David Wronek davidwronek@gmail.com
+>=20
+> ---
+> arch/arm64/boot/dts/qcom/msm8996.dtsi | 2 +-
+> 1 file changed, 1 insertion(+), 1 deletion(-)
+>=20
+> diff --git a/arch/arm64/boot/dts/qcom/msm8996.dtsi b/arch/arm64/boot/dts/=
+qcom/msm8996.dtsi
+> index 6f7065e8fd6c..c8e0986425ab 100644
+> --- a/arch/arm64/boot/dts/qcom/msm8996.dtsi
+> +++ b/arch/arm64/boot/dts/qcom/msm8996.dtsi
+> @@ -1126,7 +1126,7 @@ mdss_dsi1: dsi@996000 {
+> reg-names =3D "dsi_ctrl";
+>=20
+> interrupt-parent =3D <&mdss>;
+>=20
+> - interrupts =3D <4>;
+>=20
+> + interrupts =3D <5>;
+>=20
+>=20
+> clocks =3D <&mmcc MDSS_MDP_CLK>,
+>=20
+> <&mmcc MDSS_BYTE1_CLK>,
+>=20
+> --
+> 2.41.0
 
-Signed-off-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
----
- kernel/trace/bpf_trace.c |   22 +++++++++-------------
- 1 file changed, 9 insertions(+), 13 deletions(-)
-
-diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
-index 99c5f95360f9..0725272a3de2 100644
---- a/kernel/trace/bpf_trace.c
-+++ b/kernel/trace/bpf_trace.c
-@@ -2460,7 +2460,7 @@ static int __init bpf_event_init(void)
- fs_initcall(bpf_event_init);
- #endif /* CONFIG_MODULES */
- 
--#ifdef CONFIG_DYNAMIC_FTRACE_WITH_REGS
-+#ifdef CONFIG_FPROBE
- struct bpf_kprobe_multi_link {
- 	struct bpf_link link;
- 	struct fprobe fp;
-@@ -2482,6 +2482,8 @@ struct user_syms {
- 	char *buf;
- };
- 
-+static DEFINE_PER_CPU(struct pt_regs, bpf_kprobe_multi_pt_regs);
-+
- static int copy_user_syms(struct user_syms *us, unsigned long __user *usyms, u32 cnt)
- {
- 	unsigned long __user usymbol;
-@@ -2623,13 +2625,14 @@ static u64 bpf_kprobe_multi_entry_ip(struct bpf_run_ctx *ctx)
- 
- static int
- kprobe_multi_link_prog_run(struct bpf_kprobe_multi_link *link,
--			   unsigned long entry_ip, struct pt_regs *regs)
-+			   unsigned long entry_ip, struct ftrace_regs *fregs)
- {
- 	struct bpf_kprobe_multi_run_ctx run_ctx = {
- 		.link = link,
- 		.entry_ip = entry_ip,
- 	};
- 	struct bpf_run_ctx *old_run_ctx;
-+	struct pt_regs *regs;
- 	int err;
- 
- 	if (unlikely(__this_cpu_inc_return(bpf_prog_active) != 1)) {
-@@ -2639,6 +2642,7 @@ kprobe_multi_link_prog_run(struct bpf_kprobe_multi_link *link,
- 
- 	migrate_disable();
- 	rcu_read_lock();
-+	regs = ftrace_partial_regs(fregs, this_cpu_ptr(&bpf_kprobe_multi_pt_regs));
- 	old_run_ctx = bpf_set_run_ctx(&run_ctx.run_ctx);
- 	err = bpf_prog_run(link->link.prog, regs);
- 	bpf_reset_run_ctx(old_run_ctx);
-@@ -2656,13 +2660,9 @@ kprobe_multi_link_handler(struct fprobe *fp, unsigned long fentry_ip,
- 			  void *data)
- {
- 	struct bpf_kprobe_multi_link *link;
--	struct pt_regs *regs = ftrace_get_regs(fregs);
--
--	if (!regs)
--		return 0;
- 
- 	link = container_of(fp, struct bpf_kprobe_multi_link, fp);
--	kprobe_multi_link_prog_run(link, get_entry_ip(fentry_ip), regs);
-+	kprobe_multi_link_prog_run(link, get_entry_ip(fentry_ip), fregs);
- 	return 0;
- }
- 
-@@ -2672,13 +2672,9 @@ kprobe_multi_link_exit_handler(struct fprobe *fp, unsigned long fentry_ip,
- 			       void *data)
- {
- 	struct bpf_kprobe_multi_link *link;
--	struct pt_regs *regs = ftrace_get_regs(fregs);
--
--	if (!regs)
--		return;
- 
- 	link = container_of(fp, struct bpf_kprobe_multi_link, fp);
--	kprobe_multi_link_prog_run(link, get_entry_ip(fentry_ip), regs);
-+	kprobe_multi_link_prog_run(link, get_entry_ip(fentry_ip), fregs);
- }
- 
- static int symbols_cmp_r(const void *a, const void *b, const void *priv)
-@@ -2918,7 +2914,7 @@ int bpf_kprobe_multi_link_attach(const union bpf_attr *attr, struct bpf_prog *pr
- 	kvfree(cookies);
- 	return err;
- }
--#else /* !CONFIG_DYNAMIC_FTRACE_WITH_REGS */
-+#else /* !CONFIG_FPROBE */
- int bpf_kprobe_multi_link_attach(const union bpf_attr *attr, struct bpf_prog *prog)
- {
- 	return -EOPNOTSUPP;
+Acked-by: Yassine Oudjana <y.oudjana@protonmail.com>
 
