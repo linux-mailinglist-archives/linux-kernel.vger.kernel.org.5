@@ -2,126 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BDEBE770DFE
-	for <lists+linux-kernel@lfdr.de>; Sat,  5 Aug 2023 08:02:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D7DF8770E71
+	for <lists+linux-kernel@lfdr.de>; Sat,  5 Aug 2023 09:29:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229644AbjHEGCo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 5 Aug 2023 02:02:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59658 "EHLO
+        id S229781AbjHEH27 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 5 Aug 2023 03:28:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47230 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229445AbjHEGCl (ORCPT
+        with ESMTP id S229379AbjHEH25 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 5 Aug 2023 02:02:41 -0400
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79ADA4ECF;
-        Fri,  4 Aug 2023 23:02:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.de;
- s=s31663417; t=1691215342; x=1691820142; i=deller@gmx.de;
- bh=ADlQgcxxX/BU3meLqwOkBqG5Uzdi6RZo+u1FT7knl6U=;
- h=X-UI-Sender-Class:Date:From:To:Cc:Subject;
- b=gk8Qi0QCkgdVjVTfM9U69Mzo9Uc+ymgLzElHDOFC7or7i10m41zGdyxIplAzP0W6qq/uAmV
- ay/PnK2Y/QDsC1UBaBnfOi6cp4z5iW+vASMxX2lRpkx6x8RApay+1zKKkaRCh91M3PfT+pzfR
- Mv3mRlx8w38jXfmRdhZBPf+1EAvweed9Bu21dBnBZT9bFsw7/NuOiDvH7Bu1A8r3+5/3JhTxI
- k7nJoBHNbrf5wS7UO1vQCRjtUggODVKel1JUU1R8lNTEMWmh7IYv1QJ9HZDRtShFhseb/Ar+b
- uVPCLjIQl/STuipsWEEEgznFXrriYvRQ9C1kC8h0REhYaf3cOAEw==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from p100 ([94.134.145.133]) by mail.gmx.net (mrgmx105
- [212.227.17.168]) with ESMTPSA (Nemesis) id 1N17YY-1piHw40rGs-012Wlg; Sat, 05
- Aug 2023 08:02:22 +0200
-Date:   Sat, 5 Aug 2023 08:02:20 +0200
-From:   Helge Deller <deller@gmx.de>
-To:     Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, linux-parisc@vger.kernel.org,
-        James Bottomley <James.Bottomley@hansenpartnership.com>
-Cc:     Mike Rapoport <rppt@kernel.org>,
-        Christoph Biedl <linux-kernel.bfrz@manchmal.in-ulm.de>
-Subject: [GIT PULL] parisc architecture fixes for v6.5-rc5
-Message-ID: <ZM3l7IiQKzkkN29S@p100>
+        Sat, 5 Aug 2023 03:28:57 -0400
+X-Greylist: delayed 20999 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Sat, 05 Aug 2023 00:28:54 PDT
+Received: from 8.mo583.mail-out.ovh.net (8.mo583.mail-out.ovh.net [178.32.116.78])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B84644EC8
+        for <linux-kernel@vger.kernel.org>; Sat,  5 Aug 2023 00:28:54 -0700 (PDT)
+Received: from director9.ghost.mail-out.ovh.net (unknown [10.108.4.73])
+        by mo583.mail-out.ovh.net (Postfix) with ESMTP id 9DB5B25C31
+        for <linux-kernel@vger.kernel.org>; Sat,  5 Aug 2023 01:29:57 +0000 (UTC)
+Received: from ghost-submission-6684bf9d7b-ckdcs (unknown [10.109.156.99])
+        by director9.ghost.mail-out.ovh.net (Postfix) with ESMTPS id 993DF1FD47;
+        Sat,  5 Aug 2023 01:29:55 +0000 (UTC)
+Received: from etezian.org ([37.59.142.95])
+        by ghost-submission-6684bf9d7b-ckdcs with ESMTPSA
+        id ai7tIROmzWTHWAMAIGJpLQ
+        (envelope-from <andi@etezian.org>); Sat, 05 Aug 2023 01:29:55 +0000
+Authentication-Results: garm.ovh; auth=pass (GARM-95G001d9e3624c-ac52-4978-b522-021b72bbbf33,
+                    05ACED94171614EC843435E2D99940E8A2AB1814) smtp.auth=andi@etezian.org
+X-OVh-ClientIp: 178.238.172.51
+From:   Andi Shyti <andi.shyti@kernel.org>
+To:     linux-kernel@vger.kernel.org, monstr@monstr.eu, git@xilinx.com,
+        Michal Simek <michal.simek@amd.com>
+Cc:     Andi Shyti <andi.shyti@kernel.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-i2c@vger.kernel.org
+Subject: Re: [PATCH] dt-bindings: i2c: cadence: Describe power-domains property
+Date:   Sat,  5 Aug 2023 03:29:11 +0200
+Message-Id: <169119887100.1781235.4441400054342220300.b4-ty@kernel.org>
+X-Mailer: git-send-email 2.40.1
+In-Reply-To: <8774dba53cae5508f9f7aa173fbaf814d97898b1.1691047405.git.michal.simek@amd.com>
+References: <8774dba53cae5508f9f7aa173fbaf814d97898b1.1691047405.git.michal.simek@amd.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Provags-ID: V03:K1:qIacwImC/KQv3KrLeNeSEvxudHKIcxlDO+upSSkLn10lL/cBUwz
- JmamHh5xKjn7nJkzGWwk9sY9RwTy5N7EUeeRN/InzeRmSj0gJHx3R2iXrK72V09FtGHYuQo
- Ds9TeKcMQidaum8rsScAFx7Wd3U+bGq6VusvHuao+fYPkNtTc+LanjEBSv1KLdiL/xGTc1V
- UTgsxIUjyy/K4ADcG8LRg==
-UI-OutboundReport: notjunk:1;M01:P0:0zul3E6pVyk=;RGxKYTrpT8sI7a4TkJHoC4/vThk
- lkagKIg1lbZRbZZ2/8QfdsxwRpEIDJkgU8Sz/U193avHz4F9K/oSn6rAgPN0+n16DbpElKhcV
- FQFmLWVbTtPZr+k8+8bcFyy992c/jNsFsq2Pfbo7nNyT+XwPm1w5sNv5c53tEYu80wNiD6put
- nIlbuAPUsioJsY+vBqvUzRKXcjxuluFfu6Yr0Ju/2cXPYh1Nf8KcX9rg7xNzgdiAI+9t8hFjq
- ECGvCYKOqeG8zKGFmVvjtEawFY2Wr1kuKuucvFBcR1pkjuxy99KF1H6RNb3aYg1hx9ShlRfG5
- 8e3L4V89rxib8GuYvXpFhBDw9OA11iZiysAMtu5o8z9iEm6j3tirVk27ZH3wnyyy0jhPDm+Rb
- SiFvT51YtmT/EdfGVdaRee4kDJoxngda5xAbauIjeBQT6895EXohxfy1x/J50BuYnQ4nLYzHI
- IvQNs9mNYfMOu2AWWoH4rQ1ut59upkGCOPfWI3Q3bV4U47kfkF0v4pZ9HExG8yrpQPWOOLY9d
- iXXfZFknYZRGNZC0Z7QW+M27twngbdf7sdyRhXplcZs3Vx1r1lOPuV+3fOtkTubRvlr2OlxYf
- SyjG7I2HuQTwz3tcpRD6eKY9ZiS3OF6GJ7+v1X77vxuICvsS8xh+bie5MZpGJT3MCpb9gVaBw
- WwQUd5XYK8SCtWlnjQYvvs9vlyVv7ZXUiERlLk5Xxz1g3Y7ghpyQG+wmX/ENeJp3W7IRT2LZq
- /oYymWOoXkYSCJZZOEzXWITtA80tx3DBAGynQZ0hnvpE8Gr1svF+ydwZ3LoqBmXEfAWvXAyG4
- DnzAd7tAg4xDstnwmLK276TfQm+WkqJ/uwuFzO2CvIaepQRfdLqDyoLCmTb6R7UvXjQOgStLW
- FyR16qJoSh2oBoqebI5+k5p6wUSzOulhyCwVfeY2dp8/RRAa/8yRc2RDqFY/f9OL2f3W+AKPW
- mPp6/wjENrznJWkIgK4TDr3MbXY=
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+X-Ovh-Tracer-Id: 11967471585594182288
+X-VR-SPAMSTATE: OK
+X-VR-SPAMSCORE: -100
+X-VR-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedviedrkeehgdeggecutefuodetggdotefrodftvfcurfhrohhfihhlvgemucfqggfjpdevjffgvefmvefgnecuuegrihhlohhuthemucehtddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjughrpefhvfevufffkffojghfgggtgfesthekredtredtjeenucfhrhhomheptehnughiucfuhhihthhiuceorghnughirdhshhihthhisehkvghrnhgvlhdrohhrgheqnecuggftrfgrthhtvghrnhepveevieffieefgfefuddvteelffeuhfelffejteejuddvveekveehvdejgeefteevnecuffhomhgrihhnpehkvghrnhgvlhdrohhrghenucfkphepuddvjedrtddrtddruddpudejkedrvdefkedrudejvddrhedupdefjedrheelrddugedvrdelheenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepihhnvghtpeduvdejrddtrddtrddupdhmrghilhhfrhhomhepoegrnhguihesvghtvgiiihgrnhdrohhrgheqpdhnsggprhgtphhtthhopedupdhrtghpthhtoheplhhinhhugidqkhgvrhhnvghlsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdfovfetjfhoshhtpehmohehkeefpdhmohguvgepshhmthhpohhuth
+X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+Hi
 
-please pull a few fixes for the parisc architecture for kernel 6.5-rc5.
+On Thu, 03 Aug 2023 09:23:31 +0200, Michal Simek wrote:
+> ZynqMP Cadence I2c IP core has own power domain that's why describe it as
+> optional property.
+> 
+> 
 
-- Preallocate fixmap page tables early, which prevents crashes in static
-  keycode patching since the page allocator isn't initialized yet.  This
-  fixes boot problems which occured since kernel 6.4 [Mike Rapoport]
+Applied to i2c/andi-for-next on
 
-- DMA code removal from parport_gsc driver [Arnd Bergmann]
+https://git.kernel.org/pub/scm/linux/kernel/git/andi.shyti/linux.git
 
-- coding style fixes and dead comment removal
+Please note that this patch may still undergo further evaluation
+and the final decision will be made in collaboration with
+Wolfram.
 
-Thanks!
-Helge
+Thank you,
+Andi
 
-----
-
-The following changes since commit 5d0c230f1de8c7515b6567d9afba1f196fb4e2f4:
-
-  Linux 6.5-rc4 (2023-07-30 13:23:47 -0700)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/deller/parisc-linux.git tags/parisc-for-6.5-rc5
-
-for you to fetch changes up to 99b2f159b6e76b84357eae6dc2a206871aa630d5:
-
-  parisc: unaligned: Add required spaces after ',' (2023-08-03 14:40:37 +0200)
-
-----------------------------------------------------------------
-parisc architecture fixes for kernel v6.5-rc5:
-
-- early fixmap preallocation to fix boot failures on kernel >= 6.4
-- remove DMA leftover code in parport_gsc
-- drop old comments and code style fixes
-
-----------------------------------------------------------------
-Arnd Bergmann (1):
-      parport: gsc: remove DMA leftover code
-
-Mike Rapoport (IBM) (1):
-      parisc/mm: preallocate fixmap page tables at init
-
-Petr Tesarik (1):
-      parisc: pci-dma: remove unused and dead EISA code and comment
-
-hanyu001@208suo.com (1):
-      parisc: unaligned: Add required spaces after ','
-
- arch/parisc/kernel/pci-dma.c   |  8 --------
- arch/parisc/kernel/unaligned.c | 18 +++++++++---------
- arch/parisc/mm/fixmap.c        |  3 ---
- arch/parisc/mm/init.c          | 34 ++++++++++++++++++++++++++++++++++
- drivers/parport/parport_gsc.c  | 28 ++++------------------------
- drivers/parport/parport_gsc.h  |  7 -------
- 6 files changed, 47 insertions(+), 51 deletions(-)
+Patches applied
+===============
+[1/1] dt-bindings: i2c: cadence: Describe power-domains property
+      commit: 26a106e540b100a887209a3012b6ac2ec9a577f8
