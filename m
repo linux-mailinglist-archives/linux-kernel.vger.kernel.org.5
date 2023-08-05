@@ -2,120 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A7EE77712F9
-	for <lists+linux-kernel@lfdr.de>; Sun,  6 Aug 2023 01:15:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C08977712FC
+	for <lists+linux-kernel@lfdr.de>; Sun,  6 Aug 2023 01:15:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229790AbjHEXOV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 5 Aug 2023 19:14:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34824 "EHLO
+        id S229917AbjHEXPT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 5 Aug 2023 19:15:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35190 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229441AbjHEXOU (ORCPT
+        with ESMTP id S229441AbjHEXPR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 5 Aug 2023 19:14:20 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F7851BD4;
-        Sat,  5 Aug 2023 16:14:18 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 1AA2560F5D;
-        Sat,  5 Aug 2023 23:14:18 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A1D2DC433C7;
-        Sat,  5 Aug 2023 23:14:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691277257;
-        bh=SZoeTvqPDR+vF5ZhiCtzVJefMWAWzNemtsBf6oZ55KE=;
-        h=From:Date:Subject:To:Cc:From;
-        b=emYiu/DWEy4ADUS7nok1VtJ7U9KQO/u+30fWplQDUTEqupWAfksoKEPIoWF6wDflE
-         cbF5MRrK6naDO5cLSaQboghSIIZjdkM2WMr42K/bRkzw4/3lQHdsJK5h50ClkEj/D2
-         67M9HJlfQTXOY/MPT28nL2W9LWMCjcCfac/IPrDD3R2nLycgfvZDqi53YcmrX/7d+J
-         t/2bKkU+fjIv4up7DJQ6JTUMjZy/qJTO4RG4GuZWSxIRDaod0EPXFBFxyhvPs1uVVf
-         9k/rvOLTCJnabjfo0pxiAdLeID8A7qI1DCPrW7EYQ5X43z/0tUS3BJPiUMavWNW0Li
-         QajkVStE0684Q==
-From:   Mark Brown <broonie@kernel.org>
-Date:   Sun, 06 Aug 2023 00:14:07 +0100
-Subject: [PATCH] selftests: Hook more tests into the build infrastructure
+        Sat, 5 Aug 2023 19:15:17 -0400
+Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B20D1BD4;
+        Sat,  5 Aug 2023 16:15:17 -0700 (PDT)
+Received: by mail-wr1-x436.google.com with SMTP id ffacd0b85a97d-3178fa77b27so2765828f8f.2;
+        Sat, 05 Aug 2023 16:15:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1691277315; x=1691882115;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=beDGLo+V9tYi1NC6Mqk4Hw16Mmd1NJVmpAh76oapTaw=;
+        b=qsPQMalYlf9E3fs6q/wdXiOa2o6UDNpV45aBKqztlOnC97egwtaH3bemLLtf0iNGPE
+         jXJt6JUyAQAEb7UCr+XBwd/7VeBzK48sggcP+LCWDo5SgEybAxuUThj6lmDK47RgRmGe
+         44n+9dDxGFVShhToBsO/0gBweK+8xXC8ErTz3P7/d5hXfcaVFkpFI0gDEZ/j9O2HQElY
+         tRwr7xvIW/rf/+YuWAfG6zVDQzDRb4ypB10egdRYiY6TMIjKE1K76mIv3/CbG6ko1/6J
+         JO0uvU6fIh2vuCPo0300OKt9qNlSdtmJbGmWzKL4If+0tJAD6JTSn+F2+q/UsyuL0Swj
+         UXgg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691277315; x=1691882115;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=beDGLo+V9tYi1NC6Mqk4Hw16Mmd1NJVmpAh76oapTaw=;
+        b=AJYKebSEtIpTBL13VmMaQkV2uFvFPJzGdW7NvMpnVS662O9fYRrp9K/OO+1F4lbfLy
+         /KWMxnjTdedY3aRR7iD9pf/6gKUSm4VeVcQWH2GjmT/khq7lgecikcbjo4dVsmP+SHWi
+         T8QaGqaV3brHJ4kw91ZpkX3XIhy3sPN9cLegS3NXpgzsy9icjExskKkINx9Blt+7Lbos
+         VER000uMLmOvfIqsb5HoDagB4QvJwKvuX2IJC8l46ycMDuHCuVenUf9E4Hy12g1EMz8w
+         AZyZQjgxMySI38GyZAL+j+2vJI6oAwNjuZ5y0szgiML+3VdFI7GE6MX9DgkS22eQcoXU
+         OTpQ==
+X-Gm-Message-State: AOJu0YwubaC1JlzeSKjVZ/p13wDW/6Y7WVSR4+a0F9g8l9tmCk5R8u1G
+        wt96DRd8lRCRYOEGJPkfhtR0vRHuRcA=
+X-Google-Smtp-Source: AGHT+IG/Pp4ha9IdnhH1Fre5T8jSoIq5dcr+6YPt0wjnuNQ6a9dvyraKopLsv/4F9/IMyE7nDA6ELA==
+X-Received: by 2002:a05:6000:1205:b0:315:ad00:e628 with SMTP id e5-20020a056000120500b00315ad00e628mr4379650wrx.47.1691277315100;
+        Sat, 05 Aug 2023 16:15:15 -0700 (PDT)
+Received: from toolbox.taileb357.ts.net (89.red-83-35-60.dynamicip.rima-tde.net. [83.35.60.89])
+        by smtp.gmail.com with ESMTPSA id s9-20020adfecc9000000b0031416362e23sm6212531wro.3.2023.08.05.16.15.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 05 Aug 2023 16:15:14 -0700 (PDT)
+From:   Angel Iglesias <ang.iglesiasg@gmail.com>
+To:     linux-iio@vger.kernel.org
+Cc:     Angel Iglesias <ang.iglesiasg@gmail.com>,
+        Jonathan Cameron <jic23@kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>, linux-kernel@vger.kernel.org
+Subject: [PATCH 0/2] iio: pressure: bmp280: Use i2c_get_match_data()
+Date:   Sun,  6 Aug 2023 01:15:01 +0200
+Message-ID: <cover.1691276610.git.ang.iglesiasg@gmail.com>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20230806-kselftest-perf-events-build-v1-1-0120e7a9cd72@kernel.org>
-X-B4-Tracking: v=1; b=H4sIAL7XzmQC/x3MQQqDMBAF0KvIrDswSRGkVykuNP7ooETJpFIQ7
- 97Q5du8iwxZYfRqLso41XRPFe7RUFiGNIN1qiYv/imdtLwatlhghQ/kyDiRivH40W3iIJDoXOf
- HAVSHIyPq97+/+/v+AVI0C0ttAAAA
-To:     Shuah Khan <shuah@kernel.org>
-Cc:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Marco Elver <elver@google.com>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Mark Brown <broonie@kernel.org>
-X-Mailer: b4 0.13-dev-099c9
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1388; i=broonie@kernel.org;
- h=from:subject:message-id; bh=SZoeTvqPDR+vF5ZhiCtzVJefMWAWzNemtsBf6oZ55KE=;
- b=owEBbQGS/pANAwAKASTWi3JdVIfQAcsmYgBkztfGiwnJOHJxtvWUO88geBNS9exbfDWBm8AO3
- tnIh5OaFQ6JATMEAAEKAB0WIQSt5miqZ1cYtZ/in+ok1otyXVSH0AUCZM7XxgAKCRAk1otyXVSH
- 0G4LB/9KLFWJA9HBLL7c0D8f81z5Hevsci0B27cyEjxnlyeE81cZMb32fcUrZ4tD7c9W8HN/QqN
- UOHENUxjrDYU67lvrx8smA3Sa8twHU7A8K6P+ZO+K/IRb9s00FF7+7ex6GLigNjFr1JWAfZnb0I
- WYgW2M9tfzVTvwKA/uuXwVDfwYcqU7uO3LqpVDQ6HmgJ+sPO15s5xCqKbb9A6zmnjCVoixvKZ/o
- Na81CLTIae+3zVk7yy8LDcVuLD76OkmNvVCRj6Uu7kq/9cOd9vWdJe6yjFsmOi1dJtkis8xTXbr
- XoSGuBvwwhnxxVnbD0Ks20gdZRfMYlxoOMRMWqYYc+w/hZw5
-X-Developer-Key: i=broonie@kernel.org; a=openpgp;
- fpr=3F2568AAC26998F9E813A1C5C3F436CA30F5D8EB
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We have some dmabuf-heaps and perf_events tests but they are not hooked
-up to the kselftest build infrastructure which is a bit of an obstacle
-to running them in systems with generic infrastructure for selftests.
-Add them to the top level kselftest Makefile so they get built as
-standard.
+Minor cleanup of BMP280 i2c code and migration to the new helper function
+i2c_get_match_data() instead of device_get_match_data().
 
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- tools/testing/selftests/Makefile | 3 +++
- 1 file changed, 3 insertions(+)
+Patch 1 reorders local variable declarations on probe function following
+the reverse xmas tree to unify styles with other parts of the driver.
 
-diff --git a/tools/testing/selftests/Makefile b/tools/testing/selftests/Makefile
-index 666b56f22a41..bdee501596ef 100644
---- a/tools/testing/selftests/Makefile
-+++ b/tools/testing/selftests/Makefile
-@@ -12,6 +12,7 @@ TARGETS += core
- TARGETS += cpufreq
- TARGETS += cpu-hotplug
- TARGETS += damon
-+TARGETS += dmabuf-heaps
- TARGETS += drivers/dma-buf
- TARGETS += drivers/s390x/uvdevice
- TARGETS += drivers/net/bonding
-@@ -56,6 +57,7 @@ TARGETS += net/mptcp
- TARGETS += net/openvswitch
- TARGETS += netfilter
- TARGETS += nsfs
-+TARGETS += perf_events
- TARGETS += pidfd
- TARGETS += pid_namespace
- TARGETS += powerpc
-@@ -88,6 +90,7 @@ endif
- TARGETS += tmpfs
- TARGETS += tpm2
- TARGETS += tty
-+TARGETS += uevents
- TARGETS += user
- TARGETS += vDSO
- TARGETS += mm
+Patch 2 ports adtops the i2c_get_match_data() helper on the i2c probe.
 
----
-base-commit: 5d0c230f1de8c7515b6567d9afba1f196fb4e2f4
-change-id: 20230805-kselftest-perf-events-build-c0e0f1182bae
+Angel Iglesias (2):
+  iio: pressure: bmp280: i2c: Rearrange vars in reverse xmas tree order
+  iio: pressure: bmp280: Use i2c_get_match_data
 
-Best regards,
+ drivers/iio/pressure/bmp280-i2c.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
+
+
+base-commit: 6d9c5ae6a70c9e1017a7a252bc730d9168e219ce
 -- 
-Mark Brown <broonie@kernel.org>
+2.41.0
 
