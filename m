@@ -2,92 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C43EC770D3B
-	for <lists+linux-kernel@lfdr.de>; Sat,  5 Aug 2023 03:58:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 83754770D46
+	for <lists+linux-kernel@lfdr.de>; Sat,  5 Aug 2023 04:06:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229718AbjHEB6T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Aug 2023 21:58:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56964 "EHLO
+        id S229671AbjHECEv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Aug 2023 22:04:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57918 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229671AbjHEB6R (ORCPT
+        with ESMTP id S229480AbjHECEu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Aug 2023 21:58:17 -0400
-Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8461510D4;
-        Fri,  4 Aug 2023 18:58:16 -0700 (PDT)
-Received: from dggpeml500012.china.huawei.com (unknown [172.30.72.57])
-        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4RHlz35dSxz1Z1VS;
-        Sat,  5 Aug 2023 09:55:27 +0800 (CST)
-Received: from [10.67.110.218] (10.67.110.218) by
- dggpeml500012.china.huawei.com (7.185.36.15) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.27; Sat, 5 Aug 2023 09:58:12 +0800
-Message-ID: <77897888-bd4a-8fb7-36d0-2722402d5095@huawei.com>
-Date:   Sat, 5 Aug 2023 09:58:12 +0800
+        Fri, 4 Aug 2023 22:04:50 -0400
+Received: from mail-yb1-xb2c.google.com (mail-yb1-xb2c.google.com [IPv6:2607:f8b0:4864:20::b2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B73DD10EA
+        for <linux-kernel@vger.kernel.org>; Fri,  4 Aug 2023 19:04:45 -0700 (PDT)
+Received: by mail-yb1-xb2c.google.com with SMTP id 3f1490d57ef6-d0b597e7ac1so3006704276.1
+        for <linux-kernel@vger.kernel.org>; Fri, 04 Aug 2023 19:04:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1691201085; x=1691805885;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=VCKRnUI8FwQWRwJ/8hlrDSlOySzgfMsCiiXmu+Rh1a4=;
+        b=v7Qfm2wetpMH45IrUUaGhK0/J1vWSMrz292g2jfHm8p/djn5SST2E3F26gtQuLzFcH
+         C+UH+iziHqsmkOZfdli3NMRxtLjOCWR8vhcHjWx1I9e8zCSAFCXN1rhtiN0lk/ytmddC
+         6An8vg5fxhRUzs3IYiEl4G2MzYLTkmNPHzM9TzBNhGFf0QpK20l2gaZnbgpeHxhVcXXY
+         RHMor5pp59gRQteJeLtrwR8Gq4Ir16snZKe4ILmmcumrSxBjpWctH+9I4oj18ZYXN+sI
+         FoXf4LDSh2eifBssCkP+cxxfez3JIQIVQTbtQNJUet2Sp83wY3r0oFiPepAcTsagEMiB
+         sWgg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691201085; x=1691805885;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=VCKRnUI8FwQWRwJ/8hlrDSlOySzgfMsCiiXmu+Rh1a4=;
+        b=lyaX++fqL7V6lFsba44zCogIPPb0RmifgXA4WFTW2IN9B14tCiXCf+YM0dB+EJ51AC
+         xRI/mCerJNx0Di9KRab5KIJ3PJeKWBuRH8eJJUQaZbGoNFf5s+wgJOe+5hZ8BQI0/4vv
+         s9McZQJsgebqFUt3aVFoQtPrqShk8/H9mcIoctpYknPhZ89sMoOb8dlhYkj91PeAK1Gd
+         XHpaRCBlFsxqnY/i0yvzsuRcQXAg8s6vUI9ixqXKG6xpopJmXWqdWuQIUBddjl7OMX2A
+         6POXrYEK/m+bllNGoJCQQUg7YA4qhWJBD1zDcesYQWiOdElpvXHxkcZTAJOIMoNMFS+G
+         njDw==
+X-Gm-Message-State: AOJu0YycFmcLF67ozf88EA8frDVVeypoyUC23mV3bBue1Rx9YvogrVhv
+        Pd/RcpdADmsMjZ9eUzhTruKz/kBK+lv1fERy96MX34kxKgsLSQv8vGo=
+X-Google-Smtp-Source: AGHT+IGnrrb1f0om6BEHSRmt+VdLfQfpBCe1Ehqiq+ISyIxQ7SrfdSpKt+84xzD1EQ9qLw6r0nlnHwBHdH9uOkpHIdA=
+X-Received: by 2002:a25:f81c:0:b0:d22:4547:39d8 with SMTP id
+ u28-20020a25f81c000000b00d22454739d8mr3413208ybd.63.1691201084766; Fri, 04
+ Aug 2023 19:04:44 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.6.0
-Subject: Re: [PATCH 1/2] tracing: Fix cpu buffers unavailable due to
- 'record_disabled' messed
-Content-Language: en-US
-To:     Steven Rostedt <rostedt@goodmis.org>,
-        kernel test robot <lkp@intel.com>
-CC:     <mhiramat@kernel.org>, <vnagarnaik@google.com>, <shuah@kernel.org>,
-        <llvm@lists.linux.dev>, <oe-kbuild-all@lists.linux.dev>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-trace-kernel@vger.kernel.org>,
-        <linux-kselftest@vger.kernel.org>
-References: <20230804124549.2562977-2-zhengyejian1@huawei.com>
- <202308050048.bUnVeBjV-lkp@intel.com>
- <20230804125107.41d6cdb1@gandalf.local.home>
-From:   Zheng Yejian <zhengyejian1@huawei.com>
-In-Reply-To: <20230804125107.41d6cdb1@gandalf.local.home>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.67.110.218]
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
- dggpeml500012.china.huawei.com (7.185.36.15)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <20230805014055.1280320-1-mjguzik@gmail.com>
+In-Reply-To: <20230805014055.1280320-1-mjguzik@gmail.com>
+From:   Suren Baghdasaryan <surenb@google.com>
+Date:   Fri, 4 Aug 2023 19:04:32 -0700
+Message-ID: <CAJuCfpH5pDetC7wz25YC9PptLm1T0r09F+QP616BJ+4VNaNv-A@mail.gmail.com>
+Subject: Re: [PATCH] mm: move dummy_vm_ops out of a header
+To:     Mateusz Guzik <mjguzik@gmail.com>
+Cc:     linux-mm@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023/8/5 00:51, Steven Rostedt wrote:
-> On Sat, 5 Aug 2023 00:41:13 +0800
-> kernel test robot <lkp@intel.com> wrote:
-> 
->>    5276			if (cpumask_test_cpu(cpu, tr->tracing_cpumask) &&
->>    5277					!cpumask_test_cpu(cpu, tracing_cpumask_new)) {
->>    5278				atomic_inc(&per_cpu_ptr(tr->array_buffer.data, cpu)->disabled);
->>    5279				ring_buffer_record_disable_cpu(tr->array_buffer.buffer, cpu);
->>> 5280				ring_buffer_record_disable_cpu(tr->max_buffer.buffer, cpu);
-> 
-> The access to max_buffer requires a:
-> 
-> #ifdef CONFIG_TRACER_MAX_TRACE
-> 
-> Around them.
-> 
-> -- Steve
+On Fri, Aug 4, 2023 at 6:41=E2=80=AFPM Mateusz Guzik <mjguzik@gmail.com> wr=
+ote:
+>
+> Otherwise the kernel ends up with multiple copies:
+> $ nm vmlinux | grep dummy_vm_ops
+> ffffffff81e4ea00 d dummy_vm_ops.2
+> ffffffff81e11760 d dummy_vm_ops.254
+> ffffffff81e406e0 d dummy_vm_ops.4
+> ffffffff81e3c780 d dummy_vm_ops.7
+>
+> [if someone has better ideas where to put it, please move it]
+>
+> Signed-off-by: Mateusz Guzik <mjguzik@gmail.com>
 
-Thanks, Steve, I'll add it in v2.
+Thanks for the patch and it looks fine to me but why is it sent to me
+and not to the mm maintainer? Also nobody else is CC'ed...
+AFAIKT this code has been there long before per-vma locks got
+introduced. Did my patchset somehow cause additional side-effects?
 
--- Zheng Yejian
-
-> 
->>    5281			}
->>    5282			if (!cpumask_test_cpu(cpu, tr->tracing_cpumask) &&
->>    5283					cpumask_test_cpu(cpu, tracing_cpumask_new)) {
->>    5284				atomic_dec(&per_cpu_ptr(tr->array_buffer.data, cpu)->disabled);
->>    5285				ring_buffer_record_enable_cpu(tr->array_buffer.buffer, cpu);
->>    5286				ring_buffer_record_enable_cpu(tr->max_buffer.buffer, cpu);
->>    5287			}
->>    5288		}
->>    5289		arch_spin_unlock(&tr->max_lock);
-> 
-
+> ---
+>  include/linux/mm.h | 6 +++---
+>  mm/init-mm.c       | 2 ++
+>  2 files changed, 5 insertions(+), 3 deletions(-)
+>
+> diff --git a/include/linux/mm.h b/include/linux/mm.h
+> index 406ab9ea818f..14898e76bbf1 100644
+> --- a/include/linux/mm.h
+> +++ b/include/linux/mm.h
+> @@ -756,17 +756,17 @@ static inline void vma_mark_detached(struct vm_area=
+_struct *vma,
+>
+>  #endif /* CONFIG_PER_VMA_LOCK */
+>
+> +extern const struct vm_operations_struct vma_dummy_vm_ops;
+> +
+>  /*
+>   * WARNING: vma_init does not initialize vma->vm_lock.
+>   * Use vm_area_alloc()/vm_area_free() if vma needs locking.
+>   */
+>  static inline void vma_init(struct vm_area_struct *vma, struct mm_struct=
+ *mm)
+>  {
+> -       static const struct vm_operations_struct dummy_vm_ops =3D {};
+> -
+>         memset(vma, 0, sizeof(*vma));
+>         vma->vm_mm =3D mm;
+> -       vma->vm_ops =3D &dummy_vm_ops;
+> +       vma->vm_ops =3D &vma_dummy_vm_ops;
+>         INIT_LIST_HEAD(&vma->anon_vma_chain);
+>         vma_mark_detached(vma, false);
+>         vma_numab_state_init(vma);
+> diff --git a/mm/init-mm.c b/mm/init-mm.c
+> index efa97b57acfd..cfd367822cdd 100644
+> --- a/mm/init-mm.c
+> +++ b/mm/init-mm.c
+> @@ -17,6 +17,8 @@
+>  #define INIT_MM_CONTEXT(name)
+>  #endif
+>
+> +const struct vm_operations_struct vma_dummy_vm_ops;
+> +
+>  /*
+>   * For dynamically allocated mm_structs, there is a dynamically sized cp=
+umask
+>   * at the end of the structure, the size of which depends on the maximum=
+ CPU
+> --
+> 2.39.2
+>
