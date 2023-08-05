@@ -2,121 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3028E770FB3
-	for <lists+linux-kernel@lfdr.de>; Sat,  5 Aug 2023 14:46:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4617E770FB8
+	for <lists+linux-kernel@lfdr.de>; Sat,  5 Aug 2023 14:53:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229784AbjHEMqP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 5 Aug 2023 08:46:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35528 "EHLO
+        id S230039AbjHEMxX convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Sat, 5 Aug 2023 08:53:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36914 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229441AbjHEMqN (ORCPT
+        with ESMTP id S229939AbjHEMxV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 5 Aug 2023 08:46:13 -0400
-Received: from gandalf.ozlabs.org (mail.ozlabs.org [IPv6:2404:9400:2221:ea00::3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C3F6E68
-        for <linux-kernel@vger.kernel.org>; Sat,  5 Aug 2023 05:46:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ellerman.id.au;
-        s=201909; t=1691239559;
-        bh=Dq/kgQVeaZglrkSNoxqzWeJJbDhpw1hq63ItYejKrSI=;
-        h=From:To:Cc:Subject:Date:From;
-        b=CUSJ3d8LXvWKpwZ7UMqO2GISXEuA9tTbga6+qir3nMM3oBdO83Rs6eqsuIiixtdfO
-         rMN8yuBwjL4RmMGgnjbya+09KNFD4DMbAUTn3ZKR/vg6gG5B5xwCS69+8yJYifJaKa
-         Z0v8TCOVlAnMkjM1Jb1tlxVrjfFRicBKP4CaUQm5CrrPeA7VFtByz0EGZnB7y1hO7w
-         1bnU9hd7KG7Kd7/VShRVh5WQET/4nuk9XjzgEF8c4BC2vgTXDRtKsy2wZfVmS6moLW
-         lAOx8E/wy0ZPxLqRyM+grM/bs69Y9U0qSQpUz7af4zBAWvwMS9EoABMH9U/zld2uJq
-         56jmI5UlrMvDQ==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4RJ2Pf6MF1z4wxV;
-        Sat,  5 Aug 2023 22:45:58 +1000 (AEST)
-From:   Michael Ellerman <mpe@ellerman.id.au>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     aneesh.kumar@linux.ibm.com, bgray@linux.ibm.com,
-        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        naveen@kernel.org
-Subject: [GIT PULL] Please pull powerpc/linux.git powerpc-6.5-5 tag
-Date:   Sat, 05 Aug 2023 22:45:58 +1000
-Message-ID: <87sf8x4pyx.fsf@mail.lhotse>
+        Sat, 5 Aug 2023 08:53:21 -0400
+Received: from sendemail24.com (vps-c380ff75.vps.ovh.net [IPv6:2001:41d0:601:1100::116b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7131110DC
+        for <linux-kernel@vger.kernel.org>; Sat,  5 Aug 2023 05:53:19 -0700 (PDT)
+Received: from error-no-valid-domain.com (unknown [185.236.231.197])
+        by sendemail24.com (Postfix) with ESMTPSA id 2BD18374D8
+        for <linux-kernel@vger.kernel.org>; Sat,  5 Aug 2023 12:51:13 +0000 (UTC)
+DKIM-Filter: OpenDKIM Filter v2.11.0 sendemail24.com 2BD18374D8
+Reply-To: ivone.siciliani@zohomail.com
+From:   Ivone Siciliani <ivone.siciliani@zohomail.com>
+To:     linux-kernel@vger.kernel.org
+Subject: Re:Re:PRODUCT REQUEST/SPECIFICATION
+Date:   5 Aug 2023 05:50:25 -0700
+Message-ID: <20230805055025.0EBCC629B19A0C18@zohomail.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain;
+        charset="utf-8"
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: Yes, score=5.6 required=5.0 tests=BAYES_50,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_SBL_CSS,
+        SPF_FAIL,SPF_HELO_SOFTFAIL,SUBJ_ALL_CAPS autolearn=no
+        autolearn_force=no version=3.4.6
+X-Spam-Report: *  0.0 RCVD_IN_DNSWL_BLOCKED RBL: ADMINISTRATOR NOTICE: The query to
+        *      DNSWL was blocked.  See
+        *      http://wiki.apache.org/spamassassin/DnsBlocklists#dnsbl-block
+        *      for more information.
+        *      [2001:41d0:601:1100:0:0:0:116b listed in]
+        [list.dnswl.org]
+        *  3.3 RCVD_IN_SBL_CSS RBL: Received via a relay in Spamhaus SBL-CSS
+        *      [2001:41d0:601:1100:0:0:0:116b listed in]
+        [zen.spamhaus.org]
+        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
+        *      [score: 0.5000]
+        *  0.7 SPF_HELO_SOFTFAIL SPF: HELO does not match SPF record
+        *      (softfail)
+        *  0.2 HEADER_FROM_DIFFERENT_DOMAINS From and EnvelopeFrom 2nd level
+        *      mail domains are different
+        *  0.5 SUBJ_ALL_CAPS Subject is all capitals
+        *  0.0 SPF_FAIL SPF: sender does not match SPF record (fail)
+        *      [SPF failed: Please see http://www.openspf.org/Why?s=mfrom;id=luke%40abgprojects.com.au;ip=2001%3A41d0%3A601%3A1100%3A%3A116b;r=lindbergh.monkeyblade.net]
+X-Spam-Level: *****
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
------BEGIN PGP SIGNED MESSAGE-----
-Hash: SHA256
+Hello
 
-Hi Linus,
+ 
 
-Please pull some more powerpc fixes for 6.5:
+Good day
 
-The following changes since commit 106ea7ffd56b0f9454cd4f625474967f12ac4dbd:
+ 
 
-  Revert "powerpc/64s: Remove support for ELFv1 little endian userspace" (2023-07-19 21:28:35 +1000)
+I am Ivone Siciliani from ENOKEE group of companies based in Rome 
+Italy
 
-are available in the git repository at:
+ 
 
-  https://git.kernel.org/pub/scm/linux/kernel/git/powerpc/linux.git tags/powerpc-6.5-5
+We will love to make an inquiry about a product we saw on your 
+website earlier last week.
 
-for you to fetch changes up to 86582e6189dd8f9f52c25d46c70fe5d111da6345:
+ 
 
-  powerpc/powermac: Use early_* IO variants in via_calibrate_decr() (2023-08-02 22:57:22 +1000)
+We showed them to some of our clients and they loved it and said 
+we should get more information about the product.
 
-- ------------------------------------------------------------------
-powerpc fixes for 6.5 #5
+ 
 
- - Fix vmemmap altmap boundary check which could cause memory hotunplug failure.
+Please give me a quote of the item i choosed in the form i filled 
+on your website.
 
- - Create a dummy stackframe to fix ftrace stack unwind.
+ 
 
- - Fix secondary thread bringup for Book3E ELFv2 kernels.
+If you have a company catalogue i will love to go through it 
+too,maybe we could see other products we will love.
 
- - Use early_ioremap/unmap() in via_calibrate_decr().
+ 
 
-Thanks to: Aneesh Kumar K.V, Benjamin Gray, Christophe Leroy, David Hildenbrand,
-Naveen N Rao.
+Which date and time can you be avaliable for a phone 
+conversation?maybe we could discuss better about the project.
 
-- ------------------------------------------------------------------
-Aneesh Kumar K.V (1):
-      powerpc/mm/altmap: Fix altmap boundary check
+ 
 
-Benjamin Gray (1):
-      powerpc/powermac: Use early_* IO variants in via_calibrate_decr()
+Waiting for your quick response.
 
-Michael Ellerman (1):
-      powerpc/64e: Fix secondary thread bringup for ELFv2 kernels
+ 
 
-Naveen N Rao (1):
-      powerpc/ftrace: Create a dummy stackframe to fix stack unwind
+ 
 
+Best Regards
 
- arch/powerpc/kernel/head_64.S               | 3 +--
- arch/powerpc/kernel/trace/ftrace_mprofile.S | 9 +++++++--
- arch/powerpc/mm/init_64.c                   | 3 +--
- arch/powerpc/platforms/85xx/smp.c           | 2 +-
- arch/powerpc/platforms/powermac/time.c      | 6 +++---
- 5 files changed, 13 insertions(+), 10 deletions(-)
------BEGIN PGP SIGNATURE-----
+Ivone Siciliani
 
-iQIzBAEBCAAdFiEEJFGtCPCthwEv2Y/bUevqPMjhpYAFAmTOP28ACgkQUevqPMjh
-pYD/Dw//VVGuOe1yChY9X/ChgIqZ2PMTw4H+NpOal9xtPT9zjPG1mufNusA1rOh7
-IhhxhvEvWu2Swy7m9zT9jC7KIj/5XQXM0UFrpMry/WiuOBd61c1dyB8R6VvH5Js1
-yN1VfsWYP5lOLGBMInFu4ov+gzejvXHQbT6DlRjvlDbwALrcjO6rBlJ+lAlNzw/Y
-/dFBbpwbEKwXBdez4yEsS5yH7ZlyMfh3Y4sJ+fh/k/q6ijGqU+EinMRfO5x40wB0
-DvQjVX15Ns0fNFZK2You261igSjovDjS2GqukVXL91gxNPBhuoFEZSZXlOjziPfy
-guJVWYnmfiKjcsMPkRCDJTKMkbOq8rcdk/lc6murLdt1HawTQPK91589cc9PfNzX
-XbHrn6UybmQH7dzO1ZFkF/SdyimGWgt7QnwyZ9rKf13CmYJdDoA0Z01T3T3FH+O7
-VIqaKNJZh7hYrpugH5cWtcJ1gQVVbf1/v4tolIDuBC3vhLSBWiwJ5CVX846Q9lzS
-y5MzE3zh7T9FFh9vQw7yNMW00StCq2yV/UZwDpRqy8bkrlPExi3tZrcxODCl1t3V
-kOAIzgcj1eunSDL1nEzZPcqEnk+IX8IKUk/XMr4GomqXLM7KPyUFmKaJLNOTdElm
-LNK+oN6mTnaYInkISGImZXAGePY0s8GeHUyyE+W34OGU844HWI0=
-=ZRFy
------END PGP SIGNATURE-----
+Purchase Manager
+
+Ariccia, Metropolitan City of Rome Capital, Italy
+
++39030454261
