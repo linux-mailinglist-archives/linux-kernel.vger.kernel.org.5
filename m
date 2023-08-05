@@ -2,71 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DEDBF771073
-	for <lists+linux-kernel@lfdr.de>; Sat,  5 Aug 2023 18:14:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DFA29771076
+	for <lists+linux-kernel@lfdr.de>; Sat,  5 Aug 2023 18:16:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229618AbjHEQOj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 5 Aug 2023 12:14:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35578 "EHLO
+        id S229617AbjHEQQG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 5 Aug 2023 12:16:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35950 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229481AbjHEQOh (ORCPT
+        with ESMTP id S229481AbjHEQQE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 5 Aug 2023 12:14:37 -0400
-Received: from mail-lj1-x231.google.com (mail-lj1-x231.google.com [IPv6:2a00:1450:4864:20::231])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A49F63C3D
-        for <linux-kernel@vger.kernel.org>; Sat,  5 Aug 2023 09:14:35 -0700 (PDT)
-Received: by mail-lj1-x231.google.com with SMTP id 38308e7fff4ca-2ba0f27a4c2so44992731fa.2
-        for <linux-kernel@vger.kernel.org>; Sat, 05 Aug 2023 09:14:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1691252074; x=1691856874;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=4X5LeqFwRZ12z0t0SRAdd4hSB7565qztxHR0V8YIUsQ=;
-        b=ZdXi5xrrQrMtP7oPExcSSvfWcYTjypvLAPSjl6TaUplewzQ3PZg1/F8E4b1DxABhK/
-         eOpiCyCZzJYxQlGUdxzei4fKwD6Jlp1PYfStSdRLtJY4zXbShncJmrFN/9n5MQhmvbx0
-         hCEeF98ays3a0OaJ5kIQbbOfUp3DoxRzwsafdlVYOX1lvk9W1s1QrPpRIV+XLKtImvU5
-         Nd0Ji4MBd1kDTvqVtRCh/QmC99O2Tnp0onrQuV01AjIQ4fBkVJgam7YDxuf7Pzz+ILmP
-         QoQST+xnqyhowG59TMHZFRGNX9DQ8EMzBAfk5FsoMgu2V80xizPthQcFSpV0dYZOJiqf
-         WT0w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691252074; x=1691856874;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=4X5LeqFwRZ12z0t0SRAdd4hSB7565qztxHR0V8YIUsQ=;
-        b=SXO2+LEzFZpNCoK+9DcQKRljmvxUSg8wC/VaFcnICCLETMAudAG7V+TyBS/OI5oBae
-         AglpEVKLA5c6v9eBcRmJz0iKzVL5D8DUfM0HBQBE/OSXiU/TdZGMQ7hQmHk6BUiLCN3h
-         JMWSKYmakvlj1aMikJVR8qxS/gHraDVXjPdpcZ36C7eJ6tlAnVedZy15KObT+xCOqXUQ
-         zbJ/abaDXnwtmLyj0QMTACBwyWvBMVsj247bIJwbBwEwxYhDZfdUoBvaRl7tWkJ3isOJ
-         oy9iqROVG87/GVQv1php93eHbQxM57EKz7Gx7lhBGfKyqTdpY119RivmlnHxNx+A3K1a
-         Ms0Q==
-X-Gm-Message-State: AOJu0Yxc7KQzNSTFbWKKjSLjWywWWnJJNeewaMuBgtXb5OeHoafyayq5
-        YscU7wVf5N6OC3u4cnVUnIMxDhPerymkdDBNe2w=
-X-Google-Smtp-Source: AGHT+IGtX5wIfl3tY9j9ku33ZEqA5uzIH68ru1YtY4ppk1a7rI0YhJOPsqCGL7ic5oeTID5GaICrbg==
-X-Received: by 2002:a2e:9694:0:b0:2b6:ec2b:7d77 with SMTP id q20-20020a2e9694000000b002b6ec2b7d77mr3221194lji.6.1691252073817;
-        Sat, 05 Aug 2023 09:14:33 -0700 (PDT)
-Received: from localhost ([102.36.222.112])
-        by smtp.gmail.com with ESMTPSA id r5-20020a056000014500b00317dd7b96e7sm1554508wrx.23.2023.08.05.09.14.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 05 Aug 2023 09:14:33 -0700 (PDT)
-Date:   Sat, 5 Aug 2023 19:14:30 +0300
-From:   Dan Carpenter <dan.carpenter@linaro.org>
-To:     Madhumitha Prabakaran <madhumithabiw@gmail.com>
-Cc:     vaibhav.sr@gmail.com, mgreer@animalcreek.com, johan@kernel.org,
-        elder@kernel.org, gregkh@linuxfoundation.org,
-        greybus-dev@lists.linaro.org, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org, skhan@linuxfoundation.org,
-        ivan.orlov0322@gmail.com
-Subject: Re: [PATCH] staging: greybus: Refactor gb_audio_gb_get_topology()
- into separate calls
-Message-ID: <553ef4ed-9f0a-4ab1-b7f2-0175f6cb4dca@kadam.mountain>
-References: <20230804203134.GA618419@madhu-kernel>
+        Sat, 5 Aug 2023 12:16:04 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B203D10F8;
+        Sat,  5 Aug 2023 09:16:02 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 3DDFF60BC4;
+        Sat,  5 Aug 2023 16:16:02 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CEA1CC433C7;
+        Sat,  5 Aug 2023 16:16:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1691252161;
+        bh=Gq1y9CXthOOMrt9MSm++2oX2fZsENlJKQGevmFHMZDM=;
+        h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+        b=lYhu/8Lm6jnIM02sx+KdN2ZEpIN0vThwxn+MbJKGxpDjZVG6kId3Z2XVunzDL8ksM
+         rw1kYZrnNxxzpGsZF3rv9V0Jy2q47evCb9se/QZhd3uikoxaRhVJrKxtR9AKJx69xZ
+         konICzDY/oCV3Yp1jNPA8JrEicFL7I/5oxMgQiLY4Te09vPBdwM+HhCK+NSnXzGrv6
+         jVD2k4yBY2ev5wEWy2zEpGupQQ4xFuk5D2DreHs32T/I6xCPwsDCaXlnBav87qqMIO
+         N5v7Ek8hOICmAOKpl3MQX1RZSc+MVUnHqiBHcmqpfP1SDk3cnc6sZ72eu7/r33kQaY
+         KMldp7QEwGi+w==
+Received: (nullmailer pid 1739721 invoked by uid 1000);
+        Sat, 05 Aug 2023 16:15:59 -0000
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230804203134.GA618419@madhu-kernel>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+From:   Rob Herring <robh@kernel.org>
+To:     Raphael Gallais-Pou <rgallaispou@gmail.com>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Patrice Chotard <patrice.chotard@foss.st.com>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Marc Zyngier <maz@kernel.org>, devicetree@vger.kernel.org,
+        Conor Dooley <conor.dooley@microchip.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-kernel@vger.kernel.org
+In-Reply-To: <20230805144646.33819-1-rgallaispou@gmail.com>
+References: <20230805144646.33819-1-rgallaispou@gmail.com>
+Message-Id: <169125215968.1739705.18422511571205878865.robh@kernel.org>
+Subject: Re: [PATCH v2] dt-bindings: irqchip: convert st,stih407-irq-syscfg
+ to DT schema
+Date:   Sat, 05 Aug 2023 10:15:59 -0600
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -75,20 +64,64 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 04, 2023 at 03:31:34PM -0500, Madhumitha Prabakaran wrote:
-> Refactor gb_audio_gb_get_topology() into separate calls for better modularity.
+
+On Sat, 05 Aug 2023 16:46:46 +0200, Raphael Gallais-Pou wrote:
+> Convert deprecated format to DT schema format.
+> 
+> Signed-off-by: Raphael Gallais-Pou <rgallaispou@gmail.com>
+> Reviewed-by: Conor Dooley <conor.dooley@microchip.com>
+> ---
+> Changes in v2:
+> 	- Added Conor's r-by
+> 	- Removed quotes surrounding $refs
+> 	- Hardcoded 'st,invert-ext' possible values
+> 
+>  .../st,sti-irq-syscfg.txt                     | 30 ---------
+>  .../st,stih407-irq-syscfg.yaml                | 67 +++++++++++++++++++
+>  2 files changed, 67 insertions(+), 30 deletions(-)
+>  delete mode 100644 Documentation/devicetree/bindings/interrupt-controller/st,sti-irq-syscfg.txt
+>  create mode 100644 Documentation/devicetree/bindings/interrupt-controller/st,stih407-irq-syscfg.yaml
 > 
 
-This is too vague.  Just say "There is a comment which says 'Split into
-separate calls' so I have done it."  But actually, please just delete
-the comment instead.  This code is already an endless series of wrappers
-around wrappers.
+My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
+on your patch (DT_CHECKER_FLAGS is new in v5.13):
 
-Also, please run your patch through scripts/checkpatch.pl.
+yamllint warnings/errors:
 
-Btw, I just want to emphasize again that I was 100% serious when I asked
-you to delete the comment.
+dtschema/dtc warnings/errors:
+/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/interrupt-controller/st,stih407-irq-syscfg.yaml: properties:st,invert-ext:enum: 'oneOf' conditional failed, one must be fixed:
+	{'const': 1} is not of type 'integer'
+	{'const': 1} is not of type 'string'
+	{'const': 2} is not of type 'integer'
+	{'const': 2} is not of type 'string'
+	{'const': 4} is not of type 'integer'
+	{'const': 4} is not of type 'string'
+	hint: "enum" must be an array of either integers or strings
+	from schema $id: http://devicetree.org/meta-schemas/keywords.yaml#
+/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/interrupt-controller/st,stih407-irq-syscfg.yaml: properties:st,invert-ext:enum:0: {'const': 1} is not of type 'integer'
+	hint: An integer type must have integer constraints
+	from schema $id: http://devicetree.org/meta-schemas/types.yaml#
+/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/interrupt-controller/st,stih407-irq-syscfg.yaml: properties:st,invert-ext:enum:1: {'const': 2} is not of type 'integer'
+	hint: An integer type must have integer constraints
+	from schema $id: http://devicetree.org/meta-schemas/types.yaml#
+/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/interrupt-controller/st,stih407-irq-syscfg.yaml: properties:st,invert-ext:enum:2: {'const': 4} is not of type 'integer'
+	hint: An integer type must have integer constraints
+	from schema $id: http://devicetree.org/meta-schemas/types.yaml#
 
-regards,
-dan carpenter
+doc reference errors (make refcheckdocs):
+
+See https://patchwork.ozlabs.org/project/devicetree-bindings/patch/20230805144646.33819-1-rgallaispou@gmail.com
+
+The base for the series is generally the latest rc1. A different dependency
+should be noted in *this* patch.
+
+If you already ran 'make dt_binding_check' and didn't see the above
+error(s), then make sure 'yamllint' is installed and dt-schema is up to
+date:
+
+pip3 install dtschema --upgrade
+
+Please check and re-submit after running the above command yourself. Note
+that DT_SCHEMA_FILES can be set to your schema file to speed up checking
+your schema. However, it must be unset to test all examples with your schema.
 
