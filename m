@@ -2,123 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F621770DEB
-	for <lists+linux-kernel@lfdr.de>; Sat,  5 Aug 2023 07:23:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 77EC6770DF0
+	for <lists+linux-kernel@lfdr.de>; Sat,  5 Aug 2023 07:36:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229516AbjHEFXY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 5 Aug 2023 01:23:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55998 "EHLO
+        id S229537AbjHEFg2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 5 Aug 2023 01:36:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57368 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229445AbjHEFXV (ORCPT
+        with ESMTP id S229445AbjHEFgZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 5 Aug 2023 01:23:21 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.115])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00C3846B3;
-        Fri,  4 Aug 2023 22:23:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1691212999; x=1722748999;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=kTNNG0obHMz95xVo7VYy0eCJ7d7oTkTiy8k4b3fMJCg=;
-  b=Yg1RSTFUdt7mXXJVoqrgF2hzSBCD51rBdndSx22KODbQgZLfxH5pX7Eg
-   wVbgPatdQ6vgr4OnthWpgyO3YoKaQml5sG4TtfFApyktwpdRL3WkNHskZ
-   wW4Mi9ft+PxPVZVv0pKY5MXVZI2DTNC9TmU0YyYhUVwSuwSXIHruOUJID
-   2rGJPwal9VDosGJ8RebhYmJYTvEqxp6DRg27F2rSPxhaGDCgo9k7jMKcW
-   Iu54MjbDWf2M6WHpB23WVf/w9KjpZ3d9M13UDNcix3phSQ5IEcKSlH9pd
-   sTMVegJeDGcS6ZwQ4digmCDL3mQi5lSEcbeb45J1SJ0dJIhX+f3wdGmoQ
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10792"; a="370281325"
-X-IronPort-AV: E=Sophos;i="6.01,257,1684825200"; 
-   d="scan'208";a="370281325"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Aug 2023 22:23:19 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10792"; a="733515439"
-X-IronPort-AV: E=Sophos;i="6.01,257,1684825200"; 
-   d="scan'208";a="733515439"
-Received: from lkp-server01.sh.intel.com (HELO d1ccc7e87e8f) ([10.239.97.150])
-  by fmsmga007.fm.intel.com with ESMTP; 04 Aug 2023 22:23:16 -0700
-Received: from kbuild by d1ccc7e87e8f with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qS9kx-0003Kx-2q;
-        Sat, 05 Aug 2023 05:23:15 +0000
-Date:   Sat, 5 Aug 2023 13:22:38 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Mario Limonciello <mario.limonciello@amd.com>,
-        "Rafael J . Wysocki" <rafael@kernel.org>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Bjorn Helgaas <helgaas@kernel.org>
-Cc:     llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
-        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        linux-acpi@vger.kernel.org,
-        Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        Iain Lane <iain@orangesquash.org.uk>,
-        Shyam-sundar S-k <Shyam-sundar.S-k@amd.com>,
-        Mario Limonciello <mario.limonciello@amd.com>
-Subject: Re: [PATCH v10 7/7] PCI: Use device constraints to decide PCI target
- state fallback policy
-Message-ID: <202308051340.k7mCXXL3-lkp@intel.com>
-References: <20230804210129.5356-8-mario.limonciello@amd.com>
+        Sat, 5 Aug 2023 01:36:25 -0400
+Received: from mout.gmx.net (mout.gmx.net [212.227.15.18])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5DC8146B3;
+        Fri,  4 Aug 2023 22:36:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.de;
+ s=s31663417; t=1691213772; x=1691818572; i=w_armin@gmx.de;
+ bh=Xc5Uz3yHM1cYmTbfdHFbQvSyh54bIq4BmIZkafOGP8Q=;
+ h=X-UI-Sender-Class:From:To:Cc:Subject:Date;
+ b=WztmmToYD9V4MELG/sZBCibor6a4SSfMWRdoyJwHc7C0tXWvmk3fm8nxyAbcqUfSXxfkXJe
+ k28cl35Y2q8MG3wnrNhURND5OZxLtlHM3JuAGpiU9IXEm3ef7qZciXWR681lqMjlYWmX757Xo
+ Z4Zu9YgtYe66nxjySsjLkYbpkQNmwY4JYKiqL1f0LdnPAFq+F7ynjM8xfZWC1q8jb5IO7zzvk
+ mnas6TjctvI9KBwczHsxQXDkJEjvoDssLcR5gWbZNQuD/1M8YCW7cls5jtLwsui1z5FWuxZ+n
+ qN7mM0A/o8Q7DzUOGBVa12xXz3OSNt11IPQYRGfh1Ve2+MzQu6Sg==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from mx-amd-b650.users.agdsn.de ([141.30.226.129]) by mail.gmx.net
+ (mrgmx004 [212.227.17.190]) with ESMTPSA (Nemesis) id
+ 1N6bfw-1plbjW1n14-01816B; Sat, 05 Aug 2023 07:36:12 +0200
+From:   Armin Wolf <W_Armin@gmx.de>
+To:     prasanth.ksr@dell.com, hdegoede@redhat.com, markgross@kernel.org
+Cc:     Dell.Client.Kernel@dell.com, platform-driver-x86@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] platform/x86: dell-sysman: Fix reference leak
+Date:   Sat,  5 Aug 2023 07:36:10 +0200
+Message-Id: <20230805053610.7106-1-W_Armin@gmx.de>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230804210129.5356-8-mario.limonciello@amd.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:1Ex/nogT+uSYoxHzoSeE2GZ+pKYhOchFCLlj5z6jUoNGPKe2SjA
+ J75Wan7+Iwod2cEJ44K77Zx9Bcfju/lM7QwMk13kUe78nf2kInsQx8mjbMdGFbOp7Hl1Mm7
+ qTGOpryQvdv4uQSTAA1oxpKxRxyIDaav/3JojZMz+ZhPurLTG/M6qLSpnE+HxjLnKVXgFBo
+ c9CrIVUFE/mXf/ANmuJdw==
+UI-OutboundReport: notjunk:1;M01:P0:ngpWxp/2kfA=;g7ty0ncJA6Hjq7/2V689EIaIFfa
+ r2C2BIh5qn2LbyRwBRrkia4TROv8AvqnvHj6+W2iAmReszrr6Bwt6lV6yDvlb83Ew00dgb7qh
+ 1ro3PsrEMUrbtLT+w6OqyMaqlGOJSqIprSS12bJ/dNXHEDfqwHIsup1yCK5npXvSKT3zNOtlz
+ pKO6Qwh1DQLYC4cqqdBXcJF+714uAFEy9VSlR28fE9RkfaiFztCaVV1kh4ziZ04jkFDHV+yVo
+ pseBOUZuhKX0PbwRwKQK+0EYl06VdD9oexVICYOFPUhdDeZnYF9goF/TkQSlYghD+rvhlML4x
+ e551SuEXfiO1Czb9ShWmfjyjCm4/0BBRCH5YhnUultRgcN6nb5WVn/jx9/T+uXYZrMBUYjCSJ
+ aw26VTeUO3nh5i7BQO0XsU2O5E4EQIXPFEDeqon+Wp/micIHpYenY1q8sASdpnmXSOnF42UTo
+ FjSogej/r/clRC4+9bN1R/aMa4I4FGqYNqkJ0wJZGx7Bd5UHSXsmJTD1McjLcvDxfkQ9jcApu
+ jwMWZXe/oZnSbjeRyGvVbzXADoxJX0QJjv7uryMIcYBlviS+qj3vHr2Tbt4O6LMjcUUvg4ehB
+ 5EHsuvX/G3YtR/TuuFhnPYMkZFYaS1Lw3ItYNykWU9YrNqlilfLPnnND62jMW3SR8D1BlYhBC
+ o8mHL9rAfC8lyKnv7J5FvaAD5t0zqW4rMCwiklV1vgK0Yo04VQvGidnGht/RY7vDrZ2V0AXq8
+ I1E+Pt+P7rJKxZKzzBvvSSMIXzLjqJuSZ8Nzf245J1qAc8dxr71f8KN0tU2D34k4cSFYy76aP
+ Wq8Zn+2wN0FTC3PPu0/uINXWQRl2h/H3+cSEjKHrVFLCe/ILxAyf94EAkSUNWBl3C/n1LtvQY
+ mkY5EVMNLEznoNJmsWGkfjvKSWyaA9WdMm8dwUGif/n7JLmxCok76xE0j4Nu/yyHmifFLaxd6
+ xtC+tTaLCJiJkPzV4iZ57AOctyM=
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Mario,
+If a duplicate attribute is found using kset_find_obj(),
+a reference to that attribute is returned. This means
+that we need to dispose it accordingly. Use kobject_put()
+to dispose the duplicate attribute in such a case.
 
-kernel test robot noticed the following build errors:
+Compile-tested only.
 
-[auto build test ERROR on rafael-pm/linux-next]
-[also build test ERROR on pci/next pci/for-linus westeri-thunderbolt/next linus/master v6.5-rc4 next-20230804]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+Fixes: e8a60aa7404b ("platform/x86: Introduce support for Systems Manageme=
+nt Driver over WMI for Dell Systems")
+Signed-off-by: Armin Wolf <W_Armin@gmx.de>
+=2D--
+ drivers/platform/x86/dell/dell-wmi-sysman/sysman.c | 9 ++++++---
+ 1 file changed, 6 insertions(+), 3 deletions(-)
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Mario-Limonciello/ACPI-Add-comments-to-clarify-some-ifdef-statements/20230805-050559
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-pm.git linux-next
-patch link:    https://lore.kernel.org/r/20230804210129.5356-8-mario.limonciello%40amd.com
-patch subject: [PATCH v10 7/7] PCI: Use device constraints to decide PCI target state fallback policy
-config: mips-randconfig-r032-20230731 (https://download.01.org/0day-ci/archive/20230805/202308051340.k7mCXXL3-lkp@intel.com/config)
-compiler: clang version 17.0.0 (https://github.com/llvm/llvm-project.git 4a5ac14ee968ff0ad5d2cc1ffa0299048db4c88a)
-reproduce: (https://download.01.org/0day-ci/archive/20230805/202308051340.k7mCXXL3-lkp@intel.com/reproduce)
+diff --git a/drivers/platform/x86/dell/dell-wmi-sysman/sysman.c b/drivers/=
+platform/x86/dell/dell-wmi-sysman/sysman.c
+index b68dd11cb892..b929b4f82420 100644
+=2D-- a/drivers/platform/x86/dell/dell-wmi-sysman/sysman.c
++++ b/drivers/platform/x86/dell/dell-wmi-sysman/sysman.c
+@@ -393,6 +393,7 @@ static int init_bios_attributes(int attr_type, const c=
+har *guid)
+ 	struct kobject *attr_name_kobj; //individual attribute names
+ 	union acpi_object *obj =3D NULL;
+ 	union acpi_object *elements;
++	struct kobject *duplicate;
+ 	struct kset *tmp_set;
+ 	int min_elements;
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202308051340.k7mCXXL3-lkp@intel.com/
+@@ -451,9 +452,11 @@ static int init_bios_attributes(int attr_type, const =
+char *guid)
+ 		else
+ 			tmp_set =3D wmi_priv.main_dir_kset;
 
-All errors (new ones prefixed by >>):
+-		if (kset_find_obj(tmp_set, elements[ATTR_NAME].string.pointer)) {
+-			pr_debug("duplicate attribute name found - %s\n",
+-				elements[ATTR_NAME].string.pointer);
++		duplicate =3D kset_find_obj(tmp_set, elements[ATTR_NAME].string.pointer=
+);
++		if (duplicate) {
++			pr_debug("Duplicate attribute name found - %s\n",
++				 elements[ATTR_NAME].string.pointer);
++			kobject_put(duplicate);
+ 			goto nextobj;
+ 		}
 
->> drivers/pci/pci.c:1090:9: error: call to undeclared function 'acpi_get_lps0_constraint'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
-    1090 |         return acpi_get_lps0_constraint(&dev->dev);
-         |                ^
-   1 error generated.
+=2D-
+2.39.2
 
-
-vim +/acpi_get_lps0_constraint +1090 drivers/pci/pci.c
-
-  1084	
-  1085	static inline int platform_get_constraint(struct pci_dev *dev)
-  1086	{
-  1087		if (pci_use_mid_pm())
-  1088			return -ENODEV;
-  1089	
-> 1090		return acpi_get_lps0_constraint(&dev->dev);
-  1091	}
-  1092	
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
