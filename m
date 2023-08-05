@@ -2,71 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 30BF477130B
-	for <lists+linux-kernel@lfdr.de>; Sun,  6 Aug 2023 01:48:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B9A977130D
+	for <lists+linux-kernel@lfdr.de>; Sun,  6 Aug 2023 01:58:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229611AbjHEXsO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 5 Aug 2023 19:48:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39572 "EHLO
+        id S229680AbjHEX6Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 5 Aug 2023 19:58:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40438 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229481AbjHEXsL (ORCPT
+        with ESMTP id S229481AbjHEX6N (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 5 Aug 2023 19:48:11 -0400
-X-Greylist: delayed 135 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Sat, 05 Aug 2023 16:48:10 PDT
-Received: from p3plsmtpa12-09.prod.phx3.secureserver.net (p3plsmtpa12-09.prod.phx3.secureserver.net [68.178.252.238])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B280138
-        for <linux-kernel@vger.kernel.org>; Sat,  5 Aug 2023 16:48:10 -0700 (PDT)
-Received: from localhost ([82.27.99.45])
-        by :SMTPAUTH: with ESMTPA
-        id SQy1qnynsZmOZSQy2qqIFq; Sat, 05 Aug 2023 16:45:54 -0700
-X-CMAE-Analysis: v=2.4 cv=IqXYMpzg c=1 sm=1 tr=0 ts=64cedf32
- a=YwMIiW7BGddQzL8MrqPWMg==:117 a=YwMIiW7BGddQzL8MrqPWMg==:17
- a=HnRLSJNhp8-NwZYesygA:9 a=zgiPjhLxNE0A:10
-X-SECURESERVER-ACCT: atomlin@atomlin.com
-From:   Aaron Tomlin <atomlin@atomlin.com>
-To:     tj@kernel.org
-Cc:     atomlin@atomlin.com, jiangshanlai@gmail.com,
-        linux-kernel@vger.kernel.org, peterz@infradead.org
-Subject: Re: [RFC PATCH 0/2] workqueue: Introduce PF_WQ_RESCUE_WORKER
-Date:   Sun,  6 Aug 2023 00:45:52 +0100
-Message-Id: <20230805234552.2556114-1-atomlin@atomlin.com>
-X-Mailer: git-send-email 2.39.1
-In-Reply-To: <ZMwPZ7jRUrq6MjLn@slm.duckdns.org>
-References: <ZMwPZ7jRUrq6MjLn@slm.duckdns.org>
+        Sat, 5 Aug 2023 19:58:13 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9FAA128
+        for <linux-kernel@vger.kernel.org>; Sat,  5 Aug 2023 16:58:08 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 8339C60DE1
+        for <linux-kernel@vger.kernel.org>; Sat,  5 Aug 2023 23:58:08 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3CF8FC433C7;
+        Sat,  5 Aug 2023 23:58:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1691279887;
+        bh=fs4x6PeHwicN8FTsqkY06qC8SCDDAnU0rMG7AHf+rjw=;
+        h=From:To:Cc:Subject:Date:From;
+        b=Yn7s93IO+w2baPotkwDuOiqsj9MbRC11d10rg62BYBreUuDHhNWdQhcX3R6LscCbs
+         c92PEplaUEGIv3VjAInEY7ihjcmShP/e09QkVMvLGsHOJZ+6RCxSQ+kh/UWMU7gxsj
+         UZWXIs+t+/PwdYmoqtb7BmCNmKKN4uUmZO3fGXeyYspOGG562UsS4oYvon1Af+8/Pt
+         1eFkTkB437NVcAurn2lJfb2Ett+B/u3C3pTo4cw2WZrxPAkXXR9j5LcnTByw4yr53C
+         yrhQPrbG8/5bM8VUu1M1klMwrw5TeUQoq5mNhqQiiZUL/PRTvzO9/K41MWlFf+cVfp
+         LLwm4SpcAHEsA==
+From:   Miguel Ojeda <ojeda@kernel.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Miguel Ojeda <ojeda@kernel.org>,
+        Wedson Almeida Filho <wedsonaf@gmail.com>,
+        Alex Gaynor <alex.gaynor@gmail.com>,
+        Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>,
+        =?UTF-8?q?Bj=C3=B6rn=20Roy=20Baron?= <bjorn3_gh@protonmail.com>,
+        Benno Lossin <benno.lossin@proton.me>,
+        Andreas Hindborg <a.hindborg@samsung.com>,
+        Alice Ryhl <aliceryhl@google.com>,
+        rust-for-linux@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [GIT PULL] Rust fixes for 6.5-rc5
+Date:   Sun,  6 Aug 2023 01:57:50 +0200
+Message-ID: <20230805235750.54075-1-ojeda@kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CMAE-Envelope: MS4xfAkRaHrhRP8xW5Bcul32+ZgpRA7YcgchZIFNzzk8yLiUiMSSE7Hn+i5miErHP7MB49ykr76NXVtkgOICVTFexHQCIJ8UK2uOH8gMLUnxkJFYeIA5dW5c
- Ynoak9S8PpRpXjvZHJ08TiRQQ0UbyK7AyFDy6mcKQ5Y2mcy2eFUlWiHvAOpnkh5hu/swVrsIfYiBXejoVe4o9ztxwSuKh7z85zmOJtaGX157WSrx8uN+IQ1d
- vTds+4SE+6zOS5LZh6Ebmun72geDJToMx2c0X2+1wkzUD7pmxr6dOyM8kxmNI7O7HykC5cu4pSiOaWT2KGcn3w==
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> Note that the name changes to the work item the worker is currently
-> executing. It won't stay that way. Workers are shared across the
-> workqueues, so I'm not sure "identify and account all kernel threads" is
-> working as well as you think it is.
+Hi Linus,
 
-Hi Tejun,
+Please pull these fixes for Rust.
 
-Indeed. The point is that these kworker kthreads are easily identifiable.
+The oldest is a bit involved, and the other two are straightforward.
+The complex one has been in linux-next for 4 days and the others for
+2 days, but I reworded yesterday the complex one to add a couple tags
+(no changes otherwise -- you can find the previous version of e.g. the
+oldest in linux-next at cf222ce8477c).
 
-> We can certainly rename them to indicate that they are rescuers - e.g.
-> maybe krescuer? But, at the moment, the proposed reason seems rather
-> dubious.
+No conflicts expected. No changes to the C side.
 
-Personally, I would prefer "kworker/r-%s" and then include the specified
-workqueue's name e.g. "kworker/r-ext4-rsv-conver". So the rescuer task's
-name is more consistent with the current naming scheme.
-I will send a follow up patch.
+Cheers,
+Miguel
 
+The following changes since commit 6eaae198076080886b9e7d57f4ae06fa782f90ef:
 
-Kind regards,
+  Linux 6.5-rc3 (2023-07-23 15:24:10 -0700)
 
--- 
-Aaron Tomlin
+are available in the Git repository at:
+
+  https://github.com/Rust-for-Linux/linux.git tags/rust-fixes-6.5-rc5
+
+for you to fetch changes up to b05544884300e98512964103b33f8f87650ce887:
+
+  rust: fix bindgen build error with UBSAN_BOUNDS_STRICT (2023-08-04 17:10:50 +0200)
+
+----------------------------------------------------------------
+Rust fixes for 6.5-rc5
+
+ - Allocator: prevent mis-aligned allocation.
+
+ - Types: delete 'ForeignOwnable::borrow_mut'. A sound replacement is
+   planned for the merge window.
+
+ - Build: fix bindgen error with UBSAN_BOUNDS_STRICT.
+
+----------------------------------------------------------------
+Alice Ryhl (1):
+      rust: delete `ForeignOwnable::borrow_mut`
+
+Andrea Righi (1):
+      rust: fix bindgen build error with UBSAN_BOUNDS_STRICT
+
+Boqun Feng (1):
+      rust: allocator: Prevent mis-aligned allocation
+
+ rust/Makefile                   |  2 +-
+ rust/bindings/bindings_helper.h |  1 +
+ rust/kernel/allocator.rs        | 74 ++++++++++++++++++++++++++++++++---------
+ rust/kernel/sync/arc.rs         |  3 +-
+ rust/kernel/types.rs            | 22 ++----------
+ 5 files changed, 64 insertions(+), 38 deletions(-)
