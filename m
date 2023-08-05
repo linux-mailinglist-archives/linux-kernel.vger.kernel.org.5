@@ -2,45 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CF54C771121
-	for <lists+linux-kernel@lfdr.de>; Sat,  5 Aug 2023 19:49:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 73E8D771122
+	for <lists+linux-kernel@lfdr.de>; Sat,  5 Aug 2023 19:49:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229819AbjHERti (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 5 Aug 2023 13:49:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60406 "EHLO
+        id S229956AbjHERtl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 5 Aug 2023 13:49:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60414 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229449AbjHERtd (ORCPT
+        with ESMTP id S229527AbjHERte (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 5 Aug 2023 13:49:33 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.151])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 942F3DD
-        for <linux-kernel@vger.kernel.org>; Sat,  5 Aug 2023 10:49:32 -0700 (PDT)
+        Sat, 5 Aug 2023 13:49:34 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C675E115
+        for <linux-kernel@vger.kernel.org>; Sat,  5 Aug 2023 10:49:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1691257772; x=1722793772;
+  t=1691257773; x=1722793773;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=WwFlBTMWGP/2Noo8uToUlcYjMLDc5ySAvwUDql7sE7Y=;
-  b=VktCQzVraHQflL90VqPaKT29niMae3bJ3bcYpuhKTEcLy/zfyV0fQWjt
-   u1ltQK6AAYrX2MEg+R9XfQicleOZGR/dKivsbAgYlhxt4Xw5iTUl3uJlR
-   fdUDIdLH/F232gA3cwhT9ocTkgXC9/BLwQmGrIqQAMqtc91WjZ2yR19Hc
-   y0LuqmoP4ejM8M3UQLkHS+oUu4JCNvGaQK9PUs16dxLCjn7fFkZ1rAejG
-   IFuzDSfVL660xj40lxaPhTmfkkW5X6w6CgZmoCMPA1wjXz7FyUGAgBdB3
-   gTTloxX0eowU/LELPXD4TtuW876rOpU99YAC1bZFF5kka9LWG7dYLsPHl
+  bh=9t4+UHB5bV6ky/Acf0xEikn59MqZgagOLuXamRB5Rw0=;
+  b=PxSrXk2jjMjoRUK+6Z/XTpumOW/8SiD/OwZIvQtEVE6n5fCf0UdnL1qh
+   mscqpilvz6bLkwiCspLsijBZEbkAbhQjqrKmRDV1N1cWY/9Plr8eWsN0c
+   pAp2GAzQxa9MthRN+P0ulpqdaeycIXO15FvVvRg8CWdSvUyrjarfYdZH6
+   gf0QD9O04VNeLtD3XFEtOaJbNNfxqpx9FmIE76TST8TAJWwTKhaZE6vsQ
+   29e6dTS4/LcbaIoUwCKeN8ul541IvyderNZd6iArFy5Avhe1eKCu7WhSC
+   Isy5HQgQL1ytF+mMy4s66i9kYG9PmiX+JRwbEWUZZ4/WWiPkqoso2UuFp
    w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10793"; a="350638993"
+X-IronPort-AV: E=McAfee;i="6600,9927,10793"; a="401292537"
 X-IronPort-AV: E=Sophos;i="6.01,258,1684825200"; 
-   d="scan'208";a="350638993"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Aug 2023 10:49:31 -0700
+   d="scan'208";a="401292537"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Aug 2023 10:49:32 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10793"; a="733622471"
+X-IronPort-AV: E=McAfee;i="6600,9927,10793"; a="820494258"
 X-IronPort-AV: E=Sophos;i="6.01,258,1684825200"; 
-   d="scan'208";a="733622471"
+   d="scan'208";a="820494258"
 Received: from black.fi.intel.com ([10.237.72.28])
-  by fmsmga007.fm.intel.com with ESMTP; 05 Aug 2023 10:49:28 -0700
+  by FMSMGA003.fm.intel.com with ESMTP; 05 Aug 2023 10:49:29 -0700
 Received: by black.fi.intel.com (Postfix, from userid 1003)
-        id 9F9D5BAB; Sat,  5 Aug 2023 20:50:29 +0300 (EEST)
+        id AA2F4F12; Sat,  5 Aug 2023 20:50:29 +0300 (EEST)
 From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
         Petr Mladek <pmladek@suse.com>, Marco Elver <elver@google.com>,
@@ -52,142 +52,84 @@ Cc:     Steven Rostedt <rostedt@goodmis.org>,
         Alexander Potapenko <glider@google.com>,
         Dmitry Vyukov <dvyukov@google.com>,
         Andrew Morton <akpm@linux-foundation.org>
-Subject: [PATCH v2 2/3] lib/vsprintf: Split out sprintf() and friends
-Date:   Sat,  5 Aug 2023 20:50:26 +0300
-Message-Id: <20230805175027.50029-3-andriy.shevchenko@linux.intel.com>
+Subject: [PATCH v2 3/3] lib/vsprintf: Declare no_hash_pointers in sprintf.h
+Date:   Sat,  5 Aug 2023 20:50:27 +0300
+Message-Id: <20230805175027.50029-4-andriy.shevchenko@linux.intel.com>
 X-Mailer: git-send-email 2.40.0.1.gaa8946217a0b
 In-Reply-To: <20230805175027.50029-1-andriy.shevchenko@linux.intel.com>
 References: <20230805175027.50029-1-andriy.shevchenko@linux.intel.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-kernel.h is being used as a dump for all kinds of stuff for a long time.
-sprintf() and friends are used in many drivers without need of the full
-kernel.h dependency train with it.
+Sparse is not happy to see non-static variable without declaration:
+lib/vsprintf.c:61:6: warning: symbol 'no_hash_pointers' was not declared. Should it be static?
 
-Here is the attempt on cleaning it up by splitting out sprintf() and
-friends.
+Declare respective variable in the sprintf.h. With this, add a comment
+to discourage its use if no real need.
 
 Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 ---
- include/linux/kernel.h  | 30 +-----------------------------
- include/linux/sprintf.h | 25 +++++++++++++++++++++++++
- lib/test_printf.c       |  1 +
- lib/vsprintf.c          |  1 +
- 4 files changed, 28 insertions(+), 29 deletions(-)
- create mode 100644 include/linux/sprintf.h
+ include/linux/sprintf.h | 2 ++
+ lib/test_printf.c       | 2 --
+ mm/kfence/report.c      | 3 +--
+ 3 files changed, 3 insertions(+), 4 deletions(-)
 
-diff --git a/include/linux/kernel.h b/include/linux/kernel.h
-index b9e76f717a7e..cee8fe87e9f4 100644
---- a/include/linux/kernel.h
-+++ b/include/linux/kernel.h
-@@ -29,6 +29,7 @@
- #include <linux/panic.h>
- #include <linux/printk.h>
- #include <linux/build_bug.h>
-+#include <linux/sprintf.h>
- #include <linux/static_call_types.h>
- #include <linux/instruction_pointer.h>
- #include <asm/byteorder.h>
-@@ -203,35 +204,6 @@ static inline void might_fault(void) { }
- 
- void do_exit(long error_code) __noreturn;
- 
--extern int num_to_str(char *buf, int size,
--		      unsigned long long num, unsigned int width);
--
--/* lib/printf utilities */
--
--extern __printf(2, 3) int sprintf(char *buf, const char * fmt, ...);
--extern __printf(2, 0) int vsprintf(char *buf, const char *, va_list);
--extern __printf(3, 4)
--int snprintf(char *buf, size_t size, const char *fmt, ...);
--extern __printf(3, 0)
--int vsnprintf(char *buf, size_t size, const char *fmt, va_list args);
--extern __printf(3, 4)
--int scnprintf(char *buf, size_t size, const char *fmt, ...);
--extern __printf(3, 0)
--int vscnprintf(char *buf, size_t size, const char *fmt, va_list args);
--extern __printf(2, 3) __malloc
--char *kasprintf(gfp_t gfp, const char *fmt, ...);
--extern __printf(2, 0) __malloc
--char *kvasprintf(gfp_t gfp, const char *fmt, va_list args);
--extern __printf(2, 0)
--const char *kvasprintf_const(gfp_t gfp, const char *fmt, va_list args);
--
--extern __scanf(2, 3)
--int sscanf(const char *, const char *, ...);
--extern __scanf(2, 0)
--int vsscanf(const char *, const char *, va_list);
--
--extern int no_hash_pointers_enable(char *str);
--
- extern int get_option(char **str, int *pint);
- extern char *get_options(const char *str, int nints, int *ints);
- extern unsigned long long memparse(const char *ptr, char **retptr);
 diff --git a/include/linux/sprintf.h b/include/linux/sprintf.h
-new file mode 100644
-index 000000000000..9ca23bcf9f42
---- /dev/null
+index 9ca23bcf9f42..33dcbec71925 100644
+--- a/include/linux/sprintf.h
 +++ b/include/linux/sprintf.h
-@@ -0,0 +1,25 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+#ifndef _LINUX_KERNEL_SPRINTF_H_
-+#define _LINUX_KERNEL_SPRINTF_H_
-+
-+#include <linux/compiler_attributes.h>
-+#include <linux/types.h>
-+
-+int num_to_str(char *buf, int size, unsigned long long num, unsigned int width);
-+
-+__printf(2, 3) int sprintf(char *buf, const char * fmt, ...);
-+__printf(2, 0) int vsprintf(char *buf, const char *, va_list);
-+__printf(3, 4) int snprintf(char *buf, size_t size, const char *fmt, ...);
-+__printf(3, 0) int vsnprintf(char *buf, size_t size, const char *fmt, va_list args);
-+__printf(3, 4) int scnprintf(char *buf, size_t size, const char *fmt, ...);
-+__printf(3, 0) int vscnprintf(char *buf, size_t size, const char *fmt, va_list args);
-+__printf(2, 3) __malloc char *kasprintf(gfp_t gfp, const char *fmt, ...);
-+__printf(2, 0) __malloc char *kvasprintf(gfp_t gfp, const char *fmt, va_list args);
-+__printf(2, 0) const char *kvasprintf_const(gfp_t gfp, const char *fmt, va_list args);
-+
-+__scanf(2, 3) int sscanf(const char *, const char *, ...);
-+__scanf(2, 0) int vsscanf(const char *, const char *, va_list);
-+
-+int no_hash_pointers_enable(char *str);
-+
-+#endif	/* _LINUX_KERNEL_SPRINTF_H */
+@@ -20,6 +20,8 @@ __printf(2, 0) const char *kvasprintf_const(gfp_t gfp, const char *fmt, va_list
+ __scanf(2, 3) int sscanf(const char *, const char *, ...);
+ __scanf(2, 0) int vsscanf(const char *, const char *, va_list);
+ 
++/* These are for specific cases, do not use without real need */
++extern bool no_hash_pointers;
+ int no_hash_pointers_enable(char *str);
+ 
+ #endif	/* _LINUX_KERNEL_SPRINTF_H */
 diff --git a/lib/test_printf.c b/lib/test_printf.c
-index 2ab09a0dc841..5adca19d34e2 100644
+index 5adca19d34e2..cf861dc22169 100644
 --- a/lib/test_printf.c
 +++ b/lib/test_printf.c
-@@ -19,6 +19,7 @@
- #include <linux/rtc.h>
- #include <linux/slab.h>
- #include <linux/socket.h>
-+#include <linux/sprintf.h>
- #include <linux/string.h>
+@@ -39,8 +39,6 @@ KSTM_MODULE_GLOBALS();
+ static char *test_buffer __initdata;
+ static char *alloced_buffer __initdata;
  
- #include "../tools/testing/selftests/kselftest_module.h"
-diff --git a/lib/vsprintf.c b/lib/vsprintf.c
-index b17e0744a7bc..c89719586d0c 100644
---- a/lib/vsprintf.c
-+++ b/lib/vsprintf.c
-@@ -35,6 +35,7 @@
- #include <linux/property.h>
- #include <linux/rtc.h>
- #include <linux/siphash.h>
+-extern bool no_hash_pointers;
+-
+ static int __printf(4, 0) __init
+ do_test(int bufsize, const char *expect, int elen,
+ 	const char *fmt, va_list ap)
+diff --git a/mm/kfence/report.c b/mm/kfence/report.c
+index 197430a5be4a..c509aed326ce 100644
+--- a/mm/kfence/report.c
++++ b/mm/kfence/report.c
+@@ -13,6 +13,7 @@
+ #include <linux/printk.h>
+ #include <linux/sched/debug.h>
+ #include <linux/seq_file.h>
 +#include <linux/sprintf.h>
- #include <linux/stdarg.h>
+ #include <linux/stacktrace.h>
  #include <linux/string.h>
- #include <linux/string_helpers.h>
+ #include <trace/events/error_report.h>
+@@ -26,8 +27,6 @@
+ #define ARCH_FUNC_PREFIX ""
+ #endif
+ 
+-extern bool no_hash_pointers;
+-
+ /* Helper function to either print to a seq_file or to console. */
+ __printf(2, 3)
+ static void seq_con_printf(struct seq_file *seq, const char *fmt, ...)
 -- 
 2.40.0.1.gaa8946217a0b
 
