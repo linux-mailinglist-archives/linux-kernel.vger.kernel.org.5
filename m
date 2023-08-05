@@ -2,116 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CA91E7711E7
-	for <lists+linux-kernel@lfdr.de>; Sat,  5 Aug 2023 21:44:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 85A4D7711E9
+	for <lists+linux-kernel@lfdr.de>; Sat,  5 Aug 2023 21:46:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229905AbjHEToq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 5 Aug 2023 15:44:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59054 "EHLO
+        id S229970AbjHETqS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 5 Aug 2023 15:46:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59442 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229445AbjHETop (ORCPT
+        with ESMTP id S229445AbjHETqQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 5 Aug 2023 15:44:45 -0400
-X-Greylist: delayed 388 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Sat, 05 Aug 2023 12:44:39 PDT
-Received: from smtpbgeu1.qq.com (smtpbgeu1.qq.com [52.59.177.22])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B7D91732;
-        Sat,  5 Aug 2023 12:44:38 -0700 (PDT)
-X-QQ-mid: bizesmtp70t1691264671t108lc7o
-Received: from linux-lab-host.localdomain ( [116.30.131.233])
-        by bizesmtp.qq.com (ESMTP) with 
-        id ; Sun, 06 Aug 2023 03:44:30 +0800 (CST)
-X-QQ-SSF: 01200000000000E0X000000A0000000
-X-QQ-FEAT: zT6n3Y95oi1y8fInte+k+VHvD3XvDVwfE8g+6rqb4AalVd+4Dp8ranF9L+Uj4
-        FgiLWpRUWNssQ6BCu3QpEgULh0+D/vQtwuqkIXWYGYlD+YIAz5eQv/h/FUeYLMOXuvHWr3U
-        iZVd5cYtdKsLGjzv0XBVn8z2/lm0WxRoq4SwkO4RpyypFtUdzMcoI1cJDkq62YP1K3/H/W+
-        wE6UYkpZpbAwgMGvNLShExMa42TNO0QIB4hfIYreA0tA1Hg7gukvqVND8Z0HWwXn6bT2kdP
-        MSQLwxMRj5O4r50e1fdPek4yKGvwE/wGNjf29Tijk9xfzyE5HP/JMcYACthhu3MZ7M1uMch
-        ji0eYxYDIBWe/zp5CyFRzpVGCZPo25ZKSscKXyVDtlNgvHXJQ1CPYQTW4+H9oUG8CotnEqf
-X-QQ-GoodBg: 0
-X-BIZMAIL-ID: 7505355185918316706
-From:   Zhangjin Wu <falcon@tinylab.org>
-To:     w@1wt.eu
-Cc:     falcon@tinylab.org, linux-kernel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, tanyuan@tinylab.org,
-        thomas@t-8ch.de
-Subject: [PATCH v1 2/4] selftests/nolibc: customize CROSS_COMPILE for many architectures
-Date:   Sun,  6 Aug 2023 03:44:29 +0800
-Message-Id: <3ec048008a9b2c1ed7406214c6899e5412a97596.1691263493.git.falcon@tinylab.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <cover.1691263493.git.falcon@tinylab.org>
-References: <cover.1691263493.git.falcon@tinylab.org>
+        Sat, 5 Aug 2023 15:46:16 -0400
+Received: from lelv0143.ext.ti.com (lelv0143.ext.ti.com [198.47.23.248])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EAE071735;
+        Sat,  5 Aug 2023 12:46:14 -0700 (PDT)
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+        by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 375Jjw4S119004;
+        Sat, 5 Aug 2023 14:45:58 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1691264758;
+        bh=CdhQuWo9ujaCpg9RHjcoZQ/AvoBB7wleNs6Mpq6ktyg=;
+        h=From:To:CC:Subject:Date:In-Reply-To:References;
+        b=KU0VmzWRSoVMVYBEjZlI84Xg60/BTRvd5Nzj0x9YVEMKl3jsuI9p12gnNSVfItPsr
+         k70MWaN+vgKyfVD8rXAci0qP+LZOzGVpZ4wDI23686d0dXzP82o/RCjBxNvu833KSZ
+         qfjO1X57YtGuXvSsmco76mxf1nkt7X6RH6BgkEp0=
+Received: from DFLE111.ent.ti.com (dfle111.ent.ti.com [10.64.6.32])
+        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 375JjwSD026423
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Sat, 5 Aug 2023 14:45:58 -0500
+Received: from DFLE113.ent.ti.com (10.64.6.34) by DFLE111.ent.ti.com
+ (10.64.6.32) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Sat, 5
+ Aug 2023 14:45:58 -0500
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE113.ent.ti.com
+ (10.64.6.34) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Sat, 5 Aug 2023 14:45:58 -0500
+Received: from localhost (ileaxei01-snat2.itg.ti.com [10.180.69.6])
+        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 375Jjvx4025732;
+        Sat, 5 Aug 2023 14:45:58 -0500
+From:   Nishanth Menon <nm@ti.com>
+To:     Vignesh Raghavendra <vigneshr@ti.com>,
+        Tero Kristo <kristo@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>, Andrew Davis <afd@ti.com>
+CC:     Nishanth Menon <nm@ti.com>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 1/3] arm64: dts: ti: k3-am62a: Remove syscon compatible from epwm_tbclk
+Date:   Sat, 5 Aug 2023 14:45:57 -0500
+Message-ID: <169126415606.84898.18424472511177398578.b4-ty@ti.com>
+X-Mailer: git-send-email 2.40.0
+In-Reply-To: <20230802174521.236255-1-afd@ti.com>
+References: <20230802174521.236255-1-afd@ti.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-X-QQ-SENDSIZE: 520
-Feedback-ID: bizesmtp:tinylab.org:qybglogicsvrgz:qybglogicsvrgz5a-1
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_PASS,
-        T_SPF_HELO_TEMPERROR autolearn=ham autolearn_force=no version=3.4.6
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This simplifies the 'make' commands for most of nolibc supported
-architectures, only requires the XARCH option now.
+Hi Andrew Davis,
 
-Almost all distributions provide qemu and toolchains for i386, x86_64,
-arm64, arm, mips, riscv and s390, let's customize the local toolchains
-for them. The fresh new loongarch is an exception, which is not covered
-here.
+On Wed, 02 Aug 2023 12:45:19 -0500, Andrew Davis wrote:
+> The other instances have been fixed, but AM62a seems to have been missed,
+> fix this here.
+> 
 
-If want to use another toolchain which is not customized here, we can
-also pass CROSS_COMPILE, CROSS_COMPILE_$(XARCH) and even CC from command
-line.
+The merging of two conf nodes:
 
-After carefully install and configure $(CROSS_COMPILE_$(XARCH)) and
-qemu-$(XARCH), it is able to run tests for the architectures or their
-variants like this:
+I understand the linux-next dependency, it does create a dtbs_check
+warnings on rc1, but I am picking this up since the yaml fixup is in
+next already and not a new compatible addition. if the fixups does'nt
+end up in linus-master for 6.6-rc1, we might need to look at what we
+need to do. Please let me know if there is any concerns and I can drop
+this series from my tree.
 
-    $ ARCHS="i386 x86_64 arm64 arm mips ppc ppc64 ppc64le riscv s390"
-    $ for arch in ${ARCHS[@]}; do printf "%9s: " $arch; make run-user XARCH=$arch | grep status; done
-         i386: 165 test(s): 157 passed,   8 skipped,   0 failed => status: warning
-       x86_64: 165 test(s): 157 passed,   8 skipped,   0 failed => status: warning
-        arm64: 165 test(s): 157 passed,   8 skipped,   0 failed => status: warning
-          arm: 165 test(s): 156 passed,   9 skipped,   0 failed => status: warning
-         mips: 165 test(s): 156 passed,   9 skipped,   0 failed => status: warning
-          ppc: 165 test(s): 157 passed,   8 skipped,   0 failed => status: warning
-        ppc64: 165 test(s): 157 passed,   8 skipped,   0 failed => status: warning
-      ppc64le: 165 test(s): 157 passed,   8 skipped,   0 failed => status: warning
-        riscv: 165 test(s): 156 passed,   9 skipped,   0 failed => status: warning
-         s390: 165 test(s): 156 passed,   9 skipped,   0 failed => status: warning
+For the tbclk node name fix up:
 
-[1]: https://mirrors.edge.kernel.org/pub/tools/crosstool/
+I also noticed there were two other places we needed the fix as well,
+since they were trivial, I rolled up [2] as part of the patch #3. if
+you think the fixup should be done differently, let me know and I can
+drop the series from my tree and we can pick a new series up.
 
-Signed-off-by: Zhangjin Wu <falcon@tinylab.org>
----
- tools/testing/selftests/nolibc/Makefile | 8 ++++++++
- 1 file changed, 8 insertions(+)
+I have applied the following to branch ti-k3-dts-next on [1].
+Thank you!
 
-diff --git a/tools/testing/selftests/nolibc/Makefile b/tools/testing/selftests/nolibc/Makefile
-index e2b02761ad44..d32694656221 100644
---- a/tools/testing/selftests/nolibc/Makefile
-+++ b/tools/testing/selftests/nolibc/Makefile
-@@ -56,9 +56,17 @@ IMAGE            = $(IMAGE_$(XARCH))
- IMAGE_NAME       = $(notdir $(IMAGE))
+[1/3] arm64: dts: ti: k3-am62a: Remove syscon compatible from epwm_tbclk
+      commit: b9d801dbb2d5cb796dce32ffcee63fba83f72841
+[2/3] arm64: dts: ti: k3-am64: Merge the two main_conf nodes
+      commit: a57ba56bca42fa484bec916f7a88a3dc03d6cbdf
+[3/3] arm64: dts: ti: k3: Fix epwm_tbclk node name to generic name
+      commit: 085baaa7084e39a63d72db86821c6fb65bdbff72
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent up the chain during
+the next merge window (or sooner if it is a relevant bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+[1] https://git.kernel.org/pub/scm/linux/kernel/git/ti/linux.git
+[2]
+diff --git a/arch/arm64/boot/dts/ti/k3-am62-main.dtsi b/arch/arm64/boot/dts/ti/k3-am62-main.dtsi
+index 33b6aadc9083..ef90b2bc81eb 100644
+--- a/arch/arm64/boot/dts/ti/k3-am62-main.dtsi
++++ b/arch/arm64/boot/dts/ti/k3-am62-main.dtsi
+@@ -55,7 +55,7 @@ phy_gmii_sel: phy@4044 {
+ 			#phy-cells = <1>;
+ 		};
  
- # CROSS_COMPILE: cross toolchain prefix by architecture
-+CROSS_COMPILE_i386      ?= x86_64-linux-gnu-
-+CROSS_COMPILE_x86_64    ?= x86_64-linux-gnu-
-+CROSS_COMPILE_x86       ?= x86_64-linux-gnu-
-+CROSS_COMPILE_arm64     ?= aarch64-linux-gnu-
-+CROSS_COMPILE_arm       ?= arm-linux-gnueabi-
-+CROSS_COMPILE_mips      ?= mipsel-linux-gnu-
- CROSS_COMPILE_ppc       ?= powerpc-linux-gnu-
- CROSS_COMPILE_ppc64     ?= powerpc64le-linux-gnu-
- CROSS_COMPILE_ppc64le   ?= powerpc64le-linux-gnu-
-+CROSS_COMPILE_riscv     ?= riscv64-linux-gnu-
-+CROSS_COMPILE_s390      ?= s390x-linux-gnu-
- CROSS_COMPILE           ?= $(CROSS_COMPILE_$(XARCH))
+-		epwm_tbclk: clock@4130 {
++		epwm_tbclk: clock-controller@4130 {
+ 			compatible = "ti,am62-epwm-tbclk";
+ 			reg = <0x4130 0x4>;
+ 			#clock-cells = <1>;
+diff --git a/arch/arm64/boot/dts/ti/k3-am65-main.dtsi b/arch/arm64/boot/dts/ti/k3-am65-main.dtsi
+index 350beddc3d3c..d08f086d7d01 100644
+--- a/arch/arm64/boot/dts/ti/k3-am65-main.dtsi
++++ b/arch/arm64/boot/dts/ti/k3-am65-main.dtsi
+@@ -502,7 +502,7 @@ dss_oldi_io_ctrl: dss-oldi-io-ctrl@41e0 {
+ 			reg = <0x000041e0 0x14>;
+ 		};
  
- # make sure CC is prefixed with CROSS_COMPILE
+-		ehrpwm_tbclk: clock@4140 {
++		ehrpwm_tbclk: clock-controller@4140 {
+ 			compatible = "ti,am654-ehrpwm-tbclk";
+ 			reg = <0x4140 0x18>;
+ 			#clock-cells = <1>;
 -- 
-2.25.1
-
+Regards,
+Nishanth Menon
+Key (0xDDB5849D1736249D) / Fingerprint: F8A2 8693 54EB 8232 17A3  1A34 DDB5 849D 1736 249D
 
