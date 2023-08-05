@@ -2,134 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A573A7710C6
-	for <lists+linux-kernel@lfdr.de>; Sat,  5 Aug 2023 19:08:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A991D7710C7
+	for <lists+linux-kernel@lfdr.de>; Sat,  5 Aug 2023 19:11:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229893AbjHERIy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 5 Aug 2023 13:08:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48746 "EHLO
+        id S229882AbjHERLO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 5 Aug 2023 13:11:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49240 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229445AbjHERIw (ORCPT
+        with ESMTP id S229445AbjHERLN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 5 Aug 2023 13:08:52 -0400
+        Sat, 5 Aug 2023 13:11:13 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 371DBE51;
-        Sat,  5 Aug 2023 10:08:51 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 376C1E51
+        for <linux-kernel@vger.kernel.org>; Sat,  5 Aug 2023 10:11:12 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id BFB8260C5C;
-        Sat,  5 Aug 2023 17:08:50 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 11474C433C8;
-        Sat,  5 Aug 2023 17:08:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691255330;
-        bh=UDpdizPzwcEtTB868pvFDtGqqjiMNLIEy5YgD8LrlUM=;
+        by dfw.source.kernel.org (Postfix) with ESMTPS id BD91A60C59
+        for <linux-kernel@vger.kernel.org>; Sat,  5 Aug 2023 17:11:11 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CCF1CC433C8;
+        Sat,  5 Aug 2023 17:11:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
+        s=korg; t=1691255471;
+        bh=kIW2ToFnM5JhLxQbr+hFkYlTARFnsrqMHbJ+6K7FJDU=;
         h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=R9e2SNXn2PAQ1ttmi95R7I9gJ26yqrEtZSG00/s926uZ5WnVgTur5S5QSzbd5MP5N
-         eOoOPWD/S1HhQ6I++Jwc9btvR04aqjPZ/VmDw9Hqgq6IV+qxN253lrueQbeFmKQVKV
-         gv5ermbiwIh90d5zLNrwtj0t6v3gs0poNkk1+sTt57+8RrS3Nw2kc5ggdlLloh9j6t
-         vxC4r8WVA2aklnmXNoPKLsY9lLcvRps4mdl8yz1jgMTK1vRUVN6ymHJgU8bJDcv71C
-         W0ZpSmbNfYLcCBxK4k8Yr3hyD0KUovIiPaTRk9OyQ/RkEq1hby4pPwnq2qB2MXeasq
-         A3VmKsgJFgE+g==
-Date:   Sat, 5 Aug 2023 18:08:42 +0100
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     <marius.cristea@microchip.com>
-Cc:     <lars@metafoo.de>, <robh+dt@kernel.org>,
-        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
-        <linux-iio@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v3 0/2] Adding support for Microchip MCP3564 ADC family
-Message-ID: <20230805180842.5d0a2005@jic23-huawei>
-In-Reply-To: <20230804142820.89593-1-marius.cristea@microchip.com>
-References: <20230804142820.89593-1-marius.cristea@microchip.com>
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-pc-linux-gnu)
-MIME-Version: 1.0
+        b=2XN9wsHU0mB5AAZhW+OTNCDcQ0xanRYZHpbgozUxdNJ2zOBGHeKQ8lXBaHEH9Kj5k
+         Ozp1an1x6HFCggQayOPNoQ3aU+2QP5uX+mm3VRL5FVjfe6Ol1ec7DxRVEjBSl/jqQ1
+         cuAakzhvsk2U1YWTCde+RradwvVF8dVaZHleZqxs=
+Date:   Sat, 5 Aug 2023 10:11:09 -0700
+From:   Andrew Morton <akpm@linux-foundation.org>
+To:     Kemeng Shi <shikemeng@huaweicloud.com>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        baolin.wang@linux.alibaba.com, mgorman@techsingularity.net,
+        david@redhat.com
+Subject: Re: [PATCH 1/9] mm/compaction: use correct list in
+ move_freelist_{head}/{tail}
+Message-Id: <20230805101109.740fdc21418d0753c4658df1@linux-foundation.org>
+In-Reply-To: <20230805110711.2975149-2-shikemeng@huaweicloud.com>
+References: <20230805110711.2975149-1-shikemeng@huaweicloud.com>
+        <20230805110711.2975149-2-shikemeng@huaweicloud.com>
+X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-4.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 4 Aug 2023 17:28:18 +0300
-<marius.cristea@microchip.com> wrote:
+On Sat,  5 Aug 2023 19:07:03 +0800 Kemeng Shi <shikemeng@huaweicloud.com> wrote:
 
-> From: Marius Cristea <marius.cristea@microchip.com>
+> The freepage is chained with buddy_list in freelist head. Use buddy_list
+> instead of lru to correct the list operation.
 > 
-> Adding support for Microchip family of 153.6 ksps, Low-Noise 16/24-Bit
-> Delta-Sigma ADCs with an SPI interface. This driver covers the following part
-> numbers:
->  - MCP3561, MCP3562, MCP3564, MCP3561R, MCP3562R, MCP3564R,
->  - MCP3461, MCP3462, MCP3464, MCP3461R, MCP3462R and MCP3464R.
-> 
-> Differences related to previous patch:
-> v3:
-> - fix review comments:
->   - fix and update the device tree bindings
->   - enable "auto_zeroing_ref_enable" attribute only
->     when internal reference is used
->   - remove unused headers
->   - fix comments (kernel-docs)
->   - remove scan_type
->   - replace "extend_name" with read_label
->   - print label for each channel (label could be added into the dt)
->   - add comment to explain the maximum channels numbers
->   - add protection around critical region
->   - fallback compatible in device tree to deal with some newer part number
->   
-> - Open questions:
->   - whether or not to add a spi-mux type of thing to deal with the part number
->     address in case there are multiple devices connected to the same chip
->     select.
+> ...
+>
+> --- a/mm/compaction.c
+> +++ b/mm/compaction.c
+> @@ -1395,8 +1395,8 @@ move_freelist_head(struct list_head *freelist, struct page *freepage)
+>  {
+>  	LIST_HEAD(sublist);
+>  
+> -	if (!list_is_last(freelist, &freepage->lru)) {
+> -		list_cut_before(&sublist, freelist, &freepage->lru);
+> +	if (!list_is_last(freelist, &freepage->buddy_list)) {
+> +		list_cut_before(&sublist, freelist, &freepage->buddy_list);
+>  		list_splice_tail(&sublist, freelist);
+>  	}
+>  }
+> @@ -1412,8 +1412,8 @@ move_freelist_tail(struct list_head *freelist, struct page *freepage)
+>  {
+>  	LIST_HEAD(sublist);
+>  
+> -	if (!list_is_first(freelist, &freepage->lru)) {
+> -		list_cut_position(&sublist, freelist, &freepage->lru);
+> +	if (!list_is_first(freelist, &freepage->buddy_list)) {
+> +		list_cut_position(&sublist, freelist, &freepage->buddy_list);
+>  		list_splice_tail(&sublist, freelist);
+>  	}
+>  }
 
-I'd failed to register (until noticing it in a review a few mins ago) that we have
-have precedence for devices doing this device-address in the SPI transfer thing.
-The mcp3911 does it as well.  Obviously that doesn't rule out us doing something
-different with this one though.  
-
-I think we should take the view this is relatively uncommon and go with this
-simple vendor specific dt-binding approach.  Always nice to do something more
-general, but sometimes it isn't worth the effort.
-
-
->   - discussion related to the "custom property". Last time around a consensus
->     wasn't reached. 
-> 
-> v2:
-> - fix review comments:
->   - change the device tree bindings
->   - change the ADC channel creation (starting from DT)
->   - use defines, masks and FIELD_PREP() instead of hardcoded values
->   - mode the PGA from Hardware Gain to scale
->   - add a current output channel from burnout current
->   - fix coding style issues
->   - use self-explanatory naming to drop the comment 
-> - renumbered the versioning (start with v1 instead of v0)
-> 
-> v1:
-> - first version committed to review
-> 
-> Marius Cristea (2):
->   dt-bindings: iio: adc: adding MCP3564 ADC
->   iio: adc: adding support for MCP3564 ADC
-> 
->  .../ABI/testing/sysfs-bus-iio-adc-mcp3564     |   53 +
->  .../bindings/iio/adc/microchip,mcp3564.yaml   |  200 +++
->  MAINTAINERS                                   |    7 +
->  drivers/iio/adc/Kconfig                       |   13 +
->  drivers/iio/adc/Makefile                      |    1 +
->  drivers/iio/adc/mcp3564.c                     | 1541 +++++++++++++++++
->  6 files changed, 1815 insertions(+)
->  create mode 100644 Documentation/ABI/testing/sysfs-bus-iio-adc-mcp3564
->  create mode 100644 Documentation/devicetree/bindings/iio/adc/microchip,mcp3564.yaml
->  create mode 100644 drivers/iio/adc/mcp3564.c
-> 
-> 
-> base-commit: 9e66fb52449538406cea43e9f3889c391350e76e
+This looks like a significant error.  Can we speculate about the
+possible runtime effects?
 
