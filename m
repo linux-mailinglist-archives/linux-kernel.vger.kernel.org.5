@@ -2,52 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C81547712D5
-	for <lists+linux-kernel@lfdr.de>; Sun,  6 Aug 2023 00:14:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A0757712D9
+	for <lists+linux-kernel@lfdr.de>; Sun,  6 Aug 2023 00:20:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229917AbjHEWNr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 5 Aug 2023 18:13:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55606 "EHLO
+        id S229564AbjHEWUF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 5 Aug 2023 18:20:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56636 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229893AbjHEWNo (ORCPT
+        with ESMTP id S229478AbjHEWUC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 5 Aug 2023 18:13:44 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6DA810C9;
-        Sat,  5 Aug 2023 15:13:43 -0700 (PDT)
+        Sat, 5 Aug 2023 18:20:02 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41838E78;
+        Sat,  5 Aug 2023 15:20:01 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 5088060F39;
-        Sat,  5 Aug 2023 22:13:42 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5402CC433C9;
-        Sat,  5 Aug 2023 22:13:41 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id CA73060C1A;
+        Sat,  5 Aug 2023 22:20:00 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3A42CC433CB;
+        Sat,  5 Aug 2023 22:20:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691273621;
-        bh=Fv6xOJZuHno+soULBoFjqvGf1qqQIZ28lqSa/yaepNI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=cWO3s+9aPMtvvprSTvt2Q7uwb7A5V1/T1GBpjD4FemWJBT5S7hXTio62lrmiTV3UQ
-         tNbd9kM3syKurONPvGL9ft6QrpvEKjS6Ng/vtK9lcA/HLcMRBkaqg6xFl8O57ObDt5
-         rU/igyl8r4co4aTgmbbuDSDTNI07hhMcX/2bT+9Cjkd62yUD66ZUBTSYn7iLAUDDd7
-         gPGkUkTBrHezef/Ps0qsxMsFngrCOsgRX8gmkBHymJwMkVDHmllwv7kAazHKo3jG02
-         4gcImQkVDVvS1x3/j50ueDfm79HeS8Lzh6NTPKk7q0zdnf6qGoIFPgKnMgME9MMtlm
-         n8QIaElvZTxtw==
-Date:   Sun, 6 Aug 2023 00:13:39 +0200
-From:   Andi Shyti <andi.shyti@kernel.org>
-To:     Yue Haibing <yuehaibing@huawei.com>
-Cc:     krzysztof.kozlowski@linaro.org, alim.akhtar@samsung.com,
-        linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH -next] i2c: s3c2410: Remove unused extern declarations
-Message-ID: <20230805221339.7vl3jcutustlvhgc@intel.intel>
-References: <20230728132318.25072-1-yuehaibing@huawei.com>
+        s=k20201202; t=1691274000;
+        bh=8L00r6W/hg8NEpCDkD6zSDjERcppNOkTBRzJM/gOKMU=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=AtwV08PK9m+WcQVTR6LRg44HgLboaXqB8xx0nkr/Hb+tRtMmKzn6z0A6/7J9wDMC5
+         R6l4uMs5Ak4YZ2/NFoZwY4+m6kY7TRxUi3jPhEZ53OGp8cFuczbQSW/HpjRHJqb1kn
+         HnNwUirsiU0Az6Hf903EZAyseYdY5WQU7Klm9q9AfmWtL9Pfnnzw30iySTqY5amulB
+         ZMQVjudvhnP+aI9almUnfFNZ0Hw4InpjVXsydBSrMzEKcXme5uibby/pwSJIQfRuuC
+         4ks6hV1xyz+eYrNQpz+ozA7RgmQPvPvRhlvX8fZdX1v/aaUDgaYKEuc80UWp+cX9QJ
+         IOB7dm+gU2L1Q==
+Received: by mail-lf1-f54.google.com with SMTP id 2adb3069b0e04-4fe216edaf7so5356075e87.0;
+        Sat, 05 Aug 2023 15:20:00 -0700 (PDT)
+X-Gm-Message-State: AOJu0Yy4u4fnkJAZLTmVfo3yGQd4YVylAnqB6t9yMpAhWSABjDH5ckoz
+        gfre9adcHVAfzBGEyVhedr+LRCpI1qBQiIr5n5I=
+X-Google-Smtp-Source: AGHT+IGSgV8YMR6QPR7Wu5TwqGk1KrnDuE5jip62/F3+Dh0wEoveWU/uXp0eWOXIe+hmzobenmoCG7NsctYViaeat6A=
+X-Received: by 2002:a05:6512:159c:b0:4fe:8be:6065 with SMTP id
+ bp28-20020a056512159c00b004fe08be6065mr1032701lfb.5.1691273998150; Sat, 05
+ Aug 2023 15:19:58 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230728132318.25072-1-yuehaibing@huawei.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+References: <20230802154831.2147855-1-ardb@kernel.org> <20230805144030.GDZM5fXvaqXBLxwXfj@fat_crate.local>
+ <CAMj1kXEFC6LwNiWrGGsXot4SO0wivqN_3Yi=T9OS0XJ4=MeNew@mail.gmail.com> <20230805210631.GEZM6518W3qOCYYgNK@fat_crate.local>
+In-Reply-To: <20230805210631.GEZM6518W3qOCYYgNK@fat_crate.local>
+From:   Ard Biesheuvel <ardb@kernel.org>
+Date:   Sun, 6 Aug 2023 00:19:46 +0200
+X-Gmail-Original-Message-ID: <CAMj1kXE+jgLztL1mQ6VDkJWfAjSJnxapoUAsvqaSQmfi=kr=hg@mail.gmail.com>
+Message-ID: <CAMj1kXE+jgLztL1mQ6VDkJWfAjSJnxapoUAsvqaSQmfi=kr=hg@mail.gmail.com>
+Subject: Re: [PATCH v8 00/23] efi/x86: Avoid bare metal decompressor during
+ EFI boot
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     linux-efi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Evgeniy Baskov <baskov@ispras.ru>,
+        Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Alexey Khoroshilov <khoroshilov@ispras.ru>,
+        Peter Jones <pjones@redhat.com>,
+        Gerd Hoffmann <kraxel@redhat.com>,
+        Dave Young <dyoung@redhat.com>,
+        Mario Limonciello <mario.limonciello@amd.com>,
+        Kees Cook <keescook@chromium.org>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Joerg Roedel <jroedel@suse.de>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -55,33 +79,22 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Yue,
+On Sat, 5 Aug 2023 at 23:07, Borislav Petkov <bp@alien8.de> wrote:
+>
+> On Sat, Aug 05, 2023 at 07:37:17PM +0200, Ard Biesheuvel wrote:
+> > So this is the host booting, right?
+>
+> Yes.
+>
+> > So is the position of the C bit perhaps getting detect incorrectly?
+>
+> I don't know yet. But the evildoer is someone else:
+>
+> 02d47ce2ae02 ("x86/head_64: Store boot_params pointer in callee save register")
+>
+> after bisection. More staring later as to why...
+>
 
-On Fri, Jul 28, 2023 at 09:23:18PM +0800, Yue Haibing wrote:
-> commit 0d297df03890 ("ARM: s3c: simplify platform code") left behind
-> s3c_i2c(*)_set_platdata().
-> commit d78c16ccde96 ("ARM: SAMSUNG: Remove remaining legacy code")
-> leave s5p_i2c_hdmiphy_set_platdata() declaration.
-> And commit bad1e6aadd17 ("ARM: SAMSUNG: Cleanup plat-samsung/devs.c and devs.h")
-> leave s3c_i2c(*)_cfg_gpio() alone.
+How bizarre.
 
-I don't understand anything from the commit message here.
-
-How about:
-
-"
-After some cleanups[*] certain s3c_i2c(*)_cfg_gpio() prototypes
-have become unused. Remove them.
-
-[*] 0d297df03890 ("ARM: s3c: simplify platform code")
-    d78c16ccde96 ("ARM: SAMSUNG: Remove remaining legacy code")
-    bad1e6aadd17 ("ARM: SAMSUNG: Cleanup plat-samsung/devs.c and devs.h")
-"
-
-> Signed-off-by: Yue Haibing <yuehaibing@huawei.com>
-
-Reviewed-by: Andi Shyti <andi.shyti@kernel.org> 
-
-which branch should this go? Samsung or i2c?
-
-Andi
+But that was a bonus patch anyway, so we could just drop it for now.
