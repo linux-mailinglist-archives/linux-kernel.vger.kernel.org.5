@@ -2,77 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8CE90771221
-	for <lists+linux-kernel@lfdr.de>; Sat,  5 Aug 2023 22:28:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 83A8177122D
+	for <lists+linux-kernel@lfdr.de>; Sat,  5 Aug 2023 22:46:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230082AbjHEU2N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 5 Aug 2023 16:28:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39024 "EHLO
+        id S229834AbjHEUqB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 5 Aug 2023 16:46:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40808 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229653AbjHEU2L (ORCPT
+        with ESMTP id S229479AbjHEUqA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 5 Aug 2023 16:28:11 -0400
-Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE967183
-        for <linux-kernel@vger.kernel.org>; Sat,  5 Aug 2023 13:28:08 -0700 (PDT)
-Received: by mail-ej1-x62a.google.com with SMTP id a640c23a62f3a-99c3d3c3db9so430431366b.3
-        for <linux-kernel@vger.kernel.org>; Sat, 05 Aug 2023 13:28:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1691267287; x=1691872087;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=MlSPgf1aBHoZYljbDuR4J5sqHvOmTbVQ5HwmM3guOPo=;
-        b=PBzjvDdJnhtYbcfWLJUQd/p8N3kV6fGyJO+MYG1jKZdmpzcVRxEuQNO5awxEd/W9rj
-         6SZ4guHI0F5PgePrcOLWZcjdfvQBUuMsj6pu+FyGWiUnGmSEYzmM7F0vaMZ6vNdhSa15
-         MARrdpPMjW87ZsGobs/fYheLXhOyiTtcSOGiuTL2HequqTuQvwEPls6DCH9wjlaxKv0w
-         CxdoSXdIhwb8iYkBcwNYFqyeFI0QW3SCO3bouA4vZHqTagEFiInRf229Hu5kWIxBfZKk
-         MDE8slg7Ik+QXX9x7HxPubWh8TvSgTgJ8sW2LHvuaRKM9wo1UgCY235TGpPpr54+58fw
-         R5pA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691267287; x=1691872087;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=MlSPgf1aBHoZYljbDuR4J5sqHvOmTbVQ5HwmM3guOPo=;
-        b=d6YEmMpinfixHXfxTuUeCfYD7BEIpZeei38pNH9pZPZG6mbtuy3VYAbQdaQGsb0IWS
-         sCESAatpEgnsBbukm4t1mD90+FC22/K8DAevQI2PvX+8pXHQHRFjPgaoEw77I6TSeKeZ
-         XheeMKvhUIg070KtHf/AlOV4U7KuySXTrclMpuv3330x7EcUGqFBCq8+vMNIl+ndEVf1
-         5XoF+EpF7sx3WiWgAUtIO6LsE7OWP2oUUegx2jUaaJqF++nUWNN1ojA+4ijahUWBMabj
-         CQPIwI2j08ndW2AaQWEx9Lwpy8DklNE/j9/Pxs6EdLJPyd3XHn5IpV/sKWbvMec4qdnZ
-         E2wQ==
-X-Gm-Message-State: AOJu0YwIEdPdCICxEosdloObQbPyyBr+G95JE8ciGc+uRhLs81/Ebt2w
-        l66AzYoRWCY0IIctPrhaXVwGBw==
-X-Google-Smtp-Source: AGHT+IETqdCk7Vn/JusRmLodPXTC/VacN7qz7bYknS0qmKPmw+vlnR5YTj6jry+n3/NUb8jVYpij3w==
-X-Received: by 2002:a17:907:7757:b0:99b:499d:4635 with SMTP id kx23-20020a170907775700b0099b499d4635mr4406237ejc.75.1691267287382;
-        Sat, 05 Aug 2023 13:28:07 -0700 (PDT)
-Received: from [192.168.1.20] ([178.197.222.245])
-        by smtp.gmail.com with ESMTPSA id bg8-20020a170906a04800b00992afee724bsm3056276ejb.76.2023.08.05.13.28.05
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 05 Aug 2023 13:28:06 -0700 (PDT)
-Message-ID: <ad4dfefc-f18a-5462-eb6d-fdee161f87b3@linaro.org>
-Date:   Sat, 5 Aug 2023 22:28:05 +0200
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.14.0
-Subject: Re: [PATCH 1/2] dt-bindings: rtc: Add Epson RX8111
-Content-Language: en-US
-To:     Waqar Hameed <waqar.hameed@axis.com>,
-        Alessandro Zummo <a.zummo@towertech.it>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>
-Cc:     kernel@axis.com, linux-rtc@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <cover.1691158774.git.waqar.hameed@axis.com>
- <864b398918e99773f6cbd5ffe5b1f0dc33e4d6d1.1691158774.git.waqar.hameed@axis.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <864b398918e99773f6cbd5ffe5b1f0dc33e4d6d1.1691158774.git.waqar.hameed@axis.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        Sat, 5 Aug 2023 16:46:00 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0BBF6194;
+        Sat,  5 Aug 2023 13:45:59 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 9338660EEA;
+        Sat,  5 Aug 2023 20:45:58 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id F109EC433C7;
+        Sat,  5 Aug 2023 20:45:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1691268358;
+        bh=QgSjMbGN5oT+YPU8NxvTKL5L7XEXos7GDLcjhJlYkUI=;
+        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+        b=hhGC5uhqzgXJYYvL3r+lAL/c/VwYg15O5x52IRYzqha+X6wT97Ux+d5G7k1Wn0b7x
+         2zBACHvKG3MRNCjNuj3uesxw73suSkufAVzZftIYv/CyphXVtz/XGrjqJshH+78ysn
+         qe54r9tI92jmOwa47kgG+o8N+TdO0sVf9MfgEAQu8I8JdDwiP3S23LaUYb2QB08bnV
+         h4vKdttxN/7J96Mlw9yApo+R7FnhRRts8DgEwV37m9n4hP+oyoMmrgicbQsKwBSXFI
+         WDxl9wPVg/VG5zHljbMovXYMlBKfNc/p+76Uub7aGtU7NLlDT4VzkDETxK12oNmq/T
+         /gLEc/ajqBr0A==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id DC1CEC395C5;
+        Sat,  5 Aug 2023 20:45:57 +0000 (UTC)
+Subject: Re: [GIT PULL] SMB3 DFS Fix
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <CAH2r5mt0UH0Z-nRdEDsFMbE_gj1d8ezcoAhScZoToQckVvT_fw@mail.gmail.com>
+References: <CAH2r5mt0UH0Z-nRdEDsFMbE_gj1d8ezcoAhScZoToQckVvT_fw@mail.gmail.com>
+X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <CAH2r5mt0UH0Z-nRdEDsFMbE_gj1d8ezcoAhScZoToQckVvT_fw@mail.gmail.com>
+X-PR-Tracked-Remote: git://git.samba.org/sfrench/cifs-2.6.git tags/6.5-rc4-smb3-client-fix
+X-PR-Tracked-Commit-Id: 11260c3d608b59231f4c228147a795ab21a10b33
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: f6a691685962637e53371788fe2a72b171aedc68
+Message-Id: <169126835789.30402.13336993334935190114.pr-tracker-bot@kernel.org>
+Date:   Sat, 05 Aug 2023 20:45:57 +0000
+To:     Steve French <smfrench@gmail.com>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        CIFS <linux-cifs@vger.kernel.org>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -81,34 +63,15 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 04/08/2023 16:19, Waqar Hameed wrote:
-> Epson RX8111 is an RTC with timestamp functionality. Add devicetree
-> bindings requiring the compatible string and I2C slave address (reg).
+The pull request you sent on Sat, 5 Aug 2023 13:55:42 -0500:
 
+> git://git.samba.org/sfrench/cifs-2.6.git tags/6.5-rc4-smb3-client-fix
 
-> +
-> +maintainers:
-> +  - Waqar Hameed <waqar.hameed@axis.com>
-> +
-> +description: |
-> +  RTC with timestamp functionality.
-> +
-> +  https://support.epson.biz/td/api/doc_check.php?dl=app_RX8111CE&lang=en
-> +
-> +properties:
-> +  compatible:
-> +    const: epson,rx8111
-> +
-> +  reg:
-> +    const: 0x32
-> +
-> +required:
-> +  - compatible
-> +  - reg
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/f6a691685962637e53371788fe2a72b171aedc68
 
-Just add it to trivial-rtc.yaml. You miss here more things than trivial
-is providing, so...
+Thank you!
 
-Best regards,
-Krzysztof
-
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
