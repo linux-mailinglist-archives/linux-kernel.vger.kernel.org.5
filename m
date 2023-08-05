@@ -2,145 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 58D23770DF7
-	for <lists+linux-kernel@lfdr.de>; Sat,  5 Aug 2023 07:55:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 52626770DFA
+	for <lists+linux-kernel@lfdr.de>; Sat,  5 Aug 2023 08:00:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229580AbjHEFzr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 5 Aug 2023 01:55:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58640 "EHLO
+        id S229614AbjHEF76 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 5 Aug 2023 01:59:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59212 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229445AbjHEFzp (ORCPT
+        with ESMTP id S229445AbjHEF74 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 5 Aug 2023 01:55:45 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C83464ECF;
-        Fri,  4 Aug 2023 22:55:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        MIME-Version:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
-        Content-ID:Content-Description:In-Reply-To:References;
-        bh=VVm3P3asI3oviVAO++8ExuHX7bAYG9Ho51gp9OdQ6NM=; b=TbPmkFKgpaXQa0E52oU9HdcUKC
-        jCrORP6DdR7WbwmTMEds8TnHwFPcH7hb+uyOV719HKMk/lX2fipLeAbsoMqy7qLrrQvf2kR+EoG4P
-        InqyaK9QajFnU5tGDVCylEI6FyeQ1OWDEaXVgdI6MzyeaOQPgnzDtNXn331e93qYUQSzcivsogP5e
-        DGovxpMfl2CO8rPjji0OdjkQLAuB/bAR0TO3VGcs/FfdukthVBP+eflfH+vAB/l5Djpam9T9k0dqQ
-        1TjhNKroyWnNj98pwxuoYx3faQdQsS1bEFFQ+FL14KvMrdy6h6KaWBOTpAMDz4Nx2pzmRDod0p/H1
-        8fIynSWw==;
-Received: from 2a02-8389-2341-5b80-39d3-4735-9a3c-88d8.cable.dynamic.v6.surfer.at ([2a02:8389:2341:5b80:39d3:4735:9a3c:88d8] helo=localhost)
-        by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-        id 1qSAGL-00DjuF-09;
-        Sat, 05 Aug 2023 05:55:41 +0000
-From:   Christoph Hellwig <hch@lst.de>
-To:     minchan@kernel.org, senozhatsky@chromium.org
-Cc:     linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Dusty Mabe <dusty@dustymabe.com>
-Subject: [PATCH] zram: take device and not only bvec offset into account
-Date:   Sat,  5 Aug 2023 07:55:37 +0200
-Message-Id: <20230805055537.147835-1-hch@lst.de>
-X-Mailer: git-send-email 2.39.2
+        Sat, 5 Aug 2023 01:59:56 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BAE6E4ED0;
+        Fri,  4 Aug 2023 22:59:55 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 51B9460A1A;
+        Sat,  5 Aug 2023 05:59:55 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 526B7C433C7;
+        Sat,  5 Aug 2023 05:59:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1691215194;
+        bh=TE1QwwH7vz6EtoxLzHCs+iszGyZ0+fhxjcjhaceK0JE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=XzZSMoSP/tVdazrZpI4sCnjv3tKv6X9iShg+VAK8EegB8gnMpkqTVu1NhLmSIPLfD
+         y40poK0owMLEgViHceveY93+yeh3QxANvwGo0fTRxwgDYr+5bJtaAp3EZzG71+qQRE
+         ZSPgRXYClENqXNgTccGsJlQAlDfiRAcZ4EkPKp7c=
+Date:   Sat, 5 Aug 2023 07:59:51 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Lukas Wunner <lukas@wunner.de>
+Cc:     Alistair Francis <alistair23@gmail.com>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        bhelgaas@google.com, linux-pci@vger.kernel.org,
+        alex.williamson@redhat.com, christian.koenig@amd.com,
+        kch@nvidia.com, logang@deltatee.com, linux-kernel@vger.kernel.org,
+        Alistair Francis <alistair.francis@wdc.com>
+Subject: Re: [PATCH v2] PCI/DOE: Expose the DOE protocols via sysfs
+Message-ID: <2023080553-daringly-raider-0135@gregkh>
+References: <20230801121824.174556-1-alistair.francis@wdc.com>
+ <2023080152-disobey-widen-65a4@gregkh>
+ <CAKmqyKMEqrfP8BrXd9pVd4a5Aodipty-8bAkxK5xcGSewsC9JA@mail.gmail.com>
+ <20230801170739.000048cb@Huawei.com>
+ <CAKmqyKND01=xaiB-VFVsi3+KRbxu4dBKfh_RhCN-jric5VzNpA@mail.gmail.com>
+ <20230802225248.GA19409@wunner.de>
+ <CAKmqyKNypBUPNK37wby-0_7G2-10BmZ4f8WQbevVn9uX1mZreQ@mail.gmail.com>
+ <20230804160542.GA19120@wunner.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED
-        autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230804160542.GA19120@wunner.de>
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit af8b04c63708 ("zram: simplify bvec iteration in
-__zram_make_request") changed the bio iteration in zram to rely on the
-implicit capping to page boundaries in bio_for_each_segment.  But it
-failed to care for the fact zram not only care about the page alignment
-of the bio payload, but also the page alignment into the device.  For
-buffered I/O and swap those are the same, but for direct I/O or kernel
-internal I/O like XFS log buffer writes they can differ.
+On Fri, Aug 04, 2023 at 06:05:42PM +0200, Lukas Wunner wrote:
+> On Fri, Aug 04, 2023 at 11:17:59AM -0400, Alistair Francis wrote:
+> > On Wed, Aug 2, 2023 at 6:52???PM Lukas Wunner <lukas@wunner.de> wrote:
+> > > I kind of like the approach of exposing a list which can be grep'ed,
+> > > even though it may go against the rule of having just one datum per
+> > > attribute.  I'd prefer a representation that's human-readable though,
+> > > e.g. "0001:01" for CMA-SPDM.
+> > 
+> > Yeah, it's my preferred method as well, but it's not going to be
+> > accepted upstream
+> 
+> How about procfs instead of sysfs?
 
-Fix this by open coding bio_for_each_segment and limiting the bvec len
-so that it never crosses over a page alignment boundary in the device
-in addition to the payload boundary already taken care of by
-bio_iter_iovec.
+No, procfs is for "processes", not devices.
 
-Fixes: af8b04c63708 ("zram: simplify bvec iteration in __zram_make_request")
-Reported-by: Dusty Mabe <dusty@dustymabe.com>
-Signed-off-by: Christoph Hellwig <hch@lst.de>
----
- drivers/block/zram/zram_drv.c | 32 ++++++++++++++++++++------------
- 1 file changed, 20 insertions(+), 12 deletions(-)
+> No "single datum per file" rule over there.
+> PCI content goes into /proc/bus/pci/.
+> Already used by lspci to access config space.
 
-diff --git a/drivers/block/zram/zram_drv.c b/drivers/block/zram/zram_drv.c
-index 5676e6dd5b1672..06673c6ca25555 100644
---- a/drivers/block/zram/zram_drv.c
-+++ b/drivers/block/zram/zram_drv.c
-@@ -1870,15 +1870,16 @@ static void zram_bio_discard(struct zram *zram, struct bio *bio)
- 
- static void zram_bio_read(struct zram *zram, struct bio *bio)
- {
--	struct bvec_iter iter;
--	struct bio_vec bv;
--	unsigned long start_time;
-+	unsigned long start_time = bio_start_io_acct(bio);
-+	struct bvec_iter iter = bio->bi_iter;
- 
--	start_time = bio_start_io_acct(bio);
--	bio_for_each_segment(bv, bio, iter) {
-+	do {
- 		u32 index = iter.bi_sector >> SECTORS_PER_PAGE_SHIFT;
- 		u32 offset = (iter.bi_sector & (SECTORS_PER_PAGE - 1)) <<
- 				SECTOR_SHIFT;
-+		struct bio_vec bv = bio_iter_iovec(bio, iter);
-+
-+		bv.bv_len = min_t(u32, bv.bv_len, PAGE_SIZE - offset);
- 
- 		if (zram_bvec_read(zram, &bv, index, offset, bio) < 0) {
- 			atomic64_inc(&zram->stats.failed_reads);
-@@ -1890,22 +1891,26 @@ static void zram_bio_read(struct zram *zram, struct bio *bio)
- 		zram_slot_lock(zram, index);
- 		zram_accessed(zram, index);
- 		zram_slot_unlock(zram, index);
--	}
-+
-+		bio_advance_iter_single(bio, &iter, bv.bv_len);
-+	} while (iter.bi_size);
-+
- 	bio_end_io_acct(bio, start_time);
- 	bio_endio(bio);
- }
- 
- static void zram_bio_write(struct zram *zram, struct bio *bio)
- {
--	struct bvec_iter iter;
--	struct bio_vec bv;
--	unsigned long start_time;
-+	unsigned long start_time = bio_start_io_acct(bio);
-+	struct bvec_iter iter = bio->bi_iter;
- 
--	start_time = bio_start_io_acct(bio);
--	bio_for_each_segment(bv, bio, iter) {
-+	do {
- 		u32 index = iter.bi_sector >> SECTORS_PER_PAGE_SHIFT;
- 		u32 offset = (iter.bi_sector & (SECTORS_PER_PAGE - 1)) <<
- 				SECTOR_SHIFT;
-+		struct bio_vec bv = bio_iter_iovec(bio, iter);
-+
-+		bv.bv_len = min_t(u32, bv.bv_len, PAGE_SIZE - offset);
- 
- 		if (zram_bvec_write(zram, &bv, index, offset, bio) < 0) {
- 			atomic64_inc(&zram->stats.failed_writes);
-@@ -1916,7 +1921,10 @@ static void zram_bio_write(struct zram *zram, struct bio *bio)
- 		zram_slot_lock(zram, index);
- 		zram_accessed(zram, index);
- 		zram_slot_unlock(zram, index);
--	}
-+
-+		bio_advance_iter_single(bio, &iter, bv.bv_len);
-+	} while (iter.bi_size);
-+
- 	bio_end_io_acct(bio, start_time);
- 	bio_endio(bio);
- }
--- 
-2.39.2
+And that is old legacy stuff, please, let us learn from our past
+mistakes in api creation, sysfs was created this way for a reason (i.e.
+large files in procfs do not work well over time.)
 
+thanks,
+
+greg k-h
