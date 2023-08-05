@@ -2,230 +2,246 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7BE14770D51
-	for <lists+linux-kernel@lfdr.de>; Sat,  5 Aug 2023 04:37:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D107F770D54
+	for <lists+linux-kernel@lfdr.de>; Sat,  5 Aug 2023 04:38:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229742AbjHEChu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Aug 2023 22:37:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60616 "EHLO
+        id S229763AbjHECis (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Aug 2023 22:38:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32816 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229468AbjHECht (ORCPT
+        with ESMTP id S229744AbjHECiq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Aug 2023 22:37:49 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.115])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9AB013E;
-        Fri,  4 Aug 2023 19:37:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1691203066; x=1722739066;
-  h=date:from:to:cc:subject:message-id:references:
-   in-reply-to:mime-version;
-  bh=r3zm5MvkehnwItITK7C4uBWv9An9/eVLCvG/1DaqZFg=;
-  b=IdaddIMdylvuAkfCbOditsmJlvy869AEMXrUPVITQZ3bVhAgmCjrPAjT
-   6GBD1XETBfAavqxJzaIm80mNNkqa3ZSSeWUe1QQmbSqr5QgYCiMK9d3fg
-   ZfbKtVQzRgY/lRazxW+N/nspq6XSBfpraZt+H0/GS7ERn+0YbMQQrAoeA
-   bvS5cCO22JNPpAxJOVyqAhb6jlksMi0Et0I+Cuh8KtmkGEfORwvuFibAK
-   JOvlckS6suiOZU4svvhGc7rEBh+jJaavWyDA8R8QWx3kJGzHIkIH2s3FH
-   Qto2HZALgE/qu9Uw93ijXm0X5Fp0ca/gKiyeuJFytqkG/RH3a2hGC39qo
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10792"; a="370272818"
-X-IronPort-AV: E=Sophos;i="6.01,256,1684825200"; 
-   d="scan'208";a="370272818"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Aug 2023 19:37:46 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10792"; a="795659350"
-X-IronPort-AV: E=Sophos;i="6.01,256,1684825200"; 
-   d="scan'208";a="795659350"
-Received: from fmsmsx602.amr.corp.intel.com ([10.18.126.82])
-  by fmsmga008.fm.intel.com with ESMTP; 04 Aug 2023 19:37:45 -0700
-Received: from fmsmsx612.amr.corp.intel.com (10.18.126.92) by
- fmsmsx602.amr.corp.intel.com (10.18.126.82) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.27; Fri, 4 Aug 2023 19:37:45 -0700
-Received: from fmsmsx601.amr.corp.intel.com (10.18.126.81) by
- fmsmsx612.amr.corp.intel.com (10.18.126.92) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.27; Fri, 4 Aug 2023 19:37:45 -0700
-Received: from fmsedg602.ED.cps.intel.com (10.1.192.136) by
- fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.27 via Frontend Transport; Fri, 4 Aug 2023 19:37:45 -0700
-Received: from NAM12-BN8-obe.outbound.protection.outlook.com (104.47.55.171)
- by edgegateway.intel.com (192.55.55.71) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.27; Fri, 4 Aug 2023 19:37:45 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=eV26DfVu2orgjkg3eenP9zproKBNOfA5HIqiLWIRbQ/F61IckFA3Z5MkcbXyBNL3asAFCgFf9UhvpcVK1Wk6DFxRJ76MMYePLOrES1r1qEAG3Xy0hqGLm6ww56qmg2ygVPd71APbl2ddutbozHRouxWFMrp95Tf+00WGsN3dsgvt06mGPDCNVocv/O1C9p8IT5u5Lqhm9s06uCZ6HYDWMB746DRv0RPsFKz7u1B3RiITF63783kj8x2FpamLTj4qs/5RyJ2CYMcTXBgSTPeZoNKgHw0Jdrr8AjTQOBoosHSK/hOqPdQbKTIs/ztLyc0IrMwUkQCgDzAXXRYA/I5fXg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=oIt9QJB/gYhNsYFgN9g5mXVsOmQUAKylLf6AiecREfg=;
- b=TM1BMt0IQmMf/Rc4x7fLlBGnR8LpnmhCa5wdkGCSNy5Hckc/orqr5ax2m/L6YcNlNLBDNUbEMkfz77L045dvH7BfWWlwksQyFdBnMBlQkWEJXnTHfiBwJ7mUsQhzi69ZgG8vPupSWOGeyYnSUfNsfJEoKuLfX7473B7w+ElpRVvFZbaP0XxpvriPiPxLxYSqBeBkhxAxmIuprKWtj4hbkxyYxvuDUnkBGUGB85mzStrUI2PezbrOX9tFq1n0458BDOS6/pCSlZHQhg4/F+MVYYhiLjAqYwGBfRbKi9Q3arKDQf5XiRRsh1klKCffc/WmTrjsDoLmvM5wLPqJGaGhdA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from PH8PR11MB8107.namprd11.prod.outlook.com (2603:10b6:510:256::6)
- by IA1PR11MB8175.namprd11.prod.outlook.com (2603:10b6:208:44f::12) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6631.47; Sat, 5 Aug
- 2023 02:37:43 +0000
-Received: from PH8PR11MB8107.namprd11.prod.outlook.com
- ([fe80::4556:2d4e:a29c:3712]) by PH8PR11MB8107.namprd11.prod.outlook.com
- ([fe80::4556:2d4e:a29c:3712%4]) with mapi id 15.20.6631.046; Sat, 5 Aug 2023
- 02:37:41 +0000
-Date:   Fri, 4 Aug 2023 19:37:38 -0700
-From:   Dan Williams <dan.j.williams@intel.com>
-To:     James Bottomley <James.Bottomley@hansenpartnership.com>,
-        Dan Williams <dan.j.williams@intel.com>, <dhowells@redhat.com>
-CC:     Brijesh Singh <brijesh.singh@amd.com>,
-        Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        "Dionna Amalie Glaze" <dionnaglaze@google.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        Samuel Ortiz <sameo@rivosinc.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        <linux-coco@lists.linux.dev>, <keyrings@vger.kernel.org>,
-        <x86@kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 0/4] keys: Introduce a keys frontend for attestation
- reports
-Message-ID: <64cdb5f25c56_2138e294f1@dwillia2-xfh.jf.intel.com.notmuch>
-References: <169057265210.180586.7950140104251236598.stgit@dwillia2-xfh.jf.intel.com>
- <a507ef3302d3afff58d82528ee17e82df1f21de0.camel@HansenPartnership.com>
- <64c5ed6eb4ca1_a88b2942a@dwillia2-xfh.jf.intel.com.notmuch>
- <c6576d1682b576ba47556478a98f397ed518a177.camel@HansenPartnership.com>
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <c6576d1682b576ba47556478a98f397ed518a177.camel@HansenPartnership.com>
-X-ClientProxiedBy: MW4PR04CA0091.namprd04.prod.outlook.com
- (2603:10b6:303:83::6) To PH8PR11MB8107.namprd11.prod.outlook.com
- (2603:10b6:510:256::6)
+        Fri, 4 Aug 2023 22:38:46 -0400
+Received: from wout4-smtp.messagingengine.com (wout4-smtp.messagingengine.com [64.147.123.20])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC4504EE6;
+        Fri,  4 Aug 2023 19:38:42 -0700 (PDT)
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+        by mailout.west.internal (Postfix) with ESMTP id CE9D4320085B;
+        Fri,  4 Aug 2023 22:38:37 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute4.internal (MEProxy); Fri, 04 Aug 2023 22:38:38 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=themaw.net; h=cc
+        :cc:content-transfer-encoding:content-type:content-type:date
+        :date:from:from:in-reply-to:in-reply-to:message-id:mime-version
+        :references:reply-to:sender:subject:subject:to:to; s=fm2; t=
+        1691203117; x=1691289517; bh=XeYyMuf4nTof6DJeNjR1M2UY/Ud55rp04sm
+        HiFwidbI=; b=VNuMFDFiIXo2a+6kdC0RTo2uZf27G3JL1EeYtLCWvUFxwnstJ73
+        JKHBZKaXqyrJG/1BejltrcQZKEo19uIBGIcb5PpVpTLwhgQtrrDC9ufVtErPBq2F
+        O7zjcKnzKFqyLIsuJT5Jf+Up+XGISsPXku244rWFV0G0cSWRJLrePeRdtcnm01bx
+        mFl3+WYYTcNADZQct7EMDD09nd6udb28tHxT6cBoPXZQag58/KSXsGIgJjrF+cFD
+        DuQjSzm33MdZw0ccemTfh8un1G6I3VuYkCfyBMd2jOoJTPLekRFlZx5DLU+vZT+7
+        aZeADCudi0dd8Uhsg6PPaDFoK+Y/1i5SRog==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-transfer-encoding
+        :content-type:content-type:date:date:feedback-id:feedback-id
+        :from:from:in-reply-to:in-reply-to:message-id:mime-version
+        :references:reply-to:sender:subject:subject:to:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; t=
+        1691203117; x=1691289517; bh=XeYyMuf4nTof6DJeNjR1M2UY/Ud55rp04sm
+        HiFwidbI=; b=RAP32c6Ko+JP0MRo1V0LGvxZrOB4XM5hWLW7ip3KkPGaojJEben
+        5cuizde/h2CmqS4NqXDBbxyxeefbq+c1B1ssNEfXy+Z/cbXQKEuYjm/zCNYANjkk
+        mWXykyFimoCPAeTAUmkF4llVYoNZ310nazOljg4Zxzb7sXdHvB60HWAhgv9S8TwP
+        fh1ERXiN3DyyP4ETUkkTZ9Z6nnJOFZNaKXMrjxPE17Xuj57jd82jYROvmn7PwXHX
+        X5kArb8HxhJRg1z41m5af3viN/ny1aMUaIYtzhEs8GfdMkSsMW5CE09hhN3raN9e
+        2AmxHCtxy7rA3cMFF22Hu7OTZQEt2x8Vfvw==
+X-ME-Sender: <xms:LLbNZItISBCyiYZPZPjVITFckN47gJ2GTfxtc_UK5uHKx6hxgpdMkw>
+    <xme:LLbNZFfhDZK-cwCNLirtpXUtVu9mYKteGb5x_UR4uZrn-L_ZKF8Vh7U218fBzcvEE
+    f8ax1iHCc2J>
+X-ME-Received: <xmr:LLbNZDx08c2mJHgZeR4bsC-K8n7X0h5BSd_hKz9s4Ith50QsLjLX8gkts5u8umMRlbUqYIQen8A3k7FHlRhKdgbez8dSm0-oYUK3fFLmF59VPV-Agow>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedrkeehgdehiecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpefkffggfgfuvfevfhfhjggtgfesthejredttdefjeenucfhrhhomhepkfgrnhcu
+    mfgvnhhtuceorhgrvhgvnhesthhhvghmrgifrdhnvghtqeenucggtffrrghtthgvrhhnpe
+    euhfeuieeijeeuveekgfeitdethefguddtleffhfelfeelhfduuedvfefhgefhheenucev
+    lhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehrrghvvghnse
+    hthhgvmhgrfidrnhgvth
+X-ME-Proxy: <xmx:LLbNZLPRbxJbREg3fv1vL9YyELpkZvPz21V1_aFDupQCRKTyqqWQfQ>
+    <xmx:LLbNZI_fShfMiYqhVqNZ2rsGDIJY0LOXGdpwrdZBIHIkzc0MQIAVGw>
+    <xmx:LLbNZDVGdsoub_7Jeeu7vDGclmExvuzS0RdNdmZzRqDErOFQVgnriA>
+    <xmx:LbbNZFNvHt8jkuEJJqeCdPygMG94kGxLdZEWBEQQeKmfxrvq5vtMNA>
+Feedback-ID: i31e841b0:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
+ 4 Aug 2023 22:38:32 -0400 (EDT)
+Message-ID: <3030f42d-1ab2-4815-0526-73136f349665@themaw.net>
+Date:   Sat, 5 Aug 2023 10:38:29 +0800
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PH8PR11MB8107:EE_|IA1PR11MB8175:EE_
-X-MS-Office365-Filtering-Correlation-Id: e735fd8f-1e22-4043-d75b-08db955cf0dd
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: jCSV+vnKPw+BZ07D9H35d/DmWvnTDYAH9FoieojaZT0qgo6RvfRVlOAIZ8yMTEq3LO7ouvcFW64GpL/6AVQv/4uY5TPw+A+gVn9sUJCB3z92nEroU7Rkail6wNwqY+Hl1mlG+f7E08rRxslpyuPZmmtYbFqmvYqkXWfb6q/gQsOTiszLlqzzE4iB6VvLx+EjkMqyUwBAhxAkU7cFJJo1EEPX3ayox+5CsZF6DWSCNBMBmeLNW3rqJ2wcQFEtRLU3iY9KXtwF2n3wH5Pfvzyr1Y+g8cnzxN+LlF4tkKo90gRDu+TPSH582wkO/9DYREDdJcP1qafYFjudVJmh2ulPbT5ZjJVY8zjTrJkrBRNOmytVWuTXw/3YYb1tY5jdfpaKJmDKriqPUfuI6XYIsecwFdqvjU3qtPyTFhWsdYeLJx2vNMImWQkH57TBk80lU+0rm3Yfag7oRkCAxldgDuc4IV4vvELpu2azIAMQmu/ZuxnzbfKA4bV0KcnU7LsvLO2TGcIydyZi1N3/lGp682A1qNcvKjBT0wAKDk2yYvMqbXM=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH8PR11MB8107.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(396003)(136003)(346002)(39860400002)(366004)(376002)(451199021)(1800799003)(186006)(66556008)(41300700001)(2906002)(66946007)(316002)(66476007)(4326008)(8936002)(8676002)(5660300002)(82960400001)(26005)(6506007)(86362001)(83380400001)(38100700002)(6512007)(6666004)(9686003)(6486002)(110136005)(54906003)(966005)(478600001)(7416002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?jv4tgNm2cl6+KKzzwsIJ1WSf1/KQAOvZuiE3D5923LdIjoe940maublEeKLq?=
- =?us-ascii?Q?nVf4p/HZnEL4QLUeyJTlCKI+/5l4u8Fke+MM5vr+8U6FwzRuIBmWNrzWYBXO?=
- =?us-ascii?Q?xMOF22mFzzmRlXTkL+HXI9uDupitPl1STPL8KFhTlPhRkYpd+t+eEK71c0rJ?=
- =?us-ascii?Q?4wGTgFQzrmYDZrTnVnIFjrOa/z5gqkOy/3tShGZ22fdRr27GyqiXahDrHaFs?=
- =?us-ascii?Q?RmH2BaoUs/aEX9mcXpfgngAWsRDKVHH4WikMNe1zj4j5ctvbE1OOoCHs0ygR?=
- =?us-ascii?Q?0C0kdI2EDxhtiGBiLJegVPf2KRTirDmhnqewfydsQuuUAFxJWzGoe+T7Qt5A?=
- =?us-ascii?Q?RzeRP40DV6VWw60InNLMK4SUK3RSzpQYN0UQwIX5P6bNG0KvYiYuW3ISGcDs?=
- =?us-ascii?Q?Fm5AZBfB9lp8xq/89A6xPMhMuAPe1/pw6fOAcuFechhmeDrYTJLNUvnyUNBy?=
- =?us-ascii?Q?MsjjqOLQWE3GSLPa6AXaaph51LjC5c6PoaVxLP+wfB2ERaMewwq2El1fgMGU?=
- =?us-ascii?Q?ig5W0iYVXYplf315rIbUnRbNbFDkzlUyRbDoPG8b3Ls4+HmDGGM0xSc+FYq2?=
- =?us-ascii?Q?clhvhYK7/uIStrITEX9/73TPTOKVdNChAvduFA1h2NHMSDEtkaKJ4MzkqwPG?=
- =?us-ascii?Q?c5VBfZ8K7uA72xHAoMKgqUWFym2tzbVA2UgRRjr/eQ91ZDwEq4FBhrTueG99?=
- =?us-ascii?Q?nncqxpHlZrBx/t2RqfePIdU2RCvZ596PF0azDhKU51yTS0CHN0+sMQ7MrM76?=
- =?us-ascii?Q?IRvVe5atmKaSxwCvCl3iyWADEwVDg0c3ZdHRzofrrfyxihfZfC1QZ55qgSbt?=
- =?us-ascii?Q?stA2f7VhFBNN3XD5zkZNoOiFq0cKqb2dxrt3B8HdXVDKyzIEnmV+fdDxpSsc?=
- =?us-ascii?Q?Ihw/NYNr0o7E4pbU0MO4Q1FFyDei6EgL7hqWMbjd5FhbTTBuY0bVEHGM8PGQ?=
- =?us-ascii?Q?ezZfiG9LMydz5CdBsEdemtBSnHNXiuTdYh3KPY7Umo4Vn3EkOLrK6NIjFyeb?=
- =?us-ascii?Q?siUk1+SDCwUz/jaStZe9fHfDbyq4fxtDHr6u1VJk66hM+ZyObt2fQlEQcmzk?=
- =?us-ascii?Q?9N5cXkbQJcdDMnLLIALhk+zD4Kcev6bI4DQ6ayEliikqYD91SsjtDAQsDnhV?=
- =?us-ascii?Q?iYVAinQbRsVJsCngt0WaimI8Qsmcs9ZF2Fqvls7P1HXJmhTK4fUSVBCTwb9d?=
- =?us-ascii?Q?1NJnHojsDklo06DNTSW/cEqZfUOgy9cqF4tAvVM9RotMP+5xR8agV5btxC5G?=
- =?us-ascii?Q?ggVNywPekpExMN+JTv3E6i+9m+Iy5ILXckqeGjFd1dlK9bcEWt+ZaMczHvu1?=
- =?us-ascii?Q?k8xu8lDI4mRr51ed6VhiQIIFR3sep8WsZzsGyq1jRg3MWXfOG37d2IUyfU86?=
- =?us-ascii?Q?UXqi6k3MQ+VTPJVDgL65sGeb5HtSskPVnRGlQtDAusr/ocqjyOZaHsxaJDgn?=
- =?us-ascii?Q?gvOIXNfGV91AdXQDLeE0sSnX+9Kc0eeE6RoI6OkwyiA5NGKfZpE6oH2qOFaR?=
- =?us-ascii?Q?2r/RxcqwSjZ7FcN8+2nuR8Bo1QkBCgKLAcPGz7EnE7dUw1IyIr6v2HM05QsB?=
- =?us-ascii?Q?hbN761d349uUfdkvnpjM02S++eJwd152mdhVCEpDxSTFIJ/5HYMKJcQ0NrPJ?=
- =?us-ascii?Q?NQ=3D=3D?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: e735fd8f-1e22-4043-d75b-08db955cf0dd
-X-MS-Exchange-CrossTenant-AuthSource: PH8PR11MB8107.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 05 Aug 2023 02:37:41.5023
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 2x+HCizOv3sh621kf9S2sawtUu0mJkKsVRjTM0rLLU0tUlT3MwM+RdTJ692Nz3t/ajWvE0HzP0NP1wx67cyrTHBP9LwaAzqrvZODmqBwPqs=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA1PR11MB8175
-X-OriginatorOrg: intel.com
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.12.0
+Subject: Re: [PATCH 1/2] autofs: fix memory leak of waitqueues in
+ autofs_catatonic_mode
+To:     Christian Brauner <brauner@kernel.org>
+Cc:     Al Viro <viro@ZenIV.linux.org.uk>,
+        autofs mailing list <autofs@vger.kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Fedor Pchelkin <pchelkin@ispras.ru>,
+        Takeshi Misawa <jeliantsurux@gmail.com>,
+        Alexey Khoroshilov <khoroshilov@ispras.ru>,
+        Matthew Wilcox <willy@infradead.org>,
+        Andrey Vagin <avagin@openvz.org>
+References: <169112719161.7590.6700123246297365841.stgit@donald.themaw.net>
+ <20230804-siegen-moralisieren-dd3dc2595ee2@brauner>
+Content-Language: en-US
+From:   Ian Kent <raven@themaw.net>
+In-Reply-To: <20230804-siegen-moralisieren-dd3dc2595ee2@brauner>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_PASS,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-James Bottomley wrote:
-[..]
-> > This report interface on the other hand just needs a single ABI to
-> > retrieve all these vendor formats (until industry standardization
-> > steps in) and it needs to be flexible (within reason) for all the
-> > TSM-specific options to be conveyed. I do not trust my ioctl ABI
-> > minefield avoidance skills to get that right. Key blob instantiation
-> > feels up to the task.
-> 
-> To repeat: there's nothing keylike about it.
+On 4/8/23 19:14, Christian Brauner wrote:
+> On Fri, Aug 04, 2023 at 01:33:12PM +0800, Ian Kent wrote:
+>> From: Fedor Pchelkin <pchelkin@ispras.ru>
+>>
+>> Syzkaller reports a memory leak:
+>>
+>> BUG: memory leak
+>> unreferenced object 0xffff88810b279e00 (size 96):
+>>    comm "syz-executor399", pid 3631, jiffies 4294964921 (age 23.870s)
+>>    hex dump (first 32 bytes):
+>>      00 00 00 00 00 00 00 00 08 9e 27 0b 81 88 ff ff  ..........'.....
+>>      08 9e 27 0b 81 88 ff ff 00 00 00 00 00 00 00 00  ..'.............
+>>    backtrace:
+>>      [<ffffffff814cfc90>] kmalloc_trace+0x20/0x90 mm/slab_common.c:1046
+>>      [<ffffffff81bb75ca>] kmalloc include/linux/slab.h:576 [inline]
+>>      [<ffffffff81bb75ca>] autofs_wait+0x3fa/0x9a0 fs/autofs/waitq.c:378
+>>      [<ffffffff81bb88a7>] autofs_do_expire_multi+0xa7/0x3e0 fs/autofs/expire.c:593
+>>      [<ffffffff81bb8c33>] autofs_expire_multi+0x53/0x80 fs/autofs/expire.c:619
+>>      [<ffffffff81bb6972>] autofs_root_ioctl_unlocked+0x322/0x3b0 fs/autofs/root.c:897
+>>      [<ffffffff81bb6a95>] autofs_root_ioctl+0x25/0x30 fs/autofs/root.c:910
+>>      [<ffffffff81602a9c>] vfs_ioctl fs/ioctl.c:51 [inline]
+>>      [<ffffffff81602a9c>] __do_sys_ioctl fs/ioctl.c:870 [inline]
+>>      [<ffffffff81602a9c>] __se_sys_ioctl fs/ioctl.c:856 [inline]
+>>      [<ffffffff81602a9c>] __x64_sys_ioctl+0xfc/0x140 fs/ioctl.c:856
+>>      [<ffffffff84608225>] do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+>>      [<ffffffff84608225>] do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
+>>      [<ffffffff84800087>] entry_SYSCALL_64_after_hwframe+0x63/0xcd
+>>
+>> autofs_wait_queue structs should be freed if their wait_ctr becomes zero.
+>> Otherwise they will be lost.
+>>
+>> In this case an AUTOFS_IOC_EXPIRE_MULTI ioctl is done, then a new
+>> waitqueue struct is allocated in autofs_wait(), its initial wait_ctr
+>> equals 2. After that wait_event_killable() is interrupted (it returns
+>> -ERESTARTSYS), so that 'wq->name.name == NULL' condition may be not
+>> satisfied. Actually, this condition can be satisfied when
+>> autofs_wait_release() or autofs_catatonic_mode() is called and, what is
+>> also important, wait_ctr is decremented in those places. Upon the exit of
+>> autofs_wait(), wait_ctr is decremented to 1. Then the unmounting process
+>> begins: kill_sb calls autofs_catatonic_mode(), which should have freed the
+>> waitqueues, but it only decrements its usage counter to zero which is not
+>> a correct behaviour.
+>>
+>> edit:imk
+>> This description is of course not correct. The umount performed as a result
+>> of an expire is a umount of a mount that has been automounted, it's not the
+>> autofs mount itself. They happen independently, usually after everything
+>> mounted within the autofs file system has been expired away. If everything
+>> hasn't been expired away the automount daemon can still exit leaving mounts
+>> in place. But expires done in both cases will result in a notification that
+>> calls autofs_wait_release() with a result status. The problem case is the
+>> summary execution of of the automount daemon. In this case any waiting
+>> processes won't be woken up until either they are terminated or the mount
+>> is umounted.
+>> end edit: imk
+>>
+>> So in catatonic mode we should free waitqueues which counter becomes zero.
+>>
+>> edit: imk
+>> Initially I was concerned that the calling of autofs_wait_release() and
+>> autofs_catatonic_mode() was not mutually exclusive but that can't be the
+>> case (obviously) because the queue entry (or entries) is removed from the
+>> list when either of these two functions are called. Consequently the wait
+>> entry will be freed by only one of these functions or by the woken process
+>> in autofs_wait() depending on the order of the calls.
+>> end edit: imk
+>>
+>> Reported-by: syzbot+5e53f70e69ff0c0a1c0c@syzkaller.appspotmail.com
+>> Suggested-by: Takeshi Misawa <jeliantsurux@gmail.com>
+>> Signed-off-by: Fedor Pchelkin <pchelkin@ispras.ru>
+>> Signed-off-by: Alexey Khoroshilov <khoroshilov@ispras.ru>
+>> Signed-off-by: Ian Kent <raven@themaw.net>
+>> Cc: Matthew Wilcox <willy@infradead.org>
+>> Cc: Andrei Vagin <avagin@gmail.com>
+>> Cc: autofs@vger.kernel.org
+>> Cc: linux-kernel@vger.kernel.org
+>> ---
+>>   fs/autofs/waitq.c |    3 ++-
+>>   1 file changed, 2 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/fs/autofs/waitq.c b/fs/autofs/waitq.c
+>> index 54c1f8b8b075..efdc76732fae 100644
+>> --- a/fs/autofs/waitq.c
+>> +++ b/fs/autofs/waitq.c
+>> @@ -32,8 +32,9 @@ void autofs_catatonic_mode(struct autofs_sb_info *sbi)
+>>   		wq->status = -ENOENT; /* Magic is gone - report failure */
+>>   		kfree(wq->name.name - wq->offset);
+>>   		wq->name.name = NULL;
+>> -		wq->wait_ctr--;
+>>   		wake_up_interruptible(&wq->queue);
+>> +		if (!--wq->wait_ctr)
+>> +			kfree(wq);
+> The only thing that peeked my interest was:
+>
+> autofs_wait()
+> -> if (!wq)
+>     -> wq->wait_ctr = 2;
+>     -> autofs_notify_daemon()
+>
+> Let's say autofs_write() fails with -EIO or for whatever reason and so
+> we end up calling:
+>
+>        -> autofs_catatonic_mode()
+>
+> If wait_ctr can be decremented in between so that
+> autofs_catatonic_mode() frees it and then autofs_wait() would cause a
+> UAF when it tries to much with wq again. But afaict, this can't happen
+> because and would also affect autofs_notify_daemon() then.
 
-From that perspective there's nothing keylike about user-keys either.
-Those are just blobs that userspace gets to define how they are used and
-the keyring is just a transport. I also think that this interface *is*
-key-like in that it is used in the flow of requesting other key
-material. The ability to set policy on who can request and instantiate
-these pre-requisite reports can be controlled by request-key policy.
+Interesting observation.
 
-If there was vendor standardization I would be open to /dev/tsmX
-interface, but I do not think this deserves brand new ABI from scratch.
+I'll think about it some more.
 
-> If you think that the keyctl mechanism for transporting information
-> across the kernel boundary should be generalised and presented as an
-> alternative to our fashion of the year interface for this, then that's
-> what you should do (and, I'm afraid to add, cc all the other
-> opinionated people who've also produced the flavour of the year
-> interfaces). 
 
-So I am coming back to this after seeing the thrash that the sysfs
-proposal is already causing [1]. sysfs is simply not the right interface
-for a transactional interface. My assumption that this interface would
-be something that happens once is contraindicated by Peter and Dionna.
-So sysfs would require a userspace agent to arbitrate multiple
-requesters reconfiguring this all the time.
+But I think a call autofs_catatonic_mode() or autofs_wait_release()
 
-[1]: http://lore.kernel.org/r/ZM0lEvYJ+5IgybLT@redhat.com 
+from autofs_notify_daemon() will reduce the count by one. At this
 
-> Sneaking it in as a one-off is the wrong way to proceed
-> on something like this.
+point there can't be any other calls to autofs_wait_release() for
 
-Where is the sneaking in cc'ing all the relevant maintainers of the
-keyring subsystem and their mailing list? Yes, please add others to the
-cc. 
+this wait id since they come back as a result of the notification. But
 
-The question for me at this point is whether a new:
+perhaps there could be a call for another wait id which implies that
 
-	/dev/tsmX
+catatonic mode might cause a problem ... I'm not sure that can happen ...
 
-...ABI is worth inventing, or if a key-type is sufficient. To Peter's
-concern, this key-type imposes no restrictions over what sevguest
-already allows. New options are easy to add to the key instantiation
-interface and I expect different vendors are likely to develop workalike
-functionality to keep option proliferation to a minimum. Unlike ioctl()
-there does not need to be as careful planning about the binary format of
-the input payload for per vendor options. Just add more tokens to the
-instantiation command-line.
+if the pipe isn't setup then the autofs mount hasn't been done ... if
 
-The keyring is also sysfs-like in that it is amenable to manipulation
-with command line tools that all systems have available, or by
-libkeyctl. 
+the pipe has gone away the daemon has gone away so no calls to
 
-To the concern about where do we draw the line for other use cases that
-want to use this as a precedent is to point out that this usage is
-demonstrably part of a key material provisioning flow.
+autofs_wait_release() ...
+
+
+It is worth some more thought though ...
+
+
+I guess there could be something odd where some process accesses
+
+a path and triggers a request when the daemon is killed and then
+
+the mount is umounted at the same time of the request but it's
+
+hard to see how that could happen.
+
+
+Ian
+
