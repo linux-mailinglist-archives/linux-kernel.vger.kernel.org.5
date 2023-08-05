@@ -2,67 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E475A770EF0
-	for <lists+linux-kernel@lfdr.de>; Sat,  5 Aug 2023 11:01:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 84392770EF2
+	for <lists+linux-kernel@lfdr.de>; Sat,  5 Aug 2023 11:01:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229849AbjHEI7U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 5 Aug 2023 04:59:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33586 "EHLO
+        id S229891AbjHEJBZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 5 Aug 2023 05:01:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34024 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229483AbjHEI7R (ORCPT
+        with ESMTP id S229483AbjHEJBX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 5 Aug 2023 04:59:17 -0400
-Received: from mail-il1-x134.google.com (mail-il1-x134.google.com [IPv6:2607:f8b0:4864:20::134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46CB844B8
-        for <linux-kernel@vger.kernel.org>; Sat,  5 Aug 2023 01:59:15 -0700 (PDT)
-Received: by mail-il1-x134.google.com with SMTP id e9e14a558f8ab-34930fe8608so10691855ab.3
-        for <linux-kernel@vger.kernel.org>; Sat, 05 Aug 2023 01:59:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1691225954; x=1691830754;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=DfvEEeKIgA69ovhmfGQ9VWugUSsdWnJ329BDpMe7j+E=;
-        b=f1Q3wHnX/qCtsMOy4DMBXm8Ujfxuz6oglXZdiwbkhn4zwPmGelfXzCIvBYIKy35iOt
-         WjmxqTXVngbVFwjhK7oDuSObP587i7hA65RPU3AFY78Sx1oaoB1Q3n+9s/ADx7/0yuYp
-         antix6m//lJU9q42Yiy+lh3rFDhwdJBDSHPV7W5/UHaRRASRlsvWAAu8lEKZ4iLapYOw
-         6vP4UVJOdv8YMX0b5WlMU5kR5JwANdUHSI1I18fRBgE53BSrJr7oIHZr2zv8vxCqKWVa
-         pWM6EBCUMnn9b9bfOTDpiw/cp8/93vn0ERt8Wp1ztm87Y+0ZoFkCK8hYFsceybs2Vx7t
-         yxjA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691225954; x=1691830754;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=DfvEEeKIgA69ovhmfGQ9VWugUSsdWnJ329BDpMe7j+E=;
-        b=ckHDhrLg7GjHodb+ydKdLoprbo8sP3DqpEW9srZxztCt5B547wmdkFWCs0cSSmNOR2
-         dzGENBZ5LwTkaaUqDcdkE9COSdDcQkCAFIHyWxHdlP06I9bH6qto/MKYqaDPM33emUBh
-         euGSztB6PhzR9YlePgThRIv59DZC0Ah4fWpVgE7zI0h56Ohthw1xxtYVbaHWEhirlGOG
-         VhFVLAkSS4xnGH5zkFConZzJ5RRxR9RTvp7fDPV+OlwQGckqw6NX6zG8E2X2vtiZV3Tk
-         8O7Kwj43aEP3Gj2jPjm/ojIYuRA6C8ySPEtkAWxe21ifG18Utdcs5giX6MdnqVbDCA4m
-         FYbQ==
-X-Gm-Message-State: AOJu0YxwuLBAGaN2aOrNLhLBm7VpVPB+FUC6rD06JTwq4DXQUcYFwRp9
-        tIdk8Loozi2kqjWtgmr3KnpzG+NLu8o=
-X-Google-Smtp-Source: AGHT+IFP6KXDRVRGva01CtKkrcrpDq5SMvTG6aWShTTIqJnVe1nF0HrSUO1zYsoABezdfXLboQ43pQ==
-X-Received: by 2002:a05:6e02:1a6d:b0:345:d583:5c64 with SMTP id w13-20020a056e021a6d00b00345d5835c64mr6790311ilv.24.1691225954629;
-        Sat, 05 Aug 2023 01:59:14 -0700 (PDT)
-Received: from ubuntu.myguest.virtualbox.org ([122.171.52.122])
-        by smtp.gmail.com with ESMTPSA id j8-20020aa78008000000b00686f0b15b06sm2728784pfi.188.2023.08.05.01.59.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 05 Aug 2023 01:59:14 -0700 (PDT)
-Date:   Sat, 5 Aug 2023 14:29:04 +0530
-From:   Pavan Bobba <opensource206@gmail.com>
-To:     Forest Bond <forest@alittletooquiet.net>,
-        Michael Straube <straube.linux@gmail.com>,
-        Philipp Hortmann <philipp.g.hortmann@gmail.com>,
-        outreachy@lists.linux.dev
-Cc:     linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: [PATCH v2] staging: vt6655: replace camel case by snake case
-Message-ID: <ZM4PWL55pMQiYIX6@ubuntu.myguest.virtualbox.org>
+        Sat, 5 Aug 2023 05:01:23 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 409E044B8;
+        Sat,  5 Aug 2023 02:01:22 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 8E46660B8F;
+        Sat,  5 Aug 2023 09:01:21 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B61FFC433C7;
+        Sat,  5 Aug 2023 09:01:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1691226081;
+        bh=dgEeBcrva2jOoR/AckWXtxOp1UtODnu4Z0eDZpObTJM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Qf7Xsi/7JNqXf/cgLhzWh9m18pm1NU5mXAnVpD9UeH7xIv/l4hJMmTKUOTm/T5hYl
+         Pgdi4TMZbfN+CiVIr/DmN5D+pGHTonbUnC+AO3USTz+w6GuI7KkJp9PyS7K39oegNk
+         3WsWGKSZKiaLLrvbQKYJMOlxa2+LJJyVRqHcmmjCtMDj8cTOdot9PWcUtoBH0ZpJoI
+         ZzonVbSQzarnJ2zKqena/M8r/uNqbB+zKjzFIfTBfzMCM2qpTFSLTpSsozB5WmNJKm
+         gOcHx9nhKPb+rtYjxMsW3UrVsO0OZBfMzft9e5kSEqS1BNwhkPWVfJrwT6MrUTzpNY
+         KfL5ZOKrY5wrQ==
+Date:   Sat, 5 Aug 2023 10:01:13 +0100
+From:   Conor Dooley <conor@kernel.org>
+To:     Martin Botka <martin@biqu3d.com>
+Cc:     martin.botka1@gmail.com,
+        Konrad Dybcio <konrad.dybcio@somainline.org>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@somainline.org>,
+        Marijn Suijten <marijn.suijten@somainline.org>,
+        Jami Kettunen <jamipkettunen@somainline.org>,
+        Paul Bouchara <paul.bouchara@somainline.org>,
+        Martin Botka <martin.botka@somainline.org>,
+        Andre Przywara <andre.przywara@arm.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Samuel Holland <samuel@sholland.org>,
+        Andrew Lunn <andrew@lunn.ch>, Icenowy Zheng <uwu@icenowy.me>,
+        Ludwig Kormann <ludwig.kormann@ict42.de>,
+        Heiko Stuebner <heiko@sntech.de>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Chris Morgan <macromorgan@hotmail.com>,
+        Jagan Teki <jagan@edgeble.ai>,
+        Maxime Ripard <mripard@kernel.org>, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 0/4] Add BigTreeTech CB1 SoM & Boards
+Message-ID: <20230805-whenever-likely-f16d8b2424ac@spud>
+References: <5EB3DB1D7F80A40F+20230805083636.788048-1-martin@biqu3d.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="R1/BBwzq+zlZ3S89"
 Content-Disposition: inline
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
+In-Reply-To: <5EB3DB1D7F80A40F+20230805083636.788048-1-martin@biqu3d.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -70,42 +79,59 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Replace array name of camel case by snake case. Issue found
-by checkpatch
 
-Signed-off-by: Pavan Bobba <opensource206@gmail.com>
----
- v1 -> v2: 1.character '_' added in the array name "byvt3253b0_rfmde"
-           2. typo in the subject line "small case" corrected with the
-	      proper word "snake case"
+--R1/BBwzq+zlZ3S89
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
- drivers/staging/vt6655/baseband.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+On Sat, Aug 05, 2023 at 10:36:03AM +0200, Martin Botka wrote:
+> Hello,
+> This series adds a vendor prefix for BigTreeTech and adds BigTreeTech CB1,
+> Manta board and BigTreeTech Pi.
+>=20
+> CB1 is just an SoM thats based on AllWinner H616.
+> BigTreeTech Manta boards are expander boards for CB1 and BigTreeTech Pi
+> is an CB1 in Rpi style with few additional things like IR receiver and fa=
+n port
+> on GPIO.
+>=20
+> This work started before I was hired by BigTreeTech and thus majority of =
+the
+> patches are from SoMainline email and few are from my work email.
+>=20
+> This series depends on commit https://lkml.org/lkml/2023/8/2/801
+> "dt-bindings: mfd: x-powers,axp152: make interrupt optional for more chip=
+s".
 
-diff --git a/drivers/staging/vt6655/baseband.c b/drivers/staging/vt6655/baseband.c
-index 0e135af8316b..8b913c64845c 100644
---- a/drivers/staging/vt6655/baseband.c
-+++ b/drivers/staging/vt6655/baseband.c
-@@ -499,7 +499,7 @@ static const unsigned char by_vt3253_init_tab_rfmd[CB_VT3253_INIT_FOR_RFMD][2] =
- };
- 
- #define CB_VT3253B0_INIT_FOR_RFMD 256
--static const unsigned char byVT3253B0_RFMD[CB_VT3253B0_INIT_FOR_RFMD][2] = {
-+static const unsigned char byvt3253b0_rfmd[CB_VT3253B0_INIT_FOR_RFMD][2] = {
- 	{0x00, 0x31},
- 	{0x01, 0x00},
- 	{0x02, 0x00},
-@@ -2005,8 +2005,8 @@ bool bb_vt3253_init(struct vnt_private *priv)
- 		} else {
- 			for (ii = 0; ii < CB_VT3253B0_INIT_FOR_RFMD; ii++)
- 				result &= bb_write_embedded(priv,
--					byVT3253B0_RFMD[ii][0],
--					byVT3253B0_RFMD[ii][1]);
-+					byvt3253b0_rfmd[ii][0],
-+					byvt3253b0_rfmd[ii][1]);
- 
- 			for (ii = 0; ii < CB_VT3253B0_AGC_FOR_RFMD2959; ii++)
- 				result &= bb_write_embedded(priv,
--- 
-2.34.1
+I dunno what you are doing, but FYI the threading on your emails is not
+quite right, with the cover letter disconnected from the rest of the
+series. git send-email can send the covers alongside the patches and
+correctly set the threading. Your 1/4 has a in-reply-to header with a
+message-id that doesn't exist.
 
+   1 ND  Aug 05 Martin Botka    (8.2K) =E2=94=8C=E2=94=80>[PATCH v3 4/4] ar=
+m64: dts: allwinner: h616: Add BigTreeTech Pi support
+   2 ND  Aug 05 Martin Botka    ( 12K) =E2=94=9C=E2=94=80>[PATCH v3 3/4] ar=
+m64: dts: allwinner: h616: Add BigTreeTech CB1 SoM & boards support
+   3  D  Aug 05 Martin Botka    (  41) =E2=94=9C=E2=94=80>[PATCH v3 2/4] dt=
+-bindings: arm: sunxi: Add BigTreeTech boards
+   4  D  Aug 05 Martin Botka    (  34) =E2=94=B4=E2=94=80>[PATCH v3 1/4] dt=
+-bindings: vendor-prefixes: Add BigTreeTech
+   5     Aug 05 Martin Botka    (  38) [PATCH v3 0/4] Add BigTreeTech CB1 S=
+oM & Boards
+
+
+
+--R1/BBwzq+zlZ3S89
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZM4P2QAKCRB4tDGHoIJi
+0tXOAQCX5+cTghQzqfFftt0xtGKczjQw/G8gIxfV9+wNVo8vYQEAxEihLw6ZGmbV
+2B+UvTVU0fWKKaFPd8/Kd7KNOHej/gA=
+=G2Ie
+-----END PGP SIGNATURE-----
+
+--R1/BBwzq+zlZ3S89--
