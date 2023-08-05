@@ -2,230 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B9DFE7711D1
-	for <lists+linux-kernel@lfdr.de>; Sat,  5 Aug 2023 21:38:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CA91E7711E7
+	for <lists+linux-kernel@lfdr.de>; Sat,  5 Aug 2023 21:44:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230309AbjHETin (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 5 Aug 2023 15:38:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58398 "EHLO
+        id S229905AbjHEToq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 5 Aug 2023 15:44:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59054 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230240AbjHETik (ORCPT
+        with ESMTP id S229445AbjHETop (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 5 Aug 2023 15:38:40 -0400
-Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C83981BCA
-        for <linux-kernel@vger.kernel.org>; Sat,  5 Aug 2023 12:38:38 -0700 (PDT)
-Received: by mail-wm1-x32d.google.com with SMTP id 5b1f17b1804b1-3fe426b8583so25587615e9.2
-        for <linux-kernel@vger.kernel.org>; Sat, 05 Aug 2023 12:38:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1691264317; x=1691869117;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=udk/H8ZgKjfvJwnE+xho4EfEOftvGT0VCYsBYpwRNHo=;
-        b=yD2hT0N3zrlPlop4QxmCW16DXc/kWC/8YNFcGOeKehecVojM3ba0Zd39mtHn989C3X
-         R7oqj1lpmK9PjbFsklJF8XvKM9o8RwvldDEqrpxtJrh3IquXPVxUqYEGuiDzMB7BhQHr
-         up6Glj+7T9fB3Pt3eOshXohaxyb02FtrVfrHOLLU5gIXEGoEjg4cC53wOPQaez0p8EDf
-         2L/1awLEnbUYyc2mft6VCHoN7EkruHhgoiWAUX9d0eVHEKjE77AIX/0pbvPjiK1JFvEj
-         365QLUclpMw2AZrOh5OHpPnyul9NRliEfYwFpGcgw/OK9XH7zq9pzgZrGfIEg0bsiRG1
-         Wjqw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691264317; x=1691869117;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=udk/H8ZgKjfvJwnE+xho4EfEOftvGT0VCYsBYpwRNHo=;
-        b=U/ZyywJbJwa8xN0ZDCudFQ0lDD3N50ypG6lg1nYeTuu7Gh01Ha1XEbmLMFbSpev3Ul
-         7RsHyxuSqQt84Nt3us/rrAYDiTOGuodeksSR3qn+6JQDLOmcD8MgkcDFuhX7Tl+lHD1H
-         bIQSWo1RFlj+MvE4abp+JayKkOGPsoeSjF8W9y3WaKMrK94y52RwMMA1RvI9Vzv22V45
-         I3CK6RIcvzbXvApr1Ib5yJQx5bviNXN4IDAOWmAvkm8DSm7wgdnoX4netnrThnI00ZMD
-         ESR48pnkahPupBeV3EBeC5016EuIYh5b/bMKEbM5jplUirpwtElfwgaAiwSWZAZSAIMO
-         LP5g==
-X-Gm-Message-State: AOJu0YwsQwHuGqAPQQpHVia8QAx9JziFWOPBy92OZshg6n2zu+kLh7mO
-        z5MCnrG5cU3n4pr3Eb5FDFkJOg==
-X-Google-Smtp-Source: AGHT+IGvrlUd0YfuF3G0qhIxdGb5wiPGOR1jc4ZfaV/DTwfKyUOEYr8f52aMWDJdfJaCv83Yo1cWYQ==
-X-Received: by 2002:a1c:4b0e:0:b0:3fb:b530:a4e4 with SMTP id y14-20020a1c4b0e000000b003fbb530a4e4mr4361705wma.8.1691264317315;
-        Sat, 05 Aug 2023 12:38:37 -0700 (PDT)
-Received: from [192.168.1.20] ([178.197.222.245])
-        by smtp.gmail.com with ESMTPSA id z12-20020a05600c220c00b003fe1ca92151sm5752252wml.26.2023.08.05.12.38.34
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 05 Aug 2023 12:38:36 -0700 (PDT)
-Message-ID: <ceddbbfb-a178-2b7e-ea17-0a37f33224ab@linaro.org>
-Date:   Sat, 5 Aug 2023 21:38:34 +0200
+        Sat, 5 Aug 2023 15:44:45 -0400
+X-Greylist: delayed 388 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Sat, 05 Aug 2023 12:44:39 PDT
+Received: from smtpbgeu1.qq.com (smtpbgeu1.qq.com [52.59.177.22])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B7D91732;
+        Sat,  5 Aug 2023 12:44:38 -0700 (PDT)
+X-QQ-mid: bizesmtp70t1691264671t108lc7o
+Received: from linux-lab-host.localdomain ( [116.30.131.233])
+        by bizesmtp.qq.com (ESMTP) with 
+        id ; Sun, 06 Aug 2023 03:44:30 +0800 (CST)
+X-QQ-SSF: 01200000000000E0X000000A0000000
+X-QQ-FEAT: zT6n3Y95oi1y8fInte+k+VHvD3XvDVwfE8g+6rqb4AalVd+4Dp8ranF9L+Uj4
+        FgiLWpRUWNssQ6BCu3QpEgULh0+D/vQtwuqkIXWYGYlD+YIAz5eQv/h/FUeYLMOXuvHWr3U
+        iZVd5cYtdKsLGjzv0XBVn8z2/lm0WxRoq4SwkO4RpyypFtUdzMcoI1cJDkq62YP1K3/H/W+
+        wE6UYkpZpbAwgMGvNLShExMa42TNO0QIB4hfIYreA0tA1Hg7gukvqVND8Z0HWwXn6bT2kdP
+        MSQLwxMRj5O4r50e1fdPek4yKGvwE/wGNjf29Tijk9xfzyE5HP/JMcYACthhu3MZ7M1uMch
+        ji0eYxYDIBWe/zp5CyFRzpVGCZPo25ZKSscKXyVDtlNgvHXJQ1CPYQTW4+H9oUG8CotnEqf
+X-QQ-GoodBg: 0
+X-BIZMAIL-ID: 7505355185918316706
+From:   Zhangjin Wu <falcon@tinylab.org>
+To:     w@1wt.eu
+Cc:     falcon@tinylab.org, linux-kernel@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, tanyuan@tinylab.org,
+        thomas@t-8ch.de
+Subject: [PATCH v1 2/4] selftests/nolibc: customize CROSS_COMPILE for many architectures
+Date:   Sun,  6 Aug 2023 03:44:29 +0800
+Message-Id: <3ec048008a9b2c1ed7406214c6899e5412a97596.1691263493.git.falcon@tinylab.org>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <cover.1691263493.git.falcon@tinylab.org>
+References: <cover.1691263493.git.falcon@tinylab.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.14.0
-Subject: Re: [PATCH v3 1/2] dt-bindings: cpufreq: add bindings for virtual
- cpufreq
-Content-Language: en-US
-To:     David Dai <davidai@google.com>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        Saravana Kannan <saravanak@google.com>
-Cc:     Quentin Perret <qperret@google.com>,
-        Masami Hiramatsu <mhiramat@google.com>,
-        Will Deacon <will@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Marc Zyngier <maz@kernel.org>,
-        Oliver Upton <oliver.upton@linux.dev>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Pavan Kondeti <quic_pkondeti@quicinc.com>,
-        Gupta Pankaj <pankaj.gupta@amd.com>,
-        Mel Gorman <mgorman@suse.de>, kernel-team@android.com,
-        linux-pm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20230731174613.4133167-1-davidai@google.com>
- <20230731174613.4133167-2-davidai@google.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <20230731174613.4133167-2-davidai@google.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-QQ-SENDSIZE: 520
+Feedback-ID: bizesmtp:tinylab.org:qybglogicsvrgz:qybglogicsvrgz5a-1
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_PASS,
+        T_SPF_HELO_TEMPERROR autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 31/07/2023 19:46, David Dai wrote:
-> Adding bindings to represent a virtual cpufreq device.
-> 
-> Virtual machines may expose MMIO regions for a virtual cpufreq device for
-> guests to read frequency information or to request frequency selection. The
-> virtual cpufreq device has an individual controller for each CPU.
+This simplifies the 'make' commands for most of nolibc supported
+architectures, only requires the XARCH option now.
 
-A nit, subject: drop second/last, redundant "bindings for". The
-"dt-bindings" prefix is already stating that these are bindings.
+Almost all distributions provide qemu and toolchains for i386, x86_64,
+arm64, arm, mips, riscv and s390, let's customize the local toolchains
+for them. The fresh new loongarch is an exception, which is not covered
+here.
 
-> 
-> Co-developed-by: Saravana Kannan <saravanak@google.com>
-> Signed-off-by: Saravana Kannan <saravanak@google.com>
-> Signed-off-by: David Dai <davidai@google.com>
-> ---
->  .../bindings/cpufreq/cpufreq-virtual.yaml     | 89 +++++++++++++++++++
->  1 file changed, 89 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/cpufreq/cpufreq-virtual.yaml
-> 
-> diff --git a/Documentation/devicetree/bindings/cpufreq/cpufreq-virtual.yaml b/Documentation/devicetree/bindings/cpufreq/cpufreq-virtual.yaml
-> new file mode 100644
-> index 000000000000..f377cfc972ca
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/cpufreq/cpufreq-virtual.yaml
-> @@ -0,0 +1,89 @@
-> +# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/cpufreq/cpufreq-virtual.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yamll#
-> +
-> +title: Virtual CPUFreq
-> +
-> +maintainers:
-> +  - David Dai <davidai@google.com>
-> +  - Saravana Kannan <saravanak@google.com>
-> +
-> +description:
-> +  Virtual CPUFreq is a virtualized driver in guest kernels that sends frequency
-> +  selection of its vCPUs as a hint to the host through MMIO regions. The host
-> +  uses the hint to schedule vCPU threads and select physical CPU frequency. It
-> +  enables accurate Per-Entity Load Tracking for tasks running in the guest by
-> +  querying host CPU frequency unless a virtualized FIE (ex. AMU) exists.
+If want to use another toolchain which is not customized here, we can
+also pass CROSS_COMPILE, CROSS_COMPILE_$(XARCH) and even CC from command
+line.
 
-Why do you need DT for this? You control hypervisor, thus control the
-interface to the guest. I think Rob made it pretty clear that
-discoverable usecases (which is yours) are not for DT.
+After carefully install and configure $(CROSS_COMPILE_$(XARCH)) and
+qemu-$(XARCH), it is able to run tests for the architectures or their
+variants like this:
 
-Incomplete style-review follows:
+    $ ARCHS="i386 x86_64 arm64 arm mips ppc ppc64 ppc64le riscv s390"
+    $ for arch in ${ARCHS[@]}; do printf "%9s: " $arch; make run-user XARCH=$arch | grep status; done
+         i386: 165 test(s): 157 passed,   8 skipped,   0 failed => status: warning
+       x86_64: 165 test(s): 157 passed,   8 skipped,   0 failed => status: warning
+        arm64: 165 test(s): 157 passed,   8 skipped,   0 failed => status: warning
+          arm: 165 test(s): 156 passed,   9 skipped,   0 failed => status: warning
+         mips: 165 test(s): 156 passed,   9 skipped,   0 failed => status: warning
+          ppc: 165 test(s): 157 passed,   8 skipped,   0 failed => status: warning
+        ppc64: 165 test(s): 157 passed,   8 skipped,   0 failed => status: warning
+      ppc64le: 165 test(s): 157 passed,   8 skipped,   0 failed => status: warning
+        riscv: 165 test(s): 156 passed,   9 skipped,   0 failed => status: warning
+         s390: 165 test(s): 156 passed,   9 skipped,   0 failed => status: warning
 
-> +
-> +properties:
-> +  compatible:
-> +    const: virtual,cpufreq
+[1]: https://mirrors.edge.kernel.org/pub/tools/crosstool/
 
-Missing blank line.
+Signed-off-by: Zhangjin Wu <falcon@tinylab.org>
+---
+ tools/testing/selftests/nolibc/Makefile | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
-> +  reg:
-> +    maxItems: 1
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +
-> +additionalProperties: false
-> +
-> +examples:
-> +  - |
-> +    cpus {
-> +      #address-cells = <1>;
-> +      #size-cells = <0>;
-> +
-> +      cpu@0 {
-> +        compatible = "arm,arm-v8";
-> +        device_type = "cpu";
-> +        reg = <0x0>;
-> +        operating-points-v2 = <&opp_table0>;
-> +      };
-> +
-> +      cpu@1 {
-> +        compatible = "arm,arm-v8";
-> +        device_type = "cpu";
-> +        reg = <0x0>;
-> +        operating-points-v2 = <&opp_table1>;
-> +      };
-> +    };
-> +
-> +    opp_table0: opp-table-0 {
-> +      compatible = "operating-points-v2";
-> +
-> +      opp1098000000 {
-> +        opp-hz = /bits/ 64 <1098000000>;
-> +        opp-level = <1>;
-> +      };
-> +
-> +      opp1197000000 {
-> +        opp-hz = /bits/ 64 <1197000000>;
-> +        opp-level = <2>;
-> +      };
-> +    };
-> +
-> +    opp_table1: opp-table-1 {
-> +      compatible = "operating-points-v2";
-> +
-> +      opp1106000000 {
-> +        opp-hz = /bits/ 64 <1106000000>;
-> +        opp-level = <1>;
-> +      };
-> +
-> +      opp1277000000 {
-> +        opp-hz = /bits/ 64 <1277000000>;
-> +        opp-level = <2>;
-> +      };
-> +    };
-> +
-> +    soc {
-> +      #address-cells = <1>;
-> +      #size-cells = <1>;
-> +
-> +      cpufreq {
+diff --git a/tools/testing/selftests/nolibc/Makefile b/tools/testing/selftests/nolibc/Makefile
+index e2b02761ad44..d32694656221 100644
+--- a/tools/testing/selftests/nolibc/Makefile
++++ b/tools/testing/selftests/nolibc/Makefile
+@@ -56,9 +56,17 @@ IMAGE            = $(IMAGE_$(XARCH))
+ IMAGE_NAME       = $(notdir $(IMAGE))
+ 
+ # CROSS_COMPILE: cross toolchain prefix by architecture
++CROSS_COMPILE_i386      ?= x86_64-linux-gnu-
++CROSS_COMPILE_x86_64    ?= x86_64-linux-gnu-
++CROSS_COMPILE_x86       ?= x86_64-linux-gnu-
++CROSS_COMPILE_arm64     ?= aarch64-linux-gnu-
++CROSS_COMPILE_arm       ?= arm-linux-gnueabi-
++CROSS_COMPILE_mips      ?= mipsel-linux-gnu-
+ CROSS_COMPILE_ppc       ?= powerpc-linux-gnu-
+ CROSS_COMPILE_ppc64     ?= powerpc64le-linux-gnu-
+ CROSS_COMPILE_ppc64le   ?= powerpc64le-linux-gnu-
++CROSS_COMPILE_riscv     ?= riscv64-linux-gnu-
++CROSS_COMPILE_s390      ?= s390x-linux-gnu-
+ CROSS_COMPILE           ?= $(CROSS_COMPILE_$(XARCH))
+ 
+ # make sure CC is prefixed with CROSS_COMPILE
+-- 
+2.25.1
 
-Missing unit address
-
-> +        reg = <0x1040000 0x10>;
-> +        compatible = "virtual,cpufreq";
-
-compatible is always the first property.
-
-Also, you did not test it...
-
-
-Best regards,
-Krzysztof
 
