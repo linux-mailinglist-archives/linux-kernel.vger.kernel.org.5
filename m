@@ -2,134 +2,193 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 91235770F68
-	for <lists+linux-kernel@lfdr.de>; Sat,  5 Aug 2023 13:05:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 467BC770F6B
+	for <lists+linux-kernel@lfdr.de>; Sat,  5 Aug 2023 13:12:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229919AbjHELFf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 5 Aug 2023 07:05:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52456 "EHLO
+        id S229941AbjHELMp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 5 Aug 2023 07:12:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53044 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229511AbjHELFc (ORCPT
+        with ESMTP id S229511AbjHELMn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 5 Aug 2023 07:05:32 -0400
-Received: from bedivere.hansenpartnership.com (bedivere.hansenpartnership.com [96.44.175.130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC42A4215;
-        Sat,  5 Aug 2023 04:05:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-        d=hansenpartnership.com; s=20151216; t=1691233529;
-        bh=Kp0V8XoBe7ftnnqF+Zb6Xx7gGt4oeSLO48BmsQvQNRs=;
-        h=Message-ID:Subject:From:To:Date:In-Reply-To:References:From;
-        b=dattdD7Q5Ya4ttLlIDRS/BH6AZTqW2rycXm2dneWDDiaOu5g3QRxb4S7iaAvJwjuR
-         kNZ7BGvX1b+bsz1sit2Bp/THSHZPNVb0g+/j3tW31IHbCoIwYk7V0zdUEzh5GcI+tV
-         PzbvV7HFjW1+ANgwQWrftApsoIDUPPhrFupl9Rf0=
-Received: from localhost (localhost [127.0.0.1])
-        by bedivere.hansenpartnership.com (Postfix) with ESMTP id 6BFD11286B03;
-        Sat,  5 Aug 2023 07:05:29 -0400 (EDT)
-Received: from bedivere.hansenpartnership.com ([127.0.0.1])
- by localhost (bedivere.hansenpartnership.com [127.0.0.1]) (amavis, port 10024)
- with ESMTP id HtRUkobKztqP; Sat,  5 Aug 2023 07:05:29 -0400 (EDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-        d=hansenpartnership.com; s=20151216; t=1691233529;
-        bh=Kp0V8XoBe7ftnnqF+Zb6Xx7gGt4oeSLO48BmsQvQNRs=;
-        h=Message-ID:Subject:From:To:Date:In-Reply-To:References:From;
-        b=dattdD7Q5Ya4ttLlIDRS/BH6AZTqW2rycXm2dneWDDiaOu5g3QRxb4S7iaAvJwjuR
-         kNZ7BGvX1b+bsz1sit2Bp/THSHZPNVb0g+/j3tW31IHbCoIwYk7V0zdUEzh5GcI+tV
-         PzbvV7HFjW1+ANgwQWrftApsoIDUPPhrFupl9Rf0=
-Received: from [IPv6:2601:5c4:4302:c21::a774] (unknown [IPv6:2601:5c4:4302:c21::a774])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (prime256v1) server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        by bedivere.hansenpartnership.com (Postfix) with ESMTPSA id D1D221286B02;
-        Sat,  5 Aug 2023 07:05:27 -0400 (EDT)
-Message-ID: <a8e491304c28f74d9c8a61de4790e0584c40a19e.camel@HansenPartnership.com>
-Subject: Re: [PATCH 0/4] keys: Introduce a keys frontend for attestation
- reports
-From:   James Bottomley <James.Bottomley@HansenPartnership.com>
-To:     "Daniel P." =?ISO-8859-1?Q?Berrang=E9?= <berrange@redhat.com>,
-        "Huang, Kai" <kai.huang@intel.com>
-Cc:     "Williams, Dan J" <dan.j.williams@intel.com>,
-        "dhowells@redhat.com" <dhowells@redhat.com>,
-        "sameo@rivosinc.com" <sameo@rivosinc.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "jarkko@kernel.org" <jarkko@kernel.org>,
-        "bp@alien8.de" <bp@alien8.de>,
-        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-        "peterz@infradead.org" <peterz@infradead.org>,
-        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-        "sathyanarayanan.kuppuswamy@linux.intel.com" 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        "thomas.lendacky@amd.com" <thomas.lendacky@amd.com>,
-        "dionnaglaze@google.com" <dionnaglaze@google.com>,
-        "keyrings@vger.kernel.org" <keyrings@vger.kernel.org>,
-        "brijesh.singh@amd.com" <brijesh.singh@amd.com>,
-        "linux-coco@lists.linux.dev" <linux-coco@lists.linux.dev>,
-        "x86@kernel.org" <x86@kernel.org>
-Date:   Sat, 05 Aug 2023 07:05:25 -0400
-In-Reply-To: <ZM0lEvYJ+5IgybLT@redhat.com>
-References: <169057265210.180586.7950140104251236598.stgit@dwillia2-xfh.jf.intel.com>
-         <a507ef3302d3afff58d82528ee17e82df1f21de0.camel@HansenPartnership.com>
-         <64c5ed6eb4ca1_a88b2942a@dwillia2-xfh.jf.intel.com.notmuch>
-         <c6576d1682b576ba47556478a98f397ed518a177.camel@HansenPartnership.com>
-         <6dec442c64faf2fecd21bcc77e4a6350e88948b9.camel@intel.com>
-         <ZM0lEvYJ+5IgybLT@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.42.4 
+        Sat, 5 Aug 2023 07:12:43 -0400
+Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31A854215;
+        Sat,  5 Aug 2023 04:12:42 -0700 (PDT)
+Received: by mail-wm1-x32a.google.com with SMTP id 5b1f17b1804b1-3fe4a89e8c4so10364555e9.3;
+        Sat, 05 Aug 2023 04:12:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1691233960; x=1691838760;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=AgWNyMxZp4Y1lh0jk2J1qrZPUTJ7GIIzr1e92o6ob7k=;
+        b=cKmgs4BJFFxaeuZ5IzJVkWbattNKwAIpvXEbiG+5x2RXmSHhuMydTXXJuwD91FmNUN
+         EKpnlNizgvrkXzwk9ZBoWiokiIbJkgnKgZAZ4fJ91rW3xbyyyfH+fFNwWGtv5fmyjdFT
+         vAddfbPfNLiXwz1D/swITFXSrrol1g8R5/AgWaMlrLhfx+E3ykwmNj2qRR+RYAh7smrF
+         BC8wtEk9wp1MdqWtpFBSfKNQgxyKYO8BMVBQd1WCajnk0WnYFr2tUZ38trEMXI8Kamlo
+         rR91p6OY50F7YylO7E70NuH4EFy70sHU/tsjFT5UcChoPqwb0Eb0Man9sc+7MYfCVs11
+         sT+Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691233960; x=1691838760;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=AgWNyMxZp4Y1lh0jk2J1qrZPUTJ7GIIzr1e92o6ob7k=;
+        b=UNZfHDBcvaq/FwBQdtpbiBDRGTucxuOD0yX4IpqILhbc1ZNlpR5cNzbLHJtcfTbgtZ
+         4yzQ6z9nNlbnmpZ3BGJNmzMVeS9y3d9ESgiUzJxmK1qm35PE1dv09B7HKgXQmlGWBVMy
+         ljJpnLKjh4s8ziN49jxvn6HTkoNq/PFrvgd2fynK3vI3GaT+6JEQBk6JgnnJH4A97yLn
+         XoIpHGAsuL2BvVKJ/lSxoL0V8RZZVwjnXKLX+Ff91ULqZ2as+01FpCaJpSKenDOTEZOn
+         wO8DfJUV7T5RH+viX+a36L0zitfYWkYOQWz6TlAGOy88BEo/ExRODZsyVcQfHAIAKJ5f
+         DXeQ==
+X-Gm-Message-State: AOJu0YzwgwlRpwtLd5G9Jpeatm/AZPNmLiWExG0ukudXpdaeOmM4C3OV
+        vgiKSHGqcMvC8aa+4nK/LCc=
+X-Google-Smtp-Source: AGHT+IHO+ScG2K5CxPHsNMjHBz7qpit0hydbZUw0LLo5aF8s89U16DxNKWlP5CNpZlsFcq7lFoCGZA==
+X-Received: by 2002:a1c:f717:0:b0:3fe:45e7:1d6f with SMTP id v23-20020a1cf717000000b003fe45e71d6fmr3073239wmh.21.1691233960365;
+        Sat, 05 Aug 2023 04:12:40 -0700 (PDT)
+Received: from [192.168.22.144] ([41.86.43.41])
+        by smtp.gmail.com with ESMTPSA id y8-20020a7bcd88000000b003fe2b081661sm9165411wmj.30.2023.08.05.04.12.36
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 05 Aug 2023 04:12:39 -0700 (PDT)
+Message-ID: <0e1a5faf-88b7-87c5-ff92-413991878894@gmail.com>
+Date:   Sat, 5 Aug 2023 14:12:33 +0300
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.4.2
+Subject: Re: [PATCH net-next v5 4/4] vsock/virtio: MSG_ZEROCOPY flag support
+Content-Language: en-US
+To:     Paolo Abeni <pabeni@redhat.com>,
+        Arseniy Krasnov <AVKrasnov@sberdevices.ru>,
+        Stefan Hajnoczi <stefanha@redhat.com>,
+        Stefano Garzarella <sgarzare@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Bobby Eshleman <bobby.eshleman@bytedance.com>
+Cc:     kvm@vger.kernel.org, virtualization@lists.linux-foundation.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel@sberdevices.ru
+References: <20230730085905.3420811-1-AVKrasnov@sberdevices.ru>
+ <20230730085905.3420811-5-AVKrasnov@sberdevices.ru>
+ <8a7772a50a16fbbcb82fc0c5e09f9e31f3427e3d.camel@redhat.com>
+From:   Arseniy Krasnov <oxffffaa@gmail.com>
+In-Reply-To: <8a7772a50a16fbbcb82fc0c5e09f9e31f3427e3d.camel@redhat.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,HK_RANDOM_ENVFROM,
+        HK_RANDOM_FROM,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 2023-08-04 at 17:19 +0100, Daniel P. Berrangé wrote:
-> On Tue, Aug 01, 2023 at 11:45:12AM +0000, Huang, Kai wrote:
-> > The IOCTL vs /sysfs isn't discussed.
-> > 
-> > For instance, after rough thinking, why is the IOCTL better than
-> > below approach
-> > using /sysfs?
-> > 
-> > echo <REPORTDATA> > /sys/kernel/coco/tdx/attest/reportdata
-> > cat /sys/kernel/coco/tdx/attest/tdreport
-> > 
-> > Each "echo <REPORTDATA>" to '/sys/.../reportdata' triggers the
-> > driver to call
-> > TDCALL to get the TDREPORT, which is available at
-> > '/sys/.../tdreport'.
+
+
+On 01.08.2023 16:34, Paolo Abeni wrote:
+> On Sun, 2023-07-30 at 11:59 +0300, Arseniy Krasnov wrote:
+>> +static int virtio_transport_fill_skb(struct sk_buff *skb,
+>> +				     struct virtio_vsock_pkt_info *info,
+>> +				     size_t len,
+>> +				     bool zcopy)
+>> +{
+>> +	if (zcopy) {
+>> +		return __zerocopy_sg_from_iter(info->msg, NULL, skb,
+>> +					      &info->msg->msg_iter,
+>> +					      len);
+>> +	} else {
 > 
-> What would you suggest as behaviour with multiple processes writing
-> into 'reportdata' and trying to read from 'tdreport' in parallel ?
-> Splitting input and output across separate files removes any
-> transactional relationship between input and output. This approach
-> feels like it could easily result in buggy behaviour from concurrent
-> application usage, which would not be an issue with ioctl()
+> 
+> No need for an else statement after 'return'
+> 
+>> +		void *payload;
+>> +		int err;
+>> +
+>> +		payload = skb_put(skb, len);
+>> +		err = memcpy_from_msg(payload, info->msg, len);
+>> +		if (err)
+>> +			return -1;
+>> +
+>> +		if (msg_data_left(info->msg))
+>> +			return 0;
+>> +
+> 
+> This path does not update truesize, evem if it increases the skb len...
 
-What's the use case where there are multiple outstanding reports?  The
-only use case I've currently seen is single external relying party
-requesting a report with a challenge.
+Sorry, but what is potential problem here ? In this path I copy data from the user's
+buffer to the linear skb (there is no fragged part in this case). I think 'truesize'
+is constant in this case - it is SKB_TRUESIZE(length of skb buffer) - there is no need
+to update it as 'truesize' does not show amount of data in skb, only real size of
+skb's buffer.
 
-> Also note, there needs to be scope for more than 1 input and 1 output
-> data items. For SNP guests, the VMPL is a input, and if fetching a
-> VMPL 0 report from under SVSM [1], an optional service GUID is
-> needed. With SVSM, there are three distinct output data blobs -
-> attestation report, services manifest and certificate data.
+For non-linear case, __zerocopy_sg_from_iter() always updates 'sk_wmem_alloc' of the
+socket during iterating over frags array.
 
-That's quite simple isn't it?  All the possible additional input
-parameters appear as files.  If you don't echo anything into them, they
-take the default values.  There's usually a single parameter that
-causes the transaction to start (usually the nonce) and the transaction
-takes the current values from all the files.
+Also 'skb_set_owner_w()' is called before this code, thus setting 'sk_wmem_alloc' to the
+'truesize' value of the skb.
 
-I'm not saying sysfs can substitute for all the transactionality of
-ioctl, but in this case where everything is low volume and single
-threaded it seems a reasonable choice.  For a more volume based
-transactional approach, something more configfs like would work better,
-so is there a use case for that?
+Thanks, Arseniy
 
-James
-
+> 
+>> +		return 0;
+>> +	}
+>> +}
+> 
+> [...]
+> 
+>> @@ -214,6 +251,70 @@ static u16 virtio_transport_get_type(struct sock *sk)
+>>  		return VIRTIO_VSOCK_TYPE_SEQPACKET;
+>>  }
+>>  
+>> +static struct sk_buff *virtio_transport_alloc_skb(struct vsock_sock *vsk,
+>> +						  struct virtio_vsock_pkt_info *info,
+>> +						  size_t payload_len,
+>> +						  bool zcopy,
+>> +						  u32 src_cid,
+>> +						  u32 src_port,
+>> +						  u32 dst_cid,
+>> +						  u32 dst_port)
+>> +{
+>> +	struct sk_buff *skb;
+>> +	size_t skb_len;
+>> +
+>> +	skb_len = VIRTIO_VSOCK_SKB_HEADROOM;
+>> +
+>> +	if (!zcopy)
+>> +		skb_len += payload_len;
+>> +
+>> +	skb = virtio_vsock_alloc_skb(skb_len, GFP_KERNEL);
+>> +	if (!skb)
+>> +		return NULL;
+>> +
+>> +	virtio_transport_init_hdr(skb, info, src_cid, src_port,
+>> +				  dst_cid, dst_port,
+>> +				  payload_len);
+>> +
+>> +	/* Set owner here, because '__zerocopy_sg_from_iter()' uses
+>> +	 * owner of skb without check to update 'sk_wmem_alloc'.
+>> +	 */
+>> +	if (vsk)
+>> +		skb_set_owner_w(skb, sk_vsock(vsk));
+> 
+> ... which can lead to bad things(TM) if the skb goes trough some later
+> non trivial processing, due to the above skb_set_owner_w().
+> 
+> Additionally can be the following condition be true:
+> 
+> 	vsk == NULL && (info->msg && payload_len > 0) && zcopy
+> 
+> ???
+> 
+> If so it looks like skb can go through __zerocopy_sg_from_iter() even
+> without a prior skb_set_owner_w()...
+> 
+> 
+> Cheers,
+> 
+> Paolo
+> 
