@@ -2,74 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D63A770E29
-	for <lists+linux-kernel@lfdr.de>; Sat,  5 Aug 2023 08:44:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A949E770E2C
+	for <lists+linux-kernel@lfdr.de>; Sat,  5 Aug 2023 08:46:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229630AbjHEGn5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 5 Aug 2023 02:43:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38056 "EHLO
+        id S229767AbjHEGqD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 5 Aug 2023 02:46:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38454 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229464AbjHEGnw (ORCPT
+        with ESMTP id S229464AbjHEGqC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 5 Aug 2023 02:43:52 -0400
-Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49D271BF
-        for <linux-kernel@vger.kernel.org>; Fri,  4 Aug 2023 23:43:51 -0700 (PDT)
-Received: by mail-ej1-x636.google.com with SMTP id a640c23a62f3a-99bccc9ec02so405260566b.2
-        for <linux-kernel@vger.kernel.org>; Fri, 04 Aug 2023 23:43:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1691217830; x=1691822630;
-        h=to:subject:message-id:date:from:reply-to:mime-version:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Fyaf0OHfvWgaqfRiwRufcy49gz6rXRNyNLf1qH0Ffk0=;
-        b=fI0IdoXOvcDFp/TFe6tNB54+yAWSvxH8Zh+XLrDZpTuld3fJbS+DuZSFLqW9YgqseX
-         4akrMUkIlH8A0RNQ6uZlBhD2vSl/tI88Emx+HHrckk6iT4w9aEIRRx+1k6VfpsVQDKET
-         TY22K+Oh1gjSIPZJLmNpRq1eDvzRJ4UevCHDGQX0lehvFOsopQgcVZQ+2WZIbRPkfP53
-         4qU8wFITjBLvOLBE7aLOQSW/jJAUxTtZKtAszb8gjPMsXb0fS9ZtB5x9eatYR8U5kLFU
-         lWiQGpOnzqf4wyGILyBl9gEPbX9iLal1b1N5lJPHKxYkC8AjSMUaS8OwwptUs5POiCPI
-         EyDg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691217830; x=1691822630;
-        h=to:subject:message-id:date:from:reply-to:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Fyaf0OHfvWgaqfRiwRufcy49gz6rXRNyNLf1qH0Ffk0=;
-        b=b7piTS3BOdx+7nMi7GZEidPabAlusqbnFK3ZBro1ctypYwWzSqLq12z3+70HIjeZsV
-         2Yp6WFy5Wz4U4Y/9dms89ccI5TNs4H1Ohscv/IWn4FnK+Bu1NhgEAwMRgyObDK6IdPfG
-         d4P/E7WHxdIJp+yLYY8oeSfAczvcp5ISp1tFB2OXDrH09580qts15lRqXYqgIQJ4dXKU
-         2e9S/2gr3neD4+1Fz5hJIpRFBgCN3Lt0Dm5oFacrD/HyEZpnmqcUxQHJHJuAdi3xiI/f
-         /GMMCe2MjqkMYaOmenO9oLRZsymHDsbh7E2LfE2vEdKd5wSMkczJelRolA5EAyPe0tgM
-         wG+g==
-X-Gm-Message-State: AOJu0Yz/sagdxkwlsTFt2KbB00JRO41d8x8ggi9iVGqGHwQaQvEkS2Hk
-        fPA02kexSPjQiZGf23uiJvEQRk7x1yu0NIW1DiA=
-X-Google-Smtp-Source: AGHT+IEl1NuIN82xxyrBQD+s/Zn0M7QFkGsXZ4ZFmr6qZ9EP5GvkrTWFyE2VXvpsTcPx0h/SafTKp5lqA2W+yRb//ws=
-X-Received: by 2002:a17:906:1c7:b0:99b:22dd:f83d with SMTP id
- 7-20020a17090601c700b0099b22ddf83dmr3797948ejj.55.1691217829572; Fri, 04 Aug
- 2023 23:43:49 -0700 (PDT)
+        Sat, 5 Aug 2023 02:46:02 -0400
+Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 538F3E72;
+        Fri,  4 Aug 2023 23:45:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+        bh=MzuIUE4dAyNI/9puD5m3erQkj7sXAAK5ZQfiS6oDIQg=; b=gl2caWxRTz/6U4PiMCjjKpXfyA
+        asb3CKqwHiqMAZFcUF7H+1AkB/UglMSdMob/zzh44cD762TRYkuaPBwgMUC0m+M43H+OVZ1qz7bQP
+        jrwCl7AFqMfGbzsE01/SMEjqOJpxuDhr3RSzjcs9r2zX4hPYm0xrRGH3RlOf2alSdPKo=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+        (envelope-from <andrew@lunn.ch>)
+        id 1qSB2i-003AWH-HG; Sat, 05 Aug 2023 08:45:40 +0200
+Date:   Sat, 5 Aug 2023 08:45:40 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     "Hawkins, Nick" <nick.hawkins@hpe.com>
+Cc:     "christophe.jaillet@wanadoo.fr" <christophe.jaillet@wanadoo.fr>,
+        "simon.horman@corigine.com" <simon.horman@corigine.com>,
+        "Verdun, Jean-Marie" <verdun@hpe.com>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "edumazet@google.com" <edumazet@google.com>,
+        "kuba@kernel.org" <kuba@kernel.org>,
+        "pabeni@redhat.com" <pabeni@redhat.com>,
+        "robh+dt@kernel.org" <robh+dt@kernel.org>,
+        "krzysztof.kozlowski+dt@linaro.org" 
+        <krzysztof.kozlowski+dt@linaro.org>,
+        "conor+dt@kernel.org" <conor+dt@kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2 4/5] net: hpe: Add GXP UMAC Driver
+Message-ID: <61c541c9-be30-4a43-aa85-53816d5848f9@lunn.ch>
+References: <20230802201824.3683-1-nick.hawkins@hpe.com>
+ <20230802201824.3683-5-nick.hawkins@hpe.com>
+ <fb656c31-ecc3-408a-a719-cba65a6aa984@lunn.ch>
+ <933D6861-A193-4145-9533-A7EE8E6DD32F@hpe.com>
 MIME-Version: 1.0
-Received: by 2002:a05:7412:6629:b0:df:940:19b1 with HTTP; Fri, 4 Aug 2023
- 23:43:49 -0700 (PDT)
-Reply-To: bintu37999@gmail.com
-From:   Bintu Felicia <bimmtu@gmail.com>
-Date:   Sat, 5 Aug 2023 07:43:49 +0100
-Message-ID: <CAAF5Ruxz2Ewx0JS8DadqixYJ1dMiUNHqMW7dT=ZCAgF3-FRb0w@mail.gmail.com>
-Subject: HELLO...,
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=4.5 required=5.0 tests=BAYES_50,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,FREEMAIL_REPLYTO,
-        FREEMAIL_REPLYTO_END_DIGIT,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        UNDISC_FREEM autolearn=no autolearn_force=no version=3.4.6
-X-Spam-Level: ****
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <933D6861-A193-4145-9533-A7EE8E6DD32F@hpe.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-How are you today? I hope you are fine. My name is Miss
-Bintu Felicia . l am single looking for honest and nice
-person whom i can partner with . I don't care about
-your color, ethnicity, Status or Sex. Upon your reply to
-this mail I will tell you more about myself and send you
-more of my picture .I am sending you this beautiful mail
-with a wish for much happiness
+On Fri, Aug 04, 2023 at 08:55:58PM +0000, Hawkins, Nick wrote:
+> Greetings Andrew,
+> 
+> For some reason I do not see your replies for v1 of this patch or
+> the mdio driver on lore.kernel. Apologies as I did not intend to
+> not address your previous review comments. My mistake.
+> 
+> >> +static int umac_int_phy_init(struct umac_priv *umac)
+> >> +{
+> >> + struct phy_device *phy_dev = umac->int_phy_dev;
+> >> + unsigned int value;
+> >> +
+> >> + value = phy_read(phy_dev, 0);
+> >> + if (value & 0x4000)
+> >> + pr_info("Internal PHY loopback is enabled - clearing\n");
+> 
+> > How is the PHY getting into loopback mode? The MAC driver should never
+> > touch the PHY, because you have no idea what the PHY actually is,
+> > unless it is internal. 
+> 
+> It would only be in loopback mode if it was previously configured
+> that way. I will remove it. The PHY is internal to the ASIC 
+> and is always the same. Given that information is it acceptable
+
+Hi Nick
+
+So what you call a PHY is probably a PCS. Please look at the API used
+in driver/net/pcs/. The real PHYs are external.
+
+Given that this is a BMC, you probably have lots of i2c busses. So you
+can support an SFP on the SERDES. So it would be better if you used
+the phylink interface, not phylib. This should also solve your
+interface mode switching.
+
+    Andrew
