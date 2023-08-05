@@ -2,78 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E4AEB770FC8
-	for <lists+linux-kernel@lfdr.de>; Sat,  5 Aug 2023 15:01:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 994B1770FCB
+	for <lists+linux-kernel@lfdr.de>; Sat,  5 Aug 2023 15:04:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229954AbjHENBy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 5 Aug 2023 09:01:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38100 "EHLO
+        id S229974AbjHENE1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 5 Aug 2023 09:04:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38610 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229498AbjHENBw (ORCPT
+        with ESMTP id S229498AbjHENEZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 5 Aug 2023 09:01:52 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D266EE6A;
-        Sat,  5 Aug 2023 06:01:51 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 7091660D37;
-        Sat,  5 Aug 2023 13:01:51 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5084AC433C7;
-        Sat,  5 Aug 2023 13:01:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691240510;
-        bh=ubNowK1yjlHoJdYc2ZzISgzS0f53Vxpdvy24J0/gKlE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Q12nSUAasF6GgXNJHfpe9yP4Pnca/XU5GaidDrUVDcAgxeTXH3tIH8Qn/92HfYw1z
-         YO3HRhsB952/gp4+CbfUXMZYy/Pg4lebF2CS4enJK5sMft4iG9q5iGSbeIuTgkU94z
-         DgvJIUHnidQh0911UhyDj1j5gBIvPSyzoEoHsorT8FN1ab9rm/PwETSCI3YDuYgSrr
-         3cAQpm67LfFwOsLj2w3ajaUCppKmeMgb4sIJbqaYjooAmFpwU59CKK9K9n77TkLMX9
-         6rDEZTFr1lVzjpEbgmoBmhUAiPkgQDMiMT+QpX6bZ0FZR3Grxb/R7J/Fhnv+/b4iIu
-         k2Nn0zvOkBKRw==
-Date:   Sat, 5 Aug 2023 15:01:47 +0200
-From:   Andi Shyti <andi.shyti@kernel.org>
-To:     Thierry Reding <thierry.reding@gmail.com>
-Cc:     Akhil R <akhilrajeev@nvidia.com>, christian.koenig@amd.com,
-        digetx@gmail.com, jonathanh@nvidia.com, ldewangan@nvidia.com,
-        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-tegra@vger.kernel.org, sumit.semwal@linaro.org,
-        wsa@kernel.org
-Subject: Re: [PATCH] i2c: tegra: Fix the check during DMA channel release
-Message-ID: <20230805130147.eabmdfbyttx2mjpl@intel.intel>
-References: <20230717151240.68899-1-akhilrajeev@nvidia.com>
- <ZLVdHzFm8yngLDj2@orome>
+        Sat, 5 Aug 2023 09:04:25 -0400
+Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [80.237.130.52])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4632CE70;
+        Sat,  5 Aug 2023 06:04:24 -0700 (PDT)
+Received: from [2a02:8108:8980:2478:8cde:aa2c:f324:937e]; authenticated
+        by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        id 1qSGx9-0006Nn-V8; Sat, 05 Aug 2023 15:04:20 +0200
+Message-ID: <0ca063c6-eaa2-0123-21cb-65d4a33550f4@leemhuis.info>
+Date:   Sat, 5 Aug 2023 15:04:19 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZLVdHzFm8yngLDj2@orome>
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Reply-To: Linux regressions mailing list <regressions@lists.linux.dev>
+Subject: Re: [PATCH] crypto: caam - adjust RNG timing to support more devices
+Content-Language: en-US, de-DE
+To:     Bastian Krause <bst@pengutronix.de>, meenakshi.aggarwal@nxp.com,
+        horia.geanta@nxp.com, V.sethi@nxp.com, pankaj.gupta@nxp.com,
+        gaurav.jain@nxp.com, herbert@gondor.apana.org.au,
+        davem@davemloft.net, linux-crypto@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     Victoria Milhoan <vicki.milhoan@freescale.com>,
+        Dan Douglass <dan.douglass@nxp.com>,
+        Vipul Kumar <vipul_kumar@mentor.com>, kernel@pengutronix.de,
+        Linux kernel regressions list <regressions@lists.linux.dev>
+References: <20230612082615.1255357-1-meenakshi.aggarwal@nxp.com>
+ <e1f3f073-9d5e-1bae-f4f8-08dc48adad62@pengutronix.de>
+From:   "Linux regression tracking #adding (Thorsten Leemhuis)" 
+        <regressions@leemhuis.info>
+In-Reply-To: <e1f3f073-9d5e-1bae-f4f8-08dc48adad62@pengutronix.de>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-bounce-key: webpack.hosteurope.de;regressions@leemhuis.info;1691240664;c7d254f9;
+X-HE-SMSGID: 1qSGx9-0006Nn-V8
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Thierry and Akhil,
+[CCing the regression list, as it should be in the loop for regressions:
+https://docs.kernel.org/admin-guide/reporting-regressions.html]
 
-On Mon, Jul 17, 2023 at 05:24:15PM +0200, Thierry Reding wrote:
-> On Mon, Jul 17, 2023 at 08:42:40PM +0530, Akhil R wrote:
-> > Check for error and NULL before attempting to release DMA channel.
-> > 
-> > This, otherwise, was causing panic and crash in kernel when the
-> > dma_chan has an invalid value. The condition occurs during init_dma()
-> > when the dma_request_chan() function returns an error.
-> > 
-> > Fixes: fcc8a89a1c83 ("i2c: tegra: Share same DMA channel for RX and TX")
-> > Signed-off-by: Akhil R <akhilrajeev@nvidia.com>
-> > ---
-> >  drivers/i2c/busses/i2c-tegra.c | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
+[TLDR: I'm adding this report to the list of tracked Linux kernel
+regressions; the text you find below is based on a few templates
+paragraphs you might have encountered already in similar form.
+See link in footer if these mails annoy you.]
 
-I guess this patch is not needed anymore.
+On 17.07.23 14:43, Bastian Krause wrote:
+> On 6/12/23 10:26, meenakshi.aggarwal@nxp.com wrote:
+>> From: Victoria Milhoan <vicki.milhoan@freescale.com>
+>>
+>> Adjust RNG timing parameters to support more i.MX6 devices.
+>>
+>> Signed-off-by: Victoria Milhoan <vicki.milhoan@freescale.com>
+>> Signed-off-by: Dan Douglass <dan.douglass@nxp.com>
+>> Signed-off-by: Vipul Kumar <vipul_kumar@mentor.com>
+>> Signed-off-by: Horia Geantă <horia.geanta@nxp.com>
+>> ---
+>>   drivers/crypto/caam/ctrl.c | 4 ++--
+>>   1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> This patch seems to breaks CAAM RNG instantiation on an i.MX8MM at my end:
+> [...]
 
-Andi
+Thanks for the report. I see that people are working on it already. But
+to be sure the issue doesn't fall through the cracks unnoticed, I'm
+adding it to regzbot, the Linux kernel regression tracking bot:
+
+#regzbot ^introduced ef492d08030
+#regzbot title crypto: broke CAAM RNG instantiation on an i.MX8MM
+#regzbot ignore-activity
+
+This isn't a regression? This issue or a fix for it are already
+discussed somewhere else? It was fixed already? You want to clarify when
+the regression started to happen? Or point out I got the title or
+something else totally wrong? Then just reply and tell me -- ideally
+while also telling regzbot about it, as explained by the page listed in
+the footer of this mail.
+
+Developers: When fixing the issue, remember to add 'Link:' tags pointing
+to the report (the parent of this mail). See page linked in footer for
+details.
+
+Ciao, Thorsten (wearing his 'the Linux kernel's regression tracker' hat)
+--
+Everything you wanna know about Linux kernel regression tracking:
+https://linux-regtracking.leemhuis.info/about/#tldr
+That page also explains what to do if mails like this annoy you.
+
