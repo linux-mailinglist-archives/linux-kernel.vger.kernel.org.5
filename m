@@ -2,89 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B2BA770E8C
-	for <lists+linux-kernel@lfdr.de>; Sat,  5 Aug 2023 09:47:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BECEA770E8E
+	for <lists+linux-kernel@lfdr.de>; Sat,  5 Aug 2023 09:51:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229619AbjHEHqz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 5 Aug 2023 03:46:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51018 "EHLO
+        id S229625AbjHEHv3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 5 Aug 2023 03:51:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51594 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229478AbjHEHqw (ORCPT
+        with ESMTP id S229460AbjHEHv0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 5 Aug 2023 03:46:52 -0400
-Received: from mail-oi1-x22e.google.com (mail-oi1-x22e.google.com [IPv6:2607:f8b0:4864:20::22e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 347D34ED0
-        for <linux-kernel@vger.kernel.org>; Sat,  5 Aug 2023 00:46:51 -0700 (PDT)
-Received: by mail-oi1-x22e.google.com with SMTP id 5614622812f47-3a751d2e6ecso2366811b6e.0
-        for <linux-kernel@vger.kernel.org>; Sat, 05 Aug 2023 00:46:51 -0700 (PDT)
+        Sat, 5 Aug 2023 03:51:26 -0400
+Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 138754ED0
+        for <linux-kernel@vger.kernel.org>; Sat,  5 Aug 2023 00:51:25 -0700 (PDT)
+Received: by mail-ed1-x532.google.com with SMTP id 4fb4d7f45d1cf-51e28cac164so8281557a12.1
+        for <linux-kernel@vger.kernel.org>; Sat, 05 Aug 2023 00:51:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1691221610; x=1691826410;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=U1mEWjsyNQNOirkLaDS1Y1oFaBtO0Luk8gm6hQtL+B0=;
-        b=gYpc42vwz/s19PPS5t63FXo5gl978IpSucQQFfGTi78M9HKDNRxK8GLTJVAFmqMXBX
-         +F7ui19W2YKEx8yyrvhdMXvVtyKvYYL4xO15NEikMmV/nbPrgbiQVnTunVOUtkR9xy1v
-         hKRZrorI88qOKX4qfus+OxJ8TKRtthdZlwMxQ=
+        d=gmail.com; s=20221208; t=1691221883; x=1691826683;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=Qo01VZv46WbWZeQUoDu+eNXSK4QNZCobvRPShRBmW3A=;
+        b=eFa/+pdZy12eq7uhOk6oj8lqvgCn7Ccc2eymJdN9wZhYSADZd8x6/6x2r1uWtvr275
+         nyWcYMIKSTfIBpD31rf1i1b8J5jyywnbJeRYabxqSCY3j4Y3ndQZmv3frI4wf5/7f54x
+         oPSjlE3KIgZ59NjdIlXI/XvfMMOrxlM8gGh+LfYqQHR3qkSBHrL9XQR8wwHYQyYUlYoA
+         dPuQP3yA8Fqb8Dd5vbDrbOzpO1uTVyd3cDeOMNRQTeAlpzW52ysHL/SNGq6b65iJj2MT
+         wGTflgu6ROT5KHYPu0mIZKZn1s1o51tdEzuv71ijYEjyJ46xFD+a3oHdg3Akhf7bYqMj
+         C3yA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691221610; x=1691826410;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=U1mEWjsyNQNOirkLaDS1Y1oFaBtO0Luk8gm6hQtL+B0=;
-        b=PBfojyu3NC6h3iFGulN/AxQAa7qc21fMroIAUcz+uRixnGWQlb8+D2EfBcUQmz8WeJ
-         DLdLHXI2v4a+at1qZg/c9+bNWDE4r8SEmhdeKww8/MQ9deH82HDtR8Equ6HwgcwTVGie
-         9fvTKtJhqJ5Iiv58MOTc2SGCyI/rKTDKPY01q3gvGiM6fYoYDXzaNUGGAsyRS/LvieaQ
-         oBiZks/k/BPHW/m5K0mEDw9gOSngCTgHm/j57DSXSbIXhrfmWNaxnVtma5gz8UmnH0PB
-         dWwae8mcSzJqfipge6TCSb7itpZd2pCmrL3T8WEsGji3dtfkjpE++ulC2SfzM7I9XMvp
-         QwLA==
-X-Gm-Message-State: AOJu0YwfcF68vuQl26jcle9tDZdFCOtQi5q5TAuWjXS+kaEEYWBBKANs
-        4uoSpVyzvyolM4Gw7/XAJ6wkQw==
-X-Google-Smtp-Source: AGHT+IH+mecttJDCWN0D2JzxDKMjWIxjBSgbvyI8PDA2CSww2tKZAlAEgwnWhRF2ziiAIMLnqVMAqw==
-X-Received: by 2002:a54:4006:0:b0:3a7:2599:e10 with SMTP id x6-20020a544006000000b003a725990e10mr4376705oie.41.1691221610504;
-        Sat, 05 Aug 2023 00:46:50 -0700 (PDT)
-Received: from google.com (KD124209188001.ppp-bb.dion.ne.jp. [124.209.188.1])
-        by smtp.gmail.com with ESMTPSA id g10-20020a62e30a000000b0066a613c4a58sm2614148pfh.102.2023.08.05.00.46.48
+        d=1e100.net; s=20221208; t=1691221883; x=1691826683;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Qo01VZv46WbWZeQUoDu+eNXSK4QNZCobvRPShRBmW3A=;
+        b=WjyJKUL9Ur7UqXCJNwvFGF0CdCriITJX+CMIUeRCKYj5edQ+SDDhBNDvHJ/xvB4Hg1
+         YFPNFHQddlDJ9HUSGd9ym0nqZlkO2O27oA/SK7Tjok7nuUd/CdBNYsWjg04tsIUueOiq
+         d6oDJr1jAXB9FGaqj4IjlQ5j4ebUID8IOU43LQVIEEAPOHXAn+DbEvXelTvM9CKZzfp6
+         B1dtUwy7fMMuGk2yOCvEo0F4F1j7VKaBVeN31uqdfY8YIZ142YXHGuvClPu3ldSLyOJW
+         ZGlOGTyX8nLKRqvEtD7e0FF6Yfpx8OmFeK+6rY8JvV1fPY7/t5c1ryhJXztZk53FzILQ
+         bZUQ==
+X-Gm-Message-State: AOJu0YxMezmPfl+1se94GdfXeNJbLfz5GYX4gedAO2swRFAI/aeaZpGs
+        wJMBPrWs2DLocUVPwS2jkx0=
+X-Google-Smtp-Source: AGHT+IEdLfKGC4Ymsl5AtF+aEqvdXaiMMHCh98KsjWyPo5aFKy+g6+j686PwFwGNtNXMIIoJq8sAzg==
+X-Received: by 2002:a17:907:7f91:b0:99c:572:c0e4 with SMTP id qk17-20020a1709077f9100b0099c0572c0e4mr2255590ejc.7.1691221883217;
+        Sat, 05 Aug 2023 00:51:23 -0700 (PDT)
+Received: from localhost.localdomain ([95.90.187.185])
+        by smtp.gmail.com with ESMTPSA id o17-20020a17090611d100b0099bd0b5a2bcsm2379716eja.101.2023.08.05.00.51.22
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 05 Aug 2023 00:46:50 -0700 (PDT)
-Date:   Sat, 5 Aug 2023 16:46:45 +0900
-From:   Sergey Senozhatsky <senozhatsky@chromium.org>
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     minchan@kernel.org, senozhatsky@chromium.org,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Dusty Mabe <dusty@dustymabe.com>
-Subject: Re: [PATCH] zram: take device and not only bvec offset into account
-Message-ID: <20230805074645.GA907732@google.com>
-References: <20230805055537.147835-1-hch@lst.de>
+        Sat, 05 Aug 2023 00:51:23 -0700 (PDT)
+From:   Michael Straube <straube.linux@gmail.com>
+To:     gregkh@linuxfoundation.org
+Cc:     philipp.g.hortmann@gmail.com, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org,
+        Michael Straube <straube.linux@gmail.com>
+Subject: [PATCH] staging: rtl8192e: prefer strscpy over strncpy
+Date:   Sat,  5 Aug 2023 09:51:14 +0200
+Message-ID: <20230805075114.15186-1-straube.linux@gmail.com>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230805055537.147835-1-hch@lst.de>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FSL_HELO_FAKE,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On (23/08/05 07:55), Christoph Hellwig wrote:
-> Commit af8b04c63708 ("zram: simplify bvec iteration in
-> __zram_make_request") changed the bio iteration in zram to rely on the
-> implicit capping to page boundaries in bio_for_each_segment.  But it
-> failed to care for the fact zram not only care about the page alignment
-> of the bio payload, but also the page alignment into the device.  For
-> buffered I/O and swap those are the same, but for direct I/O or kernel
-> internal I/O like XFS log buffer writes they can differ.
-> 
-> Fix this by open coding bio_for_each_segment and limiting the bvec len
-> so that it never crosses over a page alignment boundary in the device
-> in addition to the payload boundary already taken care of by
-> bio_iter_iovec.
-> 
-> Fixes: af8b04c63708 ("zram: simplify bvec iteration in __zram_make_request")
-> Reported-by: Dusty Mabe <dusty@dustymabe.com>
-> Signed-off-by: Christoph Hellwig <hch@lst.de>
+Replace strncpy with strscpy in two places where the destination buffer
+should be NUL-terminated. Found by checkpatch.
 
-Acked-by: Sergey Senozhatsky <senozhatsky@chromium.org>
+WARNING: Prefer strscpy, strscpy_pad, or __nonstring over strncpy - see: https://github.com/KSPP/linux/issues/90
+
+Signed-off-by: Michael Straube <straube.linux@gmail.com>
+---
+ drivers/staging/rtl8192e/rtllib_softmac.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/staging/rtl8192e/rtllib_softmac.c b/drivers/staging/rtl8192e/rtllib_softmac.c
+index 0e52b207942d..bd19d6a2ce41 100644
+--- a/drivers/staging/rtl8192e/rtllib_softmac.c
++++ b/drivers/staging/rtl8192e/rtllib_softmac.c
+@@ -1564,7 +1564,7 @@ inline void rtllib_softmac_new_net(struct rtllib_device *ieee,
+ 				    (!strncmp(ieee->current_network.ssid,
+ 				    net->hidden_ssid, net->hidden_ssid_len));
+ 			if (net->hidden_ssid_len > 0) {
+-				strncpy(net->ssid, net->hidden_ssid,
++				strscpy(net->ssid, net->hidden_ssid,
+ 					net->hidden_ssid_len);
+ 				net->ssid_len = net->hidden_ssid_len;
+ 				ssidbroad = 1;
+@@ -2431,7 +2431,7 @@ static void rtllib_start_master_bss(struct rtllib_device *ieee)
+ 	ieee->assoc_id = 1;
+ 
+ 	if (ieee->current_network.ssid_len == 0) {
+-		strncpy(ieee->current_network.ssid,
++		strscpy(ieee->current_network.ssid,
+ 			RTLLIB_DEFAULT_TX_ESSID,
+ 			IW_ESSID_MAX_SIZE);
+ 
+-- 
+2.41.0
+
