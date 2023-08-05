@@ -2,94 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 018F077106A
-	for <lists+linux-kernel@lfdr.de>; Sat,  5 Aug 2023 18:06:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F00A1771070
+	for <lists+linux-kernel@lfdr.de>; Sat,  5 Aug 2023 18:12:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229967AbjHEQGn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 5 Aug 2023 12:06:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33944 "EHLO
+        id S229814AbjHEQMc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 5 Aug 2023 12:12:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34876 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229436AbjHEQGm (ORCPT
+        with ESMTP id S229436AbjHEQMa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 5 Aug 2023 12:06:42 -0400
-Received: from mail-yb1-xb2d.google.com (mail-yb1-xb2d.google.com [IPv6:2607:f8b0:4864:20::b2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 326A3E70
-        for <linux-kernel@vger.kernel.org>; Sat,  5 Aug 2023 09:06:41 -0700 (PDT)
-Received: by mail-yb1-xb2d.google.com with SMTP id 3f1490d57ef6-d05a63946e0so3167233276.1
-        for <linux-kernel@vger.kernel.org>; Sat, 05 Aug 2023 09:06:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1691251600; x=1691856400;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=LUC7hGh6qWIThNH4Y7Zx7/EPitpQqojAFQsIWWs+CoI=;
-        b=w8Aj8qAsosbRzUMt2ECW46TyqC0Gdyvyl+8r7lBeqF0ua8QQKCBE5E1zQGJ2FqqVrY
-         IWxJiR+PHr3TYG9C2wIzVQX0vTC/dTQIMFLSzMhCC4fc2iu4z+KOYx4q/EAt+r2VYcsQ
-         ljmEuYDM/aEp8ZaC3Ipn5VD4XvHWZnnmo7V4EVd3zKBxQmzVwNwbOLRTfsWf9eWLvgYJ
-         acklIdGosROzxvEoOgMaFLt02K60UXl2jNnD4Y1nKC4Pm8qYNJP57MpPfVMS4RAcceH5
-         CI1f/w7lAC5yfC49EUEm34IrwYx9pkrJ/W1wn29U0E+XXkryfH22U94PYoY0ASg7qzDx
-         Tu2Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691251600; x=1691856400;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=LUC7hGh6qWIThNH4Y7Zx7/EPitpQqojAFQsIWWs+CoI=;
-        b=bo/TnYgHwlQY5O7FRhA8itn5cj7ws1bLPqzJoOINwnAVeZryRcHm9Hx4i5IiZFS8dx
-         PNVlVbyiscdaIUcUWTBt+QI7U4KJh0j2M7VZRCvCp9UfSPnyrUmufqJOakh1twXP8v21
-         RNIWpHtsz/BRIjJ8BSfJ6Ax2RoYE9UL4qI9H3Qz6UWNfnHphnBePqw9dg8ffVrUFNJQv
-         HgBAmkcc6YpWOo3I8OD4EmRIvDuqOLSu7WkaESsvlaBnhP3enNJyu1lECUS8EYg8RO8O
-         5EiMhz4w6pSN2DIL0+EAmMIDDi/QQlQDb0V/SA5ToNiaHZh0z2jf4yL/1xbAX0e1sZYf
-         B1JA==
-X-Gm-Message-State: AOJu0YxRJGJ+AmJyp/v8p0cBFE/li6EDxbBMLew85wBBhsy1+HrKB3cY
-        h/LVc1kY4HhwNqfU43O0OqDtemJVWuWz5l90NfCotQ==
-X-Google-Smtp-Source: AGHT+IEXUM4q2tosVwitR5AuzqfGOAsWLX3RMlI0jzEdL0gZFzU0pYbDkEpMbjYQX87lDwP1ZwDc2PpSdxAmkmBsMCQ=
-X-Received: by 2002:a05:6902:392:b0:d07:87b0:f2a8 with SMTP id
- f18-20020a056902039200b00d0787b0f2a8mr4271442ybs.21.1691251600297; Sat, 05
- Aug 2023 09:06:40 -0700 (PDT)
+        Sat, 5 Aug 2023 12:12:30 -0400
+Received: from mout-p-202.mailbox.org (mout-p-202.mailbox.org [80.241.56.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6ACB510F8;
+        Sat,  5 Aug 2023 09:12:29 -0700 (PDT)
+Received: from smtp202.mailbox.org (smtp202.mailbox.org [IPv6:2001:67c:2050:b231:465::202])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mout-p-202.mailbox.org (Postfix) with ESMTPS id 4RJ6zt0Slbz9sW7;
+        Sat,  5 Aug 2023 18:12:26 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cyphar.com; s=MBO0001;
+        t=1691251946;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=yCYqR+EeCPhLlyuM0EqRgutL3UUW623kAbsrUT4n0kQ=;
+        b=OdHd8pGnTpNlH8BuqgTP2VG0QtbjeH+XFPBKgoRCyFzxn5xBoAejSoyYHQTYZ7gNnV8+pf
+        x8IUMF26GANA0MZ3PS2IudaGlDu07PS/G7/h4n0CrM6s2DKtBYWDpINo882+LsvNHyv1X1
+        vWCYSXacXeKQRf6Q1365f1pcSoLWMBIU9gAXFckG/98YZvO4CgBOdPmWTJH0K71YO/Y9Z3
+        voWV9JqroE3EY+8PZRtzatBf//qtMQIQCH1qrfcV1nisYQm80mGKdphzRdnwyMMYLAYecH
+        VoFZvyY1qkaPzYSLnaxONLuFtLxmqMZaxlHMVNvZKb+Ld8NNtDqwjdCK3X8opQ==
+From:   Aleksa Sarai <cyphar@cyphar.com>
+Date:   Sun, 06 Aug 2023 02:11:58 +1000
+Subject: [PATCH] open: make RESOLVE_CACHED correctly test for O_TMPFILE
 MIME-Version: 1.0
-References: <c1c9a74a-bc5b-15ea-e5d2-8ec34bc921d@google.com>
- <2929bfd-9893-a374-e463-4c3127ff9b9d@google.com> <CAMSo37X5GzFmqNAtABuibmMAF7t=_5SYCipMPZ-TB+uEMYkSUA@mail.gmail.com>
- <ZMPLFqJ192j0loCV@casper.infradead.org> <da591261-26f1-5cf7-1435-a98ae21f5141@google.com>
-In-Reply-To: <da591261-26f1-5cf7-1435-a98ae21f5141@google.com>
-From:   Yongqin Liu <yongqin.liu@linaro.org>
-Date:   Sun, 6 Aug 2023 00:06:28 +0800
-Message-ID: <CAMSo37UxxZ6dc9cY=TArOP01jTuBHuLT1BGv0d=y_hJA1_7Zvw@mail.gmail.com>
-Subject: Re: [PATCH v2 04/32] mm/pgtable: allow pte_offset_map[_lock]() to fail
-To:     Hugh Dickins <hughd@google.com>
-Cc:     Matthew Wilcox <willy@infradead.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Mike Rapoport <rppt@kernel.org>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        David Hildenbrand <david@redhat.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Qi Zheng <zhengqi.arch@bytedance.com>,
-        Yang Shi <shy828301@gmail.com>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Peter Xu <peterx@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Will Deacon <will@kernel.org>, Yu Zhao <yuzhao@google.com>,
-        Alistair Popple <apopple@nvidia.com>,
-        Ralph Campbell <rcampbell@nvidia.com>,
-        Ira Weiny <ira.weiny@intel.com>,
-        Steven Price <steven.price@arm.com>,
-        SeongJae Park <sj@kernel.org>,
-        Lorenzo Stoakes <lstoakes@gmail.com>,
-        Huang Ying <ying.huang@intel.com>,
-        Naoya Horiguchi <naoya.horiguchi@nec.com>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Zack Rusin <zackr@vmware.com>, Jason Gunthorpe <jgg@ziepe.ca>,
-        Axel Rasmussen <axelrasmussen@google.com>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Pasha Tatashin <pasha.tatashin@soleen.com>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        Minchan Kim <minchan@kernel.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        Song Liu <song@kernel.org>,
-        Thomas Hellstrom <thomas.hellstrom@linux.intel.com>,
-        Ryan Roberts <ryan.roberts@arm.com>,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Message-Id: <20230806-resolve_cached-o_tmpfile-v1-1-7ba16308465e@cyphar.com>
+X-B4-Tracking: v=1; b=H4sIAM10zmQC/x3M0QpAMBiG4VvRf2w1U4xbkcT24S9Mm6SWe7ccP
+ gfvGynAMwK1WSSPmwO7I6HIMzLreCwQbJNJSVVKLSvhEdx2YzCjWWGFG679nHmDaGptJlXqyVa
+ aUn56zPz8665/3w/C9KPragAAAA==
+To:     Alexander Viro <viro@zeniv.linux.org.uk>,
+        Christian Brauner <brauner@kernel.org>,
+        Jens Axboe <axboe@kernel.dk>
+Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        stable@vger.kernel.org, Aleksa Sarai <cyphar@cyphar.com>
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1168; i=cyphar@cyphar.com;
+ h=from:subject:message-id; bh=h2QuFb5UlHU5Y1F2VVpvnKPcSGujrQ9dOJy94AF37xw=;
+ b=owGbwMvMwCWmMf3Xpe0vXfIZT6slMaScK3nk1nf+Q8LV1/2PmHr2fTU5ltOxr7prz4nNXd+vT
+ dgkeExuS0cpC4MYF4OsmCLLNj/P0E3zF19J/rSSDWYOKxPIEAYuTgGYyGwzhl/MlcFRcw/msdgI
+ 1Fzpnen1sGP/pvjZtnoGcat55f5a31vF8Fdi/du2a+4N71dnSu45b9i252+939kvu0/Mszyf93/
+ Xpa+MAA==
+X-Developer-Key: i=cyphar@cyphar.com; a=openpgp;
+ fpr=C9C370B246B09F6DBCFC744C34401015D1D2D386
+X-Rspamd-Queue-Id: 4RJ6zt0Slbz9sW7
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
@@ -100,60 +66,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 29 Jul 2023 at 00:58, Hugh Dickins <hughd@google.com> wrote:
->
-> On Fri, 28 Jul 2023, Matthew Wilcox wrote:
-> > On Fri, Jul 28, 2023 at 09:53:29PM +0800, Yongqin Liu wrote:
-> > > Hi, Hugh
-> > >
-> > > It seems this change makes pte_offset_map_lock not possible to be
-> > > called in out of tree modules,
-> > > otherwise it will report error like this:
-> > >         ERROR: modpost: "__pte_offset_map_lock"
-> > > [../omap-modules/android-mainline/pvr/pvrsrvkm.ko] undefined!
-> > >
-> > > Not sure if you have any idea about it, and any suggestions on how to
-> > > resolve it?
-> >
-> > Please explain why this module needs to map page tables
->
-> +1
-Sorry, I am not able to give any explanation here,
-I am not familiar with the pvrsrvkm source, I just use it to have one
-working AOSP build.
+O_TMPFILE is actually __O_TMPFILE|O_DIRECTORY. This means that the old
+fast-path check for RESOLVE_CACHED would reject all users passing
+O_DIRECTORY with -EAGAIN, when in fact the intended test was to check
+for __O_TMPFILE.
 
-here is the source file where pte_offset_map_lock is called,
-    https://android-git.linaro.org/kernel/omap-modules.git/tree/pvr/services4/srvkm/env/linux/osfunc.c?h=android-mainline#n3508
-in case you could know something with a quick look.
+Cc: stable@vger.kernel.org # v5.12+
+Fixes: 99668f618062 ("fs: expose LOOKUP_CACHED through openat2() RESOLVE_CACHED")
+Signed-off-by: Aleksa Sarai <cyphar@cyphar.com>
+---
+ fs/open.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Otherwise, it has to wait for another one to report the problem again.
+diff --git a/fs/open.c b/fs/open.c
+index b8883ec286f5..2634047c9e9f 100644
+--- a/fs/open.c
++++ b/fs/open.c
+@@ -1337,7 +1337,7 @@ inline int build_open_flags(const struct open_how *how, struct open_flags *op)
+ 		lookup_flags |= LOOKUP_IN_ROOT;
+ 	if (how->resolve & RESOLVE_CACHED) {
+ 		/* Don't bother even trying for create/truncate/tmpfile open */
+-		if (flags & (O_TRUNC | O_CREAT | O_TMPFILE))
++		if (flags & (O_TRUNC | O_CREAT | __O_TMPFILE))
+ 			return -EAGAIN;
+ 		lookup_flags |= LOOKUP_CACHED;
+ 	}
 
-> Thank you for testing 6.5-rc, and I am sorry to have inconvenienced you.
->
-> But there is not one example of an in-tree module needing that,
-> which is a very strong hint that no module should be needing that.
->
-> Sounds like pvrsrvkm.ko wants to muck around with page table entries,
-> without the core mm knowing.  Not something core mm can encourage!
->
-> If what pvrsrvkm.ko is aiming to do there would be useful for others,
-> maybe its owner can share that, and work with core mm developers to
-> expose a generally useful interface - but that is not likely to be
-> __pte_offset_map_lock itself.
->
+---
+base-commit: bf5ad7af0516cb47121dae1b1c160e4385615274
+change-id: 20230806-resolve_cached-o_tmpfile-978cb238bd68
 
-Thanks for the explanation!
-Let's see if any other pvrsrvkm engineer or other out of tree modules could help
-give some explanations on this case or similar cases.
+Best regards,
+-- 
+Aleksa Sarai <cyphar@cyphar.com>
 
-Thanks,
-Yongqin Liu
-
-
---
-Best Regards,
-Yongqin Liu
----------------------------------------------------------------
-#mailing list
-linaro-android@lists.linaro.org
-http://lists.linaro.org/mailman/listinfo/linaro-android
