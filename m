@@ -2,52 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 30ED277119C
-	for <lists+linux-kernel@lfdr.de>; Sat,  5 Aug 2023 20:52:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A141277119F
+	for <lists+linux-kernel@lfdr.de>; Sat,  5 Aug 2023 20:56:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230241AbjHESwh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 5 Aug 2023 14:52:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49896 "EHLO
+        id S230247AbjHESz7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 5 Aug 2023 14:55:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50458 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229445AbjHESwe (ORCPT
+        with ESMTP id S229445AbjHESz6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 5 Aug 2023 14:52:34 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6D901BE4;
-        Sat,  5 Aug 2023 11:52:33 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 24C6C60E08;
-        Sat,  5 Aug 2023 18:52:33 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7F7F4C433C7;
-        Sat,  5 Aug 2023 18:52:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691261552;
-        bh=B+ZCfR/0VxxM4w9/07xvtwGZta+zoCYoP15NNG5J0U8=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=s+ZmI66XGBxJKdNQxfycjjEtI4iFoe4J4SqyFzbeBwds4MkL/lw6PhfNN/mZw6zhk
-         KEpP9xwXBTb9SDuPv7sNPNSvabua1U1N2pY/Is7/tmqcOn5VeYoijZ3FW2kkDPV92Y
-         1ktAZJBR9Xu7eRKcx5bwfte2+Tj2u1RGb2QH7qvwPdcDJBIcuvL/8Kp0ZahuouISIu
-         5NLVRZ8WyEm3e3gHi3wDhCvSiOSTuhsj+PUz4t6PyfYVJzLOFQCZdoAHPCSaJGVTJT
-         evPg+uStUwP5fT0C58FCZz5jtMyDI4fIMhfl7o6KRJbNrAPE8XBmKBsKKxUymFwyuX
-         xAo8Yl8oLbsYA==
-Date:   Sat, 5 Aug 2023 19:52:26 +0100
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     Antoniu Miclaus <antoniu.miclaus@analog.com>
-Cc:     <linux-iio@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2 1/2] drivers: iio: filter: admv8818: add bypass mode
-Message-ID: <20230805195226.7cdb38bc@jic23-huawei>
-In-Reply-To: <20230731084928.8302-1-antoniu.miclaus@analog.com>
-References: <20230731084928.8302-1-antoniu.miclaus@analog.com>
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-pc-linux-gnu)
+        Sat, 5 Aug 2023 14:55:58 -0400
+Received: from mail-lj1-x231.google.com (mail-lj1-x231.google.com [IPv6:2a00:1450:4864:20::231])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4DFF2A7;
+        Sat,  5 Aug 2023 11:55:56 -0700 (PDT)
+Received: by mail-lj1-x231.google.com with SMTP id 38308e7fff4ca-2b9b9f0387dso49868341fa.0;
+        Sat, 05 Aug 2023 11:55:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1691261754; x=1691866554;
+        h=cc:to:subject:message-id:date:from:mime-version:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=LIEL0tXVDTOWo0X4AX2HSPtn+A9sB8Rgxb5Azfh9x5I=;
+        b=gdHG3RepOtrk0+kc/f0sEMLkeYEBonCsY7LkhiYj6LGEXrf1L20ct3D7WCCCJ4igP8
+         5vBktCy7T85nglPOQG5XJh0bRkqoKewbL+F/q4RMHyU1UOPm3YPwo1aPoxS70k9LflEX
+         HKsnECg3D9Mp3c7YGdgpX19MNfrSuQR3kK+tbkL/w+xmx6+p4mSATzqk/kL310DlUIGD
+         RU0/abPM6cV7/1RZdBLsiom+AcMbsf5ziAEDBNRU5WAMdbcRLPnCiwENKBrF8Ts1kAqQ
+         r/0CLNyk66pdacD+fZNRBGBPrhnwpJd/ayV4kpJiLRI7Jzc1OrdwGLthbyeHMNyOUedV
+         89XQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691261754; x=1691866554;
+        h=cc:to:subject:message-id:date:from:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=LIEL0tXVDTOWo0X4AX2HSPtn+A9sB8Rgxb5Azfh9x5I=;
+        b=ONBXOQawVn9xDebqRZ/w0b6kNlN8mUglyxe+FlKJ2RrklHOuxuV3klFW44RLILhNrJ
+         Qzsx/0+qOqg+EHftVkUB/wdwXTXh9I0IUP/QsHoyjeV3C9LNSkLJDlDWbAZvYgucC/cZ
+         wCbd0WMbLUIRs9s5PyyEjaZifQ0P2FXdqremcZrM+UbLfUsWduw5Dgo2X76fIOiiSEXy
+         tjBMe6CyKQAeHcJf+XzmJ2V2DBPyhKP9oxKyaByKxB3Gmitkm56NQLxZm5wPsaMYtqSV
+         emUlkgveALvLpJwdQv58Qkn/NOp2mjrHuorWNogzk/GJ1coAiz210UTJIkiFySFWZzsV
+         a6gw==
+X-Gm-Message-State: AOJu0Yyw53/76nT8ljvtDZAzq+oxhW65NNkICYXHhfAy4gv9a+p8X14u
+        qhKKMCGpIAhWtYZs0ZK+pGEmL0ZPek06byGrh0wFvTYNQIFfWA==
+X-Google-Smtp-Source: AGHT+IEhmqretDu+8l+NeMCDqrX2H9NlmnFMpB7rt77QXIlcG1jVUMCBzN+on0MjV6jFsQWFGSAGfHw6We9sEnCpfc8=
+X-Received: by 2002:a2e:b0d0:0:b0:2b9:b904:74d7 with SMTP id
+ g16-20020a2eb0d0000000b002b9b90474d7mr4221463ljl.18.1691261754220; Sat, 05
+ Aug 2023 11:55:54 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+From:   Steve French <smfrench@gmail.com>
+Date:   Sat, 5 Aug 2023 13:55:42 -0500
+Message-ID: <CAH2r5mt0UH0Z-nRdEDsFMbE_gj1d8ezcoAhScZoToQckVvT_fw@mail.gmail.com>
+Subject: [GIT PULL] SMB3 DFS Fix
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        CIFS <linux-cifs@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -55,159 +64,32 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 31 Jul 2023 11:49:26 +0300
-Antoniu Miclaus <antoniu.miclaus@analog.com> wrote:
+Please pull the following changes since commit
+5d0c230f1de8c7515b6567d9afba1f196fb4e2f4:
 
-> Add filter bypass mode, which bypasses the low pass filter, high pass
-> filter and disables/unregister the clock rate notifier.
-> 
-> Currently a feature like bypassing the filter is not achievable
-> straightforward and not very deductive. The user has to look through the
-> code and call the set_lpf_3db_frequency and set_hpf_3db_frequency iio
-> attributes from the user interface using the corner cases (freq >
-> largest lpf supported by the part, respectively freq < smallest hpf
-> supported by the part). Moreover, in such case of bypassing the filter,
-> the input clock rate change might mess up things so we want to make sure
-> that it is disabled. Also, the feature will help emphasizing the filter
-> behavior, therefore adding it in the userspace will ease the
-> charcaterization of the filter's effects when active/disabled.
+  Linux 6.5-rc4 (2023-07-30 13:23:47 -0700)
 
-Reasoning is well laid out. Thanks!  It's an unusual feature, but meh
-it's also hidden in existing custom ABI so unlikely to cause any
-problems.
+are available in the Git repository at:
 
-> 
-> It was requested by users of the driver to ease the interaction with
-> different configuration modes of the device.
-> 
-> Signed-off-by: Antoniu Miclaus <antoniu.miclaus@analog.com>
-Applied to the togreg branch of iio.git and pushed out as testing for 0-day
-to take a look at it and see if we missed anything.
+  git://git.samba.org/sfrench/cifs-2.6.git tags/6.5-rc4-smb3-client-fix
 
-> ---
-> changes in v2:
->  - improve code readability when setting the filter modes
->  - add more explanations regarding the necessity of this feature in the commit
->    body.
->  drivers/iio/filter/admv8818.c | 65 ++++++++++++++++++++++++++++++-----
->  1 file changed, 56 insertions(+), 9 deletions(-)
-> 
-> diff --git a/drivers/iio/filter/admv8818.c b/drivers/iio/filter/admv8818.c
-> index fe8d46cb7f1d..848baa6e3bbf 100644
-> --- a/drivers/iio/filter/admv8818.c
-> +++ b/drivers/iio/filter/admv8818.c
-> @@ -78,6 +78,7 @@ enum {
->  enum {
->  	ADMV8818_AUTO_MODE,
->  	ADMV8818_MANUAL_MODE,
-> +	ADMV8818_BYPASS_MODE,
->  };
->  
->  struct admv8818_state {
-> @@ -114,7 +115,8 @@ static const struct regmap_config admv8818_regmap_config = {
->  
->  static const char * const admv8818_modes[] = {
->  	[0] = "auto",
-> -	[1] = "manual"
-> +	[1] = "manual",
-> +	[2] = "bypass"
->  };
->  
->  static int __admv8818_hpf_select(struct admv8818_state *st, u64 freq)
-> @@ -394,6 +396,36 @@ static int admv8818_reg_access(struct iio_dev *indio_dev,
->  		return regmap_write(st->regmap, reg, write_val);
->  }
->  
-> +static int admv8818_filter_bypass(struct admv8818_state *st)
-> +{
-> +	int ret;
-> +
-> +	mutex_lock(&st->lock);
-> +
-> +	ret = regmap_update_bits(st->regmap, ADMV8818_REG_WR0_SW,
-> +				 ADMV8818_SW_IN_SET_WR0_MSK |
-> +				 ADMV8818_SW_IN_WR0_MSK |
-> +				 ADMV8818_SW_OUT_SET_WR0_MSK |
-> +				 ADMV8818_SW_OUT_WR0_MSK,
-> +				 FIELD_PREP(ADMV8818_SW_IN_SET_WR0_MSK, 1) |
-> +				 FIELD_PREP(ADMV8818_SW_IN_WR0_MSK, 0) |
-> +				 FIELD_PREP(ADMV8818_SW_OUT_SET_WR0_MSK, 1) |
-> +				 FIELD_PREP(ADMV8818_SW_OUT_WR0_MSK, 0));
-> +	if (ret)
-> +		goto exit;
-> +
-> +	ret = regmap_update_bits(st->regmap, ADMV8818_REG_WR0_FILTER,
-> +				 ADMV8818_HPF_WR0_MSK |
-> +				 ADMV8818_LPF_WR0_MSK,
-> +				 FIELD_PREP(ADMV8818_HPF_WR0_MSK, 0) |
-> +				 FIELD_PREP(ADMV8818_LPF_WR0_MSK, 0));
-> +
-> +exit:
-> +	mutex_unlock(&st->lock);
-> +
-> +	return ret;
-> +}
-> +
->  static int admv8818_get_mode(struct iio_dev *indio_dev,
->  			     const struct iio_chan_spec *chan)
->  {
-> @@ -411,14 +443,22 @@ static int admv8818_set_mode(struct iio_dev *indio_dev,
->  
->  	if (!st->clkin) {
->  		if (mode == ADMV8818_MANUAL_MODE)
-> -			return 0;
-> +			goto set_mode;
-> +
-> +		if (mode == ADMV8818_BYPASS_MODE) {
-> +			ret = admv8818_filter_bypass(st);
-> +			if (ret)
-> +				return ret;
-> +
-> +			goto set_mode;
-> +		}
->  
->  		return -EINVAL;
->  	}
->  
->  	switch (mode) {
->  	case ADMV8818_AUTO_MODE:
-> -		if (!st->filter_mode)
-> +		if (st->filter_mode == ADMV8818_AUTO_MODE)
->  			return 0;
->  
->  		ret = clk_prepare_enable(st->clkin);
-> @@ -434,20 +474,27 @@ static int admv8818_set_mode(struct iio_dev *indio_dev,
->  
->  		break;
->  	case ADMV8818_MANUAL_MODE:
-> -		if (st->filter_mode)
-> -			return 0;
-> +	case ADMV8818_BYPASS_MODE:
-> +		if (st->filter_mode == ADMV8818_AUTO_MODE) {
-> +			clk_disable_unprepare(st->clkin);
->  
-> -		clk_disable_unprepare(st->clkin);
-> +			ret = clk_notifier_unregister(st->clkin, &st->nb);
-> +			if (ret)
-> +				return ret;
-> +		}
->  
-> -		ret = clk_notifier_unregister(st->clkin, &st->nb);
-> -		if (ret)
-> -			return ret;
-> +		if (mode == ADMV8818_BYPASS_MODE) {
-> +			ret = admv8818_filter_bypass(st);
-> +			if (ret)
-> +				return ret;
-> +		}
->  
->  		break;
->  	default:
->  		return -EINVAL;
->  	}
->  
-> +set_mode:
->  	st->filter_mode = mode;
->  
->  	return ret;
+for you to fetch changes up to 11260c3d608b59231f4c228147a795ab21a10b33:
 
+  smb: client: fix dfs link mount against w2k8 (2023-08-02 13:36:12 -0500)
+
+----------------------------------------------------------------
+small DFS fix
+- Fix DFS interlink problem (different namespace)
+
+----------------------------------------------------------------
+Paulo Alcantara (1):
+      smb: client: fix dfs link mount against w2k8
+
+ fs/smb/client/dfs.c | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
+
+
+-- 
+Thanks,
+
+Steve
