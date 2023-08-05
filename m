@@ -2,128 +2,253 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CD2CF770FDD
-	for <lists+linux-kernel@lfdr.de>; Sat,  5 Aug 2023 15:13:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 74F67770FE0
+	for <lists+linux-kernel@lfdr.de>; Sat,  5 Aug 2023 15:14:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229707AbjHENNh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 5 Aug 2023 09:13:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40798 "EHLO
+        id S229839AbjHENOp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 5 Aug 2023 09:14:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41124 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229460AbjHENNf (ORCPT
+        with ESMTP id S229581AbjHENOn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 5 Aug 2023 09:13:35 -0400
-Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 590AFE70
-        for <linux-kernel@vger.kernel.org>; Sat,  5 Aug 2023 06:13:33 -0700 (PDT)
-Received: by mail-lf1-x132.google.com with SMTP id 2adb3069b0e04-4fe10f0f4d1so5132616e87.0
-        for <linux-kernel@vger.kernel.org>; Sat, 05 Aug 2023 06:13:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1691241211; x=1691846011;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=1MoJbvtprRVDDwScrXj2qbjJ91Vs+LgCnPDN9ctv0Ok=;
-        b=tahv6n2NJvCwys7sZAQQb4CEQAfd6XxyDUx57XnL1EYn/iafVz/mWctVT4eTCBVNVx
-         LzuECL4ll+xF9BpY1qPrzKsLqEgKHDlKVHe8YHd89r7CQdFZlob93pdbodEV3Q0fpuRv
-         pnfPovfBIgg00gVQdKVnLLvGkMX1N1WVtSAqU3TZgi3MmvzWu9KFaNFvABHUV4E2M8OZ
-         fpVDFwx0LJYj+Uu7AHTa8ZqcYOswy/bpEA69V16o73N2dIKVlLe7T/fm0LF1/Cdz0ztV
-         WeVMhM+Nixl+dtJNgg301YP1GicBoOgEL3Kn7fXSvDRexzKo5WzMnSUnOvXaUMknw0b4
-         BDIQ==
+        Sat, 5 Aug 2023 09:14:43 -0400
+Received: from smtp-relay-internal-1.canonical.com (smtp-relay-internal-1.canonical.com [185.125.188.123])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30DF5E70
+        for <linux-kernel@vger.kernel.org>; Sat,  5 Aug 2023 06:14:40 -0700 (PDT)
+Received: from mail-qk1-f199.google.com (mail-qk1-f199.google.com [209.85.222.199])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id E93EB3F20E
+        for <linux-kernel@vger.kernel.org>; Sat,  5 Aug 2023 13:14:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1691241278;
+        bh=UIZCorPNYUH2jkiVRuR7FSmjsopaTm8kFTAnEKf8VTE=;
+        h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+         To:Cc:Content-Type;
+        b=bHZvhihxtmDr5Ow0JCOUpb91//mNIAdHegjOHODQUatzVrA0lNNFvzbYPCZfnDvX4
+         f3YOmOzJaPR/rQhljJFoalICXpCWME4/UpZVmb9p0HDZJEzwxhEwqC67DD8dJzjAzz
+         p2VRUkPW597Yp82env3puuVEcAad10zB5ezZMhsAXdEByO8y0fxUVI6MvWaBKkVktl
+         xGxVi1tFwNrYi44dXe9uEJWrlDhWvv3r526CagxOvlxEBK2nUWYNDqi09pd20ccrc5
+         XL6Q1qc5TB2djG3Z5MWzXL6Jr4phdouddU3L4lYLknEcOYkzQ5Gj/btfsdvfVGNqgS
+         TBRf3ftbpbpVQ==
+Received: by mail-qk1-f199.google.com with SMTP id af79cd13be357-7683da3e2a5so332739385a.3
+        for <linux-kernel@vger.kernel.org>; Sat, 05 Aug 2023 06:14:38 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691241211; x=1691846011;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=1MoJbvtprRVDDwScrXj2qbjJ91Vs+LgCnPDN9ctv0Ok=;
-        b=AYIRLnFZKwJaeV1y4luCzU6styVdo19G8z1D+547lIn8811S6RPmrEM5s9T/fyA4ZA
-         wIwL+t9aru6999SjSiACEzzYohBFQXBAr1jQFV1rpaS7QBaye92hpgAnf+TKY9csaiug
-         Tnpgl2N1KnlR+b5M88L2oItricUP3xsr7YAjax/XPFUBeVXNiSPpMAtnpqW0ZKduo/7p
-         9KO3byE3Pjp+RB2GErtjKqXuL59gwvg6nVw6PSa49vykCJi0EkEFDfW16QVr0hScHbvd
-         jCc5L+sPrJ81N6+iqqeNLFWD17WDQKUBz1Cmq9fSZXhSeaZT+CX2KzirDSQZwcl/+6HE
-         fo3A==
-X-Gm-Message-State: AOJu0Yz2pc7/+Lawp0npGX6Ye73EVcnswBKoUazqbbZxvRvCT/25w3Ag
-        kfcb6q0pyCb+Lbs/lVjOMQ7gsQ==
-X-Google-Smtp-Source: AGHT+IEyngRrynzt3gl2Ke4t14U+PwJ9bFuFj3GMsgb1qN5RlLwE9WMTExN4E+GPCFX8DEugb1a/VQ==
-X-Received: by 2002:a19:5e1b:0:b0:4fe:279b:7603 with SMTP id s27-20020a195e1b000000b004fe279b7603mr2690944lfb.14.1691241211643;
-        Sat, 05 Aug 2023 06:13:31 -0700 (PDT)
-Received: from [192.168.1.101] (abym15.neoplus.adsl.tpnet.pl. [83.9.32.15])
-        by smtp.gmail.com with ESMTPSA id q11-20020ac2528b000000b004fb964d48e6sm748178lfm.95.2023.08.05.06.13.30
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 05 Aug 2023 06:13:31 -0700 (PDT)
-Message-ID: <f38b76ca-9923-4ac2-ab3f-217d4c4c0ba9@linaro.org>
-Date:   Sat, 5 Aug 2023 15:13:29 +0200
+        d=1e100.net; s=20221208; t=1691241277; x=1691846077;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=UIZCorPNYUH2jkiVRuR7FSmjsopaTm8kFTAnEKf8VTE=;
+        b=Fv90HJ0q8yJLv4YcAS42b7R1fT6sU3Ixh2AKBViwDBCHD6RnqAdtVLPpZ/jo5kG4vC
+         h21imcxeP0moCXcWVosDjWrqZceGi6vKZwpsZFvpmepdoSMtrtdiQy5HJwqcR6Yslqr7
+         37/ysaa4j40swjaTZT7sWW6HX8G0MhfNblsGyXcxW0wTgP64paiR+8fjnqRI3XpatpNI
+         k3qkUIXLtk73OB3RGvCXGpbKo803oU1wJ2pJByNcKRsxqTZ+lDlxWK3+AfEq2SB2ElI+
+         rgfB0AVgwVsH23vdkMWEtZq75ICMEnDphgValFW9qSAekP15PrYxFAdYVtettQTKdSad
+         i08A==
+X-Gm-Message-State: AOJu0YwmZb+c/7L5MEo4/hImyuzENETwZ+irKWz6XDkcd5QIwnPKDMLT
+        S0iODxt1Y+xoZqF79l5NIeNI7VvGr9f99tC7Wb4B6ntmtY21N5adgF4a48ixImOfYqyrcnpkAM4
+        OeIh+jnEfJGW0m4mzJR2l/sFD0gRgiXwfGesmyzECU2+fMtFyy0/bZO4k+g==
+X-Received: by 2002:a05:620a:b19:b0:76c:4833:f851 with SMTP id t25-20020a05620a0b1900b0076c4833f851mr4889926qkg.47.1691241277322;
+        Sat, 05 Aug 2023 06:14:37 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IF+eIfLgnZw5L9ycwyhdLrN0uqyoE4q3saqIVPvg88zQ5KEtjZikqCgXF3BhVK1Upko+kK9baLSnF/xrJ3ejpg=
+X-Received: by 2002:a05:620a:b19:b0:76c:4833:f851 with SMTP id
+ t25-20020a05620a0b1900b0076c4833f851mr4889905qkg.47.1691241277035; Sat, 05
+ Aug 2023 06:14:37 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] arm64: dts: qcom: msm8996: Fix dsi1 interrupts
-Content-Language: en-US
-To:     David Wronek <davidwronek@gmail.com>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
+References: <20230215113249.47727-1-william.qiu@starfivetech.com>
+ <20230215113249.47727-4-william.qiu@starfivetech.com> <CAJM55Z8gVEZS4Ws2Gi7_JbdkS-4y3_8mQvR4ZxLCWZ4A1y9X1g@mail.gmail.com>
+ <CAJM55Z-h+CUmWtkn31Ek+qvxrOr5_Jz3QRRLqWYLz2A0E+h+rA@mail.gmail.com> <d967d628-6961-568e-d72e-ce0e17153818@starfivetech.com>
+In-Reply-To: <d967d628-6961-568e-d72e-ce0e17153818@starfivetech.com>
+From:   Emil Renner Berthing <emil.renner.berthing@canonical.com>
+Date:   Sat, 5 Aug 2023 15:14:20 +0200
+Message-ID: <CAJM55Z_sXt8G4+SFuN74g95zjE73f=9gbtVE+dxZ0UDEcH1hMQ@mail.gmail.com>
+Subject: Re: [PATCH v4 3/4] riscv: dts: starfive: Add mmc node
+To:     William Qiu <william.qiu@starfivetech.com>
+Cc:     linux-riscv@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-mmc@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
         Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        Yassine Oudjana <y.oudjana@protonmail.com>
-Cc:     linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, ~postmarketos/upstreaming@lists.sr.ht
-References: <20230805130936.359860-2-davidwronek@gmail.com>
-From:   Konrad Dybcio <konrad.dybcio@linaro.org>
-Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
- 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
- izWDgYvmBE8=
-In-Reply-To: <20230805130936.359860-2-davidwronek@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+        Jaehoon Chung <jh80.chung@samsung.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5.08.2023 15:09, David Wronek wrote:
-> Fix IRQ flags mismatch which was keeping dsi1 from probing by changing
-> interrupts = <4> to interrupts = <5>.
-> 
-> Fixes: 2752bb7d9b58 ("arm64: dts: qcom: msm8996: add second DSI interface")
-> Signed-off-by: David Wronek <davidwronek@gmail.com>
-> ---
-Reviewed-by: Konrad Dybcio <konrad.dybcio@linaro.org>
-Cc: stable@vger.kernel.org # v6.1
+On Wed, 15 Feb 2023 at 13:26, William Qiu <william.qiu@starfivetech.com> wrote:
+> On 2023/2/15 20:22, Emil Renner Berthing wrote:
+> > On Wed, 15 Feb 2023 at 13:12, Emil Renner Berthing
+> > <emil.renner.berthing@canonical.com> wrote:
+> >>
+> >> On Wed, 15 Feb 2023 at 12:35, William Qiu <william.qiu@starfivetech.com> wrote:
+> >> >
+> >> > Add the mmc node for the StarFive JH7110 SoC.
+> >> > Set mmco node to emmc and set mmc1 node to sd.
+> >> >
+> >> > Signed-off-by: William Qiu <william.qiu@starfivetech.com>
+> >> > ---
+> >> >  .../jh7110-starfive-visionfive-2.dtsi         | 23 +++++++++
+> >> >  arch/riscv/boot/dts/starfive/jh7110.dtsi      | 47 +++++++++++++++++++
+> >> >  2 files changed, 70 insertions(+)
+> >> >
+> >> > diff --git a/arch/riscv/boot/dts/starfive/jh7110-starfive-visionfive-2.dtsi b/arch/riscv/boot/dts/starfive/jh7110-starfive-visionfive-2.dtsi
+> >> > index c60280b89c73..e1a0248e907f 100644
+> >> > --- a/arch/riscv/boot/dts/starfive/jh7110-starfive-visionfive-2.dtsi
+> >> > +++ b/arch/riscv/boot/dts/starfive/jh7110-starfive-visionfive-2.dtsi
+> >> > @@ -42,6 +42,29 @@ &rtc_osc {
+> >> >         clock-frequency = <32768>;
+> >> >  };
+> >> >
+> >> > +&mmc0 {
+> >> > +       max-frequency = <100000000>;
+> >> > +       bus-width = <8>;
+> >> > +       cap-mmc-highspeed;
+> >> > +       mmc-ddr-1_8v;
+> >> > +       mmc-hs200-1_8v;
+> >> > +       non-removable;
+> >> > +       cap-mmc-hw-reset;
+> >> > +       post-power-on-delay-ms = <200>;
+> >> > +       status = "okay";
+> >> > +};
+> >> > +
+> >> > +&mmc1 {
+> >> > +       max-frequency = <100000000>;
+> >> > +       bus-width = <4>;
+> >> > +       no-sdio;
+> >> > +       no-mmc;
+> >> > +       broken-cd;
+> >> > +       cap-sd-highspeed;
+> >> > +       post-power-on-delay-ms = <200>;
+> >> > +       status = "okay";
+> >> > +};
+> >
+> > These nodes are also still oddly placed in the middle of the external
+> > clocks. Again please keep the external clocks at the top and then
+> > order the nodes alphabetically to have some sort of system.
+> >
+>
+>
+> Hi Emil,
+>
+> I'll update it in next version.
 
-Konrad
+Hi William,
+
+It seems the mmc nodes are still missing from the upstream device
+tree. The sysreg nodes have been added in Conors riscv-dt-for-next[1]
+branch, so I don't see any missing dependencies. Could you please
+update and send a new version of this?
+
+[1]: https://git.kernel.org/pub/scm/linux/kernel/git/conor/linux.git/log/?h=riscv-dt-for-next
+
+/Emil
+
+> Best Regards
+> William
+>
+> >> >  &gmac0_rmii_refin {
+> >> >         clock-frequency = <50000000>;
+> >> >  };
+> >> > diff --git a/arch/riscv/boot/dts/starfive/jh7110.dtsi b/arch/riscv/boot/dts/starfive/jh7110.dtsi
+> >> > index 64d260ea1f29..17f7b3ee6ca3 100644
+> >> > --- a/arch/riscv/boot/dts/starfive/jh7110.dtsi
+> >> > +++ b/arch/riscv/boot/dts/starfive/jh7110.dtsi
+> >> > @@ -314,6 +314,11 @@ uart2: serial@10020000 {
+> >> >                         status = "disabled";
+> >> >                 };
+> >> >
+> >> > +               stg_syscon: syscon@10240000 {
+> >> > +                       compatible = "starfive,jh7110-stg-syscon", "syscon";
+> >> > +                       reg = <0x0 0x10240000 0x0 0x1000>;
+> >> > +               };
+> >> > +
+> >> >                 uart3: serial@12000000 {
+> >> >                         compatible = "snps,dw-apb-uart";
+> >> >                         reg = <0x0 0x12000000 0x0 0x10000>;
+> >> > @@ -370,6 +375,11 @@ syscrg: clock-controller@13020000 {
+> >> >                         #reset-cells = <1>;
+> >> >                 };
+> >> >
+> >> > +               sys_syscon: syscon@13030000 {
+> >> > +                       compatible = "starfive,jh7110-sys-syscon", "syscon";
+> >> > +                       reg = <0x0 0x13030000 0x0 0x1000>;
+> >> > +               };
+> >> > +
+> >> >                 gpio: gpio@13040000 {
+> >> >                         compatible = "starfive,jh7110-sys-pinctrl";
+> >> >                         reg = <0x0 0x13040000 0x0 0x10000>;
+> >> > @@ -397,6 +407,11 @@ aoncrg: clock-controller@17000000 {
+> >> >                         #reset-cells = <1>;
+> >> >                 };
+> >> >
+> >> > +               aon_syscon: syscon@17010000 {
+> >> > +                       compatible = "starfive,jh7110-aon-syscon", "syscon";
+> >> > +                       reg = <0x0 0x17010000 0x0 0x1000>;
+> >> > +               };
+> >> > +
+> >> >                 gpioa: gpio@17020000 {
+> >> >                         compatible = "starfive,jh7110-aon-pinctrl";
+> >> >                         reg = <0x0 0x17020000 0x0 0x10000>;
+> >> > @@ -407,5 +422,37 @@ gpioa: gpio@17020000 {
+> >> >                         gpio-controller;
+> >> >                         #gpio-cells = <2>;
+> >> >                 };
+> >> > +
+> >> > +               mmc0: mmc@16010000 {
+> >> > +                       compatible = "starfive,jh7110-mmc";
+> >> > +                       reg = <0x0 0x16010000 0x0 0x10000>;
+> >> > +                       clocks = <&syscrg JH7110_SYSCLK_SDIO0_AHB>,
+> >> > +                                <&syscrg JH7110_SYSCLK_SDIO0_SDCARD>;
+> >> > +                       clock-names = "biu","ciu";
+> >> > +                       resets = <&syscrg JH7110_SYSRST_SDIO0_AHB>;
+> >> > +                       reset-names = "reset";
+> >> > +                       interrupts = <74>;
+> >> > +                       fifo-depth = <32>;
+> >> > +                       fifo-watermark-aligned;
+> >> > +                       data-addr = <0>;
+> >> > +                       starfive,sysreg = <&sys_syscon 0x14 0x1a 0x7c000000>;
+> >> > +                       status = "disabled";
+> >> > +               };
+> >> > +
+> >> > +               mmc1: mmc@16020000 {
+> >> > +                       compatible = "starfive,jh7110-mmc";
+> >> > +                       reg = <0x0 0x16020000 0x0 0x10000>;
+> >> > +                       clocks = <&syscrg JH7110_SYSCLK_SDIO1_AHB>,
+> >> > +                                <&syscrg JH7110_SYSCLK_SDIO1_SDCARD>;
+> >> > +                       clock-names = "biu","ciu";
+> >> > +                       resets = <&syscrg JH7110_SYSRST_SDIO1_AHB>;
+> >> > +                       reset-names = "reset";
+> >> > +                       interrupts = <75>;
+> >> > +                       fifo-depth = <32>;
+> >> > +                       fifo-watermark-aligned;
+> >> > +                       data-addr = <0>;
+> >> > +                       starfive,sysreg = <&sys_syscon 0x9c 0x1 0x3e>;
+> >> > +                       status = "disabled";
+> >> > +               };
+> >>
+> >> Hi William,
+> >>
+> >> These nodes still don't seem to be sorted by address, eg. by the
+> >> number after the @
+> >> Also please move the dt-binding patch before this one, so dtb_check
+> >> won't fail no matter where git bisect happens to land.
+> >>
+> >> /Emil
+> >>
+> >> >         };
+> >> >  };
+> >> > --
+> >> > 2.34.1
+> >> >
+> >> >
+> >> > _______________________________________________
+> >> > linux-riscv mailing list
+> >> > linux-riscv@lists.infradead.org
+> >> > http://lists.infradead.org/mailman/listinfo/linux-riscv
