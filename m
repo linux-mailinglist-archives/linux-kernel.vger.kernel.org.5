@@ -2,219 +2,231 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 65515770D82
-	for <lists+linux-kernel@lfdr.de>; Sat,  5 Aug 2023 05:21:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A536770D7F
+	for <lists+linux-kernel@lfdr.de>; Sat,  5 Aug 2023 05:19:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229644AbjHEDVH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Aug 2023 23:21:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41082 "EHLO
+        id S229494AbjHEDTS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Aug 2023 23:19:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40664 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229527AbjHEDVA (ORCPT
+        with ESMTP id S229437AbjHEDTP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Aug 2023 23:21:00 -0400
-Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 659EA4ED8;
-        Fri,  4 Aug 2023 20:20:58 -0700 (PDT)
-Received: from mail02.huawei.com (unknown [172.30.67.143])
-        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4RHnsf48Zjz4f3m7Y;
-        Sat,  5 Aug 2023 11:20:54 +0800 (CST)
-Received: from huaweicloud.com (unknown [10.174.178.55])
-        by APP4 (Coremail) with SMTP id gCh0CgAHoZQRwM1kZdNePg--.61999S6;
-        Sat, 05 Aug 2023 11:20:55 +0800 (CST)
-From:   thunder.leizhen@huaweicloud.com
-To:     Christoph Lameter <cl@linux.com>,
-        Pekka Enberg <penberg@kernel.org>,
-        David Rientjes <rientjes@google.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Hyeonggon Yoo <42.hyeyoo@gmail.com>, linux-mm@kvack.org,
-        "Paul E . McKenney" <paulmck@kernel.org>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Zqiang <qiang.zhang1211@gmail.com>, rcu@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     Zhen Lei <thunder.leizhen@huawei.com>
-Subject: [PATCH v7 2/2] rcu: Dump memory object info if callback function is invalid
-Date:   Sat,  5 Aug 2023 11:17:26 +0800
-Message-Id: <20230805031726.1230-3-thunder.leizhen@huaweicloud.com>
-X-Mailer: git-send-email 2.37.3.windows.1
-In-Reply-To: <20230805031726.1230-1-thunder.leizhen@huaweicloud.com>
-References: <20230805031726.1230-1-thunder.leizhen@huaweicloud.com>
+        Fri, 4 Aug 2023 23:19:15 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 238984ED6;
+        Fri,  4 Aug 2023 20:19:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1691205553; x=1722741553;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=6BUZMrgcIdifnOs6mbPytqxS1JGu/yhvfT9qNZo3fPA=;
+  b=fIHnkg1GvT4R1H1lkdXfrNYPxk5GX8aKjec2DkB7Ug27iYeKuDM5dcsM
+   nwgfHzPOhIcY3roB3qio12yfx87zmUOMl0hBQai3GiIR60aGymTKNU8C8
+   tXuMOfVbVt88DxTXmzmKGc8a1MDbTydRDs17eSDcRFxYm1+MAKKqU3a68
+   3MvmlkVKZG1vakp4EXoK5TqwjUBniusqfJjGjA0IY3uhO3T/fnrpSSO/e
+   OQgL3jb7xlmqNdKu76LYW19qRpDMjDJWNyd/PiuLxQ+eAOqW6QrrmjY3P
+   /5j6bGVMlZheRnkvFntJ8vNH2P+ejaOR7quSV+bmgXrty1HABQ8FKzsRX
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10792"; a="456666384"
+X-IronPort-AV: E=Sophos;i="6.01,256,1684825200"; 
+   d="scan'208";a="456666384"
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Aug 2023 20:19:12 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10792"; a="733492416"
+X-IronPort-AV: E=Sophos;i="6.01,256,1684825200"; 
+   d="scan'208";a="733492416"
+Received: from lkp-server01.sh.intel.com (HELO d1ccc7e87e8f) ([10.239.97.150])
+  by fmsmga007.fm.intel.com with ESMTP; 04 Aug 2023 20:19:09 -0700
+Received: from kbuild by d1ccc7e87e8f with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qS7oq-0003HP-1u;
+        Sat, 05 Aug 2023 03:19:08 +0000
+Date:   Sat, 5 Aug 2023 11:18:15 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Anshuman Khandual <anshuman.khandual@arm.com>,
+        linux-arm-kernel@lists.infradead.org
+Cc:     oe-kbuild-all@lists.linux.dev,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Mike Leach <mike.leach@linaro.org>,
+        James Clark <james.clark@arm.com>,
+        Leo Yan <leo.yan@linaro.org>, coresight@lists.linaro.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] coresight: etm: Make cycle count threshold user
+ configurable
+Message-ID: <202308051014.Uzl7XY32-lkp@intel.com>
+References: <20230804044720.1478900-1-anshuman.khandual@arm.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: gCh0CgAHoZQRwM1kZdNePg--.61999S6
-X-Coremail-Antispam: 1UD129KBjvJXoWxtF47WrW7Kw1fury3tFWrZrb_yoW7GrW3pr
-        ykury7Kw4kXFyrtay7Zw18WrWUA39Ygay3Ka95Crs3Cw4Ykw10gFyqyF12qrWYqF1rK34a
-        qF1YqF47tw48AwUanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUBEb4IE77IF4wAFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k2
-        6cxKx2IYs7xG6r1S6rWUM7CIcVAFz4kK6r1j6r18M28IrcIa0xkI8VA2jI8067AKxVWUXw
-        A2048vs2IY020Ec7CjxVAFwI0_Xr0E3s1l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxS
-        w2x7M28EF7xvwVC0I7IYx2IY67AKxVWDJVCq3wA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxV
-        W8Jr0_Cr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I0E14v2
-        6rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMc
-        Ij6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_
-        Jr0_Gr1lF7xvr2IYc2Ij64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1lw4CEc2x0rVAKj4
-        xxMxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_
-        Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVW8ZVWrXwCIc40Y0x
-        0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVWx
-        JVW8Jr1lIxAIcVCF04k26cxKx2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14v26r1j6r4UMI
-        IF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x07UtR67UUUUU
-        =
-X-CM-SenderInfo: hwkx0vthuozvpl2kv046kxt4xhlfz01xgou0bp/
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230804044720.1478900-1-anshuman.khandual@arm.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zhen Lei <thunder.leizhen@huawei.com>
+Hi Anshuman,
 
-When a structure containing an RCU callback rhp is (incorrectly) freed
-and reallocated after rhp is passed to call_rcu(), it is not unusual for
-rhp->func to be set to NULL. This defeats the debugging prints used by
-__call_rcu_common() in kernels built with CONFIG_DEBUG_OBJECTS_RCU_HEAD=y,
-which expect to identify the offending code using the identity of this
-function.
+kernel test robot noticed the following build errors:
 
-And in kernels build without CONFIG_DEBUG_OBJECTS_RCU_HEAD=y, things
-are even worse, as can be seen from this splat:
+[auto build test ERROR on soc/for-next]
+[also build test ERROR on linus/master v6.5-rc4 next-20230804]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-Unable to handle kernel NULL pointer dereference at virtual address 0
-... ...
-PC is at 0x0
-LR is at rcu_do_batch+0x1c0/0x3b8
-... ...
- (rcu_do_batch) from (rcu_core+0x1d4/0x284)
- (rcu_core) from (__do_softirq+0x24c/0x344)
- (__do_softirq) from (__irq_exit_rcu+0x64/0x108)
- (__irq_exit_rcu) from (irq_exit+0x8/0x10)
- (irq_exit) from (__handle_domain_irq+0x74/0x9c)
- (__handle_domain_irq) from (gic_handle_irq+0x8c/0x98)
- (gic_handle_irq) from (__irq_svc+0x5c/0x94)
- (__irq_svc) from (arch_cpu_idle+0x20/0x3c)
- (arch_cpu_idle) from (default_idle_call+0x4c/0x78)
- (default_idle_call) from (do_idle+0xf8/0x150)
- (do_idle) from (cpu_startup_entry+0x18/0x20)
- (cpu_startup_entry) from (0xc01530)
+url:    https://github.com/intel-lab-lkp/linux/commits/Anshuman-Khandual/coresight-etm-Make-cycle-count-threshold-user-configurable/20230804-124850
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/soc/soc.git for-next
+patch link:    https://lore.kernel.org/r/20230804044720.1478900-1-anshuman.khandual%40arm.com
+patch subject: [PATCH] coresight: etm: Make cycle count threshold user configurable
+config: arm64-randconfig-r004-20230731 (https://download.01.org/0day-ci/archive/20230805/202308051014.Uzl7XY32-lkp@intel.com/config)
+compiler: aarch64-linux-gcc (GCC) 12.3.0
+reproduce: (https://download.01.org/0day-ci/archive/20230805/202308051014.Uzl7XY32-lkp@intel.com/reproduce)
 
-This commit therefore adds calls to mem_dump_obj(rhp) to output some
-information, for example:
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202308051014.Uzl7XY32-lkp@intel.com/
 
-  slab kmalloc-256 start ffff410c45019900 pointer offset 0 size 256
+All errors (new ones prefixed by >>):
 
-This provides the rough size of the memory block and the offset of the
-rcu_head structure, which as least provides at least a few clues to help
-locate the problem. If the problem is reproducible, additional slab
-debugging can be enabled, for example, CONFIG_DEBUG_SLAB=y, which can
-provide significantly more information.
+   drivers/hwtracing/coresight/coresight-etm4x-core.c: In function 'etm4_parse_event_config':
+>> drivers/hwtracing/coresight/coresight-etm4x-core.c:661:17: error: 'cc_treshold' undeclared (first use in this function); did you mean 'cc_threshold'?
+     661 |                 cc_treshold = attr->config3 & ETM_CYC_THRESHOLD_MASK;
+         |                 ^~~~~~~~~~~
+         |                 cc_threshold
+   drivers/hwtracing/coresight/coresight-etm4x-core.c:661:17: note: each undeclared identifier is reported only once for each function it appears in
 
-Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
----
- kernel/rcu/rcu.h      | 7 +++++++
- kernel/rcu/srcutiny.c | 1 +
- kernel/rcu/srcutree.c | 1 +
- kernel/rcu/tasks.h    | 1 +
- kernel/rcu/tiny.c     | 1 +
- kernel/rcu/tree.c     | 1 +
- 6 files changed, 12 insertions(+)
 
-diff --git a/kernel/rcu/rcu.h b/kernel/rcu/rcu.h
-index d1dcb09750efbd6..bc81582238b9846 100644
---- a/kernel/rcu/rcu.h
-+++ b/kernel/rcu/rcu.h
-@@ -10,6 +10,7 @@
- #ifndef __LINUX_RCU_H
- #define __LINUX_RCU_H
- 
-+#include <linux/slab.h>
- #include <trace/events/rcu.h>
- 
- /*
-@@ -248,6 +249,12 @@ static inline void debug_rcu_head_unqueue(struct rcu_head *head)
- }
- #endif	/* #else !CONFIG_DEBUG_OBJECTS_RCU_HEAD */
- 
-+static inline void debug_rcu_head_callback(struct rcu_head *rhp)
-+{
-+	if (unlikely(!rhp->func))
-+		kmem_dump_obj(rhp);
-+}
-+
- extern int rcu_cpu_stall_suppress_at_boot;
- 
- static inline bool rcu_stall_is_suppressed_at_boot(void)
-diff --git a/kernel/rcu/srcutiny.c b/kernel/rcu/srcutiny.c
-index 336af24e0fe358a..c38e5933a5d6937 100644
---- a/kernel/rcu/srcutiny.c
-+++ b/kernel/rcu/srcutiny.c
-@@ -138,6 +138,7 @@ void srcu_drive_gp(struct work_struct *wp)
- 	while (lh) {
- 		rhp = lh;
- 		lh = lh->next;
-+		debug_rcu_head_callback(rhp);
- 		local_bh_disable();
- 		rhp->func(rhp);
- 		local_bh_enable();
-diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
-index f1a905200fc2f79..833a8f848a90ae6 100644
---- a/kernel/rcu/srcutree.c
-+++ b/kernel/rcu/srcutree.c
-@@ -1710,6 +1710,7 @@ static void srcu_invoke_callbacks(struct work_struct *work)
- 	rhp = rcu_cblist_dequeue(&ready_cbs);
- 	for (; rhp != NULL; rhp = rcu_cblist_dequeue(&ready_cbs)) {
- 		debug_rcu_head_unqueue(rhp);
-+		debug_rcu_head_callback(rhp);
- 		local_bh_disable();
- 		rhp->func(rhp);
- 		local_bh_enable();
-diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
-index 018f03f20629018..1fa631168594d1b 100644
---- a/kernel/rcu/tasks.h
-+++ b/kernel/rcu/tasks.h
-@@ -540,6 +540,7 @@ static void rcu_tasks_invoke_cbs(struct rcu_tasks *rtp, struct rcu_tasks_percpu
- 	raw_spin_unlock_irqrestore_rcu_node(rtpcp, flags);
- 	len = rcl.len;
- 	for (rhp = rcu_cblist_dequeue(&rcl); rhp; rhp = rcu_cblist_dequeue(&rcl)) {
-+		debug_rcu_head_callback(rhp);
- 		local_bh_disable();
- 		rhp->func(rhp);
- 		local_bh_enable();
-diff --git a/kernel/rcu/tiny.c b/kernel/rcu/tiny.c
-index 42f7589e51e09e7..fec804b7908032d 100644
---- a/kernel/rcu/tiny.c
-+++ b/kernel/rcu/tiny.c
-@@ -97,6 +97,7 @@ static inline bool rcu_reclaim_tiny(struct rcu_head *head)
- 
- 	trace_rcu_invoke_callback("", head);
- 	f = head->func;
-+	debug_rcu_head_callback(head);
- 	WRITE_ONCE(head->func, (rcu_callback_t)0L);
- 	f(head);
- 	rcu_lock_release(&rcu_callback_map);
-diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index 3c7281fc25a795b..aae515071ffd821 100644
---- a/kernel/rcu/tree.c
-+++ b/kernel/rcu/tree.c
-@@ -2135,6 +2135,7 @@ static void rcu_do_batch(struct rcu_data *rdp)
- 		trace_rcu_invoke_callback(rcu_state.name, rhp);
- 
- 		f = rhp->func;
-+		debug_rcu_head_callback(rhp);
- 		WRITE_ONCE(rhp->func, (rcu_callback_t)0L);
- 		f(rhp);
- 
+vim +661 drivers/hwtracing/coresight/coresight-etm4x-core.c
+
+   629	
+   630	static int etm4_parse_event_config(struct coresight_device *csdev,
+   631					   struct perf_event *event)
+   632	{
+   633		int ret = 0;
+   634		struct etmv4_drvdata *drvdata = dev_get_drvdata(csdev->dev.parent);
+   635		struct etmv4_config *config = &drvdata->config;
+   636		struct perf_event_attr *attr = &event->attr;
+   637		unsigned long cfg_hash;
+   638		int preset, cc_threshold;
+   639	
+   640		/* Clear configuration from previous run */
+   641		memset(config, 0, sizeof(struct etmv4_config));
+   642	
+   643		if (attr->exclude_kernel)
+   644			config->mode = ETM_MODE_EXCL_KERN;
+   645	
+   646		if (attr->exclude_user)
+   647			config->mode = ETM_MODE_EXCL_USER;
+   648	
+   649		/* Always start from the default config */
+   650		etm4_set_default_config(config);
+   651	
+   652		/* Configure filters specified on the perf cmd line, if any. */
+   653		ret = etm4_set_event_filters(drvdata, event);
+   654		if (ret)
+   655			goto out;
+   656	
+   657		/* Go from generic option to ETMv4 specifics */
+   658		if (attr->config & BIT(ETM_OPT_CYCACC)) {
+   659			config->cfg |= TRCCONFIGR_CCI;
+   660			/* TRM: Must program this for cycacc to work */
+ > 661			cc_treshold = attr->config3 & ETM_CYC_THRESHOLD_MASK;
+   662			if (cc_treshold) {
+   663				if (cc_treshold < drvdata->ccitmin)
+   664					config->ccctlr = drvdata->ccitmin;
+   665				else
+   666					config->ccctlr = cc_threshold;
+   667			} else {
+   668				config->ccctlr = ETM_CYC_THRESHOLD_DEFAULT;
+   669			}
+   670		}
+   671		if (attr->config & BIT(ETM_OPT_TS)) {
+   672			/*
+   673			 * Configure timestamps to be emitted at regular intervals in
+   674			 * order to correlate instructions executed on different CPUs
+   675			 * (CPU-wide trace scenarios).
+   676			 */
+   677			ret = etm4_config_timestamp_event(drvdata);
+   678	
+   679			/*
+   680			 * No need to go further if timestamp intervals can't
+   681			 * be configured.
+   682			 */
+   683			if (ret)
+   684				goto out;
+   685	
+   686			/* bit[11], Global timestamp tracing bit */
+   687			config->cfg |= TRCCONFIGR_TS;
+   688		}
+   689	
+   690		/* Only trace contextID when runs in root PID namespace */
+   691		if ((attr->config & BIT(ETM_OPT_CTXTID)) &&
+   692		    task_is_in_init_pid_ns(current))
+   693			/* bit[6], Context ID tracing bit */
+   694			config->cfg |= TRCCONFIGR_CID;
+   695	
+   696		/*
+   697		 * If set bit ETM_OPT_CTXTID2 in perf config, this asks to trace VMID
+   698		 * for recording CONTEXTIDR_EL2.  Do not enable VMID tracing if the
+   699		 * kernel is not running in EL2.
+   700		 */
+   701		if (attr->config & BIT(ETM_OPT_CTXTID2)) {
+   702			if (!is_kernel_in_hyp_mode()) {
+   703				ret = -EINVAL;
+   704				goto out;
+   705			}
+   706			/* Only trace virtual contextID when runs in root PID namespace */
+   707			if (task_is_in_init_pid_ns(current))
+   708				config->cfg |= TRCCONFIGR_VMID | TRCCONFIGR_VMIDOPT;
+   709		}
+   710	
+   711		/* return stack - enable if selected and supported */
+   712		if ((attr->config & BIT(ETM_OPT_RETSTK)) && drvdata->retstack)
+   713			/* bit[12], Return stack enable bit */
+   714			config->cfg |= TRCCONFIGR_RS;
+   715	
+   716		/*
+   717		 * Set any selected configuration and preset.
+   718		 *
+   719		 * This extracts the values of PMU_FORMAT_ATTR(configid) and PMU_FORMAT_ATTR(preset)
+   720		 * in the perf attributes defined in coresight-etm-perf.c.
+   721		 * configid uses bits 63:32 of attr->config2, preset uses bits 3:0 of attr->config.
+   722		 * A zero configid means no configuration active, preset = 0 means no preset selected.
+   723		 */
+   724		if (attr->config2 & GENMASK_ULL(63, 32)) {
+   725			cfg_hash = (u32)(attr->config2 >> 32);
+   726			preset = attr->config & 0xF;
+   727			ret = cscfg_csdev_enable_active_config(csdev, cfg_hash, preset);
+   728		}
+   729	
+   730		/* branch broadcast - enable if selected and supported */
+   731		if (attr->config & BIT(ETM_OPT_BRANCH_BROADCAST)) {
+   732			if (!drvdata->trcbb) {
+   733				/*
+   734				 * Missing BB support could cause silent decode errors
+   735				 * so fail to open if it's not supported.
+   736				 */
+   737				ret = -EINVAL;
+   738				goto out;
+   739			} else {
+   740				config->cfg |= BIT(ETM4_CFG_BIT_BB);
+   741			}
+   742		}
+   743	
+   744	out:
+   745		return ret;
+   746	}
+   747	
+
 -- 
-2.34.1
-
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
