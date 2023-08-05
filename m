@@ -2,43 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9EC92771095
-	for <lists+linux-kernel@lfdr.de>; Sat,  5 Aug 2023 18:35:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BC57977109E
+	for <lists+linux-kernel@lfdr.de>; Sat,  5 Aug 2023 18:41:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229917AbjHEQfi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 5 Aug 2023 12:35:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41602 "EHLO
+        id S229965AbjHEQlA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 5 Aug 2023 12:41:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42328 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229441AbjHEQfh (ORCPT
+        with ESMTP id S229527AbjHEQk7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 5 Aug 2023 12:35:37 -0400
-Received: from 1wt.eu (ded1.1wt.eu [163.172.96.212])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id E085510F8;
-        Sat,  5 Aug 2023 09:35:35 -0700 (PDT)
-Received: (from willy@localhost)
-        by pcw.home.local (8.15.2/8.15.2/Submit) id 375GZOlV023856;
-        Sat, 5 Aug 2023 18:35:24 +0200
-Date:   Sat, 5 Aug 2023 18:35:24 +0200
-From:   Willy Tarreau <w@1wt.eu>
-To:     Thomas =?iso-8859-1?Q?Wei=DFschuh?= <linux@weissschuh.net>
-Cc:     Shuah Khan <shuah@kernel.org>, linux-kselftest@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Yuan Tan <tanyuan@tinylab.org>,
-        Zhangjin Wu <falcon@tinylab.org>
-Subject: Re: [PATCH v3 05/14] tools/nolibc: stdint: use int for size_t on
- 32bit
-Message-ID: <20230805163524.GD15284@1wt.eu>
-References: <20230803-nolibc-warnings-v3-0-bcc1a096ae02@weissschuh.net>
- <20230803-nolibc-warnings-v3-5-bcc1a096ae02@weissschuh.net>
- <20230805161929.GA15284@1wt.eu>
- <44f1bab4-9d0a-4e7d-a73b-2c00c6029070@t-8ch.de>
+        Sat, 5 Aug 2023 12:40:59 -0400
+Received: from mail-lj1-x231.google.com (mail-lj1-x231.google.com [IPv6:2a00:1450:4864:20::231])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50A4D10F8;
+        Sat,  5 Aug 2023 09:40:58 -0700 (PDT)
+Received: by mail-lj1-x231.google.com with SMTP id 38308e7fff4ca-2b9bb097c1bso48272821fa.0;
+        Sat, 05 Aug 2023 09:40:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1691253656; x=1691858456;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=gbgbFpQ5CS8b/Xg24dFI86ayyuiWeSuGucCXchMse2g=;
+        b=c+FKwgy+65CRVJA5AJKwke6ZlNOixLM+hZxnft7Tzni9BU8by5Ye/LJcjR2gGI6vVK
+         AHGnHGrb5hekJ/uzdt0KNvCkW/nIvxG5CKbhjdSLRSnJfPPZcg7Yo7wyY2feKGSRzDcF
+         4vHsPI8W3cK+xasc0WDwMnBcjIdQWfaKbJ+P7/tlZl3XxnNKDbo+hXD/v4ydPa0ICFX1
+         0FMnzqNmLlT79FGtHkN+D4l6mViOFIgdZ+4QKFHsmxsQF3tkVS6grXUNICMJ0GjnW5VS
+         S9YsACtc/SdqXBxoQAZuGqoO+iF88NgFGMZgX3YP4lLXqyoT1vurhqKpHsEYSEBlrp8C
+         IAFg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691253656; x=1691858456;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=gbgbFpQ5CS8b/Xg24dFI86ayyuiWeSuGucCXchMse2g=;
+        b=KmJOFlf79AlzzPW4X9dOY9skq7FM+Trq3KXmPmkfAdts2m4OYyAuvoSnF6lz3C0MG7
+         EW4C7ZBZZuzH6ZfaQYRuwPxx90cB+UMuwDv1o/h33S+0nv1rxSjrEbBmvhmkjC8qPytJ
+         AVD6HK9aJHWQhdZ3tK9JomskT3/9uFLBedEpFT8kaoJoSdBtAIIPcQai3RZ/IOjR1iJP
+         PSDo5cXAEkJGYRSU1wrjB5/ZObKL1af8E7VInog0ItmP6f8wws+GKLqCiPyEDFNfRNuG
+         Za8rOaMBc44RaRW4BLCkJoZt6m+R5NA705pzhP/owfMrBwZWfTqEu2Cg8OEXCppd3aBs
+         BGTg==
+X-Gm-Message-State: AOJu0Yw6ZKSv0NtbT5Lr9JwQYoCSPmRmF3Oezjf05MIxikS4Ncv1BVQb
+        MOHf1s78qv5mYiS4LnqXCP4=
+X-Google-Smtp-Source: AGHT+IGAyWnZC1HC2zk0RuQ75eTsYcDjPBSvhuYz3lE2Z9xqqgVdLPS76IkbuMZuD9syyfUlKS6iew==
+X-Received: by 2002:a2e:9c9a:0:b0:2b9:ecab:d921 with SMTP id x26-20020a2e9c9a000000b002b9ecabd921mr3847745lji.18.1691253656345;
+        Sat, 05 Aug 2023 09:40:56 -0700 (PDT)
+Received: from user-PC.. ([178.134.198.138])
+        by smtp.gmail.com with ESMTPSA id v3-20020a05600c214300b003fe407ca05bsm6762335wml.37.2023.08.05.09.40.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 05 Aug 2023 09:40:55 -0700 (PDT)
+From:   Maksim Kiselev <bigunclemax@gmail.com>
+To:     contact@jookia.org
+Cc:     aou@eecs.berkeley.edu, conor+dt@kernel.org, davem@davemloft.net,
+        devicetree@vger.kernel.org, edumazet@google.com,
+        jernej.skrabec@gmail.com, krzysztof.kozlowski+dt@linaro.org,
+        kuba@kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-can@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-riscv@lists.infradead.org, linux-sunxi@lists.linux.dev,
+        mkl@pengutronix.de, netdev@vger.kernel.org, pabeni@redhat.com,
+        palmer@dabbelt.com, paul.walmsley@sifive.com, robh+dt@kernel.org,
+        samuel@sholland.org, wens@csie.org, wg@grandegger.com
+Subject: Re: [PATCH v2 2/4] riscv: dts: allwinner: d1: Add CAN controller nodes
+Date:   Sat,  5 Aug 2023 19:40:52 +0300
+Message-Id: <20230805164052.669184-1-bigunclemax@gmail.com>
+X-Mailer: git-send-email 2.39.2
+In-Reply-To: <20230721221552.1973203-4-contact@jookia.org>
+References: <20230721221552.1973203-4-contact@jookia.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <44f1bab4-9d0a-4e7d-a73b-2c00c6029070@t-8ch.de>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS autolearn=ham
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -46,67 +79,31 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Aug 05, 2023 at 06:25:52PM +0200, Thomas Weiﬂschuh wrote:
-> On 2023-08-05 18:19:29+0200, Willy Tarreau wrote:
-> > Hi Thomas,
-> > 
-> > On Thu, Aug 03, 2023 at 09:28:49AM +0200, Thomas Weiﬂschuh wrote:
-> > > Otherwise both gcc and clang may generate warnings about type
-> > > mismatches:
-> > > 
-> > > sysroot/mips/include/string.h:12:14: warning: mismatch in argument 1 type of built-in function 'malloc'; expected 'unsigned int' [-Wbuiltin-declaration-mismatch]
-> > >    12 | static void *malloc(size_t len);
-> > >       |              ^~~~~~
-> > > 
-> > > Signed-off-by: Thomas Weiﬂschuh <linux@weissschuh.net>
-> > > ---
-> > >  tools/include/nolibc/stdint.h | 4 ++++
-> > >  1 file changed, 4 insertions(+)
-> > > 
-> > > diff --git a/tools/include/nolibc/stdint.h b/tools/include/nolibc/stdint.h
-> > > index 4b282435a59a..0f390c3028d8 100644
-> > > --- a/tools/include/nolibc/stdint.h
-> > > +++ b/tools/include/nolibc/stdint.h
-> > > @@ -15,7 +15,11 @@ typedef unsigned int       uint32_t;
-> > >  typedef   signed int        int32_t;
-> > >  typedef unsigned long long uint64_t;
-> > >  typedef   signed long long  int64_t;
-> > > +#if __SIZE_WIDTH__ == 64
-> > >  typedef unsigned long        size_t;
-> > > +#else
-> > > +typedef unsigned int         size_t;
-> > > +#endif
-> > 
-> > This one breaks gcc < 7 for me because __SIZE_WIDTH__ is not defined
-> > there. However I could trace __SIZE_TYPE__ to be defined since at least
-> > gcc-3.4 so instead we can do this, which will always match the type set
-> > by the compiler (either "unsigned int" or "unsigned long int") :
-> > 
-> >   #ifdef __SIZE_TYPE__
-> >   typedef __SIZE_TYPE__ size_t;
-> >   #else
-> >   typedef unsigned long size_t;
-> >   #endif
-> 
-> Sounds good. But do we need the fallback?
+Hi John, Jernej
 
-I don't know. It's always the same when using a compiler-defined macro
-that you discover when you need it, you never know how spread it is.
-At least I've also found it in clang as old as 3.8, so maybe it can be
-considered safe enough.
+On Sat, Jul 22, 2023 at 08:15:51AM +1000, John Watts wrote:
+> ...
+> @@ -131,6 +131,18 @@ uart3_pb_pins: uart3-pb-pins {
+> 				pins = "PB6", "PB7";
+> 				function = "uart3";
+> 			};
+> +
+> +			/omit-if-no-ref/
+> +			can0_pins: can0-pins {
+> +				pins = "PB2", "PB3";
+> +				function = "can0";
+> +			};
+> +
+> +			/omit-if-no-ref/
+> +			can1_pins: can1-pins {
+> +				pins = "PB4", "PB5";
+> +				function = "can1";
+> +			};
+> ...
 
-> Further below we are also unconditionally using preprocessor-defines
-> like __INT_MAX__ and __LONG_MAX__.
-> 
-> So I guess we can drop the proposed #ifdef.
+Should we also keep a pinctrl nodes itself in alphabetical order?
+I mean placing a CAN nodes before `clk_pg11_pin` node?
+Looks like the other nodes sorted in this way...
 
-I'll try with this, the risk is quite low anyway (famous last words).
-
-> > Please just let me know if you want me to modify your patch accordingly.
-> > I'm still continuing the tests.
-> 
-> Feel free to modify the patch.
-
-Will do, thanks!
-
-Willy
+Cheers,
+Maksim
