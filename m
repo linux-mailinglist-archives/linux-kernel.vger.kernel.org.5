@@ -2,108 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BC57977109E
-	for <lists+linux-kernel@lfdr.de>; Sat,  5 Aug 2023 18:41:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E2E77710A1
+	for <lists+linux-kernel@lfdr.de>; Sat,  5 Aug 2023 18:46:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229965AbjHEQlA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 5 Aug 2023 12:41:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42328 "EHLO
+        id S229971AbjHEQqZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 5 Aug 2023 12:46:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43358 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229527AbjHEQk7 (ORCPT
+        with ESMTP id S229714AbjHEQqX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 5 Aug 2023 12:40:59 -0400
-Received: from mail-lj1-x231.google.com (mail-lj1-x231.google.com [IPv6:2a00:1450:4864:20::231])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50A4D10F8;
-        Sat,  5 Aug 2023 09:40:58 -0700 (PDT)
-Received: by mail-lj1-x231.google.com with SMTP id 38308e7fff4ca-2b9bb097c1bso48272821fa.0;
-        Sat, 05 Aug 2023 09:40:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1691253656; x=1691858456;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=gbgbFpQ5CS8b/Xg24dFI86ayyuiWeSuGucCXchMse2g=;
-        b=c+FKwgy+65CRVJA5AJKwke6ZlNOixLM+hZxnft7Tzni9BU8by5Ye/LJcjR2gGI6vVK
-         AHGnHGrb5hekJ/uzdt0KNvCkW/nIvxG5CKbhjdSLRSnJfPPZcg7Yo7wyY2feKGSRzDcF
-         4vHsPI8W3cK+xasc0WDwMnBcjIdQWfaKbJ+P7/tlZl3XxnNKDbo+hXD/v4ydPa0ICFX1
-         0FMnzqNmLlT79FGtHkN+D4l6mViOFIgdZ+4QKFHsmxsQF3tkVS6grXUNICMJ0GjnW5VS
-         S9YsACtc/SdqXBxoQAZuGqoO+iF88NgFGMZgX3YP4lLXqyoT1vurhqKpHsEYSEBlrp8C
-         IAFg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691253656; x=1691858456;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=gbgbFpQ5CS8b/Xg24dFI86ayyuiWeSuGucCXchMse2g=;
-        b=KmJOFlf79AlzzPW4X9dOY9skq7FM+Trq3KXmPmkfAdts2m4OYyAuvoSnF6lz3C0MG7
-         EW4C7ZBZZuzH6ZfaQYRuwPxx90cB+UMuwDv1o/h33S+0nv1rxSjrEbBmvhmkjC8qPytJ
-         AVD6HK9aJHWQhdZ3tK9JomskT3/9uFLBedEpFT8kaoJoSdBtAIIPcQai3RZ/IOjR1iJP
-         PSDo5cXAEkJGYRSU1wrjB5/ZObKL1af8E7VInog0ItmP6f8wws+GKLqCiPyEDFNfRNuG
-         Za8rOaMBc44RaRW4BLCkJoZt6m+R5NA705pzhP/owfMrBwZWfTqEu2Cg8OEXCppd3aBs
-         BGTg==
-X-Gm-Message-State: AOJu0Yw6ZKSv0NtbT5Lr9JwQYoCSPmRmF3Oezjf05MIxikS4Ncv1BVQb
-        MOHf1s78qv5mYiS4LnqXCP4=
-X-Google-Smtp-Source: AGHT+IGAyWnZC1HC2zk0RuQ75eTsYcDjPBSvhuYz3lE2Z9xqqgVdLPS76IkbuMZuD9syyfUlKS6iew==
-X-Received: by 2002:a2e:9c9a:0:b0:2b9:ecab:d921 with SMTP id x26-20020a2e9c9a000000b002b9ecabd921mr3847745lji.18.1691253656345;
-        Sat, 05 Aug 2023 09:40:56 -0700 (PDT)
-Received: from user-PC.. ([178.134.198.138])
-        by smtp.gmail.com with ESMTPSA id v3-20020a05600c214300b003fe407ca05bsm6762335wml.37.2023.08.05.09.40.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 05 Aug 2023 09:40:55 -0700 (PDT)
-From:   Maksim Kiselev <bigunclemax@gmail.com>
-To:     contact@jookia.org
-Cc:     aou@eecs.berkeley.edu, conor+dt@kernel.org, davem@davemloft.net,
-        devicetree@vger.kernel.org, edumazet@google.com,
-        jernej.skrabec@gmail.com, krzysztof.kozlowski+dt@linaro.org,
-        kuba@kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-can@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-riscv@lists.infradead.org, linux-sunxi@lists.linux.dev,
-        mkl@pengutronix.de, netdev@vger.kernel.org, pabeni@redhat.com,
-        palmer@dabbelt.com, paul.walmsley@sifive.com, robh+dt@kernel.org,
-        samuel@sholland.org, wens@csie.org, wg@grandegger.com
-Subject: Re: [PATCH v2 2/4] riscv: dts: allwinner: d1: Add CAN controller nodes
-Date:   Sat,  5 Aug 2023 19:40:52 +0300
-Message-Id: <20230805164052.669184-1-bigunclemax@gmail.com>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20230721221552.1973203-4-contact@jookia.org>
-References: <20230721221552.1973203-4-contact@jookia.org>
+        Sat, 5 Aug 2023 12:46:23 -0400
+Received: from phobos.denx.de (phobos.denx.de [85.214.62.61])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A5084200
+        for <linux-kernel@vger.kernel.org>; Sat,  5 Aug 2023 09:46:21 -0700 (PDT)
+Received: from [127.0.0.1] (p578adb1c.dip0.t-ipconnect.de [87.138.219.28])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: marex@denx.de)
+        by phobos.denx.de (Postfix) with ESMTPSA id 1C0EF861E6;
+        Sat,  5 Aug 2023 18:46:19 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=denx.de;
+        s=phobos-20191101; t=1691253979;
+        bh=RQdRw6SVFAdDjEY7wpgCCM0vKULqBhFkkBBjbtqn5aA=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=Plf+ZjZPlaPvGj0bCS8eK/kSM7QSub1DewuuyRh/qVNZ4kiXLl3BPzVDcjgyGdq9n
+         zVdE1SXgCKokrlufcZTOpbjdlSwQFJYCi3jhYilPHRIOzYvxmUZwmwQqsPouJMQAwy
+         oP0pSkxWoFYeSaJ61t/wfxM4lL44PE9jIg4F5NUIwWNymAj9cZR/IphcxTLZPDNNju
+         uNLlKMme4sjxDuq+C2r+gBzdV9sxrZnWgzUkC+FaBQxID2zp1O2+B5O3qBkqVPZF5n
+         OaSQZmpmwwkk5ig4Y9nh/t/ToP1rRCWg3F6P35vgyo4kpxqRiI8XjvNl/xw1yn9A99
+         L6jzw4pTBBSEg==
+Message-ID: <5f2f22f5-340b-fdf7-585d-3665a0e8a087@denx.de>
+Date:   Sat, 5 Aug 2023 18:46:18 +0200
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.1
+Subject: Re: [PATCH] drm/panel: simple: Fix Innolux G156HCE-L01 LVDS clock
+Content-Language: en-US
+To:     Luca Ceresoli <luca.ceresoli@bootlin.com>,
+        dri-devel@lists.freedesktop.org
+Cc:     Neil Armstrong <neil.armstrong@linaro.org>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>, linux-kernel@vger.kernel.org,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        Paul Kocialkowski <paul.kocialkowski@bootlin.com>
+References: <20230804151010.834990-1-luca.ceresoli@bootlin.com>
+From:   Marek Vasut <marex@denx.de>
+In-Reply-To: <20230804151010.834990-1-luca.ceresoli@bootlin.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Virus-Scanned: clamav-milter 0.103.8 at phobos.denx.de
+X-Virus-Status: Clean
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi John, Jernej
+On 8/4/23 17:10, Luca Ceresoli wrote:
+> This panel has been implemented in commit 225213f24c79 ("drm/panel-simple:
+> Add Innolux G156HCE-L01 panel entry") with a higher clock than the typical
+> one mentioned on the documentation to avoid flickering on the unit
+> tested. Testing on a different unit shows that the panel actually works
+> with the intended 70.93 MHz clock and even lower frequencies so the
+> flickering is likely caused either by a defective unit or by other
+> different components such as the bridge.
+> 
+> Fixes: 225213f24c79 ("drm/panel-simple: Add Innolux G156HCE-L01 panel entry")
+> Signed-off-by: Luca Ceresoli <luca.ceresoli@bootlin.com>
+> ---
+>   drivers/gpu/drm/panel/panel-simple.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/gpu/drm/panel/panel-simple.c b/drivers/gpu/drm/panel/panel-simple.c
+> index 56854f78441e..ec3a73bbfe30 100644
+> --- a/drivers/gpu/drm/panel/panel-simple.c
+> +++ b/drivers/gpu/drm/panel/panel-simple.c
+> @@ -2379,7 +2379,7 @@ static const struct panel_desc innolux_g121x1_l03 = {
+>   };
+>   
+>   static const struct display_timing innolux_g156hce_l01_timings = {
+> -	.pixelclock = { 120000000, 144000000, 150000000 },
+> +	.pixelclock = { 120000000, 141860000, 150000000 },
+>   	.hactive = { 1920, 1920, 1920 },
+>   	.hfront_porch = { 80, 90, 100 },
+>   	.hback_porch = { 80, 90, 100 },
 
-On Sat, Jul 22, 2023 at 08:15:51AM +1000, John Watts wrote:
-> ...
-> @@ -131,6 +131,18 @@ uart3_pb_pins: uart3-pb-pins {
-> 				pins = "PB6", "PB7";
-> 				function = "uart3";
-> 			};
-> +
-> +			/omit-if-no-ref/
-> +			can0_pins: can0-pins {
-> +				pins = "PB2", "PB3";
-> +				function = "can0";
-> +			};
-> +
-> +			/omit-if-no-ref/
-> +			can1_pins: can1-pins {
-> +				pins = "PB4", "PB5";
-> +				function = "can1";
-> +			};
-> ...
+Odd, now I don't see the flicker anymore.
 
-Should we also keep a pinctrl nodes itself in alphabetical order?
-I mean placing a CAN nodes before `clk_pg11_pin` node?
-Looks like the other nodes sorted in this way...
+Tested-by: Marek Vasut <marex@denx.de> # MX8MM with LT9211
+Reviewed-by: Marek Vasut <marex@denx.de>
 
-Cheers,
-Maksim
+Thanks !
