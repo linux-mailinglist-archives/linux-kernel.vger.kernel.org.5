@@ -2,108 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D77E770E27
-	for <lists+linux-kernel@lfdr.de>; Sat,  5 Aug 2023 08:43:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D63A770E29
+	for <lists+linux-kernel@lfdr.de>; Sat,  5 Aug 2023 08:44:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229741AbjHEGnE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 5 Aug 2023 02:43:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37750 "EHLO
+        id S229630AbjHEGn5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 5 Aug 2023 02:43:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38056 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229731AbjHEGnA (ORCPT
+        with ESMTP id S229464AbjHEGnw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 5 Aug 2023 02:43:00 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE00D1BE
-        for <linux-kernel@vger.kernel.org>; Fri,  4 Aug 2023 23:42:52 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 6F14860A1A
-        for <linux-kernel@vger.kernel.org>; Sat,  5 Aug 2023 06:42:52 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4E345C433C7;
-        Sat,  5 Aug 2023 06:42:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691217771;
-        bh=cYmaEUvHLY/7RQQcRtIEJ4CworRRdzVY9ztwu+GARH4=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=P3YiI+2VwFeV1qw+P1mlHUC5WUVuuXuN0Nd+D35Z9EqMTRX0CBUIFghsM7m7qgFth
-         OcKUjhAG5++HF+I1PyNGIsZygmw+zQiVjbJFfi/21Jcp3sRBEapuOMxH/lGpJYmLWF
-         /ZjfjjGp/yI8uylSOvSmTr0dWVQe2cJY8Q+CgwGRWg3Cvidm/JzFdJO0Ru077MsB0Q
-         I91WwAVuQ2xSDJ9KEV3KGRacugPsWESA3Cd6dubaNSrKXeOY28CqRAgpAUtXGL3QfX
-         gE+6sBrVazpOQ71het3tITxMzYfXZm+gHUowKQdIYl0ejpIgdItYKjZylOqZj8H+mw
-         R4ct5jWnujaOQ==
-Message-ID: <9d5fc0d5-9ee9-3268-2b6a-22e870047d2b@kernel.org>
-Date:   Sat, 5 Aug 2023 15:42:48 +0900
+        Sat, 5 Aug 2023 02:43:52 -0400
+Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49D271BF
+        for <linux-kernel@vger.kernel.org>; Fri,  4 Aug 2023 23:43:51 -0700 (PDT)
+Received: by mail-ej1-x636.google.com with SMTP id a640c23a62f3a-99bccc9ec02so405260566b.2
+        for <linux-kernel@vger.kernel.org>; Fri, 04 Aug 2023 23:43:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1691217830; x=1691822630;
+        h=to:subject:message-id:date:from:reply-to:mime-version:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Fyaf0OHfvWgaqfRiwRufcy49gz6rXRNyNLf1qH0Ffk0=;
+        b=fI0IdoXOvcDFp/TFe6tNB54+yAWSvxH8Zh+XLrDZpTuld3fJbS+DuZSFLqW9YgqseX
+         4akrMUkIlH8A0RNQ6uZlBhD2vSl/tI88Emx+HHrckk6iT4w9aEIRRx+1k6VfpsVQDKET
+         TY22K+Oh1gjSIPZJLmNpRq1eDvzRJ4UevCHDGQX0lehvFOsopQgcVZQ+2WZIbRPkfP53
+         4qU8wFITjBLvOLBE7aLOQSW/jJAUxTtZKtAszb8gjPMsXb0fS9ZtB5x9eatYR8U5kLFU
+         lWiQGpOnzqf4wyGILyBl9gEPbX9iLal1b1N5lJPHKxYkC8AjSMUaS8OwwptUs5POiCPI
+         EyDg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691217830; x=1691822630;
+        h=to:subject:message-id:date:from:reply-to:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Fyaf0OHfvWgaqfRiwRufcy49gz6rXRNyNLf1qH0Ffk0=;
+        b=b7piTS3BOdx+7nMi7GZEidPabAlusqbnFK3ZBro1ctypYwWzSqLq12z3+70HIjeZsV
+         2Yp6WFy5Wz4U4Y/9dms89ccI5TNs4H1Ohscv/IWn4FnK+Bu1NhgEAwMRgyObDK6IdPfG
+         d4P/E7WHxdIJp+yLYY8oeSfAczvcp5ISp1tFB2OXDrH09580qts15lRqXYqgIQJ4dXKU
+         2e9S/2gr3neD4+1Fz5hJIpRFBgCN3Lt0Dm5oFacrD/HyEZpnmqcUxQHJHJuAdi3xiI/f
+         /GMMCe2MjqkMYaOmenO9oLRZsymHDsbh7E2LfE2vEdKd5wSMkczJelRolA5EAyPe0tgM
+         wG+g==
+X-Gm-Message-State: AOJu0Yz/sagdxkwlsTFt2KbB00JRO41d8x8ggi9iVGqGHwQaQvEkS2Hk
+        fPA02kexSPjQiZGf23uiJvEQRk7x1yu0NIW1DiA=
+X-Google-Smtp-Source: AGHT+IEl1NuIN82xxyrBQD+s/Zn0M7QFkGsXZ4ZFmr6qZ9EP5GvkrTWFyE2VXvpsTcPx0h/SafTKp5lqA2W+yRb//ws=
+X-Received: by 2002:a17:906:1c7:b0:99b:22dd:f83d with SMTP id
+ 7-20020a17090601c700b0099b22ddf83dmr3797948ejj.55.1691217829572; Fri, 04 Aug
+ 2023 23:43:49 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH] extcon: cht_wc: add POWER_SUPPLY dependency
-To:     Arnd Bergmann <arnd@kernel.org>,
-        MyungJoo Ham <myungjoo.ham@samsung.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Sebastian Reichel <sebastian.reichel@collabora.com>,
-        Hans de Goede <hdegoede@redhat.com>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        =?UTF-8?Q?Alvin_=c5=a0ipraga?= <alsi@bang-olufsen.dk>,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        Marek Vasut <marex@denx.de>, linux-kernel@vger.kernel.org
-References: <20230804132853.2300155-1-arnd@kernel.org>
-From:   Chanwoo Choi <chanwoo@kernel.org>
-Content-Language: en-US
-In-Reply-To: <20230804132853.2300155-1-arnd@kernel.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-7.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_HI,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Received: by 2002:a05:7412:6629:b0:df:940:19b1 with HTTP; Fri, 4 Aug 2023
+ 23:43:49 -0700 (PDT)
+Reply-To: bintu37999@gmail.com
+From:   Bintu Felicia <bimmtu@gmail.com>
+Date:   Sat, 5 Aug 2023 07:43:49 +0100
+Message-ID: <CAAF5Ruxz2Ewx0JS8DadqixYJ1dMiUNHqMW7dT=ZCAgF3-FRb0w@mail.gmail.com>
+Subject: HELLO...,
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=4.5 required=5.0 tests=BAYES_50,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,FREEMAIL_REPLYTO,
+        FREEMAIL_REPLYTO_END_DIGIT,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        UNDISC_FREEM autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Level: ****
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 23. 8. 4. 22:28, Arnd Bergmann wrote:
-> From: Arnd Bergmann <arnd@arndb.de>
-> 
-> The driver fails to link when CONFIG_POWER_SUPPLY is disabled:
-> 
-> x86_64-linux-ld: vmlinux.o: in function `cht_wc_extcon_psy_get_prop':
-> extcon-intel-cht-wc.c:(.text+0x15ccda7): undefined reference to `power_supply_get_drvdata'
-> x86_64-linux-ld: vmlinux.o: in function `cht_wc_extcon_pwrsrc_event':
-> extcon-intel-cht-wc.c:(.text+0x15cd3e9): undefined reference to `power_supply_changed'
-> x86_64-linux-ld: vmlinux.o: in function `cht_wc_extcon_probe':
-> extcon-intel-cht-wc.c:(.text+0x15cd596): undefined reference to `devm_power_supply_register'
-> 
-> It should be possible to change the driver to not require this at
-> compile time and still provide other functions, but adding a hard
-> Kconfig dependency does not seem to have any practical downsides
-> and is simpler since the option is normally enabled anyway.
-> 
-> Fixes: 66e31186cd2aa ("extcon: intel-cht-wc: Add support for registering a power_supply class-device")
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-> ---
->  drivers/extcon/Kconfig | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/drivers/extcon/Kconfig b/drivers/extcon/Kconfig
-> index 0ef1971d22bb0..8de9023c2a387 100644
-> --- a/drivers/extcon/Kconfig
-> +++ b/drivers/extcon/Kconfig
-> @@ -62,6 +62,7 @@ config EXTCON_INTEL_CHT_WC
->  	tristate "Intel Cherrytrail Whiskey Cove PMIC extcon driver"
->  	depends on INTEL_SOC_PMIC_CHTWC
->  	depends on USB_SUPPORT
-> +	depends on POWER_SUPPLY
->  	select USB_ROLE_SWITCH
->  	help
->  	  Say Y here to enable extcon support for charger detection / control
-
-Applied it. Thanks.
-
--- 
-Best Regards,
-Samsung Electronics
-Chanwoo Choi
-
+How are you today? I hope you are fine. My name is Miss
+Bintu Felicia . l am single looking for honest and nice
+person whom i can partner with . I don't care about
+your color, ethnicity, Status or Sex. Upon your reply to
+this mail I will tell you more about myself and send you
+more of my picture .I am sending you this beautiful mail
+with a wish for much happiness
