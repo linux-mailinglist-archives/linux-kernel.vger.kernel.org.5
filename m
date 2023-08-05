@@ -2,26 +2,26 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1EEC6771032
+	by mail.lfdr.de (Postfix) with ESMTP id 7328D771033
 	for <lists+linux-kernel@lfdr.de>; Sat,  5 Aug 2023 16:43:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229803AbjHEOnn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 5 Aug 2023 10:43:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51194 "EHLO
+        id S229814AbjHEOnp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 5 Aug 2023 10:43:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51196 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229475AbjHEOnl (ORCPT
+        with ESMTP id S229464AbjHEOnl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Sat, 5 Aug 2023 10:43:41 -0400
 Received: from pidgin.makrotopia.org (pidgin.makrotopia.org [185.142.180.65])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8A4B1FE6;
-        Sat,  5 Aug 2023 07:43:38 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27AE94224;
+        Sat,  5 Aug 2023 07:43:39 -0700 (PDT)
 Received: from local
         by pidgin.makrotopia.org with esmtpsa (TLS1.3:TLS_AES_256_GCM_SHA384:256)
          (Exim 4.96)
         (envelope-from <daniel@makrotopia.org>)
-        id 1qSIUq-0000N9-0A;
-        Sat, 05 Aug 2023 14:43:12 +0000
-Date:   Sat, 5 Aug 2023 15:42:58 +0100
+        id 1qSIV5-0000NR-1o;
+        Sat, 05 Aug 2023 14:43:27 +0000
+Date:   Sat, 5 Aug 2023 15:43:19 +0100
 From:   Daniel Golle <daniel@makrotopia.org>
 To:     Andrew Lunn <andrew@lunn.ch>,
         Florian Fainelli <f.fainelli@gmail.com>,
@@ -44,12 +44,14 @@ To:     Andrew Lunn <andrew@lunn.ch>,
         devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
         linux-arm-kernel@lists.infradead.org,
         linux-mediatek@lists.infradead.org
-Subject: [PATCH RESEND net-next 1/2] net: dsa: mt7530: register OF node for
- internal MDIO bus
-Message-ID: <6eb1b7b8dbc3a4b14becad15f0707d4f624ee18b.1691246461.git.daniel@makrotopia.org>
+Subject: [PATCH RESEND net-next 2/2] dt-bindings: net: dsa: mediatek,mt7530:
+ document MDIO-bus
+Message-ID: <9aec0fe0cb676b76132c388bb3ead46f596a6e6e.1691246461.git.daniel@makrotopia.org>
+References: <6eb1b7b8dbc3a4b14becad15f0707d4f624ee18b.1691246461.git.daniel@makrotopia.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+In-Reply-To: <6eb1b7b8dbc3a4b14becad15f0707d4f624ee18b.1691246461.git.daniel@makrotopia.org>
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
@@ -61,46 +63,31 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: David Bauer <mail@david-bauer.net>
 
-The MT753x switches provide a switch-internal MDIO bus for the embedded
-PHYs.
-
-Register a OF sub-node on the switch OF-node for this internal MDIO bus.
-This allows to configure the embedded PHYs using device-tree.
+Document the ability to add nodes for the MDIO bus connecting the
+switch-internal PHYs.
 
 Signed-off-by: David Bauer <mail@david-bauer.net>
 Signed-off-by: Daniel Golle <daniel@makrotopia.org>
 ---
- drivers/net/dsa/mt7530.c | 7 ++++++-
- 1 file changed, 6 insertions(+), 1 deletion(-)
+ .../devicetree/bindings/net/dsa/mediatek,mt7530.yaml        | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
-diff --git a/drivers/net/dsa/mt7530.c b/drivers/net/dsa/mt7530.c
-index 8fbda739c1b35..9bb805de397a9 100644
---- a/drivers/net/dsa/mt7530.c
-+++ b/drivers/net/dsa/mt7530.c
-@@ -2152,10 +2152,13 @@ mt7530_setup_mdio(struct mt7530_priv *priv)
- {
- 	struct dsa_switch *ds = priv->ds;
- 	struct device *dev = priv->dev;
-+	struct device_node *np, *mnp;
- 	struct mii_bus *bus;
- 	static int idx;
- 	int ret;
+diff --git a/Documentation/devicetree/bindings/net/dsa/mediatek,mt7530.yaml b/Documentation/devicetree/bindings/net/dsa/mediatek,mt7530.yaml
+index e532c6b795f4f..50f8f83cc440f 100644
+--- a/Documentation/devicetree/bindings/net/dsa/mediatek,mt7530.yaml
++++ b/Documentation/devicetree/bindings/net/dsa/mediatek,mt7530.yaml
+@@ -128,6 +128,12 @@ properties:
+       See Documentation/devicetree/bindings/regulator/mt6323-regulator.txt for
+       details for the regulator setup on these boards.
  
-+	np = priv->dev->of_node;
++  mdio:
++    $ref: /schemas/net/mdio.yaml#
++    unevaluatedProperties: false
++    description:
++      Node for the internal MDIO bus connected to the embedded ethernet-PHYs.
 +
- 	bus = devm_mdiobus_alloc(dev);
- 	if (!bus)
- 		return -ENOMEM;
-@@ -2174,7 +2177,9 @@ mt7530_setup_mdio(struct mt7530_priv *priv)
- 	if (priv->irq)
- 		mt7530_setup_mdio_irq(priv);
- 
--	ret = devm_mdiobus_register(dev, bus);
-+	mnp = of_get_child_by_name(np, "mdio");
-+	ret = devm_of_mdiobus_register(dev, bus, mnp);
-+	of_node_put(mnp);
- 	if (ret) {
- 		dev_err(dev, "failed to register MDIO bus: %d\n", ret);
- 		if (priv->irq)
+   mediatek,mcm:
+     type: boolean
+     description:
 -- 
 2.41.0
