@@ -2,78 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1FA8F771210
-	for <lists+linux-kernel@lfdr.de>; Sat,  5 Aug 2023 22:19:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A255771218
+	for <lists+linux-kernel@lfdr.de>; Sat,  5 Aug 2023 22:25:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230320AbjHEUTI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 5 Aug 2023 16:19:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35906 "EHLO
+        id S230014AbjHEUZE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 5 Aug 2023 16:25:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37284 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230308AbjHEUTD (ORCPT
+        with ESMTP id S229559AbjHEUZB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 5 Aug 2023 16:19:03 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BCA9C1BCA;
-        Sat,  5 Aug 2023 13:19:02 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 9CDB860EF0;
-        Sat,  5 Aug 2023 20:19:02 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id EE9D1C433C9;
-        Sat,  5 Aug 2023 20:19:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691266742;
-        bh=gbAV6KRqhKF7MZ+ptikkA5jMdlmvI/esHYBsCeVYsHk=;
-        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=fEtU1gq9tepSFLgqK8XrqUJ0X2fOlGJhyXzJHr2bb55nhAwd+N84s/ffR5PZuPlxX
-         hhTgUe2AYc9r5EBCSlT0emmMODVaDG3Zsbwa0j4NZN0bawTOjlubVX0rWq/3uZRGbU
-         5kFvKmf424l91heEZ8QGVch7Lr2xgW7RSQA9P5fSg0Ewq0kOpl09QmrK5KnfiqaKiA
-         6vvgcfulFr3fEsad2ftocE4mgYG62vi8mK+JKXFbJPVjPMbgXDVKW1TaC7AcEn+19f
-         PPRLQP6BPSH/QCrLc4PDDa+9NHo/kbwAOW2ciKrgVOcEAOw3j8rLqBfGFolhMsArZL
-         uwJ2LQAqZ728g==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id D82F1C64458;
-        Sat,  5 Aug 2023 20:19:01 +0000 (UTC)
-Subject: Re: [GIT PULL] parisc architecture fixes for v6.5-rc5
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <ZM3l7IiQKzkkN29S@p100>
-References: <ZM3l7IiQKzkkN29S@p100>
-X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <ZM3l7IiQKzkkN29S@p100>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/deller/parisc-linux.git tags/parisc-for-6.5-rc5
-X-PR-Tracked-Commit-Id: 99b2f159b6e76b84357eae6dc2a206871aa630d5
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 947c2a83584d3093efea1edf52430db47f11080f
-Message-Id: <169126674187.17470.14029658406473487025.pr-tracker-bot@kernel.org>
-Date:   Sat, 05 Aug 2023 20:19:01 +0000
-To:     Helge Deller <deller@gmx.de>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, linux-parisc@vger.kernel.org,
-        James Bottomley <James.Bottomley@hansenpartnership.com>,
-        Mike Rapoport <rppt@kernel.org>,
-        Christoph Biedl <linux-kernel.bfrz@manchmal.in-ulm.de>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        Sat, 5 Aug 2023 16:25:01 -0400
+Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA7B513E;
+        Sat,  5 Aug 2023 13:24:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+        bh=dNu2egnhMUuwuP0JymsvaeCUIB7L8YRoiDijl0XGqF4=; b=1bIGNScm0IlJWgpkYH1OZiiSSD
+        uHkr6jYSWQ5cc3wxwc1OdW+tKzWVw1aYJr/qO0+4yBJ+eG/TKtZMchreUC63QrMnYOqh5wjNate88
+        Iqffy5k7Xm5gMKqojm+G4Z4okBjK1iIjdgyGu0bPyz3bSZ0IgPK4CR3fmqraKDsaPO3I=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+        (envelope-from <andrew@lunn.ch>)
+        id 1qSNp9-003DAy-Il; Sat, 05 Aug 2023 22:24:31 +0200
+Date:   Sat, 5 Aug 2023 22:24:31 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Matthew Cover <werekraken@gmail.com>
+Cc:     Michael Chan <michael.chan@broadcom.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Richard Cochran <richardcochran@gmail.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Matthew Cover <matthew.cover@stackpath.com>,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        bpf@vger.kernel.org
+Subject: Re: [PATCH net-next] Add bnxt_netlink to facilitate representor pair
+ configurations.
+Message-ID: <3987add6-4928-4cd9-9fe6-a232f202ecc6@lunn.ch>
+References: <20230804212954.98868-1-matthew.cover@stackpath.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230804212954.98868-1-matthew.cover@stackpath.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Sat, 5 Aug 2023 08:02:20 +0200:
+On Fri, Aug 04, 2023 at 02:29:54PM -0700, Matthew Cover wrote:
+> To leverage the SmartNIC capabilities available in Broadcom
+> NetXtreme-C/E ethernet devices, representor pairs must be configured
+> via bnxt-ctl
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/deller/parisc-linux.git tags/parisc-for-6.5-rc5
+Could you give a link to the bnxt-ctl sources. Also give a brief
+description of what they do. 
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/947c2a83584d3093efea1edf52430db47f11080f
+> @@ -0,0 +1,231 @@
+> +/* Broadcom NetXtreme-C/E network driver.
+> + *
+> + * Copyright (c) 2014-2016 Broadcom Corporation
+> + * Copyright (c) 2016-2017 Broadcom Limited
+> + *
+> + * This program is free software; you can redistribute it and/or modify
+> + * it under the terms of the GNU General Public License as published by
+> + * the Free Software Foundation.
 
-Thank you!
+Please remove the license boilerplate and use a SPDX-License-Identifier.
 
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+> + */
+> +#include <linux/netdevice.h>
+> +#include <linux/pci.h>
+> +#include "bnxt_hsi.h"
+> +#include "bnxt_netlink.h"
+> +#include "bnxt.h"
+> +#include "bnxt_hwrm.h"
+> +
+> +/* attribute policy */
+> +static struct nla_policy bnxt_netlink_policy[BNXT_NUM_ATTRS] = {
+> +	[BNXT_ATTR_PID] = { .type = NLA_U32 },
+> +	[BNXT_ATTR_IF_INDEX] = { .type = NLA_U32 },
+> +	[BNXT_ATTR_REQUEST] = { .type = NLA_BINARY },
+> +	[BNXT_ATTR_RESPONSE] = { .type = NLA_BINARY },
+
+Passing binary blobs from user space to firmware will not be
+accepted. You need well defined and documented individual commands.
+
+
+    Andrew
+
+---
+pw-bot: cr
