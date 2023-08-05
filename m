@@ -2,141 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CC4E8771007
-	for <lists+linux-kernel@lfdr.de>; Sat,  5 Aug 2023 16:01:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C43C77100C
+	for <lists+linux-kernel@lfdr.de>; Sat,  5 Aug 2023 16:02:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229483AbjHEOB4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 5 Aug 2023 10:01:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45108 "EHLO
+        id S229511AbjHEOCm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 5 Aug 2023 10:02:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45442 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229379AbjHEOBy (ORCPT
+        with ESMTP id S229379AbjHEOCk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 5 Aug 2023 10:01:54 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CCAD7113
-        for <linux-kernel@vger.kernel.org>; Sat,  5 Aug 2023 07:01:53 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 423D360E0A
-        for <linux-kernel@vger.kernel.org>; Sat,  5 Aug 2023 14:01:53 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DD57BC433C8;
-        Sat,  5 Aug 2023 14:01:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691244112;
-        bh=Z7i5QwWx2AHjf62kHkBY4DZ84VJ8f4fULqWvP9CNS3w=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=aYGafcyMpqWW1JrU2tEUIbghx9oeVRHe7yD/V4AonUVl9pJjX0qPNmFahIeoYGmqS
-         lNxfBmxJyFNJ10LzTVvlN3atGc3gqXnrcIvdjeFWa/RKNk1B/gge20DGMKPN/Mlybb
-         U296FuomHsXqJ8T3sGxR05iuz7UZ5xWTaQiZIZmGJmgw36ljpE5Az3nrJ9OfGYtUkK
-         cWSOAgFnN9klCvWYx0ETFfHI1NcA2L0SkgjawfD6hcidieBpgxzj+i054aC7LxTEZy
-         KCBS/2SgOsDUItr7bXGoU0TPnWYtHa1gkNUV7Qch4SI2eyHwq7yICHzRSEbVCHC7A3
-         yBhDOLAuLqqDg==
-Date:   Sat, 5 Aug 2023 23:01:48 +0900
-From:   Masami Hiramatsu (Google) <mhiramat@kernel.org>
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc:     Adrian Hunter <adrian.hunter@intel.com>,
-        Ian Rogers <irogers@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 1/1] perf probe: Free string returned by
- synthesize_perf_probe_point() on failure to add a probe
-Message-Id: <20230805230148.84a94f9f67e56513d58f4e1b@kernel.org>
-In-Reply-To: <ZM0l1Oxamr4SVjfY@kernel.org>
-References: <ZM0l1Oxamr4SVjfY@kernel.org>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        Sat, 5 Aug 2023 10:02:40 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.126])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B18B6113
+        for <linux-kernel@vger.kernel.org>; Sat,  5 Aug 2023 07:02:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1691244156; x=1722780156;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=os3qsMhMS5h3IELSLLEkYnXpa00SVVtZaZivAJC23zU=;
+  b=d/5GfxXQ5PATwv9fORfCjY159vVd9W3c+J2witk2fWZ7Cxzu4A8AT3dt
+   6hDpyEYo8jdSWreoNLTfAk0TLgo7h/t3y86vMhX5UJtBYqkqz5n9zG+op
+   OGg3CQCZ6Km3Y3tg+g+/u9H4amzmTHa1fDuCqNEWnHOh1TYpT22PqYPO9
+   ZIVCU2ZJqhGxMdzvqfYYoMcAN8lBDBV+N5wkWDRAZRF4kWUc06aGbuGJD
+   2f7S1z3rq5PgG0inOx+FrPW6YEYGeXAzVfR8VvqrLVf12fxsGOeSSaZd1
+   K3nahlM6EBbPr4V+BRmFKctA7sWyEVkPLBeH9wnn20I5CcaFflvDVJWWT
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10793"; a="355246064"
+X-IronPort-AV: E=Sophos;i="6.01,257,1684825200"; 
+   d="scan'208";a="355246064"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Aug 2023 07:02:35 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10793"; a="759942161"
+X-IronPort-AV: E=Sophos;i="6.01,257,1684825200"; 
+   d="scan'208";a="759942161"
+Received: from lkp-server01.sh.intel.com (HELO d1ccc7e87e8f) ([10.239.97.150])
+  by orsmga008.jf.intel.com with ESMTP; 05 Aug 2023 07:02:32 -0700
+Received: from kbuild by d1ccc7e87e8f with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qSHrT-0003Xt-2l;
+        Sat, 05 Aug 2023 14:02:31 +0000
+Date:   Sat, 5 Aug 2023 22:02:23 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Anshuman Khandual <anshuman.khandual@arm.com>,
+        linux-arm-kernel@lists.infradead.org, suzuki.poulose@arm.com
+Cc:     llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Mike Leach <mike.leach@linaro.org>,
+        Leo Yan <leo.yan@linaro.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        coresight@lists.linaro.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 3/3] coresight: trbe: Enable ACPI based TRBE devices
+Message-ID: <202308052123.uqR35d19-lkp@intel.com>
+References: <20230728112733.359620-4-anshuman.khandual@arm.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230728112733.359620-4-anshuman.khandual@arm.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 4 Aug 2023 13:22:44 -0300
-Arnaldo Carvalho de Melo <acme@kernel.org> wrote:
+Hi Anshuman,
 
-> Building perf with EXTRA_CFLAGS="-fsanitize=address" a leak is detect
-> when trying to add a probe to a non-existent function:
-> 
->   # perf probe -x ~/bin/perf dso__neW
->   Probe point 'dso__neW' not found.
->     Error: Failed to add events.
-> 
->   =================================================================
->   ==296634==ERROR: LeakSanitizer: detected memory leaks
-> 
->   Direct leak of 128 byte(s) in 1 object(s) allocated from:
->       #0 0x7f67642ba097 in calloc (/lib64/libasan.so.8+0xba097)
->       #1 0x7f67641a76f1 in allocate_cfi (/lib64/libdw.so.1+0x3f6f1)
-> 
->   Direct leak of 65 byte(s) in 1 object(s) allocated from:
->       #0 0x7f67642b95b5 in __interceptor_realloc.part.0 (/lib64/libasan.so.8+0xb95b5)
->       #1 0x6cac75 in strbuf_grow util/strbuf.c:64
->       #2 0x6ca934 in strbuf_init util/strbuf.c:25
->       #3 0x9337d2 in synthesize_perf_probe_point util/probe-event.c:2018
->       #4 0x92be51 in try_to_find_probe_trace_events util/probe-event.c:964
->       #5 0x93d5c6 in convert_to_probe_trace_events util/probe-event.c:3512
->       #6 0x93d6d5 in convert_perf_probe_events util/probe-event.c:3529
->       #7 0x56f37f in perf_add_probe_events /var/home/acme/git/perf-tools-next/tools/perf/builtin-probe.c:354
->       #8 0x572fbc in __cmd_probe /var/home/acme/git/perf-tools-next/tools/perf/builtin-probe.c:738
->       #9 0x5730f2 in cmd_probe /var/home/acme/git/perf-tools-next/tools/perf/builtin-probe.c:766
->       #10 0x635d81 in run_builtin /var/home/acme/git/perf-tools-next/tools/perf/perf.c:323
->       #11 0x6362c1 in handle_internal_command /var/home/acme/git/perf-tools-next/tools/perf/perf.c:377
->       #12 0x63667a in run_argv /var/home/acme/git/perf-tools-next/tools/perf/perf.c:421
->       #13 0x636b8d in main /var/home/acme/git/perf-tools-next/tools/perf/perf.c:537
->       #14 0x7f676302950f in __libc_start_call_main (/lib64/libc.so.6+0x2950f)
-> 
->   SUMMARY: AddressSanitizer: 193 byte(s) leaked in 2 allocation(s).
->   #
-> 
-> synthesize_perf_probe_point() returns a "detached" strbuf, i.e. a
-> malloc'ed string that needs to be free'd.
-> 
-> An audit will be performed to find other such cases.
+kernel test robot noticed the following build errors:
 
-Thanks for finding it!
+[auto build test ERROR on arm64/for-next/core]
+[also build test ERROR on arm/for-next soc/for-next linus/master arm/fixes v6.5-rc4 next-20230804]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-Acked-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+url:    https://github.com/intel-lab-lkp/linux/commits/Anshuman-Khandual/arm_pmu-acpi-Add-a-representative-platform-device-for-TRBE/20230728-192939
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git for-next/core
+patch link:    https://lore.kernel.org/r/20230728112733.359620-4-anshuman.khandual%40arm.com
+patch subject: [PATCH 3/3] coresight: trbe: Enable ACPI based TRBE devices
+config: arm64-randconfig-r021-20230731 (https://download.01.org/0day-ci/archive/20230805/202308052123.uqR35d19-lkp@intel.com/config)
+compiler: clang version 16.0.4 (https://github.com/llvm/llvm-project.git ae42196bc493ffe877a7e3dff8be32035dea4d07)
+reproduce: (https://download.01.org/0day-ci/archive/20230805/202308052123.uqR35d19-lkp@intel.com/reproduce)
 
-> 
-> Cc: Adrian Hunter <adrian.hunter@intel.com>
-> Cc: Ian Rogers <irogers@google.com>
-> Cc: Jiri Olsa <jolsa@kernel.org>
-> Cc: Masami Hiramatsu <mhiramat@kernel.org>
-> Cc: Namhyung Kim <namhyung@kernel.org>
-> Link: https://lore.kernel.org/lkml/
-> Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
-> ---
->  tools/perf/util/probe-event.c | 5 +++--
->  1 file changed, 3 insertions(+), 2 deletions(-)
-> 
-> diff --git a/tools/perf/util/probe-event.c b/tools/perf/util/probe-event.c
-> index 2d056f02ae408a64..c7bfeab610a3679a 100644
-> --- a/tools/perf/util/probe-event.c
-> +++ b/tools/perf/util/probe-event.c
-> @@ -961,8 +961,9 @@ static int try_to_find_probe_trace_events(struct perf_probe_event *pev,
->  	debuginfo__delete(dinfo);
->  
->  	if (ntevs == 0)	{	/* No error but failed to find probe point. */
-> -		pr_warning("Probe point '%s' not found.\n",
-> -			   synthesize_perf_probe_point(&pev->point));
-> +		char *probe_point = synthesize_perf_probe_point(&pev->point);
-> +		pr_warning("Probe point '%s' not found.\n", probe_point);
-> +		free(probe_point);
->  		return -ENODEV;
->  	} else if (ntevs < 0) {
->  		/* Error path : ntevs < 0 */
-> -- 
-> 2.37.1
-> 
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202308052123.uqR35d19-lkp@intel.com/
 
+All errors (new ones prefixed by >>):
+
+>> drivers/hwtracing/coresight/coresight-trbe.c:1549:14: error: use of undeclared identifier 'arm_trbe_acpi_match'; did you mean 'arm_trbe_of_match'?
+           .id_table = arm_trbe_acpi_match,
+                       ^~~~~~~~~~~~~~~~~~~
+                       arm_trbe_of_match
+   drivers/hwtracing/coresight/coresight-trbe.c:1534:34: note: 'arm_trbe_of_match' declared here
+   static const struct of_device_id arm_trbe_of_match[] = {
+                                    ^
+>> drivers/hwtracing/coresight/coresight-trbe.c:1549:14: error: incompatible pointer types initializing 'const struct platform_device_id *' with an expression of type 'const struct of_device_id[2]' [-Werror,-Wincompatible-pointer-types]
+           .id_table = arm_trbe_acpi_match,
+                       ^~~~~~~~~~~~~~~~~~~
+   2 errors generated.
+
+
+vim +1549 drivers/hwtracing/coresight/coresight-trbe.c
+
+  1547	
+  1548	static struct platform_driver arm_trbe_driver = {
+> 1549		.id_table = arm_trbe_acpi_match,
+  1550		.driver	= {
+  1551			.name = DRVNAME,
+  1552			.of_match_table = of_match_ptr(arm_trbe_of_match),
+  1553			.suppress_bind_attrs = true,
+  1554		},
+  1555		.probe	= arm_trbe_device_probe,
+  1556		.remove	= arm_trbe_device_remove,
+  1557	};
+  1558	
 
 -- 
-Masami Hiramatsu (Google) <mhiramat@kernel.org>
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
