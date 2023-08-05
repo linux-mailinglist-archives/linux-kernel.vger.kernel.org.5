@@ -2,112 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 171B3770D9B
-	for <lists+linux-kernel@lfdr.de>; Sat,  5 Aug 2023 05:57:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 64AE7770D60
+	for <lists+linux-kernel@lfdr.de>; Sat,  5 Aug 2023 05:07:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229652AbjHED5v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Aug 2023 23:57:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45720 "EHLO
+        id S229763AbjHEDHW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Aug 2023 23:07:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35298 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229449AbjHED5t (ORCPT
+        with ESMTP id S229520AbjHEDHH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Aug 2023 23:57:49 -0400
-Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65D5A13E
-        for <linux-kernel@vger.kernel.org>; Fri,  4 Aug 2023 20:57:47 -0700 (PDT)
-Received: by mail-pf1-x435.google.com with SMTP id d2e1a72fcca58-68336d06620so2546898b3a.1
-        for <linux-kernel@vger.kernel.org>; Fri, 04 Aug 2023 20:57:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1691207867; x=1691812667;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=QHfKKipzcEUlh6pN+k5sZVC6YXJVrgyZFsHTGa3fI6w=;
-        b=fAvM9uj/RUJc/gEOJxPTTKenWfC+yc+MQBJY0sj6qp7MQeFhFWvwg+bHPNz0yBI1Nn
-         5xuGboaSBpH4noz9gNof/1nfc+bXBVrhyDFRnWYZDYrO+RG1NtmS7C3dNCgGU5QpRpzL
-         4Ie9XpnVved47OhjXKr0TQIYf24wKoMYNP6a2mD0Ql0x3OFpPgiz9BFV1ArIwKD6uw/l
-         /lo+aSsvzbd6AdVVpa9Y7ERWfS3Nd5lIxig5lD02OPrqrZafUXv+0dSiwBf5NdJad/It
-         0lJb63EffzRNUcCS5pJFJmoNSd3ZlAq9xOjraNykBdNI2BfJkVNaFP5ztzha4mXOkdSM
-         VFKA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691207867; x=1691812667;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=QHfKKipzcEUlh6pN+k5sZVC6YXJVrgyZFsHTGa3fI6w=;
-        b=j1LEa7oKst4PtE//d8wDNWz1U3vNX5/K5PD673QJtQ0s1U0j9jI2LJPUPwC7c/3Xzm
-         j7PrKdgfJbMQg4XdutW5a6l5UncncE3U6w7zTcW2holftzBm75TXe/VDGM9/WE/9N5xp
-         yPpPRIt4Q4/rib5W+R/lz/BEEtiDOt649nnfZRRwIYE768CP5Wj2IPh+WLRzlsEtUkwo
-         CKy30QMWfleuarIxzIboR+Qp7INtYtpsDi85dI8wAVabRFBOoUtSg0GA6KZ+omMzeqUi
-         fC9TOxUG38KNydEqffRXsopw+fIDE9Z1o0uERoxQk1+Utt7bcFIWCe4Y/A0UuxijbZ13
-         veFA==
-X-Gm-Message-State: AOJu0YycYxE+2soSm79EG7qRT/RM/HcXNYIF8rxfk2DhYtcwHyPlvnqD
-        CxeLImFXFzWOC6e0MEhAb90=
-X-Google-Smtp-Source: AGHT+IFNNOAiBdLGg4WP+2tSzkvHjijQ+tfXYBWHE73rekf0n7b+ZEAVEodWi87ECWZwY3NzNcOMVw==
-X-Received: by 2002:a05:6a20:970a:b0:137:a9d7:d8cc with SMTP id hr10-20020a056a20970a00b00137a9d7d8ccmr3381557pzc.24.1691207866818;
-        Fri, 04 Aug 2023 20:57:46 -0700 (PDT)
-Received: from vm.localdomain (1-65-215-216.static.netvigator.com. [1.65.215.216])
-        by smtp.gmail.com with ESMTPSA id w8-20020a63f508000000b005634343cd9esm1792659pgh.44.2023.08.04.20.57.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 04 Aug 2023 20:57:46 -0700 (PDT)
-From:   Mingzai Sun <szp2017@gmail.com>
-To:     forest@alittletooquiet.net, gregkh@linuxfoundation.org
-Cc:     linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Mingzai Sun <szp2017@gmail.com>
-Subject: [PATCH] staging: vt6655: Change camel case variables to snake case
-Date:   Sat,  5 Aug 2023 11:57:39 +0800
-Message-Id: <20230805035739.376502-1-szp2017@gmail.com>
-X-Mailer: git-send-email 2.34.1
+        Fri, 4 Aug 2023 23:07:07 -0400
+Received: from dggsgout12.his.huawei.com (unknown [45.249.212.56])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F9EB4EE3
+        for <linux-kernel@vger.kernel.org>; Fri,  4 Aug 2023 20:07:02 -0700 (PDT)
+Received: from mail02.huawei.com (unknown [172.30.67.143])
+        by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4RHnYW3qQlz4f3lKk
+        for <linux-kernel@vger.kernel.org>; Sat,  5 Aug 2023 11:06:55 +0800 (CST)
+Received: from huaweicloud.com (unknown [10.175.124.27])
+        by APP4 (Coremail) with SMTP id gCh0CgAHvrHQvM1k6A5ePg--.23962S2;
+        Sat, 05 Aug 2023 11:06:58 +0800 (CST)
+From:   Kemeng Shi <shikemeng@huaweicloud.com>
+To:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        akpm@linux-foundation.org, baolin.wang@linux.alibaba.com,
+        mgorman@techsingularity.net, david@redhat.com
+Cc:     shikemeng@huaweicloud.com
+Subject: [PATCH 0/9] Fixes and cleanups to compaction
+Date:   Sat,  5 Aug 2023 19:07:02 +0800
+Message-Id: <20230805110711.2975149-1-shikemeng@huaweicloud.com>
+X-Mailer: git-send-email 2.30.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+X-CM-TRANSID: gCh0CgAHvrHQvM1k6A5ePg--.23962S2
+X-Coremail-Antispam: 1UD129KBjvJXoW7JryUCr4rJryrWr13Jw1DKFg_yoW8Jry5pr
+        4ayw1fJa4xX3W3Cr4fta18ua15Kr4rGr4UJrnFqry8X3WYk3Z2y3Z7tFyrZryUZryayr4Y
+        vFWDKr1xGFsrZFJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUv014x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2jI8I6cxK62vIxIIY0VWUZVW8XwA2ocxC64kIII
+        0Yj41l84x0c7CEw4AK67xGY2AK021l84ACjcxK6xIIjxv20xvE14v26w1j6s0DM28EF7xv
+        wVC0I7IYx2IY6xkF7I0E14v26r4UJVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4
+        x0Y4vEx4A2jsIEc7CjxVAFwI0_GcCE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG
+        64xvF2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r
+        1j6r4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAq
+        YI8I648v4I1l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4
+        xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r126r1D
+        MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I
+        0E14v26r1j6r4UMIIF0xvE42xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE14v2
+        6r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Jr0_GrUvcSsGvfC2KfnxnUUI43ZEXa7sRi
+        Pl1DUUUUU==
+X-CM-SenderInfo: 5vklyvpphqwq5kxd4v5lfo033gof0z/
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=0.1 required=5.0 tests=BAYES_00,DATE_IN_FUTURE_06_12,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Change camel case to snake case.
-Issue found by checkpatch.
+Hi all, this is another series to do fix and clean up to compaction.
+Patch 1-2 fix and clean up freepage list operation.
+Patch 3-4 fix and clean up isolation of freepages
+Patch 7-9 factor code to check if compaction is needed for allocation
+order.
+More details can be found in respective patches. Thanks!
 
-Signed-off-by: Mingzai Sun <szp2017@gmail.com>
----
- drivers/staging/vt6655/srom.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+Kemeng Shi (9):
+  mm/compaction: use correct list in move_freelist_{head}/{tail}
+  mm/compaction: call list_is_{first}/{last} more intuitively in
+    move_freelist_{head}/{tail}
+  mm/compaction: correctly return failure with bogus compound_order in
+    strict mode
+  mm/compaction: simplify pfn iteration in isolate_freepages_range
+  mm/compaction: remove repeat compact_blockskip_flush check in
+    reset_isolation_suitable
+  mm/compaction: rename is_via_compact_memory to
+    compaction_with_allocation_order
+  mm/compaction: factor out code to test if we should run compaction for
+    target order
+  mm/compaction: call compaction_suit_allocation_order in
+    kcompactd_node_suitable
+  mm/compaction: call compaction_suit_allocation_order in
+    kcompactd_do_work
 
-diff --git a/drivers/staging/vt6655/srom.c b/drivers/staging/vt6655/srom.c
-index ee5ca4db74dc..812964ab68c5 100644
---- a/drivers/staging/vt6655/srom.c
-+++ b/drivers/staging/vt6655/srom.c
-@@ -49,7 +49,7 @@
-  * Parameters:
-  *  In:
-  *      iobase          - I/O base address
-- *      byContntOffset  - address of EEPROM
-+ *      by_contnt_offset  - address of EEPROM
-  *  Out:
-  *      none
-  *
-@@ -57,7 +57,7 @@
-  *
-  */
- unsigned char SROMbyReadEmbedded(void __iomem *iobase,
--				 unsigned char byContntOffset)
-+				 unsigned char by_contnt_offset)
- {
- 	unsigned short wDelay, wNoACK;
- 	unsigned char byWait;
-@@ -70,7 +70,7 @@ unsigned char SROMbyReadEmbedded(void __iomem *iobase,
- 	iowrite8(byOrg & (~I2MCFG_NORETRY), iobase + MAC_REG_I2MCFG);
- 	for (wNoACK = 0; wNoACK < W_MAX_I2CRETRY; wNoACK++) {
- 		iowrite8(EEP_I2C_DEV_ID, iobase + MAC_REG_I2MTGID);
--		iowrite8(byContntOffset, iobase + MAC_REG_I2MTGAD);
-+		iowrite8(by_contnt_offset, iobase + MAC_REG_I2MTGAD);
- 
- 		/* issue read command */
- 		iowrite8(I2MCSR_EEMR, iobase + MAC_REG_I2MCSR);
+ mm/compaction.c | 119 +++++++++++++++++++++++-------------------------
+ 1 file changed, 57 insertions(+), 62 deletions(-)
+
 -- 
-2.34.1
+2.30.0
 
