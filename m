@@ -2,110 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 82137771200
-	for <lists+linux-kernel@lfdr.de>; Sat,  5 Aug 2023 22:07:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 007D6771204
+	for <lists+linux-kernel@lfdr.de>; Sat,  5 Aug 2023 22:12:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230072AbjHEUGy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 5 Aug 2023 16:06:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33656 "EHLO
+        id S230168AbjHEUMB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 5 Aug 2023 16:12:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34400 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229445AbjHEUGx (ORCPT
+        with ESMTP id S229445AbjHEUL7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 5 Aug 2023 16:06:53 -0400
-Received: from fllv0016.ext.ti.com (fllv0016.ext.ti.com [198.47.19.142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5637A1735;
-        Sat,  5 Aug 2023 13:06:52 -0700 (PDT)
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 375K6XVi054271;
-        Sat, 5 Aug 2023 15:06:33 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1691265993;
-        bh=VoQN3FGklpzU4X8rPKnZTC9k8CQSpU/RiftCcrBUIGA=;
-        h=From:To:CC:Subject:Date:In-Reply-To:References;
-        b=NeWyLC7alfp6/Y7B5+4J7NwDyU0BYKWXKXaWAoqbevzOjiTTCuVfKxf6n2UZDCQLZ
-         X5i46bNNuR6l1CZAvH4fAMFhH9idb1hdsyvXMELx1V/1l4q57pW1mtzCK3mw0UCr5d
-         i0UGxK5t9iMxO1QCF0VT/MoIZ46q8qlObvMt7TnA=
-Received: from DLEE100.ent.ti.com (dlee100.ent.ti.com [157.170.170.30])
-        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 375K6XYQ037306
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Sat, 5 Aug 2023 15:06:33 -0500
-Received: from DLEE105.ent.ti.com (157.170.170.35) by DLEE100.ent.ti.com
- (157.170.170.30) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Sat, 5
- Aug 2023 15:06:33 -0500
-Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE105.ent.ti.com
- (157.170.170.35) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Sat, 5 Aug 2023 15:06:33 -0500
-Received: from localhost (ileaxei01-snat2.itg.ti.com [10.180.69.6])
-        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 375K6XPZ041714;
-        Sat, 5 Aug 2023 15:06:33 -0500
-From:   Nishanth Menon <nm@ti.com>
-To:     <vigneshr@ti.com>, Jayesh Choudhary <j-choudhary@ti.com>
-CC:     Nishanth Menon <nm@ti.com>, <kristo@kernel.org>,
-        <robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
-        <conor+dt@kernel.org>, <a-bhatia1@ti.com>, <r-ravikumar@ti.com>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>
-Subject: Re: [PATCH 0/2] Add HDMI support for AM68-SK Board
-Date:   Sat, 5 Aug 2023 15:06:32 -0500
-Message-ID: <169126592443.93814.13094587862313989114.b4-ty@ti.com>
-X-Mailer: git-send-email 2.40.0
-In-Reply-To: <20230803081800.368582-1-j-choudhary@ti.com>
-References: <20230803081800.368582-1-j-choudhary@ti.com>
+        Sat, 5 Aug 2023 16:11:59 -0400
+Received: from mail-lj1-x22b.google.com (mail-lj1-x22b.google.com [IPv6:2a00:1450:4864:20::22b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D168F1BCA
+        for <linux-kernel@vger.kernel.org>; Sat,  5 Aug 2023 13:11:57 -0700 (PDT)
+Received: by mail-lj1-x22b.google.com with SMTP id 38308e7fff4ca-2b9c55e0fbeso49855971fa.2
+        for <linux-kernel@vger.kernel.org>; Sat, 05 Aug 2023 13:11:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1691266316; x=1691871116;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=e2ABq7soEfcbzHdPT9arw7cMpjAK4IN+Eyp4A0dUI/U=;
+        b=HoR/nLDavuW0gB2idqwPMUgM1t1WzAMxrioNKmwuSyRcrmKwW9PNfnSJwGv3nyJnx7
+         eZszcQTK/CRPTEkZr9PmqrZbJYmLsk08GE+1nouEDvOUruwvRAqikZTZswkfiQ0t+DTg
+         i0D2VAPVMTw+5v6ZPztCJfyg3BAErRDV530yziAZNgzh4K5kbdjUaofQyRJr6Z3+oExs
+         yctGRioQ5pvXfPZrpJtzeR2zxSdmhf6EOVvA3qcFSFsBpqyB5kWAacXpLYaKT+TwUPbv
+         il8WIxY8pWIHaBxkQYq9l3XbS9myQd0eqJMUYheP72XHlDLUElHAJLrOhzFBBdZ39Aeg
+         fjrQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691266316; x=1691871116;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=e2ABq7soEfcbzHdPT9arw7cMpjAK4IN+Eyp4A0dUI/U=;
+        b=Ujtiy4rTZ2W4nToz8ak40+QzkkeW9S8OLYhxO0jnxs1io5OWvc+7whE/VjeArwToja
+         2sR2N7TQCAPztsTJhArXV09i9LnkPOodw/IE/0Xk2v5+9NLwgpUS4vRr3xINeGf+eUS4
+         ZOsDEMTHPHCK/p/1Sri3zzgVqde/GX4KorXvbDfFPWqt3PGmwgQTTfaBW8Z+LpPwpBSH
+         XVAYX6BmBFCMOIyelYnFMWXhsX1oG1k4kgTOsB+qKI1q+ghxRHRYcKQDheFwsGn6E6Co
+         +VhLcAAXetVyjJtEKXlVmRBr/a+OTnXlP/cK4x1fd9Xwh9MueYnP7hjj0TiNeN7rNKls
+         M3xA==
+X-Gm-Message-State: AOJu0Yz60TEFgxexWU28P0OixVnXIQxPkKx7ZfLflhRwc+s9V8I8AtKZ
+        qHStUnkserSJyZrsu2pSLjXq4Q==
+X-Google-Smtp-Source: AGHT+IGZBQamrq2g/vboZDdDwmt/aYwpvvbRQcmvT4wHhuH2EcX3D/i/qjrkbMJp+e/RZiMFgnA+LA==
+X-Received: by 2002:a2e:7c15:0:b0:2b9:aa4d:3719 with SMTP id x21-20020a2e7c15000000b002b9aa4d3719mr4280750ljc.12.1691266315928;
+        Sat, 05 Aug 2023 13:11:55 -0700 (PDT)
+Received: from [192.168.1.20] ([178.197.222.245])
+        by smtp.gmail.com with ESMTPSA id l26-20020a1709061c5a00b0099bc5e5742asm3082024ejg.70.2023.08.05.13.11.53
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 05 Aug 2023 13:11:55 -0700 (PDT)
+Message-ID: <3f3f7d1b-d850-7d93-6f92-f16797f5b081@linaro.org>
+Date:   Sat, 5 Aug 2023 22:11:53 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.14.0
+Subject: Re: [PATCH 2/3] dt-bindings: arm: qcom: Add Xiaomi Mi 11 Ultra
+Content-Language: en-US
+To:     wuxilin123@gmail.com, Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Tony Luck <tony.luck@intel.com>,
+        "Guilherme G. Piccoli" <gpiccoli@igalia.com>
+Cc:     linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-hardening@vger.kernel.org
+References: <20230806-xiaomi-star-v1-0-0c384e8b5737@gmail.com>
+ <20230806-xiaomi-star-v1-2-0c384e8b5737@gmail.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <20230806-xiaomi-star-v1-2-0c384e8b5737@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jayesh Choudhary,
-
-On Thu, 03 Aug 2023 13:47:58 +0530, Jayesh Choudhary wrote:
-> AM68-SK base board has one DP and one HDMI port.
-> This series add support for HDMI peripheral for the same.
+On 05/08/2023 19:03, Xilin Wu via B4 Relay wrote:
+> From: Xilin Wu <wuxilin123@gmail.com>
 > 
-> Jayesh Choudhary (2):
->   arm64: dts: ti: k3-j721s2-main: Add DSS node
->   arm64: dts: ti: k3-am68-sk-base-board: Add HDMI support
+> Add a compatible for Xiaomi Mi 11 Ultra (xiaomi,star).
 > 
-> [...]
+> Signed-off-by: Xilin Wu <wuxilin123@gmail.com>
+> ---
 
-I have applied the following to branch ti-k3-dts-next on [1].
-Thank you!
 
-[1/2] arm64: dts: ti: k3-j721s2-main: Add DSS node
-      commit: a1f62d114c8ce64d1273c308228b43de8bf45171
-[2/2] arm64: dts: ti: k3-am68-sk-base-board: Add HDMI support
-      commit: dfe5ccf2359f70d36bf7e64711a46fbff2126ca8
+Acked-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent up the chain during
-the next merge window (or sooner if it is a relevant bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-[1] https://git.kernel.org/pub/scm/linux/kernel/git/ti/linux.git
--- 
-Regards,
-Nishanth Menon
-Key (0xDDB5849D1736249D) / Fingerprint: F8A2 8693 54EB 8232 17A3  1A34 DDB5 849D 1736 249D
+Best regards,
+Krzysztof
 
