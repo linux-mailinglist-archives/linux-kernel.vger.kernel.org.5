@@ -2,126 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B3924770F25
-	for <lists+linux-kernel@lfdr.de>; Sat,  5 Aug 2023 11:57:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 18F4B770F29
+	for <lists+linux-kernel@lfdr.de>; Sat,  5 Aug 2023 12:02:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229846AbjHEJ53 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 5 Aug 2023 05:57:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41720 "EHLO
+        id S229996AbjHEKB6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 5 Aug 2023 06:01:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42732 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229501AbjHEJ5Z (ORCPT
+        with ESMTP id S229445AbjHEKBz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 5 Aug 2023 05:57:25 -0400
-Received: from mail-lf1-x141.google.com (mail-lf1-x141.google.com [IPv6:2a00:1450:4864:20::141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2FDF1B9
-        for <linux-kernel@vger.kernel.org>; Sat,  5 Aug 2023 02:57:21 -0700 (PDT)
-Received: by mail-lf1-x141.google.com with SMTP id 2adb3069b0e04-4fe0eb0ca75so4640536e87.2
-        for <linux-kernel@vger.kernel.org>; Sat, 05 Aug 2023 02:57:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=smile-fr.20221208.gappssmtp.com; s=20221208; t=1691229440; x=1691834240;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=WCaScbYEgtnjR1GCfvq7Z8PNNCiGxQnN+NbG1fq6FPE=;
-        b=I77rfBvKy87ih9s65g5GRJGXFBYxUgGm2YbA5OMVa8D77epIecTEufL8z9LN1pFlho
-         YHFHvWmMvGPRUhGCrHPOnrOSb80cFFcCJ81Xc1e3T7FDErZoQP0YUJ3ey4dRjtkfLrN6
-         559JJInm0vT9+dwtUGpIUUPctmWAUpr7hDDiZJZzCP2EgK+xWMNqFjilNCAw5Zgwm+K7
-         IGa2jHJp3N4XlxGB3lmIpT5+yNg15tyMgUPfmncKMnwRC0lACC1TfHY/YOvDRQleLjcE
-         DvIZOh9ry+7OwYIT/kemwSvu/gYr8RWV1zHKl+N48XEnSViNp59h2Hf306Jcm2oSIvx4
-         kCuA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691229440; x=1691834240;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=WCaScbYEgtnjR1GCfvq7Z8PNNCiGxQnN+NbG1fq6FPE=;
-        b=LPadxo/nFVZbOVmIEQYtPL07dR0plfnGjV4SYkJbvKirOvLkWlL+wOpvsS97zaEDfy
-         hkIWKKzBjzFlVIeyIn6bfuNBexO/+iYj/PNvP3fzrI1sjxnFe9rtO2z9+Gui84JkCTTB
-         hAu7AKGi96osQWga7ymsdjGKSCu3D7mH3Lt1sJxVtigxEm8RFnWyeqCsnjqdkzT1APwD
-         Smbs1pxcPHi/tokDO4Yujn71nCzHvH8LI1HVOB5xf+gthBuTkT8gWmksVTYsmh/n7GZ6
-         u4k3FH6P2buAj5j2IZU9pNqojmJ5E7zUbPnfR8D/BpAx2M4ju56fGOYkGW8NYJwT9ojA
-         Ncdw==
-X-Gm-Message-State: AOJu0YyzIoHXdJI6xfZ9fQOh9SOpOr2jfCg1+Py1pkmSUonlr2KGkqAp
-        tjACxe57IGTBFd390vY5LeEsjA==
-X-Google-Smtp-Source: AGHT+IErPU4Ozl17Gl5tDc1p7f7iQOXYlrFzyiYjM0U248Pg6C4cbxf0ns77tv8rKXE5beamGWCeOA==
-X-Received: by 2002:ac2:465d:0:b0:4fd:8976:5fc9 with SMTP id s29-20020ac2465d000000b004fd89765fc9mr2712016lfo.23.1691229439480;
-        Sat, 05 Aug 2023 02:57:19 -0700 (PDT)
-Received: from P-ASN-ECS-830T8C3.local ([89.159.1.53])
-        by smtp.gmail.com with ESMTPSA id z13-20020a5d640d000000b003176053506fsm4752078wru.99.2023.08.05.02.57.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 05 Aug 2023 02:57:19 -0700 (PDT)
-From:   Yoann Congal <yoann.congal@smile.fr>
-To:     Masahiro Yamada <masahiroy@kernel.org>,
-        linux-kbuild@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, Yoann Congal <yoann.congal@smile.fr>
-Subject: [PATCH v2] kconfig: avoid an infinite loop in oldconfig/syncconfig
-Date:   Sat,  5 Aug 2023 11:57:09 +0200
-Message-Id: <20230805095709.6717-1-yoann.congal@smile.fr>
-X-Mailer: git-send-email 2.30.2
+        Sat, 5 Aug 2023 06:01:55 -0400
+Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D723A4495
+        for <linux-kernel@vger.kernel.org>; Sat,  5 Aug 2023 03:01:52 -0700 (PDT)
+Received: from canpemm500009.china.huawei.com (unknown [172.30.72.53])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4RHyhH2G94zGpns;
+        Sat,  5 Aug 2023 17:58:23 +0800 (CST)
+Received: from localhost.localdomain (10.50.163.32) by
+ canpemm500009.china.huawei.com (7.192.105.203) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.27; Sat, 5 Aug 2023 18:01:50 +0800
+From:   Yicong Yang <yangyicong@huawei.com>
+To:     <mingo@redhat.com>, <peterz@infradead.org>,
+        <juri.lelli@redhat.com>, <vincent.guittot@linaro.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     <dietmar.eggemann@arm.com>, <rostedt@goodmis.org>,
+        <bsegall@google.com>, <mgorman@suse.de>, <bristot@redhat.com>,
+        <vschneid@redhat.com>, <tariqt@nvidia.com>, <yury.norov@gmail.com>,
+        <kuba@kernel.org>, <shiju.jose@huawei.com>,
+        <jonathan.cameron@huawei.com>, <prime.zeng@huawei.com>,
+        <linuxarm@huawei.com>, <yangyicong@hisilicon.com>
+Subject: [PATCH] sched/topology: Fix sched_numa_find_nth_cpu() when there's CPU-less node
+Date:   Sat, 5 Aug 2023 17:59:27 +0800
+Message-ID: <20230805095927.6907-1-yangyicong@huawei.com>
+X-Mailer: git-send-email 2.31.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.50.163.32]
+X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
+ canpemm500009.china.huawei.com (7.192.105.203)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Exit on error when asking for value that has an invalid default value
-and stdin has reached EOF. This happens in particular for hex/int
-configs without an explicit default value.
+From: Yicong Yang <yangyicong@hisilicon.com>
 
-Previously, this case would loop:
-* oldconfig prompts for the value but stdin has reached EOF
-* It gets the global default value : an empty string
-* This is not a valid hex/int value so it prompts again, hence the infinite loop.
+When booting with maxcpus=1 we met below panic:
 
-This case happens with a configuration like this (a hex config without a
-valid default value):
-  config TEST_KCONFIG
-       hex "Test KConfig"
-       # default 0x0
+Unable to handle kernel NULL pointer dereference at virtual address 0000000000000000
+Mem abort info:
+  ESR = 0x0000000096000004
+  EC = 0x25: DABT (current EL), IL = 32 bits
+  SET = 0, FnV = 0
+  EA = 0, S1PTW = 0
+  FSC = 0x04: level 0 translation fault
+Data abort info:
+  ISV = 0, ISS = 0x00000004
+  CM = 0, WnR = 0
+user pgtable: 4k pages, 48-bit VAs, pgdp=0000002098202000
+[0000000000000000] pgd=0000000000000000, p4d=0000000000000000
+Internal error: Oops: 0000000096000004 [#1] PREEMPT SMP
+Modules linked in:
+CPU: 0 PID: 1 Comm: swapper/0 Not tainted 6.3.0-rc1 #3
+Hardware name: Huawei TaiShan 2280 V2/BC82AMDA, BIOS TA BIOS 2280-A CS V2.B220.01 03/19/2020
+pstate: 00400009 (nzcv daif +PAN -UAO -TCO -DIT -SSBS BTYPE=--)
+pc : __bitmap_weight_and+0x40/0xb0
+lr : cpumask_weight_and+0x18/0x24
+sp : ffff80000841bab0
+x29: ffff80000841bab0 x28: 0000000000000000 x27: ffffb0d897ca6068
+x26: 0000000000000000 x25: ffff80000841bbb8 x24: 0000000000000080
+x23: ffffb0d8983c9a48 x22: 0000000000000000 x21: 0000000000000002
+x20: 0000000000000000 x19: 0000000000000000 x18: 0000000000000000
+x17: ffff4f5337dd9000 x16: ffff800008000000 x15: 0000000000000001
+x14: 0000000000000002 x13: 0000000000bc91ca x12: ffff202bffffe928
+x11: ffff202bffffe938 x10: ffff202bffffe908 x9 : 0000000000000001
+x8 : 0000000000000380 x7 : 0000000000000014 x6 : ffff2020040b0d00
+x5 : 0000000000332000 x4 : ffffb0d8962d9794 x3 : 0000000000000008
+x2 : 0000000000000080 x1 : 0000000000000003 x0 : ffffb0d8983c9a48
+Call trace:
+ __bitmap_weight_and+0x40/0xb0
+ cpumask_weight_and+0x18/0x24
+ hop_cmp+0x2c/0xa4
+ bsearch+0x50/0xc0
+ sched_numa_find_nth_cpu+0x80/0x130
+ cpumask_local_spread+0x38/0xa8
+ hns3_nic_init_vector_data+0x58/0x394
+ hns3_client_init+0x2c8/0x6d8
+ hclge_init_client_instance+0x128/0x39c
+ hnae3_init_client_instance.part.5+0x20/0x54
+ hnae3_register_ae_algo+0xf0/0x19c
+ hclge_init+0x58/0x84
+ do_one_initcall+0x60/0x1d0
+ kernel_init_freeable+0x1d8/0x2ac
+ kernel_init+0x24/0x12c
+ ret_from_fork+0x10/0x20
+Code: 52800014 d2800013 d503201f f8737ae1 (f8737ac0)
+---[ end trace 0000000000000000 ]---
+Kernel panic - not syncing: Attempted to kill init! exitcode=0x0000000b
+SMP: stopping secondary CPUs
+Kernel Offset: 0x30d88e200000 from 0xffff800008000000
+PHYS_OFFSET: 0x0
+CPU features: 0x000000,01100506,22006203
+Memory Limit: none
+---[ end Kernel panic - not syncing: Attempted to kill init! exitcode=0x0000000b ]---
 
-And using:
-  make oldconfig < /dev/null
+The driver use cpumask_local_spread() and inner sched_numa_find_nth_cpu()
+access the node mask which is not initialized. In sched_init_numa(),
+we don't care about node without CPUs since they won't participate in scheduling.
 
-This was discovered when working on Yocto bug[0] on a downstream
-kconfig user (U-boot)
+This patch fix this by using a closet CPU node when the target node is
+CPU-less. Furthermore, sched_numa_hop_mask() also suffers so fix it as
+well by returning an error when information of target node is not
+initialized.
 
-[0]: https://bugzilla.yoctoproject.org/show_bug.cgi?id=14136
-
-Signed-off-by: Yoann Congal <yoann.congal@smile.fr>
+Fixes: cd7f55359c90 ("sched: add sched_numa_find_nth_cpu()")
+Fixes: 9feae65845f7 ("sched/topology: Introduce sched_numa_hop_mask()")
+Cc: Yury Norov <yury.norov@gmail.com>
+Cc: Valentin Schneider <vschneid@redhat.com>
+Signed-off-by: Yicong Yang <yangyicong@hisilicon.com>
 ---
-v1->v2:
- * Improve coding style
- * Put more info in the commit message 
+ kernel/sched/topology.c | 21 ++++++++++++++++++++-
+ 1 file changed, 20 insertions(+), 1 deletion(-)
 
- scripts/kconfig/conf.c | 10 +++++++++-
- 1 file changed, 9 insertions(+), 1 deletion(-)
-
-diff --git a/scripts/kconfig/conf.c b/scripts/kconfig/conf.c
-index 7cf63261d951c..8f32cbbce4805 100644
---- a/scripts/kconfig/conf.c
-+++ b/scripts/kconfig/conf.c
-@@ -377,8 +377,16 @@ static int conf_string(struct menu *menu)
- 			line[strlen(line)-1] = 0;
- 			def = line;
- 		}
--		if (def && sym_set_string_value(sym, def))
-+		if (def && sym_set_string_value(sym, def)) {
- 			return 0;
-+		} else {
-+			if (feof(stdin) && !sym_string_valid(sym, sym_get_string_value(sym))) {
-+				fprintf(stderr,
-+					"Symbol %s has invalid default value and stdin reached EOF\n",
-+					sym->name);
-+				exit(1);
+diff --git a/kernel/sched/topology.c b/kernel/sched/topology.c
+index d3a3b2646ec4..78d95ebf5072 100644
+--- a/kernel/sched/topology.c
++++ b/kernel/sched/topology.c
+@@ -2119,6 +2119,25 @@ int sched_numa_find_nth_cpu(const struct cpumask *cpus, int cpu, int node)
+ 
+ 	rcu_read_lock();
+ 
++	/*
++	 * When the target node is CPU-less, we cannot use it directly since
++	 * we didn't initialise sched_domains_numa_masks[level][node]. Use the
++	 * closet online node instead.
++	 */
++	if (!node_state(node, N_CPU)) {
++		int tmp, closet_node, closet_distance = INT_MAX;
++
++		for_each_node_state(tmp, N_CPU) {
++			if (node_distance(tmp, node) < closet_distance) {
++				closet_node = tmp;
++				closet_distance = node_distance(tmp, node);
 +			}
 +		}
- 	}
- }
++
++		k.node = closet_node;
++		node = closet_node;
++	}
++
+ 	k.masks = rcu_dereference(sched_domains_numa_masks);
+ 	if (!k.masks)
+ 		goto unlock;
+@@ -2160,7 +2179,7 @@ const struct cpumask *sched_numa_hop_mask(unsigned int node, unsigned int hops)
+ 		return ERR_PTR(-EINVAL);
  
+ 	masks = rcu_dereference(sched_domains_numa_masks);
+-	if (!masks)
++	if (!masks || !masks[hops] || !masks[hops][node])
+ 		return ERR_PTR(-EBUSY);
+ 
+ 	return masks[hops][node];
 -- 
-2.30.2
+2.24.0
 
