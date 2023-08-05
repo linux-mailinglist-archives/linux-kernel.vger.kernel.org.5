@@ -2,95 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 55995770F0B
-	for <lists+linux-kernel@lfdr.de>; Sat,  5 Aug 2023 11:20:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ECE3B770F18
+	for <lists+linux-kernel@lfdr.de>; Sat,  5 Aug 2023 11:32:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229624AbjHEJUE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 5 Aug 2023 05:20:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38402 "EHLO
+        id S229473AbjHEJcN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 5 Aug 2023 05:32:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39208 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229473AbjHEJUB (ORCPT
+        with ESMTP id S229521AbjHEJcK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 5 Aug 2023 05:20:01 -0400
-X-Greylist: delayed 102 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Sat, 05 Aug 2023 02:19:53 PDT
-Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D5C6E6A;
-        Sat,  5 Aug 2023 02:19:53 -0700 (PDT)
-Received: from localhost (localhost.localdomain [127.0.0.1])
-        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 7F3DC40E01E4;
-        Sat,  5 Aug 2023 09:19:51 +0000 (UTC)
-X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
-Received: from mail.alien8.de ([127.0.0.1])
-        by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id FxuIhAfWEWJ5; Sat,  5 Aug 2023 09:19:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
-        t=1691227188; bh=0KFUQzNILwHYJVuVO2OkbW+CwKxvhp7nvWv004pXK4c=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=JkjdPqV8GhK/nNO5lGRvdoFb9dHjqLw7unrUCOtvRSsX/1XfZs/K1iEpVk94RKMbI
-         a21RQA0i/gKZpQH19Dpu/8GYKZ/uYh1tvTobYW4jdKMgDb6rNOKUP+fOnN313nx/g4
-         dsY8YKxheQzD6sfE0O3FVD98Y6ctikUywx2VmYcK/InStVUod5THtMbgdO20Re8B7W
-         eJjldXPCg0bWfNqY85galDd9ZhVJzGf5wPwmWM4NsWROagIjqeGwCpLjfqPnvbQXNb
-         z2cyZB3Sg6VmN5Fm4SHWih7+lhmtexJg1/r/rvEse9gUDqTkjP5mY76Os1bAPkP3GX
-         v2nXmpr4UGkYYlVFLyqdEIY1X3eHKGwL4jwlwyO7VYaLKXPaSDOEm1P6xwA5wexITl
-         jy/TscbELmGbX4/31fGYCKujKzqmnNheK3eR/y7H82gbvKUAc9u8Eu3E4HDo24m0Ho
-         qWSt0ctXqwXo6+Z+iaQ0bAMEubBkeoSM7qlfZG4z/pE3CVVH3Sdew5l2lEMIQIO7o0
-         b2gHvqCUyBOIH4yXq9EoymfgyQa7GYR1VEcdVjBuqX8tYfk4QfANTYVv6C2hk6GSMf
-         F/Q4R8pwbI9f5BQNgUdVDGO0BK8elxbTdMkGCD4DkqMRR33bj6+oSw/Y9eIurOQ38X
-         yVdTEzfXpoFRZOhqRsfXT284=
-Received: from zn.tnic (pd9530d32.dip0.t-ipconnect.de [217.83.13.50])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
-        (No client certificate requested)
-        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 5048940E019D;
-        Sat,  5 Aug 2023 09:19:33 +0000 (UTC)
-Date:   Sat, 5 Aug 2023 11:19:32 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Ard Biesheuvel <ardb@kernel.org>
-Cc:     =?utf-8?B?SsO2cmcgUsO2ZGVs?= <joro@8bytes.org>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Tao Liu <ltao@redhat.com>, Michael Roth <michael.roth@amd.com>,
-        tglx@linutronix.de, mingo@redhat.com, dave.hansen@linux.intel.com,
-        x86@kernel.org, hpa@zytor.com, linux-kernel@vger.kernel.org,
-        bhe@redhat.com, dyoung@redhat.com, kexec@lists.infradead.org,
-        linux-efi@vger.kernel.org
-Subject: Re: [PATCH v2] x86/kexec: Add EFI config table identity mapping for
- kexec kernel
-Message-ID: <20230805091932.GBZM4UJC2wL4S2y2Jc@fat_crate.local>
-References: <CAO7dBbXJv9JzDbSa-DLT03+osYCQXNUXFwz63gbq=NGDxEVyEA@mail.gmail.com>
- <20230728165535.GDZMPzB/ek5QM+xJqA@fat_crate.local>
- <CAO7dBbVyuLHH6RfdVQkU5ThXaJ-F4yvFAYD1PDNGkOpph9xvnA@mail.gmail.com>
- <20230802093927.GAZMokT57anC5jBISK@fat_crate.local>
- <99cb3813-1737-9d10-1f24-77565e460c55@amd.com>
- <20230802135856.GBZMphIHHLa3dXRRVe@fat_crate.local>
- <CAMj1kXEM5hGknVGwHh_w99D4L8yrYrTFycwGHZ0CQun70CLipw@mail.gmail.com>
- <20230802155146.GCZMp7ksDdN2ETVzKV@fat_crate.local>
- <CAMj1kXHnSzdQw5CMAVXU7EzpnrdRvAqKZVgA+EV35kHmwVULgQ@mail.gmail.com>
- <CAMj1kXESuCScMLLAS4tSDcYxA3JTb24RuF7ipcKGd65tBvOBWQ@mail.gmail.com>
+        Sat, 5 Aug 2023 05:32:10 -0400
+Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 008A5469E
+        for <linux-kernel@vger.kernel.org>; Sat,  5 Aug 2023 02:32:08 -0700 (PDT)
+Received: by mail-ej1-x642.google.com with SMTP id a640c23a62f3a-99c93638322so336799766b.1
+        for <linux-kernel@vger.kernel.org>; Sat, 05 Aug 2023 02:32:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=amarulasolutions.com; s=google; t=1691227927; x=1691832727;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=aF25RsasGUB1aNRKgB20J0I6Xsy/3huYOi47Fd6Xv1k=;
+        b=b8vVOFsiKhLLr1bFXxu3b0b4fzG5ByTOZMyc8LOUxhXh7tXwd4xB40vB1C+1TnXEXf
+         ulEByMBlb4W9BASrYgRDnUEFi4o1+akeDnLB4kg2yR3DRwOV3YFsxsKMV3P6Kl9HtsiY
+         N4bU6ex122m5UfarEv6oO4HOkC78ZanmY7n5k=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691227927; x=1691832727;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=aF25RsasGUB1aNRKgB20J0I6Xsy/3huYOi47Fd6Xv1k=;
+        b=PsLdA0UhfBcR0bo9nWD4MidjKxTkNJTjj32W4voH8FoIMhoRa0GJJ8sjQrGrWd4kcm
+         NCDhsswLPkZ6aj5leYn1CIr5IZd+MFrlONiEQo8UUycZzz1Rg+yjUvduuGqHmNam4hIs
+         qhaP1Dv+VHjcE/TI8qoTLUiiU0xWrCW0SFqjdE2pI5G6g5Htc1IaXkCSwd3IsGERqAvs
+         4kHTa3gHWeyVxsC3OXDnJkmbwsChvoREgYDKHtJJDsbHoJlcVdiTfiSNghGa809wJxjO
+         qpTPddin4IT3RQuBkM1UjTOXAIbHRDuSDonUhpR/7XUOJ2leMlBljXYGYS1VCo+X2RMU
+         qZaw==
+X-Gm-Message-State: AOJu0YzdR/BFIMsN0hOFef7XDnHDC4/5xrkws6Qr1Wp4ym+VZFEx1w9/
+        /GY+2e76jDfnd+C303yQ29F+0sLZcCiNPFWdlXV8BWVH
+X-Google-Smtp-Source: AGHT+IGtXjH9AHI/YJtPiVY+kUPyUT2gJnGXQxKu46u8YS85WU5PjON9DsKxMaGHjRoi/CRF1KyyjA==
+X-Received: by 2002:a17:907:760a:b0:99b:4bab:2841 with SMTP id jx10-20020a170907760a00b0099b4bab2841mr2313337ejc.26.1691227927131;
+        Sat, 05 Aug 2023 02:32:07 -0700 (PDT)
+Received: from dario-ThinkPad-T14s-Gen-2i.homenet.telecomitalia.it (host-82-52-12-96.retail.telecomitalia.it. [82.52.12.96])
+        by smtp.gmail.com with ESMTPSA id j15-20020a170906430f00b0099b76c3041csm2491083ejm.7.2023.08.05.02.32.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 05 Aug 2023 02:32:06 -0700 (PDT)
+From:   Dario Binacchi <dario.binacchi@amarulasolutions.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     Amarula patchwork <linux-amarula@amarulasolutions.com>,
+        Philippe Cornu <philippe.cornu@foss.st.com>,
+        Raphael Gallais-Pou <raphael.gallais-pou@foss.st.com>,
+        michael@amarulasolutions.com,
+        Dario Binacchi <dario.binacchi@amarulasolutions.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-stm32@st-md-mailman.stormreply.com
+Subject: [RESEND PATCH v7 0/3] Add display support on the stm32f746-disco board
+Date:   Sat,  5 Aug 2023 11:31:59 +0200
+Message-Id: <20230805093203.3988194-1-dario.binacchi@amarulasolutions.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <CAMj1kXESuCScMLLAS4tSDcYxA3JTb24RuF7ipcKGd65tBvOBWQ@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 03, 2023 at 04:27:41PM +0200, Ard Biesheuvel wrote:
-> https://lists.gnu.org/archive/html/grub-devel/2023-08/msg00005.html
-> 
-> Coming to your distro any decade now!
+The series adds support for the display on the stm32f746-disco board.
 
-Cool. The less 32-bit crap we have to deal with, the better.
+Changes in v7:
+- Add 'Reviewed-by' tags I forgot in v6.
+  https://lore.kernel.org/linux-arm-kernel/20230629083726.84910-1-dario.binacchi@amarulasolutions.com/T/
 
-Thx.
+Changes in v6:
+- Remove dma nodes from stm32f746-disco.dts, they are not used by LTDC,
+  so there is no need to enable them.
+
+Changes in v5:
+I am confident that framebuffer sizing is a real requirement for STM32 boards,
+but I need some time to understand if and how to introduce this functionality.
+Therefore, I drop the following patches to allow the series to be fully merged:
+ - [4/6] dt-bindings: display: stm32-ltdc: add optional st,fb-bpp property
+ - [5/6] ARM: dts: stm32: set framebuffer bit depth on stm32f746-disco
+ - [6/6] drm/stm: set framebuffer bit depth through DTS property
+
+Changes in v4:
+- Use DTS property instead of module parameter to set the framebuffer bit depth.
+
+Changes in v3:
+- rename ltdc-pins-a-0 to ltdc-0.
+- drop [4/6] dt-bindings: display: simple: add Rocktech RK043FN48H
+  Applied to https://anongit.freedesktop.org/git/drm/drm-misc.git (drm-misc-next):
+  https://cgit.freedesktop.org/drm/drm-misc/commit/?id=c42a37a27c777d63961dd634a30f7c887949491a
+- drop [5/6] drm/panel: simple: add support for Rocktech RK043FN48H panel
+  Applied to https://anongit.freedesktop.org/git/drm/drm-misc.git (drm-misc-next)
+  https://cgit.freedesktop.org/drm/drm-misc/commit/?id=13cdd12a9f934158f4ec817cf048fcb4384aa9dc
+
+Dario Binacchi (3):
+  ARM: dts: stm32: add ltdc support on stm32f746 MCU
+  ARM: dts: stm32: add pin map for LTDC on stm32f7
+  ARM: dts: stm32: support display on stm32f746-disco board
+
+ arch/arm/boot/dts/st/stm32f7-pinctrl.dtsi | 35 ++++++++++++++++++
+ arch/arm/boot/dts/st/stm32f746-disco.dts  | 43 +++++++++++++++++++++++
+ arch/arm/boot/dts/st/stm32f746.dtsi       | 10 ++++++
+ 3 files changed, 88 insertions(+)
 
 -- 
-Regards/Gruss,
-    Boris.
+2.34.1
 
-https://people.kernel.org/tglx/notes-about-netiquette
