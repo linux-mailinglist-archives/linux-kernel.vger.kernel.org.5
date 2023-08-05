@@ -2,191 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B53A97711C2
-	for <lists+linux-kernel@lfdr.de>; Sat,  5 Aug 2023 21:29:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 46B387711C6
+	for <lists+linux-kernel@lfdr.de>; Sat,  5 Aug 2023 21:34:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230273AbjHET3U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 5 Aug 2023 15:29:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56396 "EHLO
+        id S230291AbjHETeQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 5 Aug 2023 15:34:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57142 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230055AbjHET3S (ORCPT
+        with ESMTP id S229483AbjHETeO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 5 Aug 2023 15:29:18 -0400
-Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EEA331A5
-        for <linux-kernel@vger.kernel.org>; Sat,  5 Aug 2023 12:29:15 -0700 (PDT)
-Received: by mail-ej1-x635.google.com with SMTP id a640c23a62f3a-99c1d03e124so417882866b.2
-        for <linux-kernel@vger.kernel.org>; Sat, 05 Aug 2023 12:29:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1691263754; x=1691868554;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=/eoTXNan9hfBAk2ItnV/fDUtgs5cEoo72FK2KNJihNY=;
-        b=Uca7hOTLTk7euoSoTKTGOqfB4yjWqKMmMs4VO2gJI8oXhqZClqtXPcoT/F9QQ08R7H
-         ccedeVD3vclOa2IzY9XWJ/LuxCmtnm96Dkxjwq6ZC44WE/B7sYCRhi81RjKlMDOLSisN
-         MVJelXZ+6l26ceWKle3LeG+092nvf2l63+PyHcK2KqUXX+ZL3w8C45zWUvNA3dzmuc1d
-         gfZg+0uq6yX8R32XBE5jhcrXRq9bSZoPYZyHOcT7iSJwqO9FRq7c5XZNzMh1IQDzG2Yc
-         QUsvG9lSmDA9MeceK1Yw4wP2vPWHW2b3ngNqdk+JoV6F1REQUYH49lKCkUulj68HlOad
-         7J+g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691263754; x=1691868554;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=/eoTXNan9hfBAk2ItnV/fDUtgs5cEoo72FK2KNJihNY=;
-        b=l/6DIzHJoAZJx1PyGty/JPG7j63fFke9jJO1cjOiouHIxe+T1VZvYOcMnVwJIj30lj
-         ha/Icp92ghnlQu8oz4OQj49W8do2ctAwExUO40Y1tEHlSedS9jD+aZ3NF5tClGmMqn5n
-         IqGor+1Qt9PnkVPVcl4fsuj6kxE06XgZ5RD3TlJO4jdhOZTaeOSDL+9Kvhmyv8Eg5P6P
-         +IMedwWlwcrVl3z4r2LK2RY7xB8FYUVq8jyXwJbrslZY1khiM54BYIDINJXqp4+3sbXr
-         mKYOZFlNAWY7CqbjNcqMCeO/JiXS64YAJOcNnhJTfQv0teru7EcjgIuhBydJ8tvXG692
-         oJOA==
-X-Gm-Message-State: AOJu0Yx0U0F8jW2CTVIq6lP48wdUIrIseH7zBvd7byKHDePVzbJ8QJQB
-        +CQjbfiKosk02EY472fRHfeO8Q==
-X-Google-Smtp-Source: AGHT+IH5DaN+pUCthq7k0rScxSZtePibiRU16HS8B5XCsuNpeTErg++bLF9XrOuvbAdXrXQTS6HjqA==
-X-Received: by 2002:a17:906:cc5a:b0:99b:cb7a:c164 with SMTP id mm26-20020a170906cc5a00b0099bcb7ac164mr3770450ejb.62.1691263754388;
-        Sat, 05 Aug 2023 12:29:14 -0700 (PDT)
-Received: from [192.168.1.20] ([178.197.222.245])
-        by smtp.gmail.com with ESMTPSA id b13-20020a17090636cd00b0099bcf9c2ec6sm3059491ejc.75.2023.08.05.12.29.12
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 05 Aug 2023 12:29:13 -0700 (PDT)
-Message-ID: <84ab9380-2fb2-76f9-2eb9-71d9202718cc@linaro.org>
-Date:   Sat, 5 Aug 2023 21:29:12 +0200
+        Sat, 5 Aug 2023 15:34:14 -0400
+Received: from fllv0015.ext.ti.com (fllv0015.ext.ti.com [198.47.19.141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5702D199;
+        Sat,  5 Aug 2023 12:34:12 -0700 (PDT)
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 375JXuWE053982;
+        Sat, 5 Aug 2023 14:33:56 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1691264036;
+        bh=ywGf2VNoOdqAsNkHO77gnWJr1RqaF8o7AFI63z26nj8=;
+        h=Date:From:To:CC:Subject:References:In-Reply-To;
+        b=YtrE2N3QmtSL2poYFvurWUJonYkeIETqbk6dYSzfB9zr4kOAA8UqV+sD4mrgn40ko
+         ZRvUJRwGb7+nwTu1+NOBFSbMU8CVxe5WAkZG1BCqeaCselDJNAfRb+b9V3Pnrlgm67
+         vtuU4HVsoHIyEYP0s2NBBkljrE/oN0LtSRpvZrJk=
+Received: from DLEE112.ent.ti.com (dlee112.ent.ti.com [157.170.170.23])
+        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 375JXuYU012469
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Sat, 5 Aug 2023 14:33:56 -0500
+Received: from DLEE108.ent.ti.com (157.170.170.38) by DLEE112.ent.ti.com
+ (157.170.170.23) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Sat, 5
+ Aug 2023 14:33:55 -0500
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE108.ent.ti.com
+ (157.170.170.38) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Sat, 5 Aug 2023 14:33:55 -0500
+Received: from localhost (ileaxei01-snat.itg.ti.com [10.180.69.5])
+        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 375JXtUa003708;
+        Sat, 5 Aug 2023 14:33:55 -0500
+Date:   Sat, 5 Aug 2023 14:33:55 -0500
+From:   Nishanth Menon <nm@ti.com>
+To:     Devarsh Thakkar <devarsht@ti.com>, <afd@ti.com>
+CC:     <vigneshr@ti.com>, <kristo@kernel.org>, <robh+dt@kernel.org>,
+        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <a-bhatia1@ti.com>, <j-luthra@ti.com>, <praneeth@ti.com>,
+        <j-choudhary@ti.com>
+Subject: Re: [PATCH] arm64: dts: ti: k3-am62x-sk-common: Reserve 128MiB of
+ global CMA
+Message-ID: <20230805193355.o657pwbq2w3tciui@vehicular>
+References: <20230803111455.811339-1-devarsht@ti.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.14.0
-Subject: Re: [PATCH 1/6] media: dt-bindings: Document SC8280XP/SM8350 Venus
-Content-Language: en-US
-To:     Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Stanimir Varbanov <stanimir.k.varbanov@gmail.com>,
-        Vikash Garodia <quic_vgarodia@quicinc.com>,
-        Bryan O'Donoghue <bryan.odonoghue@linaro.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>
-Cc:     Marijn Suijten <marijn.suijten@somainline.org>,
-        Konrad Dybcio <konradybcio@kernel.org>,
-        linux-media@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20230731-topic-8280_venus-v1-0-8c8bbe1983a5@linaro.org>
- <20230731-topic-8280_venus-v1-1-8c8bbe1983a5@linaro.org>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <20230731-topic-8280_venus-v1-1-8c8bbe1983a5@linaro.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20230803111455.811339-1-devarsht@ti.com>
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 04/08/2023 22:09, Konrad Dybcio wrote:
-> Both of these SoCs implement an IRIS2 block, with SC8280XP being able
-> to clock it a bit higher.
+On 16:44-20230803, Devarsh Thakkar wrote:
+> Reserve 128MiB of global CMA which is also marked as re-usable
+> so that OS can also use the same if peripheral drivers are not using the
+> same.
+> 
+> AM62x supports multimedia components such as GPU, dual Display and Camera.
+> Assuming the worst-case scenario where all 3 are run in parallel below
+> is the calculation :
+> 
+> 1) OV5640 camera sensor supports 1920x1080 resolution
+> -> 1920 width x 1080 height x 2 bytesperpixel x 8 buffers
+>    (default in yavta) : 32MiB
+> 
+> 2) 1920x1200 Microtips LVDS panel supported
+> -> 1920 width x 1080 height x 4 bytesperpixel x 2 buffers :
+>    16 MiB
+> 
+> 3) 1920x1080 HDMI display supported
+> -> 1920 width x 1080 height x 4 bytesperpixel x 2 buffers :
+>    15.82 MiB which is ~16 MiB
+> 
+> 4) IMG GPU shares with display allocated buffers while rendering
+>    but in case some dedicated operation viz color conversion,
+>    keeping same window of ~16 MiB for GPU too.
+> 
+> Total is 80 MiB and adding 32 MiB for other peripherals and extra
+> 16 MiB to keep as buffer for fragmentation thus rounding total to 128
+> MiB.
+> 
+> Signed-off-by: Devarsh Thakkar <devarsht@ti.com>
+> Acked-by: Darren Etheridge <detheridge@ti.com>
+> Signed-off-by: Vignesh Raghavendra <vigneshr@ti.com>
+> ---
+
+I don't think this is right approach. There are other techniques
+than having to do this (Andrew: please comment) and require drivers to
+behave properly. I am esp concerned since there are platforms based on
+am62x and just 256MB DDR.
+
+>  arch/arm64/boot/dts/ti/k3-am62x-sk-common.dtsi | 8 ++++++++
+>  1 file changed, 8 insertions(+)
+> 
+> diff --git a/arch/arm64/boot/dts/ti/k3-am62x-sk-common.dtsi b/arch/arm64/boot/dts/ti/k3-am62x-sk-common.dtsi
+> index 34c8ffc553ec..9dd6e23ca9ca 100644
+> --- a/arch/arm64/boot/dts/ti/k3-am62x-sk-common.dtsi
+> +++ b/arch/arm64/boot/dts/ti/k3-am62x-sk-common.dtsi
+> @@ -47,6 +47,14 @@ ramoops@9ca00000 {
+>  			pmsg-size = <0x8000>;
+>  		};
+>  
+> +		/* global cma region */
+> +		linux,cma {
+> +			compatible = "shared-dma-pool";
+> +			reusable;
+> +			size = <0x00 0x8000000>;
+> +			linux,cma-default;
+> +		};
+> +
+>  		secure_tfa_ddr: tfa@9e780000 {
+>  			reg = <0x00 0x9e780000 0x00 0x80000>;
+>  			alignment = <0x1000>;
+> -- 
+> 2.34.1
 > 
 
-...
-
-> +
-> +  iommus:
-> +    maxItems: 1
-> +
-> +  video-decoder:
-> +    type: object
-> +
-> +    properties:
-> +      compatible:
-> +        const: venus-decoder
-
-That's not how compatibles are constructed... missing vendor prefix, SoC
-or IP block name.
-
-> +
-> +    required:
-> +      - compatible
-> +
-> +    additionalProperties: false
-
-Why do you need this child node? Child nodes without properties are
-usually useless.
-
-> +
-> +  video-encoder:
-> +    type: object
-> +
-> +    properties:
-> +      compatible:
-> +        const: venus-encoder
-> +
-> +    required:
-> +      - compatible
-> +
-> +    additionalProperties: false
-> +
-> +required:
-> +  - compatible
-> +  - power-domain-names
-> +  - iommus
-> +  - video-decoder
-> +  - video-encoder
-> +
-> +unevaluatedProperties: false
-> +
-> +examples:
-> +  - |
-> +    #include <dt-bindings/interrupt-controller/arm-gic.h>
-> +    #include <dt-bindings/clock/qcom,gcc-sm8350.h>
-> +    #include <dt-bindings/clock/qcom,sm8350-videocc.h>
-> +    #include <dt-bindings/interconnect/qcom,sm8350.h>
-> +    #include <dt-bindings/power/qcom-rpmpd.h>
-> +
-> +    venus: video-codec@aa00000 {
-> +        compatible = "qcom,sm8350-venus";
-> +        reg = <0x0aa00000 0x100000>;
-> +        interrupts = <GIC_SPI 174 IRQ_TYPE_LEVEL_HIGH>;
-> +
-> +        clocks = <&gcc GCC_VIDEO_AXI0_CLK>,
-> +                 <&videocc VIDEO_CC_MVS0C_CLK>,
-> +                 <&videocc VIDEO_CC_MVS0_CLK>;
-> +        clock-names = "iface",
-> +                      "core",
-> +                      "vcodec0_core";
-> +
-> +        resets = <&gcc GCC_VIDEO_AXI0_CLK_ARES>;
-> +        reset-names = "core";
-> +
-> +        power-domains = <&videocc MVS0C_GDSC>,
-> +                        <&videocc MVS0_GDSC>,
-> +                        <&rpmhpd SM8350_MX>;
-> +        power-domain-names = "venus",
-> +                             "vcodec0",
-> +                             "mx";
-> +
-> +        interconnects = <&gem_noc MASTER_APPSS_PROC 0 &config_noc SLAVE_VENUS_CFG 0>,
-> +                        <&mmss_noc MASTER_VIDEO_P0 0 &mc_virt SLAVE_EBI1 0>,
-> +                        <&mmss_noc MASTER_VIDEO_P0 0 &gem_noc SLAVE_LLCC 0>;
-> +        interconnect-names = "cpu-cfg",
-> +                             "video-mem",
-> +                             "video-llcc";
-> +
-> +        operating-points-v2 = <&venus_opp_table>;
-> +        iommus = <&apps_smmu 0x2100 0x400>;
-> +        memory-region = <&pil_video_mem>;
-> +
-> +        status = "disabled";
-
-Drop status.
-
-> +
-> +        video-decoder {
-
-Best regards,
-Krzysztof
-
+-- 
+Regards,
+Nishanth Menon
+Key (0xDDB5849D1736249D) / Fingerprint: F8A2 8693 54EB 8232 17A3  1A34 DDB5 849D 1736 249D
