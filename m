@@ -2,122 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ABD1B770D4E
-	for <lists+linux-kernel@lfdr.de>; Sat,  5 Aug 2023 04:28:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7838C770D4F
+	for <lists+linux-kernel@lfdr.de>; Sat,  5 Aug 2023 04:30:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229689AbjHEC23 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Aug 2023 22:28:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59534 "EHLO
+        id S229733AbjHECaT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Aug 2023 22:30:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59900 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229468AbjHEC21 (ORCPT
+        with ESMTP id S229468AbjHECaR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Aug 2023 22:28:27 -0400
-Received: from mail-yw1-x112f.google.com (mail-yw1-x112f.google.com [IPv6:2607:f8b0:4864:20::112f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 414094EDB
-        for <linux-kernel@vger.kernel.org>; Fri,  4 Aug 2023 19:28:25 -0700 (PDT)
-Received: by mail-yw1-x112f.google.com with SMTP id 00721157ae682-584034c706dso28927847b3.1
-        for <linux-kernel@vger.kernel.org>; Fri, 04 Aug 2023 19:28:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1691202504; x=1691807304;
-        h=content-transfer-encoding:to:subject:message-id:date:from
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=xaHyFd/11/GlgUBkCwfx+jW6fBw1OjzEYwRR90O3NUk=;
-        b=GWtqQRd1RJs3GHO/LrkvbY+2UTRTgHrNRbVUSL+QUBAn5lsOei9A0iFvWacc5bHNlu
-         y21x6X3lDkMjZBYeszmsKKddc9rYyzVsqP8hWA87nEVavdQhrcUBRK72vJZiFwMZzrQa
-         DRjBm2JrkxeD6U+OCFIZEmy5/S5czvLVfilBFfoo7vFZ0X2v9Z4mJLfzRMB5cY5JA1lK
-         EVG0tDHEVPAdu5kpOVEwDwO2Qf6lP5BTqkbSvDoPw/NnewiqFL4mmY1Z3g5053RdR7ii
-         38nRUHJzzJi2bJzPMH/gzTykZxzY/z1sSAxEPGGaBse6xrkVp/bnL56vynB5BU2rqy40
-         prVw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691202504; x=1691807304;
-        h=content-transfer-encoding:to:subject:message-id:date:from
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=xaHyFd/11/GlgUBkCwfx+jW6fBw1OjzEYwRR90O3NUk=;
-        b=B7iT+C/IumWWJ+YHXe6Qa5K4nYe18ca0sXRhudR1mie6pqSq79mcjBqCGsnAT23uus
-         e2ho7xVxBvSxX+2K99vDEosPGM4Q+Vp/GKkBvaAF2i7U1/0pwa9lidpxJ9g8RyAB7gxB
-         o2rvtfywd8fktyFm9cyFjbm3x2C6tXPtG5dRlw4w3mk87SirHjQ0kGopIcB0fVISmQhf
-         4Lir/ajo6ZTW7ROJaOoRhmhciZBIG6wWBjlfUiAPDo+x2nxwgNL/nD6TKEXnaj7FIJU0
-         HYALx7BrJyuNwyWCGxHMT172mciInCGRTUtlP38efWtoZKiEFU8BQcblI2wZJULBIn3A
-         l9lQ==
-X-Gm-Message-State: AOJu0Yzzq5MSlLCFxNkPR2wcTlvJjWOkDM8G+nWUl5sH/mA8dKuXq9XQ
-        Zkk0Twc0Pik7B+yzw8ihet8BL4OJhOlH9BXMObU=
-X-Google-Smtp-Source: AGHT+IEFaXBaPoNBp7lW7sAFyB2Ld+3onP+J7SFZfQ3tkUeOqw/PO9tYtCzmBPf/rdepmCkkAX0OPCg77i7kwTtEjT4=
-X-Received: by 2002:a0d:d608:0:b0:586:9fd4:6a9f with SMTP id
- y8-20020a0dd608000000b005869fd46a9fmr3499870ywd.46.1691202504172; Fri, 04 Aug
- 2023 19:28:24 -0700 (PDT)
+        Fri, 4 Aug 2023 22:30:17 -0400
+Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37B5B4EDC;
+        Fri,  4 Aug 2023 19:30:15 -0700 (PDT)
+Received: from mail02.huawei.com (unknown [172.30.67.143])
+        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4RHml63lQVz4f3nKM;
+        Sat,  5 Aug 2023 10:30:10 +0800 (CST)
+Received: from [10.174.178.55] (unknown [10.174.178.55])
+        by APP4 (Coremail) with SMTP id gCh0CgBH_rEvtM1krxhcPg--.25609S3;
+        Sat, 05 Aug 2023 10:30:10 +0800 (CST)
+Subject: Re: [PATCH v6 0/5] rcu: Dump memory object info if callback function
+ is invalid
+To:     paulmck@kernel.org
+Cc:     Petr Mladek <pmladek@suse.com>,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        John Ogness <john.ogness@linutronix.de>,
+        Christoph Lameter <cl@linux.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        David Rientjes <rientjes@google.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Hyeonggon Yoo <42.hyeyoo@gmail.com>, linux-mm@kvack.org,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Zqiang <qiang.zhang1211@gmail.com>, rcu@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Zhen Lei <thunder.leizhen@huawei.com>
+References: <20230804091136.1177-1-thunder.leizhen@huaweicloud.com>
+ <7af1d3d8-2d51-40a8-8021-0141e4bf1a0e@paulmck-laptop>
+From:   "Leizhen (ThunderTown)" <thunder.leizhen@huaweicloud.com>
+Message-ID: <fad9df02-e57a-9a6c-84d8-e7c7b09cb021@huaweicloud.com>
+Date:   Sat, 5 Aug 2023 10:30:07 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.0
 MIME-Version: 1.0
-Received: by 2002:a05:7108:60cb:b0:326:40e:4f0d with HTTP; Fri, 4 Aug 2023
- 19:28:23 -0700 (PDT)
-From:   "Mr.Ghazi Ahmed" <mrghaziahmed502@gmail.com>
-Date:   Fri, 4 Aug 2023 19:28:23 -0700
-Message-ID: <CAB_wAu-XGN43qr-sWMEDsBNLuEeyZmBfKWpD=XaDZLV5=vRd1Q@mail.gmail.com>
-Subject: YOUR URGENT RESPONSE IS NEEDED
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: Yes, score=6.4 required=5.0 tests=ADVANCE_FEE_4_NEW_MONEY,
-        BAYES_50,DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        FREEMAIL_ENVFROM_END_DIGIT,FREEMAIL_FROM,FREEMAIL_REPLY,LOTS_OF_MONEY,
-        MONEY_FORM_SHORT,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        SUBJ_ALL_CAPS,T_FILL_THIS_FORM_SHORT,T_HK_NAME_FM_MR_MRS,
-        T_MONEY_PERCENT,UNDISC_MONEY,URG_BIZ autolearn=no autolearn_force=no
-        version=3.4.6
-X-Spam-Report: *  0.0 RCVD_IN_DNSWL_BLOCKED RBL: ADMINISTRATOR NOTICE: The query to
-        *      DNSWL was blocked.  See
-        *      http://wiki.apache.org/spamassassin/DnsBlocklists#dnsbl-block
-        *      for more information.
-        *      [2607:f8b0:4864:20:0:0:0:112f listed in]
-        [list.dnswl.org]
-        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
-        *      [score: 0.5553]
-        *  0.0 FREEMAIL_FROM Sender email is commonly abused enduser mail
-        *      provider
-        *      [mrghaziahmed502[at]gmail.com]
-        *  0.5 SUBJ_ALL_CAPS Subject is all capitals
-        * -0.0 SPF_PASS SPF: sender matches SPF record
-        *  0.0 SPF_HELO_NONE SPF: HELO does not publish an SPF Record
-        *  0.2 FREEMAIL_ENVFROM_END_DIGIT Envelope-from freemail username ends
-        *       in digit
-        *      [mrghaziahmed502[at]gmail.com]
-        *  0.1 DKIM_SIGNED Message has a DKIM or DK signature, not necessarily
-        *       valid
-        * -0.1 DKIM_VALID_AU Message has a valid DKIM or DK signature from
-        *      author's domain
-        * -0.1 DKIM_VALID Message has at least one valid DKIM or DK signature
-        * -0.1 DKIM_VALID_EF Message has a valid DKIM or DK signature from
-        *      envelope-from domain
-        *  0.0 LOTS_OF_MONEY Huge... sums of money
-        *  0.6 URG_BIZ Contains urgent matter
-        *  0.0 T_HK_NAME_FM_MR_MRS No description available.
-        *  1.0 FREEMAIL_REPLY From and body contain different freemails
-        *  0.0 T_MONEY_PERCENT X% of a lot of money for you
-        *  0.0 T_FILL_THIS_FORM_SHORT Fill in a short form with personal
-        *      information
-        *  0.0 MONEY_FORM_SHORT Lots of money if you fill out a short form
-        *  2.9 UNDISC_MONEY Undisclosed recipients + money/fraud signs
-        *  0.5 ADVANCE_FEE_4_NEW_MONEY Advance Fee fraud and lots of money
-X-Spam-Level: ******
+In-Reply-To: <7af1d3d8-2d51-40a8-8021-0141e4bf1a0e@paulmck-laptop>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-CM-TRANSID: gCh0CgBH_rEvtM1krxhcPg--.25609S3
+X-Coremail-Antispam: 1UD129KBjvJXoWxZw1DKF4UWFyfCw15tFyxKrg_yoW5XF17p3
+        sxWasxKrn8Xry7Cr1fZr1xCry5ta1fKFsxKFnxZwn5u3WUZr9ayr95Ar4xWa4UGFWxKF1j
+        y3WYyF1qkr15ArDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUvIb4IE77IF4wAFF20E14v26ryj6rWUM7CY07I20VC2zVCF04k2
+        6cxKx2IYs7xG6r1S6rWUM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+        vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xIIjxv20xvEc7Cj
+        xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
+        0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
+        6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
+        Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7Mxk0xIA0c2IE
+        e2xFo4CEbIxvr21l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxV
+        Aqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r4a
+        6rW5MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6x
+        kF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE
+        14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf
+        9x07UZ18PUUUUU=
+X-CM-SenderInfo: hwkx0vthuozvpl2kv046kxt4xhlfz01xgou0bp/
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---=20
-I have a business proposal in the tune of $10.2m USD for you to handle
-with me. I have opportunity to transfer this abandon fund to your bank
-account in your country which belongs to our client.
 
-I am inviting you in this transaction where this money can be shared
-between us at ratio of 50/50% and help the needy around us don=E2=80=99t be
-afraid of anything I am with you I will instruct you what you will do
-to maintain this fund.
 
-Please kindly contact me with your information's if you are interested
-in this tranasction for more details(Mr.GhaziAhmed@email.com)
+On 2023/8/5 1:31, Paul E. McKenney wrote:
+> On Fri, Aug 04, 2023 at 05:11:30PM +0800, thunder.leizhen@huaweicloud.com wrote:
+>> From: Zhen Lei <thunder.leizhen@huawei.com>
+>>
+>> v5 --> v6:
+>> 1. Use print_hex_dump() to dump the memory of slab object.
+>> 2. Add a new dump prefix DUMP_PREFIX_ADDRESS_LOW16
+>> 3. Minimize the output width of the offset
+>>
+>> v4 --> v5:
+>> 1. Add Reviewed-by Acked-by for patch 1/3
+>> 2. Add patch 3/3:
+>>    mm: Dump the memory of slab object in kmem_dump_obj()
+>>
+>> v3 --> v4:
+>> 1. Remove kmem_valid_obj() and convert kmem_dump_obj() to work the same way
+>>    as vmalloc_dump_obj().
+>> 2. In kernel/rcu/rcu.h
+>> -#include <linux/mm.h>
+>> +#include <linux/slab.h>
+>>
+>> v2 --> v3:
+>> 1. I made statistics about the source of 'rhp'. kmem_valid_obj() accounts for
+>>    more than 97.5%, and vmalloc accounts for less than 1%. So change call
+>>    mem_dump_obj() to call kmem_dump_obj() can meet debugging requirements and
+>>    avoid the potential deadlock risk of vmalloc_dump_obj().
+>> -		mem_dump_obj(rhp);
+>> +		if (kmem_valid_obj(rhp))
+>> +			kmem_dump_obj(rhp);
+>>
+>>    The discussion about vmap_area_lock deadlock in v2:
+>>    https://lkml.org/lkml/2022/11/11/493
+>>
+>> 2. Provide static inline empty functions for kmem_valid_obj() and kmem_dump_obj()
+>>    when CONFIG_PRINTK=n.
+>>
+>> v1 --> v2:
+>> 1. Remove condition "(unsigned long)rhp->func & 0x3", it have problems on x86.
+>> 2. Paul E. McKenney helped me update the commit message, thanks.
+> 
+> I would be happy to take the patch that Matthew and Vlastimil are happy
+> with, and also the one against RCU.  But unless you tell me otherwise,
+> I will assume that you would prefer me to wait until the entire series
+> is ready.  The best way to tell me otherwise is of course to resend just
+> those two patches in their own series.  ;-)
 
-1. Your Full Name.....................
-2. Your Address......................
-3. Your Country of Origin.............
-Mr.Ghazi Ahmed
+Yes, I also feel this snowball rolling bigger and bigger. Let me resend the two
+RCU-related patches that we've discussed OK.
+
+> 
+> 							Thanx, Paul
+> 
+>> Zhen Lei (5):
+>>   hexdump: add a new dump prefix DUMP_PREFIX_ADDRESS_LOW16
+>>   hexdump: minimize the output width of the offset
+>>   mm: Remove kmem_valid_obj()
+>>   mm: Dump the memory of slab object in kmem_dump_obj()
+>>   rcu: Dump memory object info if callback function is invalid
+>>
+>>  include/linux/printk.h |  1 +
+>>  include/linux/slab.h   |  5 ++--
+>>  kernel/rcu/rcu.h       |  7 +++++
+>>  kernel/rcu/srcutiny.c  |  1 +
+>>  kernel/rcu/srcutree.c  |  1 +
+>>  kernel/rcu/tasks.h     |  1 +
+>>  kernel/rcu/tiny.c      |  1 +
+>>  kernel/rcu/tree.c      |  1 +
+>>  lib/hexdump.c          | 17 +++++++++--
+>>  mm/slab_common.c       | 68 ++++++++++++++++++++++--------------------
+>>  mm/util.c              |  4 +--
+>>  11 files changed, 67 insertions(+), 40 deletions(-)
+>>
+>> -- 
+>> 2.34.1
+>>
+> .
+> 
+
+-- 
+Regards,
+  Zhen Lei
+
