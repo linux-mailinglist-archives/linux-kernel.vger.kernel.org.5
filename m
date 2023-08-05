@@ -2,450 +2,292 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CF136771028
-	for <lists+linux-kernel@lfdr.de>; Sat,  5 Aug 2023 16:30:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 827F077102A
+	for <lists+linux-kernel@lfdr.de>; Sat,  5 Aug 2023 16:34:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229751AbjHEOaI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 5 Aug 2023 10:30:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48446 "EHLO
+        id S229663AbjHEOeV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 5 Aug 2023 10:34:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49248 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229481AbjHEOaG (ORCPT
+        with ESMTP id S229464AbjHEOeT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 5 Aug 2023 10:30:06 -0400
-Received: from out-68.mta1.migadu.com (out-68.mta1.migadu.com [95.215.58.68])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54C8F44A4
-        for <linux-kernel@vger.kernel.org>; Sat,  5 Aug 2023 07:29:44 -0700 (PDT)
-Message-ID: <72a98e55-46b0-66d6-b4b3-4f6d14e1fd7b@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1691245782;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=0d2/HWw/t4KftogUmOniaysvCJK7HhLWbKWsyTbkz+0=;
-        b=L5JmuClvl8yxJqbTomikxt1FaaRynUJHsKi1bKAxeFsZVoZ2u6njLiy42IP0PlhNbJnMLV
-        8cwaSAc5kJ7/kXhE1CkjdC6Tcvv5pjiNK9Ijo46qs8CiWYt2T86qfz6x8+88C6xQZGXx3K
-        r2LcEbnXdJ2dvyygA2LX8H8maJZS+8Y=
-Date:   Sat, 5 Aug 2023 22:29:29 +0800
+        Sat, 5 Aug 2023 10:34:19 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 2F50810DC;
+        Sat,  5 Aug 2023 07:34:18 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id B815B1FB;
+        Sat,  5 Aug 2023 07:35:00 -0700 (PDT)
+Received: from slackpad.lan (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 3EA543F59C;
+        Sat,  5 Aug 2023 07:34:16 -0700 (PDT)
+Date:   Sat, 5 Aug 2023 15:33:14 +0100
+From:   Andre Przywara <andre.przywara@arm.com>
+To:     Matthew Croughan <matthew.croughan@nix.how>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Samuel Holland <samuel@sholland.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-sunxi@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v5 2/2] arm64: dts: allwinner: h616: Add Mango Pi
+ MQ-Quad DTS
+Message-ID: <20230805153314.457f03a6@slackpad.lan>
+In-Reply-To: <20230805044558.279473-4-matthew.croughan@nix.how>
+References: <20230805044558.279473-2-matthew.croughan@nix.how>
+        <20230805044558.279473-4-matthew.croughan@nix.how>
+Organization: Arm Ltd.
+X-Mailer: Claws Mail 4.1.1 (GTK 3.24.31; x86_64-slackware-linux-gnu)
 MIME-Version: 1.0
-Subject: Re: [PATCH net-next 03/10] mlx4: Replace the mlx4_interface.event
- callback with a notifier
-To:     Petr Pavlu <petr.pavlu@suse.com>, tariqt@nvidia.com,
-        yishaih@nvidia.com, leon@kernel.org
-Cc:     davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
-        pabeni@redhat.com, jgg@ziepe.ca, netdev@vger.kernel.org,
-        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20230804150527.6117-1-petr.pavlu@suse.com>
- <20230804150527.6117-4-petr.pavlu@suse.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Zhu Yanjun <yanjun.zhu@linux.dev>
-In-Reply-To: <20230804150527.6117-4-petr.pavlu@suse.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-在 2023/8/4 23:05, Petr Pavlu 写道:
-> Use a notifier to implement mlx4_dispatch_event() in preparation to
-> switch mlx4_en and mlx4_ib to be an auxiliary device.
+On Sat,  5 Aug 2023 05:42:39 +0100
+Matthew Croughan <matthew.croughan@nix.how> wrote:
+
+Hi Matthew,
+
+thanks for the update, some small thing below:
+
+> Mango Pi MQ Quad is a H616 based SBC, add basic support for the board
+> and its peripherals
 > 
-> A problem is that if the mlx4_interface.event callback was replaced with
-> something as mlx4_adrv.event then the implementation of
-> mlx4_dispatch_event() would need to acquire a lock on a given device
-> before executing this callback. That is necessary because otherwise
-> there is no guarantee that the associated driver cannot get unbound when
-> the callback is running. However, taking this lock is not possible
-> because mlx4_dispatch_event() can be invoked from the hardirq context.
-> Using an atomic notifier allows the driver to accurately record when it
-> wants to receive these events and solves this problem.
+> Signed-off-by: Matthew Croughan <matthew.croughan@nix.how>
 > 
-> A handler registration is done by both mlx4_en and mlx4_ib at the end of
-> their mlx4_interface.add callback. This matches the current situation
-> when mlx4_add_device() would enable events for a given device
-> immediately after this callback, by adding the device on the
-> mlx4_priv.list.
-> 
-> Signed-off-by: Petr Pavlu <petr.pavlu@suse.com>
-> Tested-by: Leon Romanovsky <leon@kernel.org>
+> Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 > ---
->   drivers/infiniband/hw/mlx4/main.c            | 41 +++++++++++++-------
->   drivers/infiniband/hw/mlx4/mlx4_ib.h         |  2 +
->   drivers/net/ethernet/mellanox/mlx4/en_main.c | 25 ++++++++----
->   drivers/net/ethernet/mellanox/mlx4/intf.c    | 24 ++++++++----
->   drivers/net/ethernet/mellanox/mlx4/main.c    |  2 +
->   drivers/net/ethernet/mellanox/mlx4/mlx4.h    |  2 +
->   drivers/net/ethernet/mellanox/mlx4/mlx4_en.h |  2 +
->   include/linux/mlx4/driver.h                  |  8 +++-
->   8 files changed, 76 insertions(+), 30 deletions(-)
+>  arch/arm64/boot/dts/allwinner/Makefile        |   1 +
+>  .../allwinner/sun50i-h616-mangopi-mq-quad.dts | 185 ++++++++++++++++++
+>  2 files changed, 186 insertions(+)
+>  create mode 100644 arch/arm64/boot/dts/allwinner/sun50i-h616-mangopi-mq-quad.dts
 > 
-> diff --git a/drivers/infiniband/hw/mlx4/main.c b/drivers/infiniband/hw/mlx4/main.c
-> index 7dd70d778b6b..458b4b11dffa 100644
-> --- a/drivers/infiniband/hw/mlx4/main.c
-> +++ b/drivers/infiniband/hw/mlx4/main.c
-> @@ -82,6 +82,8 @@ static const char mlx4_ib_version[] =
->   static void do_slave_init(struct mlx4_ib_dev *ibdev, int slave, int do_init);
->   static enum rdma_link_layer mlx4_ib_port_link_layer(struct ib_device *device,
->   						    u32 port_num);
-> +static int mlx4_ib_event(struct notifier_block *this, unsigned long event,
-> +			 void *ptr);
->   
->   static struct workqueue_struct *wq;
->   
-> @@ -2836,6 +2838,12 @@ static void *mlx4_ib_add(struct mlx4_dev *dev)
->   				do_slave_init(ibdev, j, 1);
->   		}
->   	}
+> diff --git a/arch/arm64/boot/dts/allwinner/Makefile b/arch/arm64/boot/dts/allwinner/Makefile
+> index 6a96494a2e0a..06c5b97dbfc3 100644
+> --- a/arch/arm64/boot/dts/allwinner/Makefile
+> +++ b/arch/arm64/boot/dts/allwinner/Makefile
+> @@ -38,5 +38,6 @@ dtb-$(CONFIG_ARCH_SUNXI) += sun50i-h6-pine-h64.dtb
+>  dtb-$(CONFIG_ARCH_SUNXI) += sun50i-h6-pine-h64-model-b.dtb
+>  dtb-$(CONFIG_ARCH_SUNXI) += sun50i-h6-tanix-tx6.dtb
+>  dtb-$(CONFIG_ARCH_SUNXI) += sun50i-h6-tanix-tx6-mini.dtb
+> +dtb-$(CONFIG_ARCH_SUNXI) += sun50i-h616-mangopi-mq-quad.dtb
+>  dtb-$(CONFIG_ARCH_SUNXI) += sun50i-h616-orangepi-zero2.dtb
+>  dtb-$(CONFIG_ARCH_SUNXI) += sun50i-h616-x96-mate.dtb
+> diff --git a/arch/arm64/boot/dts/allwinner/sun50i-h616-mangopi-mq-quad.dts b/arch/arm64/boot/dts/allwinner/sun50i-h616-mangopi-mq-quad.dts
+> new file mode 100644
+> index 000000000000..549f85decd85
+> --- /dev/null
+> +++ b/arch/arm64/boot/dts/allwinner/sun50i-h616-mangopi-mq-quad.dts
+> @@ -0,0 +1,185 @@
+> +/* SPDX-License-Identifier: (GPL-2.0+ OR MIT)
+> + * Copyright (C) 2020 Arm Ltd.
+> + *
+> + * Copyright (C) 2023 Matthew Croughan <matthew.croughan@nix.how>
+> + */
 > +
-> +	/* register mlx4 core notifier */
-> +	ibdev->mlx_nb.notifier_call = mlx4_ib_event;
-> +	err = mlx4_register_event_notifier(dev, &ibdev->mlx_nb);
-> +	WARN(err, "failed to register mlx4 event notifier (%d)", err);
+> +/dts-v1/;
 > +
->   	return ibdev;
->   
->   err_notif:
-> @@ -2953,6 +2961,8 @@ static void mlx4_ib_remove(struct mlx4_dev *dev, void *ibdev_ptr)
->   	int p;
->   	int i;
->   
-> +	mlx4_unregister_event_notifier(dev, &ibdev->mlx_nb);
+> +#include "sun50i-h616.dtsi"
 > +
->   	mlx4_foreach_port(i, dev, MLX4_PORT_TYPE_IB)
->   		devlink_port_type_clear(mlx4_get_devlink_port(dev, i));
->   	ibdev->ib_active = false;
-> @@ -3173,11 +3183,14 @@ void mlx4_sched_ib_sl2vl_update_work(struct mlx4_ib_dev *ibdev,
->   	}
->   }
->   
-> -static void mlx4_ib_event(struct mlx4_dev *dev, void *ibdev_ptr,
-> -			  enum mlx4_dev_event event, unsigned long param)
-> +static int mlx4_ib_event(struct notifier_block *this,
-> +			 unsigned long event /*mlx4_dev_event*/, void *ptr)
+> +#include <dt-bindings/gpio/gpio.h>
+> +#include <dt-bindings/interrupt-controller/arm-gic.h>
+> +#include <dt-bindings/leds/common.h>
+> +
+> +/ {
+> +	model = "MangoPi MQ-Quad";
+> +	compatible = "widora,mangopi-mq-quad", "allwinner,sun50i-h616";
+> +
+> +	aliases {
+> +		serial0 = &uart0;
+> +	};
+> +
+> +	chosen {
+> +		stdout-path = "serial0:115200n8";
+> +	};
+> +
+> +	leds {
+> +		compatible = "gpio-leds";
+> +
+> +		led-0 {
+> +			function = LED_FUNCTION_STATUS;
+> +			color = <LED_COLOR_ID_GREEN>;
+> +			gpios = <&pio 2 13 GPIO_ACTIVE_HIGH>; /* PC13 */
+> +		};
+> +	};
+> +
+> +	reg_vcc5v: vcc5v {
+> +		/* board wide 5V supply directly from the USB-C socket */
+> +		compatible = "regulator-fixed";
+> +		regulator-name = "vcc-5v";
+> +		regulator-min-microvolt = <5000000>;
+> +		regulator-max-microvolt = <5000000>;
+> +		regulator-always-on;
+> +	};
+> +
+> +	reg_vcc3v3: vcc3v3 {
+> +		/* board wide 3V3 supply directly from SY8008 regulator */
+> +		compatible = "regulator-fixed";
+> +		regulator-name = "vcc-3v3";
+> +		regulator-min-microvolt = <3300000>;
+> +		regulator-max-microvolt = <3300000>;
+> +		regulator-always-on;
+> +	};
+> +
+> +	wifi_pwrseq: wifi-pwrseq {
+> +		compatible = "mmc-pwrseq-simple";
+> +		reset-gpios = <&pio 6 18 GPIO_ACTIVE_LOW>; /* PG18 */
+> +	};
+> +};
+> +
+> +&ehci1 {
+> +	status = "okay";
+> +};
+> +
+> +&pio {
+> +	vcc-pc-supply = <&reg_vcc3v3>;
+> +	vcc-pg-supply = <&reg_vcc3v3>;
+> +	vcc-pi-supply = <&reg_vcc3v3>;
+> +};
+> +
+> +/* USB 2 & 3 are on headers only. */
+> +
+> +&mmc0 {
+> +	vmmc-supply = <&reg_vcc3v3>;
+> +	cd-gpios = <&pio 5 6 GPIO_ACTIVE_LOW>;	/* PF6 */
+> +	bus-width = <4>;
+> +	status = "okay";
+> +};
+> +
+> +&mmc1 {
+> +	bus-width = <4>;
+> +	mmc-pwrseq = <&wifi_pwrseq>;
+> +	non-removable;
+> +	vmmc-supply = <&reg_vcc3v3>;
+> +	vqmmc-supply = <&reg_vcc3v3>;
+> +	pinctrl-0 = <&mmc1_pins>;
+> +	pinctrl-names = "default";
+> +	status = "okay";
+> +
+> +	rtl8723ds: wifi@1 {
+> +		reg = <1>;
+> +		interrupt-parent = <&pio>;
+> +		interrupts = <6 15 IRQ_TYPE_LEVEL_LOW>; /* PG15 */
+> +		interrupt-names = "host-wake";
+> +	};
+> +};
+> +
+> +
+> +&uart1 {
+> +	uart-has-rtscts;
+> +	pinctrl-0 = <&uart1_pins>, <&uart1_rts_cts_pins>;
+> +	pinctrl-names = "default";
+> +	status = "okay";
+> +
+> +	bluetooth {
+> +		compatible = "realtek,rtl8723ds-bt";
+> +		device-wake-gpios = <&pio 6 17 GPIO_ACTIVE_HIGH>; /* PG17 */
+> +		enable-gpios = <&pio 6 19 GPIO_ACTIVE_HIGH>; /* PG19 */
+> +		host-wake-gpios = <&pio 6 16 GPIO_ACTIVE_HIGH>; /* PG16 */
+> +	};
+> +};
+> +
+> +&ohci1 {
+> +	status = "okay";
+> +};
+> +
+> +&r_i2c {
+> +	status = "okay";
+> +
+> +	axp313a: pmic@36 {
+> +		compatible = "x-powers,axp313a";
+> +		reg = <0x36>;
 
-/*mlx4_dev_event*/ should be removed?
+You need "#interrupt-cells = <1>;" and "interrupt-controller;" here,
+even if the interrupt is not connected. Otherwise the DT validation will
+fail. And just for the records, this requires the binding patch to make
+interrupts optional for the AXP313a as well [1].
 
-Zhu Yanjun
+The rest looks fine now, so with these two properties added:
 
->   {
-> +	struct mlx4_ib_dev *ibdev =
-> +		container_of(this, struct mlx4_ib_dev, mlx_nb);
-> +	struct mlx4_dev *dev = ibdev->dev;
-> +	unsigned long param = *(unsigned long *)ptr;
->   	struct ib_event ibev;
-> -	struct mlx4_ib_dev *ibdev = to_mdev((struct ib_device *) ibdev_ptr);
->   	struct mlx4_eqe *eqe = NULL;
->   	struct ib_event_work *ew;
->   	int p = 0;
-> @@ -3187,11 +3200,11 @@ static void mlx4_ib_event(struct mlx4_dev *dev, void *ibdev_ptr,
->   	    (event == MLX4_DEV_EVENT_PORT_DOWN))) {
->   		ew = kmalloc(sizeof(*ew), GFP_ATOMIC);
->   		if (!ew)
-> -			return;
-> +			return NOTIFY_DONE;
->   		INIT_WORK(&ew->work, handle_bonded_port_state_event);
->   		ew->ib_dev = ibdev;
->   		queue_work(wq, &ew->work);
-> -		return;
-> +		return NOTIFY_DONE;
->   	}
->   
->   	if (event == MLX4_DEV_EVENT_PORT_MGMT_CHANGE)
-> @@ -3202,7 +3215,7 @@ static void mlx4_ib_event(struct mlx4_dev *dev, void *ibdev_ptr,
->   	switch (event) {
->   	case MLX4_DEV_EVENT_PORT_UP:
->   		if (p > ibdev->num_ports)
-> -			return;
-> +			return NOTIFY_DONE;
->   		if (!mlx4_is_slave(dev) &&
->   		    rdma_port_get_link_layer(&ibdev->ib_dev, p) ==
->   			IB_LINK_LAYER_INFINIBAND) {
-> @@ -3217,7 +3230,7 @@ static void mlx4_ib_event(struct mlx4_dev *dev, void *ibdev_ptr,
->   
->   	case MLX4_DEV_EVENT_PORT_DOWN:
->   		if (p > ibdev->num_ports)
-> -			return;
-> +			return NOTIFY_DONE;
->   		ibev.event = IB_EVENT_PORT_ERR;
->   		break;
->   
-> @@ -3230,7 +3243,7 @@ static void mlx4_ib_event(struct mlx4_dev *dev, void *ibdev_ptr,
->   	case MLX4_DEV_EVENT_PORT_MGMT_CHANGE:
->   		ew = kmalloc(sizeof *ew, GFP_ATOMIC);
->   		if (!ew)
-> -			return;
-> +			return NOTIFY_DONE;
->   
->   		INIT_WORK(&ew->work, handle_port_mgmt_change_event);
->   		memcpy(&ew->ib_eqe, eqe, sizeof *eqe);
-> @@ -3240,7 +3253,7 @@ static void mlx4_ib_event(struct mlx4_dev *dev, void *ibdev_ptr,
->   			queue_work(wq, &ew->work);
->   		else
->   			handle_port_mgmt_change_event(&ew->work);
-> -		return;
-> +		return NOTIFY_DONE;
->   
->   	case MLX4_DEV_EVENT_SLAVE_INIT:
->   		/* here, p is the slave id */
-> @@ -3256,7 +3269,7 @@ static void mlx4_ib_event(struct mlx4_dev *dev, void *ibdev_ptr,
->   								       1);
->   			}
->   		}
-> -		return;
-> +		return NOTIFY_DONE;
->   
->   	case MLX4_DEV_EVENT_SLAVE_SHUTDOWN:
->   		if (mlx4_is_master(dev)) {
-> @@ -3272,22 +3285,22 @@ static void mlx4_ib_event(struct mlx4_dev *dev, void *ibdev_ptr,
->   		}
->   		/* here, p is the slave id */
->   		do_slave_init(ibdev, p, 0);
-> -		return;
-> +		return NOTIFY_DONE;
->   
->   	default:
-> -		return;
-> +		return NOTIFY_DONE;
->   	}
->   
-> -	ibev.device	      = ibdev_ptr;
-> +	ibev.device	      = &ibdev->ib_dev;
->   	ibev.element.port_num = mlx4_is_bonded(ibdev->dev) ? 1 : (u8)p;
->   
->   	ib_dispatch_event(&ibev);
-> +	return NOTIFY_DONE;
->   }
->   
->   static struct mlx4_interface mlx4_ib_interface = {
->   	.add		= mlx4_ib_add,
->   	.remove		= mlx4_ib_remove,
-> -	.event		= mlx4_ib_event,
->   	.protocol	= MLX4_PROT_IB_IPV6,
->   	.flags		= MLX4_INTFF_BONDING
->   };
-> diff --git a/drivers/infiniband/hw/mlx4/mlx4_ib.h b/drivers/infiniband/hw/mlx4/mlx4_ib.h
-> index 17fee1e73a45..41ca1114a995 100644
-> --- a/drivers/infiniband/hw/mlx4/mlx4_ib.h
-> +++ b/drivers/infiniband/hw/mlx4/mlx4_ib.h
-> @@ -38,6 +38,7 @@
->   #include <linux/list.h>
->   #include <linux/mutex.h>
->   #include <linux/idr.h>
-> +#include <linux/notifier.h>
->   
->   #include <rdma/ib_verbs.h>
->   #include <rdma/ib_umem.h>
-> @@ -644,6 +645,7 @@ struct mlx4_ib_dev {
->   	spinlock_t		reset_flow_resource_lock;
->   	struct list_head		qp_list;
->   	struct mlx4_ib_diag_counters diag_counters[MLX4_DIAG_COUNTERS_TYPES];
-> +	struct notifier_block	mlx_nb;
->   };
->   
->   struct ib_event_work {
-> diff --git a/drivers/net/ethernet/mellanox/mlx4/en_main.c b/drivers/net/ethernet/mellanox/mlx4/en_main.c
-> index be8ba34c9025..8384bff5c37d 100644
-> --- a/drivers/net/ethernet/mellanox/mlx4/en_main.c
-> +++ b/drivers/net/ethernet/mellanox/mlx4/en_main.c
-> @@ -183,17 +183,20 @@ static void mlx4_en_get_profile(struct mlx4_en_dev *mdev)
->   	}
->   }
->   
-> -static void mlx4_en_event(struct mlx4_dev *dev, void *endev_ptr,
-> -			  enum mlx4_dev_event event, unsigned long port)
-> +static int mlx4_en_event(struct notifier_block *this,
-> +			 unsigned long event /*mlx4_dev_event*/, void *ptr)
->   {
-> -	struct mlx4_en_dev *mdev = (struct mlx4_en_dev *) endev_ptr;
-> +	struct mlx4_en_dev *mdev =
-> +		container_of(this, struct mlx4_en_dev, mlx_nb);
-> +	struct mlx4_dev *dev = mdev->dev;
-> +	unsigned long port = *(unsigned long *)ptr;
->   	struct mlx4_en_priv *priv;
->   
->   	switch (event) {
->   	case MLX4_DEV_EVENT_PORT_UP:
->   	case MLX4_DEV_EVENT_PORT_DOWN:
->   		if (!mdev->pndev[port])
-> -			return;
-> +			return NOTIFY_DONE;
->   		priv = netdev_priv(mdev->pndev[port]);
->   		/* To prevent races, we poll the link state in a separate
->   		  task rather than changing it here */
-> @@ -211,10 +214,12 @@ static void mlx4_en_event(struct mlx4_dev *dev, void *endev_ptr,
->   	default:
->   		if (port < 1 || port > dev->caps.num_ports ||
->   		    !mdev->pndev[port])
-> -			return;
-> -		mlx4_warn(mdev, "Unhandled event %d for port %d\n", event,
-> +			return NOTIFY_DONE;
-> +		mlx4_warn(mdev, "Unhandled event %d for port %d\n", (int) event,
->   			  (int) port);
->   	}
+Reviewed-by: Andre Przywara <andre.przywara@arm.com>
+
+Cheers,
+Andre
+
+[1]
+https://lore.kernel.org/linux-devicetree/20230802141829.522595-1-andre.przywara@arm.com/
+
+
+> +		regulators {
+> +			/*
+> +			 * ALDO1 is feeding both VCC-PLL and VCC-DCXO, always-on is required,
+> +			 * as removing power would cut the 1.8v supply for the RAM
+> +			 */
+> +			reg_aldo1: aldo1 {
+> +				regulator-always-on;
+> +				regulator-min-microvolt = <1800000>;
+> +				regulator-max-microvolt = <1800000>;
+> +				regulator-name = "vcc-1v8";
+> +			};
 > +
-> +	return NOTIFY_DONE;
->   }
->   
->   static void mlx4_en_remove(struct mlx4_dev *dev, void *endev_ptr)
-> @@ -222,6 +227,8 @@ static void mlx4_en_remove(struct mlx4_dev *dev, void *endev_ptr)
->   	struct mlx4_en_dev *mdev = endev_ptr;
->   	int i;
->   
-> +	mlx4_unregister_event_notifier(dev, &mdev->mlx_nb);
+> +			reg_dcdc1: dcdc1 {
+> +				regulator-always-on;
+> +				regulator-min-microvolt = <810000>;
+> +				regulator-max-microvolt = <990000>;
+> +				regulator-name = "vdd-gpu-sys";
+> +			};
 > +
->   	mutex_lock(&mdev->state_lock);
->   	mdev->device_up = false;
->   	mutex_unlock(&mdev->state_lock);
-> @@ -326,6 +333,11 @@ static void *mlx4_en_add(struct mlx4_dev *dev)
->   	mutex_init(&mdev->state_lock);
->   	mdev->device_up = true;
->   
-> +	/* register mlx4 core notifier */
-> +	mdev->mlx_nb.notifier_call = mlx4_en_event;
-> +	err = mlx4_register_event_notifier(dev, &mdev->mlx_nb);
-> +	WARN(err, "failed to register mlx4 event notifier (%d)", err);
+> +			reg_dcdc2: dcdc2 {
+> +				regulator-always-on;
+> +				regulator-min-microvolt = <810000>;
+> +				regulator-max-microvolt = <1100000>;
+> +				regulator-name = "vdd-cpu";
+> +			};
 > +
->   	return mdev;
->   
->   err_mr:
-> @@ -346,7 +358,6 @@ static void *mlx4_en_add(struct mlx4_dev *dev)
->   static struct mlx4_interface mlx4_en_interface = {
->   	.add		= mlx4_en_add,
->   	.remove		= mlx4_en_remove,
-> -	.event		= mlx4_en_event,
->   	.protocol	= MLX4_PROT_ETH,
->   	.activate	= mlx4_en_activate,
->   };
-> diff --git a/drivers/net/ethernet/mellanox/mlx4/intf.c b/drivers/net/ethernet/mellanox/mlx4/intf.c
-> index 28d7da925d36..a7c3e2efa464 100644
-> --- a/drivers/net/ethernet/mellanox/mlx4/intf.c
-> +++ b/drivers/net/ethernet/mellanox/mlx4/intf.c
-> @@ -183,17 +183,27 @@ void mlx4_dispatch_event(struct mlx4_dev *dev, enum mlx4_dev_event type,
->   			 unsigned long param)
->   {
->   	struct mlx4_priv *priv = mlx4_priv(dev);
-> -	struct mlx4_device_context *dev_ctx;
-> -	unsigned long flags;
->   
-> -	spin_lock_irqsave(&priv->ctx_lock, flags);
-> +	atomic_notifier_call_chain(&priv->event_nh, type, &param);
-> +}
->   
-> -	list_for_each_entry(dev_ctx, &priv->ctx_list, list)
-> -		if (dev_ctx->intf->event)
-> -			dev_ctx->intf->event(dev, dev_ctx->context, type, param);
-> +int mlx4_register_event_notifier(struct mlx4_dev *dev,
-> +				 struct notifier_block *nb)
-> +{
-> +	struct mlx4_priv *priv = mlx4_priv(dev);
->   
-> -	spin_unlock_irqrestore(&priv->ctx_lock, flags);
-> +	return atomic_notifier_chain_register(&priv->event_nh, nb);
-> +}
-> +EXPORT_SYMBOL(mlx4_register_event_notifier);
+> +			reg_dcdc3: dcdc3 {
+> +				regulator-always-on;
+> +				regulator-min-microvolt = <1500000>;
+> +				regulator-max-microvolt = <1500000>;
+> +				regulator-name = "vdd-dram";
+> +			};
 > +
-> +int mlx4_unregister_event_notifier(struct mlx4_dev *dev,
-> +				   struct notifier_block *nb)
-> +{
-> +	struct mlx4_priv *priv = mlx4_priv(dev);
+> +		};
+> +	};
+> +};
 > +
-> +	return atomic_notifier_chain_unregister(&priv->event_nh, nb);
->   }
-> +EXPORT_SYMBOL(mlx4_unregister_event_notifier);
->   
->   int mlx4_register_device(struct mlx4_dev *dev)
->   {
-> diff --git a/drivers/net/ethernet/mellanox/mlx4/main.c b/drivers/net/ethernet/mellanox/mlx4/main.c
-> index 8a5409b00530..5f3ba8385e23 100644
-> --- a/drivers/net/ethernet/mellanox/mlx4/main.c
-> +++ b/drivers/net/ethernet/mellanox/mlx4/main.c
-> @@ -3378,6 +3378,8 @@ static int mlx4_load_one(struct pci_dev *pdev, int pci_dev_data,
->   	INIT_LIST_HEAD(&priv->ctx_list);
->   	spin_lock_init(&priv->ctx_lock);
->   
-> +	ATOMIC_INIT_NOTIFIER_HEAD(&priv->event_nh);
+> +&uart0 {
+> +	pinctrl-names = "default";
+> +	pinctrl-0 = <&uart0_ph_pins>;
+> +	status = "okay";
+> +};
 > +
->   	mutex_init(&priv->port_mutex);
->   	mutex_init(&priv->bond_mutex);
->   
-> diff --git a/drivers/net/ethernet/mellanox/mlx4/mlx4.h b/drivers/net/ethernet/mellanox/mlx4/mlx4.h
-> index 6ccf340660d9..10f12e4992f1 100644
-> --- a/drivers/net/ethernet/mellanox/mlx4/mlx4.h
-> +++ b/drivers/net/ethernet/mellanox/mlx4/mlx4.h
-> @@ -47,6 +47,7 @@
->   #include <linux/spinlock.h>
->   #include <net/devlink.h>
->   #include <linux/rwsem.h>
-> +#include <linux/notifier.h>
->   
->   #include <linux/mlx4/device.h>
->   #include <linux/mlx4/driver.h>
-> @@ -878,6 +879,7 @@ struct mlx4_priv {
->   	struct list_head	dev_list;
->   	struct list_head	ctx_list;
->   	spinlock_t		ctx_lock;
-> +	struct atomic_notifier_head event_nh;
->   
->   	int			pci_dev_data;
->   	int                     removed;
-> diff --git a/drivers/net/ethernet/mellanox/mlx4/mlx4_en.h b/drivers/net/ethernet/mellanox/mlx4/mlx4_en.h
-> index 72a3fea36702..efe3f97b874f 100644
-> --- a/drivers/net/ethernet/mellanox/mlx4/mlx4_en.h
-> +++ b/drivers/net/ethernet/mellanox/mlx4/mlx4_en.h
-> @@ -49,6 +49,7 @@
->   #include <linux/ptp_clock_kernel.h>
->   #include <linux/irq.h>
->   #include <net/xdp.h>
-> +#include <linux/notifier.h>
->   
->   #include <linux/mlx4/device.h>
->   #include <linux/mlx4/qp.h>
-> @@ -433,6 +434,7 @@ struct mlx4_en_dev {
->   	struct ptp_clock	*ptp_clock;
->   	struct ptp_clock_info	ptp_clock_info;
->   	struct notifier_block	netdev_nb;
-> +	struct notifier_block	mlx_nb;
->   };
->   
->   
-> diff --git a/include/linux/mlx4/driver.h b/include/linux/mlx4/driver.h
-> index 923951e19300..228da8ed7e75 100644
-> --- a/include/linux/mlx4/driver.h
-> +++ b/include/linux/mlx4/driver.h
-> @@ -34,6 +34,7 @@
->   #define MLX4_DRIVER_H
->   
->   #include <net/devlink.h>
-> +#include <linux/notifier.h>
->   #include <linux/mlx4/device.h>
->   
->   struct mlx4_dev;
-> @@ -57,8 +58,6 @@ enum {
->   struct mlx4_interface {
->   	void *			(*add)	 (struct mlx4_dev *dev);
->   	void			(*remove)(struct mlx4_dev *dev, void *context);
-> -	void			(*event) (struct mlx4_dev *dev, void *context,
-> -					  enum mlx4_dev_event event, unsigned long param);
->   	void			(*activate)(struct mlx4_dev *dev, void *context);
->   	struct list_head	list;
->   	enum mlx4_protocol	protocol;
-> @@ -87,6 +86,11 @@ struct mlx4_port_map {
->   
->   int mlx4_port_map_set(struct mlx4_dev *dev, struct mlx4_port_map *v2p);
->   
-> +int mlx4_register_event_notifier(struct mlx4_dev *dev,
-> +				 struct notifier_block *nb);
-> +int mlx4_unregister_event_notifier(struct mlx4_dev *dev,
-> +				   struct notifier_block *nb);
+> +&usbotg {
+> +	/*
+> +	 * PHY0 pins are connected to a USB-C socket, but a role switch
+> +	 * is not implemented: both CC pins are pulled to GND.
+> +	 * The VBUS pins power the device, so a fixed peripheral mode
+> +	 * is the best choice.
+> +	 * The board can be powered via GPIOs, in this case port0 *can*
+> +	 * act as a host (with a cable/adapter ignoring CC), as VBUS is
+> +	 * then provided by the GPIOs. Any user of this setup would
+> +	 * need to adjust the DT accordingly: dr_mode set to "host",
+> +	 * enabling OHCI0 and EHCI0.
+> +	 */
+> +	dr_mode = "peripheral";
+> +	status = "okay";
+> +};
 > +
->   struct devlink_port *mlx4_get_devlink_port(struct mlx4_dev *dev, int port);
->   
->   #endif /* MLX4_DRIVER_H */
+> +&usbphy {
+> +	usb1_vbus-supply = <&reg_vcc5v>;
+> +	status = "okay";
+> +};
 
