@@ -2,76 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5DEEA770F8E
-	for <lists+linux-kernel@lfdr.de>; Sat,  5 Aug 2023 14:16:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C3B9770F93
+	for <lists+linux-kernel@lfdr.de>; Sat,  5 Aug 2023 14:20:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229997AbjHEMQh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 5 Aug 2023 08:16:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58852 "EHLO
+        id S229999AbjHEMUs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 5 Aug 2023 08:20:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59636 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229741AbjHEMQg (ORCPT
+        with ESMTP id S229848AbjHEMUq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 5 Aug 2023 08:16:36 -0400
-Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [80.237.130.52])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F23794237;
-        Sat,  5 Aug 2023 05:16:33 -0700 (PDT)
-Received: from [2a02:8108:8980:2478:8cde:aa2c:f324:937e]; authenticated
-        by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        id 1qSGCt-0000Dd-FE; Sat, 05 Aug 2023 14:16:31 +0200
-Message-ID: <7d4707fa-4161-865f-2445-675be6d70ddb@leemhuis.info>
-Date:   Sat, 5 Aug 2023 14:16:30 +0200
+        Sat, 5 Aug 2023 08:20:46 -0400
+Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C874DE6E
+        for <linux-kernel@vger.kernel.org>; Sat,  5 Aug 2023 05:20:45 -0700 (PDT)
+Received: from cwcc.thunk.org (pool-173-48-112-100.bstnma.fios.verizon.net [173.48.112.100])
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 375CKVrX027553
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sat, 5 Aug 2023 08:20:32 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
+        t=1691238033; bh=eYb2O0IuXmf6IAFBpyM9vHqkTVB4ZgGCAGWOPW1z0h0=;
+        h=From:Subject:Date:Message-Id:MIME-Version:Content-Type;
+        b=ZY2yisKMU0yHb1/kCsKiDCDsQsEn660in3xvdlb2WQk3zPH76vea1fx51ChilGeQL
+         rTTOCLXGq6aSfrjIS7XwhePnbC3IwWovsS/ILiFSAsk85/U3tcI88fzk+IMIPI+j6B
+         74u3/fEBO2iDNCzSKH5m6BOm+zGidr8br7FO8noipuOHLTJck5AE8JwVyyw11PC9cN
+         EFcgem/DqZfeb0a7P8NceygvA7Yh3jJYDofhSZZ8PK2EhMYwBSiaBc/hZdGaq5Uhp9
+         5kkix/Woi/tkIPt8s6PFG14pluz5bB71glHJT92XOgCoOEl1D8X2lUz9rvH0PJiPDb
+         QRSXS+QbgUTAw==
+Received: by cwcc.thunk.org (Postfix, from userid 15806)
+        id 525B815C04F1; Sat,  5 Aug 2023 08:20:31 -0400 (EDT)
+From:   "Theodore Ts'o" <tytso@mit.edu>
+To:     Andreas Dilger <adilger.kernel@dilger.ca>,
+        Daniel Rosenberg <drosen@google.com>,
+        Eric Biggers <ebiggers@kernel.org>,
+        =?UTF-8?q?Lu=C3=ADs=20Henriques?= <lhenriques@suse.de>
+Cc:     "Theodore Ts'o" <tytso@mit.edu>, linux-ext4@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3] ext4: fix memory leaks in ext4_fname_{setup_filename,prepare_lookup}
+Date:   Sat,  5 Aug 2023 08:20:24 -0400
+Message-Id: <169123801881.1434487.6868481309254151521.b4-ty@mit.edu>
+X-Mailer: git-send-email 2.31.0
+In-Reply-To: <20230803091713.13239-1-lhenriques@suse.de>
+References: <20230803091713.13239-1-lhenriques@suse.de>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: XFS metadata CRC errors on zram block device on ppc64le
- architecture
-Content-Language: en-US, de-DE
-From:   "Linux regression tracking #update (Thorsten Leemhuis)" 
-        <regressions@leemhuis.info>
-To:     linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
-        Linux kernel regressions list <regressions@lists.linux.dev>
-Reply-To: Linux regressions mailing list <regressions@lists.linux.dev>,
-          Linux regressions mailing list 
-          <regressions@lists.linux.dev>
-References: <b2d40565-7868-ba15-4bb1-fca6f0df076b@dustymabe.com>
- <ef208002-2978-f92e-0dd0-ba20369005fb@leemhuis.info>
-In-Reply-To: <ef208002-2978-f92e-0dd0-ba20369005fb@leemhuis.info>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-bounce-key: webpack.hosteurope.de;regressions@leemhuis.info;1691237794;5d1a7720;
-X-HE-SMSGID: 1qSGCt-0000Dd-FE
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-[TLDR: This mail in primarily relevant for Linux regression tracking. A
-change or fix related to the regression discussed in this thread was
-posted or applied, but it did not use a Closes: tag to point to the
-report, as Linus and the documentation call for. Things happen, no
-worries -- but now the regression tracking bot needs to be told manually
-about the fix. See link in footer if these mails annoy you.]
 
-On 04.08.23 18:22, Linux regression tracking #adding (Thorsten Leemhuis)
-wrote:
+On Thu, 03 Aug 2023 10:17:13 +0100, Luís Henriques wrote:
+> If the filename casefolding fails, we'll be leaking memory from the
+> fscrypt_name struct, namely from the 'crypto_buf.name' member.
+> 
+> Make sure we free it in the error path on both ext4_fname_setup_filename()
+> and ext4_fname_prepare_lookup() functions.
+> 
+> 
+> [...]
 
-> On 02.08.23 05:31, Dusty Mabe wrote:
->> In Fedora CoreOS we found an issue with an interaction of an XFS filesystem on a zram block device on ppc64le:
->>
->> - https://github.com/coreos/fedora-coreos-tracker/issues/1489
->> - https://bugzilla.redhat.com/show_bug.cgi?id=2221314
+Applied, thanks!
 
-#regzbot monitor:
-https://lore.kernel.org/all/20230805055537.147835-1-hch@lst.de/
-#regzbot fix: zram: take device and not only bvec offset into account
-#regzbot ignore-activity
+[1/1] ext4: fix memory leaks in ext4_fname_{setup_filename,prepare_lookup}
+      commit: 7ca4b085f430f3774c3838b3da569ceccd6a0177
 
-Ciao, Thorsten (wearing his 'the Linux kernel's regression tracker' hat)
---
-Everything you wanna know about Linux kernel regression tracking:
-https://linux-regtracking.leemhuis.info/about/#tldr
-That page also explains what to do if mails like this annoy you.
-
+Best regards,
+-- 
+Theodore Ts'o <tytso@mit.edu>
