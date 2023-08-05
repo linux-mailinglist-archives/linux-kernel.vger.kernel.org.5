@@ -2,97 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E1A0A770E4D
-	for <lists+linux-kernel@lfdr.de>; Sat,  5 Aug 2023 09:13:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D30F770E62
+	for <lists+linux-kernel@lfdr.de>; Sat,  5 Aug 2023 09:22:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229805AbjHEHNA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 5 Aug 2023 03:13:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43094 "EHLO
+        id S229892AbjHEHWN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 5 Aug 2023 03:22:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43786 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229479AbjHEHM6 (ORCPT
+        with ESMTP id S229506AbjHEHVn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 5 Aug 2023 03:12:58 -0400
-Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 862184C04
-        for <linux-kernel@vger.kernel.org>; Sat,  5 Aug 2023 00:12:57 -0700 (PDT)
-Received: by mail-ed1-x52a.google.com with SMTP id 4fb4d7f45d1cf-522c9d388d2so3441421a12.3
-        for <linux-kernel@vger.kernel.org>; Sat, 05 Aug 2023 00:12:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1691219576; x=1691824376;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=6EYKHh9zvdAN2J1bA5/eS1HMxCXCRGCzihmZHexGE78=;
-        b=k1k3AGZmulqQC8ludWvwxbPiYrcVqk+o7I68hdA9euUYhnNu7buw3mc9Lm7HHiDDkz
-         u/r86NEkT9ycpKdcFLo+o6FGvlxHbT7bzJ52FVp2/gpPUe7hy3+EHe+n50gfFt5qbu/t
-         7/Z2B91DENrTVCGt28Dsr/Tt8z7eyC5/oE7IBXjocUG46pnhI63N5RwCCEpdCMkExvk+
-         s8roCyu4Xfj8MHQbRKo71dx1BM5qaKq2bPh49C7L3kPlLg403q2ySgeHlM8bK7zhlx9e
-         jXNDlrxhICvlw2xIvO/js9FwG4CRqjlK6rDjmnz3XoXTWW+mB0/p1u4/7FX03bFZ0Ypw
-         0Xiw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691219576; x=1691824376;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=6EYKHh9zvdAN2J1bA5/eS1HMxCXCRGCzihmZHexGE78=;
-        b=H8fC4QzZ3oWta5xNKtG/Igfothgf3rWzPY9wBSF5syFSBHl4H7Lb59b5uxvuC6HeUg
-         sR0FrnUQA3nw7iss7IEB7lgxgBBhoeirV5k+eJjbD4YvH8zLi4NWefykp1J2s7i/9XW9
-         7t9Zkpa4d3x6fCdk0GIZAXNFlKIGOYIuEfmCQ0/5Yuolo1HPgAOzxjasbHn3syjtRii6
-         oIlLHyZDyhZobkyahoit7PrEET8xJP1llLbjPdma7yQbBs0yoHRMt/kfQYYwTs4PK6zG
-         R4TQ9RxOhb77sXXYvynsBU+vu/kSVsGneLrb2nw/X6Nfp8AvePaKFXcNfN/GeUKGBaXt
-         CRTA==
-X-Gm-Message-State: AOJu0YyNmUx9xGiXiYDfpLBA60MHhIO7SFRwXyMbqeyjfq3gRT6v6Fx9
-        AK6wY8e2qao5oJrbIoR32fRR3g==
-X-Google-Smtp-Source: AGHT+IEBKGPV9a+L0ZJ9F30Yqa3AMwT7ZmB0w3Kd7xbiSD1oCem6izMufS7UEUKCnXqOxqNDfjIOIg==
-X-Received: by 2002:a17:906:2081:b0:99b:c689:3f3d with SMTP id 1-20020a170906208100b0099bc6893f3dmr3165876ejq.25.1691219576097;
-        Sat, 05 Aug 2023 00:12:56 -0700 (PDT)
-Received: from [192.168.1.20] ([178.197.222.245])
-        by smtp.gmail.com with ESMTPSA id bw4-20020a170906c1c400b009829d2e892csm2366994ejb.15.2023.08.05.00.12.54
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 05 Aug 2023 00:12:55 -0700 (PDT)
-Message-ID: <c113197b-038f-c2a1-bc83-4e009b4ac187@linaro.org>
-Date:   Sat, 5 Aug 2023 09:12:53 +0200
+        Sat, 5 Aug 2023 03:21:43 -0400
+Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2FD6C4EC4
+        for <linux-kernel@vger.kernel.org>; Sat,  5 Aug 2023 00:21:41 -0700 (PDT)
+Received: from mail02.huawei.com (unknown [172.30.67.143])
+        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4RHvCP0Qnwz4f3m7s
+        for <linux-kernel@vger.kernel.org>; Sat,  5 Aug 2023 15:21:37 +0800 (CST)
+Received: from huaweicloud.com (unknown [10.174.178.55])
+        by APP4 (Coremail) with SMTP id gCh0CgAHoZR_+M1kFAdsPg--.4573S4;
+        Sat, 05 Aug 2023 15:21:37 +0800 (CST)
+From:   thunder.leizhen@huaweicloud.com
+To:     Petr Mladek <pmladek@suse.com>,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        John Ogness <john.ogness@linutronix.de>,
+        linux-kernel@vger.kernel.org
+Cc:     Zhen Lei <thunder.leizhen@huawei.com>
+Subject: [PATCH 0/2] hexdump: minimize the output width of address and offset
+Date:   Sat,  5 Aug 2023 15:21:14 +0800
+Message-Id: <20230805072116.1260-1-thunder.leizhen@huaweicloud.com>
+X-Mailer: git-send-email 2.37.3.windows.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.14.0
-Subject: Re: [PATCH v5 2/2] arm64: dts: allwinner: h616: Add Mango Pi MQ-Quad
- DTS
-Content-Language: en-US
-To:     Matthew Croughan <matthew.croughan@nix.how>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Chen-Yu Tsai <wens@csie.org>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Samuel Holland <samuel@sholland.org>
-Cc:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-sunxi@lists.linux.dev, linux-kernel@vger.kernel.org
-References: <20230805044558.279473-2-matthew.croughan@nix.how>
- <20230805044558.279473-4-matthew.croughan@nix.how>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <20230805044558.279473-4-matthew.croughan@nix.how>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: gCh0CgAHoZR_+M1kFAdsPg--.4573S4
+X-Coremail-Antispam: 1UD129KBjvdXoWruF13AFWrurWDuF48JryfXrb_yoW3Kwc_Xa
+        s2qrykCa1UXF95AFW7AFn8ZrykCa1xCr1xZFnrXrnrJFWrJr1UWw4DWF98Xr18XrnxJa4D
+        Xw1qq393Arn5KjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUIcSsGvfJTRUUUbwAYFVCjjxCrM7AC8VAFwI0_Gr0_Xr1l1xkIjI8I6I8E6xAIw20E
+        Y4v20xvaj40_JFC_Wr1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM28CjxkF64kEwV
+        A0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVWDJVCq3wA2z4x0Y4vE2Ix0cI8IcVCY1x02
+        67AKxVWxJr0_GcWl84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxV
+        AFwI0_GcCE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2
+        j2WlYx0E2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7x
+        kEbVWUJVW8JwACjcxG0xvY0x0EwIxGrwAKzVCY07xG64k0F24l42xK82IYc2Ij64vIr41l
+        4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67
+        AKxVWUGVWUWwC2zVAF1VAY17CE14v26r126r1DMIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8I
+        cVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42xK8VAvwI
+        8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAF
+        wI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x07UuVbkUUUUU=
+X-CM-SenderInfo: hwkx0vthuozvpl2kv046kxt4xhlfz01xgou0bp/
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,KHOP_HELO_FCRDNS,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 05/08/2023 06:42, Matthew Croughan wrote:
-> Mango Pi MQ Quad is a H616 based SBC, add basic support for the board
-> and its peripherals
-> 
-> Signed-off-by: Matthew Croughan <matthew.croughan@nix.how>
-> 
-> Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+From: Zhen Lei <thunder.leizhen@huawei.com>
 
-This is FAKE, no. Please do not invent fake tags.
+The dump prefix is added to facilitate the reading of the dumped memory.
+However, if the prefix content is too repeated or redundant, the readability
+is reduced, and the ring buffer becomes full quickly and other prints are
+overwritten.
 
-Best regards,
-Krzysztof
+For example: (DUMP_PREFIX_OFFSET)
+Before:
+dump_size=36:
+00000000: c0 ba 8c 80 00 80 ff ff 6c 93 ee 2f ee bf ff ff
+00000010: 00 50 1e 98 ff 27 ff ff 01 00 00 00 00 00 00 00
+00000020: 80 ca 2f 98
+
+After:
+dump_size=36:
+00: c0 3a 91 80 00 80 ff ff 6c 93 ae 76 30 ce ff ff
+10: 00 60 cd 60 7d 4e ff ff 01 00 00 00 00 00 00 00
+20: 40 9e 29 40
+
+
+Zhen Lei (2):
+  hexdump: minimize the output width of the offset
+  hexdump: add a new dump prefix DUMP_PREFIX_ADDRESS_LOW16
+
+ include/linux/printk.h |  1 +
+ lib/hexdump.c          | 17 +++++++++++++++--
+ 2 files changed, 16 insertions(+), 2 deletions(-)
+
+-- 
+2.34.1
 
