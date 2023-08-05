@@ -2,84 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 522E277114D
-	for <lists+linux-kernel@lfdr.de>; Sat,  5 Aug 2023 20:06:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 46BA9771141
+	for <lists+linux-kernel@lfdr.de>; Sat,  5 Aug 2023 20:05:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230211AbjHESG1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 5 Aug 2023 14:06:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37648 "EHLO
+        id S229906AbjHESFk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 5 Aug 2023 14:05:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36906 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230221AbjHESGT (ORCPT
+        with ESMTP id S230089AbjHESFi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 5 Aug 2023 14:06:19 -0400
-Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1E903A8C;
-        Sat,  5 Aug 2023 11:05:59 -0700 (PDT)
-Received: by mail-wr1-x433.google.com with SMTP id ffacd0b85a97d-31768ce2e81so2758820f8f.1;
-        Sat, 05 Aug 2023 11:05:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1691258757; x=1691863557;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=jjaA2yNdWRxoAIXKsMRIdPQiU+5JdGf4g+hfiGSEvXE=;
-        b=qYKcS/LRkaOGXq4NdDRZzuiufmfi/JdXCUCdjxwvNlMaybZDSX+xGMyEpQTIV9OZnZ
-         Gp4GB7jEPbcH9CWDW84PAFwbO0TClcrL1aQj9C8N3+bq0nxcYCPolbMCJ0eeZvdBV9ay
-         ZAxs/9qDf+W5rvv6Y9l+xHmmsRaC5BJEAfFMJSpt0sHRKes7er/87raNN1FouMnr0lNA
-         iYYMr5A7x6LN4+vL4w4rTM6AwN9sc0kyUnxH5uI4v5kMrNw/MNjSdGEhaL4kvXojMj65
-         CznA+lUQm1lfKGBNQPnmKeQYtKKcVEGKXUzGXIRDiviT6mXGGyTe0umYKJHf2Up2LKYA
-         oYMA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691258757; x=1691863557;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=jjaA2yNdWRxoAIXKsMRIdPQiU+5JdGf4g+hfiGSEvXE=;
-        b=QBKUAzcccXwO5z0Y6407iLaMhk8zGzHW8cotpeqEaNIaBEi2PgV2v8jgtJU9BpTxn8
-         xzQQmsZpfg5IcxoaGgWPwA4KI2iCuuu/ifN0Zherw3Z4/tas/H5vb93n+Hz9c3KVLQhx
-         1XtMGicmhXgl4yHQ97B1oXR6r+91Jszw5L2jGXlgpdHXUni7P+OlcSUMPm7yh0M1/Zmu
-         ULu8TAyVb8RiCqnUisfOCWFH/URXooG1kIz/7Iu/9fg6Gr0BUMi/WNv/hPmh7yVX7Z4Q
-         C6BwYUwo1q/uDh/YfkND3NGkVhZ3UpdMiEZzaYct3qlCZVT7pANuKn8GyqG1eoLZnzY9
-         U/aw==
-X-Gm-Message-State: AOJu0YxAB0WgoYumW+La9LrGUG2ACSTLybczZk99G0cVQrq0RyuBtt/y
-        cUY4F1AFhnQPhIXrcuv2+IU/1j6cDxmr1A==
-X-Google-Smtp-Source: AGHT+IHH4WVwBu7aihjp9nuzFtSfjcWnZEsanbwbY8snGr0wZKCSwwwsVErXaYwxTLHpE9k4p+t7Qg==
-X-Received: by 2002:a5d:4447:0:b0:317:3d36:b2cd with SMTP id x7-20020a5d4447000000b003173d36b2cdmr3214277wrr.71.1691258756721;
-        Sat, 05 Aug 2023 11:05:56 -0700 (PDT)
-Received: from user-PC.. ([178.134.198.138])
-        by smtp.gmail.com with ESMTPSA id v4-20020a5d6104000000b003176aa612b1sm5710402wrt.38.2023.08.05.11.05.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 05 Aug 2023 11:05:56 -0700 (PDT)
-From:   Maksim Kiselev <bigunclemax@gmail.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     Maksim Kiselev <bigunclemax@gmail.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Chen-Yu Tsai <wens@csie.org>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Samuel Holland <samuel@sholland.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev,
-        linux-riscv@lists.infradead.org
-Subject: [PATCH v1 5/5] riscv: dts: allwinner: d1: Add device nodes for internal audio codec
-Date:   Sat,  5 Aug 2023 21:05:05 +0300
-Message-Id: <20230805180506.718364-6-bigunclemax@gmail.com>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20230805180506.718364-1-bigunclemax@gmail.com>
-References: <20230805180506.718364-1-bigunclemax@gmail.com>
+        Sat, 5 Aug 2023 14:05:38 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19D7A19B;
+        Sat,  5 Aug 2023 11:05:34 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id A332060DBC;
+        Sat,  5 Aug 2023 18:05:33 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B80FEC433C7;
+        Sat,  5 Aug 2023 18:05:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1691258733;
+        bh=6ngnT+YpvhD93TEqzBDpiBPquP2+w46b9BGTWjyu8w0=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=ltdF/niLESAi+aozfLjIa4kbuIJibRedI0s7K6xJq4WCpejM8K0nuWsnKRFVtQmXT
+         bh5uEipChE7m5I0WIVZY/LqNHWKYVOcC067ocbBGMcePhrmbZA4OOMKkx2g/41CsMt
+         wubx6QngdGf/sGnMeUxZIjqv8ltjliF1eh+udig+gI/vCqOLqfXU3wywGd4PuVLcR7
+         QF/SbUyQ/hmzYtHViN9wVgVuXMiHslBRxFE/h3jXj4UxkRCfxDrd6BXsdWY3oFfmh3
+         Fj/qMb4sxyv9dnBTnOOvc8WGkJB1s/iW8ESC/apFjnq421auhVGFVUBTlSOSZYc1Qa
+         qcE823d/JH3rA==
+Date:   Sat, 5 Aug 2023 19:05:24 +0100
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     Andrei Coardos <aboutphysycs@gmail.com>
+Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-iio@vger.kernel.org, alexandre.torgue@foss.st.com,
+        mcoquelin.stm32@gmail.com, lars@metafoo.de,
+        Alexandru Ardelean <alex@shruggie.ro>
+Subject: Re: [PATCH v2] iio: trigger: stm32-lptimer-trigger: remove unneeded
+ platform_set_drvdata()
+Message-ID: <20230805190524.5dc00883@jic23-huawei>
+In-Reply-To: <20230802133509.29381-1-aboutphysycs@gmail.com>
+References: <20230802133509.29381-1-aboutphysycs@gmail.com>
+X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -88,46 +60,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add DT nodes for the internal D1/T113s audio codec and its analog part.
+On Wed,  2 Aug 2023 16:35:09 +0300
+Andrei Coardos <aboutphysycs@gmail.com> wrote:
 
-Signed-off-by: Maksim Kiselev <bigunclemax@gmail.com>
----
- .../boot/dts/allwinner/sunxi-d1s-t113.dtsi    | 22 +++++++++++++++++++
- 1 file changed, 22 insertions(+)
+> This function call was found to be unnecessary as there is no equivalent
+> platform_get_drvdata() call to access the private data of the driver. Also,
+> the private data is defined in this driver, so there is no risk of it being
+> accessed outside of this driver file.
+> 
+> Reviewed-by: Alexandru Ardelean <alex@shruggie.ro>
+> Signed-off-by: Andrei Coardos <aboutphysycs@gmail.com>
 
-diff --git a/arch/riscv/boot/dts/allwinner/sunxi-d1s-t113.dtsi b/arch/riscv/boot/dts/allwinner/sunxi-d1s-t113.dtsi
-index 1c48bfff1715..6ceb141c3f93 100644
---- a/arch/riscv/boot/dts/allwinner/sunxi-d1s-t113.dtsi
-+++ b/arch/riscv/boot/dts/allwinner/sunxi-d1s-t113.dtsi
-@@ -180,6 +180,28 @@ ths: thermal-sensor@2009400 {
- 			#thermal-sensor-cells = <0>;
- 		};
- 
-+		codec: codec@2030000 {
-+			#sound-dai-cells = <0>;
-+			compatible = "allwinner,sun20i-d1-codec";
-+			reg = <0x02030000 0x300>;
-+			interrupts = <SOC_PERIPHERAL_IRQ(25) IRQ_TYPE_LEVEL_HIGH>;
-+			clocks = <&ccu CLK_BUS_AUDIO>,
-+				 <&ccu CLK_AUDIO_ADC>,
-+				 <&ccu CLK_AUDIO_DAC>;
-+			clock-names = "apb", "adc", "dac";
-+			resets = <&ccu RST_BUS_AUDIO>;
-+			dmas = <&dma 7>, <&dma 7>;
-+			dma-names = "rx", "tx";
-+			allwinner,codec-analog-controls = <&codec_analog>;
-+			status = "disabled";
-+		};
-+
-+		codec_analog: codec-analog@2030300 {
-+			compatible = "allwinner,sun20i-d1-codec-analog";
-+			reg = <0x02030300 0xd00>;
-+			status = "disabled";
-+		};
-+
- 		dmic: dmic@2031000 {
- 			compatible = "allwinner,sun20i-d1-dmic",
- 				     "allwinner,sun50i-h6-dmic";
--- 
-2.39.2
+Oops. Missed there was a v2.  Ah well, end result the same ;)
+
+Thanks,
+
+Jonathan
+
+> ---
+> 
+> Changelog V1->V2:
+> 
+> * https://lore.kernel.org/linux-iio/CAH3L5QpuoDYU6qvWH7_z5Yx0cW2qPMbCA8AFEYAPsiEkSzCiwQ@mail.gmail.com/T/#t
+> * Adjusted the returning values of the function
+> 
+> 
+>  drivers/iio/trigger/stm32-lptimer-trigger.c | 6 +-----
+>  1 file changed, 1 insertion(+), 5 deletions(-)
+> 
+> diff --git a/drivers/iio/trigger/stm32-lptimer-trigger.c b/drivers/iio/trigger/stm32-lptimer-trigger.c
+> index df2416e33375..ab1cc6a05f26 100644
+> --- a/drivers/iio/trigger/stm32-lptimer-trigger.c
+> +++ b/drivers/iio/trigger/stm32-lptimer-trigger.c
+> @@ -88,11 +88,7 @@ static int stm32_lptim_trigger_probe(struct platform_device *pdev)
+>  	priv->dev = &pdev->dev;
+>  	priv->trg = stm32_lptim_triggers[index];
+>  
+> -	ret = stm32_lptim_setup_trig(priv);
+> -	if (ret)
+> -		return ret;
+> -
+> -	return 0;
+> +	return stm32_lptim_setup_trig(priv);
+>  }
+>  
+>  static const struct of_device_id stm32_lptim_trig_of_match[] = {
 
