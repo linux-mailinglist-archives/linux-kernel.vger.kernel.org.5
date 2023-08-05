@@ -2,116 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 77EC6770DF0
-	for <lists+linux-kernel@lfdr.de>; Sat,  5 Aug 2023 07:36:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 58D23770DF7
+	for <lists+linux-kernel@lfdr.de>; Sat,  5 Aug 2023 07:55:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229537AbjHEFg2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 5 Aug 2023 01:36:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57368 "EHLO
+        id S229580AbjHEFzr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 5 Aug 2023 01:55:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58640 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229445AbjHEFgZ (ORCPT
+        with ESMTP id S229445AbjHEFzp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 5 Aug 2023 01:36:25 -0400
-Received: from mout.gmx.net (mout.gmx.net [212.227.15.18])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5DC8146B3;
-        Fri,  4 Aug 2023 22:36:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.de;
- s=s31663417; t=1691213772; x=1691818572; i=w_armin@gmx.de;
- bh=Xc5Uz3yHM1cYmTbfdHFbQvSyh54bIq4BmIZkafOGP8Q=;
- h=X-UI-Sender-Class:From:To:Cc:Subject:Date;
- b=WztmmToYD9V4MELG/sZBCibor6a4SSfMWRdoyJwHc7C0tXWvmk3fm8nxyAbcqUfSXxfkXJe
- k28cl35Y2q8MG3wnrNhURND5OZxLtlHM3JuAGpiU9IXEm3ef7qZciXWR681lqMjlYWmX757Xo
- Z4Zu9YgtYe66nxjySsjLkYbpkQNmwY4JYKiqL1f0LdnPAFq+F7ynjM8xfZWC1q8jb5IO7zzvk
- mnas6TjctvI9KBwczHsxQXDkJEjvoDssLcR5gWbZNQuD/1M8YCW7cls5jtLwsui1z5FWuxZ+n
- qN7mM0A/o8Q7DzUOGBVa12xXz3OSNt11IPQYRGfh1Ve2+MzQu6Sg==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from mx-amd-b650.users.agdsn.de ([141.30.226.129]) by mail.gmx.net
- (mrgmx004 [212.227.17.190]) with ESMTPSA (Nemesis) id
- 1N6bfw-1plbjW1n14-01816B; Sat, 05 Aug 2023 07:36:12 +0200
-From:   Armin Wolf <W_Armin@gmx.de>
-To:     prasanth.ksr@dell.com, hdegoede@redhat.com, markgross@kernel.org
-Cc:     Dell.Client.Kernel@dell.com, platform-driver-x86@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] platform/x86: dell-sysman: Fix reference leak
-Date:   Sat,  5 Aug 2023 07:36:10 +0200
-Message-Id: <20230805053610.7106-1-W_Armin@gmx.de>
+        Sat, 5 Aug 2023 01:55:45 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C83464ECF;
+        Fri,  4 Aug 2023 22:55:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        MIME-Version:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
+        Content-ID:Content-Description:In-Reply-To:References;
+        bh=VVm3P3asI3oviVAO++8ExuHX7bAYG9Ho51gp9OdQ6NM=; b=TbPmkFKgpaXQa0E52oU9HdcUKC
+        jCrORP6DdR7WbwmTMEds8TnHwFPcH7hb+uyOV719HKMk/lX2fipLeAbsoMqy7qLrrQvf2kR+EoG4P
+        InqyaK9QajFnU5tGDVCylEI6FyeQ1OWDEaXVgdI6MzyeaOQPgnzDtNXn331e93qYUQSzcivsogP5e
+        DGovxpMfl2CO8rPjji0OdjkQLAuB/bAR0TO3VGcs/FfdukthVBP+eflfH+vAB/l5Djpam9T9k0dqQ
+        1TjhNKroyWnNj98pwxuoYx3faQdQsS1bEFFQ+FL14KvMrdy6h6KaWBOTpAMDz4Nx2pzmRDod0p/H1
+        8fIynSWw==;
+Received: from 2a02-8389-2341-5b80-39d3-4735-9a3c-88d8.cable.dynamic.v6.surfer.at ([2a02:8389:2341:5b80:39d3:4735:9a3c:88d8] helo=localhost)
+        by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
+        id 1qSAGL-00DjuF-09;
+        Sat, 05 Aug 2023 05:55:41 +0000
+From:   Christoph Hellwig <hch@lst.de>
+To:     minchan@kernel.org, senozhatsky@chromium.org
+Cc:     linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Dusty Mabe <dusty@dustymabe.com>
+Subject: [PATCH] zram: take device and not only bvec offset into account
+Date:   Sat,  5 Aug 2023 07:55:37 +0200
+Message-Id: <20230805055537.147835-1-hch@lst.de>
 X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:1Ex/nogT+uSYoxHzoSeE2GZ+pKYhOchFCLlj5z6jUoNGPKe2SjA
- J75Wan7+Iwod2cEJ44K77Zx9Bcfju/lM7QwMk13kUe78nf2kInsQx8mjbMdGFbOp7Hl1Mm7
- qTGOpryQvdv4uQSTAA1oxpKxRxyIDaav/3JojZMz+ZhPurLTG/M6qLSpnE+HxjLnKVXgFBo
- c9CrIVUFE/mXf/ANmuJdw==
-UI-OutboundReport: notjunk:1;M01:P0:ngpWxp/2kfA=;g7ty0ncJA6Hjq7/2V689EIaIFfa
- r2C2BIh5qn2LbyRwBRrkia4TROv8AvqnvHj6+W2iAmReszrr6Bwt6lV6yDvlb83Ew00dgb7qh
- 1ro3PsrEMUrbtLT+w6OqyMaqlGOJSqIprSS12bJ/dNXHEDfqwHIsup1yCK5npXvSKT3zNOtlz
- pKO6Qwh1DQLYC4cqqdBXcJF+714uAFEy9VSlR28fE9RkfaiFztCaVV1kh4ziZ04jkFDHV+yVo
- pseBOUZuhKX0PbwRwKQK+0EYl06VdD9oexVICYOFPUhdDeZnYF9goF/TkQSlYghD+rvhlML4x
- e551SuEXfiO1Czb9ShWmfjyjCm4/0BBRCH5YhnUultRgcN6nb5WVn/jx9/T+uXYZrMBUYjCSJ
- aw26VTeUO3nh5i7BQO0XsU2O5E4EQIXPFEDeqon+Wp/micIHpYenY1q8sASdpnmXSOnF42UTo
- FjSogej/r/clRC4+9bN1R/aMa4I4FGqYNqkJ0wJZGx7Bd5UHSXsmJTD1McjLcvDxfkQ9jcApu
- jwMWZXe/oZnSbjeRyGvVbzXADoxJX0QJjv7uryMIcYBlviS+qj3vHr2Tbt4O6LMjcUUvg4ehB
- 5EHsuvX/G3YtR/TuuFhnPYMkZFYaS1Lw3ItYNykWU9YrNqlilfLPnnND62jMW3SR8D1BlYhBC
- o8mHL9rAfC8lyKnv7J5FvaAD5t0zqW4rMCwiklV1vgK0Yo04VQvGidnGht/RY7vDrZ2V0AXq8
- I1E+Pt+P7rJKxZKzzBvvSSMIXzLjqJuSZ8Nzf245J1qAc8dxr71f8KN0tU2D34k4cSFYy76aP
- Wq8Zn+2wN0FTC3PPu0/uINXWQRl2h/H3+cSEjKHrVFLCe/ILxAyf94EAkSUNWBl3C/n1LtvQY
- mkY5EVMNLEznoNJmsWGkfjvKSWyaA9WdMm8dwUGif/n7JLmxCok76xE0j4Nu/yyHmifFLaxd6
- xtC+tTaLCJiJkPzV4iZ57AOctyM=
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If a duplicate attribute is found using kset_find_obj(),
-a reference to that attribute is returned. This means
-that we need to dispose it accordingly. Use kobject_put()
-to dispose the duplicate attribute in such a case.
+Commit af8b04c63708 ("zram: simplify bvec iteration in
+__zram_make_request") changed the bio iteration in zram to rely on the
+implicit capping to page boundaries in bio_for_each_segment.  But it
+failed to care for the fact zram not only care about the page alignment
+of the bio payload, but also the page alignment into the device.  For
+buffered I/O and swap those are the same, but for direct I/O or kernel
+internal I/O like XFS log buffer writes they can differ.
 
-Compile-tested only.
+Fix this by open coding bio_for_each_segment and limiting the bvec len
+so that it never crosses over a page alignment boundary in the device
+in addition to the payload boundary already taken care of by
+bio_iter_iovec.
 
-Fixes: e8a60aa7404b ("platform/x86: Introduce support for Systems Manageme=
-nt Driver over WMI for Dell Systems")
-Signed-off-by: Armin Wolf <W_Armin@gmx.de>
-=2D--
- drivers/platform/x86/dell/dell-wmi-sysman/sysman.c | 9 ++++++---
- 1 file changed, 6 insertions(+), 3 deletions(-)
+Fixes: af8b04c63708 ("zram: simplify bvec iteration in __zram_make_request")
+Reported-by: Dusty Mabe <dusty@dustymabe.com>
+Signed-off-by: Christoph Hellwig <hch@lst.de>
+---
+ drivers/block/zram/zram_drv.c | 32 ++++++++++++++++++++------------
+ 1 file changed, 20 insertions(+), 12 deletions(-)
 
-diff --git a/drivers/platform/x86/dell/dell-wmi-sysman/sysman.c b/drivers/=
-platform/x86/dell/dell-wmi-sysman/sysman.c
-index b68dd11cb892..b929b4f82420 100644
-=2D-- a/drivers/platform/x86/dell/dell-wmi-sysman/sysman.c
-+++ b/drivers/platform/x86/dell/dell-wmi-sysman/sysman.c
-@@ -393,6 +393,7 @@ static int init_bios_attributes(int attr_type, const c=
-har *guid)
- 	struct kobject *attr_name_kobj; //individual attribute names
- 	union acpi_object *obj =3D NULL;
- 	union acpi_object *elements;
-+	struct kobject *duplicate;
- 	struct kset *tmp_set;
- 	int min_elements;
-
-@@ -451,9 +452,11 @@ static int init_bios_attributes(int attr_type, const =
-char *guid)
- 		else
- 			tmp_set =3D wmi_priv.main_dir_kset;
-
--		if (kset_find_obj(tmp_set, elements[ATTR_NAME].string.pointer)) {
--			pr_debug("duplicate attribute name found - %s\n",
--				elements[ATTR_NAME].string.pointer);
-+		duplicate =3D kset_find_obj(tmp_set, elements[ATTR_NAME].string.pointer=
-);
-+		if (duplicate) {
-+			pr_debug("Duplicate attribute name found - %s\n",
-+				 elements[ATTR_NAME].string.pointer);
-+			kobject_put(duplicate);
- 			goto nextobj;
- 		}
-
-=2D-
+diff --git a/drivers/block/zram/zram_drv.c b/drivers/block/zram/zram_drv.c
+index 5676e6dd5b1672..06673c6ca25555 100644
+--- a/drivers/block/zram/zram_drv.c
++++ b/drivers/block/zram/zram_drv.c
+@@ -1870,15 +1870,16 @@ static void zram_bio_discard(struct zram *zram, struct bio *bio)
+ 
+ static void zram_bio_read(struct zram *zram, struct bio *bio)
+ {
+-	struct bvec_iter iter;
+-	struct bio_vec bv;
+-	unsigned long start_time;
++	unsigned long start_time = bio_start_io_acct(bio);
++	struct bvec_iter iter = bio->bi_iter;
+ 
+-	start_time = bio_start_io_acct(bio);
+-	bio_for_each_segment(bv, bio, iter) {
++	do {
+ 		u32 index = iter.bi_sector >> SECTORS_PER_PAGE_SHIFT;
+ 		u32 offset = (iter.bi_sector & (SECTORS_PER_PAGE - 1)) <<
+ 				SECTOR_SHIFT;
++		struct bio_vec bv = bio_iter_iovec(bio, iter);
++
++		bv.bv_len = min_t(u32, bv.bv_len, PAGE_SIZE - offset);
+ 
+ 		if (zram_bvec_read(zram, &bv, index, offset, bio) < 0) {
+ 			atomic64_inc(&zram->stats.failed_reads);
+@@ -1890,22 +1891,26 @@ static void zram_bio_read(struct zram *zram, struct bio *bio)
+ 		zram_slot_lock(zram, index);
+ 		zram_accessed(zram, index);
+ 		zram_slot_unlock(zram, index);
+-	}
++
++		bio_advance_iter_single(bio, &iter, bv.bv_len);
++	} while (iter.bi_size);
++
+ 	bio_end_io_acct(bio, start_time);
+ 	bio_endio(bio);
+ }
+ 
+ static void zram_bio_write(struct zram *zram, struct bio *bio)
+ {
+-	struct bvec_iter iter;
+-	struct bio_vec bv;
+-	unsigned long start_time;
++	unsigned long start_time = bio_start_io_acct(bio);
++	struct bvec_iter iter = bio->bi_iter;
+ 
+-	start_time = bio_start_io_acct(bio);
+-	bio_for_each_segment(bv, bio, iter) {
++	do {
+ 		u32 index = iter.bi_sector >> SECTORS_PER_PAGE_SHIFT;
+ 		u32 offset = (iter.bi_sector & (SECTORS_PER_PAGE - 1)) <<
+ 				SECTOR_SHIFT;
++		struct bio_vec bv = bio_iter_iovec(bio, iter);
++
++		bv.bv_len = min_t(u32, bv.bv_len, PAGE_SIZE - offset);
+ 
+ 		if (zram_bvec_write(zram, &bv, index, offset, bio) < 0) {
+ 			atomic64_inc(&zram->stats.failed_writes);
+@@ -1916,7 +1921,10 @@ static void zram_bio_write(struct zram *zram, struct bio *bio)
+ 		zram_slot_lock(zram, index);
+ 		zram_accessed(zram, index);
+ 		zram_slot_unlock(zram, index);
+-	}
++
++		bio_advance_iter_single(bio, &iter, bv.bv_len);
++	} while (iter.bi_size);
++
+ 	bio_end_io_acct(bio, start_time);
+ 	bio_endio(bio);
+ }
+-- 
 2.39.2
 
