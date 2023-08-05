@@ -2,159 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E9D76770FEE
-	for <lists+linux-kernel@lfdr.de>; Sat,  5 Aug 2023 15:30:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C8101770FF7
+	for <lists+linux-kernel@lfdr.de>; Sat,  5 Aug 2023 15:37:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229516AbjHENa2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 5 Aug 2023 09:30:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42480 "EHLO
+        id S229712AbjHENhh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 5 Aug 2023 09:37:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42982 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229379AbjHENa0 (ORCPT
+        with ESMTP id S229379AbjHENhf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 5 Aug 2023 09:30:26 -0400
-Received: from bedivere.hansenpartnership.com (bedivere.hansenpartnership.com [IPv6:2607:fcd0:100:8a00::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 557AA1FE3;
-        Sat,  5 Aug 2023 06:30:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-        d=hansenpartnership.com; s=20151216; t=1691242223;
-        bh=98rfeMPMGKOT7p9pXais0jMvQjSP6guO+kflRMuc840=;
-        h=Message-ID:Subject:From:To:Date:In-Reply-To:References:From;
-        b=dcezqWo9mTkqSCwHjO3N1vDSbGvoZaGmlJmBbJ6/gCunym2MMea3dHzAe83THLoeU
-         WYr75KYPicgDjfpzNok1iyrKIhokXenW6FUcMQn0W2V6wa/uQYWTAHiWARtDjEgt5J
-         MAcAGgdaDc02Nhw1/JNpV/A95h2xxHwWeQTxu5d4=
-Received: from localhost (localhost [127.0.0.1])
-        by bedivere.hansenpartnership.com (Postfix) with ESMTP id D7C291281B2B;
-        Sat,  5 Aug 2023 09:30:23 -0400 (EDT)
-Received: from bedivere.hansenpartnership.com ([127.0.0.1])
- by localhost (bedivere.hansenpartnership.com [127.0.0.1]) (amavis, port 10024)
- with ESMTP id Ltna7M8JNLWK; Sat,  5 Aug 2023 09:30:23 -0400 (EDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-        d=hansenpartnership.com; s=20151216; t=1691242223;
-        bh=98rfeMPMGKOT7p9pXais0jMvQjSP6guO+kflRMuc840=;
-        h=Message-ID:Subject:From:To:Date:In-Reply-To:References:From;
-        b=dcezqWo9mTkqSCwHjO3N1vDSbGvoZaGmlJmBbJ6/gCunym2MMea3dHzAe83THLoeU
-         WYr75KYPicgDjfpzNok1iyrKIhokXenW6FUcMQn0W2V6wa/uQYWTAHiWARtDjEgt5J
-         MAcAGgdaDc02Nhw1/JNpV/A95h2xxHwWeQTxu5d4=
-Received: from lingrow.int.hansenpartnership.com (unknown [IPv6:2601:5c4:4302:c21::a774])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (prime256v1) server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        by bedivere.hansenpartnership.com (Postfix) with ESMTPSA id 646A31281B1F;
-        Sat,  5 Aug 2023 09:30:22 -0400 (EDT)
-Message-ID: <1180481830431165d49c5e64b92b81c396ebc9b1.camel@HansenPartnership.com>
-Subject: Re: [PATCH 0/4] keys: Introduce a keys frontend for attestation
- reports
-From:   James Bottomley <James.Bottomley@HansenPartnership.com>
-To:     Dan Williams <dan.j.williams@intel.com>, dhowells@redhat.com
-Cc:     Brijesh Singh <brijesh.singh@amd.com>,
-        Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Dionna Amalie Glaze <dionnaglaze@google.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        Samuel Ortiz <sameo@rivosinc.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-coco@lists.linux.dev, keyrings@vger.kernel.org,
-        x86@kernel.org, linux-kernel@vger.kernel.org
-Date:   Sat, 05 Aug 2023 09:30:21 -0400
-In-Reply-To: <64cdb5f25c56_2138e294f1@dwillia2-xfh.jf.intel.com.notmuch>
-References: <169057265210.180586.7950140104251236598.stgit@dwillia2-xfh.jf.intel.com>
-         <a507ef3302d3afff58d82528ee17e82df1f21de0.camel@HansenPartnership.com>
-         <64c5ed6eb4ca1_a88b2942a@dwillia2-xfh.jf.intel.com.notmuch>
-         <c6576d1682b576ba47556478a98f397ed518a177.camel@HansenPartnership.com>
-         <64cdb5f25c56_2138e294f1@dwillia2-xfh.jf.intel.com.notmuch>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.42.4 
+        Sat, 5 Aug 2023 09:37:35 -0400
+Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [80.237.130.52])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B067F3AB2;
+        Sat,  5 Aug 2023 06:37:33 -0700 (PDT)
+Received: from [2a02:8108:8980:2478:8cde:aa2c:f324:937e]; authenticated
+        by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        id 1qSHTH-0002eL-Pb; Sat, 05 Aug 2023 15:37:31 +0200
+Message-ID: <7d9a6d94-af49-b8f4-cb50-4665cb6ff272@leemhuis.info>
+Date:   Sat, 5 Aug 2023 15:37:30 +0200
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_PASS,SPF_PASS,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: Fwd: 6.5 - 6.4.7 Regression : ASUS UM5302TA Keyboard don't work
+Content-Language: en-US, de-DE
+To:     Hans de Goede <hdegoede@redhat.com>,
+        Mario Limonciello <mario.limonciello@amd.com>
+Cc:     Linux Input Devices <linux-input@vger.kernel.org>,
+        ACPI Asus <acpi4asus-user@lists.sourceforge.net>,
+        Linux x86 Platform Drivers 
+        <platform-driver-x86@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Bagas Sanjaya <bagasdotme@gmail.com>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Corentin Chary <corentin.chary@gmail.com>,
+        Guilhem Lettron <guilhem@lettron.fr>,
+        Linux regressions mailing list <regressions@lists.linux.dev>,
+        August Wikerfors <git@augustwikerfors.se>
+References: <bdc6cb4d-a853-72b2-b132-989b64740ad9@gmail.com>
+ <8ee87fe1-684f-ad59-21c7-4401a4e70bee@leemhuis.info>
+ <b7df9a02-3b81-4f8c-aeba-222c298180d4@augustwikerfors.se>
+ <cc9e37b4-b5cb-fd4d-84b8-5b824afe710a@redhat.com>
+From:   "Linux regression tracking (Thorsten Leemhuis)" 
+        <regressions@leemhuis.info>
+Reply-To: Linux regressions mailing list <regressions@lists.linux.dev>
+In-Reply-To: <cc9e37b4-b5cb-fd4d-84b8-5b824afe710a@redhat.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-bounce-key: webpack.hosteurope.de;regressions@leemhuis.info;1691242653;a1a73d35;
+X-HE-SMSGID: 1qSHTH-0002eL-Pb
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 2023-08-04 at 19:37 -0700, Dan Williams wrote:
-> James Bottomley wrote:
-> [..]
-> > > This report interface on the other hand just needs a single ABI
-> > > to retrieve all these vendor formats (until industry
-> > > standardization steps in) and it needs to be flexible (within
-> > > reason) for all the TSM-specific options to be conveyed. I do not
-> > > trust my ioctl ABI minefield avoidance skills to get that right.
-> > > Key blob instantiation feels up to the task.
-> > 
-> > To repeat: there's nothing keylike about it.
+On 05.08.23 15:09, Hans de Goede wrote:
+> On 8/4/23 17:26, August Wikerfors wrote:
+>> On 2023-07-30 06:49, Linux regression tracking (Thorsten Leemhuis) wrote:
+>>> Lo!
+>>>
+>>> On 30.07.23 04:41, Bagas Sanjaya wrote:
+>>>>
+>>>> I notice a regression report on Bugzilla [1]. Quoting from it:
+>>>>
+>>>>> On a kernel 6.4.5 and less, the keyboard is working fine.
+>>>>>
+>>>>> Beginning with 6.5 rc1 and 6.4.7 any key don't respond.
+>>>
+>>> That is a AMD Ryzen Laptop. And if that really started from
+>>> v6.4.6..v6.4.7 then I guess there is a decent chance that this is caused
+>>> by ```ACPI: resource: Remove "Zen" specific match and quirks``` from
+>>> Mario. Hence adding him to the list of recipients.
+>>
+>> Confirmed now, see https://bugzilla.kernel.org/show_bug.cgi?id=217726#c9
+>>
+>> #regzbot introduced: a9c4a912b7dc7ff922d4b9261160c001558f9755
 > 
-> From that perspective there's nothing keylike about user-keys either.
-
-Whataboutism may be popular in politics at the moment, but it shouldn't
-be a justification for API abuse: Just because you might be able to
-argue something else is an abuse of an API doesn't give you the right
-to abuse it further.
-
-> Those are just blobs that userspace gets to define how they are used
-> and the keyring is just a transport. I also think that this interface
-> *is* key-like in that it is used in the flow of requesting other key
-> material. The ability to set policy on who can request and
-> instantiate these pre-requisite reports can be controlled by request-
-> key policy.
-
-I thought we agreed back here:
-
-https://lore.kernel.org/linux-coco/64c5ed6eb4ca1_a88b2942a@dwillia2-xfh.jf.intel.com.notmuch/
-
-That it ended up as "just a transport interface".  Has something
-changed that?
-
-[...]
-> > Sneaking it in as a one-off is the wrong way to proceed
-> > on something like this.
+> We just have received 2 bug reports for Fedora which I believe are also
+> this issue (not confirmed yet):
 > 
-> Where is the sneaking in cc'ing all the relevant maintainers of the
-> keyring subsystem and their mailing list? Yes, please add others to
-> the cc. 
+> https://bugzilla.redhat.com/show_bug.cgi?id=2229165
+> https://bugzilla.redhat.com/show_bug.cgi?id=2229317
 
-I was thinking more using the term pubkey in the text about something
-that is more like a nonce:
+Interesting, thx for sharing! I just asked people there to share
+dmidecode and acpidump to check if those are different machines.
 
-https://lore.kernel.org/linux-coco/169057265801.180586.10867293237672839356.stgit@dwillia2-xfh.jf.intel.com/
-
-That looked to me designed to convince the casual observer that keys
-were involved.
-
-> The question for me at this point is whether a new:
+> I'm going to create a Fedora 6.4.y test-kernel with a9c4a912b7dc7ff
+> reverted.
 > 
->         /dev/tsmX
+> IMHO we really should revert a9c4a912b7dc7ff upstream,
+> at least for the 6.4.y series
+
+That is unlikely to be a option, because as explained in
+Documentation/process/handling-regressions.rst Greg's stance in cases
+like this usually is "fix it in mainline, and then I'll pick up the fix".
+
+> where it seems to be doing more harm then good.
 > 
-> ...ABI is worth inventing, or if a key-type is sufficient. To Peter's
-> concern, this key-type imposes no restrictions over what sevguest
-> already allows. New options are easy to add to the key instantiation
-> interface and I expect different vendors are likely to develop
-> workalike functionality to keep option proliferation to a minimum.
-> Unlike ioctl() there does not need to be as careful planning about
-> the binary format of the input payload for per vendor options. Just
-> add more tokens to the instantiation command-line.
+> And propably also for 6.5-rc# for now until we figure out
+> a better solution.
 
-I still think this is pretty much an arbitrary transport interface. 
-The question of how frequently it is used and how transactional it has
-to be depend on the use cases (which I think would bear further
-examination).  What you mostly want to do is create a transaction by
-adding parameters individually, kick it off and then read a set of
-results back.  Because the format of the inputs and outputs is highly
-specific to the architecture, the kernel shouldn't really be doing any
-inspection or modification.  For low volume single threaded use, this
-can easily be done by sysfs.  For high volume multi-threaded use,
-something like configfs or a generic keyctl like object transport
-interface would be more appropriate.  However, if you think the latter,
-it should still be proposed as a new generic kernel to userspace
-transactional transport mechanism.
+Hmmm, looks like the issue and the fix for one of the machines[1] didn't
+make much progress this week, so I tend to agree. Mario?
 
+[1]
+https://lore.kernel.org/all/20230728191408.18141-1-mario.limonciello@amd.com/
 
-James
-
+Ciao, Thorsten
