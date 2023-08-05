@@ -2,139 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 83754770D46
-	for <lists+linux-kernel@lfdr.de>; Sat,  5 Aug 2023 04:06:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ABD1B770D4E
+	for <lists+linux-kernel@lfdr.de>; Sat,  5 Aug 2023 04:28:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229671AbjHECEv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Aug 2023 22:04:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57918 "EHLO
+        id S229689AbjHEC23 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Aug 2023 22:28:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59534 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229480AbjHECEu (ORCPT
+        with ESMTP id S229468AbjHEC21 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Aug 2023 22:04:50 -0400
-Received: from mail-yb1-xb2c.google.com (mail-yb1-xb2c.google.com [IPv6:2607:f8b0:4864:20::b2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B73DD10EA
-        for <linux-kernel@vger.kernel.org>; Fri,  4 Aug 2023 19:04:45 -0700 (PDT)
-Received: by mail-yb1-xb2c.google.com with SMTP id 3f1490d57ef6-d0b597e7ac1so3006704276.1
-        for <linux-kernel@vger.kernel.org>; Fri, 04 Aug 2023 19:04:45 -0700 (PDT)
+        Fri, 4 Aug 2023 22:28:27 -0400
+Received: from mail-yw1-x112f.google.com (mail-yw1-x112f.google.com [IPv6:2607:f8b0:4864:20::112f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 414094EDB
+        for <linux-kernel@vger.kernel.org>; Fri,  4 Aug 2023 19:28:25 -0700 (PDT)
+Received: by mail-yw1-x112f.google.com with SMTP id 00721157ae682-584034c706dso28927847b3.1
+        for <linux-kernel@vger.kernel.org>; Fri, 04 Aug 2023 19:28:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1691201085; x=1691805885;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=VCKRnUI8FwQWRwJ/8hlrDSlOySzgfMsCiiXmu+Rh1a4=;
-        b=v7Qfm2wetpMH45IrUUaGhK0/J1vWSMrz292g2jfHm8p/djn5SST2E3F26gtQuLzFcH
-         C+UH+iziHqsmkOZfdli3NMRxtLjOCWR8vhcHjWx1I9e8zCSAFCXN1rhtiN0lk/ytmddC
-         6An8vg5fxhRUzs3IYiEl4G2MzYLTkmNPHzM9TzBNhGFf0QpK20l2gaZnbgpeHxhVcXXY
-         RHMor5pp59gRQteJeLtrwR8Gq4Ir16snZKe4ILmmcumrSxBjpWctH+9I4oj18ZYXN+sI
-         FoXf4LDSh2eifBssCkP+cxxfez3JIQIVQTbtQNJUet2Sp83wY3r0oFiPepAcTsagEMiB
-         sWgg==
+        d=gmail.com; s=20221208; t=1691202504; x=1691807304;
+        h=content-transfer-encoding:to:subject:message-id:date:from
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=xaHyFd/11/GlgUBkCwfx+jW6fBw1OjzEYwRR90O3NUk=;
+        b=GWtqQRd1RJs3GHO/LrkvbY+2UTRTgHrNRbVUSL+QUBAn5lsOei9A0iFvWacc5bHNlu
+         y21x6X3lDkMjZBYeszmsKKddc9rYyzVsqP8hWA87nEVavdQhrcUBRK72vJZiFwMZzrQa
+         DRjBm2JrkxeD6U+OCFIZEmy5/S5czvLVfilBFfoo7vFZ0X2v9Z4mJLfzRMB5cY5JA1lK
+         EVG0tDHEVPAdu5kpOVEwDwO2Qf6lP5BTqkbSvDoPw/NnewiqFL4mmY1Z3g5053RdR7ii
+         38nRUHJzzJi2bJzPMH/gzTykZxzY/z1sSAxEPGGaBse6xrkVp/bnL56vynB5BU2rqy40
+         prVw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691201085; x=1691805885;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=VCKRnUI8FwQWRwJ/8hlrDSlOySzgfMsCiiXmu+Rh1a4=;
-        b=lyaX++fqL7V6lFsba44zCogIPPb0RmifgXA4WFTW2IN9B14tCiXCf+YM0dB+EJ51AC
-         xRI/mCerJNx0Di9KRab5KIJ3PJeKWBuRH8eJJUQaZbGoNFf5s+wgJOe+5hZ8BQI0/4vv
-         s9McZQJsgebqFUt3aVFoQtPrqShk8/H9mcIoctpYknPhZ89sMoOb8dlhYkj91PeAK1Gd
-         XHpaRCBlFsxqnY/i0yvzsuRcQXAg8s6vUI9ixqXKG6xpopJmXWqdWuQIUBddjl7OMX2A
-         6POXrYEK/m+bllNGoJCQQUg7YA4qhWJBD1zDcesYQWiOdElpvXHxkcZTAJOIMoNMFS+G
-         njDw==
-X-Gm-Message-State: AOJu0YycFmcLF67ozf88EA8frDVVeypoyUC23mV3bBue1Rx9YvogrVhv
-        Pd/RcpdADmsMjZ9eUzhTruKz/kBK+lv1fERy96MX34kxKgsLSQv8vGo=
-X-Google-Smtp-Source: AGHT+IGnrrb1f0om6BEHSRmt+VdLfQfpBCe1Ehqiq+ISyIxQ7SrfdSpKt+84xzD1EQ9qLw6r0nlnHwBHdH9uOkpHIdA=
-X-Received: by 2002:a25:f81c:0:b0:d22:4547:39d8 with SMTP id
- u28-20020a25f81c000000b00d22454739d8mr3413208ybd.63.1691201084766; Fri, 04
- Aug 2023 19:04:44 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1691202504; x=1691807304;
+        h=content-transfer-encoding:to:subject:message-id:date:from
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=xaHyFd/11/GlgUBkCwfx+jW6fBw1OjzEYwRR90O3NUk=;
+        b=B7iT+C/IumWWJ+YHXe6Qa5K4nYe18ca0sXRhudR1mie6pqSq79mcjBqCGsnAT23uus
+         e2ho7xVxBvSxX+2K99vDEosPGM4Q+Vp/GKkBvaAF2i7U1/0pwa9lidpxJ9g8RyAB7gxB
+         o2rvtfywd8fktyFm9cyFjbm3x2C6tXPtG5dRlw4w3mk87SirHjQ0kGopIcB0fVISmQhf
+         4Lir/ajo6ZTW7ROJaOoRhmhciZBIG6wWBjlfUiAPDo+x2nxwgNL/nD6TKEXnaj7FIJU0
+         HYALx7BrJyuNwyWCGxHMT172mciInCGRTUtlP38efWtoZKiEFU8BQcblI2wZJULBIn3A
+         l9lQ==
+X-Gm-Message-State: AOJu0Yzzq5MSlLCFxNkPR2wcTlvJjWOkDM8G+nWUl5sH/mA8dKuXq9XQ
+        Zkk0Twc0Pik7B+yzw8ihet8BL4OJhOlH9BXMObU=
+X-Google-Smtp-Source: AGHT+IEFaXBaPoNBp7lW7sAFyB2Ld+3onP+J7SFZfQ3tkUeOqw/PO9tYtCzmBPf/rdepmCkkAX0OPCg77i7kwTtEjT4=
+X-Received: by 2002:a0d:d608:0:b0:586:9fd4:6a9f with SMTP id
+ y8-20020a0dd608000000b005869fd46a9fmr3499870ywd.46.1691202504172; Fri, 04 Aug
+ 2023 19:28:24 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230805014055.1280320-1-mjguzik@gmail.com>
-In-Reply-To: <20230805014055.1280320-1-mjguzik@gmail.com>
-From:   Suren Baghdasaryan <surenb@google.com>
-Date:   Fri, 4 Aug 2023 19:04:32 -0700
-Message-ID: <CAJuCfpH5pDetC7wz25YC9PptLm1T0r09F+QP616BJ+4VNaNv-A@mail.gmail.com>
-Subject: Re: [PATCH] mm: move dummy_vm_ops out of a header
-To:     Mateusz Guzik <mjguzik@gmail.com>
-Cc:     linux-mm@vger.kernel.org, linux-kernel@vger.kernel.org
+Received: by 2002:a05:7108:60cb:b0:326:40e:4f0d with HTTP; Fri, 4 Aug 2023
+ 19:28:23 -0700 (PDT)
+From:   "Mr.Ghazi Ahmed" <mrghaziahmed502@gmail.com>
+Date:   Fri, 4 Aug 2023 19:28:23 -0700
+Message-ID: <CAB_wAu-XGN43qr-sWMEDsBNLuEeyZmBfKWpD=XaDZLV5=vRd1Q@mail.gmail.com>
+Subject: YOUR URGENT RESPONSE IS NEEDED
+To:     undisclosed-recipients:;
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
-        autolearn_force=no version=3.4.6
+X-Spam-Status: Yes, score=6.4 required=5.0 tests=ADVANCE_FEE_4_NEW_MONEY,
+        BAYES_50,DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        FREEMAIL_ENVFROM_END_DIGIT,FREEMAIL_FROM,FREEMAIL_REPLY,LOTS_OF_MONEY,
+        MONEY_FORM_SHORT,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        SUBJ_ALL_CAPS,T_FILL_THIS_FORM_SHORT,T_HK_NAME_FM_MR_MRS,
+        T_MONEY_PERCENT,UNDISC_MONEY,URG_BIZ autolearn=no autolearn_force=no
+        version=3.4.6
+X-Spam-Report: *  0.0 RCVD_IN_DNSWL_BLOCKED RBL: ADMINISTRATOR NOTICE: The query to
+        *      DNSWL was blocked.  See
+        *      http://wiki.apache.org/spamassassin/DnsBlocklists#dnsbl-block
+        *      for more information.
+        *      [2607:f8b0:4864:20:0:0:0:112f listed in]
+        [list.dnswl.org]
+        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
+        *      [score: 0.5553]
+        *  0.0 FREEMAIL_FROM Sender email is commonly abused enduser mail
+        *      provider
+        *      [mrghaziahmed502[at]gmail.com]
+        *  0.5 SUBJ_ALL_CAPS Subject is all capitals
+        * -0.0 SPF_PASS SPF: sender matches SPF record
+        *  0.0 SPF_HELO_NONE SPF: HELO does not publish an SPF Record
+        *  0.2 FREEMAIL_ENVFROM_END_DIGIT Envelope-from freemail username ends
+        *       in digit
+        *      [mrghaziahmed502[at]gmail.com]
+        *  0.1 DKIM_SIGNED Message has a DKIM or DK signature, not necessarily
+        *       valid
+        * -0.1 DKIM_VALID_AU Message has a valid DKIM or DK signature from
+        *      author's domain
+        * -0.1 DKIM_VALID Message has at least one valid DKIM or DK signature
+        * -0.1 DKIM_VALID_EF Message has a valid DKIM or DK signature from
+        *      envelope-from domain
+        *  0.0 LOTS_OF_MONEY Huge... sums of money
+        *  0.6 URG_BIZ Contains urgent matter
+        *  0.0 T_HK_NAME_FM_MR_MRS No description available.
+        *  1.0 FREEMAIL_REPLY From and body contain different freemails
+        *  0.0 T_MONEY_PERCENT X% of a lot of money for you
+        *  0.0 T_FILL_THIS_FORM_SHORT Fill in a short form with personal
+        *      information
+        *  0.0 MONEY_FORM_SHORT Lots of money if you fill out a short form
+        *  2.9 UNDISC_MONEY Undisclosed recipients + money/fraud signs
+        *  0.5 ADVANCE_FEE_4_NEW_MONEY Advance Fee fraud and lots of money
+X-Spam-Level: ******
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 4, 2023 at 6:41=E2=80=AFPM Mateusz Guzik <mjguzik@gmail.com> wr=
-ote:
->
-> Otherwise the kernel ends up with multiple copies:
-> $ nm vmlinux | grep dummy_vm_ops
-> ffffffff81e4ea00 d dummy_vm_ops.2
-> ffffffff81e11760 d dummy_vm_ops.254
-> ffffffff81e406e0 d dummy_vm_ops.4
-> ffffffff81e3c780 d dummy_vm_ops.7
->
-> [if someone has better ideas where to put it, please move it]
->
-> Signed-off-by: Mateusz Guzik <mjguzik@gmail.com>
+--=20
+I have a business proposal in the tune of $10.2m USD for you to handle
+with me. I have opportunity to transfer this abandon fund to your bank
+account in your country which belongs to our client.
 
-Thanks for the patch and it looks fine to me but why is it sent to me
-and not to the mm maintainer? Also nobody else is CC'ed...
-AFAIKT this code has been there long before per-vma locks got
-introduced. Did my patchset somehow cause additional side-effects?
+I am inviting you in this transaction where this money can be shared
+between us at ratio of 50/50% and help the needy around us don=E2=80=99t be
+afraid of anything I am with you I will instruct you what you will do
+to maintain this fund.
 
-> ---
->  include/linux/mm.h | 6 +++---
->  mm/init-mm.c       | 2 ++
->  2 files changed, 5 insertions(+), 3 deletions(-)
->
-> diff --git a/include/linux/mm.h b/include/linux/mm.h
-> index 406ab9ea818f..14898e76bbf1 100644
-> --- a/include/linux/mm.h
-> +++ b/include/linux/mm.h
-> @@ -756,17 +756,17 @@ static inline void vma_mark_detached(struct vm_area=
-_struct *vma,
->
->  #endif /* CONFIG_PER_VMA_LOCK */
->
-> +extern const struct vm_operations_struct vma_dummy_vm_ops;
-> +
->  /*
->   * WARNING: vma_init does not initialize vma->vm_lock.
->   * Use vm_area_alloc()/vm_area_free() if vma needs locking.
->   */
->  static inline void vma_init(struct vm_area_struct *vma, struct mm_struct=
- *mm)
->  {
-> -       static const struct vm_operations_struct dummy_vm_ops =3D {};
-> -
->         memset(vma, 0, sizeof(*vma));
->         vma->vm_mm =3D mm;
-> -       vma->vm_ops =3D &dummy_vm_ops;
-> +       vma->vm_ops =3D &vma_dummy_vm_ops;
->         INIT_LIST_HEAD(&vma->anon_vma_chain);
->         vma_mark_detached(vma, false);
->         vma_numab_state_init(vma);
-> diff --git a/mm/init-mm.c b/mm/init-mm.c
-> index efa97b57acfd..cfd367822cdd 100644
-> --- a/mm/init-mm.c
-> +++ b/mm/init-mm.c
-> @@ -17,6 +17,8 @@
->  #define INIT_MM_CONTEXT(name)
->  #endif
->
-> +const struct vm_operations_struct vma_dummy_vm_ops;
-> +
->  /*
->   * For dynamically allocated mm_structs, there is a dynamically sized cp=
-umask
->   * at the end of the structure, the size of which depends on the maximum=
- CPU
-> --
-> 2.39.2
->
+Please kindly contact me with your information's if you are interested
+in this tranasction for more details(Mr.GhaziAhmed@email.com)
+
+1. Your Full Name.....................
+2. Your Address......................
+3. Your Country of Origin.............
+Mr.Ghazi Ahmed
