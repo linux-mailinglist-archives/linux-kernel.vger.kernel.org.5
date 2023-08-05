@@ -2,58 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B267770F55
-	for <lists+linux-kernel@lfdr.de>; Sat,  5 Aug 2023 12:44:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F245770F59
+	for <lists+linux-kernel@lfdr.de>; Sat,  5 Aug 2023 12:46:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229819AbjHEKoA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 5 Aug 2023 06:44:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49186 "EHLO
+        id S229870AbjHEKqe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 5 Aug 2023 06:46:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50010 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229450AbjHEKn6 (ORCPT
+        with ESMTP id S229450AbjHEKqb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 5 Aug 2023 06:43:58 -0400
-Received: from www262.sakura.ne.jp (www262.sakura.ne.jp [202.181.97.72])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9822468A
-        for <linux-kernel@vger.kernel.org>; Sat,  5 Aug 2023 03:43:56 -0700 (PDT)
-Received: from fsav112.sakura.ne.jp (fsav112.sakura.ne.jp [27.133.134.239])
-        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 375Ahs9K034135;
-        Sat, 5 Aug 2023 19:43:54 +0900 (JST)
-        (envelope-from penguin-kernel@I-love.SAKURA.ne.jp)
-Received: from www262.sakura.ne.jp (202.181.97.72)
- by fsav112.sakura.ne.jp (F-Secure/fsigk_smtp/550/fsav112.sakura.ne.jp);
- Sat, 05 Aug 2023 19:43:54 +0900 (JST)
-X-Virus-Status: clean(F-Secure/fsigk_smtp/550/fsav112.sakura.ne.jp)
-Received: from [192.168.1.6] (M106072142033.v4.enabler.ne.jp [106.72.142.33])
-        (authenticated bits=0)
-        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 375AhmiF034121
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NO);
-        Sat, 5 Aug 2023 19:43:54 +0900 (JST)
-        (envelope-from penguin-kernel@I-love.SAKURA.ne.jp)
-Message-ID: <8fd13a0a-4724-db17-f52f-3adb72868745@I-love.SAKURA.ne.jp>
-Date:   Sat, 5 Aug 2023 19:43:47 +0900
+        Sat, 5 Aug 2023 06:46:31 -0400
+Received: from mail-yb1-xb34.google.com (mail-yb1-xb34.google.com [IPv6:2607:f8b0:4864:20::b34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E174D468A;
+        Sat,  5 Aug 2023 03:46:30 -0700 (PDT)
+Received: by mail-yb1-xb34.google.com with SMTP id 3f1490d57ef6-d3522283441so2823299276.0;
+        Sat, 05 Aug 2023 03:46:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1691232390; x=1691837190;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Z0kaSQGFOdpyORL5u0e6rSfhKvQMmZDt9DGOVV3I7H8=;
+        b=TUeRwPSGD3Bru6owOtuDNpxWEbME/SK+QukxuHM/mD9cH7bc2Lqv5dpRiAjFDnelD6
+         WDYe3trLoFmaVvWm4qzESo+hZXodlshdhFIR5ZN5TlB4Yr7eo+hqE5Ma+s7l2MpWqQ+J
+         JWjEOfiQk6s4eoI7lqp2haiWu3SSZpB6VV50rDKixz4UvovCIWoUDFMhKwG4RO6fr7pM
+         6pdrGu0MrPdWlwXiPCw+/Lw44PxYicv1OGN9xTGIki0Hx/jGVGIbunw7w7pwwmVeH0vY
+         CICtq7rJk+ZogRUNklYCnZrG3bLnDdAxxwBX4392olj1iBDUwkuu/RQEy3K7PouY3fXq
+         LiWw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691232390; x=1691837190;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Z0kaSQGFOdpyORL5u0e6rSfhKvQMmZDt9DGOVV3I7H8=;
+        b=Wo6BQgZm/ojqd9LCuKdeBFkQwPUho1/aeZJ0P6ac8ZBiMSU973+HieGHs6bp7QQWUl
+         wiLGdjynAot5Bf+/3t8PRxEDY6PYpvoVq8DjNS8VEVIwxSpR2EMC3793vpKhnQ8Wvvts
+         KJwkBO63nF9rfVdh7URpJSv2J+rVHSwKGkp8TOacXi0SYCAPQBlnETQCqhPHnkamlhyA
+         H8E8Iy4OZcFvMKGq+eJ9v3vOMIGqgBAGfG3QkgjZUHl6/7LwAEZ4niJBhBw/+CZBl181
+         wHnAJmWlnnc1UxpsGE4aWUMkivj3iXFRyB0fBw5dFJMHEIiKaZz555yuIESGeeItGymU
+         Ykvg==
+X-Gm-Message-State: AOJu0Yx37iXkNeMnnhk4rMaERu2dV44MH+/ynqgjJy9tyJTg5CeK04KX
+        tNS4VzFAsl9OLWPNkIYR9qIJwCGe+vhJVI1Hdu4=
+X-Google-Smtp-Source: AGHT+IETSwfpTjPiBS07opK6v7s1fpfurQwcxwFAL6GRRgG52fk2srlqQMJilNeshqrrU7ivSVLOe7dtD5CeqJcfw0Q=
+X-Received: by 2002:a25:cc47:0:b0:d18:1fbf:c11d with SMTP id
+ l68-20020a25cc47000000b00d181fbfc11dmr3937017ybf.47.1691232390115; Sat, 05
+ Aug 2023 03:46:30 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.14.0
-Subject: Re: [PATCH] Documentation: changes.rst: add entry for git
-To:     Masahiro Yamada <masahiroy@kernel.org>,
-        Greg KH <gregkh@linuxfoundation.org>
-Cc:     Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        workflows@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20230803090711.2261876-1-linux@rasmusvillemoes.dk>
- <2023080302-theology-custody-670b@gregkh>
- <CAK7LNARPTwmnTO-saaGo4nnc7HXK44qQihRK+EqovK=qFT8zPg@mail.gmail.com>
- <2023080447-ahead-tannery-c77a@gregkh>
- <CAK7LNAQdYRuvM8t8rr=DysC_wt2QbhWqaCwnNvkrSHb5c0HWMw@mail.gmail.com>
-Content-Language: en-US
-From:   Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
-In-Reply-To: <CAK7LNAQdYRuvM8t8rr=DysC_wt2QbhWqaCwnNvkrSHb5c0HWMw@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+References: <20230804171448.54976-1-yakoyoku@gmail.com>
+In-Reply-To: <20230804171448.54976-1-yakoyoku@gmail.com>
+From:   Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+Date:   Sat, 5 Aug 2023 12:46:18 +0200
+Message-ID: <CANiq72mkmTRzuYSGveP2xxPbDJELHXoVWVbKF2eyK0DhJ+y7bw@mail.gmail.com>
+Subject: Re: [PATCH v3] scripts: generate_rust_analyzer: provide `cfg`s for
+ `core` and `alloc`
+To:     Martin Rodriguez Reboredo <yakoyoku@gmail.com>
+Cc:     Miguel Ojeda <ojeda@kernel.org>,
+        Alex Gaynor <alex.gaynor@gmail.com>,
+        Wedson Almeida Filho <wedsonaf@gmail.com>,
+        Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>,
+        =?UTF-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>,
+        Benno Lossin <benno.lossin@proton.me>,
+        rust-for-linux@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -61,30 +75,21 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023/08/05 17:02, Masahiro Yamada wrote:
->>>>> It's useful to have some minimal git version one can expect people to
->>>>> use. For now, set a somewhat conservative minimum of 1.8.0, which is
->>>>> already more then ten years old.
+On Fri, Aug 4, 2023 at 7:14=E2=80=AFPM Martin Rodriguez Reboredo
+<yakoyoku@gmail.com> wrote:
+>
+> Suggested-by: Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
 
-No problem with requiring git >= 1.8.0.
+Thanks Martin!
 
-> 
-> The default GCC on CentOS 7 is GCC 4.8,
-> which is too old to build the kernel.
-> 
-> I am not so sure how RHEL/CentOS 7 users are working
-> on the kernel development, but it is possible to
-> install a newer gcc version from Developer Toolset.
+I am a bit confused about the Suggested-by -- did you add it due to
+the suggestion from v1 of passing variables via command-line
+arguments? If so, I appreciate the gesture, but the main idea/report
+(passing the missing `cfg`s for `core` and `alloc`) is yours! :)
 
-CentOS 7 users can install a newer git version as well as gcc.
+The patch seems fine, I will test & apply it soon. If someone wants to
+give it a Tested-by with rust-analyzer, that would be great too,
+thanks! (note: it applies on top of `rust-next`).
 
-> commit f5983dab0ead92dc2690d147f0604a0badcac6a8
-> Author: Masahiro Yamada <masahiroy@kernel.org>
-> Date:   Wed Jun 28 01:32:05 2023 +0900
-> 
->     modpost: define more R_ARM_* for old distributions
-> 
->     On CentOS 7, the following build error occurs.
-
-It is glibc-headers-2.17-326.el7_9 package. Neither gcc nor git problem.
-
+Cheers,
+Miguel
