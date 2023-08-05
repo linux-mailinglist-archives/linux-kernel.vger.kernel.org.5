@@ -2,120 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B62F7771192
-	for <lists+linux-kernel@lfdr.de>; Sat,  5 Aug 2023 20:47:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 80AA7771194
+	for <lists+linux-kernel@lfdr.de>; Sat,  5 Aug 2023 20:47:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229445AbjHESrH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 5 Aug 2023 14:47:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48354 "EHLO
+        id S229917AbjHESr2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 5 Aug 2023 14:47:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48658 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229662AbjHESrF (ORCPT
+        with ESMTP id S229662AbjHESr0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 5 Aug 2023 14:47:05 -0400
-Received: from mail-lj1-x22e.google.com (mail-lj1-x22e.google.com [IPv6:2a00:1450:4864:20::22e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 910551BE4
-        for <linux-kernel@vger.kernel.org>; Sat,  5 Aug 2023 11:47:03 -0700 (PDT)
-Received: by mail-lj1-x22e.google.com with SMTP id 38308e7fff4ca-2ba1e9b1fa9so26460601fa.3
-        for <linux-kernel@vger.kernel.org>; Sat, 05 Aug 2023 11:47:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1691261222; x=1691866022;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:to:subject:user-agent:mime-version:date:message-id:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=tRWew4AjSMA2PJPO85LRIgQO2JC6RNeaCiEFmYqIM4c=;
-        b=BnyFd8xifQ6rtK9QYBMCwx/OwAaowyisDDQOCl0z5EtkZGeGxJbM/iCFTas6urkCTH
-         ZG4a+gI18MUAH1fQTzx115Wz3DSJmEDFXrODjeSYnVUThsqohW/iGg6S8LIhrkJEYJWD
-         F5uIOYIL8cHfrMINy4VMCCj9q+d8GUDQN7mLxvdPf0Q62pS5U+vBhBZJFdKkSN1t0KEO
-         J9sY+muUjKc1z6EEMzQs7Jinm8ZlFRRFgBK3iW5sijygM+EJ3chPh7I2mIjhwKTwZXcj
-         wh/6jj8Xttr+MnC5A1QKhXXzV2t2ZATpkEQIHb0H+YictGjGY0E5/lYJGV1ZNvEAu+Qz
-         vt1w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691261222; x=1691866022;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=tRWew4AjSMA2PJPO85LRIgQO2JC6RNeaCiEFmYqIM4c=;
-        b=h6FCyJ0TRtIDdHhDL4aZ+2KMpEiTYcI6N1YOJy/u0Nlh2rGLg6vA1+yI14gRIbSsbZ
-         DUT+wT7Jnm7RF5VSpwsFDl3RTubIUcKOvjKU7jaov9U/Zvb5qTF4lOx0PqWLwuU63nIz
-         MhpOTvbDvvXhw6hCzmdXsGIb0oMzDwGlnlYsr0avPekcffNxL+6PGGhwJtC3Dh88aNl2
-         Hg0Tin8gl5Zi6/sgLkHvaeuMBNcOaNCoViaKiLY/M4x3/39w8PzEAynRSHR3Pyxh1eIX
-         eDtW58D2+3Ehv0YbsFoFEselmCo6Yi2bRqER0bmElB/7geVDKW3T1fqE24DKOH7UWamZ
-         2+Cg==
-X-Gm-Message-State: AOJu0YzmEEPwGbUuC/kQxhGCiuUmXt/ANtSvPl3MvzZvXcbr0SIj6LJU
-        fhld0uWq6cCBO71iXW5teBL4Ww==
-X-Google-Smtp-Source: AGHT+IErbzYeVqDMHMWw7UPa/LkZv8Yb6Q/761H7498JUq+FubflZvr1RIQlK3ZltjtyBepW7Nz9iw==
-X-Received: by 2002:a05:6512:6d2:b0:4fd:f7a8:a9f3 with SMTP id u18-20020a05651206d200b004fdf7a8a9f3mr4282478lff.38.1691261221815;
-        Sat, 05 Aug 2023 11:47:01 -0700 (PDT)
-Received: from [192.168.1.20] ([178.197.222.245])
-        by smtp.gmail.com with ESMTPSA id f23-20020a056402069700b0052333d7e320sm81194edy.27.2023.08.05.11.46.42
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 05 Aug 2023 11:46:43 -0700 (PDT)
-Message-ID: <38fbb9d1-f263-2ec1-a3d8-4b09a26eaf2d@linaro.org>
-Date:   Sat, 5 Aug 2023 20:46:41 +0200
+        Sat, 5 Aug 2023 14:47:26 -0400
+Received: from smtpbgau1.qq.com (smtpbgau1.qq.com [54.206.16.166])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 670622D72;
+        Sat,  5 Aug 2023 11:47:22 -0700 (PDT)
+X-QQ-mid: bizesmtp82t1691261231ty7dc1hm
+Received: from linux-lab-host.localdomain ( [116.30.131.233])
+        by bizesmtp.qq.com (ESMTP) with 
+        id ; Sun, 06 Aug 2023 02:47:10 +0800 (CST)
+X-QQ-SSF: 01200000000000E0X000B00A0000000
+X-QQ-FEAT: IflLXxRcVR1gTGRr2ilcxmRzcus46IF74wtKQ1oFpYWF072KtLJW0K9dIyVlQ
+        tohiSan5e61KVmLF1i837mkqkFeEpBoKGRNFKxoJR7iO7LtaKY504LrTMtnCdLw3BYmNgR0
+        uAi3fjj2iGvwuTi3rX88NGC8qRmaNrQaKg1Z9XcDF7Lj0ZJrxsHLZIh4VM2TT+i3H1cW0y7
+        qcJ+At/jX0gv6Djuqg7s54+B6Il6vJ24id4luOv9ZOxNwnxIXbeIPQr5OH2x0C04z0ga7vt
+        Hxy0/9GCxzQbl2AlPzJ6lKTqHblp+b1WlhabeplbLHHAzCY/Vvi5tTAuJrvo/1ny6BZSttY
+        kHzK8vCDkB0l2k6jjCiaTu9GUsveogjLy9M0n/VrT6raAe5sFlMMbf46ftfwEgLPzuxUDYw
+X-QQ-GoodBg: 0
+X-BIZMAIL-ID: 2403698746126952363
+From:   Zhangjin Wu <falcon@tinylab.org>
+To:     w@1wt.eu
+Cc:     falcon@tinylab.org, arnd@arndb.de, linux-kernel@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, tanyuan@tinylab.org,
+        thomas@t-8ch.de
+Subject: [PATCH v6 8/8] selftests/nolibc: customize CROSS_COMPILE for 32/64-bit powerpc
+Date:   Sun,  6 Aug 2023 02:47:09 +0800
+Message-Id: <2c3ac4542621ddc4b2cab006ae8e3a7b709921f1.1691259983.git.falcon@tinylab.org>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <cover.1691259983.git.falcon@tinylab.org>
+References: <cover.1691259983.git.falcon@tinylab.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.14.0
-Subject: Re: [PATCH v3 00/11] mailbox/arm64/ qcom: rework compatibles for
- fallback
-To:     Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Jassi Brar <jassisinghbrar@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org
-References: <20230322174148.810938-1-krzysztof.kozlowski@linaro.org>
- <6c0a7f12-10d2-4a07-a07f-67ec0d39b279@linaro.org>
-Content-Language: en-US
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <6c0a7f12-10d2-4a07-a07f-67ec0d39b279@linaro.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-QQ-SENDSIZE: 520
+Feedback-ID: bizesmtp:tinylab.org:qybglogicsvrgz:qybglogicsvrgz5a-1
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 05/08/2023 14:21, Konrad Dybcio wrote:
-> On 22.03.2023 18:41, Krzysztof Kozlowski wrote:
->> Hi,
->>
->> Changes since v2
->> ================
->> 1. Split fixes to separate patchset which is now dependency:
->>    https://lore.kernel.org/linux-arm-msm/20230322173559.809805-1-krzysztof.kozlowski@linaro.org/T/#t
->> 2. Add Ack
->> 3. No other changes, as discussion with Dmitry did not reach conclusion on incompatibility.
->>
->> Changes since v1
->> ================
->> 1. Rebase
->> 2. Make msm8994 fallback for several variants, not msm8953, because the latter
->>    actually might take some clocks.
->> 3. Two new patches for SDX55.
->> 4. Minor corrections in bindings style.
->> v1: https://lore.kernel.org/all/20230202161856.385825-1-krzysztof.kozlowski@linaro.org/
->>
->> Description
->> ===========
->>
->> If entire approach is accepted (and correct), there are no dependencies and
->> patches can be picked independently.  Although the best in the same cycle, so
->> there will be no new `dtbs_check` warnings.
->>
->> Best regards,
->> Krzysztof
-> Looks like this was only partially merged, resulting in schema warnings
+The little-endian powerpc64le compilers provided by Ubuntu and Fedora
+are able to compile big endian kernel and big endian nolibc-test [1].
 
-There was discussion/disagreement about the bindings. DTS was applied,
-thus it's partially limbo state...
+These default CROSS_COMPILE settings allow to test target architectures
+with:
 
-Best regards,
-Krzysztof
+    $ cd /path/to/tools/testing/selftests/nolibc/
+
+    $ for arch in ppc ppc64 ppc64le; do \
+        make run-user XARCH=$arch | grep "status: "; \
+      done
+
+If want to use another cross compiler, please simply pass CROSS_COMPILE
+or CC as before.
+
+For example, it is able to build 64-bit nolibc-test with the big endian
+powerpc64-linux-gcc crosstool from [2]:
+
+    $ wget -c https://mirrors.edge.kernel.org/pub/tools/crosstool/files/bin/x86_64/13.1.0/x86_64-gcc-13.1.0-nolibc-powerpc64-linux.tar.xz
+    $ tar xvf x86_64-gcc-13.1.0-nolibc-powerpc64-linux.tar.xz
+    $ export PATH=$PWD/gcc-13.1.0-nolibc/powerpc64-linux/bin/:$PATH
+
+    $ export CROSS_COMPILE_ppc=powerpc64-linux-
+    $ export CROSS_COMPILE_ppc64=powerpc64-linux-
+    $ export CROSS_COMPILE_ppc64le=powerpc64-linux-
+    $ for arch in ppc ppc64 ppc64le; do \
+        make run-user XARCH=$arch | grep "status: "; \
+      done
+
+Or specify CC directly with full path:
+
+    $ export CC=$PWD/gcc-13.1.0-nolibc/powerpc64-linux/bin/powerpc64-linux-gcc
+    $ for arch in ppc ppc64 ppc64le; do \
+        make run-user XARCH=$arch | grep "status: "; \
+      done
+
+[1]: https://github.com/open-power/skiboot
+[2]: https://mirrors.edge.kernel.org/pub/tools/crosstool/
+
+Signed-off-by: Zhangjin Wu <falcon@tinylab.org>
+---
+ tools/testing/selftests/nolibc/Makefile | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/tools/testing/selftests/nolibc/Makefile b/tools/testing/selftests/nolibc/Makefile
+index 45d231b9c5c2..b4171a754eb2 100644
+--- a/tools/testing/selftests/nolibc/Makefile
++++ b/tools/testing/selftests/nolibc/Makefile
+@@ -56,6 +56,9 @@ IMAGE            = $(IMAGE_$(XARCH))
+ IMAGE_NAME       = $(notdir $(IMAGE))
+ 
+ # CROSS_COMPILE: cross toolchain prefix by architecture
++CROSS_COMPILE_ppc       ?= powerpc-linux-gnu-
++CROSS_COMPILE_ppc64     ?= powerpc64le-linux-gnu-
++CROSS_COMPILE_ppc64le   ?= powerpc64le-linux-gnu-
+ CROSS_COMPILE           ?= $(CROSS_COMPILE_$(XARCH))
+ 
+ # make sure CC is prefixed with CROSS_COMPILE
+-- 
+2.25.1
+
 
