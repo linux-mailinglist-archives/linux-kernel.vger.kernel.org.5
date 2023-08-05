@@ -2,153 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 53427771184
-	for <lists+linux-kernel@lfdr.de>; Sat,  5 Aug 2023 20:43:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 77BFE771186
+	for <lists+linux-kernel@lfdr.de>; Sat,  5 Aug 2023 20:43:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230186AbjHESnE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 5 Aug 2023 14:43:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46156 "EHLO
+        id S230193AbjHESnM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 5 Aug 2023 14:43:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46170 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229441AbjHESnD (ORCPT
+        with ESMTP id S230083AbjHESnI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 5 Aug 2023 14:43:03 -0400
-Received: from smtpbgau2.qq.com (smtpbgau2.qq.com [54.206.34.216])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7FA21FA;
-        Sat,  5 Aug 2023 11:43:00 -0700 (PDT)
-X-QQ-mid: bizesmtp82t1691260969t7f7paue
-Received: from linux-lab-host.localdomain ( [116.30.131.233])
-        by bizesmtp.qq.com (ESMTP) with 
-        id ; Sun, 06 Aug 2023 02:42:48 +0800 (CST)
-X-QQ-SSF: 01200000000000E0X000B00A0000000
-X-QQ-FEAT: hoArX50alxHe+LG930oTCoN8UcIoR96135u+XWn6mkEwd0LvnmOseMiK8ZsCV
-        qTdHjFayED5dmWG/j2aRiB/U7nISQB6crrt+wKiBXvCD+SVM9GlVhi4TqAo7HUs7MKxEl+e
-        ntC0Q8LUNa0MemGLXOrJ699PaKzoDM8K9Aq264BQM2akqEdUVivCkPVb2irFUO1PuqKvj7d
-        b+kpaTH0ZWlSNLQGey/P84QkeMgvRneKrCpvEctlKMW/Tk6LF3uSu2N3P2OjRA4yaDU50EC
-        IQiqh2rlLFyyxOB7lbutJI5PbVPKNzeYXbGDdgoDym7a7Xpblweq7xoTzYo2Jx7VQMkSIFT
-        Yqxn5kVoVso9Spa+uZ0pBEBuA193UlPX2Hh1vC14yKviuS1mkPTNfT6MTJCa/XEvo5HQZcT
-        s2f1kFm1vAE=
-X-QQ-GoodBg: 0
-X-BIZMAIL-ID: 1566790808252503887
-From:   Zhangjin Wu <falcon@tinylab.org>
-To:     w@1wt.eu
-Cc:     falcon@tinylab.org, arnd@arndb.de, linux-kernel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, tanyuan@tinylab.org,
-        thomas@t-8ch.de,
-        =?UTF-8?q?Thomas=20Wei=C3=9Fschuh?= <linux@weissschuh.net>
-Subject: [PATCH v6 4/8] selftests/nolibc: add test support for ppc
-Date:   Sun,  6 Aug 2023 02:42:43 +0800
-Message-Id: <f597dca2bd3baed4cc9aab7621a7b76481fdb3ce.1691259983.git.falcon@tinylab.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <cover.1691259983.git.falcon@tinylab.org>
-References: <cover.1691259983.git.falcon@tinylab.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-QQ-SENDSIZE: 520
-Feedback-ID: bizesmtp:tinylab.org:qybglogicsvrgz:qybglogicsvrgz5a-1
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+        Sat, 5 Aug 2023 14:43:08 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3DB222737
+        for <linux-kernel@vger.kernel.org>; Sat,  5 Aug 2023 11:43:07 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id C775360E76
+        for <linux-kernel@vger.kernel.org>; Sat,  5 Aug 2023 18:43:06 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B1A49C433C8;
+        Sat,  5 Aug 2023 18:43:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
+        s=korg; t=1691260986;
+        bh=JxNWPx3YcT6FMDu/5paY892p5ex0sPcNRYPgD4XnjbY=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=BatuvWtbx/l8UXQLE1KQYGbHxOLMOAYTzVa5DuYV/BgKbhBeD999i+dBaXDURPOrN
+         wCWJ1ImQviAbA26hoxC+DXISpUUAfexqfZwyQlAZPRVu8oPS/qAmeCObeFCQclzb4h
+         U3SuZTR8+efB0Uutos+C7M/dtHslwNkQXYflgO6g=
+Date:   Sat, 5 Aug 2023 11:43:04 -0700
+From:   Andrew Morton <akpm@linux-foundation.org>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     Petr Mladek <pmladek@suse.com>, Marco Elver <elver@google.com>,
+        linux-kernel@vger.kernel.org, kasan-dev@googlegroups.com,
+        linux-mm@kvack.org, Steven Rostedt <rostedt@goodmis.org>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Alexander Potapenko <glider@google.com>,
+        Dmitry Vyukov <dvyukov@google.com>
+Subject: Re: [PATCH v2 2/3] lib/vsprintf: Split out sprintf() and friends
+Message-Id: <20230805114304.001f8afe1d325dbb6f05d67e@linux-foundation.org>
+In-Reply-To: <20230805175027.50029-3-andriy.shevchenko@linux.intel.com>
+References: <20230805175027.50029-1-andriy.shevchenko@linux.intel.com>
+        <20230805175027.50029-3-andriy.shevchenko@linux.intel.com>
+X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Kernel uses ARCH=powerpc for both 32-bit and 64-bit PowerPC, here adds a
-ppc variant for 32-bit PowerPC and uses it as the default variant of
-powerpc architecture.
+On Sat,  5 Aug 2023 20:50:26 +0300 Andy Shevchenko <andriy.shevchenko@linux.intel.com> wrote:
 
-Users can pass XARCH=ppc (or ARCH=powerpc) to test 32-bit PowerPC.
+> kernel.h is being used as a dump for all kinds of stuff for a long time.
+> sprintf() and friends are used in many drivers without need of the full
+> kernel.h dependency train with it.
 
-The default qemu-system-ppc g3beige machine [1] is used to run 32-bit
-powerpc kernel with pmac32_defconfig. The missing PMACZILOG serial tty
-and console are enabled in another patch [2].
+There seems little point in this unless someone signs up to convert
+lots of code to include sprintf.h instead of kernel.h?
 
-Note,
+And such conversions will presumably cause all sorts of nasties
+which require additional work?
 
-- zImage doesn't boot due to "qemu-system-ppc: Some ROM regions are
-  overlapping" error, so, vmlinux is used instead.
-
-- since the VSX support may be disabled in kernel side, to avoid
-  "illegal instruction" errors due to missing VSX kernel support, let's
-  simply let compiler not generate vector/scalar (VSX) instructions via
-  the '-mno-vsx' option.
-
-- as 'man gcc' shows, '-mmultiple' is used to generate code that uses
-  the load multiple word instructions and the store multiple word
-  instructions. Those instructions do not work when the processor is in
-  little-endian mode (except PPC740/PPC750), so, we only enable it
-  for big endian powerpc.
-
-[1]: https://qemu.readthedocs.io/en/latest/system/ppc/powermac.html
-[2]: https://lore.kernel.org/lkml/bb7b5f9958b3e3a20f6573ff7ce7c5dc566e7e32.1690982937.git.tanyuan@tinylab.org/
-
-Suggested-by: Willy Tarreau <w@1wt.eu>
-Link: https://lore.kernel.org/lkml/ZL9leVOI25S2+0+g@1wt.eu/
-Reviewed-by: Thomas Weißschuh <linux@weissschuh.net>
-Signed-off-by: Zhangjin Wu <falcon@tinylab.org>
----
- tools/testing/selftests/nolibc/Makefile | 7 +++++++
- 1 file changed, 7 insertions(+)
-
-diff --git a/tools/testing/selftests/nolibc/Makefile b/tools/testing/selftests/nolibc/Makefile
-index 46a2312b06f5..cac501e0c7cf 100644
---- a/tools/testing/selftests/nolibc/Makefile
-+++ b/tools/testing/selftests/nolibc/Makefile
-@@ -30,9 +30,11 @@ endif
- # architectures where both are equal.
- 
- # configure default variants for target kernel supported architectures
-+XARCH_powerpc    = ppc
- XARCH            = $(or $(XARCH_$(ARCH)),$(ARCH))
- 
- # map from user input variants to their kernel supported architectures
-+ARCH_ppc         = powerpc
- ARCH            := $(or $(ARCH_$(XARCH)),$(XARCH))
- 
- # kernel image names by architecture
-@@ -42,6 +44,7 @@ IMAGE_x86        = arch/x86/boot/bzImage
- IMAGE_arm64      = arch/arm64/boot/Image
- IMAGE_arm        = arch/arm/boot/zImage
- IMAGE_mips       = vmlinuz
-+IMAGE_ppc        = vmlinux
- IMAGE_riscv      = arch/riscv/boot/Image
- IMAGE_s390       = arch/s390/boot/bzImage
- IMAGE_loongarch  = arch/loongarch/boot/vmlinuz.efi
-@@ -55,6 +58,7 @@ DEFCONFIG_x86        = defconfig
- DEFCONFIG_arm64      = defconfig
- DEFCONFIG_arm        = multi_v7_defconfig
- DEFCONFIG_mips       = malta_defconfig
-+DEFCONFIG_ppc        = pmac32_defconfig
- DEFCONFIG_riscv      = defconfig
- DEFCONFIG_s390       = defconfig
- DEFCONFIG_loongarch  = defconfig
-@@ -70,6 +74,7 @@ QEMU_ARCH_x86        = x86_64
- QEMU_ARCH_arm64      = aarch64
- QEMU_ARCH_arm        = arm
- QEMU_ARCH_mips       = mipsel  # works with malta_defconfig
-+QEMU_ARCH_ppc        = ppc
- QEMU_ARCH_riscv      = riscv64
- QEMU_ARCH_s390       = s390x
- QEMU_ARCH_loongarch  = loongarch64
-@@ -82,6 +87,7 @@ QEMU_ARGS_x86        = -M pc -append "console=ttyS0,9600 i8042.noaux panic=-1 $(
- QEMU_ARGS_arm64      = -M virt -cpu cortex-a53 -append "panic=-1 $(TEST:%=NOLIBC_TEST=%)"
- QEMU_ARGS_arm        = -M virt -append "panic=-1 $(TEST:%=NOLIBC_TEST=%)"
- QEMU_ARGS_mips       = -M malta -append "panic=-1 $(TEST:%=NOLIBC_TEST=%)"
-+QEMU_ARGS_ppc        = -M g3beige -append "console=ttyS0 panic=-1 $(TEST:%=NOLIBC_TEST=%)"
- QEMU_ARGS_riscv      = -M virt -append "console=ttyS0 panic=-1 $(TEST:%=NOLIBC_TEST=%)"
- QEMU_ARGS_s390       = -M s390-ccw-virtio -m 1G -append "console=ttyS0 panic=-1 $(TEST:%=NOLIBC_TEST=%)"
- QEMU_ARGS_loongarch  = -M virt -append "console=ttyS0,115200 panic=-1 $(TEST:%=NOLIBC_TEST=%)"
-@@ -97,6 +103,7 @@ else
- Q=@
- endif
- 
-+CFLAGS_ppc = -m32 -mbig-endian -mno-vsx $(call cc-option,-mmultiple)
- CFLAGS_s390 = -m64
- CFLAGS_mips = -EL
- CFLAGS_STACKPROTECTOR ?= $(call cc-option,-mstack-protector-guard=global $(call cc-option,-fstack-protector-all))
--- 
-2.25.1
-
+So... what's the plan here?
