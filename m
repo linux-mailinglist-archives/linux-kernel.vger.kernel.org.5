@@ -2,110 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2694E770F3B
-	for <lists+linux-kernel@lfdr.de>; Sat,  5 Aug 2023 12:15:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 813C7770F3F
+	for <lists+linux-kernel@lfdr.de>; Sat,  5 Aug 2023 12:19:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229933AbjHEKO5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 5 Aug 2023 06:14:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45516 "EHLO
+        id S229589AbjHEKTK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 5 Aug 2023 06:19:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46238 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229477AbjHEKOy (ORCPT
+        with ESMTP id S229477AbjHEKTI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 5 Aug 2023 06:14:54 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 1841646B2
-        for <linux-kernel@vger.kernel.org>; Sat,  5 Aug 2023 03:14:50 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 1E5BE1FB;
-        Sat,  5 Aug 2023 03:15:32 -0700 (PDT)
-Received: from [10.57.90.200] (unknown [10.57.90.200])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id A5BD03F5A1;
-        Sat,  5 Aug 2023 03:14:46 -0700 (PDT)
-Message-ID: <63e20343-b95c-308f-ac43-8285ef164caf@arm.com>
-Date:   Sat, 5 Aug 2023 11:14:45 +0100
+        Sat, 5 Aug 2023 06:19:08 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA151113
+        for <linux-kernel@vger.kernel.org>; Sat,  5 Aug 2023 03:18:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1691230700;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=EDl8FKi4TmGBJc8DUiagN0W08gSz4Sjm38M3DkmH1A8=;
+        b=W/6+h5VlS2KrbqJbHp7guznDGUmDM2MTcMcZtqp0f3kxy+pjy/gVEFG0NK1UCfAgIgS7/X
+        TmORnCLDzqtvEUBecFIijBx2+08/fkJM66wfQI4hET3w1hmLunOdxItGY//H1TJkMMedtJ
+        YjgB2H5HmR2pfPoTSeJIN+BaI9k2CsE=
+Received: from mail-qv1-f71.google.com (mail-qv1-f71.google.com
+ [209.85.219.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-391-S4sKxeXuNri1SAYRE-lUJw-1; Sat, 05 Aug 2023 06:18:19 -0400
+X-MC-Unique: S4sKxeXuNri1SAYRE-lUJw-1
+Received: by mail-qv1-f71.google.com with SMTP id 6a1803df08f44-63cebe9238bso7597326d6.1
+        for <linux-kernel@vger.kernel.org>; Sat, 05 Aug 2023 03:18:19 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691230698; x=1691835498;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=EDl8FKi4TmGBJc8DUiagN0W08gSz4Sjm38M3DkmH1A8=;
+        b=Qc5TCLbREjSIoLMrQHSd6ilVnP/7pitHAIosOv26DPHo+bVGaXn3jTG3NYmPqNGihg
+         hDeIvS4Yk5n1d7H3MOzbvk3RbxPr5EV456SZkAM8hYfo3agXP/DObPwiQgdZ3kgyjPrp
+         J9F2ZSIDl0ZthLkRX/qbbfjCYMsUGzTKjhU1PO/EcNk7pGuEbByQbGLm7kioTFr1xlmk
+         2rKdhPuoUQerwkFDgbN4/1yP9dEv23gP/wUJnICAXo+lU7arrG2w9IkS+MDYRBM7FPY/
+         9CDM1fj0Ua+aCsOaeg85rGMUPzu6iOEHqytVD8oYFXlwK1PszE9NdNKQGPwnYjtJ5owO
+         wvOA==
+X-Gm-Message-State: ABy/qLbVap8bsmw7mm86VLWkfnpOMy8a2hf9dtfbLLAqGkfDb2Y5gJw/
+        PzqgwuimyfkDI2VG/tgpxvVG8R6CnNumF+fBA0DQnZqJURs9chIkz2Xa/kJABRTiswiffgj3/6h
+        FQNvAU9X2qtVNvwfT8dGAwmLu4Dr8FtyOTdQb7qFaBJjISIvMaUapjJ9CgyRlZntCSd7dcOSUbI
+        Nt+68R14U=
+X-Received: by 2002:ac8:5c05:0:b0:40f:a5bb:5276 with SMTP id i5-20020ac85c05000000b0040fa5bb5276mr21244873qti.1.1691230698039;
+        Sat, 05 Aug 2023 03:18:18 -0700 (PDT)
+X-Google-Smtp-Source: APBJJlGxbKkXSoa09vwMpsK5fJJErUueAZzn6Eyh8re2STw/wxSsOI0uRnQzLEtQYQPJQ+wGIPPrkA==
+X-Received: by 2002:ac8:5c05:0:b0:40f:a5bb:5276 with SMTP id i5-20020ac85c05000000b0040fa5bb5276mr21244843qti.1.1691230697692;
+        Sat, 05 Aug 2023 03:18:17 -0700 (PDT)
+Received: from kherbst.pingu.com ([31.17.16.107])
+        by smtp.gmail.com with ESMTPSA id dq15-20020a05622a520f00b0040c72cae9f9sm1247325qtb.93.2023.08.05.03.18.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 05 Aug 2023 03:18:16 -0700 (PDT)
+From:   Karol Herbst <kherbst@redhat.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     Ben Skeggs <bskeggs@redhat.com>, Lyude Paul <lyude@redhat.com>,
+        dri-devel@lists.freedesktop.org, nouveau@lists.freedesktop.org,
+        Karol Herbst <kherbst@redhat.com>,
+        Olaf Skibbe <news@kravcenko.com>
+Subject: [PATCH] drm/nouveau/disp: Revert a NULL check inside nouveau_connector_get_modes
+Date:   Sat,  5 Aug 2023 12:18:13 +0200
+Message-ID: <20230805101813.2603989-1-kherbst@redhat.com>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.13.0
-Subject: Re: [RFC PATCH 0/3] coresight: Support exclude_guest with Feat_TRF
- and nVHE
-To:     James Clark <james.clark@arm.com>, coresight@lists.linaro.org,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev
-Cc:     Marc Zyngier <maz@kernel.org>,
-        Oliver Upton <oliver.upton@linux.dev>,
-        James Morse <james.morse@arm.com>,
-        Zenghui Yu <yuzenghui@huawei.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Mike Leach <mike.leach@linaro.org>,
-        Leo Yan <leo.yan@linaro.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Rob Herring <robh@kernel.org>, linux-kernel@vger.kernel.org,
-        Steve Clevenger <scclevenger@os.amperecomputing.com>,
-        Tanmay Jagdale <tanmay@marvell.com>,
-        Ganapatrao Kulkarni <gankulkarni@os.amperecomputing.com>
-References: <20230804101317.460697-1-james.clark@arm.com>
-From:   Suzuki K Poulose <suzuki.poulose@arm.com>
-In-Reply-To: <20230804101317.460697-1-james.clark@arm.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Cc: Ganpatrao, Steve, Tanmay
+The original commit adding that check tried to protect the kenrel against
+a potential invalid NULL pointer access.
 
-On 04/08/2023 11:13, James Clark wrote:
-> Hi,
-> 
-> I'm looking for help in testing this and for feedback on whether it's
-> useful to anyone. Testing it requires hardware that has Feat_TRF (v8.4)
-> but no TRBE. This is because TRBE usage is disabled in nVHE guests.
-> 
-> I don't currently have any access to any hardware, and the FVP model
-> can only do self hosted trace using TRBE.
+However we call nouveau_connector_detect_depth once without a native_mode
+set on purpose for non LVDS connectors and this broke DP support in a few
+cases.
 
+Cc: Olaf Skibbe <news@kravcenko.com>
+Cc: Lyude Paul <lyude@redhat.com>
+Closes: https://gitlab.freedesktop.org/drm/nouveau/-/issues/238
+Closes: https://gitlab.freedesktop.org/drm/nouveau/-/issues/245
+Fixes: 20a2ce87fbaf8 ("drm/nouveau/dp: check for NULL nv_connector->native_mode")
+Signed-off-by: Karol Herbst <kherbst@redhat.com>
+---
+ drivers/gpu/drm/nouveau/nouveau_connector.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-If you have a v8.4+ (and not v9) HW, please could you give this a spin ?
-
-Suzuki
-
-
-> 
-> Currently with nVHE you would always get trace from guests, and
-> filtering out isn't possible without this patchset. In comparison, with
-> VHE guests, they never generate guest trace without [1]. I think the
-> existence of trace rather than lack of could suggest that this change is
-> less useful than [1]. Also the restricted set of hardware that it works
-> on supports that too.
-> 
-> Apart from compilation and checking that the exclude guest settings
-> are correctly programmed on guest switch, this is untested by me.
-> 
-> Applies to kvmarm/next (3b4e3afb2032)
-> 
-> [1]: https://lore.kernel.org/linux-arm-kernel/20230804085219.260790-3-james.clark@arm.com/
-> 
-> James Clark (3):
->    arm64: KVM: Add support for exclude_guest and exclude_host for ETM
->    arm64: KVM: Support exclude_guest for Coresight trace in nVHE
->    coresight: Support exclude_guest with Feat_TRF and nVHE
-> 
->   arch/arm64/include/asm/kvm_host.h             | 10 +++-
->   arch/arm64/kvm/Makefile                       |  1 +
->   arch/arm64/kvm/arm.c                          |  1 +
->   arch/arm64/kvm/debug.c                        |  7 +++
->   arch/arm64/kvm/etm.c                          | 48 ++++++++++++++++
->   arch/arm64/kvm/hyp/nvhe/debug-sr.c            | 56 +++++++++++++++++--
->   .../hwtracing/coresight/coresight-etm-perf.c  |  4 ++
->   include/kvm/etm.h                             | 43 ++++++++++++++
->   8 files changed, 165 insertions(+), 5 deletions(-)
->   create mode 100644 arch/arm64/kvm/etm.c
->   create mode 100644 include/kvm/etm.h
-> 
+diff --git a/drivers/gpu/drm/nouveau/nouveau_connector.c b/drivers/gpu/drm/nouveau/nouveau_connector.c
+index f75c6f09dd2af..a2e0033e8a260 100644
+--- a/drivers/gpu/drm/nouveau/nouveau_connector.c
++++ b/drivers/gpu/drm/nouveau/nouveau_connector.c
+@@ -967,7 +967,7 @@ nouveau_connector_get_modes(struct drm_connector *connector)
+ 	/* Determine display colour depth for everything except LVDS now,
+ 	 * DP requires this before mode_valid() is called.
+ 	 */
+-	if (connector->connector_type != DRM_MODE_CONNECTOR_LVDS && nv_connector->native_mode)
++	if (connector->connector_type != DRM_MODE_CONNECTOR_LVDS)
+ 		nouveau_connector_detect_depth(connector);
+ 
+ 	/* Find the native mode if this is a digital panel, if we didn't
+-- 
+2.41.0
 
