@@ -2,161 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 45DDF77123C
-	for <lists+linux-kernel@lfdr.de>; Sat,  5 Aug 2023 23:03:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E153771240
+	for <lists+linux-kernel@lfdr.de>; Sat,  5 Aug 2023 23:05:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229649AbjHEVDF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 5 Aug 2023 17:03:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46300 "EHLO
+        id S230040AbjHEVFA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 5 Aug 2023 17:05:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47138 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229542AbjHEVDD (ORCPT
+        with ESMTP id S230016AbjHEVE6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 5 Aug 2023 17:03:03 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71AC4E7
-        for <linux-kernel@vger.kernel.org>; Sat,  5 Aug 2023 14:03:02 -0700 (PDT)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1691269380;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=gSbKeXLBsgKqGj/TwqTJ9+PojQPLuVRP6JDwmEEGuoE=;
-        b=G1L7HlLWpNbkQsJ5hzO4fWWiZ+FtA0lxn/PDsGsygDHKd82Z1Dlrc+/V4zug84FWYwNTBe
-        /MysUkkx5IjU9x62KFTC8slW5q048LdNDfzZMBpZeqJSQy/30me7wEOUXlVjdPRelQbtal
-        PO6QKSTMLwFh1ZFT3SgL5IaxVVsyZYXcDeEnOPSs4sdPvE0UEVxtoBueWh4tk9uHJSamI+
-        i5R7rN+6OmoKEx9+5sfv1irx9EVO+J6UgKEYv/QSZ6F+D6Pqc9F5j/CSbBB3bfKsrm+o38
-        IuwmqsyUupUM8g7ufi9tYo9fYSwRTi7bhGAE78K3uoeRUpbdCG8xwWbO1DDugQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1691269380;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=gSbKeXLBsgKqGj/TwqTJ9+PojQPLuVRP6JDwmEEGuoE=;
-        b=tJDGqJG9ZGL0jQfrmZogiEnjYq0oxLwLymgfLwSzBNsVGW5UDfDiT9E9gA4oG6BZEn37Qr
-        KJ2/cN0ZZLuWxOCA==
-To:     Peter Zijlstra <peterz@infradead.org>,
-        "Li, Xin3" <xin3.li@intel.com>
-Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "xen-devel@lists.xenproject.org" <xen-devel@lists.xenproject.org>,
-        "Lutomirski, Andy" <luto@kernel.org>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        "x86@kernel.org" <x86@kernel.org>,
-        "H . Peter Anvin" <hpa@zytor.com>,
-        "Gross, Jurgen" <jgross@suse.com>,
-        "Ostrovsky, Boris" <boris.ostrovsky@oracle.com>
-Subject: Re: [RFC PATCH 1/1] x86/traps: Get rid of exception handlers'
- second argument error code
-In-Reply-To: <20230804190120.GP212435@hirez.programming.kicks-ass.net>
-References: <20230804075734.8372-1-xin3.li@intel.com>
- <20230804101321.GH214207@hirez.programming.kicks-ass.net>
- <SA1PR11MB67349385C20E8D3B0C960432A809A@SA1PR11MB6734.namprd11.prod.outlook.com>
- <20230804190120.GP212435@hirez.programming.kicks-ass.net>
-Date:   Sat, 05 Aug 2023 23:02:59 +0200
-Message-ID: <87o7jlmccc.ffs@tglx>
+        Sat, 5 Aug 2023 17:04:58 -0400
+Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com [IPv6:2a00:1450:4864:20::331])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1BA0F3
+        for <linux-kernel@vger.kernel.org>; Sat,  5 Aug 2023 14:04:55 -0700 (PDT)
+Received: by mail-wm1-x331.google.com with SMTP id 5b1f17b1804b1-3fe2bc27029so31746015e9.3
+        for <linux-kernel@vger.kernel.org>; Sat, 05 Aug 2023 14:04:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1691269494; x=1691874294;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=VXgvu4PdDcYeSWEAGjMAQ6aaokT2QYB0Ybt1pTFSg+A=;
+        b=vgA2xqtfz8HfxCtetsIBocLLjd+CLI0pMJbGIsNa719wEia2zfDrrFeco3WOGOjdSY
+         xknRMHN1PzoOC8IQ6NkL2zK9YbRpg0mTfhvmVBrr6qMg+SAMdEUgdRIrcfZOn/stw7Ad
+         YU65yACHGJ5q9kgo1bJ5nPv/wBq99EBKt8PR0G8TfGNmQELNtbZ5YB6XFUemHO4cjgMm
+         NKtu4fyKR71+0TxvQM9EThPmFS5y1eooJ7p1qQFuf8Ze3ORPqVZyz1T5MMe61zssWh1H
+         3u9nlASTQlrBtIT/Hrq6biV8jwr7CwaklGNoxp85xPrW0NkfbWQ8qD9zUUQym5fsXmiI
+         Ac3g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691269494; x=1691874294;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=VXgvu4PdDcYeSWEAGjMAQ6aaokT2QYB0Ybt1pTFSg+A=;
+        b=cALeFv11w2Qr1OLtGkYk7V87OA4gXY2TY8197VerpSHpaqMfOqoJemjQVSQJrrU59x
+         cGorB/J0xwtS9IsYEETVC090q4OXdMPU1ZGh29Tsdrc3YuSfQsWy6T7ONbrYCKmg7H77
+         ZqeQsH1I9PZdwSf+p3LjCQQ1djM5PRKtaZ39wfVPs3KVbJqSqRkJ9Jca4GZk3APXWUOm
+         EAbf6196swclGLYGSF4cU08quh1F3qnF8w7Y1Xaocvf0FHQY3dEfjeROX0TFDR0QNClZ
+         4m9Je8w/byTrd4g4BxxvHXjGnTf2ypLy+LbU3x/DD+4zrNmwTv3mUd4Cfh0v6zhUO2oJ
+         UJ1Q==
+X-Gm-Message-State: AOJu0Yzdn2M+gCXAzHlclxLUJ9O6uUGxRtPeEXTCWKI0NFRB9QZfjK7B
+        Vw48KT5jMkXS2s2yjO3tlQ8oNQ==
+X-Google-Smtp-Source: AGHT+IELrrb3HMZVfrxFaUMcQP1kpcJAAxcbzg8Tw9gdaGgOuScyzdpPV8YzQuwVSlRpdWDtYUKKxQ==
+X-Received: by 2002:a5d:6812:0:b0:314:3740:7f69 with SMTP id w18-20020a5d6812000000b0031437407f69mr3812846wru.37.1691269494423;
+        Sat, 05 Aug 2023 14:04:54 -0700 (PDT)
+Received: from [192.168.1.20] ([178.197.222.245])
+        by smtp.gmail.com with ESMTPSA id w14-20020adfec4e000000b003141e629cb6sm5892063wrn.101.2023.08.05.14.04.52
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 05 Aug 2023 14:04:53 -0700 (PDT)
+Message-ID: <8fc27960-fa82-c900-0414-75b10a118f15@linaro.org>
+Date:   Sat, 5 Aug 2023 23:04:51 +0200
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.14.0
+Subject: Re: [PATCH v1 5/5] riscv: dts: starfive: Add the nodes and pins of
+ I2Srx/I2Stx0/I2Stx1
+Content-Language: en-US
+To:     Xingyu Wu <xingyu.wu@starfivetech.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Maxim Kochetkov <fido_max@inbox.ru>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor.dooley@microchip.com>,
+        Emil Renner Berthing <emil.renner.berthing@canonical.com>
+Cc:     Jose Abreu <joabreu@synopsys.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Walker Chen <walker.chen@starfivetech.com>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        alsa-devel@alsa-project.org, linux-riscv@lists.infradead.org
+References: <20230802084301.134122-1-xingyu.wu@starfivetech.com>
+ <20230802084301.134122-6-xingyu.wu@starfivetech.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <20230802084301.134122-6-xingyu.wu@starfivetech.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 04 2023 at 21:01, Peter Zijlstra wrote:
-> On Fri, Aug 04, 2023 at 05:35:11PM +0000, Li, Xin3 wrote:
->> > > The commit d99015b1abbad ("x86: move entry_64.S register saving out of
->> > > the macros") introduced the changes to set orig_ax to -1, but I can't
->> > > see why it's required. Our tests on x86_64 and x86_32 seem fine if
->> > > orig_ax is left unchanged instead of set to -1.
->> > 
->> > That means that SYSCALL_NUM(regs) get to be garbage; or something like that.
->> 
->> I find SYSCALL_NUM(regs) in tools/testing/selftests/seccomp/seccomp_bpf.c,
->> but nothing obvious to me.
->> 
->> I think it's clear that once exceptions and IRQs are handled, the original
->> context will be fully recovered in a normal case.
->> 
->> Is it related to preemption after such a event?
->> 
->> I must have missed something; can you please elaborate it?
->
-> arch/x86/include/asm/syscall.h
->
-> syscall_get_nr() syscall_rollback()
+On 02/08/2023 10:43, Xingyu Wu wrote:
+> Add I2Srx/I2Stx0/I2Stx1 nodes and pins configuration for the
+> StarFive JH7110 SoC.
+> 
+> Signed-off-by: Xingyu Wu <xingyu.wu@starfivetech.com>
+> ---
 
-Specifically it breaks signal handling. See arch_do_signal_or_restart()
-and handle_signal().
+...
 
-So, no. This cannot be changed nilly willy especially not because
-orig_ax is part of the UABI.
+> +
+>  	spi0_pins: spi0-0 {
+>  		mosi-pins {
+>  			pinmux = <GPIOMUX(52, GPOUT_SYS_SPI0_TXD,
+> diff --git a/arch/riscv/boot/dts/starfive/jh7110.dtsi b/arch/riscv/boot/dts/starfive/jh7110.dtsi
+> index 05f843b8ca03..507312eb6053 100644
+> --- a/arch/riscv/boot/dts/starfive/jh7110.dtsi
+> +++ b/arch/riscv/boot/dts/starfive/jh7110.dtsi
+> @@ -512,6 +512,30 @@ tdm: tdm@10090000 {
+>  			status = "disabled";
+>  		};
+>  
+> +		i2srx: i2srx@100e0000 {
 
-Even if it would work, this patch is completely unreviewable. There are
-smarter ways to make such a change in digestable chunks.
+Node names should be generic, so:
+i2s@
 
-I also looked at the latest FRED series and that's broken vs. orig_ax in
-the same way.
+> +			compatible = "starfive,jh7110-i2srx";
+> +			reg = <0x0 0x100e0000 0x0 0x1000>;
+> +			clocks = <&syscrg JH7110_SYSCLK_I2SRX_BCLK_MST>,
+> +				 <&syscrg JH7110_SYSCLK_I2SRX_APB>,
+> +				 <&syscrg JH7110_SYSCLK_MCLK>,
+> +				 <&syscrg JH7110_SYSCLK_MCLK_INNER>,
+> +				 <&mclk_ext>,
+> +				 <&syscrg JH7110_SYSCLK_I2SRX_BCLK>,
+> +				 <&syscrg JH7110_SYSCLK_I2SRX_LRCK>,
+> +				 <&i2srx_bclk_ext>,
+> +				 <&i2srx_lrck_ext>;
+> +			clock-names = "i2sclk", "apb", "mclk",
+> +				      "mclk_inner", "mclk_ext", "bclk",
+> +				      "lrck", "bclk_ext", "lrck_ext";
+> +			resets = <&syscrg JH7110_SYSRST_I2SRX_APB>,
+> +				 <&syscrg JH7110_SYSRST_I2SRX_BCLK>;
+> +			dmas = <0>, <&dma 24>;
+> +			dma-names = "tx", "rx";
+> +			starfive,syscon = <&sys_syscon 0x18 0x2>;
+> +			#sound-dai-cells = <0>;
+> +			status = "disabled";
+> +		};
+> +
+>  		usb0: usb@10100000 {
+>  			compatible = "starfive,jh7110-usb";
+>  			ranges = <0x0 0x0 0x10100000 0x100000>;
+> @@ -736,6 +760,47 @@ spi6: spi@120a0000 {
+>  			status = "disabled";
+>  		};
+>  
+> +		i2stx0: i2stx0@120b0000 {
 
-Aside of it the series is not applying to any tree I'm aware of. It
-fails because its based on a tree which has IRQ_MOVE_CLEANUP_VECTOR
-removed, but that's nowhere in mainline or tip. This is not the way it
-works, really.
+i2s@
 
-Back to the problem at hand. I'm absolutely not understanding why this
-all is so complicated.
+> +			compatible = "starfive,jh7110-i2stx0";
+> +			reg = <0x0 0x120b0000 0x0 0x1000>;
+> +			clocks = <&syscrg JH7110_SYSCLK_I2STX0_BCLK_MST>,
+> +				 <&syscrg JH7110_SYSCLK_I2STX0_APB>,
+> +				 <&syscrg JH7110_SYSCLK_MCLK>,
+> +				 <&syscrg JH7110_SYSCLK_MCLK_INNER>,
+> +				 <&mclk_ext>;
+> +			clock-names = "i2sclk", "apb", "mclk",
+> +				      "mclk_inner","mclk_ext";
+> +			resets = <&syscrg JH7110_SYSRST_I2STX0_APB>,
+> +				 <&syscrg JH7110_SYSRST_I2STX0_BCLK>;
+> +			dmas = <&dma 47>;
+> +			dma-names = "tx";
+> +			#sound-dai-cells = <0>;
+> +			status = "disabled";
+> +		};
+> +
+> +		i2stx1: i2stx1@120c0000 {
 
-FRED pushs the error code or 0 (in case there is no error code) right
-into orig_ax. That's where the ERET[US] frame starts. ERT[US] do not
-care at all about the error code location, they skip it by adding 8 to
-RSP.
+i2s@
 
-So the obvious thing to do is:
 
-fred_entry_from_xxxx(struct pt_regs *regs)
-{
-        unsigned long error_code = regs->orig_ax;
 
-        regs->orig_ax = -1;
+Best regards,
+Krzysztof
 
-        dispatch_1st_level(regs->type, regs, error_code);
-}
-
-Now the dispatching code in your series looks nice and shiny with all
-those tables, but in practice it's not so shiny at all.
-
-For one this code forces indirect calls even in places where there are
-no indirect calls required.
-
-But what's worse it causes you to make everything uniform one way or the
-other and adding all this dispatch_table_##func muck, which is fully
-duplicated code for absolutely zero reason. That's error prone and a
-maintainence mess.
-
-The vast majority of exceptions, interrupts whatever is not special at
-all neither on FRED nor on IDT. The ones which need special treatment
-are those which store additional information in the stack frame and
-these are the exception - not the rule. And those require special
-treatment anyway whether you make the rest look uniform or not.
-
-IOW, your approach of making everything uniform is completely
-wrong. There is a reason why some system vectors are not using
-DEFINE_IDTENTRY_SYSVEC().  Particularly the RESCHEDULE_VECTOR. This has
-been performance optimized with a lot of effort and no, we are not going
-to sacrifice that just because it makes it sooo simple for FRED.
-
-This is not about simplicity. This is about sane and maintainable code
-which preserves the carefully optimized code paths which are hotpath no
-matter whether there is IDT or FRED.
-
-I'm going to reply on your last failed resend attempt after creating a
-sane mail thread out of the mess you created (including the insanely
-large and inappropriate cc list).
-
-Thanks,
-
-        tglx
