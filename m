@@ -2,194 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 381AC770C8D
-	for <lists+linux-kernel@lfdr.de>; Sat,  5 Aug 2023 02:00:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 92DC9770C94
+	for <lists+linux-kernel@lfdr.de>; Sat,  5 Aug 2023 02:09:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229628AbjHEAAf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Aug 2023 20:00:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35284 "EHLO
+        id S229693AbjHEAJc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Aug 2023 20:09:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36352 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229515AbjHEAAd (ORCPT
+        with ESMTP id S229469AbjHEAJ3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Aug 2023 20:00:33 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C1084EE4;
-        Fri,  4 Aug 2023 17:00:31 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id BE5FC6217E;
-        Sat,  5 Aug 2023 00:00:30 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 31B14C433C7;
-        Sat,  5 Aug 2023 00:00:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691193630;
-        bh=5Btpzxhwy1py8ALbN0tM+A7Ge6dF3mwFVy6nXkQlmKo=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=eHg8q74soKjL8GBTtjCMrgfDMcNwEBGBZQcjVtWxmuWQzyH/AsT5nCzjSXTywS6mu
-         dFbDR2LBLY+QOfey7Vui25pzACNvo2FECm5AoGpXSGRJURWuZiFDtGxPlgWCcPRj2x
-         pxPxeKjf1qHhkFmuT4hnCsH/THkv7ihf6TGeeFnyatlcmbsYrJWgUqVbo6KsPE9xV8
-         H+N+ZDrOY2AkzCHj9q26v5KXLTB6f+RNHB68ZZhlY7iZLwCaA2WL2MjlHzjQ35ocMd
-         fx6WR5SNuqKFv7kgo9HNzgfnSOW5UZuOj7LKAUFCnzVYYnk/tBQUxZ/Pf8927DoA4W
-         m4wfZvN2V71Jw==
-Received: by mail-lj1-f173.google.com with SMTP id 38308e7fff4ca-2b9e6cc93d8so42541641fa.0;
-        Fri, 04 Aug 2023 17:00:30 -0700 (PDT)
-X-Gm-Message-State: AOJu0YwwjZ9nseoaow2ZaYZRX1daGXyH6+m26QGzQDIcBKjI/P/FLI1Z
-        NoTptb4XnHHR0OgvBXJ0DkregoTQhXy4VXFBwyk=
-X-Google-Smtp-Source: AGHT+IEKI58N3NWiaE/N0pKPD7u3M2jBQakRchM73rux7MoJqLdEL20FtKq2N2P/Wc72GvEC8LJRvGgtDJZzCAph1jo=
-X-Received: by 2002:a19:915c:0:b0:4fa:21d4:b3ca with SMTP id
- y28-20020a19915c000000b004fa21d4b3camr2229529lfj.2.1691193628194; Fri, 04 Aug
- 2023 17:00:28 -0700 (PDT)
+        Fri, 4 Aug 2023 20:09:29 -0400
+Received: from mail-oi1-f199.google.com (mail-oi1-f199.google.com [209.85.167.199])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD7FE4EDE
+        for <linux-kernel@vger.kernel.org>; Fri,  4 Aug 2023 17:09:27 -0700 (PDT)
+Received: by mail-oi1-f199.google.com with SMTP id 5614622812f47-3a7292a2ad5so4628777b6e.0
+        for <linux-kernel@vger.kernel.org>; Fri, 04 Aug 2023 17:09:27 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691194167; x=1691798967;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=FoY/PwFD0Rg65vVH6VJq/xffUWgs1OqWSy1dP4FgMIQ=;
+        b=NlicRU3MZiciHOmoU97+8dBOvzzhWqnhYUwMh1A8ri/LJz4lc+C9ncXyq6JCxkW9K1
+         Ww4utt3Geo2snxB12YGDAOd/5jFTdXCI7yq8y4tZnwCLpcV0X4m9iLai5xWSYVmLCNVe
+         RN4xEQii4vtYwB/8lKTOE/1BW/3ZveyA2/YbTsH0cpGaeInhqb6DSJvXauAKTqcJjue6
+         kdE6FB5H/KoGGGiJ7y8uyyuRA/l1mlfLMCJVAb7frGquqyJz51sf51uV+FGuuc6IcVEg
+         KaEHEyAPrfy07N8QJYL7bDm/7aZA+PmKkooWdnQYjiJllbG7PasBjoCgHWq9MWshZ6vV
+         M9Cg==
+X-Gm-Message-State: AOJu0YwmS5+xSEDnGF9zSMYQDFTe6TZ23eJv2YhGMMu/FYwpnvraU4Bt
+        vPSwhK62ihybrDx35hgjkMDIM3NEBbQTmRKn9JAa2RkaNZ67
+X-Google-Smtp-Source: AGHT+IHzZpeBgcO6v7s1Q4yu3YWAWP/RE2nVc5pSgc2PsDu2FLAxNAV7Vpa/NM77hMlzGvEouqMcspaw7MDkHJ5NQYnjtdSJZ8F2
 MIME-Version: 1.0
-References: <20230614013018.2168426-1-guoren@kernel.org> <20230614013018.2168426-2-guoren@kernel.org>
- <ZM1tGgcJg0silFaJ@zx2c4.com> <CAHmME9p3VoZco0+io6pZDnzKVdnP4vr4XWNaAPXGew+1RmfVig@mail.gmail.com>
- <20230804-hut-morbidity-126fc9158f38@spud>
-In-Reply-To: <20230804-hut-morbidity-126fc9158f38@spud>
-From:   Guo Ren <guoren@kernel.org>
-Date:   Fri, 4 Aug 2023 20:00:16 -0400
-X-Gmail-Original-Message-ID: <CAJF2gTQncTuXZ=QO_F4MGFLWEe8yrTHPVzr7_-axa-Mx7LDyFA@mail.gmail.com>
-Message-ID: <CAJF2gTQncTuXZ=QO_F4MGFLWEe8yrTHPVzr7_-axa-Mx7LDyFA@mail.gmail.com>
-Subject: Re: [PATCH -next V13 1/3] riscv: stack: Support HAVE_IRQ_EXIT_ON_IRQ_STACK
-To:     Conor Dooley <conor@kernel.org>
-Cc:     "Jason A. Donenfeld" <Jason@zx2c4.com>, arnd@arndb.de,
-        palmer@rivosinc.com, conor.dooley@microchip.com, heiko@sntech.de,
-        jszhang@kernel.org, bjorn@kernel.org, cleger@rivosinc.com,
-        linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-riscv@lists.infradead.org, Guo Ren <guoren@linux.alibaba.com>
+X-Received: by 2002:a05:6808:1812:b0:39c:a74b:81d6 with SMTP id
+ bh18-20020a056808181200b0039ca74b81d6mr4782033oib.7.1691194167195; Fri, 04
+ Aug 2023 17:09:27 -0700 (PDT)
+Date:   Fri, 04 Aug 2023 17:09:27 -0700
+In-Reply-To: <000000000000f1a26f05e9a72f57@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000094fcb0060221d31a@google.com>
+Subject: Re: [syzbot] [fs?] WARNING in brelse
+From:   syzbot <syzbot+2a0fbd1cb355de983130@syzkaller.appspotmail.com>
+To:     akpm@linux-foundation.org, hch@lst.de,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        liushixin2@huawei.com, syzkaller-bugs@googlegroups.com,
+        viro@zeniv.linux.org.uk
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=0.9 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,
+        SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 4, 2023 at 5:41=E2=80=AFPM Conor Dooley <conor@kernel.org> wrot=
-e:
->
-> On Fri, Aug 04, 2023 at 11:28:17PM +0200, Jason A. Donenfeld wrote:
-> > On Fri, Aug 4, 2023 at 11:28=E2=80=AFPM Jason A. Donenfeld <Jason@zx2c4=
-.com> wrote:
-> > >
-> > > Hi Guo,
-> > >
-> > > On Tue, Jun 13, 2023 at 09:30:16PM -0400, guoren@kernel.org wrote:
-> > > > From: Guo Ren <guoren@linux.alibaba.com>
-> > > >
-> > > > Add independent irq stacks for percpu to prevent kernel stack overf=
-lows.
-> > > > It is also compatible with VMAP_STACK by arch_alloc_vmap_stack.
-> > > >
-> > > > Tested-by: Jisheng Zhang <jszhang@kernel.org>
-> > > > Signed-off-by: Guo Ren <guoren@linux.alibaba.com>
-> > > > Signed-off-by: Guo Ren <guoren@kernel.org>
-> > > > Cc: Cl=C3=A9ment L=C3=A9ger <cleger@rivosinc.com>
-> > >
-> > > This patch broke the WireGuard test suite. I've attached the .config
-> > > file that it uses. I'm able to fix it by setting CONFIG_EXPERT=3Dy an=
-d
-> > > CONFIG_IRQ_STACKS=3Dn to essentially reverse the effect of this patch=
-. But
-> > > I'd rather not do that.
-> > >
-> > > Any idea what's up?
->
-> Given your config, I suspect you're hitting the issue that is resolved
-> by Guo Ren's series:
-> https://lore.kernel.org/linux-riscv/20230716001506.3506041-1-guoren@kerne=
-l.org/
-Thx Conor's reply.
+syzbot has bisected this issue to:
 
->
-> Hopefully that's it,
-> Conor.
->
-> > >
-> > > Thanks,
-> > > Jason
-> >
-> > And, err, I guess I failed to describe what's broken exactly. Here's
-> > what happens:
-> >
-> > timeout --foreground 20m qemu-system-riscv64 \
-> >        -nodefaults \
-> >        -nographic \
-> >        -smp 4 \
-> >        -cpu rv64 -machine virt \
-> >        -m 256M \
-> >        -serial stdio \
-> >        -chardev
-> > file,path=3D/home/zx2c4/Projects/wireguard-linux/tools/testing/selftest=
-s/wireguard/qemu/build/riscv64/result,id=3Dresult
-> > \
-> >        -device virtio-serial-device -device virtserialport,chardev=3Dre=
-sult \
-> >        -no-reboot \
-> >        -monitor none \
-> >        -kernel /home/zx2c4/Projects/wireguard-linux/tools/testing/selft=
-ests/wireguard/qemu/build/riscv64/kernel/arch/riscv/boot/Image
-> >
-> > OpenSBI v1.2
-> >   ____                    _____ ____ _____
-> >  / __ \                  / ____|  _ \_   _|
-> > | |  | |_ __   ___ _ __ | (___ | |_) || |
-> > | |  | | '_ \ / _ \ '_ \ \___ \|  _ < | |
-> > | |__| | |_) |  __/ | | |____) | |_) || |_
-> >  \____/| .__/ \___|_| |_|_____/|____/_____|
-> >        | |
-> >        |_|
-> >
-> > Platform Name             : riscv-virtio,qemu
-> > Platform Features         : medeleg
-> > Platform HART Count       : 4
-> > Platform IPI Device       : aclint-mswi
-> > Platform Timer Device     : aclint-mtimer @ 10000000Hz
-> > Platform Console Device   : uart8250
-> > Platform HSM Device       : ---
-> > Platform PMU Device       : ---
-> > Platform Reboot Device    : sifive_test
-> > Platform Shutdown Device  : sifive_test
-> > Firmware Base             : 0x80000000
-> > Firmware Size             : 236 KB
-> > Runtime SBI Version       : 1.0
-> >
-> > Domain0 Name              : root
-> > Domain0 Boot HART         : 0
-> > Domain0 HARTs             : 0*,1*,2*,3*
-> > Domain0 Region00          : 0x0000000002000000-0x000000000200ffff (I)
-> > Domain0 Region01          : 0x0000000080000000-0x000000008003ffff ()
-> > Domain0 Region02          : 0x0000000000000000-0xffffffffffffffff (R,W,=
-X)
-> > Domain0 Next Address      : 0x0000000080200000
-> > Domain0 Next Arg1         : 0x000000008fe00000
-> > Domain0 Next Mode         : S-mode
-> > Domain0 SysReset          : yes
-> >
-> > Boot HART ID              : 0
-> > Boot HART Domain          : root
-> > Boot HART Priv Version    : v1.12
-> > Boot HART Base ISA        : rv64imafdch
-> > Boot HART ISA Extensions  : time,sstc
-> > Boot HART PMP Count       : 16
-> > Boot HART PMP Granularity : 4
-> > Boot HART PMP Address Bits: 54
-> > Boot HART MHPM Count      : 16
-> > Boot HART MIDELEG         : 0x0000000000001666
-> > Boot HART MEDELEG         : 0x0000000000f0b509
-> > [terminates/hangs here]
-> >
-> > _______________________________________________
-> > linux-riscv mailing list
-> > linux-riscv@lists.infradead.org
-> > http://lists.infradead.org/mailman/listinfo/linux-riscv
+commit f6e2c20ca7604e6a267c93a511d19dda72573be1
+Author: Liu Shixin <liushixin2@huawei.com>
+Date:   Fri Apr 29 21:38:04 2022 +0000
 
+    fs: sysv: check sbi->s_firstdatazone in complete_read_super
 
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=15e8976da80000
+start commit:   77856d911a8c Merge tag 'arm64-fixes' of git://git.kernel.o..
+git tree:       upstream
+final oops:     https://syzkaller.appspot.com/x/report.txt?x=17e8976da80000
+console output: https://syzkaller.appspot.com/x/log.txt?x=13e8976da80000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=f967143badd2fa39
+dashboard link: https://syzkaller.appspot.com/bug?extid=2a0fbd1cb355de983130
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=11393ab3880000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=12a2a99d880000
 
---=20
-Best Regards
- Guo Ren
+Reported-by: syzbot+2a0fbd1cb355de983130@syzkaller.appspotmail.com
+Fixes: f6e2c20ca760 ("fs: sysv: check sbi->s_firstdatazone in complete_read_super")
+
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
