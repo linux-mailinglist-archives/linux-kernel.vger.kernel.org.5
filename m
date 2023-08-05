@@ -2,109 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E76C770F46
-	for <lists+linux-kernel@lfdr.de>; Sat,  5 Aug 2023 12:28:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D0F5B770F47
+	for <lists+linux-kernel@lfdr.de>; Sat,  5 Aug 2023 12:28:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229726AbjHEK2i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 5 Aug 2023 06:28:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47150 "EHLO
+        id S229683AbjHEK2u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 5 Aug 2023 06:28:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47290 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229469AbjHEK2a (ORCPT
+        with ESMTP id S229819AbjHEK2q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 5 Aug 2023 06:28:30 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.93])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4AD84689;
-        Sat,  5 Aug 2023 03:28:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1691231309; x=1722767309;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=/ZDkkCoUDWx4/s8HsGY+04UsKtUjmmFhstQgDKpEhmg=;
-  b=nQhOwHQ2ryJGZm8ujDDPa7SNjlWK+XWxdjTj5AAeaACNQ/jB8lpDQCfz
-   7OZ15jtAySepc30vCbKOeWSYk6a4dSychTkABWOgLBBAw0msdC2FsK59M
-   ah5Dvd3XONTSA5ApTDHm9LUXQQAURvKB4pZQSrMS6g1o3CIrktIRot0IX
-   zduDiAgkZjO8B44R2JbbDA8bSRlCDqayj6F0t5gpSsT7vgfexivhqzFlE
-   JU5Wp75mJveSiTKeshHwnNEskP9txuBn686IMrKadvIPQ/K1wxlw/J81z
-   x0pw1rZgilNjYGfW2L7P8AqWMMeOl4uXTQtyt9JeceRha35CYyW6ZfgIy
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10792"; a="367762433"
-X-IronPort-AV: E=Sophos;i="6.01,257,1684825200"; 
-   d="scan'208";a="367762433"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Aug 2023 03:28:27 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10792"; a="1061070412"
-X-IronPort-AV: E=Sophos;i="6.01,257,1684825200"; 
-   d="scan'208";a="1061070412"
-Received: from lkp-server01.sh.intel.com (HELO d1ccc7e87e8f) ([10.239.97.150])
-  by fmsmga005.fm.intel.com with ESMTP; 05 Aug 2023 03:28:25 -0700
-Received: from kbuild by d1ccc7e87e8f with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qSEWG-0003Rt-1B;
-        Sat, 05 Aug 2023 10:28:24 +0000
-Date:   Sat, 5 Aug 2023 18:27:36 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Mario Limonciello <mario.limonciello@amd.com>,
-        "Rafael J . Wysocki" <rafael@kernel.org>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Bjorn Helgaas <helgaas@kernel.org>
-Cc:     llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
-        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        linux-acpi@vger.kernel.org,
-        Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        Iain Lane <iain@orangesquash.org.uk>,
-        Shyam-sundar S-k <Shyam-sundar.S-k@amd.com>,
-        Mario Limonciello <mario.limonciello@amd.com>
-Subject: Re: [PATCH v10 7/7] PCI: Use device constraints to decide PCI target
- state fallback policy
-Message-ID: <202308051803.x00umDzn-lkp@intel.com>
-References: <20230804210129.5356-8-mario.limonciello@amd.com>
+        Sat, 5 Aug 2023 06:28:46 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 5B4C649CB
+        for <linux-kernel@vger.kernel.org>; Sat,  5 Aug 2023 03:28:43 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id B78DD1FB;
+        Sat,  5 Aug 2023 03:29:25 -0700 (PDT)
+Received: from [10.57.90.200] (unknown [10.57.90.200])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id AF54B3F5A1;
+        Sat,  5 Aug 2023 03:28:40 -0700 (PDT)
+Message-ID: <a80bdc12-96f9-bdf4-8253-bf0ea305e00d@arm.com>
+Date:   Sat, 5 Aug 2023 11:28:39 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230804210129.5356-8-mario.limonciello@amd.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.13.0
+Subject: Re: [RFC PATCH 0/3] coresight: Support exclude_guest with Feat_TRF
+ and nVHE
+To:     Marc Zyngier <maz@kernel.org>, James Clark <james.clark@arm.com>
+Cc:     coresight@lists.linaro.org, linux-arm-kernel@lists.infradead.org,
+        kvmarm@lists.linux.dev, Oliver Upton <oliver.upton@linux.dev>,
+        James Morse <james.morse@arm.com>,
+        Zenghui Yu <yuzenghui@huawei.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Mike Leach <mike.leach@linaro.org>,
+        Leo Yan <leo.yan@linaro.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Rob Herring <robh@kernel.org>, linux-kernel@vger.kernel.org
+References: <20230804101317.460697-1-james.clark@arm.com>
+ <86edki62vz.wl-maz@kernel.org>
+From:   Suzuki K Poulose <suzuki.poulose@arm.com>
+In-Reply-To: <86edki62vz.wl-maz@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Mario,
+Hi Marc
 
-kernel test robot noticed the following build errors:
+On 04/08/2023 20:09, Marc Zyngier wrote:
+> On Fri, 04 Aug 2023 11:13:10 +0100,
+> James Clark <james.clark@arm.com> wrote:
+>>
+>> Hi,
+>>
+>> I'm looking for help in testing this and for feedback on whether it's
+>> useful to anyone. Testing it requires hardware that has Feat_TRF (v8.4)
+>> but no TRBE. This is because TRBE usage is disabled in nVHE guests.
+>>
+>> I don't currently have any access to any hardware, and the FVP model
+>> can only do self hosted trace using TRBE.
+>>
+>> Currently with nVHE you would always get trace from guests, and
+>> filtering out isn't possible without this patchset. In comparison, with
+>> VHE guests, they never generate guest trace without [1]. I think the
+>> existence of trace rather than lack of could suggest that this change is
+>> less useful than [1]. Also the restricted set of hardware that it works
+>> on supports that too.
+> 
+> It'd be nice to have some sort of feature parity, but it seems like a
+> vanishingly small target of users having access to an ETM sink.
+> 
+>>
+>> Apart from compilation and checking that the exclude guest settings
+>> are correctly programmed on guest switch, this is untested by me.
+> 
+> I'll have a look at the series, but none of my HW fits in this
+> description (my ARMv8.4+ boxes don't have any form of tracing).
 
-[auto build test ERROR on rafael-pm/linux-next]
-[also build test ERROR on pci/next pci/for-linus westeri-thunderbolt/next linus/master v6.5-rc4 next-20230804]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+While I have your attention, we have another series that manages the
+trace filtering for Guests on VHE, completely within the Coresight etm4x
+driver here [0]. I personally think, it is good to have the guest
+filtering for both nVHE and VHE under the KVM control, like we do
+in this series. I would like your opinion on this.
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Mario-Limonciello/ACPI-Add-comments-to-clarify-some-ifdef-statements/20230805-050559
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-pm.git linux-next
-patch link:    https://lore.kernel.org/r/20230804210129.5356-8-mario.limonciello%40amd.com
-patch subject: [PATCH v10 7/7] PCI: Use device constraints to decide PCI target state fallback policy
-config: x86_64-randconfig-r013-20230731 (https://download.01.org/0day-ci/archive/20230805/202308051803.x00umDzn-lkp@intel.com/config)
-compiler: clang version 16.0.4 (https://github.com/llvm/llvm-project.git ae42196bc493ffe877a7e3dff8be32035dea4d07)
-reproduce: (https://download.01.org/0day-ci/archive/20230805/202308051803.x00umDzn-lkp@intel.com/reproduce)
+[0] https://lkml.kernel.org/r/20230804085219.260790-1-james.clark@arm.com
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202308051803.x00umDzn-lkp@intel.com/
 
-All errors (new ones prefixed by >>):
+Suzuki
 
->> ld.lld: error: undefined symbol: acpi_get_lps0_constraint
-   >>> referenced by pci.c:1090 (drivers/pci/pci.c:1090)
-   >>>               vmlinux.o:(pci_target_state)
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+> 
+> Thanks,
+> 
+> 	M.
+> 
+
