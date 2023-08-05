@@ -2,101 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AE91B7712FE
-	for <lists+linux-kernel@lfdr.de>; Sun,  6 Aug 2023 01:16:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CF96B771305
+	for <lists+linux-kernel@lfdr.de>; Sun,  6 Aug 2023 01:38:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229717AbjHEXP7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 5 Aug 2023 19:15:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35810 "EHLO
+        id S229628AbjHEXiG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 5 Aug 2023 19:38:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37902 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229999AbjHEXP6 (ORCPT
+        with ESMTP id S229449AbjHEXiE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 5 Aug 2023 19:15:58 -0400
-Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C56D426BE;
-        Sat,  5 Aug 2023 16:15:44 -0700 (PDT)
-Received: by mail-wm1-x32d.google.com with SMTP id 5b1f17b1804b1-3fe4b45a336so13360155e9.1;
-        Sat, 05 Aug 2023 16:15:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1691277343; x=1691882143;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=XLYg/J+UJ6fbY/mN9HM7bVyp2sfI4lnm/dmzqkwlIjY=;
-        b=H3ug8b0CDCTepLMQsXNP2LkonvE8Y1AJvRJ8q5Sa1DgdXuaKoUGfdeZxRfGyW4zXAD
-         4d/Cr2HToB5v6VnWHhQiM3pOhOPlR4JGOlJRmRGLXNavcEzA5WsTJygBDiIDlG2675zs
-         prWx7iI2ILpz2ZG28ImDaEE3lnFZyMQxl5INF3azCejE1zsywvc/RePKC2+gc2vRl1NZ
-         kTs0kQ5PMmnk5nci4Ao3h8F/QZwxdhZ9J6C5r2cBjeyg02Z0kG3FFkH1t3kjfKC1D8Cq
-         hdYBKPf9RQHVf0egXPLpHvEWhkK39GhCOaJvg5/hORoluEiwgsSTkXVJBMNRZ+jQ97UB
-         lTJw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691277343; x=1691882143;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=XLYg/J+UJ6fbY/mN9HM7bVyp2sfI4lnm/dmzqkwlIjY=;
-        b=OeAbJE/xK6nEr5mI2wJ9n9yokon1zYnjRVoTg0y3/xuPQYSNGz9dLT6NuFf6V3jl37
-         Vr9q675BmRzB2bZdd2aUioNpIIk5BCFgp1IzkSJAGk3YB7KTxMHKRmB5+EAlC3fcM03Y
-         Cyv2dvDkiLf9GMXdS7eZwDpO5gCW0En1nKROIge2uFSls/Gf+lR5o5YrLojzan0z7ywq
-         DOVaHF9nwoa0JaRSqfybET1FBdqtbsk+qcDeuktOTuIS75F+hmEA1XjgzWp7pUw4OTKe
-         prkh5au8znO092Yf/uQ1Jq2eRjNaP902Cnic853raT3sP5UvRyVO7X0Ftrk+mc5pf19K
-         hk4g==
-X-Gm-Message-State: AOJu0YypoCFidl12pbKVDBTHjEa4Spmu6ASgMf9RAmUWXUuSembL54BK
-        AT7Pd18zo6K7wfdnDi7vK5eGEcaS0gw=
-X-Google-Smtp-Source: AGHT+IFlxP+wGNHdHStcPnqROvQbpKscKDaAOAhTsJ+MrJL5NYJLHY+zLvPS2+4edL+v4KL9A3Va/A==
-X-Received: by 2002:a5d:408b:0:b0:317:6653:60b8 with SMTP id o11-20020a5d408b000000b00317665360b8mr3450975wrp.50.1691277342682;
-        Sat, 05 Aug 2023 16:15:42 -0700 (PDT)
-Received: from toolbox.taileb357.ts.net (89.red-83-35-60.dynamicip.rima-tde.net. [83.35.60.89])
-        by smtp.gmail.com with ESMTPSA id s9-20020adfecc9000000b0031416362e23sm6212531wro.3.2023.08.05.16.15.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 05 Aug 2023 16:15:42 -0700 (PDT)
-From:   Angel Iglesias <ang.iglesiasg@gmail.com>
-To:     linux-iio@vger.kernel.org
-Cc:     Angel Iglesias <ang.iglesiasg@gmail.com>,
-        Jonathan Cameron <jic23@kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>, linux-kernel@vger.kernel.org
-Subject: [PATCH 2/2] iio: pressure: bmp280: Use i2c_get_match_data
-Date:   Sun,  6 Aug 2023 01:15:03 +0200
-Message-ID: <b3483bd87093d4cd0862904b70a167ebbb538644.1691276610.git.ang.iglesiasg@gmail.com>
-X-Mailer: git-send-email 2.41.0
-In-Reply-To: <cover.1691276610.git.ang.iglesiasg@gmail.com>
-References: <cover.1691276610.git.ang.iglesiasg@gmail.com>
+        Sat, 5 Aug 2023 19:38:04 -0400
+Received: from mail.croughan.sh (mail.croughan.sh [135.181.193.41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98A3D106;
+        Sat,  5 Aug 2023 16:37:59 -0700 (PDT)
+From:   Matthew Croughan <matthew.croughan@nix.how>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nix.how; s=mail;
+        t=1691278675; bh=ozH0GhiwKpf+3WO7HJRyIfSC4fni4M0Jmnu12HwytJg=;
+        h=From:To:Cc:Subject:Date;
+        b=jZroIgsjXw8+ZLSdV8FdySv3mfJs1zZ6c4ZCR1xHayM0Tbayobv1VesodrEy3glqB
+         H2ad1S+0+fHDVPdJupaEAaBOaayjgvV8Q4hv/95vA3oDl3KJx0HmpqqaQWNtw9IOen
+         vqQRNicInVQeeyLT2YUA+XkB2tWNolwxNKQw6CSc=
+To:     Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Andre Przywara <andre.przywara@arm.com>
+Cc:     Matthew Croughan <matthew.croughan@nix.how>,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-sunxi@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: [PATCH v6 0/2] arm64: dts: allwinner: h616: Add Mango Pi MQ-Quad DTS
+Date:   Sun,  6 Aug 2023 00:34:54 +0100
+Message-ID: <20230805233715.1216456-1-matthew.croughan@nix.how>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Replaces device_get_match_data() and fallback match_id logic by new
-unified helper function i2c_get_match_data().
+V1: Submission
+V2: Alphabetical ordering, added "widora,mangopi-mq-quad" compatible
+V3: Added Signed-off-by, add to device-tree compatible/bindings documentation
+V4:
+- Add separate patch for bindings documentation
+- Regularised comment style
+- Add vcc supplies for gpio according to board schematic
+- Removed unnecessary x-powers,self-working-mode;
+- Added comment regarding ALDO1
+- Removed unnecessary reg_dldo1 regulator, it seems to be connected to nothing
+  in the schematic, no adverse effects observed
+V5:
+- Switch ordering of patches
+- Fix comment style
+- Add Reviewed-by tag
+V6:
+- Corrected Reviewed-by tags on commits
+- pass #interrupt-cells = <1> to axp313a
+- pass interrupt-controller to axp313a
 
-Signed-off-by: Angel Iglesias <ang.iglesiasg@gmail.com>
+Matthew Croughan (2):
+  dt-bindings: arm: sunxi: add Mango Pi MQ-Quad binding
+  arm64: dts: allwinner: h616: Add Mango Pi MQ-Quad DTS
 
-diff --git a/drivers/iio/pressure/bmp280-i2c.c b/drivers/iio/pressure/bmp280-i2c.c
-index 693eb1975fdc..4ebaa4edc4fc 100644
---- a/drivers/iio/pressure/bmp280-i2c.c
-+++ b/drivers/iio/pressure/bmp280-i2c.c
-@@ -11,9 +11,9 @@ static int bmp280_i2c_probe(struct i2c_client *client)
- 	const struct bmp280_chip_info *chip_info;
- 	struct regmap *regmap;
- 
--	chip_info = device_get_match_data(&client->dev);
-+	chip_info = i2c_get_match_data(client);
- 	if (!chip_info)
--		chip_info = (const struct bmp280_chip_info *) id->driver_data;
-+		return -ENODEV;
- 
- 	regmap = devm_regmap_init_i2c(client, chip_info->regmap_config);
- 	if (IS_ERR(regmap)) {
+ .../devicetree/bindings/arm/sunxi.yaml        |   5 +
+ arch/arm64/boot/dts/allwinner/Makefile        |   1 +
+ .../allwinner/sun50i-h616-mangopi-mq-quad.dts | 187 ++++++++++++++++++
+ 3 files changed, 193 insertions(+)
+ create mode 100644 arch/arm64/boot/dts/allwinner/sun50i-h616-mangopi-mq-quad.dts
+
 -- 
 2.41.0
 
