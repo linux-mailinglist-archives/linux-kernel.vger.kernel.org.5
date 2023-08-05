@@ -2,203 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CAECF770EDE
-	for <lists+linux-kernel@lfdr.de>; Sat,  5 Aug 2023 10:39:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A6936770EE0
+	for <lists+linux-kernel@lfdr.de>; Sat,  5 Aug 2023 10:41:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229944AbjHEIjp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 5 Aug 2023 04:39:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57954 "EHLO
+        id S229584AbjHEIl4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 5 Aug 2023 04:41:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58672 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229959AbjHEIjj (ORCPT
+        with ESMTP id S229496AbjHEIlu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 5 Aug 2023 04:39:39 -0400
-Received: from bg4.exmail.qq.com (bg4.exmail.qq.com [43.155.65.254])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2F2349F4
-        for <linux-kernel@vger.kernel.org>; Sat,  5 Aug 2023 01:39:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=biqu3d.com;
-        s=tfld2305; t=1691224761;
-        bh=vEKjizOztuDqy9KmC2c7ykzZ5vlzp6rvrwPfNSHRDN0=;
-        h=From:To:Subject:Date:Message-ID:MIME-Version;
-        b=luzzkOD9PCNnmq/3WzzeWXWmUUyLBKEL9mbCR4sCDf7GSBFewMgWVyql1lm4KLhni
-         /Zixr4kuqMZ/FBLVVnoDrvjacNr7v/+FYVuA6UoFSYV7pf88ws1HiPWDyG7kpIV6DQ
-         Rw4hsxwEZ0Apt7VsGaUfj6scHu6RgK9jlJ6qMZzU=
-X-QQ-mid: bizesmtp83t1691224702t71mm2ha
-Received: from localhost.localdomain ( [178.41.211.221])
-        by bizesmtp.qq.com (ESMTP) with 
-        id ; Sat, 05 Aug 2023 16:38:08 +0800 (CST)
-X-QQ-SSF: 01400000000000505000000A0000000
-X-QQ-FEAT: 1aHTM9ylpVzwFs/GMn1DOEf1VJBKSJIxCwOFsZ9Y00L5UuchrD3isPwzzPlN+
-        3Wo9Qi1UuuRj797v532ipG9iSNY5LPW5BPomnvxicYQSGGuQb+49QuGuSutMzIT7Ii2phhb
-        dfMb+JCYTs773uVR3/n7OKDQIck34EXPeln1VjATTPQtL4hMHzN81CLRn/iuW0StaqOQ1m2
-        gfuDkb+/iU6f/yD8pIpXAfinPp9VBuO8VRYwE0ZGr+rZ0qkY+p/CrfVHDmLpgDO038PckP8
-        8v/LSkOE4RMqprCy5FMtp3fndoZpDxpf98Qg08KnN9Gr/ARyKtfEvmFcdKLPSRq5TgIz98R
-        wz+LMzNMn1TbzYt+N6dtJw4eDxgiHNq4V2V7LJ2xF3acK/jwtmUmzd6uBR4u3kWN0jxIBTX
-X-QQ-GoodBg: 2
-X-BIZMAIL-ID: 9226605885258819759
-From:   Martin Botka <martin@biqu3d.com>
-To:     martin.botka1@gmail.com
-Cc:     Konrad Dybcio <konrad.dybcio@somainline.org>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@somainline.org>,
-        Marijn Suijten <marijn.suijten@somainline.org>,
-        Jami Kettunen <jamipkettunen@somainline.org>,
-        Paul Bouchara <paul.bouchara@somainline.org>,
-        Martin Botka <martin.botka@somainline.org>,
-        Andre Przywara <andre.przywara@arm.com>,
-        Martin Botka <martin@biqu3d.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Chen-Yu Tsai <wens@csie.org>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Samuel Holland <samuel@sholland.org>,
-        Ludwig Kormann <ludwig.kormann@ict42.de>,
-        Icenowy Zheng <uwu@icenowy.me>, Andrew Lunn <andrew@lunn.ch>,
-        Heiko Stuebner <heiko@sntech.de>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Chris Morgan <macromorgan@hotmail.com>,
-        Jagan Teki <jagan@edgeble.ai>,
-        Maxime Ripard <mripard@kernel.org>, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev,
+        Sat, 5 Aug 2023 04:41:50 -0400
+Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52B734689
+        for <linux-kernel@vger.kernel.org>; Sat,  5 Aug 2023 01:41:48 -0700 (PDT)
+Received: from mail02.huawei.com (unknown [172.30.67.143])
+        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4RHwzq4P0hz4f3pHw
+        for <linux-kernel@vger.kernel.org>; Sat,  5 Aug 2023 16:41:43 +0800 (CST)
+Received: from huaweicloud.com (unknown [10.174.178.55])
+        by APP4 (Coremail) with SMTP id gCh0CgAHuKtGC85kcXBwPg--.1103S4;
+        Sat, 05 Aug 2023 16:41:44 +0800 (CST)
+From:   thunder.leizhen@huaweicloud.com
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J . Wysocki" <rafael@kernel.org>,
         linux-kernel@vger.kernel.org
-Subject: [PATCH v3 4/4] arm64: dts: allwinner: h616: Add BigTreeTech Pi support
-Date:   Sat,  5 Aug 2023 10:36:07 +0200
-Message-ID: <8022803C8A2B3898+20230805083636.788048-5-martin@biqu3d.com>
-X-Mailer: git-send-email 2.41.0
-In-Reply-To: <20230805083636.788048-1-martin@biqu3d.com>
-References: <20230805083636.788048-1-martin@biqu3d.com>
+Cc:     Zhen Lei <thunder.leizhen@huawei.com>
+Subject: [PATCH 0/2] kobject: Reasonably sanity check for kset->kobj.ktype
+Date:   Sat,  5 Aug 2023 16:41:12 +0800
+Message-Id: <20230805084114.1298-1-thunder.leizhen@huaweicloud.com>
+X-Mailer: git-send-email 2.37.3.windows.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-QQ-SENDSIZE: 520
-Feedback-ID: bizesmtp:biqu3d.com:qybglogicsvrgz:qybglogicsvrgz5a-1
-X-Spam-Status: No, score=-0.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H2,RCVD_IN_VALIDITY_RPBL,SPF_HELO_NONE,SPF_PASS,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
+X-CM-TRANSID: gCh0CgAHuKtGC85kcXBwPg--.1103S4
+X-Coremail-Antispam: 1UD129KBjvdXoW7Gr1rWr4rur4UKF1kXFyDAwb_yoWDuFb_GF
+        y8AFyDJw47GFWfK3W2kws8Xry7Ca98ur15CF98tFZrJryfWr4DGr9xZFsIvr17uF45GFnr
+        Ar1DKa9aywnF9jkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUIcSsGvfJTRUUUbzxYFVCjjxCrM7AC8VAFwI0_Jr0_Gr1l1xkIjI8I6I8E6xAIw20E
+        Y4v20xvaj40_JFC_Wr1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM28CjxkF64kEwV
+        A0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVW5JVW7JwA2z4x0Y4vE2Ix0cI8IcVCY1x02
+        67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I
+        0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
+        x7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
+        0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41lw4CEc2x0rVAKj4xxMxAIw28IcxkI7VAKI48J
+        MxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwV
+        AFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUAVWUtwCIc40Y0x0EwIxGrwCI42IY6xIIjxv2
+        0xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVWUJVW8JwCI42IY6xAIw20EY4
+        v20xvaj40_WFyUJVCq3wCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E
+        14v26r4UJVWxJrUvcSsGvfC2KfnxnUUI43ZEXa7IU8j9aPUUUUU==
+X-CM-SenderInfo: hwkx0vthuozvpl2kv046kxt4xhlfz01xgou0bp/
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,KHOP_HELO_FCRDNS,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The BigTreeTech Pi is an H616 based board based on CB1.
-Just in Rpi format board.
+From: Zhen Lei <thunder.leizhen@huawei.com>
 
-It features the same internals as BTT CB1 but adds:
-    - Fan port
-    - IR receiver
-    - ADXL345 Accelerometer connector via SPI
-    - 24V DC power supply via terminal plugs
-    - USB to CAN module connector (The actual USB to CAN happens on the external module)
+Currently, there are four API paths for adding or registering kobjects:
+1. Call kobject_init() first then kobject_add()
+2. kobject_init_and_add()
+3. kset_register()
+4. kset_create_and_add()
 
-List of currently working things is same as BTT CB1 but also:
-    - IR receiver
-    - ADXL345 connector
+Except for kset_register(), the other three paths ensure that kobj.ktype cannot be NULL.
 
-Signed-off-by: Martin Botka <martin@biqu3d.com>
----
-Changes in V2:
-    - Add UART alongside aliases and chosen for it
-    - Add model string
-    - Enable IR receiver
-    - Enable SPI0 for ADXL345 connector
-Changes in V3:
-    - Add missing semicolons
-    - Add pinctrl for SPI0
+According to the description in Documentation/core-api/kobject.rst:
+ - A ktype is the type of object that embeds a kobject.  Every structure
+   that embeds a kobject needs a corresponding ktype.
 
- arch/arm64/boot/dts/allwinner/Makefile        |  1 +
- .../allwinner/sun50i-h616-bigtreetech-pi.dts  | 70 +++++++++++++++++++
- 2 files changed, 71 insertions(+)
- create mode 100644 arch/arm64/boot/dts/allwinner/sun50i-h616-bigtreetech-pi.dts
+Add sanity check for kset->kobj.ktype in kset_register(), make sure that it cannot be NULL,
+then all added or registered kobj/kset.obj, its ktype is not NULL. We can safely remove all
+statements that check whether kobj.ktype is NULL. They're redundant.
 
-diff --git a/arch/arm64/boot/dts/allwinner/Makefile b/arch/arm64/boot/dts/allwinner/Makefile
-index 7b386428510b..0b6232a7f328 100644
---- a/arch/arm64/boot/dts/allwinner/Makefile
-+++ b/arch/arm64/boot/dts/allwinner/Makefile
-@@ -39,5 +39,6 @@ dtb-$(CONFIG_ARCH_SUNXI) += sun50i-h6-pine-h64-model-b.dtb
- dtb-$(CONFIG_ARCH_SUNXI) += sun50i-h6-tanix-tx6.dtb
- dtb-$(CONFIG_ARCH_SUNXI) += sun50i-h6-tanix-tx6-mini.dtb
- dtb-$(CONFIG_ARCH_SUNXI) += sun50i-h616-bigtreetech-cb1-manta.dtb
-+dtb-$(CONFIG_ARCH_SUNXI) += sun50i-h616-bigtreetech-pi.dtb
- dtb-$(CONFIG_ARCH_SUNXI) += sun50i-h616-orangepi-zero2.dtb
- dtb-$(CONFIG_ARCH_SUNXI) += sun50i-h616-x96-mate.dtb
-diff --git a/arch/arm64/boot/dts/allwinner/sun50i-h616-bigtreetech-pi.dts b/arch/arm64/boot/dts/allwinner/sun50i-h616-bigtreetech-pi.dts
-new file mode 100644
-index 000000000000..b0d0386e8f13
---- /dev/null
-+++ b/arch/arm64/boot/dts/allwinner/sun50i-h616-bigtreetech-pi.dts
-@@ -0,0 +1,70 @@
-+// SPDX-License-Identifier: (GPL-2.0+ or MIT)
-+/*
-+ * Copyright (C) 2023 Martin Botka <martin@biqu3d.com>.
-+ */
-+
-+/dts-v1/;
-+
-+#include "sun50i-h616-bigtreetech-cb1.dtsi"
-+
-+/ {
-+	model = "BigTreeTech Pi";
-+	compatible = "bigtreetech,pi", "allwinner,sun50i-h616";
-+
-+	aliases {
-+		serial0 = &uart0;
-+	};
-+
-+	chosen {
-+		stdout-path = "serial0:115200n8";
-+	};
-+};
-+
-+&ehci0 {
-+	status = "okay";
-+};
-+
-+&ehci1 {
-+	status = "okay";
-+};
-+
-+&ehci2 {
-+	status = "okay";
-+};
-+
-+&ehci3 {
-+	status = "okay";
-+};
-+
-+&ir {
-+	status = "okay";
-+};
-+
-+&ohci0 {
-+	status = "okay";
-+};
-+
-+&ohci1 {
-+	status = "okay";
-+};
-+
-+&ohci2 {
-+	status = "okay";
-+};
-+
-+&ohci3 {
-+	status = "okay";
-+};
-+
-+&spi0 {
-+	/* SPI connection for onboard connector for ADXL345 accelerometer */
-+	status = "okay";
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&spi0_pins>, <&spi0_cs0_pin>;
-+};
-+
-+&uart0 {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&uart0_ph_pins>;
-+	status = "okay";
-+};
+
+Zhen Lei (2):
+  kobject: Add sanity check for kset->kobj.ktype in kset_register()
+  kobject: Remove redundant checks for whether ktype is NULL
+
+ lib/kobject.c | 29 +++++++++++++++--------------
+ 1 file changed, 15 insertions(+), 14 deletions(-)
+
 -- 
-2.41.0
+2.34.1
 
