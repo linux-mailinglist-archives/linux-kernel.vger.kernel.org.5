@@ -2,148 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5603D77147D
-	for <lists+linux-kernel@lfdr.de>; Sun,  6 Aug 2023 12:48:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EEBD0771481
+	for <lists+linux-kernel@lfdr.de>; Sun,  6 Aug 2023 13:18:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230342AbjHFKsE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 6 Aug 2023 06:48:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49072 "EHLO
+        id S229533AbjHFLSf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 6 Aug 2023 07:18:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50814 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229509AbjHFKr7 (ORCPT
+        with ESMTP id S229449AbjHFLSd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 6 Aug 2023 06:47:59 -0400
-Received: from mail.z3ntu.xyz (mail.z3ntu.xyz [128.199.32.197])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AAEBDB8;
-        Sun,  6 Aug 2023 03:47:54 -0700 (PDT)
-Received: from g550jk.localnet (unknown [62.108.10.64])
-        by mail.z3ntu.xyz (Postfix) with ESMTPSA id C0D4FCF63C;
-        Sun,  6 Aug 2023 10:47:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=z3ntu.xyz; s=z3ntu;
-        t=1691318873; bh=cADcKcnDy8gLxnojyW532VLW7T8QirnxnQhcPDcckqo=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References;
-        b=W8JMkEKrEKilRpRJOOyop+A9Z1lwHYBuY/Y6h0EpEB4ujaHvE+oviJ34f1Nvj8wP7
-         JK52mmBnBsCL3smqQPA0w45gU/AWDa8+0ZFMA87K6BlDCaCAKaXYg0D1AfGJtXsQoG
-         ZE+91uFeMiSHfk/2ddeS8L5iq+/0Y9HRh4ArPOPs=
-From:   Luca Weiss <luca@z3ntu.xyz>
-To:     Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Bjorn Andersson <andersson@kernel.org>
-Cc:     ~postmarketos/upstreaming@lists.sr.ht, phone-devel@vger.kernel.org,
-        Andy Gross <agross@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Eduardo Valentin <edubezval@gmail.com>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Rajendra Nayak <quic_rjendra@quicinc.com>,
-        Rob Herring <robh@kernel.org>,
-        Andy Gross <andy.gross@linaro.org>,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Craig Tatlor <ctatlor97@gmail.com>
-Subject: Re: [PATCH v2] ARM: dts: qcom: msm8974: correct qfprom node size
-Date:   Sun, 06 Aug 2023 12:47:51 +0200
-Message-ID: <12394955.O9o76ZdvQC@z3ntu.xyz>
-In-Reply-To: <ff6fwomoik6kz4jtbm5jac7jahrtcia5fb6dj5ykxg7xt574sn@ti42sevqj6pk>
-References: <20230130-msm8974-qfprom-v2-1-3839cf41d9ee@z3ntu.xyz>
- <866f1f66-8845-2453-ab9c-d125e23ae758@linaro.org>
- <ff6fwomoik6kz4jtbm5jac7jahrtcia5fb6dj5ykxg7xt574sn@ti42sevqj6pk>
+        Sun, 6 Aug 2023 07:18:33 -0400
+Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72E1A11D;
+        Sun,  6 Aug 2023 04:18:32 -0700 (PDT)
+Received: by mail-ed1-x530.google.com with SMTP id 4fb4d7f45d1cf-52222562f1eso5001692a12.3;
+        Sun, 06 Aug 2023 04:18:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1691320710; x=1691925510;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=je1gUzvwrqcKGyu+CaM6BhOeHMrmqE7jvTrxfdtVg+c=;
+        b=UvsSgM4LoSJAa2mNOuJ5Iv+oGAdwD62Wt2/PMYqnAp5neD4L6dS9zXu691t5xo58sN
+         +C8PqdPEik2VvfsCwtfpfai7q0JBWIzQY44Fj2ACxHdUp00GfP2S53aGEgNbX7jAzCwT
+         W4xpjwz5ElfF/Ao68gjWd5UewvEQbasIbqOcpx1Qw3Fok1mmdG64P9G1qldeIL2Nh51G
+         IlHGJqKYWi9pyUGaFWNBZELA0cWLZV/lhwxjB7A7UafOevLtAOFbuIxIznzVFSJs2fZR
+         AXAurc7zxFrnpEAVTTriOSKoVXxKOOnGNtWSJbqjaq9/vMoQ+OrMCkD+liGwkjtQG+Hw
+         sEHg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691320710; x=1691925510;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=je1gUzvwrqcKGyu+CaM6BhOeHMrmqE7jvTrxfdtVg+c=;
+        b=JI+zgumFKD6tNs15MA0Nnv3DgQ+M3bSdFK3LYveJijvWtlI4sLmWzTvLPEwkd5Bu8F
+         JHR+qMysfYgqr4g74trCJEnEQyUm/945qQ6eoSvtmxeigkzz4SVQye5sXK7D7PIzjqyT
+         JXKquoQxt1JvYm5vTIOIYdeEwiSDMjKCEOxkHKGLvPdM6y4kO3cnaVl4J8inm/txQNko
+         JOEmW2PpkKeHx1X9Ka2oKssF3jUlIL8Wcx63BY2Hf69mLM2R7hSgtbtj7Fl7PSI3+NW5
+         bqWaDyL710S059rL9hQwpYIsOY5b1rqx8q8q4wQOYww1hrD8UAvTpTBxLM5vsXoB+++X
+         /nyQ==
+X-Gm-Message-State: AOJu0Yy7vESyBuEVB5pHEtzrJLUUPYpG51H1yG0+dEgqu5C2+U4bmCeE
+        C2Ja5O+k3frsLKJs7RsX0OAb8E+d/i2J7w==
+X-Google-Smtp-Source: AGHT+IFgigO3y9Y0gmsVwp0bgkTt8PTWPfzi/5MWxrUz9PiEfM72eh/jIwxL/bbaITEl5Qt+H97tpg==
+X-Received: by 2002:a05:6402:54:b0:522:30cc:a1f0 with SMTP id f20-20020a056402005400b0052230cca1f0mr5720629edu.14.1691320710452;
+        Sun, 06 Aug 2023 04:18:30 -0700 (PDT)
+Received: from nam-dell (ip-217-105-46-58.ip.prioritytelecom.net. [217.105.46.58])
+        by smtp.gmail.com with ESMTPSA id s25-20020a056402015900b0052237dfa82fsm3769409edu.64.2023.08.06.04.18.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 06 Aug 2023 04:18:29 -0700 (PDT)
+Date:   Sun, 6 Aug 2023 13:18:28 +0200
+From:   Nam Cao <namcaov@gmail.com>
+To:     "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
+        Anil S Keshavamurthy <anil.s.keshavamurthy@intel.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Masami Hiramatsu <mhiramat@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org
+Subject: confused about kprobes
+Message-ID: <ZM+BhEz9u7hrWe6e@nam-dell>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Bjorn,
+Hello,
 
-On Montag, 31. Juli 2023 23:45:21 CEST Bjorn Andersson wrote:
-> On Thu, Jun 15, 2023 at 08:20:41PM +0200, Konrad Dybcio wrote:
-> > On 15.06.2023 20:17, Luca Weiss wrote:
-> > > From: Craig Tatlor <ctatlor97@gmail.com>
-> > > 
-> > > The qfprom actually has size 0x3000, so adjust the reg.
-> > > 
-> > > Note that the non-ECC-corrected qfprom can be found at 0xfc4b8000
-> > > (-0x4000). The current reg points to the ECC-corrected qfprom block
-> > > which should have equivalent values at all offsets compared to the
-> > > non-corrected version.
-> > > 
-> > > [luca@z3ntu.xyz: extract to standalone patch and adjust for review
-> > > comments]
-> > > 
-> > > Fixes: c59ffb519357 ("arm: dts: msm8974: Add thermal zones, tsens and
-> > > qfprom nodes") Signed-off-by: Craig Tatlor <ctatlor97@gmail.com>
-> > > Signed-off-by: Luca Weiss <luca@z3ntu.xyz>
-> > > ---
-> > 
-> > Not sure of the actual size of the region, maybe Bjorn can help..
-> > 
-> > Downstream 3.10 suggests 0x60F0, 0x20F0 after adjusting for the ECC offset
-> 
-> There is indeed 0x3000 bytes until the next region, but afaict the
-> corrected ECC values only cover the first 0x800 bytes thereof.
-> 
-> Can you please let me know if this patch fixes a problem, or just
-> makes the numbers look better?
+I am struggling to understand how kprobes works. It would be very nice if someone
+can spare the time to explain to me. I'm confused about this function in particular:
 
-Initially this patch came from a different direction, to make space to use the 
-PVS bits for cpufreq. Since Konrad said in earlier revisions that I should 
-always use the +0x4000 space for the ECC-corrected variant I've switched to 
-that.
+/*
+ * Return an optimized kprobe whose optimizing code replaces
+ * instructions including 'addr' (exclude breakpoint).
+ */
+static struct kprobe *get_optimized_kprobe(kprobe_opcode_t *addr)
+{
+	int i;
+	struct kprobe *p = NULL;
+	struct optimized_kprobe *op;
 
-If you think it's not useful to have the qfprom size reflect the actual size, 
-we can also drop this patch since I don't think it's actually necessary for 
-anything that I have lying around in some branches.
+	/* Don't check i == 0, since that is a breakpoint case. */
+	for (i = 1; !p && i < MAX_OPTIMIZED_LENGTH / sizeof(kprobe_opcode_t); i++)
+		p = get_kprobe(addr - i);
 
-I think I've just sent the current patch to make sure the hardware description 
-(dts) is as accurate as possible, but of course since any info on Qualcomm is 
-very restricted it could also be a bit wrong.
+	if (p && kprobe_optready(p)) {
+		op = container_of(p, struct optimized_kprobe, kp);
+		if (arch_within_optimized_kprobe(op, addr))
+			return p;
+	}
 
-Regards
-Luca
+	return NULL;
+}
 
-> 
-> Regards,
-> Bjorn
-> 
-> > Konrad
-> > 
-> > > Changes in v2:
-> > > - Keep base offset but expand reg from 0x1000 to 0x3000 (Konrad)
-> > > - Link to v1:
-> > > https://lore.kernel.org/r/20230130-msm8974-qfprom-v1-1-975aa0e5e083@z3n
-> > > tu.xyz ---
-> > > 
-> > >  arch/arm/boot/dts/qcom-msm8974.dtsi | 2 +-
-> > >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > > 
-> > > diff --git a/arch/arm/boot/dts/qcom-msm8974.dtsi
-> > > b/arch/arm/boot/dts/qcom-msm8974.dtsi index 7ed0d925a4e9..3156fe25967f
-> > > 100644
-> > > --- a/arch/arm/boot/dts/qcom-msm8974.dtsi
-> > > +++ b/arch/arm/boot/dts/qcom-msm8974.dtsi
-> > > @@ -1194,7 +1194,7 @@ restart@fc4ab000 {
-> > > 
-> > >  		qfprom: qfprom@fc4bc000 {
-> > >  		
-> > >  			compatible = "qcom,msm8974-qfprom", 
-"qcom,qfprom";
-> > > 
-> > > -			reg = <0xfc4bc000 0x1000>;
-> > > +			reg = <0xfc4bc000 0x3000>;
-> > > 
-> > >  			#address-cells = <1>;
-> > >  			#size-cells = <1>;
-> > > 
-> > > ---
-> > > base-commit: 858fd168a95c5b9669aac8db6c14a9aeab446375
-> > > change-id: 20230130-msm8974-qfprom-619c0e8f26eb
-> > > 
-> > > Best regards,
+The document mentions something about optimizing by replacing trap instructions
+with jump instructions, so I am assuming this function is part of that. But I
+fail to see what this function is trying to do exactly. The for loop seems to
+call get_kprobe at addresses immediately before "addr". But what for? What are
+at addresses before "addr"?
 
+Can someone be so kind to give me a line-by-line explanation of this function?
 
+Thanks!
 
-
+Nam
