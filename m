@@ -2,94 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A4D087713D2
-	for <lists+linux-kernel@lfdr.de>; Sun,  6 Aug 2023 09:16:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C6B237713DD
+	for <lists+linux-kernel@lfdr.de>; Sun,  6 Aug 2023 09:40:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229533AbjHFHQM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 6 Aug 2023 03:16:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49240 "EHLO
+        id S229510AbjHFHk0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 6 Aug 2023 03:40:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50560 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229436AbjHFHQJ (ORCPT
+        with ESMTP id S229436AbjHFHkY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 6 Aug 2023 03:16:09 -0400
-Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 857181FCD
-        for <linux-kernel@vger.kernel.org>; Sun,  6 Aug 2023 00:16:07 -0700 (PDT)
-Received: by mail-pl1-x635.google.com with SMTP id d9443c01a7336-1bba48b0bd2so22407985ad.3
-        for <linux-kernel@vger.kernel.org>; Sun, 06 Aug 2023 00:16:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1691306167; x=1691910967;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=f1cC44qcZYBIcGUfzoCdu9nx9KiNTrSbTmLs8T1S274=;
-        b=Kd5pIGopqU5EnXakxalZyW2dhaMcCG0JQLJjdJbyY8/i5b/iAVZ6jacxFc/WBGw7TZ
-         lNFxcdciTl/M7gTrFLHB+GRtlfq/ThS2fd8T5o3/p18HTpelyOOezVaATrbOeY9HRuAP
-         mnviOjpeni7zbextffZd5mlV9tbYweMErJY+M=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691306167; x=1691910967;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=f1cC44qcZYBIcGUfzoCdu9nx9KiNTrSbTmLs8T1S274=;
-        b=UoB/xpS2R/23SDx3Zp+EjwFP9mrCtFjkh1T6dDNmQqebm0zbRt61QnEtFvoPwcs169
-         UOAmg39mrJ05RpEEPBpMJvmzsGXLfegW66AMGe5zziwpYAe4a2AMrU+LsrsomzIjCgts
-         CP+tXHgubJSR4CqXlVnI3dPHXpBby7f9sUtVBQf2meolAD+8pJ73ZoyPW/Uily8YHsvi
-         X7YZdHuGwAOGolLq66LeXmHMMfIWOoeCgB1wHYuHshAiKRDszOTXS321zjl5laZWsXO7
-         /ORGSEPW7Kc26xcQx5urXcJUEkpkMLQtT2wF9wWkgWJJwpkeN/RxPL6DfjDZOqapd+JW
-         yy1g==
-X-Gm-Message-State: AOJu0YzBd+HLVPDyHUjs8pAdRbnHVhAHXqqOlKGdtTq5Bs4LFpkEMKrs
-        Ns+Cy7kleOIrAVtbuP0nbhsk4w==
-X-Google-Smtp-Source: AGHT+IFEHBJ4DDuyqM/dQDN0aPzndo/IuYpJsH4xff2mPzui4ao44kG2ICtjSio+J2LQT8pzDs7LaA==
-X-Received: by 2002:a17:902:e74c:b0:1b6:6b90:7c2f with SMTP id p12-20020a170902e74c00b001b66b907c2fmr5879078plf.55.1691306166662;
-        Sun, 06 Aug 2023 00:16:06 -0700 (PDT)
-Received: from google.com (KD124209188001.ppp-bb.dion.ne.jp. [124.209.188.1])
-        by smtp.gmail.com with ESMTPSA id p17-20020a170902ead100b001b03a1a3151sm4492969pld.70.2023.08.06.00.16.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 06 Aug 2023 00:16:06 -0700 (PDT)
-Date:   Sun, 6 Aug 2023 16:16:01 +0900
-From:   Sergey Senozhatsky <senozhatsky@chromium.org>
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     Sergey Senozhatsky <senozhatsky@chromium.org>, minchan@kernel.org,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Dusty Mabe <dusty@dustymabe.com>
-Subject: Re: [PATCH] zram: take device and not only bvec offset into account
-Message-ID: <20230806071601.GB907732@google.com>
-References: <20230805055537.147835-1-hch@lst.de>
- <20230805074645.GA907732@google.com>
- <20230805081306.GA29615@lst.de>
+        Sun, 6 Aug 2023 03:40:24 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E07D51BDF;
+        Sun,  6 Aug 2023 00:40:23 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 1558D60FCD;
+        Sun,  6 Aug 2023 07:40:23 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 57B41C433D9;
+        Sun,  6 Aug 2023 07:40:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1691307622;
+        bh=Bam6N1dYm20mOTjZTEj2DEAzIMxdEcmcfrPsLZbH6U0=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=EMF/fh3fkVw3JCZlEJoUyH02FIGagIvDeMSJeXWCYRwbniEbN+eXa4oXkcdtWgK/c
+         80XFJz+SkFLFL9mLeOL6o855y2roYf1mKSLaWyhr088DSaRKiJmkZu6fz+nRy/KDOF
+         F7xVSlXE2YaI9ccJ85LJhyJtdOX52WDKEyevtIP4n5QV7NxFtbzDs54okST56knVNY
+         7mxGePFrNj/HeT7tlLLI37LEufLUOvqQN4zr+CMQfpl0LFOBzo2hZTdPmpA9Nnj/N5
+         2k1PtoWd/SAWTFkjaNWW0JvYfghrhCvYC47Ea1nMO70F3ZBLSYOSitnOm092qmd7Of
+         vxKiGYsRTTygQ==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 352ACC73FE1;
+        Sun,  6 Aug 2023 07:40:22 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230805081306.GA29615@lst.de>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FSL_HELO_FAKE,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH V6,net-next] net: mana: Add page pool for RX buffers
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <169130762221.9536.13208185445739206217.git-patchwork-notify@kernel.org>
+Date:   Sun, 06 Aug 2023 07:40:22 +0000
+References: <1691181233-25286-1-git-send-email-haiyangz@microsoft.com>
+In-Reply-To: <1691181233-25286-1-git-send-email-haiyangz@microsoft.com>
+To:     Haiyang Zhang <haiyangz@microsoft.com>
+Cc:     linux-hyperv@vger.kernel.org, netdev@vger.kernel.org,
+        decui@microsoft.com, kys@microsoft.com, paulros@microsoft.com,
+        olaf@aepfle.de, vkuznets@redhat.com, davem@davemloft.net,
+        wei.liu@kernel.org, edumazet@google.com, kuba@kernel.org,
+        pabeni@redhat.com, leon@kernel.org, longli@microsoft.com,
+        ssengar@linux.microsoft.com, linux-rdma@vger.kernel.org,
+        daniel@iogearbox.net, john.fastabend@gmail.com,
+        bpf@vger.kernel.org, ast@kernel.org, sharmaajay@microsoft.com,
+        hawk@kernel.org, tglx@linutronix.de,
+        shradhagupta@linux.microsoft.com, linux-kernel@vger.kernel.org
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On (23/08/05 10:13), Christoph Hellwig wrote:
-> On Sat, Aug 05, 2023 at 04:46:45PM +0900, Sergey Senozhatsky wrote:
-> > > Fixes: af8b04c63708 ("zram: simplify bvec iteration in __zram_make_request")
-> > > Reported-by: Dusty Mabe <dusty@dustymabe.com>
-> > > Signed-off-by: Christoph Hellwig <hch@lst.de>
-> > 
-> > Acked-by: Sergey Senozhatsky <senozhatsky@chromium.org>
+Hello:
+
+This patch was applied to netdev/net-next.git (main)
+by David S. Miller <davem@davemloft.net>:
+
+On Fri,  4 Aug 2023 13:33:53 -0700 you wrote:
+> Add page pool for RX buffers for faster buffer cycle and reduce CPU
+> usage.
 > 
-> Btw, are there any interesting test suites you want me to run on
-> a > 4K page size system now that I do have this setup available?
+> The standard page pool API is used.
+> 
+> With iperf and 128 threads test, this patch improved the throughput
+> by 12-15%, and decreased the IRQ associated CPU's usage from 99-100% to
+> 10-50%.
+> 
+> [...]
 
-I don't really have any special tests. I used to run fio, but switched
-to a shell script that:
+Here is the summary with links:
+  - [V6,net-next] net: mana: Add page pool for RX buffers
+    https://git.kernel.org/netdev/net-next/c/b1d13f7a3b53
 
-1) configures zram0 and adds zram1 as writeback
-2) mkfs.ext4 on zram0, cp linux tar.gz, compile (in parallel)
-3) deferred recompress (idle and size based)
-4) idle writeback
-5) re-reads all writtenback pages
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
-I test on a system with 4K pages, tho, I probably need to get an image
-with larger PAGE_SIZE.
+
