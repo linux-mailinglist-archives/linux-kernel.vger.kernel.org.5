@@ -2,44 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 89EA0771622
-	for <lists+linux-kernel@lfdr.de>; Sun,  6 Aug 2023 18:49:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E458771624
+	for <lists+linux-kernel@lfdr.de>; Sun,  6 Aug 2023 18:49:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230448AbjHFQtB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 6 Aug 2023 12:49:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39848 "EHLO
+        id S230451AbjHFQtF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 6 Aug 2023 12:49:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39894 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229436AbjHFQs7 (ORCPT
+        with ESMTP id S229436AbjHFQtD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 6 Aug 2023 12:48:59 -0400
-Received: from fllv0015.ext.ti.com (fllv0015.ext.ti.com [198.47.19.141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9758310CC;
-        Sun,  6 Aug 2023 09:48:58 -0700 (PDT)
+        Sun, 6 Aug 2023 12:49:03 -0400
+Received: from lelv0142.ext.ti.com (lelv0142.ext.ti.com [198.47.23.249])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87B4810CC;
+        Sun,  6 Aug 2023 09:49:02 -0700 (PDT)
 Received: from fllv0035.itg.ti.com ([10.64.41.0])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 376Gml6q020260;
-        Sun, 6 Aug 2023 11:48:47 -0500
+        by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 376GmoqL006533;
+        Sun, 6 Aug 2023 11:48:50 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1691340527;
-        bh=7q6VvTj7zCInrnfOecFlb1jOVk+v0+/lH9T8gEC27a0=;
+        s=ti-com-17Q1; t=1691340530;
+        bh=gOgHxaFNknEPQkRXnHJvFNHYD58prAaSGp1BrvLOPEk=;
         h=From:To:Subject:Date:In-Reply-To:References;
-        b=PlIkdbwCCBitgLEcbG6bW+AqL2eGfN+3hG3ZwN/okpcRnhY5acEylVNuPqEfH04qG
-         M9RiKD+lCH4AhkkMmhpuwCLEUBVLCe6LWznvXyngtCnwMD93Bed3HngG1vHn5feXP5
-         ERlKXbgVn8evp4Zw6s0eoeXEW2SQKmsfE0UmghJg=
-Received: from DLEE104.ent.ti.com (dlee104.ent.ti.com [157.170.170.34])
-        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 376GmlfS086824
+        b=uWYxqcmIsoDOx1z1lqYdTbwRTW/mkX01LbIKzSOm+Wq7aukLtQrDc0X3QsYIlfbcU
+         rK/4Rgt3ZSLcFRkmBFfMWkBT4NCphD7Uw0YkoIOXHDA83ZyxHx64szTA250fuQcsF4
+         8v6EQazIvpqSV/Ngf9SAbbWs8Fo/GC6QC7vUFabU=
+Received: from DLEE106.ent.ti.com (dlee106.ent.ti.com [157.170.170.36])
+        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 376Gmodx086835
         (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Sun, 6 Aug 2023 11:48:47 -0500
-Received: from DLEE107.ent.ti.com (157.170.170.37) by DLEE104.ent.ti.com
- (157.170.170.34) with Microsoft SMTP Server (version=TLS1_2,
+        Sun, 6 Aug 2023 11:48:50 -0500
+Received: from DLEE100.ent.ti.com (157.170.170.30) by DLEE106.ent.ti.com
+ (157.170.170.36) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Sun, 6
- Aug 2023 11:48:46 -0500
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE107.ent.ti.com
- (157.170.170.37) with Microsoft SMTP Server (version=TLS1_2,
+ Aug 2023 11:48:50 -0500
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE100.ent.ti.com
+ (157.170.170.30) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Sun, 6 Aug 2023 11:48:46 -0500
+ Frontend Transport; Sun, 6 Aug 2023 11:48:50 -0500
 Received: from TI.dhcp.ti.com (ileaxei01-snat.itg.ti.com [10.180.69.5])
-        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 376GmdMY009591;
-        Sun, 6 Aug 2023 11:48:43 -0500
+        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 376GmdMZ009591;
+        Sun, 6 Aug 2023 11:48:47 -0500
 From:   Apurva Nandan <a-nandan@ti.com>
 To:     Apurva Nandan <a-nandan@ti.com>, Nishanth Menon <nm@ti.com>,
         Vignesh Raghavendra <vigneshr@ti.com>,
@@ -50,9 +50,9 @@ To:     Apurva Nandan <a-nandan@ti.com>, Nishanth Menon <nm@ti.com>,
         <linux-arm-kernel@lists.infradead.org>,
         <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
         Udit Kumar <u-kumar1@ti.com>, Hari Nagalla <hnagalla@ti.com>
-Subject: [PATCH 1/3] arm64: dts: ti: k3-j784s4-main: Add bootph-pre-ram property for SPL nodes
-Date:   Sun, 6 Aug 2023 22:18:36 +0530
-Message-ID: <20230806164838.18088-2-a-nandan@ti.com>
+Subject: [PATCH 2/3] arm64: dts: ti: k3-j784s4-mcu-wakeup: Add bootph-pre-ram property for SPL nodes
+Date:   Sun, 6 Aug 2023 22:18:37 +0530
+Message-ID: <20230806164838.18088-3-a-nandan@ti.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20230806164838.18088-1-a-nandan@ti.com>
 References: <20230806164838.18088-1-a-nandan@ti.com>
@@ -62,8 +62,7 @@ Content-Type: text/plain
 X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -75,37 +74,74 @@ for syncing it later to u-boot j784s4 dts.
 
 Signed-off-by: Apurva Nandan <a-nandan@ti.com>
 ---
- arch/arm64/boot/dts/ti/k3-j784s4-main.dtsi | 3 +++
- 1 file changed, 3 insertions(+)
+ arch/arm64/boot/dts/ti/k3-j784s4-mcu-wakeup.dtsi | 9 +++++++++
+ 1 file changed, 9 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/ti/k3-j784s4-main.dtsi b/arch/arm64/boot/dts/ti/k3-j784s4-main.dtsi
-index a04c44708a09..6bba73c8f359 100644
---- a/arch/arm64/boot/dts/ti/k3-j784s4-main.dtsi
-+++ b/arch/arm64/boot/dts/ti/k3-j784s4-main.dtsi
-@@ -6,6 +6,7 @@
+diff --git a/arch/arm64/boot/dts/ti/k3-j784s4-mcu-wakeup.dtsi b/arch/arm64/boot/dts/ti/k3-j784s4-mcu-wakeup.dtsi
+index 740ee794d7b9..57bf0261c343 100644
+--- a/arch/arm64/boot/dts/ti/k3-j784s4-mcu-wakeup.dtsi
++++ b/arch/arm64/boot/dts/ti/k3-j784s4-mcu-wakeup.dtsi
+@@ -6,7 +6,9 @@
   */
  
- &cbass_main {
+ &cbass_mcu_wakeup {
 +	bootph-pre-ram;
- 	msmc_ram: sram@70000000 {
- 		compatible = "mmio-sram";
- 		reg = <0x00 0x70000000 0x00 0x800000>;
-@@ -670,6 +671,7 @@ main_sdhci1: mmc@4fb0000 {
+ 	sms: system-controller@44083000 {
++		bootph-pre-ram;
+ 		compatible = "ti,k2g-sci";
+ 		ti,host-id = <12>;
+ 
+@@ -19,22 +21,26 @@ sms: system-controller@44083000 {
+ 		reg = <0x00 0x44083000 0x00 0x1000>;
+ 
+ 		k3_pds: power-controller {
++			bootph-pre-ram;
+ 			compatible = "ti,sci-pm-domain";
+ 			#power-domain-cells = <2>;
+ 		};
+ 
+ 		k3_clks: clock-controller {
++			bootph-pre-ram;
+ 			compatible = "ti,k2g-sci-clk";
+ 			#clock-cells = <2>;
+ 		};
+ 
+ 		k3_reset: reset-controller {
++			bootph-pre-ram;
+ 			compatible = "ti,sci-reset";
+ 			#reset-cells = <2>;
+ 		};
  	};
  
- 	main_navss: bus@30000000 {
+ 	chipid@43000014 {
++		bootph-pre-ram;
+ 		compatible = "ti,am654-chipid";
+ 		reg = <0x00 0x43000014 0x00 0x4>;
+ 	};
+@@ -442,6 +448,7 @@ mcu_spi2: spi@40320000 {
+ 	};
+ 
+ 	mcu_navss: bus@28380000 {
 +		bootph-pre-ram;
  		compatible = "simple-bus";
  		#address-cells = <2>;
  		#size-cells = <2>;
-@@ -705,6 +707,7 @@ main_udmass_inta: msi-controller@33d00000 {
+@@ -451,6 +458,7 @@ mcu_navss: bus@28380000 {
+ 		dma-ranges;
+ 
+ 		mcu_ringacc: ringacc@2b800000 {
++			bootph-pre-ram;
+ 			compatible = "ti,am654-navss-ringacc";
+ 			reg = <0x00 0x2b800000 0x00 0x400000>,
+ 			      <0x00 0x2b000000 0x00 0x400000>,
+@@ -465,6 +473,7 @@ mcu_ringacc: ringacc@2b800000 {
  		};
  
- 		secure_proxy_main: mailbox@32c00000 {
+ 		mcu_udmap: dma-controller@285c0000 {
 +			bootph-pre-ram;
- 			compatible = "ti,am654-secure-proxy";
- 			#mbox-cells = <1>;
- 			reg-names = "target_data", "rt", "scfg";
+ 			compatible = "ti,j721e-navss-mcu-udmap";
+ 			reg = <0x00 0x285c0000 0x00 0x100>,
+ 			      <0x00 0x2a800000 0x00 0x40000>,
 -- 
 2.34.1
 
