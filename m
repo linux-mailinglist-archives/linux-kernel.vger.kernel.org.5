@@ -2,113 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F164B771461
-	for <lists+linux-kernel@lfdr.de>; Sun,  6 Aug 2023 12:16:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7640A771464
+	for <lists+linux-kernel@lfdr.de>; Sun,  6 Aug 2023 12:17:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230064AbjHFKQ5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 6 Aug 2023 06:16:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44804 "EHLO
+        id S230250AbjHFKRr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 6 Aug 2023 06:17:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45132 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229483AbjHFKQz (ORCPT
+        with ESMTP id S229498AbjHFKRp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 6 Aug 2023 06:16:55 -0400
-Received: from smtpbgsg2.qq.com (smtpbgsg2.qq.com [54.254.200.128])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D64B131;
-        Sun,  6 Aug 2023 03:16:51 -0700 (PDT)
-X-QQ-mid: bizesmtp86t1691316998tvucykia
-Received: from linux-lab-host.localdomain ( [116.30.130.12])
-        by bizesmtp.qq.com (ESMTP) with 
-        id ; Sun, 06 Aug 2023 18:16:37 +0800 (CST)
-X-QQ-SSF: 01200000000000E0X000000A0000000
-X-QQ-FEAT: zT6n3Y95oi3UNBq/05tBwfN55E8F18HQLKieo6XoWqFlFdZ4Ww8tTuCZhEv96
-        1J91u0seLhK/NAc69RMunx9iy5hL9Qzb2ww2dC0niCNoAcS4v/Ws10Y1PXDhlBs05jPuF/R
-        3lqIn4CbvtqAo/exiy3Q1hgkbZu9BldgDax85supGkDY7sNInD06V+ChRpkn3Ef7lD2PZvL
-        GJvwM8SV+C5+6MvFdQHW+b2TajwusYHvmi59SFpW2RXroLOXmCYEa0zMgOfSeKGZnLXoeGx
-        fkrxYNKD8lW4RkKs0Hed8IhQefR/iZJ9iyMtIpb7fz/Ogy61Tymnawu+ePGIeOjEmXnLU+k
-        01NPgsXhGgfMkYZODlzt5Dzf24Mtxc1jfp27BztU3nFHjRDMU48V9YAweQ7Pg==
-X-QQ-GoodBg: 0
-X-BIZMAIL-ID: 16725939209030767129
-From:   Zhangjin Wu <falcon@tinylab.org>
-To:     w@1wt.eu
-Cc:     arnd@arndb.de, falcon@tinylab.org, linux-kernel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, tanyuan@tinylab.org,
-        thomas@t-8ch.de
-Subject: Re: [PATCH v6 7/8] selftests/nolibc: allow customize CROSS_COMPILE by architecture
-Date:   Sun,  6 Aug 2023 18:16:36 +0800
-Message-Id: <20230806101636.14407-1-falcon@tinylab.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20230806100410.GC10627@1wt.eu>
-References: <20230806100410.GC10627@1wt.eu>
+        Sun, 6 Aug 2023 06:17:45 -0400
+Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B46FC131;
+        Sun,  6 Aug 2023 03:17:40 -0700 (PDT)
+Received: from localhost (localhost.localdomain [127.0.0.1])
+        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 31DFC40E0191;
+        Sun,  6 Aug 2023 10:17:38 +0000 (UTC)
+X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
+Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
+        header.d=alien8.de
+Received: from mail.alien8.de ([127.0.0.1])
+        by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id U1AK7kcEZdll; Sun,  6 Aug 2023 10:17:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
+        t=1691317055; bh=cGBlvXe5nfTxKa4rZNV7x1A+ypMAcyG/itGXCpuyhY0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=N2rLiiVmk8WORAehH28yJ0e/Hir/x7xDeBqDfhnQkZ/KKxEzOebRhCZQggen0OH7k
+         7wZp0JuS2cRcztbLdfd/1ibae4qxo9JiQSosgYtdxD6ApAnMphgXTCHY3ctOFFY2jg
+         Mj/YVI33fJHYEVLPPDfnfNuV0eIEQ/mJiLMi59/GTzFuwIUYWYomqQmB4se54pJLFV
+         +sXfkzFwJrAhW1NqRIuyXzQU+c7/dSxmgHVzsUk//A4XrsqeFIsJVDBXo7GHk5qffV
+         6zGvUNOBJDEtJKmlcEvlfrVyEmT0OE534E6P+ghVsS01UUWtSYCJDxFr4SB1uurwKZ
+         SiiyClnUkNJvlTLyPtw84CLQTdWgRA94PaC1SzEALTZS6xg9+7iQH5WhuSMWgR7RFj
+         oduK64f+Y66j6w8HOq8acdBVB2YAqIgG9qzCjHhDUY/XuFx8l+6hZQubWCEKu+yvPl
+         PahzDVPhr7TMJ0mAkNWwuIUuGh2lHc/kLjfLe0NWp3Hp00q96LgoPiczF+1X/x3B8J
+         kerSfeq7OzpL2SFmH0JldMf96WtawdfYlUDMAa3LYGuYVvejdqwOeN8LnM3V5W3qtS
+         l1EfoWandsOHrJvuJn3nYUyZEvIRYG/4p0enVh4Jta5/RpxEPCDZyu8zGWhmlKvTo3
+         TB1hNs7qx+vShSHCRrDJHc7A=
+Received: from zn.tnic (pd9530d32.dip0.t-ipconnect.de [217.83.13.50])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
+        (No client certificate requested)
+        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id A575440E0185;
+        Sun,  6 Aug 2023 10:17:16 +0000 (UTC)
+Date:   Sun, 6 Aug 2023 12:17:10 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Ard Biesheuvel <ardb@kernel.org>
+Cc:     linux-efi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Evgeniy Baskov <baskov@ispras.ru>,
+        Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Alexey Khoroshilov <khoroshilov@ispras.ru>,
+        Peter Jones <pjones@redhat.com>,
+        Gerd Hoffmann <kraxel@redhat.com>,
+        Dave Young <dyoung@redhat.com>,
+        Mario Limonciello <mario.limonciello@amd.com>,
+        Kees Cook <keescook@chromium.org>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Joerg Roedel <jroedel@suse.de>
+Subject: Re: [PATCH v8 00/23] efi/x86: Avoid bare metal decompressor during
+ EFI boot
+Message-ID: <20230806101710.GAZM9zJjwoNKFSfWD6@fat_crate.local>
+References: <20230802154831.2147855-1-ardb@kernel.org>
+ <20230805144030.GDZM5fXvaqXBLxwXfj@fat_crate.local>
+ <CAMj1kXEFC6LwNiWrGGsXot4SO0wivqN_3Yi=T9OS0XJ4=MeNew@mail.gmail.com>
+ <20230805210631.GEZM6518W3qOCYYgNK@fat_crate.local>
+ <CAMj1kXE+jgLztL1mQ6VDkJWfAjSJnxapoUAsvqaSQmfi=kr=hg@mail.gmail.com>
+ <CAMj1kXHi8=L8e=a5ci4yQFVrc=XqqJaMNvZuPXduwaAVfmm4_Q@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-QQ-SENDSIZE: 520
-Feedback-ID: bizesmtp:tinylab.org:qybglogicsvrgz:qybglogicsvrgz5a-1
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <CAMj1kXHi8=L8e=a5ci4yQFVrc=XqqJaMNvZuPXduwaAVfmm4_Q@mail.gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,SPF_PASS,
+        T_SPF_HELO_TEMPERROR autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-It uses 'eval $(1) = $(2)' style, no real 'override' as the name shows
-;-)
-
-> > But you did find a bug above, we should include it again here to avoid not
-> > break the possibility of using llvm (still require to check if there are some
-> > other regressions):
-> > 
-> >    include ../../../scripts/Makefile.include
-> > 
-> > And I have further found there is another cc-cross-prefix helper from:
-> > 
-> >     $ grep cc-cross-prefix -ur scripts/
-> >     scripts/Makefile.compiler:# cc-cross-prefix
-> >     scripts/Makefile.compiler:# Usage: CROSS_COMPILE := $(call cc-cross-prefix, m68k-linux-gnu- m68k-linux-)
-> >     scripts/Makefile.compiler:cc-cross-prefix = $(firstword $(foreach c, $(1), \
-> > 
-> > So, we are able to search the toolchains from Arnd's, local toolchains and ...,
-> > may not need to force users to use which one, I will do more tests on it.
-> > 
-> > Please don't merge this patch too, to avoid break anything, let's tune it
-> > carefully in our v2 and delay the whole stuff to v6.7.
+On Sun, Aug 06, 2023 at 12:05:25PM +0200, Ard Biesheuvel wrote:
+> I suspect this should fix the issue:
 > 
-> OK. Note that in the end it might be less difficult to try to set
-> CROSS_COMPILE *before* including the general include instead of
-> after: we could preset CROSS_COMPILE based on the ARCH/XARCH we know
-> at this step, as this is not expected to rely on auto-detection.
->
+> --- a/arch/x86/kernel/head_64.S
+> +++ b/arch/x86/kernel/head_64.S
+> @@ -110,6 +110,7 @@ SYM_CODE_START_NOALIGN(startup_64)
+>          * programmed into CR3.
+>          */
+>         leaq    _text(%rip), %rdi
+> +       movq    %r15, %rsi
+>         call    __startup_64
 
-A simple tests shows, we are able to simply move the include after our
-customize lines:
+Yah, I was suspecting we're not passing boot_params properly somewhere.
+Aaand there it is.
 
-    diff --git a/tools/testing/selftests/nolibc/Makefile b/tools/testing/selftests/nolibc/Makefile
-    index 1f7c36fbe083..ed21dc393dc0 100644
-    --- a/tools/testing/selftests/nolibc/Makefile
-    +++ b/tools/testing/selftests/nolibc/Makefile
-    @@ -1,6 +1,4 @@
-     # SPDX-License-Identifier: GPL-2.0
-    -# Makefile for nolibc tests
-    -include ../../../scripts/Makefile.include
-     # We need this for the "cc-option" macro.
-     include ../../../build/Build.include
+So yes, that fixes it.
 
-    diff --git a/tools/testing/selftests/nolibc/Makefile b/tools/testing/selftests/nolibc/Makefile
-    index 228a95e65113..91a2a546954c 100644
-    --- a/tools/testing/selftests/nolibc/Makefile
-    +++ b/tools/testing/selftests/nolibc/Makefile
-    @@ -55,6 +55,12 @@ IMAGE_loongarch  = arch/loongarch/boot/vmlinuz.efi
-     IMAGE            = $(IMAGE_$(XARCH))
-     IMAGE_NAME       = $(notdir $(IMAGE))
+Lemme know when you've refreshed your branch so that I can continue
+testing.
 
-    +# CROSS_COMPILE: cross toolchain prefix by architecture
-    +CROSS_COMPILE           ?= $(CROSS_COMPILE_$(XARCH))
-    +
-    +# make sure CC is prefixed with CROSS_COMPILE
-    +include ../../../scripts/Makefile.include
+Thx.
 
-Thanks,
-Zhangjin
+-- 
+Regards/Gruss,
+    Boris.
 
-> Willy
+https://people.kernel.org/tglx/notes-about-netiquette
