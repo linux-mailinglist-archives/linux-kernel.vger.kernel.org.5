@@ -2,88 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 397DE7713FA
-	for <lists+linux-kernel@lfdr.de>; Sun,  6 Aug 2023 10:34:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A8737713FC
+	for <lists+linux-kernel@lfdr.de>; Sun,  6 Aug 2023 10:37:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229780AbjHFIeM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 6 Aug 2023 04:34:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55258 "EHLO
+        id S229809AbjHFIhn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 6 Aug 2023 04:37:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56098 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229441AbjHFIeK (ORCPT
+        with ESMTP id S229693AbjHFIhl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 6 Aug 2023 04:34:10 -0400
-Received: from mail11.truemail.it (mail11.truemail.it [IPv6:2001:4b7e:0:8::81])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C85F811D;
-        Sun,  6 Aug 2023 01:34:07 -0700 (PDT)
-Received: from francesco-nb.int.toradex.com (93-49-2-63.ip317.fastwebnet.it [93.49.2.63])
-        by mail11.truemail.it (Postfix) with ESMTPA id C780E1F8DB;
-        Sun,  6 Aug 2023 10:34:03 +0200 (CEST)
-Date:   Sun, 6 Aug 2023 10:33:59 +0200
-From:   Francesco Dolcini <francesco@dolcini.it>
-To:     Andrew Davis <afd@ti.com>, Nishanth Menon <nm@ti.com>
-Cc:     Vignesh Raghavendra <vigneshr@ti.com>,
-        Tero Kristo <kristo@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+        Sun, 6 Aug 2023 04:37:41 -0400
+Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81BF311D;
+        Sun,  6 Aug 2023 01:37:40 -0700 (PDT)
+Received: by mail-pj1-x1029.google.com with SMTP id 98e67ed59e1d1-2682b4ca7b7so1886187a91.3;
+        Sun, 06 Aug 2023 01:37:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1691311060; x=1691915860;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=y/VsbE0slEMRhZ8TGMIdWLlmOlT7Ip9MoAgWWsTSAm8=;
+        b=KzgTJejuxzMjf7uHhJZ1yYeDin/Jxg2lr0jvwD1a2ZB0FOHX1cWxEidzAj2xBDkv1A
+         6RZGS47QIYBBfFWTWHCIJAccg2aNjxoSrEz7VGUNQWOIYeD1GtiwBFC7ZOjw0Tt/eLis
+         dSVrChsTtepG4sT13WoxwAq2bULnjIeo93EZmwLYOTO7EevsicYjme9BfsYwxKPmCzTW
+         sxopvfmh3WgJjbierzs+xoEm0BzzA8X/+Lq4ConhV6PqcM+67bwrwn2ZPatD02udTbqW
+         0oBWwcW3wBlkmBSNRmpFiciBUThVlLiUlvHvfRRK6/8NsW1aW/Bt/TdXcvmGZFqg65+w
+         H5cg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691311060; x=1691915860;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=y/VsbE0slEMRhZ8TGMIdWLlmOlT7Ip9MoAgWWsTSAm8=;
+        b=XyZpBqUfY8/iiq+74TwoR61kj0Yyi4B/AFIeQkkaPt3mBb+XLUZtKPR3QKrVOAR978
+         9WuV2kS84PLT/Pz51pzTt4vR71CeYedeaLpvLCrOPblcaQ3fY6xASf71e/9B7dTiiWs7
+         xrYuf5PZ9THld5CXdLrqXQ7uZbAYa3LCiPP8pCiBG7kp7PGlM7uAJLxQGRrR7tEQBAbh
+         qI90PEYtE9t3AR69SMoe+eJAZLYfCsiW0JQPpj+Nh6+g3n1R1bikzFyFtlyepWUIK2l1
+         7XIRmgcOnjUXVzBeo6WPzQbClqJyztAD9mYLMkkKJCNLftsVoF5qgG+bhd8M/1d0ztPL
+         yuUQ==
+X-Gm-Message-State: AOJu0Yym9bdRozU2rjOhHb3h2IRItVZ3aqVgD/FWlf0I+j1w+qQyvZ7a
+        NmoSm2M4vdQXi/AxOs+68pc=
+X-Google-Smtp-Source: AGHT+IG7mAl6KpNhqZSM2ZAq57uyOgALa53jlvIRprYxgC5XwMf2mDueVaeumtqB2y4Dp2eKUnCFQQ==
+X-Received: by 2002:a17:90a:f287:b0:268:5558:de4c with SMTP id fs7-20020a17090af28700b002685558de4cmr4980313pjb.38.1691311059896;
+        Sun, 06 Aug 2023 01:37:39 -0700 (PDT)
+Received: from localhost.localdomain ([2409:40c2:1028:5dc5:7c0a:52e1:6b87:38ef])
+        by smtp.gmail.com with ESMTPSA id i4-20020a17090a64c400b0026307fa0442sm6580403pjm.49.2023.08.06.01.37.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 06 Aug 2023 01:37:39 -0700 (PDT)
+From:   coolrrsh@gmail.com
+To:     broonie@kernel.org, linux-spi@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 3/3] arm64: dts: ti: k3-am64: Fix epwm_tbclk node name to
- generic name
-Message-ID: <ZM9a93OTLuwIKitA@francesco-nb.int.toradex.com>
-References: <20230802174521.236255-1-afd@ti.com>
- <20230802174521.236255-3-afd@ti.com>
+Cc:     linux-kernel-mentees@lists.linuxfoundation.org,
+        Rajeshwar R Shinde <coolrrsh@gmail.com>
+Subject: [PATCH v3] spi: spi-mpc512x-psc: Fix an unsigned comparison that can never be negative 
+Date:   Sun,  6 Aug 2023 14:07:33 +0530
+Message-Id: <20230806083734.7685-1-coolrrsh@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230802174521.236255-3-afd@ti.com>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_PASS,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Andrew, hello Nishanth
+From: Rajeshwar R Shinde <coolrrsh@gmail.com>
 
-On Wed, Aug 02, 2023 at 12:45:21PM -0500, Andrew Davis wrote:
-> The name "clock" is not allowed for nodes, use "clock-controller" to
-> remove the DTS check warning.
-> 
-> Signed-off-by: Andrew Davis <afd@ti.com>
-> ---
->  arch/arm64/boot/dts/ti/k3-am64-main.dtsi | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/arch/arm64/boot/dts/ti/k3-am64-main.dtsi b/arch/arm64/boot/dts/ti/k3-am64-main.dtsi
-> index e27eb2e585f14..4e3e450e4e4c8 100644
-> --- a/arch/arm64/boot/dts/ti/k3-am64-main.dtsi
-> +++ b/arch/arm64/boot/dts/ti/k3-am64-main.dtsi
-> @@ -61,7 +61,7 @@ phy_gmii_sel: phy@4044 {
->  			#phy-cells = <1>;
->  		};
->  
-> -		epwm_tbclk: clock@4140 {
-> +		epwm_tbclk: clock-controller@4140 {
+In struct mpc512x_psc_spi, the variable 'irq' is declared as an unsigned int.
+The comparison of variable 'irq'  with signed int operand is incorrect. Also,
+the return value from the call to platform_get_irq(pdev,0) is int and it is 
+assigned to an unsigned int variable 'irq', thus redeclaring the type of 
+variable 'irq' to signed int.
 
-I was asked to do the exact same change here [1] by Nishanth, and I'm
-sending the updated patch in a short while.
+This fixes warning such as:
+drivers/spi/spi-mpc512x-psc.c:493:5-13: 
+WARNING: Unsigned expression compared with zero: mps -> irq < 0
 
-However I have one question, according to the
-devicetree-specification-v0.4.pdf [2] "2.2.2 Generic Names
-Recommendation", clock is a valid node name.
+---
+ drivers/spi/spi-mpc512x-psc.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-While testing the DT (make CHECK_DTBS=y), I did not have any warning nor
-error.
+diff --git a/drivers/spi/spi-mpc512x-psc.c b/drivers/spi/spi-mpc512x-psc.c
+index 99aeef28a..5cecca1be 100644
+--- a/drivers/spi/spi-mpc512x-psc.c
++++ b/drivers/spi/spi-mpc512x-psc.c
+@@ -53,7 +53,7 @@ struct mpc512x_psc_spi {
+ 	int type;
+ 	void __iomem *psc;
+ 	struct mpc512x_psc_fifo __iomem *fifo;
+-	unsigned int irq;
++	int irq;
+ 	u8 bits_per_word;
+ 	u32 mclk_rate;
+ 
+-- 
+2.25.1
 
-What am I missing?
-
-In addition to that I guess we should also update the example in the dt
-bindings yaml file.
-
-Francesco
-
-
-[1] https://lore.kernel.org/all/20230731142135.108477-2-francesco@dolcini.it/
-[2] https://github.com/devicetree-org/devicetree-specification/releases/download/v0.4/devicetree-specification-v0.4.pdf
