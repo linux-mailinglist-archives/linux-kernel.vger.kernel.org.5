@@ -2,57 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5CB1477135F
-	for <lists+linux-kernel@lfdr.de>; Sun,  6 Aug 2023 05:24:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 947F7771362
+	for <lists+linux-kernel@lfdr.de>; Sun,  6 Aug 2023 05:25:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229662AbjHFDYI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 5 Aug 2023 23:24:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58272 "EHLO
+        id S229545AbjHFDZq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 5 Aug 2023 23:25:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58654 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229468AbjHFDYG (ORCPT
+        with ESMTP id S229468AbjHFDZo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 5 Aug 2023 23:24:06 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 328671FE1;
-        Sat,  5 Aug 2023 20:24:05 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id B64F360C57;
-        Sun,  6 Aug 2023 03:24:04 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DCDBFC433C7;
-        Sun,  6 Aug 2023 03:24:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691292244;
-        bh=BjWcmlyyIUwTPcPHpo5ZIMu+WGz/CBBzwml6MBeHlXc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=BXeRkT3A4mcnCOmmPze0XP+JkA0kGl/HYT3aaw8jcTYSDyCGIKefxQGUygELVeN0c
-         C8Aoslyf2RBrDgq1611nulhk/WdOWUn1rMtKgL/2bLqu66c25gFT24mf7Us16+tqE7
-         UvGbrPV4frPPYqyVPSaVTZGVZrwYMAO0Tl5aB5+zhMagY5e/Fnz8KdLFmVGrTBENsZ
-         STeX8E+GJC4BZOr/rWX6C2dCAsuDb3stkwyY3klbcUc8GNwYcIEGKTCO6Rayt9PHci
-         Xq59IW9hqGNu1Brj0/HRqmJnHb0E3ufLTXlFTiAbqHvM8h96/AQHBLIfPgfEcEYOH4
-         7kP3owMNWgPQw==
-Date:   Sun, 6 Aug 2023 11:23:53 +0800
-From:   Shawn Guo <shawnguo@kernel.org>
-To:     Martin Kaiser <martin@kaiser.cx>
-Cc:     Stephen Boyd <sboyd@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
-        Abel Vesa <abelvesa@kernel.org>,
-        Fabio Estevam <festevam@gmail.com>,
-        linux-arm-kernel@lists.infradead.org, linux-clk@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v6 0/2] ARM: imx25: print silicon revision at startup
-Message-ID: <20230806032353.GX151430@dragon>
-References: <20220602080344.208702-1-martin@kaiser.cx>
- <20230730163928.70637-1-martin@kaiser.cx>
- <e0acf791831bcfed56d56c97f6867a89.sboyd@kernel.org>
- <20230802183849.2gzlglkskvzkgiwa@viti.kaiser.cx>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230802183849.2gzlglkskvzkgiwa@viti.kaiser.cx>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        Sat, 5 Aug 2023 23:25:44 -0400
+Received: from zg8tndyumtaxlji0oc4xnzya.icoremail.net (zg8tndyumtaxlji0oc4xnzya.icoremail.net [46.101.248.176])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id F407F1FE4;
+        Sat,  5 Aug 2023 20:25:39 -0700 (PDT)
+Received: from ubuntu.localdomain (unknown [218.12.19.97])
+        by mail-app4 (Coremail) with SMTP id cS_KCgCnrBSYEs9kXASjCg--.63926S2;
+        Sun, 06 Aug 2023 11:25:21 +0800 (CST)
+From:   Duoming Zhou <duoming@zju.edu.cn>
+To:     sean.wang@mediatek.com
+Cc:     vkoul@kernel.org, matthias.bgg@gmail.com,
+        angelogioacchino.delregno@collabora.com, dmaengine@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Duoming Zhou <duoming@zju.edu.cn>
+Subject: [PATCH] dmaengine: mediatek: Fix deadlock caused by synchronize_irq()
+Date:   Sun,  6 Aug 2023 11:25:11 +0800
+Message-Id: <20230806032511.45263-1-duoming@zju.edu.cn>
+X-Mailer: git-send-email 2.17.1
+X-CM-TRANSID: cS_KCgCnrBSYEs9kXASjCg--.63926S2
+X-Coremail-Antispam: 1UD129KBjvJXoW7Zryxuw4rJF4ktw1UtrWfGrg_yoW8GFy3pF
+        WDJa45CFWqyr1Dua1UCr42qFWrC3WfGrW7Gr4fXw43Ca4rJryYvr1FyayavF4jqr9rKa97
+        Kr4UtrWrCF4jyr7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUym14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+        1l84ACjcxK6xIIjxv20xvE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
+        JVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
+        CE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
+        2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJV
+        W8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1l42xK82IYc2Ij64vI
+        r41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8Gjc
+        xK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0
+        cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42xK8V
+        AvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E
+        14v26r1j6r4UYxBIdaVFxhVjvjDU0xZFpf9x0JUdHUDUUUUU=
+X-CM-SenderInfo: qssqjiasttq6lmxovvfxof0/1tbiAwQSAWTNp-sHcgAhs1
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -60,31 +55,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 02, 2023 at 08:38:49PM +0200, Martin Kaiser wrote:
-> Stephen Boyd (sboyd@kernel.org) wrote:
-> 
-> > You need to Cc linux-imx@nxp.com on imx clk patches. I think Abel has
-> > some filter that looks for linux-clk@vger and linux-imx.
-> 
-> > Also, please don't send series replies to previous rounds. It buries the
-> > patches deep in my MUA and my scripts don't work well to apply patches
-> > when they're sent like that.
-> 
-> > I presume that Abel will pick the patches up? Or do you want to land
-> > them through Arnd's tree? Either way feel free to add my acked-by
-> 
-> > Acked-by: Stephen Boyd <sboyd@kernel.org>
-> 
-> Thanks for responding, Stephen.
-> 
-> Ok, understood. I'll resend with Cc linux-imx@nxp.com and without the
-> reply to previous versions.
-> 
-> Arnd, are you ok with taking these patches through your tree as
-> suggested by Stephen?
+The synchronize_irq(c->irq) will not return until the IRQ handler
+mtk_uart_apdma_irq_handler() is completed. If the synchronize_irq()
+holds a spin_lock and waits the IRQ handler to complete, but the
+IRQ handler also needs the same spin_lock. The deadlock will happen.
+The process is shown below:
 
-I prefer to have Abel apply the patches through clk tree rather than
-arm-soc tree, unless there is a good reason for them to go via the
-latter.
+          cpu0                        cpu1
+mtk_uart_apdma_device_pause() | mtk_uart_apdma_irq_handler()
+  spin_lock_irqsave()         |
+                              |   spin_lock_irqsave()
+  //hold the lock to wait     |
+  synchronize_irq()           |
 
-Shawn
+This patch reorders the synchronize_irq(c->irq) outside the spin_lock
+in order to mitigate the bug.
+
+Fixes: 9135408c3ace ("dmaengine: mediatek: Add MediaTek UART APDMA support")
+Signed-off-by: Duoming Zhou <duoming@zju.edu.cn>
+---
+ drivers/dma/mediatek/mtk-uart-apdma.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
+
+diff --git a/drivers/dma/mediatek/mtk-uart-apdma.c b/drivers/dma/mediatek/mtk-uart-apdma.c
+index a1517ef1f4a..0acf6a92a4a 100644
+--- a/drivers/dma/mediatek/mtk-uart-apdma.c
++++ b/drivers/dma/mediatek/mtk-uart-apdma.c
+@@ -451,9 +451,8 @@ static int mtk_uart_apdma_device_pause(struct dma_chan *chan)
+ 	mtk_uart_apdma_write(c, VFF_EN, VFF_EN_CLR_B);
+ 	mtk_uart_apdma_write(c, VFF_INT_EN, VFF_INT_EN_CLR_B);
+ 
+-	synchronize_irq(c->irq);
+-
+ 	spin_unlock_irqrestore(&c->vc.lock, flags);
++	synchronize_irq(c->irq);
+ 
+ 	return 0;
+ }
+-- 
+2.17.1
+
