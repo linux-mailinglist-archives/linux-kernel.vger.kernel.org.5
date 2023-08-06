@@ -2,480 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4CC7877137F
-	for <lists+linux-kernel@lfdr.de>; Sun,  6 Aug 2023 05:48:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E91F771382
+	for <lists+linux-kernel@lfdr.de>; Sun,  6 Aug 2023 05:54:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229503AbjHFDsV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 5 Aug 2023 23:48:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60584 "EHLO
+        id S229544AbjHFDyn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 5 Aug 2023 23:54:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32840 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229468AbjHFDsS (ORCPT
+        with ESMTP id S229468AbjHFDyl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 5 Aug 2023 23:48:18 -0400
-Received: from mail-oa1-f79.google.com (mail-oa1-f79.google.com [209.85.160.79])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A653D1A3
-        for <linux-kernel@vger.kernel.org>; Sat,  5 Aug 2023 20:48:14 -0700 (PDT)
-Received: by mail-oa1-f79.google.com with SMTP id 586e51a60fabf-1ad12c38bceso4433572fac.3
-        for <linux-kernel@vger.kernel.org>; Sat, 05 Aug 2023 20:48:14 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691293694; x=1691898494;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=AB4gpVz6vQvvB5Ahs4Wq4tMlzZ/RoWcGtm3MYPcmhhY=;
-        b=SUBKbKCrju2GmVBhFQmjqMSyPnc0B0u9hIfw9zhoBEWJwHdIWAsGVljqQNEr6NNjNN
-         yNPDpPA6IfKWJxk/Qw/1VowIwI3ssGPJwdtGdZf5S3FIua7oJAmbb6ZcjSgGCeWCryup
-         Uw/wX9ZvfvDm974BCLLfFtsM5GjtQ+EOpfeR8hoBq66CzI+/tCVg60eM0UAPKvr2jf1t
-         t3nJEcET7ic0OPjDaULXksE9cFpNzmNRmBXxKqo0562OXoidYnQR+wbU3jadGByznG4a
-         nhYz6G/Kk332KhnZnqtllQMrVEo3d7lRnYATyF19YyqprhJtvpY/87TuBi0KgK83m5I6
-         2vaw==
-X-Gm-Message-State: AOJu0YwnHjGcd7wwwP2AcDEbqK0EloXJQ0b2JBQHIX5kngei+PYL+TlH
-        cxB2Ex7E+un0iCFo8jxQGyrZYk1Rk/TeNd4PvLh2/hg5sh6B
-X-Google-Smtp-Source: AGHT+IF84rMYuKEpjvcKfw0hIDa3OM5O68THUCnEz7dr3qveFUpkwl1FiLF+mPZuJZcoJZEmj+tFk8/ej93IsohxM+HA1mWd38uG
+        Sat, 5 Aug 2023 23:54:41 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8ABB1FD9;
+        Sat,  5 Aug 2023 20:54:40 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 6A05760F2F;
+        Sun,  6 Aug 2023 03:54:40 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5BE33C433C8;
+        Sun,  6 Aug 2023 03:54:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1691294079;
+        bh=umI5fqtycSsTyWc4yh3zJRP5W+kUF6xzbhYpY3Oijyc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=bXSTLvhC3xOfdHU0H4xjMpHpG5RSvVVeaSxbjYR6za+ReqcNzSce+N86ZtilTJ8xw
+         300Tw9CoiKBkykqG9BJ4T5UUoKEPbOjh3Dyh7AwgG2QJEIzVDZdZ8GiH4Oxhow5Nss
+         EZt1IKsCvfctlD9l6RjbuvYl7Dmex3pzhFpzE8TJqG8ikJGjGPPQ03I/j7nLnWWCcc
+         jsgK0qeiHfCeGeR7a0uOouA4OHYpoovB4kbNSEReP7osnW7jSp54COsz54IfJNAe3s
+         d84G1L5Zym+1MN2V92/HgRN6r8MKjeUndFWM3wyDDyXFvZZtwRf7dsZZaTZEQjXrvV
+         c1ZpXle4RRE6w==
+Date:   Sun, 6 Aug 2023 11:54:28 +0800
+From:   Shawn Guo <shawnguo@kernel.org>
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] ARM: dts: nxp: mxs: split interrupts per cells
+Message-ID: <20230806035428.GB151430@dragon>
+References: <20230730111539.98210-1-krzysztof.kozlowski@linaro.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6870:956a:b0:1b0:2eab:e7e2 with SMTP id
- v42-20020a056870956a00b001b02eabe7e2mr5975049oal.0.1691293694010; Sat, 05 Aug
- 2023 20:48:14 -0700 (PDT)
-Date:   Sat, 05 Aug 2023 20:48:13 -0700
-In-Reply-To: <00000000000040e14205ffbf333f@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000d7ae72060238ff24@google.com>
-Subject: Re: [syzbot] [ntfs3?] WARNING in wnd_add_free_ext (2)
-From:   syzbot <syzbot+5b2f934f08ab03d473ff@syzkaller.appspotmail.com>
-To:     almaz.alexandrovich@paragon-software.com,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        ntfs3@lists.linux.dev, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,
-        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230730111539.98210-1-krzysztof.kozlowski@linaro.org>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-syzbot has found a reproducer for the following issue on:
+On Sun, Jul 30, 2023 at 01:15:39PM +0200, Krzysztof Kozlowski wrote:
+> Each interrupt should be in its own cell.  This is much more readable.
+> 
+> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 
-HEAD commit:    86d7896480b0 Merge branch 'for-next/core' into for-kernelci
-git tree:       git://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git for-kernelci
-console output: https://syzkaller.appspot.com/x/log.txt?x=17f7a295a80000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=21762bc8221a1ed3
-dashboard link: https://syzkaller.appspot.com/bug?extid=5b2f934f08ab03d473ff
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-userspace arch: arm64
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=15f0b171a80000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=129e5713a80000
-
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/136ba9602d1f/disk-86d78964.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/dcd3ab5ec39d/vmlinux-86d78964.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/3041f85d1a44/Image-86d78964.gz.xz
-mounted in repro: https://storage.googleapis.com/syzbot-assets/02dc44470901/mount_0.gz
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+5b2f934f08ab03d473ff@syzkaller.appspotmail.com
-
- el0_svc_common+0x138/0x244 arch/arm64/kernel/syscall.c:139
- do_el0_svc+0x64/0x198 arch/arm64/kernel/syscall.c:188
- el0_svc+0x4c/0x160 arch/arm64/kernel/entry-common.c:647
- el0t_64_sync_handler+0x84/0xfc arch/arm64/kernel/entry-common.c:665
- el0t_64_sync+0x190/0x194 arch/arm64/kernel/entry.S:591
-------------[ cut here ]------------
-WARNING: CPU: 0 PID: 5986 at fs/ntfs3/bitmap.c:216 wnd_add_free_ext+0x9b0/0xc00 fs/ntfs3/bitmap.c:351
-Modules linked in:
-CPU: 0 PID: 5986 Comm: syz-executor496 Not tainted 6.5.0-rc4-syzkaller-g86d7896480b0 #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 07/12/2023
-pstate: 80400005 (Nzcv daif +PAN -UAO -TCO -DIT -SSBS BTYPE=--)
-pc : wnd_add_free_ext+0x9b0/0xc00 fs/ntfs3/bitmap.c:351
-lr : wnd_add_free_ext+0x9b0/0xc00 fs/ntfs3/bitmap.c:351
-sp : ffff8000969a71e0
-x29: ffff8000969a7210 x28: 1fffe0001c052c4b x27: dfff800000000000
-x26: dfff800000000000 x25: ffff0000e0296278 x24: ffff0000e02961e0
-x23: ffff0000e0296258 x22: 00000000000001e7 x21: ffff0000dbdae2d0
-x20: ffff0000e0296240 x19: 00000000000001e7 x18: 1fffe0003683adc6
-x17: 0000000000000000 x16: ffff80008a57089c x15: 0000000000000001
-x14: 000000008a56c67c x13: 0000000071fb52ff x12: 00000000a7effed4
-x11: 0000000000000000 x10: 0000000000000000 x9 : 0000000000000000
-x8 : ffff0000c583d340 x7 : 0000000000000000 x6 : 000000000000003f
-x5 : 0000000000000040 x4 : 0000000000000000 x3 : 0000000000000001
-x2 : ffffffffffffffc0 x1 : 00000000000001e7 x0 : 00000000000001e7
-Call trace:
- wnd_add_free_ext+0x9b0/0xc00 fs/ntfs3/bitmap.c:351
- wnd_set_free+0x570/0x5cc fs/ntfs3/bitmap.c:749
- mark_as_free_ex+0x134/0x310 fs/ntfs3/fsntfs.c:2485
- run_deallocate_ex+0x1e0/0x4ac fs/ntfs3/attrib.c:122
- attr_set_size+0x1128/0x342c fs/ntfs3/attrib.c:750
- ntfs_truncate fs/ntfs3/file.c:393 [inline]
- ntfs3_setattr+0x424/0x8fc fs/ntfs3/file.c:682
- notify_change+0xa84/0xd20 fs/attr.c:483
- do_truncate+0x1c0/0x28c fs/open.c:66
- vfs_truncate+0x2b8/0x360 fs/open.c:112
- do_sys_truncate+0xec/0x1b4 fs/open.c:135
- __do_sys_truncate fs/open.c:147 [inline]
- __se_sys_truncate fs/open.c:145 [inline]
- __arm64_sys_truncate+0x5c/0x70 fs/open.c:145
- __invoke_syscall arch/arm64/kernel/syscall.c:38 [inline]
- invoke_syscall+0x98/0x2c0 arch/arm64/kernel/syscall.c:52
- el0_svc_common+0x138/0x244 arch/arm64/kernel/syscall.c:139
- do_el0_svc+0x64/0x198 arch/arm64/kernel/syscall.c:188
- el0_svc+0x4c/0x160 arch/arm64/kernel/entry-common.c:647
- el0t_64_sync_handler+0x84/0xfc arch/arm64/kernel/entry-common.c:665
- el0t_64_sync+0x190/0x194 arch/arm64/kernel/entry.S:591
-irq event stamp: 20656
-hardirqs last  enabled at (20655): [<ffff800080b723d4>] lookup_bh_lru fs/buffer.c:1403 [inline]
-hardirqs last  enabled at (20655): [<ffff800080b723d4>] __find_get_block+0x1a0/0xd18 fs/buffer.c:1415
-hardirqs last disabled at (20656): [<ffff80008a56c1dc>] el1_dbg+0x24/0x80 arch/arm64/kernel/entry-common.c:407
-softirqs last  enabled at (19642): [<ffff8000800218ec>] softirq_handle_end kernel/softirq.c:399 [inline]
-softirqs last  enabled at (19642): [<ffff8000800218ec>] __do_softirq+0xac0/0xd54 kernel/softirq.c:582
-softirqs last disabled at (19633): [<ffff80008002aad4>] ____do_softirq+0x14/0x20 arch/arm64/kernel/irq.c:80
----[ end trace 0000000000000000 ]---
-------------[ cut here ]------------
-WARNING: CPU: 0 PID: 5986 at fs/ntfs3/bitmap.c:216 wnd_add_free_ext+0x9b0/0xc00 fs/ntfs3/bitmap.c:351
-Modules linked in:
-CPU: 0 PID: 5986 Comm: syz-executor496 Tainted: G        W          6.5.0-rc4-syzkaller-g86d7896480b0 #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 07/12/2023
-pstate: 80400005 (Nzcv daif +PAN -UAO -TCO -DIT -SSBS BTYPE=--)
-pc : wnd_add_free_ext+0x9b0/0xc00 fs/ntfs3/bitmap.c:351
-lr : wnd_add_free_ext+0x9b0/0xc00 fs/ntfs3/bitmap.c:351
-sp : ffff8000969a71e0
-x29: ffff8000969a7210 x28: 1fffe0001c052c57 x27: dfff800000000000
-x26: dfff800000000000 x25: ffff0000e02962d8 x24: ffff0000e02961e0
-x23: ffff0000e02962b8 x22: 00000000000001e7 x21: ffff0000dbdae2d0
-x20: ffff0000e02962a0 x19: 00000000000001e7 x18: 1fffe0003683adc6
-x17: 0000000000000000 x16: ffff80008a57089c x15: 0000000000000001
-x14: 000000008a56c67c x13: 0000000071fb52ff x12: 00000000a7effed4
-x11: 0000000000000000 x10: 0000000000000000 x9 : 0000000000000000
-x8 : ffff0000c583d340 x7 : 0000000000000000 x6 : 000000000000003f
-x5 : 0000000000000040 x4 : 0000000000000000 x3 : 0000000000000001
-x2 : ffffffffffffffc0 x1 : 00000000000001e7 x0 : 00000000000001e7
-Call trace:
- wnd_add_free_ext+0x9b0/0xc00 fs/ntfs3/bitmap.c:351
- wnd_set_free+0x570/0x5cc fs/ntfs3/bitmap.c:749
- mark_as_free_ex+0x134/0x310 fs/ntfs3/fsntfs.c:2485
- run_deallocate_ex+0x1e0/0x4ac fs/ntfs3/attrib.c:122
- attr_set_size+0x1128/0x342c fs/ntfs3/attrib.c:750
- ntfs_truncate fs/ntfs3/file.c:393 [inline]
- ntfs3_setattr+0x424/0x8fc fs/ntfs3/file.c:682
- notify_change+0xa84/0xd20 fs/attr.c:483
- do_truncate+0x1c0/0x28c fs/open.c:66
- vfs_truncate+0x2b8/0x360 fs/open.c:112
- do_sys_truncate+0xec/0x1b4 fs/open.c:135
- __do_sys_truncate fs/open.c:147 [inline]
- __se_sys_truncate fs/open.c:145 [inline]
- __arm64_sys_truncate+0x5c/0x70 fs/open.c:145
- __invoke_syscall arch/arm64/kernel/syscall.c:38 [inline]
- invoke_syscall+0x98/0x2c0 arch/arm64/kernel/syscall.c:52
- el0_svc_common+0x138/0x244 arch/arm64/kernel/syscall.c:139
- do_el0_svc+0x64/0x198 arch/arm64/kernel/syscall.c:188
- el0_svc+0x4c/0x160 arch/arm64/kernel/entry-common.c:647
- el0t_64_sync_handler+0x84/0xfc arch/arm64/kernel/entry-common.c:665
- el0t_64_sync+0x190/0x194 arch/arm64/kernel/entry.S:591
-irq event stamp: 21126
-hardirqs last  enabled at (21125): [<ffff800080b723d4>] lookup_bh_lru fs/buffer.c:1403 [inline]
-hardirqs last  enabled at (21125): [<ffff800080b723d4>] __find_get_block+0x1a0/0xd18 fs/buffer.c:1415
-hardirqs last disabled at (21126): [<ffff80008a56c1dc>] el1_dbg+0x24/0x80 arch/arm64/kernel/entry-common.c:407
-softirqs last  enabled at (20772): [<ffff8000800218ec>] softirq_handle_end kernel/softirq.c:399 [inline]
-softirqs last  enabled at (20772): [<ffff8000800218ec>] __do_softirq+0xac0/0xd54 kernel/softirq.c:582
-softirqs last disabled at (20659): [<ffff80008002aad4>] ____do_softirq+0x14/0x20 arch/arm64/kernel/irq.c:80
----[ end trace 0000000000000000 ]---
-------------[ cut here ]------------
-WARNING: CPU: 0 PID: 5986 at fs/ntfs3/bitmap.c:216 wnd_add_free_ext+0x9b0/0xc00 fs/ntfs3/bitmap.c:351
-Modules linked in:
-CPU: 0 PID: 5986 Comm: syz-executor496 Tainted: G        W          6.5.0-rc4-syzkaller-g86d7896480b0 #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 07/12/2023
-pstate: 80400005 (Nzcv daif +PAN -UAO -TCO -DIT -SSBS BTYPE=--)
-pc : wnd_add_free_ext+0x9b0/0xc00 fs/ntfs3/bitmap.c:351
-lr : wnd_add_free_ext+0x9b0/0xc00 fs/ntfs3/bitmap.c:351
-sp : ffff8000969a71e0
-x29: ffff8000969a7210 x28: 1fffe0001c052c63 x27: dfff800000000000
-x26: dfff800000000000 x25: ffff0000e0296338 x24: ffff0000e02961e0
-x23: ffff0000e0296318 x22: 00000000000001e7 x21: ffff0000dbdae2d0
-x20: ffff0000e0296300 x19: 00000000000001e7 x18: 1fffe0003683adc6
-x17: 0000000000000000 x16: ffff80008a57089c x15: 0000000000000001
-x14: 000000008a56c67c x13: 0000000071fb52ff x12: 00000000a7effed4
-x11: 0000000000000000 x10: 0000000000000000 x9 : 0000000000000000
-x8 : ffff0000c583d340 x7 : 0000000000000000 x6 : 000000000000003f
-x5 : 0000000000000040 x4 : 0000000000000000 x3 : 0000000000000001
-x2 : ffffffffffffffc0 x1 : 00000000000001e7 x0 : 00000000000001e7
-Call trace:
- wnd_add_free_ext+0x9b0/0xc00 fs/ntfs3/bitmap.c:351
- wnd_set_free+0x570/0x5cc fs/ntfs3/bitmap.c:749
- mark_as_free_ex+0x134/0x310 fs/ntfs3/fsntfs.c:2485
- run_deallocate_ex+0x1e0/0x4ac fs/ntfs3/attrib.c:122
- attr_set_size+0x1128/0x342c fs/ntfs3/attrib.c:750
- ntfs_truncate fs/ntfs3/file.c:393 [inline]
- ntfs3_setattr+0x424/0x8fc fs/ntfs3/file.c:682
- notify_change+0xa84/0xd20 fs/attr.c:483
- do_truncate+0x1c0/0x28c fs/open.c:66
- vfs_truncate+0x2b8/0x360 fs/open.c:112
- do_sys_truncate+0xec/0x1b4 fs/open.c:135
- __do_sys_truncate fs/open.c:147 [inline]
- __se_sys_truncate fs/open.c:145 [inline]
- __arm64_sys_truncate+0x5c/0x70 fs/open.c:145
- __invoke_syscall arch/arm64/kernel/syscall.c:38 [inline]
- invoke_syscall+0x98/0x2c0 arch/arm64/kernel/syscall.c:52
- el0_svc_common+0x138/0x244 arch/arm64/kernel/syscall.c:139
- do_el0_svc+0x64/0x198 arch/arm64/kernel/syscall.c:188
- el0_svc+0x4c/0x160 arch/arm64/kernel/entry-common.c:647
- el0t_64_sync_handler+0x84/0xfc arch/arm64/kernel/entry-common.c:665
- el0t_64_sync+0x190/0x194 arch/arm64/kernel/entry.S:591
-irq event stamp: 21568
-hardirqs last  enabled at (21567): [<ffff800080b723d4>] lookup_bh_lru fs/buffer.c:1403 [inline]
-hardirqs last  enabled at (21567): [<ffff800080b723d4>] __find_get_block+0x1a0/0xd18 fs/buffer.c:1415
-hardirqs last disabled at (21568): [<ffff80008a56c1dc>] el1_dbg+0x24/0x80 arch/arm64/kernel/entry-common.c:407
-softirqs last  enabled at (21214): [<ffff8000800218ec>] softirq_handle_end kernel/softirq.c:399 [inline]
-softirqs last  enabled at (21214): [<ffff8000800218ec>] __do_softirq+0xac0/0xd54 kernel/softirq.c:582
-softirqs last disabled at (21129): [<ffff80008002aad4>] ____do_softirq+0x14/0x20 arch/arm64/kernel/irq.c:80
----[ end trace 0000000000000000 ]---
-------------[ cut here ]------------
-WARNING: CPU: 0 PID: 5986 at fs/ntfs3/bitmap.c:216 wnd_add_free_ext+0x9b0/0xc00 fs/ntfs3/bitmap.c:351
-Modules linked in:
-CPU: 0 PID: 5986 Comm: syz-executor496 Tainted: G        W          6.5.0-rc4-syzkaller-g86d7896480b0 #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 07/12/2023
-pstate: 80400005 (Nzcv daif +PAN -UAO -TCO -DIT -SSBS BTYPE=--)
-pc : wnd_add_free_ext+0x9b0/0xc00 fs/ntfs3/bitmap.c:351
-lr : wnd_add_free_ext+0x9b0/0xc00 fs/ntfs3/bitmap.c:351
-sp : ffff8000969a71e0
-x29: ffff8000969a7210 x28: 1fffe0001c052c6f x27: dfff800000000000
-x26: dfff800000000000 x25: ffff0000e0296398 x24: ffff0000e02961e0
-x23: ffff0000e0296378 x22: 00000000000001e7 x21: ffff0000dbdae2d0
-x20: ffff0000e0296360 x19: 00000000000001e7 x18: 1fffe0003683adc6
-x17: 0000000000000000 x16: ffff80008a57089c x15: 0000000000000001
-x14: 000000008a56c67c x13: 0000000071fb52ff x12: 00000000a7effed4
-x11: 0000000000000000 x10: 0000000000000000 x9 : 0000000000000000
-x8 : ffff0000c583d340 x7 : 0000000000000000 x6 : 000000000000003f
-x5 : 0000000000000040 x4 : 0000000000000000 x3 : 0000000000000001
-x2 : ffffffffffffffc0 x1 : 00000000000001e7 x0 : 00000000000001e7
-Call trace:
- wnd_add_free_ext+0x9b0/0xc00 fs/ntfs3/bitmap.c:351
- wnd_set_free+0x570/0x5cc fs/ntfs3/bitmap.c:749
- mark_as_free_ex+0x134/0x310 fs/ntfs3/fsntfs.c:2485
- run_deallocate_ex+0x1e0/0x4ac fs/ntfs3/attrib.c:122
- attr_set_size+0x1128/0x342c fs/ntfs3/attrib.c:750
- ntfs_truncate fs/ntfs3/file.c:393 [inline]
- ntfs3_setattr+0x424/0x8fc fs/ntfs3/file.c:682
- notify_change+0xa84/0xd20 fs/attr.c:483
- do_truncate+0x1c0/0x28c fs/open.c:66
- vfs_truncate+0x2b8/0x360 fs/open.c:112
- do_sys_truncate+0xec/0x1b4 fs/open.c:135
- __do_sys_truncate fs/open.c:147 [inline]
- __se_sys_truncate fs/open.c:145 [inline]
- __arm64_sys_truncate+0x5c/0x70 fs/open.c:145
- __invoke_syscall arch/arm64/kernel/syscall.c:38 [inline]
- invoke_syscall+0x98/0x2c0 arch/arm64/kernel/syscall.c:52
- el0_svc_common+0x138/0x244 arch/arm64/kernel/syscall.c:139
- do_el0_svc+0x64/0x198 arch/arm64/kernel/syscall.c:188
- el0_svc+0x4c/0x160 arch/arm64/kernel/entry-common.c:647
- el0t_64_sync_handler+0x84/0xfc arch/arm64/kernel/entry-common.c:665
- el0t_64_sync+0x190/0x194 arch/arm64/kernel/entry.S:591
-irq event stamp: 21948
-hardirqs last  enabled at (21947): [<ffff800080b723d4>] lookup_bh_lru fs/buffer.c:1403 [inline]
-hardirqs last  enabled at (21947): [<ffff800080b723d4>] __find_get_block+0x1a0/0xd18 fs/buffer.c:1415
-hardirqs last disabled at (21948): [<ffff80008a56c1dc>] el1_dbg+0x24/0x80 arch/arm64/kernel/entry-common.c:407
-softirqs last  enabled at (21584): [<ffff8000800218ec>] softirq_handle_end kernel/softirq.c:399 [inline]
-softirqs last  enabled at (21584): [<ffff8000800218ec>] __do_softirq+0xac0/0xd54 kernel/softirq.c:582
-softirqs last disabled at (21571): [<ffff80008002aad4>] ____do_softirq+0x14/0x20 arch/arm64/kernel/irq.c:80
----[ end trace 0000000000000000 ]---
-------------[ cut here ]------------
-WARNING: CPU: 0 PID: 5986 at fs/ntfs3/bitmap.c:216 wnd_add_free_ext+0x9b0/0xc00 fs/ntfs3/bitmap.c:351
-Modules linked in:
-CPU: 0 PID: 5986 Comm: syz-executor496 Tainted: G        W          6.5.0-rc4-syzkaller-g86d7896480b0 #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 07/12/2023
-pstate: 80400005 (Nzcv daif +PAN -UAO -TCO -DIT -SSBS BTYPE=--)
-pc : wnd_add_free_ext+0x9b0/0xc00 fs/ntfs3/bitmap.c:351
-lr : wnd_add_free_ext+0x9b0/0xc00 fs/ntfs3/bitmap.c:351
-sp : ffff8000969a71e0
-x29: ffff8000969a7210 x28: 1fffe0001c052c7b x27: dfff800000000000
-x26: dfff800000000000 x25: ffff0000e02963f8 x24: ffff0000e02961e0
-x23: ffff0000e02963d8 x22: 00000000000001e7 x21: ffff0000dbdae2d0
-x20: ffff0000e02963c0 x19: 00000000000001e7 x18: 1fffe0003683adc6
-x17: 0000000000000000 x16: ffff80008a57089c x15: 0000000000000001
-x14: 000000008a56c67c x13: 0000000071fb52ff x12: 00000000a7effed4
-x11: 0000000000000000 x10: 0000000000000000 x9 : 0000000000000000
-x8 : ffff0000c583d340 x7 : 0000000000000000 x6 : 000000000000003f
-x5 : 0000000000000040 x4 : 0000000000000000 x3 : 0000000000000001
-x2 : ffffffffffffffc0 x1 : 00000000000001e7 x0 : 00000000000001e7
-Call trace:
- wnd_add_free_ext+0x9b0/0xc00 fs/ntfs3/bitmap.c:351
- wnd_set_free+0x570/0x5cc fs/ntfs3/bitmap.c:749
- mark_as_free_ex+0x134/0x310 fs/ntfs3/fsntfs.c:2485
- run_deallocate_ex+0x1e0/0x4ac fs/ntfs3/attrib.c:122
- attr_set_size+0x1128/0x342c fs/ntfs3/attrib.c:750
- ntfs_truncate fs/ntfs3/file.c:393 [inline]
- ntfs3_setattr+0x424/0x8fc fs/ntfs3/file.c:682
- notify_change+0xa84/0xd20 fs/attr.c:483
- do_truncate+0x1c0/0x28c fs/open.c:66
- vfs_truncate+0x2b8/0x360 fs/open.c:112
- do_sys_truncate+0xec/0x1b4 fs/open.c:135
- __do_sys_truncate fs/open.c:147 [inline]
- __se_sys_truncate fs/open.c:145 [inline]
- __arm64_sys_truncate+0x5c/0x70 fs/open.c:145
- __invoke_syscall arch/arm64/kernel/syscall.c:38 [inline]
- invoke_syscall+0x98/0x2c0 arch/arm64/kernel/syscall.c:52
- el0_svc_common+0x138/0x244 arch/arm64/kernel/syscall.c:139
- do_el0_svc+0x64/0x198 arch/arm64/kernel/syscall.c:188
- el0_svc+0x4c/0x160 arch/arm64/kernel/entry-common.c:647
- el0t_64_sync_handler+0x84/0xfc arch/arm64/kernel/entry-common.c:665
- el0t_64_sync+0x190/0x194 arch/arm64/kernel/entry.S:591
-irq event stamp: 22332
-hardirqs last  enabled at (22331): [<ffff800080b723d4>] lookup_bh_lru fs/buffer.c:1403 [inline]
-hardirqs last  enabled at (22331): [<ffff800080b723d4>] __find_get_block+0x1a0/0xd18 fs/buffer.c:1415
-hardirqs last disabled at (22332): [<ffff80008a56c1dc>] el1_dbg+0x24/0x80 arch/arm64/kernel/entry-common.c:407
-softirqs last  enabled at (21958): [<ffff8000800218ec>] softirq_handle_end kernel/softirq.c:399 [inline]
-softirqs last  enabled at (21958): [<ffff8000800218ec>] __do_softirq+0xac0/0xd54 kernel/softirq.c:582
-softirqs last disabled at (21951): [<ffff80008002aad4>] ____do_softirq+0x14/0x20 arch/arm64/kernel/irq.c:80
----[ end trace 0000000000000000 ]---
-------------[ cut here ]------------
-WARNING: CPU: 0 PID: 5986 at fs/ntfs3/bitmap.c:216 wnd_add_free_ext+0x9b0/0xc00 fs/ntfs3/bitmap.c:351
-Modules linked in:
-CPU: 0 PID: 5986 Comm: syz-executor496 Tainted: G        W          6.5.0-rc4-syzkaller-g86d7896480b0 #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 07/12/2023
-pstate: 80400005 (Nzcv daif +PAN -UAO -TCO -DIT -SSBS BTYPE=--)
-pc : wnd_add_free_ext+0x9b0/0xc00 fs/ntfs3/bitmap.c:351
-lr : wnd_add_free_ext+0x9b0/0xc00 fs/ntfs3/bitmap.c:351
-sp : ffff8000969a71e0
-x29: ffff8000969a7210 x28: 1fffe0001c052c87 x27: dfff800000000000
-x26: dfff800000000000 x25: ffff0000e0296458 x24: ffff0000e02961e0
-x23: ffff0000e0296438 x22: 00000000000001e7 x21: ffff0000dbdae2d0
-x20: ffff0000e0296420 x19: 00000000000001e7 x18: 1fffe0003683adc6
-x17: 0000000000000000 x16: ffff80008a57089c x15: 0000000000000001
-x14: 000000008a56c67c x13: 0000000071fb52ff x12: 00000000a7effed4
-x11: 0000000000000000 x10: 0000000000000000 x9 : 0000000000000000
-x8 : ffff0000c583d340 x7 : 0000000000000000 x6 : 000000000000003f
-x5 : 0000000000000040 x4 : 0000000000000000 x3 : 0000000000000001
-x2 : ffffffffffffffc0 x1 : 00000000000001e7 x0 : 00000000000001e7
-Call trace:
- wnd_add_free_ext+0x9b0/0xc00 fs/ntfs3/bitmap.c:351
- wnd_set_free+0x570/0x5cc fs/ntfs3/bitmap.c:749
- mark_as_free_ex+0x134/0x310 fs/ntfs3/fsntfs.c:2485
- run_deallocate_ex+0x1e0/0x4ac fs/ntfs3/attrib.c:122
- attr_set_size+0x1128/0x342c fs/ntfs3/attrib.c:750
- ntfs_truncate fs/ntfs3/file.c:393 [inline]
- ntfs3_setattr+0x424/0x8fc fs/ntfs3/file.c:682
- notify_change+0xa84/0xd20 fs/attr.c:483
- do_truncate+0x1c0/0x28c fs/open.c:66
- vfs_truncate+0x2b8/0x360 fs/open.c:112
- do_sys_truncate+0xec/0x1b4 fs/open.c:135
- __do_sys_truncate fs/open.c:147 [inline]
- __se_sys_truncate fs/open.c:145 [inline]
- __arm64_sys_truncate+0x5c/0x70 fs/open.c:145
- __invoke_syscall arch/arm64/kernel/syscall.c:38 [inline]
- invoke_syscall+0x98/0x2c0 arch/arm64/kernel/syscall.c:52
- el0_svc_common+0x138/0x244 arch/arm64/kernel/syscall.c:139
- do_el0_svc+0x64/0x198 arch/arm64/kernel/syscall.c:188
- el0_svc+0x4c/0x160 arch/arm64/kernel/entry-common.c:647
- el0t_64_sync_handler+0x84/0xfc arch/arm64/kernel/entry-common.c:665
- el0t_64_sync+0x190/0x194 arch/arm64/kernel/entry.S:591
-irq event stamp: 22732
-hardirqs last  enabled at (22731): [<ffff800080b723d4>] lookup_bh_lru fs/buffer.c:1403 [inline]
-hardirqs last  enabled at (22731): [<ffff800080b723d4>] __find_get_block+0x1a0/0xd18 fs/buffer.c:1415
-hardirqs last disabled at (22732): [<ffff80008a56c1dc>] el1_dbg+0x24/0x80 arch/arm64/kernel/entry-common.c:407
-softirqs last  enabled at (22354): [<ffff8000800218ec>] softirq_handle_end kernel/softirq.c:399 [inline]
-softirqs last  enabled at (22354): [<ffff8000800218ec>] __do_softirq+0xac0/0xd54 kernel/softirq.c:582
-softirqs last disabled at (22335): [<ffff80008002aad4>] ____do_softirq+0x14/0x20 arch/arm64/kernel/irq.c:80
----[ end trace 0000000000000000 ]---
-------------[ cut here ]------------
-WARNING: CPU: 0 PID: 5986 at fs/ntfs3/bitmap.c:216 wnd_add_free_ext+0x9b0/0xc00 fs/ntfs3/bitmap.c:351
-Modules linked in:
-CPU: 0 PID: 5986 Comm: syz-executor496 Tainted: G        W          6.5.0-rc4-syzkaller-g86d7896480b0 #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 07/12/2023
-pstate: 80400005 (Nzcv daif +PAN -UAO -TCO -DIT -SSBS BTYPE=--)
-pc : wnd_add_free_ext+0x9b0/0xc00 fs/ntfs3/bitmap.c:351
-lr : wnd_add_free_ext+0x9b0/0xc00 fs/ntfs3/bitmap.c:351
-sp : ffff8000969a71e0
-x29: ffff8000969a7210 x28: 1fffe0001c052c93 x27: dfff800000000000
-x26: dfff800000000000 x25: ffff0000e02964b8 x24: ffff0000e02961e0
-x23: ffff0000e0296498 x22: 00000000000001e7 x21: ffff0000dbdae2d0
-x20: ffff0000e0296480 x19: 00000000000001e7 x18: 1fffe0003683adc6
-x17: 0000000000000000 x16: ffff80008a57089c x15: 0000000000000001
-x14: 000000008a56c67c x13: 0000000071fb52ff x12: 00000000a7effed4
-x11: 0000000000000000 x10: 0000000000000000 x9 : 0000000000000000
-x8 : ffff0000c583d340 x7 : 0000000000000000 x6 : 000000000000003f
-x5 : 0000000000000040 x4 : 0000000000000000 x3 : 0000000000000001
-x2 : ffffffffffffffc0 x1 : 00000000000001e7 x0 : 00000000000001e7
-Call trace:
- wnd_add_free_ext+0x9b0/0xc00 fs/ntfs3/bitmap.c:351
- wnd_set_free+0x570/0x5cc fs/ntfs3/bitmap.c:749
- mark_as_free_ex+0x134/0x310 fs/ntfs3/fsntfs.c:2485
- run_deallocate_ex+0x1e0/0x4ac fs/ntfs3/attrib.c:122
- attr_set_size+0x1128/0x342c fs/ntfs3/attrib.c:750
- ntfs_truncate fs/ntfs3/file.c:393 [inline]
- ntfs3_setattr+0x424/0x8fc fs/ntfs3/file.c:682
- notify_change+0xa84/0xd20 fs/attr.c:483
- do_truncate+0x1c0/0x28c fs/open.c:66
- vfs_truncate+0x2b8/0x360 fs/open.c:112
- do_sys_truncate+0xec/0x1b4 fs/open.c:135
- __do_sys_truncate fs/open.c:147 [inline]
- __se_sys_truncate fs/open.c:145 [inline]
- __arm64_sys_truncate+0x5c/0x70 fs/open.c:145
- __invoke_syscall arch/arm64/kernel/syscall.c:38 [inline]
- invoke_syscall+0x98/0x2c0 arch/arm64/kernel/syscall.c:52
- el0_svc_common+0x138/0x244 arch/arm64/kernel/syscall.c:139
- do_el0_svc+0x64/0x198 arch/arm64/kernel/syscall.c:188
- el0_svc+0x4c/0x160 arch/arm64/kernel/entry-common.c:647
- el0t_64_sync_handler+0x84/0xfc arch/arm64/kernel/entry-common.c:665
- el0t_64_sync+0x190/0x194 arch/arm64/kernel/entry.S:591
-irq event stamp: 23126
-hardirqs last  enabled at (23125): [<ffff800080b723d4>] lookup_bh_lru fs/buffer.c:1403 [inline]
-hardirqs last  enabled at (23125): [<ffff800080b723d4>] __find_get_block+0x1a0/0xd18 fs/buffer.c:1415
-hardirqs last disabled at (23126): [<ffff80008a56c1dc>] el1_dbg+0x24/0x80 arch/arm64/kernel/entry-common.c:407
-softirqs last  enabled at (22744): [<ffff8000800218ec>] softirq_handle_end kernel/softirq.c:399 [inline]
-softirqs last  enabled at (22744): [<ffff8000800218ec>] __do_softirq+0xac0/0xd54 kernel/softirq.c:582
-softirqs last disabled at (22735): [<ffff80008002aad4>] ____do_softirq+0x14/0x20 arch/arm64/kernel/irq.c:80
----[ end trace 0000000000000000 ]---
-------------[ cut here ]------------
-WARNING: CPU: 0 PID: 5986 at fs/ntfs3/bitmap.c:216 wnd_add_free_ext+0x9b0/0xc00 fs/ntfs3/bitmap.c:351
-Modules linked in:
-CPU: 0 PID: 5986 Comm: syz-executor496 Tainted: G        W          6.5.0-rc4-syzkaller-g86d7896480b0 #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 07/12/2023
-pstate: 80400005 (Nzcv daif +PAN -UAO -TCO -DIT -SSBS BTYPE=--)
-pc : wnd_add_free_ext+0x9b0/0xc00 fs/ntfs3/bitmap.c:351
-lr : wnd_add_free_ext+0x9b0/0xc00 fs/ntfs3/bitmap.c:351
-sp : ffff8000969a71e0
-x29: ffff8000969a7210 x28: 1fffe0001c052c9f x27: dfff800000000000
-x26: dfff800000000000 x25: ffff0000e0296518 x24: ffff0000e02961e0
-x23: ffff0000e02964f8 x22: 00000000000001e7 x21: ffff0000dbdae2d0
-x20: ffff0000e02964e0 x19: 00000000000001e7 x18: 1fffe0003683adc6
-x17: 0000000000000000 x16: ffff80008a57089c x15: 0000000000000001
-x14: 1ffff00011d18abf x13: 0000000000000000 x12: 0000000000000003
-x11: 0000000000000000 x10: 0000000000000000 x9 : 0000000000000000
-x8 : ffff0000c583d340 x7 : 0000000000000000 x6 : ffff800080063870
-x5 : ffff0000d477e9c8 x4 : 0000000000000000 x3 : 0000000000000000
-x2 : ffffffffffffffc0 x1 : 00000000000001e7 x0 : 00000000000001e7
-Call trace:
- wnd_add_free_ext+0x9b0/0xc00 fs/ntfs3/bitmap.c:351
- wnd_set_free+0x570/0x5cc fs/ntfs3/bitmap.c:749
- mark_as_free_ex+0x1c8/0x310 fs/ntfs3/fsntfs.c:2495
- run_deallocate_ex+0x1e0/0x4ac fs/ntfs3/attrib.c:122
- attr_set_size+0x1128/0x342c fs/ntfs3/attrib.c:750
- ntfs_truncate fs/ntfs3/file.c:393 [inline]
- ntfs3_setattr+0x424/0x8fc fs/ntfs3/file.c:682
- notify_change+0xa84/0xd20 fs/attr.c:483
- do_truncate+0x1c0/0x28c fs/open.c:66
- vfs_truncate+0x2b8/0x360 fs/open.c:112
- do_sys_truncate+0xec/0x1b4 fs/open.c:135
- __do_sys_truncate fs/open.c:147 [inline]
- __se_sys_truncate fs/open.c:145 [inline]
- __arm64_sys_truncate+0x5c/0x70 fs/open.c:145
- __invoke_syscall arch/arm64/kernel/syscall.c:38 [inline]
- invoke_syscall+0x98/0x2c0 arch/arm64/kernel/syscall.c:52
- el0_svc_common+0x138/0x244 arch/arm64/kernel/syscall.c:139
- do_el0_svc+0x64/0x198 arch/arm64/kernel/syscall.c:188
- el0_svc+0x4c/0x160 arch/arm64/kernel/entry-common.c:647
- el0t_64_sync_handler+0x84/0xfc arch/arm64/kernel/entry-common.c:665
- el0t_64_sync+0x190/0x194 arch/arm64/kernel/entry.S:591
-irq event stamp: 23528
-hardirqs last  enabled at (23527): [<ffff80008a65a7c0>] __raw_spin_unlock_irqrestore include/linux/spinlock_api_smp.h:151 [inline]
-hardirqs last  enabled at (23527): [<ffff80008a65a7c0>] _raw_spin_unlock_irqrestore+0x38/0x98 kernel/locking/spinlock.c:194
-hardirqs last disabled at (23528): [<ffff80008a56c1dc>] el1_dbg+0x24/0x80 arch/arm64/kernel/entry-common.c:407
-softirqs last  enabled at (23142): [<ffff8000800218ec>] softirq_handle_end kernel/softirq.c:399 [inline]
-softirqs last  enabled at (23142): [<ffff8000800218ec>] __do_softirq+0xac0/0xd54 kernel/softirq.c:582
-softirqs last disabled at (23129): [<ffff80008002aad4>] ____do_softirq+0x14/0x20 arch/arm64/kernel/irq.c:80
----[ end trace 0000000000000000 ]---
-
-
----
-If you want syzbot to run the reproducer, reply with:
-#syz test: git://repo/address.git branch-or-commit-hash
-If you attach or paste a git patch, syzbot will apply it before testing.
+Applied, thanks!
