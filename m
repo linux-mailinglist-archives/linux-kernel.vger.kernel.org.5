@@ -2,49 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 07CC0771653
-	for <lists+linux-kernel@lfdr.de>; Sun,  6 Aug 2023 19:35:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9957A771657
+	for <lists+linux-kernel@lfdr.de>; Sun,  6 Aug 2023 19:52:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230124AbjHFRfm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 6 Aug 2023 13:35:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48504 "EHLO
+        id S230265AbjHFRv6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 6 Aug 2023 13:51:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49730 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229558AbjHFRfk (ORCPT
+        with ESMTP id S230028AbjHFRv4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 6 Aug 2023 13:35:40 -0400
-Received: from bg4.exmail.qq.com (bg4.exmail.qq.com [43.155.65.254])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0301C107;
-        Sun,  6 Aug 2023 10:35:36 -0700 (PDT)
-X-QQ-mid: bizesmtp84t1691343318tuni9m1q
-Received: from linux-lab-host.localdomain ( [116.30.130.12])
-        by bizesmtp.qq.com (ESMTP) with 
-        id ; Mon, 07 Aug 2023 01:35:17 +0800 (CST)
-X-QQ-SSF: 01200000000000E0X000000A0000000
-X-QQ-FEAT: XBN7tc9DADJdp0LzmFQ4W9/XjsHtdlmMvejuqH/d5Er1Lpm1BQRlBSu9tTUQY
-        pUCwURMVIGuCL4icN7qKNoYU3oyw94IHuVzg58Ii8DR20+zCb70nwa91tl0NVmdzhC+J0Pq
-        GTCKMdy6mrgX22pvppDJAaYKWJFIeNRKfVXPMo0JdIN7PVbP/Dh3xs0jb5zza5iUZ6odNcK
-        +sU7ENwd+MEV1lYWvTIczcLwXG13l4frI72ej1xDVwb3zS8svKDqUii0Wb/nRlniilS8StA
-        4soId+KSj4ZUyA7V3mnvcA/hONzs8yWRffqJsPxOXwgWFDkIYnXw1BLZ2/H1sSYQshRZ9gr
-        3oPVwPykfly+S/ZCjmv7VGHDzvU51fdrHeFhXwkm8H+xNp4PV0LfGbsrFtUMdKFEmEBMWv/
-X-QQ-GoodBg: 0
-X-BIZMAIL-ID: 3186474216457718583
-From:   Zhangjin Wu <falcon@tinylab.org>
-To:     w@1wt.eu
-Cc:     falcon@tinylab.org, arnd@arndb.de, david.laight@aculab.com,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        thomas@t-8ch.de
-Subject: [PATCH v2] tools/nolibc: fix up size inflate regression
-Date:   Mon,  7 Aug 2023 01:35:12 +0800
-Message-Id: <20230806173512.205928-1-falcon@tinylab.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <95fe3e732f455fab653fe1427118d905e4d04257.1691339836.git.falcon@tinylab.org>
-References: <95fe3e732f455fab653fe1427118d905e4d04257.1691339836.git.falcon@tinylab.org>
+        Sun, 6 Aug 2023 13:51:56 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E06A21716
+        for <linux-kernel@vger.kernel.org>; Sun,  6 Aug 2023 10:51:55 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 7E07A61219
+        for <linux-kernel@vger.kernel.org>; Sun,  6 Aug 2023 17:51:55 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8D885C433C7;
+        Sun,  6 Aug 2023 17:51:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1691344314;
+        bh=4rdC/0XPtMhN2Rc3UGtRnjsYqUgeJ+3qi4+YUkmR/8c=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=pH17gJbHuiDo2Hdaj8aXlj8RkX9wjF1rqD2ZuoxG+43y53tXIBB6rEL/KENqW/5zQ
+         ERV7LJeoeOXr5VSL3J7kqJzxmqz80gcwo2aApkyGqjHzMevZuBG2uHS6BZwNezYPBy
+         eYDoVOR4a+RjLAoB5wQUEX9aKz4gMA9t87F/kWjfn///XD6JK0Z1ilfks+Y/Kt1aAI
+         3479fIk677cmCCONTQk2MjdZuTWkYA8Qzzyl9i1nkS8RztPT4mzFAM6BqXfNZCqCUT
+         kPJGqy3Vu5iX637Q+29v1AWtIvagivrToZesykAqt90L6AeEhQY/hcZpcScBIp/1yC
+         lBa3BETVHA3WQ==
+Message-ID: <711f42de-34d8-c27a-e058-5fa460012a69@kernel.org>
+Date:   Sun, 6 Aug 2023 12:51:53 -0500
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-QQ-SENDSIZE: 520
-Feedback-ID: bizesmtp:tinylab.org:qybglogicsvrgz:qybglogicsvrgz5a-1
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS autolearn=ham
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH] drivers: firmware: stratix10-rsu: Fix max_retry counter
+ value
+Content-Language: en-US
+To:     kah.jing.lee@intel.com
+Cc:     linux-kernel@vger.kernel.org, tien.sung.ang@intel.com
+References: <88b79f4cfe1c28e31b902d2f12b81e431b09e125.1691112823.git.kah.jing.lee@intel.com>
+From:   Dinh Nguyen <dinguyen@kernel.org>
+In-Reply-To: <88b79f4cfe1c28e31b902d2f12b81e431b09e125.1691112823.git.kah.jing.lee@intel.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-11.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_HI,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -52,236 +58,33 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, Willy
 
-> [...]
-> before:
+
+On 8/3/23 20:35, kah.jing.lee@intel.com wrote:
+> From: Kah Jing Lee <kah.jing.lee@intel.com>
 > 
->     // ppc64le
->     $ size nolibc-test
->        text	   data	    bss	    dec	    hex	filename
->       27916	      8	     80	  28004	   6d64	nolibc-test
+> Fix the max_retry value because the value is truncated at scnprintf format
+> specifier, with added hex symbol and newline.
 > 
->     // mips
->     $ size nolibc-test
->        text	   data	    bss	    dec	    hex	filename
->       23276	     64	     64	  23404	   5b6c	nolibc-test
-> 
-> after:
-> 
->     // ppc64le
->     $ size nolibc-test
->        text	   data	    bss	    dec	    hex	filename
->       27736	      8	     80	  27824	   6cb0	nolibc-test
-> 
->     // mips
->     $ size nolibc-test
->        text	   data	    bss	    dec	    hex	filename
->       23036	     64	     64	  23164	   5a7c	nolibc-test
-> 
-> Suggested-by: Willy Tarreau <w@1wt.eu>
-> Link: https://lore.kernel.org/lkml/20230806095846.GB10627@1wt.eu/
-> Link: https://lore.kernel.org/lkml/20230806134348.GA19145@1wt.eu/
-> Signed-off-by: Zhangjin Wu <falcon@tinylab.org>
+> Signed-off-by: Kah Jing Lee <kah.jing.lee@intel.com>
 > ---
+>   drivers/firmware/stratix10-rsu.c | 3 +--
+>   1 file changed, 1 insertion(+), 2 deletions(-)
 > 
-> v2 here is further fix up argument with 'const' in the type and also
-> support "void *" argument, v1 is [1].
-> 
-> Tested on many architectures (i386, x86_64, mips, ppc64) and gcc version
-> (from gcc 4.8-13.1.0), compiles well without any warning and errors and
-> also with smaller size.
-> 
-> [1]: https://lore.kernel.org/lkml/20230806131921.52453-1-falcon@tinylab.org/
-> 
-> ---
->  tools/include/nolibc/sys.h | 52 ++++++++++++++++++++++++++++++--------
->  1 file changed, 41 insertions(+), 11 deletions(-)
-> 
-> diff --git a/tools/include/nolibc/sys.h b/tools/include/nolibc/sys.h
-> index 56f63eb48a1b..9c7448ae19e2 100644
-> --- a/tools/include/nolibc/sys.h
-> +++ b/tools/include/nolibc/sys.h
-> @@ -35,15 +35,45 @@
->   * (src/internal/syscall_ret.c) and glibc (sysdeps/unix/sysv/linux/sysdep.h)
->   */
->  
-> -static __inline__ __attribute__((unused, always_inline))
-> -long __sysret(unsigned long ret)
-> -{
-> -	if (ret >= (unsigned long)-MAX_ERRNO) {
-> -		SET_ERRNO(-(long)ret);
-> -		return -1;
-> -	}
-> -	return ret;
-> -}
-> +/*
-> + * Whether 'type' is a signed type or an unsigned type. Supports scalar types,
-> + * bool and also pointer types. (from include/linux/compiler.h)
-> + */
-> +#define __is_signed_type(type) (((type)(-1)) < (type)1)
-> +
-> +/* __auto_type is used instead of __typeof__ to workaround the build error
-> + * 'error: assignment of read-only variable' when the argument has 'const' in
-> + * the type, but __auto_type is a new feature from newer version and it only
-> + * work with 'const' from gcc 11.0 (__GXX_ABI_VERSION = 1016)
-> + * https://gcc.gnu.org/legacy-ml/gcc-patches/2013-11/msg01378.html
-> + */
-> +
-> +#if __GXX_ABI_VERSION < 1016
-> +#define __typeofdecl(arg) long
-> +#define __typeofconv1(arg) (long)
-> +#define __typeofconv2(arg) (long)
-> +#else
-> +#define __typeofdecl(arg) __auto_type
-> +#define __typeofconv1(arg)
-> +#define __typeofconv2(arg) (__typeof__(arg))
-> +#endif
->
+> diff --git a/drivers/firmware/stratix10-rsu.c b/drivers/firmware/stratix10-rsu.c
+> index e51c95f8d445..98ec39f6dae8 100644
+> --- a/drivers/firmware/stratix10-rsu.c
+> +++ b/drivers/firmware/stratix10-rsu.c
+> @@ -405,8 +405,7 @@ static ssize_t max_retry_show(struct device *dev,
+>   	if (!priv)
+>   		return -ENODEV;
+>   
+> -	return scnprintf(buf, sizeof(priv->max_retry),
+> -			 "0x%08x\n", priv->max_retry);
+> +	return scnprintf(buf, PAGE_SIZE, "0x%08x\n", priv->max_retry);
+>   }
+>   
 
-With nolibc-test, we did more tests.
+This would be a good time to switch over to use sysfs_emit()
 
-for ppc64le (long better):
-
-    // __auto_type
-    $ size nolibc-test
-       text	   data	    bss	    dec	    hex	filename
-      27736	      8	     80	  27824	   6cb0	nolibc-test
-
-    // long
-    $ size nolibc-test
-       text	   data	    bss	    dec	    hex	filename
-      27612	      8	     80	  27700	   6c34	nolibc-test
-
-for ppc64 (long better):
-
-    // __auto_type
-    $ size nolibc-test
-       text	   data	    bss	    dec	    hex	filename
-      27136	   1880	     80	  29096	   71a8	nolibc-test
-
-    // long
-    $ size nolibc-test
-       text	   data	    bss	    dec	    hex	filename
-      27012	   1880	     80	  28972	   712c	nolibc-test
-
-A further test on x86_64 (__auto_type better):
-
-     // __auto_type
-     $ size nolibc-test
-       text	   data	    bss	    dec	    hex	filename
-      22206	      8	     88	  22302	   571e	nolibc-test
-
-     // long
-     $ size nolibc-test
-       text	   data	    bss	    dec	    hex	filename
-      22347	      8	     88	  22443	   57ab	nolibc-test
-
-And i386 (almost the same):
-
-     // __auto_type
-     $ size nolibc-test
-       text	   data	    bss	    dec	    hex	filename
-      19718	      4	     52	  19774	   4d3e	nolibc-test
-
-     // long
-     $ size nolibc-test
-       text	   data	    bss	    dec	    hex	filename
-      19717	      4	     52	  19773	   4d3d	nolibc-test
-
-arm64 (__auto_type better):
-    // __auto_type
-    $ size nolibc-test
-       text	   data	    bss	    dec	    hex	filename
-      25764	      8	     80	  25852	   64fc	nolibc-test
-
-    // long
-    $ size nolibc-test
-       text	   data	    bss	    dec	    hex	filename
-      26004	      8	     80	  26092	   65ec	nolibc-test
-
-arm (the same):
-
-    // __auto_type
-    $ size nolibc-test
-       text	   data	    bss	    dec	    hex	filename
-      19595	      0	     52	  19647	   4cbf	nolibc-test
-
-    // long
-    $ size nolibc-test
-       text	   data	    bss	    dec	    hex	filename
-      19595	      0	     52	  19647	   4cbf	nolibc-test
-
-
-riscv64 (__auto_type better):
-
-    // __auto_type
-    $ size nolibc-test
-       text	   data	    bss	    dec	    hex	filename
-      21814	      8	     80	  21902	   558e	nolibc-test
-
-    // long
-    $ size nolibc-test
-       text	   data	    bss	    dec	    hex	filename
-      21912	      8	     80	  22000	   55f0	nolibc-test
-
-s390 (__auto_type better):
-
-    // __auto_type
-    $ size nolibc-test
-       text	   data	    bss	    dec	    hex	filename
-      22302	      0	     80	  22382	   576e	nolibc-test
-
-    // long
-    $ size nolibc-test
-       text	   data	    bss	    dec	    hex	filename
-      22438	      0	     80	  22518	   57f6	nolibc-test
-
-As a summary, in nolibc-test, for 32-bit architectures, __auto_type has the
-same as long, for 64-bit architecture, __auto_type has less size than long,
-only ppc64/ppc64le has reverse result.
-
-BR,
-Zhangjin
-
-> +#define __sysret(arg)                                                           \
-> +({                                                                              \
-> +	__typeofdecl(arg) __sysret_arg = __typeofconv1(arg)(arg);               \
-> +	if (__is_signed_type(__typeof__(arg))) {                                \
-> +		if (__sysret_arg < 0) {                                         \
-> +			SET_ERRNO(-(long)__sysret_arg);                         \
-> +			__sysret_arg = __typeofconv2(arg)(-1L);                 \
-> +		}                                                               \
-> +	} else {                                                                \
-> +		if ((unsigned long)__sysret_arg >= (unsigned long)-MAX_ERRNO) { \
-> +			SET_ERRNO(-(long)__sysret_arg);                         \
-> +			__sysret_arg = __typeofconv2(arg)(-1L);                 \
-> +		}                                                               \
-> +	}                                                                       \
-> +	(__typeof__(arg))__sysret_arg;                                          \
-> +})
->  
->  /* Functions in this file only describe syscalls. They're declared static so
->   * that the compiler usually decides to inline them while still being allowed
-> @@ -94,7 +124,7 @@ void *sbrk(intptr_t inc)
->  	if (ret && sys_brk(ret + inc) == ret + inc)
->  		return ret + inc;
->  
-> -	return (void *)__sysret(-ENOMEM);
-> +	return __sysret((void *)-ENOMEM);
->  }
->  
->  
-> @@ -682,7 +712,7 @@ void *sys_mmap(void *addr, size_t length, int prot, int flags, int fd,
->  static __attribute__((unused))
->  void *mmap(void *addr, size_t length, int prot, int flags, int fd, off_t offset)
->  {
-> -	return (void *)__sysret((unsigned long)sys_mmap(addr, length, prot, flags, fd, offset));
-> +	return __sysret(sys_mmap(addr, length, prot, flags, fd, offset));
->  }
->  
->  static __attribute__((unused))
-> -- 
-> 2.25.1
-> 
-> 
+Dinh
