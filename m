@@ -2,113 +2,216 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A17B77141A
-	for <lists+linux-kernel@lfdr.de>; Sun,  6 Aug 2023 11:00:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 45B8477141C
+	for <lists+linux-kernel@lfdr.de>; Sun,  6 Aug 2023 11:03:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229992AbjHFJAb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 6 Aug 2023 05:00:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60994 "EHLO
+        id S229748AbjHFJDq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 6 Aug 2023 05:03:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33254 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229436AbjHFJA2 (ORCPT
+        with ESMTP id S229436AbjHFJDo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 6 Aug 2023 05:00:28 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5F5919AB;
-        Sun,  6 Aug 2023 02:00:26 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 3B0FB60FF6;
-        Sun,  6 Aug 2023 09:00:26 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9774DC43391;
-        Sun,  6 Aug 2023 09:00:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691312425;
-        bh=+TXmEJX4FKponOLIv3qrpvbnUYicMBXZZmOrD0W1BWU=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=aEmjxEZ53tFzsU5Fsso656G5/XDgWWs3fQw+mWwEO/Cc7D6oluHf3jroD9t760Bi5
-         RuHYT70vFyvr4jDlZ02vzXJxDho/asCZZyqz4hKC0HAdqqRTuxsYSMVnAOh04RaP3h
-         YMY0GznnchRKydt+jALutU/eveNWtBliJ9zxZyPyU55u1Y6aweDMm8N43TahhjKCMp
-         UOUwer/Vm/g4a4WNSysQD93+alJP6RZ75DiLkSJMpGEPhpdIfeqW22ku/Xc2WpedcO
-         q2qkaMTOg2gJQqr2VOBFkMeoPdofoNQW6lRTgAKJIl9P5JKCAVvO4oZy5M/AbZpfzd
-         00NU9b+Uk5Qsg==
-Received: by mail-lj1-f175.google.com with SMTP id 38308e7fff4ca-2b9b904bb04so56974341fa.1;
-        Sun, 06 Aug 2023 02:00:25 -0700 (PDT)
-X-Gm-Message-State: AOJu0Yyc75aQL4+3cu22KZ7RNfaTRM4+rPMHn5mXFlPH4lB2IzJZYIti
-        OaGQg/1LC35bCdHSpeBiBRnHmF2bGKTLTjXBYXk=
-X-Google-Smtp-Source: AGHT+IF5eOhxK57JRUF6uaHX6gLolas9lqU/l2q+VhUtL98mtKu82atGlkOcgK3QEpJ5Kr84tLnvLrEIXS3YPhOOM8c=
-X-Received: by 2002:a05:6512:1153:b0:4fb:780d:2a49 with SMTP id
- m19-20020a056512115300b004fb780d2a49mr4597409lfg.5.1691312423452; Sun, 06 Aug
- 2023 02:00:23 -0700 (PDT)
+        Sun, 6 Aug 2023 05:03:44 -0400
+Received: from relay2-d.mail.gandi.net (relay2-d.mail.gandi.net [217.70.183.194])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 050051BD0;
+        Sun,  6 Aug 2023 02:03:41 -0700 (PDT)
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 011BF40002;
+        Sun,  6 Aug 2023 09:03:37 +0000 (UTC)
+Message-ID: <c1fca971-6993-09cc-0cf6-a60bd5fd684e@ghiti.fr>
+Date:   Sun, 6 Aug 2023 11:03:37 +0200
 MIME-Version: 1.0
-References: <20230717141409.GGZLVMsU6d/9mpJvMO@fat_crate.local>
- <CAO7dBbXJv9JzDbSa-DLT03+osYCQXNUXFwz63gbq=NGDxEVyEA@mail.gmail.com>
- <20230728165535.GDZMPzB/ek5QM+xJqA@fat_crate.local> <CAO7dBbVyuLHH6RfdVQkU5ThXaJ-F4yvFAYD1PDNGkOpph9xvnA@mail.gmail.com>
- <20230802093927.GAZMokT57anC5jBISK@fat_crate.local> <99cb3813-1737-9d10-1f24-77565e460c55@amd.com>
- <20230802135856.GBZMphIHHLa3dXRRVe@fat_crate.local> <CAMj1kXEM5hGknVGwHh_w99D4L8yrYrTFycwGHZ0CQun70CLipw@mail.gmail.com>
- <20230802155146.GCZMp7ksDdN2ETVzKV@fat_crate.local> <CAMj1kXHnSzdQw5CMAVXU7EzpnrdRvAqKZVgA+EV35kHmwVULgQ@mail.gmail.com>
- <20230805091738.GAZM4TslVWR3HHKeUC@fat_crate.local>
-In-Reply-To: <20230805091738.GAZM4TslVWR3HHKeUC@fat_crate.local>
-From:   Ard Biesheuvel <ardb@kernel.org>
-Date:   Sun, 6 Aug 2023 11:00:11 +0200
-X-Gmail-Original-Message-ID: <CAMj1kXFf1QuiYo+5gm_1X3OHStHqO=OtmumvQM=D75uNP=mpTQ@mail.gmail.com>
-Message-ID: <CAMj1kXFf1QuiYo+5gm_1X3OHStHqO=OtmumvQM=D75uNP=mpTQ@mail.gmail.com>
-Subject: Re: [PATCH v2] x86/kexec: Add EFI config table identity mapping for
- kexec kernel
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     =?UTF-8?B?SsO2cmcgUsO2ZGVs?= <joro@8bytes.org>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Tao Liu <ltao@redhat.com>, Michael Roth <michael.roth@amd.com>,
-        tglx@linutronix.de, mingo@redhat.com, dave.hansen@linux.intel.com,
-        x86@kernel.org, hpa@zytor.com, linux-kernel@vger.kernel.org,
-        bhe@redhat.com, dyoung@redhat.com, kexec@lists.infradead.org,
-        linux-efi@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [RFT 1/2] RISC-V: handle missing "no-map" properties for
+ OpenSBI's PMP protected regions
+Content-Language: en-US
+To:     Conor Dooley <conor.dooley@microchip.com>, palmer@dabbelt.com
+Cc:     conor@kernel.org, Paul Walmsley <paul.walmsley@sifive.com>,
+        Atish Patra <atishp@rivosinc.com>,
+        Anup Patel <apatel@ventanamicro.com>,
+        Alexandre Ghiti <alexghiti@rivosinc.com>,
+        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@rivosinc.com>,
+        Song Shuai <suagrfillet@gmail.com>,
+        JeeHeng Sia <jeeheng.sia@starfivetech.com>,
+        Petr Tesarik <petrtesarik@huaweicloud.com>,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+        stable@vger.kernel.org
+References: <20230802-purse-hydrant-6f44f77364b0@wendy>
+ <20230802-detention-second-82ab2b53e07a@wendy>
+From:   Alexandre Ghiti <alex@ghiti.fr>
+In-Reply-To: <20230802-detention-second-82ab2b53e07a@wendy>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-GND-Sasl: alex@ghiti.fr
+X-Spam-Status: No, score=-6.8 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 5 Aug 2023 at 11:18, Borislav Petkov <bp@alien8.de> wrote:
->
-> On Thu, Aug 03, 2023 at 01:11:54PM +0200, Ard Biesheuvel wrote:
-> > Sadly, not only 'old' grubs - GRUB mainline only recently added
-> > support for booting Linux/x86 via the EFI stub (because I wrote the
-> > code for them),
->
-> haha.
->
-> > but it will still fall back to the previous mode for kernels that are
-> > built without EFI stub support, or which are older than ~v5.8 (because
-> > their EFI stub does not implement the generic EFI initrd loading
-> > mechanism)
->
-> The thing is, those SNP kernels pretty much use the EFI boot mechanism.
-> I mean, don't take my word for it as I run SNP guests only from time to
-> time but that's what everyone uses AFAIK.
->
-> > Yeah. what seems to be saving our ass here is that startup_32 maps the
-> > first 1G of physical address space 4 times, and x86_64 EFI usually
-> > puts firmware tables below 4G. This means the cc blob check doesn't
-> > fault, but it may dereference bogus memory traversing the config table
-> > array looking for the cc blob GUID. However, the system table field
-> > holding the size of the array may also appear as bogus so this may
-> > still break in weird ways.
->
-> Oh fun.
->
+Hi Conor,
 
-This is not actually true, I misread the code.
+On 02/08/2023 13:12, Conor Dooley wrote:
+> Add an erratum for versions [v0.8 to v1.3) of OpenSBI which fail to add
+> the "no-map" property to the reserved memory nodes for the regions it
+> has protected using PMPs.
+>
+> Our existing fix sweeping hibernation under the carpet by marking it
+> NONPORTABLE is insufficient as there are other ways to generate
+> accesses to these reserved memory regions, as Petr discovered [1]
+> while testing crash kernels & kdump.
+>
+> Intercede during the boot process when the afflicted versions of OpenSBI
+> are present & set the "no-map" property in all "mmode_resv" nodes before
+> the kernel does its reserved memory region initialisation.
+>
+> Reported-by: Song Shuai <suagrfillet@gmail.com>
+> Link: https://lore.kernel.org/all/CAAYs2=gQvkhTeioMmqRDVGjdtNF_vhB+vm_1dHJxPNi75YDQ_Q@mail.gmail.com/
+> Reported-by: JeeHeng Sia <jeeheng.sia@starfivetech.com>
+> Link: https://groups.google.com/a/groups.riscv.org/g/sw-dev/c/ITXwaKfA6z8
+> Reported-by: Petr Tesarik <petrtesarik@huaweicloud.com>
+> Closes: https://lore.kernel.org/linux-riscv/76ff0f51-d6c1-580d-f943-061e93073306@huaweicloud.com/ [1]
+> CC: stable@vger.kernel.org
+> Signed-off-by: Conor Dooley <conor.dooley@microchip.com>
+> ---
+>   arch/riscv/include/asm/sbi.h |  5 +++++
+>   arch/riscv/kernel/sbi.c      | 42 +++++++++++++++++++++++++++++++++++-
+>   arch/riscv/mm/init.c         |  3 +++
+>   3 files changed, 49 insertions(+), 1 deletion(-)
+>
+> diff --git a/arch/riscv/include/asm/sbi.h b/arch/riscv/include/asm/sbi.h
+> index 5b4a1bf5f439..5360f3476278 100644
+> --- a/arch/riscv/include/asm/sbi.h
+> +++ b/arch/riscv/include/asm/sbi.h
+> @@ -252,6 +252,9 @@ enum sbi_pmu_ctr_type {
+>   #define SBI_ERR_ALREADY_STARTED -7
+>   #define SBI_ERR_ALREADY_STOPPED -8
+>   
+> +/* SBI implementation IDs */
+> +#define SBI_IMP_OPENSBI	1
+> +
+>   extern unsigned long sbi_spec_version;
+>   struct sbiret {
+>   	long error;
+> @@ -259,6 +262,8 @@ struct sbiret {
+>   };
+>   
+>   void sbi_init(void);
+> +void sbi_apply_reserved_mem_erratum(void *dtb_va);
+> +
+>   struct sbiret sbi_ecall(int ext, int fid, unsigned long arg0,
+>   			unsigned long arg1, unsigned long arg2,
+>   			unsigned long arg3, unsigned long arg4,
+> diff --git a/arch/riscv/kernel/sbi.c b/arch/riscv/kernel/sbi.c
+> index c672c8ba9a2a..aeb27263fa53 100644
+> --- a/arch/riscv/kernel/sbi.c
+> +++ b/arch/riscv/kernel/sbi.c
+> @@ -5,8 +5,10 @@
+>    * Copyright (c) 2020 Western Digital Corporation or its affiliates.
+>    */
+>   
+> +#include <linux/acpi.h>
+>   #include <linux/bits.h>
+>   #include <linux/init.h>
+> +#include <linux/libfdt.h>
+>   #include <linux/pm.h>
+>   #include <linux/reboot.h>
+>   #include <asm/sbi.h>
+> @@ -583,6 +585,40 @@ long sbi_get_mimpid(void)
+>   }
+>   EXPORT_SYMBOL_GPL(sbi_get_mimpid);
+>   
+> +static long sbi_firmware_id;
+> +static long sbi_firmware_version;
+> +
+> +/*
+> + * For devicetrees patched by OpenSBI a "mmode_resv" node is added to cover
+> + * the region OpenSBI has protected by means of a PMP. Some versions of OpenSBI,
+> + * [v0.8 to v1.3), omitted the "no-map" property, but this trips up hibernation
+> + * among other things.
+> + */
+> +void __init sbi_apply_reserved_mem_erratum(void *dtb_pa)
+> +{
+> +	int child, reserved_mem;
+> +
+> +	if (sbi_firmware_id != SBI_IMP_OPENSBI)
+> +		return;
+> +
+> +	if (!acpi_disabled)
+> +		return;
+> +
+> +	if (sbi_firmware_version >= 0x10003 || sbi_firmware_version < 0x8)
+> +		return;
+> +
+> +	reserved_mem = fdt_path_offset((void *)dtb_pa, "/reserved-memory");
+> +	if (reserved_mem < 0)
+> +		return;
+> +
+> +	fdt_for_each_subnode(child, (void *)dtb_pa, reserved_mem) {
+> +		const char *name = fdt_get_name((void *)dtb_pa, child, NULL);
+> +
+> +		if (!strncmp(name, "mmode_resv", 10))
 
-The initial mapping is 1:1 for the lower 4G of system memory, so
-anything that lives there is accessible before the demand paging stuff
-is up and running.
 
-IOW, your change should be sufficient to fix this even when entering
-via the 32-bit entry point.
+I would check that name != NULL before strncmp.
+
+
+> +			fdt_setprop((void *)dtb_pa, child, "no-map", NULL, 0);
+> +	}
+> +};
+> +
+>   void __init sbi_init(void)
+>   {
+>   	int ret;
+> @@ -596,8 +632,12 @@ void __init sbi_init(void)
+>   		sbi_major_version(), sbi_minor_version());
+>   
+>   	if (!sbi_spec_is_0_1()) {
+> +		sbi_firmware_id = sbi_get_firmware_id();
+> +		sbi_firmware_version = sbi_get_firmware_version();
+> +
+>   		pr_info("SBI implementation ID=0x%lx Version=0x%lx\n",
+> -			sbi_get_firmware_id(), sbi_get_firmware_version());
+> +			sbi_firmware_id, sbi_firmware_version);
+> +
+>   		if (sbi_probe_extension(SBI_EXT_TIME)) {
+>   			__sbi_set_timer = __sbi_set_timer_v02;
+>   			pr_info("SBI TIME extension detected\n");
+> diff --git a/arch/riscv/mm/init.c b/arch/riscv/mm/init.c
+> index 70fb31960b63..cb16bfdeacdb 100644
+> --- a/arch/riscv/mm/init.c
+> +++ b/arch/riscv/mm/init.c
+> @@ -29,6 +29,7 @@
+>   #include <asm/tlbflush.h>
+>   #include <asm/sections.h>
+>   #include <asm/soc.h>
+> +#include <asm/sbi.h>
+>   #include <asm/io.h>
+>   #include <asm/ptdump.h>
+>   #include <asm/numa.h>
+> @@ -253,6 +254,8 @@ static void __init setup_bootmem(void)
+>   	 * in the device tree, otherwise the allocation could end up in a
+>   	 * reserved region.
+>   	 */
+> +
+> +	sbi_apply_reserved_mem_erratum(dtb_early_va);
+>   	early_init_fdt_scan_reserved_mem();
+>   
+>   	/*
+
+
+Otherwise the patch looks good to me:
+
+You can add:
+
+Reviewed-by: Alexandre Ghiti <alexghiti@rivosinc.com>
+
+I just have one question though (that we discussed privately already): 
+should we fix openSBI in the kernel? If yes, what makes a bug worth 
+being fixed in the kernel?
+
+Thanks,
+
