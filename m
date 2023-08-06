@@ -2,83 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2480577165A
-	for <lists+linux-kernel@lfdr.de>; Sun,  6 Aug 2023 19:52:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AEA7C77165B
+	for <lists+linux-kernel@lfdr.de>; Sun,  6 Aug 2023 19:52:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230338AbjHFRw0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 6 Aug 2023 13:52:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50022 "EHLO
+        id S230364AbjHFRwl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 6 Aug 2023 13:52:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50106 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230310AbjHFRwY (ORCPT
+        with ESMTP id S230362AbjHFRwj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 6 Aug 2023 13:52:24 -0400
-Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D51FC171B
-        for <linux-kernel@vger.kernel.org>; Sun,  6 Aug 2023 10:52:22 -0700 (PDT)
-Received: by mail-ej1-x62c.google.com with SMTP id a640c23a62f3a-98377c5d53eso521573666b.0
-        for <linux-kernel@vger.kernel.org>; Sun, 06 Aug 2023 10:52:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1691344341; x=1691949141;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=CwvFyfkHmBnYaK/4d3zKdpJUuSVTfSdMbjRjXyVLu3I=;
-        b=R8Ct4R94W6gL7UgZegygYejkZQluQNHlYDIACaBnMhsgOrzqSxll740DGfJlKsyH6b
-         S19fSNWj0M2uttxE0OFTxXD0r1prPKedwicLJ4jvW2NqIEkU9PGXxU8WtdNi9fiCqIJ2
-         janbLr9/FUz4YkSZpdciNk9JZmvSjywmKtm57Wj+y1XChtCv+FToRHq0DkQXp+50xAsT
-         9zEXLG9O8mH+DkjHFL7OIb7q4yDkFLnX81M30Pha0bbon46qyNBzDSV1EXuLW6ePZVwu
-         XBgWeViTMS+cnCmfGPkM5VtjhSMjrrBui+nHy6oiJnh8p3Heaifs/BeE7DihZjcKyb9G
-         GWXA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691344341; x=1691949141;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=CwvFyfkHmBnYaK/4d3zKdpJUuSVTfSdMbjRjXyVLu3I=;
-        b=igPa2UbDdORSWxyB3b0dxyTDsLUpSadSbSOg9Y5konG5t5AmEJ17oIjCA81isqlUbN
-         0TF6SjEXsMP1KjdrPPzoEDnd8sX9v6wt0ckNPhDArdyjdQQ5Pf4FuhPSSb4ISPeAlsC3
-         gns7VCOqTgq30JOPP3WF1USn+4Vn9qp+s6mH4SoSCyUh5qzoGGzhEIlM3JQTQOlPtXNh
-         fgqHK6jSy5EqfRfythlE8JKo8If9gwWTAI3Kc9gKbTiyEf//UWss5iEQrANx7PHTvnrd
-         NeKknZdvcc22oF8rE26WxKtuUfsQxHXpJf322ATFEsdMg674/n0kYMtumkY/6nE2p0tR
-         rEkw==
-X-Gm-Message-State: AOJu0Yy0qg7MHzt1IwQdqwnjN7CvwOqeOgoZ2N7XFcv6pBLZ8KVc/6+u
-        l97XdzH+NVNwrlmf6lNLAPXs+Q==
-X-Google-Smtp-Source: AGHT+IFamjfnBvxxo0aAn24T+IxcP9hbraQm+b7v/6wEvTVyBdsBBNTMASnwSn5TJcU8NNpd6RHvvQ==
-X-Received: by 2002:a17:906:9bec:b0:993:d536:3cb7 with SMTP id de44-20020a1709069bec00b00993d5363cb7mr5939292ejc.11.1691344341290;
-        Sun, 06 Aug 2023 10:52:21 -0700 (PDT)
-Received: from [192.168.1.20] ([178.197.222.113])
-        by smtp.gmail.com with ESMTPSA id s5-20020a170906168500b00999bb1e01dfsm4121285ejd.52.2023.08.06.10.52.19
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 06 Aug 2023 10:52:20 -0700 (PDT)
-Message-ID: <a7de6c7c-2054-b26b-386e-22f8f4e36367@linaro.org>
-Date:   Sun, 6 Aug 2023 19:52:18 +0200
+        Sun, 6 Aug 2023 13:52:39 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF5941719
+        for <linux-kernel@vger.kernel.org>; Sun,  6 Aug 2023 10:52:38 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 0D5386124D
+        for <linux-kernel@vger.kernel.org>; Sun,  6 Aug 2023 17:52:38 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E14D6C433C8;
+        Sun,  6 Aug 2023 17:52:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1691344357;
+        bh=GFtElTpnw8Awc2J5lB8COy884PMEifozgPjaaX6ierU=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=lAR+DAW6Lc9+x7+XzVo6wIsyTTrTqhVrQijewLIqUAQ2mbJlKpc3U98aZvpGswOVx
+         kRw11EUDkWIUJDl+/O9G/Epp96eeWYSWYm4ax79za7VuVcpiwBcxCCVkisM/R5maoO
+         8U5iQmMWTiF+2iPowHSMFxSgsNRL2jgZ2cVOB2w6K4Tb58vUOL8DBgVMu2FiFKiIe4
+         8fsvIStpMtGob3l+xc9cZJPpi+2UQOJoe76sK2mwS4D6pUv8L4k8qt6QTtyIHaKkfE
+         tAINNyMBTzovDvdIxq/Wd5UC1uExcNyCgWZUZTyUvHkOg/mS8UGOqvQskhMdZfFPtL
+         dk7K0vOSQK9Ng==
+Message-ID: <8698e2f6-beac-b89f-5b7e-d9dbab267151@kernel.org>
+Date:   Sun, 6 Aug 2023 12:52:35 -0500
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.14.0
-Subject: Re: [PATCH v4 1/2] dt-bindings: interrupt-controller: mpm: Pass MSG
- RAM slice through phandle
-To:     Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Marc Zyngier <maz@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Shawn Guo <shawn.guo@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>
-Cc:     Marijn Suijten <marijn.suijten@somainline.org>,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org
-References: <20230328-topic-msgram_mpm-v4-0-bae382dc0f92@linaro.org>
- <20230328-topic-msgram_mpm-v4-1-bae382dc0f92@linaro.org>
+ Thunderbird/102.13.0
+Subject: Re: [PATCH RESEND^2] nios2: support clone3() syscall
 Content-Language: en-US
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <20230328-topic-msgram_mpm-v4-1-bae382dc0f92@linaro.org>
-Content-Type: text/plain; charset=UTF-8
+To:     Randy Dunlap <rdunlap@infradead.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Christian Brauner <brauner@kernel.org>
+Cc:     linux-kernel@vger.kernel.org,
+        Christian Brauner <christian@brauner.io>
+References: <20230802051924.7837-1-rdunlap@infradead.org>
+ <20230802-abgaben-behutsam-92946d2ecbf5@brauner>
+ <d2c8e5ca-44e0-41ec-84d0-ef743a62a2a1@app.fastmail.com>
+ <0156b0e7-d9a9-0bb6-f0af-e6a49ff87e34@infradead.org>
+From:   Dinh Nguyen <dinguyen@kernel.org>
+In-Reply-To: <0156b0e7-d9a9-0bb6-f0af-e6a49ff87e34@infradead.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-6.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
+X-Spam-Status: No, score=-6.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -86,19 +63,106 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 18/07/2023 14:19, Konrad Dybcio wrote:
-> Due to the wild nature of the Qualcomm RPM Message RAM, we can't really
-> use 'reg' to point to the MPM's slice of Message RAM without cutting into
-> an already-defined RPM MSG RAM node used for GLINK and SMEM.
+
+
+On 8/2/23 10:43, Randy Dunlap wrote:
 > 
-> Document passing the register space as a slice of SRAM through the
-> qcom,rpm-msg-ram property. This also makes 'reg' deprecated.
 > 
-> Signed-off-by: Konrad Dybcio <konrad.dybcio@linaro.org>
-> ---
+> On 8/2/23 01:16, Arnd Bergmann wrote:
+>> On Wed, Aug 2, 2023, at 09:40, Christian Brauner wrote:
+>>> On Tue, Aug 01, 2023 at 10:19:24PM -0700, Randy Dunlap wrote:
+>>>> Add support for the clone3() syscall to prevent a warning from
+>>>> checksyscalls.sh:
+>>>>
+>>>> <stdin>:1517:2: warning: #warning syscall clone3 not implemented [-Wcpp]
+>>>>
+>>>> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+>>>> Cc: Dinh Nguyen <dinguyen@kernel.org>
+>>>> Cc: Christian Brauner <christian@brauner.io>
+>>>> ---
+>>>> Is there some reason that NIOS2 should not (does not) support clone3()?
+>>>
+>>> Cc Arnd, in case he knows.
+>>
+>> As far as I remember, you left a few architectures without clone3
+>> during the introduction when there was neither an obvious way to
+>> handle the syscall entry nor a maintainer to have a look.
+>>
+>> Right now, it seems to be missing on alpha, hexagon, ia64,
+>> microblaze, nios2, sh and sparc.
+>>
+>> There are a few architectures that implement a custom entry
+>> point for both clone and clone3. The other architectures that
+>> provide the generic sys_clone3 also use the generic sys_clone.
+>> These are the wrappers I see:
+>>
+>> # ARC
+>> ENTRY(sys_clone3_wrapper)
+>>          SAVE_CALLEE_SAVED_USER
+>>          bl  @sys_clone3
+>>          DISCARD_CALLEE_SAVED_USER
+>>
+>>          GET_CURR_THR_INFO_FLAGS   r10
+>>          and.f 0, r10, _TIF_SYSCALL_WORK
+>>          bnz   tracesys_exit
+>>
+>>          b .Lret_from_system_call
+>> END(sys_clone3_wrapper)
+>>
+>> # m68k
+>> ENTRY(__sys_clone3)
+>>          SAVE_SWITCH_STACK
+>>          pea     %sp@(SWITCH_STACK_SIZE)
+>>          jbsr    m68k_clone3
+>>          lea     %sp@(28),%sp
+>>          rts
+>>
+>>
+>> # mips
+>> save_static_function(sys_clone3);
+>>
+>> # openrisc
+>> ENTRY(__sys_clone3)
+>>          l.movhi r29,hi(sys_clone3)
+>>          l.j     _fork_save_extra_regs_and_call
+>>           l.ori  r29,r29,lo(sys_clone3)
+>>
+>> # parisc
+>>          .macro  fork_like name
+>> ENTRY_CFI(sys_\name\()_wrapper)
+>>          mfctl   %cr30,%r1
+>>          ldo     TASK_REGS(%r1),%r1
+>>          reg_save %r1
+>>          mfctl   %cr27, %r28
+>>          ldil    L%sys_\name, %r31
+>>          be      R%sys_\name(%sr4,%r31)
+>>          STREG   %r28, PT_CR27(%r1)
+>> ENDPROC_CFI(sys_\name\()_wrapper)
+>>          .endm
+>> fork_like clone
+>> fork_like clone3
+>>
+>> Nios3 in turn has a wrapper for sys_clone:
+>> ENTRY(sys_clone)
+>>          SAVE_SWITCH_STACK
+>>          subi    sp, sp, 4 /* make space for tls pointer */
+>>          stw     r8, 0(sp) /* pass tls pointer (r8) via stack (5th argument) */
+>>          call    nios2_clone
+>>          addi    sp, sp, 4
+>>          RESTORE_SWITCH_STACK
+>>          ret
+>>
+>> so my guess would be that it needs the same thing
+>> for clone3 as well. Same thing on alpha, ia64 and
+>> sparc. On the other hand hexagon, microblaze and sh
+>> use the generic sys_clone() and can probably just
+>> enable sys_clone3() without extra work unless it's
+>> already broken.
+> 
+> OK, thanks for the help.
+> 
 
-Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Applied!
 
-Best regards,
-Krzysztof
-
+Thank you,
+Dinh
