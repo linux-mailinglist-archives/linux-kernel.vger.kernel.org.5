@@ -2,80 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BD99077168E
-	for <lists+linux-kernel@lfdr.de>; Sun,  6 Aug 2023 21:35:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 16887771695
+	for <lists+linux-kernel@lfdr.de>; Sun,  6 Aug 2023 21:38:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230226AbjHFTfM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 6 Aug 2023 15:35:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56238 "EHLO
+        id S230387AbjHFTif (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 6 Aug 2023 15:38:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56700 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229809AbjHFTfK (ORCPT
+        with ESMTP id S229491AbjHFTid (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 6 Aug 2023 15:35:10 -0400
-Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD4EE1720
-        for <linux-kernel@vger.kernel.org>; Sun,  6 Aug 2023 12:35:08 -0700 (PDT)
-Received: by mail-ed1-x532.google.com with SMTP id 4fb4d7f45d1cf-522ab301692so5353534a12.2
-        for <linux-kernel@vger.kernel.org>; Sun, 06 Aug 2023 12:35:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1691350507; x=1691955307;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=3bqbe2tDZsZm0END83UpLyo6EdqTZMUT086jdCCRrYw=;
-        b=g0jyzXc60snOi9Q61ciF87VgVXpMoKnvYizbfZgb2HjPkUaMyTBZig89TnI7J6YQ1s
-         K/EowG8j8K+l6ZuxtPoNMk568mXiq3LsDY1LWJevmEh+kA17IkB/ExBG5CbCNwYveV85
-         KiP8DOjX6xCwsW0l0W4CGt2RceYmAOFGEPC4d25smdzCgQUd+Bu5LPSJH7pdcQoQ/7Y0
-         uny9KeKT67FTZ4fflMOOI4Q8B29TKmVZzoAsx6Jb3p0GRyaY+V8q6dznj70w8fGRtRuM
-         aa4eJ24jFHCxakE+2duVWIx9By8XJKslLsOb4zYfHySZmq8AnxARrRSGbZUbKyV+c4+Q
-         bMTg==
+        Sun, 6 Aug 2023 15:38:33 -0400
+Received: from mail-oo1-f70.google.com (mail-oo1-f70.google.com [209.85.161.70])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33E261720
+        for <linux-kernel@vger.kernel.org>; Sun,  6 Aug 2023 12:38:32 -0700 (PDT)
+Received: by mail-oo1-f70.google.com with SMTP id 006d021491bc7-565dd317fe8so5745620eaf.0
+        for <linux-kernel@vger.kernel.org>; Sun, 06 Aug 2023 12:38:32 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691350507; x=1691955307;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
+        d=1e100.net; s=20221208; t=1691350711; x=1691955511;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=3bqbe2tDZsZm0END83UpLyo6EdqTZMUT086jdCCRrYw=;
-        b=VYqDdR+isvd1XHVndbrb+AsoqH+BQAddQTZd0QgrQsEkR4oFna6kKWnYNK27cYsb5W
-         U+G6kzGgnzpbLABlWvB5iUy1GwjEGfjEluKCsGz3B6xK8B/AYP0zCUs9VSIj3rBLBTaN
-         NSzPGoYKafgkO81x1WkUfC7H8y2i8VEUVEv/m8sr8plzxrmuzGeq0WzV6Hpt5nZseDPh
-         OyWwEjMdU+zE933J14NehwDitiH8j1AzKtwDpGYKPuv5KY5+IrlNmKXRzpJ7FktZq2kb
-         Lt70ZPQJA+vedLLu4lXi9Oh5UyqV5ngaU3VblZZDP8wUWbHwkDQLu2ajW2O3SVAUq4YT
-         /pzQ==
-X-Gm-Message-State: AOJu0YyqsfSEY2aLkI8H7ainmTf0B5tHKRUwvi581wAcDG5b6+Rxo8O1
-        9JdrzxFOGSFnsX3hzN7QVbQJNQ==
-X-Google-Smtp-Source: AGHT+IG/79s2xg9v9Za0JIriROoPvnlkRv0Jug22nma7i4hEv1WIE4RafrrohEpmmoAaMt55gaOUXA==
-X-Received: by 2002:aa7:d148:0:b0:523:2873:8323 with SMTP id r8-20020aa7d148000000b0052328738323mr4168789edo.35.1691350506747;
-        Sun, 06 Aug 2023 12:35:06 -0700 (PDT)
-Received: from [192.168.1.20] ([178.197.222.113])
-        by smtp.gmail.com with ESMTPSA id o4-20020aa7c504000000b00522828d438csm4212648edq.7.2023.08.06.12.35.04
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 06 Aug 2023 12:35:06 -0700 (PDT)
-Message-ID: <6fcd8e51-7e97-1261-7cd5-5e18840aaf8e@linaro.org>
-Date:   Sun, 6 Aug 2023 21:35:03 +0200
+        bh=wHAFAUtlpPTsblmGRi8/yz/rtfn+G6tOKLxXyDwkU7c=;
+        b=d7C0MMcGEGyvac15st23Rchj8YfbWO8grmFfuA6kN6vIhHtkpaYXniCmlU/zAj4UUx
+         em3G7tlD5uFpMtgm3MnffnwFPWEo0CdxUNQ950ZLgBl40YhKoIewWst0K943rmaB2HMr
+         f/zway8XuBm4YaITAOe5tDxGo93KuSsl9uy//mVJ4Qu6yMWY1LpA5EHGb02lz/EXy7zQ
+         hAnCs4na80Z4bvyjGZ+CqqOXAJ4omNIgzM8m4F1w+KtgrbC77xBHA2Zm72WvCCxA7Ahg
+         n8K34HM3m3J/O8sUmmXEavUHez523RHPRUpHM/rT79t2LyWwjlXArSztCW/qwXisXmf1
+         vEJw==
+X-Gm-Message-State: AOJu0YxA3h1Ggu0bSgN7+kaSnqWpx1l1kR7uFBLvniZksAwkrAvmVAlM
+        lthaJnPu8JbFevuy5R3RDmlocq6qlNmiNjmnGW2r/uvQE0rO
+X-Google-Smtp-Source: AGHT+IF40jj0zFbkkF2AkDSkU6OeSWL//98qOUQ8SLl2cjxFtDsY+SqCrZULINynDdtK/cdLxjdxmz+HSUoxFnDSbnBts8CbBw0I
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.14.0
-Subject: Re: [PATCH v2 3/5] dt-bindings: clock: add Intel Agilex5 clock
- manager
-Content-Language: en-US
-To:     niravkumar.l.rabara@intel.com
-Cc:     adrian.ho.yin.ng@intel.com, andrew@lunn.ch, conor+dt@kernel.org,
-        devicetree@vger.kernel.org, dinguyen@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, linux-clk@vger.kernel.org,
-        linux-kernel@vger.kernel.org, mturquette@baylibre.com,
-        netdev@vger.kernel.org, p.zabel@pengutronix.de,
-        richardcochran@gmail.com, robh+dt@kernel.org, sboyd@kernel.org,
-        wen.ping.teh@intel.com
-References: <20230618132235.728641-1-niravkumar.l.rabara@intel.com>
- <20230801010234.792557-1-niravkumar.l.rabara@intel.com>
- <20230801010234.792557-4-niravkumar.l.rabara@intel.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <20230801010234.792557-4-niravkumar.l.rabara@intel.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-6.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
+X-Received: by 2002:a05:6808:3020:b0:3a7:275a:dc69 with SMTP id
+ ay32-20020a056808302000b003a7275adc69mr11976106oib.1.1691350711498; Sun, 06
+ Aug 2023 12:38:31 -0700 (PDT)
+Date:   Sun, 06 Aug 2023 12:38:31 -0700
+In-Reply-To: <0000000000005003fe05a8af2231@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000597f580602464669@google.com>
+Subject: Re: [syzbot] [wireless?] INFO: trying to register non-static key in skb_queue_tail
+From:   syzbot <syzbot+743547b2a7fd655ffb6d@syzkaller.appspotmail.com>
+To:     andreyknvl@google.com, ath9k-devel@qca.qualcomm.com,
+        brookebasile@gmail.com, davem@davemloft.net, kuba@kernel.org,
+        kvalo@codeaurora.org, kvalo@kernel.org,
+        linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        pabeni@redhat.com, pchelkin@ispras.ru, quic_kvalo@quicinc.com,
+        syzkaller-bugs@googlegroups.com, toke@toke.dk
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=0.8 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS autolearn=no
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -83,21 +60,24 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 01/08/2023 03:02, niravkumar.l.rabara@intel.com wrote:
-> From: Niravkumar L Rabara <niravkumar.l.rabara@intel.com>
-> 
-> Add clock ID definitions for Intel Agilex5 SoCFPGA.
-> The registers in Agilex5 handling the clock is named as clock manager.
-> 
-> Signed-off-by: Teh Wen Ping <wen.ping.teh@intel.com>
-> Reviewed-by: Dinh Nguyen <dinguyen@kernel.org>
-> Signed-off-by: Niravkumar L Rabara <niravkumar.l.rabara@intel.com>
-> ---
+syzbot suspects this issue was fixed by commit:
 
-Do not attach (thread) your patchsets to some other threads (unrelated
-or older versions). This buries them deep in the mailbox and might
-interfere with applying entire sets.
+commit 061b0cb9327b80d7a0f63a33e7c3e2a91a71f142
+Author: Fedor Pchelkin <pchelkin@ispras.ru>
+Date:   Wed May 17 15:03:17 2023 +0000
 
-Best regards,
-Krzysztof
+    wifi: ath9k: don't allow to overwrite ENDPOINT0 attributes
 
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=1243d549a80000
+start commit:   559089e0a93d vmalloc: replace VM_NO_HUGE_VMAP with VM_ALLO..
+git tree:       upstream
+kernel config:  https://syzkaller.appspot.com/x/.config?x=dd7c9a79dfcfa205
+dashboard link: https://syzkaller.appspot.com/bug?extid=743547b2a7fd655ffb6d
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=15d5d7f4f00000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=106ff834f00000
+
+If the result looks correct, please mark the issue as fixed by replying with:
+
+#syz fix: wifi: ath9k: don't allow to overwrite ENDPOINT0 attributes
+
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
