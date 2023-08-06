@@ -2,186 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E1A2771669
-	for <lists+linux-kernel@lfdr.de>; Sun,  6 Aug 2023 20:17:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 41E8A771673
+	for <lists+linux-kernel@lfdr.de>; Sun,  6 Aug 2023 21:06:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230315AbjHFSRX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 6 Aug 2023 14:17:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51974 "EHLO
+        id S230397AbjHFTGd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 6 Aug 2023 15:06:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54516 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229436AbjHFSRV (ORCPT
+        with ESMTP id S229436AbjHFTGb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 6 Aug 2023 14:17:21 -0400
-Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3DF01716;
-        Sun,  6 Aug 2023 11:17:19 -0700 (PDT)
-Received: by mail-wm1-x335.google.com with SMTP id 5b1f17b1804b1-3fe1e1142caso38029165e9.0;
-        Sun, 06 Aug 2023 11:17:19 -0700 (PDT)
+        Sun, 6 Aug 2023 15:06:31 -0400
+Received: from mail-io1-xd2c.google.com (mail-io1-xd2c.google.com [IPv6:2607:f8b0:4864:20::d2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A67F1712;
+        Sun,  6 Aug 2023 12:06:30 -0700 (PDT)
+Received: by mail-io1-xd2c.google.com with SMTP id ca18e2360f4ac-790ca0ed6d3so129791539f.3;
+        Sun, 06 Aug 2023 12:06:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=googlemail.com; s=20221208; t=1691345838; x=1691950638;
+        d=gmail.com; s=20221208; t=1691348789; x=1691953589;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
          :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=D9NrrcIw0SRAawkmaiD2pvBC8NPzwAJf1+tu6UTui2g=;
-        b=bwCDxkOvJdHTWCnVS/jZDuQf+7e2nRlUwM1/79NQcwKGGbL4KFGLufFeNMiYw0tXWB
-         6Q0ApiKfI5KCOEZ2oBlmjmwSMUuGeIzXYPjKjCPV1HLTYTbBTzWaT8VjIANYTxYo2qtR
-         XkwOKXAkeYLnAywIqUTEKOcpEesj7t5nPC4sZy1CzY9u/lCup77Jg+n20b4zPh6g7En1
-         7wnvB0Ka9YQt7Tn48wBdF+LQe+1UHmZpwNtqZk5UYSPFthR/k2bRmL9viMypaBdtTlxt
-         p5pAKRICsKMIRkaQGwnBPkQz+f0B4HyGzB5EE5u4wK2Hfpf/ZP+0azMuLJPHL6Ib/yBx
-         Z/Rw==
+        bh=FtA/DXQ16Iik0MVLRswYcHvRP3Ma3gJUyRXapnCHuSU=;
+        b=g5yQZhefWvLdV2003/eA374xxnL4k+Av25DWV3BT9LQ8LYc7uHrRw+vIxKCm8zzudc
+         s5Uu/mIkaaAu2P3DYICFlo+4Iozq43ueYNdJtiyjyDRbSKre1fi6zRkoby1dy7idRCvj
+         9NcQtEBYdSSnRB0Vpr3ijiYPAy5UoBdOMAsYs9vWRVCz4SZZGZ6ckbWGkCdVVHa0GaYH
+         MV/Qq+V0GnLC5k0lzzkYBhhMSmWW77L8T/d4mk03BF97BBidvLH+hsyg8DI61d67kGQy
+         lLUX3KQ13o6+EtRrT3dLOWojiRm+ORgZXdo+1BwajLDHAvaWq7oJhDI0BBrUzA97Uj3a
+         T5Cw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691345838; x=1691950638;
+        d=1e100.net; s=20221208; t=1691348789; x=1691953589;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
          :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=D9NrrcIw0SRAawkmaiD2pvBC8NPzwAJf1+tu6UTui2g=;
-        b=Fj9yuQx+j0GXt52gv1XpMP9XiDA0VHV48gbtln7WdnniPSYpBGP9GzyaDV4Miv6iL+
-         Jwy7Mx/fwK+udyzB3qYDodcmOr6kXNgRLaD4vyO+rqgnRX74qDDgOPGTFwFvMBn+kTD+
-         FUhb7r4YqgFzg9E+gxYe+vFYmDRsotpJM3XbIbwqLrX8ithmN/AyguH6q1M/L7dyJ0Uy
-         WPDbrmHqbGnzmluogU/X5lv71+MDGDLvE+KlqTr45xtbchxjqRhEw3JsqSWxvTEQQ8Cn
-         A5VEhdJPFzraHGCUeRTQc6uHh7RF5lR7/XSbeXHrTJTwszQ+odIvtfqwtqEVjinGko++
-         nUTg==
-X-Gm-Message-State: AOJu0YzCuE6rBJIhg/56Q4hCwaUma1SivUT4qF4Jz9ynDYIe/ucw9vLE
-        Cvz8yRl5ctd/GdTn0r8PIfToun98mpQ=
-X-Google-Smtp-Source: AGHT+IGBfz5219P5gXXkticiosYBXpfsSfV/OW5qeGI9qz5x38kuGndJwpfhqnkK8Z0MWri8hJYyTg==
-X-Received: by 2002:a05:600c:2155:b0:3fe:173e:4a54 with SMTP id v21-20020a05600c215500b003fe173e4a54mr5791276wml.17.1691345837709;
-        Sun, 06 Aug 2023 11:17:17 -0700 (PDT)
-Received: from localhost.localdomain (dynamic-2a01-0c22-7b51-7e00-0000-0000-0000-0e63.c22.pool.telefonica.de. [2a01:c22:7b51:7e00::e63])
-        by smtp.googlemail.com with ESMTPSA id m8-20020a7bce08000000b003fbd9e390e1sm12664948wmc.47.2023.08.06.11.17.17
+        bh=FtA/DXQ16Iik0MVLRswYcHvRP3Ma3gJUyRXapnCHuSU=;
+        b=fayFrpfF3fJcbZ/JN3JDbeaZC8GToxu1UgTW6cdIgG9Z+hTqVdoBI1gEU5cbmpPgLS
+         H/iRNeEDzV+doLh7QTvDYZS/SfAYxsvSusMC7zvihCGWgmlJ9bT37mUct9oKAS1OFowq
+         VUwsK7BM4nNKXMBHtHPwUneaN6dSTHYk2YCxep/VzfNfFyWS1UAdFvaxvhUCkq/NEVRU
+         A/AIq5SNLAeMOgLLDPFAcnmJ3gqZoVmM54KMlJiv/j/ZXxdKmeevPXW+3ZArIZiIOjXb
+         DK7qntKI3Cy1r++vUuhmP1Tz3NXwTbi7Y3oz60tuIjFkYqxd+SRjHkrf3ZcWE1R59GMQ
+         Kwpw==
+X-Gm-Message-State: AOJu0YzSm3D7xPDT6BopaTSbrdQkIu3GiXFURbUx076hdmYbaQ+J1uW6
+        Hqd/yvPgYVRJSR7rMPCkDMk=
+X-Google-Smtp-Source: AGHT+IFWbyDPDi3n+1IiJNyDqVllymgmvBn0GL0USdFN0qfpO9oaRGJz4Td6pb38IM0q9HcaFt1HZg==
+X-Received: by 2002:a6b:6b0d:0:b0:790:d813:2d38 with SMTP id g13-20020a6b6b0d000000b00790d8132d38mr9144889ioc.11.1691348789548;
+        Sun, 06 Aug 2023 12:06:29 -0700 (PDT)
+Received: from aford-B741.lan ([2601:447:d001:897f:3be6:798d:d8e6:3ba5])
+        by smtp.gmail.com with ESMTPSA id i24-20020a02b698000000b0042b1dd89b0bsm1982400jam.155.2023.08.06.12.06.28
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 06 Aug 2023 11:17:17 -0700 (PDT)
-From:   Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-To:     linux-wireless@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, jernej.skrabec@gmail.com,
-        pkshih@realtek.com, ulf.hansson@linaro.org, kvalo@kernel.org,
-        tony0620emma@gmail.com,
-        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
-        "Lukas F . Hartmann" <lukas@mntre.com>
-Subject: [PATCH v2] wifi: rtw88: sdio: Honor the host max_req_size in the RX path
-Date:   Sun,  6 Aug 2023 20:16:56 +0200
-Message-ID: <20230806181656.2072792-1-martin.blumenstingl@googlemail.com>
-X-Mailer: git-send-email 2.41.0
+        Sun, 06 Aug 2023 12:06:28 -0700 (PDT)
+From:   Adam Ford <aford173@gmail.com>
+To:     linux-arm-kernel@lists.infradead.org
+Cc:     aford@beaconembedded.com, cstevens@beaconembedded.com,
+        Adam Ford <aford173@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Magnus Damm <magnus.damm@gmail.com>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-renesas-soc@vger.kernel.org
+Subject: [PATCH] arm64: dts: imx8mp-beacon: Configure 100MHz PCIe Ref Clk
+Date:   Sun,  6 Aug 2023 14:06:21 -0500
+Message-Id: <20230806190622.505887-1-aford173@gmail.com>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Lukas reports skb_over_panic errors on his Banana Pi BPI-CM4 which comes
-with an Amlogic A311D (G12B) SoC and a RTL8822CS SDIO wifi/Bluetooth
-combo card. The error he observed is identical to what has been fixed
-in commit e967229ead0e ("wifi: rtw88: sdio: Check the HISR RX_REQUEST
-bit in rtw_sdio_rx_isr()") but that commit didn't fix Lukas' problem.
+There is a I2C controlled 100MHz Reference clock used by the PCIe
+controller. Configure this clock's DIF1 output to be used by
+the PCIe.
 
-Lukas found that disabling or limiting RX aggregation works around the
-problem for some time (but does not fully fix it). In the following
-discussion a few key topics have been discussed which have an impact on
-this problem:
-- The Amlogic A311D (G12B) SoC has a hardware bug in the SDIO controller
-  which prevents DMA transfers. Instead all transfers need to go through
-  the controller SRAM which limits transfers to 1536 bytes
-- rtw88 chips don't split incoming (RX) packets, so if a big packet is
-  received this is forwarded to the host in it's original form
-- rtw88 chips can do RX aggregation, meaning more multiple incoming
-  packets can be pulled by the host from the card with one MMC/SDIO
-  transfer. This Depends on settings in the REG_RXDMA_AGG_PG_TH
-  register (BIT_RXDMA_AGG_PG_TH limits the number of packets that will
-  be aggregated, BIT_DMA_AGG_TO_V1 configures a timeout for aggregation
-  and BIT_EN_PRE_CALC makes the chip honor the limits more effectively)
+Signed-off-by: Adam Ford <aford173@gmail.com>
 
-Use multiple consecutive reads in rtw_sdio_read_port() and limit the
-number of bytes which are copied by the host from the card in one
-MMC/SDIO transfer. This allows receiving a buffer that's larger than
-the hosts max_req_size (number of bytes which can be transferred in
-one MMC/SDIO transfer). As a result of this the skb_over_panic error
-is gone as the rtw88 driver is now able to receive more than 1536 bytes
-from the card (either because the incoming packet is larger than that
-or because multiple packets have been aggregated).
-
-In case of an receive errors (-EILSEQ has been observed by Lukas) we
-need to drain the remaining data from the card's buffer, otherwise the
-card will return corrupt data for the next rtw_sdio_read_port() call.
-
-Fixes: 65371a3f14e7 ("wifi: rtw88: sdio: Add HCI implementation for SDIO based chipsets")
-Reported-by: Lukas F. Hartmann <lukas@mntre.com>
-Closes: https://lore.kernel.org/linux-wireless/CAFBinCBaXtebixKbjkWKW_WXc5k=NdGNaGUjVE8NCPNxOhsb2g@mail.gmail.com/
-Suggested-by: Ping-Ke Shih <pkshih@realtek.com>
-Signed-off-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
----
-
-
-Changes since v1 at [0]:
-- We need to read all bytes if we split the transaction into multiple
-  smaller reads. This is even the case when one of N reads reports an
-  error. Otherwise the next read port call will return garbage (partially
-  containing zeros, ...). A similar-ish approach can be found in the
-  vendor driver, see [1] (specifically the call to sdio_recv_and_drop())
-- Update the patch description accordingly
-
-With a preliminary version of this updated patch Lukas reported off-
-list: "i've been using this laptop for almost 3 hours with heavy wifi
-usage and so far no problems"
-
-
-[0] https://lore.kernel.org/lkml/169089906853.212423.17095176293160428610.kvalo@kernel.org/T/
-[1] https://github.com/chewitt/RTL8822CS/blob/ad1391e219b59314485739a499fb442d5bbc069e/hal/rtl8822c/sdio/rtl8822cs_io.c#L468-L477
-
-
- drivers/net/wireless/realtek/rtw88/sdio.c | 30 +++++++++++++++++------
- 1 file changed, 23 insertions(+), 7 deletions(-)
-
-diff --git a/drivers/net/wireless/realtek/rtw88/sdio.c b/drivers/net/wireless/realtek/rtw88/sdio.c
-index 2c1fb2dabd40..553b7e68ca3b 100644
---- a/drivers/net/wireless/realtek/rtw88/sdio.c
-+++ b/drivers/net/wireless/realtek/rtw88/sdio.c
-@@ -500,19 +500,35 @@ static u32 rtw_sdio_get_tx_addr(struct rtw_dev *rtwdev, size_t size,
- static int rtw_sdio_read_port(struct rtw_dev *rtwdev, u8 *buf, size_t count)
- {
- 	struct rtw_sdio *rtwsdio = (struct rtw_sdio *)rtwdev->priv;
-+	struct mmc_host *host = rtwsdio->sdio_func->card->host;
- 	bool bus_claim = rtw_sdio_bus_claim_needed(rtwsdio);
- 	u32 rxaddr = rtwsdio->rx_addr++;
--	int ret;
-+	int ret = 0, err = 0;
-+	size_t bytes;
+diff --git a/arch/arm64/boot/dts/freescale/imx8mp-beacon-kit.dts b/arch/arm64/boot/dts/freescale/imx8mp-beacon-kit.dts
+index 06e91297fb16..332269dedeee 100644
+--- a/arch/arm64/boot/dts/freescale/imx8mp-beacon-kit.dts
++++ b/arch/arm64/boot/dts/freescale/imx8mp-beacon-kit.dts
+@@ -23,6 +23,12 @@ chosen {
+ 		stdout-path = &uart2;
+ 	};
  
- 	if (bus_claim)
- 		sdio_claim_host(rtwsdio->sdio_func);
- 
--	ret = sdio_memcpy_fromio(rtwsdio->sdio_func, buf,
--				 RTW_SDIO_ADDR_RX_RX0FF_GEN(rxaddr), count);
--	if (ret)
--		rtw_warn(rtwdev,
--			 "Failed to read %zu byte(s) from SDIO port 0x%08x",
--			 count, rxaddr);
-+	while (count > 0) {
-+		bytes = min_t(size_t, host->max_req_size, count);
++	clk_xtal25: clk-xtal25 {
++		compatible = "fixed-clock";
++		#clock-cells = <0>;
++		clock-frequency = <25000000>;
++	};
 +
-+		err = sdio_memcpy_fromio(rtwsdio->sdio_func, buf,
-+					 RTW_SDIO_ADDR_RX_RX0FF_GEN(rxaddr),
-+					 bytes);
-+		if (err) {
-+			rtw_warn(rtwdev,
-+				 "Failed to read %zu byte(s) from SDIO port 0x%08x: %d",
-+				 bytes, rxaddr, err);
-+			ret = err;
-+			/* Don't stop here - instead drain the remaining data
-+			 * from the card's buffer, else the card will return
-+			 * corrupt data for the next rtw_sdio_read_port() call.
-+			 */
-+		}
+ 	connector {
+ 		compatible = "usb-c-connector";
+ 		label = "USB-C";
+@@ -246,6 +252,13 @@ pca6416_3: gpio@20 {
+ 		interrupt-controller;
+ 		#interrupt-cells = <2>;
+ 	};
 +
-+		count -= bytes;
-+		buf += bytes;
-+	}
++	pcieclk: clk@68 {
++		compatible = "renesas,9fgv0241";
++		reg = <0x68>;
++		clocks = <&clk_xtal25>;
++		#clock-cells = <1>;
++	};
+ };
  
- 	if (bus_claim)
- 		sdio_release_host(rtwsdio->sdio_func);
+ &i2c3 {
+@@ -372,8 +385,9 @@ &pcie {
+ };
+ 
+ &pcie_phy {
++	fsl,clkreq-unsupported;
+ 	fsl,refclk-pad-mode = <IMX8_PCIE_REFCLK_PAD_INPUT>;
+-	clocks = <&pcie0_refclk>;
++	clocks = <&pcieclk 1>;
+ 	clock-names = "ref";
+ 	status = "okay";
+ };
 -- 
-2.41.0
+2.39.2
 
