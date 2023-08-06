@@ -2,67 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EEBD0771481
-	for <lists+linux-kernel@lfdr.de>; Sun,  6 Aug 2023 13:18:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C6C30771483
+	for <lists+linux-kernel@lfdr.de>; Sun,  6 Aug 2023 13:21:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229533AbjHFLSf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 6 Aug 2023 07:18:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50814 "EHLO
+        id S229691AbjHFLVr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 6 Aug 2023 07:21:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51174 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229449AbjHFLSd (ORCPT
+        with ESMTP id S229449AbjHFLVq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 6 Aug 2023 07:18:33 -0400
-Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72E1A11D;
-        Sun,  6 Aug 2023 04:18:32 -0700 (PDT)
-Received: by mail-ed1-x530.google.com with SMTP id 4fb4d7f45d1cf-52222562f1eso5001692a12.3;
-        Sun, 06 Aug 2023 04:18:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1691320710; x=1691925510;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=je1gUzvwrqcKGyu+CaM6BhOeHMrmqE7jvTrxfdtVg+c=;
-        b=UvsSgM4LoSJAa2mNOuJ5Iv+oGAdwD62Wt2/PMYqnAp5neD4L6dS9zXu691t5xo58sN
-         +C8PqdPEik2VvfsCwtfpfai7q0JBWIzQY44Fj2ACxHdUp00GfP2S53aGEgNbX7jAzCwT
-         W4xpjwz5ElfF/Ao68gjWd5UewvEQbasIbqOcpx1Qw3Fok1mmdG64P9G1qldeIL2Nh51G
-         IlHGJqKYWi9pyUGaFWNBZELA0cWLZV/lhwxjB7A7UafOevLtAOFbuIxIznzVFSJs2fZR
-         AXAurc7zxFrnpEAVTTriOSKoVXxKOOnGNtWSJbqjaq9/vMoQ+OrMCkD+liGwkjtQG+Hw
-         sEHg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691320710; x=1691925510;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=je1gUzvwrqcKGyu+CaM6BhOeHMrmqE7jvTrxfdtVg+c=;
-        b=JI+zgumFKD6tNs15MA0Nnv3DgQ+M3bSdFK3LYveJijvWtlI4sLmWzTvLPEwkd5Bu8F
-         JHR+qMysfYgqr4g74trCJEnEQyUm/945qQ6eoSvtmxeigkzz4SVQye5sXK7D7PIzjqyT
-         JXKquoQxt1JvYm5vTIOIYdeEwiSDMjKCEOxkHKGLvPdM6y4kO3cnaVl4J8inm/txQNko
-         JOEmW2PpkKeHx1X9Ka2oKssF3jUlIL8Wcx63BY2Hf69mLM2R7hSgtbtj7Fl7PSI3+NW5
-         bqWaDyL710S059rL9hQwpYIsOY5b1rqx8q8q4wQOYww1hrD8UAvTpTBxLM5vsXoB+++X
-         /nyQ==
-X-Gm-Message-State: AOJu0Yy7vESyBuEVB5pHEtzrJLUUPYpG51H1yG0+dEgqu5C2+U4bmCeE
-        C2Ja5O+k3frsLKJs7RsX0OAb8E+d/i2J7w==
-X-Google-Smtp-Source: AGHT+IFgigO3y9Y0gmsVwp0bgkTt8PTWPfzi/5MWxrUz9PiEfM72eh/jIwxL/bbaITEl5Qt+H97tpg==
-X-Received: by 2002:a05:6402:54:b0:522:30cc:a1f0 with SMTP id f20-20020a056402005400b0052230cca1f0mr5720629edu.14.1691320710452;
-        Sun, 06 Aug 2023 04:18:30 -0700 (PDT)
-Received: from nam-dell (ip-217-105-46-58.ip.prioritytelecom.net. [217.105.46.58])
-        by smtp.gmail.com with ESMTPSA id s25-20020a056402015900b0052237dfa82fsm3769409edu.64.2023.08.06.04.18.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 06 Aug 2023 04:18:29 -0700 (PDT)
-Date:   Sun, 6 Aug 2023 13:18:28 +0200
-From:   Nam Cao <namcaov@gmail.com>
-To:     "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
-        Anil S Keshavamurthy <anil.s.keshavamurthy@intel.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Masami Hiramatsu <mhiramat@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org
-Subject: confused about kprobes
-Message-ID: <ZM+BhEz9u7hrWe6e@nam-dell>
+        Sun, 6 Aug 2023 07:21:46 -0400
+Received: from 1wt.eu (ded1.1wt.eu [163.172.96.212])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id E9AEE11D;
+        Sun,  6 Aug 2023 04:21:38 -0700 (PDT)
+Received: (from willy@localhost)
+        by pcw.home.local (8.15.2/8.15.2/Submit) id 376BLNHo013027;
+        Sun, 6 Aug 2023 13:21:23 +0200
+Date:   Sun, 6 Aug 2023 13:21:23 +0200
+From:   Willy Tarreau <w@1wt.eu>
+To:     Zhangjin Wu <falcon@tinylab.org>
+Cc:     thomas@t-8ch.de, arnd@arndb.de, linux-kernel@vger.kernel.org,
+        linux-kselftest@vger.kernel.org,
+        Thomas =?iso-8859-1?Q?Wei=DFschuh?= <linux@weissschuh.net>
+Subject: Re: [PATCH v2 3/3] selftests/nolibc: fix up O= option support
+Message-ID: <20230806112122.GF10627@1wt.eu>
+References: <cover.1691215074.git.falcon@tinylab.org>
+ <06d96bd81fe812a9718098a383678ad3beba98b1.1691215074.git.falcon@tinylab.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+In-Reply-To: <06d96bd81fe812a9718098a383678ad3beba98b1.1691215074.git.falcon@tinylab.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_PASS,T_SPF_HELO_TEMPERROR autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -70,42 +42,33 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Sat, Aug 05, 2023 at 02:13:11PM +0800, Zhangjin Wu wrote:
+> To avoid pollute the source code tree and avoid mrproper for every
+> architecture switch, the O= argument must be supported.
+> 
+> Both IMAGE and .config are from the building directory, let's use
+> objtree instead of srctree for them.
+> 
+> If no O= option specified, means building kernel in source code tree,
+> objtree should be srctree in such case.
+> 
+> To support relative path, as suggested by Thomas, $(COMMAND_O) is used
+> to pass the O=$(ABSOLUTE_O) to the $(MAKE) commands.
 
-I am struggling to understand how kprobes works. It would be very nice if someone
-can spare the time to explain to me. I'm confused about this function in particular:
+Zhangjin, I cannot get this one to work, regardless of what I try:
 
-/*
- * Return an optimized kprobe whose optimizing code replaces
- * instructions including 'addr' (exclude breakpoint).
- */
-static struct kprobe *get_optimized_kprobe(kprobe_opcode_t *addr)
-{
-	int i;
-	struct kprobe *p = NULL;
-	struct optimized_kprobe *op;
+   $ make -j8 O=$PWD/output-i386 nolibc-test XARCH=i386 CROSS_COMPILE=/f/tc/nolibc/gcc-12.3.0-nolibc/i386-linux/bin/i386-linux- CC=/f/tc/nolibc/gcc-12.3.0-nolibc/i386-linux/bin/i386-linux-gcc
+   (...)
+   CC      nolibc-test
+   In file included from sysroot/i386/include/stdio.h:14,
+                    from nolibc-test.c:13:
+   sysroot/i386/include/errno.h:10:10: fatal error: asm/errno.h: No such file or directory
+      10 | #include <asm/errno.h>
+         |          ^~~~~~~~~~~~~
+   compilation terminated.
 
-	/* Don't check i == 0, since that is a breakpoint case. */
-	for (i = 1; !p && i < MAX_OPTIMIZED_LENGTH / sizeof(kprobe_opcode_t); i++)
-		p = get_kprobe(addr - i);
+I'll leave it aside for now as I've spent way longer than I hoped on
+these series. I could take the previous two patches however.
 
-	if (p && kprobe_optready(p)) {
-		op = container_of(p, struct optimized_kprobe, kp);
-		if (arch_within_optimized_kprobe(op, addr))
-			return p;
-	}
-
-	return NULL;
-}
-
-The document mentions something about optimizing by replacing trap instructions
-with jump instructions, so I am assuming this function is part of that. But I
-fail to see what this function is trying to do exactly. The for loop seems to
-call get_kprobe at addresses immediately before "addr". But what for? What are
-at addresses before "addr"?
-
-Can someone be so kind to give me a line-by-line explanation of this function?
-
-Thanks!
-
-Nam
+Thanks,
+Willy
