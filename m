@@ -2,22 +2,22 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 70A67771410
-	for <lists+linux-kernel@lfdr.de>; Sun,  6 Aug 2023 10:51:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AABB7771412
+	for <lists+linux-kernel@lfdr.de>; Sun,  6 Aug 2023 10:51:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230077AbjHFIvg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 6 Aug 2023 04:51:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57856 "EHLO
+        id S230136AbjHFIvo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 6 Aug 2023 04:51:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57920 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230003AbjHFIvX (ORCPT
+        with ESMTP id S230038AbjHFIvX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Sun, 6 Aug 2023 04:51:23 -0400
-Received: from mail11.truemail.it (mail11.truemail.it [217.194.8.81])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 404191FDB;
-        Sun,  6 Aug 2023 01:51:20 -0700 (PDT)
+Received: from mail11.truemail.it (mail11.truemail.it [IPv6:2001:4b7e:0:8::81])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9600B131;
+        Sun,  6 Aug 2023 01:51:21 -0700 (PDT)
 Received: from francesco-nb.pivistrello.it (93-49-2-63.ip317.fastwebnet.it [93.49.2.63])
-        by mail11.truemail.it (Postfix) with ESMTPA id DE90D2078A;
-        Sun,  6 Aug 2023 10:51:18 +0200 (CEST)
+        by mail11.truemail.it (Postfix) with ESMTPA id 67A472078B;
+        Sun,  6 Aug 2023 10:51:19 +0200 (CEST)
 From:   Francesco Dolcini <francesco@dolcini.it>
 To:     Nishanth Menon <nm@ti.com>, Vignesh Raghavendra <vigneshr@ti.com>,
         Tero Kristo <kristo@kernel.org>,
@@ -27,17 +27,16 @@ To:     Nishanth Menon <nm@ti.com>, Vignesh Raghavendra <vigneshr@ti.com>,
 Cc:     Francesco Dolcini <francesco.dolcini@toradex.com>,
         linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH v2 2/4] arm64: dts: ti: verdin-am62: Set I2S_1 MCLK rate
-Date:   Sun,  6 Aug 2023 10:51:11 +0200
-Message-Id: <20230806085113.15373-3-francesco@dolcini.it>
+Subject: [PATCH v2 3/4] arm64: dts: ti: verdin-am62: dev: add sound card
+Date:   Sun,  6 Aug 2023 10:51:12 +0200
+Message-Id: <20230806085113.15373-4-francesco@dolcini.it>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20230806085113.15373-1-francesco@dolcini.it>
 References: <20230806085113.15373-1-francesco@dolcini.it>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_PASS,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -46,32 +45,76 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Francesco Dolcini <francesco.dolcini@toradex.com>
 
-Set AUDIO_EXT_REFCLK1, used as I2S_1_MCLK on Verdin AM62 family, to 25MHz
-(this is the only valid option according to TI [1]).
-
-[1] https://e2e.ti.com/support/processors-group/processors/f/processors-forum/1188051/am625-audio_ext_refclk1-clock-output---dts-support/4476322#4476322
+Add NAU8822 based analog sound card to Development carrier board.
 
 Signed-off-by: Francesco Dolcini <francesco.dolcini@toradex.com>
 ---
- arch/arm64/boot/dts/ti/k3-am62-verdin.dtsi | 5 +++++
- 1 file changed, 5 insertions(+)
+ .../arm64/boot/dts/ti/k3-am62-verdin-dev.dtsi | 45 +++++++++++++++++++
+ 1 file changed, 45 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/ti/k3-am62-verdin.dtsi b/arch/arm64/boot/dts/ti/k3-am62-verdin.dtsi
-index 12dd1d64eac9..5db9ef2dc7e5 100644
---- a/arch/arm64/boot/dts/ti/k3-am62-verdin.dtsi
-+++ b/arch/arm64/boot/dts/ti/k3-am62-verdin.dtsi
-@@ -768,6 +768,11 @@ AM62X_MCU_IOPAD(0x0028, PIN_OUTPUT,       0) /* (C5) WKUP_UART0_TXD  */ /* SODIM
- 	};
- };
+diff --git a/arch/arm64/boot/dts/ti/k3-am62-verdin-dev.dtsi b/arch/arm64/boot/dts/ti/k3-am62-verdin-dev.dtsi
+index 8205081fda33..6701cb8974bb 100644
+--- a/arch/arm64/boot/dts/ti/k3-am62-verdin-dev.dtsi
++++ b/arch/arm64/boot/dts/ti/k3-am62-verdin-dev.dtsi
+@@ -8,6 +8,42 @@
+  * https://www.toradex.com/products/carrier-board/verdin-development-board-kit
+  */
  
-+/* VERDIN I2S_1_MCLK */
-+&audio_refclk1 {
-+	assigned-clock-rates = <25000000>;
++/ {
++	sound {
++		compatible = "simple-audio-card";
++		simple-audio-card,bitclock-master = <&codec_dai>;
++		simple-audio-card,format = "i2s";
++		simple-audio-card,frame-master = <&codec_dai>;
++		simple-audio-card,name = "verdin-nau8822";
++		simple-audio-card,routing =
++			"Headphones", "LHP",
++			"Headphones", "RHP",
++			"Speaker", "LSPK",
++			"Speaker", "RSPK",
++			"Line Out", "AUXOUT1",
++			"Line Out", "AUXOUT2",
++			"LAUX", "Line In",
++			"RAUX", "Line In",
++			"LMICP", "Mic In",
++			"RMICP", "Mic In";
++		simple-audio-card,widgets =
++			"Headphones", "Headphones",
++			"Line Out", "Line Out",
++			"Speaker", "Speaker",
++			"Microphone", "Mic In",
++			"Line", "Line In";
++
++		codec_dai: simple-audio-card,codec {
++			clocks = <&audio_refclk1>;
++			sound-dai = <&nau8822_1a>;
++		};
++
++		simple-audio-card,cpu {
++			sound-dai = <&mcasp0>;
++		};
++	};
 +};
 +
+ /* Verdin ETHs */
  &cpsw3g {
  	pinctrl-names = "default";
- 	pinctrl-0 = <&pinctrl_rgmii1>;
+@@ -65,6 +101,15 @@ &main_gpio0 {
+ &main_i2c1 {
+ 	status = "okay";
+ 
++	/* Audio Codec */
++	nau8822_1a: audio-codec@1a {
++		compatible = "nuvoton,nau8822";
++		reg = <0x1a>;
++		pinctrl-names = "default";
++		pinctrl-0 = <&pinctrl_i2s1_mclk>;
++		#sound-dai-cells = <0>;
++	};
++
+ 	/* IO Expander */
+ 	gpio_expander_21: gpio@21 {
+ 		compatible = "nxp,pcal6416";
 -- 
 2.25.1
 
