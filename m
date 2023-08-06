@@ -2,90 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E6C8877160C
-	for <lists+linux-kernel@lfdr.de>; Sun,  6 Aug 2023 18:27:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 03008771616
+	for <lists+linux-kernel@lfdr.de>; Sun,  6 Aug 2023 18:37:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230028AbjHFQXx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 6 Aug 2023 12:23:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36986 "EHLO
+        id S230359AbjHFQhV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 6 Aug 2023 12:37:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37982 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229436AbjHFQXw (ORCPT
+        with ESMTP id S229436AbjHFQhT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 6 Aug 2023 12:23:52 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA375113
-        for <linux-kernel@vger.kernel.org>; Sun,  6 Aug 2023 09:23:50 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 350B461035
-        for <linux-kernel@vger.kernel.org>; Sun,  6 Aug 2023 16:23:50 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6A5B4C433C8;
-        Sun,  6 Aug 2023 16:23:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691339029;
-        bh=WvFbeGSja2fHMrxL2gi9+8yw0glACJgkp0g0wx3S3X8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=lHl824MQUgGjsskvmnR12XTxpi0jiVMNlZjh7ntIn+BFtzVz4rfT9hNRdDqe/67GC
-         Nu5jkNTL2uDrLtaDP/76/Zt7JxzfmNci3FeVjPWCCqBS3KRoLaoI9kxfx1fWRe1bDq
-         7uoCewZ2DQUQjTcTxHBFUicazxePi7Sovf0xGlvr+t+nR1lEWTptBFwwbyVnryWRoJ
-         /sXh1HGB21hosXGkSWH/ZGFUskEFrEyetxv+x7FqKym2lM5jroFn+Kx5jTgHHm/5aN
-         5U72pnwST8yHaIMxpERNWpZXGbe7LWd0hKE8iw0qrsIS6NdVjw9IunBXd9ZnSv7HG7
-         rcgfdE6bHGMUw==
-Received: by pali.im (Postfix)
-        id EB6E280E; Sun,  6 Aug 2023 18:23:46 +0200 (CEST)
-Date:   Sun, 6 Aug 2023 18:23:46 +0200
-From:   Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
-To:     Eric Biederman <ebiederm@xmission.com>,
-        Kees Cook <keescook@chromium.org>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Subject: Re: binfmt_misc & different PE binaries
-Message-ID: <20230806162346.v7gjoev2nepxlcox@pali>
-References: <20230706115550.sqyh3k26e2glz2lu@pali>
+        Sun, 6 Aug 2023 12:37:19 -0400
+Received: from bg4.exmail.qq.com (bg4.exmail.qq.com [43.155.65.254])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF06111D;
+        Sun,  6 Aug 2023 09:37:16 -0700 (PDT)
+X-QQ-mid: bizesmtp90t1691339815tf3mfofw
+Received: from linux-lab-host.localdomain ( [116.30.130.12])
+        by bizesmtp.qq.com (ESMTP) with 
+        id ; Mon, 07 Aug 2023 00:36:54 +0800 (CST)
+X-QQ-SSF: 01200000000000E0X000000A0000000
+X-QQ-FEAT: XBN7tc9DADInN8U5ppsCisi3RZ5SA9E9aHrNLARhnRb83W5yceAnL7ygRBtPo
+        VRi6xhmYy0FF45PiA9HVB3ovZHaIf4Ca6GWqwkqLspm4G7vv8GmEtyXZyT81U8+LHlqathU
+        +hLY4bqSMNJRHAkz/PyzVpJk63lMirWrArQNpSspKfGRJa+hulIZSQifTdsrD4uRnkjFkrU
+        FRZCEkdJ+HIbvviyToJDsB4nhhzv4ejKL0JAnZrHi1akmEbEpF9CWzuK2By3XsTOVC4PrHz
+        kjoqORd+TYtZi7Nnk/xb5644gYX0nCwryE6nHisddkyJOJOZeg14QkWlPWNv6OKVwTuK/dP
+        Dqf9+ihqImDzQtkhfWnPlYAVrJM4A==
+X-QQ-GoodBg: 0
+X-BIZMAIL-ID: 18061832696655097200
+From:   Zhangjin Wu <falcon@tinylab.org>
+To:     w@1wt.eu
+Cc:     arnd@arndb.de, david.laight@aculab.com, falcon@tinylab.org,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        thomas@t-8ch.de
+Subject: Re: [PATCH] tools/nolibc: fix up size inflate regression
+Date:   Mon,  7 Aug 2023 00:36:49 +0800
+Message-Id: <20230806163649.185843-1-falcon@tinylab.org>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20230806134348.GA19145@1wt.eu>
+References: <20230806134348.GA19145@1wt.eu>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20230706115550.sqyh3k26e2glz2lu@pali>
-User-Agent: NeoMutt/20180716
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-QQ-SENDSIZE: 520
+Feedback-ID: bizesmtp:tinylab.org:qybglogicsvrgz:qybglogicsvrgz5a-1
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello, I would like to remind this email about binfmt_misc for PE.
+Hi, Willy
 
-On Thursday 06 July 2023 13:55:50 Pali Rohár wrote:
-> Hello,
+> On Sun, Aug 06, 2023 at 09:19:21PM +0800, Zhangjin Wu wrote:
+> > As reported and suggested by Willy, the inline __sysret() helper
+> > introduces three types of conversions and increases the size:
 > 
-> I would like to ask how to properly register binfmt_misc for different
-> PE binaries, so kernel could execute the correct loader for them.
+> Thanks Zhangjin. A few things:
 > 
-> I mean, how to register support for Win32 (console/gui) PE binaries and
-> also for CLR PE binaries (dotnet). Win32 needs to be executed under wine
-> and CLR ideally under dotnet core (or mono).
+> > --- a/tools/include/nolibc/compiler.h
+> > +++ b/tools/include/nolibc/compiler.h
+> > @@ -22,4 +22,13 @@
+> >  #  define __no_stack_protector __attribute__((__optimize__("-fno-stack-protector")))
+> >  #endif /* defined(__has_attribute) */
+> >  
+> > +/*
+> > + * from include/linux/compiler.h
+> > + *
+> > + * Whether 'type' is a signed type or an unsigned type. Supports scalar types,
+> > + * bool and also pointer types.
+> > + */
+> > +#define is_signed_type(type)   (((type)(-1)) < (type)1)
+> > +#define is_unsigned_type(type) (!is_signed_type(type))
 > 
-> I have read kernel documentation files admin-guide/binfmt-misc.rst
-> and admin-guide/mono.rst. But seems that they are in conflicts as both
-> wants to registers its own handler for the same magic:
+> These names may conflict with application's local definitions. And since
+> there's a single call place we should probably just inline it instead.
+>
+
+Let's remove them and define a new one with __ prefix in sys.h, it is
+not readable if we simply 'inline' the comparison in the already complex
+macro ;-)
+
+> > +#define __sysret(arg)                                                           \
+> > +({                                                                              \
+> > +	__typeof__(arg) __sysret_arg = (arg);                                   \
+> > +	if (is_signed_type(__typeof__(arg))) {                                  \
+> > +		if (__sysret_arg < 0) {                                         \
+> > +			SET_ERRNO(-(int)__sysret_arg);                          \
+> > +			__sysret_arg = -1L;                                     \
+> > +		}                                                               \
+> > +	} else {                                                                \
+> > +		if ((unsigned long)__sysret_arg >= (unsigned long)-MAX_ERRNO) { \
+> > +			SET_ERRNO(-(int)__sysret_arg);                          \
+> > +			__sysret_arg = -1L;                                     \
+> > +		}                                                               \
+> > +	}                                                                       \
+> > +	__sysret_arg;                                                           \
+> > +})
 > 
->   echo ':DOSWin:M::MZ::/usr/local/bin/wine:' > register
+> I also found during my tests that this one can return a build error if
+> the arg has "const" in its type, due to the error assignment. We need
+> to think about reworking it as a ternary evaluation, it will be more
+> reliable even if less readable. But let's not change this now, I'm on
+> the changelog already.
+>
+
+The __auto_type in new enough version does work well with 'const', but
+for the old version, we need to restoring the 'long' type and the
+conversion ;-(
+
+> >  /* Functions in this file only describe syscalls. They're declared static so
+> >   * that the compiler usually decides to inline them while still being allowed
+> > @@ -94,7 +101,7 @@ void *sbrk(intptr_t inc)
+> >  	if (ret && sys_brk(ret + inc) == ret + inc)
+> >  		return ret + inc;
+> >  
+> > -	return (void *)__sysret(-ENOMEM);
+> > +	return (void *)__sysret((unsigned long)-ENOMEM);
 > 
->   echo ':CLR:M::MZ::/usr/bin/mono:' > /proc/sys/fs/binfmt_misc/register
-> 
-> Not mentioning the fact that they register DOS MZ handler, which matches
-> not only all PE binaries (including EFI, libraries, other processors),
-> but also all kind of other NE/LE/LX binaries and different DOS extenders.
-> 
-> From documentation it looks like that even registering PE binaries is
-> impossible by binfmt_misc as PE is detected by checking that indirect
-> reference from 0x3C is PE\0\0. And distinguish between Win32 and CLR
-> needs to parse PE COM descriptor directory.
-> 
-> Or it is possible to write binfmt_misc pattern match based on indirect
-> offset?
+> I noticed that one as well during my tests, but if we're purist, we're
+> supposed to use (void*) for the cast and not (unsigned long), and it
+> should allow to get rid of the outer cast.
+>
+
+To accept "void *", more conversions are required ...
+
+A new 'ugly' version are ready for review soon, it compiles and get less size
+on gcc-4.8 too ;-)
+
+Thanks,
+Zhangjin
+
+> Regards,
+> Willy
