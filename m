@@ -2,114 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D377771493
-	for <lists+linux-kernel@lfdr.de>; Sun,  6 Aug 2023 13:42:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 843B2771497
+	for <lists+linux-kernel@lfdr.de>; Sun,  6 Aug 2023 13:50:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230050AbjHFLme (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 6 Aug 2023 07:42:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54542 "EHLO
+        id S230050AbjHFLuf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 6 Aug 2023 07:50:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55262 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229530AbjHFLmc (ORCPT
+        with ESMTP id S229449AbjHFLue (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 6 Aug 2023 07:42:32 -0400
-Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC84FE50;
-        Sun,  6 Aug 2023 04:42:31 -0700 (PDT)
-Received: by mail-ed1-x52a.google.com with SMTP id 4fb4d7f45d1cf-5232bb5e47bso1148006a12.2;
-        Sun, 06 Aug 2023 04:42:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1691322150; x=1691926950;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=HumppwNUn3TA8YpQ0fQzm7WpQytFg98rX1E8vNluGYU=;
-        b=COX4FRzPg5Df7S7scGkL1a1jxSkgE4lsLMpzoAKRInM2N2donpYwiXDjSi/uGQQJdm
-         wnKu5zkOi4+z2eDvgysSiv8+wnzUSluY4wQ5tf23SqJnRh34l9MsjY0f81HXTwdimI/K
-         GW8UQJRJil0ochVBGECpvNlVOUpC2TpR46BNRdtqybtoE/quddDakVx+BSAAn7/1Sdlz
-         XZkfNvlLlGjfuEjcvAlf6iTnTjcI9tIHvIk9iB2wzLyKG0GKDLCon/LnZE/cu205nyvc
-         ZpUbvtf3cSHF9m1L8NZHvlpkWXujyLx4Z8+cLnkrtFr4Tat+wekNAvvveNMSRtuJZOmO
-         bM3w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691322150; x=1691926950;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=HumppwNUn3TA8YpQ0fQzm7WpQytFg98rX1E8vNluGYU=;
-        b=ER4NSspLt7vKD+ld0Sjxtbdvp8KRIQ3s53joN+bw8EhxGVMvYNBCFV87QuDN14qGOu
-         z1S6yWVxH1SYYLT4Jnv2pw3UNbLvmTdIHs0wyaJcwx0e48stW/CExIUjm/LKAi6r3qUX
-         tWa4F7BrTAT7iC0XAlbsoroUBr+wgDXW4vInK2qrFuwRrLtouCrgEspl/TXELCfuWxt9
-         vjcVdEyDABJRq7k7///mmMUC18BDMJ+MgKRpYCsythHmDUXGf3tOlJIu/MVMD6VAI3Vv
-         vTCJvy4kNaiSrXdtyLcfW/CLD4MNDpb4piADbPnondLb0iX88SBNjPJprZ+vjotJJTIg
-         O6fA==
-X-Gm-Message-State: AOJu0YzQVfCqg6mx2Fp1tKpbyc5ts3qxlBPMdcKeBJ36bBIeWUkglVBZ
-        q6LhhLbq3Te6JbbWkK5xOSU=
-X-Google-Smtp-Source: AGHT+IEEg3PkfDxHcETaO7LHnXNw+qJwjWb90KaZ3707q9E0qH0cZ2HLszMui/vhh35dCWWOEYUkRQ==
-X-Received: by 2002:a50:fc12:0:b0:522:c0ea:15d with SMTP id i18-20020a50fc12000000b00522c0ea015dmr4929062edr.41.1691322150093;
-        Sun, 06 Aug 2023 04:42:30 -0700 (PDT)
-Received: from jernej-laptop.localnet (82-149-1-233.dynamic.telemach.net. [82.149.1.233])
-        by smtp.gmail.com with ESMTPSA id d2-20020a056402516200b0052275deb475sm3787539ede.23.2023.08.06.04.42.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 06 Aug 2023 04:42:29 -0700 (PDT)
-From:   Jernej =?utf-8?B?xaBrcmFiZWM=?= <jernej.skrabec@gmail.com>
-To:     John Watts <contact@jookia.org>
-Cc:     Maksim Kiselev <bigunclemax@gmail.com>, aou@eecs.berkeley.edu,
-        conor+dt@kernel.org, davem@davemloft.net,
-        devicetree@vger.kernel.org, edumazet@google.com,
-        krzysztof.kozlowski+dt@linaro.org, kuba@kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-can@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org,
-        linux-sunxi@lists.linux.dev, mkl@pengutronix.de,
-        netdev@vger.kernel.org, pabeni@redhat.com, palmer@dabbelt.com,
-        paul.walmsley@sifive.com, robh+dt@kernel.org, samuel@sholland.org,
-        wens@csie.org, wg@grandegger.com
-Subject: Re: [PATCH v2 2/4] riscv: dts: allwinner: d1: Add CAN controller nodes
-Date:   Sun, 06 Aug 2023 13:42:28 +0200
-Message-ID: <4848155.31r3eYUQgx@jernej-laptop>
-In-Reply-To: <ZM8-yfRVscYjxp2p@titan>
-References: <20230721221552.1973203-4-contact@jookia.org>
- <2690764.mvXUDI8C0e@jernej-laptop> <ZM8-yfRVscYjxp2p@titan>
+        Sun, 6 Aug 2023 07:50:34 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.24])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E2CD13E
+        for <linux-kernel@vger.kernel.org>; Sun,  6 Aug 2023 04:50:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1691322633; x=1722858633;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=Ba9pH4Ej96kIzhLD9374A9bsflq4WpKM4PvDVeUYqSA=;
+  b=cX+n/S6yZ/lZE5mLiB3GlHEZDFzkKaTJw+RhwT5CRkgmLv70gh+N6WPq
+   rcM4ESLo/Q3XRPrPV5B492fpKohBhe0Ipn6bc091m1SKHaDrIIZYSYxAx
+   UBc0FmvGwis0koeVmrEE3AZp8zuwybKgJr/ZGMf8kkcTG7jNp1Ab02gxp
+   NM/E1AWibjt2k1xnXPOrHBaAIEv3E/sOxm1aVqHq7C/mzaO4NRhA0kxQD
+   gBrmbRsucMhB2rkkVhX020CwoTT5FG/LSSobZ5GZ8rgjGpIb+yKZoTjbi
+   Y/NgbQYBRE+rvrYWhficGZIsSsB2Uq0g3+CZI496Js4nATf41PgzyFWGo
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10794"; a="373128851"
+X-IronPort-AV: E=Sophos;i="6.01,259,1684825200"; 
+   d="scan'208";a="373128851"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Aug 2023 04:50:31 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10794"; a="760137935"
+X-IronPort-AV: E=Sophos;i="6.01,259,1684825200"; 
+   d="scan'208";a="760137935"
+Received: from mvalka-mobl.ger.corp.intel.com (HELO box.shutemov.name) ([10.252.63.122])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Aug 2023 04:50:27 -0700
+Received: by box.shutemov.name (Postfix, from userid 1000)
+        id A989A10A117; Sun,  6 Aug 2023 14:50:24 +0300 (+03)
+Date:   Sun, 6 Aug 2023 14:50:24 +0300
+From:   kirill.shutemov@linux.intel.com
+To:     Kai Huang <kai.huang@intel.com>
+Cc:     peterz@infradead.org, linux-kernel@vger.kernel.org,
+        dave.hansen@intel.com, tglx@linutronix.de, bp@alien8.de,
+        mingo@redhat.com, hpa@zytor.com, x86@kernel.org, seanjc@google.com,
+        pbonzini@redhat.com, isaku.yamahata@intel.com,
+        sathyanarayanan.kuppuswamy@linux.intel.com,
+        n.borisov.lkml@gmail.com
+Subject: Re: [PATCH v3 12/12] x86/virt/tdx: Adjust 'struct tdx_module_args'
+ to use x86 "register index" layout
+Message-ID: <20230806115024.k3oc6u3yu42q7h5l@box.shutemov.name>
+References: <cover.1690369495.git.kai.huang@intel.com>
+ <f61daaaad871e79eabf5ae25f5c4631640ffd288.1690369495.git.kai.huang@intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <f61daaaad871e79eabf5ae25f5c4631640ffd288.1690369495.git.kai.huang@intel.com>
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dne nedelja, 06. avgust 2023 ob 08:33:45 CEST je John Watts napisal(a):
-> On Sat, Aug 05, 2023 at 07:49:51PM +0200, Jernej =C5=A0krabec wrote:
-> > Dne sobota, 05. avgust 2023 ob 18:51:53 CEST je John Watts napisal(a):
-> > > On Sat, Aug 05, 2023 at 07:40:52PM +0300, Maksim Kiselev wrote:
-> > > > Hi John, Jernej
-> > > > Should we also keep a pinctrl nodes itself in alphabetical order?
-> > > > I mean placing a CAN nodes before `clk_pg11_pin` node?
-> > > > Looks like the other nodes sorted in this way...
-> > >=20
-> > > Good catch. Now that you mention it, the device tree nodes are sorted
-> > > by memory order too! These should be after i2c3.
-> > >=20
-> > > It looks like I might need to do a patch to re-order those too.
-> >=20
-> > It would be better if DT patches are dropped from netdev tree and then
-> > post
-> > new versions.
-> >=20
-> > Best regards,
-> > Jernej
->=20
-> Agreed. Is there a way to request that? Or will the maintainer just read
-> this?
+On Wed, Jul 26, 2023 at 11:25:14PM +1200, Kai Huang wrote:
+> For TDX guest, KVM needs to call __seamcall_saved_ret() to make the
+> TDH.VP.ENTER SEAMCALL to enter the guest, possibly taking all registers
+> in 'struct tdx_module_args' as input/output.
+> 
+> KVM caches guest's GPRs in 'kvm_vcpu_arch::regs[]', which follows the
+> "register index" hardware layout of x86 GPRs.  On the other hand, the
+> __seamcall_saved_ret() takes the pointer of 'struct tdx_module_args' as
+> argument, thus there's a mismatch.
+> 
+> KVM could choose to copy input registers from 'vcpu::regs[]' to a
+> 'struct tdx_module_args' and use that as argument to make the SEAMCALL,
+> but such memory copy isn't desired and should be avoided if possible.
 
-Hopefully it will.
+I doubt the copy will be visible on any profile.
 
-Best regards,
-Jernej
+I personally don't like that kvm implementation detail leaks here. It
+suppose to be generic TDX code.
 
 
-
-
+-- 
+  Kiryl Shutsemau / Kirill A. Shutemov
