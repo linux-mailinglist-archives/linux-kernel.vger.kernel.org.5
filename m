@@ -2,166 +2,267 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 44A9E771640
-	for <lists+linux-kernel@lfdr.de>; Sun,  6 Aug 2023 19:09:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 486BC771646
+	for <lists+linux-kernel@lfdr.de>; Sun,  6 Aug 2023 19:15:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230500AbjHFRJu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 6 Aug 2023 13:09:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44456 "EHLO
+        id S229747AbjHFRPP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 6 Aug 2023 13:15:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46944 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230254AbjHFRJn (ORCPT
+        with ESMTP id S229458AbjHFRPN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 6 Aug 2023 13:09:43 -0400
-Received: from rs227.mailgun.us (rs227.mailgun.us [209.61.151.227])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B10E41BCB
-        for <linux-kernel@vger.kernel.org>; Sun,  6 Aug 2023 10:09:14 -0700 (PDT)
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=equiv.tech; q=dns/txt;
- s=mx; t=1691341754; x=1691348954; h=Content-Transfer-Encoding: MIME-Version:
- References: In-Reply-To: Message-Id: Date: Subject: Subject: Cc: To: To:
- From: From: Sender: Sender; bh=+vpMgPndr8tHLDfj/uP9qR3t+hzWfcdZs69eLq08/jo=;
- b=g/UVj12uTj/FHErk1dYuUbspNTPeStThlEVvn0BOmB7vBcefe9UGMTbV3QmS1MzbsE/xRIoGJ+nDBYLDFxxPqbkzgLwF1U4ZXDcm3S/HGhpHX3CnDg3euwM8963loIlC/lbqp9GX1kMJX6L6VMnAAvEE0DmZHtQf+4+2eyiETrP93SbQPpgHTnr4gTfYuCWImbO9t3XZEn+GTyEXQxOLjL6Uia6bvbDdmZ2j19Yy04cD6CqMEyP62krR6td4uxQTz5cyMoohGFaHuxbD6luuMn8N6C54lkUTqwsA5MdX1+kc5Jmvog67alkhTrfNKVUNT2vV1B3a4j/HmYLrKJ0y6g==
-X-Mailgun-Sending-Ip: 209.61.151.227
-X-Mailgun-Sid: WyI4ZWI3MiIsImxpbnV4LWtlcm5lbEB2Z2VyLmtlcm5lbC5vcmciLCI5M2Q1YWIiXQ==
-Received: from mail.equiv.tech (equiv.tech [142.93.28.83]) by 0893f9b7a9d0 with SMTP id
- 64cfd3baf85b1f0c8f8a5a78 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Sun, 06 Aug 2023 17:09:14 GMT
-Sender: james@equiv.tech
-From:   James Seo <james@equiv.tech>
-To:     Sathya Prakash <sathya.prakash@broadcom.com>,
-        Sreekanth Reddy <sreekanth.reddy@broadcom.com>,
-        Suganath Prabu Subramani 
-        <suganath-prabu.subramani@broadcom.com>
-Cc:     James Seo <james@equiv.tech>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Kees Cook <keescook@chromium.org>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        MPT-FusionLinux.pdl@broadcom.com, linux-scsi@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v2 12/12] scsi: mpt3sas: Replace dynamic allocations with local variables
-Date:   Sun,  6 Aug 2023 10:06:04 -0700
-Message-Id: <20230806170604.16143-13-james@equiv.tech>
-In-Reply-To: <20230806170604.16143-1-james@equiv.tech>
-References: <20230806170604.16143-1-james@equiv.tech>
+        Sun, 6 Aug 2023 13:15:13 -0400
+Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [80.237.130.52])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25223C2
+        for <linux-kernel@vger.kernel.org>; Sun,  6 Aug 2023 10:15:11 -0700 (PDT)
+Received: from [2a02:8108:8980:2478:5054:ff:feb3:8f48] (helo=regzbot.fritz.box); authenticated
+        by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        id 1qShLF-0004VZ-SQ; Sun, 06 Aug 2023 19:14:57 +0200
+From:   "Regzbot (on behalf of Thorsten Leemhuis)" 
+        <regressions@leemhuis.info>
+To:     LKML <linux-kernel@vger.kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Linux regressions mailing list <regressions@lists.linux.dev>
+Subject: Linux regressions report  for mainline [2023-08-06]
+Date:   Sun,  6 Aug 2023 17:14:57 +0000
+Message-Id: <169134199152.488860.7520017509596978680@leemhuis.info>
+X-Mailer: git-send-email 2.40.1
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-bounce-key: webpack.hosteurope.de;regressions@leemhuis.info;1691342111;4f409422;
+X-HE-SMSGID: 1qShLF-0004VZ-SQ
+X-Spam-Status: No, score=-0.9 required=5.0 tests=BAYES_00,HEXHASH_WORD,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-mpt3sas_scsih.c:_scsih_scan_for_devices_after_reset() allocates and
-fetches a MPI2_CONFIG_PAGE_RAID_VOL_0 struct (Mpi2RaidVolPage0_t) and
-a MPI2_CONFIG_PAGE_RAID_VOL_1 struct (Mpi2RaidVolPage1_t), but does
-not include the terminal flexible array members in the struct size
-calculations, fetch those members, or otherwise use those members in
-any way.
+Hi Linus. Not much to report from by side: nearly everything currently
+looks like business as usual.
 
-These dynamic allocations can be replaced with local variables.
+Hans ~two hours ago submitted a revert for a9c4a912b7d to address the
+second manifestation of the Ryzen keyboard problems I brought to your
+attention last week (which was backported to 6.4.7 and thus meanwhile
+reached some mainstream distros). Thing is: for some users a9c4a912b7d
+was a fix to avoid the first manifestation of the regression (caused by
+9946e39fe8d0). Hence if we apply this we afaics need to extend the quirk
+list for the first manifestation of the problem. This thread has the
+details:
+https://lore.kernel.org/all/20230806151453.10690-1-hdegoede@redhat.com/
 
-Signed-off-by: James Seo <james@equiv.tech>
+FWIW, a zram regression from the 6.4 cycle that let to XFS metadata
+corruption on ppc64le turned up (I CCed you on Friday); a fix for
+that became ready over the weekend (thanks Christoph!) and Jens
+already picked it up:
+https://lore.kernel.org/lkml/b2d40565-7868-ba15-4bb1-fca6f0df076b@dustymabe.com/
+https://lore.kernel.org/lkml/20230805055537.147835-1-hch@lst.de/
+
+Ciao, Thorsten
+
 ---
- drivers/scsi/mpt3sas/mpt3sas_scsih.c | 37 +++++++++-------------------
- 1 file changed, 12 insertions(+), 25 deletions(-)
 
-diff --git a/drivers/scsi/mpt3sas/mpt3sas_scsih.c b/drivers/scsi/mpt3sas/mpt3sas_scsih.c
-index d5426a520a77..354341fc867f 100644
---- a/drivers/scsi/mpt3sas/mpt3sas_scsih.c
-+++ b/drivers/scsi/mpt3sas/mpt3sas_scsih.c
-@@ -10370,8 +10370,8 @@ _scsih_scan_for_devices_after_reset(struct MPT3SAS_ADAPTER *ioc)
- 	Mpi2ExpanderPage0_t expander_pg0;
- 	Mpi2SasDevicePage0_t sas_device_pg0;
- 	Mpi26PCIeDevicePage0_t pcie_device_pg0;
--	Mpi2RaidVolPage1_t *volume_pg1;
--	Mpi2RaidVolPage0_t *volume_pg0;
-+	Mpi2RaidVolPage1_t volume_pg1;
-+	Mpi2RaidVolPage0_t volume_pg0;
- 	Mpi2RaidPhysDiskPage0_t pd_pg0;
- 	Mpi2EventIrConfigElement_t element;
- 	Mpi2ConfigReply_t mpi_reply;
-@@ -10386,16 +10386,6 @@ _scsih_scan_for_devices_after_reset(struct MPT3SAS_ADAPTER *ioc)
- 	u8 retry_count;
- 	unsigned long flags;
- 
--	volume_pg0 = kzalloc(sizeof(*volume_pg0), GFP_KERNEL);
--	if (!volume_pg0)
--		return;
--
--	volume_pg1 = kzalloc(sizeof(*volume_pg1), GFP_KERNEL);
--	if (!volume_pg1) {
--		kfree(volume_pg0);
--		return;
--	}
--
- 	ioc_info(ioc, "scan devices: start\n");
- 
- 	_scsih_sas_host_refresh(ioc);
-@@ -10505,7 +10495,7 @@ _scsih_scan_for_devices_after_reset(struct MPT3SAS_ADAPTER *ioc)
- 	/* volumes */
- 	handle = 0xFFFF;
- 	while (!(mpt3sas_config_get_raid_volume_pg1(ioc, &mpi_reply,
--	    volume_pg1, MPI2_RAID_VOLUME_PGAD_FORM_GET_NEXT_HANDLE, handle))) {
-+	    &volume_pg1, MPI2_RAID_VOLUME_PGAD_FORM_GET_NEXT_HANDLE, handle))) {
- 		ioc_status = le16_to_cpu(mpi_reply.IOCStatus) &
- 		    MPI2_IOCSTATUS_MASK;
- 		if (ioc_status != MPI2_IOCSTATUS_SUCCESS) {
-@@ -10513,15 +10503,15 @@ _scsih_scan_for_devices_after_reset(struct MPT3SAS_ADAPTER *ioc)
- 				 ioc_status, le32_to_cpu(mpi_reply.IOCLogInfo));
- 			break;
- 		}
--		handle = le16_to_cpu(volume_pg1->DevHandle);
-+		handle = le16_to_cpu(volume_pg1.DevHandle);
- 		spin_lock_irqsave(&ioc->raid_device_lock, flags);
- 		raid_device = _scsih_raid_device_find_by_wwid(ioc,
--		    le64_to_cpu(volume_pg1->WWID));
-+		    le64_to_cpu(volume_pg1.WWID));
- 		spin_unlock_irqrestore(&ioc->raid_device_lock, flags);
- 		if (raid_device)
- 			continue;
- 		if (mpt3sas_config_get_raid_volume_pg0(ioc, &mpi_reply,
--		    volume_pg0, MPI2_RAID_VOLUME_PGAD_FORM_HANDLE, handle,
-+		    &volume_pg0, MPI2_RAID_VOLUME_PGAD_FORM_HANDLE, handle,
- 		     sizeof(Mpi2RaidVolPage0_t)))
- 			continue;
- 		ioc_status = le16_to_cpu(mpi_reply.IOCStatus) &
-@@ -10531,17 +10521,17 @@ _scsih_scan_for_devices_after_reset(struct MPT3SAS_ADAPTER *ioc)
- 				 ioc_status, le32_to_cpu(mpi_reply.IOCLogInfo));
- 			break;
- 		}
--		if (volume_pg0->VolumeState == MPI2_RAID_VOL_STATE_OPTIMAL ||
--		    volume_pg0->VolumeState == MPI2_RAID_VOL_STATE_ONLINE ||
--		    volume_pg0->VolumeState == MPI2_RAID_VOL_STATE_DEGRADED) {
-+		if (volume_pg0.VolumeState == MPI2_RAID_VOL_STATE_OPTIMAL ||
-+		    volume_pg0.VolumeState == MPI2_RAID_VOL_STATE_ONLINE ||
-+		    volume_pg0.VolumeState == MPI2_RAID_VOL_STATE_DEGRADED) {
- 			memset(&element, 0, sizeof(Mpi2EventIrConfigElement_t));
- 			element.ReasonCode = MPI2_EVENT_IR_CHANGE_RC_ADDED;
--			element.VolDevHandle = volume_pg1->DevHandle;
-+			element.VolDevHandle = volume_pg1.DevHandle;
- 			ioc_info(ioc, "\tBEFORE adding volume: handle (0x%04x)\n",
--				 volume_pg1->DevHandle);
-+				 volume_pg1.DevHandle);
- 			_scsih_sas_volume_add(ioc, &element);
- 			ioc_info(ioc, "\tAFTER adding volume: handle (0x%04x)\n",
--				 volume_pg1->DevHandle);
-+				 volume_pg1.DevHandle);
- 		}
- 	}
- 
-@@ -10630,9 +10620,6 @@ _scsih_scan_for_devices_after_reset(struct MPT3SAS_ADAPTER *ioc)
- 			 handle, (u64)le64_to_cpu(pcie_device_pg0.WWID));
- 	}
- 
--	kfree(volume_pg0);
--	kfree(volume_pg1);
--
- 	ioc_info(ioc, "\tpcie devices: pcie end devices complete\n");
- 	ioc_info(ioc, "scan devices: complete\n");
- }
--- 
-2.39.2
+Hi, this is regzbot, the Linux kernel regression tracking bot.
 
+Currently I'm aware of 10 regressions in linux-mainline. Find the
+current status below and the latest on the web:
+
+https://linux-regtracking.leemhuis.info/regzbot/mainline/
+
+Bye bye, hope to see you soon for the next report.
+   Regzbot (on behalf of Thorsten Leemhuis)
+
+
+======================================================
+current cycle (v6.4.. aka v6.5-rc), culprit identified
+======================================================
+
+
+ASUE140D:00 04F3:31B9 doesn't respond to input
+----------------------------------------------
+https://linux-regtracking.leemhuis.info/regzbot/regression/bugzilla.kernel.org/217726/
+https://bugzilla.kernel.org/show_bug.cgi?id=217726
+https://lore.kernel.org/lkml/bdc6cb4d-a853-72b2-b132-989b64740ad9@gmail.com/
+
+By Guilhem Lettron and Guilhem Lettron; 8 days ago; 14 activities, latest 0 days ago.
+Introduced in a9c4a912b7dc (v6.5-rc1)
+
+Recent activities from: Guilhem Lettron (3), Hans de Goede (2), Mario
+  Limonciello (AMD) (2), henil (2), Linux regression tracking (Thorsten
+  Leemhuis) (1), August Wikerfors (1), Marcin Bachry (1)
+
+Noteworthy links:
+* [PATCH] ACPI: resource: revert "Remove "Zen" specific match and quirks"
+  https://lore.kernel.org/stable/20230806151453.10690-1-hdegoede@redhat.com/
+  0 days ago, by Hans de Goede; thread monitored.
+
+
+PCI: acpiphp: Oops on first attempt to suspend, freeze on second
+----------------------------------------------------------------
+https://linux-regtracking.leemhuis.info/regzbot/regression/lore/11fc981c-af49-ce64-6b43-3e282728bd1a@gmail.com/
+https://lore.kernel.org/lkml/11fc981c-af49-ce64-6b43-3e282728bd1a@gmail.com/
+
+By Woody Suwalski; 17 days ago; 31 activities, latest 1 days ago.
+Introduced in 40613da52b13 (v6.5-rc1)
+
+Fix incoming:
+* Revert "PCI: acpiphp: Reassign resources on bridge if necessary"
+  https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git/commit/?h=master&id=b607aa1edc9ca2ff16ae29c48e3e4090fae8aeab
+
+
+[ *NEW* ] pm: boot problems when hibernate is configured and kernel locked down
+-------------------------------------------------------------------------------
+https://linux-regtracking.leemhuis.info/regzbot/regression/lore/2cfa5f55-1d68-8a4f-d049-13f42e0d1484@suse.cz/
+https://lore.kernel.org/lkml/2cfa5f55-1d68-8a4f-d049-13f42e0d1484@suse.cz/
+
+By Vlastimil Babka; 3 days ago; 3 activities, latest 2 days ago.
+Introduced in cc89c63e2fe3 (v6.5-rc1)
+
+Fix incoming:
+* PM: hibernate: fix resume_store() return value when hibernation not available
+  https://lore.kernel.org/lkml/84f6ea98-0d72-e17a-4b7c-d025f2d34e95@leemhuis.info/
+
+
+[ *NEW* ] crypto: broke CAAM RNG instantiation on an i.MX8MM
+------------------------------------------------------------
+https://linux-regtracking.leemhuis.info/regzbot/regression/lore/e1f3f073-9d5e-1bae-f4f8-08dc48adad62@pengutronix.de/
+https://lore.kernel.org/lkml/e1f3f073-9d5e-1bae-f4f8-08dc48adad62@pengutronix.de/
+
+By Bastian Krause; 20 days ago; 7 activities, latest 2 days ago.
+Introduced in ef492d08030 (v6.5-rc1)
+
+Recent activities from: Gaurav Jain (1), Herbert Xu (1)
+
+One patch associated with this regression:
+* Re: [PATCH] crypto: caam - adjust RNG timing to support more devices
+  https://lore.kernel.org/lkml/f673a09e-e212-ee7b-15c3-78afe8c70916@pengutronix.de/
+  19 days ago, by Bastian Krause
+
+
+kernel pointer dereference regression due to extract_iter_to_sg()
+-----------------------------------------------------------------
+https://linux-regtracking.leemhuis.info/regzbot/regression/lore/CAAUqJDuRkHE8fPgZJGaKjUjd3QfGwzfumuJBmStPqBhubxyk_A@mail.gmail.com/
+https://lore.kernel.org/lkml/CAAUqJDuRkHE8fPgZJGaKjUjd3QfGwzfumuJBmStPqBhubxyk_A@mail.gmail.com/
+
+By Ondrej Mosnáček; 24 days ago; 11 activities, latest 2 days ago.
+Introduced in c1abe6f570af (v6.5-rc1)
+
+Recent activities from: Herbert Xu (1), Ard Biesheuvel (1), Ondrej
+  Mosnáček (1)
+
+One patch associated with this regression:
+* [PATCH] crypto: Fix missing initialisation affecting gcm-aes-s390
+  https://lore.kernel.org/lkml/97730.1690408399@warthog.procyon.org.uk/
+  10 days ago, by David Howells
+
+
+drm/bridge: lt9611: Dragonboard 845c (SDM845) devboard broken when running AOSP
+-------------------------------------------------------------------------------
+https://linux-regtracking.leemhuis.info/regzbot/regression/lore/CAMi1Hd0TD=2z_=bcDrht3H_wiLvAFcv8Z-U_r_KUOoeMc6UMjw@mail.gmail.com/
+https://lore.kernel.org/dri-devel/CAMi1Hd0TD=2z_=bcDrht3H_wiLvAFcv8Z-U_r_KUOoeMc6UMjw@mail.gmail.com/
+
+By Amit Pundir; 32 days ago; 49 activities, latest 2 days ago.
+Introduced in 8ddce13ae69 (v6.5-rc1)
+
+Recent activities from: Marek Vasut (11), Dmitry Baryshkov (7), Neil
+  Armstrong (5), neil.armstrong@linaro.org (2), Laurent Pinchart (1),
+  Rob Clark (1), Abhinav Kumar (1), Amit Pundir (1)
+
+Noteworthy links:
+* [PATCH] Revert "drm/bridge: lt9611: Do not generate HFP/HBP/HSA and EOT packet"
+  https://lore.kernel.org/lkml/20230802-revert-do-not-generate-hfp-hbp-hsa-eot-packet-v1-1-f8a20084e15a@linaro.org/
+  4 days ago, by Neil Armstrong; thread monitored.
+
+
+[ *NEW* ] btrfs: write-bandwidth performance regression with NVMe raid0
+-----------------------------------------------------------------------
+https://linux-regtracking.leemhuis.info/regzbot/regression/lore/20230731152223.4EFB.409509F4@e16-tech.com/
+https://lore.kernel.org/linux-btrfs/20230731152223.4EFB.409509F4@e16-tech.com/
+
+By Wang Yugui; 6 days ago; 14 activities, latest 4 days ago.
+Introduced in da023618076 (v6.5-rc1)
+
+Recent activities from: Christoph Hellwig (7), Wang Yugui (7)
+
+2 patch postings are associated with this regression, the latest is this:
+* Re: btrfs write-bandwidth performance regression of 6.5-rc4/rc3
+  https://lore.kernel.org/linux-btrfs/20230801235123.B665.409509F4@e16-tech.com/
+  5 days ago, by Wang Yugui
+
+
+[ *NEW* ] ALSA: hda/realtek: Audible "pop" sound whenever audio card goes in or out of sleep
+--------------------------------------------------------------------------------------------
+https://linux-regtracking.leemhuis.info/regzbot/regression/bugzilla.kernel.org/217732/
+https://bugzilla.kernel.org/show_bug.cgi?id=217732
+https://lore.kernel.org/regressions/bc22f6c4-a147-3032-49ef-0784d0171d9a@leemhuis.info/
+
+By serfreeman1337 and serfreeman1337; 7 days ago; 3 activities, latest 7 days ago.
+Introduced in 69ea4c9d02b7 (v6.5-rc3)
+
+
+drm: amdgpu: HW acceleration broke on ThinkPad E595
+---------------------------------------------------
+https://linux-regtracking.leemhuis.info/regzbot/regression/lore/647beed4-9d0b-e351-6f66-756f73eb73a5@daenzer.net/
+https://lore.kernel.org/amd-gfx/647beed4-9d0b-e351-6f66-756f73eb73a5@daenzer.net/
+
+By Michel Dänzer; 20 days ago; 12 activities, latest 8 days ago.
+Introduced in 84b4dd3f84d (v6.5-rc1)
+
+2 patch postings are associated with this regression, the latest is this:
+* RE: [PATCH 28/29] drm/amdkfd: Refactor migrate init to support partition switch
+  https://lore.kernel.org/amd-gfx/DM4PR12MB5152E173B970C3974F071E76E306A@DM4PR12MB5152.namprd12.prod.outlook.com/
+  9 days ago, by Zhang, Jesse(Jie)
+
+
+===================================================
+current cycle (v6.4.. aka v6.5-rc), unknown culprit
+===================================================
+
+
+mm/vmalloc: NULL or otherwise bad pointer dereferences on ARM64
+---------------------------------------------------------------
+https://linux-regtracking.leemhuis.info/regzbot/regression/lore/42279f1f-7b82-40dc-8546-86171018729c@sirena.org.uk/
+https://lore.kernel.org/lkml/42279f1f-7b82-40dc-8546-86171018729c@sirena.org.uk/
+
+By Mark Brown; 27 days ago; 10 activities, latest 17 days ago.
+Introduced in v6.4..v6.5-rc1
+
+One patch associated with this regression:
+* Re: [PATCH v2 12/32] mm/vmalloc: vmalloc_to_page() use pte_offset_kernel()
+  https://lore.kernel.org/lkml/b479b946-f052-eb75-295d-6fa7c2d8ce8e@google.com/
+  26 days ago, by Hugh Dickins
+
+
+=============
+End of report
+=============
+
+All regressions marked '[ *NEW* ]' were added since the previous report,
+which can be found here:
+https://lore.kernel.org/r/169073747103.4140879.6035275932676410922@leemhuis.info
+
+Thanks for your attention, have a nice day!
+
+  Regzbot, your hard working Linux kernel regression tracking robot
+
+
+P.S.: Wanna know more about regzbot or how to use it to track regressions
+for your subsystem? Then check out the getting started guide or the
+reference documentation:
+
+https://gitlab.com/knurd42/regzbot/-/blob/main/docs/getting_started.md
+https://gitlab.com/knurd42/regzbot/-/blob/main/docs/reference.md
+
+The short version: if you see a regression report you want to see
+tracked, just send a reply to the report where you Cc
+regressions@lists.linux.dev with a line like this:
+
+#regzbot introduced: v5.13..v5.14-rc1
+
+If you want to fix a tracked regression, just do what is expected
+anyway: add a 'Link:' tag with the url to the report, e.g.:
+
+Link: https://lore.kernel.org/all/30th.anniversary.repost@klaava.Helsinki.FI/
