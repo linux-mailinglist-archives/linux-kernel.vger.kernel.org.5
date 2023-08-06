@@ -2,38 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 486BC771646
-	for <lists+linux-kernel@lfdr.de>; Sun,  6 Aug 2023 19:15:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F2BDB77164C
+	for <lists+linux-kernel@lfdr.de>; Sun,  6 Aug 2023 19:23:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229747AbjHFRPP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 6 Aug 2023 13:15:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46944 "EHLO
+        id S230028AbjHFRXJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 6 Aug 2023 13:23:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47572 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229458AbjHFRPN (ORCPT
+        with ESMTP id S229639AbjHFRXI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 6 Aug 2023 13:15:13 -0400
-Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [80.237.130.52])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25223C2
-        for <linux-kernel@vger.kernel.org>; Sun,  6 Aug 2023 10:15:11 -0700 (PDT)
-Received: from [2a02:8108:8980:2478:5054:ff:feb3:8f48] (helo=regzbot.fritz.box); authenticated
-        by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        id 1qShLF-0004VZ-SQ; Sun, 06 Aug 2023 19:14:57 +0200
-From:   "Regzbot (on behalf of Thorsten Leemhuis)" 
-        <regressions@leemhuis.info>
-To:     LKML <linux-kernel@vger.kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Linux regressions mailing list <regressions@lists.linux.dev>
-Subject: Linux regressions report  for mainline [2023-08-06]
-Date:   Sun,  6 Aug 2023 17:14:57 +0000
-Message-Id: <169134199152.488860.7520017509596978680@leemhuis.info>
-X-Mailer: git-send-email 2.40.1
-Content-Type: text/plain; charset="utf-8"
+        Sun, 6 Aug 2023 13:23:08 -0400
+Received: from 1wt.eu (ded1.1wt.eu [163.172.96.212])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 2E6A01724;
+        Sun,  6 Aug 2023 10:23:06 -0700 (PDT)
+Received: (from willy@localhost)
+        by pcw.home.local (8.15.2/8.15.2/Submit) id 376HMjdE026279;
+        Sun, 6 Aug 2023 19:22:45 +0200
+Date:   Sun, 6 Aug 2023 19:22:45 +0200
+From:   Willy Tarreau <w@1wt.eu>
+To:     Shuah Khan <skhan@linuxfoundation.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     Thomas =?iso-8859-1?Q?Wei=DFschuh?= <linux@weissschuh.net>,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
+Subject: [GIT PULL] nolibc changes for 6.6-rc1
+Message-ID: <20230806172245.GA26239@1wt.eu>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-bounce-key: webpack.hosteurope.de;regressions@leemhuis.info;1691342111;4f409422;
-X-HE-SMSGID: 1qShLF-0004VZ-SQ
-X-Spam-Status: No, score=-0.9 required=5.0 tests=BAYES_00,HEXHASH_WORD,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=no
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -41,228 +40,202 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus. Not much to report from by side: nearly everything currently
-looks like business as usual.
+Hi Shuah, hi Paul,
 
-Hans ~two hours ago submitted a revert for a9c4a912b7d to address the
-second manifestation of the Ryzen keyboard problems I brought to your
-attention last week (which was backported to 6.4.7 and thus meanwhile
-reached some mainstream distros). Thing is: for some users a9c4a912b7d
-was a fix to avoid the first manifestation of the regression (caused by
-9946e39fe8d0). Hence if we apply this we afaics need to extend the quirk
-list for the first manifestation of the problem. This thread has the
-details:
-https://lore.kernel.org/all/20230806151453.10690-1-hdegoede@redhat.com/
+I'm sending you the list of planned nolibc changes for 6.6. A doc update
+may possibly follow a bit later to try to document the contribution
+process. We also noticed a slight increase in binary sizes that might
+be fixed soon but I wouldn't bet on this since it will require lot of
+testing again and I'd rather postpone this by default. In any case I
+have no intent to push any significant updates/fixes for 6.6 at this
+point.
 
-FWIW, a zram regression from the 6.4 cycle that let to XFS metadata
-corruption on ppc64le turned up (I CCed you on Friday); a fix for
-that became ready over the weekend (thanks Christoph!) and Jens
-already picked it up:
-https://lore.kernel.org/lkml/b2d40565-7868-ba15-4bb1-fca6f0df076b@dustymabe.com/
-https://lore.kernel.org/lkml/20230805055537.147835-1-hch@lst.de/
+I'm also pasting a summary of the changes in this pull request, feel
+free to use it for the merge commit message if you need.
 
-Ciao, Thorsten
+For any question or if anything is not clear, do not hesitate to ask!
 
----
+Thanks,
+Willy
 
-Hi, this is regzbot, the Linux kernel regression tracking bot.
+----- changes ------
+Nolibc:
+  - improved portability by removing build errors with -ENOSYS
+  - added syscall6() on MIPS to support pselect6() and mmap()
+  - added setvbuf(), rmdir(), pipe(), pipe2()
+  - add support for ppc/ppc64
+  - environ is no longer optional
+  - fixed frame pointer issues at -O0
+  - dropped sys_stat() in favor of sys_statx()
+  - centralized _start_c() to remove lots of asm code
+  - switched size_t to __SIZE_TYPE__
 
-Currently I'm aware of 10 regressions in linux-mainline. Find the
-current status below and the latest on the web:
+Selftests:
+  - improved status reporting (success/warning/failure counts, path to log file)
+  - various code cleanups (indent, unused variables, ...)
+  - more consistent test numbering
+  - enabled compiler warnings
+  - dropped unreliable chmod_net test
+  - improved reliability (create /dev/zero & /tmp, rely less on /proc)
+  - new tests (brk/sbrk/mmap/munmap)
+  - improved compatibility with musl
+  - new run-nolibc-test target to build and run natively
+  - new run-libc-test target to build and run against native libc
+  - made the cmdline parser more reliable against boolean arguments
+  - dropped dependency on memfd for vfprintf() test
+  - nolibc-test is no longer stripped
+  - added support for extending ARCH via XARCH
 
-https://linux-regtracking.leemhuis.info/regzbot/mainline/
+Other:
+  - add Thomas as co-maintainer
+-----------
 
-Bye bye, hope to see you soon for the next report.
-   Regzbot (on behalf of Thorsten Leemhuis)
+The following changes since commit 06c2afb862f9da8dc5efa4b6076a0e48c3fbaaa5:
 
+  Linux 6.5-rc1 (2023-07-09 13:53:13 -0700)
 
-======================================================
-current cycle (v6.4.. aka v6.5-rc), culprit identified
-======================================================
+are available in the Git repository at:
 
+  https://git.kernel.org/pub/scm/linux/kernel/git/wtarreau/nolibc.git/ 20230806-for-6.6-1
 
-ASUE140D:00 04F3:31B9 doesn't respond to input
-----------------------------------------------
-https://linux-regtracking.leemhuis.info/regzbot/regression/bugzilla.kernel.org/217726/
-https://bugzilla.kernel.org/show_bug.cgi?id=217726
-https://lore.kernel.org/lkml/bdc6cb4d-a853-72b2-b132-989b64740ad9@gmail.com/
+for you to fetch changes up to d98c1e27e46e47a3ae67e1d048f153598ba82611:
 
-By Guilhem Lettron and Guilhem Lettron; 8 days ago; 14 activities, latest 0 days ago.
-Introduced in a9c4a912b7dc (v6.5-rc1)
+  tools/nolibc: stackprotector.h: make __stack_chk_init static (2023-08-06 18:44:47 +0200)
 
-Recent activities from: Guilhem Lettron (3), Hans de Goede (2), Mario
-  Limonciello (AMD) (2), henil (2), Linux regression tracking (Thorsten
-  Leemhuis) (1), August Wikerfors (1), Marcin Bachry (1)
-
-Noteworthy links:
-* [PATCH] ACPI: resource: revert "Remove "Zen" specific match and quirks"
-  https://lore.kernel.org/stable/20230806151453.10690-1-hdegoede@redhat.com/
-  0 days ago, by Hans de Goede; thread monitored.
-
-
-PCI: acpiphp: Oops on first attempt to suspend, freeze on second
 ----------------------------------------------------------------
-https://linux-regtracking.leemhuis.info/regzbot/regression/lore/11fc981c-af49-ce64-6b43-3e282728bd1a@gmail.com/
-https://lore.kernel.org/lkml/11fc981c-af49-ce64-6b43-3e282728bd1a@gmail.com/
+Ryan Roberts (1):
+      tools/nolibc/stdio: add setvbuf() to set buffering mode
 
-By Woody Suwalski; 17 days ago; 31 activities, latest 1 days ago.
-Introduced in 40613da52b13 (v6.5-rc1)
+Thomas Wei�schuh (22):
+      selftests/nolibc: drop test chmod_net
+      selftests/nolibc: simplify call to ioperm
+      tools/nolibc: completely remove optional environ support
+      selftests/nolibc: make evaluation of test conditions
+      selftests/nolibc: simplify status printing
+      selftests/nolibc: avoid gaps in test numbers
+      selftests/nolibc: avoid buffer underrun in space printing
+      tools/nolibc: drop unused variables
+      tools/nolibc: fix return type of getpagesize()
+      tools/nolibc: setvbuf: avoid unused parameter warnings
+      tools/nolibc: sys: avoid implicit sign cast
+      tools/nolibc: stdint: use __SIZE_TYPE__ for size_t
+      selftests/nolibc: drop unused variables
+      selftests/nolibc: mark test helpers as potentially unused
+      selftests/nolibc: make functions static if possible
+      selftests/nolibc: avoid unused parameter warnings
+      selftests/nolibc: avoid sign-compare warnings
+      selftests/nolibc: use correct return type for read() and write()
+      selftests/nolibc: prevent out of bounds access in expect_vfprintf
+      selftests/nolibc: don't strip nolibc-test
+      selftests/nolibc: enable compiler warnings
+      MAINTAINERS: nolibc: add myself as co-maintainer
 
-Fix incoming:
-* Revert "PCI: acpiphp: Reassign resources on bridge if necessary"
-  https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git/commit/?h=master&id=b607aa1edc9ca2ff16ae29c48e3e4090fae8aeab
+Willy Tarreau (1):
+      selftests/nolibc: avoid warnings during intptr tests
 
+Yuan Tan (2):
+      tools/nolibc: add pipe() and pipe2() support
+      selftests/nolibc: add testcase for pipe
 
-[ *NEW* ] pm: boot problems when hibernate is configured and kernel locked down
--------------------------------------------------------------------------------
-https://linux-regtracking.leemhuis.info/regzbot/regression/lore/2cfa5f55-1d68-8a4f-d049-13f42e0d1484@suse.cz/
-https://lore.kernel.org/lkml/2cfa5f55-1d68-8a4f-d049-13f42e0d1484@suse.cz/
+Zhangjin Wu (74):
+      selftests/nolibc: add a standalone test report macro
+      selftests/nolibc: always print the path to test log file
+      selftests/nolibc: restore the failed tests print
+      tools/nolibc: fix up #error compile failures with -ENOSYS
+      tools/nolibc: fix up undeclared syscall macros with #ifdef and -ENOSYS
+      tools/nolibc: sys.h: add a syscall return helper
+      tools/nolibc: unistd.h: apply __sysret() helper
+      tools/nolibc: sys.h: apply __sysret() helper
+      tools/nolibc: unistd.h: reorder the syscall macros
+      tools/nolibc: arch-*.h: fix up code indent errors
+      toolc/nolibc: arch-*.h: clean up whitespaces after __asm__
+      tools/nolibc: arch-loongarch.h: shrink with _NOLIBC_SYSCALL_CLOBBERLIST
+      tools/nolibc: arch-mips.h: shrink with _NOLIBC_SYSCALL_CLOBBERLIST
+      tools/nolibc: add missing my_syscall6() for mips
+      tools/nolibc: __sysret: support syscalls who return a pointer
+      tools/nolibc: clean up mmap() routine
+      tools/nolibc: clean up sbrk() routine
+      selftests/nolibc: export argv0 for some tests
+      selftests/nolibc: prepare: create /dev/zero
+      selftests/nolibc: add EXPECT_PTREQ, EXPECT_PTRNE and EXPECT_PTRER
+      selftests/nolibc: add sbrk_0 to test current brk getting
+      selftests/nolibc: add mmap_bad test case
+      selftests/nolibc: add munmap_bad test case
+      selftests/nolibc: add mmap_munmap_good test case
+      selftests/nolibc: add run-libc-test target
+      selftests/nolibc: stat_fault: silence NULL argument warning with glibc
+      selftests/nolibc: gettid: restore for glibc and musl
+      selftests/nolibc: add _LARGEFILE64_SOURCE for musl
+      selftests/nolibc: fix up int_fast16/32_t test cases for musl
+      tools/nolibc: types.h: add RB_ flags for reboot()
+      selftests/nolibc: prefer <sys/reboot.h> to <linux/reboot.h>
+      selftests/nolibc: fix up kernel parameters support
+      selftests/nolibc: link_cross: use /proc/self/cmdline
+      tools/nolibc: add rmdir() support
+      selftests/nolibc: add a new rmdir() test case
+      selftests/nolibc: fix up failures when CONFIG_PROC_FS=n
+      selftests/nolibc: prepare /tmp for tests that need to write
+      selftests/nolibc: vfprintf: remove MEMFD_CREATE dependency
+      selftests/nolibc: chdir_root: restore current path after test
+      selftests/nolibc: stat_timestamps: remove procfs dependency
+      selftests/nolibc: chroot_exe: remove procfs dependency
+      selftests/nolibc: add chmod_argv0 test
+      selftests/nolibc: report: print a summarized test status
+      selftests/nolibc: report: print total tests
+      selftests/nolibc: report: align passed, skipped and failed
+      selftests/nolibc: report: extrude the test status line
+      selftests/nolibc: report: add newline before test failures
+      tools/nolibc: arch-*.h: add missing space after ','
+      tools/nolibc: fix up startup failures for -O0 under gcc < 11.1.0
+      tools/nolibc: remove the old sys_stat support
+      tools/nolibc: add new crt.h with _start_c
+      tools/nolibc: stackprotector.h: add empty __stack_chk_init for !_NOLIBC_STACKPROTECTOR
+      tools/nolibc: crt.h: initialize stack protector
+      tools/nolibc: arm: shrink _start with _start_c
+      tools/nolibc: aarch64: shrink _start with _start_c
+      tools/nolibc: i386: shrink _start with _start_c
+      tools/nolibc: x86_64: shrink _start with _start_c
+      tools/nolibc: mips: shrink _start with _start_c
+      tools/nolibc: loongarch: shrink _start with _start_c
+      tools/nolibc: riscv: shrink _start with _start_c
+      tools/nolibc: s390: shrink _start with _start_c
+      selftests/nolibc: add EXPECT_PTRGE, EXPECT_PTRGT, EXPECT_PTRLE, EXPECT_PTRLT
+      selftests/nolibc: add testcases for startup code
+      selftests/nolibc: allow run nolibc-test locally
+      selftests/nolibc: allow test -include /path/to/nolibc.h
+      selftests/nolibc: mmap_munmap_good: fix up return value
+      tools/nolibc: add support for powerpc
+      tools/nolibc: add support for powerpc64
+      selftests/nolibc: add XARCH and ARCH mapping support
+      selftests/nolibc: add test support for ppc
+      selftests/nolibc: add test support for ppc64le
+      selftests/nolibc: add test support for ppc64
+      selftests/nolibc: allow report with existing test log
+      tools/nolibc: stackprotector.h: make __stack_chk_init static
 
-By Vlastimil Babka; 3 days ago; 3 activities, latest 2 days ago.
-Introduced in cc89c63e2fe3 (v6.5-rc1)
-
-Fix incoming:
-* PM: hibernate: fix resume_store() return value when hibernation not available
-  https://lore.kernel.org/lkml/84f6ea98-0d72-e17a-4b7c-d025f2d34e95@leemhuis.info/
-
-
-[ *NEW* ] crypto: broke CAAM RNG instantiation on an i.MX8MM
-------------------------------------------------------------
-https://linux-regtracking.leemhuis.info/regzbot/regression/lore/e1f3f073-9d5e-1bae-f4f8-08dc48adad62@pengutronix.de/
-https://lore.kernel.org/lkml/e1f3f073-9d5e-1bae-f4f8-08dc48adad62@pengutronix.de/
-
-By Bastian Krause; 20 days ago; 7 activities, latest 2 days ago.
-Introduced in ef492d08030 (v6.5-rc1)
-
-Recent activities from: Gaurav Jain (1), Herbert Xu (1)
-
-One patch associated with this regression:
-* Re: [PATCH] crypto: caam - adjust RNG timing to support more devices
-  https://lore.kernel.org/lkml/f673a09e-e212-ee7b-15c3-78afe8c70916@pengutronix.de/
-  19 days ago, by Bastian Krause
-
-
-kernel pointer dereference regression due to extract_iter_to_sg()
------------------------------------------------------------------
-https://linux-regtracking.leemhuis.info/regzbot/regression/lore/CAAUqJDuRkHE8fPgZJGaKjUjd3QfGwzfumuJBmStPqBhubxyk_A@mail.gmail.com/
-https://lore.kernel.org/lkml/CAAUqJDuRkHE8fPgZJGaKjUjd3QfGwzfumuJBmStPqBhubxyk_A@mail.gmail.com/
-
-By Ondrej Mosnáček; 24 days ago; 11 activities, latest 2 days ago.
-Introduced in c1abe6f570af (v6.5-rc1)
-
-Recent activities from: Herbert Xu (1), Ard Biesheuvel (1), Ondrej
-  Mosnáček (1)
-
-One patch associated with this regression:
-* [PATCH] crypto: Fix missing initialisation affecting gcm-aes-s390
-  https://lore.kernel.org/lkml/97730.1690408399@warthog.procyon.org.uk/
-  10 days ago, by David Howells
-
-
-drm/bridge: lt9611: Dragonboard 845c (SDM845) devboard broken when running AOSP
--------------------------------------------------------------------------------
-https://linux-regtracking.leemhuis.info/regzbot/regression/lore/CAMi1Hd0TD=2z_=bcDrht3H_wiLvAFcv8Z-U_r_KUOoeMc6UMjw@mail.gmail.com/
-https://lore.kernel.org/dri-devel/CAMi1Hd0TD=2z_=bcDrht3H_wiLvAFcv8Z-U_r_KUOoeMc6UMjw@mail.gmail.com/
-
-By Amit Pundir; 32 days ago; 49 activities, latest 2 days ago.
-Introduced in 8ddce13ae69 (v6.5-rc1)
-
-Recent activities from: Marek Vasut (11), Dmitry Baryshkov (7), Neil
-  Armstrong (5), neil.armstrong@linaro.org (2), Laurent Pinchart (1),
-  Rob Clark (1), Abhinav Kumar (1), Amit Pundir (1)
-
-Noteworthy links:
-* [PATCH] Revert "drm/bridge: lt9611: Do not generate HFP/HBP/HSA and EOT packet"
-  https://lore.kernel.org/lkml/20230802-revert-do-not-generate-hfp-hbp-hsa-eot-packet-v1-1-f8a20084e15a@linaro.org/
-  4 days ago, by Neil Armstrong; thread monitored.
-
-
-[ *NEW* ] btrfs: write-bandwidth performance regression with NVMe raid0
------------------------------------------------------------------------
-https://linux-regtracking.leemhuis.info/regzbot/regression/lore/20230731152223.4EFB.409509F4@e16-tech.com/
-https://lore.kernel.org/linux-btrfs/20230731152223.4EFB.409509F4@e16-tech.com/
-
-By Wang Yugui; 6 days ago; 14 activities, latest 4 days ago.
-Introduced in da023618076 (v6.5-rc1)
-
-Recent activities from: Christoph Hellwig (7), Wang Yugui (7)
-
-2 patch postings are associated with this regression, the latest is this:
-* Re: btrfs write-bandwidth performance regression of 6.5-rc4/rc3
-  https://lore.kernel.org/linux-btrfs/20230801235123.B665.409509F4@e16-tech.com/
-  5 days ago, by Wang Yugui
-
-
-[ *NEW* ] ALSA: hda/realtek: Audible "pop" sound whenever audio card goes in or out of sleep
---------------------------------------------------------------------------------------------
-https://linux-regtracking.leemhuis.info/regzbot/regression/bugzilla.kernel.org/217732/
-https://bugzilla.kernel.org/show_bug.cgi?id=217732
-https://lore.kernel.org/regressions/bc22f6c4-a147-3032-49ef-0784d0171d9a@leemhuis.info/
-
-By serfreeman1337 and serfreeman1337; 7 days ago; 3 activities, latest 7 days ago.
-Introduced in 69ea4c9d02b7 (v6.5-rc3)
-
-
-drm: amdgpu: HW acceleration broke on ThinkPad E595
----------------------------------------------------
-https://linux-regtracking.leemhuis.info/regzbot/regression/lore/647beed4-9d0b-e351-6f66-756f73eb73a5@daenzer.net/
-https://lore.kernel.org/amd-gfx/647beed4-9d0b-e351-6f66-756f73eb73a5@daenzer.net/
-
-By Michel Dänzer; 20 days ago; 12 activities, latest 8 days ago.
-Introduced in 84b4dd3f84d (v6.5-rc1)
-
-2 patch postings are associated with this regression, the latest is this:
-* RE: [PATCH 28/29] drm/amdkfd: Refactor migrate init to support partition switch
-  https://lore.kernel.org/amd-gfx/DM4PR12MB5152E173B970C3974F071E76E306A@DM4PR12MB5152.namprd12.prod.outlook.com/
-  9 days ago, by Zhang, Jesse(Jie)
-
-
-===================================================
-current cycle (v6.4.. aka v6.5-rc), unknown culprit
-===================================================
-
-
-mm/vmalloc: NULL or otherwise bad pointer dereferences on ARM64
----------------------------------------------------------------
-https://linux-regtracking.leemhuis.info/regzbot/regression/lore/42279f1f-7b82-40dc-8546-86171018729c@sirena.org.uk/
-https://lore.kernel.org/lkml/42279f1f-7b82-40dc-8546-86171018729c@sirena.org.uk/
-
-By Mark Brown; 27 days ago; 10 activities, latest 17 days ago.
-Introduced in v6.4..v6.5-rc1
-
-One patch associated with this regression:
-* Re: [PATCH v2 12/32] mm/vmalloc: vmalloc_to_page() use pte_offset_kernel()
-  https://lore.kernel.org/lkml/b479b946-f052-eb75-295d-6fa7c2d8ce8e@google.com/
-  26 days ago, by Hugh Dickins
-
-
-=============
-End of report
-=============
-
-All regressions marked '[ *NEW* ]' were added since the previous report,
-which can be found here:
-https://lore.kernel.org/r/169073747103.4140879.6035275932676410922@leemhuis.info
-
-Thanks for your attention, have a nice day!
-
-  Regzbot, your hard working Linux kernel regression tracking robot
-
-
-P.S.: Wanna know more about regzbot or how to use it to track regressions
-for your subsystem? Then check out the getting started guide or the
-reference documentation:
-
-https://gitlab.com/knurd42/regzbot/-/blob/main/docs/getting_started.md
-https://gitlab.com/knurd42/regzbot/-/blob/main/docs/reference.md
-
-The short version: if you see a regression report you want to see
-tracked, just send a reply to the report where you Cc
-regressions@lists.linux.dev with a line like this:
-
-#regzbot introduced: v5.13..v5.14-rc1
-
-If you want to fix a tracked regression, just do what is expected
-anyway: add a 'Link:' tag with the url to the report, e.g.:
-
-Link: https://lore.kernel.org/all/30th.anniversary.repost@klaava.Helsinki.FI/
+ MAINTAINERS                                  |   1 +
+ tools/include/nolibc/Makefile                |   1 +
+ tools/include/nolibc/arch-aarch64.h          |  85 +---
+ tools/include/nolibc/arch-arm.h              | 111 +----
+ tools/include/nolibc/arch-i386.h             |  86 +---
+ tools/include/nolibc/arch-loongarch.h        |  83 +---
+ tools/include/nolibc/arch-mips.h             | 147 +++----
+ tools/include/nolibc/arch-powerpc.h          | 213 ++++++++++
+ tools/include/nolibc/arch-riscv.h            |  83 +---
+ tools/include/nolibc/arch-s390.h             |  77 +---
+ tools/include/nolibc/arch-x86_64.h           |  86 +---
+ tools/include/nolibc/arch.h                  |   2 +
+ tools/include/nolibc/crt.h                   |  61 +++
+ tools/include/nolibc/nolibc.h                |   9 +-
+ tools/include/nolibc/stackprotector.h        |   5 +-
+ tools/include/nolibc/stdint.h                |   2 +-
+ tools/include/nolibc/stdio.h                 |  27 ++
+ tools/include/nolibc/stdlib.h                |  12 +-
+ tools/include/nolibc/sys.h                   | 554 +++++++-----------------
+ tools/include/nolibc/types.h                 |  22 +-
+ tools/include/nolibc/unistd.h                |  13 +-
+ tools/testing/selftests/nolibc/Makefile      | 109 +++--
+ tools/testing/selftests/nolibc/nolibc-test.c | 609 ++++++++++++++++++++-------
+ 23 files changed, 1216 insertions(+), 1182 deletions(-)
+ create mode 100644 tools/include/nolibc/arch-powerpc.h
+ create mode 100644 tools/include/nolibc/crt.h
