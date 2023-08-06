@@ -2,94 +2,208 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0AE4C77161C
-	for <lists+linux-kernel@lfdr.de>; Sun,  6 Aug 2023 18:44:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E028377161E
+	for <lists+linux-kernel@lfdr.de>; Sun,  6 Aug 2023 18:46:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230302AbjHFQow (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 6 Aug 2023 12:44:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39042 "EHLO
+        id S230364AbjHFQqn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 6 Aug 2023 12:46:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39386 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229436AbjHFQou (ORCPT
+        with ESMTP id S229436AbjHFQqm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 6 Aug 2023 12:44:50 -0400
-Received: from mail-pg1-x52a.google.com (mail-pg1-x52a.google.com [IPv6:2607:f8b0:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C29BBF
-        for <linux-kernel@vger.kernel.org>; Sun,  6 Aug 2023 09:44:49 -0700 (PDT)
-Received: by mail-pg1-x52a.google.com with SMTP id 41be03b00d2f7-51f64817809so287629a12.1
-        for <linux-kernel@vger.kernel.org>; Sun, 06 Aug 2023 09:44:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20221208.gappssmtp.com; s=20221208; t=1691340288; x=1691945088;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=A522AjDl5DEvsvtIx3nF2oxKNHEm3knvcY8h1W+FtFM=;
-        b=00QifAQTEKMyIBRPRQNPMRNsvsQTGzJwMmlmH/6Vfbhn30YEISMj2j5cB1Q67caUMS
-         HYvoiSiuUv+RihMGOldaHg9bh2pPEQ/B7DKKnC0w5oWn30ofwe0VNpsxGNHuL6/cGHie
-         qZmcoOaDltKhLhRbv/RhA7OlfKXm6QMirf4OeBV31I+puYtJ4D///Yn86mdBkqeg2ls+
-         xuFq4dCw48l6objBCJ4UceVCRexZQNkwqFKxdDXeZBILokZ4vPtA8EGBXMD7koIyLP+s
-         cdHq+m5s4HPujWHOqD1Pqe9TmHLofdS/il/kGjYsxFZL1ZHjugKWjchLcrjfLZABrFE8
-         E+kA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691340288; x=1691945088;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=A522AjDl5DEvsvtIx3nF2oxKNHEm3knvcY8h1W+FtFM=;
-        b=W4qIjhDxpJ+iB5yDSxdrn/iGNjFsuqbEVi0nLBsStRq+gEVxAcpTtiaLENa6XB5kYy
-         I9S5NP7qWWGXR0Qy0F1+l7V7t6HRp3QT1lYk3rdgWHGIogrcguVJpbE9ft45+phMSvY+
-         v3PrZbWYAblo/oyg2d36gLy3f9fwi/NUr4PDY+jt/vhxWlHejEKKvVXlJc3kKP4sVE1H
-         pL/MWLLru81Be68+NCYZtHBTq0lipZKhyCFvzKgFiPSJnC1VLp9B05vpCXiSpVpVceWb
-         BQGg5vUJzBY02ShLT26VzO30Tx0ElAw2ThHl86TpX+Z6spMTB8NJb1yxKplbqTbcgz/6
-         TSZw==
-X-Gm-Message-State: ABy/qLbe5zp/ue8uy6daXmdVpiX/Gb32g8XEL6G0SPCgmbfmFajAKlOa
-        WCbiYwt1R2Gkx/Wc3yJMytLMPQ==
-X-Google-Smtp-Source: APBJJlHsqt5xn8/2q3ojtNfG5H7V0CwjM00N0ZhzzTwfE/iwBY/PGjP40gUhFzOsWgQcjk5ibVpbJQ==
-X-Received: by 2002:a17:90a:53a3:b0:268:437:7bd9 with SMTP id y32-20020a17090a53a300b0026804377bd9mr21966599pjh.3.1691340288605;
-        Sun, 06 Aug 2023 09:44:48 -0700 (PDT)
-Received: from [172.20.1.218] (071-095-160-189.biz.spectrum.com. [71.95.160.189])
-        by smtp.gmail.com with ESMTPSA id o4-20020a17090aac0400b0026833291740sm7057566pjq.46.2023.08.06.09.44.47
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 06 Aug 2023 09:44:48 -0700 (PDT)
-Message-ID: <e136823c-b5c9-b6b3-a0e2-7e9cfda2b2d8@kernel.dk>
-Date:   Sun, 6 Aug 2023 10:44:42 -0600
+        Sun, 6 Aug 2023 12:46:42 -0400
+Received: from bg4.exmail.qq.com (bg4.exmail.qq.com [43.154.54.12])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F68EAA;
+        Sun,  6 Aug 2023 09:46:40 -0700 (PDT)
+X-QQ-mid: bizesmtp80t1691340384tkhmz0x4
+Received: from linux-lab-host.localdomain ( [116.30.130.12])
+        by bizesmtp.qq.com (ESMTP) with 
+        id ; Mon, 07 Aug 2023 00:46:23 +0800 (CST)
+X-QQ-SSF: 01200000000000E0X000000A0000000
+X-QQ-FEAT: XBN7tc9DADLpWmDmi2gsNl7JvQU3ocDYarY5h+5hWukSr/P4x7ZhmnBjuZUSC
+        V8oh+N330+lBQnkbjsPssDW+sMvv0pd6eJE3NkkylckHm1YLoHEbgOlJOKsFPOT3ZmbofV9
+        8sDCWLjCq96KwXOW7tyJeNIIifqxUf2HAulWmd2O092WRKEQahBl/WeSTUqs6yaqGZk/Bhb
+        Kfgn1vmbb0KA5D9RoAeg3Spl34TBqK4Ro4eg4End3oE9qkJibhCPAOYT6pw1yrAyHXz/2le
+        v5khxFrip8zMFvxIzyytCOaAcio32Zu5mLBAs15huccjTxJGoE1aWe4dlllwW/sXCnGPSMR
+        wf9acEaXspRsyeJm/n0YzI20InptrT/a+wLhAM6JsXGo1JIFJWbMT8TeLOB0Q==
+X-QQ-GoodBg: 0
+X-BIZMAIL-ID: 11101439852272722352
+From:   Zhangjin Wu <falcon@tinylab.org>
+To:     w@1wt.eu
+Cc:     arnd@arndb.de, david.laight@aculab.com, falcon@tinylab.org,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        thomas@t-8ch.de
+Subject: [PATCH v2] tools/nolibc: fix up size inflate regression
+Date:   Mon,  7 Aug 2023 00:46:22 +0800
+Message-Id: <95fe3e732f455fab653fe1427118d905e4d04257.1691339836.git.falcon@tinylab.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux aarch64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.1
-Subject: Re: [PATCHSET v4] Add io_uring futex/futexv support
-Content-Language: en-US
-To:     Thomas Gleixner <tglx@linutronix.de>, io-uring@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     peterz@infradead.org, andres@anarazel.de
-References: <20230728164235.1318118-1-axboe@kernel.dk> <87jzugnjzy.ffs@tglx>
-From:   Jens Axboe <axboe@kernel.dk>
-In-Reply-To: <87jzugnjzy.ffs@tglx>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-6.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-QQ-SENDSIZE: 520
+Feedback-ID: bizesmtp:tinylab.org:qybglogicsvrgz:qybglogicsvrgz5a-1
+X-Spam-Status: No, score=-0.6 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,RCVD_IN_VALIDITY_RPBL,
+        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/31/23 10:06?AM, Thomas Gleixner wrote:
-> On Fri, Jul 28 2023 at 10:42, Jens Axboe wrote:
->> s patchset adds support for first futex wake and wait, and then
->> futexv.
-> 
-> Can you please just wait until the futex core bits have been agreed on
-> and merged? No need to contribute more mess in everyones inbox.
+As reported and suggested by Willy, the inline __sysret() helper
+introduces three types of conversions and increases the size:
 
-Also no need to keep dragging out the review of the other bits. The
-dependency is only there so we can use FUTEX2 flags for this - which
-does make sense to me, but we should probably split Peter's series in
-two as there's no dependency on the functional bits on that patch
-series. As we're getting ever closer to the merge window, and I have
-other things sitting on top of the futex series, that's problematic for
-me.
+(1) the "unsigned long" argument to __sysret() forces a sign extension
+from all sys_* functions that used to return 'int'
 
+(2) the comparison with the error range now has to be performed on a
+'unsigned long' instead of an 'int'
+
+(3) the return value from __sysret() is a 'long' (note, a signed long)
+which then has to be turned back to an 'int' before being returned by the
+caller to satisfy the caller's prototype.
+
+To fix up this, firstly, let's use macro instead of inline function to
+preserves the input type and avoids these useless conversions (1), (3).
+
+Secondly, comparison to -MAX_ERRNO inflicts on all integer returns where
+we could previously keep a simple sign comparison, let's use a new
+is_signed_type() macro from include/linux/compiler.h to limit the
+comparision to -MAX_ERRNO (2) only on demand and preserves a simple sign
+comparision for most of the cases as before.
+
+Thirdly, fix up the following warning by an explicit conversion and let
+__sysret() be able to accept the (void *) type of argument:
+
+    sysroot/powerpc/include/sys.h: In function 'sbrk':
+    sysroot/powerpc/include/sys.h:104:16: warning: cast to pointer from integer of different size [-Wint-to-pointer-cast]
+      104 |         return (void *)__sysret(-ENOMEM);
+
+Fourthly, to further workaround the argument type with 'const', must use
+__auto_type in a new enough version or use 'long' as before.
+
+Here reports the size testing result with nolibc-test:
+
+before:
+
+    // ppc64le
+    $ size nolibc-test
+       text	   data	    bss	    dec	    hex	filename
+      27916	      8	     80	  28004	   6d64	nolibc-test
+
+    // mips
+    $ size nolibc-test
+       text	   data	    bss	    dec	    hex	filename
+      23276	     64	     64	  23404	   5b6c	nolibc-test
+
+after:
+
+    // ppc64le
+    $ size nolibc-test
+       text	   data	    bss	    dec	    hex	filename
+      27736	      8	     80	  27824	   6cb0	nolibc-test
+
+    // mips
+    $ size nolibc-test
+       text	   data	    bss	    dec	    hex	filename
+      23036	     64	     64	  23164	   5a7c	nolibc-test
+
+Suggested-by: Willy Tarreau <w@1wt.eu>
+Link: https://lore.kernel.org/lkml/20230806095846.GB10627@1wt.eu/
+Link: https://lore.kernel.org/lkml/20230806134348.GA19145@1wt.eu/
+Signed-off-by: Zhangjin Wu <falcon@tinylab.org>
+---
+
+v2 here is further fix up argument with 'const' in the type and also
+support "void *" argument, v1 is [1].
+
+Tested on many architectures (i386, x86_64, mips, ppc64) and gcc version
+(from gcc 4.8-13.1.0), compiles well without any warning and errors and
+also with smaller size.
+
+[1]: https://lore.kernel.org/lkml/20230806131921.52453-1-falcon@tinylab.org/
+
+---
+ tools/include/nolibc/sys.h | 52 ++++++++++++++++++++++++++++++--------
+ 1 file changed, 41 insertions(+), 11 deletions(-)
+
+diff --git a/tools/include/nolibc/sys.h b/tools/include/nolibc/sys.h
+index 56f63eb48a1b..9c7448ae19e2 100644
+--- a/tools/include/nolibc/sys.h
++++ b/tools/include/nolibc/sys.h
+@@ -35,15 +35,45 @@
+  * (src/internal/syscall_ret.c) and glibc (sysdeps/unix/sysv/linux/sysdep.h)
+  */
+ 
+-static __inline__ __attribute__((unused, always_inline))
+-long __sysret(unsigned long ret)
+-{
+-	if (ret >= (unsigned long)-MAX_ERRNO) {
+-		SET_ERRNO(-(long)ret);
+-		return -1;
+-	}
+-	return ret;
+-}
++/*
++ * Whether 'type' is a signed type or an unsigned type. Supports scalar types,
++ * bool and also pointer types. (from include/linux/compiler.h)
++ */
++#define __is_signed_type(type) (((type)(-1)) < (type)1)
++
++/* __auto_type is used instead of __typeof__ to workaround the build error
++ * 'error: assignment of read-only variable' when the argument has 'const' in
++ * the type, but __auto_type is a new feature from newer version and it only
++ * work with 'const' from gcc 11.0 (__GXX_ABI_VERSION = 1016)
++ * https://gcc.gnu.org/legacy-ml/gcc-patches/2013-11/msg01378.html
++ */
++
++#if __GXX_ABI_VERSION < 1016
++#define __typeofdecl(arg) long
++#define __typeofconv1(arg) (long)
++#define __typeofconv2(arg) (long)
++#else
++#define __typeofdecl(arg) __auto_type
++#define __typeofconv1(arg)
++#define __typeofconv2(arg) (__typeof__(arg))
++#endif
++
++#define __sysret(arg)                                                           \
++({                                                                              \
++	__typeofdecl(arg) __sysret_arg = __typeofconv1(arg)(arg);               \
++	if (__is_signed_type(__typeof__(arg))) {                                \
++		if (__sysret_arg < 0) {                                         \
++			SET_ERRNO(-(long)__sysret_arg);                         \
++			__sysret_arg = __typeofconv2(arg)(-1L);                 \
++		}                                                               \
++	} else {                                                                \
++		if ((unsigned long)__sysret_arg >= (unsigned long)-MAX_ERRNO) { \
++			SET_ERRNO(-(long)__sysret_arg);                         \
++			__sysret_arg = __typeofconv2(arg)(-1L);                 \
++		}                                                               \
++	}                                                                       \
++	(__typeof__(arg))__sysret_arg;                                          \
++})
+ 
+ /* Functions in this file only describe syscalls. They're declared static so
+  * that the compiler usually decides to inline them while still being allowed
+@@ -94,7 +124,7 @@ void *sbrk(intptr_t inc)
+ 	if (ret && sys_brk(ret + inc) == ret + inc)
+ 		return ret + inc;
+ 
+-	return (void *)__sysret(-ENOMEM);
++	return __sysret((void *)-ENOMEM);
+ }
+ 
+ 
+@@ -682,7 +712,7 @@ void *sys_mmap(void *addr, size_t length, int prot, int flags, int fd,
+ static __attribute__((unused))
+ void *mmap(void *addr, size_t length, int prot, int flags, int fd, off_t offset)
+ {
+-	return (void *)__sysret((unsigned long)sys_mmap(addr, length, prot, flags, fd, offset));
++	return __sysret(sys_mmap(addr, length, prot, flags, fd, offset));
+ }
+ 
+ static __attribute__((unused))
 -- 
-Jens Axboe
+2.25.1
 
