@@ -2,68 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C83D4771349
-	for <lists+linux-kernel@lfdr.de>; Sun,  6 Aug 2023 04:53:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C4B2771351
+	for <lists+linux-kernel@lfdr.de>; Sun,  6 Aug 2023 05:12:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229810AbjHFCxL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 5 Aug 2023 22:53:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54666 "EHLO
+        id S229810AbjHFDLs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 5 Aug 2023 23:11:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55934 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229504AbjHFCxJ (ORCPT
+        with ESMTP id S229441AbjHFDLq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 5 Aug 2023 22:53:09 -0400
-Received: from out30-99.freemail.mail.aliyun.com (out30-99.freemail.mail.aliyun.com [115.124.30.99])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 911AE130
-        for <linux-kernel@vger.kernel.org>; Sat,  5 Aug 2023 19:53:04 -0700 (PDT)
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R781e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046056;MF=liusong@linux.alibaba.com;NM=1;PH=DS;RN=4;SR=0;TI=SMTPD_---0Vp4sLaG_1691290378;
-Received: from 30.121.9.24(mailfrom:liusong@linux.alibaba.com fp:SMTPD_---0Vp4sLaG_1691290378)
-          by smtp.aliyun-inc.com;
-          Sun, 06 Aug 2023 10:53:00 +0800
-Message-ID: <bc4da863-dacb-66a7-133d-0e6e91e4477a@linux.alibaba.com>
-Date:   Sun, 6 Aug 2023 10:52:57 +0800
+        Sat, 5 Aug 2023 23:11:46 -0400
+Received: from smtpbg153.qq.com (smtpbg153.qq.com [13.245.218.24])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D3C21FE3;
+        Sat,  5 Aug 2023 20:11:40 -0700 (PDT)
+X-QQ-mid: bizesmtp84t1691291487tssduu4n
+Received: from linux-lab-host.localdomain ( [116.30.130.12])
+        by bizesmtp.qq.com (ESMTP) with 
+        id ; Sun, 06 Aug 2023 11:11:26 +0800 (CST)
+X-QQ-SSF: 01200000000000E0X000000A0000000
+X-QQ-FEAT: CR3LFp2JE4nboq28VJZElwwxerbkOQA/h6OX31e6jdysPA4Z72TbeYkM7Q4aw
+        q9prSqgqwtPVqTpQjlGJ7/0y8cLdXg8ph4OdeOqnykkYP0ZSzivSKdx97Vypho+dxQw5kqq
+        j/4g0lZhpv270TPFgyYLIsY1UgEG5u7/71CXvC8kErMF65yNU7+RZMJAhT9UiRlZzIA64sP
+        WZ+o7irh9vX63y0vsa+DJU0Aeb/YmiMl0HSEz7IqwhxxIV2DDutP5qdJ/R8wqNp6hC+PXrY
+        7z3q3cW3ZoJSqLpLIbulludgekYZxhlxynkbfRxBtQ5eeVXc9nUk7tCVvPy2gmn9yD+o9gz
+        2t56BrgriflX1tiHo96K7UwwToy9iqkO36RG9by/iS3Qiwt1z1defyT/EzoP6U8A7F1eWtu
+X-QQ-GoodBg: 0
+X-BIZMAIL-ID: 13213960197169536215
+From:   Zhangjin Wu <falcon@tinylab.org>
+To:     w@1wt.eu
+Cc:     arnd@arndb.de, falcon@tinylab.org, linux-kernel@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, tanyuan@tinylab.org,
+        thomas@t-8ch.de
+Subject: Re: [PATCH v6 8/8] selftests/nolibc: customize CROSS_COMPILE for 32/64-bit powerpc
+Date:   Sun,  6 Aug 2023 11:11:25 +0800
+Message-Id: <20230806031125.6800-1-falcon@tinylab.org>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20230805204845.GA7300@1wt.eu>
+References: <20230805204845.GA7300@1wt.eu>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.13.0
-Subject: Re: [PATCH] watchdog/hardlockup: set watchdog_hardlockup_warned to
- true as early as possible
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     dianders@chromium.org, pmladek@suse.com,
-        linux-kernel@vger.kernel.org
-References: <20230805160144.121875-1-liusong@linux.alibaba.com>
- <20230805101705.3a38ce9aacc924f1c9f0842b@linux-foundation.org>
-From:   Liu Song <liusong@linux.alibaba.com>
-In-Reply-To: <20230805101705.3a38ce9aacc924f1c9f0842b@linux-foundation.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-10.0 required=5.0 tests=BAYES_00,
-        ENV_AND_HDR_SPF_MATCH,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        SPF_PASS,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+X-QQ-SENDSIZE: 520
+Feedback-ID: bizesmtp:tinylab.org:qybglogicsvrgz:qybglogicsvrgz5a-1
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi, Willy
 
-在 2023/8/6 01:17, Andrew Morton 写道:
-> When resending, please tell us some more about the effects of the
-> change.  Presumably there are circumstances in which excess output is
-> produced?  If so, describe these circumstances and the observed
-> effects.
+> On Sun, Aug 06, 2023 at 02:47:09AM +0800, Zhangjin Wu wrote:
+> > The little-endian powerpc64le compilers provided by Ubuntu and Fedora
+> > are able to compile big endian kernel and big endian nolibc-test [1].
+> 
+> FWIW I'm wondering why focusing on these ones which have a different
+> naming from the other ones, when I think that most users rely on the
+> ones maintained by Arnd there:
+> 
+>    https://mirrors.edge.kernel.org/pub/tools/crosstool/
+>
 
-Hi,
+Arnd's toolchains may be a more distribution independent ones.
 
-I haven't found duplicate warnings in the real environment.
+> Yours is called powerpc64le while the one above is "powerpc64", it
+> requires to make an exception for this one, I find this a bit odd.
+> 
 
-However, considering that when system occurs hard lockup is basically 
-abnormal, it
+Yes, one is little endian output by default, another may be big endian output
+by default.
 
-seems more reasonable to set "watchdog_hardlockup_warned" to ture, 
-rather than
+> If someone wants to use their distro's cross toolchain, that's fine,
+> but I think that it will depend on distros anyway and some may not
+> even be provided (like loongarch) so I think it would make more sense
+> to adopt the canonical naming from Arnd's toolchains above.
+>
 
-waiting for all kinds of information to be printed.
+Agree very much, let's switch to Arnd's toolchains.
 
+> It's not critical, but as you showed below, it makes building for ppc
+> a little bit cumbersome: those "export" lines could be dropped when
+> using the default names, and that's what we should document as the
+> recommended way to test:
+> 
+> > For example, it is able to build 64-bit nolibc-test with the big endian
+> > powerpc64-linux-gcc crosstool from [2]:
+> > 
+> >     $ wget -c https://mirrors.edge.kernel.org/pub/tools/crosstool/files/bin/x86_64/13.1.0/x86_64-gcc-13.1.0-nolibc-powerpc64-linux.tar.xz
+> >     $ tar xvf x86_64-gcc-13.1.0-nolibc-powerpc64-linux.tar.xz
+> >     $ export PATH=$PWD/gcc-13.1.0-nolibc/powerpc64-linux/bin/:$PATH
+> > 
+> >     $ export CROSS_COMPILE_ppc=powerpc64-linux-
+> >     $ export CROSS_COMPILE_ppc64=powerpc64-linux-
+> >     $ export CROSS_COMPILE_ppc64le=powerpc64-linux-
+> >     $ for arch in ppc ppc64 ppc64le; do \
+> >         make run-user XARCH=$arch | grep "status: "; \
+> >       done
+> 
+> Any opinion on this ?
+>
 
-Thanks
+Ok, let's go this way, if the others are ok for you, could you please
+drop the last two CROSS_COMPILE patches from this v6 ppc series? Thanks.
 
+I will send v2 CROSS_COMPILE series with them, with Arnd's toolchains, the
+whole CROSS_COMPILE series will be unified and become very simple, although
+they need to download the toolchains manually one by one, but it is possible to
+write a common script, but that is another requirement.
+
+BR,
+Zhangjin
+---
+[1]: https://lore.kernel.org/lkml/cover.1691259983.git.falcon@tinylab.org/
+[2]: https://lore.kernel.org/lkml/cover.1691263493.git.falcon@tinylab.org/
+
+> Thanks,
+> Willy
