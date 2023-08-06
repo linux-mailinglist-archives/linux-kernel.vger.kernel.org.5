@@ -2,81 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2CF48771478
-	for <lists+linux-kernel@lfdr.de>; Sun,  6 Aug 2023 12:28:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F164B771461
+	for <lists+linux-kernel@lfdr.de>; Sun,  6 Aug 2023 12:16:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230320AbjHFK2H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 6 Aug 2023 06:28:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47180 "EHLO
+        id S230064AbjHFKQ5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 6 Aug 2023 06:16:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44804 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230124AbjHFK2F (ORCPT
+        with ESMTP id S229483AbjHFKQz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 6 Aug 2023 06:28:05 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA94D128;
-        Sun,  6 Aug 2023 03:28:04 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 59AEB61015;
-        Sun,  6 Aug 2023 10:28:04 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B3AE6C433C7;
-        Sun,  6 Aug 2023 10:28:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691317683;
-        bh=HvLJ++4+vllHa04qfBVc6aFLPg2QE1A25oIoz1ifOtc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=R/mNEtwLJQozWj7lttks60F4QC8ZMMAMXF++8wBpKcn28YasY6/QrZ9RshtO31jZf
-         QnUnip3lJ9tgNpiS65Pk0+CeX61AxClmtY85zkc9J3pilo3AW9JmxJNvspeVhKVy4L
-         TIVqzihHsf8CCA8nkgG9bapmxHicOz8c3J7XQCkAuos/tV2LsgH+JBmfc65V03LfEj
-         t6UxIX25U7inBteX4vEPrK69N9M/LTI6ixGfLkMa2yqvc+jwLQrTO+6RYaBnBWFPIK
-         CydrhvQtkK8fi5WCXWuWkQSo4zvhFJm3fbRyxeKADQIX6TKtF0Ne9DnwYMsSZdKzCX
-         ZDjlNhn/AlEUw==
-Date:   Sun, 6 Aug 2023 18:16:23 +0800
-From:   Jisheng Zhang <jszhang@kernel.org>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Ilpo =?utf-8?B?SsOkcnZpbmVu?= <ilpo.jarvinen@linux.intel.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        linux-serial@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 0/2] serial: 8250_dw: fall back to poll if there's no
- interrupt
-Message-ID: <ZM9y93rVVnIIQzzP@xhacker>
-References: <20230806092056.2467-1-jszhang@kernel.org>
- <2023080643-chalice-exploring-e7ca@gregkh>
+        Sun, 6 Aug 2023 06:16:55 -0400
+Received: from smtpbgsg2.qq.com (smtpbgsg2.qq.com [54.254.200.128])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D64B131;
+        Sun,  6 Aug 2023 03:16:51 -0700 (PDT)
+X-QQ-mid: bizesmtp86t1691316998tvucykia
+Received: from linux-lab-host.localdomain ( [116.30.130.12])
+        by bizesmtp.qq.com (ESMTP) with 
+        id ; Sun, 06 Aug 2023 18:16:37 +0800 (CST)
+X-QQ-SSF: 01200000000000E0X000000A0000000
+X-QQ-FEAT: zT6n3Y95oi3UNBq/05tBwfN55E8F18HQLKieo6XoWqFlFdZ4Ww8tTuCZhEv96
+        1J91u0seLhK/NAc69RMunx9iy5hL9Qzb2ww2dC0niCNoAcS4v/Ws10Y1PXDhlBs05jPuF/R
+        3lqIn4CbvtqAo/exiy3Q1hgkbZu9BldgDax85supGkDY7sNInD06V+ChRpkn3Ef7lD2PZvL
+        GJvwM8SV+C5+6MvFdQHW+b2TajwusYHvmi59SFpW2RXroLOXmCYEa0zMgOfSeKGZnLXoeGx
+        fkrxYNKD8lW4RkKs0Hed8IhQefR/iZJ9iyMtIpb7fz/Ogy61Tymnawu+ePGIeOjEmXnLU+k
+        01NPgsXhGgfMkYZODlzt5Dzf24Mtxc1jfp27BztU3nFHjRDMU48V9YAweQ7Pg==
+X-QQ-GoodBg: 0
+X-BIZMAIL-ID: 16725939209030767129
+From:   Zhangjin Wu <falcon@tinylab.org>
+To:     w@1wt.eu
+Cc:     arnd@arndb.de, falcon@tinylab.org, linux-kernel@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, tanyuan@tinylab.org,
+        thomas@t-8ch.de
+Subject: Re: [PATCH v6 7/8] selftests/nolibc: allow customize CROSS_COMPILE by architecture
+Date:   Sun,  6 Aug 2023 18:16:36 +0800
+Message-Id: <20230806101636.14407-1-falcon@tinylab.org>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20230806100410.GC10627@1wt.eu>
+References: <20230806100410.GC10627@1wt.eu>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <2023080643-chalice-exploring-e7ca@gregkh>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-QQ-SENDSIZE: 520
+Feedback-ID: bizesmtp:tinylab.org:qybglogicsvrgz:qybglogicsvrgz5a-1
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Aug 06, 2023 at 12:20:11PM +0200, Greg Kroah-Hartman wrote:
-> On Sun, Aug 06, 2023 at 05:20:54PM +0800, Jisheng Zhang wrote:
-> > When there's no irq(this can be due to various reasons, for example,
-> > no irq from HW support, or we just want to use poll solution, and so
-> > on), falling back to poll is still better than no support at all.
+It uses 'eval $(1) = $(2)' style, no real 'override' as the name shows
+;-)
+
+> > But you did find a bug above, we should include it again here to avoid not
+> > break the possibility of using llvm (still require to check if there are some
+> > other regressions):
+> > 
+> >    include ../../../scripts/Makefile.include
+> > 
+> > And I have further found there is another cc-cross-prefix helper from:
+> > 
+> >     $ grep cc-cross-prefix -ur scripts/
+> >     scripts/Makefile.compiler:# cc-cross-prefix
+> >     scripts/Makefile.compiler:# Usage: CROSS_COMPILE := $(call cc-cross-prefix, m68k-linux-gnu- m68k-linux-)
+> >     scripts/Makefile.compiler:cc-cross-prefix = $(firstword $(foreach c, $(1), \
+> > 
+> > So, we are able to search the toolchains from Arnd's, local toolchains and ...,
+> > may not need to force users to use which one, I will do more tests on it.
+> > 
+> > Please don't merge this patch too, to avoid break anything, let's tune it
+> > carefully in our v2 and delay the whole stuff to v6.7.
 > 
-> Ouch, really?  Why not just fix the hardware instead?
-> 
+> OK. Note that in the end it might be less difficult to try to set
+> CROSS_COMPILE *before* including the general include instead of
+> after: we could preset CROSS_COMPILE based on the ARCH/XARCH we know
+> at this step, as this is not expected to rely on auto-detection.
+>
 
-Hi Greg,
+A simple tests shows, we are able to simply move the include after our
+customize lines:
 
-The HW may be designed as that to save interrupt lines if the uart
-is dedicated to debug purpose. I also see similar support in other
-uart drivers, for example liteuart.c, altera_uart.c, altera_jtaguart.c
-8250_ioc3.c and so on.
+    diff --git a/tools/testing/selftests/nolibc/Makefile b/tools/testing/selftests/nolibc/Makefile
+    index 1f7c36fbe083..ed21dc393dc0 100644
+    --- a/tools/testing/selftests/nolibc/Makefile
+    +++ b/tools/testing/selftests/nolibc/Makefile
+    @@ -1,6 +1,4 @@
+     # SPDX-License-Identifier: GPL-2.0
+    -# Makefile for nolibc tests
+    -include ../../../scripts/Makefile.include
+     # We need this for the "cc-option" macro.
+     include ../../../build/Build.include
 
-Thanks
+    diff --git a/tools/testing/selftests/nolibc/Makefile b/tools/testing/selftests/nolibc/Makefile
+    index 228a95e65113..91a2a546954c 100644
+    --- a/tools/testing/selftests/nolibc/Makefile
+    +++ b/tools/testing/selftests/nolibc/Makefile
+    @@ -55,6 +55,12 @@ IMAGE_loongarch  = arch/loongarch/boot/vmlinuz.efi
+     IMAGE            = $(IMAGE_$(XARCH))
+     IMAGE_NAME       = $(notdir $(IMAGE))
+
+    +# CROSS_COMPILE: cross toolchain prefix by architecture
+    +CROSS_COMPILE           ?= $(CROSS_COMPILE_$(XARCH))
+    +
+    +# make sure CC is prefixed with CROSS_COMPILE
+    +include ../../../scripts/Makefile.include
+
+Thanks,
+Zhangjin
+
+> Willy
