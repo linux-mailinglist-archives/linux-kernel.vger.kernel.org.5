@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 328AB77155A
-	for <lists+linux-kernel@lfdr.de>; Sun,  6 Aug 2023 15:42:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 23EF277155C
+	for <lists+linux-kernel@lfdr.de>; Sun,  6 Aug 2023 15:42:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230280AbjHFNl5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 6 Aug 2023 09:41:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43652 "EHLO
+        id S230288AbjHFNmJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 6 Aug 2023 09:42:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43710 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229480AbjHFNlz (ORCPT
+        with ESMTP id S229480AbjHFNmF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 6 Aug 2023 09:41:55 -0400
-Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2317AA9;
-        Sun,  6 Aug 2023 06:41:54 -0700 (PDT)
-Received: by mail-ej1-x636.google.com with SMTP id a640c23a62f3a-99bf3f59905so542121066b.3;
-        Sun, 06 Aug 2023 06:41:54 -0700 (PDT)
+        Sun, 6 Aug 2023 09:42:05 -0400
+Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB2F6EB;
+        Sun,  6 Aug 2023 06:42:03 -0700 (PDT)
+Received: by mail-ej1-x629.google.com with SMTP id a640c23a62f3a-99c1c66876aso506611866b.2;
+        Sun, 06 Aug 2023 06:42:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1691329312; x=1691934112;
+        d=gmail.com; s=20221208; t=1691329322; x=1691934122;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=8h3l0kW2b6vVfnZeHC4Hn3Bn63sg4aqSIG5QO3j6yF0=;
-        b=F1gSaB7ak6JbrTNLC24zZlh6p0MBTNNa3UQrtJmMhG8OW+MYTzHrrDMrc5BCPvUsW9
-         7eoX99pLowYOQ1BdY5bpHxMCNoMq+hkEj2+vgYqYxPkCRwm3ZC+5HLseMoKpGp9+33kR
-         NKB+2ayaBYWhdWCrrl5NcY5AnSYCDscuMAAQ/UWzpagRU26xxRGqQw6liXNPwrz7w4qF
-         pKlQ8lUVzB3GMdJ3pVLXMfok3HGaKcivRe6RLQplbrPLAb3TQp8aO7uTbFe8Wfy0IfK5
-         cmyx4VjAvS8ztZOwCr4VoOa+eedJGXRzTdis+SQy8bz19IhjNMk8qmSBfrw5Yuj61l+k
-         LNAg==
+        bh=WALMtuY1q1u1v35LOtFmRB/W8nnlZgs+IUgJZUZJB0U=;
+        b=A9eYjVViIUx+U9ndZZB3LBOJzWoPLQQrEzAEL8Mmh8TnVNZQc49pdCRWQtj7JtEb8F
+         0tNn3ojMm1cKd9dr2sxCx6/vFzf+jpu5Kd4RaOQXaSid6j+L9y0rqjwyqIxf2e1u1tBo
+         vIfHBOdNcjKUa+fMQpcTiqjkOH1Ap8DCmcBGPA+4SX6s33/zxJgv2x2GBU80D1eS615v
+         d5Zyyyn4HcR4Ue0IkRmXchg4PytWoPG71mKFn4LRymr8C61l3fKnD29mjGP83m25/l4H
+         6ToQEEC93r3Yo6MU1ofAcdVDVHwB48A52JhneL9DoWPa9ye7Qt4P8D5I7ioz5dOuT5R/
+         AVAA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691329312; x=1691934112;
+        d=1e100.net; s=20221208; t=1691329322; x=1691934122;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=8h3l0kW2b6vVfnZeHC4Hn3Bn63sg4aqSIG5QO3j6yF0=;
-        b=ib+RlTzCMSeJmwF+opNU42B4QXQ6s0nsvCDcHNYvAGVeHx5PMGnlUHLAz3lIQsnbmS
-         oqxTALQaXKYxJhz5joYVBBkXVm3qkAmUt9AXDJVxViqEjQckr+Z/b16ZSCoLi0BCEYnM
-         jqtL04BpcSJlgSUoCyZHzXSNSBROU/pt8i2T9EbhmKA6bzAUYSMPyhtZMJWk3vM/UQQH
-         /Pc4FL1JhCcwxCoZCoCf15my1MzvpF0FFZUnp+IDMZ4lbsKGIki69yvyBsExSeCGTAnq
-         XZ5Umj10Kya3PHaEYIoyz5v6DXz2iSaSydIFSHVi+NOI8xnVSnbPQ5Sntcw/nszgUh93
-         0lUg==
-X-Gm-Message-State: AOJu0Yy7Ii7N1td47fQs5tyZrCYjN959uwBVCjPIAJpvoKdfN+wNqiCU
-        g9LE7BwvD9s4CLPwzqoXylM=
-X-Google-Smtp-Source: AGHT+IGtCrikG4mrC+gYRcFUweuBPrubVvV5N14YOGnArL2nkxMEhLWlK00Pz+lMgPhSP5zX1nqiIQ==
-X-Received: by 2002:a17:906:20d5:b0:99b:237e:6ee with SMTP id c21-20020a17090620d500b0099b237e06eemr7127559ejc.30.1691329309975;
-        Sun, 06 Aug 2023 06:41:49 -0700 (PDT)
+        bh=WALMtuY1q1u1v35LOtFmRB/W8nnlZgs+IUgJZUZJB0U=;
+        b=Nej6M4VQw2jH+AMZmtx7tJczILOy3CeSih/RGEgnPzgDV3UlhEFKwXcXWORSJ1h8Ex
+         1sRGZQzlRhVJ/OAhm504m+L/BXZlwTOFHH6rN9sRNaDbUzCy8FxALkvNQJMk70Giayvu
+         VjumnNntWkDGOiI4JH+PcW6JaSbu9pA/2WnG4A15vv+dGVTwk36aIB6ETDClGJ/xPNgB
+         P121AV3LQLO1sQaYxm3PY0SrxcGFLLOZaZb4ytTNJZrWILWs4KBwdv+gl/vVfrAm5wv9
+         1IDiYGkB7SnHr4cJPeGlsqDTYfRnL2ldi+9BPTFn9dx+30LXywQ1aESgM2ZJxvnYblsD
+         6B1A==
+X-Gm-Message-State: AOJu0YweU7XbIrUugLS2sJZbkWK3AzcVHdojJo+DUhz0HY/YdeYXuVv8
+        rELVhMEKFxeN63ZX5uOedss=
+X-Google-Smtp-Source: AGHT+IEtEzCGJpEmyOm8rqHxaOABvTf08nsDkY1uDvN0+mjBqCJOh9uBwh7X4BPVJzO7KxvRNvs3og==
+X-Received: by 2002:a17:906:142:b0:99b:d698:152e with SMTP id 2-20020a170906014200b0099bd698152emr6406034ejh.42.1691329322434;
+        Sun, 06 Aug 2023 06:42:02 -0700 (PDT)
 Received: from jernej-laptop.localnet (82-149-1-233.dynamic.telemach.net. [82.149.1.233])
-        by smtp.gmail.com with ESMTPSA id a8-20020a170906244800b00992b2c55c67sm3976871ejb.156.2023.08.06.06.41.48
+        by smtp.gmail.com with ESMTPSA id bg14-20020a170906a04e00b009786c8249d6sm4001307ejb.175.2023.08.06.06.42.01
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 06 Aug 2023 06:41:49 -0700 (PDT)
+        Sun, 06 Aug 2023 06:42:01 -0700 (PDT)
 From:   Jernej =?utf-8?B?xaBrcmFiZWM=?= <jernej.skrabec@gmail.com>
 To:     Maxime Ripard <mripard@kernel.org>,
         Michael Turquette <mturquette@baylibre.com>,
@@ -60,12 +60,12 @@ To:     Maxime Ripard <mripard@kernel.org>,
 Cc:     linux-clk@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
         linux-sunxi@lists.linux.dev, linux-kernel@vger.kernel.org,
         Frank Oltmanns <frank@oltmanns.dev>
-Subject: Re: [PATCH v5 05/11] clk: sunxi-ng: Add helper function to find closest rate
-Date:   Sun, 06 Aug 2023 15:41:48 +0200
-Message-ID: <8292789.NyiUUSuA9g@jernej-laptop>
-In-Reply-To: <20230806-pll-mipi_set_rate_parent-v5-5-db4f5ca33fc3@oltmanns.dev>
+Subject: Re: [PATCH v5 06/11] clk: sunxi-ng: nm: Support finding closest rate
+Date:   Sun, 06 Aug 2023 15:42:00 +0200
+Message-ID: <3432648.QJadu78ljV@jernej-laptop>
+In-Reply-To: <20230806-pll-mipi_set_rate_parent-v5-6-db4f5ca33fc3@oltmanns.dev>
 References: <20230806-pll-mipi_set_rate_parent-v5-0-db4f5ca33fc3@oltmanns.dev>
- <20230806-pll-mipi_set_rate_parent-v5-5-db4f5ca33fc3@oltmanns.dev>
+ <20230806-pll-mipi_set_rate_parent-v5-6-db4f5ca33fc3@oltmanns.dev>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7Bit
 Content-Type: text/plain; charset="us-ascii"
@@ -79,13 +79,20 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dne nedelja, 06. avgust 2023 ob 15:06:50 CEST je Frank Oltmanns napisal(a):
-> The default behaviour of clocks in the sunxi-ng driver is to select a
-> clock rate that is closest to but less than the requested rate.
+Dne nedelja, 06. avgust 2023 ob 15:06:51 CEST je Frank Oltmanns napisal(a):
+> Use the helper function ccu_is_better_rate() to determine the rate that
+> is closest to the requested rate, thereby supporting rates that are
+> higher than the requested rate if the clock uses the
+> CCU_FEATURE_CLOSEST_RATE.
 > 
-> Add the ccu_is_better_rate() helper function that - depending on the
-> fact if thc CCU_FEATURE_CLOSEST_RATE flag is set - decides if a rate is
-> closer than another rate.
+> Add the macro SUNXI_CCU_NM_WITH_FRAC_GATE_LOCK_MIN_MAX_CLOSEST which
+> sets CCU_FEATURE_CLOSEST_RATE.
+> 
+> To avoid code duplication, add the macros
+> SUNXI_CCU_NM_WITH_FRAC_GATE_LOCK_MIN_MAX_FEAT that allows selecting
+> arbitrary features and use it in the original
+> SUNXI_CCU_NM_WITH_FRAC_GATE_LOCK_MIN_MAX as well as the newly introduced
+> SUNXI_CCU_NM_WITH_FRAC_GATE_LOCK_MIN_MAX_CLOSEST macros.
 > 
 > Acked-by: Maxime Ripard <mripard@kernel.org>
 > Signed-off-by: Frank Oltmanns <frank@oltmanns.dev>
@@ -96,50 +103,200 @@ Best regards,
 Jernej
 
 > ---
->  drivers/clk/sunxi-ng/ccu_common.c | 12 ++++++++++++
->  drivers/clk/sunxi-ng/ccu_common.h |  5 +++++
->  2 files changed, 17 insertions(+)
+>  drivers/clk/sunxi-ng/ccu_nm.c | 13 +++++-------
+>  drivers/clk/sunxi-ng/ccu_nm.h | 48
+> ++++++++++++++++++++++++++++++++++++++++--- 2 files changed, 50
+> insertions(+), 11 deletions(-)
 > 
-> diff --git a/drivers/clk/sunxi-ng/ccu_common.c
-> b/drivers/clk/sunxi-ng/ccu_common.c index 8d28a7a079d0..8babce55302f 100644
-> --- a/drivers/clk/sunxi-ng/ccu_common.c
-> +++ b/drivers/clk/sunxi-ng/ccu_common.c
-> @@ -39,6 +39,18 @@ void ccu_helper_wait_for_lock(struct ccu_common *common,
-> u32 lock) }
->  EXPORT_SYMBOL_NS_GPL(ccu_helper_wait_for_lock, SUNXI_CCU);
+> diff --git a/drivers/clk/sunxi-ng/ccu_nm.c b/drivers/clk/sunxi-ng/ccu_nm.c
+> index c1fd11542c45..ffac3deb89d6 100644
+> --- a/drivers/clk/sunxi-ng/ccu_nm.c
+> +++ b/drivers/clk/sunxi-ng/ccu_nm.c
+> @@ -27,8 +27,8 @@ static unsigned long ccu_nm_calc_rate(unsigned long
+> parent, return rate;
+>  }
 > 
-> +bool ccu_is_better_rate(struct ccu_common *common,
-> +			unsigned long target_rate,
-> +			unsigned long current_rate,
-> +			unsigned long best_rate)
-> +{
-> +	if (common->features & CCU_FEATURE_CLOSEST_RATE)
-> +		return abs(current_rate - target_rate) < abs(best_rate - 
-target_rate);
+> -static unsigned long ccu_nm_find_best(unsigned long parent, unsigned long
+> rate, -				      struct _ccu_nm *nm)
+> +static unsigned long ccu_nm_find_best(struct ccu_common *common, unsigned
+> long parent, +				      unsigned long 
+rate, struct _ccu_nm *nm)
+>  {
+>  	unsigned long best_rate = 0;
+>  	unsigned long best_n = 0, best_m = 0;
+> @@ -39,10 +39,7 @@ static unsigned long ccu_nm_find_best(unsigned long
+> parent, unsigned long rate, unsigned long tmp_rate =
+> ccu_nm_calc_rate(parent,
+>  								
+  _n, _m);
+> 
+> -			if (tmp_rate > rate)
+> -				continue;
+> -
+> -			if ((rate - tmp_rate) < (rate - best_rate)) 
+{
+> +			if (ccu_is_better_rate(common, rate, 
+tmp_rate, best_rate)) {
+>  				best_rate = tmp_rate;
+>  				best_n = _n;
+>  				best_m = _m;
+> @@ -159,7 +156,7 @@ static long ccu_nm_round_rate(struct clk_hw *hw,
+> unsigned long rate, _nm.min_m = 1;
+>  	_nm.max_m = nm->m.max ?: 1 << nm->m.width;
+> 
+> -	rate = ccu_nm_find_best(*parent_rate, rate, &_nm);
+> +	rate = ccu_nm_find_best(&nm->common, *parent_rate, rate, &_nm);
+> 
+>  	if (nm->common.features & CCU_FEATURE_FIXED_POSTDIV)
+>  		rate /= nm->fixed_post_div;
+> @@ -210,7 +207,7 @@ static int ccu_nm_set_rate(struct clk_hw *hw, unsigned
+> long rate, &_nm.m, &_nm.n);
+>  	} else {
+>  		ccu_sdm_helper_disable(&nm->common, &nm->sdm);
+> -		ccu_nm_find_best(parent_rate, rate, &_nm);
+> +		ccu_nm_find_best(&nm->common, parent_rate, rate, &_nm);
+>  	}
+> 
+>  	spin_lock_irqsave(nm->common.lock, flags);
+> diff --git a/drivers/clk/sunxi-ng/ccu_nm.h b/drivers/clk/sunxi-ng/ccu_nm.h
+> index 2904e67f05a8..93c11693574f 100644
+> --- a/drivers/clk/sunxi-ng/ccu_nm.h
+> +++ b/drivers/clk/sunxi-ng/ccu_nm.h
+> @@ -108,7 +108,7 @@ struct ccu_nm {
+>  		},					
+		\
+>  	}
+> 
+> -#define SUNXI_CCU_NM_WITH_FRAC_GATE_LOCK_MIN_MAX(_struct, _name,	\
+> +#define SUNXI_CCU_NM_WITH_FRAC_GATE_LOCK_MIN_MAX_FEAT(_struct, _name,	\
+>  						 _parent, 
+_reg,		\
+>  						 _min_rate, 
+_max_rate,	\
+>  						 _nshift, 
+_nwidth,	\
+> @@ -116,7 +116,8 @@ struct ccu_nm {
+>  						 _frac_en, 
+_frac_sel,	\
+>  						 
+_frac_rate_0,		\
+>  						 
+_frac_rate_1,		\
+> -						 _gate, 
+_lock, _flags)	\
+> +						 _gate, 
+_lock, _flags,	\
+> +						 _features)	
+	\
+>  	struct ccu_nm _struct = {					
+\
+>  		.enable		= _gate,			
+	\
+>  		.lock		= _lock,			
+	\
+> @@ -129,7 +130,7 @@ struct ccu_nm {
+>  		.max_rate	= _max_rate,				
+\
+>  		.common		= {				
+	\
+>  			.reg		= _reg,		
+		\
+> -			.features	= CCU_FEATURE_FRACTIONAL,	
+\
+> +			.features	= _features,			
+\
+>  			.hw.init	= CLK_HW_INIT(_name,		
+\
+>  						      
+_parent,		\
+>  						      
+&ccu_nm_ops,	\
+> @@ -137,6 +138,47 @@ struct ccu_nm {
+>  		},					
+		\
+>  	}
+> 
+> +#define SUNXI_CCU_NM_WITH_FRAC_GATE_LOCK_MIN_MAX(_struct, _name,	\
+> +						 _parent, 
+_reg,		\
+> +						 _min_rate, 
+_max_rate,	\
+> +						 _nshift, 
+_nwidth,	\
+> +						 _mshift, 
+_mwidth,	\
+> +						 _frac_en, 
+_frac_sel,	\
+> +						 
+_frac_rate_0,		\
+> +						 
+_frac_rate_1,		\
+> +						 _gate, 
+_lock, _flags)	\
+> +	SUNXI_CCU_NM_WITH_FRAC_GATE_LOCK_MIN_MAX_FEAT(_struct, _name,	\
+> +						_parent, 
+_reg,		\
+> +						_min_rate, 
+_max_rate,	\
+> +						_nshift, 
+_nwidth,	\
+> +						_mshift, 
+_mwidth,	\
+> +						_frac_en, 
+_frac_sel,	\
+> +						
+_frac_rate_0,		\
+> +						
+_frac_rate_1,		\
+> +						_gate, 
+_lock, _flags,	\
+> +						
+CCU_FEATURE_FRACTIONAL)
 > +
-> +	return current_rate <= target_rate && current_rate > best_rate;
-> +}
-> +EXPORT_SYMBOL_NS_GPL(ccu_is_better_rate, SUNXI_CCU);
+> +#define SUNXI_CCU_NM_WITH_FRAC_GATE_LOCK_MIN_MAX_CLOSEST(_struct, _name, \
+> +						 _parent, 
+_reg,		\
+> +						 _min_rate, 
+_max_rate,	\
+> +						 _nshift, 
+_nwidth,	\
+> +						 _mshift, 
+_mwidth,	\
+> +						 _frac_en, 
+_frac_sel,	\
+> +						 
+_frac_rate_0,		\
+> +						 
+_frac_rate_1,		\
+> +						 _gate, 
+_lock, _flags)	\
+> +	SUNXI_CCU_NM_WITH_FRAC_GATE_LOCK_MIN_MAX_FEAT(_struct, _name,	\
+> +						_parent, 
+_reg,		\
+> +						_min_rate, 
+_max_rate,	\
+> +						_nshift, 
+_nwidth,	\
+> +						_mshift, 
+_mwidth,	\
+> +						_frac_en, 
+_frac_sel,	\
+> +						
+_frac_rate_0,		\
+> +						
+_frac_rate_1,		\
+> +						_gate, 
+_lock, _flags,	\
+> +						
+CCU_FEATURE_FRACTIONAL |\
+> +						
+CCU_FEATURE_CLOSEST_RATE)
 > +
->  /*
->   * This clock notifier is called when the frequency of a PLL clock is
->   * changed. In common PLL designs, changes to the dividers take effect
-> diff --git a/drivers/clk/sunxi-ng/ccu_common.h
-> b/drivers/clk/sunxi-ng/ccu_common.h index 5ad219f041d5..942a72c09437 100644
-> --- a/drivers/clk/sunxi-ng/ccu_common.h
-> +++ b/drivers/clk/sunxi-ng/ccu_common.h
-> @@ -53,6 +53,11 @@ struct sunxi_ccu_desc {
-> 
->  void ccu_helper_wait_for_lock(struct ccu_common *common, u32 lock);
-> 
-> +bool ccu_is_better_rate(struct ccu_common *common,
-> +			unsigned long target_rate,
-> +			unsigned long current_rate,
-> +			unsigned long best_rate);
-> +
->  struct ccu_pll_nb {
->  	struct notifier_block	clk_nb;
->  	struct ccu_common	*common;
+>  #define SUNXI_CCU_NM_WITH_GATE_LOCK(_struct, _name, _parent, _reg,	\
+>  				    _nshift, _nwidth,		
+	\
+>  				    _mshift, _mwidth,		
+	\
 
 
 
