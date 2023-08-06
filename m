@@ -2,427 +2,217 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A5F19771444
-	for <lists+linux-kernel@lfdr.de>; Sun,  6 Aug 2023 11:57:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E1151771446
+	for <lists+linux-kernel@lfdr.de>; Sun,  6 Aug 2023 11:59:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230221AbjHFJ5l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 6 Aug 2023 05:57:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40504 "EHLO
+        id S230226AbjHFJ7F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 6 Aug 2023 05:59:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40896 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229449AbjHFJ5i (ORCPT
+        with ESMTP id S229449AbjHFJ7C (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 6 Aug 2023 05:57:38 -0400
-Received: from todd.t-8ch.de (todd.t-8ch.de [159.69.126.157])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5BDFC199A;
-        Sun,  6 Aug 2023 02:57:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=t-8ch.de; s=mail;
-        t=1691315848; bh=UOudPQ3/CO6UhHrP74TKs9Fd6sG7RIO9+W6jZ5EZKi0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=hwj4q8X/jYU7lMagWk7uy6UBEsuN65oXebuyeYiheicALLfN3o7K4Z0ZURgDjCwYp
-         DJtTf4THoC5fueJi3OLA5dixDLlNr/ptVHEIX9ei33PC+KHz+5+YZ6oCKgcWf9hqbG
-         TOu8w0t1iDFeYuRiOHRxzZceVolzOlXeboo9RsvI=
-Date:   Sun, 6 Aug 2023 11:57:27 +0200
-From:   Thomas =?utf-8?Q?Wei=C3=9Fschuh?= <thomas@t-8ch.de>
-To:     Julius Zint <julius@zint.sh>
-Cc:     Lee Jones <lee@kernel.org>,
-        Daniel Thompson <daniel.thompson@linaro.org>,
-        Jingoo Han <jingoohan1@gmail.com>,
-        Helge Deller <deller@gmx.de>, linux-kernel@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org
-Subject: Re: [PATCH v2 1/1] backlight: hid_bl: Add VESA virtual control panel
- HID backlight driver
-Message-ID: <c5795366-f018-431d-bea4-a7f7bcc39d9d@t-8ch.de>
-References: <20230806091403.10002-1-julius@zint.sh>
- <20230806091403.10002-2-julius@zint.sh>
+        Sun, 6 Aug 2023 05:59:02 -0400
+Received: from 1wt.eu (ded1.1wt.eu [163.172.96.212])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 096A011D;
+        Sun,  6 Aug 2023 02:59:00 -0700 (PDT)
+Received: (from willy@localhost)
+        by pcw.home.local (8.15.2/8.15.2/Submit) id 3769wk4o012323;
+        Sun, 6 Aug 2023 11:58:46 +0200
+Date:   Sun, 6 Aug 2023 11:58:46 +0200
+From:   Willy Tarreau <w@1wt.eu>
+To:     Zhangjin Wu <falcon@tinylab.org>
+Cc:     arnd@arndb.de, david.laight@aculab.com,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        thomas@t-8ch.de
+Subject: Re: [PATCH v6 06/15] tools/nolibc: __sysret: support syscalls who
+ return a pointer
+Message-ID: <20230806095846.GB10627@1wt.eu>
+References: <cover.1688739492.git.falcon@tinylab.org>
+ <11fd815773f7d202d329ac2c64cd6980b32e4fcf.1688739492.git.falcon@tinylab.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230806091403.10002-2-julius@zint.sh>
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIM_INVALID,
-        DKIM_SIGNED,RCVD_IN_DNSWL_BLOCKED,SPF_PASS,T_SPF_HELO_TEMPERROR
-        autolearn=no autolearn_force=no version=3.4.6
+In-Reply-To: <11fd815773f7d202d329ac2c64cd6980b32e4fcf.1688739492.git.falcon@tinylab.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Hi Zhangjin,
 
-this should probably also go to the maintainers of the "HID CORE LAYER"
-for review:
-
-HID CORE LAYER
-M:	Jiri Kosina <jikos@kernel.org>
-M:	Benjamin Tissoires <benjamin.tissoires@redhat.com>
-L:	linux-input@vger.kernel.org
-
-And maybe it would better fit to be in  drivers/hid/ ?
-(Something for the maintainers to figure out)
-
-Some tiny review comments inline.
-
-On 2023-08-06 11:14:03+0200, Julius Zint wrote:
-> The HID spec defines the following Usage IDs (p. 345 ff):
+On Fri, Jul 07, 2023 at 10:56:59PM +0800, Zhangjin Wu wrote:
+> No official reference states the errno range, here aligns with musl and
+> glibc and uses [-MAX_ERRNO, -1] instead of all negative ones.
 > 
-> - Monitor Page (0x80) -> Monitor Control (0x01)
-> - VESA Virtual Controls Page (0x82) -> Brightness (0x10)
+> - musl: src/internal/syscall_ret.c
+> - glibc: sysdeps/unix/sysv/linux/sysdep.h
 > 
-> Apple made use of them in their Apple Studio Display and most likely on
-> other external displays (LG UltraFine 5k, Pro Display XDR).
+> The MAX_ERRNO used by musl and glibc is 4095, just like the one nolibc
+> defined in tools/include/nolibc/errno.h.
 > 
-> The driver will work for any HID device with a report, where the
-> application matches the Monitor Control Usage ID and:
-> 
-> 1. An Input field in this report with the Brightness Usage ID (to get
->    the current brightness)
-> 2. A Feature field in this report with the Brightness Usage ID (to
->    set the current brightness)
-> 
-> This driver has been developed and tested with the Apple Studio Display.
-> Here is a small excerpt from the decoded HID descriptor showing the
-> feature field for setting the brightness:
-> 
->   Usage Page (Monitor VESA VCP),  ; Monitor VESA VPC (82h, monitor page)
->   Usage (10h, Brightness),
->   Logical Minimum (400),
->   Logical Maximum (60000),
->   Unit (Centimeter^-2 * Candela),
->   Unit Exponent (14),
->   Report Size (32),
->   Report Count (1),
->   Feature (Variable, Null State),
-> 
-> The full HID descriptor dump is available as a comment in the source
-> code.
-> 
-> Signed-off-by: Julius Zint <julius@zint.sh>
+> Suggested-by: Willy Tarreau <w@1wt.eu>
+> Link: https://lore.kernel.org/lkml/ZKKdD%2Fp4UkEavru6@1wt.eu/
+> Suggested-by: David Laight <David.Laight@ACULAB.COM>
+> Link: https://lore.kernel.org/linux-riscv/94dd5170929f454fbc0a10a2eb3b108d@AcuMS.aculab.com/
+> Signed-off-by: Zhangjin Wu <falcon@tinylab.org>
 > ---
->  drivers/video/backlight/Kconfig  |   8 +
->  drivers/video/backlight/Makefile |   1 +
->  drivers/video/backlight/hid_bl.c | 267 +++++++++++++++++++++++++++++++
->  3 files changed, 276 insertions(+)
->  create mode 100644 drivers/video/backlight/hid_bl.c
+>  tools/include/nolibc/sys.h | 17 ++++++++++++-----
+>  1 file changed, 12 insertions(+), 5 deletions(-)
 > 
-> diff --git a/drivers/video/backlight/Kconfig b/drivers/video/backlight/Kconfig
-> index 51387b1ef012..b964a820956d 100644
-> --- a/drivers/video/backlight/Kconfig
-> +++ b/drivers/video/backlight/Kconfig
-> @@ -472,6 +472,14 @@ config BACKLIGHT_LED
->  	  If you have a LCD backlight adjustable by LED class driver, say Y
->  	  to enable this driver.
+> diff --git a/tools/include/nolibc/sys.h b/tools/include/nolibc/sys.h
+> index 53bc3ad6593e..3479f54d7957 100644
+> --- a/tools/include/nolibc/sys.h
+> +++ b/tools/include/nolibc/sys.h
+> @@ -28,13 +28,20 @@
+>  #include "errno.h"
+>  #include "types.h"
 >  
-> +config BACKLIGHT_HID
-> +	tristate "VESA VCP HID Backlight Driver"
-> +	depends on HID
-> +	help
-> +	  If you have an external display with VESA compliant HID brightness
-> +	  controls then say Y to enable this backlight driver. Currently the
-> +	  only supported device is the Apple Studio Display.
+> -/* Syscall return helper, set errno as -ret when ret < 0 */
 > +
->  endif # BACKLIGHT_CLASS_DEVICE
->  
->  endmenu
-> diff --git a/drivers/video/backlight/Makefile b/drivers/video/backlight/Makefile
-> index f72e1c3c59e9..835f9b8772c7 100644
-> --- a/drivers/video/backlight/Makefile
-> +++ b/drivers/video/backlight/Makefile
-> @@ -58,3 +58,4 @@ obj-$(CONFIG_BACKLIGHT_WM831X)		+= wm831x_bl.o
->  obj-$(CONFIG_BACKLIGHT_ARCXCNN) 	+= arcxcnn_bl.o
->  obj-$(CONFIG_BACKLIGHT_RAVE_SP)		+= rave-sp-backlight.o
->  obj-$(CONFIG_BACKLIGHT_LED)		+= led_bl.o
-> +obj-$(CONFIG_BACKLIGHT_HID)		+= hid_bl.o
-> diff --git a/drivers/video/backlight/hid_bl.c b/drivers/video/backlight/hid_bl.c
-> new file mode 100644
-> index 000000000000..1b9cbaa1551c
-> --- /dev/null
-> +++ b/drivers/video/backlight/hid_bl.c
-> @@ -0,0 +1,267 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +#include <linux/device.h>
-> +#include <linux/hid.h>
-> +#include <linux/module.h>
-> +#include <linux/backlight.h>
-> +
-> +#define APPLE_STUDIO_DISPLAY_VENDOR_ID  0x05ac
-> +#define APPLE_STUDIO_DISPLAY_PRODUCT_ID 0x1114
-> +
-> +#define HID_USAGE_MONITOR_CTRL			0x800001
-> +#define HID_USAGE_VESA_VCP_BRIGHTNESS		0x820010
-> +
-> +/*
-> + * Apple Studio Display HID report descriptor
+> +/* Syscall return helper for library routines, set errno as -ret when ret is in
+> + * range of [-MAX_ERRNO, -1]
 > + *
-> + * Usage Page (Monitor),               ; USB monitor (80h, monitor page)
-> + * Usage (01h),
-> + * Collection (Application),
-> + *     Report ID (1),
-> + *
-> + *     Usage Page (Monitor VESA VCP),  ; Monitor VESA virtual control panel (82h, monitor page)
-> + *     Usage (10h, Brightness),
-> + *     Logical Minimum (400),
-> + *     Logical Maximum (60000),
-> + *     Unit (Centimeter^-2 * Candela),
-> + *     Unit Exponent (14),
-> + *     Report Size (32),
-> + *     Report Count (1),
-> + *     Feature (Variable, Null State),
-> + *
-> + *     Usage Page (PID),               ; Physical interface device (0Fh)
-> + *     Usage (50h),
-> + *     Logical Minimum (0),
-> + *     Logical Maximum (20000),
-> + *     Unit (1001h),
-> + *     Unit Exponent (13),
-> + *     Report Size (16),
-> + *     Feature (Variable, Null State),
-> + *
-> + *     Usage Page (Monitor VESA VCP),  ; Monitor VESA virtual control panel (82h, monitor page)
-> + *     Usage (10h, Brightness),
-> + *     Logical Minimum (400),
-> + *     Logical Maximum (60000),
-> + *     Unit (Centimeter^-2 * Candela),
-> + *     Unit Exponent (14),
-> + *     Report Size (32),
-> + *     Report Count (1),
-> + *     Input (Variable),
-> + * End Collection
+> + * Note, No official reference states the errno range here aligns with musl
+> + * (src/internal/syscall_ret.c) and glibc (sysdeps/unix/sysv/linux/sysdep.h)
 > + */
 > +
-> +struct hid_bl_data {
-> +	struct hid_device *hdev;
-> +	unsigned int min_brightness;
-> +	unsigned int max_brightness;
-> +	struct hid_field *input_field;
-> +	struct hid_field *feature_field;
-> +};
-> +
-> +static struct hid_field *hid_get_usage_field(struct hid_device *hdev,
-> +					     unsigned int report_type,
-> +					     unsigned int application, unsigned int usage)
-> +{
-> +	struct hid_report_enum *re = &hdev->report_enum[report_type];
-> +	struct hid_report *report;
-> +	int i, j;
-> +
-> +	list_for_each_entry(report, &re->report_list, list) {
-> +		if (report->application != application)
-> +			continue;
-> +
-> +		for (i = 0; i < report->maxfield; i++) {
-> +			struct hid_field *field = report->field[i];
-> +
-> +			for (j = 0; j < field->maxusage; j++)
-> +				if (field->usage[j].hid == usage)
-> +					return field;
-> +		}
-> +	}
-> +	return NULL;
-> +}
-> +
-> +static void hid_bl_remove(struct hid_device *hdev)
-> +{
-> +	struct backlight_device *bl;
-> +	struct hid_bl_data *data;
-> +
-> +	hid_dbg(hdev, "remove\n");
-> +	bl = hid_get_drvdata(hdev);
-> +	data = bl_get_data(bl);
-> +
-> +	devm_backlight_device_unregister(&hdev->dev, bl);
-> +	hid_hw_close(hdev);
-> +	hid_hw_stop(hdev);
-> +	hid_set_drvdata(hdev, NULL);
-> +	devm_kfree(&hdev->dev, data);
+>  static __inline__ __attribute__((unused, always_inline))
+> -long __sysret(long ret)
+> +long __sysret(unsigned long ret)
+>  {
+> -	if (ret < 0) {
+> -		SET_ERRNO(-ret);
+> -		ret = -1;
+> +	if (ret >= (unsigned long)-MAX_ERRNO) {
+> +		SET_ERRNO(-(long)ret);
+> +		return -1;
+>  	}
+>  	return ret;
+>  }
 
-Are these explicit devm_ cleanups needed, shouldn't the driver core take
-care of it?
-I'm not sure myself.
+While running some regression tests, I found that my programs increased
+in size by 3-4% overall, which was solely attributed to this helper that
+significantly increased the size of many syscalls (particularly those
+returning ints). Let's consider this simple function:
 
-> +}
-> +
-> +static int hid_get_brightness(struct hid_bl_data *data)
-> +{
-> +	struct hid_field *field;
-> +	int result;
-> +
-> +	field = data->input_field;
-> +	hid_hw_request(data->hdev, field->report, HID_REQ_GET_REPORT);
-> +	hid_hw_wait(data->hdev);
-> +	result = *field->new_value;
-> +	hid_dbg(data->hdev, "get brightness: %d\n", result);
-> +
-> +	return result;
-> +}
-> +
-> +static int hid_bl_get_brightness(struct backlight_device *bl)
-> +{
-> +	struct hid_bl_data *data;
-> +	int brightness;
-> +
-> +	data = bl_get_data(bl);
-> +	brightness = hid_get_brightness(data);
-> +	return brightness - data->min_brightness;
-> +}
-> +
-> +static void hid_set_brightness(struct hid_bl_data *data, int brightness)
+  void unlink_exit(const char *name)
+  {
+        int ret = unlink(name);
+        exit(ret < 0 ? errno : 0);
+  }
 
-Some functions are using the generic hid_ prefix instead of the more
-specific hid_bl_, is that intentional?
+Before:
+  $ nm --size unlink.o | grep unli
+  0000000000000030 T unlink_exit
 
-> +{
-> +	struct hid_field *field;
-> +
-> +	field = data->feature_field;
-> +	*field->value = brightness;
-> +	hid_hw_request(data->hdev, field->report, HID_REQ_SET_REPORT);
-> +	hid_hw_wait(data->hdev);
-> +	hid_dbg(data->hdev, "set brightness: %d\n", brightness);
-> +}
-> +
-> +static int hid_bl_update_status(struct backlight_device *bl)
-> +{
-> +	struct hid_bl_data *data;
-> +	int brightness;
-> +
-> +	data = bl_get_data(bl);
-> +	brightness = backlight_get_brightness(bl);
-> +	brightness += data->min_brightness;
-> +	hid_set_brightness(data, brightness);
-> +	return 0;
-> +}
-> +
-> +static const struct backlight_ops hid_bl_ops = {
-> +	.update_status  = hid_bl_update_status,
-> +	.get_brightness = hid_bl_get_brightness,
-> +};
-> +
-> +static int hid_bl_probe(struct hid_device *hdev, const struct hid_device_id *id)
-> +{
-> +	int ret;
-> +	struct hid_field *input_field;
-> +	struct hid_field *feature_field;
-> +	struct hid_bl_data *data;
-> +	struct backlight_properties props;
-> +	struct backlight_device *bl;
-> +
-> +	hid_dbg(hdev, "probe\n");
-> +
-> +	ret = hid_parse(hdev);
-> +	if (ret)
-> +		hid_err(hdev, "parse failed\n");
+  $ objdump -d -j .text --disassemble=unlink_exit unlink.o
+  000000000000003b <unlink_exit>:
+    3b:   48 89 fe                mov    %rdi,%rsi
+    3e:   b8 07 01 00 00          mov    $0x107,%eax
+    43:   31 d2                   xor    %edx,%edx
+    45:   48 c7 c7 9c ff ff ff    mov    $0xffffffffffffff9c,%rdi
+    4c:   0f 05                   syscall 
+    4e:   31 ff                   xor    %edi,%edi
+    50:   85 c0                   test   %eax,%eax
+    52:   79 0a                   jns    5e <unlink_exit+0x23>
+    54:   89 c7                   mov    %eax,%edi
+    56:   f7 df                   neg    %edi
+    58:   89 3d 00 00 00 00       mov    %edi,0x0(%rip)        # 5e <unlink_exit+0x23>
+    5e:   b8 3c 00 00 00          mov    $0x3c,%eax
+    63:   40 0f b6 ff             movzbl %dil,%edi
+    67:   0f 05                   syscall 
+    69:   eb fe                   jmp    69 <unlink_exit+0x2e>
 
-If this fails should the probe continue?
+After:
+  $ nm --size unlink.o | grep unli
+  0000000000000042 T unlink_exit
 
-The errorcodes would be useful to log, too.
-(Also in other places)
+  $ objdump -d -j .text --disassemble=unlink_exit unlink.o
+  0000000000000051 <unlink_exit>:
+    51:   48 89 fe                mov    %rdi,%rsi
+    54:   b8 07 01 00 00          mov    $0x107,%eax
+    59:   31 d2                   xor    %edx,%edx
+    5b:   48 c7 c7 9c ff ff ff    mov    $0xffffffffffffff9c,%rdi
+    62:   0f 05                   syscall 
+    64:   48 63 d0                movslq %eax,%rdx
+    67:   48 81 fa 00 f0 ff ff    cmp    $0xfffffffffffff000,%rdx
+    6e:   76 0a                   jbe    7a <unlink_exit+0x29>
+    70:   f7 da                   neg    %edx
+    72:   89 15 00 00 00 00       mov    %edx,0x0(%rip)        # 78 <unlink_exit+0x27>
+    78:   eb 06                   jmp    80 <unlink_exit+0x2f>
+    7a:   31 ff                   xor    %edi,%edi
+    7c:   85 c0                   test   %eax,%eax
+    7e:   79 06                   jns    86 <unlink_exit+0x35>
+    80:   8b 3d 00 00 00 00       mov    0x0(%rip),%edi        # 86 <unlink_exit+0x35>
+    86:   b8 3c 00 00 00          mov    $0x3c,%eax
+    8b:   40 0f b6 ff             movzbl %dil,%edi
+    8f:   0f 05                   syscall 
+    91:   eb fe                   jmp    91 <unlink_exit+0x40>
 
-> +
-> +	ret = hid_hw_start(hdev, HID_CONNECT_DRIVER);
-> +	if (ret) {
-> +		hid_err(hdev, "hw start failed\n");
-> +		return ret;
-> +	}
-> +
-> +	input_field = hid_get_usage_field(hdev, HID_INPUT_REPORT,
-> +					  HID_USAGE_MONITOR_CTRL,
-> +					  HID_USAGE_VESA_VCP_BRIGHTNESS);
-> +	if (input_field == NULL) {
-> +		ret = -ENODEV;
-> +		goto exit_stop;
-> +	}
-> +
-> +	feature_field = hid_get_usage_field(hdev, HID_FEATURE_REPORT,
-> +					    HID_USAGE_MONITOR_CTRL,
-> +					    HID_USAGE_VESA_VCP_BRIGHTNESS);
-> +	if (feature_field == NULL) {
-> +		ret = -ENODEV;
-> +		goto exit_stop;
-> +	}
-> +
-> +	if (input_field->logical_minimum != feature_field->logical_minimum) {
-> +		hid_warn(hdev, "minimums do not match: %d / %d\n",
-> +			 input_field->logical_minimum,
-> +			 feature_field->logical_minimum);
-> +		ret = -ENODEV;
-> +		goto exit_stop;
-> +	}
-> +
-> +	if (input_field->logical_maximum != feature_field->logical_maximum) {
-> +		hid_warn(hdev, "maximums do not match: %d / %d\n",
-> +			 input_field->logical_maximum,
-> +			 feature_field->logical_maximum);
-> +		ret = -ENODEV;
-> +		goto exit_stop;
-> +	}
-> +
-> +	hid_dbg(hdev, "Monitor VESA VCP with brightness control\n");
-> +
-> +	ret = hid_hw_open(hdev);
-> +	if (ret) {
-> +		hid_err(hdev, "hw open failed\n");
-> +		goto exit_stop;
-> +	}
-> +
-> +	data = devm_kzalloc(&hdev->dev, sizeof(struct hid_bl_data), GFP_KERNEL);
+=> that's 18 bytes added to retrieve the result of a syscall.
 
-sizeof(*data)
+There are several reasons involved:
+  - the "unsigned long" argument to __sysret() forces a sign extension
+    from all sys_* functions that used to return int (the movslq above).
 
-> +	if (data == NULL) {
-> +		ret = -ENOMEM;
-> +		goto exit_stop;
-> +	}
-> +	data->hdev = hdev;
-> +	data->min_brightness = input_field->logical_minimum;
-> +	data->max_brightness = input_field->logical_maximum;
-> +	data->input_field = input_field;
-> +	data->feature_field = feature_field;
-> +
-> +	memset(&props, 0, sizeof(props));
-> +	props.type = BACKLIGHT_RAW;
-> +	props.max_brightness = data->max_brightness - data->min_brightness;
-> +
-> +	bl = devm_backlight_device_register(&hdev->dev, "vesa_vcp",
-> +					    &hdev->dev, data,
-> +					    &hid_bl_ops,
-> +					    &props);
-> +	if (IS_ERR(bl)) {
-> +		hid_err(hdev, "failed to register backlight\n");
-> +		ret = PTR_ERR(bl);
-> +		goto exit_free;
-> +	}
-> +
-> +	hid_set_drvdata(hdev, bl);
-> +
-> +	return 0;
-> +
-> +exit_free:
-> +	hid_hw_close(hdev);
-> +	devm_kfree(&hdev->dev, data);
-> +
-> +exit_stop:
-> +	hid_hw_stop(hdev);
-> +	return ret;
-> +}
-> +
-> +static const struct hid_device_id hid_bl_devices[] = {
-> +	{ HID_USB_DEVICE(APPLE_STUDIO_DISPLAY_VENDOR_ID,
-> +			 APPLE_STUDIO_DISPLAY_PRODUCT_ID) },
-> +	{ }
-> +};
-> +MODULE_DEVICE_TABLE(hid, hid_bl_devices);
-> +
-> +static struct hid_driver hid_bl_driver = {
-> +	.name = "hid_backlight",
-> +	.id_table = hid_bl_devices,
-> +	.probe = hid_bl_probe,
-> +	.remove = hid_bl_remove,
-> +};
-> +module_hid_driver(hid_bl_driver);
-> +
-> +MODULE_AUTHOR("Julius Zint <julius@zint.sh>");
-> +MODULE_LICENSE("GPL");
-> +MODULE_DESCRIPTION("Backlight driver for HID devices");
-> -- 
-> 2.41.0
-> 
+  - the comparison with the error range now has to be performed on a
+    long instead of an int
+
+  - the return value from __sysret() is a long (note, a signed long)
+    which then has to be turned back to an int before being returned
+    by the caller to satisfy the caller's prototype.
+
+I could recover a part of it by replacing the __sysret() function with
+a macro that preserves the input type and avoids these useless
+conversions:
+
+  #define __sysret(arg) ({ \
+		typeof(arg) __sysret_arg = (arg);				\
+		if ((unsigned long)__sysret_arg >= (unsigned long)-MAX_ERRNO) { \
+			SET_ERRNO(-(int)__sysret_arg);				\
+			__sysret_arg = -1L;					\
+		}								\
+		__sysret_arg;							\
+	  })
+
+But the remaining part is the comparison to -MAX_ERRNO inflicted on all
+integer returns where we could previously keep a simple sign comparison:
+
+    51:   48 89 fe                mov    %rdi,%rsi
+    54:   b8 07 01 00 00          mov    $0x107,%eax
+    59:   31 d2                   xor    %edx,%edx
+    5b:   48 c7 c7 9c ff ff ff    mov    $0xffffffffffffff9c,%rdi
+    62:   0f 05                   syscall 
+    64:   3d 00 f0 ff ff          cmp    $0xfffff000,%eax
+    69:   76 0a                   jbe    75 <unlink_exit+0x24>
+    6b:   f7 d8                   neg    %eax
+    6d:   89 05 00 00 00 00       mov    %eax,0x0(%rip)        # 73 <unlink_exit+0x22>
+    73:   eb 06                   jmp    7b <unlink_exit+0x2a>
+    75:   31 ff                   xor    %edi,%edi
+    77:   85 c0                   test   %eax,%eax
+    79:   79 06                   jns    81 <unlink_exit+0x30>
+    7b:   8b 3d 00 00 00 00       mov    0x0(%rip),%edi        # 81 <unlink_exit+0x30>
+    81:   b8 3c 00 00 00          mov    $0x3c,%eax
+    86:   40 0f b6 ff             movzbl %dil,%edi
+    8a:   0f 05                   syscall 
+    8c:   eb fe                   jmp    8c <unlink_exit+0x3b>
+
+And given that the vast majority of the syscalls return integers, I think
+we should specialize these sysret functions so that we don't add needless
+complexity for all those for which we know they're returning ints (it's
+written in the caller's prototype anyway). I.e. we can have __sysret_int()
+that is the low-overhead version and keep __sysret() the expensive one
+doing the comparison (and possibly through the macro like above if needed
+in order to avoid multiple casts).
+
+I'm not going to change all that now, that's too late, but I'm a bit sad
+to see my binaries inflate just because of this, so I hope we can get back
+to this later after the current queue is flushed.
+
+Regards,
+Willy
