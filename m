@@ -2,133 +2,485 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 41E8A771673
-	for <lists+linux-kernel@lfdr.de>; Sun,  6 Aug 2023 21:06:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 78D57771689
+	for <lists+linux-kernel@lfdr.de>; Sun,  6 Aug 2023 21:32:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230397AbjHFTGd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 6 Aug 2023 15:06:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54516 "EHLO
+        id S229839AbjHFTcw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 6 Aug 2023 15:32:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55816 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229436AbjHFTGb (ORCPT
+        with ESMTP id S229436AbjHFTct (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 6 Aug 2023 15:06:31 -0400
-Received: from mail-io1-xd2c.google.com (mail-io1-xd2c.google.com [IPv6:2607:f8b0:4864:20::d2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A67F1712;
-        Sun,  6 Aug 2023 12:06:30 -0700 (PDT)
-Received: by mail-io1-xd2c.google.com with SMTP id ca18e2360f4ac-790ca0ed6d3so129791539f.3;
-        Sun, 06 Aug 2023 12:06:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1691348789; x=1691953589;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=FtA/DXQ16Iik0MVLRswYcHvRP3Ma3gJUyRXapnCHuSU=;
-        b=g5yQZhefWvLdV2003/eA374xxnL4k+Av25DWV3BT9LQ8LYc7uHrRw+vIxKCm8zzudc
-         s5Uu/mIkaaAu2P3DYICFlo+4Iozq43ueYNdJtiyjyDRbSKre1fi6zRkoby1dy7idRCvj
-         9NcQtEBYdSSnRB0Vpr3ijiYPAy5UoBdOMAsYs9vWRVCz4SZZGZ6ckbWGkCdVVHa0GaYH
-         MV/Qq+V0GnLC5k0lzzkYBhhMSmWW77L8T/d4mk03BF97BBidvLH+hsyg8DI61d67kGQy
-         lLUX3KQ13o6+EtRrT3dLOWojiRm+ORgZXdo+1BwajLDHAvaWq7oJhDI0BBrUzA97Uj3a
-         T5Cw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691348789; x=1691953589;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=FtA/DXQ16Iik0MVLRswYcHvRP3Ma3gJUyRXapnCHuSU=;
-        b=fayFrpfF3fJcbZ/JN3JDbeaZC8GToxu1UgTW6cdIgG9Z+hTqVdoBI1gEU5cbmpPgLS
-         H/iRNeEDzV+doLh7QTvDYZS/SfAYxsvSusMC7zvihCGWgmlJ9bT37mUct9oKAS1OFowq
-         VUwsK7BM4nNKXMBHtHPwUneaN6dSTHYk2YCxep/VzfNfFyWS1UAdFvaxvhUCkq/NEVRU
-         A/AIq5SNLAeMOgLLDPFAcnmJ3gqZoVmM54KMlJiv/j/ZXxdKmeevPXW+3ZArIZiIOjXb
-         DK7qntKI3Cy1r++vUuhmP1Tz3NXwTbi7Y3oz60tuIjFkYqxd+SRjHkrf3ZcWE1R59GMQ
-         Kwpw==
-X-Gm-Message-State: AOJu0YzSm3D7xPDT6BopaTSbrdQkIu3GiXFURbUx076hdmYbaQ+J1uW6
-        Hqd/yvPgYVRJSR7rMPCkDMk=
-X-Google-Smtp-Source: AGHT+IFWbyDPDi3n+1IiJNyDqVllymgmvBn0GL0USdFN0qfpO9oaRGJz4Td6pb38IM0q9HcaFt1HZg==
-X-Received: by 2002:a6b:6b0d:0:b0:790:d813:2d38 with SMTP id g13-20020a6b6b0d000000b00790d8132d38mr9144889ioc.11.1691348789548;
-        Sun, 06 Aug 2023 12:06:29 -0700 (PDT)
-Received: from aford-B741.lan ([2601:447:d001:897f:3be6:798d:d8e6:3ba5])
-        by smtp.gmail.com with ESMTPSA id i24-20020a02b698000000b0042b1dd89b0bsm1982400jam.155.2023.08.06.12.06.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 06 Aug 2023 12:06:28 -0700 (PDT)
-From:   Adam Ford <aford173@gmail.com>
-To:     linux-arm-kernel@lists.infradead.org
-Cc:     aford@beaconembedded.com, cstevens@beaconembedded.com,
-        Adam Ford <aford173@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Magnus Damm <magnus.damm@gmail.com>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-renesas-soc@vger.kernel.org
-Subject: [PATCH] arm64: dts: imx8mp-beacon: Configure 100MHz PCIe Ref Clk
-Date:   Sun,  6 Aug 2023 14:06:21 -0500
-Message-Id: <20230806190622.505887-1-aford173@gmail.com>
-X-Mailer: git-send-email 2.39.2
+        Sun, 6 Aug 2023 15:32:49 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24F1F1719
+        for <linux-kernel@vger.kernel.org>; Sun,  6 Aug 2023 12:32:48 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 970E56124E
+        for <linux-kernel@vger.kernel.org>; Sun,  6 Aug 2023 19:32:47 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EF8D6C433CD
+        for <linux-kernel@vger.kernel.org>; Sun,  6 Aug 2023 19:32:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1691350367;
+        bh=tL8iT6yeYppDtj3cEPICVF2UPLS5piCRnt0rmZLqSsk=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=g1V+aTwh1U+cynygIW1yPoFwy+NovY0OS1id8gIILY4RGzNVyI+apveAhEsBDtBQZ
+         ok2yEQMNneDNLfloX5bx3uO0PDMVwGuNJfQpb1VsP7Q3jkVUb4jKKPDswheQCIOmbm
+         JlC+ZMyK4Ist50rGKaDFz9kwUtc+WcXt8y0U+WXYBVhSvvtq5S7wV+8/gdEpsqbvuF
+         FYJGXc2dawlqMzTso/4O6eYUBMwiEsM6fDbqu6g0HXpTd3M5Hw6z6gYqRAqb0EChKq
+         n9p16WnOiu3sb65OOgTJzi6RN5fw2ogXxLQBJC7lePXRw+/EFw2bgcJNhPpmAcr1Ig
+         UPJXvKpazDT2Q==
+Received: by mail-oo1-f49.google.com with SMTP id 006d021491bc7-56cb1e602e7so2307801eaf.1
+        for <linux-kernel@vger.kernel.org>; Sun, 06 Aug 2023 12:32:46 -0700 (PDT)
+X-Gm-Message-State: AOJu0YzIGOQVnBE3ne8FqIqzEeiQHcEYVQEi+4JDaYQ/LaxhoQJwCpGW
+        nKvQXhcrv+8Qa7HpK+K0bRYducO1vcsrjCRrXWA=
+X-Google-Smtp-Source: AGHT+IHH+OemTD5DsV/J8N+9wh/Cmrq+yT3qX4nZhGT4pKLNXaJJqDAl7Jku2IE3pEIGPIweYRxC54w4ADgjOFBq8Kg=
+X-Received: by 2002:a4a:3018:0:b0:56c:7428:4a35 with SMTP id
+ q24-20020a4a3018000000b0056c74284a35mr5760880oof.7.1691350366127; Sun, 06 Aug
+ 2023 12:32:46 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <20230623145358.568971-1-yesshedi@gmail.com> <20230623145358.568971-9-yesshedi@gmail.com>
+In-Reply-To: <20230623145358.568971-9-yesshedi@gmail.com>
+From:   Masahiro Yamada <masahiroy@kernel.org>
+Date:   Mon, 7 Aug 2023 04:32:09 +0900
+X-Gmail-Original-Message-ID: <CAK7LNARnuaOi-GwW0qnFgH5styuUTtmjSNWV92PEO6VgpqNvQg@mail.gmail.com>
+Message-ID: <CAK7LNARnuaOi-GwW0qnFgH5styuUTtmjSNWV92PEO6VgpqNvQg@mail.gmail.com>
+Subject: Re: [PATCH v7 8/8] kbuild: modinst: do modules_install step by step
+To:     Shreenidhi Shedi <yesshedi@gmail.com>
+Cc:     dhowells@redhat.com, dwmw2@infradead.org,
+        gregkh@linuxfoundation.org, nathan@kernel.org,
+        ndesaulniers@google.com, nicolas@fjasle.eu,
+        linux-kernel@vger.kernel.org, sshedi@vmware.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There is a I2C controlled 100MHz Reference clock used by the PCIe
-controller. Configure this clock's DIF1 output to be used by
-the PCIe.
+On Fri, Jun 23, 2023 at 11:54=E2=80=AFPM Shreenidhi Shedi <yesshedi@gmail.c=
+om> wrote:
+>
+> Currently Makefile.modinst does three tasks on each module built:
+> - Install modules
+> - Sign modules
+> - Compress modules
+>
+> All the above tasks happen from a single place.
+>
+> This patch divides this task further and uses a different makefile for
+> each task.
+> Signing module logic is completely refactored and everything happens
+> from a shell script now.
+>
+> Signed-off-by: Shreenidhi Shedi <yesshedi@gmail.com>
 
-Signed-off-by: Adam Ford <aford173@gmail.com>
 
-diff --git a/arch/arm64/boot/dts/freescale/imx8mp-beacon-kit.dts b/arch/arm64/boot/dts/freescale/imx8mp-beacon-kit.dts
-index 06e91297fb16..332269dedeee 100644
---- a/arch/arm64/boot/dts/freescale/imx8mp-beacon-kit.dts
-+++ b/arch/arm64/boot/dts/freescale/imx8mp-beacon-kit.dts
-@@ -23,6 +23,12 @@ chosen {
- 		stdout-path = &uart2;
- 	};
- 
-+	clk_xtal25: clk-xtal25 {
-+		compatible = "fixed-clock";
-+		#clock-cells = <0>;
-+		clock-frequency = <25000000>;
-+	};
-+
- 	connector {
- 		compatible = "usb-c-connector";
- 		label = "USB-C";
-@@ -246,6 +252,13 @@ pca6416_3: gpio@20 {
- 		interrupt-controller;
- 		#interrupt-cells = <2>;
- 	};
-+
-+	pcieclk: clk@68 {
-+		compatible = "renesas,9fgv0241";
-+		reg = <0x68>;
-+		clocks = <&clk_xtal25>;
-+		#clock-cells = <1>;
-+	};
- };
- 
- &i2c3 {
-@@ -372,8 +385,9 @@ &pcie {
- };
- 
- &pcie_phy {
-+	fsl,clkreq-unsupported;
- 	fsl,refclk-pad-mode = <IMX8_PCIE_REFCLK_PAD_INPUT>;
--	clocks = <&pcie0_refclk>;
-+	clocks = <&pcieclk 1>;
- 	clock-names = "ref";
- 	status = "okay";
- };
--- 
-2.39.2
+This patch is bad in multiple ways.
 
+1. Break "make modules_sign"
+2.   Serialize the installation steps, that is, works less efficiently
+3.   Increase code without adding any benefits.
+
+
+There is no good reason to do these changes.
+
+NACK.
+
+
+
+
+
+> ---
+>  scripts/Makefile.compress |  53 ++++++++++++++++++
+>  scripts/Makefile.install  |  66 +++++++++++++++++++++++
+>  scripts/Makefile.modinst  | 111 +++-----------------------------------
+>  scripts/Makefile.sign     |  37 +++++++++++++
+>  scripts/signfile.sh       |  24 +++++++++
+>  5 files changed, 186 insertions(+), 105 deletions(-)
+>  create mode 100644 scripts/Makefile.compress
+>  create mode 100644 scripts/Makefile.install
+>  create mode 100644 scripts/Makefile.sign
+>  create mode 100755 scripts/signfile.sh
+>
+> diff --git a/scripts/Makefile.compress b/scripts/Makefile.compress
+> new file mode 100644
+> index 000000000000..35d337ac9b6c
+> --- /dev/null
+> +++ b/scripts/Makefile.compress
+> @@ -0,0 +1,53 @@
+> +# SPDX-License-Identifier: GPL-2.0
+> +# =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D
+> +# Compressing modules
+> +# =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D
+> +
+> +PHONY :=3D __modcompress
+> +__modcompress:
+> +
+> +include include/config/auto.conf
+> +include $(srctree)/scripts/Kbuild.include
+> +
+> +modules :=3D $(call read-file, $(MODORDER))
+> +
+> +ifeq ($(KBUILD_EXTMOD),)
+> +dst :=3D $(MODLIB)/kernel
+> +else
+> +INSTALL_MOD_DIR ?=3D updates
+> +dst :=3D $(MODLIB)/$(INSTALL_MOD_DIR)
+> +endif
+> +
+> +suffix-y                               :=3D
+> +suffix-$(CONFIG_MODULE_COMPRESS_GZIP)  :=3D .gz
+> +suffix-$(CONFIG_MODULE_COMPRESS_XZ)    :=3D .xz
+> +suffix-$(CONFIG_MODULE_COMPRESS_ZSTD)  :=3D .zst
+> +
+> +modules :=3D $(patsubst $(extmod_prefix)%.o, $(dst)/%.ko$(suffix-y), $(m=
+odules))
+> +
+> +__modcompress: $(modules)
+> +       @:
+> +
+> +#
+> +# Compression
+> +#
+> +quiet_cmd_gzip =3D GZIP    $@
+> +      cmd_gzip =3D $(KGZIP) -n -f $<
+> +quiet_cmd_xz =3D XZ      $@
+> +      cmd_xz =3D $(XZ) --lzma2=3Ddict=3D2MiB -f $<
+> +quiet_cmd_zstd =3D ZSTD    $@
+> +      cmd_zstd =3D $(ZSTD) -T0 --rm -f -q $<
+> +
+> +$(dst)/%.ko.gz: $(dst)/%.ko FORCE
+> +       $(call cmd,gzip)
+> +
+> +$(dst)/%.ko.xz: $(dst)/%.ko FORCE
+> +       $(call cmd,xz)
+> +
+> +$(dst)/%.ko.zst: $(dst)/%.ko FORCE
+> +       $(call cmd,zstd)
+> +
+> +PHONY +=3D FORCE
+> +FORCE:
+> +
+> +.PHONY: $(PHONY)
+> diff --git a/scripts/Makefile.install b/scripts/Makefile.install
+> new file mode 100644
+> index 000000000000..40c496cb99dc
+> --- /dev/null
+> +++ b/scripts/Makefile.install
+> @@ -0,0 +1,66 @@
+> +# SPDX-License-Identifier: GPL-2.0
+> +# =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D
+> +# Installing modules
+> +# =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D
+> +
+> +PHONY :=3D __modinstall
+> +__modinstall:
+> +
+> +include include/config/auto.conf
+> +include $(srctree)/scripts/Kbuild.include
+> +
+> +modules :=3D $(call read-file, $(MODORDER))
+> +
+> +ifeq ($(KBUILD_EXTMOD),)
+> +dst :=3D $(MODLIB)/kernel
+> +else
+> +INSTALL_MOD_DIR ?=3D updates
+> +dst :=3D $(MODLIB)/$(INSTALL_MOD_DIR)
+> +endif
+> +
+> +$(foreach x, % :, $(if $(findstring $x, $(dst)), \
+> +       $(error module installation path cannot contain '$x')))
+> +
+> +modules :=3D $(patsubst $(extmod_prefix)%.o, $(dst)/%.ko$(suffix-y), $(m=
+odules))
+> +
+> +__modinstall: $(modules)
+> +       @:
+> +
+> +#
+> +# Installation
+> +#
+> +quiet_cmd_install =3D INSTALL $@
+> +      cmd_install =3D mkdir -p $(dir $@); cp $< $@
+> +
+> +# Strip
+> +#
+> +# INSTALL_MOD_STRIP, if defined, will cause modules to be stripped after=
+ they
+> +# are installed. If INSTALL_MOD_STRIP is '1', then the default option
+> +# --strip-debug will be used. Otherwise, INSTALL_MOD_STRIP value will be=
+ used
+> +# as the options to the strip command.
+> +ifdef INSTALL_MOD_STRIP
+> +
+> +ifeq ($(INSTALL_MOD_STRIP),1)
+> +strip-option :=3D --strip-debug
+> +else
+> +strip-option :=3D $(INSTALL_MOD_STRIP)
+> +endif
+> +
+> +quiet_cmd_strip =3D STRIP   $@
+> +      cmd_strip =3D $(STRIP) $(strip-option) $@
+> +
+> +else
+> +
+> +quiet_cmd_strip =3D
+> +      cmd_strip =3D :
+> +
+> +endif
+> +
+> +$(dst)/%.ko: $(extmod_prefix)%.ko FORCE
+> +       $(call cmd,install)
+> +       $(call cmd,strip)
+> +
+> +PHONY +=3D FORCE
+> +FORCE:
+> +
+> +.PHONY: $(PHONY)
+> diff --git a/scripts/Makefile.modinst b/scripts/Makefile.modinst
+> index ab0c5bd1a60f..d87e09e57963 100644
+> --- a/scripts/Makefile.modinst
+> +++ b/scripts/Makefile.modinst
+> @@ -1,116 +1,17 @@
+>  # SPDX-License-Identifier: GPL-2.0
+>  # =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D
+> -# Installing modules
+> +# Install, Sign & Compress modules
+>  # =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D
+>
+> -PHONY :=3D __modinst
+> -__modinst:
+> -
+>  include include/config/auto.conf
+>  include $(srctree)/scripts/Kbuild.include
+>
+> -modules :=3D $(call read-file, $(MODORDER))
+> -
+> -ifeq ($(KBUILD_EXTMOD),)
+> -dst :=3D $(MODLIB)/kernel
+> -else
+> -INSTALL_MOD_DIR ?=3D updates
+> -dst :=3D $(MODLIB)/$(INSTALL_MOD_DIR)
+> -endif
+> -
+> -$(foreach x, % :, $(if $(findstring $x, $(dst)), \
+> -       $(error module installation path cannot contain '$x')))
+> -
+> -suffix-y                               :=3D
+> -suffix-$(CONFIG_MODULE_COMPRESS_GZIP)  :=3D .gz
+> -suffix-$(CONFIG_MODULE_COMPRESS_XZ)    :=3D .xz
+> -suffix-$(CONFIG_MODULE_COMPRESS_ZSTD)  :=3D .zst
+> -
+> -modules :=3D $(patsubst $(extmod_prefix)%.o, $(dst)/%.ko$(suffix-y), $(m=
+odules))
+> -
+> -__modinst: $(modules)
+> -       @:
+> -
+> -#
+> -# Installation
+> -#
+> -quiet_cmd_install =3D INSTALL $@
+> -      cmd_install =3D mkdir -p $(dir $@); cp $< $@
+> -
+> -# Strip
+> -#
+> -# INSTALL_MOD_STRIP, if defined, will cause modules to be stripped after=
+ they
+> -# are installed. If INSTALL_MOD_STRIP is '1', then the default option
+> -# --strip-debug will be used. Otherwise, INSTALL_MOD_STRIP value will be=
+ used
+> -# as the options to the strip command.
+> -ifdef INSTALL_MOD_STRIP
+> -
+> -ifeq ($(INSTALL_MOD_STRIP),1)
+> -strip-option :=3D --strip-debug
+> -else
+> -strip-option :=3D $(INSTALL_MOD_STRIP)
+> -endif
+> -
+> -quiet_cmd_strip =3D STRIP   $@
+> -      cmd_strip =3D $(STRIP) $(strip-option) $@
+> -
+> -else
+> -
+> -quiet_cmd_strip =3D
+> -      cmd_strip =3D :
+> -
+> -endif
+> -
+> -#
+> -# Signing
+> -# Don't stop modules_install even if we can't sign external modules.
+> -#
+> -ifeq ($(CONFIG_MODULE_SIG_ALL),y)
+> -ifeq ($(filter pkcs11:%, $(CONFIG_MODULE_SIG_KEY)),)
+> -sig-key :=3D $(if $(wildcard $(CONFIG_MODULE_SIG_KEY)),,$(srctree)/)$(CO=
+NFIG_MODULE_SIG_KEY)
+> -else
+> -sig-key :=3D $(CONFIG_MODULE_SIG_KEY)
+> -endif
+> -quiet_cmd_sign =3D SIGN    $@
+> -      cmd_sign =3D scripts/sign-file $(CONFIG_MODULE_SIG_HASH) "$(sig-ke=
+y)" certs/signing_key.x509 $@ \
+> -                 $(if $(KBUILD_EXTMOD),|| true)
+> -else
+> -quiet_cmd_sign :=3D
+> -      cmd_sign :=3D :
+> -endif
+> -
+> -ifeq ($(modules_sign_only),)
+> -
+> -$(dst)/%.ko: $(extmod_prefix)%.ko FORCE
+> -       $(call cmd,install)
+> -       $(call cmd,strip)
+> -       $(call cmd,sign)
+> -
+> -else
+> -
+> -$(dst)/%.ko: FORCE
+> -       $(call cmd,sign)
+> -
+> -endif
+> -
+> -#
+> -# Compression
+> -#
+> -quiet_cmd_gzip =3D GZIP    $@
+> -      cmd_gzip =3D $(KGZIP) -n -f $<
+> -quiet_cmd_xz =3D XZ      $@
+> -      cmd_xz =3D $(XZ) --lzma2=3Ddict=3D2MiB -f $<
+> -quiet_cmd_zstd =3D ZSTD    $@
+> -      cmd_zstd =3D $(ZSTD) -T0 --rm -f -q $<
+> -
+> -$(dst)/%.ko.gz: $(dst)/%.ko FORCE
+> -       $(call cmd,gzip)
+> -
+> -$(dst)/%.ko.xz: $(dst)/%.ko FORCE
+> -       $(call cmd,xz)
+> +PHONY :=3D __modinst
+>
+> -$(dst)/%.ko.zst: $(dst)/%.ko FORCE
+> -       $(call cmd,zstd)
+> +__modinst: FORCE
+> +       $(MAKE) -f scripts/Makefile.install
+> +       $(MAKE) -f scripts/Makefile.sign
+> +       $(MAKE) -f scripts/Makefile.compress
+>
+>  PHONY +=3D FORCE
+>  FORCE:
+> diff --git a/scripts/Makefile.sign b/scripts/Makefile.sign
+> new file mode 100644
+> index 000000000000..d6b242b16657
+> --- /dev/null
+> +++ b/scripts/Makefile.sign
+> @@ -0,0 +1,37 @@
+> +# SPDX-License-Identifier: GPL-2.0
+> +# =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D
+> +# Signing modules
+> +# =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D
+> +
+> +PHONY :=3D __modsign
+> +__modsign:
+> +
+> +include include/config/auto.conf
+> +include $(srctree)/scripts/Kbuild.include
+> +
+> +#
+> +# Signing
+> +# Don't stop modules_install even if we can't sign external modules.
+> +#
+> +ifeq ($(CONFIG_MODULE_SIG_ALL),y)
+> +ifeq ($(filter pkcs11:%, $(CONFIG_MODULE_SIG_KEY)),)
+> +sig-key :=3D $(if $(wildcard $(CONFIG_MODULE_SIG_KEY)),,$(srctree)/)$(CO=
+NFIG_MODULE_SIG_KEY)
+> +else
+> +sig-key :=3D $(CONFIG_MODULE_SIG_KEY)
+> +endif
+> +quiet_cmd_sign =3D SIGNING ALL MODULES ...
+> +      cmd_sign =3D $(CONFIG_SHELL) $(srctree)/scripts/signfile.sh \
+> +                                        "$(CONFIG_MODULE_SIG_HASH)" \
+> +                                        "$(sig-key)"
+> +else
+> +quiet_cmd_sign :=3D
+> +      cmd_sign :=3D :
+> +endif
+> +
+> +__modsign: FORCE
+> +       $(call cmd,sign)
+> +
+> +PHONY +=3D FORCE
+> +FORCE:
+> +
+> +.PHONY: $(PHONY)
+> diff --git a/scripts/signfile.sh b/scripts/signfile.sh
+> new file mode 100755
+> index 000000000000..b2b58bfbd5ba
+> --- /dev/null
+> +++ b/scripts/signfile.sh
+> @@ -0,0 +1,24 @@
+> +#!/bin/sh
+> +# SPDX-License-Identifier: GPL-2.0
+> +#
+> +# A sign-file wrapper used by scripts/Makefile.sign
+> +
+> +#set -x
+> +
+> +if test $# -ne 2; then
+> +       echo "Usage: $0 <hash-algo> <sign-key>" >&2
+> +       exit 1
+> +fi
+> +
+> +SIG_HASH=3D"$1"
+> +SIG_KEY=3D"$2"
+> +
+> +MODULES_PATH=3D"${INSTALL_MOD_PATH}/lib/modules/${KERNELRELEASE}"
+> +
+> +find "${MODULES_PATH}" -name *.ko -type f -print0 | \
+> +       xargs -r -0 -P$(nproc) -x -n32 sh -c "\
+> +${srctree}/scripts/sign-file \
+> +-a \"${SIG_HASH}\" \
+> +-i \"${SIG_KEY}\" \
+> +-x ${srctree}/certs/signing_key.x509 \
+> +-b \$@ \$0"
+> --
+> 2.41.0
+>
+
+
+--=20
+Best Regards
+Masahiro Yamada
