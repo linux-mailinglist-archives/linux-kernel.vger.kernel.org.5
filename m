@@ -2,136 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 03008771616
-	for <lists+linux-kernel@lfdr.de>; Sun,  6 Aug 2023 18:37:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 28F80771619
+	for <lists+linux-kernel@lfdr.de>; Sun,  6 Aug 2023 18:41:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230359AbjHFQhV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 6 Aug 2023 12:37:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37982 "EHLO
+        id S230434AbjHFQlT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 6 Aug 2023 12:41:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38580 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229436AbjHFQhT (ORCPT
+        with ESMTP id S229436AbjHFQlR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 6 Aug 2023 12:37:19 -0400
-Received: from bg4.exmail.qq.com (bg4.exmail.qq.com [43.155.65.254])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF06111D;
-        Sun,  6 Aug 2023 09:37:16 -0700 (PDT)
-X-QQ-mid: bizesmtp90t1691339815tf3mfofw
-Received: from linux-lab-host.localdomain ( [116.30.130.12])
-        by bizesmtp.qq.com (ESMTP) with 
-        id ; Mon, 07 Aug 2023 00:36:54 +0800 (CST)
-X-QQ-SSF: 01200000000000E0X000000A0000000
-X-QQ-FEAT: XBN7tc9DADInN8U5ppsCisi3RZ5SA9E9aHrNLARhnRb83W5yceAnL7ygRBtPo
-        VRi6xhmYy0FF45PiA9HVB3ovZHaIf4Ca6GWqwkqLspm4G7vv8GmEtyXZyT81U8+LHlqathU
-        +hLY4bqSMNJRHAkz/PyzVpJk63lMirWrArQNpSspKfGRJa+hulIZSQifTdsrD4uRnkjFkrU
-        FRZCEkdJ+HIbvviyToJDsB4nhhzv4ejKL0JAnZrHi1akmEbEpF9CWzuK2By3XsTOVC4PrHz
-        kjoqORd+TYtZi7Nnk/xb5644gYX0nCwryE6nHisddkyJOJOZeg14QkWlPWNv6OKVwTuK/dP
-        Dqf9+ihqImDzQtkhfWnPlYAVrJM4A==
-X-QQ-GoodBg: 0
-X-BIZMAIL-ID: 18061832696655097200
-From:   Zhangjin Wu <falcon@tinylab.org>
-To:     w@1wt.eu
-Cc:     arnd@arndb.de, david.laight@aculab.com, falcon@tinylab.org,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        thomas@t-8ch.de
-Subject: Re: [PATCH] tools/nolibc: fix up size inflate regression
-Date:   Mon,  7 Aug 2023 00:36:49 +0800
-Message-Id: <20230806163649.185843-1-falcon@tinylab.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20230806134348.GA19145@1wt.eu>
-References: <20230806134348.GA19145@1wt.eu>
+        Sun, 6 Aug 2023 12:41:17 -0400
+Received: from mail-pg1-x531.google.com (mail-pg1-x531.google.com [IPv6:2607:f8b0:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F024AA
+        for <linux-kernel@vger.kernel.org>; Sun,  6 Aug 2023 09:41:14 -0700 (PDT)
+Received: by mail-pg1-x531.google.com with SMTP id 41be03b00d2f7-55b5a37acb6so289114a12.0
+        for <linux-kernel@vger.kernel.org>; Sun, 06 Aug 2023 09:41:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20221208.gappssmtp.com; s=20221208; t=1691340073; x=1691944873;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=Vnl3tBw3YI1niJ5TydLVcO6YxwztzFA4jbV40tVanFY=;
+        b=hh1zmX7NwxNZeOk99/85QYp6A6gNzoRJA6BoOUqiuIv51NGU0009x+CnUCHjWA5oBL
+         IyAZskuQyWj1tLZLI955AnGzmdfpwrGEtnC4kMtaav798hsW95tOJNi14FulJ5oOooV+
+         q5Z32wFlGQkP7jqNkwE4bGQ+WqmqkttGYhlAlabG9hULO7nBNK3nB9GjdUyHBqqz/hP7
+         LadFfeyKS4pDY4NYYYZGqVL9U8+Wbbx8uznKViieVNt7ayyFngQNMjurZVn5vr0L81cX
+         Y1amK1L7Uap0yJV54tr9qWQ6WRH4o5uYFhWar7o145uUpWnVhzWoSSd1Sx4Ni5palK8Y
+         2GYg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691340073; x=1691944873;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Vnl3tBw3YI1niJ5TydLVcO6YxwztzFA4jbV40tVanFY=;
+        b=QwS+cLMZg+XmrM6WYo7ilMBsV6ju2eaF/vkppN9txlIud5VjvkhkpL1zPiRbam/Qrw
+         glI3ivdl3JY0nE5YwzYZCvksMNfJvHBswEA1OMjk5Kg+OE3UJbHaJhxr73KlyAxlzDKD
+         0fyQaNYyUw8T9/anhf8pB7XC4sxX0ef9ciO8XhYqjR3l7oN8tXrvMFWR7mF8GtkTiwbL
+         1xkvmQduXzlp6lN1ON61aNID85VpsRN+AP+FAddvWSqqJ6XNZXUlqO01cPyoAXRsMLDN
+         0mMi1SEL4YCTwEie2EYNFJKUdl0jnqcajOEeT+3X7ACQw2euzqtB+uZiklSaTmEBv+im
+         gz/g==
+X-Gm-Message-State: ABy/qLb+rN1ltL1EQ/6chF+fYxtWdyxZaDSd/rkL9hjeTxsHdd4X+Mi6
+        UVvQmUa0yhGRE7/ChInFIAH5Lw==
+X-Google-Smtp-Source: APBJJlHaJrhRit6lB72vyAi4XrYgFZt7u5QYVx4Pdd5tsa9Hkz7FagEU0t5nMFfGozR08NMf60pZrw==
+X-Received: by 2002:a17:90a:faf:b0:268:abc:83d5 with SMTP id 44-20020a17090a0faf00b002680abc83d5mr21967439pjz.4.1691340073398;
+        Sun, 06 Aug 2023 09:41:13 -0700 (PDT)
+Received: from [172.20.1.218] (071-095-160-189.biz.spectrum.com. [71.95.160.189])
+        by smtp.gmail.com with ESMTPSA id bf22-20020a17090b0b1600b00263987a50fcsm7198103pjb.22.2023.08.06.09.41.11
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 06 Aug 2023 09:41:12 -0700 (PDT)
+Message-ID: <3fab7978-3dca-a6a8-a908-e9f7d8100dda@kernel.dk>
+Date:   Sun, 6 Aug 2023 10:41:11 -0600
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-QQ-SENDSIZE: 520
-Feedback-ID: bizesmtp:tinylab.org:qybglogicsvrgz:qybglogicsvrgz5a-1
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux aarch64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.1
+Subject: Re: [PATCH v2 2/2] io_uring: correct check for O_TMPFILE
+Content-Language: en-US
+To:     Aleksa Sarai <cyphar@cyphar.com>
+Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
+        Christian Brauner <brauner@kernel.org>,
+        Pavel Begunkov <asml.silence@gmail.com>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        io-uring@vger.kernel.org, stable@vger.kernel.org
+References: <20230806-resolve_cached-o_tmpfile-v2-0-058bff24fb16@cyphar.com>
+ <20230806-resolve_cached-o_tmpfile-v2-2-058bff24fb16@cyphar.com>
+ <41b5f092-5422-e461-b9bf-3a5a04c0b9e2@kernel.dk>
+ <20230806.063800-dusky.orc.woody.spectrum-98W6qtUkFLgk@cyphar.com>
+From:   Jens Axboe <axboe@kernel.dk>
+In-Reply-To: <20230806.063800-dusky.orc.woody.spectrum-98W6qtUkFLgk@cyphar.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-6.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, Willy
-
-> On Sun, Aug 06, 2023 at 09:19:21PM +0800, Zhangjin Wu wrote:
-> > As reported and suggested by Willy, the inline __sysret() helper
-> > introduces three types of conversions and increases the size:
+On 8/6/23 12:42?AM, Aleksa Sarai wrote:
+> On 2023-08-05, Jens Axboe <axboe@kernel.dk> wrote:
+>> On 8/5/23 4:48?PM, Aleksa Sarai wrote:
+>>> O_TMPFILE is actually __O_TMPFILE|O_DIRECTORY. This means that the old
+>>> check for whether RESOLVE_CACHED can be used would incorrectly think
+>>> that O_DIRECTORY could not be used with RESOLVE_CACHED.
+>>>
+>>> Cc: stable@vger.kernel.org # v5.12+
+>>> Fixes: 3a81fd02045c ("io_uring: enable LOOKUP_CACHED path resolution for filename lookups")
+>>> Signed-off-by: Aleksa Sarai <cyphar@cyphar.com>
+>>> ---
+>>>  io_uring/openclose.c | 4 ++--
+>>>  1 file changed, 2 insertions(+), 2 deletions(-)
+>>>
+>>> diff --git a/io_uring/openclose.c b/io_uring/openclose.c
+>>> index 10ca57f5bd24..a029c230119f 100644
+>>> --- a/io_uring/openclose.c
+>>> +++ b/io_uring/openclose.c
+>>> @@ -35,9 +35,9 @@ static bool io_openat_force_async(struct io_open *open)
+>>>  {
+>>>  	/*
+>>>  	 * Don't bother trying for O_TRUNC, O_CREAT, or O_TMPFILE open,
+>>> -	 * it'll always -EAGAIN
+>>> +	 * it'll always -EAGAIN.
+>>
+>> Please don't make this change, it just detracts from the actual change.
+>> And if we are making changes in there, why not change O_TMPFILE as well
+>> since this is what the change is about?
 > 
-> Thanks Zhangjin. A few things:
-> 
-> > --- a/tools/include/nolibc/compiler.h
-> > +++ b/tools/include/nolibc/compiler.h
-> > @@ -22,4 +22,13 @@
-> >  #  define __no_stack_protector __attribute__((__optimize__("-fno-stack-protector")))
-> >  #endif /* defined(__has_attribute) */
-> >  
-> > +/*
-> > + * from include/linux/compiler.h
-> > + *
-> > + * Whether 'type' is a signed type or an unsigned type. Supports scalar types,
-> > + * bool and also pointer types.
-> > + */
-> > +#define is_signed_type(type)   (((type)(-1)) < (type)1)
-> > +#define is_unsigned_type(type) (!is_signed_type(type))
-> 
-> These names may conflict with application's local definitions. And since
-> there's a single call place we should probably just inline it instead.
->
+> Userspace can't pass just __O_TMPFILE, so to me "__O_TMPFILE open"
+> sounds strange. The intention is to detect open(O_TMPFILE), it just so
+> happens that the correct check is __O_TMPFILE.
 
-Let's remove them and define a new one with __ prefix in sys.h, it is
-not readable if we simply 'inline' the comparison in the already complex
-macro ;-)
+Right, but it's confusing now as the comment refers to O_TMPFILE but
+__O_TMPFILE is being used. I'd include a comment in there on why it's
+__O_TMPFILE and not O_TMPFILE, that's the interesting bit. As it stands,
+you'd read the comment and look at the code and need to figure that on
+your own. Hence it deserves a comment.
 
-> > +#define __sysret(arg)                                                           \
-> > +({                                                                              \
-> > +	__typeof__(arg) __sysret_arg = (arg);                                   \
-> > +	if (is_signed_type(__typeof__(arg))) {                                  \
-> > +		if (__sysret_arg < 0) {                                         \
-> > +			SET_ERRNO(-(int)__sysret_arg);                          \
-> > +			__sysret_arg = -1L;                                     \
-> > +		}                                                               \
-> > +	} else {                                                                \
-> > +		if ((unsigned long)__sysret_arg >= (unsigned long)-MAX_ERRNO) { \
-> > +			SET_ERRNO(-(int)__sysret_arg);                          \
-> > +			__sysret_arg = -1L;                                     \
-> > +		}                                                               \
-> > +	}                                                                       \
-> > +	__sysret_arg;                                                           \
-> > +})
-> 
-> I also found during my tests that this one can return a build error if
-> the arg has "const" in its type, due to the error assignment. We need
-> to think about reworking it as a ternary evaluation, it will be more
-> reliable even if less readable. But let's not change this now, I'm on
-> the changelog already.
->
+-- 
+Jens Axboe
 
-The __auto_type in new enough version does work well with 'const', but
-for the old version, we need to restoring the 'long' type and the
-conversion ;-(
-
-> >  /* Functions in this file only describe syscalls. They're declared static so
-> >   * that the compiler usually decides to inline them while still being allowed
-> > @@ -94,7 +101,7 @@ void *sbrk(intptr_t inc)
-> >  	if (ret && sys_brk(ret + inc) == ret + inc)
-> >  		return ret + inc;
-> >  
-> > -	return (void *)__sysret(-ENOMEM);
-> > +	return (void *)__sysret((unsigned long)-ENOMEM);
-> 
-> I noticed that one as well during my tests, but if we're purist, we're
-> supposed to use (void*) for the cast and not (unsigned long), and it
-> should allow to get rid of the outer cast.
->
-
-To accept "void *", more conversions are required ...
-
-A new 'ugly' version are ready for review soon, it compiles and get less size
-on gcc-4.8 too ;-)
-
-Thanks,
-Zhangjin
-
-> Regards,
-> Willy
