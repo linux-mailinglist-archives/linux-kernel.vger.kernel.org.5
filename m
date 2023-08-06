@@ -2,130 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B9C97713E2
-	for <lists+linux-kernel@lfdr.de>; Sun,  6 Aug 2023 09:52:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A8067713EF
+	for <lists+linux-kernel@lfdr.de>; Sun,  6 Aug 2023 10:14:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229533AbjHFHwv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 6 Aug 2023 03:52:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51576 "EHLO
+        id S229592AbjHFIOy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 6 Aug 2023 04:14:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53062 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229436AbjHFHws (ORCPT
+        with ESMTP id S229510AbjHFIOx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 6 Aug 2023 03:52:48 -0400
-Received: from out5-smtp.messagingengine.com (out5-smtp.messagingengine.com [66.111.4.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7CD31BD4;
-        Sun,  6 Aug 2023 00:52:45 -0700 (PDT)
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-        by mailout.nyi.internal (Postfix) with ESMTP id 9D0ED5C0075;
-        Sun,  6 Aug 2023 03:52:42 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute3.internal (MEProxy); Sun, 06 Aug 2023 03:52:42 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=manjusaka.me; h=
-        cc:cc:content-transfer-encoding:content-type:date:date:from:from
-        :in-reply-to:message-id:mime-version:reply-to:sender:subject
-        :subject:to:to; s=fm3; t=1691308362; x=1691394762; bh=k+YpVT6VAo
-        F7F80t6KXXgq3nfq+BBYr4oC0WOTx8568=; b=awHlM6U1PzHY/fbAnP9S6KyVrX
-        ZGryZK6fH8MwBrytIk5Oe48O4WOsGZ33qUk6kXit1xX6/1HgT6xvd1R0yMf6H2qV
-        s/AwL5kHELXvH50fgTxyI/OrIyuL9f/KeJ2EXqWH8CRnldIJynVz5fWVeEuztMrO
-        W3H9emK7UGmA/DPWmUudSMs7N7GMjEYlstRkcHHfNT8n+rj4mkoQWzIumbeWmM+y
-        XA/ZhijWJ1GJJU547Revt2oIrhE99Kf4Q83e8aRxy6IJ5Jvj86oceROovQ98iBBk
-        wuFOdFqO9s+/MY7mu+Q0T5knq0QjxL2lClmTYOuH3BvDu90a/oDbDTBrdeXA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-transfer-encoding
-        :content-type:date:date:feedback-id:feedback-id:from:from
-        :in-reply-to:message-id:mime-version:reply-to:sender:subject
-        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm3; t=1691308362; x=1691394762; bh=k+YpVT6VAoF7F
-        80t6KXXgq3nfq+BBYr4oC0WOTx8568=; b=VkhKufPpRwzTrjWI5PNqXzFUTSPM+
-        GqhOVHLpCc2n89Gqcd3m8erhcwKgkhHNzS9rFky0CJhE6rWpPxSk+UNwPlYGAV1g
-        +AHn5hxi5IIlaZsB/K00JULQJ3T6Fa/TXaTNCQHIPrWq/SRai3m5U4mb8Gg06X8j
-        uvXddhGyS6CtX4cLgYjUhbeQ1+NNTaesxxt6eS/81gQVZgdzf7Soj03A+tM8IhPk
-        XO3BSjQe2S2lkNRUb9fW7LThOIh7UmGaNQiBywONs0pEvrncDN4ii3B871bziR0c
-        YDrb+24co4dJLbFEQNWcbMmKt8FUgYWRuvm1odmSRaYHNPrhUBiJJqHCA==
-X-ME-Sender: <xms:SlHPZAJmKGGS2Y11Du-X7HX0cTDrBFvXF09HomcZh-Wj2QPUjLMqmg>
-    <xme:SlHPZAJXp7faK4L6g3Ltlm-Cvx2IDGlqGg04mWMvgChwdkhJ2JRoixEVrnghUQ6Qi
-    dJRjkYUiDOunAPqsts>
-X-ME-Received: <xmr:SlHPZAswpHMbNlVgndjgacRWEQLto3pq51rYuGUNNLipGJMQKZOiLPgRHg-RsosN_INxmEI7Ww>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedrkeejgdduvdehucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucenucfjughrpefhvfevufffkffoggfgsedtkeertd
-    ertddtnecuhfhrohhmpeforghnjhhushgrkhgruceomhgvsehmrghnjhhushgrkhgrrdhm
-    vgeqnecuggftrfgrthhtvghrnhepvddujeetiefgheehvefhveetieeuudeutdehhedtue
-    etueehjeffhefhueeutdejnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehm
-    rghilhhfrhhomhepmhgvsehmrghnjhhushgrkhgrrdhmvg
-X-ME-Proxy: <xmx:SlHPZNbCGdnJLSbRNyNXEvwTu-HwfGm9jyNbDOBEWRtPlPJHaJkkgg>
-    <xmx:SlHPZHb9jwKkOgERgP1e5LuKgxJ4GIiesZ9K7D36_yRVmLK6BqSbAQ>
-    <xmx:SlHPZJCLtfLRPRa4Z6gJYHmNqxuCU4spymqZUPpXy3Byzs49aUIeEQ>
-    <xmx:SlHPZETZaHA1ktBka8jRiqotlKXU4V_YcprB-Ezx_p6H_oBDreSLWg>
-Feedback-ID: i3ea9498d:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Sun,
- 6 Aug 2023 03:52:38 -0400 (EDT)
-From:   Manjusaka <me@manjusaka.me>
-To:     edumazet@google.com, mhiramat@kernel.org, rostedt@goodmis.org,
-        davem@davemloft.net, dsahern@kernel.org, kuba@kernel.org,
-        pabeni@redhat.com
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-trace-kernel@vger.kernel.org, bpf@vger.kernel.org,
-        Manjusaka <me@manjusaka.me>
-Subject: [PATCH] [RFC PATCH] tcp event: add new tcp:tcp_cwnd_restart event
-Date:   Sun,  6 Aug 2023 07:52:16 +0000
-Message-Id: <20230806075216.13378-1-me@manjusaka.me>
-X-Mailer: git-send-email 2.34.1
+        Sun, 6 Aug 2023 04:14:53 -0400
+Received: from mail-io1-xd2b.google.com (mail-io1-xd2b.google.com [IPv6:2607:f8b0:4864:20::d2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 802B41FC1;
+        Sun,  6 Aug 2023 01:14:52 -0700 (PDT)
+Received: by mail-io1-xd2b.google.com with SMTP id ca18e2360f4ac-76c64da0e46so143104539f.0;
+        Sun, 06 Aug 2023 01:14:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1691309692; x=1691914492;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=oslzktuLlQuV/9tgiDlABRFZ0qfHlpBYOi45TJmyGLc=;
+        b=NS97xhilq3s4K9gvE596eIPyUH6XJ3jAL2zU2p3wZ+cfKxMAHLImT//P4m38V7sCZ6
+         vv8nvf+rZYq0QqByOHrhjyW272TdHCaANT4iNBGeKgr8sqFLbwpW/a/OqPs6auAMF9z3
+         79aYzKb4uB0HoSFnNoZR7i3p/3wSL8B+7EHaLHyt6UIfW3DMZDCZBnkBxjJEdqQxVO30
+         DGDBRrl5JcoAyL2Ziav5Yt35PlOECglhgQvkXqh2DrnAOhHudNk7xt/RIGdusKsmS7H2
+         m0NMWbdEkF6YirHhO74fRJOS819AoQCKOOAe7+bR+nzZHNd6hHDz72GSfWldy+X1wXOC
+         c2nQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691309692; x=1691914492;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=oslzktuLlQuV/9tgiDlABRFZ0qfHlpBYOi45TJmyGLc=;
+        b=g/nmhGVnugQeQ1J2V8zDD3D9gKTOPlXiBhvc1BeHXSfw7HSomyMweFTxNqcLA3E9OC
+         v2433Gl1mjqV/EdK+z4HBKuFd7iPKTUcwmIsiD9JGammguXHy5U+Nm5fgEicupTR+lV+
+         ZDkEHOfhUffWXp79kCC/kCdcOBzYGtvFXD07eQEb0ZTt7d5pnhzSE+m6QA7Xt6v3JaHq
+         nXf31+i/yXz/XD7+Crw2powASKbV4DZv3nKv3zBF16izdL21eOi3zdpprtIPETCujReM
+         1gO6xCMwvUeoEXID7otNBGwIHg66m93+DlLeohYsRPDtwBnvbUhw4NshjafDjXc3o1mp
+         IxPg==
+X-Gm-Message-State: AOJu0YxfcN6YO4mwwytFwJI/DY5r5gAXbBhc51qvbZtuQyiGSu7vyePt
+        T8lCYmz+kXlP25H4snpK2iW8+S5s0qSSKKwcldI=
+X-Google-Smtp-Source: AGHT+IHVc2Fooi3YCjJ9SgBa4bKFKhmqzl4AFAaiBQoPiHD7T07vcjs8HA++6tkd7d3k2lgS0UnRj85G1NAGLWHtTl0=
+X-Received: by 2002:a05:6602:254a:b0:783:3899:e1d0 with SMTP id
+ cg10-20020a056602254a00b007833899e1d0mr7146880iob.6.1691309691790; Sun, 06
+ Aug 2023 01:14:51 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20230802133509.29381-1-aboutphysycs@gmail.com> <20230805193052.690c87e8@jic23-huawei>
+In-Reply-To: <20230805193052.690c87e8@jic23-huawei>
+From:   Andrei Coardos <aboutphysycs@gmail.com>
+Date:   Sun, 6 Aug 2023 11:14:40 +0300
+Message-ID: <CAMu7dgvt0mmQTkL9t1F_NpEBSew+0fa1aQnn=Aw=6FA9KpP2nw@mail.gmail.com>
+Subject: Re: [PATCH v2] iio: trigger: stm32-lptimer-trigger: remove unneeded platform_set_drvdata()
+To:     Jonathan Cameron <jic23@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-iio@vger.kernel.org, alexandre.torgue@foss.st.com,
+        mcoquelin.stm32@gmail.com, lars@metafoo.de,
+        Alexandru Ardelean <alex@shruggie.ro>
+Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The tcp_cwnd_restart function would be called if the user has enabled the
-tcp_slow_start_after_idle configuration and would be triggered when the
-connection is idle (like LONG RTO etc.). I think it would be great to
-add a new trace event named 'tcp:tcp_cwnd_reset'; it would help people
-to monitor the TCP state in a complicated network environment(like
-overlay/underlay SDN in Kubernetes, etc)
+Thank you very much!
 
-Signed-off-by: Manjusaka <me@manjusaka.me>
----
- include/trace/events/tcp.h | 7 +++++++
- net/ipv4/tcp_output.c      | 1 +
- 2 files changed, 8 insertions(+)
-
-diff --git a/include/trace/events/tcp.h b/include/trace/events/tcp.h
-index bf06db8d2046..fa44191cc609 100644
---- a/include/trace/events/tcp.h
-+++ b/include/trace/events/tcp.h
-@@ -187,6 +187,13 @@ DEFINE_EVENT(tcp_event_sk, tcp_rcv_space_adjust,
- 	TP_ARGS(sk)
- );
- 
-+DEFINE_EVENT(tcp_event_sk, tcp_cwnd_restart,
-+
-+	TP_PROTO(struct sock *sk),
-+
-+	TP_ARGS(sk)
-+);
-+
- TRACE_EVENT(tcp_retransmit_synack,
- 
- 	TP_PROTO(const struct sock *sk, const struct request_sock *req),
-diff --git a/net/ipv4/tcp_output.c b/net/ipv4/tcp_output.c
-index 51d8638d4b4c..e902fa74303d 100644
---- a/net/ipv4/tcp_output.c
-+++ b/net/ipv4/tcp_output.c
-@@ -141,6 +141,7 @@ static __u16 tcp_advertise_mss(struct sock *sk)
-  */
- void tcp_cwnd_restart(struct sock *sk, s32 delta)
- {
-+	trace_tcp_cwnd_restart(sk);
- 	struct tcp_sock *tp = tcp_sk(sk);
- 	u32 restart_cwnd = tcp_init_cwnd(tp, __sk_dst_get(sk));
- 	u32 cwnd = tcp_snd_cwnd(tp);
--- 
-2.34.1
-
+On Sat, 5 Aug 2023 at 21:31, Jonathan Cameron <jic23@kernel.org> wrote:
+>
+> On Wed,  2 Aug 2023 16:35:09 +0300
+> Andrei Coardos <aboutphysycs@gmail.com> wrote:
+>
+> > This function call was found to be unnecessary as there is no equivalent
+> > platform_get_drvdata() call to access the private data of the driver. Also,
+> > the private data is defined in this driver, so there is no risk of it being
+> > accessed outside of this driver file.
+> >
+> > Reviewed-by: Alexandru Ardelean <alex@shruggie.ro>
+> > Signed-off-by: Andrei Coardos <aboutphysycs@gmail.com>
+> > ---
+> >
+> > Changelog V1->V2:
+> >
+> > * https://lore.kernel.org/linux-iio/CAH3L5QpuoDYU6qvWH7_z5Yx0cW2qPMbCA8AFEYAPsiEkSzCiwQ@mail.gmail.com/T/#t
+> > * Adjusted the returning values of the function
+> >
+> >
+> >  drivers/iio/trigger/stm32-lptimer-trigger.c | 6 +-----
+> >  1 file changed, 1 insertion(+), 5 deletions(-)
+> >
+> > diff --git a/drivers/iio/trigger/stm32-lptimer-trigger.c b/drivers/iio/trigger/stm32-lptimer-trigger.c
+> > index df2416e33375..ab1cc6a05f26 100644
+> > --- a/drivers/iio/trigger/stm32-lptimer-trigger.c
+> > +++ b/drivers/iio/trigger/stm32-lptimer-trigger.c
+> > @@ -88,11 +88,7 @@ static int stm32_lptim_trigger_probe(struct platform_device *pdev)
+> >       priv->dev = &pdev->dev;
+> >       priv->trg = stm32_lptim_triggers[index];
+> >
+> > -     ret = stm32_lptim_setup_trig(priv);
+> > -     if (ret)
+> > -             return ret;
+> > -
+> > -     return 0;
+> > +     return stm32_lptim_setup_trig(priv);
+> Both of us failed to notice ret isn't used any more.  Anyhow, I cleaned that
+> up after spotting the build warning.
+>
+> Jonathan
+>
+> >  }
+> >
+> >  static const struct of_device_id stm32_lptim_trig_of_match[] = {
+>
