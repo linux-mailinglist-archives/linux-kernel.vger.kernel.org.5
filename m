@@ -2,180 +2,275 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E9CF771517
-	for <lists+linux-kernel@lfdr.de>; Sun,  6 Aug 2023 14:45:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D6B69771522
+	for <lists+linux-kernel@lfdr.de>; Sun,  6 Aug 2023 15:07:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230190AbjHFMpv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 6 Aug 2023 08:45:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34010 "EHLO
+        id S229523AbjHFNHd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 6 Aug 2023 09:07:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35792 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229528AbjHFMpu (ORCPT
+        with ESMTP id S229436AbjHFNHb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 6 Aug 2023 08:45:50 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 183E7E47;
-        Sun,  6 Aug 2023 05:45:49 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        Sun, 6 Aug 2023 09:07:31 -0400
+Received: from mout-p-202.mailbox.org (mout-p-202.mailbox.org [80.241.56.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15CF319A7;
+        Sun,  6 Aug 2023 06:07:28 -0700 (PDT)
+Received: from smtp2.mailbox.org (smtp2.mailbox.org [IPv6:2001:67c:2050:b231:465::2])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id A0FEA610AA;
-        Sun,  6 Aug 2023 12:45:48 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 302AFC433C7;
-        Sun,  6 Aug 2023 12:45:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691325948;
-        bh=wXYWg26OzEPN2k/ZF3JgHRFogg3a61pPPpi9inOVm0Y=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=tx0smzmfap8JWuh2SZ9JmhyGP1aSjTUCbKer+myYAxc9LGi8YZptXIxr9qyE965RE
-         ubARg98QO+oI84FfP2kWZwNqMooABOZ9r+nlA6U+wkeLYmfD6wgM0t0zi+nC74b5GR
-         vZZmMI7+IKKxCQ1sdGzSbEQzQVxtrhPC3SRgaVj+R6o8MFN36bf5kB2MGXt0A9KcGd
-         AJ4xpkm39pPw3QuGja99kp0sNJAUUGk+eQFCg6015bn1uW1+hKmtELU60Fb1e58Suw
-         lNrdwirRHXYFe6lVToMHh44PHxq4yMFnKxipckUoYNsipvbaGepjxKwWbE4gSibC7d
-         SROX5an+Cm3gQ==
-Date:   Sun, 6 Aug 2023 14:45:43 +0200
-From:   Christian Brauner <brauner@kernel.org>
-To:     Loic Poulain <loic.poulain@linaro.org>
-Cc:     viro@zeniv.linux.org.uk, corbet@lwn.net,
-        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, hch@infradead.org,
-        rdunlap@infradead.org
-Subject: Re: [PATCH v3] init: Add support for rootwait timeout parameter
-Message-ID: <20230806-leibhaftig-deutung-dd4a6b01d038@brauner>
-References: <20230806101217.164068-1-loic.poulain@linaro.org>
+        by mout-p-202.mailbox.org (Postfix) with ESMTPS id 4RJfqw0hXnz9scG;
+        Sun,  6 Aug 2023 15:07:24 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oltmanns.dev;
+        s=MBO0001; t=1691327244;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=3lueAWjew8VQDPCjTbo4tk50Lh644cdw3fEshm5hvMw=;
+        b=Ph1WfJ7DVcWNlJv59rDYhTQrfu2XFg+FmDImw/4fUGHhuNgmpkKPBD0u54ap0r63Eu8QvR
+        YbQp1uYT+8ExlVyTPmUYs4gfmmoJfVBBOTiH4Z+oqorw+OaRVNHTm+wcu1uqBFMuFZ6FP1
+        gfo4IwJVYBEx08kNov3V5IMK4cb7lqN4AeLjMKV5kaAQ8chmU++TSQhFUn7PhjU02mB8qx
+        lkOs8UOthsNRB0f4Q/h4LptFNneVczilKg8nVeCX7Mj7isIO8o9yT5QB/kj5DheMOBe0/A
+        yLUoHk/eLfjKMG1JyZWF0YRiP/Km3lb55y6v3+dZt4hdqcsLiELwXmLUmgRIgw==
+From:   Frank Oltmanns <frank@oltmanns.dev>
+Subject: [PATCH v5 00/11] clk: sunxi-ng: Consider alternative parent rates
+ when determining NKM clock rate
+Date:   Sun, 06 Aug 2023 15:06:45 +0200
+Message-Id: <20230806-pll-mipi_set_rate_parent-v5-0-db4f5ca33fc3@oltmanns.dev>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20230806101217.164068-1-loic.poulain@linaro.org>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIAOWaz2QC/43OwU7EIBSF4VeZsJYJcCkVV76HMQ2FiyW2tAFCN
+ JO+u3Q2jsZMXP6L8+VcSMYUMJOn04UkrCGHNbboHk7ETia+IQ2uNRFMAFNC0W2e6RK2MGQsQzI
+ Fh80kjIUCKPCWOYXKkzbfEvrwcaVfXlv7tC60TAnNDcg504xLOHMQousppz6Z+P68zmUxMeazw
+ 3pgU8hlTZ/Xm1Uc5D8eVUEZVT1ojWOnlRM/2eNUhW+rZ+KOBc2Sytnx0RhtR/uHJW8s3t+xZLO
+ YNNZzB7pX3S9r3/cvsjCMn5gBAAA=
+To:     Maxime Ripard <mripard@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Samuel Holland <samuel@sholland.org>,
+        Andre Przywara <andre.przywara@arm.com>,
+        Roman Beranek <me@crly.cz>
+Cc:     linux-clk@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-sunxi@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Frank Oltmanns <frank@oltmanns.dev>
+X-Developer-Signature: v=1; a=openpgp-sha256; l=9476; i=frank@oltmanns.dev;
+ h=from:subject:message-id; bh=Y6huA7pRQGwiTek/nSvFoba3zhhGz8ZczovKE7oT2Yw=;
+ b=owEB7QES/pANAwAIAZppogiUStPHAcsmYgBkz5sGyv4+SCmulPpBFGgmUzpdHByc4p5tOltiO
+ BFMBe/JPrCJAbMEAAEIAB0WIQQC/SV7f5DmuaVET5aaaaIIlErTxwUCZM+bBgAKCRCaaaIIlErT
+ x5EWC/9ioHMNbbrdqFIujdKfDFEsis42cuyRU+iNPFh6M3dgin1az1Pc/0/l97/db6EsuNEnqUK
+ Lmf4ZH6sDosmpud6xp3FlBMgAah80eyMcRkXVslxMPTsNJHzeFLdNmRPG4JNTBk93CNTKgf9eI5
+ jzDVoH05NVIEisL35nHPNW7ourwkiYccza+NOuUYUept1DV+yzXpKlzwUTGzhEjb0ERy8GK2AMr
+ bj3H32j63EQ2PvkaN/1z9MmsrVNFBiXfvV7bwznSYZQ/F3cUHT6Ew/BYRO7p125fX/URT7h+7WI
+ 9UtzHhaXZNaTrT+2BoPervjm7mzKrUN4CzaZBr8hYN5v9IiKPTmCDSoywUhIFJ8gmLo6QHqO8C6
+ Hw0zKQ4hds1pazrBBaMSp4RHDVG7xAyCsayfJ1gPQ9fjbBflsL8rSVEixnh6A7Ij0Bdc8hiTg4W
+ SnGaGpoqlkeVq5dHI6Fku9BP/h/3Wju2bDmSn3z9SHpiGBeQvhhNEI1vZjQlhGMX3m92k=
+X-Developer-Key: i=frank@oltmanns.dev; a=openpgp;
+ fpr=02FD257B7F90E6B9A5444F969A69A208944AD3C7
+X-Rspamd-Queue-Id: 4RJfqw0hXnz9scG
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Aug 06, 2023 at 12:12:17PM +0200, Loic Poulain wrote:
-> Add an optional timeout arg to 'rootwait' as the maximum time in
-> seconds to wait for the root device to show up before attempting
-> forced mount of the root filesystem.
-> 
-> Use case:
-> In case of device mapper usage for the rootfs (e.g. root=/dev/dm-0),
-> if the mapper is not able to create the virtual block for any reason
-> (wrong arguments, bad dm-verity signature, etc), the `rootwait` param
-> causes the kernel to wait forever. It may however be desirable to only
-> wait for a given time and then panic (force mount) to cause device reset.
-> This gives the bootloader a chance to detect the problem and to take some
-> measures, such as marking the booted partition as bad (for A/B case) or
-> entering a recovery mode.
-> 
-> In success case, mounting happens as soon as the root device is ready,
-> unlike the existing 'rootdelay' parameter which performs an unconditional
-> pause.
-> 
-> Signed-off-by: Loic Poulain <loic.poulain@linaro.org>
-> ---
->  v2: rebase + reword: add use case example
->  v3: Use kstrtoint instead of deprecated simple_strtoul
-> 
->  .../admin-guide/kernel-parameters.txt         |  4 ++++
->  init/do_mounts.c                              | 24 +++++++++++++++++--
->  2 files changed, 26 insertions(+), 2 deletions(-)
-> 
-> diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
-> index a1457995fd41..387cf9c2a2c5 100644
-> --- a/Documentation/admin-guide/kernel-parameters.txt
-> +++ b/Documentation/admin-guide/kernel-parameters.txt
-> @@ -5501,6 +5501,10 @@
->  			Useful for devices that are detected asynchronously
->  			(e.g. USB and MMC devices).
->  
-> +	rootwait=	[KNL] Maximum time (in seconds) to wait for root device
-> +			to show up before attempting to mount the root
-> +			filesystem.
-> +
->  	rproc_mem=nn[KMG][@address]
->  			[KNL,ARM,CMA] Remoteproc physical memory block.
->  			Memory area to be used by remote processor image,
-> diff --git a/init/do_mounts.c b/init/do_mounts.c
-> index 1aa015883519..98190bf34a9f 100644
-> --- a/init/do_mounts.c
-> +++ b/init/do_mounts.c
-> @@ -18,6 +18,7 @@
->  #include <linux/slab.h>
->  #include <linux/ramfs.h>
->  #include <linux/shmem_fs.h>
-> +#include <linux/ktime.h>
->  
->  #include <linux/nfs_fs.h>
->  #include <linux/nfs_fs_sb.h>
-> @@ -71,12 +72,25 @@ static int __init rootwait_setup(char *str)
->  {
->  	if (*str)
->  		return 0;
-> -	root_wait = 1;
-> +	root_wait = -1;
->  	return 1;
->  }
->  
->  __setup("rootwait", rootwait_setup);
->  
-> +static int __init rootwait_timeout_setup(char *str)
-> +{
-> +	if (kstrtoint(str, 0, &root_wait) || root_wait < 0) {
-> +		pr_warn("ignoring invalid rootwait value\n");
-> +		/* fallback to indefinite wait */
-> +		root_wait = -1;
-> +	}
-> +
-> +	return 1;
-> +}
-> +
-> +__setup("rootwait=", rootwait_timeout_setup);
-> +
->  static char * __initdata root_mount_data;
->  static int __init root_data_setup(char *str)
->  {
-> @@ -384,14 +398,20 @@ void __init mount_root(char *root_device_name)
->  /* wait for any asynchronous scanning to complete */
->  static void __init wait_for_root(char *root_device_name)
->  {
-> +	const ktime_t end = ktime_add_ms(ktime_get_raw(), root_wait * MSEC_PER_SEC);
+This patchset enables NKM clocks to consider alternative parent rates
+and utilize this new feature to adjust the pll-video0 clock on Allwinner
+A64.
 
-I'd only initialize @end after the ROOT_DEV check.
+Furthermore, with this patchset pll-video0 considers rates that are
+higher than the requested rate when finding the closest rate. In
+consequence, higher rates are also considered by pll-video0's
+descandents. In total, after applying this patchset, finding the closest
+rate is supported by:
+  - ccu_nm
+  - ccu_nkm
+  - ccu_mux
+  - ccu_div
 
-Also, afaict, this currently allows userspace to overflow, i.e.,
+This allows us to achieve an optimal rate for driving the board's panel.
 
-root_wait=2147483647
+To provide some context, the clock structure involved in this process is
+as follows:
+    clock                       clock type
+    --------------------------------------
+    pll-video0                  ccu_nm
+       pll-mipi                 ccu_nkm
+          tcon0                 ccu_mux
+             tcon-data-clock    sun4i_dclk
 
-ktime_add_ms(..., root_wait(2147483647) * MSEC_PER_SEC(1000))
+The divider between tcon0 and tcon-data-clock is fixed at 4. Therefore,
+in order to achieve a rate that closely matches the desired rate of the
+panel, pll-mipi needs to operate at a specific rate.
 
-So idk, you probably want to convert root_wait to ms right away and do
-sm like (completely untested):
+Tests
+=====
+So far, this has been successfully tested on the A64-based Pinephone
+using three different panel rates:
 
-static int __init rootwait_timeout_setup(char *str)
-{
-	int ret, tmp;
+ 1. A panel rate that can be matched exactly by pll-video0.
+ 2. A panel rate that requires pll-video0 to undershoot to get the
+    closest rate.
+ 3. A panel rate that requires pll-video0 to overshoot to get the
+    closest rate.
 
-	THIS LINE WILL BREAK COMPILATION
+Test records:
 
-	if (*str)
-		return 0;
+Re 1:
+-----
+Panel requests tcon-data-clock of 103500000 Hz, i.e., pll-mipi needs to
+run at 414000000 Hz. This results in the following clock rates:
+   clock                            rate
+   -------------------------------------
+    pll-video0                 207000000
+       hdmi-phy-clk             51750000
+       hdmi                    207000000
+       tcon1                   207000000
+       pll-mipi                414000000
+          tcon0                414000000
+             tcon-data-clock   103500000
 
-	/* always fallback to indefinite wait */
-	root_wait = -1;
+The results of the find_best calls:
+ccu_nkm_find_best_with_parent_adj: rate=414000000, best_rate=414000000, best_parent_rate=207000000, n=1, k=2, m=1
+ccu_nkm_find_best_with_parent_adj: rate=414000000, best_rate=414000000, best_parent_rate=207000000, n=1, k=2, m=1
+ccu_nkm_find_best_with_parent_adj: rate=414000000, best_rate=414000000, best_parent_rate=207000000, n=1, k=2, m=1
+ccu_nkm_find_best_with_parent_adj: rate=414000000, best_rate=414000000, best_parent_rate=207000000, n=1, k=2, m=1
+ccu_nkm_find_best: rate=414000000, best_rate=414000000, parent_rate=207000000, n=1, k=2, m=1
 
-	ret = kstrtoint(str, 0, &tmp));
-	if (ret || tmp < 0) {
-		pr_warn("ignoring invalid rootwait value\n");
-		return 1;
-	}
+Re 2:
+-----
+Panel requests tcon-data-clock of 103650000 Hz, i.e., pll-mipi needs to
+run at 414600000 Hz. This results in the following clock rates:
+   clock                            rate
+   -------------------------------------
+    pll-video0                 282666666
+       hdmi-phy-clk             70666666
+       hdmi                    282666666
+       tcon1                   282666666
+       pll-mipi                414577776
+          tcon0                414577776
+             tcon-data-clock   103644444
 
-	if (check_mul_overflow(tmp, MSEC_PER_SEC, &root_wait))
-		pr_warn("ignoring excessive rootwait value\n");
+The results of the find_best calls:
+ccu_nkm_find_best_with_parent_adj: rate=414600000, best_rate=414577776, best_parent_rate=282666666, n=11, k=2, m=15
+ccu_nkm_find_best_with_parent_adj: rate=414600000, best_rate=414577776, best_parent_rate=282666666, n=11, k=2, m=15
+ccu_nkm_find_best_with_parent_adj: rate=414577776, best_rate=414577776, best_parent_rate=282666666, n=11, k=2, m=15
+ccu_nkm_find_best_with_parent_adj: rate=414577776, best_rate=414577776, best_parent_rate=282666666, n=11, k=2, m=15
+ccu_nkm_find_best: rate=414577776, best_rate=414577776, parent_rate=282666666, n=11, k=2, m=15
 
-	return 1;
-}
+Re 3:
+-----
+Panel requests tcon-data-clock of 112266000 Hz, i.e., pll-mipi needs to
+run at 449064000 Hz. This results in the following clock rates:
+   clock                            rate
+   -------------------------------------
+    pll-video0                 207272727
+       hdmi-phy-clk             51818181
+       hdmi                    207272727
+       tcon1                   207272727
+       pll-mipi                449090908
+          tcon0                449090908
+             tcon-data-clock   112272727
+
+The results of the find_best calls:
+ccu_nkm_find_best_with_parent_adj: rate=449064000, best_rate=449090908, best_parent_rate=207272727, n=13, k=2, m=12
+ccu_nkm_find_best_with_parent_adj: rate=449064000, best_rate=449090908, best_parent_rate=207272727, n=13, k=2, m=12
+ccu_nkm_find_best_with_parent_adj: rate=449090908, best_rate=449090908, best_parent_rate=207272727, n=13, k=2, m=12
+ccu_nkm_find_best_with_parent_adj: rate=449090908, best_rate=449090908, best_parent_rate=207272727, n=13, k=2, m=12
+ccu_nkm_find_best: rate=449090908, best_rate=449090908, parent_rate=207272727, n=13, k=2, m=12
+
+Changelog:
+----------
+Changes in v5:
+ - Remove the dedicated function for calculating the optimal parent rate
+   for nkm clocks that was introduced in v2 and again in v4. Instead use
+   a simple calculation and require the parent clock to select the
+   closest rate to achieve optimal results.
+ - Change the order of parameters of nkm_best_rate and
+   nkm_best_rate_with_parent_adj as requested my Maxime Ripard.
+ - Prefer to not reset the rate of the nkm clock's parent if the ideal
+   rate can be reached using the parent's current rate, copying the
+   behavior of ccu_mp.
+ - Link to v4: https://lore.kernel.org/r/20230717-pll-mipi_set_rate_parent-v4-0-04acf1d39765@oltmanns.dev
+
+Changes in v4:
+ - Re-introduce a dedicated function for calculating the optimal parent
+   rate for nkm clocks that was introduced in v2 and removed in v3. It
+   turned out that not having this functionality introduces a bug when
+   the parent does not support finding the closest rate:
+   https://lore.kernel.org/all/87pm4xg2ub.fsf@oltmanns.dev/
+ - Incorporate review remarks:
+    - Correcting the parameter name for ccu_nkm_round_rate()'s parent HW
+      is now in a separate patch.
+    - Use correct parameter order in ccu_nkm_find_best_with_parent_adj.
+    - Add ccu_is_better_rate() and use it for determining the best rate
+      for nm and nkm, as well as ccu_mux_helper_determine_rate.
+    - Consistently introduce new macros for clock variants that support
+      finding the closest rate instead of updating existing macros.
+    - Use wrapper function for determining a ccu_mux's rate in order to
+      support finding the closest rate.
+ - Link to v3: https://lore.kernel.org/r/20230702-pll-mipi_set_rate_parent-v3-0-46dcb8aa9cbc@oltmanns.dev
+
+Changes in v3:
+ - Use dedicated function for finding the best rate in cases where an
+   nkm clock supports setting its parent's rate, streamlining it with
+   the structure that is used in other sunxi-ng ccus such as ccu_mp
+   (PATCH 1).
+ - Therefore, remove the now obsolete comments that were introduced in
+   v2 (PATCH 1).
+ - Remove the dedicated function for calculating the optimal parent rate
+   for nkm clocks that was introduced in v2. Instead use a simple
+   calculation and require the parent clock to select the closest rate to
+   achieve optimal results (PATCH 1).
+ - Therefore, add support to set the closest rate for nm clocks (because
+   pll-mipi's parent pll-video0 is an nm clock) and all clock types that
+   are descendants of a64's pll-video0, i.e., nkm, mux, and div (PATCH 3
+   et. seq.).
+ - Link to v2: https://lore.kernel.org/all/20230611090143.132257-1-frank@oltmanns.dev/
+
+Changes in V2:
+ - Move optimal parent rate calculation to dedicated function
+ - Choose a parent rate that does not to overshoot requested rate
+ - Add comments to ccu_nkm_find_best
+ - Make sure that best_parent_rate stays at original parent rate in the unlikely
+   case that all combinations overshoot.
+
+Link to V1:
+https://lore.kernel.org/lkml/20230605190745.366882-1-frank@oltmanns.dev/
+
+---
+Frank Oltmanns (11):
+      clk: sunxi-ng: nkm: Use correct parameter name for parent HW
+      clk: sunxi-ng: nkm: consider alternative parent rates when determining rate
+      clk: sunxi-ng: a64: allow pll-mipi to set parent's rate
+      clk: sunxi-ng: Add feature to find closest rate
+      clk: sunxi-ng: Add helper function to find closest rate
+      clk: sunxi-ng: nm: Support finding closest rate
+      clk: sunxi-ng: nkm: Support finding closest rate
+      clk: sunxi-ng: mux: Support finding closest rate
+      clk: sunxi-ng: div: Support finding closest rate
+      clk: sunxi-ng: a64: select closest rate for pll-video0
+      clk: sunxi-ng: nkm: Prefer current parent rate
+
+ drivers/clk/sunxi-ng/ccu-sun50i-a64.c | 36 ++++++++++------------
+ drivers/clk/sunxi-ng/ccu_common.c     | 12 ++++++++
+ drivers/clk/sunxi-ng/ccu_common.h     |  6 ++++
+ drivers/clk/sunxi-ng/ccu_div.h        | 30 +++++++++++++++++++
+ drivers/clk/sunxi-ng/ccu_mux.c        | 15 ++++++++--
+ drivers/clk/sunxi-ng/ccu_mux.h        | 38 +++++++++++++++++-------
+ drivers/clk/sunxi-ng/ccu_nkm.c        | 56 ++++++++++++++++++++++++++++++-----
+ drivers/clk/sunxi-ng/ccu_nm.c         | 13 ++++----
+ drivers/clk/sunxi-ng/ccu_nm.h         | 48 ++++++++++++++++++++++++++++--
+ 9 files changed, 203 insertions(+), 51 deletions(-)
+---
+base-commit: 6995e2de6891c724bfeb2db33d7b87775f913ad1
+change-id: 20230626-pll-mipi_set_rate_parent-3363fc0d6e6f
+
+Best regards,
+-- 
+Frank Oltmanns <frank@oltmanns.dev>
+
