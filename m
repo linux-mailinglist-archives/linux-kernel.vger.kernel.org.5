@@ -2,134 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4923F77159D
-	for <lists+linux-kernel@lfdr.de>; Sun,  6 Aug 2023 16:27:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D1B3677159F
+	for <lists+linux-kernel@lfdr.de>; Sun,  6 Aug 2023 16:28:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230379AbjHFO1e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 6 Aug 2023 10:27:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51006 "EHLO
+        id S230131AbjHFO2P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 6 Aug 2023 10:28:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51388 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229515AbjHFO1c (ORCPT
+        with ESMTP id S229509AbjHFO2N (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 6 Aug 2023 10:27:32 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 285DDE49;
-        Sun,  6 Aug 2023 07:27:31 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id A21BB6117F;
-        Sun,  6 Aug 2023 14:27:30 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AD045C433C8;
-        Sun,  6 Aug 2023 14:27:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1691332050;
-        bh=k7Wz5My+7y3gVES1fFNpSuU/X31s8HmopFxP7aidXy4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=hOhrseXDh8smzJLqzn5JMnrQ1JlOrcR/7m0rx32YCV/jfEvBxLxJLP26t1eKCCm3R
-         ap5kt7nu01tatM0i4du1IW4yIO5zzSbWCbw/P3AeRJFfoWY6xllJF11Oww2hvBdgX4
-         MpqQ8p53clg9JYy89ix1047wMe9DLCjm4wX+hQWs=
-Date:   Sun, 6 Aug 2023 16:27:27 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Zhang Shurong <zhang_shurong@foxmail.com>
-Cc:     jgross@suse.com, xen-devel@lists.xenproject.org,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] xen: fix potential shift out-of-bounds in
- xenhcd_hub_control()
-Message-ID: <2023080659-turban-exemption-1196@gregkh>
-References: <tencent_15DD79B42AD8A0D64A7CDC24D4FE6C85800A@qq.com>
- <2023062628-shame-ebook-56f2@gregkh>
- <4825193.GXAFRqVoOG@localhost.localdomain>
- <tencent_942CC5C35E410E3545C2E386BE566B8B1405@qq.com>
+        Sun, 6 Aug 2023 10:28:13 -0400
+Received: from mail-lj1-x233.google.com (mail-lj1-x233.google.com [IPv6:2a00:1450:4864:20::233])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F66E9F;
+        Sun,  6 Aug 2023 07:28:12 -0700 (PDT)
+Received: by mail-lj1-x233.google.com with SMTP id 38308e7fff4ca-2b9338e4695so58510411fa.2;
+        Sun, 06 Aug 2023 07:28:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1691332090; x=1691936890;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=WjOqtzjiS9hMriytx4md9WAGNQMkIBNRRc2C+laXxqo=;
+        b=GZCXdTuinDdxp+PAbXVrD2C6/E4RbzF3nAUZHcD921R7oKjcEwTAL68I/Ks7yYu1GC
+         br3UoyGRCP6WXowXCDj7G74fYjvUxDIUV/HOT/JiWJQDU67qEOLTEXa71tFwYtUD3AqH
+         +bmGcAo9Ss02jOWwFfsZsF0HenAZqCeTVfom62/3MimZhq6SXaz8FfBBpWFHOgKDx+hz
+         SyNFrqzgEoaDRVHGPHJvQp6wudTwM7XcsEfz2H+z6siZuaSBTaucQWbSZatzJHOFtSKA
+         K5q82pMyR1W++pmG99GgnYu1fDerVKKt/8TPXUSMObA1UIBAjxX6JHpD8nK262FM7E5u
+         S8ag==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691332090; x=1691936890;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=WjOqtzjiS9hMriytx4md9WAGNQMkIBNRRc2C+laXxqo=;
+        b=N7KWx1C6rjpTGz0eqXJlvQoL8qQ6sD+JkuS+BzOdqrZ/h9CcvtYTe6yJ0uuCEEQcbO
+         ZS0bGtI/qJf8zGc9ThF63YhipKb0YtKBpRuBAvHgkyFUdyN8mBWmHxtySIS31d0V5kTL
+         l2pQabhQEocChqg0PmkximgruuTaPoB6TV7Ovd2K4Q7G6CAFpcf3k0fiM2D3/6rBp3ZV
+         Mlk7q1UVjLyu+fMNT5o1VIsCscUZSyVNPSIRIYvwENLMa6RfiDPMGYNBIQioJXC1C48h
+         m/nMJQ2F3Kraz4X5QBBJr0n+3msVu45hWY+ZtJDN4HfbQPEec5/ji6AGIep7CwCjhMyy
+         Vj5A==
+X-Gm-Message-State: AOJu0YwHKbSPH58wgdVwATcVAPf5AKRUx95euQbAW5wIePiANI9Ew5cr
+        eh0KsXWKnvN1LAvBqR5Goq9yKo8LYO6XbQ==
+X-Google-Smtp-Source: AGHT+IHQS5XGNzu/GSaoZhX74O3EBI5ek2XmGXif/BZeiwcZSNC8aG/8xU72RZqu3pk51DyK4m7NyQ==
+X-Received: by 2002:a19:9103:0:b0:4fd:d6ba:73c2 with SMTP id t3-20020a199103000000b004fdd6ba73c2mr4203961lfd.54.1691332089593;
+        Sun, 06 Aug 2023 07:28:09 -0700 (PDT)
+Received: from nam-dell (ip-217-105-46-58.ip.prioritytelecom.net. [217.105.46.58])
+        by smtp.gmail.com with ESMTPSA id c21-20020aa7df15000000b005222b471dc4sm3909677edy.95.2023.08.06.07.28.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 06 Aug 2023 07:28:09 -0700 (PDT)
+Date:   Sun, 6 Aug 2023 16:28:08 +0200
+From:   Nam Cao <namcaov@gmail.com>
+To:     Masami Hiramatsu <mhiramat@kernel.org>
+Cc:     "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
+        Anil S Keshavamurthy <anil.s.keshavamurthy@intel.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org
+Subject: Re: confused about kprobes
+Message-ID: <ZM+t+EVXIlNbKZ3u@nam-dell>
+References: <ZM+BhEz9u7hrWe6e@nam-dell>
+ <20230806213150.5571b4a7f4a0531fcb00f689@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <tencent_942CC5C35E410E3545C2E386BE566B8B1405@qq.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20230806213150.5571b4a7f4a0531fcb00f689@kernel.org>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Aug 06, 2023 at 10:11:43PM +0800, Zhang Shurong wrote:
-> 在 2023年7月1日星期六 CST 下午11:51:43，Zhang Shurong 写道：
-> > 在 2023年6月26日星期一 CST 下午1:52:02，您写道：
-> > 
-> > > On Mon, Jun 26, 2023 at 07:48:05AM +0200, Jan Beulich wrote:
-> > > > On 25.06.2023 18:42, Zhang Shurong wrote:
-> > > > > --- a/drivers/usb/host/xen-hcd.c
-> > > > > +++ b/drivers/usb/host/xen-hcd.c
-> > > > > @@ -456,6 +456,8 @@ static int xenhcd_hub_control(struct usb_hcd *hcd,
-> > > > > __u16 typeReq, __u16 wValue,> >
-> > > > > 
-> > > > >  			info->ports[wIndex - 1].c_connection =
-> > 
-> > false;
-> > 
-> > > > >  			fallthrough;
-> > > > >  		
-> > > > >  		default:
-> > > > > +			if (wValue >= 32)
-> > > > > +				goto error;
-> > > > > 
-> > > > >  			info->ports[wIndex - 1].status &= ~(1
-> > 
-> > << wValue);
-> > 
-> > > > Even 31 is out of bounds (as in: UB) as long as it's 1 here rather
-> > > > than 1u.
-> > > 
-> > > Why isn't the caller fixed so this type of value could never be passed
-> > > to the hub_control callback?
-> > > 
-> > > thanks,
-> > > 
-> > > greg k-h
-> > 
-> > Although I'm not knowledgeable about the USB subsystem, I've observed that
-> > not all driver code that implements hub_control callback performs a shift
-> > operation on wValue, and not all shift operations among them cause
-> > problems. Therefore, I've decided to fix this issue within each driver
-> > itself.
-> > 
-> > For example, in r8a66597_hub_control, it will first check whether wValue is
-> > valid (always < 31) before the shift operation. In case of an invalid
-> > number, the code would execute the error branch instead of the shift
-> > operation.
-> > 
-> > switch (wValue) {
-> > case USB_PORT_FEAT_ENABLE:
-> > 	rh->port &= ~USB_PORT_STAT_POWER;
-> > 	break;
-> > case USB_PORT_FEAT_SUSPEND:
-> > 	break;
-> > case USB_PORT_FEAT_POWER:
-> > 	r8a66597_port_power(r8a66597, port, 0);
-> > 	break;
-> > case USB_PORT_FEAT_C_ENABLE:
-> > case USB_PORT_FEAT_C_SUSPEND:
-> > case USB_PORT_FEAT_C_CONNECTION:
-> > case USB_PORT_FEAT_C_OVER_CURRENT:
-> > case USB_PORT_FEAT_C_RESET:
-> > 	break;
-> > default:
-> > 	goto error;
-> > }
-> > rh->port &= ~(1 << wValue);
+On Sun, Aug 06, 2023 at 09:31:50PM +0900, Masami Hiramatsu wrote:
+> Hi Nam,
 > 
-> Hi there. I apologize for reaching out once more. I'm feeling a bit puzzled 
-> about what my next step should be. I'm unsure whether I should rewrite this 
-> patch or attempt to address the issue at the caller level.
+> On Sun, 6 Aug 2023 13:18:28 +0200
+> Nam Cao <namcaov@gmail.com> wrote:
+> 
+> > Hello,
+> > 
+> > I am struggling to understand how kprobes works. It would be very nice if someone
+> > can spare the time to explain to me. I'm confused about this function in particular:
+> > 
+> > /*
+> >  * Return an optimized kprobe whose optimizing code replaces
+> >  * instructions including 'addr' (exclude breakpoint).
+> >  */
+> > static struct kprobe *get_optimized_kprobe(kprobe_opcode_t *addr)
+> > {
+> > 	int i;
+> > 	struct kprobe *p = NULL;
+> > 	struct optimized_kprobe *op;
+> > 
+> > 	/* Don't check i == 0, since that is a breakpoint case. */
+> > 	for (i = 1; !p && i < MAX_OPTIMIZED_LENGTH / sizeof(kprobe_opcode_t); i++)
+> > 		p = get_kprobe(addr - i);
+> > 
+> > 	if (p && kprobe_optready(p)) {
+> > 		op = container_of(p, struct optimized_kprobe, kp);
+> > 		if (arch_within_optimized_kprobe(op, addr))
+> > 			return p;
+> > 	}
+> > 
+> > 	return NULL;
+> > }
+> > 
+> > The document mentions something about optimizing by replacing trap instructions
+> > with jump instructions, so I am assuming this function is part of that.
+> 
+> Yes, you're right. 
+> 
+> > But I
+> > fail to see what this function is trying to do exactly. The for loop seems to
+> > call get_kprobe at addresses immediately before "addr". But what for? What are
+> > at addresses before "addr"?
+> 
+> This is for finding a jump optimized kprobe which will modify the instruction
+> pointed by 'addr'. As you may know, on x86, the software-breakpoint
+> instruction is 1 byte, but the jump will be 5 bytes. In that case, if we put
+> something at instruction including 'addr', it will be ignored or it will break
+> the jump instruction. So it is used for finding such optimized kprobe.
+> 
+> For the kprobe, the jump optimization is optional and hidden from the user. We
+> should prioritize adding kprobes at specified locations over optimization.
+> Thus if we find such optimized kprobe, it must be unoptimized.
 
-Try addressing it at the caller level first please.  If that somehow
-does not work, then we will take a patch series that fixes all of the
-host controller drivers at once.
+Thank you so much for the detailed answer, it is clear now.
 
-thanks,
-
-greg k-h
+Best regards,
+Nam
