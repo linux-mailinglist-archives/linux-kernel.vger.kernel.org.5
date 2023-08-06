@@ -2,392 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 41B89771436
-	for <lists+linux-kernel@lfdr.de>; Sun,  6 Aug 2023 11:39:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5128E771438
+	for <lists+linux-kernel@lfdr.de>; Sun,  6 Aug 2023 11:39:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230164AbjHFJjG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 6 Aug 2023 05:39:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38120 "EHLO
+        id S229939AbjHFJjn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 6 Aug 2023 05:39:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38416 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229449AbjHFJjD (ORCPT
+        with ESMTP id S229449AbjHFJjl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 6 Aug 2023 05:39:03 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E267399;
-        Sun,  6 Aug 2023 02:38:59 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 7DDE26100F;
-        Sun,  6 Aug 2023 09:38:59 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DFA59C433C7;
-        Sun,  6 Aug 2023 09:38:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691314738;
-        bh=mbtkeapvpDWstkDVi3o2PUu8Y0FTJpcS0ZZq1b7ahk8=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=URuezJLbvRhmE2BBO7llxnynnledv/ldZ7Cj753PV75DJBRg//LJdmLaW03V55Ofx
-         IqI4mKocsA1GNv5t/a+kJLMSgTCpwP9qFffm3v580WFNcxF5d/pBGKQLPJCT++vAya
-         mHbXVCSBWzzBBs+kAuzLtnRgLgH4nh2ZB54g9+4Zzi8Hbn0+oN/1Bd2rFHjplox8go
-         jGXQLWCZmnCpzKRZRC0CMdVHmGEk+9kq1VEN6CI/XHK71LAiyXq6WQHY+wvJNXWgDp
-         t656xkhHHYnbyiht/vA2Xc5/p2KjBn0RHBLv9egYdZRB4F8egAPs06EhIHCo68NCPi
-         AcHuCpZAKulmg==
-Received: by mail-lj1-f176.google.com with SMTP id 38308e7fff4ca-2b9e6cc93d8so55581331fa.0;
-        Sun, 06 Aug 2023 02:38:58 -0700 (PDT)
-X-Gm-Message-State: AOJu0Yxxt+dSwsVDEF4hbsM6XYhNpi84pA7Q5WtYCGYB5k61WD2dmEd7
-        qTcZBnyfdW0wuLrwn66ACTSEkRIfoqrj2pO/Yes=
-X-Google-Smtp-Source: AGHT+IEG4tGUdT6tMKUifQt6qnCl1AVJpHTHuWE1cO6PThE3+66SNDorgT/av0ZYoInayB2VIDYQsys6SpsUzqg8au4=
-X-Received: by 2002:a19:7b02:0:b0:4fe:19ef:879e with SMTP id
- w2-20020a197b02000000b004fe19ef879emr3367165lfc.28.1691314736862; Sun, 06 Aug
- 2023 02:38:56 -0700 (PDT)
+        Sun, 6 Aug 2023 05:39:41 -0400
+Received: from smtpbgau2.qq.com (smtpbgau2.qq.com [54.206.34.216])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 737CA1B3;
+        Sun,  6 Aug 2023 02:39:38 -0700 (PDT)
+X-QQ-mid: bizesmtp80t1691314767tiuq1r0y
+Received: from linux-lab-host.localdomain ( [116.30.130.12])
+        by bizesmtp.qq.com (ESMTP) with 
+        id ; Sun, 06 Aug 2023 17:39:26 +0800 (CST)
+X-QQ-SSF: 01200000000000E0X000000A0000000
+X-QQ-FEAT: Nq+POyG2GSpEb8/3lK4WNmAIbWr1gD0CLEgZCmzgiVkuRvdF+f3t3VBpNVG6n
+        6h30wyuDStDJ/NDsQtmFNbqQ4a5K/eLOoJ07a22WiNnQyrGra92le02ZxmwGuI294f/icQl
+        NdtATgxXtbBwfsgAHArwzH9IRmBvMxOO5KuNvshHIs/ntl6V+mkjJY0c63DnJLTjOPCrcRX
+        MCzvezajTlrR3dBaHTzpQUNoetK/TqZfFuHCe9kWvATjA2qCHvg96KX0RfOIV8r3s8IRjk5
+        HGSlDngzrgcXoUQQmKWyH4SY6mL3uzTNr4k06pJS8v9JEdJCu72Dg48B22zZLJwgWFKrzXs
+        n2MPpbl2FxjrUNIaH3U9wLCAFfuOm6BdC4xr6KGayWWpgeKt8vYV8oAAsim8MndfsF6T9i8
+X-QQ-GoodBg: 0
+X-BIZMAIL-ID: 9856170352400102152
+From:   Zhangjin Wu <falcon@tinylab.org>
+To:     w@1wt.eu
+Cc:     arnd@arndb.de, falcon@tinylab.org, linux-kernel@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, tanyuan@tinylab.org,
+        thomas@t-8ch.de
+Subject: Re: [PATCH v6 7/8] selftests/nolibc: allow customize CROSS_COMPILE by architecture
+Date:   Sun,  6 Aug 2023 17:39:21 +0800
+Message-Id: <20230806093921.9648-1-falcon@tinylab.org>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20230806081731.GA10627@1wt.eu>
+References: <20230806081731.GA10627@1wt.eu>
 MIME-Version: 1.0
-References: <20230806024715.3061589-1-xiao.w.wang@intel.com>
-In-Reply-To: <20230806024715.3061589-1-xiao.w.wang@intel.com>
-From:   Ard Biesheuvel <ardb@kernel.org>
-Date:   Sun, 6 Aug 2023 11:38:45 +0200
-X-Gmail-Original-Message-ID: <CAMj1kXHicVpT7PDSB=BgYEuhBxgufHqd9X8ZCg19k0_U+rjvEg@mail.gmail.com>
-Message-ID: <CAMj1kXHicVpT7PDSB=BgYEuhBxgufHqd9X8ZCg19k0_U+rjvEg@mail.gmail.com>
-Subject: Re: [PATCH] RISC-V: Optimize bitops with Zbb extension
-To:     Xiao Wang <xiao.w.wang@intel.com>
-Cc:     paul.walmsley@sifive.com, palmer@dabbelt.com,
-        aou@eecs.berkeley.edu, anup@brainfault.org, haicheng.li@intel.com,
-        linux-riscv@lists.infradead.org, linux-efi@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-QQ-SENDSIZE: 520
+Feedback-ID: bizesmtp:tinylab.org:qybglogicsvrgz:qybglogicsvrgz5a-1
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 6 Aug 2023 at 04:39, Xiao Wang <xiao.w.wang@intel.com> wrote:
->
-> This patch leverages the alternative mechanism to dynamically optimize
-> bitops (including __ffs, __fls, ffs, fls) with Zbb instructions. When
-> Zbb ext is not supported by the runtime CPU, legacy implementation is
-> used. If Zbb is supported, then the optimized variants will be selected
-> via alternative patching.
->
-> The legacy bitops support is taken from the generic C implementation as
-> fallback.
->
-> If the parameter is a build-time constant, we leverage compiler builtin to
-> calculate the result directly, this approach is inspired by x86 bitops
-> implementation.
->
-> EFI stub runs before the kernel, so alternative mechanism should not be
-> used there, this patch introduces a macro EFI_NO_ALTERNATIVE for this
-> purpose.
+Hi, Willy
+
+> On Sun, Aug 06, 2023 at 02:46:03AM +0800, Zhangjin Wu wrote:
+> > Some cross compilers may not just be prefixed with ARCH, customize them
+> > by architecture may simplify the test a lot, especially, when iterate
+> > with ARCH.
+> > 
+> > After customizing this for every architecture, the minimal test argument
+> > will be architecture itself, no CROSS_COMPILE required to be passed.
+> > 
+> > If the prefix of installed cross compiler is not the same as the one
+> > customized, we can also pass CROSS_COMPILE as before or even pass
+> > CROSS_COMPILE_<ARCH>.
+> > 
+> > Signed-off-by: Zhangjin Wu <falcon@tinylab.org>
+> > ---
+> >  tools/testing/selftests/nolibc/Makefile | 6 ++++++
+> >  1 file changed, 6 insertions(+)
+> > 
+> > diff --git a/tools/testing/selftests/nolibc/Makefile b/tools/testing/selftests/nolibc/Makefile
+> > index 452d8e424d28..45d231b9c5c2 100644
+> > --- a/tools/testing/selftests/nolibc/Makefile
+> > +++ b/tools/testing/selftests/nolibc/Makefile
+> > @@ -55,6 +55,12 @@ IMAGE_loongarch  = arch/loongarch/boot/vmlinuz.efi
+> >  IMAGE            = $(IMAGE_$(XARCH))
+> >  IMAGE_NAME       = $(notdir $(IMAGE))
+> >  
+> > +# CROSS_COMPILE: cross toolchain prefix by architecture
+> > +CROSS_COMPILE           ?= $(CROSS_COMPILE_$(XARCH))
+> > +
+> > +# make sure CC is prefixed with CROSS_COMPILE
+> > +$(call allow-override,CC,$(CROSS_COMPILE)gcc)
+> > +
+> 
+> Note that I feared that it would break my "CC=gcc-5.5.0" and so on but
+> fortunately it did not. However I don't understand what it tries to do
+> nor the problem it tries to solve (even the commit message is quite
+> unclear to me). I'm leaving it aside anyway but I wanted to let you
+> know.
 >
 
-Why? The unpatched sequences work fine, no?
+Thanks you for this note, will add it as a test case in our v2.
 
+These places require the '$(CC)' prefixed with $(CROSS_COMPILE):
 
-> Signed-off-by: Xiao Wang <xiao.w.wang@intel.com>
-> ---
->  arch/riscv/include/asm/bitops.h       | 266 +++++++++++++++++++++++++-
->  drivers/firmware/efi/libstub/Makefile |   2 +-
->  2 files changed, 264 insertions(+), 4 deletions(-)
->
-> diff --git a/arch/riscv/include/asm/bitops.h b/arch/riscv/include/asm/bitops.h
-> index 3540b690944b..f727f6489cd5 100644
-> --- a/arch/riscv/include/asm/bitops.h
-> +++ b/arch/riscv/include/asm/bitops.h
-> @@ -15,13 +15,273 @@
->  #include <asm/barrier.h>
->  #include <asm/bitsperlong.h>
->
-> +#if !defined(CONFIG_RISCV_ISA_ZBB) || defined(EFI_NO_ALTERNATIVE)
->  #include <asm-generic/bitops/__ffs.h>
-> -#include <asm-generic/bitops/ffz.h>
-> -#include <asm-generic/bitops/fls.h>
->  #include <asm-generic/bitops/__fls.h>
-> +#include <asm-generic/bitops/ffs.h>
-> +#include <asm-generic/bitops/fls.h>
-> +
-> +#else
-> +#include <asm/alternative-macros.h>
-> +#include <asm/hwcap.h>
-> +
-> +#if (BITS_PER_LONG == 64)
-> +#define CTZW   "ctzw "
-> +#define CLZW   "clzw "
-> +#elif (BITS_PER_LONG == 32)
-> +#define CTZW   "ctz "
-> +#define CLZW   "clz "
-> +#else
-> +#error "Unexpected BITS_PER_LONG"
-> +#endif
-> +
-> +static __always_inline unsigned long variable__ffs(unsigned long word)
-> +{
-> +       int num;
-> +
-> +       asm_volatile_goto(
-> +               ALTERNATIVE("j %l[legacy]", "nop", 0, RISCV_ISA_EXT_ZBB, 1)
-> +               : : : : legacy);
-> +
-> +       asm volatile (
-> +               ".option push\n"
-> +               ".option arch,+zbb\n"
-> +               "ctz %0, %1\n"
-> +               ".option pop\n"
-> +               : "=r" (word) : "r" (word) :);
-> +
-> +       return word;
-> +
-> +legacy:
-> +       num = 0;
-> +#if BITS_PER_LONG == 64
-> +       if ((word & 0xffffffff) == 0) {
-> +               num += 32;
-> +               word >>= 32;
-> +       }
-> +#endif
-> +       if ((word & 0xffff) == 0) {
-> +               num += 16;
-> +               word >>= 16;
-> +       }
-> +       if ((word & 0xff) == 0) {
-> +               num += 8;
-> +               word >>= 8;
-> +       }
-> +       if ((word & 0xf) == 0) {
-> +               num += 4;
-> +               word >>= 4;
-> +       }
-> +       if ((word & 0x3) == 0) {
-> +               num += 2;
-> +               word >>= 2;
-> +       }
-> +       if ((word & 0x1) == 0)
-> +               num += 1;
-> +       return num;
-> +}
-> +
-> +/**
-> + * __ffs - find first set bit in a long word
-> + * @word: The word to search
-> + *
-> + * Undefined if no set bit exists, so code should check against 0 first.
-> + */
-> +#define __ffs(word)                            \
-> +       (__builtin_constant_p(word) ?           \
-> +        (unsigned long)__builtin_ctzl(word) :  \
-> +        variable__ffs(word))
-> +
-> +static __always_inline unsigned long variable__fls(unsigned long word)
-> +{
-> +       int num;
-> +
-> +       asm_volatile_goto(
-> +               ALTERNATIVE("j %l[legacy]", "nop", 0, RISCV_ISA_EXT_ZBB, 1)
-> +               : : : : legacy);
-> +
-> +       asm volatile (
-> +               ".option push\n"
-> +               ".option arch,+zbb\n"
-> +               "clz %0, %1\n"
-> +               ".option pop\n"
-> +               : "=r" (word) : "r" (word) :);
-> +
-> +       return BITS_PER_LONG - 1 - word;
-> +
-> +legacy:
-> +       num = BITS_PER_LONG - 1;
-> +#if BITS_PER_LONG == 64
-> +       if (!(word & (~0ul << 32))) {
-> +               num -= 32;
-> +               word <<= 32;
-> +       }
-> +#endif
-> +       if (!(word & (~0ul << (BITS_PER_LONG-16)))) {
-> +               num -= 16;
-> +               word <<= 16;
-> +       }
-> +       if (!(word & (~0ul << (BITS_PER_LONG-8)))) {
-> +               num -= 8;
-> +               word <<= 8;
-> +       }
-> +       if (!(word & (~0ul << (BITS_PER_LONG-4)))) {
-> +               num -= 4;
-> +               word <<= 4;
-> +       }
-> +       if (!(word & (~0ul << (BITS_PER_LONG-2)))) {
-> +               num -= 2;
-> +               word <<= 2;
-> +       }
-> +       if (!(word & (~0ul << (BITS_PER_LONG-1))))
-> +               num -= 1;
-> +       return num;
-> +}
-> +
-> +/**
-> + * __fls - find last set bit in a long word
-> + * @word: the word to search
-> + *
-> + * Undefined if no set bit exists, so code should check against 0 first.
-> + */
-> +#define __fls(word)                                                    \
-> +       (__builtin_constant_p(word) ?                                   \
-> +        (unsigned long)(BITS_PER_LONG - 1 - __builtin_clzl(word)) :    \
-> +        variable__fls(word))
-> +
-> +static __always_inline int variable_ffs(int x)
-> +{
-> +       int r;
-> +
-> +       asm_volatile_goto(
-> +               ALTERNATIVE("j %l[legacy]", "nop", 0, RISCV_ISA_EXT_ZBB, 1)
-> +               : : : : legacy);
-> +
-> +       asm volatile (
-> +               ".option push\n"
-> +               ".option arch,+zbb\n"
-> +               "bnez %1, 1f\n"
-> +               "li %0, 0\n"
-> +               "j 2f\n"
-> +               "1:\n"
-> +               CTZW "%0, %1\n"
-> +               "addi %0, %0, 1\n"
-> +               "2:\n"
-> +               ".option pop\n"
-> +               : "=r" (r) : "r" (x) :);
-> +
-> +       return r;
-> +
-> +legacy:
-> +       r = 1;
-> +       if (!x)
-> +               return 0;
-> +       if (!(x & 0xffff)) {
-> +               x >>= 16;
-> +               r += 16;
-> +       }
-> +       if (!(x & 0xff)) {
-> +               x >>= 8;
-> +               r += 8;
-> +       }
-> +       if (!(x & 0xf)) {
-> +               x >>= 4;
-> +               r += 4;
-> +       }
-> +       if (!(x & 3)) {
-> +               x >>= 2;
-> +               r += 2;
-> +       }
-> +       if (!(x & 1)) {
-> +               x >>= 1;
-> +               r += 1;
-> +       }
-> +       return r;
-> +}
-> +
-> +/**
-> + * ffs - find first set bit in a word
-> + * @x: the word to search
-> + *
-> + * This is defined the same way as the libc and compiler builtin ffs routines.
-> + *
-> + * ffs(value) returns 0 if value is 0 or the position of the first set bit if
-> + * value is nonzero. The first (least significant) bit is at position 1.
-> + */
-> +#define ffs(x) (__builtin_constant_p(x) ? __builtin_ffs(x) : variable_ffs(x))
-> +
-> +static __always_inline int variable_fls(unsigned int x)
-> +{
-> +       int r;
-> +
-> +       asm_volatile_goto(
-> +               ALTERNATIVE("j %l[legacy]", "nop", 0, RISCV_ISA_EXT_ZBB, 1)
-> +               : : : : legacy);
-> +
-> +       asm volatile (
-> +               ".option push\n"
-> +               ".option arch,+zbb\n"
-> +               "bnez %1, 1f\n"
-> +               "li %0, 0\n"
-> +               "j 2f\n"
-> +               "1:\n"
-> +               CLZW "%0, %1\n"
-> +               "neg %0, %0\n"
-> +               "addi %0, %0, 32\n"
-> +               "2:\n"
-> +               ".option pop\n"
-> +               : "=r" (r) : "r" (x) :);
-> +
-> +       return r;
-> +
-> +legacy:
-> +       r = 32;
-> +       if (!x)
-> +               return 0;
-> +       if (!(x & 0xffff0000u)) {
-> +               x <<= 16;
-> +               r -= 16;
-> +       }
-> +       if (!(x & 0xff000000u)) {
-> +               x <<= 8;
-> +               r -= 8;
-> +       }
-> +       if (!(x & 0xf0000000u)) {
-> +               x <<= 4;
-> +               r -= 4;
-> +       }
-> +       if (!(x & 0xc0000000u)) {
-> +               x <<= 2;
-> +               r -= 2;
-> +       }
-> +       if (!(x & 0x80000000u)) {
-> +               x <<= 1;
-> +               r -= 1;
-> +       }
-> +       return r;
-> +}
-> +
-> +/**
-> + * fls - find last set bit in a word
-> + * @x: the word to search
-> + *
-> + * This is defined in a similar way as ffs, but returns the position of the most
-> + * significant set bit.
-> + *
-> + * fls(value) returns 0 if value is 0 or the position of the last set bit if
-> + * value is nonzero. The last (most significant) bit is at position 32.
-> + */
-> +#define fls(x)                                                         \
-> +       (__builtin_constant_p(x) ?                                      \
-> +        (int)(((x) != 0) ?                                             \
-> +         (sizeof(unsigned int) * 8 - __builtin_clz(x)) : 0) :          \
-> +        variable_fls(x))
-> +
-> +#endif
-> +
-> +#include <asm-generic/bitops/ffz.h>
->  #include <asm-generic/bitops/fls64.h>
->  #include <asm-generic/bitops/sched.h>
-> -#include <asm-generic/bitops/ffs.h>
->
->  #include <asm-generic/bitops/hweight.h>
->
-> diff --git a/drivers/firmware/efi/libstub/Makefile b/drivers/firmware/efi/libstub/Makefile
-> index 16d64a34d1e1..b0f8c495c10f 100644
-> --- a/drivers/firmware/efi/libstub/Makefile
-> +++ b/drivers/firmware/efi/libstub/Makefile
-> @@ -28,7 +28,7 @@ cflags-$(CONFIG_ARM)          += -DEFI_HAVE_STRLEN -DEFI_HAVE_STRNLEN \
->                                    -DEFI_HAVE_MEMCHR -DEFI_HAVE_STRRCHR \
->                                    -DEFI_HAVE_STRCMP -fno-builtin -fpic \
->                                    $(call cc-option,-mno-single-pic-base)
-> -cflags-$(CONFIG_RISCV)         += -fpic
-> +cflags-$(CONFIG_RISCV)         += -fpic -DEFI_NO_ALTERNATIVE
->  cflags-$(CONFIG_LOONGARCH)     += -fpie
->
->  cflags-$(CONFIG_EFI_PARAMS_FROM_FDT)   += -I$(srctree)/scripts/dtc/libfdt
-> --
-> 2.25.1
->
+    $ grep ")\$(CC)" tools/testing/selftests/nolibc/Makefile
+	$(QUIET_CC)$(CC) $(CFLAGS) $(LDFLAGS) -o $@ \
+	$(QUIET_CC)$(CC) $(CFLAGS) $(LDFLAGS) -o $@ \
+	$(QUIET_CC)$(CC) -o $@ $<
+
+When CROSS_COMPILE come from command line, the first lines we included have
+the CROSS_COMPILE knowledge and will add right prefix for CC:
+
+   # Makefile for nolibc tests
+   include ../../../scripts/Makefile.include
+
+But the customized $(CROSS_COMPILE) must be added from the XARCH lines, then,
+differs from the ones passed from command line, the above lines (before XARCH)
+will have no CROSS_COMPILE knowledge, the CC therefore will have no prefix.
+
+   CROSS_COMPILE=xxx                                 <= before, from command line
+
+   include ../../../scripts/Makefile.include         <= CC get the right CROSS_COMPILE prefix
+
+   XARCH            = $(or $(XARCH_$(ARCH)),$(ARCH)) <= XARCH here
+
+   CROSS_COMPILE    ?= $(CROSS_COMPILE_$(XARCH))     <= after, customize ourselves
+   (call allow-override,CC,$(CROSS_COMPILE)gcc)      <= CC have no right prefix here 
+
+   $(QUIET_CC)$(CC) $(CFLAGS) $(LDFLAGS) -o $@ \
+
+So, we must add the prefix to CC ourselves after the CROSS_COMPILE lines we
+customized, the 'allow-override' helper is also from
+../../../scripts/Makefile.include.
+
+But you did find a bug above, we should include it again here to avoid not
+break the possibility of using llvm (still require to check if there are some
+other regressions):
+
+   include ../../../scripts/Makefile.include
+
+And I have further found there is another cc-cross-prefix helper from:
+
+    $ grep cc-cross-prefix -ur scripts/
+    scripts/Makefile.compiler:# cc-cross-prefix
+    scripts/Makefile.compiler:# Usage: CROSS_COMPILE := $(call cc-cross-prefix, m68k-linux-gnu- m68k-linux-)
+    scripts/Makefile.compiler:cc-cross-prefix = $(firstword $(foreach c, $(1), \
+
+So, we are able to search the toolchains from Arnd's, local toolchains and ...,
+may not need to force users to use which one, I will do more tests on it.
+
+Please don't merge this patch too, to avoid break anything, let's tune it
+carefully in our v2 and delay the whole stuff to v6.7.
+
+Thanks,
+Zhangjin
+
+> Willy
