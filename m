@@ -2,62 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C3EA97716CB
-	for <lists+linux-kernel@lfdr.de>; Sun,  6 Aug 2023 23:32:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F7247716CE
+	for <lists+linux-kernel@lfdr.de>; Sun,  6 Aug 2023 23:42:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229573AbjHFVbb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 6 Aug 2023 17:31:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32916 "EHLO
+        id S229581AbjHFVjl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 6 Aug 2023 17:39:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33424 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229445AbjHFVba (ORCPT
+        with ESMTP id S229445AbjHFVjj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 6 Aug 2023 17:31:30 -0400
-Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67D0510E2
-        for <linux-kernel@vger.kernel.org>; Sun,  6 Aug 2023 14:31:28 -0700 (PDT)
-Received: from localhost (localhost.localdomain [127.0.0.1])
-        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 519D440E0191;
-        Sun,  6 Aug 2023 21:31:26 +0000 (UTC)
-X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
-Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
-        header.d=alien8.de
-Received: from mail.alien8.de ([127.0.0.1])
-        by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id 3EDwEU3EFcvT; Sun,  6 Aug 2023 21:31:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
-        t=1691357482; bh=OHjEeMmC5x4CkjeCMWYqJriYnSyVlai4d9bbKiPobp4=;
-        h=Date:From:To:Cc:Subject:From;
-        b=d/z26m2e7e/lDCZ3wj37vbzo+kv2qdHmJc7GxvZOJDNyKQDjyhemot+kwfL9HYg8m
-         u3R/nn6N+kr9sHv57rum4fg5ifmO1LIskRC6lQi/jdPuD6tU07DRsJDV8CyqYZdAEk
-         1b4pAjtjfXw1iKnqP7nMEXG+fSkXB396wf0alOllFY8+OlHITUxtZP5RSgU2ld15on
-         lK2C8I77s1xO5LKv4DXGBkVvMkPmRXXAuvvdzPQrNAZ2Hh8VOTIlABSBmv3dKWf/vD
-         O5WfIZ+9ptn91dU5kVh/2FB+osJC8QiO3i58yMRJusOB9RjuECVXwU6inDfcli9FUE
-         US5BMLab/Kdx8yf05d6sCVUPxWzBO69binPhoC+IVTzmkbbd10xhx5gzNAYfSZsFj1
-         8ezu1/c9nHFYZ+Ta5tyOj8ZuaB/0EGKhU+0g+S5GWl2jkQcUPTxJCPRmS6mw9D4Bch
-         RG6EiSRDkWLErTZViRFxqjpwsR6V6cqdF2PQMMx4AITDlR/j7DoWlpe6ddQU3l9npS
-         b+rhWBa+cCqFAMNIwR0/wSzjScWoQPnWkSKkbOEnlNM62dBSh51a83NCK5OomAyJ0E
-         mvQCQnJmB+kv9JCofsoFPnOBB9RRJy/PZV5pecAnSvTELgOLiKXZKPwIPalu7GJETF
-         xnwrOu0KFovZNPMO8upiOF3I=
-Received: from zn.tnic (pd9530d32.dip0.t-ipconnect.de [217.83.13.50])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
-        (No client certificate requested)
-        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id B9CFF40E018F;
-        Sun,  6 Aug 2023 21:31:13 +0000 (UTC)
-Date:   Sun, 6 Aug 2023 23:31:07 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Ben Skeggs <bskeggs@redhat.com>, Karol Herbst <kherbst@redhat.com>
-Cc:     regressions@leemhuis.info, Lyude Paul <lyude@redhat.com>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        dri-devel@lists.freedesktop.org, nouveau@lists.freedesktop.org,
-        lkml <linux-kernel@vger.kernel.org>
-Subject: 2b5d1c29f6c4 ("drm/nouveau/disp: PIOR DP uses GPIO for HPD, not PMGR
- AUX interrupts")
-Message-ID: <20230806213107.GFZNARG6moWpFuSJ9W@fat_crate.local>
+        Sun, 6 Aug 2023 17:39:39 -0400
+Received: from mail-lj1-x230.google.com (mail-lj1-x230.google.com [IPv6:2a00:1450:4864:20::230])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3110210E2
+        for <linux-kernel@vger.kernel.org>; Sun,  6 Aug 2023 14:39:38 -0700 (PDT)
+Received: by mail-lj1-x230.google.com with SMTP id 38308e7fff4ca-2b95d5ee18dso59928991fa.1
+        for <linux-kernel@vger.kernel.org>; Sun, 06 Aug 2023 14:39:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=joelfernandes.org; s=google; t=1691357976; x=1691962776;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=6ztzaeCtYtwCP+TgK4LroPEckG2nZ7GulZsmnVxqKrI=;
+        b=oYyQ6Swk9jieohmBrfD2myp/B8UG+qQ+Nqjm7UmTn2JCa/8B+rk/kLZacdjIbVrO4t
+         wd2vEw/XFzG5r4a7anvJKuIsunPBL+xTqaqed00iPMiU0m7rfMbuwy6pbM2o9c9W7U3p
+         2OupnbaD/vZvWkGzVptz5fYc9JdJw+qV0ut5Q=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691357976; x=1691962776;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=6ztzaeCtYtwCP+TgK4LroPEckG2nZ7GulZsmnVxqKrI=;
+        b=cvDCrDWjYoRi9AjzLKYYGwZanDBxWTgeQlX/XpafRO0+tnSqS6jf0wb6a4E3jThzON
+         HYA6q10VSBt33tlhDA/L3/OQBrCubg0L6nzvsQ14a3zyf4FzFaoqha3+g2TOdu+r/Aq9
+         L1V9DYqaJWNfF57N4wqjrSi+O75m6uy9IDp9l1SEoc58C3UWM4Gqp1a+SCW/C3Z2IEx9
+         UGFb6BEYfIlfxqOfJaOVPiqLS87ge7IoYhM2hCVIlvW/onjuv8fZejlldi7dzvRa2Ewc
+         sz8BloX0XxwC2y2At2xSAxcqNW4CZEoBJhQvrcckrSpp3YSC2RAC5yy6urOyspAP5IVV
+         PVAA==
+X-Gm-Message-State: AOJu0YzXkxhAmPOqmx5mIS2Y2byrJ0V5JVjZqgiXku/MmH1zvM2bFL8d
+        612Ftl1xtkyDX3vIFItTCCPv11i7B2LwfgvHquUbZw==
+X-Google-Smtp-Source: AGHT+IEOxIY/z9rhtWsusYCYlEoY8E+2R1L0c43csytsTHMVyPOdrzbnR+Us6cYwtly+EMeRP0LLWoK6susUMxWOunk=
+X-Received: by 2002:a2e:90d4:0:b0:2b9:cd79:8f94 with SMTP id
+ o20-20020a2e90d4000000b002b9cd798f94mr5231918ljg.39.1691357975659; Sun, 06
+ Aug 2023 14:39:35 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+References: <20230801204121.929256934@infradead.org> <20230801211811.828443100@infradead.org>
+In-Reply-To: <20230801211811.828443100@infradead.org>
+From:   Joel Fernandes <joel@joelfernandes.org>
+Date:   Sun, 6 Aug 2023 17:39:24 -0400
+Message-ID: <CAEXW_YSJ-G_zUKLzLgvCkxAY-dg_Zxo6n=bEXyeEmo9hEMcZpg@mail.gmail.com>
+Subject: Re: [PATCH 1/9] sched: Simplify get_nohz_timer_target()
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     mingo@redhat.com, juri.lelli@redhat.com,
+        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
+        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
+        bristot@redhat.com, vschneid@redhat.com,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
@@ -67,58 +68,55 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi folks,
+On Sun, Aug 6, 2023 at 9:52=E2=80=AFAM Peter Zijlstra <peterz@infradead.org=
+> wrote:
+>
+> Use guards to reduce gotos and simplify control flow.
+>
+> Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+> ---
+>  kernel/sched/core.c |   15 ++++++---------
+>  1 file changed, 6 insertions(+), 9 deletions(-)
+>
+> --- a/kernel/sched/core.c
+> +++ b/kernel/sched/core.c
+> @@ -1097,25 +1097,22 @@ int get_nohz_timer_target(void)
+>
+>         hk_mask =3D housekeeping_cpumask(HK_TYPE_TIMER);
+>
+> -       rcu_read_lock();
+> +       guard(rcu)();
+> +
+>         for_each_domain(cpu, sd) {
+>                 for_each_cpu_and(i, sched_domain_span(sd), hk_mask) {
+>                         if (cpu =3D=3D i)
+>                                 continue;
+>
+> -                       if (!idle_cpu(i)) {
+> -                               cpu =3D i;
+> -                               goto unlock;
+> -                       }
+> +                       if (!idle_cpu(i))
+> +                               return i;
+>                 }
+>         }
+>
+>         if (default_cpu =3D=3D -1)
+>                 default_cpu =3D housekeeping_any_cpu(HK_TYPE_TIMER);
+> -       cpu =3D default_cpu;
+> -unlock:
+> -       rcu_read_unlock();
+> -       return cpu;
+> +
+> +       return default_cpu;
+>  }
 
-the patch in $Subject breaks booting here on one of my test boxes, see
-below.
+Reviewed-by: Joel Fernandes (Google) <joel@joelfernandes.org>
 
-Reverting it ontop of -rc4 fixes the issue.
+I haven't looked into the actual implementation of the guard stuff,
+but rcu_read_lock_guarded() is less of an eyesore to me than
+guard(rcu)(); TBH.
 
-Thx.
+thanks,
 
-[    3.580535] ACPI: \_PR_.CP04: Found 4 idle states
-[    3.585694] ACPI: \_PR_.CP05: Found 4 idle states
-[    3.590852] ACPI: \_PR_.CP06: Found 4 idle states
-[    3.596037] ACPI: \_PR_.CP07: Found 4 idle states
-[    3.644065] Freeing initrd memory: 6740K
-[    3.742932] Serial: 8250/16550 driver, 4 ports, IRQ sharing enabled
-[    3.750409] 00:05: ttyS0 at I/O 0x3f8 (irq = 4, base_baud = 115200) is a 16550A
-[    3.762111] serial 0000:00:16.3: enabling device (0000 -> 0003)
-[    3.771589] 0000:00:16.3: ttyS1 at I/O 0xf0a0 (irq = 17, base_baud = 115200) is a 16550A
-[    3.782503] Linux agpgart interface v0.103
-[    3.787805] ACPI: bus type drm_connector registered
-
-<--- boot stops here.
-
-It should continue with this:
-
-[    3.795491] Console: switching to colour dummy device 80x25
-[    3.801933] nouveau 0000:03:00.0: vgaarb: deactivate vga console
-[    3.808303] nouveau 0000:03:00.0: NVIDIA GT218 (0a8c00b1)
-[    3.931002] nouveau 0000:03:00.0: bios: version 70.18.83.00.08
-[    3.941731] nouveau 0000:03:00.0: fb: 512 MiB DDR3
-[    4.110348] tsc: Refined TSC clocksource calibration: 3591.349 MHz
-[    4.116627] clocksource: tsc: mask: 0xffffffffffffffff max_cycles: 0x33c466a1ab5, max_idle_ns: 440795209767 ns
-[    4.126871] clocksource: Switched to clocksource tsc
-[    4.252013] nouveau 0000:03:00.0: DRM: VRAM: 512 MiB
-[    4.257088] nouveau 0000:03:00.0: DRM: GART: 1048576 MiB
-[    4.262501] nouveau 0000:03:00.0: DRM: TMDS table version 2.0
-[    4.268333] nouveau 0000:03:00.0: DRM: DCB version 4.0
-[    4.273561] nouveau 0000:03:00.0: DRM: DCB outp 00: 02000360 00000000
-[    4.280104] nouveau 0000:03:00.0: DRM: DCB outp 01: 02000362 00020010
-[    4.286630] nouveau 0000:03:00.0: DRM: DCB outp 02: 028003a6 0f220010
-[    4.293176] nouveau 0000:03:00.0: DRM: DCB outp 03: 01011380 00000000
-[    4.299711] nouveau 0000:03:00.0: DRM: DCB outp 04: 08011382 00020010
-[    4.306243] nouveau 0000:03:00.0: DRM: DCB outp 05: 088113c6 0f220010
-[    4.312772] nouveau 0000:03:00.0: DRM: DCB conn 00: 00101064
-[    4.318520] nouveau 0000:03:00.0: DRM: DCB conn 01: 00202165
-[    4.329488] nouveau 0000:03:00.0: DRM: MM: using COPY for buffer copies
-[    4.336261] stackdepot: allocating hash table of 1048576 entries via kvcalloc
-...
-
-
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+ - Joel
