@@ -2,40 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9386077144B
-	for <lists+linux-kernel@lfdr.de>; Sun,  6 Aug 2023 12:04:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F6C577144D
+	for <lists+linux-kernel@lfdr.de>; Sun,  6 Aug 2023 12:05:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230234AbjHFKEZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 6 Aug 2023 06:04:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41736 "EHLO
+        id S230240AbjHFKFo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 6 Aug 2023 06:05:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42084 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229685AbjHFKEW (ORCPT
+        with ESMTP id S229498AbjHFKFk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 6 Aug 2023 06:04:22 -0400
-Received: from 1wt.eu (ded1.1wt.eu [163.172.96.212])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 2B7441BEF;
-        Sun,  6 Aug 2023 03:04:18 -0700 (PDT)
-Received: (from willy@localhost)
-        by pcw.home.local (8.15.2/8.15.2/Submit) id 376A4AcX012345;
-        Sun, 6 Aug 2023 12:04:10 +0200
-Date:   Sun, 6 Aug 2023 12:04:10 +0200
-From:   Willy Tarreau <w@1wt.eu>
-To:     Zhangjin Wu <falcon@tinylab.org>
-Cc:     arnd@arndb.de, linux-kernel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, tanyuan@tinylab.org,
-        thomas@t-8ch.de
-Subject: Re: [PATCH v6 7/8] selftests/nolibc: allow customize CROSS_COMPILE
- by architecture
-Message-ID: <20230806100410.GC10627@1wt.eu>
-References: <20230806081731.GA10627@1wt.eu>
- <20230806093921.9648-1-falcon@tinylab.org>
+        Sun, 6 Aug 2023 06:05:40 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F08611D;
+        Sun,  6 Aug 2023 03:05:39 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 3D5D361028;
+        Sun,  6 Aug 2023 10:05:39 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9D6D7C433CB;
+        Sun,  6 Aug 2023 10:05:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1691316338;
+        bh=VZ5GVUQPDjKt21Zcn+VayYYZpoqhGa0Z+aHB0bMUUEE=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=lH0B0hdjiIWlp6CXWjQetMdNHOyNDR/0mCFj4XqeiC6EVqqN9c/v4N9gYFKYhpwca
+         rh8k2rpj1y1ClWARKygabscnzh33tNHFzg69DvkN9tcJZhrWVGL/SHTELCe3o1MH+D
+         i7BiaeXe9oP9oMjCJZeJSvRVeaics0MjRKXhDjQfPBHnc4j5MikUJ3JJ97htx/EHc2
+         OHEib2WmC87KxdKavLuutDOXaDh9TTSDxEmkeE1H0mx6YtCbgfliEbkLgU6ENlq1lk
+         hBKLOS5kV5LNiM3fUSX+u7CdrXgij/xOfYmFfIohrmtsKaGqwGcR0rWzMbOgM2zqUe
+         4uLUN5XqHMLqA==
+Received: by mail-lf1-f42.google.com with SMTP id 2adb3069b0e04-4fe457ec6e7so5914574e87.3;
+        Sun, 06 Aug 2023 03:05:38 -0700 (PDT)
+X-Gm-Message-State: AOJu0YzNopJK08yU4h+ETT1YdVkezoYIuC/glEvIniiXyBYtL16XI84w
+        sboPRQ1nIK1cgzfk1L8n0a9MRcRHnP1GA+RzcVw=
+X-Google-Smtp-Source: AGHT+IFzzdaH9mDAtHXdlVGRxkOmKkpd/ElQCYQum/OtJBPCDy/KpyZYX3ILQlkaTQo3lLu38SrMDekJYWYqW6ig3nk=
+X-Received: by 2002:ac2:5937:0:b0:4f8:7551:7485 with SMTP id
+ v23-20020ac25937000000b004f875517485mr3446727lfi.5.1691316336624; Sun, 06 Aug
+ 2023 03:05:36 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230806093921.9648-1-falcon@tinylab.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS autolearn=ham
+References: <20230802154831.2147855-1-ardb@kernel.org> <20230805144030.GDZM5fXvaqXBLxwXfj@fat_crate.local>
+ <CAMj1kXEFC6LwNiWrGGsXot4SO0wivqN_3Yi=T9OS0XJ4=MeNew@mail.gmail.com>
+ <20230805210631.GEZM6518W3qOCYYgNK@fat_crate.local> <CAMj1kXE+jgLztL1mQ6VDkJWfAjSJnxapoUAsvqaSQmfi=kr=hg@mail.gmail.com>
+In-Reply-To: <CAMj1kXE+jgLztL1mQ6VDkJWfAjSJnxapoUAsvqaSQmfi=kr=hg@mail.gmail.com>
+From:   Ard Biesheuvel <ardb@kernel.org>
+Date:   Sun, 6 Aug 2023 12:05:25 +0200
+X-Gmail-Original-Message-ID: <CAMj1kXHi8=L8e=a5ci4yQFVrc=XqqJaMNvZuPXduwaAVfmm4_Q@mail.gmail.com>
+Message-ID: <CAMj1kXHi8=L8e=a5ci4yQFVrc=XqqJaMNvZuPXduwaAVfmm4_Q@mail.gmail.com>
+Subject: Re: [PATCH v8 00/23] efi/x86: Avoid bare metal decompressor during
+ EFI boot
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     linux-efi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Evgeniy Baskov <baskov@ispras.ru>,
+        Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Alexey Khoroshilov <khoroshilov@ispras.ru>,
+        Peter Jones <pjones@redhat.com>,
+        Gerd Hoffmann <kraxel@redhat.com>,
+        Dave Young <dyoung@redhat.com>,
+        Mario Limonciello <mario.limonciello@amd.com>,
+        Kees Cook <keescook@chromium.org>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Joerg Roedel <jroedel@suse.de>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -43,79 +81,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Aug 06, 2023 at 05:39:21PM +0800, Zhangjin Wu wrote:
-> > > +# CROSS_COMPILE: cross toolchain prefix by architecture
-> > > +CROSS_COMPILE           ?= $(CROSS_COMPILE_$(XARCH))
-> > > +
-> > > +# make sure CC is prefixed with CROSS_COMPILE
-> > > +$(call allow-override,CC,$(CROSS_COMPILE)gcc)
-> > > +
-> > 
-> > Note that I feared that it would break my "CC=gcc-5.5.0" and so on but
-> > fortunately it did not. However I don't understand what it tries to do
-> > nor the problem it tries to solve (even the commit message is quite
-> > unclear to me). I'm leaving it aside anyway but I wanted to let you
-> > know.
+On Sun, 6 Aug 2023 at 00:19, Ard Biesheuvel <ardb@kernel.org> wrote:
+>
+> On Sat, 5 Aug 2023 at 23:07, Borislav Petkov <bp@alien8.de> wrote:
 > >
-> 
-> Thanks you for this note, will add it as a test case in our v2.
-> 
-> These places require the '$(CC)' prefixed with $(CROSS_COMPILE):
-> 
->     $ grep ")\$(CC)" tools/testing/selftests/nolibc/Makefile
-> 	$(QUIET_CC)$(CC) $(CFLAGS) $(LDFLAGS) -o $@ \
-> 	$(QUIET_CC)$(CC) $(CFLAGS) $(LDFLAGS) -o $@ \
-> 	$(QUIET_CC)$(CC) -o $@ $<
-> 
-> When CROSS_COMPILE come from command line, the first lines we included have
-> the CROSS_COMPILE knowledge and will add right prefix for CC:
-> 
->    # Makefile for nolibc tests
->    include ../../../scripts/Makefile.include
-> 
-> But the customized $(CROSS_COMPILE) must be added from the XARCH lines, then,
-> differs from the ones passed from command line, the above lines (before XARCH)
-> will have no CROSS_COMPILE knowledge, the CC therefore will have no prefix.
-> 
->    CROSS_COMPILE=xxx                                 <= before, from command line
-> 
->    include ../../../scripts/Makefile.include         <= CC get the right CROSS_COMPILE prefix
-> 
->    XARCH            = $(or $(XARCH_$(ARCH)),$(ARCH)) <= XARCH here
-> 
->    CROSS_COMPILE    ?= $(CROSS_COMPILE_$(XARCH))     <= after, customize ourselves
->    (call allow-override,CC,$(CROSS_COMPILE)gcc)      <= CC have no right prefix here 
-> 
->    $(QUIET_CC)$(CC) $(CFLAGS) $(LDFLAGS) -o $@ \
-> 
-> So, we must add the prefix to CC ourselves after the CROSS_COMPILE lines we
-> customized, the 'allow-override' helper is also from
-> ../../../scripts/Makefile.include.
+> > On Sat, Aug 05, 2023 at 07:37:17PM +0200, Ard Biesheuvel wrote:
+> > > So this is the host booting, right?
+> >
+> > Yes.
+> >
+> > > So is the position of the C bit perhaps getting detect incorrectly?
+> >
+> > I don't know yet. But the evildoer is someone else:
+> >
+> > 02d47ce2ae02 ("x86/head_64: Store boot_params pointer in callee save register")
+> >
+> > after bisection. More staring later as to why...
+> >
+>
+> How bizarre.
+>
+> But that was a bonus patch anyway, so we could just drop it for now.
 
-OK, I feared it would overwrite the command-line one.
+I suspect this should fix the issue:
 
-> But you did find a bug above, we should include it again here to avoid not
-> break the possibility of using llvm (still require to check if there are some
-> other regressions):
-> 
->    include ../../../scripts/Makefile.include
-> 
-> And I have further found there is another cc-cross-prefix helper from:
-> 
->     $ grep cc-cross-prefix -ur scripts/
->     scripts/Makefile.compiler:# cc-cross-prefix
->     scripts/Makefile.compiler:# Usage: CROSS_COMPILE := $(call cc-cross-prefix, m68k-linux-gnu- m68k-linux-)
->     scripts/Makefile.compiler:cc-cross-prefix = $(firstword $(foreach c, $(1), \
-> 
-> So, we are able to search the toolchains from Arnd's, local toolchains and ...,
-> may not need to force users to use which one, I will do more tests on it.
-> 
-> Please don't merge this patch too, to avoid break anything, let's tune it
-> carefully in our v2 and delay the whole stuff to v6.7.
+--- a/arch/x86/kernel/head_64.S
++++ b/arch/x86/kernel/head_64.S
+@@ -110,6 +110,7 @@ SYM_CODE_START_NOALIGN(startup_64)
+         * programmed into CR3.
+         */
+        leaq    _text(%rip), %rdi
++       movq    %r15, %rsi
+        call    __startup_64
 
-OK. Note that in the end it might be less difficult to try to set
-CROSS_COMPILE *before* including the general include instead of
-after: we could preset CROSS_COMPILE based on the ARCH/XARCH we know
-at this step, as this is not expected to rely on auto-detection.
-
-Willy
+        /* Form the CR3 value being sure to include the CR3 modifier */
