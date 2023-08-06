@@ -2,202 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CF3E9771742
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 01:24:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4661477174F
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 01:33:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230127AbjHFXXy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 6 Aug 2023 19:23:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41484 "EHLO
+        id S230161AbjHFXdp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 6 Aug 2023 19:33:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41998 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229468AbjHFXXw (ORCPT
+        with ESMTP id S229468AbjHFXdn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 6 Aug 2023 19:23:52 -0400
-Received: from mail-oi1-f205.google.com (mail-oi1-f205.google.com [209.85.167.205])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D48B31711
-        for <linux-kernel@vger.kernel.org>; Sun,  6 Aug 2023 16:23:50 -0700 (PDT)
-Received: by mail-oi1-f205.google.com with SMTP id 5614622812f47-3a3b86821fcso5915809b6e.0
-        for <linux-kernel@vger.kernel.org>; Sun, 06 Aug 2023 16:23:50 -0700 (PDT)
+        Sun, 6 Aug 2023 19:33:43 -0400
+Received: from mail-oa1-x31.google.com (mail-oa1-x31.google.com [IPv6:2001:4860:4864:20::31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7819A1711;
+        Sun,  6 Aug 2023 16:33:42 -0700 (PDT)
+Received: by mail-oa1-x31.google.com with SMTP id 586e51a60fabf-1bb5dda9fb7so547336fac.0;
+        Sun, 06 Aug 2023 16:33:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1691364822; x=1691969622;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=FAy0iP4nu33R1zoenEmgl0oLRqLADzX1A+hGNqe/StA=;
+        b=kF1cQIfB55viQ9BWXImgv9RJZ4PfoVJKbzNBkrQLHbYmH4dbJjkV4x7L9JsoydYP1X
+         9yN3xsSY/T+BlIRKqdhJs5uMFga1KLKhjeYBXXfSvB+ItXGLdoFvJU1sLnZb8xHM6QqG
+         9MMCVsdSQRnuaUClC3ozg3jpFQ6gdmToN0wIqigkoPL3Cs1CowYBL5X66RalPWp5RkJM
+         Vp6Hd2CfXD6JieVvH5t8u91N6I3/cOG+NTDdNJE4EQK8/ohi7b0rGQQ0oZUZBVziy5Zd
+         QO2eRaAnpDNKMhUEbj36aeC4MCOdGZ+eHUw4js6FQibjDND7RJvVvdhAuh0gfabbRF7D
+         xb2A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691364230; x=1691969030;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=1DtxWzYncT1FCh/nzYEAuayH9VVU4o8iPgfXpM5Ydtk=;
-        b=hQ5JKMC7B27gdaconC/u5ikXIs0m1Y6IUzCjbrDLJUVQI95bvs0Y2VB0HwOh+CyF7G
-         YT0XOClj34qR1yIPJA1vgI+l8cnkg/lXRazodbiWq4O3FDXJ9n/1LIEqx7+giNQ9yZhb
-         +PYaT5znhmUjGQTFaM9OzILD+GPu73S9UiorpAzcvXAGlqCwIUTm0FcWLoHTatieZxBD
-         mVB2FiJd5YacnMTEMybG9D2OWHojLnefiUuBrUsj9sxrt7AFyngP3iuvTCNaKwmXZZLz
-         3IXSxuw5S2utocUq8lUN+bH4cFGDqf8SaaV+pO5RLOYMKrV/Fn2/HUsEotC0kTfmzEz4
-         rzpA==
-X-Gm-Message-State: AOJu0Yye71Hc+PjYzU62WtlwC23tcPFSzmz8mlyHQkzcJ97ZE2+bp92L
-        7zdkPBSFOCka3qTuuMpuLFQAYTkA6GZEOEXxnH/hbSd0N1rU
-X-Google-Smtp-Source: AGHT+IH2eSmmRAiGzG99/dDQFxEv7B/Q/DCeCUnsJKUEVBfx9gmDMcgdrG7UV5EhPo3kBwku5aQZT4MJta3qYmbinBPJfHJIuFT2
+        d=1e100.net; s=20221208; t=1691364822; x=1691969622;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=FAy0iP4nu33R1zoenEmgl0oLRqLADzX1A+hGNqe/StA=;
+        b=IVFyAOqWX1uUGX3TaNsO1Y2NBOyjnlglt/g1HVK/1N0O64C0Kvuq7VfOVnDFbnUMg4
+         0r9LyR1zekz722OrXGVUpDg6WmMbSXcteZvnfYDreYPYcAt+BGjtVGyZRo7RPVO1YTJ2
+         yCpGdLqt+DNM3VzJEAbFpp8I82d6yhhQDHimtRu7w4sv1sqbSaaaTJzxdcVjimv1ONZn
+         D8EF5InWvbzmaqTHKUFBgfTwBw5KYvbIX7iq4rFf7KEdLRmHEuhcvRuBZ8rqW3e8rBeu
+         U6c0fPvndnjNl7vKiSClX2FwbY38RSO1QuTHoS09C7VtRDIo3eq+Y0isrANau8rsQjUA
+         0tNA==
+X-Gm-Message-State: ABy/qLZLhbSCio0fPodDDKGtZWL88fzccq932KDL7nxAb3Efm7TX0OEc
+        n0Iss/+okPY90mDYozFt5yo=
+X-Google-Smtp-Source: APBJJlHTJAnnYkJsfGdiTpc2zm3Mzbfa6JkIf8rAyFnPVs0lZKRu3t77VP1edvFhaDOO5u+zZ7gbOw==
+X-Received: by 2002:a05:6830:4602:b0:6b9:db20:4d25 with SMTP id ba2-20020a056830460200b006b9db204d25mr17732325otb.1.1691364821665;
+        Sun, 06 Aug 2023 16:33:41 -0700 (PDT)
+Received: from fabio-Precision-3551.. ([2804:14c:485:4b61:7349:328b:525c:ab7e])
+        by smtp.gmail.com with ESMTPSA id c12-20020a9d6c8c000000b006b96aee5195sm4261334otr.11.2023.08.06.16.33.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 06 Aug 2023 16:33:41 -0700 (PDT)
+From:   Fabio Estevam <festevam@gmail.com>
+To:     shawnguo@kernel.org
+Cc:     linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+        conor+dt@kernel.org, tharvey@gateworks.com,
+        linux-kernel@vger.kernel.org, Fabio Estevam <festevam@denx.de>
+Subject: [PATCH] arm64: dts: imx8m-venice: Pass "brcm,bcm4329-fmac"
+Date:   Sun,  6 Aug 2023 20:33:33 -0300
+Message-Id: <20230806233333.815702-1-festevam@gmail.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-X-Received: by 2002:aca:1318:0:b0:3a4:1484:b3db with SMTP id
- e24-20020aca1318000000b003a41484b3dbmr7627094oii.5.1691364230205; Sun, 06 Aug
- 2023 16:23:50 -0700 (PDT)
-Date:   Sun, 06 Aug 2023 16:23:50 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000002098bc0602496cc3@google.com>
-Subject: [syzbot] [bpf?] KMSAN: uninit-value in ieee802154_subif_start_xmit
-From:   syzbot <syzbot+d61b595e9205573133b3@syzkaller.appspotmail.com>
-To:     andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
-        daniel@iogearbox.net, davem@davemloft.net, eddyz87@gmail.com,
-        haoluo@google.com, hawk@kernel.org, john.fastabend@gmail.com,
-        jolsa@kernel.org, kpsingh@kernel.org, kuba@kernel.org,
-        linux-kernel@vger.kernel.org, martin.lau@linux.dev,
-        netdev@vger.kernel.org, sdf@google.com, song@kernel.org,
-        syzkaller-bugs@googlegroups.com, yonghong.song@linux.dev
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=0.9 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,
-        SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+From: Fabio Estevam <festevam@denx.de>
 
-syzbot found the following issue on:
+Pass "brcm,bcm4329-fmac" to fix the following schema warnings:
 
-HEAD commit:    25ad10658dc1 riscv, bpf: Adapt bpf trampoline to optimized..
-git tree:       bpf-next
-console+strace: https://syzkaller.appspot.com/x/log.txt?x=147cbb29a80000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=8acaeb93ad7c6aaa
-dashboard link: https://syzkaller.appspot.com/bug?extid=d61b595e9205573133b3
-compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=14d73ccea80000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1276aedea80000
+imx8mp-venice-gw74xx.dtb: wifi@0: compatible: 'oneOf' conditional failed, one must be fixed:
+	['cypress,cyw4373-fmac'] is too short
+	'cypress,cyw4373-fmac' is not one of ['brcm,bcm4329-fmac', 'pci14e4,43dc', 'pci14e4,4464', 'pci14e4,4488', 'pci14e4,4425', 'pci14e4,4433']
+	from schema $id: http://devicetree.org/schemas/net/wireless/brcm,bcm4329-fmac.yaml#
 
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/3d378cc13d42/disk-25ad1065.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/44580fd5d1af/vmlinux-25ad1065.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/840587618b41/bzImage-25ad1065.xz
+imx8mn-venice-gw7902.dtb: wifi@0: compatible: 'oneOf' conditional failed, one must be fixed:
+	['brcm,bcm43455-fmac'] is too short
+	'brcm,bcm43455-fmac' is not one of ['brcm,bcm4329-fmac', 'pci14e4,43dc', 'pci14e4,4464', 'pci14e4,4488', 'pci14e4,4425', 'pci14e4,4433']
+	from schema $id: http://devicetree.org/schemas/net/wireless/brcm,bcm4329-fmac.yaml#
 
-The issue was bisected to:
-
-commit 8100928c881482a73ed8bd499d602bab0fe55608
-Author: Yonghong Song <yonghong.song@linux.dev>
-Date:   Fri Jul 28 01:12:02 2023 +0000
-
-    bpf: Support new sign-extension mov insns
-
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=17970c5da80000
-final oops:     https://syzkaller.appspot.com/x/report.txt?x=14570c5da80000
-console output: https://syzkaller.appspot.com/x/log.txt?x=10570c5da80000
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+d61b595e9205573133b3@syzkaller.appspotmail.com
-Fixes: 8100928c8814 ("bpf: Support new sign-extension mov insns")
-
-general protection fault, probably for non-canonical address 0xdffffc0000000f4f: 0000 [#1] PREEMPT SMP KASAN
-KASAN: probably user-memory-access in range [0x0000000000007a78-0x0000000000007a7f]
-CPU: 1 PID: 0 Comm: swapper/1 Not tainted 6.5.0-rc2-syzkaller-00619-g25ad10658dc1 #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 07/12/2023
-RIP: 0010:strnchr+0x25/0x80 lib/string.c:403
-Code: 00 00 00 00 90 f3 0f 1e fa 53 48 01 fe 48 bb 00 00 00 00 00 fc ff df 48 83 ec 18 eb 28 48 89 f8 48 89 f9 48 c1 e8 03 83 e1 07 <0f> b6 04 18 38 c8 7f 04 84 c0 75 25 0f b6 07 38 d0 74 15 48 83 c7
-RSP: 0018:ffffc90000177848 EFLAGS: 00010046
-RAX: 0000000000000f4f RBX: dffffc0000000000 RCX: 0000000000000000
-RDX: 0000000000000000 RSI: 0000000000007a7b RDI: 0000000000007a78
-RBP: 0000000000000001 R08: 0000000000000005 R09: 0000000000000000
-R10: 0000000000000003 R11: 0000000000000000 R12: 0000000000007a78
-R13: ffffc900001779b0 R14: 0000000000000000 R15: 0000000000000003
-FS:  0000000000000000(0000) GS:ffff8880b9900000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00005611db5094b8 CR3: 0000000028ef0000 CR4: 00000000003506e0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- <TASK>
- bpf_bprintf_prepare+0x127/0x1490 kernel/bpf/helpers.c:823
- ____bpf_trace_printk kernel/trace/bpf_trace.c:385 [inline]
- bpf_trace_printk+0xdb/0x180 kernel/trace/bpf_trace.c:375
- bpf_prog_ebeed182d92b487f+0x38/0x3c
- bpf_dispatcher_nop_func include/linux/bpf.h:1180 [inline]
- __bpf_prog_run include/linux/filter.h:609 [inline]
- bpf_prog_run include/linux/filter.h:616 [inline]
- __bpf_trace_run kernel/trace/bpf_trace.c:2269 [inline]
- bpf_trace_run1+0x148/0x400 kernel/trace/bpf_trace.c:2307
- __bpf_trace_rcu_utilization+0x8e/0xc0 include/trace/events/rcu.h:27
- trace_rcu_utilization+0xcd/0x120 include/trace/events/rcu.h:27
- rcu_note_context_switch+0x6c/0x1ac0 kernel/rcu/tree_plugin.h:318
- __schedule+0x293/0x59f0 kernel/sched/core.c:6610
- schedule_idle+0x5b/0x80 kernel/sched/core.c:6814
- do_idle+0x288/0x3f0 kernel/sched/idle.c:310
- cpu_startup_entry+0x18/0x20 kernel/sched/idle.c:379
- start_secondary+0x200/0x290 arch/x86/kernel/smpboot.c:326
- secondary_startup_64_no_verify+0x167/0x16b
- </TASK>
-Modules linked in:
----[ end trace 0000000000000000 ]---
-RIP: 0010:strnchr+0x25/0x80 lib/string.c:403
-Code: 00 00 00 00 90 f3 0f 1e fa 53 48 01 fe 48 bb 00 00 00 00 00 fc ff df 48 83 ec 18 eb 28 48 89 f8 48 89 f9 48 c1 e8 03 83 e1 07 <0f> b6 04 18 38 c8 7f 04 84 c0 75 25 0f b6 07 38 d0 74 15 48 83 c7
-RSP: 0018:ffffc90000177848 EFLAGS: 00010046
-
-RAX: 0000000000000f4f RBX: dffffc0000000000 RCX: 0000000000000000
-RDX: 0000000000000000 RSI: 0000000000007a7b RDI: 0000000000007a78
-RBP: 0000000000000001 R08: 0000000000000005 R09: 0000000000000000
-R10: 0000000000000003 R11: 0000000000000000 R12: 0000000000007a78
-R13: ffffc900001779b0 R14: 0000000000000000 R15: 0000000000000003
-FS:  0000000000000000(0000) GS:ffff8880b9900000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00005611db5094b8 CR3: 0000000028ef0000 CR4: 00000000003506e0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-----------------
-Code disassembly (best guess):
-   0:	00 00                	add    %al,(%rax)
-   2:	00 00                	add    %al,(%rax)
-   4:	90                   	nop
-   5:	f3 0f 1e fa          	endbr64
-   9:	53                   	push   %rbx
-   a:	48 01 fe             	add    %rdi,%rsi
-   d:	48 bb 00 00 00 00 00 	movabs $0xdffffc0000000000,%rbx
-  14:	fc ff df
-  17:	48 83 ec 18          	sub    $0x18,%rsp
-  1b:	eb 28                	jmp    0x45
-  1d:	48 89 f8             	mov    %rdi,%rax
-  20:	48 89 f9             	mov    %rdi,%rcx
-  23:	48 c1 e8 03          	shr    $0x3,%rax
-  27:	83 e1 07             	and    $0x7,%ecx
-* 2a:	0f b6 04 18          	movzbl (%rax,%rbx,1),%eax <-- trapping instruction
-  2e:	38 c8                	cmp    %cl,%al
-  30:	7f 04                	jg     0x36
-  32:	84 c0                	test   %al,%al
-  34:	75 25                	jne    0x5b
-  36:	0f b6 07             	movzbl (%rdi),%eax
-  39:	38 d0                	cmp    %dl,%al
-  3b:	74 15                	je     0x52
-  3d:	48                   	rex.W
-  3e:	83                   	.byte 0x83
-  3f:	c7                   	.byte 0xc7
-
-
+Signed-off-by: Fabio Estevam <festevam@denx.de>
 ---
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+ arch/arm64/boot/dts/freescale/imx8mm-venice-gw7901.dts | 2 +-
+ arch/arm64/boot/dts/freescale/imx8mm-venice-gw7902.dts | 2 +-
+ arch/arm64/boot/dts/freescale/imx8mn-venice-gw7902.dts | 2 +-
+ arch/arm64/boot/dts/freescale/imx8mp-venice-gw74xx.dts | 2 +-
+ 4 files changed, 4 insertions(+), 4 deletions(-)
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+diff --git a/arch/arm64/boot/dts/freescale/imx8mm-venice-gw7901.dts b/arch/arm64/boot/dts/freescale/imx8mm-venice-gw7901.dts
+index 21d7b16d6f84..cde29aa1a0a2 100644
+--- a/arch/arm64/boot/dts/freescale/imx8mm-venice-gw7901.dts
++++ b/arch/arm64/boot/dts/freescale/imx8mm-venice-gw7901.dts
+@@ -801,7 +801,7 @@ &usdhc1 {
+ 	status = "okay";
+ 
+ 	wifi@0 {
+-		compatible = "brcm,bcm43455-fmac";
++		compatible = "brcm,bcm43455-fmac", "brcm,bcm4329-fmac";
+ 		reg = <0>;
+ 	};
+ };
+diff --git a/arch/arm64/boot/dts/freescale/imx8mm-venice-gw7902.dts b/arch/arm64/boot/dts/freescale/imx8mm-venice-gw7902.dts
+index 964cc4fc2ddf..0bff7a6fdca6 100644
+--- a/arch/arm64/boot/dts/freescale/imx8mm-venice-gw7902.dts
++++ b/arch/arm64/boot/dts/freescale/imx8mm-venice-gw7902.dts
+@@ -726,7 +726,7 @@ &usdhc2 {
+ 	status = "okay";
+ 
+ 	wifi@0 {
+-		compatible = "brcm,bcm43455-fmac";
++		compatible = "brcm,bcm43455-fmac", "brcm,bcm4329-fmac";
+ 		reg = <0>;
+ 	};
+ };
+diff --git a/arch/arm64/boot/dts/freescale/imx8mn-venice-gw7902.dts b/arch/arm64/boot/dts/freescale/imx8mn-venice-gw7902.dts
+index 3ac011bbc025..9a36edc60394 100644
+--- a/arch/arm64/boot/dts/freescale/imx8mn-venice-gw7902.dts
++++ b/arch/arm64/boot/dts/freescale/imx8mn-venice-gw7902.dts
+@@ -679,7 +679,7 @@ &usdhc2 {
+ 	status = "okay";
+ 
+ 	wifi@0 {
+-		compatible = "brcm,bcm43455-fmac";
++		compatible = "brcm,bcm43455-fmac", "brcm,bcm4329-fmac";
+ 		reg = <0>;
+ 	};
+ };
+diff --git a/arch/arm64/boot/dts/freescale/imx8mp-venice-gw74xx.dts b/arch/arm64/boot/dts/freescale/imx8mp-venice-gw74xx.dts
+index 3473423ac939..faa370a5885f 100644
+--- a/arch/arm64/boot/dts/freescale/imx8mp-venice-gw74xx.dts
++++ b/arch/arm64/boot/dts/freescale/imx8mp-venice-gw74xx.dts
+@@ -737,7 +737,7 @@ &usdhc1 {
+ 	status = "okay";
+ 
+ 	wifi@0 {
+-		compatible = "cypress,cyw4373-fmac";
++		compatible = "cypress,cyw4373-fmac", "brcm,bcm4329-fmac";
+ 		reg = <0>;
+ 	};
+ };
+-- 
+2.34.1
 
-If the bug is already fixed, let syzbot know by replying with:
-#syz fix: exact-commit-title
-
-If you want syzbot to run the reproducer, reply with:
-#syz test: git://repo/address.git branch-or-commit-hash
-If you attach or paste a git patch, syzbot will apply it before testing.
-
-If you want to change bug's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the bug is a duplicate of another bug, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
