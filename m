@@ -2,120 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 48AFE771488
-	for <lists+linux-kernel@lfdr.de>; Sun,  6 Aug 2023 13:30:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6FC1C77148B
+	for <lists+linux-kernel@lfdr.de>; Sun,  6 Aug 2023 13:36:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229530AbjHFLaW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 6 Aug 2023 07:30:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52496 "EHLO
+        id S229733AbjHFLgd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 6 Aug 2023 07:36:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53436 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229449AbjHFLaV (ORCPT
+        with ESMTP id S229530AbjHFLgb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 6 Aug 2023 07:30:21 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CACCC19C
-        for <linux-kernel@vger.kernel.org>; Sun,  6 Aug 2023 04:30:19 -0700 (PDT)
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1qSbxU-0008Gh-Du; Sun, 06 Aug 2023 13:30:04 +0200
-Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
-        by drehscheibe.grey.stw.pengutronix.de with esmtp (Exim 4.94.2)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1qSbxT-001VMe-3R; Sun, 06 Aug 2023 13:30:03 +0200
-Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.94.2)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1qSbxS-00AqWs-AO; Sun, 06 Aug 2023 13:30:02 +0200
-Date:   Sun, 6 Aug 2023 13:30:01 +0200
-From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To:     Angel Iglesias <ang.iglesiasg@gmail.com>
-Cc:     linux-iio@vger.kernel.org, Jonathan Cameron <jic23@kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/2] iio: pressure: bmp280: Use i2c_get_match_data
-Message-ID: <20230806113001.26neek3slt3w77zt@pengutronix.de>
-References: <cover.1691276610.git.ang.iglesiasg@gmail.com>
- <b3483bd87093d4cd0862904b70a167ebbb538644.1691276610.git.ang.iglesiasg@gmail.com>
+        Sun, 6 Aug 2023 07:36:31 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.65])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E2F5E50
+        for <linux-kernel@vger.kernel.org>; Sun,  6 Aug 2023 04:36:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1691321790; x=1722857790;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=RVfY0qb92YebdO6s2G7/O+6R8y5wKzyTuLAlDzxgii4=;
+  b=GuY7Nxqf3N4LgiRRm3JSQFd3zIjcWSHTZXB/R/7n2C/WsFfpsJEv8t4W
+   9YRKy6XaTd2nRuSW7ETX6/GlsuYXSFoNaVI2n3IOGSplIkSvOpxxxxwdQ
+   E0+fy9z/0Vl2uWxMxbuL9NA/f50uq3RWavgs9kctTAr+qfW5i1Te0uAJ8
+   EhzdZZp1KOUYpGeVR1R5kJFoll/w+SaKPuzS4Ch8C3IezpuDPJLO/jocj
+   2WcmNrpt72K/qZdcQzlgOlvamz5KpfxIZUGKFwJIwiDGk70+yDG7n4EGX
+   KYbU93CanHPJSUtkT8gTNWH0R4Jyd9glfNxXPjtga91JCco8CWvcbaWao
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10793"; a="374037103"
+X-IronPort-AV: E=Sophos;i="6.01,259,1684825200"; 
+   d="scan'208";a="374037103"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Aug 2023 04:36:30 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10793"; a="724206052"
+X-IronPort-AV: E=Sophos;i="6.01,259,1684825200"; 
+   d="scan'208";a="724206052"
+Received: from mvalka-mobl.ger.corp.intel.com (HELO box.shutemov.name) ([10.252.63.122])
+  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Aug 2023 04:36:26 -0700
+Received: by box.shutemov.name (Postfix, from userid 1000)
+        id C914110A117; Sun,  6 Aug 2023 14:36:23 +0300 (+03)
+Date:   Sun, 6 Aug 2023 14:36:23 +0300
+From:   kirill.shutemov@linux.intel.com
+To:     Kai Huang <kai.huang@intel.com>
+Cc:     peterz@infradead.org, linux-kernel@vger.kernel.org,
+        dave.hansen@intel.com, tglx@linutronix.de, bp@alien8.de,
+        mingo@redhat.com, hpa@zytor.com, x86@kernel.org, seanjc@google.com,
+        pbonzini@redhat.com, isaku.yamahata@intel.com,
+        sathyanarayanan.kuppuswamy@linux.intel.com,
+        n.borisov.lkml@gmail.com
+Subject: Re: [PATCH v3 10/12] x86/virt/tdx: Wire up basic SEAMCALL functions
+Message-ID: <20230806113623.f7am5levfsllpko7@box.shutemov.name>
+References: <cover.1690369495.git.kai.huang@intel.com>
+ <b57460d1d12d1f6eac9073cefd6976812b1eef5f.1690369495.git.kai.huang@intel.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="bzetm4d6c34w7mbf"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <b3483bd87093d4cd0862904b70a167ebbb538644.1691276610.git.ang.iglesiasg@gmail.com>
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <b57460d1d12d1f6eac9073cefd6976812b1eef5f.1690369495.git.kai.huang@intel.com>
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Jul 26, 2023 at 11:25:12PM +1200, Kai Huang wrote:
+> Intel Trust Domain Extensions (TDX) protects guest VMs from malicious
+> host and certain physical attacks.  A CPU-attested software module
+> called 'the TDX module' runs inside a new isolated memory range as a
+> trusted hypervisor to manage and run protected VMs.
+> 
+> TDX introduces a new CPU mode: Secure Arbitration Mode (SEAM).  This
+> mode runs only the TDX module itself or other code to load the TDX
+> module.
+> 
+> The host kernel communicates with SEAM software via a new SEAMCALL
+> instruction.  This is conceptually similar to a guest->host hypercall,
+> except it is made from the host to SEAM software instead.  The TDX
+> module establishes a new SEAMCALL ABI which allows the host to
+> initialize the module and to manage VMs.
+> 
+> The SEAMCALL ABI is very similar to the TDCALL ABI and leverages much
+> TDCALL infrastructure.  Wire up basic functions to make SEAMCALLs for
+> the basic support of running TDX guests: __seamcall(), __seamcall_ret(),
+> and __seamcall_saved_ret() for TDH.VP.ENTER.  All SEAMCALLs involved in
+> the basic TDX support don't use "callee-saved" registers as input and
+> output, except the TDH.VP.ENTER.
+> 
+> To start to support TDX, create a new arch/x86/virt/vmx/tdx/tdx.c for
+> TDX host kernel support.  Add a new Kconfig option CONFIG_INTEL_TDX_HOST
+> to opt-in TDX host kernel support (to distinguish with TDX guest kernel
+> support).  So far only KVM uses TDX.  Make the new config option depend
+> on KVM_INTEL.
+> 
+> Signed-off-by: Kai Huang <kai.huang@intel.com>
+> ---
+> 
+> v2 -> v3:
+>  - Added __seamcall_saved_ret() back for TDH.VP.ENTER, given the new
+>    patch to adjust 'struct tdx_module_args' layout.
+> 
+> v1 -> v2:
+>  - Removed __seamcall_saved_ret() and leave it to KVM TDX patches.
+> 
+> ---
+>  arch/x86/Kconfig                 | 12 +++++++
+>  arch/x86/Makefile                |  2 ++
+>  arch/x86/include/asm/tdx.h       |  7 ++++
+>  arch/x86/virt/Makefile           |  2 ++
+>  arch/x86/virt/vmx/Makefile       |  2 ++
+>  arch/x86/virt/vmx/tdx/Makefile   |  2 ++
+>  arch/x86/virt/vmx/tdx/seamcall.S | 61 ++++++++++++++++++++++++++++++++
+>  7 files changed, 88 insertions(+)
+>  create mode 100644 arch/x86/virt/Makefile
+>  create mode 100644 arch/x86/virt/vmx/Makefile
+>  create mode 100644 arch/x86/virt/vmx/tdx/Makefile
+>  create mode 100644 arch/x86/virt/vmx/tdx/seamcall.S
+> 
+> diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
+> index 7422db409770..0558dd98abd7 100644
+> --- a/arch/x86/Kconfig
+> +++ b/arch/x86/Kconfig
+> @@ -1949,6 +1949,18 @@ config X86_SGX
+>  
+>  	  If unsure, say N.
+>  
+> +config INTEL_TDX_HOST
+> +	bool "Intel Trust Domain Extensions (TDX) host support"
+> +	depends on CPU_SUP_INTEL
+> +	depends on X86_64
+> +	depends on KVM_INTEL
 
---bzetm4d6c34w7mbf
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Hm. I expected KVM_INTEL to depend on CPU_SUP_INTEL, but apparently no.
+Any reasons why?
 
-On Sun, Aug 06, 2023 at 01:15:03AM +0200, Angel Iglesias wrote:
-> Replaces device_get_match_data() and fallback match_id logic by new
-> unified helper function i2c_get_match_data().
->=20
-> Signed-off-by: Angel Iglesias <ang.iglesiasg@gmail.com>
->=20
-> diff --git a/drivers/iio/pressure/bmp280-i2c.c b/drivers/iio/pressure/bmp=
-280-i2c.c
-> index 693eb1975fdc..4ebaa4edc4fc 100644
-> --- a/drivers/iio/pressure/bmp280-i2c.c
-> +++ b/drivers/iio/pressure/bmp280-i2c.c
-> @@ -11,9 +11,9 @@ static int bmp280_i2c_probe(struct i2c_client *client)
->  	const struct bmp280_chip_info *chip_info;
->  	struct regmap *regmap;
-> =20
-> -	chip_info =3D device_get_match_data(&client->dev);
-> +	chip_info =3D i2c_get_match_data(client);
->  	if (!chip_info)
-> -		chip_info =3D (const struct bmp280_chip_info *) id->driver_data;
-> +		return -ENODEV;
+Anyway, it is not strictly related to the patch:
 
-the old code assumed that chip_info isn't NULL (implicitly by
-dereferencing that pointer in the line below). I wouldn't change
-semantics in a patch converting to a helper and so just do:
+Reviewed-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
 
--	chip_info =3D device_get_match_data(&client->dev);
-+	chip_info =3D i2c_get_match_data(client);
--	if (!chip_info)
--		chip_info =3D (const struct bmp280_chip_info *) id->driver_data;
-
-or alternatively, if you think adding a check is a good idea, add an
-error message in the error path and mention the semantic change in the
-commit log.
-
-Best regards
-Uwe
-
---=20
-Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
-Industrial Linux Solutions                 | https://www.pengutronix.de/ |
-
---bzetm4d6c34w7mbf
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEP4GsaTp6HlmJrf7Tj4D7WH0S/k4FAmTPhDkACgkQj4D7WH0S
-/k598gf/QYIEI5D+K8ylQZxk0SXcmUtPK1FbAhUY5CwUpmcE2tV0lG917a/XtYOI
-+T2fLwtlZvVwQY2BiuObqtiqRZPNi3zHW1OsulMfKpD0MZLxtcZsVHlW3nTnEPYu
-YKia11jR4Oj5TQbfzG8GSekIFZ4/5VqR+So+7DDaAWa+8c3RZ9o1oJU+Kqyu5H9d
-huk7YtgDHdNu5FbgT3CbqFgECoq63cUYiQVcK4R0WRY8dOqRMAfDompSSx+eA8xb
-oTOHltgJyHgC4cb/f0IHzR89ns8PuE0dRcPFE0NVKu7m7MSOUupHwu7bS0hLxPhL
-ATrH21jzbIDuJoakCiEbEYbyFuQRxQ==
-=R2Cx
------END PGP SIGNATURE-----
-
---bzetm4d6c34w7mbf--
+-- 
+  Kiryl Shutsemau / Kirill A. Shutemov
