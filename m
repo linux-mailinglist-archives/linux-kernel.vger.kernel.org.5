@@ -2,126 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 497947714DF
-	for <lists+linux-kernel@lfdr.de>; Sun,  6 Aug 2023 14:17:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4CCFE7714FC
+	for <lists+linux-kernel@lfdr.de>; Sun,  6 Aug 2023 14:21:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230136AbjHFMRr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 6 Aug 2023 08:17:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58538 "EHLO
+        id S230207AbjHFMVv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 6 Aug 2023 08:21:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59038 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229530AbjHFMRp (ORCPT
+        with ESMTP id S229509AbjHFMVt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 6 Aug 2023 08:17:45 -0400
-Received: from smtpbg153.qq.com (smtpbg153.qq.com [13.245.218.24])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3608A83;
-        Sun,  6 Aug 2023 05:17:36 -0700 (PDT)
-X-QQ-mid: bizesmtp89t1691324243trupm40v
-Received: from linux-lab-host.localdomain ( [116.30.130.12])
-        by bizesmtp.qq.com (ESMTP) with 
-        id ; Sun, 06 Aug 2023 20:17:22 +0800 (CST)
-X-QQ-SSF: 01200000000000E0X000000A0000000
-X-QQ-FEAT: 90EFqYDyPxBTP5m3DLzHmXuOT9mOD+v49IApa/gpVXiNSyxVaLC+SpcbpD4B5
-        QX6C9iPym9Fj4e84qs4ydTG2F8O/V2QDQS0lNJzRuJHv7cWfNnJR8mTFgtrP5o92OPK9hiE
-        mrcuCcNfFzbUwjOWDctAEvGLxdie1hBu/YdpZ/AdG0j6++9DjCjUxc9ogM2aaBEtJT146g/
-        1gJC7mlyAs0rnFAXQAiROh+k/PPB4aDqhup02HJ+oiDlGvaWrsHiaGPt0BvWgc8I8gjumgg
-        i8nOjRMbuiDV2+HrlX7U6Me68JeJn3npJecgNg5poNzfV8xtMGrUlL2irgpn9XYGQmbb/Tb
-        vUajLEyRQ2yB29AqUd7R0lQ8l20jYWSpL7hvsBnzXySAi6y1fxeALd7cvw3JXxmZdfuT58Y
-X-QQ-GoodBg: 0
-X-BIZMAIL-ID: 3912675406111922663
-From:   Zhangjin Wu <falcon@tinylab.org>
-To:     w@1wt.eu
-Cc:     arnd@arndb.de, falcon@tinylab.org, linux-kernel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, linux@weissschuh.net,
-        thomas@t-8ch.de
-Subject: Re: [PATCH v2 3/3] selftests/nolibc: fix up O= option support
-Date:   Sun,  6 Aug 2023 20:17:21 +0800
-Message-Id: <20230806121721.30774-1-falcon@tinylab.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20230806112122.GF10627@1wt.eu>
-References: <20230806112122.GF10627@1wt.eu>
+        Sun, 6 Aug 2023 08:21:49 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8112F4;
+        Sun,  6 Aug 2023 05:21:47 -0700 (PDT)
+Date:   Sun, 06 Aug 2023 12:21:44 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1691324505;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Lj2o2lMy4Naxup/WI6x4iavrDazv2xdKBIHEdvWvGYk=;
+        b=JR4gvvSAVQ2luaSxrRQahxfaU3Lut2HPhXRDp4VvMi4RBmkl1XydmI3IF79lj7nHMCX0xX
+        jOeMO/Icgljg/MavVK/yMFxpRvxMSojgTOPQ9Ds4avQv4mwbm2sn85A8F52/6ToQAzKVfq
+        LO1+L5GTQKBkaauqSJA55GrzTpDvgWiF0nGEsDxqglKMN4pnHGuMVko9CyvowPRxaMHDUm
+        QCUfnIKX7lnHvPTD5JYPgTsWG7eZNXq58sIYHYi6j48PxO4kLIjIEKNaL5nUuYXlRTHKaq
+        5zBj3+BYf0okgEpm7PtSdI7LxEybkaeqoYIvmDFj7qGQ819Rga2CLPLGNC/Dzw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1691324505;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Lj2o2lMy4Naxup/WI6x4iavrDazv2xdKBIHEdvWvGYk=;
+        b=R13j8xtNxnxwKCJA3eJNGY+lstH1VYUHi+piSQriVC8z3yGEwmBsQzxzKzufTTAFz5KqmW
+        F4mgobINPp5dgUCQ==
+From:   "tip-bot2 for Xin Li" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: x86/apic] tools: Get rid of IRQ_MOVE_CLEANUP_VECTOR from tools
+Cc:     Xin Li <xin3.li@intel.com>, Thomas Gleixner <tglx@linutronix.de>,
+        x86@kernel.org, linux-kernel@vger.kernel.org
+In-Reply-To: <20230621171248.6805-4-xin3.li@intel.com>
+References: <20230621171248.6805-4-xin3.li@intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-QQ-SENDSIZE: 520
-Feedback-ID: bizesmtp:tinylab.org:qybglogicsvrgz:qybglogicsvrgz5a-1
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Message-ID: <169132450428.28540.15994029338286764122.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> On Sat, Aug 05, 2023 at 02:13:11PM +0800, Zhangjin Wu wrote:
-> > To avoid pollute the source code tree and avoid mrproper for every
-> > architecture switch, the O= argument must be supported.
-> > 
-> > Both IMAGE and .config are from the building directory, let's use
-> > objtree instead of srctree for them.
-> > 
-> > If no O= option specified, means building kernel in source code tree,
-> > objtree should be srctree in such case.
-> > 
-> > To support relative path, as suggested by Thomas, $(COMMAND_O) is used
-> > to pass the O=$(ABSOLUTE_O) to the $(MAKE) commands.
-> 
-> Zhangjin, I cannot get this one to work, regardless of what I try:
-> 
->    $ make -j8 O=$PWD/output-i386 nolibc-test XARCH=i386 CROSS_COMPILE=/f/tc/nolibc/gcc-12.3.0-nolibc/i386-linux/bin/i386-linux- CC=/f/tc/nolibc/gcc-12.3.0-nolibc/i386-linux/bin/i386-linux-gcc
->    (...)
->    CC      nolibc-test
->    In file included from sysroot/i386/include/stdio.h:14,
->                     from nolibc-test.c:13:
->    sysroot/i386/include/errno.h:10:10: fatal error: asm/errno.h: No such file or directory
->       10 | #include <asm/errno.h>
->          |          ^~~~~~~~~~~~~
->    compilation terminated.
->
+The following commit has been merged into the x86/apic branch of tip:
 
-Willy, I also just reproduced the issue, seems only i386 sysroot has no
-asm/errno.h, will check why it is no rightly installed later.
+Commit-ID:     6e3edb0fb5c0ee3ab1edc1fcfd159e7dd177ef0e
+Gitweb:        https://git.kernel.org/tip/6e3edb0fb5c0ee3ab1edc1fcfd159e7dd177ef0e
+Author:        Xin Li <xin3.li@intel.com>
+AuthorDate:    Wed, 21 Jun 2023 10:12:48 -07:00
+Committer:     Thomas Gleixner <tglx@linutronix.de>
+CommitterDate: Sun, 06 Aug 2023 14:15:10 +02:00
 
-    $ find sysroot/ -name "errno.h"
-    sysroot/arm/include/errno.h
-    sysroot/arm/include/asm-generic/errno.h
-    sysroot/arm/include/asm/errno.h
-    sysroot/arm/include/linux/errno.h
-    sysroot/riscv/include/errno.h
-    sysroot/riscv/include/asm-generic/errno.h
-    sysroot/riscv/include/asm/errno.h
-    sysroot/riscv/include/linux/errno.h
-    sysroot/s390/include/errno.h
-    sysroot/s390/include/asm-generic/errno.h
-    sysroot/s390/include/asm/errno.h
-    sysroot/s390/include/linux/errno.h
-    sysroot/arm64/include/errno.h
-    sysroot/arm64/include/asm-generic/errno.h
-    sysroot/arm64/include/asm/errno.h
-    sysroot/arm64/include/linux/errno.h
-    sysroot/mips/include/errno.h
-    sysroot/mips/include/asm-generic/errno.h
-    sysroot/mips/include/asm/errno.h
-    sysroot/mips/include/linux/errno.h
-    sysroot/x86_64/include/errno.h
-    sysroot/x86_64/include/asm-generic/errno.h
-    sysroot/x86_64/include/asm/errno.h
-    sysroot/x86_64/include/linux/errno.h
-    sysroot/i386/include/errno.h
-    sysroot/i386/include/asm-generic/errno.h
-    sysroot/i386/include/linux/errno.h
-    sysroot/powerpc/include/errno.h
-    sysroot/powerpc/include/asm-generic/errno.h
-    sysroot/powerpc/include/asm/errno.h
-    sysroot/powerpc/include/linux/errno.h
+tools: Get rid of IRQ_MOVE_CLEANUP_VECTOR from tools
 
-> I'll leave it aside for now as I've spent way longer than I hoped on
-> these series. I could take the previous two patches however.
->
+IRQ_MOVE_CLEANUP_VECTOR is not longer in use. Remove the last traces.
 
-Ok, let's ignore this one, I will find why sysroot not install well for i386.
+Signed-off-by: Xin Li <xin3.li@intel.com>
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Link: https://lore.kernel.org/r/20230621171248.6805-4-xin3.li@intel.com
 
-Thanks,
-Zhangjin
+---
+ tools/arch/x86/include/asm/irq_vectors.h               | 7 -------
+ tools/perf/trace/beauty/tracepoints/x86_irq_vectors.sh | 2 +-
+ 2 files changed, 1 insertion(+), 8 deletions(-)
 
-> Thanks,
-> Willy
+diff --git a/tools/arch/x86/include/asm/irq_vectors.h b/tools/arch/x86/include/asm/irq_vectors.h
+index 43dcb92..3a19904 100644
+--- a/tools/arch/x86/include/asm/irq_vectors.h
++++ b/tools/arch/x86/include/asm/irq_vectors.h
+@@ -35,13 +35,6 @@
+  */
+ #define FIRST_EXTERNAL_VECTOR		0x20
+ 
+-/*
+- * Reserve the lowest usable vector (and hence lowest priority)  0x20 for
+- * triggering cleanup after irq migration. 0x21-0x2f will still be used
+- * for device interrupts.
+- */
+-#define IRQ_MOVE_CLEANUP_VECTOR		FIRST_EXTERNAL_VECTOR
+-
+ #define IA32_SYSCALL_VECTOR		0x80
+ 
+ /*
+diff --git a/tools/perf/trace/beauty/tracepoints/x86_irq_vectors.sh b/tools/perf/trace/beauty/tracepoints/x86_irq_vectors.sh
+index eed9ce0..87dc68c 100755
+--- a/tools/perf/trace/beauty/tracepoints/x86_irq_vectors.sh
++++ b/tools/perf/trace/beauty/tracepoints/x86_irq_vectors.sh
+@@ -12,7 +12,7 @@ x86_irq_vectors=${arch_x86_header_dir}/irq_vectors.h
+ 
+ # FIRST_EXTERNAL_VECTOR is not that useful, find what is its number
+ # and then replace whatever is using it and that is useful, which at
+-# the time of writing of this script was: IRQ_MOVE_CLEANUP_VECTOR.
++# the time of writing of this script was: 0x20.
+ 
+ first_external_regex='^#define[[:space:]]+FIRST_EXTERNAL_VECTOR[[:space:]]+(0x[[:xdigit:]]+)$'
+ first_external_vector=$(grep -E ${first_external_regex} ${x86_irq_vectors} | sed -r "s/${first_external_regex}/\1/g")
