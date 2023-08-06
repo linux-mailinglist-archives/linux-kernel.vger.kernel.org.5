@@ -2,143 +2,337 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 941A677158F
-	for <lists+linux-kernel@lfdr.de>; Sun,  6 Aug 2023 16:19:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D5ED771591
+	for <lists+linux-kernel@lfdr.de>; Sun,  6 Aug 2023 16:19:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230341AbjHFOSI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 6 Aug 2023 10:18:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48926 "EHLO
+        id S230351AbjHFOT1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 6 Aug 2023 10:19:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49322 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229558AbjHFOSF (ORCPT
+        with ESMTP id S229468AbjHFOTZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 6 Aug 2023 10:18:05 -0400
-Received: from out203-205-251-53.mail.qq.com (out203-205-251-53.mail.qq.com [203.205.251.53])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF2A312A
-        for <linux-kernel@vger.kernel.org>; Sun,  6 Aug 2023 07:18:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foxmail.com;
-        s=s201512; t=1691331479;
-        bh=km0RHk7GmUg0c0pMnKkJEFCFmmqVKFM2uZzWPDD58UM=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References;
-        b=ZaxaW+7+Pf8Boi+yj31MGmbFM9Anr1pQDZyBWvt3WEAiAaklhjGyjjc7YtAA9iSse
-         9Bv/1D2vOvHEdCEZ/LrKSaJ9z4reYNiwMY8rOyR4FXZ7qG+GMHh+/nlXezCgP9bAr4
-         cv6qDwp1HSpk7QnxS2zzsTxY5FwVplbnu3xoQn90=
-Received: from localhost.localdomain ([220.243.131.5])
-        by newxmesmtplogicsvrszb6-0.qq.com (NewEsmtp) with SMTP
-        id 2EBA0A76; Sun, 06 Aug 2023 22:11:43 +0800
-X-QQ-mid: xmsmtpt1691331103t1e48yjzc
-Message-ID: <tencent_942CC5C35E410E3545C2E386BE566B8B1405@qq.com>
-X-QQ-XMAILINFO: M7dxyDFn9MPmJaJLhUnyC7r5FWNexqHHySU8S2U4Z7TPYOtNOAKnKcJ9dqZOwd
-         lgAnZ2tVgPLE7IZeQYWLsjZgw6vdLOGkWm/5COii/VEHBMEhlToKLGIvKiVz9qzykkavo+DlZsqf
-         0guPTcuiezm0skj2HvDkrOWVSCUbsIAdwo29bBeRdhxDaqpmRzJLYk3KGvvi4p2dVhQo0O+SrYtM
-         GGFd1z8X/XFkGQ8fcEzy6mztNnzuHY/YA/ylJJOPgikPvkNZduk526PT007LaFUcvxlnu22ruHxn
-         s7DOScOEumy/OILPnLg8G/BXADN/CzrGtbDIASJzRx72jYi3LAcdtPHNVQwLhf15nYH1peB3lqzR
-         2GbNn7yGXt52iSOu9gPqmdMvclk2j8tqGR3PtKWUEnlD86b+KYqWWG9ADWkMsbniRKdf2eHrhIFV
-         zoaT4lk5/tnVDH2HVkyYN2FlXE87zsjqxp5tdRFyiAwydw1+msoK8dK9o1UzhjAY7eUumByYP6/W
-         rwl8KSUiDg3gft8ovg1ngKEh2+ZvO3nJgwBU/K1PULjXkWM9pFVYIVFILLNmwFGh04/Kcy7k7TSt
-         mI/Eceh8Uuf16c8xpcnNKD4zzJuSQJBZ4DAe97OeL1i9bjJAwbVC+YI7S5Z/8u0yePYlQRXoKbu4
-         d+tyAA8XcpS5/HNsylZdjSb5OXuyLfp9r986nkqbN1Fn4Y9wuCPcJMsqAZaMoBegotNCI2jPL62U
-         hzHqpLV19IUU/nCdPopPCxpGW0/gtN1VFiBeSoOySsLCEJZiIFogDAFPbAQNpz4rc8gWfBtZJXwd
-         tlaH3tpWZywC3qFWT4irI7DwFR1AJCDfZ/6JiQ8qkV9k4qKLHanjh9ARH/G3ukHRtZyoa9gU8HkX
-         r4TCLL53xLqYyNKG/pk42+1GxTa2Rseh7xgVv/1ZQRjpyW3lurm/7lfqy+VWWUyAZisHhvcl2J9g
-         gZH/5whqS/chq8ZRf+vUBKPTlpZfJs553a43LFOa4=
-X-QQ-XMRINFO: NyFYKkN4Ny6FSmKK/uo/jdU=
-From:   Zhang Shurong <zhang_shurong@foxmail.com>
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     jgross@suse.com, xen-devel@lists.xenproject.org,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] xen: fix potential shift out-of-bounds in xenhcd_hub_control()
-Date:   Sun, 06 Aug 2023 22:11:43 +0800
-X-OQ-MSGID: <5974189.lOV4Wx5bFT@localhost.localdomain>
-In-Reply-To: <4825193.GXAFRqVoOG@localhost.localdomain>
-References: <tencent_15DD79B42AD8A0D64A7CDC24D4FE6C85800A@qq.com>
- <2023062628-shame-ebook-56f2@gregkh>
- <4825193.GXAFRqVoOG@localhost.localdomain>
+        Sun, 6 Aug 2023 10:19:25 -0400
+Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B3F91B3;
+        Sun,  6 Aug 2023 07:19:24 -0700 (PDT)
+Received: by mail-pl1-x629.google.com with SMTP id d9443c01a7336-1bbc87ded50so24350685ad.1;
+        Sun, 06 Aug 2023 07:19:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1691331564; x=1691936364;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=kMrHwhbdYHGzF5f4FRST3mgNtv9aM+wyBhJFzSQJn7k=;
+        b=You7tRiDq3HIYF8el3bAjZHn5hthzGmN9r/zgD11DK1Z5IyRXNqu9tLT28s0yqwKDu
+         3M8nMYMAOEpDkhuQ5h/+USpObBh2Z+WlzhRyDkTX1adFo5CEZSRuWKEITxsdacJaUdjg
+         iW+BtwJl5WeiOC/SPpTVIDM7TI+rqUmObGXNQCQQcjqAGYJiZLZ7VlPcd2G36GqiFNXa
+         Fm9+IEpFV/5LQAFwh/7YdVGUrrYeeDybBrXzHJ5hJssXLMjXL/WajxrKDW9G/N/A8S74
+         vkjgbZL/XhxCTRLLlAoe7yNuGdX4ebDetx/DtdorneTVXC6s3z8ybZUaRjNIIs0ixjxn
+         GT7Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691331564; x=1691936364;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=kMrHwhbdYHGzF5f4FRST3mgNtv9aM+wyBhJFzSQJn7k=;
+        b=OZZbo4Rbmj+Bvy6GJR/GCVJmJAIjZ5O24GwIDvkATy/Tn0LLokDBEb6E1W+Y+fgD6U
+         sEt39KlMJFO850MAzROvmO8CIgjwojyMIoAyUOWS6EePTpYWqSySZIx7OlwW1mqgVo2/
+         wrwFa9CSEJNG2WlxyVO5gUnmmBfl7RXtxhSsindepKPYC7L10YPfG7tmNmlZwzEt8fMQ
+         q82ZnxPlMvM/6wnuvI4VH5GepGqk7Ldqj6HuX6kFseO+C+7+5yGzoTBE5Ld+aobzO1IT
+         +amA1oqIFUslIIJe/JAHgJhLJsdn20aZ6a/vUrcXEo3K2BukzmePCzo/7Xj1K3ZOScTq
+         eRYw==
+X-Gm-Message-State: AOJu0YyA6GLeG4zL/6RcFFvatV7n6Dx0vH52YtJnV5CQX6UmsYxGHIA2
+        ys+4DcdoKhthUBUedqHPEwMBJUqpkUo=
+X-Google-Smtp-Source: AGHT+IHpzDA3To08YqkkqT3hDuY0GEdLocwERyC8TQTBy07pjaQp/IcAvurfgtYfL+1pfjQ1+o79Iw==
+X-Received: by 2002:a17:903:32d1:b0:1bc:56c3:ebb7 with SMTP id i17-20020a17090332d100b001bc56c3ebb7mr6168085plr.20.1691331563717;
+        Sun, 06 Aug 2023 07:19:23 -0700 (PDT)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id p21-20020a1709028a9500b001bb0b1a93dfsm4947709plo.126.2023.08.06.07.19.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 06 Aug 2023 07:19:23 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date:   Sun, 6 Aug 2023 07:19:21 -0700
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Marek Vasut <marex@denx.de>
+Cc:     linux-arm-kernel@lists.infradead.org,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Antonio Borneo <antonio.borneo@foss.st.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Marc Zyngier <maz@kernel.org>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Richard Cochran <richardcochran@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Wim Van Sebroeck <wim@linux-watchdog.org>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-watchdog@vger.kernel.org
+Subject: Re: [PATCH v2 2/3] watchdog: stm32_iwdg: Add pretimeout support
+Message-ID: <ba596dd5-e9b9-4972-a768-e42e69897fea@roeck-us.net>
+References: <20230517194349.105745-1-marex@denx.de>
+ <20230517194349.105745-2-marex@denx.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=0.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        HELO_DYNAMIC_IPADDR,RCVD_IN_DNSWL_BLOCKED,RDNS_DYNAMIC,SPF_HELO_NONE,
-        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230517194349.105745-2-marex@denx.de>
+X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-=E5=9C=A8 2023=E5=B9=B47=E6=9C=881=E6=97=A5=E6=98=9F=E6=9C=9F=E5=85=AD CST =
-=E4=B8=8B=E5=8D=8811:51:43=EF=BC=8CZhang Shurong =E5=86=99=E9=81=93=EF=BC=9A
-> =E5=9C=A8 2023=E5=B9=B46=E6=9C=8826=E6=97=A5=E6=98=9F=E6=9C=9F=E4=B8=80 C=
-ST =E4=B8=8B=E5=8D=881:52:02=EF=BC=8C=E6=82=A8=E5=86=99=E9=81=93=EF=BC=9A
->=20
-> > On Mon, Jun 26, 2023 at 07:48:05AM +0200, Jan Beulich wrote:
-> > > On 25.06.2023 18:42, Zhang Shurong wrote:
-> > > > --- a/drivers/usb/host/xen-hcd.c
-> > > > +++ b/drivers/usb/host/xen-hcd.c
-> > > > @@ -456,6 +456,8 @@ static int xenhcd_hub_control(struct usb_hcd *h=
-cd,
-> > > > __u16 typeReq, __u16 wValue,> >
-> > > >=20
-> > > >  			info->ports[wIndex - 1].c_connection =3D
->=20
-> false;
->=20
-> > > >  			fallthrough;
-> > > >  	=09
-> > > >  		default:
-> > > > +			if (wValue >=3D 32)
-> > > > +				goto error;
-> > > >=20
-> > > >  			info->ports[wIndex - 1].status &=3D ~(1
->=20
-> << wValue);
->=20
-> > > Even 31 is out of bounds (as in: UB) as long as it's 1 here rather
-> > > than 1u.
-> >=20
-> > Why isn't the caller fixed so this type of value could never be passed
-> > to the hub_control callback?
-> >=20
-> > thanks,
-> >=20
-> > greg k-h
->=20
-> Although I'm not knowledgeable about the USB subsystem, I've observed that
-> not all driver code that implements hub_control callback performs a shift
-> operation on wValue, and not all shift operations among them cause
-> problems. Therefore, I've decided to fix this issue within each driver
-> itself.
->=20
-> For example, in r8a66597_hub_control, it will first check whether wValue =
-is
-> valid (always < 31) before the shift operation. In case of an invalid
-> number, the code would execute the error branch instead of the shift
-> operation.
->=20
-> switch (wValue) {
-> case USB_PORT_FEAT_ENABLE:
-> 	rh->port &=3D ~USB_PORT_STAT_POWER;
-> 	break;
-> case USB_PORT_FEAT_SUSPEND:
-> 	break;
-> case USB_PORT_FEAT_POWER:
-> 	r8a66597_port_power(r8a66597, port, 0);
-> 	break;
-> case USB_PORT_FEAT_C_ENABLE:
-> case USB_PORT_FEAT_C_SUSPEND:
-> case USB_PORT_FEAT_C_CONNECTION:
-> case USB_PORT_FEAT_C_OVER_CURRENT:
-> case USB_PORT_FEAT_C_RESET:
-> 	break;
-> default:
-> 	goto error;
-> }
-> rh->port &=3D ~(1 << wValue);
+On Wed, May 17, 2023 at 09:43:48PM +0200, Marek Vasut wrote:
+> The STM32MP15xx IWDG adds registers which permit this IP to generate
+> pretimeout interrupt. This interrupt can also be used to wake the CPU
+> from suspend. Implement support for generating this interrupt and let
+> userspace configure the pretimeout. In case the pretimeout is not
+> configured by user, set pretimeout to half of the WDT timeout cycle.
+> 
+> Signed-off-by: Marek Vasut <marex@denx.de>
+> ---
+> Cc: Alexandre Torgue <alexandre.torgue@foss.st.com>
+> Cc: Antonio Borneo <antonio.borneo@foss.st.com>
+> Cc: Guenter Roeck <linux@roeck-us.net>
+> Cc: Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>
+> Cc: Marc Zyngier <maz@kernel.org>
+> Cc: Maxime Coquelin <mcoquelin.stm32@gmail.com>
+> Cc: Richard Cochran <richardcochran@gmail.com>
+> Cc: Rob Herring <robh+dt@kernel.org>
+> Cc: Thomas Gleixner <tglx@linutronix.de>
+> Cc: Wim Van Sebroeck <wim@linux-watchdog.org>
+> Cc: devicetree@vger.kernel.org
+> Cc: linux-arm-kernel@lists.infradead.org
+> Cc: linux-kernel@vger.kernel.org
+> Cc: linux-stm32@st-md-mailman.stormreply.com
+> Cc: linux-watchdog@vger.kernel.org
+> ---
+> V2: - Subtract the pretimeout value from timeout value before writing it
+>       into the IWDG pretimeout register, because the watchdog counter
+>       register is counting down, and the pretimeout interrupt triggers
+>       when watchdog counter register matches the pretimeout register
+>       content.
+>     - Set default pretimeout to 3/4 of timeout .
+> ---
+>  drivers/watchdog/stm32_iwdg.c | 94 ++++++++++++++++++++++++++++++++++-
+>  1 file changed, 93 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/watchdog/stm32_iwdg.c b/drivers/watchdog/stm32_iwdg.c
+> index 570a71509d2a9..4c69d4026dd9c 100644
+> --- a/drivers/watchdog/stm32_iwdg.c
+> +++ b/drivers/watchdog/stm32_iwdg.c
+> @@ -19,6 +19,7 @@
+>  #include <linux/of.h>
+>  #include <linux/of_device.h>
+>  #include <linux/platform_device.h>
+> +#include <linux/pm_wakeirq.h>
+>  #include <linux/watchdog.h>
+>  
+>  /* IWDG registers */
+> @@ -27,6 +28,7 @@
+>  #define IWDG_RLR	0x08 /* ReLoad Register */
+>  #define IWDG_SR		0x0C /* Status Register */
+>  #define IWDG_WINR	0x10 /* Windows Register */
+> +#define IWDG_EWCR	0x14 /* Early Wake-up Register */
+>  
+>  /* IWDG_KR register bit mask */
+>  #define KR_KEY_RELOAD	0xAAAA /* reload counter enable */
+> @@ -46,22 +48,29 @@
+>  #define SR_PVU	BIT(0) /* Watchdog prescaler value update */
+>  #define SR_RVU	BIT(1) /* Watchdog counter reload value update */
+>  
+> +#define EWCR_EWIT	GENMASK(11, 0) /* Watchdog counter window value */
+> +#define EWCR_EWIC	BIT(14) /* Watchdog early interrupt acknowledge */
+> +#define EWCR_EWIE	BIT(15) /* Watchdog early interrupt enable */
+> +
+>  /* set timeout to 100000 us */
+>  #define TIMEOUT_US	100000
+>  #define SLEEP_US	1000
+>  
+>  struct stm32_iwdg_data {
+>  	bool has_pclk;
+> +	bool has_early_wakeup;
+>  	u32 max_prescaler;
+>  };
+>  
+>  static const struct stm32_iwdg_data stm32_iwdg_data = {
+>  	.has_pclk = false,
+> +	.has_early_wakeup = false,
+>  	.max_prescaler = 256,
+>  };
+>  
+>  static const struct stm32_iwdg_data stm32mp1_iwdg_data = {
+>  	.has_pclk = true,
+> +	.has_early_wakeup = true,
+>  	.max_prescaler = 1024,
+>  };
+>  
+> @@ -87,13 +96,18 @@ static inline void reg_write(void __iomem *base, u32 reg, u32 val)
+>  static int stm32_iwdg_start(struct watchdog_device *wdd)
+>  {
+>  	struct stm32_iwdg *wdt = watchdog_get_drvdata(wdd);
+> -	u32 tout, presc, iwdg_rlr, iwdg_pr, iwdg_sr;
+> +	u32 tout, ptot, presc, iwdg_rlr, iwdg_ewcr, iwdg_pr, iwdg_sr;
+>  	int ret;
+>  
+>  	dev_dbg(wdd->parent, "%s\n", __func__);
+>  
+> +	if (!wdd->pretimeout)
+> +		wdd->pretimeout = 3 * wdd->timeout / 4;
+> +
+>  	tout = clamp_t(unsigned int, wdd->timeout,
+>  		       wdd->min_timeout, wdd->max_hw_heartbeat_ms / 1000);
+> +	ptot = clamp_t(unsigned int, tout - wdd->pretimeout,
+> +		       wdd->min_timeout, tout);
+>  
+>  	presc = DIV_ROUND_UP(tout * wdt->rate, RLR_MAX + 1);
+>  
+> @@ -101,6 +115,7 @@ static int stm32_iwdg_start(struct watchdog_device *wdd)
+>  	presc = roundup_pow_of_two(presc);
+>  	iwdg_pr = presc <= 1 << PR_SHIFT ? 0 : ilog2(presc) - PR_SHIFT;
+>  	iwdg_rlr = ((tout * wdt->rate) / presc) - 1;
+> +	iwdg_ewcr = ((ptot * wdt->rate) / presc) - 1;
+>  
+>  	/* enable write access */
+>  	reg_write(wdt->regs, IWDG_KR, KR_KEY_EWA);
+> @@ -108,6 +123,8 @@ static int stm32_iwdg_start(struct watchdog_device *wdd)
+>  	/* set prescaler & reload registers */
+>  	reg_write(wdt->regs, IWDG_PR, iwdg_pr);
+>  	reg_write(wdt->regs, IWDG_RLR, iwdg_rlr);
+> +	if (wdt->data->has_early_wakeup)
+> +		reg_write(wdt->regs, IWDG_EWCR, iwdg_ewcr | EWCR_EWIE);
+>  	reg_write(wdt->regs, IWDG_KR, KR_KEY_ENABLE);
+>  
+>  	/* wait for the registers to be updated (max 100ms) */
+> @@ -150,6 +167,34 @@ static int stm32_iwdg_set_timeout(struct watchdog_device *wdd,
+>  	return 0;
+>  }
+>  
+> +static int stm32_iwdg_set_pretimeout(struct watchdog_device *wdd,
+> +				     unsigned int pretimeout)
+> +{
+> +	dev_dbg(wdd->parent, "%s pretimeout: %d sec\n", __func__, pretimeout);
+> +
+> +	wdd->pretimeout = pretimeout;
+> +
+> +	if (watchdog_active(wdd))
+> +		return stm32_iwdg_start(wdd);
+> +
+> +	return 0;
+> +}
+> +
+> +static irqreturn_t stm32_iwdg_isr(int irq, void *wdog_arg)
+> +{
+> +	struct watchdog_device *wdd = wdog_arg;
+> +	struct stm32_iwdg *wdt = watchdog_get_drvdata(wdd);
+> +	u32 reg;
+> +
+> +	reg = reg_read(wdt->regs, IWDG_EWCR);
+> +	reg |= EWCR_EWIC;
+> +	reg_write(wdt->regs, IWDG_EWCR, reg);
+> +
+> +	watchdog_notify_pretimeout(wdd);
+> +
+> +	return IRQ_HANDLED;
+> +}
+> +
+>  static void stm32_clk_disable_unprepare(void *data)
+>  {
+>  	clk_disable_unprepare(data);
+> @@ -206,11 +251,20 @@ static const struct watchdog_info stm32_iwdg_info = {
+>  	.identity	= "STM32 Independent Watchdog",
+>  };
+>  
+> +static const struct watchdog_info stm32_iwdg_preinfo = {
+> +	.options	= WDIOF_SETTIMEOUT |
+> +			  WDIOF_MAGICCLOSE |
+> +			  WDIOF_KEEPALIVEPING |
+> +			  WDIOF_PRETIMEOUT,
+> +	.identity	= "STM32 Independent Watchdog",
+> +};
+> +
+>  static const struct watchdog_ops stm32_iwdg_ops = {
+>  	.owner		= THIS_MODULE,
+>  	.start		= stm32_iwdg_start,
+>  	.ping		= stm32_iwdg_ping,
+>  	.set_timeout	= stm32_iwdg_set_timeout,
+> +	.set_pretimeout	= stm32_iwdg_set_pretimeout,
+>  };
+>  
+>  static const struct of_device_id stm32_iwdg_of_match[] = {
+> @@ -220,6 +274,39 @@ static const struct of_device_id stm32_iwdg_of_match[] = {
+>  };
+>  MODULE_DEVICE_TABLE(of, stm32_iwdg_of_match);
+>  
+> +static int stm32_iwdg_irq_init(struct platform_device *pdev,
+> +			       struct stm32_iwdg *wdt)
+> +{
+> +	struct device_node *np = pdev->dev.of_node;
+> +	struct watchdog_device *wdd = &wdt->wdd;
+> +	struct device *dev = &pdev->dev;
+> +	int irq, ret;
+> +
+> +	if (!wdt->data->has_early_wakeup)
+> +		return 0;
+> +
+> +	irq = platform_get_irq(pdev, 0);
+> +	if (irq <= 0)
+> +		return 0;
+> +
+> +	if (of_property_read_bool(np, "wakeup-source")) {
+> +		ret = device_init_wakeup(&pdev->dev, true);
 
-Hi there. I apologize for reaching out once more. I'm feeling a bit puzzled=
-=20
-about what my next step should be. I'm unsure whether I should rewrite this=
-=20
-patch or attempt to address the issue at the caller level.
+use dev
 
+> +		if (ret)
+> +			return ret;
+> +
+> +		ret = dev_pm_set_wake_irq(&pdev->dev, irq);
 
+use dev
+
+> +		if (ret)
+> +			return ret;
+> +	}
+> +
+> +	ret = devm_request_irq(dev, irq, stm32_iwdg_isr, 0,
+> +			       dev_name(dev), wdd);
+> +	if (!ret)
+> +		wdd->info = &stm32_iwdg_preinfo;
+
+	if (ret)
+		return ret;
+
+	wdd->info = &stm32_iwdg_preinfo;
+	return 0;
+
+> +
+> +	return ret;
+> +}
+> +
+>  static int stm32_iwdg_probe(struct platform_device *pdev)
+>  {
+>  	struct device *dev = &pdev->dev;
+> @@ -253,6 +340,11 @@ static int stm32_iwdg_probe(struct platform_device *pdev)
+>  	wdd->max_hw_heartbeat_ms = ((RLR_MAX + 1) * wdt->data->max_prescaler *
+>  				    1000) / wdt->rate;
+>  
+> +	/* Initialize IRQ, this might override wdd->info, hence it is here. */
+> +	ret = stm32_iwdg_irq_init(pdev, wdt);
+> +	if (ret)
+> +		return ret;
+> +
+
+What if the interrupt fires for whatever reason and the watchdog
+isn't registered yet and the driver data is not set and the
+watchdog core doesn't know about the watchdog ?
+
+Guenter
+
+>  	watchdog_set_drvdata(wdd, wdt);
+>  	watchdog_set_nowayout(wdd, WATCHDOG_NOWAYOUT);
+>  	watchdog_init_timeout(wdd, 0, dev);
