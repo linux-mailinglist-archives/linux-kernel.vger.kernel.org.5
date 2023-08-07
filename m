@@ -2,160 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E92B1772736
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 16:11:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 24362772855
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 16:56:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232642AbjHGOLi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Aug 2023 10:11:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59280 "EHLO
+        id S229892AbjHGO4q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Aug 2023 10:56:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58468 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229517AbjHGOLe (ORCPT
+        with ESMTP id S229841AbjHGO4m (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Aug 2023 10:11:34 -0400
-Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 134E79E;
-        Mon,  7 Aug 2023 07:11:33 -0700 (PDT)
-Received: from canpemm500007.china.huawei.com (unknown [172.30.72.56])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4RKJB611VTz1KCNf;
-        Mon,  7 Aug 2023 22:10:22 +0800 (CST)
-Received: from localhost (10.174.179.215) by canpemm500007.china.huawei.com
- (7.192.104.62) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Mon, 7 Aug
- 2023 22:11:29 +0800
-From:   Yue Haibing <yuehaibing@huawei.com>
-To:     <gregkh@linuxfoundation.org>, <yuehaibing@huawei.com>
-CC:     <linux-kernel@vger.kernel.org>, <linux-usb@vger.kernel.org>
-Subject: [PATCH -next] USB: misc: Remove unused include file usb_u132.h
-Date:   Mon, 7 Aug 2023 22:11:28 +0800
-Message-ID: <20230807141128.39092-1-yuehaibing@huawei.com>
-X-Mailer: git-send-email 2.10.2.windows.1
+        Mon, 7 Aug 2023 10:56:42 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44C0B10D1
+        for <linux-kernel@vger.kernel.org>; Mon,  7 Aug 2023 07:56:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1691420201; x=1722956201;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=SaHNAycvvF2ElR8nisXlQ70kDCQK0462eRAig4OuDxs=;
+  b=HqvMqJrvVbLKNXl5JHA3wR4EDl3CjFDlxkYtkIpi531O+azgFf4cHb7L
+   sPiQKNT/lLML9fKmTW8QJPGrrrLZ1ByVHBxMd52TUS/TEPCmqdCtCVRCp
+   RIcl25YXcwvZ82pG8EpPzogsUsAV7pz/xJtEc8VMrWnWAOY2ChVehb2wI
+   8ZIt0w1VKmWFhDWRc2WfUtTYeuRiUoWCd0t0zMgJ+9hdHx+PaUsp/iUJW
+   Yi8RebQt133pdupIUSeyRkrdEcfaSotAROwPkG8SegQW/D4GqbsJSQIuc
+   U7w2XpB5jwUTm2o7DjrI4zFIZbQsZnNgDlS2wKgxWepXDzJWQmZDK1w8Z
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10795"; a="434410600"
+X-IronPort-AV: E=Sophos;i="6.01,262,1684825200"; 
+   d="scan'208";a="434410600"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Aug 2023 07:56:40 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10795"; a="1061623874"
+X-IronPort-AV: E=Sophos;i="6.01,262,1684825200"; 
+   d="scan'208";a="1061623874"
+Received: from hweelee-mobl.amr.corp.intel.com (HELO [10.209.181.215]) ([10.209.181.215])
+  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Aug 2023 07:56:38 -0700
+Message-ID: <92d03e5e-c0b4-98ef-5f02-6088b4a0e5f8@linux.intel.com>
+Date:   Mon, 7 Aug 2023 09:11:47 -0500
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.174.179.215]
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
- canpemm500007.china.huawei.com (7.192.104.62)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Firefox/102.0 Thunderbird/102.13.0
+Subject: Re: [PATCH v3 4/9] ALSA: hda/i915: Allow xe as match for
+ i915_component_master_match
+Content-Language: en-US
+To:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        alsa-devel@alsa-project.org
+Cc:     Maarten Lankhorst <dev@lankhorst.se>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Cezary Rojewski <cezary.rojewski@intel.com>,
+        Liam Girdwood <liam.r.girdwood@linux.intel.com>,
+        Peter Ujfalusi <peter.ujfalusi@linux.intel.com>,
+        Bard Liao <yung-chuan.liao@linux.intel.com>,
+        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+        Mark Brown <broonie@kernel.org>,
+        Daniel Baluta <daniel.baluta@nxp.com>,
+        linux-kernel@vger.kernel.org, sound-open-firmware@alsa-project.org
+References: <20230807090045.198993-1-maarten.lankhorst@linux.intel.com>
+ <20230807090045.198993-5-maarten.lankhorst@linux.intel.com>
+From:   Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+In-Reply-To: <20230807090045.198993-5-maarten.lankhorst@linux.intel.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-6.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Since commit 8be174835f07 ("usb: ftdi-elan: Delete driver") this include file
-is not used anymore, so can remove it.
 
-Signed-off-by: Yue Haibing <yuehaibing@huawei.com>
----
- drivers/usb/misc/usb_u132.h | 97 -------------------------------------
- 1 file changed, 97 deletions(-)
- delete mode 100644 drivers/usb/misc/usb_u132.h
 
-diff --git a/drivers/usb/misc/usb_u132.h b/drivers/usb/misc/usb_u132.h
-deleted file mode 100644
-index 1584efbbd704..000000000000
---- a/drivers/usb/misc/usb_u132.h
-+++ /dev/null
-@@ -1,97 +0,0 @@
--/* SPDX-License-Identifier: GPL-2.0 */
--/*
--* Common Header File for the Elan Digital Systems U132 adapter
--* this file should be included by both the "ftdi-u132" and
--* the "u132-hcd" modules.
--*
--* Copyright(C) 2006 Elan Digital Systems Limited
--*(http://www.elandigitalsystems.com)
--*
--* Author and Maintainer - Tony Olech - Elan Digital Systems
--*(tony.olech@elandigitalsystems.com)
--*
--* The driver was written by Tony Olech(tony.olech@elandigitalsystems.com)
--* based on various USB client drivers in the 2.6.15 linux kernel
--* with constant reference to the 3rd Edition of Linux Device Drivers
--* published by O'Reilly
--*
--* The U132 adapter is a USB to CardBus adapter specifically designed
--* for PC cards that contain an OHCI host controller. Typical PC cards
--* are the Orange Mobile 3G Option GlobeTrotter Fusion card.
--*
--* The U132 adapter will *NOT *work with PC cards that do not contain
--* an OHCI controller. A simple way to test whether a PC card has an
--* OHCI controller as an interface is to insert the PC card directly
--* into a laptop(or desktop) with a CardBus slot and if "lspci" shows
--* a new USB controller and "lsusb -v" shows a new OHCI Host Controller
--* then there is a good chance that the U132 adapter will support the
--* PC card.(you also need the specific client driver for the PC card)
--*
--* Please inform the Author and Maintainer about any PC cards that
--* contain OHCI Host Controller and work when directly connected to
--* an embedded CardBus slot but do not work when they are connected
--* via an ELAN U132 adapter.
--*
--* The driver consists of two modules, the "ftdi-u132" module is
--* a USB client driver that interfaces to the FTDI chip within
--* the U132 adapter manufactured by Elan Digital Systems, and the
--* "u132-hcd" module is a USB host controller driver that talks
--* to the OHCI controller within CardBus card that are inserted
--* in the U132 adapter.
--*
--* The "ftdi-u132" module should be loaded automatically by the
--* hot plug system when the U132 adapter is plugged in. The module
--* initialises the adapter which mostly consists of synchronising
--* the FTDI chip, before continuously polling the adapter to detect
--* PC card insertions. As soon as a PC card containing a recognised
--* OHCI controller is seen the "ftdi-u132" module explicitly requests
--* the kernel to load the "u132-hcd" module.
--*
--* The "ftdi-u132" module provides the interface to the inserted
--* PC card and the "u132-hcd" module uses the API to send and receive
--* data. The API features call-backs, so that part of the "u132-hcd"
--* module code will run in the context of one of the kernel threads
--* of the "ftdi-u132" module.
--*
--*/
--int ftdi_elan_switch_on_diagnostics(int number);
--void ftdi_elan_gone_away(struct platform_device *pdev);
--void start_usb_lock_device_tracing(void);
--struct u132_platform_data {
--        u16 vendor;
--        u16 device;
--        u8 potpg;
--        void (*port_power) (struct device *dev, int is_on);
--        void (*reset) (struct device *dev);
--};
--int usb_ftdi_elan_edset_single(struct platform_device *pdev, u8 ed_number,
--        void *endp, struct urb *urb, u8 address, u8 ep_number, u8 toggle_bits,
--        void (*callback) (void *endp, struct urb *urb, u8 *buf, int len,
--        int toggle_bits, int error_count, int condition_code, int repeat_number,
--         int halted, int skipped, int actual, int non_null));
--int usb_ftdi_elan_edset_output(struct platform_device *pdev, u8 ed_number,
--        void *endp, struct urb *urb, u8 address, u8 ep_number, u8 toggle_bits,
--        void (*callback) (void *endp, struct urb *urb, u8 *buf, int len,
--        int toggle_bits, int error_count, int condition_code, int repeat_number,
--         int halted, int skipped, int actual, int non_null));
--int usb_ftdi_elan_edset_empty(struct platform_device *pdev, u8 ed_number,
--        void *endp, struct urb *urb, u8 address, u8 ep_number, u8 toggle_bits,
--        void (*callback) (void *endp, struct urb *urb, u8 *buf, int len,
--        int toggle_bits, int error_count, int condition_code, int repeat_number,
--         int halted, int skipped, int actual, int non_null));
--int usb_ftdi_elan_edset_input(struct platform_device *pdev, u8 ed_number,
--        void *endp, struct urb *urb, u8 address, u8 ep_number, u8 toggle_bits,
--        void (*callback) (void *endp, struct urb *urb, u8 *buf, int len,
--        int toggle_bits, int error_count, int condition_code, int repeat_number,
--         int halted, int skipped, int actual, int non_null));
--int usb_ftdi_elan_edset_setup(struct platform_device *pdev, u8 ed_number,
--        void *endp, struct urb *urb, u8 address, u8 ep_number, u8 toggle_bits,
--        void (*callback) (void *endp, struct urb *urb, u8 *buf, int len,
--        int toggle_bits, int error_count, int condition_code, int repeat_number,
--         int halted, int skipped, int actual, int non_null));
--int usb_ftdi_elan_edset_flush(struct platform_device *pdev, u8 ed_number,
--        void *endp);
--int usb_ftdi_elan_read_pcimem(struct platform_device *pdev, int mem_offset,
--			      u8 width, u32 *data);
--int usb_ftdi_elan_write_pcimem(struct platform_device *pdev, int mem_offset,
--			       u8 width, u32 data);
--- 
-2.34.1
+On 8/7/23 04:00, Maarten Lankhorst wrote:
+> xe is a new driver for intel GPU's that shares the sound related code
+> with i915.
+> 
+> Don't allow it to be modprobed though; the module is not upstream yet
+> and we should exclusively use the EPROBE_DEFER mechanism.
 
+The wording hasn't changed and remains confusing, likely to trigger all
+paranoia triplines. Consider rewording if there's an update.
+
+> Signed-off-by: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
+> Reviewed-by: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
+> Reviewed-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
+
+Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+
+> ---
+>  sound/hda/hdac_i915.c | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
+> 
+> diff --git a/sound/hda/hdac_i915.c b/sound/hda/hdac_i915.c
+> index 961fcd3397f4..12c1f8d93499 100644
+> --- a/sound/hda/hdac_i915.c
+> +++ b/sound/hda/hdac_i915.c
+> @@ -115,7 +115,8 @@ static int i915_component_master_match(struct device *dev, int subcomponent,
+>  	hdac_pci = to_pci_dev(bus->dev);
+>  	i915_pci = to_pci_dev(dev);
+>  
+> -	if (!strcmp(dev->driver->name, "i915") &&
+> +	if ((!strcmp(dev->driver->name, "i915") ||
+> +		 !strcmp(dev->driver->name, "xe")) &&
+>  	    subcomponent == I915_COMPONENT_AUDIO &&
+>  	    connectivity_check(i915_pci, hdac_pci))
+>  		return 1;
