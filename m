@@ -2,412 +2,189 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6574C77225A
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 13:33:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D8230772276
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 13:34:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232859AbjHGLct (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Aug 2023 07:32:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37930 "EHLO
+        id S232938AbjHGLeR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Aug 2023 07:34:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40808 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232500AbjHGLcZ (ORCPT
+        with ESMTP id S233313AbjHGLde (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Aug 2023 07:32:25 -0400
-Received: from smtp-relay-internal-1.canonical.com (smtp-relay-internal-1.canonical.com [185.125.188.123])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 061471BF1
-        for <linux-kernel@vger.kernel.org>; Mon,  7 Aug 2023 04:29:42 -0700 (PDT)
-Received: from mail-yb1-f197.google.com (mail-yb1-f197.google.com [209.85.219.197])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id 3B05E3F189
-        for <linux-kernel@vger.kernel.org>; Mon,  7 Aug 2023 11:28:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1691407726;
-        bh=qbnbOFh51mi/qrG/7hcqEm7+2Y8f9kd/IJcmNmyo2uY=;
-        h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-         To:Cc:Content-Type;
-        b=cyTCkcim7GGKpmGkTo6E+OiQADp3bU/rtNSPo+a1RdrqaXyHs4ozhybbWM4LGdB5C
-         wz/HZLwb1vrbwaTXX3gwNOo6+6gKlKdHzq/kqt41armLaWpMmVz6TxQHph7/chHi4n
-         +uCtNx24XoZVndgpk5ViiwePq8iVoqLKJxCL93FHoBUpwqN/zge5GWyNfn4icexA8e
-         l3XNHrpx+Cdc8DZxKyhund8JpL8rUvGGPmCTFHkA+CY8n+PiOWanumuhorEIFetCrl
-         +Q7sfDB3kHe5Cyh3m0xwFF0VjsCFQRMIiTyZx2BvzPth5MYpwhvYAPKzVytcWi4V79
-         H9VFvtEuYLXLw==
-Received: by mail-yb1-f197.google.com with SMTP id 3f1490d57ef6-d4ca2881833so2058755276.3
-        for <linux-kernel@vger.kernel.org>; Mon, 07 Aug 2023 04:28:46 -0700 (PDT)
+        Mon, 7 Aug 2023 07:33:34 -0400
+Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0B485248
+        for <linux-kernel@vger.kernel.org>; Mon,  7 Aug 2023 04:31:10 -0700 (PDT)
+Received: by mail-wm1-x335.google.com with SMTP id 5b1f17b1804b1-3fe5eb84d43so3864595e9.3
+        for <linux-kernel@vger.kernel.org>; Mon, 07 Aug 2023 04:31:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1691407787; x=1692012587;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=2yG847+ykANyrrRuOFOgUHlifio1mpwNPWStZ5ZsUlY=;
+        b=BaO7SpJKv1jDCZvrxi47UrPgRjKOD1RmEA5ftd1m1zmHe0gV4C+bk7yIUsI98W6BzS
+         55WzdvGGCvOtueyb9YwFEOr5ZL8MdRkIDGMM2QZb8wIGpKKDXwRaUPSslFUkVAKoD9We
+         +r5MmONLSVZOuvZu9hJy5BlT4zY4xTi5F1DYHrrkP/YeTofw4ZvHL47imnoH1u8v2dJa
+         YNETI0ySclIuryJ9WmY3b+vQr1II88Wt5+4zejrcpJ3OMfft1nATxN0y6K8d2JkekXw2
+         hc6vPMiGzrilbNrVkx7hjvPHX63Ajomg62r+WpB6amQI9Z7lZOTdXdIQq1KbM0kBOMVL
+         g82w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691407725; x=1692012525;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=qbnbOFh51mi/qrG/7hcqEm7+2Y8f9kd/IJcmNmyo2uY=;
-        b=PC5slKey/r/Y45VN7jUBzZj7yEWoYNXQFmra7hyQznAZsHHnR5umMp5Qkw8+Dj1yKv
-         RCT4HKUvvqwvr3vH75Uhry6DFhcPGJx8pjv0OKnv30ar4BKqSPIQFOZ0mg8q9vQyrg/m
-         Bv5W5Q+XrB8x4fPYg61W1Orb6rwpQeONDt57K4MNJO6b/9rAF+44AhLLf75dEZ1p8ygN
-         ghaXbcwvb5bJ394Lf8ojoF/ajQmiSkXn5ejbGedMG3jAN8xA1Ie4DyePjkGTanGDHw87
-         JB/BnFRW9pRVsUfB+5ajLIzwGEOfMtuCxrYw1WVRiOYAV9E9LQym11Lm47HdWoTioRFc
-         e+DQ==
-X-Gm-Message-State: AOJu0Yx6Ow8qJDRkZ8F7RzrAcl4elObgnPIKp6B+zViNITd0XeInYJiF
-        47etjjCWsiHgD8QdsrAxkVsDEPUWU3W4nFFUeku7Y4VX+VuRMDx1VgQvZNY9d6fmVCQUnfNNPqh
-        jVP6H/CZQ8jURvDvBpck5bxbrWO1MnhKhz5RPlj/lFjItu9udtPLBTYwYJg==
-X-Received: by 2002:a25:804e:0:b0:d0f:1f24:c620 with SMTP id a14-20020a25804e000000b00d0f1f24c620mr8058404ybn.9.1691407725113;
-        Mon, 07 Aug 2023 04:28:45 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IE5AfpQ5OxPjO08RVKQslwxqbfNLDRI8BDefn6TTJJPa35dvfssWDJ1aF3OqRfAHIA1TfHP8AYt4tOHmxY3Ofo=
-X-Received: by 2002:a25:804e:0:b0:d0f:1f24:c620 with SMTP id
- a14-20020a25804e000000b00d0f1f24c620mr8058393ybn.9.1691407724852; Mon, 07 Aug
- 2023 04:28:44 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1691407787; x=1692012587;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=2yG847+ykANyrrRuOFOgUHlifio1mpwNPWStZ5ZsUlY=;
+        b=UUjLNXQmtbLApxob9aCfwsj4phc5K6bpSf5WCsuFSDjgaykV6783i9rPeWTnOrKlNG
+         Gwr1XnUgrVvdd7y0Z/H5i4784yhQg7mgNvgdkHP0pmE5a6DCd7Q3OLdu0Elb/Zx7W0Tn
+         tdmejDXJRW0eEmNBSGjlH2pAs0S8Rj+krsb6Y50A/xklTr9sokvcArQkO1bEXRT18Zb3
+         iqAPAYbMiiH8TmpqREJlP4RznW+JNz4epKvOR7X23bCHiK1hgUs/WCHEdBP8dM4s6EDu
+         ngLie9dLdl+Ub12F0bI3R5wL+MLK9yp5wgYSmzuJS9tSDgquakl/wQ6usNJINXbUARDi
+         4zfA==
+X-Gm-Message-State: AOJu0Yw1gW/pCDy5fcZ97yJT165blLrkpV5DPsmB4ywhf1XPHvRGpdv3
+        iQ2v/ufz5IIGnlGsft97BYAxMA==
+X-Google-Smtp-Source: AGHT+IE931aONdpzSikETzjGEE2Uo9weVSJZlo9N1M9Pmrb143I2wh0bzp6eN+8C49HMcUZmE6ni2Q==
+X-Received: by 2002:a05:600c:208:b0:3fe:ad3:b066 with SMTP id 8-20020a05600c020800b003fe0ad3b066mr7051996wmi.41.1691407787574;
+        Mon, 07 Aug 2023 04:29:47 -0700 (PDT)
+Received: from [192.168.10.46] (146725694.box.freepro.com. [130.180.211.218])
+        by smtp.googlemail.com with ESMTPSA id p17-20020a7bcc91000000b003fe2696ccfcsm10402137wma.23.2023.08.07.04.29.46
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 07 Aug 2023 04:29:47 -0700 (PDT)
+Message-ID: <f47b7e17-7ec6-4c19-9db1-c1a2e1ad66b6@linaro.org>
+Date:   Mon, 7 Aug 2023 13:29:46 +0200
 MIME-Version: 1.0
-References: <20230804084858.126104-1-aleksandr.mikhalitsyn@canonical.com>
- <20230804084858.126104-4-aleksandr.mikhalitsyn@canonical.com>
- <8446e5c9-7dd7-a1e9-e262-13811ee9e640@redhat.com> <CAEivzxedfaD7cPfQ-sspJabw_P6zSJtOrbiAGYN35LGXPoSwcg@mail.gmail.com>
- <d119ef88-d827-5e8d-13e3-74ddfea61d7f@redhat.com> <CAEivzxeu9c-ZLRmz6kmvwUpofPK23cGn27XtOBRP3xSgb_JyWA@mail.gmail.com>
- <abb24879-1606-7cb4-c136-4ba1f18b1140@redhat.com>
-In-Reply-To: <abb24879-1606-7cb4-c136-4ba1f18b1140@redhat.com>
-From:   Aleksandr Mikhalitsyn <aleksandr.mikhalitsyn@canonical.com>
-Date:   Mon, 7 Aug 2023 13:28:34 +0200
-Message-ID: <CAEivzxdTvDJ9htu7sVUkWFi35gMid07waA-2u=wne-B9auLEzg@mail.gmail.com>
-Subject: Re: [PATCH v9 03/12] ceph: handle idmapped mounts in create_request_message()
-To:     Xiubo Li <xiubli@redhat.com>
-Cc:     brauner@kernel.org, stgraber@ubuntu.com,
-        linux-fsdevel@vger.kernel.org, Jeff Layton <jlayton@kernel.org>,
-        Ilya Dryomov <idryomov@gmail.com>, ceph-devel@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.11.0
+Subject: Re: [PATCH v4 04/10] thermal: core: Add
+ thermal_zone_update_trip_temp() helper routine
+Content-Language: en-US
+To:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Linux ACPI <linux-acpi@vger.kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Michal Wilczynski <michal.wilczynski@intel.com>,
+        Zhang Rui <rui.zhang@intel.com>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
+References: <13318886.uLZWGnKmhe@kreacher> <4878513.31r3eYUQgx@kreacher>
+ <1967710.PYKUYFuaPT@kreacher>
+From:   Daniel Lezcano <daniel.lezcano@linaro.org>
+In-Reply-To: <1967710.PYKUYFuaPT@kreacher>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-3.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 7, 2023 at 1:21=E2=80=AFPM Xiubo Li <xiubli@redhat.com> wrote:
->
->
-> On 8/7/23 18:34, Aleksandr Mikhalitsyn wrote:
-> > On Mon, Aug 7, 2023 at 12:28=E2=80=AFPM Xiubo Li <xiubli@redhat.com> wr=
-ote:
-> >>
-> >> On 8/7/23 14:51, Aleksandr Mikhalitsyn wrote:
-> >>> On Mon, Aug 7, 2023 at 3:25=E2=80=AFAM Xiubo Li <xiubli@redhat.com> w=
-rote:
-> >>>> On 8/4/23 16:48, Alexander Mikhalitsyn wrote:
-> >>>>> From: Christian Brauner <brauner@kernel.org>
-> >>>>>
-> >>>>> Inode operations that create a new filesystem object such as ->mkno=
-d,
-> >>>>> ->create, ->mkdir() and others don't take a {g,u}id argument explic=
-itly.
-> >>>>> Instead the caller's fs{g,u}id is used for the {g,u}id of the new
-> >>>>> filesystem object.
-> >>>>>
-> >>>>> In order to ensure that the correct {g,u}id is used map the caller'=
-s
-> >>>>> fs{g,u}id for creation requests. This doesn't require complex chang=
-es.
-> >>>>> It suffices to pass in the relevant idmapping recorded in the reque=
-st
-> >>>>> message. If this request message was triggered from an inode operat=
-ion
-> >>>>> that creates filesystem objects it will have passed down the releva=
-nt
-> >>>>> idmaping. If this is a request message that was triggered from an i=
-node
-> >>>>> operation that doens't need to take idmappings into account the ini=
-tial
-> >>>>> idmapping is passed down which is an identity mapping.
-> >>>>>
-> >>>>> This change uses a new cephfs protocol extension CEPHFS_FEATURE_HAS=
-_OWNER_UIDGID
-> >>>>> which adds two new fields (owner_{u,g}id) to the request head struc=
-ture.
-> >>>>> So, we need to ensure that MDS supports it otherwise we need to fai=
-l
-> >>>>> any IO that comes through an idmapped mount because we can't proces=
-s it
-> >>>>> in a proper way. MDS server without such an extension will use call=
-er_{u,g}id
-> >>>>> fields to set a new inode owner UID/GID which is incorrect because =
-caller_{u,g}id
-> >>>>> values are unmapped. At the same time we can't map these fields wit=
-h an
-> >>>>> idmapping as it can break UID/GID-based permission checks logic on =
-the
-> >>>>> MDS side. This problem was described with a lot of details at [1], =
-[2].
-> >>>>>
-> >>>>> [1] https://lore.kernel.org/lkml/CAEivzxfw1fHO2TFA4dx3u23ZKK6Q+EThf=
-zuibrhA3RKM=3DZOYLg@mail.gmail.com/
-> >>>>> [2] https://lore.kernel.org/all/20220104140414.155198-3-brauner@ker=
-nel.org/
-> >>>>>
-> >>>>> Link: https://github.com/ceph/ceph/pull/52575
-> >>>>> Link: https://tracker.ceph.com/issues/62217
-> >>>>> Cc: Xiubo Li <xiubli@redhat.com>
-> >>>>> Cc: Jeff Layton <jlayton@kernel.org>
-> >>>>> Cc: Ilya Dryomov <idryomov@gmail.com>
-> >>>>> Cc: ceph-devel@vger.kernel.org
-> >>>>> Co-Developed-by: Alexander Mikhalitsyn <aleksandr.mikhalitsyn@canon=
-ical.com>
-> >>>>> Signed-off-by: Christian Brauner <brauner@kernel.org>
-> >>>>> Signed-off-by: Alexander Mikhalitsyn <aleksandr.mikhalitsyn@canonic=
-al.com>
-> >>>>> ---
-> >>>>> v7:
-> >>>>>         - reworked to use two new fields for owner UID/GID (https:/=
-/github.com/ceph/ceph/pull/52575)
-> >>>>> v8:
-> >>>>>         - properly handled case when old MDS used with new kernel c=
-lient
-> >>>>> ---
-> >>>>>     fs/ceph/mds_client.c         | 47 +++++++++++++++++++++++++++++=
-++++---
-> >>>>>     fs/ceph/mds_client.h         |  5 +++-
-> >>>>>     include/linux/ceph/ceph_fs.h |  5 +++-
-> >>>>>     3 files changed, 52 insertions(+), 5 deletions(-)
-> >>>>>
-> >>>>> diff --git a/fs/ceph/mds_client.c b/fs/ceph/mds_client.c
-> >>>>> index 8829f55103da..41e4bf3811c4 100644
-> >>>>> --- a/fs/ceph/mds_client.c
-> >>>>> +++ b/fs/ceph/mds_client.c
-> >>>>> @@ -2902,6 +2902,17 @@ static void encode_mclientrequest_tail(void =
-**p, const struct ceph_mds_request *
-> >>>>>         }
-> >>>>>     }
-> >>>>>
-> >>>>> +static inline u16 mds_supported_head_version(struct ceph_mds_sessi=
-on *session)
-> >>>>> +{
-> >>>>> +     if (!test_bit(CEPHFS_FEATURE_32BITS_RETRY_FWD, &session->s_fe=
-atures))
-> >>>>> +             return 1;
-> >>>>> +
-> >>>>> +     if (!test_bit(CEPHFS_FEATURE_HAS_OWNER_UIDGID, &session->s_fe=
-atures))
-> >>>>> +             return 2;
-> >>>>> +
-> >>>>> +     return CEPH_MDS_REQUEST_HEAD_VERSION;
-> >>>>> +}
-> >>>>> +
-> >>>>>     static struct ceph_mds_request_head_legacy *
-> >>>>>     find_legacy_request_head(void *p, u64 features)
-> >>>>>     {
-> >>>>> @@ -2923,6 +2934,7 @@ static struct ceph_msg *create_request_messag=
-e(struct ceph_mds_session *session,
-> >>>>>     {
-> >>>>>         int mds =3D session->s_mds;
-> >>>>>         struct ceph_mds_client *mdsc =3D session->s_mdsc;
-> >>>>> +     struct ceph_client *cl =3D mdsc->fsc->client;
-> >>>>>         struct ceph_msg *msg;
-> >>>>>         struct ceph_mds_request_head_legacy *lhead;
-> >>>>>         const char *path1 =3D NULL;
-> >>>>> @@ -2936,7 +2948,7 @@ static struct ceph_msg *create_request_messag=
-e(struct ceph_mds_session *session,
-> >>>>>         void *p, *end;
-> >>>>>         int ret;
-> >>>>>         bool legacy =3D !(session->s_con.peer_features & CEPH_FEATU=
-RE_FS_BTIME);
-> >>>>> -     bool old_version =3D !test_bit(CEPHFS_FEATURE_32BITS_RETRY_FW=
-D, &session->s_features);
-> >>>>> +     u16 request_head_version =3D mds_supported_head_version(sessi=
-on);
-> >>>>>
-> >>>>>         ret =3D set_request_path_attr(mdsc, req->r_inode, req->r_de=
-ntry,
-> >>>>>                               req->r_parent, req->r_path1, req->r_i=
-no1.ino,
-> >>>>> @@ -2977,8 +2989,10 @@ static struct ceph_msg *create_request_messa=
-ge(struct ceph_mds_session *session,
-> >>>>>          */
-> >>>>>         if (legacy)
-> >>>>>                 len =3D sizeof(struct ceph_mds_request_head_legacy)=
-;
-> >>>>> -     else if (old_version)
-> >>>>> +     else if (request_head_version =3D=3D 1)
-> >>>>>                 len =3D sizeof(struct ceph_mds_request_head_old);
-> >>>>> +     else if (request_head_version =3D=3D 2)
-> >>>>> +             len =3D offsetofend(struct ceph_mds_request_head, ext=
-_num_fwd);
-> >>>>>         else
-> >>>>>                 len =3D sizeof(struct ceph_mds_request_head);
-> >>>>>
-> >>>>> @@ -3028,6 +3042,16 @@ static struct ceph_msg *create_request_messa=
-ge(struct ceph_mds_session *session,
-> >>>>>         lhead =3D find_legacy_request_head(msg->front.iov_base,
-> >>>>>                                          session->s_con.peer_featur=
-es);
-> >>>>>
-> >>>>> +     if ((req->r_mnt_idmap !=3D &nop_mnt_idmap) &&
-> >>>>> +         !test_bit(CEPHFS_FEATURE_HAS_OWNER_UIDGID, &session->s_fe=
-atures)) {
-> >>>>> +             pr_err_ratelimited_client(cl,
-> >>>>> +                     "idmapped mount is used and CEPHFS_FEATURE_HA=
-S_OWNER_UIDGID"
-> >>>>> +                     " is not supported by MDS. Fail request with =
--EIO.\n");
-> >>>>> +
-> >>>>> +             ret =3D -EIO;
-> >>>>> +             goto out_err;
-> >>>>> +     }
-> >>>>> +
-> >>>>>         /*
-> >>>>>          * The ceph_mds_request_head_legacy didn't contain a versio=
-n field, and
-> >>>>>          * one was added when we moved the message version from 3->=
-4.
-> >>>>> @@ -3035,17 +3059,34 @@ static struct ceph_msg *create_request_mess=
-age(struct ceph_mds_session *session,
-> >>>>>         if (legacy) {
-> >>>>>                 msg->hdr.version =3D cpu_to_le16(3);
-> >>>>>                 p =3D msg->front.iov_base + sizeof(*lhead);
-> >>>>> -     } else if (old_version) {
-> >>>>> +     } else if (request_head_version =3D=3D 1) {
-> >>>>>                 struct ceph_mds_request_head_old *ohead =3D msg->fr=
-ont.iov_base;
-> >>>>>
-> >>>>>                 msg->hdr.version =3D cpu_to_le16(4);
-> >>>>>                 ohead->version =3D cpu_to_le16(1);
-> >>>>>                 p =3D msg->front.iov_base + sizeof(*ohead);
-> >>>>> +     } else if (request_head_version =3D=3D 2) {
-> >>>>> +             struct ceph_mds_request_head *nhead =3D msg->front.io=
-v_base;
-> >>>>> +
-> >>>>> +             msg->hdr.version =3D cpu_to_le16(6);
-> >>>>> +             nhead->version =3D cpu_to_le16(2);
-> >>>>> +
-> >>>>> +             p =3D msg->front.iov_base + offsetofend(struct ceph_m=
-ds_request_head, ext_num_fwd);
-> >>>>>         } else {
-> >>>>>                 struct ceph_mds_request_head *nhead =3D msg->front.=
-iov_base;
-> >>>>> +             kuid_t owner_fsuid;
-> >>>>> +             kgid_t owner_fsgid;
-> >>>>>
-> >>>>>                 msg->hdr.version =3D cpu_to_le16(6);
-> >>>>>                 nhead->version =3D cpu_to_le16(CEPH_MDS_REQUEST_HEA=
-D_VERSION);
-> >>>>> +             nhead->struct_len =3D sizeof(struct ceph_mds_request_=
-head);
-> >>>>> +
-> >>>>> +             owner_fsuid =3D from_vfsuid(req->r_mnt_idmap, &init_u=
-ser_ns,
-> >>>>> +                                       VFSUIDT_INIT(req->r_cred->f=
-suid));
-> >>>>> +             owner_fsgid =3D from_vfsgid(req->r_mnt_idmap, &init_u=
-ser_ns,
-> >>>>> +                                       VFSGIDT_INIT(req->r_cred->f=
-sgid));
-> >>>>> +             nhead->owner_uid =3D cpu_to_le32(from_kuid(&init_user=
-_ns, owner_fsuid));
-> >>>>> +             nhead->owner_gid =3D cpu_to_le32(from_kgid(&init_user=
-_ns, owner_fsgid));
-> >>>>>                 p =3D msg->front.iov_base + sizeof(*nhead);
-> >>>>>         }
-> >>>>>
-> >>>>> diff --git a/fs/ceph/mds_client.h b/fs/ceph/mds_client.h
-> >>>>> index e3bbf3ba8ee8..8f683e8203bd 100644
-> >>>>> --- a/fs/ceph/mds_client.h
-> >>>>> +++ b/fs/ceph/mds_client.h
-> >>>>> @@ -33,8 +33,10 @@ enum ceph_feature_type {
-> >>>>>         CEPHFS_FEATURE_NOTIFY_SESSION_STATE,
-> >>>>>         CEPHFS_FEATURE_OP_GETVXATTR,
-> >>>>>         CEPHFS_FEATURE_32BITS_RETRY_FWD,
-> >>>>> +     CEPHFS_FEATURE_NEW_SNAPREALM_INFO,
-> >>>>> +     CEPHFS_FEATURE_HAS_OWNER_UIDGID,
-> >>>>>
-> >>>>> -     CEPHFS_FEATURE_MAX =3D CEPHFS_FEATURE_32BITS_RETRY_FWD,
-> >>>>> +     CEPHFS_FEATURE_MAX =3D CEPHFS_FEATURE_HAS_OWNER_UIDGID,
-> >>>>>     };
-> >>>>>
-> >>>>>     #define CEPHFS_FEATURES_CLIENT_SUPPORTED {  \
-> >>>>> @@ -49,6 +51,7 @@ enum ceph_feature_type {
-> >>>>>         CEPHFS_FEATURE_NOTIFY_SESSION_STATE,    \
-> >>>>>         CEPHFS_FEATURE_OP_GETVXATTR,            \
-> >>>>>         CEPHFS_FEATURE_32BITS_RETRY_FWD,        \
-> >>>>> +     CEPHFS_FEATURE_HAS_OWNER_UIDGID,        \
-> >>>>>     }
-> >>>>>
-> >>>>>     /*
-> >>>>> diff --git a/include/linux/ceph/ceph_fs.h b/include/linux/ceph/ceph=
-_fs.h
-> >>>>> index 5f2301ee88bc..b91699b08f26 100644
-> >>>>> --- a/include/linux/ceph/ceph_fs.h
-> >>>>> +++ b/include/linux/ceph/ceph_fs.h
-> >>>>> @@ -499,7 +499,7 @@ struct ceph_mds_request_head_legacy {
-> >>>>>         union ceph_mds_request_args args;
-> >>>>>     } __attribute__ ((packed));
-> >>>>>
-> >>>>> -#define CEPH_MDS_REQUEST_HEAD_VERSION  2
-> >>>>> +#define CEPH_MDS_REQUEST_HEAD_VERSION  3
-> >>>>>
-> >>>>>     struct ceph_mds_request_head_old {
-> >>>>>         __le16 version;                /* struct version */
-> >>>>> @@ -530,6 +530,9 @@ struct ceph_mds_request_head {
-> >>>>>
-> >>>>>         __le32 ext_num_retry;          /* new count retry attempts =
-*/
-> >>>>>         __le32 ext_num_fwd;            /* new count fwd attempts */
-> >>>>> +
-> >>>>> +     __le32 struct_len;             /* to store size of struct cep=
-h_mds_request_head */
-> >>>>> +     __le32 owner_uid, owner_gid;   /* used for OPs which create i=
-nodes */
-> >>>> Let's also initialize them to -1 for all the other requests as we do=
- in
-> >>>> your PR.
-> >>> They are always initialized already. As you can see from the code we
-> >>> don't have any extra conditions
-> >>> on filling these fields. We always fill them with an appropriate
-> >>> UID/GID. If mount is not idmapped then it's just =3D=3D caller_uid/gi=
-d,
-> >>> if mount idmapped then it's idmapped caller_uid/gid.
-> >> Then in kclient all the request will always initialized the
-> >> 'owner_{uid/gid}' with 'caller_{uid/gid}'. While in userspace libcephf=
-s
-> >> it will only set them for 'create/mknod/mkdir/symlink` instead.
-> >>
-> >> I'd prefer to make them consistent, which is what I am still focusing
-> >> on, to make them easier to read and comparing when troubles hooting.
-> > Dear Xiubo,
-> >
-> > Sure, I will do it.
-> >
-> > Couldn't you please review all the rest of the patches before I fix
-> > this particular thing?
-> > It will allow me to fix and send -v10 with all required fixes
-> > incorporated in it.
->
-> I have gone through them all and they LGTM.
+On 04/08/2023 23:05, Rafael J. Wysocki wrote:
+> From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+> 
+> Introduce a helper routine called thermal_zone_update_trip_temp() that
+> can be used to update a trip point's temperature with the help of a
+> pointer to local data associated with that trip point provided by
+> the thermal driver that created it.
+> 
+> Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+> ---
+> 
+> New patch in v4.
+> 
+> ---
+>   drivers/thermal/thermal_trip.c |   37 +++++++++++++++++++++++++++++++++++++
+>   include/linux/thermal.h        |    4 ++++
+>   2 files changed, 41 insertions(+)
+> 
+> Index: linux-pm/drivers/thermal/thermal_trip.c
+> ===================================================================
+> --- linux-pm.orig/drivers/thermal/thermal_trip.c
+> +++ linux-pm/drivers/thermal/thermal_trip.c
+> @@ -180,3 +180,40 @@ int thermal_zone_set_trip(struct thermal
+>   
+>   	return 0;
+>   }
+> +
+> +/**
+> + * thermal_zone_update_trip_temp - Update the trip point temperature.
+> + * @tz: Thermal zone.
+> + * @trip_priv: Trip tag.
+> + * @temp: New trip temperature.
+> + *
+> + * This only works for thermal zones using trip tables and its caller must
+> + * ensure that the zone lock is held before using it.
+> + *
+> + * @trip_priv is expected to be the value that has been stored by the driver
+> + * in the struct thermal_trip representing the trip point in question, so it
+> + * can be matched against the value of the priv field in that structure.
+> + *
+> + * If @trip_priv does not match any trip point in the trip table of @tz,
+> + * nothing happens.
+> + */
+> +void thermal_zone_update_trip_temp(struct thermal_zone_device *tz,
+> +				   void *trip_priv, int temperature)
+> +{
+> +	int i;
+> +
+> +	lockdep_assert_held(&tz->lock);
+> +
+> +	if (!tz->trips || !trip_priv)
+> +		return;
+> +
+> +	for (i = 0; i < tz->num_trips; i++) {
+> +		struct thermal_trip *trip = &tz->trips[i];
+> +
+> +		if (trip->priv == trip_priv) {
+> +			trip->temperature = temperature;
+> +			return;
+> +		}
+> +	}
+> +}
+> +EXPORT_SYMBOL_GPL(thermal_zone_update_trip_temp);
 
-Thanks!
+This function would imply the comparator is always trip->priv but if we 
+want another comparison eg. trip->priv->id, that won't be possible.
 
-Kind regards,
-Alex
+Actually, I think you can reuse an existing function with a simple 
+change, for_each_thermal_trip() located in thermal_core.h.
 
->
-> Thanks
->
-> - Xiubo
->
->
-> > Kind regards,
-> > Alex
-> >
-> >> Thanks
-> >>
-> >> - Xiubo
-> >>
-> >>> Kind regards,
-> >>> Alex
-> >>>
-> >>>> Thanks
-> >>>>
-> >>>> - Xiubo
-> >>>>
-> >>>>
-> >>>>
-> >>>>>     } __attribute__ ((packed));
-> >>>>>
-> >>>>>     /* cap/lease release record */
->
+The changes would be renaming it without the '__' prefix and moving it 
+in include/linux/thermal.h.
+
+Then the comparison function and the temperature change can be an ACPI 
+driver specific callback passed as parameter to for_each_thermal_zone
+
+
+
+> Index: linux-pm/include/linux/thermal.h
+> ===================================================================
+> --- linux-pm.orig/include/linux/thermal.h
+> +++ linux-pm/include/linux/thermal.h
+> @@ -286,9 +286,13 @@ int __thermal_zone_get_trip(struct therm
+>   			    struct thermal_trip *trip);
+>   int thermal_zone_get_trip(struct thermal_zone_device *tz, int trip_id,
+>   			  struct thermal_trip *trip);
+> +void thermal_zone_update_trip_temp(struct thermal_zone_device *tz,
+> +				   void *trip_priv, int temperature);
+>   
+>   int thermal_zone_set_trip(struct thermal_zone_device *tz, int trip_id,
+>   			  const struct thermal_trip *trip);
+> +void thermal_zone_update_trip_temp(struct thermal_zone_device *tz,
+> +				   void *trip_priv, int temperature);
+>   
+>   int thermal_zone_get_num_trips(struct thermal_zone_device *tz);
+>   
+> 
+> 
+> 
+
+-- 
+<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
+
+Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
+<http://twitter.com/#!/linaroorg> Twitter |
+<http://www.linaro.org/linaro-blog/> Blog
+
