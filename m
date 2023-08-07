@@ -2,403 +2,195 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F1CB9772C9F
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 19:19:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EBF5D772CA4
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 19:20:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232151AbjHGRTg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Aug 2023 13:19:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48192 "EHLO
+        id S229874AbjHGRT6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Aug 2023 13:19:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50218 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232093AbjHGRTS (ORCPT
+        with ESMTP id S232176AbjHGRTi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Aug 2023 13:19:18 -0400
-Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id D512D1FFD
-        for <linux-kernel@vger.kernel.org>; Mon,  7 Aug 2023 10:19:09 -0700 (PDT)
-Received: from [192.168.5.46] (cpe-70-95-196-11.san.res.rr.com [70.95.196.11])
-        by linux.microsoft.com (Postfix) with ESMTPSA id B45F22086958;
-        Mon,  7 Aug 2023 10:19:08 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com B45F22086958
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1691428749;
-        bh=P2zcDbRssAQel0I945bJZHWxOtzGWyvCUw0XG6yGctI=;
-        h=Date:Subject:From:To:Cc:References:In-Reply-To:From;
-        b=OX6DTaAJevnQitYVPmJi0DY0a8dZM7vTxDgIMsXLa6R1JrAkEPGf4vexxZZwPFxJV
-         qy9Kyq33ikteuoaAXHxyJqal/J3oJeE82Led+UXDpgDMAFncbU6dzjH0SBOh2rMEKe
-         gQTkWzqYbC2iEzSsv10GR76A/UGtbcqI6czABDQA=
-Message-ID: <d8bb1ec7-a4c5-43a2-9de0-9643a70b899f@linux.microsoft.com>
-Date:   Mon, 7 Aug 2023 10:19:07 -0700
+        Mon, 7 Aug 2023 13:19:38 -0400
+Received: from mail-qt1-x836.google.com (mail-qt1-x836.google.com [IPv6:2607:f8b0:4864:20::836])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1506910C1;
+        Mon,  7 Aug 2023 10:19:36 -0700 (PDT)
+Received: by mail-qt1-x836.google.com with SMTP id d75a77b69052e-40fcc91258fso31422911cf.1;
+        Mon, 07 Aug 2023 10:19:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1691428775; x=1692033575;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=8CzGcMtbdW5px13u7V86FR6wSOIpq5Rhi2EUJ/h5pT8=;
+        b=RocDf+v3UtZKHTPJSxqnYPq/0dnC+MTTfUa8drQQ+uktU3n7oYg+gIgZtfp9HsqKEB
+         4W/tYTR9iCKdxnUzfulLyp2m0K+Ja50FHbKdCIZSyt8q/CmpFK6PZcQ2AnHCvBl0T3AD
+         9RyJRVHByL8ai8YYAgq/ZPf4xi2rKQL4aTJmlCemUjLFG9vFkd5rHQhdIB4eu5JLOCgk
+         qtuwfH3Vc8lNiy9Ao4YmpF6iJBngD8vI0TLJPTqcfMkLf5VJNBo2rfDVVsnX+xLK4CVO
+         YFrQHxyeb0pSitpbbgY3A1Vc2DDxuXoElajFK9YslM4+clQh/w+4YVJpg60aXRa36JdM
+         46OA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691428775; x=1692033575;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=8CzGcMtbdW5px13u7V86FR6wSOIpq5Rhi2EUJ/h5pT8=;
+        b=A67qKsesvmtayK/2WgJPMLAj92IBcjL8B34Jx3E6MXlqGvI2ZM8n43CjjWV0o/5T+r
+         YMcBAZep4wmt4/Rpv2JRbOvun32/mmbkYfxEj8bPuUF1zMKROG2Yet0hKveBnjIqKIyJ
+         HN5vfgHiwA8yhc/0IMZ38Inligw8CQQIEHH+Tqc6BrkS44dMA3Ks9Df383qoLHjnmyQm
+         soAkqffmKyDWQtFRVj+kM0rbtcHAqXoyBQnbjxhDOUaJLu3jUArTPryuXePkG+pBbZYM
+         pUrDdkimdXwaGYWU+BQUkcqiKVzQDvAe6N63zUT1iuDFPbue3ejwm/7mqj9fyF80DT7c
+         Ozyg==
+X-Gm-Message-State: AOJu0YychoI5NFCDdcggarqHNyIO9f0Hum4cU9YnACqzzDSABwGiR+3e
+        J3UaaEnWMrXFI6KvCEnUHrPsmb0LLK9LewkfXSPYHRJ/CGM=
+X-Google-Smtp-Source: AGHT+IFRdTZogtimi+4EQ4pPu6n36JrjKkyWttVsagb3sapEXKCBVjMJI/E2P8v5u8iTm3Kn9u+DLPUHpfJqMWR90GI=
+X-Received: by 2002:ac8:7f0a:0:b0:401:e1e7:a291 with SMTP id
+ f10-20020ac87f0a000000b00401e1e7a291mr14496121qtk.22.1691428775181; Mon, 07
+ Aug 2023 10:19:35 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.14.0
-Subject: Re: pstore/ram: printk: NULL characters in pstore ramoops area
-Content-Language: en-US
-From:   Vijay Balakrishna <vijayb@linux.microsoft.com>
-To:     Petr Mladek <pmladek@suse.com>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        John Ogness <john.ogness@linutronix.de>,
-        Kees Cook <keescook@chromium.org>,
-        Colin Cross <ccross@android.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Anton Vorontsov <anton@enomsg.org>
-Cc:     linux-kernel@vger.kernel.org
-References: <f28990eb-03bc-2259-54d0-9f2254abfe62@linux.microsoft.com>
-In-Reply-To: <f28990eb-03bc-2259-54d0-9f2254abfe62@linux.microsoft.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-19.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,ENV_AND_HDR_SPF_MATCH,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,USER_IN_DEF_DKIM_WL,
-        USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no version=3.4.6
+References: <20230807-amd-pstate-cfi-v1-1-0263daa13bc3@weissschuh.net>
+In-Reply-To: <20230807-amd-pstate-cfi-v1-1-0263daa13bc3@weissschuh.net>
+From:   =?UTF-8?Q?Jannik_Gl=C3=BCckert?= <jannik.glueckert@gmail.com>
+Date:   Mon, 7 Aug 2023 19:19:24 +0200
+Message-ID: <CAFqe=z+d2pi05KkOVw_LD00KHD-aX5tKVej5F6hc2wmUC9f_Yg@mail.gmail.com>
+Subject: Re: [PATCH] cpufreq: amd-pstate: fix global sysfs attribute type
+To:     =?UTF-8?Q?Thomas_Wei=C3=9Fschuh?= <linux@weissschuh.net>
+Cc:     Huang Rui <ray.huang@amd.com>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        linux-kernel@vger.kernel.org, Bagas Sanjaya <bagasdotme@gmail.com>,
+        Linux LLVM Build Support <llvm@lists.linux.dev>,
+        Linux Power Management <linux-pm@vger.kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        stable@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I'm including my earlier email as it didn't deliver to 
-linux-kernel@vger.kernel.org due to HTML subpart.  Also sharing new 
-findings --
+Hi Thomas,
 
-Limiting the size of buffer exposed to record_print_text() and 
-prb_for_each_record() in kmsg_dump_get_buffer() also resolves this issue 
-[5] -- no NULL characters in pstore/ramoops memory.  The advantage is no 
-memory allocation (as done in previously shared changes [4]) which could 
-be problematic during kernel shutdown/reboot or during kexec reboot.
+thanks for the super quick response, your patch fixes the issue.
 
-[5]
+Best
+Jannik
 
-Author: Vijay Balakrishna <vijayb@linux.microsoft.com>
-Date:   Sat Aug 5 18:47:27 2023 +0000
-
-     printk: limit the size of buffer exposed to record_print_text() by 
-kmsg_dump_get_buffer()
-
-diff --git a/kernel/printk/printk.c b/kernel/printk/printk.c
-index b82e4c3b52f4..8feec932aa35 100644
---- a/kernel/printk/printk.c
-+++ b/kernel/printk/printk.c
-@@ -3453,9 +3453,9 @@ bool kmsg_dump_get_buffer(struct kmsg_dumper 
-*dumper, bool syslog,
-          */
-         next_seq = seq;
-
--       prb_rec_init_rd(&r, &info, buf, size);
-
-         len = 0;
-+       prb_rec_init_rd(&r, &info, buf + len, (size - len) >= 
-LOG_LINE_MAX + PREFIX_MAX ? LOG_LINE_MAX + PREFIX_MAX : size - len);
-         prb_for_each_record(seq, prb, seq, &r) {
-                 if (r.info->seq >= dumper->next_seq)
-                         break;
-@@ -3463,7 +3463,7 @@ bool kmsg_dump_get_buffer(struct kmsg_dumper 
-*dumper, bool syslog,
-                 len += record_print_text(&r, syslog, time);
-
-                 /* Adjust record to store to remaining buffer space. */
--               prb_rec_init_rd(&r, &info, buf + len, size - len);
-+               prb_rec_init_rd(&r, &info, buf + len, (size - len) >= 
-LOG_LINE_MAX + PREFIX_MAX ? LOG_LINE_MAX + PREFIX_MAX : size - len);
-         }
-
-         dumper->next_seq = next_seq;
-
-On 8/3/23 16:34, Vijay Balakrishna wrote:
+Am Mo., 7. Aug. 2023 um 08:37 Uhr schrieb Thomas Wei=C3=9Fschuh
+<linux@weissschuh.net>:
 >
-> Hello,
+> In commit 3666062b87ec ("cpufreq: amd-pstate: move to use bus_get_dev_roo=
+t()")
+> the "amd_pstate" attributes where moved from a dedicated kobject to the
+> cpu root kobject.
+> While the dedicated kobject expects to contain kobj_attributes the root
+> kobject needs device_attributes.
 >
-> We are noticing NULL characters in ramoops/pstore memory after a warm 
-> or a kexec reboot [1] in our 5.10 ARM64 product kernel after moving 
-> from 5.4 kernel.  I ruled out fs/pstore/* as the source from where 
-> NULL characters originate by adding debug code [2] and confirming from 
-> collected output [3].  Then isolated further to printk log/ring buffer 
-> area, the NULL characters were already present in buffer in 
-> kmsg_dump_get_buffer() when kmsg log lines are read.  After looking at 
-> printk merges in mainline kernel, I cherry-picked following which 
-> looked related to our 5.10 kernel and still see NULL characters.
+> As the changed arguments are not used by the callbacks it works most of
+> the time.
+> However CFI will detect this issue:
 >
->     4260e0e5510158d704898603331e5365ebe957de printk: consolidate
->     kmsg_dump_get_buffer/syslog_print_all code
->     726b5097701a8d46f5354be780e1a11fc4ca1187 printk: refactor
->     kmsg_dump_get_buffer()
->     bb07b16c44b2c6ddbafa44bb06454719002e828e printk: limit second loop
->     of syslog_print_all
+> [ 4947.849350] CFI failure at dev_attr_show+0x24/0x60 (target: show_statu=
+s+0x0/0x70; expected type: 0x8651b1de)
+> ...
+> [ 4947.849409] Call Trace:
+> [ 4947.849410]  <TASK>
+> [ 4947.849411]  ? __warn+0xcf/0x1c0
+> [ 4947.849414]  ? dev_attr_show+0x24/0x60
+> [ 4947.849415]  ? report_cfi_failure+0x4e/0x60
+> [ 4947.849417]  ? handle_cfi_failure+0x14c/0x1d0
+> [ 4947.849419]  ? __cfi_show_status+0x10/0x10
+> [ 4947.849420]  ? handle_bug+0x4f/0x90
+> [ 4947.849421]  ? exc_invalid_op+0x1a/0x60
+> [ 4947.849422]  ? asm_exc_invalid_op+0x1a/0x20
+> [ 4947.849424]  ? __cfi_show_status+0x10/0x10
+> [ 4947.849425]  ? dev_attr_show+0x24/0x60
+> [ 4947.849426]  sysfs_kf_seq_show+0xa6/0x110
+> [ 4947.849433]  seq_read_iter+0x16c/0x4b0
+> [ 4947.849436]  vfs_read+0x272/0x2d0
+> [ 4947.849438]  ksys_read+0x72/0xe0
+> [ 4947.849439]  do_syscall_64+0x76/0xb0
+> [ 4947.849440]  ? do_user_addr_fault+0x252/0x650
+> [ 4947.849442]  ? exc_page_fault+0x7a/0x1b0
+> [ 4947.849443]  entry_SYSCALL_64_after_hwframe+0x72/0xdc
 >
-> Looking at syslog_print_all() I notice it uses a local buffer unlike 
-> kmsg_dump_get_buffer() which manipulates buffer in-place to add syslog 
-> and timestamp prefix data.  I made changes [4] to 
-> kmsg_dump_get_buffer() to use a local buffer similar to 
-> syslog_print_all() after which I don't see NULL characters in ramoops 
-> area.  I couldn't spot any suspicious code in record_print_text() 
-> where prefix data added in-place.  I'm reaching out to both pstore/ram 
-> and printk folks for comments. I can investigate/debug further with 
-> assistance and input from you.
->
+> Reported-by: Jannik Gl=C3=BCckert <jannik.glueckert@gmail.com>
+> Closes: https://bugzilla.kernel.org/show_bug.cgi?id=3D217765
+> Link: https://lore.kernel.org/lkml/c7f1bf9b-b183-bf6e-1cbb-d43f72494083@g=
+mail.com/
+> Fixes: 3666062b87ec ("cpufreq: amd-pstate: move to use bus_get_dev_root()=
+")
+> Cc: stable@vger.kernel.org
+> Signed-off-by: Thomas Wei=C3=9Fschuh <linux@weissschuh.net>
+> ---
 > Note:
 >
-> - NULL characters show up starting at same offset 0x00010006, but #of 
-> NULL characters varies between reboots
+> This was not tested with CFI as I don't have the toolchain available.
+> Jannik, could you give it a spin?
+> ---
+>  drivers/cpufreq/amd-pstate.c | 10 +++++-----
+>  1 file changed, 5 insertions(+), 5 deletions(-)
 >
-> - I have removed pstore compression related kernel configs and using 
-> dyndbg config for investigation
+> diff --git a/drivers/cpufreq/amd-pstate.c b/drivers/cpufreq/amd-pstate.c
+> index 81fba0dcbee9..9a1e194d5cf8 100644
+> --- a/drivers/cpufreq/amd-pstate.c
+> +++ b/drivers/cpufreq/amd-pstate.c
+> @@ -1012,8 +1012,8 @@ static int amd_pstate_update_status(const char *buf=
+, size_t size)
+>         return 0;
+>  }
 >
-> - NULL characters are replacing some actual data
+> -static ssize_t show_status(struct kobject *kobj,
+> -                          struct kobj_attribute *attr, char *buf)
+> +static ssize_t status_show(struct device *dev,
+> +                          struct device_attribute *attr, char *buf)
+>  {
+>         ssize_t ret;
 >
-> Thanks for your time.
+> @@ -1024,7 +1024,7 @@ static ssize_t show_status(struct kobject *kobj,
+>         return ret;
+>  }
 >
-> Vijay
+> -static ssize_t store_status(struct kobject *a, struct kobj_attribute *b,
+> +static ssize_t status_store(struct device *a, struct device_attribute *b=
+,
+>                             const char *buf, size_t count)
+>  {
+>         char *p =3D memchr(buf, '\n', count);
+> @@ -1043,7 +1043,7 @@ cpufreq_freq_attr_ro(amd_pstate_lowest_nonlinear_fr=
+eq);
+>  cpufreq_freq_attr_ro(amd_pstate_highest_perf);
+>  cpufreq_freq_attr_rw(energy_performance_preference);
+>  cpufreq_freq_attr_ro(energy_performance_available_preferences);
+> -define_one_global_rw(status);
+> +static DEVICE_ATTR_RW(status);
 >
-> ++++++++++++++++++++++++++++++++++++++++++
+>  static struct freq_attr *amd_pstate_attr[] =3D {
+>         &amd_pstate_max_freq,
+> @@ -1062,7 +1062,7 @@ static struct freq_attr *amd_pstate_epp_attr[] =3D =
+{
+>  };
 >
-> [1]
+>  static struct attribute *pstate_global_attributes[] =3D {
+> -       &status.attr,
+> +       &dev_attr_status.attr,
+>         NULL
+>  };
 >
-> root@localhost:~# od -c /var/lib/systemd/pstore/dmesg-ramoops-0
-> 0000000    S   h   u   t   d   o   w   n   #   1       P   a r   t   1
-> 0000020   \n   <   6   >   [                   0   . 0   0   0   0   0
-> ..
-> 0177520    .  \n   <   5   >   [       2   1   8   7 .   1   1   1   7
-> 0177540    1   8   ]       a   u   d   i   t   :       t   y p   e   =
-> 0177560    1   1   3   1       a   u   d   i   t   (   1   6 9   0   9
-> 0177600    1   1   0   4   4   .   5   6   0   :   1   7   3 )   :
-> 0177620    p   i   d   =   1       u   i   d   =   0       a u   i   d
-> 0177640    =   4   2   9   4   9   6   7   2   9   5       s e   s   =
-> 0177660    4   2   9   4   9   6   7   2   9   5       s   u b   j   =
-> 0177700    s   y   s   t   e   m   _   u   :   s   y   s   t e   m   _
-> 0177720    r   :   i   n   i   t   _   t       m   s   g   = '   u   n
-> 0177740    i   t   =   x   x   x   x   x   x   x   x   -   e n   m   d
-> 0177760    -   o   w   n   e   r   s   h   i   p       c   o m   m   =
-> 0200000    "   s   y   s   t   e  \0  \0  \0  \0  \0  \0  \0 \0  \0  \0
-> 0200020   \0  \0  \0  \0  \0  \0  \0  \0  \0  \0  \0  \0  \0 \0  \0  \0
-> *
-> 0200120   \0  \0  \n   <   3   0   >   [       2   1 8   7   .   1   1
-> 0200140    1   9   0   5   ]       s   y   s   t   e   m   d [   1   ]
-> ..
-> root@localhost:~#
 >
-> root@localhost:~# hexdump -C /var/lib/systemd/pstore/dmesg-ramoops-0
-> 00000000  53 68 75 74 64 6f 77 6e  23 31 20 50 61 72 74 31 |Shutdown#1 
-> Part1|
-> 00000010  0a 3c 36 3e 5b 20 20 20  20 30 2e 30 30 30 30 30 |.<6>[    
-> 0.00000|
-> ..
-> 0000ff50  2e 0a 3c 35 3e 5b 20 32  31 38 37 2e 31 31 31 37 |..<5>[ 
-> 2187.1117|
-> 0000ff60  31 38 5d 20 61 75 64 69  74 3a 20 74 79 70 65 3d |18] audit: 
-> type=|
-> 0000ff70  31 31 33 31 20 61 75 64  69 74 28 31 36 39 30 39 |1131 
-> audit(16909|
-> 0000ff80  31 31 30 34 34 2e 35 36  30 3a 31 37 33 29 3a 20 
-> |11044.560:173): |
-> 0000ff90  70 69 64 3d 31 20 75 69  64 3d 30 20 61 75 69 64 |pid=1 
-> uid=0 auid|
-> 0000ffa0  3d 34 32 39 34 39 36 37  32 39 35 20 73 65 73 3d 
-> |=4294967295 ses=|
-> 0000ffb0  34 32 39 34 39 36 37 32  39 35 20 73 75 62 6a 3d |4294967295 
-> subj=|
-> 0000ffc0  73 79 73 74 65 6d 5f 75  3a 73 79 73 74 65 6d 5f 
-> |system_u:system_|
-> 0000ffd0  72 3a 69 6e 69 74 5f 74  20 6d 73 67 3d 27 75 6e |r:init_t 
-> msg='un|
-> 0000ffe0  69 74 3d xx xx xx xx xx  xx xx xx 2d 65 6e 6d 64 
-> |it=xxxxxxxx-enmd|
-> 0000fff0  2d 6f 77 6e 65 72 73 68  69 70 20 63 6f 6d 6d 3d |-ownership 
-> comm=|
-> 00010000  22 73 79 73 74 65 00 00  00 00 00 00 00 00 00 00 
-> |"syste..........|
-> 00010010  00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00 
-> |................|
-> *
-> 00010050  00 00 0a 3c 33 30 3e 5b  20 32 31 38 37 2e 31 31 |...<30>[ 
-> 2187.11|
-> ..
-> root@localhost:~#
+> ---
+> base-commit: 52a93d39b17dc7eb98b6aa3edb93943248e03b2f
+> change-id: 20230807-amd-pstate-cfi-8302498c54f5
 >
-> ++++++++++++++++++++++++++++++++++++++++++
->
-> [2]
->
->     ramoops: pstore: detect NULL char
->
-> diff --git a/fs/pstore/ram.c b/fs/pstore/ram.c
-> index ade66dbe5f39..1825972151b2 100644
-> --- a/fs/pstore/ram.c
-> +++ b/fs/pstore/ram.c
-> @@ -383,6 +383,10 @@ static int notrace ramoops_pstore_write(struct 
-> pstore_record *record)
->      size = record->size;
->      if (size + hlen > prz->buffer_size)
->          size = prz->buffer_size - hlen;
-> +    if (null_char(record->buf, size))
-> +        pr_crit("%s: A NULL char in record buf, size %zu\n", 
-> __func__, size);
-> +    else
-> +        pr_crit("%s: No NULL char in record buf, size %zu\n", 
-> __func__, size);
->      persistent_ram_write(prz, record->buf, size);
->
->      cxt->dump_write_cnt = (cxt->dump_write_cnt + 1) % cxt->max_dump_cnt;
-> diff --git a/fs/pstore/ram_core.c b/fs/pstore/ram_core.c
-> index a7630c2fea18..fafbccbfceea 100644
-> --- a/fs/pstore/ram_core.c
-> +++ b/fs/pstore/ram_core.c
-> @@ -272,10 +272,22 @@ ssize_t persistent_ram_ecc_string(struct 
-> persistent_ram_zone *prz,
->      return ret;
->  }
->
-> +bool null_char(const void *s, size_t count)
-> +{
-> +    char *p = (char *)s;
-> +
-> +    while (count--) {
-> +        if (*p++ == '\0')
-> +            return true;
-> +    }
-> +    return false;
-> +}
-> +
->  static void notrace persistent_ram_update(struct persistent_ram_zone 
-> *prz,
->      const void *s, unsigned int start, unsigned int count)
->  {
->      struct persistent_ram_buffer *buffer = prz->buffer;
-> +
->      memcpy_toio(buffer->data + start, s, count);
->      persistent_ram_update_ecc(prz, start, count);
->  }
-> @@ -309,6 +321,11 @@ void persistent_ram_save_old(struct 
-> persistent_ram_zone *prz)
->      }
->
->      prz->old_log_size = size;
-> +
-> +    if (null_char(&buffer->data[start], size - start) ||
-> +        null_char(&buffer->data[0], start))
-> +        pr_debug("%s: A NULL char in prz buffer\n", __func__);
-> +
->      memcpy_fromio(prz->old_log, &buffer->data[start], size - start);
->      memcpy_fromio(prz->old_log + size - start, &buffer->data[0], start);
->  }
-> diff --git a/fs/pstore/ram_internal.h b/fs/pstore/ram_internal.h
-> index 5f694698351f..d0fd15a6f7af 100644
-> --- a/fs/pstore/ram_internal.h
-> +++ b/fs/pstore/ram_internal.h
-> @@ -96,3 +96,4 @@ void *persistent_ram_old(struct persistent_ram_zone 
-> *prz);
->  void persistent_ram_free_old(struct persistent_ram_zone *prz);
->  ssize_t persistent_ram_ecc_string(struct persistent_ram_zone *prz,
->      char *str, size_t len);
-> +bool null_char(const void *s, size_t count);
->
-> ++++++++++++++++++++++++++++++++++++++++++
->
-> [3]
->
-> root@localhost:~# reboot
-> [ 2188.073362] systemd-shutdown[1]: Could not detach loopback 
-> /dev/loop1: Device or resource busy
-> [ 2188.082272] systemd-shutdown[1]: Could not detach loopback 
-> /dev/loop0: Device or resource busy
-> [ 2188.091873] watchdog: watchdog0: watchdog did not stop!
-> [ 2188.099227] systemd-shutdown[1]: Failed to finalize loop devices, 
-> DM devices, ignoring.
-> [ 2188.306671] reboot: Restarting system
-> [ 2188.316932] ramoops: ramoops_pstore_write: A NULL char in record 
-> buf, size 88190
->
-> (post reboot)
->
-> root@localhost:~# dmesg | grep -e ramoops -e pstore
-> ..
-> [    0.331540] ramoops 22b4000000.ramoops: using Device Tree
-> [    0.331560] ramoops: found existing buffer, size 88214, start 88214
-> [    0.339972] ramoops: persistent_ram_save_old: A NULL char in prz buffer
-> [    0.340775] ramoops: attached ramoops:dmesg(0/7) 
-> 0x80000@0x22b4000000: 12 header, 524276 data, 0 ecc (0/0)
-> [    0.340789] ramoops: found existing empty buffer
-> [    0.340792] ramoops: attached ramoops:dmesg(1/7) 
-> 0x80000@0x22b4080000: 12 header, 524276 data, 0 ecc (0/0)
-> ..
-> [    0.340880] ramoops: found existing empty buffer
-> [    0.340882] ramoops: attached ramoops:dmesg(7/7) 
-> 0x80000@0x22b4380000: 12 header, 524276 data, 0 ecc (0/0)
-> [    0.341012] pstore: Registered ramoops as persistent store backend
-> [    0.341014] ramoops: using 0x400000@0x22b4000000, ecc: 0
-> [    1.164640]     dyndbg=file fs/pstore/* +p
-> [    1.488770] ramoops: persistent_ram_save_old: A NULL char in prz buffer
-> root@localhost:~#
->
-> root@localhost:~# ls -l /var/lib/systemd/pstore/dmesg-ramoops-0
-> -rw-------    1 root     root         88190 Aug  1 17:30 
-> /var/lib/systemd/pstore/dmesg-ramoops-0
-> root@localhost:~#
->
-> (copy and paste of the line with NULL characters from dmesg-ramoops-o 
-> file from a vi session)
-> <5>[ 2187.111718] audit: type=1131 audit(1690911044.560:173): pid=1 
-> uid=0 auid=4294967295 ses=4294967295 subj=system_u:system_r:init_t 
-> msg='unit=xxxxxxxx-enmd-ownership 
-> comm="syste^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@
->
-> ++++++++++++++++++++++++++++++++++++++++++
->
-> [4]
->
-> Author: Vijay Balakrishna <vijayb@linux.microsoft.com>
-> Date:   Thu Aug 3 17:23:32 2023 +0000
->
->     printk: use local buffer in kmsg_dump_get_buffer()
->
-> diff --git a/kernel/printk/printk.c b/kernel/printk/printk.c
-> index b82e4c3b52f4..19080cb6c557 100644
-> --- a/kernel/printk/printk.c
-> +++ b/kernel/printk/printk.c
-> @@ -3420,6 +3420,11 @@ bool kmsg_dump_get_buffer(struct kmsg_dumper 
-> *dumper, bool syslog,
->         size_t len = 0;
->         bool ret = false;
->         bool time = printk_time;
-> +       char *text;
-> +
-> +       text = kmalloc(LOG_LINE_MAX + PREFIX_MAX, GFP_KERNEL);
-> +       if (!text)
-> +               return ret;
->
->         if (!dumper->active || !buf || !size)
->                 goto out;
-> @@ -3453,17 +3458,18 @@ bool kmsg_dump_get_buffer(struct kmsg_dumper 
-> *dumper, bool syslog,
->          */
->         next_seq = seq;
->
-> -       prb_rec_init_rd(&r, &info, buf, size);
-> +       prb_rec_init_rd(&r, &info, text, LOG_LINE_MAX + PREFIX_MAX);
->
->         len = 0;
->         prb_for_each_record(seq, prb, seq, &r) {
-> +               size_t textlen;
-> +
->                 if (r.info->seq >= dumper->next_seq)
->                         break;
->
-> -               len += record_print_text(&r, syslog, time);
-> -
-> -               /* Adjust record to store to remaining buffer space. */
-> -               prb_rec_init_rd(&r, &info, buf + len, size - len);
-> +               textlen = record_print_text(&r, syslog, time);
-> +               memcpy(buf + len, text, textlen);
-> +               len += textlen;
->         }
->
->         dumper->next_seq = next_seq;
-> @@ -3472,6 +3478,7 @@ bool kmsg_dump_get_buffer(struct kmsg_dumper 
-> *dumper, bool syslog,
->  out:
->         if (len_out)
->                 *len_out = len;
-> +       kfree(text);
->         return ret;
->  }
->  EXPORT_SYMBOL_GPL(kmsg_dump_get_buffer);
+> Best regards,
+> --
+> Thomas Wei=C3=9Fschuh <linux@weissschuh.net>
 >
