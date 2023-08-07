@@ -2,121 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E6B9F77330D
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 00:46:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6EF48773317
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 00:50:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230074AbjHGWqT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Aug 2023 18:46:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35936 "EHLO
+        id S230300AbjHGWu0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Aug 2023 18:50:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36944 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229544AbjHGWqR (ORCPT
+        with ESMTP id S229533AbjHGWuY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Aug 2023 18:46:17 -0400
-Received: from pandora.armlinux.org.uk (unknown [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7276CFE
-        for <linux-kernel@vger.kernel.org>; Mon,  7 Aug 2023 15:46:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=DMAmkq+Z8+wqHN2hP7Ew/2ByzL7++kUWTu18KZLXSgw=; b=NVMn7DddBbFdq1vo2tm/Nu9M3o
-        6vfm9FQpSkkV31ClPcghujps2gR8aT0/hfPlZiGXbGQK2V7NXQQee+90QD17TzZuaSBxwTKXNcEaS
-        xI+yJjIXwr/xatIfPSQzk/8NVotjWJ9tsu4HBlIqKPpn24JUdOVW9rTgfs2wHznIgabHkjN4Esx47
-        jgYAEv6K/H3z74YzzunIRpixbMp9GwCQ5LDSmE+AT2N+gCviaLt3PuJEA5nb1G1TbDzBv+tEHJ4hc
-        XuhfKCx0aTZ6F4CHZbx9t08mcjromf0foM4lFo+NweciAHCv6Y5uAKIDgJBen0GlyRiIF3LYTK3+N
-        6ESlSrdw==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:58376)
-        by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.96)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1qT8zG-0005r6-2d;
-        Mon, 07 Aug 2023 23:46:06 +0100
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1qT8zF-0007RD-MZ; Mon, 07 Aug 2023 23:46:05 +0100
-Date:   Mon, 7 Aug 2023 23:46:05 +0100
-From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     Marek Szyprowski <m.szyprowski@samsung.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Mike Rapoport <rppt@kernel.org>
-Subject: Re: [PATCH] arm: dma-mapping: fix potential endless loop in
- __dma_page_dev_to_cpu()
-Message-ID: <ZNF0LUrtoCp+aS5U@shell.armlinux.org.uk>
-References: <CGME20230807152704eucas1p1bbe08af4559a7d2984198fe8ba487a2e@eucas1p1.samsung.com>
- <20230807152657.1692414-1-m.szyprowski@samsung.com>
- <ZNFstXmztIriaKOX@casper.infradead.org>
+        Mon, 7 Aug 2023 18:50:24 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56D81FE;
+        Mon,  7 Aug 2023 15:50:23 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id E12AC622E5;
+        Mon,  7 Aug 2023 22:50:22 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 4C4E5C433CA;
+        Mon,  7 Aug 2023 22:50:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1691448622;
+        bh=t5NB6uwW31i0MvsVToZP8xQ3VwikVrgrUEwsxvH6Ops=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=puW1cLVOBtyu5bqwud5VjqvQN7qU+JKicPZtff6IaQUoYt/f6ILsEqUDU4BD63wYC
+         qPq3Fu1ZNv8it0aHvSi4PMwtuxcl5LAZ1rGNHTg1if7K82Y3oATXsy70+Oz/uk4WiZ
+         uUUBqbLKlKhPreKCh/xPjymigJLPlL7dZxb6pE1+Za9VajrJTaaajgw07Sf8y83Mwb
+         N5cz1F3pHvtfdIy4DOzExu1fhGFCylTtxhr2c0wrrY+W8b87D+xQzU2+WhDoFiopyV
+         jetT0Tt1FuyVGxm05urjSyOuxF8cT7K7Jjd+BVtLVe92KQ2dIj48cMOlpEaVqipctr
+         nAHjJJxfmW6xA==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 2C6A4E33096;
+        Mon,  7 Aug 2023 22:50:22 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZNFstXmztIriaKOX@casper.infradead.org>
-Sender: Russell King (Oracle) <linux@armlinux.org.uk>
-X-Spam-Status: No, score=-1.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,RDNS_NONE,
-        SPF_HELO_NONE,SPF_NONE autolearn=no autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH] Bluetooth: Fix potential use-after-free when clear keys
+From:   patchwork-bot+bluetooth@kernel.org
+Message-Id: <169144862217.1999.6884974256778823590.git-patchwork-notify@kernel.org>
+Date:   Mon, 07 Aug 2023 22:50:22 +0000
+References: <20230807110741.85859-1-lm0963hack@gmail.com>
+In-Reply-To: <20230807110741.85859-1-lm0963hack@gmail.com>
+To:     Min Li <lm0963hack@gmail.com>
+Cc:     luiz.dentz@gmail.com, marcel@holtmann.org, johan.hedberg@gmail.com,
+        linux-bluetooth@vger.kernel.org, linux-kernel@vger.kernel.org
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 07, 2023 at 11:14:13PM +0100, Matthew Wilcox wrote:
-> On Mon, Aug 07, 2023 at 05:26:57PM +0200, Marek Szyprowski wrote:
-> > diff --git a/arch/arm/mm/dma-mapping.c b/arch/arm/mm/dma-mapping.c
-> > index 70cb7e63a9a5..02250106e5ed 100644
-> > --- a/arch/arm/mm/dma-mapping.c
-> > +++ b/arch/arm/mm/dma-mapping.c
-> > @@ -718,7 +718,7 @@ static void __dma_page_dev_to_cpu(struct page *page, unsigned long off,
-> >  			folio = folio_next(folio);
-> >  		}
-> >  
-> > -		while (left >= (ssize_t)folio_size(folio)) {
-> > +		while (left && left >= (ssize_t)folio_size(folio)) {
-> >  			set_bit(PG_dcache_clean, &folio->flags);
-> >  			left -= folio_size(folio);
-> >  			folio = folio_next(folio);
+Hello:
+
+This patch was applied to bluetooth/bluetooth-next.git (master)
+by Luiz Augusto von Dentz <luiz.von.dentz@intel.com>:
+
+On Mon,  7 Aug 2023 19:07:41 +0800 you wrote:
+> Similar to commit c5d2b6fa26b5 ("Bluetooth: Fix use-after-free in
+> hci_remove_ltk/hci_remove_irk"). We can not access k after kfree_rcu()
+> call.
 > 
-> I've been thinking about this and I think this is the right fix for the
-> wrong reason.  I don't understand how it can produce the failure you
-> saw, but we shouldn't be calling folio_next() if left is zero, let alone
-> calling folio_size() on it.  So I'd rather see this fix:
+> Fixes: d7d41682efc2 ("Bluetooth: Fix Suspicious RCU usage warnings")
+> Signed-off-by: Min Li <lm0963hack@gmail.com>
 > 
-> 		while (left >= (ssize_t)folio_size(folio)) {
-> 			set_bit(PG_dcache_clean, &folio->flags);
-> 			left -= folio_size(folio);
-> +			if (!left)
-> +				break;
+> [...]
 
-Given that set_bit() involves atomics, wouldn't it be better if this
-had been written as:
+Here is the summary with links:
+  - Bluetooth: Fix potential use-after-free when clear keys
+    https://git.kernel.org/bluetooth/bluetooth-next/c/2e4504460992
 
-		while (left >= folio_size(folio)) {
-			left -= folio_size(folio);
-			set_bit(PG_dcache_clean, &folio->flags);
-			if (!left)
-				break;
-> 			folio = folio_next(folio);
-> 		}
-
-That likely means that folio_size() will only be evaluated once per
-loop rather than twice. I may be wrong though, I didn't check the
-generated code.
-
-Also, I'm wondering what that ssize_t cast is doing there - "left"
-is a size_t, which is unsigned. folio_size() returns a size_t, so
-is also unsigned. Why convert folio_size() to a signed number to
-then be compared with an unsigned number?
-
-Or did "left" get converted to ssize_t along with the folio
-conversion?
-
-Even if it did, how could "left" be negative (except through casting
-a large positive number as "size" that in 2's complement would be
-negative after casting to "left") ?
-
+You are awesome, thank you!
 -- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
