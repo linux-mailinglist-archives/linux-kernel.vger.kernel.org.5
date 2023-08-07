@@ -2,169 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3197E771913
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 06:43:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4DCD0771917
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 06:45:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229967AbjHGEnU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Aug 2023 00:43:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38172 "EHLO
+        id S230019AbjHGEo4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Aug 2023 00:44:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38496 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229513AbjHGEnS (ORCPT
+        with ESMTP id S229747AbjHGEox (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Aug 2023 00:43:18 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 8954810FA
-        for <linux-kernel@vger.kernel.org>; Sun,  6 Aug 2023 21:43:16 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id EA2031FB;
-        Sun,  6 Aug 2023 21:43:58 -0700 (PDT)
-Received: from [10.162.41.6] (a077893.blr.arm.com [10.162.41.6])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 114EE3F59C;
-        Sun,  6 Aug 2023 21:43:11 -0700 (PDT)
-Message-ID: <f6a5aaf2-4669-cbc2-1358-e8cfb341b9c5@arm.com>
-Date:   Mon, 7 Aug 2023 10:13:08 +0530
+        Mon, 7 Aug 2023 00:44:53 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A2B610FE
+        for <linux-kernel@vger.kernel.org>; Sun,  6 Aug 2023 21:44:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1691383450;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=E+2EbnFZV7yJtZskjh+cWG4NxmXWzvfmJSRPX0ne/hU=;
+        b=Gok80n6k1JA4onMrnAOha7hVQmzE3KGkcH1CF9kCML69KMTZHbOMvtogNX9wN952GTSls2
+        oGCWho1F2/eKtmUMuyBK9SiRTdAXXZBCgCmzaN8vCFrAXCyawxfqtTKJf53Xyc9brZ1nu2
+        wmoBdb6/15s6F4QzEn45WXClSyS7CMg=
+Received: from mail-pf1-f199.google.com (mail-pf1-f199.google.com
+ [209.85.210.199]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-28-PZmsn8s2NV-ZPAaCJvNfVA-1; Mon, 07 Aug 2023 00:44:08 -0400
+X-MC-Unique: PZmsn8s2NV-ZPAaCJvNfVA-1
+Received: by mail-pf1-f199.google.com with SMTP id d2e1a72fcca58-68701df1ac7so2597577b3a.1
+        for <linux-kernel@vger.kernel.org>; Sun, 06 Aug 2023 21:44:08 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691383447; x=1691988247;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=E+2EbnFZV7yJtZskjh+cWG4NxmXWzvfmJSRPX0ne/hU=;
+        b=OxOfM/HD8gOUF6inKj0sMSb6XBgeauRE/mFn2CVJGSN3hnmPDdOYO+echmEduq0QoT
+         VEWyz2RP2TsiAwCuNvS8WkALm2FEPeQ8sUONtZmChz6orqmJn1hurudGHGBD9eta+ejx
+         LN3HPETrvbd+xfEjUdQDkoiuqaGps3KOytspBN9GQu0CpRIC+La6dCU4AAypKgBGKWSD
+         u/iuzgXJ4eXjoTfSLpwhHzbtOsnXGzNuIzo43BPFtrZFIsY25Qbl5hV9x5RVCtzw/Fx3
+         tXQ3f/u5/qmPswgf2Qe/E+mMEJ4h/EpYkz7DiAXpbSi0XbOV1ycT+eFFDpYJzL3RdqXL
+         riTQ==
+X-Gm-Message-State: AOJu0Yy180/QR3B0uiyL75NVQpXjiL72824uYNakiYABAN/sMRk5J+Vn
+        puksSn2QEGDlqdbBe+BQyVlfc3af+ANzUUVDnHAXrfCoqCtBAUWOU2VEjQ+WGCRRB4OqnM7HMKg
+        qZzsslWt3jdU5JonvUS+Imjsr
+X-Received: by 2002:a05:6a20:1006:b0:125:f3d8:e65b with SMTP id gs6-20020a056a20100600b00125f3d8e65bmr7292036pzc.18.1691383447541;
+        Sun, 06 Aug 2023 21:44:07 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IFDShi2vAdRaNGp+RB4NdbaHvukAeLo4WlRfe0u382qDdlhARlZSEovvdd8LQZl2heUKcBudQ==
+X-Received: by 2002:a05:6a20:1006:b0:125:f3d8:e65b with SMTP id gs6-20020a056a20100600b00125f3d8e65bmr7292025pzc.18.1691383447235;
+        Sun, 06 Aug 2023 21:44:07 -0700 (PDT)
+Received: from fedora19.localdomain ([2401:d002:2d05:b10a:c9ac:2dd7:6463:bb84])
+        by smtp.gmail.com with ESMTPSA id iz7-20020a170902ef8700b001b895a17429sm5697860plb.280.2023.08.06.21.44.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 06 Aug 2023 21:44:06 -0700 (PDT)
+Date:   Mon, 7 Aug 2023 14:44:00 +1000
+From:   Ian Wienand <iwienand@redhat.com>
+To:     Minchan Kim <minchan@kernel.org>
+Cc:     Petr Vorel <pvorel@suse.cz>, ltp@lists.linux.it,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, Nitin Gupta <ngupta@vflare.org>,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Jens Axboe <axboe@kernel.dk>,
+        OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>,
+        Martin Doucha <mdoucha@suse.cz>,
+        Yang Xu <xuyang2018.jy@fujitsu.com>
+Subject: Re: [PATCH 0/1] Possible bug in zram on ppc64le on vfat
+Message-ID: <ZNB2kORYiKdl3vSq@fedora19.localdomain>
+References: <20221107191136.18048-1-pvorel@suse.cz>
+ <Y2l3vJb1y2Jynf50@google.com>
+ <ZMycl7xKyJoQNpcu@fedora19.localdomain>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH V3 4/4] coresight: trbe: Enable ACPI based TRBE devices
-Content-Language: en-US
-To:     linux-arm-kernel@lists.infradead.org, suzuki.poulose@arm.com
-Cc:     Sami Mujawar <sami.mujawar@arm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Mike Leach <mike.leach@linaro.org>,
-        Leo Yan <leo.yan@linaro.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        James Clark <james.clark@arm.com>, coresight@lists.linaro.org,
-        linux-kernel@vger.kernel.org
-References: <20230803055652.1322801-1-anshuman.khandual@arm.com>
- <20230803055652.1322801-5-anshuman.khandual@arm.com>
-From:   Anshuman Khandual <anshuman.khandual@arm.com>
-In-Reply-To: <20230803055652.1322801-5-anshuman.khandual@arm.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-8.3 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZMycl7xKyJoQNpcu@fedora19.localdomain>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+After thinking it through, I think I might have a explanation...
 
-
-On 8/3/23 11:26, Anshuman Khandual wrote:
-> This detects and enables ACPI based TRBE devices via the dummy platform
-> device created earlier for this purpose.
+On Fri, Aug 04, 2023 at 04:37:11PM +1000, Ian Wienand wrote:
+> To recap; this test [1] creates a zram device, makes a filesystem on
+> it, and fills it with sequential 1k writes from /dev/zero via dd.  The
+> problem is that it sees the mem_used_total for the zram device as zero
+> in the sysfs stats after the writes; this causes a divide by zero
+> error in the script calculation.
 > 
-> Cc: Suzuki K Poulose <suzuki.poulose@arm.com>
-> Cc: Mike Leach <mike.leach@linaro.org>
-> Cc: Leo Yan <leo.yan@linaro.org>
-> Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
-> Cc: coresight@lists.linaro.org
-> Cc: linux-arm-kernel@lists.infradead.org
-> Cc: linux-kernel@vger.kernel.org
-> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
-> ---
->  drivers/hwtracing/coresight/coresight-trbe.c | 9 +++++++++
->  drivers/hwtracing/coresight/coresight-trbe.h | 1 +
->  2 files changed, 10 insertions(+)
+> An annoted extract:
 > 
-> diff --git a/drivers/hwtracing/coresight/coresight-trbe.c b/drivers/hwtracing/coresight/coresight-trbe.c
-> index e1d9d06e7725..f884883e9018 100644
-> --- a/drivers/hwtracing/coresight/coresight-trbe.c
-> +++ b/drivers/hwtracing/coresight/coresight-trbe.c
-> @@ -1537,7 +1537,16 @@ static const struct of_device_id arm_trbe_of_match[] = {
->  };
->  MODULE_DEVICE_TABLE(of, arm_trbe_of_match);
->  
-> +#ifdef CONFIG_ACPI
-> +static const struct platform_device_id arm_trbe_acpi_match[] = {
-> +	{ ARMV8_TRBE_PDEV_NAME, 0 },
-> +	{ }
-> +};
-> +MODULE_DEVICE_TABLE(platform, arm_trbe_acpi_match);
-> +#endif
-> +
->  static struct platform_driver arm_trbe_driver = {
-> +	.id_table = arm_trbe_acpi_match,
+>  zram01 3 TINFO: /sys/block/zram1/disksize = '26214400'
+>  zram01 3 TPASS: test succeeded
+>  zram01 4 TINFO: set memory limit to zram device(s)
+>  zram01 4 TINFO: /sys/block/zram1/mem_limit = '25M'
+>  zram01 4 TPASS: test succeeded
+>  zram01 5 TINFO: make vfat filesystem on /dev/zram1
+> 
+>  >> at this point a cat of /sys/block/zram1/mm_stat shows
+>  >>   65536      527    65536 26214400    65536        0        0        0
+> 
+>  zram01 5 TPASS: zram_makefs succeeded
 
-The build problem [1] reported on the first version of the series still exists
-here i.e arm_trbe_acpi_match is hidden without CONFIG_ACPI. I had assumed that
-CONFIG_CORESIGHT always enables CONFIG_ACPI, which is not the case. Following
-random config (with CONFIG_ACPI=n and CONFIG_CORESIGHT_TRBE=y) easily triggers
-the build problem.
+So I think the thing to note is that mem_used_total is the current
+number of pages (reported * PAGE_SIZE) used by the zsmalloc allocator
+to store compressed data.
 
-https://download.01.org/0day-ci/archive/20230805/202308052123.uqR35d19-lkp@intel.com/config
+So we have made the file system, which is now quiescent and just has
+basic vfat data; this is compressed and stored and there's one page
+allocated for this (arm64, 64k pages).
 
- make CROSS_COMPILE=aarch64-linux-gnu- ARCH=arm64 -s -j 128
-drivers/hwtracing/coresight/coresight-trbe.c:1563:23: error: implicit declaration of function ‘ACPI_PTR’ [-Werror=implicit-function-declaration]
- 1563 |   .acpi_match_table = ACPI_PTR(arm_trbe_acpi_match),
-      |                       ^~~~~~~~
-drivers/hwtracing/coresight/coresight-trbe.c:1563:32: error: ‘arm_trbe_acpi_match’ undeclared here (not in a function); did you mean ‘arm_trbe_of_match’?
- 1563 |   .acpi_match_table = ACPI_PTR(arm_trbe_acpi_match),
-      |                                ^~~~~~~~~~~~~~~~~~~
-      |                                arm_trbe_of_match
+>  zram01 6 TINFO: mount /dev/zram1
+>  zram01 6 TPASS: mount of zram device(s) succeeded
+>  zram01 7 TINFO: filling zram1 (it can take long time)
+>  zram01 7 TPASS: zram1 was filled with '25568' KB
+>
+>  >> however, /sys/block/zram1/mm_stat shows
+>  >>   9502720        0        0 26214400   196608      145        0        0
+>  >> the script reads this zero value and tries to calculate the
+>  >> compression ratio
+> 
+>  ./zram01.sh: line 145: 100 * 1024 * 25568 / 0: division by 0 (error token is "0")
 
-Following config wrap around fixes the problem.
+At this point, because this test fills from /dev/zero, the zsmalloc
+pool doesn't actually have anything in it.  The filesystem metadata is
+in-use from the writes, and is not written out as compressed data.
+The zram page de-duplication has kicked in, and instead of handles to
+zsmalloc areas for data we just have "this is a page of zeros"
+recorded.  So this is correctly reflecting that fact that we don't
+actually have anything compressed stored at this time.
 
---- a/drivers/hwtracing/coresight/coresight-trbe.c
-+++ b/drivers/hwtracing/coresight/coresight-trbe.c
-@@ -1557,7 +1557,9 @@ MODULE_DEVICE_TABLE(platform, arm_trbe_acpi_match);
- #endif
- 
- static struct platform_driver arm_trbe_driver = {
-+#ifdef CONFIG_ACPI
-        .id_table = arm_trbe_acpi_match,
-+#endif
-        .driver = {
-                .name = DRVNAME,
-                .of_match_table = of_match_ptr(arm_trbe_of_match),
+>  >> If we do a "sync" then redisply the mm_stat after, we get
+>  >>   26214400     2842    65536 26214400   196608      399        0        0
 
-Please not that unlike other coresight drivers, TRBE is not using 'acpi_device_id'
-based "acpi_match_table = ACPI_PTR" construct. But regardless, ACPI_PTR() seems to
-be an alternate (probably better) solution as well.
+Now we've finished writing all our zeros and have synced, we would
+have finished updating vfat allocations, etc.  So this gets compressed
+and written, and we're back to have some small FS metadata compressed
+in our 1 page of zsmalloc allocations.
 
---- a/drivers/hwtracing/coresight/coresight-trbe.c
-+++ b/drivers/hwtracing/coresight/coresight-trbe.c
-@@ -1557,7 +1557,7 @@ MODULE_DEVICE_TABLE(platform, arm_trbe_acpi_match);
- #endif
- 
- static struct platform_driver arm_trbe_driver = {
--       .id_table = arm_trbe_acpi_match,
-+       .id_table = ACPI_PTR(arm_trbe_acpi_match),
-        .driver = {
-                .name = DRVNAME,
-                .of_match_table = of_match_ptr(arm_trbe_of_match),
-diff --git a/drivers/hwtracing/coresight/coresight-trbe.h b/drivers/hwtracing/coresight/coresight-trbe.h
-index 94e67009848a..fce1735d5c58 100644
---- a/drivers/hwtracing/coresight/coresight-trbe.h
-+++ b/drivers/hwtracing/coresight/coresight-trbe.h
-@@ -7,6 +7,7 @@
-  *
-  * Author: Anshuman Khandual <anshuman.khandual@arm.com>
-  */
-+#include <linux/acpi.h>
- #include <linux/coresight.h>
- #include <linux/device.h>
- #include <linux/irq.h>
+I think what is probably "special" about this reproducer system is
+that it is slow enough to allow the zero allocation to persist between
+the end of the test writes and examining the stats.
 
-[1] https://lore.kernel.org/all/202308052123.uqR35d19-lkp@intel.com/
+I'd be happy for any thoughts on the likelyhood of this!
 
->  	.driver	= {
->  		.name = DRVNAME,
->  		.of_match_table = of_match_ptr(arm_trbe_of_match),
-> diff --git a/drivers/hwtracing/coresight/coresight-trbe.h b/drivers/hwtracing/coresight/coresight-trbe.h
-> index 77cbb5c63878..94e67009848a 100644
-> --- a/drivers/hwtracing/coresight/coresight-trbe.h
-> +++ b/drivers/hwtracing/coresight/coresight-trbe.h
-> @@ -12,6 +12,7 @@
->  #include <linux/irq.h>
->  #include <linux/kernel.h>
->  #include <linux/of.h>
-> +#include <linux/perf/arm_pmu.h>
->  #include <linux/platform_device.h>
->  #include <linux/smp.h>
->  
+If we think this is right; then the point of the end of this test [1]
+is ensure a high reported compression ratio on the device, presumably
+to ensure the compression is working.  Filling it with urandom would
+be unreliable in this regard.  I think what we want to do is something
+highly compressable like alternate lengths of 0x00 and 0xFF.  This
+will avoid the same-page detection and ensure we actually have
+compressed data, and we can continue to assert on the high compression
+ratio reliably.  I'm happy to propose this if we generally agree.
+
+Thanks,
+
+-i
+
+> [1] https://github.com/linux-test-project/ltp/blob/8c201e55f684965df2ae5a13ff439b28278dec0d/testcases/kernel/device-drivers/zram/zram01.sh
+
