@@ -2,99 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 66DDF772859
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 16:56:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 67BA577276F
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 16:18:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229927AbjHGO4y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Aug 2023 10:56:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58492 "EHLO
+        id S232094AbjHGOS2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Aug 2023 10:18:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34680 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229849AbjHGO4n (ORCPT
+        with ESMTP id S231828AbjHGOS0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Aug 2023 10:56:43 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7238F10F8
-        for <linux-kernel@vger.kernel.org>; Mon,  7 Aug 2023 07:56:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1691420202; x=1722956202;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=lK5NaO7oefA5g11ZXsxw+6NSKHBHesJlzzBUmcoECcY=;
-  b=CBH3khPlqrdgg95ueSJDTVjbmO052vV+1Y2XaS6OMoyxglgn0u1BSV12
-   U85Yu6i86ke6e9oyKWWKE7w4fKgwM+22F+CQaxRRIrPHZHAN3JnGu0R07
-   HP5oTGwfBCy9n38iyqms/VTTdP7nZ2CpehfHxY1eB9ZcjXQUsY13BiuAG
-   cx+f4+3LfuomYUKXoz8VJ+FnegytTGD1qp+vdE8j3Z5/qGK4Y9Emp5Uqs
-   oVH2R0jgfAXgY9fWSmrWPUu6JVssWqTt2PsSg0ve+kdDYO8gjouNqkV27
-   uooXfY3A8k7O4lbZYajhpiVzgQfx6V74HdbQDDospWGWzS9PsaUfDdR/f
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10795"; a="434410620"
-X-IronPort-AV: E=Sophos;i="6.01,262,1684825200"; 
-   d="scan'208";a="434410620"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Aug 2023 07:56:42 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10795"; a="1061623884"
-X-IronPort-AV: E=Sophos;i="6.01,262,1684825200"; 
-   d="scan'208";a="1061623884"
-Received: from hweelee-mobl.amr.corp.intel.com (HELO [10.209.181.215]) ([10.209.181.215])
-  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Aug 2023 07:56:41 -0700
-Message-ID: <880a953d-bc81-5f00-7ad6-bbcf6eaac856@linux.intel.com>
-Date:   Mon, 7 Aug 2023 09:17:43 -0500
+        Mon, 7 Aug 2023 10:18:26 -0400
+Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C182310EC;
+        Mon,  7 Aug 2023 07:18:24 -0700 (PDT)
+Received: by mail-pf1-x430.google.com with SMTP id d2e1a72fcca58-686b9920362so2919966b3a.1;
+        Mon, 07 Aug 2023 07:18:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1691417904; x=1692022704;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=OFa2DA6rsp2C0K+a6N9BrivDhqrO+NCruJ7CR9dDb7o=;
+        b=GhkcVMDdfN+i+WCgvxeTkq/6+gLN4DWfjb9Od16ZT4Q+VPy4II9K86rVuyKa1g2CNI
+         TQvKupNyff2Z5/iqxAomzMOGk4ei6vGT+HSWsYgaaoxlYnj/olx/MFyEtrWewbGWCS0p
+         IPCY3m2n0DOtY4vk55q46j3BJ2wztoNTOYXvHlyIkM7peN8Lhj6DjNFFNzoRztIwqtmG
+         l2hoMy/JXEt4qJ8G2VrrYHfte9TIaNW8nQFx1QmJlUUl59K/M//E5M6FZHsVQfPJLph2
+         8c+4c+9pcXThkNF1jgLxpBdW2YfyGoA3WLpPy85LUIoyJJ9pC6IE6SV9w5+kLB3zSKwh
+         LA0Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691417904; x=1692022704;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=OFa2DA6rsp2C0K+a6N9BrivDhqrO+NCruJ7CR9dDb7o=;
+        b=C8irlkLeNOzMkAkqfyKhsPw3XQEh48Wcg8wCTQFIFOPmE6c7u+WxPQwsLZ21X3Zdl2
+         b+Bjwx8d9ddnbcS5pgHi3WCQQnJkgqDyoHgHPzWJ88DpzZd0ihQLimIdAKD9Us5LvD50
+         3IZIm3jPWP0SGhAq0jFkQq/Fl+ffSUJrom5D+QdSM8FFQzTrLBJ2J3k1rmrvpKbp2fAv
+         xXPb4CsSX/flsxqp5eshr+WXf5PXFEV3MvMR8eLl/fZHhb4oYRVJnPR+8BFRz9Q9sRy6
+         SE2GWdFTAbp0PGQKYnvkijJ7GygErDp128a5suiPVFEGUInkaruaDgNwjVKecc+I5YAf
+         Jy2A==
+X-Gm-Message-State: AOJu0YyE6GjAdfQIyd6MgWXKiU54AAhhU1TAmFEcW/9ncEsvthzVtoPK
+        CVp5F3GbC/NvWy9qoy2mgNc=
+X-Google-Smtp-Source: AGHT+IGJR3aWeUe8oH6VPG0NncqV3FpbFGTFqIEh8huV+y5dUGQaCZZJXiqYzMeqapqLEJBm/5DW6Q==
+X-Received: by 2002:a05:6a21:498a:b0:13b:a1eb:79e6 with SMTP id ax10-20020a056a21498a00b0013ba1eb79e6mr8392636pzc.53.1691417903704;
+        Mon, 07 Aug 2023 07:18:23 -0700 (PDT)
+Received: from ?IPv6:2605:59c8:448:b800:82ee:73ff:fe41:9a02? ([2605:59c8:448:b800:82ee:73ff:fe41:9a02])
+        by smtp.googlemail.com with ESMTPSA id g15-20020aa7874f000000b006878f50d071sm6231031pfo.203.2023.08.07.07.18.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 07 Aug 2023 07:18:23 -0700 (PDT)
+Message-ID: <0aa395ee0386b4b470c152b95cc8a0517ee2d2cd.camel@gmail.com>
+Subject: Re: [PATCH net-next] page_pool: Clamp ring size to 32K
+From:   Alexander H Duyck <alexander.duyck@gmail.com>
+To:     Jesper Dangaard Brouer <hawk@kernel.org>,
+        Ratheesh Kannoth <rkannoth@marvell.com>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+        pabeni@redhat.com, Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+        Alexander Lobakin <aleksander.lobakin@intel.com>,
+        Yunsheng Lin <linyunsheng@huawei.com>
+Date:   Mon, 07 Aug 2023 07:18:21 -0700
+In-Reply-To: <b8eb926e-cfc9-b082-5bb9-719be3937c5d@kernel.org>
+References: <20230807034932.4000598-1-rkannoth@marvell.com>
+         <b8eb926e-cfc9-b082-5bb9-719be3937c5d@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.48.3 (3.48.3-1.fc38) 
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Firefox/102.0 Thunderbird/102.13.0
-Subject: Re: [PATCH v3 7/9] ALSA: hda/intel: Move snd_hdac_i915_init to before
- probe_work.
-Content-Language: en-US
-To:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        alsa-devel@alsa-project.org
-Cc:     Maarten Lankhorst <dev@lankhorst.se>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Cezary Rojewski <cezary.rojewski@intel.com>,
-        Liam Girdwood <liam.r.girdwood@linux.intel.com>,
-        Peter Ujfalusi <peter.ujfalusi@linux.intel.com>,
-        Bard Liao <yung-chuan.liao@linux.intel.com>,
-        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
-        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
-        Mark Brown <broonie@kernel.org>,
-        Daniel Baluta <daniel.baluta@nxp.com>,
-        linux-kernel@vger.kernel.org, sound-open-firmware@alsa-project.org
-References: <20230807090045.198993-1-maarten.lankhorst@linux.intel.com>
- <20230807090045.198993-8-maarten.lankhorst@linux.intel.com>
-From:   Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-In-Reply-To: <20230807090045.198993-8-maarten.lankhorst@linux.intel.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-6.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, 2023-08-07 at 13:42 +0200, Jesper Dangaard Brouer wrote:
+>=20
+> On 07/08/2023 05.49, Ratheesh Kannoth wrote:
+> > https://lore.kernel.org/netdev/20230804133512.4dbbbc16@kernel.org/T/
+> > Capping the recycle ring to 32k instead of returning the error.
+> >=20
+>=20
+> Page pool (PP) is just a cache of pages.  The driver octeontx2 (in link)
+> is creating an excessive large cache of pages.  The drivers RX
+> descriptor ring size should be independent of the PP ptr_ring size, as
+> it is just a cache that grows as a functions of the in-flight packet
+> workload, it functions as a "shock absorber".
+>=20
+> 32768 pages (4KiB) is approx 128 MiB, and this will be per RX-queue.
+>=20
+> The RX-desc ring (obviously) pins down these pages (immediately), but PP
+> ring starts empty.  As the workload varies the "shock absorber" effect
+> will let more pages into the system, that will travel the PP ptr_ring.
+> As all pages originating from the same PP instance will get recycled,
+> the in-flight pages in the "system" (PP ptr_ring) will grow over time.
+>=20
+> The PP design have the problem that it never releases or reduces pages
+> in this shock absorber "closed" system. (Cc. PP people/devel) we should
+> consider implementing a MM shrinker callback (include/linux/shrinker.h).
+>=20
+> Are the systems using driver octeontx2 ready to handle 128MiB memory per
+> RX-queue getting pinned down overtime? (this could lead to some strange
+> do debug situation if the memory is not sufficient)
+>=20
+> --Jesper
 
+I'm with Jesper on this. It doesn't make sense to be tying the
+page_pool size strictly to the ring size. The amount of recycling you
+get will depend on how long the packets are on the stack, not in the
+driver.
 
-On 8/7/23 04:00, Maarten Lankhorst wrote:
-> Now that we can use -EPROBE_DEFER, it's no longer required to spin off
-> the snd_hdac_i915_init into a workqueue.
-> 
-> Use the -EPROBE_DEFER mechanism instead, which must be returned in the
-> probe function.
-> 
-> Changes since v1:
-> - Use dev_err_probe()
-> - Don't move probed_devs bitmap unnecessarily. (tiwai)
-> - Move snd_hdac_i915_init slightly upward, to ensure
->   it's always initialised before vga-switcheroo is called.
+For example, in the case of something like a software router or bridge
+that is just taking the Rx packets and routing them to Tx you could
+theoretically get away with a multiple of NAPI_POLL_WEIGHT since you
+would likely never need much more than that as the Tx would likely be
+cleaned about as fast as the Rx can consume the pages.
 
-same issue with changes.
-> 
-> Signed-off-by: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
-> Reviewed-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
+Rather than overriding the size here wouldn't it make more sense to do
+it in the octeontx2 driver? With that at least you would know that you
+were the one that limited the size instead of having the value modified
+out from underneath you.
 
-Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-
+That said, one change that might help to enable this kind of change
+would be look at adding a #define so that this value wouldn't be so
+much a magic number and would be visible to the drivers should it ever
+be changed in the future.
