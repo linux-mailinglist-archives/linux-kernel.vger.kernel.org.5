@@ -2,66 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C264772CCF
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 19:25:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E6D7772CD1
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 19:26:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231516AbjHGRZm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Aug 2023 13:25:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59570 "EHLO
+        id S231967AbjHGRZ6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Aug 2023 13:25:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59848 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231376AbjHGRZk (ORCPT
+        with ESMTP id S230265AbjHGRZ4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Aug 2023 13:25:40 -0400
-Received: from mail-oo1-xc30.google.com (mail-oo1-xc30.google.com [IPv6:2607:f8b0:4864:20::c30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50685E74
-        for <linux-kernel@vger.kernel.org>; Mon,  7 Aug 2023 10:25:39 -0700 (PDT)
-Received: by mail-oo1-xc30.google.com with SMTP id 006d021491bc7-56ca4d7079aso3254486eaf.0
-        for <linux-kernel@vger.kernel.org>; Mon, 07 Aug 2023 10:25:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1691429138; x=1692033938;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=MT9ZoHa3QBN38VFI/biOZ0hMRuiUyTubHzewye4P1RM=;
-        b=O1DRxAZ9GLVObJ/SVqp8h21UA2WiTQVFbdv1s7zTImPe9UdtKOemT2dTQX4Fnr3o8D
-         IvCL0WHX1McghjNJkOYXZ/7lO9mJsg6ekXsGtakDRfzXkjvJsaLa6JfFGj29h4iGmkBI
-         kjpsf42afYnlmz9egv4knpqvkRU5F8LLqw7nRfjby6PfxhF78u6J4gzZAk7CSC5h9pn7
-         RgePyDz6lzMvjTLR8erI6HYN/nSlF8qRCt+N3jriURPzvJtF7TGpBS8wxMh2b1QlXbOc
-         r7LnBmbtLbHT6oxk8OCGuazwSEXrbAvJTty0EnFmZB0dQDIK2zQvJsFpk4oS3V08nu/B
-         d8ZA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691429138; x=1692033938;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=MT9ZoHa3QBN38VFI/biOZ0hMRuiUyTubHzewye4P1RM=;
-        b=OAoLIHEJ+UgPo4TAflu3T0hvYRXpLiK9oaYM+aUO+uLhMe7g0J7buH1c7MrEgMwZ6R
-         +Wo4RAN2eUeLHINrKfZL1FwR8fyQfkEh/gl3skcRO3cnY9DWT5j266YBP55+OsoSQCEu
-         j+xy82cocL9lFpcnIzQJiwJMcs8FW7wibiyM/ZDq1vyTGwtig9iLFXG0gQQ7Jmab12Q0
-         SetGqC0lPFm1M0S+AqCyUb52YangniJ00KZNEDXdR+6gwu7W768tzZMhAfELrjVB2Dj6
-         4jL80QSurC/VAq15jqn2eum77f1Tt2wuDoLGFaBEm+NqENzqznEW4au2JPbRzJoN1P5N
-         L62Q==
-X-Gm-Message-State: AOJu0YwzWmaPYFUKy98MfNvYbMhIKy2i10uv5JI731IAC1/sl4jlRUkl
-        sgvAcee0eijqK4Hu9Ugpu/y5YKPpoPuwk2zZ0h0=
-X-Google-Smtp-Source: AGHT+IHKdYJhOzFLz7sRPBkKw8b9SIdR/Y65ZOVU8mGmwuV/MU3nCqvJ7FNIUlZ07bZFuuONi/WLIqWFKqq1TdTS0R4=
-X-Received: by 2002:a4a:3c5e:0:b0:56d:55b7:e99c with SMTP id
- p30-20020a4a3c5e000000b0056d55b7e99cmr9158977oof.1.1691429138564; Mon, 07 Aug
- 2023 10:25:38 -0700 (PDT)
+        Mon, 7 Aug 2023 13:25:56 -0400
+Received: from lelv0143.ext.ti.com (lelv0143.ext.ti.com [198.47.23.248])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13DAFE67;
+        Mon,  7 Aug 2023 10:25:54 -0700 (PDT)
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+        by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 377HPl04011321;
+        Mon, 7 Aug 2023 12:25:47 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1691429147;
+        bh=LfENCgN+IImSktt1Uhld80rys0xsgjA5RPZ6MWSRcik=;
+        h=Date:Subject:To:CC:References:From:In-Reply-To;
+        b=bA+Vuv9Sm8N5FcIUhjoWfwRecpu+iov+HlfO9U+7Q+LAG9zNwWyMQpdmcK64b/SE+
+         f5CIZRGSQFpUruuPptsLRenk68ZuQd0R2783gKjVsF6HW0F/rSKvSHO7MzdewPquyM
+         Yj8CQyyDliAuwRRzwZhiC2YsMDdYusFoszKYZKsQ=
+Received: from DLEE103.ent.ti.com (dlee103.ent.ti.com [157.170.170.33])
+        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 377HPluX059546
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Mon, 7 Aug 2023 12:25:47 -0500
+Received: from DLEE101.ent.ti.com (157.170.170.31) by DLEE103.ent.ti.com
+ (157.170.170.33) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Mon, 7
+ Aug 2023 12:25:47 -0500
+Received: from lelv0327.itg.ti.com (10.180.67.183) by DLEE101.ent.ti.com
+ (157.170.170.31) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Mon, 7 Aug 2023 12:25:47 -0500
+Received: from [10.24.69.34] (ileaxei01-snat2.itg.ti.com [10.180.69.6])
+        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 377HPh4X002900;
+        Mon, 7 Aug 2023 12:25:44 -0500
+Message-ID: <ef020531-e7b9-4666-0ea2-dd5c4803234b@ti.com>
+Date:   Mon, 7 Aug 2023 22:55:43 +0530
 MIME-Version: 1.0
-References: <20230802071805.12808-1-sunran001@208suo.com>
-In-Reply-To: <20230802071805.12808-1-sunran001@208suo.com>
-From:   Alex Deucher <alexdeucher@gmail.com>
-Date:   Mon, 7 Aug 2023 13:25:27 -0400
-Message-ID: <CADnq5_Oj_+k3E4Njhw-W4_YvSLb9LL9RfGsrQb6a085Dpc5iFQ@mail.gmail.com>
-Subject: Re: [PATCH] drm/amdgpu: Clean up errors in dce_v8_0.c
-To:     Ran Sun <sunran001@208suo.com>
-Cc:     alexander.deucher@amd.com, dri-devel@lists.freedesktop.org,
-        amd-gfx@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH 2/3] arm64: dts: ti: k3-j784s4-mcu-wakeup: Add
+ bootph-pre-ram property for SPL nodes
+Content-Language: en-US
+To:     Nishanth Menon <nm@ti.com>
+CC:     "Kumar, Udit" <u-kumar1@ti.com>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Tero Kristo <kristo@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Hari Nagalla <hnagalla@ti.com>
+References: <20230806164838.18088-1-a-nandan@ti.com>
+ <20230806164838.18088-3-a-nandan@ti.com>
+ <3a2d1880-10aa-ac19-24e1-b2f697bc1a73@ti.com>
+ <ef834d0b-b13a-5c3d-6c1d-088006fdfa32@ti.com>
+ <20230807172132.7e4qux3f72zyfd33@mocker>
+From:   Apurva Nandan <a-nandan@ti.com>
+In-Reply-To: <20230807172132.7e4qux3f72zyfd33@mocker>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+X-Spam-Status: No, score=-3.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -69,173 +78,21 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Applied.  Thanks!
 
-On Wed, Aug 2, 2023 at 3:18=E2=80=AFAM Ran Sun <sunran001@208suo.com> wrote=
-:
+On 07/08/23 22:51, Nishanth Menon wrote:
+> On 22:43-20230807, Apurva Nandan wrote:
+> [..]
 >
-> Fix the following errors reported by checkpatch:
+>>> mcu_timer0: timer@40400000 should be part of your list.
+>> Maybe you are referring to mcu_timer1. mcu_timer1 will be a part of
+>> u-boot.dtsi as we need to edit
+>> the node for removing k3_clks and power-domains properties from it. So we
+>> should add bootph-pre-ram
+>> there itself in uboot.dtsi as the node will be already there.
+> a) you need the timer even before talking to anything - u-boot needs it
+> for basic delay - so add the pre-ram property.
+> b) what you are doing in u-boot currently a hack - am625 in u-boot got
+> it fixed the right way - follow the model then you dont need the hackery
+> with deleting clock and power-domains properties.
 >
-> ERROR: that open brace { should be on the previous line
-> ERROR: code indent should use tabs where possible
-> ERROR: space required before the open brace '{'
->
-> Signed-off-by: Ran Sun <sunran001@208suo.com>
-> ---
->  drivers/gpu/drm/amd/amdgpu/dce_v8_0.c | 37 ++++++++++-----------------
->  1 file changed, 14 insertions(+), 23 deletions(-)
->
-> diff --git a/drivers/gpu/drm/amd/amdgpu/dce_v8_0.c b/drivers/gpu/drm/amd/=
-amdgpu/dce_v8_0.c
-> index d421a268c9ff..f2b3cb5ed6be 100644
-> --- a/drivers/gpu/drm/amd/amdgpu/dce_v8_0.c
-> +++ b/drivers/gpu/drm/amd/amdgpu/dce_v8_0.c
-> @@ -53,8 +53,7 @@
->  static void dce_v8_0_set_display_funcs(struct amdgpu_device *adev);
->  static void dce_v8_0_set_irq_funcs(struct amdgpu_device *adev);
->
-> -static const u32 crtc_offsets[6] =3D
-> -{
-> +static const u32 crtc_offsets[6] =3D {
->         CRTC0_REGISTER_OFFSET,
->         CRTC1_REGISTER_OFFSET,
->         CRTC2_REGISTER_OFFSET,
-> @@ -63,8 +62,7 @@ static const u32 crtc_offsets[6] =3D
->         CRTC5_REGISTER_OFFSET
->  };
->
-> -static const u32 hpd_offsets[] =3D
-> -{
-> +static const u32 hpd_offsets[] =3D {
->         HPD0_REGISTER_OFFSET,
->         HPD1_REGISTER_OFFSET,
->         HPD2_REGISTER_OFFSET,
-> @@ -1345,9 +1343,9 @@ static void dce_v8_0_audio_write_sad_regs(struct dr=
-m_encoder *encoder)
->                                 if (sad->channels > max_channels) {
->                                         value =3D (sad->channels <<
->                                                  AZALIA_F0_CODEC_PIN_CONT=
-ROL_AUDIO_DESCRIPTOR0__MAX_CHANNELS__SHIFT) |
-> -                                               (sad->byte2 <<
-> +                                               (sad->byte2 <<
->                                                  AZALIA_F0_CODEC_PIN_CONT=
-ROL_AUDIO_DESCRIPTOR0__DESCRIPTOR_BYTE_2__SHIFT) |
-> -                                               (sad->freq <<
-> +                                               (sad->freq <<
->                                                  AZALIA_F0_CODEC_PIN_CONT=
-ROL_AUDIO_DESCRIPTOR0__SUPPORTED_FREQUENCIES__SHIFT);
->                                         max_channels =3D sad->channels;
->                                 }
-> @@ -1379,8 +1377,7 @@ static void dce_v8_0_audio_enable(struct amdgpu_dev=
-ice *adev,
->                 enable ? AZALIA_F0_CODEC_PIN_CONTROL_HOT_PLUG_CONTROL__AU=
-DIO_ENABLED_MASK : 0);
->  }
->
-> -static const u32 pin_offsets[7] =3D
-> -{
-> +static const u32 pin_offsets[7] =3D {
->         (0x1780 - 0x1780),
->         (0x1786 - 0x1780),
->         (0x178c - 0x1780),
-> @@ -1740,8 +1737,7 @@ static void dce_v8_0_afmt_fini(struct amdgpu_device=
- *adev)
->         }
->  }
->
-> -static const u32 vga_control_regs[6] =3D
-> -{
-> +static const u32 vga_control_regs[6] =3D {
->         mmD1VGA_CONTROL,
->         mmD2VGA_CONTROL,
->         mmD3VGA_CONTROL,
-> @@ -1895,9 +1891,9 @@ static int dce_v8_0_crtc_do_set_base(struct drm_crt=
-c *crtc,
->         case DRM_FORMAT_XBGR8888:
->         case DRM_FORMAT_ABGR8888:
->                 fb_format =3D ((GRPH_DEPTH_32BPP << GRPH_CONTROL__GRPH_DE=
-PTH__SHIFT) |
-> -                            (GRPH_FORMAT_ARGB8888 << GRPH_CONTROL__GRPH_=
-FORMAT__SHIFT));
-> +                               (GRPH_FORMAT_ARGB8888 << GRPH_CONTROL__GR=
-PH_FORMAT__SHIFT));
->                 fb_swap =3D ((GRPH_RED_SEL_B << GRPH_SWAP_CNTL__GRPH_RED_=
-CROSSBAR__SHIFT) |
-> -                          (GRPH_BLUE_SEL_R << GRPH_SWAP_CNTL__GRPH_BLUE_=
-CROSSBAR__SHIFT));
-> +                       (GRPH_BLUE_SEL_R << GRPH_SWAP_CNTL__GRPH_BLUE_CRO=
-SSBAR__SHIFT));
->  #ifdef __BIG_ENDIAN
->                 fb_swap |=3D (GRPH_ENDIAN_8IN32 << GRPH_SWAP_CNTL__GRPH_E=
-NDIAN_SWAP__SHIFT);
->  #endif
-> @@ -3151,7 +3147,7 @@ static int dce_v8_0_pageflip_irq(struct amdgpu_devi=
-ce *adev,
->
->         spin_lock_irqsave(&adev_to_drm(adev)->event_lock, flags);
->         works =3D amdgpu_crtc->pflip_works;
-> -       if (amdgpu_crtc->pflip_status !=3D AMDGPU_FLIP_SUBMITTED){
-> +       if (amdgpu_crtc->pflip_status !=3D AMDGPU_FLIP_SUBMITTED) {
->                 DRM_DEBUG_DRIVER("amdgpu_crtc->pflip_status =3D %d !=3D "
->                                                 "AMDGPU_FLIP_SUBMITTED(%d=
-)\n",
->                                                 amdgpu_crtc->pflip_status=
-,
-> @@ -3544,8 +3540,7 @@ static void dce_v8_0_set_irq_funcs(struct amdgpu_de=
-vice *adev)
->         adev->hpd_irq.funcs =3D &dce_v8_0_hpd_irq_funcs;
->  }
->
-> -const struct amdgpu_ip_block_version dce_v8_0_ip_block =3D
-> -{
-> +const struct amdgpu_ip_block_version dce_v8_0_ip_block =3D {
->         .type =3D AMD_IP_BLOCK_TYPE_DCE,
->         .major =3D 8,
->         .minor =3D 0,
-> @@ -3553,8 +3548,7 @@ const struct amdgpu_ip_block_version dce_v8_0_ip_bl=
-ock =3D
->         .funcs =3D &dce_v8_0_ip_funcs,
->  };
->
-> -const struct amdgpu_ip_block_version dce_v8_1_ip_block =3D
-> -{
-> +const struct amdgpu_ip_block_version dce_v8_1_ip_block =3D {
->         .type =3D AMD_IP_BLOCK_TYPE_DCE,
->         .major =3D 8,
->         .minor =3D 1,
-> @@ -3562,8 +3556,7 @@ const struct amdgpu_ip_block_version dce_v8_1_ip_bl=
-ock =3D
->         .funcs =3D &dce_v8_0_ip_funcs,
->  };
->
-> -const struct amdgpu_ip_block_version dce_v8_2_ip_block =3D
-> -{
-> +const struct amdgpu_ip_block_version dce_v8_2_ip_block =3D {
->         .type =3D AMD_IP_BLOCK_TYPE_DCE,
->         .major =3D 8,
->         .minor =3D 2,
-> @@ -3571,8 +3564,7 @@ const struct amdgpu_ip_block_version dce_v8_2_ip_bl=
-ock =3D
->         .funcs =3D &dce_v8_0_ip_funcs,
->  };
->
-> -const struct amdgpu_ip_block_version dce_v8_3_ip_block =3D
-> -{
-> +const struct amdgpu_ip_block_version dce_v8_3_ip_block =3D {
->         .type =3D AMD_IP_BLOCK_TYPE_DCE,
->         .major =3D 8,
->         .minor =3D 3,
-> @@ -3580,8 +3572,7 @@ const struct amdgpu_ip_block_version dce_v8_3_ip_bl=
-ock =3D
->         .funcs =3D &dce_v8_0_ip_funcs,
->  };
->
-> -const struct amdgpu_ip_block_version dce_v8_5_ip_block =3D
-> -{
-> +const struct amdgpu_ip_block_version dce_v8_5_ip_block =3D {
->         .type =3D AMD_IP_BLOCK_TYPE_DCE,
->         .major =3D 8,
->         .minor =3D 5,
-> --
-> 2.17.1
->
+Okay, thanks!
