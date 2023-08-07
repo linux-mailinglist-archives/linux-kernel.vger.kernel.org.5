@@ -2,22 +2,22 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CCDB7772DA8
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 20:21:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 22780772DA3
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 20:21:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231201AbjHGSVD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Aug 2023 14:21:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53312 "EHLO
+        id S230448AbjHGSVA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Aug 2023 14:21:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53306 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229804AbjHGSU6 (ORCPT
+        with ESMTP id S229589AbjHGSU5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Aug 2023 14:20:58 -0400
+        Mon, 7 Aug 2023 14:20:57 -0400
 Received: from cloudserver094114.home.pl (cloudserver094114.home.pl [79.96.170.134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49610DE;
-        Mon,  7 Aug 2023 11:20:56 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D38B78F;
+        Mon,  7 Aug 2023 11:20:55 -0700 (PDT)
 Received: from localhost (127.0.0.1) (HELO v370.home.net.pl)
  by /usr/run/smtp (/usr/run/postfix/private/idea_relay_lmtp) via UNIX with SMTP (IdeaSmtpServer 5.2.0)
- id 8cfedfee9a03d93a; Mon, 7 Aug 2023 20:20:54 +0200
+ id 94dc6781b6e2d306; Mon, 7 Aug 2023 20:20:53 +0200
 Authentication-Results: v370.home.net.pl; spf=softfail (domain owner 
    discourages use of this host) smtp.mailfrom=rjwysocki.net 
    (client-ip=195.136.19.94; helo=[195.136.19.94]; 
@@ -26,7 +26,7 @@ Received: from kreacher.localnet (unknown [195.136.19.94])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
         (No client certificate requested)
-        by v370.home.net.pl (Postfix) with ESMTPSA id EBE836625B2;
+        by v370.home.net.pl (Postfix) with ESMTPSA id 095486625B2;
         Mon,  7 Aug 2023 20:20:53 +0200 (CEST)
 From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
 To:     Linux ACPI <linux-acpi@vger.kernel.org>,
@@ -36,9 +36,9 @@ Cc:     LKML <linux-kernel@vger.kernel.org>,
         Michal Wilczynski <michal.wilczynski@intel.com>,
         Zhang Rui <rui.zhang@intel.com>,
         Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
-Subject: [PATCH v5 10/11] ACPI: thermal: Drop unnecessary thermal zone callbacks
-Date:   Mon, 07 Aug 2023 20:18:49 +0200
-Message-ID: <3436224.QJadu78ljV@kreacher>
+Subject: [PATCH v5 11/11] thermal: core: Eliminate code duplication from acpi_thermal_notify()
+Date:   Mon, 07 Aug 2023 20:20:18 +0200
+Message-ID: <23175634.6Emhk5qWAg@kreacher>
 In-Reply-To: <4503814.LvFx2qVVIh@kreacher>
 References: <13318886.uLZWGnKmhe@kreacher> <4503814.LvFx2qVVIh@kreacher>
 MIME-Version: 1.0
@@ -61,158 +61,81 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 
-Drop the .get_trip_type(), .get_trip_temp() and .get_crit_temp() thermal
-zone callbacks that are not necessary any more from the ACPI thermal
-driver along with the corresponding callback functions.
+Move the acpi_bus_generate_netlink_event() invocation into
+acpi_thermal_trips_update() which allows the code duplication in
+acpi_thermal_notify() to be cleaned up, but for this purpose the
+event value needs to be passed to acpi_thermal_trips_update() and
+from there to acpi_thermal_adjust_thermal_zone() which has to
+determine the flag value for __acpi_thermal_trips_update() by
+itself.
 
 Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 ---
 
 v4 -> v5: Rebase.
 
-v3 -> v4: No changes.
-
-v2 -> v3: Rebase on top of the v2 of the previous patch.
-
-v1 -> v2: No changes.
+New patch in v4.
 
 ---
- drivers/acpi/thermal.c |  115 -------------------------------------------------
- 1 file changed, 115 deletions(-)
+ drivers/acpi/thermal.c |   20 ++++++++++----------
+ 1 file changed, 10 insertions(+), 10 deletions(-)
 
 Index: linux-pm/drivers/acpi/thermal.c
 ===================================================================
 --- linux-pm.orig/drivers/acpi/thermal.c
 +++ linux-pm/drivers/acpi/thermal.c
-@@ -484,118 +484,6 @@ static int thermal_get_temp(struct therm
- 	return 0;
+@@ -419,8 +419,10 @@ static void acpi_thermal_adjust_thermal_
+ 					     unsigned long data)
+ {
+ 	struct acpi_thermal *tz = thermal_zone_device_priv(thermal);
++	int flag = data == ACPI_THERMAL_NOTIFY_THRESHOLDS ?
++				ACPI_TRIPS_THRESHOLDS : ACPI_TRIPS_DEVICES;
+ 
+-	__acpi_thermal_trips_update(tz, data);
++	__acpi_thermal_trips_update(tz, flag);
+ 
+ 	for_each_thermal_trip(tz->thermal_zone, acpi_thermal_adjust_trip, tz);
+ }
+@@ -431,8 +433,10 @@ static void acpi_queue_thermal_check(str
+ 		queue_work(acpi_thermal_pm_queue, &tz->thermal_check_work);
  }
  
--static int thermal_get_trip_type(struct thermal_zone_device *thermal,
--				 int trip, enum thermal_trip_type *type)
--{
--	struct acpi_thermal *tz = thermal_zone_device_priv(thermal);
--	int i;
--
--	if (!tz || trip < 0)
--		return -EINVAL;
--
--	if (tz->trips.critical.valid) {
--		if (!trip) {
--			*type = THERMAL_TRIP_CRITICAL;
--			return 0;
--		}
--		trip--;
--	}
--
--	if (tz->trips.hot.valid) {
--		if (!trip) {
--			*type = THERMAL_TRIP_HOT;
--			return 0;
--		}
--		trip--;
--	}
--
--	if (tz->trips.passive.trip.valid) {
--		if (!trip) {
--			*type = THERMAL_TRIP_PASSIVE;
--			return 0;
--		}
--		trip--;
--	}
--
--	for (i = 0; i < ACPI_THERMAL_MAX_ACTIVE && tz->trips.active[i].trip.valid; i++) {
--		if (!trip) {
--			*type = THERMAL_TRIP_ACTIVE;
--			return 0;
--		}
--		trip--;
--	}
--
--	return -EINVAL;
--}
--
--static int thermal_get_trip_temp(struct thermal_zone_device *thermal,
--				 int trip, int *temp)
--{
--	struct acpi_thermal *tz = thermal_zone_device_priv(thermal);
--	int i;
--
--	if (!tz || trip < 0)
--		return -EINVAL;
--
--	if (tz->trips.critical.valid) {
--		if (!trip) {
--			*temp = deci_kelvin_to_millicelsius_with_offset(
--					tz->trips.critical.temperature,
--					tz->kelvin_offset);
--			return 0;
--		}
--		trip--;
--	}
--
--	if (tz->trips.hot.valid) {
--		if (!trip) {
--			*temp = deci_kelvin_to_millicelsius_with_offset(
--					tz->trips.hot.temperature,
--					tz->kelvin_offset);
--			return 0;
--		}
--		trip--;
--	}
--
--	if (tz->trips.passive.trip.valid) {
--		if (!trip) {
--			*temp = deci_kelvin_to_millicelsius_with_offset(
--					tz->trips.passive.trip.temperature,
--					tz->kelvin_offset);
--			return 0;
--		}
--		trip--;
--	}
--
--	for (i = 0; i < ACPI_THERMAL_MAX_ACTIVE &&
--		tz->trips.active[i].trip.valid; i++) {
--		if (!trip) {
--			*temp = deci_kelvin_to_millicelsius_with_offset(
--					tz->trips.active[i].trip.temperature,
--					tz->kelvin_offset);
--			return 0;
--		}
--		trip--;
--	}
--
--	return -EINVAL;
--}
--
--static int thermal_get_crit_temp(struct thermal_zone_device *thermal,
--				int *temperature)
--{
--	struct acpi_thermal *tz = thermal_zone_device_priv(thermal);
--
--	if (tz->trips.critical.valid) {
--		*temperature = deci_kelvin_to_millicelsius_with_offset(
--					tz->trips.critical.temperature,
--					tz->kelvin_offset);
--		return 0;
--	}
--
--	return -EINVAL;
--}
--
- static int thermal_get_trend(struct thermal_zone_device *thermal,
- 			     int trip_index, enum thermal_trend *trend)
+-static void acpi_thermal_trips_update(struct acpi_thermal *tz, int flag)
++static void acpi_thermal_trips_update(struct acpi_thermal *tz, u32 event)
  {
-@@ -758,9 +646,6 @@ static struct thermal_zone_device_ops ac
- 	.bind = acpi_thermal_bind_cooling_device,
- 	.unbind	= acpi_thermal_unbind_cooling_device,
- 	.get_temp = thermal_get_temp,
--	.get_trip_type = thermal_get_trip_type,
--	.get_trip_temp = thermal_get_trip_temp,
--	.get_crit_temp = thermal_get_crit_temp,
- 	.get_trend = thermal_get_trend,
- 	.hot = acpi_thermal_zone_device_hot,
- 	.critical = acpi_thermal_zone_device_critical,
++	struct acpi_device *adev = tz->device;
++
+ 	/*
+ 	 * Use thermal_zone_device_adjust() to carry out the trip points
+ 	 * update, so as to protect thermal_get_trend() from getting stale
+@@ -440,8 +444,10 @@ static void acpi_thermal_trips_update(st
+ 	 * invoked from acpi_thermal_check_fn() from producing inconsistent
+ 	 * results.
+ 	 */
+-	thermal_zone_device_adjust(tz->thermal_zone, flag);
++	thermal_zone_device_adjust(tz->thermal_zone, event);
+ 	acpi_queue_thermal_check(tz);
++	acpi_bus_generate_netlink_event(adev->pnp.device_class,
++					dev_name(&adev->dev), event, 0);
+ }
+ 
+ static int acpi_thermal_get_trip_points(struct acpi_thermal *tz)
+@@ -812,14 +818,8 @@ static void acpi_thermal_notify(acpi_han
+ 		acpi_queue_thermal_check(tz);
+ 		break;
+ 	case ACPI_THERMAL_NOTIFY_THRESHOLDS:
+-		acpi_thermal_trips_update(tz, ACPI_TRIPS_THRESHOLDS);
+-		acpi_bus_generate_netlink_event(device->pnp.device_class,
+-						dev_name(&device->dev), event, 0);
+-		break;
+ 	case ACPI_THERMAL_NOTIFY_DEVICES:
+-		acpi_thermal_trips_update(tz, ACPI_TRIPS_DEVICES);
+-		acpi_bus_generate_netlink_event(device->pnp.device_class,
+-						dev_name(&device->dev), event, 0);
++		acpi_thermal_trips_update(tz, event);
+ 		break;
+ 	default:
+ 		acpi_handle_debug(device->handle, "Unsupported event [0x%x]\n",
 
 
 
