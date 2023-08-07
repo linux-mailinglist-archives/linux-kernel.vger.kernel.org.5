@@ -2,122 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5238C7718A8
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 04:58:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BA7F97718A9
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 04:59:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229562AbjHGC6l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 6 Aug 2023 22:58:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51110 "EHLO
+        id S229839AbjHGC7j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 6 Aug 2023 22:59:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52036 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229509AbjHGC6j (ORCPT
+        with ESMTP id S229509AbjHGC7g (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 6 Aug 2023 22:58:39 -0400
-Received: from EUR02-VI1-obe.outbound.protection.outlook.com (mail-vi1eur02on2062e.outbound.protection.outlook.com [IPv6:2a01:111:f400:fe16::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4874D1BD4
-        for <linux-kernel@vger.kernel.org>; Sun,  6 Aug 2023 19:58:03 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=LPgspxCYUnPMxnOVLNlzWU7aawQ7TkgHn4Hj0nd7VEdKPMlICNgFYnoP31HqnkULxc6AHCfqC7BBsxldJ/f30MTFmNXR+usPspMklyjdoLKJIc6l7TY4Jqi6Jgy4wNSJblCTVCluP3+I9cNIaqT/cTxB1YQB7+Ci0PR2CsZ5O14smH5dDiNxC242dJ8Fs69qObBfOW93I4aPkcEee3ZYmhJwDnokKjKthgOSUHcwUV2Q9rahECb5NJhgt3XzGJiVLqdDXvN6psTIYoLSTamNBEqTFdqNz9lbaPT7dn46ZY8nkDwMmogryiqTehCcYzBu+S7QpNrx9yHHhWy7Zlgexw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=pSnhIXHZqLzaZemwCYnQ6kgfCieZkYl3WQVdgcsW0kc=;
- b=ALMUzm5bzz4lc93o3Qswc9tUXGycV27cRRwCM7MVxaMx6Op/oA4SUU1VK+dfB9A/oRy8QcEto8Kg0ZSg1mHLvJt8SqQVRQh/o2ZkworK4LsTToL6ImOuVCOG0y68AKI9vRae1XfZ61hOGFgGE3KzuNshqss0NgO9mg6YGOm8kK4vOi4GGkoE1esr7RQYcDHFhtkkyBaNR3xo0JRjjtpIuKMVUZ16/NgMHTQV3zG1W+s3gMux+7nH8jfBHn+AyxWCHZGmB6vEWHe6XdZX93rTalUxU20/K6+ORlubaoBydIsH5BOp7H6zUlpPaUk904OywsMzhpQpbFvuGfmy0UKJrA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=pSnhIXHZqLzaZemwCYnQ6kgfCieZkYl3WQVdgcsW0kc=;
- b=l4r/Q3l5VaaARD/6HZ7ILqRYWhhKh8tXFxg1DD5LhE/5x4TOeGaDmTiAaz5d9qFNKyZhKLQ2Oe5fpAqQehOuBr+M1u9GPAbpNmOwNFxM0LU7mTNQw3IjaltbMUFJgwGV1fmcVpILEKsJB23vv3bkyUqEheKL0KeWRAWP3xvvJhk=
-Received: from DU0PR04MB9417.eurprd04.prod.outlook.com (2603:10a6:10:358::11)
- by AS4PR04MB9508.eurprd04.prod.outlook.com (2603:10a6:20b:4cb::22) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6652.25; Mon, 7 Aug
- 2023 02:57:18 +0000
-Received: from DU0PR04MB9417.eurprd04.prod.outlook.com
- ([fe80::5d6a:ec53:f2a8:5b97]) by DU0PR04MB9417.eurprd04.prod.outlook.com
- ([fe80::5d6a:ec53:f2a8:5b97%6]) with mapi id 15.20.6652.025; Mon, 7 Aug 2023
- 02:57:17 +0000
-From:   Peng Fan <peng.fan@nxp.com>
-To:     Shawn Guo <shawnguo@kernel.org>,
-        "Peng Fan (OSS)" <peng.fan@oss.nxp.com>
-CC:     "s.hauer@pengutronix.de" <s.hauer@pengutronix.de>,
-        "kernel@pengutronix.de" <kernel@pengutronix.de>,
-        "festevam@gmail.com" <festevam@gmail.com>,
-        dl-linux-imx <linux-imx@nxp.com>,
-        Aisheng Dong <aisheng.dong@nxp.com>,
-        "alexander.stein@ew.tq-group.com" <alexander.stein@ew.tq-group.com>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH V5 5/9] firmware: imx: scu: use EOPNOTSUPP
-Thread-Topic: [PATCH V5 5/9] firmware: imx: scu: use EOPNOTSUPP
-Thread-Index: AQHZw41v9JxAHPEEOku28K+vqFT2QK/eLcgAgAAAl5A=
-Date:   Mon, 7 Aug 2023 02:57:17 +0000
-Message-ID: <DU0PR04MB9417C47BDAC2BDF8D00B7DFE880CA@DU0PR04MB9417.eurprd04.prod.outlook.com>
-References: <20230731090449.2845997-1-peng.fan@oss.nxp.com>
- <20230731090449.2845997-6-peng.fan@oss.nxp.com>
- <20230807025412.GN151430@dragon>
-In-Reply-To: <20230807025412.GN151430@dragon>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nxp.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: DU0PR04MB9417:EE_|AS4PR04MB9508:EE_
-x-ms-office365-filtering-correlation-id: 4d8fdac7-cc3a-4ae2-e0b3-08db96f202d0
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: oNIrruT1XnZIQFSAWQ2WpfhJhRq5KeAxkUYTHMQSC4YQVCSKHaP1lCaeY2p3x8hh2xJTy6PxEhCwJyMd8SuRMAvRNgBQDLQhlfUHzWCPYgMr4PDo5j6uqX2wJ/JVaeCUheXw7zbrnXSTWm/qewuHrg0XSBWqc2XDBZwuIzIdBehR3J+S9BG6Uok8Lkw6Sm/rifkV3V5Vb1elYlLDRSozUp0cWcOrvfbMVf8NmxZVi8BHFu2n8HTLVqVggsEbLvw4pW2Dwtw6I2qT5w1IWtc04/5l2zuOJ1EI6uiaM7QVN2SUKdjaMuIRc5MoCB5cdMP//YLmlPuPGAiJkSj0xoEvV4/87+/OwyBBGZ+AKQfCpkL9P11fhP/ntnBrPqK1OUQpFDaq6wCpOhqkBzcncbkoXF4q7Sbs2dAuLUnRTzxLtkOSVhX3M4yPLeJNlWggGHkckHrHK9BaU3GgWatag7VJ70kUQEDL5BZbSYs2WUA92IsC7feMVohSnTsgCw7sZsTg15bht9vu6gGiaehZJGMPMDjx0YgahFBGRtOwY8voT1nrOEuerMozTEEVEnncc2s/jaSsLO8FMxHcCqtRgGQYv7C4aHF+3s7V957SVbO5IxTN0stvxgeq5hYleBbws3sL
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DU0PR04MB9417.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(366004)(376002)(346002)(396003)(136003)(39860400002)(1800799003)(186006)(451199021)(52536014)(38070700005)(41300700001)(26005)(2906002)(5660300002)(44832011)(83380400001)(8676002)(8936002)(55016003)(122000001)(478600001)(86362001)(316002)(33656002)(6506007)(7696005)(76116006)(54906003)(110136005)(38100700002)(66476007)(66556008)(64756008)(66446008)(71200400001)(66946007)(9686003)(4326008);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?56vTm901tDRdALp8zcln4ZO3gF6W6BdolF5aPBnzyZ/nV+ptLFoWfb61h9fJ?=
- =?us-ascii?Q?er8RZzWaAC7dBpkQQCvx5+T466RfX/9TvSgsJfSjisVTUAXFWCClSlmhg0Tm?=
- =?us-ascii?Q?QXtfjBZs7ZpowE/S8AyVQAydO0w8CyjF/JicN3fK1ke1bHVQ3btwXZDAYxCy?=
- =?us-ascii?Q?iBmyDykrfTL2A7/Xnry28/6RSz0c65HGS06ilZEI0WtZ8HJspzLRiAjew2OV?=
- =?us-ascii?Q?5CuM4y1l1hrOE+teh4QJNywkl0f5sA7Y9//OA5rImWH309YdGbZFjFGfe0kX?=
- =?us-ascii?Q?5YcLuVpqvTeQos136ifLQF2d72Uylo4MD11NPHl6wbnbwzL0AdV75d6Xp9Te?=
- =?us-ascii?Q?ez8dC87bXPy6EYLWmEaRGZkVakphZuZ2xz6KP+8QeVRB1/Mesjl28fyMw46x?=
- =?us-ascii?Q?HLlUuST1DLq3zmFjgEPJbUagdf7A+DDV7njcljfXLTYV2JbJ8glPMUAiWFRu?=
- =?us-ascii?Q?LoZFybeQpsONAXeyZBA+jGFDiDL/jIJNaBaDCoAge7uUlbmUWVVe7QPYGdI+?=
- =?us-ascii?Q?cdzeHV4YKSfkLrSTUvi2n483kkKWmqxa+TsfZn+NRsuYfJ3BLQ2pboubGgA+?=
- =?us-ascii?Q?jv/s3ENJw7vDrQytCRQcUEbXxnVtiOsmUAb89spXEa5xBWIXEzrTWySFhKlq?=
- =?us-ascii?Q?3G8qPQLisMGN8KPsZp+09vYt6SnlLWv7h9q12wyCxGqkteVbtpyJUBowku03?=
- =?us-ascii?Q?VGU+Z6SwX5EPPE409GwTS0GgC8njCd4JqYM9zpufHM0JWAbhAD2fIDpCRByR?=
- =?us-ascii?Q?kqvw+ReVRkUNDT8V2P7xQIbDmJaaqdKsrP994ko2oPaV+YzPHEEn/3MiZpmE?=
- =?us-ascii?Q?J9pvob5KPfOW2zhjL4v7vSaiAf7dyyjj6LBmm+lTnboQqDy3KqXKXtwj/y0o?=
- =?us-ascii?Q?fpz459txfXUNnx2J+Doeb2b1zroSsCvHpsf029Founx41kBQ0SCyuOT6nwSA?=
- =?us-ascii?Q?PJO0hLoc5sa8IdbIqWZcv/cmCtnGxcGQ1NbgwKKCH6IzYL4VgnCxHnAwTjf2?=
- =?us-ascii?Q?0ivpp9r/Z8+KnR/nn7tDCBtRTgqiBeC8RiC1WeLRccivgkAmwTOEoqJ1iMWB?=
- =?us-ascii?Q?Bj+y8yCDuIUwNRw5Qrc5IormiJM7t/emaO1Um8+LNO6kqLqITQDDM4MzcWHC?=
- =?us-ascii?Q?woHAH2uqldZ+mQyodG9DrQ27Ukj3s+HUhAcXMU3cUyjDIfAPZvWEfu7/uWjz?=
- =?us-ascii?Q?DDMdhGMPVxmzT6OPkjQaTjp6k0lOX9v/4BQqpGmOI0CVqWc/KTIUSvEHtq6P?=
- =?us-ascii?Q?UJ3SzQ0iq4SZgeTcaxoWJ7tCD2RxE6oGuUxA1FDbvILXjcq/GaHfDYyOKWC0?=
- =?us-ascii?Q?rinTvM0/3wI87+fKeZX7ZJPbDs6rY/2lSuOP3v36M40NC2GAQvEScOdC9i+/?=
- =?us-ascii?Q?5IcfS2BFJih9i2uCZka10KDKg2/qkz3L820x+41qNzpfCvCUnQzWsqVYFKec?=
- =?us-ascii?Q?VS2kpGbSDsLr/U0izfhObriVwKLrLIVNHkhbvpr0twUzjE/ZL2PpDXFhtD/5?=
- =?us-ascii?Q?5fT38ACxfMfEA8LKEpJk4bJJvpsQCRP3+Rp9uAvtEBLcWM46gg105SZpEK+s?=
- =?us-ascii?Q?gSOTgP+2ywnfBtiMnoY=3D?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        Sun, 6 Aug 2023 22:59:36 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D91B51BC9
+        for <linux-kernel@vger.kernel.org>; Sun,  6 Aug 2023 19:59:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1691377149; x=1722913149;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=hhK8/eSkfPAY2j7QLmWTNFc3IKIknwQ0SMdG8chi5Ms=;
+  b=NyuFAubPG4UVAqNpvA0q+N7a3/gk6K8oD/vgNTPCKeKCrQuQ6EtFBaMp
+   YqGj2OKiOthVNZHvf+Vk+PnQXK/Mr+ZczYCvDctnVuJeB5P/3G/MlXvM6
+   p+B4m0C9I+IAPqeG7hqDs3Fvz5Y429hWOgGlixg97xS3uvagYwiyYDPGs
+   ZYEAHmNopRNsJrfdDIiK3jj9NDK6CA69/ob8GnKM1lE/hVuZu0oPTQ3H2
+   e5sjSAmgw41i0dLvB2lILCJm7re+MbqMXwwIe7is6gwLQP/ZsrH3FxWKl
+   cvy5eVpDhOMynLlf6da7Xp+/ezeuAknFuFJhIUGC10VT+UNilRfhKUMPS
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10794"; a="434287516"
+X-IronPort-AV: E=Sophos;i="6.01,261,1684825200"; 
+   d="scan'208";a="434287516"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Aug 2023 19:59:09 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10794"; a="977268350"
+X-IronPort-AV: E=Sophos;i="6.01,261,1684825200"; 
+   d="scan'208";a="977268350"
+Received: from lkp-server01.sh.intel.com (HELO d1ccc7e87e8f) ([10.239.97.150])
+  by fmsmga006.fm.intel.com with ESMTP; 06 Aug 2023 19:59:07 -0700
+Received: from kbuild by d1ccc7e87e8f with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qSqSY-0004VD-2A;
+        Mon, 07 Aug 2023 02:59:06 +0000
+Date:   Mon, 7 Aug 2023 10:58:55 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Benjamin Gray <bgray@linux.ibm.com>
+Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>
+Subject: arch/powerpc/platforms/powermac/time.c:210:24: sparse: sparse: cast
+ removes address space '__iomem' of expression
+Message-ID: <202308071025.KCEf7Mhd-lkp@intel.com>
 MIME-Version: 1.0
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: DU0PR04MB9417.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 4d8fdac7-cc3a-4ae2-e0b3-08db96f202d0
-X-MS-Exchange-CrossTenant-originalarrivaltime: 07 Aug 2023 02:57:17.6195
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: pFn7I5BY6LscgLXIshOwTRLnP2jSTYBOYASzcFztJy5/cl5FjzutTJ/TRrUusek9S2tGJlszTbfgvEh7bRnyFQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AS4PR04MB9508
-X-Spam-Status: No, score=0.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,T_SPF_PERMERROR autolearn=no
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -125,69 +64,86 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Shawn,
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   52a93d39b17dc7eb98b6aa3edb93943248e03b2f
+commit: 86582e6189dd8f9f52c25d46c70fe5d111da6345 powerpc/powermac: Use early_* IO variants in via_calibrate_decr()
+date:   5 days ago
+config: powerpc-randconfig-r071-20230807 (https://download.01.org/0day-ci/archive/20230807/202308071025.KCEf7Mhd-lkp@intel.com/config)
+compiler: powerpc-linux-gcc (GCC) 12.3.0
+reproduce: (https://download.01.org/0day-ci/archive/20230807/202308071025.KCEf7Mhd-lkp@intel.com/reproduce)
 
-> Subject: Re: [PATCH V5 5/9] firmware: imx: scu: use EOPNOTSUPP
->=20
-> On Mon, Jul 31, 2023 at 05:04:45PM +0800, Peng Fan (OSS) wrote:
-> > From: Peng Fan <peng.fan@nxp.com>
-> >
-> > EOPNOTSUPP is preferred than ENOTSUPP.
->=20
-> Could you elaborate why?
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202308071025.KCEf7Mhd-lkp@intel.com/
 
-From checkpatch.pl:
-"ENOTSUPP is not a SUSV4 error code, prefer EOPNOTSUPP"
-I could add this in commit message if you prefer.
+sparse warnings: (new ones prefixed by >>)
+>> arch/powerpc/platforms/powermac/time.c:210:24: sparse: sparse: cast removes address space '__iomem' of expression
+>> arch/powerpc/platforms/powermac/time.c:210:24: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void [noderef] __iomem *addr @@     got void * @@
+   arch/powerpc/platforms/powermac/time.c:210:24: sparse:     expected void [noderef] __iomem *addr
+   arch/powerpc/platforms/powermac/time.c:210:24: sparse:     got void *
+   arch/powerpc/platforms/powermac/time.c:192:30: sparse: sparse: dereference of noderef expression
+   arch/powerpc/platforms/powermac/time.c:192:30: sparse: sparse: dereference of noderef expression
+   arch/powerpc/platforms/powermac/time.c:196:27: sparse: sparse: cast truncates bits from constant value (b798 becomes 98)
 
-Thanks,
-Peng.
+vim +/__iomem +210 arch/powerpc/platforms/powermac/time.c
 
->=20
-> Shawn
->=20
-> >
-> > Signed-off-by: Peng Fan <peng.fan@nxp.com>
-> > ---
-> >  include/linux/firmware/imx/sci.h | 10 +++++-----
-> >  1 file changed, 5 insertions(+), 5 deletions(-)
-> >
-> > diff --git a/include/linux/firmware/imx/sci.h
-> > b/include/linux/firmware/imx/sci.h
-> > index 5cc63fe7e84d..7fa0f3b329b5 100644
-> > --- a/include/linux/firmware/imx/sci.h
-> > +++ b/include/linux/firmware/imx/sci.h
-> > @@ -25,27 +25,27 @@ int imx_scu_soc_init(struct device *dev);  #else
-> > static inline int imx_scu_soc_init(struct device *dev)  {
-> > -	return -ENOTSUPP;
-> > +	return -EOPNOTSUPP;
-> >  }
-> >
-> >  static inline int imx_scu_enable_general_irq_channel(struct device
-> > *dev)  {
-> > -	return -ENOTSUPP;
-> > +	return -EOPNOTSUPP;
-> >  }
-> >
-> >  static inline int imx_scu_irq_register_notifier(struct notifier_block
-> > *nb)  {
-> > -	return -ENOTSUPP;
-> > +	return -EOPNOTSUPP;
-> >  }
-> >
-> >  static inline int imx_scu_irq_unregister_notifier(struct
-> > notifier_block *nb)  {
-> > -	return -ENOTSUPP;
-> > +	return -EOPNOTSUPP;
-> >  }
-> >
-> >  static inline int imx_scu_irq_group_enable(u8 group, u32 mask, u8
-> > enable)  {
-> > -	return -ENOTSUPP;
-> > +	return -EOPNOTSUPP;
-> >  }
-> >  #endif
-> >  #endif /* _SC_SCI_H */
-> > --
-> > 2.37.1
-> >
+   161	
+   162	#ifdef CONFIG_PPC32
+   163	/*
+   164	 * Calibrate the decrementer register using VIA timer 1.
+   165	 * This is used both on powermacs and CHRP machines.
+   166	 */
+   167	static int __init via_calibrate_decr(void)
+   168	{
+   169		struct device_node *vias;
+   170		volatile unsigned char __iomem *via;
+   171		int count = VIA_TIMER_FREQ_6 / 100;
+   172		unsigned int dstart, dend;
+   173		struct resource rsrc;
+   174	
+   175		vias = of_find_node_by_name(NULL, "via-cuda");
+   176		if (vias == NULL)
+   177			vias = of_find_node_by_name(NULL, "via-pmu");
+   178		if (vias == NULL)
+   179			vias = of_find_node_by_name(NULL, "via");
+   180		if (vias == NULL || of_address_to_resource(vias, 0, &rsrc)) {
+   181		        of_node_put(vias);
+   182			return 0;
+   183		}
+   184		of_node_put(vias);
+   185		via = early_ioremap(rsrc.start, resource_size(&rsrc));
+   186		if (via == NULL) {
+   187			printk(KERN_ERR "Failed to map VIA for timer calibration !\n");
+   188			return 0;
+   189		}
+   190	
+   191		/* set timer 1 for continuous interrupts */
+   192		out_8(&via[ACR], (via[ACR] & ~T1MODE) | T1MODE_CONT);
+   193		/* set the counter to a small value */
+   194		out_8(&via[T1CH], 2);
+   195		/* set the latch to `count' */
+   196		out_8(&via[T1LL], count);
+   197		out_8(&via[T1LH], count >> 8);
+   198		/* wait until it hits 0 */
+   199		while ((in_8(&via[IFR]) & T1_INT) == 0)
+   200			;
+   201		dstart = get_dec();
+   202		/* clear the interrupt & wait until it hits 0 again */
+   203		in_8(&via[T1CL]);
+   204		while ((in_8(&via[IFR]) & T1_INT) == 0)
+   205			;
+   206		dend = get_dec();
+   207	
+   208		ppc_tb_freq = (dstart - dend) * 100 / 6;
+   209	
+ > 210		early_iounmap((void *)via, resource_size(&rsrc));
+   211	
+   212		return 1;
+   213	}
+   214	#endif
+   215	
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
