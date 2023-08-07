@@ -2,58 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 55FDE772C96
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 19:18:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 17554772C9A
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 19:19:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232161AbjHGRSz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Aug 2023 13:18:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48502 "EHLO
+        id S232138AbjHGRTT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Aug 2023 13:19:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48512 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232584AbjHGRSf (ORCPT
+        with ESMTP id S232056AbjHGRSw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Aug 2023 13:18:35 -0400
-Received: from mail-ot1-x329.google.com (mail-ot1-x329.google.com [IPv6:2607:f8b0:4864:20::329])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F6BD1A3
-        for <linux-kernel@vger.kernel.org>; Mon,  7 Aug 2023 10:18:10 -0700 (PDT)
-Received: by mail-ot1-x329.google.com with SMTP id 46e09a7af769-6bca88c3487so3942732a34.2
-        for <linux-kernel@vger.kernel.org>; Mon, 07 Aug 2023 10:18:10 -0700 (PDT)
+        Mon, 7 Aug 2023 13:18:52 -0400
+Received: from mail-oo1-xc32.google.com (mail-oo1-xc32.google.com [IPv6:2607:f8b0:4864:20::c32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC4E81BF7
+        for <linux-kernel@vger.kernel.org>; Mon,  7 Aug 2023 10:18:44 -0700 (PDT)
+Received: by mail-oo1-xc32.google.com with SMTP id 006d021491bc7-56d8bc0d909so753694eaf.3
+        for <linux-kernel@vger.kernel.org>; Mon, 07 Aug 2023 10:18:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1691428689; x=1692033489;
+        d=gmail.com; s=20221208; t=1691428724; x=1692033524;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=XV34gRN59NUXgPyKRqnl/Sn4kJFEpMQBDpWvtbTAeLk=;
-        b=c8QS/POYZDVCy+zrr7lKWNWXC1LM0EjzSsNlMdfGnQH3HUcEzwfacv4W3XGqZFp1Nx
-         kqHHS3BhtciMnfLsrjTBDvV1/2qxBs4wDwzlquknrAjdmd5I3cvtcGCsX/TdtH0O/X7S
-         b5LtGKzhVpfodzCbifmnJ1xF/tJTP/JljGD/n8+5hJD4r4ObNJCi3Bii09hyxjE4Gksc
-         VnSElVbQDzM3AONVcHv0+RcIm8YZtPxMH6As44T9anuJXJEoE2OPNh81HFxgQmW3Zf9p
-         wut85O+rkynHPJwkzc+kqz5QWNcuRbm4hPpji3ijwLl28N/8AqtN9DYT4OFiYZeshZli
-         OHfg==
+        bh=47Rr/3UghjkQtHtnUD+LxrBoaPTikVLYxh6ulykjDi4=;
+        b=TXhdtRQx2FmIOpLDtEf2CxM8TfUx3IKKt43guRPsVD2I3e4VN3U1DDE6vxswepiKXP
+         yGtAbi42pg1rMhZ9WzSDjb35zj1EfeEnluDaJXoCZlZ+Kb4BC9IzChR68EnOGYYU1YRk
+         VaJ+VLFCKRH6wNX0aBWNept//AvlhiMtw8+yoo7czF8t4y7vULYHopiFRjN5Rf5DKjza
+         caXIkPnUuPq6mlz9TfNqNx0EtoHC+7oejVkQPJ1VDo603Vi+IFDDOpQHbrdpjsUR5TP6
+         rbIbxEuhlCrDMrK0eyPH7OKj1NPuAaZ3bBlsy5LWwk3rFYf4UIoUQpK4G6kOxSSd2KpS
+         yMeQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691428689; x=1692033489;
+        d=1e100.net; s=20221208; t=1691428724; x=1692033524;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=XV34gRN59NUXgPyKRqnl/Sn4kJFEpMQBDpWvtbTAeLk=;
-        b=SPjBvInV7JsRqqe4HapfBl5eicQfQ6n2MropWutYqzSVgE1b4jkaAFFuKUcgNhrGRf
-         J2Uu776RTb7dvOs1+mKOBBGLSvWAE9Wat10PQImrVsMoUu54w1ntDLjEEF0FRmiMXamp
-         aPmSe1IFQBneHiOocUVgezFydLr6Kf1FlyoGLTAsYkTyn35i9UuPzmwxcQrOfH2hMsxk
-         RkyrivMotF2XqK5pjU9gMm6u1EY+GYpaeSEUabkl+x3ik7bn0psHm0HnIkZQ0a8YQpTu
-         jksIqL8IozGE8dpxbTqmFhlkZ0aan0qitj8DfgYx3q7RkfR21hKbDKq55Wtxu+SOe8pF
-         Avpg==
-X-Gm-Message-State: AOJu0Yxvyno/72dXloLbVMiANRzk4WKgiLoAlB5f5qx6EMjoanhgLky3
-        hD9hIJt0X6QDz0G7qXPMvhWsjA7Ia1yHVdwQnaQ=
-X-Google-Smtp-Source: AGHT+IEqb0XN5+AviKjgEtzF5xxq33xiyN7TQ2h94ZssjX8/OEf4jSCH08clopGvmS9RGtf1fE6Uau80c6mGy5akoQA=
-X-Received: by 2002:a05:6870:63a3:b0:1bb:a359:b909 with SMTP id
- t35-20020a05687063a300b001bba359b909mr11694940oap.55.1691428689591; Mon, 07
- Aug 2023 10:18:09 -0700 (PDT)
+        bh=47Rr/3UghjkQtHtnUD+LxrBoaPTikVLYxh6ulykjDi4=;
+        b=T8ngcRKPKTen/X8g+zYhiz9H5N00nr2NuMJKrAtr1lN2Dw+6RqaAyA9V+iSvc9D0ng
+         CR0mxouumoGBqavOeaXVpQP3oMooDOwYMJZngVse5BY5p6Mq0hKVTWKp+vcSycuKCgYY
+         Y1SJJQQO1dX0T+UIbrH+3GkF2f+DlSh3uvWtL9PE3Rqs+uNMFFNDrg5nTQfmAGJZ7fib
+         OHqmvVkqSrNtzFgYaLnHUhPwXqlkJq3ZDpLtkhSUoTwout97+e+RcjW1F+Ocdy3zH+mA
+         PyMprwUYpPSPtFTykenexcFCXH+aMMDHoGkcMUAIX+AjFSzBLYy0SurynxrTgzbypQq5
+         NE0Q==
+X-Gm-Message-State: AOJu0Yw+4pScc4sSSVPM1yqDW7+2Ofn0BPpwebwA30SoOQi06GbAGNGc
+        K3JJhNsFaaLENaBlPtBqDI8WzAW0yxv8wYGkGMg=
+X-Google-Smtp-Source: AGHT+IGoKOewF1vuvkvqzojnNhMFKp4viXf3zxLKQiaT0fZK5/PbD41GPWSxmCvC11eqAMgQJxf7OuNGuEVeUXHX33Q=
+X-Received: by 2002:a4a:8554:0:b0:567:27f4:8c45 with SMTP id
+ l20-20020a4a8554000000b0056727f48c45mr8880807ooh.8.1691428724196; Mon, 07 Aug
+ 2023 10:18:44 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230802064333.11895-1-sunran001@208suo.com>
-In-Reply-To: <20230802064333.11895-1-sunran001@208suo.com>
+References: <20230802064606.12005-1-sunran001@208suo.com>
+In-Reply-To: <20230802064606.12005-1-sunran001@208suo.com>
 From:   Alex Deucher <alexdeucher@gmail.com>
-Date:   Mon, 7 Aug 2023 13:17:58 -0400
-Message-ID: <CADnq5_MmBnK5sq=LVfJa9hWyN23XQ=TRvw15ns28sm+G7E=9aA@mail.gmail.com>
-Subject: Re: [PATCH] drm/amdgpu: Clean up errors in ih_v6_0.c
+Date:   Mon, 7 Aug 2023 13:18:33 -0400
+Message-ID: <CADnq5_P6JgNkvrV69LDc7xcbOnLD9suUfdBnxK0NR+mHPLwyAA@mail.gmail.com>
+Subject: Re: [PATCH] drm/amdgpu: Clean up errors in vega20_ih.c
 To:     Ran Sun <sunran001@208suo.com>
 Cc:     alexander.deucher@amd.com, dri-devel@lists.freedesktop.org,
         amd-gfx@lists.freedesktop.org, linux-kernel@vger.kernel.org
@@ -71,7 +71,7 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Applied.  Thanks!
 
-On Wed, Aug 2, 2023 at 2:43=E2=80=AFAM Ran Sun <sunran001@208suo.com> wrote=
+On Wed, Aug 2, 2023 at 2:46=E2=80=AFAM Ran Sun <sunran001@208suo.com> wrote=
 :
 >
 > Fix the following errors reported by checkpatch:
@@ -81,18 +81,18 @@ On Wed, Aug 2, 2023 at 2:43=E2=80=AFAM Ran Sun <sunran001@208suo.com> wrote=
 >
 > Signed-off-by: Ran Sun <sunran001@208suo.com>
 > ---
->  drivers/gpu/drm/amd/amdgpu/ih_v6_0.c | 6 +++---
+>  drivers/gpu/drm/amd/amdgpu/vega20_ih.c | 6 +++---
 >  1 file changed, 3 insertions(+), 3 deletions(-)
 >
-> diff --git a/drivers/gpu/drm/amd/amdgpu/ih_v6_0.c b/drivers/gpu/drm/amd/a=
-mdgpu/ih_v6_0.c
-> index 980b24120080..ec0c8f8b465a 100644
-> --- a/drivers/gpu/drm/amd/amdgpu/ih_v6_0.c
-> +++ b/drivers/gpu/drm/amd/amdgpu/ih_v6_0.c
-> @@ -494,7 +494,8 @@ static int ih_v6_0_self_irq(struct amdgpu_device *ade=
-v,
->                 *adev->irq.ih1.wptr_cpu =3D wptr;
->                 schedule_work(&adev->irq.ih1_work);
+> diff --git a/drivers/gpu/drm/amd/amdgpu/vega20_ih.c b/drivers/gpu/drm/amd=
+/amdgpu/vega20_ih.c
+> index 544ee55a22da..dbc99536440f 100644
+> --- a/drivers/gpu/drm/amd/amdgpu/vega20_ih.c
+> +++ b/drivers/gpu/drm/amd/amdgpu/vega20_ih.c
+> @@ -500,7 +500,8 @@ static int vega20_ih_self_irq(struct amdgpu_device *a=
+dev,
+>         case 2:
+>                 schedule_work(&adev->irq.ih2_work);
 >                 break;
 > -       default: break;
 > +       default:
@@ -100,17 +100,17 @@ v,
 >         }
 >         return 0;
 >  }
-> @@ -759,8 +760,7 @@ static void ih_v6_0_set_interrupt_funcs(struct amdgpu=
-_device *adev)
->         adev->irq.ih_funcs =3D &ih_v6_0_funcs;
+> @@ -710,8 +711,7 @@ static void vega20_ih_set_interrupt_funcs(struct amdg=
+pu_device *adev)
+>         adev->irq.ih_funcs =3D &vega20_ih_funcs;
 >  }
 >
-> -const struct amdgpu_ip_block_version ih_v6_0_ip_block =3D
+> -const struct amdgpu_ip_block_version vega20_ih_ip_block =3D
 > -{
-> +const struct amdgpu_ip_block_version ih_v6_0_ip_block =3D {
+> +const struct amdgpu_ip_block_version vega20_ih_ip_block =3D {
 >         .type =3D AMD_IP_BLOCK_TYPE_IH,
->         .major =3D 6,
->         .minor =3D 0,
+>         .major =3D 4,
+>         .minor =3D 2,
 > --
 > 2.17.1
 >
