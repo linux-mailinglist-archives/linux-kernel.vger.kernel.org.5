@@ -2,129 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D169772AE5
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 18:32:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DDE6E772AE4
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 18:32:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229827AbjHGQcq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Aug 2023 12:32:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39724 "EHLO
+        id S229686AbjHGQcg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Aug 2023 12:32:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39434 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229512AbjHGQcp (ORCPT
+        with ESMTP id S229512AbjHGQce (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Aug 2023 12:32:45 -0400
-Received: from mail-oa1-x29.google.com (mail-oa1-x29.google.com [IPv6:2001:4860:4864:20::29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0AD421BEA
-        for <linux-kernel@vger.kernel.org>; Mon,  7 Aug 2023 09:32:26 -0700 (PDT)
-Received: by mail-oa1-x29.google.com with SMTP id 586e51a60fabf-1a1fa977667so3589148fac.1
-        for <linux-kernel@vger.kernel.org>; Mon, 07 Aug 2023 09:32:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1691425945; x=1692030745;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ygTIUkZv7ZsC1Ak6vtB58w1LRxko3ruoE1DG7vp7o7g=;
-        b=LAXiJfRVuW487oHewQhGBJPinFMxMoTRw/6b/moPXJpsf1IV75KV9K92HO/autzoOR
-         rRg0qd7U7Rch7Wyf05kMunfAcflWrTpZGS9VV080lDEDu+ZywvmMy7A8gT0slXNWrPOe
-         VGhzlgOl2baKd3H6Y0Dqk1IvndoCx0uzmJ5fYVvf10TVZ9mIbR3WgwKEoIf15uhtr396
-         g8OpYuIEtz1oW37MOQbIRoZUsuF9g6VwQHNKQpH0H2IF/L9A0cZ6mmMT9DXr5lwXXGXT
-         dmvkYZG6pmghrVNBKPdjcPL8+A5MZfAaP7jF0+JZrPvfYJvw9ZtPhd8VI7tmcNLTh3A6
-         Xl2Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691425945; x=1692030745;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=ygTIUkZv7ZsC1Ak6vtB58w1LRxko3ruoE1DG7vp7o7g=;
-        b=bVb8N90GS0XiX/v+U07wnG+9CZhqw1rAPqcexl9x9o6jJDgFO+V6MYeqduT4/sUt90
-         8QkxsjzMVi95UrPTWExxsAHTNmo+dOVHvHWNie9K5QVr3pR+EmfH3ZAHUx2lvwqYHLGV
-         ddYb0e8CgR6Pjo4FX6XtkwDmL+tLpx6bd4npHBElcD+XLT/t74+VyQH1EhPxLqlMMRzI
-         IK8tBzf2Bl8uw8GTfFodIQdqUzx9ThOwDdNWoQP2MSofRmeDd0k4LWCGZ4dhwVTTNQy+
-         qUBxWvbJtfe21ejCxt3a15dMabeYxrZwVrTcu4iLAlSbAKbFxNuobBQLEFtF4mA/xMbJ
-         3Xmw==
-X-Gm-Message-State: AOJu0Yy+MQWLKnkQtPj1aNGXV3YCqy/x0zrClXgK6Q7jKLZv8zD6jI55
-        wAKN3Vp4e4xepbSo0gsjXRbNtq0F9q+F0n1CHQhxgnu3
-X-Google-Smtp-Source: AGHT+IFADLzDrmJBNqD0h6jZKZIbu6BHvz8y++9SQhxMWpdkTVMzHfELTGfP1WMkMgGjfOdSRul6Lm9Zr3/E55f5C9o=
-X-Received: by 2002:a05:6870:8294:b0:1bb:8333:ab8a with SMTP id
- q20-20020a056870829400b001bb8333ab8amr10538221oae.4.1691425945123; Mon, 07
- Aug 2023 09:32:25 -0700 (PDT)
-MIME-Version: 1.0
-References: <20230801055826.6000-1-sunran001@208suo.com>
-In-Reply-To: <20230801055826.6000-1-sunran001@208suo.com>
-From:   Alex Deucher <alexdeucher@gmail.com>
-Date:   Mon, 7 Aug 2023 12:32:14 -0400
-Message-ID: <CADnq5_PJZ-vS+p8ky1C2LFPEfp6bVfTMveL7wFeKKytwvqePgw@mail.gmail.com>
-Subject: Re: [PATCH] drm/amd/pm: Clean up errors in vega10_hwmgr.c
-To:     Ran Sun <sunran001@208suo.com>
-Cc:     alexander.deucher@amd.com, airlied@gmail.com, daniel@ffwll.ch,
-        dri-devel@lists.freedesktop.org, amd-gfx@lists.freedesktop.org,
+        Mon, 7 Aug 2023 12:32:34 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4771B1990;
+        Mon,  7 Aug 2023 09:32:18 -0700 (PDT)
+Date:   Mon, 07 Aug 2023 16:32:15 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1691425936;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=7JbN7AUthEz7Vb7oogc8x3K5whakgGYbtVj1/LIYwlc=;
+        b=cwgTTGMz+jF3/LFgoiJwfRit/zX7oXyODUv6t2oiEZsgWuRDZgALeRHZwAu8Mel303eD39
+        lGrrilrxMCWwvGqps7K8YlaRC5n7qpICmvg/qcolwzC/WqA9H5CouXUVWFaipqtyDEjIh1
+        KAaarvAxpbTOLinHtqPwyjQUrWcZ9zScvHBiRvAj/Z0emqqqqSIfZ1YhLvs7BoPHL1U8Lo
+        6RuUqvQghBHCeo5WDnaRF47T6bffMUOPlNq9LKQ7OD8oqOup9YI7Hy4niODVkF/54eqHVX
+        T1EbqpLcFnf4yRs7knWvudmwLE4flQQdA7k0LuZitvrWiIgTWSqFNyz5iT0WnA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1691425936;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=7JbN7AUthEz7Vb7oogc8x3K5whakgGYbtVj1/LIYwlc=;
+        b=LarKtNU1T8yPtvk167NtRLqNf0saNVuRybu8mHeaO4wDKdv2D9qwODUCUqfzX/R4C5iosk
+        gFJQ2QWdBdm27RAA==
+From:   "tip-bot2 for Yue Haibing" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: smp/core] cpu/hotplug: Remove unused function declaration
+ cpu_set_state_online()
+Cc:     Yue Haibing <yuehaibing@huawei.com>,
+        Thomas Gleixner <tglx@linutronix.de>, x86@kernel.org,
         linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <20230805110406.45900-1-yuehaibing@huawei.com>
+References: <20230805110406.45900-1-yuehaibing@huawei.com>
+MIME-Version: 1.0
+Message-ID: <169142593560.28540.9353044579569007442.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This one doesn't apply due to whitespace differences.
+The following commit has been merged into the smp/core branch of tip:
 
-Alex
+Commit-ID:     33af38d85b5c9e8ffe26f9712319ed28c5ded64f
+Gitweb:        https://git.kernel.org/tip/33af38d85b5c9e8ffe26f9712319ed28c5ded64f
+Author:        Yue Haibing <yuehaibing@huawei.com>
+AuthorDate:    Sat, 05 Aug 2023 19:04:06 +08:00
+Committer:     Thomas Gleixner <tglx@linutronix.de>
+CommitterDate: Mon, 07 Aug 2023 18:22:42 +02:00
 
-On Tue, Aug 1, 2023 at 1:58=E2=80=AFAM Ran Sun <sunran001@208suo.com> wrote=
-:
->
-> Fix the following errors reported by checkpatch:
->
-> ERROR: trailing statements should be on next line
-> ERROR: space required before the open brace '{'
-> ERROR: space required before the open parenthesis '('
-> ERROR: space required after that ',' (ctx:VxV)
->
-> Signed-off-by: Ran Sun <sunran001@208suo.com>
-> ---
->  .../drm/amd/pm/powerplay/hwmgr/vega10_hwmgr.c  | 18 ++++++++++++------
->  1 file changed, 12 insertions(+), 6 deletions(-)
->
-> diff --git a/drivers/gpu/drm/amd/pm/powerplay/hwmgr/vega10_hwmgr.c b/driv=
-ers/gpu/drm/amd/pm/powerplay/hwmgr/vega10_hwmgr.c
-> index 08518bc1cbbe..ba7294daddfe 100644
-> --- a/drivers/gpu/drm/amd/pm/powerplay/hwmgr/vega10_hwmgr.c
-> +++ b/drivers/gpu/drm/amd/pm/powerplay/hwmgr/vega10_hwmgr.c
-> @@ -670,17 +670,23 @@ static int vega10_patch_voltage_dependency_tables_w=
-ith_lookup_table(
->         for (i =3D 0; i < 6; i++) {
->                 struct phm_ppt_v1_clock_voltage_dependency_table *vdt;
->                 switch (i) {
-> -               case 0: vdt =3D table_info->vdd_dep_on_socclk;
-> +               case 0:
-> +                       vdt =3D table_info->vdd_dep_on_socclk;
->                         break;
-> -               case 1: vdt =3D table_info->vdd_dep_on_sclk;
-> +               case 1:
-> +                       vdt =3D table_info->vdd_dep_on_sclk;
->                         break;
-> -               case 2: vdt =3D table_info->vdd_dep_on_dcefclk;
-> +               case 2:
-> +                       vdt =3D table_info->vdd_dep_on_dcefclk;
->                         break;
-> -               case 3: vdt =3D table_info->vdd_dep_on_pixclk;
-> +               case 3:
-> +                       vdt =3D table_info->vdd_dep_on_pixclk;
->                         break;
-> -               case 4: vdt =3D table_info->vdd_dep_on_dispclk;
-> +               case 4:
-> +                       vdt =3D table_info->vdd_dep_on_dispclk;
->                         break;
-> -               case 5: vdt =3D table_info->vdd_dep_on_phyclk;
-> +               case 5:
-> +                       vdt =3D table_info->vdd_dep_on_phyclk;
->                         break;
->                 }
->
-> --
-> 2.17.1
->
+cpu/hotplug: Remove unused function declaration cpu_set_state_online()
+
+Commit 5356297d12d9 ("cpu/hotplug: Remove cpu_report_state() and related unused cruft")
+removed function but leave the declaration.
+
+Signed-off-by: Yue Haibing <yuehaibing@huawei.com>
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Link: https://lore.kernel.org/r/20230805110406.45900-1-yuehaibing@huawei.com
+
+---
+ include/linux/cpu.h | 1 -
+ 1 file changed, 1 deletion(-)
+
+diff --git a/include/linux/cpu.h b/include/linux/cpu.h
+index 6b326a9..ed56b25 100644
+--- a/include/linux/cpu.h
++++ b/include/linux/cpu.h
+@@ -191,7 +191,6 @@ void arch_cpu_finalize_init(void);
+ static inline void arch_cpu_finalize_init(void) { }
+ #endif
+ 
+-void cpu_set_state_online(int cpu);
+ void play_idle_precise(u64 duration_ns, u64 latency_ns);
+ 
+ static inline void play_idle(unsigned long duration_us)
