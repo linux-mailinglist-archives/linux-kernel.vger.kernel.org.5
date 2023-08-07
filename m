@@ -2,88 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B9D1E7727D0
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 16:31:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D7B87727D4
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 16:33:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233941AbjHGObn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Aug 2023 10:31:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44766 "EHLO
+        id S233996AbjHGOdc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Aug 2023 10:33:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45572 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232465AbjHGObl (ORCPT
+        with ESMTP id S232465AbjHGOda (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Aug 2023 10:31:41 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43E4BAA
-        for <linux-kernel@vger.kernel.org>; Mon,  7 Aug 2023 07:31:40 -0700 (PDT)
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id 04FCF21AD5;
-        Mon,  7 Aug 2023 14:31:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1691418699; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=4fOeICDyT7K2QTKRJ6MV/fDafXjEn/AufQ8OCjlhJmc=;
-        b=puqzPyxhDS8ihrRf7XaMDxl1YL8jIPCi/Ga1d289a63yhac0KgN5cQaEGTMDjJJXoTqFlz
-        upyj4HIHL5ISq9mQ8GCQDEshQyCEwPXxCKW2USu/qL8RndfTxybR14Ob4/BR0WJ+9gPiA1
-        OE2/xx3GVn9eTxXE6xVB4hj3bcPNYPA=
-Received: from suse.cz (unknown [10.100.201.202])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id 5E5292C142;
-        Mon,  7 Aug 2023 14:31:38 +0000 (UTC)
-Date:   Mon, 7 Aug 2023 16:31:37 +0200
-From:   Petr Mladek <pmladek@suse.com>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     Marco Elver <elver@google.com>, linux-kernel@vger.kernel.org,
-        kasan-dev@googlegroups.com, linux-mm@kvack.org,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Alexander Potapenko <glider@google.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>
-Subject: Re: [PATCH v2 1/3] lib/vsprintf: Sort headers alphabetically
-Message-ID: <ZNEASXq6SNS5oIu1@alley>
-References: <20230805175027.50029-1-andriy.shevchenko@linux.intel.com>
- <20230805175027.50029-2-andriy.shevchenko@linux.intel.com>
+        Mon, 7 Aug 2023 10:33:30 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.151])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A03210DC;
+        Mon,  7 Aug 2023 07:33:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1691418809; x=1722954809;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=TRDCLFDgzgMsAH800OlISo9NPJHoNGEwoCEGo3ugJME=;
+  b=dHo4qmBC8osqA8qh+/9mRCMBokFuBX8/d7pRc6TO0na+2DLI12F7/Bzy
+   u3MhLMZwpt89hko6rJC0sDk2iKqkH/k9uLn9lOrtvIXFQwckGHp/JbblR
+   jWpe0mpRMexjLzby7sIlhETHvIochznBJ7qeM/H5BzF1CsBe8YB/PXKyO
+   P6P4JleXWGIwZB5RO5hv0gBCysVWRs0U5I6wHZ61GHsSxpkzd9ZmKbOW+
+   u+A63hyg5tC3xa4QHTmRxR6sxr3y7cVLF7b4Rzgegca1wrJOV7XfI+Cq7
+   S+MesuifdmNQFsHN/4koD5SHUsA/Kbem4uNn1Caq8oE2LyQcanEGmA+D7
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10795"; a="350867078"
+X-IronPort-AV: E=Sophos;i="6.01,262,1684825200"; 
+   d="scan'208";a="350867078"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Aug 2023 07:32:54 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10795"; a="977465850"
+X-IronPort-AV: E=Sophos;i="6.01,262,1684825200"; 
+   d="scan'208";a="977465850"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by fmsmga006.fm.intel.com with ESMTP; 07 Aug 2023 07:32:52 -0700
+Received: from andy by smile.fi.intel.com with local (Exim 4.96)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1qT1Hu-00FTgr-1x;
+        Mon, 07 Aug 2023 17:32:50 +0300
+Date:   Mon, 7 Aug 2023 17:32:50 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Andi Shyti <andi.shyti@kernel.org>
+Cc:     Jarkko Nikula <jarkko.nikula@linux.intel.com>,
+        Mario Limonciello <mario.limonciello@amd.com>,
+        Wolfram Sang <wsa@kernel.org>, linux-i2c@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Jan Dabros <jsd@semihalf.com>
+Subject: Re: [PATCH v1 4/9] i2c: designware: Propagate firmware node
+Message-ID: <ZNEAklbEI5wbjv7l@smile.fi.intel.com>
+References: <20230725143023.86325-1-andriy.shevchenko@linux.intel.com>
+ <20230725143023.86325-5-andriy.shevchenko@linux.intel.com>
+ <f0e0c31e-ad5e-c3ae-945e-c2af0d68beab@linux.intel.com>
+ <ZMgU9Jm4u37D+70Y@smile.fi.intel.com>
+ <20230804205956.uuna4c76ww64z3zm@intel.intel>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230805175027.50029-2-andriy.shevchenko@linux.intel.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20230804205956.uuna4c76ww64z3zm@intel.intel>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat 2023-08-05 20:50:25, Andy Shevchenko wrote:
-> Sorting headers alphabetically helps locating duplicates, and
-> make it easier to figure out where to insert new headers.
+On Fri, Aug 04, 2023 at 10:59:56PM +0200, Andi Shyti wrote:
+> On Mon, Jul 31, 2023 at 11:09:24PM +0300, Andy Shevchenko wrote:
+> > On Fri, Jul 28, 2023 at 03:25:58PM +0300, Jarkko Nikula wrote:
+> > > On 7/25/23 17:30, Andy Shevchenko wrote:
+> > > > Propagate firmware node by using a specific API call, i.e. device_set_node().
 
-I agree that includes become a mess after some time. But I am
-not persuaded that sorting them alphabetically in random source
-files help anything.
+...
 
-Is this part of some grand plan for the entire kernel, please?
-Is this outcome from some particular discussion?
-Will this become a well know rule checked by checkpatch.pl?
+> > > > +	device_set_node(&dev->adapter.dev, dev_fwnode(dev->dev));
+> > > 
+> > > Would this be better to put in the same place where ACPI_COMPANION_SET() is
+> > > removed like below? I'd keep this static inline function in the header file
+> > > as simple as possible. All extra code might invite adding even more.
+> > 
+> > We come again to the duplication and prone to deviation code, I wouldn't like
+> > to go this way. The idea of this call is to unify and avoid mistakes, like
+> > updating only in ACPI or DT (or any new one if happens in the future) case
+> > and leaving the second one unconsidered.
+> 
+> it's anyway an inline function becoming a bit too fat. Can't we
+> make it not inline?
+> 
+> > That said, I would rather drop this patch until i2c core will take this
+> > once for all (may be never in the reasonable future :-).
+> 
+> Which patch are you referring to that should be taken into i2c
+> core?
 
-I am personally not going to reject patches because of wrongly
-sorted headers unless there is some real plan behind it.
+Something I tried to do in the past but failed.
+https://lore.kernel.org/linux-i2c/20211207162457.18450-1-andriy.shevchenko@linux.intel.com/
 
-I agree that it might look better. An inverse Christmas' tree
-also looks better. But it does not mean that it makes the life
-easier. The important things are still hidden in the details
-(every single line).
+-- 
+With Best Regards,
+Andy Shevchenko
 
-From my POV, this patch would just create a mess in the git
-history and complicate backporting.
 
-I am sorry but I will not accept this patch unless there
-is a wide consensus that this makes sense.
-
-Best Regards,
-Petr
