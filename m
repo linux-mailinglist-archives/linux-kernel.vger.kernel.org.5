@@ -2,68 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2EA18772CC5
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 19:24:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 01F50772CA6
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 19:20:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232267AbjHGRX4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Aug 2023 13:23:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58288 "EHLO
+        id S231567AbjHGRUr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Aug 2023 13:20:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53308 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232238AbjHGRXx (ORCPT
+        with ESMTP id S231310AbjHGRUo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Aug 2023 13:23:53 -0400
-Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A53C1A4;
-        Mon,  7 Aug 2023 10:23:51 -0700 (PDT)
-Received: by mail-lf1-x131.google.com with SMTP id 2adb3069b0e04-4fe0c566788so7404742e87.0;
-        Mon, 07 Aug 2023 10:23:51 -0700 (PDT)
+        Mon, 7 Aug 2023 13:20:44 -0400
+Received: from mail-oa1-x31.google.com (mail-oa1-x31.google.com [IPv6:2001:4860:4864:20::31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B518E66
+        for <linux-kernel@vger.kernel.org>; Mon,  7 Aug 2023 10:20:21 -0700 (PDT)
+Received: by mail-oa1-x31.google.com with SMTP id 586e51a60fabf-1bfafe8a425so2303910fac.3
+        for <linux-kernel@vger.kernel.org>; Mon, 07 Aug 2023 10:20:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1691429029; x=1692033829;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=3SfjDebAj1o0CQb+7Qag/JvPg20rDm+7MFCObVpSym8=;
-        b=JWHTNpG8lWftkL0YgXovsihGiRdW1OkejtUiFahHps6yTVkf2NekkGZIpmp12BHOmc
-         jwpie7/PFTKJNklFuBJnaVDwsXpzjwD9hXKOfrgqUMpucbObIIg90CzFS2e3fU9Co8lW
-         sFy/STnq6WeeJdR26T1En8/mg0eJWlJqepID5mXpgFcH9ngdM3oTe1OuYW5GmqUA3uvw
-         IiXU/gnqT2bfJ1YzvP8tHBKP7R+2gvP8/3HOO1NO/ihpR6+63sLa74fD9kkT20LKlN2x
-         Si7GFT6oXGfsIodu+ixj3UzdMOXg/3g6b6FIYM/zQOrzD1y9hrlZcmAvjZJBzfchUr+I
-         q4QQ==
+        d=gmail.com; s=20221208; t=1691428816; x=1692033616;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=+tjmnvzk6F5Cc3BXb1Q9hk2iZgMj75iv+C6EvtJVbyY=;
+        b=OhhYefLvsjRTZ0L12AmrUT5XV4rc7JF5/9w+yBEJ4aEMupPPdlv2xZJNoxvP4hq/a1
+         E3EthlVG+MD6+El1SJrSc3HyAk+o1BmSnjx571YrpVVzjDf2Yj7bWntSu3adDKUohvBQ
+         QEL/k5w/HgpCoG++LBg4YAm2mcTU4RXb8CS39SNizclX6Rt02fuovrhfBJXBbI92mefi
+         agt5dAy+vWonE7c3WS83P8iDw4aTk7yjKMWl/TXhawka1KL7+O8DfWpMxy87KAih+E98
+         BK3F+P0nF9OEkAROhQzo0lSZzfqXOHy9S6L35AbWq4ofCjsa0kEjwJF1w+W1T6lL/AI4
+         402A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691429029; x=1692033829;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=3SfjDebAj1o0CQb+7Qag/JvPg20rDm+7MFCObVpSym8=;
-        b=c9X77QukmPlxEm7a6x9vdPJdAmetZCUlAzrFSoZ0OGrkAWUMki77ZjG+T7uaYOtkEz
-         3tFF2kzX6YRXRsPjsM94xjuempxqRYHLYEN7MYI3w5f90g7LX/KhrARHscn87rYitliF
-         PuNBbdLybqz52gp3gCsku9Dn2OmSmO4V/Cw2jS1CVtcIypvsCeqVKC6BKs2uI3YQPGvu
-         tN5tIld7L/QqksyUwImSIWUvbjEuAtPkPXeSgak9Hn27tky843+d972XwdGsA4L2qJ38
-         VGoo2yuQ0BxZkEsTiEaZdzb9F93fNUSJzFSmUPS7lYwqyZyIs/6l1Ui9el9tnmKbxwx8
-         nIhg==
-X-Gm-Message-State: AOJu0YzmCpVk0W+tQc/MlMIToAnevSO5mptK4H9LTTlvIwBhTIXodp9m
-        2N6+t2JcfMeKa2cJERsISwDqhPoaDcBiDQ==
-X-Google-Smtp-Source: AGHT+IFhVr55/oPjwIc5uw4c05ngZet8sX/zl9yVM3STZ7uwBv0qu6MHpI0t6+JTF2/cnk1FzW7eoQ==
-X-Received: by 2002:ac2:57cb:0:b0:4f8:6c1f:b1ab with SMTP id k11-20020ac257cb000000b004f86c1fb1abmr5551627lfo.27.1691429029092;
-        Mon, 07 Aug 2023 10:23:49 -0700 (PDT)
-Received: from fedora.. (cable-178-148-234-71.dynamic.sbb.rs. [178.148.234.71])
-        by smtp.gmail.com with ESMTPSA id h23-20020a1709067cd700b00992f309cfe8sm5532752ejp.178.2023.08.07.10.23.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 07 Aug 2023 10:23:48 -0700 (PDT)
-From:   Aleksa Savic <savicaleksa83@gmail.com>
-To:     linux-hwmon@vger.kernel.org
-Cc:     Aleksa Savic <savicaleksa83@gmail.com>,
-        Jack Doan <me@jackdoan.com>, Jean Delvare <jdelvare@suse.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v3] hwmon: (aquacomputer_d5next) Add selective 200ms delay after sending ctrl report
-Date:   Mon,  7 Aug 2023 19:20:03 +0200
-Message-ID: <20230807172004.456968-1-savicaleksa83@gmail.com>
-X-Mailer: git-send-email 2.41.0
+        d=1e100.net; s=20221208; t=1691428816; x=1692033616;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=+tjmnvzk6F5Cc3BXb1Q9hk2iZgMj75iv+C6EvtJVbyY=;
+        b=X0GtolxXnSiJWUSpX11YerlaxKluxRmCgHtCWszwKq4lhDVXnu0rWF23uzjkK4PC4a
+         +Dfoa1sIHWqhK9uAy+Hsu3L39ZgSeh4+NPNAIqmILMfDjnB1iW+oXY1tEnqb6bGT4n/v
+         S5rj6L7O0RwDDrnmUQYAEh1sQiu2U8yQnZzcm5/rBn8SVKzyMcfEMhHJJHrR3yftojIB
+         sn5IlHZyBzA6YvtPCNfMY/B0a7rCcMKXJoWSLRzxg0lWROlm7rLCnX16ORA/PhP1xytS
+         ekmJ7Kvx7Z8UHHeV/hJ9maouodry+CCRtvdh0/+/3prRyDwRVqQyaj1GTPLsBdY2IyeN
+         GYXQ==
+X-Gm-Message-State: AOJu0Yzy+og+YfDwe3794xitggWiQ8z7SLnj18hUwFdNexC8KOwR3RWN
+        DxVM2vX+oiJIiCO85zShheBtXJNjcIg3pp4SR3k8jnYt
+X-Google-Smtp-Source: AGHT+IGv+vt5Hld//6AeQPcv0rUDVYpQJnIe/R19tAp0YTd7yrv7i9JfsLOqtgPJBg4KhaiINvLEdQ8QUp9gOYDO/2Y=
+X-Received: by 2002:a05:6870:fba9:b0:1bf:b863:b6d with SMTP id
+ kv41-20020a056870fba900b001bfb8630b6dmr9826435oab.1.1691428816327; Mon, 07
+ Aug 2023 10:20:16 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+References: <20230802065127.12183-1-sunran001@208suo.com>
+In-Reply-To: <20230802065127.12183-1-sunran001@208suo.com>
+From:   Alex Deucher <alexdeucher@gmail.com>
+Date:   Mon, 7 Aug 2023 13:20:05 -0400
+Message-ID: <CADnq5_PQr8Op2tqs4s78Qg+niP9=VMxxPQt9Ya8BJL-czWCshQ@mail.gmail.com>
+Subject: Re: [PATCH] drm/amdgpu/atomfirmware: Clean up errors in amdgpu_atomfirmware.c
+To:     Ran Sun <sunran001@208suo.com>
+Cc:     alexander.deucher@amd.com, dri-devel@lists.freedesktop.org,
+        amd-gfx@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -71,162 +69,75 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add a 200ms delay after sending a ctrl report to Quadro,
-Octo, D5 Next and Aquaero to give them enough time to
-process the request and save the data to memory. Otherwise,
-under heavier userspace loads where multiple sysfs entries
-are usually set in quick succession, a new ctrl report could
-be requested from the device while it's still processing the
-previous one and fail with -EPIPE. The delay is only applied
-if two ctrl report operations are near each other in time.
+Applied.  Thanks!
 
-Reported by a user on Github [1] and tested by both of us.
-
-[1] https://github.com/aleksamagicka/aquacomputer_d5next-hwmon/issues/82
-
-Fixes: 752b927951ea ("hwmon: (aquacomputer_d5next) Add support for Aquacomputer Octo")
-Signed-off-by: Aleksa Savic <savicaleksa83@gmail.com>
----
-Changes in v3:
-- Reworked code to track the last time of a ctrl report
-  operation and only delay if necessary, as per suggestion
-
-Changes in v2:
-- Added missing <linux/delay.h> include
----
- drivers/hwmon/aquacomputer_d5next.c | 37 ++++++++++++++++++++++++++++-
- 1 file changed, 36 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/hwmon/aquacomputer_d5next.c b/drivers/hwmon/aquacomputer_d5next.c
-index a997dbcb563f..023807859be7 100644
---- a/drivers/hwmon/aquacomputer_d5next.c
-+++ b/drivers/hwmon/aquacomputer_d5next.c
-@@ -13,9 +13,11 @@
- 
- #include <linux/crc16.h>
- #include <linux/debugfs.h>
-+#include <linux/delay.h>
- #include <linux/hid.h>
- #include <linux/hwmon.h>
- #include <linux/jiffies.h>
-+#include <linux/ktime.h>
- #include <linux/module.h>
- #include <linux/mutex.h>
- #include <linux/seq_file.h>
-@@ -63,6 +65,8 @@ static const char *const aqc_device_names[] = {
- #define CTRL_REPORT_ID			0x03
- #define AQUAERO_CTRL_REPORT_ID		0x0b
- 
-+#define CTRL_REPORT_DELAY		200	/* ms */
-+
- /* The HID report that the official software always sends
-  * after writing values, currently same for all devices
-  */
-@@ -527,6 +531,9 @@ struct aqc_data {
- 	int secondary_ctrl_report_size;
- 	u8 *secondary_ctrl_report;
- 
-+	ktime_t last_ctrl_report_op;
-+	int ctrl_report_delay;	/* Delay between two ctrl report operations, in ms */
-+
- 	int buffer_size;
- 	u8 *buffer;
- 	int checksum_start;
-@@ -611,17 +618,35 @@ static int aqc_aquastreamxt_convert_fan_rpm(u16 val)
- 	return 0;
- }
- 
-+static void aqc_delay_ctrl_report(struct aqc_data *priv)
-+{
-+	/*
-+	 * If previous read or write is too close to this one, delay the current operation
-+	 * to give the device enough time to process the previous one.
-+	 */
-+	if (priv->ctrl_report_delay) {
-+		s64 delta = ktime_ms_delta(ktime_get(), priv->last_ctrl_report_op);
-+
-+		if (delta < priv->ctrl_report_delay)
-+			msleep(priv->ctrl_report_delay - delta);
-+	}
-+}
-+
- /* Expects the mutex to be locked */
- static int aqc_get_ctrl_data(struct aqc_data *priv)
- {
- 	int ret;
- 
-+	aqc_delay_ctrl_report(priv);
-+
- 	memset(priv->buffer, 0x00, priv->buffer_size);
- 	ret = hid_hw_raw_request(priv->hdev, priv->ctrl_report_id, priv->buffer, priv->buffer_size,
- 				 HID_FEATURE_REPORT, HID_REQ_GET_REPORT);
- 	if (ret < 0)
- 		ret = -ENODATA;
- 
-+	priv->last_ctrl_report_op = ktime_get();
-+
- 	return ret;
- }
- 
-@@ -631,6 +656,8 @@ static int aqc_send_ctrl_data(struct aqc_data *priv)
- 	int ret;
- 	u16 checksum;
- 
-+	aqc_delay_ctrl_report(priv);
-+
- 	/* Checksum is not needed for Aquaero */
- 	if (priv->kind != aquaero) {
- 		/* Init and xorout value for CRC-16/USB is 0xffff */
-@@ -646,12 +673,16 @@ static int aqc_send_ctrl_data(struct aqc_data *priv)
- 	ret = hid_hw_raw_request(priv->hdev, priv->ctrl_report_id, priv->buffer, priv->buffer_size,
- 				 HID_FEATURE_REPORT, HID_REQ_SET_REPORT);
- 	if (ret < 0)
--		return ret;
-+		goto record_access_and_ret;
- 
- 	/* The official software sends this report after every change, so do it here as well */
- 	ret = hid_hw_raw_request(priv->hdev, priv->secondary_ctrl_report_id,
- 				 priv->secondary_ctrl_report, priv->secondary_ctrl_report_size,
- 				 HID_FEATURE_REPORT, HID_REQ_SET_REPORT);
-+
-+record_access_and_ret:
-+	priv->last_ctrl_report_op = ktime_get();
-+
- 	return ret;
- }
- 
-@@ -1524,6 +1555,7 @@ static int aqc_probe(struct hid_device *hdev, const struct hid_device_id *id)
- 
- 		priv->buffer_size = AQUAERO_CTRL_REPORT_SIZE;
- 		priv->temp_ctrl_offset = AQUAERO_TEMP_CTRL_OFFSET;
-+		priv->ctrl_report_delay = CTRL_REPORT_DELAY;
- 
- 		priv->temp_label = label_temp_sensors;
- 		priv->virtual_temp_label = label_virtual_temp_sensors;
-@@ -1547,6 +1579,7 @@ static int aqc_probe(struct hid_device *hdev, const struct hid_device_id *id)
- 		priv->temp_ctrl_offset = D5NEXT_TEMP_CTRL_OFFSET;
- 
- 		priv->buffer_size = D5NEXT_CTRL_REPORT_SIZE;
-+		priv->ctrl_report_delay = CTRL_REPORT_DELAY;
- 
- 		priv->power_cycle_count_offset = D5NEXT_POWER_CYCLES;
- 
-@@ -1597,6 +1630,7 @@ static int aqc_probe(struct hid_device *hdev, const struct hid_device_id *id)
- 		priv->temp_ctrl_offset = OCTO_TEMP_CTRL_OFFSET;
- 
- 		priv->buffer_size = OCTO_CTRL_REPORT_SIZE;
-+		priv->ctrl_report_delay = CTRL_REPORT_DELAY;
- 
- 		priv->power_cycle_count_offset = OCTO_POWER_CYCLES;
- 
-@@ -1624,6 +1658,7 @@ static int aqc_probe(struct hid_device *hdev, const struct hid_device_id *id)
- 		priv->temp_ctrl_offset = QUADRO_TEMP_CTRL_OFFSET;
- 
- 		priv->buffer_size = QUADRO_CTRL_REPORT_SIZE;
-+		priv->ctrl_report_delay = CTRL_REPORT_DELAY;
- 
- 		priv->flow_pulses_ctrl_offset = QUADRO_FLOW_PULSES_CTRL_OFFSET;
- 		priv->power_cycle_count_offset = QUADRO_POWER_CYCLES;
--- 
-2.41.0
-
+On Wed, Aug 2, 2023 at 2:51=E2=80=AFAM Ran Sun <sunran001@208suo.com> wrote=
+:
+>
+> Fix the following errors reported by checkpatch:
+>
+> ERROR: spaces required around that '>=3D' (ctx:WxV)
+> ERROR: spaces required around that '!=3D' (ctx:WxV)
+> ERROR: code indent should use tabs where possible
+>
+> Signed-off-by: Ran Sun <sunran001@208suo.com>
+> ---
+>  drivers/gpu/drm/amd/amdgpu/amdgpu_atomfirmware.c | 8 ++++----
+>  1 file changed, 4 insertions(+), 4 deletions(-)
+>
+> diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_atomfirmware.c b/drivers/g=
+pu/drm/amd/amdgpu/amdgpu_atomfirmware.c
+> index 0b7f4c4d58e5..835980e94b9e 100644
+> --- a/drivers/gpu/drm/amd/amdgpu/amdgpu_atomfirmware.c
+> +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_atomfirmware.c
+> @@ -58,7 +58,7 @@ uint32_t amdgpu_atomfirmware_query_firmware_capability(=
+struct amdgpu_device *ade
+>         if (amdgpu_atom_parse_data_header(adev->mode_info.atom_context,
+>                                 index, &size, &frev, &crev, &data_offset)=
+) {
+>                 /* support firmware_info 3.1 + */
+> -               if ((frev =3D=3D 3 && crev >=3D1) || (frev > 3)) {
+> +               if ((frev =3D=3D 3 && crev >=3D 1) || (frev > 3)) {
+>                         firmware_info =3D (union firmware_info *)
+>                                 (mode_info->atom_context->bios + data_off=
+set);
+>                         fw_cap =3D le32_to_cpu(firmware_info->v31.firmwar=
+e_capability);
+> @@ -597,7 +597,7 @@ bool amdgpu_atomfirmware_ras_rom_addr(struct amdgpu_d=
+evice *adev,
+>                                           index, &size, &frev, &crev,
+>                                           &data_offset)) {
+>                 /* support firmware_info 3.4 + */
+> -               if ((frev =3D=3D 3 && crev >=3D4) || (frev > 3)) {
+> +               if ((frev =3D=3D 3 && crev >=3D 4) || (frev > 3)) {
+>                         firmware_info =3D (union firmware_info *)
+>                                 (mode_info->atom_context->bios + data_off=
+set);
+>                         /* The ras_rom_i2c_slave_addr should ideally
+> @@ -850,7 +850,7 @@ int amdgpu_atomfirmware_get_fw_reserved_fb_size(struc=
+t amdgpu_device *adev)
+>
+>         firmware_info =3D (union firmware_info *)(ctx->bios + data_offset=
+);
+>
+> -       if (frev !=3D3)
+> +       if (frev !=3D 3)
+>                 return -EINVAL;
+>
+>         switch (crev) {
+> @@ -909,7 +909,7 @@ int amdgpu_atomfirmware_asic_init(struct amdgpu_devic=
+e *adev, bool fb_reset)
+>         }
+>
+>         index =3D get_index_into_master_table(atom_master_list_of_command=
+_functions_v2_1,
+> -                                            asic_init);
+> +                                       asic_init);
+>         if (amdgpu_atom_parse_cmd_header(mode_info->atom_context, index, =
+&frev, &crev)) {
+>                 if (frev =3D=3D 2 && crev >=3D 1) {
+>                         memset(&asic_init_ps_v2_1, 0, sizeof(asic_init_ps=
+_v2_1));
+> --
+> 2.17.1
+>
