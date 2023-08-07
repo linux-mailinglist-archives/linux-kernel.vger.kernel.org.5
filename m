@@ -2,56 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 22780772DA3
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 20:21:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 75B29772DC6
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 20:23:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230448AbjHGSVA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Aug 2023 14:21:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53306 "EHLO
+        id S229731AbjHGSXf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Aug 2023 14:23:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55628 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229589AbjHGSU5 (ORCPT
+        with ESMTP id S229570AbjHGSXc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Aug 2023 14:20:57 -0400
-Received: from cloudserver094114.home.pl (cloudserver094114.home.pl [79.96.170.134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D38B78F;
-        Mon,  7 Aug 2023 11:20:55 -0700 (PDT)
-Received: from localhost (127.0.0.1) (HELO v370.home.net.pl)
- by /usr/run/smtp (/usr/run/postfix/private/idea_relay_lmtp) via UNIX with SMTP (IdeaSmtpServer 5.2.0)
- id 94dc6781b6e2d306; Mon, 7 Aug 2023 20:20:53 +0200
-Authentication-Results: v370.home.net.pl; spf=softfail (domain owner 
-   discourages use of this host) smtp.mailfrom=rjwysocki.net 
-   (client-ip=195.136.19.94; helo=[195.136.19.94]; 
-   envelope-from=rjw@rjwysocki.net; receiver=<UNKNOWN>)
-Received: from kreacher.localnet (unknown [195.136.19.94])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by v370.home.net.pl (Postfix) with ESMTPSA id 095486625B2;
-        Mon,  7 Aug 2023 20:20:53 +0200 (CEST)
-From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
-To:     Linux ACPI <linux-acpi@vger.kernel.org>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Michal Wilczynski <michal.wilczynski@intel.com>,
-        Zhang Rui <rui.zhang@intel.com>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
-Subject: [PATCH v5 11/11] thermal: core: Eliminate code duplication from acpi_thermal_notify()
-Date:   Mon, 07 Aug 2023 20:20:18 +0200
-Message-ID: <23175634.6Emhk5qWAg@kreacher>
-In-Reply-To: <4503814.LvFx2qVVIh@kreacher>
-References: <13318886.uLZWGnKmhe@kreacher> <4503814.LvFx2qVVIh@kreacher>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="UTF-8"
-X-CLIENT-IP: 195.136.19.94
-X-CLIENT-HOSTNAME: 195.136.19.94
-X-VADE-SPAMSTATE: clean
-X-VADE-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedviedrledtgdduudejucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecujffqoffgrffnpdggtffipffknecuuegrihhlohhuthemucduhedtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjughrpefhvfevufffkfgjfhgggfgtsehtufertddttdejnecuhfhrohhmpedftfgrfhgrvghlucflrdcuhgihshhotghkihdfuceorhhjfiesrhhjfiihshhotghkihdrnhgvtheqnecuggftrfgrthhtvghrnhepvdffueeitdfgvddtudegueejtdffteetgeefkeffvdeftddttdeuhfegfedvjefhnecukfhppeduleehrddufeeirdduledrleegnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehinhgvthepudelhedrudefiedrudelrdelgedphhgvlhhopehkrhgvrggthhgvrhdrlhhotggrlhhnvghtpdhmrghilhhfrhhomhepfdftrghfrggvlhculfdrucghhihsohgtkhhifdcuoehrjhifsehrjhifhihsohgtkhhirdhnvghtqedpnhgspghrtghpthhtohepjedprhgtphhtthhopehlihhnuhigqdgrtghpihesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopegurghnihgvlhdrlhgviigtrghnoheslhhinhgrrhhordhorhhgpdhrtghpthhtoheplhhinhhugidqkhgvrhhnvghlsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtoheplhhinhhugidqphhmsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghp
- thhtohepmhhitghhrghlrdifihhltgiihihnshhkihesihhnthgvlhdrtghomhdprhgtphhtthhopehruhhirdiihhgrnhhgsehinhhtvghlrdgtohhm
-X-DCC--Metrics: v370.home.net.pl 1024; Body=7 Fuz1=7 Fuz2=7
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        Mon, 7 Aug 2023 14:23:32 -0400
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF13B1BF4
+        for <linux-kernel@vger.kernel.org>; Mon,  7 Aug 2023 11:23:00 -0700 (PDT)
+Received: by mail-yb1-xb4a.google.com with SMTP id 3f1490d57ef6-cf4cb742715so5053933276.2
+        for <linux-kernel@vger.kernel.org>; Mon, 07 Aug 2023 11:23:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1691432555; x=1692037355;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=7jgUB0WpU0M7afNXyKboaaIvZf92Ty700IWf8lOD30o=;
+        b=i8J/Xe7MJ9rD7NzJZFsQtFMkGeXqS2bJrxxhlpaKBuExNEjWUEFdkeosztI64kxSPx
+         JF/4yQsv6CuDK9TeNysNuDl1pWk3Jx0dVBOx20Puce26jnhznarZ9FVuQbeHT+hc8uXe
+         tto4hAfhiuqVDUbQD3Ws1uohuYH9VueQp1VY1fEeGfb2u5P8Xfvy8nchwO6vIVLW1pF8
+         xL4RHZvhfwT4h4gl8ZO9cL9lwd/ulYYkVns29wq9LO2G8VEskQ+zZFfHSBMxJmOAyCCa
+         4oo+vmDEYtCEGBluOi6X4e3MVj8kue3KR3SOyDDwB6epZiLljw6W6stVuH8djTbLZBww
+         XBzw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691432555; x=1692037355;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=7jgUB0WpU0M7afNXyKboaaIvZf92Ty700IWf8lOD30o=;
+        b=flu8EMRBQdoz1ogLy+oM0HOMJm+GGVOjeg/TNb/xTQWafqqpliHJCIXeopxqjGV3VS
+         px43MVnWV+3ceFoydSv1wPL6BnGLht4EMNv9RXHFSxkJ3KPe0Hqm1Q2pOT1cb2+zwSU8
+         6kTgUfe9fIMwsRUnqYmTkxbTUoRtRerPMfbkd7LnGkwLcaeGMazZD7YK0Y9yUFpsEKgT
+         eB+8Xlaefk/n1S+Lqav0wmvix9KH9kYSMMbWMZppiLgeYfundVl0PU1zDKtQNO4bhJtc
+         5OS03151pXiOurtDtyXfIxVT7Eb1giGeFLBiKCBkbrg3lsbpLgoElmK4r7uGNS2jvEYx
+         49Mg==
+X-Gm-Message-State: AOJu0YxOXNYqZP/o/49bnoi6+8LUwaQTbtl2decfOhHlvWVgzk3Z7ccv
+        LBxJ+i6MDuoeG4yL+NuERoVa/2J3yQCguB4Tbw==
+X-Google-Smtp-Source: AGHT+IE3EsW86Yh8dtPgXOL32nHWwf9iJWr3DyWFMH7EYJdokxnbYqC4oE8Kpzq82cS9iBtHL5aEgmyQTD1Dn3nOAA==
+X-Received: from jstitt-linux1.c.googlers.com ([fda3:e722:ac3:cc00:2b:ff92:c0a8:23b5])
+ (user=justinstitt job=sendgmr) by 2002:a25:3446:0:b0:d47:f09c:cc8e with SMTP
+ id b67-20020a253446000000b00d47f09ccc8emr49064yba.10.1691432555654; Mon, 07
+ Aug 2023 11:22:35 -0700 (PDT)
+Date:   Mon, 07 Aug 2023 18:22:30 +0000
+Mime-Version: 1.0
+X-B4-Tracking: v=1; b=H4sIAGU20WQC/x3MPQqAMAxA4auUzAaitli8ijgUGzWDP6RYBPHuF
+ sdveO+BxCqcoDcPKGdJcuwFdWVgWsO+MEoshoaaljx1GHRa8dowqmTWhCFaS468d5GgVKfyLPd /HMb3/QB6UkMCYQAAAA==
+X-Developer-Key: i=justinstitt@google.com; a=ed25519; pk=tC3hNkJQTpNX/gLKxTNQKDmiQl6QjBNCGKJINqAdJsE=
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1691432554; l=2334;
+ i=justinstitt@google.com; s=20230717; h=from:subject:message-id;
+ bh=2oYTjCvV17po6xXOpfrY+INCIA0i2CXq/pTmWjU9YB4=; b=exkU3+X8smSe8ECTT7ic4ouZhlLEph4CCWwgj+Qr8gJ7jaZ+O6d3w5WFRk4LnzhbsR+9W5UPI
+ rWdniopikbWBVCbiSSFM+aTHyahPN1VBvuH0AKGOn4ZvnvUjjusU85N
+X-Mailer: b4 0.12.3
+Message-ID: <20230807-arch-um-drivers-v1-1-10d602c5577a@google.com>
+Subject: [PATCH] um: vector: refactor deprecated strncpy
+From:   Justin Stitt <justinstitt@google.com>
+To:     Richard Weinberger <richard@nod.at>,
+        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+        Johannes Berg <johannes@sipsolutions.net>
+Cc:     linux-um@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Kees Cook <keescook@chromium.org>,
+        linux-hardening@vger.kernel.org,
+        Justin Stitt <justinstitt@google.com>
+Content-Type: text/plain; charset="utf-8"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -59,83 +77,63 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+`strncpy` is deprecated for use on NUL-terminated destination strings [1].
 
-Move the acpi_bus_generate_netlink_event() invocation into
-acpi_thermal_trips_update() which allows the code duplication in
-acpi_thermal_notify() to be cleaned up, but for this purpose the
-event value needs to be passed to acpi_thermal_trips_update() and
-from there to acpi_thermal_adjust_thermal_zone() which has to
-determine the flag value for __acpi_thermal_trips_update() by
-itself.
+A suitable replacement is `strscpy` [2] due to the fact that it
+guarantees NUL-termination on its destination buffer argument which is
+_not_ the case for `strncpy`!
 
-Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+In this case, we are able to drop the now superfluous `... - 1`
+instances because `strscpy` will automatically truncate the last byte by
+setting it to a NUL byte if the source size exceeds the destination size
+or if the source string is not NUL-terminated.
+
+I've also opted to remove the seemingly useless char* casts. I'm not
+sure why they're present at all since (after expanding the `ifr_name`
+macro) `ifr.ifr_ifrn.ifrn_name` is a char* already.
+
+All in all, `strscpy` is a more robust and less ambiguous interface
+while also letting us remove some `... -1`'s which cleans things up a
+bit.
+
+[1]: www.kernel.org/doc/html/latest/process/deprecated.html#strncpy-on-nul-terminated-strings
+[2]: https://manpages.debian.org/testing/linux-manual-4.8/strscpy.9.en.html
+
+Link: https://github.com/KSPP/linux/issues/90
+Cc: linux-hardening@vger.kernel.org
+Signed-off-by: Justin Stitt <justinstitt@google.com>
 ---
+ arch/um/drivers/vector_user.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-v4 -> v5: Rebase.
-
-New patch in v4.
+diff --git a/arch/um/drivers/vector_user.c b/arch/um/drivers/vector_user.c
+index c650e428432b..c719e1ec4645 100644
+--- a/arch/um/drivers/vector_user.c
++++ b/arch/um/drivers/vector_user.c
+@@ -141,7 +141,7 @@ static int create_tap_fd(char *iface)
+ 	}
+ 	memset(&ifr, 0, sizeof(ifr));
+ 	ifr.ifr_flags = IFF_TAP | IFF_NO_PI | IFF_VNET_HDR;
+-	strncpy((char *)&ifr.ifr_name, iface, sizeof(ifr.ifr_name) - 1);
++	strscpy(ifr.ifr_name, iface, sizeof(ifr.ifr_name));
+ 
+ 	err = ioctl(fd, TUNSETIFF, (void *) &ifr);
+ 	if (err != 0) {
+@@ -171,7 +171,7 @@ static int create_raw_fd(char *iface, int flags, int proto)
+ 		goto raw_fd_cleanup;
+ 	}
+ 	memset(&ifr, 0, sizeof(ifr));
+-	strncpy((char *)&ifr.ifr_name, iface, sizeof(ifr.ifr_name) - 1);
++	strscpy(ifr.ifr_name, iface, sizeof(ifr.ifr_name));
+ 	if (ioctl(fd, SIOCGIFINDEX, (void *) &ifr) < 0) {
+ 		err = -errno;
+ 		goto raw_fd_cleanup;
 
 ---
- drivers/acpi/thermal.c |   20 ++++++++++----------
- 1 file changed, 10 insertions(+), 10 deletions(-)
+base-commit: c1a515d3c0270628df8ae5f5118ba859b85464a2
+change-id: 20230807-arch-um-drivers-ad44050885d0
 
-Index: linux-pm/drivers/acpi/thermal.c
-===================================================================
---- linux-pm.orig/drivers/acpi/thermal.c
-+++ linux-pm/drivers/acpi/thermal.c
-@@ -419,8 +419,10 @@ static void acpi_thermal_adjust_thermal_
- 					     unsigned long data)
- {
- 	struct acpi_thermal *tz = thermal_zone_device_priv(thermal);
-+	int flag = data == ACPI_THERMAL_NOTIFY_THRESHOLDS ?
-+				ACPI_TRIPS_THRESHOLDS : ACPI_TRIPS_DEVICES;
- 
--	__acpi_thermal_trips_update(tz, data);
-+	__acpi_thermal_trips_update(tz, flag);
- 
- 	for_each_thermal_trip(tz->thermal_zone, acpi_thermal_adjust_trip, tz);
- }
-@@ -431,8 +433,10 @@ static void acpi_queue_thermal_check(str
- 		queue_work(acpi_thermal_pm_queue, &tz->thermal_check_work);
- }
- 
--static void acpi_thermal_trips_update(struct acpi_thermal *tz, int flag)
-+static void acpi_thermal_trips_update(struct acpi_thermal *tz, u32 event)
- {
-+	struct acpi_device *adev = tz->device;
-+
- 	/*
- 	 * Use thermal_zone_device_adjust() to carry out the trip points
- 	 * update, so as to protect thermal_get_trend() from getting stale
-@@ -440,8 +444,10 @@ static void acpi_thermal_trips_update(st
- 	 * invoked from acpi_thermal_check_fn() from producing inconsistent
- 	 * results.
- 	 */
--	thermal_zone_device_adjust(tz->thermal_zone, flag);
-+	thermal_zone_device_adjust(tz->thermal_zone, event);
- 	acpi_queue_thermal_check(tz);
-+	acpi_bus_generate_netlink_event(adev->pnp.device_class,
-+					dev_name(&adev->dev), event, 0);
- }
- 
- static int acpi_thermal_get_trip_points(struct acpi_thermal *tz)
-@@ -812,14 +818,8 @@ static void acpi_thermal_notify(acpi_han
- 		acpi_queue_thermal_check(tz);
- 		break;
- 	case ACPI_THERMAL_NOTIFY_THRESHOLDS:
--		acpi_thermal_trips_update(tz, ACPI_TRIPS_THRESHOLDS);
--		acpi_bus_generate_netlink_event(device->pnp.device_class,
--						dev_name(&device->dev), event, 0);
--		break;
- 	case ACPI_THERMAL_NOTIFY_DEVICES:
--		acpi_thermal_trips_update(tz, ACPI_TRIPS_DEVICES);
--		acpi_bus_generate_netlink_event(device->pnp.device_class,
--						dev_name(&device->dev), event, 0);
-+		acpi_thermal_trips_update(tz, event);
- 		break;
- 	default:
- 		acpi_handle_debug(device->handle, "Unsupported event [0x%x]\n",
-
-
+Best regards,
+--
+Justin Stitt <justinstitt@google.com>
 
