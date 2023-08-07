@@ -2,74 +2,46 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 349B7771941
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 07:08:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 86CE9771940
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 07:08:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230157AbjHGFIX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Aug 2023 01:08:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42272 "EHLO
+        id S230140AbjHGFIP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Aug 2023 01:08:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42262 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229461AbjHGFIR (ORCPT
+        with ESMTP id S229461AbjHGFIO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Aug 2023 01:08:17 -0400
-Received: from invmail4.hynix.com (exvmail4.hynix.com [166.125.252.92])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 88C1610FD
-        for <linux-kernel@vger.kernel.org>; Sun,  6 Aug 2023 22:08:14 -0700 (PDT)
-X-AuditID: a67dfc5b-d6dff70000001748-47-64d07c3b9fd9
-Date:   Mon, 7 Aug 2023 14:05:31 +0900
-From:   Byungchul Park <byungchul@sk.com>
-To:     Nadav Amit <namit@vmware.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-mm <linux-mm@kvack.org>,
-        "kernel_team@skhynix.com" <kernel_team@skhynix.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "ying.huang@intel.com" <ying.huang@intel.com>,
-        "xhao@linux.alibaba.com" <xhao@linux.alibaba.com>,
-        "mgorman@techsingularity.net" <mgorman@techsingularity.net>,
-        Hugh Dickins <hughd@google.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        David Hildenbrand <david@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>
-Subject: Re: [RFC 2/2] mm: Defer TLB flush by keeping both src and dst folios
- at migration
-Message-ID: <20230807050531.GB49200@system.software.com>
-References: <20230804061850.21498-1-byungchul@sk.com>
- <20230804061850.21498-3-byungchul@sk.com>
- <7023C1AF-6C9B-4544-8EC4-0BB790C1E338@vmware.com>
+        Mon, 7 Aug 2023 01:08:14 -0400
+Received: from SHSQR01.spreadtrum.com (unknown [222.66.158.135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D256B10FA;
+        Sun,  6 Aug 2023 22:08:11 -0700 (PDT)
+Received: from dlp.unisoc.com ([10.29.3.86])
+        by SHSQR01.spreadtrum.com with ESMTP id 37757ftm084202;
+        Mon, 7 Aug 2023 13:07:41 +0800 (+08)
+        (envelope-from Kaiwei.Liu@unisoc.com)
+Received: from SHDLP.spreadtrum.com (shmbx07.spreadtrum.com [10.0.1.12])
+        by dlp.unisoc.com (SkyGuard) with ESMTPS id 4RK45n0jfGz2K1r9q;
+        Mon,  7 Aug 2023 13:05:49 +0800 (CST)
+Received: from xm9614pcu.spreadtrum.com (10.13.2.29) by shmbx07.spreadtrum.com
+ (10.0.1.12) with Microsoft SMTP Server (TLS) id 15.0.1497.23; Mon, 7 Aug 2023
+ 13:07:39 +0800
+From:   Kaiwei Liu <kaiwei.liu@unisoc.com>
+To:     Vinod Koul <vkoul@kernel.org>, Orson Zhai <orsonzhai@gmail.com>,
+        Baolin Wang <baolin.wang@linux.alibaba.com>,
+        Chunyan Zhang <zhang.lyra@gmail.com>
+CC:     <dmaengine@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Kaiwei Liu <kaiwei.liu@unisoc.com>,
+        Wenming Wu <wenming.wu@unisoc.com>
+Subject: [PATCH 1/5] dma: delect redundant parameter for dma driver function
+Date:   Mon, 7 Aug 2023 13:07:32 +0800
+Message-ID: <20230807050732.2343-1-kaiwei.liu@unisoc.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <7023C1AF-6C9B-4544-8EC4-0BB790C1E338@vmware.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrJIsWRmVeSWpSXmKPExsXC9ZZnoa5NzYUUg70zWSzmrF/DZvFiQzuj
-        xdf1v5gtnn7qY7G4vGsOm8W9Nf9ZLc7vWstqsWPpPiaL67seMloc7z3AZPH7B1B2zhQri5Oz
-        JrM48Hos2FTqsXmFlsfiPS+ZPDat6mTz2PRpErvHiRm/WTx2PrT0mHcy0OP9vqtsHlt/2Xl8
-        3iTn8W7+W7YAnigum5TUnMyy1CJ9uwSujOcbTrAWLGep+La+kamBcTtzFyMHh4SAicS9Q/Zd
-        jJxgZkvfOkYQm0VAReL08a8sIDabgLrEjRs/mUFsEQFFiUP774HVMAtcYZH4Oo8PxBYWiJE4
-        seUzE4jNK2Ah8XbyeqB6Lg4hgamMEje6b0MlBCVOznzCAtGsLvFn3iWwG5gFpCWW/+OACMtL
-        NG+dDbaLU8BOYu7Wy2CtogLKEge2HWcCmSkh0M8u0br+BjvE0ZISB1fcYJnAKDgLyYpZSFbM
-        QlgxC8mKBYwsqxiFMvPKchMzc0z0MirzMiv0kvNzNzECI3BZ7Z/oHYyfLgQfYhTgYFTi4W04
-        fD5FiDWxrLgy9xCjBAezkgjvvCdAId6UxMqq1KL8+KLSnNTiQ4zSHCxK4rxG38pThATSE0tS
-        s1NTC1KLYLJMHJxSDYwLzmalnNw73+ta+XS3QBE57ZZHr3+Y1l9/G+zH/Ef6Q+S97EyB4K2T
-        vxw4s0JDsTEr1DJxKrezpNmdQrUJ9Yf5Xuz/vc04uVcm4J7kqjslD7/8PPZh/v3cFw6aM/cd
-        WPG9c/eriQE9XssqdYPma3puUi5zL9O98ZRFOzboj6Cg3xy1ayeyc1KVWIozEg21mIuKEwFN
-        4viIvAIAAA==
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprIIsWRmVeSWpSXmKPExsXC5WfdrGtdcyHF4P92E4s569ewWbzY0M5o
-        8XX9L2aLp5/6WCwOzz3JanF51xw2i3tr/rNanN+1ltVix9J9TBbXdz1ktDjee4DJ4vcPoOyc
-        KVYWJ2dNZnHg81iwqdRj8wotj8V7XjJ5bFrVyeax6dMkdo8TM36zeOx8aOkx72Sgx/t9V9k8
-        Fr/4wOSx9Zedx+dNch7v5r9lC+CN4rJJSc3JLEst0rdL4Mp4vuEEa8Fylopv6xuZGhi3M3cx
-        cnJICJhItPStYwSxWQRUJE4f/8oCYrMJqEvcuPETrEZEQFHi0P57YDXMAldYJL7O4wOxhQVi
-        JE5s+cwEYvMKWEi8nbweqJ6LQ0hgKqPEje7bUAlBiZMzn7BANKtL/Jl3CaiIA8iWllj+jwMi
-        LC/RvHU22C5OATuJuVsvg7WKCihLHNh2nGkCI98sJJNmIZk0C2HSLCSTFjCyrGIUycwry03M
-        zDHVK87OqMzLrNBLzs/dxAiMqGW1fybuYPxy2f0QowAHoxIPb8Ph8ylCrIllxZW5hxglOJiV
-        RHjnPQEK8aYkVlalFuXHF5XmpBYfYpTmYFES5/UKT00QEkhPLEnNTk0tSC2CyTJxcEo1MB79
-        EW614ZDPpZP9z8uj5VglLs579PDZqz4JS5b326Xa5xe+tXGTTDdeOWPrsucXPVdxX1V4OjHk
-        OMuuc1vfTFSe0hnmmpF1tzF/3v6n6lp3M9T4j3K07o+veqH/2tdyr1n4BCavOyl3A5ao+txd
-        51THf7TObIpodYJmyWzN62pJkqfXaj961anEUpyRaKjFXFScCAAKeW/NpAIAAA==
-X-CFilter-Loop: Reflected
+Content-Type: text/plain
+X-Originating-IP: [10.13.2.29]
+X-ClientProxiedBy: SHCAS03.spreadtrum.com (10.0.1.207) To
+ shmbx07.spreadtrum.com (10.0.1.12)
+X-MAIL: SHSQR01.spreadtrum.com 37757ftm084202
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
@@ -79,14 +51,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 04, 2023 at 05:32:30PM +0000, Nadav Amit wrote:
-> The patch in its current form, I am afraid, is very very hard to review.
-> It is way too big and is missing comments. Having CONFIG_MIGRC makes no
-> sense (I guess it is intended to be a “chicken-bit”). Variable and
-> function names are not informative. The memory barriers are handle
-> improperly (please check again the smp_mb__after_atomic() rules).
+The parameter *sdesc in function sprd_dma_check_trans_done is not
+used, so here delect redundant parameter.
 
-I checked it. I found what I was wrong at. Thank you for pointing it out.
-I will fix it from the next spin.
+Signed-off-by: Kaiwei Liu <kaiwei.liu@unisoc.com>
+---
+ drivers/dma/sprd-dma.c | 6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
 
-	Byungchul
+diff --git a/drivers/dma/sprd-dma.c b/drivers/dma/sprd-dma.c
+index 2b639adb48ba..20c3cb1ef2f5 100644
+--- a/drivers/dma/sprd-dma.c
++++ b/drivers/dma/sprd-dma.c
+@@ -572,8 +572,7 @@ static void sprd_dma_stop(struct sprd_dma_chn *schan)
+ 	schan->cur_desc = NULL;
+ }
+ 
+-static bool sprd_dma_check_trans_done(struct sprd_dma_desc *sdesc,
+-				      enum sprd_dma_int_type int_type,
++static bool sprd_dma_check_trans_done(enum sprd_dma_int_type int_type,
+ 				      enum sprd_dma_req_mode req_mode)
+ {
+ 	if (int_type == SPRD_DMA_NO_INT)
+@@ -619,8 +618,7 @@ static irqreturn_t dma_irq_handle(int irq, void *dev_id)
+ 			vchan_cyclic_callback(&sdesc->vd);
+ 		} else {
+ 			/* Check if the dma request descriptor is done. */
+-			trans_done = sprd_dma_check_trans_done(sdesc, int_type,
+-							       req_type);
++			trans_done = sprd_dma_check_trans_done(int_type, req_type);
+ 			if (trans_done == true) {
+ 				vchan_cookie_complete(&sdesc->vd);
+ 				schan->cur_desc = NULL;
+-- 
+2.17.1
+
