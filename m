@@ -2,180 +2,248 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1EBC27724CE
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 14:57:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6991D7724CC
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 14:57:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233023AbjHGM5U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Aug 2023 08:57:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51294 "EHLO
+        id S233701AbjHGM5K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Aug 2023 08:57:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51260 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233738AbjHGM5O (ORCPT
+        with ESMTP id S232548AbjHGM5J (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Aug 2023 08:57:14 -0400
-Received: from fllv0015.ext.ti.com (fllv0015.ext.ti.com [198.47.19.141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 544DE170A;
-        Mon,  7 Aug 2023 05:57:13 -0700 (PDT)
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 377CuupD019457;
-        Mon, 7 Aug 2023 07:56:56 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1691413016;
-        bh=ikhmkWfl1ICWIRkfls8soHLTQm+EkSPxiAnHEHo67Bk=;
-        h=Date:Subject:To:CC:References:From:In-Reply-To;
-        b=DigWjWZ5tjCanrPD9hM4r3uWaxiAp9zBvKSAieBbKqeCfaBC8A8jPVsO3kK2D+uAO
-         4Jqrxpu24I078yIzMyC8iLaDWP9jfG4aeq1YWPVr56LscmYRUBlRthBHaD35mSChqi
-         4meU7ZBIWv3rBKCKEAhyq7VIRxMR4XUrpKmWbzhg=
-Received: from DLEE100.ent.ti.com (dlee100.ent.ti.com [157.170.170.30])
-        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 377CuueH006401
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Mon, 7 Aug 2023 07:56:56 -0500
-Received: from DLEE105.ent.ti.com (157.170.170.35) by DLEE100.ent.ti.com
- (157.170.170.30) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Mon, 7
- Aug 2023 07:56:55 -0500
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE105.ent.ti.com
- (157.170.170.35) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Mon, 7 Aug 2023 07:56:55 -0500
-Received: from [172.24.227.132] (ileaxei01-snat2.itg.ti.com [10.180.69.6])
-        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 377CupCJ000907;
-        Mon, 7 Aug 2023 07:56:51 -0500
-Message-ID: <06708b12-34af-bcb5-7b65-c9bdd830b9f0@ti.com>
-Date:   Mon, 7 Aug 2023 18:26:50 +0530
+        Mon, 7 Aug 2023 08:57:09 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B1DE10FD;
+        Mon,  7 Aug 2023 05:57:07 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 93BF5619EC;
+        Mon,  7 Aug 2023 12:57:06 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 69D66C433C9;
+        Mon,  7 Aug 2023 12:57:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1691413026;
+        bh=mt1uuFOc8AlyTQ1K8cBuzB7Csp9E0a8Jlb1PTdNlCp0=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+        b=jAy5x1jASO3bVRPC78HEg0wHowcZoXtyllawrTdBEwQgceCCOovenUYMXV4Ph/dRD
+         RBukby2R3Ud+sLX3uZv7UGsK1zfOSPF9+Bu/RBqOnc3jYbCDWk/BoGxPgA/2r3r6zw
+         zgFILbbA7pRWxUNxWgrHvykIc4rpB74nklYVAefu15qE1grPgMC9I1dNFH1O3azBJL
+         B0EMkt/MfnUWT/Vnd7j37m2uoiMZBR13TPOCn7veRdC7bU/OWsOPxK9GlD6nWfkcGl
+         b2HU9SxG+xncyjJxEhNeQi+7jFjsg2u7frLL+YMTW2c3t6s5fPgfdKU6A2xhd8GrGi
+         M4dW1B0/4b1ig==
+Message-ID: <650f7b6ea6b55de4c9cbc791af0da4f800907c21.camel@kernel.org>
+Subject: Re: [PATCH v7] vfs, security: Fix automount superblock LSM init
+ problem, preventing NFS sb sharing
+From:   Jeff Layton <jlayton@kernel.org>
+To:     Christian Brauner <brauner@kernel.org>
+Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
+        Trond Myklebust <trond.myklebust@hammerspace.com>,
+        Anna Schumaker <anna@kernel.org>,
+        Paul Moore <paul@paul-moore.com>,
+        James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        Stephen Smalley <stephen.smalley.work@gmail.com>,
+        Eric Paris <eparis@parisplace.org>,
+        Casey Schaufler <casey@schaufler-ca.com>,
+        David Howells <dhowells@redhat.com>,
+        Scott Mayhew <smayhew@redhat.com>,
+        Stephen Smalley <sds@tycho.nsa.gov>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-nfs@vger.kernel.org, linux-security-module@vger.kernel.org,
+        selinux@vger.kernel.org
+Date:   Mon, 07 Aug 2023 08:57:03 -0400
+In-Reply-To: <20230805-anrechnen-medien-c639c85ebd42@brauner>
+References: <20230804-master-v7-1-5d4e48407298@kernel.org>
+         <20230805-anrechnen-medien-c639c85ebd42@brauner>
+Content-Type: text/plain; charset="ISO-8859-15"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.14.0
-Subject: Re: [PATCH v9 4/5] arm64: dts: ti: k3-j784s4-evm: Enable
- DisplayPort-0
-To:     Jayesh Choudhary <j-choudhary@ti.com>, <nm@ti.com>,
-        <vigneshr@ti.com>
-CC:     <s-vadapalli@ti.com>, <kristo@kernel.org>, <robh+dt@kernel.org>,
-        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
-        <r-ravikumar@ti.com>, <sabiya.d@ti.com>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>, <afd@ti.com>,
-        <rogerq@kernel.org>
-References: <20230803080441.367341-1-j-choudhary@ti.com>
- <20230803080441.367341-5-j-choudhary@ti.com>
- <9f19e01e-6211-16eb-c911-998ee2d46161@ti.com>
- <2ddc34f9-92ad-9a0c-8044-0ec671e55e9e@ti.com>
-Content-Language: en-US
-From:   Aradhya Bhatia <a-bhatia1@ti.com>
-In-Reply-To: <2ddc34f9-92ad-9a0c-8044-0ec671e55e9e@ti.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
-X-Spam-Status: No, score=-6.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jayesh,
+On Sat, 2023-08-05 at 14:43 +0200, Christian Brauner wrote:
+> On Fri, Aug 04, 2023 at 12:09:34PM -0400, Jeff Layton wrote:
+> > From: David Howells <dhowells@redhat.com>
+> >=20
+> > When NFS superblocks are created by automounting, their LSM parameters
+> > aren't set in the fs_context struct prior to sget_fc() being called,
+> > leading to failure to match existing superblocks.
+> >=20
+> > This bug leads to messages like the following appearing in dmesg when
+> > fscache is enabled:
+> >=20
+> >     NFS: Cache volume key already in use (nfs,4.2,2,108,106a8c0,1,,,,10=
+0000,100000,2ee,3a98,1d4c,3a98,1)
+> >=20
+> > Fix this by adding a new LSM hook to load fc->security for submount
+> > creation when alloc_fs_context() is creating the fs_context for it.
+> >=20
+> > Signed-off-by: David Howells <dhowells@redhat.com>
+> > Signed-off-by: Jeff Layton <jlayton@kernel.org>
+> > Fixes: 9bc61ab18b1d ("vfs: Introduce fs_context, switch vfs_kern_mount(=
+) to it.")
+> > Fixes: 779df6a5480f ("NFS: Ensure security label is set for root inode)
+> > Tested-by: Jeff Layton <jlayton@kernel.org>
+> > Reviewed-by: Jeff Layton <jlayton@kernel.org>
+> > Acked-by: Casey Schaufler <casey@schaufler-ca.com>
+> > Acked-by: "Christian Brauner (Microsoft)" <brauner@kernel.org>
+> > Link: https://lore.kernel.org/r/165962680944.3334508.661002390034914203=
+4.stgit@warthog.procyon.org.uk/ # v1
+> > Link: https://lore.kernel.org/r/165962729225.3357250.143507288464715271=
+37.stgit@warthog.procyon.org.uk/ # v2
+> > Link: https://lore.kernel.org/r/165970659095.2812394.686889417110231879=
+6.stgit@warthog.procyon.org.uk/ # v3
+> > Link: https://lore.kernel.org/r/166133579016.3678898.628319501948056727=
+5.stgit@warthog.procyon.org.uk/ # v4
+> > Link: https://lore.kernel.org/r/217595.1662033775@warthog.procyon.org.u=
+k/ # v5
+> > ---
+> > ver #7)
+> >  - Drop lsm_set boolean
+> >  - Link to v6: https://lore.kernel.org/r/20230802-master-v6-1-45d482991=
+68b@kernel.org
+> >=20
+> > ver #6)
+> >  - Rebase onto v6.5.0-rc4
+> >=20
+> > ver #5)
+> >  - Removed unused variable.
+> >  - Only allocate smack_mnt_opts if we're dealing with a submount.
+> >=20
+> > ver #4)
+> >  - When doing a FOR_SUBMOUNT mount, don't set the root label in SELinux=
+ or
+> >    Smack.
+> >=20
+> > ver #3)
+> >  - Made LSM parameter extraction dependent on fc->purpose =3D=3D
+> >    FS_CONTEXT_FOR_SUBMOUNT.  Shouldn't happen on FOR_RECONFIGURE.
+> >=20
+> > ver #2)
+> >  - Added Smack support
+> >  - Made LSM parameter extraction dependent on reference !=3D NULL.
+> > ---
+> >  fs/fs_context.c               |  4 ++++
+> >  include/linux/lsm_hook_defs.h |  1 +
+> >  include/linux/security.h      |  6 +++++
+> >  security/security.c           | 14 +++++++++++
+> >  security/selinux/hooks.c      | 25 ++++++++++++++++++++
+> >  security/smack/smack_lsm.c    | 54 +++++++++++++++++++++++++++++++++++=
+++++++++
+> >  6 files changed, 104 insertions(+)
+> >=20
+> > diff --git a/fs/fs_context.c b/fs/fs_context.c
+> > index 851214d1d013..a523aea956c4 100644
+> > --- a/fs/fs_context.c
+> > +++ b/fs/fs_context.c
+> > @@ -282,6 +282,10 @@ static struct fs_context *alloc_fs_context(struct =
+file_system_type *fs_type,
+> >  		break;
+> >  	}
+> > =20
+> > +	ret =3D security_fs_context_init(fc, reference);
+> > +	if (ret < 0)
+> > +		goto err_fc;
+> > +
+> >  	/* TODO: Make all filesystems support this unconditionally */
+> >  	init_fs_context =3D fc->fs_type->init_fs_context;
+> >  	if (!init_fs_context)
+> > diff --git a/include/linux/lsm_hook_defs.h b/include/linux/lsm_hook_def=
+s.h
+> > index 7308a1a7599b..7ce3550154b1 100644
+> > --- a/include/linux/lsm_hook_defs.h
+> > +++ b/include/linux/lsm_hook_defs.h
+> > @@ -54,6 +54,7 @@ LSM_HOOK(int, 0, bprm_creds_from_file, struct linux_b=
+inprm *bprm, struct file *f
+> >  LSM_HOOK(int, 0, bprm_check_security, struct linux_binprm *bprm)
+> >  LSM_HOOK(void, LSM_RET_VOID, bprm_committing_creds, struct linux_binpr=
+m *bprm)
+> >  LSM_HOOK(void, LSM_RET_VOID, bprm_committed_creds, struct linux_binprm=
+ *bprm)
+> > +LSM_HOOK(int, 0, fs_context_init, struct fs_context *fc, struct dentry=
+ *reference)
+> >  LSM_HOOK(int, 0, fs_context_dup, struct fs_context *fc,
+> >  	 struct fs_context *src_sc)
+> >  LSM_HOOK(int, -ENOPARAM, fs_context_parse_param, struct fs_context *fc=
+,
+> > diff --git a/include/linux/security.h b/include/linux/security.h
+> > index 32828502f09e..61fda06fac9d 100644
+> > --- a/include/linux/security.h
+> > +++ b/include/linux/security.h
+> > @@ -293,6 +293,7 @@ int security_bprm_creds_from_file(struct linux_binp=
+rm *bprm, struct file *file);
+> >  int security_bprm_check(struct linux_binprm *bprm);
+> >  void security_bprm_committing_creds(struct linux_binprm *bprm);
+> >  void security_bprm_committed_creds(struct linux_binprm *bprm);
+> > +int security_fs_context_init(struct fs_context *fc, struct dentry *ref=
+erence);
+> >  int security_fs_context_dup(struct fs_context *fc, struct fs_context *=
+src_fc);
+> >  int security_fs_context_parse_param(struct fs_context *fc, struct fs_p=
+arameter *param);
+> >  int security_sb_alloc(struct super_block *sb);
+> > @@ -629,6 +630,11 @@ static inline void security_bprm_committed_creds(s=
+truct linux_binprm *bprm)
+> >  {
+> >  }
+> > =20
+> > +static inline int security_fs_context_init(struct fs_context *fc,
+> > +					   struct dentry *reference)
+>=20
+> I think that's the wrong way of doing this hook. The security hook
+> really doesn't belong into alloc_fs_context().
+>=20
+> I think what we want is a dedicated helper similar to vfs_dup_context():
+>=20
+> // Only pass the superblock. There's no need for the dentry. I would
+> // avoid even passing fs_context but if that's preferred then sure.
+> security_fs_context_submount(struct fs_context *fc, const struct super_bl=
+ock *sb)
+>=20
+> vfs_submount_fs_context(struct file_system_type *fs_type, struct dentry *=
+reference)
+> {
+>         fc =3D fs_context_for_submount(fs_type, reference);
+>=20
+>         security_fs_context_for_submount(fc, reference->d_sb);
+> }
+>=20
+> This automatically ensures it's only called for submounts, the LSM
+> doesn't need to care about fc->purpose and this isn't called
+> in a pure allocation function for all allocation calls.
+>=20
+> The we should switch all callers over to that new helper and unexport
+> that fs_context_for_submount() thing completely. Yes, that's more work
+> but that's the correct thing to do. And we need to audit fuse, cifs,
+> afs, and nfs anyway that they work fine with the new security hook.*
+>=20
 
-On 07-Aug-23 17:54, Jayesh Choudhary wrote:
-> Hello Aradhya,
-> 
-> Thank you for the review.
-> 
-> On 05/08/23 00:52, Aradhya Bhatia wrote:
->> Hi Jayesh,
->>
->>
->> On 03-Aug-23 13:34, Jayesh Choudhary wrote:
->>> From: Rahul T R <r-ravikumar@ti.com>
->>>
->>> Enable display for J784S4 EVM.
->>>
->>> Add assigned clocks for DSS, DT node for DisplayPort PHY and pinmux for
->>> DP HPD. Add the clock frequency for serdes_refclk.
->>>
->>> Add the endpoint nodes to describe connection from:
->>> DSS => MHDP => DisplayPort connector.
->>>
->>> Also add the GPIO expander-4 node and pinmux for main_i2c4 which is
->>> required for controlling DP power. Set status for all required nodes
->>> for DP-0 as "okay".
->>>
->>> Signed-off-by: Rahul T R <r-ravikumar@ti.com>
->>> [j-choudhary@ti.com: move all the changes together to enable DP-0 in
->>> EVM]
->>> Signed-off-by: Jayesh Choudhary <j-choudhary@ti.com>
->>> ---
->>>   arch/arm64/boot/dts/ti/k3-j784s4-evm.dts | 119 +++++++++++++++++++++++
->>>   1 file changed, 119 insertions(+)
-> 
-> [...]
-> 
->>> +        reg = <0>;
->>> +        cdns,num-lanes = <4>;
->>> +        #phy-cells = <0>;
->>> +        cdns,phy-type = <PHY_TYPE_DP>;
->>> +        resets = <&serdes_wiz4 1>, <&serdes_wiz4 2>,
->>> +             <&serdes_wiz4 3>, <&serdes_wiz4 4>;
->>> +    };
->>> +};
->>> +
->>> +&mhdp {
->>> +    status = "okay";
->>> +    pinctrl-names = "default";
->>> +    pinctrl-0 = <&dp0_pins_default>;
->>> +    phys = <&serdes4_dp_link>;
->>> +    phy-names = "dpphy";
->>> +};
->>> +
->>> +&dss_ports {
->>> +    port {
->>
->> Port index has not been added here. Since this port outputs to MHDP
->> bridge, this should be "port@0", and a "reg = <0>;" property should be
->> added below (along with the address and size cells properties).
->>
->> I suppose this works functionally in this case, because the port gets
->> defaulted to "0" by the driver. But in future, when we add support for
->> other dss output(s) on j784s4-evm, the driver will need indices to
->> distinguish among them.
->>
-> 
-> Okay. It makes sense.
-> Just one thing here. Adding reg here would require it to have #address-
-> cells and #size-cell but since we have only single child port that too
-> at reg=<0>, it would throw dtbs_check warning:
-> 
-> arch/arm64/boot/dts/ti/k3-j784s4-main.dtsi:1828.20-1831.5: Warning
-> (graph_child_address): /bus@100000/dss@4a00000/ports: graph node has
-> single child node 'port@0', #address-cells/#size-cells are not necessary
->   also defined at arch/arm64/boot/dts/ti/k3-j784s4-evm.dts:911.12-919.3
-> 
+It's the same prototype. We could just move the hook call to the end of
+fs_context_for_submount, and that would be less churn for its callers.
+Or were you wanting to do that to make this a more gradual changeover
+for some reason?
 
-Okay! Was not aware about this. I still think "port@0" should be
-specified instead of just "port" and the warning should be ignored, if
-possible.
+I will rework the security hook to take a sb pointer instead though.
 
-If there were only a "port@1" child node, this warning would not have
-come up, and I believe "port@0" should be treated just the same.
+>=20
+> [1]: If really needed, then any additional fs specific work that needs
+>      to be done during submount allocation should probably probably be
+>      done in a new callback.
+>=20
+>      struct fs_context_operations {
+>             void (*free)(struct fs_context *fc);
+>             int (*dup)(struct fs_context *fc, struct fs_context *src_fc);
+>     +       int (*submount)(struct fs_context *fc, const struct super_blo=
+ck *sb);
 
-Moreover, while we can add these properties at a later stage as an
-incremental patch, adding the size and address cells in the dtsi would
-affect other platform dts files as well, that use this SoC.
-
-For e.g., the patch 5/5 of this series, on AM69-SK will still require
-the size and address cells for its ports. The clean up then will be that
-much more, when adding those incremental patches.
-
-Anyway, I will let Nishanth and Vignesh take the final call on this.
-
-Regards
-Aradhya
-
-> 
->>> +        dpi0_out: endpoint {
->>> +            remote-endpoint = <&dp0_in>;
-> 
-> 
-> [...]
-
+--=20
+Jeff Layton <jlayton@kernel.org>
