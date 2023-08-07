@@ -2,120 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 218B4771D50
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 11:43:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6FB30771D4C
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 11:42:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231663AbjHGJnI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Aug 2023 05:43:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34112 "EHLO
+        id S231640AbjHGJmU convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 7 Aug 2023 05:42:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33306 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230426AbjHGJnE (ORCPT
+        with ESMTP id S231630AbjHGJmS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Aug 2023 05:43:04 -0400
-Received: from icts-p-cavuit-4.kulnet.kuleuven.be (icts-p-cavuit-4.kulnet.kuleuven.be [IPv6:2a02:2c40:0:c0::25:134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 570F0F9;
-        Mon,  7 Aug 2023 02:42:47 -0700 (PDT)
-X-KULeuven-Envelope-From: jo.vanbulck@cs.kuleuven.be
-X-Spam-Status: No, score=-3.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
-X-KULeuven-Scanned: Found to be clean
-X-KULeuven-ID: 11241103.A9806
-X-KULeuven-Information: Katholieke Universiteit Leuven
-Received: from icts-p-ceifnet-smtps-0.kuleuven.be (icts-p-ceifnet-smtps.service.icts.svcd [IPv6:2a02:2c40:0:51:144:242:ac11:2f])
-        by icts-p-cavuit-4.kulnet.kuleuven.be (Postfix) with ESMTP id 11241103;
-        Mon,  7 Aug 2023 11:42:43 +0200 (CEST)
-BCmilterd-Mark-Subject: no
-BCmilterd-Errors: 
-BCmilterd-Report: SA-HVU#DKIM_SIGNED#0.00,SA-HVU#DKIM_VALID_AU#0.00,SA-HVU#DKIM_VALID#0.00
-X-CAV-Cluster: smtps
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=cs.kuleuven.be;
-        s=cav; t=1691401362;
-        bh=2hAp8DsSOdkurCaBVHql6zxWT8yIkzanw2ur0tNmnm0=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To;
-        b=oHKFSE93vluDkDFWGK2GU3Kgy2X7Z9QxrXbYQBtsdPYUKjWj2Oi8XmzRkSXuCxWNr
-         1KIGlqqB/n2X3jStRWVtxZ5lGRH8q5SyeRKj6ylrGdPaQ5evuFZhSxAZgiDzdMbkg+
-         PXnoe2xTi0UWIHAty0kzvMmy5GTYLJRoN9JBobh4=
-Received: from [192.168.44.147] (ptr-94-109-231-173.dyn.orange.be [94.109.231.173])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by icts-p-ceifnet-smtps-0.kuleuven.be (Postfix) with ESMTPSA id 4512BD4F78D51;
-        Mon,  7 Aug 2023 11:42:42 +0200 (CEST)
-Message-ID: <a2732938-f3db-a0af-3d68-a18060f66e79@cs.kuleuven.be>
-Date:   Mon, 7 Aug 2023 11:41:34 +0200
+        Mon, 7 Aug 2023 05:42:18 -0400
+Received: from mail-oo1-f43.google.com (mail-oo1-f43.google.com [209.85.161.43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 705C910F8;
+        Mon,  7 Aug 2023 02:42:14 -0700 (PDT)
+Received: by mail-oo1-f43.google.com with SMTP id 006d021491bc7-563393b63dbso657006eaf.1;
+        Mon, 07 Aug 2023 02:42:14 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691401333; x=1692006133;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=IK5JqTcazrnzFQkUb1pgAiTMlQXrShoQJmEX5JHWXhU=;
+        b=XnL/SLnMWBUN5v2QyGqXqhwRRxj6MV1hXN507LD3uoBl7EG8ntdwP7HBfZTtACdipp
+         bAhIYHEDZ3t4Re5D1G8bh2afJX2yGnNEvtlQIhA2yYlk8AeLKoQMjPORnZj8zlOTOYaj
+         mrgGfRpQepxkNNYGkqYdCfgcoMAl/qK/i+8t8++aWFLv5SpTNiYzkXRSpxl/wkXBGXjr
+         FzpEeRVlOTASCPMRMY6UeVk0CEqb36Fz0+hFEDN6hPoJgn5ae7bvzXHwm0kol/GHU0tN
+         ZKbG2l41kSx0mmxdA8KR2Jds4MWLyGYTuElasS2a9h6MYt+ky/nyyxT1VdA+CppTisjp
+         AadQ==
+X-Gm-Message-State: ABy/qLZg+S/QRZv5TNQLXONPvnRitOrat8ozaJlGqyCly1AWTUvu6q32
+        bCqraUg2ZvQ+XYMGn766ug9ahXB3fRaNyu5joS0=
+X-Google-Smtp-Source: APBJJlEb7O2dGAF/f7fTBx/HAisyhbmiTj3PawRftJoMI15JdDVqSBYI20CfGwr14y35bjypNJI9KK+xc439zbfSIBc=
+X-Received: by 2002:a4a:cf14:0:b0:569:a08a:d9c5 with SMTP id
+ l20-20020a4acf14000000b00569a08ad9c5mr19679264oos.0.1691401333651; Mon, 07
+ Aug 2023 02:42:13 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH 4/5] selftests/sgx: Ensure expected enclave data buffer
- size and placement.
-Content-Language: en-US
-To:     Jarkko Sakkinen <jarkko@kernel.org>, linux-sgx@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     dave.hansen@linux.intel.com
-References: <20230724165832.15797-1-jo.vanbulck@cs.kuleuven.be>
- <20230724165832.15797-5-jo.vanbulck@cs.kuleuven.be>
- <CUE1R4HRQ599.1BX4CEIPSDWRW@seitikki>
-X-Kuleuven: This mail passed the K.U.Leuven mailcluster
-From:   Jo Van Bulck <jo.vanbulck@cs.kuleuven.be>
-In-Reply-To: <CUE1R4HRQ599.1BX4CEIPSDWRW@seitikki>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+References: <20230807083356.19222-2-vbabka@suse.cz>
+In-Reply-To: <20230807083356.19222-2-vbabka@suse.cz>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Mon, 7 Aug 2023 11:41:58 +0200
+Message-ID: <CAJZ5v0g_OjHSdM_oi515KQUrFZvZH4hNgCy4xknosQC+81GYhw@mail.gmail.com>
+Subject: Re: [PATCH for 6.5 regression] PM: hibernate: fix resume_store()
+ return value when hibernation not available
+To:     Vlastimil Babka <vbabka@suse.cz>
+Cc:     "Rafael J . Wysocki" <rafael@kernel.org>,
+        Pavel Machek <pavel@ucw.cz>, Jens Axboe <axboe@kernel.dk>,
+        dm-devel@redhat.com, gregkh@linuxfoundation.org, hch@lst.de,
+        joern@lazybastard.org, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
+        linux-pm@vger.kernel.org, loic.poulain@linaro.org,
+        miquel.raynal@bootlin.com, regressions@lists.linux.dev,
+        richard@nod.at, snitzer@kernel.org, vigneshr@ti.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 28.07.23 21:19, Jarkko Sakkinen wrote:
-> So, when exactly is it optimized away by the compiler? This is missing.
+On Mon, Aug 7, 2023 at 10:34 AM Vlastimil Babka <vbabka@suse.cz> wrote:
+>
+> On a laptop with hibernation set up but not actively used, and with
+> secure boot and lockdown enabled kernel, 6.5-rc1 gets stuck on boot with
+> the following repeated messages:
+>
+>   A start job is running for Resume from hibernation using device /dev/system/swap (24s / no limit)
+>   lockdown_is_locked_down: 25311154 callbacks suppressed
+>   Lockdown: systemd-hiberna: hibernation is restricted; see man kernel_lockdown.7
+>   ...
+>
+> Checking the resume code leads to commit cc89c63e2fe3 ("PM: hibernate:
+> move finding the resume device out of software_resume") which
+> inadvertently changed the return value from resume_store() to 0 when
+> !hibernation_available(). This apparently translates to userspace
+> write() returning 0 as in number of bytes written, and userspace looping
+> indefinitely in the attempt to write the intended value.
+>
+> Fix this by returning the full number of bytes that were to be written,
+> as that's what was done before the commit.
+>
+> Fixes: cc89c63e2fe3 ("PM: hibernate: move finding the resume device out of software_resume")
+> Signed-off-by: Vlastimil Babka <vbabka@suse.cz>
+> Reviewed-by: Christoph Hellwig <hch@lst.de>
+> Acked-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> ---
+> Resend with review/ack tags added and not buried in the thread.
+> Link: https://lore.kernel.org/all/2cfa5f55-1d68-8a4f-d049-13f42e0d1484@suse.cz/
+>
+>  kernel/power/hibernate.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/kernel/power/hibernate.c b/kernel/power/hibernate.c
+> index e1b4bfa938dd..2b4a946a6ff5 100644
+> --- a/kernel/power/hibernate.c
+> +++ b/kernel/power/hibernate.c
+> @@ -1166,7 +1166,7 @@ static ssize_t resume_store(struct kobject *kobj, struct kobj_attribute *attr,
+>         int error;
+>
+>         if (!hibernation_available())
+> -               return 0;
+> +               return n;
+>
+>         if (len && buf[len-1] == '\n')
+>                 len--;
+> --
 
-The problem is that declaring encl_buf as static, implies that it will 
-only be used in this file and the compiler is allowed to optimize away 
-any entries that are never used within this compilation unit (e.g., when 
-optimizing out the memcpy calls).
-
-In reality, the tests outside test_encl.elf rely on both the size and 
-exact placement of encl_buf at the start of .data.
-
-For example, clang -Os generates the following (legal) code when 
-encl_bug is declared as static:
-
-0000000000001020 <do_encl_op_put_to_buf>:
-     mov    0x8(%rdi),%al
-     mov    %al,0x1fd7(%rip)   # 3000 <encl_buffer.0>
-     mov    0x9(%rdi),%al
-     mov    %al,0x8fce(%rip)   # a000 <encl_buffer.1.0>
-     mov    0xa(%rdi),%al
-     mov    %al,0x8fd5(%rip)   # a010 <encl_buffer.1.1>
-     mov    0xb(%rdi),%al
-     mov    %al,0x8fce(%rip)   # a012 <encl_buffer.1.2>
-     mov    0xc(%rdi),%al
-     mov    %al,0x8fd3(%rip)   # a020 <encl_buffer.1.3>
-     mov    0xd(%rdi),%al
-     mov    %al,0x8fce(%rip)   # a024 <encl_buffer.1.4>
-     mov    0xe(%rdi),%al
-     mov    %al,0x8fd1(%rip)   # a030 <encl_buffer.1.5>
-     mov    0xf(%rdi),%al
-     mov    %al,0x8fca(%rip)   # a032 <encl_buffer.1.6>
-     ret
-
-Disassembly of section .data:
-
-0000000000003000 <encl_buffer.0>:
-     3000:       01 00
-         ...
-0000000000004000 <encl_ssa_tcs1>:
-
-Thus, this proposed patch fixes both the size and location:
-
-1. removing the static keyword from the encl_bug declaration ensures 
-that the _entire_ buffer is preserved with expected size, as the 
-compiler cannot anymore assume encl_buf is only used in this file.
-
-2. adding _attribute__((section(".data.encl_buffer"))) ensures that we 
-can control the expected location at the start of the .data section. I 
-think this is optional, as encl_buf always seems to be placed at the 
-start of .data in all my tests. But afaik this is not guaranteed as per 
-the C standard and such constraints on exact placement should better be 
-explicitly controlled in the linker script(?)
+Applied as 6.5-rc material, thanks!
