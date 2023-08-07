@@ -2,200 +2,243 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ED2517718D0
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 05:36:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C8967718D5
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 05:47:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229968AbjHGDgc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 6 Aug 2023 23:36:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57612 "EHLO
+        id S230018AbjHGDrq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 6 Aug 2023 23:47:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58514 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229529AbjHGDga (ORCPT
+        with ESMTP id S229810AbjHGDro (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 6 Aug 2023 23:36:30 -0400
-Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2EB5C9D
-        for <linux-kernel@vger.kernel.org>; Sun,  6 Aug 2023 20:36:29 -0700 (PDT)
-Received: by mail-pf1-x433.google.com with SMTP id d2e1a72fcca58-686ba97e4feso3931129b3a.0
-        for <linux-kernel@vger.kernel.org>; Sun, 06 Aug 2023 20:36:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1691379388; x=1691984188;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
-         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=WAmHsv0aooR3nX10HEjLL5tP/plsIB0hDyj15nET4fc=;
-        b=HX/bG4KLwTRh5wjISv7jDf/BZhZZfMUQIkKKTpsE4Z/nEdgem5yGJQ+klykQb7Br0q
-         y7EA4Xwz6bfgAGBQ4je7kw+PXiEnHaeArh2+vVWRJ5R9GbwnzOWeJoAemOa10kykp9xs
-         sr7uBgapdp0vnVjhZdiUHAXUpwVoJqEWqfYiAHpIZuPu3bL/MJ/MEeLVObazbIxMmrPE
-         ULlmAFuVXJtd3P6tz4I0Ken9ItLgysJzH3OhNswJQO8BKFVzsjN4sPM8mUk0t0qifGfh
-         FFZ5MOWXOM+mbM3Pa2SRYH6Udxq6Z3Uu8YbpxsE+pFrs64y9fepLwckCpV2uWOFy/AW1
-         apDQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691379388; x=1691984188;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
-         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=WAmHsv0aooR3nX10HEjLL5tP/plsIB0hDyj15nET4fc=;
-        b=QiDCPNZeflCfbKrNlOyItj0gTbw8azr3EH4EfeCq3/gQq6pzSei7jCdpejftZEIWba
-         /clqsxTAKw0HCG51Vhmx1e3s4XZd/te8OhOiD1yHON81Sq0s1yphR+iD4Jp7M30IdipW
-         ygSAECihJGPe8AnkiDKEIcovxd6cG97LIxeztuF8E1fljwo4CLShH4JWYs4MlyBDNhAO
-         bfSMNgmxARaILaRoD2nujRaeirCRNoBr8ljOkKkOUY7InRdn21KAsWR8AMoxnJwU/FIL
-         1oRL3Di9J7jJONmy56vFk+gLEmAvWLrxcnZKeiwBfDWJbN2GTVbHnyR0ldmMCk7GFiPL
-         wG7A==
-X-Gm-Message-State: AOJu0YxTYCds31H4UL8BMM4u1DUGEssxG+Yac+hPmSUYBGup03a1RdnQ
-        miSq3Rh+G8xavO1Nvr2KKGuYiQ==
-X-Google-Smtp-Source: AGHT+IEZFPA7qWk9DHQsPtm3SkDoNZK1SccOG5TU0sYc3d+dZtsrq0mteg81HlB/V1W6YKLdp3+GKw==
-X-Received: by 2002:a05:6a00:180c:b0:66a:386c:e6a6 with SMTP id y12-20020a056a00180c00b0066a386ce6a6mr11061551pfa.6.1691379388661;
-        Sun, 06 Aug 2023 20:36:28 -0700 (PDT)
-Received: from [10.85.115.102] ([203.208.167.146])
-        by smtp.gmail.com with ESMTPSA id k14-20020aa7820e000000b0063f00898245sm5106601pfi.146.2023.08.06.20.36.25
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 06 Aug 2023 20:36:28 -0700 (PDT)
-Message-ID: <2ee4f673-8218-ac72-684f-3cd78c46f750@bytedance.com>
-Date:   Mon, 7 Aug 2023 11:36:22 +0800
+        Sun, 6 Aug 2023 23:47:44 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F24410F9
+        for <linux-kernel@vger.kernel.org>; Sun,  6 Aug 2023 20:47:43 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id E9E5261365
+        for <linux-kernel@vger.kernel.org>; Mon,  7 Aug 2023 03:47:42 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A49FAC433C8;
+        Mon,  7 Aug 2023 03:47:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1691380062;
+        bh=bj5F7ecFqurRkS5eVFeyvZbl/Z7NesxetDXDsHYsUXU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=HhqG/fGF24G0B2utg+CXG7JDcCiZR9BISnGY2sNKpI0wuhk3b6Ax1Y7cYln7mA3DA
+         PcyCbbiWpr5pNpYVZWgP7SRR5aHXzdm6lE4/GA7BX8N1KRa/OPdrOTFFEqENyVBDAV
+         Jyc1Io/g0OJ/dexb+G++DqC0zz85dyLTvK1f53YDHZbGIQp+bmc42ptKK9yQJmuLOk
+         Fgxz/FA8RG8X6r5j7qVU04G6lfm31qXcDziErzqnT42uwvzLaaC6A61ekgUBsy8ONb
+         Fj05bMowViKZlgKYFpqpSzitHZcGraweMlhg+8SoSJGLpQixV3c4IdFEGe0ztsa4Hn
+         FCD7X8OjhMG8w==
+Date:   Mon, 7 Aug 2023 11:47:29 +0800
+From:   Shawn Guo <shawnguo@kernel.org>
+To:     "Peng Fan (OSS)" <peng.fan@oss.nxp.com>
+Cc:     s.hauer@pengutronix.de, kernel@pengutronix.de, festevam@gmail.com,
+        linux-imx@nxp.com, aisheng.dong@nxp.com,
+        alexander.stein@ew.tq-group.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Ranjani Vaidyanathan <ranjani.vaidyanathan@nxp.com>,
+        Peng Fan <peng.fan@nxp.com>
+Subject: Re: [PATCH V5 9/9] firmware: imx: scu-irq: support identifying SCU
+ wakeup source from sysfs
+Message-ID: <20230807034729.GR151430@dragon>
+References: <20230731090449.2845997-1-peng.fan@oss.nxp.com>
+ <20230731090449.2845997-10-peng.fan@oss.nxp.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.12.0
-Subject: Re: [External] Re: [PATCH] cgroup/rstat: record the cumulative
- per-cpu time of cgroup and its descendants
-To:     Tejun Heo <tj@kernel.org>
-Cc:     lizefan.x@bytedance.com, hannes@cmpxchg.org, mkoutny@suse.com,
-        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20230717093612.40846-1-jiahao.os@bytedance.com>
- <ZLWb-LsBD041hMvr@slm.duckdns.org>
- <2655026d-6ae4-c14c-95b0-4177eefa434f@bytedance.com>
- <ZLcJ1nH8KzWzoQWj@slm.duckdns.org>
- <b4424767-dce7-08a9-3759-43cc9dfa4273@bytedance.com>
- <3d2b68bf-9f40-c779-dcfd-4cf9939edecc@bytedance.com>
- <ZMKs_GpHEW6Pfusj@slm.duckdns.org> <ZMrNHf2tg8AZ2F0z@slm.duckdns.org>
-From:   Hao Jia <jiahao.os@bytedance.com>
-In-Reply-To: <ZMrNHf2tg8AZ2F0z@slm.duckdns.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-6.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230731090449.2845997-10-peng.fan@oss.nxp.com>
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 2023/8/3 Tejun Heo wrote:
-> I couldn't come up with an answer. Let's go ahead with adding the field but
-> can you please do the followings?
+On Mon, Jul 31, 2023 at 05:04:49PM +0800, Peng Fan (OSS) wrote:
+> From: Ranjani Vaidyanathan <ranjani.vaidyanathan@nxp.com>
 > 
-
-Thank you for your suggestion. I am very willing to do it.
-
-> * Name it to something like subtree_bstat instead of cumul_bstat. The
->    counters are all cumulative.
-
-I did it in v2 patch.
-
+> Record SCU wakeup interrupt in /sys/power/pm_wakeup_irq
+> The user can further identify the exact wakeup source by using the
+> following interface:
+> cat /sys/firmware/scu_wakeup_source/wakeup_src
 > 
-> * Are you sure the upward propagation logic is correct? It's calculating
->    global delta and then propagating to the per-cpu delta of the parent. Is
->    that correct because the two delta calculations always end up the same?
+> The above will print the wake groups and the irqs that could have
+> contributed to waking up the kernel. For example if ON/OFF button was the
+> wakeup source:
+> cat /sys/firmware/scu_wakeup_source/wakeup_src
+> Wakeup source group = 3, irq = 0x1
+> 
+> The user can refer to the SCFW API documentation to identify all the
+> wake groups and irqs.
+> 
+> Signed-off-by: Ranjani Vaidyanathan <ranjani.vaidyanathan@nxp.com>
+> Signed-off-by: Peng Fan <peng.fan@nxp.com>
+> ---
+>  drivers/firmware/imx/imx-scu-irq.c | 66 +++++++++++++++++++++++++++---
+>  1 file changed, 61 insertions(+), 5 deletions(-)
+> 
+> diff --git a/drivers/firmware/imx/imx-scu-irq.c b/drivers/firmware/imx/imx-scu-irq.c
+> index 8d902db1daf2..fcbaa393897c 100644
+> --- a/drivers/firmware/imx/imx-scu-irq.c
+> +++ b/drivers/firmware/imx/imx-scu-irq.c
+> @@ -11,6 +11,8 @@
+>  #include <linux/firmware/imx/sci.h>
+>  #include <linux/mailbox_client.h>
+>  #include <linux/suspend.h>
+> +#include <linux/sysfs.h>
+> +#include <linux/kobject.h>
 
-Sorry, I made a mistake and misled you. These two deltas are not always 
-equal.
+Can we keep the list alphabetically sorted?
 
-I found and reproduced a bug case:
-We build /sys/fs/cgroup/test /sys/fs/cgroup/test/t1, 
-/sys/fs/cgroup/test/t1/tt1 in turn.
-And there are only tasks in /sys/fs/cgroup/test/t1/tt1. After applying 
-this patch, some operations and corresponding data changes are as follows:
+>  
+>  #define IMX_SC_IRQ_FUNC_ENABLE	1
+>  #define IMX_SC_IRQ_FUNC_STATUS	2
+> @@ -40,6 +42,20 @@ struct imx_sc_msg_irq_enable {
+>  	u8 enable;
+>  } __packed;
+>  
+> +struct scu_wakeup {
+> +	u32 mask;
+> +	u32 wakeup_src;
+> +	bool valid;
+> +};
+> +
+> +/* Sysfs functions */
+> +static struct kobject *wakeup_obj;
+> +static ssize_t wakeup_source_show(struct kobject *kobj, struct kobj_attribute *attr, char *buf);
+> +static struct kobj_attribute wakeup_source_attr =
+> +		__ATTR(wakeup_src, 0660, wakeup_source_show, NULL);
+> +
+> +static struct scu_wakeup scu_irq_wakeup[IMX_SC_IRQ_NUM_GROUP];
+> +
+>  static struct imx_sc_ipc *imx_sc_irq_ipc_handle;
+>  static struct work_struct imx_sc_irq_work;
+>  static BLOCKING_NOTIFIER_HEAD(imx_scu_irq_notifier_chain);
+> @@ -71,16 +87,24 @@ static void imx_scu_irq_work_handler(struct work_struct *work)
+>  	u8 i;
+>  
+>  	for (i = 0; i < IMX_SC_IRQ_NUM_GROUP; i++) {
+> +		if (scu_irq_wakeup[i].mask) {
+> +			scu_irq_wakeup[i].valid = false;
+> +			scu_irq_wakeup[i].wakeup_src = 0;
+> +		}
 
-Step 1、cat /sys/fs/cgroup/test/t1/tt1/cpu.stat
-*cpu 6* current flush cgroup /test/t1/tt1
-per-cpu delta utime 0 stime 0 sum_exec_runtime 257341
-/test/t1/tt1 cumul_bstat(cpu 6) utime 0 stime 0 sum_exec_runtime 257341
-/test/t1/tt1 cgrp->bstat utime 0 stime 0 sum_exec_runtime 257341
-if (cgroup_parent(parent)) {
-     cgrp delta utime 0 stime 0 sum_exec_runtime 257341
-     parent(/test/t1) ->bstat utime 0 stime 0 sum_exec_runtime 257341
-     parent(/test/t1) last_bstat utime 0 stime 0 sum_exec_runtime 0
-     parent(/test/t1) cumul_bstat utime 0 stime 0 sum_exec_runtime 257341
-}
+Can we have a newline here?
 
+>  		ret = imx_scu_irq_get_status(i, &irq_status);
+>  		if (ret) {
+> -			pr_err("get irq group %d status failed, ret %d\n",
+> -			       i, ret);
+> +			pr_err("get irq group %d status failed, ret %d\n", i, ret);
 
-Step 2、cat /sys/fs/cgroup/test/t1/tt1/cpu.stat
-*cpu 12* current flush cgroup /test/t1/tt1
-per-cpu delta utime 0 stime 1000000 sum_exec_runtime 747042
-/test/t1/tt1 cumul_bstat utime 0 stime 1000000 sum_exec_runtime 747042
-/test/t1/tt1 cgrp->bstat utime 0 stime 1000000 sum_exec_runtime 1004383
-if (cgroup_parent(parent)) {
-     cgrp delta utime 0 stime 1000000 sum_exec_runtime 747042
-     parent(/test/t1) ->bstat utime 0 stime 1000000 sum_exec_runtime 1004383
-     parent(/test/t1) last_bstat utime 0 stime 0 sum_exec_runtime 0
-     parent(/test/t1) cumul_bstat utime 0 stime 1000000 sum_exec_runtime 
-747042
-}
+Unrelated change?
 
+>  			return;
+>  		}
+>  
+>  		if (!irq_status)
+>  			continue;
+> -
+> +		if (scu_irq_wakeup[i].mask & irq_status) {
+> +			scu_irq_wakeup[i].valid = true;
+> +			scu_irq_wakeup[i].wakeup_src = irq_status & scu_irq_wakeup[i].mask;
+> +		} else {
+> +			scu_irq_wakeup[i].wakeup_src = irq_status;
+> +		}
 
-Step 3、cat /sys/fs/cgroup/test/cpu.stat
-(cgroup fulsh /test/t1/tt1 -> /test/t1 -> /test in turn)
+Can we have a newline here?
 
-*cpu 6*  current flush cgroup /test/t1/tt1
-per-cpu delta utime 0 stime 0 sum_exec_runtime 263468
-/test/t1/tt1 cumul_bstat(cpu 6) utime 0 stime 0 sum_exec_runtime 520809
-/test/t1/tt1 cgrp->bstat utime 0 stime 1000000 sum_exec_runtime 1267851
-if (cgroup_parent(parent)) {
-     cgrp delta utime 0 stime 0 sum_exec_runtime 263468
-     parent(/test/t1) ->bstat utime 0 stime 1000000 sum_exec_runtime 1267851
-     parent(/test/t1) last_bstat utime 0 stime 0 sum_exec_runtime 0
-     parent(/test/t1) cumul_bstat utime 0 stime 0 sum_exec_runtime 520809
-}
+>  		pm_system_wakeup();
+>  		imx_scu_irq_notifier_call_chain(irq_status, &i);
+>  	}
+> @@ -135,6 +159,11 @@ int imx_scu_irq_group_enable(u8 group, u32 mask, u8 enable)
+>  		pr_err("enable irq failed, group %d, mask %d, ret %d\n",
+>  			group, mask, ret);
+>  
+> +	if (enable)
+> +		scu_irq_wakeup[group].mask |= mask;
+> +	else
+> +		scu_irq_wakeup[group].mask &= ~mask;
+> +
+>  	return ret;
+>  }
+>  EXPORT_SYMBOL(imx_scu_irq_group_enable);
+> @@ -144,6 +173,25 @@ static void imx_scu_irq_callback(struct mbox_client *c, void *msg)
+>  	schedule_work(&imx_sc_irq_work);
+>  }
+>  
+> +static ssize_t wakeup_source_show(struct kobject *kobj, struct kobj_attribute *attr, char *buf)
+> +{
+> +	int i;
+> +
+> +	for (i = 0; i < IMX_SC_IRQ_NUM_GROUP; i++) {
+> +		if (!scu_irq_wakeup[i].wakeup_src)
+> +			continue;
+> +
+> +		if (scu_irq_wakeup[i].valid)
+> +			sprintf(buf, "Wakeup source group = %d, irq = 0x%x\n",
+> +				i, scu_irq_wakeup[i].wakeup_src);
+> +		else
+> +			sprintf(buf, "Spurious SCU wakeup, group = %d, irq = 0x%x\n",
+> +				i, scu_irq_wakeup[i].wakeup_src);
+> +	}
+> +
+> +	return strlen(buf);
+> +}
+> +
+>  int imx_scu_enable_general_irq_channel(struct device *dev)
+>  {
+>  	struct of_phandle_args spec;
+> @@ -173,8 +221,7 @@ int imx_scu_enable_general_irq_channel(struct device *dev)
+>  
+>  	INIT_WORK(&imx_sc_irq_work, imx_scu_irq_work_handler);
+>  
+> -	if (!of_parse_phandle_with_args(dev->of_node, "mboxes",
+> -				       "#mbox-cells", 0, &spec))
+> +	if (!of_parse_phandle_with_args(dev->of_node, "mboxes", "#mbox-cells", 0, &spec))
 
-*cpu 6* current flush cgroup /test/t1
-per-cpu delta utime 0 stime 0 sum_exec_runtime 0
-/test/t1 cumul_bstat(cpu 6) utime 0 stime 0 sum_exec_runtime 520809
-/test/t1 cgrp->bstat utime 0 stime 1000000 sum_exec_runtime 1267851
-if (cgroup_parent(parent)) {
-     cgrp delta utime 0 stime 1000000 sum_exec_runtime 1267851  <---
-     parent(/test) ->bstat utime 0 stime 1000000 sum_exec_runtime 1267851
-     parent(/test) last_bstat utime 0 stime 0 sum_exec_runtime 0
-     parent(/test) cumul_bstat (cpu 6) utime 0 stime 1000000 
-sum_exec_runtime 1267851 <--- *error*
-******
-   Here cgrp delta is *not equal* to per-cpu delta.
-   The frequency of cgroup (/test) and its chiled cgroup (/test/t1/tt1) 
-  flush is inconsistent.
-   In other words (when we call cgroup_base_stat_flush(), we will not 
-necessarily flush to the highest-level cgroup except root(like step 1 
-and 2 above)).
-   Therefore, cgrp delta may contain the cumulative value of multiple 
-per-cpu deltas.
+Unrelated change?
 
-   The correct value of parent(/test) cumul_bstat should be utime 0 
-stime 0 sum_exec_runtime 520809.
-******
-}
+>  		i = of_alias_get_id(spec.np, "mu");
+>  
+>  	/* use mu1 as general mu irq channel if failed */
+> @@ -183,6 +230,15 @@ int imx_scu_enable_general_irq_channel(struct device *dev)
+>  
+>  	mu_resource_id = IMX_SC_R_MU_0A + i;
+>  
+> +	/* Create directory under /sysfs/firmware */
+> +	wakeup_obj = kobject_create_and_add("scu_wakeup_source", firmware_kobj);
 
-*cpu 6* current flush cgroup /test
-per-cpu delta utime 0 stime 0 sum_exec_runtime 0
-cumul_bstat utime 0 stime 1000000 sum_exec_runtime 1267851
-/test ->bstat utime 0 stime 1000000 sum_exec_runtime 1267851
-	cgroup_parent(parent) is NULL end.
+Should we check error condition here?
 
+> +
+> +	if (sysfs_create_file(wakeup_obj, &wakeup_source_attr.attr)) {
 
-So we should add a per-cpu variable subtree_last_bstat similar to 
-cgrp->last_bstat to record the last value.
+Should we populate 'ret' here, or is the sysfs optional?
 
-I have sent v2 patch, please review it again.
-v2 link:
-https://lore.kernel.org/all/20230807032930.87785-1-jiahao.os@bytedance.com
+> +		pr_err("Cannot create sysfs file......\n");
 
+Can we use dev_err() here?
 
-> * Please add a comment explaining that the field is not currently used
->    outside of being read from bpf / drgn and what not and that we're still
->    trying to determine how to expose that in the cgroupfs interface.
+> +		kobject_put(wakeup_obj);
+> +		sysfs_remove_file(firmware_kobj, &wakeup_source_attr.attr);
 
+The sysfs_remove_file() is the undo of sysfs_create_file() which hasn't
+been successful, right?
 
-Thanks, I did it in v2 patch.
+Shawn
 
-Thanks,
-Hao
+> +	}
+> +
+>  	return ret;
+>  }
+>  EXPORT_SYMBOL(imx_scu_enable_general_irq_channel);
+> -- 
+> 2.37.1
+> 
