@@ -2,192 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9543277264C
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 15:44:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E6394772365
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 14:05:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234349AbjHGNoO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Aug 2023 09:44:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55352 "EHLO
+        id S233206AbjHGMFr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Aug 2023 08:05:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42096 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234326AbjHGNnw (ORCPT
+        with ESMTP id S230324AbjHGMFp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Aug 2023 09:43:52 -0400
-Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E5FB19B1;
-        Mon,  7 Aug 2023 06:43:15 -0700 (PDT)
-Received: from pps.filterd (m0333520.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 376Nf2rV021502;
-        Mon, 7 Aug 2023 11:16:46 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : date : message-id : content-transfer-encoding : content-type :
- mime-version; s=corp-2023-03-30;
- bh=F4dc77V5rVBQRDKBgGZgkz7chpSuJu2Tof7nKTWTth8=;
- b=yd5/zm6U2OUf+ssrZhtzCA6G1oXWY2Zn6coROCJZaEFdnCiX7NiC5C5gqwZZeR70c8t3
- nqN5kOngR4EMoc6olwDvyqpEltbPb9vL2BpYGgWRSnpwEIcDOZAsc47EYteTQyFt8PYy
- PQgJvSR6TckYxrc+x411C6su0ORz2w2ykgRGgSHjDkhdAkUwgxkWgloFwIy2Q36uLtNp
- jDaxVuLhWgMhoM8Vy25Ns1p+bkfNQgapRXfmrYGW9JxdXrD2HD2r2+P84JWzyw1mckgw
- jBP1WCykU0eOb69Ho3NljB83CCtRbHnBkcgqTv9Y4UXaMWaFbJf2QtvAb0nBCYODERnR Gg== 
-Received: from iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta01.appoci.oracle.com [130.35.100.223])
-        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3s9efd2hpb-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 07 Aug 2023 11:16:46 +0000
-Received: from pps.filterd (iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
-        by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 3779Y07K032731;
-        Mon, 7 Aug 2023 11:16:45 GMT
-Received: from nam11-dm6-obe.outbound.protection.outlook.com (mail-dm6nam11lp2168.outbound.protection.outlook.com [104.47.57.168])
-        by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 3s9cvadjry-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 07 Aug 2023 11:16:45 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=ecOTjozkKcbXd22/IX8x5zQEU5ggdqK9meD4Fx1JSytBIgG8u9hpsY6n1yz3YzpEYTo9CQg6S1zFjZHAJv3wE1Nh8pGT8ih6DVgyVyDHEsDUvgUAzBN06naIBfnUiLsPHxWNLqvVvs73HmfyhGv+u2EEjQlLUdSVMhnc3MgcD9IKJ2jDUpIT0kXadcvCuaPFrq2cvvKI9lgiuPc6HrTiTWH9Jg9nDIzHotNFr1nh0bRZk1dfFxd6laXjT8HNpCXf52LOhseZ4HRLNatQNW8QU4URMgqVZ6xXsfO9tLcME1V0dUFpvkGb2Xzb0j2KUOKl6gfGhRgVgdsJ6/rwWWSjKA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=F4dc77V5rVBQRDKBgGZgkz7chpSuJu2Tof7nKTWTth8=;
- b=lypcW0iQBtF8Ag3DCmvDmB4i2QDUeB6h1P1r6EvrOtr2gB/2G1aTE8AZWWC5ujHtJtZON57J3j3AxGec6/CxJzsf7x2EvDE+IBdcmUea4m8bjwyWMKz9dfzHbJDrA4mghAsLfFkx2eerswcDQtXEq/P/7nu/8bnw44qGnWPOYVHpgCu8lvqfTD40iA5vyL4edvKp8Jw7y+Xf/nuo/lYYPwFCKBdyVXkjWBJWlGaInDIApSskMGFieAW6oB/ccMVfCzr0W8lnZ6vFs0Icu2r9dNfSpVaVg7bXBP7utoaSXhg84FU6vhAS8k9rHon+fIRdm0LFz4mzZESGIPiRTxrYgw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
+        Mon, 7 Aug 2023 08:05:45 -0400
+Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4AB2AF0
+        for <linux-kernel@vger.kernel.org>; Mon,  7 Aug 2023 05:05:44 -0700 (PDT)
+Received: by mail-pj1-x102b.google.com with SMTP id 98e67ed59e1d1-2680182bc21so2234988a91.2
+        for <linux-kernel@vger.kernel.org>; Mon, 07 Aug 2023 05:05:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=F4dc77V5rVBQRDKBgGZgkz7chpSuJu2Tof7nKTWTth8=;
- b=Lo/N3FZoUf4u9Eqnl0eGy5WpA3LwbuAgaUOmVhotPwoDNnagrbDVyTajPlJEuY/R64LT8Yu2Zu1Bk7rM1GiN/T/qpJZJoVXt8M2fWlNsI2RIkh2zrVJpWWI39Kiz8ELAWlEV3j3SKen55q5iAfgtMVLG1Jx1VHbP6//p6auLa0A=
-Received: from DM6PR10MB4313.namprd10.prod.outlook.com (2603:10b6:5:212::20)
- by CYYPR10MB7625.namprd10.prod.outlook.com (2603:10b6:930:c0::15) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6631.47; Mon, 7 Aug
- 2023 11:16:43 +0000
-Received: from DM6PR10MB4313.namprd10.prod.outlook.com
- ([fe80::ebfd:c49c:6b8:6fce]) by DM6PR10MB4313.namprd10.prod.outlook.com
- ([fe80::ebfd:c49c:6b8:6fce%6]) with mapi id 15.20.6652.026; Mon, 7 Aug 2023
- 11:16:43 +0000
-From:   John Garry <john.g.garry@oracle.com>
-To:     irogers@google.com, acme@kernel.org
-Cc:     linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
-        ilkka@os.amperecomputing.com, John Garry <john.g.garry@oracle.com>
-Subject: [PATCH] perf jevents: Raise exception for no definition of a arch std event
-Date:   Mon,  7 Aug 2023 11:16:31 +0000
-Message-Id: <20230807111631.3033102-1-john.g.garry@oracle.com>
-X-Mailer: git-send-email 2.31.1
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: LO4P265CA0010.GBRP265.PROD.OUTLOOK.COM
- (2603:10a6:600:2ad::21) To DM6PR10MB4313.namprd10.prod.outlook.com
- (2603:10b6:5:212::20)
+        d=bytedance.com; s=google; t=1691409944; x=1692014744;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=UxNPOJp2gtDhfWZRzOWarZZZVlOwdeuN9g0kWHnf9gs=;
+        b=WsVfgJHsSXlOYhSa7RnTOFdsaoX0xEoReCh4sis0XDX/ZC4AZZ4i7l+6ft+Dh8q6vB
+         ZANsA/Dtc2VdW8u7FnrP6vhl0HCYwl+0lqeYM5BgkcxalSXu0RgUX8YfcOrtCb+IU5qh
+         8tfYLBfQRD8KRBSA3FfUsqZ5ZRrfd2q9Ypk+RU6CqBzKSdW79JSEAfOtj3sDInliciF5
+         MIBhYmv1/CGoUDgvZSIAlmIyn9r6HsjyaSq7lbNiasxCJUaJDvoHvCPyqcFX66qUV2iP
+         je8aXyp/+daaeX0IfqkVrnyT7rGBLtqve+JO7YPpk4qVZ/pOITQZ/mPUFQmjBzWa0+eY
+         sz4g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691409944; x=1692014744;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=UxNPOJp2gtDhfWZRzOWarZZZVlOwdeuN9g0kWHnf9gs=;
+        b=OKb2EcbwdkqDS53HwQJMc+Xz9q9WBmH/pT02O73Za+sPlJS+9f7F86QqVHJHgofT3+
+         sYAtOl+rVmzgerS9FHMbjy0ntqzWcgHdH7OmlBCQlBeI4hbvTafXfMA+OHvO0V6P0cQr
+         wG+0RfP66wTPEz9ohavFiVMji1n0+QTxKp5nz2mAggA6p4VlpbBnmKGBt5gj3n2Txg8B
+         VZ0eVrr4XEfOiop4gu7foU8dlym7s0OrTvErJAwrFQOsWlxdi9W6KOt5rwq5j3sZvymA
+         lmYteCKV9iHVjLwST/QBL9fEbKPgiijT5I8MEXFMTsz7eKHkfXHCa6WNAWxNRjzfligF
+         UBSQ==
+X-Gm-Message-State: AOJu0Yxwem+ypmPv3O1pJJ4u87kAf/wpMwMm7rj/j/7CLsheNhk/OOCa
+        p6vSd7RI3NDSb7S00PG8ddqdswjTmEcQoK9FnxdR4g==
+X-Google-Smtp-Source: AGHT+IGIntJFzxEfnZfu0K5hC4TFi3jmhVJZWB+WVqNK9Sop7DxQpbxBhPnmG4v2fW+FmoyvjvB0Ag==
+X-Received: by 2002:a17:90a:a095:b0:263:53be:5120 with SMTP id r21-20020a17090aa09500b0026353be5120mr6488176pjp.36.1691409943733;
+        Mon, 07 Aug 2023 05:05:43 -0700 (PDT)
+Received: from C02FG34NMD6R.bytedance.net ([2408:8656:30f8:e020::b])
+        by smtp.gmail.com with ESMTPSA id bx6-20020a17090af48600b00263f8915aa3sm8578098pjb.31.2023.08.07.05.05.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 07 Aug 2023 05:05:43 -0700 (PDT)
+From:   Albert Huang <huangjie.albert@bytedance.com>
+Cc:     Albert Huang <huangjie.albert@bytedance.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn@kernel.org>,
+        Magnus Karlsson <magnus.karlsson@intel.com>,
+        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Pavel Begunkov <asml.silence@gmail.com>,
+        Richard Gobert <richardbgobert@gmail.com>,
+        Menglong Dong <imagedong@tencent.com>,
+        Yunsheng Lin <linyunsheng@huawei.com>,
+        netdev@vger.kernel.org (open list:NETWORKING DRIVERS),
+        linux-kernel@vger.kernel.org (open list),
+        bpf@vger.kernel.org (open list:XDP SOCKETS (AF_XDP))
+Subject: [RFC v2 Optimizing veth xsk performance 0/9]
+Date:   Mon,  7 Aug 2023 20:04:20 +0800
+Message-Id: <20230807120434.83644-1-huangjie.albert@bytedance.com>
+X-Mailer: git-send-email 2.37.1 (Apple Git-137.1)
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DM6PR10MB4313:EE_|CYYPR10MB7625:EE_
-X-MS-Office365-Filtering-Correlation-Id: 9f1c9e97-2d05-4df6-d163-08db9737c78a
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: z/k0RNCQwLxCOqyUo/XIivHGY4ivNvy0xrXIYHOmt4zd6g7alwSsX4evH0a2b26ny75Ho+vosEFXYdgGaHMyLQ8UJQkVKpYTAjBekdFyFqT1dShQ76DNd261nc1M0/zj8x+UM9KOPdnQEjUZInsglCf/lGq9FFuvX0cA34MnaMZzlimreTlIjvCb53DGD0NWeclfUM9BtIM/aMFfVG1AcKBnAqc03/53Gg2rmwWt1nGTptSjmJnEfD2Cwbha/RXMpZMAN3fGTt4oFx42swouokk94cKaZQ2I+jw0ygVu53LdqfXfVDK9tr/0cYFau5VI1+DoojeonrQK36PUTFhakiDQE33MgftvITr3MOi8vDtDNaFcN/DWyBTTUI/9FzQQbdsfrts7fOZwsNNKsiqg38xHovxAYbL2I2xhOubFvyoHWkQfNUsdZ2kSWbd8cN99I/mIEkjW/ZsE3vEdhLZgJa5dDxrmCCf3HqD11PWuvdM5jtD0dm1UUvI/O8M421oVh+x+aqEJzt2XsImIPcu43euRl0/HZhDzAC9AUqrikOw=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR10MB4313.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(376002)(366004)(136003)(39860400002)(346002)(396003)(451199021)(186006)(1800799003)(36756003)(103116003)(86362001)(8936002)(478600001)(38100700002)(6512007)(1076003)(83380400001)(2616005)(6506007)(26005)(107886003)(6666004)(6486002)(966005)(41300700001)(66476007)(4326008)(2906002)(316002)(66946007)(8676002)(66556008)(5660300002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?M/kPooStCUjxaYDWGaaxHf9Okkt5xlqZn4l7feAGT0iwacr5CaAURX4xKTX8?=
- =?us-ascii?Q?Bguk66EWmsWqlgMfaPk5jW3H/UbDitEr2CK5gm2iOWpJ0D7IVo7npUDKCspN?=
- =?us-ascii?Q?NO/Ol86ocoh0oyXE1AYBlWRTgQquOiY0A+YuJKyoyk7AgwIvrsmk1z9I6es4?=
- =?us-ascii?Q?q/HmVBQLri04x2d9LAXuM+kgzFTvEfL7LtBOCgAJ7CmcpJDQRpcQ7PVs/VCk?=
- =?us-ascii?Q?nQdS6F/XAwlGHAkoFJ0+331UpUo2Lr5WnViQjtp4AjxdMOQVR0lJduR9o1er?=
- =?us-ascii?Q?h8rPxVZJUYJGCEPtd4wlVA1sHBG77fZ9WYmkBAz55oE4iJNiOF1IAgq4E/tu?=
- =?us-ascii?Q?4EzMF/kQT83/gwRsFue7qmEXDWTxuBcYiHT7vhmqnc3QCZshIlThKazYy+gK?=
- =?us-ascii?Q?DlLE6w5hEQbmsqMTYqRC9I87Rs8Pc/D1lU68zD4zNX7yRNEF3LQozQR5ju/Q?=
- =?us-ascii?Q?OXGLYPPnssfJb47X3+tdmQ7Mu2MKXZ0dK02ELvrZazpOgYec5uVzcde0Ryy2?=
- =?us-ascii?Q?7Ck8U+iHHuyr0WyA4KqWwul4XoTeBguY8/3/xq3rq3bnyVRuroaLbzVWF5GO?=
- =?us-ascii?Q?019z7oG3qa8V9GW8txFse3n2Mh+ifYcrOmBE5LivNMwtmo2JxoQFgYagNiND?=
- =?us-ascii?Q?OhJxA+yGcUKSWrW55+F04NVVivEcaBsWdWVEzarYBcghhDi5e1vt/Knn/sX9?=
- =?us-ascii?Q?774ViWrbpME3lfUTcCyPZA5qmO7+4Nv5pEkI/ztKQNmwlBd5gJJn7aWnhL/w?=
- =?us-ascii?Q?4fqeb7gkfZwXVoAxun5Jdo9ii7KYcXVuA9GCrUxTyP43V5TeDwMEd1nU/TYM?=
- =?us-ascii?Q?OdhPKczA/BIqiIWwg0jE2DpuAJmGzHp8lP+aOJpp0mznElqP4i2Z0YJhy6RQ?=
- =?us-ascii?Q?tJyZqHHuYJ/yvPN7bSf6nyRyxzxgMenX4Nbt1b7hiW3ON/zLHdym96b70mH/?=
- =?us-ascii?Q?OnkMFo/oDIlLjSIi8Sz7Gkj3R8y2cyopuBH1zp3BW9y4FLIYH8BENvJQ/8lY?=
- =?us-ascii?Q?+u5RKiFlhePNUGfWk4z17Sq6NkQLEEwKpjtz4VuL6HSfKHhW7zc407XJf9KO?=
- =?us-ascii?Q?axW6NB25x4KylGvgh+2//6aFQqxMBOBrKHnCmSvroSYQXoeaSUIMI9fPSXiW?=
- =?us-ascii?Q?6be6DSbRfFol/xRT0FUGFm+PFMvITAFl7kQwhR7sztUbbHXfvyc5D2PYKKWg?=
- =?us-ascii?Q?xX0c9tYWRI625zeD6JT7u1Q2M5fXVYpuNckS7sgIrxReKiLSNH936U9+C+rW?=
- =?us-ascii?Q?wRkUqOoFr2DC+xYUvaGXbGfuW7NMLQRQUTXzMegJFHeL5mry/KO6GlVt6a6R?=
- =?us-ascii?Q?23Ve/XOebQu4aGp2f5I2/NS5yb6BXBnMY+0l4hDrGP9JmilgwS9Rnu8PfUeb?=
- =?us-ascii?Q?bD3ONwPuYJv6slyRb9jxjlerBwanyumYMrxT4bZ4iuc108XvoQ29TOTujmzo?=
- =?us-ascii?Q?N5lNHiGbMjWoSo1PWuY0r7OQzZQ14Juhl0Vl8Hib+pN+iWAW2YoFPd9tCp3e?=
- =?us-ascii?Q?qXx8q3OKEYinROjYZUgZacMEAw9Im9ynFCdf2L95zRbhw+xTJJZ9LePKvV6V?=
- =?us-ascii?Q?iCWmAlFoVhigqkE31jHQZ6gJxU3BK4VJgKT2/lKU?=
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: ELcp2NCjKUFjYS/qrQmt87V3wvdcz/dd8m4jaiZRvEPo91gvuZh6EIdiV+g9NuwbRKUo5DE+CkjQtt3lEHG1eRwt/cWsLMu9PwLdh6WOd8aO36zgMO0ZrtPBhW6joBDwvBp/4UjINYk7bARFPN7C/lR7QW7DPkcVTK1e+8sm3vD/Y+5SlvNP53Q9PQ/LFc1R9/9+yvi1S2LZlm9aGjMo34o+P6wCABy26CxbX9hMy45MoapGBmvsZBO6P9wcWSLJRVjLyfT79KGNkny1JoryTwRAFvclvGLl9uAO82/n8P7zF2bGEMf+OLTQM9IJ0zfqn3rNIF8rZSZioFolUaUUONSblH981irqYlk5QIV5eyGrIanALgHpOWF7Vpu2TGghB2QcVyajnxvhT1UuC6nRu616QuOdij8v3AiC0rWjC7AT8O4xWALSEEvcsITxU5ejOhr+I/wlS/Nt1LgBlczCxjdJh1Tg9hTrX0r1WSN0X60gM2+SJ5PRaYQuLB7V+8Kuc0RlXdiMyaxW9UfFMsrYWxlIoaeVnc2E4Z9Vstpz619v35ruKGl3wj2I/FuSx/PMWrwSqNniDmL+ZAtNrXVlmxleJLCE9FuEh6yr7PCrXx9iUvCAm484WXvwnPZoeEa2oRu65UeGk1+7EAezax+3TB9+WIZtJo+nCMuRmoy83MQKcN43GXGp2RGLhGJ+KxWMg38hY9xK4s84jZlgAPSQcz9okDYCuqq2tVtq1xb+3+TsP8qrT5n6yM2Z1nxTHcJQNmwf0PqAkfPVVNQbR8fo0aIQudH6yRuIggmQY8jtFpHRfjXxrEW0dk7ntJGtZEadYKdPeVKvPk3XJLrSRr0jIBy1TPrw7wCZruLqHfXBRtUMHjsLLuOH0IeOM6hEgDK9
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 9f1c9e97-2d05-4df6-d163-08db9737c78a
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR10MB4313.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Aug 2023 11:16:43.3614
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: LYEMv4R9p7Kj6wPO1H0k2ngGctU7f2/VAxq5A5QXPa33zd3WscC0OHrYDD3K32pMLBDhdTWAqU0WtfwPIL1EwQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CYYPR10MB7625
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
- definitions=2023-08-07_10,2023-08-03_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 suspectscore=0 adultscore=0
- phishscore=0 mlxscore=0 mlxlogscore=999 spamscore=0 malwarescore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2306200000
- definitions=main-2308070104
-X-Proofpoint-GUID: h4s934UlNuoDNjBWQYfcfBj3b1MRaHa3
-X-Proofpoint-ORIG-GUID: h4s934UlNuoDNjBWQYfcfBj3b1MRaHa3
+Content-Type: text/plain; charset=yes
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Recently Ilkka reported that the JSONs for the AmpereOne arm64-based
-platform included a dud event which referenced a non-existent arch std
-event [0].
+AF_XDP is a kernel bypass technology that can greatly improve performance.
+However, for virtual devices like veth, even with the use of AF_XDP sockets,
+there are still many additional software paths that consume CPU resources. 
+This patch series focuses on optimizing the performance of AF_XDP sockets 
+for veth virtual devices. Patches 1 to 4 mainly involve preparatory work. 
+Patch 5 introduces tx queue and tx napi for packet transmission, while 
+patch 8 primarily implements batch sending for IPv4 UDP packets, and patch 9
+add support for AF_XDP tx need_wakup feature. These optimizations significantly
+reduce the software path and support checksum offload.
 
-Previously in the times of jevents.c, we would raise an exception for this.
+I tested those feature with
+A typical topology is shown below:
+client(send):                                        server:(recv)
+veth<-->veth-peer                                    veth1-peer<--->veth1
+  1       |                                                  |   7
+          |2                                                6|
+          |                                                  |
+        bridge<------->eth0(mlnx5)- switch -eth1(mlnx5)<--->bridge1
+                  3                    4                 5    
+             (machine1)                              (machine2)    
+AF_XDP socket is attach to veth and veth1. and send packets to physical NIC(eth0)
+veth:(172.17.0.2/24)
+bridge:(172.17.0.1/24)
+eth0:(192.168.156.66/24)
 
-This is still invalid, even though the current code just ignores such an
-event.
+eth1(172.17.0.2/24)
+bridge1:(172.17.0.1/24)
+eth0:(192.168.156.88/24)
 
-Re-introduce code to raise an exception for when no definition exists to
-help catch as many invalid JSONs as possible.
+after set default route、snat、dnat. we can have a tests
+to get the performance results.
 
-[0] https://lore.kernel.org/linux-perf-users/9e851e2a-26c7-ba78-cb20-be4337b2916a@oracle.com/
+packets send from veth to veth1:
+af_xdp test tool:
+link:https://github.com/cclinuxer/libxudp
+send:(veth)
+./objs/xudpperf send --dst 192.168.156.88:6002 -l 1300
+recv:(veth1)
+./objs/xudpperf recv --src 172.17.0.2:6002
 
-Signed-off-by: John Garry <john.g.garry@oracle.com>
----
-Please do not apply before [0], above.
+udp test tool:iperf3
+send:(veth)
+iperf3 -c 192.168.156.88 -p 6002 -l 1300 -b 0 -u
+recv:(veth1)
+iperf3 -s -p 6002
 
-diff --git a/tools/perf/pmu-events/jevents.py b/tools/perf/pmu-events/jevents.py
-index 8cd561aa606a..98cccc3fcbbd 100755
---- a/tools/perf/pmu-events/jevents.py
-+++ b/tools/perf/pmu-events/jevents.py
-@@ -347,12 +347,15 @@ class JsonEvent:
-       if self.desc and not self.desc.endswith('. '):
-         self.desc += '. '
-       self.desc = (self.desc if self.desc else '') + ('Unit: ' + self.pmu + ' ')
--    if arch_std and arch_std.lower() in _arch_std_events:
--      event = _arch_std_events[arch_std.lower()].event
--      # Copy from the architecture standard event to self for undefined fields.
--      for attr, value in _arch_std_events[arch_std.lower()].__dict__.items():
--        if hasattr(self, attr) and not getattr(self, attr):
--          setattr(self, attr, value)
-+    if arch_std:
-+      if arch_std.lower() in _arch_std_events:
-+        event = _arch_std_events[arch_std.lower()].event
-+        # Copy from the architecture standard event to self for undefined fields.
-+        for attr, value in _arch_std_events[arch_std.lower()].__dict__.items():
-+          if hasattr(self, attr) and not getattr(self, attr):
-+            setattr(self, attr, value)
-+      else:
-+        raise argparse.ArgumentTypeError('Cannot find arch std event:', arch_std)
- 
-     self.event = real_event(self.name, event)
- 
+performance:
+performance:(test weth libxudp lib)
+UDP                              : 320 Kpps (with 100% cpu)
+AF_XDP   no  zerocopy + no batch : 480 Kpps (with ksoftirqd 100% cpu)
+AF_XDP  with  batch  +  zerocopy : 1.5 Mpps (with ksoftirqd 15% cpu)
+
+With af_xdp batch, the libxudp user-space program reaches a bottleneck.
+Therefore, the softirq did not reach the limit.
+
+This is just an RFC patch series, and some code details still need 
+further consideration. Please review this proposal.
+
+thanks!
+
+v1->v2:
+- all the patches pass checkpatch.pl test. suggested by Simon Horman.
+- iperf3 tested with -b 0, update the test results. suggested by Paolo Abeni.
+- refactor code to make code structure clearer.
+- delete some useless code logic in the veth_xsk_tx_xmit function.
+- add support for AF_XDP tx need_wakup feature.
+
+Albert Huang (9):
+  veth: Implement ethtool's get_ringparam() callback
+  xsk: add dma_check_skip for skipping dma check
+  veth: add support for send queue
+  xsk: add xsk_tx_completed_addr function
+  veth: use send queue tx napi to xmit xsk tx desc
+  veth: add ndo_xsk_wakeup callback for veth
+  sk_buff: add destructor_arg_xsk_pool for zero copy
+  veth: af_xdp tx batch support for ipv4 udp
+  veth: add support for AF_XDP tx need_wakup feature
+
+ drivers/net/veth.c          | 679 +++++++++++++++++++++++++++++++++++-
+ include/linux/skbuff.h      |   2 +
+ include/net/xdp_sock_drv.h  |   1 +
+ include/net/xsk_buff_pool.h |   1 +
+ net/xdp/xsk.c               |   6 +
+ net/xdp/xsk_buff_pool.c     |   3 +-
+ net/xdp/xsk_queue.h         |  10 +
+ 7 files changed, 700 insertions(+), 2 deletions(-)
+
 -- 
-2.35.3
+2.20.1
 
