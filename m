@@ -2,100 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 80D037729E7
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 17:56:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 82E8D772A07
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 18:04:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231418AbjHGP4w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Aug 2023 11:56:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44736 "EHLO
+        id S229770AbjHGQEA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Aug 2023 12:04:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46160 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231383AbjHGP4u (ORCPT
+        with ESMTP id S229578AbjHGQD6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Aug 2023 11:56:50 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1C7610EC;
-        Mon,  7 Aug 2023 08:56:49 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 607A161EA7;
-        Mon,  7 Aug 2023 15:56:49 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C030BC433C9;
-        Mon,  7 Aug 2023 15:56:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691423808;
-        bh=bUNIbqe6RppIbQZBnDiHUXsd36cI7wjANaENlXpWX04=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=WPFdT9nXiYm5ey7B6THP84a8DR2nSj4h5iElCcSgiOzDpsGqe5y/B8fmH2FxJedyZ
-         ZvRjZTUfy8ouzZ+oZbJvQPH9CzwEAWbnM/bTv4R12bvVRSOTn7DN4J7qsWz60tF40D
-         22EVy1p7YA0Ba4GzoASorRjjF0PD7TE5PlEjRkk+oGUyKJx0UyhkPjRhzYp3xNZvTY
-         ZzPkXXDTKIaM5nq0U4l1McKeyO9rh8hSQ+G4Ed64WQTEDwSAVnICb+rPzgf/eki6rR
-         Cs6niX+dQ/pdcOWop5lJihOlCL7YKRBBgfvhxGkmjytnaXz/GevLs98fBayK4zv7bY
-         5kuug5ZC3Rw5g==
-Received: by mail-ed1-f52.google.com with SMTP id 4fb4d7f45d1cf-522ab557632so6234722a12.0;
-        Mon, 07 Aug 2023 08:56:48 -0700 (PDT)
-X-Gm-Message-State: AOJu0YygYwLjzjOaFBxkoqEmrOKAjOoKumBcxipootdC5iSJLp6p16zB
-        GdoZBgS1F8TVhpgyOtkkBFrdoAe5Uw6z4jxK4r4=
-X-Google-Smtp-Source: AGHT+IFBFZhk6mL3xRA71v8RsN9CSTJPBCNjhVXhQDh3/7fw+qvw+RcjmkDAVDtc/rYFw5X/DziaJ3ZDES256H2JH0k=
-X-Received: by 2002:a05:6402:12ca:b0:523:95c:9ccb with SMTP id
- k10-20020a05640212ca00b00523095c9ccbmr6769959edx.17.1691423806998; Mon, 07
- Aug 2023 08:56:46 -0700 (PDT)
+        Mon, 7 Aug 2023 12:03:58 -0400
+Received: from mail-oa1-x36.google.com (mail-oa1-x36.google.com [IPv6:2001:4860:4864:20::36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1213FE72;
+        Mon,  7 Aug 2023 09:03:58 -0700 (PDT)
+Received: by mail-oa1-x36.google.com with SMTP id 586e51a60fabf-1bba254a7d4so3657843fac.2;
+        Mon, 07 Aug 2023 09:03:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1691424237; x=1692029037;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=i0HzKgbYKKrvsEPlpYd7jVcrOdTWIpWoaM9sLQyzqjU=;
+        b=T1KpFTPFFfg7EBXxFuTH79npAj9QZ6WzQgsj0rt5xhp0KzAdeaCPb712kYjt6k3mvP
+         K0dpeMBIJUIVhbzaQj8JgX26qIhjkINkwpI2A31UZPM8OfwIkoXSbn6Aykj6bObWaAYE
+         9QCaqthsx6x1DIm/L/rFaypSQ3AQDVuMkGZCJuaq8XwTGIptx6g6m40LIn+1hXsWGAD/
+         BKGLopuvLpXV56emiXDHJo3fVT+nIsX+DpaRgwHBNrgKxVU8h1WY9s+xx/5MrsX0OGd1
+         vxHUWbWA3HLJAIoCpjNm7DOWFzM0gXFO+2fVAOxqL4M0/uQ8Zg4FIgSKqQ4JwRwd2ahV
+         XxoA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691424237; x=1692029037;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=i0HzKgbYKKrvsEPlpYd7jVcrOdTWIpWoaM9sLQyzqjU=;
+        b=ZExEHDkfYPXQn3joV6lEwFI9f1PEhrT3/CD1KbL7GYlAL0Ft6gcTu2Q3r7EHfT1876
+         mbsCxBOmC5StoPqOMxaLkrS46aFHwLpogRlqWe1OtUEiaYcOgajO7F5+ViG+yXWdAvxQ
+         WsNraVDrl72Qljukv+e2HyoFYYrqd4OYaAu0haRgRRxQGdO+qYun7fyDRTZmD0grA08K
+         T5/hQbbk055UllblpFByRlkb8yygegWD5rzHYXO2p8ojk8JnFKEUM9hojR6yOolNt1e5
+         A1EmhHPXIHmDtjfYymzv/tEuqrk9qFvei4nCF9ktQEKngMMYlg1q34PsS/Hw+OTIXGcd
+         d9sw==
+X-Gm-Message-State: AOJu0YxZcVDuSynl0og34Az20HzgFuB/IfGa8Goo1dDpbZtBzF2woLle
+        uUGFRl3rI7i3JstKMPlR9zsEpv45vA8zZAkinvY=
+X-Google-Smtp-Source: AGHT+IGByrGtGdbLv2uelLBwo0dxbfZy3X9Jlh6s0Niy41MuX4JTPdCN9HFcdski9pT/I3obFKA0M8RkE8hxR9FnPuk=
+X-Received: by 2002:a05:6870:331e:b0:1be:ffae:29a3 with SMTP id
+ x30-20020a056870331e00b001beffae29a3mr11079367oae.23.1691424237245; Mon, 07
+ Aug 2023 09:03:57 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230807154250.998765-1-masahiroy@kernel.org> <20230807154250.998765-3-masahiroy@kernel.org>
-In-Reply-To: <20230807154250.998765-3-masahiroy@kernel.org>
-From:   Huacai Chen <chenhuacai@kernel.org>
-Date:   Mon, 7 Aug 2023 23:56:36 +0800
-X-Gmail-Original-Message-ID: <CAAhV-H7VzqPBYD0o1qAY7v7z+G9xOMq+yOR9ZTcO1SKfCXVZ0g@mail.gmail.com>
-Message-ID: <CAAhV-H7VzqPBYD0o1qAY7v7z+G9xOMq+yOR9ZTcO1SKfCXVZ0g@mail.gmail.com>
-Subject: Re: [PATCH 3/3] loongarch: remove <asm/export.h>
-To:     Masahiro Yamada <masahiroy@kernel.org>
-Cc:     WANG Xuerui <kernel@xen0n.name>, loongarch@lists.linux.dev,
-        linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org
+References: <20230726123747.4097755-1-james.hilliard1@gmail.com> <20230726-frosted-scroll-a42298d2ee9c@spud>
+In-Reply-To: <20230726-frosted-scroll-a42298d2ee9c@spud>
+From:   James Hilliard <james.hilliard1@gmail.com>
+Date:   Mon, 7 Aug 2023 10:03:45 -0600
+Message-ID: <CADvTj4oPKyAx3szHhvphJ+cCpvwWaLZiTfaWZdWYQrmU5Aymxg@mail.gmail.com>
+Subject: Re: [PATCH v7 1/3] dt-bindings: arm: fsl: Add VAR-SOM-MX6 SoM with
+ Custom Board
+To:     Conor Dooley <conor@kernel.org>
+Cc:     devicetree@vger.kernel.org,
+        Pierluigi Passaro <pierluigi.p@variscite.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Marek Vasut <marex@denx.de>,
+        Frieder Schrempf <frieder.schrempf@kontron.de>,
+        Stefan Wahren <stefan.wahren@chargebyte.com>,
+        =?UTF-8?B?TWljaGFsIFZva8OhxI0=?= <michal.vokac@ysoft.com>,
+        Philippe Schenker <philippe.schenker@toradex.com>,
+        Marcel Ziswiler <marcel.ziswiler@toradex.com>,
+        Christoph Niedermaier <cniedermaier@dh-electronics.com>,
+        Li Yang <leoyang.li@nxp.com>, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, Masahiro,
+On Wed, Jul 26, 2023 at 12:26=E2=80=AFPM Conor Dooley <conor@kernel.org> wr=
+ote:
+>
+> On Wed, Jul 26, 2023 at 06:37:39AM -0600, James Hilliard wrote:
+> > Add support for Variscite i.MX6Q VAR-SOM-MX6 SoM with Custom Board.
+> >
+> > Cc: Pierluigi Passaro <pierluigi.p@variscite.com>
+> > Signed-off-by: James Hilliard <james.hilliard1@gmail.com>
+> > ---
+> >  Documentation/devicetree/bindings/arm/fsl.yaml | 6 ++++++
+> >  1 file changed, 6 insertions(+)
+> >
+> > diff --git a/Documentation/devicetree/bindings/arm/fsl.yaml b/Documenta=
+tion/devicetree/bindings/arm/fsl.yaml
+> > index 2510eaa8906d..76bb098605e7 100644
+> > --- a/Documentation/devicetree/bindings/arm/fsl.yaml
+> > +++ b/Documentation/devicetree/bindings/arm/fsl.yaml
+> > @@ -385,6 +385,12 @@ properties:
+> >            - const: toradex,apalis_imx6q
+> >            - const: fsl,imx6q
+> >
+> > +      - description: i.MX6Q Variscite VAR-SOM-MX6 Boards
+> > +        items:
+> > +          - const: variscite,mx6customboard
+> > +          - const: variscite,var-som-imx6q
+> > +          - const: fsl,imx6q
+>
+> I find it hard to tell what the sort order here is meant to be, but it
+> appears to be first by what I.MX processor and then by the board
+> compatibles? If so, this is added out of order.
 
-Is this series only for linux-next (6.6), or also needed by 6.5?
+Ordering follows the same pattern as say the "Variscite VAR-SOM-MX8MM
+based boards", should it be different?
 
-Huacai
-
-On Mon, Aug 7, 2023 at 11:43=E2=80=AFPM Masahiro Yamada <masahiroy@kernel.o=
-rg> wrote:
 >
-> All *.S files under arch/loongarch/ have been converted to include
-> <linux/export.h> instead of <asm/export.h>.
->
-> Remove <asm/export.h>.
->
-> Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
-> ---
->
->  arch/loongarch/include/asm/Kbuild | 1 -
->  1 file changed, 1 deletion(-)
->
-> diff --git a/arch/loongarch/include/asm/Kbuild b/arch/loongarch/include/a=
-sm/Kbuild
-> index 6b222f227342..93783fa24f6e 100644
-> --- a/arch/loongarch/include/asm/Kbuild
-> +++ b/arch/loongarch/include/asm/Kbuild
-> @@ -1,6 +1,5 @@
->  # SPDX-License-Identifier: GPL-2.0
->  generic-y +=3D dma-contiguous.h
-> -generic-y +=3D export.h
->  generic-y +=3D mcs_spinlock.h
->  generic-y +=3D parport.h
->  generic-y +=3D early_ioremap.h
-> --
-> 2.39.2
->
+> > +
+> >        - description: TQ-Systems TQMa6Q SoM (variant A) on MBa6x
+> >          items:
+> >            - const: tq,imx6q-mba6x-a
+> > --
+> > 2.34.1
+> >
