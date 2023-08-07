@@ -2,315 +2,209 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CD0CF77287B
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 17:01:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 719B3772884
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 17:03:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230247AbjHGPBe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Aug 2023 11:01:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34550 "EHLO
+        id S229917AbjHGPDY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Aug 2023 11:03:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35426 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230158AbjHGPB3 (ORCPT
+        with ESMTP id S229501AbjHGPDX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Aug 2023 11:01:29 -0400
-Received: from mail-yb1-xb35.google.com (mail-yb1-xb35.google.com [IPv6:2607:f8b0:4864:20::b35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F155910CC
-        for <linux-kernel@vger.kernel.org>; Mon,  7 Aug 2023 08:01:25 -0700 (PDT)
-Received: by mail-yb1-xb35.google.com with SMTP id 3f1490d57ef6-d0a8ae5f8a6so4910563276.0
-        for <linux-kernel@vger.kernel.org>; Mon, 07 Aug 2023 08:01:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1691420485; x=1692025285;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ou5UOAgRK9IFzp5RVUUxlwlvyWmk6ztlO9htLsNxvOQ=;
-        b=LSrHXj53ID3RyCoPAuGuP076PetmyBBoLglo0czMgF4JeKxHlYxJr9swFuMKS54bKl
-         36iSIYC3g+5Q6VXr1T1QaA8SwL2sDDinICR5vOZysshu4ZzfjTSIbLRt1hOCdU8XvOZL
-         tRGz4znHZzarJytYckIj1ci+7xrKJA3jUZZm5Xb580BX3MLOaOv4+JQM+JVbJ2LIKsky
-         BeHRN2rBIYINl/ZBMVo6Vnlnx+UdhEMYYsrxd769M4RZcOd1szT4Hw6DcvVc5ev7f0KM
-         OdAYtDQ4cFbhsOwk6xoUyQBABQYms+tmCCU2FzrP8e8cfOQYxG2g2fnT2XXU0Nggg2QS
-         K5rA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691420485; x=1692025285;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=ou5UOAgRK9IFzp5RVUUxlwlvyWmk6ztlO9htLsNxvOQ=;
-        b=kNh4yqPhXVRXFZ6uPXJdSYcxW3UjbwdhasXGrQjjGmAbRKSuFCwik82hjdLpbPGRIo
-         ZrivfPdNiOhKst70A74f9doCYt4gRPLIrOfMzJxp+JPPd0RtNnXygNorhGGPwebshGP0
-         ItKGTJgzsh6RK2/Zh4fzCrMhhIuEHWtnUEAxP4Qx/HZ26nSgzANtaC9+1F4mBdsdgL2G
-         dhHemxE1O3M4LhlwySYT9OfFhV2Jcgls64XF6AXnus1cnlQq0/dgVSCRv+cJ0eNfby51
-         vJZQVD+V018fpz6fDRqj9e1OM5qZeoyCKcIB8TuKfD3F6JD9e8eEuTqKcSEmcw4HPhpU
-         ZjlA==
-X-Gm-Message-State: AOJu0Yxnz8o8vla4j+7y9K5VFMX6Y/9aYphSXqyIgb+Z0JFKOoY4yufa
-        tEMWwFPEkQSLQy9QMP+2EZ6273ROP4UlswC45GOifA==
-X-Google-Smtp-Source: AGHT+IFfsbMkd+ynXUPcE2+wKzivGqSyO4/1FrdMlVRWegFnSXOFwJA6NY9cOo1Nb25e/hL9U+gXlOTNUp/pT+wD7bk=
-X-Received: by 2002:a25:2f56:0:b0:d48:9ea:4266 with SMTP id
- v83-20020a252f56000000b00d4809ea4266mr5915927ybv.7.1691420484966; Mon, 07 Aug
- 2023 08:01:24 -0700 (PDT)
+        Mon, 7 Aug 2023 11:03:23 -0400
+Received: from bg4.exmail.qq.com (bg4.exmail.qq.com [43.154.54.12])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7FC7810FC
+        for <linux-kernel@vger.kernel.org>; Mon,  7 Aug 2023 08:03:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=biqu3d.com;
+        s=tfld2305; t=1691420585;
+        bh=kNVEUFAVbS7sLP87QPT3dDszG0RMz4xD/Y9tyFDq03g=;
+        h=Message-ID:Date:MIME-Version:Subject:To:From;
+        b=aBLzsGz0vmMZnH9IoRpJ6eMl7pdwtxUk/6VOMJRZdjN+hjd7zFPO30+zFTaZgNLau
+         /HEECMlKfoLpGbQ4rwfDqmvbGRl10nUjLY/P6evo8zcJnhPc1dNvszJaMu3tnzPG8+
+         14t5RzDeJqL3vCwG8TZ6RnEtLrEn0/9kNRthziP0=
+X-QQ-mid: bizesmtp65t1691420492tlem05vv
+Received: from [192.168.2.144] ( [178.41.211.221])
+        by bizesmtp.qq.com (ESMTP) with 
+        id ; Mon, 07 Aug 2023 23:01:20 +0800 (CST)
+X-QQ-SSF: 01400000000000803000000A0000000
+X-QQ-FEAT: vLOCICHxEeDuURQkrq4byYu69a2AxguMzD+YTtCk31skVC+RB3e/NzUVuEsKY
+        o3uR5vLOje3vb56E15ctcOVyd6F8mfwZqWNGTu1AN7XXEMzrLsUpt6jpGtXj8Xs8KVUV2GD
+        Um8qkcAo4uY0beuH86GJ25VjvJt7eb9zu3np1/0B6GJzJ3vJ/A7333Ojbs2y3dBgzgc2gNk
+        Hj2mUYM6IdQJbwgoSChlUD1OWhYUvR6qsi50EWgCKr2Ale9Ytx/k178AYpdSceQDFK9n0S3
+        luF/vzOg9EJksY+uHIV2lgvKGUBY/0EW30BrO/k80VwMTrLNKp2jFp8+vMuf2ifaC7IQPUQ
+        VNlwL6+HWe+BnfrdOb6PBZnJvtAnj4Kac+hQHclC6C2ygio3hhCTdazg06nGoKhmL6YdBjj
+        90t5wjGEKTA=
+X-QQ-GoodBg: 2
+X-BIZMAIL-ID: 10160666789589212089
+Message-ID: <A5FB84817C757588+1d5864c8-7059-5195-1f3a-617015f3e9ab@biqu3d.com>
+Date:   Mon, 7 Aug 2023 17:01:19 +0200
 MIME-Version: 1.0
-References: <20230722014037.42647-1-shyamsaini@linux.microsoft.com> <20230722014037.42647-2-shyamsaini@linux.microsoft.com>
-In-Reply-To: <20230722014037.42647-2-shyamsaini@linux.microsoft.com>
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Mon, 7 Aug 2023 17:00:48 +0200
-Message-ID: <CAPDyKFoBC+GaGerGDEAjg9q4ayV9mMBKkfFk3nO-zcQzOZ_H6Q@mail.gmail.com>
-Subject: Re: [RFC, PATCH 1/1] rpmb: add Replay Protected Memory Block (RPMB) driver
-To:     Shyam Saini <shyamsaini@linux.microsoft.com>
-Cc:     linux-kernel@vger.kernel.org, linux-mmc@vger.kernel.org,
-        op-tee@lists.trustedfirmware.org, linux-scsi@vger.kernel.org,
-        =?UTF-8?B?QWxleCBCZW5uw6ll?= <alex.bennee@linaro.org>,
-        Tomas Winkler <tomas.winkler@intel.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Arnd Bergmann <arnd.bergmann@linaro.org>,
-        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
-        Sumit Garg <sumit.garg@linaro.org>,
-        Tyler Hicks <code@tyhicks.com>,
-        "Srivatsa S . Bhat" <srivatsa@csail.mit.edu>,
-        Paul Moore <paul@paul-moore.com>,
-        Allen Pais <apais@linux.microsoft.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.12.0
+Subject: Re: [PATCH v4 4/4] arm64: dts: allwinner: h616: Add BigTreeTech Pi
+ support
+Content-Language: en-US
+To:     Martin Botka <martin.botka1@gmail.com>
+Cc:     Konrad Dybcio <konrad.dybcio@somainline.org>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@somainline.org>,
+        Marijn Suijten <marijn.suijten@somainline.org>,
+        Jami Kettunen <jamipkettunen@somainline.org>,
+        Paul Bouchara <paul.bouchara@somainline.org>,
+        Martin Botka <martin.botka@somainline.org>,
+        Andre Przywara <andre.przywara@arm.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Samuel Holland <samuel@sholland.org>,
+        Ludwig Kormann <ludwig.kormann@ict42.de>,
+        Andrew Lunn <andrew@lunn.ch>, Icenowy Zheng <uwu@icenowy.me>,
+        Heiko Stuebner <heiko@sntech.de>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Chris Morgan <macromorgan@hotmail.com>,
+        Jagan Teki <jagan@edgeble.ai>,
+        Maxime Ripard <mripard@kernel.org>, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev,
+        linux-kernel@vger.kernel.org
+References: <20230807145349.2220490-1-martin@biqu3d.com>
+ <09BFA974F83AB0E8+20230807145349.2220490-5-martin@biqu3d.com>
+From:   Martin Botka <martin@biqu3d.com>
+In-Reply-To: <09BFA974F83AB0E8+20230807145349.2220490-5-martin@biqu3d.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-QQ-SENDSIZE: 520
+Feedback-ID: bizesmtp:biqu3d.com:qybglogicsvrgz:qybglogicsvrgz5a-1
+X-Spam-Status: No, score=-0.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_MUA_MOZILLA,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,RCVD_IN_VALIDITY_RPBL,
+        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 22 Jul 2023 at 03:41, Shyam Saini
-<shyamsaini@linux.microsoft.com> wrote:
->
-> From: Alex Benn=C3=A9e <alex.bennee@linaro.org>
->
-> [This is patch 1 from [1] Alex's submission and this RPMB layer was
-> originally proposed by [2]Thomas Winkler ]
->
-> A number of storage technologies support a specialised hardware
-> partition designed to be resistant to replay attacks. The underlying
-> HW protocols differ but the operations are common. The RPMB partition
-> cannot be accessed via standard block layer, but by a set of specific
-> commands: WRITE, READ, GET_WRITE_COUNTER, and PROGRAM_KEY. Such a
-> partition provides authenticated and replay protected access, hence
-> suitable as a secure storage.
->
-> The initial aim of this patch is to provide a simple RPMB Driver which
-> can be accessed by Linux's optee driver to facilitate fast-path for
-> RPMB access to optee OS(secure OS) during the boot time. [1] Currently,
-> Optee OS relies on user-tee supplicant to access eMMC RPMB partition.
->
-> A TEE device driver can claim the RPMB interface, for example, via
-> class_interface_register(). The RPMB driver provides a series of
-> operations for interacting with the device.
+Forgot to mark it but no changes from v3 in this patch.
 
-I don't quite follow this. More exactly, how will the TEE driver know
-what RPMB device it should use?
-
->
->   * program_key - a one time operation for setting up a new device
->   * get_capacity - introspect the device capacity
->   * get_write_counter - check the write counter
->   * write_blocks - write a series of blocks to the RPMB device
->   * read_blocks - read a series of blocks from the RPMB device
->
-> The detailed operation of implementing the access is left to the TEE
-> device driver itself.
->
-> The framing details and HW specific bits (JDEC vs NVME frames) are
-> left to the lower level TEE driver to worry about.
->
-> Without kernel fast path to RPMB access doesn't work when IMA try to
-> extend ftpm's PCR registers.
->
-> This fast-path would require additional work in linux optee driver and
-> as well as in MMC driver.
->
-> [1] https://lore.kernel.org/lkml/20220405093759.1126835-2-alex.bennee@lin=
-aro.org/
-> [2] https://lore.kernel.org/linux-mmc/1478548394-8184-2-git-send-email-to=
-mas.winkler@intel.com/
-> [3] https://optee.readthedocs.io/en/latest/architecture/secure_storage.ht=
-ml
->
-> Signed-off-by: Alex Benn=C3=A9e <alex.bennee@linaro.org>
-> Signed-off-by: Tomas Winkler <tomas.winkler@intel.com>
-> Signed-off-by: Shyam Saini <shyamsaini@linux.microsoft.com>
->
-
-[...]
-
-> +/**
-> + * rpmb_dev_find_device() - return first matching rpmb device
-> + * @data: data for the match function
-> + * @match: the matching function
-> + *
-> + * Return: matching rpmb device or NULL on failure
+On 8/7/23 4:53 PM, Martin Botka wrote:
+> The BigTreeTech Pi is an H616 based board based on CB1.
+> Just in Rpi format board.
+> 
+> It features the same internals as BTT CB1 but adds:
+>      - Fan port
+>      - IR receiver
+>      - ADXL345 Accelerometer connector via SPI
+>      - 24V DC power supply via terminal plugs
+>      - USB to CAN module connector (The actual USB to CAN happens on the external module)
+> 
+> List of currently working things is same as BTT CB1 but also:
+>      - IR receiver
+>      - ADXL345 connector
+> 
+> Signed-off-by: Martin Botka <martin@biqu3d.com>
+> Reviewed-by: Andre Przywara <andre.przywara@arm.com>
+> ---
+> Changes in V2:
+>      - Add UART alongside aliases and chosen for it
+>      - Add model string
+>      - Enable IR receiver
+>      - Enable SPI0 for ADXL345 connector
+> Changes in V3:
+>      - Add missing semicolons
+>      - Add pinctrl for SPI0
+> 
+>   arch/arm64/boot/dts/allwinner/Makefile        |  1 +
+>   .../allwinner/sun50i-h616-bigtreetech-pi.dts  | 70 +++++++++++++++++++
+>   2 files changed, 71 insertions(+)
+>   create mode 100644 arch/arm64/boot/dts/allwinner/sun50i-h616-bigtreetech-pi.dts
+> 
+> diff --git a/arch/arm64/boot/dts/allwinner/Makefile b/arch/arm64/boot/dts/allwinner/Makefile
+> index 7b386428510b..0b6232a7f328 100644
+> --- a/arch/arm64/boot/dts/allwinner/Makefile
+> +++ b/arch/arm64/boot/dts/allwinner/Makefile
+> @@ -39,5 +39,6 @@ dtb-$(CONFIG_ARCH_SUNXI) += sun50i-h6-pine-h64-model-b.dtb
+>   dtb-$(CONFIG_ARCH_SUNXI) += sun50i-h6-tanix-tx6.dtb
+>   dtb-$(CONFIG_ARCH_SUNXI) += sun50i-h6-tanix-tx6-mini.dtb
+>   dtb-$(CONFIG_ARCH_SUNXI) += sun50i-h616-bigtreetech-cb1-manta.dtb
+> +dtb-$(CONFIG_ARCH_SUNXI) += sun50i-h616-bigtreetech-pi.dtb
+>   dtb-$(CONFIG_ARCH_SUNXI) += sun50i-h616-orangepi-zero2.dtb
+>   dtb-$(CONFIG_ARCH_SUNXI) += sun50i-h616-x96-mate.dtb
+> diff --git a/arch/arm64/boot/dts/allwinner/sun50i-h616-bigtreetech-pi.dts b/arch/arm64/boot/dts/allwinner/sun50i-h616-bigtreetech-pi.dts
+> new file mode 100644
+> index 000000000000..b0d0386e8f13
+> --- /dev/null
+> +++ b/arch/arm64/boot/dts/allwinner/sun50i-h616-bigtreetech-pi.dts
+> @@ -0,0 +1,70 @@
+> +// SPDX-License-Identifier: (GPL-2.0+ or MIT)
+> +/*
+> + * Copyright (C) 2023 Martin Botka <martin@biqu3d.com>.
 > + */
-> +static
-> +struct rpmb_dev *rpmb_dev_find_device(const void *data,
-> +                                     int (*match)(struct device *dev,
-> +                                                  const void *data))
-> +{
-> +       struct device *dev;
 > +
-> +       dev =3D class_find_device(&rpmb_class, NULL, data, match);
+> +/dts-v1/;
 > +
-> +       return dev ? to_rpmb_dev(dev) : NULL;
-> +}
+> +#include "sun50i-h616-bigtreetech-cb1.dtsi"
 > +
-> +struct device_with_target {
-> +       const struct device *dev;
-> +       u8 target;
+> +/ {
+> +	model = "BigTreeTech Pi";
+> +	compatible = "bigtreetech,pi", "allwinner,sun50i-h616";
+> +
+> +	aliases {
+> +		serial0 = &uart0;
+> +	};
+> +
+> +	chosen {
+> +		stdout-path = "serial0:115200n8";
+> +	};
 > +};
 > +
-> +static int match_by_parent(struct device *dev, const void *data)
-> +{
-> +       const struct device_with_target *d =3D data;
-> +       struct rpmb_dev *rdev =3D to_rpmb_dev(dev);
+> +&ehci0 {
+> +	status = "okay";
+> +};
 > +
-> +       return (d->dev && dev->parent =3D=3D d->dev && rdev->target =3D=
-=3D d->target);
-> +}
+> +&ehci1 {
+> +	status = "okay";
+> +};
 > +
-> +/**
-> + * rpmb_dev_find_by_device() - retrieve rpmb device from the parent devi=
-ce
-> + * @parent: parent device of the rpmb device
-> + * @target: RPMB target/region within the physical device
-> + *
-> + * Return: NULL if there is no rpmb device associated with the parent de=
-vice
-> + */
-> +struct rpmb_dev *rpmb_dev_find_by_device(struct device *parent, u8 targe=
-t)
-> +{
-> +       struct device_with_target t;
+> +&ehci2 {
+> +	status = "okay";
+> +};
 > +
-> +       if (!parent)
-> +               return NULL;
+> +&ehci3 {
+> +	status = "okay";
+> +};
 > +
-> +       t.dev =3D parent;
-> +       t.target =3D target;
+> +&ir {
+> +	status = "okay";
+> +};
 > +
-> +       return rpmb_dev_find_device(&t, match_by_parent);
-> +}
-> +EXPORT_SYMBOL_GPL(rpmb_dev_find_by_device);
-
-Is this what the TEE driver would be calling to find the rpmb device/partit=
-ion?
-
+> +&ohci0 {
+> +	status = "okay";
+> +};
 > +
-> +/**
-> + * rpmb_dev_unregister() - unregister RPMB partition from the RPMB subsy=
-stem
-> + * @rdev: the rpmb device to unregister
-> + * Return:
-> + * *        0 on success
-> + * *        -EINVAL on wrong parameters
-> + */
-> +int rpmb_dev_unregister(struct rpmb_dev *rdev)
-> +{
-> +       if (!rdev)
-> +               return -EINVAL;
+> +&ohci1 {
+> +	status = "okay";
+> +};
 > +
-> +       mutex_lock(&rdev->lock);
-> +       rpmb_cdev_del(rdev);
-
-I can't find the function above. I guess it should be included as a
-part of the patch too?
-
-> +       device_del(&rdev->dev);
-> +       mutex_unlock(&rdev->lock);
+> +&ohci2 {
+> +	status = "okay";
+> +};
 > +
-> +       rpmb_dev_put(rdev);
+> +&ohci3 {
+> +	status = "okay";
+> +};
 > +
-> +       return 0;
-> +}
-> +EXPORT_SYMBOL_GPL(rpmb_dev_unregister);
-
-[...]
-
-> +/**
-> + * rpmb_dev_register - register RPMB partition with the RPMB subsystem
-> + * @dev: storage device of the rpmb device
-> + * @target: RPMB target/region within the physical device
-> + * @ops: device specific operations
-> + *
-> + * Return: a pointer to rpmb device
-> + */
-> +struct rpmb_dev *rpmb_dev_register(struct device *dev, u8 target,
-> +                                  const struct rpmb_ops *ops)
-> +{
-> +       struct rpmb_dev *rdev;
-> +       int id;
-> +       int ret;
+> +&spi0 {
+> +	/* SPI connection for onboard connector for ADXL345 accelerometer */
+> +	status = "okay";
+> +	pinctrl-names = "default";
+> +	pinctrl-0 = <&spi0_pins>, <&spi0_cs0_pin>;
+> +};
 > +
-> +       if (!dev || !ops)
-> +               return ERR_PTR(-EINVAL);
-> +
-> +       if (!ops->program_key)
-> +               return ERR_PTR(-EINVAL);
-> +
-> +       if (!ops->get_capacity)
-> +               return ERR_PTR(-EINVAL);
-> +
-> +       if (!ops->get_write_counter)
-> +               return ERR_PTR(-EINVAL);
-> +
-> +       if (!ops->write_blocks)
-> +               return ERR_PTR(-EINVAL);
-> +
-> +       if (!ops->read_blocks)
-> +               return ERR_PTR(-EINVAL);
-> +
-> +       rdev =3D kzalloc(sizeof(*rdev), GFP_KERNEL);
-> +       if (!rdev)
-> +               return ERR_PTR(-ENOMEM);
-> +
-> +       id =3D ida_simple_get(&rpmb_ida, 0, 0, GFP_KERNEL);
-> +       if (id < 0) {
-> +               ret =3D id;
-> +               goto exit;
-> +       }
-> +
-> +       mutex_init(&rdev->lock);
-> +       rdev->ops =3D ops;
-> +       rdev->id =3D id;
-> +       rdev->target =3D target;
-> +
-> +       dev_set_name(&rdev->dev, "rpmb%d", id);
-> +       rdev->dev.class =3D &rpmb_class;
-> +       rdev->dev.parent =3D dev;
-> +
-> +       rpmb_cdev_prepare(rdev);
-
-Ditto.
-
-> +
-> +       ret =3D device_register(&rdev->dev);
-> +       if (ret)
-> +               goto exit;
-> +
-> +       rpmb_cdev_add(rdev);
-
-Ditto.
-
-> +
-> +       dev_dbg(&rdev->dev, "registered device\n");
-> +
-> +       return rdev;
-> +
-> +exit:
-> +       if (id >=3D 0)
-> +               ida_simple_remove(&rpmb_ida, id);
-> +       kfree(rdev);
-> +       return ERR_PTR(ret);
-> +}
-> +EXPORT_SYMBOL_GPL(rpmb_dev_register);
-> +
-
-[...]
-
-Kind regards
-Uffe
+> +&uart0 {
+> +	pinctrl-names = "default";
+> +	pinctrl-0 = <&uart0_ph_pins>;
+> +	status = "okay";
+> +};
