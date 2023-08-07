@@ -2,136 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AF4FC77267F
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 15:49:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E074772679
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 15:48:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234425AbjHGNt2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Aug 2023 09:49:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37194 "EHLO
+        id S234402AbjHGNs4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Aug 2023 09:48:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36640 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234451AbjHGNtV (ORCPT
+        with ESMTP id S234442AbjHGNsr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Aug 2023 09:49:21 -0400
-Received: from mail-yb1-xb2e.google.com (mail-yb1-xb2e.google.com [IPv6:2607:f8b0:4864:20::b2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26A461BE2
-        for <linux-kernel@vger.kernel.org>; Mon,  7 Aug 2023 06:49:09 -0700 (PDT)
-Received: by mail-yb1-xb2e.google.com with SMTP id 3f1490d57ef6-d075a831636so4954157276.3
-        for <linux-kernel@vger.kernel.org>; Mon, 07 Aug 2023 06:49:08 -0700 (PDT)
+        Mon, 7 Aug 2023 09:48:47 -0400
+Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 315E510E2;
+        Mon,  7 Aug 2023 06:48:44 -0700 (PDT)
+Received: by mail-ed1-x533.google.com with SMTP id 4fb4d7f45d1cf-5217ad95029so5874706a12.2;
+        Mon, 07 Aug 2023 06:48:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1691416148; x=1692020948;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=LrwjN5Q8LetwblRISR8oyofHz7AZ81IID5+NzR+/8cA=;
-        b=V7Jh7Nsn3GJVY+ygsTFOkvGh4bLV8N8/Ew/DUfO2RWeke7HQyKDyjJX+JH09EUP2rA
-         Jju6Z82uwl1JMOag6O15FNgv0xHCpxqyF6scOiN5H6wvWBVLBpQAZYVxgKhm29sonjSH
-         TUYPL4ckDcXINMIpHVuFl+V+kpgsZjqnuZdEpGzTr8XStLu6S+g4JDUmGdlgBXaAUM9n
-         bjPmpPjvVEQJr0K3eRuPaaXg4zdZFd/S2DaXMRrvLdjIBJLBqdqpOTfsnkgnGeK64FJR
-         NxGiN3P3Vg/fHgZLkbbIvyLeA/NV8B11XiV/mObIGlymdQt9CJQqeELnuL5Kv2Sayvt0
-         dJqQ==
+        d=gmail.com; s=20221208; t=1691416122; x=1692020922;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:to:from:subject:message-id:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=IPIx8EZcuvxWfdbA6NbH4db5tWSFzcsuDpYZ0i60n1A=;
+        b=NwKzhFHHrGTkbH/+TvGBsJJlbF0T2UWM3/oO6ClLad1Jn5ohFvrfZIccwTNX0kNIuq
+         2pYWCkNiNs+mGcNPKnYr6NEJzaVqMx6mah3WpzblJr9O7DYng7AWHmEEzQEG07rRM/n0
+         CUycTDsW38N6ov/EAcFrMNpKa/BGxZGcVMRWdKWhs7ZkycqefKV6Z/HqZRyTB82pDbNG
+         HrH9GZsVMBLwtZtvrLw5RQvDA9wSgWgLUC8ZO84GHwBRIMwSED+3ITajmx7AqE2UCG7Z
+         Uw2ZZOe1L7Rm2xtIV0emhn43EWg43vC3+eA9V+yLmvhCkWVpF+4zPilDkbUH98qDPeAw
+         JrPA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691416148; x=1692020948;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=LrwjN5Q8LetwblRISR8oyofHz7AZ81IID5+NzR+/8cA=;
-        b=ifWFRs2Jldq2utj3S3zBVJqpRDa3tPMbRE4fSW1+j6z43MAtuGz/bKrrijE5kwDXy8
-         mMl6AGzHwD2dpdpewIVbUDeaPKvYtS7XyfABuxex8pvFI9EAE+6KNlr8UmVhJfniIj83
-         jjtraZpyvhWUOGZTbkXWOxJAEKkLS/Enjay6JNCHYhtf2Vl6pGuSFYrAJ3EIeWvVtrVD
-         muZbxFeT8sUtw0pgokxSQekmOPCompuwvkEkKbHCRGlcDBP8D7EglQEFumqzIpH6BkLk
-         lFEkIAY1MnVuCmw7248bYkf1GtzJ++BcV/P6dOi49+zqBvxb5tByZfF3pqa9nkYHTBU7
-         uA2A==
-X-Gm-Message-State: AOJu0Yzt4n7DWtebMLNLkRZjTjDnHicrJZ30WJ2x+sEjLsV78bS4ciBS
-        MldSweVGiuzOekFJgNFmHwNX00rqwPJSAPKJ83ICDQ==
-X-Google-Smtp-Source: AGHT+IFlfGibypvOnYH7G4eRsSzX2n2Sgj1wUF/VjFKrm12jEANuab024sswGKNkLGhC7dNM+6Cl6fZVefMCQC5Ucn4=
-X-Received: by 2002:a25:b316:0:b0:cea:b62d:620f with SMTP id
- l22-20020a25b316000000b00ceab62d620fmr9376359ybj.45.1691416147971; Mon, 07
- Aug 2023 06:49:07 -0700 (PDT)
-MIME-Version: 1.0
-References: <cover.1689802933.git.daniel@makrotopia.org> <1ce5f56df546cec25ef741f381286f1d7c33d000.1689802933.git.daniel@makrotopia.org>
-In-Reply-To: <1ce5f56df546cec25ef741f381286f1d7c33d000.1689802933.git.daniel@makrotopia.org>
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Mon, 7 Aug 2023 15:48:31 +0200
-Message-ID: <CAPDyKFqhZtCHVmCNnm_Qm7X+=GtJY8uNJOWOgZXuTTVEw0msNA@mail.gmail.com>
-Subject: Re: [RFC PATCH 2/6] mmc: block: set fwnode of disk devices
-To:     Daniel Golle <daniel@makrotopia.org>
-Cc:     Jens Axboe <axboe@kernel.dk>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Dave Chinner <dchinner@redhat.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        =?UTF-8?Q?Thomas_Wei=C3=9Fschuh?= <linux@weissschuh.net>,
-        Jan Kara <jack@suse.cz>, Damien Le Moal <dlemoal@kernel.org>,
-        Ming Lei <ming.lei@redhat.com>, Min Li <min15.li@samsung.com>,
-        Christian Loehle <CLoehle@hyperstone.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Hannes Reinecke <hare@suse.de>,
-        Jack Wang <jinpu.wang@ionos.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Yeqi Fu <asuk4.q@gmail.com>, Avri Altman <avri.altman@wdc.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Ye Bin <yebin10@huawei.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mmc@vger.kernel.org, linux-mtd@lists.infradead.org
+        d=1e100.net; s=20221208; t=1691416122; x=1692020922;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:to:from:subject:message-id:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=IPIx8EZcuvxWfdbA6NbH4db5tWSFzcsuDpYZ0i60n1A=;
+        b=ANPS6AphClrxiAPRo/1Y83sKCRJJyVgRuBGJey4E6DlOTWRqTCa08A6rPS+GDEPeCG
+         0OCTcbaH2GiETKFGcG5BElEDZz1MYWU8vbLbVhNqwm1qmpYz2vkDE4yqhdrY67VkIyFa
+         Dr2i7BQLZbId0uJdpzH6i/mY5hoY8L2i0qof7GNnFNgCbvq4AeOrADQSHtVDFDP+xyds
+         c6mr1AY8H8za9UO4FDflWSVyCPM3Y1e8kMA0XmgNU8/4t+boAPPUSLIfAtTMvl+bfRb/
+         +aRpAeJKl21DxSYScO9qjPlSu0QwgA21ZUynLMLozWogBUwAtGSdcHKcYC72SE8oXS9P
+         vNBQ==
+X-Gm-Message-State: AOJu0YwEdMV/yJ1GH9ACSfabDT+qHxqVEeNTX7Oqp45fOtBPHgZ2zHfd
+        yUq0rryMJNrOl6U0t15txK4=
+X-Google-Smtp-Source: AGHT+IEhZLlO7uV4KSBWNATjPjlNnWvOVhucZAbCmZZ2qeKkD3T1f0puZTLTGrcqTw0jTVhyzsGmFA==
+X-Received: by 2002:a50:ef0c:0:b0:523:9c4:544f with SMTP id m12-20020a50ef0c000000b0052309c4544fmr7546875eds.31.1691416122229;
+        Mon, 07 Aug 2023 06:48:42 -0700 (PDT)
+Received: from [192.168.1.95] (host-176-36-0-241.b024.la.net.ua. [176.36.0.241])
+        by smtp.gmail.com with ESMTPSA id m13-20020aa7c2cd000000b0051df54c6a27sm5195834edp.56.2023.08.07.06.48.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 07 Aug 2023 06:48:41 -0700 (PDT)
+Message-ID: <74c9a88d79b7c65e2fdc2dc1609e13590225cb60.camel@gmail.com>
+Subject: Re: [syzbot] [bpf?] KMSAN: uninit-value in
+ ieee802154_subif_start_xmit
+From:   Eduard Zingerman <eddyz87@gmail.com>
+To:     yonghong.song@linux.dev,
+        syzbot <syzbot+d61b595e9205573133b3@syzkaller.appspotmail.com>,
+        andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
+        daniel@iogearbox.net, davem@davemloft.net, haoluo@google.com,
+        hawk@kernel.org, john.fastabend@gmail.com, jolsa@kernel.org,
+        kpsingh@kernel.org, kuba@kernel.org, linux-kernel@vger.kernel.org,
+        martin.lau@linux.dev, netdev@vger.kernel.org, sdf@google.com,
+        song@kernel.org, syzkaller-bugs@googlegroups.com
+Date:   Mon, 07 Aug 2023 16:48:40 +0300
+In-Reply-To: <9c8f04a0bf90db4bb8e6192824ab71f58244b74b.camel@gmail.com>
+References: <0000000000002098bc0602496cc3@google.com>
+         <d520bd6c-bfd3-47f1-c794-ab451905256b@linux.dev>
+         <9c8f04a0bf90db4bb8e6192824ab71f58244b74b.camel@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.44.4-0ubuntu1 
+MIME-Version: 1.0
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,LOTS_OF_MONEY,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 20 Jul 2023 at 00:02, Daniel Golle <daniel@makrotopia.org> wrote:
->
-> Set fwnode of disk devices to 'block', 'boot0' and 'boot1' subnodes of
-> the mmc-card. This is done in preparation for having the eMMC act as
-> NVMEM provider.
+On Mon, 2023-08-07 at 16:11 +0300, Eduard Zingerman wrote:
+[...]
+>   $ bpftool prog dump jited id <some-id>
+>   bpf_prog_ebeed182d92b487f:
+>      0: nopl    (%rax,%rax)
+>      5: nop
+>      7: pushq   %rbp
+>      8: movq    %rsp, %rbp
+>      b: subq    $8, %rsp
+>     12: movl    $553656332, -8(%rbp)
+>     19: movswq  %bp, %rdi            ; <---- Note movswq %bp !
+>     1d: addq    $-8, %rdi
+>     21: movl    $3, %esi
+>     26: cmpq    %rdi, %rsi
+>     29: jbe 0x2b
+>     2b: callq   0xffffffffe11c484c
+>     30: xorl    %eax, %eax
+>     32: leave
+>     33: retq
+>=20
+> Note jit instruction #19 corresponding to BPF instruction #1, which
+> loads truncated and sign-extended value of %rbp's first byte as an
+> address of format string.
 
-Sorry, but I don't quite understand what you are trying to do here.
-Maybe you should re-order the patches in the series so it becomes
-clear why this is needed?
+Correction: sign-extended value of %rbp's first *two* bytes,
+disassembly with opcodes:
 
-Moreover, I don't see any DT docs being updated as a part of the
-series, which looks like it is needed too. That would also help to
-understand what you are proposing, I think.
+  19:	movswq	%bp, %rdi
+    48 0f bf fd=20
 
->
-> Signed-off-by: Daniel Golle <daniel@makrotopia.org>
-> ---
->  drivers/mmc/core/block.c | 8 ++++++++
->  1 file changed, 8 insertions(+)
->
-> diff --git a/drivers/mmc/core/block.c b/drivers/mmc/core/block.c
-> index f701efb1fa785..fc1a9f31bd253 100644
-> --- a/drivers/mmc/core/block.c
-> +++ b/drivers/mmc/core/block.c
-> @@ -2413,6 +2413,8 @@ static struct mmc_blk_data *mmc_blk_alloc_req(struct mmc_card *card,
->                                               int area_type,
->                                               unsigned int part_type)
->  {
-> +       struct fwnode_handle *fwnode;
-> +       struct device *ddev;
->         struct mmc_blk_data *md;
->         int devidx, ret;
->         char cap_str[10];
-> @@ -2509,6 +2511,12 @@ static struct mmc_blk_data *mmc_blk_alloc_req(struct mmc_card *card,
->
->         blk_queue_write_cache(md->queue.queue, cache_enabled, fua_enabled);
->
-> +       ddev = disk_to_dev(md->disk);
-> +       fwnode = device_get_named_child_node(subname ? md->parent->parent :
-> +                                                      md->parent,
-> +                                            subname ? subname : "block");
-> +       ddev->fwnode = fwnode;
-> +
->         string_get_size((u64)size, 512, STRING_UNITS_2,
->                         cap_str, sizeof(cap_str));
->         pr_info("%s: %s %s %s%s\n",
-
-Kind regards
-Uffe
+[...]
