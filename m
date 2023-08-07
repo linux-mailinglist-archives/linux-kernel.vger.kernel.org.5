@@ -2,72 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6159477351A
-	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 01:40:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 03BCC773531
+	for <lists+linux-kernel@lfdr.de>; Tue,  8 Aug 2023 01:44:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230232AbjHGXkB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Aug 2023 19:40:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34520 "EHLO
+        id S230290AbjHGXoV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Aug 2023 19:44:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36232 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230168AbjHGXj7 (ORCPT
+        with ESMTP id S229473AbjHGXoS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Aug 2023 19:39:59 -0400
-Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4BDB1736
-        for <linux-kernel@vger.kernel.org>; Mon,  7 Aug 2023 16:39:58 -0700 (PDT)
-Received: by mail-pl1-x635.google.com with SMTP id d9443c01a7336-1bbc06f830aso34262865ad.0
-        for <linux-kernel@vger.kernel.org>; Mon, 07 Aug 2023 16:39:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1691451598; x=1692056398;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=0l+sCpHwJioTYF/wfHRNJdNAUkK21XwVbEV3jke4+es=;
-        b=dXsftWzX5+Hu4twrL1n/Mo54tTI+wzGtnBu1CLPrmVntA19h9YdrWv34e6mRkH7DdU
-         1969sylXKdmjK0xJ4TqcjxyND+jT9oEGt+HDYRRKu/Cw3IOnJt/we8cjsnh3UH3SZGN1
-         5WfC0t1j0f5wDUm0oCa6ZXsUGiS5NcpQEHUu4=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691451598; x=1692056398;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=0l+sCpHwJioTYF/wfHRNJdNAUkK21XwVbEV3jke4+es=;
-        b=VmFem4hradBLTpM34ZPefhlAldX9W/N9Q7/Nygrd5nbZui4h3jdHQvQONta6O+n4s5
-         R8fHrzh9i3ZcGAXO+vc8XLIUAF/0KK5EAISvWWduqcr049Iuq903fKdtlfgZY8NJsRSU
-         DNfB5X8DTp9DMk/9AYhe6cwXRdShzf8XHTN81cx/Fb2SchnQhhD7Rp1laOcDvxcWj/5v
-         2rwcrE/SEy5W1QDA0roTkoAhTBt03BS8oFjGmvQhk5sH7zXesN1nzu0o1iNEP17bpGSh
-         2V2u0iKfyBWKZ3W0Og6S7RypR4EZiOtkJLTmLZ9C379uLlfzPGWZZx6dGmZWmOxSziRi
-         Oybw==
-X-Gm-Message-State: AOJu0YxoS4RV+oIGd1vLNeBhwdkVGZDDsMZte/jHkiD2LPpFrfV19Eoh
-        canRoAK+QAE6IUi9WdUq5NZ1yw==
-X-Google-Smtp-Source: AGHT+IGdMQVeL0uHk5iGceyUJ4IMfMXBfpY5lj7Xb2/D1CXzdymvrVtvYnilTL43ah4FuOYOA8JvkQ==
-X-Received: by 2002:a17:902:ec8e:b0:1bb:cd5a:ba53 with SMTP id x14-20020a170902ec8e00b001bbcd5aba53mr10052640plg.14.1691451598065;
-        Mon, 07 Aug 2023 16:39:58 -0700 (PDT)
-Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id s17-20020a170902ea1100b001b552309aedsm7252666plg.192.2023.08.07.16.39.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 07 Aug 2023 16:39:57 -0700 (PDT)
-Date:   Mon, 7 Aug 2023 16:39:56 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Bill Wendling <morbo@google.com>
-Cc:     Justin Stitt <justinstitt@google.com>,
-        Richard Weinberger <richard@nod.at>,
-        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-        Johannes Berg <johannes@sipsolutions.net>,
-        linux-hardening@vger.kernel.org, linux-um@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] um: refactor deprecated strncpy to strtomem
-Message-ID: <202308071636.AF290F0@keescook>
-References: <20230807-arch-um-v1-1-86dbbfb59709@google.com>
- <CAGG=3QVUqVdkzBo-=vGWprPBUhuV8p3bRSx3Qsvtqx_LDct05w@mail.gmail.com>
+        Mon, 7 Aug 2023 19:44:18 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E2151736;
+        Mon,  7 Aug 2023 16:44:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=R7l6QScXv7U38OrlWS7Mcrb8Q93Tbo+TJ0PZi9bIVzI=; b=lvQhpYkugp8p+MnqK1ZwyEPyPV
+        qQ13g/zVYcvPRrYd2noywzgnhct1y5FSUHLn9ld+CBTnhLURNvgr/bgoc4bC5EjlpBpGWWJSfX6T/
+        Qmk68ZOOTeEEYcestzUADl5Dpi2gJuWSQGiqWBWdo7zHkuT9gtEQcp0EWL0J2TwWVfknB/pb1efBJ
+        /qWuJAAvELKv3Gu45SonJbWc0VbDj+8+j0QZPdUmEmVKMoxo/rXWuGEKo/o2tIRBYi/rELO7VQcCa
+        I8mjAfAkS2C8C5SdfIKOYZeY5S9V20FFyb9rMjgiCJ7HvitG7HyaaV+Ort6BR6cHisL1dXBl+Z9Mq
+        S3J7uphA==;
+Received: from mcgrof by bombadil.infradead.org with local (Exim 4.96 #2 (Red Hat Linux))
+        id 1qT9t0-001Fyr-1h;
+        Mon, 07 Aug 2023 23:43:42 +0000
+Date:   Mon, 7 Aug 2023 16:43:42 -0700
+From:   Luis Chamberlain <mcgrof@kernel.org>
+To:     Chris Maness <christopher.maness@gmail.com>
+Cc:     Alexander Aring <alex.aring@gmail.com>,
+        Alexander Gordeev <agordeev@linux.ibm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Christian Borntraeger <borntraeger@linux.ibm.com>,
+        "D. Wythe" <alibuda@linux.alibaba.com>,
+        David Ahern <dsahern@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Florian Westphal <fw@strlen.de>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Iurii Zaikin <yzaikin@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jan Karcher <jaka@linux.ibm.com>,
+        Joel Granados <joel.granados@gmail.com>,
+        Joel Granados <j.granados@samsung.com>,
+        Joerg Reuter <jreuter@yaina.de>,
+        Jozsef Kadlecsik <kadlec@netfilter.org>,
+        Julian Anastasov <ja@ssi.bg>,
+        Karsten Graul <kgraul@linux.ibm.com>,
+        Kees Cook <keescook@chromium.org>,
+        Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>,
+        Mat Martineau <martineau@kernel.org>,
+        Matthieu Baerts <matthieu.baerts@tessares.net>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Nikolay Aleksandrov <razor@blackwall.org>,
+        Pablo Neira Ayuso <pablo@netfilter.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Ralf Baechle <ralf@linux-mips.org>,
+        Roopa Prabhu <roopa@nvidia.com>,
+        Santosh Shilimkar <santosh.shilimkar@oracle.com>,
+        Simon Horman <horms@verge.net.au>,
+        Stefan Schmidt <stefan@datenfreihafen.org>,
+        Steffen Klassert <steffen.klassert@secunet.com>,
+        Sven Schnelle <svens@linux.ibm.com>,
+        Tony Lu <tonylu@linux.alibaba.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Wen Gu <guwen@linux.alibaba.com>,
+        Wenjia Zhang <wenjia@linux.ibm.com>,
+        Will Deacon <will@kernel.org>, Xin Long <lucien.xin@gmail.com>,
+        bridge@lists.linux-foundation.org, coreteam@netfilter.org,
+        josh@joshtriplett.org, linux-arm-kernel@lists.infradead.org,
+        linux-fsdevel@vger.kernel.org, linux-hams@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
+        linux-s390@vger.kernel.org, linux-sctp@vger.kernel.org,
+        linux-wpan@vger.kernel.org, lvs-devel@vger.kernel.org,
+        mptcp@lists.linux.dev, netdev@vger.kernel.org,
+        netfilter-devel@vger.kernel.org, rds-devel@oss.oracle.com,
+        willy@infradead.org
+Subject: Re: [PATCH v2 00/14] sysctl: Add a size argument to register
+ functions in sysctl
+Message-ID: <ZNGBrkP7J2g/BAWV@bombadil.infradead.org>
+References: <20230731071728.3493794-1-j.granados@samsung.com>
+ <ZMgpck0rjqHR74sl@bombadil.infradead.org>
+ <ZNFlqwwvE6w6HyHl@bombadil.infradead.org>
+ <CANnsUMG3WO_19GpnsNaXPqu6eEnpBvYUpkrf1QbHwsc9wEoCZQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAGG=3QVUqVdkzBo-=vGWprPBUhuV8p3bRSx3Qsvtqx_LDct05w@mail.gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+In-Reply-To: <CANnsUMG3WO_19GpnsNaXPqu6eEnpBvYUpkrf1QbHwsc9wEoCZQ@mail.gmail.com>
+Sender: Luis Chamberlain <mcgrof@infradead.org>
+X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -75,88 +102,12 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 07, 2023 at 03:36:55PM -0700, Bill Wendling wrote:
-> On Mon, Aug 7, 2023 at 2:18 PM Justin Stitt <justinstitt@google.com> wrote:
-> >
-> > Use `strtomem` here since `console_buf` is not expected to be
-> > NUL-terminated. We should probably also just use `MCONSOLE_MAX_DATA`
+On Mon, Aug 07, 2023 at 04:00:49PM -0700, Chris Maness wrote:
+> When are these likely to hit the mainline release code?
 
-How is it known that console_buf is not a C-string?
+linux-next tomorrow. The first 7 patches are scheduled for mainline
+as they were merged + tested without any hiccups. These last few patches
+I'll wait and see. If nothing blows up on linux-next perhaps I'll
+include them to Linux for mainline during the next merge window.
 
-> > instead of using `ARRAY_SIZE()` for every iteration of the loop.
-> >
-> Is this change necessary? I have a general preference for ARRAY_SIZE,
-> because a change in size is less likely to be overlooked (unless that
-> goes against the coding standard).
-
-I would prefer this stay either ARRAY_SIZE or sizeof, as it keeps it
-tied to the variable in question.
-
-> 
-> > Also mark char buffer as `__nonstring` as per Kees' suggestion here [1]
-> >
-> > Finally, follow checkpatch's recommendation of using `min_t` over `min`
-> >
-> > Link: https://github.com/KSPP/linux/issues/90 [1]
-> > Cc: linux-hardening@vger.kernel.org
-> > Signed-off-by: Justin Stitt <justinstitt@google.com>
-> > ---
-> > Notes:
-> > I only build tested this patch.
-> > ---
-> >  arch/um/drivers/mconsole_kern.c | 7 ++++---
-> >  1 file changed, 4 insertions(+), 3 deletions(-)
-> >
-> > diff --git a/arch/um/drivers/mconsole_kern.c b/arch/um/drivers/mconsole_kern.c
-> > index 5026e7b9adfe..fd4c024202ae 100644
-> > --- a/arch/um/drivers/mconsole_kern.c
-> > +++ b/arch/um/drivers/mconsole_kern.c
-> > @@ -4,6 +4,7 @@
-> >   * Copyright (C) 2001 - 2008 Jeff Dike (jdike@{addtoit,linux.intel}.com)
-> >   */
-> >
-> > +#include "linux/compiler_attributes.h"
-> 
-> nit: Should this include be in angle brackets?
-> 
-> #include <linux/compiler_attributes.h>
-
-True, though this shouldn't need to be included at all. What was
-missing?
-
-> 
-> >  #include <linux/console.h>
-> >  #include <linux/ctype.h>
-> >  #include <linux/string.h>
-> > @@ -554,7 +555,7 @@ struct mconsole_output {
-> >
-> >  static DEFINE_SPINLOCK(client_lock);
-> >  static LIST_HEAD(clients);
-> > -static char console_buf[MCONSOLE_MAX_DATA];
-> > +static char console_buf[MCONSOLE_MAX_DATA] __nonstring;
-> >
-> >  static void console_write(struct console *console, const char *string,
-> >                           unsigned int len)
-> > @@ -566,8 +567,8 @@ static void console_write(struct console *console, const char *string,
-> >                 return;
-> >
-> >         while (len > 0) {
-> > -               n = min((size_t) len, ARRAY_SIZE(console_buf));
-> > -               strncpy(console_buf, string, n);
-> > +               n = min_t(size_t, len, MCONSOLE_MAX_DATA);
-> > +               strtomem(console_buf, string);
-> >                 string += n;
-> >                 len -= n;
-> >
-> >
-> > ---
-> > base-commit: c1a515d3c0270628df8ae5f5118ba859b85464a2
-> > change-id: 20230807-arch-um-3ef24413427e
-> >
-> > Best regards,
-> > --
-> > Justin Stitt <justinstitt@google.com>
-> >
-
--- 
-Kees Cook
+  Luis
