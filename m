@@ -2,117 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B9D377277F
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 16:19:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E8940772787
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 16:20:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233471AbjHGOTV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Aug 2023 10:19:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35228 "EHLO
+        id S233224AbjHGOUO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Aug 2023 10:20:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36222 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233189AbjHGOTO (ORCPT
+        with ESMTP id S230369AbjHGOUK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Aug 2023 10:19:14 -0400
-Received: from EUR04-DB3-obe.outbound.protection.outlook.com (mail-db3eur04on2060.outbound.protection.outlook.com [40.107.6.60])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C49A172A;
-        Mon,  7 Aug 2023 07:19:12 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=GkIO3adiHqWwZim3D4cNcUxtlrcvPA6/AzCbpIUgb5VydLlkK/RvoiSS9f7iP0pVyOceJDb6B1zAtFRjILkIxPJgq58xaT2kK0JWQMmaqpQKgO9Pl4OxJ+ixWWCgZMFPwxJ/kknBZDk+Hp7op8eBMWDt9xDCxgREcvR47eY61smj1KKx++UeyMSobXDl19U1aQxm1z6TPBGO99Dt3xBJIER3NtH57mCXnSfbgoSMVnIu9Gpqcv/Yu1rMeqMZ6NCJAnSehMDHGUsshsPaPFdm6fmP2WLb9RjG8hmxAe7i8tJzHez6QA4m9EWYVJA3ke46OdQZbCWB/ExrTDaiyFuzGw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=cemv0o+A4B4UVs6IecKdz+P02Zgm4E8Y/XAvJfrdSkY=;
- b=XjD5P08SrTI/1IRmEjINIeuvl2z7CtC1yVYxXuDNJOr5Qa51i1wJPkD5Aee9aExZlgq3ORwc4yigBbRC+fFb4S2j7X8Lu/0Cbfw+RhvjUaVrUvDM+Z4+okEc5Tv217RHmfxCgiEEldUP/nHUdNgWZrrVtQqqqAoxxlotpp/w2gQEIvLarmprRKEqrjKg77DYImcSLlqrkVEsHnQkB/F2Fz1nYOyAKmW8238iIuk0xJiIGqZMCx5ruGUXqp9ygIqeJM/AiYHGhsCDSU8DsIcYkl33Vm89XGyvHPKRxe8H1NSLqCIipjj3crznRxUcQtfsWOMP2UC0k33Wr3v6PmQP/Q==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=cemv0o+A4B4UVs6IecKdz+P02Zgm4E8Y/XAvJfrdSkY=;
- b=n/ca41OH7iYGhXcRE+mqGcxsB2xgbU+yNV9W09Z30Bcq9cd1f38NvfL1ppjVUpJK8vtoiOrThSj3JCiLUc5kHXyc0EBoPghlD9bN1JrZypNISn53QbdcDueA2yhE5jRPiViVqzZDHIZgNrxrOgL7Tc/tND/PFXUy7KpwWXRIwUc=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nxp.com;
-Received: from AM6PR04MB4838.eurprd04.prod.outlook.com (2603:10a6:20b:4::16)
- by AS5PR04MB9798.eurprd04.prod.outlook.com (2603:10a6:20b:654::8) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6652.25; Mon, 7 Aug
- 2023 14:19:09 +0000
-Received: from AM6PR04MB4838.eurprd04.prod.outlook.com
- ([fe80::d0d5:3604:98da:20b1]) by AM6PR04MB4838.eurprd04.prod.outlook.com
- ([fe80::d0d5:3604:98da:20b1%7]) with mapi id 15.20.6652.026; Mon, 7 Aug 2023
- 14:19:09 +0000
-From:   Frank Li <Frank.Li@nxp.com>
-To:     helgaas@kernel.org
-Cc:     Frank.li@nxp.com, bhelgaas@google.com, devicetree@vger.kernel.org,
-        gustavo.pimentel@synopsys.com, imx@lists.linux.dev, kw@linux.com,
-        leoyang.li@nxp.com, linux-arm-kernel@lists.infradead.org,
-        linux-imx@nxp.com, linux-kernel@vger.kernel.org,
-        linux-pci@vger.kernel.org, lorenzo.pieralisi@arm.com,
-        lpieralisi@kernel.org, mani@kernel.org,
-        manivannan.sadhasivam@linaro.org, minghuan.lian@nxp.com,
-        mingkai.hu@nxp.com, robh+dt@kernel.org, roy.zang@nxp.com,
-        shawnguo@kernel.org, zhiqiang.hou@nxp.com
-Subject: [PATCH v10 3/3] PCI: layerscape: Add power management support for ls1028a
-Date:   Mon,  7 Aug 2023 10:18:33 -0400
-Message-Id: <20230807141833.564479-4-Frank.Li@nxp.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20230807141833.564479-1-Frank.Li@nxp.com>
-References: <20230807141833.564479-1-Frank.Li@nxp.com>
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: BYAPR02CA0057.namprd02.prod.outlook.com
- (2603:10b6:a03:54::34) To AM6PR04MB4838.eurprd04.prod.outlook.com
- (2603:10a6:20b:4::16)
+        Mon, 7 Aug 2023 10:20:10 -0400
+Received: from mail-qt1-x832.google.com (mail-qt1-x832.google.com [IPv6:2607:f8b0:4864:20::832])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A897C10F7
+        for <linux-kernel@vger.kernel.org>; Mon,  7 Aug 2023 07:20:04 -0700 (PDT)
+Received: by mail-qt1-x832.google.com with SMTP id d75a77b69052e-40a47e8e38dso457571cf.1
+        for <linux-kernel@vger.kernel.org>; Mon, 07 Aug 2023 07:20:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1691418004; x=1692022804;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=/22JZjyzmTPowrwDf0aWQTwiV29hTfY9LBfaaAzpCOc=;
+        b=kQkkTkomqoQgnmdCjKFqcKsG4FMV5xgL9PgnfekqFcaBbWAVcGkrF+DNOrnVBTyUWl
+         0kNSME1RN3CHU113+ikghGQZHl8GA+kKicaS/ir24Z4tLEat0KODjUjOGUW4SqMvCy1O
+         YHNGzdSi48ifylDeb4UnmgtjSylQMsnoxvGb60JZ1B/Z3uybmFHQmWM4UJuYI0YE/9kK
+         ljuOYBTp6cQaEx/+7DihWddgBiTyt+bnUjBwEV0uONnH3yJJDyP0JM68iEy4E/ctyCmS
+         xjJzVPq9JaCc0bX2j2KKBqVocXEpQ3sOTlZadPAQvoCVxX2xLgNYXy4Xc7z6esF7e0nz
+         t3zg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691418004; x=1692022804;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=/22JZjyzmTPowrwDf0aWQTwiV29hTfY9LBfaaAzpCOc=;
+        b=C3WphD8ojq7R6nstS4FePZnEXXfel04CDrc3PM2cmeIAJWuIlss9MOvWemKrb4iY0O
+         TNPy04pJn2f0LeEwAbsFLY1YdKTlCr1kp1E+ReOEKurCSkcsYia/8sG0VCZ1OyoyRpAZ
+         v3U5CLXtN1cG7hSpxgW0IwqWzGi7tdVJmtKAz2PeTGMU9HZ/Ucv44MfAlTGNGqEarwp4
+         XnLkUBAwCOS5mtqBT1eODlpbE9qUVWnTNTCKMKPboaXkI0TGo+sIvx77rIZNFp6yoPc3
+         fRcIdqQ58lBLV+P3LEYyyPf0oodlStjgeCP18FLFPVbLMGTSFa+wlAohg5obr1JvY+Dd
+         Vl7g==
+X-Gm-Message-State: AOJu0YwjdyNLrQnPOCjPhyIvj2TOOyhgUOafhcdixVVUIN2SGtceSm+0
+        pUmaP3+pvvHqwluq/gSW9hT311Y78NgRkM+Z+jRxkw==
+X-Google-Smtp-Source: AGHT+IEvs04uw4bF9mUDTPFwLeLAcPFK7k8/SNwJQbcPN8JRvQ2GkRLjRRFLLDYoEKjNUCBm6OH2NUaeIY6gg06T7fY=
+X-Received: by 2002:a05:622a:116:b0:405:432b:9973 with SMTP id
+ u22-20020a05622a011600b00405432b9973mr542416qtw.0.1691418003516; Mon, 07 Aug
+ 2023 07:20:03 -0700 (PDT)
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: AM6PR04MB4838:EE_|AS5PR04MB9798:EE_
-X-MS-Office365-Filtering-Correlation-Id: bde52dd6-7061-46bb-4714-08db97514448
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: izSon6rldi0ZhVZzc/3WSFFvY4ewGHHxflSmwobfrIMZNLg+bbXBqnNhEkjOexGre/M58i8+j5huwvwrl+uoVyyKRan2VnCq6rUAf1L0MVz9Us9qsfGzGApuVw8MKHxWTPUBxc0s/q0Q/4BB5HPstHwuw0gwuU0VUUNoaOQCiGjyAHicntt71Mtf/V7UBcn023fyjG6Qtdcsp/RMsaKhF3qlq6z+PR2IPSFSY6qn/Lg2Eys9Hyvtu9l6xVApfatloxxjNi8ZGc5ZDyLMxfzrcQJLxf4UkpAJZnbaPVA+fceqUlrQa9ERpvv4Usa+bBj4w49eRI8wEiJo8UJCaBPJcb6VsGWqw8jh7juNFHgKNRzMrVY6FqgT9BOD0J/hweYCGYVpNPzyAhHvIAmX1I94ewnwyRfjl18E+pi/gIGQEHoNsAYC+/WlJ2ZCeKeDu+cNFVauYODu8dS5DeAnwWhNgYdSwV/qKCXeCGwZSAF2l5v2bV8d/ct5Eu61WyYIT32Jv6HW6fUhXqcuQETs1wYcZpsAoa6cMZp14AAyBb1prp4Tkh9ja+arkmBbGQ39XuDdNQtOduM66iUCzr7cTgELtAGa3uD+oTn4MBy14Pqi3QRuTQMfJB1l/Hxxk5FEM8DJ
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM6PR04MB4838.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(346002)(396003)(136003)(39860400002)(366004)(376002)(451199021)(1800799003)(186006)(6512007)(26005)(6506007)(1076003)(36756003)(38350700002)(38100700002)(5660300002)(7416002)(86362001)(4326008)(2906002)(6916009)(66556008)(66476007)(41300700001)(66946007)(8676002)(316002)(8936002)(6666004)(52116002)(478600001)(2616005)(6486002)(83380400001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?VEjXSkziGkEi+1Mpw8hag4Zj+sW+wxTJLI9xR0cuwNIg3Pv6BkwyOtg0zbvV?=
- =?us-ascii?Q?IvJ6UC7KMgeGxlCvq8vGVz+jf1WX0kTNKRAzSgK+FgYi+TUUUmRNaEWxyIu/?=
- =?us-ascii?Q?STAPHC7+svZ4rHDttm28aedquiKtEUz77CEw/pv45uh9zCltpHUK8NXMvlwv?=
- =?us-ascii?Q?KmkQVfmjvT0EvmQ75Wdj9NkCdXomnqJFct4t1PyUQpMPkNKYeHB2Q5TY3g5p?=
- =?us-ascii?Q?jkWhj43tloSIbH3hBii9F3yfQP1+Fy1Diu1c6ximtq53EI+cXXleyNaEW+GM?=
- =?us-ascii?Q?SiwDAI3Cvqn+LgaT9QNdGAaR+FvT0QQlTyJGkQQelJVtYSXQqW4wN7CrEM9W?=
- =?us-ascii?Q?VVLAvAv3caPYJyU0lOnx5PCHl/0gAAXjPThGfFz+/Lie56fE9PvFnOxX5qyZ?=
- =?us-ascii?Q?8IBqRxdEWOMsoaud9498VpZAVmE5aMnFXxeV612G/6ZfVo7S4PgYNnZfjOMy?=
- =?us-ascii?Q?rn54Wtlik9bKVAr7c7yeH+fCwupi5vB+m1mMcFOuT8kDcoVZHrFHVUOBjNBY?=
- =?us-ascii?Q?cJW1MXuLlTMYhwyNdWDxR4xO+hG1bDe/t6Dq9ODBPARpAyCwqfu6kSBbZSiV?=
- =?us-ascii?Q?5XpoUdPFUKJNcRPMPZ5B/pYxkVAWN/7XYc6b6U/29gd8CMEEJyFNdvCRVyqC?=
- =?us-ascii?Q?7yXaiMJXkFNlMwmwgoalJmr29coV0VBbizA2mmarotxPa1IKlc3TQDyJlq+n?=
- =?us-ascii?Q?dUUdPIOJKB0d4GLyQt/wogOgQ+38fpUm0u4zdY08ddJcY4hjxejp7a8MTCRg?=
- =?us-ascii?Q?helW4n7IYAZJ7JEOh9rnvczkulW4WpTk0h0kawJv97tpoKQYhU35K8AidMqF?=
- =?us-ascii?Q?kGIUR3KHkCnFHXErUCID339Fp1wr1v75tj5T1nv7zidAuVQygwmlrLffXEyr?=
- =?us-ascii?Q?Tz1tBZWRIjarXXsDBaMP1V2NDDzZbq3ZwfQA4sZAXyrdi4i7S7YMp4wphyjE?=
- =?us-ascii?Q?OYlmlsw5r9yK8IUrzRsaffNST2UfWkLMiJ+/CnCWWGIio1aYUQR0DzL4rBko?=
- =?us-ascii?Q?rSkrdas90sXBfpT9urjMnXsNaAcddU7ZYogumNPJIbsHtW/NpAwzJSt75PZV?=
- =?us-ascii?Q?i3H2jBAsjAMX5nJ4jN+J7keirpFxvLZpRxVbXhMNvdQUNTpDPAaRgKI/rRIk?=
- =?us-ascii?Q?ycThDW7PzMIUf1AE4jYkL/q50QAR9CS7ZNU/nhdFvF2/seTwd1GmwtXo6eT8?=
- =?us-ascii?Q?jjYk7+xifs8Hx5HvKJ56hNV5IypnM0xDAE2sTf+k8nAFeIH7hoFY14ycnUsW?=
- =?us-ascii?Q?f6qeQqT6cvso0LPxuO5mwSVG2jsB+v2blrvWvPG8K/4sAmsRZErSJpRA/ECY?=
- =?us-ascii?Q?ltx1ZygbK8ALDT0h+eB6KjL/Zpj2NVQXEp4VhvVbAh9H6UPlW9CZ8xL9Vyg0?=
- =?us-ascii?Q?G/9Y6TuEGRN4cq1cObuKYY0ys8bSMSUBm57r0SP+/B060R37DFptgQmOOvul?=
- =?us-ascii?Q?kaZzvU8B6c7m6WJCmQTKxZS0EW4TDWA0wNRg0EDCll29HZNgkyi18fA7gPj+?=
- =?us-ascii?Q?kYETxHzyMNekZEMveX5Ny6SpLL1ge22hlzC3Hn+jtP/mxwv4x4H4jRoYOh09?=
- =?us-ascii?Q?XzsSNqbNRdj+k6hYp0g=3D?=
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: bde52dd6-7061-46bb-4714-08db97514448
-X-MS-Exchange-CrossTenant-AuthSource: AM6PR04MB4838.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Aug 2023 14:19:09.8310
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: b/IJw+PtKGz9bLGb19uhz4GGSoAvl/l7UjIFwfopNa2nOYcWTuZJ+XWijqr7rJD/h2+ANOorl1p/hO7RPKRnVA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AS5PR04MB9798
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS autolearn=ham
+References: <20230807134547.2782227-1-imagedong@tencent.com> <20230807134547.2782227-4-imagedong@tencent.com>
+In-Reply-To: <20230807134547.2782227-4-imagedong@tencent.com>
+From:   Eric Dumazet <edumazet@google.com>
+Date:   Mon, 7 Aug 2023 16:19:52 +0200
+Message-ID: <CANn89iKLXu1axtg9vMpbWv1CRYh=U_r38dJ8Q2s3togZcXqJ6Q@mail.gmail.com>
+Subject: Re: [PATCH net-next v2 3/3] net: tcp: fix unexcepted socket die when
+ snd_wnd is 0
+To:     menglong8.dong@gmail.com
+Cc:     ncardwell@google.com, davem@davemloft.net, kuba@kernel.org,
+        pabeni@redhat.com, dsahern@kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Menglong Dong <imagedong@tencent.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -120,227 +72,93 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hou Zhiqiang <Zhiqiang.Hou@nxp.com>
+On Mon, Aug 7, 2023 at 3:47=E2=80=AFPM <menglong8.dong@gmail.com> wrote:
+>
+> From: Menglong Dong <imagedong@tencent.com>
+>
+> In tcp_retransmit_timer(), a window shrunk connection will be regarded
+> as timeout if 'tcp_jiffies32 - tp->rcv_tstamp > TCP_RTO_MAX'. This is not
+> right all the time.
+>
+> The retransmits will become zero-window probes in tcp_retransmit_timer()
+> if the 'snd_wnd=3D=3D0'. Therefore, the icsk->icsk_rto will come up to
+> TCP_RTO_MAX sooner or later.
+>
+> However, the timer is not precise enough, as it base on timer wheel.
 
-Add PME_Turn_off/PME_TO_Ack handshake sequence for ls1028a platform. Call
-common dwc dw_pcie_suspend(resume)_noirq() function when system enter/exit
-suspend state.
+> Sorry that I am not good at timer, but I know the concept of time-wheel.
 
-Acked-by: Manivannan Sadhasivam <mani@kernel.org>
-Signed-off-by: Hou Zhiqiang <Zhiqiang.Hou@nxp.com>
-Signed-off-by: Frank Li <Frank.Li@nxp.com>
----
- drivers/pci/controller/dwc/pci-layerscape.c | 130 ++++++++++++++++++--
- 1 file changed, 121 insertions(+), 9 deletions(-)
+Can you remove this line, can we keep focused on the actual patch instead ?
 
-diff --git a/drivers/pci/controller/dwc/pci-layerscape.c b/drivers/pci/controller/dwc/pci-layerscape.c
-index ed5fb492fe084..7586aece769b2 100644
---- a/drivers/pci/controller/dwc/pci-layerscape.c
-+++ b/drivers/pci/controller/dwc/pci-layerscape.c
-@@ -8,9 +8,11 @@
-  * Author: Minghuan Lian <Minghuan.Lian@freescale.com>
-  */
- 
-+#include <linux/delay.h>
- #include <linux/kernel.h>
- #include <linux/interrupt.h>
- #include <linux/init.h>
-+#include <linux/iopoll.h>
- #include <linux/of_pci.h>
- #include <linux/of_platform.h>
- #include <linux/of_address.h>
-@@ -20,6 +22,7 @@
- #include <linux/mfd/syscon.h>
- #include <linux/regmap.h>
- 
-+#include "../../pci.h"
- #include "pcie-designware.h"
- 
- /* PEX Internal Configuration Registers */
-@@ -27,12 +30,26 @@
- #define PCIE_ABSERR		0x8d0 /* Bridge Slave Error Response Register */
- #define PCIE_ABSERR_SETTING	0x9401 /* Forward error of non-posted request */
- 
-+/* PF Message Command Register */
-+#define LS_PCIE_PF_MCR		0x2c
-+#define PF_MCR_PTOMR		BIT(0)
-+#define PF_MCR_EXL2S		BIT(1)
-+
- #define PCIE_IATU_NUM		6
- 
-+struct ls_pcie_drvdata {
-+	const u32 pf_off;
-+	bool pm_support;
-+};
-+
- struct ls_pcie {
- 	struct dw_pcie *pci;
-+	const struct ls_pcie_drvdata *drvdata;
-+	void __iomem *pf_base;
-+	bool big_endian;
- };
- 
-+#define ls_pcie_pf_readl_addr(addr)	ls_pcie_pf_readl(pcie, addr)
- #define to_ls_pcie(x)	dev_get_drvdata((x)->dev)
- 
- static bool ls_pcie_is_bridge(struct ls_pcie *pcie)
-@@ -73,6 +90,60 @@ static void ls_pcie_fix_error_response(struct ls_pcie *pcie)
- 	iowrite32(PCIE_ABSERR_SETTING, pci->dbi_base + PCIE_ABSERR);
- }
- 
-+static u32 ls_pcie_pf_readl(struct ls_pcie *pcie, u32 off)
-+{
-+	if (pcie->big_endian)
-+		return ioread32be(pcie->pf_base + off);
-+
-+	return ioread32(pcie->pf_base + off);
-+}
-+
-+static void ls_pcie_pf_writel(struct ls_pcie *pcie, u32 off, u32 val)
-+{
-+	if (pcie->big_endian)
-+		iowrite32be(val, pcie->pf_base + off);
-+	else
-+		iowrite32(val, pcie->pf_base + off);
-+}
-+
-+static void ls_pcie_send_turnoff_msg(struct dw_pcie_rp *pp)
-+{
-+	struct dw_pcie *pci = to_dw_pcie_from_pp(pp);
-+	struct ls_pcie *pcie = to_ls_pcie(pci);
-+	u32 val;
-+	int ret;
-+
-+	val = ls_pcie_pf_readl(pcie, LS_PCIE_PF_MCR);
-+	val |= PF_MCR_PTOMR;
-+	ls_pcie_pf_writel(pcie, LS_PCIE_PF_MCR, val);
-+
-+	ret = readx_poll_timeout(ls_pcie_pf_readl_addr, LS_PCIE_PF_MCR,
-+				 val, !(val & PF_MCR_PTOMR),
-+				 PCIE_PME_TO_L2_TIMEOUT_US/10,
-+				 PCIE_PME_TO_L2_TIMEOUT_US);
-+	if (ret)
-+		dev_err(pcie->pci->dev, "poll turn off message timeout\n");
-+}
-+
-+static void ls_pcie_exit_from_l2(struct dw_pcie_rp *pp)
-+{
-+	struct dw_pcie *pci = to_dw_pcie_from_pp(pp);
-+	struct ls_pcie *pcie = to_ls_pcie(pci);
-+	u32 val;
-+	int ret;
-+
-+	val = ls_pcie_pf_readl(pcie, LS_PCIE_PF_MCR);
-+	val |= PF_MCR_EXL2S;
-+	ls_pcie_pf_writel(pcie, LS_PCIE_PF_MCR, val);
-+
-+	ret = readx_poll_timeout(ls_pcie_pf_readl_addr, LS_PCIE_PF_MCR,
-+				 val, !(val & PF_MCR_EXL2S),
-+				 PCIE_PME_TO_L2_TIMEOUT_US/10,
-+				 PCIE_PME_TO_L2_TIMEOUT_US);
-+	if (ret)
-+		dev_err(pcie->pci->dev, "poll exit L2 state timeout\n");
-+}
-+
- static int ls_pcie_host_init(struct dw_pcie_rp *pp)
- {
- 	struct dw_pcie *pci = to_dw_pcie_from_pp(pp);
-@@ -91,18 +162,28 @@ static int ls_pcie_host_init(struct dw_pcie_rp *pp)
- 
- static const struct dw_pcie_host_ops ls_pcie_host_ops = {
- 	.host_init = ls_pcie_host_init,
-+	.pme_turn_off = ls_pcie_send_turnoff_msg,
-+	.exit_from_l2 = ls_pcie_exit_from_l2,
-+};
-+
-+static const struct ls_pcie_drvdata ls1021a_drvdata = {
-+};
-+
-+static const struct ls_pcie_drvdata layerscape_drvdata = {
-+	.pf_off = 0xc0000,
-+	.pm_support = true,
- };
- 
- static const struct of_device_id ls_pcie_of_match[] = {
--	{ .compatible = "fsl,ls1012a-pcie", },
--	{ .compatible = "fsl,ls1021a-pcie", },
--	{ .compatible = "fsl,ls1028a-pcie", },
--	{ .compatible = "fsl,ls1043a-pcie", },
--	{ .compatible = "fsl,ls1046a-pcie", },
--	{ .compatible = "fsl,ls2080a-pcie", },
--	{ .compatible = "fsl,ls2085a-pcie", },
--	{ .compatible = "fsl,ls2088a-pcie", },
--	{ .compatible = "fsl,ls1088a-pcie", },
-+	{ .compatible = "fsl,ls1012a-pcie", .data = &layerscape_drvdata },
-+	{ .compatible = "fsl,ls1021a-pcie", .data = &ls1021a_drvdata },
-+	{ .compatible = "fsl,ls1028a-pcie", .data = &layerscape_drvdata },
-+	{ .compatible = "fsl,ls1043a-pcie", .data = &ls1021a_drvdata },
-+	{ .compatible = "fsl,ls1046a-pcie", .data = &layerscape_drvdata },
-+	{ .compatible = "fsl,ls2080a-pcie", .data = &layerscape_drvdata },
-+	{ .compatible = "fsl,ls2085a-pcie", .data = &layerscape_drvdata },
-+	{ .compatible = "fsl,ls2088a-pcie", .data = &layerscape_drvdata },
-+	{ .compatible = "fsl,ls1088a-pcie", .data = &layerscape_drvdata },
- 	{ },
- };
- 
-@@ -121,6 +202,8 @@ static int ls_pcie_probe(struct platform_device *pdev)
- 	if (!pci)
- 		return -ENOMEM;
- 
-+	pcie->drvdata = of_device_get_match_data(dev);
-+
- 	pci->dev = dev;
- 	pci->pp.ops = &ls_pcie_host_ops;
- 
-@@ -131,6 +214,10 @@ static int ls_pcie_probe(struct platform_device *pdev)
- 	if (IS_ERR(pci->dbi_base))
- 		return PTR_ERR(pci->dbi_base);
- 
-+	pcie->big_endian = of_property_read_bool(dev->of_node, "big-endian");
-+
-+	pcie->pf_base = pci->dbi_base + pcie->drvdata->pf_off;
-+
- 	if (!ls_pcie_is_bridge(pcie))
- 		return -ENODEV;
- 
-@@ -139,12 +226,37 @@ static int ls_pcie_probe(struct platform_device *pdev)
- 	return dw_pcie_host_init(&pci->pp);
- }
- 
-+static int ls_pcie_suspend_noirq(struct device *dev)
-+{
-+	struct ls_pcie *pcie = dev_get_drvdata(dev);
-+
-+	if (!pcie->drvdata->pm_support)
-+		return 0;
-+
-+	return dw_pcie_suspend_noirq(pcie->pci);
-+}
-+
-+static int ls_pcie_resume_noirq(struct device *dev)
-+{
-+	struct ls_pcie *pcie = dev_get_drvdata(dev);
-+
-+	if (!pcie->drvdata->pm_support)
-+		return 0;
-+
-+	return dw_pcie_resume_noirq(pcie->pci);
-+}
-+
-+static const struct dev_pm_ops ls_pcie_pm_ops = {
-+	NOIRQ_SYSTEM_SLEEP_PM_OPS(ls_pcie_suspend_noirq, ls_pcie_resume_noirq)
-+};
-+
- static struct platform_driver ls_pcie_driver = {
- 	.probe = ls_pcie_probe,
- 	.driver = {
- 		.name = "layerscape-pcie",
- 		.of_match_table = ls_pcie_of_match,
- 		.suppress_bind_attrs = true,
-+		.pm = &ls_pcie_pm_ops,
- 	},
- };
- builtin_platform_driver(ls_pcie_driver);
--- 
-2.34.1
+Regardless of timer-wheel, a timer can be delayed under load.
 
+> The longer of the timer, the rougher it will be. So the timeout is not
+> triggered after TCP_RTO_MAX, but 122877ms as I tested.
+>
+> Therefore, 'tcp_jiffies32 - tp->rcv_tstamp > TCP_RTO_MAX' is always true
+> once the RTO come up to TCP_RTO_MAX, and the socket will die.
+>
+> Fix this by replacing the 'tcp_jiffies32' with '(u32)icsk->icsk_timeout',
+> which is exact the timestamp of the timeout. Meanwhile, using
+> "max(tp->retrans_stamp, tp->rcv_tstamp)" as the last updated timestamp in
+> the receiving path, as "tp->rcv_tstamp" can restart from idle, then
+> tp->rcv_tstamp could already be a long time (minutes or hours) in the
+> past even on the first RTO.
+>
+> Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
+> Link: https://lore.kernel.org/netdev/CADxym3YyMiO+zMD4zj03YPM3FBi-1LHi6gS=
+D2XT8pyAMM096pg@mail.gmail.com/
+> Signed-off-by: Menglong Dong <imagedong@tencent.com>
+> ---
+> v2:
+> - consider the case of the connection restart from idle, as Neal comment
+> ---
+>  net/ipv4/tcp_timer.c | 10 +++++++++-
+>  1 file changed, 9 insertions(+), 1 deletion(-)
+>
+> diff --git a/net/ipv4/tcp_timer.c b/net/ipv4/tcp_timer.c
+> index d45c96c7f5a4..e4b2d8706cae 100644
+> --- a/net/ipv4/tcp_timer.c
+> +++ b/net/ipv4/tcp_timer.c
+> @@ -454,6 +454,14 @@ static void tcp_fastopen_synack_timer(struct sock *s=
+k, struct request_sock *req)
+>                           req->timeout << req->num_timeout, TCP_RTO_MAX);
+>  }
+>
+> +static bool tcp_rtx_probe0_timed_out(struct sock *sk)
+> +{
+> +       struct tcp_sock *tp =3D tcp_sk(sk);
+> +       u32 last_ts;
+> +
+> +       last_ts =3D max(tp->retrans_stamp, tp->rcv_tstamp);
+
+u32     retrans_stamp;  /* Timestamp of the last retransmit,
+u32     rcv_tstamp;     /* timestamp of last received ACK (for keepalives) =
+*/
+
+Both fields receive tcp_jiffies32 values, which wrap every 2^32 ticks.
+
+So max(A, B) won't work as you expect...
+
+You need to use before(), after() or something like that.
+
+https://en.wikipedia.org/wiki/Serial_number_arithmetic#General_Solution
+
+
+> +       return inet_csk(sk)->icsk_timeout - last_ts > TCP_RTO_MAX;
+> +}
+>
+>  /**
+>   *  tcp_retransmit_timer() - The TCP retransmit timeout handler
+> @@ -519,7 +527,7 @@ void tcp_retransmit_timer(struct sock *sk)
+>                                             tp->snd_una, tp->snd_nxt);
+>                 }
+>  #endif
+> -               if (tcp_jiffies32 - tp->rcv_tstamp > TCP_RTO_MAX) {
+> +               if (tcp_rtx_probe0_timed_out(sk)) {
+>                         tcp_write_err(sk);
+>                         goto out;
+>                 }
+> --
+> 2.40.1
+>
