@@ -2,101 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 72CFD771877
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 04:52:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5CAFF771875
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 04:52:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229886AbjHGCwP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 6 Aug 2023 22:52:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45800 "EHLO
+        id S229877AbjHGCwB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 6 Aug 2023 22:52:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45610 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229885AbjHGCwN (ORCPT
+        with ESMTP id S229875AbjHGCv7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 6 Aug 2023 22:52:13 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F7211986
-        for <linux-kernel@vger.kernel.org>; Sun,  6 Aug 2023 19:52:05 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id D43B9612F5
-        for <linux-kernel@vger.kernel.org>; Mon,  7 Aug 2023 02:52:04 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 345ECC433C7;
-        Mon,  7 Aug 2023 02:51:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691376724;
-        bh=gJk6vVUXiDkmun1RcHH2FC9OYEdQQqWcGTvzESd3jtk=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=qiqVSHhvLFxrJT5OH8ndniw3nRBvfBjs/YcaJ6ndswkbACC/4rTH3sIDzQiS11m5m
-         x3cEMjZUqhxk42ZR024u2P4pSQ5HlszAbBWbJZYqXLl7iv3s9zDSzwc5Dduv8who+G
-         EEPpMRZL2/aLE1V0T80GUXLAVf3NZ7j4zjMvJQhf9qEMg9BU/PcBaF2Efv6jaJ9daJ
-         fBxyK/qzIUIIX/z2X86WDvlI2uXn2RHhtcN3kMhfmO7CNYpglnP4dSmlGy3FzRdN6u
-         WEkcNONDJePjlHHE6yDaQybnOkG7qI1pT/KQqPaHe7BtXv1QdVVVLWpQKUATfMj1hc
-         CQoom4Gnh0mhQ==
-Date:   Mon, 7 Aug 2023 10:51:53 +0800
-From:   Shawn Guo <shawnguo@kernel.org>
-To:     "Peng Fan (OSS)" <peng.fan@oss.nxp.com>
-Cc:     s.hauer@pengutronix.de, kernel@pengutronix.de, festevam@gmail.com,
-        linux-imx@nxp.com, aisheng.dong@nxp.com,
-        alexander.stein@ew.tq-group.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Peng Fan <peng.fan@nxp.com>
-Subject: Re: [PATCH V5 4/9] firmware: imx: scu: use soc name for soc_id
-Message-ID: <20230807025153.GM151430@dragon>
-References: <20230731090449.2845997-1-peng.fan@oss.nxp.com>
- <20230731090449.2845997-5-peng.fan@oss.nxp.com>
+        Sun, 6 Aug 2023 22:51:59 -0400
+Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE1041721;
+        Sun,  6 Aug 2023 19:51:56 -0700 (PDT)
+Received: from kwepemm600006.china.huawei.com (unknown [172.30.72.53])
+        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4RK1421ZTDz1Z1Tk;
+        Mon,  7 Aug 2023 10:49:06 +0800 (CST)
+Received: from huawei.com (10.175.124.27) by kwepemm600006.china.huawei.com
+ (7.193.23.105) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Mon, 7 Aug
+ 2023 10:51:52 +0800
+From:   Wenyu Liu <liuwenyu7@huawei.com>
+To:     <ebiederm@xmission.com>, <zohar@linux.ibm.com>,
+        <dmitry.kasatkin@gmail.com>, <paul@paul-moore.com>,
+        <jmorris@namei.org>, <serge@hallyn.com>,
+        <kexec@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+        <linux-security-module@vger.kernel.org>,
+        <linux-integrity@vger.kernel.org>
+CC:     <akpm@linux-foundation.org>, <vschneid@redhat.com>,
+        <pmenzel@molgen.mpg.de>, <bhe@redhat.com>,
+        <louhongxiang@huawei.com>
+Subject: [PATCH v2 RESEND] kexec_lock: Replace kexec_mutex() by kexec_lock() in two comments
+Date:   Mon, 7 Aug 2023 10:52:06 +0800
+Message-ID: <20230807025206.3682381-1-liuwenyu7@huawei.com>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230731090449.2845997-5-peng.fan@oss.nxp.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.124.27]
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+ kwepemm600006.china.huawei.com (7.193.23.105)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 31, 2023 at 05:04:44PM +0800, Peng Fan (OSS) wrote:
-> From: Peng Fan <peng.fan@nxp.com>
-> 
-> Same as soc-imx8m and soc-imx driver, use soc name for soc_id
-> 
-> Signed-off-by: Peng Fan <peng.fan@nxp.com>
-> ---
->  drivers/firmware/imx/imx-scu-soc.c | 10 ++++++----
->  1 file changed, 6 insertions(+), 4 deletions(-)
-> 
-> diff --git a/drivers/firmware/imx/imx-scu-soc.c b/drivers/firmware/imx/imx-scu-soc.c
-> index ef9103987e76..cb8377670a7d 100644
-> --- a/drivers/firmware/imx/imx-scu-soc.c
-> +++ b/drivers/firmware/imx/imx-scu-soc.c
-> @@ -107,10 +107,12 @@ int imx_scu_soc_init(struct device *dev)
->  		return -EINVAL;
->  
->  	/* format soc_id value passed from SCU firmware */
-> -	val = id & 0x1f;
-> -	soc_dev_attr->soc_id = devm_kasprintf(dev, GFP_KERNEL, "0x%x", val);
-> -	if (!soc_dev_attr->soc_id)
-> -		return -ENOMEM;
-> +	if (of_machine_is_compatible("fsl,imx8qm"))
-> +		soc_dev_attr->soc_id = "i.MX8QM";
-> +	else if (of_machine_is_compatible("fsl,imx8qxp"))
-> +		soc_dev_attr->soc_id = "i.MX8QXP";
-> +	else if (of_machine_is_compatible("fsl,imx8dxl"))
-> +		soc_dev_attr->soc_id = "i.MX8DXL";
+kexec_mutex is replaced by an atomic variable
+in 05c6257433b (panic, kexec: make __crash_kexec() NMI safe).
 
-Is it possible to deduce SoC name from the id retrieved from SCU firmware?
-IMO, device tree should be the last resort when there is no other
-sources for the such information.
+But there are still two comments that referenced kexec_mutex,
+replace them by kexec_lock.
 
-Shawn
+Signed-off-by: Wenyu Liu <liuwenyu7@huawei.com>
+Acked-by: Baoquan He <bhe@redhat.com>
+Acked-by: Paul Menzel <pmenzel@molgen.mpg.de>
+---
+v1 -> v2
+ - fixed some mistakes in the submission information
 
->  
->  	/* format revision value passed from SCU firmware */
->  	val = (id >> 5) & 0xf;
-> -- 
-> 2.37.1
-> 
+ kernel/kexec_file.c                | 2 +-
+ security/integrity/ima/ima_kexec.c | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/kernel/kexec_file.c b/kernel/kexec_file.c
+index 881ba0d1714c..b5bbb2fe0668 100644
+--- a/kernel/kexec_file.c
++++ b/kernel/kexec_file.c
+@@ -624,7 +624,7 @@ int kexec_locate_mem_hole(struct kexec_buf *kbuf)
+  * kexec_add_buffer - place a buffer in a kexec segment
+  * @kbuf:	Buffer contents and memory parameters.
+  *
+- * This function assumes that kexec_mutex is held.
++ * This function assumes that kexec_lock is held.
+  * On successful return, @kbuf->mem will have the physical address of
+  * the buffer in memory.
+  *
+diff --git a/security/integrity/ima/ima_kexec.c b/security/integrity/ima/ima_kexec.c
+index 419dc405c831..ad133fe120db 100644
+--- a/security/integrity/ima/ima_kexec.c
++++ b/security/integrity/ima/ima_kexec.c
+@@ -77,7 +77,7 @@ static int ima_dump_measurement_list(unsigned long *buffer_size, void **buffer,
+  * Called during kexec_file_load so that IMA can add a segment to the kexec
+  * image for the measurement list for the next kernel.
+  *
+- * This function assumes that kexec_mutex is held.
++ * This function assumes that kexec_lock is held.
+  */
+ void ima_add_kexec_buffer(struct kimage *image)
+ {
+-- 
+2.33.0
+
