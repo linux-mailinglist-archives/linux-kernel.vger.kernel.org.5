@@ -2,255 +2,274 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A1B5577301A
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 22:04:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C8A0773021
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 22:06:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230387AbjHGUEi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Aug 2023 16:04:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51220 "EHLO
+        id S231240AbjHGUGz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Aug 2023 16:06:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52124 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229509AbjHGUEg (ORCPT
+        with ESMTP id S229726AbjHGUGv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Aug 2023 16:04:36 -0400
-Received: from bg4.exmail.qq.com (bg4.exmail.qq.com [43.154.54.12])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 161DEB1;
-        Mon,  7 Aug 2023 13:04:33 -0700 (PDT)
-X-QQ-mid: bizesmtp91t1691438647t4zdb9ni
-Received: from linux-lab-host.localdomain ( [116.30.130.12])
-        by bizesmtp.qq.com (ESMTP) with 
-        id ; Tue, 08 Aug 2023 04:04:06 +0800 (CST)
-X-QQ-SSF: 01200000000000E0X000B00A0000000
-X-QQ-FEAT: 90EFqYDyPxD3+sLbshWU2U7dnyvuq1IbEuoeERgw34fSNjGR16yp5HBwQ+TSj
-        9K6shDeVXkc2VkizJ0+TQnqGpqjn1nQWY0Qbqxq9XMvB5HnYFY42l5sdwEKSyCv5D/y6kjM
-        euzoSJc2+4GP+gv78sqvd/6Xth+94Hm/cKzvA9pG2IHXZU0q0HCbKpHqEu4u73oPaWltHWD
-        HPc2CDdN0G/9fQwMJXvrhYqyicxJ3Q0Fu8COTXlochfK4r4BFhN2qdifl4X+XPjfmH2WG7g
-        N21d5LClAUEvCmkfg2LjfPfwOaJet5FteH9O2Z+ea4ZHuKNSnIp3NkKCTlyPOlC1F6/xklU
-        ANJe6rj+zJV8u1FZl6SHnmoJtSEG+YRBDE7rIXW
-X-QQ-GoodBg: 0
-X-BIZMAIL-ID: 5223824127262790404
-From:   Zhangjin Wu <falcon@tinylab.org>
-To:     david.laight@aculab.com, w@1wt.eu
-Cc:     falcon@tinylab.org, arnd@arndb.de, linux-kernel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, thomas@t-8ch.de,
-        David Laight <David.Laight@ACULAB.COM>
-Subject: [PATCH v5] tools/nolibc: fix up size inflate regression
-Date:   Tue,  8 Aug 2023 04:04:05 +0800
-Message-Id: <b6ff2684f557f6ce00151905990643e651391614.1691437328.git.falcon@tinylab.org>
-X-Mailer: git-send-email 2.25.1
+        Mon, 7 Aug 2023 16:06:51 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E44CC173D;
+        Mon,  7 Aug 2023 13:06:47 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 909B9621DB;
+        Mon,  7 Aug 2023 20:06:46 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 044ADC433C8;
+        Mon,  7 Aug 2023 20:06:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1691438806;
+        bh=jbCLcqbpDdyiXp4kREB9DClxxzHA3QSW5siXV+Xh+80=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=C5Y762mIWx2L8dYncsMaAWOQJZzZ9OL8U319scvzvbRy6JNzBJFQ8HbhBQXvqcfwf
+         73d6GxUvUQ68ObtLksBTQrPTtSLBR6BwxuO3CSAD7csG3lbzObpPj+HcKPXKcIG8iw
+         EOJE5/eO4ZFeFgqVfMGyVqWtR09+6k4+eED/LTbI/ONT4YyhtUTm9cIAEmiVLJ67qA
+         THRHUPPlwXWaLZFFsafqVm4tTw+bbLF8iGWLKm5lz6gJRFd0wyXgBQaE/S0ZXClX/R
+         lg0XzhhQw7okbNhxULExRhx3OAcZCG4R+tcyXBwMhf7EW07WyjnAe1ejhG2NG8PGsa
+         6UDppXL6AQHng==
+Received: by mail-oa1-f51.google.com with SMTP id 586e51a60fabf-1bb7a1c2fe5so3655381fac.2;
+        Mon, 07 Aug 2023 13:06:45 -0700 (PDT)
+X-Gm-Message-State: AOJu0YxT48eJmUS2LpAfwbqKJmSg1ZTdMY9g8ooEzkGaWdZ7E2w/ylP7
+        ikQkan1n8C8TcY+N2/j/46pqDEMaGbC/iAcFVvs=
+X-Google-Smtp-Source: AGHT+IGH3JbOMI6wsepizL5FX1FIVyEXCskFrCuKwxyl3olYukKYpi00FSoBq9cE125gdYhALtLllFSb6PDVC0398Fk=
+X-Received: by 2002:a05:6870:ecaa:b0:1bb:6133:fb07 with SMTP id
+ eo42-20020a056870ecaa00b001bb6133fb07mr12866882oab.3.1691438805199; Mon, 07
+ Aug 2023 13:06:45 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-QQ-SENDSIZE: 520
-Feedback-ID: bizesmtp:tinylab.org:qybglogicsvrgz:qybglogicsvrgz5a-1
-X-Spam-Status: No, score=-0.6 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_VALIDITY_RPBL,SPF_HELO_NONE,SPF_PASS
-        autolearn=no autolearn_force=no version=3.4.6
+References: <20230728113415.21067-1-will@kernel.org> <20230728113415.21067-4-will@kernel.org>
+ <CAK7LNARnOUbySnnqOpP-3KBQTT-WvUHfnjV_sVTKe+faB8=86g@mail.gmail.com> <20230804143019.GA30486@willie-the-truck>
+In-Reply-To: <20230804143019.GA30486@willie-the-truck>
+From:   Masahiro Yamada <masahiroy@kernel.org>
+Date:   Tue, 8 Aug 2023 05:06:08 +0900
+X-Gmail-Original-Message-ID: <CAK7LNATAyCUNkWv+NqKz7HZGRsjByZYsADf=d9-JT_QAh56S3Q@mail.gmail.com>
+Message-ID: <CAK7LNATAyCUNkWv+NqKz7HZGRsjByZYsADf=d9-JT_QAh56S3Q@mail.gmail.com>
+Subject: Re: [PATCH v3 3/4] scripts/faddr2line: Constrain readelf output to
+ symbols from System.map
+To:     Will Deacon <will@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, kernel-team@android.com,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Nicolas Schier <nicolas@fjasle.eu>,
+        Josh Poimboeuf <jpoimboe@kernel.org>,
+        John Stultz <jstultz@google.com>, linux-kbuild@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-As reported and suggested by Willy, the inline __sysret() helper
-introduces three types of conversions and increases the size:
+On Fri, Aug 4, 2023 at 11:30=E2=80=AFPM Will Deacon <will@kernel.org> wrote=
+:
+>
+> On Thu, Aug 03, 2023 at 04:54:37AM +0900, Masahiro Yamada wrote:
+> > On Fri, Jul 28, 2023 at 8:34=E2=80=AFPM Will Deacon <will@kernel.org> w=
+rote:
+> > >
+> > > Some symbols emitted in the readelf output but filtered from System.m=
+ap
+> > > can confuse the 'faddr2line' symbol size calculation, resulting in th=
+e
+> > > erroneous rejection of valid offsets. This is especially prevalent wh=
+en
+> > > building an arm64 kernel with CONFIG_CFI_CLANG=3Dy, where most functi=
+ons
+> > > are prefixed with a 32-bit data value in a '$d.n' section. For exampl=
+e:
+> > >
+> > > 447538: ffff800080014b80   548 FUNC    GLOBAL DEFAULT    2 do_one_ini=
+tcall
+> > >    104: ffff800080014c74     0 NOTYPE  LOCAL  DEFAULT    2 $x.73
+> > >    106: ffff800080014d30     0 NOTYPE  LOCAL  DEFAULT    2 $x.75
+> > >    111: ffff800080014da4     0 NOTYPE  LOCAL  DEFAULT    2 $d.78
+> > >    112: ffff800080014da8     0 NOTYPE  LOCAL  DEFAULT    2 $x.79
+> > >     36: ffff800080014de0   200 FUNC    LOCAL  DEFAULT    2 run_init_p=
+rocess
+> > >
+> > > Adding a warning to do_one_initcall() results in:
+> > >
+> > >   | WARNING: CPU: 0 PID: 1 at init/main.c:1236 do_one_initcall+0xf4/0=
+x260
+> > >
+> > > Which 'faddr2line' refuses to accept:
+> > >
+> > > $ ./scripts/faddr2line vmlinux do_one_initcall+0xf4/0x260
+> > > skipping do_one_initcall address at 0xffff800080014c74 due to size mi=
+smatch (0x260 !=3D 0x224)
+> > > no match for do_one_initcall+0xf4/0x260
+> > >
+> > > Filter out entries from readelf using the 'sysmap-ignored-syms.sed'
+> > > script used to construct System.map, so that the size of a symbol is
+> > > calculated as a delta to the next symbol present in ksymtab.
+> >
+> >
+> > I do not think this patch set is the right approach.
+> >
+> > I assume faddr2line is meant to work with both vmlinux
+> > and modules.
+>
+> Huh, it seems to be busted for modules :/ I get:
+>
+>  | error: unknown argument '--section=3D.text'
+>
+> with llvm and:
+>
+>  | addr2line: DWARF error: invalid or unhandled FORM value: 0x25
+>
+> with binutils.
+>
+> I'll look into this, as I don't think it's related to symbol filtering.
+>
+> > A problem is that we have different filtering policies wrt kallsyms.
+> >
+> > scripts/mksysmap filters symbols in vmlinux,
+> > while kernel/module/kallsyms.c filters ones in modules.
+>
+> I don't understand why we need two different ways of filtering out
+> symbols, but it appears that the module case only filters out local
+> labels and mapping symbols, both of which are filtered out of vmlinux
+> as well. Is that right?
 
-(1) the "unsigned long" argument to __sysret() forces a sign extension
-from all sys_* functions that used to return 'int'
 
-(2) the comparison with the error range now has to be performed on a
-'unsigned long' instead of an 'int'
+For vmlinux kallsyms, the reason is the annoyance in the build process.
+kallsyms requires linking vmlinux three times.
+(see scripts/link-vmlinux.sh if you are interested)
 
-(3) the return value from __sysret() is a 'long' (note, a signed long)
-which then has to be turned back to an 'int' before being returned by the
-caller to satisfy the caller's prototype.
 
-To fix up this, firstly, let's use macro instead of inline function to
-preserves the input type and avoids these useless conversions (1), (3).
+[1a] link vmlinux without symbol table
+[1b] Generate symbol list from [1a]
+[2a] link vmlinux, embedding the temp kallsyms created by [1b]
+[2b] Generate symbol list from [2a]
+[3a] link vmlinux, embedding the final kallsyms created by [2b]
 
-Secondly, comparison to -MAX_ERRNO inflicts on all integer returns where
-we could previously keep a simple sign comparison, let's use a new
-__is_pointer() macro suggested by David Laight to limit the comparison
-to -MAX_ERRNO (2) only for pointer returns and preserve a simple sign
-comparison for integer returns as before. The __builtin_choose_expr()
-is suggested by David Laight to choose different comparisons based on
-the types to share code.
 
-Thirdly, fix up the following warning by an explicit conversion and let
-__sysret() be able to accept the (void *) type of argument:
+Our assumption is that [1b] and [2b] have the same number of
+symbols, so that [2a] and [3a] can embed the same size kallsyms.
 
-    sysroot/powerpc/include/sys.h: In function 'sbrk':
-    sysroot/powerpc/include/sys.h:104:16: warning: cast to pointer from integer of different size [-Wint-to-pointer-cast]
-      104 |         return (void *)__sysret(-ENOMEM);
 
-Fourthly, to further workaround the argument type with 'const' flag,
-must use __auto_type for gcc >= 11.0 and __typeof__((arg) + 0) suggested
-by David Laight for old gcc versions.
+However, the process [2a] inserts the kallsyms table
+in the middle of vmlinux.
+It may cause the compiler to emit additional symbols
+(e.g. ARM veneers) due to the inserted kallsyms.
 
-Suggested-by: Willy Tarreau <w@1wt.eu>
-Link: https://lore.kernel.org/lkml/20230806095846.GB10627@1wt.eu/
-Link: https://lore.kernel.org/lkml/20230806134348.GA19145@1wt.eu/
-Suggested-by: David Laight <David.Laight@ACULAB.COM>
-Link: https://lore.kernel.org/lkml/f51e54bcf470451ea36f24640f000e61@AcuMS.aculab.com/
-Link: https://lore.kernel.org/lkml/a1732bbffd1542d3b9dd34c92f45076c@AcuMS.aculab.com/
-Signed-off-by: Zhangjin Wu <falcon@tinylab.org>
----
 
-Hi, Willy, Hi, David
+So, we filter out all compiler-generated symbols so that
+[1b] and [2b] have the same number of symbols.
 
-v5 applies suggestions from David Laight, it further drops the fixed
-'long' conversion branch by using a __typeof__((arg) + 0) trick and also
-merges the pointer type and integer type comparisons with
-__bultin_choose_expr() and a new __is_pointer() macro, now, the code is
-cleaner than before versions.
 
-David, Thanks a lot!
+If we do not do it,
+we may have more and more kallsyms steps.
 
-Like before, tests run for all nolibc supported boards.
+Emitted veneers increase kallsyms size
+-> Increased kallsyms causes more veneers
+-> The new veneers increase kallsyms size
+-> Increased kallsyms causes yet more veneers
+-> The new veneers increase kallsyms size again
+-> (this cycle may continue again and again)
 
-Changes from v4 --> v5:
 
-* Use __typeof__((arg) + 0) to lose the 'const' flag for old gcc
-  versions.
 
-* Import the famous __is_constexpr() macro from kernel side and add a
-  __is_pointer() macro based on it. (David, to avoid introduce extra
-  discuss on the prove-in-use __is_constexpr macro, this patch uses the
-  original version instead of your suggested version, more info here:
-  https://lore.kernel.org/lkml/20220131204357.1133674-1-keescook@chromium.org/)
 
-* Use __builtin_choose_expr() to merge two comparisons to share the same
-  errno setting code and the -1L assignment code.
 
-Changes from v3 --> v4:
 
-* fix up a new warning about 'ret < 0' when the input arg type is (void *)
+> > This patch tries to get aligned with the stacktrace of vmlinux,
+> > but that does not seem optimal to the stacktrace of modules.
+> >
+> >
+> > I have not checked the details, but I guess
+> > the module kallsyms filters less symbols.
+> >
+> > https://github.com/torvalds/linux/blob/v6.5-rc4/kernel/module/kallsyms.=
+c#L288
+> >
+> > I prefer filtering symbols in the intersection of vmlinux and modules.
+>
+> I think mksysmap filters out a superset of the symbols which are filtered
+> for modules, so why is the intersection the right thing to do? That will
+> mean that faddr2line considers a whole bunch of symbols that aren't in
+> the ksymtab of vmlinux.
 
-Changes from v2 --> v3:
 
-* define a __GXX_HAS_AUTO_TYPE_WITH_CONST_SUPPORT for gcc >= 11.0 (ABI_VERSION >= 1016)
-* split __sysret() to two versions by the macro instead of a mixed unified and unreadable version
-* use shorter __ret instead of __sysret_arg
 
-Changes from v1 --> v2:
+If A is a subset of B,
+(A & B) =3D=3D A.
 
-* fix up argument with 'const' in the type
-* support "void *" argument
 
-Best regards,
-Zhangjin
----
+I meant "the intersection of the filtering rules of vmlinux and modules"
+=3D=3D "the filtering rule of modules".
 
-v4: https://lore.kernel.org/lkml/a4084f7fac7a89f861b5582774bc7a98634d1e76.1691392805.git.falcon@tinylab.org/
-v3: https://lore.kernel.org/lkml/8eaab5da2dcbba42e3f3efc2ae686a22c95f84f0.1691386601.git.falcon@tinylab.org/
-v2: https://lore.kernel.org/lkml/95fe3e732f455fab653fe1427118d905e4d04257.1691339836.git.falcon@tinylab.org/
-v1: https://lore.kernel.org/lkml/20230806131921.52453-1-falcon@tinylab.org/
 
----
- tools/include/nolibc/sys.h | 74 ++++++++++++++++++++++++++++++--------
- 1 file changed, 59 insertions(+), 15 deletions(-)
 
-diff --git a/tools/include/nolibc/sys.h b/tools/include/nolibc/sys.h
-index 833d6c5e86dc..6bdd18716e84 100644
---- a/tools/include/nolibc/sys.h
-+++ b/tools/include/nolibc/sys.h
-@@ -27,23 +27,67 @@
- #include "errno.h"
- #include "types.h"
- 
-+/*
-+ * This returns a constant expression while determining if an argument is
-+ * a constant expression, most importantly without evaluating the argument.
-+ * Glory to Martin Uecker <Martin.Uecker@med.uni-goettingen.de>
-+ * (from include/linux/const.h)
-+ */
-+#define __is_constexpr(x) \
-+	(sizeof(int) == sizeof(*(8 ? ((void *)((long)(x) * 0l)) : (int *)8)))
-+
-+/*
-+ * "(void *)0 isn't 'constant enough' for is_constexpr() - so
-+ * is_constexpr((type)0) can be used to detect pointer types."
-+ * (from David Laight <David.Laight@ACULAB.COM>)
-+ */
-+#define __is_pointer(x) (!__is_constexpr((__typeof__(x))0))
- 
--/* Syscall return helper for library routines, set errno as -ret when ret is in
-- * range of [-MAX_ERRNO, -1]
-+/*
-+ * To preserve the input type and workaround the 'error: assignment of
-+ * read-only variable' when the input type has 'const' flag.
-+ *
-+ * For gcc >= 11.0 (__GXX_ABI_VERSION = 1016), use the new __auto_type keyword
-+ * instead of __typeof__().
-  *
-- * Note, No official reference states the errno range here aligns with musl
-- * (src/internal/syscall_ret.c) and glibc (sysdeps/unix/sysv/linux/sysdep.h)
-+ * For old gcc versions, "use typeof((x) + 0) to lose the 'const' flag. The
-+ * only downside is that char/short become int." (from David Laight
-+ * <David.Laight@ACULAB.COM>)
-  */
- 
--static __inline__ __attribute__((unused, always_inline))
--long __sysret(unsigned long ret)
--{
--	if (ret >= (unsigned long)-MAX_ERRNO) {
--		SET_ERRNO(-(long)ret);
--		return -1;
--	}
--	return ret;
--}
-+#if __GXX_ABI_VERSION >= 1016
-+#define __typeofdecl(arg) __auto_type
-+#else
-+#define __typeofdecl(arg) __typeof__((arg) + 0)
-+#endif
-+
-+/* Syscall return helper for library routines
-+ *
-+ * - for pointer returns, set errno as -ret when ret is in [-MAX_ERRNO, -1]
-+ * - for integer returns, set errno as -ret when ret < 0
-+ *
-+ * Note,
-+ *
-+ * - No official reference states the errno range, here aligns with musl
-+ *   (src/internal/syscall_ret.c) and glibc (sysdeps/unix/sysv/linux/sysdep.h).
-+ *
-+ * - To reduce binary size by removing useless type conversions and sign
-+ *   extensions, the helper is defined as a macro to preserve input type and
-+ *   provide two comparisons for both pointer and integer types during the
-+ *   compiling stage.
-+ */
-+
-+#define __sysret(arg)                                                                              \
-+({                                                                                                 \
-+	__typeofdecl(arg) __ret = (arg);                                                           \
-+	if (__builtin_choose_expr(__is_pointer(arg), (unsigned long)-(MAX_ERRNO + 1), (long)__ret) \
-+		< __builtin_choose_expr(__is_pointer(arg), (unsigned long)__ret, 0)) {             \
-+		SET_ERRNO(-(long)__ret);                                                           \
-+		__ret = (__typeof__(arg))-1L;                                                      \
-+	}                                                                                          \
-+	__ret;                                                                                     \
-+})
-+
- 
- /* Functions in this file only describe syscalls. They're declared static so
-  * that the compiler usually decides to inline them while still being allowed
-@@ -94,7 +138,7 @@ void *sbrk(intptr_t inc)
- 	if (ret && sys_brk(ret + inc) == ret + inc)
- 		return ret + inc;
- 
--	return (void *)__sysret(-ENOMEM);
-+	return __sysret((void *)-ENOMEM);
- }
- 
- 
-@@ -682,7 +726,7 @@ void *sys_mmap(void *addr, size_t length, int prot, int flags, int fd,
- static __attribute__((unused))
- void *mmap(void *addr, size_t length, int prot, int flags, int fd, off_t offset)
- {
--	return (void *)__sysret((unsigned long)sys_mmap(addr, length, prot, flags, fd, offset));
-+	return __sysret(sys_mmap(addr, length, prot, flags, fd, offset));
- }
- 
- static __attribute__((unused))
--- 
-2.25.1
 
+
+
+
+>
+> > is_mapping_symbol() filters symbols you are addressing.
+>
+> That's a C function and faddr2line is a shell script. What exactly do
+> you want me to do? My first hack just matched on symbols starting with
+> '$' but I ended up with this after other review feedback.
+
+
+In linux-next, I see this:
+
+static inline int is_mapping_symbol(const char *str)
+{
+        if (str[0] =3D=3D '.' && str[1] =3D=3D 'L')
+                return true;
+        if (str[0] =3D=3D 'L' && str[1] =3D=3D '0')
+                return true;
+        return str[0] =3D=3D '$';
+}
+
+
+It is pretty easy to write a sed script to do the same thing.
+
+
+
+
+
+Another possibility is to use different filtering rules
+between vmlinux and modules.
+(but I do not know if this complexity is worthwhile)
+
+
+
+[pseudo code]
+
+
+get_symbol_list () {
+
+    if [ "${is_vmlinux}" =3D 1 ]; then
+            {READELF} --symbols --wide $objfile | sed -f
+scripts/sysmap-ignored-syms.sed
+    else
+            {READELF} --symbols --wide $objfile | sed  'remove ".L", 'L0", =
+"^$"'
+    fi
+}
+
+
+
+
+>
+> Josh -- how do you want to proceed here?
+>
+> Will
+
+
+
+--=20
+Best Regards
+Masahiro Yamada
