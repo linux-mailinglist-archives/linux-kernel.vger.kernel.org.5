@@ -2,78 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A8B4E771C79
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 10:41:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E7521771C7C
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 10:41:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231147AbjHGIlp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Aug 2023 04:41:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34830 "EHLO
+        id S231236AbjHGIlu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Aug 2023 04:41:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34774 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231140AbjHGIlh (ORCPT
+        with ESMTP id S231217AbjHGIlk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Aug 2023 04:41:37 -0400
-Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 371F519BD
-        for <linux-kernel@vger.kernel.org>; Mon,  7 Aug 2023 01:41:33 -0700 (PDT)
-Received: by mail-ej1-x62a.google.com with SMTP id a640c23a62f3a-99c0290f0a8so551148466b.1
-        for <linux-kernel@vger.kernel.org>; Mon, 07 Aug 2023 01:41:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1691397691; x=1692002491;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=MUj1t86IIglhpvqbCl+JW1p0KP0RIykK8lcH5sYs7WE=;
-        b=uHaH2GdpgclUraDoPzTb4pV1nYPdWxfiaaGHpD8ip5S2erNhUbkFpcvX3tLQPwuJiE
-         P4w4rynffTyS+jg2bYa24bS/McH0qUG3jz9KDhRnz2F5jH91vq9rmtL+Tk9O0eapCLd4
-         L0Vk1ld06IK76WOh6X1ctPA1RF6HLNgNr+HQfD9oEfnOXkOc9mlLixdgJELnWCCVD3g8
-         PN9Xmpj1Uys9VXyFqYLJdaWgPGTMGER4GOkL4uPDNdWW+1C0cELVq4G6zwyRCdF37L+u
-         DYyG+mNCr5YKoucMXI07rg+RsfSmjKMQBuunc7mfZWG7kx4F7ULRa4mLEP9cRuGIGiVv
-         qYOQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691397691; x=1692002491;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=MUj1t86IIglhpvqbCl+JW1p0KP0RIykK8lcH5sYs7WE=;
-        b=OvFP3YPrltwxFSuHEZ0GfN+yoCGmRHcjtKymrynvFEln5wAVRLng4XjF49F9pecZK7
-         HuxYzzf3YpGcEwwfG0Utr3pjRM6XZHZ0hEZnXqmJP2Jq0FXgv/XyZto45DC7hQXtnPhb
-         Aa1hdvJb9DTNg4E2JND9F16P3mVJsCry74pfyeYwFISaR8BHZpgV1VYH4r0y5mSXKKBp
-         maaNfkeNgmCKU7JlqGBUSkBD8o4+V2qV6onvo7OoGuT5i77cA5r9xVpBTuW+hu2Yt8n7
-         LA2EfoZ8GoAXSDOg+raKmZ/SsJIhunv/miZl53wjk+vfzk5IGIpSbiqikqeFySCpvPLa
-         riRg==
-X-Gm-Message-State: AOJu0YxdrWzjlx0QHuANIqGrzIhXrc0piHUoeCB7ACkPTNb9VZ/w31fh
-        rI7XPJ/Ji0CqdysfJ5JIKOTQLg==
-X-Google-Smtp-Source: AGHT+IHNAZnHDcoJmsBlY3w8kuDDoRD76fbpds8ZCkkKxNciisv0f5lhiixQKkV5SSVUmlWzXnq+Tg==
-X-Received: by 2002:a17:907:2e0d:b0:99c:a07f:8c41 with SMTP id ig13-20020a1709072e0d00b0099ca07f8c41mr6204519ejc.28.1691397691504;
-        Mon, 07 Aug 2023 01:41:31 -0700 (PDT)
-Received: from [192.168.1.20] ([178.197.222.113])
-        by smtp.gmail.com with ESMTPSA id v2-20020a1709063bc200b009890e402a6bsm4885380ejf.221.2023.08.07.01.41.30
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 07 Aug 2023 01:41:31 -0700 (PDT)
-Message-ID: <6caa3739-fb5a-28e5-38cc-9b22830775e0@linaro.org>
-Date:   Mon, 7 Aug 2023 10:41:29 +0200
+        Mon, 7 Aug 2023 04:41:40 -0400
+Received: from out30-113.freemail.mail.aliyun.com (out30-113.freemail.mail.aliyun.com [115.124.30.113])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 360511733;
+        Mon,  7 Aug 2023 01:41:34 -0700 (PDT)
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R121e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046049;MF=baolin.wang@linux.alibaba.com;NM=1;PH=DS;RN=9;SR=0;TI=SMTPD_---0VpCmB9e_1691397688;
+Received: from 30.97.48.53(mailfrom:baolin.wang@linux.alibaba.com fp:SMTPD_---0VpCmB9e_1691397688)
+          by smtp.aliyun-inc.com;
+          Mon, 07 Aug 2023 16:41:29 +0800
+Message-ID: <3554a99d-339f-39f9-111d-040025096f97@linux.alibaba.com>
+Date:   Mon, 7 Aug 2023 16:41:30 +0800
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
  Thunderbird/102.14.0
-Subject: Re: [RESEND PATCH v3 3/4] dt-bindings: clock: rk3588: export
- PCLK_VO1GRF clk id
-Content-Language: en-US
-To:     Elaine Zhang <zhangqing@rock-chips.com>, mturquette@baylibre.com,
-        sboyd@kernel.org, kever.yang@rock-chips.com, heiko@sntech.de,
-        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
-        conor+dt@kernel.org
-Cc:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-clk@vger.kernel.org, linux-rockchip@lists.infradead.org,
-        linux-kernel@vger.kernel.org, huangtao@rock-chips.com
-References: <20230807065942.9937-1-zhangqing@rock-chips.com>
- <20230807065942.9937-4-zhangqing@rock-chips.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <20230807065942.9937-4-zhangqing@rock-chips.com>
-Content-Type: text/plain; charset=UTF-8
+Subject: Re: [PATCH] serial: sprd: Support 12 uart ports
+To:     Wenhua Lin <Wenhua.Lin@unisoc.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Orson Zhai <orsonzhai@gmail.com>,
+        Chunyan Zhang <zhang.lyra@gmail.com>
+Cc:     linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org,
+        wenhua lin <wenhua.lin1994@gmail.com>,
+        Xiongpeng Wu <xiongpeng.wu@unisoc.com>
+References: <20230807080726.7190-1-Wenhua.Lin@unisoc.com>
+From:   Baolin Wang <baolin.wang@linux.alibaba.com>
+In-Reply-To: <20230807080726.7190-1-Wenhua.Lin@unisoc.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
+X-Spam-Status: No, score=-11.7 required=5.0 tests=BAYES_00,
+        ENV_AND_HDR_SPF_MATCH,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
+        SPF_PASS,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -81,20 +48,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 07/08/2023 08:59, Elaine Zhang wrote:
-> add PCLK_VO1GRF clk id.
+
+
+On 8/7/2023 4:07 PM, Wenhua Lin wrote:
+> From: Wenhua Lin <wenhua.lin@unisoc.com>
 > 
-> Signed-off-by: Elaine Zhang <zhangqing@rock-chips.com>
+> Support 12 uart ports, which can solve the problem
+> of insufficient uart ports.
+
+This sounds incorrect to me.
+If this is a software bug, please add a Fixes tag to backport for stable 
+kernels. If the change of the max ports is only avaliable on the new 
+SPRD serial hardware, you should ensure the change is 
+backward-compatibility with old hardware.
+
+> Signed-off-by: Wenhua Lin <wenhua.lin@unisoc.com>
 > ---
->  include/dt-bindings/clock/rockchip,rk3588-cru.h | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
+>   drivers/tty/serial/sprd_serial.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-
-
-Acked-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-
-Consider dropping CLK_NR_CLKS
-
-Best regards,
-Krzysztof
-
+> diff --git a/drivers/tty/serial/sprd_serial.c b/drivers/tty/serial/sprd_serial.c
+> index b58f51296ace..2774df490899 100644
+> --- a/drivers/tty/serial/sprd_serial.c
+> +++ b/drivers/tty/serial/sprd_serial.c
+> @@ -22,7 +22,7 @@
+>   #include <linux/tty_flip.h>
+>   
+>   /* device name */
+> -#define UART_NR_MAX		8
+> +#define UART_NR_MAX		12
+>   #define SPRD_TTY_NAME		"ttyS"
+>   #define SPRD_FIFO_SIZE		128
+>   #define SPRD_DEF_RATE		26000000
