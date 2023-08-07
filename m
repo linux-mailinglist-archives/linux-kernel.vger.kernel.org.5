@@ -2,77 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0069D77291A
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 17:25:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E9DBE77291D
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 17:26:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229978AbjHGPZj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Aug 2023 11:25:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49868 "EHLO
+        id S230000AbjHGP0Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Aug 2023 11:26:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50176 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229965AbjHGPZh (ORCPT
+        with ESMTP id S229870AbjHGP0P (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Aug 2023 11:25:37 -0400
-Received: from mail-ot1-x32a.google.com (mail-ot1-x32a.google.com [IPv6:2607:f8b0:4864:20::32a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83DB010DE
-        for <linux-kernel@vger.kernel.org>; Mon,  7 Aug 2023 08:25:36 -0700 (PDT)
-Received: by mail-ot1-x32a.google.com with SMTP id 46e09a7af769-6bcac140aaaso3524754a34.2
-        for <linux-kernel@vger.kernel.org>; Mon, 07 Aug 2023 08:25:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1691421936; x=1692026736;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=uVfa+QMd2zH/cfIHSNN0dnX9lPXFYxYQbQ4a91P5Z/s=;
-        b=B+L7Y0EkALfivJzT3tpVTdT033crMCRRKgKQ9vKSL9vclzoCatBdBOnTdARzIpRUqt
-         x6EN6/35O66J1l8YCjGD1409t+lV2GVhgzm67pQRozGp40vMyE5536bppoIjQtk245zf
-         U5d23eeXlEHqAMPD6UttIIMZmLI+mMsLX+uM6TkTQ52fAHgQKqnf9C9DvLx/bb2kAr+F
-         5DKKoiinBaKf8U/WpVazSmlFcYeIC1IGilR09tUpVmEUq6HRfdZjMyygGQczmQZBqKJV
-         H5kV7L88WgBfF2HJFYJTZlULSX+QLEQ4Mby3pZdKMVB8rzaJic3a8Zlvoz05vTqdshD9
-         x1HA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691421936; x=1692026736;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=uVfa+QMd2zH/cfIHSNN0dnX9lPXFYxYQbQ4a91P5Z/s=;
-        b=cJ6K9XwyfmGnEUV61FtXGcyQaHlsWi8eKQ0HLeytJfCeKYPo0beWr1C/FTIF1udAeU
-         U3ptR4DRnUee22wm95bhLxPSRDC+p8YzpSa+kwcAIkjhOExSlg89koOMjQu+MNagRpJO
-         FTrY9bHQAI1s7N4WADcnM3uTgJon/bnyyehEz00x72QC3wTqU05cyqJMt6kNZlzIs0U6
-         I/qZHOd8bhMEuF2AyxRjWF1U6xCFSkKq/tziERwoGvM4wx+67fyHLvuJXhnxvD0pIUpk
-         5PoBe9OcqNzzQbXIewRMeYHhXt3lhC9Th2n+cHc4VDKNiiD6q540z6oxeYmtT+JKN/85
-         vGJA==
-X-Gm-Message-State: AOJu0YwnmhJS37Jm7NknAphdPtOCD6/ezaiuOEEn3uqvsuuUiRMCdBVD
-        BKVg4XI6vLuWLBS7+wsEXKSJqh5n6GDw4XC7vBs=
-X-Google-Smtp-Source: AGHT+IEAqEZmOBCFU0VrG42Vt0MG0ztXo19zmMkvdMSureqBPV+AW3lcYW6cZun2NT8YjUuLzgfrzh2F1NFMrR9Kwvg=
-X-Received: by 2002:a05:6870:b155:b0:19f:2257:6865 with SMTP id
- a21-20020a056870b15500b0019f22576865mr9969932oal.31.1691421935724; Mon, 07
- Aug 2023 08:25:35 -0700 (PDT)
+        Mon, 7 Aug 2023 11:26:15 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D0EC83
+        for <linux-kernel@vger.kernel.org>; Mon,  7 Aug 2023 08:26:13 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id EF23261E03
+        for <linux-kernel@vger.kernel.org>; Mon,  7 Aug 2023 15:26:12 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9DB24C433C7;
+        Mon,  7 Aug 2023 15:26:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1691421972;
+        bh=fqUuoBJCLCaWtjsfkRUPNSG8YF8xLnqGYw03JAiy+g4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=gmcfMmf8om5sN6Swzz80F5I8nqef8JzZIhk7oza6Rbpq29OBYP8doQu7TaQXkwtj/
+         8CBrfW4hmlc7igg3N05EBz4Ghhfp8phBMClogYqwceDXdv/pIKU8qx2wd0yVWc1AGG
+         y4KTOHAV/DCSFBWsVDZlNgbOMAY7ZwoJqDLaodbk=
+Date:   Mon, 7 Aug 2023 17:26:04 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Alexon Oliveira <alexondunkan@gmail.com>
+Cc:     martyn@welchs.me.uk, manohar.vanga@gmail.com,
+        linux-kernel@vger.kernel.org, linux-staging@lists.linux.dev
+Subject: Re: [PATCH] staging: vme_user: fix check alignment should match open
+ parenthesis
+Message-ID: <2023080746-consonant-employed-030d@gregkh>
+References: <ZM1rsu0M22HHtjfl@alolivei-thinkpadt480s.gru.csb>
+ <2023080510-vacation-support-7afe@gregkh>
+ <ZNEKJH3mEoOwV6eF@alolivei-thinkpadt480s.gru.csb>
 MIME-Version: 1.0
-References: <20230807130108.853357011@linutronix.de> <20230807135026.698506626@linutronix.de>
-In-Reply-To: <20230807135026.698506626@linutronix.de>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Mon, 7 Aug 2023 18:24:59 +0300
-Message-ID: <CAHp75VeZic8KTj5x-OFMojWB2jn4tMq9eKSWm_MeJoaO5FQOGg@mail.gmail.com>
-Subject: Re: [patch 05/53] x86/apic: Get rid of get_physical_broadcast()
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     LKML <linux-kernel@vger.kernel.org>, x86@kernel.org,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Andrew Cooper <andrew.cooper3@citrix.com>,
-        Arjan van de Ven <arjan@linux.intel.com>,
-        Huang Rui <ray.huang@amd.com>, Juergen Gross <jgross@suse.com>,
-        Dimitri Sivanich <dimitri.sivanich@hpe.com>,
-        Michael Kelley <mikelley@microsoft.com>,
-        Sohil Mehta <sohil.mehta@intel.com>,
-        K Prateek Nayak <kprateek.nayak@amd.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Zhang Rui <rui.zhang@intel.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Feng Tang <feng.tang@intel.com>,
-        Andy Shevchenko <andy@infradead.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZNEKJH3mEoOwV6eF@alolivei-thinkpadt480s.gru.csb>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -81,47 +55,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 7, 2023 at 4:52=E2=80=AFPM Thomas Gleixner <tglx@linutronix.de>=
- wrote:
->
-> There is no point for this function. The only case where this is used whe=
-n
+On Mon, Aug 07, 2023 at 12:13:40PM -0300, Alexon Oliveira wrote:
+> On Sat, Aug 05, 2023 at 08:14:33AM +0200, Greg KH wrote:
+> > On Fri, Aug 04, 2023 at 06:20:50PM -0300, Alexon Oliveira wrote:
+> > > Fixed all CHECK: Alignment should match open parenthesis
+> > > as reported by checkpatch to adhere to the Linux kernel
+> > > coding-style guidelines.
+> > 
+> > This does not describe the changes you actually made in this patch :(
+> > 
+> Hi Greg,
+> 
+> Thank you for your feedback. Don't get me wrong, please, I'm just trying
+> to understand it now, but honestly I don't know what is wrong with
+> it this time. I described exactly what I did in the code: ran the
+> checkpatch, which identified a lot of "CHECK: Alignment should match
+> open parenthesis" messages, fixed them all according to the coding-style
+> guidelines and comitted it.
 
-used is when
+But you did not change the alignment of the open parenthesis, right?
+You deleted the trailing whitespace.
 
-> there is no XAPIC available, which means the broadcast address is 0xF.
+> 
+> This is the same thing I did previously for the file
+> drivers/staging/vme_user/vme_bridge.h in the commit
+> 7d5ce25fb4c3cc91d16e27163dc141de0eba213b, but now is the file
+> drivers/staging/vme_user/vme.c and commit
+> a1f0b0a8ba9a496504c2e3d4b37cee388e78f0ea. Different files,
+> different commits, similar fixes for the same warnings,
+> and same description.
+> 
+> The only thing I found strange is because instead of starting a new
+> email thread it ended up in the same email thread as the previous
+> patch. Would that be the problem?
 
-...
+That would be a problem, and it seems you used the same subject line as
+previous patches that were different?
 
-> +               if (mpc_ioapic_id(ioapic_idx) >=3D broadcast_id) {
-> +                       pr_err("BIOS bug, IO-APIC#%d ID is %d in the MPC =
-table!...\n",
+Anyway, my comment was about the trailing whitespace change.
 
-Wouldn't it be better to switch to FW_BUG instead of the "BIOS bug,  " thin=
-gy?
-Same for other similar cases.
+thanks,
 
-> +                              ioapic_idx, mpc_ioapic_id(ioapic_idx));
-> +                       pr_err("... fixing up to %d. (tell your hw vendor=
-)\n", reg_00.bits.ID);
->                         ioapics[ioapic_idx].mp_config.apicid =3D reg_00.b=
-its.ID;
->                 }
-
-...
-
-> -       if ((boot_cpu_data.x86_vendor =3D=3D X86_VENDOR_INTEL) &&
-> -           !APIC_XAPIC(boot_cpu_apic_version))
-> +       if ((boot_cpu_data.x86_vendor =3D=3D X86_VENDOR_INTEL) && !APIC_X=
-APIC(boot_cpu_apic_version))
->                 return io_apic_get_unique_id(idx, id);
-
->         else
-
-You can also kill the redundant 'else'.
-
->                 return id;
-
---=20
-With Best Regards,
-Andy Shevchenko
+greg k-h
