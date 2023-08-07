@@ -2,67 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ABB35772249
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 13:31:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5CFB77722D7
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 13:40:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232831AbjHGLbr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Aug 2023 07:31:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40808 "EHLO
+        id S233014AbjHGLj6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Aug 2023 07:39:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46474 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232836AbjHGLbd (ORCPT
+        with ESMTP id S233016AbjHGLje (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Aug 2023 07:31:33 -0400
-Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0D9110DE
-        for <linux-kernel@vger.kernel.org>; Mon,  7 Aug 2023 04:28:42 -0700 (PDT)
-Received: by mail-wm1-x32a.google.com with SMTP id 5b1f17b1804b1-3fe1fc8768aso43769145e9.1
-        for <linux-kernel@vger.kernel.org>; Mon, 07 Aug 2023 04:28:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1691407643; x=1692012443;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=kxk0yn3bHsd/RJ0FbkAiNgx85t4pR2+Dv2sbpn4c78Y=;
-        b=m4SenbcsFt674qRn5+kbUSBCfNEsLcMWFRLZaeBmV10RzglyGuRzP4jfRANirlcQtk
-         SDxNwHu+Dcv35Sip1lM+Srw3cPoyfhSdZywk6VPBxuQxNb3JtYLtF467sRJ8jjtUYAr0
-         hl4wnwf/AeTgqsFGqnxRMT/BHx3JLT5lA8VcmPGe3Y9l4If6LcbymihK3qGnZYVvbf1S
-         qFqgDF2ruqeZhxkpS11FazdO8zsPs0/MqIlzElBJqMv+Vz1zuYQGT7+NL2mvBKJz97ev
-         n/qAj+0cEwaHVM6keRFewEsu75YydVB8vQw2D1dDvOaYIcW9zZeftxe7butWFQ5AOIMJ
-         sbzA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691407643; x=1692012443;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=kxk0yn3bHsd/RJ0FbkAiNgx85t4pR2+Dv2sbpn4c78Y=;
-        b=Whllp2PtIYmiEoPZUamnhbSJHLep/2c4xlw2LZbXSrP7TLuiEiMc+uvV8JfgZ/+bTo
-         iyXtLAcgmmfB+Fic1BodnKb6+3b77fgWyfvgV2bwXe3z8F3XDmNSvcSzmWgt0rHBpGe7
-         UbgeLgL+AjZ9AHTENU+ez4v4IX/dLVw6fyI6sAt5Gks88+rj0IkbK9IzagrFGvn6amo8
-         CNAe8XQhj82LgbQccIGDeOi4jbj9GhX4bGrKZ4ona6VUlEzOfV9cCgiEjIz//j6OIoUX
-         8jPhiEYVZK1CrVABZtbMggHpsCOOxXlryAEPHOUyhliDxj/MFL/VZDJqyTrmOguzTZtl
-         fg9Q==
-X-Gm-Message-State: AOJu0Yx7ds4VtY8xkIWsOgztgKXHLVuoShUH6N+3qhdoM+SinqJUsbki
-        O606kYW4FDoZir0sBTf0CcxDqyBjkAarIA==
-X-Google-Smtp-Source: AGHT+IGMBh83Lf6a12odjnWu7+OgCee9BjTsv45wkZZBieJgKm473rbCHKrU7qoTXhavwG8ZHHZK4Q==
-X-Received: by 2002:a1c:4c15:0:b0:3fe:207c:1aea with SMTP id z21-20020a1c4c15000000b003fe207c1aeamr7010990wmf.23.1691407643550;
-        Mon, 07 Aug 2023 04:27:23 -0700 (PDT)
-Received: from localhost.localdomain ([92.85.190.61])
-        by smtp.gmail.com with ESMTPSA id s22-20020a7bc396000000b003fc0505be19sm10401106wmj.37.2023.08.07.04.27.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 07 Aug 2023 04:27:23 -0700 (PDT)
-From:   Andrei Coardos <aboutphysycs@gmail.com>
-To:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Cc:     mhiramat@kernel.org, hayashi.kunihiko@socionext.com,
-        p.zabel@pengutronix.de, alex@shruggie.ro,
-        Andrei Coardos <aboutphysycs@gmail.com>
-Subject: [PATCH] reset: uniphier-glue: remove unneeded call to platform_set_drvdata()
-Date:   Mon,  7 Aug 2023 14:27:05 +0300
-Message-Id: <20230807112705.12862-1-aboutphysycs@gmail.com>
-X-Mailer: git-send-email 2.34.1
+        Mon, 7 Aug 2023 07:39:34 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id A806A2698;
+        Mon,  7 Aug 2023 04:36:32 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 20C571FB;
+        Mon,  7 Aug 2023 04:28:05 -0700 (PDT)
+Received: from [10.57.90.63] (unknown [10.57.90.63])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 574AC3F59C;
+        Mon,  7 Aug 2023 04:27:19 -0700 (PDT)
+Message-ID: <19e7b5e1-d549-8627-b73b-112df5f8890e@arm.com>
+Date:   Mon, 7 Aug 2023 12:27:17 +0100
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.13.0
+Subject: Re: [PATCH v7 11/13] coresight-tpdm: Add nodes for timestamp request
+To:     Tao Zhang <quic_taozha@quicinc.com>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Konrad Dybcio <konradybcio@gmail.com>,
+        Mike Leach <mike.leach@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>
+Cc:     Jinlong Mao <quic_jinlmao@quicinc.com>,
+        Leo Yan <leo.yan@linaro.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        coresight@lists.linaro.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        Tingwei Zhang <quic_tingweiz@quicinc.com>,
+        Yuanfang Zhang <quic_yuanfang@quicinc.com>,
+        Trilok Soni <quic_tsoni@quicinc.com>,
+        Hao Zhang <quic_hazha@quicinc.com>,
+        linux-arm-msm@vger.kernel.org, andersson@kernel.org
+References: <1690269353-10829-1-git-send-email-quic_taozha@quicinc.com>
+ <1690269353-10829-12-git-send-email-quic_taozha@quicinc.com>
+From:   Suzuki K Poulose <suzuki.poulose@arm.com>
+In-Reply-To: <1690269353-10829-12-git-send-email-quic_taozha@quicinc.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-6.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -70,29 +59,262 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This function call was found to be unnecessary as there is no equivalent
-platform_get_drvdata() call to access the private data of the driver. Also,
-the private data is defined in this driver, so there is no risk of it being
-accessed outside of this driver file.
+On 25/07/2023 08:15, Tao Zhang wrote:
+> Add nodes to configure the timestamp request based on input
+> pattern match. Each TPDM that support DSB subunit has maximum of
+> n(n<7) TPR registers to configure value for timestamp request
+> based on input pattern match. Eight 32 bit registers providing
+> DSB interface timestamp request  pattern match comparison. And
+> each TPDM that support DSB subunit has maximum of m(m<7) TPMR
+> registers to configure pattern mask for timestamp request. Eight
+> 32 bit registers providing DSB interface timestamp request
+> pattern match mask generation. Add nodes to enable/disable
+> pattern timestamp and set pattern timestamp type.
+> 
+> Signed-off-by: Tao Zhang <quic_taozha@quicinc.com>
+> ---
+>   .../ABI/testing/sysfs-bus-coresight-devices-tpdm   |  57 +++++-
+>   drivers/hwtracing/coresight/coresight-tpdm.c       | 205 ++++++++++++++++++++-
+>   drivers/hwtracing/coresight/coresight-tpdm.h       |  16 ++
+>   3 files changed, 272 insertions(+), 6 deletions(-)
+> 
+> diff --git a/Documentation/ABI/testing/sysfs-bus-coresight-devices-tpdm b/Documentation/ABI/testing/sysfs-bus-coresight-devices-tpdm
+> index 66f9582..74a0126 100644
+> --- a/Documentation/ABI/testing/sysfs-bus-coresight-devices-tpdm
+> +++ b/Documentation/ABI/testing/sysfs-bus-coresight-devices-tpdm
+> @@ -130,4 +130,59 @@ Description:
+>   		to the index number. Before writing data to this sysfs file,
+>   		"dsb_trig_patt_idx" should be written first to configure the
+>   		index number of the trigger pattern mask which needs to be
+> -		configured.
+> \ No newline at end of file
+> +		configured.
+> +
+> +What:		/sys/bus/coresight/devices/<tpdm-name>/dsb_patt_idx
+> +Date:		March 2023
+> +KernelVersion	6.5
+> +Contact:	Jinlong Mao (QUIC) <quic_jinlmao@quicinc.com>, Tao Zhang (QUIC) <quic_taozha@quicinc.com>
+> +Description:
+> +		Read/Write the index number of the DSB tpdm pattern. Since
+> +		there are at most 8 TPR and TPMR registers for the parttern,
+> +		this value ranges from 0 to 7.
 
-Signed-off-by: Andrei Coardos <aboutphysycs@gmail.com>
----
- drivers/reset/reset-uniphier-glue.c | 2 --
- 1 file changed, 2 deletions(-)
+If it is only 0-7 and we read/write full registers, why not expose 
+individual registers as mentioned in the previous comments and avoid
+multi-line output for "show" routines. You may even group the registers
+under a directory structure to avoid confusion.
 
-diff --git a/drivers/reset/reset-uniphier-glue.c b/drivers/reset/reset-uniphier-glue.c
-index 15abac9fc72c..df41b75786ad 100644
---- a/drivers/reset/reset-uniphier-glue.c
-+++ b/drivers/reset/reset-uniphier-glue.c
-@@ -99,8 +99,6 @@ static int uniphier_glue_reset_probe(struct platform_device *pdev)
- 	priv->rdata.rcdev.of_node = dev->of_node;
- 	priv->rdata.active_low = true;
- 
--	platform_set_drvdata(pdev, priv);
--
- 	return devm_reset_controller_register(dev, &priv->rdata.rcdev);
- }
- 
--- 
-2.34.1
+e.g, :
+
+	dsb_patt/
+		\- mask0 ... mask7
+		\- ts0 ... ts7
+		\- type0 ... type7
+
+	dsb_edge/
+		\- edcr0 ... edcr15
+		\- edcmr0 ... edcmr7
+		\- ctrl_idx
+		\- ctrl_idx_val
+....
+
+
+
+> +
+> +What:		/sys/bus/coresight/devices/<tpdm-name>/dsb_patt_val
+> +Date:		March 2023
+> +KernelVersion	6.5
+> +Contact:	Jinlong Mao (QUIC) <quic_jinlmao@quicinc.com>, Tao Zhang (QUIC) <quic_taozha@quicinc.com>
+> +Description:
+> +		Read a set of the pattern values of the DSB TPDM. Write a data
+> +		to configure the pattern corresponding to the index number.
+> +		Before writing data to this sysfs file, "dsb_patt_idx" should be
+> +		written first to configure the index number of the pattern which
+> +		needs to be configured.
+> +
+> +What:		/sys/bus/coresight/devices/<tpdm-name>/dsb_patt_mask
+> +Date:		March 2023
+> +KernelVersion	6.5
+> +Contact:	Jinlong Mao (QUIC) <quic_jinlmao@quicinc.com>, Tao Zhang (QUIC) <quic_taozha@quicinc.com>
+> +Description:
+> +		Read a set of the pattern mask values of the DSB TPDM. Write a
+> +		data to configure the pattern mask corresponding to the index
+> +		number. Before writing data to this sysfs file, "dsb_patt_idx"
+> +		should be written first to configure the index number of the
+> +		pattern mask which needs to be configured.
+> +
+> +What:		/sys/bus/coresight/devices/<tpdm-name>/dsb_patt_ts
+> +Date:		March 2023
+> +KernelVersion	6.5
+> +Contact:	Jinlong Mao (QUIC) <quic_jinlmao@quicinc.com>, Tao Zhang (QUIC) <quic_taozha@quicinc.com>
+> +Description:
+> +		(Write) Set the pattern timestamp of DSB tpdm. Read
+> +		the pattern timestamp of DSB tpdm.
+> +
+> +		Accepts only one of the 2 values -  0 or 1.
+> +		0 : Disable DSB pattern timestamp.
+> +		1 : Enable DSB pattern timestamp.
+> +
+> +What:		/sys/bus/coresight/devices/<tpdm-name>/dsb_patt_type
+> +Date:		March 2023
+> +KernelVersion	6.5
+> +Contact:	Jinlong Mao (QUIC) <quic_jinlmao@quicinc.com>, Tao Zhang (QUIC) <quic_taozha@quicinc.com>
+> +Description:
+> +		(Write) Set the pattern type of DSB tpdm. Read
+> +		the pattern type of DSB tpdm.
+> +
+> +		Accepts only one of the 2 values -  0 or 1.
+> +		0 : Set the DSB pattern type to value.
+> +		1 : Set the DSB pattern type to toggle.
+> \ No newline at end of file
+> diff --git a/drivers/hwtracing/coresight/coresight-tpdm.c b/drivers/hwtracing/coresight/coresight-tpdm.c
+> index 1c32d27..f9e5a1d 100644
+> --- a/drivers/hwtracing/coresight/coresight-tpdm.c
+> +++ b/drivers/hwtracing/coresight/coresight-tpdm.c
+> @@ -69,6 +69,27 @@ static void set_dsb_perf_mode(struct tpdm_drvdata *drvdata, u32 *val)
+>   		*val &= ~TPDM_DSB_CR_MODE;
+>   }
+>   
+> +static void set_dsb_tier(struct tpdm_drvdata *drvdata, u32 *val)
+> +{
+> +	/* Set pattern timestamp type and enablement */
+> +	if (drvdata->dsb->patt_ts) {
+> +		*val |= TPDM_DSB_TIER_PATT_TSENAB;
+> +		if (drvdata->dsb->patt_type)
+> +			*val |= TPDM_DSB_TIER_PATT_TYPE;
+> +		else
+> +			*val &= ~TPDM_DSB_TIER_PATT_TYPE;
+> +	} else {
+> +		*val &= ~TPDM_DSB_TIER_PATT_TSENAB;
+> +	}
+> +
+> +	/* Set trigger timestamp */
+> +	if (drvdata->dsb->trig_ts)
+> +		*val |= TPDM_DSB_TIER_XTRIG_TSENAB;
+> +	else
+> +		*val &= ~TPDM_DSB_TIER_XTRIG_TSENAB;
+> +
+> +}
+> +
+>   static void tpdm_enable_dsb(struct tpdm_drvdata *drvdata)
+>   {
+>   	u32 val, i;
+> @@ -81,6 +102,10 @@ static void tpdm_enable_dsb(struct tpdm_drvdata *drvdata)
+>   			   drvdata->base + TPDM_DSB_EDCMR(i));
+>   
+>   	for (i = 0; i < TPDM_DSB_MAX_PATT; i++) {
+> +		writel_relaxed(drvdata->dsb->patt_val[i],
+> +			    drvdata->base + TPDM_DSB_TPR(i));
+> +		writel_relaxed(drvdata->dsb->patt_mask[i],
+> +			    drvdata->base + TPDM_DSB_TPMR(i));
+>   		writel_relaxed(drvdata->dsb->trig_patt[i],
+>   			    drvdata->base + TPDM_DSB_XPR(i));
+>   		writel_relaxed(drvdata->dsb->trig_patt_mask[i],
+> @@ -88,11 +113,7 @@ static void tpdm_enable_dsb(struct tpdm_drvdata *drvdata)
+>   	}
+>   
+>   	val = readl_relaxed(drvdata->base + TPDM_DSB_TIER);
+> -	/* Set trigger timestamp */
+> -	if (drvdata->dsb->trig_ts)
+> -		val |= TPDM_DSB_TIER_XTRIG_TSENAB;
+> -	else
+> -		val &= ~TPDM_DSB_TIER_XTRIG_TSENAB;
+> +	set_dsb_tier(drvdata, &val);
+>   	writel_relaxed(val, drvdata->base + TPDM_DSB_TIER);
+>   
+>   	val = readl_relaxed(drvdata->base + TPDM_DSB_CR);
+> @@ -462,6 +483,175 @@ static ssize_t dsb_edge_ctrl_mask_store(struct device *dev,
+>   }
+>   static DEVICE_ATTR_RW(dsb_edge_ctrl_mask);
+>   
+> +static ssize_t dsb_patt_idx_show(struct device *dev,
+> +				struct device_attribute *attr,
+> +				char *buf)
+> +{
+> +	struct tpdm_drvdata *drvdata = dev_get_drvdata(dev->parent);
+> +
+> +	return sysfs_emit(buf, "%u\n",
+> +			 (unsigned int)drvdata->dsb->patt_idx);
+> +
+> +}
+> +
+> +static ssize_t dsb_patt_idx_store(struct device *dev,
+> +				struct device_attribute *attr,
+> +				const char *buf,
+> +				size_t size)
+> +{
+> +	struct tpdm_drvdata *drvdata = dev_get_drvdata(dev->parent);
+> +	unsigned long index;
+> +
+> +	if ((kstrtoul(buf, 0, &index)) || (index >= TPDM_DSB_MAX_PATT))
+> +		return -EINVAL;
+> +
+> +	spin_lock(&drvdata->spinlock);
+> +	drvdata->dsb->patt_idx = index;
+> +	spin_unlock(&drvdata->spinlock);
+> +
+> +	return size;
+> +
+> +}
+> +static DEVICE_ATTR_RW(dsb_patt_idx);
+> +
+> +static ssize_t dsb_patt_val_show(struct device *dev,
+> +				struct device_attribute *attr,
+> +				char *buf)
+> +{
+> +	struct tpdm_drvdata *drvdata = dev_get_drvdata(dev->parent);
+> +	ssize_t size = 0;
+> +	unsigned long bytes;
+> +	int i = 0;
+> +
+> +	spin_lock(&drvdata->spinlock);
+> +	for (i = 0; i < TPDM_DSB_MAX_PATT; i++) {
+> +		bytes = sysfs_emit_at(buf, size,
+> +				  "Value: 0x%x\n", drvdata->dsb->patt_val[i]);
+
+Please see my comment on the other patches.
+
+> +		if (bytes <= 0)
+> +			break;
+> +		size += bytes;
+> +	}
+> +	spin_unlock(&drvdata->spinlock);
+> +	return size;
+> +}
+> +
+> +static ssize_t dsb_patt_val_store(struct device *dev,
+> +				struct device_attribute *attr,
+> +				const char *buf,
+> +				size_t size)
+> +{
+> +	struct tpdm_drvdata *drvdata = dev_get_drvdata(dev->parent);
+> +	unsigned long val;
+> +
+> +	if (kstrtoul(buf, 0, &val))
+
+You have used the base for all such conversions inconsistently,
+throughout the series. You can always stick to 0.
+
+$ git grep kstrtoul drivers/hwtracing/coresight/coresight-tpdm.c
+drivers/hwtracing/coresight/coresight-tpdm.c:   ret = kstrtoul(buf, 10, 
+&val);
+drivers/hwtracing/coresight/coresight-tpdm.c:   ret = kstrtoul(buf, 10, 
+&val);
+drivers/hwtracing/coresight/coresight-tpdm.c:   if ((kstrtoul(buf, 0, 
+&val)) || val < 0)
+drivers/hwtracing/coresight/coresight-tpdm.c:   if ((kstrtoul(buf, 0, 
+&val)) || (val >= TPDM_DSB_MAX_LINES))
+drivers/hwtracing/coresight/coresight-tpdm.c:   if ((kstrtoul(buf, 0, 
+&edge_ctrl)) || (edge_ctrl > 0x2))
+drivers/hwtracing/coresight/coresight-tpdm.c:   if ((kstrtoul(buf, 0, 
+&val)) || (val & ~1UL))
+drivers/hwtracing/coresight/coresight-tpdm.c:   if ((kstrtoul(buf, 0, 
+&val)) || (val & ~1UL))
+drivers/hwtracing/coresight/coresight-tpdm.c:   if ((kstrtoul(buf, 0, 
+&val)) || (val & ~1UL))
+
+
+
+Suzuki
+
 
