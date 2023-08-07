@@ -2,167 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D71AB7728EA
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 17:19:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F7617728E8
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 17:19:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229666AbjHGPTF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Aug 2023 11:19:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46342 "EHLO
+        id S229576AbjHGPTC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Aug 2023 11:19:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46336 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229454AbjHGPTD (ORCPT
+        with ESMTP id S229454AbjHGPTA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Aug 2023 11:19:03 -0400
-Received: from fllv0015.ext.ti.com (fllv0015.ext.ti.com [198.47.19.141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F06010F6;
-        Mon,  7 Aug 2023 08:19:02 -0700 (PDT)
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 377FIqAV054763;
-        Mon, 7 Aug 2023 10:18:52 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1691421532;
-        bh=Dz24on+wEQPpYN6Xa5J23UHkSkIVtlonN1jK6mdXl1U=;
-        h=Date:Subject:To:CC:References:From:In-Reply-To;
-        b=aZ6cH+kLLO3iUkG3h0WaNDlO+IXT8BHHOfYn1YyAt4ArzSKLNVxHumvOffUIhNFCL
-         Ard5U9FwfM6l6qkinxzHo2ps67N8WBoHHIdsgVt29diwn99wJHFI+0a4PD5uzGoqUb
-         HQW9N0zVgI+Sti46hYTavBv3JAQFIY0YKQpyTHHQ=
-Received: from DFLE102.ent.ti.com (dfle102.ent.ti.com [10.64.6.23])
-        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 377FIqoP110743
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Mon, 7 Aug 2023 10:18:52 -0500
-Received: from DFLE107.ent.ti.com (10.64.6.28) by DFLE102.ent.ti.com
- (10.64.6.23) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Mon, 7
- Aug 2023 10:18:52 -0500
-Received: from lelv0327.itg.ti.com (10.180.67.183) by DFLE107.ent.ti.com
- (10.64.6.28) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Mon, 7 Aug 2023 10:18:52 -0500
-Received: from [10.250.36.243] (ileaxei01-snat2.itg.ti.com [10.180.69.6])
-        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 377FIp5v017993;
-        Mon, 7 Aug 2023 10:18:51 -0500
-Message-ID: <627ed411-a6f7-cbc9-d48f-2678bf63c609@ti.com>
-Date:   Mon, 7 Aug 2023 10:18:51 -0500
+        Mon, 7 Aug 2023 11:19:00 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E982610DE
+        for <linux-kernel@vger.kernel.org>; Mon,  7 Aug 2023 08:18:59 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 796CE61DF2
+        for <linux-kernel@vger.kernel.org>; Mon,  7 Aug 2023 15:18:59 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 275B4C433C7;
+        Mon,  7 Aug 2023 15:18:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1691421538;
+        bh=Ol5bMly7ZqSw89nfp8mGDx2BhxDc6aLMJTh/iG345hs=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=YRp/HqOwWwHkISGl6UlLg2lhuOJ3o0X4pe3nR6DzFJ6au08VpBT9ZQPWXQ2jgpCEz
+         8IZLlaeQVQNCQrn9p49EF7NkJQ3aZ0m0DG+RdLt5rKwOAfWinT8Q24WbwuqofDvtpR
+         itQgofis4FrIyi0nxdIEdKehqg9yJATp6vdSotCLcjsjbu9cMXulryywabJ2OgQYr5
+         gRBBPX6y9ROcoTv5J2E3HSKQcQyCSK7f7qoF7Brg5Mv81gdJL8OKWyXnRVMJ4/omNJ
+         sPbQQzirY9MYcN1gFDpaZVQPqQ4XsPapJ1kycY9apdtExhLO4rQ7Rpbhpe6bqHSZHI
+         RYwJTvM+Grrlw==
+Date:   Mon, 7 Aug 2023 17:18:53 +0200
+From:   Simon Horman <horms@kernel.org>
+To:     Furong Xu <0x1207@gmail.com>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Jose Abreu <joabreu@synopsys.com>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Joao Pinto <jpinto@synopsys.com>, netdev@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        xfr@outlook.com, rock.xu@nio.com
+Subject: Re: [PATCH] net: stmmac: xgmac: RX queue routing configuration
+Message-ID: <ZNELXd4I8r+YlWXP@vergenet.net>
+References: <20230807065609.1096076-1-0x1207@gmail.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH 04/13] arm64: dts: ti: k3-am65: Enable OSPI nodes at the
- board level
-Content-Language: en-US
-To:     Dhruva Gole <d-gole@ti.com>, Nishanth Menon <nm@ti.com>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Tero Kristo <kristo@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>
-CC:     <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-References: <20230802205309.257392-1-afd@ti.com>
- <20230802205309.257392-5-afd@ti.com>
- <bb87effc-00c3-7d97-08c9-68408f9c514c@ti.com>
-From:   Andrew Davis <afd@ti.com>
-In-Reply-To: <bb87effc-00c3-7d97-08c9-68408f9c514c@ti.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
-X-Spam-Status: No, score=-6.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230807065609.1096076-1-0x1207@gmail.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/7/23 1:16 AM, Dhruva Gole wrote:
-> Hi Andrew,
+On Mon, Aug 07, 2023 at 02:56:09PM +0800, Furong Xu wrote:
+> Commit abe80fdc6ee6 ("net: stmmac: RX queue routing configuration")
+> introduced RX queue routing to DWMAC4 core.
+> This patch extend the support to XGMAC2 core.
 > 
-> On 03/08/23 02:23, Andrew Davis wrote:
->> OSPI nodes defined in the top-level AM65x SoC dtsi files are incomplete
->> and may not be functional unless they are extended with pinmux and
->> device information.
->>
->> As the attached OSPI device is only known about at the board integration
->> level, these nodes should only be enabled when provided with this
->> information.
->>
->> Disable the OSPI nodes in the dtsi files and only enable the ones that
->> are actually pinned out on a given board.
->>
->> Signed-off-by: Andrew Davis <afd@ti.com>
->> ---
->>   arch/arm64/boot/dts/ti/k3-am65-iot2050-common.dtsi | 1 +
->>   arch/arm64/boot/dts/ti/k3-am65-mcu.dtsi            | 2 ++
->>   arch/arm64/boot/dts/ti/k3-am654-base-board.dts     | 1 +
->>   3 files changed, 4 insertions(+)
->>
->> diff --git a/arch/arm64/boot/dts/ti/k3-am65-iot2050-common.dtsi b/arch/arm64/boot/dts/ti/k3-am65-iot2050-common.dtsi
->> index e26bd988e5224..6041862d5aa75 100644
->> --- a/arch/arm64/boot/dts/ti/k3-am65-iot2050-common.dtsi
->> +++ b/arch/arm64/boot/dts/ti/k3-am65-iot2050-common.dtsi
->> @@ -593,6 +593,7 @@ adc {
->>   };
->>   &ospi0 {
->> +    status = "okay";
-> 
-> Ok, so this k3-am65-iot2050 series of DT files seem to be structured in
-> a bit different manner than our SKs and EVMs?
-> 
-> The terminologies like advanced, advanced-m2, basic, etc. are a little
-> confusing to me. However, I am wondering if we don't do any status = ..
-> here, and rather make ospi status okays from the iot2050 dts files?
-> 
-> Pardon me if I am making an invalid suggestion, I don't have much
-> background on these boards.
-> 
+> Signed-off-by: Furong Xu <0x1207@gmail.com>
 
-This is a valid question, and yes the IOT2050 DTS organization is
-slightly different than the one we use with our SK/EVMs.
+Hi Furong Xu,
 
-The way these DT files tend to work is layering more functionality
-or information in each file, starting with the core/most common
-in the base .dtsi, and ending with .dts that is specific to a given
-board. (In that way I would consider instances of "/delete-node/"
-to be an indicator of bad layering, but that is a different topic..)
+as this is a feature for a Networking it (probably) should
+be targeted at net-next - as opposed to net, which is for bug fixes.
+The target tree should be included in the subject.
 
-Any node that is only partially defined in a layer should be marked
-disabled, and then only enabled in the layer that finally completes
-the node. That is often the pinmux info at the board level.
+  Subject: [PATCH net-next] ...
 
-In this case, the OSPI nodes are complete after this point, there
-is no additional information given in the DTS files, so we can
-enable it here in this .dtsi file.
+...
 
-Andrew
+> diff --git a/drivers/net/ethernet/stmicro/stmmac/dwxgmac2_core.c b/drivers/net/ethernet/stmicro/stmmac/dwxgmac2_core.c
+> index a0c2ef8bb0ac..24918d95f612 100644
+> --- a/drivers/net/ethernet/stmicro/stmmac/dwxgmac2_core.c
+> +++ b/drivers/net/ethernet/stmicro/stmmac/dwxgmac2_core.c
+> @@ -127,6 +127,39 @@ static void dwxgmac2_tx_queue_prio(struct mac_device_info *hw, u32 prio,
+>  	writel(value, ioaddr + reg);
+>  }
+>  
+> +static void dwxgmac2_rx_queue_routing(struct mac_device_info *hw,
+> +				      u8 packet, u32 queue)
+> +{
+> +	void __iomem *ioaddr = hw->pcsr;
+> +	u32 value;
+> +
+> +	static const struct stmmac_rx_routing dwxgmac2_route_possibilities[] = {
+> +		{ XGMAC_AVCPQ, XGMAC_AVCPQ_SHIFT },
+> +		{ XGMAC_PTPQ, XGMAC_PTPQ_SHIFT },
+> +		{ XGMAC_DCBCPQ, XGMAC_DCBCPQ_SHIFT },
+> +		{ XGMAC_UPQ, XGMAC_UPQ_SHIFT },
+> +		{ XGMAC_MCBCQ, XGMAC_MCBCQ_SHIFT },
+> +	};
+> +
+> +	value = readl(ioaddr + XGMAC_RXQ_CTRL1);
+> +
+> +	/* routing configuration */
+> +	value &= ~dwxgmac2_route_possibilities[packet - 1].reg_mask;
+> +	value |= (queue << dwxgmac2_route_possibilities[packet-1].reg_shift) &
+> +		dwxgmac2_route_possibilities[packet - 1].reg_mask;
+> +
+> +	/* some packets require extra ops */
+> +	if (packet == PACKET_AVCPQ) {
+> +		value &= ~XGMAC_TACPQE;
+> +		value |= 0x1 << XGMAC_TACPQE_SHIFT;
 
->>       pinctrl-names = "default";
->>       pinctrl-0 = <&mcu_fss0_ospi0_pins_default>;
->> diff --git a/arch/arm64/boot/dts/ti/k3-am65-mcu.dtsi b/arch/arm64/boot/dts/ti/k3-am65-mcu.dtsi
->> index 7b1f94a89eca8..2c9c20a9d9179 100644
->> --- a/arch/arm64/boot/dts/ti/k3-am65-mcu.dtsi
->> +++ b/arch/arm64/boot/dts/ti/k3-am65-mcu.dtsi
->> @@ -295,6 +295,7 @@ ospi0: spi@47040000 {
->>               power-domains = <&k3_pds 248 TI_SCI_PD_EXCLUSIVE>;
->>               #address-cells = <1>;
->>               #size-cells = <0>;
->> +            status = "disabled";
->>           };
->>           ospi1: spi@47050000 {
->> @@ -309,6 +310,7 @@ ospi1: spi@47050000 {
->>               power-domains = <&k3_pds 249 TI_SCI_PD_EXCLUSIVE>;
->>               #address-cells = <1>;
->>               #size-cells = <0>;
->> +            status = "disabled";
->>           };
->>       };
->> diff --git a/arch/arm64/boot/dts/ti/k3-am654-base-board.dts b/arch/arm64/boot/dts/ti/k3-am654-base-board.dts
->> index 973a89b04a22f..43de7c132d343 100644
->> --- a/arch/arm64/boot/dts/ti/k3-am654-base-board.dts
->> +++ b/arch/arm64/boot/dts/ti/k3-am654-base-board.dts
->> @@ -530,6 +530,7 @@ &mcu_r5fss0_core1 {
->>   };
->>   &ospi0 {
->> +    status = "okay";
->>       pinctrl-names = "default";
->>       pinctrl-0 = <&mcu_fss0_ospi0_pins_default>;
-> 
+FIELD_PREP seems appropriate here.
+
+> +	} else if (packet == PACKET_MCBCQ) {
+> +		value &= ~XGMAC_MCBCQEN;
+> +		value |= 0x1 << XGMAC_MCBCQEN_SHIFT;
+
+And here.
+
+> +	}
+> +
+> +	writel(value, ioaddr + XGMAC_RXQ_CTRL1);
+> +}
+> +
+>  static void dwxgmac2_prog_mtl_rx_algorithms(struct mac_device_info *hw,
+>  					    u32 rx_alg)
+>  {
+
+...
