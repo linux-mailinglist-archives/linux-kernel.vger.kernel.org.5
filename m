@@ -2,88 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 107F8771DA9
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 11:59:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 903C5771D9D
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 11:56:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231304AbjHGJ7F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Aug 2023 05:59:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43686 "EHLO
+        id S231752AbjHGJ4W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Aug 2023 05:56:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42142 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230274AbjHGJ7C (ORCPT
+        with ESMTP id S231733AbjHGJ4T (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Aug 2023 05:59:02 -0400
-Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id B393DA4;
-        Mon,  7 Aug 2023 02:59:01 -0700 (PDT)
-Authenticated-By: 
-X-SpamFilter-By: ArmorX SpamTrap 5.77 with qID 3779vqRY3019363, This message is accepted by code: ctloc85258
-Received: from mail.realtek.com (rtexh36505.realtek.com.tw[172.21.6.25])
-        by rtits2.realtek.com.tw (8.15.2/2.81/5.90) with ESMTPS id 3779vqRY3019363
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=FAIL);
-        Mon, 7 Aug 2023 17:57:52 +0800
-Received: from RTEXMBS04.realtek.com.tw (172.21.6.97) by
- RTEXH36505.realtek.com.tw (172.21.6.25) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.32; Mon, 7 Aug 2023 17:57:16 +0800
-Received: from RTEXMBS04.realtek.com.tw (172.21.6.97) by
- RTEXMBS04.realtek.com.tw (172.21.6.97) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.7; Mon, 7 Aug 2023 17:57:15 +0800
-Received: from RTEXMBS04.realtek.com.tw ([fe80::e138:e7f1:4709:ff4d]) by
- RTEXMBS04.realtek.com.tw ([fe80::e138:e7f1:4709:ff4d%5]) with mapi id
- 15.01.2375.007; Mon, 7 Aug 2023 17:57:15 +0800
-From:   Hayes Wang <hayeswang@realtek.com>
-To:     "Limonciello, Mario" <mario.limonciello@amd.com>,
-        Jakub Kicinski <kuba@kernel.org>
-CC:     "edumazet@google.com" <edumazet@google.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
-        "pabeni@redhat.com" <pabeni@redhat.com>,
-        Paul Menzel <pmenzel@molgen.mpg.de>
-Subject: RE: Error 'netif_napi_add_weight() called with weight 256'
-Thread-Topic: Error 'netif_napi_add_weight() called with weight 256'
-Thread-Index: AQHZw8h1VlKS4AgmjUKpznAl5+SYmK/Tp70AgAAC4ICACvPXQA==
-Date:   Mon, 7 Aug 2023 09:57:15 +0000
-Message-ID: <8fcbab1aa2e14262bea79222bf7a4976@realtek.com>
-References: <0bfd445a-81f7-f702-08b0-bd5a72095e49@amd.com>
- <20230731111330.5211e637@kernel.org>
- <673bc252-2b34-6ef9-1765-9c7cac1e8658@amd.com>
-In-Reply-To: <673bc252-2b34-6ef9-1765-9c7cac1e8658@amd.com>
-Accept-Language: zh-TW, en-US
-Content-Language: zh-TW
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [172.22.228.6]
-x-kse-serverinfo: RTEXMBS04.realtek.com.tw, 9
-x-kse-antispam-interceptor-info: fallback
-x-kse-antivirus-interceptor-info: fallback
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        Mon, 7 Aug 2023 05:56:19 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.93])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE447134;
+        Mon,  7 Aug 2023 02:56:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1691402178; x=1722938178;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=4/2va4N+yxECKU3nkj0ADpdSkYaka5HTaKbB+Q+fNQ8=;
+  b=SxhTCX7qid47FE18BpQvk+apUGFUkV03altoT1Wb+MVzdWSlTsoOpsvX
+   U388ylE3XXKTFptcHk1D5KTuuWYrkK9vKFdLhSmgEEYKwJYRNR/EpRlC3
+   P1vkqprXOJYvfyd5E8aLCrWoxJXAKNvn+wTiL2Ebe5ibQxbh0uBjTb1Hr
+   +ZKwiYWigxLfGJm7rmicrztTfpP5cZDcPZ5iujAch/3lAg4taUchMBoMC
+   onfiZ2bLbHfUxHP62/MPxX/R9FfUUl2/81gfAGNyTTbs3ofHkeHetyCxx
+   RxDwUooXHCHmJdZVvnXIbT9QQcWq0Kj6fDy35wO/OtVREK4F38xuMVDb1
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10794"; a="367963811"
+X-IronPort-AV: E=Sophos;i="6.01,261,1684825200"; 
+   d="scan'208";a="367963811"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Aug 2023 02:56:18 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10794"; a="977379708"
+X-IronPort-AV: E=Sophos;i="6.01,261,1684825200"; 
+   d="scan'208";a="977379708"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by fmsmga006.fm.intel.com with ESMTP; 07 Aug 2023 02:56:16 -0700
+Received: by black.fi.intel.com (Postfix, from userid 1003)
+        id 0C9AD17C; Mon,  7 Aug 2023 12:58:28 +0300 (EEST)
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Justin Tee <justin.tee@broadcom.com>,
+        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     James Smart <james.smart@broadcom.com>,
+        Dick Kennedy <dick.kennedy@broadcom.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Subject: [PATCH v1 1/1] scsi: lpfc: Do not abuse UUID APIs
+Date:   Mon,  7 Aug 2023 12:58:23 +0300
+Message-Id: <20230807095823.33902-1-andriy.shevchenko@linux.intel.com>
+X-Mailer: git-send-email 2.40.0.1.gaa8946217a0b
 MIME-Version: 1.0
-X-KSE-AntiSpam-Interceptor-Info: fallback
-X-KSE-ServerInfo: RTEXH36505.realtek.com.tw, 9
-X-KSE-AntiSpam-Interceptor-Info: fallback
-X-KSE-Antivirus-Interceptor-Info: fallback
-X-KSE-AntiSpam-Interceptor-Info: fallback
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-TGltb25jaWVsbG8sIE1hcmlvIDxtYXJpby5saW1vbmNpZWxsb0BhbWQuY29tPg0KPiBTZW50OiBU
-dWVzZGF5LCBBdWd1c3QgMSwgMjAyMyAyOjI0IEFNDQpbLi4uXQ0KPiANCj4gPiBUaGUgY3VzdG9t
-IHdlaWdodCBpcyBwcm9iYWJseSBkdWUgdG8gYSBtaXN1bmRlcnN0YW5kaW5nLiBXZSBoYXZlIDIw
-MEcNCj4gPiBhZGFwdGVycyB1c2luZyB0aGUgc3RhbmRhcmQgd2VpZ2h0IG9mIDY0LCBJREsgd2h5
-IDIuNUcgYWRhcHRlciB3b3VsZA0KPiA+IG5lZWQgYW55dGhpbmcgc3BlY2lhbC4NCj4gDQo+IFBl
-cmhhcHMgSGF5ZXMgV2FuZyBjYW4gY29tbWVudCBvbiB0aGlzIChhcyB0aGUgYXV0aG9yIG9mIDE5
-NWFhZTMyMWM4MikuDQoNCkkgdGVzdCBvdXIgZGV2aWNlcyBvbiBhbiBFbWJlZGRlZCBzeXN0ZW0u
-DQpXZSBmaW5kIHRoZSB0aHJvdWdocHV0IGlzIGxvdy4NCkFuZCBpdCBpcyBjYXVzZWQgYnkgdGhl
-IHdlaWdodC4NCk91ciBOQVBJIGZ1bmN0aW9uIG9mdGVuIHVzZXMgdGhlIHdob2xlIGJ1ZGdldC4N
-CkZpbmFsbHksIHdlIGluY3JlYXNlIHRoZSB3ZWlnaHQsIGFuZCB0aGUgdGhyb3VnaHB1dCBpcyBn
-b29kLg0KDQpCZXN0IFJlZ2FyZHMsDQpIYXllcw0KDQo=
+The lpfc_vmid_host_uuid is not defined as uuid_t and its usage is not
+the same as for uuid_t operations (like exporting or importing).
+Hence replace call to uuid_is_null() by respective memchr_inv() without
+abusing casting.
+
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+---
+ drivers/scsi/lpfc/lpfc_els.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/scsi/lpfc/lpfc_els.c b/drivers/scsi/lpfc/lpfc_els.c
+index 2bad9954c355..14aece44cf43 100644
+--- a/drivers/scsi/lpfc/lpfc_els.c
++++ b/drivers/scsi/lpfc/lpfc_els.c
+@@ -1332,7 +1332,7 @@ lpfc_issue_els_flogi(struct lpfc_vport *vport, struct lpfc_nodelist *ndlp,
+ 	if (phba->cfg_vmid_priority_tagging) {
+ 		sp->cmn.priority_tagging = 1;
+ 		/* lpfc_vmid_host_uuid is combination of wwpn and wwnn */
+-		if (uuid_is_null((uuid_t *)vport->lpfc_vmid_host_uuid)) {
++		if (memchr_inv(vport->lpfc_vmid_host_uuid, 0, LPFC_COMPRESS_VMID_SIZE)) {
+ 			memcpy(vport->lpfc_vmid_host_uuid, phba->wwpn,
+ 			       sizeof(phba->wwpn));
+ 			memcpy(&vport->lpfc_vmid_host_uuid[8], phba->wwnn,
+@@ -12331,7 +12331,7 @@ lpfc_vmid_uvem(struct lpfc_vport *vport,
+ 	elsiocb->vmid_tag.vmid_context = vmid_context;
+ 	pcmd = (u8 *)elsiocb->cmd_dmabuf->virt;
+ 
+-	if (uuid_is_null((uuid_t *)vport->lpfc_vmid_host_uuid))
++	if (memchr_inv(vport->lpfc_vmid_host_uuid, 0, LPFC_COMPRESS_VMID_SIZE))
+ 		memcpy(vport->lpfc_vmid_host_uuid, vmid->host_vmid,
+ 		       LPFC_COMPRESS_VMID_SIZE);
+ 
+-- 
+2.40.0.1.gaa8946217a0b
+
