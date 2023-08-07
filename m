@@ -2,121 +2,211 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 89FE1772DDE
-	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 20:28:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 18BE0772DE0
+	for <lists+linux-kernel@lfdr.de>; Mon,  7 Aug 2023 20:29:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230005AbjHGS2l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 7 Aug 2023 14:28:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58894 "EHLO
+        id S230133AbjHGS3y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 7 Aug 2023 14:29:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59370 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229669AbjHGS2j (ORCPT
+        with ESMTP id S229669AbjHGS3x (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 7 Aug 2023 14:28:39 -0400
-Received: from domac.alu.hr (domac.alu.unizg.hr [IPv6:2001:b68:2:2800::3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54E9D10DB;
-        Mon,  7 Aug 2023 11:28:36 -0700 (PDT)
-Received: from localhost (localhost [127.0.0.1])
-        by domac.alu.hr (Postfix) with ESMTP id 053A660171;
-        Mon,  7 Aug 2023 20:28:28 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=alu.unizg.hr; s=mail;
-        t=1691432908; bh=+h9eEP/ZmYdTuhaB6Ft3TqSCoC6idCxuVPLw06kDWT8=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=KEsOfbFH0QeQgljUnJmvUKUkXtsJ/5k+6r2/aRm2doyEtWYZYjc0E5UdZPPmAC3JF
-         9sD38srBpM2J7550at1wtGZ5KoVOiF/gf3VbD4bVvzWiPl2HI0LjTXj5L8e2l0JiYN
-         g60AZrxCEy78yiR48GjrRe2dzterDJbLYwlCFi9+vjBW+og6y6sl6RunajM0AliJE8
-         C010G8jXu4hz27av/t8yOYyXHR0VGNp+j5pTrSr0DSNb9/TAwLlTrl6KEOSz62RdUu
-         +Ld+HrHOgaiM1UBh7ZTo4SUrgHEw/wAEB3Hf30NmOSPCug8NmvvBRZr2pe5ZkWjhxy
-         r8zUVdBai7r5A==
-X-Virus-Scanned: Debian amavisd-new at domac.alu.hr
-Received: from domac.alu.hr ([127.0.0.1])
-        by localhost (domac.alu.hr [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id wZltFuMJG8Ts; Mon,  7 Aug 2023 20:28:25 +0200 (CEST)
-Received: from [192.168.1.6] (unknown [94.250.191.183])
-        by domac.alu.hr (Postfix) with ESMTPSA id 76A656016E;
-        Mon,  7 Aug 2023 20:28:11 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=alu.unizg.hr; s=mail;
-        t=1691432905; bh=+h9eEP/ZmYdTuhaB6Ft3TqSCoC6idCxuVPLw06kDWT8=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=zkJ/T+MtZKGdboju85D5JB24Ea4374paBE6rYI/Mx4MMYxh92e9BQb8NF6y2WWWlt
-         9f/IuMvcxpdkeA7lNHjnj/Gfqqxk/JNs0a9iyUgKk5Jq0J5FY/a37H94OJ6BW6laC5
-         auHd0T5vpMT7xC9iu5RWqjaOhYwLSe+VAfwbqaQCegVRSy8SlTQ+Vr454mYor3+yYv
-         NXsDx4QyqyeYcA06e0LpTOoxmB1mO8AQ0rl8p1KUj/V/wWU9qeeq/PcTdez6i+rZuQ
-         b6Soze7dKfP6IfeN5Cfn9erLgF/t2oR58hEDlxaOr3QQCfA+VQpb9MyEAicwN7mXQ3
-         n2xBepXBLJMBg==
-Message-ID: <a9e443c7-c7b5-63ce-08d9-5604ac545bf6@alu.unizg.hr>
-Date:   Mon, 7 Aug 2023 20:28:04 +0200
+        Mon, 7 Aug 2023 14:29:53 -0400
+Received: from lelv0142.ext.ti.com (lelv0142.ext.ti.com [198.47.23.249])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7A1410EF;
+        Mon,  7 Aug 2023 11:29:51 -0700 (PDT)
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+        by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 377ITdhQ081719;
+        Mon, 7 Aug 2023 13:29:39 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1691432979;
+        bh=mW6rG9MJw/rvl4+H6oLctG2tKTYJaCepOs6PH34wgWI=;
+        h=Date:Subject:To:CC:References:From:In-Reply-To;
+        b=LU/dm8e6jRwmIaVsnUw6F8RvqWxSVr6JF78hJHS37p//4loxaTKA5CI+mPhil0ZpJ
+         FYME+r1QAJ9qpVyu9wsvcZjxhL1TemRJebEuydgRfw8ssCwiFDOVQlCNefgMd84/+v
+         MAk8pVzRe7QKPTNAeSN3SEta673Fe5OGzxSktD+c=
+Received: from DFLE105.ent.ti.com (dfle105.ent.ti.com [10.64.6.26])
+        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 377ITdRU076712
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Mon, 7 Aug 2023 13:29:39 -0500
+Received: from DFLE110.ent.ti.com (10.64.6.31) by DFLE105.ent.ti.com
+ (10.64.6.26) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Mon, 7
+ Aug 2023 13:29:38 -0500
+Received: from fllv0040.itg.ti.com (10.64.41.20) by DFLE110.ent.ti.com
+ (10.64.6.31) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Mon, 7 Aug 2023 13:29:38 -0500
+Received: from [10.249.132.69] (ileaxei01-snat2.itg.ti.com [10.180.69.6])
+        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 377ITWfB091198;
+        Mon, 7 Aug 2023 13:29:33 -0500
+Message-ID: <435f9b99-b888-2e18-cf70-8c7d074b68be@ti.com>
+Date:   Mon, 7 Aug 2023 23:59:31 +0530
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
  Thunderbird/102.14.0
-Subject: Re: [PATCH v3 4.14 1/1] test_firmware: fix the memory leaks with the
- reqs buffer
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, Luis Chamberlain <mcgrof@kernel.org>,
-        Russ Weight <russell.h.weight@intel.com>,
-        Tianfei Zhang <tianfei.zhang@intel.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Colin Ian King <colin.i.king@gmail.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        linux-kselftest@vger.kernel.org, stable@vger.kernel.org,
-        Dan Carpenter <error27@gmail.com>, Takashi Iwai <tiwai@suse.de>
-References: <20230804170017.92671-1-mirsad.todorovac@alu.unizg.hr>
- <2023080705-poet-nickname-5e08@gregkh>
+Subject: Re: [PATCH v9 4/5] arm64: dts: ti: k3-j784s4-evm: Enable
+ DisplayPort-0
 Content-Language: en-US
-From:   Mirsad Todorovac <mirsad.todorovac@alu.unizg.hr>
-In-Reply-To: <2023080705-poet-nickname-5e08@gregkh>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,T_SPF_TEMPERROR autolearn=ham autolearn_force=no
-        version=3.4.6
+To:     Andrew Davis <afd@ti.com>, Jayesh Choudhary <j-choudhary@ti.com>,
+        <nm@ti.com>, <vigneshr@ti.com>
+CC:     Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>,
+        <s-vadapalli@ti.com>, <kristo@kernel.org>, <robh+dt@kernel.org>,
+        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
+        <r-ravikumar@ti.com>, <sabiya.d@ti.com>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>, <rogerq@kernel.org>
+References: <20230803080441.367341-1-j-choudhary@ti.com>
+ <20230803080441.367341-5-j-choudhary@ti.com>
+ <9f19e01e-6211-16eb-c911-998ee2d46161@ti.com>
+ <2ddc34f9-92ad-9a0c-8044-0ec671e55e9e@ti.com>
+ <06708b12-34af-bcb5-7b65-c9bdd830b9f0@ti.com>
+ <7c2b0f22-95d3-2976-7999-7e65c6d9801b@ti.com>
+From:   Aradhya Bhatia <a-bhatia1@ti.com>
+In-Reply-To: <7c2b0f22-95d3-2976-7999-7e65c6d9801b@ti.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+X-Spam-Status: No, score=-6.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,SPF_HELO_PASS,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/7/23 11:15, Greg Kroah-Hartman wrote:
-> On Fri, Aug 04, 2023 at 07:00:18PM +0200, Mirsad Todorovac wrote:
->> [ commit be37bed754ed90b2655382f93f9724b3c1aae847 upstream ]
+
+
+On 07-Aug-23 21:19, Andrew Davis wrote:
+> On 8/7/23 7:56 AM, Aradhya Bhatia wrote:
+>> Hi Jayesh,
 >>
->> Dan Carpenter spotted that test_fw_config->reqs will be leaked if
->> trigger_batched_requests_store() is called two or more times.
->> The same appears with trigger_batched_requests_async_store().
+>> On 07-Aug-23 17:54, Jayesh Choudhary wrote:
+>>> Hello Aradhya,
+>>>
+>>> Thank you for the review.
+>>>
+>>> On 05/08/23 00:52, Aradhya Bhatia wrote:
+>>>> Hi Jayesh,
+>>>>
+>>>>
+>>>> On 03-Aug-23 13:34, Jayesh Choudhary wrote:
+>>>>> From: Rahul T R <r-ravikumar@ti.com>
+>>>>>
+>>>>> Enable display for J784S4 EVM.
+>>>>>
+>>>>> Add assigned clocks for DSS, DT node for DisplayPort PHY and pinmux
+>>>>> for
+>>>>> DP HPD. Add the clock frequency for serdes_refclk.
+>>>>>
+>>>>> Add the endpoint nodes to describe connection from:
+>>>>> DSS => MHDP => DisplayPort connector.
+>>>>>
+>>>>> Also add the GPIO expander-4 node and pinmux for main_i2c4 which is
+>>>>> required for controlling DP power. Set status for all required nodes
+>>>>> for DP-0 as "okay".
+>>>>>
+>>>>> Signed-off-by: Rahul T R <r-ravikumar@ti.com>
+>>>>> [j-choudhary@ti.com: move all the changes together to enable DP-0 in
+>>>>> EVM]
+>>>>> Signed-off-by: Jayesh Choudhary <j-choudhary@ti.com>
+>>>>> ---
+>>>>>    arch/arm64/boot/dts/ti/k3-j784s4-evm.dts | 119
+>>>>> +++++++++++++++++++++++
+>>>>>    1 file changed, 119 insertions(+)
+>>>
+>>> [...]
+>>>
+>>>>> +        reg = <0>;
+>>>>> +        cdns,num-lanes = <4>;
+>>>>> +        #phy-cells = <0>;
+>>>>> +        cdns,phy-type = <PHY_TYPE_DP>;
+>>>>> +        resets = <&serdes_wiz4 1>, <&serdes_wiz4 2>,
+>>>>> +             <&serdes_wiz4 3>, <&serdes_wiz4 4>;
+>>>>> +    };
+>>>>> +};
+>>>>> +
+>>>>> +&mhdp {
+>>>>> +    status = "okay";
+>>>>> +    pinctrl-names = "default";
+>>>>> +    pinctrl-0 = <&dp0_pins_default>;
+>>>>> +    phys = <&serdes4_dp_link>;
+>>>>> +    phy-names = "dpphy";
+>>>>> +};
+>>>>> +
+>>>>> +&dss_ports {
+>>>>> +    port {
+>>>>
+>>>> Port index has not been added here. Since this port outputs to MHDP
+>>>> bridge, this should be "port@0", and a "reg = <0>;" property should be
+>>>> added below (along with the address and size cells properties).
+>>>>
+>>>> I suppose this works functionally in this case, because the port gets
+>>>> defaulted to "0" by the driver. But in future, when we add support for
+>>>> other dss output(s) on j784s4-evm, the driver will need indices to
+>>>> distinguish among them.
+>>>>
+>>>
+>>> Okay. It makes sense.
+>>> Just one thing here. Adding reg here would require it to have #address-
+>>> cells and #size-cell but since we have only single child port that too
+>>> at reg=<0>, it would throw dtbs_check warning:
+>>>
+>>> arch/arm64/boot/dts/ti/k3-j784s4-main.dtsi:1828.20-1831.5: Warning
+>>> (graph_child_address): /bus@100000/dss@4a00000/ports: graph node has
+>>> single child node 'port@0', #address-cells/#size-cells are not necessary
+>>>    also defined at arch/arm64/boot/dts/ti/k3-j784s4-evm.dts:911.12-919.3
+>>>
 >>
->> This bug wasn't triggered by the tests, but observed by Dan's visual
->> inspection of the code.
+>> Okay! Was not aware about this. I still think "port@0" should be
+>> specified instead of just "port" and the warning should be ignored, if
+>> possible.
 >>
->> The recommended workaround was to return -EBUSY if test_fw_config->reqs
->> is already allocated.
->>
->> Fixes: c92316bf8e94 ("test_firmware: add batched firmware tests")
->> Cc: Luis Chamberlain <mcgrof@kernel.org>
->> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
->> Cc: Russ Weight <russell.h.weight@intel.com>
->> Cc: Tianfei Zhang <tianfei.zhang@intel.com>
->> Cc: Shuah Khan <shuah@kernel.org>
->> Cc: Colin Ian King <colin.i.king@gmail.com>
->> Cc: Randy Dunlap <rdunlap@infradead.org>
->> Cc: linux-kselftest@vger.kernel.org
->> Cc: stable@vger.kernel.org # v4.14
->> Suggested-by: Dan Carpenter <error27@gmail.com>
->> Suggested-by: Takashi Iwai <tiwai@suse.de>
->> Link: https://lore.kernel.org/r/20230509084746.48259-2-mirsad.todorovac@alu.unizg.hr
->> Signed-off-by: Mirsad Todorovac <mirsad.todorovac@alu.unizg.hr>
->>
->> [ This fix is applied against the 4.14 stable branch. There are no changes to the ]
->> [ fix in code when compared to the upstread, only the reformatting for backport.  ]
 > 
-> Thanks for all of these, now queued up.
+> Do not ignore new DT check warnings, if you go with "port@0" (which you
+> need to do as the "ti,j721e-dss" binding requires it) you must also add
+> the #address-cells/#size-cells.
+> 
 
-No problem, I should have done it right the first time to reduce your load.
+The warning that Jayesh mentioned above comes when "port@0" is
+mentioned, *along-with* the #address-cells/#size-cells properties.
+Essentially, it wants us to not use "port@0" when only single port is
+being added whose reg values is 0.
 
-I really believe that backporting bug fix patches is important because many systems
-cannot upgrade because of the legacy apps and hardware, to state the obvious.
+This warning does not come when only a single port other than 0,
+"port@1" for e.g., is being used. That's the warning, that should get
+ignored, if possible.
 
-I know because we are in that group. :-)
+However, just mentioning "port@0", without the #address-cells/
+#size-cells, would be plain wrong.
 
-Kind regards,
-Mirsad Todorovac
+Regards
+Aradhya
+
+> 
+>> If there were only a "port@1" child node, this warning would not have
+>> come up, and I believe "port@0" should be treated just the same.
+>>
+>> Moreover, while we can add these properties at a later stage as an
+>> incremental patch, adding the size and address cells in the dtsi would
+>> affect other platform dts files as well, that use this SoC.
+>>
+>> For e.g., the patch 5/5 of this series, on AM69-SK will still require
+>> the size and address cells for its ports. The clean up then will be that
+>> much more, when adding those incremental patches.
+>>
+>> Anyway, I will let Nishanth and Vignesh take the final call on this.
+>>
+>> Regards
+>> Aradhya
+>>
+>>>
+>>>>> +        dpi0_out: endpoint {
+>>>>> +            remote-endpoint = <&dp0_in>;
+>>>
+>>>
+>>> [...]
+>>
 
